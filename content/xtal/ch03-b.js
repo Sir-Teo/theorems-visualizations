@@ -7,6 +7,8 @@ import {
   stabilizer, orbit, snapSpecial, siteInfo, describeOp, intrinsic, dimSym2, dimPiezo, averageSym2, closure3,
 } from './ch03.shared.js';
 
+import { TOY_CRYSTALS, toyStrain, relaxNegativeSublattice, toyPolarization } from './source-audit-symmetry-indices.shared.js';
+
 const SQ3 = Math.sqrt(3) / 2;
 const isHexGroup = (n) => n >= 143 && n <= 194;
 const sysOf = (n) => SG[n - 1].cs;
@@ -337,22 +339,21 @@ export default {
       num: '3.10',
       kind: 'Principle',
       name: 'Neumann’s principle',
-      statement: String.raw`**Neumann's principle.** The symmetry group of any macroscopic physical property of a crystal contains the point group of the crystal: if $R$ is an operation of the crystal's point group, then the property is unchanged when the crystal is transformed by $R$. For a property described by a symmetric second-rank tensor $K$ (electrical or thermal conductivity, permittivity, thermal expansion, …) this means $K=RKR^{\mathsf T}$ for every matrix $R$ of the point group, which restricts the number of independent components: **1** for the cubic groups (the property is isotropic), **2** for tetragonal, trigonal and hexagonal crystals (uniaxial: $K_{\parallel}\neq K_\perp$), **3** for orthorhombic, **4** for monoclinic and **6** for triclinic crystals. The principle limits the symmetry of a property from below: the property may be *more* symmetric than the crystal (every second-rank tensor property is centrosymmetric, whatever the crystal), never less. It applies to properties of the crystal as a continuum, not to the positions of its atoms, and not to a crystal under a field that breaks its symmetry.`,
-      idea: String.raw`A symmetry operation $R$ of the crystal maps the crystal onto itself, so a measurement made on the transformed crystal gives the same result as on the original; but the transformed crystal gives the transformed tensor, $RKR^{\mathsf T}$, so these two must be equal. Averaging over the group, $\bar K=\tfrac1{|G|}\sum_{R}RKR^{\mathsf T}$, produces a tensor that obeys the condition (the group property makes it invariant) and equals $K$ exactly when $K$ obeyed it already; hence the invariant tensors form the image of the averaging operator, whose dimension is $\tfrac1{|G|}\sum_R\tfrac12(\operatorname{tr}^2R+\operatorname{tr}R^2)$ (the average of a character). Neumann stated the principle in his lectures at Königsberg, and it was formalised in print by his students, among them Voigt, in the 1880s; Pierre Curie later generalised it to causes and effects.`,
-      caption: String.raw`Choose a point group on the board and set a trial $3\times3$ symmetric tensor with the sliders (the six independent entries): the blue surface is its **average over the group**, the tensor Neumann's principle allows, drawn as the value $K(\mathbf n)=\mathbf n^{\mathsf T}K\mathbf n$ along every direction $\mathbf n$ (with $\mathbf c$ vertical); the section panel compares it with the raw tensor. Cubic groups give a sphere, tetragonal/trigonal/hexagonal groups an ellipsoid of revolution about $\mathbf c$, orthorhombic ones three different axes, monoclinic ones one axis fixed by symmetry. Switch on *use the raw tensor* to break the hypothesis: the readout then shows how far $RKR^{\mathsf T}$ is from $K$ for the group's operations.`,
+      statement: String.raw`**Neumann's principle.** The symmetry group of any macroscopic physical property of a crystal contains the point group of the crystal: if $R$ is an operation of the crystal's point group, then the property is unchanged when the crystal is transformed by $R$. For a property described by a symmetric **polar** second-rank tensor $K$ (electrical or thermal conductivity, permittivity, thermal expansion, …) this means $K=RKR^{\mathsf T}$ for every matrix $R$ of the point group, which restricts the number of independent components: **1** for the cubic groups (the property is isotropic), **2** for tetragonal, trigonal and hexagonal crystals (uniaxial: $K_{\parallel}$ and $K_\perp$ may differ), **3** for orthorhombic, **4** for monoclinic and **6** for triclinic crystals. The principle limits the symmetry of a property from below: the property may be *more* symmetric than the crystal (every ordinary polar second-rank tensor is centrosymmetric, whatever the crystal), never less. It applies to properties of the crystal as a continuum, not to the positions of its atoms, and not to a crystal under a field that breaks its symmetry.`,
+      idea: String.raw`A symmetry operation $R$ of the crystal maps the crystal onto itself, so a measurement made on the transformed crystal gives the same result as on the original; but the transformed crystal gives the transformed tensor, $RKR^{\mathsf T}$, so these two must be equal. Averaging over the group, $\bar K=\tfrac1{|G|}\sum_{R}RKR^{\mathsf T}$, produces a tensor that obeys the condition (the group property makes it invariant) and equals $K$ exactly when $K$ obeyed it already; hence the invariant tensors form the image of the averaging operator, whose dimension is $\tfrac1{|G|}\sum_R\tfrac12(\operatorname{tr}^2R+\operatorname{tr}R^2)$ (the average of a character).`,
+      caption: String.raw`Choose a point group on the board and set a trial $3\times3$ symmetric tensor with the sliders (the six independent entries): the blue surface is its **average over the group**, the tensor Neumann's principle allows, drawn with radius proportional to the **positive part** of $K(\mathbf n)=\mathbf n^{\mathsf T}K\mathbf n$ along every direction $\mathbf n$ (with $\mathbf c$ vertical); the section panel compares it with the raw tensor. Cubic groups give a sphere, tetragonal/trigonal/hexagonal groups a surface of revolution about $\mathbf c$, orthorhombic ones three different axes, monoclinic ones one axis fixed by symmetry. Switch on *use the raw tensor* to break the hypothesis: the readout then shows how far $RKR^{\mathsf T}$ is from $K$ for the group's operations.`,
       deps: ['xtal-3.4'],
-      refs: ['Hammond ch. 14', 'Giacovazzo ch. 10'],
-      credit: 'F. E. Neumann, lectures of the 1870s; formalised in print in the 1880s (W. Voigt, B. Minnigerode); generalised by P. Curie, 1894',
+      refs: ['Ervin Hartmann, IUCr Teaching Pamphlet18, §§3–5, Eqs.(4.1)–(4.11),(5.3)', 'Invariant tensor projection and dimension derivation in verification report'],
+      scope: String.raw`Ordinary symmetric polar tensors and conventional nonmagnetic point groups, at a state respecting that symmetry. Axial/pseudotensors and magnetic time-reversal symmetries use different transformation laws. A radial plot of $\mathbf n^{\mathsf T}K\mathbf n$ is generally not an ellipsoid. Sliders can make a non-positive tensor; negative values are displayed as zero radius, and this limitation is explicit in the readout.`,
       tags: ['Neumann’s principle', 'tensors', 'anisotropy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Neumann%27s_principle' },
-      verify: true,
       viz(v) {
         let sel = 14;
         const K = [v.slider('$K_{11}$', 0.6, 3.6, 3.3, { step: 0.05 }), v.slider('$K_{22}$', 0.6, 3.6, 1.5, { step: 0.05 }), v.slider('$K_{33}$', 0.6, 3.6, 1.2, { step: 0.05 }),
           v.slider('$K_{12}$', -0.9, 0.9, 0.5, { step: 0.05 }), v.slider('$K_{13}$', -0.9, 0.9, 0.4, { step: 0.05 }), v.slider('$K_{23}$', -0.9, 0.9, -0.4, { step: 0.05 })];
         const raw = v.toggle('use the raw tensor (break the hypothesis)', false);
         const plane = v.select('section plane', [{ value: 'xz', label: 'xz (contains c)' }, { value: 'xy', label: 'xy (⟂ c)' }, { value: 'yz', label: 'yz' }], 'xz');
-        const S = v.stage({ x: [-2, 2], y: [-1.8, 1.8], equal: true, axes: false, height: 400, weight: 1.1, title: 'value K(n) of the allowed tensor (drag to rotate)' });
+        const S = v.stage({ x: [-2.3, 2.3], y: [-2.3, 2.3], equal: true, axes: false, height: 400, weight: 1.1, title: 'value K(n) of the allowed tensor (drag to rotate)' });
         const sc = v.scene3(S, { yaw: -0.6, pitch: 0.3, axes: false });
         const C = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: false, height: 400, weight: 1, title: 'section through the surface' });
         const B = v.stage({ x: [-2.4, 7.3], y: [-0.5, 7.1], axes: false, height: 380, full: true, title: 'point group (click one) and its number d of independent components' });
@@ -371,7 +372,7 @@ export default {
           SYSTEMS.forEach((sy, k) => B.text(sy, -0.12, 6.5 - k, { size: 12, align: 'right', color: 'muted', baseline: 'middle' }));
           // surface
           const ev = v.M.eigSym(Tshow).values, ev0 = v.M.eigSym(T0).values, vmax = Math.max(...ev.map(Math.abs), ...ev0.map(Math.abs)), sc0 = 1.5 / vmax, vmin = Math.min(...ev);
-          const rr = (n) => Math.max(val(Tshow, n), 0.02) * sc0, N = 20, M = 10;
+          const rr = (n) => Math.max(val(Tshow, n), 0) * sc0, N = 20, M = 10;
           sc.begin();
           const pt = (i, j) => { const lam = (TAU * i) / N, phi = -Math.PI / 2 + (Math.PI * j) / M, n = [Math.cos(phi) * Math.cos(lam), Math.cos(phi) * Math.sin(lam), Math.sin(phi)]; return mul(rr(n), [n[0], n[1], n[2]]); };
           for (let i = 0; i < N; i++) for (let j = 0; j < M; j++) sc.poly([pt(i, j), pt(i + 1, j), pt(i + 1, j + 1), pt(i, j + 1)], { fill: raw.value ? 'orange' : 'accent', fillAlpha: 0.3, color: raw.value ? 'orange' : 'accent', width: 0.6, alpha: 0.7 });
@@ -395,8 +396,8 @@ export default {
           const { g, Ts, Tshow, ev, viol, viol0, rank, dim, vmin } = info, f = (x) => (Math.abs(x) < 1e-9 ? '0' : v.fix(x, 2));
           const mat = '\\begin{pmatrix}' + Tshow.map((r) => r.map(f).join('&')).join('\\\\') + '\\end{pmatrix}';
           const nd = ev.filter((x, i) => ev.findIndex((y) => Math.abs(y - x) < 1e-6) === i).length;
-          const shape = nd === 1 ? 'a sphere: isotropic' : nd === 2 ? 'an ellipsoid of revolution' : 'an ellipsoid with three different axes';
-          return `$${hmMath(g.hm)}$: the allowed tensors form a space of dimension **${v.fix(dim, 0)}** (character formula) and the averaging operator has rank **${rank}** ${Math.abs(dim - rank) < 1e-9 ? '✓' : '✗'}. Shown: $K=${mat}$ — ${raw.value ? 'the raw tensor' : 'forced zeros and equalities are visible'}; the surface is ${shape}${vmin <= 0 ? ' (not positive definite)' : ''}.\nLargest deviation $\\max_R\\|RKR^{\\mathsf T}-K\\|$: ${raw.value ? `**$${v.sci(viol, 2)}$** for the raw tensor ${viol > 1e-9 ? '— it violates Neumann’s principle for this crystal ✗' : '(already allowed)'}` : `$${v.sci(Math.max(viol, 1e-17), 2)}$ (zero to rounding) for the averaged tensor; the raw one has $${v.sci(viol0, 2)}$`}.`;
+          const shape = nd === 1 ? 'a sphere: isotropic' : nd === 2 ? 'a surface of revolution' : 'a quadratic radial response with three principal values';
+          return `$${hmMath(g.hm)}$: the allowed tensors form a space of dimension **${v.fix(dim, 0)}** (character formula) and the averaging operator has rank **${rank}** ${Math.abs(dim - rank) < 1e-9 ? '✓' : '✗'}. Shown: $K=${mat}$ — ${raw.value ? 'the raw tensor' : 'forced zeros and equalities are visible'}; the surface is ${shape}${vmin <= 0 ? ' (not positive definite: negative radial values are shown as zero)' : ''}.\nLargest deviation $\\max_R\\|RKR^{\\mathsf T}-K\\|$: ${raw.value ? `**$${v.sci(viol, 2)}$** for the raw tensor ${viol > 1e-9 ? '— it violates Neumann’s principle for this crystal ✗' : '(already allowed)'}` : `$${v.sci(viol, 2)}$ (zero to rounding) for the averaged tensor; the raw one has $${v.sci(viol0, 2)}$`}.`;
         });
       },
     },
@@ -466,15 +467,14 @@ export default {
       num: '3.12',
       kind: 'Phenomenon',
       name: 'Piezoelectricity requires a lack of inversion symmetry',
-      statement: String.raw`In a **piezoelectric** crystal a mechanical stress (or strain) produces an electric polarisation, $P_i=d_{ijk}\sigma_{jk}$ (direct effect; $d_{ijk}=d_{ikj}$, a symmetric third-rank tensor with at most 18 independent components), and conversely an applied field produces a strain (converse effect). A crystal can be piezoelectric only if its point group has **no centre of inversion**: of the 32 crystallographic point groups, 11 are centrosymmetric and all 11 have $d_{ijk}=0$; of the 21 non-centrosymmetric groups, 20 allow the effect and only the cubic group $432$ does not, because its rotations force every component to vanish. The effect is linear and **changes sign** when the stress changes sign (squeezing versus stretching), and it appears in $\alpha$-quartz, tourmaline, zinc oxide, GaN and many ceramics but not in diamond, silicon or rock salt. The number of independent coefficients depends on the group (for example 1 for $\bar6m2$ and $\bar43m$, 2 for $32$ and $\bar42m$, 18 for $1$).`,
-      idea: String.raw`Under inversion $\mathbf x\mapsto-\mathbf x$ a polar vector changes sign, $P\to-P$, while a stress or strain (a second-rank tensor, two sign changes) does not. If the crystal has an inversion centre, the law $P_i=d_{ijk}\sigma_{jk}$ must hold in the inverted crystal, which is the same crystal, with $-P_i=d_{ijk}\sigma_{jk}$, so $P=-P=0$: the third-rank tensor is odd and Neumann's principle (3.10) kills it. For non-centrosymmetric groups the invariant tensors are the group average of $d_{ijk}$ over the matrices $R\otimes R\otimes R$ and the dimension is the average of $\operatorname{tr}R\cdot\tfrac12(\operatorname{tr}^2R+\operatorname{tr}R^2)$; the program computes it for all 32 groups. Physically the strain moves positive and negative ions relative to each other; without a centre of inversion their dipoles no longer cancel. Pierre and Jacques Curie found the effect in 1880 in quartz, tourmaline and other crystals by using symmetry arguments to choose which crystals to test.`,
+      statement: String.raw`In a **piezoelectric** crystal a mechanical stress produces an electric polarisation, $P_i=d_{ijk}\sigma_{jk}$ (direct effect; $d_{ijk}=d_{ikj}$, a polar third-rank tensor symmetric in its last two indices with at most 18 independent components), and conversely an applied field produces a strain (converse effect). A crystal can be piezoelectric only if its point group has **no centre of inversion**: of the 32 crystallographic point groups, 11 are centrosymmetric and all 11 have $d_{ijk}=0$; of the 21 non-centrosymmetric groups, 20 allow the effect and only the cubic group $432$ does not, because its rotations force every component to vanish. The effect is linear and **changes sign** when the stress changes sign (squeezing versus stretching); the symmetry allows coefficients but does not require that a particular allowed coefficient be nonzero. The number of independent coefficients depends on the group (for example 1 for $\bar6m2$ and $\bar43m$, 2 for $32$ and $\bar42m$, 18 for $1$).`,
+      idea: String.raw`Under inversion $\mathbf x\mapsto-\mathbf x$ a polar vector changes sign, $P\to-P$, while a stress or strain (a second-rank tensor, two sign changes) does not. If the crystal has an inversion centre, the law $P_i=d_{ijk}\sigma_{jk}$ must hold in the inverted crystal, which is the same crystal, with $-P_i=d_{ijk}\sigma_{jk}$, so $P=-P=0$: the third-rank tensor is odd and Neumann's principle (3.10) kills it. For non-centrosymmetric groups the invariant tensors are the group average of $d_{ijk}$ over the matrices $R\otimes R\otimes R$ and the dimension is the average of $\operatorname{tr}R\cdot\tfrac12(\operatorname{tr}^2R+\operatorname{tr}R^2)$; the program computes it for all 32 groups. Physically the strain moves positive and negative ions relative to each other; without a centre of inversion their dipoles no longer cancel.`,
       caption: String.raw`Left: the 32 point groups coloured by the computed number of independent piezoelectric coefficients (grey: centrosymmetric, so zero; green: allowed; the one non-centrosymmetric group with zero is $432$, in red). Right: a toy model of the mechanism, **not** a quartz calculation: two-dimensional ionic crystals of $+$ and $-$ point charges joined by springs. Choose a *honeycomb* crystal (like a boron nitride sheet, no inversion centre) or a *square checkerboard* (an inversion centre on every ion), set the direction and size of a uniaxial strain, and let the ions relax: the positive and negative sublattices shift against each other by the computed internal displacement. Honeycomb: a polarisation appears and reverses when stretching becomes squeezing; checkerboard: it is exactly zero. Switch on *inversion test* to see why.`,
       deps: ['xtal-3.10'],
-      refs: ['Hammond ch. 14', 'Giacovazzo ch. 10'],
-      credit: 'J. and P. Curie, 1880',
+      refs: ['Ervin Hartmann, IUCr Teaching Pamphlet18, §§3–4, Eq.(3.13), polar tensor invariance Eq.(4.10)', 'Explicit18-component invariant-space and toy spring-energy derivations in verification report'],
+      scope: String.raw`Linear bulk response at a symmetry-preserving reference state, conventional nonmagnetic point groups. The board computes symmetry-allowed stress coefficients; the independent 2D spring toy computes a strain response, not a measured material coefficient. Its relative shift moves negative charges by $\mathbf u$, giving a dipole change $-q\mathbf u$ per cell. The affine baseline is chosen nonpolar; nonlinear strains, surfaces, field gradients and quantum polarization are outside this illustration.`,
       tags: ['piezoelectricity', 'inversion symmetry', 'tensors'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Piezoelectricity' },
-      verify: true,
       viz(v) {
         let sel = pointGroups().findIndex((g) => g.hm === '32');
         const XTAL = v.select('toy crystal', [{ value: 'hc', label: 'honeycomb (B⁺N⁻)' }, { value: 'sq', label: 'square checkerboard' }], 'hc');
@@ -484,39 +484,19 @@ export default {
         const invT = v.toggle('inversion test', false);
         const Bd = v.stage({ x: [-2.4, 7.3], y: [-0.5, 7.1], axes: false, height: 400, weight: 1, title: 'the 32 point groups: independent piezoelectric coefficients' });
         const M = v.stage({ x: [-6, 6], y: [-4.4, 4.4], equal: true, axes: false, height: 400, weight: 1.15, title: 'toy model: ions relaxing under uniaxial strain' });
-        const Cv = v.stage({ x: [0, 180], y: [-0.6, 0.6], axes: 'box', gutter: true, xlabel: 'strain direction θ (°)', ylabel: 'polarisation P (units q/ℓ)', height: 250, full: true, title: 'polarisation for a strain of the chosen size, all directions' });
+        const Cv = v.stage({ x: [0, 180], y: [-0.6, 0.6], axes: 'box', gutter: {l:85}, xlabel: 'strain direction θ (°)', ylabel: 'polarisation P (units q/ℓ)', height: 250, full: true, title: 'polarisation for a strain of the chosen size, all directions' });
         Bd.onClick((x, y) => { const i = pgTileAt(x, y); if (i >= 0) sel = i; v.invalidate(); });
-        const NU = 0.3, s3 = Math.sqrt(3);
-        const MODEL = {
-          hc: { name: 'honeycomb', bonds: [90, 210, 330].map((a) => [Math.cos((a * Math.PI) / 180), Math.sin((a * Math.PI) / 180)]), a1: [s3, 0], a2: [s3 / 2, 1.5], pos: [0, 0], area: (3 * s3) / 2 },
-          sq: { name: 'checkerboard', bonds: [[1, 0], [-1, 0], [0, 1], [0, -1]], a1: [1, 1], a2: [1, -1], pos: [0, 0], area: 2 },
-        };
-        const strain = (t, e) => { const n = [Math.cos(t), Math.sin(t)], f = (i, j) => e * ((1 + NU) * n[i] * n[j] - (i === j ? NU : 0)); return [[f(0, 0), f(0, 1)], [f(1, 0), f(1, 1)]]; };
-        /** relaxed internal displacement u of the negative sublattice: minimise the spring energy sum (n_j . (eps b_j + u))^2 over u. */
-        const relax = (md, eps) => {
-          let A = [[0, 0], [0, 0]], r = [0, 0];
-          for (const b of md.bonds) {
-            const n = b, eb = [eps[0][0] * b[0] + eps[0][1] * b[1], eps[1][0] * b[0] + eps[1][1] * b[1]], c = n[0] * eb[0] + n[1] * eb[1];
-            A[0][0] += n[0] * n[0]; A[0][1] += n[0] * n[1]; A[1][0] += n[1] * n[0]; A[1][1] += n[1] * n[1]; r[0] -= n[0] * c; r[1] -= n[1] * c;
-          }
-          const d = A[0][0] * A[1][1] - A[0][1] * A[1][0];
-          return [(A[1][1] * r[0] - A[0][1] * r[1]) / d, (-A[1][0] * r[0] + A[0][0] * r[1]) / d];
-        };
-        const polar = (md, t, e) => { const u = relax(md, strain(t, e)); return [u[0] / md.area, u[1] / md.area]; };
+        const MODEL=TOY_CRYSTALS, strain=toyStrain, relax=relaxNegativeSublattice;
+        const polar=(md,t,e)=>toyPolarization(md,relax(md,strain(t,e)));
         // does the (undistorted) structure have a centre of inversion?  test every centre (r_i + r_j)/2 of two like ions
         const atoms = (md) => { const out = []; for (let i = -4; i <= 4; i++) for (let j = -4; j <= 4; j++) { const R = [i * md.a1[0] + j * md.a2[0], i * md.a1[1] + j * md.a2[1]]; if (md === MODEL.hc) { out.push({ r: R, q: 1 }); out.push({ r: [R[0] + md.bonds[0][0], R[1] + md.bonds[0][1]], q: -1 }); } else { out.push({ r: R, q: 1 }); out.push({ r: [R[0] + 1, R[1]], q: -1 }); } } return out; };
-        const inversionCentre = (md) => {
-          const at = atoms(md), inner = at.filter((a) => Math.hypot(...a.r) < 2.2), find = (r, q) => at.some((a) => a.q === q && Math.hypot(a.r[0] - r[0], a.r[1] - r[1]) < 1e-6);
-          const cands = [];
-          for (const a of at.filter((x) => Math.hypot(...x.r) < 3)) for (const b of inner.slice(0, 40)) if (a.q === b.q) cands.push([(a.r[0] + b.r[0]) / 2, (a.r[1] + b.r[1]) / 2]);
-          for (const c of cands.slice(0, 600)) if (inner.every((a) => find([2 * c[0] - a.r[0], 2 * c[1] - a.r[1]], a.q))) return c;
-          return null;
-        };
-        const centreOf = { hc: null, sq: null }; let centresDone = false;
+        // Analytic two-sublattice test: inversion about a positive site preserves
+        // negative sites iff2delta belongs to the Bravais lattice. For the square
+        // delta=(1,0),2delta=a1+a2; for honeycomb delta=(0,1), its a2 coefficient is4/3.
+        const centreOf = { hc: null, sq: [0,0] };
         let info = null;
         v.render(() => {
-          if (!centresDone) { centreOf.hc = inversionCentre(MODEL.hc); centreOf.sq = inversionCentre(MODEL.sq); centresDone = true; }
-          const key = XTAL.value, md = MODEL[key], t = (th.value * Math.PI) / 180, e = e0.value / 100, eps = strain(t, e), u = relax(md, eps), Pv = [u[0] / md.area, u[1] / md.area];
+          const key = XTAL.value, md = MODEL[key], t = (th.value * Math.PI) / 180, e = e0.value / 100, eps = strain(t, e), u = relax(md, eps), Pv = toyPolarization(md,u);
           // board
           const status = (g) => (g.centro ? 'c' : g.hm === '432' ? 'z' : 'p');
           for (let i = 0; i < 32; i++) {
@@ -531,6 +511,10 @@ export default {
           const at = atoms(md).filter((a) => Math.abs(a.r[0]) < 5.2 && Math.abs(a.r[1]) < 4.2);
           const posOf = (a, def) => { if (!def) return a.r; const m = map(a.r); return a.q < 0 ? [m[0] + ex.value * u[0], m[1] + ex.value * u[1]] : m; };
           const pos0 = at.filter((a) => a.q > 0);
+          const extent=at.flatMap(a=>[a.r,posOf(a,true)]);
+          for(const a of pos0)for(const b of md.bonds){const p=[a.r[0]+b[0],a.r[1]+b[1]],q=map(p);extent.push(p,[q[0]+ex.value*u[0],q[1]+ex.value*u[1]]);}
+          extent.push([-5,-4.15],[-5+Pv[0]*(3.2/.014),-3.7+Pv[1]*(3.2/.014)]);
+          const mx=Math.max(6,...extent.map(p=>Math.abs(p[0])))+.6,my=Math.max(4.4,...extent.map(p=>Math.abs(p[1])))+.6;M.setView([-mx,mx],[-my,my]);
           for (const a of pos0) for (const b of md.bonds) {
             const n0 = md === MODEL.hc ? [a.r[0] + b[0], a.r[1] + b[1]] : [a.r[0] + b[0], a.r[1] + b[1]];
             if (md === MODEL.hc) { M.segment(a.r, n0, { color: 'faint', width: 1, alpha: 0.55 }); }
@@ -545,7 +529,7 @@ export default {
             let mism = 0;
             for (const a of at) { const r = [2 * c2[0] - a.r[0], 2 * c2[1] - a.r[1]]; const same = atoms(md).some((b) => b.q === a.q && Math.hypot(b.r[0] - r[0], b.r[1] - r[1]) < 1e-6); if (!same) mism++; if (Math.abs(r[0]) < 5 && Math.abs(r[1]) < 4) M.dot(r[0], r[1], { r: a.q > 0 ? 12 : 10, color: a.q > 0 ? 'accent' : 'orange', hollow: true, alpha: same ? 0.5 : 1 }); }
             M.dot(c2[0], c2[1], { r: 6, color: 'ink', hollow: true }); M.text(ok ? 'inversion centre' : 'trial centre', c2[0] + 0.15, c2[1] + 0.2, { size: 11, color: 'muted', align: 'left' });
-            M.corner(ok ? 'inverted crystal coincides with the original' : `inverted crystal: ${mism} of ${at.length} ions land on an ion of the opposite charge or on nothing`, 'bl', { size: 11, color: ok ? 'green' : 'red', weight: 700, plate: true });
+            M.corner(ok ? 'inverted crystal coincides with the original' : `inversion fails: ${mism}/${at.length} shown ions mismatch`, 'bl', { size: 11, color: ok ? 'green' : 'red', weight: 700, plate: true });
           }
           // polarisation arrow
           const kP = (3.2 / 0.014);
@@ -559,18 +543,18 @@ export default {
           Cv.hline(0, { color: 'faint', alpha: 0.6 });
           Cv.path(cx, { color: 'accent', width: 2.2 }); Cv.path(cy, { color: 'orange', width: 2.2 });
           Cv.vline(th.value, { color: 'gold', alpha: 0.8 });
-          Cv.text('P_x', 170, cx[85][1] + 0.05, { size: 12, color: 'accent', align: 'right' }); Cv.text('P_y', 170, cy[85][1] - 0.07, { size: 12, color: 'orange', align: 'right' });
+          Cv.text('P_x', 170, cx[85][1] + .12*pm, { size: 12, color: 'accent', align: 'right' }); Cv.text('P_y', 170, cy[85][1] - .12*pm, { size: 12, color: 'orange', align: 'right' });
           // response matrix of the model (P = d eps), from unit strains
           const unit = (i, j) => { const E = [[0, 0], [0, 0]]; E[i][j] = 1; if (i !== j) E[j][i] = 1; return E; };
-          const resp = [unit(0, 0), unit(1, 1), unit(0, 1)].map((E) => { const uu = relax(md, E); return [uu[0] / md.area, uu[1] / md.area]; });
+          const resp = [unit(0, 0), unit(1, 1), unit(0, 1)].map((E) => { const uu = relax(md, E); return toyPolarization(md,uu); });
           const g = pointGroup(sel);
           info = { key, Pv, u, centre: centreOf[key], resp, g, e: e0.value, th: th.value, d: Math.round(dimPiezo(g.ops)) };
         });
         v.readout(() => {
           const { key, Pv, u, centre, resp, g, e, th: tt, d } = info, f = (x) => (Math.abs(x) < 1e-12 ? '0' : v.fix(x, 3));
           const st = g.centro ? `centrosymmetric: $d_{ijk}=0$` : g.hm === '432' ? 'non-centrosymmetric, yet all components vanish by the rotations of 432' : `$${d}$ independent coefficient${d === 1 ? '' : 's'}`;
-          const quartz = g.hm === '32' ? ' α-quartz belongs to class 32: two independent coefficients $d_{11}$ and $d_{14}$, with $|d_{11}|\\approx2.3$ pC/N (the sign depends on the handedness of the crystal and on convention).' : '';
-          return `**Class $${hmMath(g.hm)}$**: ${st}.${quartz}\n**Toy ${key === 'hc' ? 'honeycomb' : 'checkerboard'}**, strain $\\varepsilon_0=${v.fix(e, 1)}\\%$ at $\\theta=${tt}^\\circ$: internal displacement $\\mathbf u=(${f(u[0])},${f(u[1])})\\,\\ell$, polarisation $\\mathbf P=q\\mathbf u/A=(${f(Pv[0])},${f(Pv[1])})\\,q/\\ell$ ${Math.hypot(...Pv) < 1e-12 ? '— exactly zero: ' + (centre ? 'the structure has an inversion centre ✓' : '') : '— nonzero: no inversion centre' + (key === 'hc' ? ' ✓' : '')}. Reverse the strain and $\\mathbf P$ reverses.\nResponse to unit strains $(\\varepsilon_{xx},\\varepsilon_{yy},\\varepsilon_{xy})$: $P_x=(${f(resp[0][0])},${f(resp[1][0])},${f(resp[2][0])})$, $P_y=(${f(resp[0][1])},${f(resp[1][1])},${f(resp[2][1])})$ — ${key === 'hc' ? 'one coefficient in all, like the single $d$ of the point group $\\bar6m2$ of a flat honeycomb' : 'all zero'}.`;
+          const quartz = g.hm === '32' ? ' Class 32 allows two independent stress-response coefficients; the 2D toy is a separate illustration.' : '';
+          return `**Class $${hmMath(g.hm)}$**: ${st}.${quartz}\n**Toy ${key === 'hc' ? 'honeycomb' : 'checkerboard'}**, strain $\\varepsilon_0=${v.fix(e, 1)}\\%$ at $\\theta=${tt}^\\circ$: internal displacement $\\mathbf u=(${f(u[0])},${f(u[1])})\\,\\ell$, polarisation $\\mathbf P=-q\\mathbf u/A=(${f(Pv[0])},${f(Pv[1])})\\,q/\\ell$ ${Math.hypot(...Pv) < 1e-12 ? (e===0?'— zero imposed strain; this does not diagnose inversion symmetry':centre?'— zero response, as required by inversion symmetry':'— this input gives zero response; no inversion centre') : '— nonzero: no inversion centre' + (key === 'hc' ? ' ✓' : '')}. Reverse the strain and $\\mathbf P$ reverses.\nResponse to unit strains $(\\varepsilon_{xx},\\varepsilon_{yy},\\varepsilon_{xy})$: $P_x=(${f(resp[0][0])},${f(resp[1][0])},${f(resp[2][0])})$, $P_y=(${f(resp[0][1])},${f(resp[1][1])},${f(resp[2][1])})$ — ${key === 'hc' ? 'one coefficient in all, like the single $d$ of the point group $\\bar6m2$ of a flat honeycomb' : 'all zero'}.`;
         });
       },
     },

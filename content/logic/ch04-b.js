@@ -1,8 +1,10 @@
 // Logic & Foundations — Chapter 4: Proofs, soundness and completeness (items 4.7–4.12)
 import {
   parseFO, toStr, toTex, preorder, isQ, freeVars, qrank, holds, langOf, structures, range, foField, graphStruct, tableStruct, structText,
-  drawStruct, dpll, skolemize, herbrandStage, nnfFO, neg, imp, prenexSteps, degreeOne, godelInstances, godelSat, subNum, mk, P1, circlePos,
+  drawStruct, dpll, skolemize, nnfFO, neg, imp, prenexSteps, degreeOne, godelInstances, subNum, mk, P1, circlePos,
 } from './ch04.shared.js';
+
+import { herbrandStage, godelSat, groundWitness, boundedHolds, freshenBound } from './source-audit.shared.js';
 
 // ---------- helpers ----------
 const SIGM = { rels: { P: 1, Q: 1, R: 2 }, funcs: {}, consts: [], name: 'the language with P, Q, R' };
@@ -179,14 +181,13 @@ export default {
       num: '4.8',
       kind: 'Theorem',
       name: 'The validities are effectively enumerable',
-      statement: String.raw`There is an algorithm that prints, one after another, exactly the logically valid sentences of a given (effectively presented) first-order language: every valid sentence is eventually printed and nothing else is. For an invalid sentence the algorithm just keeps running: validity is **semi-decidable**. (That it is not decidable is the theorem of Church and Turing, 1936, which is not proved here.)`,
+      statement: String.raw`There is an algorithm that prints, one after another, exactly the logically valid sentences of a given (effectively presented) first-order language: every valid sentence is eventually printed and nothing else is. For an invalid sentence the algorithm just keeps running: validity is **semi-decidable**. (General first-order validity is undecidable, as established by Church and Turing; this does not say that validity is undecidable in every restricted language.)`,
       idea: String.raw`By completeness (logic-4.6) a sentence is valid iff it has a deduction, and soundness (logic-4.4) makes the converse. Deductions are finite strings that can be checked mechanically (logic-4.1), so list all strings in order of length, test each, and print the conclusion of those that are deductions. A practical machine does the same thing through Herbrand's theorem: negate the sentence, replace $\exists$ by Skolem functions, and instantiate the universal quantifiers with ever larger sets of terms; the sentence is valid iff, at some stage, the resulting propositional clauses are unsatisfiable. The machine below runs that search for several sentences at once (dovetailing) so that a sentence that never closes cannot block the others.`,
-      caption: String.raw`The machine is working on six sentences, the first of which you can edit (equality-free sentences in $P,Q,R$). Drag **time $T$**: units of work are handed out in turn to the sentences, each unit computing the next Herbrand level of the negation. A cell is grey while the instances so far are still satisfiable and turns green (⊥) when they first become propositionally unsatisfiable: the sentence is *valid* and is printed in the list at the top. Invalid sentences stay grey for ever. The last sentence has no finite countermodel at all, only infinite ones, which is why no finite search can ever tell that it is invalid.`,
-      scope: String.raw`Herbrand levels are computed up to level 5 with at most 2 500 ground instances; beyond that a cell is shown as capped. The correctness of "unsatisfiable at some level ⇔ valid" is Herbrand's theorem for equality-free sentences.`,
-      credit: 'Gödel’s completeness theorem (1930) gives the enumeration; Herbrand, 1930, the instance-based form; the undecidability is Church and Turing, 1936',
-      verify: true,
+      caption: String.raw`The machine is working on six sentences, the first of which you can edit (equality-free sentences in $P,Q,R$). Drag **time $T$**: units of work are handed out in turn to the sentences, each unit advancing one Herbrand level of a negation (levels have different computational costs). A cell is grey while the instances so far are still satisfiable and turns green (⊥) when they first become propositionally unsatisfiable: the sentence is *valid* and is printed in the list at the top. An unbounded search never prints an invalid sentence; capped cells only report unresolved work. The last sentence has no finite countermodel at all, only infinite ones, which is why no finite search can ever tell that it is invalid.`,
+      scope: String.raw`Herbrand levels are computed up to level 5 with at most 2 500 ground instances and a 400-term generation budget; SAT work also has a finite cap; beyond that a cell is shown as capped. The correctness of "unsatisfiable at some level ⇔ valid" is Herbrand's theorem for equality-free sentences.`,
+      credit: 'Enumerability and Herbrand expansion proofs: Enderton §§2.5 and 4.2',
       deps: ['logic-4.6'],
-      refs: ['Enderton §2.5'],
+      refs: ['Enderton, 2nd ed. (2001), §2.5, Enumerability Theorem, pp. 142–145', 'Enderton §4.2, Herbrand expansions and proof, pp. 291–294'],
       tags: ['decidability', 'proof search'],
       viz(v) {
         const PRE = [
@@ -207,11 +208,11 @@ export default {
           for (let l = 0; l < LEV; l++) { const h = herbrandStage(sk, l); r.push(h); if (h.sat === false || h.capped) break; }
           memo.set(key, r); return r;
         };
-        const queue = () => [{ ast: fld.ok ? fld.ast : P1('∀x P(x) → ∃x P(x)', SIGM), tag: 'yours' }, ...PRE.map((p) => ({ ast: P1(p.text, SIGM), tag: p.tag, text: p.text }))];
+        const queue = () => [{ ast: fld.ok ? fld.ast : null, tag: 'yours' }, ...PRE.map((p) => ({ ast: P1(p.text, SIGM), tag: p.tag, text: p.text }))];
         const status = (Q, t) => {
           const k = Q.length;
           return Q.map((q, i) => {
-            const lv = levels(q.ast), units = t > i ? Math.floor((t - i - 1) / k) + 1 : 0;
+            const lv = q.ast ? levels(q.ast) : [], units = t > i ? Math.floor((t - i - 1) / k) + 1 : 0;
             const closeAt = lv.findIndex((h) => h.sat === false);
             const done = closeAt >= 0 && units > closeAt;
             const printedUnit = done ? closeAt * k + i : null; // unit index at which level `closeAt` was computed
@@ -227,7 +228,7 @@ export default {
           Q.forEach((q, i) => {
             const y = 78 - i * 12.2, s = St[i];
             A.text(`${i + 1}`, 1.5, y, { align: 'left', baseline: 'middle', size: 12, color: 'muted', weight: 700 });
-            A.text(clip(toStr(q.ast), 62), 5, y + 2.3, { align: 'left', baseline: 'middle', size: 11.5, color: 'ink' });
+            A.text(q.ast ? clip(toStr(q.ast), 62) : '(invalid input: no proof search)', 5, y + 2.3, { align: 'left', baseline: 'middle', size: 11.5, color: 'ink' });
             A.text(q.tag, 5, y - 3.4, { align: 'left', baseline: 'middle', size: 9.8, color: 'muted' });
             for (let l = 0; l < LEV; l++) {
               const x = 72 + l * 4.6, h = s.lv[l];
@@ -236,7 +237,7 @@ export default {
               A.rect(x - 2, y - 4, x + 2, y + 4, { fill: col, fillAlpha: closes ? 0.55 : computed ? 0.3 : 0.1, color: col, width: 1.2, radius: 2 });
               if (computed) A.text(closes ? '⊥' : cap ? '…' : String(h.instances), x, y, { align: 'center', baseline: 'middle', size: 8.4, color: 'ink' });
             }
-            A.text(s.done ? 'valid ✓' : s.units ? 'running…' : 'waiting', 99.5, y, { align: 'right', baseline: 'middle', size: 11, color: s.done ? 'green' : 'muted', weight: 700 });
+            A.text(!q.ast ? 'invalid input' : s.done ? 'valid ✓' : s.units ? 'running…' : 'waiting', 99.5, y, { align: 'right', baseline: 'middle', size: 11, color: s.done ? 'green' : 'muted', weight: 700 });
           });
           A.text('Herbrand level of ¬σ:', 70, 6, { align: 'right', baseline: 'middle', size: 9.8, color: 'muted' });
           for (let l = 0; l < LEV; l++) A.text(String(l), 72 + l * 4.6, 6, { align: 'center', baseline: 'middle', size: 9.8, color: 'muted' });
@@ -245,7 +246,7 @@ export default {
           const Q = queue(), St = status(Q, T.value), my = St[0], q0 = Q[0];
           const found = St.filter((s) => s.done).length;
           let mine;
-          if (!fld.ok && fld.src.trim()) mine = `Sentence 1 cannot be read: ${fld.error}.`;
+          if (!fld.ok) mine = fld.src.trim() ? `Sentence 1 cannot be read: ${fld.error}.` : 'Type a sentence; sentence 1 has no search while the input is empty.';
           else if (my.closeAt >= 0) mine = `Sentence 1 is **valid**: the instances of its negation become propositionally unsatisfiable at Herbrand level ${my.closeAt} (${levels(q0.ast)[my.closeAt].instances} ground instances), which the machine reaches at unit ${my.closeAt * Q.length + 1}${my.done ? ' and prints' : ' (move $T$ further)'}.`;
           else {
             let cm = null;
@@ -262,9 +263,9 @@ export default {
       kind: 'Proposition',
       name: 'Finiteness is not first-order expressible',
       statement: String.raw`There is no first-order sentence $\varphi$ (and no set of sentences) whose models are exactly the finite structures. More precisely, if a set $\Sigma$ of sentences has arbitrarily large finite models, then it has an infinite model. Writing $\lambda_n$ for “there are at least $n$ elements”, $\exists x_1\cdots\exists x_n \bigwedge_{i<j}x_i\neq x_j$, the set $\Sigma\cup\{\lambda_n : n\ge 1\}$ is the one to which compactness is applied.`,
-      idea: String.raw`Let $\Sigma$ have models of every finite size. A finite subset of $\Sigma\cup\{\lambda_n\}$ mentions only $\lambda_n$ for $n\le N$, and is satisfied by a model of $\Sigma$ with at least $N$ elements. By compactness (logic-4.7) the whole set has a model; it satisfies every $\lambda_n$, so it is infinite. A sentence $\varphi$ meant to say “finite” would hold in the finite models of every size, so it also holds in an infinite one, a contradiction.`,
-      caption: String.raw`Pick a sentence that is meant to express “finite”, or type your own in the language of a binary relation $R$, a unary relation $P$ and a unary function $f$ (with =). The program searches for models of $\varphi$ of each size $1,\dots,8$ (structured candidates such as $R$ = “less than”, $f$ = “add 1 mod $n$”, then 400 random ones) and draws a model of $\Gamma_N=\{\varphi,\lambda_1,\dots,\lambda_N\}$ with exactly $N$ elements. If models of every size turn up, compactness gives an infinite one; the sentence “at most one element” shows what happens when they do not.`,
-      scope: String.raw`The search is not exhaustive, so "no model found" is evidence, not proof; a found model is verified exactly. The infinite models promised by compactness are not constructed here.`,
+      idea: String.raw`Let $\Sigma$ have models of arbitrarily large finite sizes. A finite subset of $\Sigma\cup\{\lambda_n\}$ mentions only $\lambda_n$ for $n\le N$, and is satisfied by a model of $\Sigma$ with at least $N$ elements. By compactness (logic-4.7) the whole set has a model; it satisfies every $\lambda_n$, so it is infinite. A sentence $\varphi$ meant to say “finite” would hold in the finite models of every size, so it also holds in an infinite one, a contradiction.`,
+      caption: String.raw`Pick a sentence that is meant to express “finite”, or type your own in the language of a binary relation $R$, a unary relation $P$ and a unary function $f$ (with =). The program searches for models of $\varphi$ of each size $1,\dots,8$ (structured candidates such as $R$ = “less than”, $f$ = “add 1 mod $n$”, then 400 random ones) and draws a model of $\Gamma_N=\{\varphi,\lambda_1,\dots,\lambda_N\}$ with exactly $N$ elements. Finding models at all eight displayed sizes supplies finite evidence only. Compactness gives an infinite model only if models exist at arbitrarily large finite sizes. The sentence “at most one element” illustrates a genuine finite bound.`,
+      scope: String.raw`The search is not exhaustive, so "no model found" is inconclusive; a found model is verified exactly. Finding models at sizes 1–8 does not establish unbounded finite sizes or an infinite model. The infinite models promised by compactness are not constructed here.`,
       deps: ['logic-4.7'],
       refs: ['Enderton §2.6'],
       tags: ['compactness', 'expressiveness'],
@@ -304,7 +305,7 @@ export default {
           if (!fld.ok) return fld.src.trim() ? `Cannot read the sentence: ${fld.error}.` : 'Type a sentence.';
           const R = models(fld.ast), found = R.map((h, i) => (h ? i + 1 : null)).filter(Boolean), N = NS.value;
           const all = found.length === 8;
-          const verdict = all ? 'models of every size from 1 to 8 turned up. By compactness $\\{\\varphi,\\lambda_1,\\lambda_2,\\dots\\}$ then has a model, which must be infinite — so $\\varphi$ does not mean “finite”.' : found.length ? `models were found only for sizes ${found.join(', ')}; ${Math.max(...found) < 8 ? 'beyond that the search found none, so this sentence does not force-fit the compactness argument (it may have only small models).' : 'there are gaps, so the search may have missed some.'}` : 'no model of any size 1–8 was found, so this sentence is (as far as the search shows) unsatisfiable or only has larger models.';
+          const verdict = all ? 'models were found at all eight displayed sizes. This finite evidence does not establish models at arbitrarily large finite sizes, so compactness supplies no infinite-model conclusion from this search alone.' : found.length ? `models were found only for sizes ${found.join(', ')}; ${Math.max(...found) < 8 ? 'at the other displayed sizes the search found none; this is inconclusive and does not prove a finite upper bound.' : 'there are gaps, so the search may have missed some.'}` : 'no model at sizes 1–8 was found; this bounded, incomplete search proves neither unsatisfiability nor a finite size bound.';
           return `$\\Gamma_{${N}}$ ${R[N - 1] ? 'has a model with exactly ' + N + ' elements, so it is satisfiable ✓' : 'has no model found with ' + N + ' elements'}. Over all sizes ${verdict}`;
         });
       },
@@ -314,14 +315,13 @@ export default {
       num: '4.10',
       kind: 'Proposition',
       name: 'Connectedness is not first-order axiomatizable',
-      statement: String.raw`There is no set $T$ of first-order sentences in the language of graphs ($E$ for adjacency) whose models are exactly the connected graphs. In fact no theory true in all connected graphs can exclude every disconnected graph: with two new constants $a,b$, the set $T\cup\{\delta_n : n\ge 1\}$, where $\delta_n$ says “no path of length at most $n$ joins $a$ and $b$”, is satisfiable.`,
-      idea: String.raw`Suppose $T$ axiomatized connectedness. Every finite subset of $T\cup\{\delta_n\}$ uses only $\delta_n$ for $n\le N$, and is satisfied by a long path graph with $a,b$ at its two ends (connected, so a model of $T$, and with $a,b$ at distance larger than $N$). By compactness (logic-4.7) there is a model of all of it: a model of $T$ in which no finite path joins $a$ and $b$, i.e. a disconnected graph satisfying $T$, contradicting the choice of $T$. The second panel shows the same phenomenon from the other side: first-order sentences cannot distinguish one long cycle from two cycles of half the length.`,
-      caption: String.raw`Top: the path graph with endpoints $a,b$ satisfies $\delta_1,\dots,\delta_N$ at stage $N$ (drag $N$); no stage can capture connectedness. Bottom: choose a sentence of your own or an example and compare the connected graph $C_{2m}$ with the disconnected graph $C_m\sqcup C_m$ for $m=3,\dots,10$ (green dot: the sentence has the same truth value in both, red: it tells them apart). Small cycles are told apart by short-range properties; once $m$ is large compared with the sentence’s quantifier rank, every sentence agrees.`,
-      scope: String.raw`The cycle comparison is a finite experiment (exact evaluation for each $m$ shown); that agreement persists for all larger $m$ is the Ehrenfeucht–Fraïssé argument and is not proved here.`,
+      statement: String.raw`There is no set $T$ of first-order sentences in the language of graphs ($E$ for adjacency) whose models are exactly the connected graphs. Working relative to the axioms for simple undirected graphs, no theory true in all connected graphs can exclude every disconnected graph: with two new constants $a,b$, the set $T\cup\{\delta_n : n\ge 1\}$, where $\delta_n$ includes $a\ne b$ and says that no $E$-walk of lengths $1,\dots,n$ joins $a$ and $b$, is satisfiable.`,
+      idea: String.raw`Suppose $T$ axiomatized connectedness. Every finite subset of $T\cup\{\delta_n\}$ uses only $\delta_n$ for $n\le N$, and is satisfied by a long path graph with $a,b$ at its two ends (connected, so a model of $T$, and with $a,b$ at distance larger than $N$). By compactness (logic-4.7) there is a model of all of it: a model of $T$ in which no finite path joins $a$ and $b$, i.e. a disconnected graph satisfying $T$, contradicting the choice of $T$. The cycle panel supplies finite comparisons for particular sentences; these experiments are separate from the compactness proof and establish no general indistinguishability theorem.`,
+      caption: String.raw`Top: the path graph with endpoints $a,b$ satisfies $\delta_1,\dots,\delta_N$ at stage $N$ (drag $N$); no stage can capture connectedness. Bottom: choose a sentence of your own or an example and compare the connected graph $C_{2m}$ with the disconnected graph $C_m\sqcup C_m$ for $m=3,\dots,10$ (green dot: the sentence has the same truth value in both, red: it tells them apart). Small cycles may be told apart by short-range properties. Agreement at the displayed sizes is only a finite observation for the chosen sentence; it does not establish agreement at all larger sizes.`,
+      scope: String.raw`Each evaluated finite structure has a budget of 250 000 recursive evaluation steps. An orange/unknown result means the budget was exceeded; it is not counted as agreement. The compactness proof concerns all graphs, including infinite ones, and does not assert that connectedness is undefinable relative to finite graphs alone.`,
       deps: ['logic-4.7'],
-      refs: ['Enderton §2.6'],
+      refs: ['Enderton, 2nd ed. (2001), §2.5, Compactness Theorem p. 142 and Exercise 8 p. 146'],
       tags: ['compactness', 'graphs'],
-      verify: true,
       viz(v) {
         const N = v.slider('stage $N$', 1, 10, 4, { int: true });
         const pre = v.select('sentence', PRESET10.map((p) => ({ value: p.id, label: p.label })), 'diam3', { onChange: (id) => fld.set(PRESET10.find((p) => p.id === id).text) });
@@ -332,7 +332,7 @@ export default {
         const C = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 250, weight: 0.9, minWidth: 260 });
         const cyc = (parts) => { const n = parts.reduce((s, k) => s + k, 0), adj = range(n).map(() => new Array(n).fill(0)); let o = 0; for (const k of parts) { for (let i = 0; i < k; i++) { const a = o + i, b = o + (i + 1) % k; adj[a][b] = adj[b][a] = 1; } o += k; } return graphStruct(n, adj); };
         const cache = new Map();
-        const verdict = (ast, m) => { const key = `${toStr(ast)}|${m}`; let r = cache.get(key); if (!r) { const a = holds(ast, cyc([2 * m])), b = holds(ast, cyc([m, m])); r = { a, b }; cache.set(key, r); } return r; };
+        const verdict = (ast, m) => { const key = `${toStr(ast)}|${m}`; let r = cache.get(key); if (!r) { const a = boundedHolds(ast, cyc([2 * m])), b = boundedHolds(ast, cyc([m, m])); r = { a, b }; cache.set(key, r); } return r; };
         v.render(() => {
           const n = N.value;
           for (let i = 0; i <= n + 1; i++) {
@@ -358,23 +358,23 @@ export default {
           if (fld.ok) {
             const maxM = qrank(fld.ast) >= 4 ? 8 : 10;
             for (let k = 3; k <= 10; k++) {
-              const x = 16 + (k - 3) * 11, big = k > maxM, r = big ? null : verdict(fld.ast, k), same = r && r.a === r.b;
-              C.dot(x, 70, { r: k === m ? 10 : 7, color: big ? 'faint' : same ? 'green' : 'red', fill: big ? null : same ? 'green' : 'red', hollow: big, width: k === m ? 3 : 1.5 });
+              const x = 16 + (k - 3) * 11, big = k > maxM, r = big ? null : verdict(fld.ast, k), unknown = r && (r.a === null || r.b === null), same = r && !unknown && r.a === r.b;
+              C.dot(x, 70, { r: k === m ? 10 : 7, color: big ? 'faint' : unknown ? 'orange' : same ? 'green' : 'red', fill: big ? null : unknown ? 'orange' : same ? 'green' : 'red', hollow: big, width: k === m ? 3 : 1.5 });
               C.text(String(k), x, 55, { align: 'center', size: 11, color: k === m ? 'ink' : 'muted' });
             }
             C.text('m →', 2, 55, { align: 'left', size: 11, color: 'muted' });
             const rr = verdict(fld.ast, m);
-            C.text(`C₂ₘ: ${rr.a ? 'true' : 'false'}`, 6, 35, { align: 'left', size: 12.5, color: rr.a ? 'green' : 'red', weight: 700 });
-            C.text(`Cₘ⊔Cₘ: ${rr.b ? 'true' : 'false'}`, 6, 22, { align: 'left', size: 12.5, color: rr.b ? 'green' : 'red', weight: 700 });
+            C.text(`C₂ₘ: ${rr.a === null ? 'unknown (budget)' : rr.a ? 'true' : 'false'}`, 6, 35, { align: 'left', size: 12.5, color: rr.a === null ? 'orange' : rr.a ? 'green' : 'red', weight: 700 });
+            C.text(`Cₘ⊔Cₘ: ${rr.b === null ? 'unknown (budget)' : rr.b ? 'true' : 'false'}`, 6, 22, { align: 'left', size: 12.5, color: rr.b === null ? 'orange' : rr.b ? 'green' : 'red', weight: 700 });
             C.text(`quantifier rank ${qrank(fld.ast)}`, 98, 6, { align: 'right', size: 11, color: 'muted' });
           }
         });
         v.readout(() => {
           if (!fld.ok) return fld.src.trim() ? `Cannot read the sentence: ${fld.error}.` : 'Type a sentence in $E$.';
           const maxM = qrank(fld.ast) >= 4 ? 8 : 10, ms = range(maxM - 2).map((i) => i + 3);
-          const diff = ms.filter((k) => { const r = verdict(fld.ast, k); return r.a !== r.b; });
-          const lastDiff = diff.length ? Math.max(...diff) : null;
-          return `At stage $N=${N.value}$ the path satisfies $\\delta_1,\\dots,\\delta_{${N.value}}$; for every $N$ some finite connected graph does, so by compactness a model of all $\\delta_n$ exists which no first-order theory of connected graphs can rule out. The sentence $${toTex(fld.ast)}$ (rank ${qrank(fld.ast)}) separates $C_{2m}$ from $C_m\\sqcup C_m$ for ${diff.length ? `$m\\in\\{${diff.join(',')}\\}$ and not for the other $m$ up to ${maxM}` : `none of the $m$ from 3 to ${maxM}`}${lastDiff && lastDiff < maxM ? `, and it has stopped separating after $m=${lastDiff}$` : ''}.`;
+          const diff = ms.filter((k) => { const r = verdict(fld.ast, k); return r.a !== null && r.b !== null && r.a !== r.b; });
+          const unknown = ms.filter(k => { const r = verdict(fld.ast, k); return r.a === null || r.b === null; });
+          return `At stage $N=${N.value}$ the path satisfies $\\delta_1,\\dots,\\delta_{${N.value}}$; for every $N$ some finite connected graph does, so by compactness a model of all $\\delta_n$ exists which no first-order theory of connected graphs can rule out. The sentence $${toTex(fld.ast)}$ (rank ${qrank(fld.ast)}) separates $C_{2m}$ from $C_m\\sqcup C_m$ for ${diff.length ? `$m\\in\\{${diff.join(',')}\\}$ among evaluated $m$ up to ${maxM}` : `none of the $m$ from 3 to ${maxM}`}${unknown.length ? `; budget unresolved at $m\\in\\{${unknown.join(',')}\\}$` : ''}. No conclusion about larger cycle lengths follows from this finite strip.`;
         });
       },
     },
@@ -454,11 +454,11 @@ export default {
       introduces: ['logic-4.6', 'logic-4.7'],
       statement: String.raw`Gödel showed that in the restricted functional calculus (first-order logic without equality), every valid formula is provable from the axioms of Hilbert and Ackermann. He did this by proving that every formula is either refutable or satisfiable, in a countable domain, and he derived from it that a countable set of formulas is satisfiable as soon as each finite subset is (the compactness theorem, in its countable form).`,
       idea: String.raw`Before 1930 it was open whether the axioms of the calculus captured all of valid reasoning (Hilbert and Ackermann’s 1928 textbook is usually cited as posing the question, a point confirmed here only from secondary sources). Gödel's method, as outlined here, reduces a formula to the shape $\forall x_1\cdots\forall x_k\,\exists y_1\cdots\exists y_m\,\psi$, with $\psi$ quantifier-free, using prenex form (logic-3.12) and a lemma adapted from Skolem that lowers the number of alternations. He then writes down propositional sentences $D_n$ that say: the instances of $\psi$ at the first $n$ $k$-tuples of numbers, with fresh numbers for the $y$'s, hold together. If some $D_n$ is propositionally refutable, the formula is refutable in the calculus. Otherwise every $D_n$ has a truth assignment, and a selection argument of König type extracts one assignment that works for all $n$ at once; read as a relation on the natural numbers it is a model. The theorem is thus a dichotomy: refutable or satisfiable.`,
-      caption: String.raw`A $\forall\exists$-sentence without equality is on the left; its instances $B_1,B_2,\dots$ (universals at the $n$-th pair of numbers, existentials at fresh numbers) are listed with the propositional sentence $D_N=B_1\wedge\dots\wedge B_N$ they form. The middle panel is the tree of truth values for the first few atoms: a node is green if some assignment extending it satisfies $D_N$ and red if none does, and the gold path is the one chosen by always taking the first branch that stays extendable. The right panel reads that choice as a graph on $\{1,2,\dots\}$. Slide $N$ to watch a satisfiable sentence stay satisfiable, or try the refutable one and see $D_n$ collapse at a definite stage, with the offending instances in red.`,
+      caption: String.raw`A $\forall\exists$-sentence without equality is on the left; its instances $B_1,B_2,\dots$ (universals at the $n$-th tuple of positive numbers, existentials at fresh numbers) are listed with the propositional sentence $D_N=B_1\wedge\dots\wedge B_N$ they form. The middle panel is the tree of truth values for the first few atoms: a node is green if some assignment extending it satisfies $D_N$ and red if none does (orange means solver work is unresolved), and the gold path is the one chosen by always taking the first branch that stays extendable. The right panel previews at most seven coordinates of that finite assignment; it is not a model of the quantified sentence. Slide $N$ to watch a satisfiable sentence stay satisfiable, or try the refutable one and see $D_n$ collapse at a definite stage, with the offending instances in red.`,
       scope: String.raw`This is a reconstruction of the method, not of the paper's own tables or notation: the instances and assignments are computed live for the sentences offered, with a finite look-ahead $N$ in place of Gödel's infinitary selection; prenex sentences of "degree" one only (the degree-reduction lemma is not run).`,
       credit: 'Kurt Gödel, 1929 (doctoral dissertation) and 1930 (Monatshefte für Mathematik und Physik 37, 349–360)',
       deps: ['logic-4.1', 'logic-4.4', 'logic-3.12', 'logic-2.11'],
-      refs: [],
+      refs: ['Gödel (1930), DOI 10.1007/BF01696781; direct full-paper verification pending', 'Enderton, 2nd ed., §4.2, pp. 291–294 (modern finite expansion method)'],
       tags: ['completeness', 'history'],
       verify: true,
       viz(v) {
@@ -470,7 +470,7 @@ export default {
           { id: 'ref1', text: '∀x ∃y (P(y) ∧ ¬P(y))', label: 'refutable at once' },
         ];
         const pre = v.select('sentence', PRE.map((p) => ({ value: p.id, label: p.label })), 'asym', { onChange: (id) => fld.set(PRE.find((p) => p.id === id).text) });
-        const fld = foField(v, 'or type one', PRE[1].text, { sig: { rels: { P: 1, R: 2 }, funcs: {}, consts: [], name: 'P and R' }, width: 380, check: (a) => (freeVars(a).length ? 'it must be a sentence' : noEq(a)), onChange: () => v.invalidate() });
+        const fld = foField(v, 'or type one', PRE[1].text, { sig: { rels: { P: 1, Q: 1, R: 2 }, funcs: {}, consts: [], name: 'P, Q and R' }, width: 380, check: (a) => (freeVars(a).length ? 'it must be a sentence' : noEq(a)), onChange: () => v.invalidate() });
         const NS = v.slider('stage $N$', 1, 12, 5, { int: true });
         const A = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 340, weight: 1.1, minWidth: 320 });
         const B = v.stage({ x: [0, 100], y: [0, 100], axes: false, height: 340, weight: 1.2, minWidth: 330 });
@@ -479,7 +479,7 @@ export default {
         const compute = () => {
           if (!fld.ok) { S = null; return; }
           const k = `${toStr(fld.ast)}|${NS.value}`; if (k === key) return; key = k;
-          const steps = prenexSteps(fld.ast, 'correct'), pre0 = steps[steps.length - 1].ast, d = degreeOne(pre0);
+          const steps = prenexSteps(freshenBound(fld.ast), 'correct'), pre0 = steps[steps.length - 1].ast, d = degreeOne(pre0);
           if (!d) { S = { error: 'the prenex form is not of the shape ∀…∀∃…∃ (degree one); Gödel’s lemma would first reduce it' }; return; }
           const N = NS.value, inst = godelInstances(d, N), r = godelSat(inst);
           let firstUnsat = null;
@@ -490,10 +490,9 @@ export default {
             S.core = keep;
           } else if (r.sat) {
             // greedy path through the tree of atom values
-            const fixed = [], val = new Map();
-            for (const a of S.atoms) { const t = godelSat(inst, [...fixed, [a, true]]).sat; const b = t === true; fixed.push([a, b]); val.set(a, b); }
-            S.val = val; S.tree = { top: S.atoms.slice(0, 4) };
-            S.ok = inst.every((b) => evalGround(b.g, val));
+            const witness = groundWitness(inst, S.atoms);
+            S.val = witness.val; S.witnessAborted = witness.aborted; S.tree = { top: S.atoms.slice(0, 4) };
+            S.ok = S.val ? inst.every((b) => evalGround(b.g, S.val)) : null;
           }
         };
         v.render(() => {
@@ -516,7 +515,7 @@ export default {
             B.text('D_N has no satisfying assignment', 50, 60, { align: 'center', size: 15, weight: 700, color: 'red' });
             B.text(`the instances ${S.core.map((i) => `B${subNum(i + 1)}`).join(', ')} already contradict each other`, 50, 48, { align: 'center', size: 12, color: 'ink' });
             B.text('so φ is refutable: ¬φ is provable', 50, 36, { align: 'center', size: 12.5, color: 'muted' });
-          } else if (S.sat) {
+          } else if (S.sat && S.val) {
             const H = Math.min(4, S.atoms.length);
             B.text('values of the first atoms (True ↑, False ↓): the tree of partial assignments', 2, 98, { align: 'left', baseline: 'top', size: 11, color: 'muted', weight: 700 });
             const nodes = [{ pre: [], x: 8, y: 46 }];
@@ -530,25 +529,26 @@ export default {
                 next.push(nn);
               }
               for (const nn of next) {
-                const ok = godelSat(S.inst, nn.pre).sat === true, onPath = nn.pre.every(([a, b]) => S.val.get(a) === b);
+                const ok = godelSat(S.inst, nn.pre).sat, onPath = nn.pre.every(([a, b]) => S.val.get(a) === b);
                 B.line(nn.parent.x, nn.parent.y, nn.x, nn.y, { color: onPath ? 'gold' : 'faint', width: onPath ? 3 : 1.2 });
                 nn.ok = ok; nn.onPath = onPath;
               }
-              for (const nn of next) B.dot(nn.x, nn.y, { r: nn.onPath ? 6 : 4, color: nn.ok ? 'green' : 'red', fill: nn.ok ? 'green' : 'red', width: 1 });
+              for (const nn of next) B.dot(nn.x, nn.y, { r: nn.onPath ? 6 : 4, color: nn.ok === null ? 'orange' : nn.ok ? 'green' : 'red', fill: nn.ok === null ? 'orange' : nn.ok ? 'green' : 'red', width: 1 });
               B.text(S.atoms[h], 8 + (h + 1) * colw, 88, { align: 'center', baseline: 'top', size: 9.5, color: 'muted' });
               level = next;
             }
             B.dot(8, 46, { r: 5, color: 'ink', fill: 'ink' });
             B.corner(`the whole assignment has ${S.atoms.length} atoms; gold path extended to all of them`, 'bl', { size: 11, color: 'muted' });
           }
+          if (S.sat === null || S.witnessAborted) { B.text('solver work unresolved', 50, 50, {align:'center',color:'orange',size:14}); C.text('no assignment preview yet', 0, 0, {align:'center',color:'orange',size:12}); }
           if (S.sat === false) { C.text('no model', 0, 0.2, { align: 'center', size: 18, weight: 700, color: 'red' }); C.text('a refutable formula has none', 0, -0.2, { align: 'center', size: 12, color: 'muted' }); }
           // model
           if (S.sat && S.val) {
             const K = Math.min(7, Math.max(2, ...S.atoms.flatMap((a) => (a.match(/\d+/g) || []).map(Number))));
             const get = (r, args) => S.val.get(`${r}(${args.map((a) => a + 1).join(', ')})`) === true;
             const M = { n: K, dom: range(K), rel: (r, a) => get(r, a), konst: () => 0, fn: () => 0 };
-            drawStruct(C, M, { rels: new Map([['P', 1], ['R', 2]].filter(([r]) => preorder(S.pre).some((n) => n.op === 'rel' && n.r === r))), consts: new Set(), funcs: new Map() }, { radius: 1.0, r: 13, label: (a) => String(a + 1) });
-            C.corner(`the model: elements 1…${K}, a drawn arrow = an atom the assignment makes true; atoms outside D_N are drawn false`, 'tl', { size: 10.5, color: 'muted' });
+            drawStruct(C, M, { rels: langOf(S.pre).rels, consts: new Set(), funcs: new Map() }, { radius: 1.0, r: 13, label: (a) => String(a + 1) });
+            C.corner(`finite assignment preview, coordinates 1…${K}; true recorded atoms only (not a model of φ)`, 'tl', { size: 10.5, color: 'muted' });
           }
         });
         v.readout(() => {
@@ -556,7 +556,7 @@ export default {
           if (!S || S.error) return S ? `${S.error}.` : '';
           const N = NS.value;
           if (S.sat === false) return `$D_{${N}}$ is unsatisfiable: the instances ${S.core.map((i) => `$B_{${i + 1}}$`).join(', ')} (${S.core.length} of ${N}) are propositionally contradictory. The first stage where this happens is $n=${S.firstUnsat}$, so $\\varphi$ is refutable, and a refutation of the finite propositional sentence is a derivation of $\\neg\\varphi$ in the calculus.`;
-          if (S.sat) return `$D_{${N}}$ is satisfiable, and so is every $D_n$ with $n\\le 12$ (none fails up to 12). The path of gold nodes fixes all ${S.atoms.length} atoms at once; the resulting relation satisfies every $B_n$ for $n\\le ${N}$ ${S.ok ? '✓ (checked)' : '✗'}. Letting $N\\to\\infty$ and always keeping a branch with infinitely many extensions is Gödel's argument: the limit assignment is a model on the numbers $1,2,3,\\dots$ — so a formula is always refutable or satisfiable, never neither.`;
+          if (S.sat) return `$D_{${N}}$ is satisfiable. ${S.firstUnsat !== null ? `The later/first contradictory stage is $D_{${S.firstUnsat}}$; a satisfiable prefix does not certify a model.` : 'No contradiction was found in the first twelve prefixes; this finite test does not establish satisfiability of the original sentence.'} ${S.witnessAborted ? 'The finite witness search exceeded its work budget.' : `The displayed finite assignment satisfies all ${N} selected instances ${S.ok ? '✓ (checked)' : '✗'}.`} If every $D_n$ is satisfiable, an infinitary compactness/selection argument gives a single assignment satisfying all of them. The finite preview makes no such infinite-model claim.`;
           return `The SAT solver gave up at stage ${N}.`;
         });
       },

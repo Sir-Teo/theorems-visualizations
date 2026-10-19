@@ -1,6 +1,8 @@
 // Geography & Cartography — Chapter 5 (part b): general perspective, conic projections
 import { D2R, R2D, R_MEAN, comma, clamp, PI, ellipse, shoelace, conic, conicBase, conicFrame, conicIndicatrix, landFrame, azMap, azBase } from './ch05.shared.js';
 
+import { conicRange } from './geog-source-audit-world.shared.js';
+
 const secd = (d) => 1 / Math.cos(d * D2R);
 const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
 
@@ -142,18 +144,19 @@ The visible part is the cap $\cos c > 1/P$ for $P>1$ (a viewpoint outside, whose
       num: '5.7',
       kind: 'Concept',
       name: 'Conic projections and the cone constant',
-      credit: 'A rudimentary form of the simple conic is described in Ptolemy’s Geography (2nd century)',
-      verify: true,
+      credit: 'Spherical equidistant conic; technical source: Snyder (1987), §16',
+      verify: false,
       statement: String.raw`A **conic projection** with central meridian $\lambda_0$ and cone constant $n \in (0,1)$ is a map
 $$x = \rho(\varphi)\sin\theta,\qquad y = \rho_0 - \rho(\varphi)\cos\theta,\qquad \theta = n(\lambda-\lambda_0),$$
 for a function $\rho(\varphi)$ that decreases with latitude. Meridians become straight rays from the apex, $\frac{\Delta\theta}{\Delta\lambda} = n$ apart, and parallels become concentric circular arcs; the fan covers the angle $360^\circ n$ for the full $360^\circ$ of longitude. The cone constant is the ratio of the unrolled cone's sector angle to $2\pi$: for a cone tangent along the parallel $\varphi_0$ it is $n = \sin\varphi_0$, which is $0$ for a cylinder ($\varphi_0 \to 0$) and $1$ for the plane over the pole. The scale along a parallel is $k = n\rho/(R\cos\varphi)$. The **equidistant conic** with standard parallels $\varphi_1 \neq \varphi_2$ takes $\rho = R(G - \varphi)$ (true distance along every meridian, $h = 1$) with
 $$n = \frac{\cos\varphi_1 - \cos\varphi_2}{\varphi_2 - \varphi_1},\qquad G = \frac{\cos\varphi_1}{n} + \varphi_1,$$
 so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = \varphi_2$).`,
-      idea: String.raw`Roll a sheet of paper into a cone around the globe, touching along $\varphi_0$. The parallel $\varphi_0$ has length $2\pi R\cos\varphi_0$ and, as a slant circle of the cone, radius $R\cot\varphi_0$ from the apex, so unrolled it subtends $2\pi R\cos\varphi_0/(R\cot\varphi_0) = 2\pi\sin\varphi_0$: this is $n$. Cutting the cone along a meridian and flattening it gives straight meridians fanning out at angle $n\,\Delta\lambda$. A cone that cuts the globe along two parallels has a cone constant fixed by requiring both parallels to be drawn at true length, $n\rho_i = R\cos\varphi_i$; with equal spacing of meridians this gives the formula above (the section shows the chord version, which differs slightly). Away from the standard parallels the Tissot indicatrix (geog-3.4) is stretched along the parallels, $k \ne 1$, and distortion is smallest between and near them.`,
+      idea: String.raw`Roll a sheet of paper into a cone around the globe, touching along $\varphi_0$. The parallel $\varphi_0$ has length $2\pi R\cos\varphi_0$ and, as a slant circle of the cone, radius $R\cot\varphi_0$ from the apex, so unrolled it subtends $2\pi R\cos\varphi_0/(R\cot\varphi_0) = 2\pi\sin\varphi_0$: this is $n$. Cutting the cone along a meridian and flattening it gives straight meridians fanning out at angle $n\,\Delta\lambda$. A cone that cuts the globe along two parallels has a cone constant fixed by requiring both parallels to be drawn at true length, $n\rho_i = R\cos\varphi_i$; with equal meridian-distance spacing of parallels this gives the formula above (the section shows the chord version, which differs slightly). Away from the standard parallels the Tissot indicatrix (geog-3.4) is stretched along the parallels, $k \ne 1$, and distortion is smallest between and near them.`,
       caption: String.raw`Move the two standard parallels (set them equal for a tangent cone). Left: a section through the axis, with the cone through the two standard parallels meeting the axis at the apex. Middle: the unrolled equidistant conic map, a fan of angle $360^\circ n$; the indicatrices are green on the standard parallels, red where east–west lengths are stretched, blue where they are shrunk. Right: the parallel scale $k(\varphi)$. Try $\varphi_1 = \varphi_2 = 10^\circ$ (almost a cylinder, narrow fan) and $80^\circ$ (almost a polar plane).`,
+      scope: String.raw`Northern conic case: the controls restrict both standard parallels to 10°–80°N, so 0<n<1. Southern conics require sign conventions; n=0 and n=1 are limiting cylindrical and polar cases with changed formulas. The left section is a physical secant cone; the middle uses the equidistant conic's arc-based cone constant. They coincide only in the tangent limit. Neither projection is generally obtained by a perspective ray construction onto that secant cone.`,
       deps: ['geog-3.4'],
       see: ['geog-4.1'],
-      refs: ['Snyder §16'],
+      refs: ['Snyder, Map Projections—A Working Manual (1987), §16, pp. 111–114, equations 16-1–16-5'],
       tags: ['map projections', 'conic'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Equidistant_conic_projection' },
       viz(v) {
@@ -184,7 +187,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
           if (b - a > 0.5) sA.text(`φ₂ = ${b.toFixed(1)}°`, Qb[0] + 0.08, Qb[1] + 0.1, { size: 11.5, color: 'green', weight: 700, align: 'left', plate: true });
           sA.corner('cone through the standard parallels', 'tl', { color: 'muted', weight: 600, plate: true });
           // ---- fan map
-          const fr = conicFrame(C, fa, fb), xs = fr.map((p) => p[0]), ys = fr.map((p) => p[1]);
+          const fr = conicFrame(C, fa, fb), xs = [0,...fr.map((p) => p[0])], ys = [0,...fr.map((p) => p[1])];
           const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys), mg = 0.04 * Math.max(x1 - x0, y1 - y0);
           sB.setView([x0 - mg, x1 + mg], [y0 - mg, y1 + mg]);
           conicBase(sB, v, C, lon0, fa, fb, { step: 30, pstep: 15 });
@@ -194,6 +197,7 @@ so that $k = 1$ on both standard parallels ($n = \sin\varphi_1$ if $\varphi_1 = 
           for (const f of [a, b]) { const p = []; for (let l = -180; l <= 180; l += 3) p.push(C.fwd(l * D2R, f * D2R)); sB.path(p, { color: 'green', width: 2, dash: [6, 4] }); }
           sB.corner(`equidistant conic, n = ${C.n.toFixed(3)}`, 'tl', { color: 'muted', weight: 600, plate: true });
           // ---- k(phi)
+          sC.setView([-50,85],conicRange(C));
           sC.hline(1, { color: 'faint', width: 1 });
           sC.fn((f) => C.k(f * D2R), { domain: [-50, 84], color: 'red', width: 2.6 });
           for (const f of [a, b]) sC.vline(f, { color: 'green', dash: [4, 4], width: 1.2 });

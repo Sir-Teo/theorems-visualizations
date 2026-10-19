@@ -12,7 +12,7 @@
 //   4.7 Perturb-and-observe is a standard hill-climbing controller. The irradiance history is an INVENTED illustrative cloud sequence; the cell is the illustrative
 //     single-diode model of 4.3.
 //   4.8 Cell temperature from ambient: T_cell = T_amb + (NOCT - 20) G/800 with NOCT = 45 C (a typical datasheet value, from memory; the definition of NOCT as
-//     the cell temperature at 800 W/m2, 20 C ambient, 1 m/s wind is from memory too). J0 follows n_i^2 ~ T^3 exp(-Eg/kT). Photocurrent temperature coefficient
+//     the cell temperature at 800 W/m2, 20 C ambient, 1 m/s wind is confirmed by SAM/PVPMC (2026-10-16)). J0 follows n_i^2 ~ T^3 exp(-Eg/kT). Photocurrent temperature coefficient
 //     +0.05 %/K is an illustrative round number. Quoted commercial silicon power coefficients vary by technology (literature values between -0.2 and -0.4 %/K).
 
 import { clamp, KB, S0, QE, FW, T_SUN, SIGMA, phot, engy, junction, junctionMax, stack, pin, cell, ivCurve } from './ch04.shared.js';
@@ -110,7 +110,7 @@ Scope: ideal junctions with radiative recombination only; in a series-connected 
       idea: String.raw`A single junction pays two spectral penalties — the sub-gap photons it ignores and the above-gap energy it throws away (energy-4.5). A stack splits the spectrum into slices, and within each slice the gap is closer to the photon energy, so the thermalisation loss shrinks as $\sim 1/N$ of the single-cell loss. The price is current matching: in series, the same current flows through every junction, so the smallest photon current in the stack limits the rest. The optimum gaps therefore balance currents rather than maximising each junction on its own. This picture of a spectrum-splitting stack, here a reconstruction with a blackbody Sun, is the principle behind the III–V triple-junction cells used on satellites and in concentrators.`,
       caption: String.raw`Choose the number of junctions and drag the **gap handles** along the photon-energy axis (the axis of the figure is the Sun's spectrum). Each junction's colour band is the slice of the spectrum it absorbs; the darker part of the band is what it converts to electrical power, set by its voltage. Press **optimise** to search for the best gaps. The bars on the right compare the best $N=1,2,3$ stacks for the chosen connection and concentration. **Model values:** blackbody Sun, no photon recycling.`,
       deps: ['energy-4.5'],
-      refs: ['Tester ch. 13'],
+      refs: ['De Soto five-parameter model, temperature dependence; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/single-diode-equivalent-circuit-models/de-soto-five-parameter-module-model/'],
       tags: ['photovoltaics', 'tandem', 'efficiency'],
       scope: String.raw`Detailed-balance model, blackbody Sun, ideal junctions; real stacks have lattice-matching, tunnel-junction and non-radiative losses.`,
       credit: 'C. H. Henry, 1980; A. De Vos, 1980',
@@ -181,7 +181,7 @@ Scope: uniform illumination, so one peak; the step size trades tracking speed ag
       idea: String.raw`The power curve of a cell rises, peaks, and falls (energy-4.4), so the sign of the slope $dP/dV$ tells which way the maximum lies, and a perturbation tests that sign without knowing the cell model. The controller is a discrete gradient ascent: it needs only a voltage actuator (in practice the duty cycle of a DC–DC converter) and a power measurement. At the peak $dP/dV=0$, so it hunts back and forth across it; a larger $\Delta V$ follows moving peaks faster but wastes more power in the ripple, though since $P$ is flat at the top the loss is quadratic in the offset. A weakness is that a sudden brightening during a step can raise $P$ for the wrong reason and send the controller the wrong way for one step.`,
       caption: String.raw`The cell is lit by an invented cloud sequence (shaded strip, top). **Left** (top) the green dashed curve is the power available at the true maximum power point and the blue curve what the controller delivers; **right**, the power–voltage curve at this instant with the controller's recent positions (gold trail) hunting around the peak (green ring). Change the **step size** to see slow tracking after a cloud edge (small step) versus ripple (large step), or switch to a **fixed voltage** to see what tracking is worth. Press play or drag the time.`,
       deps: ['energy-4.4'],
-      refs: ['Tester ch. 13'],
+      refs: ['De Soto five-parameter model, temperature dependence; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/single-diode-equivalent-circuit-models/de-soto-five-parameter-module-model/'],
       tags: ['photovoltaics', 'control', 'optimisation'],
       scope: String.raw`Single peak (uniform illumination); the cloud history and cell parameters are illustrative.`,
       viz(v) {
@@ -240,18 +240,17 @@ Scope: uniform illumination, so one peak; the step size trades tracking speed ag
       num: '4.8',
       kind: 'Phenomenon',
       name: 'Hot panels produce less',
-      statement: String.raw`The output of a silicon solar cell falls as it warms. The photocurrent rises very slightly with temperature (the gap narrows), but the dark saturation current grows roughly as $J_0\propto T^{3}e^{-E_g/kT}$, so the open-circuit voltage
-$$V_{oc}=\frac{nkT}{q}\ln\!\Big(\frac{J_{ph}}{J_0}\Big)\quad\Rightarrow\quad \frac{dV_{oc}}{dT}\approx-\frac{E_g/q-V_{oc}}{T}-\frac{3nk}{q}\approx-2\ \text{mV/K}$$
-for a silicon cell, i.e. about $-0.3$ to $-0.4\%$ per kelvin of the voltage. The maximum power therefore falls by a few tenths of a per cent per kelvin; on a sunny day a roof panel at 60–70 °C produces noticeably less than its 25 °C rating.
-
-Scope: crystalline silicon with the ideal-diode relation; the exact coefficient depends on cell technology and quality (published power coefficients for commercial silicon modules range from about $-0.2$ to $-0.4\%/$K).`,
-      idea: String.raw`Warm cells have more thermally excited carriers, so the junction leaks more in the dark: $J_0$ grows exponentially with temperature (the intrinsic carrier density squared of cm-4.2 and the diode law of energy-4.3). The light current barely changes, so the point where the diode current cancels it moves to a lower voltage. Differentiating the log gives the slope $-(E_g/q-V_{oc})/T$: the further $V_{oc}$ sits below the gap voltage, the faster it falls, which is why high-gap materials such as GaAs suffer less. In a real installation the cell temperature rises above ambient by an amount proportional to the sunlight absorbed and not converted to electricity (nominal operating cell temperature), so hot, bright days are doubly penalised.`,
-      caption: String.raw`Set the **ambient temperature** and the **sunshine**: the cell temperature follows (about 31 K above ambient at one sun, from a typical NOCT of 45 °C). The left panel overlays the I–V curve at 25 °C (dashed) with the hot one; the right panel plots the maximum power against cell temperature, with its tangent giving the temperature coefficient. Compare the computed coefficients in the readout with the quoted figures. **Illustrative model**, silicon-like parameters.`,
+      statement: String.raw`A silicon-like solar cell generally loses voltage and maximum power as it warms: the dark saturation current rises much faster than the photocurrent. In the chosen fixed-gap, ideality-one approximation,
+$$J_0\propto T^3e^{-E_g/k_BT},\qquad V_{oc}\simeq\frac{k_BT}{q}\ln\frac{J_{ph}}{J_0},$$
+so, neglecting the small temperature dependence of $J_{ph}$,
+$$\frac{dV_{oc}}{dT}\simeq-\frac{E_g/q-V_{oc}}{T}-\frac{3k_B}{q}.$$
+For $E_g=1.12$ eV and $V_{oc}\simeq0.63$ V near 298 K, this is about $-1.9$ mV/K. The exact power coefficient depends on the device and its operating point; the readout computes it for the chosen model.`,
+      idea: String.raw`The temperature dependence of the intrinsic carrier population drives a strong increase in junction leakage. More of the photocurrent is then cancelled by the diode current at the same voltage, reducing the voltage available to a load. The numerical model includes a small imposed photocurrent increase and finite series and shunt resistances. A separate, simplified NOCT relation converts ambient temperature and sunlight into cell temperature; real module-temperature models additionally account for wind and mounting.`,
+      caption: String.raw`Set the **ambient temperature** and the **sunshine**: the cell temperature follows (about 31 K above ambient at one sun, from the illustrative NOCT of 45 °C). The left panel overlays the I–V curve at 25 °C (dashed) with the hot one; the right panel plots the maximum power against cell temperature, with its tangent giving the temperature coefficient. The readout gives the voltage slope and the local fractional power slope $(1/P_{max})dP_{max}/dT$. **Illustrative model**, silicon-like parameters.`,
       deps: ['energy-4.3'],
-      refs: ['Tester ch. 13'],
+      refs: ['SAM, Module: Nominal operating cell temperature; https://samrepo.nlr.gov/help/pv_module.html', 'Sandia PVPMC, NOCT Cell Temperature; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/cell-temperature/noct-cell-temperature/', 'De Soto five-parameter model, temperature dependence; https://pvpmc.sandia.gov/modeling-guide/2-dc-module-iv/single-diode-equivalent-circuit-models/de-soto-five-parameter-module-model/'],
       tags: ['photovoltaics', 'temperature', 'performance'],
-      scope: String.raw`Ideal-diode silicon-like cell, one-sun-scaled photocurrent; the NOCT relation is an empirical estimate.`,
-      verify: true,
+      scope: String.raw`Ideal-diode silicon-like cell with $n=1$ and fixed band gap. The chosen NOCT of 45 °C is illustrative, not a measured module specification. The simple temperature rise law scales linearly with irradiance and omits the wind, mounting and conversion-efficiency corrections present in the full SAM model.`,
       viz(v) {
         const Ta = v.slider('ambient temperature (°C)', -10, 45, 30, { step: 1 });
         const G = v.slider('sunshine (suns)', 0.2, 1.2, 1, { step: 0.01 });
@@ -281,7 +280,7 @@ Scope: crystalline silicon with the ideal-diode relation; the exact coefficient 
         v.readout(() => {
           if (!st) return '';
           const { Tcell, m, m0, dVoc, dP, voc, voc0 } = st;
-          return `Cell temperature ${v.fix(Tcell, 0)} °C: $V_{oc}=${v.fix(voc, 3)}$ V (${v.fix(1000 * (voc - voc0), 0)} mV from 25 °C) · slope $dV_{oc}/dT=${v.fix(1000 * dVoc, 2)}$ mV/K (${v.fix((100 * dVoc) / voc, 2)}%/K) · maximum power ${v.fix(m.P, 2)} mW/cm² = **${v.fix((100 * m.P) / m0.P, 1)}%** of its 25 °C value, local coefficient ${v.fix(100 * dP, 2)}%/K`;
+          return `Cell temperature ${v.fix(Tcell, 0)} °C: $V_{oc}=${v.fix(voc, 3)}$ V (${v.fix(1000 * (voc - voc0), 0)} mV from 25 °C) · slope $dV_{oc}/dT=${v.fix(1000 * dVoc, 2)}$ mV/K (${v.fix((100 * dVoc) / voc, 2)}%/K) · maximum power ${v.fix(m.P, 2)} mW/cm² = **${v.fix((100 * m.P) / m0.P, 1)}%** of its 25 °C value, local coefficient ${v.fix(100 * dP * m0.P / m.P, 2)}%/K`;
         });
       },
     },

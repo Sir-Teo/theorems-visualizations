@@ -61,22 +61,21 @@ fixed by indifference: $v-c=v\bigl(1-(1-p^*)^{n-1}\bigr)$. The probability that 
       num: '2.8',
       kind: 'Phenomenon',
       name: 'Mixed equilibria in sport: penalty kicks and serves',
-      credit: 'Palacios-Huerta, 2003; Walker & Wooders, 2001',
+      credit: 'Ignacio Palacios-Huerta, 2003; numerical table from his expanded 2017 study',
       statement: String.raw`A penalty kick is a $2\times2$ zero-sum game between kicker and goalkeeper: the kicker aims left or right, the goalkeeper dives left or right at the same moment, and the payoff to the kicker is the probability $S_{ij}$ of a goal. With $S_{LL},S_{RR}$ (keeper guesses correctly) lower than $S_{LR},S_{RL}$, there is no pure equilibrium and the unique equilibrium mixes so that each player is indifferent (game-2.2); in particular, **the kicker's scoring probability is the same whichever side she aims at**, and so is the goalkeeper's save probability. Studies of professional data find that scoring rates by side are statistically very close, and that choices look unpredictable — striking support for the theory, though not perfect: kickers are close to but not exactly at the equilibrium mixture, and some studies reject serial independence in other settings.`,
       idea: String.raw`For the zero-sum payoffs $S$, kicker's $p^*=\dfrac{S_{RR}-S_{RL}}{S_{LL}-S_{LR}-S_{RL}+S_{RR}}$ and the keeper's $q^*$ come from the indifference equations; the value of the game is the equalised scoring rate. What makes sport a good test is that stakes are high, the actions are clear, and payoffs (win probability) are naturally measured on a cardinal scale. Observed frequencies need not be exactly the equilibrium ones: a small shift of one player's mixture changes nothing for him in equilibrium, so the **success rates** — not the frequencies — are the sharper test, and they are close to equal.`,
-      caption: String.raw`The four scoring probabilities of a kicker's choice against the keeper's dive can be edited (they start at illustrative values of the same size as those recalled from Palacios-Huerta's table of 1417 kicks, 1995–2000; **the exact figures and which off-diagonal cell carries which could not be checked against the paper, so treat them as illustrative**). The map shows the chance of a goal for every pair of mixtures $(p,q)$ with its saddle at the green equilibrium; drag the gold point to the frequencies *you* want to test ($40\%$ and $42\%$ are illustrative, not the published figures). The bars show the kicker's scoring rate for each aim against the keeper's mixture, and the keeper's save rate for each dive against the kicker's: equal exactly at equilibrium.`,
+      caption: String.raw`The editable scoring probabilities start from Palacios-Huerta’s expanded sample of **9,017 kicks, September 1995–June 2012**, reported in *Strictly Competitive Strategic Situations* (2017), p. 22: rows are the kicker’s L/R choice and columns the keeper’s L/R choice. These are not the smaller 2003 sample. The gold point starts at the reported empirical mixture (kicker L 38.97%, keeper L 41.17%); drag it to try your own mixture. The green point is the equilibrium computed from the displayed payoffs. The bars compare success rates by action, which become equal at equilibrium.`,
       scope: String.raw`Holds for the stylised two-action game: it ignores the centre of the goal, the kicker's strong and weak side being tied to foot, game state and pressure, and pooling many kickers.`,
       deps: ['game-2.2'],
-      refs: ['Osborne §4.6'],
-      verify: true,
+      refs: ['Palacios-Huerta (2017), Economía Industrial 403:19–28, p. 22; https://www.mintur.gob.es/Publicaciones/Publicacionesperiodicas/EconomiaIndustrial/RevistaEconomiaIndustrial/403/PALACIOS%20HUERTA.pdf', 'Osborne §4.6'],
       tags: ['minimax', 'empirical'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Penalty_kick_(association_football)#Game_theory' },
       viz(v) {
         const M = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'p = P(kicker aims left)', ylabel: 'q = P(keeper dives left)', title: 'probability of a goal' });
         const Bar = v.stage({ x: [0, 6], y: [0, 100], axes: 'box', gutter: true, height: 340, weight: 1, ylabel: 'per cent', title: 'success rate by choice' });
-        const sLL = v.slider('goal if kicker L, keeper L (%)', 30, 100, 58.3, { step: 0.1 }), sLR = v.slider('kicker L, keeper R', 30, 100, 92.9, { step: 0.1 });
-        const sRL = v.slider('kicker R, keeper L', 30, 100, 95.0, { step: 0.1 }), sRR = v.slider('kicker R, keeper R', 30, 100, 69.9, { step: 0.1 });
-        const h = M.handle(0.4, 0.42, { color: 'gold', label: 'observed', constrain: { x: [0, 1], y: [0, 1] }, r: 8 });
+        const sLL = v.slider('goal if kicker L, keeper L (%)', 30, 100, 59.11, { step: 0.1 }), sLR = v.slider('kicker L, keeper R', 30, 100, 94.10, { step: 0.1 });
+        const sRL = v.slider('kicker R, keeper L', 30, 100, 93.10, { step: 0.1 }), sRR = v.slider('kicker R, keeper R', 30, 100, 71.22, { step: 0.1 });
+        const h = M.handle(0.3897, 0.4117, { color: 'gold', label: 'trial', constrain: { x: [0, 1], y: [0, 1] }, r: 8 });
         const eq = () => { const a = sLL.value, b = sLR.value, c = sRL.value, d = sRR.value, den = a - b - c + d; if (Math.abs(den) < 1e-9) return null; const p = (d - c) / den, q = (d - b) / den; return p > 0 && p < 1 && q > 0 && q < 1 ? { p, q, val: (a * d - b * c) / den } : null; };
         const S = (p, q) => p * q * sLL.value + p * (1 - q) * sLR.value + (1 - p) * q * sRL.value + (1 - p) * (1 - q) * sRR.value;
         let st = null;
@@ -98,7 +97,7 @@ fixed by indifference: $v-c=v\bigl(1-(1-p^*)^{n-1}\bigr)$. The probability that 
           if (!st) return '';
           const { e, p, q, kL, kR, gL, gR } = st;
           const eqs = e ? `equilibrium: kicker aims left with probability **${v.fix(100 * e.p, 1)}%**, keeper dives left with **${v.fix(100 * e.q, 1)}%**, goal probability **${v.fix(e.val, 1)}%** whichever side is chosen` : 'no completely mixed equilibrium for these numbers: one action is dominant';
-          return `${eqs}\nAt your point $(p,q)=(${v.fix(p, 2)},${v.fix(q, 2)})$: kicking left scores ${v.fix(kL, 1)}%, right ${v.fix(kR, 1)}% (gap ${v.fix(Math.abs(kL - kR), 1)} points); keeper saves ${v.fix(100 - gL, 1)}% diving left, ${v.fix(100 - gR, 1)}% right · at equilibrium both gaps are $0$ — in the data they are small, within sampling error`;
+          return `${eqs}\nAt your point $(p,q)=(${v.fix(p, 2)},${v.fix(q, 2)})$: kicking left scores ${v.fix(kL, 1)}%, right ${v.fix(kR, 1)}% (gap ${v.fix(Math.abs(kL - kR), 1)} points); keeper saves ${v.fix(100 - gL, 1)}% diving left, ${v.fix(100 - gR, 1)}% right · at equilibrium both gaps are $0$ — the source tests reported success-rate equality, rather than asserting that these aggregate payoffs describe every individual`;
         });
       },
     },

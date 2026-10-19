@@ -1,6 +1,9 @@
 // Mathematical Biology — Chapter 3 (part c): items 3.13–3.18
 import { rk4sys, envelope, rmField, rmEq } from './ch03.shared.js';
 
+import { PREDATOR_MODELS, predatorDiagnostics } from './mathbio-source-audit-kolmogorov.js';
+import { gaussian, overlapKernel, competitionInfo, competitionRun } from './mathbio-source-audit-competition.js';
+
 export default {
   collection: 'mathbio',
   chapter: 3,
@@ -59,28 +62,18 @@ export default {
     {
       num: '3.14',
       kind: 'Theorem',
-      name: 'Kolmogorov’s theorem for predator–prey systems',
-      credit: 'Kolmogorov, 1936',
-      statement: String.raw`Consider $\dot N=N\,F(N,P)$, $\dot P=P\,G(N,P)$ for prey $N$ and predators $P$, with smooth per-capita rates satisfying, in the quadrant of interest,
-(a) $\partial F/\partial P<0$ and $N\,\partial F/\partial N+P\,\partial F/\partial P\le0$ (prey growth falls with predators and with overall density),
-(b) $\partial G/\partial P\le0$ and $N\,\partial G/\partial N+P\,\partial G/\partial P>0$ (predator growth does not rise with predators and rises with prey),
-(c) $F(0,0)>0$; there are $K,L>0$ with $F(0,K)=0$, $F(L,0)=0$; and $G(B,0)=0$ for some $0<B<L$.
-Then the system has either a **stable equilibrium** or a **stable limit cycle** in the positive quadrant (and, as seen from the phase plane, solutions stay bounded).`,
-      idea: String.raw`The sign conditions force the nullclines to be graphs over the right axes, make the prey-free and predator-free axes behave as in an ecologically sensible model, and make a bounded region of the quadrant positively invariant, so every solution is bounded and no solution leaves for the boundary. Poincaré–Bendixson (3.11) then applies: the only possible $\omega$-limit sets in an invariant region are equilibria and cycles. The theorem is a general statement behind the Rosenzweig–MacArthur model; it says that no matter what functional forms are chosen the dichotomy is the same, and that in the planar case chaos is impossible.`,
-      scope: String.raw`Statement recalled from textbook accounts (Murray, Freedman); the exact inequalities and the regions on which they must hold differ slightly between sources, so the viz tests them on a finite box and is a numerical check of the hypotheses, not a proof. Systems violating a hypothesis may still behave well, e.g. the Lotka–Volterra system has $\partial G/\partial P=0$ and cycles that are neutral.`,
-      caption: String.raw`Pick a model and drag the predator death rate $m$. The checklist tests each hypothesis on a grid over the box $0<N\le L$, $0<P\le K$ (✓ = holds, ✗ = violated). For the first three models everything holds and the phase plane shows the dichotomy: below the Hopf value the equilibrium is stable, above it a cycle. The last two models each break one hypothesis (predator cooperation: $\partial G/\partial P>0$; an Allee effect: $F(0,0)<0$) and the theorem does not apply.`,
+      name: 'Kolmogorov predator–prey systems: hypotheses and diagnostics',
+      credit: String.raw`Modern planar limit-set theorem; the original Kolmogorov (1936) statement remains unverified`,
+      statement: String.raw`For a $C^1$ planar system $\dot N=NF(N,P)$, $\dot P=PG(N,P)$, a **nonempty compact** forward limit set that contains **no equilibrium** is a regular periodic orbit (Poincaré–Bendixson). This conditional conclusion requires independently establishing those global properties. Ecological sign conditions, invasion thresholds and nullcline geometry can guide such an argument, but a finite grid cannot certify it. In particular, if equilibria are present in the limit set, connections between equilibria are another possibility; a universal “stable equilibrium or stable cycle” dichotomy does not follow just from the sampled checklist below.`,
+      idea: String.raw`The planar proof uses an ordered sequence of crossings of a transverse arc: a compact limit set without a fixed point must close into a periodic orbit. To apply it to an ecological model one must also control escape to infinity and approach to the boundary, and exclude equilibria from the actual limit set. The direction of local feedback alone does not do this. Edelstein-Keshet’s geometric discussion includes an unstable coexistence equilibrium and a trapping construction, whose full geometric conditions are not certified by the displayed sample of ecological diagnostics.`,
+      scope: String.raw`The exact original 1936 Kolmogorov theorem and its historical attribution are still pending verification. The supported theorem above is Teschl’s precise Poincaré–Bendixson statement. Below, derivatives are evaluated analytically on a specified $30\times30$ grid; root and invasion tests are analytic for these selected models. Passes apply only to those diagnostics. A phase portrait over finite time and a finite viewport is not proof of boundedness, persistence, attraction or uniqueness of cycles.`,
+      caption: String.raw`Choose a model and predator death rate. The derivative comparisons are **sampled diagnostics**, with the sampled ranges displayed. A missing finite root is reported explicitly: for type III, $F(0,P)=1$ for every $P$, so there is no finite $K$ with $F(0,K)=0$; type II at $m=0.9$ requires $B=9>L=6$, so predators cannot invade prey at carrying capacity. Such examples show why the individual diagnostics must be assessed separately. Click to add a finite-window trajectory, or clear the paths.`,
       deps: ['mathbio-3.9', 'mathbio-3.11'],
       tags: ['Kolmogorov', 'predator–prey'],
-      refs: ['Murray I ch. 3'],
+      refs: ['Teschl §7.3, Lemma 7.13 and Theorem 7.16, pp. 222–224, complete proofs; Edelstein-Keshet, Mathematical Models in Biology §8.7 pp. 347–352, geometric discussion (not verification of original 1936 inequalities)'],
       verify: true,
       viz(v) {
-        const MOD = {
-          I: { name: 'type I response, logistic prey', F: (N, P) => 1 - N / 6 - P, G: (N, P, m) => N - m, L: 6, K: 1 },
-          II: { name: 'type II (Rosenzweig–MacArthur)', F: (N, P) => 1 - N / 6 - P / (1 + N), G: (N, P, m) => N / (1 + N) - m, L: 6, K: 1 },
-          III: { name: 'type III response', F: (N, P) => 1 - N / 6 - P * N / (1 + N * N), G: (N, P, m) => N * N / (1 + N * N) - m, L: 6, K: 1.3 },
-          coop: { name: 'predators help each other ($G$ rises with $P$)', F: (N, P) => 1 - N / 6 - P / (1 + N), G: (N, P, m) => N / (1 + N) - m + 0.2 * P, L: 6, K: 1 },
-          allee: { name: 'prey with an Allee effect', F: (N, P) => (N / 0.6 - 1) * (1 - N / 6) - P / (1 + N), G: (N, P, m) => N / (1 + N) - m, L: 6, K: 1 },
-        };
+        const MOD=PREDATOR_MODELS;
         const sel = v.select('model', [{ value: 'I', label: 'I' }, { value: 'II', label: 'II' }, { value: 'III', label: 'III' }, { value: 'coop', label: 'cooperating predators' }, { value: 'allee', label: 'Allee prey' }], 'II');
         const m = v.slider('predator death rate $m$', 0.1, 0.9, 0.3, { step: 0.01 });
         const s = v.stage({ x: [0, 6.2], y: [0, 3.5], height: 380, axes: 'box', gutter: true, weight: 1.2, minWidth: 300, xlabel: 'prey N', ylabel: 'predators P', title: 'phase plane' });
@@ -90,34 +83,19 @@ Then the system has either a **stable equilibrium** or a **stable limit cycle** 
         });
         v.button('Clear trajectories', () => pp.clear());
         let checks = [];
-        function test() {
-          const M = MOD[sel.value], mm = m.value, h = 1e-5;
-          const Fp = (N, P) => (M.F(N, P + h) - M.F(N, P - h)) / (2 * h), Fn = (N, P) => (M.F(N + h, P) - M.F(N - h, P)) / (2 * h);
-          const Gp = (N, P) => (M.G(N, P + h, mm) - M.G(N, P - h, mm)) / (2 * h), Gn = (N, P) => (M.G(N + h, P, mm) - M.G(N - h, P, mm)) / (2 * h);
-          let a1 = -Infinity, a2 = -Infinity, b1 = -Infinity, b2 = Infinity;
-          for (let i = 1; i <= 30; i++) for (let j = 1; j <= 30; j++) {
-            const N = M.L * i / 30, P = M.K * j / 30;
-            a1 = Math.max(a1, Fp(N, P)); a2 = Math.max(a2, N * Fn(N, P) + P * Fp(N, P));
-            b1 = Math.max(b1, Gp(N, P)); b2 = Math.min(b2, N * Gn(N, P) + P * Gp(N, P));
-          }
-          const F00 = M.F(0, 0);
-          const Kr = (() => { let lo = 0, hi = 50; if (M.F(0, hi) > 0) return null; for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (M.F(0, mid) > 0) lo = mid; else hi = mid; } return M.F(0, 0) > 0 ? lo : null; })();
-          let Lr = null; { let prev = M.F(0.001, 0); for (let N = 0.01; N <= 20; N += 0.01) { const f = M.F(N, 0); if (prev > 0 && f <= 0) { Lr = N; break; } prev = f; } }
-          let Br = null; { let prev = M.G(0, 0, mm); for (let N = 0.01; N <= 20; N += 0.01) { const g = M.G(N, 0, mm); if (prev < 0 && g >= 0) { Br = N; break; } prev = g; } }
-          checks = [
-            [a1 < 0, String.raw`$\partial F/\partial P<0$ (largest value ${v.fix(a1, 3)})`],
-            [a2 <= 1e-9, String.raw`$N F_N+P F_P\le0$ (largest ${v.fix(a2, 3)})`],
-            [b1 <= 1e-9, String.raw`$\partial G/\partial P\le0$ (largest ${v.fix(b1, 3)})`],
-            [b2 > 0, String.raw`$N G_N+P G_P>0$ (smallest ${v.fix(b2, 3)})`],
-            [F00 > 0, String.raw`$F(0,0)=${v.fix(F00, 2)}>0$`],
-            [Kr != null, String.raw`$F(0,K)=0$: ${Kr != null ? 'K = ' + v.fix(Kr, 2) : 'no root'}`],
-            [Lr != null, String.raw`$F(L,0)=0$: ${Lr != null ? 'L = ' + v.fix(Lr, 2) : 'no root'}`],
-            [Br != null && Lr != null && Br < Lr, String.raw`$G(B,0)=0$ with $B<L$: ${Br != null ? 'B = ' + v.fix(Br, 2) : 'no root'}`],
-          ];
-        }
+        function test(){const Q=predatorDiagnostics(sel.value,m.value);checks=[
+          [Q.a1<0,String.raw`sampled $F_P<0$: max ${v.fix(Q.a1,4)}`],
+          [Q.a2<=0,String.raw`sampled $NF_N+PF_P\le0$: max ${v.fix(Q.a2,4)}`],
+          [Q.b1<=0,String.raw`sampled $G_P\le0$: max ${v.fix(Q.b1,4)}`],
+          [Q.b2>0,String.raw`sampled $NG_N+PG_P>0$: min ${v.fix(Q.b2,4)}`],
+          [Q.F00>0,`analytic $F(0,0)=${v.fix(Q.F00,2)}>0$`],
+          [Q.K!==null,`analytic finite root $F(0,K)=0$: ${Q.K===null?'none':Q.K}`],
+          [true,`analytic carrying-axis root $L=${Q.L}$`],
+          [Q.B<Q.L,`analytic invasion threshold $B=${v.fix(Q.B,4)}<L=${Q.L}$`],
+        ];}
         v.render(() => { test(); pp.draw(); });
         pp.legend();
-        v.readout(() => { test(); const all = checks.every((c) => c[0]); return `${checks.map((c) => `${c[0] ? '✓' : '✗'} ${c[1]}`).join('\n')}\n${all ? '**All hypotheses hold**: expect a stable equilibrium or a stable limit cycle.' : '**A hypothesis fails**: the theorem makes no claim.'}\n${pp.describe({ max: 3 })}`; });
+        v.readout(()=>{test();const Q=predatorDiagnostics(sel.value,m.value);return `${checks.map(c=>`${c[0]?'✓':'✗'} ${c[1]}`).join('\n')}\nGrid: $N=6i/30$, $P=${Q.Pmax}j/30$, $i,j=1,\\ldots,30$.\n**${checks.filter(c=>c[0]).length}/8 diagnostics pass; this does not establish the global theorem’s hypotheses.**`;} );
       },
     },
     // ───────────────────────────────────────────────────────────── 3.15
@@ -202,37 +180,37 @@ Here $K_i$ is the carrying capacity of species $i$ alone and $\alpha_{12}$ (resp
       num: '3.17',
       kind: 'Principle',
       name: 'Competitive exclusion principle (Gause)',
-      credit: 'Gause, 1932–34 (experiments); Hardin, 1960 (the name)',
-      statement: String.raw`Two species that compete for the same limiting resource in the same way cannot coexist at constant population sizes: if their niches are identical, the one that makes better use of the resource drives the other to extinction. In the Lotka–Volterra model with equal competition coefficients $\alpha_{12}=\alpha_{21}=\alpha$ (the overlap between the species' resource use) coexistence is stable iff $\alpha<\min(K_2/K_1,\ K_1/K_2)\le1$. So as the overlap tends to $1$ the coexistence region shrinks to nothing, unless $K_1=K_2$ exactly, when it is neutral.`,
-      idea: String.raw`From the four outcomes (3.16): coexistence needs both species to limit themselves more than they limit the other, $\alpha<1$ in scaled terms. Identical niches means $\alpha\to1$, and then $\alpha_{12}K_2/K_1<1$ and $\alpha_{21}K_1/K_2<1$ cannot both hold unless $K_1=K_2$. Intuitively, the species with the larger carrying capacity on the shared resource can persist at a resource level where the other cannot. The principle is a model statement (and, with more resources than species, false: see 3.20).`,
-      scope: String.raw`Holds for the Lotka–Volterra competition model and for the chemostat with one resource (3.20); more generally, at most as many species can coexist at equilibrium as there are limiting factors. It does not apply with fluctuating environments, spatial structure, or non-equilibrium coexistence. Gause's own experiments used *Paramecium* and yeast cultures; here only the model is shown.`,
-      caption: String.raw`Left: two species' resource-use curves (Gaussians of width $\sigma$) with their overlap shaded; the competition coefficient is the overlap fraction $\alpha=e^{-d^2/4\sigma^2}$. Middle: the model run from small densities; Right: the $(\alpha,K_2/K_1)$ plane with the coexistence wedge ($\alpha<\min(\kappa,1/\kappa)$). Slide the separation $d$ to zero and the wedge closes: one species disappears.`,
+      credit: String.raw`Hardin (1960) discussion; explicit competition-model calculation below`,
+      statement: String.raw`Competitive exclusion is a model-dependent statement, with identical-fitness exceptions. In the displayed Lotka–Volterra competition model $\dot N_1=N_1(1-N_1-\alpha N_2)$, $\dot N_2=N_2[1-(N_2+\alpha N_1)/\kappa]$, positive coexistence is asymptotically stable exactly when $\alpha<\min(\kappa,1/\kappa)$. Here $0<\alpha\le1$, $K_1=1$, $K_2=\kappa$. At identical overlap $\alpha=1$ with $\kappa\ne1$, the species with larger capacity excludes the other asymptotically. At $\alpha=\kappa=1$ there is instead a line of equilibria $N_1+N_2=1$, so both species can persist neutrally.`,
+      idea: String.raw`At coexistence, solving the two nullclines gives $N_1^*=(1-\alpha\kappa)/(1-\alpha^2)$ and $N_2^*=(\kappa-\alpha)/(1-\alpha^2)$. Positivity and a positive Jacobian determinant require the stated inequalities; its trace is then negative. For $\alpha=\kappa=1$, both species have the same per-capita growth, so $N_1/N_2$ is constant and their sum follows a logistic equation. Exact ecological identity therefore does not by itself imply exclusion in this deterministic model. At $\alpha=1$, $\log N_1-\kappa\log N_2$ changes at the constant rate $1-\kappa$; together with bounded densities this forces exclusion of the lower-capacity species when $\kappa\ne1$.`,
+      scope: String.raw`This is a chosen symmetric competition model, not a universal resource-count theorem. Nonlinear, fluctuating, spatial or degenerate systems require their own hypotheses. Hardin’s 1960 discussion distinguishes theory, identity assumptions and the limits of empirical tests; no dates of first discovery or naming, fitted cultural data or literal finite-time extinction are claimed. The Gaussian mapping to a competition coefficient is an illustrative modeling assumption.`,
+      caption: String.raw`Left: normalized Gaussian resource-use curves. The green shading is their **product kernel divided by the self-overlap integral**; its full real-line area is $\alpha=e^{-d^2/4}$, not the area under the minimum of the curves. The finite drawing window omits tiny tails. Middle: a 60-unit model run from $(0.12,0.15)$. Right: the strict coexistence wedge. At coincident niches and equal capacities coexistence is neutral; finite final densities are not a verdict that exclusion has finished.`,
       deps: ['mathbio-3.16'],
       tags: ['Gause', 'niche'],
-      refs: ['Edelstein-Keshet ch. 6'],
+      refs: ['Hardin (1960), Science 131, pp. 1292–1295, especially identity assumption and naming discussion; explicit nullcline/Jacobian and Gaussian-integral calculations'],
       links: { doi: 'https://doi.org/10.1126/science.131.3409.1292' },
-      verify: true,
+      verify: false,
       viz(v) {
         const d = v.slider('niche separation $d/\\sigma$', 0, 4, 1.2, { step: 0.01 });
         const kap = v.slider('capacity ratio $\\kappa=K_2/K_1$', 0.6, 1.6, 1.1, { step: 0.01 });
-        const A = v.stage({ x: [-4, 8], y: [0, 0.5], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'resource axis (e.g. prey size)', ylabel: 'use', title: 'niches' });
+        const A = v.stage({ x: [-4, 8], y: [0, 0.65], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'resource axis (e.g. prey size)', ylabel: 'schematic curves / kernel', title: 'niches and normalized product' });
         const B = v.stage({ x: [0, 60], y: [0, 1.7], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'time', ylabel: 'density', title: 'competition run from small densities' });
-        const C = v.stage({ x: [0, 1], y: [0.6, 1.6], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'overlap α', ylabel: 'κ = K₂/K₁', title: 'coexistence wedge' });
+        const C = v.stage({ x: [-0.04, 1.04], y: [0.54, 1.66], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'overlap α', ylabel: 'κ = K₂/K₁', title: 'coexistence wedge' });
         v.legend([['accent', 'species 1'], ['orange', 'species 2'], ['green', 'overlap', { area: true }]]);
-        const g = (x, mu) => Math.exp(-0.5 * (x - mu) ** 2) / Math.sqrt(2 * Math.PI);
+        const g = gaussian;
         let key = '', sol = null;
         v.render(() => {
           const dd = d.value, k = kap.value, al = Math.exp(-dd * dd / 4);
-          A.between((x) => Math.min(g(x, 0), g(x, dd)), () => 0, -4, 8, { fill: 'green', fillAlpha: 0.35 });
+          A.between((x) => overlapKernel(x,dd), () => 0, -4, 8, { fill: 'green', fillAlpha: 0.35 });
           A.fn((x) => g(x, 0), { color: 'accent', width: 2.5 }); A.fn((x) => g(x, dd), { color: 'orange', width: 2.5 });
-          const kk = [al, k].join(); if (kk !== key) { key = kk; sol = rk4sys((t, s) => [s[0] * (1 - s[0] - al * s[1] / 1), s[1] * (1 - s[1] / k - al * s[0] / k)], [0.05, 0.05], 60, 1500, 1e-9); }
+          const kk=[al,k].join();if(kk!==key){key=kk;sol=competitionRun(al,k);}
           B.path(sol.ts.map((t, i) => [t, sol.ys[i][0]]), { color: 'accent', width: 2.4 }); B.path(sol.ts.map((t, i) => [t, sol.ys[i][1]]), { color: 'orange', width: 2.4 });
           B.hline(1, { color: 'accent', dash: true, alpha: 0.4 }); B.hline(k, { color: 'orange', dash: true, alpha: 0.4 });
           C.between((a) => Math.max(a, 0.6), (a) => Math.min(1 / Math.max(a, 1e-6), 1.6), 0, 1, { fill: 'green', fillAlpha: 0.3 });
           C.fn((a) => a, { color: 'green', width: 2, domain: [0.6, 1] }); C.fn((a) => 1 / Math.max(a, 1e-6), { color: 'green', width: 2, domain: [0.625, 1] });
           C.dot(al, k, { r: 7, color: 'gold' });
         });
-        v.readout(() => { const dd = d.value, k = kap.value, al = Math.exp(-dd * dd / 4), lim = Math.min(k, 1 / k), co = al < lim; return `overlap $\\alpha=${v.fix(al, 3)}$; coexistence needs $\\alpha<\\min(\\kappa,1/\\kappa)=${v.fix(lim, 3)}$ → **${co ? 'stable coexistence' : k > 1 ? 'species 2 excludes species 1' : k < 1 ? 'species 1 excludes species 2' : 'neutral: identical species'}** (final densities $${sol ? v.fix(sol.ys[sol.ys.length - 1][0], 3) : ''},\\ ${sol ? v.fix(sol.ys[sol.ys.length - 1][1], 3) : ''}$)`; });
+        v.readout(()=>{const Q=competitionInfo(d.value,kap.value),names={coexistence:'stable positive coexistence',neutral:'neutral line of equilibria (both can persist)',boundary:'nonhyperbolic boundary: positive coexistence disappears',species1:'species 1 excludes species 2 asymptotically',species2:'species 2 excludes species 1 asymptotically'};return `normalized product overlap $\\alpha=${v.fix(Q.alpha,4)}$; strict threshold $${v.fix(Q.limit,4)}$ → **${names[Q.type]}**. Densities at finite $t=60$: $(${sol.ys.at(-1).map(x=>v.fix(x,4)).join(', ')})$.`;});
       },
     },
     // ───────────────────────────────────────────────────────────── 3.18

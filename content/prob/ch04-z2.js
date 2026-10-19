@@ -1,3 +1,4 @@
+import {finitePairProbabilities, coinMixtureSample} from './ch04-exchangeability.shared.js';
 // Probability: Theory and Examples (Durrett) — Chapter 4, part Z2: backwards martingales, exchangeability, stopping and UI (§4.7, 4.8.1-4.8.2)
 import { clampN, cornerIn, PHI, PhiN, DFUN, dfunOpts, dyadicTable, dyadAt, DL, tailExp, srw, ruinDP, sampleBeta, betaMoment, betaPdf, polyaDraws, polyaSeqProb, logChoose, fr } from './ch04-z.shared.js';
 
@@ -17,14 +18,15 @@ export default {
       num: '4.7.1a',
       kind: 'Definition',
       name: 'Backwards martingale',
-      statement: String.raw`A **backwards (reverse) martingale** is a sequence $X_{-n}$, $n\ge0$, adapted to a *decreasing* sequence of $\sigma$-fields $\mathcal F_{-n}\supset\mathcal F_{-n-1}$ (time runs towards $-\infty$ as $n$ grows), with $E|X_0|<\infty$ and
+      statement: String.raw`A **backwards (reverse) martingale** is a sequence $X_{-n}$, $n\ge0$, adapted to a sequence of $\sigma$-fields decreasing with $n$ $\mathcal F_{-n}\supset\mathcal F_{-n-1}$ (time runs towards $-\infty$ as $n$ grows), with $E|X_0|<\infty$ and
 $$E(X_{-n}\mid\mathcal F_{-n-1})=X_{-n-1}\qquad(n\ge0).$$
 Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary martingale; and every $X_{-n}=E(X_0\mid\mathcal F_{-n})$.`,
-      idea: String.raw`Example: i.i.d. $\xi_i$ with $E|\xi_1|<\infty$, $S_n=\xi_1+\dots+\xi_n$, $\mathcal F_{-n}=\sigma(S_n,\xi_{n+1},\xi_{n+2},\dots)$ and $X_{-n}=S_n/n$. Given $S_{n+1}$ the $n+1$ summands are exchangeable, so each has conditional mean $S_{n+1}/(n+1)$; hence $E(S_n/n\mid\mathcal F_{-n-1})=S_{n+1}/(n+1)$. The $\sigma$-fields shrink as the sample grows, because the sum forgets which individual terms made it. This is the setting of Lévy's downward theorem and the strong law.`,
-      caption: String.raw`Left: running means $S_n/n$ of five seeded samples, drawn against *time* $-n$ (so time flows left to right: the sample size shrinks as we go forward and the martingale ends at $X_{-1}=\xi_1$). Right: for the chosen $n$, a scatter of $(X_{-n-1},X_{-n})=(S_{n+1}/(n+1),\,S_n/n)$ over 1500 samples, with the average of $X_{-n}$ in each of 14 bins of $X_{-n-1}$ (orange): the bin averages fall on the diagonal, which is the defining identity $E(X_{-n}|X_{-n-1})=X_{-n-1}$. Change the law of $\xi$ and the identity persists.`,
+      idea: String.raw`For the example use $n\ge1$ (the terminal time is $-1$): i.i.d. $\xi_i$ with $E|\xi_1|<\infty$, $S_n=\xi_1+\dots+\xi_n$, $\mathcal F_{-n}=\sigma(S_n,\xi_{n+1},\xi_{n+2},\dots)$ and $X_{-n}=S_n/n$. Given $S_{n+1}$ the $n+1$ summands are exchangeable, so each has conditional mean $S_{n+1}/(n+1)$; hence $E(S_n/n\mid\mathcal F_{-n-1})=S_{n+1}/(n+1)$. The $\sigma$-fields shrink as the sample grows, because the sum forgets which individual terms made it. This is the setting of Lévy's downward theorem and the strong law.`,
+      caption: String.raw`Left: running means $S_n/n$ of five seeded samples, drawn against *time* $-n$ (so time flows left to right: the sample size shrinks as we go forward and the martingale ends at $X_{-1}=\xi_1$). Right: for the chosen $n$, a scatter of $(X_{-n-1},X_{-n})=(S_{n+1}/(n+1),\,S_n/n)$ over 1500 samples, with the average of $X_{-n}$ in each of 14 bins of $X_{-n-1}$ (orange): the two bin means are close up to finite-sample noise. The full defining identity conditions on $\mathcal F_{-n-1}$; conditioning only on $X_{-n-1}$ is a consequence by the tower property. Change the law of $\xi$ to compare three examples; these finite samples do not prove the identity.`,
       deps: ['prob-4.2.1a'],
       tags: ['martingales'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), unnumbered definition before Theorem 4.7.1, p. 249'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       scope: String.raw`Durrett's convention indexes by $n\le0$ with $X_{-n}$ adapted to $\mathcal F_{-n}$; some texts instead write $Y_n=X_{-n}$ and call it a reverse martingale with respect to a decreasing filtration. Only the direction of time differs.`,
       viz(v) {
         const kind = v.select('law of $\\xi$', KIND_OPTS, 'norm');
@@ -37,13 +39,14 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
         v.render(() => {
           const k = kind.value, n = nS.value, r = v.rng(seed * 131 + 7);
           const lim = k === 'exp' ? [-1.2, 3] : [-1.6, 1.6];
-          L.setView([-NMAX, -1], lim);
+          const paths = []; for (let j=0;j<5;j++) {let sum=0;const pts=[];for(let i=1;i<=NMAX;i++){sum+=drawFrom(k,r);pts.push([-i,sum/i]);}paths.push(pts);}
+          const all=paths.flat().map(p=>p[1]); L.setView([-NMAX,-1],[Math.min(...all,lim[0])-.1,Math.max(...all,lim[1])+.1]);
           L.hline(0, { color: 'faint' });
-          for (let j = 0; j < 5; j++) { let s = 0; const pts = []; for (let i = 1; i <= NMAX; i++) { s += drawFrom(k, r); pts.push([-i, s / i]); } L.path(pts, { color: EXAMPLE_COLS[j], width: 1.8 }); }
+          paths.forEach((pts,j)=>L.path(pts,{color:EXAMPLE_COLS[j],width:1.8}));
           L.vline(-n, { color: 'gold', dash: true }); L.vline(-n - 1, { color: 'gold', dash: true, alpha: 0.5 });
           const P = [], r2 = v.rng(seed * 977 + 3);
           for (let j = 0; j < 1500; j++) { let s = 0; for (let i = 0; i < n; i++) s += drawFrom(k, r2); const s1 = s + drawFrom(k, r2); P.push([s1 / (n + 1), s / n]); }
-          const xs = P.map((p) => p[0]).sort((a, b) => a - b), lo = xs[Math.floor(0.02 * xs.length)], hi = xs[Math.floor(0.98 * xs.length)];
+          const lo = Math.min(...P.flat()), hi = Math.max(...P.flat());
           R.setView([lo - 0.2, hi + 0.2], [lo - 0.2, hi + 0.2]);
           P.forEach(([a, b]) => R.dot(a, b, { r: 1.6, color: 'accent', alpha: 0.35 }));
           R.line(lo - 1, lo - 1, hi + 1, hi + 1, { color: 'ink', width: 1.2, dash: true });
@@ -54,7 +57,7 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
           st = { n, dev, cnt };
         });
         v.legend([['accent', 'sample pairs'], ['orange', 'bin averages of $X_{-n}$'], ['ink', 'diagonal', { dash: true }]]);
-        v.readout(() => st && `$n=${st.n}$: the largest gap between a bin average of $X_{-n}$ and the bin average of $X_{-n-1}$ is $${v.fix(st.dev, 3)}$ (sampling noise only), over ${st.cnt} well-populated bins.`);
+        v.readout(() => st && `$n=${st.n}$: the largest gap between a bin average of $X_{-n}$ and the bin average of $X_{-n-1}$ is $${v.fix(st.dev, 3)}$ (finite-sample discrepancy), over ${st.cnt} well-populated bins.`);
       },
     },
     {
@@ -227,13 +230,13 @@ equals $E(\varphi(X_1,\dots,X_k)\mid\mathcal E_n)$, where $\mathcal E_n$ is the 
       num: '4.7.9',
       kind: 'Theorem',
       name: 'de Finetti’s theorem',
-      statement: String.raw`Let $X_1,X_2,\dots$ be an exchangeable sequence of random variables with values in a nice space (for instance $\R$). Then, conditionally on the exchangeable $\sigma$-field $\mathcal E$, the $X_i$ are i.i.d.: there is a random probability measure $\mu$ ($\mathcal E$-measurable) such that
+      statement: String.raw`Let $X_1,X_2,\dots$ be an exchangeable sequence of random variables with values in a nonempty standard Borel space (for instance $\R$ with its Borel sets). Then, conditionally on the exchangeable $\sigma$-field $\mathcal E$, the $X_i$ are i.i.d.: there is a random probability measure $\mu$ ($\mathcal E$-measurable) such that, for all measurable $A_1,\dots,A_k$,
 $$P(X_1\in A_1,\dots,X_k\in A_k\mid\mathcal E)=\prod_{j=1}^k\mu(A_j)\quad\text{a.s.}$$
 In words, every infinite exchangeable sequence is a mixture of i.i.d. sequences.`,
-      idea: String.raw`By the U-statistic lemma (4.7.7), $A_n(\varphi)\to E(\varphi(X_1,..,X_k)|\mathcal E)$ and the limit factors over coordinates. Taking $\varphi_j=\mathbf 1_{A_j}$ identifies $\mu(A)=\lim\frac1n\sum_i\mathbf 1(X_i\in A)$, the limiting empirical measure, which is $\mathcal E$-measurable, and shows that the conditional law of $(X_1,\dots,X_k)$ is the product. The measurability of $\mu$ and the extension from half-lines to all Borel sets use the $\pi$–$\lambda$ theorem and, on $\R$, a countable generating class.`,
-      caption: String.raw`The Pólya urn is the standard exchangeable sequence that is *not* i.i.d. Left: the exact probability of each of the 16 colour patterns of the first four draws, computed from the urn rule; patterns with the same number of reds (bars of one colour) have exactly equal probability, which is exchangeability. Right: the histogram of the limiting red fraction $\theta$ (from 3000 simulated urns of 600 draws) against its Beta$(a,b)$ law. Drag the gold window along $\theta$: among urns with $\theta$ in the window, the first two draws behave like i.i.d. Bernoulli($\theta$), as the readout compares ($P(RR)$ vs $\theta^2$, $P(RB)$ vs $\theta(1-\theta)$), while over all urns they are positively correlated.`,
-      credit: 'B. de Finetti (0-1 sequences, around 1930); Hewitt & Savage, 1955 (general case)',
-      verify: true,
+      idea: String.raw`By the U-statistic lemma (4.7.7), $A_n(\varphi)\to E(\varphi(X_1,..,X_k)|\mathcal E)$ and the limit factors over coordinates. Taking $\varphi_j=\mathbf 1_{A_j}$ identifies $\mu(A)=\lim\frac1n\sum_{i=1}^n\mathbf 1(X_i\in A)$, the limiting empirical measure, which is $\mathcal E$-measurable, and shows that the conditional law of $(X_1,\dots,X_k)$ is the product. The measurability of $\mu$ and the extension from half-lines to all Borel sets use the $\pi$–$\lambda$ theorem and, on $\R$, a countable generating class.`,
+      caption: String.raw`A Pólya urn starts with red weight $a$ and blue weight $b$ (positive real weights are allowed), replacing each draw with one extra unit of its colour. Left: exact probabilities of the 16 four-draw patterns; patterns with the same red count have equal probability. Right: the finite proxy $(a+S_{600})/(a+b+600)$ from 3000 urns, compared with the limiting Beta$(a,b)$ density (drawn only on $[0.004,0.996]$). Drag the gold window: the first-two-draw frequencies are compared with exact finite-population conditional probabilities given $S_{600}$, averaged over the selected urns. These finite conditional draws are not i.i.d.; the theorem conditions on the infinite exchangeable field.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorem 4.7.9, pp. 253–254; Pólya urn §4.3.2'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.7.7', 'prob-4.7.3', 'prob-2.5.3a'],
       see: ['stat-10.12', 'prob-4.3.4a'],
       tags: ['exchangeability'],
@@ -243,8 +246,8 @@ In words, every infinite exchangeable sequence is a mixture of i.i.d. sequences.
         const wS = v.slider('window half-width', 0.02, 0.2, 0.06, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });
         const A = v.stage({ x: [-0.5, 15.5], y: [0, 0.3], height: 320, axes: 'box', gutter: true, xlabel: 'pattern (sorted by number of reds)', title: 'exact $P(\\text{pattern})$, 4 draws' });
-        const B = v.stage({ x: [0, 1], y: [0, 3], height: 320, axes: 'box', gutter: true, xlabel: '$\\theta$ (limiting red fraction)', title: 'limit fraction and window' });
-        const h = B.handle(0.5, 0, { color: 'gold', label: '$\\theta_0$', constrain: 'x' });
+        const B = v.stage({ x: [0, 1], y: [0, 3], height: 320, axes: 'box', gutter: true, xlabel: '$(a+S_{600})/(a+b+600)$', title: 'finite proxy for the limit and window' });
+        const h = B.handle(0.5, 0, { color: 'gold', label: '$\\theta_0$', labelPos:'nw', constrain: 'x' });
         let pool = null, st = null;
         const NN = 600, K = 3000;
         v.render(() => {
@@ -256,38 +259,39 @@ In words, every infinite exchangeable sequence is a mixture of i.i.d. sequences.
           const cols = ['blue', 'teal', 'green', 'orange', 'red'];
           pats.forEach((p, i) => { A.rect(i - 0.38, 0, i + 0.38, polyaSeqProb(a, b, p.k, 4), { fill: cols[p.k], fillAlpha: 0.55, color: cols[p.k] }); A.text(String(p.m.toString(2).padStart(4, '0')).replace(/1/g, 'R').replace(/0/g, 'B'), i, -ymax * 0.0, { size: 9, color: 'muted', baseline: 'top', dy: 4 }); });
           if (!pool || pool.key !== key) {
-            const r = v.rng(seed * 8191 + 3), th = new Float32Array(K), x12 = new Uint8Array(K);
-            for (let j = 0; j < K; j++) { const d = polyaDraws(r, a, b, NN); let s = 0; for (let i = 0; i < NN; i++) s += d[i]; th[j] = (a + s) / (a + b + NN); x12[j] = d[0] * 2 + d[1]; }
-            pool = { key, th, x12 };
+            const r = v.rng(seed * 8191 + 3), th = new Float64Array(K), counts = new Uint16Array(K), x12 = new Uint8Array(K);
+            for (let j = 0; j < K; j++) { const d = polyaDraws(r, a, b, NN); let s = 0; for (let i = 0; i < NN; i++) s += d[i]; counts[j] = s; th[j] = (a + s) / (a + b + NN); x12[j] = d[0] * 2 + d[1]; }
+            pool = { key, th, counts, x12 };
           }
           const E = Array.from({ length: 41 }, (_, i) => i / 40), cnt = new Float64Array(40);
           for (let j = 0; j < K; j++) cnt[Math.min(39, Math.floor(pool.th[j] * 40))]++;
-          const dens = Array.from(cnt, (c) => c / (K / 40)), mx = Math.max(...dens, ...E.map((x) => betaPdf(a, b, clampN(x, 0.005, 0.995))).slice(1, 40));
-          B.setView([0, 1], [0, Math.min(5, mx * 1.2)]);
+          const dens = Array.from(cnt, (c) => c / (K / 40)), mx = Math.max(...dens, ...Array.from({length:501},(_,i)=>betaPdf(a,b,.004+.992*i/500)));
+          B.setView([0, 1], [0, mx * 1.12]);
           B.hist({ edges: E, counts: Array.from(cnt), density: dens }, { density: true, color: 'accent', fillAlpha: 0.3 });
           B.fn((x) => betaPdf(a, b, x), { color: 'red', width: 2.2, domain: [0.004, 0.996] });
           const t0 = clampN(h.x, 0.02, 0.98), w = wS.value; h.set(t0, 0);
           B.vband(t0 - w, t0 + w, { color: 'gold', alpha: 0.2 });
-          let n = 0, rr = 0, rb = 0, bb = 0, sth = 0;
-          for (let j = 0; j < K; j++) if (Math.abs(pool.th[j] - t0) < w) { n++; sth += pool.th[j]; const c = pool.x12[j]; if (c === 3) rr++; else if (c === 2 || c === 1) rb++; else bb++; }
+          let n = 0, rr = 0, rb = 0, bb = 0, sth = 0; const expected=[0,0,0];
+          for (let j = 0; j < K; j++) if (Math.abs(pool.th[j] - t0) < w) { n++; sth += pool.th[j]; finitePairProbabilities(pool.counts[j],NN).forEach((p,i)=>expected[i]+=p); const c = pool.x12[j]; if (c === 3) rr++; else if (c === 2 || c === 1) rb++; else bb++; }
           const tb = n ? sth / n : t0;
-          st = { n, rr: n ? rr / n : NaN, rb: n ? rb / n : NaN, bb: n ? bb / n : NaN, tb };
+          st = { n, rr: n ? rr / n : NaN, rb: n ? rb / n : NaN, bb: n ? bb / n : NaN, tb, expected:expected.map(x=>n?x/n:NaN) };
         });
-        v.legend([['accent', 'simulated $\\theta$', { area: true }], ['red', 'Beta$(a,b)$'], ['gold', 'window', { area: true }]]);
-        v.readout(() => st && `${st.n} urns in the window, mean $\\theta=${v.fix(st.tb, 3)}$. First two draws: $P(RR)=${fr(st.rr, 3)}$ vs $\\theta^2=${v.fix(st.tb ** 2, 3)}$; $P(RB\\text{ or }BR)=${fr(st.rb, 3)}$ vs $2\\theta(1-\\theta)=${v.fix(2 * st.tb * (1 - st.tb), 3)}$; $P(BB)=${fr(st.bb, 3)}$ vs $(1-\\theta)^2=${v.fix((1 - st.tb) ** 2, 3)}$.`);
+        v.legend([['accent', 'finite urn proxy', { area: true }], ['red', 'Beta$(a,b)$'], ['gold', 'window', { area: true }]]);
+        v.readout(() => st && (st.n ? `${st.n} urns in the window; mean finite proxy $${v.fix(st.tb,3)}$. First two draws, empirical vs exact conditional-count average: $P(RR)=${fr(st.rr,3)}$ vs $${fr(st.expected[0],3)}$; $P(RB\\text{ or }BR)=${fr(st.rb,3)}$ vs $${fr(st.expected[1],3)}$; $P(BB)=${fr(st.bb,3)}$ vs $${fr(st.expected[2],3)}$. Finite-window conditioning does not imply independence.` : 'No simulated urns in this window; widen or move it to compare conditional frequencies.'));
+
       },
     },
     {
       num: '4.7.10',
       kind: 'Theorem',
       name: 'Exchangeable 0-1 sequences are mixtures of coin tossing',
-      statement: String.raw`If $X_1,X_2,\dots\in\{0,1\}$ are exchangeable, there is a probability measure $\nu$ on $[0,1]$ such that for all $k$ and $x\in\{0,1\}^k$ with $s=\sum x_i$,
+      statement: String.raw`If $X_1,X_2,\dots\in\{0,1\}$ are exchangeable, there is a probability measure $\nu$ on $[0,1]$ such that for every integer $k\ge1$ and $x\in\{0,1\}^k$ with $s=\sum x_i$,
 $$P(X_1=x_1,\dots,X_k=x_k)=\int_0^1\theta^{s}(1-\theta)^{k-s}\,\nu(d\theta).$$
-Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
+Here $S_n=\sum_{i=1}^nX_i$ and $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
       idea: String.raw`This is de Finetti (4.7.9) for the two-point space: the conditional law of each $X_i$ given $\mathcal E$ is Bernoulli$(\theta)$ with $\theta=\lim S_n/n$ (the strong law applied conditionally, or 4.7.2). Integrating the conditional product formula over $\theta$ gives the displayed mixture; taking $x=(1,\dots,1)$ gives $P(X_1=\dots=X_k=1)=E\theta^k$, so $\nu$ is determined by its moments and hence by the law of the sequence.`,
-      caption: String.raw`Choose the mixing law $\nu$ (the bias of the hidden coin). Left: histogram of the running frequency $S_n/n$ over 2500 simulated sequences, for the $n$ you choose, against the exact mixing law $\nu$ (red; atoms drawn as stems). As $n$ grows the histogram recovers $\nu$. Right: $P(X_1=\dots=X_k=1)$ for $k=1,\dots,8$, simulated (accent bars) against the exact moment $E\theta^k$ (dots): the finite-dimensional laws are the moments of $\nu$.`,
-      credit: 'B. de Finetti, around 1930',
-      verify: true,
+      caption: String.raw`Choose the mixing law $\nu$ (the bias of the hidden coin). Left: histogram of the running frequency $S_n/n$ over 2500 simulated sequences, for the $n$ you choose, against the exact mixing law $\nu$ (red; atoms drawn as stems). For continuous laws the panel uses density units; for the two-atom law it uses bin probability masses and stems of the exact atom masses. The continuous density is shown only on $[0.002,0.998]$; endpoint singularities are not finite-height peaks. As $n$ grows the frequency law converges weakly to $\nu$. Right: $P(X_1=\dots=X_k=1)$ for $k=1,\dots,8$, simulated (accent bars) against the exact moment $E\theta^k$ (dots): the finite-dimensional laws are the moments of $\nu$.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorem 4.7.10, pp. 254–255'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.7.9'],
       tags: ['exchangeability'],
       viz(v) {
@@ -307,16 +311,17 @@ Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
           const key = `${m}|${w}|${n}|${seed}`;
           if (!pool || pool.key !== key) {
             const r = v.rng(seed * 4099 + 1), fr_ = new Float32Array(K), first = new Uint8Array(K);
-            for (let j = 0; j < K; j++) { const t = sampleTheta(r, m, w); let s = 0, run = 0; for (let i = 0; i < n; i++) { const x = r() < t ? 1 : 0; s += x; if (i < 8 && run === i && x === 1) run = i + 1; } fr_[j] = s / n; first[j] = run; }
+            for (let j = 0; j < K; j++) { const t = sampleTheta(r, m, w); const sample=coinMixtureSample(r,t,n); fr_[j]=sample.frequency;first[j]=sample.run; }
             pool = { key, fr_, first };
           }
           const E = Array.from({ length: 41 }, (_, i) => i / 40), cnt = new Float64Array(40);
           for (let j = 0; j < K; j++) cnt[Math.min(39, Math.floor(pool.fr_[j] * 40))]++;
           const dens = Array.from(cnt, (c) => c / (K / 40));
-          const top = m === 'atoms' ? 1.2 : Math.min(8, Math.max(...dens) * 1.25);
-          L.setView([0, 1], [0, m === 'atoms' ? Math.max(...dens) * 1.15 : Math.max(Math.max(...dens), m === 'arc' ? 1.5 : m === 'bump' ? 6 : 1) * 1.15]);
-          L.hist({ edges: E, counts: Array.from(cnt), density: dens }, { density: true, color: 'accent', fillAlpha: 0.3 });
-          if (m === 'atoms') { const sc = Math.max(...dens) / Math.max(w, 1 - w) * 0.9; [[0.2, w], [0.8, 1 - w]].forEach(([x, p]) => { L.line(x, 0, x, p * sc, { color: 'red', width: 3 }); L.dot(x, p * sc, { color: 'red', r: 5 }); }); }
+          const plotted = m === 'atoms' ? Array.from(cnt,c=>c/K) : dens;
+          const peak=Math.max(...plotted,...Array.from({length:501},(_,i)=>pdf(m,.002+.996*i/500)));
+          L.setView([0,1],[0,m==='atoms'?1.1:1.12*peak]);
+          L.hist({ edges: E, counts: Array.from(cnt), density: plotted }, { density: true, color: 'accent', fillAlpha: 0.3 });
+          if (m === 'atoms') { [[0.2,w],[0.8,1-w]].forEach(([x,p])=>{L.line(x,0,x,p,{color:'red',width:3});L.dot(x,p,{color:'red',r:5});}); }
           else L.fn((x) => pdf(m, clampN(x, 0.002, 0.998)), { color: 'red', width: 2.4, domain: [0.002, 0.998] });
           const sim = [], ex = [];
           for (let k = 1; k <= 8; k++) { let c = 0; for (let j = 0; j < K; j++) if (pool.first[j] >= k) c++; sim.push(c / K); ex.push(moment(m, w, k)); }
@@ -325,7 +330,7 @@ Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
           st = { sim, ex, mean, n };
         });
         v.legend([['accent', 'simulation', { area: true }], ['red', 'exact $\\nu$ / moments $E\\theta^k$']]);
-        v.readout(() => st && `$n=${st.n}$: mean frequency $${v.fix(st.mean, 3)}=E\\theta=${v.fix(st.ex[0], 3)}$. $P(X_1=X_2=1)$: simulated $${v.fix(st.sim[1], 3)}$, $E\\theta^2=${v.fix(st.ex[1], 3)}$; $P(X_1=\\dots=X_8=1)$: $${v.fix(st.sim[7], 4)}$ vs $E\\theta^8=${v.fix(st.ex[7], 4)}$.`);
+        v.readout(() => st && `$n=${st.n}$: empirical mean frequency $${v.fix(st.mean, 3)}$; exact $E\\theta=${v.fix(st.ex[0], 3)}$. $P(X_1=X_2=1)$: simulated $${v.fix(st.sim[1], 3)}$, $E\\theta^2=${v.fix(st.ex[1], 3)}$; $P(X_1=\\dots=X_8=1)$: $${v.fix(st.sim[7], 4)}$ vs $E\\theta^8=${v.fix(st.ex[7], 4)}$.`);
       },
     },
     // ============================================================ 4.8 optional stopping

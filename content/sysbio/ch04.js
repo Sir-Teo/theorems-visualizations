@@ -2,7 +2,8 @@
 //
 // Units used in every picture: concentrations in units of the promoter's half-activation / half-repression constant K, time in units
 // of 1/(removal rate), so a protein with no regulation relaxes as exp(-t). Part 1 (this file): 4.1-4.5. Part 2 (ch04-b.js): 4.6-4.10.
-import { rep, toggleRoots, integrate, lacRoots } from './ch04.shared.js';
+import { rep, toggleRoots, integrate } from './ch04.shared.js';
+import {lacEquilibria as lacRoots,lacCulture,lacBranches} from './sysbio-source-audit-lac.shared.js';
 
 const pw = (x, n) => Math.pow(Math.max(x, 0), n);
 
@@ -227,16 +228,16 @@ where $\alpha_{1,2}$ are the effective rates of synthesis and $\beta,\gamma$ the
       name: 'Lac operon bistability',
       statement: String.raw`In *E. coli* the lactose permease LacY imports the inducer that inactivates the Lac repressor and so switches on the *lac* genes, including *lacY*: the inducer feeds back positively on its own uptake. A minimal model with permease level $P$ and internal inducer $X$ is
 $$\dot P=\alpha\,\frac{\varepsilon+X^{n}}{1+X^{n}}-P,\qquad \dot X=\kappa\,(\varphi+P)\,\frac{e}{1+e}-X,$$
-with a small basal expression $\varepsilon$, a permease-independent leak $\varphi$ and external inducer $e$ (units of the uptake constant). For cooperative derepression $n>1$ and a strong promoter there is a window of external inducer in which an uninduced and a fully induced state are both stable. Cells grown from an uninduced history stay low, cells from an induced history stay high, and a mixed culture splits into two sub-populations — the all-or-none response seen with a non-metabolised inducer such as TMG.`,
-      idea: String.raw`At steady state the permease is a function of the inducer inside, $P=\alpha D(X)$ with $D$ the sigmoidal derepression curve, and the inducer is the permease times a transport factor, so $X=\kappa\sigma(\varphi+\alpha D(X))$ with $\sigma=e/(1+e)$. The right side is a sigmoid in $X$, the left a line; for $e$ in a window the line cuts the sigmoid three times (two stable, one unstable), which is the double-positive loop of 4.1 realised through a transporter rather than a second gene. Outside the window one crossing remains, so the memory is lost: below it every cell is uninduced, above it every cell is induced. The loop gain is the product of the derepression slope and the transport gain, and it must exceed 1 somewhere, which again requires $n>1$ (see 2.5 for a self-activating gene).`,
-      caption: String.raw`**Left**: the steady-state internal inducer $X$ against external inducer $e$ (log axis): solid green = stable, dashed red = unstable. The gold line is the current $e$. Inside the S-shaped fold two stable states coexist. **Right**: a simulated culture of 200 cells (promoter strength scattered by a few percent) shown as a histogram of $\log_{10}X$, for three histories. At an intermediate $e$ a mixed history gives two peaks and an unmixed one gives one; move $e$ out of the window and the peaks merge. Reduce $n$ or $\alpha$ until the fold disappears.`,
+with a small basal expression $\varepsilon$, a permease-independent leak $\varphi$ and external inducer $e$ (units of the uptake constant). For suitable repression steepness, sufficiently small basal/leak terms and balanced uptake/production, there can be an external-inducer window with two stable states; $n>1$ and a strong promoter alone are not sufficient. Within a bistable window, induced and uninduced histories can retain distinct expression states; the original TMG experiment observed history dependence and bimodal single-cell fluorescence near switching boundaries. This is distinct from a universal lactose response.`,
+      idea: String.raw`At steady state the permease is a function of the inducer inside, $P=\alpha D(X)$ with $D$ the sigmoidal derepression curve, and the inducer is the permease times a transport factor, so $X=\kappa\sigma(\varphi+\alpha D(X))$ with $\sigma=e/(1+e)$. The right side is a sigmoid in $X$, the left a line; for $e$ in a window the line cuts the sigmoid three times (two stable, one unstable), which is the double-positive loop of 4.1 realised through a transporter rather than a second gene. Where only one crossing remains, the two-state equilibrium memory is lost. The Jacobian has eigenvalues $-1\pm\sqrt{G'(X)}$, with $G(X)=\kappa\sigma(\varphi+\alpha D(X))$. A root is stable for $G'<1$, a saddle for $G'>1$, and marginal for equality. For this positive-leak model $n=1$ gives one positive stable root; steepness above one permits but does not guarantee multiple roots.`,
+      caption: String.raw`**Left**: the steady-state internal inducer $X$ against external inducer $e$ (log axis): solid green = stable, dashed red = unstable. The gold line is the current $e$. Inside the S-shaped fold two stable states coexist. **Right**: a simulated culture of 200 cells (promoter strength scattered by a few percent) shown as a histogram of $\log_{10}X$, for three assigned histories. Each cell is assigned the lowest or highest stable equilibrium, rather than simulated through growth or stochastic switching. The readout counts lower/upper choices only for cells with two stable roots; variation can give different root counts across the culture. All 200 cells remain in the adaptive histogram range. Reduce $n$ or $\alpha$ until the fold disappears.`,
       deps: ['sysbio-4.1', 'sysbio-2.5'],
-      refs: ['Alon: Positive Feedback, Bistability and Memory'],
+      refs: ['Ozbudak et al. (2004), Nature427:737–740: Figure1/TMG loop p737, Figure2 history/hysteresis p738, Figure4 graded-vs-binary p739, Methods p740'],
       tags: ['lac operon', 'bistability', 'history dependence'],
-      scope: String.raw`An illustrative reduction with made-up parameters (not fitted): it keeps only the inducer–permease loop, ignores the *lacZ* and *lacA* products, glucose and cAMP control, growth-rate effects and noise, and treats the inducer as non-metabolised (TMG-like). Real lactose or IPTG experiments can differ in where and whether bistability appears.`,
-      credit: 'A. Novick & M. Weiner, 1957 (PNAS 43: 553–566); E. M. Ozbudak, M. Thattai, H. N. Lim, B. I. Shraiman & A. van Oudenaarden, 2004 (Nature 427: 737–740)',
+      scope: String.raw`The original full four-page Ozbudak et al. article was checked. It measured lac-promoter GFP and gat-promoter HcRed in individual cells after defined induced/uninduced histories, varying TMG and glucose. The following equations and 200-cell branch assignment are an illustrative reduction with chosen parameters (not fitted): it keeps only the inducer–permease loop, ignores the *lacZ* and *lacA* products, glucose and cAMP control, growth-rate effects and noise, and treats the inducer as non-metabolised (TMG-like). Real lactose or IPTG experiments can differ in where and whether bistability appears.`,
+      credit: 'E. M. Ozbudak, M. Thattai, H. N. Lim, B. I. Shraiman & A. van Oudenaarden, 2004 (Nature427:737–740; TMG/glucose experiment); illustrative reduced model chosen here',
       links: { doi: 'https://doi.org/10.1038/nature02298', wikipedia: 'https://en.wikipedia.org/wiki/Lac_operon' },
-      verify: true,
+      verify: false,
       viz(v) {
         const le = v.slider('external inducer e (log₁₀, units of the uptake constant)', -1.5, 1.5, -0.3, { step: 0.01, fmt: (x) => v.fix(Math.pow(10, x), 2) });
         const al = v.slider(String.raw`promoter strength $\alpha$`, 3, 30, 10, { log: true, sig: 2 });
@@ -250,33 +251,20 @@ with a small basal expression $\varepsilon$, a permease-independent leak $\varph
         v.render(() => {
           const p = { ...base, al: al.value, n: nn.value };
           const k = `${al.value}|${nn.value}`;
-          if (k !== ckey) {
-            ckey = k; curve = [];
-            for (let i = 0; i <= 150; i++) { const x = -1.5 + (3 * i) / 150; curve.push([x, lacRoots(Math.pow(10, x), p, 300)]); }
-          }
-          const top = Math.max(2, ...curve.flatMap(([, r]) => r.map((q) => q.X))) * 1.08; S1.setView([-1.5, 1.5], [0, top]);
-          for (const stable of [false, true]) {
-              for (let idx = 0; idx < 2; idx++) {
-              // plot each stable/unstable root as separate dots joined by consecutive points
-              let run = [];
-              curve.forEach(([x, r]) => { const q = r.filter((z) => z.stable === stable)[idx]; if (q) run.push([x, q.X]); else { if (run.length > 1) S1.path(run, { color: stable ? 'green' : 'red', width: stable ? 3 : 2, dash: !stable }); run = []; } });
-              if (run.length > 1) S1.path(run, { color: stable ? 'green' : 'red', width: stable ? 3 : 2, dash: !stable });
-            }
-          }
+          if(k!==ckey){ckey=k;curve=lacBranches(p);}
+          const top=Math.max(2,...curve.flatMap(r=>r.points.map(q=>q[1])))*1.08;S1.setView([-1.5,1.5],[0,top]);
+          curve.forEach(r=>S1.path(r.points,{color:r.stable?'green':'red',width:r.stable?3:2,dash:!r.stable}));
           S1.vline(le.value, { color: 'gold', width: 2 });
           const e = Math.pow(10, le.value), roots = lacRoots(e, p, 400), st = roots.filter((r) => r.stable).map((r) => r.X);
           // culture of 200 cells with scattered promoter strength; each relaxes to the stable state matching its history
-          const vals = zs.map((z, i) => {
-            const pc = { ...p, al: p.al * Math.exp(0.05 * z) }, rr = lacRoots(e, pc, 300).filter((r) => r.stable).map((r) => r.X);
-            const high = hist.value === 'high' || (hist.value === 'mix' && i % 2 === 0);
-            return Math.log10(high ? rr[rr.length - 1] : rr[0]);
-          });
-          const hh = v.M.histogram(vals, { bins: 52, range: [-3, 1.3] });
-          S2.hist({ edges: hh.edges, counts: hh.counts.map((c) => c / vals.length) }, { color: 'accent' });
-          info = { nst: st.length, hi: vals.filter((x) => x > (Math.min(...vals) + Math.max(...vals)) / 2 && Math.max(...vals) - Math.min(...vals) > 0.5).length, spread: Math.max(...vals) - Math.min(...vals), e };
+          const culture=lacCulture(e,p,zs,hist.value),{vals,range}=culture;
+          S2.setView(range,[0,1]);
+          const hh=v.M.histogram(vals,{bins:52,range});
+          S2.hist({edges:hh.edges,counts:hh.counts.map(c=>c/vals.length)},{color:'accent'});
+          info={nst:st.length,marginal:roots.filter(r=>r.marginal).length,e,...culture};
         });
         v.legend([['green', 'stable steady state'], ['red', 'unstable', { dash: true }], ['gold', 'current e']]);
-        v.readout(() => (info ? `e = ${v.fix(info.e, 2)}: ${info.nst} stable state${info.nst === 1 ? '' : 's'} → **${info.nst >= 2 ? 'bistable window' : 'single state'}**\nculture (${hist.value === 'low' ? 'uninduced' : hist.value === 'high' ? 'induced' : 'mixed'} history): ${info.spread > 0.5 ? `two sub-populations (${info.hi} of 200 cells in the upper peak)` : 'one population'}` : ''));
+        v.readout(()=>info?`e = ${v.fix(info.e,2)}: ${info.nst} strictly stable state${info.nst===1?'':'s'}${info.marginal?`, ${info.marginal} marginal root`:''} → **${info.nst>=2?'bistable window':info.marginal?'fold boundary':'single stable state'}**\nculture (${hist.value} assigned history): ${info.lower} on a lower branch and ${info.upper} on an upper branch of a bistable cell; ${info.single} have one strictly stable root; ${info.marginal} marginal. Histogram includes all 200 cells; this branch assignment is not a measured population distribution.`:'');
       },
     },
   ],

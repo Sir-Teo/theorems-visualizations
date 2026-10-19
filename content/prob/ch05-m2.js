@@ -1,5 +1,6 @@
+import {stableResolvent as reInv,auditedShell as shellIntegral} from './ch05-recurrence.audit.js';
 // Probability: Theory and Examples (Durrett) — Chapter 5, part M2: §5.4 Recurrence criteria via characteristic functions
-import { clampN, fr, LATTICE, LATTICE_OPTS, reInv, shellIntegral } from './ch05-m.shared.js';
+import { clampN, fr, LATTICE, LATTICE_OPTS } from './ch05-m.shared.js';
 
 const ptsOf = (a, stride = 1) => { const o = []; for (let i = 0; i < a.length; i += stride) o.push([i, a[i]]); return o; };
 const pickW = (w, r) => { const u = r(); let c = 0; for (const e of w) { c += e[3]; if (u <= c) return e; } return w[w.length - 1]; };
@@ -9,13 +10,13 @@ const shellCache = new Map();
 const shellFor = (k, r) => { const key = `${k}|${r}`; if (!shellCache.has(key)) shellCache.set(key, shellIntegral(LATTICE[k].w, LATTICE[k].d, r)); return shellCache.get(key); };
 /** Mean number of returns to 0 of a lattice walk by time n (M walks). */
 function latticeReturns(w, M, N, r) {
-  const ev = new Float64Array(N + 1);
+  const ev = new Float64Array(N + 1),totals=new Float64Array(M);
   for (let k = 0; k < M; k++) {
     let x = 0, y = 0, z = 0;
-    for (let n = 1; n <= N; n++) { const e = pickW(w, r); x += e[0]; y += e[1]; z += e[2]; if (!x && !y && !z) ev[n]++; }
+    for (let n = 1; n <= N; n++) { const e = pickW(w, r); x += e[0]; y += e[1]; z += e[2]; if (!x && !y && !z){ev[n]++;totals[k]++;} }
   }
   for (let n = 1; n <= N; n++) ev[n] = ev[n - 1] + ev[n] / M;
-  return ev;
+  const mean=ev[N],se=Math.sqrt(totals.reduce((s,x)=>s+(x-mean)**2,0)/(M-1)/M);return {ev,se};
 }
 
 export default {
@@ -79,18 +80,17 @@ export default {
     {
       num: '5.4.10',
       kind: 'Theorem',
-      name: 'Chung–Fuchs integral criterion',
-      statement: String.raw`Let $\varphi$ be the characteristic function of the step distribution of a random walk $S_n$ in $\R^d$ and $\delta>0$. If
-$$\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-\varphi(y)}\,dy=\infty,$$
-then $S_n$ is recurrent. (With the regularised integral of 5.4.11 the criterion is an equivalence.)`,
-      idea: String.raw`The integrand $\operatorname{Re}\frac1{1-r\varphi}$ is nonnegative and tends to $\operatorname{Re}\frac1{1-\varphi}$ as $r\uparrow1$ wherever $\varphi\ne1$. Fatou's lemma gives $\int\operatorname{Re}\frac1{1-\varphi}\le\liminf_{r\uparrow1}\int\operatorname{Re}\frac1{1-r\varphi}$, so divergence of the first integral forces the supremum in 5.4.11 to be infinite, and 5.4.11 gives recurrence.`,
-      caption: String.raw`Pick a lattice walk. Top left: the integrand $\operatorname{Re}\frac1{1-\varphi(y)}$ along a coordinate axis, log–log. Top right: the truncated integral $I(\eta)=\int_{\eta<|y|<1}\operatorname{Re}\frac1{1-\varphi}$ against $\eta$: it blows up as $\eta\downarrow0$ exactly for the symmetric walks with $d\le2$. Bottom: the simulated mean number of returns, which grows (or stalls) accordingly.`,
+      name: 'Unregularized characteristic-function recurrence criterion',
+      statement: String.raw`Let $\varphi$ be the characteristic function of the step distribution of a random walk $S_n$ in $\R^d$ and $\delta>0$. The walk is recurrent if and only if
+$$\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-\varphi(y)}\,dy=\infty.$$`,
+      idea: String.raw`The integrand $\operatorname{Re}\frac1{1-r\varphi}$ is nonnegative and tends to $\operatorname{Re}\frac1{1-\varphi}$ as $r\uparrow1$ wherever $\varphi\ne1$. Fatou's lemma gives $\int\operatorname{Re}\frac1{1-\varphi}\le\liminf_{r\uparrow1}\int\operatorname{Re}\frac1{1-r\varphi}$, so divergence of the first integral forces the supremum in 5.4.11 to be infinite, and 5.4.11 gives recurrence. The converse is also part of Theorem 5.4.10 but requires an additional argument beyond Fatou; the source explicitly distinguishes it from the regularized criterion proved in the text. Finite numerical integrals do not prove either direction.`,
+      caption: String.raw`Pick a lattice walk. Top left: the integrand $\operatorname{Re}\frac1{1-\varphi(y)}$ along a coordinate axis, log–log. Top right: the truncated integral $I(\eta)=\int_{\eta<|y|<1}\operatorname{Re}\frac1{1-\varphi}$ against $\eta$: the theoretical divergence for the symmetric walks with $d\le2$ comes from their small-frequency expansion, not from a finite ratio of sampled integrals. Bottom: the simulated mean number of returns in a finite horizon; finite growth does not distinguish convergence from divergence.`,
       deps: ['prob-5.4.7', 'prob-3.3.11'],
       see: ['prob-5.4.11'],
       tags: ['random walk', 'characteristic functions'],
-      credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
-      scope: String.raw`The statement given is the Fatou half; whether finiteness of the plain integral characterises transience in full generality is not claimed here. The truncated integrals are computed over a ball of radius $1$ rather than the cube, with polar quadrature; the integrand is evaluated for the lattice walks listed.`,
+      refs: ['Durrett, fifth edition, Theorem 5.4.10, p. 293, and discussion distinguishing it from Theorem 5.4.11, p. 294.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=301' },
+      scope: String.raw`The full equivalence matches Theorem 5.4.10. The plot uses the unit Euclidean ball instead of a cube, angular/radial quadrature for dimensions 2 and 3, and an analytic one-dimensional integral. Integrals are approximate in higher dimensions. For the listed laws the only singularity in that ball is at the origin. For symmetric walks, the resolvent has order $|y|^{-2}$, whose radial integral diverges exactly when $d\le2$; nonzero drift implies transience by the strong law.`,
       viz(v) {
         const wS = v.select('walk', LATTICE_OPTS, 'srw2');
         let seed = 1; v.button('Resample', () => { seed++; });
@@ -100,21 +100,21 @@ then $S_n$ is recurrent. (With the regularised integral of 5.4.11 the criterion 
         let cache = null, st = null;
         v.render(() => {
           const k = wS.value, L = LATTICE[k], key = `${k}|${seed}`;
-          if (!cache || cache.key !== key) cache = { key, ev: latticeReturns(L.w, 250, 3000, v.rng(seed * 5 + k.length * 3)) };
+          if (!cache || cache.key !== key) cache = { key, ...latticeReturns(L.w, 250, 3000, v.rng(seed * 5 + k.length * 3)) };
           const sh = shellFor(k, 1), prof = [];
           for (let i = 0; i <= 120; i++) { const y = 10 ** (-3 + (3 * i) / 120); prof.push([y, reInv(L.w, 1, y)]); }
           A.path(prof, { color: LCOL[k], width: 2 });
           const I = [];
-          for (let i = 0; i < sh.rad.length; i++) if (sh.rad[i] >= 1e-4) I.push([sh.rad[i], Math.max(1e-3, sh.tail[i])]);
+          for (let i = 0; i < sh.rad.length; i++) if (sh.rad[i] >= 1e-4) if(sh.tail[i]>0)I.push([sh.rad[i],sh.tail[i]]);
           const lo = Math.min(...I.map((p) => p[1])), hi = Math.max(...I.map((p) => p[1]));
           B.setView([1e-4, 1], [Math.max(1e-3, lo * 0.5), hi * 2]);
           B.path(I, { color: LCOL[k], width: 2 });
           C.setView([1, 3000], [0, Math.max(1, cache.ev[3000]) * 1.12]);
           C.path(ptsOf(cache.ev, 6).slice(1), { color: 'gold', width: 2 });
-          const at = (e) => sh.tail[sh.rad.findIndex((x) => x >= e)];
-          st = { a: at(1e-2), b: at(1e-4), ret: cache.ev[3000] };
+          const at=(e)=>sh.at(e);
+          st = { a: at(1e-2), b: at(1e-4), ret: cache.ev[3000],se:cache.se };
         });
-        v.readout(() => st && `$I(10^{-2})=${fr(st.a, 1)}$, $I(10^{-4})=${fr(st.b, 1)}$ (ratio ${fr(st.b / st.a, 2)}). ${st.b / st.a > 1.4 ? 'The integral keeps growing as $\\eta\\downarrow0$: it diverges, so the walk is recurrent.' : 'The integral has settled: finite, and the walk is transient.'}\nSimulated mean returns by $n=3000$: ${fr(st.ret, 2)}.`);
+        v.readout(() => st && `$I(10^{-2})\\approx${fr(st.a, 2)}$, $I(10^{-4})\\approx${fr(st.b, 2)}$ (finite quadrature values). ${['srw1','srw2'].includes(wS.value)?'This symmetric walk is recurrent by the near-zero quadratic characteristic-function expansion.':'This walk is transient: '+(wS.value==='srw3'?'the three-dimensional quadratic singularity is integrable.':'its nonzero drift gives transience by the strong law.')} A finite integral ratio does not prove this classification.\nSimulated mean returns by $n=3000$: ${fr(st.ret, 2)} (estimated standard error ${fr(st.se,2)}).`);
       },
     },
     // ======================================================================== 5.4.11
@@ -129,9 +129,9 @@ $$\sup_{0<r<1}\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-r\varphi(y)}\,d
       deps: ['prob-5.4.7', 'prob-3.3.1a'],
       see: ['prob-5.4.10'],
       tags: ['random walk', 'characteristic functions'],
-      credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
-      scope: String.raw`Integrals are over the unit ball (equivalent to a cube of any fixed size, since the integrand is positive and bounded away from the origin), evaluated by polar quadrature for the lattice walks listed.`,
+      refs: ['Durrett, fifth edition, Theorem 5.4.11 and proof, pp. 294–296.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=302' },
+      scope: String.raw`Integrals are over the unit ball (balls and cubes contain one another after rescaling, so the theorem for every positive size gives the same recurrence test), evaluated by adaptive angular quadrature in the plane, fixed spherical quadrature in dimension 3, and logarithmic radial quadrature. A small central-ball contribution is included when $r<1$; all numbers are approximations, not proofs of divergence.`,
       viz(v) {
         const wS = v.select('walk', LATTICE_OPTS, 'srw2');
         const sS = v.slider('$s=1-r$', 1e-5, 0.5, 0.01, { log: true, sig: 2 });
@@ -156,7 +156,7 @@ $$\sup_{0<r<1}\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-r\varphi(y)}\,d
           v.J = { Js, J10: shellFor(k, 1 - Math.min(0.5, 10 * s)).total };
         });
         v.legend(LKEYS.map((k) => [LCOL[k], LATTICE[k].label]));
-        v.readout(() => v.J && `$J(1-s)=${fr(v.J.Js, 2)}$ at $s=${sS.value.toPrecision(2)}$, and $${fr(v.J.J10, 2)}$ at $10s$. ${v.J.Js / v.J.J10 > 1.5 ? 'It rises a lot every time $s$ shrinks tenfold: the supremum is infinite (recurrent).' : 'It barely changes: it stays bounded as $r\\uparrow1$ (transient).'}`);
+        v.readout(() => v.J && `$J(1-s)\\approx${fr(v.J.Js, 2)}$ at $s=${sS.value.toPrecision(2)}$, and $${fr(v.J.J10, 2)}$ at $s'=\\min(10s,0.5)$. ${['srw1','srw2'].includes(wS.value)?'This symmetric walk is recurrent by its quadratic near-zero expansion; the regularized supremum is infinite.':'This walk is transient by '+(wS.value==='srw3'?'the integrable three-dimensional singularity.':'its nonzero drift and the strong law.')} The finite plotted ratios do not establish the limiting supremum.`);
       },
     },
     // ======================================================================== 5.4.12

@@ -17,15 +17,14 @@ export default {
       statement: String.raw`An **open cover** of a space $X$ is a family of open sets whose union is $X$. The space $X$ is **compact** if every open cover has a **finite subcover**, a finite subfamily that still covers $X$. A subset $A\subset X$ is compact when it is compact in the subspace topology, equivalently when every cover of $A$ by open subsets of $X$ has a finite subfamily covering $A$.`,
       idea: String.raw`Compactness says that no matter how an infinite family of open sets is arranged, finitely many of them already do the whole job. It is a statement about *all* covers, so to refute it one good cover is enough, and to prove it one needs an argument that works for every cover. $[0,1]$ is compact (4.10), $(0,1]$ is not: the sets $(1/n,2)$ cover it, but any finite subfamily is contained in its largest member $(1/N,2)$, which misses the points of $(0,1/N]$. Adding one open set that contains $0$ to the cover of $[0,1]$ repairs this.`,
       caption: String.raw`Choose a space and a cover. In the random cover of $[0,1]$ (each bar is an open interval, hollow ends), the extractor picks, from the point it has reached, the set that reaches farthest right: the coloured bars below are a finite subcover. Switch to $(0,1]$ with the sets $(1/n,2)$ and increase $N$: the uncovered stretch $(0,1/N]$ (red) never closes up. In the third mode a single extra set around $0$ rescues the cover as soon as it is larger than $1/N$.`,
-      credit: String.raw`Borel, 1895 (countable covers of $[0,1]$); Lebesgue, 1898, and others for arbitrary covers; the word “compact” in this sense is due to Fréchet, 1906`,
       deps: ['top-1.1'],
       see: ['pma-2.32'],
-      refs: ['Munkres §26'],
+      refs: ['Munkres (2nd ed.), §26, definition and Lemma 26.1'],
+      links: { source: 'https://raw.githubusercontent.com/enilsen16/The-Math-Group/master/Munkres-Topology.pdf' },
       tags: ['compactness', 'covers'],
-      verify: true,
       viz(v) {
         const sp = v.select('space and cover', [{ value: 'rand', label: '$[0,1]$, random cover' }, { value: 'half', label: '$(0,1]$, sets $(1/n,2)$' }, { value: 'closed', label: '$[0,1]$, those sets plus a set around $0$' }], 'rand');
-        const nI = v.slider('intervals in the random cover', 8, 60, 30, { int: true });
+        const nI = v.slider('subdivisions (one more interval)', 8, 60, 30, { int: true });
         const rad = v.slider('largest radius', 0.04, 0.25, 0.12, { step: 0.01 });
         const N = v.slider('sets $U_1,\\dots,U_N$', 1, 40, 12, { int: true });
         const r0 = v.slider('radius of the set at $0$', 0.02, 0.5, 0.1, { step: 0.01 });

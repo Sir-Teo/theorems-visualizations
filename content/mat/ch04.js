@@ -11,6 +11,8 @@ function getBar(m, imp, epsF) {
   return barCache.get(key);
 }
 
+import { honeycombMechanism, clipSegment2 } from './source-audit-elastic-slip.shared.js';
+
 export default {
   collection: 'mat',
   chapter: 4,
@@ -93,23 +95,21 @@ export default {
       num: '4.2',
       kind: 'Law',
       name: 'Hooke’s law and Poisson’s ratio',
-      statement: String.raw`For small strains an isotropic solid responds linearly: a uniaxial stress $\sigma$ produces the axial strain $\varepsilon=\sigma/E$ (Hooke's law, with Young's modulus $E$) and a lateral strain of opposite sign, $$\varepsilon_{\rm lat}=-\nu\,\varepsilon,$$ where $\nu$ is **Poisson's ratio**. Stability of an isotropic elastic solid requires $-1<\nu<\tfrac12$. Most metals have $\nu\approx0.3$, rubber is nearly incompressible ($\nu\to\tfrac12$, volume change $\Delta V/V=(1-2\nu)\varepsilon\to0$), cork is close to $0$, and **auxetic** materials with $\nu<0$ get fatter when stretched.`,
-      idea: String.raw`The linear law is the generalized Hooke's law of solid mechanics (solid-2.7) specialised to one loaded direction; the sign of $\nu$ is a geometric statement about how the microstructure rearranges when the axial dimension changes. In a metal, atoms are pushed together sideways as the bonds along the load are stretched; in a re-entrant honeycomb the stretched ribs hinge outward and the cell opens in both directions. For the honeycomb below, the ribs are treated as rigid with free hinges (the bending-dominated limit), so the cell width $2l\cos\theta$ fixes the angle $\theta$ and with it the height $2(h+l\sin\theta)$: Poisson's ratio is read from the geometry and equals $\cos^2\theta/\big[(h/l+\sin\theta)\sin\theta\big]$ for small strains.`,
-      caption: String.raw`Stretch the block with the strain slider: the dashed outline is the unloaded shape, and the lateral strain is $-\nu$ times the axial one (set $\nu$ by hand or pick a material). Right: a honeycomb of rigid ribs that rotate at hinges. With ribs leaning outward (positive $\theta$, a conventional hexagon) it narrows when stretched; flip $\theta$ negative (re-entrant) and it widens: its Poisson's ratio, measured from the picture, turns negative.`,
+      statement: String.raw`For small strains an isotropic solid responds linearly: a uniaxial stress $\sigma$ produces the axial strain $\varepsilon=\sigma/E$ (Hooke's law, with Young's modulus $E$) and a lateral strain, $$\varepsilon_{\rm lat}=-\nu\,\varepsilon,$$ where $\nu$ is **Poisson's ratio**. Stability of an isotropic elastic solid requires $-1<\nu<\tfrac12$. For $\nu>0$ a uniaxial tension contracts the lateral dimensions; for **auxetic** $\nu<0$ they expand. The infinitesimal volume strain is $(1-2\nu)\varepsilon$; the nearly incompressible limit $\nu\to1/2$ suppresses this first-order change, not every finite-strain volume change of the linear drawing.`,
+      idea: String.raw`The linear law is the generalized Hooke's law of solid mechanics (solid-2.7) specialised to one loaded direction; the sign of $\nu$ is a geometric statement about how the microstructure rearranges when the axial dimension changes. In a metal, atoms are pushed together sideways as the bonds along the load are stretched; in a re-entrant honeycomb the stretched ribs hinge outward and the cell opens in both directions. For the honeycomb below, the ribs are treated as rigid with free hinges (the bending-dominated limit), so the cell width $2l\cos\theta$ fixes the angle $\theta$ and with it the height $2(h+l\sin\theta)$: the tangent Poisson ratio follows by differentiating these dimensions and equals $\cos^2\theta/\big[(h/l+\sin\theta)\sin\theta\big]$ away from the singular flat-rib angle $\theta=0$ and for nonoverlapping cells, $h/l+\sin\theta>0$.`,
+      caption: String.raw`Stretch the block with the strain slider: the dashed outline is the unloaded shape, and the lateral strain is $-\nu$ times the axial one (set $\nu$ by hand or pick a synthetic benchmark). Right: a honeycomb of rigid ribs that rotate at hinges. With ribs leaning outward (positive $\theta$, a conventional hexagon) it narrows when stretched; flip $\theta$ negative (re-entrant) and it widens: its Poisson's ratio, measured from the picture, turns negative.`,
       deps: ['mat-1.2', 'solid-2.7'],
-      refs: ['Callister §6.3', 'Callister §6.5'],
+      refs: ['A.F.Bower, Applied Mechanics of Solids, complete §§3.2.1–3.2.2,3.2.5–3.2.7', 'Rigid-rib hinge geometry and admissibility derivation in verification report'],
       tags: ['elasticity', 'Poisson ratio', 'auxetic'],
-      credit: 'R. Hooke, 1678 (ut tensio sic vis); S. D. Poisson, 1820s (lateral contraction); R. S. Lakes, 1987 (first auxetic foam); L. J. Gibson & M. F. Ashby, 1982 (honeycomb mechanics)',
-      scope: String.raw`Linear, isotropic, small strain. The $\nu$ values in the menu are typical orders of magnitude (rubber $\approx0.49$ rather than exactly $0.5$). The honeycomb is the rigid-rib, free-hinge mechanism: it is exact kinematics but ignores rib bending and stretching, so it shows how the sign of $\nu$ arises rather than a real modulus.`,
-      verify: true,
+      scope: String.raw`Isotropic small-strain elasticity at a symmetry-preserving reference state, $E>0$ and $-1<\nu<1/2$. Benchmarks are chosen illustrative $(E,\nu)$ pairs, not measured named-material data. Large displayed strains extrapolate the linear law only to show its geometric limitations. The2D rigid-rib mechanism is anisotropic and has zero bending stiffness; the 3D isotropic stability bound does not constrain its directional tangent ratio. Unreachable extensions stop at straight ribs with requested and achieved strains reported; overlapping cells are rejected and a flat-rib tangent is undefined.`,
       viz(v) {
         const MAT = { metal: { nu: 0.3, E: 200, lab: 'metal' }, rubber: { nu: 0.49, E: 0.01, lab: 'rubber' }, cork: { nu: 0.02, E: 0.03, lab: 'cork' }, foam: { nu: -0.7, E: 0.02, lab: 'auxetic foam' } };
-        const mat = v.select('block', [{ value: 'metal', label: 'metal' }, { value: 'rubber', label: 'rubber' }, { value: 'cork', label: 'cork' }, { value: 'foam', label: 'auxetic foam' }, { value: 'free', label: 'free $\\nu$' }], 'metal', { onChange: (id) => { if (MAT[id]) nuS.set(MAT[id].nu); } });
+        const mat = v.select('block', [{ value: 'metal', label: 'metal-like toy' }, { value: 'rubber', label: 'rubber-like toy' }, { value: 'cork', label: 'low-contraction toy' }, { value: 'foam', label: 'auxetic toy' }, { value: 'free', label: 'free $\\nu$' }], 'metal', { onChange: (id) => { if (MAT[id]) nuS.set(MAT[id].nu); } });
         const nuS = v.slider('Poisson ratio $\\nu$', -0.95, 0.495, 0.3, { step: 0.005, decimals: 3 });
         const epsS = v.slider('axial strain $\\varepsilon$', -0.1, 0.25, 0.08, { step: 0.005 });
         const th = v.slider('honeycomb rib angle $\\theta_0$ (°)', -60, 60, -30, { step: 1 });
         const hl = v.slider('rib ratio $h/l$', 0.8, 2.5, 2, { step: 0.05 });
-        const A = v.stage({ x: [-1.9, 2.9], y: [-1.6, 1.6], equal: true, axes: false, height: 330, weight: 1, title: 'a block, stretched' });
+        const A = v.stage({ x: [-2.7, 2.7], y: [-1.6, 1.6], equal: true, axes: false, height: 330, weight: 1, title: 'a block, stretched' });
         const B = v.stage({ x: [-3.2, 5.4], y: [-3.6, 3.6], equal: true, axes: false, height: 330, weight: 1.1, title: 'a honeycomb of rigid ribs and hinges' });
         let info = null;
         // honeycomb of rigid ribs: inclined ribs of length 1 at angle t to the horizontal, vertical ribs of length h
@@ -119,7 +119,7 @@ export default {
           for (let j = -3; j <= 3; j++) for (let m = -3; m <= 3; m++) {
             const cx = 2 * c * m + (j & 1 ? c : 0), cy = j * rowH;
             const P = [[cx - c, cy + h / 2], [cx, cy + h / 2 + sn], [cx + c, cy + h / 2], [cx + c, cy - h / 2], [cx, cy - h / 2 - sn], [cx - c, cy - h / 2]];
-            S.path(P, { close: true, color: col, alpha, width: w });
+            for(let i=0;i<P.length;i++){const seg=clipSegment2(P[i],P[(i+1)%P.length],[S.bounds.x,S.bounds.y]);if(seg.length)S.path(seg,{color:col,alpha,width:w});}
           }
         }
         v.render(() => {
@@ -136,22 +136,16 @@ export default {
           A.text('$\\sigma$', bw * lx + 0.7, 0.18, { color: 'red', size: 15 });
           const dV = lx * ly * ly - 1;
           // honeycomb
-          const t0 = (th.value * Math.PI) / 180, h = hl.value;
-          const c0 = Math.cos(t0), eH = e;
-          const arg = clamp((1 + eH) * c0, -1, 1);
-          const tn = Math.sign(t0 || 1) * Math.acos(arg);
-          drawHoney(B, t0, h, 'muted', 0.35, 1.2);
-          drawHoney(B, tn, h, 'accent', 0.95, 2.2);
-          const X0 = cellXY(t0, h), X1 = cellXY(tn, h), X2 = cellXY(Math.sign(t0 || 1) * Math.acos(clamp(1.0001 * c0, -1, 1)), h);
-          const exH = X1.X / X0.X - 1, eyH = X1.Y / X0.Y - 1;
-          const nuH = Math.abs(X2.X / X0.X - 1) > 1e-9 ? -(X2.Y / X0.Y - 1) / (X2.X / X0.X - 1) : NaN;
-          const nuTh = Math.cos(t0) ** 2 / ((h + Math.sin(t0)) * Math.sin(t0 || 1e-9));
-          info = { nu, e, dV, nuH, nuTh, exH, eyH, valid: Math.abs(arg) < 1 };
+          const H=honeycombMechanism(th.value,hl.value,e);
+          if(H.valid){drawHoney(B,H.t0,hl.value,'muted',.35,1.2);drawHoney(B,H.tn,hl.value,'accent',.95,2.2);}else B.corner(H.reason,'tl',{color:'red',size:11});
+          info={nu,e,dV,H};
         });
         v.readout(() => {
           if (!info) return '';
-          const { nu, e, dV, nuH, nuTh, valid } = info;
-          return `Block: axial $\\varepsilon=${v.fix(e, 3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu * e, 4)}=-\\nu\\varepsilon$ with $\\nu=${v.fix(nu, 3)}$; exact volume change $${v.fix(dV * 100, 2)}\\,\\%$ (small-strain $(1-2\\nu)\\varepsilon=${v.fix((1 - 2 * nu) * e * 100, 2)}\\,\\%$). With $E=${MAT[mat.value] ? MAT[mat.value].E : 'free'}$ GPa, $\\sigma=E\\varepsilon$.\nHoneycomb: width strain $${v.fix(info.exH, 3)}$, height strain $${v.fix(info.eyH, 3)}$, measured at small strain $\\nu=${Number.isFinite(nuH) ? v.fix(nuH, 2) : '–'}$ (the shape change shown is large, so $-\\varepsilon_y/\\varepsilon_x$ here is $${v.fix(-info.eyH / (info.exH || 1e-9), 2)}$); the small-strain formula $\\cos^2\\theta/[(h/l+\\sin\\theta)\\sin\\theta]=${v.fix(nuTh, 2)}$${valid ? '' : '. At this strain the ribs are fully straightened: the mechanism locks.'}`;
+          const {nu,e,dV,H}=info;
+          const block=`Block: axial $\\varepsilon=${v.fix(e,3)}$, lateral $\\varepsilon_{\\rm lat}=${v.fix(-nu*e,4)}$; geometric volume change of this linear extrapolation $${v.fix(dV*100,2)}\\%$, first-order value $${v.fix((1-2*nu)*e*100,2)}\\%$. Chosen $\\nu=${v.fix(nu,3)}$; ${MAT[mat.value]?`$E=${MAT[mat.value].E}$ GPa.`:'Young’s modulus is unspecified for the free ratio.'} Large displayed strains do not validate a finite-strain constitutive law.`;
+          if(!H.valid)return block+'\nHoneycomb: '+H.reason+'. No admissible deformed mechanism shown.';
+          return block+`\nHoneycomb: requested width strain $${v.fix(e,3)}$, achieved $${v.fix(H.ex,3)}$, height strain $${v.fix(H.ey,3)}$. Finite secant ratio $-\\varepsilon_y/\\varepsilon_x$: ${H.finiteRatio===null?'undefined at zero achieved strain':v.fix(H.finiteRatio,3)}; reference tangent ratio: ${H.nu===null?'undefined at flat ribs':v.fix(H.nu,3)}.`+(H.locked?' Requested extension is unreachable: ribs are straight, mechanism locked.':'')+(H.branchAtFlat?' At flat ribs a branch is chosen for compression; there is no unique finite tangent ratio.':'');
         });
       },
     },

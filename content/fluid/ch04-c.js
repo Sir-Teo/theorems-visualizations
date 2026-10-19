@@ -1,27 +1,10 @@
 // Fluid Dynamics — Chapter 4: Potential flow (items 4.12–4.17)
 import { G0, clamp, TAU, cadd, cpolar, cmul, cdiv, cexp, cabs, carg, elemVel, elemW1, streamlines, drawLines, theodorsen } from './ch04.shared.js';
 
-const deg = (a) => (a * Math.PI) / 180;
+import * as CA from './conformal-audit.shared.js';
+import * as BA from './boundaries-inertia-audit.shared.js';
 
-/** Velocity at (px, py) of point vortices L = [{x, y, k}] (counter-clockwise k), skipping `skip`. */
-function vtxVel(L, px, py, skip = -1) {
-  let u = 0, w = 0;
-  for (let j = 0; j < L.length; j++) {
-    if (j === skip) continue;
-    const dx = px - L[j].x, dy = py - L[j].y, r2 = dx * dx + dy * dy + 1e-14, k = L[j].k / (TAU * r2);
-    u -= k * dy; w += k * dx;
-  }
-  return [u, w];
-}
-const WCH = 2;
-/** The real vortex (index 0) followed by its images, for a wall, a channel 0 < y < 2 or a right-angle corner x, y > 0. */
-function imageSet(mode, x, y, G, N = 14) {
-  const L = [{ x, y, k: G }];
-  if (mode === 'wall') L.push({ x, y: -y, k: -G });
-  else if (mode === 'corner') L.push({ x: -x, y, k: -G }, { x, y: -y, k: -G }, { x: -x, y: -y, k: G });
-  else for (let n = -N; n <= N; n++) { if (n !== 0) L.push({ x, y: y + 2 * n * WCH, k: G }); L.push({ x, y: -y + 2 * n * WCH, k: -G }); }
-  return L;
-}
+const deg = (a) => (a * Math.PI) / 180;
 
 export default {
   collection: 'fluid',
@@ -29,63 +12,42 @@ export default {
   items: [
     // ───────────────────────────────────────────────────────────────────────── 4.12
     {
-      num: '4.12',
-      kind: 'Method',
-      name: 'Method of images',
-      statement: String.raw`To satisfy the no-penetration condition $\partial\phi/\partial n=0$ at a fixed plane wall, add to the singularities in the fluid their mirror images in the plane, a source for a source, and a **vortex of opposite sign** for a vortex. The sum is a flow in the whole space that is symmetric about the wall, so its velocity is tangent to the wall; its restriction to the fluid side has the original singularities only and satisfies the boundary condition. A vortex of circulation $\Gamma$ at distance $d$ from a wall therefore drifts parallel to the wall at speed $\Gamma/4\pi d$ (induced by its image at distance $2d$). Between two parallel walls a distance $W$ apart there is an infinite lattice of images, and the drift speed is $\dfrac{\Gamma}{4W}\cot\dfrac{\pi y}{W}$; in a right-angle corner three images are needed and the vortex moves along $x^{-2}+y^{-2}=\text{const}$.`,
-      idea: String.raw`Laplace's equation is linear (4.2), so the solutions for the original singularities and the images add, and uniqueness of the Neumann problem (4.2) shows the sum, restricted to the fluid, is *the* solution. The reflection of a source in a plane is a source (the normal velocities of the pair cancel at the wall, the tangential ones add), but the reflection of a vortex must be reversed in sign, because the normal velocity induced at the wall by the vortex is odd about the vortex's own height. Walls at an angle $\pi/m$ need $2m-1$ images.`,
-      credit: 'method of electrical images: William Thomson (Kelvin), 1845',
-      verify: true,
-      caption: String.raw`Drag the gold handle to place a point vortex near a wall, between two walls or in a corner, choose its circulation, and watch it move under the velocity induced by its images (open dots, opposite sign; a few of the infinite lattice are drawn for the channel). The streamlines are traced from the real vortex plus all images and are drawn only in the fluid; the walls are streamlines (the readout gives the largest normal velocity found along them, which is rounding error). The measured drift is compared with the closed formulas: $\Gamma/4\pi d$ at a wall, $(\Gamma/4W)\cot(\pi y/W)$ in the channel (the vortex moves one way near the lower wall, the other way near the upper), and in the corner the path conserves $x^{-2}+y^{-2}$.`,
-      deps: ['fluid-4.5'],
-      refs: ['Kundu §7.3'],
+      num: '4.12', kind: 'Method', name: 'Method of images',
+      statement: String.raw`For a straight impermeable wall, reflect a source with the same strength and a point vortex with **opposite circulation**. The pair cancels normal velocity at the wall. A counterclockwise vortex of strength $\Gamma$ at height $y>0$ drifts with signed velocity $u=\Gamma/(4\pi y)$ along the wall. In a strip $0<y<W$, the complete infinite image lattice gives $u=\Gamma\cot(\pi y/W)/(4W)$ and $v=0$. In the right-angle corner $x,y>0$, the three image strengths are $-\Gamma,-\Gamma,+\Gamma$; their induced velocity conserves $x^{-2}+y^{-2}$.`,
+      idea: String.raw`Reflection makes the normal components cancel. For the strip, sum the simple poles using $\sum_{n\in\mathbb Z}(z-2inW)^{-1}=(\pi/2W)\coth(\pi z/2W)$, with symmetric summation. Thus $u-iv=\Gamma[\coth(\pi(z-z_0)/(2W))-\coth(\pi(z-\bar z_0)/(2W))]/(4Wi)$. Removing the real vortex's singular term gives its drift. The corner drift is $\dot x=\Gamma x^2/[4\pi y(x^2+y^2)]$, $\dot y=-\Gamma y^2/[4\pi x(x^2+y^2)]$; differentiate the stated invariant to check it. These constructions satisfy the boundary condition; uniqueness also requires a far-field condition and specified circulations, not just Neumann data.`,
+      credit: 'Straight-wall reflection derivation: MIT 13.021, lectures 10–11, §3.8',
+      verify: false,
+      caption: String.raw`Place the vortex and release it in a wall, strip or corner geometry. Open dots show image vortices, coloured by sign; the doubly reflected corner image has the original sign. Only a few strip images are drawn, but velocity, streamlines and wall checks use the **closed infinite-lattice field**. Drift is analytic for the wall/strip and fourth-order time stepping for the corner. The numerical wall residual is sampled, not a proof or an imposed error floor. Motion stops before leaving the frame; changing a control or dragging restarts both the state and animation clock.`,
+      deps: ['fluid-4.5'], refs: ['MIT 13.021, lectures 10–11, §3.8; strip pole sum and corner invariant derived here'],
       tags: ['images', 'vortex', 'wall'],
-      scope: String.raw`Ideal, incompressible, irrotational flow with fixed straight walls (planes or wedges of angle $\pi/m$). The image construction for a wall of any other shape requires a conformal map (4.15) or the circle theorem (4.13).`,
+      scope: String.raw`Inviscid incompressible plane point-vortex model, irrotational away from its vortex, with slip walls. No imposed background stream. The vortex is a singular idealization; its self-field is omitted from its motion. The strip uses $W=2$ in chosen units. The visible finite-time corner trajectory is numerical and its invariant residual is displayed.`,
       viz(v) {
-        const mode = v.select('boundary', [{ value: 'wall', label: 'one wall' }, { value: 'channel', label: 'two walls' }, { value: 'corner', label: 'corner' }], 'wall', { onChange: () => { place(); S.reset(); } });
-        const gs = v.slider('circulation $\\Gamma$', -10, 10, 6, { step: 0.5, onChange: () => S.reset() });
-        v.button('Release again', () => S.reset());
-        const s = v.stage({ x: [-4.6, 4.6], y: [-1.5, 3.3], equal: true, axes: false, height: 400, weight: 1, title: 'a vortex and its images' });
-        const H = s.handle(-2.5, 0.8, { color: 'gold', r: 8, label: 'start', labelPos: 'nw', constrain: (x, y) => { const m = mode ? mode.value : 'wall'; return m === 'wall' ? [x, clamp(y, 0.2, 3)] : m === 'channel' ? [x, clamp(y, 0.2, WCH - 0.2)] : [clamp(x, 0.2, 4.4), clamp(y, 0.2, 3)]; } });
-        H.onDrag = () => S.reset();
-        function place() { const m = mode.value; if (m === 'wall') H.set(-2.5, 0.8); else if (m === 'channel') H.set(-2.5, 0.6); else H.set(0.9, 2.2); }
-        const inside = (x, y) => (mode.value === 'wall' ? y > 0 : mode.value === 'channel' ? y > 0 && y < WCH : x > 0 && y > 0);
-        const speedAt = (st) => { const L = imageSet(mode.value, st.x, st.y, gs.value); return vtxVel(L, st.x, st.y, 0); };
-        const S = v.sim(() => ({ x: H.x, y: H.y, t: 0, trail: [[H.x, H.y]], k: 0, c0: 1 / (H.x * H.x) + 1 / (H.y * H.y) }), (st, dt) => {
-          const f = (x, y) => vtxVel(imageSet(mode.value, x, y, gs.value, 10), x, y, 0);
-          if (Math.abs(st.x) > 6 || st.y > 7 || st.y < 0.03) return;
-          const k1 = f(st.x, st.y), k2 = f(st.x + dt / 2 * k1[0], st.y + dt / 2 * k1[1]), k3 = f(st.x + dt / 2 * k2[0], st.y + dt / 2 * k2[1]), k4 = f(st.x + dt * k3[0], st.y + dt * k3[1]);
-          st.x += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); st.y += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); st.t += dt; st.k++;
-          if (st.k % 5 === 0) st.trail.push([st.x, st.y]);
-        }, { dt: 0.02 });
-        let info = {};
-        v.animate((t) => {
-          const st = S.advance(t), m = mode.value, L = imageSet(m, st.x, st.y, gs.value);
-          const Ls = imageSet(m, st.x, st.y, gs.value, 8);
-          const lines = streamlines((x, y) => (inside(x, y) ? vtxVel(Ls, x, y) : null), [-4.6, 4.6, m === 'channel' ? 0 : 0, m === 'channel' ? WCH : 3.3], { sep: 0.2, step: 0.04, seeds: [[st.x + 0.9, st.y]] });
-          // walls
-          const hat = { fill: 'muted', fillAlpha: 0.3, hatch: true, color: 'ink', width: 2.4 };
-          if (m === 'wall') s.rect(-4.6, -1.5, 4.6, 0, hat);
-          else if (m === 'channel') { s.rect(-4.6, -1.5, 4.6, 0, hat); s.rect(-4.6, WCH, 4.6, 3.3, hat); }
-          else { s.rect(-4.6, -1.5, 4.6, 0, hat); s.rect(-4.6, 0, 0, 3.3, hat); }
-          drawLines(s, lines, { color: 'accent', width: 1.1, alpha: 0.7, arrows: false });
-          s.path(st.trail, { color: 'gold', width: 2.2 });
-          for (let j = 1; j < L.length; j++) { const e = L[j]; if (e.y > -1.5 && e.y < 3.3 && Math.abs(e.x) < 4.6) s.dot(e.x, e.y, { r: 6, hollow: true, color: e.k > 0 ? 'purple' : 'orange' }); }
-          s.dot(st.x, st.y, { r: 7, color: gs.value > 0 ? 'purple' : 'orange' });
-          // wall check
-          let vn = 0;
-          for (let i = -20; i <= 20; i++) {
-            const x = (i * 0.2) + 0.013;
-            if (m === 'wall' || m === 'channel') { vn = Math.max(vn, Math.abs(vtxVel(L, x, 0)[1])); if (m === 'channel') vn = Math.max(vn, Math.abs(vtxVel(imageSet(m, st.x, st.y, gs.value, 60), x, WCH)[1])); }
-            else { vn = Math.max(vn, Math.abs(vtxVel(L, x > 0 ? x : -x, 0)[1])); vn = Math.max(vn, Math.abs(vtxVel(L, 0, Math.abs(x))[0])); }
-          }
-          const sp = speedAt(st);
-          let ex = null;
-          if (m === 'wall') ex = gs.value / (4 * Math.PI * st.y);
-          else if (m === 'channel') ex = (gs.value / (4 * WCH)) / Math.tan((Math.PI * st.y) / WCH);
-          info = { sp, vn, ex, inv: 1 / (st.x * st.x) + 1 / (st.y * st.y), c0: st.c0, x: st.x, y: st.y };
-        }, { period: 12, still: 6 });
-        v.readout(() => `vortex at $(${v.fix(info.x, 2)},\\,${v.fix(info.y, 2)})$, velocity from the images $(${v.fix(info.sp[0], 4)},\\,${v.fix(info.sp[1], 4)})$${info.ex !== null ? `; closed formula for the drift: $${v.fix(info.ex, 4)}$` : `; $x^{-2}+y^{-2}=${v.fix(info.inv, 4)}$ (started at $${v.fix(info.c0, 4)}$): conserved`}\nlargest normal velocity found on the walls: $${v.sci(info.vn + 1e-18, 1)}$ — the images cancel it`);
+        const reset=()=>{S.reset();v.t=0;};
+        const mode=v.select('boundary',[{value:'wall',label:'one wall'},{value:'channel',label:'two walls'},{value:'corner',label:'corner'}],'wall',{onChange:()=>{place();reset();}});
+        const gs=v.slider('circulation $\\Gamma$',-10,10,6,{step:.5,onChange:reset});
+        v.button('Release again',reset);
+        const s=v.stage({x:[-4.6,4.6],y:[-1.5,3.3],equal:true,axes:false,height:400,title:'a vortex and its images'});
+        const H=s.handle(-2.5,.8,{color:'gold',r:8,label:'start',labelPos:'nw',constrain:(x,y)=>{const m=mode.value;return[m==='corner'?clamp(x,.2,3.8):clamp(x,-3.8,3.8),clamp(y,.2,m==='channel'?1.8:2.8)];}});H.onDrag=reset;
+        function place(){H.set(mode.value==='corner'?.9:-2.5,mode.value==='channel'?.6:mode.value==='corner'?2.2:.8);}
+        const inside=(x,y)=>mode.value==='corner'?x>0&&y>0:mode.value==='channel'?y>0&&y<2:y>0;
+        const S=v.sim(()=>({x:H.x,y:H.y,t:0,trail:[[H.x,H.y]],k:0,c0:1/H.x**2+1/H.y**2,stopped:false}),(st,dt)=>{
+          if(st.stopped)return;
+          const next=BA.vortexStep(mode.value,st.x,st.y,gs.value,dt);
+          if(next[0]<-4.2||next[0]>4.2||next[1]<.1||next[1]>3.0){st.stopped=true;return;}
+          [st.x,st.y]=next;st.t+=dt;if(++st.k%3===0)st.trail.push(next);
+        },{dt:.005});
+        let info={};
+        v.animate(t=>{
+          const st=S.advance(t),m=mode.value,L=BA.imageVortices(m,st.x,st.y,gs.value),field=(x,y)=>inside(x,y)&&Math.hypot(x-st.x,y-st.y)>.035?BA.imageVelocity(m,x,y,st.x,st.y,gs.value):null;
+          const lines=streamlines(field,[-4.6,4.6,0,m==='channel'?2:3.3],{sep:.23,step:.04,seeds:[[st.x+.5,st.y]]}),hat={fill:'muted',fillAlpha:.3,hatch:true,color:'ink',width:2.4};
+          s.rect(-4.6,-1.5,4.6,0,hat);if(m==='channel')s.rect(-4.6,2,4.6,3.3,hat);if(m==='corner')s.rect(-4.6,0,0,3.3,hat);
+          drawLines(s,lines,{color:'accent',width:1.1,alpha:.7,arrows:false});s.path(st.trail,{color:'gold',width:2.2});
+          for(const e of L.slice(1))if(e.y>-1.5&&e.y<3.3&&Math.abs(e.x)<4.6)s.dot(e.x,e.y,{r:6,hollow:true,color:e.k>0?'purple':'orange'});
+          s.dot(st.x,st.y,{r:7,color:gs.value>=0?'purple':'orange'});
+          let vn=0;for(let j=0;j<=60;j++){const x=.013+j*4/60;const f=(x,y)=>BA.imageVelocity(m,x,y,st.x,st.y,gs.value);vn=Math.max(vn,Math.abs(f(m==='corner'?x:x-2,0)[1]));if(m==='channel')vn=Math.max(vn,Math.abs(f(x-2,2)[1]));if(m==='corner')vn=Math.max(vn,Math.abs(f(0,x*.75)[0]));}
+          info={...st,sp:BA.imageDrift(m,st.x,st.y,gs.value),vn,error:1/st.x**2+1/st.y**2-st.c0,mode:m};
+        },{period:12,still:0});
+        v.readout(()=>`$t=${v.fix(info.t,3)}$, vortex $(${v.fix(info.x,3)},${v.fix(info.y,3)})$, signed drift $(${v.fix(info.sp[0],4)},${v.fix(info.sp[1],4)})$${info.stopped?' · stopped at the visible-frame limit':''}\nsampled wall-normal residual $${v.sci(info.vn,2)}$${info.mode==='corner'?`; invariant error $${v.sci(info.error,2)}$`:''}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.13
@@ -186,170 +148,97 @@ is the flow that has the same singularities outside the circle and in addition h
       name: 'Conformal maps carry potential flows',
       statement: String.raw`Let $z=F(\zeta)$ be a conformal map (analytic with $F'\ne0$) from a region $D'$ of the $\zeta$-plane onto the flow region $D$ of the $z$-plane. If $W(\zeta)$ is the complex potential of a flow in $D'$ then
 $$w(z)=W\big(F^{-1}(z)\big)$$
-is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$ are carried to those of $w$ (they remain orthogonal), a streamline that is a boundary of $D'$ maps to a boundary streamline of $D$, and the velocities are related by $\dfrac{dw}{dz}=\dfrac{dW/d\zeta}{dF/d\zeta}$. Circulation and flux through corresponding curves are the same. By the Riemann mapping theorem (rca-14.8) a simply connected region has such a map onto a disk; for the exterior of a body, onto the exterior of the unit disk, so the flow past any simply connected obstacle can be obtained from the flow past a circle (4.7, 4.9).`,
+is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$ are carried to those of $w$ (they remain orthogonal), a streamline that is a boundary of $D'$ maps to a boundary streamline of $D$, and the velocities are related by $\dfrac{dw}{dz}=\dfrac{dW/d\zeta}{dF/d\zeta}$. Circulation and flux through corresponding curves are the same. The Riemann mapping theorem applies to a proper simply connected plane domain; for a bounded Jordan body, its exterior with infinity included maps to the exterior disk with infinity fixed. Smooth boundary extension is needed when carrying surface velocities, and a zero derivative at a corner requires separate limiting analysis.`,
       idea: String.raw`Composition of analytic functions is analytic, so $W\circ F^{-1}$ is analytic and its real and imaginary parts are conjugate harmonic functions: a legitimate flow. Because $\psi$ is simply carried along, level sets of $\psi$ map to level sets and the boundary streamline stays a streamline. The map preserves angles at every point where $F'\neq0$ (rca-14.2), so orthogonality of the two families is kept, while the speed is rescaled by $|F'|$: wherever the map stretches lengths the flow slows down and vice versa (the chain rule above).`,
-      caption: String.raw`The left panel is the simplest flow of all: uniform stream (angle and circulation adjustable) past the unit circle in the $\zeta$-plane. Drag the eight gold handles on the right (each slides along its ray) to draw a star-shaped obstacle. The exterior of the obstacle is mapped onto the exterior of the unit disk numerically (Theodorsen's iteration, computed here with a discrete Fourier transform), and the streamlines of the circle flow are pushed forward through the map. They hug your shape, because the circle was a streamline. The readout gives the number of iterations and the largest mismatch between the mapped circle and your outline; very elongated shapes make the iteration fail, which is reported.`,
+      caption: String.raw`Drag the eight radial handles to specify a positive log-radius interpolant. The dashed candidate boundary comes from a relaxed Fourier implementation of Theodorsen's nonlinear boundary correspondence. A residual below $10^{-4}$, positive sampled polar-angle increments and nonzero sampled map derivatives allow a numerical flow illustration; failure withholds the mapped flow and surface speed. These finite tests do not certify global conformality. The right camera includes the outline, candidate and any mapped streamlines. Changing shape recomputes both flows, including the circle-plane stream scale needed for unit physical far-stream speed.`,
       deps: ['fluid-4.4', 'rca-14.2', 'rca-14.8'],
-      refs: ['Kundu §7.6', 'Acheson ch. 4'],
-      credit: 'numerical method: T. Theodorsen, NACA Report 411, 1931, and T. Theodorsen and I. E. Garrick, NACA Report 452, 1933',
-      verify: true,
+      refs: ['Theodorsen, NACA Report411, Theory of Wing Sections of Arbitrary Shape, pp229–234 and237 (appendix)'],
+      credit: 'Nonlinear boundary correspondence: Theodore Theodorsen, NACA Report411; the Fourier discretization here is a numerical implementation',
+      verify: false,
       tags: ['conformal map', 'Theodorsen', 'obstacle'],
       scope: String.raw`Plane, ideal, irrotational flow; simply connected obstacle. The numerical method here needs a star-shaped outline (a single-valued radius as a function of angle) and moderate aspect ratio.`,
-      viz(v) {
-        const al = v.slider('stream angle (deg)', -30, 30, 10, { step: 1 });
-        const gm = v.slider('circulation $\\Gamma$ in the circle plane', -3, 3, 0, { step: 0.05 });
-        const a = v.stage({ x: [-3.2, 3.2], y: [-2.4, 2.4], equal: true, axes: false, height: 400, weight: 1, title: 'the $\\zeta$-plane: flow past the unit circle' });
-        const s = v.stage({ x: [-3.2, 3.2], y: [-2.4, 2.4], equal: true, axes: false, height: 400, weight: 1, title: 'the $z$-plane: flow past your obstacle' });
-        const R0 = [1.45, 1.0, 0.62, 0.8, 1.2, 0.8, 0.62, 1.0], TH = R0.map((_, k) => (TAU * k) / 8);
-        const H = TH.map((t, k) => s.handle(R0[k] * Math.cos(t), R0[k] * Math.sin(t), { color: 'gold', r: 7, constrain: (x, y) => { const e = [Math.cos(t), Math.sin(t)], p = clamp(x * e[0] + y * e[1], 0.35, 2.2); return [p * e[0], p * e[1]]; } }));
-        const rad = () => H.map((h, k) => Math.hypot(h.x, h.y));
-        const trigInterp = (vals) => {
-          const n = vals.length, f = vals.map(Math.log); const A = [], B = [];
-          for (let k = 0; k <= n / 2; k++) { let ca = 0, cb = 0; for (let j = 0; j < n; j++) { ca += f[j] * Math.cos((TAU * k * j) / n); cb += f[j] * Math.sin((TAU * k * j) / n); } A.push(((k === 0 || k === n / 2 ? 1 : 2) * ca) / n); B.push((2 * cb) / n); }
-          return (t) => { let r = A[0]; for (let k = 1; k < n / 2; k++) r += A[k] * Math.cos(k * t) + B[k] * Math.sin(k * t); r += A[n / 2] * Math.cos((n / 2) * t); return Math.exp(r); };
-        };
-        let key = '', mp = null, Rf = null, circLines = [], ck = '';
-        let info = {};
-        v.render(() => {
-          const rr = rad(), k = rr.map((x) => x.toFixed(3)).join(',');
-          if (k !== key) { key = k; Rf = trigInterp(rr); mp = theodorsen(Rf, 96, 40); }
-          const alpha = deg(al.value), G = gm.value, c0 = Math.exp(mp.c0 ?? 0), Uz = c0;
-          const dW = (zt) => { const z2 = cmul(zt, zt); const t1 = cmul([Uz, 0], cadd(cpolar(1, -alpha), cmul([-1, 0], cdiv(cpolar(1, alpha), z2)))); return cadd(t1, cdiv([0, G / TAU], zt)); };
-          const k2 = al.value + '|' + gm.value;
-          if (ck !== k2) { ck = k2; circLines = streamlines((x, y) => { if (x * x + y * y < 1.004) return null; const d = dW([x, y]); return [d[0], -d[1]]; }, [-3.2, 3.2, -2.4, 2.4], { sep: 0.2, step: 0.045, seeds: [[-3.1, 0.2]] }); }
-          // left: circle flow
-          drawLines(a, circLines, { color: 'accent', width: 1.1, alpha: 0.85 });
-          a.circle(0, 0, 1, { fill: 'muted', fillAlpha: 0.5, color: 'ink', width: 2.4 });
-          // right: mapped lines
-          const mapped = circLines.map((L) => L.map((p) => { const z = mp.zOf(p); return z; }));
-          drawLines(s, mapped, { color: 'accent', width: 1.1, alpha: 0.85 });
-          const outline = []; for (let j = 0; j <= 200; j++) { const t = (TAU * j) / 200, r = Rf(t); outline.push([r * Math.cos(t), r * Math.sin(t)]); }
-          s.poly(outline, { fill: 'muted', fillAlpha: 0.5, color: 'ink', width: 2.4 });
-          const mb = []; for (let j = 0; j <= 120; j++) mb.push(mp.zOf(cpolar(1, (TAU * j) / 120)));
-          s.path(mb, { color: 'green', width: 1.6, dash: [5, 4] });
-          // maximum surface speed
-          let vm = 0; for (let j = 0; j < 180; j++) { const zt = cpolar(1, (TAU * (j + 0.5)) / 180), d = cdiv(dW(zt), mp.dzOf(zt)); vm = Math.max(vm, cabs(d)); }
-          info = { it: mp.it, err: mp.err, ok: mp.ok, vm, cap: c0 };
+      viz(v){
+        const al=v.slider('stream angle (deg)',-30,30,10,{step:1}),gm=v.slider('clockwise circulation $\\Gamma$',-3,3,0,{step:.05});
+        const a=v.stage({x:[-3.2,3.2],y:[-2.4,2.4],equal:true,axes:false,height:400,title:'circle plane: capacity-scaled stream'}),s=v.stage({x:[-3.2,3.2],y:[-2.4,2.4],equal:true,axes:false,height:400,title:'candidate map and requested outline'});
+        const R0=[1.45,1,.62,.8,1.2,.8,.62,1],TH=R0.map((_,k)=>TAU*k/8),H=TH.map((t,k)=>s.handle(R0[k]*Math.cos(t),R0[k]*Math.sin(t),{color:'gold',r:7,constrain:(x,y)=>{const c=Math.cos(t),sn=Math.sin(t),r=clamp(x*c+y*sn,.35,2.2);return[r*c,r*sn];}}));
+        let key='',mp=null,Rf=null,lines=[],flowKey='',info={};
+        v.render(()=>{
+          const rr=H.map(h=>Math.hypot(h.x,h.y)),k=rr.join(',');if(k!==key){key=k;Rf=CA.radiusInterpolant(rr);mp=CA.mapCandidate(Rf);}
+          const angle=deg(al.value),G=gm.value,U=mp.capacity,fk=key+'|'+angle+'|'+G;
+          if(flowKey!==fk){flowKey=fk;lines=streamlines((x,y)=>{if(x*x+y*y<1.004)return null;const d=CA.circleDerivative([x,y],angle,G,U);return[d[0],-d[1]];},[-3.2,3.2,-2.4,2.4],{sep:.22,step:.045,seeds:[[-3.1,.2]]});}
+          drawLines(a,lines,{color:'accent',width:1.1,alpha:.85});a.circle(0,0,1,{fill:'muted',fillAlpha:.5,color:'ink',width:2.4});
+          const mapped=mp.accepted?lines.map(L=>L.map(p=>mp.zOf(p))):[],outline=Array.from({length:513},(_,j)=>{const t=TAU*j/512,r=Rf(t);return[r*Math.cos(t),r*Math.sin(t)];}),V=CA.bounds([...outline,...mp.boundary,...mapped.flat()]);s.setView(V.x,V.y);
+          if(mp.accepted)drawLines(s,mapped,{color:'accent',width:1.1,alpha:.85});
+          s.poly(outline,{fill:'muted',fillAlpha:.5,color:'ink',width:2.4});s.path([...mp.boundary,mp.boundary[0]],{color:mp.accepted?'green':'red',width:1.6,dash:[5,4]});
+          let vm=null;if(mp.accepted){vm=0;for(let j=0;j<720;j++)vm=Math.max(vm,cabs(CA.mappedVelocity(mp,cpolar(1,TAU*(j+.5)/720),angle,G)));}else s.text('unresolved map',0,0,{color:'red',align:'center'});
+          info={it:mp.it,error:mp.error,accepted:mp.accepted,minDerivative:mp.minDerivative,minAngleStep:mp.minAngleStep,vm,cap:U,flowKey,rr,V,mapped,boundary:mp.boundary};
         });
-        v.legend([['accent', 'streamlines (circle flow, and mapped)'], ['green', 'image of the unit circle', { dash: true }]]);
-        v.readout(() => `Theodorsen iteration: ${info.it} steps · largest mismatch between the mapped circle and your outline $${v.fix(100 * info.err, 2)}\\%$ of the radius${info.ok ? '' : ' — not converged: the shape is too extreme for this method'}\nfar-field scale $|F'(\\infty)|=${v.fix(info.cap, 3)}$ (stream speed rescaled to $1$ at infinity) · largest surface speed $|w'|=${v.fix(info.vm, 3)}$`);
+        v.legend([['accent','circle flow; mapped only after finite checks'],['green','candidate boundary: passed finite checks',{dash:true}],['red','unresolved candidate',{dash:true}]]);
+        v.readout(()=>`Theodorsen iteration: ${info.it} steps; sampled radial residual $${v.sci(info.error,2)}$; ${info.accepted?'finite checks passed':'unresolved — mapped flow and speed withheld'}\ncapacity $${v.fix(info.cap,4)}$ scales the circle stream to physical far-field speed 1; sampled minimum $|F'|=${v.sci(info.minDerivative,2)}$${info.vm===null?'':`; sampled surface maximum speed $${v.fix(info.vm,4)}$`}\n128 angular nodes, 56 Laurent modes; boundary checks are finite, not a proof of injectivity or an exact maximum.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.16
     {
-      num: '4.16',
-      kind: 'Theorem',
-      name: 'Circulation as a free parameter',
-      statement: String.raw`Let a body occupy a bounded region in the plane and let the fluid outside it be irrotational and incompressible with a prescribed uniform stream at infinity and no flow through the body. The potential problem ($\nabla^2\phi=0$, $\partial_n\phi=0$ on the body, $\nabla\phi\to\mathbf U$) has **infinitely many solutions**, one for each real number $\Gamma$: any two differ by a multiple of the circulation flow round the body, $\Gamma\,\nabla\theta$-like field, which is harmonic, tangent to the body and decays at infinity. The circulation $\oint_C\mathbf u\cdot d\mathbf l$ equals $-\Gamma$ (in the clockwise-positive convention) for every closed curve $C$ that winds once round the body and $0$ for every curve that does not. The potential $\phi$ is many-valued, changing by $\Gamma$ on going once round. If the body is removed (the region is simply connected), the circulation must vanish.`,
-      idea: String.raw`In a simply connected region every closed loop is contractible and the circulation round it is the flux of vorticity through it, hence zero (4.1, 1.11). Round a hole the loops fall into classes labelled by their winding number, and homotopic loops give the same circulation (rca-10.40; the field is closed). The difference of two solutions is a harmonic function with zero normal derivative on the body and zero at infinity whose single-valued potential would have to vanish by the uniqueness argument of 4.2, so any difference must be many-valued, and the only many-valued possibility is a multiple of the angle round the hole. This leaves $\Gamma$ undetermined by the equations: something outside potential flow theory (the Kutta condition, chapter 5) has to choose it.`,
-      caption: String.raw`The stream flows past the unit cylinder with circulation $\Gamma$ (slider). Two circular loops (blue and orange) can be moved and resized: drag each centre handle and its radius handle. Each loop's circulation is computed by integrating $\mathbf u\cdot d\mathbf l$ numerically: a loop that winds round the cylinder gives exactly $\Gamma$ whatever its shape, one that stays away from it gives $0$, and a loop that crosses the cylinder is not in the fluid (greyed). The right-hand plot shows the blue loop's circulation as a function of its radius, with its centre fixed: zero, then a gap while it crosses the body, then $\Gamma$. Switch the body off and $\Gamma$ is forced to zero: the region is no longer multiply connected.`,
+      num: '4.16', kind: 'Theorem', name: 'Circulation as a free parameter',
+      statement: String.raw`Consider the exterior of a single smooth, simply connected bounded body in the plane, with a prescribed uniform stream at infinity. A regular incompressible irrotational velocity tangent to the body has one free circulation. Write $\Gamma$ positive clockwise: a clockwise loop of winding number one has integral $\Gamma$, a counterclockwise loop has $-\Gamma$, and a contractible fluid loop has zero. Once this circulation is fixed, the regular potential flow is unique. Its local potential gains $\Gamma$ on a clockwise circuit; the velocity itself is single-valued. In the whole plane, regular everywhere with the prescribed far stream, the only such flow is the uniform stream and its circulation is zero.`,
+      idea: String.raw`An exterior conformal map carries the circle solution to the body. For the circle, $W(z)=U(z+a^2/z)+i\Gamma\log z/(2\pi)$ supplies arbitrary circulation while preserving zero normal velocity and the far stream. For uniqueness, subtract two solutions with the same circulation: the difference has a single-valued harmonic potential. Green's identity, zero normal derivative on the body and the decaying far-field difference force its Dirichlet energy to vanish. Merely saying that a potential can be many-valued does not establish uniqueness. Removing the body also requires regularity throughout the plane: a hidden point vortex would violate that assumption. Potential-flow boundary conditions alone do not select $\Gamma$; additional physics such as a Kutta condition is needed for a sharp trailing edge.`,
+      caption: String.raw`Drag each loop's centre or radius handle. The numerical integral is explicitly **clockwise**. A loop encircling the cylinder approaches $\Gamma$; a fluid loop staying outside without enclosing it approaches zero. Loops intersecting, touching or lying inside the solid are invalid and grey. The readout shows quadrature residuals rather than claiming exact numerical equality. The camera includes both loops; radii are constrained to $0.1$–$3.5$, the full domain of the right plot. Switching off the body chooses the everywhere-regular uniform stream.`,
       deps: ['fluid-4.2', 'fluid-4.9', 'rca-10.40', 'vcalc-5.7'],
-      refs: ['Acheson ch. 4'],
-      credit: 'cyclic constants of multiply connected regions: Kelvin, 1869',
-      verify: true,
-      tags: ['circulation', 'multiply connected', 'Kutta'],
-      scope: String.raw`Plane, ideal, irrotational flow past a single body. For several bodies there is one free circulation per body.`,
-      viz(v) {
-        const gs = v.slider('circulation $\\Gamma$ round the cylinder', -4, 4, 2, { step: 0.1 });
-        const body = v.toggle('cylinder present', true);
-        const s = v.stage({ x: [-4, 4], y: [-2.5, 2.5], equal: true, axes: false, height: 400, weight: 1.4, title: 'two loops in the flow past a cylinder' });
-        const q = v.stage({ x: [0, 3.5], y: [-4, 4], axes: 'box', gutter: true, height: 400, weight: 0.85, xlabel: 'radius of the blue loop', ylabel: 'circulation (clockwise)', title: 'circulation against loop radius' });
-        const CA = s.handle(-0.2, 0.2, { color: 'accent', r: 7, label: 'A', labelPos: 'nw' }), RA = s.handle(1.9, 0.2, { color: 'accent', r: 6 });
-        const CB = s.handle(2.8, 1.3, { color: 'orange', r: 7, label: 'B', labelPos: 'nw' }), RB = s.handle(3.45, 1.3, { color: 'orange', r: 6 });
-        const field = (x, y) => {
-          const G = body.value ? gs.value : 0;
-          if (!body.value) return [1, 0];
-          const E = [{ t: 'uni', k: 1, th: 0 }, { t: 'dbl', x: 0, y: 0, k: 1, th: 0 }, { t: 'vtx', x: 0, y: 0, k: -G }];
-          return elemVel(E, x, y, 0.001);
-        };
-        const loop = (cx, cy, r) => {
-          const n = 720; let g = 0, ok = true;
-          for (let j = 0; j < n; j++) {
-            const t = (TAU * (j + 0.5)) / n, x = cx + r * Math.cos(t), y = cy + r * Math.sin(t);
-            if (body.value && x * x + y * y < 1) { ok = false; break; }
-            const u = field(x, y); g += (u[0] * -Math.sin(t) + u[1] * Math.cos(t)) * r * (TAU / n);
-          }
-          if (body.value) { const d = Math.hypot(cx, cy); if (Math.abs(r - 1) <= d && d <= r + 1) ok = false; }
-          return ok ? -g : null;
-        };
-        let lines = [], key = '';
-        let info = {};
-        v.render(() => {
-          const k = body.value + '|' + gs.value;
-          if (k !== key) { key = k; lines = streamlines((x, y) => (body.value && x * x + y * y < 1.004 ? null : field(x, y)), [-4, 4, -2.5, 2.5], { sep: 0.22, step: 0.045, seeds: [[-3.9, 0.3], [-3.9, -0.3]] }); }
-          drawLines(s, lines, { color: 'accent', width: 1.0, alpha: 0.55 });
-          if (body.value) s.circle(0, 0, 1, { fill: 'muted', fillAlpha: 0.55, color: 'ink', width: 2.4 });
-          const rA = Math.max(0.1, Math.hypot(RA.x - CA.x, RA.y - CA.y)), rB = Math.max(0.1, Math.hypot(RB.x - CB.x, RB.y - CB.y));
-          const gA = loop(CA.x, CA.y, rA), gB = loop(CB.x, CB.y, rB);
-          s.circle(CA.x, CA.y, rA, { color: gA === null ? 'muted' : 'accent', width: 3, fill: gA === null ? 'muted' : 'accent', fillAlpha: 0.06 });
-          s.circle(CB.x, CB.y, rB, { color: gB === null ? 'muted' : 'orange', width: 3, fill: gB === null ? 'muted' : 'orange', fillAlpha: 0.06 });
-          q.hline(0, { color: 'muted', alpha: 0.6 }); if (body.value) q.hline(gs.value, { color: 'green', dash: true, alpha: 0.8 });
-          const pts = []; for (let r = 0.05; r <= 3.5; r += 0.05) { const g = loop(CA.x, CA.y, r); pts.push(g === null ? null : [r, g]); }
-          q.path(pts, { color: 'accent', width: 2.6 });
-          if (gA !== null) q.dot(rA, gA, { r: 7, color: 'accent' });
-          info = { gA, gB };
+      refs: ['MIT 18.354, 2015 notes, §§18.4 and19.1–19.3; regular exterior uniqueness argument given here'],
+      credit: 'Circle circulation solution and conformal construction: MIT 18.354 author notes',
+      verify: false, tags: ['circulation', 'multiply connected', 'Kutta'],
+      scope: String.raw`One smooth impermeable body, slip condition, no singularities in the fluid. The velocity difference after matching circulation decays sufficiently for the exterior Green identity. Several disjoint bodies require a circulation for each boundary component. The demonstration uses a unit circle and unit far-stream speed, in chosen units.`,
+      viz(v){
+        const gs=v.slider('clockwise circulation $\\Gamma$',-4,4,2,{step:.1}),body=v.toggle('cylinder present',true);
+        const s=v.stage({x:[-4,4],y:[-2.5,2.5],equal:true,axes:false,height:400,weight:1.4,title:'clockwise loop integrals'}),q=v.stage({x:[0,3.65],y:[-4.5,4.5],axes:'box',gutter:true,height:400,weight:.85,xlabel:'radius of the blue loop',ylabel:'clockwise circulation',title:'full allowed radius range'});
+        const centre=(color,x,y,label)=>s.handle(x,y,{color,r:7,label,labelPos:'nw',constrain:(x,y)=>[clamp(x,-3,3),clamp(y,-2,2)]});
+        const CA=centre('accent',-.2,.2,'A'),CB=centre('orange',2.8,1.3,'B');
+        const radius=(C,color,x,y)=>s.handle(x,y,{color,r:6,constrain:(x,y)=>{const dx=x-C.x,dy=y-C.y,d=Math.hypot(dx,dy),r=clamp(d,.1,3.5);return d?[C.x+r*dx/d,C.y+r*dy/d]:[C.x+.1,C.y];}});
+        const RA=radius(CA,'accent',1.9,.2),RB=radius(CB,'orange',3.45,1.3);
+        for(const [C,R] of[[CA,RA],[CB,RB]]){let old=[C.x,C.y];C.onDrag=()=>{R.set(R.x+C.x-old[0],R.y+C.y-old[1]);old=[C.x,C.y];};}
+        let lines=[],key='',info={};
+        v.render(()=>{
+          const field=(x,y)=>BA.cylinderVelocity(x,y,gs.value,body.value),k=body.value+'|'+gs.value;
+          const rA=Math.hypot(RA.x-CA.x,RA.y-CA.y),rB=Math.hypot(RB.x-CB.x,RB.y-CB.y),gA=BA.loopCirculation(CA.x,CA.y,rA,gs.value,body.value),gB=BA.loopCirculation(CB.x,CB.y,rB,gs.value,body.value);
+          const x0=Math.min(-4,CA.x-rA-.25,CB.x-rB-.25),x1=Math.max(4,CA.x+rA+.25,CB.x+rB+.25),y0=Math.min(-2.5,CA.y-rA-.25,CB.y-rB-.25),y1=Math.max(2.5,CA.y+rA+.25,CB.y+rB+.25);s.setView([x0,x1],[y0,y1]);
+          const cache=k+'|'+[x0,x1,y0,y1].map(x=>x.toFixed(2)).join(',');if(cache!==key){key=cache;lines=streamlines((x,y)=>body.value&&x*x+y*y<1.004?null:field(x,y),[x0,x1,y0,y1],{sep:.3,step:.055,seeds:[[-3.9,.3]]});}
+          drawLines(s,lines,{color:'accent',width:1,alpha:.55});if(body.value)s.circle(0,0,1,{fill:'muted',fillAlpha:.55,color:'ink',width:2.4});
+          for(const[C,r,g,color]of[[CA,rA,gA,'accent'],[CB,rB,gB,'orange']])s.circle(C.x,C.y,r,{color:g.value===null?'muted':color,width:3,fill:g.value===null?'muted':color,fillAlpha:.06});
+          q.hline(0,{color:'muted',alpha:.6});if(body.value)q.hline(gs.value,{color:'green',dash:true,alpha:.8});
+          const pts=Array.from({length:70},(_,j)=>{const r=.05*(j+1),g=BA.loopCirculation(CA.x,CA.y,r,gs.value,body.value);return g.value===null?null:[r,g.value];});q.path(pts,{color:'accent',width:2.6});if(gA.value!==null)q.dot(rA,gA.value,{r:7,color:'accent'});
+          info={gA,gB,rA,rB,x0,x1,y0,y1};
         });
-        v.legend([['accent', 'loop A'], ['orange', 'loop B'], ['green', '$\\Gamma$', { dash: true }]]);
-        v.readout(() => `loop A: ${info.gA === null ? 'crosses the cylinder (not in the fluid)' : `$\\oint\\mathbf u\\cdot d\\mathbf l$ (clockwise) $=${v.fix(info.gA, 4)}$`} · loop B: ${info.gB === null ? 'crosses the cylinder' : `$${v.fix(info.gB, 4)}$`}\n${body.value ? `$\\Gamma=${v.fix(gs.value, 2)}$` : '$\\Gamma=0$ (no body: the region is simply connected)'}`);
+        v.legend([['accent','loop A'],['orange','loop B'],['green','$\\Gamma$',{dash:true}]]);
+        const show=(g)=>g.value===null?'not wholly in the fluid':`$${v.fix(g.value,5)}$ · residual $${v.sci(g.error,2)}$`;
+        v.readout(()=>`clockwise integral A: ${show(info.gA)}\nclockwise integral B: ${show(info.gB)}\n${body.value?`imposed $\\Gamma=${v.fix(gs.value,2)}$`:'everywhere-regular uniform stream: circulation zero'}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.17
     {
-      num: '4.17',
-      kind: 'Phenomenon',
-      name: 'Added mass of an accelerating body',
-      statement: String.raw`A body accelerating through an ideal fluid at rest at infinity, with acceleration $\dot U$, feels (once the steady-flow forces, which vanish by d'Alembert's paradox, are set aside) a force opposing the acceleration:
-$$F=-m_a\,\dot U,\qquad m_a=C_a\,\rho_fV,$$
-where $V$ is the volume of the body and $C_a$ the added-mass coefficient ($C_a=\tfrac12$ for a sphere, $C_a=1$ for a circular cylinder moving perpendicular to its axis). The fluid's kinetic energy $\tfrac12m_aU^2$ must be supplied by the body. A body of mass $m=\rho_bV$ that is driven by a force $F_0$ therefore behaves as if it had mass $m+m_a$; for a free body released at rest in fluid, buoyancy gives
-$$\dot U=\frac{(\rho_f-\rho_b)\,g}{\rho_b+C_a\rho_f},$$
-which for a sphere much lighter than the fluid tends to $2g$ rather than to the naive $(\rho_f/\rho_b-1)g$.`,
-      idea: String.raw`A sphere of radius $a$ moving at $U$ in fluid at rest has velocity potential $\phi=-\dfrac{Ua^3\cos\theta}{2r^2}$, a doublet, which satisfies $\partial_r\phi=U\cos\theta$ on $r=a$. The kinetic energy of the fluid is $\tfrac12(\tfrac12\rho_fV)U^2$. The unsteady Bernoulli equation (4.3) gives a pressure $p=-\rho_f\,\partial\phi/\partial t=\tfrac12\rho_fa\dot U\cos\theta$ that is larger on the front; integrating $-p\,\mathbf n\,dS$ gives $F=-\tfrac12\rho_fV\dot U$. In the cylinder, $\phi=-Ua^2\cos\theta/r$ gives $F=-\rho_f\pi a^2\dot U$ per unit length. The steady (quadratic) part of the pressure cancels, as in d'Alembert's paradox (4.8), which is why only the acceleration term remains.`,
-      credit: 'F. W. Bessel, 1828 (pendulum experiments); G. Green, 1833 and G. G. Stokes, 1843 (theory)',
-      verify: true,
-      caption: String.raw`A ball (or a circular cylinder, a cross-section of a long rod) is released from rest in water and accelerates upward. The picture follows the ball; the streamlines are the instantaneous dipole flow of the fluid pushed aside, with red arrows where the acceleration raises the pressure and blue where it lowers it, which is integrated numerically to the force $-m_a\dot U$ of the readout. The right panel shows the height gained: the dashed grey curve is the naive result that ignores the fluid's inertia, the blue curve includes the added mass. A very light sphere rises at $2g$, a very light cylinder at $g$; a neutrally buoyant ball does not move at all.`,
-      deps: ['fluid-4.3', 'fluid-4.8'],
-      refs: ['Kundu §7.8'],
-      tags: ['added mass', 'buoyancy', 'unsteady'],
-      scope: String.raw`Ideal fluid, no wake or vorticity, constant acceleration for the first instants of the motion; in real fluids drag and vortex shedding soon dominate, and the added-mass coefficient is modified by a nearby wall or by deformation (a bubble's shape).`,
-      viz(v) {
-        const shape = v.select('body', [{ value: 'sph', label: 'sphere' }, { value: 'cyl', label: 'circular cylinder' }], 'sph', { onChange: () => v.invalidate() });
-        const sg = v.slider('density ratio $\\rho_b/\\rho_f$', 0, 1.6, 0.1, { step: 0.01 });
-        const s = v.stage({ x: [-3, 3], y: [-2.3, 2.3], equal: true, axes: false, height: 400, weight: 1.1, title: 'the fluid pushed aside by the rising body' });
-        const q = v.stage({ x: [0, 1.2], y: [-1, 5], axes: 'box', gutter: true, height: 400, weight: 0.9, xlabel: 'time $t$ (s)', ylabel: 'height gained (m)', title: 'released from rest' });
-        let lines = [], key = '';
-        let info = {};
-        v.animate((t) => {
-          const sph = shape.value === 'sph', Ca = sph ? 0.5 : 1, sig = Math.max(sg.value, 1e-6), a = ((1 - sig) * G0) / (sig + Ca), an = ((1 - sig) * G0) / sig;
-          const U = a * t, a0 = 1;
-          const k = shape.value;
-          if (key !== k) {
-            key = k;
-            const f = sph ? (x, y) => { const r = Math.hypot(x, y); if (r < 1.004) return null; const c = y / r, sn = x / r, ur = c / (r ** 3), ut = sn / (2 * r ** 3); return [ur * sn + ut * c, ur * c - ut * sn]; }
-              : (x, y) => { const r = Math.hypot(x, y); if (r < 1.004) return null; const c = y / r, sn = x / r, ur = c / (r * r), ut = sn / (r * r); return [ur * sn + ut * c, ur * c - ut * sn]; };
-            lines = streamlines(f, [-3, 3, -2.3, 2.3], { sep: 0.22, step: 0.04, seeds: [[0.6, 1.8]] });
-          }
-          drawLines(s, lines, { color: 'accent', width: 1.1, alpha: 0.75 });
-          s.circle(0, 0, a0, { fill: 'gold', fillAlpha: 0.35, color: 'ink', width: 2.4 });
-          // pressure from the acceleration term: p ~ cos(theta) (in units of rho a Udot (1/2 or 1))
-          for (let j = 0; j < 24; j++) {
-            const th = (TAU * (j + 0.5)) / 24, c = Math.cos(th), sn = Math.sin(th), pp = c; // normalised
-            const L = 0.4 * Math.abs(pp) + 0.03, x = sn, y = c; // theta measured from +y (direction of motion)
-            if (pp > 0) s.arrow(x * (1 + L), y * (1 + L), x, y, { color: 'red', width: 1.6, head: 5 }); else s.arrow(x, y, x * (1 + L), y * (1 + L), { color: 'blue', width: 1.6, head: 5 });
-          }
-          s.arrow(0, 0, 0, 0.8, { color: 'green', width: 3.5 }); s.text('acceleration', 0.1, 0.55, { color: 'green', align: 'left' });
-          // plot
-          const hh = 0.5 * a * 1.44, lo = Math.min(0, hh), hi = Math.max(0, hh), pad = 0.12 * (hi - lo) + 0.05;
-          q.setView([0, 1.2], [lo - pad, hi + pad]);
-          q.hline(0, { color: 'muted', alpha: 0.6 });
-          q.fn((x) => 0.5 * clamp(an, -60, 60) * x * x, { color: 'muted', width: 2, dash: true, domain: [0, 1.2] });
-          q.fn((x) => 0.5 * a * x * x, { color: 'accent', width: 2.8, domain: [0, 1.2] });
-          q.dot(t % 1.2, 0.5 * a * (t % 1.2) ** 2, { r: 7, color: 'gold' });
-          // exact integration of the pressure force per unit rho*V
-          const ratio = sph ? (() => { let F = 0; const m = 2000; for (let j = 0; j < m; j++) { const th = (Math.PI * (j + 0.5)) / m; F += -(0.5 * Math.cos(th)) * Math.cos(th) * TAU * Math.sin(th) * (Math.PI / m); } return F / ((4 * Math.PI) / 3); })() : (() => { let F = 0; const m = 2000; for (let j = 0; j < m; j++) { const th = (TAU * (j + 0.5)) / m; F += -Math.cos(th) * Math.cos(th) * (TAU / m); } return F / Math.PI; })();
-          info = { a, an, Ca, ratio, sig, U };
-        }, { period: 1.2, still: 0.8 });
-        v.legend([['accent', 'with added mass'], ['muted', 'naive: ignores the fluid’s inertia', { dash: true }]]);
-        v.readout(() => `$C_a=${info.Ca}$: pressure integrated over the surface gives $F=${v.fix(info.ratio, 4)}\\,\\rho_fV\\dot U$ (the theory: $-C_a$)\nacceleration $\\dot U=(1-\\sigma)g/(\\sigma+C_a)=${v.fix(info.a / G0, 3)}\\,g$ — the naive $(1-\\sigma)g/\\sigma$ would give $${info.sig < 0.02 ? 'a huge value' : v.fix(info.an / G0, 2) + '\\,g'}$`);
+      num:'4.17',kind:'Phenomenon',name:'Added mass of an accelerating body',
+      statement:String.raw`A rigid sphere translating in an unbounded incompressible ideal fluid at rest at infinity experiences the inertial force $F=-m_a\dot U$, where $m_a=\tfrac12\rho_fV$. A circular cylinder translating perpendicular to its axis has $m_a=\rho_f\pi a^2$ **per unit length**. The fluid kinetic energy is $\tfrac12m_aU^2$. For a constant upward buoyancy-minus-weight force, with $\sigma=\rho_b/\rho_f$, the model gives
+$$\dot U=\frac{1-\sigma}{\sigma+C_a}g,\qquad C_a=\tfrac12\text{ (sphere)},\quad C_a=1\text{ (cylinder)}.$$
+A very light sphere approaches upward acceleration $2g$, a cylinder $g$; a denser body accelerates downward. General shapes have an added-mass tensor rather than one universal scalar coefficient.`,
+      idea:String.raw`With coordinates relative to the translating centre, the lab-frame potentials are $\phi=-Ua^3\cos\theta/(2r^2)$ for the sphere and $\phi=-Ua^2\cos\theta/r$ for the cylinder. Integrating $\tfrac12\rho_f|\nabla\phi|^2$ gives the added masses above. In lab-frame unsteady Bernoulli, the time derivative includes the motion of the centre. The surface pressure splits into an acceleration term $p_a=\rho_fa\dot U\cos\theta/2$ (sphere), or $\rho_fa\dot U\cos\theta$ (cylinder), and a quadratic term: $\rho_fU^2(9\cos^2\theta-5)/8$ or $\rho_fU^2(4\cos^2\theta-3)/2$. Integrating $-p_a\mathbf n$ gives $-m_a\dot U$; the quadratic terms are fore/aft even and give zero resultant. Hydrostatic buoyancy is accounted for separately in the driving force.`,
+      credit:'Potential-flow energy derivation: Benny Lautrup, Physics of Continuous Matter, revision7.7, §16.6',verify:false,
+      caption:String.raw`The first panel follows the body. Streamline geometry shows its instantaneous dipole velocity field, with direction reversed for sinking and no flow at rest. Red/blue arrows show the sign of **acceleration pressure only**, normalized within each setting; they disappear at neutral buoyancy. The green acceleration arrow reverses when density exceeds the fluid's. The height plot includes both complete finite curves without capping the naive acceleration. At $\sigma=0$ the naive massless-body formula is undefined and omitted. At small positive density its large height range makes the physical curve appear close to zero. Changing a control resets the clock.`,
+      deps:['fluid-4.3','fluid-4.8'],refs:['Lautrup, Physics of Continuous Matter, rev7.7, §16.6, Eqs16-55–16-65; translating-frame pressure and energy integrals derived here'],tags:['added mass','buoyancy','unsteady'],
+      scope:String.raw`Rigid sphere or infinite circular cylinder in unbounded ideal fluid, initially at rest; no wake, viscosity, surface deformation or wall correction. The $0$–$1.2$s trajectory is a chosen model interval, not a measured drag-free validity interval. The plotted sphere flow is a meridional slice of its three-dimensional dipole. Pressure-force coefficients are numerical midpoint quadratures, with residuals displayed.`,
+      viz(v){
+        const reset=()=>{v.t=0;v.invalidate();},shape=v.select('body',[{value:'sph',label:'sphere'},{value:'cyl',label:'circular cylinder'}],'sph',{onChange:reset}),sg=v.slider('density ratio $\\rho_b/\\rho_f$',0,1.6,.1,{step:.01,onChange:reset});
+        const s=v.stage({x:[-3,3],y:[-2.3,2.3],equal:true,axes:false,height:400,weight:1.1,title:'dipole flow and acceleration pressure'}),q=v.stage({x:[0,1.2],y:[-1,5],axes:'box',gutter:true,height:400,weight:.9,xlabel:'time $t$ (s)',ylabel:'height gained (m)',title:'released from rest: complete model curves'});
+        let lines=[],key='',info={};
+        v.animate(t=>{
+          const sh=shape.value,sph=sh==='sph',sig=sg.value,{Ca,a,naive}=BA.addedMotion(sh,sig,G0),U=a*t,k=sh+'|'+Math.sign(U);
+          if(k!==key){key=k;const sign=Math.sign(U),f=(x,y)=>{const r=Math.hypot(x,y);if(r<1.004||!sign)return null;const c=y/r,sn=x/r,ur=sign*c/r**(sph?3:2),ut=sign*sn/((sph?2:1)*r**(sph?3:2));return[ur*sn+ut*c,ur*c-ut*sn];};lines=streamlines(f,[-3,3,-2.3,2.3],{sep:.22,step:.04,seeds:[[.6,1.8]]});}
+          drawLines(s,lines,{color:'accent',width:1.1,alpha:.75,arrows:true});s.circle(0,0,1,{fill:'gold',fillAlpha:.35,color:'ink',width:2.4});
+          for(let j=0;j<24;j++){const th=TAU*(j+.5)/24,c=Math.cos(th),sn=Math.sin(th),p=BA.addedPressure(sh,c,U,a).acceleration;if(!p)continue;const L=.4*Math.abs(c),x=sn,y=c;if(p>0)s.arrow(x*(1+L),y*(1+L),x,y,{color:'red',width:1.6,head:5});else s.arrow(x,y,x*(1+L),y*(1+L),{color:'blue',width:1.6,head:5});}
+          const arrow=.4*a/G0;if(a!==0){s.arrow(0,0,0,arrow,{color:'green',width:3.5});s.text('acceleration',.1,arrow/2,{color:'green',align:'left'});}
+          const end=.5*a*1.44,ne=naive===null?null:.5*naive*1.44,lo=Math.min(0,end,ne??0),hi=Math.max(0,end,ne??0),pad=.1*(hi-lo)+.05;q.setView([0,1.2],[lo-pad,hi+pad]);q.hline(0,{color:'muted',alpha:.6});if(naive!==null)q.fn(x=>.5*naive*x*x,{color:'muted',width:2,dash:true,domain:[0,1.2]});q.fn(x=>.5*a*x*x,{color:'accent',width:2.8,domain:[0,1.2]});q.dot(t,.5*a*t*t,{r:7,color:'gold'});
+          const ratio=BA.pressureForceCoefficient(sh);info={a,naive,Ca,ratio,sig,U,t,arrow,end,ne,lo:lo-pad,hi:hi+pad,pressureSign:Math.sign(a)};
+        },{period:1.2,still:0});
+        v.legend([['accent','with added mass'],['muted','naive finite-mass formula',{dash:true}]]);
+        v.readout(()=>`$C_a=${info.Ca}$; pressure quadrature coefficient $${v.fix(info.ratio,7)}$ versus $-C_a$; residual $${v.sci(info.ratio+info.Ca,2)}$\nacceleration $${v.fix(info.a/G0,4)}g$, naive ${info.naive===null?'undefined at zero body mass':`$${v.fix(info.naive/G0,4)}g$`}; elapsed $${v.fix(info.t,2)}$s`);
       },
     },
   ],

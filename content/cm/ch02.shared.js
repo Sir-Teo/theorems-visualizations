@@ -87,3 +87,20 @@ export function qheAt(n, B, p) {
   const d = sxx * sxx + sxy * sxy;
   return { mu, G, w, sxy, sxx, rxy: sxy / d, rxx: sxx / d, nu: n / D };
 }
+
+/** Dimensionless open-circuit thermal transport for the positive toy weight
+ * Sigma(x)=1+alpha*tanh(x), |alpha|<1, x=(E-mu)/kBT.
+ * L/(kB/e)^2 = K2/K0-(K1/K0)^2; thermal current is evaluated at zero charge current.
+ */
+export function lorenzMoments(alpha) {
+  if (!(Math.abs(alpha) < 1)) throw new RangeError('positive transport weight requires |alpha| < 1');
+  const N = 1600, dx = 60 / N;
+  let k0 = 0, k1 = 0, k2 = 0, c0 = 0, c2 = 0;
+  for (let i = 0; i <= N; i++) {
+    const x = -30 + i * dx, w = (i === 0 || i === N ? 1 : i % 2 ? 4 : 2) * dx / 3;
+    const f = w / (4 * Math.cosh(x / 2) ** 2), g = 1 + alpha * Math.tanh(x);
+    k0 += f * g; k1 += f * g * x; k2 += f * g * x * x;
+    c0 += f; c2 += f * x * x;
+  }
+  return { k0, k1, k2, area: c2 / c0, ratio: (k2 / k0 - (k1 / k0) ** 2) / (Math.PI ** 2 / 3) };
+}

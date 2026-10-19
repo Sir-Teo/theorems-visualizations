@@ -51,6 +51,13 @@ export function legendreSeriesCoef(ell, odd, N) {
 }
 export function polyHorner(a, x) { let s = 0; for (let k = a.length - 1; k >= 0; k--) s = s * x + a[k]; return s; }
 
+/** Taylor coefficients at x0 of (c²+x²)u″+c²u=0 with u(x0)=1, u′(x0)=0.4. */
+export function analyticExampleCoefficients(c, x0, N = 120) {
+  const a = [1, 0.4], c2 = c * c, A = c2 + x0 * x0;
+  for (let k = 0; k + 2 <= N; k++) a[k + 2] = -(2 * x0 * (k + 1) * k * a[k + 1] + (k * (k - 1) + c2) * a[k]) / (A * (k + 2) * (k + 1));
+  return a.slice(0, N + 1);
+}
+
 // ───────────────────────────────────────────────────────────── Frobenius series (complex exponent allowed)
 /**
  * Frobenius solution of t²u″ + t(p0+p1 t+p2 t²)u′ + (q0+q1 t+q2 t²)u = 0, u = t^r Σ c_k t^k, c_0 = 1, r = [re, im].
@@ -149,6 +156,12 @@ export function slEigenvalues(pr, bc, n) {
     lam = l1; g0 = g1;
   }
   pr.cache.set(key, out); return out.slice(0, n);
+}
+/** Cover a displayed spectral window, up to 64 resolved modes. Check the last value for coverage. */
+export function slEigenvaluesThrough(pr, bc, limit) {
+  let n = 16, ev = slEigenvalues(pr, bc, n);
+  while (ev.length === n && ev.at(-1) <= limit && n < 64) { n *= 2; ev = slEigenvalues(pr, bc, n); }
+  return ev;
 }
 /** Eigenfunction for eigenvalue lam, normalised in L²(w) with u′(0) > 0 (D) or u(0) > 0 (N). Returns {x, u, v}. */
 export function slEigenfunction(pr, lam, bc) {

@@ -2,14 +2,10 @@
 // Part 1 (this file): the shift code, private-key versus public-key systems, breaking a shift code by letter
 // frequencies, and the affine code (7.1–7.3).
 // Part 2 (ch07-b.js): the matrix (Hill) cipher, one-way functions, RSA and signatures with RSA (7.4–7.5a).
-import { ABC, ENG, m26, gcdN, invMod, UNITS26, mapText, counts26, abcTicks, powmod, lettersOnly } from './ch07.shared.js';
+import { ABC, ENG, m26, gcdN, invMod, UNITS26, mapText, counts26, abcTicks, powmod, lettersOnly, SHIFT_SAMPLES, shiftScores } from './ch07.shared.js';
 
 const clean = (t) => String(t).toUpperCase().replace(/[^A-Z ]/g, '');
-const SAMPLES = {
-  short: 'WHY DID IT FAIL',
-  medium: 'THE LETTER E APPEARS MORE OFTEN THAN ANY OTHER LETTER IN ENGLISH',
-  long: 'THE FREQUENCY OF LETTERS IN ENGLISH IS FAR FROM UNIFORM AND THE LETTER E APPEARS MORE OFTEN THAN ANY OTHER SO A CIPHER THAT REPLACES EACH LETTER BY ANOTHER LETTER ALWAYS THE SAME ONE KEEPS THE SHAPE OF THE HISTOGRAM AND ONLY SLIDES IT ALONG THE ALPHABET',
-};
+const SAMPLES = SHIFT_SAMPLES;
 
 export default {
   collection: 'alg',
@@ -24,14 +20,13 @@ export default {
       name: 'Shift code (Caesar cipher)',
       statement: String.raw`Number the letters $A=0,\dots,Z=25$. For a key $k\in\mathbb Z_{26}$ the **shift code** encrypts a letter $p$ as $c=p+k \pmod{26}$ and decrypts by $p=c-k \pmod{26}$. Encryption is a bijection of $\mathbb Z_{26}$ for every key, so there are exactly $26$ keys (one of them, $k=0$, leaves the message unchanged). Julius Caesar is traditionally reported to have used $k=3$.`,
       idea: String.raw`Congruence classes mod $26$ (1.30) make the alphabet a clock face: adding $k$ turns the clock by $k$ places, and subtracting $k$ turns it back, so encryption and decryption are inverse rotations. Because the key is a single element of the additive group $\mathbb Z_{26}$ that must be known to both parties, this is a *private-key* system; with only 26 keys it can be broken by trying them all.`,
-      caption: String.raw`Slide $k$ to rotate the inner ring; the gold spoke shows what the selected letter (click any letter on the outer ring) becomes. Type a message to encrypt it, or switch to *Decrypt* and paste a ciphertext. Set $k=3$ for Caesar’s code, $k=13$ for ROT13 (its own inverse).`,
+      caption: String.raw`Slide $k$ to change the inner ring’s letter mapping; the gold spoke shows what the selected letter (click any letter on the outer ring) becomes. Type up to 80 letters/spaces to encrypt (punctuation is removed), or switch to *Decrypt* and paste a ciphertext. Set $k=3$ for Caesar’s code, $k=13$ for ROT13 (its own inverse).`,
       deps: ['alg-1.30'],
       see: ['crypto-1.3'],
       refs: ['Judson §7.1'],
       tags: ['cryptography', 'modular arithmetic'],
-      credit: 'Julius Caesar (Suetonius reports a shift by three), 1st century BC',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Caesar_cipher' },
+      credit: 'Suetonius, Divus Iulius 56.6, describes Caesar’s substitution by three places',
+      links: { source: 'https://lexundria.com/suet_jul/56.6/', textbook: 'https://twjudson.github.io/aata-files/aata-20230811.pdf#page=94' },
       viz(v) {
         const mode = v.select('Mode', ['Encrypt', 'Decrypt'], 'Encrypt');
         const kS = v.slider('Key $k$', 0, 25, 3, { int: true });
@@ -75,8 +70,8 @@ export default {
       kind: 'Definition',
       name: 'Cryptosystems: private key and public key',
       statement: String.raw`A **cryptosystem** consists of a set of plaintexts, a set of ciphertexts, a set of keys, an encryption rule $E_K$ and a decryption rule $D_{K'}$ with $D_{K'}(E_K(x))=x$ for every plaintext $x$. In a **private-key** (symmetric) system the decrypting key $K'$ is the same as, or easily computed from, the encrypting key $K$, so the key must be kept secret by both parties. In a **public-key** system the encrypting key may be published because computing $K'$ from $K$ is believed to be computationally infeasible.`,
-      idea: String.raw`The dividing line is not the shape of the algorithm but who must know what. For a shift code, anybody who learns the encrypting key $k$ learns the decrypting key $-k$ at once, so the key has to travel to the receiver secretly. A public-key system breaks this link with a one-way function (7.4a): publishing $E_K$ costs nothing because inverting it appears to require a hard computation such as factoring (7.5).`,
-      caption: String.raw`Switch between the two kinds of system and move the letter slider. Then let Eve learn the encrypting key: against the shift code she recovers the plaintext instantly; against the toy RSA key she is left needing the factors of $n$ (the trial-division count is shown; a real $n$ has hundreds of digits).`,
+      idea: String.raw`The dividing line is not the shape of the algorithm but who must know what. For a shift code, anybody who learns the encrypting key $k$ learns the decrypting key $-k$ at once, so the key has to travel to the receiver secretly. A public-key system breaks this link with a one-way function (7.4a): publishing $E_K$ does not reveal the secret key. Whether the message is protected also depends on its encoding; raw RSA on a tiny alphabet is vulnerable to a public lookup table.`,
+      caption: String.raw`Switch between the two kinds of system and move the letter slider. Then let Eve learn the encrypting key: against the shift code she recovers the plaintext instantly; against this raw RSA encoding of one of 26 letters she can also recover the message: she encrypts every possible letter using the public key and compares the results. This attack does not require factoring.`,
       deps: [],
       refs: ['Judson ch. 7'],
       tags: ['cryptography', 'keys'],
@@ -122,7 +117,7 @@ export default {
           s.arrow(5, 1.0, 5, 1.3, { color: 'red' });
           if (eve.value) {
             s.rect(2.3, 0.1, 7.7, 0.45, { color: 'red', fill: 'red', fillAlpha: 0.08 });
-            s.text(priv ? 'decrypting key = −k: found at once' : 'needs D: must factor n first', 5, 0.28, { size: 11, color: 'red', align: 'center', baseline: 'middle' });
+            s.text(priv ? 'decrypting key = −k: found at once' : '26 public encryptions reveal the letter', 5, 0.28, { size: 11, color: 'red', align: 'center', baseline: 'middle' });
           }
         });
         v.readout(() => {
@@ -132,8 +127,9 @@ export default {
             return String.raw`Shift code, $k=3$: $E_k(${p})=${p}+3=${c}$, $D_{k'}(${c})=${c}-3=${p}$ with $k'=-k\equiv 23$.` + (eve.value ? `\nEve, knowing $k=3$, writes down $k'=-3$ and reads the plaintext **${ABC[p]}** immediately: *one key, no secret left*.` : '\nBoth parties must hold the same key, which has to be delivered secretly.');
           }
           const c = powmod(p, 17, N);
-          let steps = 0; for (let d = 3; d <= 53; d += 2) { steps++; if (N % d === 0) break; }
-          return String.raw`Toy RSA, $n=${N}$, $E=17$: $E(${p})=${p}^{17}\bmod ${N}=${c}$; with $D=2753$: $${c}^{2753}\bmod ${N}=${powmod(c, 2753, N)}$.` + (eve.value ? `\nEve knows $(n,E)=(3233,17)$ but not $D$; she must factor $n$: trial division needs **${steps}** divisions to find $53$, then $\\varphi(n)=52\\cdot 60=3120$ and $D=17^{-1}\\bmod 3120$. Trivial here — hopeless for a 600-digit $n$.` : '\nAnyone may encrypt with the published $(n,E)$; only the holder of $D$ can decrypt.');
+          const candidates = Array.from({ length: 26 }, (_, x) => powmod(x, E, N));
+          const recovered = candidates.indexOf(c);
+          return String.raw`Toy RSA, $n=${N}$, $E=17$: $E(${p})=${p}^{17}\bmod ${N}=${c}$; with $D=2753$: $${c}^{2753}\bmod ${N}=${powmod(c, 2753, N)}$.` + (eve.value ? '\n' + String.raw`Eve encrypts all 26 letters with the public key. Only **${ABC[recovered]}** produces ${c}: the plaintext is recovered without the private exponent or factoring.` : '\nThe public key also lets Eve test every possible plaintext letter. Raw encryption of this small alphabet is not secret.');
         });
       },
     },
@@ -142,17 +138,15 @@ export default {
       num: '7.2',
       kind: 'Concept',
       name: 'Breaking a shift code by letter frequencies',
-      statement: String.raw`A shift code replaces every occurrence of a plaintext letter by the same ciphertext letter, so the histogram of the ciphertext is the histogram of the plaintext cyclically shifted by the key $k$. Since English letters occur with very uneven frequencies ($E$, $T$, $A$ most often), the shift can be found as the one for which the shifted ciphertext histogram best matches the English one — without trying decryptions by hand. The method needs a long enough text to have English-like statistics.`,
+      statement: String.raw`A shift code replaces every occurrence of a plaintext letter by the same ciphertext letter, so the histogram of the ciphertext is the histogram of the plaintext cyclically shifted by the key $k$. Since English letters occur with very uneven frequencies ($E$, $T$, $A$ lead the reference corpus used here), a candidate shift can be chosen as the one for which the shifted ciphertext histogram best matches the English one — without trying decryptions by hand. A strong score is a heuristic, not a guarantee, even for a long text; the topic and corpus matter.`,
       idea: String.raw`Encryption acts on the multiset of letters by the permutation $j\mapsto j+k$, so the count vector $(n_0,\dots,n_{25})$ is rotated cyclically. Scoring every rotation $g$ by the correlation $\sum_j f_{j+g}\,e_j$ with the English frequencies $e_j$ turns key recovery into finding a maximum among 26 numbers. For short texts the sampling noise in $f$ is larger than the gap between the best and second-best rotation, and the attack can fail.`,
       caption: String.raw`The bars are the English frequencies; the orange line is the ciphertext histogram slid left by your guess $g$. Drag $g$ until the peaks align (or press *Best match*), then read the decrypted text. Choose *short* text (12 letters: it is a deliberately unlucky sample whose own statistics are unlike English): the correlation chart (right) picks the wrong shift for every key.`,
       deps: ['alg-7.1'],
       see: ['crypto-1.6'],
       refs: ['Judson §7.1'],
       tags: ['cryptography', 'frequency analysis'],
-      credit: 'al-Kindi, c. 850 (earliest known description of frequency analysis)',
-      scope: String.raw`Works for monoalphabetic ciphers on texts long enough to resemble the language’s statistics. The English table is the commonly quoted published one, rounded.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Frequency_analysis' },
+      scope: String.raw`The rotation-score search here applies to shift ciphers; a general monoalphabetic substitution needs a different search. Corpus resemblance improves this heuristic but does not guarantee recovery. The reference table is Norvig’s Google Books word-count analysis, rounded to two decimal percent; it is not a universal distribution of English.`,
+      links: { source: 'https://www.norvig.com/mayzner.html', textbook: 'https://twjudson.github.io/aata-files/aata-20230811.pdf#page=94' },
       viz(v) {
         const len = v.select('Text length', [{ value: 'short', label: 'short (12 letters)' }, { value: 'medium', label: 'medium (53)' }, { value: 'long', label: 'long (207)' }], 'long');
         const key = v.slider('True key $k$ (secret)', 0, 25, 11, { int: true });
@@ -160,17 +154,11 @@ export default {
         const s = v.stage({ x: [0, 26], y: [0, 18], axes: 'box', gutter: true, height: 300, ylabel: '% of letters', xticks: abcTicks, title: 'letter frequencies, ciphertext slid left by $g$' });
         const t = v.stage({ x: [0, 26], y: [0, 1.1], axes: 'box', gutter: true, height: 300, ylabel: 'match score', xlabel: 'guess $g$', title: 'correlation with English for every shift', xticks: [[0.5, '0'], [5.5, '5'], [10.5, '10'], [15.5, '15'], [20.5, '20'], [25.5, '25']] });
         let st = null;
-        const calc = () => {
-          const pt = lettersOnly(SAMPLES[len.value]), ct = mapText(pt, (p) => m26(p + key.value));
-          const n = counts26(ct), tot = n.reduce((a, b) => a + b, 0);
-          const f = n.map((c) => (100 * c) / tot);
-          const score = Array.from({ length: 26 }, (_, gg) => ENG.reduce((a, e, j) => a + e * f[m26(j + gg)], 0));
-          const order = [...score.keys()].sort((a, b) => score[b] - score[a]);
-          st = { pt, ct, f, score, best: order[0], second: order[1], ratio: score[order[0]] / score[order[1]] };
-        };
+        const calc = () => { st = shiftScores(SAMPLES[len.value], key.value); };
         v.button('Best match', () => { calc(); g.set(st.best); });
         v.render(() => {
           calc();
+          s.setView([0, 26], [0, 1.12 * Math.max(...ENG, ...st.f)]);
           s.bars(ENG, { x0: 0.5, dx: 1, color: 'accent' });
           const pts = Array.from({ length: 26 }, (_, j) => [j + 0.5, st.f[m26(j + g.value)]]);
           s.path(pts, { color: 'orange', width: 2.5 });
@@ -183,7 +171,7 @@ export default {
         v.readout(() => {
           const dec = mapText(st.ct, (c) => m26(c - g.value));
           const ok = st.best === key.value;
-          return `Ciphertext: **${st.ct.slice(0, 60)}${st.ct.length > 60 ? '…' : ''}**` + '\n' + `Decrypted with $g=${g.value}$: **${dec.slice(0, 60)}${dec.length > 60 ? '…' : ''}**` + '\n' + String.raw`Best-scoring shift: $${st.best}$ (the true key is $${key.value}$: ${ok ? '**recovered**' : '**missed — the text is too short for the statistics**'}). Best/second-best score ratio $${st.ratio.toFixed(3)}$ (the closer to 1, the less decisive).`;
+          return `Ciphertext: **${st.ct.slice(0, 60)}${st.ct.length > 60 ? '…' : ''}**` + '\n' + `Decrypted with $g=${g.value}$: **${dec.slice(0, 60)}${dec.length > 60 ? '…' : ''}**` + '\n' + String.raw`Best-scoring shift: $${st.best}$ (the true key is $${key.value}$: ${ok ? '**recovered**' : '**missed — this sample does not fit the reference closely enough**'}). Uncalibrated best/second-best score ratio $${st.ratio.toFixed(3)}$ (the closer to 1, the less decisive).`;
         });
       },
     },

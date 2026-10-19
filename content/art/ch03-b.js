@@ -272,6 +272,7 @@ Goethe took the boundary of light and dark to be the origin of colour. Newton’
       paper: { authors: 'Isaac Newton', year: 1704, title: 'Opticks: or, a Treatise of the Reflexions, Refractions, Inflexions and Colours of Light',
                venue: 'London: Sam. Smith and Benj. Walford, 1704; the colour circle is Book I, Part II, Prop. VI', url: 'https://archive.org/details/opticksortreatis00newt' },
       introduces: ['art-3.3'],
+      verify: true, // The item explicitly identifies a historical or empirical claim that has not been checked.
       credit: 'Isaac Newton, 1704',
       statement: String.raw`Book I, Part II, Proposition VI, Problem II of the Opticks sets the problem “in a mixture of primary colours, the quantity and quality of each being given, to know the colour of the compound”, and solves it with a diagram. A circle is divided into seven arcs, named from red to violet, whose lengths are proportional to the numbers $\tfrac19,\tfrac1{16},\tfrac1{10},\tfrac19,\tfrac1{16},\tfrac1{16},\tfrac19$, which Newton takes from the seven intervals of the musical octave; circles proportional to the number of rays of each colour are placed at the centres of gravity of their arcs, and the common centre of gravity $Z$ of those circles is found. The line from the centre $O$ through $Z$ meets the circumference at $Y$, which shows the hue of the compound, and $OZ$ measures its fullness, its distance from whiteness.
 
@@ -346,6 +347,7 @@ Newton adds the caveats himself: two opposite colours mixed equally make a faint
       paper: { authors: 'Johann Wolfgang von Goethe', year: 1810, title: 'Zur Farbenlehre',
                venue: 'Tübingen: J. G. Cotta, 1810 (2 vols. and an atlas of plates)', url: 'https://archive.org/details/ZurFarbenlehre00GoetA' },
       introduces: ['art-3.11'],
+      verify: true, // The item explicitly identifies a historical or empirical claim that has not been checked.
       credit: 'Johann Wolfgang von Goethe, 1810',
       statement: String.raw`Goethe’s *Zur Farbenlehre* (1810) rejects Newton’s conclusion that white light is a mixture of coloured rays, and builds a theory of colour on observation with the prism and on the experience of the eye. Its centre is the prism experiment with cards: seen through a prism, a white area on a dark ground is not coloured in its interior but shows coloured edges, yellow and red at one boundary, blue and violet at the other; the colours widen as the card is moved away from the prism, until the fringes of a narrow white stripe meet and overlap into green; and a narrow dark stripe on a white ground gives the opposite, a purple. Goethe concluded that colours arise at the boundary of light and dark, in a turbid or displaced medium, and not in the light itself.
 

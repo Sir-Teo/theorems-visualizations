@@ -1,5 +1,5 @@
 // Macroeconomics — Chapter 4: Growth II: optimal saving, ideas and history (items 4.1–4.5; 4.6–4.9 are in ch04-b.js)
-import { clamp, pc, fx } from './ch04.shared.js';
+import { clamp, pc, fx, capitalSavingPath } from './ch04.shared.js';
 
 /** Ramsey–Cass–Koopmans with f(k) = A k^a: steady state, golden rule, saddle-path table and trajectories by RK4 shooting. */
 function rckModel(A, a, d, rho, th) {
@@ -52,6 +52,7 @@ Scope: a closed, one-good economy with no growth in technology or labour (adding
       idea: String.raw`The planner trades consumption today against more capital tomorrow; the Euler equation says consumption rises exactly when the marginal product of capital, net of depreciation, exceeds impatience $\rho$ (scaled by how much the household dislikes an uneven path, $\theta$). Along $\dot c = 0$ the marginal product is pinned down, so that locus is vertical at $k^*$; along $\dot k = 0$ consumption equals net output, a hump. Linearising at their intersection gives one stable and one unstable eigenvalue (a saddle), so convergence needs the jump variable $c$ to land on the stable arm. The two-period Euler equation of the Fisher problem reappears here in continuous time, and the capital dynamics are the Solow model with the saving rate now chosen.`,
       caption: String.raw`**Left:** the phase diagram in $(k, c)$. The red hump is $\dot k = 0$, the vertical gold line is $\dot c = 0$, arrows show the flow and the green curve is the saddle path (computed by shooting). Drag the **gold handle** to choose starting capital $k_0$ and consumption $c_0$; the trajectory turns green only if you sit on the saddle path. Tick *start on the saddle path* to let the household choose $c_0$ optimally. **Right:** $k(t)$ and $c(t)$ relative to their steady-state values. Raise $\rho$ and watch the steady state move left of the golden rule.`,
       deps: ['macro-3.2', 'macro-2.11'], refs: ['Romer ch. 2'], tags: ['growth', 'optimal control', 'saddle path'],
+      verify: true, // Historical credit and textbook pointers await primary-source review.
       credit: 'Frank Ramsey, 1928; David Cass and Tjalling Koopmans, 1965',
       scope: String.raw`Closed economy, infinitely lived representative household, CRRA utility, no technological progress in the version drawn here.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ramsey%E2%80%93Cass%E2%80%93Koopmans_model' },
@@ -130,8 +131,9 @@ Scope: log utility, Cobb–Douglas technology and full depreciation (one period 
       idea: String.raw`Young workers save out of wages for retirement, and the next generation's capital equals what they saved. The saving map is increasing and concave with $k_{t+1}(0)=0$ and infinite slope there, so iterating it converges monotonically to its single fixed point, as in the Solow model. The difference from Solow is that nobody chooses the *aggregate* saving rate for the good of the dynasty: each household saves for its own retirement, so the fixed point has no reason to sit at or below the golden rule. When it lies above it, the dynamic-inefficiency result of Solow's model holds in a genuine competitive equilibrium, and a pay-as-you-go pension or government debt that crowds out capital would be a Pareto improvement.`,
       caption: String.raw`**Left:** the saving map $k_{t+1}(k_t)$ (blue) against the 45° line, with the cobweb from the **gold handle** $k_0$ for the number of generations you choose. **Right:** steady-state consumption per worker as a function of $k$; the fixed point is green when it lies below the golden rule and red when beyond it. Raise $\beta$ (patience over a generation) or lower $\alpha$ until the dot slips past the peak. With a 30-year period, $\beta$ near 1 means little impatience over a lifetime.`,
       deps: ['macro-3.5', 'macro-2.10'], refs: ['Romer ch. 2'], tags: ['growth', 'overlapping generations', 'dynamic inefficiency'],
+      verify: true, // Historical credit and textbook pointers await primary-source review.
       credit: 'Peter Diamond, 1965 (after Samuelson, 1958)',
-      scope: String.raw`Log utility, Cobb–Douglas production, full depreciation, one-period-lived young and old; no bequests.`,
+      scope: String.raw`Log utility, Cobb–Douglas production, full depreciation, two-period-lived households (young, then old); no bequests.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Overlapping_generations_model' },
       viz(v) {
         const aS = v.slider('capital share $\\alpha$', 0.1, 0.6, 0.25, { step: 0.005 });
@@ -174,16 +176,16 @@ Scope: log utility, Cobb–Douglas technology and full depreciation (one period 
     // ------------------------------------------------------------------ 4.3
     {
       num: '4.3', kind: 'Model', name: 'The AK model',
-      statement: String.raw`Let output depend linearly on the broad capital stock, $Y = AK$ (equivalently, per worker $y = Ak$): capital in the broad sense includes human and knowledge capital, and the externality from accumulating it exactly offsets diminishing returns. With a constant saving rate $s$, depreciation $\delta$ and population growth $n$,
+      statement: String.raw`Let output depend linearly on the broad capital stock, $Y = AK$ (equivalently, per worker $y = Ak$): the reproducible factor may include physical, human or knowledge capital. Constant aggregate returns can be assumed directly or arise through an accumulation externality. With a constant saving rate $s$, depreciation $\delta$ and population growth $n$,
 $$\dot k = sAk - (n+\delta)k, \qquad \frac{\dot k}{k} = \frac{\dot y}{y} = sA - n - \delta .$$
-If $sA > n+\delta$ the economy grows forever at the constant rate $\gamma = sA - n - \delta$, there is no transition and no convergence between rich and poor countries, and **the saving rate permanently changes the long-run growth rate**. With $y = Ak^{\alpha}$ and $\alpha < 1$ the same economy returns to a steady state with zero growth per capita.
+If $sA > n+\delta$ the economy grows forever at the constant rate $\gamma = sA - n - \delta$, there is no transition in this constant-saving model, and countries with identical parameters retain their initial proportional income differences, and **the saving rate permanently changes the long-run growth rate**. With $y = Ak^{\alpha}$ and $\alpha < 1$ the same economy returns to a steady state with zero growth per capita.
 
-Scope: the model asserts constant returns to the reproducible factor; it is a deliberate caricature, and with a narrow capital concept ($\alpha \approx 1/3$) the data reject it.`,
+Scope: the model asserts constant returns to the reproducible factor; it is a deliberate caricature, ordinary physical capital alone need not satisfy this assumption.`,
       idea: String.raw`In the Solow model the investment curve $s f(k)$ is concave and crosses the straight break-even line $(n+\delta)k$ once, which makes growth die out. If $f$ is linear the saving curve is a straight line that is steeper than the break-even line, so it never crosses: capital per worker grows at the constant rate $sA-n-\delta$. Dividing by $k$ shows the same thing as a horizontal comparison: the "return per unit of capital" $sf(k)/k$ no longer falls with $k$. Growth is then a choice variable (through $s$) and a level difference at the start is never closed. The cost of this tidy answer is the strong assumption that returns to accumulation do not diminish.`,
-      caption: String.raw`**Left:** saving per unit of capital $s f(k)/k$ (green) against the break-even rate $n+\delta$ (red). Slide **$\alpha$** from $0.5$ to $1$: for $\alpha<1$ the curves cross and growth stops; at $\alpha = 1$ they never do. **Right:** $\ln k(t)$ when the saving rate steps from $s$ to $s'$ in year 50. For $\alpha = 1$ the slope of the line changes for ever; for $\alpha<1$ the level moves but the long-run growth rate stays at zero.`,
-      deps: ['macro-3.2'], refs: ['Romer ch. 3'], tags: ['growth', 'endogenous growth', 'constant returns'],
+      caption: String.raw`**Left:** saving per unit of capital $s f(k)/k$ (green) against the break-even rate $n+\delta$ (red). Slide **$\alpha$** from $0.5$ to $1$: for $\alpha<1$ they cross at the steady state (possibly outside the visible range). At $\alpha=1$ the lines are horizontal: capital grows, stays constant or shrinks according to the sign of $sA-n-\delta$. **Right:** $\ln k(t)$ when the saving rate changes from $s$ to $s'$ in year 50. For $\alpha = 1$ the slope of the line changes for ever; for $\alpha<1$ the level moves but the long-run growth rate stays at zero.`,
+      deps: ['macro-3.2'], refs: ['Rebelo (1991), JPE 99(3):500–521; https://doi.org/10.1086/261764', 'Frankel (1962), AER 52(5):996–1022; https://www.scribd.com/document/78724522/Frankel-1962-the-Production-Function-in-Allocation-and-Growth'], tags: ['growth', 'endogenous growth', 'constant returns'],
       credit: 'Marvin Frankel, 1962; Sergio Rebelo, 1991',
-      scope: String.raw`Needs constant returns to the reproducible factors (broad capital), saving rate $s$ with $sA > n+\delta$.`,
+      scope: String.raw`Needs constant returns to the reproducible factors (broad capital), exogenous constant saving within each regime; $sA>n+\delta$ is required for positive growth, not for the model to be defined.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/AK_model' },
       viz(v) {
         const aS = v.slider('returns to capital $\\alpha$', 0.5, 1, 1, { step: 0.01 });
@@ -191,7 +193,7 @@ Scope: the model asserts constant returns to the reproducible factor; it is a de
         const s2 = v.slider("saving rate after year 50, $s'$", 0.05, 0.4, 0.3, { step: 0.005 });
         const nd = v.slider('$n+\\delta$', 0.02, 0.12, 0.06, { step: 0.002 });
         const L = v.stage({ x: [0.5, 30], y: [0, 0.2], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'capital per worker k (log scale)', ylabel: 'rate per unit of capital', title: 's f(k)/k  against  n + δ' });
-        const R = v.stage({ x: [0, 150], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'years', ylabel: 'ln k(t) − ln k(0)', title: 'effect of a permanent rise in saving' });
+        const R = v.stage({ x: [0, 150], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'years', ylabel: 'ln k(t) − ln k(0)', title: 'effect of a permanent saving change' });
         const A = 0.35;
         let st = null;
         v.render(() => {
@@ -204,21 +206,16 @@ Scope: the model asserts constant returns to the reproducible factor; it is a de
           L.text('n + δ', 20, d, { dy: -10, color: 'red', weight: 700, size: 12 });
           L.text('s f(k)/k', 1.0, r1(1.0), { dx: 8, dy: -12, align: 'left', color: 'green', weight: 700, size: 12 });
           L.text("s' f(k)/k", 1.0, r2(1.0), { dx: 8, dy: -12, align: 'left', color: 'teal', weight: 700, size: 12 });
-          const sim = (swap) => {
-            const out = [[0, 0]]; let k = 1; const dt = 0.25;
-            for (let t = dt; t <= 150 + 1e-9; t += dt) { const s = swap && t > 50 ? sb : sa; k = Math.max(1e-9, k + dt * (s * A * k ** a - d * k)); out.push([t, Math.log(k)]); }
-            return out;
-          };
-          const base = sim(false), chg = sim(true);
-          const top = Math.max(1, Math.min(14, chg[chg.length - 1][1] * 1.1, Math.max(...base.map((p) => p[1])) * 1.1 + 0.5, 1e9));
-          R.setView([0, 150], [Math.min(0, ...chg.map((p) => p[1])) - 0.1, Math.max(top, chg[chg.length - 1][1] * 1.08, 1)]);
+          const base = capitalSavingPath(a, A, d, sa, sa), chg = capitalSavingPath(a, A, d, sa, sb);
+          const ys = [...base, ...chg].map(p => p[1]);
+          R.setView([0, 150], [Math.min(0, ...ys) - .1, Math.max(1, ...ys) + .1]);
           R.vline(50, { color: 'faint', dash: [4, 4] });
           R.path(base, { color: 'green', width: 2.2, dash: [6, 4] });
           R.path(chg, { color: 'teal', width: 2.8 });
           const slope = (arr, t0, t1) => (arr.find((p) => p[0] >= t1)[1] - arr.find((p) => p[0] >= t0)[1]) / (t1 - t0);
-          st = { g0: slope(chg, 30, 50), g1: slope(chg, 130, 150), ak: a >= 0.995, ok: a >= 0.995 ? sa * A > d : true, gAK: sa * A - d, gAK2: sb * A - d };
+          st = { g0: slope(chg, 30, 50), g1: slope(chg, 130, 150), ak: a === 1, gAK: sa * A - d, gAK2: sb * A - d };
         });
-        v.legend([['green', 'saving rate s'], ['teal', "after the rise to s'"]]);
+        v.legend([['green', 'saving rate s'], ['teal', "after the change to s'"]]);
         v.readout(() => st && (st.ak ? `**AK** ($\\alpha=1$): growth rate of $k$ and $y$ is $sA-n-\\delta = ${pc(st.gAK)}$ before year 50 and $s'A-n-\\delta = ${pc(st.gAK2)}$ afterwards: measured slopes ${pc(st.g0)} and ${pc(st.g1)}.` : `$\\alpha<1$: diminishing returns. Growth rate of $k$ measured before year 50: ${pc(st.g0)}, in years 130–150: ${pc(st.g1)}; it dies out and only the level changes.`) + ` (Productivity $A=0.35$ fixed.)`);
       },
     },
@@ -229,12 +226,12 @@ Scope: the model asserts constant returns to the reproducible factor; it is a de
 $$g = \frac{\dot A}{A} = \bar\delta\,s_R\,L .$$
 A larger research share raises the growth rate permanently, while a larger population $L$ raises it too (a *scale effect*). A higher $s_R$ lowers output per worker at once, because fewer people produce goods, but beyond a crossing date income is higher for ever.
 
-Scope: a deliberately simple version of Romer (1990) without monopolistic competition for intermediates; the knife-edge assumption is that research productivity does not depend on the stock of ideas (the exponent of $A$ in the idea production function is exactly 1).`,
+Scope: a deliberately simple version of Romer (1990) without monopolistic competition for intermediates; the knife-edge assumption is that output of new ideas per researcher is proportional to the existing stock $A$ (its exponent is exactly 1), so research productivity measured as proportional growth per researcher stays constant.`,
       idea: String.raw`Capital accumulation stalls because its returns diminish; ideas do not stall, because each new idea raises the productivity of every future researcher. If a research worker's output is proportional to $A$, then $\dot A/A$ is proportional to the number of researchers, which is a level that policy or population can raise. That turns the exogenous technology growth of Solow's model into the output of a sector, and the Solow residual of the growth-accounting exercise into something that has a price and an input. The balanced path is the AK model, with the stock of ideas playing the role of the broad capital stock.`,
       caption: String.raw`**Right:** the growth rate $g(s_R) = \bar\delta s_R L$ as a straight line; drag the **gold handle** to move the research share from the baseline $s_R = 0.05$ to a new value, and raise $L$ to see the dashed scale-effect line move up. **Left:** $\ln y(t)$ under the baseline and the new research share: income starts lower (fewer producers) but the steeper path overtakes at the crossing date marked in gold.`,
-      deps: ['macro-4.3'], refs: ['Romer ch. 3'], tags: ['growth', 'ideas', 'non-rivalry'],
+      deps: ['macro-4.3'], refs: ['Romer ch. 3', 'P. Romer (1990), Endogenous Technological Change; https://www.nber.org/papers/w3210'], tags: ['growth', 'ideas', 'non-rivalry'],
       credit: 'Paul Romer, 1990 (Journal of Political Economy 98(5), S71–S102)',
-      scope: String.raw`Research productivity independent of the stock of ideas (linear in $A$); semi-endogenous variants (4.5) relax this.`,
+      scope: String.raw`New ideas per researcher proportional to the stock of ideas (linear in $A$); the coefficient of proportionality is constant. Semi-endogenous variants (4.5) relax this.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Endogenous_growth_theory' },
       viz(v) {
         const LS = v.slider('population (research scale) $L$', 1, 4, 1, { step: 0.05 });
@@ -275,10 +272,10 @@ Scope: a deliberately simple version of Romer (1990) without monopolistic compet
 $$\dot A = \bar\delta\,L_A^{\lambda}\,A^{\phi}, \qquad \phi < 1 \;(\text{ideas get harder to find}),$$
 the **semi-endogenous** model. Its balanced growth rate is $g_A^* = \dfrac{\lambda\,n}{1-\phi}$, where $n$ is the growth rate of research effort; it depends on the *growth* of the population, not its level or the research share, so permanent policy changes shift levels but not long-run growth. Bloom, Jones, Van Reenen and Webb (2020) report that U.S. effective research effort rose by a factor of about 23 between the 1930s and 2014 while research productivity fell by a factor of about 41.
 
-Scope: a stylised calibration, not an estimate; with $\phi<1$ long-run growth is fed by population growth, which must itself end for finite populations.`,
+Scope: a stylised calibration, not an estimate; with $\phi<1$ positive balanced growth requires sustained growth of research effort; if research effort eventually stops growing, the long-run growth rate tends to zero.`,
       idea: String.raw`Differentiate the idea production function: $g_A = \bar\delta L_A^\lambda A^{\phi-1}$. If $\phi=1$ the growth rate follows $L_A$ and explodes with it; if $\phi<1$ the term $A^{\phi-1}$ shrinks as ideas accumulate, so the growth rate settles where $\lambda\dot L_A/L_A = (1-\phi)\,g_A$. The empirical content is the *decomposition* of the data into research input and research output: growth = effort × productivity, so with effort up ×23 and growth roughly constant, productivity per researcher had to fall by about the same factor (the paper reports ×41, because growth itself also slowed a little, by a factor of $23/41\approx 0.56$).`,
       caption: String.raw`**Left (log scale):** the growth rate of ideas implied by the idea production function with research effort rising $23$-fold in 84 years. The red line is Romer ($\phi=1$): growth explodes with the number of researchers. The blue line uses the $\phi$ you choose; lower $\phi$ flattens it, and the dashed line is its balanced-growth rate $\lambda n/(1-\phi)$. **Right:** research productivity $g_A/L_A$ relative to year 0; the gold mark is the empirical fall of Bloom et al. Reduce $\phi$ until the blue growth curve is flat, then read off what productivity decline that needs.`,
-      deps: ['macro-4.4'], refs: ['Romer ch. 3'], tags: ['growth', 'ideas', 'semi-endogenous growth'],
+      deps: ['macro-4.4'], refs: ['Romer ch. 3', 'Bloom et al. (2020), p. 1110, Fig. 2; https://web.stanford.edu/~chadj/IdeaPF.pdf'], tags: ['growth', 'ideas', 'semi-endogenous growth'],
       credit: 'Charles Jones, 1995 (Journal of Political Economy 103(4), 759–784); Bloom, Jones, Van Reenen & Webb, 2020 (American Economic Review 110(4), 1104–1144)',
       scope: String.raw`Aggregate U.S. data 1930–2014 in Bloom et al.; the simulation here is an illustration with $g(0)=2\%$ chosen for display, not their series.`,
       links: { doi: 'https://doi.org/10.1257/aer.20180338' },

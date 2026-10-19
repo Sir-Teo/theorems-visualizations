@@ -1,3 +1,4 @@
+import {emissionLedger,comptonCollision,COMPTON_PM} from './rel-source-audit.js';
 // Special & General Relativity — Chapter 4 (items 4.13–4.17): four-force, cyclotron, pair creation, and the papers of Einstein (1905) and Compton (1923)
 import { gam, eng, ME, MP, U_MEV as U } from './ch04.shared.js';
 
@@ -200,107 +201,75 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
     {
       num: '4.16',
       kind: 'Paper',
-      name: 'Ist die Trägheit eines Körpers vom Energieinhalt abhängig?',
+      name: 'Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?',
       paper: { authors: 'A. Einstein', year: 1905, title: 'Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?', venue: 'Annalen der Physik 323 (13): 639–641', doi: '10.1002/andp.19053231314' },
       introduces: ['rel-4.4'],
-      verify: true,
-      statement: String.raw`In three pages Einstein considers a body at rest that emits two plane light waves of equal energy $L/2$ in opposite directions, and describes the same event from a frame in which the body moves at speed $v$. Using the transformation of the energy of light between the frames (the Doppler factor $\gamma(1\mp\beta\cos\varphi)$ of rel-2.9) and conservation of energy, he finds that the body's kinetic energy in the moving frame has decreased by $L\big(1/\sqrt{1-\beta^2}-1\big)\approx\tfrac12(L/c^2)v^2$, as if its mass had decreased by $L/c^2$. His conclusion: *the mass of a body is a measure of its energy content*; if the energy changes by $L$, the mass changes by $L/c^2$ (he adds that radioactive bodies, such as radium salts, may offer a test).`,
-      idea: String.raw`Before 1905 mass and energy were separate conserved quantities, and electromagnetic energy was known to carry momentum and to exert pressure (em-11.5). Einstein had just derived the Lorentz transformation and the Doppler formula from the postulates (rel-1.14); here he applies them to a radiating body. The argument needs only the way energy of light transforms and the fact that the body's kinetic energy is $\tfrac12 mv^2$ at low speed. This is the first derivation of the mass–energy relation (rel-4.4); later derivations (rel-4.3) use four-momentum. The paper does not write $E=mc^2$ in this form: it states $\Delta m=L/V^2$ with $V$ the speed of light.`,
-      caption: String.raw`Left: the radiating body in its rest frame, two equal pulses at angle $\varphi$ to the $x$-axis. Middle: the same event in the frame where the body moves at $\beta$: the pulses have unequal Doppler-shifted energies (arrow lengths) and aberrated directions. **Set $\beta$, $\varphi$ and the emitted energy $L$** (relative to the body's rest energy $Mc^2$). The ledger on the right is in units of $L$: the pulses carry $\gamma L$ away. If the body's rest mass is **assumed unchanged** (toggle) the books do not balance; with a mass drop $L/c^2$ they do. The bottom panel shows how small $L/Mc^2$ is for chemical, fission and fusion reactions. (The paper has no figure; this is a modern reconstruction of its thought experiment.)`,
+      verify: false,
+      statement: String.raw`Einstein's three-page 1905 note considers a resting body emitting equal plane light pulses $L/2$ in opposite directions. Rest-frame energy conservation gives $E_0-E_1=L$; in a moving frame, transformation of light energy gives $H_0-H_1=\gamma L$. Subtracting the two balances, and identifying each $H-E$ with kinetic energy plus the same additive constant, yields
+$$K_0-K_1=(\gamma-1)L\simeq\frac12\frac{L}{c^2}v^2.$$
+Comparison with the low-speed kinetic-energy change identifies an inertial-mass decrease $\Delta m=L/c^2$. The paper generalizes the connection between mass and energy content and suggests highly variable-energy substances, such as radium salts, as possible tests.`,
+      idea: String.raw`The argument compares energy conservation in two frames; it does not begin by assuming the body's total energy is $\gamma mc^2$. The light pulses have total energy $L$ in the body's rest frame and $\gamma L$ in the other frame, independent of their angle. Their difference requires a kinetic-energy decrease $(\gamma-1)L$. At low speed this is $\tfrac12(L/c^2)v^2$, identifying the change of inertial mass. The paper's notation uses $V$ for light speed, and states a mass change rather than the modern equation $E=mc^2$. This entry makes no claim of exclusive historical priority.`,
+      caption: String.raw`The two equal rest-frame pulses acquire different energies and aberrated directions in the frame where the body moves right. **Change speed, pulse angle and emitted-energy fraction.** The ledger compares the kinetic-energy decrease required by the two energy balances with the prediction if the mass changes by $L/c^2$. Toggle **unchanged inertial mass** to set the predicted kinetic-energy change to zero. Rest energy still falls by $L$ in that counterfactual; the mismatch is $(\gamma-1)L$, not $\gamma L$. The lower panel shows the mass fraction implied by the modern relation. These figures reconstruct the argument; the original has no figure.`,
       deps: ['rel-2.1', 'rel-2.9', 'em-11.5', 'rel-1.14'],
-      refs: [],
+      refs: ['Einstein, Annalen der Physik (series4)18 [overall323] (1905),639–641: light-energy transformation p.639, two balances p.640, kinetic-energy difference and low-speed mass change p.641; DOI10.1002/andp.19053231314'],
       tags: ['mass–energy', 'Einstein', 'thought experiment'],
-      credit: 'Einstein, Annalen der Physik, September 1905',
-      links: { doi: 'https://doi.org/10.1002/andp.19053231314', wikipedia: 'https://en.wikipedia.org/wiki/Mass%E2%80%93energy_equivalence' },
+      credit: 'Einstein, 1905; received 27 September',
+      links: { doi: 'https://doi.org/10.1002/andp.19053231314', 'Full original German scan': 'https://zenodo.org/records/1424057/files/article.pdf?download=1', 'Full translation': 'https://www.fourmilab.ch/etexts/einstein/E_mc2/www/' },
+      scope: String.raw`Original German pp.639–641 were read in full and checked against the Perrett–Jeffery translation. The final inertial-mass comparison is a low-speed argument; the exact difference of frame energies precedes it. The displayed body has positive remaining rest mass: $0<L/Mc^2\le0.9$. Pulse arrow length is proportional to energy in units of $L$, with an expanding moving-frame window. The bottom panel is modern mass-fraction bookkeeping, not reaction-yield data or an original figure.`,
       viz(v) {
-        const bS = v.slider('speed of the moving frame $\\beta$', 0, 0.95, 0.6, { step: 0.01 });
-        const fS = v.slider('emission angle $\\varphi$ (degrees)', 0, 90, 40, { step: 1 });
-        const LS = v.slider('emitted energy $L/Mc^2$', 1e-10, 1, 0.1, { log: true, sig: 2 });
-        const un = v.toggle('assume the rest mass does not change', false);
-        const A = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, axes: false, height: 300, minWidth: 220, title: 'rest frame of the body' });
-        const Bm = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, axes: false, height: 300, minWidth: 220, title: 'frame in which the body moves' });
-        const Cl = v.stage({ x: [0, 5], y: [0, 3], axes: 'box', gutter: true, height: 300, minWidth: 260, weight: 1, xticks: [[0.8, 'pulses'], [2.2, 'body'], [3.6, 'difference']], ylabel: 'energy in units of $L$', title: 'energy ledger (moving frame)' });
-        const D = v.stage({ x: [1e-12, 10], y: [0, 1], axes: 'box', gutter: true, height: 220, minWidth: 300, xlog: true, full: true, xlabel: 'fraction of rest energy released $L/Mc^2$', title: 'how big is the effect?' });
-        let st = {};
-        const reacts = [['TNT', 4.184e6 / 8.9876e16], ['gasoline', 46e6 / 8.9876e16], ['U-235 fission', 200 / (235.0439 * U)], ['D–T fusion', 17.59 / (5.0301 * U)], ['4H→He', 26.73 / (4.0313 * U)], ['e⁺e⁻ annihilation', 1]];
-        v.render(() => {
-          const b = bS.value, ph = (fS.value * Math.PI) / 180, g = gam(b), L = LS.value;
-          const c = Math.cos(ph), s = Math.sin(ph);
-          // rest frame: pulses of energy 1/2 each (in units of L)
-          A.circle(0, 0, 0.35, { fill: 'accent', fillAlpha: 0.4, color: 'accent' });
-          A.arrow(0.35 * c, 0.35 * s, 1.8 * c * 0.5 + 0.35 * c, 1.8 * s * 0.5 + 0.35 * s, { color: 'gold', width: 3 }); A.arrow(-0.35 * c, -0.35 * s, -1.8 * c * 0.5 - 0.35 * c, -1.8 * s * 0.5 - 0.35 * s, { color: 'gold', width: 3 });
-          A.text('$L/2$', 1.0 * c, 1.0 * s, { color: 'gold', dy: -12 }); A.text('$L/2$', -1.0 * c, -1.0 * s, { color: 'gold', dy: 12 });
-          // moving frame: energies and directions
-          const E1 = 0.5 * g * (1 + b * c), E2 = 0.5 * g * (1 - b * c);
-          const dir = (cs, sn) => { const px = g * (cs + b), py = sn; const n = Math.hypot(px, py); return [px / n, py / n]; };
-          const d1 = dir(c, s), d2 = dir(-c, -s);
-          Bm.circle(0, 0, 0.35, { fill: 'accent', fillAlpha: 0.4, color: 'accent' }); Bm.arrow(-1.9, -1.7, -1.9 + 0.8 * b + 0.15, -1.7, { color: 'accent', width: 2 }); Bm.text(`$v=${v.fix(b, 2)}c$`, -1.9, -1.45, { color: 'accent', align: 'left' });
-          Bm.arrow(0.35 * d1[0], 0.35 * d1[1], 0.35 * d1[0] + 1.3 * E1 * d1[0], 0.35 * d1[1] + 1.3 * E1 * d1[1], { color: 'gold', width: 3 });
-          Bm.arrow(0.35 * d2[0], 0.35 * d2[1], 0.35 * d2[0] + 1.3 * E2 * d2[0], 0.35 * d2[1] + 1.3 * E2 * d2[1], { color: 'gold', width: 3 });
-          Bm.text(`${v.fix(E1, 2)} L`, 0.9 * d1[0], 0.9 * d1[1], { color: 'gold', dy: -12 }); Bm.text(`${v.fix(E2, 2)} L`, 1.2 * d2[0], 1.2 * d2[1], { color: 'gold', dy: 12 });
-          // ledger in units of L: pulses carry gamma L; body loses gamma * dM c^2 where dM = L/c^2 (or 0)
-          const carried = E1 + E2, lost = un.value ? 0 : g;
-          Cl.rect(0.4, 0, 1.2, carried, { fill: 'gold', fillAlpha: 0.55, color: 'gold' }); Cl.rect(1.8, 0, 2.6, lost, { fill: 'blue', fillAlpha: 0.55, color: 'blue' });
-          const diff = carried - lost;
-          Cl.rect(3.2, 0, 4.0, Math.abs(diff), { fill: diff > 1e-9 ? 'red' : 'green', fillAlpha: 0.55, color: diff > 1e-9 ? 'red' : 'green' });
-          Cl.setView([0, 5], [0, Math.max(3, 1.2 * g)]);
-          // scale panel
-          D.setView([1e-12, 10], [0, 1]);
-          reacts.forEach(([n, x], i) => { D.vline(x, { color: 'faint', width: 1 }); D.dot(x, 0.15 + 0.14 * (i % 5), { r: 5, color: 'orange' }); D.text(n, x, 0.15 + 0.14 * (i % 5), { dy: -12, color: 'muted', size: 12 }); });
-          D.vline(L, { color: 'gold', width: 2 });
-          st = { b, g, E1, E2, carried, lost, diff, L, ke: (g - 1), ein: 0.5 * b * b };
+        const bS=v.slider('speed of the moving frame $\\beta$',0,.95,.6,{step:.01}),fS=v.slider('emission angle $\\varphi$ (degrees)',0,90,40,{step:1}),LS=v.slider('emitted energy $L/Mc^2$',1e-10,.9,.1,{log:true,sig:2});
+        const un=v.toggle('unchanged inertial mass',false);
+        const A=v.stage({x:[-2.2,2.2],y:[-2,2],equal:true,axes:false,height:300,minWidth:220,title:'rest frame of the body'}),B=v.stage({x:[-2.2,2.2],y:[-2,2],equal:true,axes:false,height:300,minWidth:220,title:'frame where the body moves right'});
+        const C=v.stage({x:[0,5],y:[0,3],axes:'box',gutter:true,height:300,minWidth:260,xticks:[[.8,'required ΔK'],[2.2,'mass model'],[3.6,'mismatch']],ylabel:'kinetic-energy decrease / L',title:'difference between the two energy balances'});
+        const D=v.stage({x:[1e-10,1],y:[0,1],xlog:true,axes:'box',gutter:true,height:230,full:true,xlabel:'emitted energy fraction L / Mc²',ylabel:'mass decrease Δm / M',title:'modern mass-fraction bookkeeping'});
+        let st={};
+        v.render(()=>{
+          const M=emissionLedger(bS.value,fS.value,un.value),ph=fS.value*Math.PI/180,c=Math.cos(ph),s=Math.sin(ph),R=Math.max(2.2,.35+1.3*Math.max(M.E1,M.E2)+.45);B.setView([-R,R],[-R,R]);
+          for(const S of[A,B])S.circle(0,0,.35,{fill:'accent',fillAlpha:.4,color:'accent'});
+          for(const sg of[-1,1]){A.arrow(.35*sg*c,.35*sg*s,1.25*sg*c,1.25*sg*s,{color:'gold',width:3});A.text('L/2',sg*c,sg*s,{color:'gold',dy:-12*sg});}
+          for(const[E,d,dy]of[[M.E1,M.d1,-12],[M.E2,M.d2,12]]){B.arrow(.35*d[0],.35*d[1],(.35+1.3*E)*d[0],(.35+1.3*E)*d[1],{color:'gold',width:3});B.text(`${v.fix(E,2)} L`,(.55+.55*E)*d[0],(.55+.55*E)*d[1],{color:'gold',dy});}
+          B.arrow(-.8*R,-.8*R,-.8*R+.8*bS.value+.15,-.8*R,{color:'accent',width:2});B.text(`v = ${v.fix(bS.value,2)} c`,-.8*R,-.65*R,{color:'accent',size:11});
+          C.setView([0,5],[0,Math.max(1,1.25*M.required)]);
+          for(const[x,y,col]of[[.8,M.required,'gold'],[2.2,M.predicted,'blue'],[3.6,M.difference,M.difference>1e-12?'red':'green']])C.rect(x-.4,0,x+.4,y,{color:col,fill:col,fillAlpha:.5});
+          D.fn(x=>un.value?0:x,{domain:[1e-10,1],color:'blue',width:2.4,n:400});D.dot(LS.value,un.value?0:LS.value,{r:6,color:'gold'});D.vline(LS.value,{color:'gold',dash:true});
+          st={...M,b:bS.value,angle:fS.value,L:LS.value,constantMass:un.value,R,massFraction:un.value?0:LS.value};
         });
-        v.legend([['gold', 'light pulses'], ['accent', 'the body'], ['blue', 'energy lost by body: $\\gamma\\,\\Delta m\\,c^2$'], ['red', 'unbalanced energy']]);
-        v.readout(() => {
-          const { b, g, E1, E2, carried, lost, diff, L, ke, ein } = st; if (g === undefined) return '';
-          return String.raw`Pulse energies in the moving frame: $${v.fix(E1, 3)}L$ and $${v.fix(E2, 3)}L$ (sum $\gamma L=${v.fix(carried, 3)}L$). The body's kinetic energy falls by $(\gamma-1)\Delta m c^2=${v.fix(ke, 4)}\,\Delta mc^2$ versus Einstein's low-speed form $\tfrac12\beta^2\Delta mc^2=${v.fix(ein, 4)}\,\Delta mc^2$.` + '\n' +
-            (un.value ? String.raw`With the rest mass unchanged the body loses nothing, yet the pulses carry $${v.fix(carried, 3)}L$: energy is **not** conserved by $${v.fix(diff, 3)}L$. So $\Delta m=L/c^2$ is forced.` : String.raw`With $\Delta m=L/c^2$ the body loses $\gamma L$ of energy, exactly what the pulses carry: balanced. Here $L/Mc^2=${v.sci(L, 2)}$.`);
-        });
+        v.legend([['gold','required kinetic-energy decrease'],['blue','inertial-mass model'],['red','unbalanced kinetic energy']]);
+        v.readout(()=>`The moving-frame pulses carry $${v.fix(st.E1,3)}L+${v.fix(st.E2,3)}L=\\gamma L$. Subtracting the rest-frame loss $L$ requires $\\Delta K=(\\gamma-1)L=${v.fix(st.required,4)}L$. The mass model gives $${v.fix(st.predicted,4)}L$, leaving mismatch $${v.fix(st.difference,4)}L$.\nLow-speed comparison: $(\\gamma-1)=${v.fix(st.required,5)}$ versus $\\beta^2/2=${v.fix(st.lowSpeed,5)}$. At $\\beta=0$ both vanish; a nonzero small speed identifies $\\Delta m=L/c^2$. The selected emitted fraction is $${v.sci(st.L,2)}$, with assumed mass decrease $\\Delta m/M=${v.sci(st.massFraction,2)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.17
     {
+
       num: '4.17',
       kind: 'Paper',
       name: 'Quantum Theory of the Scattering of X-rays by Light Elements',
       paper: { authors: 'Arthur H. Compton', year: 1923, title: 'A Quantum Theory of the Scattering of X-rays by Light Elements', venue: 'Physical Review 21 (5): 483–502', doi: '10.1103/PhysRev.21.483' },
       introduces: ['rel-4.9'],
-      verify: true,
-      statement: String.raw`Compton reports that X-rays scattered by light elements (graphite, in the experiments with molybdenum $K\alpha$ radiation) come out with two components: one of the original wavelength and one of **longer** wavelength, whose shift grows with the scattering angle but not with the incident wavelength or the target. He explains this by treating each quantum as a particle of energy $h\nu$ and momentum $h/\lambda$ that collides with a single, nearly free electron, and derives $\lambda'-\lambda=(2h/mc)\sin^2(\theta/2)$ (his coefficient $2h/mc=0.0484$ Å) from conservation of energy and momentum. The unshifted line comes from collisions in which the whole atom recoils.`,
-      idea: String.raw`Classical scattering (Thomson) predicted an unchanged wavelength, and the wave theory of light had no way to account for a shift independent of wavelength. The photon of Einstein (qm-1.15) had been confirmed only by the photoelectric effect; Compton made it carry momentum, treating the collision with relativistic mechanics (rel-4.3, rel-4.6) like billiard balls. The agreement of the shift with $h/mc$, measured with an X-ray spectrometer, was taken as decisive evidence that light has particle properties (the 1927 Nobel Prize in Physics). It also introduced the quantity now called the Compton wavelength (rel-4.9).`,
-      caption: String.raw`**Choose the scattering angle** (or the paper's three typical angles: 45°, 90°, 135°). The left panel is a *schematic reconstruction* of the spectrum of Mo $K\alpha$ X-rays scattered by graphite: the unmodified line at $\lambda_0$ and the modified line at $\lambda_0+\Delta\lambda$; the positions come from the formula, the line widths and heights are assumed (they are not Compton's data). The right panel shows the recoil-electron energy your photon–electron collision predicts. Toggle **classical scattering** to remove the modified line, as Thomson theory demands.`,
+      verify: false,
+      statement: String.raw`Compton's May 1923 paper treats scattering as a collision between a light quantum and an initially resting, effectively free electron. Conservation of relativistic energy and momentum gives
+$$\lambda'-\lambda=\frac{2h}{mc}\sin^2\frac\theta2=\frac{h}{mc}(1-\cos\theta).$$
+His Eq. 31 uses $2h/mc=0.0484$ Å. In Fig. 4 and the discussion pp. 494–495, he compares incident Mo radiation with graphite scattering at 90°: the reported characteristic wavelength changes from 0.708 Å to 0.730 Å, a shift 0.022 Å, compared with the theoretical ≈0.024 Å. The paper also compares angular shifts for gamma rays; its wavelength formula assumes electron binding can be neglected.`,
+      idea: String.raw`The outgoing photon has energy $hc/\lambda'$ and a changed momentum direction. The electron receives the momentum difference and its relativistic recoil kinetic energy. Eliminating that recoil from the two conservation equations produces the wavelength shift. This connects a directed light-quantum momentum to a measured spectral displacement. The paper separately proposes an approximate intensity formula; the visualization uses no such intensity prediction and does not substitute it for a later quantum-electrodynamic cross section.`,
+      caption: String.raw`**Change the scattering angle**, or select 45°,90°,135°. The left panel overlays separately scaled **incident reference** (blue) and **scattered-model** (orange) Gaussian curves at the predicted wavelengths. The incident wavelength 70.8 pm is the rounded value quoted in the paper; curve widths and heights are illustrative. This compares two spectra, not two asserted components of one measured scattered spectrum. The right panel shows free-electron recoil energy. Toggle the idealized Thomson limit to show an unchanged wavelength and neglect recoil energy.`,
       deps: ['qm-1.3', 'rel-4.3', 'rel-4.6', 'qm-1.15'],
-      refs: [],
+      refs: ['Compton, A Quantum Theory of the Scattering of X-rays by Light Elements, Physical Review21 (1923),483–502; Eqs.1–5 pp.486–487, Eq. 31 p.494, Fig. 4 and quoted wavelengths p.495, Table I p.496, binding limitations p.502; DOI10.1103/PhysRev.21.483', 'NIST CODATA 2022 wall chart: electron Compton wavelength2.42631023538(76)pm; BIPM exact SI h,c,e for energy conversion'],
       tags: ['Compton', 'photon', 'X-rays'],
-      credit: 'A. H. Compton, 1923 (Nobel Prize 1927)',
-      links: { doi: 'https://doi.org/10.1103/PhysRev.21.483', wikipedia: 'https://en.wikipedia.org/wiki/Compton_scattering' },
+      credit: 'Arthur H. Compton, Physical Review21 (1923),483–502',
+      links: { doi: 'https://doi.org/10.1103/PhysRev.21.483', 'Full original paper': 'https://journals.aps.org/pr/pdf/10.1103/PhysRev.21.483', 'CODATA 2022 constants': 'https://physics.nist.gov/cuu/pdf/wall_2022.pdf' },
+      scope: String.raw`Original 20-page paper was read in full. Its Fig. 4 compares primary and scattered spectra at 90°; this entry does not attribute the familiar later two-component scattered spectrum or a whole-atom recoil explanation to that figure. The 45°/90°/135° choices are model angles, also present in the paper's gamma-ray table, not three claimed Mo spectra. Photon energy and recoil use modern constants; the historical0.0484Å coefficient is identified separately. Gaussian heights/widths are assumed and each curve is drawn separately; they are not a fitted total spectrum. One ångström is 100 pm.`,
       viz(v) {
-        const lamC = 2.42631023867, lam0 = 71.073; // pm; Mo Kα (weighted)
-        const thS = v.slider('scattering angle $\\theta$ (degrees)', 0, 180, 90, { step: 1 });
-        for (const a of [45, 90, 135]) v.button(a + '°', () => thS.set(a));
-        const cl = v.toggle('classical (Thomson) scattering', false);
-        const A = v.stage({ x: [66, 80], y: [0, 1.25], axes: 'box', gutter: true, height: 360, minWidth: 300, xlabel: 'wavelength (pm)', ylabel: 'scattered intensity (arbitrary)', title: 'Mo $K\\alpha$ off graphite: the two lines (schematic)' });
-        const B = v.stage({ x: [0, 180], y: [0, 2.2], axes: 'box', gutter: true, height: 360, minWidth: 300, weight: 1, xlabel: 'scattering angle $\\theta$ (degrees)', ylabel: 'recoil electron energy (keV)', title: 'what the collision predicts' });
-        const gauss = (x, mu, s) => Math.exp(-0.5 * ((x - mu) / s) ** 2);
-        let st = {};
-        v.render(() => {
-          const th = (thS.value * Math.PI) / 180, d = lamC * (1 - Math.cos(th)), lm = lam0 + d;
-          A.vline(lam0, { color: 'faint', width: 1, dash: [3, 3] });
-          A.fn((x) => gauss(x, lam0, 0.35), { color: 'accent', width: 2.6, fill: true, n: 400 });
-          if (!cl.value) A.fn((x) => 0.8 * gauss(x, lm, 0.5), { color: 'orange', width: 2.6, fill: true, n: 400 });
-          A.dot(lam0, 1, { r: 4, color: 'accent', label: 'unmodified', labelPos: 'w' });
-          if (!cl.value) { A.dot(lm, 0.8, { r: 4, color: 'orange', label: 'modified', labelPos: 'e' }); A.measure(lam0, 1.12, lm, 1.12, `Δλ = ${v.fix(d, 2)} pm`); }
-          const E0 = 1239.84198 / lam0, T = (a) => { const l = lam0 + lamC * (1 - Math.cos(a)); return E0 - 1239.84198 / l; };
-          B.fn((a) => T(a * Math.PI / 180), { color: 'green', width: 2.6 });
-          B.dot(thS.value, T(th), { r: 6, color: 'orange' }); B.hline(E0, { color: 'faint', width: 1 });
-          st = { th, d, lm, E0, T: T(th), rel: d / lam0 };
+        const lam0=70.8,thS=v.slider('scattering angle $\\theta$ (degrees)',0,180,90,{step:1});for(const a of[45,90,135])v.button(a+'°',()=>thS.set(a));const cl=v.toggle('idealized Thomson limit (neglect recoil)',false);
+        const A=v.stage({x:[66,79],y:[0,1.3],axes:'box',gutter:true,height:360,minWidth:300,xlabel:'wavelength (pm)',ylabel:'profiles (separate arbitrary units)',title:'incident reference and scattered model (schematic)'}),B=v.stage({x:[0,180],y:[0,1.4],axes:'box',gutter:true,height:360,minWidth:300,xlabel:'scattering angle θ (degrees)',ylabel:'electron recoil energy (keV)',title:'collision-model recoil'});
+        let st={};const gauss=(x,mu,s)=>Math.exp(-.5*((x-mu)/s)**2);
+        v.render(()=>{
+          const C=comptonCollision(thS.value,lam0,cl.value);
+          A.fn(x=>gauss(x,lam0,.35),{color:'accent',dash:true,width:2.1,n:400});A.fn(x=>.8*gauss(x,C.lambda,.5),{color:'orange',width:2.6,n:400});A.dot(lam0,1,{r:4,color:'accent',label:'incident reference',labelPos:'w'});A.dot(C.lambda,.8,{r:4,color:'orange',label:'scattered model',labelPos:'e'});A.measure(lam0,1.14,C.lambda,1.14,`Δλ = ${v.fix(C.shift,2)} pm`);
+          B.fn(a=>comptonCollision(a,lam0,cl.value).T,{domain:[0,180],color:'green',width:2.6});B.dot(thS.value,C.T,{r:6,color:'orange'});B.hline(0,{color:'faint'});
+          st={...C,angle:thS.value,classical:cl.value,lam0};
         });
-        v.legend([['accent', 'unmodified line'], ['orange', 'modified line'], ['green', 'recoil electron energy']]);
-        v.readout(() => {
-          const { th, d, lm, E0, T, rel } = st; if (lm === undefined) return '';
-          return String.raw`$\theta=${v.fix(th * 180 / Math.PI, 0)}^\circ$: modified line at $${v.fix(lm, 3)}$ pm ($\lambda_0=${v.fix(lam0, 3)}$ pm, ${v.fix(E0, 2)} keV), shift $\Delta\lambda=${v.fix(d, 3)}$ pm $=${v.fix(d * 10, 4)}$ Å, i.e. ${v.fix(100 * rel, 2)}% of $\lambda_0$; the electron gets ${v.fix(T * 1000, 0)} eV.` + '\n' +
-            String.raw`The paper's coefficient $2h/mc=0.0484$ Å against today's $2\lambda_C=${v.fix(2 * lamC / 100, 5)}$ Å (CODATA 2018): they agree to 0.3%.`;
-        });
+        v.legend([['accent','incident reference (separate spectrum)'],['orange','scattered model'],['green','electron recoil energy']]);
+        v.readout(()=>`$\\theta=${v.fix(st.angle,0)}^\\circ$: predicted scattered wavelength $${v.fix(st.lambda,3)}$ pm from $\\lambda_0=${v.fix(lam0,1)}$ pm (${v.fix(st.E0,3)} keV). Shift $\\Delta\\lambda=${v.fix(st.shift,3)}$ pm $=${v.fix(st.angstrom,5)}$ Å; recoil energy $${v.fix(st.T*1000,1)}$ eV.${st.classical?' Idealized Thomson limit: wavelength unchanged and recoil neglected.':' Free-electron quantum collision.'}\nThe original Eq. 31 uses $2h/mc=0.0484$ Å; CODATA 2022 gives $2\\lambda_C=${v.fix(2*COMPTON_PM/100,6)}$ Å. At90° the original reports a 0.022 Å shift, compared with its ≈0.024 Å prediction.`);
       },
     },
   ],

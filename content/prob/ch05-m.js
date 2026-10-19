@@ -115,14 +115,13 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
       kind: 'Theorem',
       name: 'Pólya’s recurrence theorem',
       statement: String.raw`Simple symmetric random walk on $\Z^d$ is recurrent for $d=1$ and $d=2$ and transient for $d\ge3$.`,
-      idea: String.raw`By 5.4.3, recurrence is equivalent to $\sum_nP(S_n=0)=\infty$. The walk can return only at even times, and a local limit theorem (3.1.2 for $d=1$; the same computation in higher dimensions) gives $P(S_{2n}=0)\sim2\,(d/4\pi n)^{d/2}$, of order $n^{-d/2}$. This series diverges exactly when $d/2\le1$.`,
-      caption: String.raw`Left: one seeded walk of $N$ steps (for $d=1$ the graph of $S_n$, otherwise the projection to the $xy$-plane); gold dots mark returns to the origin. Right: $P(S_{2n}=0)$ against $n$ on log–log axes with Pólya's asymptote $2(d/4\pi n)^{d/2}$ dashed, whose slope $-d/2$ decides whether the series diverges.`,
-      deps: ['prob-5.4.3', 'prob-3.1.2'],
+      idea: String.raw`By 5.4.3, recurrence is equivalent to $\sum_nP(S_n=0)=\infty$. The walk can return only at even times, and a local limit theorem (3.1.3 for $d=1$; the same computation in higher dimensions) gives $P(S_{2n}=0)\sim2\,(d/4\pi n)^{d/2}$, of order $n^{-d/2}$. This series diverges exactly when $d/2\le1$.`,
+      caption: String.raw`Left: one seeded walk of $N$ steps (for $d=1$ the graph of $S_n$, otherwise the projection to the $xy$-plane); the path is thinned to at most about 3,000 vertices and gold dots mark the first 400 returns to the full-dimensional origin (the readout counts every return). Right: $P(S_{2n}=0)$ against $n$ on log–log axes with Pólya's asymptote $2(d/4\pi n)^{d/2}$ dashed, whose slope $-d/2$ decides whether the series diverges.`,
+      deps: ['prob-5.4.3', 'prob-3.1.3'],
       see: ['stoch-3.5', 'stoch-8.6', 'stoch-8.7'],
       tags: ['random walk', 'recurrence'],
-      credit: 'G. Pólya, 1921',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Random_walk' },
+      refs: ['Durrett, fifth edition, Theorem 5.4.4 and proof, pp. 289–290.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=297' },
       viz(v) {
         const dS = v.select('dimension', [{ value: '1', label: '$d=1$' }, { value: '2', label: '$d=2$' }, { value: '3', label: '$d=3$' }], '2');
         const nS = v.slider('steps $N$', 1000, 200000, 20000, { log: true, int: true, sig: 2 });
@@ -143,8 +142,9 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
           }
           const { xs, ys, ret } = cache, stride = Math.max(1, Math.ceil(N / 3000)), P = [];
           if (d === 1) { for (let n = 0; n <= N; n += stride) P.push([n, xs[n]]); } else for (let n = 0; n <= N; n += stride) P.push([xs[n], ys[n]]);
+          if(N%stride)P.push(d===1?[N,xs[N]]:[xs[N],ys[N]]);
           let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
-          for (const p of P) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); }
+          for(let n=0;n<=N;n++){const px=d===1?n:xs[n],py=d===1?xs[n]:ys[n];x0=Math.min(x0,px);x1=Math.max(x1,px);y0=Math.min(y0,py);y1=Math.max(y1,py);}
           const pad = (a, b) => Math.max(2, (b - a) * 0.06);
           if (d === 1) { const m = Math.max(3, -y0, y1) * 1.1; A.setView([0, N], [-m, m]); A.hline(0, { color: 'faint' }); A.setLabels('$n$', '$S_n$'); A.setTitle('$S_n$'); }
           else { const m = Math.max(x1 - x0, y1 - y0) / 2 + 2, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2; A.setView([cx - m, cx + m], [cy - m, cy + m]); A.setLabels('$x$', '$y$'); A.setTitle(d === 2 ? 'the walk in the plane' : 'the walk, projected to the $xy$-plane'); }
@@ -170,12 +170,13 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
       kind: 'Lemma',
       name: 'Σ P(‖Sₙ‖ < ε) decides recurrence near 0',
       statement: String.raw`Let $S_n$ be a random walk in $\R^d$, $\|\cdot\|$ the sup norm, and $\eps>0$. (a) If $\sum_nP(\|S_n\|<\eps)<\infty$, then $P(\|S_n\|<\eps\text{ i.o.})=0$. (b) If $\sum_nP(\|S_n\|<\eps)=\infty$, then $P(\|S_n\|<2\eps\text{ i.o.})=1$.`,
-      idea: String.raw`Part (a) is the first Borel–Cantelli lemma (2.3.1). For (b), let $N$ count visits to the $\eps$-ball and look at the first time $T$ the walk enters it: the strong Markov property restarts the walk at $S_T$, and later visits to the $\eps$-ball are visits to the $2\eps$-ball of the restarted walk. So the expected number of visits to the $2\eps$-ball after reaching $\eps$ is at least the full sum; if it is infinite, then an infinite number of visits to the $2\eps$-ball cannot be avoided.`,
-      caption: String.raw`Planar Gaussian steps (zero mean, or with a drift $(0.04,0)$). Left: one path in the window $[-10,10]^2$ with the $\eps$-square (green) and $2\eps$-square (orange); gold dots are visits to the $\eps$-square. Right: the partial sums $\sum_{m\le n}\hat P(\|S_m\|<\eps)$ (blue) and for $2\eps$ (orange), estimated from 300 seeded walks: unbounded without drift, levelling off with drift.`,
+      idea: String.raw`Part (a) is Borel–Cantelli. For (b), fix $k\ge1$ and let $\rho_{2\eps,k}=P(\|S_j\|\ge2\eps\text{ for all }j\ge k)$. Define $A_m=\{\|S_m\|<\eps,\ \|S_n\|\ge\eps\text{ for all }n\ge m+k\}$. A path belongs to at most $k$ of these events. Independent increments and the triangle inequality give $P(A_m)\ge P(\|S_m\|<\eps)\rho_{2\eps,k}$. Thus $k\ge\sum_mP(A_m)\ge\rho_{2\eps,k}\sum_mP(\|S_m\|<\eps)$, forcing $\rho_{2\eps,k}=0$. Taking every integer $k$ rules out an eventual absence of visits to the $2\eps$-ball. Infinite expected visit counts alone would not justify this conclusion.`,
+      caption: String.raw`Planar Gaussian steps (zero mean, or with a drift $(0.04,0)$). Left: one path in the window $[-10,10]^2$ with the $\eps$-square (green) and $2\eps$-square (orange); gold dots are visits to the $\eps$-square. Right: the partial sums $\sum_{m\le n}\hat P(\|S_m\|<\eps)$ (blue) and for $2\eps$ (orange), estimated from 300 seeded walks: finite-horizon estimates rather than proof of divergence or convergence. For these Gaussian laws, zero drift gives recurrence and nonzero drift transience by the theorems, independently of this sample.`,
       deps: ['prob-2.3.1'],
       tags: ['random walk', 'recurrence'],
-      verify: true,
-      scope: String.raw`The lemma is for walks started at $0$ with i.i.d. steps; the sup norm is used so that the balls are squares. Constants (the factor $2$ in (b)) follow the textbook form as best I recall and are flagged for verification.`,
+      refs: ['Durrett, fifth edition, Lemma 5.4.5 and proof, p. 291.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=299' },
+      scope: String.raw`The lemma holds for any norm and for walks started at $0$ with i.i.d. steps. This display uses the sup norm, so the neighborhoods are squares; the factor $2$ in (b) matches the source exactly.`,
       viz(v) {
         const mode = v.select('walk', [{ value: 'zero', label: 'no drift' }, { value: 'drift', label: 'drift' }], 'zero');
         const eS = v.slider('$\\varepsilon$', 0.5, 3, 1.5, { step: 0.05 });
@@ -195,7 +196,8 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
             cache = { key, nr, px, py };
           }
           const { nr, px, py } = cache, e = eS.value, h1 = new Float64Array(N + 1), h2 = new Float64Array(N + 1);
-          for (let w = 0; w < M; w++) for (let n = 1; n <= N; n++) { const q = nr[w * (N + 1) + n]; if (q < e) h1[n]++; if (q < 2 * e) h2[n]++; }
+          const totals=new Float64Array(M);
+          for (let w = 0; w < M; w++) for (let n = 1; n <= N; n++) { const q = nr[w * (N + 1) + n]; if (q < e){h1[n]++;totals[w]++;} if (q < 2 * e) h2[n]++; }
           for (let n = 1; n <= N; n++) { h1[n] = h1[n - 1] + h1[n] / M; h2[n] = h2[n - 1] + h2[n] / M; }
           A.rect(-2 * e, -2 * e, 2 * e, 2 * e, { fill: 'orange', fillAlpha: 0.1, color: 'orange', width: 1.2 });
           A.rect(-e, -e, e, e, { fill: 'green', fillAlpha: 0.18, color: 'green', width: 1.2 });
@@ -206,10 +208,11 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
           B.setView([0, N], [0, Math.max(1, h2[N]) * 1.12]);
           B.path(ptsOf(h2, 10), { color: 'orange', width: 1.6 });
           B.path(ptsOf(h1, 10), { color: 'accent', width: 2 });
-          st = { vis, vis2, s1: h1[N], s2: h2[N], half: h1[N >> 1] };
+          const mean=h1[N],se=Math.sqrt(totals.reduce((s,x)=>s+(x-mean)**2,0)/(M-1)/M);
+          st = { vis, vis2, s1: h1[N], s2: h2[N], half: h1[N >> 1],se };
         });
         v.legend([['accent', '$\\varepsilon$'], ['orange', '$2\\varepsilon$']]);
-        v.readout(() => st && `The shown path visits the $\\varepsilon$-square **${st.vis}** times and the $2\\varepsilon$-square ${st.vis2} times in $4000$ steps.\nPartial sums at $n=2000$ and $4000$ ($\\varepsilon$): $${fr(st.half, 2)}$ and $${fr(st.s1, 2)}$. ${mode.value === 'zero' ? 'They are still growing (like $\\log n$): the sum diverges.' : 'They level off: the sum converges and the walk visits the square only finitely often.'}`);
+        v.readout(() => st && `The shown path visits the $\\varepsilon$-square **${st.vis}** times and the $2\\varepsilon$-square ${st.vis2} times in $4000$ steps.\nPartial sums at $n=2000$ and $4000$ ($\\varepsilon$): $${fr(st.half, 2)}$ and  $${fr(st.s1, 2)}$ (estimated standard error of the latter mean $${fr(st.se,2)}$). ${mode.value === 'zero' ? 'The zero-drift Gaussian walk is recurrent; this finite sample does not establish divergence.' : 'The nonzero-drift Gaussian walk is transient by the strong law; finite sample growth does not decide convergence of the series.'}`);
       },
     },
     // ======================================================================== 5.4.6
@@ -305,27 +308,29 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
       name: 'Chung–Fuchs theorem',
       statement: String.raw`Let $S_n$ be a random walk on $\R$. If $S_n/n\to0$ in probability, then $S_n$ is recurrent. In particular a walk whose steps are integrable with mean $0$ is recurrent (weak law of large numbers).`,
       idea: String.raw`Fix $A>0$ and let $m$ be large. By the covering bound 5.4.6, $\sum_nP(|S_n|<1)\ge\frac1{2m}\sum_nP(|S_n|<m)\ge\frac1{2m}\sum_{n\le Am}P(|S_n|<n/A)$, because $|S_n|<n/A\le m$ there. Since $S_n/n\to0$ in probability, each term is close to $1$ when $n$ is large, so the last sum is about $Am$. The series is therefore at least about $A/2$ for every $A$, hence infinite, and 5.4.7 gives recurrence.`,
-      caption: String.raw`Choose the step law (symmetric, except for the drifted one). Left: five paths drawn on a signed-log scale $\operatorname{arsinh}S_n$. Right: the median of $|S_n/n|$ over 300 seeded walks, log–log. When it falls to $0$ the theorem applies. The symmetric Cauchy law does **not** satisfy the hypothesis ($S_n/n$ is again Cauchy), yet it still returns, as 5.4.10 shows; the Pareto law with index $0.7$ does not return often.`,
+      caption: String.raw`Choose the step law (symmetric, except for the drifted one). Left: five paths drawn on a signed-log scale $\operatorname{arsinh}S_n$. Right: the median of $|S_n/n|$ over 300 seeded walks, log–log. A vanishing median alone does not establish convergence in probability. The extra lower panel estimates $P(|S_n/n|>\eps)$ for the chosen $\eps$, with theoretical curves for Gaussian and Cauchy steps; finite samples still do not prove a limit. The symmetric Cauchy law does **not** satisfy the hypothesis ($S_n/n$ is again Cauchy), yet it still returns, as 5.4.10 shows; the symmetric Pareto law with index $0.7$ is transient by the characteristic-function criterion.`,
       deps: ['prob-5.4.6', 'prob-5.4.7', 'prob-2.2.1a'],
       tags: ['random walk', 'recurrence'],
-      credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
-      scope: String.raw`The theorem is a sufficient condition (one-dimensional): the converse fails, since the Cauchy walk is recurrent although $S_n/n$ does not tend to $0$. Counts of returns here use the window $|S_n|<1$ for $20\,000$ steps.`,
+      refs: ['Durrett, fifth edition, Theorem 5.4.8, pp. 292–293; Theorem 5.4.10 for the Cauchy/Pareto comparisons.'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=300' },
+      scope: String.raw`The theorem is a sufficient condition (one-dimensional): the converse fails, since the Cauchy walk is recurrent although $S_n/n$ does not tend to $0$. Counts of visits here use the window $|S_n|<1$ for $20\,000$ steps. For symmetric Pareto tails of index $\alpha\in(0,2)$, $1-\varphi(t)\sim c|t|^\alpha$ follows by substituting $u=|t|x$ in $\alpha\int_1^\infty(1-\cos(tx))x^{-1-\alpha}dx$. Thus $\alpha=0.7$ gives an integrable resolvent near zero and transience; Cauchy has $1-\varphi(t)\sim|t|$ and a divergent integral.`,
       viz(v) {
         const lS = v.select('step law', [
           { value: 'g', label: 'Gaussian' }, { value: 'p15', label: 'Pareto $\\alpha=1.5$' }, { value: 'c', label: 'Cauchy' }, { value: 'p07', label: 'Pareto $\\alpha=0.7$' }, { value: 'dr', label: 'Gaussian + drift' },
         ], 'p15');
+        const epsS=v.slider('probability threshold $\\varepsilon$',.01,5,.1,{log:true});
         let seed = 1; v.button('Resample', () => { seed++; });
         const N = 20000, M = 300, CK = 70;
         const checks = Array.from({ length: CK }, (_, i) => Math.round(10 ** (1 + (i * (Math.log10(N) - 1)) / (CK - 1))));
         const A = v.stage({ x: [0, N], y: [-13, 13], axes: 'box', gutter: true, height: 320, xlabel: '$n$', ylabel: 'arsinh $S_n$', title: 'five paths (signed-log scale)' });
         const B = v.stage({ x: [10, N], y: [1e-3, 100], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$n$', title: 'median $|S_n/n|$' });
+        const C=v.stage({x:[10,N],xlog:true,y:[0,1.03],axes:'box',gutter:true,height:230,full:true,xlabel:'$n$',title:'$P(|S_n/n|>\\varepsilon)$: estimate and theoretical curve when available'});
         let cache = null, st = null;
         v.render(() => {
           const key = `${lS.value}|${seed}`;
           if (!cache || cache.key !== key) {
             const r = v.rng(seed * 41 + lS.value.length * 5), lw = lS.value;
-            const draw = () => (lw === 'g' ? r.normal() : lw === 'dr' ? r.normal() + 0.05 : lw === 'c' ? Math.tan(Math.PI * (r() - 0.5)) : (r() < 0.5 ? -1 : 1) * r() ** (-1 / (lw === 'p15' ? 1.5 : 0.7)));
+            const draw = () => (lw === 'g' ? r.normal() : lw === 'dr' ? r.normal() + 0.05 : lw === 'c' ? Math.tan(Math.PI * (r() - 0.5)) : (r() < 0.5 ? -1 : 1) * (1-r()) ** (-1 / (lw === 'p15' ? 1.5 : 0.7)));
             const vals = checks.map(() => new Float64Array(M)), paths = [], rets = [];
             for (let w = 0; w < M; w++) {
               let S = 0, ci = 0, ret = 0; const P = [];
@@ -338,16 +343,19 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
             }
             const med = vals.map((a) => { const b = Array.from(a).sort((x, y) => x - y); return b[M >> 1]; });
             rets.sort((x, y) => x - y);
-            cache = { key, paths, med, retMean: rets.reduce((a, b) => a + b, 0) / M, retMed: rets[M >> 1] };
+            cache = { key, paths, med, vals, retMean: rets.reduce((a, b) => a + b, 0) / M, retMed: rets[M >> 1] };
           }
+          const ext=Math.max(2,...cache.paths.flat().map(p=>Math.abs(p[1])))*1.1;A.setView([0,N],[-ext,ext]);B.setView([10,N],[Math.max(1e-8,Math.min(.5,...cache.med.map(x=>x*.5))),Math.max(2,...cache.med)*1.3]);
           const cols = ['accent', 'orange', 'green', 'purple', 'teal'];
           cache.paths.forEach((P, i) => A.path(P, { color: cols[i], width: 1.1, alpha: 0.8 }));
           A.hline(0, { color: 'faint' });
-          B.path(checks.map((n, i) => [n, Math.max(1e-3, cache.med[i])]), { color: 'accent', width: 2 });
+          B.path(checks.map((n, i) => [n, cache.med[i]]), { color: 'accent', width: 2 });
           B.path([[10, 1], [N, 1]], { color: 'faint', dash: [4, 4] });
-          st = { last: cache.med[CK - 1], retMean: cache.retMean, retMed: cache.retMed };
+          const eps=epsS.value,prob=cache.vals.map(a=>a.filter(x=>x>eps).length/M);C.path(checks.map((n,i)=>[n,prob[i]]),{color:'gold',width:2});if(['g','dr','c'].includes(lS.value))C.path(checks.map(n=>[n,lS.value==='c'?1-2/Math.PI*Math.atan(eps):.5*(v.M.erfc((eps-(lS.value==='dr'?.05:0))*Math.sqrt(n/2))+v.M.erfc((eps+(lS.value==='dr'?.05:0))*Math.sqrt(n/2)))]),{color:'green',width:1.8});
+          st = { last: cache.med[CK - 1], retMean: cache.retMean, retMed: cache.retMed,prob:prob[CK-1],se:Math.sqrt(prob[CK-1]*(1-prob[CK-1])/M) };
         });
-        v.readout(() => st && `Median $|S_n/n|$ at $n=20\\,000$: **${st.last < 0.01 ? st.last.toExponential(1) : fr(st.last, 3)}**. Visits to $|S_n|<1$ in $20\\,000$ steps: median **${st.retMed}**, mean ${fr(st.retMean, 1)}.\n${{ g: '$S_n/n\\to0$: Chung–Fuchs applies.', p15: 'Mean exists and is $0$, so $S_n/n\\to0$ (slowly): recurrent.', c: '$S_n/n$ is standard Cauchy for every $n$: the hypothesis fails, but the walk is still recurrent.', p07: 'No mean and $|S_n|/n\\to\\infty$: the walk is transient (few returns).', dr: '$S_n/n\\to0.05$: not recurrent.' }[lS.value]}`);
+        v.legend([['gold','tail probability, 300-path estimate'],['green','theoretical Gaussian/Cauchy tail probability']]);
+        v.readout(() => st && `Median $|S_n/n|$ at $n=20\\,000$: **${st.last < 0.01 ? st.last.toExponential(1) : fr(st.last, 3)}**. Estimated tail probability $${fr(st.prob,3)}$ (estimated standard error $${fr(st.se,3)}$, pointwise). Visits to $|S_n|<1$ in $20\\,000$ steps: median **${st.retMed}**, mean ${fr(st.retMean, 1)}.\n${{ g: '$S_n/n\\to0$: Chung–Fuchs applies.', p15: 'Mean exists and is $0$, so $S_n/n\\to0$ (slowly): recurrent.', c: '$S_n/n$ is standard Cauchy for every $n$: the hypothesis fails, but the walk is still recurrent.', p07: 'No mean: the symmetric Pareto characteristic-function criterion gives transience.', dr: '$S_n/n\\to0.05$: not recurrent.' }[lS.value]}`);
       },
     },
   ],

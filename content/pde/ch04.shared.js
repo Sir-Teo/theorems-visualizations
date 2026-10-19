@@ -2,6 +2,24 @@
 // exports, imported by ch04.js, ch04-b.js and ch04-c.js. Re-exports the chapter-3 helpers (makeHeat, sineCoeffs, spline, ...).
 export * from './ch03.shared.js';
 
+/** Sine coefficient of a fixed-end triangular pluck, peak h at x=p on [0,1]. */
+export function pluckCoefficient(n, p, h) {
+  return 2 * h * Math.sin(n * Math.PI * p) / (n * n * Math.PI * Math.PI * p * (1 - p));
+}
+
+/** Modern finite-sum reconstruction of Fourier's stationary lamina, chapter III. */
+export function fourierLamina(N, x, y) {
+  let s = 0;
+  for (let k = 0; k < N; k++) s += (k % 2 ? -1 : 1) * Math.exp(-(2 * k + 1) * x) * Math.cos((2 * k + 1) * y) / (2 * k + 1);
+  return 4 * s / Math.PI;
+}
+/** Unit-temperature bar of width pi, zero ends, diffusivity one. */
+export function fourierBar(t, y, N = 60) {
+  let s = 0;
+  for (let k = 0; k < N; k++) s += (k % 2 ? -1 : 1) * Math.exp(-((2 * k + 1) ** 2) * t) * Math.cos((2 * k + 1) * y) / (2 * k + 1);
+  return 4 * s / Math.PI;
+}
+
 /** Solutions of X'' = -lam X with X(0) = 0, X'(0) = 1 (S) and X(0) = 1, X'(0) = 0 (C), valid for lam of either sign. */
 export function CS(lam, x) {
   if (lam > 1e-12) { const m = Math.sqrt(lam); return [Math.cos(m * x), Math.sin(m * x) / m]; }
@@ -47,7 +65,11 @@ export function eigModes(left, right, h0 = 0, h1 = 0, K = 8) {
   const out = [];
   for (const lam of lams.slice(0, K)) {
     const X0 = XX(lam), dX0 = dXX(lam);
-    let s = 0; const n = 400; for (let i = 0; i < n; i++) { const x = (i + 0.5) / n; s += X0(x) ** 2; } const nrm = Math.sqrt(s / n);
+    let cc, ss, cs;
+    if (Math.abs(lam) < 1e-5) { cc = 1 - lam / 3; ss = 1 / 3 - lam / 15; cs = .5 - lam / 6; }
+    else if (lam > 0) { const m = Math.sqrt(lam); cc = .5 + Math.sin(2 * m) / (4 * m); ss = (.5 - Math.sin(2 * m) / (4 * m)) / lam; cs = Math.sin(m) ** 2 / (2 * lam); }
+    else { const k = Math.sqrt(-lam); cc = .5 + Math.sinh(2 * k) / (4 * k); ss = (-.5 + Math.sinh(2 * k) / (4 * k)) / (-lam); cs = Math.sinh(k) ** 2 / (-2 * lam); }
+    const nrm = Math.sqrt(ab[0] ** 2 * cc + 2 * ab[0] * ab[1] * cs + ab[1] ** 2 * ss);
     out.push({ lam, X: (x) => X0(x) / nrm, dX: (x) => dX0(x) / nrm, kind: lam > 1e-9 ? 'osc' : lam < -1e-9 ? 'growing' : 'zero' });
   }
   return out;

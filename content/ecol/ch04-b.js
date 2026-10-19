@@ -1,5 +1,15 @@
 // Ecology — Chapter 4 (part b): limiting similarity to the competition–colonization trade-off
-import { solveDense, jcInit, jcStep, jcRichness, spcol } from './ch04.shared.js';
+import { jcInit, jcRichness, spcol } from './ch04.shared.js';
+
+import { forestStep, parentSeed, parentSurvival, parentRecruitment, parentRecruitmentPeak } from './ecol-source-audit-forest.shared.js';
+
+import { lotteryGrowth, lotteryStepLogOdds, lotteryShare, lotteryOutcome, wedgeOutcome } from './ecol-source-audit-lottery.shared.js';
+
+import { packingUtil as packingU, packingMatrix, packingCondition, packingSolve } from './ecol-source-audit-packing.shared.js';
+
+import { runDisplacement, displacementLimit } from './ecol-source-audit-displacement.shared.js';
+
+import { colonizationEquilibrium, colonizationCoexistence, runColonization } from './ecol-source-audit-colonization.shared.js';
 
 export default {
   collection: 'ecol',
@@ -10,28 +20,26 @@ export default {
       num: '4.7',
       kind: 'Concept',
       name: 'Limiting similarity',
-      credit: 'R. H. MacArthur & R. Levins, 1967; R. M. May & R. H. MacArthur, 1972',
-      statement: String.raw`Species that live on a resource axis (prey size, seed size, perch height…) use it with overlapping utilization curves. In the Lotka–Volterra model the competition coefficient between species $i$ and $j$ is the overlap of their curves relative to a species' overlap with itself, $\alpha_{ij}=\int u_iu_j\big/\int u_i^2$, so it falls with the spacing $d$ between their optima measured in units of the curve width $w$. **Limiting similarity** is the idea that there is a smallest spacing $d/w$ below which the equilibrium coexistence of a packed community is lost: closer-packed species are driven out by small differences in their fitness.`,
-      scope: String.raw`This is about the Lotka–Volterra equilibrium with equal, constant carrying capacities and a regular spacing. The minimum $d/w$ is not a universal constant: it depends on the shape of the utilization curves and on how much the species differ in fitness (the noise slider), a point stressed by May and MacArthur (1972) and by later critics of a fixed limit.`,
-      idea: String.raw`Coexistence of $n$ species needs the equilibrium $N^*=\alpha^{-1}K$ to be positive. Because $\alpha$ is the autocorrelation of the utilization curves it is a positive definite matrix, so the equilibrium is always *stable* when it exists (the minimum eigenvalue below stays positive); what fails when the species are packed is **feasibility**. As the spacing shrinks, $\alpha$ becomes nearly singular, $\alpha^{-1}$ amplifies tiny differences in $K_i$, and some $N_i^*$ turn negative. With realistic fitness noise there is thus a threshold spacing, of the order of the curve width, below which a random community loses species (community matrix: mathbio-3.21).`,
-      caption: String.raw`Top: the resource axis with $n$ equally spaced species whose utilization curves have width $w=1$ (choose the curve shape). Bottom left: equilibrium abundances $N_i^*$ for the carrying capacities $K_i$ (green positive, red negative = that species cannot be in the community). Bottom right: the fraction of 150 random draws of the $K_i$ (log-normal with the chosen noise) in which all $n$ species are feasible, as a function of spacing; the gold line marks your spacing. Squeeze $d/w$ and watch the curve fall from 1 to 0.`,
+      credit: 'R. H. MacArthur & R. Levins, 1967; finite packing sensitivity experiment derived here',
+      statement: String.raw`In a resource-overlap Lotka–Volterra model, choose competition coefficients $\alpha_{ij}=\int u_i u_j/\int u_i^2$ for congruent utilization curves at distinct regularly spaced optima. A strictly positive equilibrium requires $N^*=\alpha^{-1}K>0$. Limiting similarity concerns restrictions on packing compatible with this coexistence; no universal minimum spacing follows from overlap alone. Finite array boundaries, curve shape and differences among constant carrying capacities can all change feasibility, even when a positive equilibrium would be locally stable.`,
+      scope: String.raw`The overlap prescription is a model assumption, justified heuristically for rapidly renewed resources or spatial encounters, not an identity for every ecological interaction. Here Kᵢ are drawn once and then held constant: the noise slider controls between-species variation, not temporal environmental variation. All widths are chosen scale parameters: Gaussian w is its standard deviation, exponential w its decay length, and box w its half-width. The atlas finite-array/lognormal Monte Carlo experiment is not a reproduction of an original figure or a stochastic-persistence theorem.`,
+      idea: String.raw`An overlap matrix is generally positive semidefinite. For the three displayed kernels, finitely many distinct translates are linearly independent, making this equal-norm Gram matrix strictly positive definite in exact arithmetic. At a positive equilibrium the Jacobian is $-D\alpha$, for positive diagonal $D$, and is similar to the negative-definite symmetric matrix $-D^{1/2}\alpha D^{1/2}$: this proves local stability. Positivity of $\alpha^{-1}K$ is a separate requirement; a negative formal abundance means this full-species equilibrium is infeasible, not that the negative species alone determines the surviving community. Very small spacing makes the solve ill-conditioned, so numerical uncertainty must not be counted as ecological exclusion.`,
+      caption: String.raw`Top: n equally spaced utilization curves, with chosen width parameter w=1. Bottom left: the formal equilibrium for one fixed draw of Kᵢ, when numerically resolved. Bottom right: resolved-feasible fraction among 150 fixed lognormal draws versus spacing; gray shows unresolved fraction. Gold marks the chosen spacing; its readout is calculated at that exact spacing. Neither curve is a universal probability of coexistence, and finite sampling need not give a monotone transition.`,
       deps: ['mathbio-3.21'],
-      refs: ['Begon ch. 19'],
+      refs: ['MacArthur & Levins (1967), Am.Nat.101:377–385, pp.377–381 equations1–3 and overlap derivation; finite-array numerical experiment derived here'],
       tags: ['niche', 'competition', 'species packing'],
       links: { doi: 'https://doi.org/10.1086/282505' },
-      verify: true,
+      verify: false,
       viz(v) {
         const nS = v.slider('number of species $n$', 3, 9, 5, { int: true });
         const dS = v.slider('spacing $d/w$', 0.2, 3.5, 1, { step: 0.05 });
         const sS = v.slider('noise in carrying capacities (s.d. of $\\ln K$)', 0, 0.4, 0.1, { step: 0.01 });
         const kern = v.select('utilization curves', [{ value: 'g', label: 'Gaussian' }, { value: 'l', label: 'exponential' }, { value: 'b', label: 'box' }], 'g');
-        const alpha = (k, d) => { d = Math.abs(d); return k === 'g' ? Math.exp(-d * d / 4) : k === 'l' ? (1 + d) * Math.exp(-d) : Math.max(0, 1 - d / 2); };
-        const util = (k, x) => (k === 'g' ? Math.exp(-x * x / 2) : k === 'l' ? Math.exp(-Math.abs(x)) : Math.abs(x) <= 1 ? 1 : 0);
+        const util=packingU;
         const A = v.stage({ x: [-6, 6], y: [0, 1.25], axes: 'box', gutter: true, height: 230, xlabel: 'position on the resource axis (units of $w$)', title: 'utilization curves', full: true });
         const B = v.stage({ x: [0, 10], y: [-1, 2], axes: 'box', gutter: true, height: 270, xlabel: 'species', ylabel: 'equilibrium $N_i^*$', title: 'equilibrium abundances', weight: 1 });
-        const C = v.stage({ x: [0, 3.5], y: [0, 1.05], axes: 'box', gutter: true, height: 270, xlabel: 'spacing $d/w$', ylabel: 'fraction of draws feasible', title: 'chance that all $n$ species coexist', weight: 1 });
-        let mcKey = '', mc = [], info = null;
-        const solveFor = (k, n, dw, Kv) => { const M = []; for (let i = 0; i < n; i++) { M.push([]); for (let j = 0; j < n; j++) M[i].push(alpha(k, (i - j) * dw)); } return { M, x: solveDense(M, Kv) }; };
+        const C = v.stage({ x: [0, 3.5], y: [0, 1.05], axes: 'box', gutter: true, height: 270, xlabel: 'spacing $d/w$', ylabel: 'fraction of draws feasible', title: 'finite draw feasibility and numerical uncertainty', weight: 1 });
+        let mcKey = '', mc = [], un = [], info = null;
         v.render(() => {
           const n = nS.value, dw = dS.value, sd = sS.value, k = kern.value;
           const half = Math.max(3, ((n - 1) * dw) / 2 + 2.5);
@@ -43,25 +51,24 @@ export default {
           for (let t = 0; t < NT; t++) { z.push([]); for (let i = 0; i < n; i++) z[t].push(r.normal()); }
           const key = [n, sd, k].join('|');
           if (key !== mcKey) {
-            mcKey = key; mc = [];
+            mcKey = key; mc = []; un=[];
             for (let q = 0; q <= 35; q++) {
-              const d = 0.1 + (3.4 * q) / 35; let ok = 0;
-              for (let t = 0; t < NT; t++) { const { x } = solveFor(k, n, d, z[t].map((e) => Math.exp(sd * e))); if (x && x.every((u) => u > 0)) ok++; }
-              mc.push([d, ok / NT]);
+              const d=.1+3.4*q/35,M=packingMatrix(k,n,d),cond=packingCondition(M);let ok=0,unknown=0;
+              for(let t=0;t<NT;t++){const r=packingSolve(M,z[t].map(e=>Math.exp(sd*e)),cond);if(r.status==='feasible')ok++;if(r.status==='unresolved')unknown++;}
+              mc.push([d,ok/NT]);un.push([d,unknown/NT]);
             }
           }
           const Kv = z[0].map(() => 1).map((one, i) => Math.exp(sd * z[0][i]));
-          const { M, x: Ns } = solveFor(k, n, dw, Kv);
+          const M=packingMatrix(k,n,dw),cond=packingCondition(M),result=packingSolve(M,Kv,cond),Ns=result.status==='unresolved'?null:result.x;let ok=0,unknown=0;for(const row of z){const r=packingSolve(M,row.map(e=>Math.exp(sd*e)),cond);if(r.status==='feasible')ok++;if(r.status==='unresolved')unknown++;}
           B.setView([0, n + 1], [Math.min(-0.5, ...(Ns || [0]).map((u) => u * 1.1)), Math.max(2, ...(Ns || [0]).map((u) => u * 1.1))]);
           if (Ns) B.bars(Ns, { x0: 1, dx: 1, color: (u) => (u > 0 ? 'green' : 'red') });
           B.hline(0, { color: 'ink', width: 1 });
-          C.path(mc, { color: 'accent', width: 2.6 });
+          C.path(mc, { color: 'accent', width: 2.6 });C.path(un,{color:'muted',width:1.8,dash:[4,3]});
           C.vline(dw, { color: 'gold', width: 2 });
-          const feas = Ns && Ns.every((u) => u > 0);
-          const lam = v.M.eigSym(M).values; const lmin = Math.min(...lam);
-          info = { feas, lmin, minN: Ns ? Math.min(...Ns) : NaN, p: (mc.reduce((a, b) => (Math.abs(b[0] - dw) < Math.abs(a[0] - dw) ? b : a))[1]) };
+          info={status:result.status,cond,minN:Ns?Math.min(...Ns):null,p:ok/NT,u:unknown/NT};
         });
-        v.readout(() => info && String.raw`Smallest eigenvalue of $\alpha$: $${v.fix(info.lmin, 4)}$ (${info.lmin > 0 ? 'positive: the equilibrium, if it exists, is stable' : 'not positive'}). For this draw of $K_i$: smallest $N_i^*=${v.fix(info.minN, 3)}$ → **${info.feas ? 'all species coexist' : 'at least one species is lost'}**. Probability of full coexistence at this spacing: $${v.fix(info.p, 2)}$.`);
+        v.legend([['accent','resolved-feasible fraction'],['muted','numerically unresolved fraction',{dash:true}],['gold','selected spacing']]);
+        v.readout(() => info && `Exact selected spacing: resolved-feasible ${v.fix(info.p,2)}, unresolved ${v.fix(info.u,2)} among 150 draws. For this fixed draw: **${info.status==='feasible'?'positive equilibrium, locally stable':info.status==='infeasible'?'formal full-species equilibrium infeasible':'numerically unresolved; no ecological exclusion conclusion'}**.${info.minN===null?'':` Smallest formal abundance ${v.fix(info.minN,3)}.`} Estimated infinity-norm condition ${Number.isFinite(info.cond)?info.cond.toExponential(2):'beyond the solver threshold'}. Exact Gram positive definiteness is not established by a rounded numerical eigenvalue.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.8
@@ -69,44 +76,26 @@ export default {
       num: '4.8',
       kind: 'Phenomenon',
       name: 'Character displacement',
-      credit: 'W. L. Brown & E. O. Wilson, 1956 (term); P. R. Grant & B. R. Grant, 2006 (Darwin’s finches)',
-      statement: String.raw`Two closely related species that overlap in space often differ more in a trait that governs resource use (beak depth, body size) where they live together (**sympatry**) than where each lives alone (**allopatry**). This pattern, character displacement, is explained by natural selection driven by competition: where the species meet, individuals that overlap least with the rival's resource use have the highest fitness, so the two species' trait means are pushed apart until competition and the resource supply balance.`,
-      scope: String.raw`The model below shows that competition can produce divergence, not that any given field pattern is caused by it: a pattern of larger differences in sympatry can also result from species sorting (only species that already differ can coexist) or from environmental differences between islands. Such alternatives must be excluded by tests (e.g. Schluter, Price & Grant 1985). In the classic example the ground finches *Geospiza fortis* and *G. fuliginosa* differ little in beak depth on islands where each occurs alone, and more where they occur together; Grant & Grant (2006) reported displacement of *G. fortis* observed on Daphne Major after the arrival of the larger *G. magnirostris*.`,
-      idea: String.raw`Let each species' carrying capacity be a Gaussian function of its trait $z$ (resource availability, width $\sigma_K$) and let the competition coefficient fall with the trait distance, $\alpha(d)=e^{-d^2/2\sigma_a^2}$. The mean trait climbs the gradient of per-capita fitness, evaluated at the ecological equilibrium of the Lotka–Volterra competition model (mathbio-3.15): $$\dot z_i\propto \frac{d_i}{\sigma_a^2}\,\alpha(d_i)\frac{N_j^*}{K(z_i)}-\frac{z_i}{\sigma_K^2},\qquad d_i=z_i-z_j .$$ The first term pushes the species away from the rival, the second pulls it back toward the best resources; the balance sets the final separation. (This is the trait-evolution model of Slatkin 1980, simplified.) Species that are too similar to coexist ecologically in the first place are not rescued by evolution when $\alpha$ is large relative to the resource gradient, so divergence needs the right balance.`,
-      caption: String.raw`The two populations start close to the resource optimum (faint dots). Left: the resource curve $K(z)$ and the trait distributions of the two species at the current time. Right: their mean traits through time in **sympatry** (solid) and in **allopatry** (dashed, each species alone). Press play, or change $\sigma_a$ (competition width) and $\sigma_K$ (resource breadth): wide competition kernels give strong displacement, a very narrow resource axis pulls the species together again.`,
+      credit: 'P. R. Grant & B. R. Grant, 2006 (field evidence); symmetric trait model derived here',
+      statement: String.raw`Ecological character displacement is evolutionary divergence in resource-use traits caused by interspecific competition. Larger differences between sympatric than allopatric populations can be consistent with this mechanism, but the pattern alone does not establish its cause. Grant & Grant followed *Geospiza fortis* on Daphne Major after *G. magnirostris* established a breeding population in 1982: during the 2004–2005 drought, selection favored smaller beaks in *G. fortis*, away from the larger competitor. The next generation’s change was consistent with the response predicted from heritability and measured selection.`,
+      scope: String.raw`The field paper offers four lines of observational support for competition and calls for replicated experiments to establish causation definitively. Its 2005 offspring generation was measured in 2006; these dates are not interchangeable. The visualization is an atlas illustration with chosen standardized traits, not empirical finch trajectories or fitted evolutionary rates. It imposes exact symmetry, equal growth parameters, positive ecological equilibria, instantaneous ecological equilibration and a constant response coefficient; stochasticity, genetic variance changes and demographic extinction are absent.`,
+      idea: String.raw`For resident traits $z_1=-z$, $z_2=z$, choose $K(z)=e^{-z^2/(2\sigma_K^2)}$ and $\alpha(d)=e^{-d^2/(2\sigma_a^2)}$. The symmetric Lotka–Volterra equilibrium is $N_1=N_2=K(z)/(1+\alpha(2z))>0$ for $z>0$. Differentiating a rare mutant’s per-capita fitness with resident densities held fixed gives $$\dot z=\tfrac14 z\left[\frac{2\alpha(2z)}{\sigma_a^2(1+\alpha(2z))}-\frac1{\sigma_K^2}\right].$$ Allopatry instead has $\dot z=-z/(4\sigma_K^2)$. A positive separation equilibrium exists only for $\sigma_a<\sigma_K$, with $d^*=\sigma_a\sqrt{2\ln(2\sigma_K^2/\sigma_a^2-1)}$; otherwise separation tends to zero. As traits coincide, ecological splitting becomes neutral; the exact coincident limit is not a stable distinct-species coexistence claim.`,
+      caption: String.raw`Left: chosen resource curve K(z) and schematic trait distributions (fixed display width, not measured variation). Right: symmetric mean traits through 40 chosen evolution-time units in sympatry (solid) and exact allopatric relaxation (dashed). Press play or change the competition and resource widths. Narrower competition than the resource curve can maintain divergence; increasing the competition width beyond the resource width removes the positive-separation equilibrium. Finite trajectories need not have reached their limits.`,
       deps: ['ecol-4.7'],
-      refs: ['Begon ch. 8'],
+      refs: ['Grant & Grant (2006), Science 313:224–226, full paper; displayed fitness-gradient and separation limit derived explicitly here'],
       tags: ['evolution', 'competition', 'trait'],
       links: { doi: 'https://doi.org/10.1126/science.1128374' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sa = v.slider('width of competition $\\sigma_a$', 0.2, 1.5, 0.6, { step: 0.05 });
         const sk = v.slider('breadth of resources $\\sigma_K$', 0.3, 2, 1, { step: 0.05 });
-        const T = 40, dt = 0.1;
-        const run = (sym) => {
-          const a = sa.value, k = sk.value, Kf = (z) => Math.exp(-z * z / (2 * k * k)), al = (d) => Math.exp(-d * d / (2 * a * a));
-          let z1 = -0.15, z2 = 0.15, alive = [true, true];
-          const out = { t: [0], z1: [z1], z2: [z2], ex: false };
-          for (let s = 1; s <= T / dt; s++) {
-            let N1 = Kf(z1), N2 = Kf(z2);
-            if (sym) {
-              const A = al(z1 - z2), K1 = Kf(z1), K2 = Kf(z2), det = 1 - A * A;
-              N1 = (K1 - A * K2) / det; N2 = (K2 - A * K1) / det;
-              if (N1 <= 0) { alive[0] = false; out.ex = true; } else if (N2 <= 0) { alive[1] = false; out.ex = true; }
-            }
-            const g1 = (sym && alive[1] ? ((z1 - z2) / (a * a)) * al(z1 - z2) * N2 / Kf(z1) : 0) - z1 / (k * k);
-            const g2 = (sym && alive[0] ? ((z2 - z1) / (a * a)) * al(z1 - z2) * N1 / Kf(z2) : 0) - z2 / (k * k);
-            if (alive[0]) z1 += 0.25 * g1 * dt; if (alive[1]) z2 += 0.25 * g2 * dt;
-            if (s % 5 === 0) { out.t.push(s * dt); out.z1.push(z1); out.z2.push(z2); }
-          }
-          return out;
-        };
+        const T = 40;
         let key = '', sym = null, allo = null, prog = 1, info = null;
         const A = v.stage({ x: [-3, 3], y: [0, 1.4], axes: 'box', gutter: true, height: 320, xlabel: 'trait $z$ (e.g. beak depth, standardized)', ylabel: 'resource availability $K(z)$', title: 'resources and the two species', weight: 1 });
-        const B = v.stage({ x: [0, T], y: [-2, 2], axes: 'box', gutter: true, height: 320, xlabel: 'generations (arbitrary units)', ylabel: 'mean trait', title: 'evolution of the two trait means', weight: 1 });
+        const B = v.stage({ x: [0, T], y: [-2, 2], axes: 'box', gutter: true, height: 320, xlabel: 'chosen evolution time', ylabel: 'mean trait', title: 'evolution of the two trait means', weight: 1 });
         v.render(() => {
           const kk = sa.value + '|' + sk.value;
-          if (kk !== key) { key = kk; sym = run(true); allo = run(false); }
+          if (kk !== key) { key = kk; sym = runDisplacement(sa.value,sk.value); allo = {z1:sym.allo1,z2:sym.allo2}; }
           const k = sk.value, n = sym.t.length - 1, idx = Math.min(n, Math.floor(prog * n));
           A.fn((z) => Math.exp(-z * z / (2 * k * k)), { color: 'muted', width: 2, fill: true, fillAlpha: 0.08, domain: [-3, 3] });
           const bump = (m, col) => A.fn((z) => 0.7 * Math.exp(-((z - m) ** 2) / (2 * 0.15 * 0.15)), { color: col, width: 2.4, fill: true, fillAlpha: 0.3, domain: [-3, 3], n: 300 });
@@ -117,11 +106,11 @@ export default {
           const sl = (arr) => sym.t.slice(0, idx + 1).map((t, i) => [t, arr[i]]);
           B.path(sl(allo.z1), { color: 'accent', width: 1.6, dash: [5, 4] }); B.path(sl(allo.z2), { color: 'orange', width: 1.6, dash: [5, 4] });
           B.path(sl(sym.z1), { color: 'accent', width: 2.6 }); B.path(sl(sym.z2), { color: 'orange', width: 2.6 });
-          info = { ds: Math.abs(sym.z2[idx] - sym.z1[idx]), da: Math.abs(allo.z2[idx] - allo.z1[idx]), ex: sym.ex, t: sym.t[idx] };
+          info = { ds: Math.abs(sym.z2[idx] - sym.z1[idx]), da: Math.abs(allo.z2[idx] - allo.z1[idx]), limit: displacementLimit(sa.value,sk.value), t: sym.t[idx] };
         });
         v.animate((t) => { prog = Math.min(1, t / 10); v.invalidate(); }, { period: 12, still: 11.9 });
         v.legend([['accent', 'species 1'], ['orange', 'species 2'], ['muted', 'resource curve'], ['ink', 'solid: sympatry, dashed: allopatry']]);
-        v.readout(() => info && String.raw`At time ${v.fix(info.t, 0)}: difference between the trait means **${v.fix(info.ds, 2)}** in sympatry versus ${v.fix(info.da, 2)} in allopatry (in units of the trait scale)${info.ex ? ' — competition is too strong here: one species is excluded and its trait stops evolving' : ''}.`);
+        v.readout(() => info && String.raw`At chosen time ${v.fix(info.t,1)}: separation **${v.fix(info.ds,3)}** in sympatry versus ${v.fix(info.da,3)} in allopatry. Symmetric-model limiting separation: ${v.fix(info.limit,3)}. ${sa.value>=sk.value?'No positive-separation equilibrium: finite separation decays toward zero; ecological splitting is neutral at exact coincidence.':'The positive-separation equilibrium is an illustrative model result, not a fit to the field data.'}`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.9
@@ -130,7 +119,7 @@ export default {
       kind: 'Concept',
       name: 'Stabilizing versus equalizing mechanisms (Chesson)',
       credit: 'P. Chesson, 2000',
-      statement: String.raw`In modern coexistence theory two species can coexist when each can increase from low density in the presence of the other. For the two-species Lotka–Volterra competition model this reduces to $$\rho<\frac{\kappa_1}{\kappa_2}<\frac1\rho ,$$ where $\rho=\sqrt{\alpha_{12}\alpha_{21}}$ is the **niche overlap** and $\kappa_1/\kappa_2$ is the **fitness ratio** (here $\kappa_1/\kappa_2=\frac{K_1}{K_2}\sqrt{\alpha_{21}/\alpha_{12}}$). **Stabilizing mechanisms** reduce $\rho$ (they make species limit themselves more than each other) and so widen the coexistence region. **Equalizing mechanisms** bring the fitness ratio toward 1. For $\rho>1$ the inequality has no solution and the species show priority effects.`,
+      statement: String.raw`In modern coexistence theory two species can coexist when each can increase from low density in the presence of the other. For the two-species Lotka–Volterra competition model this reduces to $$\rho<\frac{\kappa_1}{\kappa_2}<\frac1\rho ,$$ where $\rho=\sqrt{\alpha_{12}\alpha_{21}}$ is the **niche overlap** and $\kappa_1/\kappa_2$ is the **fitness ratio** (here $\kappa_1/\kappa_2=\frac{K_1}{K_2}\sqrt{\alpha_{21}/\alpha_{12}}$). **Stabilizing mechanisms** reduce $\rho$ (they make species limit themselves more than each other) and so widen the coexistence region. **Equalizing mechanisms** bring the fitness ratio toward 1. For $\rho>1$ the coexistence inequality has no solution; priority effects occur only when $1/\rho<\kappa_1/\kappa_2<\rho$. Outside that reversed wedge one species excludes the other; equality is an invasion boundary.`,
       scope: String.raw`Exact for two-species Lotka–Volterra competition. Chesson’s general framework defines the stabilizing and equalizing components through invasion growth rates for arbitrary models, using the same wedge picture.`,
       idea: String.raw`Species 1 can invade a resident of species 2 at its carrying capacity when $K_1/K_2>\alpha_{12}$, and species 2 can invade species 1 when $K_1/K_2<1/\alpha_{21}$. Dividing out the asymmetry between $\alpha_{12}$ and $\alpha_{21}$ and writing the conditions in terms of $\rho$ and $\kappa_1/\kappa_2$ gives the symmetric wedge above. Stronger competition within species than between (small $\rho$) makes the wedge wide; unequal fitness moves the point off the centre line, and only equalizing mechanisms bring it back (compare the four outcomes of mathbio-3.16).`,
       caption: String.raw`Drag the gold point in the plane of niche overlap $\rho$ (horizontal) and fitness ratio (vertical, log scale). The green wedge is where both species can invade; above it species 1 excludes 2, below it species 2 excludes 1, and for $\rho>1$ the reversed wedge (red) is the region of priority effects. The right panel integrates the Lotka–Volterra equations at the chosen point. The buttons apply a **stabilizing** change (overlap $\times0.7$) or an **equalizing** change (fitness ratio $\to$ its square root).`,
@@ -145,6 +134,8 @@ export default {
         const start = v.select('who starts ahead', [{ value: 'e', label: 'neither' }, { value: '1', label: 'species 1' }, { value: '2', label: 'species 2' }], 'e');
         v.button('apply a stabilizing mechanism', () => { h.set(Math.max(0.02, h.x * 0.7), h.y); });
         v.button('apply an equalizing mechanism', () => { h.set(h.x, Math.exp(Math.log(h.y) * 0.5)); });
+        v.button('neutral reference',()=>h.set(1,1));
+        v.button('zero-invasion reference',()=>h.set(.5,.5));
         let info = null;
         v.render(() => {
           const rho = h.x, kap = h.y;
@@ -173,10 +164,10 @@ export default {
           B.setView([0, 60], [0, Math.max(120, K1 * 1.1, K2 * 1.1)]);
           B.path(pa, { color: 'accent', width: 2.6 }); B.path(pb, { color: 'orange', width: 2.6 });
           const inside = rho < 1 && kap > rho && kap < 1 / rho;
-          info = { rho, kap, inside, n1, n2 };
+          info = {rho,kap,inside,n1,n2,outcome:wedgeOutcome(rho,kap)};
         });
         v.legend([['accent', 'species 1'], ['orange', 'species 2'], ['green', 'coexistence boundary']]);
-        v.readout(() => info && String.raw`$\rho=${v.fix(info.rho, 2)}$, $\kappa_1/\kappa_2=${v.fix(info.kap, 2)}$: ${info.rho >= 1 ? 'no coexistence region ($\\rho\\ge1$): the winner depends on who starts ahead' : info.inside ? `inside the wedge $(${v.fix(info.rho, 2)},\\,${v.fix(1 / info.rho, 2)})$: stable coexistence` : info.kap >= 1 / info.rho ? 'above the wedge: species 1 excludes species 2' : 'below the wedge: species 2 excludes species 1'}. At $t=60$: $N_1=${v.fix(info.n1, 1)}$, $N_2=${v.fix(info.n2, 1)}$.`);
+        v.readout(() => info && String.raw`$\rho=${v.fix(info.rho,2)}$, $\kappa_1/\kappa_2=${v.fix(info.kap,2)}$: **${info.outcome}**. ${info.outcome==='priority effects'?'Within the reversed wedge both invasion rates are negative, so the attraction basin matters.':info.outcome==='neutral continuum'?'At rho=fitness=1, the total tends to 100 while the starting proportion stays constant.':info.outcome==='zero-invasion boundary'?'A zero invasion rate needs boundary analysis; strict coexistence/priority inequalities do not apply.':''} At finite t=60: $N_1=${v.fix(info.n1,1)}$, $N_2=${v.fix(info.n2,1)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.10
@@ -185,15 +176,15 @@ export default {
       kind: 'Model',
       name: 'Lottery model and the storage effect',
       credit: 'P. L. Chesson & R. R. Warner, 1981',
-      statement: String.raw`In a lottery model, sites are held by long-lived adults. Each year a fraction $\delta$ of adults die; the vacated sites are taken at random by juveniles, each species’ share being proportional to its number of juveniles. With $p_i$ the fraction of sites held by species $i$ and $B_i(t)$ its year-specific recruitment success, $$p_i(t+1)=(1-\delta)\,p_i+\delta\,\frac{B_i(t)\,p_i}{\sum_j B_j(t)\,p_j}.$$ In a constant environment, species with different mean $B_i$ cannot coexist. If $\ln B_i$ fluctuates from year to year, and good years for one species are not exactly the good years of the other, two species coexist whenever $\delta<1$ (overlapping generations) and the fluctuations are strong enough compared with their difference in mean: the **storage effect**.`,
-      scope: String.raw`Two species, lognormal recruitment, adult death rate $\delta$ the same for both. For non-overlapping generations ($\delta=1$) there is no buffering and the effect vanishes. The condition below uses the second-order expansion of the invasion growth rate; the picture computes the exact expectation numerically.`,
-      idea: String.raw`A species coexists when it can increase from rarity. Rare species $i$ in a sea of $j$ gains $\ln\bigl(1-\delta+\delta B_i/B_j\bigr)$ per year. The adults buffer the population in bad years (the loss is at most $\delta$ of the sites) while the gain in good years is not capped, so the growth rate averaged over fluctuations is raised by roughly $\delta(1-\delta)\,\mathrm{Var}(\ln B_i-\ln B_j)/2$ for either species, on top of the difference in means. Coexistence needs this storage term to exceed the fitness difference (Chesson's stabilizing mechanism of 4.9).`,
-      caption: String.raw`Right: the region of $(\sigma,\delta)$ (strength of fluctuations, adult death rate) where both species have positive invasion growth rates, for the chosen mean difference and correlation of good years; drag the gold point. Left: six simulated histories of species 1's share from a 50:50 start. Set $\sigma=0$ or $\delta=1$ and one species always wins; with fluctuations and $\delta<1$ the shares wander but neither is lost. Increase the correlation of the species' good years and the effect weakens.`,
+      statement: String.raw`In the two-species lottery model, adults hold sites and a common fixed fraction $0<\delta\le1$ dies per year. Juveniles refill every vacancy in proportion to their positive recruitment successes: $$p_i(t+1)=(1-\delta)p_i+\delta\frac{B_i(t)p_i}{\sum_j B_j(t)p_j}.$$ Here yearly log recruitment vectors are independent and identically distributed, with each species’ standard deviation σ, correlation ρ and mean difference Δμ. Invasion growth rates are $g_1=E\ln(1-\delta+\delta e^X)$ and $g_2=E\ln(1-\delta+\delta e^{-X})$, where $X\sim N(\Delta\mu,2\sigma^2(1-\rho))$. Strictly positive rates for both are the mutual-invasion condition for the reported stochastic coexistence. It concerns probability distributions, not a positive lower bound on every infinite sample path.`,
+      scope: String.raw`An effectively infinite number of sites, both species initially present, positive fecundities, equal constant adult mortality, complete vacancy filling and no demographic stochasticity. The displayed common-mortality lognormal specialization omits the original paper’s unequal and random death-rate cases. Its invasion formula is exact; plotted Gaussian integration is a numerical approximation with analytic special cases and a 1e−8 sign-resolution threshold. The 1981 paper gives a heuristic coexistence argument and refers full stochastic persistence proofs elsewhere; this display is not that proof.`,
+      idea: String.raw`The finite multiplicative growth at rarity is 1−δ+δ exp(X). Survivorship buffers bad years for δ<1. For small Δμ and small variance V=2σ²(1−ρ), expanding around X=0 gives $g_1=\delta\Delta\mu+\tfrac12\delta(1-\delta)(V+\Delta\mu^2)+\text{higher orders}$; reversing Δμ gives g₂. This is a local expansion, not a global coexistence threshold. When δ=1, g₁=Δμ and g₂=−Δμ exactly. With Δμ=0 and positive V this unbuffered log-odds process is a zero-drift random walk, not stable coexistence. With no relative variation (σ=0 or ρ=1) and Δμ=0 the proportions are exactly neutral and constant.`,
+      caption: String.raw`Right: numerically resolved mutual-invasion region for the chosen mean log-recruitment difference and correlation; drag the gold point. Left: six finite, seeded 400-year histories from 50:50. Paths are integrated in log odds so a rounded displayed share of zero or one does not create a false absorbing extinction. When σ=0 or ρ=1 a nonzero mean difference favors one species, but zero difference gives neutral constant shares. At δ=1 there is no buffered coexistence; zero mean relative growth instead gives unbuffered drift. Finite wandering paths do not establish persistence.`,
       deps: ['ecol-4.9'],
-      refs: ['Begon ch. 19'],
+      refs: ['Chesson & Warner (1981), Am.Nat.117:923–943; model equations3–4 p926, equation11 p928, invasion rates p929, stochastic-persistence meaning pp933–935, Appendix pp940–942'],
       tags: ['storage effect', 'lottery', 'variability'],
       links: { doi: 'https://doi.org/10.1086/283778', wikipedia: 'https://en.wikipedia.org/wiki/Storage_effect' },
-      verify: true,
+      verify: false,
       viz(v) {
         const dm = v.slider('difference in mean log recruitment $\\Delta\\mu$', 0, 0.5, 0.1, { step: 0.01 });
         const rc = v.slider('correlation of the two species’ good years', -0.5, 1, 0, { step: 0.05 });
@@ -201,31 +192,30 @@ export default {
         const B = v.stage({ x: [0, 1.5], y: [0.02, 1], axes: 'box', gutter: true, height: 330, xlabel: 'strength of fluctuations $\\sigma$', ylabel: 'adult death rate $\\delta$', title: 'both species can invade', weight: 1 });
         const h = B.handle(0.8, 0.3, { color: 'gold', r: 9, label: '(σ, δ)', constrain: { x: [0, 1.5], y: [0.02, 1] } });
         // invasion growth rate of the rare species whose mean log-ratio is +m: E ln(1 - d + d e^X), X ~ N(m, 2 s^2 (1 - rho))
-        const NZ = 121, zs = Array.from({ length: NZ }, (_, i) => -5 + (10 * i) / (NZ - 1)), wz = zs.map((z) => Math.exp(-z * z / 2));
-        const ws = wz.reduce((a, b) => a + b, 0);
-        const gr = (m, s, d, rho) => { const sd = s * Math.sqrt(2 * (1 - rho)); let t = 0; for (let i = 0; i < NZ; i++) t += wz[i] * Math.log(1 - d + d * Math.exp(m + sd * zs[i])); return t / ws; };
+        const gr=lotteryGrowth;
         let info = null;
         v.render(() => {
           const m = dm.value, rho = rc.value, s = h.x, d = h.y;
-          const key = m.toFixed(3) + '|' + rho.toFixed(3);
-          B.raster((x, y) => { const g = Math.min(gr(m, x, y, rho), gr(-m, x, y, rho)); return g > 0 ? v.rgb('green').slice(0, 3).concat([0.45]) : null; }, { key, res: 6 });
-          B.axes();
+          const key=[m,rho,v.rgb('green').join(',')].join('|');
+          B.raster((x, y) => { const g = Math.min(gr(m, x, y, rho), gr(-m, x, y, rho)); return g > 1e-8 ? v.rgb('green').slice(0, 3).concat([0.45]) : null; }, { key, res: 6 });
+          B.axes();B.hline(1,{color:'muted',width:2,dash:[4,3]});
           const r = v.rng(5);
           for (let q = 0; q < 6; q++) {
-            let p = 0.5; const pts = [[0, p]];
+            let logOdds=0;const pts=[[0,.5]];
             for (let t = 1; t <= 400; t++) {
               const z1 = r.normal(), z2 = rho * z1 + Math.sqrt(Math.max(0, 1 - rho * rho)) * r.normal();
-              const B1 = Math.exp(m / 2 + s * z1), B2 = Math.exp(-m / 2 + s * z2);
-              p = (1 - d) * p + (d * B1 * p) / (B1 * p + B2 * (1 - p));
-              if (t % 2 === 0) pts.push([t, p]);
+              const x=m+s*(z1-z2);
+              logOdds=lotteryStepLogOdds(logOdds,x,d);
+              if(t%2===0)pts.push([t,lotteryShare(logOdds)]);
             }
             A.path(pts, { color: spcol(q), width: 1.6, alpha: 0.9 });
           }
           A.hline(0.5, { color: 'grid' });
           const g1 = gr(m, s, d, rho), g2 = gr(-m, s, d, rho);
-          info = { g1, g2, s, d, ok: g1 > 0 && g2 > 0 };
+          info = { g1, g2, s, d, outcome:lotteryOutcome(m,s,d,rho) };
         });
-        v.readout(() => info && String.raw`At $\sigma=${v.fix(info.s, 2)}$, $\delta=${v.fix(info.d, 2)}$: invasion growth rate of species 1 when rare $=${v.fix(info.g1, 4)}$, of species 2 when rare $=${v.fix(info.g2, 4)}$ per year → **${info.ok ? 'both can invade: coexistence' : 'one species excludes the other'}**.`);
+        v.legend([['green','resolved mutual-invasion region'],['muted','δ=1: unbuffered boundary',{dash:true}]]);
+        v.readout(() => info && String.raw`At $\sigma=${v.fix(info.s,2)}$, $\delta=${v.fix(info.d,2)}$: numerical invasion growth per year ${v.fix(info.g1,6)} and ${v.fix(info.g2,6)} → **${info.outcome}**. Gaussian integral is approximated; signs within 1e−8 are unresolved. Finite sample paths are illustrations, not a stochastic-persistence proof.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.11
@@ -233,30 +223,30 @@ export default {
       num: '4.11',
       kind: 'Hypothesis',
       name: 'Janzen–Connell hypothesis',
-      credit: 'D. H. Janzen, 1970; J. H. Connell, 1971',
-      statement: String.raw`Seeds and seedlings suffer from host-specific enemies (seed predators, pathogens, herbivores) that are concentrated around adult trees of the same species. Seed density falls with distance from the parent, while the chance of surviving the enemies rises with distance, so recruitment peaks away from the parent and conspecific seedlings rarely replace an adult nearby. The hypothesis is that this *negative density dependence* keeps any one species from taking over, allowing many tree species to coexist, as in tropical forests.`,
-      scope: String.raw`A hypothesis about a mechanism that stabilizes coexistence (a stabilizing mechanism in the sense of 4.9). The forest below is a simple stochastic model built for illustration: the existence of distance- and density-dependent mortality near conspecific adults is well documented, but its quantitative contribution to tropical diversity is still debated.`,
-      idea: String.raw`Without enemies the forest is neutral: each species' abundance drifts at random and species are lost one by one. With the enemy effect, a species that becomes common crowds its own seedlings together with their natural enemies, so it recruits less than rare species; this restoring force is exactly a negative frequency dependence, which counteracts drift and so is stabilizing.`,
-      caption: String.raw`Two forests of 900 trees and 20 species (colours) start identically. Left: no enemy effect (neutral); middle: with it (set the strength $\gamma$). Right top: richness over time in both; right bottom: the Janzen–Connell argument for a single parent tree, with seed density (orange), survival (green) and their product, the recruitment, which peaks away from the parent. Raise $\gamma$ to 0 and the two forests behave alike.`,
+      credit: 'D. H. Janzen, 1970 (original hypothesis reviewed); conventional Janzen–Connell name',
+      statement: String.raw`The Janzen–Connell hypothesis proposes that host-specific natural enemies can reduce seed and seedling survival near conspecific adults or dense conspecific juveniles, limiting local dominance and creating recruitment opportunities for other species. Seed rain often decreases with distance from the parent while survival from these enemies can increase; their product may peak away from the parent. This is a proposed coexistence mechanism, not a universal rule that every species has an off-parent peak or that every enemy increases total diversity.`,
+      scope: String.raw`Janzen’s original paper distinguishes distance-responsive and density-responsive enemies and labels its curves schematic. Its diversity argument requires other species and seed sources to be available. The lattice below is an atlas illustration, not a fitted tropical-forest census or the original paper’s model. It has 900 sites on a periodic 30×30 lattice, 20 initial labels, 10% independent mortality per update, local seed dispersal and a conspecific crowding penalty. Pre-mortality adults supply the current update’s seed bank; recruits cannot reproduce again within that update. There is no immigration or speciation: lost labels cannot return, and this finite model cannot establish permanent coexistence. Both forests use the same random stream; identical gamma=0 rules then give identical paths.`,
+      idea: String.raw`For each vacancy the chosen model draws a species with weight (local seed rain)×exp(−γ×local conspecific crowding). Increasing crowding lowers a species’ recruitment weight relative to others, providing a possible negative-frequency feedback, but finite richness need not increase monotonically with γ or in every random run. The separate single-parent cartoon uses per-unit-area seed density I(d)=exp(−d/2) and survival P(d)=exp(−γ exp(−(d/2.5)²)); recruitment is their product. This is not the total number in a radial annulus (which would include an area factor). We compare the parent limit d=0 with any interior maximum; weak enemy effects can still leave the global peak at 0.`,
+      caption: String.raw`Two identically initialized forests compare neutral recruitment (left) with the selected conspecific-enemy penalty (middle), using paired random numbers. Right: richness over 400 chosen updates, and a schematic single-parent seed-density×survival profile per unit area, with recruitment rescaled to peak1. The displayed species counts are finite realizations, not field observations or a diversity theorem. Set γ=0 to recover exactly identical forest paths; positive γ need not move the single-parent peak away from0.`,
       deps: ['ecol-4.9'],
-      refs: ['Begon ch. 19'],
+      refs: ['Janzen (1970), Am.Nat.104:501–528, original text pp501–504, Figure1 p502, distance/density distinctions pp504–514, recruitment surfaces pp514–516, discussion/summary pp520–525'],
       tags: ['negative density dependence', 'forest', 'diversity'],
       links: { doi: 'https://doi.org/10.1086/282687', wikipedia: 'https://en.wikipedia.org/wiki/Janzen%E2%80%93Connell_hypothesis' },
-      verify: true,
+      verify: false,
       viz(v) {
         const L = 30, S = 20, G = 400;
         const gS = v.slider('enemy effect strength $\\gamma$', 0, 4, 2.5, { step: 0.1, onChange: () => { sim.reset(); } });
         const pal = Array.from({ length: S }, (_, i) => v.M.hsl2rgb((i * 0.381966) % 1, 0.65, 0.55));
         const init = () => {
-          const mk = (gamma) => { const st = jcInit(L, S, v.rng(9)); st.gamma = gamma; st.hist = [jcRichness(st)]; st.rng = v.rng(100 + Math.round(gamma * 10)); return st; };
+          const mk = (gamma) => { const st = jcInit(L, S, v.rng(9)); st.gamma = gamma; st.hist = [jcRichness(st)]; st.rng = v.rng(100); return st; };
           const a = mk(0), b = mk(gS.value); b.g.set(a.g);
           return { a, b };
         };
-        const step = (st) => { for (const f of [st.a, st.b]) { jcStep(f, { gamma: f.gamma }); f.hist.push(jcRichness(f)); } };
+        const step = (st) => { for (const f of [st.a, st.b]) { forestStep(f, { gamma: f.gamma }); f.hist.push(jcRichness(f)); } };
         const sim = v.sim(init, step, { dt: 1, maxSteps: G });
         const A = v.stage({ x: [0, L], y: [0, L], equal: true, axes: false, height: 280, title: 'neutral forest (no enemies)', weight: 1 });
         const Bs = v.stage({ x: [0, L], y: [0, L], equal: true, axes: false, height: 280, title: 'Janzen–Connell forest', weight: 1 });
-        const C = v.stage({ x: [0, G], y: [0, S + 1], axes: 'box', gutter: true, height: 280, xlabel: 'generation', ylabel: 'species present', title: 'species richness', weight: 1 });
+        const C = v.stage({ x: [0, G], y: [0, S + 1], axes: 'box', gutter: true, height: 280, xlabel: 'chosen update', ylabel: 'species present', title: 'species richness', weight: 1 });
         const D = v.stage({ x: [0, 12], y: [0, 1.1], axes: 'box', gutter: true, height: 280, xlabel: 'distance from the parent tree', ylabel: 'relative value', title: 'seeds × survival = recruitment', weight: 1 });
         let info = null;
         v.animate((t) => {
@@ -266,17 +256,12 @@ export default {
           A.raster(img(a), { key: 'a' + a.gen, res: 1, id: 'a' }); Bs.raster(img(b), { key: 'b' + b.gen + '|' + b.gamma, res: 1, id: 'b' });
           C.path(a.hist.map((r, i) => [i, r]), { color: 'muted', width: 2.4 });
           C.path(b.hist.map((r, i) => [i, r]), { color: 'green', width: 2.6 });
-          const g = gS.value, lam = 2, rc = 2.5;
-          const seed = (d) => Math.exp(-d / lam), surv = (d) => Math.exp(-g * Math.exp(-((d / rc) ** 2))), rec = (d) => seed(d) * surv(d);
-          const dm = Math.max(...Array.from({ length: 121 }, (_, i) => rec(i / 10 + 0.5)));
-          D.fn((d) => seed(d), { color: 'orange', width: 2, domain: [0.5, 12] });
-          D.fn((d) => surv(d), { color: 'green', width: 2, domain: [0.5, 12] });
-          D.fn((d) => rec(d) / dm, { color: 'accent', width: 2.8, domain: [0.5, 12] });
-          let dpk = 0, best = 0; for (let d = 0.5; d <= 12; d += 0.1) if (rec(d) > best) { best = rec(d); dpk = d; }
+          const g=gS.value,seed=parentSeed,surv=d=>parentSurvival(d,g),rec=d=>parentRecruitment(d,g),dpk=parentRecruitmentPeak(g),dm=rec(dpk);
+          D.fn(seed,{color:'orange',width:2,domain:[0,12]});D.fn(surv,{color:'green',width:2,domain:[0,12]});D.fn(d=>rec(d)/dm,{color:'accent',width:2.8,domain:[0,12]});D.dot(dpk,1,{r:4,color:'accent'});
           info = { ra: a.hist[a.hist.length - 1], rb: b.hist[b.hist.length - 1], gen: a.gen, dpk };
         }, { period: 20, still: 19.9 });
         v.legend([['muted', 'richness, neutral'], ['green', 'richness, with enemies'], ['orange', 'seed density'], ['green', 'survival'], ['accent', 'recruitment (scaled)']]);
-        v.readout(() => info && String.raw`Generation ${info.gen}: **${info.ra}** species left without enemies, **${info.rb}** with them. Recruitment around a single parent peaks at distance $${v.fix(info.dpk, 1)}$ cells${gS.value === 0 ? ' (no enemies: it simply falls with distance)' : ''}.`);
+        v.readout(() => info && String.raw`Chosen update ${info.gen}: **${info.ra}** species left without enemies, **${info.rb}** with them. Recruitment around a single parent peaks at distance $${v.fix(info.dpk, 1)}$ cells${info.dpk===0?' (the global maximum remains at the parent limit; an off-parent peak is not guaranteed)':''}.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.12
@@ -284,16 +269,16 @@ export default {
       num: '4.12',
       kind: 'Model',
       name: 'Competition–colonization trade-off',
-      credit: 'R. Levins & D. Culver, 1971; A. Hastings, 1980; D. Tilman, 1994',
-      statement: String.raw`Let species 1 be a superior competitor (it can take over a patch occupied by species 2) but a poor colonizer, and species 2 an inferior competitor but a good colonizer. With a fraction $D$ of patches destroyed, a common mortality rate $m$ and colonization rates $c_1<c_2$, the occupied fractions obey $$\dot p_1=c_1p_1(1-D-p_1)-mp_1,\qquad \dot p_2=c_2p_2(1-D-p_1-p_2)-mp_2-c_1p_1p_2 .$$ Both species persist, $p_1^*=1-D-\dfrac m{c_1}$ and $p_2^*=\dfrac m{c_1}-\dfrac{c_1}{c_2}(1-D)$, when $1-\dfrac{c_2m}{c_1^2}<D<1-\dfrac m{c_1}$. As $D$ grows, the superior competitor disappears first.`,
-      scope: String.raw`A mean-field metapopulation model with global dispersal and species-independent mortality (Tilman 1994 extends it to many species ranked by competitive ability). A hierarchy of species with a strict trade-off is needed: if the better competitor were also the better colonizer it would exclude the other, as in the Levins model (3.2).`,
-      idea: String.raw`Each species is an instance of the Levins model on the sites its superiors leave open. The inferior competitor survives by colonizing sites faster than the superior competitor can overtake them; the superior competitor is held at $p_1^*$, the amount of habitat it alone can fill. Habitat destruction takes away the sites that the superior competitor must fill (as in 3.3, it persists only while $1-D>m/c_1$), whereas the fast colonizer can live on the sites that are still free: the species that needs the most habitat, and is the best competitor, is lost first.`,
-      caption: String.raw`Left: equilibrium occupancy of the superior (blue) and inferior (orange) competitor as a function of habitat destruction $D$; drag the gold point to choose $D$. Right: the time course of $p_1$, $p_2$ from a small start at the chosen $D$. Increase $D$ until the blue curve hits zero: the better competitor is removed while the better colonizer is still there. With $D$ small the inferior competitor can be excluded; raise $c_2$ to widen the range of coexistence.`,
+      credit: 'Tilman (1994), two-species hierarchy; permanent-habitat-loss extension derived here',
+      statement: String.raw`Let species 1 be a superior competitor (it can take over a patch occupied by species 2) but a poor colonizer, and species 2 an inferior competitor but a good colonizer. With a fraction $D$ of patches destroyed, a common mortality rate $m$ and colonization rates $c_1<c_2$, the occupied fractions obey $$\dot p_1=c_1p_1(1-D-p_1)-mp_1,\qquad \dot p_2=c_2p_2(1-D-p_1-p_2)-mp_2-c_1p_1p_2 .$$ Both species persist, $p_1^*=1-D-\dfrac m{c_1}$ and $p_2^*=\dfrac m{c_1}-\dfrac{c_1}{c_2}(1-D)$, when $1-\dfrac{c_2m}{c_1^2}<D<1-\dfrac m{c_1}$, intersected with the physical range $0\le D\le1$. Both species must initially be present (or introduced). With $c_1>m$ and $c_2>c_1$, the superior competitor’s threshold $1-m/c_1$ is below the inferior competitor’s single-species threshold $1-m/c_2$; the inferior may nevertheless be excluded at low destruction.`,
+      scope: String.raw`The original Tilman 1994 paper’s two-rank model has D=0; replacing available habitat 1 by H=1−D is the atlas’s stated extension, not an attribution of the habitat-destruction analysis to that paper. Fractions are relative to the entire original landscape, and propagules disperse randomly to all sites, including wasted arrivals on destroyed sites. A superior arrival instantly displaces an inferior occupant; lower-ranked species cannot harm higher ranks. Common positive mortality, positive finite colonization rates and initially feasible occupancies are assumed. Controls also allow c₂≤c₁ to test failure of the trade-off; in that case the claimed coexistence interval is empty. Finite 300-unit trajectories can remain far from equilibrium near zero-growth boundaries.`,
+      idea: String.raw`Each species is an instance of the Levins model on the sites its superiors leave open. The inferior competitor survives by colonizing sites faster than the superior competitor can overtake them; the superior competitor is held at $p_1^*$, the amount of habitat it alone can fill. Habitat destruction takes away the sites that the superior competitor must fill (for positive initial occupancy it persists only while $1-D>m/c_1$), whereas the fast colonizer can live on the sites that are still free: the species that needs the most habitat, and is the best competitor, is lost first.`,
+      caption: String.raw`Left: equilibrium occupancy of the superior (blue) and inferior (orange) competitor as a function of habitat destruction $D$; drag the gold point to choose $D$. Right: the time course of $p_1$, $p_2$ from a small physically feasible start at the chosen $D$ (chosen rates, not fitted data). For c₂>c₁ and c₁>m, increase $D$ until the blue equilibrium hits zero: the better competitor loses persistence while the better colonizer can still persist. With $D$ small the inferior competitor can be excluded; raise $c_2$ to widen the range of coexistence.`,
       deps: ['ecol-3.1', 'ecol-4.9'],
-      refs: ['Begon ch. 19'],
+      refs: ['Tilman (1994), Ecology 75:2–16, pp.5–6 equations 3.1–4.3; p.16 Appendix A.1–A.3 (triangular stability proof)'],
       tags: ['trade-off', 'metapopulation', 'habitat loss'],
       links: { doi: 'https://doi.org/10.2307/1939377' },
-      verify: true,
+      verify: false,
       viz(v) {
         const c1S = v.slider('colonization rate of the superior competitor $c_1$', 0.2, 1.5, 0.5, { step: 0.01 });
         const c2S = v.slider('colonization rate of the inferior competitor $c_2$', 0.2, 6, 2, { step: 0.01 });
@@ -301,7 +286,7 @@ export default {
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'fraction of habitat destroyed $D$', ylabel: 'equilibrium occupied fraction', title: 'what survives destruction', weight: 1 });
         const B = v.stage({ x: [0, 300], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'time', ylabel: 'occupied fraction', title: 'time course', weight: 1 });
         const h = A.handle(0.4, 0, { color: 'gold', r: 8, label: 'D', constrain: (x) => [Math.min(0.99, Math.max(0, x)), 0] });
-        const eq = (c1, c2, m, D) => { const p1 = Math.max(0, 1 - D - m / c1); const p2 = p1 > 0 ? Math.max(0, m / c1 - (c1 / c2) * (1 - D)) : Math.max(0, 1 - D - m / c2); return [p1, p2]; };
+        const eq=colonizationEquilibrium;
         let info = null;
         v.render(() => {
           const c1 = c1S.value, c2 = c2S.value, m = mS.value, D = h.x;
@@ -310,21 +295,14 @@ export default {
           A.fn((x) => Math.max(0, 1 - x - m / c1) + eq(c1, c2, m, x)[1], { color: 'muted', width: 1.2, dash: true, domain: [0, 1], n: 400 });
           const e = eq(c1, c2, m, D);
           A.dot(D, e[0], { r: 5, color: 'accent' }); A.dot(D, e[1], { r: 5, color: 'orange' });
-          A.vline(1 - m / c1, { color: 'red', width: 1.2, dash: [5, 4] });
-          // time course (RK4)
-          let p1 = 0.05, p2 = 0.05; const dt = 0.1, pa = [[0, p1]], pb = [[0, p2]];
-          const f = (a, b) => [c1 * a * (1 - D - a) - m * a, c2 * b * (1 - D - a - b) - m * b - c1 * a * b];
-          for (let s = 1; s <= 3000; s++) {
-            const k1 = f(p1, p2), k2 = f(p1 + 0.5 * dt * k1[0], p2 + 0.5 * dt * k1[1]), k3 = f(p1 + 0.5 * dt * k2[0], p2 + 0.5 * dt * k2[1]), k4 = f(p1 + dt * k3[0], p2 + dt * k3[1]);
-            p1 = Math.max(0, p1 + (dt / 6) * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0])); p2 = Math.max(0, p2 + (dt / 6) * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]));
-            if (s % 10 === 0) { pa.push([s * dt, p1]); pb.push([s * dt, p2]); }
-          }
-          B.path(pa, { color: 'accent', width: 2.6 }); B.path(pb, { color: 'orange', width: 2.6 });
-          const lo = Math.max(0, 1 - (c2 * m) / (c1 * c1)), hi = 1 - m / c1;
-          info = { e, D, lo, hi, p1, p2 };
+          const threshold=1-m/c1;if(threshold>=0&&threshold<=1)A.vline(threshold,{color:'red',width:1.2,dash:[5,4]});
+          const {pa,pb,a:p1,b:p2,start}=runColonization(c1,c2,m,D);
+          B.path(pa,{color:'accent',width:2.6});B.path(pb,{color:'orange',width:2.6});
+          const interval=colonizationCoexistence(c1,c2,m);
+          info={e,D,...interval,p1,p2,start,c1,c2,m};
         });
         v.legend([['accent', 'superior competitor'], ['orange', 'inferior competitor'], ['red', '$D=1-m/c_1$', { dash: true }]]);
-        v.readout(() => info && String.raw`$D=${v.fix(info.D, 2)}$: equilibrium $p_1^*=${v.fix(info.e[0], 3)}$, $p_2^*=${v.fix(info.e[1], 3)}$ (simulated at $t=300$: $${v.fix(info.p1, 3)}$, $${v.fix(info.p2, 3)}$). Coexistence for ${v.fix(info.lo, 2)} < D < ${v.fix(info.hi, 2)}${info.c2 < 0 ? '' : ''}${info.hi <= info.lo ? ' (empty: needs $c_2>c_1$)' : ''}.`);
+        v.readout(() => {if(!info)return'';const I=info,interval=I.empty?'no physical coexistence interval':`${v.fix(I.lo,3)} ${I.includeZero?'≤':'<'} D < ${v.fix(I.hi,3)}`;return String.raw`$D=${v.fix(I.D,2)}$: equilibrium $p_1^*=${v.fix(I.e[0],3)}$, $p_2^*=${v.fix(I.e[1],3)}$. Starting at $p_1=p_2=${v.fix(I.start,4)}$ (total ≤ available habitat ${v.fix(1-I.D,2)}), the finite t=300 trajectory gives ${v.fix(I.p1,3)}, ${v.fix(I.p2,3)}. Coexistence: **${interval}**. ${I.c2<=I.c1?'The inferior species has no colonization advantage. ':''}${I.hi<=0?'The superior cannot persist even at D=0. ':''}Near thresholds the finite trajectory need not equal the equilibrium.`;});
       },
     },
   ],

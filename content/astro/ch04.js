@@ -6,6 +6,7 @@ import {
   planckL, wienPeak, bbColor, BAND, bandT, bvToy, tBallesteros,
 } from './ch04.shared.js';
 
+import { syntheticColour, ballesterosColourTemperature, energyBand } from './source-audit-photometry.shared.js';
 
 export default {
   collection: 'astro',
@@ -18,24 +19,22 @@ export default {
       num: '4.1',
       kind: 'Definition',
       name: 'Parallax and the parsec',
-      statement: String.raw`As the Earth circles the Sun, a nearby star appears to trace a small ellipse against the far more distant background, with semi-major axis $p$ (the **annual parallax**). For a baseline of $1$ AU and a star at distance $d \gg 1$ AU, $\tan p = 1\,\text{AU}/d$, so $p \approx 1\,\text{AU}/d$ in radians. The **parsec** is defined as the distance at which $p = 1''$: $1\ \text{pc} = (648000/\pi)\ \text{AU} \approx 3.0857\times10^{16}$ m $\approx 3.26$ light-years. Then, with $p$ in arcseconds and $d$ in parsecs,
-$$d = \frac{1}{p}.$$
+      statement: String.raw`As the Earth circles the Sun, a nearby star appears to trace a small ellipse against the far more distant background, with semi-major axis $p$ (the **annual parallax**). For a baseline of $1$ AU and a star at distance $d \gg 1$ AU, $\tan p = 1\,\text{AU}/d$, so $p \approx 1\,\text{AU}/d$ in radians. The modern **parsec** is defined exactly as $1\ \text{pc} = (648000/\pi)\ \text{AU} \approx 3.0857\times10^{16}$ m $\approx 3.26$ light-years. For this small-angle model, with $p$ in arcseconds and $d$ in parsecs,
+$$d \approx \frac{1}{p}.$$
 The ellipse is flattened by the factor $\sin\beta$ for a star at ecliptic latitude $\beta$ (a circle at the pole, a line in the ecliptic).`,
-      idea: String.raw`It is nothing but the triangle Sun–Earth–star with a right angle at the Sun when the Earth is a quarter of a year from alignment: the side opposite the small angle $p$ is $1$ AU, the long side is $d$. Defining the parsec through this triangle makes the formula $d=1/p$ free of constants. Measuring $p$ means measuring a displacement, so the useful range is set by the astrometric precision $\sigma_p$: a parallax is trustworthy only when $\sigma_p/p$ is small, so a $10\%$ distance needs $p\ge 10\sigma_p$, i.e. $d \le 100\ \text{pc}/\sigma_p[\text{mas}]$.`,
-      caption: String.raw`Slide the **distance** and the **time of year**: left, the Earth moves around the Sun (schematic, not to scale) and the line of sight to the star swings; right, the star's path against the background field, which is rescaled to fit (see the width in the corner). The red circle is the **measurement error** of the chosen instrument; push the star far enough away and its ellipse sinks into the circle: the parallax is lost. Change the ecliptic latitude to flatten the ellipse.`,
-      scope: String.raw`Annual parallax only (the heliocentric triangle, $d\gg1$ AU). The measurable range depends on the instrument: ground-based $\sim$ 10 mas, Hipparcos $\sim$ 1 mas, Gaia $\sim$ 0.02–0.03 mas for bright stars (stated precisions, rounded).`,
-      credit: 'Bessel, 1838 (first successful parallax, 61 Cygni); the name “parsec” is credited to H. H. Turner, 1913',
+      idea: String.raw`It is nothing but the triangle Sun–Earth–star with a right angle at the Sun when the Earth is a quarter of a year from alignment: the side opposite the small angle $p$ is $1$ AU, the long side is $d$. The exact parsec definition agrees with the small-angle triangle, rather than $1/\tan(1\mathrm{arcsec})$ AU. The reciprocal relation is free of conversion constants in these units. Measuring $p$ means measuring a displacement, so the useful range is set by the astrometric precision $\sigma_p$: linear uncertainty propagation is useful when $\sigma_p/p$ is small, so a nominal $10\%$ linearized distance precision needs $p\ge 10\sigma_p$, i.e. $d \le 100\ \text{pc}/\sigma_p[\text{mas}]$.`,
+      caption: String.raw`Slide the **distance** and the **time of year**: left, the Earth moves around the Sun (schematic, not to scale) and the line of sight to the star swings; right, the star's path against the background field, which is rescaled to fit (see the width in the corner). The red circle has radius equal to an **assumed parallax uncertainty**; it is an illustrative size comparison, not an astrometric position fit; push the star far enough away and its ellipse sinks into the circle: the signal-to-noise ratio becomes small and direct inversion is unreliable. Change the ecliptic latitude to flatten the ellipse.`,
+      scope: String.raw`Annual parallax only (the heliocentric triangle, $d\gg1$ AU). The three noise values 10, 1 and 0.03 mas are illustrative assumptions, not performance promises for named instruments. Distance uncertainty is only linearized at high signal-to-noise; a noisy measured parallax need not be positive, and estimating distance requires an inference model, not a negative-distance interpretation. No real observations are fitted here.`,
       deps: [],
-      refs: ['Carroll–Ostlie §3.1'],
+      refs: ['IAU (2015), Resolution B2, note 4', 'Bailer-Jones (2015), §§1–3 pp.1–3'],
       tags: ['distance', 'parallax', 'astrometry'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Parsec' },
       viz(v) {
         const dS = v.slider('distance $d$ (pc)', 1.3, 3000, 8, { log: true, sig: 2, fmt: (x) => v.fmt(x, 3) });
         const day = v.slider('time of year (days)', 0, 365, 70, { step: 1 });
         const beta = v.slider('ecliptic latitude $\\beta$ (°)', 0, 90, 55, { step: 1 });
-        const TEL = { ground: { s: 10, name: 'ground-based' }, hip: { s: 1, name: 'Hipparcos-class' }, gaia: { s: 0.03, name: 'Gaia-class' } };
-        const tel = v.select('instrument', [{ value: 'ground', label: 'ground ~10 mas' }, { value: 'hip', label: 'Hipparcos ~1 mas' }, { value: 'gaia', label: 'Gaia ~0.03 mas' }], 'hip');
+        const TEL = { ground: { s: 10, name: '10mas scenario' }, hip: { s: 1, name: '1mas scenario' }, gaia: { s: 0.03, name: '0.03mas scenario' } };
+        const tel = v.select('assumed parallax uncertainty', [{ value: 'ground', label: '10 mas' }, { value: 'hip', label: '1 mas' }, { value: 'gaia', label: '0.03 mas' }], 'hip');
         const orb = v.stage({ x: [-1.8, 1.8], y: [-1.5, 3.7], equal: true, axes: false, height: 330, weight: 0.9, title: 'seen from above the ecliptic (schematic)' });
         const sky = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 330, weight: 1, title: 'the star against distant background stars' });
         const r = v.rng(4);
@@ -53,7 +52,7 @@ The ellipse is flattened by the factor $\sin\beta$ for a star at ecliptic latitu
           orb.tex('p', 0.12, D - 0.9, { color: 'accent', size: 14 });
           orb.text('1 AU', 0, -1, { dy: 16, size: 10.5, color: 'muted', align: 'center' });
           const p = 1 / dS.value, sg = TEL[tel.value].s / 1000, b = beta.value * DEG;
-          half = 1.7 * Math.max(p, sg);
+          half = 1.15 * (p + sg);
           const pos = (t) => [-p * Math.cos(t), p * Math.sin(b) * Math.sin(t)];
           sky.setView([-half, half], [-half, half]);
           for (const q of bg) sky.dot(q[0] * half, q[1] * half, { r: 2.6, color: 'faint' });
@@ -63,10 +62,10 @@ The ellipse is flattened by the factor $\sin\beta$ for a star at ecliptic latitu
           sky.circle(c[0], c[1], sg, { color: 'red', width: 1.6, dash: [4, 3] });
           sky.dot(c[0], c[1], { r: 5.5, color: 'orange' });
           sky.corner(`field width ${p > 0.05 ? v.fix(2 * half, 2) + '″' : v.fix(2000 * half, 2) + ' mas'}`, 'bl', { color: 'muted' });
-          sky.corner('red: measurement error', 'br', { color: 'red' });
+          sky.corner('red: assumed parallax uncertainty', 'br', { color: 'red' });
           stat = { p, sg, snr: p / sg };
         });
-        v.readout(() => `$p = 1/d = ${v.fix(stat.p * 1000, stat.p < 0.01 ? 2 : 1)}$ mas  ·  error $\\sigma_p = ${TEL[tel.value].s}$ mas  ·  $p/\\sigma_p = ${v.fmt(stat.snr, 3)}$\n${stat.snr > 10 ? 'a good distance (better than 10 %)' : stat.snr > 3 ? 'a rough distance (' + v.fix(100 / stat.snr, 0) + ' % error)' : 'not measurable: the ellipse is inside the error circle'}  ·  largest distance with 10 % error: ${v.fmt(100 / TEL[tel.value].s, 3)} pc`);
+        v.readout(() => `$p = 1/d = ${v.fix(stat.p * 1000, stat.p < 0.01 ? 2 : 1)}$ mas  ·  error $\\sigma_p = ${TEL[tel.value].s}$ mas  ·  $p/\\sigma_p = ${v.fmt(stat.snr, 3)}$\n${stat.snr > 10 ? 'linearized distance uncertainty below 10%' : stat.snr > 3 ? 'formal linear estimate ' + v.fix(100 / stat.snr, 0) + '%; nonlinear distance uncertainty not computed' : 'low signal-to-noise: reciprocal distance requires a noise/prior model'}  ·  nominal distance for 10% linearized precision: ${v.fmt(100 / TEL[tel.value].s, 3)} pc`);
       },
     },
 
@@ -129,16 +128,14 @@ $$m_1 - m_2 = -2.5\log_{10}\frac{F_1}{F_2}\qquad\Longleftrightarrow\qquad \frac{
 Larger $m$ means a fainter star. The **absolute magnitude** $M$ is the apparent magnitude the star would have at $10$ pc. Because $F\propto d^{-2}$ (4.2),
 $$m - M = 5\log_{10}\frac{d}{10\ \text{pc}},$$
 the **distance modulus**, which gives the distance of any star of known $M$ from its apparent magnitude.`,
-      idea: String.raw`The eye's response is roughly logarithmic, which is how the ancient six-class scale of brightness worked; Pogson (1856) fixed it by making five steps exactly a factor $100$ so that the old scale is reproduced. Moving the star from $d$ to $10$ pc multiplies the flux by $(d/10\,\text{pc})^2$; taking $-2.5\log_{10}$ of the inverse-square law of 4.2 turns that factor into $5\log_{10}(d/10\ \text{pc})$ magnitudes.`,
-      caption: String.raw`Left: apparent magnitude against distance for the chosen absolute magnitude; the line crosses $m=M$ at $10$ pc, always rises with slope $5$ per decade of distance, and the horizontal lines are the naked-eye and a deep-telescope limit (the **handle** slides along the distance axis). Right: drag the two magnitudes $m_1,m_2$ on the flux ruler; five magnitudes always give a factor 100.`,
-      scope: String.raw`Ignores interstellar extinction, which adds a term $A$ to the modulus ($m-M=5\log_{10}(d/10\,\text{pc})+A$), and the dependence of magnitude on the filter (bolometric versus band magnitudes, 4.6). The absolute magnitudes in the menu are rounded and quoted from memory.`,
-      credit: 'Pogson, 1856 (the factor-100 scale)',
+      idea: String.raw`The conventional logarithmic scale turns flux ratios into additive magnitude differences: five magnitudes correspond exactly to a factor100. Moving the star from $d$ to $10$ pc multiplies the flux by $(d/10\,\text{pc})^2$; taking $-2.5\log_{10}$ of the inverse-square law of 4.2 turns that factor into $5\log_{10}(d/10\ \text{pc})$ magnitudes.`,
+      caption: String.raw`Left: apparent magnitude against distance for the chosen absolute magnitude; the line crosses $m=M$ at $10$ pc, always rises with slope $5$ per decade of distance, and the horizontal lines are illustrative detection thresholds 6 and 30 mag (the **handle** slides along the distance axis). Right: drag the two magnitudes $m_1,m_2$ on the flux ruler; five magnitudes always give a factor 100.`,
+      scope: String.raw`Ignores interstellar extinction, which adds a term $A$ to the modulus ($m-M=5\log_{10}(d/10\,\text{pc})+A$), and the dependence of magnitude on the filter (bolometric versus band magnitudes, 4.6). The menu supplies synthetic example values of $M$, not catalogue measurements of named stars. The detection thresholds are illustrative, not universal naked-eye or telescope limits.`,
       deps: ['astro-4.2'],
-      refs: ['Carroll–Ostlie §3.2'],
+      refs: ['IAU (2015), Resolution B2, Eqs.(2)–(4), standard10pc reference distance', 'Direct subtraction of logarithmic magnitudes and inverse-square flux law'],
       tags: ['magnitude', 'distance modulus', 'photometry'],
-      verify: true,
       viz(v) {
-        const PRE = { sun: ['Sun (V ≈ 4.83)', 4.83], vega: ['Vega (≈ 0.6)', 0.6], sir: ['Sirius A (≈ 1.4)', 1.43], prox: ['Proxima Cen (≈ 15.5)', 15.5], sg: ['blue supergiant (≈ −7)', -7] };
+        const PRE = { sun: ['model M=4.83', 4.83], vega: ['model M=0.60', .6], sir: ['model M=1.43', 1.43], prox: ['model M=15.50', 15.5], sg: ['model M=−7', -7] };
         const Mabs = v.slider('absolute magnitude $M$', -9, 17, 4.83, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const pre = v.select('example', Object.entries(PRE).map(([k, a]) => ({ value: k, label: a[0] })), 'sun', { onChange: (k) => Mabs.set(PRE[k][1]) });
         const A = v.stage({ x: [1, 1e5], y: [-40, 14], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1.05, xlabel: 'distance (pc)', ylabel: 'apparent magnitude m (brighter ↑)', title: 'm = M + 5 log₁₀(d/10 pc)',
@@ -153,8 +150,8 @@ the **distance modulus**, which gives the distance of any star of known $M$ from
           hd.set(hd.x, -(M + 5 * Math.log10(hd.x / 10)));
           A.fn((d) => -(M + 5 * Math.log10(d / 10)), { color: 'accent', width: 2.2 });
           A.vline(10, { color: 'faint', width: 1, dash: [3, 4] });
-          A.hline(-6, { color: 'green', width: 1.2, dash: [5, 4] }); A.text('naked eye ≈ 6', 1e5, -6, { size: 10.5, color: 'green', dy: -9, align: 'right' });
-          A.hline(-30, { color: 'red', width: 1.2, dash: [5, 4] }); A.text('deep telescope ≈ 30', 1e5, -30, { size: 10.5, color: 'red', dy: -9, align: 'right' });
+          A.hline(-6, { color: 'green', width: 1.2, dash: [5, 4] }); A.text('assumed limit6mag', 1e5, -6, { size: 10.5, color: 'green', dy: -9, align: 'right' });
+          A.hline(-30, { color: 'red', width: 1.2, dash: [5, 4] }); A.text('assumed limit30mag', 1e5, -30, { size: 10.5, color: 'red', dy: -9, align: 'right' });
           A.text('10 pc', 10, -37, { size: 10.5, color: 'muted', dx: 4, align: 'left' });
           d0 = hd.x;
           B.fn((m) => Math.pow(10, -0.4 * m), { color: 'ink', width: 1.8 });
@@ -163,7 +160,7 @@ the **distance modulus**, which gives the distance of any star of known $M$ from
         });
         v.readout(() => {
           const M = Mabs.value, m = M + 5 * Math.log10(d0 / 10), dm = m2.x - m1.x;
-          return `$d = ${v.fmt(d0, 3)}$ pc  →  $m = M + 5\\log_{10}(d/10) = ${v.fix(m, 2)}$ (${m <= 6 ? 'visible to the naked eye' : m <= 30 ? 'needs a telescope' : 'beyond the telescope limit'})\n$m_2 - m_1 = ${v.fix(dm, 2)}$  →  $F_1/F_2 = 100^{(m_2-m_1)/5} = ${v.fmt(Math.pow(100, dm / 5), 4)}$`;
+          return `$d = ${v.fmt(d0, 3)}$ pc  →  $m = M + 5\\log_{10}(d/10) = ${v.fix(m, 2)}$ (${m <= 6 ? 'brighter than assumed 6 mag threshold' : m <= 30 ? 'between assumed 6 and 30 mag thresholds' : 'fainter than assumed 30 mag threshold'})\n$m_2 - m_1 = ${v.fix(dm, 2)}$  →  $F_1/F_2 = 100^{(m_2-m_1)/5} = ${v.fmt(Math.pow(100, dm / 5), 4)}$`;
         });
       },
     },
@@ -267,37 +264,38 @@ with $T_\odot = 5772$ K. In a plot of $\log L$ against $\log T_{\rm eff}$ the st
       num: '4.6',
       kind: 'Definition',
       name: 'Colour index',
-      statement: String.raw`A **colour index** is the difference of a star's magnitudes in two wavelength bands, for instance $B-V = m_B - m_V$ (blue minus visual filter of the Johnson–Morgan system). Since a magnitude difference is a flux ratio (4.3), $B-V = -2.5\log_{10}(F_B/F_V) + \text{const}$, the constant being fixed by convention (a star of spectral type A0 has all indices $\approx 0$). For blackbody-like stars the ratio $F_B/F_V$ depends only on temperature, and it increases with $T$, so $B-V$ **decreases monotonically with temperature**: about $-0.3$ for the hottest stars, $+0.65$ for the Sun, $+1.5$ or more for cool red stars. A two-filter measurement therefore gives a temperature, with no spectrum and no distance needed (the distance divides out of the flux ratio).`,
-      idea: String.raw`The two filters sample a Planck spectrum at two wavelengths. For $T$ so high that both bands lie on the Rayleigh–Jeans side the ratio is a constant; as $T$ drops, the peak of the Planck curve (Wien's law) moves from the blue towards the red, and light in $B$ falls faster than in $V$. The map $T\mapsto F_B/F_V$ is monotone, so it can be inverted. Interstellar dust reddens a star and is the main source of ambiguity, which is why observers use at least two colours.`,
-      caption: String.raw`Drag the **temperature**: left, a blackbody spectrum with two filter curves (here Gaussian toys, not the tabulated Johnson curves; shaded: the part of the spectrum each filter lets through). Right: $B-V$ against $T$ from this model (calibrated so that $5772$ K gives $0.65$) and the blackbody-derived formula of Ballesteros (2012) for comparison; dots mark stars whose $B-V$ is read off, placed at the temperature the model colour implies.`,
-      scope: String.raw`Model calibrated to a single point (the Sun), so absolute values of $B-V$ for hot and cool stars are only indicative: real stars have line blanketing, and the real filters are not Gaussians. The star list uses rounded catalogue colours quoted from memory.`,
-      credit: 'Johnson & Morgan, 1953 (UBV system)',
+      statement: String.raw`A **colour index** is the difference of a star's magnitudes in two wavelength bands, for instance $B-V = m_B - m_V$ (blue minus visual filter of the Johnson–Morgan system). Since a magnitude difference is a flux ratio (4.3), $B-V = -2.5\log_{10}(F_B/F_V) + \text{const}$, the constant being fixed by convention (the separate band zero points are fixed by the chosen photometric system). For blackbody-like stars the ratio $F_B/F_V$ depends only on temperature, and it increases with $T$, so $B-V$ **decreases monotonically with temperature** within a fixed idealized blackbody family and fixed filters. Within that model a calibrated two-filter ratio can constrain a colour temperature, with no spectrum and no distance needed (the distance divides out of the flux ratio).`,
+      idea: String.raw`The two filters sample a Planck spectrum at two wavelengths. For $T$ so high that both bands lie on the Rayleigh–Jeans side the ratio is a constant; as $T$ drops, the peak of the Planck curve (Wien's law) moves from the blue towards the red, and light in $B$ falls faster than in $V$. The map $T\mapsto F_B/F_V$ is monotone, so it can be inverted. Interstellar dust reddens a star and is the main source of ambiguity, and one colour alone cannot determine both temperature and extinction; atmospheric composition, line blanketing and surface gravity introduce further departures from a blackbody.`,
+      caption: String.raw`Drag the **temperature**: left, a blackbody spectrum with two filter curves (here Gaussian toys, not the tabulated Johnson curves; shaded: the part of the spectrum each filter lets through). Right: $B-V$ against $T$ from this model (calibrated so that $5772$ K gives $0.65$) and the blackbody-derived formula of Ballesteros (2012) for comparison; dots mark synthetic blackbodies at known temperatures; their colours are calculated, not catalogue observations. The two curves need not agree because their band definitions/calibrations differ.`,
+      scope: String.raw`Model calibrated to a single point (the Sun), so absolute values of $B-V$ for hot and cool stars are only indicative: real stars have line blanketing, and the real filters are not Gaussians. The Gaussian bands integrate **energy** over the displayed 250–900 nm interval; they are not measured Johnson response functions or a photon-counting detector model. The anchor $(5772\mathrm{K},0.65)$ is a chosen toy calibration, not a fresh solar-colour measurement. Ballesteros Eq.(14) is an approximate comparison, not an exact inverse of these toy bands.`,
+      credit: 'Ballesteros, 2012 (approximate colour-temperature comparison)',
       deps: ['astro-4.4', 'astro-4.3'],
-      refs: ['Carroll–Ostlie §3.6'],
+      refs: ['Ballesteros (2012), pp.1–4, especially Eq.(14) and the broad-filter qualifications immediately before it', 'IAU (2015), Resolution B2, logarithmic magnitude convention'],
       tags: ['colour', 'photometry', 'temperature'],
-      verify: true,
       viz(v) {
         const T = v.slider('temperature $T$ (K)', 2500, 30000, 5772, { log: true, sig: 3, fmt: (x) => v.fix(x, 0) });
         const sp = v.stage({ x: [250, 900], y: [0, 2.6], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'wavelength (nm)', ylabel: 'relative flux per unit wavelength', title: 'a blackbody seen through B and V filters' });
         const cv = v.stage({ x: [2500, 30000], y: [-0.5, 2.3], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'temperature (K)', ylabel: 'B − V', title: 'B − V falls as the temperature rises' });
-        const STARS = [['Rigel', -0.03], ['Sirius', 0.0], ['Procyon', 0.42], ['Sun', 0.65], ['Arcturus', 1.23], ['Betelgeuse', 1.85]];
-        const invToy = (bv) => v.M.bisect((t) => bvToy(t) - bv, 2000, 60000, 0.5);
+        const MODELS = [3000,5000,5772,10000,20000];
         v.render(() => {
           const t = T.value, ref = planckL(550e-9, t);
+          const spectralTop = Math.max(1,...Array.from({length:651},(_,i)=>planckL((250+i)*1e-9,t)/ref));
+          sp.setView([250,900],[0,spectralTop*1.15]);
           sp.fn((nm) => bandT('B', nm), { color: 'blue', width: 1, dash: [4, 4], alpha: 0.7 });
           sp.fn((nm) => bandT('V', nm), { color: 'green', width: 1, dash: [4, 4], alpha: 0.7 });
           sp.fn((nm) => (planckL(nm * 1e-9, t) / ref) * bandT('B', nm), { fill: true, color: 'blue', fillAlpha: 0.3, width: 1.4, n: 400 });
           sp.fn((nm) => (planckL(nm * 1e-9, t) / ref) * bandT('V', nm), { fill: true, color: 'green', fillAlpha: 0.3, width: 1.4, n: 400 });
           sp.fn((nm) => planckL(nm * 1e-9, t) / ref, { color: 'ink', width: 2.2, n: 400 });
-          sp.text('B', BAND.B.c, 2.4, { color: 'blue', size: 13, align: 'center' }); sp.text('V', BAND.V.c + 60, 2.4, { color: 'green', size: 13, align: 'center' });
-          cv.fn(bvToy, { color: 'accent', width: 2.4 });
-          const pts = []; for (let bv = -0.35; bv <= 2.1; bv += 0.02) pts.push([tBallesteros(bv), bv]);
+          sp.text('B', BAND.B.c, spectralTop*1.08, { color: 'blue', size: 13, align: 'center' }); sp.text('V', BAND.V.c + 60, spectralTop*1.08, { color: 'green', size: 13, align: 'center' });
+          cv.fn(syntheticColour, { color: 'accent', width: 2.4 });
+          const pts = []; for (let bv = -.5; bv <= 3; bv += .01) {const tt=ballesterosColourTemperature(bv);if(tt>=2500&&tt<=30000)pts.push([tt,bv]);}
+          cv.setView([2500,30000],[Math.min(syntheticColour(30000),...pts.map(p=>p[1]))-.12,Math.max(syntheticColour(2500),...pts.map(p=>p[1]))+.12]);
           cv.path(pts, { color: 'orange', width: 1.6, dash: [6, 4] });
-          for (const [nm, bv] of STARS) { const x = invToy(bv); cv.dot(x, bv, { r: 4, color: 'purple', label: nm, labelPos: nm === 'Rigel' ? 'se' : 'ne' }); }
-          cv.dot(t, bvToy(t), { r: 7, color: 'gold' });
+          for(const tt of MODELS)cv.dot(tt,syntheticColour(tt),{r:4,color:'purple',label:`${tt}K`,labelPos:'ne'});
+          cv.dot(t, syntheticColour(t), { r: 7, color: 'gold' });
           cv.corner('model (solid), Ballesteros 2012 (dashed)', 'tr', { color: 'muted' });
         });
-        v.readout(() => `$T = ${v.fix(T.value, 0)}$ K  →  $B - V = ${v.fix(bvToy(T.value), 2)}$ (model)  ·  Ballesteros formula applied to that colour gives ${v.fix(tBallesteros(bvToy(T.value)), 0)} K`);
+        v.readout(() => `$T = ${v.fix(T.value, 0)}$ K  →  $B - V = ${v.fix(syntheticColour(T.value), 2)}$ (synthetic energy bands, chosen zero point) · band energy ratio $F_B/F_V = ${v.fix(energyBand('B',T.value)/energyBand('V',T.value),4)}$ · Ballesteros formula applied to that colour gives ${v.fix(ballesterosColourTemperature(syntheticColour(T.value)), 0)} K`);
       },
     },
   ],

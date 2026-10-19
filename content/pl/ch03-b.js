@@ -1,4 +1,5 @@
 // Programming Languages & Types — Chapter 3: Confluence and normalization (items 3.6–3.10)
+import { boundedBracket, freshObservation } from './reduction-audit.shared.js';
 import {
   V, L, A, parse, P, DEFS, key, layoutTerm, show, drawLine, redexes, size, runStrategy, normalize, makeGraph, drawGraph, hitBox,
   field, pxStage, drawParseError, rrect, layoutG, drawTreePx, bfs, STRATS, cat, getAt,
@@ -261,54 +262,54 @@ export default {
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Algorithm', name: 'Bracket abstraction: from λ-terms to SKI',
-      statement: String.raw`**Bracket abstraction** $[x]\,M$ removes a variable from a $\lambda$-free combinator term $M$: $[x]\,x=I$; $[x]\,M=K\,M$ if $x$ is not free in $M$; $[x]\,(M\,N)=S\,([x]\,M)\,([x]\,N)$. Translating a $\lambda$-term, innermost abstraction first, replaces $\lambda x.\,M$ by $[x]\,M$, and this yields a term $T$ with no $\lambda$ such that $T\,x_1\cdots x_n$ reduces, in combinatory logic, to the same applicative term as the original $\lambda$-term applied to the same fresh variables. The optional $\eta$-rule $[x]\,(M\,x)=M$ (when $x$ is not free in $M$) shortens the output. The translation can make terms noticeably bigger.`,
-      idea: String.raw`$[x]\,M$ is a combinator term $C$ with $C\,x\to M$; the three clauses say how to build it by cases on $M$: a variable $x$ itself is the identity, something not mentioning $x$ is ignored by $K$, and an application $M\,N$ needs $x$ passed to both halves, which is exactly the rule for $S$. Doing the innermost binder first leaves a $\lambda$-free body to apply the clauses to, and each step removes one $\lambda$. Equivalence of the two sides is by induction on $M$ using the $K$ and $S$ rules, and is compared here on fresh arguments, since combinatory logic does not identify functions beyond what they do (3.8).`,
+      statement: String.raw`For a **λ-free** combinator term $M$, bracket abstraction is defined by ordered clauses: $[x]x=I$; if $x\notin FV(M)$, $[x]M=K\,M$; otherwise $[x](P\,Q)=S([x]P)([x]Q)$. For every combinator argument $N$, $([x]M)N\to^{*}M[x:=N]$. Eliminating innermost binders therefore translates every finite λ-term to a λ-free combinator term. Interpreting $S,K,I$ by their λ-definitions gives a β-equivalent λ-term. The optional shortcut $[x](P\,x)=P$, requiring $x\notin FV(P)$, preserves βη-equivalence instead; it still satisfies the displayed application property. Translation does not imply normalization: divergent terms such as $Y$ remain possible.`,
+      idea: String.raw`Prove $([x]M)N\to^{*}M[x:=N]$ by structural induction. The $I$ case returns $N$, the $K$ case ignores it, and the $S$ rule passes it to both subterms before applying the induction hypotheses. Zero or several steps may be required, so this is not a one-step claim. Translating inner binders first ensures the bracket algorithm always receives a λ-free body. The observed comparison below is a finite example, not a proof of equivalence for all terms or contexts.`,
       caption: String.raw`Type a $\lambda$-term (or pick one) and drag “binders eliminated” to watch the abstractions disappear one by one, innermost first. The plot compares the size of the result with and without the $\eta$-shortcut for the family $\lambda x_1\ldots x_n.\,x_n\,x_{n-1}\cdots x_1$, measured by the page’s own translator. The bottom line applies the $\lambda$-term and its translation to the same fresh variables and compares their normal forms.`,
-      scope: String.raw`This is the simplest (Curry-style) translation, with only the three clauses and the optional $\eta$-rule; better algorithms (with extra combinators B, C or the optimizations of Turner) produce smaller output and are not shown. The growth numbers in the plot are measurements of this translator, not a stated theorem.`,
-      deps: ['pl-3.8'], refs: ['Pierce §5.2'], tags: ['combinators', 'compilation'],
-      credit: 'Bracket abstraction comes from the early combinatory logic of Schönfinkel and Curry (who first gave the algorithm was not verified); optimized variant: D. A. Turner, J. Symbolic Logic 44 (1979)',
-      verify: true,
+      scope: String.raw`This basic SKI algorithm uses the three ordered clauses and optional η rule, with a constant-function shortcut when a whole subterm omits the variable. The mathematical translation terminates by eliminating finitely many binders; this implementation stops at20,000 nodes or200 binders. Plot values measure this translator only; finite fresh-argument comparisons do not decide general equivalence.`,
+      deps: ['pl-3.8'], refs: ['Selinger §5.2, Theorem5.1, pp.35–37; Lemma5.10, p.40'], tags: ['combinators', 'compilation'],
+      credit: 'Algorithm and inductive application law follow Selinger §5.2, Theorem5.1 and Remark5.3; this implementation also includes the stated η shortcut',
       viz(v) {
         const sTr = pxStage(v, { height: 230, full: true, title: 'Eliminating the binders, innermost first' });
         const sPl = v.stage({ x: [1, 8], y: [0, 100], axes: 'box', gutter: true, height: 250, minWidth: 340, weight: 1.2, xlabel: 'number n of abstractions', ylabel: 'leaves in the result', title: 'Size of the translation of λx₁…xₙ. xₙ … x₂ x₁' });
         const sCk = pxStage(v, { height: 250, minWidth: 320, title: 'Do both versions agree?' });
         const EX = { i: 'λx. x', k: 'λx y. x', s: 'λx y z. x z (y z)', c2: 'λf x. f (f x)', plus: 'Plus', sw: 'λx y. y x', t: 'λf. (λx. f (x x)) (λx. f (x x))' };
         let info = null;
-        const compute = () => { if (!f.ast) { info = null; return; } const r = bracketSteps(f.ast, eta.value); info = { r }; kS.set(Math.min(kS.value, r.states.length - 1)); };
+        const compute = () => { if (f.err||!f.ast) { info = null; return; } const r = boundedBracket(f.ast, eta.value); info = { r }; kS.input.max=String(r.states.length-1); kS.set(Math.min(kS.value, r.states.length - 1)); };
         const f = tf(v, 'λ-term', EX.s, () => { compute(); v.invalidate(); }, 360);
         const ex = v.select('Examples', [{ value: 's', label: 'S' }, { value: 'k', label: 'K' }, { value: 'i', label: 'I' }, { value: 'sw', label: 'λx y. y x' }, { value: 'c2', label: 'Church 2' }, { value: 'plus', label: 'Plus' }, { value: 't', label: 'Y' }], 's', { onChange: () => f.set(EX[ex.value]) });
         const eta = v.toggle('η-shortcut  [x](M x) = M', false, { onChange: () => { compute(); } });
         const kS = v.slider('binders eliminated', 0, 12, 12, { step: 1, int: true });
         compute(); kS.set(info ? info.r.states.length - 1 : 0);
-        const growth = (n, e) => { let body = V('x' + n); for (let i = n - 1; i >= 1; i--) body = A(body, V('x' + i)); let t = body; for (let i = n; i >= 1; i--) t = L('x' + i, t); const st = bracketSteps(t, e); return clLeaves(st.states[st.states.length - 1]); };
+        const growth = (n, e) => { let body = V('x' + n); for (let i = n - 1; i >= 1; i--) body = A(body, V('x' + i)); let t = body; for (let i = n; i >= 1; i--) t = L('x' + i, t); const st = boundedBracket(t, e); return st.complete?clLeaves(st.states[st.states.length - 1]):NaN; };
         const G0 = [], G1 = []; for (let n = 1; n <= 8; n++) { G0.push([n, growth(n, false)]); G1.push([n, growth(n, true)]); }
-        v.legend([['accent', 'Curry translation'], ['green', 'with η-shortcut']]);
+        v.legend([['accent', 'basic SKI translation'], ['green', 'with η-shortcut']]);
         let obs = null;
         v.render(() => {
           if (f.err || !info) { drawParseError(v, sTr, f.src, f.err || { error: 'not a term', pos: 0, len: 1 }); return; }
           const st = info.r.states, k = Math.min(kS.value, st.length - 1);
           drawTraceCL(v, sTr, { states: st, paths: [] }, k, { rowH: 34, size: 17, all: true });
-          sTr.textPx(k === st.length - 1 ? 'no λ left: a combinator term' : `${k} of ${st.length - 1} binders eliminated`, sTr.W - 10, sTr.H - 10, { size: 11.5, color: 'muted', align: 'right', weight: 700 });
+          sTr.textPx(k === st.length - 1 ? info.r.complete?'no λ left: a combinator term':'translation budget reached; binders may remain' : `${k} of ${st.length - 1} computed binders eliminated`, sTr.W - 10, sTr.H - 10, { size: 11.5, color: 'muted', align: 'right', weight: 700 });
           sPl.setView([0.7, 8.3], [0, Math.max(...G0.map((q) => q[1])) * 1.1]);
           sPl.path(G0, { color: 'accent', width: 2 }); sPl.dots(G0, { color: 'accent', r: 4 });
           sPl.path(G1, { color: 'green', width: 2 }); sPl.dots(G1, { color: 'green', r: 4 });
           const fin = st[st.length - 1];
-          obs = observe(f.ast, fin);
+          obs = info.r.complete?freshObservation(f.ast, fin):null;
           sCk.textPx('λ-term applied to fresh variables', 14, 24, { size: 12, weight: 700, color: 'muted', align: 'left', halo: false });
-          if (!obs) { sCk.textPx('(no λ-free normal form within 4 arguments)', 14, 50, { size: 13, color: 'muted', align: 'left', halo: false }); return; }
-          const nm = 'abcd'.slice(0, obs.n).split('').join(' ');
+          if (!obs) { sCk.textPx('(no applicative comparison within argument/step/size budgets)', 14, 50, { size: 12, color: 'muted', align: 'left', halo: false }); return; }
+          const nm = obs.names.join(' ');
           const row = (y, label, val, col) => { sCk.textPx(label, 14, y, { size: 11.5, weight: 700, color: 'muted', align: 'left', halo: false }); sCk.textPx(val, 14, y + 20, { size: 15, weight: 600, color: col, align: 'left', halo: false }); };
           row(44, `λ-term ${obs.n ? nm : ''}  →*  (${obs.lamSteps} β-steps)`, obs.lam.replace(/^\((.*)\)$/, '$1'), 'ink');
           row(104, `SKI term ${obs.n ? nm : ''}  →*  (${obs.clSteps} steps)`, (obs.cl || '(no normal form)').replace(/^\((.*)\)$/, '$1'), 'ink');
           const same = obs.cl === obs.lam;
-          sCk.textPx(same ? '✓ same result' : '✗ different', sCk.W / 2, 190, { size: 18, weight: 700, color: same ? 'green' : 'red', align: 'center', halo: false });
+          sCk.textPx(!obs.complete?'comparison incomplete':same ? '✓ same result' : '✗ different', sCk.W / 2, 190, { size: 18, weight: 700, color: !obs.complete?'orange':same ? 'green' : 'red', align: 'center', halo: false });
         });
         v.readout(() => {
           if (f.err || !info) return 'Not a term.';
           const st = info.r.states, fin = st[st.length - 1], lam = f.ast;
           const cnt = (t, c) => (t.t === 'a' ? cnt(t.f, c) + cnt(t.a, c) : t.t === 'c' && t.c === c ? 1 : 0);
           const lv = (t) => (t.t === 'a' ? lv(t.f) + lv(t.a) : t.t === 'l' ? lv(t.b) : 1);
-          return `The λ-term has $${lv(fromLambda(lam))}$ variable occurrences; its translation has $${clLeaves(fin)}$ leaves (${cnt(fin, 'S')} S, ${cnt(fin, 'K')} K, ${cnt(fin, 'I')} I, the rest variables), ${info.r.removed.length} abstraction${info.r.removed.length === 1 ? '' : 's'} removed${eta.value ? ', with the η-shortcut' : ''}.` + (obs ? ` Applied to ${obs.n} fresh variable${obs.n === 1 ? '' : 's'}, both reach $\\mathtt{${obs.lam.replace(/ /g, '\\ ')}}$ ${obs.cl === obs.lam ? '✓' : '✗'}.` : '');
+          if(!info.r.complete)return `Translation stopped at its ${info.r.reason}; ${info.r.states.length-1} binders eliminated. No claim that the remaining term is λ-free.`;
+          return `The λ-term has $${lv(fromLambda(lam))}$ variable occurrences; its translation has $${clLeaves(fin)}$ leaves (${cnt(fin, 'S')} S, ${cnt(fin, 'K')} K, ${cnt(fin, 'I')} I, the rest variables), ${info.r.removed.length} abstractions removed${eta.value ? ', preserving βη-equivalence with the shortcut' : ', preserving β-equivalence'}.` + (obs&&obs.complete ? ` Applied to fresh variables ${obs.names.join(', ')||'(none)'}, the finite normal-form comparison ${obs.cl===obs.lam?'agrees':'differs'}: $\\mathtt{${obs.lam.replace(/ /g, '\\ ')}}$.` : ' No comparison completed within four fresh arguments, 150 β-steps /500 λ-nodes or500 combinator steps /1,000 leaves budgets; this does not decide equivalence or divergence.');
         });
       },
     },

@@ -70,15 +70,14 @@ export default {
     // ------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Definition', name: 'Simply typed λ-calculus',
-      statement: String.raw`**Types** are built from base types and arrows: $T ::= \mathsf{Bool}\mid\mathsf{Nat}\mid T\to T$ (the arrow associates to the right). **Terms** are the variables, abstractions $\lambda x{:}T.\,t$ (the binder carries its type), applications $t\,t$, and the constants and operators of 4.1. A **context** $\Gamma$ is a finite list of bindings $x{:}T$. The typing relation $\Gamma\vdash t:T$ has the rules of 4.1 (with $\Gamma$ carried along) and
+      statement: String.raw`**Types** are built from base types and arrows: $T ::= \mathsf{Bool}\mid\mathsf{Nat}\mid T\to T$ (the arrow associates to the right). **Terms** are the variables, abstractions $\lambda x{:}T.\,t$ (the binder carries its type), applications $t\,t$, and the constants and operators of 4.1. A **context** $\Gamma$ is a finite list of bindings $x{:}T$. We use an ordered binding stack: a new binder shadows an earlier binding of the same name. This implements the usual distinct-name context convention up to α-renaming. The typing relation $\Gamma\vdash t:T$ has the rules of 4.1 (with $\Gamma$ carried along) and
 - T-Var: if $x{:}T\in\Gamma$ then $\Gamma\vdash x:T$ (the rightmost binding of $x$ wins);
 - T-Abs: if $\Gamma,x{:}T_1\vdash t_2:T_2$ then $\Gamma\vdash\lambda x{:}T_1.\,t_2:T_1\to T_2$;
 - T-App: if $\Gamma\vdash t_1:T_1\to T_2$ and $\Gamma\vdash t_2:T_1$ then $\Gamma\vdash t_1\,t_2:T_2$.`,
       idea: String.raw`Functions get arrow types and the context records what each free variable is assumed to be. Crossing a $\lambda$ adds one assumption to $\Gamma$ for the body, so $\Gamma$ grows as the derivation climbs through binders and shrinks again at their conclusion; this is why the same variable name can have different types in different parts of a term. The rules are still syntax-directed: one rule per term constructor. The calculus is the typed counterpart of the untyped $\lambda$-calculus of chapter 2, and is the core of every typed functional language.`,
       caption: String.raw`Type a term (write $\lambda x{:}\mathsf{Nat}.\ t$, types $\mathsf{Nat}\to\mathsf{Nat}$ with an arrow or “->”) or choose an example. Every node of the derivation shows its own context $\Gamma$ before the turnstile; click a node to see its context as chips and the rule. Ill-typed terms mark the node where a rule fails.`,
-      deps: ['pl-2.4', 'pl-4.1'], refs: ['Pierce §9.1', 'Pierce §9.2'], tags: ['lambda calculus', 'typing'],
-      credit: 'A. Church, 1940 (J. Symbolic Logic 5(2), “A formulation of the simple theory of types”) is the source of the simply typed λ-calculus; the presentation with typing contexts follows later textbooks',
-      verify: true,
+      deps: ['pl-2.4', 'pl-4.1'], refs: ['Selinger §6.1, pp.46–48, Table4'], tags: ['lambda calculus', 'typing'],
+      credit: 'Arrow-fragment presentation follows Selinger §6.1, Table4; Bool/Nat primitives follow the chapter’s explicitly defined language',
       viz(v) {
         const sD = pxStage(v, { height: 260, full: true, title: 'Typing derivation' });
         const sG = pxStage(v, { height: 108, full: true, title: 'Context and rule of the selected node' });

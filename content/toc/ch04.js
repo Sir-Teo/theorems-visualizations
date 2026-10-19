@@ -24,12 +24,11 @@ Any $p$ at least the number of states of some DFA for $L$ works. The condition i
       idea: String.raw`Take a DFA with $p$ states and a string $w\in L$ with $|w|\ge p$. Its run visits $|w|+1\ge p+1$ states, so by the pigeonhole principle (comb-1.2) two of the first $p+1$ of them coincide. The piece $y$ read between the two visits is a loop from a state back to itself; deleting the loop or going round it $i$ times leaves the machine in the same state before it continues with $z$, so the end state — and acceptance — is unchanged.`,
       caption: String.raw`Choose a machine and type a string (the run is drawn on the machine: blue = the path $x$, orange = the loop $y$, teal = the rest $z$). The slider pumps the loop $k$ times; the lower row shows the pumped string with the state under every boundary, and the verdict never changes. Try a string **shorter than the number of states** $p$: the run may have no repeated state and the lemma promises nothing.`,
       deps: ['toc-2.3', 'comb-1.2'],
-      refs: ['Sipser §1.4'],
-      credit: 'Rabin & Scott, 1959 (the argument); stated as a pumping lemma by Bar-Hillel, Perles & Shamir, 1961',
-      scope: String.raw`The attribution follows Wikipedia's account; the original papers were not rechecked in detail.`,
-      verify: true,
+      refs: ['Pettorossi, Automata Theory and Formal Languages, §2.9 Theorem 2.9.1 pp. 72–73; DFA first-repeat refinement proved here'],
+      credit: 'Proof checked against Alberto Pettorossi, Automata Theory and Formal Languages; historical priority not asserted',
+      scope: String.raw`The proof uses a complete DFA and the first repeated state among the first $p+1$ run positions, giving the stronger bound $|xy|\le p$. The visualization also accepts rejected inputs: a loop preserves their rejection, but this is an extra observation, not the lemma's $w\in L$ hypothesis. Original historical priority has been removed; no conclusion about nonregularity is drawn from a finite pumping sample.`,
       tags: ['pumping lemma', 'pigeonhole', 'regular languages'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Pumping_lemma_for_regular_languages' },
+      links: { 'Author textbook': 'https://cs.brown.edu/courses/csci1810/fall-2024/resources/ch2_readings/automata_theory_and_formal_languages.pdf', 'Author minimization proof': 'https://cs.stanford.edu/people/trevisan/cs103-14/lecture16.pdf' },
       viz(v) {
         const MACH = { hasABA: () => PRESETS.hasABA(), endsAB: () => PRESETS.endsAB(), aMod3: () => PRESETS.aMod3(), mod5 };
         const DEF = { hasABA: 'bbabab', endsAB: 'abbaab', aMod3: 'abaabb', mod5: 'aabaaab' };
@@ -227,14 +226,13 @@ In each case the pumping game (4.2) is won with an explicit string and an explic
 $$xz\in L\iff yz\in L .$$
 A string $z$ with $xz\in L\not\ni yz$ (or the other way round) **distinguishes** $x$ and $y$. $\equiv_L$ is an equivalence relation on $\Sigma^*$ that is a *right congruence*: $x\equiv_L y\Rightarrow xa\equiv_L ya$. Its classes are the *Myhill–Nerode classes* of $L$.`,
       idea: String.raw`$x\equiv_L y$ says that, as far as $L$ is concerned, the prefixes $x$ and $y$ have the same future: any continuation that completes one into a member completes the other. A DFA can only remember a prefix through its state, so two prefixes that lead to the same state are necessarily indistinguishable; the converse direction is the content of 4.5. Reflexivity, symmetry and transitivity are inherited from "$\iff$"; the right-congruence property holds because $(xa)z=x(az)$.`,
-      caption: String.raw`Choose a language and type two prefixes $x,y$. Each barcode lists all suffixes $z$ in shortlex order (one row per length, up to the bound) and colours the cell green when $xz\in L$. Cells where the two barcodes disagree are outlined red; the first of them in shortlex order is the **distinguishing suffix**. Identical barcodes mean $x\equiv_L y$ as far as the bound can tell — only a *bound*, because a longer distinguishing suffix might exist (for regular languages it never has to be longer than the number of states).`,
+      caption: String.raw`Choose a language and type two prefixes $x,y$. Each barcode lists all suffixes $z$ in shortlex order (one row per length, up to the bound) and colours the cell green when $xz\in L$. Cells where the two barcodes disagree are outlined red; the first of them in shortlex order is the **distinguishing suffix**. Identical barcodes mean $x\equiv_L y$ as far as the bound can tell — only a *bound*, because a longer distinguishing suffix might exist (for two states of a fixed complete $n$-state DFA a distinguishing suffix, when one exists, has length at most $n-1$).`,
       deps: ['toc-2.3'],
-      refs: ['Sipser §1.4'],
-      credit: 'Myhill, 1957; Nerode, 1958',
-      scope: String.raw`Nerode's paper (Proc. AMS 9, 541–544, 1958) was confirmed; the Myhill technical report (WADC TR 57-624, 1957) is cited from secondary bibliographies.`,
-      verify: true,
+      refs: ['Pettorossi, Automata Theory and Formal Languages, §2.8 Theorem 2.8.4 pp. 59–61', 'Trevisan, Notes on State Minimization (2014), Definitions 1–2 and Lemma 3'],
+      credit: 'Proof checked against Alberto Pettorossi, Automata Theory and Formal Languages; historical priority not asserted',
+      scope: String.raw`The stated relation quantifies over all finite suffixes. The drawn barcodes use a finite bound and can only refute equivalence or report agreement within that bound. For a fixed complete $n$-state DFA, partition refinement ensures a distinguishing suffix of length at most $n-1$ when states differ; the pictured nonregular languages have no such finite universal DFA bound. Long prefixes are abbreviated with an ellipsis only in canvas labels; all membership calculations use the full input. Exact historical year/priority claims are omitted.`,
       tags: ['Myhill–Nerode', 'right congruence'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Myhill%E2%80%93Nerode_theorem' },
+      links: { 'Author textbook': 'https://cs.brown.edu/courses/csci1810/fall-2024/resources/ch2_readings/automata_theory_and_formal_languages.pdf', 'Author minimization proof': 'https://cs.stanford.edu/people/trevisan/cs103-14/lecture16.pdf' },
       viz(v) {
         const NAMES = ['ends01', 'mod3', 'div3', 'has011', 'third1', 'zn1n', 'pal', 'ww'];
         const DEF = { ends01: ['0', '1'], mod3: ['1', '0'], div3: ['1', '110'], has011: ['01', '0'], third1: ['100', '1000'], zn1n: ['000', '00'], pal: ['01', '0'], ww: ['01', '0'] };
@@ -247,7 +245,7 @@ A string $z$ with $xz\in L\not\ni yz$ (or the other way round) **distinguishes**
           const L = LANGS[langSel.value], x = xi.value.trim(), y = yi.value.trim(), S = sS.value;
           const okIn = /^[01]*$/.test(x) && /^[01]*$/.test(y), P = pen(s, v);
           if (!okIn) { P.sans('use only the letters 0 and 1', P.W / 2, 60, { size: 14, color: 'red', weight: 600 }); info = { bad: true }; return; }
-          const z = sepSuffix(L.mem, BIN, x, y, S), nm = (u) => (u === '' ? 'ε' : u);
+          const z = sepSuffix(L.mem, BIN, x, y, S), nm = (u) => (u === '' ? 'ε' : u.length > 18 ? u.slice(0, 10) + '…' + u.slice(-6) : u);
           const half = (P.W - 60) / 2, rows = S + 1, rh = Math.min(30, (P.H - 112) / rows), top = 54;
           let diffs = 0, total = 0;
           for (const [col, u, X0] of [['blue', x, 20], ['orange', y, 40 + half]]) {
@@ -289,14 +287,13 @@ A string $z$ with $xz\in L\not\ni yz$ (or the other way round) **distinguishes**
 (iii) $L$ is a union of classes of some right congruence of finite index.
 Moreover the number of classes of $\equiv_L$ is exactly the number of states of the smallest DFA for $L$.`,
       idea: String.raw`(i)$\Rightarrow$(ii): if a DFA $M$ with $n$ states accepts $L$, then two strings that end in the same state are indistinguishable, so $\equiv_L$ has at most $n$ classes. (ii)$\Rightarrow$(i): take the classes themselves as states, $\delta([x],a)=[xa]$ (well defined by the right-congruence property of 4.4), start $[\varepsilon]$, accepting classes those inside $L$; induction on $|w|$ gives $\hat\delta([\varepsilon],w)=[w]$, so the machine accepts $w$ iff $w\in L$. (ii)$\Leftrightarrow$(iii) is the same argument in two directions.`,
-      caption: String.raw`Choose a language. The prefixes of length $\le k$ are sorted into classes by their behaviour on all suffixes up to the bound $S$; the bar chart shows how many classes have appeared after prefixes of length $\le k$. For a **regular** language the count stops growing (green plateau) and the classes close up into a DFA (right); for $0^n1^n$ a new class opens for every $n$. The slider $S$ shows the limit of the experiment: with too short suffixes, classes that differ only after a long suffix are merged and the count is a lower bound.`,
+      caption: String.raw`Choose a language. The prefixes of length $\le k$ are sorted into classes by their behaviour on all suffixes up to the bound $S$; the bar chart shows how many classes have appeared after prefixes of length $\le k$. For a **regular** language the count can reach the independently known minimal size, giving the true classes and DFA (right); for $0^n1^n$ a new class opens for every $n$. The slider $S$ shows the limit of the experiment: with too short suffixes, classes that differ only after a long suffix are merged and the count is a lower bound.`,
       deps: ['toc-4.4', 'toc-2.2'],
-      refs: ['Sipser §1.4'],
-      credit: 'Myhill, 1957; Nerode, 1958',
-      scope: String.raw`Classes are computed by testing suffixes up to the bound $S$ only, so the displayed counts are lower bounds for the true number of classes.`,
-      verify: true,
+      refs: ['Pettorossi, Automata Theory and Formal Languages, §2.8 Theorem 2.8.4 and proof pp. 59–61', 'Trevisan, Notes on State Minimization (2014), pp. 1–3'],
+      credit: 'Proof checked against Alberto Pettorossi, Automata Theory and Formal Languages; historical priority not asserted',
+      scope: String.raw`All bounded signature counts are lower bounds. For the five displayed regular languages, the stated minimal size is independently checked from explicit complete DFAs; matching that known size certifies the observed classes. A graph of representative transitions from insufficient suffix tests need not be a quotient automaton for $L$. For the three nonregular languages, nonregularity follows from infinite distinguishable families: prefixes $0^n$ with suffixes $1^n$ for $0^n1^n$ and equal counts; prefixes $0^n1$ with suffixes $0^n$ for palindromes. The finite bar chart alone proves none of those infinite claims.`,
       tags: ['Myhill–Nerode', 'regular languages'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Myhill%E2%80%93Nerode_theorem' },
+      links: { 'Author textbook': 'https://cs.brown.edu/courses/csci1810/fall-2024/resources/ch2_readings/automata_theory_and_formal_languages.pdf', 'Author minimization proof': 'https://cs.stanford.edu/people/trevisan/cs103-14/lecture16.pdf' },
       viz(v) {
         const NAMES = ['ends01', 'mod3', 'div3', 'has011', 'third1', 'zn1n', 'eq', 'pal'];
         const langSel = v.select('language $L$', NAMES.map((k) => ({ value: k, label: LANGS[k].name })), 'ends01');
@@ -304,7 +301,7 @@ Moreover the number of classes of $\equiv_L$ is exactly the number of states of 
         const kS = v.slider('prefix length $k$', 1, 8, 5, { int: true });
         const bs = v.stage({ x: [-0.6, 8.8], y: [0, 20], axes: 'box', gutter: true, xlabel: 'longest prefix length $k$', ylabel: 'classes met', height: 300, weight: 1 });
         const gs = v.stage({ x: [0, 10], y: [0, 7], axes: false, equal: true, height: 300, weight: 1 });
-        const cs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 120, full: true });
+        const cs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 145, full: true });
         const KMAX = 8;
         let cache = { key: '', val: null };
         const get = () => { const key = langSel.value + '|' + sS.value; if (cache.key !== key) cache = { key, val: classify(LANGS[langSel.value].mem, BIN, KMAX, sS.value) }; return cache.val; };
@@ -332,23 +329,24 @@ Moreover the number of classes of $\equiv_L$ is exactly the number of states of 
             const D = dfa(BIN, states, ids[0], delta);
             layoutBFS(D, 10, 7); G.sync(D);
             drawDFA(v, gs, G, D, { fill: (id) => (id === ids[0] ? 'gold' : null) });
-          } else { gs.text('more than 8 classes —', 5, 4.1, { align: 'center', color: 'muted', size: 14 }); gs.text('no finite automaton is closing up', 5, 3.2, { align: 'center', color: 'red', size: 14, weight: 600 }); }
+          } else { gs.text('more than 8 classes —', 5, 4.1, { align: 'center', color: 'muted', size: 14 }); gs.text('finite display limit; no conclusion from this count alone', 5, 3.2, { align: 'center', color: 'red', size: 14, weight: 600 }); }
           dinfo = { small, unknown, n: cls.length };
           const P = pen(cs, v); let x = 12, y = 8;
-          P.sans(`classes of the prefixes of length ≤ ${k}   (representative: shortest, ε = empty)`, 12, 10, { align: 'left', size: 11.5, color: 'muted', weight: 600 }); y = 26;
+          let shown = 0; P.sans(`classes of the prefixes of length ≤ ${k}   (representative: shortest, ε = empty)`, 12, 10, { align: 'left', size: 11.5, color: 'muted', weight: 600 }); y = 26;
           cls.forEach((c, i) => {
             const t = `c${i}: ${c.rep === '' ? 'ε' : c.rep}${c.members.length > 1 ? ` (+${c.members.filter((m) => m.length <= k).length - 1})` : ''}`, wpx = P.tw(t, 11.5) + 12;
             if (x + wpx > P.W - 8) { x = 12; y += 24; }
-            if (y < P.H - 12) { P.box(x, y, wpx, 20, { r: 5, fill: L.mem(c.rep) ? 'green' : 'blue', alpha: 0.15, stroke: L.mem(c.rep) ? 'green' : 'blue' }); P.text(t, x + wpx / 2, y + 10, { size: 11.5 }); }
+            if (y < P.H - 34) { shown++; P.box(x, y, wpx, 20, { r: 5, fill: L.mem(c.rep) ? 'green' : 'blue', alpha: 0.15, stroke: L.mem(c.rep) ? 'green' : 'blue' }); P.text(t, x + wpx / 2, y + 10, { size: 11.5 }); }
             x += wpx + 6;
           });
+          P.sans(`${shown} of ${cls.length} representatives shown`, P.W - 10, P.H - 10, { align: 'right', size: 10.5, color: 'muted' });
         });
         v.legend([['accent', 'new class(es) appeared', { dot: true }], ['green', 'no new class (plateau)', { dot: true }], ['gold', 'class of ε (start)', { dot: true }]]);
         v.readout(() => {
           const C = get(), L = LANGS[langSel.value], k = kS.value, n = C.counts[k], last = C.counts[KMAX];
           const grow = C.counts.slice(1).map((c, i) => c - C.counts[i]);
-          let tail = ''; if (L.reg) tail = last === L.size ? ` After $k=${KMAX}$ there are exactly ${last} classes = the ${L.size} states of the minimal DFA.` : ` ${last} classes found (minimal DFA has ${L.size}: raise $S$).`; else tail = ` The count is still growing at $k=${KMAX}$ (${last} classes): ${grow.slice(-3).join(', ')} new per step — no finite number of states can remember them.`;
-          return `Prefixes of length $\\le${k}$ fall into **${n}** classes.${tail}${dinfo.small ? (dinfo.unknown ? ` ${dinfo.unknown} arrows lead outside the classes seen so far.` : ' All arrows $[x]\\to[xa]$ stay inside the classes: a DFA.') : ''}`;
+          let tail = ''; if (L.reg) tail = last === L.size ? ` After $k=${KMAX}$ there are exactly ${last} bounded classes = the independently known ${L.size} true classes.` : ` ${last} classes found (minimal DFA has ${L.size}: raise $S$).`; else tail = ` At $k=${KMAX}$, ${last} bounded classes are visible (${grow.slice(-3).join(', ')} new per last step). The infinite distinguishable families in the scope prove nonregularity; finite growth alone does not.`;
+          return `Prefixes of length $\\le${k}$ fall into **${n}** classes.${tail}${dinfo.small ? (dinfo.unknown ? ` ${dinfo.unknown} arrows lead outside the classes seen so far.` : (L.reg && last === L.size && n === L.size ? ' All true classes are present and representative transitions give the minimal DFA.' : ' Representative arrows close in this finite signature graph; this alone does not certify a quotient DFA for L.')) : ''}`;
         });
       },
     },

@@ -1,64 +1,11 @@
 // Materials Science — Chapter 4, part c: items 4.9–4.11 (precipitation hardening and Orowan bypass, annealing of cold-worked metal, hardness testing)
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
 
-// ── precipitation hardening model (4.9) ───────────────────────────────────────────────────────────────────────────────
-const G_AL = 26e9, B_AL = 0.286e-9, M_TAYLOR = 3.06, SIG_MATRIX = 60;
-/** Orowan stress increment (MPa, tensile): tau = G b / lambda, lambda the surface-to-surface spacing on the slip plane. */
-function orowan(r_nm, f) {
-  const lam = r_nm * (Math.sqrt((2 * Math.PI) / (3 * f)) - 2);
-  return lam > 0.5 * r_nm ? (M_TAYLOR * G_AL * B_AL) / (lam * 1e-9) / 1e6 : Infinity;
-}
-/** Shearing increment (MPa, tensile): proportional to sqrt(r f); the constant is fixed so that it crosses the Orowan curve at r_c for f = 3 %. */
-function shearing(r_nm, f, rc) {
-  const A = orowan(rc, 0.03) / Math.sqrt(rc * 0.03);
-  return A * Math.sqrt(r_nm * f);
-}
-/** Coarsening: r^3 = r0^3 + K(T) t (Lifshitz–Slyozov–Wagner), K calibrated to reach 6 nm in 10 h at 190 C, with activation energy Q. */
-function radiusAt(tH, TC, Q) {
-  const r0 = 1.2, Kref = (Math.pow(6, 3) - r0 ** 3) / 10, kB = 8.617333e-5;
-  const K = Kref * Math.exp((-Q / kB) * (1 / (TC + 273.15) - 1 / 463.15));
-  return Math.cbrt(r0 ** 3 + K * tH);
-}
+import { AGING, orowan, shearing, radiusAt, agingPoint, agingPeak } from './source-audit-aging.shared.js';
 
-// ── Potts model of annealing (4.10) ───────────────────────────────────────────────────────────────────────────────────
-const NBX = [-1, 0, 1, -1, 1, -1, 0, 1], NBY = [-1, -1, -1, 0, 0, 1, 1, 1];
-function mcInit(N, nuc, seed, v) {
-  const r = v.rng(seed), o = new Int32Array(N * N), f = new Uint8Array(N * N), nGr = 52, sx = [], sy = [];
-  for (let k = 0; k < nGr; k++) { sx.push(r() * N); sy.push(r() * N); }
-  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
-    let b = 1e9, bi = 0;
-    for (let k = 0; k < nGr; k++) { let dx = Math.abs(x - sx[k]); dx = Math.min(dx, N - dx); let dy = Math.abs(y - sy[k]); dy = Math.min(dy, N - dy); const d = (dx / 1.7) ** 2 + (dy * 1.7) ** 2; if (d < b) { b = d; bi = k; } }
-    o[y * N + x] = bi + 1; f[y * N + x] = 1;
-  }
-  let id = nGr + 1;
-  for (let k = 0; k < nuc; k++) {
-    const cx = Math.floor(r() * N), cy = Math.floor(r() * N);
-    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (Math.abs(dx) + Math.abs(dy) > 1) continue; const i = ((cy + dy + N) % N) * N + ((cx + dx + N) % N); o[i] = id; f[i] = 0; }
-    id++;
-  }
-  return { N, o, f, r, t: 0, hist: [] };
-}
-function mcSweep(S, Es) {
-  const { N, o, f, r } = S, NN = N * N;
-  for (let n = 0; n < NN; n++) {
-    const i = Math.floor(r() * NN), x = i % N, y = (i - x) / N, k = Math.floor(r() * 8);
-    const j = ((y + NBY[k] + N) % N) * N + ((x + NBX[k] + N) % N);
-    if (o[j] === o[i]) continue;
-    let before = 0, after = 0; const oi = o[i], oj = o[j];
-    for (let q = 0; q < 8; q++) { const val = o[((y + NBY[q] + N) % N) * N + ((x + NBX[q] + N) % N)]; if (val !== oi) before++; if (val !== oj) after++; }
-    if (after - before + Es * (f[j] - f[i]) <= 0) { o[i] = oj; f[i] = f[j]; }
-  }
-  S.t++;
-}
-function mcStats(S) {
-  const { N, o, f } = S; let fd = 0; for (let i = 0; i < N * N; i++) fd += f[i];
-  const seen = new Uint8Array(N * N), st = []; let ng = 0;
-  for (let i = 0; i < N * N; i++) {
-    if (seen[i]) continue; ng++; seen[i] = 1; st.push(i);
-    while (st.length) { const p = st.pop(), x = p % N, y = (p - x) / N; for (let q = 0; q < 4; q++) { const nx = (x + (q === 0) - (q === 1) + N) % N, ny = (y + (q === 2) - (q === 3) + N) % N, w = ny * N + nx; if (!seen[w] && o[w] === o[p]) { seen[w] = 1; st.push(w); } } }
-  }
-  return { fdef: fd / (N * N), ng };
-}
+import { mcInit, mcSweep, mcStats, recoveryFactor } from './source-audit-aging.shared.js';
+
+import { INDENT, indentation, rockwellC, minimumBallExponent } from './source-audit-indentation.shared.js';
 
 export default {
   collection: 'mat',
@@ -69,83 +16,66 @@ export default {
       num: '4.9',
       kind: 'Model',
       name: 'Precipitation hardening and Orowan bypass',
-      statement: String.raw`A supersaturated alloy aged at a moderate temperature precipitates fine second-phase particles of volume fraction $f$ and radius $r$ that grow with time. A gliding dislocation either **shears** a particle, at a stress that rises as $\Delta\tau_{\rm sh}\propto\sqrt{rf}$ (more interface area and more resistance to cutting for larger particles), or **bypasses** it by bowing between particles and leaving a loop around each (the **Orowan mechanism**), at the stress $$\Delta\tau_{\rm Or}\approx\frac{Gb}{\lambda},\qquad \lambda\approx r\Big(\sqrt{\tfrac{2\pi}{3f}}-2\Big),$$ which falls as particles coarsen and spread apart. The softer mechanism operates, so the strength increment is $\min(\Delta\tau_{\rm sh},\Delta\tau_{\rm Or})$: it rises while the particles are sheared, **peaks** where the two curves cross, and falls with further aging (**overaging**).`,
-      idea: String.raw`At fixed $f$, both curves depend on $r$ in opposite directions: cutting gets harder as $r$ grows, bypass gets easier because the gaps $\lambda$ widen and the bowing stress $Gb/\lambda$ (the Frank–Read estimate, 3.7, with line tension $\tfrac12Gb^2$) drops. A dislocation takes whichever is easier, so the strength is the lower envelope with a maximum at the crossing radius $r_c$, a few nanometres in Al–Cu alloys. Aging time enters through coarsening: the Lifshitz–Slyozov–Wagner law $r^3-r_0^3=K(T)\,t$, whose rate $K$ is thermally activated, so aging at a higher temperature reaches the peak sooner and peaks lower if $f$ is smaller. Adding the Taylor factor turns the shear-stress increment into a tensile one (3.8).`,
-      caption: String.raw`Drag the handle along the aging curve (or the time slider) to age the alloy. Top: a row of particles on the slip plane and the dislocation passing it: small particles are sheared (the two halves offset by $b$), large ones are bypassed and left with loops. Bottom: strength increment against aging time for shearing (blue), Orowan bypass (red) and the actual envelope (black), and the particle radius from coarsening. Raise the temperature to move the peak earlier, or lower $f$ to see the peak drop and shift.`,
+      statement: String.raw`Precipitation can impede dislocation motion by cutting particles or by bowing between particles and leaving Orowan loops. In a **fixed-volume-fraction toy model**, assume cutting resistance $\Delta\tau_{\rm sh}=A\sqrt{rf}$ and bypass resistance $\Delta\tau_{\rm Or}=Gb/\lambda$, with the chosen spacing $\lambda=r(\sqrt{2\pi/(3f)}-2)$. The lower of these two resistances increases and then decreases as $r$ grows. This gives a model peak at their crossing, not a universal law for every precipitate chemistry or aging treatment.`,
+      idea: String.raw`For fixed $f$, write the tensile increments as $A_T\sqrt{rf}$ and $B_T(f)/r$. Their crossing is exactly $r_*=[B_T/(A_T\sqrt f)]^{2/3}$. Here $A_T$ is calibrated so that $r_*=r_c$ at $f=0.03$. A diffusion-controlled **late coarsening** approximation is $r^3-r_0^3=K(T)t$ at nearly constant volume fraction; it does not describe initial nucleation or growth. Thus $t_*=(r_*^3-r_0^3)/K(T)$ when this is nonnegative. Changing temperature changes this toy clock, while the peak height at fixed $f,r_c$ stays unchanged.`,
+      caption: String.raw`Move the time slider or drag the black curve's handle. The top drawing is a schematic: the offset between the cut particle halves is exaggerated, and bypass loops are illustrative. The lower plots show both assumed strength branches without clipping (logarithmic strength axis), their lower envelope, and the evolving radius. A crossover outside the displayed time interval is reported explicitly.`,
       deps: ['mat-3.6', 'mat-4.8'],
-      refs: ['Callister §11.10', 'Porter–Easterling ch. 5'],
+      refs: ['Simm et al., MSEA 702 (2017), §5.1 Eq. (6), §5.2 Eqs. (7)–(10), Figs. 9–10; author PDF: https://www.phase-trans.msm.cam.ac.uk/2017/marageing2_Simm_M_2017.pdf', 'Bhadeshia, Bainite in Steels, 3rd ed. (2015), §4.4 pp. 98–99, Eq. (4.5); author PDF: https://www.phase-trans.msm.cam.ac.uk/2018/Bainite_small.pdf'],
       tags: ['age hardening', 'precipitates', 'Orowan'],
-      credit: 'A. Wilm, 1906 (age hardening of Al alloys); A. Guinier and G. D. Preston, 1938 (G.P. zones); E. Orowan, 1948 (bypass mechanism); I. M. Lifshitz and V. V. Slyozov, and C. Wagner, 1961 (coarsening)',
-      scope: String.raw`A schematic model: $G=26$ GPa, $b=0.286$ nm (aluminium), Taylor factor 3.06 and a matrix strength of 60 MPa; spherical particles on a regular array; the coarsening rate is calibrated so that $r=6$ nm after 10 h at 190 °C with activation energy $Q$ (a model value), and the shearing constant is fixed by putting the crossover at $r_c$ for $f=3\%$. Real Al–Cu alloys pass through $\mathrm{GP}\to\theta''\to\theta'\to\theta$ with changing shape, coherency and fraction, none of which is modelled, so absolute strengths are illustrative.`,
-      verify: true,
+      credit: 'Mechanism comparison follows the explicit lower-resistance model discussed by Simm and coauthors (2017); numerical calibration and regular-spacing geometry here are illustrative.',
+      scope: String.raw`Chosen constants: $G=26$ GPa, $b=0.286$ nm, $M=3.06$, matrix strength 60 MPa, $r_0=1.2$ nm. The assumed rate reaches 6 nm in 10 h at 190 °C, with an adjustable activation energy. These are synthetic Al-like settings, not a fit to an alloy. The spacing replaces a distribution of spherical particle intersections by one regular spacing; actual cutting laws, logarithmic line-tension corrections, size distributions, changing fraction and precipitate transformations are omitted. A coarsening law applied over the entire slider interval is an extrapolation of the toy model.`,
+      verify: false,
       viz(v) {
-        const fS = v.slider('volume fraction $f$ (%)', 1, 8, 3, { step: 0.1 });
+        const fS = v.slider('volume fraction $f$ (%)', 1, 8, 3, { step: .1 });
         const TS = v.slider('aging temperature (°C)', 150, 240, 190, { step: 1 });
-        const rcS = v.slider('shearing → bypass radius $r_c$ (nm, at $f=3\\,\\%$)', 3, 12, 6, { step: 0.5 });
-        const QS = v.slider('activation energy $Q$ (eV)', 0.8, 1.6, 1.2, { step: 0.05 });
-        const tS = v.slider('aging time (h)', 0.01, 10000, 10, { log: true, decimals: 2 });
-        const A = v.stage({ x: [-10, 90], y: [-30, 30], equal: true, axes: false, height: 230, full: true, title: 'a dislocation meets a row of particles on its slip plane' });
-        const B = v.stage({ x: [0.01, 10000], y: [0, 700], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1.3, xlabel: 'aging time (h)', ylabel: 'yield strength (MPa)', title: 'strength against aging time' });
-        const C = v.stage({ x: [0.01, 10000], y: [0, 60], xlog: true, axes: 'box', gutter: true, height: 320, weight: 0.8, minWidth: 250, xlabel: 'aging time (h)', ylabel: 'particle radius $r$ (nm)', title: 'coarsening' });
-        const curve = (t) => {
-          const f = fS.value / 100, r = radiusAt(t, TS.value, QS.value), sh = shearing(r, f, rcS.value), orr = orowan(r, f);
-          return { r, sh, orr, s: SIG_MATRIX + Math.min(sh, orr) };
-        };
-        const hB = B.handle(10, 300, { color: 'accent', r: 8, constrain: (x) => { const tt = clamp(x, 0.01, 1e4); return [tt, curve(tt).s]; } });
-        hB.onDrag = () => tS.set(clamp(hB.x, 0.01, 1e4));
-        let info = null;
+        const rcS = v.slider('reference crossover $r_c$ (nm, at 3%)', 3, 12, 6, { step: .5 });
+        const QS = v.slider('assumed activation energy $Q$ (eV)', .8, 1.6, 1.2, { step: .05 });
+        const tS = v.slider('aging time (h)', .01, 10000, 10, { log: true, decimals: 2 });
+        const A = v.stage({ x: [-10, 90], y: [-30, 30], equal: true, axes: false, height: 230, full: true, title: 'schematic cutting or bypass snapshots' });
+        const B = v.stage({ x: [.01, 1e4], y: [50, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, weight: 1.3, xlabel: 'model aging time (h)', ylabel: 'tensile strength (MPa, log scale)', title: 'two assumed resistances and their lower envelope' });
+        const C = v.stage({ x: [.01, 1e4], y: [0, 60], xlog: true, axes: 'box', gutter: true, height: 320, weight: .8, minWidth: 250, xlabel: 'model aging time (h)', ylabel: 'radius (nm)', title: 'assumed coarsening' });
+        const point = t => agingPoint(t, fS.value / 100, TS.value, QS.value, rcS.value);
+        const h = B.handle(10, point(10).s, { color: 'accent', r: 8, constrain: x => { const t = clamp(x, .01, 1e4); return [t, point(t).s]; } });
+        h.onDrag = () => tS.set(clamp(h.x, .01, 1e4));
+        let info;
         v.render(() => {
-          const f = fS.value / 100, t = tS.value, cur = curve(t);
-          // peak
-          let pk = { s: 0, t: 0 };
-          for (let k = 0; k <= 300; k++) { const tt = 0.01 * Math.pow(1e6, k / 300), c = curve(tt); if (c.s > pk.s) pk = { s: c.s, t: tt, r: c.r }; }
-          B.setView([0.01, 10000], [0, Math.max(300, pk.s * 1.2)]);
-          B.fn((x) => SIG_MATRIX + Math.min(shearing(radiusAt(x, TS.value, QS.value), f, rcS.value), 900), { domain: [0.01, 10000], color: 'accent', width: 1.8, dash: true, alpha: 0.7 });
-          B.fn((x) => SIG_MATRIX + Math.min(orowan(radiusAt(x, TS.value, QS.value), f), 900), { domain: [0.01, 10000], color: 'red', width: 1.8, dash: true, alpha: 0.7 });
-          B.fn((x) => curve(x).s, { domain: [0.01, 10000], color: 'ink', width: 3 });
-          B.vline(pk.t, { color: 'green', dash: true, alpha: 0.7 }); B.text('peak', pk.t * 1.08, pk.s * 0.12, { color: 'green', size: 12, align: 'left' });
-          B.text('under-aged: sheared', 0.02, pk.s * 1.12, { color: 'accent', size: 11.5, align: 'left' });
-          B.text('over-aged: bypassed', 9000, pk.s * 1.12, { color: 'red', size: 11.5, align: 'right' });
-          hB.set(t, cur.s);
-          C.setView([0.01, 10000], [0, 60]);
-          C.fn((x) => radiusAt(x, TS.value, QS.value), { domain: [0.01, 10000], color: 'orange', width: 2.6 });
-          const rc = (() => { let lo = 0.01, hi = 1e4; const g = (x) => shearing(radiusAt(x, TS.value, QS.value), f, rcS.value) - orowan(radiusAt(x, TS.value, QS.value), f); for (let i = 0; i < 60; i++) { const m = Math.sqrt(lo * hi); if (g(m) < 0) lo = m; else hi = m; } return Math.sqrt(lo * hi); })();
-          C.vline(pk.t, { color: 'green', dash: true, alpha: 0.7 }); C.vline(t, { color: 'accent', alpha: 0.4, dash: true });
-          C.dot(t, cur.r, { r: 6, color: 'accent', fill: 'accent' });
-          // picture: row of particles, centre spacing Lc, radius r
-          const r = cur.r, Lc = r * Math.sqrt((2 * Math.PI) / (3 * f)), lam = Lc - 2 * r, sheared = cur.sh < cur.orr;
-          const x0 = -Lc * 0.6, x1 = Lc * 3.6, span = x1 - x0, hh = span * 0.3;
+          const f = fS.value / 100, t = tS.value, cur = point(t), pk = agingPeak(f, TS.value, QS.value, rcS.value), first = point(.01), last = point(1e4);
+          const top = AGING.matrix + Math.max(last.sh, first.orr);
+          B.setView([.01, 1e4], [50, top * 1.4]);
+          B.fn(x => AGING.matrix + point(x).sh, { domain: [.01, 1e4], color: 'accent', dash: true, width: 1.8 });
+          B.fn(x => AGING.matrix + point(x).orr, { domain: [.01, 1e4], color: 'red', dash: true, width: 1.8 });
+          B.fn(x => point(x).s, { domain: [.01, 1e4], color: 'ink', width: 3 });
+          if (pk.inWindow) { B.vline(pk.t, { color: 'green', dash: true }); B.text('model peak', pk.t, 55, { color: 'green', size: 11 }); }
+          h.set(t, cur.s);
+          C.setView([.01, 1e4], [0, last.r * 1.15]);
+          C.fn(x => point(x).r, { domain: [.01, 1e4], color: 'orange', width: 2.5 });
+          if (pk.inWindow) C.vline(pk.t, { color: 'green', dash: true });
+          C.vline(t, { color: 'accent', dash: true }); C.dot(t, cur.r, { color: 'accent', fill: 'accent', r: 6 });
+          const r = cur.r, L = r * Math.sqrt(2 * Math.PI / (3 * f)), lam = L - 2 * r, sheared = cur.sh <= cur.orr;
+          const x0 = -.6 * L, x1 = 3.6 * L, hh = (x1 - x0) * .3;
           A.setView([x0, x1], [-hh, hh]);
-          A.line(x0, 0, x1, 0, { color: 'faint', dash: true, alpha: 0.5 });
-          const b = Math.max(0.12 * r, 0.04 * Lc);
+          A.line(x0, 0, x1, 0, { color: 'faint', dash: true });
           for (let k = 0; k < 4; k++) {
-            const cx = k * Lc + Lc / 2 * 0 + Lc * 0.2;
+            const cx = (k + .2) * L;
             if (sheared) {
-              A.circle(cx, 0, r, { fill: 'purple', fillAlpha: 0.35, color: 'purple', width: 1.5 });
-              A.circle(cx, b, r, { fill: 'purple', fillAlpha: 0.0, color: 'purple', width: 1.5, dash: true });
-            } else {
-              A.circle(cx, 0, r, { fill: 'purple', fillAlpha: 0.35, color: 'purple', width: 1.5 });
-              A.circle(cx, 0, r * 1.5, { color: 'orange', width: 2, alpha: 0.9 });
-            }
+              A.curve(q => [cx + r * Math.cos(q), r * Math.sin(q)], Math.PI, 2 * Math.PI, { color: 'purple', width: 2 });
+              A.line(cx - r, 0, cx + r, 0, { color: 'purple' });
+              A.curve(q => [cx + .3 * r + r * Math.cos(q), r * Math.sin(q)], 0, Math.PI, { color: 'purple', width: 2 });
+              A.line(cx - .7 * r, 0, cx + 1.3 * r, 0, { color: 'purple' });
+            } else { A.circle(cx, 0, r, { fill: 'purple', fillAlpha: .25, color: 'purple' }); A.circle(cx, 0, 1.2 * r, { color: 'orange', width: 2 }); }
           }
-          // dislocation line: straight through particles when sheared, bowed arcs between particles when bypassed
-          const pts = [];
-          if (sheared) { A.line(x0, -0.3 * Lc, x1, -0.3 * Lc, { color: 'accent', width: 3 }); A.text('shears the particles: each step is one $b$', x0 + 0.1 * span, -0.5 * Lc, { color: 'accent', size: 12, align: 'left' }); }
-          else {
-            for (let k = -1; k < 4; k++) {
-              const ca = k * Lc + Lc * 0.2 + r, cb = (k + 1) * Lc + Lc * 0.2 - r, mid = (ca + cb) / 2, R = Math.max((cb - ca) / 2, 1e-3);
-              A.curve((q) => [mid + R * Math.cos(q), R * Math.sin(q) * 0.999 + 0], Math.PI, 0, { n: 30, color: 'accent', width: 3 });
-            }
-            A.text('bows between particles, leaves loops around them', x0 + 0.1 * span, -0.5 * Lc, { color: 'accent', size: 12, align: 'left' });
-          }
-          A.text(`$r=${r.toFixed(1)}$ nm,  $\\lambda=${Math.max(lam, 0).toFixed(0)}$ nm`, x1 - 0.02 * span, hh * 0.85, { color: 'muted', size: 12, align: 'right' });
-          info = { cur, pk, rc, sheared, f, lam };
+          if (!sheared) for (let k = 0; k < 3; k++) { const ca = (k + .2) * L + r, cb = (k + 1.2) * L - r, R = (cb - ca) / 2; A.curve(q => [(ca + cb) / 2 + R * Math.cos(q), R * Math.sin(q)], Math.PI, 0, { color: 'accent', width: 3 }); }
+          else A.line(x0, -.3 * L, x1, -.3 * L, { color: 'accent', width: 3 });
+          A.text(sheared ? 'cut halves: exaggerated displacement' : 'bypass arcs and schematic residual loops', x0 + .05 * (x1 - x0), -.6 * L, { color: 'accent', size: 12, align: 'left' });
+          A.text(`$r=${r.toFixed(2)}$ nm; $\\lambda=${lam.toFixed(2)}$ nm`, x1 - .03 * (x1 - x0), .85 * hh, { color: 'muted', size: 12, align: 'right' });
+          info = { cur, pk, sheared };
         });
-        v.legend([['accent', 'shearing', { dash: true }], ['red', 'Orowan bypass', { dash: true }], ['ink', 'strength = matrix + the softer increment'], ['green', 'peak', { dash: true }]]);
+        v.legend([['accent', 'matrix + cutting resistance', { dash: true }], ['red', 'matrix + bypass resistance', { dash: true }], ['ink', 'lower envelope'], ['green', 'crossing inside the displayed interval', { dash: true }]]);
         v.readout(() => {
           if (!info) return '';
           const { cur, pk, sheared } = info;
-          return `$t=${v.fmt(tS.value, 3)}$ h at ${TS.value} °C: $r=${v.fix(cur.r, 1)}$ nm, shearing $+${v.fix(cur.sh, 0)}$ MPa, Orowan $+${v.fix(Number.isFinite(cur.orr) ? cur.orr : 9999, 0)}$ MPa → strength ${v.fix(cur.s, 0)} MPa by ${sheared ? 'shearing (under-aged)' : 'bypass (over-aged)'}.\nPeak ${v.fix(pk.s, 0)} MPa at $t^*=${v.fmt(pk.t, 3)}$ h, $r^*=${v.fix(pk.r, 1)}$ nm. Aged 100 times longer than $t^*$ the alloy has lost ${v.fix(pk.s - curve(pk.t * 100).s, 0)} MPa.`;
+          const status = pk.inWindow ? `Model peak ${v.fix(pk.crossoverStrength, 1)} MPa at ${v.fmt(pk.t, 4)} h and ${v.fix(pk.r, 2)} nm.` : `The crossing is ${pk.position} the displayed .01–10000 h interval; its formal time is ${v.fmt(pk.t, 4)} h. The visible maximum is ${v.fix(pk.visible.s, 1)} MPa at ${v.fmt(pk.visibleTime, 3)} h.`;
+          return `Synthetic model at ${v.fmt(tS.value, 4)} h, ${TS.value} °C: radius ${v.fix(cur.r, 2)} nm; cutting increment ${v.fix(cur.sh, 1)} MPa, bypass increment ${v.fix(cur.orr, 1)} MPa; lower-envelope strength ${v.fix(cur.s, 1)} MPa (${sheared ? 'cutting' : 'bypass'}).\n${status} Temperature changes the clock, not the fixed-fraction crossing strength.`;
         });
       },
     },
@@ -154,31 +84,31 @@ export default {
       num: '4.10',
       kind: 'Phenomenon',
       name: 'Recovery, recrystallization and grain growth',
-      statement: String.raw`Cold work stores energy in a metal as dislocations (the energy density grows like the dislocation density $\rho$, 3.8). Heating it releases that energy in three overlapping stages. **Recovery**: point defects annihilate and dislocations rearrange into low-energy arrays; the strength falls only a little, the grains do not change. **Recrystallization**: new strain-free grains nucleate and their boundaries sweep through the deformed metal, driven by the stored energy; the dislocation density drops by orders of magnitude and the strength falls to its annealed value. **Grain growth**: with the stored energy gone, the boundary energy drives the strain-free grains to coarsen, and the mean grain diameter grows roughly as $d^2-d_0^2=kt$ (Burke and Turnbull).`,
-      idea: String.raw`Each stage has its own driving force and its own kinetics. Recrystallization trades stored energy $E_s$ per volume for boundary energy: a nucleus grows into the deformed matrix wherever the energy released by consuming strained metal outweighs the curvature cost of the boundary, so it has a threshold stored energy (a sluggish or heavily recovered metal never recrystallizes). The stored energy also feeds the hardness through Taylor's $\sigma\propto\sqrt\rho$ (3.8), so the hardness falls in proportion to the square root of the unrecrystallized, unrecovered fraction. Grain growth after recrystallization is pure curvature-driven boundary motion, which a lattice Monte Carlo (Potts) model with an energy for every unlike neighbour pair reproduces. Temperature enters through the Arrhenius law (2.7) for the rates, represented here by running the clock faster.`,
-      caption: String.raw`Press play: a 96×96 patch of cold-worked metal (elongated deformed grains, grey) with strain-free nuclei (coloured) grows by a Monte Carlo grain-boundary model. Right: the recrystallized fraction (green), the relative hardness (blue), the remaining stored energy (orange), and the mean grain area after the new grains meet. Lower the stored energy or switch on recovery and the nuclei stop growing: recrystallization has a threshold. Change the nuclei count and watch the final grain size.`,
+      statement: String.raw`Annealing cold-worked metal can reduce its stored defect energy. **Recovery** includes defect annihilation and dislocation rearrangement within the deformed microstructure. **Recrystallization** replaces deformed material by grains with much lower dislocation content, driven by the stored-energy difference. **Grain growth** reduces grain-boundary energy. These processes can overlap. In an ideal self-similar, curvature-controlled growth regime, a characteristic diameter obeys $d^2-d_0^2\propto t$; this is not a guaranteed exponent of every finite lattice run.`,
+      idea: String.raw`The illustration uses orientation labels $o_i$ and deformed-state indicators $f_i\in\{0,1\}$, with energy $E=\sum_{\langle i,j\rangle}[o_i\ne o_j]+E_s\sum_i f_i$ (each eight-neighbor pair counted once). A site copies a random neighbor's orientation and state only when $\Delta E\le0$. One sweep is $N^2$ random attempts with replacement. This is a zero-lattice-temperature, neighbor-copy variant: there is no physical temperature or calibrated clock. Stored energy favors strain-free material, but curvature can eliminate a small embryo. The model allows both kinds of site conversion when they lower energy.`,
+      caption: String.raw`Press play or advance 40 sweeps. Grey sites retain the deformed state; bright sites are strain-free. The plots track the strain-free site fraction, an assumed normalized strength proxy, stored energy, and mean area of eight-neighbor connected orientation regions (periodic edges). Nuclei are seeded only at initialization. The decay switch reduces stored energy concurrently with boundary motion; it does not resolve the microscopic recovery mechanism.`,
       deps: ['mat-3.8', 'mat-2.7'],
-      refs: ['Callister §7.11', 'Callister §7.12'],
+      refs: ['Rollett and Manohar, Monte Carlo Modeling of Grain Growth and Recrystallization, author chapter (14 December 2003), §§4.3–4.6, Eq. (15), Eqs. (19)–(20): https://mm.math.cmu.edu/slides/Review_MonteCarlo.final.pdf', 'Bhadeshia, Metals and Alloys, Lectures 6–7, printed pp. 37–45: https://www.phase-trans.msm.cam.ac.uk/abstracts/L6-8.pdf'],
       tags: ['annealing', 'recrystallization', 'grain growth'],
-      credit: 'J. E. Burke and D. Turnbull, 1952 (review of recrystallization and grain growth); M. P. Anderson, D. J. Srolovitz, G. S. Grest and P. S. Sahni, 1984 (Monte Carlo grain growth)',
-      scope: String.raw`A two-dimensional $Q$-state Potts model at zero temperature with eight-neighbour boundary energy 1 per unlike pair, periodic edges, and a stored energy $E_s$ (in the same units) for each deformed site; it gives the qualitative sequence and a $\sqrt t$-type growth law, not absolute times or sizes (a Monte Carlo step is not a second). The recovery law $E_s(t)=E_s(0)\,[\,0.4+0.6e^{-t/40}\,]$ and the hardness range (60 to 140 HV, copper-like) are assumptions of the illustration.`,
-      verify: true,
+      credit: 'Potts microstructure framework presented by Rollett and Manohar; neighbor-copy rule, seeded crosses and decay/proxy functions here are illustrative choices.',
+      scope: String.raw`A $96\times96$ periodic square lattice with eight-neighbor boundary energy 1 per unlike pair, initial elongated Voronoi regions and five-site embryo-placement attempts. Placements may overlap. Energy is nonincreasing at each accepted update for fixed $E_s$; neither the strain-free fraction nor individual grain areas must be monotone. The optional factor $R(t)=0.4+0.6e^{-t/40}$ scales $E_s$ and the displayed proxy $\sqrt{(1-X)R}$; these are chosen functions, not measured hardness, dislocation densities or seconds. Lattice anisotropy, finite size, faceting and initialization can affect coarsening.`,
+      verify: false,
       viz(v) {
         const N = 96;
         let S;
         const reset = () => { S.reset(); };
         const EsS = v.slider('stored energy $E_s$ (per site)', 0.4, 3, 1.5, { step: 0.05, onChange: reset });
-        const nucS = v.slider('number of nuclei', 0, 300, 120, { step: 1, int: true, onChange: reset });
-        const recT = v.toggle('recovery acts first', false, { onChange: reset });
+        const nucS = v.slider('embryo placement attempts', 0, 300, 120, { step: 1, int: true, onChange: reset });
+        const recT = v.toggle('assumed stored-energy decay', false, { onChange: reset });
         const seedS = v.slider('random seed', 1, 40, 5, { step: 1, int: true, onChange: reset });
         const DT = 1 / 30;
-        const R = (t) => (recT.value ? 0.4 + 0.6 * Math.exp(-t / 40) : 1);
+        const R = t => recoveryFactor(t, recT.value);
         S = v.sim(() => mcInit(N, nucS.value, seedS.value, v), (st) => {
           mcSweep(st, EsS.value * R(st.t));
-          if (st.t % 4 === 0) { const q = mcStats(st); st.hist.push({ t: st.t, fx: 1 - q.fdef, ng: q.ng }); }
         }, { dt: DT, maxSteps: 400 });
+        v.button('Advance 40 sweeps', () => { for (let k = 0; k < 40; k++) mcSweep(S.state, EsS.value * R(S.state.t)); });
         const A = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 380, weight: 1.05, title: 'microstructure (strain-free = bright, deformed = grey)' });
-        const B = v.stage({ x: [0, 720], y: [0, 1.05], axes: 'box', gutter: true, height: 380, weight: 1.15, xlabel: 'Monte Carlo steps ("annealing time")', ylabel: 'relative', title: 'what annealing does' });
+        const B = v.stage({ x: [0, 720], y: [0, 1.05], axes: 'box', gutter: true, height: 380, weight: 1.15, xlabel: 'Monte Carlo sweeps (uncalibrated)', ylabel: 'relative', title: 'site fractions and assumed proxies' });
         const C = v.stage({ x: [0, 720], y: [0, 400], axes: 'box', gutter: true, height: 230, full: true, xlabel: 'Monte Carlo steps', ylabel: 'mean grain area (sites)', title: 'mean grain area' });
         const names = ['accent', 'orange', 'green', 'teal', 'purple', 'pink', 'gold'];
         const base = names.map((n) => v.rgb(n)), grey = v.rgb('muted'), pan = v.rgb('panel');
@@ -199,26 +129,23 @@ export default {
             return [col[0], col[1], col[2], 255];
           }, { res: 3, key: `${st.t}|${seedS.value}|${nucS.value}|${EsS.value}|${recT.value}` });
           // plots
-          const h = st.hist, Hm = (p) => 0;
+          const h = st.hist, current = mcStats(st);
           const tmax = Math.max(720, st.t + 20);
-          B.setView([0, 720], [0, 1.05]); C.setView([0, 720], [0, Math.max(100, ...h.map((p) => (N * N) / p.ng)) * 1.1]);
-          const rel = h.map((p) => ({ t: p.t, fx: p.fx, rho: Math.sqrt((1 - p.fx) * R(p.t)), er: R(p.t) * (1 - p.fx) }));
+          B.setView([0, tmax], [0, 1.05]); C.setView([0, tmax], [0, Math.max(100, N * N / current.ng, ...h.map((p) => (N * N) / p.ng)) * 1.1]);
+          const rel = h.map((p) => ({ t: p.t, fx: 1 - p.fdef, rho: Math.sqrt(p.fdef * R(p.t)), er: R(p.t) * p.fdef }));
           B.path(rel.map((p) => [p.t, p.fx]), { color: 'green', width: 2.6 });
           B.path(rel.map((p) => [p.t, p.rho]), { color: 'accent', width: 2.6 });
           B.path(rel.map((p) => [p.t, p.er]), { color: 'orange', width: 2.2, dash: true });
-          const last = h[h.length - 1] || { fx: 0, ng: 0, t: 0 };
+          const last = { t: st.t, fx: 1 - current.fdef, ng: current.ng };
+          B.dot(st.t, last.fx, { color: 'green', r: 3 }); C.dot(st.t, N * N / current.ng, { color: 'purple', r: 3 });
           C.path(h.map((p) => [p.t, (N * N) / p.ng]), { color: 'purple', width: 2.4 });
-          // power-law exponent of the mean diameter after recrystallization (fx > 0.98)
-          const post = h.filter((p) => p.fx > 0.98 && p.t > 0);
-          let nExp = NaN;
-          if (post.length > 12 && post[post.length - 1].ng >= 8) { const a = post[Math.floor(post.length * 0.3)].t; const pp = post.filter((p) => p.t >= a); if (pp.length > 6) nExp = v.M.linreg(pp.map((p) => Math.log(p.t)), pp.map((p) => 0.5 * Math.log((N * N) / p.ng))).slope; }
-          info = { st, last, nExp, Es: EsS.value * R(st.t), hard: 60 + 80 * Math.sqrt((1 - last.fx) * R(st.t)) };
+          info = { st, last, Es: EsS.value * R(st.t), proxy: Math.sqrt(current.fdef * R(st.t)) };
         }, { period: 24, still: 20 });
-        v.legend([['green', 'recrystallized fraction'], ['accent', 'relative hardness $\\sqrt{\\rho}$'], ['orange', 'stored energy remaining', { dash: true }], ['purple', 'mean grain area']]);
+        v.legend([['green', 'recrystallized fraction'], ['accent', 'assumed normalized strength proxy'], ['orange', 'stored energy / initial per-site value', { dash: true }], ['purple', 'mean grain area']]);
         v.readout(() => {
           if (!info) return '';
-          const { st, last, nExp, Es, hard } = info;
-          return `Step ${st.t}: ${v.fix(last.fx * 100, 0)} % recrystallized, hardness ≈ ${v.fix(hard, 0)} HV (60 annealed, 140 cold-worked), stored energy per deformed site ${v.fix(Es, 2)}, ${last.ng} grains of mean area ${v.fix((N * N) / Math.max(1, last.ng), 0)} sites.\n${Number.isFinite(nExp) ? `After recrystallization the fitted growth exponent of the mean diameter is $${v.fix(nExp, 2)}$ in this run (Burke–Turnbull's ideal is $1/2$)${nExp < 0.25 ? ': growth has nearly stalled, because at zero temperature the boundaries of a small lattice pin on the grid, a known artifact of the Potts model' : ''}.` : last.fx < 0.02 && st.t > 200 ? 'The nuclei have not grown: the stored energy is below the threshold set by boundary curvature.' : ''}`;
+          const { st, last, Es, proxy } = info;
+          return `Sweep ${st.t}: ${v.fix(last.fx * 100, 1)}% strain-free sites; assumed normalized strength proxy ${v.fix(proxy, 3)}; stored energy per deformed site ${v.fix(Es, 2)}; ${last.ng} eight-neighbor orientation regions, mean area ${v.fix((N * N) / last.ng, 1)} sites.\n${nucS.value === 0 ? 'No strain-free embryos were seeded; neighbor copying cannot create that state.' : 'Seeded embryos can grow, shrink or disappear; this run does not establish a universal nucleation threshold or growth exponent.'} Plotted samples occur every four sweeps, with current-state markers. No HV calibration or physical-time conversion is assumed.`;
         });
       },
     },
@@ -227,92 +154,88 @@ export default {
       num: '4.11',
       kind: 'Method',
       name: 'Hardness testing and Tabor’s relation',
-      statement: String.raw`Hardness is the resistance to permanent indentation, measured by pressing a hard indenter into the surface under a load $P$ and measuring the impression. **Brinell** (ball of diameter $D$, chordal impression diameter $d$): $\mathrm{HB}=\dfrac{2P}{\pi D\big(D-\sqrt{D^2-d^2}\big)}$. **Vickers** (136° diamond pyramid, mean diagonal $d$): $\mathrm{HV}=1.854\,P/d^2$. **Rockwell** reads the permanent *depth* $h$ of a cone or ball on an arbitrary scale ($\mathrm{HRC}=100-h/0.002\,\mathrm{mm}$). **Tabor's relation**: the mean contact pressure (Meyer hardness) of a plastic indentation is about three times the flow stress at a representative strain, $H\approx3\sigma_r$, with $\sigma_r$ read at $\varepsilon_r\approx0.08$ for sharp indenters; so for a metal that does not harden $H\approx3\sigma_y$, and for steels the tensile strength is roughly $3.45\,$HB (in MPa).`,
-      idea: String.raw`Under the indenter the metal is constrained by the elastic material around the plastic zone, so it can flow only at a higher stress than in a tensile test: slip-line and cavity-expansion analyses give a constraint factor of about 3, so the average pressure is $p_m\approx3\sigma_r$. The flow stress has to be taken at the strain the indenter imposes, which is roughly $0.2\cot\alpha$ for a cone or pyramid of half-angle $\alpha$ (about 8 % for Vickers) and $0.2\,a/D$ for a ball of contact radius $a$. For a hardening metal $\sigma_r$ exceeds the 0.2 % yield stress by the factor $(\varepsilon_r/0.002)^n$ from Hollomon's law (4.5), which is why $H/\sigma_y$ is above 3 for work-hardened metals. Here the impression size is computed by solving $P=p_m\,A_{\rm proj}$ with that $\sigma_r$.`,
-      caption: String.raw`Choose a test and a load; set the material's yield strength $\sigma_{0.2}$ and hardening exponent $n$. Left: the impression seen from above (with its measured size) and in cross-section. Right: $H/\sigma_{0.2}$ against $n$ for this indenter's representative strain: the constraint factor 3 appears only for a metal that does not harden, and the dashed line shows where yours sits. The readout converts to HB or HV and compares the model's tensile strength with $3.45\,$HB.`,
+      statement: String.raw`Indentation tests define hardness through a specified geometry and loading procedure. With load $P$ in kgf and dimensions in mm, the conventional numbers are $$\mathrm{HB}=\frac{2P}{\pi D(D-\sqrt{D^2-d^2})},\qquad \mathrm{HV}=\frac{2P\sin68^\circ}{d^2}\approx1.8544P/d^2,$$ using ball diameter $D$, residual impression diameter $d$ for Brinell, and mean residual diagonal $d$ for a 136° Vickers pyramid. These use curved/sloping areas, unlike the mean **projected-area pressure** $p_m=P_N/A_{\rm proj}$ in MPa. Rockwell C instead uses two depth readings under the same preliminary force: $\mathrm{HRC}=100-\Delta h/(0.002\,\mathrm{mm})$.`,
+      idea: String.raw`In a fully plastic approximation, $p_m\approx C\sigma(\varepsilon_r)$, with a constraint factor of order three. The demonstration chooses $C=3$ and $\sigma(\varepsilon_p)=\sigma_{\rm ref}(\varepsilon_p/0.002)^n$. For a ball, the chosen representative strain is $\varepsilon_r=0.2a/R=0.2d/D$, with contact radius $a$ and ball radius $R=D/2$; for the sharp pyramid it is fixed at 0.08. These empirical choices are not universal material inversions. Solving $P_N=p_m A_{\rm proj}$ predicts an ideal contact size. Rockwell depth difference is entered separately: it cannot be obtained from the Vickers depth formula.`,
+      caption: String.raw`For Brinell or Vickers, choose a force, reference flow stress and exponent. The drawings show ideal contact geometry with elastic recovery neglected; the curve recomputes the contact solution for every exponent. A ball contact beyond its hemisphere is explicitly unsupported. In Rockwell mode, enter the measured differential depth: the two readings are under 10 kgf, before and after a 150 kgf total-force cycle. The diagrams show the procedure and scale arithmetic, not an elastic-plastic penetration simulation.`,
       deps: ['mat-4.3', 'mat-4.5'],
-      refs: ['Callister §6.10'],
+      refs: ['Low, NIST SP 960-5 (2001), §§2.2–2.4, Table 1, Fig. 1, §3.3.8.1: https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication960-5.pdf', 'NIST SRM 1896a certificate, p. 2 Eq. (1), Vickers geometry and kgf/mm² definition: https://tsapps.nist.gov/srmext/certificates/archives/1896a.pdf', 'Gabauer, UNCERT CoP 14 (2000), §1 pp. 1–2: https://www.npl.co.uk/getmedia/dd265533-ce7b-4613-9227-ad3035d5a48a/cop14.pdf', 'Chang et al., Advances in Materials Science and Engineering (2018), §2.1 Eqs. (1)–(6): https://oa.upm.es/87018/1/5496395.pdf'],
       tags: ['hardness', 'indentation', 'Tabor'],
-      credit: 'J. A. Brinell, 1900 (ball test); R. L. Smith and G. E. Sandland, 1922 (Vickers pyramid); S. P. Rockwell, patent 1914 (depth test); D. Tabor, 1951 (The Hardness of Metals)',
-      scope: String.raw`A rigid-plastic indentation model with a constraint factor $C=3$ and the Hollomon flow stress $\sigma=K\varepsilon_p^n$ at the representative strain; elastic recovery, pile-up and sink-in are ignored. Rockwell C is computed from the Vickers geometry of the same load (permanent depth $h\approx d_V/7$), which is only approximately the standard scale: use the ASTM E140 tables for real conversions. The $3.45\,$HB rule for the tensile strength is the usual steel correlation quoted in textbooks; it is an empirical rule of thumb, not a theorem.`,
-      verify: true,
+      credit: 'Test definitions follow the cited NIST and UNCERT presentations; the Tabor-type representative-stress approximation and its limitations are discussed by Chang and coauthors (2018).',
+      scope: String.raw`Synthetic rigid-plastic model, $C=3$, ball diameter 10 mm; pile-up, sink-in, elastic recovery, specimen thickness, indentation size effects and the elastic-to-plastic transition are omitted. The reference stress is defined at plastic strain 0.002. Its power law and the selected representative strains are extrapolated over the slider range. A computed contact size is treated as a residual size only under this zero-recovery assumption. HB and HV numbers use the conventional kgf/mm² normalization; multiply by 9.80665 to express the corresponding area-based pressure in MPa. HRC is dimensionless, depends on the specified loading/depth cycle, and has no modeled conversion to HB, HV or tensile strength here. The Rockwell arithmetic slider extends beyond typical working ranges and does not certify test applicability.`,
+      verify: false,
       viz(v) {
-        const test = v.select('test', [{ value: 'brinell', label: 'Brinell (10 mm ball)' }, { value: 'vickers', label: 'Vickers (pyramid)' }, { value: 'rockwell', label: 'Rockwell C (150 kgf)' }], 'vickers', { onChange: (id) => { P.set({ brinell: 3000, vickers: 30, rockwell: 150 }[id]); } });
-        const s0S = v.slider('yield strength $\\sigma_{0.2}$ (MPa)', 50, 1800, 250, { step: 5 });
-        const nS = v.slider('hardening exponent $n$', 0.02, 0.5, 0.2, { step: 0.01 });
-        const P = v.slider('load $P$ (kgf)', 1, 3000, 30, { log: true, decimals: 0 });
-        const A = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 280, weight: 1, minWidth: 240, title: 'impression, from above' });
-        const B = v.stage({ x: [-1.2, 1.2], y: [-1.1, 0.6], equal: true, axes: false, height: 280, weight: 1, minWidth: 240, title: 'cross-section' });
-        const C = v.stage({ x: [0, 0.5], y: [1.5, 5.5], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 250, xlabel: 'hardening exponent $n$', ylabel: '$H/\\sigma_{0.2}$', title: 'Tabor: how much more than 3?' });
-        const hC = C.handle(0.2, 3, { color: 'accent', r: 7, constrain: 'x' });
-        hC.onDrag = () => nS.set(clamp(hC.x, 0.02, 0.5));
-        const g = 9.80665;
-        function solve(tt, s0, n, Pk) {
-          const K = s0 * Math.pow(500, n), flow = (e) => K * Math.pow(Math.max(e, 1e-6), n), PN = Pk * g;
-          if (tt === 'brinell') {
-            const D = 10; let lo = 1e-3, hi = D / 2 - 1e-6;
-            const f = (a) => PN / (Math.PI * a * a) - 3 * flow((0.2 * a) / D);
-            if (f(hi) > 0) return { sat: true, D, a: hi, pm: PN / (Math.PI * hi * hi) };
-            for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m) > 0) lo = m; else hi = m; }
-            const a = (lo + hi) / 2, d = 2 * a, HB = (2 * Pk) / (Math.PI * D * (D - Math.sqrt(D * D - d * d)));
-            return { D, a, d, pm: PN / (Math.PI * a * a), HB, er: (0.2 * a) / D, h: (D / 2) * (1 - Math.sqrt(1 - (d / D) ** 2)) };
-          }
-          const er = tt === 'vickers' ? 0.2 / Math.tan((68 * Math.PI) / 180) : 0.2 / Math.tan((60 * Math.PI) / 180);
-          const pm = 3 * flow(er), dV = Math.sqrt((2 * PN) / pm), HV = (1.8544 * Pk) / (dV * dV);
-          if (tt === 'vickers') return { d: dV, pm, HV, er, h: dV / 7 };
-          const dR = Math.sqrt((2 * 150 * g) / pm), hR = dR / 7, HRC = clamp(100 - hR / 0.002, 0, 100);
-          return { d: dR, pm, HV: (1.8544 * 150) / (dR * dR), er, h: hR, HRC };
-        }
-        let info = null;
+        const test = v.select('test', [{ value: 'brinell', label: 'Brinell (10 mm ball)' }, { value: 'vickers', label: 'Vickers (136° pyramid)' }, { value: 'rockwell', label: 'Rockwell C (depth cycle)' }], 'vickers', { onChange: id => { if (id !== 'rockwell') P.set(id === 'brinell' ? 3000 : 30); } });
+        const s0S = v.slider('reference flow stress $\\sigma_{\\rm ref}$ (MPa)', 50, 1800, 250, { step: 5 });
+        const nS = v.slider('hardening exponent $n$', 0, .5, .2, { step: .01 });
+        const P = v.slider('force $P$ (kgf)', 1, 3000, 30, { log: true, decimals: 0 });
+        const hS = v.slider('measured differential depth $\\Delta h$ (µm)', 0, 240, 100, { step: 1 });
+        const A = v.stage({ x: [-1, 1], y: [-1, 1], equal: false, aspect: 1, axes: false, height: 290, weight: 1, minWidth: 240, title: 'contact outline / Rockwell force cycle' });
+        const B = v.stage({ x: [-1, 1], y: [-1, 1], equal: false, aspect: 1, axes: false, height: 290, weight: 1, minWidth: 240, title: 'ideal section / Rockwell datum readings' });
+        const C = v.stage({ x: [0, .5], y: [0, 20], axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 250, xlabel: 'hardening exponent', ylabel: '$p_m/\\sigma_{\\rm ref}$', title: 'model response / depth scale' });
+        const hC = C.handle(.2, 3, { color: 'accent', r: 7, constrain: 'x' });
+        hC.onDrag = () => { if (test.value === 'rockwell') hS.set(Math.round(clamp(hC.x, 0, 240))); else nS.set(Math.round(clamp(hC.x, 0, .5) * 100) / 100); };
+        let info;
         v.render(() => {
-          const tt = test.value, s0 = s0S.value, n = nS.value, Pk = tt === 'rockwell' ? 150 : P.value;
-          P.el.hidden = tt === 'rockwell';
-          const r = solve(tt, s0, n, Pk);
-          // top view
-          const half = tt === 'brinell' ? r.D / 2 * 0.9 : r.d * 1.1;
-          A.setView([-half, half], [-half, half]); B.setView([-half * 1.2, half * 1.2], [-half * 1.05, half * 0.45]);
-          if (tt === 'brinell') {
-            A.circle(0, 0, r.a, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
-            A.arrow(-r.a, -r.a * 0.15 - half * 0.1, r.a, -r.a * 0.15 - half * 0.1, { both: true, color: 'red', head: 6 });
-            A.text(`$d=${r.d.toFixed(2)}$ mm`, 0, -r.a * 0.15 - half * 0.2, { color: 'red', size: 13, plate: true });
-          } else {
-            const d = r.d / 2; A.poly([[d, 0], [0, d], [-d, 0], [0, -d]], { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
-            A.arrow(-d, 0, d, 0, { both: true, color: 'red', head: 6 });
-            A.text(`$d=${r.d.toFixed(3)}$ mm`, 0, -d * 0.4, { color: 'red', size: 13, plate: true });
+          const tt = test.value, rw = tt === 'rockwell';
+          P.el.hidden = rw; s0S.el.hidden = rw; nS.el.hidden = rw; hS.el.hidden = !rw;
+          hC.visible = true;
+          if (rw) {
+            const dh = hS.value, HRC = rockwellC(dh / 1000);
+            A.setView([-1, 9], [-50, 200]);
+            A.path([[0,0],[1,10],[3,10],[4,150],[5,150],[6,10],[8,10]], { color: 'accent', width: 3 });
+            A.text('150 kgf total', 4.5, 175, { size: 12, align: 'center' }); A.text('10 kgf at both readings', 4, -25, { size: 11, align: 'center' });
+            A.dot(3,10,{ color:'red',r:5 }); A.dot(8,10,{ color:'red',r:5 });
+            B.setView([-1, 9], [-280, 70]);
+            B.line(0,0,4,0,{color:'accent',width:2}); B.line(5,-dh,8,-dh,{color:'green',width:2});
+            B.dot(3,0,{color:'accent',r:5}); B.dot(8,-dh,{color:'green',r:5});
+            B.text('initial datum = 0', 2, 35, {size:11,align:'center'}); B.text('final reading',6.5,-dh-25,{size:11,align:'center'});
+            B.arrow(4.5,0,4.5,-dh,{color:'red',both:true,head:5}); B.text(`$\\Delta h=${dh.toFixed(0)}$ µm`, 4, -260, {color:'red',size:12,align:'center'});
+            C.setLabels('differential depth (µm)', 'HRC (dimensionless)'); C.setView([0,240],[-25,105]);
+            C.fn(x => rockwellC(x/1000), {domain:[0,240],color:'ink',width:2.6}); hC.set(dh,HRC);
+            info = { rw, dh, HRC }; return;
           }
-          // section: the surface at y = 0 and the impression below; the indenter dashed
-          B.hline(0, { color: 'muted' });
-          B.rect(-half * 1.2, -half * 1.05, half * 1.2, 0, { fill: 'muted', fillAlpha: 0.08, stroke: false });
-          if (tt === 'brinell') {
-            const R = r.D / 2, cy = R - r.h;
-            B.curve((q) => [R * Math.sin(q), cy - R * Math.cos(q) - 0 * q], -Math.asin(r.a / R), Math.asin(r.a / R), { n: 60, color: 'accent', width: 3 });
-            B.curve((q) => [R * Math.sin(q), cy + R * Math.cos(q)], 0, 2 * Math.PI, { n: 90, color: 'faint', dash: true, alpha: 0.6 });
-            B.arrow(half * 0.9, 0, half * 0.9, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(2)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
-          } else if (tt === 'vickers') {
-            const hw = r.d / 2, depth = r.d / 7;
-            B.path([[-hw, 0], [0, -depth], [hw, 0]], { color: 'accent', width: 3 });
-            B.arrow(half * 0.95, 0, half * 0.95, -depth, { both: true, color: 'red', head: 5 }); B.text(`$h\\approx d/7=${depth.toFixed(3)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
-          } else {
-            const hw = r.h * Math.tan((60 * Math.PI) / 180);
-            B.path([[-hw, 0], [0, -r.h], [hw, 0]], { color: 'accent', width: 3 });
-            B.arrow(half * 0.95, 0, half * 0.95, -r.h, { both: true, color: 'red', head: 5 }); B.text(`$h=${r.h.toFixed(3)}$ mm`, 0, -half * 0.55, { color: 'red', size: 12, plate: true });
+          const r = indentation(tt,s0S.value,nS.value,P.value);
+          const lo = tt === 'brinell' ? Math.max(0,minimumBallExponent(s0S.value,P.value)) : 0;
+          const data = [];
+          if (lo <= .5) for (let j=0;j<=150;j++) { const n=lo+(.5-lo)*j/150, q=indentation(tt,s0S.value,n,P.value); if(q.ok)data.push([n,q.ratio]); }
+          C.setLabels('hardening exponent $n$', '$p_m/\\sigma_{\\rm ref}$'); C.setView([0,.5],[0,Math.max(4,...data.map(p=>p[1]))*1.15]);
+          C.path(data,{color:'ink',width:2.6}); C.hline(3,{color:'red',dash:true});
+          C.text('chosen C = 3', .49, 3.25, {color:'red',size:11,align:'right'});
+          hC.visible = r.ok;
+          if(!r.ok){
+            A.setView([-1,1],[-1,1]); B.setView([-1,1],[-1,1]);
+            A.text('No ball contact solution',0,.25,{color:'red',size:12,align:'center'}); A.text('within the hemisphere',0,-.05,{color:'red',size:12,align:'center'});
+            B.text('Lower force or',0,.15,{size:12,align:'center'}); B.text('raise reference stress',0,-.15,{size:12,align:'center'});
+            info={rw,r};return;
           }
-          // H/sigma0.2 against n
-          const ratio = (nn) => 3 * Math.pow(500 * r.er, nn);
-          C.setView([0, 0.5], [0, Math.max(5.5, ratio(0.5) * 1.05)]);
-          C.fn(ratio, { domain: [0, 0.5], color: 'ink', width: 2.6 });
-          C.hline(3, { color: 'red', dash: true }); C.text('$H=3\\sigma_{0.2}$ (no hardening)', 0.495, 3.35, { color: 'red', size: 11.5, align: 'right', plate: true });
-          hC.set(n, ratio(n));
-          const su = s0 * Math.pow(500, n) * Math.pow(n, n) * Math.exp(-n);
-          const HBeq = tt === 'brinell' ? r.HB : r.pm / g;
-          info = { r, tt, n, s0, su, HBeq, ratio: ratio(n) };
+          hC.set(nS.value,r.ratio);
+          const half = (tt === 'brinell' ? r.a : r.d/2)*1.65;
+          A.setView([-half,half],[-half,half]); B.setView([-half,half],[-half,half]);
+          if(tt==='brinell') {
+            A.circle(0,0,r.a,{fill:'accent',fillAlpha:.18,color:'accent',width:2.5});
+            A.arrow(-r.a,-.25*half,r.a,-.25*half,{both:true,color:'red',head:5});
+            A.text(`$d=${r.d.toFixed(3)}$ mm`,0,-.5*half,{color:'red',size:12,align:'center'});
+            const angle=Math.asin(Math.min(1,r.a/r.R));
+            B.curve(q=>[r.R*Math.sin(q),r.R-r.h-r.R*Math.cos(q)],-angle,angle,{n:60,color:'accent',width:3});
+          } else {
+            const a=r.d/2;
+            A.poly([[a,0],[0,a],[-a,0],[0,-a]],{fill:'accent',fillAlpha:.18,color:'accent',width:2.5});
+            A.arrow(-a,0,a,0,{both:true,color:'red',head:5}); A.text(`$d=${r.d.toFixed(3)}$ mm`,0,-.5*half,{color:'red',size:12,align:'center'});
+            B.path([[-r.hw,0],[0,-r.h],[r.hw,0]],{color:'accent',width:3});
+          }
+          B.hline(0,{color:'muted'});
+          B.arrow(half*.85,0,half*.85,-r.h,{both:true,color:'red',head:5});
+          B.text(`$h=${r.h.toFixed(4)}$ mm`,0,-Math.max(r.h*1.25,half*.4),{color:'red',size:12,align:'center'});
+          B.text(tt==='vickers'?'section through opposite face midpoints':'contact arc only; rest of ball omitted',0,half*.27,{size:10.5,color:'muted',align:'center'});
+          info={rw,r,tt};
         });
         v.readout(() => {
-          if (!info) return '';
-          const { r, tt, su, HBeq, ratio: ra } = info;
-          if (r.sat) return 'The ball would sink in beyond its equator: lower the load.';
-          const name = tt === 'brinell' ? `HB $=${v.fix(r.HB, 0)}$` : tt === 'vickers' ? `HV $=${v.fix(r.HV, 0)}$` : `HRC $=${v.fix(r.HRC, 0)}$ (HV $=${v.fix(r.HV, 0)}$)`;
-          return `Representative strain $\\varepsilon_r=${v.fix(r.er, 3)}$; contact pressure (Meyer hardness) $p_m=3\\sigma_r=${v.fix(r.pm, 0)}$ MPa $=${v.fix(ra, 2)}\\,\\sigma_{0.2}$. ${name}.\nModel tensile strength $Kn^ne^{-n}=${v.fix(su, 0)}$ MPa; the steel rule of thumb $3.45\\,$HB gives ${v.fix(3.45 * HBeq, 0)} MPa (HB ≈ ${v.fix(HBeq, 0)}${tt === 'brinell' ? '' : ' from $p_m$'}).`;
+          if(!info)return '';
+          if(info.rw)return `Differential depth ${v.fix(info.dh,0)} µm = ${v.fix(info.dh/1000,3)} mm; HRC = ${v.fix(info.HRC,1)}. Both depth readings use 10 kgf, with 150 kgf total force applied between them. This is entered depth data, not a prediction from the flow-stress sliders; cycle timings are schematic. The arithmetic is not clamped to a working range.`;
+          const {r,tt}=info;
+          if(!r.ok)return `Unsupported ball-contact geometry: the model requires radius ${v.fix(r.requiredRadius,3)} mm > ball radius ${v.fix(r.R,1)} mm. No HB, depth or pressure prediction is reported. The exponent curve shows only the subset with a contact inside the hemisphere.`;
+          const number=tt==='brinell'?`HB = ${v.fix(r.HB,1)}`:`HV = ${v.fix(r.HV,1)}`;
+          return `Chosen representative strain ${v.fix(r.er,4)}, projected-area pressure ${v.fix(r.pm,1)} MPa = ${v.fix(r.ratio,3)} times the reference stress. ${number} (conventional kgf/mm² normalization); corresponding curved/sloping-area pressure ${v.fix((tt==='brinell'?r.HB:r.HV)*INDENT.g,1)} MPa.\nIdeal ${tt==='brinell'?'diameter':'diagonal'} ${v.fix(r.d,4)} mm and depth ${v.fix(r.h,4)} mm assume no elastic recovery. The curve recomputes contact size at each exponent. No Rockwell or tensile-strength conversion is inferred.`;
         });
       },
     },

@@ -1,6 +1,8 @@
 // Atmosphere & Ocean Dynamics — Chapter 3: Balanced flow (items 3.6–3.9; 3.1–3.5 are in ch03.js)
 import { clamp, RAD, TAU, fcor, sgn, log10, pAt, gradP, lapP, geoWind, adjustSim, etaFinal, cubicRoots, betaOf, potentialIntensity, hollandP, hollandV, deficitForVmax, saffirName, RHO_TC } from './ch03.shared.js';
 
+import { simplePI, cycloneCalibration, cycloneAt, CYCLONE_RHO } from './geo-source-audit.js';
+
 const fsafe = (lat) => { const f = fcor(lat); return Math.abs(f) < 1e-6 ? (f < 0 ? -1e-6 : 1e-6) : f; };
 
 export default {
@@ -209,70 +211,52 @@ for a single shallow-water layer. Divergent flow is slaved to the balanced flow,
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Phenomenon', name: 'Tropical cyclones',
-      verify: true,
-      statement: String.raw`A tropical cyclone is a warm-core, nearly axisymmetric vortex that draws its energy from the enthalpy flux from the warm sea. Outside the core the wind is in **gradient-wind balance** (3.3); within the eyewall the Rossby number $V/fr$ is of order 100, so the balance is nearly cyclostrophic. A parametric radial profile (Holland) $p(r)=p_c+(p_n-p_c)e^{-(R_m/r)^B}$ gives a gradient wind that peaks at the radius of maximum wind $R_m$ with $V_{\max}\approx\sqrt{B\,\Delta p/(\rho e)}$, $\Delta p=p_n-p_c$. Emanuel's thermodynamic theory bounds the intensity: the **maximum potential intensity** satisfies
-$$V_p^2=\frac{C_k}{C_d}\,\frac{T_s-T_o}{T_o}\,\bigl(k_0^*-k\bigr),$$
-with sea-surface temperature $T_s$, outflow temperature $T_o$, exchange coefficients $C_k$ and $C_d$ of enthalpy and momentum, and the enthalpy difference between the saturated sea surface and the boundary-layer air. Warmer ocean means a larger bound and a deeper central pressure.`,
-      idea: String.raw`Treat the storm as a Carnot-like engine: air spirals in over the sea, picks up enthalpy at nearly the sea-surface temperature, rises in the eyewall and flows out at the cold tropopause $T_o$, so a fraction $(T_s-T_o)/T_o$ of the enthalpy taken up is turned into kinetic energy, which friction dissipates (the ratio $C_k/C_d$ sets how much enthalpy is picked up per unit drag). Equating the work done by the engine with the dissipation near the surface gives $V_p^2$ above. The balanced wind associated with a pressure profile follows from 3.3, and the thermal structure (the warm core, thermal wind 3.4, a vortex that weakens with height) from hydrostatic balance with the temperature excess of the core. A warmer sea raises $k_0^*$ exponentially through Clausius–Clapeyron (1.5, applying its saturation vapour pressure at the sea surface).`,
-      caption: String.raw`**Drag the gold handle** along the potential-intensity curve to change the sea-surface temperature, then set how much of the bound the storm reaches, the profile shape $B$, the radius of maximum wind $R_m$ and the latitude. The plan view is the wind speed of the Holland vortex whose central pressure is chosen (numerically) so that its **gradient wind** peaks at the target speed; the middle panel compares that gradient wind with the geostrophic and cyclostrophic estimates. This is a **parametric vortex plus a simplified potential-intensity formula**, not a time-stepping hurricane simulation (the syllabus plan), and the numbers are model values: $T_o=203$ K, $C_k/C_d=1$, boundary-layer air at $T_s-1$ K and 80% humidity, so the potential intensity is only indicative at low SST.`,
+      verify: false,
+      statement: String.raw`A tropical cyclone draws energy from the sea's enthalpy flux. In a steady, axisymmetric idealization, the gradient wind satisfies $V^2+frV=rp'(r)/\rho$. For the Holland-type pressure profile
+$$p(r)=p_c+\Delta p\exp[-(R/r)^B],$$
+$R$ is the **cyclostrophic** peak radius: at nonzero $f$ the gradient-wind maximum is slightly inward of $R$. The cyclostrophic maximum is $\sqrt{B\Delta p/(\rho e)}$. The dissipative-heating version of the potential-intensity relation (Bister and Emanuel, 1998, Eq. 21) is
+$$V_p^2=\frac{C_k}{C_d}\frac{T_s-T_o}{T_o}(k_0^*-k).$$
+Here $T_s,T_o$ are absolute sea-surface and outflow temperatures and $k_0^*-k$ is the surface-to-air enthalpy difference. With all other model inputs fixed, a warmer sea increases this intensity scale.`,
+      idea: String.raw`The Carnot efficiency is $\eta=(T_s-T_o)/T_s$. If dissipated work is returned as heat at the warm end, $W=\eta(Q_{\rm ocean}+W)$, so $W/Q_{\rm ocean}=\eta/(1-\eta)=(T_s-T_o)/T_o$. This explains the denominator $T_o$; it is not itself a Carnot efficiency. Bister and Emanuel derive the wind relation using steady axisymmetry, hydrostatic and gradient balance, slantwise convective neutrality and approximations relating surface and balanced winds. Independently, differentiating the pressure profile gives $rp'/\rho=(B\Delta p/\rho)x e^{-x}$ with $x=(R/r)^B$; the positive root of the gradient-wind quadratic then determines the wind.`,
+      caption: String.raw`**Drag the gold SST handle** and change the target fraction, $B$, pressure-profile radius $R$ and latitude. The pressure deficit is calibrated to the actual gradient-wind peak, using its stationary-point equation, rather than a sampled maximum. Blue is gradient wind, orange cyclostrophic and purple geostrophic. The radial panel uses a **logarithmic speed axis** and omits speeds below 0.01 m/s (the central zero is outside that display window); it includes all larger comparison values without clipping. The plan-view heat scale runs from zero to the target speed; arrow lengths are capped for legibility. This is a parametric vortex plus a simplified thermodynamic scale. Chosen inputs: $T_o=203$ K, $C_k/C_d=1$, air temperature $T_s-1$ K, relative humidity 80%, ambient pressure 1010 hPa, density 1.15 kg/m³; constant $c_p=1005$, $L_v=2.5\times10^6$ in SI units and a constant-$L_v$ Clausius–Clapeyron saturation law. These are model assumptions, not fitted hurricane measurements.`,
       deps: ['geo-3.3', 'geo-1.7'],
       refs: ['Vallis', 'Pierrehumbert'],
       tags: ['hurricane', 'potential intensity', 'gradient wind', 'warm core'],
-      credit: 'radial profile: G. J. Holland, Monthly Weather Review 108 (1980) 1212–1218; potential intensity: K. A. Emanuel, J. Atmospheric Sciences 43 (1986) 585–605',
-      scope: String.raw`Axisymmetric, steady, gradient-wind balanced above the boundary layer; the maximum potential intensity is an upper bound that real storms rarely reach (shear, dry air, ocean cooling), and the simplified evaluation here (fixed outflow temperature) is not Emanuel's full algorithm.`,
+      credit: 'Pressure-profile implementation: NOAA PaHM developers, Holland-model equations; dissipative heating: M. Bister and K. A. Emanuel, Meteorology and Atmospheric Physics 65 (1998), 233–240, §§3.1–3.2, Eq. 21',
+      scope: String.raw`Steady axisymmetric balanced model above the boundary layer, with an illustrative surface enthalpy calculation. This is not the full potential-intensity algorithm, an observational bound, a forecast or a surface-wind category estimator. The geostrophic approximation becomes poor at large Rossby number. Sources: [Bister–Emanuel original](https://texmex.mit.edu/pub/emanuel/PAPERS/bisteremanuel98.pdf), [NOAA PaHM model derivation](https://noaa-ocs-modeling.github.io/PaHM/html/models.html).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Maximum_potential_intensity' },
       viz(v) {
-        const frac = v.slider('fraction of the potential intensity reached', 0.3, 1, 0.8, { step: 0.01 });
-        const Bs = v.slider('profile shape $B$', 1, 2.5, 1.4, { step: 0.05 });
-        const Rms = v.slider('radius of maximum wind $R_m$ (km)', 10, 100, 35, { step: 1 });
-        const lat = v.slider('latitude $\\varphi$ (°)', 8, 40, 20, { step: 1 });
-        const sP = v.stage({ x: [-250, 250], y: [-250, 250], equal: true, axes: 'box', gutter: true, xlabel: 'distance east (km)', ylabel: 'north (km)', height: 380, weight: 1, minWidth: 280, title: 'wind speed (m/s), plan view' });
-        const sR = v.stage({ x: [0, 300], y: [0, 100], axes: 'box', gutter: true, xlabel: 'radius $r$ (km)', ylabel: 'tangential wind (m/s)', height: 380, weight: 1.1, minWidth: 280, title: 'radial profile' });
-        const sS = v.stage({ x: [18, 33], y: [0, 110], axes: 'box', gutter: true, xlabel: 'sea-surface temperature (°C)', ylabel: 'potential intensity $V_p$ (m/s)', height: 380, weight: 1, minWidth: 260, title: 'potential intensity vs SST' });
-        const hS = sS.handle(28, potentialIntensity(28).V, { color: 'gold', label: 'SST', constrain: (x) => { const t = clamp(x, 18, 33); return [t, potentialIntensity(t).V]; } });
-        const PN = 101000;
-        let key = '', M = null, st = {};
-        const model = (sst, fr, B, Rm, la) => {
-          const k = `${sst}|${fr}|${B}|${Rm}|${la}`; if (k === key) return M; key = k;
-          const f = Math.abs(fcor(la)), Vp = potentialIntensity(sst).V, Vt = fr * Vp, dp = deficitForVmax(Vt, Rm * 1e3, B, f);
-          M = { f, Vp, Vt, dp, pc: PN - dp, Rm: Rm * 1e3, B }; return M;
-        };
-        v.render(() => {
-          const sst = hS.x, Mo = model(Math.round(sst * 20) / 20, frac.value, Bs.value, Rms.value, lat.value);
-          const Vr = (r) => hollandV(r, Mo.pc, PN, Mo.Rm, Mo.B, Mo.f);
-          sP.heat((x, y) => Vr(Math.hypot(x, y) * 1e3), { range: [0, Math.max(40, Mo.Vt * 1.05)], cmap: 'theme', color: 'red', res: 3, key });
-          sP.clip(() => sP.contour((x, y) => hollandP(Math.hypot(x, y) * 1e3, Mo.pc, PN, Mo.Rm, Mo.B) / 100, [880, 900, 920, 940, 960, 980, 1000], { color: 'ink', width: 1, alpha: 0.5, labels: false }));
-          for (const q of [1, 2, 3.4]) for (let a = 0; a < 8; a++) {
-            const th = a * Math.PI / 4 + 0.2, r = q * Mo.Rm / 1e3, V = Vr(r * 1e3), L = Math.min(5 * V, 80) ;
-            if (r > 240) continue;
-            const x = r * Math.cos(th), y = r * Math.sin(th);
-            sP.arrow(x, y, x - Math.sin(th) * L * 0.6, y + Math.cos(th) * L * 0.6, { color: 'ink', width: 1.8, head: 6 });
-          }
-          sP.circle(0, 0, Mo.Rm / 1e3, { color: 'gold', width: 1.6, dash: [5, 4] });
-          sP.text('$R_m$', Mo.Rm / 1e3 * 0.71, Mo.Rm / 1e3 * 0.71, { size: 12, color: 'gold', dx: 8, dy: -8, plate: true });
-          // profile
-          const rs = []; for (let r = 2; r <= 300; r += 2) rs.push(r);
-          const G = (r) => (Mo.pc === PN ? 0 : (PN - Mo.pc) * Math.exp(-Math.pow(Mo.Rm / (r * 1e3), Mo.B)) * Mo.B * Math.pow(Mo.Rm / (r * 1e3), Mo.B) / (r * 1e3)) / RHO_TC;
-          sR.setView([0, 300], [0, Math.max(40, Mo.Vt * 1.15)]);
-          sR.clip(() => {
-            sR.path(rs.map((r) => [r, Math.abs(G(r)) / Mo.f]), { color: 'purple', width: 1.6, dash: [5, 4] });
-            sR.path(rs.map((r) => [r, Math.sqrt(r * 1e3 * G(r))]), { color: 'orange', width: 1.6, dash: [5, 4] });
-          });
-          sR.path(rs.map((r) => [r, Vr(r * 1e3)]), { color: 'accent', width: 3 });
-          sR.vline(Mo.Rm / 1e3, { color: 'gold', dash: [4, 4] });
-          // SST curve
-          sS.fn((x) => potentialIntensity(x).V, { domain: [18, 33], color: 'accent', width: 2.6, n: 80 });
-          sS.fn((x) => frac.value * potentialIntensity(x).V, { domain: [18, 33], color: 'gold', width: 1.6, dash: [5, 4] });
-          for (const [V, nm] of [[32.9, 'hurricane'], [49.4, 'cat 3'], [70.5, 'cat 5']]) { sS.hline(V, { color: 'muted', dash: [3, 4], alpha: 0.6 }); sS.text(nm, 32.9, V, { size: 11, color: 'muted', dy: -9, align: 'right' }); }
-          sS.vline(26, { color: 'green', dash: [3, 4], alpha: 0.5 });
-          let mx = 0, rmx = 0; for (let r = 2; r <= 300; r += 1) { const V = Vr(r * 1e3); if (V > mx) { mx = V; rmx = r; } }
-          st = { Mo, mx, rmx, sst: Math.round(sst * 20) / 20, pi: potentialIntensity(sst), Vr };
+        const frac=v.slider('fraction of the potential-intensity scale',.3,1,.8,{step:.01});
+        const Bs=v.slider('profile shape $B$',1,2.5,1.4,{step:.05});
+        const Rms=v.slider('pressure-profile radius $R$ (km)',10,100,35,{step:1});
+        const lat=v.slider('latitude (°)',8,40,20,{step:1});
+        const sP=v.stage({x:[-250,250],y:[-250,250],equal:true,axes:'box',gutter:true,xlabel:'east (km)',ylabel:'north (km)',height:380,weight:1,minWidth:280,title:'gradient speed: 0 → target (m/s)'});
+        const sR=v.stage({x:[0,305],y:[.008,1e5],ylog:true,axes:'box',gutter:true,xlabel:'radius (km)',ylabel:'speed (m/s), log scale',height:380,weight:1.1,minWidth:280,title:'radial comparison ≥ 0.01 m/s'});
+        const sS=v.stage({x:[17.4,33.6],y:[0,120],axes:'box',gutter:true,xlabel:'sea-surface temperature (°C)',ylabel:'intensity scale (m/s)',height:380,weight:1,minWidth:260,title:'fixed-environment intensity scale'});
+        const hS=sS.handle(28,simplePI(28).V,{color:'gold',constrain:x=>{const t=clamp(x,18,33);return[t,simplePI(t).V];}});
+        let st={};
+        v.render(()=>{
+          const pi=simplePI(hS.x),Mo=cycloneCalibration(frac.value*pi.V,Rms.value*1000,Bs.value,Math.abs(fcor(lat.value)));
+          const at=r=>cycloneAt(r,Mo),Vr=r=>at(r).V;
+          sP.heat((x,y)=>Vr(Math.hypot(x,y)*1000),{range:[0,Mo.V],cmap:'theme',color:'red',res:3,key:`${hS.x}|${frac.value}|${Bs.value}|${Rms.value}|${lat.value}`});
+          sP.clip(()=>sP.contour((x,y)=>at(Math.hypot(x,y)*1000).p/100,[880,900,920,940,960,980,1000],{color:'ink',width:1,alpha:.5,labels:false}));
+          for(const q of[1,2,3.4])for(let a=0;a<8;a++){const th=a*Math.PI/4+.2,r=q*Mo.R/1000,L=Math.min(3*Vr(r*1000),48);if(r>200)continue;const x=r*Math.cos(th),y=r*Math.sin(th);sP.arrow(x,y,x-Math.sin(th)*L,y+Math.cos(th)*L,{color:'ink',width:1.8,head:6});}
+          sP.circle(0,0,Mo.R/1000,{color:'gold',width:1.6,dash:[5,4]});
+          sP.text('R',Mo.R/1000*.71,Mo.R/1000*.71,{color:'gold',size:12,dx:8,dy:-8,plate:true});
+          const rs=Array.from({length:601},(_,j)=>.01*(300/.01)**(j/600));
+          rs.push(Mo.rmax/1000,Mo.R/1000);rs.sort((a,b)=>a-b);
+          const curves=['V','geo','cyclo'].map(k=>rs.map(r=>[r,at(r*1000)[k]]));
+          const top=Math.max(...curves.flat().map(p=>p[1]));sR.setView([0,305],[.008,top*1.35]);
+          for(const[i,color]of['accent','purple','orange'].entries()){let segment=[];const flush=()=>{if(segment.length>1)sR.path(segment,{color,width:i?1.5:2.8,dash:i?[5,4]:undefined});segment=[];};for(const p of curves[i]){if(p[1]>=.01)segment.push(p);else flush();}flush();}
+          sR.vline(Mo.R/1000,{color:'gold',dash:[4,4]});sR.dot(Mo.rmax/1000,Mo.V,{r:5,color:'accent'});
+          sS.setView([17.4,33.6],[0,simplePI(33).V*1.15]);
+          sS.fn(x=>simplePI(x).V,{domain:[18,33],color:'accent',n:120,width:2.6});
+          sS.fn(x=>frac.value*simplePI(x).V,{domain:[18,33],color:'gold',n:120,width:1.6,dash:[5,4]});
+          sS.text('SST',hS.x,pi.V,{color:'gold',size:11,align:hS.x>25?'right':'left',dx:hS.x>25?-12:12,dy:-14});
+          st={Mo,pi,sst:hS.x,top};
         });
-        v.legend([['accent', 'gradient wind'], ['purple', 'geostrophic', { dash: true }], ['orange', 'cyclostrophic', { dash: true }], ['gold', 'target (fraction of $V_p$)', { dash: true }]]);
-        v.readout(() => {
-          const Mo = st.Mo, cyc = Math.sqrt(Mo.B * Mo.dp / (RHO_TC * Math.E)), Ro = st.mx / (Mo.f * st.rmx * 1e3);
-          return `SST ${v.fix(st.sst, 1)} °C → potential intensity $V_p=${v.fix(Mo.Vp, 1)}$ m/s (enthalpy difference $k_0^*-k=${v.fix(st.pi.dk / 1000, 1)}$ kJ/kg, efficiency $(T_s-T_o)/T_o=${v.fix(st.pi.eff, 3)}$); target ${v.fix(Mo.Vt, 1)} m/s = **${saffirName(Mo.Vt)}** (NHC Saffir–Simpson wind thresholds)\ncentral pressure ${v.fix(Mo.pc / 100, 0)} hPa (deficit ${v.fix(Mo.dp / 100, 0)} hPa, ambient 1010 hPa); computed gradient-wind maximum ${v.fix(st.mx, 1)} m/s at ${v.fix(st.rmx, 0)} km; cyclostrophic estimate $\\sqrt{B\\Delta p/\\rho e}=${v.fix(cyc, 1)}$ m/s; Rossby number there $V/fR_m=${v.fix(Ro, 0)}$ (the Coriolis force is small in the eyewall, large far out)`;
-        });
+        v.legend([['accent','gradient wind'],['purple','geostrophic',{dash:true}],['orange','cyclostrophic',{dash:true}],['gold','R / target fraction',{dash:true}]]);
+        v.readout(()=>{const{Mo,pi,sst}=st;return `SST ${v.fix(sst,2)} °C; intensity scale ${v.fix(pi.V,2)} m/s; target/actual peak ${v.fix(Mo.V,2)} m/s at ${v.fix(Mo.rmax/1000,2)} km (profile R=${v.fix(Mo.R/1000,0)} km).\nEnthalpy difference ${v.fix(pi.dk/1000,3)} kJ/kg; Carnot efficiency ${v.fix(pi.eta,3)}, recycled-heat factor ${v.fix(pi.eff,3)}. Central pressure ${v.fix(Mo.pc/100,2)} hPa; deficit ${v.fix(Mo.dp/100,2)} hPa. Peak Rossby number ${v.fix(Mo.V/(Mo.f*Mo.rmax),2)}; gradient-level speeds are not surface-wind categories.`;});
       },
     },
   ],

@@ -1,6 +1,6 @@
 // Condensed Matter Physics — Chapter 2: Transport and semiclassical dynamics (items 2.1–2.7; 2.8–2.14 in ch02-b.js)
 // Units of the lattice models: a = ħ = e = 1, hopping t = 1 (see ch02.shared.js).
-import { TAU, hallTransport, bgRho, NDENS } from './ch02.shared.js';
+import { TAU, hallTransport, bgRho, NDENS, lorenzMoments } from './ch02.shared.js';
 
 const PI = Math.PI;
 
@@ -275,24 +275,23 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
       num: '2.5',
       kind: 'Phenomenon',
       name: 'Positive Hall coefficients: holes rescue band theory',
-      credit: 'E. H. Hall, 1879; Peierls, 1929',
-      verify: true,
-      statement: String.raw`In the Drude–Sommerfeld free-electron model the Hall coefficient of a metal with $n$ conduction electrons per volume is $R_H=-1/(nec)$ (Gaussian) or $-1/ne$ (SI), always negative and fixed by the valence. Measurements agree for the alkali metals ($R_H\,n e$ within about 20% of $-1$) but not for Be, Mg, Zn, Cd, Al and In, which show **positive** $R_H$ whose magnitude can differ from $1/ne$ by a large factor. Band theory explains this: the sign is that of the carriers on the Fermi surface, hole-like where the Fermi surface encloses empty states of a nearly full band.`,
+      credit: 'E. H. Hall, 1879 (Hall effect); band interpretation follows the cited solid-state text',
+      statement: String.raw`In the Drude–Sommerfeld free-electron model the Hall coefficient of a metal with $n$ conduction electrons per volume is $R_H=-1/(nec)$ (Gaussian) or $-1/ne$ (SI), always negative and fixed by the valence. Measurements agree for the alkali metals (approximately the free-electron sign and magnitude) but not for some multivalent metals, including Be, Mg, Al and In, which show **positive** $R_H$ whose magnitude can differ from $1/ne$ by a large factor. Band theory explains this: the sign is that of the carriers on the Fermi surface, hole-like where the Fermi surface encloses empty states of a nearly full band.`,
       idea: String.raw`With a constant relaxation time, the Boltzmann equation gives $R_H$ as an average of the inverse-mass tensor (cm-2.3) over the Fermi surface, $\sigma_{yx}\propto\oint (v_y\partial_{k_x}v_x-v_x\partial_{k_y}v_x)v_y\,dk/|v|$ (see em-7.5 for the Hall geometry). On a Fermi surface curving around the zone centre the inverse mass is positive and one recovers $-1/ne$; on a surface curving the other way (hole pockets near the zone corner) the sign flips and $|R_H|\to1/(pe)$ for a nearly full band (cm-2.4).`,
-      caption: String.raw`**Left:** measured Hall coefficients, shown as the ratio $R_H/R_H^{\rm free}$ where $R_H^{\rm free}=-1/(n_{\rm val}e)$ is the free-electron prediction for the valence electron density; the green line is the free-electron value, $1$. **Click** a metal to compare. **Right:** the same ratio computed from a toy square-lattice band for a chosen filling: it is $1$ at low density, passes through $0$ at half filling and becomes large and negative (positive $R_H$) near a full band. Drag **filling $n$** and **$t^\prime$**: the orange line marks the selected metal’s measured ratio and the dots where the toy model reaches it.`,
-      scope: String.raw`Measured values from room-temperature polycrystals or low-field limits; real Fermi surfaces are multiply connected with electron and hole parts, and $R_H$ is anisotropic, field-dependent for compensated metals (Be, Zn, Cd) and sensitive to the scattering time on each sheet, so the toy band illustrates the sign, not the numbers.`,
+      caption: String.raw`**Left:** Hall-coefficient values from Ashcroft–Mermin Table 1.4 (p. 15), shown as the ratio $R_H/R_H^{\rm free}$ where $R_H^{\rm free}=-1/(n_{\rm val}e)$ is the free-electron prediction for the valence electron density; the green line is the free-electron value, $1$. **Click** a metal to compare. **Right:** the same ratio computed from a toy square-lattice band for a chosen filling: it is $1$ at low density, passes through $0$ at half filling and becomes large and negative (positive $R_H$) near a full band. Drag **filling $n$** and **$t^\prime$**: the orange line marks the selected metal’s tabulated ratio and the dots where the toy model reaches it.`,
+      scope: String.raw`The table gives approximate moderate-/high-field limits (fields of order $10^4$ G) at very low temperature in carefully prepared samples, as specified in Ashcroft–Mermin Table 1.4. The square-lattice calculation is a weak-field, constant-relaxation-time toy model, so it illustrates signs and does not fit the table’s different field regime; real Fermi surfaces are multiply connected with electron and hole parts, and $R_H$ is anisotropic, field-dependent for compensated metals (Be, Zn, Cd) and sensitive to the scattering time on each sheet, so the toy band illustrates the sign, not the numbers.`,
       deps: ['em-7.5', 'cm-2.4'],
-      refs: ['Ashcroft–Mermin ch. 3', 'Kittel ch. 6'],
+      refs: ['Ashcroft–Mermin (1976), Table 1.4, p. 15; https://djvu.online/file/Z9JgjkEDnjXjL', 'Ashcroft–Mermin ch. 3', 'Kittel ch. 6'],
       tags: ['hall effect', 'holes', 'band theory'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hall_effect' },
       viz(v) {
-        // −1/(R_H n e c) from room-temperature measurements, as tabulated by Ashcroft–Mermin (Table 1.4): recalled values, rounded
+        // −1/(R_H n e c) as tabulated by Ashcroft–Mermin (1976), Table 1.4, p. 15: moderate to high fields, very low T (checked against the original table, 2026-10-16)
         const DATA = { Li: 0.8, Na: 1.2, K: 1.1, Rb: 1.0, Cs: 0.9, Cu: 1.5, Ag: 1.3, Au: 1.5, Be: -0.2, Mg: -0.4, Al: -0.3, In: -0.3 };
         const names = Object.keys(DATA), ratio = (m) => 1 / DATA[m];
         const sel = v.select('metal', names, 'Na');
         const tp = v.slider('$t^\\prime/t$', -0.4, 0.4, 0, { step: 0.02 });
         const nS = v.slider('filling $n$ (electrons per site)', 0.05, 1.95, 0.4, { step: 0.01 });
-        const sD = v.stage({ x: [0.3, names.length + 0.7], y: [-6.5, 2.6], axes: 'box', gutter: true, height: 350, xlabel: 'metal', ylabel: '$R_H/R_H^{\\rm free}$', xticks: names.map((m, i) => [i + 1, m]), title: 'measured Hall coefficients', weight: 1.15 });
+        const sD = v.stage({ x: [0.3, names.length + 0.7], y: [-6.5, 2.6], axes: 'box', gutter: true, height: 350, xlabel: 'metal', ylabel: '$R_H/R_H^{\\rm free}$', xticks: names.map((m, i) => [i + 1, m]), title: 'Hall values: moderate to high fields', weight: 1.15 });
         const sM = v.stage({ x: [0, 2], y: [-6.5, 2.6], axes: 'box', gutter: true, height: 350, xlabel: 'electrons per site $n$', ylabel: '$R_H/R_H^{\\rm free}$', title: 'toy band: Hall coefficient vs filling', weight: 0.95 });
         sD.onClick((x) => { const i = Math.max(0, Math.min(names.length - 1, Math.round(x) - 1)); sel.set(names[i]); });
         let key = '', curve = [];
@@ -313,7 +312,7 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
           sM.text('electron-like', 0.15, 1.5, { color: 'green', size: 11 }); sM.text('hole-like', 1.75, -5.6, { color: 'red', size: 11, align: 'center' });
           rrNow = rr;
         });
-        v.readout(() => `${sel.value}: measured $R_H/R_H^{\\rm free}=${v.fix(ratio(sel.value), 2)}$ (${DATA[sel.value] < 0 ? 'positive $R_H$: hole-like carriers' : 'electron-like'}) · toy band at $n=${v.fix(nS.value, 2)}$: ${v.fix(rrNow, 2)} · the toy band reaches the measured ratio at ${hit.length ? hit.map((n) => 'n≈' + v.fix(n, 2)).join(', ') : 'no filling (the toy band cannot reproduce it)'}.`);
+        v.readout(() => `${sel.value}: tabulated $R_H/R_H^{\\rm free}=${v.fix(ratio(sel.value), 2)}$ (${DATA[sel.value] < 0 ? 'positive $R_H$: hole-like carriers' : 'electron-like'}) · toy band at $n=${v.fix(nS.value, 2)}$: ${v.fix(rrNow, 2)} · the toy band reaches the tabulated ratio at ${hit.length ? hit.map((n) => 'n≈' + v.fix(n, 2)).join(', ') : 'no filling (the toy band cannot reproduce it)'}.`);
       },
     },
 
@@ -323,47 +322,44 @@ Near a band maximum, where the electron mass is negative, the hole mass is posit
       kind: 'Law',
       name: 'Wiedemann–Franz law',
       credit: 'Wiedemann & Franz, 1853; Lorenz, 1872; Sommerfeld, 1927',
-      verify: true,
-      statement: String.raw`For a metal in which electrons carry both charge and heat and are scattered elastically, the ratio of thermal to electrical conductivity is proportional to the temperature with a universal constant, the **Lorenz number**,
-$$\frac{\kappa}{\sigma T}=L_0=\frac{\pi^2}{3}\Big(\frac{k_B}{e}\Big)^2=2.44\times10^{-8}\ \mathrm{W\,\Omega\,K^{-2}}.$$
-Drude’s classical treatment gives $L=\tfrac32(k_B/e)^2=1.11\times10^{-8}$. Measured room-temperature values lie near $2.2$–$2.6\times10^{-8}$; the law holds at low temperature (impurity scattering) and at high temperature, and fails by tens of percent in between where inelastic scattering dominates.`,
+      statement: String.raw`For a degenerate metal with elastic scattering and a transport function smooth on the scale $k_BT$ around the Fermi energy, the electronic thermal conductivity $\kappa_e$ and electrical conductivity obey the low-temperature **Wiedemann–Franz law**:
+$$\frac{\kappa_e}{\sigma T}\longrightarrow L_0=\frac{\pi^2}{3}\Big(\frac{k_B}{e}\Big)^2=2.44\times10^{-8}\ \mathrm{W\,\Omega\,K^{-2}}.$$
+Drude’s classical treatment gives $L=\tfrac32(k_B/e)^2=1.11\times10^{-8}$. The selected 273 K measurements span $2.12$–$2.64\times10^{-8}$. Impurity-dominated low temperatures and quasi-elastic phonon scattering at higher temperatures often approach $L_0$; inelastic scattering can suppress it substantially. The lattice contribution must be separated when comparing the electronic law with measured total heat conduction.`,
       idea: String.raw`Both conductivities are Fermi-surface integrals with the same relaxation time: $\sigma=e^2\tau\,g(E_F)v_F^2/3$ and $\kappa=\tau\,v_F^2\,c_v/3$ with $c_v=\tfrac{\pi^2}{3}k_B^2 T\,g(E_F)$ (thermo-8.10). The ratio cancels $\tau$, $v_F$ and $g$ and leaves $\pi^2k_B^2/3e^2$. Only electrons within $k_BT$ of $E_F$ carry heat (em-6.4 gives $\sigma$), and each carries $(E-\mu)\sim k_BT$ of it, hence the factor $\int x^2(-f')dx=\pi^2/3$. Drude’s agreement was a coincidence of two errors: his $c_v$ is about $T_F/T$ times too large and $v^2$ about $T_F/T$ times too small.`,
-      caption: String.raw`**Left:** measured Lorenz numbers (273 K, values recalled from the Ashcroft–Mermin table) for several metals with the Drude value (orange) and the Sommerfeld value (green); **click** a bar to select. **Right:** why the number is universal: the weight $-\partial f/\partial E$ of the electrons that conduct charge (blue) and $x^2$ times it for heat (orange), $x=(E-\mu)/k_BT$. Their ratio of areas is exactly $\pi^2/3$; give the conductivity an energy dependence $\sigma(E)\propto1+\alpha x$ (a strongly energy-dependent scattering) and the Lorenz number shifts only at order $\alpha^2$. The readout redoes Drude’s two compensating errors for the selected metal and temperature.`,
-      scope: String.raw`Degenerate metals with elastic or quasi-elastic scattering; fails where inelastic electron–phonon scattering relaxes heat currents faster than charge currents (roughly $\Theta_D/10$ to $\Theta_D$), in semimetals and for strongly correlated or ballistic and hydrodynamic electron flow, and when phonons or other excitations carry much of the heat.`,
+      caption: String.raw`**Left:** Lorenz numbers at 273 K from Ashcroft–Mermin Table 1.6 (p. 21) for several metals with the Drude value (orange) and the Sommerfeld value (green); **click** a metal with a density entry to select it for the free-electron readout. **Right:** why the number is universal: the weight $-\partial f/\partial E$ of the electrons that conduct charge (blue) and $x^2$ times it for heat (orange), $x=(E-\mu)/k_BT$. Their ratio of areas is exactly $\pi^2/3$; change the positive transport weight to $\Sigma(x)=1+\alpha\tanh x$, $|\alpha|<1$, and the open-circuit Lorenz ratio decreases quadratically in $\alpha$. This chosen toy weight varies across the thermal window; it is not a fitted metal. The orange second-moment curve is scaled by $3/\pi^2$; the open-circuit ratio also subtracts the squared first moment: $L/(k_B/e)^2=K_2/K_0-(K_1/K_0)^2$. The readout also compares classical and degenerate heat capacities and speeds.`,
+      scope: String.raw`The universal value is a degenerate, smooth-transport limit for electronic heat conduction measured at zero electric current. Inelastic scattering, sharp energy dependence and additional heat carriers can alter the ratio. A deviation alone does not establish non-Fermi-liquid behavior. The right panel illustrates transport moments, not the temperature dependence of a particular metal.`,
       deps: ['em-6.4', 'thermo-8.10'],
-      refs: ['Ashcroft–Mermin ch. 1', 'Ashcroft–Mermin ch. 2'],
+      refs: ['Ashcroft–Mermin (1976), Table 1.6, p. 21; https://djvu.online/file/Z9JgjkEDnjXjL', 'Ashcroft–Mermin ch. 1', 'Ashcroft–Mermin ch. 2', 'Franz & Wiedemann (1853), pp. 497–531; https://doi.org/10.1002/andp.18531650802', 'Lorenz (1872), pp. 429–452; https://doi.org/10.1002/andp.18722231107', 'Sommerfeld (1927), Naturwissenschaften 15, 825–832; https://doi.org/10.1007/BF01505083', 'Lavasani, Bulmash & Das Sarma (2019), Secs. I–II and Appendix B; https://arxiv.org/abs/1810.05646'],
       tags: ['thermal conductivity', 'lorenz number', 'sommerfeld'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wiedemann%E2%80%93Franz_law' },
       viz(v) {
         const M = v.M, C = M.CONST;
-        // L (10⁻⁸ W Ω K⁻²) at 273 K as tabulated by Ashcroft–Mermin (Table 1.6): recalled values
-        const LZ = { Li: 2.22, Na: 2.12, K: 2.23, Cu: 2.20, Ag: 2.31, Au: 2.32, Zn: 2.28, Cd: 2.49, Al: 2.14, Pb: 2.64, Sn: 2.48, W: 3.04 };
+        // L (10⁻⁸ W Ω K⁻²) at 273 K, checked against Ashcroft–Mermin Table 1.6, p. 21 (2026-10-16).
+        const LZ = { Li: 2.22, Na: 2.12, K: 2.23, Cu: 2.20, Ag: 2.31, Au: 2.32, Zn: 2.28, Cd: 2.49, Al: 2.14, Pb: 2.64, Sn: 2.48 };
         const names = Object.keys(LZ);
-        const sel = v.select('metal (for the readout)', ['Li', 'Na', 'K', 'Cu', 'Ag', 'Au', 'Al'], 'Cu');
+        const sel = v.select('metal (free-electron comparison)', names.filter(m => NDENS[m]), 'Cu');
         const Tk = v.slider('temperature $T$ (K)', 50, 800, 300, { step: 10 });
-        const al = v.slider('energy dependence $\\alpha$ of $\\sigma(E)$', -1.5, 1.5, 0, { step: 0.05 });
+        const al = v.slider('transport asymmetry $\\alpha$', -0.95, 0.95, 0, { step: 0.05 });
         const L0 = (Math.PI ** 2 / 3) * (C.kB / C.e) ** 2 * 1e8, LD = 1.5 * (C.kB / C.e) ** 2 * 1e8;
-        const sD = v.stage({ x: [0.3, names.length + 0.7], y: [0, 3.4], axes: 'box', gutter: true, height: 340, xlabel: 'metal', ylabel: '$L=\\kappa/\\sigma T\\ (10^{-8}\\,\\mathrm{W\\Omega K^{-2}})$', xticks: names.map((m, i) => [i + 1, m]), title: 'measured Lorenz numbers at 273 K', weight: 1.1 });
+        const sD = v.stage({ x: [0.3, names.length + 0.7], y: [0, 3.4], axes: 'box', gutter: true, height: 340, xlabel: 'metal', ylabel: '$L=\\kappa/\\sigma T\\ (10^{-8}\\,\\mathrm{W\\Omega K^{-2}})$', xticks: names.map((m, i) => [i + 1, m]), title: 'Lorenz numbers at 273 K (Table 1.6)', weight: 1.1 });
         const sW = v.stage({ x: [-8, 8], y: [0, 0.5], axes: 'box', gutter: true, height: 340, xlabel: '$x=(E-\\mu)/k_BT$', ylabel: 'weight', title: 'who carries charge and heat', weight: 1 });
-        sD.onClick((x) => { const m = names[Math.max(0, Math.min(names.length - 1, Math.round(x) - 1))]; if (['Li', 'Na', 'K', 'Cu', 'Ag', 'Au', 'Al'].includes(m)) sel.set(m); });
-        v.legend([['accent', 'measured'], ['green', 'Sommerfeld $\\pi^2k_B^2/3e^2$', { dash: true }], ['orange', 'Drude $\\tfrac32 k_B^2/e^2$', { dash: true }]]);
+        sD.onClick((x) => { const m = names[Math.max(0, Math.min(names.length - 1, Math.round(x) - 1))]; if (NDENS[m]) sel.set(m); });
+        v.legend([['accent', 'Table 1.6 (273 K)'], ['green', 'Sommerfeld $\\pi^2k_B^2/3e^2$', { dash: true }], ['orange', 'Drude $\\tfrac32 k_B^2/e^2$', { dash: true }]]);
         let K = null;
         v.render(() => {
           names.forEach((m, i) => sD.bars([LZ[m]], { x0: i + 1, dx: 1, color: 'accent' }));
           sD.hline(L0, { color: 'green', width: 2, dash: [6, 4] }); sD.hline(LD, { color: 'orange', width: 2, dash: [6, 4] });
-          const a = al.value, mf = (x) => 1 / (4 * Math.cosh(x / 2) ** 2), sg = (x) => Math.max(0, 1 + a * x);
-          const N = 800, xs = M.linspace(-30, 30, N + 1), dx = 60 / N; let k0 = 0, k1 = 0, k2 = 0, c0 = 0, c2 = 0;
-          for (const x of xs) { const w = mf(x) * sg(x) * dx; k0 += w; k1 += w * x; k2 += w * x * x; c0 += mf(x) * dx; c2 += mf(x) * x * x * dx; }
+          const a = al.value, mf = (x) => 1 / (4 * Math.cosh(x / 2) ** 2), sg = (x) => 1 + a * Math.tanh(x);
+          K = lorenzMoments(a);
           sW.fn((x) => mf(x) * sg(x), { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.15 });
           sW.fn((x) => (mf(x) * sg(x) * x * x * 3) / (Math.PI ** 2), { color: 'orange', width: 2.2, fill: 'orange', fillAlpha: 0.12 });
-          sW.text('charge: $-\\partial f/\\partial E$', 2.6, 0.2, { color: 'accent', size: 12 });
-          sW.text('heat: $x^2(-\\partial f/\\partial E)\\cdot 3/\\pi^2$', 3.4, 0.07, { color: 'orange', size: 12, align: 'center' });
-          K = { ratio: (k2 * k0 - k1 * k1) / (k0 * k0) / (Math.PI ** 2 / 3), area: c2 / c0 };
+          sW.text('charge weight', 0, .42, { color: 'accent', size: 12, align: 'center' });
+          sW.text('scaled second moment', 0, .37, { color: 'orange', size: 12, align: 'center' });
         });
         v.readout(() => {
           const T = Tk.value, n = NDENS[sel.value] * 1e28, kF = Math.cbrt(3 * Math.PI ** 2 * n), EF = (C.hbar * kF) ** 2 / (2 * C.me), TF = EF / C.kB;
           const cv = (Math.PI ** 2 * T) / (3 * TF), v2 = (2 * TF) / (3 * T);
-          return `$\\int x^2(-f')dx\\big/\\!\\int(-f')dx=${v.fix(K.area, 4)}$ vs $\\pi^2/3=${v.fix(Math.PI ** 2 / 3, 4)}$ · with $\\sigma\\propto1+\\alpha x$: $L/L_0=${v.fix(K.ratio, 4)}$ · Sommerfeld $L_0=${v.fix(L0, 3)}$, Drude $${v.fix(LD, 3)}$, measured mean ${v.fix(M.mean(Object.values(LZ)), 2)} ($\\times10^{-8}$) · ${sel.value} at ${T} K: $T_F=${v.fix(TF / 1e4, 2)}\\times10^4$ K; Sommerfeld/Drude heat capacity $=${v.fix(cv, 4)}$, $v_F^2/\\langle v^2\\rangle=${v.fix(v2, 1)}$, product $${v.fix(cv * v2, 3)}$ ($=2\\pi^2/9$, the factor between $L_0$ and $L_{\\rm Drude}$).`;
+          return `$\\int x^2(-f')dx\\big/\\!\\int(-f')dx=${v.fix(K.area, 4)}$ vs $\\pi^2/3=${v.fix(Math.PI ** 2 / 3, 4)}$ · with $\\Sigma=1+\\alpha\\tanh x$: $L/L_0=${v.fix(K.ratio, 4)}$ · Sommerfeld $L_0=${v.fix(L0, 3)}$, Drude $${v.fix(LD, 3)}$, tabulated mean ${v.fix(M.mean(Object.values(LZ)), 2)} ($\\times10^{-8}$) · ${sel.value} at ${T} K: $T_F=${v.fix(TF / 1e4, 2)}\\times10^4$ K; Sommerfeld/Drude heat capacity $=${v.fix(cv, 4)}$, $v_F^2/\\langle v^2\\rangle=${v.fix(v2, 1)}$, product $${v.fix(cv * v2, 3)}$ ($=2\\pi^2/9$, the factor between $L_0$ and $L_{\\rm Drude}$).`;
         });
       },
     },

@@ -1,29 +1,21 @@
 // Geology & Geophysics — Chapter 4: Heat flow, the cooling lithosphere and mantle convection (part a: 4.1–4.5)
 //
 // Sources checked / provenance (Oct 2026):
-//   4.1  Fourier's law is mathematics plus an empirical constant; the layer conductivities (shale 1.8, sandstone 3.2, rock salt 5.5,
-//        granite 2.9 W/m/K) are TYPICAL ROUND VALUES chosen for the picture, not a measured borehole. Pollack, Hurter & Johnson (1993,
-//        Rev. Geophys. 31: 267–280, Crossref- and abstract-checked): mean heat flow 65 (continents), 101 (oceans), 87 mW/m² (global),
-//        44.2 TW. Jaupart, Labrosse & Mareschal (2007, Treatise on Geophysics 7: 253–303, Crossref-checked) revise the total to 46 ± 3 TW
-//        (the 46 TW figure is quoted from a secondary summary of that chapter; the chapter was not opened).
-//   4.2  Linear q0 = q* + D·A0: Birch, Roy & Decker (1968) and Roy, Blackwell & Birch (1968, EPSL 5: 1–12), Lachenbruch (1968, JGR 73:
-//        6977–6989) — all Crossref-checked; D ≈ 7.5 km (eastern US) and ≈ 10 km (west of the Great Plains) are quoted from a USGS report
-//        (Roy et al. 1968, Birch et al. 1968). The "province" points in the plot are SYNTHETIC (generated with q* = 30 mW/m², D = 10 km,
-//        ±4 mW/m² noise): they are a model, not the measurements. k = 2.5 W/m/K is a round value.
-//   4.3  Half-space solution is exact mathematics; Tm = 1300 °C, κ = 1 mm²/s are the usual round textbook values. McKenzie (1967, JGR 72:
-//        6261–6273) is the Crossref-checked credit for the cooling-lithosphere heat-flow model; Davis & Lister (1974) and Parsons & Sclater
-//        (1977) are the oceanic-depth applications (not separately checked).
-//   4.4  Parsons & Sclater (1977, JGR 82: 803–827, Crossref-checked): depth 2500 + 350√t (m, t in Myr, quoted valid for t < 70 Myr) and
-//        6400 − 3200 exp(−t/62.8) for older crust (drawn from 20 Myr on, where the two forms agree to 10 m). Stein & Stein (1992, Nature 359: 123–129, Crossref-checked): GDH1 depth 2600 + 365√t (t < 20 Myr)
-//        and 5651 − 2473 exp(−0.0278 t). The fit coefficients were read from a web summary of the two papers, not from the papers. The
-//        curves are the published FITS, not the underlying soundings (no data table is reproduced).
-//   4.5  Parsons & Sclater heat-flow law q = 11.3/√t HFU = 473 mW/m² per √Myr and Stein & Stein q = 510/√t (t < 55 Myr), 48 + 96 exp(−0.0278 t)
-//        (older) are quoted from memory (verify). The "observed" curve is an ILLUSTRATIVE MODEL of the hydrothermal deficit, not data.
-//        Triangular age–area distribution of the sea floor after Parsons (1982, JGR 87: 289–302, Crossref-checked) with round numbers
-//        (3.1×10⁸ km² of oceanic crust, oldest crust 180 Myr, hence 3.4 km²/yr of new crust). Hydrothermal share of oceanic heat loss:
-//        Stein & Stein (1994, JGR 99: 3081–3095, Crossref-checked) — the size of the effect is not quoted here.
+//   4.1–4.2: complete relevant DOE1992 rectangular/composite conduction pp6–11,
+//        Davies–Davies2010 estimation/results/uncertainty and Table7, and Sass–Jaeger–Munroe1976
+//        primary heat-flow/production discussion and full geotherm treatment pp51–67 read.
+//        Lithologies, conductivities, synthetic province and 35km datum are chosen examples.
+//        See docs/verification/geol-continental-followup.md for scope, hashes and checks.
+//   4.3–4.5: complete relevant primary derivations read in Parsons & Sclater1977 pp804–809,
+//        Eqs21–23 pp819–820 and Appendix1 pp823–824; Stein & Stein1992 pp123–126,
+//        including the printed GDH1 depth/heat formulas. Models and chosen age-area distribution
+//        are distinguished from published reference fits and raw observations. Full evidence,
+//        hashes and numerical references are in docs/verification/geol-cooling-followup.md.
 
 import { MYR, KAPPA, halfSpaceQ, halfSpaceSubs } from './ch04.shared.js';
+
+import * as HC from './cooling-audit.shared.js';
+import * as CT from './continental-audit.shared.js';
 
 const T0C = 10; // mean surface temperature used in the continental pictures (°C)
 
@@ -31,36 +23,31 @@ export default {
   collection: 'geol',
   chapter: 4,
   title: 'Heat flow, the cooling lithosphere and mantle convection',
-  summary: String.raw`The Earth loses about 46 terawatts through its surface. On the continents radiogenic heat shapes the geotherm; in the oceans, the lithosphere is a thermal boundary layer that thickens as it cools, so ocean depth grows as the square root of age and heat flow falls as its inverse. Underneath, the mantle convects at a Rayleigh number in the millions, with plumes rising from the deep and melting by decompression feeding volcanoes.`,
+  summary: String.raw`Davies and Davies (2010) estimate Earth’s surface heat loss at 47 ± 2 terawatts. On the continents radiogenic heat shapes the geotherm; in the oceans, the lithosphere is a thermal boundary layer that thickens as it cools, so ocean depth grows as the square root of age and heat flow falls as its inverse. Underneath, the mantle convects at a Rayleigh number in the millions, with plumes rising from the deep and melting by decompression feeding volcanoes.`,
   items: [
     // ───────────────────────────────────────── 4.1
     {
       num: '4.1',
       kind: 'Law',
       name: 'Fourier’s law and the conductive geotherm',
-      statement: String.raw`Heat conducted through a solid flows down the temperature gradient and is proportional to it: $\mathbf q=-k\nabla T$, with $k$ the thermal conductivity (W m$^{-1}$ K$^{-1}$). In steady state, with no heat sources, in a column varying only with depth $z$, the flux $q$ is the same at every depth, so $dT/dz=q/k(z)$: the temperature rises linearly in each layer, steeply in poor conductors and gently in good ones. Measuring $dT/dz$ in a borehole and $k$ on the core gives the surface heat flow $q=k\,dT/dz$.`,
-      idea: String.raw`Fourier's law is an empirical constitutive relation, true when the temperature varies slowly compared with the mean free path of the heat carriers (phonons, here). Combined with energy conservation, $\nabla\cdot\mathbf q=0$ in steady state without sources, it forces $q$ to be constant down a one-dimensional column, so a change of rock type changes the gradient but never the flux. This is why geothermal gradients (typically 20–30 K/km) are quoted together with the conductivity, and why heat flow, not gradient, is the quantity that is mapped over the globe.`,
-      caption: String.raw`Drag the **probe** up and down the borehole (left panel) and change the surface heat flow $q$. The middle panel shows the gradient $dT/dz$ in each layer, the right panel the flux $k\,dT/dz$: the gradient jumps at each contact while the flux stays a single value. Switch to the uniform column and the temperature becomes one straight line. The layer conductivities are typical round values, not a real well.`,
+      statement: String.raw`Heat conducted through a solid flows down the temperature gradient and is proportional to it: $\mathbf q=-k\nabla T$, with $k$ the thermal conductivity (W m$^{-1}$ K$^{-1}$). In steady state, with no heat sources, let $z$ increase downward and $q$ denote the upward flux magnitude. In a one-dimensional column $q$ is constant, so $dT/dz=q/k(z)$: the temperature rises linearly in each layer, steeply in poor conductors and gently in good ones. Measuring $dT/dz$ in a borehole and $k$ on the core gives the surface heat flow $q=k\,dT/dz$.`,
+      idea: String.raw`The model assumes a local isotropic conductivity and ideal thermal contact. Combined with energy conservation, $\nabla\cdot\mathbf q=0$ in steady state without sources, it forces $q$ to be constant down a one-dimensional column, so a change of rock type changes the gradient but never the flux. With ideal thermal contact, temperature is continuous at an interface, while its derivative changes inversely with conductivity. Thermal resistance adds as $\sum h_i/k_i$; the constant upward heat flux is distinct from the layer-dependent gradient.`,
+      caption: String.raw`Drag the **probe** up and down the borehole (left panel) and change the surface heat flow $q$. The middle panel shows the gradient $dT/dz$ in each layer, the right panel the flux $k\,dT/dz$: the gradient jumps at each contact while the flux stays a single value. Switch to the uniform column and the temperature becomes one straight line. Rock names and conductivities are chosen examples, not measurements from a real borehole.`,
       deps: ['thermo-7.3'],
-      refs: ['Turcotte–Schubert ch. 4'],
+      refs: ['DOE-HDBK-1012/2-92 pp6–11; Davies–Davies2010 §§2.4,3,4 and Table7'],
       tags: ['heat flow', 'conduction', 'geotherm'],
-      credit: 'Joseph Fourier, 1822 (Théorie analytique de la chaleur; memoirs 1807–1811)',
-      scope: String.raw`Holds for conduction in a stationary solid, steady state and no internal sources or advection (fluid flow in the rock, which is common in the top kilometres, breaks it). Global means: about 65 mW/m² on continents, 101 mW/m² in oceans (Pollack et al. 1993), roughly 44–47 TW in total.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Thermal_conduction#Fourier\'s_law' },
-      verify: true,
+      credit: 'Fourier conduction law; DOE1992 technical treatment and Davies–Davies2010 global estimate',
+      scope: String.raw`Holds for conduction in a stationary solid, steady state and no internal sources or advection (fluid flow in the rock, which is common in the top kilometres, breaks it). Davies and Davies (2010) estimate 47 ± 2 TW globally and quote continental/ocean means of approximately 71/105 mW/m² (Table 7). This is a model-assisted area-weighted estimate, with hydrothermal and sparse-coverage corrections, not a uniform local flux or a new current assessment.`,
+      links: { doi: 'https://doi.org/10.5194/se-1-5-2010' },
+      verify: false,
       viz(v) {
-        const LAY = [
-          { name: 'shale', k: 1.8, h: 0.7, col: 'orange' },
-          { name: 'sandstone', k: 3.2, h: 0.9, col: 'gold' },
-          { name: 'rock salt', k: 5.5, h: 0.5, col: 'teal' },
-          { name: 'granite', k: 2.9, h: 1.5, col: 'purple' },
-        ];
+        const LAY = CT.layers;
         const ZMAX = LAY.reduce((a, l) => a + l.h, 0);
         const q = v.slider('surface heat flow $q$ (mW/m²)', 20, 120, 65, { step: 1 });
         const mode = v.select('column', [{ value: 'lay', label: 'four rock types' }, { value: 'uni', label: 'uniform, $k=2.9$' }], 'lay');
-        const kAt = (z) => { if (mode.value === 'uni') return 2.9; let a = 0; for (const l of LAY) { a += l.h; if (z <= a) return l.k; } return LAY[3].k; };
+        const kAt = z => CT.layerK(z,layers());
         const layers = () => (mode.value === 'uni' ? [{ name: 'uniform rock', k: 2.9, h: ZMAX, col: 'accent' }] : LAY);
-        const Tz = (z) => { let t = T0C, a = 0; for (const l of layers()) { const d = Math.min(l.h, Math.max(z - a, 0)); t += (q.value / l.k) * d; a += l.h; if (z <= a) break; } return t; };
+        const Tz = z => CT.layerTemperature(z,q.value,layers(),T0C);
         const yt = [[0, '0'], [-1, '1'], [-2, '2'], [-3, '3']];
         const S1 = v.stage({ x: [0, 170], y: [-ZMAX, 0], axes: 'box', gutter: true, xlabel: 'temperature $T$ (°C)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 1.2, minWidth: 240 });
         const S2 = v.stage({ x: [0, 40], y: [-ZMAX, 0], axes: 'box', gutter: true, xlabel: 'gradient $dT/dz$ (°C/km)', yticks: yt, height: 340, weight: 0.9, minWidth: 200 });
@@ -68,6 +55,7 @@ export default {
         const probe = S1.handle(10, -1.6, { color: 'gold', constrain: 'y', label: 'probe', labelPos: 'ne' });
         let info = {};
         v.render(() => {
+          S2.setView([0,q.value/Math.min(...layers().map(l=>l.k))*1.15],[-ZMAX,0]);
           let a = 0;
           for (const S of [S1, S2, S3]) {
             a = 0;
@@ -98,225 +86,125 @@ export default {
       num: '4.2',
       kind: 'Model',
       name: 'Radiogenic heating and the continental geotherm',
-      statement: String.raw`Continental crust contains uranium, thorium and potassium whose decay produces heat at a rate $A$ (W/m$^3$), largest in the upper crust. In steady conduction, $k\,d^2T/dz^2=-A(z)$. If the heat production is a uniform layer of thickness $h$ and rate $A_0$ above a base flux $q_m$ (the "reduced" heat flow from below), then
-$$q_0=q_m+A_0\,h,\qquad T(z)=T_0+\frac{q_0 z}{k}-\frac{A_0z^2}{2k}\quad(z\le h),$$
-and the same $q_0=q_m+hA_0$ holds when $A$ decays exponentially, $A=A_0e^{-z/h}$. Within a heat-flow province the surface heat flow is therefore a straight line in the surface heat production $A_0$, with slope $h$ and intercept $q_m$.`,
-      idea: String.raw`Integrate the heat equation once from depth up to the surface: the flux leaving the top is the flux entering from below plus all the heat generated in between (conservation of energy, with Fourier's law from 4.1). With a layer of production $A_0$ and thickness $h$ this is $q_0=q_m+A_0h$. Birch, Roy and others found that heat flow and surface radioactivity of plutons in a province do lie on a line, which says that the crust's enrichment is arranged in a layer of characteristic thickness $h$ about 8–10 km. The decay constants and half-lives behind $A$ are those of 2.1: the same atoms that date rocks warm them.`,
-      caption: String.raw`The right panel shows a **synthetic** province (14 points, generated with a hidden line and noise): fit it with $q_m$ and $h$, or press *Best fit*. The gold handle on the model line sets $A_0$, which controls the geotherm on the left (dashed: the geotherm that would hold if $q_0$ were carried by conduction alone, with no heat production). Make $A_0\,h$ large and the Moho temperature runs away: the crust cannot be uniformly enriched to the base.`,
+      statement: String.raw`Let depth $z$ increase downward in a steady, constant-conductivity column, with upward heat flux $q=kT_z$ and chosen volumetric production $A(z)$. Conservation gives $q_z=-A$ and $kT_{zz}=-A$. A uniform source layer $A_0$ of thickness $h$, with upward flux $q_m$ below it, gives
+$$q_0=q_m+A_0h,\qquad T(z)=T_0+\frac{q_0z}{k}-\frac{A_0z^2}{2k}\quad(0\le z\le h).$$
+An infinite exponential profile $A=A_0e^{-z/h}$ with limiting deep flux $q_m$ has the same surface law but a different geotherm. An affine relation across sites follows if $h$ and $q_m$ are shared; it is not universal for every geological province.`,
+      idea:String.raw`Integrating $q_z=-A$ gives $q(z)=q_m+\int_z^\infty A(s)ds$. Integrating once more yields the temperature. For the exponential profile,
+$$T(z)=T_0+\frac{q_mz}{k}+\frac{A_0h^2}{k}(1-e^{-z/h}).$$
+The same surface slope $h$ can describe a uniform layer thickness or an exponential scale depth; surface fits alone do not distinguish these vertical shapes. Sass, Jaeger and Munroe's Australian primary study shows both province differences and sampling limitations, including a region with no simple heat-flow/production relation.`,
+      caption:String.raw`Fit the line to 14 synthetic points using the two sliders or press Least-squares line. Drag the gold handle to select surface production. The left panel compares the selected source-bearing model with the source-free line at the same surface flux. The red production profile has its own axis in the right panel. The 35 km line is a chosen reference depth. The exponential source extends below it, so the actual flux there need not equal the limiting deep flux. This constant-property calculation does not assess melting.`,
       deps: ['geol-4.1', 'geol-2.1'],
-      refs: ['Turcotte–Schubert ch. 4'],
+      refs: ['Sass, Jaeger & Munroe (1976) USGS OF76-250 pp51–67, Fig7'],
       tags: ['heat production', 'geotherm', 'continents'],
-      credit: 'Birch, Roy & Decker; Roy, Blackwell & Birch; Lachenbruch (1968)',
-      scope: String.raw`Holds in a steady state, for a province where the crust's heat production varies laterally but its vertical distribution is similar. The simple linear law describes granite-dominated provinces; the values of $q_m$ and $h$ are properties of each province (about 7.5 km for the eastern US and 10 km west of the Great Plains in the original fits).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Geothermal_gradient' },
-      verify: true,
+      credit: 'Primary model/discussion: Sass, Jaeger and Munroe, USGS OF76-250 (1976)',
+      scope:String.raw`Two prescribed one-dimensional source profiles, fixed surface temperature and constant conductivity. Synthetic points use a chosen line plus noise, not digitized field data. A reduced flux contains heat supplied below the modelled source population; it is not uniquely identified as mantle heat. Source-layer scale and conductivity do not determine a rock solidus.`,
+      links:{url:'https://pubs.usgs.gov/of/1976/0250/report.pdf'},
+      verify: false,
       viz(v) {
         const K = 2.5, MOHO = 35;
         const rng = v.rng(42);
         const pts = []; for (let i = 0; i < 14; i++) { const A = 0.4 + 5.2 * rng(); pts.push([A, 30 + 10 * A + 4 * rng.normal()]); }
         const model = v.select('production profile', [{ value: 'uni', label: 'uniform layer' }, { value: 'exp', label: 'exponential' }], 'uni');
-        const qm = v.slider('base flux $q_m$ (mW/m²)', 10, 60, 30, { step: 0.5 });
+        const qm = v.slider('limiting deep flux $q_m$ (mW/m²)', 10, 60, 30, { step: 0.5 });
         const hh = v.slider('thickness $h$ (km)', 4, 20, 10, { step: 0.5 });
-        v.button('Best fit', () => {
-          const n = pts.length, mx = pts.reduce((a, p) => a + p[0], 0) / n, my = pts.reduce((a, p) => a + p[1], 0) / n;
-          let sxy = 0, sxx = 0; for (const p of pts) { sxy += (p[0] - mx) * (p[1] - my); sxx += (p[0] - mx) ** 2; }
-          const sl = sxy / sxx; hh.set(Math.min(20, Math.max(4, sl))); qm.set(Math.min(60, Math.max(10, my - sl * mx)));
-        });
+        const fit=CT.fitLine(pts);
+        v.button('Least-squares line',()=>{hh.set(fit.slope);qm.set(fit.intercept);});
         const L = v.stage({ x: [0, 1400], y: [-60, 0], axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: 'depth (km)', yticks: [[0, '0'], [-10, '10'], [-20, '20'], [-30, '30'], [-40, '40'], [-50, '50'], [-60, '60']], height: 380, weight: 1, minWidth: 240 });
         const R = v.stage({ x: [0, 6], y: [0, 130], axes: 'box', gutter: true, xlabel: 'surface heat production $A_0$ (µW/m³)', ylabel: 'surface heat flow $q_0$ (mW/m²)', height: 380, weight: 1.1, minWidth: 260 });
+        const D=v.stage({x:[0,6.6],y:[-60,0],axes:'box',gutter:true,xlabel:'heat production (µW/m³)',ylabel:'depth (km)',yticks:[[0,'0'],[-10,'10'],[-20,'20'],[-30,'30'],[-40,'40'],[-50,'50'],[-60,'60']],height:380,weight:.7,minWidth:190});
         const hand = R.handle(2.5, 55, { color: 'gold', label: '$A_0$', constrain: (x) => { const X = Math.min(Math.max(x, 0.1), 6); return [X, qm.value + hh.value * X]; } });
         let info = {};
         v.render(() => {
           const A0 = Math.min(Math.max(hand.x, 0.1), 6), h = hh.value, q0 = qm.value + h * A0;
           hand.set(A0, q0);
-          const Tm_ = (z) => { // z in km; A0 µW/m³ × km = mW/m²; k in W/m/K → T in K from (mW/m²·km)/(W/m/K) = K
-            if (model.value === 'uni') {
-              if (z <= h) return T0C + (q0 * z) / K - (A0 * z * z) / (2 * K);
-              return T0C + (qm.value * h) / K + (A0 * h * h) / (2 * K) + (qm.value * (z - h)) / K;
-            }
-            return T0C + (qm.value * z) / K + ((A0 * h * h) / K) * (1 - Math.exp(-z / h));
-          };
+          const opts={qm:qm.value,A0,h,model:model.value,k:K,T0:T0C},Tm_=z=>CT.productionTemperature(z,opts),noSource=z=>T0C+q0*z/K,maximum=Math.max(Tm_(60),noSource(60))*1.08;
+          L.setView([0,maximum],[-60,0]);R.setView([0,6.4],[-3,Math.max(qm.value+6*h,...pts.map(p=>p[1]))*1.12]);hand.labelPos=A0>4.5?'nw':'ne';
           L.hline(-MOHO, { color: 'muted', dash: true });
-          L.text('Moho (35 km)', 1390, -MOHO + 2, { align: 'right', size: 11, color: 'muted' });
+          L.text('chosen 35 km datum', maximum*.97, -MOHO + 2, { align: 'right', size: 11, color: 'muted' });
           L.curve((z) => [T0C + (q0 * z) / K, -z], 0, 60, { color: 'muted', dash: true, width: 1.4 });
           L.curve((z) => [Tm_(z), -z], 0, 60, { n: 200, color: 'accent', width: 2.4 });
           L.dot(Tm_(MOHO), -MOHO, { r: 5, color: 'orange' });
-          // heat production profile as a thin strip
-          const prof = (z) => (model.value === 'uni' ? (z <= h ? A0 : 0) : A0 * Math.exp(-z / h));
-          L.curve((z) => [prof(z) * 120, -z], 0, 60, { n: 200, color: 'red', width: 1.6, alpha: 0.9 });
+          // Production has its own physical horizontal axis.
+          const prof = z => CT.productionAt(z,opts);
+          if(model.value==='uni')D.path([[A0,0],[A0,-h],[0,-h],[0,-60]],{color:'red',width:1.8});else D.curve(z=>[prof(z),-z],0,60,{n:240,color:'red',width:1.8});
           R.line(0, qm.value, 6, qm.value + 6 * h, { color: 'accent', width: 2.2 });
           R.hline(qm.value, { color: 'muted', dash: true });
           R.dots(pts.map((p) => [p[0], p[1]]), { r: 4.5, color: 'ink' });
           const rms = Math.sqrt(pts.reduce((a, p) => a + (p[1] - qm.value - h * p[0]) ** 2, 0) / pts.length);
-          info = { q0, A0, T35: Tm_(MOHO), rms };
+          info={q0,A0,h,qm:qm.value,profile:model.value,T35:Tm_(MOHO),q35:CT.productionFlux(MOHO,opts),rms,fit,pts,maximum};
         });
-        v.legend([['accent', 'geotherm'], ['muted', 'no-source geotherm', { dash: true }], ['red', 'heat production (scaled)'], ['ink', 'synthetic province data', { dot: true }]]);
-        v.readout(() => `$q_0=q_m+hA_0=${v.fix(info.q0, 1)}$ mW/m² at $A_0=${v.fix(info.A0, 2)}$ µW/m³. Temperature at 35 km: ${v.fix(info.T35, 0)} °C${info.T35 > 1000 ? ' (crust would be molten: the layer is too enriched)' : ''}. Misfit to the synthetic province: rms ${v.fix(info.rms, 1)} mW/m².`);
+        v.legend([['accent', 'geotherm'], ['muted', 'no-source geotherm', { dash: true }], ['red', 'heat production (separate axis)'], ['ink', 'synthetic province data', { dot: true }]]);
+        v.readout(()=>`Surface $q_0=q_m+hA_0=${v.fix(info.q0,1)}$ mW/m² at $A_0=${v.fix(info.A0,2)}$ µW/m³. At the chosen 35 km datum: $T=${v.fix(info.T35,0)}$ °C and upward flux $${v.fix(info.q35,2)}$ mW/m².\nSynthetic-point rms ${v.fix(info.rms,3)} mW/m²; unconstrained least-squares rms ${v.fix(info.fit.rms,3)}. The deep limit is ${v.fix(info.qm,2)} mW/m²; no solidus criterion is supplied.`);
       },
     },
 
     // ───────────────────────────────────────── 4.3
     {
-      num: '4.3',
-      kind: 'Model',
-      name: 'Half-space cooling of the oceanic lithosphere',
-      statement: String.raw`Treat new sea floor as a half-space $z>0$ that is at the mantle temperature $T_m$ when it forms at the ridge and whose surface is held at $T_0$. It then cools by conduction as it moves away at constant speed; at age $t$ the temperature depends on depth only through $z/\sqrt{\kappa t}$:
-$$T(z,t)=T_0+(T_m-T_0)\,\mathrm{erf}\!\Big(\frac{z}{2\sqrt{\kappa t}}\Big).$$
-Isotherms deepen as $\sqrt{\kappa t}$; the thermal lithosphere (the depth of, say, the $0.9\,T_m$ isotherm) is $z_L\approx2.32\sqrt{\kappa t}$.`,
-      idea: String.raw`Horizontal conduction is negligible compared with horizontal advection by the moving plate, so each column cools independently as a one-dimensional diffusion problem: $\partial_tT=\kappa\,\partial_z^2T$ with the initial and boundary conditions above. The problem has no length scale of its own, so the solution is a function of the similarity variable $\eta=z/2\sqrt{\kappa t}$ alone, and is the half-line diffusion solution (pde-3.8, 4.1's conduction law). With $\kappa\approx10^{-6}$ m²/s, $z_L\approx116$ km at 80 Myr.`,
-      caption: String.raw`The heat map is the temperature in a cross-section of the sea floor; the horizontal axis is age (equivalently, distance from the ridge at the chosen spreading rate). Drag the **age probe**; the green curve is the $0.9\,T_m$ isotherm. In *collapse* mode the profiles at four ages fall on one curve against $z/2\sqrt{\kappa t}$.`,
-      deps: ['geol-4.1', 'pde-3.8'],
-      refs: ['Turcotte–Schubert ch. 4'],
-      tags: ['lithosphere', 'cooling', 'erf'],
-      credit: 'McKenzie, 1967 (cooling-lithosphere heat-flow model); Parsons & Sclater, 1977',
-      scope: String.raw`Holds for sea floor younger than about 70–80 Myr, before the basal heat supply of the asthenosphere stops the thickening (the plate model, 4.6); also ignores shear heating, hydrothermal cooling and the heat of the crust.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Seafloor_spreading' },
-      verify: true,
-      viz(v) {
-        const Tm = v.slider('mantle temperature $T_m$ (°C)', 1200, 1450, 1300, { step: 5 });
-        const rate = v.slider('half-spreading rate (mm/yr)', 5, 60, 30, { step: 1 });
-        const view = v.select('right panel', [{ value: 'prof', label: 'profile at probe age' }, { value: 'col', label: 'similarity collapse' }], 'prof');
-        const yt = [[0, '0'], [-50, '50'], [-100, '100'], [-150, '150']];
-        const A = v.stage({ x: [0, 100], y: [-150, 0], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 1.5, minWidth: 300, title: 'Cross-section of new sea floor' });
-        const B = v.stage({ x: [0, 1400], y: [-150, 0], axes: 'box', gutter: true, xlabel: 'temperature (°C)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 0.9, minWidth: 240 });
-        const probe = A.handle(60, -8, { color: 'gold', constrain: 'x', label: 'age', labelPos: 'ne' });
-        const T = (zkm, tMyr) => { if (tMyr <= 0) return zkm <= 0 ? 0 : Tm.value; return Tm.value * (v.M.erf(zkm * 1000 / (2 * Math.sqrt(KAPPA * tMyr * MYR)))); };
-        let info = {};
-        v.render(() => {
-          const tm = Tm.value, t = Math.min(Math.max(probe.x, 2), 100);
-          probe.set(t, -8);
-          A.heat((x, y) => T(-y, x) / tm, { range: [0, 1], cmap: 'magma', res: 3, key: 'T' + tm });
-          A.contour((x, y) => T(-y, x), [200, 600, 1000, 0.9 * tm], { color: 'ink', width: 0.9, alpha: 0.55 });
-          A.curve((x) => [x, -2.32 * Math.sqrt(KAPPA * x * MYR) / 1000], 0.2, 100, { n: 160, color: 'green', width: 2.4 });
-          A.vline(t, { color: 'gold', dash: true });
-          if (view.value === 'prof') {
-            B.setView([0, 1400], [-150, 0]); B.setLabels('temperature (°C)', 'depth (km)'); B.setTicks(null, yt);
-            B.curve((z) => [T(z, t), -z], 0, 150, { n: 200, color: 'accent', width: 2.4 });
-            const g = tm / Math.sqrt(Math.PI * KAPPA * t * MYR) * 1000; // °C/km at the surface
-            B.line(0, 0, tm, -tm / g, { color: 'orange', dash: true, width: 1.5 });
-            B.hline(-2.32 * Math.sqrt(KAPPA * t * MYR) / 1000, { color: 'green', dash: true });
-            B.vline(tm, { color: 'muted', dash: true });
-          } else {
-            B.setView([0, 3], [-1, 0]); B.setLabels('depth $z/(2\\sqrt{\\kappa t})$', '$(T-T_0)/(T_m-T_0)$'); B.setTicks(null, null);
-            const cols = ['blue', 'teal', 'orange', 'purple'], ages = [5, 20, 50, 100];
-            B.curve((e) => [e, -v.M.erf(e)], 0, 3, { color: 'ink', width: 3, alpha: 0.35 });
-            ages.forEach((a, i) => B.curve((e) => [e, -T(2 * e * Math.sqrt(KAPPA * a * MYR) / 1000, a) / tm], 0, 3, { color: cols[i], width: 1.6, dash: [4, 3] }));
-          }
-          const zL = (2.32 * Math.sqrt(KAPPA * t * MYR)) / 1000;
-          info = { t, zL, dist: (rate.value * t), q: halfSpaceQ(t, { Tm: tm, T0: 0, k: 3.138 }) * 1000 };
+      num:'4.3',kind:'Model',name:'Half-space cooling of the oceanic lithosphere',
+      statement:String.raw`In a one-dimensional half-space $z>0$, initially at $T_m$, hold the surface at $T_0$. For constant thermal diffusivity $\kappa$ and $t>0$,
+$$T=T_0+(T_m-T_0)\operatorname{erf}\!\left(\frac{z}{2\sqrt{\kappa t}}\right).$$
+Isotherms scale with $\sqrt{\kappa t}$. The depth where $(T-T_0)/(T_m-T_0)=0.9$ is $z_{90}=2\operatorname{erf}^{-1}(0.9)\sqrt{\kappa t}\simeq2.32617\sqrt{\kappa t}$; it is a chosen thermal definition of lithospheric thickness.`,
+      idea:String.raw`Substitute the similarity variable $\eta=z/(2\sqrt{\kappa t})$ into $T_t=\kappa T_{zz}$. The resulting ODE integrates to the error function, satisfying the cold surface and initially hot interior. Identifying age with distance divided by plate speed additionally assumes negligible horizontal conduction. The mathematical half-space has no basal heat source or finite limiting thickness; comparison with old sea floor motivates a finite plate model. A universal 70–80 Myr validity boundary does not follow from this PDE.`,
+      caption:String.raw`The heat map shows the chosen one-dimensional model, including its idealized initial boundary jump. Drag the age probe between 1 and 100 Myr. The green line is the 90% isotherm. The spreading-rate slider changes distance corresponding to age, while leaving an age-labelled temperature field unchanged. In similarity mode all four profiles use a positive normalized temperature axis.`,
+      deps:['geol-4.1','pde-3.8'],refs:['Parsons–Sclater (1977), pp804–809 and full Appendix1 pp823–824; Stein–Stein (1992) pp123–126'],
+      tags:['lithosphere','cooling','erf'],credit:'Half-space/plate derivations in Parsons and Sclater, JGR82(1977),803–827',
+      scope:String.raw`Constant-property diffusion model, $T_0=0$°C and chosen $\kappa=10^{-6}$m²/s; mantle temperature and spreading rate are model inputs. It omits horizontal conduction, hydrothermal transport, crustal heat production, latent heat and variable properties. Near-ridge/old-age physical applicability is distinct from the PDE solution.`,
+      links:{doi:'https://doi.org/10.1029/JB082i005p00803'},verify:false,
+      viz(v){
+        const Tm=v.slider('mantle temperature $T_m$ (°C)',1200,1450,1300,{step:5}),rate=v.slider('half-spreading rate (mm/yr)',5,60,30,{step:1}),view=v.select('right panel',[{value:'prof',label:'profile at probe age'},{value:'col',label:'similarity collapse'}],'prof');
+        const yt=[[0,'0'],[-50,'50'],[-100,'100'],[-150,'150']],A=v.stage({x:[0,105],y:[-150,0],axes:'box',gutter:true,xlabel:'age (Myr)',ylabel:'depth (km)',yticks:yt,height:340,weight:1.5,minWidth:300,title:'chosen half-space cooling model'}),B=v.stage({x:[0,1500],y:[-150,0],axes:'box',gutter:true,xlabel:'temperature (°C)',ylabel:'depth (km)',yticks:yt,height:340,weight:.9,minWidth:240}),probe=A.handle(60,-8,{color:'gold',constrain:(x)=>[Math.min(Math.max(x,1),100),-8],label:'age',labelPos:'ne'});
+        let info={};v.render(()=>{const tm=Tm.value,t=Math.min(Math.max(probe.x,1),100),T=(z,t)=>HC.halfTemperature(z*1000,t,{Tm:tm}),zL=HC.Z90*Math.sqrt(KAPPA*t*MYR)/1000;probe.set(t,-8);probe.labelPos=t>85?'nw':'ne';
+          A.heat((x,y)=>T(-y,x)/tm,{range:[0,1],cmap:'magma',res:3,key:`half-${tm}`});A.contour((x,y)=>T(-y,x),[200,600,1000],{color:'ink',width:.8,alpha:.45});A.curve(x=>[x,-HC.Z90*Math.sqrt(KAPPA*x*MYR)/1000],0,100,{color:'green',width:2});A.vline(t,{color:'gold',dash:true});
+          if(view.value==='prof'){B.setView([0,tm*1.06],[-150,0]);B.setLabels('temperature (°C)','depth (km)');B.setTicks(null,yt);B.curve(z=>[T(z,t),-z],0,150,{n:240,color:'accent',width:2.4});const g=tm/Math.sqrt(Math.PI*KAPPA*t*MYR)*1000;B.line(0,0,tm,-tm/g,{color:'orange',dash:true,width:1.5});B.hline(-zL,{color:'green',dash:true});B.vline(tm,{color:'muted',dash:true});}
+          else{B.setView([0,3.1],[0,1.05]);B.setLabels('$z/(2\\sqrt{\\kappa t})$','$(T-T_0)/(T_m-T_0)$');B.setTicks(null,null);const cols=['accent','teal','orange','purple'];[5,20,50,100].forEach((age,j)=>B.curve(e=>[e,T(2*e*Math.sqrt(KAPPA*age*MYR)/1000,age)/tm],0,3,{n:160,color:cols[j],width:1.8,dash:j?[4,3]:undefined}));}
+          info={t,zL,dist:rate.value*t,q:HC.halfHeat(t,{Tm:tm})*1000,temperature:T(zL,t),tm};
         });
-        v.legend([['green', '0.9 $T_m$ isotherm'], ['accent', 'erf profile'], ['orange', 'surface gradient', { dash: true }], ['ink', 'contours 200/600/1000 °C']]);
-        v.readout(() => `Age $${v.fix(info.t, 0)}$ Myr (${v.fix(info.dist, 0)} km from the ridge at this rate): lithosphere thickness $z_L=2.32\\sqrt{\\kappa t}=${v.fix(info.zL, 0)}$ km; surface heat flow $k T_m/\\sqrt{\\pi\\kappa t}=${v.fix(info.q, 0)}$ mW/m² (with $k=3.14$ W/m/K).`);
+        v.legend([['green','90% isotherm'],['accent','temperature profile'],['orange','surface tangent',{dash:true}],['ink','200/600/1000°C contours']]);
+        v.readout(()=>`Age $${v.fix(info.t,1)}$Myr, distance $${v.fix(info.dist,0)}$ km at this rate; $z_{90}=${v.fix(info.zL,2)}$ km with $T/T_m=${v.fix(info.temperature/info.tm,6)}$.\nModel heat flow $${v.fix(info.q,1)}$ mW/m² with chosen $k=3.138$W/m/K and $\\kappa=10^{-6}$m²/s.`);
       },
     },
-
     // ───────────────────────────────────────── 4.4
     {
-      num: '4.4',
-      kind: 'Proposition',
-      name: 'Ocean depth grows as √age',
-      statement: String.raw`If the cooling lithosphere floats in isostatic balance, the ocean floor must subside as the column of rock contracts. Integrating the density excess of the half-space cooling profile (4.3) gives a sea-floor depth below the ridge-crest level
-$$w(t)=\frac{2\rho_m\alpha(T_m-T_0)}{\rho_m-\rho_w}\sqrt{\frac{\kappa t}{\pi}}\;\approx\;350\sqrt{t/\mathrm{Myr}}\ \text{m},$$
-with $\alpha$ the thermal expansion coefficient and $\rho_m$, $\rho_w$ the mantle and water densities. The empirical depth–age curves are $2500+350\sqrt t$ m for ages below about 70 Myr and flatten for old sea floor.`,
-      idea: String.raw`Isostasy (the column mass, down to a level below the lithosphere, must be the same everywhere) turns a temperature deficit into extra water depth: $\rho_w\,w+\int\rho\,dz=\text{const}$. Because $\rho=\rho_m[1+\alpha(T_m-T)]$, the extra mass of the cold column is $\rho_m\alpha\int(T_m-T)dz$, which by the erf profile is proportional to $\sqrt{\kappa t}$, and each metre of water added replaces mantle by water at a density contrast $\rho_m-\rho_w$. The prefactor from round values is about 350 m per $\sqrt{\rm Myr}$, which is what Parsons and Sclater found by fitting; older sea floor sits shallower than the law predicts, which motivates the plate model (4.6).`,
-      caption: String.raw`Left: depth versus age (or versus $\sqrt{\rm age}$, where the half-space law is a straight line). Gold curve: the model with your $\alpha$ and $T_m$; the two other curves are the published empirical fits (not raw soundings). Right: the density excess whose depth integral (shaded) is the subsidence at the probe age; the readout compares the numerical integral with the closed form.`,
-      deps: ['geol-4.3', 'vcalc-8.8'],
-      refs: ['Turcotte–Schubert ch. 4'],
-      tags: ['bathymetry', 'isostasy', 'subsidence'],
-      credit: 'Davis & Lister, 1974; Parsons & Sclater, 1977',
-      scope: String.raw`Holds for sea floor younger than about 70–80 Myr; older sea floor is shallower than the $\sqrt t$ law (flattening, 4.6). Ignores sediment loading and the crust's own buoyancy, and uses the ridge-crest depth of 2500 m as the zero level.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Seafloor_depth_versus_age' },
-      verify: true,
-      viz(v) {
-        const alpha = v.slider('thermal expansion $\\alpha$ (10⁻⁵/K)', 2, 4, 3, { step: 0.05 });
-        const Tm = v.slider('$T_m-T_0$ (K)', 1100, 1500, 1300, { step: 10 });
-        const ax = v.select('age axis', [{ value: 'age', label: 'age' }, { value: 'sqrt', label: '√age' }], 'age');
-        const PS = (t) => (t < 20 ? 2500 + 350 * Math.sqrt(t) : 6400 - 3200 * Math.exp(-t / 62.8));
-        const GD = (t) => (t < 20 ? 2600 + 365 * Math.sqrt(t) : 5651 - 2473 * Math.exp(-0.0278 * t));
-        const yt = [[-2, '2'], [-3, '3'], [-4, '4'], [-5, '5'], [-6, '6']];
-        const S = v.stage({ x: [0, 180], y: [-6.6, -2.2], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 1.4, minWidth: 300 });
-        const D = v.stage({ x: [0, 140], y: [-150, 0], axes: 'box', gutter: true, xlabel: 'density excess $\\rho-\\rho_m$ (kg/m³)', ylabel: 'depth (km)', yticks: [[0, '0'], [-50, '50'], [-100, '100'], [-150, '150']], height: 340, weight: 0.8, minWidth: 220 });
-        const probe = S.handle(40, -4, { color: 'gold', label: 'age', labelPos: 'ne', constrain: 'x' });
-        let info = {};
-        v.render(() => {
-          const al = alpha.value * 1e-5, dT = Tm.value, sq = ax.value === 'sqrt';
-          const X = (t) => (sq ? Math.sqrt(t) : t);
-          S.setView(sq ? [0, 13.5] : [0, 180], [-6.6, -2.2]);
-          S.setLabels(sq ? '$\\sqrt{\\text{age}}$  (Myr$^{1/2}$)' : 'age (Myr)', 'depth (km)');
-          S.setTicks(sq ? [[0, '0'], [Math.sqrt(10), '10'], [Math.sqrt(40), '40'], [Math.sqrt(90), '90'], [Math.sqrt(160), '160']] : null, yt);
-          const ts = Array.from({ length: 181 }, (_, i) => i);
-          const mod = (t) => -(2500 + halfSpaceSubs(t, { Tm: dT, T0: 0, alpha: al })) / 1000;
-          S.path(ts.map((t) => [X(t), -PS(t) / 1000]), { color: 'orange', width: 1.8 });
-          S.path(ts.map((t) => [X(t), -GD(t) / 1000]), { color: 'teal', width: 1.8, dash: [5, 3] });
-          S.path(ts.map((t) => [X(t), mod(t)]), { color: 'gold', width: 2.6 });
-          const tp = Math.min(Math.max(sq ? probe.x * probe.x : probe.x, 1), 180);
-          probe.set(X(tp), mod(tp));
-          // density excess panel
-          const rhoM = 3300, rhoW = 1000;
-          const dr = (z) => rhoM * al * dT * (1 - v.M.erf(z * 1000 / (2 * Math.sqrt(KAPPA * tp * MYR))));
-          D.curve((z) => [dr(z), -z], 0, 150, { n: 200, color: 'accent', width: 2.2 });
-          D.path([[0, 0], ...Array.from({ length: 151 }, (_, z) => [dr(z), -z]), [0, -150]], { close: true, fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 0.5 });
-          const I = v.M.integrate((z) => dr(z * 1000 / 1000), 0, 150, 300) * 1000; // kg/m² (z in km → m)
-          const w = I / (rhoM - rhoW);
-          info = { t: tp, w, wf: halfSpaceSubs(tp, { Tm: dT, T0: 0, alpha: al }), ps: 350 * Math.sqrt(tp) };
+      num:'4.4',kind:'Proposition',name:'Ocean depth grows as √age',
+      statement:String.raw`In the half-space model, linear thermal expansion and water-loaded isostasy give subsidence below the selected ridge datum
+$$w(t)=\frac{\rho_m\alpha}{\rho_m-\rho_w}\int_0^\infty(T_m-T)\,dz=\frac{2\rho_m\alpha(T_m-T_0)}{\rho_m-\rho_w}\sqrt{\frac{\kappa t}{\pi}}.$$
+Parsons–Sclater (1977) give the empirical young-age approximation $d=2500+350\sqrt t$ metres for $0<t<70$Myr, and the older asymptote $6400-3200e^{-t/62.8}$ for $t>20$ Myr. Their ranges overlap: these are not one exact law spliced at an unexplained age.`,
+      idea:String.raw`To first order in thermal expansion, the cold column's excess mass per area is $\rho_m\alpha\int(T_m-T)dz$. Replacing mantle by seawater balances it with $(\rho_m-\rho_w)w$. The error-function deficit integrates to $2(T_m-T_0)\sqrt{\kappa t/\pi}$. This proves the model's square-root dependence; the numerical coefficient depends on its inputs. Published depth–age approximations describe reference datasets and do not establish the same depth for every oceanic location.`,
+      caption:String.raw`The gold curve uses your chosen expansion coefficient and temperature contrast with a 2500 m ridge datum. Orange shows both Parsons–Sclater asymptotes on their published domains; teal shows the piecewise GDH1 approximation, with its own 2600 m datum. The right panel deliberately displays only the upper 150 km density excess. Its numerical finite-window integral, analytic missing tail and infinite-column subsidence are reported separately. Switching to a square-root age axis preserves the selected physical age. `,
+      deps:['geol-4.3','vcalc-8.8'],refs:['Parsons–Sclater (1977) Eqs7–11,21–22; Stein–Stein (1992) pp124–126'],tags:['bathymetry','isostasy','subsidence'],credit:'Published reference approximations: Parsons–Sclater (1977) and Stein–Stein (1992)',verify:false,
+      scope:String.raw`First-order constant-property thermal/isostatic model, with chosen densities 3300 and 1000 kg/m³ and diffusivity 10⁻⁶ m²/s; no sediment loading or crustal buoyancy. The GDH1 formula changes asymptote at 20 Myr with a small approximation mismatch; it is not raw sounding data. Curves beyond the source's sampled ages are model continuations.`,links:{doi:'https://doi.org/10.1038/359123a0'},
+      viz(v){
+        const alpha=v.slider('thermal expansion $\\alpha$ (10⁻⁵/K)',2,4,3,{step:.05}),Tm=v.slider('$T_m-T_0$ (K)',1100,1500,1300,{step:10});let chosen=40;
+        const ax=v.select('age axis',[{value:'age',label:'age'},{value:'sqrt',label:'√age'}],'age',{onChange:()=>{probe.set(ax.value==='sqrt'?Math.sqrt(chosen):chosen,0);}});
+        const S=v.stage({x:[0,180],y:[-7,-2.2],axes:'box',gutter:true,xlabel:'age (Myr)',ylabel:'depth (km)',height:340,weight:1.4,minWidth:300}),D=v.stage({x:[0,220],y:[-150,0],axes:'box',gutter:true,xlabel:'density excess (kg/m³)',ylabel:'depth (km)',yticks:[[0,'0'],[-50,'50'],[-100,'100'],[-150,'150']],height:340,weight:.8,minWidth:220}),probe=S.handle(40,-4,{color:'gold',constrain:'x',label:'age',labelPos:'ne'});
+        let info={};v.render(()=>{const opts={Tm:Tm.value,alpha:alpha.value*1e-5},sq=ax.value==='sqrt',X=t=>sq?Math.sqrt(t):t,model=t=>-(2500+HC.halfSubs(t,opts))/1000,young=Array.from({length:71},(_,j)=>[X(j),-HC.psYoungDepth(j)/1000]),old=Array.from({length:161},(_,j)=>[X(j+20),-HC.psOldDepth(j+20)/1000]),gdh=Array.from({length:181},(_,j)=>[X(j),-HC.gdhDepth(j)/1000]),gold=Array.from({length:181},(_,j)=>[X(j),model(j)]),lo=Math.min(...gold.map(p=>p[1]),...old.map(p=>p[1]),...gdh.map(p=>p[1]))-.25;
+          chosen=Math.min(Math.max(sq?probe.x**2:probe.x,1),180);S.setView(sq?[0,Math.sqrt(180)+.7]:[0,190],[lo,-2.15]);S.setLabels(sq?'$\\sqrt{\\mathrm{age}}$ (Myr$^{1/2}$)':'age (Myr)','depth (km)');S.setTicks(null,null);probe.set(X(chosen),model(chosen));probe.labelPos=chosen>110?'nw':'ne';S.path(young,{color:'orange',width:1.8});S.path(old,{color:'orange',width:1.6,dash:[4,3]});S.path(gdh,{color:'teal',width:1.8,dash:[2,3]});S.path(gold,{color:'gold',width:2.6});
+          const maximum=3300*opts.alpha*opts.Tm,dr=z=>maximum*HC.erfc(z*1000/(2*Math.sqrt(KAPPA*chosen*MYR)));D.setView([0,maximum*1.1],[-150,0]);D.curve(z=>[dr(z),-z],0,150,{n:250,color:'accent',width:2.2});D.path([[0,0],...Array.from({length:301},(_,j)=>[dr(j/2),-j/2]),[0,-150]],{close:true,fill:'accent',fillAlpha:.2,color:'accent',width:.5});const finite=v.M.integrate(dr,0,150,600)*1000/2300,analyticFinite=HC.finiteSubs(150000,chosen,opts),full=HC.halfSubs(chosen,opts);
+          info={t:chosen,finite,analyticFinite,full,tail:full-analyticFinite,maximum,lo,sq};
         });
-        v.legend([['gold', 'half-space model'], ['orange', 'Parsons & Sclater (1977) fit'], ['teal', 'Stein & Stein (1992) GDH1 fit', { dash: true }]]);
-        v.readout(() => `At ${v.fix(info.t, 0)} Myr: numerical $\\int(\\rho-\\rho_m)dz/(\\rho_m-\\rho_w)=${v.fix(info.w, 0)}$ m, closed form $=${v.fix(info.wf, 0)}$ m, empirical $350\\sqrt t=${v.fix(info.ps, 0)}$ m (all below the 2500 m ridge crest). For $t>80$ Myr the half-space curve keeps falling but the sea floor does not.`);
+        v.legend([['gold','chosen half-space model'],['orange','PS77 young/old asymptotes'],['teal','GDH1 piecewise approximation',{dash:true}]]);
+        v.readout(()=>`At $${v.fix(info.t,1)}$Myr: numerical upper 150 km subsidence $${v.fix(info.finite,2)}$ m; analytic finite-window value $${v.fix(info.analyticFinite,2)}$ m.\nMissing deeper tail $${v.fix(info.tail,2)}$ m; full-column model $${v.fix(info.full,2)}$ m below its 2500 m ridge datum. The GDH1 reference uses 2600 m.`);
       },
     },
-
     // ───────────────────────────────────────── 4.5
     {
-      num: '4.5',
-      kind: 'Proposition',
-      name: 'Oceanic heat flow falls as 1/√age',
-      statement: String.raw`The surface heat flow of the half-space cooling model (4.3) is the gradient at the surface times the conductivity:
-$$q(t)=\frac{k\,(T_m-T_0)}{\sqrt{\pi\kappa t}}\;\approx\;\frac{0.45\ \text{W m}^{-2}}{\sqrt{t/\mathrm{Myr}}},$$
-so heat flow decreases as $t^{-1/2}$, from several hundred mW/m² at the ridge towards about 50–100 mW/m² on old crust. Integrated over the sea floor with its age–area distribution, this gives most of the Earth's oceanic heat loss.`,
-      idea: String.raw`Differentiate the erf profile of 4.3 at $z=0$: $\partial_zT|_0=(T_m-T_0)/\sqrt{\pi\kappa t}$, then multiply by $k$ (4.1). The $t^{-1/2}$ singularity at the ridge is integrable, so the total heat lost by a patch of age distribution $A(t)$ is finite: $\int q\,dA$. On crust younger than about 50–60 Myr measured values are far below this curve because seawater circulating through cracks carries away heat that conduction probes do not see; the shortfall is the signature of hydrothermal circulation, and the measured heat flow only reaches the conductive curve on older, sediment-sealed crust.`,
-      caption: String.raw`Left (log–log): the conductive law (blue), two published empirical fits (as quoted) and an **illustrative model** of the observed conductive heat flow (red), reduced by hydrothermal circulation on crust younger than the sealing age. Right: heat loss per 10 Myr of age for a triangular age distribution of the ocean floor (round numbers); the area between the curves is the missing hydrothermal flux. Drag the age probe.`,
-      deps: ['geol-4.3'],
-      refs: ['Turcotte–Schubert ch. 4'],
-      tags: ['heat flow', 'hydrothermal', 'sea floor'],
-      credit: 'Parsons & Sclater, 1977; Stein & Stein, 1994 (hydrothermal flux)',
-      scope: String.raw`Holds as the lithospheric conductive heat flow in the half-space model; the conductive flow measured in probes on young crust is lower because of hydrothermal circulation, and measured heat flow also departs from $t^{-1/2}$ on old sea floor (plate model, 4.6). The age–area distribution used for the total is an approximation.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Heat_flow#Oceanic_heat_flow' },
-      verify: true,
-      viz(v) {
-        const dT = v.slider('$T_m-T_0$ (K)', 1100, 1500, 1350, { step: 10 });
-        const kk = v.slider('conductivity $k$ (W/m/K)', 2.5, 4, 3.3, { step: 0.05 });
-        const ts = v.slider('sealing age (Myr)', 20, 90, 60, { step: 1 });
-        const f0 = v.slider('conductive fraction at the ridge', 0, 0.6, 0.2, { step: 0.02 });
-        const AREA = 3.1e14, TM = 180; // m², Myr
-        const C = (2 * AREA) / TM; // m² per Myr of age at t = 0
-        const qth = (t) => halfSpaceQ(t, { Tm: dT.value, T0: 0, k: kk.value }) * 1000;
-        const fc = (t) => (t >= ts.value ? 1 : 1 - (1 - f0.value) * (1 - t / ts.value) ** 2);
-        const PSq = (t) => 473 / Math.sqrt(t);
-        const SSq = (t) => (t < 55 ? 510 / Math.sqrt(t) : 48 + 96 * Math.exp(-0.0278 * t));
-        const H = v.stage({ x: [1, 200], y: [20, 700], xlog: true, ylog: true, axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat flow (mW/m²)', height: 340, weight: 1.2, minWidth: 280 });
-        const G = v.stage({ x: [0, 180], y: [0, 3], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'heat loss per 10 Myr of age (TW)', height: 340, weight: 1, minWidth: 260 });
-        const probe = H.handle(8, 150, { color: 'gold', label: 'age', labelPos: 'ne', constrain: (x) => [Math.min(Math.max(x, 1), 180), qth(Math.min(Math.max(x, 1), 180)) * fc(Math.min(Math.max(x, 1), 180))] });
-        let info = {};
-        v.render(() => {
-          const tt = Array.from({ length: 160 }, (_, i) => Math.exp(Math.log(1) + (i / 159) * (Math.log(200) - Math.log(1))));
-          H.path(tt.map((t) => [t, qth(t)]), { color: 'accent', width: 2.4 });
-          H.path(tt.map((t) => [t, PSq(t)]), { color: 'orange', width: 1.4, dash: [5, 3] });
-          H.path(tt.map((t) => [t, SSq(t)]), { color: 'teal', width: 1.4, dash: [2, 3] });
-          H.path(tt.map((t) => [t, qth(t) * fc(t)]), { color: 'red', width: 2.4 });
-          H.vline(ts.value, { color: 'muted', dash: true, alpha: 0.6 });
-          const tp = Math.min(Math.max(probe.x, 1), 180); probe.set(tp, qth(tp) * fc(tp));
-          // global integral: heat loss per 10 Myr bin
-          const dens = (t) => (qth(t) / 1000) * C * (1 - t / TM) * 10 / 1e12; // TW per 10 Myr
-          G.fn((t) => dens(t), { domain: [0.5, 180], color: 'accent', width: 2.2, fill: true, base: 0 });
-          G.fn((t) => dens(t) * fc(t), { domain: [0.5, 180], color: 'red', width: 2.2, fill: true, base: 0 });
-          G.vline(tp, { color: 'gold', dash: true });
-          // substitute t = u² to remove the integrable 1/√t singularity at the ridge
-          const tot = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
-          const cond = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) * fc(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
-          info = { tp, q: qth(tp), qo: qth(tp) * fc(tp), tot, cond };
+      num:'4.5',kind:'Proposition',name:'Oceanic heat flow falls as 1/√age',
+      statement:String.raw`Differentiating the half-space temperature at its surface gives the upward conductive heat flow
+$$q(t)=\frac{k(T_m-T_0)}{\sqrt{\pi\kappa t}},\qquad t>0.$$
+It diverges at the idealized ridge but is integrable over a finite age-area distribution. Parsons–Sclater (1977) report $q=11.3/\sqrt t$μcal cm⁻²s⁻¹, or $472.792/\sqrt t$ mW/m² for $0<t<120$ Myr. The distinct GDH1 approximation is $510/\sqrt t$ through 55 Myr and $48+96e^{-0.0278t}$ above 55 Myr.`,
+      idea:String.raw`The derivative of $\operatorname{erf}(z/(2\sqrt{\kappa t}))$ at $z=0$ is $1/\sqrt{\pi\kappa t}$. Multiplying by the conductivity gives the model law. A young-crust conductive-probe deficit relative to a thermal reference is consistent with hydrothermal heat transport; it does not by itself measure a unique water flux or universal sealing age. For $t=u^2$, the transformed heat-loss integrand has a finite **nonzero** value at $u=0$, which must be retained in numerical quadrature.`,
+      caption:String.raw`Left: selected model curves on 1–200 Myr, plus source approximations on their stated ranges; the red curve uses an explicitly chosen conductive fraction. Right: exact integrated heat loss in each 10 Myr bin of a synthetic triangular age-area distribution. Complete bins include the integrable young-age singularity. The difference is the toy's assigned nonconductive heat component, not a measured global hydrothermal estimate. Change the sealing parameter and ridge fraction or drag the age probe.`,
+      deps:['geol-4.3'],refs:['Parsons–Sclater (1977) Eqs10,23 and p820 range; Stein–Stein (1992) pp125–126 GDH1 formulas/data limitations'],tags:['heat flow','hydrothermal','sea floor'],credit:'Thermal reference models: Parsons–Sclater (1977) and Stein–Stein (1992)',verify:false,
+      scope:String.raw`Chosen area 3.1×10¹⁴ m² and oldest age 180 Myr define the triangular distribution, not a retrieved seafloor dataset. The quadratic conductive fraction is synthetic. Thermal parameters are constant; old-age half-space curves are deliberate model extrapolations. The 55 Myr GDH1 splice has a small approximation mismatch.`,links:{doi:'https://doi.org/10.1038/359123a0'},
+      viz(v){
+        const dT=v.slider('$T_m-T_0$ (K)',1100,1500,1350,{step:10}),kk=v.slider('conductivity $k$ (W/m/K)',2.5,4,3.3,{step:.05}),ts=v.slider('model sealing age (Myr)',20,90,60,{step:1}),f0=v.slider('model ridge conductive fraction',0,.6,.2,{step:.02});
+        const H=v.stage({x:[.9,210],y:[1,800],xlog:true,ylog:true,axes:'box',gutter:true,xlabel:'age (Myr)',ylabel:'heat flow (mW/m²)',height:340,weight:1.2,minWidth:280}),G=v.stage({x:[-2,182],y:[0,12],axes:'box',gutter:true,xlabel:'age bin (Myr)',ylabel:'integrated bin heat loss (TW)',height:340,weight:1,minWidth:260}),probe=H.handle(8,150,{color:'gold',label:'age',labelPos:'ne',constrain:'x'});
+        let info={};v.render(()=>{const opts={Tm:dT.value,k:kk.value},q=t=>HC.halfHeat(t,opts)*1000,frac=t=>HC.conductedFraction(t,ts.value,f0.value),tt=Array.from({length:201},(_,j)=>Math.exp(j*Math.log(200)/200)),blue=tt.map(t=>[t,q(t)]),red=tt.map(t=>[t,q(t)*frac(t)]),ps=tt.filter(t=>t<=120).map(t=>[t,HC.psHeat(t)]),gdh=tt.map(t=>[t,HC.gdhHeat(t)]),ys=[...blue,...red,...ps,...gdh].map(p=>p[1]);H.setView([.9,210],[Math.min(...ys)*.75,Math.max(...ys)*1.15]);H.path(blue,{color:'accent',width:2.4});H.path(red,{color:'red',width:2.2});H.path(ps,{color:'orange',width:1.4,dash:[5,3]});H.path(gdh,{color:'teal',width:1.4,dash:[2,3]});H.vline(ts.value,{color:'muted',dash:true,alpha:.6});const t=Math.min(Math.max(probe.x,1),180);probe.set(t,q(t)*frac(t));probe.labelPos=t>70?'nw':'ne';
+          const bins=HC.heatBins(opts,ts.value,f0.value),top=Math.max(...bins.map(b=>b.law))*1.12;G.setView([-2,182],[-.03*top,top]);for(const b of bins){G.rect(b.lo+.3,0,b.hi-.3,b.law,{fill:'accent',fillAlpha:.22,color:'accent',width:1});G.rect(b.lo+1.7,0,b.hi-1.7,b.conducted,{fill:'red',fillAlpha:.36,color:'red',width:1});}G.vline(t,{color:'gold',dash:true});
+          const total=bins.reduce((a,b)=>a+b.law,0),conducted=bins.reduce((a,b)=>a+b.conducted,0);info={t,q:q(t),qc:q(t)*frac(t),total,conducted,bins,top,fraction:frac(t),c:HC.heatCoefficient(opts)};
         });
-        v.legend([['accent', 'conductive law $t^{-1/2}$'], ['orange', 'P&S fit 473/√t (quoted)', { dash: true }], ['teal', 'Stein & Stein fit (quoted)', { dash: true }], ['red', 'model of observed (hydrothermal deficit)']]);
-        v.readout(() => `At ${v.fix(info.tp, 0)} Myr: law ${v.fix(info.q, 0)} mW/m², model-observed ${v.fix(info.qo, 0)} mW/m². Integrated over the ocean floor: ${v.fix(info.tot, 1)} TW from the law, ${v.fix(info.cond, 1)} TW conducted in the model, so ${v.fix(info.tot - info.cond, 1)} TW (${v.fix(100 * (1 - info.cond / info.tot), 0)}%) is carried by water.`);
+        v.legend([['accent','chosen conductive law / complete bins'],['orange','PS77 approximation'],['teal','GDH1 approximation'],['red','chosen conductive fraction / bin component']]);
+        v.readout(()=>`At $${v.fix(info.t,1)}$Myr: law $${v.fix(info.q,1)}$, toy conductive component $${v.fix(info.qc,1)}$ mW/m².\nSum of all 18 bins: $${v.fix(info.total,3)}$ TW; toy conductive component $${v.fix(info.conducted,3)}$ TW; assigned remainder $${v.fix(info.total-info.conducted,3)}$ TW. These are chosen-model totals.`);
       },
     },
   ],

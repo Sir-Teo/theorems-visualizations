@@ -1,0 +1,8 @@
+// Scoped source-audit helpers; existing compartment engine remains unchanged.
+import{buildTree,treeSim}from'./ch04.shared.js';
+const clip=(x,a,b)=>Math.max(a,Math.min(b,x));
+export function cableSite(segs,x,y){let site=null,best=Infinity;for(let k=1;k<segs.length;k++){const s=segs[k],dx=s.x1-s.x0,dy=s.y1-s.y0,f=clip(((x-s.x0)*dx+(y-s.y0)*dy)/(dx*dx+dy*dy),0,1),xx=s.x0+f*dx,yy=s.y0+f*dy,d=(xx-x)**2+(yy-y)**2;if(d<best){best=d;site={seg:k,f,x:xx,y:yy};}}return site;}
+/** Fixed physical 30µm patch, clipped at segment ends, with total current conserved on every mesh. */
+export function cablePatch(tr,site,width=30){const s=tr.segs[site.seg],center=site.f*s.len,lo=Math.max(0,center-width/2),hi=Math.min(s.len,center+width/2),out=[];for(let i=tr.first[site.seg];i<=tr.last[site.seg];i++){const a=tr.pos[i]-tr.len[i]/2,b=tr.pos[i]+tr.len[i]/2,w=Math.max(0,Math.min(b,hi)-Math.max(a,lo))/(hi-lo);if(w>0)out.push([i,w]);}return{weights:out,lo,hi};}
+export function passiveTreeAudit(segs,dx,site,{dt=.05,tEnd=40,frames=8}={}){const tr=buildTree(segs,{dxMax:dx,Ra:100}),patch=cablePatch(tr,site),rec=[0,...patch.weights.map(([i])=>i)],r=treeSim(tr,{dt,tEnd,cm:1,gL:.05,EL:-65,V0:-65,stim:(t,I)=>{if(t>1&&t<=4)for(const[i,w]of patch.weights)I[i]=.01*w;},rec,frames}),soma=r.V[0].map(x=>x+65),loc=r.t.map((_,k)=>patch.weights.reduce((a,[,w],j)=>a+w*(r.V[j+1][k]+65),0)),fr=r.frames?.map(f=>Float32Array.from(f,x=>x+65));return{tr,patch,t:r.t,soma,loc,fr,ft:r.ft,localPeak:Math.max(...loc),somaPeak:Math.max(...soma)};}
+export function cableConvergence(segs,site,{dt=.05,grids=[200,100,50,25,12.5,6.25]}={}){return grids.map(dx=>{const r=passiveTreeAudit(segs,dx,site,{dt,frames:0});return[r.tr.n,r.somaPeak];});}

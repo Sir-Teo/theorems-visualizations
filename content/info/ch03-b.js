@@ -5,6 +5,8 @@
 import { clamp, sum, H, h2, KL, commas, hashStr, LET, lbinom, lmult, lse2, lbinPmf, lseqP, typeRound, lQclass, pick,
   simXY, simP, simStage, drawSimplex, simHandle, stationary, markovRate, stepDist, barEd } from './ch03.shared.js';
 
+import {npBernoulli} from './source-audit.shared.js';
+
 const log2 = Math.log2;
 const pw2 = (x) => Math.pow(2, x);
 const R3 = Math.sqrt(3) / 2;
@@ -106,18 +108,21 @@ where $Q^n(E)$ is the probability that the empirical distribution of $X^n$ lies 
       num: '3.10',
       kind: 'Theorem',
       name: 'Chernoff–Stein lemma',
-      statement: String.raw`Test the simple hypotheses $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ (i.i.d., finite alphabet, $D(P\|Q)<\infty$) with $n$ observations. For a decision region $A_n$ (accept $H_0$), let $\alpha_n=P^n(A_n^c)$ be the false-alarm probability and $\beta_n=Q^n(A_n)$ the miss probability. Fix $0<\varepsilon<\tfrac12$ and let $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n<\varepsilon\}$. Then
-$$\lim_{n\to\infty}-\frac1n\log_2\beta_n^\varepsilon\ =\ D(P\|Q),$$
-whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the best miss probability decays exponentially at the rate given by the relative entropy of the null from the alternative.`,
-      idea: String.raw`Achievability: take $A_n$ to be the typical set of $P$ (3.3) with respect to the log-likelihood ratio: it has $P^n$-probability $>1-\varepsilon$ eventually (3.1), and each member has $Q^n(x^n)\le2^{-n(D(P\|Q)-\varepsilon')}$, so $\beta_n\le2^{-n(D-\varepsilon')}$. Converse: any region with $P^n(A_n)\ge1-\varepsilon$ must contain at least $1-2\varepsilon$ of its mass on sequences whose log-likelihood ratio is close to $nD$, and these have $Q^n$-mass at least $2^{-n(D+\varepsilon')}$ times their $P^n$-mass. The optimal regions are Neyman–Pearson likelihood-ratio tests; the picture computes them exactly.`,
-      caption: String.raw`Binary alphabet, $P=\mathrm{Bernoulli}(p_0)$ and $Q=\mathrm{Bernoulli}(q)$. The Neyman–Pearson test accepts the sequences with the largest likelihood ratio until $P^n$ has mass $1-\varepsilon$ (the last class is cut exactly, as a deterministic subset). Left: $-\frac1n\log_2\beta_n$ for three values of $\varepsilon$ converges to $D(P\|Q)$ (green) from different directions. Right: at the chosen $n$, the pmfs of the number of ones under $P$ (blue) and $Q$ (orange); the shaded orange area is $\beta_n$ and the shaded red area $\alpha_n$.`,
+      statement: String.raw`Test $H_0:X_i\sim P$ against $H_1:X_i\sim Q$ using $n$ i.i.d. observations on a finite alphabet, with $D(P\|Q)<\infty$. A possibly randomized test accepts $H_0$ with probability $g_n(x^n)\in[0,1]$. Its false-alarm and miss probabilities are $\alpha_n=1-E_{P^n}g_n$ and $\beta_n=E_{Q^n}g_n$. For every fixed $0<\varepsilon<1$, put $\beta_n^\varepsilon=\min\{\beta_n:\alpha_n\le\varepsilon\}$. Then
+$$\lim_{n\to\infty}-\frac1n\log_2\beta_n^\varepsilon=D(P\|Q).$$
+The fixed false-alarm constraint determines the optimal asymptotic miss exponent. Randomization at a likelihood-ratio tie allows the finite-sample constraint to be met exactly.`,
+      idea: String.raw`Let $L_n=\log_2(P^n/Q^n)$. Under $P^n$, $L_n/n\to D=D(P\|Q)$ in probability. Accepting on $L_n\ge n(D-\delta)$ eventually meets the constraint, and
+$$Q^n(A_n)=E_{P^n}[2^{-L_n}\mathbf1_{A_n}]\le2^{-n(D-\delta)}.$$
+For the converse, set $T_n=\{L_n\le n(D+\delta)\}$. Every admissible $g_n$ satisfies $E_{P^n}[g_n\mathbf1_{T_n}]\ge1-\varepsilon-o(1)$, so $E_{Q^n}g_n\ge2^{-n(D+\delta)}(1-\varepsilon-o(1))$. Let $\delta\downarrow0$. The positive constant works for every fixed $\varepsilon<1$.
+
+Finite-sample Neyman–Pearson optimality fills likelihood-ratio classes from largest to smallest, then randomizes at the boundary. With $P=Q$ every outcome is tied and uniform acceptance probability $1-\varepsilon$ is optimal.`,
+      caption: String.raw`For two Bernoulli laws, compute the optimal **randomized** test using binomial probabilities in the log domain. A fractional final class is an acceptance probability for every sequence in that class, not a fractional deterministic set. Left: three finite-sample exponents and their limiting relative entropy. Right: bars show **probability masses** at counts $k$; accepted orange heights sum to $\beta_n$, rejected red heights to $\alpha_n$. The boundary probability is reported explicitly.`,
       deps: ['info-3.8'],
-      refs: ['Cover–Thomas §11.8'],
+      refs: ['Polyanskiy–Wu, MIT 6.441 (2016), Theorem 10.6 pp.118–119 and Theorem 11.1 pp.121–123'],
       tags: ['hypothesis testing', 'large deviations'],
-      credit: 'Named for Herman Chernoff and a result credited to Charles Stein (the exact first source was not verified here); Chernoff, Ann. Math. Stat. 23 (1952) 493 is the related paper on the Chernoff bound',
-      verify: true,
-      scope: String.raw`Holds for i.i.d. observations under both hypotheses, with $D(P\|Q)<\infty$. The false-alarm constraint is fixed, not shrinking with $n$; if both error probabilities must vanish together, the exponent is the Chernoff information rather than $D(P\|Q)$.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stein%27s_lemma' },
+      credit: 'Stein’s lemma; proof source: Polyanskiy–Wu (2016), Theorem 11.1',
+      scope: String.raw`Finite alphabet and i.i.d. observations under both laws; all logarithms here use base 2. The displayed optimum allows randomized tests and is evaluated numerically. Merely requiring both errors to vanish does not specify a unique exponent: a shrinking false-alarm constraint produces a tradeoff depending on its rate. Chernoff information describes a different symmetric-error optimization.`,
+      links: { source: 'https://ocw.mit.edu/courses/6-441-information-theory-spring-2016/d14633baf528941dcb5ee00a334e1d89_MIT6_441S16_chapter_11.pdf' },
       viz(v) {
         const pS = v.slider(String.raw`$P=\mathrm{Bern}(p_0)$, $p_0$`, 0.05, 0.95, 0.5, { step: 0.01 });
         const qS = v.slider(String.raw`$Q=\mathrm{Bern}(q)$, $q$`, 0.05, 0.95, 0.2, { step: 0.01 });
@@ -125,55 +130,39 @@ whatever the value of $\varepsilon$. With the false-alarm rate held fixed, the b
         const nS = v.slider('length $n$ (right panel)', 5, 300, 60, { int: true });
         const NM = 300;
         const s1 = v.stage({ x: [5, NM], y: [0, 2], height: 280, axes: 'box', gutter: true, xlabel: 'n', ylabel: '−(1/n) log₂ βₙ', title: 'miss-probability exponent of the best test' });
-        const s2 = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'fraction of ones k/n', ylabel: 'probability density of k/n', title: 'the two hypotheses and the optimal acceptance region' });
+        const s2 = v.stage({ x: [0, 1], y: [0, 1], height: 280, axes: 'box', gutter: true, xlabel: 'fraction of ones k/n', ylabel: 'probability mass at k', title: 'the two hypotheses and the optimal acceptance region' });
         v.legend([['accent', '$\\varepsilon$ (slider)'], ['orange', '$\\varepsilon=0.3$'], ['purple', '$\\varepsilon=0.01$'], ['green', '$D(P\\|Q)$']]);
-        // Neyman–Pearson: classes ordered by likelihood ratio (large first)
-        function np(n, p0, q, eps) {
-          const ks = []; for (let k = 0; k <= n; k++) ks.push(k);
-          const asc = p0 < q; ks.sort((a, b) => (asc ? a - b : b - a));
-          let cum = 0; const lq = [], inc = [];
-          for (const k of ks) {
-            const mp = pw2(lbinPmf(n, k, p0));
-            if (cum + mp >= 1 - eps) {
-              const f = Math.min(1, Math.max(0, (1 - eps - cum) / mp));
-              if (f > 0) lq.push(lbinPmf(n, k, q) + log2(f));
-              inc.push([k, f]);
-              return { lb: lse2(lq), inc, alpha: eps };
-            }
-            cum += mp; lq.push(lbinPmf(n, k, q)); inc.push([k, 1]);
-          }
-          return { lb: lse2(lq), inc, alpha: 0 };
-        }
+        const np=npBernoulli;
         let cache = null, info = {};
         v.render(() => {
           const p0 = pS.value, q = qS.value, eps = eS.value, n = nS.value, D = KL([p0, 1 - p0], [q, 1 - q]), key = `${p0}|${q}|${eps}`;
           if (!cache || cache.key !== key) {
-            const mk = (e) => { const a = []; for (let m = 5; m <= NM; m++) a.push([m, -np(m, p0, q, e).lb / m]); return a; };
+            const mk = (e) => { const a = []; for (let m = 5; m <= NM; m++) a.push([m, -np(m, p0, q, e).logBeta / m]); return a; };
             cache = { key, a: mk(eps), b: mk(0.3), c: mk(0.01) };
           }
-          const top = Math.max(0.5, D * 1.5, ...cache.c.map((p) => p[1]).filter(isFinite)) * 1.05;
-          s1.setView([5, NM], [0, Math.min(top, 8)]);
+          const top = Math.max(0.5, D * 1.5, ...[...cache.a,...cache.b,...cache.c].map(p=>p[1]).filter(isFinite)) * 1.05;
+          s1.setView([5, NM], [0, top]);
           s1.hline(D, { color: 'green', width: 2 });
           s1.path(cache.b, { color: 'orange', width: 1.6 }); s1.path(cache.c, { color: 'purple', width: 1.6 }); s1.path(cache.a, { color: 'accent', width: 2.4 });
           s1.vline(n, { color: 'faint', dash: true });
-          const r = np(n, p0, q, eps), fr = new Map(r.inc);
+          const r = np(n,p0,q,eps);
           const dens = [], hmax = { v: 0 };
-          for (let k = 0; k <= n; k++) { const a = pw2(lbinPmf(n, k, p0)), b = pw2(lbinPmf(n, k, q)); dens.push([a, b]); hmax.v = Math.max(hmax.v, a, b); }
-          s2.setView([0, 1], [0, hmax.v * 1.15]);
+          for (let k = 0; k <= n; k++) { const a=r.P[k],b=r.Q[k];dens.push([a, b]); hmax.v = Math.max(hmax.v, a, b); }
+          s2.setView([-0.5/n,1+0.5/n],[0,hmax.v*1.2]);
           let alpha = 0, beta = 0;
           for (let k = 0; k <= n; k++) {
-            const f = fr.get(k) || 0, [a, b] = dens[k], x0 = (k - 0.5) / n, x1 = (k + 0.5) / n;
+            const f=r.f[k],[a,b]=dens[k], x0 = (k - 0.5) / n, x1 = (k + 0.5) / n;
             alpha += a * (1 - f); beta += b * f;
             if (f > 0) s2.rect(x0, 0, x1, b * f, { fill: 'orange', fillAlpha: 0.6, stroke: false });
             if (f < 1) s2.rect(x0, 0, x1, a * (1 - f), { fill: 'red', fillAlpha: 0.6, stroke: false });
             s2.rect(x0, 0, x1, a, { color: 'accent', fill: 'accent', fillAlpha: 0.12, width: 1 });
             s2.rect(x0, 0, x1, b, { color: 'orange', width: 1 });
           }
-          const acc = r.inc.map(([k]) => k), lo = Math.min(...acc), hi = Math.max(...acc);
-          s2.text(`accept $H_0$ for k ${p0 > q ? '≥' : '≤'} ${p0 > q ? lo : hi}`, 0.5, hmax.v * 1.08, { align: 'center', size: 11.5, color: 'muted', weight: 600 });
-          info = { D, n, alpha, beta, lb: r.lb, last: cache.a[cache.a.length - 1][1] };
+          const boundary=r.boundary;
+          s2.text(p0===q?'all outcomes tied: randomize uniformly':`boundary k=${boundary.k}: accept with probability ${v.fix(boundary.probability,3)}`,0.5,hmax.v*1.1,{align:'center',size:11.5,color:'muted',weight:600});
+          info = {D,n,alpha,beta,lb:r.logBeta,boundary,equal:p0===q,last:cache.a.at(-1)[1]};
         });
-        v.readout(() => String.raw`$D(P\|Q)=${v.fix(info.D, 3)}$ bits. At $n=${info.n}$ the best test has false-alarm probability $\alpha_n=${v.fix(info.alpha, 3)}$ and miss probability $\beta_n=2^{${v.fix(info.lb, 1)}}$, giving $-\frac1n\log_2\beta_n=${v.fix(-info.lb / info.n, 3)}$; at $n=${NM}$ the exponent is $${v.fix(info.last, 3)}$.` + (info.D < 1e-9 ? String.raw` With $P=Q$ no test can do better than $\beta=1-\varepsilon$.` : ''));
+        v.readout(() => String.raw`$D(P\|Q)=${v.fix(info.D,3)}$ bits. At $n=${info.n}$ the randomized optimum has $\alpha_n=${v.fix(info.alpha,4)}$, $\beta_n=2^{${v.fix(info.lb,2)}}$ and exponent $${v.fix(-info.lb/info.n,3)}$; at $n=${NM}$ the exponent is $${v.fix(info.last,3)}$. Boundary acceptance probability: **${v.fix(info.boundary?.probability??0,4)}**${info.equal?String.raw` for every outcome; $P=Q$ gives $\beta=1-\varepsilon$.`:` at k=${info.boundary?.k}.`} The masses are numerical binomial evaluations.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.11

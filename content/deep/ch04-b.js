@@ -4,6 +4,7 @@
 // the numbers on screen are measured on those runs, not quoted from the papers. Item 4.8 uses the scalar deep linear
 // network, where the whole landscape can be drawn.
 import { clamp, mnus, memo, rand, hashStr, makeNet, predict, toyData, makeTrainer, lossGrad, zeroGrad, accuracy, getParams, setParams, lossGradFlat, sharpness, log10Ticks, lg } from './ch04.shared.js';
+import { linearRun, logRange } from './source-audit.shared.js';
 
 export default {
   collection: 'deep',
@@ -14,60 +15,31 @@ export default {
       num: '4.8',
       kind: 'Theorem',
       name: 'Deep linear networks have no bad local minima',
-      statement: String.raw`Consider the squared loss $L(W_1,\dots,W_H)=\tfrac12\|W_H\cdots W_1X-Y\|_F^2$ of a **linear** network, and assume $XX^{\top}$ and $XY^{\top}$ have full rank (with $Y X^{\top}(XX^{\top})^{-1}XY^{\top}$ having distinct eigenvalues). Then $L$ is non-convex (and non-concave) once $H\ge2$, yet **every local minimum is a global minimum**, and every critical point that is not a global minimum is a saddle. For a single hidden layer ($H=2$) each such saddle has a Hessian with a negative eigenvalue (a strict saddle); for three or more weight matrices some saddles have a positive semi-definite Hessian, so second-order information at them is inconclusive.`,
-      idea: String.raw`A critical point of the factorized loss is a critical point of the convex loss in the product $W=W_H\cdots W_1$ whenever the product has full rank; a convex function has no non-global critical points, so any other critical point must have a rank-deficient product. At such a point one can move along a direction that increases the rank of the product (adding a factor that is zero at the saddle), which lowers the loss: so it cannot be a local minimum. The single-hidden-layer case goes back to Baldi and Hornik's analysis of linear autoencoders (see 10.2); Kawaguchi extended it to arbitrary depth. The statement above is recalled from the paper and its hypotheses should be checked against it.`,
-      caption: String.raw`The smallest case: scalar weights, $L=\tfrac12(w_L\cdots w_1-c)^2$ for the single data pair $(x,y)=(1,c)$. Thirty gradient-descent runs start from Gaussian weights of scale $\rho$. Left (two weights): every path ends on the green curve $w_1w_2=c$ of global minima; shrink $\rho$ and paths slow down near the saddle at the origin. Right: loss curves, one per run. With three weights the origin is a saddle with a *zero* Hessian, so small starts stall for much longer.`,
+      statement: String.raw`Let $X\in\mathbb R^{d_x\times m}$, $Y\in\mathbb R^{d_y\times m}$, $D\ge2$ weight matrices of positive widths, and $L=\tfrac12\|W_D\cdots W_1X-Y\|_F^2$. Assume **$d_y\le d_x$**, $XX^\top$ and $XY^\top$ have full rank, and $\Sigma=YX^\top(XX^\top)^{-1}XY^\top$ has $d_y$ distinct eigenvalues. Then $L$ is non-convex and non-concave, **every local minimum is global**, and every other critical point is a saddle. For $D=2$ every saddle has a negative Hessian eigenvalue. For $D\ge3$ saddles with no negative Hessian eigenvalue exist (Kawaguchi, Theorem 2.3 and Corollary 2.4; his $H=D-1$). This is a landscape result, not a guarantee that gradient descent reaches a minimum.`,
+      idea: String.raw`A bottleneck of width $p=\min(d_1,\ldots,d_{D-1})$ constrains the product's rank, so convexity in an unrestricted product alone does not prove the result. Kawaguchi's proof separates sufficient-rank critical points (ordinary least squares when $p\ge d_y$, or the best rank-$p$ fit selected by the top eigenspace of $\Sigma$) from deficient-rank cases, where arbitrarily small loss-preserving parameter perturbations reduce to the sufficient-rank analysis. In the scalar picture $P=\prod_iw_i$ and $\partial_iL=(P-c)\prod_{j\ne i}w_j$. With two weights, the origin has Hessian eigenvalues $\pm c$. With three, the **all-weight-zero** origin has zero Hessian, yet along $(t,t,t)$ the loss is $c^2/2-ct^3+t^6/2$, both above and below its value at zero nearby.`,
+      caption: String.raw`Thirty seeded Gaussian starts for scalar $L=\tfrac12(w_D\cdots w_1-c)^2$, GD step $0.05$, 1200 updates. The left window clips paths outside $[-2.2,2.2]^2$ and samples every fourth update plus the endpoint. For $D=3$ it is only a projection: $(w_1,w_2)=(0,0)$ does not specify $w_3$, so the marked origin refers to the full zero vector. The green minimum curve applies only to $D=2$. The loss panel shows all finite recorded losses (display floor $10^{-16}$); a run stops when recorded loss exceeds $10^{12}$ or arithmetic ceases to be finite. Finite runs may stall or stop and prove no landscape theorem.`,
       deps: ['deep-4.6'],
       see: ['deep-10.2'],
-      refs: ['Goodfellow §8.2'],
+      refs: ['Kawaguchi (2016), Theorem 2.3, Corollary 2.4, §4.3 and Appendices B–C'],
       tags: ['deep linear networks', 'saddle points', 'landscape'],
-      credit: 'Baldi & Hornik, 1989; Kawaguchi, 2016',
-      scope: String.raw`Linear networks only (the product is a linear map, so depth adds no expressive power); the theorem does not transfer to nonlinear networks, which can have bad local minima.`,
-      verify: true,
+      credit: 'Kawaguchi, 2016; earlier shallow linear-network result: Baldi & Hornik, 1989',
+      scope: String.raw`Squared loss of linear networks under the stated data assumptions; nonlinear-network conclusions require separate hypotheses. Scalar examples satisfy these assumptions for $c>0$. Exactly zero initialization remains stationary under GD even at a saddle.`,
       links: { arxiv: 'https://arxiv.org/abs/1605.07110' },
       viz(v) {
-        const depth = v.select('number of weights', [{ value: 2, label: '2: $w_2w_1$' }, { value: 3, label: '3: $w_3w_2w_1$' }], 2);
-        const cS = v.slider('target $c$', 0.3, 2, 1, { step: 0.05 });
-        const rho = v.slider('initial scale $\\rho$', 0.01, 1.5, 0.5, { log: true, sig: 2 });
-        const seed = { v: 1 }; v.button('resample starts', () => { seed.v++; });
-        const M = 30, T = 1200, eta = 0.05, R = 2.2;
-        const sW = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 360, axes: 'box', gutter: true, xlabel: '$w_1$', ylabel: '$w_2$', weight: 1, minWidth: 270, title: 'weight plane (first two weights)' });
-        const sL = v.stage({ x: [0, T], y: [-8.5, 0.7], height: 360, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\log_{10}$ loss', weight: 1, minWidth: 270, title: 'loss of each run' });
-        sL.setTicks(undefined, log10Ticks(-8, 0, 2));
-        const mc = memo();
-        let info = null;
-        v.render(() => {
-          const D = depth.value, c = cS.value, rh = rho.value;
-          const runs = mc(D + '|' + c + '|' + rh + '|' + seed.v, () => {
-            const r = rand(hashStr('lin' + seed.v)), out = [];
-            for (let m = 0; m < M; m++) {
-              const w = Array.from({ length: D }, () => r.normal() * rh), tr = [w.slice(0, 2)], loss = []; let hit = null;
-              for (let t = 0; t <= T; t++) {
-                let P = 1; for (const x of w) P *= x;
-                const e = P - c, L = 0.5 * e * e; loss.push(L);
-                if (hit == null && L < 1e-3) hit = t;
-                if (t === T || !isFinite(L) || L > 1e6) { if (!isFinite(L) || L > 1e6) hit = hit ?? -1; break; }
-                const g = w.map((_, i) => { let q = 1; for (let j = 0; j < D; j++) if (j !== i) q *= w[j]; return e * q; });
-                for (let i = 0; i < D; i++) w[i] -= eta * g[i];
-                if (t % 4 === 3) tr.push(w.slice(0, 2));
-              }
-              out.push({ tr, loss, hit, fin: loss[loss.length - 1] });
-            }
-            return out;
-          });
-          if (D === 2) for (const sg of [1, -1]) sW.curve((t) => [sg * t, c / (sg * t)], 0.1, 8, { color: 'green', width: 2.2, n: 200 });
-          sW.dot(0, 0, { r: 5, color: 'red', label: 'saddle', labelPos: 'ne' });
-          const col = (r) => (r.fin < 1e-3 ? 'accent' : !isFinite(r.fin) || r.fin > 1e3 ? 'red' : 'gold');
-          sW.clip(() => { for (const r of runs) { sW.path(r.tr, { color: col(r), width: 1.2, alpha: 0.8 }); sW.dot(r.tr[0][0], r.tr[0][1], { r: 2.6, color: 'ink' }); } });
-          const xmax = clamp(Math.max(...runs.map((r) => (r.hit != null && r.hit >= 0 ? r.hit : T))) * 1.15, 100, T);
-          sL.setView([0, xmax], [-8.5, 0.7]);
-          for (const r of runs) sL.path(r.loss.map((l, t) => [t, lg(l, -9)]), { color: col(r), width: 1.2, alpha: 0.8 });
-          const done = runs.filter((r) => r.fin < 1e-3).length, hits = runs.map((r) => r.hit).filter((h) => h != null && h >= 0).sort((a, b) => a - b);
-          info = { done, M, median: hits.length ? hits[Math.floor(hits.length / 2)] : null, stuck: runs.filter((r) => r.fin >= 1e-3 && isFinite(r.fin) && r.fin < 1e3).length, bad: runs.filter((r) => !isFinite(r.fin) || r.fin > 1e3).length };
+        const depth=v.select('number of weights',[{value:2,label:'2: $w_2w_1$'},{value:3,label:'3: $w_3w_2w_1$'}],2),cS=v.slider('target $c$',.3,2,1,{step:.05}),rho=v.slider('initial scale $\\rho$',.01,1.5,.5,{log:true,sig:2}),seed={v:1};v.button('resample starts',()=>{seed.v++;});
+        const M=30,T=1200,R=2.2,sW=v.stage({x:[-R,R],y:[-R,R],equal:true,height:360,axes:'box',gutter:true,xlabel:'$w_1$',ylabel:'$w_2$',weight:1,minWidth:270,title:'first two weights (clipped projection)'}),sL=v.stage({x:[0,T],y:[-16,1],height:360,axes:'box',gutter:true,xlabel:'step',ylabel:'loss (log scale)',weight:1,minWidth:270,title:'all recorded losses'}),mc=memo();let info=null;
+        v.render(()=>{
+          const D=depth.value,c=cS.value,rh=rho.value,runs=mc(D+'|'+c+'|'+rh+'|'+seed.v,()=>{const r=rand(hashStr('lin'+seed.v));return Array.from({length:M},()=>linearRun(Array.from({length:D},()=>r.normal()*rh),c));});
+          sW.clip(()=>{if(D===2)for(const sg of [1,-1])sW.curve(t=>[sg*t,c/(sg*t)],.1,8,{color:'green',width:2.2,n:200});});
+          sW.dot(0,0,{r:5,color:'red',label:D===2?'saddle':'full zero saddle',labelPos:'ne'});
+          const col=r=>r.status==='below'?'accent':r.stopped?'red':'gold';
+          sW.clip(()=>{for(const r of runs){sW.path(r.tr,{color:col(r),width:1.2,alpha:.8});sW.dot(...r.tr[0],{r:2.6,color:'ink'});}});
+          const yr=logRange(runs.flatMap(r=>r.loss));sL.setView([0,T],yr);sL.setTicks(undefined,log10Ticks(Math.ceil(yr[0]),Math.floor(yr[1]),Math.max(1,Math.ceil((yr[1]-yr[0])/6))));
+          for(const r of runs)sL.path(r.loss.map((l,t)=>[t,Math.log10(Math.max(1e-16,l))]),{color:col(r),width:1.2,alpha:.8});
+          const hits=runs.map(r=>r.hit).filter(h=>h!==null).sort((a,b)=>a-b);info={below:runs.filter(r=>r.status==='below').length,unfinished:runs.filter(r=>r.status==='unfinished').length,stopped:runs.filter(r=>r.stopped).length,hit:hits.length,median:hits.length?hits[Math.floor(hits.length/2)]:null};
         });
-        v.legend([['accent', 'reached loss < $10^{-3}$'], ['gold', 'still on a plateau at the end'], ['green', '$w_1w_2=c$ (global minima)'], ['red', 'saddle / diverged']]);
-        v.readout(() => info && String.raw`${info.done} of ${info.M} runs reach loss below $10^{-3}$ within ${T} steps${info.median != null ? ' (median ' + info.median + ' steps)' : ''}; ${info.stuck} still on the plateau, ${info.bad} diverged; none is trapped at a non-global minimum` + `\n` +
-          (depth.value === 2 ? String.raw`Hessian at the saddle $0$: eigenvalues $\pm c=\pm${v.fix(cS.value, 2)}$ (one negative: a strict saddle)` : String.raw`Hessian at the saddle $0$: **all zero** (every entry is a product containing a weight), so it gives no escape direction; the loss still falls, but only along the cubic terms`));
+        v.legend([['accent','final loss below $10^{-3}$'],['gold','finished above threshold'],['red','stopped at numerical/loss budget; zero saddle marker'],['green','$w_1w_2=c$ (two weights only)']]);
+        v.readout(()=>info&&String.raw`After ${T} updates: **${info.below}/${M}** below $10^{-3}$; ${info.unfinished} above threshold; ${info.stopped} stopped. ${info.hit} ever crossed the threshold${info.median===null?'':' (median first crossing '+info.median+')'}.`+`\n`+'Observed finite runs do not establish convergence or absence of bad minima. Three-weight paths hide the third coordinate.');
       },
     },
     // ───────────────────────────────────────────────────────────── 4.9

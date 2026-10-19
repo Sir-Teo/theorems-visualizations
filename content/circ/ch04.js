@@ -3,6 +3,7 @@
 // All component values are illustrative. Diode and transistor curves are the textbook models named in each item, not measured data.
 // Historical attributions are checked where the item says so; those resting on memory or a secondary source carry verify: true.
 import { clamp, vT, shock, shockV, loadDiode, bisectDec, eng } from './ch04.shared.js';
+import { rectifierEnvelope } from './circ-source-audit-rectifier.shared.js';
 
 export default {
   collection: 'circ',
@@ -203,28 +204,18 @@ export default {
       kind: 'Invention',
       name: 'Rectifiers: half-wave, full-wave and bridge',
       statement: String.raw`A rectifier turns an alternating voltage into one of a single sign. A *half-wave* rectifier is one diode in series with the load; a *full-wave bridge* uses four diodes so that both half-cycles reach the load with the same polarity, with two diode drops in the path. With a smoothing capacitor $C$ across a load $R_L$, the output follows the peaks of the rectified input and decays as $e^{-t/R_LC}$ between them. When $R_LC\gg 1/f$ the peak-to-peak ripple is approximately $\Delta V\approx I_{\mathrm{load}}/(f_rC)$, where the ripple frequency is $f_r=f$ for the half-wave and $f_r = 2f$ for the full-wave rectifier.`,
-      idea: String.raw`A diode conducts only while the input exceeds the output by its drop (4.3), so the capacitor is recharged in short pulses near each peak and discharges alone the rest of the time. During discharge the load draws an almost constant current $I$ from the capacitor, so the droop is $\Delta V = I\,\Delta t/C$ with $\Delta t\approx 1/f_r$ the time between peaks (the capacitor law $i=C\,dv/dt$). The bridge has two peaks per cycle, hence half the ripple for the same $C$ and load.`,
-      caption: String.raw`Three cycles of the steady state: the grey sine is the AC source, the blue curve the rectifier output, found by simulating an ideal source, constant-drop diodes and an RC load. Switch between half-wave and bridge, change $C$ and the load: the ripple (orange band) shrinks as $1/C$, and for the same $C$ it is halved by the bridge. The right plot shows the ripple against $C$ for both rectifiers from the same simulation, with the dashed lines the estimate $I/(f_rC)$; the gold dot is the present setting.`,
-      scope: String.raw`Ideal sinusoidal source with no series resistance and fixed $0.7$ V diode drops; real supplies have transformer resistance that limits the charging pulse, and the smoothing estimate fails when $R_LC$ is not large compared with $1/f$.`,
-      credit: 'J. A. Fleming (thermionic diode), 1904; Graetz and Pollak (bridge), 1890s',
-      verify: true,
+      idea: String.raw`A diode conducts while the source can support the capacitor voltage and load current; during the off interval the resistor discharges the capacitor exponentially. For small ripple, $i=C\,dv/dt$ gives $\Delta V\approx I_{\mathrm{load}}\Delta t/C$, with nearly a full interval $\Delta t\approx1/f_r$ between charging peaks. The bridge doubles the peak frequency, so its ripple is roughly half in that limit; its extra diode drop also lowers the output level. The factor of two and the inverse-capacitance rule are approximations, not identities at arbitrary load.`,
+      caption: String.raw`Three cycles of the periodic steady solution are shown. The blue output follows the rectified sine during conduction and the exact RC exponential during discharge; no arbitrary warm-up interval is used. The orange band marks the analytic minimum and maximum. On the right, both exact-model ripple curves remain visible throughout the controls. Dashed estimates use peak output current $I_{pk}/(f_rC)$ and are drawn only where $R_LCf\ge3$; even there they are approximations. At small $RCf$ neither exact halving nor $1/C$ scaling should be expected.`,
+      scope: String.raw`Ideal floating sinusoidal source, fixed $0.7$ V diode drops and a parallel resistor–capacitor load. The bridge output is measured across its load. Source resistance/inductance, diode leakage and switching dynamics are omitted. The periodic envelope and turn-on/off angles are derived for this model; no measured supply is fitted.`,
+      credit: 'Circuit treatment: D. A. Steck, Analog and Digital Electronics, revision 1.0.10 (2026), §3.6; periodic-envelope calculation derived here',
+      verify: false,
       deps: ['circ-4.3'],
-      refs: ['Horowitz–Hill §1.6', 'Agarwal–Lang §16.5'],
+      refs: ['Steck, Analog and Digital Electronics, rev. 1.0.10 (2026), §3.6, pp. 83–85'],
       tags: ['rectifier', 'ripple', 'power supply'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rectifier' },
       viz(v) {
         const VD = 0.7;
-        const sim = (type, Vp, RL, C, f) => {
-          const per = 400, dt = 1 / f / per, out = [], vin = [], dec = Math.exp(-dt / (RL * C));
-          let vc = 0;
-          for (let k = 0; k < 6 * per; k++) {
-            const x = Vp * Math.sin(2 * Math.PI * f * k * dt), r = type === 'half' ? Math.max(x - VD, 0) : Math.max(Math.abs(x) - 2 * VD, 0);
-            vc = r > vc ? r : vc * dec;
-            if (k >= 3 * per) { out.push(vc); vin.push(x); }
-          }
-          return { out, vin, dt };
-        };
-        const ripple = (o) => Math.max(...o) - Math.min(...o);
+        const sim = rectifierEnvelope;
         const s = v.stage({ x: [0, 3], y: [-1, 1], axes: 'box', gutter: true, height: 320, weight: 1.3, xlabel: 'time (cycles)', ylabel: 'voltage (V)', title: 'steady-state output' });
         const sr = v.stage({ x: [1e-5, 1e-2], y: [0.01, 30], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, weight: 0.85, xlabel: '$C$ (F)', ylabel: 'ripple (V)', title: 'ripple against capacitance' });
         const kind = v.select('rectifier', [{ value: 'half', label: 'half-wave' }, { value: 'full', label: 'full-wave bridge' }], 'half');
@@ -238,24 +229,27 @@ export default {
           s.setView([0, 3], [-Vp.value * 1.1, Vp.value * 1.1]);
           const ts = r.out.map((_, k) => (k * r.dt) / T);
           s.path(ts.map((t, k) => [t, r.vin[k]]), { color: 'faint', width: 1.6 });
-          const vmax = Math.max(...r.out), vmin = Math.min(...r.out);
+          const { vmax, vmin } = r;
           s.hband(vmin, vmax, { color: 'orange', alpha: 0.18 });
           s.path(ts.map((t, k) => [t, r.out[k]]), { color: 'accent', width: 2.6 });
           s.hline(0, { color: 'faint' });
+          const minRipple = Math.min(...['half', 'full'].map(kd => sim(kd, Vp.value, RL.value, 1e-2, f).ripple));
+          sr.setView([1e-5, 1e-2], [Math.max(1e-6, minRipple * .7), Vp.value * 1.3]);
           for (const kd of ['half', 'full']) {
             const Cl = [], Rl = [];
-            for (let e = -5; e <= -2 + 1e-9; e += 0.1) { const C = Math.pow(10, e); Cl.push([C, Math.max(ripple(sim(kd, Vp.value, RL.value, C, f).out), 1e-4)]); }
+            for (let e = -5; e <= -2 + 1e-9; e += 0.1) { const C = Math.pow(10, e); Cl.push([C, Math.max(sim(kd, Vp.value, RL.value, C, f).ripple, 1e-4)]); }
             sr.path(Cl, { color: kd === 'half' ? 'purple' : 'teal', width: 2.2 });
             const Ip = (Vp.value - (kd === 'half' ? VD : 2 * VD)) / RL.value, fr = kd === 'half' ? f : 2 * f;
-            sr.fn((C) => Ip / (fr * C), { domain: [1e-5, 1e-2], color: kd === 'half' ? 'purple' : 'teal', width: 1.2, dash: true, alpha: 0.8 });
+            const estimateMin = Math.max(1e-5, 3 / (RL.value * f));
+            if (estimateMin <= 1e-2) sr.fn((C) => Ip / (fr * C), { domain: [estimateMin, 1e-2], color: kd === 'half' ? 'purple' : 'teal', width: 1.2, dash: true, alpha: 0.8 });
           }
-          const rp = ripple(r.out);
+          const rp = r.ripple;
           sr.dot(Cs.value, Math.max(rp, 1e-4), { color: 'gold', r: 6.5 });
           const Vavg = r.out.reduce((a, b) => a + b, 0) / n, fr = kind.value === 'half' ? f : 2 * f, Ipk = (Vp.value - (kind.value === 'half' ? VD : 2 * VD)) / RL.value;
           info = { rp, est: Ipk / (fr * Cs.value), Vavg, vmax, vmin, fr, tau: RL.value * Cs.value * f };
         });
         v.legend([['faint', 'AC source'], ['accent', 'rectified, smoothed'], ['orange', 'ripple'], ['purple', 'half-wave'], ['teal', 'bridge']]);
-        v.readout(() => info && `Ripple frequency ${info.fr} Hz. Simulated ripple $${v.fix(info.rp, 3)}$ V (output between $${v.fix(info.vmin, 2)}$ and $${v.fix(info.vmax, 2)}$ V); estimate $I/(f_rC) = ${v.fix(info.est, 3)}$ V. $R_LCf = ${v.fix(info.tau, 1)}$${info.tau < 3 ? ' (too small for the estimate to be accurate)' : ''}.`);
+        v.readout(() => info && `Ripple frequency ${info.fr} Hz. Exact-model ripple $${v.fix(info.rp, 3)}$ V (output between $${v.fix(info.vmin, 2)}$ and $${v.fix(info.vmax, 2)}$ V); peak-current estimate $I_{pk}/(f_rC) = ${v.fix(info.est, 3)}$ V. $R_LCf = ${v.fix(info.tau, 1)}$${info.tau < 3 ? ' (too small for the estimate to be accurate)' : ''}.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.6

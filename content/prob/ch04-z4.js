@@ -1,3 +1,4 @@
+import {arcsineCdf,arcsineBinDensity,plotStepCdf} from './ch04-exchangeability.shared.js';
 // Probability: Theory and Examples (Durrett) — Chapter 4, part Z4: ballot theorem and arcsine laws for simple random walk (§4.9.2-4.9.6)
 import { clampN, cornerIn, u2n, logChoose, srw, fr } from './ch04-z.shared.js';
 
@@ -125,13 +126,13 @@ The law is symmetric about $n$ and U-shaped: its largest values are at the two e
       num: '4.9.5',
       kind: 'Theorem',
       name: 'Arcsine law for the last visit to 0',
-      statement: String.raw`For the symmetric simple random walk, the last visit to $0$ before time $2n$ satisfies, for every $0<a<b<1$,
+      statement: String.raw`For the symmetric simple random walk started at $S_0=0$, the last visit to $0$ at or before time $2n$ (including time $0$), denoted $L_{2n}=\max\{0\le j\le2n:S_j=0\}$, satisfies, for every $0<a<b<1$,
 $$P\Big(a\le\frac{L_{2n}}{2n}\le b\Big)\ \longrightarrow\ \int_a^b\frac{dx}{\pi\sqrt{x(1-x)}}=\frac2\pi\big(\arcsin\sqrt b-\arcsin\sqrt a\big).$$
 The limit density $1/(\pi\sqrt{x(1-x)})$ is unbounded at both $0$ and $1$.`,
       idea: String.raw`By 4.9.4, $P(L_{2n}=2k)=u_{2k}u_{2n-2k}$, and the local limit for the simple walk (3.1.2, Stirling) gives $u_{2j}\sim1/\sqrt{\pi j}$. For $k=xn$ the product is $\sim\frac1{\pi n\sqrt{x(1-x)}}$, a Riemann sum for $\int dx/(\pi\sqrt{x(1-x)})$ with mesh $1/n$. The result is counter-intuitive: the walk is most likely to have last visited $0$ very early or very late, and the chance of $L_{2n}/2n$ lying in $(0.45,0.55)$ is only about $6\%$.`,
-      caption: String.raw`Seeded simulation of the last zero of walks of length $2n$ ($n$ on the slider, 6000 walks). Left: the histogram of $L_{2n}/2n$ against the arcsine density (red); the dashed grey line is the uniform density a naive guess would suggest. Middle: the empirical distribution function (accent), the exact discrete one (gold) and $\frac2\pi\arcsin\sqrt x$ (red). Right: the exact Kolmogorov distance between the discrete law and the arcsine law for every $n$ up to 1000 (log–log), computed from $u_{2k}u_{2n-2k}$; the marker is your $n$. (It decays only like $n^{-1/2}$: the discrete law has an atom of size $P(L_{2n}=0)=u_{2n}\approx1/\sqrt{\pi n}$ at each end, and the arcsine law has none.)`,
-      credit: 'P. Lévy, 1939 (Brownian motion); for random walks: P. Erdős & M. Kac, 1947; K. L. Chung & W. Feller, 1949',
-      verify: true,
+      caption: String.raw`Seeded simulation of the last zero of walks of length $2n$ ($n$ on the slider, 6000 walks). Left: the histogram of $L_{2n}/2n$ against the exact average arcsine density in the same 30 bins (red outlines); the dashed grey line is the uniform density a naive guess would suggest. Middle: the empirical distribution function (accent), the exact discrete one (gold) and $\frac2\pi\arcsin\sqrt x$ (red). Right: the exact Kolmogorov distance between the discrete law and the arcsine law at the sampled horizons from 5 to 1000 (log–log), computed from $u_{2k}u_{2n-2k}$; the marker is your $n$. (The distance is at least $u_{2n}\sim1/\sqrt{\pi n}$, because the discrete CDF has an atom of that size at zero while the limiting CDF is zero there.)`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorems 4.9.5–4.9.6, pp. 265–267'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.9.4', 'prob-3.1.2'],
       see: ['stoch-2.12'],
       tags: ['random walk', 'arcsine law'],
@@ -141,7 +142,7 @@ The limit density $1/(\pi\sqrt{x(1-x)})$ is unbounded at both $0$ and $1$.`,
         const A = v.stage({ x: [0, 1], y: [0, 3.5], height: 310, axes: 'box', gutter: true, xlabel: '$L_{2n}/2n$', title: 'density' });
         const B = v.stage({ x: [0, 1], y: [0, 1], height: 310, axes: 'box', gutter: true, xlabel: '$x$', title: 'distribution function' });
         const C = v.stage({ x: [5, 1000], xlog: true, y: [1e-4, 0.5], ylog: true, height: 310, axes: 'box', gutter: true, xlabel: '$n$', title: 'exact Kolmogorov distance' });
-        const asin = (x) => (2 / Math.PI) * Math.asin(Math.sqrt(clampN(x, 0, 1)));
+        const asin=arcsineCdf;
         const kd = (n) => { const law = lastZeroLaw(n); let c = 0, d = 0; for (let k = 0; k <= n; k++) { const x = k / n; d = Math.max(d, Math.abs(c - asin(x)), Math.abs(c + law[k] - asin(x))); c += law[k]; } return d; };
         let curve = null, st = null;
         v.render(() => {
@@ -151,13 +152,13 @@ The limit density $1/(\pi\sqrt{x(1-x)})$ is unbounded at both $0$ and $1$.`,
           const bins = 30, E = Array.from({ length: bins + 1 }, (_, i) => i / bins), h = new Float64Array(bins);
           for (let k = 0; k <= n; k++) h[Math.min(bins - 1, Math.floor((k / n) * bins))] += cnt[k];
           const dens = Array.from(h, (c) => (c / K) * bins);
-          A.hist({ edges: E, counts: Array.from(h), density: dens }, { density: true, color: 'accent', fillAlpha: 0.3 });
-          A.fn((x) => 1 / (Math.PI * Math.sqrt(x * (1 - x))), { color: 'red', width: 2.4, domain: [0.004, 0.996] });
+          const limitBins=arcsineBinDensity(bins);A.setView([0,1],[0,1.12*Math.max(...dens,...limitBins,1)]);
+          A.hist({edges:E,counts:Array.from(h),density:dens},{density:true,color:'accent',fillAlpha:.3});
+          limitBins.forEach((p,i)=>A.rect(i/bins,0,(i+1)/bins,p,{color:'red',fill:false,width:1.5}));
           A.hline(1, { color: 'muted', dash: [4, 4], width: 1 });
-          const law = lastZeroLaw(n), emp = [], exact = []; let ce = 0, cx = 0;
-          for (let k = 0; k <= n; k++) { ce += cnt[k] / K; cx += law[k]; emp.push([k / n, ce]); exact.push([k / n, cx]); }
-          B.fn(asin, { color: 'red', width: 2.6, domain: [0, 1] }); B.path(exact, { color: 'gold', width: 2 }); B.path(emp, { color: 'accent', width: 1.6 });
-          if (!curve) { const ns = []; for (let m = 5; m <= 1000; m = Math.max(m + 1, Math.round(m * 1.12))) ns.push(m); curve = ns.map((m) => [m, kd(m)]); }
+          const law = lastZeroLaw(n);
+          B.fn(asin, { color: 'red', width: 2.6, domain: [0, 1] }); plotStepCdf(B,law,'gold');plotStepCdf(B,Array.from(cnt,c=>c/K),'accent');
+          if (!curve) { const ns = []; for (let m = 5; m <= 1000; m = Math.max(m + 1, Math.round(m * 1.12))) ns.push(m); if(ns.at(-1)!==1000)ns.push(1000);curve = ns.map((m) => [m, kd(m)]); }
           C.path(curve, { color: 'accent', width: 2.4 }); C.dot(n, kd(n), { color: 'gold', r: 6 }); C.vline(n, { color: 'gold', dash: true, width: 1 });
           let mid = 0; for (let k = 0; k <= n; k++) if (k / n >= 0.45 && k / n <= 0.55) mid += law[k];
           let ends = 0; for (let k = 0; k <= n; k++) if (k / n < 0.1 || k / n > 0.9) ends += law[k];
@@ -171,11 +172,11 @@ The limit density $1/(\pi\sqrt{x(1-x)})$ is unbounded at both $0$ and $1$.`,
       num: '4.9.6',
       kind: 'Theorem',
       name: 'Arcsine law for time spent above 0',
-      statement: String.raw`Let $\Pi_{2n}$ be the number of steps $k\le2n$ for which the walk lies above the axis, i.e. $\max(S_{k-1},S_k)>0$, for the symmetric simple random walk. Then $\Pi_{2n}$ is even and $P(\Pi_{2n}=2k)=u_{2k}u_{2n-2k}$, the same law as $L_{2n}$. Hence $\Pi_{2n}/2n$ converges in law to the arcsine law: $P(\Pi_{2n}/2n\le x)\to\frac2\pi\arcsin\sqrt x$.`,
+      statement: String.raw`Let $n\ge1$ be an integer and $\Pi_{2n}$ the number of steps $1\le k\le2n$ whose line segment has positive interior height, equivalently $\max(S_{k-1},S_k)>0$, for the symmetric simple random walk with $S_0=0$. Write $u_{2j}=P(S_{2j}=0)=\binom{2j}{j}2^{-2j}$. Then $\Pi_{2n}$ is even and $P(\Pi_{2n}=2k)=u_{2k}u_{2n-2k}$, for $k=0,\dots,n$, the same law as $L_{2n}$. Hence $\Pi_{2n}/2n$ converges in law to the arcsine law: $P(\Pi_{2n}/2n\le x)\to\frac2\pi\arcsin\sqrt x$ for $0\le x\le1$.`,
       idea: String.raw`The identity in law is proved by induction on $n$ (or by a bijection of paths): condition on the first return to $0$ at time $2j$; the walk until then is above or below the axis with probability $\frac12$ each, and what follows is a fresh walk of length $2n-2j$, which gives the recursion $P(\Pi_{2n}=2k)=\frac12\sum_{j\le n}f_{2j}\big[P(\Pi_{2n-2j}=2k-2j)+P(\Pi_{2n-2j}=2k)\big]+\frac12u_{2n}\big(\mathbf 1_{k=0}+\mathbf 1_{k=n}\big)$ with $f_{2j}$ the first-return law (the last term: no return by $2n$); $u_{2k}u_{2n-2k}$ satisfies the same recursion by 4.9.4 and the convolution identity for the $u$'s. The limit then follows from 4.9.5.`,
-      caption: String.raw`Left: eight seeded walks of length $2n$ with the stretches above the axis painted green and those below red; the fraction above is printed on each. Right: the histogram over 6000 walks of the fraction of time above $0$ (accent), the exact bars $u_{2k}u_{2n-2k}$ (red outlines) and the arcsine density (red curve). The walk spends most of its time on one side: a fraction near $\frac12$ is the *least* likely outcome, near $0$ or $1$ the most likely.`,
-      credit: 'P. Lévy, 1939 (Brownian motion); P. Erdős & M. Kac, 1947 and K. L. Chung & W. Feller, 1949 (random walks)',
-      verify: true,
+      caption: String.raw`Left: eight seeded walks of length $2n$ with the stretches above the axis painted green and those below red; their eight fractions appear as a list above the panel. Right: the histogram over 6000 walks of the fraction of time above $0$ (accent), the exact finite law $u_{2k}u_{2n-2k}$ accumulated into the same bins (gold outlines), and the average limiting arcsine density in those bins (red horizontal marks). The walk spends most of its time on one side: a fraction near $\frac12$ is the *least* likely outcome, near $0$ or $1$ the most likely.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (2019), Theorems 4.9.5–4.9.6, pp. 265–267'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.9.4', 'prob-4.9.5'],
       tags: ['random walk', 'arcsine law'],
       viz(v) {
@@ -185,27 +186,29 @@ The limit density $1/(\pi\sqrt{x(1-x)})$ is unbounded at both $0$ and $1$.`,
         const B = v.stage({ x: [0, 1], y: [0, 3.5], height: 330, axes: 'box', gutter: true, xlabel: '$\\Pi_{2n}/2n$', title: 'fraction of time above $0$' });
         let st = null;
         v.render(() => {
-          const n = nS.value, K = 6000, r = v.rng(seed * 6007 + n), cap = Math.max(6, Math.round(2.2 * Math.sqrt(2 * n)));
-          A.setView([0, 2 * n], [-cap, cap]); A.hline(0, { color: 'ink', width: 1.4 });
-          const frac = [];
-          for (let j = 0; j < 8; j++) {
-            const S = srw(r, 2 * n); let above = 0;
+          const n = nS.value, K = 6000, r = v.rng(seed * 6007 + n);
+          const paths=Array.from({length:8},()=>srw(r,2*n)), values=paths.flatMap(S=>Array.from(S)), low=Math.min(...values)-3,high=Math.max(...values)+5;
+          A.setView([0,2*n],[low,high]);A.hline(0,{color:'ink',width:1.4});
+          const frac=[];
+          for(let j=0;j<8;j++){
+            const S=paths[j];let above=0;
             for (let i = 1; i <= 2 * n; i++) { const up = Math.max(S[i - 1], S[i]) > 0; if (up) above++; A.line(i - 1, S[i - 1], i, S[i], { color: up ? 'green' : 'red', width: 1.2, alpha: 0.7 }); }
             frac.push(above / (2 * n));
           }
-          A.text(frac.map((f) => v.fix(f, 2)).join('  '), n, cap * 0.92, { size: 11, color: 'muted', align: 'center' });
+          A.text(frac.map((f) => v.fix(f, 2)).join('  '), n, high-1, { size: 11, color: 'muted', align: 'center' });
           const r2 = v.rng(seed * 33 + n), cnt = new Float64Array(n + 1);
           for (let j = 0; j < K; j++) { let s = 0, above = 0; for (let i = 1; i <= 2 * n; i++) { const p = s; s += r2() < 0.5 ? 1 : -1; if (Math.max(p, s) > 0) above++; } cnt[above / 2]++; }
           const law = lastZeroLaw(n), bins = 30, E = Array.from({ length: bins + 1 }, (_, i) => i / bins), h = new Float64Array(bins), hx = new Float64Array(bins);
           for (let k = 0; k <= n; k++) { const q = Math.min(bins - 1, Math.floor((k / n) * bins)); h[q] += cnt[k]; hx[q] += law[k]; }
-          B.hist({ edges: E, counts: Array.from(h), density: Array.from(h, (c) => (c / K) * bins) }, { density: true, color: 'accent', fillAlpha: 0.3 });
-          for (let q = 0; q < bins; q++) B.rect(q / bins, 0, (q + 1) / bins, hx[q] * bins, { fill: false, color: 'red', width: 1.3, stroke: true });
-          B.fn((x) => 1 / (Math.PI * Math.sqrt(x * (1 - x))), { color: 'red', width: 2, domain: [0.004, 0.996], alpha: 0.7 });
+          const dens=Array.from(h,c=>c/K*bins),limitBins=arcsineBinDensity(bins);B.setView([0,1],[0,1.12*Math.max(...dens,...Array.from(hx,c=>c*bins),...limitBins)]);
+          B.hist({edges:E,counts:Array.from(h),density:dens},{density:true,color:'accent',fillAlpha:.3});
+          for (let q = 0; q < bins; q++) B.rect(q / bins, 0, (q + 1) / bins, hx[q] * bins, { fill: false, color: 'gold', width: 1.5, stroke: true });
+          limitBins.forEach((p,i)=>B.line(i/bins,p,(i+1)/bins,p,{color:'red',width:2}));
           let mid = 0, ends = 0, simMid = 0, simEnds = 0;
           for (let k = 0; k <= n; k++) { const x = k / n; if (x >= 0.4 && x <= 0.6) { mid += law[k]; simMid += cnt[k] / K; } if (x < 0.1 || x > 0.9) { ends += law[k]; simEnds += cnt[k] / K; } }
           st = { n, mid, ends, simMid, simEnds };
         });
-        v.legend([['accent', 'simulation', { area: true }], ['red', 'exact $u_{2k}u_{2n-2k}$ (binned) and arcsine density'], ['green', 'above'], ['red', 'below']]);
+        v.legend([['accent', 'simulation', { area: true }], ['gold', 'exact discrete law (binned)'],['red','average arcsine density in each bin'], ['green', 'above'], ['red', 'below']]);
         v.readout(() => st && `$n=${st.n}$: $P(0.4\\le\\Pi/2n\\le0.6)=${v.fix(st.mid, 3)}$ (simulated $${v.fix(st.simMid, 3)}$) but $P(\\Pi/2n<0.1\\text{ or }>0.9)=${v.fix(st.ends, 3)}$ (simulated $${v.fix(st.simEnds, 3)}$).`);
       },
     },

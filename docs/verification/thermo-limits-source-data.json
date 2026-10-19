@@ -1,0 +1,149 @@
+{
+  "reviewed": "2026-10-18",
+  "scope": "Transcribed primary reference values; hash identifies this review snapshot, not remote HTML.",
+  "noble_gases": {
+    "He": {
+      "mass_u": 4.002602,
+      "Sstandard_J_mol_K": 126.153,
+      "uncertainty": 0.002,
+      "T_K": 298.15,
+      "P_Pa": 100000,
+      "reference": "Cox, Wagman and Medvedev (1984), CODATA review",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7440597&Mask=1"
+    },
+    "Ne": {
+      "mass_u": 20.1797,
+      "Sstandard_J_mol_K": 146.328,
+      "uncertainty": 0.003,
+      "T_K": 298.15,
+      "P_Pa": 100000,
+      "reference": "Cox, Wagman and Medvedev (1984), CODATA review",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7440019&Mask=1"
+    },
+    "Ar": {
+      "mass_u": 39.948,
+      "Sstandard_J_mol_K": 154.846,
+      "uncertainty": 0.003,
+      "T_K": 298.15,
+      "P_Pa": 100000,
+      "reference": "Cox, Wagman and Medvedev (1984), CODATA review",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7440371&Mask=1"
+    },
+    "Kr": {
+      "mass_u": 83.798,
+      "Sstandard_J_mol_K": 164.085,
+      "uncertainty": 0.003,
+      "T_K": 298.15,
+      "P_Pa": 100000,
+      "reference": "Cox, Wagman and Medvedev (1984), CODATA review",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7439909&Mask=1"
+    },
+    "Xe": {
+      "mass_u": 131.293,
+      "Sstandard_J_mol_K": 169.685,
+      "uncertainty": 0.003,
+      "T_K": 298.15,
+      "P_Pa": 100000,
+      "reference": "Cox, Wagman and Medvedev (1984), CODATA review",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7440633&Mask=1"
+    }
+  },
+  "diatomic": {
+    "h2": {
+      "Be_we_wexe_cm-1": [
+        60.853,
+        4401.213,
+        121.336
+      ],
+      "reference": "Huber and Herzberg compilation (data collected through Nov 1976), ground X state",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C1333740&Mask=1000"
+    },
+    "n2": {
+      "Be_we_wexe_cm-1": [
+        1.998241,
+        2358.57,
+        14.324
+      ],
+      "reference": "Huber and Herzberg compilation (data collected through Nov 1976), ground X state",
+      "url": "https://webbook.nist.gov/cgi/cbook.cgi?ID=C7727379&Mask=1000"
+    }
+  },
+  "janaf": {
+    "h2": {
+      "Pstandard_Pa": 100000,
+      "table_T_K_Cp_J_mol_K": [
+        [
+          100,
+          28.154
+        ],
+        [
+          200,
+          27.447
+        ],
+        [
+          298.15,
+          28.836
+        ],
+        [
+          500,
+          29.26
+        ],
+        [
+          1000,
+          30.205
+        ],
+        [
+          1500,
+          32.298
+        ],
+        [
+          2000,
+          34.28
+        ],
+        [
+          3000,
+          37.087
+        ]
+      ],
+      "url": "https://janaf.nist.gov/tables/H-050.html"
+    },
+    "n2": {
+      "Pstandard_Pa": 100000,
+      "table_T_K_Cp_J_mol_K": [
+        [
+          100,
+          29.104
+        ],
+        [
+          200,
+          29.107
+        ],
+        [
+          298.15,
+          29.124
+        ],
+        [
+          500,
+          29.58
+        ],
+        [
+          1000,
+          32.697
+        ],
+        [
+          1500,
+          34.843
+        ],
+        [
+          2000,
+          35.971
+        ],
+        [
+          3000,
+          37.03
+        ]
+      ],
+      "url": "https://janaf.nist.gov/tables/N-023.html"
+    }
+  }
+}

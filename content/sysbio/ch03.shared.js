@@ -4,8 +4,8 @@ import { hillAct, hillRep } from './ch01.shared.js';
 
 /** The eight FFL types: signs of the edges X→Y, Y→Z, X→Z. Coherent when s_XZ = s_XY · s_YZ. */
 export const FFL_TYPES = [
-  { id: 'C1', s: [1, 1, 1] }, { id: 'C2', s: [-1, -1, 1] }, { id: 'C3', s: [1, -1, -1] }, { id: 'C4', s: [-1, 1, -1] },
-  { id: 'I1', s: [1, -1, 1] }, { id: 'I2', s: [-1, 1, 1] }, { id: 'I3', s: [1, 1, -1] }, { id: 'I4', s: [-1, -1, -1] },
+  { id: 'C1', s: [1, 1, 1] }, { id: 'C2', s: [-1, 1, -1] }, { id: 'C3', s: [1, -1, -1] }, { id: 'C4', s: [-1, -1, 1] },
+  { id: 'I1', s: [1, -1, 1] }, { id: 'I2', s: [-1, -1, -1] }, { id: 'I3', s: [1, 1, -1] }, { id: 'I4', s: [-1, 1, 1] },
 ];
 export const fflType = (sxy, syz, sxz) => {
   const k = FFL_TYPES.find((t) => t.s[0] === sxy && t.s[1] === syz && t.s[2] === sxz);

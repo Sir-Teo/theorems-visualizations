@@ -1,4 +1,5 @@
 // Programming Languages & Types — Chapter 4: Types and type safety (items 4.10–4.13)
+import { reductionGraph, validatedTyped } from './reduction-audit.shared.js';
 import {
   derive, tStr, tSegs, tx, tyStr, tyEq, tyVarName, tySubst, parseTM, typeOf, tErase, tKey, tSize, tSubst, tmRun, tmStep, tIsValue, pathStats, genTyped, genPure,
   TB, TN, TF, TV, infer, normalizeTM, allSteps, drawSegs, drawChips, drawParseError, drawTreePx, layoutG, hitNode, segWidth, field, pxStage, wrapText,
@@ -87,50 +88,50 @@ Hence a closed well-typed term never gets stuck: if $\vdash t:T$ and $t\to^{*}t'
     {
       num: '4.11', kind: 'Theorem', name: 'Strong normalization (Tait)',
       statement: String.raw`In the simply typed $\lambda$-calculus every well-typed term is **strongly normalizing**: if $\Gamma\vdash t:T$ then every sequence of $\beta$-reductions starting from $t$ is finite (under any strategy, anywhere in the term). In particular every well-typed term has a normal form, which is unique (3.5), and evaluation always terminates. The same holds with the constants of 4.1 added.`,
-      idea: String.raw`Termination cannot be proved by induction on the term, because a $\beta$-step can make the term bigger: $(\lambda x.\,x\,x)\,u$ duplicates $u$. Tait's method strengthens the induction hypothesis: define by recursion on the *type* a set $R_T$ of terms (“reducible at $T$”): at a base type, the strongly normalizing terms; at $T_1\to T_2$, the terms that send every reducible $T_1$ argument to a reducible $T_2$ result. Then show that reducible terms are strongly normalizing, and that every well-typed term, with its free variables replaced by reducible terms, is reducible, by induction on the typing derivation (the case of application is immediate from the definition at arrow type; abstraction uses the substitution lemma and a closure property of $R_T$). The argument is exactly where types enter: the untyped term $\Omega$ has no type, and cannot be placed in any $R_T$. Via the Curry–Howard correspondence this is what makes the logic of the simply typed calculus consistent, and the method has to be strengthened for stronger systems such as System F.`,
-      caption: String.raw`Random terms are generated and reduced by *every* strategy at once: for each term the longest and the shortest reduction path to normal form are computed exhaustively. In “typed” mode every point is finite (green: shortest path, blue: longest); in “untyped” mode some terms cannot be completed within the search limit (red marks at the top: reduction loops or grows). Click a point to see its term. Typed terms stay finite however you resample.`,
-      deps: ['pl-4.10'], refs: ['Pierce §12.1'], tags: ['normalization', 'termination'],
-      credit: 'W. W. Tait, 1967 (J. Symbolic Logic 32(2), “Intensional interpretations of functionals of finite type I”)',
-      scope: String.raw`Holds for the simply typed calculus (with the constants of 4.1). It fails as soon as general recursion, fixed points ($\mathtt{fix}$) or recursive types are added. The sampled path lengths are for small random terms; the theorem gives no bound that is feasible to compute in general (the lengths can be enormously large, beyond any fixed tower of exponentials in the size of the term; quoted from memory).`,
-      verify: true,
+      idea: String.raw`Termination cannot be proved by induction on the term, because a β-step can copy its argument: $(\lambda x{:}A.\,f\,x\,x)\,u$ duplicates $u$ when $f:A\to A\to B$. Tait's method strengthens the induction hypothesis: define by recursion on the *type* a set $R_T$ of terms (“reducible at $T$”): at a base type, the strongly normalizing terms; at $T_1\to T_2$, the terms that send every reducible $T_1$ argument to a reducible $T_2$ result. Then show that reducible terms are strongly normalizing, and that every well-typed term, with its free variables replaced by reducible terms, is reducible, by induction on the typing derivation (the case of application is immediate from the definition at arrow type; abstraction uses the substitution lemma and a closure property of $R_T$). The argument is exactly where types enter: the untyped term $\Omega$ has no type, and cannot be placed in any $R_T$. Via the Curry–Howard correspondence this is what makes the logic of the simply typed calculus consistent, and the method has to be strengthened for stronger systems such as System F.`,
+      caption: String.raw`For each generated term, explore its full β/primitive-reduction graph within explicit size, depth and state budgets. A complete acyclic graph gives exact shortest (green) and longest (blue) path lengths for that term. Red marks certify a discovered reduction cycle; orange marks mean only that a resource budget was reached. Click a point for its term and status. Typed samples are independently type checked before admission; the experiment illustrates, and does not prove, the normalization theorem.`,
+      deps: ['pl-4.10'], refs: ['Girard–Lafont–Taylor, Proofs and Types, §§6.1–6.3, pp.41–45; §7.2, p.48'], tags: ['normalization', 'termination'],
+      credit: 'Tait’s reducibility method, as attributed and fully proved in Girard–Lafont–Taylor, Proofs and Types, chapter6',
+      scope: String.raw`The theorem concerns arbitrary full β-reduction, including under λ, for simply typed terms. The shown Bool/Nat extension uses only terminating conditionals and arithmetic primitives, covered by the reducibility extension to System T (Girard–Lafont–Taylor, chapter7); the graph also counts these primitive steps. General recursion and unrestricted recursive type equations can destroy normalization. A cutoff is inconclusive, and may be caused by depth, state count or term size. No practical global complexity bound is claimed here.`,
       viz(v) {
         const s = v.stage({ x: [0, 40], y: [0, 20], axes: 'box', gutter: true, full: true, height: 330, xlabel: 'term size (nodes)', ylabel: 'reduction steps to normal form', title: 'Reduction path lengths of random terms' });
-        let seed = 1, data = [], sel = null, ymax = 20;
+        let seed = 1, data = [], sel = null, ymax = 20, cache='', rejected=0;
         const mode = v.select('Terms', [{ value: 'typed', label: 'random well-typed' }, { value: 'untyped', label: 'random untyped' }], 'typed', { onChange: () => { sel = null; v.invalidate(); } });
-        const size = v.slider('largest size', 8, 36, 24, { step: 1, int: true });
+        const size = v.slider('generation size budget', 8, 36, 24, { step: 1, int: true });
         const cnt = v.slider('terms', 20, 160, 80, { step: 10, int: true });
         v.button('Resample', () => { seed++; sel = null; });
         s.onClick((x, y) => {
           let best = null, bd = 18;
-          for (const d of data) for (const yy of [d.y, d.y0]) { if (yy == null) continue; const q = Math.hypot(s.X(d.x) - s.X(x), s.Y(yy) - s.Y(y)); if (q < bd) { bd = q; best = d; } }
+          for (let i=0;i<data.length;i++) for (const yy of [data[i].y,data[i].y0]) { if (yy == null) continue; const q = Math.hypot(s.X(data[i].x) - s.X(x), s.Y(yy) - s.Y(y)); if (q < bd) { bd = q; best = i; } }
           sel = best; v.invalidate();
         });
         v.render(() => {
-          const r = v.rng(seed * 104729 + (mode.value === 'typed' ? 1 : 2) + size.value * 13), pts = [];
-          for (let i = 0; i < cnt.value; i++) {
-            const n = 4 + Math.floor(r() * (size.value - 3));
-            const t = mode.value === 'typed' ? genTyped(r, r.pick([TN, TB, TN]), [], n) : genPure(r, Math.max(3, Math.round(n * 0.7)));
-            const p = pathStats(t, mode.value === 'typed' ? { cap: 2500, maxSize: 260 } : { cap: 1500, maxDepth: 60, maxSize: 120 });
-            pts.push({ t, x: tSize(t), cut: !!p.cut, y: p.cut ? null : p.max, y0: p.cut ? null : p.min });
+          const k=[seed,mode.value,size.value,cnt.value].join('|');
+          if(k!==cache){cache=k;sel=null;rejected=0;const r=v.rng(seed*104729+(mode.value==='typed'?1:2)+size.value*13),pts=[];
+            for(let i=0;i<cnt.value;i++){
+              const n=4+Math.floor(r()*(size.value-3)),g=mode.value==='typed'?validatedTyped(r,r.pick([TN,TB,TN]),n):{term:genPure(r,Math.max(3,Math.round(n*.7))),rejected:0},t=g.term;
+              rejected+=g.rejected;const p=reductionGraph(t,mode.value==='typed'?{cap:2500,maxSize:260,maxDepth:200}:{cap:1500,maxDepth:60,maxSize:120});
+              pts.push({t,x:tSize(t),cut:p.status!=='complete',status:p.status,limits:p.limits,states:p.states,y:p.status==='complete'?p.max:null,y0:p.status==='complete'?p.min:null});
+            }data=pts;
           }
-          const fin = pts.filter((d) => !d.cut);
+          const fin = data.filter((d) => !d.cut);
           ymax = Math.max(10, ...fin.map((d) => d.y)) * 1.15;
-          for (const d of pts) if (d.cut) d.yc = ymax * 0.94;
-          data = pts.map((d) => ({ ...d, y: d.cut ? d.yc : d.y }));
-          s.setView([0, Math.max(...pts.map((d) => d.x)) + 2], [0, ymax]);
+          for (const d of data) if (d.cut) d.y=ymax*.94;
+          s.setView([0, Math.max(...data.map((d) => d.x)) + 2], [0, ymax]);
           for (const d of data) {
-            if (d.cut) s.dot(d.x, d.y, { r: 5, color: 'red', hollow: true });
+            if (d.cut) s.dot(d.x, d.y, { r: 5, color: d.status==='cycle'?'red':'orange', hollow: true });
             else { s.dot(d.x, d.y0, { r: 3.5, color: 'green', hollow: true }); s.dot(d.x, d.y, { r: 4, color: 'accent' }); if (d.y > d.y0) s.line(d.x, d.y0, d.x, d.y, { color: 'faint', width: 1 }); }
           }
-          if (sel) { const q = data.find((d) => d === sel || d.t === sel.t); if (q) s.dot(q.x, q.y, { r: 9, color: 'gold', hollow: true }); }
+          if (sel!==null) { const q = data[sel]; if (q) s.dot(q.x, q.y, { r: 9, color: 'gold', hollow: true }); }
         });
-        v.legend([['accent', 'longest path (over all strategies)', { dot: true }], ['green', 'shortest path', { dot: true }], ['red', 'no normal form found within the search limit', { dot: true }]]);
+        v.legend([['accent', 'longest path: complete graph', { dot: true }], ['green', 'shortest path: complete graph', { dot: true }], ['red', 'cycle witness', { dot: true }],['orange','unknown: resource cutoff',{dot:true}]]);
         v.readout(() => {
           const fin = data.filter((d) => !d.cut), cut = data.length - fin.length;
-          let t = `$${fin.length}$ of $${data.length}$ terms normalise under every strategy; longest path seen: $${fin.length ? Math.max(...fin.map((d) => d.y)) : 0}$ steps; ${cut ? `**$${cut}$ terms did not finish** within the search limit` : 'none was cut off'}.`;
-          if (mode.value === 'typed') t += ' Typed terms are strongly normalizing (Tait), so a cut-off here could only be a size limit, never a loop.';
-          else t += ' Some untyped terms never reach a normal form, or grow without bound; that is why they cannot all be typed.';
-          if (sel) { const q = sel; t += `\nSelected: $${dTex(tStr(q.t).length > 120 ? tStr(q.t).slice(0, 118) + '…' : tStr(q.t))}$, size $${q.x}$${q.cut ? ', no normal form found' : `, paths from $${q.y0}$ to $${q.y}$ steps`}.`; }
+          const cycles=data.filter(d=>d.status==='cycle').length,unknown=data.filter(d=>d.status==='unknown').length;
+          let t = `Complete acyclic graphs: **${fin.length} of ${data.length}**, with exact path maxima up to **${fin.length?Math.max(...fin.map(d=>d.y)):0}** steps. Cycle witnesses: **${cycles}**. Unknown resource cutoffs: **${unknown}**. Budgets: ${mode.value==='typed'?'2,500 states, depth200, size260':'1,500 states, depth60, size120'} nodes.`;
+          if(mode.value==='typed')t+=` Every admitted term passed the type checker; ${rejected} rejected generator candidates. Strong normalization is the source theorem, not inferred from the sample.`;
+          else t+=' A cycle disproves strong normalization for that term, but does not rule out a different path to a normal form. A cutoff proves neither divergence nor absence of normal forms.';
+          if (sel!==null) { const q = data[sel]; t += `\nSelected: $${dTex(tStr(q.t).length > 120 ? tStr(q.t).slice(0, 118) + '…' : tStr(q.t))}$, size $${q.x}$: ${q.status==='complete'?`exact paths ${q.y0}–${q.y} steps`:q.status==='cycle'?'a reduction cycle was found':'unknown ('+q.limits.join(', ')+')'}, explored ${q.states} states.`; }
           return t;
         });
       },

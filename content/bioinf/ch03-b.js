@@ -244,26 +244,26 @@ export default {
         venue: 'Journal of Molecular Biology 215 (3): 403–410', doi: '10.1016/S0022-2836(05)80360-2',
       },
       introduces: ['bioinf-3.7'],
-      statement: String.raw`The paper presented BLAST, a method that approximates the best *ungapped* local alignments (maximal segment pairs, scored with a substitution matrix) between a query and a database far faster than the full dynamic programme: it lists the high-scoring words of the query, finds exact occurrences of them in the database, and extends each into a segment pair, then judges the result by the Karlin–Altschul statistics (a score's chance of arising at random is $Kmne^{-\lambda S}$). The authors report it to be at least an order of magnitude faster than existing tools of comparable sensitivity.`,
-      idea: String.raw`Before it, the practical choices were the exact but slow Smith–Waterman search (item 2.6) and fast but less sensitive heuristics such as FASTA. The paper's moves: score *words* against their neighbourhood so that conservative substitutions still seed a match, search the database for those words, extend from hits, and attach honest significance levels using the extreme-value statistics of items 3.4–3.6. The threshold $T$ is the sensitivity-versus-speed dial. It introduced the seed-and-extend scheme of item 3.7; the two-hit trigger came later, in 1997 (the paper reports about three times the speed).`,
-      caption: String.raw`A model of the paper's trade-off, built on the protein sequences of chapter 2, not a reconstruction of its tables (the paper's own data are not reproduced here). For each of the 91 within-family pairs (globins, cytochromes c, lysozymes, serine proteases, thioredoxins) we ask: does BLAST, with threshold $T$ and X-drop $X$, report an ungapped segment pair with $E$ below the cut-off, in a database of $10^6$ residues? The accent curve is the fraction of pairs found; the green dashed line is what a full Smith–Waterman search finds. Raising $T$ shrinks the neighbourhood (left), cuts the work (right) and loses distant homologues. Switch the word length or the two-hit rule to see how they move the curves.`,
-      scope: String.raw`This is a toy model: 91 family pairs from five families, the ungapped algorithm, BLOSUM62, and an operation count (word look-ups, hits and extension cells against the cells of the dynamic programme), not CPU time. The original paper's word length and threshold settings are not asserted here; both $w=3$ and $w=4$ are offered. The paper states the speed claim only in the abstract's terms ("at least an order of magnitude"); the numbers shown here are from this model.`,
+      statement: String.raw`The paper presented BLAST, a method that approximates the best *ungapped* local alignments (maximal segment pairs, scored with a substitution matrix) between a query and a database far faster than the full dynamic programme: it lists the high-scoring words of the query, finds exact occurrences of them in the database, and extends each into a segment pair, then judges the result by the Karlin–Altschul statistics (the asymptotic expected count is $E=Kmne^{-\lambda S}$, and the probability of at least one such random match is approximately $1-e^{-E}$). The authors report it to be an order of magnitude faster than existing tools of comparable sensitivity; this is an empirical comparison, not a complexity bound.`,
+      idea: String.raw`Exact dynamic programming and earlier heuristics provide the comparison: the paper specifically compares its speed and sensitivity with FASTP, rather than proving a universal ranking against every search method. The algorithm's main steps are: score *words* against their neighbourhood so that conservative substitutions still seed a match, search the database for those words, extend from hits, and estimate significance under an explicit random-sequence null model using the extreme-value statistics of items 3.4–3.6. The threshold $T$ is the sensitivity-versus-speed dial. The 1990 method extends a single hit. The optional two-hit trigger below is a later-style toy variant, not a feature of this paper.`,
+      caption: String.raw`A model of the paper's trade-off, built on the protein sequences of chapter 2, not a reconstruction of its tables (the paper's own data are not reproduced here). For each of the 91 within-family pairs (globins, cytochromes c, lysozymes, serine proteases, thioredoxins) we ask: does BLAST, with threshold $T$ and X-drop $X$, report an ungapped segment pair with $E$ below the cut-off, in a database of $10^6$ residues? The accent curve is the fraction of pairs found; the green dashed line is what a full Smith–Waterman search finds. The left panel lists the highest-scoring neighbours and their full count. The right panel measures only a scan/extension proxy: dynamic-programming cells divided by (subject residues + word hits + extension score cells). Preprocessing, memory, implementation constants and CPU time are excluded; this ratio can be below one. Switch the word length or the two-hit rule to see how they move the curves.`,
+      scope: String.raw`This is a toy benchmark on 91 curated within-family pairs, not a measured search of a million-residue database. That database size enters only the illustrative E-value calculation; sensitivity means the fraction of these pairs meeting the cut-off, with no false-positive evaluation. The paper uses PAM-120 and protein defaults $w=4,T=17$ (pp. 407–408); this model uses BLOSUM62 and offers both word lengths. Its ungapped E-values use the tabulated BLOSUM62 constants and a finite-length adjustment; the gapped Smith–Waterman reference uses a different tabulated calibration. Neither is a proof of homology. Original p. 405 Eq. (1) distinguishes probability from expected count. Preprocessing omitted from the plotted proxy is explicitly part of the original cost model on p. 408.`,
       credit: 'Altschul, Gish, Miller, Myers & Lipman, 1990',
       deps: ['bioinf-2.6', 'bioinf-3.4'],
-      refs: [],
+      refs: ['Altschul et al. (1990), pp. 403–410: §2(b,c) pp. 404–405; Eq. (1) p. 405; Tables 1–3 and cost model pp. 407–409'],
       tags: ['paper', 'BLAST', 'database search'],
-      links: { doi: 'https://doi.org/10.1016/S0022-2836(05)80360-2', wikipedia: 'https://en.wikipedia.org/wiki/BLAST_(biotechnology)' },
-      verify: true,
+      links: { source: 'https://doc.aporc.org/attach/Course001Papers/altschuletal1990.pdf', doi: 'https://doi.org/10.1016/S0022-2836(05)80360-2', wikipedia: 'https://en.wikipedia.org/wiki/BLAST_(biotechnology)' },
+      verify: false,
       viz(v) {
         const wS = v.select('word length $w$', [{ value: 3, label: '3' }, { value: 4, label: '4' }], 3);
-        const Tt = v.slider('threshold $T$', 7, 24, 11, { int: true });
+        const Tt = v.slider('threshold $T$', 12, 24, 17, { int: true });
         const Xs = v.slider('X-drop $X$', 5, 40, 15, { int: true });
         const two = v.toggle('two-hit rule', false);
         const ec = logSlider(v, 'E-value cut-off', 1e-4, 100, 0.01);
         const pos = v.slider('query word position', 1, 140, 16, { int: true });
         const sW = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, title: 'neighbourhood of one query word', minWidth: 250 });
         const sA = v.stage({ x: [7, 24], y: [0, 1], axes: 'box', gutter: true, height: 400, xlabel: 'threshold $T$', ylabel: 'fraction of the 91 pairs found', title: 'sensitivity', minWidth: 280 });
-        const sB = v.stage({ x: [7, 24], y: [1, 1000], ylog: true, axes: 'box', gutter: true, height: 400, xlabel: 'threshold $T$', ylabel: 'work saved (× fewer operations)', title: 'work against Smith–Waterman', minWidth: 280 });
+        const sB = v.stage({ x: [7, 24], y: [1, 1000], ylog: true, axes: 'box', gutter: true, height: 400, xlabel: 'threshold $T$', ylabel: 'DP cells / scan-extension proxy', title: 'scan/extension proxy (preprocessing excluded)', minWidth: 280 });
         const S = matFlat('blosum62'), PU = NCBI.blosum62, PG = NCBI.gapped62, NDB = 1e6;
         const pairs = homologPairs().map((p) => ({ ...p, q: seqOf(p.a), t: seqOf(p.b) }));
         for (const p of pairs) { p.sw = swScore(p.q, p.t, S, 12, 1); p.swE = expect(p.sw, PG, p.q.length, NDB); }
@@ -284,7 +284,7 @@ export default {
         };
         let info = null;
         v.render(() => {
-          const w = wS.value, Ts = w === 3 ? [7, 18] : [12, 24], X = Xs.value, tw = two.value, ecv = ec.value;
+          const w = wS.value, Ts = [12, 24], X = Xs.value, tw = two.value, ecv = ec.value;
           const curve = [], speed = [];
           for (let T = Ts[0]; T <= Ts[1]; T++) {
             const R = measure(w, T, X, tw);
@@ -292,27 +292,27 @@ export default {
             curve.push([T, f]); speed.push([T, R.sw / R.work]);
           }
           const swFound = pairs.filter((p) => p.swE <= ecv).length / pairs.length;
-          sA.setView([Ts[0], Ts[1]], [0, 1.02]); sB.setView([Ts[0], Ts[1]], [Math.min(1, ...speed.map((p) => p[1])) / 1.5, Math.max(...speed.map((p) => p[1])) * 2]);
+          sA.setView([Ts[0] - 0.4, Ts[1] + 0.4], [-0.04, 1.1]); sB.setView([Ts[0] - 0.4, Ts[1] + 0.4], [Math.min(1, ...speed.map((p) => p[1])) / 1.5, Math.max(...speed.map((p) => p[1])) * 2]);
           sA.hline(swFound, { color: 'green', dash: true, width: 2 }); sA.text('full Smith–Waterman', Ts[1] - 0.2, swFound + 0.035, { align: 'right', size: 12, color: 'green' });
           sA.path(curve, { color: 'accent', width: 2.6 }); sA.dots(curve, { r: 3.8, color: 'accent' }); sA.vline(Tt.value, { color: 'gold', width: 2 });
-          sB.hline(1, { color: 'muted', dash: true }); sB.hline(10, { color: 'faint', dash: true }); sB.text('order of magnitude', Ts[1] - 0.2, 12, { align: 'right', size: 11.5, color: 'muted' });
+          sB.hline(1, { color: 'muted', dash: true }); sB.hline(10, { color: 'faint', dash: true });
           sB.path(speed, { color: 'orange', width: 2.6 }); sB.dots(speed, { r: 3.8, color: 'orange' }); sB.vline(Tt.value, { color: 'gold', width: 2 });
           // neighbourhood of the chosen query word (the query is human β-globin)
-          const q = seqOf('HBB_HUMAN'), i = Math.min(pos.value, q.length - w + 1) - 1, word = q.slice(i, i + w), nb = neighborsOf(word, S, Tt.value, 200), shown = nb.slice(0, 12), top = shown.length ? shown[0].score : 1;
+          const q = seqOf('HBB_HUMAN'), i = Math.min(pos.value, q.length - w + 1) - 1, word = q.slice(i, i + w), nb = neighborsOf(word, S, Tt.value, Infinity), shown = nb.slice(0, 12), top = shown.length ? shown[0].score : 1;
           const wstr = PROT.HBB_HUMAN.seq.slice(i, i + w), selfScore = Array.from(word).reduce((t, c) => t + S[c * 20 + c], 0);
           sW.setView([0, 1], [0, 1]);
-          sW.text(`query word ${wstr} at position ${i + 1}: ${nb.length} neighbours with score ≥ ${Tt.value}`, 0.02, 0.96, { size: 12.5, color: 'ink' });
-          shown.forEach((q2, r) => { const y = 0.86 - r * 0.063, len = (q2.score / Math.max(top, 1)) * 0.5; sW.text(q2.word, 0.02, y, { size: 13, weight: 700, color: q2.word === wstr ? 'gold' : 'ink', baseline: 'middle' });
+          sW.text(`${wstr} at query position ${i + 1}`, 0.02, 0.96, { size: 12.5, color: 'ink' });
+          sW.text(`${nb.length} neighbours score ≥ ${Tt.value}`, 0.02, 0.91, { size: 12, color: 'muted' });
+          shown.forEach((q2, r) => { const y = 0.83 - r * 0.06, len = (q2.score / Math.max(top, 1)) * 0.5; sW.text(q2.word, 0.02, y, { size: 13, weight: 700, color: q2.word === wstr ? 'gold' : 'ink', baseline: 'middle' });
             sW.rect(0.2, y - 0.018, 0.2 + len, y + 0.018, { fill: q2.word === wstr ? 'gold' : 'accent', fillAlpha: 0.5, stroke: false }); sW.text(String(q2.score), 0.22 + len, y, { size: 11.5, color: 'muted', baseline: 'middle' }); });
-          if (nb.length > shown.length) sW.text(`… and ${nb.length - shown.length} more`, 0.02, 0.86 - shown.length * 0.063, { size: 11.5, color: 'muted', baseline: 'middle' });
-          if (!nb.length) sW.text('no word reaches the threshold (not even the query word itself)', 0.02, 0.8, { size: 12, color: 'red' });
+          if (nb.length > shown.length) sW.text(`… and ${nb.length - shown.length} more`, 0.02, 0.83 - shown.length * 0.06, { size: 11.5, color: 'muted', baseline: 'middle' });
+          if (!nb.length) sW.text('no word reaches this threshold', 0.02, 0.8, { size: 12, color: 'red' });
           info = { curve, speed, swFound, tt: Tt.value, w, tw, selfScore };
         });
-        v.legend([['accent', 'BLAST finds'], ['green', 'Smith–Waterman finds', { dash: true }], ['orange', 'operations saved'], ['gold', 'chosen $T$']]);
+        v.legend([['accent', 'BLAST finds'], ['green', 'Smith–Waterman finds', { dash: true }], ['orange', 'DP cells / scan-extension proxy'], ['gold', 'chosen $T$']]);
         v.readout(() => {
           const { curve, speed, swFound, tt, w, tw } = info, c = curve.find((p) => p[0] === tt), s = speed.find((p) => p[0] === tt);
-          if (!c) return `$T=${tt}$ is outside the range ${w === 3 ? '7–18' : '12–24'} computed for $w=${w}$: move the slider.`;
-          return `$w=${w}$, $T=${tt}$, ${tw ? 'two-hit' : 'one-hit'}: BLAST reports **${fx(100 * c[1], 0)}%** of the 91 family pairs at this cut-off, Smith–Waterman **${fx(100 * swFound, 0)}%** · the model needs **${fx(s[1], 0)}×** fewer operations than filling the dynamic-programming matrices\nthe 1990 abstract claims "an order of magnitude" speed-up at comparable sensitivity — in this model the speed-up is ${s[1] >= 10 ? 'at least that large' : 'smaller than that'}, and sensitivity ${c[1] >= swFound - 0.05 ? 'is comparable' : 'falls short (ungapped extension misses the gapped, distant pairs)'}`;
+          return `$w=${w}$, $T=${tt}$, ${tw ? 'two-hit toy variant' : 'one-hit'}: **${fx(100 * c[1], 1)}%** of the 91 family pairs pass this illustrative E-value cut-off; the gapped reference gives **${fx(100 * swFound, 1)}%**.\nDP cells / (subject residues + word hits + extension score cells) = **${fx(s[1], 2)}**. This excludes word-table construction and is not a CPU speed-up or a reproduction of the paper's benchmark.`;
         });
       },
     },

@@ -1,7 +1,7 @@
 // Vector Calculus — Chapter 4: Multiple integrals
 // Part 2 (4.7–4.11): polar/cylindrical/spherical integrals, the Gaussian integral, mass and moments, Pappus, Lebesgue's 1902 memoir.
 import {
-  tn, tf, simpson, polyArea, polyCentroid, inPoly, logInts, patch, add3, mul3, DEG, TAU,
+  tn, tf, simpson, gaussianExhaustion, sliceFunction, sliceExtrema, sliceDarboux, polyArea, polyCentroid, simplePolygon, polygonRevolutionVolume, polygonSweepArea, inPoly, logInts, patch, add3, mul3, DEG, TAU,
 } from './ch04.shared.js';
 
 const PI = Math.PI;
@@ -22,7 +22,7 @@ export default {
 
 Choose the system in which the region's description is simplest. For the unit ball $B$ all three give $\operatorname{vol}B=\tfrac{4\pi}{3}$, and $\iiint_B(x^2+y^2)\,dV=\tfrac{8\pi}{15}$.`,
       idea: String.raw`Each coordinate system is a $C^1$ map from a box of parameters, one-to-one off a set of zero volume (the axis, the pole), and 4.6 applies with $|\det|=r$ or $\rho^2\sin\varphi$: the cells of a coordinate grid are curved boxes whose size is the product of side lengths $dr$, $r\,d\theta$, $dz$ (or $d\rho$, $\rho\,d\varphi$, $\rho\sin\varphi\,d\theta$). In coordinates adapted to the ball the limits are constants, so the integral is a product of three one-variable integrals; in Cartesian coordinates the curved boundary has to be approximated by cubes, which converges slowly.`,
-      caption: String.raw`Left: a slice (the $xz$-plane) of the unit ball cut into cells by the chosen coordinates, with $N$ cells per variable; orange cells are the ones used in the midpoint sum. Right: the relative error of the midpoint sum for the volume (or the second integral) against $N$ on log axes, for all three systems. Cartesian cubes (counted by their centres) converge erratically at about the rate $1/N$; the adapted systems converge like $1/N^2$. For these integrands nothing depends on $\theta$, so the $\theta$-sum is done exactly ($2\pi$) and each adapted system uses $N^2$ cells.`,
+      caption: String.raw`Left: a slice (the $xz$-plane) of the unit ball cut into cells by the chosen coordinates, with $N$ cells per variable; orange cells are the ones used in the midpoint sum. Right: the relative error of the midpoint sum for the volume (or the second integral) against $N$ on log axes, for all three systems. Cartesian errors are erratic because cubes are accepted by their centres. The spherical midpoint sum has order $N^{-2}$; the cylindrical radial integrand has a square-root endpoint, giving a leading error of order $N^{-3/2}$. The grey power laws are comparison guides. Nothing depends on $\theta$, so its integral is exact ($2\pi$); in cylindrical coordinates the $z$-sum is exact too, leaving $N$ radial evaluations. Spherical coordinates use $N^2$ evaluations.`,
       deps: ['vcalc-4.6', 'vcalc-1.6'],
       refs: ['Marsden–Tromba §6.2', 'Schey ch. II'],
       tags: ['polar', 'cylindrical', 'spherical'],
@@ -97,8 +97,8 @@ Choose the system in which the region's description is simplest. For the unit ba
             E.path(curve(mm, w).map(([n, e]) => [n, Math.max(e, 1e-7)]), { color: col, width: mm === m ? 3 : 1.4, alpha: mm === m ? 1 : 0.55 });
           }
           const guide = (p, c) => E.path([[2, c * 2 ** -p], [64, c * 64 ** -p]], { color: 'muted', dash: true, width: 1 });
-          guide(1, 0.9); guide(2, 0.9);
-          E.text('$1/N$', 40, 0.9 / 40 * 1.5, { color: 'muted', size: 12 }); E.text('$1/N^2$', 40, 0.9 / 1600 * 0.4, { color: 'muted', size: 12 });
+          guide(1, 0.9); guide(1.5, 0.9); guide(2, 0.9);
+          E.text('$1/N$', 40, 0.9 / 40 * 1.5, { color: 'muted', size: 12 }); E.text('$1/N^{3/2}$', 30, 0.9 / 30 ** 1.5 * 1.3, { color: 'muted', size: 12 }); E.text('$1/N^2$', 40, 0.9 / 1600 * 0.4, { color: 'muted', size: 12 });
           info = { s: sum(m, w, N), ex: exact(w), N, m };
         });
         v.legend([['red', 'Cartesian'], ['blue', 'cylindrical'], ['green', 'spherical']]);
@@ -113,19 +113,18 @@ Choose the system in which the region's description is simplest. For the unit ba
       name: 'Gaussian integral via polar coordinates',
       statement: String.raw`$$\int_{-\infty}^{\infty}e^{-x^2}\,dx=\sqrt\pi.$$
 Equivalently, $\iint_{\R^2}e^{-(x^2+y^2)}\,dA=\pi$. Writing $I=\int_{-\infty}^\infty e^{-x^2}dx$ (finite, since $e^{-x^2}\le e^{1/4-|x|}$), Fubini gives $I^2=\iint_{\R^2}e^{-x^2-y^2}\,dA$ and polar coordinates evaluate the right-hand side as $\int_0^{2\pi}\!\int_0^\infty e^{-r^2}r\,dr\,d\theta=\pi$.`,
-      idea: String.raw`The one-variable integral has no elementary antiderivative, but its square is a two-variable integral of the rotation-invariant function $e^{-r^2}$, which polar coordinates (4.7) make elementary because the Jacobian $r$ supplies exactly the factor needed: $\int_0^R e^{-r^2}r\,dr=\tfrac12(1-e^{-R^2})$. Improper integrals are handled by exhaustion: the integrand is positive, so the integral over the square $[-R,R]^2$ (a product, equal to $(\int_{-R}^Re^{-x^2}dx)^2$ by 4.2) is squeezed between the integrals over the discs of radius $R$ and $\sqrt2R$ (which contain/are contained in it), and both disc integrals tend to $\pi$.`,
-      caption: String.raw`Drag $R$. Left: the surface $e^{-(x^2+y^2)}$ as a colour map, with the disc of radius $R$ (blue) and the square of half-side $R$ (orange). Right: the two integrals as functions of $R$. The square's value (orange) always lies between the disc of radius $R$ (blue) and the disc of radius $\sqrt2R$ (blue, dashed); both discs climb to $\pi$, so the square does as well, and $\sqrt{\text{square}}=\int_{-R}^Re^{-x^2}dx\to\sqrt\pi$. All values are computed by numerical integration (Simpson), not from the closed forms.`,
+      idea: String.raw`The one-variable integral has no elementary antiderivative, but its square is a two-variable integral of the rotation-invariant function $e^{-r^2}$, which polar coordinates (4.7) make elementary because the Jacobian $r$ supplies exactly the factor needed: $\int_0^R e^{-r^2}r\,dr=\tfrac12(1-e^{-R^2})$. Improper integrals are handled by exhaustion: the integrand is positive, so the integral over the square $[-R,R]^2$ (a product, equal to $(\int_{-R}^Re^{-x^2}dx)^2$ by 4.2) is squeezed between the integrals over the discs of radius $R$ and $\sqrt2R$ (the smaller disc lies inside the square, which lies inside the larger disc), and both disc integrals tend to $\pi$.`,
+      caption: String.raw`Drag $R$. Left: the surface $e^{-(x^2+y^2)}$ as a colour map, with the disc of radius $R$ (blue) and the square of half-side $R$ (orange). Right: the two integrals as functions of $R$. The square's value (orange) always lies between the disc of radius $R$ (blue) and the disc of radius $\sqrt2R$ (blue, dashed); both discs climb to $\pi$, so the square does as well, and $\sqrt{\text{square}}=\int_{-R}^Re^{-x^2}dx\to\sqrt\pi$. Disc values use the exact formula $\pi(1-e^{-R^2})$; the square uses Simpson quadrature with 800 panels. The five-decimal readout is rounded.`,
       deps: ['vcalc-4.7', 'vcalc-4.2'],
-      refs: ['Marsden–Tromba §6.4'],
-      credit: 'The value $\\sqrt\\pi$ goes back to Laplace and de Moivre’s era (18th century); the squaring-and-polar-coordinates evaluation is usually attributed to Poisson',
-      verify: true,
+      refs: ['Toronto MAT237 notes §4.5, Example 6 (author-written course notes)'],
+      links: { source: 'https://www.math.utoronto.ca/courses/mat237y1/20189/notes/Chapter4/S4.5.html' },
       tags: ['Gaussian', 'polar coordinates', 'improper integral'],
       viz(v) {
         const R = v.slider('radius $R$', 0.1, 3.2, 1.0, { step: 0.01 });
         const S = v.stage({ x: [-3.3, 3.3], y: [-3.3, 3.3], equal: true, axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 260, xlabel: 'x', ylabel: 'y', title: '$e^{-(x^2+y^2)}$ with the disc and the square' });
         const G = v.stage({ x: [0, 3.2], y: [0, 3.6], axes: 'box', gutter: true, height: 380, weight: 1.1, minWidth: 260, xlabel: 'R', title: 'integral over the disc and over the square' });
-        const disc = (r) => TAU * simpson((t) => t * Math.exp(-t * t), 0, r, 200);
-        const sqr = (r) => simpson((t) => Math.exp(-t * t), -r, r, 200) ** 2;
+        const disc = (r) => gaussianExhaustion(r).d;
+        const sqr = (r) => gaussianExhaustion(r).q;
         const curves = (() => {
           const rs = Array.from({ length: 161 }, (_, i) => (3.2 * i) / 160);
           return { rs, d: rs.map(disc), d2: rs.map((r) => disc(Math.SQRT2 * r)), q: rs.map(sqr) };
@@ -143,7 +142,7 @@ Equivalently, $\iint_{\R^2}e^{-(x^2+y^2)}\,dA=\pi$. Writing $I=\int_{-\infty}^\i
           G.vline(r, { color: 'gold', width: 1.2, dash: true });
           G.dot(r, disc(r), { color: 'blue', r: 4 }); G.dot(r, sqr(r), { color: 'orange', r: 5 }); G.dot(r, disc(Math.SQRT2 * r), { color: 'blue', r: 4, hollow: true });
           G.text('$\\pi$', 0.08, PI + 0.12, { color: 'green', size: 14 });
-          info = { d: disc(r), q: sqr(r), d2: disc(Math.SQRT2 * r), line: simpson((t) => Math.exp(-t * t), -r, r, 200) };
+          info = gaussianExhaustion(r);
         });
         v.legend([['blue', 'disc of radius $R$'], ['blue', 'disc of radius $\\sqrt2R$', { dash: true }], ['orange', 'square $[-R,R]^2$'], ['green', '$\\pi$']]);
         v.readout(() => `disc $=${tf(info.d, 5)}\\ \\le$ square $=${tf(info.q, 5)}\\ \\le$ disc$(\\sqrt2R)=${tf(info.d2, 5)}$ ; $\\pi=${tf(PI, 5)}$\n$\\int_{-R}^{R}e^{-x^2}dx=${tf(info.line, 5)}$ ; $\\sqrt\\pi=${tf(Math.sqrt(PI), 5)}$`);
@@ -236,55 +235,34 @@ Properties: the total torque of gravity about the centre of mass is zero (the la
       num: '4.10',
       kind: 'Theorem',
       name: 'Pappus’s centroid theorems',
-      statement: String.raw`Let $D$ be a bounded plane region with area $A$ and centroid at distance $d$ from a line $\ell$ in its plane that does not cut the interior of $D$. Then the solid obtained by revolving $D$ once about $\ell$ has volume
+      statement: String.raw`Let $D$ be a bounded plane region with area $A>0$, lying entirely in one closed half-plane determined by a line $\ell$ in its plane. If its area centroid is at distance $d$ from $\ell$, revolving $D$ once about $\ell$ generates a solid with volume
 $$V=2\pi d\,A.$$
-Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc length) at distance $d$ from $\ell$ lies on one side of $\ell$, the surface of revolution it sweeps has area $S=2\pi d\,L$. The hypothesis that $\ell$ does not cut the region (resp. curve) cannot be dropped.`,
-      idea: String.raw`Place $\ell$ as the line $x=a$ and use shells: a thin vertical strip of $D$ at distance $r=|x-a|$ sweeps a cylindrical shell of volume $2\pi r\,dA$, so $V=2\pi\iint_D|x-a|\,dA$. When $D$ lies on one side of $\ell$, $|x-a|=\pm(x-a)$ and the integral is $\pm2\pi\iint(x-a)\,dA=2\pi A(\bar x-a)$, by the definition of the centroid (4.9); that is $2\pi dA$. The curve version is the same computation with $\int\ldots\,ds$ in place of $\iint\ldots\,dA$. If $D$ straddles $\ell$ the two halves overlap after revolving and the signed integral no longer counts the volume of the solid.`,
-      caption: String.raw`Drag the five corners of the pentagon (keep it a simple polygon) and move the axis with the slider. Left: the region, its centroid (green), the axis, and the distance $d$. Right: the solid of revolution (drag to rotate). The readout compares $2\pi dA$ with an independent number: for volume, a sum of annulus areas over horizontal slices of the actual solid; for surface, a line integral $\int 2\pi|x-a|\,ds$ over the boundary. They agree to about $0.5\%$ for any shape when the axis stays on one side, and disagree as soon as the axis cuts the region.`,
+Likewise, a simple piecewise-$C^1$ plane curve of length $L>0$, lying on one side of $\ell$, sweeps a surface of area $S=2\pi d\,L$, where $d$ is the distance of its arc-length centroid from $\ell$. The curve is traversed once without retracing. The formulas require the one-side hypothesis; tangency to the axis is allowed.`,
+      idea: String.raw`Place the axis at $x=a$. On one side of it, rotating a point of the region gives a shell with volume factor $2\pi|x-a|$, with no overlap of distinct radii. Thus $V=2\pi\iint_D|x-a|\,dA=2\pi\bigl|\iint_D(x-a)\,dA\bigr|=2\pi A|\bar x-a|$. For the curve use $ds$ and its arc-length centroid. If the region straddles the axis, its signed moment can cancel; even the integral of the absolute distance may count overlapping shells more than once. The volume of the union must then be found by merging the radial intervals of each slice. A curve's sweep can also cover the same surface more than once.`,
+      caption: String.raw`Drag the five corners and move the axis; self-crossing or collapsed polygons show a correction prompt. Green marks the area centroid in volume mode and the arc-length centroid in surface mode. The right panel shows the revolved boundary (drag to rotate); its scale adapts to the region. Compare the centroid formula with the independently integrated union of annular slices, or the edge integral $\int2\pi|x-a|\,ds$. Polygon slices are integrated piecewise exactly up to roundoff. When the polygon straddles the axis the theorem does not apply: the solid volume counts overlaps once, while the edge integral counts swept sheets with multiplicity. Equality outside the hypotheses is not guaranteed.`,
       deps: ['vcalc-4.9'],
-      refs: ['Marsden–Tromba ch. 6'],
-      credit: 'Pappus of Alexandria (about 4th century AD); rediscovered by P. Guldin, Centrobaryca, 1640',
-      verify: true,
+      refs: ['NTNU TMA4100, Applications of Integration, Pappus’s Theorem (parts a–b)'],
+      links: { source: 'https://wiki.math.ntnu.no/tma4100/2013h/tema/applicationsofintegration' },
       tags: ['centroid', 'solids of revolution', 'history'],
       viz(v) {
         const mode = v.select('theorem', [{ value: 'vol', label: 'volume of the solid' }, { value: 'surf', label: 'area of the surface' }], 'vol');
         const aS = v.slider('axis position $a$', -1, 1.2, 0, { step: 0.01 });
         const S = v.stage({ x: [-1.6, 3.6], y: [-0.4, 2.6], equal: true, axes: 'box', gutter: true, height: 380, weight: 1.1, minWidth: 260, xlabel: 'x', ylabel: 'y', title: 'the region and the axis $x=a$' });
-        const S3 = v.stage({ x: [-2.3, 2.3], y: [-2, 2.3], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'solid of revolution' });
+        const S3 = v.stage({ x: [-2.3, 2.3], y: [-2, 2.3], equal: true, axes: false, height: 380, weight: 1, minWidth: 260, title: 'revolved boundary' });
         const sc = v.scene3(S3, { yaw: -0.7, pitch: 0.28, axis: 0, lim: 2, hint: true, axes: false });
         const H = [[1.0, 0.2], [2.5, 0.5], [2.9, 1.6], [1.8, 2.1], [1.1, 1.2]].map((p, i) => S.handle(p[0], p[1], { color: 'accent', label: String(i + 1), constrain: { x: [-1.5, 3.5], y: [-0.3, 2.5] } }));
-        const volNum = (P, a) => {
-          // slices y = const: radial intervals |x-a| of the polygon, folded and united; annulus areas
-          const ys = P.map((p) => p[1]), y0 = Math.min(...ys), y1 = Math.max(...ys), NY = 160, NX = 500;
-          const xs = P.map((p) => p[0]), x0 = Math.min(...xs) - 0.01, x1 = Math.max(...xs) + 0.01;
-          let V = 0;
-          for (let j = 0; j < NY; j++) {
-            const y = y0 + ((y1 - y0) * (j + 0.5)) / NY, bins = new Set();
-            const rr = [];
-            for (let i = 0; i < NX; i++) { const x = x0 + ((x1 - x0) * (i + 0.5)) / NX; if (inPoly(P, x, y)) rr.push(Math.abs(x - a)); }
-            // area of the union of rings in rho^2: sort distinct rho (spacing dx) and merge
-            const dx = (x1 - x0) / NX, iv = rr.map((r) => [Math.max(0, r - dx / 2), r + dx / 2]).sort((p, q) => p[0] - q[0]);
-            let cur = null, area = 0;
-            for (const [lo, hi] of iv) {
-              if (cur && lo <= cur[1] + 1e-9) cur[1] = Math.max(cur[1], hi);
-              else { if (cur) area += cur[1] ** 2 - cur[0] ** 2; cur = [lo, hi]; }
-            }
-            if (cur) area += cur[1] ** 2 - cur[0] ** 2;
-            V += PI * area * ((y1 - y0) / NY);
-          }
-          return V;
-        };
-        const surfNum = (P, a) => {
-          let s = 0;
-          for (let i = 0; i < P.length; i++) {
-            const p = P[i], q = P[(i + 1) % P.length], len = Math.hypot(q[0] - p[0], q[1] - p[1]), m = 200;
-            for (let k = 0; k < m; k++) { const t = (k + 0.5) / m; s += TAU * Math.abs(p[0] + t * (q[0] - p[0]) - a) * (len / m); }
-          }
-          return s;
-        };
+        const volNum = polygonRevolutionVolume, surfNum = polygonSweepArea;
         let info = {};
         v.render(() => {
           const P = H.map((h) => [h.x, h.y]), a = aS.value;
+          if (!simplePolygon(P)) {
+            S.path(P.concat([P[0]]), { color: 'red', width: 2 });
+            S.vline(a, { color: 'red', width: 2.5 });
+            S.text('Separate crossed or collapsed corners', 1, 1.1, { color: 'red', align: 'center', size: 13 });
+            sc.begin(); sc.flush();
+            S3.text('Correct the polygon to show its sweep', 0, 0, { color: 'red', align: 'center', size: 13 });
+            info = { invalid: true }; return;
+          }
           const A = Math.abs(polyArea(P)), cen = polyCentroid(P);
           let L = 0, cx = 0, cy = 0;
           for (let i = 0; i < P.length; i++) { const p = P[i], q = P[(i + 1) % P.length], len = Math.hypot(q[0] - p[0], q[1] - p[1]); L += len; cx += (len * (p[0] + q[0])) / 2; cy += (len * (p[1] + q[1])) / 2; }
@@ -296,7 +274,10 @@ Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc lengt
           S.measure(a, c[1], c[0], c[1], 'd');
           // 3D
           sc.begin();
-          const NP = 40, pt = (x, y, ph) => [0.7 * (x - a) * Math.cos(ph), 0.7 * (x - a) * Math.sin(ph), 0.7 * (y - 1.2)];
+          const ys = P.map(p => p[1]), midY = (Math.min(...ys) + Math.max(...ys)) / 2;
+          const radius = Math.max(...P.map(p => Math.abs(p[0] - a))), halfHeight = (Math.max(...ys) - Math.min(...ys)) / 2;
+          const scale = 1.5 / Math.hypot(radius, halfHeight);
+          const NP = 40, pt = (x, y, ph) => [scale * (x - a) * Math.cos(ph), scale * (x - a) * Math.sin(ph), scale * (y - midY)];
           for (let i = 0; i < P.length; i++) {
             const p = P[i], q = P[(i + 1) % P.length];
             patch(sc, (u, ph) => pt(p[0] + u * (q[0] - p[0]), p[1] + u * (q[1] - p[1]), ph), [0, 1], [0, TAU], 1, NP, { fill: 'accent', fillAlpha: 0.1 });
@@ -308,10 +289,10 @@ Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc lengt
           const dV = Math.abs(cen[0] - a), dS = Math.abs(ctr[0] - a);
           info = { A, L, dV, dS, Vp: TAU * dV * A, Sp: TAU * dS * L, Vn: volNum(P, a), Sn: surfNum(P, a), cut: P.some((p) => p[0] > a) && P.some((p) => p[0] < a) };
         });
-        v.readout(() => (mode.value === 'vol'
+        v.readout(() => info.invalid ? '**Move the corners to make a simple polygon with nonzero area.**' : (mode.value === 'vol'
           ? `$A=${tf(info.A, 3)}$, $d=${tf(info.dV, 3)}$ : $2\\pi dA=${tf(info.Vp, 3)}$ ; solid computed by slicing: $V=${tf(info.Vn, 3)}$ ; ratio $${tf(info.Vp / info.Vn, 3)}$`
-          : `$L=${tf(info.L, 3)}$, $d=${tf(info.dS, 3)}$ : $2\\pi dL=${tf(info.Sp, 3)}$ ; line integral $\\int2\\pi|x-a|\\,ds=${tf(info.Sn, 3)}$ ; ratio $${tf(info.Sp / info.Sn, 3)}$`)
-          + (info.cut ? '\n**the axis cuts the region: the hypothesis fails**' : ''));
+          : `$L=${tf(info.L, 3)}$, $d=${tf(info.dS, 3)}$ : $2\\pi dL=${tf(info.Sp, 3)}$ ; swept area (overlaps counted) $\\int2\\pi|x-a|\\,ds=${tf(info.Sn, 3)}$ ; ratio $${tf(info.Sp / info.Sn, 3)}$`)
+          + (info.cut ? '\n**The polygon straddles the axis: Pappus’s one-side hypothesis fails.**' : ''));
       },
     },
 
@@ -323,28 +304,29 @@ Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc lengt
       paper: { authors: 'H. Lebesgue', year: 1902, title: 'Intégrale, Longueur, Aire', venue: 'Annali di Matematica Pura ed Applicata (3) 7: 231–359', doi: '10.1007/BF02420592' },
       introduces: ['pma-11.21', 'rca-2.21', 'pma-11.32a'],
       credit: 'H. Lebesgue, 1902 (doctoral thesis, published in Annali di Matematica Pura ed Applicata (3) 7, pp. 231–359)',
-      statement: String.raw`In this long memoir Lebesgue builds a theory of measure for sets of real numbers (and of $\R^n$) and, from it, a new integral. Instead of cutting the *domain* into small intervals as Riemann did, he cuts the *range* of a bounded function $f$ into bands $y_k\le f<y_{k+1}$ and adds $\sum_k y_k\,m(E_k)$, where $E_k=f^{-1}[y_k,y_{k+1})$ and $m$ is the measure. In modern terms the results include:
+      statement: String.raw`In this long memoir Lebesgue builds a theory of measure for sets of real numbers (and of $\R^n$) and, from it, a new integral. Instead of cutting the *domain* into small intervals as Riemann did, he cuts the *range* of a bounded function $f$ into bands $y_k\le f<y_{k+1}$ and adds $\sum_k y_k\,m(E_k)$, where $E_k=f^{-1}[y_k,y_{k+1})$ and $m$ is the measure. On a finite interval, the integration results (§§19–25) include the following in modern notation:
 
-(a) every bounded measurable function is integrable in this sense, the integral agrees with Riemann's whenever the latter exists, and it is defined for functions such as the indicator of the rationals, which is $0$ almost everywhere, so that its integral is $0$ (while Riemann's upper and lower sums stay $1$ and $0$);
+(a) every bounded measurable function on a set of finite measure is integrable in this sense, the integral agrees with Riemann's whenever the latter exists, and it is defined for functions such as the indicator of the rationals, which is $0$ almost everywhere, so that its integral is $0$ (on $[0,1]$, Riemann's upper and lower sums stay $1$ and $0$);
 
 (b) if bounded measurable functions $f_n\to f$ pointwise with $|f_n|\le K$ on a set of finite measure, then $\int f_n\to\int f$ (the bounded convergence theorem);
 
-(c) a bounded function is Riemann integrable exactly when its set of discontinuities has measure zero.
+The related modern Riemann criterion is: a bounded function on a compact interval is Riemann integrable exactly when its set of discontinuities has measure zero. The memoir uses the necessity of this condition in §20 to compare the two integrals.
 
 The memoir's later sections treat length of curves and area of surfaces by a similar limiting process.`,
-      idea: String.raw`Before 1902 the Riemann integral was well suited to continuous and piecewise continuous functions, but limits of integrable functions could fail to be integrable, so $\lim\int f_n=\int\lim f_n$ was hard to justify. Lebesgue's observation was that the sum $\sum y_k\,m(E_k)$ only requires the sets $E_k$ to have a size, so a theory of measure (countably additive, with measure zero sets negligible) gives an integral that is stable under pointwise limits. The memoir introduces measurable sets and the Lebesgue integral for bounded functions (pma-11.21, rca-2.21) and the bounded convergence theorem (pma-11.32a); the part on length and area, relating them to limits of polygons and polyhedra, belongs to the same programme and treats Plateau-type problems.`,
-      caption: String.raw`**Slicing.** Choose a function. Vertical slicing (Riemann) draws $m$ strips with sup/inf rectangles; horizontal slicing (Lebesgue) draws $m$ bands of the range and colours the points of the graph by band, with $m(E_k)$ read off from the sampling. The right panel shows how fast the upper-minus-lower gap closes against $m$: Lebesgue's gap is at most (range)$/m$ however wild $f$ is, Riemann's closes slowly for the oscillating $\sin(1/x)$. For the **rationals** the Riemann gap stays $1$ for every $m$ (exact: every interval contains rationals and irrationals) and the Lebesgue sums converge to $0$; only a model picture is possible, so the dots are the rationals $p/q$ with $q\le m$. In the **sequence** mode $f_n(x)=x^n$ on $[0,1]$: $f_n\to0$ except at $x=1$ and $0\le f_n\le1$, and $\int f_n=1/(n+1)\to0$. Functions are sampled at $20\,000$ points, so sums are accurate to about $10^{-3}$. This is an illustration of the memoir's ideas, not a reproduction of a figure from it (it has none of this kind).`,
+      idea: String.raw`Before 1902 the Riemann integral was well suited to continuous and piecewise continuous functions, but limits of integrable functions could fail to be integrable, so $\lim\int f_n=\int\lim f_n$ was hard to justify. Lebesgue's observation was that the sum $\sum y_k\,m(E_k)$ only requires the sets $E_k$ to have a size, so a theory of measure (countably additive, with measure zero sets negligible) gives a class of measurable functions closed under pointwise limits. Passing the limit through the integral additionally requires a hypothesis such as the uniform bound on a finite-measure domain in (b); the functions $n\mathbf1_{(0,1/n)}$ converge pointwise to $0$ on $[0,1]$ but their integrals stay $1$. The memoir introduces measurable sets and the Lebesgue integral for bounded functions (pma-11.21, rca-2.21) and the bounded convergence theorem (pma-11.32a); the part on length and area, relating them to limits of polygons and polyhedra, belongs to the same programme and treats Plateau-type problems.`,
+      caption: String.raw`**Slicing.** Vertical slicing draws genuine sup/inf rectangles, computed from analytic extrema, including all the infinitely many oscillations in the first cell of $\frac12(1+\sin(1/x))$ (value $1/2$ at $0$). Horizontal slicing colours sampled graph points by range band. On $[0,1]$, exact band measures give an upper-minus-lower gap at most (range)$/m$. The display estimates those measures from $20\,000$ midpoint samples: its blue numbers bracket the **sample mean**, and are not certified bounds on the integral. The orange Darboux bounds do bound the integral. The oscillatory graph itself is sampled and cannot show every oscillation near zero.
+
+For the **rationals**, the orange gap is exactly $1$; the blue bounds $0$ and $1/m$ use the fact that the rationals have measure zero, not numerical sampling. Dots show only rationals $p/q$ with $q\le m$. In **sequence** mode $f_n=x^n$: $f_n\to0$ for $x<1$, $f_n(1)=1$, $0\le f_n\le1$, and $\int f_n=1/(n+1)\to0$. These are illustrations of the ideas, not reproductions of the memoir's figures.`,
       deps: ['pma-6.1', 'vcalc-4.1'],
       see: ['pma-11.21', 'rca-2.21'],
-      refs: [],
-      links: { doi: 'https://doi.org/10.1007/BF02420592', wikipedia: 'https://en.wikipedia.org/wiki/Lebesgue_integration' },
-      verify: true,
+      refs: ['Lebesgue (1902), §§19–25, pp. 252–260; introduction pp. 231–235', 'Viaclovsky/Brown, MIT 18.125 Lecture 3, Theorem 0.1 (modern Riemann criterion)'],
+      links: { doi: 'https://doi.org/10.1007/BF02420592', source: 'https://zenodo.org/records/2313710/files/article.pdf' },
       tags: ['Lebesgue integral', 'measure', 'history'],
       viz(v) {
         const NS = 20000;
         const FUN = {
-          wavy: { label: 'smooth wave', f: (x) => 0.5 + 0.4 * Math.sin(6 * x) * Math.cos(2 * x) },
-          chirp: { label: '$\\tfrac12(1+\\sin\\tfrac1x)$', f: (x) => 0.5 + 0.5 * Math.sin(1 / Math.max(x, 1e-6)) },
+          wavy: { label: 'smooth wave', f: (x) => sliceFunction('wavy', x) },
+          chirp: { label: '$\\tfrac12(1+\\sin\\tfrac1x)$', f: (x) => sliceFunction('chirp', x) },
           rat: { label: 'indicator of the rationals', f: () => 0 },
           seq: { label: '$f_n=x^n$', f: (x) => x },
         };
@@ -360,18 +342,10 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
           const f = FUN[k].f, ys = new Float64Array(NS);
           let mn = Infinity, mx = -Infinity, s = 0;
           for (let i = 0; i < NS; i++) { const y = f((i + 0.5) / NS); ys[i] = y; mn = Math.min(mn, y); mx = Math.max(mx, y); s += y; }
+          if (k !== 'rat') [mn, mx] = sliceExtrema(k, 0, 1);
           return (cache[k] = { ys, mn, mx, I: s / NS });
         };
-        const riemann = (k, m) => {
-          const { ys } = samples(k); let lo = 0, up = 0;
-          for (let j = 0; j < m; j++) {
-            const a = Math.floor((j * NS) / m), b = Math.floor(((j + 1) * NS) / m);
-            let mn = Infinity, mx = -Infinity;
-            for (let i = a; i < b; i++) { if (ys[i] < mn) mn = ys[i]; if (ys[i] > mx) mx = ys[i]; }
-            lo += mn / m; up += mx / m;
-          }
-          return { lo, up };
-        };
+        const riemann = sliceDarboux;
         const lebesgue = (k, m) => {
           if (k === 'rat') return { lo: 0, up: 1 / m, cnt: [1] };
           const { ys, mn, mx } = samples(k), w = (mx - mn) / m || 1, cnt = new Array(m).fill(0);
@@ -387,6 +361,7 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
           const k = sel.value, m = mS.value, isSeq = k === 'seq', isRat = k === 'rat', n = nSeq.value;
           mS.el.hidden = isSeq; nSeq.el.hidden = !isSeq; way.el.hidden = isSeq;
           if (isSeq) {
+            B.setLabels('n');
             A.fn((x) => x ** n, { domain: [0, 1], n: 400, color: 'accent', width: 2.5, fill: true, base: 0 });
             A.hline(0, { color: 'green', width: 2 });
             B.setView([1, 60], [1e-3, 1.5]);
@@ -397,6 +372,7 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
             info = { seq: true, n, val: 1 / (n + 1) };
             return;
           }
+          B.setLabels('m');
           B.setTitle('upper sum minus lower sum');
           const T = samples(k), Lb = lebesgue(k, m), Rm = isRat ? { lo: 0, up: 1 } : riemann(k, m);
           if (isRat) {
@@ -410,9 +386,7 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
             const f = FUN[k].f;
             if (way.value === 'dom') {
               for (let j = 0; j < m; j++) {
-                const a = Math.floor((j * NS) / m), b = Math.floor(((j + 1) * NS) / m);
-                let mn = Infinity, mx = -Infinity;
-                for (let i = a; i < b; i++) { if (T.ys[i] < mn) mn = T.ys[i]; if (T.ys[i] > mx) mx = T.ys[i]; }
+                const [mn, mx] = sliceExtrema(k, j / m, (j + 1) / m);
                 A.rect(j / m, 0, (j + 1) / m, mx, { color: 'orange', width: 1, fill: 'orange', fillAlpha: 0.12 });
                 A.rect(j / m, 0, (j + 1) / m, mn, { color: 'blue', width: 1, fill: 'blue', fillAlpha: 0.3 });
               }
@@ -433,10 +407,10 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
           B.dot(m, Math.max(gR(m), 1e-6), { color: 'orange', r: 5 }); B.dot(m, gL(m), { color: 'blue', r: 5 });
           info = { m, Rm, Lb, I: isRat ? 0 : T.I, isRat, range: isRat ? 1 : T.mx - T.mn };
         });
-        v.legend([['orange', 'Riemann: upper − lower (domain strips)'], ['blue', 'Lebesgue: upper − lower (range bands)']]);
+        v.legend([['orange', 'Riemann: upper − lower (domain strips)'], ['blue', 'range bands: sampled gap (rationals exact)']]);
         v.readout(() => (info.seq
           ? `$n=${info.n}$: $\\int_0^1 x^n\\,dx=${tf(info.val, 4)}$, and $x^n\\to0$ for every $x<1$ with $|x^n|\\le1$.`
-          : `$m=${info.m}$ ; Riemann: $${tf(info.Rm.lo, 4)}\\le\\int f\\le${tf(info.Rm.up, 4)}$ (gap $${tf(info.Rm.up - info.Rm.lo, 4)}$) ; Lebesgue: $${tf(info.Lb.lo, 4)}\\le\\int f\\le${tf(info.Lb.up, 4)}$ (gap $\\le \\text{range}/m=${tf(info.range / info.m, 4)}$) ; $\\int f\\approx${tf(info.I, 4)}$`));
+          : `$m=${info.m}$ ; Darboux bounds: $${tf(info.Rm.lo, 4)}\\le\\int f\\le${tf(info.Rm.up, 4)}$ (gap $${tf(info.Rm.up - info.Rm.lo, 4)}$) ; ${info.isRat ? 'exact range-band bounds' : 'sample-mean bracket'}: $[${tf(info.Lb.lo, 4)},${tf(info.Lb.up, 4)}]$ (gap $${tf(info.Lb.up - info.Lb.lo, 4)}$) ; ${info.isRat ? 'integral' : 'sample mean'} $=${tf(info.I, 4)}$${info.isRat ? '' : ' ; band measures are sampled; no certified integral error.'}`));
       },
     },
   ],

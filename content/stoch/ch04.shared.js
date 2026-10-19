@@ -67,7 +67,7 @@ export function arborescences(P, r) {
   (function rec(k) {
     if (k === nonroot.length) { if (acyclic()) out.push(par.slice()); return; }
     const i = nonroot[k];
-    for (let j = 0; j < n; j++) if (j !== i && P[i][j] > 1e-12) { par[i] = j; rec(k + 1); }
+    for (let j = 0; j < n; j++) if (j !== i && P[i][j] > 0) { par[i] = j; rec(k + 1); }
     par[i] = -1;
   })(0);
   return out;

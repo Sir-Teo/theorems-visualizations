@@ -4,6 +4,8 @@ import { MAPS, orbitOf, cobwebPts, lyapunovOf, roots1, hostParasitoid, juryStabl
 /** Möbius function for small n. */
 function mobius(n) { let m = 1; for (let p = 2; p <= n; p++) { if (n % p === 0) { n /= p; if (n % p === 0) return 0; m = -m; } } return m; }
 
+import { aggregation, aggregationRun } from './mathbio-source-audit-competition.js';
+
 export default {
   collection: 'mathbio',
   chapter: 2,
@@ -306,42 +308,26 @@ The coexistence equilibrium is $aP^*=\ln\lambda$, $N^*=\lambda\ln\lambda/\bigl(a
       kind: 'Phenomenon',
       name: 'Nicholson–Bailey instability and stabilization by aggregation',
       credit: 'May, 1978 (negative-binomial attack model)',
-      statement: String.raw`The Nicholson–Bailey equilibrium is unstable for every $\lambda>1$ (mathbio-2.13). If instead attacks per host follow a negative binomial distribution with clumping parameter $k$ (small $k$ = parasitoids concentrate on few hosts, $k\to\infty$ = random Poisson attacks), then the fraction of hosts escaping is $g(P)=(1+aP/k)^{-k}$ and
-$$N_{t+1}=\lambda N_t\Bigl(1+\frac{aP_t}k\Bigr)^{-k},\qquad P_{t+1}=cN_t\Bigl[1-\Bigl(1+\frac{aP_t}k\Bigr)^{-k}\Bigr].$$
-The determinant of the Jacobian at the coexistence equilibrium is below $1$ if and only if $k<1$ (computed here; it equals $1$ exactly at $k=1$); for $k\ge1$ the equilibrium is unstable, and for $k<1$ it is stable over a wide range of $\lambda$, so aggregation of attacks can stabilize the interaction.`,
-      idea: String.raw`Clumping makes a host's risk depend on where it lives: parasitoids spend their effort on hosts that are already attacked, so some hosts are in a refuge from parasitism and a rising parasitoid density protects the rest of the host population less than in the random model, which damps the delayed feedback. In the Jury conditions of mathbio-2.12 this moves the determinant $D$ from above $1$ to below it; the Poisson model of mathbio-2.13 is the limit $k\to\infty$.`,
-      scope: String.raw`A phenomenological model for aggregated attacks (May 1978); the threshold $k<1$ and the stable range of $\lambda$ are computed here numerically from the Jacobian rather than quoted from the paper, and the attribution of the model and of the $k<1$ condition to the 1978 paper should be checked against the original (flagged for verification). Other stabilizing mechanisms (host density dependence, refuges) are not in this model.`,
-      caption: String.raw`Right: for each clumping parameter $k$ (log scale) and host rate $\lambda$, the equilibrium is stable (green) or unstable (red); drag the gold point. Left: the orbit from a small displacement (orange) against the random-search Nicholson–Bailey orbit (dashed): for $k<1$ the spiral turns inward and both species persist, for $k>1$ it spirals outward as before.`,
+      statement: String.raw`Replacing Poisson attacks by a negative-binomial attack count gives escape probability $g(P)=(1+aP/k)^{-k}$ and the map $N_{t+1}=\lambda N_tg(P_t)$, $P_{t+1}=cN_t(1-g(P_t))$, for $\lambda>1$, $a,c,k>0$. Its coexistence equilibrium is **locally asymptotically stable for every $\lambda>1$ if $0<k<1$**, and linearly unstable for $k>1$. At $k=1$ the eigenvalues have unit modulus; strict linear stability fails, and this is a nonhyperbolic boundary rather than an exponentially growing spiral. The Poisson limit $k\to\infty$ recovers Nicholson–Bailey instability.`,
+      idea: String.raw`Write $D=k(1-\lambda^{-1/k})/(1-\lambda^{-1})$ and $T=1+D/\lambda$ for the determinant and trace. The two nontrivial Jury inequalities are $D<1$ and $1-T+D=D(1-1/\lambda)>0$. The latter is automatic; $D$ increases strictly with $k$ and equals one at $k=1$, proving the threshold. Stable perturbations can decay monotonically or oscillate: not every stable case is a spiral. May’s original Appendix 2 gives this local proof and distinguishes it from numerical evidence about large disturbances.`,
+      scope: String.raw`May’s phenomenological model summarizes aggregated attacks across patches; small $k$ means more overdispersion, and $k=\infty$ is Poisson. A fixed yield $c$ rescales population units and does not change this local criterion. Finite trajectories from a log displacement $0.3$ are illustrative and do not establish global attraction. At $k=1$ the map preserves area in logarithmic coordinates, precluding asymptotic attraction of an open neighborhood.`,
+      caption: String.raw`Left: exact local classification over $k$ (log axis) and $\lambda$; drag the gold point. Green is stable, red unstable and the $k=1$ line is the nonhyperbolic boundary (dragging within $0.02$ log units snaps to it). Right: finite log-population trajectories relative to each model’s own equilibrium, with the Poisson comparison dashed. Numerical iteration stops before a coordinate exceeds $8$ in magnitude; a stopped trajectory is not a biological extinction claim.`,
       deps: ['mathbio-2.13'],
-      verify: true,
+      verify: false,
       tags: ['aggregation', 'negative binomial', 'stabilization'],
-      refs: ['Edelstein-Keshet ch. 3'],
+      refs: ['May (1978), Host-Parasitoid Systems in Patchy Environments: A Phenomenological Model, pp. 838–839, equations (3)–(7); Appendix 2 pp. 843–844'],
+      links: {doi:'https://doi.org/10.2307/3674'},
       viz(v) {
-        const A = v.stage({ x: [-1.3, 1.3], y: [1.05, 12], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: 'clumping $k$', ylabel: 'host rate $\\lambda$', title: 'is the equilibrium stable?', xticks: [[-1, '0.1'], [-0.5, '0.3'], [0, '1'], [0.5, '3'], [1, '10']] });
-        const B = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 340, weight: 1, minWidth: 280, xlabel: '$\\ln(N/N^*)$', ylabel: '$\\ln(P/P^*)$', title: 'orbit from a small displacement' });
-        v.legend([['green', 'stable', { area: true }], ['red', 'unstable', { area: true }], ['orange', 'aggregated attacks (this $k$)'], ['purple', 'random attacks ($k\\to\\infty$)', { dash: true }]]);
-        const h = A.handle(-0.4, 3, { color: 'gold', r: 8, constrain: (x, y) => [v.M.clamp(x, -1.3, 1.3), v.M.clamp(y, 1.1, 12)] });
-        let info = { D: 0, T: 0, k: 1, L: 2, st: false }, ext = false;
-        const green = v.rgb('green'), red = v.rgb('red');
-        v.render(() => {
-          const k = Math.pow(10, h.x), L = h.y;
-          A.raster((x, y) => { const M = hostParasitoid(y, Math.pow(10, x)); const { T, D } = M.jac(); return juryStable(T, D) ? [green[0], green[1], green[2], 0.5] : [red[0], red[1], red[2], 0.28]; }, { res: 4, key: 'stab-map' });
-          A.vline(0, { color: 'ink', width: 1.4, dash: true });
-          A.text('$k=1$', 0.03, 11.2, { align: 'left', size: 12, color: 'ink' });
-          const M = hostParasitoid(L, k), j = M.jac();
-          info = { D: j.D, T: j.T, k, L, st: juryStable(j.T, j.D) };
-          const run = (kk) => { const Mx = hostParasitoid(L, kk); let n = Mx.Ns * Math.exp(0.3), p = Mx.Ps; const out = [[0.3, 0]]; for (let t = 0; t < 120; t++) { [n, p] = Mx.F(n, p); const a = Math.log(n / Mx.Ns), b = Math.log(p / Mx.Ps); if (!isFinite(a) || !isFinite(b) || Math.hypot(a, b) > 8) break; out.push([a, b]); } return out; };
-          const o1 = run(k), o2 = run(Infinity);
-          B.clip(() => {
-            B.path(o2, { color: 'purple', width: 1.4, dash: true });
-            B.path(o1, { color: 'orange', width: 2 });
-            o1.forEach(([a, b], i) => { if (i % 2 === 0 || o1.length < 40) B.dot(a, b, { r: i === 0 ? 5 : 2.8, color: i === 0 ? 'gold' : 'orange' }); });
-          });
-          B.dot(0, 0, { r: 6, color: info.st ? 'green' : 'red', hollow: true });
-          ext = o1.length < 121 && Math.hypot(...o1[o1.length - 1]) > 7.9;
+        const A=v.stage({x:[-1.4,1.4],y:[.7,12.4],axes:'box',gutter:true,height:340,minWidth:300,xlabel:'clumping k (log scale)',ylabel:'host reproduction λ',title:'exact local stability',xticks:[[-1,'0.1'],[0,'1'],[1,'10']]});
+        const B=v.stage({x:[-3,3],y:[-3,3],equal:true,axes:true,height:340,minWidth:280,xlabel:'ln(N/N*)',ylabel:'ln(P/P*)',title:'120-generation orbit or display stop'});
+        const h=A.handle(-.4,3,{color:'gold',r:8,constrain:(x,y)=>[Math.abs(x)<.02?0:v.M.clamp(x,-1.3,1.3),v.M.clamp(y,1.1,12)]});let info=null;
+        v.legend([['green','locally asymptotically stable',{area:true}],['red','linearly unstable',{area:true}],['orange','aggregated attacks'],['purple','Poisson comparison',{dash:true}]]);
+        const green=v.rgb('green'),red=v.rgb('red');
+        v.render(()=>{const k=10**h.x,L=h.y,M=aggregation(L,k),Q=aggregationRun(L,k),P=aggregationRun(L,Infinity);info={...M,stopped:Q.stopped};
+          A.raster((x,y)=>x< -1.3||x>1.3||y<1.1||y>12?[0,0,0,0]:x<0?[...green,.5]:x>0?[...red,.28]:[0,0,0,0],{res:4,key:'exact-clumping'});A.vline(0,{color:'ink',dash:true});A.text('$k=1$',.03,11.4,{align:'left',size:12});
+          const pts=[...Q.path,...P.path],xm=Math.max(1,...pts.map(p=>Math.abs(p[0])))*1.12,ym=Math.max(1,...pts.map(p=>Math.abs(p[1])))*1.12;const bound=Math.max(xm,ym);B.setView([-bound,bound],[-bound,bound]);B.path(P.path,{color:'purple',dash:true,width:1.4});B.path(Q.path,{color:'orange',width:2});Q.path.forEach((q,i)=>{if(i%2===0)B.dot(...q,{r:i===0?5:2.8,color:i===0?'gold':'orange'});});B.dot(0,0,{r:6,color:k<1?'green':k>1?'red':'muted',hollow:true});
         });
-        v.readout(() => String.raw`$k=${v.fmt(info.k, 3)}$, $\lambda=${v.fix(info.L, 2)}$: determinant $D=${v.fix(info.D, 4)}$ (${info.D < 1 ? '<1' : '≥1'}), trace $T=${v.fix(info.T, 3)}$ ⇒ equilibrium **${info.st ? 'stable' : 'unstable'}**
- the orbit from a $0.3$-sized displacement ${ext ? 'leaves the plotted window (growing oscillation)' : 'stays near the equilibrium'}; $D<1$ exactly when $k<1$: this $k$ is ${info.k < 1 ? 'below' : 'at or above'} $1$`);
+        v.readout(()=>{const M=info;return `clumping $k=${v.fmt(M.k,3)}$, $\\lambda=${v.fix(M.L,2)}$: exact determinant $D=${v.fix(M.D,6)}$, trace $T=${v.fix(M.T,6)}$ → **${M.classification==='boundary'?'nonhyperbolic boundary (unit-modulus linear eigenvalues)':M.classification==='stable'?'locally asymptotically stable':'linearly unstable'}**. ${M.stopped?'Iteration stopped at the declared display threshold.':'120 generations shown; this is finite numerical evidence.'}`;});
       },
     },
   ],

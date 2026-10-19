@@ -7,7 +7,7 @@
 //   clouds +0.42 (−0.10 to +0.94); biogeophysical and non-CO2 biogeochemical −0.01; net −1.16 (−1.81 to −0.51).
 //   Water vapour alone 1.77 ± 0.20 (CMIP5/6, one s.d.), constant-RH lapse rate LR* −0.10 ± 0.07, Clausius–Clapeyron 1.36 ± 0.04.
 //   Arctic amplification ranges from a factor two to four in ESM projections of 21st-century warming (§7.4.4).
-import { GRID, esat, opticalDepths, longwave, BASE } from './ch03.shared.js';
+import { GRID, esat, opticalDepths, longwave, BASE, Phi, PhiInv } from './ch03.shared.js';
 export * from './ch03.shared.js';
 
 export const AR6 = { planck: -3.22, wvlr: 1.30, albedo: 0.35, cloud: 0.42, other: -0.01, net: -1.16, wv: 1.77, lrStar: -0.10 };
@@ -81,4 +81,22 @@ export function pAtT(T, Tw) {
   const pm = GRID.pm;
   for (let i = 0; i < pm.length - 1; i++) if ((T[i] - Tw) * (T[i + 1] - Tw) <= 0 && T[i] !== T[i + 1]) { const f = (T[i] - Tw) / (T[i] - T[i + 1]); return Math.exp(Math.log(pm[i]) + f * (Math.log(pm[i + 1]) - Math.log(pm[i]))); }
   return Tw > T[0] ? pm[0] : null;
+}
+
+/** Roe–Baker transform conditioned on the stable branch f < 1.
+ * The discarded probability is returned separately; histogram mass beyond the
+ * displayed window must not be renormalized into the visible bars. */
+export function stableFeedbackLaw(mu, sigma, dT0) {
+  if (!(sigma > 0 && dT0 > 0)) throw new RangeError('Positive uncertainty and no-feedback warming required');
+  const stable = Phi((1 - mu) / sigma);
+  const pf = (f) => Math.exp(-0.5 * ((f - mu) / sigma) ** 2) / (sigma * Math.sqrt(2 * Math.PI));
+  const cdf = (s) => s <= 0 ? 0 : Math.min(1, Phi((1 - dT0 / s - mu) / sigma) / stable);
+  const quantile = (p) => {
+    if (p <= 0) return 0;
+    if (p >= 1) return Infinity;
+    return dT0 / (1 - mu - sigma * PhiInv(p * stable));
+  };
+  return { stable, runaway: 1 - stable, cdf, quantile,
+    density: (s) => s <= 0 ? 0 : (dT0 / (s * s)) * pf(1 - dT0 / s) / stable,
+    exceedance: (s) => Math.max(0, 1 - cdf(s)) };
 }

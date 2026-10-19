@@ -4,6 +4,7 @@
 // cliff). 5.11 is a matrix picture of the two normalizations. 5.13 re-creates, at toy scale, the experiment of Fig. 1 of the ResNet paper and
 // shows the paper's own numbers (Tables 2 and 6) beside it.
 import { clamp, mnus, memo, rand, hashStr, toyData, makeRace, drawPoints, regionRaster, dnetProb } from './ch05.shared.js';
+import { scaleData, scaleLoss, scaleRun, positiveRange, pathView } from './source-audit.shared.js';
 
 const pct = (x) => (100 * x).toFixed(0) + '%';
 const last = (a) => a[a.length - 1];
@@ -18,74 +19,32 @@ export default {
       num: '5.10',
       kind: 'Concept',
       name: 'Scale invariance and the effective learning rate',
-      statement: String.raw`Suppose the loss is **scale invariant** in a weight vector $w\ne0$: $\ell(cw)=\ell(w)$ for all $c>0$ (this holds for the incoming weights of a unit followed by batch normalization). Then differentiating $c\mapsto\ell(cw)$ at $c=1$ gives $\langle\nabla\ell(w),w\rangle=0$, and $\nabla\ell(cw)=\tfrac1c\nabla\ell(w)$. Consequently, for gradient descent $w_{t+1}=w_t-\eta\nabla\ell(w_t)$,
-$$\|w_{t+1}\|^2=\|w_t\|^2+\eta^2\|\nabla\ell(w_t)\|^2\ \ge\ \|w_t\|^2,$$
-the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ is governed by the **effective learning rate** $\eta_{\rm eff}=\eta/\|w\|^2$ (the gradient on the unit sphere is $\|w\|$ times the gradient at $w$, and a step of length $\eta\|\nabla\ell\|$ turns the direction by an angle of order $\eta\|\nabla\ell\|/\|w\|$). With weight decay $\lambda$, $w_{t+1}=(1-\eta\lambda)w_t-\eta\nabla\ell(w_t)$, the norm settles where growth from the gradient balances shrinkage from the decay, $\|w\|^4\approx\eta\|\tilde g\|^2/(2\lambda)$ with $\tilde g$ the gradient on the unit sphere, and the effective learning rate stays at a steady level.`,
-      idea: String.raw`Euler's theorem for homogeneous functions of degree 0 gives the orthogonality of gradient and weights, and Pythagoras then gives the norm identity: each step moves along a tangent direction, so it can only lengthen the radius. As the radius grows, the same absolute step is a smaller angle, so the learning rate decays automatically ("auto rate-tuning", Arora, Li and Lyu 2019); weight decay, which looked like a regularizer for a function it cannot change, instead controls the equilibrium effective rate, which is why batch-normalized networks are sensitive to it (van Laarhoven 2017; Hoffer et al. 2018). In a network the per-unit norms are tied by scale symmetries of the other layers as well.`,
-      caption: String.raw`A single logistic unit on 40 two-dimensional points (two overlapping classes, centred), trained by gradient descent from $w_0$ (gold). With **BN** the unit's output is standardized over the data before the loss, so the loss (heat map) depends only on the direction of $w$: it is constant along rays. Top left: the path in weight space. Top right: $\|w\|^2$ with the identity $\|w_0\|^2+\eta^2\sum\|g\|^2$ (dashed), which holds exactly when weight decay is off. Bottom: the effective learning rate $\eta/\|w\|^2$ and the loss. Turn on weight decay to see the norm stop growing; switch to the plain unit and the gradient is no longer orthogonal to $w$ (loss falls partly by growing the norm).`,
+      statement: String.raw`Let a differentiable loss satisfy $\ell(cw)=\ell(w)$ for all $c>0$, $w\ne0$. Then $w^\top g(w)=0$ and $g(cw)=g(w)/c$. For plain GD, $w_+=w-\eta g$,
+$$\|w_+\|^2=\|w\|^2+\eta^2\|g\|^2.$$
+Writing $r=\|w\|$, $u=w/r$ and $\tilde g=r g$, the exact direction update is $u_+=\operatorname{normalize}(u-(\eta/r^2)\tilde g)$; thus $\eta_{\rm eff}=\eta/r^2$. With decay $q=1-\eta\lambda$,
+$$\|w_+\|^2=q^2\|w\|^2+\eta^2\|g\|^2.$$
+A stationary balance would give $r^4=\eta\|\tilde g\|^2/(2\lambda-\eta\lambda^2)\approx\eta\|\tilde g\|^2/(2\lambda)$ when $0<\eta\lambda\ll1$ and the angular gradient magnitude stays approximately stationary. **The identities do not guarantee an equilibrium.**`,
+      idea: String.raw`Differentiate scale invariance in $c$ for orthogonality, and in $w$ for the inverse scaling of the gradient. Pythagoras gives the norm recurrence. Without decay the angle of one update is exactly $\arctan(\eta\|g\|/r)$; its small-angle approximation explains the effective rate. These identities apply to each scale-invariant minibatch loss, with other parameters held fixed for that gradient. Updating a learned gain $\gamma$ or changing minibatches does not itself add a cross term. Arora–Li–Lyu's Lemma 2.4 and Theorem 2.5 formalize the norm/direction identities; their convergence results require additional smoothness and learning-rate assumptions. Van Laarhoven's equilibrium analysis uses a stationary gradient-noise model, not an unconditional deterministic limit.`,
+      caption: String.raw`An explicit logistic unit on 40 centred points: ideal training-statistics **BN with $\epsilon=0$** and fixed gain 3, or a plain linear unit. The BN gradient differentiates through the data variance. Heat colours saturate outside loss 0.3–3 (BN) or 0–3 (plain). Its loss depends on direction; $w=0$ is excluded. Drag the gold handle for the initial direction and use the slider for its norm. Top: the fitted weight-path window and squared norm; the dashed BN prediction applies the exact recurrence including decay. Bottom: effective rate and actual loss, with adaptive logarithmic axes. Decay may shrink or balance the norm; the controls do not promise a steady plateau.`,
       deps: ['deep-5.9'],
-      refs: ['Prince §11.4'],
+      refs: ['Arora–Li–Lyu (ICLR 2019), Lemmas 2.2, 2.4 and Theorem 2.5', 'van Laarhoven (2017), §§3.1–4'],
       tags: ['scale invariance', 'weight decay', 'learning rate'],
-      credit: 'Salimans & Kingma, 2016 (weight normalization); van Laarhoven, 2017; Arora, Li & Lyu, 2019',
-      scope: String.raw`Exact for scale-invariant losses (batch or weight normalization without the learned scale, evaluated on the full training set); with minibatch noise or a learned scale $\gamma$ the identity picks up additional terms. The equilibrium norm formula is a heuristic.`,
-      verify: true,
+      credit: 'van Laarhoven, 2017; Arora, Li & Lyu, ICLR 2019 (2018 preprint)',
+      scope: String.raw`Exact for differentiable degree-zero losses and plain (stochastic) gradient updates without momentum. Ideal BN requires nonzero batch variance and $\epsilon=0$; positive stabilizer $\epsilon$, frozen inference statistics, or non-scale-invariant penalties generally break the identities. Learned gain/bias do not break invariance in the incoming weights. The decay equilibrium is conditional and heuristic.`,
       links: { arxiv: 'https://arxiv.org/abs/1812.03981' },
       viz(v) {
-        const unitS = v.select('unit', [{ value: 'bn', label: 'batch-normalized' }, { value: 'plain', label: 'plain linear' }], 'bn');
-        const eta = v.slider('learning rate $\\eta$', 0.02, 3, 0.05, { log: true, sig: 2 });
-        const lam = v.slider('weight decay $\\lambda$', 0, 0.03, 0, { step: 0.001 });
-        const rho = v.slider('initial norm $\\|w_0\\|$', 0.2, 3, 0.7, { step: 0.05 });
-        const T = 400, R = 3.2, GAM = 3;
-        const rr = rand(hashStr('scaleinv')), X = [], Y = [];
-        for (let i = 0; i < 40; i++) { const c = i % 2 ? 1 : -1; X.push([c * 0.9 + rr.normal() * 1.1, c * 0.5 + rr.normal() * 1.1]); Y.push(c); }
-        const mx = X.reduce((a, p) => a + p[0], 0) / X.length, my = X.reduce((a, p) => a + p[1], 0) / X.length;
-        const Xc = X.map((p) => [p[0] - mx, p[1] - my]);
-        const S = [[0, 0], [0, 0]]; for (const p of Xc) { S[0][0] += p[0] * p[0] / 40; S[0][1] += p[0] * p[1] / 40; S[1][1] += p[1] * p[1] / 40; } S[1][0] = S[0][1];
-        const sf = (z) => (z > 30 ? z : z < -30 ? Math.exp(z) : Math.log1p(Math.exp(z))), sg = (z) => 1 / (1 + Math.exp(-z));
-        function lossGrad(w, bn) {
-          let L = 0, g = [0, 0];
-          if (bn) {
-            const Sw = [S[0][0] * w[0] + S[0][1] * w[1], S[1][0] * w[0] + S[1][1] * w[1]], s2 = w[0] * Sw[0] + w[1] * Sw[1] + 1e-12, s = Math.sqrt(s2);
-            for (let i = 0; i < 40; i++) {
-              const p = Xc[i], a = p[0] * w[0] + p[1] * w[1], z = GAM * a / s; L += sf(-Y[i] * z) / 40;
-              const d = -Y[i] * sg(-Y[i] * z) / 40;
-              g[0] += d * GAM * (p[0] / s - a * Sw[0] / (s2 * s)); g[1] += d * GAM * (p[1] / s - a * Sw[1] / (s2 * s));
-            }
-          } else {
-            for (let i = 0; i < 40; i++) { const p = Xc[i], z = p[0] * w[0] + p[1] * w[1]; L += sf(-Y[i] * z) / 40; const d = -Y[i] * sg(-Y[i] * z) / 40; g[0] += d * p[0]; g[1] += d * p[1]; }
-          }
-          return { L, g };
-        }
-        const sP = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 290, axes: 'box', gutter: true, xlabel: '$w_1$', ylabel: '$w_2$', weight: 1, minWidth: 380, title: 'weight plane: loss and path' });
-        const sN = v.stage({ x: [0, T], y: [0, 4], height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\|w\\|^2$', weight: 1, minWidth: 380, title: 'squared weight norm' });
-        const sE = v.stage({ x: [0, T], y: [1e-3, 10], ylog: true, height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\eta/\\|w\\|^2$', weight: 1, minWidth: 380, title: 'effective learning rate' });
-        const sL = v.stage({ x: [0, T], y: [0.05, 1], ylog: true, height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: 'loss', weight: 1, minWidth: 380, title: 'loss' });
-        const w0 = sP.handle(-0.5, -0.45, { color: 'gold', r: 8, label: '$w_0$' });
-        const mc = memo(); let info = null;
-        v.render(() => {
-          const bn = unitS.value === 'bn', e = eta.value, l = lam.value, rh = rho.value;
-          const ang = Math.atan2(w0.y, w0.x); w0.set(rh * Math.cos(ang), rh * Math.sin(ang)); // the handle gives the direction, the slider the norm
-          let w = [w0.x, w0.y]; const path = [w.slice()], nrm = [w[0] ** 2 + w[1] ** 2], loss = [], eff = [], pred = [nrm[0]], cosv = []; let acc = nrm[0], maxCos = 0;
-          for (let t = 0; t <= T; t++) {
-            const { L, g } = lossGrad(w, bn), n2 = w[0] ** 2 + w[1] ** 2, gn = Math.hypot(g[0], g[1]);
-            loss.push(L); eff.push(e / n2); if (gn > 1e-12) maxCos = Math.max(maxCos, Math.abs(g[0] * w[0] + g[1] * w[1]) / (gn * Math.sqrt(n2)));
-            if (t === T) break;
-            acc += e * e * (g[0] ** 2 + g[1] ** 2); pred.push(acc);
-            w = [(1 - e * l) * w[0] - e * g[0], (1 - e * l) * w[1] - e * g[1]]; path.push(w.slice()); nrm.push(w[0] ** 2 + w[1] ** 2);
-          }
-          sP.heat((x, y) => lossGrad([x, y], bn).L, { range: [0.3, 0.9], cmap: 'theme', res: 4, key: 'ld' + unitS.value });
-          sP.clip(() => { sP.path(path, { color: 'accent', width: 1.8 }); });
-          sP.dot(path[path.length - 1][0], path[path.length - 1][1], { r: 4, color: 'green' });
-          const ymax = Math.max(1, ...nrm.slice(0, T + 1)) * 1.1; sN.setView([0, T], [0, Math.min(ymax, 1e3)]);
-          sN.path(nrm.map((y, t) => [t, y]), { color: 'accent', width: 2.2 });
-          if (l === 0 && bn) sN.path(pred.map((y, t) => [t, y]), { color: 'muted', dash: true, width: 1.5 });
-          sE.path(eff.map((y, t) => [t, y]), { color: 'orange', width: 2.2 });
-          sL.path(loss.map((y, t) => [t, Math.max(0.05, y)]), { color: 'red', width: 2.2 });
-          info = { n0: nrm[0], nT: last(nrm), e0: eff[0], eT: last(eff), maxCos, bn, pred: last(pred), lT: last(loss), l };
+        const unitS=v.select('unit',[{value:'bn',label:'batch-normalized'},{value:'plain',label:'plain linear'}],'bn'),eta=v.slider('learning rate $\\eta$',.02,3,.05,{log:true,sig:2}),lam=v.slider('weight decay $\\lambda$',0,.03,0,{step:.001}),rho=v.slider('initial norm $\\|w_0\\|$',.2,3,.7,{step:.05}),T=400,data=scaleData();
+        const sP=v.stage({x:[-3.2,3.2],y:[-3.2,3.2],equal:true,height:290,axes:'box',gutter:true,xlabel:'$w_1$',ylabel:'$w_2$',weight:1,minWidth:380,title:'loss and weight path ($w=0$ excluded)'}),sN=v.stage({x:[0,T],y:[0,4],height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'$\\|w\\|^2$',weight:1,minWidth:380,title:'squared norm and recurrence'}),sE=v.stage({x:[0,T],y:[1e-3,10],ylog:true,height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'$\\eta/\\|w\\|^2$',weight:1,minWidth:380,title:'effective learning rate'}),sL=v.stage({x:[0,T],y:[.05,1],ylog:true,height:290,axes:'box',gutter:true,xlabel:'step',ylabel:'loss',weight:1,minWidth:380,title:'actual logistic loss'});
+        const w0=sP.handle(-.5,-.45,{color:'gold',r:8,label:'$w_0$'});let info=null;
+        v.render(()=>{
+          const bn=unitS.value==='bn',e=eta.value,l=lam.value,rh=rho.value,ang=Math.atan2(w0.y,w0.x);w0.set(rh*Math.cos(ang),rh*Math.sin(ang));
+          const R=scaleRun([w0.x,w0.y],data,{eta:e,lambda:l,bn,T}),context=Math.max(1,rh),view=pathView([R.path,[[-context,-context],[context,context]]]);sP.setView(...view);
+          sP.heat((x,y)=>scaleLoss([x,y],data,{bn}).L,{range:bn?[.3,3]:[0,3],cmap:'theme',res:4,key:'scale-'+bn+'|'+view.flat().join(',')});sP.dot(0,0,{hollow:true,r:3,color:'muted',label:bn?'excluded':'zero',labelPos:'se'});sP.path(R.path,{color:'accent',width:1.8});sP.dot(...R.path.at(-1),{r:4,color:'green'});
+          sN.setView([0,T],[0,Math.max(1,...R.nrm,...(bn?R.prediction:[]))*1.1]);sN.path(R.nrm.map((y,t)=>[t,y]),{color:'accent',width:2.2});if(bn)sN.path(R.prediction.map((y,t)=>[t,y]),{color:'muted',dash:true,width:1.5});
+          sE.setView([0,T],positiveRange(R.eff));sE.path(R.eff.map((y,t)=>[t,y]),{color:'orange',width:2.2});sL.setView([0,T],positiveRange(R.loss));sL.path(R.loss.map((y,t)=>[t,y]),{color:'red',width:2.2});info={R,bn,l};
         });
-        v.legend([['accent', '$\\|w_t\\|^2$ and path'], ['muted', '$\\|w_0\\|^2+\\eta^2\\sum\\|g\\|^2$ (no decay)', { dash: true }], ['orange', '$\\eta/\\|w\\|^2$'], ['red', 'loss']]);
-        v.readout(() => info && String.raw`$\|w\|^2$: ${v.fix(info.n0, 2)} → **${v.fix(info.nT, 2)}** after ${T} steps` + (info.l === 0 && info.bn ? String.raw` · predicted by the identity ${v.fix(info.pred, 2)} (exact when $g\perp w$)` : '') + ` · effective rate $\\eta/\\|w\\|^2$: ${v.fix(info.e0, 2)} → **${v.fix(info.eT, 3)}**` + `\n` +
-          String.raw`largest $|\cos\angle(g,w)|$ along the run: ${v.fix(info.maxCos, 4)} ` + (info.bn ? `(scale-invariant loss: always 0, so the norm can only grow without decay)` : `(plain unit: the loss depends on the norm too, gradient not orthogonal)`) + ` · final loss ${v.fix(info.lT, 3)}`);
+        v.legend([['accent','squared norm / path'],['muted','BN norm recurrence (with decay)',{dash:true}],['orange','effective learning rate'],['red','actual loss']]);
+        v.readout(()=>info&&String.raw`$\|w\|^2$: $${v.sci(info.R.nrm[0],3)}$ → **$${v.sci(info.R.nrm.at(-1),3)}$**; effective rate $${v.sci(info.R.eff[0],3)}$ → $${v.sci(info.R.eff.at(-1),3)}$; final loss ${v.fix(info.R.loss.at(-1),4)}.`+`\n`+(info.bn?String.raw`BN recurrence discrepancy: $${v.sci(Math.max(...info.R.nrm.map((x,i)=>Math.abs(x-info.R.prediction[i])/(1+x))),2)}$; normalized orthogonality residual $\max |w^\top g|/(1+\|w\|\|g\|)=${v.sci(info.R.residual,2)}$. These are numerical checks; a steady norm is not guaranteed.`:String.raw`Plain unit: normalized $w^\top g$ residual $${v.sci(info.R.residual,2)}$; the orthogonal-gradient recurrence does not apply.`));
       },
     },
     // ───────────────────────────────────────────────────────────── 5.11

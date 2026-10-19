@@ -1,7 +1,8 @@
 // Optimization — Chapter 4: Convex optimization problems (items 4.8–4.14; 4.1–4.7 in ch04.js)
 import {
-  clamp, mulberry, chordTest, chordTest2, levelsOf, memo, rgbA, lp2, solveSmall, f3, linspace, discPoly,
+  clamp, mulberry, chordTest, chordTest2, levelsOf, memo, rgbA, solveSmall, f3, linspace, discPoly,
 } from './ch04.shared.js';
+import {lp2,robust2d,gpOpt,gpBoundary,lensMin,paretoPoint,DCP_AT,analyzeDcp,dcpChords,ROBUST_ROWS,SDP_GEOMETRY} from './source-audit.shared.js';
 
 export default {
   collection: 'opt',
@@ -169,20 +170,19 @@ Each constraint says that the affine image $(A_ix+b_i,\ c_i^{\mathsf T}x+d_i)$ l
 $$\min_x\ c^{\mathsf T}x\quad\text{s.t.}\quad a_i^{\mathsf T}x\le b_i\ \ \text{for all }a_i\in\mathcal E_i,\ i=1,\dots,m,$$
 asks the constraints to hold for every admissible $a_i$. Since $\sup_{a\in\mathcal E_i}a^{\mathsf T}x=\bar a_i^{\mathsf T}x+\norm{P_i^{\mathsf T}x}_2$, it is equivalent to the second-order cone program
 $$\min_x\ c^{\mathsf T}x\quad\text{s.t.}\quad \bar a_i^{\mathsf T}x+\norm{P_i^{\mathsf T}x}_2\le b_i,\ \ i=1,\dots,m .$$
-The robust feasible set is contained in the nominal polyhedron, and the loss in optimal value is the *price of robustness*.`,
-      idea: String.raw`A constraint that must hold for all $a$ in a set holds iff it holds for the worst $a$, and the worst case of a linear function over an ellipsoid is a support function: by Cauchy–Schwarz $\sup_{\norm u\le1}(P^{\mathsf T}x)^{\mathsf T}u=\norm{P^{\mathsf T}x}_2$. This turns infinitely many linear constraints into one second-order cone constraint (opt-4.9). The extra term $\norm{P_i^{\mathsf T}x}_2$ is a norm penalty that pushes $x$ away from boundaries that are sensitive to the uncertain coefficient, so the feasible set shrinks and rounds off.`,
-      caption: String.raw`Six constraints $a_i^{\mathsf T}x\le1$ with nominal normals $\bar a_i$ and uncertainty balls of radius $\rho$ (so $P_i=\rho I$). Slide $\rho$: the dashed polygon is the nominal feasible set and the shaded region is the robust set $\bar a_i^{\mathsf T}x+\rho\norm x\le1$, which shrinks and loses its corners. The objective is $\max c^{\mathsf T}x$ in direction $\varphi$. Faint lines are 4 random draws of each uncertain constraint. For 2000 random realizations of **all** data, the percentage violated by the nominal optimum (red) and by the robust optimum (green, never) is read out. The coefficients are illustrative.`,
+The robust feasible set is contained in the nominal polyhedron, and the increase in the minimization value (when both optima are finite) is the *price of robustness*.`,
+      idea: String.raw`A constraint that must hold for all $a$ in a set holds iff it holds for the worst $a$, and the worst case of a linear function over an ellipsoid is a support function: by Cauchy–Schwarz $\sup_{\norm u\le1}(P^{\mathsf T}x)^{\mathsf T}u=\norm{P^{\mathsf T}x}_2$. This turns infinitely many linear constraints into one second-order cone constraint (opt-4.9). The extra term $\norm{P_i^{\mathsf T}x}_2$ is a convex support-function penalty (a seminorm when the uncertainty map is singular) that pushes $x$ away from boundaries that are sensitive to the uncertain coefficient, so the feasible set shrinks and rounds off.`,
+      caption: String.raw`Six constraints $a_i^{\mathsf T}x\le1$ with nominal normals $\bar a_i$ and uncertainty balls of radius $\rho$ (so $P_i=\rho I$). Slide $\rho$: the dashed polygon is the nominal feasible set and the shaded region is the robust set $\bar a_i^{\mathsf T}x+\rho\norm x\le1$, which shrinks and rounds its individual boundary arcs; intersections of active constraints can still make corners. The objective is $\max c^{\mathsf T}x$ in direction $\varphi$. Faint lines are 4 random draws of each uncertain constraint. For 2000 random realizations of **all** data, the percentage violated by the nominal optimum (red) and by the robust optimum (green; certified by all worst-case inequalities) is read out. The coefficients and the uniform-area sampling law are illustrative; the sampled violation rate is not a real-world probability. The robust maximizer is computed from exact radial boundary candidates.`,
       scope: String.raw`Ball-shaped (ellipsoidal) uncertainty in each constraint row independently, and a worst-case, not probabilistic, guarantee.`,
-      credit: 'Ben-Tal & Nemirovski, 1998 (Robust convex optimization, Math. Oper. Res. 23); El Ghaoui & Lebret, 1997 (robust least squares)',
-      verify: true,
+      credit: 'Ellipsoidal robust-LP formulation: Boyd–Vandenberghe §4.4.2; Ben-Tal & Nemirovski (1998), Robust convex optimization',
       deps: ['opt-4.9'],
-      refs: ['Boyd–Vandenberghe §4.4'],
+      refs: ['Boyd–Vandenberghe (2004), §4.4.2, Robust linear programming, p. 157'],
       tags: ['robust optimization', 'second-order cone'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robust_optimization', doi: 'https://doi.org/10.1287/moor.23.4.769' },
       viz(v) {
         const rho = v.slider('uncertainty radius $\\rho$', 0, 0.6, 0.25, { step: 0.005 });
         const phi = v.slider('objective direction $\\varphi$ (degrees)', 0, 359, 35, { step: 1, int: true });
-        const AB = [[1, 0.1], [0.4, 1], [-0.7, 0.8], [-0.9, -0.5], [0.3, -1], [0.9, -0.5]];
+        const AB = ROBUST_ROWS;
         const S = v.stage({ x: [-2.2, 2.2], y: [-2, 2], equal: true, axes: 'box', gutter: true, height: 420, title: 'nominal and robust feasible sets' });
         const mc = memo();
         let info = {};
@@ -192,15 +192,14 @@ The robust feasible set is contained in the nominal polyhedron, and the loss in 
           const nom = lp2([-c[0], -c[1]], hs, 6);
           const robOK = (x, y) => AB.every((a) => a[0] * x + a[1] * y + rh * Math.hypot(x, y) <= 1);
           const R = mc(`${rh}|${phi.value}`, () => {
-            let best = -Infinity, bx = null;
-            for (let i = 0; i <= 440; i++) for (let j = 0; j <= 400; j++) { const x = -2.2 + (4.4 * i) / 440, y = -2 + (4 * j) / 400; if (robOK(x, y)) { const val = c[0] * x + c[1] * y; if (val > best) { best = val; bx = [x, y]; } } }
+            const {best,bx,residual} = robust2d(AB,rh,c);
             const r = mulberry(21); let vn = 0, vr = 0; const N = 2000;
             for (let k = 0; k < N; k++) {
               const draws = AB.map((a) => { const t = r() * 2 * Math.PI, rr = rh * Math.sqrt(r()); return [a[0] + rr * Math.cos(t), a[1] + rr * Math.sin(t)]; });
               const bad = (x) => x && draws.some((a) => a[0] * x[0] + a[1] * x[1] > 1 + 1e-9);
               if (bad(nom.status === 'optimal' ? nom.x : null)) vn++; if (bad(bx)) vr++;
             }
-            return { best, bx, vn: vn / N, vr: vr / N };
+            return { best, bx, residual, vn: vn / N, vr: vr / N };
           });
           S.raster((x, y) => (robOK(x, y) ? rgbA(v, 'green', 56) : null), { res: 3, key: `rob|${rh}` });
           S.poly(nom.poly, { fill: false, color: 'ink', width: 1.8, dash: true });
@@ -217,7 +216,7 @@ The robust feasible set is contained in the nominal polyhedron, and the loss in 
         v.readout(() => {
           const { nom, R, c } = info;
           const nv = nom.status === 'optimal' ? c[0] * nom.x[0] + c[1] * nom.x[1] : NaN;
-          return `Nominal optimum $c^{\\mathsf T}x=${f3(v, nv)}$, robust $${f3(v, R.best)}$ (price of robustness $${f3(v, nv - R.best)}$).\nRealizations of the uncertain data violated: nominal optimum **${f3(v, 100 * R.vn, 1)}%**, robust optimum **${f3(v, 100 * R.vr, 1)}%**.`;
+          return `Nominal optimum $c^{\\mathsf T}x=${f3(v, nv)}$, robust $${f3(v, R.best)}$ (price of robustness $${f3(v, nv - R.best)}$).\nWorst-case residual $\\max_i(\\bar a_i^{\\mathsf T}x+\\rho\\|x\\|-1)=${f3(v,R.residual,9)}$. Under the displayed sampling law, 2000 realizations violated: nominal optimum **${f3(v, 100 * R.vn, 1)}%**, robust optimum **${f3(v, 100 * R.vr, 1)}%**.`;
         });
       },
     },
@@ -229,14 +228,13 @@ The robust feasible set is contained in the nominal polyhedron, and the loss in 
       statement: String.raw`A **monomial** is $g(x)=c\,x_1^{a_1}\cdots x_n^{a_n}$ with $c>0$, $a_i\in\R$, on $x\succ0$; a **posynomial** is a sum of monomials. A **geometric program** (GP) is
 $$\min\ f_0(x)\quad\text{s.t.}\quad f_i(x)\le1\ (i=1,\dots,m),\quad g_j(x)=1\ (j=1,\dots,p),\qquad x\succ0,$$
 with $f_i$ posynomials and $g_j$ monomials. It is generally not convex in $x$, but under $x_i=e^{y_i}$ a monomial becomes $\exp(a^{\mathsf T}y+\log c)$ and a posynomial $\sum_k\exp(a_k^{\mathsf T}y+b_k)$; taking logarithms, $\log f_i(e^y)$ is a log-sum-exp of affine functions, hence **convex**, and monomial equalities become affine equalities. So every GP is equivalent to a convex problem in $y$.`,
-      idea: String.raw`Log-sum-exp is convex (it is the log of a sum of exponentials of affine maps; opt-3.10 supplies the log-convexity of such sums), and a pointwise composition with the affine map $y\mapsto a_k^{\mathsf T}y+b_k$ preserves convexity (opt-3.6). The constraint $f_i(e^y)\le1$ becomes $\log f_i(e^y)\le0$, a sublevel set of a convex function; the objective $\log f_0(e^y)$ has the same minimizers as $f_0$ because $\log$ is increasing. The change of variables is a homeomorphism of the positive orthant onto $\R^n$, so nothing is lost.`,
-      caption: String.raw`Choose a design: minimize $f_0=1/w+2/h$ (heat loss of a panel of width $w$ and height $h$) subject to the posynomial constraint $wh+\tfrac12w^2\le A$ and the aspect-ratio bounds $\tfrac1\gamma\le w/h\le\gamma$. **Left:** the problem in the original variables: the feasible set is *not* convex (the chord test finds violating chords; it is bounded by a curve bending the wrong way). **Right:** after $w=e^u,\ h=e^v$ the feasible set is convex and the objective $\log f_0$ is convex; the chord tests pass. The optimum found on a grid in the $(u,v)$-plane maps to the same point on the left. The design problem is illustrative.`,
-      credit: 'Zener, 1961; Duffin, Peterson & Zener, Geometric Programming, 1967',
+      idea: String.raw`Log-sum-exp is convex (its Hessian is the covariance matrix of the affine exponents under softmax weights, hence positive semidefinite), and a pointwise composition with the affine map $y\mapsto a_k^{\mathsf T}y+b_k$ preserves convexity (opt-3.6). The constraint $f_i(e^y)\le1$ becomes $\log f_i(e^y)\le0$, a sublevel set of a convex function; the objective $\log f_0(e^y)$ has the same minimizers as $f_0$ because $\log$ is increasing. The change of variables is a homeomorphism of the positive orthant onto $\R^n$, so nothing is lost.`,
+      caption: String.raw`Choose a design: minimize $f_0=1/w+2/h$ (an illustrative cost for positive width $w$ and height $h$) subject to the posynomial constraint $wh+\tfrac12w^2\le A$ and the aspect-ratio bounds $\tfrac1\gamma\le w/h\le\gamma$. **Left:** the problem in the original variables: the feasible set is *not* convex (an orange chord between two feasible boundary points has an infeasible midpoint). **Right:** after $w=e^u,\ h=e^v$ the feasible set is convex and the objective $\log f_0$ is convex. Chord tests supply finite diagnostics. The exact minimizer uses $h/w=\min(\gamma,1+\sqrt3)$ and the active area constraint, and maps to the same point in both panels. The design problem is illustrative.`,
+      credit: 'GP definitions and convex transformation: Boyd–Vandenberghe §4.5',
       deps: ['opt-4.1', 'opt-3.10'],
-      refs: ['Boyd–Vandenberghe §4.5'],
+      refs: ['Boyd–Vandenberghe (2004), §4.5.1–4.5.3, pp. 160–163'],
       tags: ['geometric program', 'posynomial', 'change of variables'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Geometric_programming' },
-      verify: true,
       viz(v) {
         const AS = v.slider('area budget $A$', 1, 12, 5, { step: 0.05 });
         const GS = v.slider('aspect bound $\\gamma$', 1.2, 8, 6, { step: 0.05 });
@@ -246,7 +244,7 @@ with $f_i$ posynomials and $g_j$ monomials. It is generally not convex in $x$, b
         const mc = memo();
         let info = {};
         v.render(() => {
-          const A = AS.value, g = GS.value;
+          const A = AS.value, g = GS.value;const edge0=gpBoundary(A,1/g),edge1=gpBoundary(A,g);L.setView([0,Math.max(6,edge0[0]*1.08)],[0,Math.max(6,edge1[1]*1.08)]);R.setView([-2.5,Math.max(2.2,Math.log(edge0[0])+.15)],[-2.5,Math.max(2.2,Math.log(edge1[1])+.15)]);
           const feas = (w, h) => w > 0 && h > 0 && w * h + 0.5 * w * w <= A && w / h <= g && h / w <= g;
           const feasUV = (u, vv) => feas(Math.exp(u), Math.exp(vv));
           const K = mc(`${A}|${g}`, () => {
@@ -254,9 +252,7 @@ with $f_i$ posynomials and $g_j$ monomials. It is generally not convex in $x$, b
             const t2 = chordTest(feasUV, [-2.5, -2.5, 2.2, 2.2], { seed: 2, tries: 20000 });
             const lf = (u, vv) => Math.log(f0(Math.exp(u), Math.exp(vv)));
             const c1 = chordTest2((w, h) => Math.log(f0(Math.exp(w), Math.exp(h))), [-2.5, -2.5, 2.2, 2.2], { seed: 6 });
-            let best = Infinity, bu = 0, bv = 0;
-            for (let i = 0; i <= 940; i++) for (let j = 0; j <= 940; j++) { const u = -2.5 + (4.7 * i) / 940, vv = -2.5 + (4.7 * j) / 940; if (feasUV(u, vv)) { const val = lf(u, vv); if (val < best) { best = val; bu = u; bv = vv; } } }
-            return { t1, t2, c1, best, bu, bv };
+            const opt=gpOpt(A,g);return {t1,t2,c1,best:Math.log(opt.f),bu:opt.u,bv:opt.v,opt};
           });
           L.raster((w, h) => (feas(w, h) ? rgbA(v, 'accent', 55) : null), { res: 3, key: `L|${A}|${g}` });
           R.raster((u, vv) => (feasUV(u, vv) ? rgbA(v, 'accent', 55) : null), { res: 3, key: `R|${A}|${g}` });
@@ -266,12 +262,13 @@ with $f_i$ posynomials and $g_j$ monomials. It is generally not convex in $x$, b
             R.dot(K.bu, K.bv, { r: 7, color: 'green' });
             L.dot(Math.exp(K.bu), Math.exp(K.bv), { r: 7, color: 'green' });
           }
-          info = K;
+          const ends=[gpBoundary(A,1/g),gpBoundary(A,g)],mid=ends[0].map((x,i)=>(x+ends[1][i])/2);L.segment(...ends,{color:'orange',width:2.5});L.dot(...mid,{color:'red',r:5});
+          info = {...K,chordExcess:mid[0]*mid[1]+.5*mid[0]**2-A};
         });
         v.legend([['accent', 'feasible set', { area: true }], ['ink', 'level sets of the objective'], ['green', 'optimum', { dot: true }]]);
         v.readout(() => {
-          const K = info; const yn = (t) => (t.bad === 0 ? '✓ passes' : `✗ ${t.bad}/${t.tested} chords leave the set`);
-          return `Chord test on the feasible set — original $(w,h)$: ${K.t1.m < 12 ? 'empty' : yn(K.t1)}; log variables $(u,v)$: ${K.t2.m < 12 ? 'empty' : yn(K.t2)}. Objective $\\log f_0(e^y)$ chord test: ${K.c1.bad === 0 ? '✓ convex' : '✗'}.\n${K.best < Infinity ? `Optimum: $w=${f3(v, Math.exp(K.bu))}$, $h=${f3(v, Math.exp(K.bv))}$, $f_0=${f3(v, Math.exp(K.best))}$.` : 'Infeasible.'}`;
+          const K = info; const yn = (t) => (t.bad === 0 ? 'no sampled violations' : `✗ ${t.bad}/${t.tested} chords leave the set`);
+          return `Chord test on the feasible set — original $(w,h)$: ${K.t1.m < 12 ? 'too few sampled feasible points' : yn(K.t1)}; log variables $(u,v)$: ${K.t2.m < 12 ? 'too few sampled feasible points' : yn(K.t2)}. Objective $\\log f_0(e^y)$ chord test: ${K.c1.bad === 0 ? 'no sampled violations' : 'sampled violations'}. The orange chord midpoint exceeds the area budget by $${f3(v,K.chordExcess,6)}$.\n${K.best < Infinity ? `Optimum: $w=${f3(v, Math.exp(K.bu))}$, $h=${f3(v, Math.exp(K.bv))}$, $f_0=${f3(v, Math.exp(K.best))}$.` : 'Infeasible.'}`;
         });
       },
     },
@@ -282,24 +279,19 @@ with $f_i$ posynomials and $g_j$ monomials. It is generally not convex in $x$, b
       name: 'Semidefinite programs',
       statement: String.raw`A **semidefinite program** (SDP) minimizes a linear function over a **spectrahedron**, the solution set of a linear matrix inequality (LMI):
 $$\min_x\ c^{\mathsf T}x\quad\text{s.t.}\quad F(x)=F_0+x_1F_1+\dots+x_nF_n\ \succeq\ 0,\quad Ax=b,$$
-with $F_i$ symmetric matrices. The constraint is the preimage of the positive semidefinite cone (opt-2.4) under an affine map, hence convex, but unlike a polyhedron its boundary can be curved. A finite family of LMIs is a single LMI (block-diagonal matrices), and LPs, QCQPs and SOCPs are special cases; a $2\times2$ block $\left[\begin{smallmatrix}t+s&r\\r&t-s\end{smallmatrix}\right]\succeq0$ is exactly $\norm{(s,r)}\le t$, so a second-order cone constraint is a $2\times2$ LMI. At an optimum of an SDP the matrix $F(x^\star)$ is typically singular (the eigenvalue constraint is tight).`,
+with $F_i$ symmetric matrices. The constraint is the preimage of the positive semidefinite cone (opt-2.4) under an affine map, hence convex, but unlike a polyhedron its boundary can be curved. A finite family of LMIs is a single LMI (block-diagonal matrices), and LPs, convex QCQPs and SOCPs can be represented as SDPs, using auxiliary variables when needed; a $2\times2$ block $\left[\begin{smallmatrix}t+s&r\\r&t-s\end{smallmatrix}\right]\succeq0$ is exactly $\norm{(s,r)}\le t$, so a second-order cone with two norm coordinates has a $2\times2$ LMI. In general $\|z\|_2\le t$ is equivalent to $\left[\begin{smallmatrix}tI&z\\z^{\mathsf T}&t\end{smallmatrix}\right]\succeq0$. In the displayed bounded examples, a nonzero linear objective is minimized on the boundary, where an LMI block is singular. This is not a universal claim for arbitrary equality-constrained SDPs or a zero objective.`,
       idea: String.raw`A symmetric matrix is positive semidefinite iff all its eigenvalues are nonnegative, iff $z^{\mathsf T}F(x)z\ge0$ for every $z$; each such inequality is a half-space in $x$ (affine in $x$ for fixed $z$), so the feasible set is an intersection of infinitely many half-spaces — convex, with curved boundary where the smallest eigenvalue crosses zero. Block-diagonal LMIs make the intersection of several spectrahedra a spectrahedron, and the $2\times2$ blocks used here recover discs (second-order cone slices). Strict feasibility ($F(x)\succ0$ for some $x$) is the SDP analogue of Slater's condition and underlies duality and interior-point methods.`,
-      caption: String.raw`Choose a spectrahedron: a disc ($2\times2$ LMI), a disc cut by two half-planes ($2\times2$ plus $1\times1$ blocks) or an intersection of three discs (three $2\times2$ blocks), each assembled into one block-diagonal LMI. Drag the point $x$ (white): the right panel shows the eigenvalues of $F(x)$, green when all are $\ge0$. The shading is the feasible set $\{\lambda_{\min}(F(x))\ge0\}$; the gold dot minimizes $c^{\mathsf T}x$ (direction $\varphi$) over it, found by a nested grid search, and its smallest eigenvalue is $0$: the active constraint is the one whose block is singular. The examples are chosen to look like polygons with some sides curved.`,
+      caption: String.raw`Choose a spectrahedron: a disc ($2\times2$ LMI), a disc cut by two half-planes ($2\times2$ plus $1\times1$ blocks) or an intersection of three discs (three $2\times2$ blocks), each assembled into one block-diagonal LMI. Drag the point $x$ (white): the right panel shows the eigenvalues of $F(x)$, green when all are $\ge0$. The shading is the feasible set $\{\lambda_{\min}(F(x))\ge0\}$; the gold dot minimizes $c^{\mathsf T}x$ (direction $\varphi$) over it, computed from feasible circle-support points and circle/line intersections; its smallest eigenvalue is $0$ up to floating-point roundoff: the active constraint is the one whose block is singular. The examples are chosen to look like polygons with some sides curved.`,
       deps: ['opt-4.9', 'opt-2.4'],
-      refs: ['Boyd–Vandenberghe §4.6'],
+      refs: ['Boyd–Vandenberghe (2004), §4.6.2–4.6.3, pp. 168–170; Schur complements, Appendix A.5.5'],
       tags: ['semidefinite program', 'LMI', 'spectrahedron'],
-      credit: 'Nesterov & Nemirovski, 1988–1994 (interior-point theory); Alizadeh, 1995 (SIAM J. Optim. 5(1), 13–51)',
-      verify: true,
+      credit: 'SDP and block-diagonal LMI formulations: Boyd–Vandenberghe §4.6.2',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Semidefinite_programming' },
       viz(v) {
         // each block: {n, F: (x1, x2) => symmetric matrix as rows}
-        const disc = (cx, cy, r) => ({ F: (x, y) => [[r + (x - cx), y - cy], [y - cy, r - (x - cx)]], name: `disc ${r}` });
-        const lin = (a, b, c) => ({ F: (x, y) => [[c - a * x - b * y]], name: 'half-plane' });
-        const SETS = {
-          disc: { label: 'disc', blocks: [disc(0, 0, 1.5)] },
-          cut: { label: 'disc and two cuts', blocks: [disc(0, 0, 1.6), lin(1, 0, 0.9), lin(-0.6, -1, 1.1)] },
-          three: { label: 'three discs', blocks: [disc(0.5, 0.0, 1.9), disc(-0.3, 0.65, 1.9), disc(-0.3, -0.65, 1.9)] },
-        };
+        const disc = (cx, cy, r) => ({ F: (x, y) => [[r + (x - cx), y - cy], [y - cy, r - (x - cx)]], name: `disc ${r}`,disc:{x:cx,y:cy,r} });
+        const lin = (a, b, c) => ({ F: (x, y) => [[c - a * x - b * y]], name: 'half-plane',half:{nx:a,ny:b,c} });
+        const SETS=Object.fromEntries(Object.entries(SDP_GEOMETRY).map(([k,o])=>[k,{label:o.label,blocks:[...o.discs.map(d=>disc(d.x,d.y,d.r)),...o.hs.map(h=>lin(h.nx,h.ny,h.c))]}]));
         const sel = v.select('LMI', Object.entries(SETS).map(([k, o]) => ({ value: k, label: o.label })), 'cut');
         const phi = v.slider('objective direction $\\varphi$ (degrees)', 0, 359, 30, { step: 1, int: true });
         const S = v.stage({ x: [-3, 3], y: [-2.5, 2.5], equal: true, axes: 'box', gutter: true, height: 400, title: 'spectrahedron $\\{x:F(x)\\succeq0\\}$' });
@@ -313,16 +305,7 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
         v.render(() => {
           const bl = SETS[sel.value].blocks, ph = (phi.value * Math.PI) / 180, c = [Math.cos(ph), Math.sin(ph)];
           S.raster((x, y) => { const m = lmin(bl, x, y); return m >= 0 ? rgbA(v, 'accent', 55) : null; }, { res: 3, key: 'S|' + sel.value });
-          const opt = mc(`${sel.value}|${phi.value}`, () => {
-            let best = null, cx = 0, cy = 0, h = 0.02, x0 = -3, x1 = 3, y0 = -2.5, y1 = 2.5;
-            for (let round = 0; round < 3; round++) {
-              best = null; const nx = Math.round((x1 - x0) / h), ny = Math.round((y1 - y0) / h);
-              for (let i = 0; i <= nx; i++) for (let j = 0; j <= ny; j++) { const x = x0 + i * h, y = y0 + j * h; if (lmin(bl, x, y) >= 0) { const val = c[0] * x + c[1] * y; if (!best || val < best.val) best = { x, y, val }; } }
-              if (!best) break;
-              x0 = best.x - 2 * h; x1 = best.x + 2 * h; y0 = best.y - 2 * h; y1 = best.y + 2 * h; h /= 8;
-            }
-            return best;
-          });
+          const opt = mc(`${sel.value}|${phi.value}`,()=>lensMin(c,bl.filter(b=>b.disc).map(b=>b.disc),bl.filter(b=>b.half).map(b=>b.half)));
           S.contour((x, y) => lmin(bl, x, y), [0], { color: 'accent', width: 2.6, res: 160 });
           S.arrow(0, 0, -0.9 * c[0], -0.9 * c[1], { color: 'gold', width: 2.4 });
           if (opt) {
@@ -339,7 +322,7 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
         v.legend([['accent', 'feasible set', { area: true }], ['gold', 'objective direction, level line, minimizer']]);
         v.readout(() => {
           const { opt, ok, lm, optEv } = info;
-          return `At the white point $\\lambda_{\\min}(F(x))=${f3(v, lm)}$: ${ok ? '**feasible**' : '**infeasible**'}.\n${opt ? `Minimizer $x^\\star=(${f3(v, opt.x, 3)},${f3(v, opt.y, 3)})$, $c^{\\mathsf T}x^\\star=${f3(v, opt.val)}$, $\\lambda_{\\min}(F(x^\\star))=${f3(v, optEv, 4)}$ (singular: the LMI is tight).` : ''}`;
+          return `At the white point $\\lambda_{\\min}(F(x))=${f3(v, lm)}$: ${ok ? '**feasible**' : '**infeasible**'}.\n${opt ? `Minimizer $x^\\star=(${f3(v, opt.x, 3)},${f3(v, opt.y, 3)})$, $c^{\\mathsf T}x^\\star=${f3(v, opt.val)}$, $\\lambda_{\\min}(F(x^\\star))=${f3(v, optEv, 4)}$ (boundary residual up to numerical roundoff).` : ''}`;
         });
       },
     },
@@ -349,58 +332,28 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
       kind: 'Definition',
       name: 'Pareto optimality and scalarization',
       statement: String.raw`A **multicriterion** (vector) problem minimizes $F(x)=(f_1(x),\dots,f_q(x))$ over a feasible set $X$. A feasible $x$ is **Pareto optimal** if no feasible $x'$ has $f_i(x')\le f_i(x)$ for all $i$ with strict inequality for some $i$; the set of attainable Pareto optimal values $F(x)$ is the **Pareto frontier** (optimal trade-off curve). **Scalarization** minimizes a weighted sum $\sum_i\lambda_if_i(x)$ with $\lambda\succ0$: every minimizer is Pareto optimal. For a **convex** problem ($f_i$ convex, $X$ convex) the converse holds: every Pareto optimal point minimizes $\sum\lambda_if_i$ for some $\lambda\succeq0$, $\lambda\ne0$. For non-convex problems some Pareto optimal points can never be reached by scalarization.`,
-      idea: String.raw`Consider the set $\mathcal A=\{F(x)+r:\ x\in X,\ r\succeq0\}$ of values dominated by attainable ones. A minimizer of $\lambda^{\mathsf T}u$ over $\mathcal A$ is a point where the hyperplane $\lambda^{\mathsf T}u=\text{const}$ supports $\mathcal A$ (opt-2.8). When the $f_i$ and $X$ are convex, $\mathcal A$ is convex, so by the supporting hyperplane theorem every boundary point — every Pareto optimal value — has a supporting hyperplane, i.e. is reached by some weight $\lambda$. If $\mathcal A$ is not convex, points in its dented part have no supporting hyperplane and scalarization jumps over them.`,
-      caption: String.raw`Two costs $f=(x_1,x_2)$ are minimized together over a set of designs $x\in X\subset\R^2$ (so the design plane and the objective plane coincide). In the **disc** setting $X$ is convex; in the **ring** setting $X=\{x\succeq0:1\le\norm x\le1.5\}$ is not. **Left:** the set $X$ with its Pareto frontier in green (the lower-left boundary), the minimizer of $\lambda f_1+(1-\lambda)f_2$ in gold and its supporting line of slope $-\lambda/(1-\lambda)$. **Right:** the values $f_1$ (blue) and $f_2$ (orange) of the weighted-sum minimizer as $\lambda$ sweeps from 0 to 1: it slides continuously along a convex frontier but **jumps** across the frontier of the ring, whose interior points no weight reaches (red). The readout gives the percentage of the frontier reached by some weight.`,
-      credit: 'Edgeworth, 1881; Pareto, 1896 (optimality); weighted-sum scalarization is standard in multicriteria optimization',
+      idea: String.raw`Consider the set $\mathcal A=\{F(x)+r:\ x\in X,\ r\succeq0\}$ of values dominated by attainable ones. A minimizer of $\lambda^{\mathsf T}u$ over $\mathcal A$ is a point where the hyperplane $\lambda^{\mathsf T}u=\text{const}$ supports $\mathcal A$ (opt-2.8). When the $f_i$ and $X$ are convex, $\mathcal A$ is convex, so by the supporting hyperplane theorem every boundary point — every Pareto optimal value — has a supporting hyperplane, i.e. is reached by some nonzero nonnegative weight $\lambda$. Nonnegativity follows because $\mathcal A$ contains every positive coordinate ray from each of its points. Zero weights can admit dominated ties, so not every minimizer for such a weight is Pareto optimal. If $\mathcal A$ is not convex, points in its dented part have no supporting hyperplane and scalarization jumps over them.`,
+      caption: String.raw`Two costs $f=(x_1,x_2)$ are minimized together over a set of designs $x\in X\subset\R^2$ (so the design plane and the objective plane coincide). In the **disc** setting $X$ is convex; in the **ring** setting $X=\{x\succeq0:1\le\norm x\le1.5\}$ is not. **Left:** the set $X$ with its Pareto frontier in green (the lower-left boundary), the minimizer of $\lambda f_1+(1-\lambda)f_2$ in gold and its supporting line of slope $-\lambda/(1-\lambda)$ (vertical at $\lambda=1$). **Right:** the values $f_1$ (blue) and $f_2$ (orange) of the weighted-sum minimizer as $\lambda$ sweeps from 0 to 1: it slides continuously along a convex frontier but **jumps** across the frontier of the ring, whose interior points no weight reaches (red). The readout gives the analytic reachability result. At $\lambda=1/2$ the ring has two tied endpoint minimizers; the interior arc is never optimal. The disc endpoints require a zero weight, while interior frontier points use positive weights.`,
+      credit: 'Pareto definitions and scalarization theorem: Boyd–Vandenberghe §4.7.3–4.7.4',
       deps: ['opt-4.1'],
-      refs: ['Boyd–Vandenberghe §4.7'],
+      refs: ['Boyd–Vandenberghe (2004), §4.7.3–4.7.4, pp. 177–180, including the nonnegative-weight qualification'],
       tags: ['Pareto', 'scalarization', 'multicriterion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pareto_efficiency' },
-      verify: true,
       viz(v) {
-        const mode = v.select('design set $X$', [{ value: 'disc', label: 'disc (convex)' }, { value: 'ring', label: 'ring (non-convex)' }], 'disc');
-        const lam = v.slider('weight $\\lambda$ on $f_1$', 0.01, 0.99, 0.5, { step: 0.005 });
-        const R = v.stage({ x: [0, 3.2], y: [0, 3.2], equal: true, axes: 'box', gutter: true, grid: true, height: 380, title: 'designs = objective values $(f_1,f_2)$', xlabel: '$f_1=x_1$', ylabel: '$f_2=x_2$' });
-        const T = v.stage({ x: [0, 1], y: [0, 3.2], axes: 'box', gutter: true, grid: true, height: 380, title: 'minimizer vs $\\lambda$: $f_1$ (blue), $f_2$ (orange)', xlabel: '$\\lambda$' });
-        const SETS = {
-          disc: (x, y) => (x - 1.9) ** 2 + (y - 1.6) ** 2 <= 1.3 ** 2,
-          ring: (x, y) => x >= 0 && y >= 0 && x * x + y * y >= 1 && x * x + y * y <= 2.25,
-        };
-        const F = (p) => [p[0], p[1]];
-        const mc = memo();
-        let info = {};
-        v.render(() => {
-          const K = mc(mode.value, () => {
-            const pts = [];
-            for (let i = 0; i <= 320; i++) for (let j = 0; j <= 320; j++) { const x = (3.2 * i) / 320, y = (3.2 * j) / 320; if (SETS[mode.value](x, y)) pts.push([x, y]); }
-            const V = pts.map(F);
-            const ord = V.map((_, i) => i).sort((i, j) => V[i][0] - V[j][0] || V[i][1] - V[j][1]);
-            const par = []; let best = Infinity;
-            for (const i of ord) if (V[i][1] < best - 1e-12) { par.push(i); best = V[i][1]; }
-            const lams = Array.from({ length: 300 }, (_, k) => 0.003 + (0.994 * k) / 299);
-            const arg = lams.map((l) => { let bi = 0, bv = Infinity; V.forEach((u, i) => { const val = l * u[0] + (1 - l) * u[1]; if (val < bv) { bv = val; bi = i; } }); return bi; });
-            const mins = lams.map((l, k) => l * V[arg[k]][0] + (1 - l) * V[arg[k]][1]);
-            const sup = par.map((i) => lams.some((l, k) => l * V[i][0] + (1 - l) * V[i][1] <= mins[k] + 0.012));
-            return { pts, V, par, sup, lams, arg, frac: sup.filter(Boolean).length / par.length };
-          });
-          const l = lam.value; let bi = 0, bv = Infinity;
-          K.V.forEach((u, i) => { const val = l * u[0] + (1 - l) * u[1]; if (val < bv) { bv = val; bi = i; } });
-          R.raster((x, y) => (SETS[mode.value](x, y) ? rgbA(v, 'accent', 50) : null), { res: 3, key: 'L|' + mode.value });
-          R.path(K.par.map((i) => K.V[i]), { color: 'green', width: 2.6 });
-          K.par.forEach((i, k) => { if (!K.sup[k]) R.dot(K.V[i][0], K.V[i][1], { r: 2.2, color: 'red' }); });
-          const u = K.V[bi], d = [-(1 - l), l];
-          R.line(u[0] - 30 * d[0], u[1] - 30 * d[1], u[0] + 30 * d[0], u[1] + 30 * d[1], { color: 'gold', width: 1.6, dash: true });
-          R.dot(u[0], u[1], { r: 7, color: 'gold' });
-          T.path(K.lams.map((x, k) => [x, K.V[K.arg[k]][0]]), { color: 'accent', width: 2.2 });
-          T.path(K.lams.map((x, k) => [x, K.V[K.arg[k]][1]]), { color: 'orange', width: 2.2 });
-          T.dot(l, u[0], { r: 6, color: 'gold' });
-          info = { frac: K.frac, np: K.par.length, u, cv: mode.value === 'disc' };
-        });
-        v.legend([['green', 'Pareto optimal designs / frontier'], ['red', 'frontier points no weight reaches', { dot: true }], ['gold', 'weighted-sum minimizer', { dot: true }]]);
-        v.readout(() => {
-          const { frac, np, u, cv } = info;
-          return `Weighted-sum minimizer: $(f_1,f_2)=(${f3(v, u[0], 2)},${f3(v, u[1], 2)})$. The frontier has ${np} grid points; **${f3(v, 100 * frac, 0)}%** of them minimize some weighted sum${cv ? ' (convex problem: all of them)' : ' (non-convex set: only the two ends of the arc are reachable)'}.`;
-        });
+        const mode=v.select('design set $X$',[{value:'disc',label:'disc (convex)'},{value:'ring',label:'ring (non-convex)'}],'disc');
+        const lam=v.slider('weight $\\lambda$ on $f_1$',0,1,.5,{step:.005});
+        const R=v.stage({x:[-.12,3.4],y:[-.12,3.2],equal:true,axes:'box',gutter:true,grid:true,height:380,title:'designs = objective values $(f_1,f_2)$',xlabel:'$f_1=x_1$',ylabel:'$f_2=x_2$'});
+        const T=v.stage({x:[-.025,1.025],y:[-.12,3.2],axes:'box',gutter:true,grid:true,height:380,title:'selected weighted-sum minimizers vs $\\lambda$',xlabel:'$\\lambda$'});
+        let info={};v.render(()=>{const disc=mode.value==='disc',l=lam.value,P=paretoPoint(mode.value,l),u=P.u;
+          R.raster((x,y)=>(disc?(x-1.9)**2+(y-1.6)**2<=1.3**2:x>=0&&y>=0&&x*x+y*y>=1&&x*x+y*y<=2.25)?rgbA(v,'accent',50):null,{res:3,key:mode.value});
+          const arc=Array.from({length:161},(_,i)=>{const t=disc?Math.PI+i*Math.PI/320:i*Math.PI/320;return disc?[1.9+1.3*Math.cos(t),1.6+1.3*Math.sin(t)]:[Math.cos(t),Math.sin(t)];});
+          R.path(arc,{color:'green',width:3});if(!disc)R.path(arc.slice(1,-1),{color:'red',width:2});
+          const d=[-(1-l),l];R.line(u[0]-10*d[0],u[1]-10*d[1],u[0]+10*d[0],u[1]+10*d[1],{color:'gold',width:1.6,dash:true});
+          for(const q of P.ties.length?P.ties:[u])R.dot(...q,{r:7,color:'gold'});
+          for(let k=0;k<2;k++){const color=k?'orange':'accent';if(disc)T.path(Array.from({length:201},(_,i)=>[i/200,paretoPoint('disc',i/200).u[k]]),{color,width:2.2});else{T.path([[0,k?0:1],[.5,k?0:1]],{color,width:2.2});T.path([[.5,k?1:0],[1,k?1:0]],{color,width:2.2});for(const y of [0,1])T.dot(.5,y,{color,r:3});}for(const q of P.ties.length?P.ties:[u])T.dot(l,q[k],{r:5,color});}
+          info={...P,disc,l};});
+        v.legend([['green','Pareto frontier'],['red','ring interior: no weight reaches it'],['gold','weighted-sum minimizer(s)',{dot:true}]]);
+        v.readout(()=>{const{u,disc,ties,value,l}=info;return `Weighted-sum minimum $${f3(v,value)}$ at ${ties.length?'both $(1,0)$ and $(0,1)$ (tie)':`$(f_1,f_2)=(${f3(v,u[0],4)},${f3(v,u[1],4)})$`}. ${disc?'Every point of the exact disc frontier is reached by a nonnegative weight; the two endpoints use a zero weight.':'Only the two endpoints of the inner quarter-circle are reached by any nonzero nonnegative weight. Every interior point is Pareto optimal but unsupported.'}${!disc&&(l===0||l===1)?' At a zero weight there are also dominated minimizers along the corresponding axis segment of radii 1–1.5; the displayed endpoint is a Pareto representative.':''}`;});
       },
     },
     // ───────────────────────────────────────────────────────────── 4.14
@@ -408,31 +361,18 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
       num: '4.14',
       kind: 'Invention',
       name: 'Disciplined convex programming and modelling languages',
-      statement: String.raw`**Disciplined convex programming** (DCP) is a set of rules for building expressions whose convexity can be verified mechanically. Every expression is a tree of **atoms** (functions with known curvature and, per argument, known monotonicity) applied to variables. The **composition rule**: $h(g_1,\dots,g_k)$ is convex if $h$ is convex and for each $i$ either $h$ is nondecreasing in its $i$-th argument and $g_i$ is convex, or $h$ is nonincreasing in it and $g_i$ is concave, or $g_i$ is affine (and analogously for concave). Expressions that follow the rules are certified convex (or concave, or affine); a program built from them is accepted as convex. The rules are **sufficient, not necessary**: $\sqrt{x^2}$ equals $|x|$ for $x\ge0$, but the rules reject it. Modelling languages (CVX, CVXPY, YALMIP) implement DCP and translate accepted problems into the conic forms of this chapter for a solver.`,
-      idea: String.raw`The composition rule is the chain rule for convexity (opt-3.6): for $f=h\circ g$ with $g$ a scalar function, $f''=h'(g)g''+h''(g)(g')^2$, which is $\ge0$ when $h''\ge0$ and $h'g''\ge0$ — exactly "$h$ increasing with $g$ convex or $h$ decreasing with $g$ concave". Applying this recursively along the tree, with the curvature and sign of each node computed bottom-up, certifies the whole expression in time linear in its size. Each atom also has a representation as a cone constraint (an epigraph, opt-4.3), so an accepted problem can be rewritten as an SOCP or SDP (opt-4.9, opt-4.12) automatically.`,
-      caption: String.raw`Pick a classic expression or build one yourself: start from a variable and wrap the current expression in an atom. The tree shows each node's curvature computed by the rules (blue convex, orange concave, grey affine, red rejected). The verdict is the **DCP verdict**; below it is a numerical chord test of the actual function on $x,y\in[0.2,4]$. Where they differ — e.g. $\log(e^x)=x$ or $\sqrt{x^2}$ — the rules are conservative: the function is convex (even affine), but the expression is not written in a form DCP can certify.`,
-      scope: String.raw`Variables are taken nonnegative ($x,y\ge0.2$ in the numerical test) so that $\log$, $\sqrt{\cdot}$ and $1/x$ are defined; the atom set shown is a small fragment of CVX/CVXPY's.`,
-      credit: 'Grant, Boyd & Ye, 2006 (Disciplined convex programming); CVX, Grant & Boyd, 2008; CVXPY, Diamond & Boyd, 2016',
+      statement: String.raw`**Disciplined convex programming** (DCP) is a set of rules for building expressions whose convexity can be verified mechanically. Every expression is represented as a tree of **atoms** (functions with known curvature and, per argument, known monotonicity) applied to variables. The **composition rule**: $h(g_1,\dots,g_k)$ is convex if $h$ is convex and for each $i$ either $h$ is nondecreasing in its $i$-th argument and $g_i$ is convex, or $h$ is nonincreasing in it and $g_i$ is concave, or $g_i$ is affine (and analogously for concave). Expressions that follow the rules are certified convex (or concave, or affine); a minimization problem with a convex objective, convex $\le$ concave inequalities and affine equalities is accepted as convex. Atom domains must be respected, and convexity certification does not assert feasibility or attainment. The rules are **sufficient, not necessary**: $\sqrt{x^2}$ equals $|x|$ on $\R$, but the rules reject it. Modelling languages such as CVX and CVXPY apply DCP and translate supported atoms into solver representations. Exponential and logarithmic atoms require representations beyond LP/SOCP/SDP, such as the exponential cone.`,
+      idea: String.raw`For twice-differentiable scalar functions on compatible convex domains, the composition rule can be illustrated by the chain rule (opt-3.6): for $f=h\circ g$ with $g$ a scalar function, $f''=h'(g)g''+h''(g)(g')^2$, which is $\ge0$ when $h''\ge0$ and $h'g''\ge0$ — exactly "$h$ increasing with $g$ convex or $h$ decreasing with $g$ concave". Applying this recursively along the tree, with the curvature and sign of each node computed bottom-up, propagates curvature with work proportional to the number of tree nodes for a fixed-size atom library (excluding formula copying and canonicalization). Nonsmooth atoms such as absolute value and norms use the general composition theorem rather than this derivative calculation. Supported atoms have graph/epigraph implementations; their expansion gives an equivalent solver form, which need not be an SOCP or SDP.`,
+      caption: String.raw`Pick a classic expression or build one yourself: start from a variable and wrap the current expression in an atom. The tree shows each node's curvature computed by the rules (blue convex, orange concave, grey affine, red rejected). The verdict is the **DCP verdict**; below it are finite numerical chord diagnostics of the actual function on $x,y\in[0.2,4]$. Known identities — e.g. $\log(e^x)=x$ or $\sqrt{x^2}$ — show the rules can be conservative: those functions are affine for positive inputs, but these expression trees are not certified. The chord samples alone prove no curvature claim.`,
+      scope: String.raw`Variables are declared nonnegative; numerical tests sample $x,y\in[0.2,4]$. Composed atoms can still leave their domains (for example $\log(-x)$); nonfinite evaluations, including domain failures and floating-point overflow, are counted and skipped. Inverse means the positive-domain atom $1/t$ for $t>0$. The atom set is a small fragment of CVX/CVXPY; the builder is limited to 31 nodes and depth 5 for readable trees.`,
+      credit: 'Grant, Boyd & Ye (2006), Disciplined convex programming, pp. 155–210; current rules: CVXPY documentation',
       deps: ['opt-3.6', 'opt-4.12'],
-      refs: ['Boyd–Vandenberghe ch. 4'],
+      refs: ['Grant, Boyd & Ye (2006), §§6.2–6.4 and §10 (graph implementations)', 'CVXPY official DCP tutorial: curvature rules and problem rules'],
       tags: ['DCP', 'modelling language', 'composition rules'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Disciplined_convex_programming', website: 'https://www.cvxpy.org/tutorial/dcp/' },
-      verify: true,
       viz(v) {
         // atoms: curv ('convex'|'concave'|'affine'), mono per arg: 'inc' | 'dec' | 'sgn' (inc on nonneg, dec on nonpos), sign of result
-        const AT = {
-          square: { n: 1, curv: 'convex', mono: ['sgn'], f: (a) => a * a, sign: () => 'nn', tex: (a) => `(${a})^2` },
-          abs: { n: 1, curv: 'convex', mono: ['sgn'], f: (a) => Math.abs(a), sign: () => 'nn', tex: (a) => `|${a}|` },
-          exp: { n: 1, curv: 'convex', mono: ['inc'], f: Math.exp, sign: () => 'nn', tex: (a) => `e^{${a}}` },
-          inv: { n: 1, curv: 'convex', mono: ['dec'], f: (a) => (a > 0 ? 1 / a : NaN), sign: () => 'nn', tex: (a) => `1/${a}`, needsPos: true },
-          log: { n: 1, curv: 'concave', mono: ['inc'], f: (a) => (a > 0 ? Math.log(a) : NaN), sign: () => 'unk', tex: (a) => `\\log(${a})` },
-          sqrt: { n: 1, curv: 'concave', mono: ['inc'], f: (a) => (a >= 0 ? Math.sqrt(a) : NaN), sign: () => 'nn', tex: (a) => `\\sqrt{${a}}` },
-          neg: { n: 1, curv: 'affine', mono: ['dec'], f: (a) => -a, sign: (s) => (s[0] === 'nn' ? 'np' : s[0] === 'np' ? 'nn' : 'unk'), tex: (a) => `-${a}` },
-          add: { n: 2, curv: 'affine', mono: ['inc', 'inc'], f: (a, b) => a + b, sign: (s) => (s[0] === 'nn' && s[1] === 'nn' ? 'nn' : s[0] === 'np' && s[1] === 'np' ? 'np' : 'unk'), tex: (a, b) => `${a}+${b}` },
-          max: { n: 2, curv: 'convex', mono: ['inc', 'inc'], f: Math.max, sign: (s) => (s.includes('nn') ? 'nn' : s[0] === 'np' && s[1] === 'np' ? 'np' : 'unk'), tex: (a, b) => `\\max(${a},${b})` },
-          min: { n: 2, curv: 'concave', mono: ['inc', 'inc'], f: Math.min, sign: (s) => (s[0] === 'nn' && s[1] === 'nn' ? 'nn' : 'unk'), tex: (a, b) => `\\min(${a},${b})` },
-          norm: { n: 2, curv: 'convex', mono: ['sgn', 'sgn'], f: Math.hypot, sign: () => 'nn', tex: (a, b) => `\\|(${a},${b})\\|` },
-        };
+        const AT=DCP_AT;
         const V = (nm) => ({ op: nm });
         const ap = (op, ...args) => ({ op, args });
         const PRE = {
@@ -451,35 +391,21 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
         const names = Object.keys(PRE);
         const sel = v.select('example', names.map((n) => ({ value: n, label: n })), 'log(eˣ)');
         let E = PRE[sel.value];
-        const hist = [];
-        const setE = (e) => { hist.push(E); E = e; v.invalidate(); };
+        const hist = [];let limit=false;const size=e=>1+(e.args||[]).reduce((n,a)=>n+size(a),0),depth=e=>1+Math.max(0,...(e.args||[]).map(depth));
+        const setE = (e) => {if(size(e)>31||depth(e)>5){limit=true;v.invalidate();return;}limit=false;hist.push(E); E = e; v.invalidate(); };
         sel.set(sel.value);
         const prevSel = { v: sel.value };
         const bar = (label, fn) => v.button(label, fn);
         ['square', 'abs', 'exp', 'log', 'sqrt', 'neg', 'inv'].forEach((op) => bar(`${op}(·)`, () => setE(ap(op, E))));
         ['add', 'max', 'min', 'norm'].forEach((op) => { bar(`${op}(·, x)`, () => setE(ap(op, E, V('x')))); bar(`${op}(·, y)`, () => setE(ap(op, E, V('y')))); });
-        v.button('undo', () => { if (hist.length) { E = hist.pop(); v.invalidate(); } });
+        v.button('undo', () => { if (hist.length) { E = hist.pop(); limit=false; v.invalidate(); } });
         // analysis
-        const ana = (e) => {
-          if (!e.args) return { e, convex: true, concave: true, sign: 'nn', kids: [], str: e.op, val: (x, y) => (e.op === 'x' ? x : y), name: e.op };
-          const at = AT[e.op], kids = e.args.map(ana);
-          const cond = (isConvexOuter) => kids.every((k, i) => {
-            const aff = k.convex && k.concave; if (aff) return true;
-            let m = at.mono[i]; if (m === 'sgn') m = k.sign === 'nn' ? 'inc' : k.sign === 'np' ? 'dec' : null;
-            if (m === 'inc') return isConvexOuter ? k.convex : k.concave;
-            if (m === 'dec') return isConvexOuter ? k.concave : k.convex;
-            return false;
-          });
-          const convex = (at.curv === 'convex' || at.curv === 'affine') && cond(true);
-          const concave = (at.curv === 'concave' || at.curv === 'affine') && cond(false);
-          const posOK = !at.needsPos || kids.every((k) => k.sign === 'nn');
-          return { e, convex: convex && posOK, concave: concave && posOK, sign: at.sign(kids.map((k) => k.sign)), kids, name: e.op, str: at.tex(...kids.map((k) => k.str)), val: (x, y) => at.f(...kids.map((k) => k.val(x, y))) };
-        };
+        const ana=analyzeDcp;
         const S = v.stage({ x: [0, 10], y: [0, 6], axes: false, height: 330, title: 'expression tree with inferred curvature' });
         const pos = (a) => a;
         let info = {};
         v.render(() => {
-          if (sel.value !== prevSel.v) { prevSel.v = sel.value; hist.length = 0; E = PRE[sel.value]; }
+          if (sel.value !== prevSel.v) { prevSel.v = sel.value; hist.length = 0; limit=false; E = PRE[sel.value]; }
           const A = ana(E);
           // layout
           let leaf = 0; const depthMax = (n) => (n.kids.length ? 1 + Math.max(...n.kids.map(depthMax)) : 0);
@@ -491,25 +417,16 @@ with $F_i$ symmetric matrices. The constraint is the preimage of the positive se
           const lab = (n) => (n.convex && n.concave ? 'affine' : n.convex ? 'convex' : n.concave ? 'concave' : 'rejected');
           const draw = (n) => {
             n.kids.forEach((k) => { S.segment([X(n.px), Y(n.d)], [X(k.px), Y(k.d)], { color: 'muted', width: 1.4 }); draw(k); });
-            S.dot(X(n.px), Y(n.d), { r: 15, color: col(n) });
-            S.text(n.kids.length ? n.name : n.name, X(n.px), Y(n.d), { size: 12, color: 'panel', align: 'center', baseline: 'middle' });
+            S.dot(X(n.px), Y(n.d), { r: 18, color: col(n) });
+            S.text(n.kids.length ? n.name : n.name, X(n.px), Y(n.d), { size: 11.5, color: 'panel', align: 'center', baseline: 'middle',halo:false,weight:600 });
             S.text(lab(n), X(n.px), Y(n.d) - 0.5, { size: 11, color: col(n), align: 'center' });
           };
           draw(A);
           // numeric chord test on [0.2,4]^2
           const f = (x, y) => A.val(x, y);
-          const cc = chordTest2(f, [0.2, 0.2, 4, 4], { seed: 9, n: 2500 });
-          const nf = chordTest2((x, y) => -f(x, y), [0.2, 0.2, 4, 4], { seed: 9, n: 2500 });
-          const numerics = cc.tested < 100 ? 'undefined' : cc.bad === 0 && nf.bad === 0 ? 'affine' : cc.bad === 0 ? 'convex' : nf.bad === 0 ? 'concave' : 'neither';
-          info = { A, dcp: lab(A), numerics, str: A.str };
+          const diagnostics=dcpChords(f);info={A,dcp:lab(A),str:A.str,diagnostics};
         });
-        v.readout(() => {
-          const { dcp, numerics, str } = info;
-          const dcpWord = dcp === 'rejected' ? 'neither (rejected)' : dcp;
-          const agree = dcp === numerics || (dcp === 'affine' && false);
-          const flag = dcp === 'rejected' && numerics !== 'neither' && numerics !== 'undefined' ? ' — the function is in fact ' + numerics + ', but the rules cannot see it.' : dcp !== 'rejected' && dcp !== numerics && !(dcp === 'convex' && numerics === 'affine') && !(dcp === 'concave' && numerics === 'affine') ? ' — check the numerics.' : '.';
-          return `$f(x,y)=${str}$\nDCP verdict: **${dcpWord}**. Numerical chord test on $[0.2,4]^2$: **${numerics}**${flag}`;
-        });
+        v.readout(()=>{const{dcp,str,diagnostics:d}=info;return `$f(x,y)=${str}$\nDCP curvature: **${dcp==='rejected'?'unknown (not certified)':dcp}**. Finite chord diagnostics on $[0.2,4]^2$: ${d.tested} evaluated, ${d.skipped} skipped (nonfinite/domain); convexity violations **${d.convexViolations}**, concavity violations **${d.concaveViolations}**. Samples do not certify global curvature.${limit?' Builder limit reached: undo or choose another example.':''}`;});
       },
     },
   ],

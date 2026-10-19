@@ -185,13 +185,12 @@ export default {
 (a) **Weak duality:** if $x$ is primal feasible and $y$ dual feasible, then $c^{\top}x\le b^{\top}y$.
 (b) **Strong duality:** if either program has a finite optimal value, so does the other, and the two optimal values are equal.
 (c) If the primal is unbounded the dual is infeasible, and if the dual is unbounded the primal is infeasible (both can be infeasible).`,
-      idea: String.raw`(a) $c^{\top}x\le (A^{\top}y)^{\top}x=y^{\top}(Ax)\le y^{\top}b$, using $x\ge0$ in the first step and $y\ge0$ in the second. (b) Farkas' lemma (opt-5.14, via cross-listing 11.18) says that a system $Mz\le q$ has no solution exactly when a nonnegative combination of its rows gives $0\le -1$; applied to the system "$x$ primal feasible, $y$ dual feasible, $c^{\top}x\ge b^{\top}y+\varepsilon$" the alternative contradicts weak duality's bound, so a feasible pair with equal values exists. In the simplex method the same fact appears as the multipliers in the optimal tableau, which are a dual feasible $y$ with $b^{\top}y=c^{\top}x^*$.`,
-      caption: String.raw`Left: the primal region; right: a number line of objective values. Blue dots are values $c^\top x$ of random primal feasible points (big dots: vertices), red dots are values $b^\top y$ of dual feasible points. Every red dot lies to the right of every blue one (weak duality); the shaded gap between the best of each closes exactly at the common optimum when the vertices are included. Edit $c$ or the first right-hand side $b_1$, and switch the case to make the primal unbounded (the dual then has no points) or infeasible.`,
+      idea: String.raw`(a) $c^{\top}x\le (A^{\top}y)^{\top}x=y^{\top}(Ax)\le y^{\top}b$, using $x\ge0$ in the first step and $y\ge0$ in the second. (b) Let the feasible primal have finite optimum $p^*$. The inequality $c^\top x\le p^*$ is a consequence of its feasible constraints $Ax\le b$ and $-x\le0$. The **inhomogeneous Farkas lemma** therefore gives $y,z\ge0$ with $A^\top y-z=c$ and $b^\top y\le p^*$. Thus $y$ is dual feasible; weak duality forces $b^\top y=p^*$. Swapping primal and dual proves the symmetric case. This uses the consequence form of Farkas on a nonempty feasible system; impossibility of a positive-gap pair alone would not establish an equal-value pair.`,
+      caption: String.raw`Left: the primal region; right: a number line of objective values. Blue dots are values $c^\top x$ of random primal feasible points (big dots: vertices), red dots are values $b^\top y$ of dual feasible points. Every red dot lies to the right of every blue one (weak duality); the best vertex values meet at the computed common optimum in the bounded case. The number line fits all sampled values. The left window clips the unbounded region; it does not determine solver status. Edit $c$ or the first right-hand side $b_1$, and switch the case to make the primal unbounded (the dual then has no points) or infeasible.`,
       deps: ['opt-5.14', 'algo-11.15'],
-      refs: ['CLRS 4e §29.3'],
+      refs: ['Nemirovski, Optimization I (2024), slides 3.38–3.40, PDF pp.240–242', 'Erickson H.5 and H.7'],
       tags: ['linear programming', 'duality'],
-      credit: 'J. von Neumann, 1947 (unpublished); D. Gale, H. W. Kuhn & A. W. Tucker, 1951 (first published proof)',
-      verify: true,
+      scope: String.raw`Finite-dimensional LPs with real data. The finite numerical illustration has positive $c_1,c_2$; its three cases do not enumerate every possible primal/dual status pair. Solver limits are reported separately, never as an unboundedness proof.`,
       viz(v) {
         const s = v.stage({ x: [0, 8], y: [0, 8], equal: true, axes: 'box', gutter: true, height: 340, xlabel: '$x_1$', ylabel: '$x_2$', title: 'Primal feasible region', weight: 1 });
         const nl = v.stage({ x: [0, 20], y: [0, 3], axes: 'box', gutter: true, height: 340, xlabel: 'objective value', weight: 1.2, title: 'Primal values (blue) and dual values (red)', yticks: [[1, 'primal'], [2, 'dual']] });
@@ -216,9 +215,9 @@ export default {
           const { A, b, c, prim, polyFull } = D;
           A.forEach((a, i) => { const tx = -a[1], ty = a[0], L = Math.hypot(a[0], a[1]), px = (a[0] * b[i]) / (L * L), py = (a[1] * b[i]) / (L * L); s.clip(() => s.line(px - 40 * tx, py - 40 * ty, px + 40 * tx, py + 40 * ty, { color: 'orange', width: 2 })); });
           if (polyFull.length >= 3) { const dp = clipWin(polyFull); if (dp.length) s.poly(dp, { fill: 'accent', fillAlpha: 0.16, color: 'accent', width: 2 }); }
-          D.ps.forEach((x) => s.dot(x[0], x[1], { r: 2, color: 'blue' })); D.pv.forEach((x) => s.dot(x[0], x[1], { r: 4.5, color: 'blue' }));
+          s.clip(() => { D.ps.forEach((x) => s.dot(x[0], x[1], { r: 2, color: 'blue' })); D.pv.forEach((x) => s.dot(x[0], x[1], { r: 4.5, color: 'blue' })); });
           if (prim.status === 'optimal') { s.dot(prim.x[0], prim.x[1], { r: 9, hollow: true, color: 'green' }); const cn = Math.hypot(c[0], c[1]); s.clip(() => s.line(prim.x[0] + 40 * (-c[1] / cn), prim.x[1] + 40 * (c[0] / cn), prim.x[0] - 40 * (-c[1] / cn), prim.x[1] - 40 * (c[0] / cn), { color: 'gold', width: 2.2 })); }
-          const all = [...D.vp, ...D.vd, ...D.pvv, ...D.dvv], ref = prim.status === 'optimal' ? prim.value : Math.max(10, ...all.map(Math.abs)) / 2, hi = Math.max(8, ref * 2.4), lo = Math.min(0, ...all.filter((x) => x > -3 * hi)) * 1.08;
+          const all = [...D.vp, ...D.vd, ...D.pvv, ...D.dvv], ref = prim.status === 'optimal' ? prim.value : Math.max(10, ...all.map(Math.abs)) / 2, hi = Math.max(8, ...all, ref) * 1.08, lo = Math.min(0, ...all) - Math.max(1, hi * 0.03);
           nl.setView([lo, hi], [0, 3]);
           const mp = D.vp.concat(D.pvv).length ? Math.max(...D.vp, ...D.pvv) : null, md = D.vd.concat(D.dvv).length ? Math.min(...D.vd, ...D.dvv) : null;
           if (mp != null && md != null) nl.rect(mp, 1.25, Math.max(md, mp), 1.75, { fill: 'gold', fillAlpha: md >= mp - 1e-9 ? 0.35 : 0.1, color: 'gold', width: 1 });
@@ -232,7 +231,7 @@ export default {
           const st = (r) => (r.status === 'optimal' ? 'optimal' : r.status);
           const mp = Math.max(...D.vp, ...D.pvv, -Infinity), md = Math.min(...D.vd, ...D.dvv, Infinity);
           const weak = D.vp.every((p) => D.vd.every((q) => p <= q + 1e-9));
-          return `primal: **${st(prim)}**${prim.status === 'optimal' ? ` ${num(prim.value, 3)}` : ''} · dual: **${st(dual)}**${dual.status === 'optimal' ? ` ${num(dv, 3)}` : ''}${prim.status === 'optimal' && dual.status === 'optimal' ? ` · gap $${num(Math.abs(prim.value - dv), 6)}$ ✓ strong duality` : ''}\nweak duality on all ${D.vp.length * D.vd.length} sampled pairs: ${weak ? '✓' : '✗'}${isFinite(mp) && isFinite(md) ? ` · best primal point ${num(mp, 3)} ≤ best dual point ${num(md, 3)}` : ''}${prim.status === 'optimal' ? ` · optimal dual $y^*=(${dual.x.map((q) => num(q, 2)).join(', ')})$` : ''}`;
+          return `primal: **${st(prim)}**${prim.status === 'optimal' ? ` ${num(prim.value, 3)}` : ''} · dual: **${st(dual)}**${dual.status === 'optimal' ? ` ${num(dv, 3)}` : ''}${prim.status === 'optimal' && dual.status === 'optimal' ? ` · computed gap $${num(Math.abs(prim.value - dv), 6)}$ (numerical illustration)` : ''}\n${D.vp.length * D.vd.length ? `weak inequality on ${D.vp.length * D.vd.length} sampled pairs: ${weak ? 'holds' : 'fails'}` : 'No sampled primal/dual pair; no sampled comparison'}${isFinite(mp) && isFinite(md) ? ` · best primal point ${num(mp, 3)} ≤ best dual point ${num(md, 3)}` : ''}${prim.status === 'optimal' && dual.status === 'optimal' ? ` · optimal dual $y^*=(${dual.x.map((q) => num(q, 2)).join(', ')})$` : ''}`;
         });
       },
     },

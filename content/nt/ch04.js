@@ -72,13 +72,11 @@ Exactly $(p-1)/2$ of the $p-1$ non-zero classes are residues, and exactly $(p-1)
 $$a^{(p-1)/2}\equiv\left(\frac ap\right)\pmod p .$$
 In particular $a^{(p-1)/2}\equiv\pm1$ always, the symbol is multiplicative, $\left(\frac{ab}p\right)=\left(\frac ap\right)\left(\frac bp\right)$, and $a$ is a residue exactly when $a^{(p-1)/2}\equiv1$. For a composite odd modulus $n$ the power $a^{(n-1)/2}$ need not be $\pm1$ at all.`,
       idea: String.raw`By Fermat's little theorem (2.5), $b=a^{(p-1)/2}$ satisfies $b^2\equiv1$, hence $b\equiv\pm1$ since $\Z/p\Z$ has no zero divisors. If $a\equiv x^2$ then $b\equiv x^{p-1}\equiv1$. So the $(p-1)/2$ residues are roots of $y^{(p-1)/2}-1$, and Lagrange's theorem (2.12) says that polynomial has at most $(p-1)/2$ roots; these are therefore all of its roots, and every non-residue must give $b\equiv-1$. (With a primitive root $g$ (3.2): $a=g^k$ is a square iff $k$ is even, and $g^{k(p-1)/2}=(-1)^k$.)`,
-      caption: String.raw`Slide $p$ and $a$. The first panel plots $a^{(p-1)/2}$ reduced to $(-p/2,p/2]$ for every $a$: the bars sit at $\pm1$ and their colour (green square, red non-square) is decided independently by brute-force squaring. The second panel lists the repeated squarings $a,a^2,a^4,\dots$ and the product that builds the exponent $(p-1)/2$. Tick *composite* and use $n=15$ or $21$: the powers scatter and no longer decide anything.`,
+      caption: String.raw`Choose a modulus (nearest odd prime, or nearest odd integer in composite mode) and an integer $a$, reduced modulo it. A multiple of $p$ is shown as zero and explicitly excluded from the nonzero hypothesis. The first panel plots $a^{(p-1)/2}$ reduced to $(-p/2,p/2]$ for every unit $a$: for a prime the bars sit at $\pm1$ and their colour (green square, red non-square) is decided independently by brute-force squaring. The second panel lists the repeated squarings $a,a^2,a^4,\dots$ and the product that builds the exponent $(p-1)/2$. Tick *composite* and use $n=15$ or $21$: the unit powers can differ from the prime criterion; squares still necessarily give Jacobi symbol $+1$ when coprime, but that condition is not sufficient.`,
       deps: ['nt-4.1', 'nt-3.2', 'nt-2.5', 'nt-2.12'],
-      refs: ['Apostol §9.2', 'Hardy–Wright §6.5'],
+      refs: ['Lee–Kumar, MIT 18.781 (2012), Lecture 9, Lemma 39, pp.1–2'],
       tags: ['Euler', 'quadratic residue', 'fast power'],
-      credit: 'Euler, 1748 (criterion stated and proved)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Euler%27s_criterion' },
+      links: { source: 'https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/d5cdd1b802194a2a236eed934da8ae36_MIT18_781S12_lec9.pdf#page=1' },
       viz(v) {
         const P = v.slider('modulus $p$', 3, 61, 23, { int: true });
         const A = v.slider('$a$', 1, 60, 5, { int: true });
@@ -89,7 +87,7 @@ In particular $a^{(p-1)/2}\equiv\pm1$ always, the symbol is multiplicative, $\le
         B.onClick((x) => { const a = Math.round(x); if (a >= 1 && a < info.n) A.set(a); });
         v.render(() => {
           const n = comp.value ? (P.value % 2 ? P.value : P.value + 1) : nearOddPrime(P.value, 3, 61);
-          const a = mod(A.value, n) || 1, e = (n - 1) / 2, sq = squaresMod(n);
+          const a = mod(A.value, n), e = (n - 1) / 2, sq = squaresMod(n);
           const lim = isPrime(n) ? 2.2 : Math.ceil(n / 2) + 1;
           B.setView([0, n], [-lim, lim]); B.setTicks(null, isPrime(n) || n <= 23 ? [[-1, '−1'], [0, '0'], [1, '1']] : [[-1, '−1'], [1, '1']]);
           let allPm = true, agree = true;
@@ -120,8 +118,9 @@ In particular $a^{(p-1)/2}\equiv\pm1$ always, the symbol is multiplicative, $\le
         });
         v.readout(() => {
           const { n, a, e, val, allPm, agree, isSq, g } = info;
-          if (isPrime(n)) return `$${a}^{${e}}\\equiv${sym(val, n)}\\pmod{${n}}$ and $${a}$ ${isSq ? 'is' : 'is not'} a square — the criterion agrees: **${agree}**; every power was $\\pm1$: **${allPm}**.`;
-          return `$n=${n}$ is composite: $${a}^{${e}}\\equiv${val}\\pmod{${n}}$; all powers are $\\pm1$: **${allPm}**; the sign tells whether $a$ is a square: **${agree}**.${g > 1 ? ` ($\\gcd(${a},${n})=${g}$.)` : ''}`;
+          if (isPrime(n) && a === 0) return `Selected integer ${A.value} is divisible by $p=${n}$: the theorem's nonzero hypothesis fails. The displayed power is zero, and the extended Legendre symbol is zero.`;
+          if (isPrime(n)) return `$${a}^{${e}}\\equiv${sym(val, n)}\\pmod{${n}}$ and $${a}$ ${isSq ? 'is' : 'is not'} a square — the criterion agrees: **${agree}**; every nonzero residue power was $\\pm1$: **${allPm}**.`;
+          return `$n=${n}$ is composite: $${a}^{${e}}\\equiv${val}\\pmod{${n}}$; all unit powers are $\\pm1$: **${allPm}**; the sign tells whether $a$ is a square: **${agree}**.${g > 1 ? ` ($\\gcd(${a},${n})=${g}$.)` : ''}`;
         });
       },
     },
@@ -182,13 +181,11 @@ When $p\equiv1\pmod4$ an explicit solution of $x^2\equiv-1$ is $x=\left(\frac{p-
 $$\left(\frac ap\right)=(-1)^{\mu}.$$
 Moreover the absolute values of the reduced multiples are exactly the numbers $1,2,\dots,\tfrac{p-1}2$, each once.`,
       idea: String.raw`If two reduced multiples had the same absolute value, then $ja\equiv\pm ka$ forces $j\equiv\pm k$, impossible for distinct $j,k\le(p-1)/2$; so the absolute values are a permutation of $1,\dots,(p-1)/2$. Multiply all the reduced multiples: $a^{(p-1)/2}\left(\tfrac{p-1}2\right)!\equiv(-1)^\mu\left(\tfrac{p-1}2\right)!$. Cancel the factorial (it is a unit) and apply Euler's criterion (4.2).`,
-      caption: String.raw`Choose $p$ and $a$. Top: the number line $(-p/2,p/2)$ with the reduced multiples $ka$ labelled by $k$; blue ones are positive, red ones negative — count the red. Bottom: $|ka \bmod p|$ plotted against $k$: the heights are a permutation of $1,\dots,(p-1)/2$ (each level is used once). Move $a$ and the picture reshuffles, but the parity of the red count always matches $\left(\frac ap\right)$.`,
+      caption: String.raw`Choose $p$ (snapped to the nearest odd prime) and an integer $a$, reduced modulo $p$. Multiples of $p$ are explicitly outside the lemma: all reduced multiples then vanish and no permutation assertion applies. Top: the number line $(-p/2,p/2)$ with the reduced multiples $ka$ labelled by $k$; blue ones are positive, red ones negative — count the red. Bottom: $|ka \bmod p|$ plotted against $k$: the heights are a permutation of $1,\dots,(p-1)/2$ (each level is used once). Move $a$ and the picture reshuffles, but the parity of the red count always matches $\left(\frac ap\right)$.`,
       deps: ['nt-4.1', 'nt-4.2'],
-      refs: ['Hardy–Wright §6.11', 'Apostol §9.4'],
+      refs: ['Lee–Kumar, MIT 18.781 (2012), Lecture 9, Lemma 40, pp.2–3'],
       tags: ['Gauss', 'quadratic residue', 'reciprocity'],
-      credit: 'Gauss, 1808 (third proof of reciprocity)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gauss%27s_lemma_(number_theory)' },
+      links: { source: 'https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/d5cdd1b802194a2a236eed934da8ae36_MIT18_781S12_lec9.pdf#page=2' },
       viz(v) {
         const P = v.slider('prime $p$', 5, 61, 17, { int: true });
         const A = v.slider('$a$', 1, 120, 5, { int: true });
@@ -196,7 +193,7 @@ Moreover the absolute values of the reduced multiples are exactly the numbers $1
         const B = v.stage({ x: [0, 31], y: [0, 31], axes: 'box', gutter: true, height: 280, xlabel: '$k$', ylabel: '$|ka \\bmod p|$' });
         let info = {};
         v.render(() => {
-          const p = nearOddPrime(P.value, 5, 61), a = mod(A.value, p) || 1, h = (p - 1) / 2;
+          const p = nearOddPrime(P.value, 5, 61), a = mod(A.value, p), h = (p - 1) / 2;
           N.setView([-p / 2 - 1, p / 2 + 1], [-1.5, 1.7]);
           N.line(-p / 2, 0, p / 2, 0, { color: 'ink', width: 1.5 });
           for (let t = -h; t <= h; t++) { N.line(t, -0.06, t, 0.06, { color: 'muted' }); if (p <= 31 || t % 5 === 0) N.text(String(t), t, -0.25, { align: 'center', size: 10, color: 'muted' }); }
@@ -207,16 +204,17 @@ Moreover the absolute values of the reduced multiples are exactly the numbers $1
           for (let k = 1; k <= h; k++) {
             const r = sym(k * a, p), neg = r < 0; if (neg) mu++; abs.push(Math.abs(r));
             const lvl = (stack.get(r) || 0); stack.set(r, lvl + 1);
-            N.dot(r, 0.35 + 0.0 * lvl, { r: 7, color: neg ? 'red' : 'blue', label: String(k), labelPos: 'n' });
-            B.rect(k - 0.4, 0, k + 0.4, Math.abs(r), { fill: neg ? 'red' : 'blue', fillAlpha: 0.45, color: neg ? 'red' : 'blue' });
+            N.dot(r, 0.35 + 0.0 * lvl, { r: 7, color: r === 0 ? 'muted' : neg ? 'red' : 'blue', label: String(k), labelPos: 'n' });
+            B.rect(k - 0.4, 0, k + 0.4, Math.abs(r), { fill: neg ? 'red' : 'blue', fillAlpha: 0.45, color: r === 0 ? 'muted' : neg ? 'red' : 'blue' });
           }
           B.hline(h, { color: 'faint', dash: true });
           const perm = [...abs].sort((x, y) => x - y).every((x, i) => x === i + 1);
           info = { p, a, mu, perm, leg: legendre(a, p) };
         });
-        v.legend([['blue', '$ka \\bmod p > 0$', { dot: true }], ['red', '$ka \\bmod p < 0$', { dot: true }]]);
+        v.legend([['blue', '$ka \\bmod p > 0$', { dot: true }], ['red', '$ka \\bmod p < 0$', { dot: true }], ['muted', 'zero: excluded hypothesis', { dot: true }]]);
         v.readout(() => {
           const { p, a, mu, perm, leg } = info;
+          if (a === 0) return `Selected integer ${A.value} is divisible by $p=${p}$: the nonzero hypothesis fails. All reduced multiples are zero; their absolute values are not a permutation, and the extended Legendre symbol is zero.`;
           return `$p=${p}$, $a=${a}$: **$\\mu=${mu}$** negative multiples, $(-1)^\\mu=${mu % 2 ? -1 : 1}$, and $\\left(\\frac{${a}}{${p}}\\right)=${leg}$. The absolute values are a permutation of $1..${(p - 1) / 2}$: **${perm}**.`;
         });
       },

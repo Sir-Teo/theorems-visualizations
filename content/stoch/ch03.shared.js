@@ -94,12 +94,18 @@ export function offspring(kind, m, K = 30) {
 }
 export const meanOf = (p) => p.reduce((s, x, k) => s + k * x, 0);
 export const pgf = (p, s) => { let r = 0; for (let k = p.length - 1; k >= 0; k--) r = r * s + p[k]; return r; };
-/** Smallest fixed point of the pgf in [0,1] (monotone iteration from 0). */
+/** Least fixed point for a finite normalized offspring law. Factor out the known root 1. */
 export function extinction(p) {
-  if (meanOf(p) <= 1 + 1e-12) return 1;
-  let s = 0;
-  for (let i = 0; i < 400000; i++) { const t = pgf(p, s); if (Math.abs(t - s) < 1e-15) { s = t; break; } s = t; }
-  return s;
+  if (p[0] === 0) return 0; // includes the exceptional deterministic one-child law
+  const g = (s) => {
+    let y = p[0], power = 1, sum = 0;
+    for (let k = 2; k < p.length; k++) { power *= s; sum += power; y -= p[k] * sum; }
+    return y; // (f(s)-s)/(1-s), evaluated without cancellation near s=1
+  };
+  if (g(1) >= 0) return 1;
+  let lo = 0, hi = 1;
+  for (let i = 0; i < 60; i++) { const mid = (lo + hi) / 2; if (g(mid) > 0) lo = mid; else hi = mid; }
+  return (lo + hi) / 2;
 }
 export const cumOf = (p) => { let s = 0; return p.map((x) => (s += x)); };
 export function draw(C, u) { for (let k = 0; k < C.length; k++) if (u < C[k]) return k; return C.length - 1; }
@@ -113,6 +119,7 @@ export function growTree(p, R, maxGen, maxNodes) {
     for (const i of frontier) {
       if (nodes.length >= maxNodes) { nodes[i].open = true; continue; }
       const k = draw(C, R());
+      nodes[i].childCount = k; // retain sampled offspring, including children omitted by the drawing cap
       for (let c = 0; c < k && nodes.length < maxNodes; c++) { nodes.push({ gen: g + 1, parent: i, kids: [], open: false }); nodes[i].kids.push(nodes.length - 1); next.push(nodes.length - 1); }
     }
     frontier = next;

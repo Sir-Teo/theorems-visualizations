@@ -1,8 +1,9 @@
 // Logic & Foundations — Chapter 5: Model theory (items 5.1–5.7)
 import {
   parseFO, holds, foField, range, rng, fr, frVal, frStr, frKey, frCmp, backForth, orderStruct, finiteOrder, infiniteSet, intStruct,
-  THEORIES,
 } from './ch05.shared.js';
+
+import { THEORIES, finiteBatch } from './source-audit.shared.js';
 
 // ---------- 5.1: closing a set of reals under witnesses ----------
 const K8 = (x) => Math.round(x * 1e8);
@@ -133,28 +134,26 @@ export default {
       kind: 'Theorem',
       name: 'Upward Löwenheim–Skolem theorem',
       statement: String.raw`Let $\mathfrak{A}$ be an infinite $L$-structure and let $\kappa\ge|A|+|L|$ be an infinite cardinal. Then $\mathfrak{A}$ has an **elementary extension** $\mathfrak{B}\succeq\mathfrak{A}$ with $|B|=\kappa$. Consequently a theory with an infinite model has models of every infinite cardinality $\kappa\ge|L|$.`,
-      idea: String.raw`Expand the language by constants $c_\alpha$ ($\alpha<\kappa$) and by a constant for each element of $A$, and add the elementary diagram of $\mathfrak{A}$ together with the sentences $c_\alpha\ne c_\beta$ for $\alpha\ne\beta$. Any finite subset mentions only finitely many of the new constants, and these can be interpreted in $\mathfrak{A}$ as distinct elements because $A$ is infinite. So the compactness theorem (logic-4.7) gives a model; it has at least $\kappa$ elements and contains a copy of $\mathfrak{A}$ elementarily. The downward theorem (logic-5.1) then cuts it down to exactly $\kappa$ elements while keeping $\mathfrak{A}$.`,
-      caption: String.raw`The row on top holds the new constants $c_0,c_1,\dots$ (the pairwise-distinct requirement is the only thing added). Pick a batch of the first $b$ constants and a structure $\mathfrak{A}$ (finite of a chosen size, or infinite): the lines show an injective interpretation, and a red mark appears the moment the pigeonhole principle fails. With $\mathfrak{A}$ finite the batches stop being satisfiable once $b>|A|$; with $\mathfrak{A}$ infinite every batch works, which is exactly what compactness needs.`,
+      idea: String.raw`Expand the language by constants $c_\alpha$ ($\alpha<\kappa$) and by a constant for each element of $A$, and add the elementary diagram of $\mathfrak{A}$ together with the sentences $c_\alpha\ne c_\beta$ for $\alpha\ne\beta$. Any finite subset mentions only finitely many of the new constants, and these can be interpreted in $\mathfrak{A}$ as distinct elements because $A$ is infinite. So the compactness theorem (logic-4.7) gives a model; it has at least $\kappa$ elements and contains a copy of $\mathfrak{A}$ elementarily. The downward theorem (logic-5.1) then cuts it down to exactly $\kappa$ elements while retaining both the embedded copy of $A$ and the $\kappa$ distinct interpretations of the new constants. For a theory whose initial infinite model is larger than $\kappa$, first apply the downward theorem, then this extension theorem.`,
+      caption: String.raw`The row on top holds the new constants $c_0,c_1,\dots$ (the full elementary diagram of $\mathfrak A$ is held fixed but is not drawn; the added inequalities are shown). Pick a batch of the first $b$ constants and a structure $\mathfrak{A}$ (finite of a chosen size, or countably infinite): the lines show an injective interpretation, and a red mark appears the moment the pigeonhole principle fails. With $\mathfrak{A}$ finite the batches stop being satisfiable once $b>|A|$; with $\mathfrak{A}$ infinite every batch works, which illustrates the finite satisfiability needed by compactness. The finite options 4 and 8 only compare inequality batches; the theorem itself concerns infinite target cardinals.`,
       deps: ['logic-4.7', 'logic-3.10', 'logic-5.1'],
-      refs: ['Enderton §2.6'],
+      refs: ['Enderton, 2nd ed. (2001), §2.6, pp. 153–154 and §4.2 Exercises 1–2 p. 294', 'Prest, Model Theory course notes, §5.2 (elementary chains and upward Löwenheim–Skolem)'],
       tags: ['Löwenheim–Skolem', 'compactness'],
-      credit: 'Tarski, Mal’cev and Vaught, 1930s–1957',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/L%C3%B6wenheim%E2%80%93Skolem_theorem' },
-      verify: true,
       viz(v) {
-        const kap = v.select('new constants κ', [{ value: '4', label: '4' }, { value: '8', label: '8' }, { value: 'w', label: '$\\aleph_0$' }, { value: 'w1', label: '$\\aleph_1$' }], 'w');
+        const kap = v.select('number of new constants', [{ value: '4', label: '4' }, { value: '8', label: '8' }, { value: 'w', label: '$\\aleph_0$' }, { value: 'w1', label: '$\\aleph_1$' }], 'w');
         const bS = v.slider('batch size $b$', 1, 8, 5, { int: true });
-        const inf = v.toggle('$\\mathfrak{A}$ is infinite', true);
+        const inf = v.toggle('$\\mathfrak{A}$ is countably infinite', true);
         const aS = v.slider('$|A|$ when finite', 1, 8, 4, { int: true });
         const s = v.stage({ x: [0, 100], y: [0, 100], axes: false, full: true, height: 330 });
         let info = {};
         v.render(() => {
-          aS.el.hidden = inf.value;
-          const D = kap.value === '4' ? 4 : 8;
-          const b = Math.min(bS.value, D);
-          const Asize = inf.value ? Infinity : aS.value;
+          aS.el.style.display = inf.value ? 'none' : '';
+          const batch = finiteBatch(kap.value, bS.value, aS.value, inf.value), D = batch.shown;
+          bS.input.max = String(D); if (bS.value > D) bS.set(D);
+          const b = batch.b, Asize = batch.capacity;
           const cx = (i, n) => 12 + (76 * i) / Math.max(1, n - 1);
-          s.text('new constants (to be interpreted by pairwise distinct elements)', 50, 94, { color: 'muted', size: 12, align: 'center' });
+          s.text('elementary diagram of A fixed; new constants must be pairwise distinct', 50, 94, { color: 'muted', size: 12, align: 'center' });
           s.text('A:', 3, 22, { color: 'ink', size: 14, align: 'left', baseline: 'middle' });
           const nA = inf.value ? 8 : aS.value;
           let failed = 0;
@@ -176,14 +175,15 @@ export default {
             s.dot(x, 22, { r: 6, color: 'accent' });
             s.text(`a${'₀₁₂₃₄₅₆₇'[i]}`, x, 12, { size: 11, color: 'muted', align: 'center' });
           }
-          if (inf.value) s.text('… infinitely many more elements …', 95, 3, { color: 'muted', size: 11, align: 'right' });
+          if (inf.value) s.text('… countably infinitely many elements …', 95, 3, { color: 'muted', size: 11, align: 'right' });
           if (failed) s.text(`pigeonhole: ${b} distinct constants cannot fit into ${Asize} elements`, 50, 50, { color: 'red', size: 13, weight: 700, align: 'center' });
           const finiteSat = b <= Asize;
           const all = kap.value === '4' ? 4 : kap.value === '8' ? 8 : Infinity;
           const everySat = inf.value || all <= Asize;
-          info = { b, finiteSat, everySat, all, Asize };
+          info = { b, finiteSat, everySat, all, Asize, infiniteTarget: batch.infiniteTarget };
         });
-        v.readout(() => `The batch $\\{c_i\\ne c_j: i<j<${info.b}\\}$ is ${info.finiteSat ? '**satisfiable**' : '**not satisfiable**'} in $\\mathfrak{A}$ (it needs $${info.b}$ distinct elements; $|A| = ${Number.isFinite(info.Asize) ? info.Asize : '\\infty'}$).\nAll finite batches satisfiable: **${info.everySat ? 'yes' : 'no'}**${info.everySat ? ' — by compactness there is a model of the whole theory, and it has at least $\\kappa$ elements.' : ' — no model of this form exists; this is why the theorem needs an infinite $\\mathfrak{A}$ (finite structures are rigid in size).'}`);
+        v.readout(() => `The displayed batch needs $${info.b}$ distinct elements and is ${info.finiteSat ? '**satisfiable**' : '**not satisfiable**'} in the chosen $\\mathfrak A$ ($|A|=${Number.isFinite(info.Asize) ? info.Asize : '\\aleph_0'}$). All finite batches for the selected family fit: **${info.everySat ? 'yes' : 'no'}**. ${!info.infiniteTarget ? 'A finite option tests only these inequalities; no infinite-cardinal conclusion is drawn.' : info.everySat ? 'With the full elementary diagram, compactness supplies an elementary extension of at least κ elements; the downward theorem retaining all named elements makes its size exactly κ.' : 'A finite A cannot realize all these inequalities, and its elementary diagram forbids any larger elementary extension.'}`);
+
       },
     },
     // ------------------------------------------------------------------ 5.3
@@ -248,13 +248,11 @@ export default {
       kind: 'Definition',
       name: 'Categoricity in a cardinal',
       statement: String.raw`A theory $T$ is **$\kappa$-categorical** if it has a model of cardinality $\kappa$ and any two models of $T$ of cardinality $\kappa$ are isomorphic. By the Löwenheim–Skolem theorems (logic-5.1, logic-5.2) a theory in a countable language with an infinite model has models of every infinite size, so categoricity is a statement about whether size alone determines the structure.`,
-      idea: String.raw`A first-order theory cannot pin down a structure up to isomorphism (logic-5.2: it has models of all infinite sizes), but it can pin it down *among structures of a given size*. Typical proofs identify a complete invariant: the dimension of a vector space, the transcendence degree of a field, the number of classes and their sizes. Size $\kappa$ then fixes the invariant (large invariants dominate the cardinality) or leaves it free (at $\aleph_0$ the invariant can be any finite number or $\aleph_0$).`,
-      caption: String.raw`Each row is a theory, each column a size ($\aleph_1$ and $\aleph_2$ stand for the uncountable sizes). Green cells are categorical. **Click any cell** to see why the models are unique or to see two models of that size that are not isomorphic. The patterns to notice: some theories are categorical only at $\aleph_0$, some only above, some in every infinite size, some nowhere.`,
+      idea: String.raw`A first-order theory with an infinite model cannot pin down one structure up to isomorphism (logic-5.2: it has models of all infinite sizes), but it can pin it down *among structures of a given size*. Typical proofs identify a complete invariant: the dimension of a vector space, the transcendence degree of a field, the number of classes and their sizes. Size $\kappa$ then fixes the invariant (large invariants dominate the cardinality) or leaves it free (at $\aleph_0$ the invariant can be any finite number or $\aleph_0$).`,
+      caption: String.raw`Each row is a theory, each column a size ($\aleph_1$ and $\aleph_2$ stand for the uncountable sizes). Green cells are categorical. **Click any cell** to see why the models are unique or to see two models of that size that are not isomorphic. The patterns to notice: some theories are categorical only at $\aleph_0$, some only above, some in every infinite size, some in no infinite size. Red cells assert noncategoricity rather than an exact number of models.`,
       deps: ['logic-5.2', 'logic-3.7', 'logic-3.13'],
-      refs: ['Enderton §2.6'],
+      refs: ['Enderton, 2nd ed. (2001), §2.6 pp. 157–159; §3.1 Theorem 31B', 'Cameron, The Random Graph, arXiv:1301.7544, §1.1 Facts 1–2 and back-and-forth proof', 'Prest, Model Theory course notes, §5.2 (elementary chains)'],
       tags: ['categoricity', 'cardinality'],
-      credit: 'Veblen, 1904 (the term “categorical”)',
-      verify: true,
       viz(v) {
         const s = v.stage({ x: [0, 100], y: [0, 100], axes: false, full: true, height: 390 });
         let sel = { r: 1, c: 1 };
@@ -271,19 +269,19 @@ export default {
             const y = rowY(i);
             s.text(T.name, 3, y, { size: 11.5, align: 'left', baseline: 'middle', color: sel.r === i ? 'ink' : 'muted', weight: sel.r === i ? 700 : 400 });
             COLS.forEach((q, c) => {
-              const cat = q.unc ? T.cu : T.c0, txt = cat ? '✓' : (q.unc ? T.nu : T.n0);
+              const cat = q.unc ? T.cu : T.c0, txt = cat ? '✓' : '≠';
               const on = sel.r === i && sel.c === c;
               s.rect(q.x - 7, y - 4.3, q.x + 7, y + 4.3, { fill: cat ? 'green' : 'red', fillAlpha: on ? 0.5 : 0.2, color: on ? 'ink' : 'faint', width: on ? 2 : 1, radius: 4 });
               s.text(txt, q.x, y, { size: 13, baseline: 'middle', weight: 700, color: cat ? 'green' : 'red', align: 'center' });
             });
           });
-          s.text('click a cell · ✓ = categorical · otherwise the number of non-isomorphic models of that size', 3, 1.5, { size: 10.5, color: 'muted', align: 'left' });
+          s.text('click a cell · ✓ = categorical · ≠ = at least two non-isomorphic models; no exact count is asserted', 3, 3.5, { size: 10.5, color: 'muted', align: 'left' });
         });
         v.readout(() => {
           const T = THEORIES[sel.r], q = COLS[sel.c], cat = q.unc ? T.cu : T.c0;
           const size = q.unc ? 'an uncountable size $\\kappa$' : '$\\aleph_0$';
           const body = cat ? (q.unc ? T.whyu : T.why0) || 'any two models of this size are isomorphic' : (q.unc ? T.witu : T.wit0);
-          return `$${T.tex}$ in ${size}: ${cat ? '**categorical** — ' : '**not categorical** — '}${body}.${T.verify && !cat && q.unc ? ' (Unverified detail.)' : ''}`;
+          return `$${T.tex}$ in ${size}: ${cat ? '**categorical** — ' : '**not categorical** — '}${body}.`;
         });
       },
     },

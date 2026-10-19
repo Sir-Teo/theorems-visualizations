@@ -46,17 +46,16 @@ export default {
       name: 'Totally disconnected spaces: ℚ and the Cantor set',
       statement: String.raw`A space is **totally disconnected** if its only connected subsets are single points (and $\varnothing$), i.e. every component is a point. The rationals $\Q\subset\R$ and the Cantor set $C\subset[0,1]$ are totally disconnected: for any two points $a<b$ of the space there is a separation $U\cup V$ of the whole space with $a\in U$ and $b\in V$.`,
       idea: String.raw`For $\Q$ choose an irrational $c$ with $a<c<b$: the rationals below $c$ and above $c$ are open, disjoint, and cover $\Q$. For $C$, the points $a<b$ are separated at some stage of the construction: some middle third $(g_0,g_1)$ removed at stage $k$ lies between them, and then $C\cap[0,g_0]$ and $C\cap[g_1,1]$ are both closed, hence both open in $C$ (their complements in $C$ are each other). A connected subset containing $a$ and $b$ would be split by this separation (3.1), so every connected subset is a single point.`,
-      credit: 'Smith, mid-1870s (first example); Cantor, 1883 (the set that bears his name)',
-      verify: true,
       caption: String.raw`Choose the space and drag the two points $a<b$ (they snap to rationals with denominator $20$, or to endpoints of the Cantor construction at stage 6). The tool finds the gap or cut that separates them and colours the two clopen halves. For the Cantor set the rows show the construction; the green band is the removed middle third that lies between $a$ and $b$ (found at the first stage at which they fall into different intervals).`,
       deps: ['top-3.10', 'pma-2.44'],
-      refs: ['Munkres §23'],
+      refs: ['Munkres (2nd ed.), §23, Lemma 23.2 and Exercise 5; §27, Exercise 6'],
+      links: { source: 'https://raw.githubusercontent.com/enilsen16/The-Math-Group/master/Munkres-Topology.pdf' },
       tags: ['connectedness', 'cantor set'],
       viz(v) {
-        const sp = v.select('space', [{ value: 'Q', label: '$\\Q$' }, { value: 'C', label: 'Cantor set' }], 'C');
+        const sp = v.select('space', [{ value: 'Q', label: '$\\Q$' }, { value: 'C', label: 'Cantor set' }], 'C', { onChange: () => { ha.set(snap(ha.x),0.35); hb.set(snap(hb.x),0.35); } });
         const S = v.stage({ x: [-0.03, 1.03], y: [-1.45, 0.75], axes: false, height: 330 });
         const snap = (x) => (sp.value === 'Q' ? Math.round(clamp(x, 0, 1) * 20) / 20 : snapCantor(clamp(x, 0, 1), 6));
-        const ha = S.handle(0.07, 0.35, { color: 'gold', label: 'a', constrain: (x) => [snap(x), 0.35] }), hb = S.handle(0.93, 0.35, { color: 'gold', label: 'b', constrain: (x) => [snap(x), 0.35] });
+        const ha = S.handle(snap(0.07), 0.35, { color: 'gold', label: 'a', constrain: (x) => [snap(x), 0.35] }), hb = S.handle(snap(0.93), 0.35, { color: 'gold', label: 'b', constrain: (x) => [snap(x), 0.35] });
         let info = null;
         v.render(() => {
           const a = Math.min(ha.x, hb.x), b = Math.max(ha.x, hb.x), Q = sp.value === 'Q';
@@ -70,7 +69,7 @@ export default {
             for (let k = 0; k <= 400; k++) { const x = k / 400; S.dot(x, 0, { r: 1.4, color: cut === null ? 'muted' : x < cut ? 'blue' : 'red' }); }
             if (cut !== null) { S.vline(cut, { color: 'green', width: 1.8, dash: [5, 4] }); S.text('irrational cut', cut, -0.28, { align: 'center', size: 12, color: 'green' }); }
           } else {
-            for (let L = 0; L <= 6; L++) for (const [lo, hi] of cantorLevel(L)) { const y = -0.12 * L; const col = cut === null || L === 0 ? 'muted' : hi <= cut ? 'blue' : 'red'; S.line(lo, y, hi, y, { color: col, width: L === 6 ? 7 : 5, cap: 'butt', alpha: L === 6 ? 1 : 0.55 }); }
+            for (let L = 0; L <= 6; L++) for (const [lo, hi] of cantorLevel(L)) { const y = -0.12 * L; const col = cut === null || (lo < cut && cut < hi) ? 'muted' : hi <= cut ? 'blue' : 'red'; S.line(lo, y, hi, y, { color: col, width: L === 6 ? 7 : 5, cap: 'butt', alpha: L === 6 ? 1 : 0.55 }); }
             if (cut !== null) { S.rect(extra.g0, -0.12 * extra.level - 0.05, extra.g1, 0.06, { fill: 'green', fillAlpha: 0.25, color: 'green', width: 1.2 }); S.vline(cut, { color: 'green', width: 1.4, dash: [4, 4] }); S.text('gap removed at stage ' + extra.level, cut, -0.12 * 6 - 0.25, { align: 'center', size: 12, color: 'green' }); }
           }
           info = { a, b, cut, Q, level: extra && extra.level };

@@ -1,3 +1,4 @@
+import { attackPopulation } from './sources.audit.js';
 // Cryptography — Chapter 4, part b (items 4.5–4.8): DES, meet-in-the-middle, AES, differential and linear cryptanalysis
 import {
   clamp, pixc as pix, mix2, hx, popcnt, hex, des, bitsOfHex, hexOfBits, toHex32, aes, aesKeys, bytesHex, hexBytes, SBOX, SBOXES, invS, ddt, lat, dur, sciText,
@@ -16,24 +17,23 @@ export default {
       num: '4.5',
       kind: 'Invention',
       name: 'The Data Encryption Standard',
-      statement: String.raw`The **Data Encryption Standard** (DES) is a block cipher on $64$-bit blocks with a $56$-bit key (stored in $64$ bits with parity bits). After an initial permutation $\mathrm{IP}$ the block is split into halves $(L_0,R_0)$ and passed through $16$ Feistel rounds (4.4) $$L_i=R_{i-1},\qquad R_i=L_{i-1}\oplus f(R_{i-1},K_i),\qquad f(R,K)=P\bigl(S_1\|\cdots\|S_8\,(E(R)\oplus K)\bigr),$$ where $E$ expands $32$ bits to $48$, each of eight S-boxes $S_j$ maps $6$ bits to $4$, $P$ is a fixed bit permutation and $K_i$ are $48$-bit round keys selected from the key; after the last round the halves are swapped and $\mathrm{IP}^{-1}$ is applied. Decryption is the same circuit with the round keys in reverse order. The only generic attack on the full cipher that matters in practice is exhaustive search of the $2^{56}$ keys, which became affordable in the late 1990s.`,
-      idea: String.raw`Feistel structure makes the cipher invertible although the S-boxes are not, and the repetition of expansion, key mixing, substitution and permutation produces confusion and diffusion (4.3) in $16$ cheap rounds. The S-boxes are the non-linear heart, and were famously chosen to resist differential cryptanalysis (4.8), a technique that the designers at IBM knew about years before it was published. The weakness is the key length: $2^{56}$ is within reach of dedicated hardware. In July 1998 the Electronic Frontier Foundation's "Deep Crack" machine (custom chips, under $250\,000$) found the key of RSA's DES Challenge II-2 in about $56$ hours, searching more than $8.8\times10^{10}$ keys per second; $3$DES (three DES calls, 4.6) stretched the life of the design until AES (4.7).`,
-      caption: String.raw`**Top:** step through the encryption of one block (use the preset worked example or draw new random key and block; the **gold** columns show the expansion, the round key, their XOR and the S-box outputs for the current round — the arithmetic is exactly DES, checked against a published worked example). **Bottom left:** flip one plaintext bit (slider) and see how many of the 64 state bits differ after each round. **Bottom right:** the cost calculator: average exhaustive-search time against key length at a search rate you set; the dot marks the machine of 1998.`,
-      scope: String.raw`The cipher is simulated exactly (tables as in FIPS 46-3). The cost plot assumes an ideal machine testing a fixed number of keys per second and the average $2^{k-1}$ trials; the 1998 rate is the figure quoted by EFF, and later costs are not modelled.`,
+      statement: String.raw`The **Data Encryption Standard** (DES) is a block cipher on $64$-bit blocks with a $56$-bit key (stored in $64$ bits with parity bits). After an initial permutation $\mathrm{IP}$ the block is split into halves $(L_0,R_0)$ and passed through $16$ Feistel rounds (4.4) $$L_i=R_{i-1},\qquad R_i=L_{i-1}\oplus f(R_{i-1},K_i),\qquad f(R,K)=P\bigl(S_1\|\cdots\|S_8\,(E(R)\oplus K)\bigr),$$ where $E$ expands $32$ bits to $48$, each of eight S-boxes $S_j$ maps $6$ bits to $4$, $P$ is a fixed bit permutation and $K_i$ are $48$-bit round keys selected from the key; after the last round the halves are swapped and $\mathrm{IP}^{-1}$ is applied. Decryption is the same circuit with the round keys in reverse order. The key space has $2^{56}$ possibilities. This is a historical cipher: NIST withdrew FIPS 46-3 in 2005; the experiment explains its structure and the 1998 exhaustive-search demonstration.`,
+      idea: String.raw`Feistel rounds remain invertible even though the 6-to-4-bit S-boxes are not. The 16 rounds repeatedly expand, mix keys, substitute and permute. The short key also permits exhaustive search: EFF's July 1998 FAQ reports that its machine found the DES Challenge II-2 key in about 56 hours after examining 24.8% of the space, at an average 88,803,604,509 keys per second. The project cost less than $250\,000$. A particular successful search can be shorter than the mean; the calculator uses the average half-keyspace work model rather than presenting that run's time as an average.`,
+      caption: String.raw`Step through actual DES: the preset block, a new deterministic sample, round expansion, subkey, XOR and substitution outputs. Bottom left shows the 0–64 possible state-bit differences after flipping one plaintext bit. Bottom right is a hypothetical constant-rate exhaustive search of an ideal $k$-bit key space: approximately $2^{k-1}/r$ seconds, plotted on a logarithmic time scale. The hollow dot uses EFF's measured average rate but shows the model's **mean**, not the historical 56-hour result. DES and AES-128 labels indicate key lengths; this calculator does not model algorithm-specific attacks or hardware costs.`,
+      scope: String.raw`DES tables and reverse-key decryption follow FIPS 46-3, pp. 8–19. Preset output and random blocks are independently checked against native OpenSSL triple-DES with the same DES key repeated (EDE then equals single DES); EFF's independently published Blaze example is another known-answer check. Sampling is reproducible, not cryptographic. The cost plot assumes uniformly located keys and fixed trial rate, and omits implementation overhead.`,
       deps: ['crypto-4.4'],
       tags: ['DES', 'block cipher', 'brute force'],
-      refs: ['Katz–Lindell §7.2.3'],
-      credit: 'IBM (H. Feistel and colleagues; Lucifer) and NBS, adopted as FIPS 46 in 1977; EFF “Deep Crack”, July 1998',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Data_Encryption_Standard', eff: 'https://en.wikipedia.org/wiki/EFF_DES_cracker' },
+      refs: ['FIPS 46-3 (1999), DES specification pp. 8–19', 'EFF DES Cracker FAQ (July 1998), sections Does it work? and How much did it cost?'],
+      credit: 'FIPS 46-3 (1999 revision); EFF DES Cracker (July 1998), primary specification and project report',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Data_Encryption_Standard', eff: 'https://en.wikipedia.org/wiki/EFF_DES_cracker', 'FIPS 46-3': 'https://csrc.nist.gov/files/pubs/fips/46-3/final/docs/fips46-3.pdf', 'EFF original report': 'https://w2.eff.org/Privacy/Crypto/Crypto_misc/DESCracker/HTML/19980716_eff_des_faq.html' },
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
-        const sA = v.stage({ x: [0, 17], y: [0, 50], axes: 'box', gutter: true, height: 260, minWidth: 320, xlabel: 'round', ylabel: 'state bits differing' });
+        const sA = v.stage({ x: [0, 17], y: [0, 64], axes: 'box', gutter: true, height: 260, minWidth: 320, xlabel: 'round', ylabel: 'state bits differing' });
         const sC = v.stage({ x: [40, 128], y: [-6, 40], axes: 'box', gutter: true, height: 260, minWidth: 320, xlabel: 'key length k (bits)', ylabel: 'mean search time (s)' });
         const pre = v.select('Block', [{ value: 'ex', label: 'worked example' }, { value: 'rnd', label: 'random' }], 'ex');
         let seed = 1; v.button('New random', () => { seed += 1; pre.value = 'rnd'; });
         const bS = v.slider('flip plaintext bit', 0, 63, 12, { step: 1, int: true });
-        const rate = v.slider('keys per second', 1e6, 1e16, 8.8e10, { log: true });
+        const rate = v.slider('keys per second', 1e6, 1e16, 88803604509, { log: true });
         const S = v.steps({ frames: Array.from({ length: 18 }, (_, i) => ({ r: i })), start: 3, still: 5, note: false });
         const EX = { k: '133457799BBCDFF1', p: '0123456789ABCDEF', c: '85E813540F0AB405' };
         let key = '', D = null;
@@ -76,23 +76,22 @@ export default {
             P.text(`permutation P of the 32 S-box bits: ${toHex32(rd.P)}`, W / 2, 252, { size: 12, color: 'muted', halo: false });
             P.text(`R${f} = L${f - 1} ⊕ ${toHex32(rd.P)} = ${Rh}`, W / 2, 274, { size: 12.5, color: 'ink', weight: 600, halo: false });
           } else if (f === 0) P.text(`key ${D.k}   plaintext ${D.p}`, W / 2, 110, { size: 12.5, color: 'muted', halo: false });
-          else P.text(`ciphertext = ${a.out}` + (D.ok ? '   (matches the published worked example 85E813540F0AB405)' : ''), W / 2, 110, { size: 13, weight: 700, color: 'green', halo: false });
+          else P.text(`ciphertext = ${a.out}` + (D.ok ? '   (matches the independently checked preset 85E813540F0AB405)' : ''), W / 2, 110, { size: 13, weight: 700, color: 'green', halo: false });
           // avalanche
-          sA.setView([0, 17], [0, 50]);
+          sA.setView([0, 17], [0, 64]);
           sA.hline(32, { color: 'green', width: 1.5, dash: true }); sA.text('ideal 32 of 64', 16.8, 36, { size: 11.5, color: 'green', align: 'right', weight: 600 });
           sA.bars(D.diff.slice(0), { x0: 0, color: (val, i) => (i === Math.min(f, 16) ? 'gold' : 'accent') });
           // cost
-          const lt = (kb, rt) => (kb - 1) * 0.30103 - Math.log10(rt); // log10 seconds
+          const lt = (kb, rt) => (kb - 1) * Math.LOG10E * Math.LN2 - Math.log10(rt); // log10 seconds
           sC.setView([40, 128], [-6, 40]);
-          const tick = [[-3, '1 ms'], [0, '1 s'], [7.5, '1 y'], [10.5, '10³ y'], [17.64, '10¹⁸ s'], [25, '10²⁵ s'], [35, '10³⁵ s']];
+          const tick = [[-3, '1 ms'], [0, '1 s'], [7.5, '1 y'], [10.5, '10³ y'], [18, '10¹⁸ s'], [25, '10²⁵ s'], [35, '10³⁵ s']];
           sC.setTicks(null, tick);
           sC.path([[40, lt(40, rate.value)], [128, lt(128, rate.value)]], { color: 'accent', width: 2.6 });
-          sC.path([[40, lt(40, 8.8e10)], [128, lt(128, 8.8e10)]], { color: 'muted', width: 1.4, dash: true });
-          sC.hline(17.64, { color: 'red', width: 1.2, dash: true });
-          [[56, 'DES'], [112, '3DES (112 effective)'], [128, 'AES-128']].forEach(([kb, l]) => { sC.dot(kb, lt(kb, rate.value), { r: 5, color: 'gold' }); sC.text(l, kb - 1.5, lt(kb, rate.value) + 2.2, { size: 11, color: 'gold', align: kb > 100 ? 'right' : 'left', weight: 700 }); });
-          sC.dot(56, lt(56, 8.8e10), { r: 5, color: 'muted', hollow: true });
+          sC.path([[40, lt(40, 88803604509)], [128, lt(128, 88803604509)]], { color: 'muted', width: 1.4, dash: true });
+          [[56, 'DES'], [128, 'AES-128']].forEach(([kb, l]) => { sC.dot(kb, lt(kb, rate.value), { r: 5, color: 'gold' }); sC.text(l, kb - 1.5, lt(kb, rate.value) + 2.2, { size: 11, color: 'gold', align: kb > 100 ? 'right' : 'left', weight: 700 }); });
+          sC.dot(56, lt(56, 88803604509), { r: 5, color: 'muted', hollow: true });
         });
-        v.legend([['accent', 'your search rate'], ['muted', 'Deep Crack 1998: $8.8\\times10^{10}$ keys/s', { dash: true }], ['red', 'age of the universe (4.4×10¹⁷ s)', { dash: true }]]);
+        v.legend([['accent', 'your search rate'], ['muted', 'Deep Crack 1998: $8.88036\\times10^{10}$ keys/s', { dash: true }]]);
         v.readout(() => {
           const tDES = Math.pow(2, 55) / rate.value, t = Math.pow(2, 127) / rate.value;
           return String.raw`Round ${S.frame.r <= 16 ? S.frame.r : 16}: ${D.diff[Math.min(S.frame.r, 16)]} of 64 state bits differ from the flipped-bit run. Encryption then decryption with reversed keys ${D.back ? 'returns the plaintext' : 'FAILED'}.` + '\n' +
@@ -220,16 +219,15 @@ export default {
       num: '4.8',
       kind: 'Method',
       name: 'Differential and linear cryptanalysis',
-      statement: String.raw`Let $S:\{0,1\}^4\to\{0,1\}^4$ be an S-box. Its **difference distribution table** is $\mathrm{DDT}[a][b]=\#\{x:S(x)\oplus S(x\oplus a)=b\}$; an input difference $a$ produces output difference $b$ with probability $\mathrm{DDT}[a][b]/16$. Its **linear approximation table** is $\mathrm{LAT}[a][b]=\#\{x:a\cdot x=b\cdot S(x)\}-8$; the approximation $a\cdot x=b\cdot S(x)$ holds with probability $\tfrac12+\mathrm{LAT}[a][b]/16$ (bias $\epsilon=\mathrm{LAT}/16$). **Differential cryptanalysis** (Biham–Shamir) feeds many *chosen* plaintext pairs with a difference $a$ and counts, for each guess of the last round key, how often the partially decrypted pair has the predicted difference. **Linear cryptanalysis** (Matsui) uses *known* plaintexts and the bias of an XOR of plaintext and (partly decrypted) ciphertext bits, which by the piling-up lemma has bias $2^{m-1}\prod\epsilon_i$ over $m$ rounds. In both, the correct key candidate stands out after about $c/p$ pairs for a differential of probability $p$, or $c/\epsilon^2$ known plaintexts for a bias $\epsilon$; for the full 16-round DES the figures are about $2^{47}$ chosen pairs (differential) and $2^{43}$–$2^{47}$ known plaintexts (linear).`,
-      idea: String.raw`A secure round function must make *every* entry of both tables small. The attacker looks for one large entry, builds a short chain of such entries through the first rounds, and peels off the last round by guessing the (small) last-round subkey: for the right guess the predicted statistic is biased, for wrong guesses it behaves randomly. The toy below attacks a two-layer cipher $C=S(S(P\oplus k_0)\oplus k_1)\oplus k_2$ with the single most informative cell of the table and $N$ samples. The linear version has "ghost peaks" because wrong keys can share the structure. The attacks do not break DES or AES in practice (they need far too much data), but they decided how both ciphers were designed: Coppersmith (1994) reported that the DES designers at IBM already knew differential cryptanalysis around 1974.`,
-      caption: String.raw`**Left:** the DDT (or LAT) of the chosen 4-bit S-box; click a cell to select a differential $(a\to b)$ or approximation (default: the best non-trivial cell). **Right:** attack on the toy two-layer cipher with the selected cell: for each of the $16$ guesses of the last key nibble, the score after $N$ samples (counts of the predicted difference, or $|{\rm zeros}-N/2|$ for linear). The real key nibble is green. Increase $N$: the right key wins once $N$ is above about $1/p$ resp. $1/\epsilon^2$. The affine S-box has a perfect differential and shows why linear structure is fatal.`,
-      scope: String.raw`Toy model with random keys per resample; the S-boxes are published 4-bit examples (S-box A as in Heys's tutorial and S-box B as in PRESENT, recalled from memory — see verify flag). Data complexities quoted for DES are the figures in the original papers (Biham–Shamir 1991; Matsui, EUROCRYPT 1993 reports $2^{47}$ known plaintexts, a later refinement $2^{43}$) and are not simulated.`,
+      statement: String.raw`For an invertible 4-bit S-box, $\mathrm{DDT}[a][b]=\#\{x:S(x)\oplus S(x\oplus a)=b\}$ gives differential probability $\mathrm{DDT}/16$. The table $\mathrm{LAT}[a][b]=\#\{x:a\cdot x=b\cdot S(x)\}-8$ gives signed linear bias $\mathrm{LAT}/16$, with dot products over $\mathbb F_2$. A differential attack tests predicted differences after partial decryption under guessed last-round subkeys; a linear attack tests correlations with known plaintext bits. For **independent** binary variables with biases $\epsilon_i$, the piling-up lemma gives XOR bias $2^{m-1}\prod_i\epsilon_i$. Round expressions in an actual cipher need not be independent, so this formula is not an unconditional multi-round cipher theorem. Data scales $1/p$ for observing a differential event or $1/\epsilon^2$ for detecting a fixed bias do not guarantee unique key identification.`,
+      idea: String.raw`The trivial DDT cell $(0,0)$ is 16 and the trivial LAT cell is 8; only nontrivial differences/masks measure resistance. Even small individual entries do not prove cipher security. This two-layer teaching cipher is $C=S(S(P\oplus k_0)\oplus k_1)\oplus k_2$. With the true $k_2$, peeling the outer S-box yields the selected DDT probability or the selected absolute LAT bias. Wrong guesses can have equally strong population scores. Here all 16 plaintexts can be enumerated, so the gold marks show that population statistic for **every** guess. More samples reduce sampling variation but cannot separate permanently tied population scores with this statistic alone.`,
+      caption: String.raw`Click any DDT/LAT cell, including trivial ones, then choose the S-box and sample size. Bars show scores in samples drawn independently with replacement; green is the known true key. Gold ticks are $N$ times the exact population differential probability, or $N$ times the absolute population linear bias. For linear scores, $N|p-1/2|$ is a population reference, not the expectation of the finite folded score $|Z-N/2|$. Resampling changes keys and data. A sample winner is not a demonstrated key-recovery theorem, and ties can persist even with unlimited data.`,
+      scope: String.raw`Original 2-layer teaching model, not a simulation of DES/AES attack complexities. S-box A is Heys §2.1 Table 1; B is PRESENT §3; affine is a deliberately weak rotation/XOR. The piling-up proof and caveats follow Heys §3.2. Historical attack costs and claims about secret design history are omitted because those original research papers are not the evidence for this reconstruction.`,
       deps: ['crypto-4.3'],
       tags: ['differential cryptanalysis', 'linear cryptanalysis'],
-      refs: ['Katz–Lindell §7.2', 'Boneh–Shoup ch. 4'],
-      credit: 'E. Biham & A. Shamir, 1990 (differential; J. Cryptology 4 (1991) 3–72); M. Matsui, EUROCRYPT 1993 (linear); known to IBM c. 1974 (Coppersmith, IBM J. Res. Dev. 38 (1994) 243–250)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Differential_cryptanalysis', linear: 'https://en.wikipedia.org/wiki/Linear_cryptanalysis' },
+      refs: ['Heys, A Tutorial on Linear and Differential Cryptanalysis, §§2–4, Table 1 and piling-up lemma §3.2', 'Bogdanov et al., PRESENT (2007), §3 S-box table'],
+      credit: 'Teaching demonstration after Howard M. Heys, A Tutorial on Linear and Differential Cryptanalysis',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Differential_cryptanalysis', linear: 'https://en.wikipedia.org/wiki/Linear_cryptanalysis', 'Heys tutorial': 'https://cs.bc.edu/straubin/crypto2017/heys.pdf', 'PRESENT original': 'https://www.researchgate.net/publication/221291660_PRESENT_An_Ultra-Lightweight_Block_Cipher' },
       viz(v) {
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 340 });
         const sK = v.stage({ x: [-0.5, 15.5], y: [0, 1], axes: 'box', gutter: true, height: 400, minWidth: 340, xlabel: 'guess for the last key nibble k₂', ylabel: 'score' });
@@ -257,17 +255,19 @@ export default {
             for (let t = 0; t < N; t++) { const p = Math.floor(r() * 16), c = enc(p), pa = popcnt(a & p) & 1; for (let g = 0; g < 16; g++) if (((popcnt(b & Si[c ^ g]) & 1) ^ pa) === 0) zs[g]++; }
             for (let g = 0; g < 16; g++) sc[g] = Math.abs(zs[g] - N / 2);
           }
-          const mx = Math.max(...sc, 1), top = sc.indexOf(Math.max(...sc)), ties = sc.filter((x) => x === sc[top]).length;
+          const population = attackPopulation(S, kk, a, b, d), reference = population.map((p) => N * p);
+          const mx = Math.max(...sc, ...reference, 1), top = sc.indexOf(Math.max(...sc)), ties = sc.filter((x) => x === sc[top]).length;
           sK.setView([-0.5, 15.5], [0, mx * 1.2 + 1]);
           sc.forEach((s, g) => sK.rect(g - 0.35, 0, g + 0.35, s, { fill: g === kk[2] ? 'green' : 'accent', fillAlpha: g === kk[2] ? 0.7 : 0.4, color: g === kk[2] ? 'green' : 'accent', width: 1.2 }));
+          reference.forEach((score, g) => sK.line(g - .35, score, g + .35, score, { color: 'gold', width: 2.5 }));
           sK.setTicks([...Array(16).keys()].map((g) => [g, hx(g, 1)]), null);
-          info = { a, b, val: tab[a][b], d, N, top, ties, key: kk[2], sc: sc[top], real: sc[kk[2]] };
+          info = { a, b, val: tab[a][b], d, N, top, ties, key: kk[2], sc: sc[top], real: sc[kk[2]], population, scores: sc, keys: kk, S };
         });
-        v.legend([['green', 'real $k_2$'], ['accent', 'wrong guesses'], ['gold', 'selected table cell']]);
+        v.legend([['green', 'real $k_2$'], ['accent', 'wrong guesses'], ['gold', 'selected cell / exact population score']]);
         v.readout(() => {
           const i = info, p = i.val / 16;
-          const head = i.d ? String.raw`Differential $${hx(i.a, 1)}\to${hx(i.b, 1)}$: probability $${i.val}/16=${v.fix(p, 3)}$, so about $1/p\approx${p > 0 ? v.fix(1 / p, 1) : '\\infty'}$ pairs per right pair.` : String.raw`Approximation $${hx(i.a, 1)}\cdot x=${hx(i.b, 1)}\cdot S(x)$: bias $\epsilon=${i.val}/16=${v.fix(p, 3)}$, needing about $1/\epsilon^2\approx${p ? v.fix(1 / (p * p), 0) : '\\infty'}$ known plaintexts.`;
-          return head + '\n' + String.raw`With $N=${i.N}$ samples the top guess is $${hx(i.top, 1)}$ (score ${v.fix(i.sc, 0)}${i.ties > 1 ? ', tied with ' + (i.ties - 1) + ' other' + (i.ties > 2 ? 's' : '') : ''}); the real key nibble is $${hx(i.key, 1)}$ (score ${v.fix(i.real, 0)}): ` + (i.top === i.key && i.ties === 1 ? '**recovered**.' : i.sc === i.real ? 'tied for the top — not yet determined.' : 'not yet recovered.');
+          const head = i.d ? String.raw`Differential $${hx(i.a, 1)}\to ${hx(i.b, 1)}$: probability $${i.val}/16=${v.fix(p, 3)}$, so about $1/p\approx${p > 0 ? v.fix(1 / p, 1) : '\\infty'}$ pairs per right pair.` : String.raw`Approximation $${hx(i.a, 1)}\cdot x=${hx(i.b, 1)}\cdot S(x)$: bias $\epsilon=${i.val}/16=${v.fix(p, 3)}$, fixed-bias detection scale $1/\epsilon^2\approx${p ? v.fix(1 / (p * p), 0) : '\\infty'}$ known plaintexts.`;
+          return head + '\n' + String.raw`With $N=${i.N}$ samples the top guess is $${hx(i.top, 1)}$ (score ${v.fix(i.sc, 0)}${i.ties > 1 ? ', tied with ' + (i.ties - 1) + ' other' + (i.ties > 2 ? 's' : '') : ''}); the real key nibble is $${hx(i.key, 1)}$ (score ${v.fix(i.real, 0)}): ` + (i.top === i.key && i.ties === 1 ? 'unique sample leader matching the true key in this batch.' : i.sc === i.real ? 'tied for the sample top.' : 'a wrong guess leads this batch.') + ` The exact population statistic has ${i.population.filter(x => Math.abs(x - Math.max(...i.population)) < 1e-14).length} maximizers; this score need not identify a unique key.`;
         });
       },
     },

@@ -1,3 +1,4 @@
+import { spnRun, spnPermutation } from './sources.audit.js';
 // Cryptography — Chapter 4: Stream ciphers, block ciphers and modes of operation (items 4.1–4.4)
 import {
   clamp, pixc as pix, mix2, hx, popcnt, hex, lfsrBits, lfsrPeriod, bm, predict, rc4, chachaInit, quarter, SBOXES, invS,
@@ -105,16 +106,15 @@ export default {
       num: '4.2',
       kind: 'Model',
       name: 'RC4 and ChaCha20',
-      statement: String.raw`**RC4** keeps a permutation $S$ of $\{0,\dots,255\}$ and two indices; its key schedule shuffles $S$ by the key, and each output byte is $S[S[i]+S[j]]$ after a swap. It is *not* a pseudorandom generator: the second output byte is $0$ with probability about $2/256$ instead of $1/256$ (Mantin–Shamir), so a few hundred streams under random keys already distinguish it from random. **ChaCha20** is a 256-bit-key stream cipher whose block function runs 20 rounds of the *quarter round* on a $4\times4$ array of 32-bit words, $a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll16;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll12;\ a\mathrel{+}=b;\ d\mathrel{\oplus}=a;\ d\lll8;\ c\mathrel{+}=d;\ b\mathrel{\oplus}=c;\ b\lll7$ (alternately on the four columns and the four diagonals), then adds the input state to the result; the keystream is the sequence of blocks for counters $1,2,\dots$ No such bias is known for the full cipher, and it is standardised in RFC 8439.`,
-      idea: String.raw`Mantin and Shamir's argument for RC4: if the permutation entry $S[2]$ is $0$ at the start of the second output step and $S[1]\ne2$, the output byte is $0$ with certainty; since $S[2]=0$ happens with probability about $1/256$ after the key schedule, this adds about $1/256$ to the uniform $1/256$. (Later work found further biases, and RFC 7465 (2015) forbids RC4 in TLS.) ChaCha20 relies on "add, rotate, xor": individually cheap, and together non-linear (the carries of the additions) and diffusing. The right-hand plot measures the diffusion directly: flip one bit of the block counter and count how many of the 512 state bits differ after $r$ rounds; the fraction reaches the ideal $\tfrac12$ after three or four rounds, leaving the remaining rounds as a security margin. That is evidence of mixing, not a proof of security: the security of both ciphers rests on the absence of known attacks.`,
-      caption: String.raw`**Left:** histogram of the *second* keystream byte over many random keys (choose the cipher and the number of keys). The dashed line is the uniform expectation; for RC4 the bar at $0$ is about twice as tall, for ChaCha20 nothing stands out (the readout gives the excess at $0$ in standard deviations of a uniform source). **Right:** diffusion in ChaCha: the average number of the 512 state words' bits that change when one counter bit is flipped, after $r$ rounds ($r=1,\dots,20$); the gold dot follows the slider.`,
-      scope: String.raw`Second-byte bias: Mantin & Shamir, *A practical attack on broadcast RC4* (FSE 2001). Measurements here: random 16-byte keys for RC4; random 256-bit keys with fixed counter and nonce for ChaCha20. The diffusion plot is an illustration of the round function, not a security analysis.`,
+      statement: String.raw`**RC4** initializes a 256-entry permutation from its key, then updates indices $i,j$, swaps $S[i],S[j]$, and outputs $S[(S[i]+S[j])\bmod256]$ (index arithmetic modulo 256). Its second output byte has an approximately doubled frequency at zero across independent keys, a useful distinguishing bias. Mantin–Shamir's Theorem 1 analyzes a uniformly random initial permutation; the key-scheduled RC4 experiment here is a separate measurement. **ChaCha20**, as specified in RFC 8439 §2, has a 256-bit key, a 32-bit block counter and a 96-bit nonce. Its 512-bit state undergoes 20 alternating column/diagonal rounds, using modular addition, XOR and rotations $16,12,8,7$, followed by addition of the input state and little-endian serialization. Counter inputs must not repeat under a key/nonce; the 32-bit counter must not wrap. A flat byte histogram is not a security proof.`,
+      idea: String.raw`The RC4 event is about the permutation **before the first output step**: if $S_0[2]=0$ and $S_0[1]\ne2$, the first step leaves location 2 untouched, and the second swap forces the second output to zero. Under a uniform initial permutation this event has probability approximately $1/256$; treating the remaining outputs as approximately uniform yields the paper's approximate $2/256$ bias, not an exact formula for RC4 key scheduling. Its §3.3 reports success above 0.64 using 200 streams. ChaCha's additions introduce carries and its rotations spread differences. The diffusion plot measures working states **before feed-forward**, with one uniformly selected counter bit flipped; reaching a mean near half the bits illustrates mixing and does not quantify a security margin.`,
+      caption: String.raw`Left: the second keystream byte over the selected number of reproducibly sampled keys. The y-axis expands to contain every bar; the dashed line is the uniform expectation. RC4 uses 16-byte keys; ChaCha20 uses 32-byte keys with fixed nonce and counter 1. Right: mean working-state Hamming distance over 1000 trials after each round, before feed-forward, for a counter bit chosen uniformly among all 32 bits. The readout describes only the preselected zero-byte statistic in this batch.`,
+      scope: String.raw`Actual RC4 and RFC 8439 ChaCha20 round computations, checked against RFC known-answer vectors. Toy sampling uses a deterministic non-cryptographic PRNG. Mantin–Shamir Theorem 1 assumes a uniform permutation, whereas the histogram uses RC4 key scheduling; the approximate theoretical argument and the empirical comparison are distinct. These finite tests do not establish pseudorandomness.`,
       deps: ['crypto-4.1'],
       tags: ['RC4', 'ChaCha', 'bias'],
-      refs: ['Katz–Lindell §7.1.4', 'Katz–Lindell §7.1.5'],
-      credit: 'RC4: R. Rivest, 1987 (source posted anonymously in 1994); bias: Mantin & Shamir, 2001. ChaCha: D. J. Bernstein, 2008 (variant of Salsa20, 2005); RFC 8439 (2018)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/RC4', rfc: 'https://www.rfc-editor.org/rfc/rfc8439' },
+      refs: ['Mantin–Shamir, A Practical Attack on Broadcast RC4, LNCS 2355, pp. 152–164, Theorems 1–2', 'RFC 6229 §2 (RC4 vectors)', 'RFC 8439 §§2.1–2.4 (quarter round, state and block vectors)'],
+      credit: 'Mantin & Shamir, FSE 2001 (proceedings 2002), §§2–3; Nir & Langley, RFC 8439 (2018), ChaCha20 specification',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/RC4', rfc: 'https://www.rfc-editor.org/rfc/rfc8439', 'RC4 original (pp. 152–164)': 'https://www.researchgate.net/profile/Ljupco-Kocarev/publication/220942382_Cryptanalysis_of_SBLH/links/0deec53a9c28f923e9000000/Cryptanalysis-of-SBLH.pdf', 'RC4 vectors': 'https://www.rfc-editor.org/rfc/rfc6229' },
       viz(v) {
         const sH = v.stage({ x: [0, 256], y: [0, 4], axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'value of the second keystream byte', ylabel: 'count ÷ expected' });
         const sC = v.stage({ x: [0, 20.5], y: [0, 270], axes: 'box', gutter: true, height: 300, minWidth: 320, xlabel: 'ChaCha rounds r', ylabel: 'state bits changed (of 512)' });
@@ -136,21 +136,23 @@ export default {
               for (let i = 0; i < 16; i++) kb[i] = Math.floor(r() * 256);
               hr[rc4(kb, 2)[1]]++;
               for (let i = 0; i < 8; i++) kw[i] = rnd(r);
-              const init = chachaInit(kw, 1 + (rnd(r) & 0xffff0), nonce);
+              const init = chachaInit(kw, 1, nonce);
               const w = Uint32Array.from(init); for (let rd = 1; rd <= 20; rd++) rnd1(w, rd);
               hc[((w[0] + init[0]) >>> 8) & 255]++;
               if (t < NA) {
-                s.set(init); s2.set(init); s2[12] ^= 1 << Math.floor(r() * 4);
+                s.set(init); s2.set(init); s2[12] ^= 1 << Math.floor(r() * 32);
                 for (let rd = 1; rd <= 20; rd++) { rnd1(s, rd); rnd1(s2, rd); let c = 0; for (let i = 0; i < 16; i++) c += popcnt(s[i] ^ s2[i]); av[rd] += c / NA; }
               }
             }
             D = { hr, hc, chiR: chi(hr, N), chiC: chi(hc, N), av };
           }
           const rc = cip.value === 'RC4', h = rc ? D.hr : D.hc, e = N / 256;
-          sH.setView([0, 256], [0, 2.6]);
+          const ymax = Math.max(2.6, Math.max(...h) / e * 1.15);
+          sH.setView([0, 256], [0, ymax]);
           sH.hline(1, { color: 'muted', width: 1.4, dash: true });
           for (let i = 0; i < 256; i++) sH.rect(i + 0.1, 0, i + 0.9, h[i] / e, { fill: i === 0 ? 'red' : (rc ? 'accent' : 'teal'), fillAlpha: i === 0 ? 0.8 : 0.55, color: i === 0 ? 'red' : (rc ? 'accent' : 'teal'), width: 0.6 });
-          sH.text(`value 0: ${h[0]} (uniform: ${v.fix(e, 0)})`, 255, 2.4, { size: 11.5, color: 'red', align: 'right', weight: 700 });
+          sH.text(`value 0: ${h[0]} (uniform: ${v.fix(e, 0)})`, 255, ymax * .94, { size: 11.5, color: 'red', align: 'right', weight: 700 });
+          sC.setView([0, 20.5], [0, Math.max(270, ...Array.from(D.av, x => x * 1.08))]);
           sC.hline(256, { color: 'green', width: 1.8, dash: true });
           sC.text('ideal 256 (half of 512)', 20, 240, { size: 11.5, color: 'green', align: 'right', weight: 600 });
           sC.path(Array.from({ length: 20 }, (_, i) => [i + 1, D.av[i + 1]]), { color: 'teal', width: 2.4 });
@@ -159,7 +161,7 @@ export default {
         v.legend([['accent', 'RC4 counts'], ['teal', 'ChaCha counts / diffusion'], ['red', 'value 0']]);
         v.readout(() => {
           const rc = cip.value === 'RC4', N = nS.value, h = rc ? D.hr : D.hc, e = N / 256, r = rS.value;
-          return String.raw`${rc ? 'RC4' : 'ChaCha20'}, ${N} random keys: the second byte was $0$ in ${h[0]} of them, $${v.fix(h[0] / e, 2)}\times$ the uniform expectation; that is $${v.fix((h[0] - e) / Math.sqrt(e * (1 - 1 / 256)), 1)}$ standard deviations from the uniform expectation` + (Math.abs(h[0] - e) > 4 * Math.sqrt(e) ? '. **Distinguished from random.**' : '. Not distinguishable at this sample size.') + '\n' +
+          return String.raw`${rc ? 'RC4' : 'ChaCha20'}, ${N} random keys: the second byte was $0$ in ${h[0]} of them, $${v.fix(h[0] / e, 2)}\times$ the uniform expectation; that is $${v.fix((h[0] - e) / Math.sqrt(e * (1 - 1 / 256)), 1)}$ standard deviations from the uniform expectation` + (Math.abs(h[0] - e) > 4 * Math.sqrt(e) ? '. The chosen zero-byte test shows a greater-than-4σ deviation in this batch.' : '. The chosen zero-byte test shows no greater-than-4σ deviation in this batch.') + '\n' +
             String.raw`ChaCha: after $r=${r}$ round${r > 1 ? 's' : ''}, flipping one counter bit changed $${v.fix(D.av[r], 1)}$ of the 512 state bits (${v.fix(D.av[r] / 5.12, 0)}%).`;
         });
       },
@@ -170,16 +172,15 @@ export default {
       num: '4.3',
       kind: 'Definition',
       name: 'Substitution–permutation networks and the avalanche effect',
-      statement: String.raw`A **substitution–permutation network** (SPN) on $n=\ell m$ bits applies, for $r$ rounds, three layers to the state $x$: *key mixing* $x\mapsto x\oplus k_i$ (round keys $k_i$ derived from the master key), *substitution* by $m$ fixed invertible $\ell$-bit S-boxes applied to disjoint blocks, and a fixed bit *permutation* mixing the outputs of different S-boxes (usually omitted in the last round, which is followed by a final key mixing). Every layer is invertible, so the network is a permutation for each key. The design aims at **confusion** (the relation key–ciphertext is complicated, via S-boxes) and **diffusion** (flipping one input bit changes about half of the output bits, via permutation after substitution): the **avalanche effect**. Without non-linear S-boxes there is no avalanche: a one-bit difference stays a one-bit difference.`,
-      idea: String.raw`If S-boxes were linear, the whole network would be an affine map and a single bit flip could only change as many output bits as the matrix rows allow — here exactly one. A good S-box turns one flipped input bit into a non-trivial pattern in its nibble (typically $2$ of $4$ bits), the permutation sends those bits to *different* S-boxes, and each of those then spreads further; so the number of "active" S-boxes multiplies until the whole block is hit after $\log_\ell n$ rounds or so (here two or three). Shannon named the two principles in 1949; the strict avalanche criterion asks that every input bit flips each output bit with probability exactly $\tfrac12$. The 4-bit toy below is far too small to be secure, but exhibits the mechanism that AES scales up with a $16\times16$ byte state.`,
-      caption: String.raw`A 16-bit SPN with four 4-bit S-boxes and the bit transposition $4a+b\mapsto4b+a$. **Left:** one trial. Pick which input bit to flip (slider) and the number of rounds; each row shows the state after a round, with *changed* bits in red; green lines are the permutation. **Right:** the average number of changed output bits over 400 random inputs and keys after each round: for a good S-box it settles at $8$ of $16$ after two or three rounds; for the *affine* S-box it stays at $1$. Resample for another input and key.`,
-      scope: String.raw`Round keys are produced by a non-cryptographic mixer and the S-box is a published 4-bit example; the network is a teaching toy, not a secure cipher (a 16-bit block is trivially exhaustible).`,
+      statement: String.raw`A **substitution–permutation network** on $n=\ell m$ bits alternates round-key XOR, $m$ invertible $\ell$-bit substitutions on disjoint groups, and a fixed bit permutation. Here the final round omits the permutation and is followed by a final key XOR. Every layer is invertible, so each keyed network is a permutation. Nonlinear substitutions complicate algebraic relations; permutations spread active bits between substitutions. An **avalanche** measurement asks how output differences spread. The stronger strict avalanche condition requires, for each input bit and each output bit, flip probability $1/2$ over uniform inputs; a mean Hamming distance near $n/2$ alone does not establish it. Affine networks can spread a one-bit difference widely but still satisfy simple linear equations and are insecure.`,
+      idea: String.raw`The transpose wiring sends bits from each substituted nibble to several other nibbles. Nonlinear substitutions then make subsequent differences depend on the input. The affine option here is specifically a bit rotation XOR a constant, so every key and every number of rounds preserve Hamming weight one; a general invertible affine map need not do that. The displayed network has 16 bits and four 4-bit substitutions. It is inspired by the tutorial SPN, not an AES implementation: AES uses a $4\times4$ array of bytes and a different diffusion layer. Good measured diffusion alone does not rule out differential, linear or other attacks.`,
+      caption: String.raw`A 16-bit teaching SPN with Heys's Table 1 S-box, the PRESENT §3 S-box, or a deliberately weak affine rotation. Left: the input, all round states and the final whitening state (ciphertext); changed bits are red. Green wiring indicates the bit permutation between substitution groups, not literal bit values before substitution. Right: mean Hamming distance over 400 sampled inputs and independent round keys. The green reference is $8$; a uniformly random permutation on distinct 16-bit inputs has mean $8\cdot65536/65535$, extremely close to that reference. Resampling and changing controls alter the experiment, not a security theorem.`,
+      scope: String.raw`The S-box tables are checked directly against Heys §2.1 Table 1 and Bogdanov et al. (2007) §3. Round keys use a reproducible non-cryptographic mixer; this is not PRESENT or AES and has no cryptographic security claim. It demonstrates mean diffusion, not the per-bit strict avalanche criterion.`,
       deps: ['crypto-3.11'],
       tags: ['SPN', 'avalanche', 'confusion and diffusion'],
-      refs: ['Katz–Lindell §7.2.1'],
-      credit: 'C. E. Shannon, 1949 (confusion and diffusion); the name “avalanche effect”: H. Feistel, 1973',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Substitution%E2%80%93permutation_network' },
+      refs: ['Heys, A Tutorial on Linear and Differential Cryptanalysis, §§2.1–2.4, Tables 1–2', 'Bogdanov et al., PRESENT (CHES 2007), §3 (S-box table)'],
+      credit: 'Teaching SPN after Howard M. Heys; alternate S-box from Bogdanov et al., PRESENT (2007)',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Substitution%E2%80%93permutation_network', 'Heys tutorial': 'https://cs.bc.edu/straubin/crypto2017/heys.pdf', 'PRESENT original': 'https://www.researchgate.net/publication/221291660_PRESENT_An_Ultra-Lightweight_Block_Cipher' },
       viz(v) {
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 330 });
         const sA = v.stage({ x: [0, 8.5], y: [0, 16], axes: 'box', gutter: true, height: 400, minWidth: 330, xlabel: 'rounds', ylabel: 'mean changed output bits' });
@@ -187,12 +188,7 @@ export default {
         const rS = v.slider('rounds $R$', 1, 8, 4, { step: 1, int: true });
         const sb = v.select('S-box', [{ value: 'heys', label: 'S-box A' }, { value: 'present', label: 'S-box B' }, { value: 'linear', label: 'affine' }], 'heys');
         let seed = 1; v.button('Resample', () => { seed += 1; });
-        const PERM = (j) => 4 * (j % 4) + ((j / 4) | 0);
-        const run = (S, x, ks, R) => {
-          const st = [x];
-          for (let r = 0; r < R; r++) { x ^= ks[r]; let y = 0; for (let i = 0; i < 4; i++) y |= S[(x >> (4 * i)) & 15] << (4 * i); if (r < R - 1) { let z = 0; for (let j = 0; j < 16; j++) z |= ((y >> j) & 1) << PERM(j); y = z; } x = y; st.push(x); }
-          st.push(x ^ ks[R]); return st;
-        };
+        const PERM = spnPermutation, run = spnRun;
         let keyA = '', curve = null, info = null;
         v.render(() => {
           const S = SBOXES[sb.value].S, R = rS.value, b = bS.value, r = v.rng(seed * 131 + 17);
@@ -209,12 +205,12 @@ export default {
             curve[0] = 1;
           }
           // trial panel
-          const P = pix(sT), W = P.W, H = P.H, cs = Math.min(20, (W - 90) / 16), x0 = (W - 16 * cs) / 2 + 22, top = 26, rh = Math.min(48, (H - 40) / (R + 1));
-          const rows = R + 1;
+          const P = pix(sT), W = P.W, H = P.H, cs = Math.min(20, (W - 90) / 16), x0 = (W - 16 * cs) / 2 + 22, top = 26, rh = Math.min(48, (H - 55) / (R + 2));
+          const rows = R + 2;
           P.text('input', 8, top - 12, { size: 11, color: 'muted', align: 'left', halo: false });
           for (let i = 0; i < rows; i++) {
             const y = top + i * rh, d = a[i] ^ c[i];
-            P.text(i === 0 ? 'x' : i === R ? `r${i}` : `r${i}`, x0 - 12, y + 9, { size: 11, color: 'muted', align: 'right', halo: false });
+            P.text(i === 0 ? 'x' : i === R + 1 ? 'out' : `r${i}`, x0 - 12, y + 9, { size: 11, color: 'muted', align: 'right', halo: false });
             for (let j = 0; j < 16; j++) {
               const bit = 15 - j, dd = (d >> bit) & 1;
               P.rect(x0 + j * cs + 1, y, cs - 2, 18, { fill: dd ? 'red' : 'faint', fillAlpha: dd ? 0.55 : 0.1, color: dd ? 'red' : 'muted', width: dd ? 1.6 : 0.8, radius: 3 });
@@ -230,7 +226,8 @@ export default {
                   const tj = PERM(j), changedNext = ((a[i + 1] ^ c[i + 1]) >> tj) & 1, col = changedNext ? 'red' : 'green';
                   P.line(x0 + (15 - j + 0.5) * cs, y + 21, x0 + (15 - tj + 0.5) * cs, y + rh - 2, { color: col, width: changedNext ? 1.4 : 0.7, alpha: changedNext ? 0.9 : 0.35 });
                 }
-              } else P.text('last round: no permutation; a final key is XORed in', W / 2, y + rh + 30, { size: 10.5, color: 'muted', halo: false });
+              }
+            } else if (i === R) { P.text('final key XOR →', x0 + 8 * cs, y + rh - 6, { size: 10, color: 'muted', halo: false });
             }
           }
           P.text(`input bit ${b} flipped`, W / 2, H - 8, { size: 11.5, color: 'red', weight: 600, halo: false });
@@ -243,7 +240,7 @@ export default {
           info = { dn, avg: curve[R], R, b };
         });
         v.legend([['red', 'changed bit'], ['orange', 'S-box blocks', { dash: true }], ['accent', 'average over 400 trials']]);
-        v.readout(() => String.raw`Flipping input bit $${info.b}$ changed **${info.dn}** of the 16 output bits after $R=${info.R}$ rounds; averaged over 400 random inputs and keys the figure is $${v.fix(info.avg, 2)}$ (a random permutation would give $8$).` + (info.avg < 3 ? ' No avalanche: the network is (nearly) linear.' : ''));
+        v.readout(() => String.raw`Flipping input bit $${info.b}$ changed **${info.dn}** of the 16 output bits after $R=${info.R}$ rounds; averaged over 400 random inputs and keys the figure is $${v.fix(info.avg, 2)}$ (reference $8$; the exact random-permutation mean is $8\cdot65536/65535$).` + (info.avg < 3 ? ' This batch has low mean diffusion; this statistic alone does not classify a cipher.' : ''));
       },
     },
 

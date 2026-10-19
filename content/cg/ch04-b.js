@@ -1,3 +1,4 @@
+import {fullArrangementZone} from './geometry-source-audit.shared.js';
 // Computational Geometry & Graphics — Chapter 4: Linear programming and duality (§§4.6–4.9; §§4.1–4.5 in ch04.js)
 import { lineEnds, randLines, zoneOf, pixelPattern, discAt, discrepancy, areaLeft, clipHalf } from './ch04.shared.js';
 
@@ -67,43 +68,44 @@ Vertical lines have no dual, which is why dualizing assumes general position (or
     // ------------------------------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Theorem', name: 'Arrangements of lines and the zone theorem',
-      statement: String.raw`A set $L$ of $m$ lines in general position cuts the plane into an **arrangement** with $\binom m2$ vertices, $m^2$ edges and $1+m+\binom m2$ faces. The **zone** of another line $\ell$ is the set of faces that $\ell$ crosses. **Zone theorem:** the total number of edges of the faces in the zone of $\ell$ is $O(m)$, with a small constant (the best known bound is about $9.5\,m$). Consequently one can build the whole arrangement by inserting the lines one at a time into a doubly connected edge list, since the $i$-th line costs only the size of its zone, $O(i)$, for $O(m^2)$ in total, which is optimal because the output has size $\Theta(m^2)$.`,
-      idea: String.raw`Count only the edges that bound a zone face on its left side; the right side is symmetric. Induction on $m$: remove the line of $L$ that crosses $\ell$ furthest to the right. In the smaller arrangement the zone has at most $5(m-1)$ left-bounding edges by induction; putting the line back splits at most a constant number of zone edges and adds a constant number of new ones, and the constant works out to $5$ more. Hence $\le5m$ per side. Intuitively, a face of a line arrangement is convex, so the line $\ell$ can only graze a face's long boundary a bounded number of times before the faces it enters become unrelated to the previous ones.`,
-      caption: String.raw`Drag the gold line $\ell$ over the arrangement; the faces it crosses (its zone) are shaded orange and their edges are counted. The bars on the right show what building the arrangement line by line cost: the $i$-th bar is the zone of line $i$ in the arrangement of the first $i-1$ lines, which grows linearly (the dashed line is the $9.5\,(i-1)$ bound); the gold dot is the zone of your $\ell$. **New lines** redraws the arrangement.`,
-      credit: 'B. Chazelle, L. J. Guibas & D. T. Lee, 1985; H. Edelsbrunner, J. O’Rourke & R. Seidel, 1986 (constant sharpened by Bern, Eppstein, Plassmann & Yao, 1991)',
-      verify: true,
-      deps: ['cg-4.6'], refs: ['de Berg §8.3'], tags: ['arrangements', 'zone theorem'],
-      links: { doi: 'https://doi.org/10.1007/BF01934990' },
+      statement: String.raw`A set $L$ of $m$ distinct lines in general position (no parallels, no three concurrent) has $\binom m2$ arrangement vertices, $m^2$ edges including unbounded rays, and $1+m+\binom m2$ faces. For a generic query line $\ell\notin L$, its **zone before insertion** consists of the $m+1$ open faces whose interiors it crosses. Count boundary-edge incidences with multiplicity: an edge adjoining two zone faces counts twice. The **zone theorem** gives $O(m)$ such incidences; the textbook proof gives the convenient bound $10m$. This bounds a DCEL insertion by $O(1+m)$ and the full construction by $O(m^2)$, optimal for general-position output. A different convention counts faces incident to $\ell$ **after** it is inserted; that count is larger by $4m+2$ in generic position. The classical $9.5m+O(1)$ bound refers to that latter convention.`,
+      idea: String.raw`Make $\ell$ horizontal and assume no arrangement line is parallel to it. Count left-bounding incidences; right-bounding ones are symmetric. Remove the arrangement line $\ell_1$ with rightmost intersection on $\ell$. When reinserted, its nearest intersections $v,w$ above and below $\ell$ contribute at most one new left-bounding edge between $v,w$ and two splits. Beyond them, a newly split piece drops out of the zone, so it causes no net increase. Thus a generic step adds at most three left incidences; ties at the rightmost crossing require at most five. Induction gives at most $5m$ left and $5m$ right incidences. Boundary vertices add only a constant factor. For incremental construction, walk the crossed DCEL faces and update their edges in time proportional to the zone. The demo enumerates sign-vector cells for verification, rather than implementing that quadratic-time construction.`,
+      caption: String.raw`Drag the gold query line. Orange shading shows the visible parts of its zone, while counts include the **entire** affine arrangement, including distant edges and rays. Bars count boundary-edge incidences before each insertion; they are an update-work proxy, not timings. The dashed line is the applicable $10(i-1)$ bound. The gold point shows the current query count, and the readout also gives the separate after-insertion convention. The window clips shading only, never the combinatorial count. Parallel/concurrent cases report actual counts; the $m+1$ formula is asserted only in generic position. Coincident lines or coincident query handles are rejected explicitly.`,
+      credit: 'Zone theorem and proof: de Berg et al., Theorem 8.5; after-insertion 9.5m+O(1) bound: Bern, Eppstein, Plassmann & Yao (1991), §2',
+      deps: ['cg-4.6'], refs: ['de Berg et al., 3rd ed., Theorem 8.5, pp.183–185; Bern et al. (1991), §2 and Theorem 1'], tags: ['arrangements', 'zone theorem'],
+      links: { source: 'https://ics.uci.edu/~eppstein/pubs/BerEppPla-DCG-91.pdf' },
       viz(v) {
         const s = v.stage({ x: [-5, 5], y: [-3.6, 3.6], equal: true, axes: false, height: 380, minWidth: 340 });
-        const G = v.stage({ x: [0, 12], y: [0, 40], axes: 'box', gutter: true, xlabel: 'line number i', ylabel: 'edges in the zone', title: 'cost of inserting line i', height: 380, minWidth: 280 });
+        const G = v.stage({ x: [0, 12], y: [0, 40], axes: 'box', gutter: true, xlabel: 'line number i', ylabel: 'zone edge incidences', title: 'zone incidences before inserting line i', height: 380, minWidth: 280 });
         let seed = 1, L = [], ins = [], ymax = 40;
         const msl = v.slider('lines $m$', 3, 30, 10, { int: true, onChange: () => regen() });
         const regen = () => {
           const m = msl.value;
           L = randLines(v.rng(seed * 17 + m), m);
-          ins = L.map((l, i) => { const P0 = [l[0] * l[2], l[1] * l[2]]; return zoneOf(L.slice(0, i), P0, [P0[0] - l[1], P0[1] + l[0]]).total; });
-          ymax = Math.min(9.5 * (m - 1) + 4, Math.max(...ins) * 2.2 + 6);
+          ins = L.map((l, i) => { const P0 = [l[0] * l[2], l[1] * l[2]]; return fullArrangementZone(L.slice(0, i), P0, [P0[0] - l[1], P0[1] + l[0]]).total; });
+          ymax = Math.min(10 * (m - 1) + 4, Math.max(...ins) * 2.2 + 6);
         };
         v.button('new lines', () => { seed++; regen(); });
         const u = s.handle(-4.4, -1.9, { color: 'gold', label: 'ℓ' }), w = s.handle(4.3, 2.3, { color: 'gold' });
         regen();
-        v.legend([['accent', 'cost of inserting line i'], ['gold', 'zone of ℓ', { dot: true }], ['muted', '9.5·(i−1)', { dash: true }]]);
+        v.legend([['accent', 'zone before inserting line i'], ['gold', 'zone of ℓ', { dot: true }], ['muted', '10·(i−1)', { dash: true }]]);
         let info = '';
         v.render(() => {
           const m = msl.value, dx = w.x - u.x, dy = w.y - u.y, len = Math.hypot(dx, dy) || 1;
           const a = -dy / len, b = dx / len, c = a * u.x + b * u.y;
-          const Z = zoneOf(L, [u.x, u.y], [w.x, w.y]);
+          const XR=s.xr,YR=s.yr;
+          const Z = fullArrangementZone(L, [u.x, u.y], [w.x, w.y],[XR[0],YR[0],XR[1],YR[1]]);
+          if(Z.bad){info=`**${Z.bad}**. Move the query handles to define a distinct line.`;s.corner(Z.bad,'tl',{color:'red'});return;}
           Z.faces.forEach((f) => { if (f.poly.length) s.poly(f.poly, { fill: 'orange', fillAlpha: 0.17, color: 'orange', width: 1.2, alpha: 0.9 }); });
-          L.forEach((l) => { const e = lineEnds(l[0], l[1], l[2], [-5, 5], [-3.6, 3.6]); if (e) s.segment(e[0], e[1], { color: 'blue', width: 1.5, alpha: 0.75 }); });
-          const e = lineEnds(a, b, c, [-5, 5], [-3.6, 3.6]);
+          L.forEach((l) => { const e = lineEnds(l[0], l[1], l[2], XR,YR); if (e) s.segment(e[0], e[1], { color: 'blue', width: 1.5, alpha: 0.75 }); });
+          const e = lineEnds(a, b, c, XR,YR);
           if (e) s.segment(e[0], e[1], { color: 'gold', width: 3.5 });
-          G.setView([0, m + 2], [0, Math.max(ymax, Z.total * 1.2 + 2)]);
-          G.fn((x) => 9.5 * (x - 1), { domain: [1, m], color: 'muted', dash: true, width: 1.5 });
+          G.setView([0, m + 2], [0, Math.max(ymax, Z.total * 1.2 + 2,10*(m-1)+5)]);
+          G.fn((x) => 10 * (x - 1), { domain: [1, m], color: 'muted', dash: true, width: 1.5 });
           G.bars(ins, { x0: 1, dx: 1, color: 'accent' });
           G.dot(m + 1, Z.total, { r: 7, color: 'gold' });
           const tot = ins.reduce((t, x) => t + x, 0);
-          info = `Zone of $\\ell$: ${Z.faces.length} faces (= $m+1$), **${Z.total} edges** = $${v.fix(Z.total / m, 2)}\\,m$ (worst-case bound about $9.5\\,m=${v.fix(9.5 * m, 0)}$). Building the arrangement line by line cost $\\sum_i \\text{zone}_i=${tot}$ edge visits, against $m^2=${m * m}$ edges in the final arrangement.`;
+          info=`Zone before insertion: **${Z.faces.length} faces, ${Z.total} edge incidences**. ${Z.generic?`Generic case: m+1=${m+1}; textbook bound 10m=${10*m}.`:'Degenerate configuration: use the actual counts, not the general-position formulas.'} After-insertion convention: ${Z.insertedZoneTotal===null?'query passes through a vertex; generic conversion not used':`${Z.insertedZoneTotal} incidences`}.\nArrangement: ${Z.vertices} vertices, ${Z.edges} edges, ${Z.faceCount} faces. Sum of prefix-zone incidences ${tot}, plus constant insertion overhead per line; this is a combinatorial proxy, not the running time of the sign-vector enumerator. Viewport clipping affects shading only.`;
         });
         v.readout(() => info);
       },

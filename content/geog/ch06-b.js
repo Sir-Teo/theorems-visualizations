@@ -93,19 +93,19 @@ This item implements four simpler measures in the same spirit: with $J$ the Jaco
       num: '6.5',
       kind: 'Method',
       name: 'Interrupted and polyhedral maps',
-      credit: 'J. P. Goode, 1923; R. B. Fuller, 1943 (Dymaxion)',
-      statement: String.raw`Cutting the sphere before flattening it lowers distortion, because only the pieces, not the whole, must be developed onto the plane.
+      credit: 'Goode homolosine (Snyder & Voxland, 1989); atlas gnomonic icosahedral construction',
+      statement: String.raw`Cutting the sphere before flattening it permits pieces to use separate charts with less distortion. The cuts themselves do not guarantee an improvement; the projection and centres assigned to the pieces matter.
 - An **interrupted** map splits the world into lobes, each drawn with its own central meridian. In the **Goode homolosine** (1923) each lobe uses the sinusoidal projection between latitudes $\pm\varphi_0$, $\varphi_0\approx40^\circ44'$, and the Mollweide projection poleward, joined where their parallels have equal length; both are equal-area, so the whole is, and in an ocean-interrupted layout the cuts run mostly through oceans.
-- A **polyhedral** map projects the globe onto the faces of an inscribed solid and unfolds them. Fuller's Dymaxion map uses an icosahedron; the version here applies the plain central (gnomonic) projection to each of its 20 triangles and unfolds them in a strip.
+- A **polyhedral** map projects the globe onto the faces of an inscribed solid and unfolds them. The example here applies plain central (gnomonic) projection to the 20 faces of an icosahedron and unfolds them in a strip. This construction is supplied by the atlas; it does not reproduce Fuller’s Dymaxion mapping or its historical net.
 The price is the cuts: the interrupted maps tear the globe along meridians and the icosahedral net along 11 edges, of total length $11\arctan 2\approx3.9\pi$ on the unit sphere.`,
-      idea: String.raw`A lobe is a smaller region of the sphere, so its distortion obeys the same growth law as in geog-6.1: the sinusoidal shear grows with distance from the lobe's own central meridian, and lobes of 60° to 150° width keep it small. A face of the icosahedron spans only about 63°, and the gnomonic map of a small cap (geog-5.1) is nearly isometric, which is why the net's shape error is only a few degrees. Both constructions get their accuracy by paying in the Goldberg–Gott boundary-cut term (geog-6.4), as the scatter plot shows.`,
+      idea: String.raw`A lobe is a smaller region of the sphere, so its distortion obeys the same growth law as in geog-6.1: the sinusoidal shear grows with distance from the lobe's own central meridian, and smaller longitude offsets within a lobe reduce shear. This layout includes a 220° northern lobe, so it does not give every lobe the same small distortion bound. Each icosahedral edge subtends $\arctan 2\approx63.435^\circ$, while a face vertex is about 37.38° from the face centre. Gnomonic scale relative to the face-centre scale can still reach about 1.59 radially and 1.26 transversely at a vertex; cutting bounds this distortion but does not make the faces isometric. Both constructions get their accuracy by paying in the Goldberg–Gott boundary-cut term (geog-6.4), as the scatter plot shows.`,
       caption: String.raw`Switch among the interrupted Goode homolosine, the uninterrupted one, an interrupted sinusoidal with the same lobes, and the icosahedral net. Red marks where the globe was cut. The ellipses are Tissot indicatrices: their shape tells the shear, their size the area error. The scatter plot puts each map at (length of cuts, mean angular distortion): more cuts, less shear. The readout also measures what share of each cut runs over land.`,
       deps: ['geog-6.1', 'geog-5.1'],
       see: ['geog-6.4', 'geog-6.3'],
-      refs: ['Snyder §6'],
+      refs: ['Snyder (1987), §§22,30–31, pp.164–167,247,249–252', 'Snyder & Voxland, An Album of Map Projections (1989), pp.66–67 (Goode)', 'PROJ official source, src/projections/igh.cpp (lobe boundaries and central meridians)'],
       tags: ['map projections', 'interrupted', 'polyhedral'],
-      scope: String.raw`The Goode lobe boundaries used here (north: −180, −40, 180; south: −180, −100, −20, 80, 180, with central meridians −100, 30 and −160, −60, 20, 140) are a standard ocean-interrupted layout recalled from software documentation and were not checked against Goode's atlas. The icosahedral net is plain gnomonic on each face and is **not** Fuller's own Dymaxion mapping, which is not gnomonic and uses different face geometry. Dates (Goode 1923; Dymaxion 1943 in Life magazine, icosahedral version 1954) are from Wikipedia.`,
-      verify: true,
+      scope: String.raw`The six non-overlapping lobe bounds and central meridians match the forward-zone configuration in PROJ’s official igh.cpp: north −180/−40/180 with centres −100/30; south −180/−100/−20/80/180 with centres −160/−60/20/140. This verifies the software configuration, not identity with every Goode atlas edition or its optional repeated regions. The continuous equal-area join follows Snyder’s formulas; the atlas solves the exact scale-matching equation rather than copying a rounded latitude. The icosahedral geometry/cut length is derived from the 20-face triangulation and tested independently; no Fuller-specific mapping/date claim is retained. Metrics are finite midpoint/log-scatter diagnostics, not published Goldberg–Gott scores; land shares are coarse 0.5° mask / 1° arc samples, not surveyed coastlines.`,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Goode_homolosine_projection', dymaxion: 'https://en.wikipedia.org/wiki/Dymaxion_map' },
       viz(v) {
         const I = icosa(), mask = landMask(v);
@@ -155,7 +155,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
             for (const d of lobes(k)) { s.poly(d.out, { fill: 'blue', fillAlpha: 0.07, stroke: false }); s.rings(d.fills, { fill: 'gold', fillAlpha: 0.3, stroke: false }); s.path(d.gr, { color: 'muted', width: 0.7, alpha: 0.38 }); s.poly(d.out, { color: 'red', width: 1.4, alpha: 0.75, fill: false }); box = box.concat(d.out); }
           } else if (M.net) {
             const g = ((c) => [c[0], c[1], c[2], 0.3])(v.rgb('gold')), b = v.rgb('blue');
-            s.raster((x, y) => { const w = I.inv(x, y); if (!w) return null; return isLand(mask, w[0], w[1]) ? g : [b[0], b[1], b[2], 0.08]; }, { res: 2, key: 'ico' });
+            s.raster((x, y) => { const w = I.inv(x, y); if (!w) return null; return isLand(mask, w[0], w[1]) ? g : [b[0], b[1], b[2], 0.08]; }, { res: 2, key: 'ico|'+v.rgb('panel').join(',') });
             const gr = [];
             for (let L = -180; L < 180; L += 30) { const m = []; for (let f = -90; f <= 90; f += 2) m.push([L, f]); for (const pl of azLines({ fwd: (l, f) => I.fwd(l, f) }, m, 0.8)) gr.push(...pl, null); }
             for (let f = -60; f <= 60; f += 30) { const m = []; for (let L = -180; L <= 180; L += 2) m.push([L, f]); for (const pl of azLines({ fwd: (l, f2) => I.fwd(l, f2) }, m, 0.8)) gr.push(...pl, null); }
@@ -179,7 +179,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
         });
         v.readout(() => {
           const I2 = info; if (!I2) return '';
-          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, area error ${(I2.e.area * 100).toFixed(0)} %${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, distance error ${(I2.e.dist * 100).toFixed(0)} % over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. ${I2.M.lobes || I2.M.base || I2.k === 'goode' ? `Goode's join latitude between sinusoidal and Mollweide: ${(GOODE_PHI0 * R2D).toFixed(2)}°.` : ''}`;
+          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, 100×RMS log-area scatter ${(I2.e.area * 100).toFixed(1)}${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, 100×RMS log-distance scatter ${(I2.e.dist * 100).toFixed(1)} over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. ${I2.M.lobes || I2.M.base || I2.k === 'goode' ? `Goode's join latitude between sinusoidal and Mollweide: ${(GOODE_PHI0 * R2D).toFixed(2)}°.` : ''}`;
         });
       },
     },

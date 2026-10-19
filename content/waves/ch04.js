@@ -1,5 +1,6 @@
 // Waves & Optics — Chapter 4: Light at interfaces (items 4.1–4.8; 4.9–4.15 are in ch04-b.js)
-import { TAU, deg, rad, fresnel, carg } from './ch04.shared.js';
+import { TAU, deg, rad, carg } from './ch04.shared.js';
+import {fresnel, tangentContact} from './interface-audit.shared.js';
 
 /**
  * Huygens construction at a plane interface (used by 4.5 and 4.6). A plane wave of speed 1/n1 hits the line y = 0 at angle th1
@@ -11,26 +12,33 @@ function interfaceViz(v, refract) {
   const n1S = v.slider('index of the upper medium $n_1$', 1, 2.5, 1, { step: 0.01 });
   const n2S = v.slider('index of the lower medium $n_2$', 1, 2.5, 1.5, { step: 0.01 });
   if (!refract) { n1S.el.hidden = true; n2S.el.hidden = true; }
-  const aS = v.slider('angle of incidence $\\theta_1$ (degrees)', 5, 80, 35, { step: 1 });
+  const aS = v.slider('angle of incidence $\\theta_1$ (degrees)', 0, 80, 35, { step: 1 });
   const S = v.stage(refract
     ? { x: [-5.2, 5.2], y: [-4.2, 4.4], equal: true, axes: false, height: 440, title: 'wavelets from the points the front has already reached' }
     : { x: [-5.2, 5.2], y: [-1.2, 5.2], equal: true, axes: false, height: 400, title: 'wavelets from the points of the mirror already reached' });
   let rd = null;
-  const hit = (cx, r0, px, sgn) => { // tangent point from P=(px,0) to the circle (cx,0), radius r0, on side sgn (+1 up, -1 down)
-    const d = px - cx; if (r0 >= d) return null;
-    const b = Math.acos(r0 / d); return [cx + r0 * Math.cos(b), sgn * r0 * Math.sin(b)];
-  };
+  const hit = tangentContact;
   v.animate((t) => {
     const n1 = refract ? n1S.value : 1, n2 = refract ? n2S.value : 1, th1 = rad(aS.value);
     const u = (t % P) / P, xt = XS + 0.02 + u * (XE - XS - 0.02), d = xt - XS;
     const s1 = Math.sin(th1), c1 = Math.cos(th1);
+    const max1=d*s1,max2=refract?(n1/n2)*max1:0,large=Math.max(max1,max2);
+    S.setView([Math.min(-7,XS-large-.3),Math.max(5.2,XE+large+.3)],refract?[-Math.max(4.2,max2+.3),Math.max(4.4,max1+.3)]:[-1.2,Math.max(5.2,max1+.3)]);
+    if(aS.value===0){
+      S.line(-6,0,6,0,{color:'ink',width:2});S.line(0,-.5,0,4,{color:'faint',dash:[3,4]});
+      S.line(-3,2,3,2,{color:'accent',width:3});S.arrow(0,2,0,.4,{color:'accent',head:9});
+      S.line(-3,refract?-2:1,3,refract?-2:1,{color:'green',width:3});
+      S.arrow(.5,refract?-.3:.3,.5,refract?-1.7:1.7,{color:'green',head:9});
+      S.text('normal incidence: the whole interface is reached together',0,3.5,{align:'center',size:12,color:'ink',plate:true});
+      rd={n1,n2,th1:0,thR:0,thT:0,ratio:n1/n2,d,normal:true};return;
+    }
     if (refract) {
-      S.rect(-5.2, -4.2, 5.2, 0, { fill: 'blue', fillAlpha: Math.min(0.28, 0.06 + 0.1 * (n2 - 1)), stroke: false });
-      S.rect(-5.2, 0, 5.2, 4.4, { fill: 'blue', fillAlpha: Math.min(0.28, 0.06 + 0.1 * (n1 - 1)), stroke: false });
-      S.line(-5.2, 0, 5.2, 0, { color: 'ink', width: 1.5 });
+      S.rect(S.bounds.x[0],S.bounds.y[0],S.bounds.x[1],0, { fill: 'blue', fillAlpha: Math.min(0.28, 0.06 + 0.1 * (n2 - 1)), stroke: false });
+      S.rect(S.bounds.x[0],0,S.bounds.x[1],S.bounds.y[1], { fill: 'blue', fillAlpha: Math.min(0.28, 0.06 + 0.1 * (n1 - 1)), stroke: false });
+      S.line(S.bounds.x[0],0,S.bounds.x[1],0, { color: 'ink', width: 1.5 });
     } else {
-      S.rect(-5.2, -1.2, 5.2, 0, { fill: 'muted', fillAlpha: 0.25, hatch: true, stroke: false });
-      S.line(-5.2, 0, 5.2, 0, { color: 'ink', width: 3 });
+      S.rect(S.bounds.x[0],S.bounds.y[0],S.bounds.x[1],0, { fill: 'muted', fillAlpha: 0.25, hatch: true, stroke: false });
+      S.line(S.bounds.x[0],0,S.bounds.x[1],0, { color: 'ink', width: 3 });
     }
     S.line(0, -(refract ? 3.6 : 0.2), 0, 4.3, { color: 'faint', width: 1, dash: [3, 4] });
     S.line(XS, 0, XE, 0, { color: 'gold', width: 4 });
@@ -68,10 +76,12 @@ function interfaceViz(v, refract) {
         const T2 = hit(XS, rt, xt, -1);
         if (T2) {
           S.line(xt, 0, T2[0], T2[1], { color: 'green', width: 3.2 });
-          thT = deg(Math.atan2(-T2[1], xt - T2[0]));
+          const critical=Math.abs(rt-d)<=1e-12*d;
+          if(critical)S.line(xt,0,xt,-Math.min(3,max2),{color:'green',width:3.2});
+          thT = critical?90:deg(Math.atan2(-T2[1],xt-T2[0]));
           S.dot(T2[0], T2[1], { r: 3, color: 'green' });
         }
-        ratio = rt / d;
+        ratio = rt / r0;
       }
     }
     rd = { n1, n2, th1: aS.value, thR, thT, ratio, d };
@@ -81,9 +91,10 @@ function interfaceViz(v, refract) {
     : [['accent', 'incident front'], ['green', 'wavelets and reflected front'], ['gold', 'points of the mirror reached so far']]);
   v.readout(() => {
     if (!rd) return '';
+    if (rd.normal) return `$\\theta_i=\\theta_r=0^\\circ$${refract?' and $\\theta_2=0^\\circ$':''}: normal incidence; parallel fronts remain parallel to the interface.`;
     if (!refract) return rd.thR == null ? 'the wave has only just touched the mirror' : `incident angle (from the normal) $\\theta_1=${v.fix(rd.th1, 1)}^\\circ$ · reflected front built from the wavelets leaves at $\\theta_r=${v.fix(rd.thR, 2)}^\\circ$`;
     if (rd.d <= 0.15) return 'the wave has only just touched the interface';
-    if (rd.thT == null) return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 3)}>n_2$: the wavelets in medium 2 are too small for the points reached to share a tangent line, so no refracted wave exists (total internal reflection, 4.9)`;
+    if (rd.thT == null) return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 3)}>n_2$: the earliest wavelet radius exceeds the distance to the moving contact point, so there is no real transmitted plane-wave normal (an evanescent field remains) (total internal reflection, 4.9)`;
     return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 4)}$ · refracted front measured from the wavelets: $\\theta_2=${v.fix(rd.thT, 2)}^\\circ$, so $n_2\\sin\\theta_2=${v.fix(rd.n2 * Math.sin(rad(rd.thT)), 4)}$ · wavelet radius in 2 over radius in 1 $=n_1/n_2=${v.fix(rd.ratio, 3)}$`;
   });
 }
@@ -298,11 +309,9 @@ Both angles are measured from the normal. The result holds for any wavelength an
       idea: String.raw`With Huygens' principle (4.4): the plane front reaches the mirror point by point, and the wavelet from the first point has spread by $vt$ when the last point is just reached. Since the wavelets stay in the same medium they share one speed, so the common tangent through the contact point and the first wavelet is the mirror image of the incident front: two right triangles with equal hypotenuse and a common side are congruent, giving $\theta_r=\theta_i$. The same law follows from Fermat's principle (5.2) as the path of least length.`,
       caption: String.raw`The blue front sweeps along the mirror; each point of the mirror struck so far (gold) has emitted a wavelet. The green line is the common tangent of the wavelets, the reflected front. Change $\theta_1$ and the reflected front tilts the same way: the readout measures its angle from the geometry of the wavelets and compares it with the incident angle. Pause the animation to inspect any instant.`,
       deps: ['waves-4.4'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Fitzpatrick, Oscillations and Waves, §7.8, eqs. (7.40)–(7.49)'],
       tags: ['reflection', 'Huygens'],
-      credit: 'known to Euclid and Hero of Alexandria (antiquity)',
-      verify: true,
-      scope: String.raw`Specular reflection from a surface smooth on the scale of the wavelength; a rough surface scatters diffusely (each patch still reflects specularly). Valid in any isotropic medium.`,
+      scope: String.raw`Specular reflection from a surface smooth on the scale of the wavelength; a rough surface scatters diffusely (each patch still reflects specularly). Stationary plane interface and an isotropic incident medium; a moving or structured surface requires a different phase-matching analysis.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Specular_reflection' },
       viz(v) { interfaceViz(v, false); },
     },
@@ -313,15 +322,13 @@ Both angles are measured from the normal. The result holds for any wavelength an
       name: 'Snell’s law of refraction',
       statement: String.raw`A ray passing from a transparent medium of index $n_1$ into one of index $n_2$ stays in the plane of incidence, and its angles to the normal obey
 $$n_1\sin\theta_1=n_2\sin\theta_2 .$$
-It bends toward the normal on entering the optically denser medium ($n_2>n_1$) and away from it on leaving. If $n_1\sin\theta_1>n_2$ there is no refracted ray (total internal reflection, 4.9). The law also gives the frequency-independent statement that $k_x=\omega n\sin\theta/c$ is the same on both sides, i.e. the phase along the interface is continuous.`,
-      idea: String.raw`With Huygens’ principle (4.4): the front sweeps along the interface at speed $v_1/\sin\theta_1$. In the same time the wavelet from the first contact point spreads only to $v_2t$ in medium 2, so the common tangent through the moving contact point makes $\sin\theta_2=v_2t/d$ with the interface, and $\sin\theta_1=v_1t/d$; dividing, $\sin\theta_1/\sin\theta_2=v_1/v_2=n_2/n_1$. Fermat (5.2) gives it as the path of least time, and the phase-matching view is the boundary condition behind the Fresnel equations (4.7).`,
-      caption: String.raw`Set the two indices and the angle $\theta_1$. The blue front arrives along the interface; green wavelets live in the second medium, smaller where light is slower. Their common tangent (solid green) is the refracted front; the readout measures its angle from the construction and shows that $n_1\sin\theta_1$ and $n_2\sin\theta_2$ agree. Make $n_1>n_2$ and raise $\theta_1$: the wavelets become too small to share a tangent and the refracted wave disappears.`,
+It bends toward the normal on entering the optically denser medium ($n_2>n_1$) and away from it on leaving. If $n_1\sin\theta_1>n_2$ there is no refracted ray (total internal reflection, 4.9). At each frequency the law equivalently states that $k_x=\omega n\sin\theta/c$ is the same on both sides, i.e. the phase along the interface is continuous.`,
+      idea: String.raw`With Huygens’ principle (4.4): the front sweeps along the interface at speed $v_1/\sin\theta_1$. In the same time the wavelet from the first contact point reaches radius $v_2t$ in medium 2, so the common tangent through the moving contact point makes $\sin\theta_2=v_2t/d$ with the interface, and $\sin\theta_1=v_1t/d$; dividing, $\sin\theta_1/\sin\theta_2=v_1/v_2=n_2/n_1$. Fermat (5.2) gives it as the path of least time, and the phase-matching view is the boundary condition behind the Fresnel equations (4.7).`,
+      caption: String.raw`Set the two indices and the angle $\theta_1$. The blue front arrives along the interface; green wavelets live in the second medium, smaller where light is slower. Their common tangent (solid green) is the refracted front; the readout measures its angle from the construction and shows that $n_1\sin\theta_1$ and $n_2\sin\theta_2$ agree. Make $n_1>n_2$ and raise $\theta_1$: the wavelet radius overtakes the contact distance and no propagating transmitted front can be drawn. At zero incidence the whole interface is reached together; a separate parallel-front picture replaces the sweeping construction.`,
       deps: ['waves-4.4', 'waves-4.3'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Fitzpatrick, Oscillations and Waves, §7.8, eqs. (7.40)–(7.49)'],
       tags: ['refraction', 'Snell'],
-      credit: 'Ibn Sahl, c. 984; Harriot, c. 1602; Snell, c. 1621; Descartes, 1637',
-      verify: true,
-      scope: String.raw`Isotropic media with a plane boundary; for birefringent crystals (9.9) the second ray does not obey it. The sine form holds for phase velocities, so with dispersion each colour refracts differently (4.12). Priority is disputed: the dates are those of the earliest known statements and are not exact.`,
+      scope: String.raw`Isotropic media with a plane boundary; in birefringent crystals (9.9), wavevector phase matching still holds but ray and wave-normal directions can differ. The sine form holds for phase velocities, so with dispersion each colour refracts differently (4.12). The frequency is preserved by a stationary boundary; the indices are evaluated at that frequency. A ray denotes the phase normal in these isotropic media.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Snell%27s_law' },
       viz(v) { interfaceViz(v, true); },
     },
@@ -333,15 +340,13 @@ It bends toward the normal on entering the optically denser medium ($n_2>n_1$) a
       statement: String.raw`For a monochromatic plane wave incident at angle $\theta_1$ from a non-magnetic medium of index $n_1$ on a flat interface with $n_2$ (with $\theta_2$ given by Snell’s law), the reflected and transmitted amplitudes are, for polarization perpendicular (s) and parallel (p) to the plane of incidence,
 $$r_s=\frac{n_1\cos\theta_1-n_2\cos\theta_2}{n_1\cos\theta_1+n_2\cos\theta_2},\quad t_s=\frac{2n_1\cos\theta_1}{n_1\cos\theta_1+n_2\cos\theta_2},$$
 $$r_p=\frac{n_2\cos\theta_1-n_1\cos\theta_2}{n_2\cos\theta_1+n_1\cos\theta_2},\quad t_p=\frac{2n_1\cos\theta_1}{n_2\cos\theta_1+n_1\cos\theta_2}.$$
-The reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\theta_1}|t|^2$ satisfy $R+T=1$ for each polarization. At normal incidence both give $R=\left(\dfrac{n_1-n_2}{n_1+n_2}\right)^2$ (about 4% for air to glass).`,
-      idea: String.raw`Maxwell's boundary conditions (em-10.7) require the tangential components of $\mathbf E$ and $\mathbf H$ to be continuous across the interface; with the phases already matched by Snell’s law (4.6), each polarization gives two linear equations for $r$ and $t$, solved by the formulas above. $R+T=1$ is conservation of the normal energy flux (4.2 and em-11.5), and the factor in $T$ accounts for the change of beam width and wave speed. Fresnel obtained the sine and tangent laws in 1823 from his elastic-solid theory; the electromagnetic derivation came later.`,
+For a propagating transmitted wave, the reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\theta_1}|t|^2$ satisfy $R+T=1$ for each polarization. At normal incidence both give $R=\left(\dfrac{n_1-n_2}{n_1+n_2}\right)^2$ (about 4% for air to glass). Beyond the critical angle use $\cos\theta_2=+i\sqrt{(n_1\sin\theta_1/n_2)^2-1}$ with the convention $e^{i(\mathbf k\cdot\mathbf x-\omega t)}$; then $T=0$ and $R=1$, although $t$ is nonzero. At equal indices there is no interface: $r=0,t=1$.`,
+      idea: String.raw`Maxwell's boundary conditions (em-10.7) require the tangential components of $\mathbf E$ and $\mathbf H$ to be continuous across the interface; with the phases already matched by Snell’s law (4.6), each polarization gives two linear equations for $r$ and $t$, solved by the formulas above. $R+T=1$ is conservation of the normal energy flux (4.2 and em-11.5), and the factor in $T$ accounts for the change of beam width and wave speed. The formulas here are obtained from the electromagnetic boundary equations, as derived in Fitzpatrick’s author notes §7.9.`,
       caption: String.raw`Left: $R$ (solid) and $T$ (dashed) against angle of incidence for s (blue) and p (purple) polarization. Set $n_1$ and $n_2$ with the sliders, drag the angle, and read off $R+T$ (always 1). Right: the three rays with line weight showing their power for the chosen polarization. Try $n_1>n_2$: at the critical angle $R\to1$ (4.9). The p curve touches zero at Brewster’s angle (4.8).`,
       deps: ['em-10.7', 'em-11.9', 'waves-4.6'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Fitzpatrick, Oscillations and Waves, §7.9, eqs. (7.50)–(7.101)'],
       tags: ['Fresnel', 'reflectance'],
-      credit: 'Fresnel, 1823 (memoir read 7 January 1823; published 1831)',
-      verify: true,
-      scope: String.raw`Plane wave, flat interface between two lossless, non-magnetic, isotropic media. Metals and absorbing media need a complex index; thin films add multiple reflections (6.5). Sign conventions for $r_p$ vary between textbooks (this page follows Hecht).`,
+      scope: String.raw`Plane wave, flat interface between two lossless, non-magnetic, isotropic media with positive real indices. Metals and absorbing media need a complex index; thin films add multiple reflections (6.5). Sign conventions for $r_p$ vary between textbooks (the displayed p axes give $r_p=-r_s$ at normal incidence).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fresnel_equations' },
       viz(v) {
         const n1S = v.slider('$n_1$ (incident side)', 1, 3, 1, { step: 0.01 });
@@ -368,15 +373,15 @@ The reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\t
           B.line(0, -1.5, 0, 1.5, { color: 'faint', width: 1, dash: [3, 4] });
           const si = Math.sin(th), ci = Math.cos(th), L = 1.6;
           B.arrow(-si * L, ci * L, 0, 0, { color: 'accent', width: 4, head: 11 });
-          B.line(0, 0, si * L, ci * L, { color: 'red', width: 0.7 + 7 * Rr });
-          if (!f.tir) B.line(0, 0, Math.sin(Math.asin(f.sinT)) * L, -Math.cos(Math.asin(f.sinT)) * L, { color: 'green', width: 0.7 + 7 * Tt });
+          if(Rr>1e-12)B.line(0, 0, si * L, ci * L, { color: 'red', width: 0.7 + 7 * Rr });
+          if (!f.tir && Tt > 1e-12) B.line(0, 0, Math.sin(Math.asin(f.sinT)) * L, -Math.cos(Math.asin(f.sinT)) * L, { color: 'green', width: 0.7 + 7 * Tt });
           st = { f, Rr, Tt, n1, n2 };
         });
         v.legend([['accent', '$R_s$ (solid), $T_s$ (dashed)'], ['purple', '$R_p$, $T_p$'], ['red', 'reflected ray'], ['green', 'transmitted ray']]);
         v.readout(() => {
           if (!st) return '';
           const f = st.f, r0 = ((st.n1 - st.n2) / (st.n1 + st.n2)) ** 2;
-          return `$R_s=${v.fix(f.Rs, 4)}$, $T_s=${v.fix(f.Ts, 4)}$, sum $=${v.fix(f.Rs + f.Ts, 6)}$ · $R_p=${v.fix(f.Rp, 4)}$, $T_p=${v.fix(f.Tp, 4)}$, sum $=${v.fix(f.Rp + f.Tp, 6)}$\nnormal incidence: $((n_1-n_2)/(n_1+n_2))^2=${v.fix(r0, 4)}$ · amplitudes now $r_s=${v.fix(f.rs[0], 3)}$, $r_p=${v.fix(f.rp[0], 3)}$${f.tir ? ' (complex beyond the critical angle: $|r|=1$)' : ''}`;
+          return `$R_s=${v.fix(f.Rs, 4)}$, $T_s=${v.fix(f.Ts, 4)}$, sum $=${v.fix(f.Rs + f.Ts, 6)}$ · $R_p=${v.fix(f.Rp, 4)}$, $T_p=${v.fix(f.Tp, 4)}$, sum $=${v.fix(f.Rp + f.Tp, 6)}$\nnormal incidence: $((n_1-n_2)/(n_1+n_2))^2=${v.fix(r0, 4)}$ · amplitudes now $r_s=${v.fix(f.rs[0], 3)}${f.tir ? (f.rs[1]<0?'':'+' )+v.fix(f.rs[1],3)+'i':''}$, $r_p=${v.fix(f.rp[0], 3)}${f.tir ? (f.rp[1]<0?'':'+' )+v.fix(f.rp[1],3)+'i':''}$${f.tir ? ' (complex beyond the critical angle: $|r|=1$)' : ''}`;
         });
       },
     },
@@ -387,7 +392,7 @@ The reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\t
       name: 'Brewster’s angle',
       statement: String.raw`At the angle of incidence $\theta_B$ with
 $$\tan\theta_B=\frac{n_2}{n_1}$$
-the p-polarized (in-plane) component of light is not reflected at all: $r_p=0$. At this angle the reflected and refracted rays are perpendicular ($\theta_B+\theta_2=90^\circ$), and light reflected from an interface is completely s-polarized. For air to glass ($n=1.5$) $\theta_B\approx56.3^\circ$; for air to water ($n=1.33$), $\approx53.1^\circ$.`,
+for distinct positive real indices, the p-polarized (in-plane) component of light is not reflected at all: $r_p=0$. At this angle the reflected and refracted rays are perpendicular ($\theta_B+\theta_2=90^\circ$), and an initially unpolarized beam has completely s-polarized reflected light when the reflected intensity is nonzero. If $n_1=n_2$, there is no reflection at any angle and no polarization of a reflected beam can be defined. For air to glass ($n=1.5$) $\theta_B\approx56.3^\circ$; for air to water ($n=1.33$), $\approx53.1^\circ$.`,
       idea: String.raw`The numerator of $r_p$ in the Fresnel equations (4.7) vanishes when $n_2\cos\theta_1=n_1\cos\theta_2$; combined with Snell’s law (4.6) this forces $\sin 2\theta_1=\sin2\theta_2$, i.e. $\theta_1+\theta_2=90^\circ$. Physically the p-polarized refracted wave drives oscillating dipoles in the second medium along the direction of the field, which is perpendicular to the refracted ray; a dipole radiates nothing along its own axis, and at $\theta_B$ that axis points exactly along the would-be reflected ray.`,
       caption: String.raw`Left: $R_p$, $R_s$ and the degree of polarization of the reflected light for unpolarized incidence ($P=(R_s-R_p)/(R_s+R_p)$, green). Drag the angle to $\theta_B$ (marked): $R_p$ touches zero. Right: the rays, with the double arrow showing the direction in which the p-polarized dipoles in medium 2 oscillate, perpendicular to the refracted ray. When that arrow lines up with the (dotted) reflected direction nothing is radiated there. Presets give air–glass, air–water, and the internal angle glass–air.`,
       deps: ['waves-4.7'],
@@ -412,7 +417,7 @@ the p-polarized (in-plane) component of light is not reflected at all: $r_p=0$. 
           const F = (a) => fresnel(n1, n2, rad(a));
           A.fn((a) => F(a).Rs, { color: 'accent', width: 2.2, n: 360 });
           A.fn((a) => F(a).Rp, { color: 'purple', width: 2.4, n: 360 });
-          A.fn((a) => { const f = F(a); return f.Rs + f.Rp > 1e-9 ? (f.Rs - f.Rp) / (f.Rs + f.Rp) : 0; }, { color: 'green', width: 1.8, dash: [5, 4], n: 360 });
+          A.fn((a) => { const f = F(a); return f.Rs + f.Rp > 1e-9 ? (f.Rs - f.Rp) / (f.Rs + f.Rp) : NaN; }, { color: 'green', width: 1.8, dash: [5, 4], n: 360 });
           A.vline(deg(thB), { color: 'green', width: 1.2 });
           A.vline(aS.value, { color: 'gold', width: 1.5 });
           if (n1 > n2) A.vline(deg(Math.asin(n2 / n1)), { color: 'red', width: 1, dash: [3, 4] });
@@ -422,7 +427,7 @@ the p-polarized (in-plane) component of light is not reflected at all: $r_p=0$. 
           B.line(0, -1.7, 0, 1.7, { color: 'faint', width: 1, dash: [3, 4] });
           const si = Math.sin(th), ci = Math.cos(th), L = 1.7;
           B.arrow(-si * L, ci * L, 0, 0, { color: 'accent', width: 3, head: 10 });
-          B.line(0, 0, si * L, ci * L, { color: 'red', width: 0.7 + 7 * f.Rp, alpha: 0.9 });
+          if(f.Rp>1e-12)B.line(0, 0, si * L, ci * L, { color: 'red', width: 0.7 + 7 * f.Rp, alpha: 0.9 });
           let angRT = null;
           if (!f.tir) {
             const t2 = Math.asin(f.sinT);
@@ -436,7 +441,7 @@ the p-polarized (in-plane) component of light is not reflected at all: $r_p=0$. 
           st = { f, thB, angRT, n1, n2 };
         });
         v.legend([['accent', '$R_s$'], ['purple', '$R_p$'], ['green', 'degree of polarization of reflected light', { dash: true }], ['red', 'reflected ray (width ∝ $R_p$)']]);
-        v.readout(() => st ? `$\\theta_B=\\arctan(n_2/n_1)=${v.fix(deg(st.thB), 2)}^\\circ$ · at the chosen angle $R_p=${v.sci(st.f.Rp, 3)}$, $R_s=${v.fix(st.f.Rs, 4)}$ · angle between reflected and refracted rays: ${st.angRT == null ? 'none (total reflection)' : '$' + v.fix(st.angRT, 2) + '^\\circ$'}` : '');
+        v.readout(() => st && st.n1===st.n2 ? 'Equal indices: no reflected light, no distinguished Brewster angle, and the reflected beam has no defined polarization.' : st ? `$\\theta_B=\\arctan(n_2/n_1)=${v.fix(deg(st.thB), 2)}^\\circ$ · at the chosen angle $R_p=${v.sci(st.f.Rp, 3)}$, $R_s=${v.fix(st.f.Rs, 4)}$ · angle between reflected and refracted rays: ${st.angRT == null ? 'none (total reflection)' : '$' + v.fix(st.angRT, 2) + '^\\circ$'}` : '');
       },
     },
   ],

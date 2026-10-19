@@ -16,15 +16,13 @@ export default {
       num: '4.1',
       kind: 'Proposition',
       name: 'Characters of finite abelian groups',
-      statement: String.raw`Let $G=\mathbb Z/m\times\mathbb Z/n$ (the same holds for any finite abelian group). Its irreducible characters are the $mn$ homomorphisms $\chi_{a,b}(x,y)=e^{2\pi i(ax/m+by/n)}$, $0\le a<m$, $0\le b<n$. They are orthonormal, $\langle\chi_{a,b},\chi_{a',b'}\rangle=\delta_{aa'}\delta_{bb'}$, they multiply pointwise, $\chi_{a,b}\chi_{a',b'}=\chi_{a+a',b+b'}$, and so they form a group $\widehat G\cong G$.`,
+      statement: String.raw`Let $G=\mathbb Z/m\times\mathbb Z/n$ (for an arbitrary finite abelian group use a decomposition into cyclic factors). Its irreducible characters are the $mn$ homomorphisms $\chi_{a,b}(x,y)=e^{2\pi i(ax/m+by/n)}$, $0\le a<m$, $0\le b<n$. They are orthonormal, $\langle\chi_{a,b},\chi_{a',b'}\rangle=\delta_{aa'}\delta_{bb'}$, they multiply pointwise, $\chi_{a,b}\chi_{a',b'}=\chi_{a+a',b+b'}$, and so they form a group $\widehat G\cong G$; this isomorphism depends on the chosen cyclic coordinates.`,
       idea: String.raw`All irreducibles of an abelian group are one-dimensional (2.6), so an irreducible character is a homomorphism $G\to\mathbb C^\times$ and must send the generators to roots of unity of the right orders; this leaves exactly $mn$ choices, one for each pair $(a,b)$. Orthonormality is 3.5 in this case, and can be seen directly because a nontrivial character sums to zero over the group (the roots of unity add up to $0$). Multiplying two homomorphisms gives a homomorphism, which is the group structure on $\widehat G$.`,
       caption: String.raw`Choose $m$ and $n$. Each row of the grid is one character, each column a group element; the colour is the phase of $\chi_{a,b}(x,y)$ (the number printed in a cell is the exponent $e$ in $e^{2\pi i e/(mn)}$). Click two rows: the readout computes their inner product ($0$ unless they are the same row) and checks that the pointwise product of the two rows is again a row of the table, namely the one labelled by the sum.`,
       deps: ['rep-2.6'],
-      refs: ['Serre §5.1', 'Serre §3.1'],
+      refs: ['Serre §5.1; §3.1, Theorem 9 and Exercise 3.3; §3.2, Theorem 10'],
       tags: ['abelian groups', 'character table', 'duality'],
-      credit: 'Characters of abelian groups: Gauss and Dirichlet (as roots-of-unity sums); the dual group, Pontryagin, 1934 (for locally compact groups)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Character_group' },
+      links: { source: 'https://link.springer.com/book/10.1007/978-1-4684-9458-7', wikipedia: 'https://en.wikipedia.org/wiki/Character_group' },
       viz(v) {
         const ms = v.slider('$m$', 1, 6, 2, { int: true }), ns = v.slider('$n$', 1, 6, 3, { int: true });
         let sel = [0, 1];

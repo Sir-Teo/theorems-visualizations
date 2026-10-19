@@ -1,5 +1,6 @@
 // Condensed Matter Physics — Chapter 3: Lattice vibrations, binding and defects (items 3.1–3.8; 3.9–3.16 in ch03-b.js; 3.7 is a cross-listing)
 import { PI, bose, madelung, ljSums, ljEnergy, phononFreqs } from './ch03.shared.js';
+import { crystalSummary, soundModel } from './cm-source-audit-lattice.js';
 
 export default {
   collection: 'cm',
@@ -58,18 +59,18 @@ The series is only **conditionally convergent**: its value depends on how the si
       num: '3.2',
       kind: 'Model',
       name: 'Van der Waals solids: the Lennard-Jones crystal',
-      credit: 'Lennard-Jones, 1924',
-      statement: String.raw`Noble-gas atoms attract through fluctuating dipoles ($\propto -r^{-6}$, London) and repel at short range; the Lennard-Jones pair potential $\phi(r)=4\varepsilon[(\sigma/r)^{12}-(\sigma/r)^6]$ models both. Summed over a lattice with nearest-neighbour distance $r$, the energy per atom is
+      credit: 'Lennard-Jones pair-potential model',
+      statement: String.raw`Noble-gas atoms attract through fluctuating dipoles ($\propto -r^{-6}$) and repel at short range; the Lennard-Jones pair potential $\phi(r)=4\varepsilon[(\sigma/r)^{12}-(\sigma/r)^6]$ models both. Summed over a lattice with nearest-neighbour distance $r$, the energy per atom is
 $$u(r)=2\varepsilon\left[S_{12}\left(\frac{\sigma}{r}\right)^{12}-S_{6}\left(\frac{\sigma}{r}\right)^{6}\right],\qquad S_n=\sum_{j\ne0}\left(\frac{r}{r_j}\right)^n,$$
-with $S_{12}=12.13,\ S_6=14.45$ for fcc and hcp and $S_{12}=9.11,\ S_6=12.25$ for bcc. The minimum is at $r_0=(2S_{12}/S_6)^{1/6}\sigma\approx1.09\,\sigma$, where $u=-\varepsilon S_6^2/(2S_{12})\approx-8.6\,\varepsilon$ for close-packed structures, which therefore beat bcc.`,
-      idea: String.raw`The $r^{-12}$ sum converges after the first shell (12 neighbours) while the $r^{-6}$ sum receives a few percent from further shells, so the lattice sums are mostly "number of neighbours": 12 for fcc/hcp against 8 (+6 slightly further) for bcc, and the close-packed structures differ only in the third shell, hence $-8.610\,\varepsilon$ (fcc) against $-8.611\,\varepsilon$ (hcp). Setting $du/dr=0$ gives $r_0$ and $d^2u/dV^2$ gives the bulk modulus $B=V\,d^2u/dV^2\approx 75\,\varepsilon/\sigma^3$ for fcc. The model overestimates the stiffness and binding of real solid argon because it ignores zero-point motion, which is large for light atoms.`,
-      caption: String.raw`The energy per atom against nearest-neighbour distance for the three structures (sums over all neighbours within a radius of 11 spacings plus a continuum tail for $r^{-6}$). Drag the handle along the selected curve: the bars on the right show how much of the energy each shell of neighbours contributes. Compare the minimum with the solid-argon values in the readout.`,
-      scope: String.raw`Pair potential, classical lattice at $T=0$ with no zero-point motion, and no three-body (Axilrod–Teller) forces. Parameters $\varepsilon=0.0104$ eV, $\sigma=3.40$ Å are standard fits to argon; experimental solid argon (near 0 K, from textbook tables, quoted from memory: $r_0=3.76$ Å, cohesive energy $0.080$ eV per atom, $B\approx2.7$ GPa) differs by the quantum corrections.`,
+For ideal lattices, $(S_6,S_{12})$ is approximately $(14.45392,12.13188)$ for fcc, $(14.45490,12.13229)$ for hcp and $(12.25367,9.11418)$ for bcc. The minimum is at $r_0=(2S_{12}/S_6)^{1/6}\sigma\approx1.09\,\sigma$, where $u=-\varepsilon S_6^2/(2S_{12})\approx-8.6\,\varepsilon$ for close-packed structures, which therefore beat bcc.`,
+      idea: String.raw`The factor $1/2$ in the energy per atom avoids counting each pair twice. Differentiating the lattice energy gives $r_0$; with volume per atom $V=c r^3$, the bulk modulus at this minimum is $B=Vd^2u/dV^2=-8u_0/V_0$. For fcc this is about $75.2\,\varepsilon/\sigma^3$. The first two neighbour shells of fcc and ideal hcp agree, but subsequent shells differ, so their classical static energies differ slightly: approximately $-8.610\,\varepsilon$ and $-8.611\,\varepsilon$. This energy comparison is restricted to these lattice families and is not a proof of mechanical stability or a real-material phase diagram.`,
+      caption: String.raw`Compare fcc, ideal hcp and bcc. Drag the gold handle along the selected energy curve. The bars show the first eight neighbour shells at that spacing; their labels give the atom counts, and the readout separately gives the contribution from all remaining shells. The energy uses a radius-11 lattice sum with a continuum $r^{-6}$ tail, so displayed values are numerical approximations, not exact infinite sums.`,
+      scope: String.raw`Classical pair-potential lattice at $T=0$, with uniform dilation and fixed structure. Both zero-point motion and many-body forces are omitted. The curves and modulus are in model units: no experimental argon values or material fit are asserted. The continuum tail has a small discretization error; it is adequate for the displayed three-decimal energies but not for high-precision lattice constants.`,
       deps: ['xtal-1.5'],
-      refs: ['Ashcroft–Mermin ch. 20', 'Kittel ch. 3'],
+      refs: ['Schwerdtfeger, Burrows & Smits, arXiv:2012.05413, Eqs. (3)–(6), (10)–(13), pp. 4–8'],
       tags: ['van der waals', 'lennard-jones', 'cohesion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lennard-Jones_potential' },
-      verify: true,
+      verify: false,
       viz(v) {
         const ST = ['fcc', 'hcp', 'bcc'], COL = { fcc: 'accent', hcp: 'green', bcc: 'orange' };
         const sel = v.select('structure', [{ value: 'fcc', label: 'fcc' }, { value: 'hcp', label: 'hcp (ideal $c/a$)' }, { value: 'bcc', label: 'bcc' }], 'fcc');
@@ -81,18 +82,17 @@ with $S_{12}=12.13,\ S_6=14.45$ for fcc and hcp and $S_{12}=9.11,\ S_6=12.25$ fo
           for (const s of ST) { const S = ljSums(s); sE.fn((r) => ljEnergy(S, r), { color: COL[s], width: sel.value === s ? 2.8 : 1.4, alpha: sel.value === s ? 1 : 0.6, domain: [0.97, 1.6] }); }
           sE.hline(0, { color: 'faint', width: 1 });
           const S = ljSums(sel.value), r = h.x; h.set(r, ljEnergy(S, r));
+          sE.setView([0.95,1.6],[-9.8,Math.max(3,...ST.map(s=>ljEnergy(ljSums(s),0.97)*1.08))]);
           sE.vline(Math.pow((2 * S.s12) / S.s6, 1 / 6), { color: COL[sel.value], width: 1, dash: [4, 4], alpha: 0.7 });
-          const sh = S.shells.slice(0, 8);
+          const sh = S.shells.slice(0, 8), vals=sh.map(q=>2*(q.n/q.r2**6/r**12-q.n/q.r2**3/r**6));
+          sS.setView([0.3,8.7],[Math.min(-7,...vals.map(x=>x*1.15)),Math.max(5,...vals.map(x=>x*1.15))]);
           sS.bars(sh.map((q) => 2 * (q.n / q.r2 ** 6 / r ** 12 - q.n / q.r2 ** 3 / r ** 6)), { x0: 1, dx: 1, color: (val) => (val < 0 ? 'green' : 'red') });
           sh.forEach((q, i) => sS.text(`${q.n}`, i + 1, -6.3, { size: 10, color: 'muted', align: 'center' }));
-          sS.text('atoms in shell:', 0.4, -5.6, { size: 10, color: 'muted' });
           sS.hline(0, { color: 'faint', width: 1 });
         });
         v.readout(() => {
-          const S = ljSums(sel.value), r0 = Math.pow((2 * S.s12) / S.s6, 1 / 6), u0 = ljEnergy(S, r0), c = S.vol; // volume per atom = vol r³ (σ³)
-          const uV = (V) => ljEnergy(S, Math.cbrt(V / c)), V0 = c * r0 ** 3, dv = V0 * 1e-3, B = (V0 * (uV(V0 + dv) - 2 * uV(V0) + uV(V0 - dv))) / (dv * dv);
-          const eps = 0.0104, sig = 3.40, GPa = (eps * 1.602176634e-19) / (sig * 1e-10) ** 3 / 1e9;
-          return `${sel.value}: $S_6=${v.fix(S.s6, 3)}$, $S_{12}=${v.fix(S.s12, 3)}$, ${S.nn} nearest neighbours · minimum $r_0=${v.fix(r0, 4)}\\,\\sigma$, $u_0=${v.fix(u0, 3)}\\,\\varepsilon$, $B=${v.fix(B, 1)}\\,\\varepsilon/\\sigma^3$\nWith the argon parameters: $r_0=${v.fix(r0 * sig, 2)}$ Å, $|u_0|=${v.fix(-u0 * eps, 4)}$ eV, $B=${v.fix(B * GPa, 1)}$ GPa — against solid argon (quoted from tables, unverified) $3.76$ Å, $0.080$ eV, $2.7$ GPa. Currently at $r=${v.fix(h.x, 3)}\\,\\sigma$: $u=${v.fix(ljEnergy(S, h.x), 3)}\\,\\varepsilon$.`;
+          const S=ljSums(sel.value), C=crystalSummary(S,h.x); const {r0,u0,B,remainder}=C;
+          return `${sel.value}: $S_6\\approx${v.fix(S.s6,5)}$, $S_{12}\\approx${v.fix(S.s12,5)}$, ${S.nn} nearest neighbours · minimum $r_0=${v.fix(r0,4)}\\,\\sigma$, $u_0=${v.fix(u0,3)}\\,\\varepsilon$, $B=${v.fix(B,2)}\\,\\varepsilon/\\sigma^3$\nAt $r=${v.fix(h.x,3)}\\,\\sigma$: $u=${v.fix(C.u,3)}\\,\\varepsilon$; beyond the eight displayed shells, including the continuum tail: $${v.fix(remainder,4)}\\,\\varepsilon$ (numerical model).`;
         });
       },
     },
@@ -248,22 +248,23 @@ and the number of phonons is not conserved.`,
       name: 'Speed of sound from the acoustic branch',
       statement: String.raw`At long wavelengths the acoustic branch is linear, $\omega=v_sk$, and the slope is the speed of sound. For a monatomic chain of mass $m$, spacing $a$ and spring constant $K$ the dispersion $\omega=2\sqrt{K/m}\,|\sin(ka/2)|$ gives $v_s=a\sqrt{K/m}$. In three dimensions $v_s^2=(\text{elastic modulus})/\rho$ for each polarization, so the "spring constant" can be read off from the measured sound speed: $K=mv_s^2/a^2$.`,
       idea: String.raw`Expanding $\sin(ka/2)\approx ka/2$ gives $\omega\approx a\sqrt{K/m}\,k$, i.e. a non-dispersive wave of velocity $a\sqrt{K/m}$. The group velocity $d\omega/dk=a\sqrt{K/m}\cos(ka/2)$ falls to zero at the zone edge, where the wave is a standing pattern of alternating displacements and carries no energy (Bragg reflection of the lattice wave, compare cm-1.4). A wave only behaves as sound when $ka\ll1$, i.e. when its wavelength spans many atoms.`,
-      caption: String.raw`Choose a metal; the measured longitudinal sound speed (Wikipedia/ASM, see scope) fixes $K=mv_s^2/a^2$ of the chain with that metal's atomic mass and nearest-neighbour distance, and the zone-edge frequency follows. Drag the **zoom** slider to look at a smaller and smaller range of $k$: the curve and its tangent (dashed) become indistinguishable, and the readout gives the relative deviation at the right edge of the window.`,
-      scope: String.raw`Monatomic one-dimensional model with nearest-neighbour springs; the fitted $K$ is the effective stiffness of a row of atoms, not a first-principles bond strength. Longitudinal speeds: aluminium (alloy 1100) $6313$ m/s, copper $4664$ m/s, iron about $5120$ m/s (Wikipedia, "Speed of sound", which does not state whether bulk or rod values); atomic masses and nearest-neighbour distances are standard handbook values (Al 26.98 u, 2.86 Å; Cu 63.55 u, 2.56 Å; Fe 55.85 u, 2.48 Å), quoted from memory.`,
+      caption: String.raw`Set the mass $m$, spacing $a$ and spring constant $K$ in consistent model units: the readout gives $v_s=a\sqrt{K/m}$ and the zone-edge frequency. The plots use normalized axes, so these inputs change the dimensional scales without changing the universal curve. Zoom toward $ka=0$ to compare the acoustic branch with its tangent, and compare phase and group velocities.`,
+      scope: String.raw`Monatomic nearest-neighbour harmonic chain. The model inputs are freely chosen and are not measured properties of aluminium, copper or iron. A real three-dimensional crystal has polarization- and direction-dependent sound speeds determined by its elastic tensor and density; a single fitted chain stiffness cannot reconstruct that tensor.`,
       deps: ['mech-11.8'],
-      refs: ['Ashcroft–Mermin ch. 22', 'Kittel ch. 4'],
+      refs: ['David Tong, Applications of Quantum Mechanics, §4.1.1, Eqs. (4.1)–(4.4), pp. 103–105'],
       tags: ['sound', 'acoustic phonon', 'dispersion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Speed_of_sound' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const MAT = { Al: { m: 26.98, a: 2.86, vs: 6313 }, Cu: { m: 63.55, a: 2.56, vs: 4664 }, Fe: { m: 55.85, a: 2.48, vs: 5120 } };
-        const sel = v.select('metal', ['Al', 'Cu', 'Fe'], 'Cu');
+        const mass=v.slider('mass $m$ (model units)',0.5,5,1,{step:0.1});
+        const spacing=v.slider('spacing $a$ (model units)',0.5,3,1,{step:0.1});
+        const spring=v.slider('spring constant $K$ (model units)',0.5,8,2,{step:0.1});
         const zoom = v.slider('zoom: range of $ka$ shown', 0.05, PI, PI, { log: true, sig: 2 });
         const sD = v.stage({ x: [0, PI], y: [0, 2.1], axes: 'box', gutter: true, height: 340, xlabel: 'wave number $ka$', ylabel: '$\\omega/\\sqrt{K/m}$', title: 'acoustic branch and its tangent', weight: 1.2 });
         const sV = v.stage({ x: [0, PI], y: [0, 1.1], axes: 'box', gutter: true, height: 340, xlabel: 'wave number $ka$', ylabel: 'velocity$/v_s$', title: 'phase and group velocity', weight: 0.9 });
         v.legend([['accent', '$\\omega(k)$'], ['muted', 'tangent $v_sk$', { dash: true }], ['green', 'group velocity'], ['orange', 'phase velocity']]);
         v.render(() => {
-          const z = zoom.value; sD.setView([0, z], [0, Math.min(2.1, 1.05 * z)]); sV.setView([0, z], [Math.max(0, 1 - 1.3 * (1 - Math.cos(z / 2))) - 0.02, 1.05]);
+          const z = zoom.value; sD.setView([0, z], [0, 1.05 * z]); sV.setView([0, z], [Math.max(0, 1 - 1.3 * (1 - Math.cos(z / 2))) - 0.02, 1.05]);
           sD.fn((x) => 2 * Math.sin(x / 2), { color: 'accent', width: 2.6, domain: [0, z] });
           sD.fn((x) => x, { color: 'muted', width: 1.4, dash: [5, 4], domain: [0, z] });
           sV.fn((x) => Math.cos(x / 2), { color: 'green', width: 2.4, domain: [0, z] });
@@ -271,9 +272,8 @@ and the number of phonons is not conserved.`,
           sV.hline(1, { color: 'faint', width: 1, dash: [3, 4] });
         });
         v.readout(() => {
-          const A = MAT[sel.value], m = A.m * 1.66053907e-27, a = A.a * 1e-10, K = (m * A.vs * A.vs) / (a * a), wmax = 2 * Math.sqrt(K / m), z = zoom.value;
-          const dev = 1 - (2 * Math.sin(z / 2)) / z;
-          return `${sel.value}: $v_s=${A.vs}$ m/s, $m=${A.m}$ u, $a=${A.a}$ Å ⇒ $K=mv_s^2/a^2=${v.fix(K, 1)}$ N/m · zone-edge frequency $2\\sqrt{K/m}=${v.fix(wmax / (2 * PI) / 1e12, 2)}$ THz (chain model)\nwindow $ka\\le${v.fix(z, 2)}$: the curve lies ${v.fix(dev * 100, 2)}% below its tangent at the right edge; group velocity there $=${v.fix(Math.cos(z / 2), 3)}\\,v_s$.`;
+          const A=soundModel(mass.value,spacing.value,spring.value,zoom.value), z=zoom.value;
+          return `Model $m=${v.fix(mass.value,1)}$, $a=${v.fix(spacing.value,1)}$, $K=${v.fix(spring.value,1)}$: $v_s=a\\sqrt{K/m}=${v.fix(A.vs,3)}$ length/time · zone-edge angular frequency $2\\sqrt{K/m}=${v.fix(A.edgeOmega,3)}$ radians/time, cyclic frequency $f=${v.fix(A.edgeOmega/(2*PI),3)}$ cycles/time\nWindow $ka\\le${v.fix(z,3)}$: frequency ${v.fix(A.deviation*100,3)}% below tangent at the right edge; group speed $${v.fix(A.group,4)}\\,v_s$, phase speed $${v.fix(A.phase,4)}\\,v_s$.`;
         });
       },
     },

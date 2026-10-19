@@ -4,6 +4,7 @@ import {
   sMul, sInv, sCompose, sExp, sPow, numStr, fracTex, circlePts, DSU, pruferEncode, pruferDecode, edgeKey,
   catalanBig, motzkinBig, fibBig, partitionsBig, bigLog,
 } from './ch04.shared.js';
+import{exactCayleyCounts,cayleyDegreeCounts,cayleyDegreeLaw,greedyZeckendorf,zeckendorfSubsets}from'./ch04-source-audit.shared.js';
 
 const SQ = Math.sqrt;
 const sameEdges = (a, b) => { const A = a.map(edgeKey).sort().join(), B = b.map(edgeKey).sort().join(); return A === B; };
@@ -314,13 +315,12 @@ and more generally $[x^n]H(T(x))=\frac1n[u^{n-1}]\big(H'(u)\varphi(u)^n\big)$ fo
       num: '4.15',
       kind: 'Theorem',
       name: 'Cayley’s formula nⁿ⁻² for labelled trees',
-      credit: 'Cayley, 1889 (earlier: Borchardt, 1860)',
-      verify: true,
-      statement: String.raw`The number of trees on the vertex set $[n]$ is $n^{\,n-2}$ for $n\ge1$. More precisely, the number of them in which vertex $1$ has degree $d$ is $\binom{n-2}{d-1}(n-1)^{\,n-1-d}$, so under the uniform distribution $\deg(1)-1\sim\mathrm{Bin}(n-2,\tfrac1n)$.`,
-      idea: String.raw`By the Prüfer bijection (4.14) trees correspond to words in $[n]^{n-2}$, and there are $n^{n-2}$ of those. The degree statement also falls out: $\deg(1)=1+\#\{i:p_i=1\}$, and the number of words with exactly $d-1$ ones is $\binom{n-2}{d-1}(n-1)^{n-1-d}$. A uniform random word gives a uniform random labelled tree, which is how the sampler on the right works.`,
-      caption: String.raw`Left: for small $n$ **every** set of $n-1$ edges of $K_n$ is tested (is it acyclic?), the trees are tallied by the degree of vertex 1 (bars), and the formula $\binom{n-2}{d-1}(n-1)^{n-1-d}$ is overlaid (rings). Middle: random Prüfer words → uniform random trees on $n'$ vertices: the empirical law of $\deg(1)-1$ from the sample (bars) against $\mathrm{Bin}(n'-2,1/n')$ (rings). Right: the last sampled tree.`,
+      statement: String.raw`The number of trees on the vertex set $[n]$ is $n^{\,n-2}$ for $n\ge1$. For $n\ge2$ and $1\le d\le n-1$, the number of them in which vertex $1$ has degree $d$ is $\binom{n-2}{d-1}(n-1)^{\,n-1-d}$, so under the uniform distribution $\deg(1)-1\sim\mathrm{Bin}(n-2,\tfrac1n)$. For $n=1$, the unique tree has one isolated vertex of degree $0$.`,
+      idea: String.raw`For $n\ge2$, the Prüfer bijection (4.14) makes trees correspond to words in $[n]^{n-2}$, and there are $n^{n-2}$ of those. The degree statement also falls out: $\deg(1)=1+\#\{i:p_i=1\}$, and the number of words with exactly $d-1$ ones is $\binom{n-2}{d-1}(n-1)^{n-1-d}$. A uniform random word gives a uniform random labelled tree, which is how the sampler on the right works.`,
+      caption: String.raw`Left: for small $n$, all acyclic sets of $n-1$ edges of $K_n$ are enumerated, pruning cyclic prefixes; the trees are tallied by the degree of vertex 1 (bars), and the formula $\binom{n-2}{d-1}(n-1)^{n-1-d}$ is overlaid (rings). Middle: random Prüfer words → uniform random trees on $n'$ vertices: the empirical law of $\deg(1)-1$ from the sample (bars) against $\mathrm{Bin}(n'-2,1/n')$ (rings). The full binomial support is shown. Right: the last sampled tree; the readout checks its vertex-1 degree against its code.`,
       deps: ['comb-4.14'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Frieze & Karoński, Introduction to Random Graphs, author version 7 Aug 2026, §20.1, pp. 433–434, equations (20.1)–(20.2)'],
+      links:{source:'https://www.math.cmu.edu/~af1p/BOOK.pdf#page=449'},
       tags: ['trees', 'Cayley'],
       viz(v) {
         const nS = v.slider('exact: $n$', 3, 7, 6, { int: true });
@@ -331,40 +331,33 @@ and more generally $[x^n]H(T(x))=\frac1n[u^{n-1}]\big(H'(u)\varphi(u)^n\big)$ fo
         const B = v.stage({ x: [-0.6, 6.6], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: '$\\deg(1)-1$', ylabel: 'frequency', title: 'random trees from random codes' });
         const C = v.stage({ x: [-1.4, 1.4], y: [-1.4, 1.4], equal: true, axes: false, height: 300, weight: 0.8, title: 'one sample', minWidth: 220 });
         const cache = new Map();
-        const exact = (n) => { if (cache.has(n)) return cache.get(n);
-          const E = []; for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) E.push([i, j]);
-          const deg1 = Array(n + 1).fill(0); let trees = 0; const pick = [];
-          const rec = (start, dsu) => {
-            if (pick.length === n - 1) { trees++; deg1[pick.filter(([a]) => a === 0).length]++; return; }
-            for (let e = start; e < E.length; e++) { const d2 = new DSU(n); pick.forEach(([a, b]) => d2.union(a, b)); if (d2.find(E[e][0]) === d2.find(E[e][1])) continue; pick.push(E[e]); rec(e + 1); pick.pop(); }
-          };
-          rec(0); const r = { trees, deg1 }; cache.set(n, r); return r; };
+        const exact=n=>{if(!cache.has(n))cache.set(n,exactCayleyCounts(n));return cache.get(n);};
         let info = {};
         v.render(() => {
           const n = nS.value, np = mS.value, NN = NS.value, { trees, deg1 } = exact(n);
-          const form = range(n).map((i) => (i === 0 ? 0 : binom(n - 2, i - 1) * (n - 1) ** (n - 1 - i)));
+          const form=cayleyDegreeCounts(n).slice(0,n);
           A.setView([0.4, n + 0.6], [0, Math.max(...deg1, ...form) * 1.15]); A.setTicks(range(n).slice(1), null);
           A.bars(deg1.slice(1, n), { x0: 1, color: 'accent' }); form.slice(1).forEach((y, i) => A.dot(i + 1, y, { r: 9, hollow: true, color: 'green' }));
-          const r = v.rng(seed * 13 + np); let last = null; const cnt = Array(np).fill(0), degSum = Array(np).fill(0);
+          const r = v.rng(seed * 13 + np); let last = null; const cnt = Array(np).fill(0);
           for (let s = 0; s < NN; s++) {
             const code = range(np - 2).map(() => r.int(0, np - 1)); const k = code.filter((x) => x === 0).length; cnt[k]++;
-            if (s === 0) last = code;
+            last = code;
           }
-          const bin = range(np - 1).map((k) => binom(np - 2, k) * (1 / np) ** k * (1 - 1 / np) ** (np - 2 - k));
-          const maxK = Math.min(6, np - 2);
-          B.setView([-0.6, maxK + 0.6], [0, Math.max(...cnt.slice(0, maxK + 1).map((c) => c / NN), ...bin.slice(0, maxK + 1)) * 1.2]); B.setTicks(range(maxK + 1), null);
-          B.bars(cnt.slice(0, maxK + 1).map((c) => c / NN), { x0: 0, color: 'accent' }); bin.slice(0, maxK + 1).forEach((y, k) => B.dot(k, y, { r: 9, hollow: true, color: 'green' }));
+          const bin=cayleyDegreeLaw(np);
+          const maxK=np-2;
+          B.setView([-0.6, maxK + 0.6], [0, Math.max(...cnt.slice(0, maxK + 1).map((c) => c / NN), ...bin.slice(0, maxK + 1)) * 1.2]); B.setTicks(range(maxK+1).filter(k=>maxK<=10||k%2===0),null);
+          B.bars(cnt.slice(0, maxK + 1).map((c) => c / NN), { x0: 0, color: 'accent' }); bin.slice(0,maxK+1).forEach((y,k)=>B.dot(k,y,{r:np>14?4:8,hollow:true,color:'green'}));
           const dec = pruferDecode(np, last), P = circlePts(np, 1.15);
           dec.edges.forEach(([a, b]) => C.line(P[a][0], P[a][1], P[b][0], P[b][1], { color: 'ink', width: 2 }));
           P.forEach(([x, y], i) => { C.dot(x, y, { r: np > 14 ? 8 : 12, color: i === 0 ? 'gold' : 'accent' }); if (np <= 14) C.text(String(i + 1), x, y, { color: 'panel', size: 11, align: 'center', baseline: 'middle', weight: 700 }); });
           const meanDeg = (2 * (np - 1)) / np;
-          info = { n, trees, np, NN, mean1: cnt.reduce((s, c, k) => s + c * (k + 1), 0) / NN, expect: 1 + (np - 2) / np, tv: 0.5 * bin.reduce((s, q, k) => s + Math.abs(q - cnt[k] / NN), 0), meanDeg, allDist: range(n).slice(1).every((d) => deg1[d] === form[d]) };
+          info = { n, trees, np, NN, mean1: cnt.reduce((s, c, k) => s + c * (k + 1), 0) / NN, expect: 1 + (np - 2) / np, lastDegree:dec.edges.filter(([a,b])=>a===0||b===0).length,codeDegree:1+last.filter(x=>x===0).length, tv: 0.5 * bin.reduce((s, q, k) => s + Math.abs(q - cnt[k] / NN), 0), meanDeg, allDist: range(n).slice(1).every((d) => deg1[d] === form[d]) };
         });
         v.legend([['accent', 'counted / sampled', { dot: true }], ['green', 'formula', { dot: true }]]);
         v.readout(() => {
-          const { n, trees, np, NN, mean1, expect, tv, allDist } = info;
+          const { n, trees, np, NN, mean1, expect, tv, allDist,lastDegree,codeDegree } = info;
           return String.raw`$n=${n}$: of the $\binom{${n * (n - 1) / 2}}{${n - 1}}=${commas(binom(n * (n - 1) / 2, n - 1))}$ edge sets with $n-1$ edges, exactly **${commas(trees)}** are trees; $n^{n-2}=${commas(n ** (n - 2))}$ ${trees === n ** (n - 2) ? '✓' : '✗'}; the degree-of-vertex-1 counts equal $\binom{n-2}{d-1}(n-1)^{n-1-d}$ ${allDist ? '✓' : '✗'}.` + '\n' +
-            String.raw`Sample of ${commas(NN)} random trees on $n'=${np}$ vertices: mean $\deg(1)=${mean1.toFixed(3)}$ vs $1+(n'-2)/n'=${expect.toFixed(3)}$; total-variation distance to the binomial law $=${tv.toFixed(3)}$.`;
+            String.raw`Sample of ${commas(NN)} random trees on $n'=${np}$ vertices: mean $\deg(1)=${mean1.toFixed(3)}$ vs $1+(n'-2)/n'=${expect.toFixed(3)}$; total-variation distance to the binomial law $=${tv.toFixed(3)}$. Last displayed tree: $\deg(1)=${lastDegree}=1+${codeDegree-1}$ code occurrences ${lastDegree===codeDegree?'✓':'✗'}.`;
         });
       },
     },
@@ -424,34 +417,28 @@ So $a_n$ grows like $\rho^{-n}$ up to subexponential factors: $a_n=\rho^{-n+o(n)
       num: '4.17',
       kind: 'Theorem',
       name: 'Zeckendorf’s theorem',
-      credit: 'Zeckendorf (published 1972; earlier work by Lekkerkerker, 1952)',
-      verify: true,
       statement: String.raw`Every positive integer $n$ can be written **uniquely** as a sum of Fibonacci numbers $F_{i_1}+F_{i_2}+\cdots+F_{i_r}$ with $i_1>i_2>\cdots>i_r\ge2$ and $i_j-i_{j+1}\ge2$ (no two consecutive Fibonacci numbers; $F_2=1,F_3=2,F_4=3,F_5=5,\dots$). The representation is produced by the greedy algorithm: repeatedly subtract the largest Fibonacci number not exceeding what is left.`,
-      idea: String.raw`Existence by the greedy step: if $F_k\le n<F_{k+1}$ then $n-F_k<F_{k+1}-F_k=F_{k-1}$, so the remainder is smaller than $F_{k-1}$ and the next chosen index is at most $k-2$ — never consecutive. Uniqueness: a sum of non-consecutive Fibonacci numbers with largest term $F_k$ is at most $F_{k-1}+F_{k-3}+\cdots<F_{k+1}$ (telescoping $F_{j}=F_{j+1}-F_{j-1}$), so the largest term must be the greedy $F_k$ with $F_k\le n<F_{k+1}$; then induct on the remainder.`,
-      caption: String.raw`Move $n$. Top: the greedy algorithm cuts $[0,n]$ into Fibonacci blocks, largest first. Middle: which Fibonacci numbers were used (gold) — never two neighbours. Bottom: for every $m\le 300$, in how many ways $m$ is a sum of **distinct** Fibonacci numbers if neighbours *are* allowed (dots; found by testing all $2^{13}$ subsets): usually many, but **exactly one** of those ways has no neighbours. The readout counts both.`,
+      idea: String.raw`Existence by the greedy step: if $F_k\le n<F_{k+1}$ then $n-F_k<F_{k+1}-F_k=F_{k-1}$, so the remainder is smaller than $F_{k-1}$ and the next chosen index is at most $k-2$ — never consecutive. Uniqueness: a sum of distinct non-consecutive Fibonacci numbers with largest term $F_k$ is at most $F_k+F_{k-2}+\cdots=F_{k+1}-1$ (telescoping $F_{j}=F_{j+1}-F_{j-1}$), so the largest term must be the greedy $F_k$ with $F_k\le n<F_{k+1}$; then induct on the remainder.`,
+      caption: String.raw`Move $n$. Top: the greedy algorithm cuts $[0,n]$ into Fibonacci blocks, largest first. Middle: which Fibonacci numbers were used (gold) — never two neighbours. Bottom: for every $1\le m\le300$, in how many ways $m$ is a sum of **distinct** Fibonacci numbers if neighbours *are* allowed (dots; found by testing all $2^{13}$ subsets): usually many, but **exactly one** of those ways has no neighbours. The readout counts both.`,
       deps: ['comb-4.3'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Kologlu–Kopp–Miller–Wang, On the Number of Summands in Zeckendorf Decompositions, Lemma 2.2 and Theorem 2.3, pp. 6–8; source F_1=1,F_2=2 corresponds to atlas F_2=1,F_3=2'],
+      links:{source:'https://arxiv.org/pdf/1008.3204#page=6'},
       tags: ['Fibonacci', 'number representation'],
       viz(v) {
         const nS = v.slider('$n$', 1, 300, 100, { int: true });
         const FI = range(13).map((i) => i + 2), F = fibBig(16).map(Number);
         const A = v.stage({ x: [0, 300], y: [0, 1], axes: false, height: 120, full: true, title: 'greedy decomposition of $[0,n]$' });
         const B = v.stage({ x: [1.2, 14.8], y: [0, 1], axes: false, height: 150, weight: 1, title: 'Fibonacci numbers used', minWidth: 300 });
-        const C = v.stage({ x: [0, 300], y: [0, 1], axes: 'box', gutter: true, height: 210, weight: 1.4, xlabel: '$m$', ylabel: 'representations', title: 'representations as sums of distinct Fibonacci numbers' });
+        const C = v.stage({ x: [-7, 307], y: [0, 1], axes: 'box', gutter: true, height: 210, weight: 1.4, xlabel: '$m$', ylabel: 'representations', title: 'representations as sums of distinct Fibonacci numbers' });
         // all subsets of F_2..F_14
-        const rep = Array(401).fill(0), nonc = Array(401).fill(0);
-        for (let mask = 0; mask < 1 << 13; mask++) {
-          let s = 0; for (let b = 0; b < 13; b++) if ((mask >> b) & 1) s += F[b + 2];
-          if (s <= 400) { rep[s]++; if ((mask & (mask >> 1)) === 0) nonc[s]++; }
-        }
+        const{rep,nonc}=zeckendorfSubsets(F,14,400);
         let info = {};
         v.render(() => {
-          const n = nS.value; let rest = n; const used = [];
-          while (rest > 0) { let k = 2; while (F[k + 1] <= rest) k++; used.push(k); rest -= F[k]; }
+          const n=nS.value,used=greedyZeckendorf(n,F);
           A.setView([0, Math.max(300, n)], [0, 1]);
           let x = 0; used.forEach((k, j) => { A.rect(x, 0.15, x + F[k], 0.85, { fill: CAT[j % CAT.length], fillAlpha: 0.75, color: CAT[j % CAT.length], width: 1.2 }); if (F[k] > 12) A.text(`$F_{${k}}=${F[k]}$`, x + F[k] / 2, 0.5, { size: 12, color: 'panel', align: 'center', baseline: 'middle' }); x += F[k]; });
           for (const k of FI) { const used2 = used.includes(k); B.rect(k - 0.42, 0.25, k + 0.42, 0.9, { fill: used2 ? 'gold' : 'faint', fillAlpha: used2 ? 0.7 : 0.1, color: used2 ? 'gold' : 'faint', width: 1.2 }); B.text(String(F[k]), k, 0.58, { size: used2 ? 13 : 11, color: used2 ? 'ink' : 'muted', align: 'center', baseline: 'middle' }); B.text(`$F_{${k}}$`, k, 0.08, { size: 10, color: 'muted', align: 'center', baseline: 'middle' }); }
-          C.setView([0, 300], [0, Math.max(...rep.slice(1, 301)) * 1.12]);
+          C.setView([-7,307],[0,Math.max(...rep.slice(1,301))*1.12]);
           for (let m = 1; m <= 300; m++) C.dot(m, rep[m], { r: m === n ? 6 : 2.2, color: m === n ? 'gold' : 'accent', alpha: m === n ? 1 : 0.7 });
           C.hline(1, { color: 'green', dash: true, width: 1.6 });
           info = { n, used, sum: used.reduce((s, k) => s + F[k], 0), consec: used.some((k, j) => j && used[j - 1] - k < 2), allR: rep[n], uniq: nonc[n] };

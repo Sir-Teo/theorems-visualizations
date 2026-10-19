@@ -1,5 +1,5 @@
 // Probability: Theory and Examples (Durrett) — Chapter 4, part A1: §4.1 (second half) and the start of §4.2
-import { clampN, cornerIn, fr, GN, SNAP, gridOf, cellMeans, project, meanOf, maxAbsDiff, drawGrid, drawSteps, drawCuts, cutLane, cellOf, XF, xfOpts, Y_RANGE, PHI, PhiN, simpson, walkPaths, meanPaths } from './ch04-a.shared.js';
+import { clampN, cornerIn, fr, GN, SNAP, gridOf, cellMeans, project, meanOf, maxAbsDiff, drawGrid, drawSteps, drawCuts, cutLane, cellOf, XF, xfOpts, Y_RANGE, PHI, PhiN, simpson, walkPaths, meanPaths, conditionalCdfPreview, gaussianConditionalKernel, gaussianFunctional } from './ch04-a.shared.js';
 
 const Ylo = Y_RANGE[0];
 const fx = (x, d = 3) => fr(x, d);
@@ -95,17 +95,18 @@ $$E(X-Y)^2=E\big(X-E(X\mid\mathcal F)\big)^2+E\big(E(X\mid\mathcal F)-Y\big)^2 .
       num: '4.1.15a',
       kind: 'Definition',
       name: 'Regular conditional distribution',
-      verify: true,
-      statement: String.raw`Let $X:(\Omega,\mathcal F_0)\to(S,\mathcal S)$ be measurable and $\mathcal G\subset\mathcal F_0$ a σ-field. A **regular conditional distribution** for $X$ given $\mathcal G$ is a function $\mu:\Omega\times\mathcal S\to[0,1]$ such that
+      statement: String.raw`On a probability space $(\Omega,\mathcal F_0,P)$, let $X:\Omega\to(S,\mathcal S)$ be measurable and $\mathcal G\subset\mathcal F_0$ a σ-field. A **regular conditional distribution** for $X$ given $\mathcal G$ is a function $\mu:\Omega\times\mathcal S\to[0,1]$ such that
 
 (i) for each $A\in\mathcal S$, $\omega\mapsto\mu(\omega,A)$ is a version of $P(X\in A\mid\mathcal G)$;
 
 (ii) for a.e. $\omega$, $A\mapsto\mu(\omega,A)$ is a probability measure on $(S,\mathcal S)$.
 
-For conditioning on $Y$ one asks for $\mu(Y(\omega),A)$ with $\mu(y,\cdot)$ a probability measure for each $y$.`,
-      idea: String.raw`Each conditional probability $P(X\in A\mid\mathcal G)$ is only defined up to a null set that depends on $A$. A regular conditional distribution asks for one choice of versions that is a genuine probability measure in $A$ for almost every $\omega$, so that conditional expectations of all functions of $X$ can be computed by integrating (4.1.16). When $(X,Y)$ has a joint density $f(x,y)>0$, $\mu(y,A)=\int_Af(x,y)\,dx\big/\int f(x,y)\,dx$ works.`,
-      caption: String.raw`A standard Gaussian pair $(X,Y)$ with correlation $\rho$. Left: the kernel $\mu(y,\cdot)$ as a heat map (one density per column, each integrating to $1$) with 400 seeded sample points from the joint law; the vertical gold line is the conditioning value $y$. Right: the density $\mu(y,\cdot)=N(\rho y,1-\rho^2)$ and the set $A=[a,b]$ (shaded): $\mu(y,A)$ is its mass. The readout checks both parts of the definition: total mass $1$ for every $y$ (ii), and $\int_C\mu(y,A)\,P_Y(dy)=P(X\in A,Y\in C)$ against a Monte Carlo estimate (i).`,
+For conditioning on $Y$, one writes $\mu(Y(\omega),A)$ with each map $y\mapsto\mu(y,A)$ measurable and $\mu(y,\cdot)$ a probability measure outside a $P_Y$-null set.`,
+      idea: String.raw`Each conditional probability $P(X\in A\mid\mathcal G)$ is only defined up to a null set that depends on $A$. A regular conditional distribution asks for one choice of versions that is a genuine probability measure in $A$ for almost every $\omega$, so that conditional expectations of all functions of $X$ can be computed by integrating (4.1.16). For the Gaussian example below, the joint density factors as $f(x,y)=f_Y(y)f_{X\mid Y=y}(x)$; integrating over arbitrary measurable $A$ and $C$ proves the kernel identity. More generally, when $(X,Y)$ has a joint density $f(x,y)$ and $0<\int f(x,y)\,dx<\infty$, $\mu(y,A)=\int_Af(x,y)\,dx\big/\int f(x,y)\,dx$ works.`,
+      caption: String.raw`A standard Gaussian pair $(X,Y)$ with correlation $\rho$. Left: the kernel $\mu(y,\cdot)$ as a heat map (one density per column, each integrating to $1$) with 400 seeded sample points from the joint law; the vertical gold line is the conditioning value $y$. Right: the density $\mu(y,\cdot)=N(\rho y,1-\rho^2)$ and the set $A=[a,b]$ (shaded): $\mu(y,A)$ is its mass. The readout illustrates the definition for the selected sets: analytic total mass $1$ for every $y$, with a finite-interval numerical integral, and $\int_C\mu(y,A)\,P_Y(dy)=P(X\in A,Y\in C)$ against a Monte Carlo estimate with its sampling error. These finite checks do not prove the identity for all sets; the density factorization does.`,
       deps: ['prob-4.1.1a'],
+      refs: ['Durrett, fifth edition, §4.1.3 definition and continuation of Example 4.1.6, p. 214'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['conditional expectation', 'kernels'],
       viz(v) {
         const rho = v.slider('$\\rho$', -0.95, 0.95, 0.7, { step: 0.01 });
@@ -119,21 +120,19 @@ For conditioning on $Y$ one asks for $\mu(Y(\omega),A)$ with $\mu(y,\cdot)$ a pr
         let st = null;
         v.render(() => {
           const p = rho.value, sg = Math.sqrt(1 - p * p), y0 = yS.value, a = Math.min(aS.value, bS.value), b = Math.max(aS.value, bS.value);
-          L.heat((y, x) => PHI((x - p * y) / sg) / sg, { range: [0, 1.6 / Math.max(0.35, sg) * 0.4], cmap: 'viridis', res: 3, key: `k${p}` });
+          L.heat((y, x) => PHI((x - p * y) / sg) / sg, { range: [0, 1 / (Math.sqrt(2*Math.PI)*sg)], cmap: 'viridis', res: 3, key: `k${p}` });
           L.dots(Z1.slice(0, 400).map((z, i) => [z, p * z + sg * Z2[i]]), { r: 2, color: 'ink', alpha: 0.5 });
           L.vline(y0, { color: 'gold', width: 2 }); L.line(-3, p * -3, 3, p * 3, { color: 'orange', width: 1.4, dash: [5, 4] });
-          const m = p * y0, f = (x) => PHI((x - m) / sg) / sg;
+          const kernel=gaussianConditionalKernel(v.M,p,y0,a,b,cS.value),m=kernel.mean,f=kernel.density;
           R.setView([-3.5, 3.5], [0, 0.5 / sg + 0.05]);
           R.fn(f, { color: 'accent', width: 2.4, n: 300 });
           R.between(f, () => 0, a, b, { fill: 'gold', fillAlpha: 0.4 });
           R.vline(m, { color: 'orange', dash: [4, 4] });
-          const muA = Phi(v.M, (b - m) / sg) - Phi(v.M, (a - m) / sg);
-          const c = cS.value, lhs = simpson((y) => (Phi(v.M, (b - p * y) / sg) - Phi(v.M, (a - p * y) / sg)) * PHI(y), -c, c, 400);
-          let k = 0, tot = 0; for (let i = 0; i < Z1.length; i++) { if (Math.abs(Z1[i]) <= c) { tot++; const x = p * Z1[i] + sg * Z2[i]; if (x >= a && x <= b) k++; } }
-          st = { muA, mass: simpson(f, -8 + m, 8 + m, 600), lhs, mc: k / Z1.length, a, b, m, c };
+          const c=cS.value;let k=0;for(let i=0;i<Z1.length;i++)if(Math.abs(Z1[i])<=c){const x=p*Z1[i]+sg*Z2[i];if(x>=a&&x<=b)k++;}
+          st={muA:kernel.probability,mass:kernel.finiteMass,lhs:kernel.joint,mc:k/Z1.length,se:Math.sqrt((k/Z1.length)*(1-k/Z1.length)/Z1.length),a,b,m,c};
         });
         v.legend([['gold', 'conditioning value $y$'], ['orange', 'conditional mean $\\rho y$', { dash: [5, 4] }], ['ink', 'joint sample', { dot: true }]]);
-        v.readout(() => st && `$\\mu(y,\\mathbb R)=${fx(st.mass, 6)}$ (a probability measure for each $y$). $\\mu(y,[${fx(st.a, 2)},${fx(st.b, 2)}])=${fx(st.muA, 4)}$. Averaging over $C$: $\\int_C\\mu(y,A)P_Y(dy)=${fx(st.lhs, 4)}$ versus $P(X\\in A,Y\\in C)\\approx${fx(st.mc, 4)}$ (Monte Carlo, $n=20000$).`);
+        v.readout(() => st && `Analytic mass $\\mu(y,\\mathbb R)=1$; numerical integral over eight conditional standard deviations on each side $\\approx${fx(st.mass,6)}$. $\\mu(y,[${fx(st.a, 2)},${fx(st.b, 2)}])=${fx(st.muA, 4)}$. Averaging over $C$: $\\int_C\\mu(y,A)P_Y(dy)=${fx(st.lhs, 4)}$ versus $P(X\\in A,Y\\in C)\\approx${fx(st.mc, 4)}$ (Monte Carlo, $n=20000$, estimated standard error $${fx(st.se,4)}$).`);
       },
     },
     {
@@ -142,9 +141,11 @@ For conditioning on $Y$ one asks for $\mu(Y(\omega),A)$ with $\mu(y,\cdot)$ a pr
       name: 'Integrating against a regular conditional distribution',
       statement: String.raw`Let $\mu(\omega,A)$ be a regular conditional distribution for $X$ given $\mathcal F$. If $f:(S,\mathcal S)\to(\R,\mathcal R)$ has $E|f(X)|<\infty$, then
 $$E\big(f(X)\mid\mathcal F\big)(\omega)=\int\mu(\omega,dx)\,f(x)\quad\text{a.s.}$$`,
-      idea: String.raw`For $f=1_A$ this is the definition of $\mu$ (i). Linearity extends it to simple functions, monotone convergence (4.1.9c) to nonnegative $f$, and splitting $f=f^+-f^-$ to every integrable $f$. The point of having a *regular* version is that one kernel serves every $f$ simultaneously, instead of one exceptional null set per function.`,
-      caption: String.raw`Gaussian pair with correlation $\rho$, $Y$ the conditioning variable. Left: 3000 seeded sample points $(Y,X)$, the gold dots are averages of $f(X)$ over narrow bins of $Y$, and the curve is $h(y)=\int f(x)\mu(y,dx)$ computed by numerical integration against $N(\rho y,1-\rho^2)$. They agree. Right: at the chosen $y$, the integrand $f(x)\mu(y,dx)$ whose area is $h(y)$; the dots on the left curve show where you are.`,
+      idea: String.raw`For $f=1_A$ this is the definition of $\mu$ (i). Linearity extends it to simple functions, monotone convergence (4.1.9c) to nonnegative $f$, and splitting $f=f^+-f^-$ to every integrable $f$. One probability kernel supplies the integral formula for each $f$. For each fixed integrable $f$ the equality holds almost surely; this does not assert one common exceptional set for all arbitrarily chosen versions of all conditional expectations.`,
+      caption: String.raw`Gaussian pair with correlation $\rho$, $Y$ the conditioning variable. Left: 3000 seeded sample points $(Y,X)$, the gold dots are averages of $f(X)$ over narrow bins of $Y$, and the curve is $h(y)=\int f(x)\mu(y,dx)$ computed from exact Gaussian moment formulas. Finite-bin sample averages fluctuate and can differ from the point-conditioned value. Right: at the chosen $y$, the integrand $f(x)\mu(y,dx)$ on a finite display window; its integral over all of $\R$ is $h(y)$. The selected dot on the left curve shows where you are. Negative cubic contributions remain visible.`,
       deps: ['prob-4.1.15a', 'prob-4.1.9'],
+      refs: ['Durrett, fifth edition, Theorem 4.1.16, p. 214'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['conditional expectation', 'kernels'],
       viz(v) {
         const F = { sq: { l: '$x^2$', f: (x) => x * x }, ab: { l: '$|x|$', f: Math.abs }, ind: { l: '$1_{\\{x>1\\}}$', f: (x) => (x > 1 ? 1 : 0) }, cu: { l: '$x^3$', f: (x) => x ** 3 } };
@@ -157,10 +158,11 @@ $$E\big(f(X)\mid\mathcal F\big)(\omega)=\int\mu(\omega,dx)\,f(x)\quad\text{a.s.}
         let st = null;
         v.render(() => {
           const f = F[fs.value].f, p = rho.value, sg = Math.sqrt(1 - p * p), y0 = yS.value;
-          const h = (y) => simpson((x) => f(x) * PHI((x - p * y) / sg) / sg, p * y - 8 * sg, p * y + 8 * sg, 600);
+          const h = y => gaussianFunctional(v.M,fs.value,p*y,sg).moment;
           const pts = Z1.map((z, i) => [z, f(p * z + sg * Z2[i])]);
           const hv = []; for (let y = -3; y <= 3; y += 0.1) hv.push(h(y));
-          const lo = Math.min(...hv, 0), hi = Math.max(...hv);
+          const visible=pts.filter(q=>q[0]>=-3&&q[0]<=3).map(q=>q[1]);
+          const lo = Math.min(...hv,...visible, 0), hi = Math.max(...hv,...visible);
           L.setView([-3, 3], [lo - 0.15 * (hi - lo) - 0.2, hi + 0.2 * (hi - lo) + 0.2]);
           L.dots(pts, { r: 1.6, color: 'muted', alpha: 0.25 });
           L.fn(h, { color: 'accent', width: 2.6, n: 120 });
@@ -169,7 +171,8 @@ $$E\big(f(X)\mid\mathcal F\big)(\omega)=\int\mu(\omega,dx)\,f(x)\quad\text{a.s.}
           bins.forEach((b, k) => { if (b[1] > 15) L.dot(-3 + (k + 0.5) * (6 / nb), b[0] / b[1], { r: 5, color: 'gold' }); });
           L.vline(y0, { color: 'orange', dash: [4, 4] }); L.dot(y0, h(y0), { r: 6, color: 'orange' });
           const m = p * y0, mu = (x) => PHI((x - m) / sg) / sg;
-          R.setView([m - 4.5, m + 4.5], [-0.4, Math.max(2.2, ...[...Array(60)].map((_, i) => f(m - 4 + i * 0.14)) .map((q, i) => q * mu(m - 4 + i * 0.14)) .map((q) => q * 1.2), 1.2)]);
+          const profile=gaussianFunctional(v.M,fs.value,m,sg),padding=.08*(profile.hi-profile.lo)+.05;
+          R.setView([m-4.5,m+4.5],[profile.lo-padding,profile.hi+padding]);
           R.fn(mu, { color: 'accent', width: 1.4, alpha: 0.6 });
           R.fn((x) => f(x) * mu(x), { color: 'green', width: 2.4, fill: true, fillAlpha: 0.22, n: 400 });
           R.hline(0, { color: 'grid' });
@@ -184,39 +187,34 @@ $$E\big(f(X)\mid\mathcal F\big)(\omega)=\int\mu(\omega,dx)\,f(x)\quad\text{a.s.}
       num: '4.1.17',
       kind: 'Theorem',
       name: 'Regular conditional distributions exist on nice spaces',
-      statement: String.raw`If $(S,\mathcal S)$ is *nice* (there is a one-to-one map $\varphi:S\to\R$ with $\varphi$ and $\varphi^{-1}$ measurable; by 2.1.22 this holds for Borel subsets of complete separable metric spaces), then for every $X:\Omega\to S$ and σ-field $\mathcal G$ a regular conditional distribution of $X$ given $\mathcal G$ exists.
-
-(Without such structure it can fail: the first counterexample was given by Dieudonné in 1948, as reported by Durrett.)`,
-      idea: String.raw`Transport to $\R$ with $\varphi$. For each rational $q$ pick a version $G(q,\omega)$ of $P(\varphi(X)\le q\mid\mathcal G)$. Monotonicity (4.1.9b) holds off a null set for each pair $q<q'$; there are countably many, so one null set suffices, outside of which $q\mapsto G(q,\omega)$ is nondecreasing. Set $F(x,\omega)=\inf_{q>x}G(q,\omega)$. As in Helly's selection argument (3.2.12) this is a distribution function; monotone convergence for conditional expectations shows $F(x,\cdot)$ is still a version of $P(\varphi(X)\le x\mid\mathcal G)$. The measures defined by $F$, and the π–λ theorem, extend this from half-lines to all Borel sets, and $\varphi^{-1}$ pulls back to $S$.`,
-      caption: String.raw`Here $S=\R$ and $\varphi=\mathrm{id}$, for one conditioning value (slide the mean $m$). The dots are versions $G(q)$ of $P(X\le q\mid\mathcal G)$ at rational points $q$ (you choose how many); since each version is only defined a.s., every point carries an independent error, drawn here between $-0.3\epsilon$ and $\epsilon$ (red = out of order). The blue step curve is $F(x)=\inf_{q>x}G(q)$. With the toggle on, the exceptional null set is discarded ($\epsilon$ becomes $0$) and $F$ is the true conditional distribution function (green dashed). With it off, $F$ is still nondecreasing and right-continuous, but it does not reach $0$ at $-\infty$ and misses the truth: this is exactly why the null sets must be thrown away.`,
+      statement: String.raw`If $(S,\mathcal S)$ is a nonempty **standard Borel** space (Durrett's “nice” space), meaning it is measurably isomorphic to a Borel subset of $\R$, then every measurable $S$-valued random variable $X$ has a regular conditional distribution given any sub-σ-field $\mathcal G$. Borel subsets of complete separable metric spaces have this property (2.1.22). Such existence can fail on general measurable spaces.`,
+      idea: String.raw`Transport $X$ to a Borel subset $B\subset\R$. For each rational $q$, choose a version $G(q,\omega)$ of $P(\varphi(X)\le q\mid\mathcal G)$. Discard one common null set to enforce monotonicity for all rational pairs and the limits $0$ and $1$ at the two tails. Then $F(x,\omega)=\inf_{q>x}G(q,\omega)$ is a right-continuous CDF, and conditional monotone convergence preserves the conditional-probability identity. The induced measure has measurable evaluations and the correct identity on all Borel sets by the π–λ theorem. It is supported on $B$ almost surely, since $\varphi(X)\in B$; discard this additional null set before pulling back by $\varphi^{-1}$. On the exceptional set choose a fixed Dirac probability measure. These are measure-theoretic arguments, not consequences of finite sampling.`,
+      caption: String.raw`Here $X\sim N(m,1)$ is independent of $Y\sim U[0,1]$, so the true conditional CDF is $F_0(x)=\Phi(x-m)$ for every ordinary conditioning value. For each displayed rational $q$, the dots are legitimate versions $G_q(Y)$: they equal $F_0(q)$ except possibly at the single value $Y=1/2$, which has probability zero. Select an ordinary or exceptional slice and toggle repair; repair chooses the Gaussian law also at the exceptional value. Blue is the suffix minimum over only the displayed finite rational grid, with the rightmost empty minimum set to $1$. Even after repair it is a finite-grid approximation, not the true CDF; its left extrapolation does not establish a tail limit. On ordinary or repaired slices, smaller grid spacing controls the approximation error; the theorem uses all rational points and a common null set.`,
       deps: ['prob-4.1.15a', 'prob-3.2.12', 'prob-4.1.9', 'prob-2.1.22'],
-      credit: 'Existence on nice spaces as in Durrett; counterexample by Dieudonné, 1948 (as cited by Durrett)',
-      verify: true,
+      refs: ['Durrett, fifth edition, Theorems 4.1.17 and 2.1.22, pp. 215 and 53–54'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['conditional expectation', 'kernels'],
       viz(v) {
-        const mS = v.slider('conditioning value (mean $m$)', -1.5, 1.5, 0.3, { step: 0.05 });
+        const mS = v.slider('Gaussian mean $m$', -1.5, 1.5, 0.3, { step: 0.05 });
         const nS = v.slider('number of rationals $q$', 8, 80, 30, { int: true });
-        const eS = v.slider('version error $\\epsilon$', 0, 0.25, 0.1, { step: 0.005 });
-        const fix = v.toggle('discard the exceptional null set', false);
+        const eS = v.slider('null-slice perturbation $\\epsilon$', 0, 0.25, 0.1, { step: 0.005 });
+        const slice=v.select('conditioning slice',[{value:'ordinary',label:'ordinary: $Y=1/4$'},{value:'exceptional',label:'exceptional: $Y=1/2$'}],'exceptional');
+        const fix = v.toggle('repair versions on the null slice', false);
         let seed = 1; v.button('New versions', () => { seed++; });
-        const s = v.stage({ x: [-4.5, 4.5], y: [-0.05, 1.12], axes: 'box', gutter: true, height: 360, xlabel: '$x$', title: 'from versions $G(q)$ to a distribution function $F(x)$' });
+        const s = v.stage({ x: [-4.5, 4.5], y: [-0.05, 1.12], axes: 'box', gutter: true, height: 360, xlabel: '$x$', title: 'finite rational-grid preview of the CDF construction' });
         let st = null;
         v.render(() => {
-          const m = mS.value, n = nS.value, eps = fix.value ? 0 : eS.value, r = v.rng(seed * 13 + 3);
-          const qs = Array.from({ length: n }, (_, k) => -4 + (8 * k) / (n - 1)), F0 = (x) => Phi(v.M, x - m);
-          const G = qs.map((q) => clampN(F0(q) + (1.3 * r() - 0.3) * eps, 0, 1));
-          // F(x) = inf over q > x of G(q)
-          const suf = new Array(n + 1).fill(1); for (let k = n - 1; k >= 0; k--) suf[k] = Math.min(suf[k + 1], G[k]);
-          const Fx = (x) => { let k = qs.findIndex((q) => q > x); if (k < 0) k = n; return suf[k]; };
-          const pts = [[-4.5, suf[0]]]; qs.forEach((q, k) => { pts.push([q, suf[k]], [q, suf[k + 1]]); }); pts.push([4.5, suf[n]]);
+          const m=mS.value,n=nS.value,eps=eS.value,r=v.rng(seed*13+3),F0=x=>Phi(v.M,x-m);
+          const preview=conditionalCdfPreview(F0,n,eps,Array.from({length:n},()=>1.3*r()-.3),{exceptional:slice.value==='exceptional',repair:fix.value});
+          const {qs,G,points}=preview;
           s.fn(F0, { color: 'green', width: 2.2, dash: [6, 4], n: 300 });
-          s.path(pts, { color: 'accent', width: 3 });
-          let bad = 0; G.forEach((g, k) => { const viol = (k > 0 && G[k - 1] > g + 1e-12) || (k + 1 < n && g > G[k + 1] + 1e-12); if (viol) bad++; s.dot(qs[k], g, { r: 3.6, color: viol ? 'red' : 'ink', alpha: 0.9 }); });
-          let sup = 0; for (let i = 0; i <= 400; i++) { const x = -4 + (8 * i) / 400; sup = Math.max(sup, Math.abs(Fx(x) - F0(x))); }
-          st = { bad, sup, low: Fx(-4.4), hi: Fx(4.4), n };
+          s.path(points, { color: 'accent', width: 3 });
+          G.forEach((g,k)=>{const viol=(k>0&&G[k-1]>g+1e-12)||(k+1<n&&g>G[k+1]+1e-12);s.dot(qs[k],g,{r:3.6,color:viol?'red':'ink',alpha:.9});});
+          st={...preview,n,exceptional:slice.value==='exceptional',repair:fix.value};
         });
-        v.legend([['ink', 'versions $G(q)$', { dot: true }], ['red', 'out of order', { dot: true }], ['accent', '$F(x)=\\inf_{q>x}G(q)$'], ['green', 'true $P(X\\le x\\mid\\mathcal G)$', { dash: [6, 4] }]]);
-        v.readout(() => st && `${st.bad} of ${st.n} versions violate monotonicity. $F(-4.4)=${fx(st.low, 3)}$ (should tend to $0$), $F(4.4)=${fx(st.hi, 3)}$ (should tend to $1$); $\\sup_x|F-\\text{truth}|=${fx(st.sup, 3)}$.`);
+        v.legend([['ink', 'versions $G(q)$', { dot: true }], ['red', 'out of order', { dot: true }], ['accent', 'finite-grid suffix minimum'], ['green', 'true $P(X\\le x\\mid\\mathcal G)$', { dash: [6, 4] }]]);
+        v.readout(() => st && `${st.bad} of ${st.n} displayed dots participate in an adjacent monotonicity violation. ${st.exceptional?'This is the null slice $Y=1/2$; its probability is zero.':'This is an ordinary slice $Y=1/4$.'} ${st.repair?'The Gaussian versions are used on every slice.':''} Finite-grid values at $-4.4$ and $4.4$: $${fx(st.low,3)}$, $${fx(st.high,3)}$. Maximum discrepancy over 401 sampled $x$ values in $[-4,4]$: $${fx(st.sampledError,3)}$. Neither a finite extrapolation nor this sample maximum proves the infinite-grid CDF or its tails.`);
+
       },
     },
     {
@@ -273,17 +271,19 @@ So the conditional law is a kernel in the *value* $y$ of $Y$, not merely a funct
       num: '4.2.1a',
       kind: 'Definition',
       name: 'Filtration and martingale (sub-, super-)',
-      verify: true,
       statement: String.raw`A **filtration** is an increasing sequence of σ-fields $\mathcal F_0\subset\mathcal F_1\subset\cdots$. A sequence $X_n$ is **adapted** to $(\mathcal F_n)$ if $X_n\in\mathcal F_n$ for every $n$. An adapted sequence with $E|X_n|<\infty$ is a
 
 - **martingale** if $E(X_{n+1}\mid\mathcal F_n)=X_n$ for all $n$ (a fair game);
 - **supermartingale** if $E(X_{n+1}\mid\mathcal F_n)\le X_n$ (an unfavourable game);
-- **submartingale** if $E(X_{n+1}\mid\mathcal F_n)\ge X_n$ (a favourable game).`,
-      idea: String.raw`$\mathcal F_n$ is the information available at time $n$ and $X_n$ is your fortune. The definition asks that the best prediction of tomorrow's fortune from today's information equals (or is below, or above) today's fortune. The names are historical: "super" refers to superharmonic functions, for which the value at a point is at least the average over a ball, not to a favourable game. The word *martingale* in this probabilistic sense is due to Ville (1939), after earlier work of Lévy.`,
-      caption: String.raw`A game of $\pm1$ steps that is won with probability $p$. The thin grey curves are 39 of 2000 seeded plays; the blue path is the one followed. Drag the gold handle along it to move the current time $m$: the two arrows show the possible next values, and the ring marks $E(X_{m+1}\mid\mathcal F_m)=X_m+2p-1$. For $p=\tfrac12$ it sits exactly on the current value (martingale); for $p>\tfrac12$ above it (submartingale); below for $p<\tfrac12$ (supermartingale). The dashed orange line is the mean over the 2000 plays, which tracks $X_0+n(2p-1)$.`,
+- **submartingale** if $E(X_{n+1}\mid\mathcal F_n)\ge X_n$ (a favourable game).
+
+All conditional equalities and inequalities are understood almost surely.`,
+      idea: String.raw`$\mathcal F_n$ is the information available at time $n$ and $X_n$ is your fortune. The definition asks that the best prediction of tomorrow's fortune from today's information equals (or is below, or above) today's fortune. The names are historical: "super" refers to superharmonic functions, for which the value at a point is at least the average over a ball, not to a favourable game.`,
+      caption: String.raw`A game of $\pm1$ steps that is won with probability $p$. The thin grey curves are 39 of 2000 seeded plays; the blue path is the one followed. Drag the gold handle along it to move the current time $m$: the two arrows show the possible next values, and the ring marks $E(X_{m+1}\mid\mathcal F_m)=X_m+2p-1$. For $p=\tfrac12$ it sits exactly on the current value (martingale); for $p>\tfrac12$ above it (submartingale); below for $p<\tfrac12$ (supermartingale). The dashed orange line is the mean over 2000 plays; purple is the exact theoretical mean $X_0+n(2p-1)$. Their difference is sampling fluctuation. The view includes every displayed path and both possible next values.`,
       deps: ['prob-4.1.1a'],
       see: ['stoch-12.1'],
-      credit: 'Ville, 1939 (the term); developed by Doob',
+      refs: ['Durrett, fifth edition, §4.2 definition and Example 4.2.1, pp. 217–218'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['martingales', 'foundations'],
       viz(v) {
         const pS = v.slider('win probability $p$', 0.2, 0.8, 0.5, { step: 0.01 });
@@ -297,8 +297,11 @@ So the conditional law is a kernel in the *value* $y$ of $Y$, not merely a funct
         v.render(() => {
           const p = pS.value, paths = U.map((u) => { const a = new Float64Array(NN + 1); for (let i = 1; i <= NN; i++) a[i] = a[i - 1] + (u[i - 1] < p ? 1 : -1); return a; });
           cur = paths[0]; const mt = clampN(Math.round(hd.x), 0, NN - 1); hd.set(mt, cur[mt]);
+          const mean=meanPaths(paths),theory=Array.from({length:NN+1},(_,i)=>[i,i*(2*p-1)]),visible=paths.slice(0,40).flatMap(a=>Array.from(a));
+          s.setView([-1,NN+1],[Math.min(0,...visible,...mean,NN*(2*p-1))-2,Math.max(0,...visible,...mean,NN*(2*p-1))+2]);
+          s.path(theory,{color:'purple',width:1.6});
           for (let k = 1; k < 40; k++) s.path(Array.from(paths[k], (y, i) => [i, y]), { color: 'muted', width: 0.8, alpha: 0.3 });
-          const mean = meanPaths(paths); s.path(Array.from(mean, (y, i) => [i, y]), { color: 'orange', width: 2.2, dash: [6, 4] });
+          s.path(Array.from(mean, (y, i) => [i, y]), { color: 'orange', width: 2.2, dash: [6, 4] });
           s.path(Array.from(cur, (y, i) => [i, y]), { color: 'accent', width: 2.6 });
           const x0 = cur[mt], c = x0 + 2 * p - 1;
           s.line(mt, x0, mt + 1, x0 + 1, { color: 'green', width: 2.2 }); s.line(mt, x0, mt + 1, x0 - 1, { color: 'red', width: 2.2 });
@@ -306,10 +309,10 @@ So the conditional law is a kernel in the *value* $y$ of $Y$, not merely a funct
           s.dot(mt + 1, c, { r: 7, color: 'ink', hollow: true });
           cornerIn(s, `ring = $E(X_{m+1}\\mid\\mathcal F_m)$ at $m=${mt}$; green / red dots: the two possible next values`, 'tl');
           s.vline(mt, { color: 'faint', dash: [3, 4] });
-          st = { mt, x0, c, p, mean: mean[NN] };
+          st = { mt, x0, c, p, mean: mean[NN],se:Math.sqrt(4*p*(1-p)*NN/paths.length) };
         });
-        v.legend([['accent', 'followed play'], ['muted', 'other plays'], ['orange', 'mean over 2000 plays', { dash: [6, 4] }]]);
-        v.readout(() => st && `At $m=${st.mt}$: $X_m=${st.x0}$ and $E(X_{m+1}\\mid\\mathcal F_m)=X_m+2p-1=${fx(st.c, 2)}$ ⇒ **${Math.abs(st.p - 0.5) < 0.005 ? 'martingale' : st.p > 0.5 ? 'submartingale' : 'supermartingale'}**. Mean of $X_{${NN}}$ over the plays: $${fx(st.mean, 2)}$ (theory $${fx(NN * (2 * st.p - 1), 2)}$).`);
+        v.legend([['accent', 'followed play'], ['muted', 'other plays'], ['orange', 'mean over 2000 plays', { dash: [6, 4] }], ['purple','theoretical mean']]);
+        v.readout(() => st && `At $m=${st.mt}$: $X_m=${st.x0}$ and $E(X_{m+1}\\mid\\mathcal F_m)=X_m+2p-1=${fx(st.c, 2)}$ ⇒ **${Math.abs(st.p - 0.5) < 0.005 ? 'martingale' : st.p > 0.5 ? 'submartingale' : 'supermartingale'}**. Mean of $X_{${NN}}$ over the plays: $${fx(st.mean, 2)}$ (theory $${fx(NN * (2 * st.p - 1), 2)}$, sampling standard error $${fx(st.se,3)}$).`);
       },
     },
     {

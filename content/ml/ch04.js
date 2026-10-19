@@ -6,6 +6,7 @@
 import {
   clamp, rand, memo, mean, commas, bins, etaT, trueRisks, drawT, empRisks, argmin, supGap, drawCurves, q2, geo, quantileSorted,
 } from './ch04.shared.js';
+import { midpointQuantize, finiteDescriptionBound } from './ch03-foundations-audit.shared.js';
 
 const K0 = 101;
 const LN2 = Math.LN2;
@@ -284,11 +285,11 @@ $$m^{\mathrm{UC}}_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{\ln(2|\
 and is therefore agnostic PAC learnable by ERM$_{\mathcal H}$ with
 $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;m^{\mathrm{UC}}_{\mathcal H}(\varepsilon/2,\delta)\;\le\;\Big\lceil\frac{2\ln(2|\mathcal H|/\delta)}{\varepsilon^2}\Big\rceil .$$`,
       idea: String.raw`Fix $h$. The losses $\ell(h,z_i)$ are i.i.d. with values in $[0,1]$ and mean $L_{\mathcal D}(h)$, so Hoeffding (ml-4.5, $b-a=1$) gives $\mathbb P[|L_S(h)-L_{\mathcal D}(h)|>\varepsilon]\le2e^{-2m\varepsilon^2}$. The union bound (ml-2.2) over the $|\mathcal H|$ hypotheses multiplies this by $|\mathcal H|$; making the result at most $\delta$ gives the sample size. The class size enters only through $\ln|\mathcal H|$, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.`,
-      caption: String.raw`The data are 3000 labelled points in the square (a fixed population standing in for $\mathcal D$); labels follow a half-plane, with a fraction $\nu$ flipped. The class is $k$ random half-planes (left, grey; the red one is the worst offender at the chosen $m$ in the first run). **Right:** for 6 independent samples of size up to 1000 (blue), the largest gap $\max_h|L_S(h)-L_{\mathcal D}(h)|$ against $m$, and the guarantee $\sqrt{\ln(2k/\delta)/2m}$ (orange; dashed: for $100k$ classifiers). Multiply $k$ by 100 and the guarantee rises only slightly (the dashed line); raise $k$ yourself and compare how much the observed gaps move. The runs should stay under the orange line (each does so with probability at least $1-\delta$).`,
+      caption: String.raw`The data are 3000 labelled points in the square (a fixed population standing in for $\mathcal D$); labels follow a half-plane, with a fraction $\nu$ flipped. The class is $k$ random half-planes (left, grey; the red one is the worst offender at the chosen $m$ in the first run). **Right:** for 6 independent samples of size up to 1000 (blue), the largest gap $\max_h|L_S(h)-L_{\mathcal D}(h)|$ against $m$, and the guarantee $\sqrt{\ln(2k/\delta)/2m}$ (orange; dashed: for $100k$ classifiers). Multiply $k$ by 100 and the guarantee rises only slightly (the dashed line); raise $k$ yourself and compare how much the observed gaps move. At each fixed sample size, each run is under the orange line with probability at least $1-\delta$. This is not a simultaneous guarantee over the entire sample-size curve.`,
       deps: ['ml-4.5', 'ml-2.2', 'ml-4.4'],
       refs: ['UML §4.2'],
       tags: ['finite class', 'union bound'],
-      scope: String.raw`Bounded loss in $[0,1]$ ($0$–$1$ loss here). $\mathcal D$ is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; $k\le3000$ half-planes. Six runs are far too few to estimate a $\delta$-quantile; they show typical behaviour, and the theorem is a guarantee for every run.`,
+      scope: String.raw`Bounded loss in $[0,1]$ ($0$–$1$ loss here). $\mathcal D$ is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; $k\le3000$ half-planes. Six runs are far too few to estimate a $\delta$-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound.`,
       viz(v) {
         const P = 3000;
         const sL = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: 'box', gutter: true, height: 380, xlabel: '$x_1$', ylabel: '$x_2$', title: 'data and $k$ random half-planes' });
@@ -362,16 +363,15 @@ $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;m^{\mathrm{UC}}_{\mathcal H}(\varepsi
 $$|\mathcal H|\;\le\;2^{bd}\qquad\text{and}\qquad \ln|\mathcal H|\le bd\ln2 .$$
 For a loss with values in $[0,1]$, ml-4.6 then guarantees that ERM over the discretized class is agnostic PAC with
 $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{2\,(bd\ln2+\ln(2/\delta))}{\varepsilon^2}\Big\rceil ,$$
-linear in the number $bd$ of bits needed to write down a hypothesis.`,
-      idea: String.raw`ml-4.6 charges $\ln|\mathcal H|$ for a finite class, and a hypothesis that takes $bd$ bits to specify can be one of at most $2^{bd}$ objects. So $\ln|\mathcal H|\le bd\ln 2$, and the bound is linear in the description length. The argument is crude (it ignores that nearby parameter vectors give nearly the same predictions, and the bound is typically far from tight), but it shows that a finite-precision implementation of *any* parametric class with a bounded loss is learnable from a number of examples that scales with the number of parameters. The sharper way to measure the size of an infinite class, without referring to the arithmetic, is the VC dimension of ml-6.x.`,
-      caption: String.raw`Left: two of the $d$ parameters live in $[0,1)$; with $b$ bits each only the $2^b\times2^b$ grid points can be stored (drawn for $b\le6$; finer grids are too dense to draw). Drag $\theta$ to see the rounding to the nearest representable point and the rounding error, at most $2^{-b-1}$ per coordinate. Right: the sample-size bound against the number of parameters $d$, one line per precision $b$ (grey: 8, 16, 32, 64 bits; blue: your $b$). Doubling the precision doubles the slope; doubling $d$ doubles the number of examples.`,
+linear in the description length $bd$. The guarantee compares with the best representable hypothesis; it does not bound the extra error from quantizing an unrestricted real-valued class or guarantee an efficient ERM search.`,
+      idea: String.raw`ml-4.6 charges $\ln|\mathcal H|$ for a finite class, and a hypothesis that takes $bd$ bits to specify can be one of at most $2^{bd}$ objects. So $\ln|\mathcal H|\le bd\ln 2$, and the bound is linear in the description length. The argument is crude and the bound is typically far from tight, but it shows that a fixed finite representation of a parametric class with a bounded loss is statistically learnable by ERM from a number of examples that scales with the number of parameters. This is a counting argument about a finite class; nearby parameters can still have very different risks without regularity assumptions. The sharper way to measure the size of an infinite class, without referring to the arithmetic, is the VC dimension of ml-6.x.`,
+      caption: String.raw`Left: two of the $d$ parameters live in $[0,1]$; with $b$ bits each the illustration uses $2^b$ midpoint codes per coordinate, $(j+1/2)2^{-b}$, $0\le j<2^b$. Their Cartesian grid is drawn only for $b\le6$; finer grids are not drawn. Drag $\theta$ to see the quantization to the midpoint of the containing cell (the nearest midpoint, with ties at cell edges) and the rounding error, at most $2^{-b-1}$ per coordinate. Right: the sample-size bound against the number of parameters $d$, one line per precision $b$ (grey: 8, 16, 32, 64 bits; blue: your $b$). Doubling $b$ doubles the slope; the bound is affine in $d$ because the confidence term supplies a nonzero intercept. At more than 52 bits the figure cannot resolve all midpoint spacings; the error readout retains exact binary-grid differences.`,
       deps: ['ml-4.6'],
-      refs: ['UML §4.2', 'UML Remark 4.1'],
+      refs: ['UML Corollary 4.6 and Remark 4.1, pp. 57–58'],
       tags: ['finite precision', 'sample complexity'],
-      scope: String.raw`Worst-case bound for a loss in $[0,1]$, assuming the parameters are written with $b$ bits and the learner searches among those representable hypotheses. Distinct parameter vectors may give the same predictor, so $2^{bd}$ is an upper bound on $|\mathcal H|$; the sample size is generally very pessimistic.`,
-      verify: true,
+      scope: String.raw`Worst-case bound for a loss in $[0,1]$, assuming the parameters are written with $b$ bits and the learner searches among those representable hypotheses. Distinct parameter vectors may give the same predictor, so $2^{bd}$ is an upper bound on $|\mathcal H|$; the sample size is generally pessimistic. The plotted code is a uniform fixed-point illustration, not the nonuniform spacing of actual floating-point formats. Generalization and quantization error are separate.`,
       viz(v) {
-        const sA = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'parameter $\\theta_1\\in[0,1)$', ylabel: 'parameter $\\theta_2$', title: 'representable parameters' });
+        const sA = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'parameter $\\theta_1\\in[0,1]$', ylabel: 'parameter $\\theta_2$', title: 'representable parameters' });
         const sB = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'number of parameters $d$', ylabel: 'examples sufficient (thousands)', title: 'the guarantee grows linearly in $bd$' });
         const bS = v.slider('bits per parameter $b$', 1, 64, 4, { int: true });
         const dS = v.slider('parameters $d$', 1, 100, 10, { int: true });
@@ -383,9 +383,9 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
         let info = null;
         v.render(() => {
           const b = bS.value, d = dS.value, eps = eS.value, del = dl.value, n = Math.pow(2, b), bd = Math.min(b, 6), nd = Math.pow(2, bd);
-          for (let i = 0; i < nd; i++) for (let j = 0; j < nd; j++) sA.dot(i / nd, j / nd, { color: 'muted', r: nd > 32 ? 1.6 : 2.6 });
-          const rnd = (x) => clamp(Math.round(x * n), 0, n - 1) / n;
-          const rx = rnd(th.x), ry = rnd(th.y);
+          th.set(clamp(th.x,0,1),clamp(th.y,0,1));
+          if(b<=6){for(let i=0;i<nd;i++)for(let j=0;j<nd;j++)sA.dot((i+.5)/nd,(j+.5)/nd,{color:'muted',r:nd>32?1.6:2.6});}else sA.corner('grid too fine to draw','tl',{color:'muted'});
+          const qx=midpointQuantize(th.x,b),qy=midpointQuantize(th.y,b),rx=qx.value,ry=qy.value;
           sA.segment([th.x, th.y], [rx, ry], { color: 'orange', width: 2 });
           sA.dot(rx, ry, { color: 'green', r: 5 });
           const ymax = mK(64, 100, eps, del) * 1.05;
@@ -393,9 +393,9 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
           for (const bb of [8, 16, 32, 64]) { sB.line(0, mK(bb, 0, eps, del), 100, mK(bb, 100, eps, del), { color: 'muted', width: 1.3 }); sB.text(`${bb} bits`, 100, mK(bb, 100, eps, del), { align: 'right', dy: -9, size: 11.5 }); }
           sB.line(0, mK(b, 0, eps, del), 100, mK(b, 100, eps, del), { color: 'accent', width: 2.8 });
           sB.dot(d, mK(b, d, eps, del), { color: 'gold', r: 7 });
-          info = { b, d, m: Math.ceil(mB(b, d, eps, del)), err: Math.max(Math.abs(th.x - rx), Math.abs(th.y - ry)), half: 1 / (2 * n), lnH: b * d * LN2, big: Math.ceil(mB(32, 1e6, eps, del)) };
+          info = { b, d, m: finiteDescriptionBound(b,d,eps,del), err: Math.max(qx.error,qy.error), half: qx.half, lnH: b * d * LN2, big: Math.ceil(mB(32, 1e6, eps, del)) };
         });
-        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. Rounding error of $\theta$ (largest coordinate): $${v.sci(info.err, 2)}$, at most $2^{-b-1}=${v.sci(info.half, 2)}$. For comparison, a model of $10^6$ float32 weights would need at most $${v.sci(info.big, 2)}$ examples by this bound at the same $\varepsilon,\delta$.`);
+        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. Rounding error of $\theta$ (largest coordinate): $${v.sci(info.err, 2)}$, at most $2^{-b-1}=${v.sci(info.half, 2)}$. The theorem compares with the best fixed-code hypothesis. For comparison, $10^6$ parameters encoded with 32 bits give a sufficient sample size $${v.sci(info.big, 2)}$ at the same $\varepsilon,\delta$.`);
       },
     },
   ],

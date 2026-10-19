@@ -84,11 +84,13 @@ export function jacEllipse(s, x, y, J, r0, col, alpha = 0.26) {
 }
 
 // ---------------------------------------------------------------- sampling the sphere and the error measures
-/** Equal-area sample of the sphere: [l, f] radians, l in (-pi, pi). */
+/** Equal-area midpoint cells: constant longitude count in equal sin(latitude) bands.
+ * Each cell has area4π/(nLat*m); varying m with cos(latitude) would bias unweighted averages.
+ * Returns [l,f] radians, l in (-pi,pi). */
 export function sphereGrid(nLat = 34, per = 68) {
   const out = [];
   for (let i = 0; i < nLat; i++) {
-    const f = Math.asin(-1 + (2 * i + 1) / nLat), m = Math.max(1, Math.round(per * Math.cos(f)));
+    const f = Math.asin(-1 + (2 * i + 1) / nLat), m = Math.max(1, Math.round(per));
     for (let j = 0; j < m; j++) out.push([-PI + ((j + 0.5) * 2 * PI) / m, f]);
   }
   return out;

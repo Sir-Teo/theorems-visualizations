@@ -1,5 +1,6 @@
 // Numerical Analysis — Chapter 4: Approximation: best, near-best and rational (items 4.1–4.5; the rest in ch04-b/-c/-d.js)
 import { lg, sci, tsci, clamp, linspace, chebPts, chebInterp, chebCoef, clenshaw, supDiff, baryW, bary } from './ch04.shared.js';
+import { stepChebInterp } from './numerical-source-audit.shared.js';
 
 const FLOOR = 1e-17;
 const lgt = (x) => Math.max(x, FLOOR);
@@ -225,15 +226,14 @@ It is the expected value of $f(S_n/n)$ where $S_n\sim\mathrm{Bin}(n,x)$. For con
       num: '4.5',
       kind: 'Phenomenon',
       name: 'Gibbs phenomenon for polynomial approximation',
-      statement: String.raw`Let $f$ have a jump discontinuity in the interior of $[-1,1]$ and be smooth elsewhere. Then neither the truncated Chebyshev series nor the Chebyshev interpolant $p_n$ converges uniformly: near the jump, they overshoot by a fixed fraction of the jump height that does not shrink as $n\to\infty$ — for the truncated series, by $\frac1\pi\int_0^\pi\frac{\sin t}t\,dt-\frac12\approx0.0895$ of the jump (about $9\%$) — while the region of the overshoot narrows like $1/n$ and away from the jump the convergence is pointwise. For a smooth step ($\tanh$) the overshoot dies out once $n$ resolves the transition.`,
-      idea: String.raw`With $x=\cos\theta$ the Chebyshev series of $f$ is the cosine (Fourier) series of $f(\cos\theta)$, which has a jump at $\theta_0=\arccos x_0$; near the jump the partial sums behave like the Fourier partial sums of a step, i.e. the sine integral $\mathrm{Si}$, whose maximum $\mathrm{Si}(\pi)$ gives the 9%. Convergence in sup norm fails because the limit is discontinuous (4.1), so some defect must stay; Gibbs shows what it looks like. Interpolation at Chebyshev points behaves similarly, with a somewhat larger overshoot (about 14% in the numerical experiment below).`,
-      caption: String.raw`Choose the step and slide the degree $n$. Top: $p_n$ and a zoom on the jump (windows shrink like $1/n$) with the lines $1$ and $1.179$ ($=1+2\cdot0.0895$ for a unit step of height $2$). Right: overshoot, as a fraction of the jump, against $n$ for the truncated series and the interpolant — both settle at a constant instead of tending to $0$.`,
+      statement: String.raw`Let $f$ have a jump discontinuity in the interior of $[-1,1]$ and be smooth elsewhere. Neither a truncated Chebyshev series nor a Chebyshev interpolant can converge uniformly to this discontinuous $f$. The series has a limiting overshoot near the jump of $\frac1\pi\int_0^\pi\frac{\sin t}t\,dt-\frac12\approx0.0895$ of the jump (about $9\%$), in a region narrowing like $1/n$; away from the jump the series converges pointwise. Interpolation also exhibits persistent ringing, whose amplitude depends on how the jump lies relative to its nodes. For a smooth step ($\tanh$) the overshoot dies out once $n$ resolves the transition.`,
+      idea: String.raw`With $x=\cos\theta$ the Chebyshev series of $f$ is the cosine (Fourier) series of $f(\cos\theta)$, which has a jump at $\theta_0=\arccos x_0$; near the jump the partial sums behave like the Fourier partial sums of a step, i.e. the sine integral $\mathrm{Si}$, whose maximum $\mathrm{Si}(\pi)$ gives the 9%. Convergence in sup norm fails because the limit is discontinuous (4.1), so some defect must stay; Gibbs shows what it looks like. For $\operatorname{sign}(x)$, the interpolation limit depends on parity and the value assigned at the jump: ATAP reports amplitudes about $1.28228$ for odd $n$ and $1.06578$ for even $n$ with $f(0)=0$, i.e. about $14.11\%$ and $3.29\%$ of the height-two jump. A shifted jump need not have a single limiting interpolation overshoot as its location moves relative to the nodes.`,
+      caption: String.raw`Choose the step and slide the degree $n$. Top: $p_n$ and a zoom on the jump (windows shrink like $1/n$) with the lines $1$ and $1.179$ ($=1+2\cdot0.0895$ for a unit step of height $2$). Right: sampled overshoot as a fraction of height $2$. The interpolant is split into even and odd degrees: the centered jump has different parity limits; the shifted jump also depends on its position between nodes. Negative values are clipped to zero (no measured overshoot).`,
       deps: ['num-4.3', 'sig-4.4'],
-      refs: ['Trefethen ATAP ch. 9'],
+      refs: ['Trefethen ATAP ch. 9, Theorems 9.1–9.2'],
       credit: 'Wilbraham, 1848; Gibbs, 1898–99',
-      scope: String.raw`Jump discontinuities; the exact 9% is for the Fourier/Chebyshev partial sum. The interpolant’s value is measured here numerically.`,
+      scope: String.raw`The 8.95% constant is the limiting partial-sum overshoot, not a universal interpolation constant. ATAP Theorem 9.1 states the centered interpolation parity limits while explicitly noting the incomplete published proof history. The smooth tanh example has no jump: height 2 is only a comparison scale.`,
       tags: ['approximation', 'gibbs', 'discontinuity'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gibbs_phenomenon' },
       viz(v) {
         const kind = v.select('function', [{ value: 'c0', label: 'sign$(x)$' }, { value: 'c4', label: 'sign$(x-0.4)$' }, { value: 'tanh', label: '$\\tanh(40x)$ (smooth)' }], 'c0');
@@ -250,37 +250,38 @@ It is the expected value of $f(S_n/n)$ where $S_n\sim\mathrm{Bin}(n,x)$. For con
           const f = (x) => (x > c0 ? 1 : x < c0 ? -1 : 0);
           return { f, c: a, c0 };
         };
-        const over = (S, n) => { let m = -9; for (let i = 0; i <= 1200; i++) { const x = S.c0 + (i / 1200 - 0.02) * Math.min(0.9, 14 / n) * 1; if (x < -1 || x > 1) continue; const val = S.ser(n, x); m = Math.max(m, val); } return (m - 1) / 2; };
+        const over = (S, n) => { let m = -9; for (let i = 0; i <= 1200; i++) { const x = S.c0 + (i / 1200 - 0.02) * Math.min(0.9, 14 / n) * 1; if (x < -1 || x > 1) continue; const val = S.ser(n, x); m = Math.max(m, val); } return Math.max(0, (m - 1) / 2); };
         let info = {};
-        v.legend([['ink', '$f$'], ['accent', 'interpolant $p_n$'], ['orange', 'truncated series $S_n$']]);
+        v.legend([['ink', '$f$'], ['accent', 'interpolant $p_n$'], ['orange', 'truncated series $S_n$'], ['purple', 'interpolant, even degree']]);
         v.render(() => {
           const k = kind.value;
           const S = cache[k] || (cache[k] = spec(k));
           S.ser = (n, x) => clenshaw(S.c, x, n);
-          const n = nn.value, pI = chebInterp(S.f, n);
+          const n = nn.value, pI = k === 'tanh' ? chebInterp(S.f, n) : stepChebInterp(S.c0, n);
           const stepPt = S.c0;
           s.fn(S.f, { color: 'ink', width: 1.2, n: 600 });
-          s.fn(pI, { color: 'accent', width: 1.8, n: 800 });
+          s.clip(() => s.fn(pI, { color: 'accent', width: 1.8, n: 800 }));
           z.setView([-Math.min(0.3, 9 / n), Math.min(0.3, 9 / n)], [0.7, 1.35]);
-          z.fn((x) => S.f(stepPt + x), { color: 'ink', width: 1.2, n: 800 });
+          z.clip(() => { z.fn((x) => S.f(stepPt + x), { color: 'ink', width: 1.2, n: 800 });
           z.fn((x) => S.ser(n, stepPt + x), { color: 'orange', width: 1.6, n: 800 });
           z.fn((x) => pI(stepPt + x), { color: 'accent', width: 1.8, n: 800 });
+          });
           z.hline(1, { color: 'faint' }); z.hline(1.179, { color: 'green', dash: true });
           if (!S.curve) {
             S.curve = [];
             for (let m = 4; m <= 200; m = Math.max(m + 2, Math.round(m * 1.2))) {
-              const pm = chebInterp(S.f, m); let mi = -9; for (let i = 0; i <= 1500; i++) { const x = S.c0 + (i / 1500 - 0.02) * Math.min(0.9, 14 / m); if (x > -1 && x < 1) mi = Math.max(mi, pm(x)); }
-              S.curve.push([m, over(S, m), (mi - 1) / 2]);
+              const pm = k === 'tanh' ? chebInterp(S.f, m) : stepChebInterp(S.c0, m); let mi = -9; for (let i = 0; i <= 1500; i++) { const x = S.c0 + (i / 1500 - 0.02) * Math.min(0.9, 14 / m); if (x > -1 && x < 1) mi = Math.max(mi, pm(x)); }
+              S.curve.push([m, over(S, m), Math.max(0, (mi - 1) / 2)]);
             }
           }
           g.path(S.curve.map((r) => [r[0], r[1]]), { color: 'orange', width: 2 });
-          g.path(S.curve.map((r) => [r[0], r[2]]), { color: 'accent', width: 2 });
+          for (const parity of [0,1]) g.path(S.curve.filter(r => r[0]%2===parity).map(r=>[r[0],r[2]]), {color: parity ? 'accent' : 'purple', width:2});
           g.hline(0.0895, { color: 'green', dash: true });
           g.vline(n, { color: 'gold', alpha: 0.6 });
           let mi = -9; for (let i = 0; i <= 2000; i++) { const x = S.c0 + (i / 2000 - 0.02) * Math.min(0.9, 14 / n); if (x > -1 && x < 1) mi = Math.max(mi, pI(x)); }
-          info = { ov: over(S, n), ovI: (mi - 1) / 2, n, k };
+          info = { ov: over(S, n), ovI: Math.max(0, (mi - 1) / 2), n, k };
         });
-        v.readout(() => `$n=${info.n}$: overshoot above the upper plateau — truncated series $${v.fix(100 * info.ov, 2)}\\%$ of the jump, interpolant $${v.fix(100 * info.ovI, 2)}\\%$; the classical value for the series is $8.95\\%$` + (info.k === 'tanh' ? '\nthe smooth step is resolved once $n\\gtrsim 100$ and the ringing disappears' : ''));
+        v.readout(() => `$n=${info.n}$: overshoot above the upper plateau — truncated series $${v.fix(100 * info.ov, 2)}\\%$ of the jump, interpolant $${v.fix(100 * info.ovI, 2)}\\%$; the classical value for the series is $8.95\\%$` + (info.k === 'tanh' ? '\nSmooth tanh: height 2 is a comparison scale, not a jump; the overshoot tends to zero when resolved.' : info.k === 'c0' ? `\nCentered step, ${info.n%2 ? 'odd' : 'even'} degree: interpolation limit is about ${info.n%2 ? '14.11' : '3.29'}% (midpoint value zero).` : '\nShifted jump: interpolation overshoot depends on the jump position relative to the nodes.'));
       },
     },
   ],

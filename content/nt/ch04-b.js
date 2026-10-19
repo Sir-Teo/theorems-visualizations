@@ -14,13 +14,11 @@ export default {
 $$\left(\frac pq\right)\left(\frac qp\right)=(-1)^{\frac{p-1}2\cdot\frac{q-1}2}.$$
 Thus $\left(\frac pq\right)=\left(\frac qp\right)$ unless $p\equiv q\equiv3\pmod 4$, in which case the two symbols are opposite. Together with the two supplements (4.3, 4.5) this lets one decide the solvability of every congruence $x^2\equiv a\pmod p$.`,
       idea: String.raw`Gauss's lemma (4.4) with $a=q$ gives $\left(\frac qp\right)=(-1)^{S_1}$ where $S_1=\sum_{x=1}^{(p-1)/2}\lfloor qx/p\rfloor$ (Eisenstein's form: for odd $q$ the sign count $\mu$ and $S_1$ have the same parity). Now $S_1$ counts the lattice points $(x,y)$ with $1\le x\le\frac{p-1}2$ lying under the diagonal $y=qx/p$ of the $\frac p2\times\frac q2$ rectangle, and by symmetry $S_2=\sum_{y=1}^{(q-1)/2}\lfloor py/q\rfloor$ counts those above it; no lattice point lies on the diagonal because $p,q$ are coprime. Together they fill the rectangle: $S_1+S_2=\frac{p-1}2\cdot\frac{q-1}2$.`,
-      caption: String.raw`The rectangle holds the lattice points $1\le x\le\frac{p-1}2$, $1\le y\le\frac{q-1}2$, split by the diagonal into the $S_1$ blue points below (they give $\left(\frac qp\right)$) and the $S_2$ orange points above (they give $\left(\frac pq\right)$). Change $p$ and $q$: the two counts always add up to the area count $\frac{p-1}2\frac{q-1}2$, so the product of the two signs is its parity. Switch off *primes only* and take composite values: the counts still fill the rectangle, but the symbols computed by brute force no longer obey the law.`,
+      caption: String.raw`The rectangle holds the lattice points $1\le x\le\frac{p-1}2$, $1\le y\le\frac{q-1}2$, split by the diagonal into the $S_1$ blue points below (they give $\left(\frac qp\right)$) and the $S_2$ orange points above (they give $\left(\frac pq\right)$). Change $p$ and $q$: the two counts always add up to the area count $\frac{p-1}2\frac{q-1}2$, so the product of the two signs is its parity. Switch off *primes only*: coprime odd composite inputs still obey reciprocity for the Jacobi symbols. Noncoprime or equal inputs have diagonal points and fall outside that coprime statement; the readout includes those points in the total rather than asserting a false two-part count.`,
       deps: ['nt-4.4', 'nt-4.3', 'nt-4.5'],
-      refs: ['Hardy–Wright §6.12', 'Apostol §9.5'],
+      refs: ['Lee–Kumar, MIT 18.781 (2012), Lecture 9, Theorems 41–42, pp.3–6'],
       tags: ['reciprocity', 'lattice points', 'Eisenstein'],
-      credit: 'Euler and Legendre (conjectured); first complete proof by Gauss, 1796 (published 1801); lattice-point proof by Eisenstein, 1844',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Quadratic_reciprocity' },
+      links: { source: 'https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/d5cdd1b802194a2a236eed934da8ae36_MIT18_781S12_lec9.pdf#page=5' },
       viz(v) {
         const P = v.slider('$p$', 3, 61, 11, { int: true });
         const Q = v.slider('$q$', 3, 61, 7, { int: true });
@@ -30,7 +28,6 @@ Thus $\left(\frac pq\right)=\left(\frac qp\right)$ unless $p\equiv q\equiv3\pmod
         v.render(() => {
           let p = pr.value ? nearOddPrime(P.value, 3, 61) : (P.value % 2 ? P.value : P.value + 1);
           let q = pr.value ? nearOddPrime(Q.value, 3, 61) : (Q.value % 2 ? Q.value : Q.value + 1);
-          if (p === q) q = pr.value ? nearOddPrime(q + 2, 3, 200) : q + 2;
           const hp = (p - 1) / 2, hq = (q - 1) / 2;
           S.setView([-p * 0.04, p / 2 + p * 0.06], [-q * 0.04, q / 2 + q * 0.06]);
           S.rect(0, 0, p / 2, q / 2, { color: 'ink', width: 1.5 });
@@ -48,8 +45,9 @@ Thus $\left(\frac pq\right)=\left(\frac qp\right)$ unless $p\equiv q\equiv3\pmod
         v.readout(() => {
           const { p, q, s1, s2, on, hp, hq, lpq, lqp, prime, g } = info;
           const tot = hp * hq, sign = tot % 2 ? -1 : 1;
-          const head = `$p=${p},\\ q=${q}$: $S_1=${s1}$, $S_2=${s2}$, $S_1+S_2=${s1 + s2}=\\frac{${p - 1}}2\\cdot\\frac{${q - 1}}2=${tot}$${on ? ` (plus ${on} on the diagonal, since $\\gcd=${g}$)` : ''}.`;
-          if (!prime) return head + `\n$p,q$ are not both prime: the symbols (computed as Jacobi symbols) give $\\left(\\frac pq\\right)\\left(\\frac qp\\right)=${lpq * lqp}$, the law predicts $${sign}$.`;
+          const head = `$p=${p},\\ q=${q}$: $S_1=${s1}$ below, $S_2=${s2}$ above, $D=${on}$ on the diagonal; $S_1+S_2+D=${s1+s2+on}=\\frac{${p-1}}2\\cdot\\frac{${q-1}}2=${tot}$.`;
+          if (g !== 1) return head + ` The inputs are not coprime ($\\gcd=${g}$), so reciprocity is not asserted. Both Jacobi symbols are zero; the diagonal points cannot be assigned to either strict side.`;
+          if (!prime) return head + `\nCoprime odd inputs: the Jacobi extension gives $\\left(\\frac pq\\right)\\left(\\frac qp\\right)=${lpq * lqp}$, equal to the reciprocity sign $${sign}$.`;
           return head + `\n$\\left(\\frac qp\\right)=(-1)^{S_1}=${s1 % 2 ? -1 : 1}$ (symbol: $${lqp}$), $\\left(\\frac pq\\right)=(-1)^{S_2}=${s2 % 2 ? -1 : 1}$ (symbol: $${lpq}$); product $${lpq * lqp}$ $=(-1)^{${tot}}$.`;
         });
       },
@@ -106,13 +104,11 @@ It is multiplicative in $a$ and in $n$, depends only on $a\bmod n$, and satisfie
 $$\left(\frac mn\right)\left(\frac nm\right)=(-1)^{\frac{m-1}2\cdot\frac{n-1}2}.$$
 Caution: $\left(\frac an\right)=-1$ proves that $a$ is not a square mod $n$, but $\left(\frac an\right)=1$ does **not** prove it is one when $n$ is composite.`,
       idea: String.raw`Everything follows from the prime case (4.6, 4.3, 4.5) by multiplying over the prime factors. For the law one uses that for odd $a,b$ we have $\frac{ab-1}2\equiv\frac{a-1}2+\frac{b-1}2\pmod 2$, and likewise $\frac{a^2b^2-1}8\equiv\frac{a^2-1}8+\frac{b^2-1}8\pmod 2$, so the sign rules for $-1$, $2$ and reciprocity extend multiplicatively from primes to products. The warning is simple: if $n=pq$ and $a$ is a non-residue modulo both, the two signs $-1$ multiply to $+1$ although $a$ is not a square modulo $p$ (hence not modulo $n$).`,
-      caption: String.raw`Choose an odd $n$ (try $15$) and $a$. Left: for every $a$ the bar gives $\left(\frac an\right)$; a gold cap marks the classes that really are squares mod $n$ (found by brute force) — **red hatched bars** are the traps where the symbol is $+1$ but $a$ is not a square. Right: a table of $\left(\frac mn\right)\left(\frac nm\right)$ against the predicted sign $(-1)^{\frac{m-1}2\frac{n-1}2}$ for odd coprime $m,n\le31$; every cell agrees (green), the dark cells are the pairs with both $\equiv3\pmod4$.`,
+      caption: String.raw`Choose an odd $n$ (try $15$); an even slider value is rounded up. The chart covers every nonzero class $a$. Left: for every $a$ the bar gives $\left(\frac an\right)$; a gold cap marks the classes that really are squares mod $n$ (found by brute force) — **red hatched bars** are the traps where the symbol is $+1$ but $a$ is not a square. Right: a table of $\left(\frac mn\right)\left(\frac nm\right)$ against the predicted sign $(-1)^{\frac{m-1}2\frac{n-1}2}$ for odd coprime $m,n\le31$; every cell agrees (green), the dark cells are the pairs with both $\equiv3\pmod4$.`,
       deps: ['nt-4.6', 'nt-4.1'],
-      refs: ['Apostol §9.7'],
+      refs: ['Lee–Kumar, MIT 18.781 (2012), Lecture 10, pp.1–2'],
       tags: ['Jacobi symbol', 'reciprocity'],
-      credit: 'Jacobi, 1837',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Jacobi_symbol' },
+      links: { source: 'https://ocw.mit.edu/courses/18-781-theory-of-numbers-spring-2012/785c307302fa0fd1113b0fd6bdaf6f4a_MIT18_781S12_lec10.pdf#page=2' },
       viz(v) {
         const N = v.slider('odd $n$', 3, 99, 15, { int: true });
         const B = v.stage({ x: [0, 100], y: [-1.7, 1.9], axes: 'box', gutter: true, height: 360, xlabel: '$a$', ylabel: '$\\left(\\frac an\\right)$', title: 'the Jacobi symbol against actual squares' });
@@ -124,10 +120,11 @@ Caution: $\left(\frac an\right)=-1$ proves that $a$ is not a square mod $n$, but
           let traps = 0;
           for (let a = 1; a < n; a++) {
             const j = jacobi(a, n), isq = sq.has(a);
+            if (isq) B.dot(a, 1.45, { r: Math.max(2.5, Math.min(5, 150 / n)), color: 'gold' });
             if (j === 0) { B.rect(a - 0.35, -0.05, a + 0.35, 0.05, { fill: 'faint', color: 'faint' }); continue; }
             const trap = j === 1 && !isq; if (trap) traps++;
             B.rect(a - 0.4, 0, a + 0.4, j, { fill: trap ? 'red' : j > 0 ? 'green' : 'blue', fillAlpha: 0.45, color: trap ? 'red' : j > 0 ? 'green' : 'blue', width: 1, hatch: trap });
-            if (isq) B.dot(a, 1.45, { r: Math.max(2.5, Math.min(5, 150 / n)), color: 'gold' });
+
           }
           B.text('gold = a really is a square mod n', n * 0.98, 1.75, { align: 'right', size: 11, color: 'gold' });
           let ok = 0, tot = 0;

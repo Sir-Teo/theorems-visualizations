@@ -1,15 +1,15 @@
 // Energy Systems — Chapter 4: Solar energy, items 4.9–4.11 (shading and bypass diodes, the étendue limit, the 1954 silicon cell paper)
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
-//   4.9  A 60-cell module in three bypassed substrings of 20 cells is the common commercial layout (from memory). Cell parameters (9.7 A short-circuit current,
+//   4.9  A 60-cell module in three bypassed substrings of 20 cells is the chosen illustrative topology (no claim about prevalence in commercial modules). Cell parameters (9.7 A short-circuit current,
 //     0.63 V open-circuit) are ILLUSTRATIVE round numbers for a 156 mm silicon cell; the reverse characteristic of a shaded cell (ohmic, 1.5 ohm) and the
 //     0.6 V forward drop of the bypass diode are simplifications, not measurements.
 //   4.10 Sun's angular radius from the IAU 2015 nominal radius 6.957e8 m and 1 au = 1.495978707e11 m: sin(theta_s) = 4.6505e-3, theta_s = 0.2665 deg, so the
 //     three-dimensional étendue limit 1/sin^2(theta_s) = 46 240 (computed here). The sine-condition ray picture is a schematic of an ideal aplanatic concentrator.
 //     Stagnation temperature T = (C S / sigma)^(1/4) for a blackbody absorber that loses heat only by radiation from the concentrated area.
-//   4.11 Chapin, Fuller & Pearson, J. Appl. Phys. 25 (5) 676–677 (1954), DOI 10.1063/1.1721711 (title, authors, volume, issue and pages confirmed in the Crossref
-//     record). That the cell reached about 6 % in sunlight is from secondary histories (ETHW milestone page, April 25 1954 demonstration) and is flagged; the
-//     numbers drawn in the viz are an ILLUSTRATIVE reconstruction of such a cell, not data taken from the paper.
+//   4.11 Chapin, Fuller & Pearson (1954), pp. 676–677, DOI 10.1063/1.1721711.
+//     Original letter checked through the accessible article scan: 60 W/m², approximately 6%, and the 0.5% comparison on p. 677.
+//     Electrical curves use chosen parameters, not extracted experimental data.
 
 import { clamp, S0, SIGMA, R_SUN, AU, cell, ivCurve } from './ch04.shared.js';
 
@@ -53,7 +53,7 @@ Scope: series-connected cells with uniform temperature; the maximum power point 
       deps: ['energy-4.4'],
       refs: ['Tester ch. 13'],
       tags: ['photovoltaics', 'shading', 'series circuits'],
-      scope: String.raw`Illustrative single-diode cells (9.7 A, 0.63 V) with an ohmic reverse characteristic; temperature effects of hot spots are not modelled.`,
+      scope: String.raw`Chosen illustrative topology: 60 cells, three substrings of 20, with one bypass diode per substring. Cell parameters (9.7 A, 0.63 V) and the ohmic reverse characteristic are illustrative; temperature effects of hot spots are not modelled.`,
       viz(v) {
         const level = v.slider('light on a shaded cell (fraction of full)', 0.02, 0.8, 0.15, { step: 0.01 });
         const byp = v.toggle('bypass diodes shown as the main curve', true);
@@ -182,20 +182,19 @@ Scope: ideal non-imaging optics, an isotropic radiator in a medium of refractive
       name: 'A New Silicon p-n Junction Photocell',
       paper: { authors: 'D. M. Chapin, C. S. Fuller and G. L. Pearson', year: 1954, title: 'A New Silicon p-n Junction Photocell for Converting Solar Radiation into Electrical Power', venue: 'Journal of Applied Physics 25 (5): 676–677', doi: '10.1063/1.1721711' },
       introduces: ['tech-12.10'],
-      statement: String.raw`A two-page letter from Bell Telephone Laboratories reported a photocell made from a **silicon p–n junction**, formed by diffusing impurities into a silicon wafer, that turns sunlight into electrical power far more efficiently than the selenium and other photocells then available. In direct sunlight the cell converted about **6 %** of the incident power, enough, for the first time, to run small devices from the Sun. The junction field separates the electron–hole pairs that light creates, so the cell behaves as the illuminated diode of energy-4.3: a current proportional to the light, with an open-circuit voltage of a few tenths of a volt.
+      statement: String.raw`Chapin, Fuller and Pearson reported a thin p-type silicon layer on an n-type base. Their cell delivered **60 W/m²** into a resistive load under sunlight, corresponding to approximately **6% efficiency**; a commercial photocell measured for comparison gave 0.5%. The letter discusses reflection, recombination before collection, and resistance in the surface layer and contacts as practical losses.
 
-Scope: a small laboratory cell, measured in sunlight; an engineering milestone, not a theoretical limit.`,
-      idea: String.raw`Photovoltaic action had been known since 1839, and selenium cells had long served as light meters, but with efficiency far too low to supply power. Chapin was working at Bell Laboratories on a power source for remote telephone equipment; Fuller's method of diffusing dopants into silicon to make junctions and Pearson's observation of the photovoltaic effect in such junctions let them replace selenium by silicon, whose band gap (1.1 eV) sits near the optimum for the solar spectrum (energy-4.5, mat-9.8). The paper marks the beginning of practical photovoltaics (energy-4.1, tech-12.10); its first applications were satellite power supplies, and the Shockley–Queisser analysis of 1961 (energy-4.12) showed how much room remained above 6 %.`,
-      caption: String.raw`A **reconstruction**, not the paper's data: a silicon cell in the single-diode model of 4.3, with parameters chosen to reproduce a cell near 6 % (high series resistance and a leaky junction), against the same cell with modern parameters. Slide the **sunlight** and drag the **load** along the curve to find the maximum power point; the right panel plots efficiency against light intensity for both. Today's best silicon cells convert over a quarter of the sunlight, near the Shockley–Queisser bound of about one third.`,
+The junction separates photogenerated electron–hole pairs and supplies power to an external circuit. This laboratory result is an efficiency measurement, not a theoretical limit.`,
+      idea: String.raw`The paper connects spectral response to usable sunlight: photons must create electron–hole pairs, the pairs must reach the junction before recombining, and contacts must collect current with little resistance. A shallow junction helps collection, while contact geometry helps reduce electrical loss. The single-diode model (energy-4.3) lets us explore those electrical losses, but does not reconstruct the paper's spectral measurements.`,
+      caption: String.raw`An **illustrative single-diode comparison**: the blue parameter set gives about 5.7% efficiency at one sun, near the paper's reported 6%; the green lower-loss set gives about 20.6%. Neither curve is measured data from the paper or a current record cell. Slide **sunlight** and drag the **load** to find maximum power; the right panel shows how each chosen model's efficiency changes with irradiance.`,
       deps: ['energy-4.3', 'mat-9.8', 'energy-4.1'],
-      refs: [],
+      refs: ['Chapin, Fuller & Pearson (1954), pp. 676–677; https://doi.org/10.1063/1.1721711', 'Accessible original article scan, including p. 677 numerical comparison; https://es.scribd.com/document/598911344/1-1721711'],
       tags: ['photovoltaics', 'silicon', 'history'],
       credit: 'Chapin, Fuller & Pearson, Bell Telephone Laboratories, 1954',
       links: { doi: 'https://doi.org/10.1063/1.1721711', wikipedia: 'https://en.wikipedia.org/wiki/Solar_cell' },
-      verify: true,
       viz(v) {
         const suns = v.slider('sunlight (suns)', 0.05, 2, 1, { log: true, sig: 2 });
-        const kind = v.select('cell', [{ value: '1954', label: '1954-like (illustrative)' }, { value: 'now', label: 'modern silicon (illustrative)' }], '1954');
+        const kind = v.select('cell', [{ value: '1954', label: '1954-like (illustrative)' }, { value: 'now', label: 'lower-loss model' }], '1954');
         const P = { '1954': { jsc1: 19, j0ref: 1e-9, n: 1, rs: 2, rsh: 1500, col: 'accent' }, now: { jsc1: 41, j0ref: 1e-12, n: 1, rs: 0.5, rsh: 5000, col: 'green' } };
         const mk = (k, s) => cell({ suns: s, T: 298.15, ...P[k] });
         const S = v.stage({ x: [0, 0.8], y: [0, 50], axes: 'box', gutter: true, height: 330, weight: 1.2, minWidth: 290, xlabel: 'voltage V (V)', ylabel: 'current density (mA/cm²)', title: 'current–voltage curve' });
@@ -217,11 +216,11 @@ Scope: a small laboratory cell, measured in sunlight; an engineering milestone, 
           E.dot(s, mp.P / (100 * s), { r: 8, color: 'gold' });
           st = { V, J, voc, jsc, mp, eta: mp.P / (100 * s), FF: mp.P / (voc * jsc), s };
         });
-        v.legend([['accent', '1954-like cell'], ['green', 'modern silicon cell']]);
+        v.legend([['accent', '1954-like cell'], ['green', 'lower-loss model']]);
         v.readout(() => {
           if (!st) return '';
           const { V, J, voc, jsc, mp, eta, FF, s } = st;
-          return `${v.fix(100 * s, 0)} mW/cm² of sunlight: $J_{sc}=${v.fix(jsc, 1)}$ mA/cm², $V_{oc}=${v.fix(voc, 2)}$ V, FF ${v.fix(FF, 2)} → maximum power ${v.fix(mp.P, 1)} mW/cm², efficiency **${v.fix(100 * eta, 1)}%** · your load: ${v.fix(V * J, 1)} mW/cm² · the paper reported about 6% in sunlight (secondary sources); crystalline silicon is limited to about 33% by the Shockley–Queisser argument and record cells exceed 26% (Green et al., efficiency tables, quoted from memory).`;
+          return `${v.fix(100 * s, 0)} mW/cm² of sunlight: $J_{sc}=${v.fix(jsc, 1)}$ mA/cm², $V_{oc}=${v.fix(voc, 2)}$ V, FF ${v.fix(FF, 2)} → maximum power ${v.fix(mp.P, 1)} mW/cm², efficiency **${v.fix(100 * eta, 1)}%** · your load: ${v.fix(V * J, 1)} mW/cm² · the original letter reports 60 W/m² and approximately 6% efficiency (p. 677). These curves use chosen model parameters.`;
         });
       },
     },

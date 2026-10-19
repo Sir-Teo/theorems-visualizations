@@ -1,11 +1,12 @@
 // Information & Coding Theory — Chapter 4: Source coding (items 4.6, 4.7, 4.10, 4.11, 4.12; the rest in ch04.js and ch04-c.js)
 //
 // Credits checked Oct 2026 (Crossref and library records): Shannon 1948; Rissanen, IBM J. Res. Dev. 20 (3): 198–203 (1976);
-// Witten–Neal–Cleary, Commun. ACM 30 (6): 520–540 (1987). The attribution of Shannon–Fano–Elias coding and of the first
-// arithmetic coders (Pasco 1976, Rissanen 1976) is the usual textbook one and is marked verify.
+// Witten–Neal–Cleary, Commun. ACM 30 (6): 520–540 (1987).
+// Items 4.11–4.12 now cite the full construction/proof sources; see coding-sources-followup.md.
 
 import { clamp, sum, H, h2, KL, hashStr, LET, barEd, resizeP, shannonLens, expLen, huffLens, canon, isPrefixFree, lbinom, lbinPmf, binomCdf, cdfPick,
   fracBits, mono, pw2, log2, commas, setProb } from './ch04.shared.js';
+import {sfeCode,arithmeticEncode,ratio} from './coding-audit.shared.js';
 
 const COL3 = ['accent', 'orange', 'teal', 'purple', 'pink', 'gold'];
 
@@ -193,17 +194,17 @@ So designing for the wrong distribution costs about $D(p\|q)$ extra bits per sym
       num: '4.11',
       kind: 'Algorithm',
       name: 'Shannon–Fano–Elias coding',
-      statement: String.raw`Order the symbols $x=1,\dots,m$ and let $F(x)=\sum_{a<x}p(a)$, $\bar F(x)=F(x)+\tfrac12p(x)$ (the midpoint of the interval $[F(x),F(x)+p(x))$). Give $x$ the codeword consisting of the first $\ell(x)=\lceil\log_2\frac1{p(x)}\rceil+1$ binary digits of $\bar F(x)$. Then the code is a prefix code and
+      statement: String.raw`Order the positive-probability symbols $x=1,\dots,m$ and let $F(x)=\sum_{a<x}p(a)$, $\bar F(x)=F(x)+\tfrac12p(x)$ (the midpoint of the interval $[F(x),F(x)+p(x))$). Give $x$ the codeword consisting of the first $\ell(x)=\lceil\log_2\frac1{p(x)}\rceil+1$ binary digits of $\bar F(x)$, using the terminating expansion followed by zeros at dyadic rationals. Then the code is a prefix code and
 $$H(X)+1\ \le\ L\ <\ H(X)+2 .$$
 No sorting of the symbols is needed, and the code needs only the cumulative distribution, which is the idea that arithmetic coding (4.12) extends to long strings.`,
       idea: String.raw`Truncating $\bar F(x)$ to $\ell$ bits gives a number $c$ with $\bar F-2^{-\ell}<c\le\bar F$. The dyadic interval $[c,c+2^{-\ell})$ then contains $\bar F(x)$, and because $2^{-\ell}\le p(x)/2$ it lies inside $[F(x),F(x)+p(x))$: it sticks out neither to the left of $F$ (it starts within $p/2$ below the midpoint) nor beyond the right end. The symbols' intervals are disjoint, so the dyadic intervals are disjoint; and two codewords, one a prefix of the other, would have nested dyadic intervals. Hence the code is prefix-free. The lengths exceed $\log\frac1p$ by at most $2$, giving $L<H+2$.`,
-      caption: String.raw`Edit the distribution (bars) and the number of symbols. Each symbol owns the interval $[F,F+p)$ of $[0,1)$ (top bar of each row); its midpoint $\bar F$ is the dot, and its codeword is the dyadic interval of length $2^{-\ell}$ below, which must lie inside the symbol's interval. Switch to the broken variant without the extra bit (length $\lceil\log\frac1p\rceil$) to break the construction: dyadic intervals then stick out (red) and codewords can collide.`,
+      caption: String.raw`Edit the distribution (bars) and the number of symbols. Each positive-probability symbol owns the interval $[F,F+p)$ of $[0,1)$ (top bar of each row); its midpoint $\bar F$ is the dot, and its codeword is the dyadic interval of length $2^{-\ell}$ below, which must lie inside the symbol's interval. Removing the extra bit (length $\lceil\log\frac1p\rceil$) can make dyadic intervals stick out (red) and codewords collide; some distributions still work.`,
       deps: ['info-4.3'],
-      refs: ['Cover–Thomas §5.9'],
+      refs: ['Cover–Thomas, Elements of Information Theory (1991), §5.9 pp.101–103, Examples 5.9.1–5.9.2'],
       tags: ['arithmetic coding', 'prefix codes'],
-      credit: 'Shannon (1948) and Fano (1949); the cumulative-distribution version is attributed to Elias (unpublished; via Abramson, 1963)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Shannon%E2%80%93Fano%E2%80%93Elias_coding' },
+      credit: 'Shannon–Fano–Elias construction; proof source: Cover–Thomas (1991), §5.9',
+      scope: 'Zero-probability symbols are omitted. Coding decisions and interval containment use exact rational arithmetic on the normalized stored bar values; coordinates and reported averages are rounded. The shorter variant can work for some distributions but has no general guarantee. The empty word is shown as ε when a single positive symbol needs zero bits in that variant.',
+      links: { source: 'https://djvu.online/file/BHWTNwrjWY0GV' },
       viz(v) {
         const nS = v.slider('symbols', 2, 6, 4, { int: true });
         const extra = v.select('codeword length', [{ value: 1, label: '$\\lceil\\log\\frac1p\\rceil+1$' }, { value: 0, label: '$\\lceil\\log\\frac1p\\rceil$ (broken)' }], 1);
@@ -214,34 +215,22 @@ No sorting of the symbols is needed, and the code needs only the cumulative dist
           if (nS.value !== last) { last = nS.value; ed.p = resizeP(ed.p, last); }
           const p = ed.p, m = p.length, add = extra.value;
           ed.draw({ values: true, alpha: 0.4 });
-          let F = 0; const words = [], rows = [];
-          for (let i = 0; i < m; i++) {
-            const pi = p[i], Fb = F + pi / 2;
-            if (pi > 0) {
-              const l = Math.ceil(log2(1 / pi) - 1e-12) + add, k = Math.floor(Fb * pw2(l) + 1e-12), c = k / pw2(l);
-              const w = k.toString(2).padStart(l, '0').slice(-l);
-              rows.push({ i, F, pi, Fb, l, c, w, inside: c >= F - 1e-12 && c + pw2(-l) <= F + pi + 1e-12 });
-              words.push(w);
-            }
-            F += pi;
-          }
+          const result=sfeCode(p,add),rows=result.rows;
           const col = (i) => COL3[i % COL3.length];
           rows.forEach((r, j) => {
             const y = -j * 1.05;
             s.rect(r.F, y - 0.05, r.F + r.pi, y + 0.42, { fill: col(r.i), fillAlpha: 0.3, color: col(r.i), width: 1.6 });
             s.dot(r.Fb, y + 0.18, { r: 4.5, color: 'ink' });
-            s.rect(r.c, y - 0.62, r.c + pw2(-r.l), y - 0.2, { fill: r.inside ? 'green' : 'red', fillAlpha: 0.5, color: r.inside ? 'green' : 'red', width: 1.6 });
+            s.rect(r.c, y - 0.62, r.c + r.width, y - 0.2, { fill: r.inside ? 'green' : 'red', fillAlpha: 0.5, color: r.inside ? 'green' : 'red', width: 1.6 });
             s.text(`${LET[r.i]}`, 0, y + 0.18, { dx: -4, align: 'right', size: 13, weight: 700, color: col(r.i), halo: false });
-            s.text(r.w, 1.04, y + 0.1, { align: 'left', size: 13, weight: 700, color: r.inside ? 'ink' : 'red', halo: false });
+            s.text(r.w.length>8?r.w.slice(0,6)+'…':r.w||'ε', 1.04, y + 0.1, { align: 'left', size: 13, weight: 700, color: r.inside ? 'ink' : 'red', halo: false });
             s.text(`ℓ=${r.l}`, 1.3, y + 0.1, { align: 'left', size: 11, color: 'muted', halo: false });
           });
           s.text('code', 1.04, 0.85, { align: 'left', size: 10.5, color: 'muted' });
           s.vline(0, { color: 'faint' }); s.vline(1, { color: 'faint' });
-          const L = sum(rows.map((r) => r.pi * r.l)), Hh = H(p);
-          const pf = isPrefixFree(words) && new Set(words).size === words.length;
-          info = { L, Hh, pf, allIn: rows.every((r) => r.inside), add };
+          info = { L:result.L,Hh:result.H,pf:result.pf,allIn:result.allIn,add,rows };
         });
-        v.readout(() => `$H=${v.fix(info.Hh, 3)}$, $L=${v.fix(info.L, 3)}$ ${info.add ? `∈ [H+1, H+2) = [${v.fix(info.Hh + 1, 3)}, ${v.fix(info.Hh + 2, 3)})` : '(shorter, but no longer guaranteed to work)'}. Every dyadic interval inside its symbol's interval: ${info.allIn ? '**yes**' : '**no**'}; prefix-free: ${info.pf ? '**yes**' : '**no**'}.`);
+        v.readout(() => `$H=${v.fix(info.Hh, 3)}$, $L=${v.fix(info.L, 3)}$ ${info.add ? `∈ [H+1, H+2) = [${v.fix(info.Hh + 1, 3)}, ${v.fix(info.Hh + 2, 3)})` : '(shorter, but no longer guaranteed to work)'}. Every dyadic interval inside its symbol's interval: ${info.allIn ? '**yes**' : '**no**'}; prefix-free: ${info.pf ? '**yes**' : '**no**'}. Exact rational coding decisions; rounded coordinates. Codes: `+info.rows.map(r=>`${LET[r.i]}: \`${r.w||'ε'}\` (${r.l} bits)`).join('; ')+'.');
       },
     },
     // ───────────────────────────────────────────────────────────── 4.12
@@ -249,75 +238,56 @@ No sorting of the symbols is needed, and the code needs only the cumulative dist
       num: '4.12',
       kind: 'Algorithm',
       name: 'Arithmetic coding',
-      statement: String.raw`Given a model that assigns each next symbol a conditional probability $P(x_t\mid x_1,\dots,x_{t-1})$ (it may be adaptive), arithmetic coding encodes the string $x_1\dots x_N$ as follows. Start with the interval $I_0=[0,1)$. At step $t$ divide $I_{t-1}$ into subintervals proportional to the model's probabilities for the next symbol and let $I_t$ be the subinterval of the symbol that occurs. The final interval has width $\prod_tP(x_t\mid x_{<t})=P(x_1\dots x_N)$; the code is the shortest binary fraction $0.b_1\dots b_k$ inside $I_N$, and
-$$k\ <\ \log_2\frac1{P(x_1\dots x_N)}+2 .$$
-The decoder, running the same model, recovers the string from the number. The cost is within $2$ bits of the ideal $-\log P$ for the **whole string**, not $1$ bit per symbol, so the coder follows the model's entropy with no integer-length loss, and the model can learn as it goes.`,
-      idea: String.raw`Nested intervals: each step multiplies the width by the probability of the actual symbol, so after $N$ symbols the width is exactly the model probability of the whole message. A dyadic interval of width at most half the final width fits inside it (as in 4.11), and its length is at most $\lceil\log\frac1P\rceil+1<\log\frac1P+2$ bits. The decoder reverses the process, comparing the code value with the model's cumulative probabilities. Practical coders use finite-precision integer arithmetic and emit a bit as soon as the interval lies within one half of the current range, which is the "output bits as soon as the interval fits" pictured below.`,
-      caption: String.raw`Type a message over $\{a,b,c\}$ (up to 14 symbols) and choose the model: a **fixed** model (drag the three bars) or an **adaptive** one that starts with one count per letter and counts what it has seen (Laplace). Each row is the current interval magnified to full width and cut according to the model; the chosen slice is outlined and zoomed into the next row. The bits on the right are those already fixed because the interval lies in a single dyadic half, quarter, … The slider steps through the message; at the end the code, the ideal length $-\log_2P$ and a decoding check are shown.`,
+      statement: String.raw`Given computable conditional probabilities $P(x_t\mid x_{<t})$ and a **known message length $N$**, start with $I_0=[0,1)$. Divide each current interval into half-open subintervals proportional to the model's next-symbol probabilities and retain the observed symbol's slice. For a positive-probability message the final interval has width $P(x^N)$. Transmit a binary word of minimal length $k$ whose entire dyadic interval
+$$[j2^{-k},(j+1)2^{-k})\ \subseteq\ I_N.$$
+Then $k< -\log_2P(x^N)+2$. The decoder uses the same model and any point in that dyadic interval to recover exactly $N$ symbols. A point lying in $I_N$ alone does not guarantee a prefix code. An unknown length requires framing, for example an end-of-message symbol, with its additional cost.`,
+      idea: String.raw`Each step multiplies the interval width by the observed conditional probability. Put $\ell=\lceil-\log_2|I_N|\rceil+1$, so the dyadic mesh is at most half the interval width. The first mesh point at or above the left endpoint starts a full mesh cell contained in $I_N$. Thus a contained cell exists with at most $\ell< -\log_2|I_N|+2$ bits. Different messages of a fixed length have disjoint final intervals, so their contained dyadic cells are disjoint and the resulting words are prefix-free. Minimality may save another bit.
+
+This picture uses exact rational endpoints. Practical integer coders instead renormalize ranges and manage underflow and termination explicitly; their finite-precision overhead needs separate accounting. Common binary digits shown here describe the current interval; they are not a simulation of every practical renormalization step.`,
+      caption: String.raw`Enter up to 14 lowercase letters from $\{a,b,c\}$. Invalid or overlong input is reported without silently changing the message. Choose a fixed distribution or adaptive Laplace counts starting at one per letter. Each row magnifies the current interval; the highlighted slice becomes the next row. Common interval bits appear at right (long labels are abbreviated). At the end, the full code defines a **contained dyadic interval** and is decoded using the known length. Coding uses exact rational arithmetic; plotted coordinates and logarithms are rounded. A zero-probability fixed-model letter cannot be encoded.`,
       deps: ['info-4.11'],
-      refs: ['Cover–Thomas §13.3', 'MacKay ch. 6'],
+      refs: ['Polyanskiy–Wu, MIT 6.441 (2016), §9.1 p.102', 'Witten–Neal–Cleary (1987), Arithmetic Coding for Data Compression, pp.521–522, 533–536'],
       tags: ['arithmetic coding', 'adaptive models'],
-      credit: 'R. Pasco (1976, Stanford thesis) and J. Rissanen (1976, IBM J. Res. Dev. 20: 198–203), independently; popularised by Witten, Neal & Cleary (Commun. ACM 30 (6): 520–540, 1987)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arithmetic_coding' },
+      credit: 'Construction source: Polyanskiy–Wu (2016), §9.1; practical implementation: Witten, Neal & Cleary (1987)',
+      scope: 'Known N and the probability model are side information. The less-than-two-bit bound concerns the ideal exact interval construction, excluding framing and model transmission. Binary64 bar values are interpreted exactly and normalized rationally before coding. Drawing may merge very narrow slices visually; containment and decoding decisions remain exact.',
+      links: { source: 'https://ocw.mit.edu/courses/6-441-information-theory-spring-2016/18b243d5e475579b7434260214ad9a25_MIT6_441S16_chapter_9.pdf', implementation: 'https://cs.nyu.edu/home/people/in_memoriam/roweis/csc310-2006/extras/p520-witten.pdf' },
       viz(v) {
         const model = v.select('model', [{ value: 'fixed', label: 'fixed $p$' }, { value: 'adapt', label: 'adaptive (Laplace)' }], 'adapt');
         const msg = v.input('message', 'abaabcaab', { width: 220 });
         const stepS = v.slider('steps shown', 0, 14, 14, { int: true });
         const ed = barEd(v, { title: 'fixed model $p$ (drag; used when “fixed” is selected)', p: [0.6, 0.3, 0.1], height: 150, minWidth: 220, weight: 0.8 });
-        const s = v.stage({ x: [0, 1.38], y: [-14.6, 1.4], height: 430, axes: false, title: 'interval narrowing: each row is the previous chosen slice, magnified', minWidth: 340, weight: 1.6 });
-        const SYM = 'abc';
+        const s = v.stage({ x: [-0.06, 1.4], y: [-15, 1.4], height: 430, axes: false, title: 'interval narrowing: each row is the previous chosen slice, magnified', minWidth: 340, weight: 1.6 });
+        const SYM = 'abc',brief=b=>b.length>10?b.slice(0,8)+'…':b;
         let info = {};
-        const commonBits = (lo, hi) => { let b = ''; for (let k = 0; k < 40; k++) { const a = Math.floor(lo * pw2(k + 1)), c = Math.floor((hi - 1e-15) * pw2(k + 1)); if (a !== c || Math.floor(lo * pw2(k)) !== Math.floor((hi - 1e-15) * pw2(k))) break; b += (a & 1) ? '1' : '0'; } return b; };
         v.render(() => {
-          const text = String(msg.value).toLowerCase().replace(/[^abc]/g, '').slice(0, 14);
-          const adaptive = model.value === 'adapt';
-          ed.draw({ values: true, alpha: 0.4 });
-          const pf = ed.p, cnt = [1, 1, 1];
-          let lo = 0, hi = 1, logP = 0; const rows = [];
-          for (let t = 0; t < text.length; t++) {
-            const pr = adaptive ? cnt.map((c) => c / (cnt[0] + cnt[1] + cnt[2])) : pf.slice();
-            const j = SYM.indexOf(text[t]); let cum = 0; const cs = [0, pr[0], pr[0] + pr[1], 1];
-            const w = hi - lo; rows.push({ pr, j, lo, hi, cs, bits: commonBits(lo, hi) });
-            hi = lo + w * cs[j + 1]; lo = lo + w * cs[j]; logP -= log2(Math.max(pr[j], 1e-12)); cnt[j]++;
-          }
-          const final = { lo, hi, bits: commonBits(lo, hi) };
-          const shown = Math.min(stepS.value, text.length);
-          const R = Math.min(shown + 1, 15);
-          for (let t = 0; t < Math.min(R, text.length + 1); t++) {
-            const y = -t * 1.0, r = t < text.length ? rows[t] : null;
-            if (r) {
-              for (let a = 0; a < 3; a++) {
-                const sel = a === r.j && t < shown + (shown < text.length ? 1 : 0) && t <= shown;
-                const chosen = a === r.j && t < shown;
-                s.rect(r.cs[a], y - 0.3, r.cs[a + 1], y + 0.3, { fill: COL3[a], fillAlpha: chosen ? 0.55 : 0.2, color: COL3[a], width: chosen ? 2.4 : 1 });
-                if (r.cs[a + 1] - r.cs[a] > 0.07) s.text(SYM[a], (r.cs[a] + r.cs[a + 1]) / 2, y, { align: 'center', size: 12, weight: 700, color: 'ink', halo: false });
-              }
-              if (t < shown) {
-                const a = r.j; s.line(r.cs[a], y - 0.3, 0, y - 0.7, { color: 'faint', width: 1 }); s.line(r.cs[a + 1], y - 0.3, 1, y - 0.7, { color: 'faint', width: 1 });
-              }
-              s.text(t < shown ? `${SYM[r.j]}` : '?', -0.0, y, { dx: -6, align: 'right', size: 12, color: 'muted', weight: 700 });
-              const bits = rows[t].bits;
-              s.text(bits ? `0.${bits}…` : '', 1.03, y, { align: 'left', size: 11.5, color: 'green', weight: 700, halo: false });
+          const text=String(msg.value),adaptive=model.value==='adapt';ed.draw({values:true,alpha:.4});
+          const encoded=text.length>14?{error:'Use at most 14 letters; input is not truncated.'}:arithmeticEncode(text,ed.p,adaptive);
+          const shown=Math.min(stepS.value,text.length),done=shown===text.length;
+          if(encoded.error){s.text('Message cannot be encoded — see readout',0,-1,{align:'left',size:12,color:'red'});info={text,adaptive,error:encoded.error};return;}
+          for(let t=0;t<Math.min(shown+1,text.length);t++){
+            const y=-t,r=encoded.rows[t];
+            for(let a=0;a<3;a++){
+              const chosen=a===r.j&&t<shown;
+              s.rect(r.cs[a],y-.3,r.cs[a+1],y+.3,{fill:COL3[a],fillAlpha:chosen?.55:.2,color:COL3[a],width:chosen?2.4:1});
+              if(r.cs[a+1]-r.cs[a]>.07)s.text(SYM[a],(r.cs[a]+r.cs[a+1])/2,y,{align:'center',size:12,weight:700,color:'ink',halo:false});
             }
+            if(t<shown){s.line(r.cs[r.j],y-.3,0,y-.7,{color:'faint',width:1});s.line(r.cs[r.j+1],y-.3,1,y-.7,{color:'faint',width:1});}
+            s.text(t<shown?SYM[r.j]:'?',0,y,{dx:-6,align:'right',size:12,color:'muted',weight:700});
+            s.text(r.bits?`0.${brief(r.bits)} (${r.bits.length})`:'',1.03,y,{align:'left',size:10.5,color:'green',weight:700,halo:false});
           }
-          // result
-          const done = shown === text.length && text.length > 0;
-          let code = '', dec = '', ok = false;
-          if (done) {
-            let k = 0, x = 0; for (k = 1; k < 60; k++) { x = Math.ceil(lo * pw2(k) - 1e-15); if (x / pw2(k) < hi) break; }
-            code = x.toString(2).padStart(k, '0').slice(-k); const val = x / pw2(k);
-            // decode
-            const cnt2 = [1, 1, 1]; let l2 = 0, h2_ = 1; dec = '';
-            for (let t = 0; t < text.length; t++) { const pr = adaptive ? cnt2.map((c) => c / (cnt2[0] + cnt2[1] + cnt2[2])) : pf.slice(); const w = h2_ - l2; const cs = [0, pr[0], pr[0] + pr[1], 1]; let a = 0; while (a < 2 && val >= l2 + w * cs[a + 1]) a++; dec += SYM[a]; h2_ = l2 + w * cs[a + 1]; l2 = l2 + w * cs[a]; cnt2[a]++; }
-            ok = dec === text;
+          if(done){
+            const scale=1n<<BigInt(encoded.l),den=(encoded.U-encoded.L)*scale;
+            const a=ratio(encoded.k*encoded.D-encoded.L*scale,den),b=ratio((encoded.k+1n)*encoded.D-encoded.L*scale,den),y=-text.length;
+            s.rect(0,y-.3,1,y+.3,{fill:'faint',fillAlpha:.2,color:'muted',width:1});
+            s.rect(a,y-.3,b,y+.3,{fill:'green',fillAlpha:.45,color:'green',width:2});
+            s.text('final interval: green cell is the code',0,y-.55,{align:'left',size:11,color:'green'});
           }
-          info = { text, shown, done, code, dec, ok, logP, adaptive };
+          info={text,shown,done,adaptive,...encoded};
         });
-        v.readout(() => {
-          const i = info; if (!i.text.length) return 'Type a message over a, b, c.';
-          if (!i.done) return `Step ${i.shown} of ${i.text.length}: move the slider to the end to see the final code and the decoding check.`;
-          return `Message \`${i.text}\`: ideal length $-\\log_2P=${v.fix(i.logP, 2)}$ bits. Arithmetic code: \`${i.code}\` (${i.code.length} bits, < ${v.fix(i.logP + 2, 2)}). Decoded with the same ${i.adaptive ? 'adaptive ' : ''}model: \`${i.dec}\` ${i.ok ? '✓' : '✗'}. A plain symbol code would need at least ${i.text.length} bits.`;
+        v.readout(()=>{
+          const i=info;if(i.error)return i.error;if(!i.text.length)return 'Enter a message over lowercase a, b, c. The known empty message needs zero bits.';
+          if(!i.done)return `Step ${i.shown} of ${i.text.length}: move the slider to the end for the complete code and decoding check.`;
+          return String.raw`Message ${i.text}: ideal length $-\log_2P=${v.fix(i.logP,2)}$ bits. Prefix interval code: ${i.code||'ε'} (${i.l} bits, $<${v.fix(i.logP+2,2)}$). Entire dyadic cell contained: **yes**, by exact integer comparison. Decoded with known $N=${i.text.length}$ and the same ${i.adaptive?'adaptive ':''}model: ${i.decoded} ${i.ok?'✓':'✗'}. Framing and model costs are excluded.`;
         });
       },
     },

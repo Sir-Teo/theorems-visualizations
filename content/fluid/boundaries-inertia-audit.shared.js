@@ -1,0 +1,15 @@
+// Dedicated verified plane-boundary, circulation and translating-body calculations.
+const TAU=2*Math.PI;
+export function imageVortices(mode,x,y,G,W=2,N=5){const L=[{x,y,k:G}];if(mode==='wall')L.push({x,y:-y,k:-G});else if(mode==='corner')L.push({x:-x,y,k:-G},{x,y:-y,k:-G},{x:-x,y:-y,k:G});else for(let n=-N;n<=N;n++){if(n)L.push({x,y:y+2*n*W,k:G});L.push({x,y:-y+2*n*W,k:-G});}return L;}
+export function vortexVelocity(L,x,y,skip=-1){let u=0,v=0;for(let j=0;j<L.length;j++){if(j===skip)continue;const dx=x-L[j].x,dy=y-L[j].y,r2=dx*dx+dy*dy;if(r2===0)return null;const a=L[j].k/(TAU*r2);u-=a*dy;v+=a*dx;}return[u,v];}
+// Analytic sum of the whole infinite strip lattice, not the drawn finite images.
+export function stripVelocity(x,y,x0,y0,G,W=2){const a=Math.PI*(x-x0)/(2*W),coth=b=>{const s=Math.sinh(a),t=Math.sin(b),d=s*s+t*t;if(d===0)return null;return[s*Math.cosh(a)/d,-t*Math.cos(b)/d];},p=coth(Math.PI*(y-y0)/(2*W)),m=coth(Math.PI*(y+y0)/(2*W));return p&&m?[G*(p[1]-m[1])/(4*W),G*(p[0]-m[0])/(4*W)]:null;}
+export function imageVelocity(mode,x,y,x0,y0,G,W=2){return mode==='channel'?stripVelocity(x,y,x0,y0,G,W):vortexVelocity(imageVortices(mode,x0,y0,G,W),x,y);}
+export function imageDrift(mode,x,y,G,W=2){if(mode==='wall')return[G/(4*Math.PI*y),0];if(mode==='channel')return[G/(4*W)/Math.tan(Math.PI*y/W),0];const a=G/(4*Math.PI*(x*x+y*y));return[a*x*x/y,-a*y*y/x];}
+export function vortexStep(mode,x,y,G,dt,W=2){if(mode!=='corner'){const u=imageDrift(mode,x,y,G,W);return[x+u[0]*dt,y];}const f=(x,y)=>imageDrift(mode,x,y,G,W),a=f(x,y),b=f(x+dt*a[0]/2,y+dt*a[1]/2),c=f(x+dt*b[0]/2,y+dt*b[1]/2),d=f(x+dt*c[0],y+dt*c[1]);return[x+dt*(a[0]+2*b[0]+2*c[0]+d[0])/6,y+dt*(a[1]+2*b[1]+2*c[1]+d[1])/6];}
+export function cylinderVelocity(x,y,G=0,body=true){if(!body)return[1,0];const r2=x*x+y*y;if(r2===0)return null;return[1+(y*y-x*x)/(r2*r2)+G*y/(TAU*r2),-2*x*y/(r2*r2)-G*x/(TAU*r2)];}
+export function loopPosition(cx,cy,r){const d=Math.hypot(cx,cy);if(d-r>1+1e-10)return'outside';if(r-d>1+1e-10)return'encircles';return'invalid';}
+export function loopCirculation(cx,cy,r,G,body=true,n=1024){const position=body?loopPosition(cx,cy,r):'outside';if(position==='invalid')return{value:null,position,error:null};let g=0;for(let j=0;j<n;j++){const t=TAU*(j+.5)/n,c=Math.cos(t),s=Math.sin(t),u=cylinderVelocity(cx+r*c,cy+r*s,G,body);g+=(u[0]*s-u[1]*c)*r*TAU/n;}const expected=body&&position==='encircles'?G:0;return{value:g,position,error:g-expected,expected};}
+export function addedMotion(shape,sigma,g=9.81){const Ca=shape==='sph'?.5:1;return{Ca,a:(1-sigma)*g/(sigma+Ca),naive:sigma===0?null:(1-sigma)*g/sigma};}
+export function addedPressure(shape,c,U,acc,radius=1,rho=1){const sphere=shape==='sph';return{acceleration:rho*radius*acc*c*(sphere?.5:1),quadratic:rho*U*U*(sphere?(9*c*c-5)/8:(4*c*c-3)/2)};}
+export function pressureForceCoefficient(shape,n=2048){let F=0;const sphere=shape==='sph';for(let j=0;j<n;j++){const t=(sphere?Math.PI:TAU)*(j+.5)/n,c=Math.cos(t);F-=addedPressure(shape,c,0,1).acceleration*c*(sphere?TAU*Math.sin(t)*Math.PI/n:TAU/n);}return F/(sphere?4*Math.PI/3:Math.PI);}

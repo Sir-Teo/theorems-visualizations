@@ -8,6 +8,7 @@ import {
   CAT, pen, binom, fact, range, commas,
   sMul, sInv, sCompose, sExp, ratCoeffs, numStr, fracTex, fibBig, circlePts,
 } from './ch04.shared.js';
+import{fibonacciRatioError}from'./ch04-source-audit.shared.js';
 
 const PHI = (1 + Math.sqrt(5)) / 2;
 const sgnStr = (x) => (x < 0 ? '−' : '+');
@@ -165,15 +166,14 @@ Factor the denominator as $(1-r_1x)(1-r_2x)$ ($r_i$ the roots of $r^2=c_1r+c_2$)
       num: '4.3',
       kind: 'Theorem',
       name: 'Fibonacci numbers and Binet’s formula',
-      credit: 'Binet, 1843 (the closed form was known earlier, to de Moivre and D. Bernoulli)',
-      verify: true,
-      statement: String.raw`Let $F_0=0$, $F_1=1$, $F_{n}=F_{n-1}+F_{n-2}$. Then $\sum_{n\ge0}F_nx^n=\dfrac{x}{1-x-x^2}$ and
+      statement: String.raw`Let $F_0=0$, $F_1=1$, $F_{n}=F_{n-1}+F_{n-2}$ for $n\ge2$. Then $\sum_{n\ge0}F_nx^n=\dfrac{x}{1-x-x^2}$ and
 $$F_n=\frac{\varphi^n-\psi^n}{\sqrt5},\qquad \varphi=\frac{1+\sqrt5}{2},\ \ \psi=\frac{1-\sqrt5}{2}=-\frac1\varphi .$$
 Consequently $F_n$ is the integer nearest to $\varphi^n/\sqrt5$, and $F_{n+1}/F_n\to\varphi$. Combinatorially, $F_{n+1}$ is the number of tilings of a $1\times n$ strip by squares ($1\times1$) and dominoes ($1\times2$).`,
-      idea: String.raw`Tilings: look at the last tile — a square leaves a tiling of length $n-1$, a domino one of length $n-2$ — so $t_n=t_{n-1}+t_{n-2}$ with $t_0=1$, $t_1=1$; hence $t_n=F_{n+1}$. Generating function: summing the recurrence gives $F(x)=x/(1-x-x^2)$ (4.2). The roots of $r^2=r+1$ are $\varphi,\psi$, and partial fractions give $F_n=(\varphi^n-\psi^n)/\sqrt5$. Because $|\psi|<1$, the second term is below $\tfrac12$ in absolute value, which gives the rounding statement.`,
-      caption: String.raw`Slide $n$ to see **every** tiling of the $1\times n$ strip (blue = square, orange = domino); the tilings ending in a domino number $F_{n-1}$ and those ending in a square $F_n$ — the recurrence. Right: the ratios $F_{n+1}/F_n$ zigzag around $\varphi$ with error $\approx\psi^n$-sized, the content of Binet's formula.`,
+      idea: String.raw`Tilings: look at the last tile — a square leaves a tiling of length $n-1$, a domino one of length $n-2$ — so $t_n=t_{n-1}+t_{n-2}$ with $t_0=1$, $t_1=1$; hence $t_n=F_{n+1}$. Generating function: summing the recurrence gives $F(x)=x/(1-x-x^2)$ (4.2). The roots of $r^2=r+1$ are $\varphi,\psi$, and partial fractions give $F_n=(\varphi^n-\psi^n)/\sqrt5$. The error in $\varphi^n/\sqrt5$ is $|\psi|^n/\sqrt5\le1/\sqrt5<1/2$ for $n\ge0$, which proves rounding. For $n\ge1$, $F_{n+1}-\varphi F_n=\psi^n$, so the ratio error is $\psi^n/F_n=O(\varphi^{-2n})$.`,
+      caption: String.raw`Slide $n$ to see **every** tiling of the $1\times n$ strip (blue = square, orange = domino); the tilings ending in a domino number $F_{n-1}$ and those ending in a square $F_n$ — the recurrence. Right: the ratios $F_{n+1}/F_n$ zigzag around $\varphi$ with exact error $\psi^n/F_n$, of order $\varphi^{-2n}$, as follows from Binet’s formula.`,
       deps: ['comb-4.2'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Stanley, Enumerative Combinatorics 1, 2nd ed. author draft (15 July 2011), Example 4.1.2 and equation (4.5), p. 537; Example 1.1.12, p. 17; Exercise 1.35(c), p. 121'],
+      links:{source:'https://math.mit.edu/~rstan/ec/ec1.pdf#page=537'},
       tags: ['Fibonacci', 'generating functions'],
       viz(v) {
         const nS = v.slider('strip length $n$', 1, 9, 6, { int: true });
@@ -202,7 +202,7 @@ Consequently $F_n$ is the integer nearest to $\varphi^n/\sqrt5$, and $F_{n+1}/F_
         v.readout(() => {
           const { n, cnt, lastDom, lastSq } = info; const f = F[n + 1], bin = (PHI ** (n + 1) - (-1 / PHI) ** (n + 1)) / Math.sqrt(5), near = PHI ** (n + 1) / Math.sqrt(5);
           return String.raw`$n=${n}$: **${cnt}** tilings listed $=F_{${n + 1}}=${f}$ ${cnt === f ? '✓' : '✗'}; ending in a domino: ${lastDom} $=F_{${n - 1}}=${F[n - 1]}$, in a square: ${lastSq} $=F_{${n}}=${F[n]}$.` + '\n' +
-            String.raw`Binet: $(\varphi^{${n + 1}}-\psi^{${n + 1}})/\sqrt5=${bin.toFixed(6)}$; rounding $\varphi^{${n + 1}}/\sqrt5=${near.toFixed(4)}$ gives $${Math.round(near)}$ ${Math.round(near) === f ? '✓' : '✗'}. Ratio $F_{${n + 1}}/F_{${n}}=${(F[n + 1] / F[n]).toFixed(5)}$ vs $\varphi=${PHI.toFixed(5)}$.`;
+            String.raw`Binet: $(\varphi^{${n + 1}}-\psi^{${n + 1}})/\sqrt5=${bin.toFixed(6)}$; rounding $\varphi^{${n + 1}}/\sqrt5=${near.toFixed(4)}$ gives $${Math.round(near)}$ ${Math.round(near) === f ? '✓' : '✗'}. Ratio $F_{${n + 1}}/F_{${n}}=${(F[n + 1] / F[n]).toFixed(5)}$ vs $\varphi=${PHI.toFixed(5)}$. Exact ratio error $\psi^{${n}}/F_{${n}}\approx${v.sci(fibonacciRatioError(n,F),3)}$.`;
         });
       },
     },

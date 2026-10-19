@@ -11,8 +11,8 @@
 //     I = S (1 + 0.033 cos(360 n/365)) 0.7^(AM^0.678) (Meinel & Meinel, from memory — the form with a 0.7 base is equivalent to exp(-0.357 AM^0.678) in PyAstronomy's
 //     documentation of Meinel's formula); air mass from Kasten & Young (1989), from memory. Direct beam only: diffuse light is omitted.
 //   4.3 Single-diode cell with ILLUSTRATIVE silicon-like numbers (Jsc 40 mA/cm2 at 1 sun, J0 about 1e-12 A/cm2); nothing here is a measurement of a device.
-//   4.4 Green's empirical ideal fill factor FF0 = (v - ln(v + 0.72))/(v + 1), v = Voc/(n kT/q): M. A. Green, Solar Cells 7 (1982) 337–340 (title confirmed;
-//     the formula is quoted from memory and is checked below against the numerical diode model).
+//   4.4 Green's empirical ideal fill factor FF0 = (v - ln(v + 0.72))/(v + 1), v = Voc/(n kT/q): M. A. Green, Solid-State Electronics 24 (1981), 788–789;
+//     formula and original attribution checked in PVEducation (https://www.pveducation.org/pvcdrom/solar-cell-operation/fill-factor), 2026-10-16.
 
 import { clamp, S0, T_SUN, FW, KB, SIGMA, cell, ivCurve, ffGreen } from './ch04.shared.js';
 
@@ -281,11 +281,10 @@ Scope: single-diode cell under constant illumination; $0<FF<1$, and for good sil
       idea: String.raw`Along the curve the product $VJ$ starts at zero (short circuit), ends at zero (open circuit) and is positive in between, so it has a maximum; where it occurs the load line through the origin is tangent to a level set of $P$. The same extremum problem appears in circ-3.5 for a linear source, where matching the load to the source resistance is optimal; here the source is nonlinear, so the matching load is $R_{mp}=V_{mp}/J_{mp}$ at one particular intensity — and moves when the light changes (energy-4.7). Because the exponential is so steep, the knee of the curve is sharp and the fill factor sits near 0.8 even though $V_{mp}$ is only about 85 % of $V_{oc}$.`,
       caption: String.raw`Drag the **gold operating point** along the I–V curve (left): the orange rectangle $V\times J$ is the power delivered, the dashed one is $V_{oc}\times J_{sc}$, and the fill factor is the ratio of the green maximum rectangle to the dashed one. The right panel shows the same power as a curve in $V$. Switch on **series resistance** and the knee rounds off, the fill factor falls and the load that extracts the most power changes. The line from the origin through the point is the load resistance $V/J$.`,
       deps: ['energy-4.3', 'circ-3.5'],
-      refs: ['Tester ch. 13'],
+      refs: ['Green (1981), Solar cell fill factors: General graph and empirical expressions, Solid-State Electronics 24:788–789', 'PVEducation, Fill Factor; https://www.pveducation.org/pvcdrom/solar-cell-operation/fill-factor', 'Tester ch. 13'],
       tags: ['photovoltaics', 'fill factor', 'power'],
       scope: String.raw`Single-diode silicon-like cell, one sun, illustrative parameters.`,
-      credit: 'Fill-factor expression: M. A. Green, 1982',
-      verify: true,
+      credit: 'Fill-factor expression: M. A. Green, 1981',
       viz(v) {
         const rs = v.select('series resistance $R_s$', [{ value: '0', label: '0' }, { value: '1', label: '1 Ω cm²' }, { value: '3', label: '3 Ω cm²' }, { value: '6', label: '6 Ω cm²' }], '0');
         const suns = v.slider('light intensity (suns)', 0.1, 5, 1, { log: true, sig: 2 });

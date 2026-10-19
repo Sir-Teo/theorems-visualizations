@@ -1,0 +1,8 @@
+import{theodorsen,cpolar,cdiv,cadd,cmul,cabs}from'./ch04.shared.js';
+const TAU=2*Math.PI;
+export function radiusInterpolant(vals){const n=vals.length,f=vals.map(Math.log),A=[],B=[];for(let k=0;k<=n/2;k++){let a=0,b=0;for(let j=0;j<n;j++){a+=f[j]*Math.cos(TAU*k*j/n);b+=f[j]*Math.sin(TAU*k*j/n);}A.push((k===0||k===n/2?1:2)*a/n);B.push(2*b/n);}return t=>{let r=A[0];for(let k=1;k<n/2;k++)r+=A[k]*Math.cos(k*t)+B[k]*Math.sin(k*t);return Math.exp(r+A[n/2]*Math.cos(n*t/2));};}
+export function mapCandidate(R,N=128,K=56){const m=theodorsen(R,N,K),boundary=[],count=1024;let minDerivative=Infinity,minAngleStep=Infinity,error=0;for(let j=0;j<count;j++){const t=TAU*j/count,z=m.zOf(cpolar(1,t)),next=m.zOf(cpolar(1,t+TAU/count)),angle=Math.atan2(z[0]*next[1]-z[1]*next[0],z[0]*next[0]+z[1]*next[1]);boundary.push(z);minDerivative=Math.min(minDerivative,cabs(m.dzOf(cpolar(1,t))));minAngleStep=Math.min(minAngleStep,angle);const r=cabs(z);error=Math.max(error,Math.abs(r-R(Math.atan2(z[1],z[0])))/R(Math.atan2(z[1],z[0])));}
+ return{...m,error,capacity:Math.exp(m.c0),boundary,minDerivative,minAngleStep,accepted:m.ok&&error<1e-4&&minDerivative>1e-5&&minAngleStep>0};}
+export function circleDerivative(z,angle,G,capacity){const zz=cmul(z,z);return cadd(cmul([capacity,0],cadd(cpolar(1,-angle),cmul([-1,0],cdiv(cpolar(1,angle),zz)))),cdiv([0,G/TAU],z));}
+export function mappedVelocity(m,z,angle,G){return cdiv(circleDerivative(z,angle,G,m.capacity),m.dzOf(z));}
+export function bounds(points){const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]),x0=Math.min(-2.8,...xs),x1=Math.max(2.8,...xs),y0=Math.min(-2.3,...ys),y1=Math.max(2.3,...ys),p=.08*Math.max(x1-x0,y1-y0);return{x:[x0-p,x1+p],y:[y0-p,y1+p]};}

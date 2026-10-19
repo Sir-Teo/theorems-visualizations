@@ -1,6 +1,8 @@
 // Numerical Analysis — Chapter 4 (continued): best approximation in the sup norm (items 4.6–4.9)
 import { lg, clamp, linspace, chebPts, chebInterp, supDiff, baryW, bary, remez, bestErr, lebMax, tsci } from './ch04.shared.js';
 
+import { affineSupError, stableLebesgueMax } from './numerical-source-audit.shared.js';
+
 const FUNS = {
   exp: { f: Math.exp, tex: 'e^x' },
   lin: { f: (x) => x, tex: 'x' },
@@ -18,15 +20,14 @@ export default {
       num: '4.6',
       kind: 'Theorem',
       name: 'Existence and uniqueness of best approximation',
-      statement: String.raw`Let $f\in C[a,b]$ and let $V$ be a finite-dimensional subspace of $C[a,b]$. Then there is at least one $p^*\in V$ minimizing $\|f-p\|_\infty$ (**existence**; true in any normed space for finite-dimensional $V$). If moreover $V$ is a **Haar space** — every nonzero element has at most $\dim V-1$ zeros, as for polynomials of degree $\le n$ — the minimizer is **unique**. For a non-Haar space (such as span$\{1,x^2\}$ on $[-1,1]$) uniqueness can fail: the set of best approximations may be a whole segment.`,
-      idea: String.raw`Existence: $p\mapsto\|f-p\|$ is continuous and tends to $\infty$ as $\|p\|\to\infty$, so it attains its minimum on a closed ball of the finite-dimensional $V$, which is compact (extreme value theorem, pma-4.16). The set of minimizers is convex because the norm is. Uniqueness needs the Haar condition: if two minimizers differed, their average would also be one, and the error would have to equal $\pm E$ at too many points for a nonzero element of $V$ with too many zeros to exist.`,
+      statement: String.raw`Let $a<b$, $f\in C[a,b;\mathbb R]$, and let $V$ be a real finite-dimensional subspace of $C[a,b]$. Then there is at least one $p^*\in V$ minimizing $\|f-p\|_\infty$ (**existence**; true in any normed space for finite-dimensional $V$). If moreover $V$ is a **Haar space** — every nonzero element has at most $\dim V-1$ zeros, as for polynomials of degree $\le n$ — the minimizer is **unique**. For a non-Haar space (such as span$\{1,x^2\}$ on $[-1,1]$) uniqueness can fail: the set of best approximations may be a whole segment.`,
+      idea: String.raw`Existence: $p\mapsto\|f-p\|$ is continuous and tends to $\infty$ as $\|p\|\to\infty$, so it attains its minimum on a closed ball of the finite-dimensional $V$, which is compact (extreme value theorem, pma-4.16). The set of minimizers is convex because the norm is. Uniqueness needs the Haar condition: if two minimizers differed, their average would also be one, and the Haar-space alternation theorem supplies $\dim V+1$ alternating extreme points; their sign constraints force the difference to vanish. For $f=x$ in the non-Haar example, every $p=\beta(x^2-1)$, $|\beta|\le1/2$, has error exactly $1$: the endpoints force a lower bound of $1$, and $|x|+\tfrac12(1-x^2)\le1$ proves attainment.`,
       caption: String.raw`Right: the map $(\text{coefficients})\mapsto\|f-p\|_\infty$ for the degree-1 approximation $p=\alpha+\beta x$ (or for the non-Haar family $\alpha+\beta x^2$), as a colour map; drag the gold point to choose $p$, shown on the left with its error band. For $e^x$ and lines the bowl has one lowest point. Choose $f=x$ with the family $\alpha+\beta x^2$ and the bottom of the bowl becomes a flat green valley — a whole segment of best approximations.`,
       deps: ['num-4.1', 'pma-4.16'],
       refs: ['Trefethen ATAP ch. 10', 'Süli–Mayers ch. 8'],
-      credit: 'Chebyshev, 1850s (existence); Haar, 1918 (uniqueness criterion)',
+      credit: 'Haar-space uniqueness; see ATAP Theorem 10.1 for the polynomial case',
       scope: String.raw`Sup norm on a compact interval; the Haar condition is what makes uniqueness hold for algebraic polynomials.`,
       tags: ['best approximation', 'uniqueness'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Haar_space' },
       viz(v) {
         const space = v.select('family', [{ value: 'lin', label: '$\\alpha+\\beta x$ (Haar)' }, { value: 'sq', label: '$\\alpha+\\beta x^2$ (not Haar)' }], 'lin');
@@ -41,10 +42,10 @@ export default {
           const key = sp + fk; if (cache[key]) return cache[key];
           const f = FUNS[fk].f, G = [];
           let best = Infinity, bi = 0, bj = 0;
-          for (let j = 0; j < NG; j++) { G.push([]); for (let i = 0; i < NG; i++) { const b = -2 + 4 * i / (NG - 1), a = -2 + 4 * j / (NG - 1); let m = 0; for (const x of xs) m = Math.max(m, Math.abs(f(x) - a - b * basis(sp, x))); G[j].push(m); if (m < best) { best = m; bi = i; bj = j; } } }
+          for (let j = 0; j < NG; j++) { G.push([]); for (let i = 0; i < NG; i++) { const b = -2 + 4 * i / (NG - 1), a = -2 + 4 * j / (NG - 1); const m = affineSupError(fk, sp, a, b); G[j].push(m); if (m < best) { best = m; bi = i; bj = j; } } }
           // refine the lowest point by shrinking local searches
           let ba = -2 + 4 * bj / (NG - 1), bb = -2 + 4 * bi / (NG - 1), w = 0.04;
-          const E = (a, b) => { let m = 0; for (const x of xs) m = Math.max(m, Math.abs(f(x) - a - b * basis(sp, x))); return m; };
+          const E = (a, b) => affineSupError(fk, sp, a, b);
           for (let r = 0; r < 14; r++) { let be = E(ba, bb), na = ba, nb = bb; for (let j = -4; j <= 4; j++) for (let i = -4; i <= 4; i++) { const a = ba + j * w / 4, b = bb + i * w / 4, e = E(a, b); if (e < be - 1e-15) { be = e; na = a; nb = b; } } ba = na; bb = nb; w *= 0.6; }
           const emin = E(ba, bb); let n = 0, minx = 9, maxx = -9, miny = 9, maxy = -9;
           for (let j = 0; j < NG; j++) for (let i = 0; i < NG; i++) if (G[j][i] < emin + 0.03) { n++; const b = -2 + 4 * i / (NG - 1), a = -2 + 4 * j / (NG - 1); minx = Math.min(minx, b); maxx = Math.max(maxx, b); miny = Math.min(miny, a); maxy = Math.max(maxy, a); }
@@ -58,13 +59,14 @@ export default {
           R.contour(at, [g.emin + 0.03], { color: 'green', width: 2.4 });
           R.dot(g.bb, g.ba, { color: 'green', r: 4 });
           const a = H.y, b = H.x, p = (x) => a + b * basis(sp, x), E = g.E(a, b);
+          const yy = linspace(-1,1,101).flatMap(x=>[f(x),p(x)-E,p(x)+E]); L.setView([-1,1],[Math.min(...yy)-0.2,Math.max(...yy)+0.2]);
           L.between((x) => p(x) - E, (x) => p(x) + E, -1, 1, { fill: 'blue', fillAlpha: 0.12 });
           L.fn(f, { color: 'ink', width: 2 });
           L.fn(p, { color: 'gold', width: 2 });
           L.fn((x) => g.ba + g.bb * basis(sp, x), { color: 'green', width: 1.6, dash: true });
           info = { E, g, sp, fk };
         });
-        v.readout(() => `your $p$: $\\|f-p\\|_\\infty=${v.fix(info.E, 4)}$; smallest value on the map $E^*=${v.fix(info.g.emin, 4)}$ at $(\\beta,\\alpha)\\approx(${v.fix(info.g.bb, 3)},${v.fix(info.g.ba, 3)})$\n` + (info.g.ext > 0.6 ? `the set of near-minimizers (green outline) stretches over a distance $\\approx${v.fix(info.g.ext, 2)}$: the best approximation is **not unique** here` : 'the near-minimizers form a tiny blob: a unique best approximation'));
+        v.readout(() => `your $p$: $\\|f-p\\|_\\infty=${v.fix(info.E, 4)}$ (endpoints and analytic critical points); map search minimum $\\approx${v.fix(info.g.emin, 4)}$ at $(\\beta,\\alpha)\\approx(${v.fix(info.g.bb, 3)},${v.fix(info.g.ba, 3)})$\n` + (info.sp === 'lin' ? 'This family is Haar: the best approximation is unique by the theorem. The green outline shows near-minimizers, not the exact minimizer set.' : info.fk === 'lin' ? 'Analytically nonunique: every $p=\\beta(x^2-1)$ with $|\\beta|\\le1/2$ has optimal error $1$.' : 'This family is not Haar. A finite-resolution contour does not decide uniqueness for this function.'));
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -72,14 +74,13 @@ export default {
       num: '4.7',
       kind: 'Theorem',
       name: 'Chebyshev equioscillation theorem',
-      statement: String.raw`Let $f\in C[a,b]$ and $n\ge0$. A polynomial $p$ of degree $\le n$ is the best sup-norm approximation of $f$ if and only if the error $f-p$ attains its maximum modulus $\|f-p\|_\infty$ with alternating signs at $n+2$ points $x_0<\dots<x_{n+1}$ of $[a,b]$: $(f-p)(x_j)=\pm(-1)^j\|f-p\|_\infty$. In particular the best approximation is unique, and its error has at least $n+2$ extrema of equal height.`,
-      idea: String.raw`If $p$ has fewer than $n+2$ alternation points, a small polynomial of degree $\le n$ can be built with the sign pattern of the error at the (at most $n+1$) sign changes — it has a zero between consecutive alternation points, so its degree allows it — and subtracting a multiple of it from $p$ lowers the maximal error everywhere it is attained. Conversely if $n+2$ alternation points exist, a better $q$ would make $p-q$ (degree $\le n$) change sign $n+1$ times, which is too many roots (the de la Vallée-Poussin argument). This is the Haar-space characterization at work (4.6).`,
-      caption: String.raw`The $n+1$ gold handles set the values of a degree-$n$ polynomial (it interpolates them at Chebyshev points); the bottom panel shows the error $f-p$, with the points where it reaches its maximum height marked. The approximation is certified **best** when at least $n+2$ marked points alternate in sign. Press *snap to best* to jump to the Remez solution and see the error level out at $\pm E^*$; no choice of handles ever gets below it.`,
+      statement: String.raw`Let $a<b$, $f\in C[a,b;\mathbb R]$, and $n\ge0$. A polynomial $p$ of degree $\le n$ is the best sup-norm approximation of $f$ if and only if the error $f-p$ attains its maximum modulus $\|f-p\|_\infty$ with alternating signs at $n+2$ points $x_0<\dots<x_{n+1}$ of $[a,b]$: $(f-p)(x_j)=\pm(-1)^j\|f-p\|_\infty$. In particular the best approximation is unique, and its error has at least $n+2$ extrema of equal height.`,
+      idea: String.raw`If $p$ has fewer than $n+2$ alternation points, a small polynomial of degree $\le n$ can be built with the sign pattern of the error at the (at most $n$) sign changes between alternating extreme groups — it has a zero between consecutive alternation points, so its degree allows it — and adding a sufficiently small multiple with the matching sign to $p$ lowers the maximal error everywhere it is attained. Conversely if $n+2$ alternation points exist, a better $q$ would make $p-q$ (degree $\le n$) change sign $n+1$ times, which is too many roots (the de la Vallée-Poussin argument). This is the Haar-space characterization at work (4.6).`,
+      caption: String.raw`The $n+1$ gold handles set the values of a degree-$n$ polynomial (it interpolates them at Chebyshev points); the bottom panel shows the error $f-p$, with the points where it reaches its maximum height marked. The marked points are detected numerically within a 3% height tolerance: they illustrate alternation but do not certify exact optimality. Press *snap to best* to jump to the Remez solution and see the error level out at $\pm E^*$; the numerical error approaches the computed Remez level.`,
       deps: ['num-4.6'],
       refs: ['Trefethen ATAP ch. 10', 'Süli–Mayers ch. 8'],
       credit: 'Chebyshev, 1850s; proofs by Kirchberger, 1902, and Borel, 1905',
       tags: ['best approximation', 'equioscillation'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Equioscillation_theorem' },
       viz(v) {
         const fsel = v.select('$f$', [{ value: 'exp', label: '$e^x$' }, { value: 'cos', label: '$\\cos3x$' }, { value: 'runge', label: '$\\frac1{1+25x^2}$' }], 'exp');
@@ -115,7 +116,7 @@ export default {
           alt.forEach((c) => B.dot(c[0], c[1], { color: 'green', r: 5 }));
           info = { mx, Es, k: alt.length, n };
         });
-        v.readout(() => `$\\|f-p\\|_\\infty=${v.sci(info.mx, 3)}$ versus the best possible $E^*=${v.sci(info.Es, 3)}$; alternating extremal points found: **${info.k}** (need $n+2=${info.n + 2}$)\n` + (info.k >= info.n + 2 ? '**certified: this $p$ is the best approximation**' : 'not yet equioscillating: a better polynomial exists'));
+        v.readout(() => `$\\|f-p\\|_\\infty=${v.sci(info.mx, 3)}$ versus the Remez estimate $E^*\\approx${v.sci(info.Es, 3)}$; alternating extremal points found: **${info.k}** (need $n+2=${info.n + 2}$)\n` + (info.k >= info.n + 2 ? 'near-equioscillation detected (3% tolerance): numerical evidence, not a certificate of optimality'  : 'no near-equioscillation detected on this grid'));
       },
     },
     // ------------------------------------------------------------------ 4.8
@@ -167,13 +168,12 @@ export default {
       name: 'Chebyshev interpolants are near-best',
       statement: String.raw`Let $p_n$ be the interpolant of $f\in C[-1,1]$ at the $n+1$ Chebyshev points and $p_n^*$ its best sup-norm approximation of degree $\le n$. Then
 $$\|f-p_n\|_\infty\le(1+\Lambda_n)\|f-p_n^*\|_\infty,\qquad \Lambda_n\le\tfrac2\pi\log(n+1)+1,$$
-where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the interpolant is within a factor of about $3$–$4$ of the best possible for every $n$ one will ever use, although computing it takes $O(n\log n)$ operations instead of an iteration.`,
+where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the interpolant is within the logarithmic factor above of the best possible for many practical degrees (the factor still grows without bound), although computing it takes $O(n\log n)$ operations instead of an iteration.`,
       idea: String.raw`Interpolation is a linear projection $f\mapsto p_n$ that reproduces polynomials of degree $\le n$ and has norm $\Lambda_n$ (the Lebesgue constant, 3.10–3.11). For the best approximation $p^*$, $f-p_n=(f-p^*)-(p_n-p^*)=(f-p^*)-\mathcal I(f-p^*)$, and the triangle inequality gives the factor $1+\Lambda_n$. The logarithmic growth of $\Lambda_n$ for Chebyshev points is what makes the bound modest.`,
-      caption: String.raw`Left: for the chosen function, sup errors of the best approximation (Remez, green) and of the Chebyshev interpolant (blue) against $n$ — the curves are hard to tell apart on a log scale. Right: the ratio interpolant/best for five functions and every even $n$, always below the black curve $1+\Lambda_n$ (computed exactly, not from the bound) and mostly below $2$.`,
+      caption: String.raw`Left: for the chosen function, sampled sup errors of the numerical best approximation (numerical Remez estimate, green) and of the Chebyshev interpolant (blue) against $n$ — the curves are hard to tell apart on a log scale. Right: the ratio interpolant/best for four functions and every even $n$, compared with the black theorem bound $1+\Lambda_n$ (numerically maximized, rather than using the analytic bound) and mostly below $2$.`,
       deps: ['num-4.7', 'num-3.11'],
-      refs: ['Trefethen ATAP ch. 16'],
-      credit: 'Lebesgue’s inequality (Lebesgue, 1910) applied to Chebyshev points',
-      verify: true,
+      refs: ['Trefethen ATAP Theorems 15.1–15.2; ch. 16'],
+      credit: 'Lebesgue’s inequality applied to second-kind Chebyshev points',
       tags: ['best approximation', 'interpolation', 'lebesgue'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lebesgue%27s_lemma' },
       viz(v) {
@@ -186,7 +186,7 @@ where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the interpolant is
         for (const k of names) {
           DATA[k] = NS.map((n) => { const f = FUNS[k].f, eb = bestErr(f, n, { iters: 14, M: 700 }), ei = supDiff(f, chebInterp(f, n), 1500); return { n, eb, ei, r: ei / eb }; }).filter((d) => isFinite(d.eb));
         }
-        const LEB = NS.map((n) => 1 + lebMax(chebPts(n)).L);
+        const LEB = NS.map((n) => 1 + stableLebesgueMax(chebPts(n)).L);
         const COLS = ['accent', 'orange', 'purple', 'teal', 'pink'];
         let info = {};
         v.legend([['green', 'best (Remez)'], ['accent', 'Chebyshev interpolant'], ['ink', '$1+\\Lambda_n$']]);
@@ -198,7 +198,7 @@ where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the interpolant is
           names.forEach((nm, ci) => { const dd = DATA[nm].filter((d) => d.eb > 1e-13); B.dots(dd.map((d) => [d.n, d.r]), { color: nm === k ? 'red' : COLS[ci % 5], r: nm === k ? 5 : 3 }); dd.forEach((d) => { worst = Math.max(worst, d.r / LEB[NS.indexOf(d.n)]); }); });
           info = { k, worst, d: D[D.length - 1] };
         });
-        v.readout(() => `highlighted (red dots): $${FUNS[info.k].tex}$, at $n=${info.d.n}$ ratio $${v.fix(info.d.r, 3)}$. Over all functions and degrees shown, the largest value of ratio$/(1+\\Lambda_n)$ is $${v.fix(info.worst, 3)}\\le1$ ✓ (points are drawn only while the best error exceeds $10^{-13}$, above rounding level).`);
+        v.readout(() => `highlighted (red dots): $${FUNS[info.k].tex}$, at $n=${info.d.n}$ ratio $${v.fix(info.d.r, 3)}$. Over all functions and degrees shown, the largest sampled value of ratio$/(1+\\Lambda_n)$ is $${v.fix(info.worst, 3)}$ (a numerical comparison) (points are drawn only while the best error exceeds $10^{-13}$, above rounding level).`);
       },
     },
   ],

@@ -103,25 +103,45 @@ export function thrustAt(A, H, yc) {
   }
   return out;
 }
-/** Scan the (H, yc) plane and return {ok, Hmin, Hmax, lines: {min: {H, yc}, max: {H, yc}}, grid}: feasible when every joint's thrust point lies inside [Ri, Re]. */
+/** Exact feasible interval in H and B = H*yc for the discrete voussoir model.
+ * Each joint gives a lower and upper affine bound on B. Every lower bound must
+ * lie below every upper bound; eliminating B leaves a one-dimensional interval.
+ * The diagnostic scan is used only to draw an inadmissible line after failure. */
 export function archFeasible(A, nH = 70, nY = 40) {
-  const { Ri, Re } = A;
-  let Hmin = Infinity, Hmax = -Infinity, minP = null, maxP = null, count = 0, best = null;
-  const Hlo = 0.05, Hhi = 3;
+  const { Ri, Re, N, dth, Wk, xk, Wtot } = A;
+  const lower = [], upper = [];
+  let V = 0, M = 0;
+  for (let k = 0; k <= N; k++) {
+    if (k) { V += Wk[k - 1]; M += Wk[k - 1] * xk[k - 1]; }
+    const c = Math.cos(k * dth), vs = V * Math.sin(k * dth) / Wtot, m = M / Wtot;
+    lower.push([Ri * c, Ri * vs - m]);
+    upper.push([Re * c, Re * vs - m]);
+  }
+  let Hmin = 0, Hmax = Infinity, possible = true;
+  for (const [a, b] of lower) for (const [c, d] of upper) {
+    const slope = a - c, rhs = d - b;
+    if (Math.abs(slope) < 1e-13) { if (rhs < -1e-12) possible = false; }
+    else if (slope > 0) Hmax = Math.min(Hmax, rhs / slope);
+    else Hmin = Math.max(Hmin, rhs / slope);
+  }
+  const point = (H) => {
+    const lo = Math.max(...lower.map(([a, b]) => a * H + b));
+    const hi = Math.min(...upper.map(([a, b]) => a * H + b));
+    return { H, yc: (lo + hi) / (2 * H) };
+  };
+  if (possible && Hmax > 0 && Hmin <= Hmax + 1e-12) {
+    Hmin = Math.max(Hmin, 1e-12);
+    return { ok: true, Hmin, Hmax, min: point(Hmin), max: point(Hmax),
+      middle: point((Hmin + Hmax) / 2) };
+  }
+  let best = null;
   for (let i = 0; i < nH; i++) {
-    const H = Hlo * Math.pow(Hhi / Hlo, i / (nH - 1));
+    const H = 0.05 * Math.pow(60, i / (nH - 1));
     for (let j = 0; j < nY; j++) {
       const yc = Ri + (Re - Ri) * (j + 0.5) / nY;
-      const p = thrustAt(A, H, yc);
-      let ok = true, viol = 0;
-      for (let k = 0; k < p.length; k++) {
-        const e = Math.max(Ri - p[k], p[k] - Re, 0);
-        if (!(p[k] >= Ri - 1e-9 && p[k] <= Re + 1e-9)) ok = false;
-        if (!(e <= viol)) viol = isFinite(e) ? e : 1e9;
-      }
+      const viol = Math.max(...thrustAt(A, H, yc).map((rho) => Math.max(Ri - rho, rho - Re, 0)));
       if (!best || viol < best.viol) best = { H, yc, viol };
-      if (ok) { count++; if (H < Hmin) { Hmin = H; minP = { H, yc }; } if (H > Hmax) { Hmax = H; maxP = { H, yc }; } }
     }
   }
-  return { ok: count > 0, Hmin, Hmax, min: minP, max: maxP, count, best };
+  return { ok: false, Hmin, Hmax, best };
 }

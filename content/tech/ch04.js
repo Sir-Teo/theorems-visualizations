@@ -5,13 +5,13 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
 
 // ---------------------------------------------------------------- 4.1 helpers
-/** Smallest ring thickness (fraction of intrados radius) that still holds a thrust line, by bisection on the feasibility scan. */
+/** Smallest ring thickness (fraction of intrados radius) that still holds a thrust line, by bisection on the joint constraints. */
 function minThickness(alpha) {
   let lo = 0.004, hi = 0.6;
-  if (!archFeasible(archGeometry(hi, alpha, 24), 100, 70).ok) return NaN;
-  for (let i = 0; i < 11; i++) {
+  if (!archFeasible(archGeometry(hi, alpha, 180), 2, 2).ok) return NaN;
+  for (let i = 0; i < 24; i++) {
     const mid = (lo + hi) / 2;
-    if (archFeasible(archGeometry(mid, alpha, 24), 100, 70).ok) hi = mid; else lo = mid;
+    if (archFeasible(archGeometry(mid, alpha, 180), 2, 2).ok) hi = mid; else lo = mid;
   }
   return hi;
 }
@@ -48,10 +48,10 @@ Scope of the picture: it takes stone with no tensile strength, effectively unlim
       idea: String.raw`If the stones are free to carry only compression, the arch stands if and only if some line of thrust, the curve along which the force passes from joint to joint, lies inside the ring everywhere (Heyman's safe theorem, arch-3.5). Cutting a symmetric arch at the crown leaves one unknown horizontal thrust $H$ and the height $y_c$ where it crosses the crown joint; statics then gives the thrust line through every other joint from the weights of the voussoirs (arch-3.2). Hooke's remark that "as hangs the flexible line, so but inverted will stand the rigid arch" is the same statement: a chain hangs in a pure tension curve, and its mirror image is a pure compression curve.
 
 A free-standing stack of blocks has no such freedom. A block can overhang its support by at most half its own length, and a stack of $n$ equal blocks can reach out by $\tfrac12(1+\tfrac12+\dots+\tfrac1n)$ lengths in all, which grows like $\tfrac12\ln n$. To close a gap of $S$ block lengths the two sides need about $e^{S-\gamma}$ courses, so reach is paid for with height, exponentially. Real corbel vaults load the courses from behind with masonry and do far better, but the geometry of the cantilever is why a corbel opens in height and an arch in width.`,
-      caption: String.raw`Left: a voussoir arch of the chosen span and shape under its own weight. The ring is shaded; the **orange** and **purple** dashed curves are the thrust lines of smallest and largest horizontal thrust that stay inside the ring, and any line in between would do as well. Thin the ring with the **thickness** slider: for a semicircle the two lines merge and then no line fits (the readout then says there is no admissible thrust line, and the red thrust line leaves the masonry at the hinge points). Right: a corbel of the same span, built from free-standing courses of unit blocks. Raise the **courses** until the two sides meet; the readout says how many the span needs.`,
+      caption: String.raw`Left: a voussoir arch of the chosen span and shape under its own weight. Thickness is measured relative to the intrados radius $R_i$; the readout also converts the limiting thickness to the mean-radius convention of arch-3.7. The ring is shaded; the **orange** and **purple** dashed curves are the thrust lines of smallest and largest horizontal thrust that stay inside the ring, and any line in between would do as well. Thin the ring with the **thickness** slider: for a semicircle the two lines merge and then no line fits (the readout then says there is no admissible thrust line, and the red thrust line leaves the masonry at the hinge points). Right: a corbel of the same span, built from free-standing courses of unit blocks. Raise the **courses** until the two sides meet; the readout says how many the span needs.`,
       deps: ['arch-3.2', 'arch-3.5'],
       see: ['arch-3.13', 'arch-3.7', 'tech-4.3'],
-      refs: ['Mokyr ch. 2', 'Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249', 'Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia "Arch"'],
+      refs: ['Makris & Alexakis (2013), radial joints: t/R_m = 0.1075; https://doi.org/10.1007/s00419-013-0763-4', 'Mokyr ch. 2', 'Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249', 'Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia "Arch"'],
       tags: ['ancient', 'masonry', 'statics'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Arch' },
       viz(v) {
@@ -59,7 +59,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
         const B = v.stage({ x: [-4, 4], y: [-1, 6], equal: true, axes: false, height: 330, weight: 1, minWidth: 300, title: 'corbel of free-standing courses' });
         const shape = v.select('shape', [{ value: 'semi', label: 'semicircle' }, { value: 'seg', label: 'segmental (60°)' }], 'semi');
         const span = v.slider('span $S$ (block lengths)', 1, 6, 3, { step: 0.1 });
-        const thick = v.slider('ring thickness $t/R$', 0.03, 0.3, 0.16, { step: 0.005 });
+        const thick = v.slider('ring thickness $t/R_i$', 0.03, 0.3, 0.16, { step: 0.005 });
         const nC = v.slider('corbel courses $n$', 1, 40, 6, { int: true });
         const tMinCache = {};
         let cacheKey = '', geo = null, feas = null;
@@ -96,8 +96,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
           if (feas.ok) {
             draw(feas.max.H, feas.max.yc, 'purple', [5, 3], 1.8);
             draw(feas.min.H, feas.min.yc, 'orange', [5, 3], 1.8);
-            const Hm = Math.sqrt(feas.min.H * feas.max.H), ym = (feas.min.yc + feas.max.yc) / 2;
-            draw(feas.min.H === feas.max.H ? feas.min.H : Hm, feas.min.H === feas.max.H ? feas.min.yc : ym, 'green', null, 2.6);
+            draw(feas.middle.H, feas.middle.yc, 'green', null, 2.6);
           } else if (feas.best) {
             draw(feas.best.H, feas.best.yc, 'red', null, 2.4);
             A.text('no thrust line fits: hinges form', 0, top - 0.1, { size: 12, color: 'red', weight: 700, align: 'center', plate: true });
@@ -124,7 +123,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
         v.readout(() => {
           const tmin = tMinCache[shape.value], t = thick.value;
           const hmin = feas && feas.ok ? `thrust between **${v.fix(feas.min.H, 2)}** and **${v.fix(feas.max.H, 2)}** of a half-arch's weight` : '**no admissible thrust line**';
-          return `${shape.value === 'semi' ? 'semicircle' : 'segmental arch'}, ring $t/R = ${v.fix(t, 3)}$: ${hmin}; the thinnest ring that stands is $t/R \\approx ${v.fix(tmin, 3)}$ (scan resolution about $\\pm0.005$)\nCorbel with $n=${nC.value}$ courses reaches $H_n=${v.fix(B._Hn, 2)}$ block lengths; spanning $S=${v.fix(span.value, 1)}$ needs $n \\ge ${B._need}$ courses`;
+          return `${shape.value === 'semi' ? 'semicircle' : 'segmental arch'}, ring $t/R_i = ${v.fix(t, 3)}$: ${hmin}; the thinnest ring that stands is $t/R_i \\approx ${v.fix(tmin, 3)}$ (180 joints per half-arch; mean-radius ratio $t/R_m=${v.fix(tmin / (1 + tmin / 2), 5)}$)\nCorbel with $n=${nC.value}$ courses reaches $H_n=${v.fix(B._Hn, 2)}$ block lengths; spanning $S=${v.fix(span.value, 1)}$ needs $n \\ge ${B._need}$ courses`;
         });
       },
     },

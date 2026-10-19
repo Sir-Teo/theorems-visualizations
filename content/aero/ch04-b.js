@@ -1,8 +1,8 @@
 // Aerospace Engineering — Chapter 4 (part b): items 4.5-4.8. Sources and caveats: see the header of ch04.js and ch04.shared.js.
 //   4.5 Oblique shock theta-beta-M relation, Prandtl-Meyer function (gamma = 1.4): standard, recomputed (jump relations cross-checked in the readout against the normal-shock formulas of the normal Mach component).
 //       History: T. Meyer's 1908 Goettingen dissertation (supervised by Prandtl; Prandtl had shown schlieren images of the flow in 1907) -- from Wikipedia's Prandtl-Meyer expansion fan article (secondary), verify: true.
-//   4.6 Ackeret's linear theory: J. Ackeret, 1925, Zeitschrift fuer Flugtechnik und Motorluftschiffahrt 16, 72-74 (title "Luftkraefte auf Fluegel, die mit groesserer als Schallgeschwindigkeit bewegt werden"): from the
-//       Wikipedia article on Ackeret; the claim that this is the thin-airfoil paper is supported by a National Academy memorial tribute (secondary). Exact comparison: shock-expansion theory (ch04.shared.js), checked
+//   4.6 Ackeret's linear theory: J. Ackeret, 1925, Zeitschrift fuer Flugtechnik und Motorluftschiffahrt 16, 72-74 (title "Luftkraefte auf Fluegel, die mit groesserer als Schallgeschwindigkeit bewegt werden"): verified in the
+//       original article in the NACA TM 317 translation (NASA NTRS 19930087085, pp. 1 and 5–6), checked 2026-10-16. Exact comparison: shock-expansion theory (ch04.shared.js), checked
 //       against Ackeret's flat-plate result 4 alpha^2/beta at small angles.
 //   4.7 Sutton-Graves: K. Sutton and R. A. Graves Jr., NASA TR R-376 (Nov 1971), title/scope checked (NTRS); the constant k = 1.7415e-4 (SI) was recalled, a secondary source quotes the rounded 1.75e-4 for Earth air:
 //       verify: true. Fay-Riddell: J. Aerospace Sci. 25(2), 73-85 (1958), DOI 10.2514/8.7517 (checked, Crossref). Material limits from the Space Shuttle thermal protection system (NASA pages and Wikipedia):
@@ -147,11 +147,10 @@ Lift and wave drag are non-zero even in inviscid flow, and thickness adds wave d
       idea: String.raw`The linearised potential equation $(M_\infty^2-1)\phi_{xx}-\phi_{yy}=0$ is the wave equation: disturbances travel unchanged along the Mach lines $x\mp\beta y=\text{const}$, $\beta=\sqrt{M_\infty^2-1}$. Above the airfoil only the downstream-running family exists, so $\phi=f(x-\beta y)$, and the flow-tangency condition $\phi_y=V_\infty\theta$ gives $u'/V_\infty=-\theta/\beta$ and hence $C_p=-2u'/V_\infty=2\theta/\beta$. The same expression is the first term in the oblique-shock relation (4.5) and in the Prandtl–Meyer expansion for small $\theta$, so the exact shock–expansion method reduces to Ackeret's result at small angles.`,
       caption: String.raw`Left: the airfoil at incidence with the waves it sends out (red compression, blue expansion). Top right: the pressure coefficient on its four faces from Ackeret's formula (hollow) and from exact shock–expansion theory (solid). Bottom: lift and drag against angle of attack, linear theory (dashed) and exact (solid). Raise the angle of attack or lower the Mach number and Ackeret's curves drift away from the exact ones; at large $\alpha$ the shock detaches, and as $M_\infty\to1$ linear theory breaks down.`,
       deps: ['aero-4.5'],
-      refs: ['Anderson ch. 5'],
+      refs: ['Anderson ch. 5', 'Ackeret (1925), NACA TM 317, pp. 1, 5–6; https://ntrs.nasa.gov/citations/19930087085'],
       tags: ['supersonic', 'wave drag', 'linear theory'],
       scope: String.raw`Small angles and thin sections, $M_\infty$ well above 1 (roughly $1.2\lesssim M_\infty\lesssim4$); inviscid flow over a flat plate or double-wedge section. The 'exact' comparison is the shock–expansion method: each face is treated as an independent corner, so wave reflections off the opposite shocks are neglected.`,
-      credit: 'J. Ackeret, 1925 (Zeitschrift für Flugtechnik und Motorluftschiffahrt 16, 72–74; year and venue from Wikipedia, a National Academy tribute confirms the 1925 thin-airfoil result)',
-      verify: true,
+      credit: 'J. Ackeret, 1925 (original article, 14 February, pp. 72–74; translated as NACA TM 317)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Jakob_Ackeret' },
       viz(v) {
         const Ms = v.slider('Mach number $M_\\infty$', 1.15, 5, 2, { step: 0.05 });

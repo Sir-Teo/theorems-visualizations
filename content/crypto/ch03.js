@@ -1,3 +1,4 @@
+import { hybridBias, hybridProbabilities } from './sources.audit.js';
 // Cryptography — Chapter 3: Computational security and pseudorandomness
 import {
   clamp, ent, bits, pixc as pix, mix2, hex, ci95, GENS, GEN_NOTE, genBits, randomBitsFrom, TESTS, testZ, ladder, paintBits,
@@ -210,21 +211,20 @@ export default {
       num: '3.4',
       kind: 'Theorem',
       name: 'Semantic security is equivalent to indistinguishability',
-      statement: String.raw`Let $\Pi$ be a private-key encryption scheme. The following are equivalent. (i) $\Pi$ has indistinguishable encryptions in the presence of an eavesdropper (3.3). (ii) $\Pi$ is **semantically secure**: for every PPT adversary $\mathcal A$ there is a PPT simulator $\mathcal S$ such that for every efficiently sampleable message distribution and every efficiently computable function $f$ (and any side information $h(m)$), $$\bigl|\Pr[\mathcal A(1^n,\mathsf{Enc}_k(m),|m|,h(m))=f(m)]-\Pr[\mathcal S(1^n,|m|,h(m))=f(m)]\bigr|\le\mathsf{negl}(n).$$ In words: whatever an eavesdropper can compute about the plaintext from the ciphertext, a simulator who sees only the plaintext’s length (and the same side information) can compute about as well.`,
-      idea: String.raw`(i)⇒(ii) is the reduction shown here: given an adversary $\mathcal A$ that guesses $f(m)$ from $c$, a distinguisher $\mathcal D$ picks $m_0,m_1$ with $f(m_0)\neq f(m_1)$, receives $c=\mathsf{Enc}_k(m_b)$, runs $\mathcal A$ and answers according to whether $\mathcal A$’s output equals $f(m_0)$ or $f(m_1)$: $\mathcal D$ wins whenever $\mathcal A$ is right, so $\mathcal D$’s advantage equals $\mathcal A$’s advantage over a blind guesser. The simulator in the other direction encrypts $1^{|m|}$ itself and runs $\mathcal A$ on that. Indistinguishability is the form used in proofs because it is a single bit-guessing game.`,
-      caption: String.raw`Messages are 8 bits; $f(m)$ is the XOR of the first $w$ bits and the key bits are i.i.d. with $\Pr[k_i=1]=p$ ($p=\frac12$: one-time pad). Eve’s semantic adversary $\mathcal A$ guesses $f(m)$ from $c$ (blue); the simulator $\mathcal S$, who never sees $c$, can only flip a coin (grey). The wrapper $\mathcal D$ uses $\mathcal A$ to win the indistinguishability game (orange). Raise $p$: all three advantages move together, and fall back to $0$ at $p=\tfrac12$ — and the larger $w$, the smaller the leak.`,
+      statement: String.raw`For private-key encryption of all bit strings of the supported lengths, **single-ciphertext indistinguishability** against PPT eavesdroppers is equivalent to this computational simulation property. For every PPT adversary $A$ there is a PPT simulator $S$ such that for every PPT sampler of polynomial-length pairs $(m,z)$ and every efficiently computable, polynomial-length function $f$, $$\left|\Pr[A(1^n,\mathsf{Enc}_k(m),|m|,z)=f(m,z)]-\Pr[S(1^n,|m|,z)=f(m,z)]\right|$$ is negligible in $n$. Here $k\leftarrow\mathsf{Gen}(1^n)$ is independent of the sampler, and probabilities include all random coins. The auxiliary information $z$ is given to both algorithms. This is a modern, efficiently sampled formulation of semantic security; it concerns one ciphertext, not repeated use of a key.`,
+      idea: String.raw`IND implies simulation: $S$ generates a fresh key, encrypts a dummy string of the supplied length, and runs $A$ with the same auxiliary information. If replacing the real message by the dummy changes the probability of outputting $f(m,z)$ noticeably, a reduction samples $(m,z)$, submits the real/dummy pair to its IND challenge, and tests whether $A$'s output equals $f(m,z)$. Conversely, an IND adversary selects two equal-length messages and state. Sample one of those messages uniformly, give the pair and state as auxiliary information, and ask for the bit identifying the selected message. With distinct messages the ciphertext adversary has its IND success probability, whereas a simulator without the ciphertext succeeds with probability $1/2$. For equal-message cases the target function and semantic adversary can both return a fixed value; these cases contribute no IND advantage. These reductions explain the equivalence; the diagram below is one special parity example.`,
+      caption: String.raw`Uniform 8-bit messages are encrypted with independent biased pad bits, $\Pr[k_i=1]=p$. The function is the parity of the $w$ least significant bits. The semantic adversary $A$ (blue) and its parity-specific IND wrapper $D$ (orange) have exact excess success $|1-2p|^w/2$; the ciphertext-free simulator $S$ (grey) has exact excess $0$. The sampled bars may be slightly negative and include normal standard-error intervals. At $p=1/2$ all exact excesses vanish.`,
       scope: String.raw`Instance: one-bit function $f$ of an 8-bit message under a biased pad; the general equivalence is proved by the two reductions in the idea, not by this simulation.`,
       deps: ['crypto-3.3'],
       tags: ['semantic security', 'reductions'],
-      refs: ['Katz–Lindell §3.2', 'Boneh–Shoup ch. 2'],
-      credit: 'Goldwasser & Micali, 1984 (definitions and equivalence); later simplified by others',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Semantic_security' },
+      refs: ['Goldwasser–Micali (1984), §§5.1–5.2, Theorem 5.2, pp. 282–290', 'Boneh–Shoup v0.6, §2.2 (modern IND games); reductions supplied in the text'],
+      credit: 'Goldwasser & Micali, 1984, §5.2 (original public-key semantic notion); modern simulation formulation here',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Semantic_security', 'GM original': 'https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Encryption/Probabilistic_Encryption.pdf' },
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, full: true });
-        const sB = v.stage({ x: [0.4, 3.6], y: [0, 0.55], axes: 'box', gutter: true, height: 270, full: true, ylabel: 'advantage over ½' });
+        const sB = v.stage({ x: [0.4, 3.6], y: [-0.06, 0.58], axes: 'box', gutter: true, height: 270, full: true, ylabel: 'advantage over ½' });
         const pS = v.slider('key bias $p=\\Pr[k_i=1]$', 0.5, 1, 0.8, { step: 0.01 });
-        const wS = v.select('$f(m)$ = XOR of the first $w$ bits', [1, 2, 3, 4].map((w) => ({ value: w, label: `$w=${w}$` })), 1);
+        const wS = v.select('$f(m)$ = XOR of the low $w$ bits', [1, 2, 3, 4].map((w) => ({ value: w, label: `$w=${w}$` })), 1);
         let seed = 1; v.button('Resample', () => { seed += 1; });
         const NG = 6000;
         let info = null;
@@ -259,7 +259,8 @@ export default {
           P.text('b′ = [A’s guess = f(m₁)]', x0 + cw * 0.88, 70, { size: 11.5, color: 'ink', halo: false });
           const adv = (x) => x / NG - 0.5, e = (q) => ci95(q / NG, NG);
           const vals = [[1, adv(wa), 'accent', e(wa)], [2, adv(ws), 'muted', e(ws)], [3, adv(wd), 'orange', e(wd)]];
-          vals.forEach(([x, y, col, er]) => { sB.rect(x - 0.28, 0, x + 0.28, Math.max(y, 0), { fill: col, fillAlpha: 0.5, color: col, width: 1.2 }); sB.line(x, y - er, x, y + er, { color: 'ink', width: 2 }); sB.text(v.fix(y, 3), x, Math.max(y, 0) + er + 0.04, { size: 11.5, weight: 700, color: col }); });
+          vals.forEach(([x, y, col, er]) => { sB.rect(x - 0.28, Math.min(y, 0), x + 0.28, Math.max(y, 0), { fill: col, fillAlpha: 0.5, color: col, width: 1.2 }); sB.line(x, y - er, x, y + er, { color: 'ink', width: 2 }); sB.text(v.fix(y, 3), x, Math.max(y, 0) + er + 0.04, { size: 11.5, weight: 700, color: col }); });
+          sB.hline(0, { color: 'muted', width: 1 });
           sB.hline(delta, { color: 'green', width: 2, dash: true });
           sB.text(`exact ${v.fix(delta, 3)}`, 3.58, delta + 0.03, { size: 11, color: 'green', align: 'right', weight: 700 });
           sB.setTicks([[1, 'A  (sees c)'], [2, 'S  (sees only |m|)'], [3, 'D  (built from A)']], null);
@@ -447,15 +448,15 @@ export default {
       num: '3.8',
       kind: 'Method',
       name: 'The hybrid argument',
-      statement: String.raw`Let $H_0,H_1,\dots,H_\ell$ be distributions (“hybrids”) such that $H_0$ is the real experiment and $H_\ell$ the ideal one, and let $D$ be any distinguisher. Telescoping gives $$\bigl|\Pr[D(H_0)=1]-\Pr[D(H_\ell)=1]\bigr|\le\sum_{i=1}^{\ell}\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|\le\ell\cdot\max_i\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|.$$ If neighbouring hybrids differ only in one component that a *single-component* distinguisher can attack, then an efficient $D$ with advantage $\varepsilon$ yields, by guessing the index $i\in\{1,\dots,\ell\}$ at random, an efficient distinguisher for that component with advantage at least $\varepsilon/\ell$. For polynomial $\ell$, a non-negligible total gap forces a non-negligible gap in a single step.`,
-      idea: String.raw`A large change over $\ell$ steps must be made of at least one step of average size. The triangle inequality bounds the total by the sum of the steps, and the reduction pays a factor $\ell$ for not knowing which step is the big one — the polynomial loss $L=\ell$ of 3.6. The argument needs hybrids that can be *sampled* efficiently with the challenge plugged in as component $i$: that is how the one-component distinguisher is built. It is the engine of multi-message security, of PRG length extension, and of the original security proofs of Goldwasser and Micali (3.15).`,
-      caption: String.raw`Left: the staircase of hybrids; row $i$ has its first $i$ blocks ideal (green, uniform) and the others real (red, biased). The distinguisher $D$ outputs $1$ iff the total number of $1$ bits reaches the threshold $T$. Middle: exact $\Pr[D(H_i)=1]$ (convolution of the blocks). Right: each neighbour gap $|\Delta_i|$; their sum bounds the total drop. Click a row to highlight it. With one weak block all the gap sits in a single step; with many weak blocks each step contributes about $1/\ell$ of it.`,
-      scope: String.raw`Instance: each block is one bit that is Bernoulli$(\tfrac12+\delta_j)$ in the real world, uniform in the ideal one; the probabilities are computed exactly, not sampled.`,
+      statement: String.raw`Let $H_0,H_1,\dots,H_\ell$ be distributions (“hybrids”) such that $H_0$ is the real experiment and $H_\ell$ the ideal one, and let $D$ be any distinguisher. Telescoping gives $$\bigl|\Pr[D(H_0)=1]-\Pr[D(H_\ell)=1]\bigr|\le\sum_{i=1}^{\ell}\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|\le\ell\cdot\max_i\bigl|\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1]\bigr|.$$ If neighbouring hybrids differ only in one component that a *single-component* distinguisher can attack, with consistently oriented real/ideal challenge embeddings, then an efficient $D$ with advantage $\varepsilon$ yields, by guessing the index $i\in\{1,\dots,\ell\}$ at random, an efficient distinguisher for that component with advantage at least $\varepsilon/\ell$. For polynomial $\ell$, a non-negligible total gap forces a non-negligible gap in a single step.`,
+      idea: String.raw`The signed gaps telescope: $\sum_i(\Pr[D(H_{i-1})=1]-\Pr[D(H_i)=1])=\Pr[D(H_0)=1]-\Pr[D(H_\ell)=1]$. If the challenge can be embedded efficiently at each position with a consistent real/ideal orientation, sampling a uniform index produces a distinguisher whose signed gap is exactly the total signed gap divided by $\ell$; taking its absolute value gives $\varepsilon/\ell$. Merely averaging absolute gaps would not justify that randomized reduction, since signed gaps can cancel. The triangle inequality also guarantees a large individual step. Goldwasser–Micali's Theorem 5.1 uses adjacent message words to reduce a whole-message gap to one encrypted bit.`,
+      caption: String.raw`Left: the staircase of hybrids; row $i$ has its first $i$ blocks ideal (green, uniform) and the others real (red, biased). The distinguisher $D$ outputs $1$ iff the total number of $1$ bits reaches the threshold $T$. Middle: exact $\Pr[D(H_i)=1]$ (convolution of the blocks). Right: each neighbour gap $|\Delta_i|$; their sum bounds the total drop. Click a row to highlight it. With one weak block only its replacement can change the probability; with many biased blocks the gaps can vary, while their maximum is at least the total divided by $\ell$.`,
+      scope: String.raw`Independent Bernoulli bits: all-block bias is $\delta$; the one-block profile biases only the middle block by $\delta$; growing biases are $\delta(j+1)/\ell$. Thus every real success probability lies in $[1/2,0.95]$. Finite convolutions compute the plotted probabilities up to floating-point rounding. Here the threshold event is monotone, so all signed gaps have the same sign; the method also applies to general efficiently embeddable hybrids.`,
       deps: ['crypto-3.5'],
       tags: ['hybrid argument', 'proof technique'],
-      refs: ['Katz–Lindell §8.8'],
+      refs: ['Goldwasser–Micali (1984), Theorem 5.1, pp. 284–286', 'Boneh–Shoup v0.6, §3.2, Theorem 3.2, pp. 57–59 (hybrid proof)'],
       credit: 'Goldwasser & Micali, 1984',
-      verify: true,
+      links: { 'Boneh–Shoup v0.6': 'https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf' },
       viz(v) {
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, minWidth: 250, weight: 1 });
         const sP = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, minWidth: 250, weight: 1, xlabel: 'hybrid i', ylabel: 'Pr[D(Hᵢ) = 1]' });
@@ -468,14 +469,10 @@ export default {
         sP.onClick((x) => { sel = clamp(Math.round(x), 0, lS.value); });
         let info = null;
         v.render(() => {
-          const l = lS.value, d = dS.value, T = Math.min(tS.value, l);
-          const dj = (j) => (prof.value === 'all' ? d : prof.value === 'one' ? (j === Math.floor(l / 2) ? Math.min(0.5, d * 2.2) : 0) : d * 2 * (j + 1) / (l + 1));
-          const pr1 = (i) => { // exact Pr[ones >= T] in H_i
-            let dist = [1];
-            for (let j = 0; j < l; j++) { const p = j < i ? 0.5 : 0.5 + dj(j), nd = new Array(dist.length + 1).fill(0); dist.forEach((q, k) => { nd[k] += q * (1 - p); nd[k + 1] += q * p; }); dist = nd; }
-            let s = 0; for (let k = T; k <= l; k++) s += dist[k] || 0; return s;
-          };
-          const pv = Array.from({ length: l + 1 }, (_, i) => pr1(i));
+          const l = lS.value, d = dS.value;
+          tS.input.max = String(l); if (tS.value > l) tS.set(l);
+          const T = tS.value, dj = (j) => hybridBias(prof.value, d, j, l);
+          const pv = hybridProbabilities(l, d, prof.value, T);
           const gaps = Array.from({ length: l }, (_, i) => Math.abs(pv[i] - pv[i + 1]));
           const tot = Math.abs(pv[0] - pv[l]), sum = gaps.reduce((a, b) => a + b, 0), mx = Math.max(...gaps);
           sel = clamp(sel, 0, l);
@@ -501,7 +498,7 @@ export default {
           sG.setView([0.3, l + 0.7], [0, Math.max(0.05, mx * 1.3)]);
           gaps.forEach((g, i) => sG.rect(i + 1 - 0.38, 0, i + 1 + 0.38, g, { fill: i + 1 === sel || i === sel ? 'gold' : 'orange', fillAlpha: 0.55, color: 'orange', width: 1 }));
           sG.hline(tot / l, { color: 'green', width: 1.6, dash: true });
-          info = { tot, sum, mx, l };
+          info = { tot, sum, mx, l, T, pv, gaps };
         });
         v.legend([['red', 'real block (biased)'], ['orange', 'real block (unbiased)'], ['green', 'ideal block'], ['green', 'average gap $\\mathrm{total}/\\ell$', { dash: true }]]);
         v.readout(() => `Total gap $|\\Pr[D(H_0)=1]-\\Pr[D(H_\\ell)=1]|=${v.fix(info.tot, 4)}$ $\\le$ $\\sum_i|\\Delta_i|=${v.fix(info.sum, 4)}$ $\\le$ $\\ell\\max_i|\\Delta_i|=${v.fix(info.l * info.mx, 4)}$. The best single step has gap $${v.fix(info.mx, 4)}$ $\\ge$ total$/\\ell=${v.fix(info.tot / info.l, 4)}$: guessing the index $i$ loses at most the factor $\\ell=${info.l}$.`);

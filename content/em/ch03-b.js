@@ -1,6 +1,8 @@
 // Electromagnetism — Chapter 3, part b: items 3.7–3.13 (Faraday cage, capacitance, images)
 import { TAU, KV, EPS0, pot, fld, sgnCol, drawCharge, heatPot, levels, quiver, solveLin, sor, samp, drawLines, circ, potL, fldL, streamline } from './ch03.shared.js';
 
+import { shellModel, exteriorHandle, pointPotential, pointField, planeShape, planeFraction, sphereTrial } from './electrostatics-audit.shared.js';
+
 export default {
   collection: 'em',
   chapter: 3,
@@ -10,45 +12,36 @@ export default {
       num: '3.7',
       kind: 'Phenomenon',
       name: 'Faraday cage: no field in an empty cavity',
-      statement: String.raw`Inside a closed hollow conductor the field of any charges *outside* is exactly zero: a cavity that contains no charge has $\mathbf E=\mathbf 0$ and one constant potential, whatever the outside charges do. If the cavity does contain charge $q$, the inner surface carries $-q$ and the outer surface carries the rest of the conductor’s net charge, spread so that the outside field depends only on the *total* charge and the outside charges — not on where inside the cavity $q$ sits or how it is arranged.`,
-      idea: String.raw`Without charge in the cavity, $V$ is harmonic inside (em-2.8) and is constant on the cavity wall, since the conductor is an equipotential (em-3.1). The constant is itself a solution with those boundary values, so by the first uniqueness theorem (em-3.5) it is the solution: $\mathbf E=\mathbf 0$. If the cavity holds a charge, Gauss's law around the cavity wall (which lies in the conductor, where $\mathbf E=\mathbf 0$) forces the induced charge on it to be $-q$, so the outer surface sees net $Q_{shell}+q$; the field inside the cavity is determined by the cavity wall as a boundary alone, and the field outside by the outer surface alone, and the two problems do not talk to each other.`,
-      caption: String.raw`A conducting cylindrical shell (cross-section: inner radius $a$, outer radius $b$) with a charge inside the cavity (drag the orange handle) and a charge outside (drag the red one). Colour is $|\mathbf E|$: it is exactly zero inside the metal. Move the outer charge and the pattern in the cavity does not change at all; move the inner charge and the field outside does not change at all (only its total, $Q_{shell}+\lambda_i$, matters). The readout checks that both walls really are equipotentials.`,
-      scope: String.raw`Exact solution for an infinitely long cylindrical shell with line charges (image method for each wall); the theorem holds for any closed cavity in an electrostatic conductor. For *time-varying* fields the shielding is only approximate (skin depth, holes of size comparable to the wavelength); a real mesh cage shields by the same principle only for frequencies whose wavelength greatly exceeds the mesh size.`,
-      credit: 'Faraday, 1836 (conducting-room experiment)',
-      verify: true,
+      statement: String.raw`In electrostatic equilibrium, an empty cavity completely enclosed by an ideal conductor has $\mathbf E=0$. If the cavity contains fixed charge $q$, its inner wall carries total $-q$. An **isolated** shell with fixed net charge $Q_{shell}$ then has outer-wall charge $Q_{shell}+q$. For fixed conductor geometry, external sources and total cavity charge, rearranging charges inside changes no exterior field. Grounding instead fixes potential and permits charge exchange.`,
+      idea: String.raw`The empty cavity solves Laplace's equation with constant wall potential; uniqueness makes its potential constant. With an internal charge, a Gaussian surface entirely in the metal encloses zero total charge, forcing inner-wall charge $-q$. Uniqueness separately fixes cavity fields from the internal sources and its wall, and exterior fields from external sources, geometry and outer total charge. These **fields** decouple. A change in the shell potential can still shift the cavity potential by a constant.`,
+      caption: String.raw`An infinitely long cylindrical shell with inside and outside line charges. Drag both handles, including the inside charge to the centre. Colour shows field magnitude; red/blue rim bars show positive/negative surface density, separately normalized on each wall. Moving an outside source leaves the cavity field unchanged; moving an inside source at fixed charge leaves the outside field unchanged. Both wall potentials use the same zero reference.`,
+      scope: String.raw`Exact logarithmic line-charge solution in vacuum, with an isolated shell of prescribed net charge per length. Zero wall potential here is a gauge choice, not an electrical ground: line-charge potentials need not vanish at infinity. This is an electrostatic result for a completely closed conductor; it makes no general shielding guarantee for meshes or time-varying magnetic fields. Source cores are omitted from the field-line drawing.`,
+      credit: 'Source treatment: Feynman Lectures II §§5–5, 5–9, 5–10. Cylinder construction verified by its boundary values and Gauss flux.',
       deps: ['em-3.5', 'em-3.1'],
-      refs: ['Griffiths §2.5', 'Feynman II ch. 5'],
+      refs: ['Feynman II §§5–5, 5–9, 5–10'],
       tags: ['shielding', 'cavity'],
       viz(v) {
-        const a = 1.6, b = 2.5, EB = [-7, 7, -4.6, 4.6];
-        const s = v.stage({ x: [-7, 7], y: [-4.6, 4.6], equal: true, height: 380, axes: false, weight: 1, title: 'conducting shell with a cavity' });
-        const he = s.handle(4.4, 2.2, { color: 'red', r: 8, label: 'outside charge', labelPos: 'n', constrain: (x, y) => { const r = Math.hypot(x, y), m = b + 0.4; return r < m ? [(x / r) * m, (y / r) * m] : [x, y]; } });
-        const hi = s.handle(0.55, -0.3, { color: 'orange', r: 8, label: 'inside charge', labelPos: 'n', constrain: (x, y) => { const r = Math.hypot(x, y), m = a - 0.3; return r > m ? [(x / r) * m, (y / r) * m] : [x, y]; } });
-        const le = v.slider('outside charge $\\lambda_e$', -8, 8, 6, { step: 0.5, fmt: (x) => `${x} nC/cm` }), li = v.slider('inside charge $\\lambda_i$', -8, 8, 5, { step: 0.5, fmt: (x) => `${x} nC/cm` }), Qs = v.slider('shell’s net charge', -8, 8, 0, { step: 0.5, fmt: (x) => `${x} nC/cm` });
-        let info = {};
-        const inv = (x, y, R) => { const r2 = x * x + y * y; return [(R * R * x) / r2, (R * R * y) / r2]; };
-        v.render(() => {
-          const L = le.value, I = li.value, Q = Qs.value, ei = inv(he.x, he.y, b), ii = inv(hi.x, hi.y, a);
-          const outS = [{ x: he.x, y: he.y, q: L }, { x: ei[0], y: ei[1], q: -L }, { x: 0, y: 0, q: Q + I + L }], cavS = [{ x: hi.x, y: hi.y, q: I }, { x: ii[0], y: ii[1], q: -I }];
-          const F = (x, y) => { const r = Math.hypot(x, y); return r > b ? fldL(outS, x, y) : r < a ? fldL(cavS, x, y) : [0, 0]; };
-          const Es = 2 * KV * 5 / 1.2;
-          s.heat((x, y) => Math.tanh(Math.hypot(...F(x, y)) / Es), { range: [0, 1], cmap: 'theme', color: 'accent', res: 3, key: [he.x, he.y, hi.x, hi.y, L, I, Q].map((z) => z.toFixed(3)).join(), alpha: 0.8 });
-          s.path(circ(0, 0, b, 100), { color: 'ink', width: 2.4 }); s.path(circ(0, 0, a, 100), { color: 'ink', width: 2.4 });
-          s.text('metal', 0, (a + b) / 2, { align: 'center', size: 11, color: 'muted', baseline: 'middle' });
-          const seeds = (cx, cy, n, r0) => Array.from({ length: n }, (_, k) => [cx + r0 * Math.cos((TAU * (k + 0.3)) / n), cy + r0 * Math.sin((TAU * (k + 0.3)) / n)]);
-          const stopOut = (x, y) => Math.hypot(x, y) < b + 0.01, stopIn = (x, y) => Math.hypot(x, y) > a - 0.01;
-          if (L) drawLines(s, F, seeds(he.x, he.y, 14, 0.18), EB, { color: 'red', dir: Math.sign(L), stop: stopOut, h: 0.07, n: 500, alpha: 0.7 });
-          if (I) drawLines(s, F, seeds(hi.x, hi.y, 14, 0.14), EB, { color: 'orange', dir: Math.sign(I), stop: stopIn, h: 0.05, n: 500, alpha: 0.8 });
-          const rim = (R, off, dr) => { const out = []; for (let k = 0; k < 24; k++) { const t = (TAU * (k + 0.5)) / 24, x = (R + off) * Math.cos(t), y = (R + off) * Math.sin(t), f = F(x, y), en = f[0] * Math.cos(t) + f[1] * Math.sin(t); out.push([t, en]); } return out; };
-          const outer = rim(b, 0.02), inner = rim(a, -0.02), mo = Math.max(...outer.map((p) => Math.abs(p[1])), 1e-9), mi = Math.max(...inner.map((p) => Math.abs(p[1])), 1e-9);
-          outer.forEach(([t, e]) => { const l = (0.55 * e) / mo; s.segment([b * Math.cos(t), b * Math.sin(t)], [(b + l) * Math.cos(t), (b + l) * Math.sin(t)], { color: e >= 0 ? 'red' : 'blue', width: 3 }); });
-          inner.forEach(([t, e]) => { const l = (0.4 * e) / mi; s.segment([a * Math.cos(t), a * Math.sin(t)], [(a - l) * Math.cos(t), (a - l) * Math.sin(t)], { color: e >= 0 ? 'red' : 'blue', width: 3 }); });
-          he.color = sgnCol(L); hi.color = sgnCol(I);
-          const spread = (S, R) => { let lo = 1e30, hi2 = -1e30; for (let k = 0; k < 90; k++) { const t = (TAU * k) / 90, p = potL(S, R * Math.cos(t), R * Math.sin(t)); lo = Math.min(lo, p); hi2 = Math.max(hi2, p); } return hi2 - lo; };
-          const Ec = Math.hypot(...fldL(cavS, 0, 0));
-          info = { so: spread(outS, b), si: spread(cavS, a), Ec, tot: Q + I + L, q_in: -I, q_out: Q + I };
+        const a=1.6,b=2.5,box=[-7,7,-4.6,4.6];
+        const s=v.stage({x:[-7,7],y:[-4.6,4.6],equal:true,height:380,axes:false,title:'isolated conducting cylindrical shell'});
+        const he=s.handle(4.4,2.2,{color:'red',r:8,label:'outside charge',labelPos:'n',constrain:(x,y)=>exteriorHandle(x,y,b+.4,4.2)});
+        const hi=s.handle(.55,-.3,{color:'orange',r:8,label:'inside charge',labelPos:'n',constrain:(x,y)=>{const r=Math.hypot(x,y),t=r>a-.3?(a-.3)/r:1;return r<.04?[0,0]:[x*t,y*t];}});
+        const le=v.slider('outside charge $\\lambda_e$',-8,8,6,{step:.5,fmt:x=>`${x} nC/cm`}),li=v.slider('inside charge $\\lambda_i$',-8,8,5,{step:.5,fmt:x=>`${x} nC/cm`}),Qs=v.slider('shell’s net charge',-8,8,0,{step:.5,fmt:x=>`${x} nC/cm`});let info={};
+        v.render(()=>{
+          const L=le.value,I=li.value,Q=Qs.value,M=shellModel({a,b,outside:[he.x,he.y],inside:[hi.x,hi.y],L,I,Q});
+          const core=(x,y)=>(I!==0&&Math.hypot(x-hi.x,y-hi.y)<.06)||(L!==0&&Math.hypot(x-he.x,y-he.y)<.06);
+          const F=(x,y)=>core(x,y)?[0,0]:M.field(x,y);
+          s.heat((x,y)=>core(x,y)?1:Math.tanh(Math.hypot(...F(x,y))/(2*KV*5/1.2)),{range:[0,1],cmap:'theme',color:'accent',res:3,key:[he.x,he.y,hi.x,hi.y,L,I,Q].join(),alpha:.8});
+          s.path(circ(0,0,b,100),{color:'ink',width:2.4});s.path(circ(0,0,a,100),{color:'ink',width:2.4});s.text('metal',0,(a+b)/2,{align:'center',size:11,color:'muted'});
+          const seeds=(x,y,r)=>Array.from({length:14},(_,k)=>[x+r*Math.cos(TAU*(k+.3)/14),y+r*Math.sin(TAU*(k+.3)/14)]);
+          if(L)drawLines(s,F,seeds(he.x,he.y,.18),box,{color:'red',dir:Math.sign(L),stop:(x,y)=>Math.hypot(x,y)<b+.01||core(x,y),h:.07,n:500,alpha:.7});
+          if(I)drawLines(s,F,seeds(hi.x,hi.y,.14),box,{color:'orange',dir:Math.sign(I),stop:(x,y)=>Math.hypot(x,y)>a-.01||core(x,y),h:.05,n:500,alpha:.8});
+          const inner=[],outer=[];for(let k=0;k<24;k++){const t=TAU*(k+.5)/24;inner.push([t,M.sigmaInner(t)]);outer.push([t,M.sigmaOuter(t)]);}
+          for(const[values,R,dir]of[[inner,a,-1],[outer,b,1]]){const mx=Math.max(...values.map(p=>Math.abs(p[1])),1e-12);for(const[t,z]of values){const len=.4*Math.abs(z)/mx,c=Math.cos(t),sn=Math.sin(t);s.segment([R*c,R*sn],[(R+dir*len)*c,(R+dir*len)*sn],{color:z>=0?'red':'blue',width:3});}}
+          he.color=sgnCol(L);hi.color=sgnCol(I);
+          const spread=(fn,R)=>{const z=Array.from({length:90},(_,k)=>fn(R*Math.cos(TAU*k/90),R*Math.sin(TAU*k/90)));return Math.max(...z)-Math.min(...z);};
+          info={I,L,Q,inside:[hi.x,hi.y],outside:[he.x,he.y],si:spread(M.cavityPotential,a),so:spread(M.outerPotential,b)};
         });
-        v.readout(() => `Induced charge on the inner wall $=${v.fix(info.q_in, 1)}$ nC/cm, on the outer wall $=${v.fix(info.q_out, 1)}$ nC/cm (plus the part induced by the outside charge, which sums to zero).\nPotential variation over the outer wall: $${v.sci(info.so + 1e-12, 1)}$ V; over the inner wall: $${v.sci(info.si + 1e-12, 1)}$ V — both walls are equipotentials. Field in the metal: $0$.`);
+        v.readout(()=>`Inner-wall charge $${v.fix(-info.I,1)}$ nC/cm; total outer-wall charge $${v.fix(info.Q+info.I,1)}$ nC/cm, including polarization by the outside source.\nPotential variation over 90 wall samples: outer $${v.sci(info.so,2)}$ V; inner $${v.sci(info.si,2)}$ V. Analytic wall value is zero for both; field in the metal is zero.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.8
@@ -230,45 +223,45 @@ and it equals the energy $\tfrac{\varepsilon_0}2\int E^2\,d\tau$ stored in the f
       num: '3.11',
       kind: 'Method',
       name: 'Method of images: charge near a grounded plane',
-      statement: String.raw`A point charge $q$ at height $d$ above an infinite grounded conducting plane produces, in the half-space above the plane, exactly the field of $q$ together with an *image* charge $-q$ at the mirror point $d$ below the plane. The induced surface charge density on the plane at distance $\rho$ from the foot of the perpendicular is
+      statement: String.raw`A point charge $q$ at height $d$ above an infinite grounded conducting half-space produces, in the half-space above the plane, exactly the field of $q$ together with an *image* charge $-q$ at the mirror point $d$ below the plane. The induced surface charge density on the plane at distance $\rho$ from the foot of the perpendicular is
 $$\sigma(\rho)=-\frac{q\,d}{2\pi\,(\rho^2+d^2)^{3/2}},\qquad\int\sigma\,dA=-q.$$
-The image field is only valid above the plane; below it the real field is zero.`,
-      idea: String.raw`The potential of $q$ and its mirror image $-q$ satisfies Poisson's equation above the plane with the single source $q$, and is $0$ on the plane by symmetry (the two contributions cancel). By the first uniqueness theorem (em-3.5) the grounded-plane problem has exactly this solution above the plane, and no other. The surface charge follows from $\sigma=\varepsilon_0E_\perp$ (em-3.2): the field at the plane is vertical with magnitude $2\cdot\frac{q}{4\pi\varepsilon_0}\frac{d}{(\rho^2+d^2)^{3/2}}$. Integrating over the plane gives $-q$: all the flux of $q$ ends on the plane.`,
+The image field is only valid above the plane; in the conducting half-space below it the real field is zero; the potential tends to zero at infinity.`,
+      idea: String.raw`The potential of $q$ and its mirror image $-q$ satisfies Poisson's equation above the plane with the single source $q$, and is $0$ on the plane by symmetry (the two contributions cancel). By the first uniqueness theorem (em-3.5) the grounded-plane problem has exactly this solution above the plane, and no other. The surface charge follows from $\sigma=\varepsilon_0E_\perp$ (em-3.2): the outward normal is upward and the signed component is $E_\perp=-2\frac{q}{4\pi\varepsilon_0}\frac{d}{(\rho^2+d^2)^{3/2}}$. Integrating over the plane gives $-q$: all the flux of $q$ ends on the plane.`,
       caption: String.raw`Drag the charge $q$ (it keeps above the plane). The shading is the potential of the charge and its image; blue/red lines are field lines, ending perpendicularly on the plane. Tick **show image field** to see the continuation below the plane: it exists only in the equations. On the right, the induced density $\sigma(\rho)$ and the induced charge inside a disc of radius $\rho_{max}$ (slider), which tends to $-q$.`,
-      scope: String.raw`Infinite, grounded, perfectly conducting plane, vacuum above. The picture is the plane through the charge perpendicular to the conductor; the induced charge is rotationally symmetric about the vertical axis through $q$. For an isolated, neutral plane (rather than grounded) the same solution holds for an infinite plane.`,
-      credit: 'W. Thomson (Lord Kelvin), 1840s',
-      verify: true,
+      scope: String.raw`Infinite, grounded, perfectly conducting plane, vacuum above. The picture is the plane through the charge perpendicular to the conductor; the induced charge is rotationally symmetric about the vertical axis through $q$. The conductor fills the lower half-space; grounding fixes its potential. No isolated-neutral-plane equivalence is assumed.`,
+      credit: 'Source treatment: Feynman Lectures II §§6–7, 6–8, Eqs. (6.28)–(6.30)',
       deps: ['em-3.5'],
-      refs: ['Griffiths §3.2', 'Feynman II ch. 6'],
+      refs: ['Feynman II §§6–7, 6–8, Eqs. (6.28)–(6.30)'],
       tags: ['images', 'grounded plane'],
       viz(v) {
-        const BX = [-5, 5, -1.5, 5];
+        const BX = [-5, 5, -5, 5];
         const s = v.stage({ x: [-5, 5], y: [-1.5, 5], equal: true, height: 360, axes: false, weight: 1.15, title: 'charge above a grounded plane' });
         const sS = v.stage({ x: [0, 6], y: [0, 1.05], height: 360, axes: 'box', gutter: true, weight: 0.85, minWidth: 250, xlabel: 'distance from foot $\\rho/d$', ylabel: '', title: 'induced charge' });
         const qs = v.slider('charge $q$', -5, 5, 3, { step: 0.5, fmt: (x) => `${x} nC` });
-        const h = s.handle(0.8, 2, { color: 'red', r: 9, constrain: (x, y) => [x, Math.max(0.35, y)] });
+        const h = s.handle(0.8, 2, { color: 'red', r: 9, constrain: (x, y) => [Math.max(-4.5, Math.min(4.5, x)), Math.max(0.35, Math.min(4.5, y))] });
         const show = v.toggle('show image field below the plane', false);
-        const rho = v.slider('disc radius $\\rho_{max}$', 0.2, 40, 3, { log: true, fmt: (x) => `${x.toPrecision(2)} d` });
+        const rho = v.slider('disc radius $\\rho_{max}$', 0.2, 40, 3, { step: 0.2, fmt: (x) => `${x.toFixed(1)} d` });
         let info = {};
         v.render(() => {
-          const q = qs.value || 1e-6, d = h.y, x0 = h.x, src = [{ x: x0, y: d, q }, { x: x0, y: -d, q: -q }], F = (x, y) => fld(src, x, y);
+          const q = qs.value, d = h.y, x0 = h.x, src = [{ x: x0, y: d, q }, { x: x0, y: -d, q: -q }], F = (x, y) => pointField(src, x, y);
           h.color = sgnCol(qs.value);
+          s.setView([-5,5],show.value?[-5,5]:[-1.5,5]);const xmax=Math.max(6,rho.value*1.05);sS.setView([0,xmax],[0,1.05]);
           const sc = Math.max(300, 0.5 * Math.abs(q) * KV / 0.9);
-          heatPot(s, (x, y) => (y < 0 && !show.value ? 0 : pot(src, x, y)), sc, `p${x0.toFixed(2)}${d.toFixed(2)}${q}${show.value}`, { res: 3, alpha: show.value ? 0.6 : 0.85 });
-          s.contour((x, y) => (y < 0 && !show.value ? NaN : pot(src, x, y)), levels(sc / 3, 9).filter((z) => z), { color: 'ink', alpha: 0.28, width: 1, res: 140 });
+          heatPot(s, (x, y) => (y < 0 && !show.value ? 0 : pointPotential(src, x, y)), sc, `p${x0.toFixed(2)}${d.toFixed(2)}${q}${show.value}`, { res: 3, alpha: show.value ? 0.6 : 0.85 });
+          s.contour((x, y) => (y < 0 && !show.value ? NaN : pointPotential(src, x, y)), levels(sc / 3, 9).filter((z) => z), { color: 'ink', alpha: 0.28, width: 1, res: 140 });
           if (!show.value) s.rect(-5, -1.5, 5, 0, { fill: 'muted', fillAlpha: 0.35, color: 'ink', width: 2 }); else s.line(-5, 0, 5, 0, { color: 'ink', width: 2 });
           const seeds = Array.from({ length: 16 }, (_, k) => [x0 + 0.16 * Math.cos((TAU * (k + 0.25)) / 16), d + 0.16 * Math.sin((TAU * (k + 0.25)) / 16)]);
-          drawLines(s, F, seeds, show.value ? BX : [-5, 5, 0, 5], { color: q > 0 ? 'red' : 'blue', dir: q > 0 ? 1 : -1, h: 0.06, n: 900, alpha: 0.75, stop: (x, y) => (show.value ? Math.hypot(x - x0, y + d) < 0.14 : y < 0.01) });
+          if(q)drawLines(s, F, seeds, show.value ? BX : [-5, 5, 0, 5], { color: q > 0 ? 'red' : 'blue', dir: q > 0 ? 1 : -1, h: 0.06, n: 900, alpha: 0.75, stop: (x, y) => (show.value ? Math.hypot(x - x0, y + d) < 0.14 : y < 0.01) });
           if (show.value) { s.dot(x0, -d, { r: 9, hollow: true, color: sgnCol(-q) }); s.text('image', x0 + 0.3, -d, { size: 12, color: 'muted' }); }
-          s.dot(x0, d, { r: 9, color: sgnCol(q) }); s.text(q > 0 ? '+' : '−', x0, d, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
-          const sg = (r) => (1 / (1 + r * r) ** 1.5), enc = (r) => 1 - 1 / Math.sqrt(1 + r * r);
-          sS.fn(sg, { color: 'accent', width: 2.2, domain: [0, 6] }); sS.fn(enc, { color: 'green', width: 2.2, domain: [0, 6] });
+          s.dot(x0, d, { r: 9, color: sgnCol(q) }); s.text(q === 0 ? '0' : q > 0 ? '+' : '−', x0, d, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
+          const sg=planeShape,enc=planeFraction;
+          sS.fn(sg, { color: 'accent', width: 2.2, domain: [0, xmax] }); sS.fn(enc, { color: 'green', width: 2.2, domain: [0, xmax] });
           sS.vline(rho.value, { color: 'gold', dash: true }); sS.hline(1, { color: 'faint', dash: true });
-          sS.dot(Math.min(rho.value, 6), enc(Math.min(rho.value, 6)), { r: 5, color: 'gold' });
-          info = { d, q, s0: (-q * 1) / (2 * Math.PI * d * d), enc: enc(rho.value), num: v.M.integrate((r) => 2 * Math.PI * r * sg(r) / (2 * Math.PI), 0, rho.value, 400) };
+          sS.dot(rho.value, enc(rho.value), { r: 5, color: 'gold' });
+          info = { d, q, radius:rho.value*d,t:rho.value, s0: (-q * 1) / (2 * Math.PI * d * d), enc: enc(rho.value), num: v.M.integrate((r) => 2 * Math.PI * r * sg(r) / (2 * Math.PI), 0, rho.value, 4000) };
         });
-        v.legend([['accent', '$\\sigma(\\rho)/\\sigma(0)$'], ['green', 'fraction of $-q$ inside $\\rho$']]);
-        v.readout(() => `Charge at height $d=${v.fix(info.d, 2)}$ cm. Peak induced density $\\sigma(0)=${v.fix(info.s0, 4)}$ nC/cm² (directly under the charge).\nInside radius $\\rho_{max}$ the plane carries $${v.fix(-info.q * info.enc, 3)}$ nC; numerical integral of $\\sigma\\,dA$: $${v.fix(-info.q * info.num, 3)}$ nC; the total is $-q=${v.fix(-info.q, 2)}$ nC.`);
+        v.legend([['accent', 'unit-charge density shape'], ['green', 'unit-charge enclosed fraction']]);
+        v.readout(() => `Charge at height $d=${v.fix(info.d, 2)}$ cm. Peak induced density $\\sigma(0)=${v.fix(info.s0, 4)}$ nC/cm² (directly under the charge).\nInside radius $\\rho_{max}=${v.fix(info.radius,2)}$ cm ($${v.fix(info.t,1)}d$) the plane carries $${v.fix(-info.q * info.enc, 3)}$ nC; numerical integral of $\\sigma\\,dA$: $${v.fix(-info.q * info.num, 3)}$ nC; the total is $-q=${v.fix(-info.q, 2)}$ nC.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.12
@@ -278,44 +271,44 @@ The image field is only valid above the plane; below it the real field is zero.`
       name: 'Image charge for a grounded sphere',
       statement: String.raw`A point charge $q$ at distance $a>R$ from the centre of a grounded conducting sphere of radius $R$ produces outside the sphere the field of $q$ together with an image charge
 $$q'=-\frac{R}{a}\,q\qquad\text{at distance}\qquad b=\frac{R^2}{a}$$
-from the centre, on the line to $q$. The induced charge on the sphere is $q'$, and the potential vanishes on the sphere.`,
-      idea: String.raw`Place $q$ and $q'$ on a line through the centre. On the sphere, the ratio of the distances to $q$ and to the image is constant, $|\mathbf r-\mathbf a|/|\mathbf r-\mathbf b|=a/R$ (Apollonius' circle: a sphere is the locus of constant distance ratio), so with $q'/q=-R/a$ the two potentials $q/4\pi\varepsilon_0|\mathbf r-\mathbf a|$ and $q'/4\pi\varepsilon_0|\mathbf r-\mathbf b|$ cancel at every point of the sphere. By uniqueness (em-3.5) the field outside is that of $q$ and $q'$, as in the plane case (em-3.11).`,
-      caption: String.raw`Drag the charge $q$ around the sphere (the cross-section through the centre). Two sliders deliberately *spoil* the image: scale its size or its distance away from the correct value $-qR/a$, $R^2/a$. Then the potential on the sphere (right panel: $V(\theta)$ as one goes round) ripples away from zero, so the sphere is no longer grounded; only the correct pair gives the flat line at $0$.`,
+from the centre, on the line to $q$. The induced charge on the sphere is $q'$, and the potential vanishes on the sphere and tends to zero at infinity.`,
+      idea: String.raw`Place $q$ and $q'$ on a line through the centre. On the sphere, the ratio of the distances to $q$ and to the image is constant, $|\mathbf r-\mathbf a|/|\mathbf r-\mathbf b|=a/R$ (Apollonius' circle: a sphere is the locus of constant distance ratio), so with $q'/q=-R/a$ the two potentials $\frac{q}{4\pi\varepsilon_0|\mathbf r-\mathbf a|}$ and $\frac{q'}{4\pi\varepsilon_0|\mathbf r-\mathbf b|}$ cancel at every point of the sphere. By uniqueness (em-3.5) the field outside is that of $q$ and $q'$, as in the plane case (em-3.11).`,
+      caption: String.raw`Drag the charge $q$ around the sphere (the cross-section through the centre). Two sliders deliberately *spoil* the image: scale its size, or move it by a fraction of the remaining radial gap to the wall, always keeping it inside. The right panel tests the target boundary value $V=0$. A nonzero boundary residual means the trial field fails the conductor problem; it does not describe a different equilibrium conductor. At $q=0$ every trial is the zero field.`,
       scope: String.raw`Grounded sphere in vacuum, charge outside. (For an isolated neutral sphere, add $+qR/a$ at the centre; for a sphere held at $V_0$, add $4\pi\varepsilon_0RV_0$ at the centre.) The picture is the plane through the centre and the charge, with the 3D inverse-square law.`,
-      credit: 'W. Thomson (Lord Kelvin), 1840s',
-      verify: true,
+      credit: 'Source treatment: Feynman Lectures II §6–9, Eqs. (6.31)–(6.32)',
       deps: ['em-3.11'],
-      refs: ['Griffiths §3.2', 'Feynman II ch. 6'],
+      refs: ['Feynman II §6–9, Eqs. (6.31)–(6.32)'],
       tags: ['images', 'sphere'],
       viz(v) {
         const R = 1.6;
         const s = v.stage({ x: [-5, 5], y: [-3.8, 3.8], equal: true, height: 340, axes: false, weight: 1.2, title: 'charge and grounded sphere' });
         const sV = v.stage({ x: [0, 360], y: [-1, 1], height: 340, axes: 'box', gutter: true, weight: 0.85, minWidth: 250, xlabel: 'angle $\\theta$ round the sphere (degrees)', ylabel: '$V$ on the sphere (V)', title: 'potential on the sphere' });
         const qs = v.slider('charge $q$', -6, 6, 4, { step: 0.5, fmt: (x) => `${x} nC` });
-        const fq = v.slider('image size × correct', 0.5, 1.5, 1, { step: 0.01 }), fb = v.slider('image distance × correct', 0.5, 1.5, 1, { step: 0.01 });
-        const h = s.handle(3.4, 0.9, { color: 'red', r: 9, constrain: (x, y) => { const r = Math.hypot(x, y), m = R + 0.25; return r < m ? [(x / r) * m, (y / r) * m] : [x, y]; } });
+        const fq = v.slider('image size × correct', 0.5, 1.5, 1, { step: 0.01 }), fb = v.slider('image offset / remaining radial gap', -0.5, 0.5, 0, { step: 0.01 });
+        const h = s.handle(3.4, 0.9, { color: 'red', r: 9, constrain: (x, y) => { return exteriorHandle(x,y,R+.25,3.3); } });
         let info = {};
         v.render(() => {
-          const q = qs.value || 1e-6, a = Math.hypot(h.x, h.y), ux = h.x / a, uy = h.y / a, qi = (-q * R) / a * fq.value, b = ((R * R) / a) * fb.value;
+          const q = qs.value, a = Math.hypot(h.x, h.y), ux = h.x / a, uy = h.y / a, trial=sphereTrial(q,a,R,fq.value,fb.value),{qi,b}=trial;
           const src = [{ x: h.x, y: h.y, q }, { x: ux * b, y: uy * b, q: qi }];
           h.color = sgnCol(qs.value);
           const out = (x, y) => Math.hypot(x, y) >= R;
           const sc = Math.max(250, Math.abs(q) * 120);
-          heatPot(s, (x, y) => (out(x, y) ? pot(src, x, y) : 0), sc, `s${h.x.toFixed(2)}${h.y.toFixed(2)}${q}${fq.value}${fb.value}`, { res: 3 });
-          s.contour((x, y) => (out(x, y) ? pot(src, x, y) : NaN), levels(sc / 3, 9).filter((z) => z), { color: 'ink', alpha: 0.28, width: 1, res: 140 });
+          heatPot(s, (x, y) => (out(x, y) ? pointPotential(src, x, y) : 0), sc, `s${h.x.toFixed(2)}${h.y.toFixed(2)}${q}${fq.value}${fb.value}`, { res: 3 });
+          s.contour((x, y) => (out(x, y) ? pointPotential(src, x, y) : NaN), levels(sc / 3, 9).filter((z) => z), { color: 'ink', alpha: 0.28, width: 1, res: 140 });
           const seeds = Array.from({ length: 16 }, (_, k) => [h.x + 0.16 * Math.cos((TAU * (k + 0.25)) / 16), h.y + 0.16 * Math.sin((TAU * (k + 0.25)) / 16)]);
-          drawLines(s, (x, y) => fld(src, x, y), seeds, [-5, 5, -3.8, 3.8], { color: q > 0 ? 'red' : 'blue', dir: q > 0 ? 1 : -1, h: 0.06, n: 900, alpha: 0.7, stop: (x, y) => Math.hypot(x, y) < R + 0.005 });
+          if(q)drawLines(s, (x, y) => pointField(src, x, y), seeds, [-5, 5, -3.8, 3.8], { color: q > 0 ? 'red' : 'blue', dir: q > 0 ? 1 : -1, h: 0.06, n: 900, alpha: 0.7, stop: (x, y) => Math.hypot(x, y) < R + 0.005 });
           s.circle(0, 0, R, { color: 'ink', width: 2.4, fill: 'muted', fillAlpha: 0.3 });
-          s.dot(h.x, h.y, { r: 9, color: sgnCol(q) }); s.text(q > 0 ? '+' : '−', h.x, h.y, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
+          s.dot(h.x, h.y, { r: 9, color: sgnCol(q) }); s.text(q === 0 ? '0' : q > 0 ? '+' : '−', h.x, h.y, { align: 'center', size: 12, weight: 700, color: 'panel', halo: false });
           s.dot(ux * b, uy * b, { r: 8, hollow: true, color: sgnCol(qi) }); s.text("image", ux * b, uy * b - 0.55, { align: 'center', size: 11, color: 'muted' });
-          s.text('0 V', 0, -R * 0.55, { align: 'center', size: 13, color: 'muted' });
-          const ang = Math.atan2(h.y, h.x), pts = []; let mx = 0;
-          for (let k = 0; k <= 180; k++) { const t = (TAU * k) / 180, V = pot(src, R * Math.cos(t), R * Math.sin(t)); mx = Math.max(mx, Math.abs(V)); pts.push([(k * 2), V]); }
+          s.text('target: 0 V', 0, -R * 0.55, { align: 'center', size: 13, color: 'muted' });
+          const ang = Math.atan2(h.y,h.x), angles=Array.from({length:181},(_,k)=>TAU*k/180);
+          for(const c of trial.cosines)for(const sign of[-1,1])angles.push(((ang+sign*Math.acos(c))%TAU+TAU)%TAU);
+          angles.sort((a,b)=>a-b);const pts=angles.map(t=>[t*180/Math.PI,trial.at(Math.cos(t-ang))]),mx=trial.max;
           const top = Math.max(mx * 1.2, 5); sV.setView([0, 360], [-top, top]);
           sV.hline(0, { color: 'green', dash: true }); sV.path(pts, { color: 'accent', width: 2.2 }); sV.vline(((ang * 180) / Math.PI + 360) % 360, { color: 'red', dash: true, alpha: 0.5 });
-          info = { mx, qi, b, a, qc: (-q * R) / a, bc: (R * R) / a, V0: pot(src, R * ux, R * uy) };
+          info = { mx, qi, b, a,q,size:fq.value,offset:fb.value, qc: (-q * R) / a, bc: (R * R) / a, V0: pointPotential(src, R * ux, R * uy) };
         });
-        v.readout(() => `Correct image: $q'=-qR/a=${v.fix(info.qc, 3)}$ nC at $R^2/a=${v.fix(info.bc, 3)}$ cm (distance of the charge $a=${v.fix(info.a, 2)}$ cm). Used: $q'=${v.fix(info.qi, 3)}$ nC at $${v.fix(info.b, 3)}$ cm.\nLargest $|V|$ on the sphere: $${v.fix(info.mx, 2)}$ V ${info.mx < 1e-6 ? '— zero, as required.' : '— not a grounded sphere.'}`);
+        v.readout(() => `Correct image: $q'=-qR/a=${v.fix(info.qc, 3)}$ nC at $R^2/a=${v.fix(info.bc, 3)}$ cm (distance of the charge $a=${v.fix(info.a, 2)}$ cm). Used: $q'=${v.fix(info.qi, 3)}$ nC at signed radial coordinate $${v.fix(info.b, 3)}$ cm.\nLargest $|V|$ on the sphere: $${v.fix(info.mx, 2)}$ V ${info.mx < 1e-6 ? '— target boundary satisfied.' : '— trial fails the grounded boundary condition.'}`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.13

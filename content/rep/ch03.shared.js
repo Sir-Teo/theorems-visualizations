@@ -6,7 +6,7 @@
 //  * A character table is {rows: [{name, tex, d, vals: [complex per class]}], G}. Complex numbers are pairs [re, im].
 //  * The tables are *data* (the classical tables); every use checks them (orthonormality, column orthogonality) before drawing.
 export * from './ch02.shared.js';
-import { TAU, nm, dihedral, cyclic } from './ch02.shared.js';
+import { TAU, nm, dihedral, cyclic, mm } from './ch02.shared.js';
 
 // ---------------------------------------------------------------- complex numbers
 export const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
@@ -240,6 +240,36 @@ export const sqClass = (G) => G.classes.map((c) => G.cls[G.mul[c.rep][c.rep]]);
 export const invClass = (G) => G.classes.map((c) => G.cls[G.inv[c.rep]]);
 /** Decompose a class function into the rows of a table: multiplicities ⟨χ, χ_i⟩ (complex, real part is returned rounded when within 1e-9). */
 export const multiplicities = (G, rows, f) => rows.map((r) => ip(G, f, r.vals));
+
+/** Average a real 2×2 map into Hom_G(rho,sigma); a zero/singular result is allowed. */
+export function averageIntertwiner(rho, sigma, X) {
+  let T = [[0,0],[0,0]];
+  for(let g=0;g<rho.length;g++){
+    const R=rho[g],d=R[0][0]*R[1][1]-R[0][1]*R[1][0];
+    const inverse=[[R[1][1]/d,-R[0][1]/d],[-R[1][0]/d,R[0][0]/d]];
+    const A=mm(sigma[g],mm(X,inverse));
+    T=T.map((r,i)=>r.map((v,j)=>v+A[i][j]/rho.length));
+  }
+  const norm=Math.hypot(...T.flat()),det=T[0][0]*T[1][1]-T[0][1]*T[1][0];
+  let defect=0;
+  for(let g=0;g<rho.length;g++){
+    const left=mm(sigma[g],T),right=mm(T,rho[g]);
+    defect=Math.max(defect,Math.hypot(...left.flatMap((r,i)=>r.map((v,j)=>v-right[i][j]))));
+  }
+  return {T,norm,det,defect,invertible:norm>1e-12&&Math.abs(det)>1e-8*norm*norm};
+}
+/** Character projections for D6 acting on functions on the six vertices. */
+export function hexProjections(f) {
+  const {G,rows}=tableOf('D6');
+  return rows.map(r=>{
+    const out=Array(6).fill(0);
+    for(let g=0;g<G.n;g++){
+      const weight=r.d/G.n*r.vals[G.cls[g]][0];
+      G.perms[g].forEach((to,k)=>{out[to]+=weight*f[k];});
+    }
+    return out;
+  });
+}
 /** The character of a permutation action given as a list of permutations (one per element of G): fixed-point count per class. */
 export const fixedChar = (G, perms) => G.classes.map((c) => [perms[c.rep].reduce((s, x, k) => s + (x === k ? 1 : 0), 0), 0]);
 
@@ -318,4 +348,35 @@ export function orbitCount(perms, size) {
   const roots = new Map();
   for (let x = 0; x < size; x++) { const r = find(x); if (!roots.has(r)) roots.set(r, []); roots.get(r).push(x); }
   return [...roots.values()];
+}
+
+/** Enumerate fixed colourings and their orbits for a finite permutation action. */
+export function colouringOrbits(perms,n,k) {
+  const total = k ** n, fixCount = Array(perms.length).fill(0);
+  const colour = (c) => { const out = Array(n); for (let i = 0; i < n; i++) { out[i] = c % k; c = Math.floor(c / k); } return out; };
+  for (let c = 0; c < total; c++) {
+    const col = colour(c);
+    perms.forEach((p, g) => { let ok = true; for (let i = 0; i < n && ok; i++) if (col[p[i]] !== col[i]) ok = false; if (ok) fixCount[g]++; });
+  }
+  // orbits of colourings by union–find on colourings
+  const enc = (col) => col.reduce((s, x, i) => s + x * k ** i, 0);
+  const maps = perms.map((p) => Array.from({ length: total }, (_, c) => { const col = colour(c), out = Array(n); for (let i = 0; i < n; i++) out[p[i]] = col[i]; return enc(out); }));
+  const orbits = orbitCount(maps, total);
+  return {total,fixCount,orbits,colour};
+}
+
+/** Modern group-determinant factors and finite-difference character reconstruction. */
+export function groupDeterminantData(key,x,eps=1e-5) {
+  const {G,rows}=tableOf(key),irr=irrepMats(key);
+  // direct group determinant (complex determinant of a real matrix)
+  const M = Array.from({ length: G.n }, (_, g) => Array.from({ length: G.n }, (_, h) => [x[G.mul[g][G.inv[h]]], 0]));
+  const direct = cdet(M);
+  const Phi = (xs, ir) => { const d = ir.d; let S = Array.from({ length: d }, () => Array.from({ length: d }, () => [0, 0])); xs.forEach((xg, g) => { if (xg) S = S.map((row, i) => row.map((z, j) => cadd(z, csc(ir.mats[g][i][j], xg)))); }); return cdet(S); };
+  const phis = irr.map((ir) => Phi(x, ir));
+  let prod = [1, 0]; irr.forEach((ir, i) => { for (let k = 0; k < ir.d; k++) prod = cmul(prod, phis[i]); });
+  // characters as derivatives of Phi_i at x = delta_e, in direction g
+  const delta = (g, s) => G.mul.map((_, h) => (h === G.e ? 1 : 0) + (h === g ? s * eps : 0));
+  const tab = irr.map((ir) => G.classes.map((c) => { const g = c.rep, a = Phi(delta(g, 1), ir), b = Phi(delta(g, -1), ir); return csc(csub(a, b), 1 / (2 * eps)); }));
+  const chars = irr.map((ir, i) => ({ vals: tab[i], d: ir.d }));
+  return {G,rows,irr,x,M,direct,phis,prod,tab,defect:tableDefect(G,chars)};
 }

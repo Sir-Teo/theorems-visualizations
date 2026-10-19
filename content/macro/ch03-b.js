@@ -1,5 +1,5 @@
 // Macroeconomics — Chapter 3 (part b): convergence, growth accounting and the growth puzzles (items 3.8–3.13)
-import { clamp, pc, fx, ols, olsMulti, sgn, rkPath, at, rows, GA_PWT, XS_PWT, IT_US, NAMES } from './ch03.shared.js';
+import { clamp, pc, fx, ols, olsMulti, sgn, rkPath, at, rows, GA_PWT, XS_PWT, IT_US, NAMES, growthAccounting } from './ch03.shared.js';
 
 const GA = rows(GA_PWT, 7); // country, year, rgdpna, rnna, emp, hc, labsh
 const XS = rows(XS_PWT.flat(), 10); // code, name, y60, y19, s, n, hc60, hc19, oecd, irr
@@ -62,17 +62,16 @@ Scope: a statement about the *linearization* — for large gaps the exact path i
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Method', name: 'Growth accounting and the Solow residual',
-      statement: String.raw`Take an aggregate production function $Y = A\,F(K, L)$ with competitive factor payments, so that the elasticity of output with respect to capital is capital's income share $\alpha$ and with respect to labour $1-\alpha$. Differentiating logarithms in time gives the exact decomposition
+      statement: String.raw`Take an aggregate production function $Y = A\,F(K, L)$ with constant returns to scale and competitive factor payments, so that the elasticity of output with respect to capital is capital's income share $\alpha$ and with respect to labour $1-\alpha$. Differentiating logarithms in time gives the exact decomposition
 $$\frac{\dot Y}{Y} = \alpha\,\frac{\dot K}{K} + (1-\alpha)\,\frac{\dot L}{L} + \frac{\dot A}{A},$$
 and the **Solow residual** $\dot A/A$ is whatever output growth is not explained by measured growth in inputs, weighted by their income shares. Splitting labour into employment and a human-capital index gives one more term.
 
 Scope: a measurement identity, not a causal theory: the residual is "total factor productivity" only if inputs are correctly measured, factors are paid their marginal products and returns to scale are constant; it also absorbs measurement error.`,
-      idea: String.raw`With Cobb–Douglas technology (macro-2.1) the logarithm of output is a weighted sum of the logarithms of inputs plus $\ln A$; differentiating in time gives the displayed sum, and the weights can be read off national accounts as the shares of income paid to capital and labour. Solow (1957) applied this to U.S. data and found that only a small part of the rise in output per hour could be attributed to more capital per hour: as usually reported, about seven eighths of it was left to technical change. Applied to several countries, the residual explains very different fractions of growth.`,
-      caption: String.raw`Pick a **country**. Each bar is a decade of growth in real GDP (Penn World Table), split into the contribution of capital $\alpha\,g_K$ (orange), employment (blue), human capital per worker (teal) and the residual (gold); the black dot is total output growth. Choose whether the capital share is PWT's measured $1 - $ labour share or a fixed $1/3$.`,
-      deps: ['macro-2.1'], refs: ['Mankiw ch. 10'], tags: ['growth', 'measurement'],
+      idea: String.raw`With Cobb–Douglas technology (macro-2.1) the logarithm of output is a weighted sum of the logarithms of inputs plus $\ln A$; differentiating in time gives the displayed sum, and the weights can be read off national accounts as the shares of income paid to capital and labour. For U.S. private non-farm output per hour over 1909–1949, Solow (1957, p. 316) attributed roughly seven eighths of the increase to the shift in the production function. This historical calculation used his particular input and utilization measures; the modern chart below is a separate illustration. Applied to several countries, the residual explains very different fractions of growth.`,
+      caption: String.raw`Pick a **country**. Each bar is an interval of annual log growth in real GDP (PWT 10.0; the final interval is nine years), split into the contribution of capital $\alpha\,g_K$ (orange), employment (blue), human capital per worker (teal) and the residual (gold); the black dot is total output growth. Choose whether the capital share is PWT's measured $1 - $ labour share or a fixed $1/3$.`,
+      deps: ['macro-2.1'], refs: ['Solow (1957), Technical Change and the Aggregate Production Function, pp. 312–316; https://economicstrategy.org/wp-content/uploads/2013/10/Solow1957.pdf', 'Feenstra, Inklaar & Timmer (2015); PWT 10.0, CC BY 4.0; https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt100'], tags: ['growth', 'measurement'],
       credit: 'Robert Solow, 1957',
-      scope: String.raw`Decomposition with period-average income shares (Törnqvist weights); the residual includes anything not measured, including mismeasurement of capital and labour quality.`,
-      verify: true,
+      scope: String.raw`Finite-interval log decomposition with endpoint-average factor shares, a Törnqvist-style approximation to continuous growth accounting. Labour input is employment times PWT's human-capital index; hours and utilization are not controlled. The residual absorbs omitted inputs and measurement error. Full-period rates weight intervals by years.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow_residual' },
       viz(v) {
         const cs = Object.keys(NAMES);
@@ -81,16 +80,9 @@ Scope: a measurement identity, not a causal theory: the residual is "total facto
         const S = v.stage({ x: [0, 6], y: [-0.02, 0.1], axes: 'box', gutter: true, height: 360, full: true, xlabel: 'period', ylabel: 'growth of real GDP per year (0.02 = 2%)', xticks: [[0.5, '1960–70'], [1.5, '1970–80'], [2.5, '1980–90'], [3.5, '1990–2000'], [4.5, '2000–10'], [5.5, '2010–19']], title: 'where growth came from' });
         let st = null;
         v.render(() => {
-          const c = sel.value, R = GA.filter((r) => r[0] === c), out = [];
-          for (let i = 0; i + 1 < R.length; i++) {
-            const a0 = R[i], a1 = R[i + 1], T = a1[1] - a0[1], gr = (x, y) => Math.log(y / x) / T;
-            const al = wt.value === 'third' ? 1 / 3 : 1 - (a0[6] + a1[6]) / 2;
-            const gY = gr(a0[2], a1[2]), gK = gr(a0[3], a1[3]), gL = gr(a0[4], a1[4]), gH = gr(a0[5], a1[5]);
-            const cap = al * gK, lab = (1 - al) * gL, hc = (1 - al) * gH;
-            out.push({ gY, cap, lab, hc, tfp: gY - cap - lab - hc, al });
-          }
-          const lo = Math.min(-0.01, ...out.map((o) => Math.min(0, o.tfp) + Math.min(0, o.cap, o.lab, o.hc))), hi = Math.max(0.05, ...out.map((o) => o.gY + 0.005));
-          S.setView([0, 6], [lo - 0.005, hi * 1.08]);
+          const c = sel.value, R = GA.filter((r) => r[0] === c);
+          const {out,mean,lo,hi} = growthAccounting(R,wt.value==='third'?1/3:null);
+          S.setView([0, 6], [Math.min(-0.01,lo) - 0.005, Math.max(0.05,hi) * 1.08]);
           S.hline(0, { color: 'ink' });
           out.forEach((o, i) => {
             let pos = 0, neg = 0;
@@ -100,11 +92,10 @@ Scope: a measurement identity, not a causal theory: the residual is "total facto
             }
             S.dot(i + 0.5, o.gY, { r: 6, color: 'ink' });
           });
-          const tot = out.reduce((p, o) => ({ gY: p.gY + o.gY, tfp: p.tfp + o.tfp, cap: p.cap + o.cap }), { gY: 0, tfp: 0, cap: 0 });
-          st = { out, tot, c };
+          st = { out, mean, c };
         });
         v.legend([['orange', 'capital α·g_K'], ['accent', 'employment (1−α)·g_L'], ['teal', 'human capital (1−α)·g_h'], ['gold', 'Solow residual (TFP)'], ['ink', 'GDP growth', { dot: true }]]);
-        v.readout(() => st && `${NAMES[st.c]}: average growth ${pc(st.tot.gY / st.out.length, 1)} a year over 1960–2019, of which capital deepening ${pc(st.tot.cap / st.out.length, 1)} and the residual ${pc(st.tot.tfp / st.out.length, 1)} (${st.tot.gY > 0 ? fx((100 * st.tot.tfp) / st.tot.gY, 0) : '—'}% of growth). By decade the residual ranges from ${pc(Math.min(...st.out.map((o) => o.tfp)), 1)} to ${pc(Math.max(...st.out.map((o) => o.tfp)), 1)}. Capital share used: ${st.out.map((o) => fx(o.al, 2)).join(', ')}. The accounting identity holds exactly by construction: the bars sum to the black dot.`);
+        v.readout(() => st && `${NAMES[st.c]}: mean log GDP growth ${pc(st.mean.gY, 1)} a year over 1960–2019, of which capital accumulation ${pc(st.mean.cap, 1)} and the residual ${pc(st.mean.tfp, 1)} (${st.mean.gY > 0 ? fx((100 * st.mean.tfp) / st.mean.gY, 0) : '—'}% of growth). By decade the residual ranges from ${pc(Math.min(...st.out.map((o) => o.tfp)), 1)} to ${pc(Math.max(...st.out.map((o) => o.tfp)), 1)}. Capital share used: ${st.out.map((o) => fx(o.al, 2)).join(', ')}. The accounting identity holds exactly by construction: the bars sum to the black dot.`);
       },
     },
     // ------------------------------------------------------------------ 3.10
@@ -160,15 +151,14 @@ Scope: an empirical hypothesis. In samples of broadly similar economies (current
       num: '3.11', kind: 'Paradox', name: 'The Lucas paradox',
       statement: String.raw`If every country had the same Cobb–Douglas technology $y = A k^{\alpha}$ and capital were paid its marginal product $f'(k)=\alpha A k^{\alpha-1}$, then the ratio of returns to capital in a poor and a rich country would be
 $$\frac{f'(k_{\text{poor}})}{f'(k_{\text{rich}})} = \Big(\frac{y_{\text{rich}}}{y_{\text{poor}}}\Big)^{\frac{1-\alpha}{\alpha}} .$$
-With $\alpha = 0.4$ and a 15-fold gap in income per worker this is about 58. With returns that different, capital should flow massively from rich to poor countries; yet no such flows are observed. **The paradox** is the failure of the neoclassical prediction; Lucas offered differences in human capital and externalities, and later work stresses institutions, risk and the measurement of capital.
+With $\alpha = 0.4$ and a 15-fold gap in income per worker this is about 58. With returns that different, capital should flow massively from rich to poor countries; observed flows are far smaller than this prediction. **The paradox** is the failure of the neoclassical prediction; Lucas examined human-capital differences, knowledge spillovers, monopoly power and political risk as possible explanations.
 
 Scope: the prediction requires identical technology, no frictions and no differences in labour quality.`,
-      idea: String.raw`Under diminishing returns (macro-3.3) the marginal product of capital falls with the capital–labour ratio, and with a common Cobb–Douglas technology (macro-2.1) capital per worker is proportional to $y^{1/\alpha}$, so $f' \propto y^{-(1-\alpha)/\alpha}$. Small differences in the exponent matter hugely because income gaps are large: with $\alpha=0.4$ the exponent is $1.5$. Lucas (1990) compared India and the United States in 1988 and concluded that the prediction was wildly at odds with observed flows; the alternative explanations differ in whether the returns really are so different. His own proposal was to measure labour in efficiency units, which shrinks the implied gap.`,
-      caption: String.raw`**Left:** the implied ratio of returns to capital against the income gap, for your $\alpha$; drag the handle (the default 15 and $\alpha=0.4$ reproduce the textbook 58). **Right:** for 85 countries (Penn World Table, 2019), the return implied by the model relative to the U.S. (blue), on a log axis, against income per worker, together with the return the Penn World Table reports (green). Switch to **per effective worker** to divide income by the human-capital index and watch the implied gaps shrink. Click a country to label it. The green returns are constructed by the Penn World Table from asset prices and depreciation, not directly observed.`,
-      deps: ['macro-3.3'], refs: ['Romer ch. 4'], tags: ['growth', 'capital flows', 'development'],
+      idea: String.raw`Under diminishing returns (macro-3.3) the marginal product of capital falls with the capital–labour ratio, and with a common Cobb–Douglas technology (macro-2.1) capital per worker is proportional to $y^{1/\alpha}$, so $f' \propto y^{-(1-\alpha)/\alpha}$. Small differences in the exponent matter hugely because income gaps are large: with $\alpha=0.4$ the exponent is $1.5$. Lucas (1990, p. 92) used the approximate U.S.–India income gap reported by Summers and Heston (1988) and concluded that the prediction was wildly at odds with observed flows; the alternative explanations differ in whether the returns really are so different. His own proposal was to measure labour in efficiency units, which shrinks the implied gap.`,
+      caption: String.raw`**Left:** the implied ratio of returns to capital against the income gap, for your $\alpha$; drag the handle (the default 15 and $\alpha=0.4$ reproduce Lucas's rounded factor of 58). **Right:** for 85 countries (PWT 10.0; income in 2019), the return implied by the model relative to the U.S. (blue), on a log axis, against income per worker, together with PWT's mean available constructed return in 2000–2019 (green). Switch to **per effective worker** to divide income by the human-capital index and watch the implied gaps shrink. Click a country to label it. The green returns are constructed by the Penn World Table from asset prices and depreciation, not directly observed.`,
+      deps: ['macro-3.3'], refs: ['Lucas (1990), Why Doesn’t Capital Flow from Rich to Poor Countries?, AER 80(2), 92–96, especially pp. 92–93; https://www.sfu.ca/~kkasa/lucas90.pdf', 'Feenstra, Inklaar & Timmer (2015); PWT 10.0, CC BY 4.0; https://www.rug.nl/ggdc/productivity/pwt/pwt-releases/pwt100'], tags: ['growth', 'capital flows', 'development'],
       credit: 'Robert Lucas, 1990',
-      scope: String.raw`The 15-fold income gap and $\alpha=0.4$ are the inputs that reproduce the quoted factor of 58 (India against the U.S. in 1988); they are not checked against Lucas's tables, and the figures on the right are from today's Penn World Table, not from his paper. Capital-flow data are not shown.`,
-      verify: true,
+      scope: String.raw`Lucas's p. 92 calculation takes a rough 15-fold income gap and capital share 0.4; 1988 is the year of the cited Summers–Heston publication. The right panel is a separate PWT 10.0 illustration, with 2019 incomes and 2000–2019 return averages, rather than Lucas's original data. Capital-flow data are not shown.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lucas_paradox' },
       viz(v) {
         const aS = v.slider('capital share $\\alpha$', 0.2, 0.7, 0.4, { step: 0.01 });
@@ -180,6 +170,7 @@ Scope: the prediction requires identical technology, no frictions and no differe
         R.onClick((x, y) => { let best = null, bd = 1e9; for (const p of pts) { const dx = R.X(p.x) - R.X(x), dy = R.Y(p.y) - R.Y(y); if (dx * dx + dy * dy < bd) { bd = dx * dx + dy * dy; best = p.r[0]; } } pick = best; });
         v.render(() => {
           const a = aS.value, e = (1 - a) / a, us = XS.find((r) => r[0] === 'USA');
+          L.setView([0.9,44],[0.9,Math.max(1000,40**e*1.15)]);
           const val = (r) => (adj.value === 'e' ? r[3] / r[7] : r[3]);
           L.fn((x) => x ** e, { color: 'accent', width: 2.8, domain: [1, 40] });
           L.fn((x) => x, { color: 'faint', dash: [4, 4], width: 1.4, domain: [1, 40] });
@@ -187,6 +178,9 @@ Scope: the prediction requires identical technology, no frictions and no differe
           L.hline(1, { color: 'faint' });
           L.text(`exponent (1−α)/α = ${fx(e, 2)}`, 1.3, 400, { color: 'accent', weight: 700, size: 12, align: 'left' });
           pts = XS.map((r) => ({ x: r[3], y: (val(us) / val(r)) ** e, r }));
+          const reported = pts.filter(p=>p.r[9]!=null).map(p=>p.r[9]/us[9]);
+          const incomes = pts.map(p=>p.x), returns = pts.map(p=>p.y).concat(reported);
+          R.setView([Math.min(...incomes)/1.25,Math.max(...incomes)*1.25], [Math.min(...returns)/1.25,Math.max(...returns)*1.25]);
           R.hline(1, { color: 'faint', dash: [4, 4] });
           for (const p of pts) R.dot(p.x, p.y, { r: 4.5, color: 'accent', alpha: 0.8 });
           for (const p of pts) if (p.r[9] != null) R.dot(p.x, p.r[9] / us[9], { r: 4.5, color: 'green', alpha: 0.85 });
@@ -195,8 +189,8 @@ Scope: the prediction requires identical technology, no frictions and no differe
           const ind = XS.find((r) => r[0] === 'IND');
           st = { e, ratio, pr: ratio ** e, sel, us, selY: sel ? sel.y : 0, ind, indRatio: val(us) / val(ind), indRet: (val(us) / val(ind)) ** e };
         });
-        v.legend([['accent', 'return implied by the model', { dot: true }], ['green', 'PWT internal rate of return, 2000–19', { dot: true }], ['faint', 'equal to the U.S.', { dash: true }]]);
-        v.readout(() => st && `a ${fx(st.ratio, 1)}-fold income gap implies a ${fx(st.pr, 0)}-fold gap in returns at $\\alpha = ${fx(aS.value, 2)}$. In the 2019 Penn World Table the U.S.-to-India gap in income per ${adj.value === 'e' ? 'effective worker' : 'worker'} is ${fx(st.indRatio, 1)}, implying returns ${fx(st.indRet, 0)} times higher in India${st.sel ? `; ${st.sel.r[1]}: ${fx(st.sel.r[3], 1)} thousand dollars per worker, implied return ${fx(st.selY, 1)} times the U.S.${st.sel.r[9] != null ? `, PWT's constructed return ${fx(st.sel.r[9] / st.us[9], 2)} times the U.S.` : ''}` : ''}. The constructed returns (green) differ from the U.S. by factors of one or two, not tens or hundreds: that gap between the two series is the paradox.`);
+        v.legend([['accent', 'return implied by the model', { dot: true }], ['green', 'PWT 10.0 internal return, mean available 2000–19', { dot: true }], ['faint', 'equal to the U.S.', { dash: true }]]);
+        v.readout(() => st && `a ${fx(st.ratio, 1)}-fold income gap implies a ${fx(st.pr, 0)}-fold gap in returns at $\\alpha = ${fx(aS.value, 2)}$. In the 2019 Penn World Table the U.S.-to-India gap in income per ${adj.value === 'e' ? 'effective worker' : 'worker'} is ${fx(st.indRatio, 1)}, implying returns ${fx(st.indRet, 0)} times higher in India${st.sel ? `; ${st.sel.r[1]}: ${fx(st.sel.r[3], 1)} thousand dollars per worker, implied return ${fx(st.selY, 1)} times the U.S.${st.sel.r[9] != null ? `, PWT's constructed return ${fx(st.sel.r[9] / st.us[9], 2)} times the U.S.` : ''}` : ''}. The green series is a separate constructed-return comparison, not a direct test of international investment flows.`);
       },
     },
     // ------------------------------------------------------------------ 3.12

@@ -1,3 +1,4 @@
+import { comparativeModel, recoverRisks, crossRatio, riskRatio, ratioLabel } from './epi-source-audit.js';
 // Epidemiology & Evidence — Chapter 3: Measures of association and effect (items 3.9–3.13; 3.1–3.7 are in ch03.js)
 import { int, pc, pcs, sig3, odds, oneIn, RATIO_TICKS, riskDot, table22, cells22 } from './ch03.shared.js';
 
@@ -209,19 +210,22 @@ The two statements are different: if both $A$ and $B$ raise the risk ($R_{10}, R
       paper: { authors: 'Jerome Cornfield', year: 1951, title: 'A Method of Estimating Comparative Rates from Clinical Data. Applications to Cancer of the Lung, Breast, and Cervix', venue: 'Journal of the National Cancer Institute 11 (6): 1269–1275', doi: '10.1093/jnci/11.6.1269' },
       introduces: ['epi-3.7'],
       credit: 'Jerome Cornfield, 1951',
-      verify: true,
-      statement: String.raw`Cornfield addressed a problem of clinical (hospital) data: patients with a disease are sampled, and so are patients without it, and one asks how much more often the disease occurs in people with a given characteristic (smoking, say). The data give $P(E\mid D)$ and $P(E\mid \bar D)$ — exposure among cases and non-cases — not the rates $P(D\mid E)$ the question needs. He showed that the rates, and so the relative risk, can be recovered from these two proportions together with the overall frequency $P$ of the disease in the population, by Bayes' theorem, and that when the disease is rare the relative risk is approximately the cross-product ratio $ad/(bc)$ of the case–control table, which does not depend on the sampling fractions. Applied to studies of smoking and cancers of the lung, breast and cervix, the method gave comparative rates from clinical series (3.7, 3.6). (Summary from the bibliographic record and secondary accounts; the paper itself could not be read in full here, so details of its tables and wording are not reproduced.)`,
-      idea: String.raw`Before this paper, case–control comparisons (hospital patients with and without a disease) were widely thought unable to say anything about risk, because their proportions are fixed by the sampler. Cornfield's step is to notice that the exposure proportions among cases and non-cases, combined with how common the disease is, determine the risks by Bayes' theorem — and that for rare diseases the dependence on how common the disease is nearly disappears, leaving the odds ratio (3.6). That is the rare-disease approximation (3.7), and it is what made the case–control design (Doll and Hill's smoking study, 1950, appeared the year before) a quantitative tool. It is often cited as the first demonstration that the relative risk can be estimated from case–control data.`,
-      caption: String.raw`A **model of the argument, not a reconstruction of the paper's tables** (its original data are not reproduced here). Set a true relative risk and the share exposed; the left table is the whole population (per 100 000), the right table a case–control sample of 100 cases and 100 non-cases. **Drag the dot** along the odds-ratio curve to change how common the disease is: when it is rare, OR = RR; when it is common they part company. The readout recovers the risks from the sample alone, using the disease frequency, as Cornfield proposed. Press *Draw a sample* to see sampling noise.`,
+      verify: false,
+      statement: String.raw`For representative samples of cases and non-cases, let $p_1=P(E\mid D)$ and $p_0=P(E\mid\bar D)$. If the disease frequency $P=P(D)$ in the source population is known independently, Bayes' theorem gives $q=P(E)=Pp_1+(1-P)p_0$ and the exact risks
+$$R_1=\frac{Pp_1}{q},\qquad R_0=\frac{P(1-p_1)}{1-q}.$$
+Cornfield derives these formulas on p. 1270 and their rare-disease approximation on pp. 1270–1271: $\mathrm{RR}\approx p_1(1-p_0)/[p_0(1-p_1)]$, the case–control odds ratio. This approximation requires a sufficiently small disease frequency relative to the relevant control proportions; it is not an identity at a positive disease risk. His pp. 1273–1275 stress that unrepresentative hospital case or control groups invalidate generalisation to the source population.`,
+      idea: String.raw`Multiply the exposure proportions in each sampled disease stratum by its population frequency to reconstruct the four population proportions. The case and control sampling fractions cancel in the cross-product ratio, provided selection within disease strata does not depend on exposure. The exact population relation is $\mathrm{OR}=\mathrm{RR}(1-R_0)/(1-R_1)$, so the approximation is good when both risks are small. Knowing the case–control table alone does not identify absolute risks: the external $P$ is essential. The original also discusses approximate confidence limits and concrete examples; the visual below illustrates the algebra rather than reproducing those tables.`,
+      caption: String.raw`A **model of the argument, not a reconstruction of the paper's tables** (its original data are not reproduced here). Set a true relative risk and the share exposed; the left table is the whole population (per 100 000), the right table a case–control sample of 100 cases and 100 non-cases. **Drag the dot** along the odds-ratio curve to change how common the disease is: the risks remain $R_1=\mathrm{RR}\,R_0$; the allowed baseline range shortens at larger RR to keep $R_1\le0.98$. OR approaches RR as both risks approach zero. The readout combines the sample exposure proportions with the external population disease frequency to reconstruct risks. Press *Draw a sample* to see sampling noise.`,
       deps: ['epi-3.6', 'epi-3.2'],
-      refs: [],
+      scope: String.raw`The original seven-page paper is directly available in a reprint (printed pp. 1269–1275; reprint pp. 95–101). This example assumes representative within-stratum sampling and a known, error-free population disease frequency. Expected cells are fractional; Draw a sample uses independent binomial draws with 100 cases and 100 controls. Zero cells can yield an infinite or undefined estimate and are reported explicitly, without an invented denominator. The pale band marks both model risks at most 5%, a visual guide rather than a universal approximation guarantee.`,
+      refs: ['Cornfield (1951), pp. 1270–1271 Eqs. (1)–(2), pp. 1273–1275 Pitfalls'],
       tags: ['case-control', 'relative risk', 'history'],
-      links: { doi: 'https://doi.org/10.1093/jnci/11.6.1269' },
+      links: { source: 'https://wwwusers.ts.infn.it/~milotti/Didattica/Bayes/pdfs/Cornfield_1951.pdf', doi: 'https://doi.org/10.1093/jnci/11.6.1269' },
       viz(v) {
         const M = v.M, NC = 100;
         const sP = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, weight: 1, minWidth: 270, title: 'the population (per 100 000 people)' });
         const sS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, weight: 1, minWidth: 270, title: 'a case–control sample (100 + 100)' });
-        const sK = v.stage({ x: [5e-4, 0.4], y: [0.5, 12], xlog: true, ylog: true, axes: 'box', gutter: true, height: 270, full: true, xticks: [[0.001, '0.1%'], [0.01, '1%'], [0.1, '10%']], yticks: [[0.5, '1/2'], [1, '1'], [2, '2'], [4, '4'], [8, '8']], xlabel: 'baseline risk R₀ (how common the disease is)', ylabel: 'ratio', title: 'the odds ratio matches the relative risk only for a rare disease' });
+        const sK = v.stage({ x: [5e-4, 0.4], y: [0.5, 12], xlog: true, ylog: true, axes: 'box', gutter: true, height: 270, full: true, xticks: [[0.001, '0.1%'], [0.01, '1%'], [0.1, '10%']], yticks: [[0.5, '1/2'], [1, '1'], [2, '2'], [4, '4'], [8, '8']], xlabel: 'unexposed baseline risk R₀', ylabel: 'ratio', title: 'odds and risk ratios: the rare-risk approximation' });
         const rrS = v.slider('true relative risk', 1.5, 10, 4, { log: true, sig: 2 });
         const peS = v.slider('share of the population exposed', 0.05, 0.9, 0.3, { step: 0.01, fmt: (x) => pcs(x) });
         let seed = 3, noisy = false;
@@ -229,35 +233,37 @@ The two statements are different: if both $A$ and $B$ raise the risk ($R_{10}, R
         v.button('Use expected counts', () => { noisy = false; });
         const Tp = table22(v, sP, [0, 0.22, 1, 1], ['exposed', 'unexposed', 'total'], ['cases', 'non-cases', 'total']);
         const Ts = table22(v, sS, [0, 0.22, 1, 1], ['exposed', 'unexposed', 'total'], ['cases', 'controls', 'total']);
-        const orOf = (r0, rr) => { const r1 = Math.min(0.98, rr * r0); return [r1 / r0, odds(r1) / odds(r0)]; };
-        const H = sK.handle(0.01, 4, { color: 'gold', r: 8, constrain: (x) => { const r0 = Math.min(0.39, Math.max(6e-4, x)); return [r0, orOf(r0, rrS.value)[1]]; } });
+        const orOf = (r0, rr) => [rr, rr * (1 - r0) / (1 - rr * r0)];
+        const H = sK.handle(0.01, 4, { color: 'gold', r: 8, constrain: (x) => { const r0 = Math.min(0.39, 0.98 / rrS.value, Math.max(6e-4, x)); return [r0, orOf(r0, rrS.value)[1]]; } });
         let st = null;
         v.render(() => {
-          const pe = peS.value, rr0 = rrS.value, r0 = H.x, r1 = Math.min(0.98, rr0 * r0), P = pe * r1 + (1 - pe) * r0, RR = r1 / r0, OR = odds(r1) / odds(r0);
+          const pe = peS.value, rr0 = rrS.value, D = comparativeModel(rr0, pe, H.x), {r0, r1, P, OR, maxRisk} = D, RR = rr0;
+          const ytop = orOf(maxRisk, rr0)[1] * 1.5; sK.setView([0.0004, maxRisk * 1.25], [0.45, ytop]);
+          sK.setTicks([[.001,'0.1%'],[.01,'1%'],[.1,'10%'],[.4,'40%']].filter(([x])=>x<=maxRisk*1.25),[.5,1,2,5,10,20,50,100,200,500,1000].filter(y=>y<=ytop).map(y=>[y,String(y)]));
           const pi1 = (pe * r1) / P, pi0 = (pe * (1 - r1)) / (1 - P);
           const N = 1e5, C = cells22(N * pe * r1, N * pe * (1 - r1), N * (1 - pe) * r0, N * (1 - pe) * (1 - r0));
           Tp.draw({ value: (i, j) => int(C[i][j]), fill: (i, j) => (i < 2 && j < 2 ? [j ? 'blue' : 'red', i ? 0.1 : 0.3] : i === 2 || j === 2 ? ['gray', 0.08] : null), weight: (i, j) => (i === 2 || j === 2 ? 500 : 700) });
           // sample
           let x1 = NC * pi1, x0 = NC * pi0;
           if (noisy) { const r = v.rng(seed); x1 = 0; x0 = 0; for (let k = 0; k < NC; k++) { if (r() < pi1) x1++; if (r() < pi0) x0++; } }
-          const S = cells22(x1, NC - x1, x0, NC - x0), r2 = (x) => (noisy ? String(Math.round(x)) : v.fix(x, 1));
-          Ts.draw({ rowLabels: ['exposed', 'unexposed', 'total'], value: (i, j) => (j === 2 || i === 2 ? int(S[i][j]) : r2(S[i][j])), fill: (i, j) => (i < 2 && j < 2 ? [j ? 'blue' : 'red', i ? 0.1 : 0.3] : i === 2 || j === 2 ? ['gray', 0.08] : null), weight: (i, j) => (i === 2 || j === 2 ? 500 : 700) });
+          const S = cells22(x1, x0, NC - x1, NC - x0), r2 = (x) => (noisy ? String(Math.round(x)) : v.fix(x, 1));
+          Ts.draw({ rowLabels: ['exposed', 'unexposed', 'total'], value: (i, j) => r2(S[i][j]), fill: (i, j) => (i < 2 && j < 2 ? [j ? 'blue' : 'red', i ? 0.1 : 0.3] : i === 2 || j === 2 ? ['gray', 0.08] : null), weight: (i, j) => (i === 2 || j === 2 ? 500 : 700) });
           sP.text(`risk ratio ${v.fix(RR, 2)} · odds ratio ${v.fix(OR, 2)}`, 0.5, 0.12, { align: 'center', color: 'ink', size: 13, weight: 600 });
-          sS.text(`odds ratio ad ÷ bc = ${v.fix((x1 * (NC - x0)) / ((NC - x1) * x0 || 1e-9), 2)}`, 0.5, 0.2, { align: 'center', color: 'green', size: 13, weight: 700 });
+          sS.text(`odds ratio ad ÷ bc = ${ratioLabel(crossRatio(x1, x0, NC - x1, NC - x0))}`, 0.5, 0.2, { align: 'center', color: 'green', size: 13, weight: 700 });
           sS.text('the sample fixes 100 cases and 100 controls: no risks here', 0.5, 0.1, { align: 'center', color: 'muted', size: 11.5 });
-          const cc = (x1 * (NC - x0)) / ((NC - x1) * x0 || 1e-9);
+          const cc = crossRatio(x1, x0, NC - x1, NC - x0);
           // Cornfield's recovery: P(E|D), P(E|not D) and the disease frequency P give the rates
-          const p1h = x1 / NC, p0h = x0 / NC, peh = P * p1h + (1 - P) * p0h, R1h = (P * p1h) / peh, R0h = (P * (1 - p1h)) / (1 - peh);
-          sK.rect(5e-4, 0.5, 0.05, 12, { fill: 'green', fillAlpha: 0.06, stroke: false });
-          sK.fn((x) => orOf(x, rr0)[1], { domain: [5e-4, 0.4], color: 'green', width: 2.6 });
-          sK.fn((x) => orOf(x, rr0)[0], { domain: [5e-4, 0.4], color: 'ink', width: 2, dash: [6, 4] });
+          const p1h = x1 / NC, p0h = x0 / NC, recovered = recoverRisks(p1h, p0h, P), R1h = recovered.r1, R0h = recovered.r0;
+          sK.rect(0.0006, 0.45, 0.05 / rr0, ytop, { fill: 'green', fillAlpha: 0.06, stroke: false });
+          sK.fn((x) => orOf(x, rr0)[1], { domain: [0.0006, maxRisk], color: 'green', width: 2.6 });
+          sK.fn((x) => orOf(x, rr0)[0], { domain: [0.0006, maxRisk], color: 'ink', width: 2, dash: [6, 4] });
           sK.text('relative risk', 0.0007, rr0, { align: 'left', dy: -9, color: 'ink', size: 12, weight: 700 });
-          sK.text('odds ratio', 0.3, orOf(0.3, rr0)[1], { align: 'right', dx: -6, dy: -9, color: 'green', size: 12, weight: 700 });
-          sK.text('rare disease (< 5%)', 0.0007, 0.62, { align: 'left', color: 'green', size: 11 });
+          sK.text('odds ratio', maxRisk * 0.92, orOf(maxRisk * 0.92, rr0)[1], { align: 'right', dx: -6, dy: -9, color: 'green', size: 12, weight: 700 });
+          sK.text('both risks ≤ 5%', 0.0007, 0.62, { align: 'left', color: 'green', size: 11 });
           H.set(r0, OR);
           st = { P, RR, OR, cc, R1h, R0h, r1, r0, noisy };
         });
-        v.readout(() => st && `disease frequency in the population $P = ${v.fix(100 * st.P, 2)}\\%$ (true risks ${pcs(st.r1)} and ${pcs(st.r0)}, **RR = ${v.fix(st.RR, 2)}**) · case–control odds ratio${st.noisy ? ' in this sample' : ''} **${v.fix(st.cc, 2)}**${st.noisy ? '' : ` = population OR ${v.fix(st.OR, 2)}`}, ${Math.abs(st.OR / st.RR - 1) < 0.1 ? 'within 10% of RR' : `${v.fix(100 * (st.OR / st.RR - 1), 0)}% above RR`} · risks recovered from the sample with $P$ (Cornfield's step): ${pcs(st.R1h)} and ${pcs(st.R0h)}, ratio **${v.fix(st.R1h / st.R0h, 2)}**`);
+        v.readout(() => st && `disease frequency in the population $P = ${v.fix(100 * st.P, 2)}\\%$ (true risks ${pcs(st.r1)} and ${pcs(st.r0)}, **RR = ${v.fix(st.RR, 2)}**) · case–control odds ratio${st.noisy ? ' in this sample' : ''} **${ratioLabel(st.cc)}**${st.noisy ? '' : ` = population OR ${v.fix(st.OR, 2)}`}, ${Math.abs(st.OR / st.RR - 1) < 0.1 ? 'within 10% of RR' : `${v.fix(100 * (st.OR / st.RR - 1), 0)}% above RR`} · risks recovered from the sample with $P$ (Cornfield's step): ${(st.R1h==null?'not defined':pcs(st.R1h))} and ${(st.R0h==null?'not defined':pcs(st.R0h))}, ratio **${ratioLabel(riskRatio(st.R1h,st.R0h))}**`);
       },
     },
   ],

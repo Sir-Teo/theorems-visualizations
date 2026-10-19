@@ -1,405 +1,157 @@
-// Probability: Theory and Examples (Durrett) — Chapter 5, part Z2: Harris chains on a general state space (§5.8)
-import { PHI, gcd, phi, fx, minor, harrisStep, stationaryVar, gridAR, splitGrid, vecP, vecM, matVecR, matMulS, cdfSample, tvNormal, stationary } from './ch05-z.shared.js';
+// Durrett, Probability: Theory and Examples, version 5 (2019), §5.8, pp.322–327.
+import {gridAR,stationary,stationaryVar,cdfSample,matVecR,fx} from './ch05-z.shared.js';
+import {PHI,phi,vecM,matMulS,intervalSplit,cycleMeasure,completeCycles,analyticMinor,exactHarrisStep,escapeSurvival,gaussianTV,exponentialDifferenceTail} from './ch05-harris.shared.js';
+const source='https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf';
+const ref=(anchor)=>[`Durrett, Probability: Theory and Examples, version 5 (2019), ${anchor}`];
+const bars=(S,values,xs,w,color,outline=false)=>values.forEach((p,i)=>S.rect(xs[i]-w/2,0,xs[i]+w/2,p,{color,fill:outline?false:color,fillAlpha:.3,width:outline?1.5:1}));
+const maxDiff=(a,b)=>Math.max(...a.map((x,i)=>Math.abs(x-b[i])));
+const value=(x)=>Number.isFinite(x)?fx(x,3):'no sample';
+function heat(S,M,key){const rows=M.length,cols=M[0].length,mx=Math.max(...M.flat());S.heat((x,y)=>{const row=M[Math.floor(rows-y)];return row?.[Math.floor(x)]===undefined?NaN:Math.sqrt(Math.max(0,row[Math.floor(x)])/mx);},{range:[0,1],cmap:'theme',color:'accent',rect:[0,0,cols,rows],res:3,key});}
+function finiteSetup(a,c=1,lo=-c,hi=c){const g=gridAR(a,41,5),sp=intervalSplit(g,lo,hi);return {g,sp};}
 
-const markovDef = 'prob-5.1.1a';
-const SPLIT_CREDIT = 'Harris, 1956 (Harris chains); splitting: Nummelin and Athreya–Ney, 1978';
-const bars = (S, vals, x0, w, opts) => vals.forEach((h, i) => S.rect(x0 + i * w, 0, x0 + (i + 1) * w, h, opts));
-
-/** Regeneration cycles of the AR(1) chain: occupation counts of the states X_0..X_{T-1} of each cycle (X_0 ~ nu). */
-function cycles(mn, N, rng, nb, lo, hi, cap = 600000) {
-  const counts = new Float64Array(nb), w = (hi - lo) / nb; let x = mn.sample(rng), c = 0, steps = 0, T = 0;
-  while (c < N && steps < cap) {
-    const b = Math.floor((x - lo) / w); if (b >= 0 && b < nb) counts[b]++; T++;
-    const [y, reg] = harrisStep(x, mn, rng); steps++; x = y; if (reg) c++;
+export default {collection:'prob',chapter:5,items:[
+ {
+  num:'5.8.1a',kind:'Definition',name:'Harris chain',
+  statement:String.raw`A Markov chain with kernel $p$ on $(S,\mathcal S)$ is a **Harris chain in this section's convention** if there are a measurable set $A$, a probability measure $\rho$ and $0<\varepsilon\le1$ such that $P_z(\tau_A<\infty)>0$ for every $z$, where $\tau_A=\inf\{n\ge0:X_n\in A\}$, and
+$$p(x,C)\ge\varepsilon\rho(C)\quad(x\in A,\ C\in\mathcal S).$$
+This is equivalent to the source's formulation with $\rho$ supported on $B$ and a density $q(x,y)\ge\varepsilon$ on $A\times B$. Positive probability of reaching $A$ does not mean probability one.`,
+  idea:String.raw`The shared mass $\varepsilon\rho$ lets us create an auxiliary atom $\alpha$: from $A$, send mass $\varepsilon$ to $\alpha$ and retain the nonnegative measure $p(x,\cdot)-\varepsilon\rho$ on $S$. Recover the original next-state law by replacing $\alpha$ with a draw from $\rho$. On a countable space, take $A=\{a\}$ accessible with positive probability from every state, choose $b$ with $p(a,b)>0$, and use $\rho=\delta_b$, $\varepsilon=p(a,b)$; $b$ need not equal $a$.`,
+  caption:String.raw`For $X_{n+1}=aX_n+N(0,1)$ and $A=[-c,c]$, the largest common density is $m(y)=\phi(|y|+ac)$, with mass $\varepsilon=2\Phi(-ac)$ and $\rho(dy)=m(y)dy/\varepsilon$ supported on $B=\mathbb R$. Gold points mark draws from that common part. Paths are not clipped or modified; the next-step remainder is sampled by rejection. Both the coin and the path are finite illustrations.`,
+  deps:['prob-5.1.1a'],refs:ref('unnumbered definition before Example 5.8.1, p.322; Example 5.8.2, pp.322–323'),links:{source},tags:['general state space'],
+  viz(v){const a=v.slider('$a$',.2,.95,.7,{step:.05}),c=v.slider('$c$',.25,2,1,{step:.05});let seed=1,st;v.button('New path',()=>seed++);
+   const P=v.stage({x:[0,150],y:[-5,5],height:330,axes:'box',gutter:true,xlabel:'$n$',title:'AR(1) path and common-part draws'}),D=v.stage({x:[-5,5],y:[0,.45],height:330,axes:'box',gutter:true,xlabel:'$y$',title:'transition densities and common minorant'});
+   v.render(()=>{const mn=analyticMinor(a.value,-c.value,c.value),r=v.rng(seed*11+3),path=[[0,0]],regs=[];let x=0,visits=0;
+    for(let n=1;n<=150;n++){if(Math.abs(x)<=c.value)visits++;const [y,g]=exactHarrisStep(x,mn,r);x=y;path.push([n,x]);if(g)regs.push([n,x]);}
+    const ys=path.map(p=>p[1]);P.setView([0,150],[Math.min(-c.value,...ys)-.4,Math.max(c.value,...ys)+.4]);P.hband(-c.value,c.value,{color:'orange',alpha:.15});P.path(path,{color:'accent',width:1.6});regs.forEach(p=>P.dot(...p,{color:'gold',r:4}));
+    [-c.value,0,c.value].forEach(x=>D.fn(y=>phi(y-a.value*x),{color:'accent',width:1.4,alpha:.55}));D.fn(mn.density,{color:'green',fill:true,fillAlpha:.25,width:2.5});st={eps:mn.eps,visits,reg:regs.length};});
+   v.legend([['accent','AR(1) / transition densities'],['orange','$A$'],['green','$m=\\varepsilon\\rho$'],['gold','common-part draw']]);v.readout(()=>st&&`Common mass $\\varepsilon=${fx(st.eps,5)}$; ${st.visits} eligible steps, ${st.reg} common-part draws. The eligible-step count depends on the same random path; multiplying it by $\\varepsilon$ is not a conditional prediction of the realised number.`);
   }
-  return { counts, N: c, meanT: T / Math.max(1, c), steps };
-}
-const dens = (counts, N, w) => Array.from(counts, (c) => c / (N * w));
-
-export default {
-  collection: 'prob',
-  chapter: 5,
-  items: [
-    {
-      num: '5.8.1a',
-      kind: 'Definition',
-      name: 'Harris chain',
-      statement: String.raw`A Markov chain $X_n$ on a measurable space $(S,\mathcal S)$ is a **Harris chain** if there are sets $A,B\in\mathcal S$ and a measure $\rho$ with $\rho(B)>0$ such that
-(i) $P_z(\tau_A<\infty)>0$ for every $z\in S$, where $\tau_A=\inf\{n\ge0: X_n\in A\}$, and
-(ii) $p(x,C)\ge\rho(C)$ for all $x\in A$ and all measurable $C\subset B$.
-The condition (ii) is a *minorization*: from every point of $A$ the next step contains a common piece $\rho$ that does not depend on the point.`,
-      idea: String.raw`On a countable space any single state $A=B=\{a\}$ works, with $\rho=p(a,\cdot)$. In general (ii) lets one flip a coin with probability $\varepsilon=\rho(B)$ at each visit to $A$ and, on heads, draw the next state from the fixed law $\nu=\rho/\varepsilon$ — whatever the current point of $A$ was. These coin flips produce *regeneration times* at which the future is independent of the past; the splitting of 5.8.4 makes this exact.`,
-      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ with $\xi\sim N(0,1)$ and $A=B=[-c,c]$. Left: a path; gold dots mark steps where the minorization coin came up heads and the state was redrawn from $\nu$. Right: the transition densities $p(x,\cdot)$ from $x=-c,0,c$ (blue) all lie above the green shape $\varepsilon\nu$, the largest common minorant. Widen $c$ and $\varepsilon$ shrinks; make $a$ small and it grows.`,
-      deps: [markovDef],
-      credit: 'T. E. Harris, 1956; the A, B, ρ formulation is the textbook’s',
-      verify: true,
-      tags: ['general state space'],
-      scope: String.raw`The page uses $A=B$ and an explicit $\rho=\varepsilon\nu$ on all of $\mathbb R$ for the AR(1) kernel; the textbook’s definition allows $A\ne B$ and a $\rho$ living on a part of the space.`,
-      viz(v) {
-        const st = {};
-        const aS = v.slider('$a$', 0.2, 0.95, 0.7, { step: 0.05 });
-        const cS = v.slider('$c$', 0.25, 2, 1, { step: 0.05 });
-        let seed = 1; v.button('New path', () => { seed++; });
-        const P = v.stage({ x: [0, 150], y: [-5, 5], height: 330, axes: 'box', gutter: true, xlabel: '$n$', ylabel: '$X_n$', title: 'path and regeneration steps' });
-        const D = v.stage({ x: [-5, 5], y: [0, 0.65], height: 330, axes: 'box', gutter: true, xlabel: '$y$', title: String.raw`$p(x,\cdot)$ and $\varepsilon\nu$`, weight: 0.8, minWidth: 260 });
-        v.render(() => {
-          const a = aS.value, c = cS.value, mn = minor(a, -c, c), r = v.rng(seed * 11 + 3); let x = 0, reg = 0, vis = 0; const path = [x], regs = [];
-          for (let n = 1; n <= 150; n++) { if (Math.abs(x) <= c) vis++; const [y, g] = harrisStep(x, mn, r); x = Math.max(-9, Math.min(9, y)); path.push(x); if (g) { reg++; regs.push(n); } }
-          P.hband(-c, c, { color: 'orange', alpha: 0.18 });
-          P.path(path.map((y, n) => [n, y]), { color: 'accent', width: 1.5 });
-          regs.forEach((n) => P.dot(n, path[n], { color: 'gold', r: 4.5 }));
-          [-c, 0, c].forEach((x0, i) => D.fn((y) => phi(y - a * x0), { color: 'accent', width: 1.6, alpha: 0.4 + 0.3 * (i === 1) }));
-          D.fn((y) => mn.eps * mn.nu(y), { color: 'green', width: 2.6, fill: true, fillAlpha: 0.35 });
-          D.text(`ε = ${fx(mn.eps, 3)}`, 4.8, 0.58, { align: 'right', color: 'green', size: 14 });
-          st.stats = { eps: mn.eps, reg, vis };
-        });
-        v.legend([['orange', 'the set $A=[-c,c]$'], ['gold', 'regeneration'], ['accent', '$p(x,\\cdot)$, $x=-c,0,c$'], ['green', '$\\varepsilon\\nu$']]);
-        v.readout(() => { const s = st.stats || {}; return `$\\varepsilon=${fx(s.eps || 0, 3)}$. In 150 steps: ${s.vis} visits to $A$, ${s.reg} regenerations (expected about $\\varepsilon\\cdot${s.vis}=${fx((s.eps || 0) * (s.vis || 0), 1)}$).`; });
-      },
-    },
-    {
-      num: '5.8.4',
-      kind: 'Lemma',
-      name: 'Splitting identities for the auxiliary kernel',
-      statement: String.raw`Let $X_n$ be a Harris chain with $A=B$ and $p(x,\cdot)\ge\varepsilon\nu$ for $x\in A$. On $\bar S=S\cup\{\alpha\}$ define the kernel $v$ from $S$ to $\bar S$ by $v(x,\cdot)=\delta_x$ for $x\notin A$ and $v(x,\cdot)=(1-\varepsilon)\delta_x+\varepsilon\delta_\alpha$ for $x\in A$, and the kernel $\bar p$ from $\bar S$ to $S$ by $\bar p(\alpha,\cdot)=\nu$, $\bar p(x,\cdot)=p(x,\cdot)$ for $x\notin A$, and $\bar p(x,\cdot)=\frac{p(x,\cdot)-\varepsilon\nu}{1-\varepsilon}$ for $x\in A$. Then each $\bar p(x,\cdot)$ is a probability measure and
-$$v\,\bar p=p .$$`,
-      idea: String.raw`For $x\notin A$ both sides are $p(x,\cdot)$. For $x\in A$, $v\bar p(x,\cdot)=(1-\varepsilon)\bar p(x,\cdot)+\varepsilon\bar p(\alpha,\cdot)=\big(p(x,\cdot)-\varepsilon\nu\big)+\varepsilon\nu$. Positivity of $\bar p(x,\cdot)$ is exactly the minorization $p(x,\cdot)\ge\varepsilon\nu$. So a $p$-step is the same as first deciding whether to jump to the pseudo-state $\alpha$, and then drawing from $\nu$ (if at $\alpha$) or from the remainder kernel.`,
-      credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`The AR(1) chain $X'=aX+\xi$ discretised to $41$ cells on $[-5,5]$. The heat maps show $p$ ($41\times41$), $v$ ($41\times42$, last column $=\alpha$) and $\bar p$ ($42\times41$, last row $=\alpha$ equal to $\nu$). The rows between the orange lines are those of $A$: there $v$ puts mass $\varepsilon$ on the $\alpha$-column and $\bar p$ has the $\varepsilon\nu$ removed. The readout multiplies $v\bar p$ and compares it with $p$.`,
-      deps: ['prob-5.8.1a'],
-      tags: ['general state space'],
-      viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
-        const cS = v.slider('$c$', 0.25, 2.5, 1, { step: 0.05 });
-        const K = 41;
-        const mk = (M, rows, cols, name, extra) => v.stage({ x: [0, cols], y: [0, rows], height: 250, axes: false, aspect: rows / cols, minWidth: 240, title: name, ...(extra || {}) });
-        const Sp = mk(null, K, K, '$p$'), Sv = mk(null, K, K + 1, '$v$'), Sb = mk(null, K + 1, K, String.raw`$\bar p$`);
-        let key = '', G = null;
-        const get = () => { const k = aS.value + '|' + cS.value; if (k !== key) { key = k; const g = gridAR(aS.value, K, 5), sp = splitGrid(g, cS.value); G = { g, sp }; } return G; };
-        const heatOf = (S, M, rows, cols, mx, k) => {
-          S.heat((x, y) => { const i = Math.floor(rows - y), j = Math.floor(x); return M[i] && M[i][j] !== undefined ? Math.sqrt(M[i][j] / mx) : NaN; }, { range: [0, 1], cmap: 'theme', color: 'accent', rect: [0, 0, cols, rows], res: 3, key: k });
-        };
-        v.render(() => {
-          const { g, sp } = get(), k = key;
-          const mx = Math.max(...g.P.flat());
-          heatOf(Sp, g.P, K, K, mx, 'p' + k); heatOf(Sv, sp.V, K, K + 1, 1, 'v' + k); heatOf(Sb, sp.Pb, K + 1, K, Math.max(...sp.Pb.flat()), 'b' + k);
-          const rowsA = sp.inA.map((b, i) => (b ? i : -1)).filter((i) => i >= 0);
-          if (rowsA.length) { const top = K - rowsA[0], bot = K - rowsA[rowsA.length - 1] - 1; [Sp, Sv].forEach((S, q) => { S.hline(top, { color: 'orange', width: 1.4 }); S.hline(bot, { color: 'orange', width: 1.4 }); }); Sb.hline(K + 1 - rowsA[0], { color: 'orange', width: 1.4 }); Sb.hline(K + 1 - rowsA[rowsA.length - 1] - 1, { color: 'orange', width: 1.4 }); }
-          Sv.vline(K, { color: 'green', width: 1.4 }); Sb.hline(1, { color: 'green', width: 1.4 });
-        });
-        v.readout(() => {
-          const { g, sp } = get(), VP = matMulS(sp.V, sp.Pb); let err = 0, neg = 0, rowErr = 0;
-          VP.forEach((row, i) => row.forEach((x, j) => { err = Math.max(err, Math.abs(x - g.P[i][j])); }));
-          sp.Pb.forEach((row) => { rowErr = Math.max(rowErr, Math.abs(row.reduce((a, b) => a + b, 0) - 1)); row.forEach((x) => { if (x < -1e-15) neg++; }); });
-          return `$\\varepsilon=${fx(sp.eps, 4)}$. Largest entry of $|v\\bar p-p|$: ${err.toExponential(1)}; the rows of $\\bar p$ sum to $1$ within ${rowErr.toExponential(1)}, and ${neg} entries are negative.`;
-        });
-      },
-    },
-    {
-      num: '5.8.5',
-      kind: 'Lemma',
-      name: 'The split chain is a Markov chain',
-      statement: String.raw`Let $\bar X_0,\bar X_1,\bar X_2,\dots$ alternate between $S$ and $\bar S$: $\bar X_{2n}\in S$, $\bar X_{2n+1}\sim v(\bar X_{2n},\cdot)$ and $\bar X_{2n+2}\sim\bar p(\bar X_{2n+1},\cdot)$, each time using only the current state. This is a (time-inhomogeneous, alternating) Markov chain, and $\bar X_{2n}$ has the same law as the original chain $X_n$. The odd-time states $Z_n=\bar X_{2n+1}$ form a Markov chain on $\bar S$ with kernel $\bar p v$; whenever $Z_n=\alpha$ the next original state is drawn from $\nu$, whatever happened before.`,
-      idea: String.raw`The construction is by definition Markov, and $v\bar p=p$ (5.8.4) shows that the even-time marginals are the original chain: two steps of the alternating chain are one step of $p$. The regeneration property is read off the kernel $\bar p(\alpha,\cdot)=\nu$, which does not depend on how the chain reached $\alpha$.`,
-      credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`Simulate the odd-time chain $Z_n$ (kernel $\bar pv$, on the 41-cell discretisation) and look at the step *after* each visit to $\alpha$, split by the previous state of $Z$: negative cell (blue), positive cell (orange) or $\alpha$ itself (purple). All three conditional histograms trace the same law, $\nu v$ (green), though the pasts differ.`,
-      deps: ['prob-5.8.4'],
-      tags: ['general state space'],
-      viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
-        const cS = v.slider('$c$', 0.5, 2.5, 1.5, { step: 0.05 });
-        const nS = v.slider('steps', 2000, 80000, 30000, { log: true, int: true });
-        let seed = 1; v.button('New run', () => { seed++; });
-        const K = 41;
-        const S = v.stage({ x: [-5, 5], y: [0, 0.6], height: 340, axes: 'box', gutter: true, xlabel: String.raw`cell $x$ of $Z_{n+1}$ (probability per unit length)`, title: String.raw`law of $Z_{n+1}$ given $Z_n=\alpha$` });
-        let key = '', R = null;
-        const get = () => {
-          const k = aS.value + '|' + cS.value + '|' + nS.value + '|' + seed; if (k === key) return R; key = k;
-          const g = gridAR(aS.value, K, 5), sp = splitGrid(g, cS.value), r = v.rng(seed * 29 + 1);
-          const Kb = matMulS(sp.Pb, sp.V), cnt = [0, 1, 2].map(() => new Float64Array(K + 1)), tot = [0, 0, 0]; let z = 0, vis = 0, prevz = -1;
-          for (let n = 0; n < nS.value; n++) {
-            const nz = cdfSample(Kb[z], r);
-            if (z === K) { vis++; if (prevz >= 0) { const grp = prevz === K ? 2 : g.xs[prevz] < 0 ? 0 : 1; cnt[grp][nz]++; tot[grp]++; } }
-            prevz = z; z = nz;
-          }
-          const tau = vecM(sp.nu, sp.V);
-          R = { g, sp, cnt, tot, tau, vis }; return R;
-        };
-        v.render(() => {
-          const { g, sp, cnt, tot, tau } = get(); const h = g.h;
-          const cols = ['accent', 'orange', 'purple'];
-          cnt.forEach((c, q) => { if (tot[q] > 0) S.path(Array.from({ length: K }, (_, i) => [g.xs[i], c[i] / tot[q] / h]), { color: cols[q], width: 1.8, alpha: 0.9 }); });
-          S.path(Array.from({ length: K }, (_, i) => [g.xs[i], tau[i] / h]), { color: 'green', width: 3, alpha: 0.7, dash: [8, 5] });
-        });
-        v.legend([['accent', 'previous $Z$ in a negative cell'], ['orange', 'previous $Z$ in a positive cell'], ['purple', 'previous $Z=\\alpha$'], ['green', '$\\nu v$ (S-part)', { dash: true }]]);
-        v.readout(() => { const { sp, cnt, tot, tau, vis } = get(); const tv = (q) => (tot[q] ? 0.5 * Array.from({ length: K }, (_, i) => Math.abs(cnt[q][i] / tot[q] - tau[i])).reduce((a, b) => a + b, 0) : NaN); return `${vis} visits to $\\alpha$ ($\\varepsilon=${fx(sp.eps, 3)}$); sample sizes ${tot.join(' / ')}. TV distance of each conditional law from $\\nu v$: ${[0, 1, 2].map((q) => fx(tv(q), 3)).join(', ')}.`; });
-      },
-    },
-    {
-      num: '5.8.6',
-      kind: 'Lemma',
-      name: 'Expectations transfer to the split chain',
-      statement: String.raw`With $\bar X$ the alternating split chain of 5.8.5 started at $\bar X_0=x\in S$ and a bounded function $f$ on $S$,
-$$E_x f(X_n)=E_x f(\bar X_{2n}),\qquad E_x f(X_{n+1})=E_x\,\bar f(\bar X_{2n+1}),$$
-where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alpha)=\int f\,d\nu$. So the original chain's expectations can be computed on the split chain, where $\alpha$ is an atom.`,
-      idea: String.raw`Since $v\bar p=p$ (5.8.4), a double step of the alternating chain has kernel $p$, so $\bar X_{2n}$ has the law of $X_n$ by induction. For the odd times, one more $\bar p$-step from $\bar X_{2n+1}$ lands on $\bar X_{2n+2}\overset{d}{=}X_{n+1}$; averaging $f$ over that step gives $\bar pf$.`,
-      credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`Choose a test function and a starting cell. Curves: $E f(X_n)$ computed exactly for the original discretised chain (blue) and from the alternating chain (green dashes) — they coincide. Dots: simulation of the alternating chain (3000 runs) at even times $2n$ (gold) and the odd-time quantity $E\bar f(\bar X_{2n+1})$ (purple, plotted at $n+1$), both landing on the blue curve up to sampling noise.`,
-      deps: ['prob-5.8.5'],
-      tags: ['general state space'],
-      viz(v) {
-        const fS = v.select('$f$', [{ value: 'x', label: '$x$' }, { value: 'x2', label: '$x^2$' }, { value: 'ind', label: '$1_{x>1}$' }, { value: 'cos', label: '$\\cos 2x$' }], 'x2');
-        const x0S = v.slider('start $x_0$', -4.5, 4.5, 3, { step: 0.25 });
-        const aS = v.slider('$a$', 0.3, 0.9, 0.7, { step: 0.05 });
-        let seed = 1; v.button('Resimulate', () => { seed++; });
-        const K = 41, NN = 14;
-        const S = v.stage({ x: [0, NN], y: [-1, 1], height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`$E_x f(X_n)$` });
-        const F = { x: (x) => x, x2: (x) => x * x, ind: (x) => (x > 1 ? 1 : 0), cos: (x) => Math.cos(2 * x) };
-        let key = '', R = null;
-        const get = () => {
-          const k = fS.value + '|' + x0S.value + '|' + aS.value + '|' + seed; if (k === key) return R; key = k;
-          const g = gridAR(aS.value, K, 5), sp = splitGrid(g, 1), f = g.xs.map(F[fS.value]), fb = matVecR(sp.Pb, f), r = v.rng(seed * 37 + 5);
-          let i0 = 0; g.xs.forEach((x, i) => { if (Math.abs(x - x0S.value) < Math.abs(g.xs[i0] - x0S.value)) i0 = i; });
-          const Kb = matMulS(sp.Pb, sp.V); let mu = new Array(K).fill(0); mu[i0] = 1; let mz = vecM(mu, sp.V);
-          const ex = [], sp2 = [], odd = [];
-          for (let n = 0; n <= NN; n++) { ex.push(mu.reduce((s, m, i) => s + m * f[i], 0)); mu = vecP(mu, g.P); }
-          mu = new Array(K).fill(0); mu[i0] = 1; let ev = mu.slice(), zs = vecM(ev, sp.V);
-          for (let n = 0; n <= NN; n++) { sp2.push(ev.reduce((s, m, i) => s + m * f[i], 0)); odd.push(zs.reduce((s, m, i) => s + m * fb[i], 0)); ev = vecM(zs, sp.Pb); zs = vecM(ev, sp.V); }
-          const RUNS = 3000, mcE = new Float64Array(NN + 1), mcO = new Float64Array(NN + 1);
-          for (let k = 0; k < RUNS; k++) { let x = i0; for (let n = 0; n <= NN; n++) { mcE[n] += f[x]; const z = cdfSample(sp.V[x], r); mcO[n] += fb[z]; x = cdfSample(sp.Pb[z], r); } }
-          R = { ex, sp2, odd, mcE: Array.from(mcE, (s) => s / RUNS), mcO: Array.from(mcO, (s) => s / RUNS), i0, g }; return R;
-        };
-        v.render(() => {
-          const { ex, sp2, odd, mcE, mcO } = get(); const all = [...ex, ...mcE, ...mcO], lo = Math.min(...all), hi = Math.max(...all), pad = 0.15 * (hi - lo || 1);
-          S.setView([0, NN], [lo - pad, hi + pad]);
-          S.path(ex.map((y, n) => [n, y]), { color: 'accent', width: 3 });
-          S.path(sp2.map((y, n) => [n, y]), { color: 'green', width: 2, dash: [8, 5] });
-          mcE.forEach((y, n) => S.dot(n, y, { color: 'gold', r: 4 }));
-          mcO.forEach((y, n) => n < NN && S.dot(n + 1, y, { color: 'purple', r: 3, hollow: true }));
-        });
-        v.legend([['accent', 'original chain (exact)'], ['green', 'alternating chain (exact)', { dash: true }], ['gold', 'simulated $f(\\bar X_{2n})$'], ['purple', 'simulated $\\bar f(\\bar X_{2n+1})$ vs $E f(X_{n+1})$']]);
-        v.readout(() => { const { ex, sp2, odd, mcE } = get(); let e1 = 0, e2 = 0, e3 = 0; ex.forEach((y, n) => { e1 = Math.max(e1, Math.abs(y - sp2[n])); e3 = Math.max(e3, Math.abs(y - mcE[n])); if (n < NN) e2 = Math.max(e2, Math.abs(ex[n + 1] - odd[n])); }); return `Exact original vs exact alternating: max difference ${e1.toExponential(1)}; odd-time identity (against $Ef(X_{n+1})$): ${e2.toExponential(1)}; simulation vs exact: ${fx(e3, 3)}.`; });
-      },
-    },
-    {
-      num: '5.8.8',
-      kind: 'Theorem',
-      name: 'Recurrence of Harris chains',
-      statement: String.raw`Let $X_n$ be a Harris chain with $A,B,\rho$ as in 5.8.1a. If $P_z(X_n\in A\text{ i.o.})=1$ for every $z$ (equivalently, the atom $\alpha$ of the split chain is recurrent), then the chain is **Harris recurrent**: for every measurable $C$ with $\rho(C)>0$, $P_z(X_n\in C\text{ i.o.})=1$ for all $z\in S$.`,
-      idea: String.raw`Each visit to $A$ triggers, independently, a regeneration with probability $\varepsilon$ (a visit of the split chain to $\alpha$). If $A$ is visited i.o., infinitely many of these independent coin flips succeed (Borel–Cantelli II), so $\alpha$ is visited i.o. After each visit the next state is drawn from $\nu$, and $\nu$ charges the sets $C$ in question, so by the strong Markov property (5.2.5) the independent excursions from $\alpha$ hit $C$ infinitely often.`,
-      credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`A long run of $X_{n+1}=aX_n+\xi$ with $A=[-1,1]$ and $\lambda=$ Lebesgue measure; gold ticks are visits to $\alpha$ (regenerations). Right: running counts of regenerations (gold) and of visits to $C=[1,1.5]$ (accent). For $a<1$ both grow linearly; at $a=1$ (recurrent, but only like a Gaussian random walk) they grow like $\sqrt n$; for $a=1.15$ the chain is transient, the counts stop and the path escapes.`,
-      deps: ['prob-5.8.5', 'prob-5.2.5'],
-      tags: ['general state space', 'recurrence'],
-      scope: String.raw`The statement is a faithful paraphrase only for the typical situation $B\subset A$ and $\nu\ll\lambda$; the exact formulation of 'Harris recurrent' in the source should be checked.`,
-      viz(v) {
-        const st = {};
-        const aS = v.select('$a$', [0.5, 0.9, 1, 1.15].map((a) => ({ value: a, label: String(a) })), 0.9);
-        const nS = v.slider('steps $N$', 500, 20000, 8000, { log: true, int: true });
-        let seed = 1; v.button('New run', () => { seed++; });
-        const P = v.stage({ x: [0, 8000], y: [-8, 8], height: 330, axes: 'box', gutter: true, xlabel: '$n$', ylabel: '$X_n$', title: 'path; ticks are visits to $\\alpha$' });
-        const C = v.stage({ x: [0, 8000], y: [0, 100], height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: 'running counts', weight: 0.9 });
-        let key = '', R = null;
-        const get = () => {
-          const k = aS.value + '|' + nS.value + '|' + seed; if (k === key) return R; key = k;
-          const a = aS.value, mn = minor(a, -1, 1), r = v.rng(seed * 41 + 2), N = nS.value; let x = 0;
-          const path = [], regs = [], cReg = [], cC = []; let nr = 0, nc = 0;
-          for (let n = 1; n <= N; n++) { const [y, g] = harrisStep(x, mn, r); x = Math.max(-1e9, Math.min(1e9, y)); if (g) { nr++; regs.push(n); } if (x >= 1 && x <= 1.5) nc++; if (n % Math.ceil(N / 400) === 0) { path.push([n, x]); cReg.push([n, nr]); cC.push([n, nc]); } }
-          R = { path, regs, cReg, cC, nr, nc, eps: mn.eps, N }; return R;
-        };
-        v.render(() => {
-          const { path, regs, cReg, cC, N } = get(); const mx = Math.max(6, ...path.map((p) => Math.abs(p[1]))), ym = Math.max(5, ...cReg.map((p) => p[1]), ...cC.map((p) => p[1]));
-          P.setView([0, N], [-Math.min(mx, 15) * 1.05, Math.min(mx, 15) * 1.05]);
-          P.hband(-1, 1, { color: 'orange', alpha: 0.25 });
-          P.path(path, { color: 'accent', width: 1.2 });
-          const vy = Math.min(mx, 15) * 1.05;
-          regs.forEach((n) => P.line(n, -vy, n, -vy * 0.85, { color: 'gold', width: 1, alpha: 0.7 }));
-          C.setView([0, N], [0, ym * 1.1]);
-          C.path(cReg, { color: 'gold', width: 2.4 }); C.path(cC, { color: 'accent', width: 2 });
-        });
-        v.legend([['orange', '$A=[-1,1]$'], ['gold', 'regenerations'], ['accent', 'visits to $C=[1,1.5]$']]);
-        v.readout(() => { const { nr, nc, eps, N } = get(); return `$\\varepsilon=${fx(eps, 3)}$. After ${N} steps: ${nr} visits to $\\alpha$, ${nc} visits to $C$ (Lebesgue measure ${0.5}).${aS.value > 1 ? ' The chain is transient: it escapes to infinity.' : ''}`; });
-      },
-    },
-    {
-      num: '5.8.9',
-      kind: 'Theorem',
-      name: 'Recurrent Harris chains have σ-finite stationary measures',
-      statement: String.raw`If $X_n$ is a recurrent Harris chain, then $\mu(C)=E_\alpha\sum_{n=0}^{T_\alpha-1}\mathbf 1_{(\bar X_n\in C)}$ (occupation measure of one excursion of the split chain from $\alpha$, projected to $S$) defines a stationary $\sigma$-finite measure for $p$: $\int\mu(dx)p(x,C)=\mu(C)$. It is finite exactly when $E_\alpha T_\alpha<\infty$.`,
-      idea: String.raw`This is the cycle trick of 5.5.7 applied to the atom $\alpha$ of the split chain: the expected number of visits to a state between two visits to $\alpha$ is a stationary measure for the split chain. Projecting to $S$ gives a measure for the original chain, using the correspondence between stationary measures established in 5.8.10.`,
-      caption: String.raw`For $X_{n+1}=aX_n+\xi$ with $A=[-c,c]$ and its regeneration law $\nu$, histogram the states $X_0,\dots,X_{T-1}$ visited during each cycle between regenerations, and divide by the number of cycles. After normalising, the histogram (accent) matches the exact stationary normal density $N(0,1/(1-a^2))$ (green). The un-normalised total mass per cycle is $E\,T$ (the mean cycle length).`,
-      deps: ['prob-5.5.7', 'prob-5.8.4'],
-      credit: SPLIT_CREDIT,
-      verify: true,
-      tags: ['general state space', 'stationary measures'],
-      viz(v) {
-        const st = {};
-        const aS = v.slider('$a$', 0.2, 0.9, 0.7, { step: 0.05 });
-        const cS = v.slider('$c$', 0.5, 2.5, 1.2, { step: 0.05 });
-        const nS = v.slider('cycles', 50, 20000, 1000, { log: true, int: true });
-        let seed = 1; v.button('New cycles', () => { seed++; });
-        const S = v.stage({ x: [-5, 5], y: [0, 0.8], height: 340, axes: 'box', gutter: true, xlabel: '$x$', title: 'occupation density of the cycles' });
-        const NB = 50;
-        v.render(() => {
-          const a = aS.value, mn = minor(a, -cS.value, cS.value), res = cycles(mn, nS.value, v.rng(seed * 43 + 1), NB, -5, 5), w = 10 / NB, tot = res.counts.reduce((s, c) => s + c, 0);
-          const d = Array.from(res.counts, (c) => c / (tot * w));
-          bars(S, d, -5, w, { fill: 'accent', fillAlpha: 0.3, color: 'accent' });
-          const s2 = stationaryVar(a);
-          S.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
-          let tvv = 0; d.forEach((y, i) => { const x0 = -5 + i * w; tvv += Math.abs(y - (PHI((x0 + w) / Math.sqrt(s2)) - PHI(x0 / Math.sqrt(s2))) / w) * w; });
-          st.out = { ET: res.meanT, N: res.N, eps: mn.eps, tv: tvv / 2, steps: res.steps };
-        });
-        v.legend([['accent', 'excursion occupation (normalised)'], ['green', 'exact $N(0,1/(1-a^2))$']]);
-        v.readout(() => { const o = st.out || {}; return `$\\varepsilon=${fx(o.eps || 0, 3)}$; ${o.N} cycles, ${o.steps} steps; mean cycle length $E\\,T\\approx${fx(o.ET || 0, 2)}$ (total mass of $\\mu$). TV distance of the normalised histogram from the normal: ${fx(o.tv || 0, 3)}.`; });
-      },
-    },
-    {
-      num: '5.8.10',
-      kind: 'Lemma',
-      name: 'Stationary measures of chain and split chain correspond',
-      statement: String.raw`If $\mu$ is a stationary measure for $p$ (a measure on $S$ with $\mu p=\mu$), then $\bar\mu=\mu v$ on $\bar S$ is stationary for the split chain's odd-time kernel $\bar p v$, i.e. $\bar\mu\,\bar pv=\bar\mu$. Conversely, if $\bar\mu$ is stationary for $\bar pv$ then $\mu=\bar\mu\bar p$ is stationary for $p$.`,
-      idea: String.raw`Both directions use only $v\bar p=p$ (5.8.4). If $\mu p=\mu$ then $(\mu v)(\bar pv)=\mu(v\bar p)v=\mu pv=\mu v$. Conversely $(\bar\mu\bar p)p=\bar\mu(\bar pv)\bar p=\bar\mu\bar p$. The same associativity move transports stationarity in both directions.`,
-      credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`On the 41-cell discretisation of the AR(1) chain: the stationary vector $\pi$ (grey outline), its image $\bar\pi=\pi v$ (blue; the mass on $A$ is multiplied by $1-\varepsilon$) and the extra atom $\alpha$ with mass $\varepsilon\pi(A)$ (orange bar at the right end). The readout shows how close $\bar\pi\bar pv-\bar\pi$ and $\bar\pi\bar p-\pi$ are to zero.`,
-      deps: ['prob-5.8.4'],
-      tags: ['general state space', 'stationary measures'],
-      viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.7, { step: 0.05 });
-        const cS = v.slider('$c$', 0.25, 2.5, 1, { step: 0.05 });
-        const S = v.stage({ x: [-5.5, 7], y: [0, 0.3], height: 340, axes: 'box', gutter: true, xlabel: 'cell $x$; the bar at $x=6$ is $\\alpha$', title: String.raw`$\pi$ and $\bar\pi=\pi v$` });
-        v.render(() => {
-          const g = gridAR(aS.value, 41, 5), sp = splitGrid(g, cS.value), pi = stationary(g.P, 6000), pb = vecM(pi, sp.V), w = g.h * 0.9;
-          pi.forEach((p, i) => S.rect(g.xs[i] - g.h / 2, 0, g.xs[i] + g.h / 2, p, { color: 'ink', fill: false, width: 1, alpha: 0.7 }));
-          pb.slice(0, 41).forEach((p, i) => S.rect(g.xs[i] - w / 2, 0, g.xs[i] + w / 2, p, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1 }));
-          S.rect(5.75, 0, 6.25, pb[41], { fill: 'orange', fillAlpha: 0.6, color: 'orange' });
-          const orange = sp.inA.map((b, i) => (b ? g.xs[i] : null)).filter((x) => x !== null);
-          if (orange.length) S.hband(0, 0.004, { color: 'orange', alpha: 0.4 });
-        });
-        v.legend([['ink', '$\\pi$'], ['accent', '$\\bar\\pi=\\pi v$ on $S$'], ['orange', '$\\bar\\pi(\\alpha)=\\varepsilon\\pi(A)$']]);
-        v.readout(() => {
-          const g = gridAR(aS.value, 41, 5), sp = splitGrid(g, cS.value), pi = stationary(g.P, 6000), pb = vecM(pi, sp.V);
-          const K2 = matMulS(sp.Pb, sp.V), pb2 = vecM(pb, K2), back = vecM(pb, sp.Pb);
-          const e1 = Math.max(...pb.map((x, i) => Math.abs(x - pb2[i]))), e2 = Math.max(...pi.map((x, i) => Math.abs(x - back[i])));
-          return `$\\varepsilon=${fx(sp.eps, 3)}$. $\\max|\\bar\\pi\\,\\bar pv-\\bar\\pi|=${e1.toExponential(1)}$, $\\max|\\bar\\pi\\bar p-\\pi|=${e2.toExponential(1)}$ (the power iteration for $\\pi$ is itself accurate only to about 1e-8).`;
-        });
-      },
-    },
-    {
-      num: '5.8.11',
-      kind: 'Theorem',
-      name: 'Recurrent Harris chains: stationary measure is unique',
-      statement: String.raw`A recurrent Harris chain has, up to a constant multiple, only one $\sigma$-finite stationary measure. Consequently, the measures $\mu_A$ built from different regeneration pairs $(A,\nu)$ differ only by a constant factor, and the normalised ones coincide.`,
-      idea: String.raw`Transfer to the split chain (5.8.10): a stationary measure of the original chain gives a stationary measure of the split chain, which is a recurrent chain with an atom $\alpha$ for which uniqueness holds (5.5.9). Hence $\mu$ is a multiple of the occupation measure $\mu_A$ of 5.8.9, and the multiple cancels on normalising, for whichever regeneration set was used.`,
-      credit: 'Harris, 1956; uniqueness proof via the splitting of Nummelin and Athreya–Ney, 1978',
-      verify: true,
-      caption: String.raw`Two regeneration sets for the same chain $X'=aX+\xi$: $A_1=[-c_1,c_1]$ and $A_2=[m-c_2,m+c_2]$. Left: the raw excursion occupation measures $\mu_{A_1}$ (blue) and $\mu_{A_2}$ (orange), whose total masses are the mean cycle lengths and so differ. Right: after dividing by total mass both histograms land on the one stationary normal density (green).`,
-      deps: ['prob-5.8.9', 'prob-5.8.10', 'prob-5.5.9'],
-      tags: ['general state space', 'stationary measures'],
-      viz(v) {
-        const st = {};
-        const aS = v.slider('$a$', 0.3, 0.9, 0.7, { step: 0.05 });
-        const c1 = v.slider('$c_1$', 0.5, 2.5, 1, { step: 0.05 });
-        const mS = v.slider('$m$', -2, 3, 1.5, { step: 0.25 });
-        const c2 = v.slider('$c_2$', 0.5, 2.5, 0.7, { step: 0.05 });
-        let seed = 1; v.button('New cycles', () => { seed++; });
-        const NB = 50, N = 4000;
-        const L = v.stage({ x: [-5, 6], y: [0, 4], height: 320, axes: 'box', gutter: true, xlabel: '$x$', title: String.raw`raw measures $\mu_{A_1},\mu_{A_2}$ (mass per cycle)` });
-        const R = v.stage({ x: [-5, 6], y: [0, 0.6], height: 320, axes: 'box', gutter: true, xlabel: '$x$', title: 'normalised' });
-        v.render(() => {
-          const a = aS.value, w = 11 / NB, s2 = stationaryVar(a);
-          const m1 = minor(a, -c1.value, c1.value), m2 = minor(a, mS.value - c2.value, mS.value + c2.value);
-          const r1 = cycles(m1, N, v.rng(seed * 5 + 1), NB, -5, 6), r2 = cycles(m2, N, v.rng(seed * 5 + 2), NB, -5, 6);
-          const d1 = dens(r1.counts, r1.N, w), d2 = dens(r2.counts, r2.N, w);
-          const mx = Math.max(...d1, ...d2) * 1.1;
-          L.setView([-5, 6], [0, mx]);
-          bars(L, d1, -5, w, { fill: 'accent', fillAlpha: 0.3, color: 'accent' }); bars(L, d2, -5, w, { fill: 'orange', fillAlpha: 0.3, color: 'orange' });
-          const n1 = d1.reduce((s, x) => s + x * w, 0), n2 = d2.reduce((s, x) => s + x * w, 0);
-          bars(R, d1.map((x) => x / n1), -5, w, { fill: 'accent', fillAlpha: 0.25, color: 'accent' }); bars(R, d2.map((x) => x / n2), -5, w, { fill: 'orange', fillAlpha: 0.25, color: 'orange' });
-          R.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
-          st.out = { n1, n2, e1: m1.eps, e2: m2.eps };
-        });
-        v.legend([['accent', '$A_1$'], ['orange', '$A_2$'], ['green', 'exact stationary density']]);
-        v.readout(() => { const o = st.out || {}; return `$\\varepsilon_1=${fx(o.e1 || 0, 3)}$, $\\varepsilon_2=${fx(o.e2 || 0, 3)}$. Total masses $E\\,T_1\\approx${fx(o.n1 || 0, 2)}$ and $E\\,T_2\\approx${fx(o.n2 || 0, 2)}$: the measures differ by a constant factor (ratio ${fx((o.n1 || 0) / (o.n2 || 1), 3)}); normalised, they agree.`; });
-      },
-    },
-    {
-      num: '5.8.12',
-      kind: 'Theorem',
-      name: 'Convergence theorem for Harris chains',
-      statement: String.raw`Let $X_n$ be a recurrent Harris chain with a stationary probability measure $\pi$ that is aperiodic (in the sense that the split chain's atom $\alpha$ has $\gcd\{n:\bar p^n(\alpha,\alpha)>0\}=1$). Then for every initial state $x$ ,
-$$\|p^n(x,\cdot)-\pi\|_{TV}\to0 .$$`,
-      idea: String.raw`Pass to the split chain, which has the atom $\alpha$ and the stationary law $\bar\pi$ (5.8.10, 5.8.11), and apply the coupling convergence theorem 5.6.6 there; expectations transfer back to the original chain by 5.8.6. Recurrence (5.8.8) supplies the needed returns to $\alpha$.`,
-      credit: 'coupling idea of Doeblin; Harris chains: Harris, 1956; splitting: Nummelin and Athreya–Ney, 1978',
-      verify: true,
-      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ started at $x_0$ far from the centre. Left: a histogram of $X_n$ over 4000 simulated chains at the chosen $n$, the exact law $N(a^nx_0,(1-a^{2n})/(1-a^2))$ (blue) and the stationary law $N(0,1/(1-a^2))$ (green). Right: the exact total variation distance against $n$ on a log scale — geometric decay for $|a|<1$; set $a=1$ and nothing converges.`,
-      deps: ['prob-5.8.8', 'prob-5.8.6', 'prob-5.8.11', 'prob-5.6.6'],
-      tags: ['general state space', 'convergence'],
-      viz(v) {
-        const aS = v.slider('$a$', 0.3, 0.95, 0.8, { step: 0.05 });
-        const x0 = v.slider('start $x_0$', -20, 20, 12, { step: 1 });
-        const nS = v.slider('$n$', 0, 40, 5, { int: true });
-        let seed = 1; v.button('Resample', () => { seed++; });
-        const H = v.stage({ x: [-8, 20], y: [0, 0.6], height: 330, axes: 'box', gutter: true, xlabel: '$x$', title: String.raw`law of $X_n$` });
-        const T = v.stage({ x: [0, 40], y: [1e-4, 1.2], ylog: true, height: 330, axes: 'box', gutter: true, xlabel: '$n$', title: 'total variation distance to $\\pi$', weight: 0.9 });
-        let key = '', sims = null;
-        const getSims = () => {
-          const k = aS.value + '|' + x0.value + '|' + seed; if (k === key) return sims; key = k;
-          const r = v.rng(seed * 53 + 7), a = aS.value, R = 4000, xs = new Float64Array(R).fill(x0.value); sims = [Array.from(xs)];
-          for (let n = 1; n <= 40; n++) { for (let k2 = 0; k2 < R; k2++) xs[k2] = a * xs[k2] + r.normal(); sims.push(Array.from(xs)); }
-          return sims;
-        };
-        const law = (n, a, x) => ({ m: a ** n * x, v: n === 0 ? 1e-12 : (1 - a ** (2 * n)) / (1 - a * a) });
-        v.render(() => {
-          const a = aS.value, n = nS.value, s2 = stationaryVar(a), L = law(n, a, x0.value), xs = getSims()[n];
-          const lo = Math.min(-8, x0.value - 8), hi = Math.max(20, x0.value + 8);
-          H.setView([lo, hi], [0, 0.7]);
-          H.hist(xs, { bins: 60, range: [lo, hi], density: true, color: 'accent', fillAlpha: 0.25 });
-          const sd = Math.sqrt(L.v); if (n > 0) H.fn((x) => phi((x - L.m) / sd) / sd, { color: 'accent', width: 2.2 });
-          H.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
-          const pts = []; for (let k = 0; k <= 40; k++) { const q = law(k, a, x0.value); pts.push([k, k === 0 ? 1 : Math.max(1e-4, tvNormal(q.m, q.v, 0, s2))]); }
-          T.path(pts, { color: 'green', width: 2.4 }); T.dot(n, pts[n][1], { color: 'gold', r: 5 }); T.vline(n, { color: 'gold', width: 1.2, dash: true });
-        });
-        v.legend([['accent', 'simulated / exact law of $X_n$'], ['green', 'stationary law']]);
-        v.readout(() => { const a = aS.value, n = nS.value, L = law(n, a, x0.value); return `$n=${n}$: $X_n\\sim N(${fx(L.m, 2)},${fx(L.v, 2)})$; stationary variance $${fx(stationaryVar(a), 2)}$; $\\|p^n(x_0,\\cdot)-\\pi\\|_{TV}=${fx(n === 0 ? 1 : tvNormal(L.m, L.v, 0, stationaryVar(a)), 4)}$.`; });
-      },
-    },
-    {
-      num: '5.8.13',
-      kind: 'Lemma',
-      name: 'Exponential minus independent Y has an exponential tail',
-      statement: String.raw`Let $X$ be exponential with rate $\lambda$ and $Y\ge0$ independent of $X$. Then for $t\ge0$
-$$P(X-Y>t)=P(X-Y>0)\,e^{-\lambda t},\qquad P(X-Y>0)=E\,e^{-\lambda Y}.$$
-That is, conditionally on $X>Y$ the excess $X-Y$ is again exponential with rate $\lambda$.`,
-      idea: String.raw`Condition on $Y=y\ge0$ and use the memoryless property of $X$: $P(X>y+t)=e^{-\lambda y}e^{-\lambda t}$. Integrating over the law of $Y$ gives $P(X-Y>t)=E e^{-\lambda Y}\,e^{-\lambda t}$. If $Y$ may be negative the identity fails for small $t$, because $P(X>y+t)=1$ when $y+t<0$.`,
-      see: ['stoch-11.12'],
-      verify: true,
-      scope: String.raw`The syllabus entry has no hypothesis on $Y$; the statement here requires $Y\ge0$ (or at least that the identity is only asserted for $t$ beyond the smallest negative value of $Y$) — please compare with the source before relying on the general version.`,
-      tags: ['queues', 'distributions'],
-      caption: String.raw`$X\sim\mathrm{Exp}(\lambda)$ and an independent $Y$ chosen from the menu. The accent curve is the empirical conditional tail $P(X-Y>t\mid X-Y>0)$ from 40000 samples on a log scale; the green line is $e^{-\lambda t}$. For $Y\ge0$ they coincide; the last menu entry lets $Y$ be negative (uniform on $[-1,2]$) and the curve bends for $t<1$.`,
-      deps: ['prob-2.1.12'],
-      viz(v) {
-        const st = {};
-        const yS = v.select('law of $Y$', [{ value: 'c', label: '$Y=0.7$' }, { value: 'u', label: '$U(0,3)$' }, { value: 'b', label: '$\\{0,2\\}$' }, { value: 'neg', label: '$U(-1,2)$ (can be $<0$)' }], 'u');
-        const lS = v.slider('rate $\\lambda$', 0.3, 2, 1, { step: 0.05 });
-        let seed = 1; v.button('Resample', () => { seed++; });
-        const S = v.stage({ x: [0, 6], y: [1e-3, 1.2], ylog: true, height: 340, axes: 'box', gutter: true, xlabel: '$t$', title: String.raw`$P(X-Y>t\mid X-Y>0)$` });
-        v.render(() => {
-          const lam = lS.value, r = v.rng(seed * 59 + 4), N = 40000, ds = [];
-          for (let k = 0; k < N; k++) { const x = -Math.log(1 - r()) / lam; let y; switch (yS.value) { case 'c': y = 0.7; break; case 'u': y = 3 * r(); break; case 'b': y = r() < 0.5 ? 0 : 2; break; default: y = -1 + 3 * r(); } if (x - y > 0) ds.push(x - y); }
-          ds.sort((a, b) => a - b); const M = ds.length, pts = [];
-          for (let i = 0; i <= 120; i++) { const t = (6 * i) / 120; let lo = 0, hi = M; while (lo < hi) { const mid = (lo + hi) >> 1; if (ds[mid] <= t) lo = mid + 1; else hi = mid; } const s = (M - lo) / M; pts.push([t, Math.max(1e-3, s)]); }
-          S.path(pts, { color: 'accent', width: 2.6 });
-          S.fn((t) => Math.exp(-lam * t), { color: 'green', width: 2.2, dash: [8, 5] });
-          st.out = { p: M / N, N };
-        });
-        v.legend([['accent', 'empirical tail'], ['green', '$e^{-\\lambda t}$', { dash: true }]]);
-        v.readout(() => { const lam = lS.value, p = (st.out || {}).p || 0; const ex = { c: Math.exp(-lam * 0.7), u: (1 - Math.exp(-3 * lam)) / (3 * lam), b: 0.5 * (1 + Math.exp(-2 * lam)), neg: null }[yS.value]; return `Empirical $P(X-Y>0)=${fx(p, 4)}$; ${ex === null ? 'for $Y$ taking negative values the formula $Ee^{-\\lambda Y}$ no longer applies and the tail is not a pure exponential.' : `$Ee^{-\\lambda Y}=${fx(ex, 4)}$.`}`; });
-      },
-    },
-  ],
-};
+ },
+ {
+  num:'5.8.4',kind:'Lemma',name:'Splitting identities for the auxiliary kernel',
+  statement:String.raw`Adjoin $\alpha$ to $S$. For $x\in S$ define
+$$\bar p(x,D)=p(x,D\cap S)-\varepsilon\mathbf1_A(x)\rho(D\cap S)+\varepsilon\mathbf1_A(x)\mathbf1_D(\alpha),$$
+and set $\bar p(\alpha,D)=\int\rho(dx)\bar p(x,D)$. The recovery kernel $v$ fixes $x\in S$ and sends $\alpha$ to $\rho$. With kernels composed from left to right,
+$$v\bar p=\bar p,\qquad \bar p v=p,$$
+where the second identity is restricted to starting states in $S$.`,
+  idea:String.raw`Recovery affects only the atom. Its row is defined as the $\rho$-average of the other augmented rows, giving $v\bar p=\bar p$. Recovering after an augmented step restores exactly the mass $\varepsilon\rho$ removed from $p$, giving $\bar pv=p$. The augmented kernel needs no division by $1-\varepsilon$, so $\varepsilon=1$ is allowed.`,
+  caption:String.raw`A finite AR(1) approximation has 41 representative cells: Gaussian tails are folded into the end cells and each next step starts at its cell centre. These are not the exact multi-step continuous laws. The panels show $p$ (41×41), the source's augmented $\bar p$ (42×42), and recovery $v$ (42×41). The last row/column is $\alpha$. Square-root colour intensity makes small entries visible; matrix identities are checked on the probabilities themselves.`,
+  deps:['prob-5.8.1a'],refs:ref('construction pp.323–324 and Lemma 5.8.4, p.324'),links:{source},tags:['general state space'],
+  viz(v){const a=v.slider('$a$',.2,.9,.6,{step:.05}),c=v.slider('$c$',.25,2.5,1,{step:.05});const stages=[[41,41,'$p$'],[42,42,'$\\bar p$'],[42,41,'$v$']].map(([r,k,title])=>v.stage({x:[0,k],y:[0,r],height:280,axes:false,title,minWidth:220}));let st;
+   v.render(()=>{const {g,sp}=finiteSetup(a.value,c.value),k=`${a.value}|${c.value}`;[g.P,sp.Q,sp.V].forEach((M,i)=>heat(stages[i],M,k+i));const recovered=matMulS(sp.U,sp.V),rebuilt=matMulS(sp.V,sp.U);st={eps:sp.eps,p:Math.max(...recovered.map((r,i)=>maxDiff(r,g.P[i]))),q:Math.max(...rebuilt.map((r,i)=>maxDiff(r,sp.Q[i]))),row:Math.max(...sp.Q.map(r=>Math.abs(r.reduce((a,b)=>a+b)-1))),negative:sp.Q.flat().filter(x=>x< -1e-14).length};});
+   v.readout(()=>st&&`$\\varepsilon=${fx(st.eps,5)}$. Maximum discrepancies: $\\bar pv-p$: ${st.p.toExponential(2)}; $v\\bar p-\\bar p$: ${st.q.toExponential(2)}. Augmented row-sum error ${st.row.toExponential(2)}; ${st.negative} negative entries.`);
+  }
+ },
+ {
+  num:'5.8.5',kind:'Lemma',name:'The split chain is a Markov chain',
+  statement:String.raw`Let $Y_n$ alternate kernels: $Y_{2k}\to Y_{2k+1}$ uses recovery $v$ and $Y_{2k+1}\to Y_{2k+2}$ uses $\bar p$. Then $\bar X_n=Y_{2n}$ is a homogeneous Markov chain on $S\cup\{\alpha\}$ with kernel $\bar p$, while $X_n=Y_{2n+1}$ is a homogeneous Markov chain on $S$ with kernel $p$.`,
+  idea:String.raw`The even skeleton has kernel $v\bar p=\bar p$, and the odd skeleton has kernel $\bar pv=p$. At the augmented atom the next augmented state has law $\bar p(\alpha,\cdot)=\rho\bar p$ and the recovered state has law $\rho$. These laws are independent of the preceding history. They are different laws on different spaces.`,
+  caption:String.raw`For the finite 41-cell example, simulate the augmented chain and group departures from $\alpha$ by the preceding state: a negative cell, a nonnegative cell, or $\alpha$. Each group estimates the full augmented row $\bar p(\alpha,\cdot)$, including its atom mass at the separate bar $x=6$. Empty groups are reported explicitly. The total variation calculation includes all 42 states.`,
+  deps:['prob-5.8.4'],refs:ref('Lemma 5.8.5, p.324'),links:{source},tags:['general state space'],
+  viz(v){const a=v.slider('$a$',.2,.9,.6,{step:.05}),c=v.slider('$c$',.5,2.5,1.5,{step:.05}),steps=v.slider('steps',2000,80000,30000,{int:true,log:true});let seed=1,st;v.button('New run',()=>seed++);const S=v.stage({x:[-5.2,6.5],y:[0,1],height:350,axes:'box',gutter:true,xlabel:'$x$; last bar $\\alpha$',title:'departure probability mass, including the atom'});
+   v.render(()=>{const {g,sp}=finiteSetup(a.value,c.value),r=v.rng(seed*29+1),cnt=Array.from({length:3},()=>new Array(42).fill(0)),tot=[0,0,0];let z=0,previous=-1;
+    for(let n=0;n<steps.value;n++){const next=cdfSample(sp.Q[z],r);if(z===41&&previous>=0){const group=previous===41?2:g.xs[previous]<0?0:1;cnt[group][next]++;tot[group]++;}previous=z;z=next;}
+    const exact=sp.Q[41],ys=[...exact,...cnt.flatMap((row,i)=>tot[i]?row.map(x=>x/tot[i]):[])];S.setView([-5.2,6.5],[0,Math.max(...ys)*1.16]);const xs=[...g.xs,6];cnt.forEach((row,q)=>{if(tot[q])bars(S,row.map(x=>x/tot[q]),xs,g.h*.75,['accent','orange','purple'][q]);});bars(S,exact,xs,g.h,'green',true);st={tot,tv:cnt.map((row,q)=>tot[q]?row.reduce((s,x,i)=>s+Math.abs(x/tot[q]-exact[i]),0)/2:NaN),atom:exact[41]};});
+   v.legend([['accent','previous negative'],['orange','previous nonnegative'],['purple','previous atom'],['green','exact full augmented row']]);v.readout(()=>st&&`Group sizes ${st.tot.join(' / ')}; full 42-state TV errors ${st.tv.map(value).join(' / ')}. Exact next-atom probability $${fx(st.atom,4)}$. Finite frequencies illustrate the Markov construction.`);
+  }
+ },
+ {
+  num:'5.8.6',kind:'Lemma',name:'Expectations transfer to the split chain',
+  statement:String.raw`For a probability measure $\eta$ on $S$ and a bounded measurable function $f:S\to\mathbb R$, put $\bar f=vf$: $\bar f(x)=f(x)$ on $S$ and $\bar f(\alpha)=\int f\,d\rho$. With both skeletons started from $\eta$,
+$$E_\eta f(X_n)=E_\eta\bar f(\bar X_n)\quad(n\ge0).$$`,
+  idea:String.raw`The original state $X_n$ is obtained from the augmented state $\bar X_n$ by recovery $v$. Conditional averaging gives $E[f(X_n)\mid\bar X_n]=(vf)(\bar X_n)$. Equivalently, $\eta\bar p^{\,n}v=\eta p^n$. There is no extra shift of the displayed time index.`,
+  caption:String.raw`On the finite cell chain all four offered functions are bounded. Blue: exact finite-matrix expectation under $p$. Green dashes: exact expectation of $vf$ under the source's augmented kernel at the same $n$. Gold and purple points estimate those two expectations in 3000 runs. The selected start is snapped to its nearest representative cell and reported below.`,
+  deps:['prob-5.8.5'],refs:ref('Lemma 5.8.6, p.324'),links:{source},tags:['general state space'],
+  viz(v){const f=v.select('$f$',['x','x²','indicator x>1','cos 2x'],'x²'),start=v.slider('start $x_0$',-4.5,4.5,3,{step:.25}),a=v.slider('$a$',.3,.9,.7,{step:.05});let seed=1,st;v.button('Resimulate',()=>seed++);const S=v.stage({x:[0,14],y:[0,10],height:350,axes:'box',gutter:true,xlabel:'$n$',title:'same-time expectation transfer'});
+   v.render(()=>{const {g,sp}=finiteSetup(a.value),fn=f.value==='x'?x=>x:f.value==='x²'?x=>x*x:f.value==='indicator x>1'?x=>Number(x>1):x=>Math.cos(2*x),fs=g.xs.map(fn),fb=matVecR(sp.V,fs);let i0=g.xs.reduce((best,x,i)=>Math.abs(x-start.value)<Math.abs(g.xs[best]-start.value)?i:best,0),mu=new Array(41).fill(0),aug=new Array(42).fill(0);mu[i0]=aug[i0]=1;const exact=[],split=[];
+    for(let n=0;n<=14;n++){exact.push(mu.reduce((s,p,i)=>s+p*fs[i],0));split.push(aug.reduce((s,p,i)=>s+p*fb[i],0));mu=vecM(mu,g.P);aug=vecM(aug,sp.Q);}
+    const r=v.rng(seed*37+5),mc=new Array(15).fill(0),ms=new Array(15).fill(0);for(let k=0;k<3000;k++){let x=i0,z=i0;for(let n=0;n<=14;n++){mc[n]+=fs[x]/3000;ms[n]+=fb[z]/3000;x=cdfSample(g.P[x],r);z=cdfSample(sp.Q[z],r);}}
+    const all=[...exact,...split,...mc,...ms],lo=Math.min(...all),hi=Math.max(...all),pad=.15*(hi-lo||1);S.setView([0,14],[lo-pad,hi+pad]);S.path(exact.map((y,n)=>[n,y]),{color:'accent',width:3});S.path(split.map((y,n)=>[n,y]),{color:'green',dash:true,width:2});mc.forEach((y,n)=>S.dot(n,y,{color:'gold',r:3}));ms.forEach((y,n)=>S.dot(n,y,{color:'purple',r:3,hollow:true}));st={err:maxDiff(exact,split),mc:maxDiff(exact,mc),ms:maxDiff(exact,ms),x:g.xs[i0]};});
+   v.legend([['accent','original exact'],['green','augmented exact'],['gold','original Monte Carlo'],['purple','augmented Monte Carlo']]);v.readout(()=>st&&`Representative start $${fx(st.x,4)}$. Exact identity discrepancy ${st.err.toExponential(2)}; maximum finite-grid Monte Carlo deviations ${fx(st.mc,3)} / ${fx(st.ms,3)}.`);
+  }
+ },
+ {
+  num:'5.8.8',kind:'Theorem',name:'Recurrence of Harris chains',
+  statement:String.raw`For the augmented chain let $R=\inf\{n\ge1:\bar X_n=\alpha\}$ and call the chain recurrent when $P_\alpha(R<\infty)=1$. Define
+$$\lambda(C)=\sum_{n\ge1}2^{-n}\bar p^{\,n}(\alpha,C).$$
+In the recurrent case, $\lambda(C)>0$ implies $P_\alpha(\bar X_n\in C\text{ infinitely often})=1$. Also $P_x(R<\infty)=1$ for $\lambda$-almost every $x$. The latter conclusion need not hold for every starting state.`,
+  idea:String.raw`Successive excursions from the recurrent atom are independent with the same law. Any set reachable from the atom with positive probability is visited during infinitely many excursions. If a set reachable from $\alpha$ had positive probability of never returning, the strong Markov property would contradict recurrence at $\alpha$. This yields an almost-everywhere conclusion with respect to $\lambda$, not an all-state conclusion.`,
+  caption:String.raw`A countable analogue of the source's exceptional-state example: state 0 is absorbing; from integer $j\ge2$, jump to 0 with probability $j^{-2}$ or to $j+1$ otherwise. Take $A=\{0\}$ and split its transition with $\varepsilon=1/2$. The recurrent augmented class is $\{0,\alpha\}$, which supports $\lambda$. From $j\ge2$ the exact probability of never reaching that class is $(j-1)/j>0$. Sample paths and exact finite-horizon avoidance probabilities show why exceptional starts cannot be discarded.`,
+  deps:['prob-5.8.5','prob-5.2.5'],refs:ref('Example 5.8.7 and Theorem 5.8.8 with remark, p.325'),links:{source},tags:['general state space','recurrence'],
+  viz(v){const start=v.select('start',[{value:0,label:'recurrent core 0'},{value:2,label:'exceptional 2'},{value:10,label:'exceptional 10'}],2),N=v.slider('horizon',20,500,100,{int:true});let seed=1,st;v.button('New run',()=>seed++);const P=v.stage({x:[0,100],y:[0,110],height:330,axes:'box',gutter:true,xlabel:'$n$',title:'core and exceptional-state paths'}),C=v.stage({x:[0,100],y:[0,1.05],height:330,axes:'box',gutter:true,xlabel:'$n$',title:'probability of avoiding the recurrent core'});
+   v.render(()=>{const r=v.rng(seed*41+2),j=start.value,n=N.value,paths=Array.from({length:12},()=>{let x=j;const ps=[[0,x]];for(let k=1;k<=n;k++){if(x!==0)x=r()<1/(x*x)?0:x+1;ps.push([k,x]);}return ps;});P.setView([0,n],[-1,j+n+2]);paths.forEach((p,i)=>P.path(p,{color:i%2?'orange':'accent',width:1.2,alpha:.65}));P.hline(0,{color:'green',width:2});C.setView([0,n],[0,1.05]);C.path(Array.from({length:n+1},(_,k)=>[k,escapeSurvival(j,k)]),{color:'accent',width:2.5});const limit=j===0?0:(j-1)/j;C.hline(limit,{color:'red',dash:true,width:2});st={j,n,p:escapeSurvival(j,n),limit};});
+   v.legend([['accent','exact finite avoidance / sample paths'],['green','recurrent core'],['red','limiting avoidance']]);v.readout(()=>st&&`Start ${st.j}: avoidance through ${st.n} steps $${fx(st.p,5)}$; probability of never reaching the recurrent class $${fx(st.limit,5)}$. Every exceptional state still has a positive probability of reaching $A$, as the definition requires.`);
+  }
+ },
+ {
+  num:'5.8.9',kind:'Theorem',name:'Recurrent Harris chains have σ-finite stationary measures',
+  statement:String.raw`In the recurrent case, with $R=\inf\{n\ge1:\bar X_n=\alpha\}$, the augmented occupation measure
+$$\bar\mu(C)=E_\alpha\sum_{n=0}^{R-1}\mathbf1_{\{\bar X_n\in C\}}$$
+is stationary, $\sigma$-finite and absolutely continuous with respect to $\lambda$ from 5.8.8. Recovery gives $\mu=\bar\mu v$, a stationary measure for $p$. The total mass of each measure is $E_\alpha R$; normalisation to a probability is possible when this mean is finite.`,
+  idea:String.raw`Summing one cycle telescopes the occupation balance: the initial and terminal atom contributions cancel. For $G_{k,m}=\{x:\bar p^k(x,\alpha)\ge1/m\}$, visits can be grouped into trials at least $k$ steps apart; each has conditional return probability at least $1/m$, giving finite expected occupation on these sets. They cover the part reached from the recurrent atom, up to a $\lambda$-null set. This gives $\sigma$-finiteness even when the cycle's total expected length is infinite. Recovery preserves mass and stationarity.`,
+  caption:String.raw`The finite AR(1) approximation has an exactly solvable killed-kernel occupation system. Compare its stationary probability vector (green outlines) with projected occupation from completed augmented cycles (blue). A cycle includes its initial atom and excludes its terminal return; recovery distributes each atom contribution according to $\rho$. If the step budget interrupts a cycle, that entire unfinished cycle is discarded and reported. No window truncation or partial-cycle mass is normalised away.`,
+  deps:['prob-5.5.7','prob-5.8.4'],refs:ref('Theorem 5.8.9 and proof, p.326'),links:{source},tags:['general state space','stationary measures'],
+  viz(v){const a=v.slider('$a$',.2,.9,.7,{step:.05}),c=v.slider('$c$',.5,2.5,1.2,{step:.05}),N=v.slider('completed cycles requested',50,5000,1000,{int:true,log:true});let seed=1,st;v.button('New cycles',()=>seed++);const S=v.stage({x:[-5,5],y:[0,.6],height:350,axes:'box',gutter:true,xlabel:'cell centre',title:'projected completed-cycle occupation per unit cell width'});
+   v.render(()=>{const {g,sp}=finiteSetup(a.value,c.value),exact=cycleMeasure(sp),sample=completeCycles(sp,N.value,v.rng(seed*43+1)),d=sample.pi.map(x=>x/g.h),e=exact.pi.map(x=>x/g.h);S.setView([-5,5],[0,1.15*Math.max(...d,...e)]);bars(S,d,g.xs,g.h*.85,'accent');bars(S,e,g.xs,g.h,'green',true);st={sample,exact,error:maxDiff(vecM(exact.mu,g.P),exact.mu),tv:sample.completed?sample.pi.reduce((s,x,i)=>s+Math.abs(x-exact.pi[i]),0)/2:NaN};});
+   v.legend([['accent','completed cycles'],['green','exact finite stationary vector']]);v.readout(()=>st&&`${st.sample.completed} completed cycles, ${st.sample.steps} attempted steps; discarded unfinished length ${st.sample.discarded}${st.sample.capped?' (step budget reached)':''}. Mean return: sample ${value(st.sample.completed?st.sample.ET:NaN)}, exact finite $${fx(st.exact.ET,3)}$. Full 41-state empirical TV error ${value(st.tv)}; exact occupation-balance residual ${st.error.toExponential(2)}.`);
+  }
+ },
+ {
+  num:'5.8.10',kind:'Lemma',name:'Stationary measures of chain and split chain correspond',
+  statement:String.raw`If $\eta$ is a $\sigma$-finite stationary measure for $p$, then $\eta(A)<\infty$. Its augmentation $\bar\eta=\eta\bar p$ is stationary for $\bar p$ and satisfies
+$$\bar\eta(\alpha)=\varepsilon\eta(A)<\infty,\qquad \bar\eta v=\eta.$$
+On $S$, $\bar\eta(C)=\eta(C)-\varepsilon\eta(A)\rho(C)$.`,
+  idea:String.raw`If $\eta(A)$ were infinite, minorization and stationarity would force $\eta(C)=\infty$ whenever $\rho(C)>0$, contradicting a countable cover of the probability space by sets of finite $\eta$ measure. Thus the subtraction is well defined. Recovery restores the removed mass, and $\bar\eta\bar p=\bar\eta v\bar p=\eta\bar p=\bar\eta$.`,
+  caption:String.raw`For the finite cell chain, grey outlines show $\pi$, blue bars show the $S$ part of $\bar\pi=\pi\bar p$, and orange is its actual atom mass $\varepsilon\pi(A)$ at $x=6$. The removed mass is spread according to $\rho$ over the whole space, rather than merely scaling the bars within $A$. Check recovery and stationarity residuals below.`,
+  deps:['prob-5.8.4'],refs:ref('Lemma 5.8.10 and proof, p.326'),links:{source},tags:['general state space','stationary measures'],
+  viz(v){const a=v.slider('$a$',.2,.9,.7,{step:.05}),c=v.slider('$c$',.25,2.5,1,{step:.05});let st;const S=v.stage({x:[-5.2,6.5],y:[0,1],height:350,axes:'box',gutter:true,xlabel:'$x$; last bar $\\alpha$',title:'stationary mass and its source augmentation'});
+   v.render(()=>{const {g,sp}=finiteSetup(a.value,c.value),pi=stationary(g.P,3000),aug=vecM(pi,sp.U),back=vecM(aug,sp.V),again=vecM(aug,sp.Q);S.setView([-5.2,6.5],[0,1.15*Math.max(...pi,...aug)]);bars(S,pi,g.xs,g.h,'ink',true);bars(S,aug.slice(0,41),g.xs,g.h*.75,'accent');bars(S,[aug[41]],[6],.4,'orange');const piA=pi.reduce((s,p,i)=>s+(sp.inA[i]?p:0),0);st={recover:maxDiff(back,pi),stationary:maxDiff(again,aug),original:maxDiff(vecM(pi,g.P),pi),atom:aug[41],expected:sp.eps*piA};});
+   v.legend([['ink','original $\\pi$'],['accent','augmented $S$ mass'],['orange','augmented atom']]);v.readout(()=>st&&`Atom mass $${fx(st.atom,6)}$; $\\varepsilon\\pi(A)=${fx(st.expected,6)}$. Recovery residual ${st.recover.toExponential(2)}, augmented stationarity residual ${st.stationary.toExponential(2)}, original stationary-vector residual ${st.original.toExponential(2)}.`);
+  }
+ },
+ {
+  num:'5.8.11',kind:'Theorem',name:'Recurrent Harris chains: stationary measure is unique',
+  statement:String.raw`For a recurrent Harris chain and the cycle measure $\mu$ of 5.8.9, every $\sigma$-finite stationary measure $\eta$ satisfies
+$$\eta=\bar\eta(\alpha)\,\mu,\qquad\bar\eta=\eta\bar p.$$
+Thus the nonzero $\sigma$-finite stationary measure is unique up to a positive constant. If its total mass is finite, normalisation gives a unique stationary probability.`,
+  idea:String.raw`Lift $\eta$ using 5.8.10; its atom mass is finite. The excursion comparison for a recurrent atom shows $\bar\eta\ge\bar\eta(\alpha)\bar\mu$. Any excess would feed positive mass back into $\alpha$, because every state has a positive probability of reaching it, contradicting equality of the atom masses. Recover with $v$. The argument needs positive accessibility from every state, not almost-sure return from every state.`,
+  caption:String.raw`Two regeneration intervals for the same finite AR(1) approximation. Solve both augmented cycle-occupation systems directly. Left: raw recovered measures per unit cell width; their total masses are the corresponding mean return times. Right: normalising either gives the same finite-chain stationary vector. These are exact finite-matrix calculations up to floating-point error; they are not a proof of the general theorem or an exact continuous Gaussian law.`,
+  deps:['prob-5.8.9','prob-5.8.10','prob-5.5.9'],refs:ref('Theorem 5.8.11 and proof, p.326'),links:{source},tags:['general state space','stationary measures'],
+  viz(v){const a=v.slider('$a$',.3,.9,.7,{step:.05}),c1=v.slider('$c_1$',.5,2.5,1,{step:.05}),m=v.slider('second centre $m$',-2,3,1.5,{step:.25}),c2=v.slider('$c_2$',.5,2.5,.7,{step:.05});const L=v.stage({x:[-5,5],y:[0,4],height:330,axes:'box',gutter:true,title:'raw occupation per cycle'}),R=v.stage({x:[-5,5],y:[0,.5],height:330,axes:'box',gutter:true,title:'normalised finite stationary laws'});let st;
+   v.render(()=>{const g=gridAR(a.value,41,5),s1=intervalSplit(g,-c1.value,c1.value),s2=intervalSplit(g,m.value-c2.value,m.value+c2.value),r1=cycleMeasure(s1),r2=cycleMeasure(s2),d1=r1.mu.map(x=>x/g.h),d2=r2.mu.map(x=>x/g.h),p1=r1.pi.map(x=>x/g.h),p2=r2.pi.map(x=>x/g.h);L.setView([-5,5],[0,Math.max(...d1,...d2)*1.12]);R.setView([-5,5],[0,Math.max(...p1,...p2)*1.12]);bars(L,d1,g.xs,g.h*.85,'accent');bars(L,d2,g.xs,g.h*.65,'orange');bars(R,p1,g.xs,g.h*.85,'accent');bars(R,p2,g.xs,g.h,'orange',true);st={t1:r1.ET,t2:r2.ET,error:maxDiff(r1.pi,r2.pi),raw:maxDiff(r1.mu,r2.mu.map(x=>x*r1.ET/r2.ET))};});
+   v.legend([['accent','first interval'],['orange','second interval']]);v.readout(()=>st&&`Exact finite mean returns $${fx(st.t1,4)}$ and $${fx(st.t2,4)}$; mass ratio $${fx(st.t1/st.t2,4)}$. Normalised discrepancy ${st.error.toExponential(2)}; raw proportionality residual ${st.raw.toExponential(2)}.`);
+  }
+ },
+ {
+  num:'5.8.12',kind:'Theorem',name:'Convergence theorem for Harris chains',
+  statement:String.raw`Let the Harris chain be recurrent and have a stationary probability $\pi$. Suppose its augmented atom is aperiodic: $\gcd\{n\ge1:\bar p^{\,n}(\alpha,\alpha)>0\}=1$. For every starting state $x$ satisfying $P_x(R<\infty)=1$,
+$$\|p^n(x,\cdot)-\pi\|_{TV}\longrightarrow0.$$
+Here $R$ is the augmented chain's first positive-time visit to $\alpha$. This hitting condition holds for $\pi$-almost every $x$, and is a necessary hypothesis in the source's generality.`,
+  idea:String.raw`Existence of a stationary probability and uniqueness imply finite mean return to the augmented atom. Aperiodic renewal coupling synchronises two copies' return cycles, one started from $x$ and one in stationarity; the almost-sure hitting hypothesis is needed to start that coupling. The coupling inequality bounds total variation by the chance of not yet coupling. Recovery transfers the bound to the original chain.`,
+  caption:String.raw`In AR(1) mode $|a|<1$ and every start satisfies the hitting condition. At $n=0$ the law is a Dirac atom, not a narrow Gaussian; at $n>0$ it is the displayed Gaussian. TV uses analytic Gaussian crossing points and CDFs. Values below $10^{-12}$ are shown at the plot floor. Switch to the exceptional-state chain of 5.8.8: its stationary law is the point mass at 0, but TV from start 2 or 10 tends to a positive value because the required hitting probability is less than one.`,
+  deps:['prob-5.8.8','prob-5.8.6','prob-5.8.11','prob-5.6.6'],refs:ref('aperiodicity definition and Theorem 5.8.12 with note, p.327'),links:{source},tags:['general state space','convergence'],
+  viz(v){const mode=v.select('chain',['AR(1)','exceptional start'],'AR(1)'),a=v.slider('$a$',.3,.95,.8,{step:.05}),x0=v.slider('AR start $x_0$',-20,20,12,{int:true}),n=v.slider('$n$',0,40,5,{int:true}),j=v.select('exceptional initial state',[{value:0,label:'core 0'},{value:2,label:'2'},{value:10,label:'10'}],2);let seed=1,st;v.button('Resample',()=>seed++);const H=v.stage({x:[-8,20],y:[0,.6],height:340,axes:'box',gutter:true,title:'finite-time law'}),T=v.stage({x:[0,40],y:[1e-12,1.2],ylog:true,height:340,axes:'box',gutter:true,xlabel:'$n$',title:'TV distance to the stationary law (floor 10⁻¹²)'});
+   v.render(()=>{const ar=mode.value==='AR(1)';a.el.hidden=x0.el.hidden=!ar;j.el.hidden=ar;const N=n.value;let curve,tv;
+    if(ar){const aa=a.value,s2=stationaryVar(aa),mean=aa**N*x0.value,variance=N===0?0:(1-aa**(2*N))/(1-aa*aa);curve=Array.from({length:41},(_,k)=>[k,k===0?1:gaussianTV(aa**k*x0.value,(1-aa**(2*k))/(1-aa*aa),0,s2)]);tv=curve[N][1];
+     if(N===0){H.setView([x0.value-2,x0.value+2],[0,1.15]);H.line(x0.value,0,x0.value,1,{color:'accent',width:3});H.dot(x0.value,1,{color:'accent',r:5});H.text('Dirac atom: probability mass 1',x0.value,1.08,{align:'center',size:12,color:'muted'});}
+     else{const r=v.rng(seed*53+7),xs=Array.from({length:4000},()=>{let x=x0.value;for(let k=0;k<N;k++)x=aa*x+r.normal();return x;}),lo=Math.min(-6*Math.sqrt(s2),mean-6*Math.sqrt(variance),...xs),hi=Math.max(6*Math.sqrt(s2),mean+6*Math.sqrt(variance),...xs),bins=60,w=(hi-lo)/bins,cnt=new Array(bins).fill(0);xs.forEach(x=>cnt[Math.min(bins-1,Math.floor((x-lo)/w))]++);const density=cnt.map(x=>x/(4000*w));H.setView([lo,hi],[0,1.15*Math.max(...density,phi(0)/Math.sqrt(variance),phi(0)/Math.sqrt(s2))]);H.hist({edges:Array.from({length:bins+1},(_,i)=>lo+i*w),counts:cnt,density},{density:true,color:'accent',fillAlpha:.25});H.fn(x=>phi((x-mean)/Math.sqrt(variance))/Math.sqrt(variance),{color:'accent',width:2});H.fn(x=>phi(x/Math.sqrt(s2))/Math.sqrt(s2),{color:'green',width:2.4});}
+     st={ar,N,mean,variance,tv};
+    }else{curve=Array.from({length:41},(_,k)=>[k,escapeSurvival(j.value,k)]);tv=curve[N][1];const other=j.value===0?0:j.value+N;H.setView([-1,Math.max(3,other+1)],[0,1.15]);bars(H,[1-tv,tv],[0,other],.5,'accent');H.line(0,0,0,1,{color:'green',width:2,dash:true});st={ar,N,j:j.value,tv,limit:j.value===0?0:(j.value-1)/j.value};}
+    T.path(curve.map(([x,y])=>[x,Math.max(1e-12,y)]),{color:'green',width:2.4});T.dot(N,Math.max(1e-12,tv),{color:'gold',r:5});});
+   v.legend([['accent','finite-time law / simulation'],['green','stationary law / TV curve'],['gold','selected time']]);v.readout(()=>st&&(st.ar?(st.N===0?`At $n=0$, $X_0=${fx(st.mean,2)}$ deterministically; TV to the continuous stationary law is 1.`:`$n=${st.N}$: $X_n\\sim N(${fx(st.mean,3)},${fx(st.variance,4)})$. Gaussian TV evaluated from crossings/CDFs: ${st.tv.toExponential(4)}${st.tv<1e-12?' (below the displayed floor)':''}.`):`Start ${st.j}: TV after ${st.N} steps ${fx(st.tv,6)}; limit ${fx(st.limit,6)}. ${st.j===0?'The recurrent-core start satisfies the hitting hypothesis.':'The hitting hypothesis fails; convergence from this start is not asserted.'}`));
+  }
+ },
+ {
+  num:'5.8.13',kind:'Lemma',name:'Exponential minus independent Y has an exponential tail',
+  statement:String.raw`Let $X\sim\operatorname{Exp}(\lambda)$ with $\lambda>0$ and let $Y\ge0$ be independent of $X$. For every $t\ge0$,
+$$P(X-Y>t)=a e^{-\lambda t},\qquad a=P(X-Y>0)=E e^{-\lambda Y}.$$
+Consequently the conditional excess given $X>Y$ is exponential with the same rate.`,
+  idea:String.raw`For each nonnegative $y$, $P(X>y+t)=e^{-\lambda y}e^{-\lambda t}$. Integrate over the independent law of $Y$ and set $t=0$ to identify $a$. Allowing negative $Y$ changes the part where $y+t<0$: that probability is one. Even beyond that region the exponential tail generally has a different coefficient from $a$.`,
+  caption:String.raw`From 40000 seeded samples, compare the empirical conditional tail (blue) with its exact conditional tail (orange) and the exponential reference (green). Nonnegative choices satisfy the lemma. The negative choice $Y\sim U(-1,2)$ breaks its hypothesis and is integrated separately, so its exact orange curve differs from the exponential. Zero empirical tails are omitted on the logarithmic plot; values below the axis range are not raised to an artificial positive floor.`,
+  deps:['prob-2.1.12'],see:['stoch-11.12'],refs:ref('Lemma 5.8.13 and proof, p.327'),links:{source},tags:['queues','distributions'],
+  viz(v){const kind=v.select('law of $Y$',[{value:'constant',label:'constant 0.7'},{value:'uniform',label:'uniform (0,3)'},{value:'binary',label:'0 or 2 equally'},{value:'negative',label:'uniform (−1,2)'}],'uniform'),lam=v.slider('rate $\\lambda$',.3,2,1,{step:.05});let seed=1,st;v.button('Resample',()=>seed++);const S=v.stage({x:[0,6],y:[1e-6,1.2],ylog:true,height:350,axes:'box',gutter:true,xlabel:'$t$',title:'conditional excess tail'});
+   v.render(()=>{const r=v.rng(seed*59+4),ds=[];for(let i=0;i<40000;i++){const x=-Math.log1p(-r())/lam.value,y=kind.value==='constant'?.7:kind.value==='uniform'?3*r():kind.value==='binary'?(r()<.5?0:2):-1+3*r();if(x>y)ds.push(x-y);}ds.sort((a,b)=>a-b);const mass=exponentialDifferenceTail(kind.value,lam.value,0),emp=[];let pos=0,error=0;for(let i=0;i<=120;i++){const t=i/20;while(pos<ds.length&&ds[pos]<=t)pos++;const y=(ds.length-pos)/ds.length;if(y>0)emp.push([t,y]);error=Math.max(error,Math.abs(y-exponentialDifferenceTail(kind.value,lam.value,t)/mass));}S.path(emp,{color:'accent',width:2.4});S.fn(t=>exponentialDifferenceTail(kind.value,lam.value,t)/mass,{color:'orange',width:2,dash:true});S.fn(t=>Math.exp(-lam.value*t),{color:'green',width:2,dash:[8,5]});st={p:ds.length/40000,mass,error,M:ds.length};});
+   v.legend([['accent','empirical conditional tail'],['orange','exact conditional tail'],['green','exponential reference']]);v.readout(()=>st&&`${st.M} accepted excesses; empirical $P(X>Y)=${fx(st.p,5)}$, exact ${fx(st.mass,5)}. Maximum empirical tail deviation on the 121 displayed thresholds: ${fx(st.error,5)}. ${kind.value==='negative'?'Negative Y violates the lemma; both the early shape and later coefficient differ.':'Nonnegative Y satisfies the lemma.'}`);
+  }
+ }
+]};

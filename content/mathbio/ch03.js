@@ -1,6 +1,8 @@
 // Mathematical Biology — Chapter 3: Interacting populations (items 3.1–3.6; 3.7–3.12 in ch03-b.js, 3.13–3.18 in ch03-c.js, 3.19–3.23 in ch03-d.js)
 import { rk4sys, crossings, runMean, peakTimes, lvField, lvV, cycleMean, eig2x2 } from './ch03.shared.js';
 
+import { lotkaRun, changingHarvest } from './mathbio-source-audit-lotka.js';
+
 const PI = Math.PI;
 
 function classifyTD(tr, det) {
@@ -245,35 +247,30 @@ $$\frac1T\int_0^T x\,dt=\frac\gamma\delta,\qquad \frac1T\int_0^T y\,dt=\frac\alp
       num: '3.6',
       kind: 'Principle',
       name: 'Volterra’s principle',
-      credit: 'Volterra, 1926 (prompted by D’Ancona’s Adriatic fish-market statistics)',
+      credit: String.raw`Volterra, Nature 118 (1926), law III and attributed fishery comparison, pp. 558–559`,
       statement: String.raw`Suppose a Lotka–Volterra community is harvested indiscriminately, each species being removed at a rate proportional to its density with the same effort $E$: $\dot x=(\alpha-E)x-\beta xy$, $\dot y=\delta xy-(\gamma+E)y$. Then the cycle averages become $\bar x=(\gamma+E)/\delta$ and $\bar y=(\alpha-E)/\beta$ (for $E<\alpha$). Moderate fishing therefore **raises** the average prey population and **lowers** the average predator population; relaxing it does the opposite, so the predators' share rises when fishing is reduced.`,
-      idea: String.raw`Harvesting simply replaces $\alpha$ by $\alpha-E$ and $\gamma$ by $\gamma+E$, and by the averages theorem (3.5) the mean prey is the new $(\gamma+E)/\delta$ and the mean predators the new $(\alpha-E)/\beta$. Fishing hurts the species that is growing on its own, the prey, only through the extra mortality, but it hurts the predators more because their own growth depends on the (now scarcer) prey. The prediction explained why the sharp drop in fishing during the First World War was followed, in D’Ancona’s Adriatic catches, by an increase in the proportion of predatory fish.`,
-      scope: String.raw`A statement about the Lotka–Volterra model; it is a prediction, not a theorem about real fisheries. Whether it matches the Adriatic data (an increase in the predator share during the war years) is a historical claim based on D’Ancona’s catch statistics, which are not reproduced here: the curves below are model output.`,
-      caption: String.raw`Effort is high, then **paused** (middle third), then resumed. The top plot is model output with $\beta=\delta=1$, $\alpha=1$, $\gamma=0.6$: when fishing relaxes the predators rise and the prey fall. The lower left shows the predators' share $y/(x+y)$ of the stock, and the right panel compares the cycle averages measured numerically (dots) with $\gamma+E$ and $\alpha-E$ (lines).`,
+      idea: String.raw`Integrate $d\log x/dt=\alpha-E-\beta y$ and $d\log y/dt=\delta x-\gamma-E$ over a complete cycle. The logarithms return to their initial values, proving the two averages exactly. Increasing constant effort therefore raises the prey cycle average even though prey are directly removed. This comparison concerns separate constant-effort orbits; it does not predict the sign of every instantaneous response after a switch. Volterra’s p. 559 describes D’Ancona’s wartime fishery observations as agreeing with the theory; the underlying catch tables are not reanalysed here.`,
+      scope: String.raw`Positive constant coefficients, positive initial densities and $0\le E<\alpha$. These are model identities, not a causal validation of an actual fishery. The predator share **at the cycle averages**, $\bar y/(\bar x+\bar y)$, is generally different from the cycle average of $y/(x+y)$. Dashed reference lines use the former ratio. No field data are plotted.`,
+      caption: String.raw`The effort switches at $t=30$ to the independently chosen middle value and switches back at $t=60$. It is a reduction only when the middle value is lower. Paths are integrated separately on the three intervals, with continuous populations at the switches. Bottom left: instantaneous predator share; dashed guides are ratios of cycle means in separate constant-effort systems. Right: their numerically measured whole-cycle averages (dots) and exact formulas (lines).`,
       deps: ['mathbio-3.5'],
       tags: ['harvesting', 'Volterra'],
-      refs: ['Murray I ch. 3'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Umberto_D%27Ancona' },
-      verify: true,
+      refs: ['Volterra (1926), Nature 118, pp. 558–559, law III and fishery discussion; direct logarithmic-average calculation'],
+      links: { doi: 'https://doi.org/10.1038/118558a0' },
+      verify: false,
       viz(v) {
         const Eh = v.slider('fishing effort $E$', 0.1, 0.6, 0.5, { step: 0.01 });
-        const El = v.slider('effort during the pause', 0, 0.3, 0.02, { step: 0.01 });
+        const El = v.slider('effort in the middle interval', 0, 0.3, 0.02, { step: 0.01 });
         const al = 1, ga = 0.6, TT = 90;
         const A = v.stage({ x: [0, TT], y: [0, 3], height: 300, axes: 'box', gutter: true, full: true, xlabel: 'time (model units)', ylabel: 'density', title: 'prey and predators under changing effort (model)' });
         const B = v.stage({ x: [0, TT], y: [0, 1], height: 250, axes: 'box', gutter: true, weight: 1.2, minWidth: 280, xlabel: 'time', ylabel: 'predator share', title: 'share of predators in the stock, $y/(x+y)$' });
-        const C = v.stage({ x: [0, 0.6], y: [0, 1.4], height: 250, axes: 'box', gutter: true, minWidth: 260, xlabel: 'effort E', ylabel: 'cycle average', title: 'averages against effort' });
-        v.legend([['accent', 'prey'], ['orange', 'predators'], ['gold', 'fishing on', { area: true }], ['muted', 'pause', { area: true }]]);
+        const C = v.stage({ x: [-0.03, 0.63], y: [0, 1.4], height: 250, axes: 'box', gutter: true, minWidth: 260, xlabel: 'effort E', ylabel: 'cycle average', title: 'averages against effort' });
+        v.legend([['accent', 'prey'], ['orange', 'predators'], ['gold', 'outer intervals', { area: true }], ['muted', 'middle interval', { area: true }]]);
         let sol = null, key = '', meas = {};
         function compute() {
           const k = [Eh.value, El.value].join(); if (k === key) return; key = k;
-          const E = (t) => (t < 30 || t >= 60 ? Eh.value : El.value);
-          sol = rk4sys((t, s) => { const e = E(t); return [s[0] * (al - e - s[1]), s[1] * (s[0] - ga - e)]; }, [ga + Eh.value + 0.3, al - Eh.value], TT, 9000, 1e-9);
-          meas = {};
-          for (const [name, e] of [['hi', Eh.value], ['lo', El.value]]) {
-            const r = rk4sys((t, s) => [s[0] * (al - e - s[1]), s[1] * (s[0] - ga - e)], [ga + e + 0.25, al - e], 400, 40000, 1e-9);
-            const xs = r.ys.map((p) => p[0]), ys = r.ys.map((p) => p[1]);
-            meas[name] = { e, x: cycleMean(r.ts, xs, xs, ga + e), y: cycleMean(r.ts, ys, xs, ga + e) };
-          }
+          sol=changingHarvest(Eh.value,El.value);
+          meas={};for(const[name,e]of[['hi',Eh.value],['lo',El.value]]){const Q=lotkaRun(al-e,ga+e,[ga+e+.25,al-e],160);meas[name]={e,x:Q.means?{mean:Q.means[0]}:null,y:Q.means?{mean:Q.means[1]}:null};}
+
         }
         v.render(() => {
           compute();
@@ -289,7 +286,7 @@ $$\frac1T\int_0^T x\,dt=\frac\gamma\delta,\qquad \frac1T\int_0^T y\,dt=\frac\alp
           C.fn((e) => ga + e, { color: 'accent', width: 2, domain: [0, 0.6] }); C.fn((e) => al - e, { color: 'orange', width: 2, domain: [0, 0.6] });
           for (const m of [meas.hi, meas.lo]) { if (m.x) C.dot(m.e, m.x.mean, { r: 6, color: 'accent' }); if (m.y) C.dot(m.e, m.y.mean, { r: 6, color: 'orange' }); }
         });
-        v.readout(() => { compute(); const f = (m, k) => (m[k] ? v.fix(m[k].mean, 3) : '—'); return `effort $E=${v.fix(Eh.value, 2)}$: averages (prey, predators) $(${f(meas.hi, 'x')},${f(meas.hi, 'y')})$ vs predicted $(${v.fix(ga + Eh.value, 3)},${v.fix(al - Eh.value, 3)})$; paused, $E=${v.fix(El.value, 2)}$: $(${f(meas.lo, 'x')},${f(meas.lo, 'y')})$ vs $(${v.fix(ga + El.value, 3)},${v.fix(al - El.value, 3)})$. Predator share at the averages: ${v.fix((al - Eh.value) / (al + ga), 3)} → ${v.fix((al - El.value) / (al + ga), 3)}`; });
+        v.readout(() => { compute(); const f = (m, k) => (m[k] ? v.fix(m[k].mean, 3) : '—'); return `effort $E=${v.fix(Eh.value, 2)}$: averages (prey, predators) $(${f(meas.hi, 'x')},${f(meas.hi, 'y')})$ vs predicted $(${v.fix(ga + Eh.value, 3)},${v.fix(al - Eh.value, 3)})$; middle constant-effort comparison, $E=${v.fix(El.value, 2)}$: $(${f(meas.lo, 'x')},${f(meas.lo, 'y')})$ vs $(${v.fix(ga + El.value, 3)},${v.fix(al - El.value, 3)})$. Predator share at the averages: ${v.fix((al - Eh.value) / (al + ga), 3)} → ${v.fix((al - El.value) / (al + ga), 3)}`; });
       },
     },
   ],

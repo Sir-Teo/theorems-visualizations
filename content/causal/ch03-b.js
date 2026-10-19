@@ -9,6 +9,7 @@ import {
   LETTERS, parentsOf, hasCycle, dSep, vStructs, skeletonKey, equivalenceClass, cpdag, impliedIndependences,
   semCov, coefMatrix, pcorrCov, sampleSEM, sampleCov, zBand, makeDag, edgesOf, ols, corrOf,
 } from './ch03.shared.js';
+import { noisyOr, tableAssociation, mosaicCells } from './graph-sources-audit.shared.js';
 
 const nrm = (x) => 0.5 * (1 + erf(x / Math.SQRT2));
 function erf(x) { const s = Math.sign(x), t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return s * y; }
@@ -104,49 +105,50 @@ export default {
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Phenomenon', name: 'Explaining away',
-      statement: String.raw`If $A\to C\leftarrow B$ is a collider with $A\perp\!\!\!\perp B$, then conditioning on the effect $C$ (or a descendant) makes the causes **dependent**: typically *negatively* so for causes that each tend to produce $C$ — learning that one cause is present makes the other less probable. In the noisy-OR alarm example, $P(\text{burglary}\mid\text{alarm},\text{earthquake})<P(\text{burglary}\mid\text{alarm})$, although burglary and earthquake are independent a priori.`,
-      idea: String.raw`Bayes' rule: $P(a,b\mid c)\propto P(a)P(b)P(c\mid a,b)$. The prior factors, but the likelihood $P(c\mid a,b)$ does not, so the conditional table need not factor either. For a noisy-OR the alarm is likely whenever at least one cause is present, so once the alarm has rung the "both absent" cell is nearly ruled out; mass moves to the mixed cells, and the odds ratio of $A,B$ falls below 1. This is the opposite of the chain and fork, where conditioning removes dependence (3.4).`,
-      caption: String.raw`The mosaic is the joint table of burglary (columns) and earthquake (rows): the area of each cell is its probability. With **condition on the alarm** off, the rows line up across the columns (independence); switch it on and the row boundaries jump, the odds ratio drops below 1. Right: the exact probability of a burglary under four states of knowledge. Learning of the earthquake lowers it; learning there was none raises it. Make the alarm hard to trigger by an earthquake (strength 0) and the effect disappears.`,
-      deps: ['causal-3.4'], refs: ['Pearl §1.2'], tags: ['explaining away', 'colliders'],
-      credit: 'Pearl, 1988 (burglar–earthquake–alarm example)',
-      verify: true,
-      scope: String.raw`Exact for the noisy-OR model with the probabilities set below; the sign of the induced dependence depends on how the causes combine (for an AND-like effect conditioning on it induces positive dependence).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Explaining_away' },
+      statement: String.raw`With independent causes $A,B$ of a collider $C$, Bayes' rule gives $P(a,b\mid c)\propto P(a)P(b)P(c\mid a,b)$ whenever $P(c)>0$. This table need not factor: learning one cause can change belief in the other after observing their effect. In the noisy-OR model below, with nondegenerate cause priors, both strengths positive and leak less than 1, an alarm makes the causes negatively dependent. A collider alone does not guarantee dependence or its sign.`,
+      idea: String.raw`Write $l_{be}=P(\text{alarm}\mid B=b,E=e)=1-(1-\ell)(1-s_B)^b(1-s_E)^e$. Its cross-product difference is
+$$l_{00}l_{11}-l_{10}l_{01}=-(1-\ell)s_Bs_E.$$
+Multiplying by the independent prior and normalizing preserves that sign. Thus both active causes give a negative association; if either strength is zero the posterior still factors. For a different alarm mechanism the sign can be positive: likelihoods $(l_{00},l_{10},l_{01},l_{11})=(0.1,0.2,0.2,0.9)$ have positive cross-product difference. A deterministic AND instead fixes both causes to 1 after an alarm, a degenerate independent law.`,
+      caption: String.raw`The mosaic's cell areas equal the joint probabilities of burglary (columns) and earthquake (rows). Toggle between the prior and the table conditioned on an alarm. The bars always compare the four stated knowledge events. Active causes explain an alarm away; setting either strength to zero removes their induced association. An impossible alarm or additional condition is labelled undefined; it is never assigned probability zero by default.`,
+      deps: ['causal-3.4'], refs: ['Peters (2015), Example 2.4.9 and Definition 2.4.10, pp. 30–31', 'Pearl (1995), Definition 1, p. 671'], tags: ['explaining away', 'colliders'],
+      credit: 'Collider selection: Pearl (1995); noisy binary OR example: Peters (2015). The chosen alarm parameters and algebra here are illustrative.',
+      scope: String.raw`Exact Bayes calculations for the specified independent-prior noisy-OR model; not a reproduction of historical alarm data. Conditional probabilities require a positive-probability event. Odds ratios may be undefined for zero posterior margins even when the joint law is independent.`,
+      links: { source: 'https://people.tuebingen.mpg.de/jpeters/scriptChapter1-4.pdf', paper: 'https://bayes.cs.ucla.edu/R218-B.pdf' },
       viz(v) {
         const pB = v.slider('burglary probability', 0.01, 0.5, 0.1, { step: 0.01 }), pE = v.slider('earthquake probability', 0.01, 0.5, 0.15, { step: 0.01 });
         const sB = v.slider('burglary sets off the alarm', 0, 1, 0.95, { step: 0.01 }), sE = v.slider('earthquake sets off the alarm', 0, 1, 0.5, { step: 0.01 }), leak = v.slider('false alarm', 0, 0.2, 0.02, { step: 0.01 });
         const cond = v.toggle('condition on the alarm having rung', true);
         const sm = v.stage({ x: [-0.3, 1.04], y: [-0.12, 1.14], axes: false, height: 320, title: 'joint table of burglary and earthquake', minWidth: 330 });
-        const sb = v.stage({ x: [0.4, 4.6], y: [0, 1], axes: 'box', gutter: true, height: 320, ylabel: 'probability of a burglary', xlabel: 'what we know', title: 'belief about the burglary', minWidth: 300 });
+        const sb = v.stage({ x: [0.4, 4.6], y: [0, 1.15], axes: 'box', gutter: true, height: 320, ylabel: 'probability of a burglary', xlabel: 'what we know', title: 'belief about the burglary', minWidth: 300 });
         sb.setTicks([[1, 'nothing'], [2, 'alarm'], [3, '+ quake'], [4, '+ no quake']], null);
         v.legend([['accent', 'burglary'], ['orange', 'earthquake'], ['muted', 'neither']]);
-        const jt = () => {
-          const T = {}; for (const b of [0, 1]) for (const e of [0, 1]) { const al = 1 - (1 - leak.value) * (b ? 1 - sB.value : 1) * (e ? 1 - sE.value : 1); T[b + '' + e] = { pri: (b ? pB.value : 1 - pB.value) * (e ? pE.value : 1 - pE.value), al }; }
-          return T;
-        };
         let info = {};
         v.render(() => {
-          const T = jt(); let Z = 0; for (const k in T) Z += T[k].pri * T[k].al;
-          const P = {}; for (const k in T) P[k] = cond.value ? T[k].pri * T[k].al / Z : T[k].pri;
-          const pb = [P['00'] + P['01'], P['10'] + P['11']], x0 = [0, pb[0]], x1 = [pb[0], 1];
-          const cells = [[0, 0], [0, 1], [1, 0], [1, 1]];
-          for (const [b, e] of cells) {
-            const colW = pb[b], pe1 = P[b + '1'] / colW, h = e ? pe1 : 1 - pe1, y0 = e ? 1 - pe1 : 0, xa = b ? pb[0] : 0;
-            sm.rect(xa + 0.004, y0 + 0.004, xa + colW - 0.004, y0 + h - 0.004, { fill: b && !e ? 'accent' : e && !b ? 'orange' : b && e ? 'purple' : 'muted', fillAlpha: 0.38, color: 'ink', width: 1 });
-            if (colW > 0.06 && h > 0.06) sm.text(pct(P[b + '' + e], 1), xa + colW / 2, y0 + h / 2, { size: 11.5, weight: 700, plate: true });
+          const T = noisyOr(pB.value,pE.value,sB.value,sE.value,leak.value), P = cond.value ? T.posterior : T.prior;
+          if (!P) { sm.text('No conditional table:',0.5,0.62,{size:14,align:'center'}); sm.text('the alarm is impossible',0.5,0.46,{size:13,align:'center',color:'muted'}); }
+          else {
+            for (const {b,e,p,x,y,width,height} of mosaicCells(P)) {
+              sm.rect(x,y,x+width,y+height,{fill:b&&e?'purple':b?'accent':e?'orange':'muted',fillAlpha:0.38,color:'ink',width:1});
+              if (width>0.06 && height>0.06) sm.text(pct(p,1),x+width/2,y+height/2,{size:11.5,weight:700,plate:true});
+            }
+            const pb=[P['00']+P['01'],P['10']+P['11']];
+            if(pb[0]>0.06) sm.text('no burglary',pb[0]/2,1.07,{size:12,color:'muted'});
+            if(pb[1]>0.06) sm.text('burglary',pb[0]+pb[1]/2,1.07,{size:12,color:'accent'});
+            // The left legend gives row meaning; zero-width columns need no conditional row labels.
+            const b=pb[0] ? 0 : 1, pe=P[`${b}1`]/pb[b];
+            if(pe<1)sm.text('no quake',-0.02,(1-pe)/2,{size:11,color:'muted',align:'right'});
+            if(pe>0)sm.text('quake',-0.02,1-pe/2,{size:11,color:'orange',align:'right'});
           }
-          const pe0 = P['01'] / pb[0], pe1x = P['11'] / pb[1];
-          for (const yy of [1 - pe0, 1 - pe1x]) sm.hline(yy, { color: 'muted', dash: true, width: 0.8 });
-          sm.text('no burglary', pb[0] / 2, 1.07, { size: 12, color: 'muted' }); sm.text('burglary', pb[0] + pb[1] / 2, 1.07, { size: 12, color: 'accent' });
-          sm.text('no quake', -0.02, (1 - pe0) / 2, { size: 11, color: 'muted', align: 'right' }); sm.text('quake', -0.02, 1 - pe0 / 2, { size: 11, color: 'orange', align: 'right' });
-          const OR = (P['11'] * P['00']) / (P['10'] * P['01']);
-          const q = (cb) => { let n = 0, d = 0; for (const k in T) if (cb(+k[1])) { const w = T[k].pri * T[k].al; d += w; if (k[0] === '1') n += w; } return n / d; };
-          const pr = pB.value, pA = q(() => true), pAq = q((e) => e === 1), pAn = q((e) => e === 0);
-          [[1, pr, 'muted'], [2, pA, 'accent'], [3, pAq, 'orange'], [4, pAn, 'purple']].forEach(([x, y, c]) => { sb.rect(x - 0.32, 0, x + 0.32, y, { fill: c, fillAlpha: 0.4, color: c }); sb.text(pct(y, 1), x, y + 0.045, { size: 12, weight: 700, plate: true }); });
-          info = { OR, pr, pA, pAq, pAn };
+          [[1,T.pr,'muted'],[2,T.pA,'accent'],[3,T.pAq,'orange'],[4,T.pAn,'purple']].forEach(([x,y,c])=>{
+            if(y===null)sb.text('undefined',x,0.08,{size:11,color:'muted',align:'center'});
+            else {sb.rect(x-0.32,0,x+0.32,y,{fill:c,fillAlpha:0.4,color:c});sb.text(pct(y,1),x,y+0.045,{size:12,weight:700,plate:true});}
+          });
+          info={...T,...tableAssociation(P)};
         });
-        v.readout(() => `Odds ratio of burglary and earthquake in the table shown: **${v.fix(info.OR, 3)}** ${Math.abs(info.OR - 1) < 1e-9 ? '(independent)' : info.OR < 1 ? '(negatively dependent)' : '(positively dependent)'}.\n` +
-          `$P(\\text{burglary})=${pct(info.pr, 1)}$; given the alarm **${pct(info.pA, 1)}**; given the alarm *and* an earthquake **${pct(info.pAq, 1)}**; given the alarm and no earthquake **${pct(info.pAn, 1)}**. The earthquake explains the alarm away: ${fx(100 * (info.pAq - info.pA), 1)} percentage points.`);
+        const probability=x=>x===null?'undefined (impossible condition)':pct(x,1);
+        v.readout(() => `Alarm probability: **${pct(info.Z,2)}**. Table shown: **${cond.value?'given alarm':'prior'}**. Association: **${info.kind}**; odds ratio **${info.OR===null?'undefined (zero denominator)':v.fix(info.OR,3)}**.\n`+
+          `Burglary: prior **${probability(info.pr)}**; given alarm **${probability(info.pA)}**; given alarm and quake **${probability(info.pAq)}**; given alarm and no quake **${probability(info.pAn)}**.\n`+
+          (info.pA!==null&&info.pAq!==null?`Learning of the quake after the alarm changes burglary belief by **${fx(100*(info.pAq-info.pA),1)} percentage points**.`:'No belief comparison is defined for an impossible event.'));
       },
     },
     // ------------------------------------------------------------------ 3.10

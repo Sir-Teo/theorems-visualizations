@@ -6,6 +6,7 @@
 // Attributions checked: Simpson, JRSS B 13:238–241 (1951); Bickel, Hammel & O'Connell, Science 187:398–404 (1975); Greenland, Epidemiology 14:300–306
 // (2003); Ding & Miratrix, J. Causal Inference 3(1):41–57 (2015); Bhattacharya & Vogt, NBER Technical Working Paper 343 (2007); Pearl, UAI 2010,
 // PMLR R8:424–431 (Pearl credits Bhattacharya–Vogt and Wooldridge 2009). Pearl's 1993 Statistical Science comment could not be page-checked: verify.
+import { backDoorCheck, SIMPSON_TABLES, reweightedTable } from './intervention-audit.shared.js';
 import {
   clamp, logistic, pct, sg, fx, mean, rng, memo, lab, svar, histPanel,
   parentsOf, hasCycle, topoOrder, descendants, ancestors, dSep, allPaths, pathReport, pathText,
@@ -24,12 +25,11 @@ export default {
       num: '4.1', kind: 'Definition', name: 'Intervention and the do-operator',
       statement: String.raw`In a structural causal model, the **intervention** $\mathrm{do}(X=x)$ replaces the structural equation of $X$ by the constant assignment $X:=x$ and leaves every other equation untouched. The resulting model has the graph $G_{\overline X}$ (all arrows into $X$ deleted), and its distribution is written $P(y\mid \mathrm{do}(x))$ or $P_x(y)$. In general
 $$P(y\mid \mathrm{do}(x))\ \ne\ P(y\mid X=x),$$
-because seeing $X=x$ is evidence about the causes of $X$, while setting $X=x$ cuts $X$ off from them. The two coincide when nothing influences both $X$ and $Y$ other than through $X$.`,
+because seeing $X=x$ is evidence about the causes of $X$, while setting $X=x$ cuts $X$ off from them. A sufficient graphical condition for equality is that the empty set satisfies the back-door criterion (4.3), with $P(X=x)>0$. Equality at particular parameters does not establish absence of confounding.`,
       idea: String.raw`Conditioning *selects* the units whose own mechanism produced $x$, so it also selects their values of every common cause; doing *overrides* the mechanism, so the common causes keep their natural distribution. That is why the graph surgery deletes only the arrows *into* $X$: the arrows out of $X$ (the mechanisms of its effects) are separate, stable equations that survive. This modularity, built into the structural model of 3.3, is what lets a model predict what an experiment would do from a description of how nature works.`,
-      caption: String.raw`A confounder $Z$ pushes units into treatment $X$ and also moves the outcome. Choose observe or intervene (the arrow into $X$ turns into a dashed red cut). Bars: exact $P(Y{=}1\mid X{=}x)$ in blue and exact $P(Y{=}1\mid \mathrm{do}(X{=}x))$ in green; dots: estimates from 1,500 simulated units in each world. Set the two confounding sliders to 0 and the bars meet; make $Z$ push the other way and watch observation reverse the sign of the truth.`,
-      deps: ['causal-3.3'], refs: ['Pearl §3.2'], tags: ['do-operator', 'intervention'],
-      credit: 'Pearl, 1993–95 (do-operator and graph surgery); Spirtes, Glymour & Scheines, 1993 (manipulation theorem); Strotz & Wold, 1960 (earlier “wiping out an equation”)',
-      verify: true,
+      caption: String.raw`A confounder $Z$ pushes units into treatment $X$ and also moves the outcome. Choose observe or intervene (the arrow into $X$ turns into a dashed red cut). Bars: exact $P(Y{=}1\mid X{=}x)$ in blue and exact $P(Y{=}1\mid \mathrm{do}(X{=}x))$ in green; dots: estimates from 1,500 simulated units in each world. Setting either confounding slider to 0 removes the back-door association in this model. Some opposing settings reverse the observed contrast; simulation dots fluctuate around the exact bars.`,
+      deps: ['causal-3.3'], refs: ['Pearl (1995), §2.2, pp.672–674, equation (5)'], tags: ['do-operator', 'intervention'],
+      credit: 'Pearl, 1995, §2.2 (structural intervention semantics; modern do notation here)',
       scope: String.raw`Perfect (“surgical”) interventions that fix $X$ without disturbing other mechanisms. A real-world action may also change other variables (a drug with side effects), in which case it is a different intervention.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Causal_model' },
       viz(v) {
@@ -63,7 +63,7 @@ because seeing $X=x$ is evidence about the causes of $X$, while setting $X=x$ cu
         });
         v.readout(() => `Seeing: $P(Y{=}1\\mid X{=}1)-P(Y{=}1\\mid X{=}0)=${fx(info.obs[1], 3)}-${fx(info.obs[0], 3)}=$ **${fx(info.rdObs, 3)}**.\n` +
           `Doing: $P(Y{=}1\\mid \\mathrm{do}(X{=}1))-P(Y{=}1\\mid \\mathrm{do}(X{=}0))=${fx(info.dov[1], 3)}-${fx(info.dov[0], 3)}=$ **${fx(info.rdDo, 3)}**` +
-          `${Math.abs(info.rdObs - info.rdDo) < 1e-6 ? ' (equal: no confounding left to cut)' : ` — they differ by **${fx(info.rdObs - info.rdDo, 3)}**, the confounding bias.`}`);
+          `${Math.abs(info.rdObs - info.rdDo) < 1e-6 ? ' (equal here; agreement alone does not establish absence of confounding)' : ` — they differ by **${fx(info.rdObs - info.rdDo, 3)}**, the confounding bias.`}`);
       },
     },
     // ------------------------------------------------------------------ 4.2
@@ -122,13 +122,12 @@ the observational factorization with the factors of the intervened variables del
     // ------------------------------------------------------------------ 4.3
     {
       num: '4.3', kind: 'Theorem', name: 'Back-door criterion',
-      statement: String.raw`Let $X$ and $Y$ be two variables of a causal DAG $G$. A set $Z$ of variables satisfies the **back-door criterion** relative to $(X,Y)$ if (i) no member of $Z$ is a descendant of $X$, and (ii) $Z$ blocks (d-separates) every path between $X$ and $Y$ that begins with an arrow *into* $X$, i.e. $(X\perp\!\!\!\perp Y\mid Z)$ in the graph $G_{\underline X}$ with the arrows out of $X$ deleted. If $Z$ satisfies it, the causal effect is identifiable by adjustment:
+      statement: String.raw`Let $X$ and $Y$ be two variables of a causal DAG $G$. A set $Z$ of observed variables disjoint from $\{X,Y\}$ satisfies the **back-door criterion** relative to $(X,Y)$ if (i) no member of $Z$ is a descendant of $X$, and (ii) $Z$ blocks (d-separates) every path between $X$ and $Y$ that begins with an arrow *into* $X$, i.e. $(X\perp\!\!\!\perp Y\mid Z)$ in the graph $G_{\underline X}$ with the arrows out of $X$ deleted. If $Z$ satisfies it and $P(X=x\mid Z=z)>0$ for every $z$ with $P(z)>0$, the effect is identifiable by adjustment:
 $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
-      idea: String.raw`Condition (ii) says that once $Z$ is held fixed, the only association left between $X$ and $Y$ flows along directed paths out of $X$ — the causal paths. Condition (i) keeps $Z$ from blocking those causal paths or opening a collider through a consequence of $X$. In the truncated model (4.2) $X$ has no parents, so $Y$ is independent of $X$ given $Z$ exactly when $(X\perp\!\!\!\perp Y\mid Z)$ holds in $G_{\underline X}$, and averaging $P(y\mid x,z)$ over the *natural* law of $Z$ then reproduces the interventional answer.`,
-      caption: String.raw`A linear-Gaussian world on the graph below. In “pick the adjustment set” mode click covariates to put them in $Z$ (filled blue); in “edit arrows” mode click one node and then another to add or remove an arrow (cycles are refused). The verdict lists the open back-door paths and any descendants of $X$ in $Z$. Right: the coefficient of $X$ in a regression on $Z$ over 300 simulated studies of 200 units, against the true total effect (green line). Valid sets centre on it; invalid ones do not.`,
-      deps: ['causal-4.2', 'causal-3.5'], refs: ['Pearl §3.3', 'Hernán–Robins §7.3'], tags: ['back-door', 'adjustment'],
-      credit: 'Pearl, 1993 (back-door criterion); Pearl, Biometrika 82, 1995',
-      verify: true,
+      idea: String.raw`The back-door condition permits exchange of action and observation: $P(y\mid\mathrm{do}(x),z)=P(y\mid x,z)$. Because $Z$ contains no descendants of $X$, $P(z\mid\mathrm{do}(x))=P(z)$. Summing over $z$ gives the adjustment formula. This does not say $X$ and $Y$ are independent in the intervened model: causal arrows from $X$ to $Y$ remain.`,
+      caption: String.raw`A linear-Gaussian world on the graph below. In “pick the adjustment set” mode click covariates to put them in $Z$ (filled blue); in “edit arrows” mode click one node and then another to add or remove an arrow (cycles are refused). The verdict lists the open back-door paths and any descendants of $X$ in $Z$. Right: the coefficient of $X$ in a regression on $Z$ over 300 simulated studies of 200 units, against the true total effect (green line). Valid sets identify the total effect under the stated model assumptions; finite sample means fluctuate. A set failing the criterion has no such guarantee, though particular parameters can still give equality.`,
+      deps: ['causal-4.2', 'causal-3.5'], refs: ['Pearl (1995), Definition 3 and Theorem 1, pp.674–675'], tags: ['back-door', 'adjustment'],
+      credit: 'Pearl, 1995, Definition 3 and Theorem 1',
       scope: String.raw`Sufficient for identification by covariate adjustment, not necessary for identifiability (the front-door criterion, 4.8, identifies effects no adjustment set can). The simulation is linear and Gaussian with unit-variance noise.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Confounding#Decreasing_the_potential_for_confounding' },
       viz(v) {
@@ -167,55 +166,45 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
           sh.vline(truth, { color: 'green', width: 2.4 });
           // back-door check
           const desc = descendants(6, E, 0), bad = zl.filter((z) => desc.has(z));
-          const Gb = E.filter(([a]) => a !== 0), open = allPaths(6, Gb, 0, 1).filter((p) => pathReport(6, Gb, p, Z).open);
-          const ok = bad.length === 0 && open.length === 0;
+          const Gb = E.filter(([a]) => a !== 0), open = allPaths(6, Gb, 0, 1, Infinity).filter((p) => pathReport(6, Gb, p, Z).open);
+          const ok = backDoorCheck(6, E, 0, 1, Z).ok;
           G.draw({
             nodeColor: (id) => (id === 0 ? 'orange' : id === 1 ? 'green' : Z.has(id) ? 'accent' : null), nodeFill: (id) => (Z.has(id) ? 'accent' : null),
             nodeRing: (id) => (Z.has(id) && desc.has(id) ? 'red' : null),
           });
           let m = 0; for (const e of ests) m += e; m /= ests.length;
-          info = { truth, mean: m, bad, open, ok, E, zl };
+          const population = popReg(semCov(6, B, ones), 1, [0, ...zl])[0];
+          info = { truth, population, mean: m, bad, open, ok, E, zl };
         });
         v.readout(() => (msg ? `**${msg}**\n` : '') +
           `$Z=${setTex(names, new Set(info.zl))}$: ${info.bad.length ? `**not allowed** — ${info.bad.map((i) => names[i]).join(', ')} descend${info.bad.length === 1 ? 's' : ''} from $X$. ` : ''}` +
           `${info.open.length ? `Open back-door path${info.open.length > 1 ? 's' : ''}: ${info.open.slice(0, 3).map((p) => '$' + pathText(info.E.filter(([a]) => a !== 0), p, (i) => names[i]).replace(/→/g, '\\to ').replace(/←/g, '\\leftarrow ') + '$').join(';  ')}.` : 'No open back-door path.'} ` +
           `Back-door criterion: **${info.ok ? 'satisfied' : 'violated'}**.\n` +
-          `Average estimate **${fx(info.mean, 3)}** against the true total effect **${fx(info.truth, 3)}** (bias ${fx(info.mean - info.truth, 3)}).`);
+          `Population coefficient **${fx(info.population, 3)}**, total effect **${fx(info.truth, 3)}**, population bias **${fx(info.population-info.truth, 3)}**. Mean over 300 studies **${fx(info.mean, 3)}** (Monte Carlo offset from population coefficient ${fx(info.mean-info.population, 3)}).`);
       },
     },
     // ------------------------------------------------------------------ 4.4
     {
       num: '4.4', kind: 'Paradox', name: 'Simpson’s paradox',
-      statement: String.raw`A comparison can reverse when data are pooled: for two groups $a$ and $b$ and strata $s$ it is possible that $P(Y{=}1\mid a,s)>P(Y{=}1\mid b,s)$ in **every** stratum $s$, yet $P(Y{=}1\mid a)<P(Y{=}1\mid b)$ overall, because the groups have different stratum mixes $P(s\mid a)\ne P(s\mid b)$. Arithmetic permits both; **which** comparison answers a causal question depends on the causal graph: if $S$ is a common cause of the group and the outcome, adjust ($\sum_s P(Y{=}1\mid g,s)P(s)$, 4.3); if $S$ lies on the path from group to outcome (a mediator), the pooled comparison is the total effect.`,
-      idea: String.raw`The overall rate is a weighted average of the stratum rates with weights $P(s\mid g)$ that depend on the group. A group concentrated in easy strata can win overall without winning anywhere, and a group concentrated in hard strata can lose overall while winning everywhere. The reversal disappears if the mixes are equalized. The data alone cannot say which table to read; the story (the graph) can: in the kidney-stone data the surgeon’s choice of treatment depended on stone size, so size is a confounder and the stratified rates answer the question.`,
-      caption: String.raw`Choose a data set: Charig et al.’s kidney-stone counts (open surgery versus percutaneous nephrolithotomy) or the six largest Berkeley departments of 1973 (women versus men). Bars are success or admission rates by stratum and, at the right, pooled; the numbers under each bar are counts. Drag **mix shift** to move the first group’s stratum mix toward the second’s (rates unchanged): the reversal dissolves exactly when the two mixes agree.`,
+      statement: String.raw`A comparison can reverse when data are pooled: for two groups $a$ and $b$ and strata $s$ it is possible that $P(Y{=}1\mid a,s)>P(Y{=}1\mid b,s)$ in **every** stratum $s$, yet $P(Y{=}1\mid a)<P(Y{=}1\mid b)$ overall, because the groups have different stratum mixes $P(s\mid a)\ne P(s\mid b)$. Arithmetic permits both; **which** comparison answers a causal question depends on the causal graph: if the measured $S$ satisfies the back-door criterion, adjust ($\sum_s P(Y{=}1\mid g,s)P(s)$, 4.3); if $S$ is a mediator, adjustment can remove part of the total effect. A pooled association represents a total causal effect only under additional identification assumptions, such as no unblocked back-door paths.`,
+      idea: String.raw`The overall rate is a weighted average of the stratum rates with weights $P(s\mid g)$ that depend on the group. A group concentrated in easy strata can win overall without winning anywhere, and a group concentrated in hard strata can lose overall while winning everywhere. The reversal disappears if the mixes are equalized. The data alone cannot say which table to read; the story (the graph) can: stone size can influence both treatment selection and success, but the observational counts alone do not establish that controlling size suffices for identification.`,
+      caption: String.raw`Choose a data set: Charig et al.’s kidney-stone counts (open surgery versus percutaneous nephrolithotomy) or the six largest Berkeley departments of 1973 (women versus men). Bars are success or admission rates by stratum and, at the right, pooled; the numbers under each bar are group sizes (denominators). Berkeley is an aggregation contrast: women have higher rates in four of six departments, not every department. Drag **mix shift** to move the first group’s stratum mix toward the second’s (rates unchanged): equal mixes remove the mixing difference, but a sign crossing can occur earlier. At nonzero shift the rounded sizes are synthetic reweighting sizes, not additional observed patients or applicants.`,
       deps: ['causal-4.3'], refs: ['Pearl §6.1'], tags: ['simpson', 'paradox', 'confounding'],
-      credit: 'Pearson, 1899, and Yule, 1903 (the effect); Simpson, 1951; Blyth, 1972 (the name); Charig et al., BMJ 292:879–882 (1986); Bickel, Hammel & O’Connell, Science 187:398–404 (1975)',
-      verify: true,
-      scope: String.raw`The kidney-stone counts are as commonly reproduced from Charig et al. (1986); the Berkeley table is the six-department extract distributed with R, which keeps only the largest departments (its totals are 2,691 men with 1,198 admitted and 1,835 women with 557 admitted). Both are real, observational tables, not experiments.`,
+      credit: 'Simpson, 1951, JRSS B 13:238–241; Charig et al., 1986, BMJ 292:879–882; Bickel, Hammel & O’Connell, 1975, Science 187:398–404; R datasets UCBAdmissions',
+      scope: String.raw`Kidney group 1 is mean stone diameter below 2 cm; group 2 is mean diameter at least 2 cm or multiple stones (Charig et al., Table I, p.880). Success means stone-free or residual particles below 2 mm at three months. the Berkeley table is the six-department extract distributed with R, which keeps only the largest departments (its totals are 2,691 men with 1,198 admitted and 1,835 women with 557 admitted). Both are real, observational tables, not experiments.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Simpson%27s_paradox' },
       viz(v) {
-        const DATA = {
-          kidney: { g: ['open surgery', 'PCNL'], st: ['small', 'large'], n: [[87, 263], [270, 80]], s: [[81, 192], [234, 55]], out: 'success', title: 'kidney-stone treatments (Charig et al. 1986)',
-            nodes: ['stone size', 'treatment', 'success'], gpos: [[5, 4.9], [1.6, 1.3], [8.4, 1.3]], ge: [[0, 1], [0, 2], [1, 2]], note: 'stone size causes both the choice of treatment and the outcome: it is a confounder, so the stratified answer is the causal one' },
-          ucb: { g: ['women', 'men'], st: ['A', 'B', 'C', 'D', 'E', 'F'], n: [[108, 25, 593, 375, 393, 341], [825, 560, 325, 417, 191, 373]], s: [[89, 17, 202, 131, 94, 24], [512, 353, 120, 138, 53, 22]], out: 'admitted', title: 'Berkeley graduate admissions, 1973, six largest departments',
-            nodes: ['sex', 'department', 'admitted'], gpos: [[1.6, 1.3], [5, 4.9], [8.4, 1.3]], ge: [[0, 1], [1, 2], [0, 2]], note: 'department is on the path from sex to admission (applicants choose it): the pooled gap is the total effect of sex, the stratified one the effect within departments, so the two answer different questions' },
-        };
+        const DATA = SIMPSON_TABLES;
         const ds = v.select('data', [{ value: 'kidney', label: 'kidney stones' }, { value: 'ucb', label: 'Berkeley admissions' }], 'kidney');
         const lam = v.slider('mix shift of the first group toward the second’s', 0, 1, 0, { step: 0.01 });
         const sb = v.stage({ x: [-0.6, 8], y: [-0.16, 1.05], axes: 'box', gutter: true, height: 320, ylabel: 'rate', title: 'rate by stratum, and pooled', minWidth: 360 });
-        const sgr = v.stage({ x: [0, 10], y: [0, 6.2], equal: true, axes: false, height: 320, title: 'the causal story', minWidth: 260 });
+        const sgr = v.stage({ x: [0, 10], y: [0, 6.2], equal: true, axes: false, height: 320, title: 'an assumed causal story', minWidth: 260 });
         const G = makeDag(v, sgr, { names: ['a', 'b', 'c'], pos: [[5, 4.9], [1.6, 1.3], [8.4, 1.3]], edges: [[0, 1], [0, 2], [1, 2]], draggable: false, r: 17 });
         let info = {};
         v.render(() => {
           const D = DATA[ds.value], K = D.st.length, l = lam.value;
-          const n0 = D.n[0].reduce((a, b) => a + b, 0), n1 = D.n[1].reduce((a, b) => a + b, 0);
-          const nn = [D.n[0].map((c, k) => n0 * ((1 - l) * c / n0 + l * D.n[1][k] / n1)), D.n[1].slice()];
-          const r = [D.s[0].map((c, k) => c / D.n[0][k]), D.s[1].map((c, k) => c / D.n[1][k])];
-          const pool = [0, 1].map((g) => nn[g].reduce((a, c, k) => a + c * r[g][k], 0) / nn[g].reduce((a, c) => a + c, 0));
-          const sh = (g) => nn[g].map((c) => c / nn[g].reduce((a, b) => a + b, 0));
-          const pi = nn[0].map((c, k) => (c + nn[1][k])), tot = pi.reduce((a, b) => a + b, 0);
-          const stdz = [0, 1].map((g) => pi.reduce((a, c, k) => a + c / tot * r[g][k], 0));
+          const R = reweightedTable(D, l), nn=R.counts, r=R.rates, pool=R.pooled, stdz=R.standardized;
+          const sh = (g) => nn[g].map(c=>c/nn[g].reduce((a,b)=>a+b,0));
           const xs = D.st.map((_, k) => k * 1.15 + 0.5), xo = K * 1.15 + 0.9;
           sb.setView([-0.6, xo + 1.0], [-0.16, 1.05]); sb.setTicks([...xs.map((x, k) => [x, D.st[k]]), [xo, 'pooled']], [[0, '0'], [0.5, '.5'], [1, '1']]);
           const col = ['accent', 'orange'];
@@ -243,13 +232,12 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
     // ------------------------------------------------------------------ 4.5
     {
       num: '4.5', kind: 'Concept', name: 'M-bias: adjusting for a pre-treatment collider',
-      statement: String.raw`Let $U_1\to X$, $U_2\to Y$ and $X\to Y$, with a pre-treatment variable $Z$ that is a *common effect* of the two unmeasured causes: $U_1\to Z\leftarrow U_2$ (the graph is shaped like an M). Then $X$ and $Y$ have no back-door path, so the unadjusted estimate is unbiased; but conditioning on $Z$ opens the collider path $X\leftarrow U_1\to Z\leftarrow U_2\to Y$ and **creates** bias. Being measured before treatment does not make a covariate safe to adjust for.`,
-      idea: String.raw`This is conditioning on a collider (3.4, 3.9) in the service of causal estimation: before adjustment $U_1$ and $U_2$ are independent, so $X$ and $Y$ share nothing; after conditioning on a common effect they become dependent, and the dependence passes along $U_1\to X$ and $U_2\to Y$. In linear models the induced bias is the product of four path coefficients divided by variance terms, so it is usually modest unless the arrows into $Z$ are strong — one reason the practical advice is to adjust for pre-treatment covariates unless the M-structure is known and strong.`,
+      statement: String.raw`Let $U_1\to X$, $U_2\to Y$ and $X\to Y$, with a pre-treatment variable $Z$ that is a *common effect* of the two unmeasured causes: $U_1\to Z\leftarrow U_2$ (the graph is shaped like an M). The only back-door path is closed at the collider, so the empty adjustment set identifies the effect. Conditioning on $Z$ opens the path $X\leftarrow U_1\to Z\leftarrow U_2\to Y$ and **can create** bias. Being measured before treatment does not make a covariate safe to adjust for.`,
+      idea: String.raw`Before adjustment the M-shaped path is blocked at $Z$; the directed causal path $X\to Y$ is still present. Conditioning on the common effect can associate its independent causes. Magnitude and direction depend on the mechanisms. Ding and Miratrix analyze specified linear models and departures from the pure M-structure; those sensitivity results are not a universal rule for selecting covariates. In this unit-noise illustration the exact adjusted bias is $-s^2/(3s^2+2)$; with added coefficient $e$ on $Z\to X$, the unadjusted bias is $es/[2+2es+e^2(2s^2+1)]$.`,
       caption: String.raw`Histograms of the estimated effect of $X$ over 300 simulated studies: without $Z$ (blue) and adjusting for $Z$ (red); the green line is the true effect. Drag the strength of the two arrows into $Z$, or add an arrow $Z\to X$ (which makes $Z$ also a legitimate-looking confounder and creates the dilemma of real data). The readout gives the exact biases from the population covariance.`,
       deps: ['causal-4.3', 'causal-3.9'], refs: ['Hernán–Robins §18.2', 'Hernán–Robins §7.4'], tags: ['m-bias', 'collider'],
-      credit: 'Greenland, 2003 (collider stratification and pre-treatment variables); name and sensitivity analysis: Ding & Miratrix, 2015',
-      verify: true,
-      scope: String.raw`Linear Gaussian illustration with unit-variance noise, unit-size arrows $U_1\to X$ and $U_2\to Y$. With the arrow $Z\to X$ switched on, $Z$ is no longer a pure collider and neither choice of adjustment set is unbiased.`,
+      credit: 'Ding & Miratrix, 2014 preprint / 2015 JCI, §§1–3 (M-bias sensitivity analysis); independently specified numerical model here',
+      scope: String.raw`Linear Gaussian illustration with unit-variance independent noise and unit-size arrows $U_1\to X$ and $U_2\to Y$. With $Z\to X$ present, $Z$ also participates in confounding. The displayed biases apply to this particular model, including zero-strength boundary cases.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Collider_(statistics)' },
       viz(v) {
         const names = [String.raw`$U_1$`, String.raw`$U_2$`, 'Z', 'X', 'Y'], pos = [[1.6, 5], [8.4, 5], [5, 5], [1.6, 1.3], [8.4, 1.3]];
@@ -273,7 +261,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
             for (let r = 0; r < 300; r++) { const X = sampleSEM(5, E, B, [1, 1, 1, 1, 1], 200, seed * 1000 + r); u[r] = sampleReg(X, 4, [3])[0]; a[r] = sampleReg(X, 4, [3, 2])[0]; }
             return { u, a };
           });
-          const lo = th - 1.2, hi = th + 1.2; sh.setView([lo, hi], [0, 1]);
+          const lo = Math.min(th-1.2,...R.u,...R.a)-0.05, hi = Math.max(th+1.2,...R.u,...R.a)+0.05; sh.setView([lo, hi], [0, 1]);
           histPanel(sh, [{ vals: Array.from(R.u), color: 'accent' }, { vals: Array.from(R.a), color: 'red' }], lo, hi, 40);
           sh.vline(th, { color: 'green', width: 2.4 });
           G.set({ nodes: names.map((c, i) => ({ id: i, label: c, x: pos[i][0], y: pos[i][1] })), edges: E.map(([a, b]) => ({ from: a, to: b })), directed: true, layout: 'none' });
@@ -282,18 +270,17 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
           info = { bu, ba, mu: Array.from(R.u).reduce((a, b) => a + b, 0) / 300 - th, ma: Array.from(R.a).reduce((a, b) => a + b, 0) / 300 - th };
         });
         v.readout(() => `Exact bias without $Z$: **${fx(info.bu, 3)}** (simulated mean ${fx(info.mu, 3)}).  Exact bias adjusting for $Z$: **${fx(info.ba, 3)}** (simulated mean ${fx(info.ma, 3)}).\n` +
-          `${zS.value === 0 ? 'With no arrow $Z\\to X$ the unadjusted estimate is unbiased and adjustment is what hurts; it hurts more the stronger $Z$ listens to its two causes.' : 'With $Z\\to X$ present there is a back-door path through $Z$ as well, so both choices are biased; only adjusting for $U_1$ or $U_2$ (hidden) would help.'}`);
+          `These are population biases; simulated means fluctuate. At $s=0$ both biases vanish. With $e=0$ the unadjusted population coefficient equals the causal effect; for $s>0$ the adjusted coefficient is biased in this model.`);
       },
     },
     // ------------------------------------------------------------------ 4.6
     {
       num: '4.6', kind: 'Concept', name: 'Bad controls: mediators and descendants',
-      statement: String.raw`Adding a covariate to a regression is not harmless. Relative to the **total** effect of $X$ on $Y$: (i) controlling for a **mediator** $M$ ($X\to M\to Y$) removes the part of the effect that passes through it, estimating only the direct effect; (ii) controlling for a **descendant of the outcome** $D$ ($Y\to D$) partly conditions on $Y$ itself and biases the estimate toward zero; (iii) controlling for a **collider** $K$ of $X$ and $Y$ ($X\to K\leftarrow Y$) opens a path and biases it; (iv) controlling for a **proxy** $W$ of a confounder $L$ ($L\to W$) is helpful but incomplete. Which variables to include is decided by the graph and the back-door criterion, not by their predictive power or by whether they are measured before the outcome.`,
-      idea: String.raw`Each rule is the back-door criterion (4.3) read off one case: a mediator and a descendant of $X$ break condition (i) by blocking or contaminating the causal path; a collider breaks condition (ii) by opening a path that was closed (3.4); a descendant of a confounder only partly blocks the path it sits on. Everything here is exact for linear Gaussian models, where the coefficient on $X$ is a ratio of path sums.`,
-      caption: String.raw`The graph at left has confounder $L$, mediator $M$, a child $D$ of the outcome, a collider $K$, and a proxy $W$ of $L$. Switch variables in and out of the regression: the black bar is the estimated coefficient of $X$ for your choice; the grey bars below are every standard choice for comparison. Green line: true total effect; blue line: direct effect only.`,
+      statement: String.raw`A control is good or bad relative to a causal target and a model. For the **total** effect of $X$ on $Y$, conditioning on a mediator can remove mediated effects, conditioning on a collider can induce spurious association, and conditioning on an outcome’s descendant can also distort a regression coefficient. These are possibilities, not universal formulas for direction or magnitude. A proxy $W$ of a confounder $L$ need not suffice for adjustment: $W$ does not graphically block $X\leftarrow L\to Y$. Measurement time or predictive accuracy alone does not justify a control.`,
+      idea: String.raw`First specify the target, graph, and identification assumptions. In a correctly specified linear model with adequate confounder adjustment, controlling a mediator can recover a direct effect; this interpretation is not automatic in arbitrary models. The combined linear Gaussian example below has total effect $0.5+0.9(0.7)=1.13$. Adjusting for $L$ recovers it; adjusting for both $L$ and $M$ gives the direct coefficient $0.5$. A noisy proxy alone leaves confounding in this example. Other controls change the coefficient according to their exact population covariance.`,
+      caption: String.raw`The graph at left has confounder $L$, mediator $M$, a child $D$ of the outcome, a collider $K$, and a proxy $W$ of $L$. Switch variables in and out of the regression: the black bar is the exact population coefficient of $X$ for your choice; the grey bars below are every standard choice for comparison. Green line: true total effect; blue line: direct effect only.`,
       deps: ['causal-4.3'], refs: ['Hernán–Robins §18.2'], tags: ['bad controls', 'mediation'],
-      credit: 'Angrist & Pischke, 2009 (“bad control”); Cinelli, Forney & Pearl, 2022 (A crash course in good and bad controls)',
-      verify: true,
+      credit: 'Cinelli, Forney & Pearl, 2022, A Crash Course in Good and Bad Controls (models 7, 11–12, 16–18); combined numerical model here',
       scope: String.raw`Linear Gaussian model with unit-variance noise; the coefficients are exact population values, not simulation. “Bad” and “good” are relative to the target: total effect here.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Confounding' },
       viz(v) {
@@ -314,16 +301,17 @@ $$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
         v.render(() => {
           const g = gS.value, B = coefMatrix(7, E, mk(g)), S = semCov(7, B, new Array(7).fill(1)), total = totalEffect(7, B, 1, 0), direct = B[1][0];
           const est = (set) => popReg(S, 1, [0, ...set])[0];
-          const rows = [['nothing', []], ['L', [2]], ['L, W', [2, 6]], ['L, M', [2, 3]], ['L, D', [2, 4]], ['L, K', [2, 5]], ['everything', [2, 3, 4, 5, 6]]];
+          const rows = [['nothing', []], ['W only', [6]], ['L', [2]], ['L, W', [2, 6]], ['L, M', [2, 3]], ['L, D', [2, 4]], ['L, K', [2, 5]], ['everything', [2, 3, 4, 5, 6]]];
           const cur = Object.keys(T).filter((k) => T[k].value).map((k) => idx[k]);
-          sb.setView([-0.2, 1.8], [0, rows.length + 1.8]);
+          const c = est(cur), all=[0,total,direct,c,...rows.map(([,z])=>est(z))], lo=Math.min(-.2,...all)-.08, hi=Math.max(1.8,...all)+.25;
+          sb.setView([lo,hi], [0, rows.length + 1.8]);
           rows.forEach(([lab_, set], i) => {
             const y = rows.length - i, val = est(set);
             sb.rect(0, y - 0.32, val, y + 0.32, { fill: 'muted', fillAlpha: 0.3, color: 'muted' });
-            sb.text(lab_, 1.78, y, { size: 11, color: 'muted', align: 'right' });
+            sb.text(lab_, hi-.02, y, { size: 11, color: 'muted', align: 'right' });
           });
-          const c = est(cur), y0 = rows.length + 1.05;
-          sb.rect(0, y0 - 0.38, c, y0 + 0.38, { fill: 'ink', fillAlpha: 0.55, color: 'ink' }); sb.text('your choice', 1.78, y0, { size: 11.5, color: 'ink', align: 'right', weight: 700 });
+          const y0 = rows.length + 1.05;
+          sb.rect(0, y0 - 0.38, c, y0 + 0.38, { fill: 'ink', fillAlpha: 0.55, color: 'ink' }); sb.text('your choice', hi-.02, y0, { size: 11.5, color: 'ink', align: 'right', weight: 700 });
           sb.vline(total, { color: 'green', width: 2.4 }); sb.vline(direct, { color: 'accent', width: 2, dash: true });
           G.draw({ nodeColor: (id) => (id === 0 ? 'orange' : id === 1 ? 'green' : null), nodeFill: (id) => (cur.includes(id) ? 'accent' : null) });
           info = { c, total, direct, cur };

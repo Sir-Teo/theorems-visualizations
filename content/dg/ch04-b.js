@@ -1,7 +1,7 @@
 // Differential Geometry — Chapter 4 (continued): 4.8–4.14. (4.7 is the cross-listed differential of a smooth map, mfd-2.4.)
 import {
   TAU, PI, clamp, add, sub, mul, dot, cross, len, unit, dF, stage3, chart, coordLines, SURF,
-  implicitMesh, paramMesh, drawMesh, rayHits, sliceZ,
+  implicitMesh, paramMesh, drawMesh, rayHits, sliceZ, classifyQuadric, planeInBox, lineInBox, genusTwoLevel, kleinFigureEight, surfaceRay,
 } from './ch04.shared.js';
 
 
@@ -145,14 +145,13 @@ which is a regular surface with $\mathbf x_t\times\mathbf x_\theta\ne0$ (indeed 
     num: '4.10',
     kind: 'Definition',
     name: 'Quadric surfaces',
-    statement: String.raw`A **quadric surface** is the zero set in $\R^3$ of a polynomial of degree $2$, $Q(x)=x^{\mathsf T}Ax+2b\cdot x+c=0$ with $A\ne0$ symmetric. After a rotation and a translation of the axes, $A$ is diagonal with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ and every non-degenerate quadric takes one of the standard forms: the ellipsoid ($+++$, right side $1$), hyperboloids of one sheet ($++-$) and of two sheets ($+--$), the elliptic and hyperbolic paraboloids ($\lambda_3=0$ with a linear term), the cone ($\kappa=0$), and the cylinders (one $\lambda_i=0$). The type is read off from the signs of the eigenvalues and of the constant.`,
-    idea: String.raw`The spectral theorem (ladr-7.29) diagonalizes $A$ by an orthogonal change of coordinates, which preserves shapes. If no eigenvalue is $0$ one can complete the square in every variable, which moves the centre to the origin and leaves $\sum\lambda_ix_i^2=\kappa$; dividing by $|\kappa|$ leaves only the signs of the $\lambda_i$ (and the sign of $\kappa$), so they decide the type. If $\lambda_3=0$ and $b$ has a component along that axis, completing squares in the other two variables leaves a linear term and a paraboloid. The nonzero level $\kappa$ is a regular value of $Q$ in the central case, so the standard quadrics are regular surfaces (4.3), except the cone.`,
-    caption: String.raw`The equation is $\lambda_1x'^2+\lambda_2y'^2+\lambda_3z'^2+2\ell z'=\kappa$ in axes $(x',y',z')$ rotated by the two tilt sliders, so the picture is a genuinely general quadric $x^{\mathsf T}Ax+2b\cdot x=\kappa$; the readout recomputes the eigenvalues of $A$ from the rotated matrix and classifies the surface from their signs. Use the presets, then move one eigenvalue through $0$: an ellipsoid opens into a cylinder and then into a hyperboloid; add $\ell$ with $\lambda_3=0$ for the paraboloids; set $\kappa=0$ for the cone.`,
+    statement: String.raw`A **quadric surface** is the zero set in $\R^3$ of a degree-two polynomial $Q(x)=x^{\mathsf T}Ax+2b\cdot x+c$, with $A\ne0$ symmetric. Orthogonal axes diagonalize $A$; translations remove linear terms in directions with nonzero eigenvalues. The remaining type depends on the eigenvalue signs, the shifted constant and any linear term along the nullspace. Standard two-dimensional examples include ellipsoids, hyperboloids, paraboloids and cylinders. Degenerate cases include cones, intersecting or parallel planes, a double plane, a line, a point and the empty set. A cone is singular at its vertex; a union of planes is singular at their intersection.`,
+    idea: String.raw`The spectral theorem (ladr-7.29) removes cross terms. Completing the square moves the centre whenever the linear term lies in the range of $A$, leaving $\sum\lambda_ix_i^2=\kappa$. Signs and rank classify that central equation; rescaling individual coordinates normalizes nonzero coefficients to $\pm1$ (such a rescaling need not preserve lengths). A nonzero linear term in the nullspace instead yields a paraboloid or parabolic cylinder after an additional rotation there. For the displayed family, completing the $z'$ square when $\lambda_3\ne0$ shifts its centre to $z'=-\ell/\lambda_3$ and its level to $\kappa+\ell^2/\lambda_3$. Nonempty nonzero levels of the central quadratic form are regular; zero levels and lower-rank cases need separate examination.`,
+    caption: String.raw`The displayed family is $\lambda_1x'^2+\lambda_2y'^2+\lambda_3z'^2+2\ell z'=\kappa$, rotated by the two tilt sliders. It explores standard types; its linear term is restricted to one principal axis. The eigenvalues are independently recomputed from the rotated matrix. Try the presets, cross an eigenvalue through zero, or set all three to zero: that last case has degree below two and is labeled separately. Plane, line and point degeneracies are drawn directly so a double zero does not disappear from the sign-changing mesh. Everything is clipped to the cube $[-1.8,1.8]^3$; a nonempty quadric may lie outside it.`,
     deps: ['dg-4.3', 'ladr-7.29'],
-    refs: ['Pressley Ch. 5'],
+    refs: ['U.C. Riverside, Classification of quadric surfaces, pp. 1–2'],
+    links: { source: 'https://math.ucr.edu/~res/math10A/quadrics.pdf' },
     tags: ['quadric', 'classification', 'eigenvalues'],
-    credit: 'The classification of surfaces of second degree is classical; it is usually credited to L. Euler (Introductio in analysin infinitorum, 1748)',
-    verify: true,
     viz(v) {
       const PRE = {
         ell: [1, 0.8, 0.5, 0, 1], one: [1, 1, -0.8, 0, 1], two: [1, -1, -1, 0, 1], cone: [1, 1, -1, 0, 0],
@@ -166,7 +165,7 @@ which is a regular surface with $\mathbf x_t\times\mathbf x_\theta\ne0$ (indeed 
       const ell = v.slider('linear term $\\ell$', 0, 1.2, 0, { step: 0.1 });
       const kap = v.select('$\\kappa$', [{ value: -1, label: '−1' }, { value: 0, label: '0' }, { value: 1, label: '1' }], 1);
       const a1 = v.slider('tilt 1 (degrees)', 0, 90, 25, { step: 1 }), a2 = v.slider('tilt 2 (degrees)', 0, 90, 35, { step: 1 });
-      const S3 = stage3(v, { range: 2.1, height: 430, title: 'the quadric (clipped to a box)', yaw: -0.7, pitch: 0.4, full: true });
+      const S3 = stage3(v, { range: 3.4, height: 430, title: 'the quadric (clipped to a box)', yaw: -0.7, pitch: 0.4, full: true });
       const cache = new Map();
       let info = null;
       v.render(() => {
@@ -177,40 +176,32 @@ which is a regular surface with $\mathbf x_t\times\mathbf x_\theta\ne0$ (indeed 
         const R = [[cb, -sb * ca, sb * sa], [sb, cb * ca, -cb * sa], [0, sa, ca]];
         const Rt = (x, y, z) => [R[0][0] * x + R[1][0] * y + R[2][0] * z, R[0][1] * x + R[1][1] * y + R[2][1] * z, R[0][2] * x + R[1][2] * y + R[2][2] * z];
         const f = (x, y, z) => { const q = Rt(x, y, z); return L[0] * q[0] * q[0] + L[1] * q[1] * q[1] + L[2] * q[2] * q[2] + 2 * lt * q[2]; };
+        const classification=classifyQuadric(L,lt,k),rotate=p=>R.map(row=>dot(row,p));
         const key = [...L, lt, k, a1.value, a2.value].join('|');
-        if (!cache.has(key)) { if (cache.size > 6) cache.clear(); cache.set(key, implicitMesh(f, k, [-1.8, -1.8, -1.8], [1.8, 1.8, 1.8], 30)); }
-        const tris = cache.get(key);
-        drawMesh(S3, v, tris, { color: 'accent', alpha: 0.88 });
+        let visible=0;
+        if(classification.mode==='mesh'){
+          if (!cache.has(key)) { if (cache.size > 6) cache.clear(); cache.set(key, implicitMesh(f, k, [-1.8, -1.8, -1.8], [1.8, 1.8, 1.8], 30)); }
+          const tris=cache.get(key);drawMesh(S3,v,tris,{color:'accent',alpha:.88});visible=tris.length;
+        }else if(classification.mode==='planes'){
+          for(const {n,d} of classification.planes){const poly=planeInBox(rotate(n),d);if(poly.length){S3.poly(poly,{fill:'accent',fillAlpha:.4,color:'accent',width:2});visible++;}}
+        }else if(classification.mode==='point'){
+          const p=rotate(classification.center);if(p.every(x=>Math.abs(x)<=1.8)){S3.dot(p,{r:7,color:'accent'});visible++;}
+        }else if(classification.mode==='line'){
+          const axis=[0,0,0];axis[[0,1,2].find(i=>!classification.nz.includes(i))]=1;const segment=lineInBox(rotate(classification.center),rotate(axis));if(segment.length){S3.line(...segment,{color:'accent',width:4});visible++;}
+        }else if(classification.mode==='all'){
+          for(let axis=0;axis<3;axis++)for(const a of [-1.8,1.8])for(const b of [-1.8,1.8]){const p=[0,0,0],q=[0,0,0],other=[0,1,2].filter(i=>i!==axis);p[axis]=-1.8;q[axis]=1.8;p[other[0]]=q[other[0]]=a;p[other[1]]=q[other[1]]=b;S3.line(p,q,{color:'accent',alpha:.6});}visible=12;
+        }
+        if(!visible)S3.text(classification.mode==='empty'?'empty set':'no geometry resolved in the display cube',[0,0,0],{color:'muted',size:15});
         for (let i = 0; i < 3; i++) { const e = [0, 0, 0]; e[i] = 1; const w = [R[0][i], R[1][i], R[2][i]]; S3.arrow(mul(w, -1.9), mul(w, 1.9), { color: ['red', 'green', 'blue'][i], width: 1.4, alpha: 0.6 }); }
         // eigenvalues of A = R diag(L) R^T
         const A = [0, 1, 2].map((i) => [0, 1, 2].map((j) => L[0] * R[i][0] * R[j][0] + L[1] * R[i][1] * R[j][1] + L[2] * R[i][2] * R[j][2]));
         const ev = v.M.eigSym(A).values.slice().sort((p, q) => q - p);
-        // classification
-        const tol = 1e-6, z3 = Math.abs(L[2]) < tol;
-        let name;
-        if (z3 && lt > tol) {
-          const a = L[0], b = L[1];
-          if (Math.abs(a) > tol && Math.abs(b) > tol) name = a * b > 0 ? 'elliptic paraboloid' : 'hyperbolic paraboloid';
-          else if (Math.abs(a) > tol || Math.abs(b) > tol) name = 'parabolic cylinder';
-          else name = 'plane';
-        } else {
-          const ke = k + (!z3 ? (lt * lt) / L[2] : 0);
-          const nz = L.filter((x) => Math.abs(x) > tol), sgn = Math.abs(ke) < 1e-9 ? 1 : Math.sign(ke);
-          const p = nz.filter((x) => x * sgn > 0).length, n = nz.length - p, r = nz.length;
-          if (Math.abs(ke) < 1e-9) {
-            if (r === 3) name = p === 3 || n === 3 ? 'a single point' : 'cone';
-            else if (r === 2) name = nz[0] * nz[1] > 0 ? 'a line' : 'two crossing planes';
-            else if (r === 1) name = 'a plane (double)'; else name = 'everything';
-          } else if (r === 3) name = p === 3 ? 'ellipsoid' : p === 2 ? 'hyperboloid of one sheet' : p === 1 ? 'hyperboloid of two sheets' : 'empty set';
-          else if (r === 2) name = p === 2 ? 'elliptic cylinder' : p === 1 ? 'hyperbolic cylinder' : 'empty set';
-          else if (r === 1) name = p === 1 ? 'two parallel planes' : 'empty set'; else name = 'empty set';
-        }
-        info = { ev, name, L };
+        info = { ev, ...classification, visible, degree:L.some(x=>x!==0)?2:lt!==0?1:0 };
       });
       v.readout(() => {
         if (!info) return '';
         const sg = (x) => (Math.abs(x) < 1e-6 ? '0' : x > 0 ? '+' : '−');
-        return `Eigenvalues of $A$ (computed from the rotated matrix): $${info.ev.map((x) => v.fix(x, 2)).join(',\\ ')}$, signs $(${info.ev.map(sg).join(' ')})$ — the surface is the **${info.name}**.`;
+        return `Eigenvalues of $A$ (computed from the rotated matrix): $${info.ev.map((x) => v.fix(x, 2)).join(',\\ ')}$, signs $(${info.ev.map(sg).join(' ')})$ — solution set: **${info.name}**. ${info.degree<2?`Degree ${info.degree}: this setting is not a degree-two quadric. `:''}${!info.visible&&info.mode!=='empty'?'No geometry is resolved in the display cube; this does not imply the full solution set is empty.':'The display shows its intersection with the cube.'}`;
       });
     },
   },
@@ -343,17 +334,15 @@ is a regular surface that is not orientable: there is no continuous unit normal 
     num: '4.14',
     kind: 'Proposition',
     name: 'Compact surfaces in ℝ³ are orientable',
-    statement: String.raw`Every compact connected regular surface $S\subset\R^3$ is orientable. In fact $\R^3\setminus S$ has exactly two connected components, a bounded one (the inside) and an unbounded one (the outside) (Jordan–Brouwer separation), and the unit normal that points into the outside is a smooth field on $S$. Consequently the Klein bottle, and the projective plane, cannot be embedded as regular surfaces in $\R^3$: their usual pictures pass through themselves.`,
-    idea: String.raw`Separation (top-13.15) says that $S$ divides space into an inside and an outside. At each $p\in S$ exactly one of the two unit normals points into the outside, and which one varies smoothly with $p$, since a small normal segment through $p$ crosses the surface only at $p$ and stays on a fixed side. Equivalently, parity of crossings of a ray from a point with $S$ tells inside (odd) from outside (even). Immersed surfaces escape this: where two sheets cross there are four local regions, and the side labelled "outside" is no longer a single side of each sheet.`,
-    caption: String.raw`Choose a compact surface. Drag the probe $q$ in the section $z=q_z$ (right) and slide $q_z$: the ray to the right meets the surface at the gold points and the readout counts them (computed by intersecting the ray with the triangle mesh). An odd count means $q$ is inside. At each hit the green arrow points to the side from which a ray meets the surface an even number of times, i.e. outward. On the sphere, torus and the genus-2 surface this is one consistent field. The Klein bottle (figure-eight immersion) crosses itself along the red circle, where two sheets with different tangent planes meet: it is not a regular surface there.`,
+    statement: String.raw`Every nonempty compact connected smooth embedded surface without boundary $S\subset\R^3$ is orientable. In fact $\R^3\setminus S$ has exactly two connected components, a bounded one (the inside) and an unbounded one (the outside) (Jordan–Brouwer separation), and the unit normal that points into the outside is a smooth field on $S$. Consequently the Klein bottle, and the projective plane, cannot be embedded as regular surfaces in $\R^3$: their usual pictures pass through themselves.`,
+    idea: String.raw`Separation (top-13.15) says that $S$ divides space into an inside and an outside. At each $p\in S$ exactly one of the two unit normals points into the outside, and which one varies smoothly with $p$, since a small normal segment through $p$ crosses the surface only at $p$ and stays on a fixed side. For a point outside $S$ and a ray transverse to $S$, each crossing switches sides: the number of forward crossings is odd inside and even outside. A tangent contact is not a transverse crossing, and points on $S$ require a separate label. Immersed surfaces escape this: where two sheets cross there are four local regions, and the side labelled "outside" is no longer a single side of each sheet.`,
+    caption: String.raw`Drag $q$ in the section $z=q_z$ and change the height. For the sphere, torus and double torus, gold points are analytic intersections with the ray in the positive $x$ direction; green arrows are outward normals from the defining equations. The readout locates $q$ using those equations and distinguishes tangent contacts from transverse crossings. The shaded meshes and section segments are finite approximations. For the self-intersecting Klein bottle the hits come from the mesh; no global inside/outside label or outward field is asserted. Its red self-intersection circle is drawn in 3D, and appears in the section only at $z=0$.`,
     deps: ['dg-4.13', 'top-13.15'],
-    refs: ['do Carmo Ch. 2'],
+    refs: ['Guillemin–Pollack, Differential Topology (1974), §2.5 and §3.2, Exercise 13'],
+    links: { source: 'https://www.math.auckland.ac.nz/~hekmati/Books/GP.pdf' },
     tags: ['compact surface', 'Jordan–Brouwer', 'Klein bottle'],
-    credit: 'Elementary proof of orientability of hypersurfaces in $\\R^n$: H. Samelson, Proc. AMS 22 (1969); the separation theorem is due to Jordan (1887) in the plane and Brouwer (1911–12) in higher dimensions',
-    verify: true,
     viz(v) {
-      const g2 = (x, y, z) => (x * x * (1 - x * x) - y * y) ** 2 + z * z;
-      const klein = (u, w) => { const r = 2 + Math.cos(u / 2) * Math.sin(w) - Math.sin(u / 2) * Math.sin(2 * w); return [0.5 * r * Math.cos(u), 0.5 * r * Math.sin(u), 0.5 * (Math.sin(u / 2) * Math.sin(w) + Math.cos(u / 2) * Math.sin(2 * w))]; };
+      const g2=(x,y,z)=>genusTwoLevel(x,y,z)+.03,klein=kleinFigureEight;
       const SRF = {
         sphere: { name: 'sphere', mk: () => paramMesh(SURF.sphere.F, [-PI, PI], [-PI / 2, PI / 2], 40, 24), q: [0.2, 0.1, 0.1], emb: true, range: 1.7 },
         torus: { name: 'torus', mk: () => paramMesh(SURF.torus.F, [0, TAU], [0, TAU], 56, 28), q: [1.0, 0.3, 0.0], emb: true, range: 2 },
@@ -363,45 +352,44 @@ is a regular surface that is not orientable: there is no continuous unit normal 
       const sel = v.select('surface', Object.entries(SRF).map(([k, s]) => ({ value: k, label: s.name })), 'torus', { onChange: () => reset() });
       const qz = v.slider('height $q_z$ of the probe', -1, 1, 0, { step: 0.01 });
       const S3 = stage3(v, { range: 2, height: 420, title: 'surface, probe and ray', yaw: -0.6, pitch: 0.5, weight: 1.2 });
-      const S2 = chart(v, { x: [-2, 2], y: [-1.5, 1.5], xlabel: 'x', ylabel: 'y', equal: true, title: 'section $z=q_z$ and the ray', weight: 0.9 });
-      const q = S2.handle(1, 0.3, { color: 'gold', label: 'q', constrain: { x: [-1.9, 1.9], y: [-1.4, 1.4] } });
+      const S2 = chart(v, { x: [-2, 2], y: [-2, 2], xlabel: 'x', ylabel: 'y', equal: true, title: 'section $z=q_z$ and the ray', weight: 0.9 });
+      const q = S2.handle(1, 0.3, { color: 'gold', label: 'q', constrain: { x: [-1.9, 1.9], y: [-1.9, 1.9] } });
       const cache = {};
       const mesh = (k) => (cache[k] ||= SRF[k].mk());
-      function reset() { const s = SRF[sel.value]; q.set(s.q[0], s.q[1]); qz.set(s.q[2]); S3.o.range = s.range; }
+      function reset() { const s = SRF[sel.value]; q.set(s.q[0], s.q[1]); qz.set(s.q[2]); S3.o.range = 3.2; }
       reset();
       let info = null;
       v.render(() => {
         const key = sel.value, s = SRF[key], tris = mesh(key);
         drawMesh(S3, v, tris, { color: 'accent', alpha: 0.42 });
         const Q = [q.x, q.y, qz.value], D = [1, 0, 0];
-        const hits = rayHits(tris, Q, D);
-        const par = (pt) => rayHits(tris, pt, unit([0.31, 0.52, 0.8])).length % 2;
+        const analytic=s.emb?surfaceRay(key,Q):null;
+        const hits=s.emb?analytic.hits:rayHits(tris,Q,D).map(h=>({p:add(Q,mul(D,h.s))}));
         // section
         for (const sg of sliceZ(tris, qz.value)) S2.segment(sg[0], sg[1], { color: 'accent', width: 2.2 });
         S2.segment([q.x, q.y], [2, q.y], { color: 'gold', width: 1.6, dash: true });
         S3.arrow(Q, [2, Q[1], Q[2]], { color: 'gold', width: 1.6 });
         S3.dot(Q, { r: 6, color: 'gold', bias: -0.3 });
         for (const h of hits) {
-          const P = add(Q, mul(D, h.s));
+          const P = h.p;
           S2.dot(P[0], P[1], { r: 4.5, color: 'gold' });
           S3.dot(P, { r: 4.5, color: 'orange', bias: -0.3 });
-          const n = h.t.n, e = 0.06, a = par(add(P, mul(n, e))), b = par(sub(P, mul(n, e)));
-          if (a !== b) { const out = a === 0 ? n : mul(n, -1); S3.arrow(P, add(P, mul(out, 0.45)), { color: 'green', width: 2.8, bias: -0.4 }); }
+          if(s.emb)S3.arrow(P,add(P,mul(h.normal,.35)),{color:'green',width:2.8,bias:-.4});
         }
         if (!s.emb) {
           S3.path(Array.from({ length: 97 }, (_, i) => [Math.cos((TAU * i) / 96), Math.sin((TAU * i) / 96), 0]), { color: 'red', width: 3, bias: -0.5 });
-          S2.circle(0, 0, 1, { color: 'red', width: 2 });
+          if(Math.abs(qz.value)<1e-9)S2.circle(0,0,1,{color:'red',width:2});
         }
         let ang = null;
         if (!s.emb) { const a = dF(klein, 0.8, 0).N, b = dF(klein, 0.8, PI).N; ang = (Math.acos(clamp(Math.abs(dot(a, b)), 0, 1)) * 180) / PI; }
-        info = { n: hits.length, ang, emb: s.emb, par: par(Q) };
+        info = { n:hits.length, ang, emb:s.emb,location:analytic?.location,tangent:analytic?.hits.some(h=>h.tangent) };
       });
       v.legend([['gold', 'probe, ray, hits'], ['green', 'outward normal at a hit'], ['red', 'self-intersection']]);
       v.readout(() => {
         if (!info) return '';
-        const t = `The ray from $q$ to the right meets the surface **${info.n}** time${info.n === 1 ? '' : 's'} (${info.n % 2 ? 'odd: $q$ is inside' : 'even: $q$ is outside'}).`;
-        if (info.emb) return t + ' The surface is embedded and compact, so inside and outside are well defined and the outward normal is a continuous field.';
-        return t + ` Along the red circle two sheets meet at an angle of $${v.fix(info.ang, 0)}^\\circ$ (between their normals, at $u=0.8$): the surface passes through itself, so it is not a regular surface and the outward-normal argument breaks down. The Klein bottle is not orientable.`;
+        const t=`The forward ray has **${info.n}** ${info.emb?'analytic':'mesh'} intersection${info.n===1?'':'s'}.`;
+        if(info.emb)return `${t} The probe is **${info.location}**. ${info.location==='on the surface'?'Boundary points are not labeled inside or outside.':info.tangent?'This ray has a tangent contact; raw intersection parity is not an inside/outside test.':'The ray is transverse: odd crossing parity means inside, even means outside.'} Outward normals come from the analytic level equation.`;
+        return `${t} The Klein bottle is immersed and self-intersecting; these mesh hits do not define a global inside/outside or outward-normal field. Along the red circle the sheets have distinct tangent planes: their normals at $u=0.8$ meet at approximately $${v.fix(info.ang,0)}^\\circ$. The abstract Klein bottle is nonorientable.`;
       });
     },
   },

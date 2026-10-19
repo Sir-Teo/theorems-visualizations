@@ -3,8 +3,10 @@
 // elimination, iterative refinement, and the Bunch–Kaufman LDLᵀ factorization. Part 1 (4.1–4.6) is in ch04.js.
 import {
   nm, sciT, dot, mv, mm, tp, eye, fl, flM, flV, flChol, withSingular, geomSigma, randQ,
-  luFactor, luSolveFl, gaussMat, randSPD, relErr, normV, spy, symbolicChol, minDegree, gridPattern, arrowPattern, ldlt, ldltD, inertiaOf,
+  luFactor, luSolveFl, gaussMat, randSPD, relErr, normV, spy, symbolicChol, minDegree, gridPattern, arrowPattern, ldltD,
 } from './ch04.shared.js';
+
+import { auditedLDLT as ldlt, numericalInertia, blockEigenvalues } from './ch04-factorization.audit.js';
 
 const maxAbsM = (A) => Math.max(...A.flat().map(Math.abs));
 const sub = (A, B) => A.map((r, i) => r.map((x, j) => x - B[i][j]));
@@ -115,16 +117,15 @@ i.e. the "growth factor" of Cholesky is bounded by $1$ (relative to $\sqrt{\|A\|
       num: '4.9',
       kind: 'Algorithm',
       name: 'Banded and tridiagonal solvers (Thomas algorithm)',
-      statement: String.raw`For a tridiagonal system with sub-, main and super-diagonals $a_i,b_i,c_i$ and right-hand side $d_i$, elimination touches only the three diagonals:
-$$w_i=\frac{a_i}{b_{i-1}},\quad b_i\leftarrow b_i-w_ic_{i-1},\quad d_i\leftarrow d_i-w_id_{i-1}\ (i=2,\dots,n);\qquad x_n=\frac{d_n}{b_n},\ \ x_i=\frac{d_i-c_ix_{i+1}}{b_i}.$$
-This is the **Thomas algorithm** (the tridiagonal matrix algorithm): $8n-7$ flops, linear in $n$, against $\tfrac23n^3$ for dense LU. More generally, LU without pivoting preserves the band: $L$ and $U$ of a matrix of lower/upper bandwidth $(\beta,\gamma)$ have bandwidths $\beta$ and $\gamma$ and cost $O(n\beta\gamma)$; with partial pivoting the upper bandwidth of $U$ grows to $\beta+\gamma$. Stability without pivoting is guaranteed for diagonally dominant or symmetric positive definite tridiagonal matrices.`,
-      idea: String.raw`In step $k$ the multiplier is needed only for row $k+1$ (the entries below it are already zero), and the update $a_{k+1,k+1}\leftarrow a_{k+1,k+1}-\ell\,a_{k,k+1}$ touches one entry; no fill-in occurs outside the band (by contrast, 4.10). Each equation is processed with a constant number of operations, whence the count $O(n)$. Diagonal dominance ($|b_i|>|a_i|+|c_i|$) gives $|w_i|<1$ and keeps the pivots bounded away from zero, which is why pivoting is unnecessary in the typical discretisations of one-dimensional differential equations.`,
+      statement: String.raw`For a tridiagonal system with sub-, main and super-diagonals $a_i,b_i,c_i$ and right-hand side $d_i$, **provided all computed elimination pivots are nonzero**, the Thomas algorithm is
+$$w_i=a_i/b_{i-1},\quad b_i\leftarrow b_i-w_ic_{i-1},\quad d_i\leftarrow d_i-w_id_{i-1}\quad(i=2,\ldots,n),$$
+followed by $x_n=d_n/b_n$ and $x_i=(d_i-c_ix_{i+1})/b_i$. Counting each scalar addition, subtraction, multiplication and division as one flop gives $5(n-1)+1+3(n-1)=8n-7$. Nonsingularity alone does not ensure nonzero pivots: $\begin{pmatrix}0&1\\1&0\end{pmatrix}$ needs an interchange. Strict row diagonal dominance or positive definiteness in the symmetric case prevents exact-arithmetic breakdown. General tridiagonal systems can instead use partial pivoting; its upper factor can have a second superdiagonal (LAPACK DGTSV). For lower/upper bandwidths $\beta,\gamma$, band elimination without pivoting preserves those bandwidths and costs $O(n(\beta+1)(\gamma+1))$ including the solves; partial pivoting can increase the upper bandwidth to $\beta+\gamma$ (LAPACK DGBTRF).`,
+      idea: String.raw`Only row $k+1$ has an entry to eliminate in column $k$, so each forward step costs five operations and back substitution costs three per remaining row. Strict row diagonal dominance is inherited by the trailing Schur complement, ensuring nonzero pivots; it does **not** imply every multiplier has modulus below one. For example, $\begin{pmatrix}2&1\\100&101\end{pmatrix}$ is strictly row diagonally dominant but its first multiplier is $50$. The display uses such safe strictly dominant systems, while the LAPACK reference includes row swaps for general systems.`,
       caption: String.raw`Left: step through the Thomas algorithm for an $8\times8$ system (a diagonally dominant matrix; Resample for another): the forward sweep modifies one diagonal entry and one right-hand side per row, then back substitution fills in $x$ from the bottom. Only the tridiagonal cells are ever touched. Right: operation counts against $n$ on log–log axes: Thomas $8n-7$ (slope $1$) against dense LU $\tfrac23n^3$ (slope $3$); the gap at your chosen $n$ is in the readout.`,
       deps: ['nla-4.1'],
-      credit: 'L. H. Thomas, 1949 (Watson Scientific Computing Laboratory report); the method is older',
+      credit: 'Thomas algorithm (conventional name); pivoted variant documented in LAPACK DGTSV',
       tags: ['banded', 'tridiagonal'],
-      refs: ['Golub–Van Loan ch. 4'],
-      verify: true,
+      refs: ['LAPACK DGTSV, purpose and elimination/back-substitution source (April 2011)', 'LAPACK DGBTRF, purpose/band storage (November 2006)'],
       viz(v) {
         const M = v.M, n = 8;
         let seed = 1;
@@ -153,8 +154,8 @@ This is the **Thomas algorithm** (the tridiagonal matrix algorithm): $8n-7$ flop
           const f = S.frame; if (!f.b) return;
           const band = (i, j) => Math.abs(i - j) <= 1;
           T.draw({
-            value: (i, j) => (j === n ? null : j === n + 1 ? f.x[i] : !band(i, j) ? null : j === i ? f.b[i] : j === i - 1 ? sys.a[i] : sys.c[i]),
-            fill: (i, j) => (j === n ? null : j === n + 1 ? (f.x[i] !== null ? ['green', 0.25] : null) : band(i, j) ? (f.stage === 'fwd' && i === f.i && j >= i - 1 && j <= i ? ['gold', 0.4] : ['blue', 0.1]) : null),
+            value: (i, j) => (j === n ? f.d[i] : j === n + 1 ? f.x[i] : !band(i, j) ? null : j === i ? f.b[i] : j === i - 1 ? (f.stage === 'bwd' || (f.stage === 'fwd' && i <= f.i) ? 0 : sys.a[i]) : sys.c[i]),
+            fill: (i, j) => (j === n ? (f.stage === 'fwd' && i === f.i ? ['gold', 0.4] : ['blue', 0.1]) : j === n + 1 ? (f.x[i] !== null ? ['green', 0.25] : null) : band(i, j) ? (f.stage === 'fwd' && i === f.i && j >= i - 1 && j <= i ? ['gold', 0.4] : ['blue', 0.1]) : null),
             colLabels: (j) => (j < n ? `${j + 1}` : j === n ? 'd' : 'x'), rowLabels: (i) => `${i + 1}`, format: 2,
           });
           const nb = nbig.value;
@@ -178,15 +179,14 @@ This is the **Thomas algorithm** (the tridiagonal matrix algorithm): $8n-7$ flop
       num: '4.10',
       kind: 'Phenomenon',
       name: 'Fill-in and reordering in sparse elimination',
-      statement: String.raw`Eliminating a variable from a sparse symmetric system creates nonzeros ("fill-in") in the factor where $A$ had zeros: if $a_{ik}\ne0\ne a_{jk}$ then after step $k$ the entry $(i,j)$ of the trailing block is generically nonzero. In graph terms (vertices = unknowns, edges = nonzero off-diagonals) eliminating a vertex joins all its neighbours into a clique. The amount of fill depends dramatically on the order of elimination, i.e. on the permutation $P$ in $PAP^{\top}=RR^{\top}$ (symmetric case): for the **arrow matrix** (dense first row and column plus the diagonal) the natural order fills the whole triangle, $\sim n^2/2$ nonzeros, while the reversed order produces **no** fill, $2n-1$ nonzeros. Finding the ordering with least fill is NP-complete, so heuristics (minimum degree, nested dissection) are used: for the five-point Laplacian on a $g\times g$ grid the natural ordering gives $O(g^3)$ nonzeros in the factor, nested dissection (George, 1973) $O(g^2\log g)$.`,
-      idea: String.raw`The fill created by eliminating vertex $v$ is determined only by the graph: it is the set of non-adjacent pairs of neighbours of $v$. If the first vertex eliminated is the hub of a star (the arrow matrix), all $n-1$ leaves become mutually adjacent; if it is a leaf, its single neighbour yields no new edge, and the hub is eliminated last, when nothing remains. Minimum degree greedily eliminates a vertex with the fewest neighbours (Tinney & Walker, 1967), a good heuristic in practice. The pictures use the *symbolic* factorization (no cancellation assumed), which for generic values is exact.`,
-      caption: String.raw`Choose the matrix (an arrow matrix or the $6\times6$ grid Laplacian) and an ordering. Left: the pattern of $PAP^{\top}$; right: the pattern of its Cholesky factor, with the original nonzeros in blue and **fill-in in red**. Compare the nonzero counts: for the arrow matrix, "natural" fills everything and "reversed" gives zero fill; for the grid, minimum degree produces visibly less fill than the natural ordering, and a random ordering is worst.`,
+      statement: String.raw`For a symmetric positive definite matrix, write $PAP^{\top}=LL^{\top}$. Eliminating vertex $k$ joins its remaining graph neighbours into a clique: the Schur update $a_{ij}\leftarrow a_{ij}-a_{ik}a_{jk}/a_{kk}$ can create nonzeros where $A$ had zeros. This is a **symbolic** pattern prediction, excluding numerical cancellations. For the arrow pattern (dense first row/column and diagonal), eliminating the hub first creates a full lower triangle with $n(n+1)/2$ entries; eliminating all leaves before the hub creates no fill and leaves $2n-1$ entries. An ordering can strongly affect storage. The minimum-degree heuristic repeatedly eliminates a vertex with the fewest remaining neighbours, updating the filled graph at every step (Tinney–Walker (1967), §III.A, scheme 2).`,
+      idea: String.raw`The hub-first and leaves-first counts follow directly by induction on the neighbour-clique rule. This rule also shows that elimination creates no edges between initially disconnected components. Minimum degree is a heuristic, with no claim that it always minimizes fill; Tinney and Walker explicitly discuss topology-dependent performance. The pictures calculate exact symbolic counts for the selected ordering, rather than bounds on all orderings.`,
+      caption: String.raw`Left: the permuted input pattern; right: the lower symbolic Cholesky pattern, original entries blue and fill red. The grid uses a $6\times6$ five-point stencil. Compare the actual counts under all four orderings; a random order need not be the worst. No numerical factorization or cancellation is being simulated. The arrow pattern has exactly 136 factor entries in natural order and 31 in reversed order ($n=16$).`,
       deps: ['nla-4.7'],
-      credit: 'Parter, 1961 (elimination graphs); Tinney & Walker, 1967 (minimum degree); A. George, 1973 (nested dissection)',
+      credit: 'Tinney & Walker, 1967, §III.A, scheme 2 (minimum degree)',
       links: { doi: 'https://doi.org/10.1109/PROC.1967.6011' },
       tags: ['sparse', 'ordering'],
-      refs: ['Golub–Van Loan ch. 4', 'Golub–Van Loan ch. 11'],
-      verify: true,
+      refs: ['Tinney–Walker, Proc.IEEE 55(11), 1801–1809, §III.A pp. 1805–1806'],
       viz(v) {
         const mat = v.select('matrix', [{ value: 'arrow', label: 'arrow ($n=16$)' }, { value: 'grid', label: 'grid Laplacian ($6\\times6$)' }], 'arrow');
         const ord = v.select('ordering', [{ value: 'nat', label: 'natural' }, { value: 'rev', label: 'reversed' }, { value: 'md', label: 'minimum degree' }, { value: 'rnd', label: 'random' }], 'nat');
@@ -216,46 +216,47 @@ This is the **Thomas algorithm** (the tridiagonal matrix algorithm): $8n-7$ flop
       num: '4.11',
       kind: 'Method',
       name: 'Iterative refinement',
-      statement: String.raw`Let $\hat x_0$ be the solution of $Ax=b$ computed from an LU factorization in working precision $u$. Iterative refinement repeats
-$$r_s=b-A\hat x_s\ \ (\text{computed in higher precision}),\qquad A\,d_s=r_s\ \ (\text{solved with the same factors}),\qquad \hat x_{s+1}=\hat x_s+d_s.$$
-If $\kappa(A)\,u$ is sufficiently smaller than $1$ (roughly $c\,n\,\kappa(A)u<1$), the error contracts by a factor of about $\kappa(A)\,u$ per sweep, $\|\hat x_s-x\|/\|x\|\approx(\kappa u)^{s+1}$, until it reaches the level $\approx$ (higher precision unit roundoff)$\cdot\kappa(A)$; each sweep costs only $O(n^2)$ since the factors are reused. If the residuals are computed in the working precision, refinement still improves the backward error (to the level of the data) but not the forward error. For $\kappa(A)u\gtrsim1$ it does not converge.`,
-      idea: String.raw`Since $x=\hat x_s+A^{-1}(b-A\hat x_s)$ exactly, the correction $d_s$ is the exact solution of the residual equation; solving it with the inexact factors makes an error of relative size $\sim\kappa(A)u$ in the *correction*, which is already small, so the error of $\hat x_{s+1}$ is $\kappa u$ times that of $\hat x_s$. The essential point is that the residual $b-A\hat x_s$ suffers cancellation and must be formed accurately; only then do the digits gained at each sweep not get lost. History: Wilkinson used it in the 1940s on early computers; Moler (1967) analysed the version with single-precision factors and double-precision residuals — I give this attribution without having checked the 1940s part.`,
-      caption: String.raw`A $10\times10$ matrix with condition number $\kappa$, factored (partial pivoting) in $p$-bit arithmetic; residuals are computed in double precision. The bold line is the error after each sweep $s$ for your $\kappa$ and $p$; the dashed reference is $(\kappa\,\epsilon_{\rm machine})^{s+1}$; the faint lines are other $\kappa$. Each sweep gains at least about $\log_{10}\!\big(1/(\kappa\epsilon_{\rm machine})\big)$ digits — the bound is pessimistic for these matrices, and the readout compares it with the measured gain, and the error stalls near $10^{-16}\kappa$, the limit set by the double-precision residual. When $\kappa\epsilon_{\rm machine}$ reaches $1$ the iteration stops converging.`,
+      statement: String.raw`Iterative refinement reuses a computed LU factorization while repeating
+$$r_s=b-A\hat x_s,\qquad A d_s\approx r_s,\qquad \hat x_{s+1}=\hat x_s+d_s.$$
+In exact residual/update arithmetic, if the correction solver is the fixed linear map $C$, the error obeys $e_{s+1}=(I-CA)e_s$. Thus $\|I-CA\|<1$ is a sufficient contraction condition. With rounding, residual and update errors add a limiting error term. A small $\kappa(A)u$ is a useful guide **only with the dimension and factorization-error constants included**; $\kappa u\ge1$ by itself neither proves convergence nor proves divergence. Higher precision residuals can improve accuracy substantially. Each correction costs $O(n^2)$ after the factors are formed.`,
+      idea: String.raw`Subtract $x$ from the update and use $b=Ax$ to obtain the error recurrence. Moler (1967) equations (5)–(11), pp. 317–320, bound a rounded variant, including factorization, residual and iterate-update terms. Working-precision residuals can sometimes improve forward accuracy too; they provide a weaker accuracy guarantee. Here factors and correction solves use simulated $p$-bit arithmetic, while residuals **and iterate updates** use JavaScript double precision. This differs from Moler's particular working-precision iterate model.`,
+      caption: String.raw`The bold curve measures error against a chosen vector $x_*$; $b=Ax_*$ is itself formed in double precision, so data formation also affects the comparison. Dashed $(\kappa u)^{s+1}$ and $10^{-16}\kappa$ curves are heuristic scales, not bounds, predicted equalities or mandatory floors. Faint curves use three other condition numbers. Error can exceed 100%, and the plot expands to show it. A failed rounded factorization is reported rather than connected through a missing value.`,
       deps: ['nla-4.3'],
-      credit: 'J. H. Wilkinson, 1940s–1960s; C. B. Moler, 1967',
+      credit: 'C. B. Moler, Iterative Refinement in Floating Point, 1967',
       links: { doi: 'https://doi.org/10.1145/321386.321394' },
       tags: ['refinement', 'accuracy'],
       refs: ['Golub–Van Loan ch. 3', 'Moler, J. ACM 14 (1967) 316–321'],
-      verify: true,
       viz(v) {
         const M = v.M, n = 10, SW = 12;
         const kap = v.slider('condition number $\\kappa(A)$', 1, 1e8, 1e3, { log: true, sig: 2 });
-        const pb = v.slider('significand bits $p$', 8, 40, 24, { int: true });
+        const pb = v.slider('significand bits $p$', 8, 26, 24, { int: true });
         let seed = 1;
         v.button('Resample', () => { seed++; });
         const S = v.stage({ x: [0, SW], y: [1e-17, 10], ylog: true, axes: 'box', gutter: true, height: 400, full: true, xlabel: 'refinement sweeps s', ylabel: 'relative error', title: 'error after each sweep' });
         const run = (k, p) => {
           const r = v.rng(seed * 73 + 5), A = withSingular(M, r, n, n, geomSigma(n, k)), xt = Array.from({ length: n }, () => r.normal()), b = mv(A, xt), f = luFactor(A, { pivot: true, p });
+          if (!f.ok) return [];
           let x = luSolveFl(f, b, p), out = [relErr(x, xt)];
           for (let s = 0; s < SW; s++) {
             const res = b.map((bi, i) => bi - A[i].reduce((q, a, j) => q + a * x[j], 0)), d = luSolveFl(f, res, p);
             x = x.map((t, i) => t + d[i]); out.push(relErr(x, xt));
           }
-          return out;
+          return out.every(Number.isFinite) ? out : [];
         };
         let st = null;
         v.render(() => {
           const p = pb.value, u = 2 ** -p, k = kap.value;
-          for (const g of [1e2, 1e4, 1e6]) S.path(run(g, p).map((e, s) => [s, Math.max(1e-17, e)]), { color: 'muted', width: 1, alpha: 0.5 });
-          const e = run(k, p);
-          S.path(Array.from({ length: SW + 1 }, (_, s) => [s, Math.max(1e-17, Math.min(10, (k * u) ** (s + 1)))]), { color: 'purple', width: 1.6, dash: true });
+          const others = [1e2, 1e4, 1e6].map(g => run(g,p)), e = run(k,p);
+          const ymax = Math.max(10, ...e, ...others.flat(),(k*u)**(SW+1)) * 2; S.setView([0, SW], [1e-17,ymax]);
+          for (const other of others) S.path(other.map((e, s) => [s, Math.max(1e-17, e)]), { color: 'muted', width: 1, alpha: 0.5 });
+          S.path(Array.from({ length: SW + 1 }, (_, s) => [s, Math.max(1e-17, Math.min(ymax, (k * u) ** (s + 1)))]), { color: 'purple', width: 1.6, dash: true });
           S.hline(1e-16 * k, { color: 'orange', width: 1, dash: true });
           S.path(e.map((q, s) => [s, Math.max(1e-17, q)]), { color: 'accent', width: 3 }); S.dots(e.map((q, s) => [s, Math.max(1e-17, q)]), { color: 'accent', r: 4 });
           const gains = []; for (let s = 0; s < 4; s++) if (e[s] > 1e-14 * k && e[s + 1] > 0) gains.push(Math.log10(e[s] / e[s + 1]));
-          st = { u, k, gain: gains.length ? M.mean(gains) : NaN, expect: -Math.log10(k * u), last: e[SW], first: e[0] };
+          st = { u, k, gain: gains.length ? M.mean(gains) : NaN, expect: -Math.log10(k * u), last: e[SW], first: e[0], failed: !e.length };
         });
         v.legend([['accent', 'error after s sweeps'], ['purple', '$(\\kappa\\epsilon)^{s+1}$', { dash: true }], ['orange', '$10^{-16}\\kappa$', { dash: true }], ['muted', 'other $\\kappa$ (1e2, 1e4, 1e6)']]);
-        v.readout(() => st ? `$\\epsilon_{\\rm machine}=2^{-${pb.value}}=${sciT(st.u)}$, $\\kappa\\epsilon_{\\rm machine}=${sciT(st.k * st.u)}$. Initial error $${sciT(st.first)}$, after ${SW} sweeps $${sciT(st.last)}$. Digits gained per sweep: measured ${isFinite(st.gain) ? nm(st.gain, 2) : '—'}, predicted $\\log_{10}(1/\\kappa\\epsilon)=${nm(st.expect, 2)}$.${st.k * st.u > 0.5 ? ' Here $\\kappa\\epsilon\\gtrsim1$: no convergence guaranteed.' : ''}` : '');
+        v.readout(() => st?.failed ? '**Rounded factorization or correction solve failed.** Increase the significand precision or resample.' : st ? `$\\epsilon_{\\rm machine}=2^{-${pb.value}}=${sciT(st.u)}$, $\\kappa\\epsilon_{\\rm machine}=${sciT(st.k * st.u)}$. Initial error $${sciT(st.first)}$, after ${SW} sweeps $${sciT(st.last)}$. Digits gained per sweep: measured ${isFinite(st.gain) ? nm(st.gain, 2) : '—'}, heuristic $\\log_{10}(1/\\kappa\\epsilon)=${nm(st.expect, 2)}$.${st.k * st.u > 0.5 ? ' Here $\\kappa\\epsilon\\gtrsim1$: no convergence guaranteed.' : ''}` : '');
       },
     },
     // ------------------------------------------------------------------ 4.12
@@ -265,15 +266,14 @@ If $\kappa(A)\,u$ is sufficiently smaller than $1$ (roughly $c\,n\,\kappa(A)u<1$
       name: 'Symmetric indefinite factorization (LDLᵀ)',
       statement: String.raw`Every symmetric matrix $A$ has a factorization
 $$PAP^{\top}=LDL^{\top},$$
-with $P$ a permutation, $L$ unit lower triangular and $D$ **block diagonal with $1\times1$ and $2\times2$ blocks**. The diagonal pivoting method of Bunch–Parlett and Bunch–Kaufman chooses at each step either a $1\times1$ pivot or a $2\times2$ pivot block, by a partial pivoting rule that bounds the growth of the entries ($\alpha=(1+\sqrt{17})/8\approx0.64$ in the Bunch–Kaufman rule); the cost is $\tfrac13n^3$ flops, like Cholesky, and the factors preserve symmetry. A $2\times2$ block is needed because a matrix such as $\begin{pmatrix}0&1\\1&0\end{pmatrix}$ has zero diagonal, so no $1\times1$ pivot exists. By Sylvester's law of inertia the numbers of positive, negative and zero eigenvalues of $A$ equal those of $D$ (a $2\times2$ block with negative determinant contributes one positive and one negative eigenvalue).`,
-      idea: String.raw`Symmetric elimination $A\mapsto$ Schur complement preserves symmetry only if rows and columns are treated alike, so the permutation must be symmetric ($PAP^{\top}$) and the pivot a diagonal entry, which may be small or zero even for nonsingular $A$. When no diagonal entry of the pivot column is large enough compared with the largest off-diagonal entry $\lambda$, the Bunch–Kaufman rule swaps in a $2\times2$ block containing the large off-diagonal entry, whose inverse is bounded. Congruence $A\mapsto SAS^{\top}$ preserves inertia, so $D$ (obtained by a congruence) has the same signs as $A$. The cost of the rule is $O(n^2)$ comparisons overall. Stability of the full algorithm is bounded by a growth factor independent of the matrix size ($\le(1+1/\alpha)^{n-1}$ in the worst case, like partial pivoting), in practice small; I have not re-derived the constants.`,
-      caption: String.raw`A random symmetric $6\times6$ matrix $B$ (with zero diagonal, or a general one) shifted to $A=B-\sigma I$. Left: the block diagonal $D$ of $PAP^{\top}=LDL^{\top}$ (blue: $1\times1$, orange: $2\times2$ blocks). Right: the eigenvalues of $A$ on a line, coloured by sign. Slide $\sigma$: every time an eigenvalue crosses $0$, the count of negative entries/blocks in $D$ changes in step with it. Turn "pivot with $2\times2$ blocks" off for the plain diagonal method, which breaks down on a zero diagonal.`,
+with $P$ a permutation, $L$ unit lower triangular and $D$ **block diagonal with $1\times1$ and $2\times2$ blocks**. The Bunch–Kaufman diagonal pivoting method chooses at each step either a $1\times1$ pivot or a $2\times2$ pivot block, by a diagonal pivoting rule ($\alpha=(1+\sqrt{17})/8\approx0.64$ in the Bunch–Kaufman rule); an efficient implementation costs $\tfrac13n^3+O(n^2)$ flops, like Cholesky, and the factors preserve symmetry. A $2\times2$ block is needed because a matrix such as $\begin{pmatrix}0&1\\1&0\end{pmatrix}$ has zero diagonal, so no $1\times1$ pivot exists. By Sylvester's law of inertia the numbers of positive, negative and zero eigenvalues of $A$ equal those of $D$ (a $2\times2$ block with negative determinant contributes one positive and one negative eigenvalue).`,
+      idea: String.raw`A Schur complement with symmetric row/column interchanges preserves symmetry. The Bunch–Kaufman rule compares the current diagonal with the largest column entry, then tests a candidate row before selecting a scalar or a two-by-two pivot; it does not simply search the diagonal. LAPACK DSYTF2 documents these tests with $\alpha=(1+\sqrt{17})/8$. The displayed implementation follows the lower-triangular rule. Congruence preserves inertia: $x^{\top}Ax=(L^{\top}P x)^{\top}D(L^{\top}P x)$ after the corresponding coordinate change. This gives the equality of exact sign counts. Finite precision near-zero sign classification is only numerical evidence, so uncertain counts are labelled as such.`,
+      caption: String.raw`The block diagonal $D$ and the actual eigenvalue locations of $A=B-\sigma I$ are shown. The horizontal range expands to include every eigenvalue. The helper normalizes the matrix before elimination to avoid absolute small-pivot thresholds. Numerical signs use a scale-relative tolerance separately for $A$ and $D$; values in that tolerance are labelled "near zero", not proven exact zeros. The readout gives a relative reconstruction residual. With scalar pivoting only, an exact zero pivot causes a reported breakdown.`,
       deps: ['nla-4.7', 'nla-4.3'],
-      credit: 'J. R. Bunch & B. N. Parlett, 1971; J. R. Bunch & L. Kaufman, 1977',
+      credit: 'Bunch–Kaufman diagonal pivoting, as implemented in LAPACK DSYTF2/DSYTRF',
       links: { doi: 'https://doi.org/10.1090/S0025-5718-1977-0428694-0' },
       tags: ['ldl', 'inertia'],
-      refs: ['Golub–Van Loan ch. 4'],
-      verify: true,
+      refs: ['LAPACK DSYTRF purpose; DSYTF2 lower-triangle pivot tests and updates (April 2011)'],
       viz(v) {
         const M = v.M, n = 6;
         const kind = v.select('matrix $B$', [{ value: 'zero', label: 'zero diagonal' }, { value: 'gen', label: 'general' }], 'zero');
@@ -290,9 +290,9 @@ with $P$ a permutation, $L$ unit lower triangular and $D$ **block diagonal with 
           for (let i = 0; i < n; i++) for (let j = i; j < n; j++) { const t = Math.round(r.uniform(-3, 3) * 2) / 2; B[i][j] = B[j][i] = i === j ? (kind.value === 'zero' ? 0 : t) : t; }
           const A = B.map((row, i) => row.map((x, j) => (i === j ? x - sig.value : x)));
           const f = ldlt(A, { pivoting: piv.value }), D = ldltD(f), ev = M.eigSym(A).values;
-          const cnt = { pos: ev.filter((x) => x > 1e-9).length, neg: ev.filter((x) => x < -1e-9).length, zero: ev.filter((x) => Math.abs(x) <= 1e-9).length };
-          const inD = inertiaOf(f);
-          const PA = f.perm.map((i) => f.perm.map((j) => A[i][j])), recon = mm(mm(f.L, D), tp(f.L)), err = maxAbsM(sub(PA, recon));
+          const cnt = numericalInertia(ev, n), inD = numericalInertia(blockEigenvalues(f), n);
+          const radius = Math.max(1,...ev.map(Math.abs)) * 1.15; s2.setView([-radius,radius],[-1,1]);
+          const PA = f.perm.map((i) => f.perm.map((j) => A[i][j])), recon = mm(mm(f.L, D), tp(f.L)), err = maxAbsM(sub(PA, recon)) / (maxAbsM(A) || 1);
           const blockAt = new Array(n).fill(null); for (const b of f.blocks) for (let i = 0; i < b.size; i++) blockAt[b.k + i] = b;
           T.draw({
             value: (i, j) => (blockAt[i] && blockAt[i] === blockAt[j] ? D[i][j] : null),
@@ -300,11 +300,11 @@ with $P$ a permutation, $L$ unit lower triangular and $D$ **block diagonal with 
             format: 2, rowLabels: (i) => `${f.perm[i] + 1}`, colLabels: (j) => `${f.perm[j] + 1}`,
           });
           s2.hline(0, { color: 'faint', width: 1 }); s2.vline(0, { color: 'muted', width: 1.4, dash: true });
-          ev.forEach((x, i) => s2.dot(Math.max(-5.9, Math.min(5.9, x)), 0, { color: x > 1e-9 ? 'blue' : x < -1e-9 ? 'red' : 'ink', r: 6 }));
+          ev.forEach((x, i) => s2.dot(x, 0, { color: x > cnt.tol ? 'blue' : x < -cnt.tol ? 'red' : 'ink', r: 6 }));
           st = { cnt, inD, twos: f.twoByTwo, err, breakdown: f.breakdown, ok: f.breakdown < 0 };
         });
         v.legend([['blue', 'positive eigenvalue', { dot: true }], ['red', 'negative eigenvalue', { dot: true }]]);
-        v.readout(() => st ? (st.ok ? `Eigenvalues of $A$: ${st.cnt.pos} positive, ${st.cnt.neg} negative, ${st.cnt.zero} zero. Signs read off from $D$: ${st.inD.pos} / ${st.inD.neg} / ${st.inD.zero} — ${st.cnt.pos === st.inD.pos && st.cnt.neg === st.inD.neg ? '**equal** (Sylvester)' : 'different (a zero eigenvalue is only visible numerically)'}. $2\\times2$ blocks used: ${st.twos}. $\\max|PAP^{\\top}-LDL^{\\top}|=${st.err < 1e-12 ? '0' : sciT(st.err)}$.` : `**Breakdown:** the diagonal-only method meets a zero pivot at step ${st.breakdown + 1}; $D$ is shown up to there. Switch the $2\\times2$ pivoting on.`) : '');
+        v.readout(() => st ? (st.ok ? `Numerical signs of $A$: ${st.cnt.pos} positive, ${st.cnt.neg} negative, ${st.cnt.zero} near zero (tolerance $${sciT(st.cnt.tol)}$). Signs of $D$: ${st.inD.pos} / ${st.inD.neg} / ${st.inD.zero} (tolerance $${sciT(st.inD.tol)}$). ${st.cnt.zero || st.inD.zero ? 'Near-zero signs are unresolved numerically.' : st.cnt.pos === st.inD.pos && st.cnt.neg === st.inD.neg ? '**Sign counts agree** (numerical illustration of Sylvester).' : '**Numerical sign counts disagree**; no exact inertia conclusion.'} Two-by-two blocks: ${st.twos}. Relative max-entry reconstruction residual $${sciT(st.err)}$.` : `**Breakdown:** scalar-only elimination meets an exact zero pivot at step ${st.breakdown + 1}; only the completed part of $D$ is shown. Switch block pivoting on.`) : '');
       },
     },
   ],

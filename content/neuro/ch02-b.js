@@ -6,21 +6,26 @@
 //   all numbers shown on these pages are computed here.
 // - Hodgkin (1948), J. Physiol. 107: 165–181 (Crossref-checked title and pages): classification of axons by their repetitive
 //   response. The definitions of class 1 (firing frequency can be arbitrarily low) and class 2 (onset at a non-zero minimum
-//   frequency) are as given by several review articles (not read in the original), so 2.7 and 2.8 carry verify: true.
+//   frequency) were initially secondary; 2.7 is now audited against complete author gain-function treatments, without original1948 priority.
+//   The parameter/claim review of2.8 remains separate.
 // - Connor & Stevens (1971): three papers, J. Physiol. 213: 1–19 (doi 10.1113/jphysiol.1971.sp009364), 21–30 (sp009365)
 //   and 31–53 (sp009366, "Prediction of repetitive firing behaviour from voltage clamp data on an isolated neurone soma"), all
 //   Crossref-checked. The parameter set used here (ḡNa = 120, ḡK = 20, ḡA = 47.7, ḡL = 0.3 mS/cm², E_Na = 55, E_K = −72,
 //   E_A = −75, E_L = −17 mV, rate factor 3.8, A-current kinetics with the constants 0.0761, 94.22, 31.84, 1.17, 28.93, 0.3632,
 //   1.158, 55.96, 20.12, 53.3, 14.54, 1.24, 2.678, 50, 16.027) was read from the XPP implementation distributed with the Pitt
 //   computational-neuroscience course (sites.pitt.edu/~phase/bard/bardware/classes/compneuro/model/cs.ode), a teaching file that
-//   follows Connor, Walter & McKown (1977); it was not compared with the 1971/1977 tables, hence verify: true.
-//   Leak reversal is re-tuned here so that rest stays at −68 mV when ḡA is changed (our assumption, stated on the page).
-// - Stochastic channels: Chow & White (1996), Biophys. J. 71: 3013–3021 ("Spontaneous action potentials due to channel
-//   fluctuations"); Schneidman, Freedman & Segev (1998), Neural Comput. 10: 1679–1703; White, Rubinstein & Kay (2000),
-//   Trends Neurosci. 23: 131–137 (all Crossref-checked). Channel densities 60 Na⁺ and 18 K⁺ channels per µm² with 20 pS each are the
-//   standard parameter set of stochastic-HH studies (found in several arXiv/PMC parameter tables; the set reproduces ḡNa = 120 and
-//   ḡK = 36 mS/cm²: 60·20 pS/µm² = 120 mS/cm²). Which of these papers used exactly these numbers was not confirmed, hence verify: true.
-import { HH, ION_COL, gateInf, clamp, trace, hhSim, hhRun, spikeTimes, pulse, hhRest, CS, csRun, csSpikes, csA, hhStochastic } from './ch02.shared.js';
+//   is explicitly treated as a teaching variant; no equality to original1971/1977 tables is asserted.
+//   The2.8 source audit read the complete author XPP file and full1971 original (whose A-gate exponent/kinetics differ).
+//   Its numerical variant retunes leak reversal to preserve the baseline rest; no1977 original-table fit is claimed.
+// - Channel noise2.9: full Goldwyn & Shea-Brown2011 author treatment, especially pp3–6,
+//   Eqs10–13 and Fig3, now supports the retained classical independent-subunit model.
+//   Fixed-voltage binomial statistics are distinct from voltage-feedback simulation;
+//   our frozen-voltage multinomial/exponential splitting is not their Gillespie implementation.
+import { HH, ION_COL, gateInf, clamp, trace, hhSim, hhRun, spikeTimes, pulse, hhRest, CS, csRun, csSpikes, csA } from './ch02.shared.js';
+
+import { csSimulationAudit, csCurveAudit, csTargetRest } from './source-audit-connor-stevens.shared.js';
+import { hhFiringSweeps, hhFiringTrace } from './source-audit-hh-firing.shared.js';
+import { channelRun, latencySummary } from './source-audit-channel-noise.shared.js';
 
 const GC = { n: ION_COL.K, m: ION_COL.Na, h: 'teal' };
 
@@ -103,62 +108,26 @@ export default {
       num: '2.7',
       kind: 'Phenomenon',
       name: 'Repetitive firing and the Hodgkin–Huxley f–I curve',
-      statement: String.raw`Held under a constant injected current $I$ the Hodgkin–Huxley model fires periodically once $I$ exceeds a critical value. Its firing rate does not start at zero: on a slow upward ramp the rate jumps from zero to a non-zero minimum at the critical current, and on a ramp back down the neuron keeps firing to a lower current than the one where it started, so that the $f$–$I$ curve has a **bistable** window in which both rest and repetitive firing are stable. At large current the spikes shrink and firing stops altogether (depolarization block). Hodgkin (1948) distinguished axons whose repetitive response can be arbitrarily slow (class 1) from those that start at a minimum frequency (class 2); the Hodgkin–Huxley model is of the second kind (type II).`,
-      idea: String.raw`The gates $h$ and $n$ respond slowly (neuro-2.3), so rest is stable for a range of currents, while a limit cycle born in a subcritical Hopf bifurcation can coexist with it. The rate on that cycle is set by the time $n$ and $h$ need to recover after each spike (neuro-2.5), which is about 17 ms at 6.3 °C, hence a minimum rate near 58 Hz in this model. At the other end of the window the rest state itself loses stability, giving the abrupt jump on the upward ramp. The transition type is analysed in neuro-3.4 (Hopf, type II) and contrasted with neuro-3.5 (saddle-node on an invariant circle, type I).`,
-      caption: String.raw`Left: the firing rate (inverse of the last interspike interval) against constant current, computed by slowly ramping the current up from rest (blue), down from the spiking state (orange), and for a sudden step from rest (green circles); drag the handle along the axis to choose $I$. Right: the voltage at that current, starting from rest or from the spiking state: in the bistable window the same current gives silence or spiking depending on the history. (A sudden step from rest, as in the right-hand trace, already kicks the state over the unstable cycle and fires from about 6.5 µA/cm²; only a slow ramp keeps the membrane silent up to about 10.) Choose the 0–150 range to see depolarization block. At 18.5 °C every rate is about 3.5 times faster, but the shape is the same.`,
-      scope: String.raw`Space-clamped Hodgkin–Huxley membrane under constant current. The numbers (onset near 58 Hz; on a slow current ramp the bistable window runs from about 7 up to about 10 µA/cm² at 6.3 °C, while a sudden step from rest already fires from about 6.5) are those of this model at the stated temperature and settle times (300 ms per current), not measurements; in a real axon, sustained firing at these currents is also limited by ion accumulation.`,
+      statement: String.raw`The standard squid Hodgkin–Huxley membrane can support repetitive firing under constant input, with a frequency–current relation having a nonzero onset rate (type II). Resting and spiking responses can coexist over an input interval, so the observed response depends on initialization and input history. A stable firing orbit near a subcritical Hopf is a **global** branch; the small local Hopf cycle is unstable. The finite numerical protocols below compare history-dependent responses, not certified bifurcation thresholds. At high input, loss of detected spikes can reflect shrinking oscillations as well as eventual depolarized quiescence.`,
+      idea: String.raw`Fast sodium activation supplies regenerative depolarization, while sodium inactivation and potassium activation restore the membrane and set recovery between spikes. The full conductance model, rather than a single recovery time, determines its frequency. The local Hopf coefficient controls a small periodic branch; it does not alone establish a stable large-amplitude firing cycle, bistable interval or its minimum frequency. Temperature here multiplies all gate rates by $3^{(T-6.3)/10}$ while leaving capacitance and voltage dynamics otherwise unchanged, so it is not a uniform time rescaling and need not multiply every firing rate by one common factor.`,
+      caption: String.raw`Drag the gold handle along the input axis. Blue: sequential ascending constant-current steps; orange: descending from the final ascending state; green: independent starts from rest. Each grid current is held 300 ms, carrying the entire state only for the sequential curves. A rate is the inverse last interval, using events after 100 ms and requiring at least three retained crossings. Unresolved samples are omitted, rather than plotted as zero. The trace uses your exact selected current from time 0, starting either at rest or at the final state of a separate 100 ms I=20 run. Its finite counts and last-quarter voltage range are displayed independently of the nearest grid samples.`,
+      scope: String.raw`Chosen space-clamped squid-HH convention: C=1µF/cm²; gNa=120,gK=36,gL=.3mS/cm²; ENa=50,EK=−77,EL=−54.387mV, with the atlas HH voltage-dependent gates and their stated temperature factor. These parameter choices differ from Gerstner’s cortical Table 2.1; its Fig. 2.7C–D explicitly discusses the original squid gain function separately. Grid spacing is .25µA/cm² up to 12, 2 from 14–40 and 10 from 50–150. The first resolved sample depends on step size, hold time, carried rounding perturbations, detector and initialization; it is not an exact rheobase or proof of asymptotic bistability. Upward 0 mV crossings are rearmed only below −20 mV, so undetected subthreshold oscillations are possible. No experimental rates, original 1948 priority or all-temperature onset constants are inferred.`,
       deps: ['neuro-2.3'],
       see: ['neuro-2.8', 'neuro-3.4'],
-      refs: ['Gerstner §4.4'],
+      refs: ['Gerstner, Kistler, Naud & Paninski, Neuronal Dynamics (2014), complete §2.2.3, Fig. 2.7C–D and gain-function discussion; §4.4.3 local/global Hopf distinction: https://neuronaldynamics.epfl.ch/online/Ch2.S2.html', 'Izhikevich, Dynamical Systems in Neuroscience (2007), complete §6.1.3–6.1.4 printed168–178: https://izhikevich.org/publications/dsn.pdf'],
       tags: ['f–I curve', 'bistability'],
-      credit: 'Classification of repetitive responses by A. L. Hodgkin, 1948 (J. Physiol. 107: 165–181); model of Hodgkin and Huxley, 1952',
-      verify: true,
+      credit: 'Hodgkin–Huxley conductance framework; retained gain-function and bifurcation explanations follow the cited complete author treatments. Numerical parameters and finite protocols are explicit atlas choices.',
+      verify: false,
       viz(v) {
-        const Tsel = v.select('temperature', [{ value: 6.3, label: '6.3 °C' }, { value: 18.5, label: '18.5 °C' }], 6.3);
-        const rng = v.select('current range', [{ value: 15, label: '0–15 µA/cm²' }, { value: 150, label: '0–150 µA/cm²' }], 15);
-        const start = v.select('trace starts from', [{ value: 'rest', label: 'rest' }, { value: 'spiking', label: 'spiking state' }], 'rest');
-        const grid = []; for (let I = 0; I <= 12; I += 0.25) grid.push(I); for (let I = 14; I <= 40; I += 2) grid.push(I); for (let I = 50; I <= 150; I += 10) grid.push(I);
-        const sA = v.stage({ x: [0, 15], y: [0, 135], axes: 'box', gutter: true, xlabel: 'constant current I (µA/cm²)', ylabel: 'rate (Hz)', height: 300, weight: 1.1, minWidth: 320 });
-        const sB = v.stage({ x: [0, 150], y: [-90, 60], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 300, weight: 1, minWidth: 300 });
-        const rate = (r) => { const sp = r.spikes.filter((x) => x > 100); return sp.length > 2 ? 1000 / (sp[sp.length - 1] - sp[sp.length - 2]) : 0; };
-        const cache = {};
-        const sweeps = () => {
-          const T = Tsel.value; if (cache[T]) return cache[T];
-          const o = { T, tEnd: 300, dt: T > 10 ? 0.025 : 0.04 };
-          const run = (Is, y) => Is.map((I) => { const r = hhRun(() => I, { ...o, y0: y }); y = r.y; return [I, rate(r)]; });
-          const spiking = hhRun(() => 20, { T, tEnd: 100, dt: o.dt }).y;
-          const up = run(grid, hhRest()), down = run(grid.slice().reverse(), spiking).reverse();
-          const step = grid.map((I) => [I, rate(hhRun(() => I, { ...o, y0: hhRest() }))]);
-          // bistable window: lowest current that sustains firing on the way down and lowest that fires on the way up
-          const dLo = down.find((p) => p[1] > 0)?.[0], uJump = up.find((p) => p[1] > 0)?.[0];
-          const fmin = down.find((p) => p[1] > 0)?.[1];
-          return (cache[T] = { up, down, step, dLo, uJump, fmin });
-        };
-        const h = sA.handle(8, 0, { color: 'gold', r: 8, constrain: 'x' });
-        v.render(() => {
-          const S = sweeps(), xmax = rng.value;
-          let ymax = 20; for (const p of S.up.concat(S.down)) if (p[0] <= xmax) ymax = Math.max(ymax, p[1]);
-          sA.setView([0, xmax], [0, ymax * 1.12]);
-          const vis = (arr) => arr.filter((p) => p[0] <= xmax);
-          sA.path(vis(S.down), { color: ION_COL.Na, width: 2.4 });
-          sA.dots(vis(S.down), { r: 2.6, color: ION_COL.Na });
-          sA.path(vis(S.up), { color: 'accent', width: 2.6 });
-          sA.dots(vis(S.step), { r: 4, color: 'green', hollow: true });
-          const I = clamp(h.x, 0, xmax); h.set(I, 0);
-          sA.vline(I, { color: 'gold', width: 1.2, dash: [4, 3] });
-          const y0 = start.value === 'spiking' ? hhRun(() => 20, { T: Tsel.value, tEnd: 100, dt: 0.04 }).y : hhRest();
-          const o = hhSim((t) => (t >= 5 ? I : 0), { T: Tsel.value, tEnd: 150, dt: 0.04, every: 2, y0 });
-          trace(sB, o.t, o.V, { color: 'accent', width: 2.2 });
-          sB.text(`I = ${v.fix(I, 2)}`, 148, 52, { size: 11, color: 'gold', align: 'right' });
-          h._S = S; h._I = I; h._o = o;
+        const Tsel=v.select('temperature',[{value:6.3,label:'6.3 °C'},{value:18.5,label:'18.5 °C'}],6.3),rng=v.select('current range',[{value:15,label:'0–15 µA/cm²'},{value:150,label:'0–150 µA/cm²'}],15),start=v.select('trace starts from',[{value:'rest',label:'rest'},{value:'spiking',label:'I=20 warm state'}],'rest');
+        const sA=v.stage({x:[0,15],y:[0,135],axes:'box',gutter:true,xlabel:'constant I (µA/cm²)',ylabel:'finite detected rate (Hz)',height:300,weight:1.1,minWidth:320}),sB=v.stage({x:[0,150],y:[-90,60],axes:'box',gutter:true,xlabel:'t (ms)',ylabel:'V (mV)',height:300,weight:1,minWidth:300}),h=sA.handle(8,0,{color:'gold',r:8,constrain:'x'}),cache=new Map();let info=null;
+        const sweeps=()=>{const T=Number(Tsel.value);if(!cache.has(T))cache.set(T,hhFiringSweeps(T));return cache.get(T);};
+        v.render(()=>{const S=sweeps(),xmax=Number(rng.value),I=clamp(h.x,0,xmax);h.set(I,0);const visible=rows=>rows.filter(q=>q.I<=xmax),all=[S.up,S.down,S.step].flatMap(visible).filter(q=>q.rate!==null),ymax=Math.max(20,...all.map(q=>q.rate))*1.12;sA.setView([-.015*xmax,xmax*1.015],[0,ymax]);
+          for(const[rows,color,width]of[[S.down,ION_COL.Na,2.4],[S.up,'accent',2.6]]){sA.path(visible(rows).map(q=>q.rate===null?null:[q.I,q.rate]),{color,width});sA.dots(visible(rows).filter(q=>q.rate!==null).map(q=>[q.I,q.rate]),{r:2.6,color});}sA.dots(visible(S.step).filter(q=>q.rate!==null).map(q=>[q.I,q.rate]),{r:4,color:'green',hollow:true});sA.vline(I,{color:'gold',width:1.2,dash:[4,3]});
+          const o=hhFiringTrace(S.T,I,start.value),tail=o.V.filter((_,j)=>o.t[j]>=112.5),range=Math.max(...tail)-Math.min(...tail);sB.setView([0,150],[Math.min(-85,...o.V)-2,Math.max(50,...o.V)+2]);trace(sB,o.t,o.V,{color:'accent',width:2.2});info={S,I,o,range};
         });
-        v.legend([['accent', 'ramp up from rest'], [ION_COL.Na, 'ramp down from spiking'], ['green', 'step from rest', { dot: true }]]);
-        v.readout(() => {
-          const S = h._S || sweeps(), I = h._I ?? 8, o = h._o, sp = o ? spikeTimes(o.t, o.V, 0).filter((t) => t > 5) : [];
-          const f = (arr) => arr.reduce((a, p) => (Math.abs(p[0] - I) < Math.abs(a[0] - I) ? p : a), arr[0])[1];
-          return String.raw`at $I = ${v.fix(I, 2)}$ µA/cm²: ramp up ${v.fix(f(S.up), 1)} Hz · ramp down ${v.fix(f(S.down), 1)} Hz · step from rest ${v.fix(f(S.step), 1)} Hz · this trace: ${sp.length} spikes in 145 ms` + '\n' +
-            String.raw`lowest sustained rate on the way down: $${v.fix(S.fmin ?? 0, 1)}$ Hz at $I \approx ${v.fix(S.dLo ?? 0, 2)}$ · the upward ramp starts firing at $I \approx ${v.fix(S.uJump ?? 0, 2)}$ µA/cm²: bistable between them (grid step 0.25)`;
-        });
+        v.legend([['accent','sequential ascent'],[ION_COL.Na,'sequential descent'],['green','independent rest starts',{dot:true}]]);
+        v.readout(()=>{if(!info)return'';const{S,I,o,range}=info,nearest=S.up.reduce((a,q)=>Math.abs(q.I-I)<Math.abs(a.I-I)?q:a),at=rows=>rows.find(q=>q.I===nearest.I),show=q=>q.rate===null?'unresolved':v.fix(q.rate,3)+' Hz',first=rows=>{const q=rows.find(q=>q.rate!==null);return q?`I=${q.I}, rate=${v.fix(q.rate,3)}Hz`:'none';};return`Selected exact I=${v.fix(I,3)}µA/cm²: ${o.events.length} detected spikes in 150 ms; after 50 ms retained ${o.rate.count}, rate ${show(o.rate)}; last-quarter voltage range ${v.fix(range,5)}mV.`+'\n'+`Nearest grid I=${nearest.I}: ascending ${show(at(S.up))}, descending ${show(at(S.down))}, independent rest ${show(at(S.step))}.`+'\n'+`First resolved grid samples: ascending ${first(S.up)}; descending ${first(S.down)}. Sequential 300 ms holds; these are finite history comparisons, not exact stability boundaries. Maximum RK4 step ${S.dt}ms.`;});
       },
     },
 
@@ -166,57 +135,27 @@ export default {
     {
       num: '2.8',
       kind: 'Model',
-      name: 'Connor–Stevens A-current and type I firing',
-      statement: String.raw`Adding a fast, transient potassium **A-current** $I_A = \bar g_A\, a^3 b\,(V-E_A)$, with its own activation $a$ and a slow inactivation $b$, to the sodium and delayed-rectifier currents of the Hodgkin–Huxley kind gives the **Connor–Stevens model**. Its $f$–$I$ curve starts continuously from zero frequency at the critical current (**type I**), unlike the Hodgkin–Huxley neuron, and near that current the first spike appears only after a long latency. Removing the A-current ($\bar g_A\to 0$) restores a non-zero minimum frequency (type II).`,
-      idea: String.raw`After each spike the A-current is activated by the voltage and, because $b$ inactivates slowly, it adds an extra outward current that delays the next spike as the membrane climbs toward threshold. Near the critical input this delay can be arbitrarily long, so the rate can be arbitrarily low and the transition becomes a saddle-node on an invariant circle rather than a Hopf bifurcation (neuro-3.5, neuro-3.4). Connor and Stevens fitted their current to voltage-clamp records of an isolated gastropod neurone and used it to predict repetitive firing from the clamp data (neuro-1.5), the first such quantitative prediction after Hodgkin and Huxley.`,
-      caption: String.raw`Choose the A-conductance. Left: firing rate against current step for your $\bar g_A$ (blue) and for $\bar g_A=0$ (red): the blue curve starts at zero, the red one at a high rate. Top right: latency to the first spike against current, on log axes; with the A-current it grows to more than 100 ms near threshold, while without it the first spike comes after about 3 ms. Drag the handle to pick the current. Bottom: the voltage trace (blue; red for $\bar g_A=0$) and the A-current conductance $\bar g_A a^3 b$ along the blue trace.`,
-      scope: String.raw`Single-compartment model with the parameter set quoted on this page (rates multiplied by 3.8, a temperature factor); not checked against the original 1971 tables (verify). Voltages are in the convention of that parameter set (rest near −68 mV). The leak reversal is re-tuned so that rest stays fixed when $\bar g_A$ is varied, and the rates come from 600 ms runs, so rates below roughly 2 Hz read as zero.`,
+      name: 'Modified Connor–Stevens A-current model',
+      statement: String.raw`A six-variable conductance model adds a transient outward A-current $I_A=\bar g_Aa^3b(V-E_A)$ to shifted Hodgkin–Huxley-like sodium and delayed potassium currents. All five gates relax toward their voltage-dependent targets, $\dot x=[x_\infty(V)-x]/\tau_x(V)$. A-current activation can oppose depolarization and delay spikes; the firing regime depends on conductance, kinetic parameters, input and initialization. Adding it does **not** by itself guarantee continuous zero-frequency onset or a SNIC. The displayed variant follows a complete author-hosted teaching implementation, with an explicitly altered leak reversal to keep rest fixed.`,
+      idea: String.raw`During subthreshold depolarization, outward A-current can balance part of the applied input and slow the approach to a spike. Activation, inactivation and recovery determine when that opposition is present; their relative time scales matter. Connor and Stevens’ complete 1971 original analyzed a gastropod preparation with empirically tabulated kinetics, a fourth-power A-activation convention and different time constants. It supports the mechanism, not a claim that these teaching parameters reproduce that preparation. The finite curves below cannot establish an unbounded latency, exact onset class or homoclinic/SNIC mechanism.`,
+      caption: String.raw`Choose A-conductance and drag input. The curves compare each chosen variant (blue) with gA=0 (red), using independent 620 ms runs from the common resting voltage and a step at 20 ms. Rates require at least three events after 120 ms and use the last interval; first-spike latency is measured only when a crossing occurs before the observation ends. Unresolved points remain gaps. The 400 ms voltage traces use the exact selected current, count events at integration resolution, and plot every 0.1 ms. The purple trace is conductance gA*a³*b, rather than ionic current. Each variant has its own leak reversal; this joint comparison is not a pharmacological channel-block experiment.`,
+      scope: String.raw`Chosen single-compartment teaching variant: C=1µF/cm²; gNa=120,gK=20,gL=.3mS/cm²; ENa=55,EK=−72,EA=−75mV, gA chosen in mS/cm². The cited XPP file specifies sodium/potassium voltage shifts −5.3,−12,−4.3mV, rate factor 3.8 and a doubled n-gate time constant, plus the complete A-gate formulas. Here A activation uses the exact cube-root convention instead of the file’s rounded .3333 exponent. For each gA, EL is recomputed so the gate-equilibrium voltage stays at the baseline gA47.7,EL−17 rest. The fitted A-activation target can slightly exceed1 at spike voltages; it is retained without clipping and is not a literal probability throughout this model. The curves are model calculations, not original 1971/1977 table fits or an exact onset classification. Missing events are finite right-censoring; a few measured intervals do not prove a sustained attractor.`,
       deps: ['neuro-2.3', 'neuro-2.7'],
       see: ['neuro-3.5', 'neuro-3.4', 'neuro-1.5'],
-      refs: ['Gerstner §2.3', 'Dayan–Abbott ch. 6'],
-      tags: ['A-current', 'type I'],
-      credit: 'J. A. Connor and C. F. Stevens, 1971 (J. Physiol. 213: 1–53); J. A. Connor, D. Walter and R. McKown, 1977',
-      verify: true,
+      refs: ['G. Bard Ermentrout, author-hosted complete XPP Connor–Stevens teaching model, all constants, shifts, doubled n time constant and six ODEs: https://sites.pitt.edu/~phase/bard/bardware/classes/compneuro/model/cs.ode', 'Connor & Stevens (1971), complete original, J.Physiol.213:31–53, Eqs.(4)–(5)/(9), Table1 and discussion: https://elec548.github.io/Resources/Connor%2C%20Stevens%20-%20Prediction%20of%20repetitive%20firing%20behaviour%20from%20voltage%20clamp%20data%20on%20an%20isolated%20neurone%20soma.%20-%201971.pdf'],
+      tags: ['A-current', 'excitability'],
+      credit: 'Connor–Stevens conductance framework; this explicitly modified numerical variant follows Ermentrout’s complete author teaching model, rather than claiming an original experimental fit.',
+      verify: false,
       viz(v) {
-        const gsel = v.select('A-conductance $\\bar g_A$', [0, 15, 30, 47.7].map((g) => ({ value: g, label: `${g}` })), 47.7);
-        const IG = []; for (let I = 7; I <= 14.01; I += 0.5) IG.push(I);
-        const sA = v.stage({ x: [7, 14], y: [0, 120], axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'rate (Hz)', height: 260, weight: 1, minWidth: 280 });
-        const sL = v.stage({ x: [7, 14], y: [1, 1000], ylog: true, axes: 'box', gutter: true, xlabel: 'current step I (µA/cm²)', ylabel: 'first-spike latency (ms)', height: 260, weight: 1, minWidth: 280 });
-        const sV = v.stage({ x: [0, 400], y: [-90, 50], axes: 'box', gutter: true, xlabel: 't (ms, step at 20)', ylabel: 'V (mV)', height: 200, weight: 1.4, minWidth: 320 });
-        const sI = v.stage({ x: [0, 400], y: [0, 50], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'gA a³b (mS/cm²)', height: 200, weight: 1, minWidth: 280 });
-        const cache = {};
-        const curve = (g) => {
-          if (cache[g]) return cache[g];
-          const pts = IG.map((I) => { const sp = csSpikes(I, g, { tEnd: 620, dt: 0.05 }); const n = sp.length; return { I, f: n >= 2 ? 1000 / (sp[n - 1] - sp[n - 2]) : 0, lat: n ? sp[0] - 20 : NaN, n }; });
-          return (cache[g] = pts);
-        };
-        const h = sA.handle(10, 0, { color: 'gold', r: 8, constrain: 'x' });
-        v.render(() => {
-          const g = gsel.value, cg = curve(g), c0 = curve(0), I = clamp(h.x, 7, 14); h.set(I, 0);
-          let fm = 20; for (const p of cg.concat(c0)) fm = Math.max(fm, p.f);
-          sA.setView([7, 14], [0, fm * 1.12]);
-          sA.path(c0.map((p) => [p.I, p.f]), { color: 'red', width: 2.2 }); sA.dots(c0.map((p) => [p.I, p.f]), { r: 2.5, color: 'red' });
-          sA.path(cg.map((p) => [p.I, p.f]), { color: 'accent', width: 2.6 }); sA.dots(cg.map((p) => [p.I, p.f]), { r: 2.5, color: 'accent' });
-          sA.vline(I, { color: 'gold', dash: [4, 3] });
-          sL.path(c0.map((p) => (isFinite(p.lat) && p.lat > 0 ? [p.I, p.lat] : null)), { color: 'red', width: 2.2 });
-          sL.path(cg.map((p) => (isFinite(p.lat) && p.lat > 0 ? [p.I, p.lat] : null)), { color: 'accent', width: 2.6 });
-          sL.vline(I, { color: 'gold', dash: [4, 3] });
-          const o = csRun(I, g, { tEnd: 400, t0: 20, dt: 0.05, every: 8 }), o0 = csRun(I, 0, { tEnd: 400, t0: 20, dt: 0.05, every: 8 });
-          trace(sV, o0.t, o0.V, { color: 'red', width: 1.4, alpha: 0.7 });
-          trace(sV, o.t, o.V, { color: 'accent', width: 2.2 });
-          sI.setView([0, 400], [0, Math.max(5, ...o.a) * 1.15]);
-          trace(sI, o.t, o.a, { color: 'purple', width: 2.2 });
-          h._o = o; h._o0 = o0; h._I = I;
+        const gsel=v.select('A-conductance $\\bar g_A$',[0,15,30,47.7].map(g=>({value:g,label:`${g} mS/cm²`})),47.7),IG=Array.from({length:15},(_,j)=>7+.5*j),cache=new Map();
+        const sA=v.stage({x:[6.9,14.1],y:[0,120],axes:'box',gutter:true,xlabel:'step I (µA/cm²)',ylabel:'finite rate (Hz)',height:260,weight:1,minWidth:280}),sL=v.stage({x:[6.9,14.1],y:[1,1000],ylog:true,axes:'box',gutter:true,xlabel:'step I (µA/cm²)',ylabel:'first crossing latency (ms)',height:260,weight:1,minWidth:280}),sV=v.stage({x:[0,400],y:[-90,55],axes:'box',gutter:true,xlabel:'t (ms; step at20)',ylabel:'V (mV)',height:200,weight:1.4,minWidth:320}),sI=v.stage({x:[0,400],y:[0,50],axes:'box',gutter:true,xlabel:'t (ms)',ylabel:'gA a³b (mS/cm²)',height:200,weight:1,minWidth:280}),h=sA.handle(10,0,{color:'gold',r:8,constrain:'x'});let info=null;
+        const curve=g=>{if(!cache.has(g))cache.set(g,csCurveAudit(g,IG));return cache.get(g);};
+        v.render(()=>{const g=Number(gsel.value),cg=curve(g),c0=curve(0),I=clamp(h.x,7,14);h.set(I,0);const all=[...cg,...c0],rates=all.filter(q=>q.rate!==null).map(q=>q.rate),latencies=all.filter(q=>q.latency!==null&&q.latency>0).map(q=>q.latency);sA.setView([6.9,14.1],[0,Math.max(20,...rates)*1.12]);sL.setView([6.9,14.1],[Math.min(1,...latencies)*.8,Math.max(100,...latencies)*1.15]);
+          for(const[rows,color,width]of[[c0,'red',2.2],[cg,'accent',2.6]]){sA.path(rows.map(q=>q.rate===null?null:[q.I,q.rate]),{color,width});sA.dots(rows.filter(q=>q.rate!==null).map(q=>[q.I,q.rate]),{r:2.5,color});sL.path(rows.map(q=>q.latency===null||q.latency<=0?null:[q.I,q.latency]),{color,width});}sA.vline(I,{color:'gold',dash:[4,3]});sL.vline(I,{color:'gold',dash:[4,3]});
+          const o=csSimulationAudit(I,g,{T:400}),o0=csSimulationAudit(I,0,{T:400});sV.setView([0,400],[Math.min(-85,...o.V,...o0.V)-2,Math.max(50,...o.V,...o0.V)+2]);trace(sV,o0.t,o0.V,{color:'red',width:1.4,alpha:.7});trace(sV,o.t,o.V,{color:'accent',width:2.2});sI.setView([0,400],[0,Math.max(5,...o.conductance)*1.15]);trace(sI,o.t,o.conductance,{color:'purple',width:2.2});info={g,I,cg,c0,o,o0};
         });
-        v.legend([['accent', 'chosen $\\bar g_A$'], ['red', '$\\bar g_A=0$'], ['purple', 'A-current conductance']]);
-        const low = (g) => { const a = (cache[g] || []).filter((p) => p.f > 0).map((p) => p.f); return a.length ? v.fix(Math.min(...a), 1) + ' Hz' : 'none'; };
-        v.readout(() => {
-          const o = h._o, o0 = h._o0, I = h._I ?? 10; if (!o) return '';
-          const lat = (r) => (r.spikes.length ? v.fix(r.spikes[0] - 20, 0) + ' ms' : 'no spike');
-          const rt = (r) => { const n = r.spikes.length; return n >= 2 ? v.fix(1000 / (r.spikes[n - 1] - r.spikes[n - 2]), 1) + ' Hz' : '0'; };
-          return String.raw`at $I=${v.fix(I, 1)}$ µA/cm²: with $\bar g_A = ${gsel.value}$: first spike after ${lat(o)}, rate ${rt(o)} · with $\bar g_A = 0$: first spike after ${lat(o0)}, rate ${rt(o0)}` + '\n' +
-            String.raw`lowest nonzero rate on the grid (0.5 µA/cm² steps, 600 ms): ${low(gsel.value)} with the A-current, ${low(0)} without`;
-        });
+        v.legend([['accent','chosen joint A/leak variant'],['red','gA=0, retuned leak'],['purple','A-conductance']]);
+        v.readout(()=>{if(!info)return'';const{g,I,o,o0,cg,c0}=info,lat=q=>q.latency===null?'unresolved by400ms':v.fix(q.latency,4)+'ms',rate=q=>q.rate===null?'unresolved (<3 events after 120 ms)':v.fix(q.rate,4)+'Hz',min=rows=>{const r=rows.filter(q=>q.rate!==null);return r.length?v.fix(Math.min(...r.map(q=>q.rate)),4)+'Hz':'unresolved';};return`Exact I=${v.fix(I,3)}µA/cm²: chosen gA=${g}, EL=${v.fix(o.EL,5)}mV, latency ${lat(o)}, finite rate ${rate(o)} (${o.events.length} total events).`+'\n'+`gA=0 comparison: EL=${v.fix(o0.EL,5)}mV, latency ${lat(o0)}, rate ${rate(o0)} (${o0.events.length} events). Common rest V=${v.fix(csTargetRest(),6)}mV.`+'\n'+`Minimum resolved 620 ms grid rates: chosen ${min(cg)}, gA0 ${min(c0)}; grid step 0.5, not an asymptotic minimum. RK4 dt=.05ms, plotted every .1 ms; -20mV crossings rearmed below-40mV.`;});
       },
     },
 
@@ -225,59 +164,29 @@ export default {
       num: '2.9',
       kind: 'Phenomenon',
       name: 'Channel noise and spontaneous spikes',
-      statement: String.raw`A membrane has a finite number $N$ of ion channels, each opening and closing at random, so the conductances fluctuate around the deterministic Hodgkin–Huxley values with relative size of order $1/\sqrt N$. For a large patch this noise is negligible and the deterministic model is the limit $N\to\infty$ of the stochastic one. For a small patch (a thin axon, a dendritic spine, a small area of soma) the fluctuations are large enough to trigger **spontaneous spikes** from a subthreshold or zero input, to miss responses to input that would reach threshold, and to **jitter** the spike time in response to a repeated identical stimulus.`,
-      idea: String.raw`Each channel is a continuous-time Markov chain (neuro-1.6, stoch-10.2). A potassium channel with four independent $n$-gates has five lumped states (number of open gates, with rates $(4-k)\alpha_n$ up and $k\beta_n$ down), a sodium channel has eight (three $m$-gates and one $h$-gate), and the channels are independent. Their mean obeys the Hodgkin–Huxley equations, while the variance of the open fraction is $p(1-p)/N$ for each gate (law of large numbers and central limit theorem). Threshold is a steep function of the state (neuro-2.4), so a random fluctuation of a few channels is enough to start a spike when the patch is small; this was shown in simulations of small membrane patches by Chow and White (1996), and its consequences for spike-timing reliability by Schneidman, Freedman and Segev (1998) and reviewed by White, Rubinstein and Kay (2000).`,
-      caption: String.raw`The patch area sets the channel numbers ($60$ Na⁺ and $18$ K⁺ channels per µm², 20 pS each, which reproduces $\bar g_{Na}=120$ and $\bar g_K=36$ mS/cm²). The input current is constant and below the deterministic threshold, so the deterministic model (dashed) stays at rest. Top left: one stochastic run. Bottom left: spike rasters of six runs and of the deterministic model. Right: the distribution of the first-spike latency after a fixed suprathreshold 1 ms pulse over 40 repeated trials, with the deterministic latency marked. Shrink the patch and watch spikes appear from nothing and the latency histogram widen; enlarge it and both collapse onto the deterministic picture. Latencies near zero are spontaneous spikes that happen to fall just after the pulse starts; trials without a spike after the pulse are counted as missed. Press "new runs" for fresh random numbers.`,
-      scope: String.raw`Space-clamped Hodgkin–Huxley kinetics at 6.3 °C with independent channels of 20 pS and densities 60 (Na⁺) and 18 (K⁺) per µm², a parameter set common in stochastic-HH studies; the sampler advances the lumped channel states with binomial draws per 0.025 ms step (an approximation of the exact Gillespie scheme, accurate when rate × step is small). Which paper first used these exact numbers was not confirmed here (verify).`,
+      statement: String.raw`A finite population of randomly switching ion channels produces fluctuating membrane conductances. In the classical independent-subunit Hodgkin–Huxley channel model, prescribing the voltage trajectory and starting with independent gates gives an open-channel fraction with mean $p$ and variance $p(1-p)/N$, where $p_{Na}=m^3h$ and $p_K=n^4$. Its absolute standard deviation is of order $N^{-1/2}$; its coefficient of variation is $\sqrt{(1-p)/(Np)}$ when $p>0$. With voltage feedback, channel fluctuations can generate spontaneous spikes and variable spike times. These effects and their frequency depend on the parameters, input and channel count.`,
+      idea: String.raw`A K channel has four two-state $n$ subunits: the lumped state $k=0,\ldots,4$ jumps upward at $(4-k)\alpha_n$ and downward at $k\beta_n$. A Na channel has three $m$ subunits and one $h$ subunit, hence eight lumped states. The conducting states have all four subunits open. For a prescribed voltage, independent channel indicators give the binomial mean and variance directly; raising an aggregate noisy gate fraction to its fourth power would instead mix subunits belonging to different channels. In the freely evolving membrane, the shared voltage couples channels and the finite-population expectation does not simply satisfy the nonlinear HH equations. The deterministic equations describe the large-population limit under the usual channel-model assumptions (Goldwyn & Shea-Brown, 2011, pp. 1, 3–5).`,
+      caption: String.raw`Left: one 200 ms stochastic trace and six spike rasters at the selected constant current, compared with deterministic HH from the same nominal rest. The deterministic model may have transient spikes; its actual count is reported. Right: 40 separate trials receive a 9 µA/cm² pulse on $[2,3)$ ms, without the constant-current slider. The histogram covers the whole 10 ms post-onset observation window. Its bars are fractions of all 40 trials; trials with no crossing by 12 ms are reported as right-censored. A crossing after pulse onset may be spontaneous, so it is not automatically an evoked response. Change patch size, time step, or “new runs” to compare finite samples; individual samples need not show a monotone change in variability.`,
+      scope: String.raw`Classical space-clamped HH at 6.3 °C, chosen densities 60 Na and 18 K channels/µm² (rounded channel counts). With a nominal 20 pS/channel these give 120 and 36 mS/cm²; Goldwyn & Shea-Brown's 100 µm² example has 6000 Na and 1800 K channels (Fig. 1). This is a model illustration, not a fit to small axons or spines. Initial channel states are sampled independently at −65 mV gate equilibrium. Each step samples the exact transition matrix for voltage held fixed during that step, including multiple subunit transitions, using multinomial inversion; an exponential voltage update then holds the new conductances fixed. The coupled simulation has first-order splitting error and seeded pseudorandom draws, and is not a continuous-time Gillespie run. Halving the step gives another approximate sample, not an exact paired trajectory or proof of convergence. Spike events are interpolated upward 0 mV crossings, rearmed below −20 mV.`,
       deps: ['neuro-2.3', 'neuro-1.6'],
       see: ['neuro-2.4', 'stoch-1.4'],
-      refs: ['Gerstner §2.2', 'White, Rubinstein & Kay, Trends Neurosci. 23 (2000)'],
+      refs: ['Goldwyn & Shea-Brown (2011), pp. 1–6, Eqs. 10–13, Fig. 3; doi:10.1371/journal.pcbi.1002247'],
       tags: ['channel noise', 'stochastic'],
-      credit: 'Chow and White, 1996; Schneidman, Freedman and Segev, 1998',
-      verify: true,
+      credit: 'Classical channel model; presentation: Goldwyn & Shea-Brown, 2011',
+      verify: false,
       viz(v) {
-        const As = v.slider('patch area', 1, 300, 6, { log: true, fmt: (x) => `${v.fix(x, x < 10 ? 1 : 0)} µm²` });
-        const Is = v.slider('constant current $I$', 0, 6, 2, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} µA/cm²` });
-        let seed = 1; v.button('new runs', () => { seed++; });
-        const sV = v.stage({ x: [0, 200], y: [-90, 55], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 200, weight: 1.3, minWidth: 340 });
-        const sR = v.stage({ x: [0, 200], y: [0.3, 7.7], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'run', height: 200, weight: 1.3, minWidth: 340, yticks: [[1, 'det.'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5'], [7, '6']] });
-        const sH = v.stage({ x: [0, 8], y: [0, 1], axes: 'box', gutter: true, xlabel: 'first-spike latency after pulse onset (ms)', ylabel: 'fraction of trials', height: 420, weight: 1, minWidth: 280 });
-        const NR = 6, NT = 40, PUL = pulse(2, 1, 9);
-        let key = '', C = null;
-        const get = () => {
-          const k = `${As.value}|${Is.value}|${seed}`; if (k === key) return C; key = k;
-          const A = As.value, NNa = Math.round(60 * A), NK = Math.round(18 * A), I = Is.value;
-          const det = hhSim(() => I, { tEnd: 200, dt: 0.05, every: 4 });
-          const runs = Array.from({ length: NR }, (_, r) => hhStochastic(() => I, { NNa, NK, tEnd: 200, dt: 0.025, every: 8, rng: v.rng(seed * 1000 + r) }));
-          const lats = []; let miss = 0;
-          for (let t = 0; t < NT; t++) { const o = hhStochastic(PUL, { NNa, NK, tEnd: 12, dt: 0.025, every: 8, rng: v.rng(seed * 7919 + 100 + t) }); const s = o.spikes.find((x) => x > 2); if (s) lats.push(s - 2); else miss++; }
-          const dl = hhRun(PUL, { tEnd: 12, dt: 0.04 }).spikes[0] - 2;
-          C = { A, NNa, NK, det, runs, lats, miss, dl, I };
-          return C;
-        };
-        v.render(() => {
-          const D = get();
-          trace(sV, D.det.t, D.det.V, { color: 'ink', width: 1.4, dash: [5, 4] });
-          trace(sV, D.runs[0].t, D.runs[0].V, { color: 'accent', width: 1.8 });
-          sR.hline(1.5, { color: 'grid' });
-          D.runs.forEach((r, i) => sR.dots(r.spikes.map((t) => [t, i + 2]), { r: 3.2, color: 'accent' }));
-          sR.dots(spikeTimes(D.det.t, D.det.V, 0).map((t) => [t, 1]), { r: 3.2, color: 'ink' });
-          const bins = 20, w = 8 / bins, cnt = new Array(bins).fill(0);
-          for (const l of D.lats) { const b = Math.floor(l / w); if (b >= 0 && b < bins) cnt[b]++; }
-          const fr = cnt.map((c) => c / NT), fm = Math.max(0.2, ...fr);
-          sH.setView([0, 8], [0, fm * 1.2]);
-          sH.bars(fr, { x0: w / 2, dx: w, color: 'accent' });
-          if (D.dl) sH.vline(D.dl, { color: 'ink', dash: [5, 4], width: 1.6 });
-          sH.text('deterministic', D.dl || 3, fm * 1.12, { size: 10.5, color: 'ink', align: 'left', dx: 5 });
-        });
-        v.legend([['accent', 'stochastic channels'], ['ink', 'deterministic Hodgkin–Huxley', { dash: true }]]);
-        v.readout(() => {
-          const D = get(), sp = D.runs.reduce((a, r) => a + r.spikes.length, 0), m = D.lats.length ? D.lats.reduce((a, b) => a + b, 0) / D.lats.length : NaN;
-          const sd = D.lats.length > 1 ? Math.sqrt(D.lats.reduce((a, b) => a + (b - m) ** 2, 0) / (D.lats.length - 1)) : NaN;
-          return String.raw`patch of $${v.fix(D.A, D.A < 10 ? 1 : 0)}$ µm²: $N_{Na} = ${D.NNa}$, $N_K = ${D.NK}$ channels · relative size of fluctuations $\sim 1/\sqrt{N_{Na}} = ${v.fix(100 / Math.sqrt(D.NNa), 1)}\,\%$` + '\n' +
-            String.raw`at $I = ${v.fix(D.I, 1)}$ µA/cm² the deterministic model is silent; the six stochastic runs fired ${sp} spikes in 200 ms (${v.fix(sp / (NR * 0.2), 1)} spikes/s per patch) · pulse response: latency $${isFinite(m) ? v.fix(m, 2) : '—'} \pm ${isFinite(sd) ? v.fix(sd, 2) : '—'}$ ms over ${D.lats.length} spiking trials (deterministic $${v.fix(D.dl ?? NaN, 2)}$ ms), ${D.miss} of ${NT} trials missed`;
-        });
-      },
+        const As=v.slider('patch area',1,300,6,{log:true,fmt:x=>`${v.fix(x,x<10?1:0)} µm²`}),Is=v.slider('constant current $I$',0,6,2,{step:.1,fmt:x=>`${v.fix(x,1)} µA/cm²`}),ds=v.select('splitting step',[{value:.025,label:'0.025 ms'},{value:.0125,label:'0.0125 ms'}],.025);
+        let seed=1;v.button('new runs',()=>{seed++;});
+        const sV=v.stage({x:[0,200],y:[-90,55],axes:'box',gutter:true,xlabel:'t (ms)',ylabel:'V (mV)',height:200,weight:1.3,minWidth:340}),sR=v.stage({x:[0,200],y:[.3,7.7],axes:'box',gutter:true,xlabel:'t (ms)',ylabel:'run',height:200,weight:1.3,minWidth:340,yticks:[[1,'det.'],[2,'1'],[3,'2'],[4,'3'],[5,'4'],[6,'5'],[7,'6']]}),sH=v.stage({x:[0,10],y:[0,1],axes:'box',gutter:true,xlabel:'first post-onset crossing latency (ms)',ylabel:'fraction of all 40 trials',height:420,weight:1,minWidth:280});
+        const NR=6,NT=40,PUL=pulse(2,1,9);let key='',C=null;
+        const get=()=>{const k=`${As.value}|${Is.value}|${ds.value}|${seed}`;if(k===key)return C;key=k;const A=As.value,NNa=Math.round(60*A),NK=Math.round(18*A),I=Is.value,dt=Number(ds.value),det=hhSim(()=>I,{tEnd:200,dt:.01,every:10}),detSpikes=hhRun(()=>I,{tEnd:200,dt:.01}).spikes,runs=Array.from({length:NR},(_,r)=>channelRun(()=>I,{NNa,NK,tEnd:200,dt,every:Math.round(.1/dt),rng:v.rng(seed*1000+r)}));
+          const trials=Array.from({length:NT},(_,r)=>channelRun(PUL,{NNa,NK,tEnd:12,dt,every:Math.round(.1/dt),rng:v.rng(seed*7919+100+r)}).spikes),summary=latencySummary(trials),ds0=hhRun(PUL,{tEnd:12,dt:.01}).spikes.find(t=>t>=2&&t<=12),dl=ds0===undefined?null:ds0-2;
+          return C={A,NNa,NK,I,dt,det,detSpikes,runs,...summary,dl};};
+        v.render(()=>{const D=get(),vals=[...D.det.V,...D.runs[0].V];sV.setView([0,200],[Math.min(-85,...vals)-2,Math.max(50,...vals)+2]);trace(sV,D.det.t,D.det.V,{color:'ink',width:1.4,dash:[5,4]});trace(sV,D.runs[0].t,D.runs[0].V,{color:'accent',width:1.8});sR.hline(1.5,{color:'grid'});D.runs.forEach((r,i)=>sR.dots(r.spikes.map(t=>[t,i+2]),{r:3.2,color:'accent'}));sR.dots(D.detSpikes.map(t=>[t,1]),{r:3.2,color:'ink'});
+          const fr=D.counts.map(c=>c/NT),fm=Math.max(.2,...fr);sH.setView([0,10],[0,fm*1.2]);sH.bars(fr,{x0:D.width/2,dx:D.width,color:'accent'});if(D.dl!==null){sH.vline(D.dl,{color:'ink',dash:[5,4],width:1.6});sH.text('det.',D.dl,fm*1.1,{size:10.5,color:'ink',align:'center'});}});
+        v.legend([['accent','finite stochastic sample'],['ink','deterministic HH',{dash:true}]]);
+        v.readout(()=>{const D=get(),sp=D.runs.reduce((a,r)=>a+r.spikes.length,0),f=x=>x===null?'unavailable':v.fix(x,3)+' ms';return`Area ${v.fix(D.A,3)} µm²: NNa=${D.NNa}, NK=${D.NK}; I=${v.fix(D.I,1)} µA/cm²; splitting dt=${D.dt} ms; sample seed=${seed}.`+'\n'+`Constant-input 200 ms runs: deterministic ${D.detSpikes.length} events; six stochastic runs ${sp} events (${v.fix(sp/(NR*.2),2)} events/s per patch).`+'\n'+`Separate pulse trials: ${D.lats.length}/${NT} post-onset crossings, ${D.censored}/${NT} right-censored at12ms. Histogram accounts for ${D.counts.reduce((a,b)=>a+b,0)} crossing trials over0–10ms; bar mass=${v.fix(D.lats.length/NT,3)}.`+'\n'+`Conditional observed latency mean ${f(D.mean)}, sample SD ${f(D.sd)}; deterministic latency ${f(D.dl)}. Fixed-voltage absolute SD scales as sqrt[p(1−p)/N], not a measured relative percentage for this feedback trace.`;});
+      }
     },
   ],
 };

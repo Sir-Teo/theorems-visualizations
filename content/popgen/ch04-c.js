@@ -1,5 +1,7 @@
 // Population Genetics & Evolution — Chapter 4 (part c): frequency dependence, fluctuating selection, peppered moth, resistance, Darwin & Wallace
 import { clamp, memo, selStep, selPath, hapStep, logit, expit } from './ch04.shared.js';
+import { melanicFraction, mothPath, mothTarget, mothPredationFit, resistanceHistory } from './source-audit-empirical.shared.js';
+import { fluctuationMeans } from './source-audit-selection.shared.js';
 
 const root = (f, a, b) => { let fa = f(a); for (let i = 0; i < 80; i++) { const m = (a + b) / 2, fm = f(m); if ((fm < 0) === (fa < 0)) { a = m; fa = fm; } else b = m; } return (a + b) / 2; };
 
@@ -67,17 +69,15 @@ An interior equilibrium is a frequency $p^*$ with $w_A(p^*)=w_a(p^*)$; it is sta
       num: '4.12',
       kind: 'Theorem',
       name: 'Fluctuating selection favours geometric-mean fitness',
-      statement: String.raw`Two lineages $X$ and $Y$ compete in a very large population in which fitnesses change from generation to generation with the environment, the same for everybody in a given generation. Let $X$ have fitness $W_t$ in generation $t$ (independent and identically distributed with $\mathbb E\,W_t<\infty$, $W_t>0$) and $Y$ constant fitness $1$. The odds $x_t/(1-x_t)$ of $X$ are multiplied by $W_t$ each generation, so
-$$\ln\frac{x_t}{1-x_t}=\ln\frac{x_0}{1-x_0}+\sum_{s<t}\ln W_s\;\sim\;t\,\mathbb E[\ln W]\quad(t\to\infty).$$
-$X$ takes over if its **geometric-mean fitness** $G=\exp\mathbb E\ln W$ exceeds $1$ and disappears if $G<1$, **regardless of its arithmetic mean** $A=\mathbb E\,W$. Since $G\le A$ (Jensen), a lineage with $A>1$ but $G<1$, i.e. with a high mean but large year-to-year variance, is eliminated by a steadier competitor.`,
-      idea: String.raw`With non-overlapping generations, fitness acts multiplicatively over time, so what matters is the long-run growth rate of a lineage, which is the mean of the *logarithm* of its fitness (the law of large numbers for $\sum\ln W_s$). Because the logarithm is concave, Jensen’s inequality (rca-3.3) gives $\mathbb E\ln W\le\ln\mathbb E W$, with equality only if $W$ is constant: variance costs growth, and costs more the larger it is — to second order $\ln G\approx\ln A-\tfrac12\sigma^2/A^2$. This is the principle behind bet-hedging, in which a genotype gives up some mean reproduction to reduce variance; it was developed for polymorphism by Dempster (1955), Haldane and Jayakar (1963) and Gillespie (1973), and in the demographic setting by Lewontin and Cohen (1969).`,
-      caption: String.raw`$X$ has fitness $a$ in a good year (probability $\pi$) and $b$ in a bad year; $Y$ always has fitness 1. **Left**: the log-odds of $X$ against $Y$ in forty independent histories of the environment (thin lines; above 0 means $X$ is the commoner), the median history (gold) and the straight line $t\ln G$ (dashed) that the law of large numbers predicts. **Right**: the logarithm is concave, so the average of $\ln W$ (point on the chord) falls below $\ln$ of the average (point on the curve): the vertical gap is the cost of fluctuation. Raise the good-year fitness until the arithmetic mean exceeds 1 while $G<1$ — $X$ still loses.`,
+      statement: String.raw`In a deterministic haploid competition, let lineage $X$ have positive i.i.d. generation fitnesses $W_t$ and lineage $Y$ have fitness 1. Assume $0<x_0<1$ and $\mathbb E|\ln W|<\infty$. Then $$\frac1t\ln\frac{x_t}{1-x_t}\longrightarrow m=\mathbb E\ln W\quad\text{almost surely}.$$ Thus $x_t\to1$ if $m>0$ and $x_t\to0$ if $m<0$. The case $m=0$ has no such directional conclusion. If also $A=\mathbb EW<\infty$, Jensen gives $G=\exp(m)\le A$: an arithmetic advantage alone need not imply long-run success.`,
+      idea: String.raw`The exact log-odds identity is $\operatorname{logit}x_t=\operatorname{logit}x_0+\sum_{u<t}\ln W_u$. Apply the strong law to the **integrable logarithms**, not to the raw fitnesses, to obtain the stated rate even when $m=0$. Jensen compares a fluctuating lineage with a constant lineage at the same arithmetic mean; variance alone does not order arbitrary fitness distributions. For uniformly small relative fluctuations around $A$, a second-order expansion gives $\ln G\approx\ln A-\operatorname{Var}(W)/(2A^2)$.`,
+      caption: String.raw`The two-state fitness of $X$ is $a$ with probability $\pi$ and $b$ otherwise; $Y$ stays at 1. All histories start at equal frequencies. Forty finite log-odds histories, their sample median and the exact **expected** log-odds $tm$ are shown separately. The long-run conclusion does not guarantee which lineage is common after 300 generations. The right panel compares the mean log fitness with the log of its mean. Equal growth rate is reported as a separate case.`,
       deps: ['popgen-4.2', 'rca-3.3'],
-      refs: ['Ewens §5.8', 'Gillespie'],
-      credit: 'Dempster, 1955; Haldane & Jayakar, 1963; Gillespie, 1973',
-      scope: String.raw`Infinite population, fitness fluctuations that are the same for the whole population in a generation and independent between generations, non-overlapping generations. Within-generation (individual) variance in offspring number, finite populations and environmental autocorrelation modify the result; with overlapping generations or a seed bank the effective fluctuation is damped.`,
+      refs: ['Felsenstein, Theoretical Evolutionary Genetics (2019), §II.11 pp. 111–113 Eqs. (II-134)–(II-137), complete haploid treatment: https://felsenst.github.io/pgbook/pgbook.pdf', 'Durrett, Probability: Theory and Examples, fifth edition, Theorem 2.4.1 and proof pp. 76–78: https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf'],
+      credit: 'Temporal multiplicative-fitness account follows Felsenstein; the almost-sure limit uses the explicitly stated strong-law hypotheses.',
+      scope: String.raw`Infinite population, non-overlapping generations, frequency-independent lineage fitnesses and a shared environment within each generation. The displayed positive two-state distribution satisfies log integrability automatically. The stated theorem assumes independent environments. Temporal correlation changes the history distribution and needs separate assumptions and analysis. Finite-population sampling, individual reproductive variance, overlapping generations and seed banks require additional models.`,
       tags: ['fluctuating selection', 'bet hedging', 'Jensen'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bet_hedging_(biology)' },
       viz(v) {
         const aS = v.slider('good-year fitness $a$ of $X$', 1, 3, 1.5, { step: 0.01 });
@@ -87,12 +87,12 @@ $X$ takes over if its **geometric-mean fitness** $G=\exp\mathbb E\ln W$ exceeds 
         v.button('New histories', () => { seed++; });
         const T = 300, K = 40;
         const L = v.stage({ x: [0, T], y: [-20, 20], axes: 'box', gutter: true, height: 330, xlabel: 'generation', ylabel: 'log-odds of $X$:  $\\ln\\frac{x}{1-x}$', title: 'Forty histories of the environment', minWidth: 300 });
-        const R = v.stage({ x: [0, 3], y: [-2.4, 1.2], axes: 'box', gutter: true, height: 330, xlabel: 'fitness $W$', ylabel: '$\\ln W$', title: 'Jensen’s inequality', minWidth: 260 });
+        const R = v.stage({ x: [0, 3], y: [-2.45, 1.2], axes: 'box', gutter: true, height: 330, xlabel: 'fitness $W$', ylabel: '$\\ln W$', title: 'Jensen’s inequality', minWidth: 260 });
         const sim = memo();
         let info = {};
         v.render(() => {
           const a = aS.value, b = bS.value, pi = piS.value;
-          const A = pi * a + (1 - pi) * b, lnG = pi * Math.log(a) + (1 - pi) * Math.log(b), G = Math.exp(lnG);
+          const means=fluctuationMeans(a,b,pi),A=means.A,lnG=means.m,G=means.G;
           const S = sim(`${a}|${b}|${pi}|${seed}`, () => {
             const reps = []; let sumLn = 0, cnt = 0;
             for (let k = 0; k < K; k++) {
@@ -103,13 +103,13 @@ $X$ takes over if its **geometric-mean fitness** $G=\exp\mathbb E\ln W$ exceeds 
             const med = Array.from({ length: T + 1 }, (_, t) => { const xs = reps.map((p) => p[t]).sort((u, w) => u - w); return (xs[K / 2 - 1] + xs[K / 2]) / 2; });
             return { reps, med, drift: sumLn / cnt };
           });
-          let ext = 6; S.reps.forEach((p) => p.forEach((y) => { ext = Math.max(ext, Math.abs(y)); }));
+          let ext = Math.max(6,Math.abs(T*lnG)); S.reps.forEach((p) => p.forEach((y) => { ext = Math.max(ext, Math.abs(y)); }));
           ext = Math.ceil(ext / 5) * 5; L.setView([0, T], [-ext, ext]);
           S.reps.forEach((p) => L.path(p.map((y, t) => [t, y]), { color: 'accent', width: 1, alpha: 0.35 }));
           L.path(Array.from({ length: T + 1 }, (_, t) => [t, t * lnG]), { color: 'ink', width: 2.2, dash: true });
           L.path(S.med.map((y, t) => [t, y]), { color: 'gold', width: 3 });
           L.hline(0, { color: 'muted', width: 1, dash: true });
-          R.setView([0, 3], [-2.4, 1.2]);
+          R.setView([0, 3], [-2.45, 1.2]);
           R.fn(Math.log, { domain: [0.09, 3], color: 'ink', width: 2.4 });
           R.vline(1, { color: 'muted', width: 1, dash: true }); R.hline(0, { color: 'muted', width: 1, dash: true });
           R.line(b, Math.log(b), a, Math.log(a), { color: 'orange', width: 2 });
@@ -118,10 +118,10 @@ $X$ takes over if its **geometric-mean fitness** $G=\exp\mathbb E\ln W$ exceeds 
           R.dot(A, lnG, { r: 6.5, color: 'red', label: 'mean of ln W', labelPos: 'sw' });
           R.dot(A, Math.log(A), { r: 6.5, color: 'green', label: 'ln of mean', labelPos: 'nw' });
           const end = S.reps.filter((p) => p[T] < 0).length;
-          info = { A, G, lnG, lnA: Math.log(A), drift: S.drift, end };
+          info = { A, G, lnG, lnA: Math.log(A), drift: S.drift, end, direction:means.direction };
         });
         v.legend([['accent', 'one history'], ['gold', 'median'], ['ink', 'expected drift $t\\ln G$', { dash: true }]]);
-        v.readout(() => `Arithmetic mean $A=${v.fix(info.A, 3)}$, geometric mean $G=${v.fix(info.G, 3)}$ ($\\ln G=${v.fix(info.lnG, 4)}$, $\\ln A=${v.fix(info.lnA, 4)}$; the gap is Jensen’s).\nMeasured mean of $\\ln W$ over 40 histories: ${v.fix(info.drift, 4)}. After 300 generations, $X$ is rarer than $Y$ in ${info.end} of 40 histories — ${info.G < 1 ? '$G<1$: $X$ declines' + (info.A > 1 ? ' although $A>1$' : '') : '$G>1$: $X$ takes over' + (info.A < 1 ? ' although $A<1$ (impossible)' : '')}.`);
+        v.readout(() => `Arithmetic mean $A=${v.fix(info.A,3)}$, geometric mean $G=${v.fix(info.G,3)}$; expected log-odds rate $m=${v.fix(info.lnG,5)}$. Jensen gap $\\ln A-m=${v.fix(info.lnA-info.lnG,5)}$.\nMean sampled log fitness over 40 histories ${v.fix(info.drift,5)}; X is rarer after 300 generations in ${info.end}/40 histories. ${info.direction==='zero'?'Zero expected log growth rate: no directional takeover conclusion is asserted.':info.direction==='increase'?'The almost-sure long-run prediction is X approaching frequency one.':'The almost-sure long-run prediction is X approaching frequency zero.'} These are asymptotic statements, not guarantees about the finite histories.`);
       },
     },
 
@@ -130,97 +130,74 @@ $X$ takes over if its **geometric-mean fitness** $G=\exp\mathbb E\ln W$ exceeds 
       num: '4.13',
       kind: 'Phenomenon',
       name: 'Industrial melanism in the peppered moth',
-      statement: String.raw`In the peppered moth *Biston betularia* the dark (*carbonaria*) form is controlled by a single dominant allele $C$ and the pale (*typica*) form is the homozygote $cc$. In Britain the dark form was rare before the Industrial Revolution (first recorded near Manchester in 1848), rose to a large majority in industrial regions within a few decades, and declined again after air-pollution controls from the 1950s. Treated as one-locus selection with a dominant allele, the rise from about 1% to about 98% in 47 generations needs selection against *typica* of roughly $s\approx0.25$ per generation, and the decline needs selection against *carbonaria* of order $s\approx0.1$–$0.15$; with $q$ the frequency of $c$ the melanic fraction is $1-q^2$ and, for fitnesses $w_{CC}=w_{Cc}=1$, $w_{cc}=1-s$, $q'=q(1-sq)/(1-sq^2)$.`,
-      idea: String.raw`Where soot darkened lichen-free tree trunks, dark moths were better camouflaged and suffered less bird predation; after smoke control, trunks lightened and the advantage reversed (Kettlewell’s mark–recapture experiments of the 1950s, Cook and colleagues’ predation experiments later). Haldane (1924) was the first to turn the rise into a selection coefficient, concluding that the dark form needed a large advantage, about 1.5 times the fitness of *typica*; the decline in the north-west of England, recorded since 1959 at Caldy Common, gave a mirror-image estimate of about a 12% disadvantage (Cook, Mani and Varley, 1986) within a published range of 5–20%. Because the allele is dominant (4.6), both phases are shaped by the sluggish end of the sweep: a rising dominant allele is slow to eliminate the last *typica*, a falling one to remove the last carriers.`,
-      caption: String.raw`Two panels, two eras (an idealised single population; the anchor points are approximate values from the literature, not a data table). **Left**: the rise of the melanic phenotype (blue) and of the allele $C$ (dashed) from about 1% in 1848 to about 98% in 1895 for a chosen selection coefficient against *typica*. **Right**: the decline of the melanic form after about 1959 for a chosen coefficient against *carbonaria*. The readout finds, by bisection, the coefficient that joins each pair of anchors, and compares it with the literature. Press “Use fitted values” to set both sliders.`,
+      statement: String.raw`The dark carbonaria morph of the peppered moth Biston betularia is controlled by a dominant allele at a major locus. Its industrial rise and later decline provide evidence of changing selection. Cook et al. (2012) analyzed Majerus’s six-year release experiment involving 4,864 moths at an unpolluted Cambridge site and found lower daily survival of melanics. They reported daily selection against melanics $s=0.091$ (95% likelihood-estimated interval 0.028–0.157). This daily survival contrast must not be substituted directly for a whole-generation genotype fitness. In a two-allele Hardy–Weinberg model, a dominant dark allele of frequency $p$ gives dark phenotype frequency $1-(1-p)^2$.`,
+      idea: String.raw`For selected viabilities $(w_{CC},w_{Cc},w_{cc})=(1,1,1-s)$, the pale-allele frequency $q=1-p$ obeys $q'=q(1-sq)/(1-sq^2)$. Reversing the relative viabilities to $(1-s,1-s,1)$ instead favors the pale genotype. These synthetic constant-fitness paths illustrate dominance, not a reconstruction of Manchester or Caldy census histories. For the actual release counts, our separate binomial calculation fits a typical-survival probability $u_y$ per year and one shared melanic survival ratio $r$, with probabilities $u_y$ and $ru_y$. Profiling the six baseline probabilities gives $r\approx0.909$, consistent with the paper’s rounded daily coefficient. This is distinct from fitting the synthetic generation endpoints.`,
+      caption: String.raw`**Left:** two synthetic paths from chosen phenotype frequencies 1% and 93%, with chosen endpoint targets 98% after 47 generations and 10% after 41. Solid lines are phenotypes and dashed lines allele frequencies. “Fit toy endpoint targets” fits those chosen targets only; the orange targets are not field observations. **Right:** actual one-exposure survival fractions computed from the released/eaten counts in Cook et al.’s Table 2, printed 611; the optional model curves fit those counts. The table labels the experiments 2002–2007, while the paper’s Figure 1 labels its corresponding survival points 2001–2006. We use the Table 2 labels explicitly and do not silently merge those inconsistent dates.`,
       deps: ['popgen-4.6'],
-      refs: ['Gillespie', 'Cook & Saccheri 2013, Heredity 110: 207–212', 'Cook, Mani & Varley 1986, Science 231: 611–613'],
-      credit: 'Haldane, 1924; Kettlewell, 1955; Cook et al., 1986',
-      scope: String.raw`A single-locus, single-population idealisation with one generation per year and constant selection in each era. Real selection varied with place and year, other morphs (*insularia*) exist, and the anchors are approximate: Manchester for the rise, Caldy Common (near Liverpool) for the decline, so the two panels are different populations. The causal role of bird predation was long debated and is now well supported; the dark allele was recently traced to a single transposon insertion in a gene involved in wing pattern (van’t Hof et al., 2016).`,
+      refs: ['Cook, Grant, Saccheri & Mallet (2012), Selective bird predation on the peppered moth: the last experiment of Michael Majerus, Biology Letters 8:609–612, complete original, Methods 610 and Results/Table 2/Discussion 611: https://dash.harvard.edu/bitstreams/7312037c-b346-6bd4-e053-0100007fdf3b/download', 'Bürger, Elementary Population Genetics, §4.2–4.3 pp.12–15, genotype selection recursion: https://homepage.univie.ac.at/Reinhard.Buerger/biovo_skript.pdf'],
+      credit: 'Original experiment by Michael Majerus, analyzed by Cook, Grant, Saccheri & Mallet (2012); displayed binomial profile and toy trajectories are separately specified calculations.',
+      scope: String.raw`The experiment released local carbonaria and typica at low densities onto naturally selected branches; missing moths after 4 hours were presumed eaten, with about 26% of disappearances directly observed as bird predation. It supplies direct evidence of differential predation, not a model in which every disappearance is directly witnessed. The article’s fitted daily inference accounts for year effects; the detailed supplemental S3 analysis was not reconstructed here. Our explicitly stated binomial model reproduces the rounded coefficient from the published counts. The synthetic trajectories omit migration, other morphs, changing environments and stochastic sampling; their selection coefficients and targets are not empirical estimates.`,
       tags: ['selection', 'dominance', 'natural selection in action'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Peppered_moth_evolution' },
       viz(v) {
-        const A1 = { y0: 1848, y1: 1895, f0: 0.01, f1: 0.98 }, A2 = { y0: 1959, y1: 2000, f0: 0.93, f1: 0.1 };
-        const sUp = v.slider('selection against pale $cc$, soot era', 0.02, 0.8, 0.25, { step: 0.005 });
-        const sDown = v.slider('selection against dark $CC,Cc$, clean-air era', 0.01, 0.5, 0.15, { step: 0.005 });
-        const mel = (p) => 1 - (1 - p) * (1 - p);
-        const run = (f0, w, n) => { let p = 1 - Math.sqrt(1 - f0); const out = [p]; for (let i = 0; i < n; i++) { p = selStep(p, w); out.push(p); } return out; };
-        const fitUp = root((s) => mel(run(A1.f0, [1, 1, 1 - s], A1.y1 - A1.y0)[A1.y1 - A1.y0]) - A1.f1, 0.001, 0.95);
-        const fitDown = root((s) => mel(run(A2.f0, [1 - s, 1 - s, 1], A2.y1 - A2.y0)[A2.y1 - A2.y0]) - A2.f1, 0.001, 0.95);
-        v.button('Use fitted values', () => { sUp.set(fitUp); sDown.set(fitDown); });
-        const L = v.stage({ x: [1845, 1900], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'year (one generation per year)', ylabel: 'frequency', title: 'The rise of the dark form', minWidth: 300, xticks: [1850, 1860, 1870, 1880, 1890, 1900] });
-        const R = v.stage({ x: [1950, 2006], y: [0, 1], axes: 'box', gutter: true, height: 320, xlabel: 'year', ylabel: 'frequency', title: 'The decline after clean-air legislation', minWidth: 300, xticks: [1960, 1970, 1980, 1990, 2000] });
-        let info = {};
-        v.render(() => {
-          const su = sUp.value, sd = sDown.value;
-          const up = run(A1.f0, [1, 1, 1 - su], 55), dn = run(A2.f0, [1 - sd, 1 - sd, 1], 46);
-          L.path(up.map((p, i) => [A1.y0 + i, mel(p)]), { color: 'accent', width: 3 });
-          L.path(up.map((p, i) => [A1.y0 + i, p]), { color: 'accent', width: 1.8, dash: true });
-          R.path(dn.map((p, i) => [A2.y0 + i, mel(p)]), { color: 'accent', width: 3 });
-          R.path(dn.map((p, i) => [A2.y0 + i, p]), { color: 'accent', width: 1.8, dash: true });
-          [[L, A1, 'e1'], [R, A2, 'e2']].forEach(([S, A]) => {
-            S.dot(A.y0, A.f0, { r: 6, hollow: true, color: 'orange', label: `≈ ${Math.round(100 * A.f0)}%`, labelPos: A.f0 > 0.5 ? 'e' : 'n' });
-            S.dot(A.y1, A.f1, { r: 6, hollow: true, color: 'orange', label: `≈ ${Math.round(100 * A.f1)}%`, labelPos: A.f1 > 0.5 ? 'sw' : 'n' });
-          });
-          R.vline(1956, { color: 'green', dash: true, width: 1.5 }); R.text('Clean Air Act 1956', 1957, 0.5, { size: 11, color: 'green', align: 'left' });
-          info = { fu: mel(up[A1.y1 - A1.y0]), fd: mel(dn[A2.y1 - A2.y0]), su, sd };
+        const sUp=v.slider('toy selection against pale cc',.02,.8,.25,{step:.005});
+        const sDown=v.slider('toy selection against dark CC,Cc',.01,.5,.15,{step:.005});
+        const fitOn=v.toggle('show binomial profile fit to released-moth counts',true);
+        const fitUp=mothTarget(.01,.98,47),fitDown=mothTarget(.93,.1,41,true),F=mothPredationFit();
+        v.button('Fit toy endpoint targets',()=>{sUp.set(fitUp);sDown.set(fitDown);});
+        const L=v.stage({x:[0,55],y:[0,1],axes:'box',gutter:true,height:330,xlabel:'model generations (no historical calendar)',ylabel:'phenotype / allele frequency',title:'Two chosen selection scenarios',minWidth:300});
+        const R=v.stage({x:[2001.5,2007.5],y:[0,1],axes:'box',gutter:true,height:330,xlabel:'experiment year as printed in Table 2',ylabel:'fraction surviving one exposure',title:'Original released-moth counts; separate daily inference',minWidth:300,xticks:[2002,2003,2004,2005,2006,2007]});
+        let info={};
+        v.render(()=>{
+          const up=mothPath(.01,sUp.value),dn=mothPath(.93,sDown.value,true);
+          for(const [P,col]of[[up,'accent'],[dn,'purple']]){L.path(P.map((p,t)=>[t,melanicFraction(p)]),{color:col,width:2.8});L.path(P.map((p,t)=>[t,p]),{color:col,width:1.5,dash:true});}
+          L.dot(47,.98,{r:5,hollow:true,color:'orange'});L.dot(41,.1,{r:5,hollow:true,color:'orange'});
+          F.rows.forEach(q=>{R.dot(q.year,q.typical,{r:4.8,color:'teal'});R.dot(q.year,q.melanic,{r:4.8,color:'red'});});
+          if(fitOn.value){R.path(F.rows.map(q=>[q.year,q.fitT]),{color:'teal',width:1.6,dash:true});R.path(F.rows.map(q=>[q.year,q.fitC]),{color:'red',width:1.6,dash:true});}
+          info={fu:melanicFraction(up[47]),fd:melanicFraction(dn[41]),su:sUp.value,sd:sDown.value};
         });
-        v.legend([['accent', 'melanic phenotype $1-q^2$'], ['accent', 'allele $C$', { dash: true }], ['orange', 'approximate anchors']]);
-        v.readout(() => `Rise: with $s=${v.fix(info.su, 3)}$ the dark form goes from 1% to ${v.fix(100 * info.fu, 0)}% in 47 generations; to hit 98% exactly one needs $s=${v.fix(fitUp, 3)}$ (typica fitness ${v.fix(1 - fitUp, 2)} relative to 1; Haldane’s “1.5 times as fit”, from slightly different starting numbers, corresponds to $s\\approx0.33$).\nDecline: with $s=${v.fix(info.sd, 3)}$ the dark form goes from 93% to ${v.fix(100 * info.fd, 0)}% in 41 generations; to reach 10% one needs $s=${v.fix(fitDown, 3)}$ (Cook et al.: about 0.12, within a range of 0.05–0.20).`);
+        v.legend([['accent','toy rise'],['purple','toy decline'],['orange','chosen toy targets',{dot:true}],['teal','actual typica survival',{dot:true}],['red','actual carbonaria survival',{dot:true}]]);
+        v.readout(()=>`Toy rise: s=${v.fix(info.su,4)} gives ${v.fix(100*info.fu,3)}% dark after 47 generations; chosen-target fit s=${v.fix(fitUp,5)}. Toy decline: s=${v.fix(info.sd,4)} gives ${v.fix(100*info.fd,3)}% dark after 41; chosen-target fit s=${v.fix(fitDown,5)}.\nIndependent binomial profile of original counts: daily survival ratio r=${v.fix(F.r,6)}, s=${v.fix(F.s,6)}; likelihood-ratio statistic versus r=1 is ${v.fix(F.LR,5)}. This is not a per-generation fitness or a fit to the synthetic paths. The paper reports s=0.091 with interval 0.028–0.157.`);
       },
     },
 
     // ───────────────────────────────────────────────────────────── 4.14
     {
       num: '4.14',
-      kind: 'Phenomenon',
-      name: 'Rapid evolution of drug and pesticide resistance',
-      statement: String.raw`Resistance to an antibiotic, antiviral drug, herbicide or insecticide is usually an allele $R$ that is already present, at low frequency, before the treatment. Without the agent $R$ has a cost: relative fitness $1-c$ against $1$ for the sensitive allele $S$, and recurrent mutation $S\to R$ at rate $\mu$ per generation holds it at the mutation–selection balance $p\approx\mu/c$ (5.1). When the agent kills a fraction $d$ of sensitive individuals, the odds $p/(1-p)$ of $R$ are multiplied each generation by $(1-c)/(1-d)\approx 1+d-c$ (4.2), so $R$ goes from the balance level to near fixation in about $\ln\!\big(p^{-1}\big)/\,(d-c)$ generations, which is tens of generations for a strong treatment. When treatment stops the odds of $R$ are multiplied by $1-c$, so $R$ declines only at the slow rate $c$, and only if sensitive types are still present or return (from untreated refuges, back mutation or migration); otherwise it stays near fixation.`,
-      idea: String.raw`This is haploid selection (4.2) with a time-dependent environment: the log-odds of resistance is piecewise linear, with slope $\ln\frac{1-c}{1-d}$ while the drug is on and $\ln(1-c)$ while it is off. Because the starting frequency is so small, a drug is often followed by a sweep from standing variation, with *no new mutation* required; and because the cost $c$ is typically small, the decline after withdrawal is slow, so resistance lingers. Examples include penicillin-resistant *Staphylococcus aureus*, which was reported in hospitals within a few years of the first clinical use of penicillin in the 1940s, and the many cases of insecticide resistance in insects. Combination therapy and refuges work by making $d-c$ small or negative for each resistance allele.`,
-      caption: String.raw`The vertical axis is the frequency of resistance on a **logarithmic** scale, so a constant selective advantage is a straight line. Set the mutation rate $\mu$, the cost $c$, the kill rate $d$, the influx $m$ of sensitive types from untreated refuges, and the dates when the drug is applied and withdrawn (the shaded band). The population starts at the balance between mutation, selection and influx. Watch the sweep during treatment, and the slow decline after it; make $c$ larger to see that costly resistance fades faster, and make $d$ small (below $c$) to see that a weak dose does not select for resistance. The model is generic and not a fit to a particular species or drug.`,
+      kind: 'Model',
+      name: 'Evolution of resistance under selective exposure',
+      statement: String.raw`Resistance can spread when heritable resistant types reproduce better under a selective agent, but its origin and persistence depend on the system. In a chosen two-type haploid model, resistant fitness is $1-c$ and sensitive fitness is $1-d$ during exposure. **With selection alone**, resistant odds multiply by $(1-c)/(1-d)$; after withdrawal they multiply by $1-c$. Thus resistance declines when costly and sensitive types remain, even with no immigration. Mutation, migration, spatial structure, horizontal transfer and compensatory evolution can change this behavior. Resistance is not universally pre-existing or universally costly.`,
+      idea: String.raw`Our full generation is selection, then replacement of a fraction $m$ by sensitive immigrants, then forward mutation at rate $\mu$: $$p'=\mu+(1-\mu)(1-m)\frac{(1-c)p}{(1-c)p+(1-d)(1-p)}.$$ Its log-odds is generally **not** piecewise linear. At $d=0$, write $B=c+\mu+(1-\mu)m(1-c)$; the small equilibrium root of $cp^2-Bp+\mu=0$ is $p_*=2\mu/(B+\sqrt{B^2-4c\mu})$, approximately $\mu/(c+m)$ only for weak rates and rare resistance. The initial seed uses that exact equilibrium; recurrent mutation after the start can be switched off. A separate selection-only reference starts from the actual state at application and has exact log-odds slope $\ln[(1-c)/(1-d)]$.`,
+      caption: String.raw`**Synthetic frequency model, not a drug-response fit.** Frequencies are plotted as their actual $\log_{10}$ values, preserving extremely rare sensitive types without a floor. The shaded interval uses the chosen application/withdrawal generations; if withdrawal is no later than application, there is no exposure. The gold dashed curve is a selection-only reference from the actual application state, omitting ongoing mutation and immigration. Its predicted half-frequency time is conditional on that reference, not a prediction for the full map. Setting immigration and recurrent mutation to zero exposes the exact odds identity. Straight log-frequency growth applies only approximately while resistance is rare; the exact linear identity concerns log-odds.`,
       deps: ['popgen-4.2'],
-      refs: ['Gillespie'],
-      scope: String.raw`Haploid or additive-resistance model, large population, constant cost and kill rate, no drift (resistance mutations arising anew, and loss of rare mutants by drift, matter when $N\mu\lesssim1$), no horizontal transfer, no compensatory mutations, and a constant influx of sensitive types from refuges (without it resistance would never decline); compensatory evolution often removes the cost of resistance, which makes it persist even more.`,
+      refs: ['Felsenstein, Theoretical Evolutionary Genetics (2019), complete haploid recursion and exact log-odds rate §II.6 pp.70–74: https://felsenst.github.io/pgbook/pgbook.pdf', 'Baym et al. (2016), Spatiotemporal microbial evolution on antibiotic landscapes, Science 353:1147–1151, original final main text pp.1147–1151 and Figs. 1–4; archived author manuscript: https://pmc.ncbi.nlm.nih.gov/articles/PMC5534434/'],
+      credit: 'Exact two-type selection follows Felsenstein; Baym et al. (2016) supplies an original experimental example of spatial, sequential and compensatory evolution beyond this model.',
+      scope: String.raw`Deterministic haploid frequencies, constant chosen cost, one forward mutation, sensitive immigration and no back mutation. This does not model finite-population loss, population density, pharmacology, multiple resistance genes, gene transfer or spatial barriers. Baym et al.’s MEGA-plate experiments demonstrate sequential resistance mutations and compensatory changes in spatially expanding E. coli; they explicitly do not directly simulate natural or clinical settings. These experiments do not calibrate this model’s parameters or justify a universal claim about standing variation, withdrawal, refuges or combination treatment.`,
       tags: ['resistance', 'selection', 'applied evolution'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Antimicrobial_resistance' },
       viz(v) {
-        const sciT = (x) => { const e = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** e; return `${m.toFixed(1)}×10${String(e).replace('-', '⁻').replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}`; };
-        const muS = v.slider('mutation rate $\\mu$ to resistance', 1e-9, 1e-5, 1e-7, { log: true, sig: 2, fmt: sciT });
-        const cS = v.slider('cost of resistance $c$', 0.005, 0.3, 0.05, { log: true, sig: 2 });
-        const dS = v.slider('kill rate $d$ of sensitive type under the drug', 0.05, 0.95, 0.5, { step: 0.01 });
-        const mS = v.slider('influx $m$ of sensitive types from untreated refuges', 1e-5, 0.05, 0.002, { log: true, sig: 2, fmt: sciT });
-        const t1S = v.slider('drug applied at generation', 5, 150, 30, { int: true });
-        const t2S = v.slider('drug withdrawn at generation', 30, 380, 150, { int: true });
-        const T = 400;
-        const L = v.stage({ x: [0, T], y: [1e-9, 1], ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'generation', ylabel: 'frequency (log scale)', title: 'Resistance sweeps, then lingers', minWidth: 320 });
-        let info = {};
-        v.render(() => {
-          const mu = muS.value, c = cS.value, d = dS.value, m = mS.value, t1 = t1S.value, t2 = Math.max(t2S.value, t1 + 1);
-          const step = (pR, pS, on) => {
-            const wR = 1 - c, wS = on ? 1 - d : 1, wb = pR * wR + pS * wS;
-            let r = (pR * wR) / wb, s2 = (pS * wS) / wb;
-            r *= 1 - m; s2 = s2 * (1 - m) + m;
-            const mt = s2 * mu; return [r + mt, s2 - mt];
-          };
-          let R = mu / (c + m), S = 1 - R; for (let i = 0; i < 40000; i++) [R, S] = step(R, S, false);
-          const p0 = R, ptsR = [[0, R]], ptsS = [[0, S]]; let t50 = null, tend = null;
-          for (let t = 1; t <= T; t++) {
-            [R, S] = step(R, S, t > t1 && t <= t2); ptsR.push([t, Math.max(R, 1e-12)]); ptsS.push([t, Math.max(S, 1e-12)]);
-            if (t50 === null && t > t1 && R >= 0.5) t50 = t - t1;
-            if (t === t2) tend = R;
-          }
-          L.vband(t1, t2, { color: 'orange', alpha: 0.13 });
-          L.text('drug on', (t1 + t2) / 2, 3e-9, { size: 12, color: 'orange', align: 'center' });
-          L.hline(p0, { color: 'muted', dash: true, width: 1.2 });
-          L.path(ptsS, { color: 'orange', width: 2.6 });
-          L.path(ptsR, { color: 'accent', width: 3 });
-          const ln = Math.log((1 - c) / (1 - d));
-          info = { p0, mu, c, d, m, t50, tend, pfinal: R, ln, pred: ln > 0 ? (0 - logit(Math.min(p0, 0.4999))) / ln : null };
+        const muS=v.slider('seed mutation rate and optional recurrent mutation',1e-9,1e-5,1e-7,{log:true,sig:2,fmt:x=>x.toExponential(2)});
+        const cS=v.slider('chosen resistance cost c',.005,.3,.05,{log:true,sig:2});
+        const dS=v.slider('chosen sensitive removal fraction d during exposure',0,.95,.5,{step:.01});
+        const mS=v.slider('replacement by sensitive immigrants m',0,.05,.002,{step:.001});
+        const t1S=v.slider('exposure starts after generation',5,150,30,{int:true});
+        const t2S=v.slider('exposure ends at generation',30,380,150,{int:true});
+        const mutOn=v.toggle('include recurrent mutation after the initial seed',true);
+        const T=400,L=v.stage({x:[0,T],y:[-12,0],axes:'box',gutter:true,height:370,xlabel:'model generation',ylabel:'log10 allele frequency',title:'Full model and conditional selection-only reference',full:true});let info={};
+        v.render(()=>{
+          const c=cS.value,d=dS.value,mu=muS.value,m=mS.value,start=t1S.value,end=t2S.value,H=resistanceHistory(c,d,mu,m,start,end,mutOn.value,T),active=start<end,at=H.rows[start],rate=Math.log1p(-c)-Math.log1p(-d);
+          const reference=active?Array.from({length:end-start+1},(_,j)=>{const z=at.z+j*rate;return[start+j,-Math.max(0,-z)/Math.LN10-Math.log1p(Math.exp(-Math.abs(z)))/Math.LN10];}):[];
+          const R=H.rows.map(q=>[q.t,q.lp/Math.LN10]),S=H.rows.map(q=>[q.t,q.lq/Math.LN10]),low=Math.min(-3,...R.map(q=>q[1]),...S.map(q=>q[1]),...reference.map(q=>q[1]));L.setView([0,T],[low-1,.15]);
+          if(active){L.vband(start,end,{color:'orange',alpha:.12});L.text('chosen exposure',(start+end)/2,(low-1)+.07*(1.15-low),{align:'center',color:'orange',size:12});}
+          L.hline(Math.log10(H.p0),{color:'muted',dash:true,width:1});L.path(S,{color:'orange',width:2.3});L.path(R,{color:'accent',width:2.8});if(active)L.path(reference,{color:'gold',dash:true,width:1.8});
+          const hit=H.rows.find(q=>q.on&&q.z>=0),pred=active&&rate>0?Math.max(0,-at.z/rate):null;
+          info={p0:H.p0,mu,c,m,d,start,end,active,rate,pred,hit:hit?hit.t-start:null,at:at.z,withdraw:H.rows[end],final:H.rows.at(-1),pure:m===0&&!mutOn.value};
         });
-        v.legend([['accent', 'resistant allele $R$'], ['orange', 'sensitive allele $S$'], ['muted', 'balance before the drug', { dash: true }]]);
-        v.readout(() => `Before the drug: mutation–selection–influx balance $p\\approx\\mu/(c+m)=${v.sci(info.mu / (info.c + info.m), 2)}$ (iterated: $${v.sci(info.p0, 2)}$).\nUnder the drug the log-odds of $R$ grow by $\\ln\\frac{1-c}{1-d}=${v.fix(info.ln, 3)}$ per generation${info.ln > 0 ? `; predicted time from the balance to ½ ≈ $-\\mathrm{logit}(p_0)/${v.fix(info.ln, 3)}=${v.fix(info.pred, 0)}$ generations, simulated ${info.t50 === null ? 'not reached' : info.t50}` : ' — negative: a dose this weak does not select for resistance'}.\nAt withdrawal resistance stands at ${info.tend !== null ? v.fix(info.tend, 3) : '—'}; at generation ${T} it is ${v.fix(info.pfinal, 3)} (the odds of $R$ fall by the factor $1-c$ per generation once sensitive types are present again).`);
+        v.legend([['accent','full resistant frequency'],['orange','full sensitive frequency'],['gold','selection-only reference from application',{dash:true}],['muted','initial seed equilibrium',{dash:true}]]);
+        const frequency=lp=>lp<-650?`$10^{${v.fix(lp/Math.LN10,2)}}$`:`$${v.sci(Math.exp(lp),3)}$`;
+        v.readout(()=>`Initial seed equilibrium $${v.sci(info.p0,3)}$; weak-rate approximation $${v.sci(info.mu/(info.c+info.m),3)}$. ${mutOn.value?'Forward mutation continues.':'Forward mutation is off after the seed; its initial equilibrium need not persist.'}\n${info.active?`Selected exposure: generations ${info.start+1} through ${info.end}. Full-map first half-frequency crossing during exposure: ${info.hit===null?'not reached':info.hit+' generations after application'}. Selection-only log-odds rate ${v.fix(info.rate,5)}; ${info.pred===null?'no increasing half-frequency reference':`reference half-frequency time ${v.fix(info.pred,3)} generations (first integer crossing ${Math.ceil(info.pred)}, ${info.pred<=info.end-info.start?'within':'beyond'} selected exposure)`}. ${info.pure?'Mutation and immigration are zero: the odds identity is exact.':'Mutation or immigration is present: the reference omits those processes.'}`:'Withdrawal is no later than application: no exposure is applied.'}\nAt generation ${T}, resistant frequency ${frequency(info.final.lp)}, sensitive frequency ${frequency(info.final.lq)}. Extremely rare types remain represented on the log-frequency axis.`);
       },
     },
 

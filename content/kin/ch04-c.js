@@ -1,5 +1,6 @@
 // Chemical Kinetics — Chapter 4: Chains, explosions and polymerization (items 4.10–4.13)
 import { clamp, ode, logspace, nz } from './ch04.shared.js';
+import{hbrIntegrate,hbrDerivative,hbrSteady,branchingK,branchingLambda,branchingLimits,radicalLog}from'./kin-source-audit-mechanisms.js';
 
 export default {
   collection: 'kin',
@@ -12,15 +13,15 @@ export default {
 $$\frac{d[\mathrm{HBr}]}{dt}=\frac{2k_2\sqrt{k_1/k_5}\;[\mathrm H_2][\mathrm{Br}_2]^{1/2}}{1+k'\,[\mathrm{HBr}]/[\mathrm{Br}_2]},\qquad k'=\frac{k_4}{k_3},$$
 half order in bromine and *inhibited* by the product. It follows from a radical chain with
 $$\begin{aligned}&\text{initiation}&\mathrm{Br}_2+\mathrm M&\xrightarrow{k_1}2\,\mathrm{Br}+\mathrm M\\&\text{propagation}&\mathrm{Br}+\mathrm H_2&\xrightarrow{k_2}\mathrm{HBr}+\mathrm H,\qquad \mathrm H+\mathrm{Br}_2\xrightarrow{k_3}\mathrm{HBr}+\mathrm{Br}\\&\text{inhibition}&\mathrm H+\mathrm{HBr}&\xrightarrow{k_4}\mathrm H_2+\mathrm{Br}\\&\text{termination}&2\,\mathrm{Br}+\mathrm M&\xrightarrow{k_5}\mathrm{Br}_2+\mathrm M\end{aligned}$$
-by applying the steady-state approximation (4.3) to the two radicals: initiation balances termination, $[\mathrm{Br}]=(k_1[\mathrm{Br}_2]/k_5)^{1/2}$, and $[\mathrm H]=k_2[\mathrm{Br}][\mathrm H_2]/(k_3[\mathrm{Br}_2]+k_4[\mathrm{HBr}])$. One initiation event triggers many propagation cycles (a *kinetic chain length* of hundreds or more).`,
-      idea: String.raw`The radicals are the intermediates of 4.3: they are made slowly (initiation), destroyed in pairs (termination) and recycled many times in between (the propagation pair, which consumes no radicals). Balancing the two sources and sinks of Br gives its square-root dependence, and the product of that with the propagation step gives the half-order law. HBr slows the reaction because H atoms that meet HBr instead of Br₂ regenerate H₂ and no HBr is made. Bodenstein and Lind (1906–07) found the empirical rate law; Christiansen, Herzfeld and Polanyi independently proposed the chain mechanism in 1919–20; the analogous H₂ + Cl₂ and H₂ + I₂ reactions behave differently.`,
-      caption: String.raw`The full mechanism integrated numerically (rate constants are round illustrative numbers in arbitrary units, not measured values; $k_3\gg k_2$, as in the real system). Left: reactants and product. Middle: radical concentrations (note the scale: about a hundredth of the reactants) against their steady-state values (dashed). Right: the numerical rate of HBr formation against the half-order formula; after the radicals settle they coincide. Add HBr at the start to inhibit the reaction, and raise $k_4/k_3$ to strengthen the inhibition.`,
+by applying the steady-state approximation (4.3) to the two radicals: initiation balances termination, $[\mathrm{Br}]=(k_1[\mathrm{Br}_2]/k_5)^{1/2}$, and $[\mathrm H]=k_2[\mathrm{Br}][\mathrm H_2]/(k_3[\mathrm{Br}_2]+k_4[\mathrm{HBr}])$. One initiation event can permit many propagation cycles when termination is slow; a large kinetic chain length is an additional regime, not a universal value.`,
+      idea: String.raw`The radicals are the intermediates of 4.3: they are made slowly (initiation), destroyed in pairs (termination) and recycled many times in between (the propagation pair, which consumes no radicals). Balancing the two sources and sinks of Br gives its square-root dependence, and the product of that with the propagation step gives the half-order law. HBr slows the reaction because H atoms that meet HBr instead of Br₂ regenerate H₂ and no HBr is made.`,
+      caption: String.raw`The full mechanism integrated numerically (rate constants are round illustrative numbers in arbitrary units, not measured values; $k_3\gg k_2$, as in the real system). Left: reactants and product. Middle: radical concentrations (note the scale: different from the stable-species scale; H is multiplied by20) against their steady-state values (dashed). Right: the numerical rate of HBr formation against the half-order formula; after fast intermediates relax, their agreement tests the SSA approximation. The chosen rates illustrate that approximation, not a long-chain regime or measured kinetic constants. Add HBr at the start to inhibit the reaction, and raise $k_4/k_3$ to strengthen the inhibition.`,
       deps: ['kin-4.3'],
-      refs: ['Houston', 'Steinfeld et al.'],
+      refs: ['Claire Vallance, Reaction Kinetics §17 pp.23–24, Eqs.(17.1)–(17.13), with inhibition/termination constants renamed explicitly'],
       tags: ['chain reactions', 'radicals'],
-      credit: 'Bodenstein & Lind, 1906–07 (rate law); Christiansen, Herzfeld & Polanyi, 1919–20 (mechanism)',
-      verify: true,
-      scope: String.raw`Valid in the early part of the reaction at moderate temperature, ignoring the reverse of the propagation step $\mathrm H+\mathrm{HBr}$ beyond $k_4$ and wall effects; rate constants here are illustrative.`,
+      credit: 'Five-step radical-chain mass-action model',
+      verify: false,
+      scope: String.raw`Five displayed elementary steps in a constant-volume, constant-temperature model with constant bath concentration absorbed into initiation/termination coefficients. Inhibition is the reverse of the first propagation step, with constant $k_4$. Other reverse steps, walls and detailed-balance completion are omitted; round rate constants have arbitrary consistent units, not laboratory calibration. The SSA need not apply during startup or depletion.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Chain_reaction#Chemical_chain_reactions' },
       viz(v) {
         const k4r = v.slider('$k_4/k_3$', 0.01, 3, 0.1, { log: true, sig: 2 });
@@ -31,30 +32,26 @@ by applying the steady-state approximation (4.3) to the two radicals: initiation
         const a = v.stage({ x: [0, 20], y: [0, 2.1], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'concentration', title: 'stable species', weight: 1 });
         const b = v.stage({ x: [0, 20], y: [0, 0.02], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'concentration', title: 'radicals (full) and steady state', weight: 1 });
         const c = v.stage({ x: [0, 20], y: [0, 0.3], axes: 'box', gutter: true, height: 300, xlabel: 'time', ylabel: 'd[HBr]/dt', title: 'rate of HBr formation', weight: 1 });
-        let info = {};
+        let info={},key='',cached;
         v.render(() => {
           const K4 = K3 * k4r.value, T = 20;
           // state: [H2, Br2, HBr, Br, H]
-          const F = (t, y) => {
-            const [H2, Br2, HBr, Br, H] = y;
-            const r1 = K1 * Br2, r5 = K5 * Br * Br, r2 = K2 * Br * H2, r3 = K3 * H * Br2, r4 = K4 * H * HBr;
-            return [-r2 + r4, -r1 + r5 - r3, r2 + r3 - r4, 2 * r1 - 2 * r5 - r2 + r3 + r4, r2 - r3 - r4];
-          };
-          const sol = ode(F, [1, b20.value, hb0.value, 0, 0], T, { kmax: 700, n: 4000 });
+          const F=(t,y)=>hbrDerivative(k4r.value,y),cacheKey=`${k4r.value}|${hb0.value}|${b20.value}`;if(cacheKey!==key){key=cacheKey;cached=hbrIntegrate(k4r.value,hb0.value,b20.value);}const sol=cached;
           const ts = Array.from({ length: 301 }, (_, i) => T * i / 300), ys = ts.map((t) => sol.at(t));
           const cols = ['blue', 'orange', 'green'];
           [0, 1, 2].forEach((j) => a.path(ts.map((t, i) => [t, ys[i][j]]), { color: cols[j], width: 2.4 }));
-          const BrSS = (y) => Math.sqrt(K1 * y[1] / K5), HSS = (y) => K2 * BrSS(y) * y[0] / (K3 * y[1] + K4 * y[2]);
+          const BrSS=y=>hbrSteady(k4r.value,y).Br,HSS=y=>hbrSteady(k4r.value,y).H;
           b.path(ts.map((t, i) => [t, ys[i][3]]), { color: 'purple', width: 2.4 });
           b.path(ts.map((t, i) => [t, ys[i][4] * 20]), { color: 'teal', width: 2.4 });
           b.path(ts.map((t, i) => [t, BrSS(ys[i])]), { color: 'purple', width: 1.5, dash: true });
           b.path(ts.map((t, i) => [t, HSS(ys[i]) * 20]), { color: 'teal', width: 1.5, dash: true });
-          const rate = (y) => 2 * K2 * Math.sqrt(K1 / K5) * y[0] * Math.sqrt(y[1]) / (1 + (K4 / K3) * y[2] / y[1]);
+          const rate=y=>hbrSteady(k4r.value,y).rate;
           const num = (y) => { const [H2, , HBr, Br, H] = y; return K2 * Br * H2 + K3 * H * y[1] - K4 * H * HBr; };
           c.path(ts.map((t, i) => [t, num(ys[i])]), { color: 'accent', width: 2.6 });
           c.path(ts.map((t, i) => [t, rate(ys[i])]), { color: 'orange', width: 1.8, dash: true });
           const ymax = Math.max(0.02, ...ts.map((t, i) => num(ys[i])), ...ts.map((t, i) => rate(ys[i]))) * 1.1;
           c.setView([0, T], [0, ymax]);
+          a.setView([0,T],[0,1.08*Math.max(...ys.flatMap(y=>y.slice(0,3)))]);b.setView([0,T],[0,1.08*Math.max(...ys.flatMap(y=>[y[3],20*y[4],BrSS(y),20*HSS(y)]))]);
           [a, b, c].forEach((s) => s.vline(tS.value, { color: 'muted', dash: true }));
           const y = sol.at(tS.value);
           info = { y, num: num(y), form: rate(y), Br: y[3], BrSS: BrSS(y), H: y[4], HSS: HSS(y), t: tS.value };
@@ -68,50 +65,40 @@ by applying the steady-state approximation (4.3) to the two radicals: initiation
       num: '4.11', kind: 'Phenomenon', name: 'Branching chains and explosion limits',
       statement: String.raw`In a chain with **branching**, one radical produces more than one radical. For the radical balance $dn/dt=\nu+(\varphi-g)\,n$, with initiation rate $\nu$, branching rate constant $\varphi$ and termination rate constant $g$, the radical number is
 $$n(t)=\frac{\nu}{\varphi-g}\Bigl(e^{(\varphi-g)t}-1\Bigr):$$
-it levels off at $\nu/(g-\varphi)$ when $\varphi<g$ (a slow, steady reaction) but grows without bound, exponentially, when $\varphi>g$: an **explosion** with no change in temperature. In $\mathrm H_2/\mathrm O_2$, branching is $\mathrm H+\mathrm O_2\to\mathrm{OH}+\mathrm O$ followed by $\mathrm O+\mathrm H_2\to\mathrm{OH}+\mathrm H$ and $\mathrm{OH}+\mathrm H_2\to\mathrm{H_2O}+\mathrm H$ (net: one H becomes three), and termination happens at the vessel wall (efficient at low pressure: *first limit*) and by $\mathrm H+\mathrm O_2+\mathrm M\to\mathrm{HO_2}+\mathrm M$ (efficient at high pressure: *second limit*). Branching grows with pressure like $p$, wall termination falls like $1/p$ and three-body termination grows like $p^2$, so the explosive region in the pressure–temperature plane is a peninsula bounded below by $p_1(T)$ and above by $p_2(T)$ and closed below a minimum temperature. At still higher pressure a third limit, thermal and involving $\mathrm{HO_2}$ and $\mathrm{H_2O_2}$ chemistry, reopens the explosion; it is not in this model.`,
-      idea: String.raw`Treat the radical pool as the single intermediate of a chain. If branching outruns termination, the linear equation for $n$ has a positive exponent and the population explodes; when termination wins, $n$ is bounded and the steady-state approximation (4.3) applies. The limits are the curves where the exponent $\lambda=\varphi-g$ changes sign: here $\lambda(p,T)=\kappa(T)\,p-\tau p^2-a/p$ with $\kappa$ Arrhenius (the branching step has a barrier of tens of kJ/mol), so the explosion region is where the cubic $\tau p^3-\kappa p^2+a=0$ has two positive roots. That the explosion is *isothermal* (a pure chain effect) and appears as a sharp threshold in pressure was the key observation of Semenov's and Hinshelwood's chain theories of combustion.`,
-      caption: String.raw`Drag the point across the pressure–temperature map (log pressure; shaded: $\lambda>0$, explosive). Right: the radical number $n(t)$ at that point, on a log scale: a straight line rising without bound inside the peninsula, a plateau outside it. Strengthen wall termination (smaller vessel, poorer surface) and the first limit rises; increase the third-body efficiency and the second limit falls. The rate constants are chosen to give a peninsula with the right topology near 800 K; the pressures (in Torr-like model units) are not measured limits.`,
+it levels off at $\nu/(g-\varphi)$ when $\varphi<g$ (a slow, steady reaction) but grows exponentially when $\varphi>g$: an isothermal radical-pool instability in this maintained-reactant linearization. At equality $n=\nu t$ for initial $n(0)=0$. Real fuel depletion and heat release eventually invalidate unlimited growth. In $\mathrm H_2/\mathrm O_2$, branching is $\mathrm H+\mathrm O_2\to\mathrm{OH}+\mathrm O$ followed by $\mathrm O+\mathrm H_2\to\mathrm{OH}+\mathrm H$ and $\mathrm{OH}+\mathrm H_2\to\mathrm{H_2O}+\mathrm H$ (after two OH propagation events, one H becomes three), and termination happens at the vessel wall (efficient at low pressure: *first limit*) and by $\mathrm H+\mathrm O_2+\mathrm M\to\mathrm{HO_2}+\mathrm M$ (efficient at high pressure: *second limit*). Branching grows with pressure like $p$, wall termination falls like $1/p$ and three-body termination grows like $p^2$, so the explosive region in the pressure–temperature plane is a peninsula bounded below by $p_1(T)$ and above by $p_2(T)$ and closed below a minimum temperature. At still higher pressure a third, thermally coupled limit can reopen the explosion; it is not in this model.`,
+      idea: String.raw`Treat the radical pool as the single intermediate of a chain. If branching outruns termination, the linear equation for $n$ has a positive exponent and the population explodes; when termination wins, $n$ is bounded and the steady-state approximation (4.3) applies. The limits are the curves where the exponent $\lambda=\varphi-g$ changes sign: here $\lambda(p,T)=\kappa(T)\,p-\tau p^2-a/p$ with $\kappa$ Arrhenius (the branching step has a barrier of tens of kJ/mol), so the explosion region is where the cubic $\tau p^3-\kappa p^2+a=0$ has two positive roots. This model separates radical branching from thermal feedback; real hydrogen–oxygen explosions can involve both.`,
+      caption: String.raw`Drag the point across the pressure–temperature map (log pressure; shaded: $\lambda>0$, explosive). Right: the radical number $n(t)$ at that point, on a log scale: a straight line rising without bound inside the peninsula, a plateau outside it. Strengthen wall termination (smaller vessel, poorer surface) and the first limit rises; increase the third-body efficiency and the second limit falls. The rate constants are chosen to give a peninsula with the right topology near 800 K; the pressure coordinate has arbitrary model units and is not a calibrated hydrogen–oxygen explosion diagram. The red boundaries are numerical roots of the stated model, rather than a coarse pressure-grid approximation.`,
       deps: ['kin-4.10'],
-      refs: ['Houston', 'Steinfeld et al.'],
+      refs: ['Claire Vallance, Reaction Kinetics §18 pp.26–28, hydrogen–oxygen branching/termination; custom cubic limit model independently derived'],
       tags: ['explosion limits', 'chain branching'],
-      credit: 'Hinshelwood & Thompson (1920s, H₂/O₂ kinetics); Semenov, chain theory of combustion (1930s)',
-      verify: true,
+      credit: 'Isothermal linear radical-pool model',
+      verify: false,
       scope: String.raw`Isothermal chain-branching model with three terms (branching, wall termination, three-body termination); the third explosion limit and heat release are not included, and the numbers are illustrative.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Explosion_limits' },
       viz(v) {
         const aS = v.slider('wall termination $a$', 0.1, 10, 1, { log: true, sig: 2 });
         const tS = v.slider('third-body termination $\\tau$', 0.003, 0.03, 0.01, { log: true, sig: 2 });
         const EB = 70;   // kJ/mol, model branching barrier
-        const kap = (T) => Math.exp(-(EB * 1000 / 8.314) * (1 / T - 1 / 800));
+        const kap=branchingK;
         const lam = (p, T) => kap(T) * p - tS.value * p * p - aS.value / p;
-        const m = v.stage({ x: [550, 900], y: [0.1, 1000], ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'temperature T (K)', ylabel: 'pressure p (model Torr)', title: 'explosion peninsula', weight: 1.2 });
-        const n = v.stage({ x: [0, 1], y: [-2, 8], axes: 'box', gutter: true, height: 380, xlabel: 'time (s)', ylabel: 'log₁₀ n', title: 'radical number at the chosen point', weight: 1 });
-        const h = m.handle(780, 30, { color: 'gold', r: 8, constrain: { x: [550, 900], y: [0.15, 900] } });
+        const m = v.stage({ x: [550, 900], y: [0.1, 1000], ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'temperature T (K)', ylabel: 'pressure p (model units)', title: 'explosion peninsula', weight: 1.2 });
+        const n = v.stage({ x: [0, 1], y: [-2, 8], axes: 'box', gutter: true, height: 380, xlabel: 'time (model units)', ylabel: 'log₁₀ n', title: 'radical number at the chosen point', weight: 1 });
+        const h=m.handle(780,30,{color:'gold',r:8,constrain:(x,y)=>[clamp(x,550,900),clamp(y,.15,Math.max(900,(branchingLimits(900,aS.value,tS.value)[1]??900)*1.05))]});
         let info = {};
         v.render(() => {
           const A = aS.value, tau = tS.value;
           m.raster((T, p) => (kap(T) * p - tau * p * p - A / p > 0 ? [214, 60, 60, 70] : null), { res: 3, key: `${A}|${tau}` });
-          const lo = [], hi = [];
-          for (let T = 550; T <= 900.1; T += 4) {
-            let prev = null, roots = [];
-            for (let i = 0; i <= 400; i++) {
-              const p = 0.1 * Math.pow(1e4, i / 400), f = kap(T) * p - tau * p * p - A / p;
-              if (prev !== null && (prev.f > 0) !== (f > 0)) roots.push(Math.sqrt(prev.p * p));
-              prev = { p, f };
-            }
-            if (roots.length >= 2) { lo.push([T, roots[0]]); hi.push([T, roots[roots.length - 1]]); }
-          }
-          m.path(lo, { color: 'red', width: 2.4 }); m.path(hi, { color: 'red', width: 2.4 });
+          const lo=[],hi=[];for(let T=550;T<=900.1;T+=2){const roots=branchingLimits(T,A,tau);if(roots.length){lo.push([T,roots[0]]);hi.push([T,roots[1]]);}}
+          m.setView([550,900],[.1,Math.max(1000,...hi.map(q=>q[1]))*1.08]);m.path(lo, { color: 'red', width: 2.4 }); m.path(hi, { color: 'red', width: 2.4 });
           const T0 = h.x, p0 = h.y, l = lam(p0, T0);
           const tEnd = Math.min(60, 12 / Math.max(Math.abs(l), 0.3));
-          n.setView([0, tEnd], [-2, 8]);
-          n.fn((t) => { const nn = Math.abs(l) < 1e-9 ? t : (Math.exp(l * t) - 1) / l; return Math.log10(Math.max(1e-30, nn)); }, { color: l > 0 ? 'red' : 'green', width: 2.6, domain: [0, tEnd] });
-          if (l < 0) n.hline(Math.log10(1 / -l), { color: 'green', dash: true });
-          const near = lo.reduce((b, q) => Math.abs(q[0] - T0) < Math.abs(b[0] - T0) ? q : b, [1e9, 0]), nh = hi.reduce((b, q) => Math.abs(q[0] - T0) < Math.abs(b[0] - T0) ? q : b, [1e9, 0]);
-          info = { l, T0, p0, p1: Math.abs(near[0] - T0) < 6 ? near[1] : NaN, p2: Math.abs(nh[0] - T0) < 6 ? nh[1] : NaN, kap: kap(T0) };
+          const tMin=tEnd/1000,y0=radicalLog(tMin,l),y1=radicalLog(tEnd,l),plateau=l<0?Math.log10(-1/l):null;n.setView([0,tEnd],[Math.min(y0,plateau??y0)-.3,Math.max(y1,plateau??y1)+.4]);n.fn(t=>radicalLog(t,l),{color:l>0?'red':'green',width:2.6,domain:[tMin,tEnd]});n.text('n(0)=0 has no log coordinate',tEnd*.02,n.view.y[0]+.12,{color:'muted',size:9});if(l<0)n.hline(plateau,{color:'green',dash:true});
+          const limits=branchingLimits(T0,A,tau);info={l,T0,p0,p1:limits[0]??null,p2:limits[1]??null,kap:kap(T0),tEnd};
         });
         v.legend([['red', 'explosion limits'], ['gold', 'state point', { dot: true }]]);
-        v.readout(() => `$T=${v.fix(info.T0, 0)}$ K, $p=${nz(v, info.p0, 2)}$: net growth rate $\\lambda=\\varphi-g=\\kappa p-\\tau p^2-a/p=${nz(v, info.l, 2)}$ s$^{-1}$ — ${info.l > 0 ? `explosive: $n$ doubles every $${nz(v, Math.LN2 / info.l, 2)}$ s` : `steady: $n\\to\\nu/|\\lambda|=${nz(v, 1 / -info.l, 2)}\\,\\nu$ (dashed)`}.\n${isFinite(info.p1) ? `At this temperature the first limit is $p_1\\approx${nz(v, info.p1, 2)}$ and the second $p_2\\approx${nz(v, info.p2, 2)}$ (model units).` : 'At this temperature there is no explosive pressure range (below the nose of the peninsula).'}`);
+        v.readout(()=>`$T=${v.fix(info.T0,0)}$ K, $p=${nz(v,info.p0,2)}$: net model growth $\\lambda=${nz(v,info.l,3)}$ (inverse model time) — ${Math.abs(info.l)<1e-10?'critical: linear growth $n=\\nu t$.':info.l>0?`exponential growth, doubling time $${nz(v,Math.LN2/info.l,3)}$.`:`stable, $n\\to\\nu/|\\lambda|=${nz(v,1/-info.l,3)}\\,\\nu$.`}
+${info.p1!==null?`At this exact temperature: model roots $p_1=${nz(v,info.p1,3)}$, $p_2=${nz(v,info.p2,3)}$.`:'No pair of positive model roots at this temperature; the critical tangent point is not an open explosive interval.'}`);
+
       },
     },
     // ------------------------------------------------------------------ 4.12

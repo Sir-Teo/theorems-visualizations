@@ -219,45 +219,45 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.15',
       kind: 'Concept',
       name: 'Womersley number and pulsatile flow',
-      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ is the ratio of the unsteady inertial force to the viscous force. For $\alpha\lesssim1$ the profile is a parabola that rises and falls in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of thickness about $R/\alpha$ at the wall. The exact solution for the velocity is
+      statement: String.raw`For an oscillatory pressure gradient of angular frequency $\omega$ in a tube of radius $R$, the dimensionless **Womersley number** $\alpha=R\sqrt{\omega\rho/\mu}$ has square $\alpha^2=\omega\rho R^2/\mu$, the ratio of unsteady inertial to viscous terms at the radius scale. For $\alpha\lesssim1$ the profile is a parabola that rises and falls in step with the pressure gradient (a "breathing" Poiseuille flow); for $\alpha\gg1$ the fluid in the core moves as a flat plug that lags the gradient by almost 90°, and the shear is confined to a thin Stokes layer of penetration depth $\delta=\sqrt{2\mu/(\rho\omega)}=\sqrt2R/\alpha$ at the wall. The exact solution for the velocity is
 $$u(r,t)=\operatorname{Re}\!\Bigl\{\tfrac{-iG}{\rho\omega}\Bigl[1-\tfrac{J_0(\alpha i^{3/2}r/R)}{J_0(\alpha i^{3/2})}\Bigr]e^{i\omega t}\Bigr\}\quad\text{for } -\partial_z p=G\cos\omega t.$$
-In the human aorta $\alpha\approx 15$–20 at resting heart rate, in the femoral artery about 4–5, and in the arterioles and capillaries well below 1.`,
+Here the anatomical labels denote illustrative radii; the model computes $\alpha$ from those radii and the stated frequency, density and viscosity.`,
       idea: String.raw`Write $u=\operatorname{Re}[\hat u(r)e^{i\omega t}]$ in the axisymmetric momentum equation: $i\omega\rho\hat u=G+\mu(\hat u''+\hat u'/r)$, whose regular solution is a Bessel function of complex argument, $J_0(\alpha i^{3/2}r/R)$. For small $\alpha$ the viscous term wins and the series reproduces the Poiseuille parabola (physio-4.2) at each instant; for large $\alpha$ the inertia wins in the core, the velocity is $G/(i\omega\rho)$ there (90° behind the gradient), and the wall layer is thin. The reason that this matters is that the oscillatory flow in large arteries is not quasi-steady, so Poiseuille's law gives the wrong resistance to the pulsatile components of flow.`,
-      caption: String.raw`The **left** panel shows the velocity profile across the tube as it oscillates (animated, with eight phases of the cycle drawn faintly); the **right** panel plots the pressure gradient (grey) and the centre-line velocity (blue) over one cycle. Raise the **Womersley number** with the slider or choose a vessel: the parabola flattens into a plug, the centre-line response shrinks, and its lag grows from 0° towards 90°. The profile is computed from the exact Bessel-function solution, with a complex Bessel series evaluated numerically.`,
-      scope: String.raw`Exact for a rigid straight tube, an incompressible Newtonian fluid and a sinusoidal gradient (physiological waveforms are sums of such harmonics, each with its own $\alpha$). Vessel elasticity changes the flow (Womersley's elastic-tube theory), and the vessel values of $\alpha$ assume a heart rate of 75 beats/min, a blood density of 1060 kg/m³ and viscosity 3.5 mPa·s.`,
+      caption: String.raw`The **left** panel shows the velocity profile across the tube as it oscillates (animated, with eight phases of the cycle drawn faintly); the **right** panel plots the pressure gradient (grey) and the centre-line velocity (blue) over one cycle. Raise the **Womersley number** with the slider or choose a vessel: the parabola flattens into a plug, the centre-line response shrinks, and its centre-line lag tends towards 90° at large $\alpha$. It need not approach monotonically: the centre-line lag can slightly exceed 90°. The original paper’s volume-flow phase curve is a different observable. The profile is computed from the exact Bessel-function solution, with a complex Bessel series evaluated numerically.`,
+      scope: String.raw`Exact fully developed laminar solution for a rigid straight circular tube with no slip, an incompressible Newtonian fluid and a sinusoidal gradient (physiological waveforms are sums of such harmonics, each with its own $\alpha$). Vessel elasticity changes the flow (Womersley's elastic-tube theory), and the illustrative radius presets use a heart rate of 75 beats/min, a blood density of 1060 kg/m³ and viscosity 3.5 mPa·s.`,
       deps: ['physio-4.2'],
       see: ['physio-4.9'],
-      refs: ['Keener–Sneyd ch. 11'],
+      refs: ['Womersley (1955), pp. 553–556, equations (4)–(9), and limitations pp. 562–563'],
       tags: ['Womersley', 'pulsatile flow', 'Bessel'],
       credit: 'J. R. Womersley, 1955',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1955.sp005276' },
       verify: true,
       viz(v) {
         const w = 2 * Math.PI * 1.25, aOf = (Rmm) => Rmm * 1e-3 * Math.sqrt((w * RHO_BLOOD) / MU_BLOOD);
-        const sA = v.slider('Womersley number $\\alpha$', 0.1, 20, 4.6, { log: true, sig: 2, fmt: (x) => v.fix(x, x < 1 ? 2 : 1) });
-        const pre = v.select('or pick a vessel', [{ value: 12, label: 'aorta' }, { value: 3, label: 'femoral' }, { value: 0.5, label: 'small artery' }, { value: 0.015, label: 'arteriole' }], 3, {
-          onChange: (Rmm) => sA.set(clamp(aOf(+Rmm), 0.1, 20)),
+        const sA = v.slider('Womersley number $\\alpha$', 0.01, 20, 4.6, { log: true, sig: 2, fmt: (x) => v.fix(x, x < 1 ? 2 : 1) });
+        const pre = v.select('or pick a vessel', [{ value: 12, label: 'aorta scale (12 mm)' }, { value: 3, label: 'femoral scale (3 mm)' }, { value: 0.5, label: 'small artery (0.5 mm)' }, { value: 0.015, label: 'arteriole (0.015 mm)' }], 3, {
+          onChange: (Rmm) => sA.set(clamp(aOf(+Rmm), 0.01, 20)),
         });
         const a = v.stage({ x: [-1.05, 1.05], y: [-1.05, 1.05], height: 330, axes: 'box', gutter: true, xlabel: 'radius r/R', ylabel: 'velocity (units of $GR^2/4\\mu$)', weight: 1.1 });
-        const b = v.stage({ x: [0, 1], y: [-1.15, 1.15], height: 330, axes: 'box', gutter: true, xlabel: 'time (fraction of a cycle)', ylabel: 'relative to Poiseuille peak', weight: 1 });
+        const b = v.stage({ x: [-0.03, 1.03], y: [-1.15, 1.15], height: 330, axes: 'box', gutter: true, xlabel: 'time (fraction of a cycle)', ylabel: 'relative to Poiseuille peak', weight: 1 });
         const prof = (al, ph) => Array.from({ length: 81 }, (_, k) => { const s = -1 + k / 40; return [s, womersleyU(al, Math.abs(s), ph)]; });
         let o = null;
         v.animate((t) => {
           const al = sA.value, ph = 2 * Math.PI * (t % 1);
           for (let k = 0; k < 8; k++) { const p2 = (2 * Math.PI * k) / 8; a.path(prof(al, p2), { color: 'faint', width: 1, alpha: 0.6 }); }
           let amp = 0.05; for (let k = 0; k < 8; k++) for (const [, u] of prof(al, (2 * Math.PI * k) / 8)) amp = Math.max(amp, Math.abs(u));
-          const yr = Math.min(1.05, amp * 1.25); a.setView([-1.05, 1.05], [-yr, yr]); b.setView([0, 1], [-1.15, 1.15]);
+          const yr = Math.min(1.05, amp * 1.25); a.setView([-1.05, 1.05], [-yr, yr]); b.setView([-.03, 1.03], [-1.15, 1.15]);
           const pr = prof(al, ph);
           a.poly([[-1, 0], ...pr.map(([s, u]) => [s, u]), [1, 0]], { fill: 'accent', fillAlpha: 0.18, stroke: false });
           a.path(pr, { color: 'accent', width: 2.8 }); a.hline(0, { color: 'muted', width: 1 });
           const c = womersleyCentre(al), gain = Math.hypot(c[0], c[1]), lag = -Math.atan2(c[1], c[0]) * 180 / Math.PI;
-          b.fn((x) => Math.cos(2 * Math.PI * x), { color: 'muted', width: 2, dash: [5, 4] });
-          b.fn((x) => womersleyU(al, 0, 2 * Math.PI * x), { color: 'accent', width: 2.8 });
+          b.fn((x) => Math.cos(2 * Math.PI * x), { domain: [0, 1], color: 'muted', width: 2, dash: [5, 4] });
+          b.fn((x) => womersleyU(al, 0, 2 * Math.PI * x), { domain: [0, 1], color: 'accent', width: 2.8 });
           b.vline(t % 1, { color: 'gold', dash: [3, 4] }); b.dot(t % 1, womersleyU(al, 0, ph), { r: 6, color: 'gold' });
-          o = { al, gain, lag, ph, uc: womersleyU(al, 0, ph), delta: 1 / al };
+          o = { al, gain, lag, ph, uc: womersleyU(al, 0, ph), delta: Math.SQRT2 / al };
         }, { period: 1, still: 0.12 });
         v.legend([['muted', 'pressure gradient $G\\cos\\omega t$', { dash: true }], ['accent', 'centre-line velocity']]);
-        v.readout(() => `$\\alpha=${v.fix(o.al, 2)}$: centre-line amplitude ${v.fix(100 * o.gain, 0)}% of the quasi-steady (Poiseuille) value, lagging the gradient by ${v.fix(o.lag, 0)}°;  Stokes layer ≈ $R/\\alpha$ = ${v.fix(100 * o.delta, 0)}% of the radius`);
+        v.readout(() => `$\\alpha=${v.fix(o.al, 2)}$: centre-line amplitude ${v.fix(100 * o.gain, 0)}% of the quasi-steady (Poiseuille) value, lagging the gradient by ${v.fix(o.lag, 0)}°;  viscous penetration depth $\\delta/R=\\sqrt2/\\alpha=${v.fix(o.delta, 2)}$. ${o.delta < .3 ? 'Thin-layer approximation is useful at this setting.' : 'This is not a thin wall layer relative to the tube radius.'}`);
       },
     },
   ],

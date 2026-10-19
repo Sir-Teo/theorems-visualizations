@@ -1,24 +1,10 @@
 // Physical Chemistry — Chapter 3: Entropy, the second and third laws, and free energy
 import { R, RL } from './ch03.shared.js';
+import { BLOCK_C as CBLK, PACKET_Q as QPK, PACKETS as NPK, packetLedger as ledger, minimumPacketWork, clausiusCycle, frozenOrientation } from './pchem-source-audit-entropy.shared.js';
 
 const Rln2 = R * Math.log(2);
 const hmix = (x) => (x <= 0 || x >= 1 ? 0 : -(x * Math.log(x) + (1 - x) * Math.log(1 - x)));
 const lnC = (N, n, M) => M.lgamma(N + 1) - M.lgamma(n + 1) - M.lgamma(N - n + 1);
-
-// ---- 3.1: two blocks exchanging heat in packets ----------------------------------------------------------
-const CBLK = 100, QPK = 50, NPK = 70;       // J/K per block, J per packet, packets shown
-function ledger(mode, TA0, TB0, w) {
-  let TA = TA0, TB = TB0, S = 0, alive = true;
-  const out = { TA: [TA], TB: [TB], S: [0], dS: [0], ok: [true] };
-  for (let i = 1; i <= NPK; i++) {
-    let d = 0;
-    if (mode === 'down') { if (TA - QPK / CBLK <= TB + QPK / CBLK) alive = false; if (alive) { d = QPK / TB - QPK / TA; TA -= QPK / CBLK; TB += QPK / CBLK; } }
-    else if (mode === 'up') { d = QPK / TA - QPK / TB; TB -= QPK / CBLK; TA += QPK / CBLK; }
-    else { d = -QPK / TB + (QPK + w) / TA; TB -= QPK / CBLK; TA += (QPK + w) / CBLK; }
-    S += d; out.TA.push(TA); out.TB.push(TB); out.S.push(S); out.dS.push(d); out.ok.push(alive);
-  }
-  return out;
-}
 
 // ---- 3.2: reversible path integrals for 1 mol of perfect gas in the (V, T) plane ------------------------
 const CVG = 1.5 * R;
@@ -67,17 +53,17 @@ export default {
     {
       num: '3.1', kind: 'Law', name: 'Second law of thermodynamics',
       statement: String.raw`In any spontaneous process in an isolated system the total entropy cannot decrease: $\Delta S_{\text{total}} \ge 0$, with equality only for an idealized reversible process. Two equivalent classical wordings: heat never flows by itself from a colder body to a hotter one (Clausius), and no cyclic process has as its sole result the conversion of heat from one reservoir into work (Kelvin–Planck). Lowering the entropy of one part of the world is allowed, but only by raising that of another part by at least as much.`,
-      idea: String.raw`The law is an empirical generalization of what never happens: perpetual-motion machines of the second kind. Once heat is assigned the entropy $\mathrm{d}q/T$ (pchem-3.2), the Clausius statement says exactly that moving a packet $q$ from a cold block at $T_B$ to a hot one at $T_A$ changes the entropy by $q/T_A - q/T_B < 0$ unless something else compensates, for instance work degraded into heat. It builds on the first law (pchem-2.1), which says nothing about direction, and on the thermodynamic-level Kelvin and Clausius statements (thermo-2.1).`,
-      caption: String.raw`Two blocks of equal heat capacity (100 J/K) trade packets of 50 J. Pick the direction, drag the packet counter and watch the ledger on the right: downhill packets always add entropy; uphill packets subtract it unless you pay the work $w$ per packet. Raise $w$ until the ledger turns around: that is the minimum work.`,
+      idea: String.raw`The Kelvin–Planck and Clausius statements exclude a cyclic device whose only net effect is, respectively, single-reservoir heat extraction as work or cold-to-hot heat transfer. Entropy quantifies this constraint (pchem-3.2). For finite constant-heat-capacity blocks the exact change is $C\ln(T_A^\prime/T_A)+C\ln(T_B^\prime/T_B)$, not the finite-packet approximation $q/T_A-q/T_B$. Work carries energy but no entropy. The first law alone does not select the allowed direction (pchem-2.1; thermo-2.1).`,
+      caption: String.raw`Two blocks of equal heat capacity (100 J/K) exchange packets of up to 50 J. Select a direction and move the packet counter. The exact entropy ledger marks a proposed history forbidden if any packet lowers total entropy, even if its cumulative total remains positive. Work is fixed per packet; the displayed minimum applies to the next packet at the current temperatures. The final downhill packet may be smaller to reach equal temperatures exactly.`,
       deps: ['pchem-2.1', 'thermo-2.1'],
       refs: ['Atkins 3A', 'M–S ch. 20'],
       tags: ['second law', 'entropy', 'spontaneity'],
-      credit: 'Clausius, 1850; Kelvin, 1851',
-      scope: String.raw`Macroscopic systems, where fluctuations are negligible (see pchem-3.7). The model blocks have constant heat capacity and the work is supplied by a pure-work source that carries no entropy; the dates are those usually quoted for the two statements and were checked only against secondary sources.`,
-      verify: true,
+      credit: 'Clausius and Kelvin–Planck formulations; modern entropy derivation in Arovas',
+      scope: String.raw`Classical macroscopic thermodynamics; microscopic fluctuations require a statistical description (pchem-3.7). Blocks equilibrate internally between packets, have constant heat capacity, and exchange no energy with an unmodelled environment. The pure-work source has no entropy change. The work-assisted ledger is a proposed energy/entropy balance, not a construction of a reversible finite-rate refrigerator. Primary modern derivation: Arovas, §§2.6–2.7, Eqs. 2.95–2.102; historical priority dates are not asserted.`,
+      verify: false,
       viz(v) {
         const mode = v.select('exchange', [{ value: 'down', label: 'hot → cold' }, { value: 'up', label: 'cold → hot, no work' }, { value: 'work', label: 'cold → hot, with work' }], 'down');
-        const TA = v.slider('$T_A$ (hot block)', 300, 420, 350, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
+        const TA = v.slider('$T_A$ (hot block)', 330, 420, 350, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
         const TB = v.slider('$T_B$ (cold block)', 240, 320, 290, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
         const W = v.slider('work per packet $w$', 0, 40, 14, { step: 0.5, fmt: (x) => `${x.toFixed(1)} J` });
         const n = v.slider('packets passed', 0, NPK, 25, { int: true });
@@ -88,6 +74,8 @@ export default {
           W.el.hidden = mode.value !== 'work';
           L = ledger(mode.value, TA.value, TB.value, W.value);
           const k = n.value;
+          const tlo = Math.min(...L.TA, ...L.TB), thi = Math.max(...L.TA, ...L.TB), tp = 0.08 * (thi - tlo);
+          s1.setView([0, NPK], [tlo - tp, thi + tp]);
           s1.path(L.TA.map((t, i) => [i, t]), { color: 'red', width: 2 });
           s1.path(L.TB.map((t, i) => [i, t]), { color: 'blue', width: 2 });
           s1.vline(k, { color: 'gold', width: 2 });
@@ -96,18 +84,18 @@ export default {
           const lo = Math.min(0, ...L.S), hi = Math.max(0, ...L.S), pad = Math.max(0.15, (hi - lo) * 0.15);
           s2.setView([0, NPK], [lo - pad, hi + pad]);
           s2.hline(0, { color: 'muted', dash: true });
-          const sgn = L.S[NPK] >= -1e-12 ? 'green' : 'red';
+          const sgn = L.admissible[NPK] ? 'green' : 'red';
           s2.path(L.S.map((t, i) => [i, t]), { color: sgn, width: 2.5 });
           s2.vline(k, { color: 'gold', width: 2 });
-          s2.dot(k, L.S[k], { r: 6, color: L.S[k] >= -1e-12 ? 'green' : 'red' });
-          if (L.S[NPK] < -1e-12) s2.corner('forbidden: total entropy falls', 'br', { color: 'red', plate: true });
+          s2.dot(k, L.S[k], { r: 6, color: L.admissible[k] ? 'green' : 'red' });
+          if (!L.admissible[NPK]) s2.corner('proposed history: a packet lowers entropy', 'br', { color: 'red', plate: true });
           else if (mode.value === 'down' && !L.ok[NPK]) s2.corner('equilibrium reached: entropy stops growing', 'br', { color: 'green', plate: true });
         });
-        v.legend([['red', 'block A'], ['blue', 'block B'], ['green', 'ΔS_total ≥ 0'], ['red', 'ΔS_total < 0 (never happens)']]);
+        v.legend([['red', 'block A'], ['blue', 'block B'], ['green', 'every packet admissible'], ['red', 'proposed entropy-lowering packet']]);
         v.readout(() => {
           const k = n.value, Tm = L.TA[k], Tc = L.TB[k];
-          const wmin = QPK * (Tm / Tc - 1);
-          return `after ${k} packets: $T_A=${v.fix(Tm, 2)}$ K, $T_B=${v.fix(Tc, 2)}$ K, $\\Delta S_{\\text{total}}=${v.fix(L.S[k], 4)}$ J/K\nlast packet: $\\Delta S=${v.fix(L.dS[k], 5)}$ J/K\nminimum work to push a ${QPK} J packet uphill at these temperatures: $w_{\\min}=q(T_A/T_B-1)=${v.fix(wmin, 2)}$ J`;
+          const wmin = minimumPacketWork(Tm, Tc);
+          return `after ${k} packets: $T_A=${v.fix(Tm, 2)}$ K, $T_B=${v.fix(Tc, 2)}$ K, $\\Delta S_{\\text{total}}=${v.fix(L.S[k], 4)}$ J/K\nlast packet: $\\Delta S=${v.fix(L.dS[k], 5)}$ J/K\nnext ${QPK} J uphill packet: $w_{\\min}=q[T_A/(T_B-q/C)-1]=${v.fix(wmin, 2)}$ J\n${L.admissible[k] ? 'every packet so far has nonnegative entropy change' : 'hypothetical history: an entropy-lowering packet has occurred'}; reservoir limit as $q/C\\to0$: $q(T_A/T_B-1)$`;
         });
       },
     },
@@ -225,27 +213,26 @@ and no engine working between the same two reservoirs can exceed it. For a perfe
       statement: String.raw`For any cyclic process in which the system exchanges heat $\mathrm{d}q$ with surroundings at temperature $T_{\text{surr}}$ at the boundary,
 $$\oint \frac{\mathrm{d}q}{T_{\text{surr}}} \le 0,$$
 with equality exactly when the cycle is reversible. Equivalently, for any change of state $\Delta S \ge \int \mathrm{d}q/T_{\text{surr}}$, so for an isolated system $\Delta S \ge 0$.`,
-      idea: String.raw`Cut a general cycle into small pieces, each exchanging heat with a Carnot engine that connects it to a single reservoir (pchem-3.3). If the cycle were irreversible, the engines would convert heat from that one reservoir into work with no other effect, which the second law forbids (pchem-3.1; thermo-2.8 states the same inequality). Irreversibility enters through temperature differences across the boundary and through friction, and the amount by which the sum falls short of zero is the entropy generated.`,
-      caption: String.raw`A gas runs a Carnot-shaped cycle between reservoirs at $T_h$ and $T_c$. Increase the temperature drop $\delta$ (heat flows across a finite gap) or the friction fraction $f$ of the work lost to heat. The waterfall adds up $q/T_{\text{surr}}$ leg by leg: zero for the reversible cycle, negative otherwise; the grey bar shows that the gas's own entropy change around the loop is zero regardless.`,
+      idea: String.raw`Attach reversible auxiliary Carnot devices to each heat exchange and a reference reservoir. If $\sum_i q_i/T_i$ were positive, their combined cycle could extract heat from that one reservoir and turn it entirely into work, violating Kelvin–Planck (pchem-3.1). Thus the sum is nonpositive; zero corresponds to zero total entropy production. Negative sums are allowed irreversible cycles, not contradictions. Arovas §§2.6–2.7 derives the bound and the entropy balance (Eqs. 2.95–2.102; thermo-2.8).`,
+      caption: String.raw`An internally reversible gas cycle operates across finite temperature gaps to two reservoirs. A separate cyclic brake dissipates fraction $f$ of its work into the cold reservoir. For the combined gas-plus-brake device, the bars add heat received divided by bath temperature. The cold bar includes the brake dissipation. The gas returns to its initial entropy; the baths gain $-\sum q/T$.`,
       deps: ['pchem-3.3', 'thermo-2.8'],
       refs: ['Atkins 3A', 'M–S ch. 20'],
       tags: ['Clausius inequality', 'irreversibility', 'entropy production'],
-      credit: 'Clausius, 1854 and 1865',
-      scope: String.raw`Model cycle of one mole of perfect gas with isothermal legs at $T_h-\delta$ and $T_c+\delta$ and ideal (reversible) adiabats; friction returns a fraction $f$ of the net work as heat to the cold side. The dates are those usually quoted and were checked only against secondary sources.`,
-      verify: true,
+      credit: 'Clausius inequality; primary modern derivation in Arovas',
+      scope: String.raw`Closed cyclic device, equilibrium reservoirs with positive temperatures, and all heat/work exchanges included. The gas is one mole of perfect gas with reversible isotherms at $600-\delta$ and $300+\delta$ K and reversible adiabats. The external brake generates entropy $fW/T_c$; it is included in the device boundary used for the heat bars. The gas TS rectangle alone is not the entropy production. Arovas §§2.7.1–2.7.3 supplies the primary proof; no original-paper date claim is retained.`,
+      verify: false,
       viz(v) {
         const Th = 600, Tc = 300;
         const dl = v.slider('temperature drop $\\delta$', 0, 140, 40, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
         const f = v.slider('friction fraction $f$', 0, 0.5, 0.1, { step: 0.01, fmt: (x) => `${(100 * x).toFixed(0)} %` });
         const r = v.slider('expansion ratio', 1.5, 6, 3, { step: 0.05 });
         const s1 = v.stage({ x: [-1, 11], y: [150, 700], axes: 'box', gutter: true, xlabel: '$S$ of the gas / (J/K)', ylabel: '$T$ / K', height: 340, title: 'the gas cycle in the TS plane' });
-        const s2 = v.stage({ x: [0.3, 7.1], y: [-10, 10], axes: 'box', gutter: true, ylabel: '$q/T_{\\mathrm{surr}}$ / (J/K)', height: 340, title: 'adding up q/T leg by leg', xticks: [[1, 'hot leg'], [2, 'adiabat'], [3, 'cold leg'], [4, 'adiabat'], [5.3, 'Σ surr.'], [6.4, 'Σ gas']] });
+        const s2 = v.stage({ x: [0.3, 7.1], y: [-10, 10], axes: 'box', gutter: true, ylabel: '$q/T_{\\mathrm{surr}}$ / (J/K)', height: 340, title: 'adding up q/T leg by leg', xticks: [[1, 'hot leg'], [2, 'adiabat'], [3, 'cold leg'], [4, 'adiabat'], [5.3, 'Σ q/T'], [6.4, 'Σ gas']] });
         let res = {};
         v.render(() => {
-          const d = Math.min(dl.value, (Th - Tc) / 2 - 6), t1 = Th - d, t2 = Tc + d, dS = R * Math.log(r.value);
-          const qh = t1 * dS, qc0 = t2 * dS, w = qh - qc0, qc = qc0 + f.value * w;
-          const a = qh / Th, b = -qc / Tc, tot = a + b;
-          res = { qh, qc, w, a, b, tot, eff: (1 - f.value) * w / qh, carnot: 1 - Tc / Th, gas: qh / t1 - qc0 / t2 };
+          const d = dl.value;
+          res = clausiusCycle(R, d, f.value, r.value);
+          const { t1, t2, dS, qh, qc, w, a, b, tot } = res;
           s1.setView([-0.25 * dS, 1.25 * dS], [150, 700]);
           s1.hline(Th, { color: 'red', dash: true, width: 1.5 }); s1.hline(Tc, { color: 'blue', dash: true, width: 1.5 });
           s1.text('hot reservoir', 1.22 * dS, Th, { align: 'right', dy: -8, color: 'red', size: 11 }); s1.text('cold reservoir', 1.22 * dS, Tc, { align: 'right', dy: 14, color: 'blue', size: 11 });
@@ -254,9 +241,9 @@ with equality exactly when the cycle is reversible. Equivalently, for any change
           s2.setView([0.3, 7.1], [-Math.max(8, 1.25 * Math.abs(b), 1.25 * a), Math.max(8, 1.25 * a)]);
           s2.hline(0, { color: 'muted' });
           s2.rect(0.65, 0, 1.35, a, { fill: 'red', fillAlpha: 0.6, color: 'red' }); s2.text('+' + v.fix(a, 2), 1, a, { dy: -9, size: 12 });
-          s2.rect(1.65, -0.0, 2.35, 0.0001, { fill: 'muted', fillAlpha: 0.5, color: 'muted' }); s2.text('0', 2, 0, { dy: -9, size: 12 });
+          s2.rect(1.65, -0.0, 2.35, 0, { fill: 'muted', fillAlpha: 0.5, color: 'muted' }); s2.text('0', 2, 0, { dy: -9, size: 12 });
           s2.rect(2.65, 0, 3.35, b, { fill: 'blue', fillAlpha: 0.6, color: 'blue' }); s2.text(v.fix(b, 2), 3, b, { dy: 13, size: 12 });
-          s2.rect(3.65, 0, 4.35, 0.0001, { fill: 'muted', fillAlpha: 0.5, color: 'muted' }); s2.text('0', 4, 0, { dy: -9, size: 12 });
+          s2.rect(3.65, 0, 4.35, 0, { fill: 'muted', fillAlpha: 0.5, color: 'muted' }); s2.text('0', 4, 0, { dy: -9, size: 12 });
           s2.rect(4.9, 0, 5.7, tot, { fill: tot < -1e-9 ? 'orange' : 'green', fillAlpha: 0.7, color: tot < -1e-9 ? 'orange' : 'green' }); s2.text(v.fix(tot, 2), 5.3, tot, { dy: tot >= 0 ? -9 : 13, size: 12, color: 'ink' });
           s2.rect(6.0, 0, 6.8, res.gas, { fill: 'muted', fillAlpha: 0.4, color: 'muted' }); s2.text(v.fix(res.gas, 2), 6.4, res.gas, { dy: -9, size: 12 });
         });
@@ -343,14 +330,14 @@ Liquids whose structure is strongly ordered by hydrogen bonds (water, alcohols) 
       statement: String.raw`The entropy of a macroscopic state is proportional to the logarithm of the number $W$ of microstates compatible with it,
 $$S = k_B \ln W,$$
 where $k_B = 1.380649\times10^{-23}\ \mathrm{J\,K^{-1}}$ is Boltzmann's constant. For $N$ distinguishable particles shared between two halves of a box, the macrostate "$n$ on the left" has $W = \binom{N}{n}$, so $S/(Nk_B)$ tends to $-x\ln x-(1-x)\ln(1-x)$ with $x=n/N$ as $N$ grows; the equilibrium state is overwhelmingly the one that can be realized in the most ways. The formula applies to systems whose microstates are equally probable (the microcanonical ensemble).`,
-      idea: String.raw`The logarithm is forced by additivity: entropy of two independent systems adds while the counts $W$ multiply. The count itself is a binomial coefficient, and Stirling's formula (pma-8.22) turns $\ln N! \approx N\ln N - N$ into the entropy function; the same function appears as the mixing entropy of pchem-3.5, which is now seen to be a statement about counting. Because $\binom{N}{n}/2^N$ is sharply peaked with relative width $\sim 1/\sqrt N$, fluctuations away from the maximum are unobservable for $N\sim10^{23}$ (thermo-5.6 is the same statement for a general system).`,
-      caption: String.raw`Choose the number of particles $N$ and drag the fraction on the left. Left panel: $\ln W/N$ from the exact binomial count (blue), from the crude Stirling form (orange) and with the $\tfrac12\ln(2\pi n)$ corrections (green). Middle: the probability of each split, peaked at one half with width $\sim\sqrt N$. Right: one random arrangement of the particles.`,
+      idea: String.raw`Independent subsystem counts multiply, so their logarithms add. Here the binary occupancy microstates are all equally likely, giving the binomial count and $P(n)=\binom{N}{n}2^{-N}$. Stirling gives $\ln W=Nh(x)-\tfrac12\ln[2\pi Nx(1-x)]+O(1/N)$ for fixed $0<x<1$. Thus $\ln W/N\to h(x)$, while the absolute difference from $Nh(x)$ need not vanish. The standard deviation is $\sqrt N/2$ in particle count and $1/(2\sqrt N)$ in fraction. Tong §§1.2.1 and 1.2.3 gives the count, additivity and Stirling derivation (pchem-3.5; pma-8.22; thermo-5.6).`,
+      caption: String.raw`Choose $N$ and the left occupancy fraction (rounded to an integer particle count). Left: log binomial count per particle, leading Stirling term $h(x)$ and its logarithmic correction. The refined expansion needs both $n$ and $N-n$ large and omits endpoints. Middle: discrete probability masses, with width $1/(2\sqrt N)$ on the fraction axis. Right: all $N$ markers, with exactly $n$ on the left; their positions are illustrative.`,
       deps: ['pchem-3.5', 'pma-8.22', 'thermo-5.6'],
       refs: ['Atkins Focus 13', 'M–S ch. 20'],
       tags: ['Boltzmann', 'microstates', 'statistical entropy'],
-      credit: 'Boltzmann, 1877 (statistical interpretation); the form $S=k\ln W$ is usually credited to Planck, c. 1900–01',
-      scope: String.raw`Isolated systems with equiprobable microstates. The exact attribution of the compact formula is disputed in the secondary literature I could consult (Boltzmann's 1877 paper uses a different notation; the constant $k$ and the modern form appear in Planck's 1900–01 radiation papers), so the credit line is a summary, not a primary-source finding.`,
-      verify: true,
+      credit: 'Boltzmann entropy; counting and asymptotic derivation in Tong',
+      scope: String.raw`Equal-probability binary occupancy configurations of labelled particles. Within-half position and momentum states are omitted: zero for all-left is a binary counting baseline, not the absolute entropy of a real gas. Concentration is a probability statement, not a return-time or transition-rate model. Primary author source: Tong, Statistical Physics, §1.2.1 Eq. 1.2 and §1.2.3 Eq. 1.12 and Stirling discussion. No claim about original historical notation or formula priority is made.`,
+      verify: false,
       viz(v) {
         const M = v.M;
         const Nsel = v.select('particles $N$', [4, 10, 30, 100, 1000].map((x) => ({ value: x, label: String(x) })), 30);
@@ -359,7 +346,7 @@ where $k_B = 1.380649\times10^{-23}\ \mathrm{J\,K^{-1}}$ is Boltzmann's constant
         const s2 = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, xlabel: 'fraction on the left, $n/N$', ylabel: 'probability of the split', height: 320, title: 'how likely is each split?' });
         const s3 = v.stage({ x: [0, 2.2], y: [0, 1.2], axes: false, equal: true, height: 320, title: 'one arrangement' });
         const rng = v.rng(11);
-        const pos = Array.from({ length: 400 }, () => [rng(), rng()]);
+        const pos = Array.from({ length: 1000 }, () => [rng(), rng()]);
         v.render(() => {
           const N = Nsel.value, n = Math.round(xs.value * N);
           const ex = []; for (let k = 0; k <= N; k++) ex.push([k / N, lnC(N, k, M) / N]);
@@ -372,63 +359,62 @@ where $k_B = 1.380649\times10^{-23}\ \mathrm{J\,K^{-1}}$ is Boltzmann's constant
           s1.hline(Math.log(2), { color: 'muted', dash: true, width: 1 }); s1.text('ln 2', 0.02, Math.log(2), { align: 'left', dy: -9, size: 11, color: 'muted' });
           // probability
           const P = []; let pk = 0; for (let k = 0; k <= N; k++) { const p = Math.exp(lnC(N, k, M) - N * Math.log(2)); P.push([k / N, p]); pk = Math.max(pk, p); }
-          s2.setView([0, 1], [0, pk * 1.18]);
+          s2.setView([-0.5 / N, 1 + 0.5 / N], [0, pk * 1.18]);
           if (N <= 100) { P.forEach(([x, p], k) => s2.rect(x - 0.4 / N, 0, x + 0.4 / N, p, { fill: k === n ? 'gold' : 'blue', fillAlpha: k === n ? 0.9 : 0.55, color: k === n ? 'gold' : 'blue' })); }
           else { s2.path(P, { color: 'blue', width: 2.5 }); s2.dot(n / N, Math.exp(lnC(N, n, M) - N * Math.log(2)), { r: 6, color: 'gold' }); }
           // box
-          const nd = Math.min(N, 400), nl = Math.round(nd * n / N);
+          const nd = N, nl = n;
           s3.rect(0, 0, 1, 1, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.05 }); s3.rect(1.2, 0, 2.2, 1, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.05 });
           pos.slice(0, nd).forEach(([a, b], i) => { const left = i < nl; s3.dot(left ? 0.05 + 0.9 * a : 1.25 + 0.9 * a, 0.05 + 0.9 * b, { r: N > 100 ? 2.5 : 5, color: left ? 'blue' : 'orange' }); });
           s3.text('left', 0.5, 1.1, { size: 12, color: 'muted' }); s3.text('right', 1.7, 1.1, { size: 12, color: 'muted' });
         });
-        v.legend([['blue', 'exact $\\ln\\binom{N}{n}/N$'], ['orange', '$N\\ln N - n\\ln n-(N-n)\\ln(N-n)$ (Stirling)', { dash: true }], ['green', 'Stirling with $\\tfrac12\\ln(2\\pi n)$ terms', { dash: true }]]);
+        v.legend([['blue', 'exact $\\ln\\binom{N}{n}/N$'], ['orange', '$h(x)=-x\\ln x-(1-x)\\ln(1-x)$ (leading Stirling)', { dash: true }], ['green', 'Stirling with $\\tfrac12\\ln(2\\pi n)$ terms', { dash: true }]]);
         v.readout(() => {
           const N = Nsel.value, n = Math.round(xs.value * N), lw = lnC(N, n, M), cr = n === 0 || n === N ? 0 : N * Math.log(N) - n * Math.log(n) - (N - n) * Math.log(N - n);
           const wtxt = lw < 25 ? `${v.fix(Math.exp(lw), 0)}` : `10^{${v.fix(lw / Math.LN10, 1)}}`;
-          return `$N=${N}$, $n=${n}$: $W=\\binom{N}{n}=${wtxt}$, $\\ln W=${v.fix(lw, 3)}$ (Stirling: ${v.fix(cr, 3)}, error ${lw > 0 ? v.fix(100 * (cr - lw) / lw, 1) : '–'} %)\nall left: $W=1$, $S=0$; even split: $\\ln W=${v.fix(lnC(N, Math.round(N / 2), M), 3)}\\to N\\ln2$. For a mole of gas: $S_{\\text{even}}-S_{\\text{all left}}=k_B N_A \\ln2=R\\ln2=${v.fix(Rln2, 3)}$ J/K. Chance the box spontaneously goes all-left: $2^{-N}=${N <= 30 ? v.fix(Math.pow(2, -N), 10) : '10^{' + v.fix(-N * Math.log10(2), 0) + '}'}$`;
+          return `$N=${N}$, $n=${n}$: $W=\\binom{N}{n}=${wtxt}$, $\\ln W=${v.fix(lw, 3)}$ (Stirling: ${v.fix(cr, 3)}, error ${lw > 0 ? v.fix(100 * (cr - lw) / lw, 1) : '–'} %)\nall left: $W=1$, $S_{\\text{binary}}=0$; even split: $\\ln W/N=${v.fix(lnC(N, Math.round(N / 2), M)/N, 5)}\\to\\ln2$. Leading molar entropy difference: $R\\ln2=${v.fix(Rln2, 3)}$ J/(K mol), with relative per-particle correction $O(\\ln N/N)$. Probability of all-left in a uniformly random configuration: $2^{-N}=${N <= 30 ? v.fix(Math.pow(2, -N), 10) : '10^{' + v.fix(-N * Math.log10(2), 0) + '}'}$`;
         });
       },
     },
     {
       num: '3.8', kind: 'Law', name: 'Third law and residual entropy',
-      statement: String.raw`Third law (Nernst–Planck form): the entropy of a pure, perfectly ordered crystal in internal equilibrium tends to zero as $T\to0$, so entropy changes of all reactions between such substances vanish at absolute zero and absolute entropies can be tabulated. Where disorder is frozen in as the sample is cooled, the substance keeps a *residual entropy* $S_0 = k_B\ln W_0>0$: for a crystal of $N$ linear molecules such as CO that may sit in either of two orientations, $S_0 = R\ln 2$ per mole; for ordinary ice, counting the arrangements allowed by the Bernal–Fowler ice rules gives $S_0 \approx R\ln\tfrac32$ (Pauling).`,
-      idea: String.raw`With Boltzmann's formula (pchem-3.7), a unique ground state gives $S(0)=k\ln1=0$. In CO the two orientations differ so little in energy that the molecules cannot reorient once the crystal is cold, and the calorimeter never sees the disorder they hold: the integral of $C_p/T$ from near 0 K (pchem-3.9) falls short of the statistical entropy by $S_0$. For ice, each of the $2N$ hydrogen bonds has two possible proton positions, so $4^N$ arrangements; the fraction of vertex configurations with exactly two protons near each oxygen is $6/16$, giving $W_0\approx(4\cdot\tfrac{6}{16})^N=(3/2)^N$.`,
-      caption: String.raw`Left: a model crystal of CO whose molecules freeze at temperature $T_f$ with a small energy preference $\Delta E$ for the right orientation; lower $T_f$ or larger $\Delta E$ ordered it more, and the bar chart shows the residual entropy it leaves. Middle: click the four bonds around an oxygen to move protons: only arrangements with exactly two near protons obey the ice rules (6 of 16). Right: the numbers, with the calorimetric values.`,
+      statement: String.raw`For a system equilibrating into a unique ground state, $S\to0$ as $T\to0$; a finite ground degeneracy $g$ instead gives $k_B\ln g$. Frozen configurational disorder is a different mechanism: a sample may retain an ensemble entropy when it cannot reach equilibrium on the observation time scale. Independent equally populated two-orientation sites have molar entropy $R\ln2$. Pauling’s approximate ice-rule count gives $W_0\approx(3/2)^N$ and $S_0\approx R\ln(3/2)$; this is not an exact finite-lattice count.`,
+      idea: String.raw`Boltzmann counting (pchem-3.7) gives zero entropy for a unique ground state. For frozen independent two-level sites, the population at the chosen freezing temperature gives $S_0=-R[p\ln p+(1-p)\ln(1-p)]$; with a positive bias, continued equilibration to zero temperature would instead order the model. Pauling’s 1935 original paper, pp. 2681–2682, multiplies the $4^N$ bond choices by an approximate factor $(6/16)^N$. The local constraints are correlated through loops, so this product is an approximation. His paper explicitly distinguishes frozen disorder, equilibration and low-temperature extrapolation.`,
+      caption: String.raw`Left: 96 illustrative orientations sampled from a frozen independent two-level model, not a fitted CO crystal. Change the molar energy bias and freezing temperature. Middle: a projection of four bonds around one oxygen; clicking near a bond toggles its proton and tests only the central two-near rule. Right: model limits and Pauling’s historical ice comparison. This local star does not count globally consistent ice configurations.`,
       deps: ['pchem-3.7'],
       refs: ['Atkins Focus 3', 'M–S ch. 21'],
       tags: ['third law', 'residual entropy', 'ice rules'],
-      credit: 'Nernst, 1906–12; Planck, 1911–12; Pauling, 1935',
-      scope: String.raw`The CO panel is a toy model (independent orientations frozen in at $T_f$ with a two-level preference $\Delta E$ per molecule); its parameters are illustrative, not fitted. Measured values: Giauque and Stout's calorimetry of ice gave $0.82\pm0.05$ cal K⁻¹ mol⁻¹ (3.43 ± 0.21 J K⁻¹ mol⁻¹), and a 1932 table of zero-point entropies quotes Clayton and Giauque's CO value as $1.12\pm0.10$ cal K⁻¹ mol⁻¹ (about 4.7 J K⁻¹ mol⁻¹); the latter I could only confirm from a secondary summary, not the original paper.`,
-      verify: true,
+      credit: 'Nernst–Planck third law; Pauling, 1935 (original ice model)',
+      scope: String.raw`Arovas §2.7.2 supplies the ground-state degeneracy qualification. Pauling, JACS 57 (1935), pp. 2680–2684, supplies the ice model and reports a thermal/spectroscopic entropy discrepancy of 0.87 cal/(K mol), displayed here as a historical comparison using 4.184 J/cal; it is not a modern independent measurement or uncertainty interval. The previously secondary-only CO value and unchecked later ice uncertainty are removed. The 1935 count neglects loop correlations; the frozen CO-like toy does not determine the equilibrium residual entropy of real CO.`,
+      verify: false,
       viz(v) {
         const dE = v.slider('orientation preference $\\Delta E$', 0, 2000, 200, { step: 10, fmt: (x) => `${x.toFixed(0)} J/mol` });
         const Tf = v.slider('freezing temperature $T_f$', 5, 300, 80, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
         const sc = v.stage({ x: [0, 12], y: [0, 8], axes: false, equal: true, height: 300, title: 'CO crystal, frozen in at $T_f$' });
-        const si = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], axes: false, equal: true, height: 300, title: 'ice: click a bond to move its proton' });
+        const si = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], axes: false, equal: true, height: 300, title: 'one oxygen star: click near a bond' });
         const sb = v.stage({ x: [0, 6], y: [0, 7], axes: 'box', gutter: true, ylabel: '$S_0$ / (J K⁻¹ mol⁻¹)', height: 300, title: 'residual entropies', xticks: [] });
         const rng = v.rng(5);
         const u = Array.from({ length: 96 }, () => rng());
         const dirs = [[1, 1], [-1, 1], [-1, -1], [1, -1]].map(([a, b]) => [a / Math.SQRT2, b / Math.SQRT2]);
         const near = [true, true, false, false];
-        si.onClick((x, y) => { let best = 0, bd = 1e9; dirs.forEach((d, i) => { const dd = Math.hypot(x - d[0] * 0.55, y - d[1] * 0.55); if (dd < bd) { bd = dd; best = i; } }); near[best] = !near[best]; v.invalidate(); });
+        si.onClick((x, y) => { let best = 0, bd = 1e9; dirs.forEach((d, i) => { const dd = Math.hypot(x - d[0] * 0.55, y - d[1] * 0.55); if (dd < bd) { bd = dd; best = i; } }); if (bd < 0.42) { near[best] = !near[best]; v.invalidate(); } });
         v.render(() => {
-          const p = 1 / (1 + Math.exp(dE.value / (R * Tf.value)));
+          const { p, S: S0m } = frozenOrientation(R, dE.value, Tf.value);
           for (let i = 0; i < 96; i++) { const cx = 0.9 + (i % 12) * 0.93, cy = 7.2 - Math.floor(i / 12) * 0.93, wrong = u[i] < p; sc.arrow(cx - 0.3 * (wrong ? -1 : 1), cy, cx + 0.3 * (wrong ? -1 : 1), cy, { color: wrong ? 'red' : 'blue', width: 2.5, head: 7 }); }
           // ice
           dirs.forEach((d, i) => { si.line(0, 0, d[0] * 1.2, d[1] * 1.2, { color: 'muted', width: 2.5 }); si.dot(d[0] * 1.2, d[1] * 1.2, { r: 9, color: 'red', hollow: true }); const k = near[i] ? 0.42 : 0.82; si.dot(d[0] * k, d[1] * k, { r: 6, color: 'accent' }); });
           si.dot(0, 0, { r: 12, color: 'red' }); si.text('O', 0, 0, { size: 11, color: 'ink' });
-          const cnt = near.filter(Boolean).length; si.corner(cnt === 2 ? 'ice rules obeyed' : `${cnt} protons near: violates ice rules`, 'tl', { color: cnt === 2 ? 'green' : 'red', plate: true });
+          const cnt = near.filter(Boolean).length; si.corner(cnt === 2 ? 'central site: two near protons' : `${cnt} near: central rule fails`, 'tl', { color: cnt === 2 ? 'green' : 'red', plate: true });
           // bars
-          const S0m = -R * (p * Math.log(Math.max(p, 1e-12)) + (1 - p) * Math.log(Math.max(1 - p, 1e-12)));
-          const bars = [[0.7, Rln2, 'muted'], [1.7, S0m, 'accent'], [2.7, 4.184 * 1.12, 'purple'], [3.7, R * Math.log(1.5), 'green'], [4.7, 4.184 * 0.82, 'orange']];
-          bars.forEach(([x, h, c]) => { sb.rect(x - 0.32, 0, x + 0.32, h, { fill: c, fillAlpha: 0.65, color: c }); sb.text(v.fix(h, 2), x, h, { dy: (x === 2.7 || x === 4.7) ? -26 : -10, size: 12 }); });
-          sb.line(2.7, 4.184 * 1.02, 2.7, 4.184 * 1.22, { color: 'ink', width: 2 }); sb.line(4.7, 4.184 * 0.77, 4.7, 4.184 * 0.87, { color: 'ink', width: 2 });
+          const bars = [[1, Rln2, 'muted'], [2.3, S0m, 'accent'], [3.6, R * Math.log(1.5), 'green'], [4.9, 4.184 * 0.87, 'orange']];
+          bars.forEach(([x, h, c]) => { sb.rect(x - 0.4, 0, x + 0.4, h, { fill: c, fillAlpha: 0.65, color: c }); sb.text(v.fix(h, 2), x, h, { dy: -10, size: 12 }); });
           sb.hline(0, { color: 'muted' });
         });
-        v.legend([['muted', '$R\\ln2$, two orientations', { area: true }], ['accent', 'toy model', { area: true }], ['purple', 'CO, Clayton–Giauque (secondary source)', { area: true }], ['green', 'ice, Pauling count', { area: true }], ['orange', 'ice, Giauque–Stout', { area: true }]]);
+        v.legend([['muted', '$R\\ln2$, equal independent orientations', { area: true }], ['accent', 'frozen toy model', { area: true }], ['green', 'ice, approximate Pauling count', { area: true }], ['orange', 'ice discrepancy reported by Pauling (1935)', { area: true }]]);
         v.readout(() => {
-          const p = 1 / (1 + Math.exp(dE.value / (R * Tf.value))), S0m = -R * (p * Math.log(Math.max(p, 1e-12)) + (1 - p) * Math.log(Math.max(1 - p, 1e-12)));
-          return `model CO crystal: wrong-way fraction $p=${v.fix(p, 3)}$, $S_0=-R[p\\ln p+(1-p)\\ln(1-p)]=${v.fix(S0m, 2)}$ J/(K mol) (limit $R\\ln2=${v.fix(Rln2, 2)}$)\nice: $W_0=(3/2)^N$, $S_0=R\\ln\\tfrac32=${v.fix(R * Math.log(1.5), 2)}$ J/(K mol) against calorimetry $3.43\\pm0.21$; $6/16=${v.fix(6 / 16, 3)}$ of vertex states obey the rules`;
+          const { p, S: S0m } = frozenOrientation(R, dE.value, Tf.value);
+          return `frozen toy: higher-energy fraction $p=${v.fix(p, 5)}$, $S_0=-R[p\\ln p+(1-p)\\ln(1-p)]=${v.fix(S0m, 4)}$ J/(K mol); equal-population limit $R\\ln2=${v.fix(Rln2, 3)}$. Positive bias gives a unique equilibrium ground state; the displayed entropy assumes freezing.\nice: $W_0\\approx(3/2)^N$, $S_0\\approx R\\ln(3/2)=${v.fix(R * Math.log(1.5), 3)}$ J/(K mol); historical discrepancy reported in Pauling (1935): $0.87$ cal/(K mol) $=${v.fix(4.184*.87, 3)}$ J/(K mol). Local star: 6 of 16 bond states satisfy the central rule.`;
+
         });
       },
     },

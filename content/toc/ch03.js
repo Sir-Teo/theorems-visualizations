@@ -1,3 +1,4 @@
+import { regexDifference } from './automata.audit.js';
 // Theory of Computation — Chapter 3: Nondeterminism and regular expressions (items 3.1–3.8; 3.9–3.16 in ch03-b.js)
 import { EPS, DEAD, layer, upTo, pen, keypad, dfa, dfaEdges, cycleTarget, deltaValue, rowLabel, texName, nfa, closure, move, hasAcc, nfaRun, nfaAccepts, determinize, minimalSize, deriv, nullable, nfaEdges, PRESETS, dfaAccepts, nfaLang, eqSets, firstDiff, nfaGraph, drawNFA, bendEdges, fitThompson, NFAS, R, parseRegex, tryParse, rx, rxTeX, rxSize, countParts, langSets, langFlat, thompson, gnfaFromNFA, eliminate, nfaToRegex, rxInput, drawLangRows, tt, texName3, setTex, setStr, drawBarcode, symbolsOf, onColor, asNFA, SANS } from './ch03.shared.js';
 
@@ -282,7 +283,7 @@ export default {
         const cache = {};
         const info = (f, k) => { const key = f + k; if (!cache[key]) { const N = (f === 'end' ? FAM : FAM_START)(k), D = determinize(N); cache[key] = { N, D, nfa: k + 1, sub: D.states.length, min: minimalSize(D) }; } return cache[key]; };
         const series = (f) => Array.from({ length: 10 }, (_, i) => info(f, i + 1));
-        let built = '';
+        let built = '', certKey = '', cert = null;
         v.render(() => {
           const k = kS.value, I = info(fam, k);
           if (built !== fam + k) {
@@ -435,6 +436,7 @@ export default {
       refs: ['Sipser §1.3'],
       credit: 'Thompson, 1968 (search algorithm); textbook form of the construction',
       scope: String.raw`Ken Thompson's 1968 paper describes a regular-expression search that simulates the NFA (compiling to machine code); the NFA-building rules drawn here are the textbook formulation of that idea, in the variant that identifies states for concatenation (Aho, Sethi, Ullman), not a transcription of his paper.`,
+      links: { 'Stanford author guide': 'https://web.stanford.edu/class/archive/cs/cs103/cs103.1254/guide_to_state_elimination' },
       tags: ['regular expressions', 'construction'],
       viz(v) {
         let T = null, built = '';
@@ -485,10 +487,10 @@ export default {
       idea: String.raw`A path through a removed state $q$ enters $q$, loops there any number of times, and leaves; the formula writes exactly that as a single arrow, so the set of strings labelling paths from $I$ to $F$ never changes during a removal (an induction on the number of removed states). The expression can nevertheless grow exponentially in the number of states, because each removal can multiply the lengths of many labels, and a bad order makes this worse.`,
       caption: String.raw`**Click a state** to rip it out (or use the buttons for left-to-right and fewest-edges-first orders, undo and reset): new arrows appear with the labels $R_{pq}R_{qq}^*R_{qt}$. When every state is gone, the label of $I\to F$ is the answer and is checked against the NFA on all strings up to length 7. The bars show the **final size of the expression for every possible elimination order** (sorted); the gold bar is the order you chose, so you can see how much the order matters.`,
       deps: ['toc-3.1', 'toc-3.6'],
-      refs: ['Sipser §1.3'],
-      credit: 'McNaughton & Yamada, 1960; Brzozowski & McCluskey, 1963',
-      scope: String.raw`McNaughton and Yamada (1960) give a construction of regular expressions from state graphs; the "rip out one state at a time" formulation drawn here is the one in current textbooks, and its attribution to the signal-flow-graph method of Brzozowski and McCluskey (IEEE Trans. Electronic Computers EC-12, 1963) is not verified here.`,
-      verify: true,
+      refs: ['Stanford CS103, Guide to State Elimination, Winter 2025, Initial Setup and Step Two', 'Pettorossi, Automata Theory and Formal Languages, §2.6, Theorem 2.6.1 (language equations)'],
+      credit: 'Textbook state-elimination construction; explicit path invariant supplied here',
+      scope: String.raw`Modern generalized-NFA construction, verified against the complete Stanford CS103 guide. Its original historical priority is not asserted. Missing edges mean the empty language and all update labels use the **pre-removal** graph. The finite length-7 comparison is a spot check; after full elimination an independent subset-product search also checks equality on all words (or explicitly reports its resource cap).`,
+      links: { 'Stanford author guide': 'https://web.stanford.edu/class/archive/cs/cs103/cs103.1254/guide_to_state_elimination' },
       tags: ['regular expressions', 'construction'],
       viz(v) {
         const PS = { endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), secondA: () => NFAS.secondA(), evenA: () => asNFA(PRESETS.evenA()) };
@@ -508,7 +510,7 @@ export default {
         const perms = (a) => (a.length <= 1 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map((p) => [x, ...p])));
         const sizes = {}; const allSizes = () => { const k = sel.value; if (!sizes[k]) sizes[k] = perms(N.states.map((s) => s.id)).map((o) => ({ o, size: rxSize(nfaToRegex(N, o)) })).sort((a, b) => a.size - b.size); return sizes[k]; };
         const short = (e) => { const t = rx(e); return t.length > 24 ? t.slice(0, 22) + '…' : t; };
-        let built = '';
+        let built = '', certKey = '', cert = null;
         G = v.graph(gs, { nodes: [], edges: [], layout: 'none', directed: true, r: 17, autoRadius: false, texSize: 14, draggable: true, edgeFontSize: 11.5 });
         G.onClick = ({ node }) => { if (node && node.id !== 'I' && node.id !== 'F') rip(node.id); return true; };
         v.render(() => {
@@ -539,7 +541,8 @@ export default {
           const g = cur(), left = alive();
           if (left.length) return (note || 'Click a state to rip it out.') + ` · ${Object.keys(g.E).length} arrows`;
           const r = g.E['I>F'] || R.empty, A = langFlat(r, 7), B = nfaLang(N, 7), all = allSizes();
-          return `$r=${rxTeX(r)}$ · size ${rxSize(r)} (orders give sizes ${all[0].size}…${all.at(-1).size}) · order ${removed.join('→')} · same strings as the NFA up to length 7: ${eqSets(A, B) ? '✓' : '✗'}`;
+          const ck = sel.value + '|' + removed.join(','); if (certKey !== ck) { certKey = ck; cert = regexDifference(N, r); }
+          return `$r=${rxTeX(r)}$ · size ${rxSize(r)} (orders give sizes ${all[0].size}…${all.at(-1).size}) · order ${removed.join('→')} · same strings as the NFA up to length 7: ${eqSets(A, B) ? '✓' : '✗'} · exact whole-language product check: ${cert.equal === null ? 'resource cap reached, unknown' : cert.equal ? 'equal ✓' : 'different ✗'} (${cert.pairs} reachable subset pairs)`;
         });
       },
     },

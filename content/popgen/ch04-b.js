@@ -1,5 +1,7 @@
 // Population Genetics & Evolution — Chapter 4 (part b): dominance, overdominance, sickle-cell, underdominance, adaptive landscapes
 import { clamp, memo, selStep, wbarD, dpSel, intEq, selPath } from './ch04.shared.js';
+import { sickleHistory } from './source-audit-empirical.shared.js';
+import { overdominance } from './source-audit-selection.shared.js';
 
 export default {
   collection: 'popgen',
@@ -57,17 +59,15 @@ export default {
       num: '4.7',
       kind: 'Theorem',
       name: 'Heterozygote advantage maintains a stable polymorphism',
-      statement: String.raw`Let the genotype fitnesses be $w_{AA}=1-s$, $w_{Aa}=1$, $w_{aa}=1-t$ with $s,t>0$ (the heterozygote is the fittest). Then the only interior equilibrium of the one-locus selection recursion is
-$$\hat p=\frac{t}{s+t},$$
-and it is globally stable: from every $p_0\in(0,1)$, $p_n\to\hat p$. The mean fitness $\bar w=1-sp^2-tq^2$ is maximal at $\hat p$, and near it the deviation shrinks geometrically by the factor $\lambda=\dfrac{1-2h}{1-h}$ with $h=\dfrac{st}{s+t}$. More generally, with arbitrary $w_{AA},w_{aa}<w_{Aa}$, $\hat p=\dfrac{w_{Aa}-w_{aa}}{2w_{Aa}-w_{AA}-w_{aa}}$ is the stable equilibrium.`,
-      idea: String.raw`Marginal fitnesses are $w_A=1-sp$ and $w_a=1-tq$, so $\Delta p=pq(tq-sp)/\bar w$ is positive when $p<\hat p$ and negative when $p>\hat p$ (4.3): both boundary points repel and $\hat p$ attracts. Equivalently $\bar w$ is a concave parabola whose peak is at $\hat p$, and by Wright’s formula (4.4) the frequency climbs it. Linearising at $\hat p$ (mathbio-1.5), $\frac{d\,\Delta p}{dp}=-\hat p\hat q(s+t)/\bar w(\hat p)$, so the convergence factor per generation is $\lambda=1-\frac{h}{1-h}$. Selection therefore *maintains* both alleles, at a frequency set only by the two homozygote disadvantages — the classic balanced polymorphism.`,
-      caption: String.raw`Set the selection against each homozygote ($s$ against $AA$, $t$ against $aa$). **Left**: eleven populations start at different frequencies; all converge to $\hat p=t/(s+t)$ (green dashed). **Right**: the mean-fitness parabola peaks at $\hat p$; drag the gold handle to choose a start and watch the dots climb to the top. The readout compares the observed rate of convergence with $\lambda$. Make $s$ large and $t$ small: the equilibrium moves toward $A$’s loss, but the polymorphism persists as long as both are positive.`,
+      statement: String.raw`For random mating and constant one-locus viabilities $w_{AA}=1-s$, $w_{Aa}=1$, $w_{aa}=1-t$ with $0<s,t<1$, the unique interior equilibrium is $$\hat p=\frac{t}{s+t}.$$ Every interior starting frequency converges monotonically to it; the exact boundary states remain fixed. Mean fitness $1-sp^2-t(1-p)^2$ is maximized there. Near equilibrium the deviation has multiplier $\lambda=(1-2h)/(1-h)$ with $h=st/(s+t)$, so $0<\lambda<1$.`,
+      idea: String.raw`Writing $q=1-p$ gives $\Delta p=pq(s+t)(\hat p-p)/\bar w$, hence $$p'-\hat p=(p-\hat p)\left[1-\frac{(s+t)pq}{\bar w}\right].$$ The bracket lies strictly between zero and one because $\bar w-(s+t)pq=(1-s)p+(1-t)q>0$. Thus the map moves toward equilibrium without crossing it. Taking the limit in the recursion identifies the only interior limit as $\hat p$. At that point the bracket equals $(1-2h)/(1-h)$, giving the local convergence factor.`,
+      caption: String.raw`Change the two homozygote disadvantages. Eleven interior starting frequencies move toward the same equilibrium, with the actual largest remaining distance reported after a finite number of generations. Drag the gold start on the fitness parabola to inspect another trajectory. The estimated near-equilibrium multiplier is shown only when the run supplies a measurable nonzero deviation; an exact equilibrium provides no such ratio.`,
       deps: ['popgen-4.3', 'mathbio-1.5'],
-      refs: ['Ewens §1.4'],
-      credit: 'Fisher, 1922 (heterozygote advantage as a mechanism of balanced polymorphism)',
-      scope: String.raw`Large population, constant genotype fitnesses, random mating, viability selection at one locus. In finite populations drift eventually removes one allele, but only after a time that grows exponentially with $N$ for strong selection. The fitness pattern $w_{AA},w_{aa}<w_{Aa}$ is “overdominance” in the narrow sense.`,
+      refs: ['Bürger, Elementary Population Genetics, §4.3 pp. 14–15 Eq. (4.13), monotone global convergence: https://homepage.univie.ac.at/Reinhard.Buerger/biovo_skript.pdf', 'Felsenstein, Theoretical Evolutionary Genetics (2019), §II.7 pp. 84–88 Eqs. (II-101)–(II-107): https://felsenst.github.io/pgbook/pgbook.pdf'],
+      credit: 'Equilibrium and stability follow the complete author treatments cited here; original historical priority is not newly audited.',
+      scope: String.raw`Infinite population, one autosomal locus, random mating, constant positive genotype viabilities, no mutation, migration or drift. The global claim is for $0<p_0<1$; an allele absent at a boundary cannot return. In a finite population overdominance does not by itself rule out eventual loss, and no universal fixation-time scaling is asserted here.`,
       tags: ['selection', 'polymorphism', 'balancing selection'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Heterozygote_advantage' },
       viz(v) {
         const sS = v.slider('$s$ (selection against $AA$)', 0.02, 0.8, 0.3, { step: 0.01 });
@@ -77,10 +77,10 @@ and it is globally stable: from every $p_0\in(0,1)$, $p_n\to\hat p$. The mean fi
         const h = R.handle(0.05, 0.6, { color: 'gold', r: 8, label: 'start', labelPos: 's', constrain: (x) => [clamp(x, 0.01, 0.99), 0.6] });
         let info = {};
         v.render(() => {
-          const s = sS.value, t = tS.value, w = [1 - s, 1, 1 - t], ph = t / (s + t), hh = (s * t) / (s + t), lam = (1 - 2 * hh) / (1 - hh);
+          const s=sS.value,t=tS.value,w=[1-s,1,1-t],eq=overdominance(s,t),ph=eq.p,lam=eq.lambda;
           const T = Math.min(400, Math.max(30, Math.ceil(7 / -Math.log(Math.max(lam, 0.0001)) * 1.0)));
           L.setView([0, T], [0, 1]);
-          for (let i = 0; i < 11; i++) L.path(Array.from(selPath(0.02 + i * 0.096, w, T), (x, k) => [k, x]), { color: 'accent', width: 1.6, alpha: 0.75 });
+          let maxRemaining=0; for(let i=0;i<11;i++){const path=selPath(.02+i*.096,w,T);maxRemaining=Math.max(maxRemaining,Math.abs(path[T]-ph));L.path(Array.from(path,(x,k)=>[k,x]),{color:'accent',width:1.6,alpha:.75});}
           L.hline(ph, { color: 'green', dash: true, width: 2 });
           const lo = Math.min(wbarD(0, w), wbarD(1, w)), top = wbarD(ph, w);
           R.setView([0, 1], [lo - 0.08 * (top - lo) - 0.02, top + 0.15 * (top - lo) + 0.02]);
@@ -92,10 +92,10 @@ and it is globally stable: from every $p_0\in(0,1)$, $p_n\to\hat p$. The mean fi
           R.dots(Array.from(path, (x) => [x, wbarD(x, w)]), { r: 3, color: 'gold' });
           // measured convergence factor
           let q = p0, meas = NaN; for (let k = 0; k < 2000; k++) { const nx = selStep(q, w); if (Math.abs(q - ph) < 1e-5 && Math.abs(q - ph) > 1e-13) { meas = Math.abs(nx - ph) / Math.abs(q - ph); break; } q = nx; }
-          info = { s, t, ph, lam, meas, top, end: path[40] };
+          info = { s, t, ph, lam, meas, top, end: path[40], T, maxRemaining };
         });
         v.legend([['accent', 'trajectories / $\\bar w(p)$'], ['green', 'equilibrium $\\hat p=t/(s+t)$', { dash: true }], ['gold', 'start and next 40 generations']]);
-        v.readout(() => `$\\hat p=t/(s+t)=${v.fix(info.ph, 4)}$, $\\bar w(\\hat p)=1-\\frac{st}{s+t}=${v.fix(info.top, 4)}$ (the top of the parabola). All eleven curves end there.\nConvergence factor: formula $\\lambda=\\frac{1-2h}{1-h}=${v.fix(info.lam, 4)}$; measured from the recursion near $\\hat p$: ${Number.isNaN(info.meas) ? '—' : v.fix(info.meas, 4)}. Gold start after 40 generations: $p=${v.fix(info.end, 4)}$.`);
+        v.readout(() => `$\\hat p=t/(s+t)=${v.fix(info.ph, 4)}$, $\\bar w(\\hat p)=1-\\frac{st}{s+t}=${v.fix(info.top, 4)}$ (the top of the parabola). After ${info.T} generations, the largest remaining distance among the eleven curves is $${v.sci(info.maxRemaining,3)}$.\nConvergence factor: formula $\\lambda=\\frac{1-2h}{1-h}=${v.fix(info.lam, 4)}$; measured from the recursion near $\\hat p$: ${Number.isNaN(info.meas) ? 'unavailable (no measurable near-equilibrium deviation)' : v.fix(info.meas, 4)}. Gold start after 40 generations: $p=${v.fix(info.end, 4)}$.`);
       },
     },
 
@@ -104,17 +104,15 @@ and it is globally stable: from every $p_0\in(0,1)$, $p_n\to\hat p$. The mean fi
       num: '4.8',
       kind: 'Phenomenon',
       name: 'Sickle-cell polymorphism and malaria',
-      statement: String.raw`The sickle-cell allele $S$ of the haemoglobin $\beta$-globin gene is harmful in homozygotes (sickle-cell anaemia, historically often fatal in childhood) yet reaches substantial frequencies, of the order of ten per cent in some of the most malarious regions of Africa. Carriers ($AS$) are partly protected against severe *Plasmodium falciparum* malaria. In the heterozygote-advantage model of 4.7 with fitnesses $w_{AA}=1-s$, $w_{AS}=1$, $w_{SS}=1-t$, the equilibrium frequency of $S$ is
-$$\hat q=\frac{s}{s+t},$$
-so it rises with the malarial selection $s$ against normal homozygotes and falls with the severity $t$ of the disease. Where malaria is absent ($s=0$) the allele is selected against and declines, and the geographic distribution of the allele follows that of malaria.`,
-      idea: String.raw`Haldane (1949) suggested that resistance to malaria might explain why the thalassaemia genes persist in the Mediterranean despite their cost; Allison (1954) then showed that sickle-cell trait protects against falciparum malaria and that the allele’s frequency matches the distribution of malaria in East Africa, which fits a balanced polymorphism with $\hat q=s/(s+t)$. Modern high-resolution mapping of the allele (Piel et al., 2010) confirms the correlation with historical malaria endemicity in Africa. Once malaria is gone, the protected heterozygotes lose their edge and the fitnesses become $(1,1,1-t)$: the allele is then a recessive deleterious allele that declines with $\Delta q\approx -tq^2$, quickly at first and ever more slowly as it becomes rare, because heterozygotes hide most copies (1.11).`,
-      caption: String.raw`**Left**: a transect from a malarious lowland (left) to the highlands (right). The malaria intensity (orange) gives selection $s$ against $AA$ and the equilibrium frequency $\hat q$ of $S$ (blue) follows it; drag the gold handle to choose a location. **Right**: what happens at that location if malaria is eliminated at generation 0: $S$ declines (blue; the dashed lines are other locations). The axis is in generations, with years at 25 per generation in the readout. The parameters are illustrative, not a fit to a particular survey.`,
+      statement: String.raw`The haemoglobin-$S$ allele illustrates a trade-off between homozygous disease burden and partial malaria protection associated with the $AS$ genotype. Piel et al.’s 2010 geostatistical study found a geographical association between HbS frequency and historical malaria endemicity, driven mainly by Africa; it did not resolve the association in Asia or the Americas. In the idealized random-mating viability model $w_{AA}=1-s$, $w_{AS}=1$, $w_{SS}=1-t$, with $0<s<1$ and $0<t\le1$, the interior equilibrium allele frequency is $\hat q=s/(s+t)$. For $s=0$, an initially interior allele is recessively deleterious and declines asymptotically. The measured geographical association does not by itself estimate these fitnesses or prove local equilibrium.`,
+      idea: String.raw`At equilibrium, the marginal viabilities of $A$ and $S$ agree. Subtracting them gives $s(1-q)-tq=0$, hence the stated frequency. Once $s=0$, the exact recursion is $q'=q(1-tq)/(1-tq^2)$ and $\Delta q=-tq^2(1-q)/(1-tq^2)$. Its rare-allele decline is quadratic, not rapid elimination. Williams et al.’s Kenyan cohort found partial protection against **mild clinical malaria** in HbAS, with adjusted incidence-rate ratio 0.62 (95% interval 0.51–0.76); that study explicitly left the relevance of its age-pattern results to severe disease unresolved. Such clinical incidence ratios are not the genotype viability parameters in this synthetic model.`,
+      caption: String.raw`**A synthetic transect, not a map or patient forecast.** A chosen smooth profile determines selection $s$ against $AA$, shown in orange; the blue equilibrium $q$ follows from the chosen viabilities. Drag the location. The right panel follows 100 generations either after removing that modeled advantage or while retaining it, as selected by the toggle. All reference locations use the same toggle. The view includes the full possible equilibrium range, including frequencies above 0.35. Reported $2q(1-q)$ and $q^2$ are model newborn genotype proportions before viability selection.`,
       deps: ['popgen-4.7'],
-      refs: ['Gillespie', 'Piel et al. 2010, Nat. Commun. 1: 104'],
-      credit: 'Haldane, 1949 (malaria hypothesis); Allison, 1954',
-      scope: String.raw`A model, not data: constant fitnesses, random mating, one locus, no migration between locations, no admixture. Real distributions also reflect migration, drift, other red-cell variants (HbC, thalassaemias, G6PD) that compete for the same protection, and, today, treatment that raises $1-t$. The decline of the allele frequency among African Americans owes much to admixture, not only to selection.`,
+      refs: ['Piel et al. (2010), Nature Communications 1:104, complete original, Results pp.2–4, Discussion pp.4–5 and Methods pp.5–6: https://ora.ox.ac.uk/objects/uuid%3Adbb79f47-ef1b-4088-ac44-152d4af29126/files/m87eae47db3033c767ee5166696afd234', 'Williams et al. (2005), An Immune Basis for Malaria Protection by the Sickle Cell Trait, complete original, Results/Table 1 printed 442–443 and limitations 444: https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.0020128', 'Bürger, Elementary Population Genetics, §4.3 pp.14–15, complete two-allele stability argument: https://homepage.univie.ac.at/Reinhard.Buerger/biovo_skript.pdf'],
+      credit: 'Empirical context follows the original studies by Piel et al. (2010) and Williams et al. (2005); the displayed viabilities are chosen model parameters.',
+      scope: String.raw`One locus, random mating, no mutation, migration, admixture, drift, age structure or changing treatment; the sites are independent model populations. The chosen intensities are not measured. Piel’s map assembled indigenous population surveys and historical malaria categories, explicitly was not a contemporary distribution map, and had uneven coverage and prediction uncertainty. Neither that association nor this toy model supplies a present-day clinical prognosis or a causal estimate of local fitness.`,
       tags: ['balancing selection', 'human', 'malaria'],
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sickle_cell_disease#Epidemiology' },
       viz(v) {
         const m0S = v.slider('malaria intensity in the lowland', 0, 1, 0.75, { step: 0.01 });
@@ -122,31 +120,28 @@ so it rises with the malarial selection $s$ against normal homozygotes and falls
         const tS = v.slider('selection against $SS$, $t$', 0.3, 1, 0.8, { step: 0.01 });
         const cS = v.slider('highland begins at', 0.2, 0.9, 0.55, { step: 0.01 });
         const off = v.toggle('malaria eliminated (right panel)', true);
-        const L = v.stage({ x: [0, 1], y: [0, 0.35], axes: 'box', gutter: true, height: 320, xlabel: 'position along the transect (lowland → highland)', ylabel: 'frequency of $S$  /  $s$', title: 'Equilibrium sickle-cell frequency follows malaria', minWidth: 300 });
-        const R = v.stage({ x: [0, 100], y: [0, 0.35], axes: 'box', gutter: true, height: 320, xlabel: 'generations after malaria is gone', ylabel: 'frequency of $S$', title: 'Decline after eradication', minWidth: 280 });
+        const L = v.stage({ x: [0, 1], y: [0, 0.35], axes: 'box', gutter: true, height: 320, xlabel: 'chosen synthetic transect coordinate', ylabel: 'frequency of $S$  /  $s$', title: 'Equilibrium under chosen viabilities', minWidth: 300 });
+        const R = v.stage({ x: [0, 100], y: [0, 0.35], axes: 'box', gutter: true, height: 320, xlabel: 'generations from the chosen equilibrium', ylabel: 'frequency of $S$', title: 'Toggle removal or retention of the modeled advantage', minWidth: 280 });
         const hnd = L.handle(0.15, 0, { color: 'gold', r: 8, label: 'here', labelPos: 'n', constrain: (x) => [clamp(x, 0, 1), 0] });
         let info = {};
         v.render(() => {
           const m0 = m0S.value, smax = smaxS.value, t = tS.value, c = cS.value, wd = 0.07;
           const m = (x) => m0 / (1 + Math.exp((x - c) / wd));
           const qh = (x) => { const s = smax * m(x); return s / (s + t); };
+          const ymax=Math.max(.1,qh(0),smax*m(0))*1.15; L.setView([0,1],[0,ymax]);R.setView([0,100],[0,ymax]);
           L.fn((x) => smax * m(x), { color: 'orange', width: 2.2 });
           L.fn(qh, { color: 'accent', width: 3 });
           const x0 = hnd.x; hnd.set(x0, 0);
           L.dot(x0, qh(x0), { r: 6, color: 'gold' });
           L.vline(x0, { color: 'gold', dash: true, width: 1 });
-          const run = (q0, on) => {
-            const s = on ? 0 : smax * m(x0), w = [1 - s, 1, 1 - t]; let q = q0; const pts = [[0, q]];
-            for (let k = 1; k <= 100; k++) { q = 1 - selStep(1 - q, w); pts.push([k, q]); } return pts;
-          };
-          [0.05, 0.3, 0.6].forEach((xx) => { const q0 = qh(xx); if (q0 > 0.002) { const s = 0, w = [1, 1, 1 - t]; let q = q0; const pts = [[0, q]]; for (let k = 1; k <= 100; k++) { q = 1 - selStep(1 - q, w); pts.push([k, q]); } R.path(pts, { color: 'muted', width: 1.2, dash: true }); } });
-          const q0 = qh(x0), pts = run(q0, off.value);
+          [0.05,0.3,0.6].forEach(xx=>R.path(sickleHistory(qh(xx),off.value?0:smax*m(xx),t),{color:'muted',width:1.2,dash:true}));
+          const q0=qh(x0),pts=sickleHistory(q0,off.value?0:smax*m(x0),t);
           R.path(pts, { color: 'accent', width: 3 });
           R.dot(0, q0, { r: 5, color: 'gold' });
           info = { x0, s: smax * m(x0), q0, end: pts[100][1], t, carriers: 2 * q0 * (1 - q0), ss: q0 * q0, half: pts.findIndex(([, y]) => y <= q0 / 2) };
         });
         v.legend([['orange', 'selection $s$ against $AA$ (malaria)'], ['accent', 'equilibrium frequency of $S$'], ['gold', 'chosen location']]);
-        v.readout(() => `Here: $s=${v.fix(info.s, 3)}$, $t=${v.fix(info.t, 2)}$ ⇒ $\\hat q=s/(s+t)=${v.fix(info.q0, 3)}$; carriers $2\\hat q\\hat p=${v.fix(100 * info.carriers, 1)}\\%$, sickle-cell anaemia at birth $\\hat q^2=${v.fix(100 * info.ss, 2)}\\%$.\n${off.value ? `After 100 generations (≈ 2 500 years at 25 years per generation) without malaria: $q=${v.fix(info.end, 3)}$${info.half > 0 ? `; half the initial frequency after ${info.half} generations` : ''}.` : 'Malaria still present: the frequency stays at its equilibrium.'}`);
+        v.readout(() => `Here: $s=${v.fix(info.s, 3)}$, $t=${v.fix(info.t, 2)}$ ⇒ $\\hat q=s/(s+t)=${v.fix(info.q0, 3)}$; carriers $2\\hat q\\hat p=${v.fix(100 * info.carriers, 1)}\\%$, modeled SS newborn genotype $\\hat q^2=${v.fix(100 * info.ss, 2)}\\%$.\n${off.value ? `After 100 modeled generations without the advantage: $q=${info.end<.001?v.sci(info.end,2):v.fix(info.end,3)}$${info.half > 0 ? `; half the initial frequency after ${info.half} generations` : ''}.` : 'Modeled advantage retained: the chosen and reference frequencies stay at their equilibria.'}`);
       },
     },
 

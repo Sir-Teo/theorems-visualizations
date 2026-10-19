@@ -1,4 +1,5 @@
 // Programming Languages & Types — Chapter 3: Confluence and normalization (items 3.1–3.5; 3.6–3.10 in ch03-b.js)
+import { oneStepDiamond, finiteOneStepDiamond, limitedParallel, parallelMembership } from './reduction-audit.shared.js';
 import {
   V, L, A, parse, P, DEFS, key, layoutTerm, show, drawLine, redexes, contract, getAt, setAt, size, naiveSubst, runStrategy, normalize,
   field, pxStage, drawParseError, rrect, succs, joinSearch, betaDist, contractSet, dev, parAll, isParallel, arsAnalyse, drawDiamond, hitNodes, underlineSpans, cat,
@@ -36,9 +37,9 @@ export default {
       num: '3.1', kind: 'Definition', name: 'Confluence and the diamond property',
       statement: String.raw`Let $\to$ be a binary relation on a set (for us: $\to_\beta$ on $\lambda$-terms up to $\equiv_\alpha$) and $\to^{*}$ its reflexive–transitive closure. $\to$ has the **diamond property** if $b\leftarrow a\to c$ implies there is $d$ with $b\to d\leftarrow c$: one step on each side closes the fork. $\to$ is **confluent** if $\to^{*}$ has the diamond property, i.e. whenever $a\to^{*}b$ and $a\to^{*}c$ there is $d$ with $b\to^{*}d$ and $c\to^{*}d$. The diamond property implies confluence (tile a grid of diamonds), but not conversely. $\to_\beta$ is confluent (3.4), yet it does not have the diamond property: contracting a redex can copy or erase another one, so the fork may need several steps to close on one side.`,
       idea: String.raw`Confluence is the statement that the choices made by a reduction strategy (2.5) never matter in the long run: whatever two partial computations have been done from the same term, both can still be completed to the same term. If the relation has the diamond property one proves confluence by induction on the lengths of the two paths, filling in a grid one diamond at a time. For $\beta$ the single diamond is false, as the duplicating redex $(\lambda x.\,x\,x)\,((\lambda y.\,y)\,z)$ shows: contracting the outer redex copies the inner one, which then needs two further steps, while the other side needs one. Closing that gap is the job of parallel reduction (3.3).`,
-      caption: String.raw`Choose a term and, with the two sliders, two of its redexes (numbered under the term; the picture uses the first four). The tool contracts them, then searches both sides for a common reduct with the fewest steps and draws the result. The number of steps on each side tells whether this particular fork closes as a one-step diamond. Switch to “abstract systems” to see forks that never rejoin.`,
-      deps: ['pl-2.4'], refs: ['Pierce §5.3'], tags: ['confluence', 'reduction'],
-      credit: 'Church & Rosser, 1936 (Trans. AMS 39) for the confluence of λ-conversion; the term “diamond property” is a later convention (origin not verified)',
+      caption: String.raw`Choose a term and, with the two sliders, two of its redexes (numbered under the term; the picture uses the first four). The tool contracts them, then searches bounded sets on both sides and draws a common reduct with the least total steps among those found. A separate exact-successor check tests one-step diamonds; the shortest displayed join may use zero or several steps. Switch to “abstract systems” to see forks that never rejoin.`,
+      deps: ['pl-2.4'], refs: ['Selinger §4.3, pp.25–27'], tags: ['confluence', 'reduction'],
+      credit: 'Definitions and diamond-to-confluence proof follow Selinger, Lecture Notes on the Lambda Calculus, §4.3; confluence is the Church–Rosser theorem',
       viz(v) {
         const sT = pxStage(v, { height: 108, full: true, title: 'A fork: one term, two redexes chosen' });
         const sD = pxStage(v, { height: 370, full: true, hover: true, title: 'Closing the fork' });
@@ -79,7 +80,7 @@ export default {
             if (jn) {
               leftN = jn.left.slice(0, -1).map((u) => ({ text: show(u, NICE) })); rightN = jn.right.slice(0, -1).map((u) => ({ text: show(u, NICE) }));
               bottom = { text: show(jn.meet, NICE), color: 'green' };
-              res = { lam: true, i, j, n, a: jn.left.length - 1, b: jn.right.length - 1, same: i === j, joined: true };
+              res = { lam: true, i, j, n, a: jn.left.length - 1, b: jn.right.length - 1, same: key(L1)===key(R1), joined: true, diamond:oneStepDiamond(L1,R1).value };
             } else {
               leftN = [{ text: show(L1, NICE) }]; rightN = [{ text: show(R1, NICE) }];
               bottom = { text: 'no common reduct found', color: 'red', missing: true };
@@ -97,7 +98,7 @@ export default {
             if (jn) {
               leftN = jn.left.slice(0, -1).map((u) => ({ text: nm[u] })); rightN = jn.right.slice(0, -1).map((u) => ({ text: nm[u] }));
               bottom = { text: nm[jn.meet], color: 'green' };
-              res = { lam: false, i, j, n: mx, a: jn.left.length - 1, b: jn.right.length - 1, same: b === c, joined: true };
+              res = { lam: false, i, j, n: mx, a: jn.left.length - 1, b: jn.right.length - 1, same: b === c, joined: true, diamond:finiteOneStepDiamond(S.succ,b,c) };
             } else {
               leftN = [{ text: nm[b] }]; rightN = [{ text: nm[c] }];
               bottom = { text: 'no common reduct', color: 'red', missing: true };
@@ -112,10 +113,9 @@ export default {
         });
         v.readout(() => {
           if (!res) return mode.value === 'lam' ? 'Choose a term with at least one redex.' : '';
-          if (!res.joined) return `**No common reduct was found** (searched up to 7 steps on each side). The two successors are different normal forms or lead to different ones, so this system is **not confluent**: the fork does not close, and the diamond property fails.`;
-          const one = res.a === 1 && res.b === 1;
-          const pick = res.same ? 'The same redex was chosen twice, so the fork is trivial. ' : '';
-          return `${pick}After the fork, the left side needs $${res.a}$ step${res.a === 1 ? '' : 's'} and the right side $${res.b}$ step${res.b === 1 ? '' : 's'} to reach the common reduct. The **diamond property** (exactly one step each) holds for this fork: ${ok(one)}. A common reduct exists in every case, which is **confluence** for this fork: ✓.` + (one || res.same ? '' : ' Single-step diamonds fail here, so confluence of $\\beta$ needs the argument of 3.3–3.4.');
+          if (!res.joined) return res.lam ? '**No common reduct found within the search budgets**: depth7 per side, at most900 states per side, size120 nodes. This is inconclusive; β-reduction is confluent by the theorem, so a join exists beyond the search performed here.' : '**No common reduct exists**: exhaustive reachability on this finite abstract system certifies a nonjoinable fork, hence nonconfluence.';
+          const pick = res.same ? 'The chosen successors are identical, giving a zero-step join. ' : '';
+          return `${pick}The displayed common reduct takes $${res.a}$ steps on the left and $${res.b}$ on the right. Exact one-step successors were checked separately: **${res.diamond===null?'unknown (size budget)':res.diamond?'one-step diamond found':'no exact one-step diamond'}**. Reflexive joining permits zero steps; our strict diamond definition requires one on each side, even when the successors coincide. This selected fork illustrates joinability; it is not a test of all forks in an infinite system.`;
         });
       },
     },
@@ -225,11 +225,10 @@ export default {
       num: '3.3', kind: 'Method', name: 'Parallel reduction (Tait–Martin-Löf)',
       statement: String.raw`**Parallel reduction** $t\Rightarrow t'$ is defined by: $x\Rightarrow x$; if $t\Rightarrow t'$ then $\lambda x.\,t\Rightarrow\lambda x.\,t'$; if $t\Rightarrow t'$ and $u\Rightarrow u'$ then $t\,u\Rightarrow t'\,u'$ and $(\lambda x.\,t)\,u\Rightarrow[x\mapsto u']\,t'$. It contracts any set of redexes at once, including redexes inside the body or argument of a contracted one, and $\to_\beta\;\subseteq\;\Rightarrow\;\subseteq\;\to_\beta^{*}$, so $\Rightarrow^{*}=\to_\beta^{*}$. The **complete development** $t^{*}$ contracts every redex present in $t$: $x^{*}=x$, $(\lambda x.\,t)^{*}=\lambda x.\,t^{*}$, $((\lambda x.\,t)\,u)^{*}=[x\mapsto u^{*}]\,t^{*}$, $(t\,u)^{*}=t^{*}\,u^{*}$ if $t$ is not an abstraction. **Diamond lemma:** $t\Rightarrow u$ implies $u\Rightarrow t^{*}$; hence $\Rightarrow$ has the diamond property.`,
       idea: String.raw`The ordinary one-step relation fails the diamond property because a contracted redex may duplicate another (3.1). Parallel reduction is designed to absorb that: the duplicated redex is contracted inside every copy in the same move. The lemma is proved by induction on the derivation of $t\Rightarrow u$, using one substitution fact, that $t\Rightarrow t'$ and $u\Rightarrow u'$ imply $[x\mapsto u]\,t\Rightarrow[x\mapsto u']\,t'$. Since $\Rightarrow$ is sandwiched between $\to_\beta$ and $\to_\beta^{*}$, the diamond property of $\Rightarrow$ gives confluence of $\beta$ (3.4) by tiling.`,
-      caption: String.raw`Click redexes in the term to put them into a set (choose set A, blue, or set B, orange, with the selector); the redexes of A are contracted at once to give $u$, those of B to give $w$, and every redex at once gives $t^{*}$ at the bottom. The two bottom edges are single parallel steps; the readout says how many ordinary $\beta$-steps the same moves would need. “Check every parallel reduct” tests the lemma on all parallel reducts of the term. The credit for the method is given as it is usually stated (see below).`,
-      scope: String.raw`The proof method is attributed to Tait and Martin-Löf; the exact year and source of that attribution could not be confirmed, so it is marked for verification. The complete-development formulation of the diamond lemma is the one in Takahashi’s 1995 paper (Information and Computation 118).`,
-      deps: ['pl-3.1'], refs: ['Pierce §5.3'], tags: ['parallel reduction', 'confluence'],
-      credit: 'W. W. Tait and P. Martin-Löf (parallel-reduction proof of Church–Rosser; date not verified); complete developments: M. Takahashi, 1995 (Inf. & Comput. 118)',
-      verify: true,
+      caption: String.raw`Click redexes in the term to put them into a set (choose set A, blue, or set B, orange, with the selector); the redexes of A are contracted at once to give $u$, those of B to give $w$, and every redex at once gives $t^{*}$ at the bottom. The two bottom edges are single parallel steps; the readout says how many ordinary $\beta$-steps the same moves would need. “Check every parallel reduct” tests the lemma on all parallel reducts of the term. Membership enumeration is limited to size80 and eight redexes; development is limited to1,000 nodes. A cutoff is inconclusive.`,
+      scope: String.raw`Capture-avoiding substitution and identification up to α-equivalence are essential. Selinger §4.4 gives the substitution lemma, maximal parallel reduct and diamond proof, explicitly attributing the parallel proof to Tait and Martin-Löf. We display the β-only specialization. Computational checks are bounded and do not prove the theorem.`,
+      deps: ['pl-3.1'], refs: ['Selinger §4.4, Lemmas4.7–4.9, pp.28–31'], tags: ['parallel reduction', 'confluence'],
+      credit: 'Tait–Martin-Löf parallel-reduction proof, as attributed and presented by Selinger, §4.4, Lemmas 4.7–4.9',
       viz(v) {
         const sT = pxStage(v, { height: 112, full: true, title: 'Click redexes to add them to the active set' });
         const sD = pxStage(v, { height: 340, full: true, hover: true, title: 'Parallel steps close every fork in one move' });
@@ -239,13 +238,15 @@ export default {
         const f = tf(v, 'term', EX.dup, () => { reset(); v.invalidate(); });
         const ex = v.select('Examples', [{ value: 'dup', label: 'duplicating' }, { value: 'nest', label: 'nested' }, { value: 'three', label: 'redex in argument' }, { value: 'ska', label: 'two arguments' }], 'dup', { onChange: () => f.set(EX[ex.value]) });
         const which = v.select('Clicks edit', [{ value: 'A', label: 'set A (blue)' }, { value: 'B', label: 'set B (orange)' }], 'A');
-        v.button('A = every redex', () => { SA = new Set(redexes(f.ast)); });
-        v.button('B = every redex', () => { SB = new Set(redexes(f.ast)); });
+        v.button('A = every redex', () => { if(!f.err) SA = new Set(redexes(f.ast)); });
+        v.button('B = every redex', () => { if(!f.err) SB = new Set(redexes(f.ast)); });
         v.button('Clear both', () => { SA = new Set(); SB = new Set(); });
         v.button('Check every parallel reduct', () => {
-          if (f.err) return; const t = f.ast, ts = dev(t), pr = parAll(t, 400); let good = 0, unk = 0;
-          for (const u of pr.list) { const r = isParallel(u, ts); if (r === true) good++; else if (r === null) unk++; }
-          bigRes = `Checked all $${pr.list.length}$ parallel reducts $u$ of $t$${pr.complete ? '' : ' (the first 400)'}: $u\\Rightarrow t^{*}$ held for $${good}$ of them${unk ? `, undecided (search cut off) for ${unk}` : ''}.`;
+          if (f.err) return; const t = f.ast, D=limitedParallel(t,new Set(),{all:true});
+          if(!D.complete||size(t)>80||redexes(t).length>8){bigRes='Enumeration unavailable: input/development exceeds the finite verification budgets.';return;}
+          const pr = parAll(t, 400); let good = 0, unk = 0, bad=0;
+          for (const u of pr.list) { const r = parallelMembership(u, D.term); if (r === true) good++; else if (r === null) unk++;else bad++; }
+          bigRes = `Enumerated $${pr.list.length}$ parallel reducts${pr.complete?' (complete for this input)':' (capped)'}: $u\\Rightarrow t^{*}$ checked for $${good}$; failed $${bad}$; undecided $${unk}$. This finite check illustrates the lemma.`;
         });
         reset();
         sT.onClick((x) => {
@@ -273,8 +274,10 @@ export default {
             if (inB) draw('orange', 6, 3.4);
           }
           sT.textPx(rs.length ? `${rs.length} redex${rs.length === 1 ? '' : 'es'} · A has ${SA.size}, B has ${SB.size}` : 'normal form: no redexes', sT.W / 2, 92, { size: 12.5, color: 'muted', weight: 600, align: 'center', halo: false });
-          const u = contractSet(t, SA), w = contractSet(t, SB), ts = dev(t);
-          const pu = isParallel(u, ts), pw = isParallel(w, ts);
+          const U=limitedParallel(t,SA),W=limitedParallel(t,SB),D=limitedParallel(t,new Set(),{all:true});
+          if(!U.complete||!W.complete||!D.complete){res={cut:true};sD.textPx('Parallel computation stopped at the 1,000-node size budget.',sD.W/2,sD.H/2,{size:14,color:'orange',align:'center'});return;}
+          const u=U.term,w=W.term,ts=D.term;
+          const pu = parallelMembership(u, ts), pw = parallelMembership(w, ts);
           const du = betaDist(u, ts), dw = betaDist(w, ts);
           res = { pu, pw, du, dw, na: SA.size, nb: SB.size, nr: rs.length };
           nodes = drawDiamond(v, sD, {
@@ -287,8 +290,9 @@ export default {
         });
         v.readout(() => {
           if (!res) return 'Fix the term.';
+          if(res.cut)return 'The parallel computation exceeded its size budget. No negative theorem verdict follows from this cutoff.';
           const st = (b) => (b === true ? '✓' : b === false ? '✗' : '?');
-          const ds = (d) => (d < 0 ? 'more than 8' : String(d));
+          const ds = (d) => (d < 0 ? 'not found within depth8/state1200/size200 budgets' : String(d));
           return `$u\\Rightarrow t^{*}$: ${st(res.pu)} in one parallel step (as ordinary $\\beta$-steps: ${ds(res.du)}) · $w\\Rightarrow t^{*}$: ${st(res.pw)} in one parallel step (as ordinary $\\beta$-steps: ${ds(res.dw)}). So after any two parallel steps from $t$ the fork closes with one parallel step each: the diamond property of $\\Rightarrow$.` + (bigRes ? '\n' + bigRes : '');
         });
       },

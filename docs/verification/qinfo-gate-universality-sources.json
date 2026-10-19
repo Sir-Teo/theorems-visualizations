@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-18",
+  "items": [
+    "qinfo-4.2",
+    "qinfo-4.3",
+    "qinfo-4.4"
+  ],
+  "sources": [
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/9503016",
+      "version": "quant-ph/9503016v1,23March1995",
+      "sha256": "e329e6e56e234a4c572f8eb2d493b07864e308027fe142985fb76e62229e154d",
+      "readingScope": "31pages; full Lemma4.3/§5.1 pp9–11, Corollary7.6 pp21–22, complete §8 Gray-code construction pp26–28."
+    },
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/0308006",
+      "version": "quant-ph/0308006v3,25March2004",
+      "sha256": "992b768ef08773ceac91383d1904a469a340934d68248f637310031bc9c90ade",
+      "readingScope": "6pages; full §V pp3–4/Theorem5 and §VI pp4–5/Theorem6; source regeneration has a26November2024 date, distinct from revision banner."
+    },
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/9807006",
+      "version": "quant-ph/9807006v1,1July1998",
+      "sha256": "4c5f0b3c818cb85f8dd0290e697d96370981720a6283ee4fd7db002b7e3baad8",
+      "readingScope": "20pages; complete §§2–3 pp3–5, Pauli conventions, generator actions and global-phase qualification."
+    },
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/9705052",
+      "version": "quant-ph/9705052v1,28May1997; submitted21May1997",
+      "sha256": "80dcaa0545fd7510b02095b98306d9e24ef67dba766b4f8d2925a7c7e8147e6d",
+      "readingScope": "122pages; complete two-qubit classification §5.6 printed50–51/PDF58–59, full inductive generation §5.8 printed55–57/PDF63–65. Regenerated title/copyright says2024; submission/revision1997 explicitly identified."
+    },
+    {
+      "url": "https://arxiv.org/pdf/1406.2170",
+      "version": "1406.2170v1,9June2014",
+      "sha256": "512ec1b512ecdaaf6c04a7d18093cff561e8b73783ec1b58565ac5ee714e2dbc",
+      "readingScope": "12pages; complete §I.A pp1–2 and §I.B/C pp2–3, Eq.(1), quotient/kernel and full symplectic-pair coset counting."
+    },
+    {
+      "url": "https://arxiv.org/pdf/quant-ph/9906054",
+      "version": "quant-ph/9906054v1,16June1999",
+      "sha256": "f2545094a1aae50eca36ae142ecd9609d0630042bf9e5afb87c6280ceee1176a",
+      "readingScope": "10pages; complete §2 pp3–4, full §3 pp4–5, full AppendixB p10; irrational-rotation polynomial, density and rate qualification."
+    }
+  ]
+}

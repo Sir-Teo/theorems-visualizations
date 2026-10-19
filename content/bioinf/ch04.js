@@ -26,15 +26,15 @@ export default {
       kind: 'Model',
       name: 'Markov chains for sequences: CpG islands',
       statement: String.raw`A first-order Markov chain on the alphabet $\{A,C,G,T\}$ assigns to a sequence $x_1\cdots x_n$ the probability $P(x)=P(x_1)\prod_{i=2}^{n}a_{x_{i-1}x_i}$, where $a_{st}=P(x_i=t\mid x_{i-1}=s)$ and every row of the matrix $(a_{st})$ sums to $1$. From training data the maximum-likelihood estimate is $\hat a_{st}=c_{st}/\sum_{t'}c_{st'}$, with $c_{st}$ the number of times $s$ is followed by $t$. In vertebrate genomes the dinucleotide CG is much rarer than the base composition predicts, except in CpG islands, so one fits two chains, "$+$" for islands and "$-$" for the rest; they differ most in the transition $C\to G$.`,
-      idea: String.raw`Dependence between neighbouring letters is the simplest correlation a sequence model can capture, and it needs only $4\times4$ parameters. CG is depleted outside islands because methylated cytosine in CG tends to mutate to thymine, whereas islands are kept unmethylated and retain CG; so the two classes of sequence have different transition matrices. Counting is the maximum-likelihood fit (stoch-1.1 defines the chain), and by the law of large numbers the estimate converges to the true matrix as the training sequence grows.`,
-      caption: String.raw`The table shows the transition matrix of the island chain ($+$), the non-island chain ($-$), or their log-odds ratio $\beta_{st}=\log_2(a^+_{st}/a^-_{st})$; the gold outline marks $C\to G$. The scatter plot trains a chain on a sequence of length $N$ *simulated from* the chosen model and plots each of the 16 estimated entries against the true one: they fall on the diagonal as $N$ grows. The matrices are the published ones, the training sequence is a simulation.`,
-      scope: String.raw`The two matrices are the ones printed in Durbin, Eddy, Krogh & Mitchison (1998), estimated there from a few dozen annotated human CpG islands (about 60 000 nucleotides, from memory) and the surrounding sequence; I confirmed the numbers against lecture notes that reproduce the table, not against the book's page. A first-order chain ignores everything beyond the previous letter, and island boundaries are not part of the model.`,
-      credit: 'Gardiner-Garden & Frommer, 1987 (islands); Durbin et al., 1998 (the two-chain model)',
-      verify: true,
+      idea: String.raw`Dependence between neighbouring letters is a simple sequence correlation: the four rows each have three free probabilities, for twelve transition parameters. CG is depleted outside islands because methylated cytosine in CG tends to mutate to thymine, whereas islands are kept unmethylated and retain CG; so the two classes of sequence have different transition matrices. Counting is the maximum-likelihood fit when the row has a positive count; with no observed transition from a base, every row distribution maximises that likelihood and this simulation uses a uniform row. For these positive matrices, the ergodic law of large numbers gives consistency as training length grows.`,
+      caption: String.raw`The table shows the transition matrix of the island chain ($+$), the non-island chain ($-$), or their log-odds ratio $\beta_{st}=\log_2(a^+_{st}/a^-_{st})$; the gold outline marks $C\to G$. The scatter plot trains a chain on a sequence of length $N$ *simulated from* the chosen model and plots each of the 16 estimated entries against the true one: the estimates concentrate near the diagonal with longer training, although a particular error need not decrease after increasing $N$. The printed probabilities are rounded; the simulation normalises each row to sum to one.`,
+      scope: String.raw`Durbin et al. (1998), §3.1 pp. 47–51, explicitly report 48 putative human CpG islands and almost 60,000 nucleotides in the training data. The two matrices were checked directly on printed p. 50. The island C row sums to 1.001 because of rounding, so its entries here are divided by 1.001; the other rows already sum to one. These are illustrative fitted chains, not universal genome parameters. Simulated sequences start uniformly over the four bases, and a first-order chain has no island-boundary mechanism.`,
+      credit: 'Durbin, Eddy, Krogh & Mitchison, 1998, §3.1 pp. 47–51',
+      verify: false,
       deps: ['bioinf-1.1', 'stoch-1.1'],
-      refs: ['Durbin ch. 3'],
+      refs: ['Durbin et al. (1998) §3.1, pp. 47–51, Eq. (3.1)–(3.3), transition tables p. 50'],
       tags: ['markov chain', 'cpg islands', 'dinucleotides'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/CpG_site', doi: 'https://doi.org/10.1016/0022-2836(87)90689-9' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/CpG_site', source: 'https://www.mcb111.org/w06/durbin_book.pdf' },
       viz(v) {
         const show = v.select('show', [{ value: 'plus', label: '$+$ island' }, { value: 'minus', label: '$-$ background' }, { value: 'beta', label: 'log-odds $\\beta$' }], 'plus');
         const src = v.select('train on', [{ value: 'plus', label: '$+$' }, { value: 'minus', label: '$-$' }], 'plus');
@@ -58,7 +58,9 @@ export default {
             highlight: [[1, 2, 'gold']],
           });
           const E = fit(), TP = src.value === 'plus' ? CPG_PLUS : CPG_MINUS;
-          sS.line(0, 0, 0.5, 0.5, { color: 'muted', dash: true });
+          const bound = Math.max(0.5, ...E.flat(), ...TP.flat()) + 0.05;
+          sS.setView([-0.025, bound], [-0.025, bound]);
+          sS.line(0, 0, bound - 0.015, bound - 0.015, { color: 'muted', dash: true });
           let err = 0;
           for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
             const cg = i === 1 && j === 2; err = Math.max(err, Math.abs(E[i][j] - TP[i][j]));
@@ -69,7 +71,7 @@ export default {
         v.legend([['gold', 'C→G'], ['accent', 'other 15 entries', { dot: true }]]);
         v.readout(() => {
           const pp = stationary(CPG_PLUS), pm = stationary(CPG_MINUS), cgP = pp[1] * CPG_PLUS[1][2], cgM = pm[1] * CPG_MINUS[1][2];
-          return `$a^+_{CG}=${f3(CPG_PLUS[1][2])}$ against $a^-_{CG}=${f3(CPG_MINUS[1][2])}$ (ratio $${fx(CPG_PLUS[1][2] / CPG_MINUS[1][2], 1)}$) · long-run frequency of the dinucleotide CG: $${f3(cgP)}$ inside islands, $${f3(cgM)}$ outside\nsimulated training sequence of $N=${nS.value}$: largest estimation error over the 16 entries is $${f3(info.err)}$ (it shrinks roughly like $1/\\sqrt N$); the true $C\\to G$ entry is $${f3(info.TP[1][2])}$, estimated $${f3(info.E[1][2])}$`;
+          return `$a^+_{CG}=${f3(CPG_PLUS[1][2])}$ against $a^-_{CG}=${f3(CPG_MINUS[1][2])}$ (ratio $${fx(CPG_PLUS[1][2] / CPG_MINUS[1][2], 1)}$) · long-run frequency of the dinucleotide CG: $${f3(cgP)}$ inside islands, $${f3(cgM)}$ outside\nsimulated training sequence of $N=${nS.value}$: largest estimation error over the 16 entries is $${f3(info.err)}$ (typical sampling fluctuations are of order $1/\\sqrt N$); the true $C\\to G$ entry is $${f3(info.TP[1][2])}$, estimated $${f3(info.E[1][2])}$`;
         });
       },
     },
@@ -253,16 +255,16 @@ and $P(x,\pi^*)=\max_kV_T(k)$; recording the maximising $j$ at each cell and fol
       num: '4.5',
       kind: 'Phenomenon',
       name: 'The occasionally dishonest casino',
-      statement: String.raw`Suppose a casino secretly swaps between a fair die and a loaded die that shows six with probability $\tfrac12$ (and each other face with probability $\tfrac1{10}$). With switching probabilities $0.05$ (fair to loaded) and $0.10$ (loaded to fair), the swaps are invisible, yet decoding the roll sequence with the model recovers the hidden path remarkably well: a Viterbi path or the posterior mode marks most loaded stretches correctly, although single rolls carry little evidence (a six is only three times as likely under the loaded die) and short stretches are missed.`,
-      idea: String.raw`Evidence accumulates along a run: each six multiplies the odds of "loaded" by $3$ and each other face by only $0.6$, so a handful of rolls tips the balance, while the persistence of the states (expected run lengths of $20$ and $10$ rolls) says that a state is unlikely to have changed since the last roll. Viterbi (4.4) maximises the probability of the whole path; posterior decoding (4.7) maximises each position separately; the two almost always agree on a long, clear stretch.`,
-      caption: String.raw`The top strips show the true hidden path, the Viterbi path and the path of posterior probabilities above one half; gold ticks mark rolls of six. Below, the posterior probability of "loaded" at each roll. Change the loaded die's bias or the switching probabilities and watch accuracy fall as the dice become harder to tell apart; every run is a fresh simulation from the model.`,
-      scope: String.raw`Decoding here uses the true parameters of the generating model; when they must be learned, accuracy is lower (4.8). The default parameters are those of the Durbin et al. textbook example, to my recollection; the picture does not depend on exact numbers.`,
+      statement: String.raw`Suppose a casino secretly swaps between a fair die and a loaded die that shows six with probability $\tfrac12$ (and each other face with probability $\tfrac1{10}$). With switching probabilities $0.05$ (fair to loaded) and $0.10$ (loaded to fair), the die labels are hidden. A six has likelihood ratio $3$ for loaded versus fair, and another face has ratio $0.6$. Viterbi decoding finds the most probable complete hidden path, whereas marginal posterior decoding minimises expected per-position error under the model; neither guarantees recovery of a particular realised path.`,
+      idea: String.raw`Evidence accumulates along a run: each six multiplies the odds of "loaded" by $3$ and each other face by only $0.6$, so a handful of rolls tips the balance, while the persistence of the states (expected run lengths of $20$ and $10$ rolls) says that a state is unlikely to have changed since the last roll. Viterbi (4.4) maximises the probability of the whole path; posterior decoding (4.7) maximises each position separately; they can disagree, and even the most probable path can miss every loaded run in a finite sample (the book gives such an example on p. 61).`,
+      caption: String.raw`The top strips show the true hidden path, the Viterbi path and the path of posterior probabilities above one half; gold ticks mark rolls of six. Below, the posterior probability of "loaded" at each roll. Change the loaded die's bias or the switching probabilities and compare the realised accuracies with the always-fair baseline. Accuracy can vary nonmonotonically for a particular sample. Resample changes the random seed; other controls reuse that seed with the new parameters.`,
+      scope: String.raw`The default emissions and transition probabilities are exactly those on Durbin et al. (1998) p. 54; decoding and its limitations are developed on pp. 55–61. This simulation starts the hidden chain in its stationary distribution $\pi=(a_{LF},a_{FL})/(a_{LF}+a_{FL})$, an explicit additional choice. Decoding uses known generating parameters. Estimating parameters adds uncertainty, but need not reduce the realised accuracy on every sample.`,
       credit: 'Durbin, Eddy, Krogh & Mitchison, 1998',
-      verify: true,
+      verify: false,
       deps: ['bioinf-4.4'],
-      refs: ['Durbin ch. 3'],
+      refs: ['Durbin et al. (1998) §3.2, pp. 54–61, Eqs. (3.6)–(3.15), Figs. 3.5–3.7'],
       tags: ['decoding', 'hmm', 'viterbi'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm' },
+      links: { source: 'https://www.mcb111.org/w06/durbin_book.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Viterbi_algorithm' },
       viz(v) {
         const Ts = v.slider('rolls $T$', 50, 500, 300, { int: true, step: 10 });
         const p6 = v.slider('loaded die: $P(6)$', 0.2, 0.9, 0.5, { step: 0.05 });

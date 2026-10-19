@@ -1,0 +1,4 @@
+// Independent finite diagnostic routines: no convergence guarantee for arbitrary Newton starts.
+export function newtonTrace(phi,start,limit=30){const target=Math.PI*Math.sin(phi),its=[start];let t=start,ok=false,reason='iteration limit';for(let i=0;i<limit;i++){const residual=t+Math.sin(t)-target;if(Math.abs(residual)<1e-10){ok=true;reason='residual tolerance';break;}const d=1+Math.cos(t);if(d<1e-9){reason='flat derivative';break;}const next=t-residual/d;if(!Number.isFinite(next)||Math.abs(next)>1e6){reason='iterate magnitude limit (1,000,000)';break;}t=next;its.push(t);}const residual=t+Math.sin(t)-target;if(Math.abs(residual)<1e-10){ok=true;reason='residual tolerance';}return{its,ok,reason,residual};}
+export function conicRange(C,lo=-50,hi=85){let max=1;for(let f=lo;f<=hi;f+=.1)max=Math.max(max,C.k(f*Math.PI/180));return[0,1.05*max];}
+export function winkelPoleRatio(cosStandard=2/Math.PI){return cosStandard/(1+cosStandard);}

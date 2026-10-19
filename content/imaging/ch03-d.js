@@ -4,6 +4,8 @@ import {
   clamp, fx, mean, sd, showImage, frame, raster, ellAt, ellProj, ellFT, slEllipses, makeScan, sinoEll, fbp, fbpAt, fft2d, rmse, rms,
   ellipsoidAt, fdk, rng32, gauss, noiseField, poissonFrom, MATS, mu,
 } from './ch03.shared.js';
+import { diffractionLocusAudit, diffractionGridAudit } from './source-audit-diffraction.shared.js';
+import { CORMACK1963_AUDIT, cormackMuAudit, cormackProjectionAudit, cormackExactJAudit, cormackBeamAudit, cormackJAudit } from './source-audit-cormack.shared.js';
 
 const PI = Math.PI;
 const lin = (a, b, n) => Array.from({ length: n }, (_, i) => a + ((b - a) * i) / (n - 1));
@@ -67,97 +69,51 @@ export default {
       num: '3.16',
       kind: 'Theorem',
       name: 'Fourier diffraction theorem',
-      statement: String.raw`Let a plane wave $e^{2\pi i\mathbf k_{\rm in}\cdot\mathbf r}$, $|\mathbf k_{\rm in}|=k_0=1/\lambda$, illuminate a weakly scattering object with contrast $o(\mathbf r)$, so that the first Born (or Rytov) approximation holds. The field scattered into direction $\mathbf k_s=k_0\hat{\mathbf s}$ on the far side is proportional to the object's Fourier transform at the **difference vector**:
-$$u_s(\hat{\mathbf s})\;\propto\;F\big(\mathbf k_s-\mathbf k_{\rm in}\big),\qquad F(\mathbf K)=\int o(\mathbf r)\,e^{-2\pi i\mathbf K\cdot\mathbf r}\,d\mathbf r .$$
-As $\hat{\mathbf s}$ runs over the directions in the half-plane facing forward, $\mathbf K$ runs over a **semicircle** of radius $k_0$ passing through the origin; rotating the illumination rotates the semicircle about the origin, and a full turn of illumination fills the disc of radius $\sqrt2\,k_0$. In the limit $k_0\to\infty$ the arcs flatten into straight lines through the origin: the Fourier slice theorem (imaging-3.4).`,
-      idea: String.raw`In the Born approximation the scattered far field is the sum of single-scattering events: every object element radiates with the phase it received from the incident wave, $e^{2\pi i\mathbf k_{\rm in}\cdot\mathbf r}$, and reaches the detector with the phase $e^{-2\pi i\mathbf k_s\cdot\mathbf r}$ — so the sum is exactly the Fourier integral at $\mathbf K=\mathbf k_s-\mathbf k_{\rm in}$. The constraint $|\mathbf k_s|=|\mathbf k_{\rm in}|=k_0$ (elastic scattering, Ewald-sphere construction in 2-D) confines $\mathbf K$ to a circle. Unlike X-rays, which see lines, waves of finite wavelength see arcs, and the resolution is limited to about $1/(\sqrt2k_0)$, i.e. a fraction of the wavelength (imaging-1.9).`,
-      caption: String.raw`Left: the object, the incident plane wave (its wavefronts are spaced by the wavelength) and the forward scattering directions; drag **incident direction** $\varphi$. Middle: Fourier space with the exact $|F|$ as background; the gold arc is the data obtained for the chosen $\varphi$, the other arcs for the other illumination angles you set; the circle is the limit $\sqrt2k_0$. Right: the object recovered by inverse FFT of the gridded arcs. Switch to **straight rays** (the $k_0\to\infty$ limit) to compare with the slice theorem; lower the **wavenumber** $k_0$ (longer wavelength) and the picture blurs.`,
+      statement: String.raw`Consider a scalar 2-D Helmholtz model (object invariant in the third direction), an incident plane wave along $+y$, and a compact scattering potential $o$. Under the **first Born approximation**, let $u_B$ be the linearized scattered field on a receiver line $y=\ell$ beyond the object. With outgoing Green function $G(\mathbf r)=\tfrac i4H_0^{(1)}(2\pi k_0|\mathbf r|)$, cycles/unit Fourier convention and $\kappa=\sqrt{k_0^2-q^2}$,
+$$\widehat u_B(q,\ell)=\frac{i\,e^{2\pi i\kappa\ell}}{4\pi\kappa}\,F(q,\kappa-k_0),\qquad |q|<k_0,\qquad F(\mathbf K)=\int o(\mathbf r)e^{-2\pi i\mathbf K\cdot\mathbf r}\,d\mathbf r.$$
+Thus the **lateral Fourier transform of the receiver field**, after a known propagation/obliquity correction, samples $F$ at $\mathbf K=\mathbf k_s-\mathbf k_{\rm in}$. It is not the unprocessed receiver field itself. The forward propagating directions trace a semicircle of radius $k_0$ centred at $-\mathbf k_{\rm in}$; the grazing endpoints are limiting points. A continuous full turn of illumination covers the open disc $|\mathbf K|<\sqrt2 k_0$ (and its boundary as a limit).`,
+      idea: String.raw`The Born field is $u_B(\mathbf r)=\int G(\mathbf r-\mathbf r')o(\mathbf r')e^{2\pi i k_0y'}\,d\mathbf r'$. On a receiver above the support, the outgoing angular spectrum of $G$ contributes $i e^{2\pi i\kappa(\ell-y')}/(4\pi\kappa)$ in lateral frequency $q$. Interchanging integrals leaves precisely $F(q,\kappa-k_0)$, proving the formula. The same construction rotates with the incident direction. At fixed transverse $q$, $\kappa-k_0=-q^2/(k_0+\kappa)\to0$ as $k_0\to\infty$, giving the straight-slice geometry on every fixed bounded frequency window. This is not a uniform flattening if the window grows in proportion to $k_0$. The cutoff inverse $1/(\sqrt2k_0)$ is a shortest-period scale, not a point-spread FWHM or a two-object resolution criterion.`,
+      caption: String.raw`The chosen real phantom is a normalized weak-potential shape. Left: illustrative incident wavefronts and forward directions. Middle: the **continuous geometric loci** for the acquired illumination set; the gold locus is a movable probe and does not add data. Right: a finite approximation built from 65 exact synthetic, deweighted $F$ samples per illumination, nearest-cell gridding, explicit real-object conjugate completion and zero fill. Samples are evaluated at the actual arc points, not at grid-cell centres; unhit cells remain zero. **Straight slices** use the same chosen finite cutoff as a comparison, not an entire infinite-wavenumber experiment. Missing samples, cutoff and gridding errors all affect the picture.`,
       deps: ['imaging-3.4'],
       tags: ['diffraction tomography', 'Born approximation', 'Ewald circle'],
-      refs: ['Kak–Slaney §6.3'],
-      credit: 'E. Wolf, 1969 (inverse scattering); Mueller, Kaveh & Wade, 1979 (reconstruction)',
+      refs: ['Kak–Slaney §6.2.1–6.2.2, pp.212–218', 'Kak–Slaney §6.3.1–6.3.3, pp.220–228, Eqs.92–126'],
+      credit: 'Complete derivation and conventions: Kak & Slaney, chapter 6; angular frequencies converted to cycles/unit',
       verify: true,
-      scope: String.raw`Weak scattering only (first Born or Rytov approximation, objects whose phase shift across their size is small); 2-D, far field, transmission mode (scattering in forward half-plane); the scattered amplitude is taken as the exact Fourier transform of the phantom at $\mathbf K$ (the theorem itself), not simulated by solving the wave equation. Reflection mode and near-field propagation corrections are not shown.`,
+      scope: String.raw`Scalar, weak single scattering, 2-D translation invariance and propagating transmission modes only; grazing and evanescent modes are excluded. The Born assumption is a small scattered perturbation, not an unconditional claim about the displayed contrast values. A physically small multiplier on the real potential is divided out for display. The Rytov variant would use incident field times the complex logarithmic perturbation, with phase unwrapping and different validity conditions; it is not raw scattered amplitude and is not simulated here. No wave-equation solution or experimental field is generated. A 64² inverse Fourier grid uses spacing0.5 cycles/unit, a symmetric circular numerical cutoff at most15.5, and no hole filling or analytic continuation. Blue data include the stated real-object symmetry; for complex potentials that completion is invalid. Grey levels clip outside $[-.05,1.05]$; RMS uses unwindowed pixels.`,
       viz(v) {
-        const PH = slEllipses(0.9), N = 64, Wp = 80;
-        const mode = v.select('data', [{ value: 'wave', label: 'waves: arcs' }, { value: 'ray', label: 'straight rays (k₀ → ∞)' }], 'wave');
-        const k0 = v.slider('wavenumber $k_0=1/\\lambda$ (cycles per unit)', 3, 14, 8, { step: 0.5 });
+        const PH = slEllipses(.9), N = 64;
+        const mode = v.select('data geometry', [{ value: 'wave', label: 'waves: arcs' }, { value: 'ray', label: 'straight slices: same cutoff' }], 'wave');
+        const k0 = v.slider('wavenumber $k_0=1/\\lambda$ (cycles per unit)', 3, 14, 8, { step: .5 });
         const na = v.slider('number of illumination angles', 4, 120, 48, { step: 1, int: true });
-        const rng = v.slider('illumination range (°)', 60, 360, 360, { step: 10, int: true });
-        const ph = v.slider('incident direction $\\varphi$ (°)', 0, 359, 30, { step: 1, int: true });
-        const A = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: false, height: 270, title: 'Object and incident wave', minWidth: 220 });
-        const Fk = v.stage({ x: [-16, 16], y: [-16, 16], equal: true, axes: 'box', gutter: true, height: 270, xlabel: '$K_x$', ylabel: '$K_y$', title: 'Fourier space: where the data lie', minWidth: 230 });
-        const Rc = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'Reconstruction from the arcs', minWidth: 220 });
-        const arcPts = (phi, k, m, np = 48) => {
-          const out = [];
-          for (let i = 0; i < np; i++) {
-            if (m === 'wave') { const psi = phi - PI / 2 + ((i + 0.5) / np) * PI; out.push([k * (Math.cos(psi) - Math.cos(phi)), k * (Math.sin(psi) - Math.sin(phi))]); }
-            else { const t = (-1 + ((i + 0.5) / np) * 2) * Math.SQRT2 * k; out.push([-t * Math.sin(phi), t * Math.cos(phi)]); }
-          }
-          return out;
-        };
-        let cur = null, ck = '';
-        const build = () => {
-          const key = `${mode.value}|${k0.value}|${na.value}|${rng.value}`; if (key === ck) return; ck = key;
-          const sum = new Float64Array(N * N * 2), cnt = new Float64Array(N * N); let used = 0;
-          for (let a = 0; a < na.value; a++) {
-            const phi = (((a + 0.5) * rng.value) / na.value) * PI / 180;
-            for (const [kx, ky] of arcPts(phi, k0.value, mode.value, 64)) {
-              const ia = Math.round(kx / 0.5) + N / 2, ib = Math.round(ky / 0.5) + N / 2; if (ia < 0 || ia >= N || ib < 0 || ib >= N) continue;
-              const [fr, fi] = ellFT(PH, ia * 0.5 - N / 4, ib * 0.5 - N / 4); // value at the cell centre (data snapped to the grid)
-              sum[(ib * N + ia) * 2] += fr; sum[(ib * N + ia) * 2 + 1] += fi; cnt[ib * N + ia]++; used++;
-            }
-          }
-          const F = new Float64Array(N * N * 2), have = new Uint8Array(N * N); let cells = 0;
-          for (let i = 0; i < N * N; i++) if (cnt[i] > 0) { F[2 * i] = sum[2 * i] / cnt[i]; F[2 * i + 1] = sum[2 * i + 1] / cnt[i]; have[i] = 1; cells++; }
-          const rcov = Math.SQRT2 * k0.value;
-          let disc = 0;
-          for (let b = 0; b < N; b++) for (let a = 0; a < N; a++) if (Math.hypot((a - N / 2) * 0.5, (b - N / 2) * 0.5) <= rcov) disc++;
-          // fill small holes inside the covered region from filled neighbours (3 passes), only when illumination is a full turn
-          const filled = Uint8Array.from(have), G = Float64Array.from(F);
-          for (let pass = 0; pass < 3; pass++) {
-            const add = [];
-            for (let b = 1; b < N - 1; b++) for (let a = 1; a < N - 1; a++) {
-              const i = b * N + a; if (filled[i] || Math.hypot((a - N / 2) * 0.5, (b - N / 2) * 0.5) > rcov) continue;
-              let sr = 0, si = 0, c = 0;
-              for (let db = -1; db <= 1; db++) for (let da = -1; da <= 1; da++) { const j = (b + db) * N + a + da; if (filled[j]) { sr += G[2 * j]; si += G[2 * j + 1]; c++; } }
-              if (c >= 3) add.push([i, sr / c, si / c]);
-            }
-            for (const [i, r, s2] of add) { G[2 * i] = r; G[2 * i + 1] = s2; filled[i] = 1; }
-          }
-          const re = new Float64Array(N * N), im = new Float64Array(N * N);
-          for (let b = 0; b < N; b++) for (let a = 0; a < N; a++) {
-            const i = b * N + a; if (!filled[i]) continue;
-            const kx = (a - N / 2) * 0.5, ky = (b - N / 2) * 0.5, q = (-2 * PI + (2 * PI) / N) * (kx + ky), cr = Math.cos(q), ci = Math.sin(q);
-            re[i] = G[2 * i] * cr - G[2 * i + 1] * ci; im[i] = G[2 * i] * ci + G[2 * i + 1] * cr;
-          }
-          fft2d(re, im, N, N, true);
-          const out = new Float64Array(N * N);
-          for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) out[(N - 1 - j) * N + i] = ((i + j) % 2 ? -1 : 1) * re[j * N + i] * N * N * 0.25;
-          // truth at the same grid for the error
-          const truth = raster((x, y) => ellAt(PH, x, y), N, N, 2);
-          cur = { out, have, filled, cells, disc, used, err: rmse(out, truth), key };
-        };
-        let st = null;
+        const range = v.slider('illumination range (°)', 60, 360, 360, { step: 10, int: true });
+        const probe = v.slider('probe incident direction $\\varphi$ (°)', 0, 359, 30, { step: 1, int: true });
+        const A = v.stage({ x: [-1.4, 1.4], y: [-1.4, 1.4], equal: true, axes: false, height: 270, title: 'Normalized shape / illustrative waves', minWidth: 220 });
+        const Fk = v.stage({ x: [-16, 16], y: [-16, 16], equal: true, axes: 'box', gutter: true, height: 270, xlabel: '$K_x$', ylabel: '$K_y$', title: 'Geometric loci and sampled cells', minWidth: 230 });
+        const Rc = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'Gridded synthetic Fourier estimate', minWidth: 220 });
+        const truth = raster((x, y) => ellAt(PH, x, y), N, N, 2); let cur = null, key = '';
         v.render(() => {
-          build();
-          const phi = (ph.value * PI) / 180, k = k0.value;
-          A.raster((x, y) => { const c = Math.round(255 * clamp(ellAt(PH, x, y), 0, 1)); return Math.abs(x) < 1 && Math.abs(y) < 1 ? [c, c, c] : null; }, { res: 2, id: 'o', key: 'o' });
+          const k = `${mode.value}|${k0.value}|${na.value}|${range.value}`;
+          if (key !== k) { key = k; cur = diffractionGridAudit(PH, k0.value, na.value, range.value, mode.value); cur.err = rmse(cur.out, truth); }
+          const phi = probe.value * PI / 180, c = Math.cos(phi), sn = Math.sin(phi), radius = cur.theoreticalRadius, extent = Math.max(16.8, radius * 1.08);
+          Fk.setView([-extent, extent], [-extent, extent]);
+          A.raster((x, y) => { if (Math.abs(x) >= 1 || Math.abs(y) >= 1) return null; const g = Math.round(255 * clamp(ellAt(PH, x, y), 0, 1)); return [g, g, g]; }, { res: 2, id: 'shape', key: 'chosen' });
           A.rect(-1, -1, 1, 1, { color: 'muted', width: 1 });
-          const wl = 1 / k, cx = Math.cos(phi), sy = Math.sin(phi);
-          for (let q = -12; q <= 12; q++) { const d = q * wl; if (Math.abs(d) > 1.25) continue; A.segment([d * cx + 1.3 * sy, d * sy - 1.3 * cx], [d * cx - 1.3 * sy, d * sy + 1.3 * cx], { color: 'orange', width: 1, alpha: 0.5 }); }
-          A.arrow(-1.2 * cx, -1.2 * sy, -1.2 * cx + 0.5 * cx, -1.2 * sy + 0.5 * sy, { color: 'orange', width: 2.4 });
-          A.text('$\\mathbf k_{\\rm in}$', -1.2 * cx + 0.6 * cx, -1.2 * sy + 0.6 * sy + 0.1, { color: 'orange', size: 13 });
-          for (let i = 0; i <= 8; i++) { const psi = phi - PI / 2 + (i / 8) * PI; A.arrow(1.0 * cx * 0.0 + 0.0, 0, 1.25 * Math.cos(psi), 1.25 * Math.sin(psi), { color: 'green', width: 1.2, alpha: 0.55 }); }
-          Fk.raster((kx, ky) => { const [re, im] = ellFT(PH, kx, ky), m = Math.log10(1 + 400 * Math.hypot(re, im) / 1.0) / 3.0; const c = Math.round(255 * clamp(m, 0, 1) * 0.55); return [c, c, c]; }, { res: 3, id: 'fbg', key: 'bg' });
-          Fk.circle(0, 0, Math.SQRT2 * k, { color: 'red', width: 1.2, dash: true });
-          for (let a = 0; a < na.value; a++) { const p = (((a + 0.5) * rng.value) / na.value) * PI / 180, pts = arcPts(p, k, mode.value, 40); Fk.path(pts, { color: 'accent', width: 0.8, alpha: 0.35 }); }
-          Fk.path(arcPts(phi, k, mode.value, 80), { color: 'gold', width: 3 });
-          showImage(Rc, cur.out, N, N, { lo: -0.05, hi: 1.05, id: 'rc', extra: cur.key, smooth: true }); frame(Rc, N, N);
-          st = { cov: cur.cells / cur.disc, err: cur.err, k };
+          for (let j = -Math.ceil(1.2 * k0.value); j <= Math.ceil(1.2 * k0.value); j++) {
+            const d = j / k0.value, t = Math.sqrt(Math.max(0, 1.2 ** 2 - d * d)); if (Math.abs(d) > 1.2) continue;
+            A.segment([d * c + t * sn, d * sn - t * c], [d * c - t * sn, d * sn + t * c], { color: 'orange', width: 1, alpha: .4 });
+          }
+          A.arrow(-1.3 * c, -1.3 * sn, -.7 * c, -.7 * sn, { color: 'orange', width: 2 });
+          for (let j = 0; j <= 8; j++) { const psi = phi - PI / 2 + j * PI / 8; A.arrow(0, 0, 1.22 * Math.cos(psi), 1.22 * Math.sin(psi), { color: 'green', width: 1, alpha: .5 }); }
+          Fk.raster((kx, ky) => { const [re, im] = ellFT(PH, kx, ky), g = Math.round(140 * clamp(Math.log10(1 + 400 * Math.hypot(re, im)) / 3, 0, 1)); return [g, g, g]; }, { res: 3, id: 'fbg', key: `oracle-background|${extent}` });
+          Fk.circle(0, 0, radius, { color: 'red', width: 1.2, dash: true }); Fk.circle(0, 0, cur.cutoff, { color: 'purple', width: 1, dash: true });
+          for (let j = 0; j < na.value; j++) Fk.path(diffractionLocusAudit((j + .5) * range.value / na.value * PI / 180, k0.value, mode.value, 41, true), { color: 'accent', width: .7, alpha: .25 });
+          const hit = []; for (let j = 0; j < N; j++) for (let i = 0; i < N; i++) if (cur.counts[j * N + i]) hit.push([(i - N / 2) * .5, (j - N / 2) * .5]);
+          Fk.dots(hit, { color: 'accent', r: 1.1, alpha: .55 });
+          Fk.path(diffractionLocusAudit(phi, k0.value, mode.value, 81, true), { color: 'gold', width: 2.6 });
+          showImage(Rc, cur.out, N, N, { lo: -.05, hi: 1.05, id: 'diffraction', extra: key, smooth: true }); frame(Rc, N, N);
         });
-        v.legend([['gold', 'data for this illumination'], ['accent', 'other illuminations'], ['red', 'radius $\\sqrt2k_0$', { dash: true }], ['orange', 'incident wave'], ['green', 'scattering directions']]);
-        v.readout(() => st ? `$k_0=${fx(st.k, 1)}$ (wavelength $\\lambda=${fx(1 / st.k, 3)}$ in units where the head is 1.8 wide): the arcs reach radius $\\sqrt2k_0=${fx(Math.SQRT2 * st.k, 1)}$, giving a nominal resolution of $1/(\\sqrt2k_0)=${fx(1 / (Math.SQRT2 * st.k), 3)}$.\nCells of the Fourier grid hit by data: ${fx(100 * st.cov, 0)}% of the disc; RMS error of the reconstruction against the phantom $${fx(st.err, 3)}$. ${mode.value === 'ray' ? 'Straight rays: the lines of 3.4/3.5, which cover the plane evenly.' : 'With waves the arcs cross the origin tangentially to the lines but curve away: more illumination angles are needed to cover the same disc.'}` : '');
+        v.legend([['gold', 'probe locus (no added data)'], ['accent', 'acquired loci / gridded + conjugate cells'], ['red', 'continuous cutoff √2 k₀', { dash: true }], ['purple', 'numerical circular cutoff', { dash: true }], ['orange', 'incident wave'], ['green', 'forward directions']]);
+        v.readout(() => cur ? `$k_0=${fx(k0.value, 1)}$, wavelength${fx(1 / k0.value, 3)}; continuous cutoff radius${fx(cur.theoreticalRadius, 2)}, shortest-period scale${fx(1 / cur.theoreticalRadius, 3)} (not PSF FWHM). Numerical cutoff${fx(cur.cutoff, 2)} on the64² grid.\n${cur.cells}/${cur.eligible} eligible cells (${fx(100 * cur.cells / cur.eligible, 1)}%) populated after explicit real-object conjugate completion; ${cur.accepted}/${65 * na.value} synthetic samples retained, ${cur.discarded} outside the numerical cutoff. RMS sample-to-cell displacement${fx(cur.displacementRMS, 3)} cycles/unit; unhit cells zero, no hole filling.\nRMS image error${fx(cur.err, 4)}; residual inverse-transform imaginary magnitude${fx(cur.imagMax, 12)}. The probe only moves the gold geometry. ${mode.value === 'ray' ? 'Straight slices have this same finite cutoff; this is a geometry comparison.' : 'Synthetic deweighted Born samples; no wave propagation or Rytov-log data are simulated.'}` : '');
       },
     },
 
@@ -171,57 +127,51 @@ As $\hat{\mathbf s}$ runs over the directions in the half-plane facing forward, 
         venue: 'Journal of Applied Physics 34 (9): 2722–2727', doi: '10.1063/1.1729798',
       },
       introduces: ['imaging-3.1'],
-      statement: String.raw`Cormack showed how the distribution of attenuation coefficient in a plane section of the body can be computed from the transmission measurements of narrow beams along many lines through it, i.e. from its line integrals, and gave explicit inversion formulae: for a circularly symmetric function an Abel-type integral equation, and for the general case expansions of the function and of its line integrals in angular Fourier series (with radial functions that are Chebyshev-like), which he argued suit noisy data. The radiological motivation was to see density differences that ordinary radiographs, which superimpose all depths, cannot resolve, and to plan radiotherapy. He and a student tested the idea with a narrow Co-60 gamma-ray beam on a phantom without circular symmetry — an aluminium ring ("skull"), Lucite ("soft tissue") and two aluminium discs ("tumours") — and recovered the attenuation coefficient along a line to good agreement (according to his 1979 Nobel lecture).`,
-      idea: String.raw`Before 1963 the inversion of the Radon transform (imaging-3.2) was known to mathematicians (Radon, 1917) but not to radiologists or applied physicists, and in 1957 Cormack had worked out the circularly symmetric case for a radiotherapy problem; he went on to the non-symmetric case with Fourier expansions, solved the resulting integral equations in terms of orthogonal polynomials, and was concerned with noise from the limited counts of gamma rays. His series method is not the filtered back-projection used today (3.7), but solves the same problem and uses the same line integrals (3.1). The paper drew almost no response at the time; its relevance became clear after Hounsfield's scanner (3.18).`,
-      caption: String.raw`A schematic of Cormack's test object — aluminium ring, Lucite interior, two aluminium discs — scanned with a narrow beam at many positions and angles; the Poisson noise comes from the number of **counts per ray** you set. The middle panel is the reconstruction (by filtered back-projection, not Cormack's series); the right panel plots the attenuation coefficient along the line from the centre O through a disc to the ring A: true (line) against reconstructed (dots), like his published graph. The readout compares the aluminium/Lucite ratio with the value Cormack quoted and with the modern tabulated one.`,
+      statement: String.raw`Cormack formulates recovery of a bounded piecewise-continuous function supported in a disc from its line integrals over all straight lines through that disc. Expanding object and data in angular Fourier modes reduces the problem to one-dimensional equations containing Chebyshev polynomials (Eqs.4–10); the integral identity in Eq.16 leads to inversion Eqs.17–18. The radiological applications are attenuation mapping, attenuation-corrected positron-annihilation imaging, and a more restricted charged-particle density model.
+The **1963 experimental test was circularly symmetric** (§6): a 5cm-thick, 20cm-diameter specimen with a 1.13cm-diameter pure-aluminium core, aluminium-alloy annulus to diameter10cm, and oak annulus to diameter20cm. A Co-60 beam of overall width7mm was measured at one angle, in5mm offset steps, with at least20,000 counts per setting. Figure1 compares the radial primitive $J(r)$, not a nonsymmetric reconstructed image. This was not a Lucite/two-disc phantom.`,
+      idea: String.raw`For a radial coefficient $g(r)$ supported at radius $R$, the projection is an Abel integral. Scaling Cormack's unit-radius Eq.26 to centimetres gives
+$$p(s)=2\int_s^R\frac{g(r)r}{\sqrt{r^2-s^2}}\,dr,\qquad J(r)=\frac r\pi\int_r^R\frac{p(s)}{s\sqrt{s^2-r^2}}\,ds,\qquad g(r)=-J'(r).$$
+For nested constant layers, $J(r)=\sum_\ell\Delta\mu_\ell(R_\ell-r)_+$ is piecewise linear. With $s=r/\cos\theta$, its integral becomes $\pi^{-1}\int_0^{\arccos(r/R)}p(r/\cos\theta)\,d\theta$; $J(0)=p(0)/2$. The picture evaluates this integral from interpolated simulated samples, avoiding differentiation of noisy data. The paper reports alloy $0.161\pm0.002$ and oak $0.0340\pm0.0005\ \mathrm{cm^{-1}}$, and assumes $0.150\ \mathrm{cm^{-1}}$ for the pure-aluminium core; its Figure1 agreement is an experimental observation, not an error bound for this simulation.`,
+      caption: String.raw`Left: the original paper's circular dimensions and central attenuation values. Middle: ideal zero-width line integrals, a chosen finite-beam model, and simulated sampled log transmissions. Right: the exact piecewise-linear $J$ and its numerical estimate from those samples, corresponding to the quantity in the original Figure1. Change **beam width**, **offset step**, and **incident counts**, or switch counting noise off. The original used7mm overall beam width and5mm steps; its unreported beam-intensity profile is not reconstructed. These are new model curves, not digitized experimental points.`,
       deps: ['imaging-2.3'],
       tags: ['Cormack', 'line integrals', 'history'],
-      refs: [],
-      credit: 'A. M. Cormack, 1963 (Nobel Prize in Physiology or Medicine 1979, shared with G. N. Hounsfield)',
-      links: { nobel: 'https://www.nobelprize.org/prizes/medicine/1979/cormack/lecture/' },
-      verify: true,
-      scope: String.raw`Schematic reconstruction of the experiment as described in Cormack's Nobel lecture: the dimensions, counts, step sizes and the exact phantom are not from the paper (they are not reproduced here); the attenuation coefficients are computed from NIST tables at the Co-60 mean energy of 1.25 MeV (Al $0.05496\ \mathrm{cm^2/g}\times2.699\ \mathrm{g/cm^3}$; PMMA $0.06143\times1.19$). Whether the experimental test appears in the 1963 paper itself or in its 1964 sequel is not confirmed here. Reconstruction by FBP; Cormack's own method was a series expansion.`,
+      refs: ['Cormack (1963), §§2–4, Eqs.4–18; §6, Eq.26 and Fig.1, pp.2726–2727'],
+      credit: 'A. M. Cormack, 1963; original article and its circular experimental test',
+      links: { original: 'https://www.radhis.nl/uploads/5/5/4/1/55414293/cormack_1963.pdf', doi: 'https://doi.org/10.1063/1.1729798' },
+      verify: false,
+      scope: String.raw`The complete 1963 original was read. Geometry and central coefficients come from §6; sample thickness is5cm along the cylinder axis, while transverse ray lengths follow the20cm diameter. The beam model is an explicitly chosen uniform strip: transmitted intensities are averaged before taking the logarithm. It ignores scatter, dead time, background, the Co-60 doublet and the unknown original beam profile. Counts control means incident expectation per offset, unlike the paper's at-least20,000 recorded counts. Noise uses seed9, exact Poisson inverse sums below mean40 and a rounded normal approximation above it; a half-count floor prevents log0. The continuous inversion theorem and the original experiment are separate from this finite interpolated, Simpson-integrated illustration. The later nonsymmetric experiment, original historical priority and clinical validation are not asserted.`,
       viz(v) {
-        const MUL = 0.06143 * 1.19, ratio0 = (0.05496 * 2.699) / MUL, SCALE = 5; // cm per unit (schematic: phantom radius 5 cm)
-        const nd = 100, Wp = 80;
-        const rat = v.slider('μ(aluminium) / μ(Lucite)', 1.2, 3.5, ratio0, { step: 0.01 });
-        const I0 = v.slider('counts per ray', 300, 1e6, 20000, { log: true, sig: 2 });
-        const nAs = v.slider('number of angles (over 180°)', 6, 90, 36, { step: 1, int: true });
-        const A = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: false, height: 280, title: 'Phantom (schematic)', minWidth: 220 });
-        const B = v.stage({ x: [0, Wp], y: [0, Wp], equal: true, axes: false, height: 280, title: 'Reconstruction', minWidth: 220 });
-        const C = v.stage({ x: [0, 1], y: [0, 0.2], axes: 'box', gutter: true, height: 280, xlabel: 'distance from O along OA (fraction of radius)', ylabel: '$\\mu$ (cm⁻¹)', title: 'Attenuation along OA', minWidth: 260 });
-        const sc0 = makeScan(90, nd, 1.2), r = rng32(9), { u: U, z: Z } = noiseField(v.M, r, 90 * nd);
-        const phE = (ra) => { const mA = MUL * ra; return [[mA, 0.92, 0.92, 0, 0, 0], [MUL - mA, 0.8, 0.8, 0, 0, 0], [mA - MUL, 0.15, 0.15, 0.45, 0, 0], [mA - MUL, 0.15, 0.15, -0.3, -0.35, 0]]; };
-        let res = null, rk = '';
+        const C = CORMACK1963_AUDIT;
+        const width = v.slider('beam width (cm)', 0, 1.4, .7, { step: .05 });
+        const I0 = v.slider('incident counts per offset', 3000, 1e7, 200000, { log: true, sig: 2 });
+        const step = v.select('offset step (cm)', [{ value: '0.5', label: '0.5 (original)' }, { value: '0.25', label: '0.25' }, { value: '0.1', label: '0.1' }], '0.5');
+        const noise = v.select('counting noise', [{ value: 'on', label: 'seeded counts' }, { value: 'off', label: 'off' }], 'on');
+        const A = v.stage({ x: [-11.5, 11.5], y: [-11.5, 11.5], equal: true, axes: false, height: 280, title: '1963 circular specimen (cm)', minWidth: 220 });
+        const B = v.stage({ x: [0, 12.5], y: [-.1, 2.4], axes: 'box', gutter: true, height: 280, xlabel: 'offset s (cm)', ylabel: 'log attenuation p', title: 'Simulated transmissions', minWidth: 240 });
+        const D = v.stage({ x: [0, 10], y: [0, 1.1], axes: 'box', gutter: true, height: 280, xlabel: 'radius r (cm)', ylabel: 'radial primitive J', title: 'Eq.26 / Figure1 quantity', minWidth: 240 });
+        const rng = rng32(9), U = Float64Array.from({ length: 126 }, () => Math.max(1e-10, rng())), Z = Float64Array.from(U, u => v.M.dist.normal(0, 1).quantile(u));
+        const sx = lin(0, 12.5, 251), rx = lin(0, 10, 101); let result = null, key = '';
         v.render(() => {
-          const k = `${rat.value}|${Math.round(I0.value)}|${nAs.value}`;
-          if (k !== rk) {
-            rk = k; const E = phE(rat.value), nA = nAs.value, sc = makeScan(nA, nd, 1.2);
-            const sino = new Float64Array(nA * nd);
-            for (let a = 0; a < nA; a++) for (let j = 0; j < nd; j++) {
-              const p = SCALE * ellProj(E, sc.th[a], sc.sOf(j)), idx = Math.min(89, Math.floor((a / nA) * 90)) * nd + j;
-              const N = poissonFrom(Math.round(I0.value) * Math.exp(-p), U[idx], Z[idx]); sino[a * nd + j] = -Math.log(Math.max(N, 0.5) / Math.round(I0.value));
-            }
-            const img = fbp(sino, sc, Wp, Wp, 'shepp').map((x) => x / SCALE), pts = lin(0, 1, 60).map((t) => [t * 0.98, 0]);
-            res = { E, img, sc, sino };
+          const k = `${width.value}|${Math.round(I0.value)}|${step.value}|${noise.value}`;
+          if (k !== key) {
+            key = k; const offsets = lin(0, 12.5, Math.round(12.5 / Number(step.value)) + 1), incident = Math.round(I0.value);
+            const values = offsets.map((s, j) => { const p = cormackBeamAudit(s, width.value); return noise.value === 'off' ? p : -Math.log(Math.max(.5, poissonFrom(incident * Math.exp(-p), U[j], Z[j])) / incident); });
+            const J = rx.map(r => cormackJAudit(r, offsets, values));
+            result = { offsets, values, J, residual: Math.sqrt(mean(J.map((q, i) => (q - cormackExactJAudit(rx[i])) ** 2))), minMean: incident * Math.exp(-Math.max(...offsets.map(s => cormackBeamAudit(s, width.value)))) };
           }
-          const E = res.E;
-          A.raster((x, y) => { const m = ellAt(E, x, y); return Math.hypot(x, y) < 0.921 ? (() => { const c = Math.round(255 * clamp(m / (MUL * rat.value), 0, 1) * 0.9 + 12); return [c, c, c]; })() : null; }, { res: 2, id: 'ph', key: k });
-          A.line(0, 0, 0.98, 0, { color: 'gold', width: 2 }); A.text('O', -0.05, 0.08, { color: 'gold', size: 13 }); A.text('A', 1.0, 0.08, { color: 'gold', size: 13 });
-          showImage(B, res.img, Wp, Wp, { lo: -0.02, hi: MUL * rat.value * 1.1, id: 'rc', extra: k, smooth: true }); frame(B, Wp, Wp);
-          C.setView([0, 1], [-0.02, MUL * rat.value * 1.25]);
-          C.fn((t) => ellAt(E, t * 0.98, 0), { color: 'ink', width: 2.2, n: 400 });
-          const xs = lin(0.01, 0.97, 48);
-          const val = (t) => { const px = ((t + 1) / 2) * Wp - 0.5, py = Wp / 2 - 0.5 + 0.0; const i = Math.floor(px), a = px - i; const row = Math.floor(py); const g = (ii, jj) => res.img[jj * Wp + ii]; return (1 - a) * ((g(i, row) + g(i, row + 1)) / 2) + a * ((g(i + 1, row) + g(i + 1, row + 1)) / 2); };
-          C.dots(xs.map((t) => [t, val(t * 0.98)]), { r: 3, color: 'accent' });
-          // statistics
-          const cA = ((0.45 + 1) / 2) * Wp, cell = (xx, yy) => res.img[Math.floor(Wp - yy) * Wp + Math.floor(xx)];
-          const al = mean([cell(cA, Wp / 2), cell(cA - 1, Wp / 2), cell(cA + 1, Wp / 2), cell(cA, Wp / 2 + 1), cell(cA, Wp / 2 - 1)]), lu = mean([cell(Wp / 2 + 3, Wp / 2 + 6), cell(Wp / 2 + 5, Wp / 2 + 8), cell(Wp / 2 - 4, Wp / 2 + 10), cell(Wp / 2 + 8, Wp / 2 + 12)]);
-          const prof = xs.map((t) => val(t * 0.98)), tru = xs.map((t) => ellAt(E, t * 0.98, 0));
-          res.stat = { al, lu, e: rmse(prof, tru) / (MUL * rat.value) };
+          A.raster((x, y) => { const r = Math.hypot(x, y); if (r > C.radius) return null; const t = Math.round(255 * cormackMuAudit(r) / C.alloyMu); return [t, t, t]; }, { res: 2, id: 'cormack1963', key: 'original-central-values' });
+          for (const radius of [C.radius, C.alloyRadius, C.coreRadius]) A.circle(0, 0, radius, { color: 'muted', width: 1 });
+          A.hband(-width.value / 2, width.value / 2, { color: 'gold', alpha: .4 });
+          A.text('oak', 0, 7.3, { color: 'orange', align: 'center', size: 12 }); A.text('Al alloy', 0, 2.5, { color: 'ink', align: 'center', size: 12 });
+          const ideal = sx.map(s => [s, cormackProjectionAudit(s)]), beam = sx.map(s => [s, cormackBeamAudit(s, width.value)]);
+          const ys = [...ideal, ...beam, ...result.values.map((q, i) => [result.offsets[i], q])].map(p => p[1]);
+          B.setView([0, 12.5], [Math.min(-.04, ...ys) - .03, Math.max(...ys) * 1.08]);
+          B.path(ideal, { color: 'ink', width: 2 }); B.path(beam, { color: 'orange', width: 2 }); B.dots(result.values.map((q, i) => [result.offsets[i], q]), { color: 'accent', r: 3 });
+          const exact = rx.map(r => [r, cormackExactJAudit(r)]), estimated = rx.map((r, i) => [r, result.J[i]]), all = [...exact, ...estimated].map(p => p[1]);
+          D.setView([0, 10], [Math.min(0, ...all) - .02, Math.max(...all) * 1.08]); D.path(exact, { color: 'ink', width: 2 }); D.path(estimated, { color: 'accent', width: 2.3 });
         });
-        v.legend([['ink', 'true $\\mu$ along OA'], ['accent', 'reconstructed', { dot: true }], ['gold', 'line OA']]);
-        v.readout(() => res && res.stat ? `Reconstructed $\\mu$ in the disc ${fx(res.stat.al, 3)} cm$^{-1}$ and in the Lucite ${fx(res.stat.lu, 3)} cm$^{-1}$: ratio ${fx(res.stat.al / res.stat.lu, 2)} (set ${fx(rat.value, 2)}); RMS deviation along OA $${fx(100 * res.stat.e, 1)}\\%$ of the aluminium value.\nCormack's 1979 recollection: the ratio of aluminium to Lucite was “about 3”; NIST tables at 1.25 MeV give $0.1483/0.0731\\approx${fx(ratio0, 2)}$ (default setting). The phantom size and counts here are illustrative.` : '');
+        v.legend([['ink', 'ideal thin-ray / exact J'], ['orange', 'chosen finite-beam model'], ['accent', 'simulated sample / inferred J'], ['gold', 'beam strip']]);
+        v.readout(() => result ? `Original1963: pure Al core radius0.565cm; alloy to5cm; oak to10cm. Source coefficients0.150 (assumed),0.161±0.002 and0.0340±0.0005 cm⁻¹; original Fig.1 plots J, not μ.\nSimulation: ${result.offsets.length} offsets0–12.5cm, width${fx(width.value, 2)}cm, ${noise.value === 'off' ? 'no counting noise' : 'seed9 counts (normal approximation at means≥40)'}. Incident expectation${fx(Math.round(I0.value), 0)}, smallest transmitted mean${fx(result.minMean, 0)}; these are not the original registered counts. RMS difference in J=${fx(result.residual, 5)} (finite sample/integration error, not an experimental residual).` : '');
       },
     },
 

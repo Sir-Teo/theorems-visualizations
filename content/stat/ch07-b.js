@@ -7,6 +7,8 @@ import {
   TC, PC, orderOf, procs, falseFirst, genZ, pZ, runScreens, summary, quant,
 } from './ch07.shared.js';
 
+import { exactPermutations, fdpSE } from './inference-sources.audit.js';
+
 export default {
   collection: 'stat',
   chapter: 7,
@@ -318,17 +320,16 @@ with equality when the null p-values are exactly uniform. The bound holds whatev
       num: '7.13',
       kind: 'Method',
       name: 'Permutation test',
-      statement: String.raw`Two groups of sizes $n_1$ and $n_2$ are compared by a statistic $T$ such as the difference of means, and the null hypothesis says the group labels carry no information: under $H_0$ the $N=n_1+n_2$ observations are exchangeable between the groups. The **permutation test** computes $T$ for every one of the $\binom{N}{n_1}$ ways of reassigning the labels and reports
-$$p=\frac{\#\{\text{relabellings with }|T^*|\ge|T_{\rm obs}|\}}{\binom{N}{n_1}}.$$
-Because the observed labelling is one of the equally likely relabellings under $H_0$, this p-value satisfies $P_{H_0}(p\le\alpha)\le\alpha$ **exactly**, for every sample size, with no assumption about the shape of the data distribution, only exchangeability. When the full enumeration is too large, $B$ random relabellings give the Monte Carlo p-value $(1+\#\{|T^*|\ge|T_{\rm obs}|\})/(B+1)$, which is still exactly valid.`,
-      idea: String.raw`The null model is the experiment itself: if the treatment did nothing, each unit would have produced the same value under either label, so the label assignment is the only randomness (stat-7.1 supplies the tail-area definition of the p-value). The reference distribution is built from the data rather than taken from a table, so heavy tails, skewness and outliers cannot invalidate it, although they may cost power. For normal data the permutation distribution of the $t$ statistic is close to the $t$ distribution, which is why the classical test works.`,
-      caption: String.raw`Two groups of 8 (top two rows: A in blue, B in orange); drag the orange handle to slide group B and change the observed difference. Each shuffle reassigns the 16 values at random (the lower two rows show the latest one) and adds its difference of means to the gold histogram; the blue outline is the exact distribution over all 12,870 relabellings. The red tails beyond $\pm|D_{\rm obs}|$ give the p-value. Pick **skewed** or **outlier** data: the permutation p-value stays exact while Welch's $t$ p-value drifts away from it.`,
+      statement: String.raw`Under the null hypothesis, assume the pooled observations are exchangeable between two groups of fixed sizes $n_1,n_2$: conditional on the pooled values, every label assignment is equally likely. Enumerate all $M=\binom{n_1+n_2}{n_1}$ assignments and use
+$$p=\#\{|T^*|\ge|T_{\rm obs}|\}/M.$$
+Including ties and the observed assignment makes this a finite-sample valid p-value: $P_{H_0}(p\le\alpha)\le\alpha$. No distributional shape assumption replaces exchangeability. For **a fixed number $B$ chosen before simulation**, independent uniform relabellings sampled with replacement give the conservative valid Monte Carlo value $(b+1)/(B+1)$. This is not generally the exact exhaustive tail probability or the exact with-replacement calibration. Repeated testing or choosing when to stop after seeing results requires separate justification.`,
+      idea: String.raw`Within an exchangeable orbit, the observed assignment has a uniform rank; counting ties in the upper tail only increases its p-value. A sharp no-treatment-effect null with complete uniform random assignment supplies one route to this assumption; equality of means alone does not. Phipson and Smyth (2010), §§4–6, distinguish exhaustive enumeration, sampling without replacement and independent sampling with replacement. The display compares a permutation difference-of-means test with Welch's approximate unequal-variance $t$ test. They test different null models unless their assumptions align, and their p-values need not agree even for normal data.`,
+      caption: String.raw`Drag the orange handle to shift group B. The left axis expands to include every observation. Blue outlines enumerate all 12,870 assignments; gold bars show a newly drawn fixed-size random batch. Tail membership includes exact ties in the finite binary values stored by the computer, without a numerical tie tolerance. Each shuffle button replaces the previous batch; the displayed Monte Carlo value has the fixed-batch guarantee above. Repeatedly trying batches or moving the data after seeing results is exploratory. Welch's p-value is an approximate comparison, not a source of "exact" reference values.`,
       deps: ['stat-7.1'],
-      refs: ['Wasserman §10.5'],
+      refs: ['Phipson–Smyth (2010), corrected 2011, §§4–6, pp. 6–8'],
       tags: ['permutation test', 'exact test', 'nonparametric'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Permutation_test' },
-      credit: 'R. A. Fisher, 1930s; E. J. G. Pitman, 1937',
-      verify: true,
+      credit: 'Monte Carlo calibration: B. Phipson & G. K. Smyth, 2010 (corrected 2011)',
       viz(v) {
         const popS = v.select('data', [{ value: 'norm', label: 'normal' }, { value: 'skew', label: 'skewed (lognormal)' }, { value: 'out', label: 'one outlier in A' }], 'skew', { onChange: () => resetPos() });
         v.button('New data', () => { dseed++; masks.length = 0; resetPos(); });
@@ -341,7 +342,7 @@ Because the observed labelling is one of the equally likely relabellings under $
         const sL = v.stage({ x: [-3, 6], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'measurement', yticks: [[0.88, 'A'], [0.66, 'B'], [0.34, 'A*'], [0.12, 'B*']], title: 'the data, and the latest shuffled labelling' });
         const sR = v.stage({ x: [-3, 3], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'difference of means $\\bar A-\\bar B$ under relabelling', ylabel: 'density', title: 'permutation distribution' });
         const hB = sL.handle(1, 0.56, { color: TC.beta, label: 'drag B', labelPos: 's', constrain: (x) => [clamp(x, -3, 5.8), 0.6] });
-        const mc = memo(), rr = { r: null, k: 0 };
+        const mc = memo(), exactCache = memo(), rr = { r: null, k: 0 };
         const base = () => mc(popS.value + '|' + dseed, () => {
           const r = v.rng(hashStr(`t7.13|${popS.value}|${dseed}`)), kind = popS.value, g = () => (kind === 'skew' ? (Math.exp(0.9 * r.normal()) - 1.2) : r.normal());
           const a = Array.from({ length: NA }, g), b = Array.from({ length: NA }, g);
@@ -352,27 +353,28 @@ Because the observed labelling is one of the equally likely relabellings under $
         const resetPos = () => { const B = base(); hB.set(B.mb + 1.0, 0.6); };
         resetPos();
         function addShuffles(n) {
+          masks.length = 0;
           if (!rr.r) rr.r = v.rng(hashStr('t7.13shuffle'));
           for (let t = 0; t < n && masks.length < 200000; t++) { const idx = Array.from({ length: N }, (_, i) => i); for (let i = 0; i < NA; i++) { const j = i + Math.floor(rr.r() * (N - i)); [idx[i], idx[j]] = [idx[j], idx[i]]; } let m = 0; for (let i = 0; i < NA; i++) m |= 1 << idx[i]; masks.push(m); }
         }
         const leg = legender(v);
         let st = null;
         v.render(() => {
-          const B = base(), delta = hB.x - B.mb, a = B.a, b = B.b.map((x) => x + delta), pooled = a.concat(b), tot = pooled.reduce((s, x) => s + x, 0);
-          const mA = a.reduce((s, x) => s + x, 0) / NA, mB = b.reduce((s, x) => s + x, 0) / NA, D = mA - mB;
-          // exact: all 12,870 relabellings
-          const sums = new Float64Array(65536), pc = new Uint8Array(65536); const dif = [];
-          for (let k = 1; k < 65536; k++) { const low = k & -k, bit = 31 - Math.clz32(low); sums[k] = sums[k ^ low] + pooled[bit]; pc[k] = pc[k ^ low] + 1; if (pc[k] === NA) dif.push(2 * sums[k] / NA - tot / NA); }
-          const eps = 1e-9, cntEx = dif.filter((d) => Math.abs(d) >= Math.abs(D) - eps).length, pEx = cntEx / dif.length;
-          let lo = -3, hi = 3; const span = Math.max(...dif.map(Math.abs), Math.abs(D)) * 1.08; lo = -span; hi = span;
+          const B = base(), delta = hB.x - B.mb, a = B.a, b = B.b.map((x) => x + delta), pooled = a.concat(b);
+          const E = exactCache(pooled.join('|'), () => exactPermutations(pooled, NA));
+          const mA = a.reduce((s, x) => s + x, 0) / NA, mB = b.reduce((s, x) => s + x, 0) / NA, D = E.observed;
+          const dif = E.dif, cntEx = E.count, pEx = E.p;
+          const leftLo=Math.min(-3,...pooled)-.5,leftHi=Math.max(6,...pooled)+.5;
+          sL.setView([leftLo,leftHi],[0,1]);
+          let lo = -3, hi = 3; const span = Math.max(1e-6,...dif.map(Math.abs), Math.abs(D)) * 1.08; lo = -span; hi = span;
           sR.setView([lo, hi], [0, 1]);
           const NB = 41, w = (hi - lo) / NB, ce = new Array(NB).fill(0); for (const d of dif) ce[Math.min(NB - 1, Math.floor((d - lo) / w))]++;
-          const dEx = ce.map((c) => c / dif.length / w), ptsR = masks.map((m) => { let s = 0; for (let i = 0; i < N; i++) if (m & (1 << i)) s += pooled[i]; return 2 * s / NA - tot / NA; });
+          const dEx = ce.map((c) => c / dif.length / w), ptsR = masks.map(m => E.lookup[m]);
           const cr = new Array(NB).fill(0); for (const d of ptsR) cr[Math.min(NB - 1, Math.max(0, Math.floor((d - lo) / w)))]++;
           const dR = cr.map((c) => (ptsR.length ? c / ptsR.length / w : 0));
           const top = Math.max(...dEx, ...dR) * 1.12;
           sR.setView([lo, hi], [0, top]);
-          for (let i = 0; i < NB; i++) { const x0 = lo + i * w, x1 = x0 + w, xc = x0 + w / 2, tail = Math.abs(xc) >= Math.abs(D) - w / 2 + 1e-9 && Math.abs(xc) >= Math.abs(D) - eps - w / 2; if (dR[i]) sR.rect(x0 + 0.04 * w, 0, x1 - 0.04 * w, dR[i], { fill: TC.sim, fillAlpha: 0.5, color: TC.sim, width: 1 }); }
+          for (let i = 0; i < NB; i++) { const x0 = lo + i * w, x1 = x0 + w; if (dR[i]) sR.rect(x0 + 0.04 * w, 0, x1 - 0.04 * w, dR[i], { fill: TC.sim, fillAlpha: 0.5, color: TC.sim, width: 1 }); }
           sR.path(dEx.flatMap((h, i) => [[lo + i * w, h], [lo + (i + 1) * w, h]]), { color: TC.h0, width: 2.2 });
           sR.vband(Math.abs(D), hi, { color: TC.alpha, alpha: 0.12 }); sR.vband(lo, -Math.abs(D), { color: TC.alpha, alpha: 0.12 });
           sR.vline(D, { color: TC.beta, width: 2.4 }); sR.vline(-D, { color: TC.beta, width: 1.2, dash: [4, 4] });
@@ -381,20 +383,20 @@ Because the observed labelling is one of the equally likely relabellings under $
           a.forEach((x, i) => dot(x, 0.88 + B.jit[i], TC.h0)); b.forEach((x, i) => dot(x, 0.66 + B.jit[NA + i], TC.beta));
           sL.vline(mA, { color: TC.h0, width: 1.2, dash: [3, 3] }); sL.vline(mB, { color: TC.beta, width: 1.2, dash: [3, 3] });
           if (masks.length) {
-            const m = masks[masks.length - 1]; let sa = 0;
-            pooled.forEach((x, i) => { const inA = !!(m & (1 << i)); if (inA) sa += x; dot(x, (inA ? 0.34 : 0.12) + B.jit[i], inA ? TC.h0 : TC.beta, true); });
-            sL.text(`latest shuffle: difference ${v.fix(2 * sa / NA - tot / NA, 2)}`, -2.9, 0.4, { size: 11.5, color: 'muted', align: 'left', plate: true });
-          } else sL.text('press “Shuffle” to relabel at random', -2.9, 0.4, { size: 11.5, color: 'muted', align: 'left', plate: true });
+            const m = masks[masks.length - 1];
+            pooled.forEach((x, i) => { const inA = !!(m & (1 << i)); dot(x, (inA ? 0.34 : 0.12) + B.jit[i], inA ? TC.h0 : TC.beta, true); });
+            sL.text(`latest shuffle: difference ${v.fix(E.lookup[m], 2)}`, leftLo + .02*(leftHi-leftLo), 0.4, { size: 11.5, color: 'muted', align: 'left', plate: true });
+          } else sL.text('press “Shuffle” to relabel at random', leftLo + .02*(leftHi-leftLo), 0.4, { size: 11.5, color: 'muted', align: 'left', plate: true });
           // t-test
           const T = twoSample(a, b), pT = Math.min(1, 2 * tUp(Math.abs(T.tW), T.nuW));
-          const nB = ptsR.length, cB = ptsR.filter((d) => Math.abs(d) >= Math.abs(D) - eps).length;
+          const nB = ptsR.length, cB = masks.reduce((s,m)=>s+E.extreme[m],0);
           leg([[TC.h0, 'exact distribution, all 12,870 relabellings'], [TC.sim, 'random shuffles', { area: true }], [TC.beta, 'observed difference'], [TC.alpha, 'as extreme or more', { area: true }]]);
           st = { D, pEx, cntEx, nTot: dif.length, nB, cB, pMC: (cB + 1) / (nB + 1), pT, tW: T.tW };
         });
         v.readout(() => {
           if (!st) return '';
           const { D, pEx, cntEx, nTot, nB, cB, pMC, pT } = st;
-          return String.raw`observed $\bar A-\bar B=${v.fix(D, 3)}$ · **exact permutation p** $=${commas(cntEx)}/${commas(nTot)}=${v.fix(pEx, 4)}$` + (nB ? String.raw` · ${commas(nB)} random shuffles: ${commas(cB)} as extreme, $p=(1+${cB})/(1+${commas(nB)})=${v.fix(pMC, 4)}$ (error $\pm$ ${v.fix(2 * mcse(pEx, nB), 4)})` : ' · no random shuffles yet') + String.raw` · Welch $t$-test $p=${v.fix(pT, 4)}$` + (Math.abs(pT - pEx) > 0.02 ? ' (assumes normality: differs from the exact value)' : '');
+          return String.raw`observed $\bar A-\bar B=${v.fix(D, 3)}$ · **exact permutation p** $=${commas(cntEx)}/${commas(nTot)}=${v.fix(pEx, 4)}$` + (nB ? String.raw` · ${commas(nB)} independent shuffles in this fixed batch: ${commas(cB)} as extreme, $p=(1+${cB})/(1+${commas(nB)})=${v.fix(pMC, 4)}$ (Monte Carlo 2SE $\pm$ ${v.fix(2 * Math.sqrt(nB*pEx*(1-pEx))/(nB+1), 4)})` : ' · no random shuffles yet') + String.raw` · Welch $t$-test $p=${v.fix(pT, 4)}$` + (Math.abs(pT - pEx) > 0.02 ? ' (approximate Welch comparison; unequal-variance normality does not make it exact)' : '');
         });
       },
     },
@@ -406,12 +408,11 @@ Because the observed labelling is one of the equally likely relabellings under $
       paper: { authors: 'Yoav Benjamini and Yosef Hochberg', year: 1995, title: 'Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing', venue: 'Journal of the Royal Statistical Society B 57 (1): 289–300', doi: '10.1111/j.2517-6161.1995.tb02031.x' },
       introduces: ['stat-7.10', 'stat-7.11'],
       credit: 'Yoav Benjamini & Yosef Hochberg, 1995',
-      verify: true,
-      statement: String.raw`Benjamini and Hochberg argued that when many hypotheses are tested, controlling the chance of any false rejection (the family-wise error rate, stat-7.7) is often too demanding, costing power that the scientist would rather spend on discoveries. They proposed to control instead the expected proportion of false discoveries among the rejected hypotheses, the **false discovery rate** $\mathrm{FDR}=E[V/\max(R,1)]$ (stat-7.10), and a simple step-up procedure that does it: sort the $m$ p-values, find the largest $k$ with $p_{(k)}\le kq/m$, and reject the $k$ smallest. For independent test statistics the FDR of this procedure is $\frac{m_0}{m}q\le q$ (stat-7.11); when every null is true it coincides with FWER control; and with many false nulls it rejects more than Bonferroni-type procedures. They illustrated the idea on fifteen p-values from a study of treatments after myocardial infarction.`,
-      idea: String.raw`Before 1995 the multiple-comparison literature (Bonferroni, stat-7.8; Holm, stat-7.9) aimed at FWER control, which becomes very conservative in screens of hundreds or thousands of hypotheses, and practitioners often simply did not correct. The paper changed the error criterion to the one that matches the use of a list of discoveries (the share that will turn out to be false), showed it can be controlled by a procedure no harder than sorting, and reported that the gain in power over FWER methods grows with the number of true effects. The idea became standard in genomics and imaging, where $m$ is in the thousands.`,
-      caption: String.raw`The fifteen p-values of the paper's example, sorted and plotted on a log scale against the BH line $iq/m$ (green), Holm's staircase (orange) and Bonferroni's constant $q/m$ (dashed); drag $q$. At $q=0.05$ BH rejects four hypotheses, Holm and Bonferroni three. (The values are as reproduced in a 2015 arXiv paper on the BH procedure; the original article is a scan, so they are flagged for checking against it.) Right: a simulation of fifteen hypotheses with $m_1$ real effects: FWER and FDR of the four procedures over 3,000 screens at level $q$, to see what the extra rejection costs.`,
+      statement: String.raw`Benjamini and Hochberg's 1995 paper defines the false discovery rate $\mathrm{FDR}=E[V/\max(R,1)]$, the expected false fraction among rejected hypotheses. It proposes the step-up rule: sort the $m$ p-values, choose the largest $k$ with $p_{(k)}\le kq/m$, and reject the first $k$ (reject none if no such $k$ exists). If the true-null p-values are super-uniform, mutually independent, and independent of the false-null p-values, the result is $\mathrm{FDR}\le(m_0/m)q\le q$, not an equality from independence alone. When every hypothesis is null, FDR equals FWER. The original paper demonstrates potential power gains and illustrates the rule with fifteen comparisons from a myocardial-infarction treatment study.`,
+      idea: String.raw`The original Theorem 1 and lemma give a bound, with the appendix treating independent uniform true-null p-values. A direct proof also covers super-uniform nulls: replace a true-null $p_i$ by zero and let $R_i$ be the resulting rejection count. Whenever $i$ is rejected, $R=R_i$, and rejection is equivalent to $p_i\le qR_i/m$. Independence from the other p-values gives $E[\mathbf1_{\{i\text{ rejected}\}}/\max(R,1)]\le q/m$; summing over the true nulls gives the bound. It controls an expectation, not the false fraction in every realized list. The right-hand simulation is a separate reconstruction.` ,
+      caption: String.raw`All fifteen displayed p-values were checked directly against the original paper, §3.2, p. 295. At $q=0.05$, BH rejects four; Bonferroni and the separately calculated Holm rule reject three. The original paragraph compares Bonferroni and **Hochberg**, so our Holm staircase is a modern additional comparison. The right panel independently simulates 3,000 screens of fifteen independent two-sided normal tests; the readout reports Monte Carlo uncertainty. Move $q$, the number of real effects, or their effect size.`,
       deps: ['stat-7.7', 'stat-7.8', 'stat-7.9'],
-      refs: [],
+      refs: ['Benjamini–Hochberg (1995), Theorem 1/lemma p. 293, §3.2 pp. 294–295, Appendix A pp. 298–300'],
       tags: ['false discovery rate', 'history', 'multiple testing'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/False_discovery_rate', doi: 'https://doi.org/10.1111/j.2517-6161.1995.tb02031.x' },
       viz(v) {
@@ -447,8 +448,8 @@ Because the observed labelling is one of the equally likely relabellings under $
         });
         v.readout(() => {
           if (!st) return '';
-          const { q, c, adj, sm, m1 } = st, nAdj = adj.filter((a) => a <= q + 1e-12).length;
-          return String.raw`level $q=${v.fix(q, 3)}$ on the 15 p-values: **BH rejects ${c.bh}**, Holm ${c.holm}, Bonferroni ${c.bonf}, uncorrected ${c.unc}` + (Math.abs(q - 0.05) < 1e-9 ? ' · at $q=0.05$ the BH step-up gives 4, as the 2015 arXiv reproduction of the example also reports; Bonferroni and Holm give 3 (computed here)' : '') + String.raw` · today's BH-adjusted p-values (monotone $\min_{j\ge i}mp_{(j)}/j$) $\le q$: ${nAdj}, the same set · simulation, ${m1} real of 15: FDR  BH ${v.fix(sm[3].fdr, 3)} (level ${v.fix(q, 2)}), Holm ${v.fix(sm[2].fdr, 3)}; FWER BH ${v.fix(sm[3].fwer, 3)} vs Holm ${v.fix(sm[2].fwer, 3)}; mean rejections BH ${v.fix(sm[3].R, 1)} vs Holm ${v.fix(sm[2].R, 1)}`;
+          const { q, c, adj, sm, m1 } = st, nAdj = adj.filter((a) => a <= q).length;
+          return String.raw`level $q=${v.fix(q, 3)}$ on the 15 p-values: **BH rejects ${c.bh}**, Holm ${c.holm}, Bonferroni ${c.bonf}, uncorrected ${c.unc}` + (Math.abs(q - 0.05) < 1e-9 ? ' · at $q=0.05$ the BH step-up gives 4, as in the original p. 295; Bonferroni gives 3 there and Holm gives 3 in our separate calculation' : '') + String.raw` · today's BH-adjusted p-values (monotone $\min_{j\ge i}mp_{(j)}/j$) $\le q$: ${nAdj}, the same set · simulation, ${m1} real of 15: FDR  BH ${v.fix(sm[3].fdr, 3)} (level ${v.fix(q, 2)}), Holm ${v.fix(sm[2].fdr, 3)}; FWER BH ${v.fix(sm[3].fwer, 3)} vs Holm ${v.fix(sm[2].fwer, 3)}; mean rejections BH ${v.fix(sm[3].R, 1)} vs Holm ${v.fix(sm[2].R, 1)}; largest Monte Carlo 2SE across the four procedures: FDR ${v.fix(2*Math.max(...sm.map(s=>fdpSE(s.fdp))),3)}, FWER ${v.fix(2*Math.max(...sm.map(s=>Math.sqrt(s.fwer*(1-s.fwer)/REP))),3)}`;
         });
       },
     },

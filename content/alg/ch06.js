@@ -255,8 +255,7 @@ export default {
       deps: ['alg-6.4', 'alg-6.9', 'alg-6.5a'],
       refs: ['Judson §6.2'],
       tags: ['lagrange', 'cosets', 'counting'],
-      credit: 'after J.-L. Lagrange, 1770–71 (a special case, for permutations of roots)',
-      verify: true,
+      links: { source: 'https://twjudson.github.io/aata-files/aata-20230811.pdf#page=88' },
       viz(v) {
         const L = useLab(v, ['Z12', 'D6', 'A4', 'U15'], { group: 'Z12' });
         const s = cgStage(v, { weight: 1.2, height: 380 });

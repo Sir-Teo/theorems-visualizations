@@ -1,6 +1,6 @@
 // Ordinary Differential Equations & Dynamical Systems — Chapter 4: Series solutions and boundary value problems
 // (items 4.1–4.5 here; 4.6–4.10 in ch04-b.js, 4.11–4.15 in ch04-c.js)
-import { flow, besselJ, besselY, besselZeros, legendreP, legendreSeriesCoef, polyHorner, frobCoef, frobEval, indicialRoots, simpson } from './ch04.shared.js';
+import { flow, analyticExampleCoefficients, besselJ, besselY, besselZeros, legendreP, legendreSeriesCoef, polyHorner, frobCoef, frobEval, indicialRoots, simpson } from './ch04.shared.js';
 
 export default {
   collection: 'ode',
@@ -14,26 +14,25 @@ export default {
       kind: 'Theorem',
       name: 'Analytic coefficients give analytic solutions',
       statement: String.raw`Let $a_0,a_1,g$ be analytic in the disc $|z-z_0|<R$ (that is, given there by convergent power series). Then the equation $u''+a_1(z)u'+a_0(z)u=g(z)$ with initial data $u(z_0)=\xi_0$, $u'(z_0)=\xi_1$ has a unique solution, it is analytic in the *whole* disc $|z-z_0|<R$, and its Taylor coefficients are found by substituting $u=\sum_k c_k(z-z_0)^k$ and comparing coefficients, which gives each $c_{k+2}$ from the earlier ones. The same holds for systems and for equations of any order.`,
-      idea: String.raw`Substitution turns the equation into a recursion for $c_k$; the work is to show the resulting series converges on the full disc and not just near $z_0$. One compares with a *majorant* problem whose coefficients dominate those of the given one and whose series solution is explicit and positive, and applies Picard iteration in the space of power series (a contraction, as in 2.4). The disc can be no larger than the distance to the nearest singularity of the coefficients in the complex plane, even if everything is perfectly smooth on the real line.`,
-      caption: String.raw`The equation is $(c^2+x^2)u''+c^2u=0$, whose coefficient has poles at $z=\pm ic$ (the two red points on the left). Drag the pole up and down and the centre $x_0$ left and right: the green disc, centred at $x_0$, reaches exactly to the nearest pole. On the right the Taylor polynomial of degree $N$ (blue) follows the true solution (black, integrated numerically) inside the disc and explodes just outside it, however many terms you add.`,
+      idea: String.raw`Substitution turns the equation into a recursion for $c_k$; the work is to show the resulting series converges on the full disc and not just near $z_0$. One compares with a *majorant* problem whose coefficients dominate those of the given one and whose series solution is explicit and positive, and applies Picard iteration in the space of power series (a contraction, as in 2.4). The distance to the nearest coefficient singularity guarantees a disc of convergence. The solution may extend farther if a coefficient singularity is removable for that particular solution (even the zero solution is entire). Complex singularities can limit the Taylor series despite smooth coefficients on the whole real line.`,
+      caption: String.raw`The equation is $(c^2+x^2)u''+c^2u=0$, whose coefficient has poles at $z=\pm ic$ (the two red points on the left). Drag the pole up and down and the centre $x_0$ left and right: the green disc, centred at $x_0$, reaches exactly to the nearest pole. On the right the Taylor polynomial of degree $N$ (blue) follows the true solution (black, integrated numerically) inside the disc and can develop large errors outside it as the degree increases. A finite polynomial can still approximate some points outside the guaranteed disc.`,
       deps: ['ode-2.4', 'rca-10.16'],
-      refs: ['Teschl §4.1'],
+      refs: ['Teschl §4.1, Theorems 4.1–4.3; §4.2 opening discussion, pp. 113–116'],
       tags: ['power series', 'analyticity', 'radius of convergence'],
       scope: String.raw`Holds for linear equations with coefficients analytic in a disc; the radius of convergence of the solution is at least the radius of the disc, and equal to it in the typical case where the singularity of the coefficients is genuinely felt by the solution.`,
-      credit: 'A.-L. Cauchy (method of majorants, 1830s–40s)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Power_series_solution_of_differential_equations' },
-      verify: true,
+      credit: 'Analytic linear initial-value theory; presentation follows Teschl §§4.1–4.2',
+      links: { source: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf#page=124', wikipedia: 'https://en.wikipedia.org/wiki/Power_series_solution_of_differential_equations' },
       viz(v) {
         const sc = v.stage({ x: [-3.6, 3.6], y: [-2.7, 2.7], equal: true, axes: true, height: 320, xlabel: 'Re z', ylabel: 'Im z', title: 'complex plane: poles of the coefficient', weight: 0.9, minWidth: 250 });
         const sr = v.stage({ x: [-3.6, 3.6], y: [-3.2, 3.2], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'u', title: 'real line: solution and Taylor polynomial', weight: 1.2, minWidth: 280 });
         const pole = sc.handle(0, 1, { color: 'red', label: '$ic$', labelPos: 'ne', constrain: (x, y) => [0, Math.min(2.3, Math.max(0.35, y))] });
         const cen = sc.handle(0, 0, { color: 'accent', label: '$x_0$', labelPos: 'sw', constrain: (x, y) => [Math.min(2, Math.max(-2, x)), 0] });
         const Ns = v.slider('degree $N$', 1, 70, 12, { int: true });
-        v.legend([['ink', 'exact solution'], ['accent', 'Taylor polynomial of degree $N$'], ['green', 'disc of guaranteed convergence', { area: true }]]);
+        v.legend([['ink', 'numerically integrated solution'], ['accent', 'Taylor polynomial of degree $N$'], ['green', 'disc of guaranteed convergence', { area: true }]]);
         let info = null;
         v.render(() => {
-          const c = pole.y, x0 = cen.x, R = Math.hypot(x0, c), c2 = c * c, A = c2 + x0 * x0, K = 120;
-          const a = [1, 0.4]; for (let k = 0; k + 2 <= K; k++) a[k + 2] = -(2 * x0 * (k + 1) * k * a[k + 1] + (k * (k - 1) + c2) * a[k]) / (A * (k + 2) * (k + 1));
+          const c = pole.y, x0 = cen.x, R = Math.hypot(x0, c), c2 = c * c, K = 120;
+          const a = analyticExampleCoefficients(c, x0, K);
           const F = (x, [u, w]) => [w, (-c2 * u) / (c2 + x * x)];
           const right = flow(F, x0, [1, 0.4], 3.6, 500), left = flow(F, x0, [1, 0.4], -3.6, 500).reverse();
           const ex = left.slice(0, -1).concat(right).map(([x, y]) => [x, y[0]]);
@@ -56,7 +55,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { R, c, x0, N, ein, eout, nin, nout, rootTest, ratio } = info;
-          return `Nearest pole is at distance $\\sqrt{x_0^2+c^2}=${v.fix(R, 3)}$ from the centre $x_0=${v.fix(x0, 2)}$.\nCoefficient test on the first 120 Taylor coefficients: $|c_{120}|^{-1/120}=${v.fix(rootTest, 3)}$ and $\\sqrt{|c_{118}/c_{120}|}=${v.fix(ratio, 3)}$ (both tend to the radius of convergence).\nDegree $N=${N}$: largest error ${nin ? 'at distance $<0.8R$ is $' + v.sci(ein, 2) + '$' : 'inside the disc: n/a'}${nout ? '; at distance $>1.15R$ it is $' + v.sci(eout, 2) + '$ (and grows with $N$)' : ''}.`;
+          return `Nearest pole is at distance $\\sqrt{x_0^2+c^2}=${v.fix(R, 3)}$ from the centre $x_0=${v.fix(x0, 2)}$.\nCoefficient test on the first 120 Taylor coefficients: $|c_{120}|^{-1/120}=${v.fix(rootTest, 3)}$ and $\\sqrt{|c_{118}/c_{120}|}=${v.fix(ratio, 3)}$ (finite-order proxies; the ratio can oscillate when the nearest poles have different phases).\nDegree $N=${N}$: largest error ${nin ? 'at distance $<0.8R$ is $' + v.sci(ein, 2) + '$' : 'inside the disc: n/a'}${nout ? '; at distance $>1.15R$ it is $' + v.sci(eout, 2) + '$' : ''}.`;
         });
       },
     },

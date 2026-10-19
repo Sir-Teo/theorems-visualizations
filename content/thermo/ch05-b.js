@@ -1,6 +1,8 @@
 // Thermodynamics & Statistical Mechanics — Chapter 5 (part b): gas entropy, paradoxes, demons and the cost of information
 import { clamp, lerp, R, KB, NA, HP, AMU, lnGam, lnFac, lnBin, lnEin, shannon, texExp, sup10, tRamp, ramp, pick } from './ch05.shared.js';
 
+import { degeneracyTemperature, ratchet } from './thermodynamic-limits-source-audit.shared.js';
+
 // ---------- helpers for this file ----------
 /** Noble gases: standard atomic weight (IUPAC) and the CODATA key value of S° at 298.15 K, 1 bar (J/(mol K), NIST WebBook). */
 const NOBLE = {
@@ -14,8 +16,6 @@ const NOBLE = {
 const lambdaT = (m, T, hf = 1) => hf * HP / Math.sqrt(2 * Math.PI * m * KB * T);
 /** Sackur–Tetrode entropy per atom in units of k at temperature T (K), pressure P (Pa): ln(kT/(Pλ³)) + 5/2. */
 const sST = (mAmu, T, P, hf = 1) => Math.log(KB * T / (P * lambdaT(mAmu * AMU, T, hf) ** 3)) + 2.5;
-/** Temperature (K) at which nλ³ = 1 for pressure P (Pa) (the classical treatment is unreliable below it). */
-const Tdeg = (mAmu, P) => Math.pow(P * HP ** 3 / (KB * Math.pow(2 * Math.PI * mAmu * AMU * KB, 1.5)), 0.4);
 
 export default {
   collection: 'thermo',
@@ -24,15 +24,15 @@ export default {
     // ------------------------------------------------------------------ 5.11
     {
       num: '5.11', kind: 'Theorem', name: 'Sackur–Tetrode equation',
-      statement: String.raw`For a dilute monatomic ideal gas of $N$ identical atoms of mass $m$ in volume $V$ at temperature $T$ (energy $U=\tfrac32NkT$), counting one microstate per phase-space cell of size $h^{3}$ per atom and dividing by $N!$ for indistinguishability gives the absolute entropy
+      statement: String.raw`For a dilute monatomic ideal gas of $N$ identical atoms of mass $m$ in volume $V$ at temperature $T$ (energy $U=\tfrac32NkT$), counting one microstate per phase-space cell of size $h^{3}$ per atom and dividing by $N!$ for indistinguishability gives, to leading order for $N\gg1$, the absolute entropy
 $$S=Nk\left[\ln\!\left(\frac{V}{N\lambda^{3}}\right)+\frac52\right],\qquad \lambda=\frac{h}{\sqrt{2\pi mkT}}.$$
 Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It reproduces $\partial S/\partial U=1/T$, $P=NkT/V$ and $C_V=\tfrac32Nk$ and is valid only when $N\lambda^3/V\ll1$; as $T\to0$ it would give $S\to-\infty$, so the classical gas fails below the degeneracy temperature.`,
-      idea: String.raw`The number of states below energy $E$ is the momentum-ball volume of 5.10 times $V^N$, divided by $h^{3N}$ (one quantum state per cell of size $h$ per degree of freedom, qm-12.13) and by $N!$ for identical atoms. Taking the logarithm and using Stirling's formula (pma-8.22) for $\ln N!$ and $\ln\Gamma(\tfrac{3N}2+1)$ gives the equation; differentiating with respect to $U$, $V$, $N$ reproduces the ideal-gas law and $\mu$. The constant $h$ appears inside the logarithm, so thermodynamic entropies of gases could be used to *measure* $h$ (Sackur and Tetrode compared such values with Planck's).`,
-      caption: String.raw`**Choose a noble gas, a pressure and a temperature.** Left: $S/Nk$ against $T$ for the chosen gas (thick) and the others (thin); the red zone is where $N\lambda^3/V>1$ and the formula breaks down (it would give negative entropy). Right: the formula, evaluated at 298.15 K and 1 bar (bars), against the CODATA key values of the standard entropy (rings), with the difference printed above each bar. The *Planck-constant factor* rescales $h$: the agreement is lost at once, which is the point — the absolute entropy depends on $h$.`,
-      deps: ['thermo-5.10', 'pma-8.22'], refs: ['Schroeder §2.6'], tags: ['ideal gas', 'entropy'],
-      credit: 'O. Sackur, 1911, and H. Tetrode, 1912 (independently; Annalen der Physik 38, 434 for Tetrode)',
-      scope: String.raw`Dilute monatomic gas with $N\lambda^3/V\ll1$ (classical limit of the ideal quantum gas) and negligible electronic excitation. The "CODATA key values" quoted here are the standard-state entropies of the noble gases as tabulated by NIST; they agree with this formula to a few parts per million, which is a check of the arithmetic and constants (the tabulated monatomic values are, to the best of my knowledge, themselves obtained from the translational partition function rather than calorimetry).`,
-      verify: true,
+      idea: String.raw`The number of states below energy $E$ is the momentum-ball volume of 5.10 times $V^N$, divided by $h^{3N}$ (one quantum state per cell of size $h$ per degree of freedom, qm-12.13) and by $N!$ for identical atoms. Taking the logarithm and using Stirling's formula (pma-8.22) for $\ln N!$ and $\ln\Gamma(\tfrac{3N}2+1)$ gives the equation; differentiating with respect to $U$, $V$, $N$ reproduces the ideal-gas law and $\mu$. The constant $h$ fixes the additive entropy constant; rescaling it by $f$ shifts the molar entropy by $-3R\ln f$.`,
+      caption: String.raw`**Choose a noble gas, a pressure and a temperature.** Left: $S/Nk$ against $T$ for the chosen gas (thick) and the others (thin); the red zone is where $N\lambda^3/V>1$ and the formula breaks down (negative entropy occurs only farther into this invalid extrapolation, at $N\lambda^3/V>e^{5/2}$). Right: the formula, evaluated at 298.15 K and 1 bar (bars), against the CODATA key values of the standard entropy (rings), with the difference printed above each bar. The *Planck-constant factor* rescales $h$: the agreement is lost at once, which is the point — the absolute entropy depends on $h$.`,
+      deps: ['thermo-5.10', 'pma-8.22'], refs: ['Tong §2.2.3, Eqs. (2.12)–(2.13)', 'NIST Chemistry WebBook: He, Ne, Ar, Kr, Xe gas entropies'], tags: ['ideal gas', 'entropy'],
+      credit: 'Sackur–Tetrode equation; derivation: Tong §2.2.3, Eqs. (2.12)–(2.13)',
+      scope: String.raw`Thermodynamic-limit, dilute monatomic ideal gas with $N\gg1$, $n\lambda^3\ll1$, negligible internal excitation and continuum translational states. Low-temperature extrapolation can also cross real phase changes. The NIST comparison uses CODATA review values (Cox, Wagman and Medvedev, 1984), with quoted uncertainties 0.002 J/(mol K) for He and 0.003 for the others; agreement is a numerical reference comparison, not evidence of an independent measurement of $h$.`,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sackur%E2%80%93Tetrode_equation' },
       viz(v) {
         const gsel = v.select('gas', Object.keys(NOBLE), 'He');
@@ -45,12 +45,16 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         let st = null;
         v.render(() => {
           const P = Ps.value * 1e5, hf = hs.value, key = gsel.value, g = NOBLE[key];
-          const td = Tdeg(g.m, P) * Math.pow(hf, 0.8);   // λ ∝ h: nλ³ = 1 at T ∝ h^{4/5}... (λ³ ∝ h³ T^{-3/2}, n ∝ T^{-1})
-          sa.vband(0.1, Math.max(0.1001, td), { color: 'red', alpha: 0.14 });
+          const td = degeneracyTemperature(g.m, P, hf); // At fixed P: nλ³ ∝ h³ T^(−5/2), hence Tdeg ∝ h^(6/5).
+          const ends = keys.flatMap(k => [sST(NOBLE[k].m,.1,P,hf),sST(NOBLE[k].m,3000,P,hf)]), yl=Math.min(-10,...ends)-1, yh=Math.max(26,...ends)+1;
+          sa.setView([.1,3000],[yl,yh]);
+          const vals=keys.map(k=>R*sST(NOBLE[k].m,298.15,1e5,hf));
+          sb.setView([.4,5.6],[Math.min(100,...vals)-3,Math.max(185,...vals,...keys.map(k=>NOBLE[k].S))+7]);
+          if(td>.1) sa.vband(0.1, Math.min(3000, td), { color: 'red', alpha: 0.14 });
           for (const k of keys) if (k !== key) sa.fn((T) => sST(NOBLE[k].m, T, P, hf), { color: 'muted', width: 1.1, alpha: 0.7, n: 120 });
           sa.fn((T) => sST(g.m, T, P, hf), { color: 'accent', width: 2.8, n: 200 });
           sa.hline(0, { color: 'faint', width: 1 });
-          if (td > 0.2) sa.text('$N\\lambda^3/V>1$: formula fails', Math.max(0.35, Math.sqrt(0.1 * td)), -7.5, { size: 11, color: 'red', align: 'center', plate: true });
+          if (td > 0.2) sa.text('$N\\lambda^3/V>1$: formula fails', Math.max(0.35, Math.sqrt(0.1 * Math.min(3000,td))), yl+2, { size: 11, color: 'red', align: 'center', plate: true });
           sa.dot(Ts.value, sST(g.m, Ts.value, P, hf), { r: 6, color: 'gold' });
           keys.forEach((k, i) => {
             const S = R * sST(NOBLE[k].m, 298.15, 1e5, hf), d = S - NOBLE[k].S;
@@ -65,7 +69,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
         v.readout(() => {
           if (!st) return '';
           const { key, g, T, lam, nl3, S, S0, td, hf, P } = st;
-          return `$${g.tex}$ at ${v.fix(T, 1)} K, ${String(+(P / 1e5).toPrecision(2))} bar: $\\lambda=${v.sci(lam, 3)}$ m, $N\\lambda^3/V=${v.sci(nl3, 3)}$ ${nl3 > 0.3 ? '(**quantum regime: formula invalid**)' : ''} · $S=${v.fix(S, 2)}$ J/(mol K) = $${v.fix(S / R, 2)}\\,Nk$/atom · degeneracy temperature at this $P$: ${v.fix(td, td < 1 ? 3 : 2)} K\nstandard entropy at 298.15 K, 1 bar: formula **${v.fix(S0, 3)}** J/(mol K) vs CODATA ${g.S} (${v.fix(1e6 * (S0 - g.S) / g.S, 1)} ppm)${Math.abs(hf - 1) > 0.005 ? ` — with $h\\to${v.fix(hf, 2)}\\,h$ every entropy shifts by $-3R\\ln f=${v.fix(-3 * R * Math.log(hf), 2)}$ J/(mol K)` : ''}`;
+          return `$${g.tex}$ at ${v.fix(T, 1)} K, ${String(+(P / 1e5).toPrecision(2))} bar: $\\lambda=${v.sci(lam, 3)}$ m, $N\\lambda^3/V=${v.sci(nl3, 3)}$ ${nl3 > 0.3 ? '(**quantum regime: formula invalid**)' : ''} · $S_\\mathrm{molar}=${v.fix(S, 2)}$ J/(mol K) = $${v.fix(S / R, 2)}\\,k$/atom · degeneracy temperature at this $P$: ${v.fix(td, td < 1 ? 3 : 2)} K\nstandard entropy at 298.15 K, 1 bar: formula **${v.fix(S0, 3)}** J/(mol K) vs CODATA ${g.S} (${v.fix(1e6 * (S0 - g.S) / g.S, 1)} ppm)${Math.abs(hf - 1) > 0.005 ? ` — with $h\\to${v.fix(hf, 2)}\\,h$ every entropy shifts by $-3R\\ln f=${v.fix(-3 * R * Math.log(hf), 2)}$ J/(mol K)` : ''}`;
         });
       },
     },
@@ -518,18 +522,20 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
     // ------------------------------------------------------------------ 5.19
     {
       num: '5.19', kind: 'Paradox', name: 'Feynman’s ratchet and pawl',
-      statement: String.raw`Feynman's ratchet is a small vane in a gas at temperature $T_1$, joined by an axle to a ratchet wheel whose teeth are asymmetric, held by a spring-loaded pawl at temperature $T_2$. It seems that molecular bombardment of the vane should make the wheel rotate in the direction the teeth allow, extracting work from a single temperature. It does not: when $T_1=T_2$ the pawl itself fluctuates and occasionally lifts, letting the wheel slip backward at exactly the rate at which thermal kicks advance it, so the net rotation is zero on average. If the vane is hotter than the pawl ($T_1>T_2$) the device does turn, lifting a load until a stall load at which its efficiency equals the Carnot value $1-T_2/T_1$ (at vanishing power). In the two-rate model used here the forward and backward step rates are $r_f=r_0e^{-(\varepsilon+w)/kT_1}$ and $r_b=r_0e^{-\varepsilon/kT_2}$, with $\varepsilon$ the energy to lift the pawl over a tooth and $w$ the load work per tooth.`,
-      idea: String.raw`The statistical content is that fluctuations occur at *both* ends of the axle: whatever the vane's thermal energy can do to the ratchet, the pawl's thermal energy can undo, and at equal temperatures detailed balance forces the two rates to match (the second law, 2.1, in microscopic form). Smoluchowski had given the qualitative resolution in 1912; Feynman worked out the rates in the *Lectures*. Balancing the two rates gives the stall load $w^*=\varepsilon(T_1/T_2-1)$, and with energy $\varepsilon+w^*$ drawn from the hot vane per tooth, the efficiency $w^*/(\varepsilon+w^*)=1-T_2/T_1$ — the Carnot limit of the earlier chapter (2.7), approached only when the ratchet advances infinitely slowly.`,
-      caption: String.raw`**Adjust the vane temperature $T_1$ (the pawl stays at $T_2=1$), the lifting energy $\varepsilon$ and the load $w$**, then press play: the wheel turns by a random sequence of forward and backward steps (Gillespie simulation of the two rates). With $T_1=T_2$ the trace wanders with no drift; with $T_1>T_2$ it climbs until you raise the load beyond the stall value $w^*$, when it descends. The right panel plots the net rate against load for the chosen $T_1$ (blue) and for equal temperatures (grey).`,
-      deps: ['thermo-5.16', 'thermo-2.1'], refs: ['Schroeder ch. 4'], tags: ['ratchet', 'second law'],
-      credit: 'M. von Smoluchowski, 1912 (Physikalische Zeitschrift 13, 1069); R. P. Feynman, 1963 (Lectures on Physics vol. I, ch. 46)',
+      statement: String.raw`In the idealized ratchet model, a vane at $T_1$ and pawl at $T_2$ have forward and backward step rates
+$$r_f=r_0e^{-(\varepsilon+w)/kT_1},\qquad r_b=r_0e^{-\varepsilon/kT_2}.$$
+Here $\varepsilon>0$ lifts the pawl and $w\ge0$ is work against the load per forward tooth. At equal temperatures and zero load the mean drift vanishes; a positive load instead makes it slip backward. For $T_1>T_2$, forward operation requires $0\le w<w^*=\varepsilon(T_1/T_2-1)$. In the engine regime $0<w<w^*$, the ideal work/heat ratio is $w/(\varepsilon+w)<1-T_2/T_1$. It approaches the Carnot bound as $w\uparrow w^*$, while net power tends to zero. At exact stall the net work and net heat both vanish, so their ratio is undefined.`,
+      idea: String.raw`Both vane and pawl fluctuate. Detailed balance gives $r_f/r_b=e^{-w/kT}$ at equal temperatures, which equals one only for an unloaded wheel. Solving $r_f=r_b$ gives $w^*$. In this tightly coupled model, net hot heat is $(\varepsilon+w)(r_f-r_b)$ and net work is $w(r_f-r_b)$ per unit time. The rate ratio also gives nonnegative entropy production $k(r_f-r_b)\ln(r_f/r_b)\ge0$. These algebraic conclusions describe the stated two-rate model, not a guarantee for a real device.`,
+      caption: String.raw`**Adjust the temperatures, pawl energy and load**, then play the Gillespie trace. Changing a physical parameter restarts the trace, so the orange mean line uses the same rates as its whole history. At equal temperatures the unloaded wheel has zero drift; under load it slips backward. Right: net rate against load for the chosen temperature (blue) and equal temperatures (grey); the green zero crossing is stall.`,
+      deps: ['thermo-5.16', 'thermo-2.1'], refs: ['Feynman, Leighton & Sands, Lectures I §46-1–46-2, Table 46-1, Eq. (46.1)'], tags: ['ratchet', 'second law'],
+      credit: 'Feynman, Leighton & Sands, The Feynman Lectures on Physics I, ch. 46',
       scope: String.raw`A schematic two-rate model in the spirit of Feynman's argument: the numerical prefactors and the way heat is partitioned are simplified, and heat leaking from the vane to the pawl through the axle, which makes real ratchets far less efficient than Carnot, is ignored.`,
-      verify: true,
+      verify: false,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Brownian_ratchet' },
       viz(v) {
-        const T1 = v.slider('vane temperature $T_1$ (pawl $T_2=1$)', 1, 4, 2, { step: 0.05, fmt: (x) => v.fix(x, 2) });
-        const eps = v.slider('pawl-lifting energy $\\varepsilon/kT_2$', 0.5, 6, 3, { step: 0.05, fmt: (x) => v.fix(x, 2) });
-        const wl = v.slider('load work per tooth $w/kT_2$', 0, 8, 1, { step: 0.05, fmt: (x) => v.fix(x, 2) });
+        const T1 = v.slider('vane temperature $T_1$ (pawl $T_2=1$)', 1, 4, 2, { step: 0.05, fmt: (x) => v.fix(x, 2), onChange: () => { S.reset(); v.restart(); } });
+        const eps = v.slider('pawl-lifting energy $\\varepsilon/kT_2$', 0.5, 6, 3, { step: 0.05, fmt: (x) => v.fix(x, 2), onChange: () => { S.reset(); v.restart(); } });
+        const wl = v.slider('load work per tooth $w/kT_2$', 0, 8, 1, { step: 0.05, fmt: (x) => v.fix(x, 2), onChange: () => { S.reset(); v.restart(); } });
         const rate = v.slider('simulated time per second', 2, 200, 40, { log: true, sig: 2 });
         const S = v.sim(() => ({ n: 0, t: 0, r: v.rng(17), ser: [[0, 0]], nf: 0, nb: 0 }), (st) => {
           const rf = Math.exp(-(eps.value + wl.value) / T1.value), rb = Math.exp(-eps.value / 1), tot = rf + rb;
@@ -562,12 +568,12 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           sa.arrow(0.55, -1.0, 0.55 + 0.4, -1.0 + 0.12, { color: 'green', width: 2, head: 7 });
           sa.text(st.n >= 0 ? `+${st.n} teeth` : `${st.n.toString().replace('-', '−')} teeth`, 0, -1.3, { size: 12.5, color: 'ink', align: 'center', weight: 650 });
           const tm = Math.max(50, st.t);
-          const lo = Math.min(-5, ...st.ser.map((p) => p[1])) - 1, hi = Math.max(5, ...st.ser.map((p) => p[1])) + 1;
+          const lo = Math.min(-5, (rf-rb)*tm, ...st.ser.map((p) => p[1])) - 1, hi = Math.max(5, (rf-rb)*tm, ...st.ser.map((p) => p[1])) + 1;
           sb.setView([0, tm], [lo, hi]); sb.path(st.ser, { color: 'accent', width: 1.6 });
           sb.line(0, 0, tm, (rf - rb) * tm, { color: 'orange', width: 2, dash: [6, 4] });
           sb.hline(0, { color: 'faint', width: 1 });
-          const f = (T, w) => Math.exp(-(eps.value + w) / T) - Math.exp(-eps.value);
-          const top = Math.max(0.05, f(Math.max(T1.value, 1.0001), 0)) * 1.2;
+          const f = (T,w) => ratchet(T,eps.value,w).drift;
+          const top = Math.max(.05,...[f(T1.value,0),f(T1.value,8),f(1,0),f(1,8)].map(Math.abs))*1.2;
           sc.setView([0, 8], [-top, top]);
           sc.fn((w) => f(T1.value, w), { color: 'accent', width: 2.4, n: 100 }); sc.fn((w) => f(1, w), { color: 'muted', width: 1.8, n: 100, dash: [5, 4] });
           sc.hline(0, { color: 'ink', width: 1 });
@@ -581,7 +587,7 @@ Equivalently $S=Nk\{\ln[\tfrac VN(\tfrac{4\pi mU}{3Nh^2})^{3/2}]+\tfrac52\}$. It
           if (!info) return '';
           const { rf, rb, n, t, ws, nf, nb } = info;
           const eta = ws > 0 ? ws / (eps.value + ws) : 0;
-          return `$r_f/r_0=${v.fix(rf, 4)}$, $r_b/r_0=${v.fix(rb, 4)}$ → mean rate **${v.fix(rf - rb, 4)}** teeth per unit time ${rf > rb ? '(turns forward, lifting the load)' : rf < rb ? '(slips backward)' : '(no net motion)'} · after $t=${v.fix(t, 1)}$: ${nf} forward and ${nb} backward steps, net ${n}\nstall load $w^*=\\varepsilon(T_1/T_2-1)=${v.fix(ws, 2)}\\,kT_2$ ${T1.value === 1 ? '(zero: no engine at equal temperatures)' : ''} · efficiency at stall $w^*/(\\varepsilon+w^*)=${v.fix(eta, 3)}$ vs Carnot $1-T_2/T_1=${v.fix(1 - 1 / T1.value, 3)}$`;
+          return `$r_f/r_0=${v.fix(rf, 4)}$, $r_b/r_0=${v.fix(rb, 4)}$ → mean rate **${v.fix(rf - rb, 4)}** teeth per unit time ${rf > rb ? '(turns forward, lifting the load)' : rf < rb ? '(slips backward)' : '(no net motion)'} · after $t=${v.fix(t, 1)}$: ${nf} forward and ${nb} backward steps, net ${n}\nstall load $w^*=\\varepsilon(T_1/T_2-1)=${v.fix(ws, 2)}\\,kT_2$ ${T1.value === 1 ? '(zero: no engine at equal temperatures)' : ''} · ${T1.value>1 ? 'limiting engine work/heat ratio as stall is approached' : 'formal stall ratio (no forward engine interval at equal temperatures)'} $w^*/(\\varepsilon+w^*)=${v.fix(eta, 3)}$ vs Carnot $1-T_2/T_1=${v.fix(1 - 1 / T1.value, 3)}$ · exact stall: net power and net heat are zero (ratio undefined)`;
         });
       },
     },

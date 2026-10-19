@@ -6,6 +6,8 @@ import {
   gram, latticeSymmetry, recipBasis, gramOf, inv3, quad, planeSection, intOrbit, indexHandle, CELLS, gcd2, gcd3, lcm2, reduceIdx, idxTex, barTex, rint, invD2,
 } from './ch04.shared.js';
 
+import { planeStatus, basalTrace } from './source-audit-symmetry-indices.shared.js';
+
 export default {
   collection: 'xtal',
   chapter: 4,
@@ -137,13 +139,12 @@ export default {
       name: 'Miller–Bravais indices for hexagonal crystals',
       statement: String.raw`For a hexagonal (or trigonal, hexagonal-axes) cell use three coplanar axes $\mathbf a_1,\mathbf a_2,\mathbf a_3$ at $120^\circ$ with $\mathbf a_3=-(\mathbf a_1+\mathbf a_2)$, plus $\mathbf c$. A plane is labelled $(hkil)$ with $h,k,l$ the ordinary Miller indices with respect to $\mathbf a_1,\mathbf a_2,\mathbf c$, and the **redundant third index fixed by**
 $$i=-(h+k),\qquad\text{i.e. } h+k+i=0 .$$
-The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. Equivalent planes related by the 3-fold or 6-fold axis are then obtained by permuting $h,k,i$ cyclically (and, with a mirror, in any order), and the six faces of the first-order hexagonal prism are $\{10\bar10\}$.`,
-      idea: String.raw`The three axes in the basal plane are dependent, so any plane's trace on the basal plane, $hx_1+kx_2=1$ in coordinates along $\mathbf a_1,\mathbf a_2$, also meets the $\mathbf a_3$ axis. Putting $\mathbf a_3=-\mathbf a_1-\mathbf a_2$, i.e. $(x_1,x_2)=(-t,-t)$, gives $-(h+k)t=1$, so the intercept is $1/i$ with $i=-(h+k)$. The extra index carries no new information, but it makes the sixfold symmetry visible: rotating by $60^\circ$ shifts $(h,k,i)$ one step cyclically (with sign changes), whereas the three-index labels $(100),(010),(\bar110),\dots$ of equivalent faces look unrelated. The four-index scheme is usually credited to Bravais (the year is not confirmed here).`,
+The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. A $120^\circ$ rotation cyclically permutes $h,k,i$; a $60^\circ$ rotation additionally changes signs. Which resulting planes are crystal-symmetry equivalent depends on the actual point group, and the six faces of the first-order hexagonal prism are $\{10\bar10\}$.`,
+      idea: String.raw`The three axes in the basal plane are dependent, so any plane's trace on the basal plane, $hx_1+kx_2=1$ in coordinates along $\mathbf a_1,\mathbf a_2$, also meets the $\mathbf a_3$ axis. Putting $\mathbf a_3=-\mathbf a_1-\mathbf a_2$, i.e. $(x_1,x_2)=(-t,-t)$, gives $-(h+k)t=1$, so the intercept is $1/i$ with $i=-(h+k)$. The extra index carries no new information, but it makes the sixfold symmetry visible: rotating by $60^\circ$ shifts $(h,k,i)$ one step cyclically (with sign changes), whereas the three-index labels $(100),(010),(\bar110),\dots$ of equivalent faces look unrelated. The zero quadruple is not a plane. These are plane indices; four-axis direction indices obey a different conversion.`,
       caption: String.raw`Choose $h,k,l$ (or press *next prism face*). The blue line is the trace of the plane $(hk\cdot l)$ on the basal plane; gold dots are its intercepts on the three axes. With the lock on they are always collinear, because $i=-(h+k)$; unlock it and set $i$ by hand to see the third intercept leave the line. The table lists the six prism faces in both notations.`,
       deps: ['xtal-4.2'],
-      refs: ['Hammond ch. 5'],
+      refs: ['Nespolo2018, The rise and fall of Weber indices, complete §§2–3 pp1222 and plane/direction distinction in§4', 'IUCr Online Dictionary, Bravais-Miller indices'],
       tags: ['Miller–Bravais indices', 'hexagonal', 'symmetry'],
-      verify: true,
       links: { iucr: 'https://dictionary.iucr.org/Bravais-Miller_indices', wikipedia: 'https://en.wikipedia.org/wiki/Miller_index#Case_of_hexagonal_and_rhombohedral_structures' },
       viz(v) {
         const A1 = [1, 0], A2 = [-0.5, Math.sqrt(3) / 2], A3 = [-0.5, -Math.sqrt(3) / 2];
@@ -170,10 +171,7 @@ The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. Equivalent pl
           // trace of the plane  h x1 + k x2 = 1  (coordinates along a1, a2)
           let trace = null;
           if (h || k) {
-            const p0 = h ? [1 / h, 0] : [0, 1 / k], d = [k, -h], q = (t) => [p0[0] + t * d[0], p0[1] + t * d[1]];
-            const cart = (c) => [c[0] * A1[0] + c[1] * A2[0], c[0] * A1[1] + c[1] * A2[1]];
-            const a = cart(q(-4)), b = cart(q(4));
-            s.clip(() => s.line(a[0], a[1], b[0], b[1], { color: 'blue', width: 2.6 }));
+            const seg=basalTrace(h,k);if(seg.length)s.path(seg,{color:'blue',width:2.6});
             trace = true;
           }
           const ints = [h, k, i].map((x, j) => (x ? P(ax[j], 1 / x) : null));
@@ -199,9 +197,11 @@ The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. Equivalent pl
         });
         v.readout(() => {
           const { h, k, i, l, off, locked } = info;
+          const status=planeStatus(h,k,i,l);if(status==='inconsistent') return `Inconsistent indices: $h+k+i=${h+k+i}\\ne0$. No plane has this quadruple, including when an intercept is at infinity.`;
+          if(status==='zero')return 'The zero quadruple (0000) does not define a plane.';
           if (!h && !k) return `$(hkil)=(${[h, k, i, l].map(barTex).join('')})$: with $h=k=0$ the plane is parallel to the basal plane and its trace is at infinity (this is the plane $(000l)$, perpendicular to $\\mathbf c$).`;
           const sum = h + k + i;
-          return `Plane $(hkil)=${idxTex([h, k, i, l])}$ with $h+k+i=${sum}$${locked ? ' (forced to 0 by $i=-(h+k)$)' : ''}.\n${off === null ? 'An intercept is at infinity, so the three-point collinearity test is trivially met or not needed.' : sum === 0 ? `The three intercepts lie on one line (distance of the $\\mathbf a_3$ intercept from the line through the other two: ${fmt(off, 3)}).` : `With $h+k+i\\ne0$ the $\\mathbf a_3$ intercept (red) is ${fmt(off, 3)} off the line through the other two: no plane has these four indices.`}`;
+          return `Plane $(hkil)=${idxTex([h, k, i, l])}$ with $h+k+i=${sum}$${locked ? ' (forced to 0 by $i=-(h+k)$)' : ''}.\n${off === null ? 'An intercept is at infinity; consistency is determined by $h+k+i=0$, not a three-finite-point test.' : sum === 0 ? `The three intercepts lie on one line (distance of the $\\mathbf a_3$ intercept from the line through the other two: ${fmt(off, 3)}).` : `With $h+k+i\\ne0$ the $\\mathbf a_3$ intercept (red) is ${fmt(off, 3)} off the line through the other two: no plane has these four indices.`}`;
         });
       },
     },

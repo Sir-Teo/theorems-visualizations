@@ -1,3 +1,4 @@
+import { toyModeTamper } from './sources.audit.js';
 // Cryptography — Chapter 4, part c (items 4.9–4.12): ECB, CBC/CTR, padding oracle, side channels
 import {
   clamp, pixc as pix, mix2, hx, popcnt, feistel8, feistel8inv, aesKeys, aes, aesDec, SBOX, textBitmap, smileyBitmap, bytesHex,
@@ -61,16 +62,15 @@ export default {
       num: '4.10',
       kind: 'Algorithm',
       name: 'CBC and counter modes',
-      statement: String.raw`Let $E_k$ be a block cipher (a permutation family; in CTR mode a pseudorandom function suffices) on $b$-bit blocks and $m=m_1\|\cdots\|m_t$. **CBC:** pick a uniform IV $c_0\in\{0,1\}^b$ and set $c_i=E_k(m_i\oplus c_{i-1})$; output $(c_0,c_1,\dots,c_t)$; decrypt by $m_i=E_k^{-1}(c_i)\oplus c_{i-1}$. **CTR:** pick a nonce/counter value $\mathsf{ctr}$ uniformly and set $c_i=m_i\oplus F_k(\mathsf{ctr}+i)$; output $(\mathsf{ctr},c_1,\dots,c_t)$. If $E$ is a pseudorandom permutation (resp. $F$ a pseudorandom function) then both schemes are CPA-secure provided the IV (resp. counter range) is chosen at random, with the advantage degrading like $q^2t^2/2^b$ ($q$ messages of $t$ blocks). A *predictable* CBC IV, or a repeated CTR value, destroys security. Neither mode authenticates: flipping bit $j$ of $c_i$ in CTR flips bit $j$ of $m_i$ and nothing else; in CBC it scrambles $m_i$ and flips bit $j$ of $m_{i+1}$.`,
-      idea: String.raw`In CTR the pad blocks $F_k(\mathsf{ctr}+i)$ are pseudorandom and, as long as the counter ranges of different messages do not overlap, fresh — CTR is a pseudorandom generator in disguise (3.7, 3.12), and decryption never uses $E^{-1}$. In CBC the value $m_i\oplus c_{i-1}$ fed to $E$ is new with overwhelming probability, so $c_i$ looks uniform: the IV randomises the whole chain. The tampering behaviour is the flip side of the same structure: both modes are *malleable* (5.16), CTR in the most direct way.`,
-      caption: String.raw`Type a short message (up to 6 characters), choose a mode, and flip one bit of one ciphertext block with the sliders. The diagram shows the encryption circuit (toy 8-bit block cipher), the ciphertext blocks (the tampered bit in red) and the decryption of the tampered ciphertext: **red** plaintext blocks differ from the original. In CTR exactly one bit changes; in CBC one block turns to garbage and the next gets the flipped bit — flipping a bit of the IV changes only the first block.`,
-      scope: String.raw`Toy 8-bit block cipher; the CTR pad is a hashed function of the counter (an idealised PRF) and the nonce is an offset added to the block index modulo $256$. The security bound quoted is the standard birthday-type bound (Katz–Lindell Thm 3.32 style); real systems use 128-bit blocks and 96-bit nonces.`,
+      statement: String.raw`For a block cipher $E_k$ on $b$-bit blocks, **CBC** sets $c_0=\mathrm{IV}$ and $c_i=E_k(m_i\oplus c_{i-1})$, and decrypts $m_i=E_k^{-1}(c_i)\oplus c_{i-1}$. The IV must be unpredictable before the plaintext is chosen; an independent uniform IV is a sufficient choice. **CTR** uses distinct counter input blocks $T_i$ and sets $c_i=m_i\oplus F_k(T_i)$, decrypting with the same XOR. Counter blocks must be unique **across all blocks of all messages under a key**, including prevention of wrap/reuse; unique starting values alone do not exclude overlapping ranges. With efficient constructions, appropriate superpolynomial block spaces and polynomial usage, secure PRPs give CPA-secure random-IV CBC; a secure PRF gives nonce-respecting CPA-secure CTR on disjoint counter inputs. CBC's bounds include birthday terms; substituting a PRP for the CTR PRF also incurs a switching term. Neither mode alone authenticates. A CTR ciphertext-bit flip flips exactly that plaintext bit. A CBC ciphertext-block change produces an uncontrolled nonzero change in its plaintext block, and the same XOR difference in the next block when present.`,
+      idea: String.raw`Distinct CTR inputs to a random function yield independent pads; a PRF reduction carries this to computational confidentiality. Reusing an input reuses a pad, revealing an XOR of plaintexts. CBC's fresh unpredictable IV prevents an adversary from arranging the first cipher input by cancelling a predicted IV. Its proof replaces the block cipher by a random function through switching and bounds collisions among internal inputs. These are security reductions under explicit usage assumptions, whereas the diagram checks only decryption and tampering identities. NIST SP 800-38A specifies the operations and IV/counter requirements; Boneh–Shoup supplies the security proofs.`,
+      caption: String.raw`Type a message: the first six **UTF-8 bytes** are shown as toy one-byte blocks (empty input uses A). Change mode, ciphertext/header block and bit. Red plaintext cells differ after tampering. In CTR a payload-bit flip affects exactly one bit; changing its counter header may alter multiple pads, with collisions possible. In CBC, changing the IV flips only the corresponding bit of the first plaintext block; a payload change affects that block and, when present, the same bit of the next. The block slider adapts to the actual byte count.`,
+      scope: String.raw`Tampering illustration with an exhaustible 8-bit Feistel permutation and a deterministic non-cryptographic hash mixer for CTR pads; neither is a secure primitive or an ideal PRF. The toy counter wraps modulo 256 and is unsuitable for repeated-key use. No authentication, padding or production encryption is implemented. Specification: NIST SP 800-38A §§6.2,6.5, Appendices B,C,D; asymptotic proofs: Boneh–Shoup v0.6 Theorems 5.3–5.4 and nonce-based CTR §5.5.2.`,
       deps: ['crypto-3.12'],
       tags: ['CBC', 'CTR', 'modes of operation'],
-      refs: ['Katz–Lindell §3.6.3'],
-      credit: 'CBC: Ehrsam, Meyer, Smith & Tuchman (IBM patent US 4,074,066, filed 1976); CTR: Diffie & Hellman, Proc. IEEE 67 (1979); standardised in NIST SP 800-38A (2001)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation' },
+      refs: ['NIST SP 800-38A (2001), §§6.2,6.5, Appendices B–D', 'Boneh–Shoup v0.6, §§5.4.2–5.4.3, Theorems 5.3–5.4; §5.5.2 nonce-based CTR'],
+      credit: 'NIST SP 800-38A (2001), specification; Boneh–Shoup v0.6, security reductions',
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation', 'NIST SP 800-38A': 'https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf', 'Boneh–Shoup v0.6': 'https://crypto.stanford.edu/~dabo/cryptobook/BonehShoup_0_6.pdf' },
       viz(v) {
         const sD = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true });
         const msg = v.input('Message', 'PAY 10', { width: 160 });
@@ -81,15 +81,11 @@ export default {
         const D = (k, y) => feistel8inv(k, y);
         let info = null;
         v.render(() => {
-          const text = (msg.value || 'A').slice(0, 6), m = [...text].map((ch) => ch.charCodeAt(0) & 255), t = m.length;
+          const m = Array.from(new TextEncoder().encode(msg.value || 'A').slice(0, 6)), t = m.length, text = m.map(printable).join('');
           const k = mix2(seed, 5) & 0xffff, iv = mix2(seed, 17) & 255, cbc = mode.value === 'CBC';
-          const ks = (i) => mix2(k, 5000 + ((iv + i) & 255)) & 255;
-          let c; // c[0] is IV / counter
-          if (cbc) { c = [iv]; for (let i = 0; i < t; i++) c.push(feistel8(k, m[i] ^ c[i])); } else { c = [iv]; for (let i = 0; i < t; i++) c.push(m[i] ^ ks(i + 1)); }
-          const jmax = t; jS.el.hidden = false;
-          const j = Math.min(jS.value, jmax), bit = bS.value;
-          const c2 = c.slice(); c2[j] ^= 1 << bit;
-          const m2 = []; for (let i = 1; i <= t; i++) m2.push(cbc ? (D(k, c2[i]) ^ c2[i - 1]) : (c2[i] ^ (mix2(k, 5000 + ((c2[0] + i) & 255)) & 255)));
+          jS.input.max = String(t); if (jS.value > t) jS.set(t);
+          const j = jS.value, bit = bS.value;
+          const { c, c2, m2 } = toyModeTamper(m, k, iv, cbc, j, bit);
           const P = pix(sD), Wd = P.W, nbk = t + 1, cw = Math.min(110, (Wd - 30) / nbk), x0 = (Wd - nbk * cw) / 2;
           const bx = (x, y, w, h, txt, col, on = true, sz = 12) => { P.rect(x, y, w, h, { fill: col, fillAlpha: on ? 0.14 : 0.05, color: col, width: on ? 1.6 : 1, radius: 6 }); P.text(txt, x + w / 2, y + h / 2, { size: sz, weight: 700, color: col, halo: false }); };
           P.text(cbc ? 'CBC encryption:  c_i = E_k(m_i ⊕ c_{i−1})' : 'CTR encryption:  c_i = m_i ⊕ F_k(ctr + i)', 10, 12, { size: 12.5, weight: 700, color: 'ink', align: 'left', halo: false });
@@ -107,12 +103,12 @@ export default {
           let dmg = 0;
           for (let i = 1; i <= t; i++) { const x = x0 + i * cw + 3, w = cw - 6, bad = m2[i - 1] !== m[i - 1]; if (bad) dmg++; bx(x, yd, w, 38, `${printable(m2[i - 1])}  (${hx(m2[i - 1])})`, bad ? 'red' : 'green', true, 13); P.text(bad ? `Δ = ${(m2[i - 1] ^ m[i - 1]).toString(2).padStart(8, '0')}` : 'unchanged', x + w / 2, yd + 52, { size: 10.5, color: bad ? 'red' : 'muted', halo: false, weight: bad ? 700 : 400 }); }
           P.text(`plaintext  ${text}   →   tampered result  ${m2.map(printable).join('')}`, Wd / 2, 296, { size: 13, weight: 700, color: 'ink', halo: false });
-          info = { dmg, t, j, cbc, bit, m, m2 };
+          info = { dmg, t, j, cbc, bit, m, m2, c, c2, k, iv };
         });
         v.readout(() => {
           const i = info; if (!i) return '';
           const pos = i.j === 0 ? (i.cbc ? 'the IV' : 'the counter value') : `ciphertext block $c_${i.j}$`;
-          return String.raw`Flipping bit ${i.bit} of ${pos} changes **${i.dmg}** of the ${i.t} plaintext block${i.t > 1 ? 's' : ''}` + (i.cbc ? (i.j === 0 ? ': the first block gets exactly that bit flipped (the attacker controls it).' : i.j < i.t ? String.raw`: block $m_${i.j}$ is garbled, and $m_${i.j + 1}$ gets exactly the flipped bit — a chosen change.` : String.raw`: only block $m_${i.j}$, and it is garbled.`) : (i.j === 0 ? ': the counter changed, so *every* pad changes and the whole message turns to noise.' : String.raw`: only $m_${i.j}$, and exactly bit ${i.bit} — a chosen change.`)) + ' Neither mode detects tampering.';
+          return String.raw`Flipping bit ${i.bit} of ${pos} changes **${i.dmg}** of the ${i.t} plaintext block${i.t > 1 ? 's' : ''}` + (i.cbc ? (i.j === 0 ? ': the first block gets exactly that bit flipped (the attacker controls it).' : i.j < i.t ? String.raw`: block $m_${i.j}$ has an uncontrolled nonzero change, and $m_${i.j + 1}$ gets exactly the flipped bit — a chosen change.` : String.raw`: only block $m_${i.j}$, and it has an uncontrolled nonzero change.`) : (i.j === 0 ? ': a changed counter header can alter all pad positions, but toy pad collisions may leave some bytes unchanged.' : String.raw`: only $m_${i.j}$, and exactly bit ${i.bit} — a chosen change.`)) + ' Neither mode detects tampering.';
         });
       },
     },

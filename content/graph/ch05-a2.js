@@ -4,6 +4,8 @@ import {
   alphaMask, popcnt, edgeColourWith, maxDeg, gnm, grotzsch, regularGraph, konigFrames, vizingFrames, hajosRecipe, TAU,
 } from './ch05-a.shared.js';
 
+import {brooksPlan,erdosBounds,factorizationObstruction} from './ch05-brooks-edge-audit.shared.js';
+
 const cc = (c) => (c >= 0 ? COL[c % COL.length] : null);
 const opts = (P) => Object.entries(P).map(([value, a]) => ({ value, label: a[0] }));
 const nm = (G, H) => (u) => String(G.lab(H.ids[u]));
@@ -78,12 +80,11 @@ export default {
     },
     {
       num: '5.2.4', kind: 'Theorem', name: 'Brooks’s theorem',
-      statement: String.raw`Let $G$ be a connected graph that is neither complete nor an odd cycle. Then $\chi(G)\le\Delta(G)$.`,
-      idea: String.raw`Greedy colouring uses at most $\Delta$ colours as soon as every vertex but the last has a *later* neighbour. If some vertex $z$ has degree $<\Delta$, order the vertices by decreasing distance from $z$, with $z$ last. Otherwise $G$ is $\Delta$-regular; (Lovász) choose a vertex $v$ with two non-adjacent neighbours $x,y$ such that $G-x-y$ is connected, put $x,y$ first (they get the same colour) and the rest by decreasing distance from $v$ in $G-x-y$, with $v$ last: then $v$ sees only $\Delta-1$ colours. Complete graphs and odd cycles are exactly the connected graphs with $\chi=\Delta+1$.`,
-      caption: String.raw`Pick a graph and step through the greedy colouring in the order the proof prescribes (gold: the root $z$ or $v$; purple: the two vertices $x,y$ that share a colour). Switch off *proof order* to colour in label order and see greedy overshoot $\Delta$. $K^4$ and $C^5$ are the exceptions.`,
-      deps: ['graph-5.2.1a', 'graph-1.4.1b'], refs: ['Diestel §5.2'], tags: ['colouring', 'greedy'],
-      credit: 'Brooks, 1941; short proof by Lovász, 1975', verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Brooks%27_theorem' },
+      statement: String.raw`Let $G$ be a finite connected simple graph that is neither complete nor an odd cycle. Then $\chi(G)\le\Delta(G)$.`,
+      idea: String.raw`If every vertex except the last has a later neighbour, each earlier vertex sees at most $\Delta-1$ already-coloured neighbours; the last needs an extra argument. If some vertex $z$ has degree $<\Delta$, order the vertices by decreasing distance from $z$, with $z$ last. First reduce a graph with cutvertices to its blocks and permute colour names to agree at shared vertices. In the remaining 2-connected $\Delta$-regular case with $\Delta\ge3$, choose a vertex $v$ with two non-adjacent neighbours $x,y$ such that $G-x-y$ is connected, put $x,y$ first (they get the same colour) and the rest by decreasing distance from $v$ in $G-x-y$, with $v$ last: then $v$ sees only $\Delta-1$ colours. Complete graphs and odd cycles are exactly the connected graphs with $\chi=\Delta+1$.`,
+      caption: String.raw`Pick a graph and step through the greedy colouring in the order the proof prescribes (gold: the root $z$ or $v$; purple: the two vertices $x,y$ that share a colour). Switch off *proof order* to compare label order, which can use more than $\Delta$ colours. $K^4$ and $C^5$ are the exceptions.`,
+      deps: ['graph-5.2.1a', 'graph-1.4.1b'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 5.2.4, pp. 127–129; Exercise 17, p. 149', 'Lovász, Three Short Proofs in Graph Theory, pp. 269–270 (1975)'], tags: ['colouring', 'greedy'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=5', wikipedia: 'https://en.wikipedia.org/wiki/Brooks%27_theorem' },
       viz(v) {
         const P = {
           pet: ['Petersen', () => named('petersen')], cube: ['cube', () => named('cube')], w5: ['wheel', () => wheel(6)], c6: ['$C^6$', () => named('cycle', 6)],
@@ -94,25 +95,6 @@ export default {
         let seed = 1, H, plan, S;
         const gsel = v.select('graph', opts(P), 'pet', { onChange: () => load() });
         const proof = v.toggle('proof order', true, { onChange: () => load() });
-        function brooksPlan(H) {
-          const adj = nbrs(H), n = H.n, D = Math.max(...adj.map((l) => l.length)), regular = adj.every((l) => l.length === D);
-          if (adj.every((l) => l.length === n - 1)) return { excl: 'complete graph', D };
-          if (regular && D === 2 && n % 2) return { excl: 'odd cycle', D };
-          const dec = (alive, root) => { const d = new Array(n).fill(-1); d[root] = 0; const q = [root]; for (let i = 0; i < q.length; i++) for (const w of adj[q[i]]) if (alive[w] && d[w] < 0) { d[w] = d[q[i]] + 1; q.push(w); } return { d, q }; };
-          if (!regular) {
-            const z = adj.findIndex((l) => l.length < D), { d } = dec(new Array(n).fill(true), z);
-            return { D, kind: 'low', z, order: [...Array(n).keys()].sort((a, b) => d[b] - d[a] || a - b), note: `vertex ${z + 1} has degree below $\\Delta$: order by decreasing distance from it` };
-          }
-          for (let vv = 0; vv < n; vv++) for (const x of adj[vv]) for (const y of adj[vv]) if (x < y && !adj[x].includes(y)) {
-            const alive = new Array(n).fill(true); alive[x] = alive[y] = false;
-            const r = dec(alive, vv); if (r.q.length === n - 2) {
-              const rest = r.q.slice().reverse();
-              return { D, kind: 'triple', z: vv, x, y, order: [x, y, ...rest], note: `$\\Delta$-regular: $v=${vv + 1}$ has non-adjacent neighbours $x=${x + 1}$, $y=${y + 1}$ and $G-x-y$ is connected` };
-            }
-          }
-          const { q } = dec(new Array(n).fill(true), 0);
-          return { D, kind: 'bfs', z: -1, order: q, note: 'no suitable triple (e.g. an even cycle): breadth-first order is enough here' };
-        }
         function frames() {
           const adj = nbrs(H), col = new Array(H.n).fill(-1), fr = [];
           const order = proof.value && plan.order ? plan.order : [...Array(H.n).keys()];
@@ -132,11 +114,11 @@ export default {
           if (S) S.reset(frames(), { at: 'end' });
         }
         load();
-        S = v.steps({ frames: frames(), start: 'end', still: 'end', speed: 1.2, codePos: 'below', code: ['order the vertices so that every vertex but the last has a later neighbour', '  (decreasing distance from a vertex z of degree < Δ, or from v after x, y)', 'colour greedily in that order', 'every vertex sees ≤ Δ − 1 earlier colours, and the last one sees ≤ Δ − 1 distinct'], codeTitle: 'Brooks’s colouring' });
+        S = v.steps({ frames: frames(), start: 'end', still: 'end', speed: 1.2, codePos: 'below', code: ['reduce at cutvertices; otherwise choose a low-degree root or a nonseparating pair', '  (decreasing distance from a vertex z of degree < Δ, or from v after x, y)', 'colour greedily in that order', 'every vertex sees ≤ Δ − 1 earlier colours, and the last one sees ≤ Δ − 1 distinct'], codeTitle: 'Brooks’s colouring' });
         v.button('Another random graph', () => { seed++; gsel.set('rnd', { fire: true }); load(); });
         v.render(() => {
           const f = S.frame; if (!f.col) return;
-          G.draw({ nodeFill: (id) => cc(f.col[H.at(id)]), nodeRing: (id) => { const u = H.at(id); if (f.cur === u) return 'gold'; if (proof.value && plan.kind === 'triple' && (u === plan.x || u === plan.y)) return 'purple'; if (proof.value && plan.kind && plan.kind !== 'bfs' && u === plan.z) return 'gold'; return null; } });
+          G.draw({ nodeFill: (id) => cc(f.col[H.at(id)]), nodeRing: (id) => { const u = H.at(id); if (f.cur === u) return 'gold'; if (proof.value && plan.kind === 'triple' && (u === plan.x || u === plan.y)) return 'purple'; if (proof.value && plan.kind && plan.z >= 0 && u === plan.z) return 'gold'; return null; } });
         });
         v.readout(() => {
           const f = S.frame; if (!f.col) return ''; const used = f.col.some((c) => c < 0) ? Math.max(0, ...f.col) + 1 : Math.max(...f.col) + 1;
@@ -145,13 +127,13 @@ export default {
       },
     },
     {
-      num: '5.2.5', kind: 'Theorem', name: 'Erdős: graphs of large girth and large chromatic number', verify: true,
-      statement: String.raw`For every $k\ge 1$ and $g\ge3$ there is a graph $G$ with girth greater than $g$ and chromatic number greater than $k$. The proof is probabilistic: the existence is certain but no explicit graph is produced.`,
-      idea: String.raw`Take a random graph on $n$ vertices with edge probability $p=n^{\varepsilon-1}$ for a small $\varepsilon<1/g$. The expected number of cycles of length $\le g$ is $\sum_{i\le g}(np)^i/2i=o(n)$, so with positive probability fewer than $n/2$ vertices lie on short cycles. At the same time, the chance of an independent set of size $r=\lceil n/2k\rceil$ is at most $\binom nr(1-p)^{\binom r2}\le (ne^{-p(r-1)/2})^r\to0$. Delete one vertex from each short cycle: at least $n/2$ vertices remain, every independent set has fewer than $n/2k$ vertices, so $\chi>k$.`,
-      caption: String.raw`Right: the two estimates of the proof against $\log_{10}n$ for your $k$, $g$ and $\varepsilon=f/g$. Orange: the bound on the chance of $\ge n/2$ short cycles; blue: the base $b=ne^{-p(r-1)/2}$ of the bound $b^r$ on an independent set of size $r\approx n/2k$ (it needs $b<1$, and then $b^r$ is tiny). The green zone is where both bounds fall below $\frac12$: only for astronomically large $n$. Left: a small sample (with its own density) on which the construction is run for real; at this size $\chi$ stays small — that is the honest picture.`,
-      deps: ['graph-5.1.1a', 'graph-1.3.1b'], refs: ['Diestel §5.2'], see: ['graph-11.2.2', 'comb-12.10'], tags: ['probabilistic method', 'girth', 'colouring'],
-      credit: 'Erdős, 1959', scope: String.raw`The curves use the first-moment bounds from the proof (an upper bound on probabilities), not exact values; the sample on the left is a model illustration at a tiny $n$.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Probabilistic_method' },
+      num: '5.2.5', kind: 'Theorem', name: 'Erdős: graphs of large girth and large chromatic number',
+      statement: String.raw`For every pair of integers $k\ge 1$ and $g\ge3$ there is a graph $G$ with girth greater than $g$ and chromatic number greater than $k$. The classical existence proof is probabilistic; this display illustrates that proof. The two-parameter form follows from the book’s single parameter by taking its maximum.`,
+      idea: String.raw`Take a random graph on $n$ vertices with edge probability $p=n^{\varepsilon-1}$ with $0<\varepsilon<1/g$. The expected number of cycles of length $3\le i\le g$ is at most $\sum_{i=3}^g(np)^i/(2i)=o(n)$, so with probability tending to one there are fewer than $n/2$ short cycles. At the same time, the chance of an independent set of size $r=\lceil n/2k\rceil$ is at most $\binom nr(1-p)^{\binom r2}\le (ne^{-p(r-1)/2})^r\to0$. Delete one vertex from each short cycle: at least $n/2$ vertices remain, every independent set has fewer than $n/2k$ vertices, so $\chi>k$.`,
+      caption: String.raw`Right: the two estimates of the proof against $\log_{10}n$ for your $k$, $g$ and $\varepsilon=f/g$. Orange: the bound on the chance of $\ge n/2$ short cycles; blue: the bound $(ne^{-p(r-1)/2})^r$ on the existence of an independent set of size $r=\lceil n/2k\rceil$. Values above 1 are harmless upper estimates; values below the plot floor are clipped explicitly. Green points mark checked grid values where both bounds fall below $\frac12$, giving the proof’s sufficient estimate. The marked boundary is the first checked grid point, not a certified least integer $n$. Left: a small sample (with its own density) on which the construction is run for real; the readout gives its computed girth, independence number and chromatic bounds.`,
+      deps: ['graph-5.1.1a', 'graph-1.3.1b'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 5.2.5, p. 130 (the two-parameter equivalent form)', 'Diestel, Lemmas 11.1.2, 11.1.4–5 and Theorem 11.2.2, pp. 342–347'], see: ['graph-11.2.2', 'comb-12.10'], tags: ['probabilistic method', 'girth', 'colouring'],
+      scope: String.raw`The curves use the first-moment bounds from the proof (an upper bound on probabilities), not exact values; the sample on the left is a model illustration at a tiny $n$.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=8', wikipedia: 'https://en.wikipedia.org/wiki/Probabilistic_method' },
       viz(v) {
         const sG = gstage(v, { height: 320, title: 'a small sample, short cycles deleted' });
         const sA = v.stage({ x: [0, 40], y: [-12, 4], axes: 'box', gutter: true, height: 320, xlabel: '$\\log_{10} n$', ylabel: '$\\log_{10}$ of the quantity', title: 'the two estimates of the proof' });
@@ -166,17 +148,15 @@ export default {
         const LN10 = Math.LN10;
         v.render(() => {
           const k = +kS.value, g = +gS.value, eps = fS.value / g, half = Math.log10(0.5);
-          // c1: Markov bound 2A/n on P(at least n/2 short cycles), A = sum_{i<=g} (np)^i / 2i = sum n^{eps i}/2i
-          const c1 = (t) => { let A = 0; for (let i = 3; i <= g; i++) A += Math.pow(10, i * eps * t) / (2 * i); return Math.log10(2 * A) - t; };
-          // c2: log10 of b = n e^{-p(r-1)/2}; the bound on P(alpha >= r) is b^r, r = ceil(n/2k)
-          const base = (t) => { const n = Math.pow(10, t), r = Math.ceil(n / (2 * k)), p = Math.pow(n, eps - 1); return { lb: (Math.log(n) - (p * (r - 1)) / 2) / LN10, r }; };
-          const clamp = (y) => Math.max(-12, Math.min(4, y));
-          sA.fn((t) => clamp(c1(t)), { domain: [0.3, 40], color: 'orange', width: 2.5 });
-          sA.fn((t) => clamp(base(t).lb), { domain: [0.3, 40], color: 'accent', width: 2.5 });
+          const c1=t=>erdosBounds(t,k,g,fS.value).cycles, c2=t=>erdosBounds(t,k,g,fS.value).independent;
+          const clamp=y=>Math.max(-12,Math.min(4,y));
+          sA.fn(t=>clamp(c1(t)),{domain:[0.3,40],color:'orange',width:2.5});
+          sA.fn(t=>clamp(c2(t)),{domain:[0.3,40],color:'accent',width:2.5});
           sA.hline(half, { color: 'green', dash: true }); sA.hline(0, { color: 'muted', dash: true, alpha: 0.5 });
-          let tStar = null;
-          for (let t = 0.3; t <= 40; t += 0.02) { const b = base(t); if (c1(t) < half && b.r * b.lb < half) { tStar = t; break; } }
-          if (tStar != null) { sA.vband(tStar, 40, { color: 'green', alpha: 0.12 }); sA.vline(tStar, { color: 'green', width: 2 }); }
+          let tStar=null;const checked=[];
+          for(let t=.3;t<=40;t+=.02)if(c1(t)<half&&c2(t)<half){if(tStar==null)tStar=t;checked.push([t,-11.7]);}
+          if(checked.length)sA.dots(checked,{color:'green',r:1.3});
+          if(tStar!=null)sA.vline(tStar,{color:'green',width:2});
           sA.text('½', 39.5, half + 0.5, { align: 'right', color: 'green' });
           const n = nS.value, key = [n, k, g, dS.value, seed].join(':');
           if (samp.key !== key) {
@@ -194,21 +174,21 @@ export default {
           G.draw({ dim: [...samp.gone] });
           info = { tStar, eps };
         });
-        v.legend([['orange', '$\\frac{2}{n}\\sum_{i\\le g}\\frac{(np)^i}{2i}$: bound on $P(\\ge n/2$ short cycles$)$'], ['accent', '$n\\,e^{-p(r-1)/2}$: base of the bound on $P(\\alpha\\ge r)$, $r=\\lceil n/2k\\rceil$'], ['green', 'both bounds below ½ (green zone)']]);
+        v.legend([['orange', '$\\frac{2}{n}\\sum_{i=3}^g\\frac{(np)^i}{2i}$: bound on $P(\\ge n/2$ short cycles$)$'], ['accent', '$(n\\,e^{-p(r-1)/2})^r$: bound on $P(\\alpha\\ge r)$, $r=\\lceil n/2k\\rceil$'], ['green', 'checked grid values with both bounds below ½']]);
         v.readout(() => {
           const x = samp, i = info;
-          const t = i.tStar == null ? 'beyond $10^{40}$' : `$n\\ge 10^{${v.fix(i.tStar, 1)}}$`;
-          return `with $p=n^{\\varepsilon-1}$, $\\varepsilon=${v.fix(i.eps, 3)}$, the proof works from ${t} on\n` + `sample (its own density): $n=${x.n}$, ${x.m} edges, ${x.gone.size} vertices deleted to reach girth $>g$: $n'=${x.H.n}$, girth ${x.gi === Infinity ? '$\\infty$' : x.gi}, $\\alpha=${x.al}$, so $\\chi\\ge\\lceil n'/\\alpha\\rceil=${x.al ? Math.ceil(x.H.n / x.al) : '-'}$` + (x.ch ? `, exactly $\\chi=${x.ch.k}$` : '');
+          const t = i.tStar == null ? 'no grid point up to $10^{40}$ satisfies both bounds' : `first checked point $\\log_{10}n\\approx${v.fix(i.tStar,2)}$ satisfies both bounds`;
+          return `with $p=n^{\\varepsilon-1}$, $\\varepsilon\\approx${v.fix(i.eps, 3)}$, ${t}; curves are clipped to $[-12,4]$\n` + `sample (its own density): $n=${x.n}$, ${x.m} edges, ${x.gone.size} vertices deleted to reach girth $>g$: $n'=${x.H.n}$, girth ${x.gi === Infinity ? '$\\infty$' : x.gi}, $\\alpha=${x.al}$, so $\\chi\\ge\\lceil n'/\\alpha\\rceil=${x.al ? Math.ceil(x.H.n / x.al) : '-'}$` + (x.ch ? `, $\\chi${x.ch.exact?'=':'\\ge'}${x.ch.k}$` : '');
         });
       },
     },
     {
-      num: '5.2.5a', kind: 'Definition', name: 'k-constructible graphs (Hajós construction)', verify: true,
-      statement: String.raw`For $k\ge1$ the class of **$k$-constructible** graphs is generated by three rules: (i) $K^k$ is $k$-constructible; (ii) (*Hajós join*) if $G_1,G_2$ are disjoint $k$-constructible graphs with edges $x_1y_1\in G_1$, $x_2y_2\in G_2$, then deleting these two edges, identifying $x_1$ with $x_2$ and adding the edge $y_1y_2$ gives a $k$-constructible graph; (iii) identifying two non-adjacent vertices of a $k$-constructible graph gives a $k$-constructible graph. Every $k$-constructible graph has $\chi\ge k$.`,
-      idea: String.raw`Each rule preserves "not $(k-1)$-colourable". For the join, a $(k-1)$-colouring would give $x_1=x_2$ one colour; then $y_1$ and $y_2$ cannot both share it (they are adjacent), so one of the deleted edges $x_iy_i$ is still properly coloured and the colouring extends to the corresponding original graph, a contradiction. Identifying two non-adjacent vertices only merges colour classes. The smallest example of a join is the Moser spindle, built from two $K^4$.`,
+      num: '5.2.5a', kind: 'Definition', name: 'k-constructible graphs (Hajós construction)',
+      statement: String.raw`For an integer $k\ge1$ the class of **$k$-constructible** graphs is generated by three rules: (i) $K^k$ is $k$-constructible; (ii) (*Hajós join*) if $G_1,G_2$ are disjoint $k$-constructible graphs with edges $x_1y_1\in G_1$, $x_2y_2\in G_2$, then deleting these two edges, identifying $x_1$ with $x_2$ and adding the edge $y_1y_2$ gives a $k$-constructible graph; (iii) identifying two non-adjacent vertices of a $k$-constructible graph gives a $k$-constructible graph. Every $k$-constructible graph has $\chi\ge k$.`,
+      idea: String.raw`Each rule preserves "not $(k-1)$-colourable". For the join, a $(k-1)$-colouring would give $x_1=x_2$ one colour; then $y_1$ and $y_2$ cannot both share it (they are adjacent), so one of the deleted edges $x_iy_i$ is still properly coloured and the colouring extends to the corresponding original graph, a contradiction. A colouring after identifying two non-adjacent vertices pulls back to a colouring of the original graph. For $k=4$, joining two copies of $K^4$ gives the abstract Moser spindle.`,
       caption: String.raw`Start from $K^k$. Click an edge (the end nearer to your click becomes the glued vertex) and press *join with a new $K^k$*; or click two non-adjacent vertices and press *identify*. The readout keeps checking $\chi\ge k$ by exhaustive search. Try $k=4$: one join of two $K^4$ gives the 7-vertex Moser spindle.`,
-      deps: ['graph-5.1.1a'], refs: ['Diestel §5.2'], tags: ['Hajós', 'colouring'],
-      credit: 'Hajós, 1961', links: { wikipedia: 'https://en.wikipedia.org/wiki/Haj%C3%B3s_construction' },
+      deps: ['graph-5.1.1a'], refs: ['Diestel, Graph Theory, 6th ed. (2025), unnumbered k-constructible definition, p. 130'], tags: ['Hajós', 'colouring'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=8', wikipedia: 'https://en.wikipedia.org/wiki/Haj%C3%B3s_construction' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const kS = v.select('$k$', [3, 4, 5].map((x) => ({ value: String(x), label: String(x) })), '4', { onChange: () => reset() });
@@ -259,16 +239,16 @@ export default {
             edgeColor: (e) => (e === sel.e ? 'gold' : null), edgeWidth: (e) => (e === sel.e ? 5 : null),
           });
         });
-        v.readout(() => { const H = ix(G), r = chi(G), k = +kS.value; return `$n=${H.n}$, $m=${H.m}$ · $\\chi(G)=${r.exact ? r.k : '\\ge' + r.k}\\ge k=${k}$ ${r.k >= k ? '✓' : ''}\n${log.slice(-4).join(' → ')}` + (H.n + k - 1 > 20 ? '\n(joins are disabled above 20 vertices)' : ''); });
+        v.readout(() => { const H = ix(G), r = chi(G), k = +kS.value; return `$n=${H.n}$, $m=${H.m}$ · $\\chi(G)${r.exact ? '=' : '\\ge'}${r.k}\\ge k=${k}$ ${r.k >= k ? '✓' : ''}\n${log.slice(-4).join(' → ')}` + (H.n + k - 1 > 20 ? '\n(joins are disabled above 20 vertices)' : ''); });
       },
     },
     {
-      num: '5.2.6', kind: 'Theorem', name: 'Hajós: χ ≥ k iff there is a k-constructible subgraph', verify: true,
-      statement: String.raw`A graph $G$ has $\chi(G)\ge k$ if and only if it contains a $k$-constructible subgraph. In particular every graph with $\chi\ge k$ can be reduced to $K^k$'s by the three Hajós operations.`,
+      num: '5.2.6', kind: 'Theorem', name: 'Hajós: χ ≥ k iff there is a k-constructible subgraph',
+      statement: String.raw`A finite simple graph $G$ has $\chi(G)\ge k$, for an integer $k\ge1$, if and only if it contains a $k$-constructible subgraph. The construction certifies a subgraph with chromatic number at least $k$.`,
       idea: String.raw`"If" is 5.2.5a. For "only if" take an edge-maximal counterexample $G$ on a fixed vertex set. It is not complete multipartite (that would contain $K^k$), so there are $x,y_1,y_2$ with $xy_1,xy_2\notin E$ but $y_1y_2\in E$. By maximality $G+xy_1$ and $G+xy_2$ contain $k$-constructible subgraphs $H_1\ni xy_1$ and $H_2\ni xy_2$. Join them at $x$ (deleting both added edges, adding $y_1y_2$) and identify the remaining copies of corresponding vertices: this is a $k$-constructible subgraph of $G$. The picture runs this argument as a recursion.`,
       caption: String.raw`Step through the construction found by the proof for the chosen graph. Green edges belong to $G$; orange dashed edges are "virtual" edges that the recursion added to $G$ and that later joins remove again. A join at $x$ merges two earlier steps (named in the note); the last step is a $k$-constructible subgraph of $G$.`,
-      deps: ['graph-5.2.5a'], refs: ['Diestel §5.2'], tags: ['Hajós', 'colouring'],
-      credit: 'Hajós, 1961', links: { wikipedia: 'https://en.wikipedia.org/wiki/Haj%C3%B3s_construction' },
+      deps: ['graph-5.2.5a'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 5.2.6, p. 131'], tags: ['Hajós', 'colouring'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=9', wikipedia: 'https://en.wikipedia.org/wiki/Haj%C3%B3s_construction' },
       scope: String.raw`The sequence shown is what this particular implementation of the proof produces (labels of $G$ are reused instead of building disjoint copies and identifying afterwards); other valid sequences exist.`,
       viz(v) {
         const diamond = (a, ang) => [[Math.cos(ang + Math.PI / 6), Math.sin(ang + Math.PI / 6)], [Math.cos(ang - Math.PI / 6), Math.sin(ang - Math.PI / 6)], [Math.sqrt(3) * Math.cos(ang), Math.sqrt(3) * Math.sin(ang)]];
@@ -312,19 +292,18 @@ export default {
           const f = S.frame; if (!f.edges) return ''; const n = H.n;
           const sub = ix({ nodes: H.ids.map((id) => ({ id })), edges: f.edges.map((e) => e.split(',').map((x) => H.ids[+x])) }, { skipNode: (id) => !f.vs.has(H.at(id)) });
           const r = chromatic(sub);
-          return `step ${S.i + 1} of ${S.n}: ${f.edges.length} edges on ${f.vs.size} of ${n} vertices · this graph has $\\chi=${r.k}\\ge k=${k}$ ${r.k >= k ? '✓' : ''}`;
+          return `step ${S.i + 1} of ${S.n}: ${f.edges.length} edges on ${f.vs.size} of ${n} vertices · this graph has $\\chi${r.exact?'=':'\\ge'}${r.k}\\ge k=${k}$ ${r.k >= k ? '✓' : ''}`;
         });
       },
     },
     // ====================================================================== 5.3 Colouring edges
     {
       num: '5.3.1', kind: 'Proposition', name: 'König: bipartite graphs have chromatic index Δ',
-      statement: String.raw`Every bipartite graph $G$ satisfies $\chi'(G)=\Delta(G)$.`,
+      statement: String.raw`Every finite bipartite simple graph $G$ satisfies $\chi'(G)=\Delta(G)$.`,
       idea: String.raw`Colour the edges one at a time with $\Delta$ colours, keeping the colouring proper. For a new edge $xy$ both ends have a missing colour, say $\alpha$ at $x$ and $\beta$ at $y$; if $\alpha=\beta$ or $\alpha$ is also missing at $y$ we are done. Otherwise follow the path from $y$ that alternates $\alpha,\beta,\alpha,\dots$ and swap the two colours along it. This path cannot reach $x$: with $x\\in A$ and $y\\in B$ for the two sides, the path alternately visits $B$ and $A$ and enters every vertex of $A$ along an $\\alpha$-edge, but $x$ has no $\\alpha$-edge. After the swap $\alpha$ is missing at both ends of $xy$.`,
       caption: String.raw`Step through the algorithm: the gold edge is the one being coloured, a thick edge is the alternating path that is swapped. Choose *Petersen* (not bipartite) to see the argument fail: the path runs into $x$ and the algorithm gets stuck with $\Delta=3$ colours.`,
-      deps: ['graph-5.1.1b', 'graph-1.6.1'], refs: ['Diestel §5.3'], tags: ['edge colouring', 'bipartite'],
-      credit: 'König, 1916', verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/K%C5%91nig%27s_theorem_(graph_theory)' },
+      deps: ['graph-5.1.1b', 'graph-1.6.1'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Proposition 5.3.1, p. 132'], tags: ['edge colouring', 'bipartite'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=10', wikipedia: 'https://en.wikipedia.org/wiki/K%C5%91nig%27s_theorem_(graph_theory)' },
       viz(v) {
         const P = { rnd: ['random bipartite', null], k33: ['$K_{3,3}$', () => named('kmn', 3, 3)], cube: ['cube', () => named('cube')], pet: ['Petersen (not bipartite)', () => named('petersen')] };
         const s = gstage(v, { height: 340 });
@@ -348,22 +327,21 @@ export default {
     },
     {
       num: '5.3.2', kind: 'Theorem', name: 'Vizing’s theorem',
-      statement: String.raw`Every (simple) graph $G$ satisfies $\Delta(G)\le\chi'(G)\le\Delta(G)+1$.`,
+      statement: String.raw`Every finite simple graph $G$ satisfies $\Delta(G)\le\chi'(G)\le\Delta(G)+1$.`,
       idea: String.raw`Colour edges one at a time with $\Delta+1$ colours. To colour an uncoloured edge $xy_0$, build a *fan* at $x$: a sequence $y_0,y_1,\dots,y_t$ of neighbours where the colour of $xy_{i+1}$ is missing at $y_i$. Let $c$ be missing at $x$ and $d$ missing at $y_t$. Flip the $c/d$-alternating path starting at $x$ (so $d$ becomes missing at $x$); some initial piece of the fan ending at a vertex $y_j$ that misses $d$ is still a fan. Rotate it (each fan edge takes the next one's colour) and colour $xy_j$ with $d$. The picture follows the Misra–Gries implementation of this proof.`,
-      caption: String.raw`Step through the colouring (edges coloured one by one in the order of the list). Purple rings mark the fan at the gold vertex, thick edges are the fan edges or the inverted alternating path. $K^5$ and the Petersen graph really need $\Delta+1$ colours; the cube needs only $\Delta$.`,
-      deps: ['graph-5.1.1b'], refs: ['Diestel §5.3'], tags: ['edge colouring', 'Vizing'],
-      credit: 'Vizing, 1964 (independently Gupta, 1966); algorithm: Misra & Gries, 1992', verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Vizing%27s_theorem' },
+      caption: String.raw`Step through the colouring (edges coloured one by one in the order of the list). Purple rings mark the fan at the gold vertex, thick edges are the fan edges or the inverted alternating path. $K^5$ and the Petersen graph really need $\Delta+1$ colours; the cube needs only $\Delta$, although this $\Delta+1$ algorithm may use an extra colour even there. The readout separately certifies the minimum on these small examples.`,
+      deps: ['graph-5.1.1b'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 5.3.2, pp. 132–133', 'Misra & Gries, A Constructive Proof of Vizing’s Theorem, https://www.cs.utexas.edu/~misra/psp.dir/vizing.pdf'], tags: ['edge colouring', 'Vizing'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=10', wikipedia: 'https://en.wikipedia.org/wiki/Vizing%27s_theorem' },
       viz(v) {
         const P = { pet: ['Petersen', () => named('petersen')], k5: ['$K^5$', () => named('complete', 5)], k4: ['$K^4$', () => named('complete', 4)], cube: ['cube', () => named('cube')], rnd: ['random', null] };
         const s = gstage(v, { height: 340 });
         const G = v.graph(s, { ...named('petersen'), r: 12 });
-        let seed = 1, H, F, S;
+        let seed = 1, H, F, S, optimum;
         const gsel = v.select('graph', opts(P), 'pet', { onChange: () => load() });
         function load() {
           const sp = gsel.value === 'rnd' ? connectedGraph(8, 6 + (seed % 5), rng32(seed * 29)) : P[gsel.value][1]();
           sp.nodes.forEach((n, i) => { if (!n.label) n.label = String(i + 1); });
-          loadSpec(G, sp); H = ix(G); F = vizingFrames(H, nm(G, H));
+          loadSpec(G, sp); H = ix(G); F = vizingFrames(H, nm(G, H)); optimum=edgeColourWith(H,maxDeg(H));
           if (S) S.reset(F.frames, { at: at() });
         }
         load();
@@ -377,31 +355,32 @@ export default {
           G.draw({ ...edgeStyle(H, f.ecol, { cur: f.cur, hot }), nodeRing: (id) => (H.at(id) === f.centre ? 'gold' : ring.has(id) ? 'purple' : null) });
         });
         v.legend([['gold', 'edge being coloured / its common end', { dot: true }], ['purple', 'fan vertices', { dot: true }]]);
-        v.readout(() => { const f = S.frame; if (!f.ecol) return ''; const used = new Set(f.ecol.filter((c) => c >= 0)).size; return `$\\Delta=${maxDeg(H)}$, palette $\\Delta+1=${maxDeg(H) + 1}$ · ${f.ecol.filter((c) => c >= 0).length} of ${H.m} edges coloured with ${used} colours` + (S.atEnd ? (F.ok ? ' · proper ✓' : ' · error') : ''); });
+        v.readout(() => { const f = S.frame; if (!f.ecol) return ''; const used = new Set(f.ecol.filter((c) => c >= 0)).size; return `$\\Delta=${maxDeg(H)}$, palette $\\Delta+1=${maxDeg(H) + 1}$ · ${f.ecol.filter((c) => c >= 0).length} of ${H.m} edges coloured with ${used} colours; ${optimum.status==='yes'?`minimum $\\chi'=${maxDeg(H)}$`:optimum.status==='no'?`minimum $\\chi'=${maxDeg(H)+1}$`:'minimum not decided within the search budget'}` + (S.atEnd ? (F.ok ? ' · proper ✓' : ' · error') : ''); });
       },
     },
     {
-      num: '5.3.3', kind: 'Theorem', name: '1-factorization of dense regular graphs (CKLOT)', verify: true,
-      statement: String.raw`There is $n_0$ such that every $d$-regular graph on an even number $n\ge n_0$ of vertices with $d\ge 2\lceil n/4\rceil-1$ is 1-factorizable, i.e. $\chi'(G)=d$: its edges split into $d$ perfect matchings. The bound on $d$ is best possible.`,
-      idea: String.raw`This is the (large) 1-factorization conjecture of Chetwynd and Hilton, proved with a robust-expander decomposition method; no short proof is known. The threshold $2\lceil n/4\rceil-1\approx n/2$ is sharp: two disjoint cliques of odd order $n/2$ are $(n/2-1)$-regular, but a graph with an odd component has no perfect matching at all.`,
-      caption: String.raw`Choose $n$ and $d$ and a graph (random $d$-regular, or two disjoint cliques). An exhaustive search for a $d$-edge-colouring either shows the perfect matchings one colour class at a time or proves none exists. The theorem needs $n\ge n_0$ (huge), so these small cases only illustrate it; the two cliques show why the degree bound cannot be lowered.`,
-      deps: ['graph-5.1.1b', 'graph-5.3.2', 'graph-2.1.1a'], refs: ['Diestel §5.3'], tags: ['edge colouring', '1-factorization'],
-      credit: 'Csaba, Kühn, Lo, Osthus & Treglown, 2016 (Memoirs of the AMS 244)', scope: String.raw`Asymptotic: holds for all sufficiently large even $n$. The small graphs drawn here are illustrations and are decided by exhaustive search, not by the theorem.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Graph_factorization' },
+      num: '5.3.3', kind: 'Theorem', name: '1-factorization of dense regular graphs (CKLOT)',
+      statement: String.raw`There is $n_0$ such that every finite simple $d$-regular graph on an even number $n\ge n_0$ of vertices with $d\ge 2\lceil n/4\rceil-1$ is 1-factorizable, i.e. $\chi'(G)=d$: its edges split into $d$ perfect matchings. The bound on $d$ is best possible.`,
+      idea: String.raw`This is the (large) 1-factorization conjecture of Chetwynd and Hilton, proved using robust-expander decompositions and detailed structural cases. The threshold $2\lceil n/4\rceil-1\approx n/2$ is sharp: for $n\equiv2\pmod4$, two odd cliques of order $n/2$ have degree one below the threshold. For $n\equiv0\pmod4$, use odd cliques of orders $n/2-1,n/2+1$ and remove a Hamilton cycle from the larger. Both constructions have odd components and no perfect matching.`,
+      caption: String.raw`Choose $n$ and $d$ and a graph (a sampled $d$-regular graph, or a threshold-sharp example with two odd components). An exhaustive search for a $d$-edge-colouring either shows the perfect matchings one colour class at a time or proves none exists; stopping at the search budget is inconclusive. The theorem needs an unspecified sufficiently large $n\ge n_0$, so these small cases only illustrate it; the odd-component examples show why the sharp degree bound cannot be lowered. The degree control is limited by $n-1$ and disabled in sharpness mode, whose degree is determined by the construction. The colour-class control spans the effective palette.`,
+      deps: ['graph-5.1.1b', 'graph-5.3.2', 'graph-2.1.1a'], refs: ['Diestel, Graph Theory, 6th ed. (2025), Theorem 5.3.3, p. 133 (weaker degree n/2 form); Csaba et al., Theorem 1.1.1, https://arxiv.org/abs/1401.4159'], tags: ['edge colouring', '1-factorization'],
+      scope: String.raw`Asymptotic: holds for all sufficiently large even $n$. The small graphs drawn here are illustrations and are decided by exhaustive search, not by the theorem.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf#page=11', wikipedia: 'https://en.wikipedia.org/wiki/Graph_factorization' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const nS = v.slider('$n$ (even)', 6, 12, 10, { int: true, step: 2 });
         const dS = v.slider('degree $d$', 2, 11, 5, { int: true });
-        const kind = v.select('graph', [{ value: 'reg', label: 'random $d$-regular' }, { value: 'two', label: 'two disjoint cliques' }], 'reg');
+        const kind = v.select('graph', [{ value: 'reg', label: 'random $d$-regular' }, { value: 'two', label: 'odd-component sharpness example' }], 'reg');
         const cS = v.slider('colour class (0 = all)', 0, 11, 0, { int: true });
         const G = v.graph(s, { nodes: [{ id: 0, x: 0, y: 0 }], edges: [], layout: 'none', r: 11, draggable: true });
         let seed = 1, B = { key: '' };
         v.button('Resample', () => { seed++; });
         v.render(() => {
-          const n = nS.value - (nS.value % 2), two = kind.value === 'two', d = two ? n / 2 - 1 : Math.min(dS.value, n - 1), key = [n, d, two, seed].join(':');
+          const n = nS.value - (nS.value % 2), two = kind.value === 'two', d = two ? 2*Math.ceil(n/4)-2 : Math.min(dS.value, n - 1), key = [n, d, two, seed].join(':');
+          dS.input.max=n-1;dS.input.disabled=two;if(two&&dS.value!==d)dS.set(d);else if(dS.value>n-1)dS.set(n-1);cS.input.max=d;if(cS.value>d)cS.set(d);
           if (B.key !== key) {
             let sp;
-            if (two) { const h = n / 2, E = []; for (let b = 0; b < 2; b++) for (let i = 0; i < h; i++) for (let j = i + 1; j < h; j++) E.push([b * h + i, b * h + j]); sp = { nodes: Array.from({ length: n }, (_, i) => { const b = i < h ? 0 : 1, j = i % h, a = Math.PI / 2 - (TAU * j) / h; return { id: i, label: String(i + 1), x: (b ? 1.3 : -1.3) + 0.9 * Math.cos(a), y: 0.9 * Math.sin(a) }; }), edges: E, layout: 'fit' }; }
+            if (two) {const Q=factorizationObstruction(n);let off=0;const nodes=[];Q.parts.forEach((h,b)=>{for(let j=0;j<h;j++){const a=Math.PI/2-TAU*j/h;nodes.push({id:off+j,label:String(off+j+1),x:(b?1.3:-1.3)+.9*Math.cos(a),y:.9*Math.sin(a)});}off+=h;});sp={nodes,edges:Q.E,layout:'fit'};}
             else { sp = regularGraph(n, d, rng32(seed * 7 + n * 13 + d), 300); sp.nodes.forEach((x, i) => { x.label = String(i + 1); }); }
             loadSpec(G, sp);
             const H = ix(G), cm = comps(H), odd = cm.lists.some((l) => l.length % 2), r = odd ? { status: 'no' } : edgeColourWith(H, d, 2e6);

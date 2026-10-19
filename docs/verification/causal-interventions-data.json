@@ -1,0 +1,159 @@
+{
+  "ucb": {
+    "source": "https://raw.githubusercontent.com/wch/r-source/trunk/src/library/datasets/data/UCBAdmissions.R",
+    "sha256": "86a5801b122ec1f172098303de35c9df9a8c4c09f2f81dc9f03bfafdde102d5e",
+    "dimensions": [
+      2,
+      2,
+      6
+    ],
+    "layout": "R column-major: Admit(Admitted,Rejected), Gender(Male,Female), Dept(A,B,C,D,E,F)",
+    "rArray": [
+      512,
+      313,
+      89,
+      19,
+      353,
+      207,
+      17,
+      8,
+      120,
+      205,
+      202,
+      391,
+      138,
+      279,
+      131,
+      244,
+      53,
+      138,
+      94,
+      299,
+      22,
+      351,
+      24,
+      317
+    ]
+  },
+  "kidney": {
+    "source": "https://cdn.ncbi.nlm.nih.gov/pmc/blobs/60be/1339981/ba6b4ced937a/bmjcred00227-0032.png",
+    "printedPage": 880,
+    "sha256": "cf5f868d8c65f1fdfa5f50bccb9ec6be96ed465c739fbf2e96ef97b5b77c34c3",
+    "tableI": {
+      "openProcedureGroupSizes": [
+        [
+          13,
+          218
+        ],
+        [
+          31,
+          45
+        ],
+        [
+          43,
+          0
+        ]
+      ],
+      "pcnlGroupSizes": [
+        270,
+        80
+      ]
+    },
+    "tableII": {
+      "openProcedureSuccesses": [
+        [
+          12,
+          154
+        ],
+        [
+          26,
+          38
+        ],
+        [
+          43,
+          0
+        ]
+      ],
+      "pcnlSuccesses": [
+        234,
+        55
+      ]
+    },
+    "strata": [
+      "mean stone diameter <2cm",
+      "mean stone diameter >=2cm or multiple stones"
+    ],
+    "outcome": "stone-free or residual particles <2mm three months after treatment"
+  },
+  "primarySources": [
+    {
+      "key": "pearl1995",
+      "url": "https://bayes.cs.ucla.edu/R218-B.pdf",
+      "sha256": "0a9dd3218e541acbf26aeff5865e3c70cb662cd7de50e1234d016f1af5da8927",
+      "pdfPages": 42,
+      "anchors": "printed 672\u2013678 = PDF4\u201310; Definition2/equation5 p673, Definition3 p674/Theorem1 p675, Figure3 p675/Theorem2 p676, Theorem3 p677"
+    },
+    {
+      "key": "id2006",
+      "url": "https://ftp.cs.ucla.edu/pub/stat_ser/r327.pdf",
+      "sha256": "52558309691764a12006fa92cbfe224284f297a6491c209fc26273f94f14d6cb",
+      "pdfPages": 9,
+      "anchors": "Theorem1 PDF3; Corollary2 PDF6, Theorem7 PDF7 (author technical report with appendix)"
+    },
+    {
+      "key": "huang2006",
+      "url": "https://arxiv.org/pdf/1206.6831",
+      "sha256": "a367e5f87838bdf9774d0b0088e33a7c3aa69c611b5bb1609e835af595a74d89",
+      "pdfPages": 8,
+      "anchors": "Theorem2 PDF8"
+    },
+    {
+      "key": "swig2013",
+      "url": "https://csss.uw.edu/Papers/wp128.pdf",
+      "sha256": "fd9326cc5555321b0cf3bbe486c235f5638177fbbc76abc00b2f20bef9d3ca00",
+      "pdfPages": 148,
+      "anchors": "node splitting \u00a72.2 pp6\u20137 = PDF8\u20139; Theorem12 p33=PDF35; Theorem19 p40=PDF42"
+    },
+    {
+      "key": "mbias",
+      "url": "https://arxiv.org/pdf/1408.0324",
+      "sha256": "8c681a3aaa97f05eca92a3a2401e0fe182145b6eea7c657374bb7f7924e2df5b",
+      "pdfPages": 25,
+      "anchors": "2014 author preprint, \u00a7\u00a71\u20133, M-structure and linear sensitivity models"
+    },
+    {
+      "key": "controls-reprint",
+      "url": "https://ftp.cs.ucla.edu/pub/stat_ser/r493-reprint.pdf",
+      "sha256": "304adc4c9808784f8eba23a954ac15d8197f2390a3d4b135b3cf3ed5bac75ff1",
+      "pdfPages": 34,
+      "anchors": "2022 reprint; models7,11\u201312,16\u201318 pp6,8\u201311; appendix path/regression calculations"
+    },
+    {
+      "key": "simpson1951",
+      "url": "https://math.bme.hu/~marib/bsmeur/simpson.pdf",
+      "sha256": "eea390d7c1fc36584b9117fa4a1da5af8c9c223ee48616c65f1f1ee2354a346a",
+      "pdfPages": 5,
+      "anchors": "original1951 pp238\u2013241=PDF2\u20135; \u00a7\u00a78\u201311 tables2\u20134"
+    },
+    {
+      "key": "berkeley1975",
+      "url": "https://homepages.dcc.ufmg.br/~assuncao/EstatCC/Slides/Extra/Bickel-SexBias.pdf",
+      "sha256": "f44ed6a55dda77aa85467e71af62a243e47a6a8aa2078154662716e0a86b8f6e",
+      "pdfPages": 8,
+      "anchors": "original1975 pp398\u2013404=PDF2\u20138; full university data distinct from R six-department extract"
+    },
+    {
+      "key": "lord2016",
+      "url": "https://ftp.cs.ucla.edu/pub/stat_ser/r436-reprint-aop.pdf",
+      "sha256": "90425fce73d38638cb0878e27f931ed60e6dcb7b5ad0467b7b79c07bf94ae55c",
+      "pdfPages": 13,
+      "anchors": "\u00a7\u00a71\u20132 pp1\u20133; author explicitly holds diet fixed as background in interpretation of original"
+    },
+    {
+      "key": "lord1967",
+      "url": "https://fr.scribd.com/document/124308315/Paradoja-de-Lord",
+      "anchors": "complete original pp304\u2013305 body OCR, web lines103\u2013134; cross-checked with original-author text reproduced in Pearl2016 \u00a7\u00a71\u20132",
+      "limitation": "No original PDF hash or original figure visual inspection claimed; illustration is newly generated and not a reproduction."
+    }
+  ]
+}

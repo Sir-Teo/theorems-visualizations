@@ -5,6 +5,10 @@
 // Every curve is computed from the ODEs in ch03.shared.js (fflSim); nothing is a fitted or digitised curve.
 import { FFL_TYPES, fflType, isCoherent, fflSim, crossAfter, edge, hillAct, hillRep } from './ch03.shared.js';
 
+import { runArabinose, directedHalfTime } from './sysbio-source-audit-arabinose.shared.js';
+
+import { FFL_HISTORICAL_COUNTS } from './sysbio-source-audit-ffl.shared.js';
+
 const NAMES = ['X', 'Y', 'Z'];
 /** Draw X, Y, Z (and optionally the thresholds) from a simulation result on stage S. */
 function traces(S, r, o = {}) {
@@ -28,14 +32,14 @@ export default {
       kind: 'Concept',
       name: 'The eight feed-forward loop types',
       statement: String.raw`A **feed-forward loop** (FFL) is a three-gene pattern in which a transcription factor $X$ regulates a target $Z$ and also regulates a second transcription factor $Y$, which regulates $Z$ as well: the edges are $X\to Y$, $Y\to Z$ and $X\to Z$. Each edge can be an activation ($+$) or a repression ($-$), so there are $2^3=8$ **types**. The loop is **coherent** when the direct sign equals the product of the signs along the indirect path, $s_{XZ}=s_{XY}\,s_{YZ}$ (four types, C1–C4), and **incoherent** when it is the opposite (four types, I1–I4). The type with all three edges activating is C1; the type with $X\to Y\to Z$ activating and $X\dashv Z$ repressing is I3; the type with $X\to Y$ activating, $Y\dashv Z$ repressing and $X\to Z$ activating is I1.`,
-      idea: String.raw`The classification is a sign count on a triangle. Two paths lead from $X$ to $Z$, the direct edge and the path through $Y$; the sign of a path is the product of its edge signs. If both paths agree in sign the loop is coherent, otherwise the two paths push $Z$ in opposite directions and it is incoherent. Naming the types C1–C4 and I1–I4 and then asking how each one responds to a step in $X$ is the programme of the next items. In the *E. coli* and yeast transcription networks the FFL is a significant motif (1.9), and two of the eight types, C1 and I1, are far commoner than the rest.`,
+      idea: String.raw`The classification is a sign count on a triangle. Two paths lead from $X$ to $Z$, the direct edge and the path through $Y$; the sign of a path is the product of its edge signs. If both paths agree in sign the loop is coherent, otherwise the two paths push $Z$ in opposite directions and it is incoherent. Naming the types C1–C4 and I1–I4 and then asking how each one responds to a step in $X$ is the programme of the next items. In the *E. coli* and yeast transcription networks the FFL is a significant motif (1.9), and C1 is the most common coherent type while I1 is the most common incoherent type in the historical databases examined by the paper.`,
       caption: String.raw`Choose the sign of each edge (top) or click one of the eight miniatures (middle): the diagram classifies the loop and the bottom panel simulates its response to $X$ switching on at $t=2$ and off at $t=9$ (grey dashed $X$, blue $Y$, green $Z$), with AND or OR logic at $Z$. Notice that in the coherent types the direct edge and the path through $Y$ push $Z$ the same way, whereas in the incoherent ones they oppose each other.`,
       deps: ['sysbio-1.9'],
-      refs: ['Alon: The Feed Forward Loop'],
+      refs: ['Mangan & Alon (2003), PNAS100:11980–11985: Tables1–2 p11981, database conventions p11982'],
       tags: ['feed-forward loop', 'motifs'],
-      credit: 'S. Shen-Orr, R. Milo, S. Mangan & U. Alon, 2002 (FFL as a motif in E. coli; Nature Genetics 31: 64–68); S. Mangan & U. Alon, 2003 (the eight types; PNAS 100: 11980–11985)',
-      verify: true,
-      scope: String.raw`The type numbering is the one used by Mangan & Alon. I do not reproduce the observed frequencies of the eight types in *E. coli* and yeast: the literature reports that C1 and I1 are the most abundant, but I could not check the underlying counts, so the picture shows no frequency bars. The panel uses a Hill model with $n=4$, equal thresholds $K=0.5$ and a step-like input; real loops have unequal thresholds and kinetics.`,
+      credit: 'S. Mangan & U. Alon, 2003 (PNAS100:11980–11985, original Tables1–2)',
+      verify: false,
+      scope: String.raw`All eight sign rows and historical abundances were checked against original Tables1–2. The data are snapshots of E. coli database v1.1 and yeast v1.3, not current network counts; dual regulators were counted as activators and four yeast complex-related apparent loops were removed. The visualization shows chosen Hill dynamics with n=4 and K=0.5, not measured time courses or the original paper’s numerical parameters. Its independent-input OR=a+b−ab differs from the paper’s competitive-binding OR formula, so the signs and type names are shared but exact OR amplitudes are not a reproduction.`,
       links: { doi: 'https://doi.org/10.1073/pnas.2133841100' },
       viz(v) {
         const SG = [{ value: '1', label: '+' }, { value: '-1', label: '−' }];
@@ -78,7 +82,7 @@ export default {
           const p = { sxy: a, syz: b, sxz: c, lg: LG.value, Kxy: 0.5, Kyz: 0.5, Kxz: 0.5, n: 4, by: 1, ay: 1, bz: 6, az: 6 };
           const r = fflSim(p, (t) => (t >= 2 && t < 9 ? 1 : 0), 16, 0.01);
           traces(C, r);
-          info = `**${id}** (${coh ? 'coherent' : 'incoherent'}): signs $(s_{XY},s_{YZ},s_{XZ})=(${sgn(a)},${sgn(b)},${sgn(c)})$, indirect path $s_{XY}s_{YZ}=${sgn(a * b)}$, direct edge ${sgn(c)}.`;
+          info = `**${id}** (${coh ? 'coherent' : 'incoherent'}): signs $(s_{XY},s_{YZ},s_{XZ})=(${sgn(a)},${sgn(b)},${sgn(c)})$, indirect path $s_{XY}s_{YZ}=${sgn(a * b)}$, direct edge ${sgn(c)}. Historical 2003 database counts (E. coli / yeast): **${FFL_HISTORICAL_COUNTS[id].join(' / ')}**.`;
         });
         B.onClick((x, y) => {
           const col = Math.floor(x), row = y >= 1.05 ? 0 : 1;
@@ -191,15 +195,15 @@ $$T_{\rm ON}=\frac1{\alpha_Y}\ln\frac1{1-K_{YZ}/Y_{\rm st}}$$
       num: '3.4',
       kind: 'Phenomenon',
       name: 'Sign-sensitive delay in the arabinose system',
-      statement: String.raw`The *E. coli* arabinose utilisation genes (*araBAD*) form a C1-FFL with AND logic: the cAMP-bound activator CRP ($X$) activates both the regulator AraC ($Y$) and the *araBAD* promoter ($Z$), and *araBAD* is switched on only when CRP and AraC with arabinose are both present. Mangan, Zaslaver and Alon measured promoter activity with GFP reporters after step changes in cAMP and found **sign-sensitive delay kinetics**: the response is fast to a step in one direction and delayed to a step in the other. In the AND model the delay appears after the ON step of cAMP, none after the OFF step.`,
-      idea: String.raw`Before the experiment, the C1-FFL of 3.3 predicted that a persistence detector should show a delay only when $Y$ must accumulate, that is, when $X$ switches on. The test is to drive the real circuit with step-like inputs and read the promoter activity with the time resolution of a reporter (minutes). The model shows what such a measurement should look like, and the control (a promoter regulated by CRP alone) shows what no delay looks like. Without arabinose AraC is inactive and the promoter never turns on, which is the AND gate at work.`,
-      caption: String.raw`**A reconstruction by the C1-FFL model, not the published data.** Left: cAMP steps up at $t=1$; right: cAMP steps down at $t=1$ (the system having first settled ON). Green: modelled *araBAD* promoter activity, faint dashed: a reference promoter regulated by CRP alone. Drag the AraC lifetime and the arabinose level: the delay on the ON step equals $\ln(1/(1-K/(a\,Y_{\rm st})))$ and grows as arabinose is lowered, while the OFF response stays fast.`,
+      statement: String.raw`In the E. coli arabinose system, cAMP-activated CRP activates AraC expression, and CRP plus arabinose-activated AraC jointly activate araBAD and araFGH. Mangan, Zaslaver & Alon measured GFP reporters and found delayed ON responses relative to lacZYA after adding cAMP, with no comparable additional OFF delay after adding glucose to suppress cAMP. L-arabinose and IPTG were maintained at saturating levels during these kinetic comparisons. This supports sign-sensitive delay in this C1-FFL context; it does not imply that the complete biological circuit is an ideal AND gate.`,
+      idea: String.raw`With a saturating CRP step at chosen time1, the modeled AraC level rises exactly as $Y_{\max}(1-e^{-\alpha_Y(t-1)})$. In a sharp-threshold approximation its onset wait is $-\ln(1-K_{YZ}/(aY_{\max}))/\alpha_Y$ when $K_{YZ}<aY_{\max}$. This approximation concerns onset of production, not a finite-Hill reporter half-rise time. OFF immediately removes the direct activating key, so Z production stops; its existing reporter level still decays with half-time ln2/4. The model and chosen direct-reference reporter therefore have the same OFF half-time, rather than an instantaneous concentration change.`,
+      caption: String.raw`Chosen model curves, not published data. Left: CRP steps up at time1 from its OFF steady state; right: it steps down from its ON steady state. Green is reporter Z, blue AraC Y, dashed gray prescribed CRP, faint reference a chosen directly driven reporter. Change AraC removal rate, activity factor and threshold. Half-response is measured against each curve’s own exact ON steady level, including low graded outputs. The orange Y-threshold line is shown only when attainable; the sharp-threshold onset wait is separately reported.`,
       deps: ['sysbio-3.3'],
-      refs: ['Alon: The Feed Forward Loop'],
+      refs: ['Mangan, Zaslaver & Alon (2003), J.Mol.Biol.334:197–204: wiring/controls p198; induction/kinetics pp199–200 Tables1–2; reporter and modeling Methods pp202–203'],
       tags: ['feed-forward loop', 'E. coli'],
       credit: 'S. Mangan, A. Zaslaver & U. Alon, 2003 (J. Mol. Biol. 334: 197–204)',
-      verify: true,
-      scope: String.raw`Only the qualitative result (sign-sensitive delay of the arabinose promoter after cAMP steps, measured by GFP reporters) comes from the paper's abstract; I did not have access to its data, time scales or fits, so the time axis is in model units and no measured curve is drawn. Which direction is delayed, and the model's wiring (CRP$\to$araC, CRP and AraC·arabinose $\to$ araBAD), follow the standard textbook account and should be checked against the paper. Arabinose is modelled as a multiplicative factor on AraC's activity.`,
+      verify: false,
+      scope: String.raw`The full original paper’s wiring, experiment and model were checked (Figures1–4, Tables1–2, Methods). The reference was lacZYA jointly regulated by CRP and LacI with IPTG, not a literal CRP-only native promoter. GFP per cell and inferred promoter activity are distinct observables. The display is a chosen zero-basal-AraC, n=6 Hill model with a prescribed CRP step; Z is a normalized reporter/gene-product level, not a digitized promoter-activity dataset or measured minutes. AraC autoregulation, DNA-loop effects and mRNA delays are omitted, and arabinose enters as a chosen activity factor. A finite Hill curve remains positive above its nominal threshold; failure to cross the sharp threshold is not zero expression.`,
       viz(v) {
         const Y = v.slider('AraC removal rate α_Y (1/model time)', 0.3, 3, 1, { log: true, sig: 2 });
         const A = v.slider('arabinose (AraC activity factor)', 0.3, 1, 1, { step: 0.01 });
@@ -208,17 +212,13 @@ $$T_{\rm ON}=\frac1{\alpha_Y}\ln\frac1{1-K_{YZ}/Y_{\rm st}}$$
         const SU = mk(true), SD = mk(false);
         let m = {};
         v.render(() => {
-          const ay = Y.value, a = A.value, base = { sxy: 1, syz: 1, sxz: 1, lg: 'AND', Kxy: 0.1, Kyz: KZ.value / a, Kxz: 0.1, n: 6, by: ay, ay, bz: 4, az: 4 };
-          const ref = { ...base, Kyz: 1e-6 };
-          const up = (t) => (t >= 1 ? 1 : 0), dn = (t) => (t < 1 ? 1 : 0);
-          const ru = fflSim(base, up, 14, 0.01), rd = fflSim(base, dn, 14, 0.01), cu = fflSim(ref, up, 14, 0.01), cd = fflSim(ref, dn, 14, 0.01);
-          traces(SU, ru, { simple: cu }); traces(SD, rd, { simple: cd });
-          SU.hline(KZ.value / a, { color: 'orange', dash: true });
-          const hm = (r) => { const z = Math.max(...r.Z); return z > 0.5 ? crossAfter(r.t, r.Z, 0.5 * Math.min(1, z), 1) - 1 : NaN; };
-          m = { up: hm(ru), dn: crossAfter(rd.t, rd.Z, 0.5, 1) - 1, cu: hm(cu), cd: crossAfter(cd.t, cd.Z, 0.5, 1) - 1, thr: KZ.value / a, pred: Math.log(1 / (1 - KZ.value / a)) / ay };
+          const ay=Y.value,a=A.value,k=KZ.value,ru=runArabinose(ay,a,k),rd=runArabinose(ay,a,k,{up:false});
+          traces(SU,ru,{simple:{Z:ru.Zref}});traces(SD,rd,{simple:{Z:rd.Zref}});
+          if(k/a<ru.ymax)SU.hline(k/a,{color:'orange',dash:true});else SU.text('sharp threshold exceeds available Y',13.7,1.07,{color:'orange',size:11,align:'right'});
+          m={on:directedHalfTime(ru,true),off:directedHalfTime(rd,false),refOn:directedHalfTime(ru,true,'Zref',ru.ymax),refOff:directedHalfTime(rd,false,'Zref',rd.ymax),steady:ru.steady,pred:ru.sharpDelay};
         });
-        v.legend([['muted', 'cAMP-CRP (X)', { dash: true }], ['blue', 'AraC (Y)'], ['green', 'araBAD promoter (Z)'], ['faint', 'CRP-only reference promoter', { dash: true }], ['orange', 'AraC threshold', { dash: true }]]);
-        v.readout(() => (m.thr >= 1 ? 'The AraC threshold exceeds the available AraC activity: the promoter never turns on (no arabinose, no expression).' : `Time to half-maximal promoter activity: ON step $${v.fix(m.up, 2)}$ (reference $${v.fix(m.cu, 2)}$; predicted AraC delay $${v.fix(m.pred, 2)}$), OFF step $${v.fix(m.dn, 2)}$ (reference $${v.fix(m.cd, 2)}$).`));
+        v.legend([['muted', 'cAMP-CRP (X)', { dash: true }], ['blue', 'AraC (Y)'], ['green', 'chosen reporter Z'], ['faint', 'chosen direct-reference reporter', { dash: true }], ['orange', 'AraC threshold', { dash: true }]]);
+        v.readout(()=>m.steady===undefined?'':`Exact chosen ON steady reporter level ${v.fix(m.steady,4)}. Half-response after ON: ${m.on===null?'not reached in this window':v.fix(m.on,3)} (reference ${v.fix(m.refOn,3)}); after OFF: ${v.fix(m.off,3)} (reference ${v.fix(m.refOff,3)}), in model time. Sharp-threshold production-onset wait: ${Number.isFinite(m.pred)?v.fix(m.pred,3):'threshold not attained; the finite-Hill reporter nevertheless has positive graded output'}.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.5

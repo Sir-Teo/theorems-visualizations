@@ -132,22 +132,21 @@ It equals the census size $N_m+N_f$ only if the sexes are equal in number, and i
       num: '2.10',
       kind: 'Phenomenon',
       name: 'Drift in replicate populations (Buri 1956)',
-      statement: String.raw`Peter Buri followed 107 laboratory populations of *Drosophila melanogaster*, each kept at 16 flies per generation (all started with 16 heterozygotes for two eye-colour alleles, $bw^{75}$ and $bw$, at frequency $\tfrac12$) for 19 generations. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, with the mean frequency staying near $\tfrac12$. The spread was somewhat faster than for 16 breeding flies, corresponding to an effective size of about 11 flies (the figure usually quoted from his analysis is $N_e\approx11.5$) instead of the census 16.`,
-      idea: String.raw`The experiment is the first quantitative test of drift with genuine replicates. All lines begin identical, so any divergence is sampling: the variance among lines grows by $p(1-p)/2N_e$ per generation (2.1) and heterozygosity decays as $(1-1/2N_e)^t$ (2.3), while the mean stays put (2.2). Fitting the observed variance among lines gives $N_e$ of roughly 11–12, below the census number of 16 — ordinary variation in family size and unequal fertility (2.6).`,
-      caption: String.raw`A simulation of Buri’s design (107 lines, 32 gene copies each, started at 16 $bw^{75}$ copies), **not his original counts**. Drag the generation $t$ and watch the histogram of $bw^{75}$ copies per line flatten and pile up at 0 and 32. Right: mean heterozygosity of the lines against theory for the chosen $N_e$ (green) and for census size 16 (grey dashed). Lower $N_e$ speeds the spread; resample for another set of lines.`,
+      statement: String.raw`In series I, Peter Buri followed 107 laboratory populations of *Drosophila melanogaster*, each kept at 16 flies per generation (all started with 16 heterozygotes for two eye-colour alleles, $bw^{75}$ and $bw$, at frequency $\tfrac12$) for 19 generations. The distribution of $bw^{75}$ frequency across the replicate lines spread out from a spike at $\tfrac12$, flattened, and piled up in the classes of loss and fixation, as the Wright–Fisher model predicts, with the mean frequency staying near $\tfrac12$. The spread was somewhat faster than for 16 breeding flies, Buri estimated $N_e=9.0$ for series I and $N_e=11.5$ for the separate series II (Summary §7, p. 400), both below the census 16.`,
+      idea: String.raw`This experiment tests drift with replicated populations. All lines begin identical, so neutral sampling predicts divergence: the variance among lines grows by $p(1-p)/2N_e$ per generation (2.1) and heterozygosity decays as $(1-1/2N_e)^t$ (2.3), while the mean stays put (2.2). The observed recipient-class variances give $N_e=9.0$ for series I, below the census number of 16 — ordinary variation in family size and unequal fertility (2.6).`,
+      caption: String.raw`A Wright–Fisher approximation to Buri’s series I with 107 lines, started at frequency $1/2$, **not his original counts**. The simulated gene pool has $2N_e$ copies; frequencies are rounded onto the census 32-copy scale for display. Drag the generation $t$ and watch the histogram of $bw^{75}$ copies per line flatten and pile up at 0 and 32. Right: mean heterozygosity of the lines against theory for the chosen $N_e$ (green) and for census size 16 (grey dashed). Lower $N_e$ speeds the spread; resample for another set of lines.`,
       deps: ['popgen-2.3'],
-      refs: ['Gillespie'],
+      refs: ['Buri (1956), Evolution 10:367–402, Table 7 and Summary §7; https://www.rpgroup.caltech.edu/embl_pboc_2023/assets/pdfs/buri1956.pdf'],
       credit: 'Peter Buri, 1956 (Evolution 10: 367–402)',
-      verify: true,
-      scope: String.raw`Illustration by simulation of the published design; the lines are random, not the recorded data. The effective size $N_e\approx11.5$ is the value quoted in secondary summaries of Buri (1956); the paper's own estimate was not re-read here.`,
+      scope: String.raw`Illustration by simulation of the published design; the lines are random, not the recorded data. The default $N_e=9$ is Buri’s estimate for series I, not the $11.5$ estimate for series II. A constant effective size is an approximation to his more heterogeneous experimental populations.`,
       tags: ['drift', 'experiment', 'Drosophila'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Genetic_drift#Experiment' },
       viz(v) {
-        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 11, { int: true });
+        const neS = v.slider('effective size $N_e$ of each line', 4, 16, 9, { int: true });
         const tS = v.slider('generation $t$', 0, 19, 19, { int: true });
         let seed = 1; v.button('Resample lines', () => { seed++; });
         const L = v.stage({ x: [-1, 33], y: [0, 0.4], axes: 'box', gutter: true, height: 320, xlabel: 'number of bw75 copies in a line (out of 32)', ylabel: 'share of the 107 lines', title: 'Replicate lines at generation t' });
-        const Rg = v.stage({ x: [0, 19], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'generation', ylabel: 'mean heterozygosity 2p(1−p)', title: 'Heterozygosity of the lines', minWidth: 300 });
+        const Rg = v.stage({ x: [0, 19], y: [0, 1.05], axes: 'box', gutter: true, height: 320, xlabel: 'generation', ylabel: 'relative heterozygosity $H/H_0$', title: 'Heterozygosity of the lines', minWidth: 300 });
         const sim = memo();
         let info = {};
         v.render(() => {

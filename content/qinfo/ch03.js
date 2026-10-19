@@ -4,6 +4,8 @@ import {
   drawGroups, tilesR, rtrace,
 } from './ch03.shared.js';
 
+import {repeaterModel,logDirect} from './algorithm-sources-audit.shared.js';
+
 const fix = (v, x, d = 3) => v.fix(Math.abs(x) < 0.5 * 10 ** -d ? 0 : x, d);
 const pct = (v, x, d = 1) => `${fix(v, x * 100, d)}%`;
 const bit2 = (n) => n.toString(2).padStart(2, '0');
@@ -162,7 +164,7 @@ If the pairs are Werner states with visibilities $w_1,w_2$ (mixtures $w|\Phi^+\r
           const fid = [0, 1, 2, 3].map((j) => bellFidR(res[k].rho, j));
           cur = { Ss, prod: w1.value * w2.value, p: res.map((r) => r.p), fid, k, pAll: res.reduce((s, r) => s + r.p, 0) };
         });
-        v.readout(() => `outcome probabilities $${cur.p.map((p) => fix(v, p, 3)).join(',\\ ')}$ (sum $${fix(v, cur.pAll, 3)}$); for outcome $${BELL[cur.k].tex}$ the pair $A$–$D$ has fidelity $${fix(v, cur.fid[cur.k], 3)}$ with $${BELL[cur.k].tex}$\nbest CHSH value $S_{\\max}=${fix(v, cur.Ss[cur.k], 4)}$ against $2\\sqrt2\\,w_1w_2=${fix(v, 2 * Math.SQRT2 * cur.prod, 4)}$ · ${cur.Ss[cur.k] > 2 + 1e-9 ? '**violates CHSH: A and D are entangled although they never interacted**' : 'no Bell violation (the noise has eaten the entanglement of the swapped pair)'}`);
+        v.readout(() => `outcome probabilities $${cur.p.map((p) => fix(v, p, 3)).join(',\\ ')}$ (sum $${fix(v, cur.pAll, 3)}$); for outcome $${BELL[cur.k].tex}$ the pair $A$–$D$ has fidelity $${fix(v, cur.fid[cur.k], 3)}$ with $${BELL[cur.k].tex}$\nbest CHSH value $S_{\\max}=${fix(v, cur.Ss[cur.k], 4)}$ against $2\\sqrt2\\,w_1w_2=${fix(v, 2 * Math.SQRT2 * cur.prod, 4)}$ · ${cur.Ss[cur.k] > 2 + 1e-9 ? '**violates CHSH: A and D are entangled although they never interacted**' : 'no CHSH violation; this test alone does not establish whether the swapped pair is separable'}`);
       },
     },
 
@@ -434,61 +436,38 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
       num: '3.8',
       kind: 'Invention',
       name: 'Quantum repeaters',
-      statement: String.raw`A quantum state cannot be amplified or copied (qm-14.14), and the chance that a photon crosses a fibre of length $L$ falls as $10^{-\alpha L/10}$ (with typical attenuation $\alpha\approx0.2$ dB/km), so direct transmission of entanglement has a rate falling **exponentially** in $L$. A **quantum repeater** splits the channel into $2^K$ segments of length $\ell_0$, creates an entangled pair across each, and then repeatedly **swaps** neighbouring pairs (a Bell measurement at the joint, qinfo-3.3) and **purifies** the longer pairs (qinfo-3.7) to keep their fidelity above the usable threshold. Because the segments are made in parallel and only successful links are combined, the time to a pair across $L=2^K\ell_0$ grows only **polynomially** in $L$ (and the fidelity can be kept fixed at a cost that grows slowly with the number of segments).`,
-      idea: String.raw`Swapping makes a long link from two short ones but multiplies their noise (visibility $w_1w_2$, qinfo-3.3), so after $K$ levels the raw fidelity decays like $w_0^{2^K}$ and eventually falls below the entanglement threshold; purification (qinfo-3.7) pumps it back up using extra pairs. Each level needs two sub-links to exist at the same time, so the waiting time grows by a constant factor per level (roughly $\tfrac32$ for waiting on two links, divided by the swap success probability), i.e. a power of the number of segments, $N^{\log_2 c}$, instead of the exponential $10^{0.02L}$.`,
-      caption: String.raw`A simplified *simulation*, not the full Briegel–Dür–Cirac–Zoller protocol: elementary links of length $\ell_0$ succeed with probability $10^{-0.02\ell_0}$ per attempt cycle; nested swapping with ideal quantum memories and swap success probability $p_s$ is simulated by bootstrap Monte Carlo (3 000 samples per level); each purification round is one recurrence step of qinfo-3.7. The left graph compares the repeater's rate at $\ell=2^k\ell_0$ with direct transmission; the middle one draws the chain; the right graph follows the fidelity with and without purification.`,
+      statement: String.raw`A quantum repeater distributes elementary entangled pairs between intermediate nodes, then combines them by entanglement swapping and nested purification. Briegel, Dür, Cirac and Zoller (1998) show how this can avoid exponential resource scaling **when the connection–purification cycle restores a chosen working fidelity at each level**. If a level combines $b$ links and uses a fixed average $M$ copies for purification, $N=b^K$ segments require $R=(bM)^K=N^{1+\log_b M}$ elementary pairs. Their sequential-memory variant trades parallel copies for time and has logarithmic local storage under its additional nesting condition and ideal-memory assumption.
+
+For an illustrative loss-only fibre model, transmission probability is $10^{-\alpha L/10}$; this demo chooses $\alpha=0.2$ dB/km as a parameter, without claiming a universal fibre value. Fixed purification rounds do **not** guarantee an entangled output or a distance-independent fidelity.`,
+      idea: String.raw`Swapping ideal Werner links multiplies visibility: after $2^K$ unpurified segments it is $w_0^{2^K}$, and fidelity is $F=(1+3w)/4$ (fidelity itself is not $w$). The original repeater requires the post-connection pair to lie above the purification threshold and enough purification to restore a working fidelity before the next level. The toy model below instead fixes the number of recurrence rounds and tracks failures of that requirement. Its waiting time is a bootstrap estimate of repeated maxima of two independent sub-link times, retried after unsuccessful swaps/purification. The often-used factor 3/2 applies approximately to the maximum of two rare-success geometric/exponential waits, not to every higher-level distribution.`,
+      caption: String.raw`**Choose segment length, nesting, swap success, purification rounds and starting visibility.** This simplified Monte Carlo model uses 3000 bootstrap samples per level, perfect memories/local gates, instantaneous messages and reset-after-failure scheduling. Purification is applied at level zero as well as after each swap level. The left plot uses **log10 accepted-pair rate**, including pairs that may be separable; its loss-only comparison stays representable even when the probability would underflow. Gold marks your final level; the readout separately checks whether $F>1/2$. The chain draws at most four levels; the fidelity graph shows whether the chosen finite purification actually maintains quality. It is not a simulation of every resource or timing assumption in the original protocol.`,
       deps: ['qinfo-3.3', 'qinfo-3.7'],
-      refs: ['Nielsen–Chuang §12.5.2'],
+      refs: ['Briegel, Dür, Cirac & Zoller, Physical Review Letters81 (1998),5932–5935, full paper: equation(1), connection/purification equations(5)–(6), nesting-condition and sequential-memory discussion: https://people.ee.duke.edu/~jungsang/ECE590_01/BriegelPRL1998.pdf'],
       tags: ['repeaters', 'entanglement', 'networks'],
-      verify: true,
-      scope: String.raw`Model assumptions: perfect memories that never decohere, instantaneous classical messages (no $L/c$ latency per attempt), perfect local gates, Werner-state links. These favour the repeater; real devices lose to direct transmission at short distance and need very good memories at long distance. Rates are per attempt cycle, and fibre loss $0.2$ dB/km is a typical value (not checked against a source here, hence the verification flag), not a constant of nature.`,
-      credit: 'H.-J. Briegel, W. Dür, J. I. Cirac and P. Zoller, Phys. Rev. Lett. 81, 5932 (1998); polynomial overhead analysed in W. Dür, H.-J. Briegel, J. I. Cirac and P. Zoller, Phys. Rev. A 59, 169 (1999)',
+      scope: String.raw`Toy per-attempt-cycle rates, not physical pairs per second: no finite memory lifetime, classical-signal latency, detector loss, imperfect gates or resource cap. Fixed rounds can produce separable output, so an accepted-pair rate alone is not an entanglement-delivery rate. The original paper's polynomial guarantee has working-fidelity and resource hypotheses that this finite display does not certify.`,
+      credit: 'Briegel, Dür, Cirac & Zoller, Physical Review Letters81,5932–5935 (1998)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_repeater', arxiv: 'https://arxiv.org/abs/quant-ph/9803056' },
       viz(v) {
-        const Rt = v.stage({ x: [5, 20000], y: [1e-12, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, weight: 1.35, xlabel: 'distance $L$ (km)', ylabel: 'entangled pairs per attempt cycle', title: 'rate against distance' });
+        const Rt = v.stage({ x: [5, 20000], y: [-400, 0.1], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1.35, xlabel: 'distance $L$ (km)', ylabel: '$\\log_{10}$ rate', title: 'rate against distance' });
         const Ch = v.stage({ x: [-0.6, 16.6], y: [-1.3, 5.2], axes: false, height: 320, weight: 1.1, title: 'the chain (drawn for up to 4 levels)' });
         const Fd = v.stage({ x: [0, 8], y: [0.25, 1.02], axes: 'box', gutter: true, height: 320, weight: 0.9, xlabel: 'nesting level $k$', ylabel: 'fidelity of the pair', title: 'fidelity of the long pair', xticks: [0, 2, 4, 6, 8] });
         const l0 = v.slider('segment length $\\ell_0$ (km)', 5, 50, 20, { step: 1, int: true });
         const K = v.slider('nesting levels $K$', 0, 8, 5, { int: true });
-        const ps = v.select('Bell measurement', [{ value: '1', label: 'ideal ($p_s=1$)' }, { value: '0.5', label: 'linear optics ($p_s=\\tfrac12$)' }], '0.5');
+        const ps = v.select('Bell measurement', [{ value: '1', label: 'ideal ($p_s=1$)' }, { value: '0.5', label: 'probabilistic ($p_s=\\tfrac12$)' }], '0.5');
         const pr = v.slider('purification rounds per level', 0, 2, 1, { int: true });
         const w0 = v.slider('elementary visibility $w_0$', 0.8, 1, 0.97, { step: 0.005 });
         let cache = {};
         const M = 3000;
-        function model() {
-          const key = [l0.value, ps.value, pr.value, w0.value].join('|');
-          if (cache.key === key) return cache.levels;
-          const rng = v.rng(2024), p0 = Math.pow(10, -0.02 * l0.value), p_s = +ps.value;
-          const geom = () => (p0 >= 1 ? 1 : Math.max(1, Math.ceil(Math.log(1 - rng()) / Math.log(1 - p0))));
-          let T = Array.from({ length: M }, geom), w = w0.value, wraw = w0.value;
-          const levels = [];
-          for (let k = 0; k <= 8; k++) {
-            if (k > 0) {
-              const prev = T; T = new Array(M);
-              for (let i = 0; i < M; i++) { let t = 0; do { t += Math.max(prev[Math.floor(rng() * M)], prev[Math.floor(rng() * M)]); } while (rng() > p_s); T[i] = t; }
-              w = w * w; wraw = wraw * wraw;
-            }
-            let F = fidOfW(w);
-            for (let r = 0; r < pr.value; r++) {
-              const o = bbpsswFormula(F), prev = T; T = new Array(M);
-              for (let i = 0; i < M; i++) { let t = 0; do { t += Math.max(prev[Math.floor(rng() * M)], prev[Math.floor(rng() * M)]); } while (rng() > o.p); T[i] = t; }
-              F = o.F;
-            }
-            w = wOfFid(F);
-            levels.push({ k, L: Math.pow(2, k) * l0.value, rate: 1 / (T.reduce((s, x) => s + x, 0) / M), F, Fraw: fidOfW(wraw) });
-          }
-          cache = { key, levels }; return levels;
-        }
+        function model(){const key=[l0.value,ps.value,pr.value,w0.value].join('|');if(cache.key===key)return cache.levels;const levels=repeaterModel({length:l0.value,swap:+ps.value,rounds:pr.value,visibility:w0.value,samples:M},v.rng(2024));cache={key,levels};return levels;}
         let cur;
         v.render(() => {
           const lv = model(), Kk = K.value, pts = lv.slice(0, Kk + 1);
-          Rt.fn((L) => Math.max(1e-13, Math.pow(10, -0.02 * L)), { domain: [5, 20000], color: 'red', width: 2 });
-          Rt.path(pts.map((p) => [p.L, p.rate]), { color: 'green', width: 2.4 });
-          Rt.dots(pts.map((p) => [p.L, p.rate]), { r: 4.5, color: 'green' });
+          const xmax=Math.max(10,pts.at(-1).L*1.2);Rt.setView([5,xmax],[Math.min(logDirect(xmax),...pts.map(p=>Math.log10(p.rate)))*1.15,.2]);
+          Rt.fn((L) => logDirect(L), { domain: [5, xmax], color: 'red', width: 2 });
+          Rt.path(pts.map((p) => [p.L, Math.log10(p.rate)]), { color: 'green', width: 2.4 });
+          Rt.dots(pts.map((p) => [p.L, Math.log10(p.rate)]), { r: 4.5, color: 'green' });
           const last = pts[pts.length - 1];
-          Rt.dot(last.L, last.rate, { r: 7, color: 'gold' });
-          Rt.text('direct fibre', 400, 1e-9, { size: 12, color: 'red', align: 'left' });
-          Rt.text('repeater', last.L, last.rate, { size: 12, color: 'green', align: 'right', dx: -10, dy: -12 });
+          Rt.dot(last.L, Math.log10(last.rate), { r: 7, color: 'gold' });
           // chain schematic
           const Kd = Math.min(Kk, 4), Nseg = 1 << Kd, sx = 16 / Nseg;
           const lc = ['blue', 'teal', 'purple', 'orange', 'pink'];
@@ -503,7 +482,7 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
               if (j > 0) Ch.dot(x0 + (x1 - x0) / 2, h, { r: 3.2, color: lc[j % lc.length] });
             }
           }
-          Ch.text(`${Nseg} segment${Nseg > 1 ? 's' : ''} of ${v.fix(l0.value, 0)} km · arcs = swapped pairs`, 8, -0.55, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
+          Ch.text(`${Nseg} schematic segment${Nseg > 1 ? 's' : ''} · arcs = swapped pairs`, 8, -0.55, { size: 11, color: 'muted', align: 'center', baseline: 'top' });
           if (Kk > 4) Ch.text(`only 4 levels drawn (real chain: ${1 << Kk} segments)`, 8, 4.9, { size: 11, color: 'muted', align: 'center', baseline: 'bottom' });
           // fidelity
           Fd.path(pts.map((p) => [p.k, p.Fraw]), { color: 'red', width: 2, dash: true });
@@ -511,9 +490,10 @@ For $F>\tfrac12$ one has $F'>F$ and iteration converges to $F\to1$; for $F\le\tf
           Fd.hline(0.5, { color: 'muted', dash: true, width: 1.2 }); Fd.text('F = ½', 7.9, 0.5, { size: 11, color: 'muted', align: 'right', baseline: 'top', dy: 3 });
           Fd.text('no purification', 7.9, Math.max(0.28, Math.min(0.98, pts[pts.length - 1].Fraw + 0.04)), { size: 11, color: 'red', align: 'right', baseline: 'bottom' });
           const prevP = pts.length > 1 ? pts[pts.length - 2] : null;
-          cur = { last, prevP, direct: Math.pow(10, -0.02 * last.L), slope: prevP ? Math.log(last.rate / prevP.rate) / Math.log(2) : NaN };
+          cur = { last, prevP, logDirect: logDirect(last.L), slope: prevP ? Math.log(last.rate / prevP.rate) / Math.log(2) : NaN };
         });
-        v.readout(() => `${K.value} levels: pair across $L=${v.fmt(cur.last.L, 4)}$ km at $${v.sci(cur.last.rate, 2)}$ per cycle; direct fibre would give $${v.sci(cur.direct, 2)}$${cur.direct > 0 ? ` (a gain of $${v.sci(cur.last.rate / cur.direct, 2)}$)` : ''}\n${cur.prevP ? `doubling $L$ multiplies the rate by $2^{${fix(v, cur.slope, 2)}}$: a power law, in contrast with the factor $10^{-0.02L}$ of the direct link` : 'no swapping yet (K = 0): the repeater is just the direct link'} · fidelity ${fix(v, cur.last.F, 3)} with purification, ${fix(v, cur.last.Fraw, 3)} without`);
+        v.legend([['green','accepted-pair rate (may be separable)'],['red','loss-only direct transmission'],['gold','selected final level',{dot:true}]]);
+        v.readout(()=>`${K.value} levels: $L=${v.fmt(cur.last.L,4)}$ km; bootstrap accepted-pair rate $${v.sci(cur.last.rate,3)}$ per cycle, $\\log_{10}$ direct rate $=${fix(v,cur.logDirect,3)}$.\n$F=${fix(v,cur.last.F,5)}$: **${cur.last.entangled?'entangled Werner output':'separable Werner output; the displayed rate is not an entanglement rate'}**; raw no-purification fidelity ${fix(v,cur.last.Fraw,5)}. ${cur.prevP?`Observed last-level log2 rate ratio ${fix(v,cur.slope,3)}; one finite ratio is not proof of a power law.`:`No swaps at K=0; ${pr.value} purification rounds still act on elementary pairs.`}`);
       },
     },
   ],

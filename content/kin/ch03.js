@@ -1,7 +1,7 @@
 // Chemical Kinetics — Chapter 3: Transition-state theory (items 3.1–3.6)
 import { R, clamp, KB, HP, RJ, kTh, HC_K, eyring, mkRng, dwell, langevinStep, kappaTunnel } from './ch03.shared.js';
 
-const CM = 0.011962656; // kJ/mol per cm^-1
+import{CM_ENERGY as CM,isotope,tunnel as auditTunnel,tunnelLog,HC_TEMP}from'./kin-source-audit-transition.js';
 
 export default {
   collection: 'kin',
@@ -170,21 +170,21 @@ In an **Eyring plot** of $\ln(k/T)$ against $1/T$ the slope is $-\Delta H^\ddagg
     // ------------------------------------------------------------------ 3.4
     {
       num: '3.4', kind: 'Phenomenon', name: 'Kinetic isotope effect',
-      statement: String.raw`Replacing an atom by a heavier isotope changes a rate constant even though the potential energy surface is unchanged. For a **primary** effect, where the bond to the isotope is broken or formed in the rate-determining step, the lighter isotope usually reacts faster ($k_{\rm H}/k_{\rm D}>1$). In the simplest semiclassical picture, the zero-point energy of a stretching vibration is $\tfrac12 h\nu$ with $\nu\propto\mu^{-1/2}$, and if the stretch is lost (or much weakened) at the transition state the heavier isotope has to climb a higher barrier by the difference of zero-point energies:
+      statement: String.raw`Within the Born–Oppenheimer approximation, replacing an atom by a heavier isotope changes nuclear masses while keeping the electronic potential energy surface fixed; rate constants can still change. For a **primary** effect, where the bond to the isotope is broken or formed in the rate-determining step, the lighter isotope usually reacts faster ($k_{\rm H}/k_{\rm D}>1$). In the simplest semiclassical picture, the zero-point energy of a stretching vibration is $\tfrac12 h\nu$ with $\nu\propto\mu^{-1/2}$, and if the stretch is lost (or much weakened) at the transition state the heavier isotope has to climb a higher barrier by the difference of zero-point energies:
 $$\frac{k_{\rm H}}{k_{\rm D}}\;\approx\;\exp\!\Big[\frac{(1-\phi)\,\tfrac12 h c(\tilde\nu_{\rm H}-\tilde\nu_{\rm D})\,N_A}{RT}\Big],$$
-with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that survives at the transition state. For a C–H stretch near $3000\ \mathrm{cm^{-1}}$ and $\phi=0$ this gives a value near $7$ at room temperature, which falls toward 1 as $T$ rises.`,
-      idea: String.raw`In TST (3.2) both isotopologues share one surface, so the only differences are in the partition functions, and the dominant one is the zero-point term $e^{-\mathrm{ZPE}/RT}$ that makes the effective barrier $E_0^{\rm D}-E_0^{\rm H}=(1-\phi)(\mathrm{ZPE}^{\rm H}_{\rm R}-\mathrm{ZPE}^{\rm D}_{\rm R})$. A symmetric transition state with the hydrogen half-way between two heavy atoms has $\phi\approx0$ for the stretch that becomes the reaction coordinate. The ratio of the zero-point energies follows from the reduced masses (zero-point energy, qm-4.4), and the effect decays as $e^{\Delta\mathrm{ZPE}/RT}$ with temperature. Bending modes and tunnelling (3.5) move real values away from this bare estimate.`,
-      caption: String.raw`Left: a schematic of the zero-point levels of H and D in the reactant well and at the transition state (the right-hand well is the same stretch at the transition state, its frequency scaled by $\phi$). The arrows are the two activation energies measured between zero-point levels; their lengths differ by $(1-\phi)$ times the reactant zero-point gap. Right: $k_{\rm H}/k_{\rm D}$ against $T$ for $\phi$ you choose (blue) and for $\phi=0$ (dashed grey). The stretch frequency, the heavy partner atom (which sets the reduced masses) and $\phi$ are yours to change.`,
+with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that survives at the transition state. For a C–H stretch near $3000\ \mathrm{cm^{-1}}$ and $\phi=0$ this gives a value around $7$ at room temperature, which falls toward 1 as $T$ rises.`,
+      idea: String.raw`In TST (3.2) both isotopologues share one surface, so the only differences are in the partition functions, and the dominant one is the zero-point term $e^{-\mathrm{ZPE}/RT}$ that makes the effective barrier $E_0^{\rm D}-E_0^{\rm H}=(1-\phi)(\mathrm{ZPE}^{\rm H}_{\rm R}-\mathrm{ZPE}^{\rm D}_{\rm R})$. Here $\phi=0$ models loss of this mode; a real transition state also has other stable modes. The ratio of the zero-point energies follows from the reduced masses (zero-point energy, qm-4.4), and the effect decays as $e^{\Delta\mathrm{ZPE}/RT}$ with temperature. Bending modes and tunnelling (3.5) move real values away from this bare estimate.`,
+      caption: String.raw`Left: a schematic of the zero-point levels of H and D in the reactant well and at the transition state (the right-hand well represents a stable stretching mode at the transition state, its frequency scaled by $\phi$). The arrows are the two activation energies measured between zero-point levels; their lengths differ by $(1-\phi)$ times the reactant zero-point gap. Right: $k_{\rm H}/k_{\rm D}$ against $T$ for $\phi$ you choose (blue) and for $\phi=0$ (dashed grey). The stretch frequency, the heavy partner atom (which sets the reduced masses) and $\phi$ are yours to change.`,
       deps: ['kin-3.2', 'qm-4.4'],
-      refs: ['Steinfeld et al.'],
+      refs: ['Claire Vallance, Transition state theory author notes §3 pp.3–4, Kinetic isotope effects; one-mode equal-prefactor approximation'],
       tags: ['isotope effect', 'zero-point energy'],
-      credit: 'Bigeleisen, 1949 (theory of isotope effects on rates)',
-      verify: true,
-      scope: String.raw`Semiclassical, one stretching mode, harmonic zero-point energies; real primary effects also depend on bending modes, transition-state symmetry and tunnelling. Secondary and heavy-atom effects are far smaller than this bare estimate.`,
+      credit: 'Harmonic one-mode zero-point estimate',
+      verify: false,
+      scope: String.raw`Semiclassical, one stretching mode, harmonic zero-point energies; real primary effects also depend on bending modes, transition-state symmetry and tunnelling. Equal non-vibrational prefactors and nominal masses H=1,D=2 are assumed; this is not a universal bound on isotope effects.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Kinetic_isotope_effect' },
       viz(v) {
         const nuS = v.slider('C–H stretch $\\tilde\\nu_{\\rm H}$ (cm⁻¹)', 2400, 3600, 3000, { step: 10 });
-        const mx = v.select('heavy partner X', [{ value: '12', label: 'C (12)' }, { value: '14', label: 'N (14)' }, { value: '16', label: 'O (16)' }, { value: '1000', label: 'infinitely heavy' }], '12');
+        const mx = v.select('heavy partner X', [{ value: '12', label: 'C (12)' }, { value: '14', label: 'N (14)' }, { value: '16', label: 'O (16)' }, { value: 'Infinity', label: 'infinite partner mass' }], '12');
         const phi = v.slider('stretch ZPE kept at the TS, $\\phi$', 0, 1, 0, { step: 0.01 });
         const Ts = v.slider('$T$ (K)', 150, 800, 298, { step: 1 });
         const A = v.stage({ x: [0, 10], y: [-8, 100], axes: false, height: 350, title: 'zero-point levels (schematic)', weight: 1, minWidth: 270 });
@@ -192,15 +192,15 @@ with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that surviv
         const red = (m, a) => m * a / (m + a);
         let info = {};
         v.render(() => {
-          const m = +mx.value, rr = Math.sqrt(red(m, 1.00783) / red(m, 2.01410));
+          const m=+mx.value,rr=isotope(nuS.value,m,phi.value,Ts.value).rr;
           const nuH = nuS.value, nuD = nuH * rr;
           const zH = 0.5 * CM * nuH, zD = 0.5 * CM * nuD, ph = phi.value, V = 62, w = 0.8;
           const kie = (T, p) => Math.exp((1 - p) * (zH - zD) * 1000 / (RJ * T));
           const x0 = 2.2, x1 = 7.6;
           const reac = (x) => zH * ((x - x0) / w) ** 2, ts = (x) => V + zH * ph * ph * ((x - x1) / w) ** 2;
           A.curve((x) => [x, reac(x)], x0 - 1.35, x0 + 1.35, { n: 60, color: 'ink', width: 2.2 });
-          A.curve((x) => [x, Math.min(96, ts(x))], x1 - 1.35, x1 + 1.35, { n: 60, color: 'ink', width: 2.2 });
-          const ya = reac(x0 + 1.35), yb = ts(x1 - 1.35);
+          A.curve((x) => [x, ts(x)], x1 - 1.35, x1 + 1.35, { n: 60, color: 'ink', width: 2.2 });
+          const ya = reac(x0 + 1.35), yb = ts(x1 - 1.35);A.setView([0,10],[-8,Math.max(100,yb+12)]);B.setView([150,800],[.9,Math.max(10,kie(150,0)*1.2)]);
           A.curve((x) => [x, ya + (yb - ya) * (1 - Math.cos(Math.PI * (x - (x0 + 1.35)) / (x1 - 1.35 - x0 - 1.35))) / 2], x0 + 1.35, x1 - 1.35, { n: 40, color: 'faint', width: 1.8, dash: [5, 4] });
           const tH = V + ph * zH, tD = V + ph * zD, dw = w * Math.sqrt(zD / zH);
           A.line(x0 - w, zH, x0 + w, zH, { color: 'accent', width: 3.4 }); A.line(x0 - dw, zD, x0 + dw, zD, { color: 'purple', width: 3.4 });
@@ -211,7 +211,7 @@ with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that surviv
           A.arrow(8.9, zH, 8.9, tH, { color: 'accent', width: 2, head: 7 }); A.arrow(9.6, zD, 9.6, tD, { color: 'purple', width: 2, head: 7 });
           A.tex('E_0^{\\rm H}', 8.75, (zH + tH) / 2, { size: 13, color: 'accent', align: 'right' }); A.tex('E_0^{\\rm D}', 9.6, tD + 7, { size: 13, color: 'purple', align: 'center' });
           A.tex('\\mathrm{ZPE}_{\\rm H}', x0, zH + 8, { size: 12, color: 'accent' }); A.tex('\\mathrm{ZPE}_{\\rm D}', x0 - 0.75, zD - 7, { size: 12, color: 'purple', align: 'right' });
-          A.text('reactant', x0, -5, { size: 12, color: 'muted', align: 'center' }); A.text('transition state', x1, 83, { size: 12, color: 'muted', align: 'center' });
+          A.text('reactant', x0, -5, { size: 12, color: 'muted', align: 'center' }); A.text('transition state', x1, V+ph*zH+12, { size: 12, color: 'muted', align: 'center' });
           B.hband(6, 8, { color: 'green', alpha: 0.1 });
           B.fn((T) => kie(T, 0), { color: 'faint', width: 1.8, dash: [6, 4], domain: [150, 800] });
           B.fn((T) => kie(T, ph), { color: 'accent', width: 2.6, domain: [150, 800] });
@@ -219,21 +219,21 @@ with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that surviv
           info = { nuD, dz: zH - zD, E: (1 - ph) * (zH - zD), k: kie(Ts.value, ph), kmax: kie(298.15, 0), T: Ts.value };
         });
         v.legend([['accent', 'H', { dot: true }], ['purple', 'D', { dot: true }], ['green', 'the “about 7” band', { area: true }], ['faint', 'stretch lost at TS ($\\phi=0$)', { dash: true }]]);
-        v.readout(() => `$\\tilde\\nu_{\\rm D}=${v.fix(info.nuD, 0)}$ cm⁻¹ · zero-point gap in the reactant $${v.fix(info.dz, 2)}$ kJ/mol, difference of activation energies $E_0^{\\rm D}-E_0^{\\rm H}=${v.fix(info.E, 2)}$ kJ/mol\n$k_{\\rm H}/k_{\\rm D}(${info.T}\\,\\mathrm K)=${v.fix(info.k, 2)}$ · the largest value for these frequencies ($\\phi=0$) at 298 K is $${v.fix(info.kmax, 2)}$ — values far above that point to tunnelling (3.5)`);
+        v.readout(() => `$\\tilde\\nu_{\\rm D}=${v.fix(info.nuD, 0)}$ cm⁻¹ · zero-point gap in the reactant $${v.fix(info.dz, 2)}$ kJ/mol, difference of activation energies $E_0^{\\rm D}-E_0^{\\rm H}=${v.fix(info.E, 2)}$ kJ/mol\n$k_{\\rm H}/k_{\\rm D}(${info.T}\\,\\mathrm K)=${v.fix(info.k, 2)}$ · the largest value for these frequencies ($\\phi=0$) at 298 K is $${v.fix(info.kmax, 2)}$ — a larger observed effect requires contributions beyond this one-mode equal-prefactor model (including possible tunnelling)`);
       },
     },
     // ------------------------------------------------------------------ 3.5
     {
       num: '3.5', kind: 'Phenomenon', name: 'Tunnelling corrections to rates',
-      statement: String.raw`For light atoms, especially hydrogen, a fraction of the reacting systems goes through the barrier instead of over it. The rate constant acquires a tunnelling factor $\kappa(T)=k_{\rm quantum}/k_{\rm classical}\ge1$ that grows as the temperature falls. For a parabolic barrier of height $V_0$ and imaginary frequency $\nu^\ddagger$, with $u=h\nu^\ddagger/k_BT$, the leading correction is Wigner's $\kappa\approx1+u^2/24$, and Bell's closed form $\kappa=\dfrac{u/2}{\sin(u/2)}$ holds while $u<2\pi$; below the **crossover temperature** $T_c=h\nu^\ddagger/2\pi k_B$ tunnelling dominates and Arrhenius plots flatten. Because $\nu^\ddagger\propto m^{-1/2}$, deuterium tunnels far less than hydrogen, so the isotope effect can greatly exceed the semiclassical limit of about 7 (3.4).`,
-      idea: String.raw`The thermally averaged transmission through a barrier is $\int_0^\infty P(E)\,e^{-E/k_BT}\,dE/k_BT$ divided by the classical $e^{-V_0/k_BT}$. For the parabolic (Kemble) barrier, $P(E)=[1+e^{2\pi(V_0-E)/h\nu^\ddagger}]^{-1}$, which is exactly 1/2 at the top and decays exponentially below it, so energies somewhat below $V_0$ contribute at low $T$. Wigner's formula is the first term of an expansion in $h\nu^\ddagger/k_BT$ and Bell's the sum of the geometric series; both fail when $k_BT$ falls below the crossover. A deuterium has $\nu^\ddagger/\sqrt2$, so a smaller $u$ and a much smaller $\kappa$.`,
-      caption: String.raw`The parabolic-barrier (Kemble) model integrated numerically, with energies measured from the reactant zero-point level. Left: Arrhenius plots for H (blue), for D (orange; barrier raised by the zero-point gap and $\nu^\ddagger/\sqrt2$) and for the classical barrier alone (grey). Middle: the tunnelling factor for H with Wigner's and Bell's approximations (they leave the exact curve near $T_c$). Right: the resulting $k_{\rm H}/k_{\rm D}$ compared with its zero-point-only value. Lower $T$, a higher $\nu^\ddagger$ or a lower barrier make the Arrhenius plot of H curve and the isotope effect soar.`,
+      statement: String.raw`For light atoms, especially hydrogen, a fraction of the reacting systems goes through the barrier instead of over it. The model transmission correction is $\kappa(T)=k_{\rm model}/k_{\rm classical}$; it includes both below-barrier transmission and above-barrier reflection. It need not universally exceed1. For a parabolic barrier of height $V_0$ and imaginary frequency $\nu^\ddagger$, with $u=h\nu^\ddagger/k_BT$, the leading correction is quadratic high-temperature expansion $\kappa\approx1+u^2/24$. Extending the parabolic model below all physical threshold energies gives $\kappa_\infty=\dfrac{u/2}{\sin(u/2)}$ for $u<2\pi$; this is not the exact finite-threshold factor; below the **crossover temperature** $T_c=h\nu^\ddagger/2\pi k_B$ the unbounded-energy approximation diverges; the finite-threshold integral remains finite. Because $\nu^\ddagger\propto m^{-1/2}$, deuterium tunnels far less than hydrogen, so the isotope effect can exceed the one-mode room-temperature estimate of 3.4.`,
+      idea: String.raw`The thermally averaged transmission through a barrier is $\int_0^\infty P(E)\,e^{-E/k_BT}\,dE/k_BT$ divided by the classical $e^{-V_0/k_BT}$. For the parabolic (Kemble) barrier, $P(E)=[1+e^{2\pi(V_0-E)/h\nu^\ddagger}]^{-1}$, which is exactly 1/2 at the top and decays exponentially below it, so energies somewhat below $V_0$ contribute at low $T$. The quadratic term follows by expanding $x/\sin x$. The closed form requires extending the lower integration limit to $-\infty$; it is a useful large-barrier approximation above crossover, not a geometric-series identity or the finite-threshold result. The chosen mass scaling gives D the curvature $\nu^\ddagger/\sqrt2$; both isotope integrals are evaluated explicitly.`,
+      caption: String.raw`The parabolic-barrier (Kemble) model integrated numerically, with energies measured from the reactant zero-point level. Left: Arrhenius plots for H (blue), for D (orange; barrier raised by the zero-point gap and $\nu^\ddagger/\sqrt2$) and for the classical barrier alone (grey). Middle: the tunnelling factor for H with the quadratic and unbounded-energy approximations. The red curve is shown only for $T\ge1.05T_c$; it diverges at $T_c$, whereas the finite-threshold integral does not. Right: the resulting $k_{\rm H}/k_{\rm D}$ compared with its zero-point-only value. All three panels use100–600K. Ratios reflect both isotope-specific barriers and curvatures; this is a chosen model, not a universal ordering theorem.`,
       deps: ['kin-3.2', 'qchem-1.11'],
-      refs: ['Steinfeld et al.'],
+      refs: ['Skodje and Truhlar, J.Phys.Chem.85 (1981),624–628, §II.A Eqs.(2)–(6), (17)–(18): numerical uniformized-WKB integral and untruncated comparison; original scan OCR read', 'Shan, Burd and Clary, New Developments in Semiclassical Transition State Theory, author manuscript §3.2 pp.16–17 Eqs.(29)–(31), finite threshold versus unbounded parabolic limit'],
       tags: ['tunnelling', 'isotope effect'],
-      credit: 'Wigner, 1932 (correction); Bell, 1959 (parabolic-barrier treatment)',
-      verify: true,
-      scope: String.raw`A one-dimensional parabolic barrier, truncated at the reactant zero-point energy: reliable for $T\gtrsim T_c$ and qualitative below it, where multidimensional (small-curvature, instanton) treatments are needed. The numbers do not describe a particular reaction.`,
+      credit: 'Finite-threshold parabolic transmission model',
+      verify: false,
+      scope: String.raw`One-dimensional parabolic transmission probability integrated from physical energy0; this prescription does not solve an abruptly truncated real-space potential. It is a model over the whole plotted range. Real multidimensional chemistry can require anharmonic/instanton treatments. The numbers do not describe a particular reaction.`,
       viz(v) {
         const V0 = v.slider('barrier $V_0$ (kJ/mol)', 15, 80, 40, { step: 1 });
         const nu = v.slider('$\\nu^\\ddagger_{\\rm H}$ (cm⁻¹)', 400, 2000, 1200, { step: 50 });
@@ -246,28 +246,29 @@ with $\phi\in[0,1]$ the fraction of the stretching zero-point energy that surviv
         v.render(() => {
           const hvH = nu.value * CM, hvD = hvH / Math.SQRT2, V = V0.value, Dz = dz.value;
           const kc = (T) => Math.exp(-V * 1000 / (RJ * T));
-          const kH = (T) => (tun.value ? kappaTunnel(V, hvH, T) : 1) * kc(T);
-          const kD = (T) => (tun.value ? kappaTunnel(V + Dz, hvD, T) : 1) * Math.exp(-(V + Dz) * 1000 / (RJ * T));
-          const Tc = nu.value * HC_K / (2 * Math.PI), Tmin = 100;
-          A.setView([1.5, 8.3], [-(V + Dz) * 1000 / (RJ * Tmin) - 3, 1]);
-          A.curve((x) => [x, Math.log(kc(1000 / x))], 1.7, 8.2, { n: 40, color: 'faint', width: 1.8, dash: [6, 4] });
-          A.curve((x) => [x, Math.log(kD(1000 / x))], 1.7, 8.2, { n: 90, color: 'orange', width: 2.4 });
-          A.curve((x) => [x, Math.log(kH(1000 / x))], 1.7, 8.2, { n: 90, color: 'accent', width: 2.6 });
-          if (1000 / Tc <= 8.3) A.vline(1000 / Tc, { color: 'gold', dash: [3, 4] });
+          const kH = (T) => (tun.value ? auditTunnel(V, hvH, T) : 1) * kc(T);
+          const kD = (T) => (tun.value ? auditTunnel(V + Dz, hvD, T) : 1) * Math.exp(-(V + Dz) * 1000 / (RJ * T));
+          const Tc = nu.value * HC_TEMP / (2 * Math.PI), Tmin = 100;
+          A.setView([1000/600,10],[-(V+Dz)*1000/(RJ*Tmin)-3,1]);
+          A.curve((x) => [x, Math.log(kc(1000 / x))], 1000/600, 10, { n: 40, color: 'faint', width: 1.8, dash: [6, 4] });
+          A.curve((x) => [x, Math.log(kD(1000 / x))], 1000/600, 10, { n: 90, color: 'orange', width: 2.4 });
+          A.curve((x) => [x, Math.log(kH(1000 / x))], 1000/600, 10, { n: 90, color: 'accent', width: 2.6 });
+          if (1000 / Tc <= 10) A.vline(1000 / Tc, { color: 'gold', dash: [3, 4] });
           const u = (T) => hvH * 1000 / (RJ * T), wig = (T) => 1 + u(T) ** 2 / 24, bell = (T) => (u(T) < 2 * Math.PI ? (u(T) / 2) / Math.sin(u(T) / 2) : NaN);
-          B.fn((T) => kappaTunnel(V, hvH, T), { color: 'accent', width: 2.6, domain: [100, 600] });
+          const temps=Array.from({length:101},(_,i)=>100+5*i),kap=temps.map(t=>auditTunnel(V,hvH,t)),kis=temps.map(t=>Math.exp(Dz*1000/(RJ*t))*(tun.value?auditTunnel(V,hvH,t)/auditTunnel(V+Dz,hvD,t):1)),bmax=Math.max(...kap,...temps.map(wig),...temps.filter(t=>t>=Tc*1.05).map(bell),bell(Math.max(100,Tc*1.05))); B.setView([100,600],[Math.min(.9,...kap)*.9,bmax*1.1]);C.setView([100,600],[Math.min(.9,...kis)*.9,Math.max(...kis,Math.exp(Dz*1000/(RJ*100)))*1.2]);
+          B.fn((T) => auditTunnel(V, hvH, T), { color: 'accent', width: 2.6, domain: [100, 600] });
           B.fn(wig, { color: 'green', width: 1.8, dash: [6, 4], domain: [100, 600] });
-          B.fn(bell, { color: 'red', width: 1.8, dash: [2, 3], domain: [Math.max(100, Tc * 1.0001), 600] });
+          B.fn(bell, { color: 'red', width: 1.8, dash: [2, 3], domain: [Math.max(100, Tc * 1.05), 600] });
           B.vline(Tc, { color: 'gold', dash: [3, 4] });
           const zpe = (T) => Math.exp(Dz * 1000 / (RJ * T));
           C.fn(zpe, { color: 'faint', width: 1.8, dash: [6, 4], domain: [100, 600] });
-          C.fn((T) => zpe(T) * (tun.value ? kappaTunnel(V, hvH, T) / kappaTunnel(V + Dz, hvD, T) : 1), { color: 'accent', width: 2.6, domain: [100, 600] });
+          C.fn((T) => zpe(T) * (tun.value ? auditTunnel(V, hvH, T) / auditTunnel(V + Dz, hvD, T) : 1), { color: 'accent', width: 2.6, domain: [100, 600] });
           C.vline(Tc, { color: 'gold', dash: [3, 4] });
           const T0 = 300;
-          info = { Tc, k300: kappaTunnel(V, hvH, T0), k200: kappaTunnel(V, hvH, 200), kie300: zpe(T0) * (tun.value ? kappaTunnel(V, hvH, T0) / kappaTunnel(V + Dz, hvD, T0) : 1), kie200: zpe(200) * (tun.value ? kappaTunnel(V, hvH, 200) / kappaTunnel(V + Dz, hvD, 200) : 1), z300: zpe(T0), wig300: wig(T0), bell300: bell(T0) };
+          info = { Tc, k300: auditTunnel(V, hvH, T0), k200: auditTunnel(V, hvH, 200), kie300: zpe(T0) * (tun.value ? auditTunnel(V, hvH, T0) / auditTunnel(V + Dz, hvD, T0) : 1), kie200: zpe(200) * (tun.value ? auditTunnel(V, hvH, 200) / auditTunnel(V + Dz, hvD, 200) : 1), z300: zpe(T0), wig300: wig(T0), bell300: bell(T0) };
         });
-        v.legend([['accent', 'H (with tunnelling if on)'], ['orange', 'D'], ['faint', 'classical / ZPE only', { dash: true }], ['green', 'Wigner', { dash: true }], ['red', 'Bell', { dash: true }], ['gold', 'crossover $T_c$', { dash: true }]]);
-        v.readout(() => `crossover temperature $T_c=h\\nu^\\ddagger/2\\pi k_B=${v.fix(info.Tc, 0)}$ K · $\\kappa_{\\rm H}(300\\,\\mathrm K)=${v.fix(info.k300, 2)}$ (Wigner $${v.fix(info.wig300, 2)}$, Bell $${isFinite(info.bell300) ? v.fix(info.bell300, 2) : '–'}$), $\\kappa_{\\rm H}(200\\,\\mathrm K)=${v.fix(info.k200, 1)}$\n$k_{\\rm H}/k_{\\rm D}$: $${v.fix(info.kie300, 1)}$ at 300 K and $${v.sci(info.kie200, 2)}$ at 200 K, against $${v.fix(info.z300, 1)}$ from zero-point energy alone at 300 K`);
+        v.legend([['accent', 'H (with tunnelling if on)'], ['orange', 'D'], ['faint', 'classical / ZPE only', { dash: true }], ['green', 'quadratic expansion', { dash: true }], ['red', 'unbounded-energy limit', { dash: true }], ['gold', 'crossover $T_c$', { dash: true }]]);
+        v.readout(() => `crossover temperature $T_c=h\\nu^\\ddagger/2\\pi k_B=${v.fix(info.Tc, 0)}$ K · $\\kappa_{\\rm H}(300\\,\\mathrm K)=${v.sci(info.k300, 3)}$ (quadratic $${v.fix(info.wig300, 2)}$, unbounded limit $${isFinite(info.bell300) ? v.fix(info.bell300, 2) : '–'}$), $\\kappa_{\\rm H}(200\\,\\mathrm K)=${v.sci(info.k200, 3)}$\n$k_{\\rm H}/k_{\\rm D}$: $${v.sci(info.kie300, 3)}$ at 300 K and $${v.sci(info.kie200, 2)}$ at 200 K, against $${v.fix(info.z300, 1)}$ from zero-point energy alone at 300 K`);
       },
     },
     // ------------------------------------------------------------------ 3.6

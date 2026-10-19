@@ -19,15 +19,14 @@ export default {
       num: '4.5',
       kind: 'Theorem',
       name: 'Orthogonal eigenfunctions for symmetric boundary conditions',
-      statement: String.raw`Let $X_m,X_n$ be eigenfunctions of $-X''=\lambda X$ on $[a,b]$, with eigenvalues $\lambda_m\ne\lambda_n$, under boundary conditions that are *symmetric*, meaning that $\big[f'g-fg'\big]_a^b=0$ for every pair $f,g$ obeying them (this holds for Dirichlet, Neumann, periodic and Robin conditions at each end, with any real Robin coefficients, and for mixtures). Then $\int_a^bX_mX_n\,dx=0$. Moreover all eigenvalues are real, and, since the quotient $\lambda=\int X'^2+\text{(boundary terms)}\Big/\int X^2$ is positive when the boundary terms are, all eigenvalues are positive for Dirichlet and for Robin conditions with $h\ge0$. For conditions that are not symmetric the conclusion can fail.`,
+      statement: String.raw`Let $X_m,X_n$ be eigenfunctions of $-X''=\lambda X$ on $[a,b]$, with eigenvalues $\lambda_m\ne\lambda_n$, under homogeneous real boundary conditions that are *symmetric*, meaning that $\big[f'g-fg'\big]_a^b=0$ for every pair $f,g$ obeying them (this holds for Dirichlet, Neumann, periodic and Robin conditions at each end, with any real Robin coefficients, and for mixtures). Then $\int_a^bX_mX_n\,dx=0$. Moreover all eigenvalues are real, and, since the quotient $\lambda=\int X'^2+\text{(boundary terms)}\Big/\int X^2$ is positive when the boundary terms are, the spectrum is positive for Dirichlet ends and for outward Robin conditions with nonnegative coefficients and at least one positive coefficient (or a Dirichlet end). Pure Neumann and periodic conditions also have a zero constant mode. For conditions that are not symmetric the conclusion can fail.`,
       idea: String.raw`Multiply $-X_m''=\lambda_mX_m$ by $X_n$ and $-X_n''=\lambda_nX_n$ by $X_m$ and subtract; the left side is $-(X_m''X_n-X_mX_n'')=-(X_m'X_n-X_mX_n')'$, an exact derivative, so integrating over $[a,b]$ gives $(\lambda_n-\lambda_m)\int X_mX_n=\big[X_m'X_n-X_mX_n'\big]_a^b$ (Green's second identity in one dimension, vcalc-8.9). Symmetric boundary conditions are exactly those that kill the right side. Hence orthogonality; reality of $\lambda$ follows by applying the same identity with $X_n=\overline{X_m}$.`,
-      caption: String.raw`Pick the boundary condition at each end ($h$ is the Robin coefficient). The heat map is the matrix of numerical inner products $\langle X_i,X_j\rangle=\int_0^1X_iX_j\,dx$ of the first eight eigenfunctions (found numerically for Robin; the numbers shown are those above $0.005$): diagonal for every symmetric choice. The sliders $m,n$ test the identity $(\lambda_n-\lambda_m)\langle X_m,X_n\rangle=[X_m'X_n-X_mX_n']_0^1$ with both sides computed independently. Switch on *break symmetry*: the condition $u(0)=0$, $u'(1)=a\,u'(0)$ couples the two ends, the boundary term no longer vanishes and the matrix gets off-diagonal entries. (These real eigenfunctions $\sin\mu x$, $\cos\mu=a$, do not even form a complete set: this operator is not self-adjoint.)`,
+      caption: String.raw`Pick the boundary condition at each end ($h$ is the Robin coefficient). The heat map is the matrix of numerical inner products $\langle X_i,X_j\rangle=\int_0^1X_iX_j\,dx$ of the first eight eigenfunctions (found numerically for Robin; the numbers shown are those above $0.005$): diagonal for every symmetric choice. The sliders $m,n$ test the identity $(\lambda_n-\lambda_m)\langle X_m,X_n\rangle=[X_m'X_n-X_mX_n']_0^1$ with both sides computed independently. Switch on *break symmetry*: the condition $u(0)=0$, $u'(1)=a\,u'(0)$ couples the two ends, the boundary term no longer vanishes and the matrix gets off-diagonal entries. (Here $\cos\mu=a$; for $a\ne0$ orthogonality can fail. At $a=0$ this is the symmetric Dirichlet–Neumann problem. Nonorthogonality alone says nothing about completeness.)`,
       deps: ['pde-4.3', 'vcalc-8.9'],
-      refs: ['Strauss §5.3'],
-      credit: 'Sturm & Liouville, 1836–37',
-      verify: true,
+      refs: ['Ivrii §4.3, Green identity (4.3.5)–(4.3.6); §4.2, Examples 2 and 6'],
+      credit: 'Presentation follows Ivrii, Partial Differential Equations, chapter 4',
       tags: ['orthogonality', 'eigenfunctions', 'self-adjoint'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory' },
+      links: { source: 'https://www.math.utoronto.ca/ivrii/PDE-textbook/Chapter4/S4.3.html', wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory' },
       viz(v) {
         const M = v.M, K = 8, NQ = 800;
         const L = v.select('left end', [{ value: 'D', label: 'D' }, { value: 'N', label: 'N' }, { value: 'R', label: 'Robin' }], 'D');
@@ -75,17 +74,16 @@ export default {
       num: '4.6',
       kind: 'Theorem',
       name: 'Mean-square convergence and Parseval’s identity',
-      statement: String.raw`Let $f$ be square-integrable on $(-\pi,\pi)$ with Fourier coefficients $a_n,b_n$ and partial sums $S_N=\frac{a_0}2+\sum_{n\le N}(a_n\cos nx+b_n\sin nx)$. Then $S_N$ is the best approximation to $f$ in $L^2$ among trigonometric polynomials of degree $\le N$, the *Bessel inequality* $\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)\le\int f^2$ holds, and the trigonometric system is complete: $\|f-S_N\|_{L^2}\to0$. Equivalently, *Parseval's identity* holds,
+      statement: String.raw`Let $f$ be real-valued and square-integrable on $(-\pi,\pi)$ with Fourier coefficients $a_n,b_n$ and partial sums $S_N=\frac{a_0}2+\sum_{n\le N}(a_n\cos nx+b_n\sin nx)$. Then $S_N$ is the best approximation to $f$ in $L^2$ among trigonometric polynomials of degree $\le N$, the *Bessel inequality* $\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)\le\int f^2$ holds, and the trigonometric system is complete: $\|f-S_N\|_{L^2}\to0$. Equivalently, *Parseval's identity* holds,
 $$\int_{-\pi}^\pi f(x)^2\,dx=\pi\Big(\frac{a_0^2}2+\sum_{n=1}^\infty a_n^2+b_n^2\Big),$$
 and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ exactly. Mean-square convergence does *not* imply pointwise or uniform convergence.`,
-      idea: String.raw`The orthogonality relations (4.5, pma-8.10) make $S_N$ the orthogonal projection onto a finite-dimensional subspace, so the Pythagorean identity gives $\|f\|^2=\|S_N\|^2+\|f-S_N\|^2$ and with it Bessel's inequality and the exact formula for the error. Completeness is the real content: continuous functions are uniformly approximable by trigonometric polynomials (Weierstrass), hence in $L^2$; continuous functions are dense in $L^2$; the best-approximation property then transfers the approximation to the Fourier partial sums (see pma-11.40 and rca-4.26 for the Hilbert-space proof).`,
-      caption: String.raw`Choose a function and add Fourier terms with the slider $N$. Top: $f$ (grey), $S_N$ (orange). Middle: $\|f-S_N\|^2$ against $N$ on a log scale (it decreases monotonically, as the best-approximation property demands) with the current $N$ marked. Right: the bar fills up to $\|f\|^2$ as the Parseval sum $\pi(\frac{a_0^2}{2}+\sum a_n^2+b_n^2)$ accumulates. The readout checks $\|f-S_N\|^2$ computed directly by quadrature against $\|f\|^2$ minus the partial Parseval sum. The *sup* error of the square wave never goes to zero (the Gibbs overshoot, 4.8), though its $L^2$ error does.`,
+      idea: String.raw`The orthogonality relations (4.5, pma-8.10) make $S_N$ the orthogonal projection onto a finite-dimensional subspace, so the Pythagorean identity gives $\|f\|^2=\|S_N\|^2+\|f-S_N\|^2$ and with it Bessel's inequality and the exact formula for the error. Completeness is the real content: continuous periodic functions are uniformly approximable by trigonometric polynomials (Stone–Weierstrass), hence in $L^2$; continuous functions are dense in $L^2$; the best-approximation property then transfers the approximation to the Fourier partial sums (see pma-11.40 and rca-4.26 for the Hilbert-space proof).`,
+      caption: String.raw`Choose a function and add Fourier terms with the slider $N$. Top: $f$ (grey), $S_N$ (orange). Middle: $\|f-S_N\|^2$ against $N$ on a log scale (it decreases monotonically, as the best-approximation property demands) with the current $N$ marked. Right: the bar fills up to $\|f\|^2$ as the Parseval sum $\pi(\frac{a_0^2}{2}+\sum a_n^2+b_n^2)$ accumulates. The readout checks $\|f-S_N\|^2$ computed directly by quadrature against $\|f\|^2$ minus the partial Parseval sum. The *sup* error of the square wave never goes to zero (continuous partial sums cannot converge uniformly across a jump; see also Gibbs overshoot, 4.8), though its $L^2$ error does.`,
       deps: ['pde-4.4', 'pma-11.40', 'rca-4.26'],
-      refs: ['Strauss §5.4'],
-      credit: 'identity of Parseval, 1799 (for series); completeness for $L^2$: Riesz and Fischer, 1907',
-      verify: true,
+      refs: ['Ivrii §4.3 (orthogonal projections and completeness); §4.4, Parseval equality (4.4.5)'],
+      credit: 'Presentation follows Ivrii, Partial Differential Equations, chapter 4',
       tags: ['Parseval', 'L2 convergence', 'completeness'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Parseval%27s_identity' },
+      links: { source: 'https://www.math.utoronto.ca/ivrii/PDE-textbook/Chapter4/S4.4.html', wikipedia: 'https://en.wikipedia.org/wiki/Parseval%27s_identity' },
       viz(v) {
         const M = v.M, KM = 64;
         const fsel = v.select('function', Object.keys(FUNS).map((k) => ({ value: k, label: FUNS[k].label })), 'square');
@@ -95,7 +93,7 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
         const C = v.stage({ x: [0, 1], y: [0, 1.1], axes: 'box', gutter: true, height: 240, title: 'Parseval sum / $\\|f\\|^2$', minWidth: 160, weight: 0.45, xticks: [] });
         let key = '', cf = null, nf = 0, err = [], direct = 0, supErr = 0, via = 0, frac = 0;
         v.render(() => {
-          if (key !== fsel.value) { key = fsel.value; cf = trigCoef(FUNS[key].f, KM); nf = 0; const nq = 4000; for (let i = 0; i < nq; i++) { const x = -Math.PI + ((i + 0.5) * 2 * Math.PI) / nq; nf += FUNS[key].f(x) ** 2 * ((2 * Math.PI) / nq); }
+          if (key !== fsel.value) { key = fsel.value; cf = trigCoef(FUNS[key].f, KM); nf = 0; const nq = 4096; for (let i = 0; i < nq; i++) { const x = -Math.PI + ((i + 0.5) * 2 * Math.PI) / nq; nf += FUNS[key].f(x) ** 2 * ((2 * Math.PI) / nq); }
             err = []; let acc = (Math.PI * cf.a[0] ** 2) / 2; err.push(nf - acc); for (let n = 1; n <= KM; n++) { acc += Math.PI * (cf.a[n] ** 2 + cf.b[n] ** 2); err.push(Math.max(1e-12, nf - acc)); } }
           const f = FUNS[key].f, N = nS.value;
           A.fn(f, { color: 'muted', width: 1.8, n: 800 });
@@ -109,11 +107,11 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
           C.rect(0.15, 0, 0.85, 1, { color: 'ink', width: 1.5, fill: false });
           C.rect(0.15, 0, 0.85, Math.min(1, frac), { fill: 'green', fillAlpha: 0.55, stroke: false });
           C.hline(1, { color: 'ink', width: 1.5, dash: [4, 3] });
-          let d = 0, sup = 0; const nq = 2000; for (let i = 0; i < nq; i++) { const x = -Math.PI + ((i + 0.5) * 2 * Math.PI) / nq, e = f(x) - trigSum(cf, N, x); d += (e * e * 2 * Math.PI) / nq; sup = Math.max(sup, Math.abs(e)); }
+          let d = 0, sup = 0; const nq = 4096; for (let i = 0; i < nq; i++) { const x = -Math.PI + ((i + 0.5) * 2 * Math.PI) / nq, e = f(x) - trigSum(cf, N, x); d += (e * e * 2 * Math.PI) / nq; sup = Math.max(sup, Math.abs(e)); }
           direct = d; supErr = sup;
         });
         v.legend([['muted', '$f$'], ['orange', '$S_N$'], ['green', 'Parseval partial sum', { area: true }]]);
-        v.readout(() => `$\\|f\\|^2=${v.fix(nf, 4)}$ · $\\|f-S_N\\|^2$ by quadrature $=${v.fix(direct, 5)}$ and $\\|f\\|^2-\\pi(\\dots)=${v.fix(via, 5)}$ ✓ · Parseval sum is ${v.fix(100 * frac, 3)}% of $\\|f\\|^2$ · $\\sup|f-S_N|=${v.fix(supErr, 3)}$`);
+        v.readout(() => `$\\|f\\|^2=${v.fix(nf, 4)}$ · $\\|f-S_N\\|^2$ by quadrature $=${v.fix(direct, 5)}$ and $\\|f\\|^2-\\pi(\\dots)=${v.fix(via, 5)}$ (numerical quadrature) · Parseval sum is ${v.fix(100 * frac, 3)}% of $\\|f\\|^2$ · $\\sup|f-S_N|=${v.fix(supErr, 3)}$`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -123,13 +121,12 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
       name: 'Pointwise and uniform convergence of Fourier series',
       statement: String.raw`Let $f$ be $2\pi$-periodic and piecewise $C^1$ (finitely many jumps, with $f'$ piecewise continuous). Then at every point $x$ the partial sums converge to the average of the one-sided limits, $S_N(x)\to\tfrac12\big(f(x^+)+f(x^-)\big)$ (so to $f(x)$ where $f$ is continuous). If in addition $f$ is continuous, the convergence is *uniform* on $\R$ and $\sum(|a_n|+|b_n|)<\infty$. Without continuity the convergence is still uniform on every closed interval free of jumps, but not near a jump.`,
       idea: String.raw`Write $S_N(x)=\frac1\pi\int f(x+y)D_N(y)\,dy$ with the Dirichlet kernel $D_N(y)=\frac{\sin((N+\frac12)y)}{2\sin(y/2)}$. Subtracting the average of the one-sided limits leaves $\int g(y)\sin((N+\tfrac12)y)\,dy$ where $g(y)=\big(f(x+y)-f(x^\pm)\big)/(2\sin\frac y2)$ is bounded (this is where piecewise differentiability enters) and so integrable; the Riemann–Lebesgue lemma sends this to $0$. For continuous piecewise $C^1$ $f$, Bessel's inequality (4.6) applied to $f'$ gives $\sum n^2(a_n^2+b_n^2)<\infty$, hence by Cauchy–Schwarz $\sum(|a_n|+|b_n|)<\infty$, and the Weierstrass $M$-test (pma-7.10) gives uniform convergence.`,
-      caption: String.raw`Choose a function and move the gold probe along the axis. Left: $f$ and the partial sum $S_N$. Middle: the value $S_N(x_0)$ at the probe for $N=1,2,\dots,80$, converging to the green target line, the average of the one-sided limits (at a jump it is the *midpoint* of the jump, not either side). Right: the sup error on log–log axes for all of $\R$ (blue) and for the part of the circle at distance $\ge0.3$ from every jump (orange). For the triangle wave both go to zero like $1/N$; for the square wave only the orange curve does, while the blue stays at about $1$, half the size of the jump, however many terms you take. The cusp $|x|^{1/2}$ is continuous but not piecewise $C^1$: convergence is still uniform but slow, about $N^{-1/2}$.`,
+      caption: String.raw`Choose a function and move the gold probe along the axis; *probe nearest jump* lands exactly on a jump. Left: $f$ and the partial sum $S_N$. Middle: the value $S_N(x_0)$ at the probe for $N=1,2,\dots,80$, converging to the green target line, the average of the one-sided limits (at a jump it is the *midpoint* of the jump, not either side). Right: the sampled maximum error on log–log axes across one period (blue) and for the part of the circle at distance $\ge0.3$ from every jump (orange). For the triangle wave both go to zero like $1/N$; for the square wave only the orange curve does, while the blue stays at about $1$, half the size of the jump, however many terms you take. The cusp $|x|^{1/2}$ is continuous but not piecewise $C^1$: convergence is still uniform but slow, about $N^{-1/2}$.`,
       deps: ['pde-4.6', 'pma-8.14', 'pma-7.10'],
-      refs: ['Strauss §5.4'],
-      credit: 'Dirichlet, 1829',
-      verify: true,
+      refs: ['Ivrii §4.4, Theorems 4.4.3–4.4.4 and Remark 4.4.2; absolute convergence follows by the Bessel argument below'],
+      credit: 'Presentation follows Ivrii, Partial Differential Equations, chapter 4',
       tags: ['pointwise convergence', 'uniform convergence', 'Dirichlet kernel'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Convergence_of_Fourier_series' },
+      links: { source: 'https://www.math.utoronto.ca/ivrii/PDE-textbook/Chapter4/S4.4.html', wikipedia: 'https://en.wikipedia.org/wiki/Convergence_of_Fourier_series' },
       viz(v) {
         const M = v.M, NM = 80;
         const F2 = { ...FUNS, cusp: { f: (x) => Math.sqrt(Math.abs(wrap(x))) / 1.7, jumps: [], label: 'cusp $|x|^{1/2}$' } };
@@ -138,8 +135,9 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
         const nS = v.slider('terms $N$', 1, NM, 10, { int: true });
         const A = v.stage({ x: [-Math.PI, Math.PI], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 250, xlabel: 'x', title: '$f$ and $S_N$', minWidth: 280, xticks: [[-Math.PI, '−π'], [0, '0'], [Math.PI, 'π']] });
         const B = v.stage({ x: [0, NM], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 250, xlabel: 'N', title: '$S_N(x_0)$ at the probe', minWidth: 250 });
-        const C = v.stage({ x: [1, NM], y: [1e-3, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 250, xlabel: 'N', title: 'sup error', minWidth: 250 });
+        const C = v.stage({ x: [1, NM], y: [1e-3, 2], xlog: true, ylog: true, axes: 'box', gutter: true, height: 250, xlabel: 'N', title: 'sampled maximum error', minWidth: 250 });
         const P = A.handle(1.2, -1.35, { color: 'gold', r: 8, label: 'probe', constrain: (x) => [M.clamp(x, -Math.PI, Math.PI), -1.35] });
+        v.button('probe nearest jump', () => { const jumps = F2[fsel.value].jumps.flatMap(x => [x, x - 2 * Math.PI, x + 2 * Math.PI]).filter(x => x >= -Math.PI && x <= Math.PI); if (jumps.length) P.set(jumps.reduce((a, b) => Math.abs(a - P.x) < Math.abs(b - P.x) ? a : b), -1.35); });
         let key = '', cf = null, supAll = [], supAway = [], grid = [];
         const NG = 721;
         const build = () => {
@@ -174,8 +172,8 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
           const a0 = 20, pts = []; for (let n = a0; n <= NM; n++) pts.push([Math.log(n), Math.log(F2[key].jumps.length ? supAway[n - 1] : supAll[n - 1])]);
           slope = M.linreg(pts.map((p) => p[0]), pts.map((p) => p[1])).slope;
         });
-        v.legend([['muted', '$f$'], ['orange', '$S_N$ / sup error away from jumps'], ['accent', 'sup error on all of $\\R$'], ['green', 'average of one-sided limits']]);
-        v.readout(() => `$S_{${nS.value}}(x_0)=${v.fix(curv, 4)}$, target $\\frac12(f(x_0^+)+f(x_0^-))=${v.fix(tgt, 4)}$, gap at $N=${NM}$: $${v.sci(dev, 2)}$\nsup error at $N=${nS.value}$: ${v.fix(supAll[nS.value - 1], 4)} · log–log slope of the ${F2[key].jumps.length ? 'error away from the jumps' : 'sup error'} for $N\\in[20,${NM}]$: ${v.fix(slope, 2)} ${F2[key].jumps.length ? '(the error on all of $\\R$ does not go to 0 near a jump)' : ''}`);
+        v.legend([['muted', '$f$'], ['orange', '$S_N$ / sup error away from jumps'], ['accent', 'sampled maximum over one period'], ['green', 'average of one-sided limits']]);
+        v.readout(() => `$S_{${nS.value}}(x_0)=${v.fix(curv, 4)}$, target $\\frac12(f(x_0^+)+f(x_0^-))=${v.fix(tgt, 4)}$, gap at $N=${NM}$: $${v.sci(dev, 2)}$\nsampled maximum error at $N=${nS.value}$: ${v.fix(supAll[nS.value - 1], 4)} · log–log slope of the ${F2[key].jumps.length ? 'error away from the jumps' : 'sup error'} for $N\\in[20,${NM}]$: ${v.fix(slope, 2)} ${F2[key].jumps.length ? '(the error on all of $\\R$ does not go to 0 near a jump)' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -183,11 +181,11 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
       num: '4.9',
       kind: 'Theorem',
       name: 'Smoothness and decay of Fourier coefficients',
-      statement: String.raw`Let $f$ be $2\pi$-periodic with Fourier coefficients $c_n=\frac1{2\pi}\int f(x)e^{-inx}dx$. (a) If $f\in C^{k-1}$ and $f^{(k-1)}$ is absolutely continuous with $f^{(k)}\in L^2$ (piecewise continuous suffices), then $c_n=(in)^{-k}\,\widehat{f^{(k)}}(n)$, so $\sum n^{2k}|c_n|^2<\infty$ and $|c_n|=o(n^{-k})$. A jump of $f^{(k-1)}$ of size $J$ forces $|c_n|\sim J/(2\pi n^{k})$, and so the decay rate is *exactly* $n^{-k}$. (b) Conversely, if $|c_n|\le C|n|^{-k-1-\varepsilon}$ then $f\in C^k$. (c) $f$ extends to an analytic function in a strip $|\Im z|<\rho$ if and only if $|c_n|\lesssim e^{-\rho|n|}$.`,
-      idea: String.raw`Integrate by parts $k$ times: each integration moves a derivative from $e^{-inx}$ onto $f$ and produces a factor $1/(in)$; the boundary terms cancel by periodicity as long as $f,\dots,f^{(k-1)}$ are continuous, and when $f^{(k-1)}$ jumps the boundary terms are $J/(in)^{k}\cdot e^{-inx_0}/(2\pi)$. The last integral is a Fourier coefficient of an integrable function, so it tends to $0$ by the Riemann–Lebesgue lemma (rca-5.12). Part (c) is the Paley–Wiener-type statement: shifting the contour of integration into the complex strip gains the factor $e^{-\rho n}$.`,
-      caption: String.raw`The log–log plot shows $|c_n|$ for five $2\pi$-periodic functions normalised to unit $L^2$ norm: a sawtooth (jump), a triangle wave (kink), and the next two Bernoulli-type functions with a jump in $f''$ and $f'''$, plus the analytic function $1/(1-2r\cos x+r^2)$ (its tail bends downward). Slopes $-1,-2,-3,-4$ appear, and the analytic curve falls through all straight lines. Select the function to highlight (right: its graph and the partial sum $S_N$, which hugs smoother functions much faster); the readout fits the log–log slope for $5\le n\le80$ (for the analytic function it fits a slope that keeps steepening, and the exponential rate $\ln(1/r)$ per mode is shown). The data are computed by FFT of $8192$ samples.`,
+      statement: String.raw`Let $f$ be $2\pi$-periodic with Fourier coefficients $c_n=\frac1{2\pi}\int f(x)e^{-inx}dx$. (a) If $f\in C^{k-1}$ and $f^{(k-1)}$ is absolutely continuous with $f^{(k)}\in L^2$ (piecewise continuous suffices), then $c_n=(in)^{-k}\,\widehat{f^{(k)}}(n)$, so $\sum n^{2k}|c_n|^2<\infty$ and $|c_n|=o(n^{-k})$. If instead $f^{(k-1)}$ has finitely many jumps $J_j$ at $x_j$, with lower derivatives continuous and periodic, piecewise absolutely continuous top-derivative pieces and integrable next derivative, then $c_n=\sum_j J_j e^{-inx_j}/(2\pi(in)^k)+o(n^{-k})$. Multiple jumps can cancel on subsequences; a single jump gives the stated power-law leading magnitude. (b) Conversely, if $|c_n|\le C|n|^{-k-1-\varepsilon}$ then its Fourier series represents a $C^k$ function (equal to $f$ almost everywhere). (c) $f$ has a representative extending periodically and analytically to the open strip $|\Im z|<\rho$ if and only if, for every $0<r<\rho$, $|c_n|\le C_r e^{-r|n|}$. A bound at the full width requires additional control at the strip boundary.`,
+      idea: String.raw`Integrate by parts $k$ times: each integration moves a derivative from $e^{-inx}$ onto $f$ and produces a factor $1/(in)$; the boundary terms cancel by periodicity as long as $f,\dots,f^{(k-1)}$ are continuous, and when $f^{(k-1)}$ jumps the boundary terms are $J/(in)^{k}\cdot e^{-inx_0}/(2\pi)$. The last integral is a Fourier coefficient of an integrable function, so it tends to $0$ by the Riemann–Lebesgue lemma (rca-5.12). Part (c) is the Paley–Wiener-type statement: shifting the contour to any line strictly inside the strip gains exponential decay at that line's distance from the real axis.`,
+      caption: String.raw`The log–log plot shows $|c_n|$ for five $2\pi$-periodic functions normalised to unit $L^2$ norm: a sawtooth (jump), a triangle wave (kink), and the next two Bernoulli-type functions with a jump in $f''$ and $f'''$, plus the mean-subtracted analytic function $1/(1-2r\cos x+r^2)-1/(1-r^2)$ (its tail bends downward). Slopes $-1,-2,-3,-4$ appear, and the analytic curve falls through all straight lines. Select the function to highlight (right: its graph and the partial sum $S_N$, which hugs smoother functions much faster); the readout fits the log–log slope for $5\le n\le80$ (for the analytic function it fits a slope that keeps steepening, and the exponential rate $\ln(1/r)$ per mode is shown). The data are computed by FFT of $8192$ samples.`,
       deps: ['pde-4.6', 'rca-5.12'],
-      refs: ['Strauss §5.4'],
+      refs: ['Ivrii §4.4 (Fourier coefficients); integration by parts and contour-shift arguments below'],
       tags: ['Fourier coefficients', 'smoothness', 'decay'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fourier_series#Convergence' },
       viz(v) {
@@ -207,7 +205,7 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
             data = fs.map((f) => {
               const x = Float64Array.from({ length: NS }, (_, j) => f(((j + 0.5) * 2 * Math.PI) / NS)), z = M.fftReal(x);
               let nrm = 0; for (let j = 0; j < NS; j++) nrm += x[j] * x[j]; nrm = Math.sqrt(nrm / NS);
-              return Array.from({ length: NM }, (_, i) => (2 * Math.hypot(z.re[i + 1], z.im[i + 1])) / NS / nrm / Math.SQRT2);
+              return Array.from({ length: NM }, (_, i) => Math.hypot(z.re[i + 1], z.im[i + 1]) / (NS * nrm * Math.sqrt(2 * Math.PI)));
             });
             cfs = fs.map((f) => trigCoef((x) => f(x), 30, 2048));
           }
@@ -215,7 +213,9 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
           rS.el.hidden = false;
           data.forEach((d, i) => A.path(d.map((c, n) => [n + 1, Math.max(c, 1e-15)]), { color: cols[i], width: i === k ? 3.4 : 1.4, alpha: i === k ? 1 : 0.55 }));
           [1, 2, 3, 4].forEach((s) => A.path([[1, 1.6 * 1 ** -s * 0.4], [NM, 1.6 * 0.4 * NM ** -s]], { color: 'faint', width: 1, dash: [3, 4] }));
-          const f = fs[k], norm = Math.sqrt(M.integrate((x) => f(x) ** 2, -Math.PI, Math.PI, 400) / (2 * Math.PI)), sc = norm > 0 ? 1 / norm : 1;
+          const f = fs[k], norm = Math.sqrt(M.integrate((x) => f(x) ** 2, -Math.PI, Math.PI, 2000)), sc = norm > 0 ? 1 / norm : 1;
+          const peak = Math.max(.1, ...Array.from({ length: 601 }, (_, i) => { const x = -Math.PI + i * Math.PI / 300; return Math.max(Math.abs(f(x) * sc), Math.abs(trigSum(cfs[k], nS.value, x) * sc)); }));
+          B.setView([-Math.PI, Math.PI], [-1.15 * peak, 1.15 * peak]);
           B.fn((x) => f(x) * sc, { color: 'muted', width: 1.8, n: 600 });
           B.fn((x) => trigSum(cfs[k], nS.value, x) * sc, { color: 'orange', width: 2.4, n: 600 });
           const pts = []; for (let n = 5; n <= 80; n++) pts.push([Math.log(n), Math.log(Math.max(data[k][n - 1], 1e-300))]);
@@ -224,7 +224,7 @@ and $\|f-S_N\|^2=\|f\|^2-\pi\big(\tfrac{a_0^2}2+\sum_{n\le N}a_n^2+b_n^2\big)$ e
         v.legend(cols.map((c, i) => [c, names[i]]));
         v.readout(() => {
           const k = +sel.value;
-          return k < 4 ? `${names[k]}: fitted log–log slope $${v.fix(slope, 2)}$, expected $-${k + 1}$ (a jump in $f^{(${k})}$) ✓ · dashed grey lines are slopes $-1,\\dots,-4$`
+          return k < 4 ? `${names[k]}: sampled log–log slope $${v.fix(slope, 2)}$, expected $-${k + 1}$ (a jump in $f^{(${k})}$) ✓ · dashed grey lines are slopes $-1,\\dots,-4$`
             : `analytic, $r=${v.fix(rS.value, 2)}$: $|c_n|\\propto r^n$, rate $\\ln(1/r)=${v.fix(Math.log(1 / rS.value), 3)}$ per mode (strip width $\\rho=\\ln(1/r)$); the log–log slope fitted over $[5,80]$ is only a poor summary: $${v.fix(slope, 1)}$ and steepening. The curve flattens at about $10^{-15}$ (rounding floor).`;
         });
       },

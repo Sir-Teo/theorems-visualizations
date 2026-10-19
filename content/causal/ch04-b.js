@@ -4,24 +4,13 @@
 // example in Pearl 1995, NOT the paper's numbers). Attributions checked: Pearl, Biometrika 82(4):669–688 (1995); Shpitser & Pearl, AAAI 2006,
 // pp. 1219–1226; Huang & Valtorta, UAI 2006 (Pearl’s calculus of intervention is complete; arXiv 1206.6831); Richardson & Robins, CSSS Working
 // Paper 128, University of Washington (April 2013); Lord, Psychological Bulletin 68(5):304–305 (1967), DOI 10.1037/h0025105.
+import { swigCovariate, supportedFrontDoor, lordPopulation } from './intervention-audit.shared.js';
 import {
   clamp, logistic, fx, mean, rng, memo, histPanel,
   parentsOf, hasCycle, topoOrder, descendants, ancestors, dSep, allPaths, pathReport,
   semCov, coefMatrix, sampleSEM, sampleCov, pcorrCov, makeDag, edgesOf, solveSmall, ols,
   binModel, jointP, probOf, condProb, sampleTable, popReg, sampleReg, setTex,
 } from './ch04.shared.js';
-
-/** Front-door estimate of P(Y=1 | do(X=x)) from a table P over nodes (x, m, y) given by indices; U is never touched. */
-function frontDoor(P, n, ix, im, iy, x) {
-  let tot = 0;
-  for (const m of [0, 1]) {
-    const pm = condProb(P, n, im, { [ix]: x }); const pmx = m ? pm : 1 - pm;
-    let inner = 0;
-    for (const xp of [0, 1]) { const px = probOf(P, n, { [ix]: xp }); const py = condProb(P, n, iy, { [ix]: xp, [im]: m }); inner += (Number.isNaN(py) ? 0 : py) * px; }
-    tot += (Number.isNaN(pmx) ? 0 : pmx) * inner;
-  }
-  return tot;
-}
 
 export default {
   collection: 'causal',
@@ -33,13 +22,13 @@ export default {
       statement: String.raw`A set $M$ satisfies the **front-door criterion** relative to $(X,Y)$ if (i) $M$ intercepts every directed path from $X$ to $Y$, (ii) there is no unblocked back-door path from $X$ to $M$, and (iii) every back-door path from $M$ to $Y$ is blocked by $X$. If it does, and $P(x,m)>0$, the effect is identifiable **even when $X$ and $Y$ share an unmeasured cause**:
 $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
       idea: String.raw`Split the effect into two links that can each be identified. $X\to M$ has no back-door path, so $P(m\mid \mathrm{do}(x))=P(m\mid x)$. For $M\to Y$ the only back-door path runs through $X$, which can be adjusted for by the back-door formula (4.3): $P(y\mid \mathrm{do}(m))=\sum_{x'}P(y\mid x',m)P(x')$. Chaining the two links gives the formula, although the confounder of $X$ and $Y$ is never measured. The derivation is a three-line application of the do-calculus (4.9).`,
-      caption: String.raw`Pearl’s smoking–tar–cancer structure with an unmeasured genotype $U$. The three bars are the true effect of $X$ on $Y$ (risk difference under $\mathrm{do}$), the naïve observational contrast (red) and the front-door estimate computed from the observed $(X,M,Y)$ table only (blue: exact; dots: 40 studies of $n$ units). Add a direct arrow $X\to Y$ with the slider and condition (i) fails: the formula misses, however large $n$.`,
+      caption: String.raw`Pearl’s smoking–tar–cancer structure with an unmeasured genotype $U$. The three bars are the true effect of $X$ on $Y$ (risk difference under $\mathrm{do}$), the naïve observational contrast (red) and the front-door estimate computed from the observed $(X,M,Y)$ table only (blue: exact; dots: 40 studies of $n$ units). Add a direct arrow $X\to Y$ with the slider and condition (i) fails: the population formula need not identify the total effect. Dots with missing required empirical strata are omitted and counted as unavailable, never replaced by zero.`,
       deps: ['causal-4.2'], refs: ['Pearl §3.3'], tags: ['front-door', 'identification'],
       credit: 'Pearl, 1995 (Biometrika 82)',
       scope: String.raw`Binary model with invented parameters (not the data of any real study); the genotype $U$ is hidden from the estimator. Needs $0<P(x)<1$ and all strata present; with a direct $X\to Y$ arrow or a confounder of $X$ and $M$ the criterion is violated.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Causal_graph' },
       viz(v) {
-        const names = ['genotype U', 'smoking X', 'tar M', 'cancer Y'], pos = [[5, 5.1], [1.5, 1.3], [5, 1.3], [8.5, 1.3]];
+        const names = ['genotype U', 'smoking X', 'tar M', 'cancer Y'], pos = [[5, 5.1], [1.5, 1.3], [5, 2.7], [8.5, 1.3]];
         const cS = v.slider(String.raw`$U\to X$`, 0, 3, 1.8, { step: 0.05 }), dS = v.slider(String.raw`$U\to Y$`, 0, 3, 1.8, { step: 0.05 });
         const eS = v.slider(String.raw`$M\to Y$`, 0, 3, 1.6, { step: 0.05 }), wS = v.slider(String.raw`direct $X\to Y$`, -2, 2, 0, { step: 0.05 });
         const nS = v.slider('sample size $n$', 200, 50000, 3000, { log: true, int: true, sig: 2 });
@@ -56,19 +45,19 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
           const m = binModel(4, E, { seed: 2, W: { '0>1': cS.value, '0>3': dS.value, '1>2': 2.2, '2>3': eS.value, '1>3': w }, B: { 0: 0, 1: 0, 2: 0, 3: -0.2 } });
           const P = jointP(m), truth = probOf(jointP(m, { 1: 1 }), 4, { 3: 1 }) - probOf(jointP(m, { 1: 0 }), 4, { 3: 1 });
           const naive = condProb(P, 4, 3, { 1: 1 }) - condProb(P, 4, 3, { 1: 0 });
-          const fd = frontDoor(P, 4, 1, 2, 3, 1) - frontDoor(P, 4, 1, 2, 3, 0);
-          const est = key(`${cS.value}|${dS.value}|${eS.value}|${w}|${nS.value}|${seed}`, () => Array.from({ length: 40 }, (_, k) => { const Q = sampleTable(P, nS.value, seed * 100 + k); return { n: condProb(Q, 4, 3, { 1: 1 }) - condProb(Q, 4, 3, { 1: 0 }), f: frontDoor(Q, 4, 1, 2, 3, 1) - frontDoor(Q, 4, 1, 2, 3, 0) }; }));
-          const vals = [truth, naive, fd, ...est.map((e) => e.n), ...est.map((e) => e.f)], lo = Math.min(-0.05, ...vals) - 0.05, hi = Math.max(0.3, ...vals) + 0.05;
+          const fd = supportedFrontDoor(P, 4, 1, 2, 3, 1) - supportedFrontDoor(P, 4, 1, 2, 3, 0);
+          const est = key(`${cS.value}|${dS.value}|${eS.value}|${w}|${nS.value}|${seed}`, () => Array.from({ length: 40 }, (_, k) => { const Q = sampleTable(P, nS.value, seed * 100 + k); return { n: condProb(Q, 4, 3, { 1: 1 }) - condProb(Q, 4, 3, { 1: 0 }), f: supportedFrontDoor(Q, 4, 1, 2, 3, 1) - supportedFrontDoor(Q, 4, 1, 2, 3, 0) }; }));
+          const vals = [truth, naive, fd, ...est.map((e) => e.n), ...est.map((e) => e.f)].filter(Number.isFinite), lo = Math.min(-0.05, ...vals) - 0.05, hi = Math.max(0.3, ...vals) + 0.05;
           sb.setView([0, 4.4], [lo, hi]); sb.hline(0, { color: 'grid', width: 1.2 });
           [[0.9, truth, 'green'], [1.9, naive, 'red'], [2.9, fd, 'accent']].forEach(([x, val, col]) => sb.rect(x - 0.35, 0, x + 0.35, val, { fill: col, fillAlpha: 0.4, color: col }));
-          est.forEach((e, k) => { const j = ((k * 37) % 11 - 5) * 0.045; sb.dot(1.9 + j, e.n, { r: 2.6, color: 'ink', alpha: 0.65 }); sb.dot(2.9 + j, e.f, { r: 2.6, color: 'ink', alpha: 0.65 }); });
+          est.forEach((e, k) => { const j = ((k * 37) % 11 - 5) * 0.045; if(Number.isFinite(e.n)) sb.dot(1.9 + j, e.n, { r: 2.6, color: 'ink', alpha: 0.65 }); if(Number.isFinite(e.f)) sb.dot(2.9 + j, e.f, { r: 2.6, color: 'ink', alpha: 0.65 }); });
           G.set({ nodes: names.map((c, i) => ({ id: i, label: c, x: pos[i][0], y: pos[i][1] })), edges: E.map(([a, b]) => ({ from: a, to: b })), directed: true, layout: 'none' });
           G.draw({ nodeColor: (id) => (id === 0 ? 'muted' : id === 1 ? 'orange' : id === 3 ? 'green' : 'accent'), edgeColor: (e) => (e.from === 1 && e.to === 3 ? 'red' : null), edgeWidth: (e) => (e.from === 1 && e.to === 3 ? 3 : null) });
-          const me = est.reduce((s, e) => s + e.f, 0) / est.length;
-          info = { truth, naive, fd, me, w };
+          const available=est.filter(e=>Number.isFinite(e.f)), me=available.length?available.reduce((s,e)=>s+e.f,0)/available.length:null;
+          info = { truth, naive, fd, me, w, available:available.length };
         });
-        v.readout(() => `True effect **${fx(info.truth, 3)}**; naïve contrast **${fx(info.naive, 3)}** (bias ${fx(info.naive - info.truth, 3)}); front-door formula on the exact observed table **${fx(info.fd, 3)}** (mean of 40 studies ${fx(info.me, 3)}).\n` +
-          `${info.w === 0 ? 'Smoking acts only through tar, so conditions (i)–(iii) hold: the hidden genotype is no obstacle.' : '**Condition (i) fails** — a direct arrow bypasses tar — and the formula now returns the effect through tar only, wrong by ' + fx(info.fd - info.truth, 3) + '.'}`);
+        v.readout(() => `True effect **${fx(info.truth, 3)}**; naïve contrast **${fx(info.naive, 3)}** (bias ${fx(info.naive - info.truth, 3)}); front-door formula on the exact observed table **${fx(info.fd, 3)}** (mean over available studies ${info.me===null?'unavailable':fx(info.me,3)}; **${info.available} of 40** available).\n` +
+          `${info.w === 0 ? 'Smoking acts only through tar, so conditions (i)–(iii) hold: the hidden genotype is no obstacle.' : '**Condition (i) fails** — a direct arrow bypasses tar — so the formula no longer has an identification guarantee. Its discrepancy in this model is ' + fx(info.fd - info.truth, 3) + '.'}`);
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -146,13 +135,12 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
     // ------------------------------------------------------------------ 4.10
     {
       num: '4.10', kind: 'Theorem', name: 'Completeness of do-calculus; non-identifiable effects',
-      statement: String.raw`The three rules of the do-calculus are **complete** for identifiability of causal effects: if $P(y\mid \mathrm{do}(x))$ can be computed from the observational distribution of a causal graph with hidden variables, then some finite sequence of the rules derives it; if no such derivation exists, the effect is *not identifiable* — there exist two models with the graph that agree on every observable distribution and disagree on $P(y\mid \mathrm{do}(x))$. The simplest non-identifiable graph is the **bow**: $X\to Y$ together with an unmeasured common cause of $X$ and $Y$.`,
+      statement: String.raw`For recursive nonparametric semi-Markovian causal models, the three do-calculus rules **together with ordinary probability manipulations** are complete for identifying $P(y\mid\mathrm{do}(x))$ from a positive observational law, for disjoint observed sets $X,Y$. Whenever the effect is identifiable in the graph, a finite derivation exists. Otherwise there are compatible models with the same observed joint distribution and different interventional answers. A finite unsuccessful search is not a non-identifiability proof; the complete ID algorithm can return a graphical hedge certificate. A standard non-identifiable graph is the **bow**: $X\to Y$ with an unmeasured common cause.`,
       idea: String.raw`Completeness was proved by two groups (Shpitser–Pearl 2006, who gave an algorithm that finds an expression or a *hedge* that rules it out, and Huang–Valtorta 2006), settling Pearl’s 1995 conjecture. For the bow the failure can be seen directly: an observed association between $X$ and $Y$ can be produced by a causal effect, by hidden confounding alone, or by any mixture, and the observational table cannot tell them apart while the interventional answers differ.`,
-      caption: String.raw`Fix an observed table with the three sliders ($P(X{=}1)$ and the two outcome rates). The model has $X$ a copy of the hidden $U$; with probability $1-\lambda$ a unit’s $Y$ responds to $X$, with probability $\lambda$ it responds to $U$. Every $\lambda$ gives the **same** observational table (left, two models overlaid) but a different interventional answer (right): at $\lambda=0$ the whole association is causal, at $\lambda=1$ none of it is.`,
-      deps: ['causal-4.9'], refs: ['Pearl §3.5'], tags: ['identifiability', 'bow graph'],
+      caption: String.raw`Fix an observed table with three sliders. Here $X:=U$; with probability $1-\lambda$, $Y$ responds to $X$, and otherwise to $U$. Every $\lambda$ gives the same observational table. If the two outcome rates differ, different $\lambda$ values give different causal effects: $(1-\lambda)(q_1-q_0)$. If $q_0=q_1$, this particular family has zero effect for all $\lambda$; it does not enumerate all models compatible with the bow. Dots are finite samples and can differ between observationally equivalent models.`,
+      deps: ['causal-4.9'], refs: ['Shpitser–Pearl (2006), Theorems 1 and 7, Corollary 2; Huang–Valtorta (2006), Theorem 2'], tags: ['identifiability', 'bow graph'],
       credit: 'Shpitser & Pearl, 2006 (AAAI); Huang & Valtorta, 2006 (UAI); conjectured by Pearl, 1995',
-      verify: true,
-      scope: String.raw`Completeness is for do-calculus identification of (conditional) interventional distributions in nonparametric semi-Markovian models; extra assumptions (linearity, an instrument, monotonicity) can identify effects the graph alone cannot. The two-line model here is one family of observationally equivalent models for the bow, not all of them.`,
+      scope: String.raw`This states the 2006 completeness theorem for unconditional post-intervention distributions, not its separate conditional-query extension. Extra functional or distributional restrictions can change identifiability; an arbitrary added instrument does not itself guarantee identification. The example is one family of compatible bow models.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Do-calculus' },
       viz(v) {
         const pS = v.slider('$P(X=1)$', 0.1, 0.9, 0.4, { step: 0.01 });
@@ -160,7 +148,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
         const l1S = v.slider('model 1: $\\lambda_1$ (confounded share)', 0, 1, 0, { step: 0.01 }), l2S = v.slider('model 2: $\\lambda_2$', 0, 1, 1, { step: 0.01 });
         let seed = 1; v.button('resample 3,000 units', () => { seed++; });
         const sgr = v.stage({ x: [0, 10], y: [0.2, 5.6], equal: true, axes: false, height: 250, title: 'the bow graph', minWidth: 230 });
-        const so = v.stage({ x: [0, 5], y: [0, 0.8], axes: 'box', gutter: true, height: 250, ylabel: '$P(x,y)$', title: 'observational table: identical', minWidth: 280 });
+        const so = v.stage({ x: [0, 5], y: [0, 1], axes: 'box', gutter: true, height: 250, ylabel: '$P(x,y)$', title: 'observational table: identical', minWidth: 280 });
         so.setTicks([[0.9, 'x0,y0'], [1.9, 'x0,y1'], [2.9, 'x1,y0'], [3.9, 'x1,y1']], null);
         const si = v.stage({ x: [0, 4], y: [0, 1], axes: 'box', gutter: true, height: 250, ylabel: '$P(Y=1)$', title: 'interventional answers: different', minWidth: 280 });
         si.setTicks([[0.6, 'do(X=0)'], [1.5, 'do(X=1)'], [2.7, 'seen 0'], [3.5, 'seen 1']], null);
@@ -200,18 +188,17 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
           info = { ate: ms.map((m) => m.D[1] - m.D[0]), tv };
         });
         v.readout(() => `Largest difference between the two models’ observational cells: **${v.fix(info.tv, 12).replace(/0+$/, '0')}** — the data are the same.\n` +
-          `Average causal effect of $X$ on $Y$: model 1 **${fx(info.ate[0], 3)}**, model 2 **${fx(info.ate[1], 3)}**. The observed contrast $P(Y{=}1\\mid X{=}1)-P(Y{=}1\\mid X{=}0)=${fx(q1S.value - q0S.value, 3)}$ equals the first only when there is no confounding at all.`);
+          `Average causal effect of $X$ on $Y$: model 1 **${fx(info.ate[0], 3)}**, model 2 **${fx(info.ate[1], 3)}**. Observed contrast **${fx(q1S.value-q0S.value,3)}**; in this family the effect is $(1-\\lambda)(q_1-q_0)$. Coinciding answers at a slider setting do not establish identification.`);
       },
     },
     // ------------------------------------------------------------------ 4.11
     {
       num: '4.11', kind: 'Definition', name: 'Single-world intervention graphs',
-      statement: String.raw`Given a causal DAG $G$ and a treatment node $A$, the **single-world intervention graph** $G(a)$ (SWIG) is obtained by **splitting** $A$ into two nodes: the **natural value** $A$, which keeps all the arrows *into* $A$ and no arrows out, and the **fixed value** $a$, which keeps all the arrows *out of* $A$ and none in. Every descendant $V$ of $A$ is relabelled with its counterfactual $V^{a}$. The SWIG represents the joint law of the factual variables that precede treatment, the natural treatment $A$, and the counterfactuals $V^a$ in a single hypothetical world, and satisfies the same d-separation rules (the fixed node $a$ counts as conditioned on). In particular, $Y^{a}\perp\!\!\!\perp A\mid Z$ **holds** exactly when $Y^a$ and $A$ are d-separated by $Z$ (and $a$) in $G(a)$.`,
-      idea: String.raw`Potential-outcome independences such as conditional exchangeability (1.7) are exactly the statements one wants for identification, but the plain DAG only talks about the factual world. Splitting the treatment makes the graph describe the world in which treatment was set to $a$ *and* the natural treatment is still around, so $A$ and $Y^a$ can sit in one picture and be tested by d-separation — the back-door criterion becomes a statement about the SWIG. The cut at $A$ is the graphical form of $G_{\overline A}$ together with the original $G$.`,
-      caption: String.raw`Choose a causal story; the left panel is the ordinary DAG and the right its SWIG for treatment $A$ (the node splits into $A\mid a$ and descendants become counterfactuals). Click pre-treatment covariates to condition on them (blue). The verdict reads exchangeability $Y^{a}\perp\!\!\!\perp A\mid Z$ off the SWIG by d-separation, and the simulation checks it: the partial correlation of $Y^a$ and $A$ given $Z$ (exact, and from 4,000 units).`,
-      deps: ['causal-4.1', 'causal-1.7'], refs: ['Hernán–Robins §7.5'], tags: ['swig', 'exchangeability', 'counterfactuals'],
+      statement: String.raw`Given a causal DAG $G$ and a treatment node $A$, the **single-world intervention graph** $G(a)$ (SWIG) is obtained by **splitting** $A$ into two nodes: the **natural value** $A$, which keeps all the arrows *into* $A$ and no arrows out, and the **fixed value** $a$, which keeps all the arrows *out of* $A$ and none in. Every descendant $V$ of $A$ is relabelled with its counterfactual $V^{a}$. The SWIG represents the joint law of the factual variables that precede treatment, the natural treatment $A$, and the counterfactuals $V^a$ in a single hypothetical world, and satisfies the same d-separation rules (the fixed node $a$ counts as conditioned on). Under the SWIG Markov/modularity assumptions, d-separation of $Y^a$ and $A$ by $Z$ (and fixed $a$) entails $Y^{a}\perp\!\!\!\perp A\mid Z$. D-connection means this independence is not entailed for all compatible models; a particular distribution may still satisfy it.`,
+      idea: String.raw`Potential-outcome independences such as conditional exchangeability (1.7) are exactly the statements one wants for identification, but the plain DAG only talks about the factual world. Splitting the treatment makes the graph describe the world in which treatment was set to $a$ *and* the natural treatment is still around, so $A$ and $Y^a$ can sit in one picture and be tested by d-separation — the back-door criterion becomes a statement about the SWIG. Unlike deleting all incoming arrows into the random treatment, splitting retains the natural treatment and its parents in the same single-world graph.`,
+      caption: String.raw`Choose a causal story; the left panel is the ordinary DAG and the right its SWIG for treatment $A$ (the node splits into $A\mid a$ and descendants become counterfactuals). Click pre-treatment covariates to condition on them (blue). The verdict reads exchangeability $Y^{a}\perp\!\!\!\perp A\mid Z$ off the SWIG by d-separation, and illustrates it in one Gaussian model: the partial correlation of $Y^a$ and $A$ given $Z$ (exact, and from 4,000 units).`,
+      deps: ['causal-4.1', 'causal-1.7'], refs: ['Richardson–Robins (2013), §2.2, Theorems 12 and 19'], tags: ['swig', 'exchangeability', 'counterfactuals'],
       credit: 'Richardson & Robins, 2013 (CSSS Working Paper 128)',
-      verify: true,
       scope: String.raw`Shown for a single point treatment and a linear Gaussian realization (zero partial correlation then coincides with conditional independence). SWIGs extend to several treatments and dynamic regimes; hidden variables stay in the graph, drawn but never conditioned on.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Causal_graph' },
       viz(v) {
@@ -230,7 +217,7 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
         const G2 = makeDag(v, s2, { names: ['L', 'A', 'Y', 'a'], pos: PRE.conf.pos.concat([[3, 1.4]]), edges: PRE.conf.e, draggable: false, r: 17, onClick: (c) => clickNode(c) });
         function clickNode(c) {
           if (c.node == null) return false; const o = cur(), id = c.id ?? c.node.id, de = descendants(o.names.length, o.e, o.t);
-          if (de.has(id) || o.hid.includes(id)) return true; if (Z.has(id)) Z.delete(id); else Z.add(id); v.invalidate(); return true;
+          if (!swigCovariate(o,id)) return true; if (Z.has(id)) Z.delete(id); else Z.add(id); v.invalidate(); return true;
         }
         const coefOf = (a, b) => 0.55 + 0.2 * ((a * 3 + b) % 3);
         let info = {};
@@ -252,24 +239,23 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
           const X = sampleSEM(n, Eq, Bm, new Array(n).fill(1), 4000, 31); const emp = pcorrCov(sampleCov(X), t, o.y, zl);
           const nodeFill = (id) => (Z.has(id) ? 'accent' : null), nodeColor = (id) => (o.hid.includes(id) ? 'muted' : id === t ? 'orange' : id === o.y ? 'green' : null);
           G1.draw({ nodeColor, nodeFill });
-          G2.draw({ nodeColor: (id) => (id === an ? 'gold' : nodeColor(id)), nodeFill });
+          G2.draw({ nodeColor: (id) => (id === an ? 'gold' : nodeColor(id)), nodeFill: (id) => id===an?'gold':nodeFill(id) });
           info = { sep, exact, emp, zl, names: o.names };
         });
-        v.readout(() => `Conditioning set $Z=${setTex(info.names, new Set(info.zl))}$. In $G(a)$: $Y^{a}$ and $A$ are **${info.sep ? 'd-separated' : 'd-connected'}** given $Z$, so conditional exchangeability $Y^{a}\\perp\\!\\!\\!\\perp A\\mid Z$ **${info.sep ? 'holds' : 'fails'}**.\n` +
+        v.readout(() => `Conditioning set $Z=${setTex(info.names, new Set(info.zl))}$. In $G(a)$: $Y^{a}$ and $A$ are **${info.sep ? 'd-separated' : 'd-connected'}** given $Z$. Exchangeability $Y^{a}\\perp\\!\\!\\!\\perp A\\mid Z$ is **${info.sep ? 'entailed by the model' : 'not entailed by the graph'}**.\n` +
           `Partial correlation of $Y^{a}$ and $A$ given $Z$: exact **${fx(info.exact, 3)}**, simulated **${fx(info.emp, 3)}**. ` +
-          `${info.sep ? 'Zero, as the graph predicts.' : 'Non-zero: some unblocked path joins them, so adjusting for this $Z$ does not remove confounding.'}`);
+          `${info.sep ? 'The exact zero follows from d-separation; the sample value fluctuates.' : 'The chosen Gaussian coefficients give this exact partial correlation. D-connection permits dependence; it does not require it at every parameter setting.'}`);
       },
     },
     // ------------------------------------------------------------------ 4.12
     {
       num: '4.12', kind: 'Paradox', name: 'Lord’s paradox',
-      statement: String.raw`Lord (1967) described two groups (the weights of students of each sex) measured before and after a period in which the same diet applies to both. Each group’s mean weight is unchanged, so one statistician concludes that the diet has no differential effect (the *change scores* do not differ between groups). A second adjusts for initial weight (analysis of covariance) and finds that, at equal initial weight, the group with the higher mean ends up heavier — a significant differential effect. Both computations are correct; they answer different causal questions and rest on different assumptions about what each group’s final weight would have been *without* the diet.`,
-      idea: String.raw`Within a group the final weight regresses toward the group’s mean: the regression slope on initial weight is less than one (here equal to the reliability $\rho$), so at equal initial weights the group with the higher mean has a higher expected final weight even if nothing happens to anyone. If initial weights are noisy measurements of stable weights, that is regression to the mean and the change-score comparison is right; if weights would drift toward a common mean without intervention, the same data show an effect and the adjusted comparison is right. The data are identical; the **causal graph** (what produces final weight) tells which contrast estimates the effect. Holland and Rubin (1983) and Pearl (2016) give the resolution.`,
-      caption: String.raw`Scatter of final against initial weight for two groups of 100, simulated so that nobody’s expected weight changes. Drag reliability $\rho$ down: the group lines stay parallel but flatten, and the ANCOVA gap between them opens although both group means stay on the 45° line. Choose the causal story; the third bar is the true differential effect under that story (a modelling assumption, not something the data can reveal).`,
+      statement: String.raw`Lord (1967) described two groups (the weights of students of each sex) measured before and after a period in which the same diet applies to both. Each group’s mean weight is unchanged, so one statistician concludes that the diet has no differential effect (the *change scores* do not differ between groups). A second adjusts for initial weight (analysis of covariance) and finds that, at equal initial weight, the group with the higher mean ends up heavier — a significant differential effect. Both descriptive computations are correct. Their causal interpretations require assumptions beyond these data; the original question concerned uncontrolled preexisting group differences, not a randomized diet contrast.`,
+      idea: String.raw`The two descriptive population contrasts are $0$ for change scores and $(1-\rho)\Delta$ for ANCOVA when both waves have group means $\mu_g=60\pm\Delta/2$, variance $64$, and covariance $64\rho$. Neither contrast acquires a causal meaning merely by being computed correctly. Lord concluded that the available data do not determine proper adjustment for uncontrolled preexisting differences. Pearl (2016) analyzes the original problem with diet held as background. The optional diet counterfactual models below are our distinct illustration of observational equivalence, not Lord’s data or a claim to a unique resolution.`,
+      caption: String.raw`Two groups of 100 are sampled from the same observed Gaussian law under either story. Population means lie on the 45° line; sample means fluctuate. Lowering $\rho$ opens the population ANCOVA gap $(1-\rho)\Delta$. Switching stories leaves the observed points unchanged but changes the stipulated differential diet effect. Error bars are approximate normal intervals, estimate ±1.96 standard errors.`,
       deps: ['causal-4.3', 'stat-12.9'], refs: ['Pearl §6'], tags: ['lord', 'ancova', 'regression to the mean'],
-      credit: 'Lord, 1967 (Psychological Bulletin 68(5):304–305); Holland & Rubin, 1983; Pearl, 2016 (Lord’s paradox revisited)',
-      verify: true,
-      scope: String.raw`A linear-Gaussian simulation with the same sampling variance in both groups; sex plays the role of the “treatment” only formally (nobody can be assigned a sex), which is part of Lord’s point: the contrasts target different counterfactuals. The data here are simulated, not Lord’s.`,
+      credit: 'Lord, 1967, Psychological Bulletin 68(5):304–305; Pearl, 2016, Lord’s Paradox Revisited, §§1–2; explicit diet counterfactual completions here',
+      scope: String.raw`Explicit illustrative completions, with independent standard normals and $D=1$ observed for everyone. Stable story: $T=\mu_g+8\sqrt\rho E$, $W_0=T+8\sqrt{1-\rho}E_0$, $W_1(d)=T+8\sqrt{1-\rho}E_1$ for either diet $d$, hence diet effect zero. Drift story: $W_0=\mu_g+8E_0$ and $W_1(d)=60+\rho(W_0-60)+d(1-\rho)(\mu_g-60)+8\sqrt{1-\rho^2}E_1$, hence differential diet effect $(1-\rho)\Delta$. At $D=1$ both have the same bivariate Gaussian law. Group is a background covariate; the counterfactual action here is diet, not sex.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lord%27s_paradox' },
       viz(v) {
         const rS = v.slider(String.raw`reliability $\rho$ (slope within a group)`, 0.2, 1, 0.6, { step: 0.01 });
@@ -300,26 +286,31 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
         let info = {};
         v.render(() => {
           const rho = rS.value, gap = gS.value, D = gen(rho, gap, seed), F = fitAll(D);
-          sp.line(35, 35, 100, 100, { color: 'faint', dash: true, width: 1.3 });
+          const lo=Math.min(35,...D.flatMap(d=>[d.w0,d.w1]))-2, hi=Math.max(100,...D.flatMap(d=>[d.w0,d.w1]))+2;
+          const lineEnds=[0,1].flatMap(g=>{const pts=D.filter(d=>d.g===g),mx=mean(pts.map(d=>d.w0)),my=mean(pts.map(d=>d.w1));return[my+F.slope*(lo-mx),my+F.slope*(hi-mx)];});
+          sp.setView([lo,hi],[Math.min(lo,...lineEnds)-1,Math.max(hi,...lineEnds)+1]);
+          sp.line(lo, lo, hi, hi, { color: 'faint', dash: true, width: 1.3 });
           const col = ['accent', 'orange'];
           D.forEach((d) => sp.dot(d.w0, d.w1, { r: 2.8, color: col[d.g], alpha: 0.55 }));
           for (let g = 0; g < 2; g++) {
             const pts = D.filter((d) => d.g === g), mx = mean(pts.map((p) => p.w0)), my = mean(pts.map((p) => p.w1));
-            sp.line(35, my + F.slope * (35 - mx), 100, my + F.slope * (100 - mx), { color: col[g], width: 2.4 });
+            sp.line(lo, my + F.slope * (lo - mx), hi, my + F.slope * (hi - mx), { color: col[g], width: 2.4 });
             sp.dot(mx, my, { r: 7, color: col[g], hollow: false });
           }
-          const truth = story.value === 'trait' ? 0 : (1 - rho) * gap;
+          const population=lordPopulation(rho,gap,story.value), truth=population.differentialDietEffect;
           const bars = [[0.8, F.change, F.seC], [1.8, F.ancova, F.seA], [3.0, truth, 0]];
+          const ends=[0,...bars.flatMap(([,b,se])=>[b-1.96*se,b+1.96*se])], bottom=Math.min(-1,...ends),top=Math.max(1,...ends),pad=.1*(top-bottom);
+          sa.setView([0,4],[bottom-pad,top+pad]);
           bars.forEach(([x, val, se], k) => { sa.rect(x - 0.4, 0, x + 0.4, val, { fill: k === 2 ? 'green' : k === 0 ? 'blue' : 'red', fillAlpha: 0.4, color: k === 2 ? 'green' : k === 0 ? 'blue' : 'red' }); if (se) sa.segment([x, val - 1.96 * se], [x, val + 1.96 * se], { color: 'ink', width: 1.6 }); });
           sa.hline(0, { color: 'grid' });
           const names = story.value === 'trait' ? ['sex', 'W₀', 'W₁'] : ['sex', 'W₀', 'W₁'];
-          if (story.value === 'trait') G.set({ nodes: [{ id: 0, label: 'sex', x: 5, y: 4.3 }, { id: 1, label: 'true wt', x: 5, y: 2.5, r: 20 }, { id: 2, label: 'W₀', x: 1.5, y: 0.8 }, { id: 3, label: 'W₁', x: 8.5, y: 0.8 }], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 1, to: 3 }], directed: true, layout: 'none' });
-          else G.set({ nodes: [{ id: 0, label: 'sex', x: 5, y: 4.3 }, { id: 1, label: 'W₀', x: 1.5, y: 1 }, { id: 2, label: 'W₁', x: 8.5, y: 1 }], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 0, to: 2 }], directed: true, layout: 'none' });
+          if (story.value === 'trait') G.set({ nodes: [{ id: 0, label: 'group G', x: 5, y: 4.3 }, { id: 1, label: 'true wt', x: 5, y: 2.5, r: 20 }, { id: 2, label: 'W₀', x: 1.5, y: 0.8 }, { id: 3, label: 'W₁', x: 8.5, y: 0.8 },{id:4,label:'diet D',x:8.5,y:4.3}], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 1, to: 3 }], directed: true, layout: 'none' });
+          else G.set({ nodes: [{ id: 0, label: 'group G', x: 5, y: 4.3 }, { id: 1, label: 'W₀', x: 1.5, y: 1 }, { id: 2, label: 'W₁', x: 8.5, y: 1 },{id:3,label:'diet D',x:8.5,y:4.3}], edges: [{ from: 0, to: 1 }, { from: 1, to: 2 }, { from: 0, to: 2 },{from:3,to:2}], directed: true, layout: 'none' });
           G.draw({ nodeColor: (id) => (id === 0 ? 'orange' : null), edgeColor: (e) => (story.value === 'drift' && e.from === 0 && e.to === 2 ? 'red' : null) });
-          info = { ...F, truth, names };
+          info = { ...F, truth, names, population };
         });
         v.readout(() => `Statistician 1 (change scores): difference in mean change **${fx(info.change, 2)}** kg (±${v.fix(1.96 * info.seC, 2)}). Statistician 2 (ANCOVA, same initial weight): group difference **${fx(info.ancova, 2)}** kg (±${v.fix(1.96 * info.seA, 2)}); within-group slope ${v.fix(info.slope, 2)}.\n` +
-          `Under the “${story.value === 'trait' ? 'stable weight + noise' : 'drifts to the common mean'}” story the true differential effect is **${fx(info.truth, 2)}** kg, so ${story.value === 'trait' ? 'the change-score analysis answers the question and the ANCOVA gap is regression to the mean' : 'the ANCOVA gap is the effect and the zero change scores hide it'}.`);
+          `Population change-score contrast **0**; population ANCOVA contrast **${fx(info.population.ancova,2)}** kg. The stipulated differential diet effect under the “${story.value==='trait'?'stable weight + noise':'drifts to the common mean'}” completion is **${fx(info.truth,2)}** kg. Sample estimates fluctuate; the observed law alone does not choose a completion.`);
       },
     },
     // ------------------------------------------------------------------ 4.13
@@ -328,15 +319,14 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
       paper: { authors: 'Judea Pearl', year: 1995, title: 'Causal diagrams for empirical research', venue: 'Biometrika 82 (4): 669–688', doi: '10.1093/biomet/82.4.669' },
       introduces: ['causal-4.1', 'causal-4.8', 'causal-4.9'],
       statement: String.raw`The paper shows how a causal diagram, combined with observed data, can decide quantitative causal questions without assuming that all confounders are measured. It gives (i) a calculus with three inference rules, each a d-separation test in a graph edited to represent an intervention, for deriving $P(y\mid \mathrm{do}(x))$ from observational probabilities; (ii) the back-door criterion for choosing sufficient covariates; and (iii) the **front-door criterion**, with an example (smoking, tar deposits, cancer, and an unobserved genotype) in which the effect is identified although no sufficient adjustment set is measured. The paper also asks which effects are identifiable at all, a question settled for the calculus by the completeness results of 2006 (4.10).`,
-      idea: String.raw`Before 1995 causal modelling in statistics mostly meant regression with a list of covariates, and the choice of covariates rested on judgment; structural-equation modellers had graphs but no non-parametric theory, and the potential-outcome school had no graphical way to see which independences hold. Pearl’s paper connected the two with d-separation, introduced the notation $\mathrm{do}(x)$ for intervention, put the rules of the calculus on graphs, and derived adjustment and front-door formulas from them. It is the source of 4.1, 4.8 and 4.9 and the starting point of the identification programme that ends in 4.10.`,
-      caption: String.raw`Edit the paper’s smoking–tar–cancer diagram (click one node, then another, to add or remove an arrow; $U$ is the unobserved genotype). The three front-door conditions are checked on your graph by d-separation, and the front-door formula is applied to data simulated from it. Delete an arrow the paper needs, or add one it rules out, and the checks and the estimate fail together. The parameters are invented here; they are not the paper’s numbers.`,
+      idea: String.raw`Autonomous structural mechanisms make intervention a precise operation. The paper combines that semantics with graphical separation tests and three rules for transforming intervention expressions. Its back-door theorem gives adjustment, while its front-door theorem demonstrates identification despite hidden confounding. The original article distinguishes intervention using a checked treatment symbol; we use modern $\mathrm{do}(x)$ notation here. The 2006 results in 4.10 establish completeness for the stated model class.`,
+      caption: String.raw`Edit the smoking–tar–cancer topology of the paper’s Figure 3: click two nodes to add or remove an arrow; cycles are refused. The front-door conditions are checked on your graph, and the formula is applied to an invented binary model and 30 simulated studies. Failed conditions remove the theorem’s guarantee; accidental equality can remain. Studies missing a required empirical stratum are reported as unavailable, not replaced by zero.`,
       deps: ['causal-3.5', 'causal-4.3', 'causal-3.3'], refs: [], tags: ['do-calculus', 'front-door', 'paper'],
       credit: 'Pearl, 1995 (Biometrika 82(4):669–688); discussion by Cox, Rubin, Freedman and others; Pearl’s rejoinder',
-      verify: true,
-      scope: String.raw`The reconstruction uses a binary model with invented parameters and checks conditions (i)–(iii) as stated in the statement above; it does not reproduce the paper’s figures. The paper’s own hypothetical smoking–tar–cancer data table is not used because the exact numbers could not be re-checked.`,
+      scope: String.raw`The topology follows Figure 3 and the conditions follow Theorem 2, equation (9), p.676. All probabilities and sample sizes here are independently invented; they are not measured smoking or cancer data and do not validate the proposed clinical graph. The article’s rules are Theorem 3, p.677.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Judea_Pearl' },
       viz(v) {
-        const names = ['genotype U', 'smoking X', 'tar M', 'cancer Y'], pos = [[5, 5.1], [1.5, 1.3], [5, 1.3], [8.5, 1.3]];
+        const names = ['genotype U', 'smoking X', 'tar M', 'cancer Y'], pos = [[5, 5.1], [1.5, 1.3], [5, 2.7], [8.5, 1.3]];
         const cS = v.slider(String.raw`strength of the genotype’s arrows`, 0, 3, 1.8, { step: 0.05 });
         const nS = v.slider('sample size $n$', 200, 50000, 5000, { log: true, int: true, sig: 2 });
         let seed = 1, msg = ''; v.button('resample', () => { seed++; });
@@ -361,18 +351,18 @@ $$P(y\mid \mathrm{do}(x))=\sum_{m}P(m\mid x)\sum_{x'}P(y\mid x',m)\,P(x').$$`,
           const cond3 = dSep(n, Gm, 2, 3, new Set([1]));
           const m = binModel(n, E, { seed: 2, W: { '0>1': cS.value, '0>3': cS.value, '1>2': 2.2, '2>3': 1.6 }, B: { 3: -0.2 } });
           const P = jointP(m), truth = probOf(jointP(m, { 1: 1 }), n, { 3: 1 }) - probOf(jointP(m, { 1: 0 }), n, { 3: 1 });
-          const naive = condProb(P, n, 3, { 1: 1 }) - condProb(P, n, 3, { 1: 0 }), fd = frontDoor(P, n, 1, 2, 3, 1) - frontDoor(P, n, 1, 2, 3, 0);
-          const est = key(E.map((e) => e.join('')).sort().join('|') + `|${cS.value}|${nS.value}|${seed}`, () => Array.from({ length: 30 }, (_, k) => { const Q = sampleTable(P, nS.value, seed * 100 + k); return { n: condProb(Q, n, 3, { 1: 1 }) - condProb(Q, n, 3, { 1: 0 }), f: frontDoor(Q, n, 1, 2, 3, 1) - frontDoor(Q, n, 1, 2, 3, 0) }; }));
-          const vals = [truth, naive, fd, ...est.map((e) => e.n), ...est.map((e) => e.f)], lo = Math.min(-0.05, ...vals) - 0.05, hi = Math.max(0.3, ...vals) + 0.05;
+          const naive = condProb(P, n, 3, { 1: 1 }) - condProb(P, n, 3, { 1: 0 }), fd = supportedFrontDoor(P, n, 1, 2, 3, 1) - supportedFrontDoor(P, n, 1, 2, 3, 0);
+          const est = key(E.map((e) => e.join('')).sort().join('|') + `|${cS.value}|${nS.value}|${seed}`, () => Array.from({ length: 30 }, (_, k) => { const Q = sampleTable(P, nS.value, seed * 100 + k); return { n: condProb(Q, n, 3, { 1: 1 }) - condProb(Q, n, 3, { 1: 0 }), f: supportedFrontDoor(Q, n, 1, 2, 3, 1) - supportedFrontDoor(Q, n, 1, 2, 3, 0) }; }));
+          const vals = [truth, naive, fd, ...est.map((e) => e.n), ...est.map((e) => e.f)].filter(Number.isFinite), lo = Math.min(-0.05, ...vals) - 0.05, hi = Math.max(0.3, ...vals) + 0.05;
           sb.setView([0, 4.4], [lo, hi]); sb.hline(0, { color: 'grid', width: 1.2 });
           [[0.9, truth, 'green'], [1.9, naive, 'red'], [2.9, fd, 'accent']].forEach(([x, val, col]) => sb.rect(x - 0.35, 0, x + 0.35, val, { fill: col, fillAlpha: 0.4, color: col }));
-          est.forEach((e, k) => { const j = ((k * 37) % 11 - 5) * 0.045; sb.dot(1.9 + j, e.n, { r: 2.6, color: 'ink', alpha: 0.65 }); sb.dot(2.9 + j, e.f, { r: 2.6, color: 'ink', alpha: 0.65 }); });
+          est.forEach((e, k) => { const j = ((k * 37) % 11 - 5) * 0.045; if(Number.isFinite(e.n)) sb.dot(1.9 + j, e.n, { r: 2.6, color: 'ink', alpha: 0.65 }); if(Number.isFinite(e.f)) sb.dot(2.9 + j, e.f, { r: 2.6, color: 'ink', alpha: 0.65 }); });
           G.draw({ nodeColor: (id) => (id === 0 ? 'muted' : id === 1 ? 'orange' : id === 3 ? 'green' : 'accent') });
-          info = { c1: cond1b, c2: cond2, c3: cond3, truth, naive, fd, E, bypass: hasE(1, 3) };
+          info = { c1: cond1b, c2: cond2, c3: cond3, truth, naive, fd, E, bypass: hasE(1, 3), missing:est.filter(e=>!Number.isFinite(e.f)).length };
         });
         const tick = (b) => (b ? '✓' : '✗');
         v.readout(() => (msg ? `**${msg}**\n` : '') + `Front-door conditions for $M$: (i) $M$ intercepts all directed paths $X\\to Y$ **${tick(info.c1)}**; (ii) no open back-door path $X$ to $M$ **${tick(info.c2)}**; (iii) $X$ blocks all back-door paths $M$ to $Y$ **${tick(info.c3)}**.\n` +
-          `True effect **${fx(info.truth, 3)}**; naïve **${fx(info.naive, 3)}**; front-door formula **${fx(info.fd, 3)}** — ${info.c1 && info.c2 && info.c3 ? 'conditions hold, so the formula recovers the truth' : 'at least one condition fails, so the formula has no licence to work'}.`);
+          `True effect **${fx(info.truth, 3)}**; naïve **${fx(info.naive, 3)}**; front-door formula **${fx(info.fd, 3)}** — ${info.c1 && info.c2 && info.c3 ? 'conditions hold, so the population formula recovers the truth' : 'at least one condition fails; equality or disagreement here cannot establish the criterion'}. Unavailable front-door estimates: **${info.missing} of 30** studies (missing required empirical strata).`);
       },
     },
   ],

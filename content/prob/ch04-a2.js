@@ -1,6 +1,8 @@
 // Probability: Theory and Examples (Durrett) — Chapter 4, part A2: §4.2 martingales, stopping, upcrossings and convergence
 import { clampN, cornerIn, fr, PhiN, walkPaths, meanPaths, upcrossings, expectPhi, logInts, quantileOf } from './ch04-a.shared.js';
 
+import { gamblingSystems, predictableFailures, exactUpcrossingWalk, stoppingRules } from './ch04-stopping.shared.js';
+
 const fx = (x, d = 3) => fr(x, d);
 const polyl = (a, f = (x) => x) => Array.from(a, (y, i) => [i, f(y)]);
 
@@ -91,21 +93,18 @@ export default {
       num: '4.2.7a',
       kind: 'Definition',
       name: 'Predictable sequence',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered definition after Theorem 4.2.7, p. 219'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=227' },
       statement: String.raw`Let $(\mathcal F_n)_{n\ge0}$ be a filtration. A sequence $H_n$, $n\ge1$, is **predictable** if $H_n\in\mathcal F_{n-1}$ for every $n\ge1$: the value of $H_n$ is determined by the information available at time $n-1$. If $X_n$ is the cumulative net gain of a gambler who bets $1$ per round, then $H_n$ is the stake placed on round $n$, and a gambling system $H$ earns
 $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
-      idea: String.raw`The stake on round $n$ must be fixed before round $n$ is played, so it may depend on rounds $1,\dots,n-1$ but not on round $n$ itself. This single restriction is what makes gambling systems powerless against a fair game (4.2.8): a stake that could peek at the $n$th outcome would be a sure win.`,
-      caption: String.raw`Twelve fair $\pm1$ rounds (click a column in the lower panel to flip that round). Pick a system $H$: its stakes are the bars, and the top panel shows the plain game $X_n$ and the winnings $(H\cdot X)_n$. The three honest systems depend only on earlier rounds and come out green. **Peek** stakes $2$ on rounds it already knows are won and $0$ on the others: it uses $\xi_n$, so the checker (which flips each outcome $\xi_j$, $j\ge n$, and watches whether $H_n$ changes) flags it red and it wins every time, which no predictable system can do.`,
+      idea: String.raw`The stake on round $n$ must be fixed before round $n$ is played, so it may depend on rounds $1,\dots,n-1$ but not on round $n$ itself. This single restriction is what makes gambling systems powerless against a fair game (4.2.8): a stake that could peek at the $n$th outcome could bet only on wins and never lose.`,
+      caption: String.raw`Twelve fair $\pm1$ rounds (click a column in the lower panel to flip that round). Pick a system $H$: its stakes are the bars, and the top panel shows the plain game $X_n$ and the winnings $(H\cdot X)_n$. The three honest systems depend only on earlier rounds and come out green. **Peek** uses the current outcome, staking $2$ on wins and $0$ on losses. It guarantees a nonnegative gain, positive whenever a win occurs. The checker exhausts all $2^{12}$ outcome sequences and compares stakes for every common past; this verifies predictability for this finite model only.`,
       deps: ['prob-4.2.1a'],
       tags: ['martingales'],
       viz(v) {
         const NN = 12;
-        const SYS = {
-          flat: { l: 'constant stake 1', H: (xi, n) => 1 },
-          dbl: { l: 'double after a loss', H: (xi, n) => { let h = 1; for (let m = 2; m <= n; m++) h = xi[m - 2] < 0 ? Math.min(8, 2 * h) : 1; return h; } },
-          chase: { l: 'raise after wins', H: (xi, n) => { let h = 1; for (let m = 1; m < n; m++) h = xi[m - 1] > 0 ? Math.min(8, h + 1) : 1; return h; } },
-          peek: { l: 'peek at round $n$', H: (xi, n) => (xi[n - 1] > 0 ? 2 : 0) },
-        };
+        const SYS = gamblingSystems;
+        const failures = Object.fromEntries(Object.entries(SYS).map(([k,S]) => [k,predictableFailures(S.H,NN)]));
         const sys = v.select('system $H$', Object.entries(SYS).map(([k, o]) => ({ value: k, label: o.l })), 'dbl');
         let seed = 3; v.button('New flips', () => { seed++; flips = null; });
         let flips = null;
@@ -113,14 +112,11 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
         const B = v.stage({ x: [0.5, NN + 0.5], y: [-1.6, 9], axes: 'box', gutter: true, height: 270, xlabel: 'round $n$ (click to flip $\\xi_n$)', title: 'stakes $H_n$ and the outcomes $\\xi_n$' });
         B.onClick((x, y) => { const i = clampN(Math.round(x), 1, NN) - 1; if (!flips) return; flips[i] = -flips[i]; v.invalidate(); });
         let st = null;
-        const alt = v.rng(100);
         v.render(() => {
           if (!flips) { const r = v.rng(seed * 17 + 1); flips = Array.from({ length: NN }, () => (r() < 0.5 ? 1 : -1)); }
           const S = SYS[sys.value], xi = flips;
           const H = Array.from({ length: NN }, (_, k) => S.H(xi, k + 1));
-          // predictability test: flipping any xi_j with j >= n must not change H_n
-          const bad = new Set(); const tests = [xi, ...Array.from({ length: 40 }, () => Array.from({ length: NN }, () => (alt() < 0.5 ? 1 : -1)))];
-          for (const base of tests) for (let n = 1; n <= NN; n++) { const h0 = S.H(base, n); for (let j = n; j <= NN; j++) { const q = base.slice(); q[j - 1] = -q[j - 1]; if (S.H(q, n) !== h0) { bad.add(n); break; } } }
+          const bad = new Set(failures[sys.value]);
           const X = [0], W = [0]; xi.forEach((e, k) => { X.push(X[k] + e); W.push(W[k] + H[k] * e); });
           const lo = Math.min(...X, ...W), hi = Math.max(...X, ...W), pd = 0.1 * (hi - lo + 2);
           A.setView([0, NN], [lo - pd, hi + pd]);
@@ -135,7 +131,7 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
           st = { bad: [...bad].sort((a, b) => a - b), final: W[NN], X: X[NN] };
         });
         v.legend([['green', 'stake fixed by the past', { area: true }], ['red', 'stake depends on round $n$ or later', { area: true }], ['accent', '$(H\\cdot X)_n$'], ['muted', '$X_n$']]);
-        v.readout(() => st && `${st.bad.length ? `**Not predictable**: $H_n$ changes when $\\xi_j$ ($j\\ge n$) is flipped, for $n\\in\\{${st.bad.join(',')}\\}$.` : '**Predictable**: no $H_n$ is affected by $\\xi_n,\\xi_{n+1},\\dots$ (tested on the current flips and 40 random sequences).'} Final winnings $(H\\cdot X)_{${NN}}=${st.final}$ against $X_{${NN}}=${st.X}$.`);
+        v.readout(() => st && `${st.bad.length ? `**Not predictable**: $H_n$ changes when $\\xi_j$ ($j\\ge n$) is flipped, for $n\\in\\{${st.bad.join(',')}\\}$.` : '**Predictable in this 12-round model**: stakes agree for every common past, over all 4096 outcomes.'} Final winnings $(H\\cdot X)_{${NN}}=${st.final}$ against $X_{${NN}}=${st.X}$.`);
       },
     },
     {
@@ -144,7 +140,7 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
       name: 'Martingale transforms: no system beats a fair game',
       statement: String.raw`Let $X_n$, $n\ge0$, be a supermartingale. If $H_n\ge0$ is predictable and every $H_n$ is bounded, then $(H\cdot X)_n=\sum_{m\le n}H_m(X_m-X_{m-1})$ is a supermartingale. The same holds for submartingales, and for martingales without the restriction $H_n\ge0$. So no bounded gambling system turns an unfavourable game into a favourable one.`,
       idea: String.raw`Write $(H\cdot X)_{n+1}=(H\cdot X)_n+H_{n+1}(X_{n+1}-X_n)$. Since $H_{n+1}\in\mathcal F_n$, take it out of the conditional expectation (4.1.14): $E(H_{n+1}(X_{n+1}-X_n)\mid\mathcal F_n)=H_{n+1}E(X_{n+1}-X_n\mid\mathcal F_n)\le0$ because $H_{n+1}\ge0$ and the increment has nonpositive conditional mean. Boundedness of $H$ gives integrability.`,
-      caption: String.raw`An unfavourable coin game (win probability $p$) played by 2000 seeded gamblers, each following the chosen system with stakes capped at $B$ (the theorem needs bounded stakes). Thin curves are a few gamblers; the thick orange curve is the average fortune $(H\cdot X)_n$ with a $\pm2$ standard-error band, and the dashed line is the plain game $n(2p-1)$. Whatever system you choose (doubling, chasing wins, constant, stop-loss) the average drifts below $0$. Slide $p$ above $\tfrac12$ and the same system now drifts up: the supermartingale hypothesis, not the system, decides.`,
+      caption: String.raw`An unfavourable coin game (win probability $p$) played by 2000 seeded gamblers, each following the chosen system with stakes capped at $B$ (the theorem needs bounded stakes). Thin curves are a few gamblers; the thick orange curve is the average fortune $(H\cdot X)_n$ with a $\pm2$ standard-error band, and the dashed line is the plain game $n(2p-1)$. For $p\le\tfrac12$ the theorem bounds the expected fortune by $0$; the finite sample mean and its estimated uncertainty can fluctuate. Slide $p$ above $\tfrac12$ to make the underlying game favorable.`,
       deps: ['prob-4.2.7a', 'prob-4.1.14'],
       see: ['fin-11.2'],
       tags: ['martingales', 'gambling'],
@@ -170,7 +166,7 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
             if (k < 12) paths.push(path);
           }
           const mean = Array.from(sum, (x) => x / M), se = Array.from(sq, (q, n) => Math.sqrt(Math.max(0, q / M - mean[n] ** 2) / M));
-          const lo = Math.min(...paths.flat(), ...mean.map((m, n) => m - 2 * se[n])), hi = Math.max(...paths.flat(), ...mean.map((m, n) => m + 2 * se[n]), 5);
+          const lo = Math.min(NN*(2*p-1), ...paths.flat(), ...mean.map((m, n) => m - 2 * se[n])), hi = Math.max(NN*(2*p-1), ...paths.flat(), ...mean.map((m, n) => m + 2 * se[n]), 5);
           s.setView([0, NN], [lo - 4, hi + 4]);
           paths.forEach((q) => s.path(polyl(q), { color: 'muted', width: 0.9, alpha: 0.5 }));
           s.hline(0, { color: 'ink', width: 1.2 });
@@ -180,28 +176,24 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
           st = { m: mean[NN], se: se[NN], th: NN * (2 * p - 1), p };
         });
         v.legend([['orange', 'average fortune $\\pm2$ s.e.'], ['accent', 'plain game $n(2p-1)$', { dash: [6, 4] }], ['muted', 'individual gamblers']]);
-        v.readout(() => st && `After ${NN} rounds the average fortune is $${fx(st.m, 2)}\\pm${fx(2 * st.se, 2)}$ (plain game: $${fx(st.th, 2)}$). ${st.p <= 0.5 ? 'It is **not above $0$**, within sampling error, as the supermartingale transform theorem requires.' : '$p>\\tfrac12$: the game is favourable, so the transform drifts up.'}`);
+        v.readout(() => st && `After ${NN} rounds the average fortune is $${fx(st.m, 2)}\\pm${fx(2 * st.se, 2)}$ (plain game: $${fx(st.th, 2)}$). ${st.p <= 0.5 ? 'The expected fortune is at most $0$; this finite sample can fluctuate above it. The displayed band uses estimated standard errors, not a guaranteed bound.' : '$p>\\tfrac12$: the underlying game is favourable; this is a finite sample estimate.'}`);
       },
     },
     {
       num: '4.2.8a',
       kind: 'Definition',
       name: 'Stopping time',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., unnumbered definition after Theorem 4.2.8, p. 220'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=228' },
       statement: String.raw`A random variable $N$ with values in $\{0,1,2,\dots\}\cup\{\infty\}$ is a **stopping time** (for the filtration $\mathcal F_n$) if $\{N=n\}\in\mathcal F_n$ for every $n<\infty$: the decision to stop at time $n$ is made with the information known at time $n$. Equivalently $\{N\le n\}\in\mathcal F_n$ for all $n$.`,
       idea: String.raw`"First time the walk hits $5$" qualifies: to know whether $N=n$ you only look at $S_0,\dots,S_n$. "The last visit to $0$ before time $100$" does not, since at time $n$ you cannot tell whether the walk will return. Stopping times are the legal ways to quit a game; their indicator $1_{\{N\ge n\}}$ is predictable, which is how 4.2.9 is derived from 4.2.8.`,
-      caption: String.raw`A seeded simple random walk and a candidate rule. Slide the test time $t$: the solid blue part is the information up to $t$, the faint curves are 12 alternative futures that agree with it, and the gold marks show where the rule says to stop on each. For a stopping time the answer to "is $N=t$?" is the same on all futures (the bar is all green or all grey); for a rule that needs the future it varies (mixed bar). The readout runs the test at every $t$ with 40 futures each.`,
+      caption: String.raw`A seeded simple random walk and a candidate rule. Slide the test time $t$: the solid blue part is the information up to $t$, the faint curves are 12 alternative futures that agree with it, and the gold marks show where the rule says to stop on each. For a stopping time the answer to "is $N=t$?" is the same on all futures (the bar is all green or all grey); for a rule that needs the future it varies (mixed bar). Here $T=40$; hitting rules return $\infty$ if no hit occurs by $T$, while last-visit and maximum rules use $[0,T]$. The sampled alternatives can expose dependence on the future; agreement among finitely many alternatives does not prove measurability. The first two rules are stopping times by their definitions; the other two are not.`,
       deps: ['prob-4.2.1a'],
       see: ['stoch-2.7'],
       tags: ['stopping times'],
       viz(v) {
         const T = 40;
-        const RULES = {
-          hit4: { l: 'first hit of $+4$', N: (p) => { const k = p.findIndex((x) => x >= 4); return k < 0 ? T + 1 : k; } },
-          back: { l: 'first time $\\le-2$ after being $\\ge2$', N: (p) => { let up = false; for (let i = 0; i <= T; i++) { if (p[i] >= 2) up = true; if (up && p[i] <= -2) return i; } return T + 1; } },
-          last0: { l: 'last visit to $0$ before $T$', N: (p) => { let k = 0; for (let i = 0; i <= T; i++) if (p[i] === 0) k = i; return k; } },
-          argmax: { l: 'time of the maximum', N: (p) => { let k = 0; for (let i = 0; i <= T; i++) if (p[i] > p[k]) k = i; return k; } },
-        };
+        const RULES = stoppingRules(T);
         const rule = v.select('rule $N$', Object.entries(RULES).map(([k, o]) => ({ value: k, label: o.l })), 'hit4');
         const tS = v.slider('test time $t$', 1, T - 1, 18, { int: true });
         let seed = 6; v.button('New walk', () => { seed++; });
@@ -213,6 +205,7 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
           const fut = (pre, t, rr) => { const q = pre.slice(0, t + 1); for (let i = t + 1; i <= T; i++) q.push(q[i - 1] + (rr() < 0.5 ? 1 : -1)); return q; };
           const t = tS.value, rt = v.rng(900 + seed), futs = [path, ...Array.from({ length: 12 }, () => fut(path, t, rt))];
           const Nact = R.N(path);
+          const yy=futs.flat(),lo=Math.min(...yy),hi=Math.max(...yy);s.setView([0,T],[lo-2,hi+2]);
           s.hline(0, { color: 'grid' });
           futs.slice(1).forEach((q) => s.path(polyl(q.slice(t)).map(([i, y]) => [i + t, y]), { color: 'muted', width: 0.9, alpha: 0.6 }));
           s.path(polyl(path.slice(0, t + 1)), { color: 'accent', width: 3 });
@@ -227,16 +220,18 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
           st = { Nact, bad, mixed: flagsT.size > 1, t };
         });
         v.legend([['accent', 'information up to $t$'], ['muted', 'alternative futures'], ['gold', 'where the rule stops', { dot: true }]]);
-        v.readout(() => st && `Actual $N=${st.Nact > T ? '\\infty\\ (\\text{not within } T)' : st.Nact}$. At $t=${st.t}$ the event $\\{N=t\\}$ is ${st.mixed ? '**decided differently on different futures**' : 'decided the same way on all 13 futures'}. Full test: ${st.bad.length ? `**not a stopping time** — $\\{N=t\\}$ depends on the future for $t\\in\\{${st.bad.join(',')}${st.bad.length >= 6 ? ',\\dots' : ''}\\}$.` : '**passes at every $t\\le T$**: consistent with a stopping time.'}`);
+        v.readout(() => st && `Actual $N=${st.Nact > T ? '\\infty\\ (\\text{no hit by } T)' : st.Nact}$. At $t=${st.t}$ the event $\\{N=t\\}$ is ${st.mixed ? '**decided differently on different futures**' : 'decided the same way on all 13 futures'}. Sampled witness search (40 futures per time): ${st.bad.length ? `**not a stopping time** — $\\{N=t\\}$ depends on the future for $t\\in\\{${st.bad.join(',')}${st.bad.length >= 6 ? ',\\dots' : ''}\\}$.` : '**no witness found**; finite sampling does not establish a stopping time.'}`);
       },
     },
     {
       num: '4.2.9',
       kind: 'Theorem',
       name: 'Stopped supermartingales are supermartingales',
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 4.2.9, p. 220'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=228' },
       statement: String.raw`If $N$ is a stopping time and $X_n$ is a supermartingale, then the stopped process $X_{N\wedge n}$ is a supermartingale. The same holds for submartingales and martingales; in particular $EX_{N\wedge n}\le EX_0$ for a supermartingale.`,
       idea: String.raw`Bet $1$ on every round up to $N$ and nothing afterwards: $H_n=1_{\{N\ge n\}}$ is predictable (bounded, $\ge0$) because $\{N\ge n\}=\{N\le n-1\}^c\in\mathcal F_{n-1}$. By 4.2.8, $(H\cdot X)_n=X_{N\wedge n}-X_0$ is a supermartingale, and adding the constant $X_0$ keeps it one.`,
-      caption: String.raw`Walks with up-probability $p$ are frozen at the stopping time $N$ you choose (hit $+a$ or $-b$, or hit $+a$ only). Thin curves are 40 frozen paths. The thick orange curve is the average of $X_{N\wedge n}$ over 5000 seeded walks; the dashed blue curve is the average of the plain walk. For $p=\tfrac12$ the stopped average stays flat at $0$ (martingale); for $p<\tfrac12$ it can only go down, and lies above the unstopped line, which falls faster, because stopping stops the losses too.`,
+      caption: String.raw`Walks with up-probability $p$ are frozen at the stopping time $N$ you choose (hit $+a$ or $-b$, or hit $+a$ only). Thin curves are 40 frozen paths. The thick orange curve is the average of $X_{N\wedge n}$ over 5000 seeded walks; the dashed blue curve is the average of the plain walk. For $p=\tfrac12$ the stopped expectation is $0$ (martingale); for $p<\tfrac12$ it is nonincreasing and at least the unstopped expectation. Sample averages fluctuate; the terminal readout gives their estimated standard error.`,
       deps: ['prob-4.2.8', 'prob-4.2.8a'],
       tags: ['martingales', 'stopping times'],
       viz(v) {
@@ -249,20 +244,21 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
         const r = v.rng(66), U = []; for (let k = 0; k < M; k++) { const u = new Float64Array(NN); for (let i = 0; i < NN; i++) u[i] = r(); U.push(u); }
         let st = null;
         v.render(() => {
-          const p = pS.value, stop = RULE[rule.value].f(aS.value, bS.value), sm = new Float64Array(NN + 1), pm = new Float64Array(NN + 1), drawn = [];
+          const p = pS.value, stop = RULE[rule.value].f(aS.value, bS.value), sm = new Float64Array(NN + 1), pm = new Float64Array(NN + 1), sm2 = new Float64Array(NN + 1), drawn = [];
           for (let k = 0; k < M; k++) {
             let x = 0, frozen = false; const path = [0];
-            for (let n = 1; n <= NN; n++) { x += U[k][n - 1] < p ? 1 : -1; pm[n] += x; if (!frozen) { path.push(x); if (stop(x)) frozen = true; } else path.push(path[path.length - 1]); sm[n] += path[n]; }
+            for (let n = 1; n <= NN; n++) { x += U[k][n - 1] < p ? 1 : -1; pm[n] += x; if (!frozen) { path.push(x); if (stop(x)) frozen = true; } else path.push(path[path.length - 1]); sm[n] += path[n]; sm2[n] += path[n]**2; }
             if (k < 40) drawn.push(path);
           }
+          const values=[...drawn.flat(),...Array.from(pm,x=>x/M),...Array.from(sm,x=>x/M)];s.setView([0,NN],[Math.min(0,...values)-2,Math.max(0,...values)+2]);
           drawn.forEach((q) => s.path(polyl(q), { color: 'muted', width: 0.8, alpha: 0.4 }));
           s.hline(0, { color: 'ink', width: 1.2 });
           s.path(polyl(Array.from(pm, (x) => x / M)), { color: 'accent', width: 2.2, dash: [6, 4] });
           s.path(polyl(Array.from(sm, (x) => x / M)), { color: 'orange', width: 3.4 });
-          st = { stopped: sm[NN] / M, plain: pm[NN] / M, p, theory: NN * (2 * p - 1) };
+          st = { stopped: sm[NN] / M, plain: pm[NN] / M, p, theory: NN * (2 * p - 1), se:Math.sqrt(Math.max(0,sm2[NN]/M-(sm[NN]/M)**2)/(M-1)) };
         });
         v.legend([['orange', 'average of $X_{N\\wedge n}$'], ['accent', 'average of $X_n$', { dash: [6, 4] }], ['muted', 'frozen paths']]);
-        v.readout(() => st && `At $n=${NN}$: $E X_{N\\wedge n}\\approx${fx(st.stopped, 3)}$ (never above $EX_0=0$ for $p\\le\\tfrac12$ up to sampling error, $\\pm0.1$), against $EX_n\\approx${fx(st.plain, 2)}$ for the unstopped walk (exact $${fx(st.theory, 2)}$).`);
+        v.readout(() => st && `At $n=${NN}$: $E X_{N\\wedge n}\\approx${fx(st.stopped, 3)}$ (estimated s.e. $${fx(st.se,3)}$; the expected value is at most $0$ for $p\\le\\tfrac12$), against $EX_n\\approx${fx(st.plain, 2)}$ for the unstopped walk (exact $${fx(st.theory, 2)}$).`);
       },
     },
     {
@@ -271,44 +267,41 @@ $$(H\cdot X)_n=\sum_{m=1}^nH_m\,(X_m-X_{m-1}).$$`,
       name: 'Upcrossing inequality',
       statement: String.raw`Let $X_m$, $m\ge0$, be a submartingale, $a<b$, and let $U_n$ be the number of upcrossings of $[a,b]$ completed by time $n$ (successive passages from $\le a$ to $\ge b$). Then
 $$(b-a)\,EU_n\le E(X_n-a)^+-E(X_0-a)^+ .$$`,
-      idea: String.raw`Bet $1$ from the first time the process is $\le a$ until it is next $\ge b$, repeat: $H_m\in\{0,1\}$ is predictable (it is defined through stopping times). Each completed upcrossing earns at least $b-a$. Apply the strategy to $Y_m=a+(X_m-a)^+$, a submartingale by 4.2.7, which has the same upcrossings; then $(b-a)U_n\le(H\cdot Y)_n$. The complementary strategy $K=1-H$ has $E(K\cdot Y)_n\ge0$ by 4.2.8, hence $E(H\cdot Y)_n\le E(Y_n-Y_0)$.`,
-      scope: String.raw`The attribution to Doob is the conventional one (it is called Doob's upcrossing inequality); I could not confirm the exact original source or year of the inequality in the form stated here.`,
-      caption: String.raw`A $\pm1$ walk with up-probability $p\ge\tfrac12$ (a submartingale). Drag the two gold handles to place the band $[a,b]$; each completed upcrossing is shaded and numbered, and the betting rule's profit window is drawn in green. Right: the average number of upcrossings $EU_n$ over 3000 seeded walks (blue) stays below the exact bound $\big(E(X_n-a)^+-E(X_0-a)^+\big)/(b-a)$ (orange) for every $n$ (the bound is not tight, since it only uses the expected final positive part).`,
+      idea: String.raw`Bet $1$ from the first time the process is $\le a$ until it is next $\ge b$, repeat: $H_m\in\{0,1\}$ is predictable (it is defined through stopping times). Each completed upcrossing earns at least $b-a$. Apply the strategy to $Y_m=a+(X_m-a)^+$, a submartingale by 4.2.7, which has the same upcrossings; then $(b-a)U_n\le(H\cdot Y)_n$: an incomplete final bet also contributes nonnegatively because its purchase value in $Y$ is $a$. The complementary strategy $K=1-H$ has $E(K\cdot Y)_n\ge0$ by 4.2.8, hence $E(H\cdot Y)_n\le E(Y_n-Y_0)$.`,
+      caption: String.raw`A $\pm1$ walk with up-probability $p\ge\tfrac12$ (a submartingale). Drag the two gold handles to place the band $[a,b]$; each completed upcrossing is highlighted and numbered. Right: $EU_n$ (blue) is computed by an exact finite-state probability recursion, alongside the exact bound $\big(E(X_n-a)^+-E(X_0-a)^+\big)/(b-a)$ (orange) for every $n$ (the bound is not tight, since it only uses the expected final positive part).`,
       deps: ['prob-4.2.7', 'prob-4.2.8'],
-      verify: true,
-      credit: 'conventionally Doob (name of the inequality); exact original source not verified',
+      refs: ['Durrett, Probability: Theory and Examples, 5th ed., Theorem 4.2.10, p. 221'],
+      links: { source: 'https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf#page=229' },
       tags: ['martingales'],
       viz(v) {
         const pS = v.slider('up-probability $p$', 0.5, 0.7, 0.52, { step: 0.01 });
         const nS = v.slider('horizon $n$', 20, 200, 120, { int: true });
-        const NMAX = 200, M = 3000;
+        const NMAX = 200;
         const L = v.stage({ x: [0, NMAX], y: [-20, 20], axes: 'box', gutter: true, height: 340, xlabel: 'time $m$', title: 'a path and its upcrossings of $[a,b]$' });
         const R = v.stage({ x: [0, NMAX], y: [0, 10], axes: 'box', gutter: true, height: 340, xlabel: 'time $n$', title: '$EU_n$ against the bound', minWidth: 280 });
         const ha = L.handle(NMAX * 0.03, -2, { color: 'gold', r: 8, label: 'a', labelPos: 'e', constrain: (x, y) => [NMAX * 0.03, clampN(Math.round(y), -15, 13)] });
-        const hb = L.handle(NMAX * 0.03, 3, { color: 'gold', r: 8, label: 'b', labelPos: 'e', constrain: (x, y) => [NMAX * 0.03, clampN(Math.round(y), -14, 14)] });
-        const r = v.rng(8), U = []; for (let k = 0; k < M; k++) { const u = new Float64Array(NMAX); for (let i = 0; i < NMAX; i++) u[i] = r(); U.push(u); }
+        const hb = L.handle(NMAX * 0.12, 3, { color: 'gold', r: 8, label: 'b', labelPos: 'e', constrain: (x, y) => [NMAX * 0.12, clampN(Math.round(y), -14, 14)] });
+        const r = v.rng(8), U = []; for (let k = 0; k < 1; k++) { const u = new Float64Array(NMAX); for (let i = 0; i < NMAX; i++) u[i] = r(); U.push(u); }
         let st = null;
         v.render(() => {
-          const p = pS.value, n = nS.value; let a = Math.round(ha.y), b = Math.round(hb.y); if (b <= a) b = a + 1; ha.set(NMAX * 0.03, a); hb.set(NMAX * 0.03, b);
+          const p = pS.value, n = nS.value; let a = Math.round(ha.y), b = Math.round(hb.y); if (b <= a) b = a + 1; ha.set(NMAX * 0.03, a); hb.set(NMAX * 0.12, b);
           const paths = U.map((u) => { const q = new Float64Array(NMAX + 1); for (let i = 1; i <= NMAX; i++) q[i] = q[i - 1] + (u[i - 1] < p ? 1 : -1); return q; });
           const base = paths[0];
+          const visible=Array.from(base.slice(0,n+1));L.setView([0,NMAX],[Math.min(a,...visible)-3,Math.max(b,...visible)+4]);
           L.hband(a, b, { color: 'gold', alpha: 0.12 }); L.hline(a, { color: 'orange', width: 1.4 }); L.hline(b, { color: 'orange', width: 1.4 });
           L.path(polyl(base.slice(0, n + 1)), { color: 'accent', width: 2 });
           let below = false, start = 0, cnt = 0;
           for (let i = 0; i <= n; i++) {
             if (!below) { if (base[i] <= a) { below = true; start = i; } } else if (base[i] >= b) { cnt++; below = false; L.path(polyl(base.slice(start, i + 1)).map(([j, y]) => [j + start, y]), { color: 'green', width: 4 }); L.text(String(cnt), i, base[i] + 1.8, { size: 12, color: 'green' }); }
           }
-          // averages over n
-          const Uc = new Float64Array(NMAX + 1);
-          for (const q of paths) { let bl = false, c = 0; for (let i = 0; i <= NMAX; i++) { if (!bl) { if (q[i] <= a) bl = true; } else if (q[i] >= b) { c++; bl = false; } Uc[i] += c; } }
-          const bound = Array.from({ length: NMAX + 1 }, (_, i) => (expectPhi((x) => Math.max(x - a, 0), i, p, 0) - Math.max(0 - a, 0)) / (b - a));
+          const {EU, bound} = exactUpcrossingWalk(NMAX,p,a,b);
           const top = Math.max(1, ...bound) * 1.15; R.setView([0, NMAX], [0, top]);
-          R.path(polyl(Array.from(bound)), { color: 'orange', width: 3 }); R.path(polyl(Array.from(Uc, (x) => x / M)), { color: 'accent', width: 2.6 }); R.vline(n, { color: 'gold', dash: [4, 4] });
-          const worst = Math.min(...bound.map((bb, i) => bb - Uc[i] / M));
-          st = { cnt, EU: Uc[n] / M, bd: bound[n], n, worst, a, b };
+          R.path(polyl(Array.from(bound)), { color: 'orange', width: 3 }); R.path(polyl(EU), { color: 'accent', width: 2.6 }); R.vline(n, { color: 'gold', dash: [4, 4] });
+          const worst = Math.min(...bound.map((bb, i) => bb - EU[i]));
+          st = { cnt, EU: EU[n], bd: bound[n], n, worst, a, b };
         });
-        v.legend([['accent', '$EU_n$ (3000 walks)'], ['orange', 'bound $\\frac{E(X_n-a)^+-E(X_0-a)^+}{b-a}$'], ['green', 'upcrossing', {}]]);
-        v.readout(() => st && `Band $[${st.a},${st.b}]$: this path has completed ${st.cnt} upcrossing${st.cnt === 1 ? '' : 's'} by time ${st.n}. Average over walks: $EU_n=${fx(st.EU, 3)}\\le$ bound $${fx(st.bd, 3)}$. Smallest margin over all $n\\le${NMAX}$: $${fx(st.worst, 3)}$ (≥ 0 up to sampling error).`);
+        v.legend([['accent', '$EU_n$ (exact finite-state law)'], ['orange', 'bound $\\frac{E(X_n-a)^+-E(X_0-a)^+}{b-a}$'], ['green', 'upcrossing', {}]]);
+        v.readout(() => st && `Band $[${st.a},${st.b}]$: this path has completed ${st.cnt} upcrossing${st.cnt === 1 ? '' : 's'} by time ${st.n}. Exact walk law: $EU_n=${fx(st.EU, 3)}\\le$ bound $${fx(st.bd, 3)}$. Smallest margin over all $n\\le${NMAX}$: $${fx(st.worst, 3)}$ (nonnegative up to floating-point roundoff).`);
       },
     },
     {

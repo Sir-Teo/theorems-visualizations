@@ -1,6 +1,6 @@
 // Representation Theory — Chapter 3: Characters
 // Part 1 (this file): 3.1–3.8. Part 2 (ch03-b.js): 3.9–3.16. Shared machinery: ch03.shared.js.
-import { TAU, ecol, nm, nmc, matN, mm, eye, trace, rot2, permMat, drawMoved, homCheck, cexp, cadd, csub, cmul, cconj, cabs, csc, ctex, ctext, cm, cI, cmm, ckron, ctr, cdsum, swapMat, cscale, tableOf, ip, gramRows, tableDefect, sqClass, invClass, multiplicities, cubeData, actOn, elOf, cyclic } from './ch03.shared.js';
+import { TAU, ecol, nm, nmc, matN, mm, eye, trace, rot2, permMat, drawMoved, homCheck, cexp, cadd, csub, cmul, cconj, cabs, csc, ctex, ctext, cm, cI, cmm, ckron, ctr, cdsum, swapMat, cscale, tableOf, ip, gramRows, tableDefect, sqClass, invClass, multiplicities, cubeData, actOn, elOf, cyclic, averageIntertwiner } from './ch03.shared.js';
 
 const SUP = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 /** Plain-text version of a group-element label (for tick labels). */
@@ -9,7 +9,7 @@ const plain = (L) => L.replace(/\^\{(\d+)\}/g, (_, d) => [...d].map((c) => SUP[c
 const byClass = (G) => G.classes.flatMap((c) => c.els);
 const re = (z) => z[0];
 const tolz = (x, t = 1e-9) => (Math.abs(x) < t ? 0 : x);
-/** Mosaic of a product of two class functions: width |C|/|G|, height Re f(C)conj h(C); the signed area is ⟨f, h⟩. */
+/** Mosaic of a product of two class functions: width |C|/|G|, height Re f(C)conj h(C); the signed area is Re ⟨f, h⟩. */
 function mosaic(s, G, f, h, o = {}) {
   let x = 0, tot = 0;
   G.classes.forEach((c, i) => {
@@ -239,16 +239,15 @@ export default {
       num: '3.4',
       kind: 'Definition',
       name: 'Inner product of class functions',
-      statement: String.raw`For functions $\varphi,\psi\colon G\to\mathbb C$ put $\langle\varphi,\psi\rangle=\frac1{|G|}\sum_{g\in G}\varphi(g)\overline{\psi(g)}$. On the space of class functions (functions constant on conjugacy classes) this is a Hermitian inner product, and since a class function takes one value $\varphi(C)$ on each class $C$,
+      statement: String.raw`For a finite group $G$ and functions $\varphi,\psi\colon G\to\mathbb C$ put $\langle\varphi,\psi\rangle=\frac1{|G|}\sum_{g\in G}\varphi(g)\overline{\psi(g)}$. On the space of class functions (functions constant on conjugacy classes) this is a Hermitian inner product, and since a class function takes one value $\varphi(C)$ on each class $C$,
 $$\langle\varphi,\psi\rangle=\sum_{C}\frac{|C|}{|G|}\,\varphi(C)\overline{\psi(C)} .$$
 The space of class functions has dimension equal to the number of conjugacy classes.`,
       idea: String.raw`The formula is an average over the group, the same operation as in 2.1; grouping the terms by conjugacy class collects $|C|$ equal terms for each class, so a class function is a vector indexed by the classes and the inner product is an ordinary dot product with weights $|C|/|G|$ (which add to $1$). Positivity: $\langle\varphi,\varphi\rangle=\frac1{|G|}\sum|\varphi(g)|^2>0$ unless $\varphi=0$.`,
       caption: String.raw`The blue and orange handles set two real class functions $\varphi$ and $\psi$ on the classes of the chosen group. The right panel draws their product as rectangles whose width is the class weight $|C|/|G|$ and whose height is $\varphi(C)\psi(C)$: the signed area (green minus red) is $\langle\varphi,\psi\rangle$. The readout shows the class sum and, as a check, the element-by-element sum. "Next character" loads a row of the character table into $\varphi$ or $\psi$ (see 3.5).`,
       deps: ['rep-3.2'],
       refs: ['Serre §2.3'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['inner product', 'class function'],
-      credit: 'Frobenius, 1896–97 (the averaging formula); the formulation as an inner product is due to Schur and later authors',
-      verify: true,
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'S4', 'D5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3', { onChange: () => load(0, 0), });
@@ -288,7 +287,7 @@ The space of class functions has dimension equal to the number of conjugacy clas
         v.readout(() => {
           const { G, f, h } = vecs(), terms = G.classes.map((c, i) => `${nm(c.size, 0)}\\cdot${nm(f[i][0], 2)}\\cdot${nm(h[i][0], 2)}`);
           const byCls = ip(G, f, h)[0];
-          const byEl = G.perms ? G.cls.reduce((s, ci) => s + f[ci][0] * h[ci][0], 0) / G.n : byCls;
+          const byEl = G.cls.reduce((s, ci) => s + f[ci][0] * h[ci][0], 0) / G.n;
           const ff = ip(G, f, f)[0], hh2 = ip(G, h, h)[0];
           return `$\\langle\\varphi,\\psi\\rangle=\\frac1{${G.n}}\\big(${terms.join('+')}\\big)=${nm(byCls, 3)}$; element-by-element sum: $${nm(byEl, 3)}$. $\\langle\\varphi,\\varphi\\rangle=${nm(ff, 3)}\\ge0$, $\\langle\\psi,\\psi\\rangle=${nm(hh2, 3)}\\ge0$.`;
         });
@@ -303,13 +302,12 @@ The space of class functions has dimension equal to the number of conjugacy clas
       statement: String.raw`Let $G$ be a finite group and $\chi_1,\chi_2,\dots$ the characters of its pairwise non-isomorphic irreducible complex representations. Then
 $$\langle\chi_i,\chi_j\rangle=\frac1{|G|}\sum_{g\in G}\chi_i(g)\overline{\chi_j(g)}=\delta_{ij}.$$
 The irreducible characters form an orthonormal family in the space of class functions.`,
-      idea: String.raw`For any matrices $X$ the average $T=\frac1{|G|}\sum_g\rho_j(g)\,X\,\rho_i(g)^{-1}$ is an intertwiner, so by Schur's lemma (2.5, 2.7, 2.8) it is $0$ if $\rho_i\not\cong\rho_j$ and a scalar $\frac{\operatorname{tr}X}{\dim}\,I$ if they are equal. Reading off the entries gives the orthogonality of matrix coefficients (3.13); summing the diagonal entries gives the orthogonality of characters.`,
-      caption: String.raw`The table is the Gram matrix $\langle\chi_i,\chi_j\rangle$ of the rows of the character table of the chosen group, computed with the class sizes as weights. Every diagonal entry is $1$ and every other entry $0$. Click a cell: the left panel draws the product $\chi_i\overline{\chi_j}$ as weighted rectangles, whose signed area is the entry. Then break the theorem: weight all classes equally, or drop the complex conjugate (visible on $A_4$, whose table is complex).`,
+      idea: String.raw`Choose unitary bases (2.1). For any matrix $X$ the average $T=\frac1{|G|}\sum_g\rho_j(g)\,X\,\rho_i(g)^{-1}$ is an intertwiner, so by Schur's lemma (2.5, 2.7, 2.8) it is $0$ if $\rho_i\not\cong\rho_j$ and a scalar $\frac{\operatorname{tr}X}{\dim}\,I$ if they are equal. Reading off the entries gives the orthogonality of matrix coefficients (3.13); summing the diagonal entries gives the orthogonality of characters.`,
+      caption: String.raw`The table is the Gram matrix $\langle\chi_i,\chi_j\rangle$ of the rows of the character table of the chosen group, computed with the class sizes as weights. Every diagonal entry is $1$ and every other entry $0$. Click a cell: the left panel draws the real part of $\chi_i\overline{\chi_j}$ as weighted rectangles, whose signed area is the entry. Then break the theorem: weight all classes equally, or drop the complex conjugate (visible on $A_4$, whose table is complex).`,
       deps: ['rep-3.4', 'rep-2.5'],
-      refs: ['Serre §2.3', 'Fulton–Harris §2.2'],
+      refs: ['Serre §2.3, Theorems 3–5', 'Etingof et al. §4.5, Theorem 4.5.1'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['orthogonality', 'character table'],
-      credit: 'Frobenius, 1896–97; the proof by Schur’s lemma is Schur’s, 1905',
-      verify: true,
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'A4', 'S4', 'S5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3', { onChange: () => { sel = [0, 1]; } });
@@ -360,9 +358,8 @@ The irreducible characters form an orthonormal family in the space of class func
       caption: String.raw`The rotation group of the cube is $S_4$ (it permutes the four body diagonals). Choose a set of geometric objects the cube rotations move: diagonals, faces, vertices, edges or the three face axes. Choose a class of rotation ($e$; $(1\,2)$, a half-turn about an edge axis; $(1\,2)(3\,4)$, a half-turn about a face axis; $(1\,2\,3)$, a third-turn about a body diagonal; $(1\,2\,3\,4)$, a quarter-turn about a face axis): the 3D picture shows which objects stay fixed (green) and which move (red), and the character of that class is their count. The bars on the right are the multiplicities $\langle\chi,\chi_i\rangle$ of the five irreducibles of $S_4$, computed by the weighted dot product; they are whole numbers, and the readout rebuilds $\chi$ from them.`,
       deps: ['rep-3.5'],
       refs: ['Serre §2.3'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['multiplicity', 'permutation representation'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
       viz(v) {
         const T = tableOf('S4'), cube = cubeData(), G = T.G;
         const pairsOfEdges = cube.sets.edges.pts.filter((p, i, a) => a.findIndex((q) => cube.same(q, p.map((t) => -t))) >= i); // 6 axes through opposite edge midpoints
@@ -422,21 +419,21 @@ The irreducible characters form an orthonormal family in the space of class func
       num: '3.7',
       kind: 'Theorem',
       name: 'A representation is determined by its character',
-      statement: String.raw`Two finite-dimensional complex representations $V,W$ of a finite group $G$ are isomorphic if and only if $\chi_V=\chi_W$. (Over a field of characteristic $0$ the same holds: the character determines the multiplicities of the irreducible constituents.)`,
-      idea: String.raw`If $V\cong W$ the traces agree (3.1). Conversely, equal characters give equal multiplicities $\langle\chi_V,\chi_i\rangle=\langle\chi_W,\chi_i\rangle$ by 3.6, and by Maschke (2.2) a representation is determined up to isomorphism by those multiplicities. The isomorphism can be produced explicitly: for a generic matrix $X$, the average $T=\frac1{|G|}\sum_g\sigma(g)X\rho(g)^{-1}$ is an intertwiner, and is invertible exactly when $\rho\cong\sigma$ (2.5).`,
-      caption: String.raw`Left: the standard representation $\rho$ of $S_3$ moving the letter F. Right: another candidate $\sigma$ chosen from the menu. The characters of the two are printed class by class. If they agree, the averaged matrix $T$ (computed from a random $X$) is invertible and intertwines: the image $T\rho(g)F$ of the moved letter coincides with $\sigma(g)$ applied to $TF$ (green outline on the right). If they differ, the average is $0$ and nothing can be matched. Drag the shear slider to disguise $\sigma$ further; the character does not change.`,
+      statement: String.raw`Two finite-dimensional complex representations $V,W$ of a finite group $G$ are isomorphic if and only if $\chi_V=\chi_W$.`,
+      idea: String.raw`If $V\cong W$ the traces agree (3.1). Conversely, equal characters give equal multiplicities $\langle\chi_V,\chi_i\rangle=\langle\chi_W,\chi_i\rangle$ by 3.6, and by Maschke (2.2) a representation is determined up to isomorphism by those multiplicities. The isomorphism can be produced explicitly: for a generic matrix $X$, the average $T=\frac1{|G|}\sum_g\sigma(g)X\rho(g)^{-1}$ is an intertwiner. If the representations are isomorphic, an invertible average exists and generic $X$ gives one: averaging fixes every intertwiner, so its image contains an isomorphism. A particular average may still be zero or singular; it is a witness only when invertible. Non-isomorphic representations can have nonzero intertwiners if they share constituents.`,
+      caption: String.raw`Left: the standard representation $\rho$ of $S_3$ moving the letter F. Right: another candidate $\sigma$ chosen from the menu. The characters of the two are printed class by class. For a generic random $X$, equal characters produce an invertible averaged intertwiner $T$: the image $T\rho(g)F$ of the moved letter coincides with $\sigma(g)$ applied to $TF$ (green outline on the right). For the unequal candidates in this menu the average is $0$, since they share no constituent with the irreducible $\rho$. Try **zero X**: equal characters still prove isomorphism, but this particular average supplies no witness. Drag the shear slider to disguise $\sigma$ further; the character does not change.`,
       deps: ['rep-3.6'],
       refs: ['Serre §2.3'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['character', 'isomorphism'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
       viz(v) {
         const T3 = tableOf('S3'), G = T3.G, rho = G.mat;
         const tsel = v.select('candidate $\\sigma$', [{ value: 'skew', label: 'standard, skewed basis' }, { value: 'rot', label: 'standard, rotated & scaled basis' }, { value: 'ge', label: '$\\mathbf 1\\oplus\\varepsilon$' }, { value: 'gg', label: '$\\mathbf 1\\oplus\\mathbf 1$' }], 'skew');
         const sh = v.slider('shear / scale', 0, 2.5, 1.2, { step: 0.05 });
         const gsl = v.select('element $g$', G.L.map((l, i) => ({ value: i, label: `$${l}$` })), 4);
-        let seed = 3;
-        v.button('new random $X$', () => { seed += 1; });
+        let seed = 3, zeroX = false;
+        v.button('new random $X$', () => { seed += 1; zeroX = false; });
+        v.button('zero X', () => { zeroX = true; });
         const A = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: true, height: 360, weight: 1, title: '$V$ with $\\rho$' });
         const B = v.stage({ x: [-4, 4], y: [-4, 4], equal: true, axes: true, height: 360, weight: 1, title: '$W$ with $\\sigma$' });
         const sigma = () => {
@@ -447,30 +444,30 @@ The irreducible characters form an orthonormal family in the space of class func
           if (tsel.value === 'ge') return G.perms.map((_, g) => [[1, 0], [0, G.isRef(g) ? -1 : 1]]);
           return G.perms.map(() => [[1, 0], [0, 1]]);
         };
-        const inv2 = (M) => { const d = M[0][0] * M[1][1] - M[0][1] * M[1][0]; return [[M[1][1] / d, -M[0][1] / d], [-M[1][0] / d, M[0][0] / d]]; };
         const calc = () => {
-          const sg = sigma(), r = v.rng(seed), X = [[r.normal(), r.normal()], [r.normal(), r.normal()]];
-          let Tm = [[0, 0], [0, 0]];
-          G.perms.forEach((_, g) => { const P = mm(sg[g], mm(X, inv2(rho[g]))); Tm = Tm.map((row, i) => row.map((x, j) => x + P[i][j] / G.n)); });
-          const chS = G.classes.map((c) => sg[c.rep][0][0] + sg[c.rep][1][1]), chR = G.classes.map((c) => rho[c.rep][0][0] + rho[c.rep][1][1]);
-          let inter = 0; G.perms.forEach((_, g) => { const D = mm(sg[g], Tm).map((row, i) => row.map((x, j) => x - mm(Tm, rho[g])[i][j])); inter = Math.max(inter, Math.hypot(...D.flat())); });
-          return { sg, Tm, chS, chR, det: Tm[0][0] * Tm[1][1] - Tm[0][1] * Tm[1][0], inter, same: chS.every((x, i) => Math.abs(x - chR[i]) < 1e-9) };
+          const sg = sigma(), r = v.rng(seed), X = zeroX ? [[0,0],[0,0]] : [[r.normal(),r.normal()],[r.normal(),r.normal()]];
+          const result = averageIntertwiner(rho,sg,X);
+          const chS = G.classes.map(c => sg[c.rep][0][0]+sg[c.rep][1][1]), chR = G.classes.map(c => rho[c.rep][0][0]+rho[c.rep][1][1]);
+          return {sg,Tm:result.T,chS,chR,det:result.det,inter:result.defect,invertible:result.invertible,same:chS.every((x,i)=>Math.abs(x-chR[i])<1e-9)};
         };
         const F = [[-0.3, -0.6], [-0.12, -0.6], [-0.12, -0.14], [0.14, -0.14], [0.14, 0.02], [-0.12, 0.02], [-0.12, 0.3], [0.3, 0.3], [0.3, 0.5], [-0.3, 0.5]].map(([x, y]) => [1.5 * x, 1.5 * y]);
         const ap = (M, P) => P.map(([x, y]) => [M[0][0] * x + M[0][1] * y, M[1][0] * x + M[1][1] * y]);
         v.render(() => {
-          const { sg, Tm, det, same } = calc(), g = gsl.value;
+          const { sg, Tm, invertible, same } = calc(), g = gsl.value;
+          const points = [...ap(Tm,F),...ap(Tm,ap(rho[g],F)),...ap(sg[g],ap(Tm,F))];
+          const extent = 1.2 * Math.max(1,...points.flat().map(Math.abs));
+          B.setView([-extent,extent],[-extent,extent]);
           A.poly(F, { color: 'muted', fill: 'muted', fillAlpha: 0.1, dash: true, width: 1.4 });
           A.poly(ap(rho[g], F), { color: 'accent', fill: 'accent', fillAlpha: 0.3, width: 2 });
           B.poly(ap(Tm, F), { color: 'muted', fill: 'muted', fillAlpha: 0.1, dash: true, width: 1.4 });
           B.poly(ap(Tm, ap(rho[g], F)), { color: 'accent', fill: 'accent', fillAlpha: 0.3, width: 2.2 });
           B.poly(ap(sg[g], ap(Tm, F)), { color: same ? 'green' : 'red', fill: false, width: 3.2, dash: [7, 5] });
-          B.corner(Math.abs(det) > 1e-6 ? '$T$ is invertible' : '$T$ is degenerate', 'tl', { plate: true, color: Math.abs(det) > 1e-6 ? 'green' : 'red' });
+          B.corner(invertible ? '$T$ is invertible' : 'this average gives no isomorphism witness', 'tl', { plate: true, color: invertible ? 'green' : 'red' });
         });
         v.legend([['muted', 'F, and $TF$', { dash: true }], ['accent', '$\\rho(g)F$, and $T\\rho(g)F$'], ['green', '$\\sigma(g)TF$ (equal when $T$ intertwines)', { dash: true }]]);
         v.readout(() => {
-          const { chS, chR, det, inter, same, Tm } = calc(), cl = G.classes.map((c) => G.L[c.rep]);
-          return `Characters on the classes $(${cl.join(',\\ ')})$: $\\chi_\\rho=(${chR.map((x) => nm(x, 2)).join(',\\ ')})$, $\\chi_\\sigma=(${chS.map((x) => nm(x, 2)).join(',\\ ')})$ — ${same ? '**equal**' : '**different**'}.\nAveraged $T$: $\\|T\\|=${nm(Math.hypot(...Tm.flat()), 3)}$, $\\det T=${nm(det, 3)}$, $\\max_g\\|\\sigma(g)T-T\\rho(g)\\|=${inter < 1e-9 ? '0' : nm(inter, 3)}$ — ${same ? 'an explicit isomorphism $\\rho\\cong\\sigma$' : 'no isomorphism exists, and the average vanishes'}.`;
+          const { chS, chR, det, inter, same, Tm, invertible } = calc(), cl = G.classes.map((c) => G.L[c.rep]);
+          return `Characters on the classes $(${cl.join(',\\ ')})$: $\\chi_\\rho=(${chR.map((x) => nm(x, 2)).join(',\\ ')})$, $\\chi_\\sigma=(${chS.map((x) => nm(x, 2)).join(',\\ ')})$ — ${same ? '**equal**' : '**different**'}.\nAveraged $T$: $\\|T\\|=${nm(Math.hypot(...Tm.flat()), 3)}$, $\\det T=${nm(det, 3)}$, $\\max_g\\|\\sigma(g)T-T\\rho(g)\\|=${inter < 1e-9 ? '0' : nm(inter, 3)}$ — ${same ? (invertible ? 'an explicit isomorphism $\\rho\\cong\\sigma$' : 'equal characters prove isomorphism, but this average gives no invertible witness; try another X') : 'no isomorphism exists; these candidates share no constituent'}.`;
         });
       },
     },
@@ -479,17 +476,16 @@ The irreducible characters form an orthonormal family in the space of class func
       num: '3.8',
       kind: 'Theorem',
       name: 'Irreducibility criterion ⟨χ, χ⟩ = 1',
-      statement: String.raw`If $V\cong\bigoplus_iW_i^{\,m_i}$ has character $\chi$, then $\langle\chi,\chi\rangle=\sum_i m_i^2$. Consequently $\langle\chi,\chi\rangle$ is a positive integer, and $V$ is irreducible if and only if $\langle\chi,\chi\rangle=1$. More generally $\langle\chi,\chi\rangle=\dim\operatorname{End}_G(V)$.`,
+      statement: String.raw`For a finite-dimensional complex representation $V\cong\bigoplus_iW_i^{\,m_i}$ of a finite group $G$ with character $\chi$, $\langle\chi,\chi\rangle=\sum_i m_i^2$. Consequently $\langle\chi,\chi\rangle$ is a nonnegative integer (positive when $V\ne0$), and $V$ is irreducible if and only if $\langle\chi,\chi\rangle=1$. More generally $\langle\chi,\chi\rangle=\dim\operatorname{End}_G(V)$.`,
       idea: String.raw`Write $\chi=\sum m_i\chi_i$ (3.6) and expand the inner product with the orthonormality 3.5: $\langle\chi,\chi\rangle=\sum_{i,j}m_im_j\langle\chi_i,\chi_j\rangle=\sum m_i^2$. A sum of squares of non-negative integers equals $1$ only if exactly one $m_i$ is $1$ and the rest vanish, which is irreducibility. The number $\sum m_i^2$ is also $\dim\operatorname{End}_G(V)$ by Schur’s lemma (2.5).`,
       caption: String.raw`The five irreducibles of $S_4$ are the sliders: choose how many copies of each to put into a representation. The coloured squares have side $m_i$, so their total area is $\langle\chi,\chi\rangle=\sum m_i^2$; the readout computes the same number directly from the character values with the class weights. Only a single unit square certifies irreducibility. The menu loads representations built from earlier items (permutation, tensor and regular representations); their multiplicities are then found by 3.6.`,
       deps: ['rep-3.6'],
       refs: ['Serre §2.3'],
+      links: { source: 'https://math.mit.edu/~etingof/reprbook.pdf' },
       tags: ['irreducibility', 'character'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
       viz(v) {
         const T = tableOf('S4'), G = T.G, n = T.rows.length;
-        const sl = T.rows.map((r, i) => v.slider(`multiplicity of $${r.tex}$`, 0, 4, i === 3 ? 1 : 0, { int: true }));
+        const sl = T.rows.map((r, i) => v.slider(`multiplicity of $${r.tex}$`, 0, 5, i === 3 ? 1 : 0, { int: true }));
         const chi3 = T.rows[3].vals, sq = sqClass(G);
         const PRE = {
           perm4: { label: 'permutation on 4 points', chi: [[4, 0], [2, 0], [0, 0], [1, 0], [0, 0]] },

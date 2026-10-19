@@ -1,6 +1,8 @@
 // Mathematical Biology — Chapter 3 (part b): items 3.7–3.12
 import { rk4sys, eig2x2 } from './ch03.shared.js';
 
+import { perturbation, response, risk, feed, brusselatorAmplitude, brusselatorTrajectories } from './mathbio-source-audit-predator.js';
+
 const PI = Math.PI;
 
 export default {
@@ -12,15 +14,15 @@ export default {
       num: '3.7',
       kind: 'Phenomenon',
       name: 'Structural instability of the Lotka–Volterra centre',
-      credit: 'notion of structural stability: Andronov & Pontryagin, 1937',
-      statement: String.raw`The closed orbits of the Lotka–Volterra system are not robust. At the interior equilibrium the Jacobian has eigenvalues $\pm i\sqrt{\alpha\gamma}$ on the imaginary axis (a **non-hyperbolic** equilibrium), so linearization cannot decide its type, and an arbitrarily small change of the model turns the centre into a spiral. For example, in $\dot x=x(1-y-\varepsilon x)$, $\dot y=y(x-1)$ (prey crowding) the equilibrium $(1,1-\varepsilon)$ has trace $-\varepsilon$ and determinant $1-\varepsilon$, a stable spiral for $0<\varepsilon<1$ small; in $\dot x=x\bigl(1-\tfrac y{1+\varepsilon x}\bigr)$, $\dot y=y\bigl(\tfrac x{1+\varepsilon x}-1\bigr)$ (predator saturation) it has trace $+\varepsilon$ and is an unstable spiral. The sign of the perturbation, not its size, decides the fate of the cycles.`,
-      idea: String.raw`A centre is a borderline case of the trace–determinant plane (3.2): it sits exactly on the line $\tau=0$, and any perturbation moves the trace to a small non-zero value of either sign, which pushes the eigenvalues to $\pm i\omega+\tfrac\tau2$ and makes orbits spiral slowly. Mathematically, the family of closed orbits comes from a conserved quantity (3.4) that exists only for the exact linear per-capita rates; a generic term destroys it. Models whose qualitative picture changes under small changes are called structurally unstable; the lesson for modelling is that the neutral cycles of Lotka–Volterra cannot be used to predict real oscillations.`,
-      scope: String.raw`Applies to the two perturbations below for $0<\varepsilon<1$; both sign choices occur, so there is no universal direction. Real systems that oscillate (3.9, 3.12) have isolated limit cycles that survive perturbation.`,
-      caption: String.raw`Slide $\varepsilon$ from $0$ and choose the perturbation: with prey crowding the orbits wind in to the equilibrium, with predator saturation they wind out (towards a large cycle or extinction of one species). At $\varepsilon=0$ the original closed loops return. The readout gives the trace and determinant at the interior equilibrium.`,
+      credit: String.raw`Local perturbation calculation; structural stability in the usual planar-flow sense`,
+      statement: String.raw`The Lotka–Volterra centre is **structurally unstable**: arbitrarily small smooth perturbations can replace its surrounding closed orbits by spiralling trajectories. For prey crowding, $\dot x=x(1-y-\varepsilon x)$, $\dot y=y(x-1)$, the equilibrium is $(1,1-\varepsilon)$ and $(\operatorname{tr}J,\det J)=(-\varepsilon,1-\varepsilon)$. For predator saturation, $\dot x=x(1-y/(1+\varepsilon x))$, $\dot y=y(x/(1+\varepsilon x)-1)$, the equilibrium is $(1/(1-\varepsilon),1/(1-\varepsilon))$ and the trace is $+\varepsilon$ with the same determinant. On the displayed range $0<\varepsilon\le0.4$, the discriminant $\varepsilon^2-4(1-\varepsilon)<0$: these are stable and unstable spirals respectively.`,
+      idea: String.raw`At zero perturbation the first integral in 3.4 gives a family of periodic orbits. With a nonzero trace the interior equilibrium is hyperbolic and its nearby orbits spiral; no homeomorphism of local phase portraits can turn those orbits into closed ones. Exhibiting these arbitrarily small changes is enough to establish failure of structural stability. It does **not** mean every small perturbation destroys the centre: changes that preserve a Lotka–Volterra form still have an integral.`,
+      scope: String.raw`Local conclusion near the coexistence equilibrium; the displayed parameters are $0\le\varepsilon\le0.4$. Nonhyperbolicity alone does not determine nonlinear stability. Persistence of an isolated periodic orbit requires hyperbolicity, not merely isolation. No global attractor or extinction claim is made for the saturation model.`,
+      caption: String.raw`Choose a perturbation and vary its size. The finite phase window shows inward or outward spiralling near coexistence; trajectories can leave this window. Click inside it to add a trajectory, or clear all trajectories. At $\varepsilon=0$ the unperturbed closed orbits return.`,
       deps: ['mathbio-3.4', 'mathbio-3.2', 'ode-6.6'],
       tags: ['structural stability', 'centre'],
-      refs: ['Murray I ch. 3'],
-      verify: true,
+      refs: ['Kuznetsov, Elements of Applied Bifurcation Theory, second edition, §2.5 pp. 69–72; Teschl, §7.1 pp. 209–213; direct Jacobian calculation for the two displayed perturbations'],
+      verify: false,
       viz(v) {
         const kind = v.select('perturbation', [{ value: 'crowd', label: 'prey crowding $-\\varepsilon x^2$' }, { value: 'sat', label: 'predator saturation' }], 'crowd');
         const eps = v.slider('size $\\varepsilon$', 0, 0.4, 0.08, { step: 0.005 });
@@ -33,7 +35,7 @@ export default {
         v.render(() => pp.draw());
         pp.legend();
         v.readout(() => {
-          const e = eps.value, tr = kind.value === 'crowd' ? -e : e, det = 1 - e;
+          const e = eps.value, info=perturbation(kind.value,e), tr=info.trace, det=info.det;
           return `interior equilibrium $${kind.value === 'crowd' ? `(1,\\,${v.fix(1 - e, 3)})` : `(${v.fix(1 / (1 - e), 3)},\\,${v.fix(1 / (1 - e), 3)})`}$: trace $${v.fix(tr, 3)}$, determinant $${v.fix(det, 3)}$ → ${e === 0 ? '**centre** (closed orbits)' : tr < 0 ? '**stable spiral**' : '**unstable spiral**'}; real part of the eigenvalues $${v.fix(tr / 2, 3)}$`;
         });
       },
@@ -43,19 +45,19 @@ export default {
       num: '3.8',
       kind: 'Model',
       name: 'Holling functional responses (types I–III)',
-      credit: 'C. S. Holling, 1959',
-      statement: String.raw`The **functional response** $f(N)$ is the number of prey a single predator eats per unit time at prey density $N$. Holling's three classical shapes are: **type I**, $f=\min(aN,\,1/h)$, linear up to a ceiling; **type II**, $f=\dfrac{aN}{1+ahN}$ (the disc equation), a hyperbolic rise to the ceiling $1/h$; **type III**, $f=\dfrac{aN^2}{1+ahN^2}$, a sigmoid with an accelerating start. Here $a$ is the attack (or search) rate and $h$ the handling time per prey. The per-prey risk $f(N)/N$ falls with $N$ for type II but first rises for type III.`,
-      idea: String.raw`In time $T$ a predator spends $T_s$ searching and $T_h=hn$ handling $n$ prey; encounters come at rate $aN$ while searching, so $n=aNT_s$ and $T=T_s+hn$, which solves to $n/T=aN/(1+ahN)$ (type II). Handling time is what saturates intake. If search efficiency itself grows with density (learning, switching, prey refuges at low density) the encounter rate is $aN^2$ and the same bookkeeping gives type III. The disc experiments that suggested the equation used a blindfolded human 'predator' tapping sandpaper discs on a table; the equation is a derivation, not a law.`,
-      scope: String.raw`Single predators with constant search rate, no depletion of the prey during the observation, no hunger dynamics. Type III is a phenomenological shape; its mechanisms vary and are debated.`,
-      caption: String.raw`Left: the intake curve $f(N)$ of the chosen type (curves of the other types are faint). The dots are a simulated predator (random search times, then handling) observed over a long window at each density: they scatter around the formula. Right: the risk per prey $f(N)/N$, which for type III has a hump, so prey at very low density are safer. Press *Resample* for a new simulated predator.`,
+      credit: String.raw`Holling, 1959: disc equation (type II); I and III below are explicitly chosen comparison models`,
+      statement: String.raw`For dimensionless prey density $N$, compare $f_I=\min(aN,1/h)$, $f_{II}=aN/(1+ahN)$ and the chosen sigmoid $f_{III}=aN^2/(1+ahN^2)$. Here $f$ is intake per predator per time, $h$ is handling time, and $a$ sets encounter intensity. Type II is Holling’s disc equation. If density has physical units, $a$ has different units in the quadratic type III model. The limiting intake is $1/h$. The per-prey risk $f/N$ decreases for II and peaks at $N=1/\sqrt{ah}$ for III.`,
+      idea: String.raw`Holling’s time budget is $n=aNT_s$, $T=T_s+hn$, giving $n/T=aN/(1+ahN)$. The 1959 paper derives this equation and tests its assumptions using human subjects searching for sandpaper discs. It also observes sigmoid responses but does not derive the particular quadratic formula used here; replacing the encounter intensity by $aN^2$ is our illustrative model, rather than an identified mechanism for every sigmoid response.`,
+      scope: String.raw`Fixed prey density and constant parameters; the simulation replenishes prey implicitly. A curve fit alone does not verify a behavioral mechanism. For II/III, random exponential searches alternate with fixed handling and only completed meals are counted; their long-run rates are the curves. The I points instead use a capped Poisson count, a separate illustrative construction. All observations use a fixed 120-unit window, so finite-window bias and noise are expected.`,
+      caption: String.raw`Left: chosen intake formula, faint comparison curves, and generated observations (not experimental data). Right: risk per prey, including its limit at zero density. Resample changes the seeded random searches. The type I count is capped at $\lfloor120/h\rfloor$; II/III count completed search-and-handling cycles.`,
       deps: ['mathbio-3.3'],
       tags: ['functional response', 'handling time'],
-      refs: ['Murray I ch. 3', 'Edelstein-Keshet ch. 6'],
+      refs: ['Holling (1959), Some Characteristics of Simple Types of Predation and Parasitism, pp. 385–391, equations (1)–(10); remaining formulas derived directly here'],
       links: { doi: 'https://doi.org/10.4039/ent91385-7' },
-      verify: true,
+      verify: false,
       viz(v) {
         const typ = v.select('type', [{ value: 'I', label: 'I' }, { value: 'II', label: 'II' }, { value: 'III', label: 'III' }], 'II');
-        const a = v.slider('attack rate $a$', 0.2, 2, 0.8, { step: 0.01 });
+        const a = v.slider('encounter coefficient $a$', 0.2, 2, 0.8, { step: 0.01 });
         const h = v.slider('handling time $h$', 0.1, 1, 0.5, { step: 0.01 });
         let seed = 1;
         v.button('Resample', () => { seed++; });
@@ -63,27 +65,21 @@ export default {
         const A = v.stage({ x: [0, NM], y: [0, 3], height: 340, axes: 'box', gutter: true, minWidth: 280, xlabel: 'prey density N', ylabel: 'prey eaten per predator per time', title: 'functional response' });
         const B = v.stage({ x: [0, NM], y: [0, 1], height: 340, axes: 'box', gutter: true, minWidth: 260, xlabel: 'prey density N', ylabel: 'f(N)/N', title: 'risk per prey' });
         v.legend([['accent', 'selected type'], ['gold', 'simulated predator', { dot: true }], ['muted', 'ceiling $1/h$', { dash: true }]]);
-        const F = (t, N, aa, hh) => (t === 'I' ? Math.min(aa * N, 1 / hh) : t === 'II' ? aa * N / (1 + aa * hh * N) : aa * N * N / (1 + aa * hh * N * N));
-        function simulate(t, N, aa, hh, T, r) {
-          const lam = t === 'III' ? aa * N * N : aa * N; let clock = 0, n = 0;
-          const handle = t === 'I' ? 0 : hh, cap = t === 'I' ? Math.floor(T / hh) : Infinity;
-          for (;;) { clock += -Math.log(1 - r()) / lam; if (clock > T) break; n++; clock += handle; if (n >= cap) break; }
-          return n / T;
-        }
+        const F=response;
         v.render(() => {
           const aa = a.value, hh = h.value, t = typ.value;
           const ymax = Math.max(1.2 / hh, 0.5);
-          A.setView([0, NM], [0, ymax]);
+          A.setView([0, NM], [-0.06*ymax, ymax]);
           A.hline(1 / hh, { color: 'muted', dash: true });
           for (const o of ['I', 'II', 'III']) if (o !== t) A.fn((N) => F(o, N, aa, hh), { color: 'muted', width: 1.4, alpha: 0.5, domain: [0, NM] });
           A.fn((N) => F(t, N, aa, hh), { color: 'accent', width: 3, domain: [0, NM] });
           const r = v.rng(seed);
           const dens = [0.5, 1, 1.5, 2, 3, 4.5, 6, 8, 9.6];
-          dens.forEach((N) => A.dot(N, simulate(t, N, aa, hh, 120, r), { r: 5, color: 'gold' }));
-          let top = 0; for (let N = 0.05; N <= NM; N += 0.05) top = Math.max(top, F(t, N, aa, hh) / N);
-          B.setView([0, NM], [0, Math.max(top * 1.1, 0.05)]);
-          B.fn((N) => F(t, N, aa, hh) / N, { color: 'accent', width: 3, domain: [0.02, NM] });
-          if (t === 'III') { const Nm = Math.sqrt(1 / (aa * hh)); B.vline(Nm, { color: 'orange', dash: true }); B.tex('N=1/\\sqrt{ah}', Nm, top * 1.0, { color: 'orange', align: 'left', dx: 6 }); }
+          dens.forEach((N) => A.dot(N, feed(t, N, aa, hh, 120, r), { r: 5, color: 'gold' }));
+          const top=t==='III'?Math.sqrt(aa/hh)/2:aa;
+          B.setView([0, NM], [0, Math.max(top * 1.15, 0.05)]);
+          B.fn((N) => risk(t,N,aa,hh), { color: 'accent', width: 3, domain: [0, NM] });
+          if (t === 'III') { const Nm = Math.sqrt(1 / (aa * hh)); B.vline(Nm, { color: 'orange', dash: true }); B.tex('N=1/\\sqrt{ah}', Nm, top * 1.07, { color: 'orange', align: 'center' }); }
         });
         v.readout(() => { const aa = a.value, hh = h.value; return `ceiling $1/h=${v.fix(1 / hh, 2)}$ prey per unit time; half-saturation (type II) at $N=1/(ah)=${v.fix(1 / (aa * hh), 2)}$; type III risk per prey peaks at $N=1/\\sqrt{ah}=${v.fix(1 / Math.sqrt(aa * hh), 2)}$`; });
       },
@@ -235,37 +231,33 @@ with $m<1$. The predator nullcline is the vertical line $x=x^*=m/(1-m)$; the pre
       num: '3.12',
       kind: 'Theorem',
       name: 'Hopf bifurcation: birth of a limit cycle',
-      credit: 'Poincaré–Andronov–Hopf; Hopf, 1942',
+      credit: String.raw`Andronov–Hopf bifurcation; modern author proof: Kuznetsov, §3.4–3.5`,
       statement: String.raw`Let $\dot{\mathbf x}=\mathbf F(\mathbf x,\mu)$ be a smooth planar family with an equilibrium $\mathbf x^*(\mu)$ whose Jacobian has a complex pair $\lambda(\mu)=\sigma(\mu)\pm i\omega(\mu)$ with $\sigma(\mu_0)=0$, $\omega(\mu_0)>0$ and $\sigma'(\mu_0)\ne0$ (so the pair crosses the imaginary axis with non-zero speed). Then, provided a non-degeneracy condition on the cubic terms (the first Lyapunov coefficient $\ell_1\ne0$) holds, a branch of periodic orbits bifurcates from the equilibrium at $\mu_0$ with period near $2\pi/\omega(\mu_0)$. If $\ell_1<0$ the bifurcation is **supercritical**: a stable cycle exists on the side where the equilibrium has become unstable, and its amplitude grows like $\sqrt{|\mu-\mu_0|}$.`,
-      idea: String.raw`Near $\mu_0$ the dynamics reduce to the normal form $\dot z=(\sigma+i\omega)z+\ell_1 z|z|^2$ for a complex variable $z$, i.e. $\dot r=\sigma r+\ell_1r^3$, $\dot\theta=\omega$. For $\ell_1<0$ the radial equation has the stable fixed point $r=\sqrt{-\sigma/\ell_1}$ when $\sigma>0$, which is the cycle. The reduction to the normal form is a centre-manifold and averaging argument (ode-6.7). The Brusselator below, $\dot x=a-(b+1)x+x^2y$, $\dot y=bx-x^2y$, has $\operatorname{tr}J=b-1-a^2$, $\det J=a^2$, so $\sigma=\tfrac12(b-1-a^2)$ and the Hopf point is $b_c=1+a^2$ with $\omega=a$; the bifurcation is supercritical.`,
-      scope: String.raw`Needs a simple pair of purely imaginary eigenvalues and non-degeneracy ($\ell_1\ne0$, $\sigma'\ne0$). When $\ell_1>0$ the bifurcation is subcritical: an unstable cycle exists before the equilibrium loses stability and the system jumps to a distant attractor (ode-8.14). The Brusselator example is for $a=1$.`,
-      caption: String.raw`Slide $b$ through the Hopf value $b_c=2$ ($a=1$). Left: phase portrait with the equilibrium and trajectories that spiral in below $b_c$ and out onto a cycle above. Middle: the eigenvalues in the complex plane crossing the imaginary axis at $\pm i$. Right: measured amplitude of the cycle against $b$ (dots, from simulation) with the fitted square-root law (dashed).`,
+      idea: String.raw`Near the critical point a smooth change of variables gives $\dot z=(\sigma+i\omega)z+c z|z|^2+\text{higher-order terms}$. The sign of $\operatorname{Re}c$ determines the radial cubic: a negative coefficient yields a stable cycle on the $\sigma>0$ side. The imaginary cubic term changes frequency; a constant angular speed is not generally exact. For the displayed Brusselator ($a=1$), $\operatorname{tr}J=b-2$, $\det J=1$. At $b=2$, write $u=x-1$, $v=-(x+y-3)$: $\dot u=-v-2uv-u^3-u^2v$, $\dot v=u$. The planar cubic radial coefficient is $-3/8$, so the Hopf bifurcation is supercritical, and the leading half-range of $x$ is $\sqrt{4(b-2)/3}$.`,
+      scope: String.raw`Local theorem with a simple imaginary pair, nonzero crossing speed and nonzero first Lyapunov coefficient. For the subcritical case an unstable small cycle lies on the stable-equilibrium side; the local theorem says nothing about a distant attractor or a jump destination. Numerical trajectories and finite-window amplitude estimates illustrate the Brusselator, but are not a proof of a global cycle branch.`,
+      caption: String.raw`Slide $b$ through $2$. The phase plane shows trajectories over $0\le t\le300$ from two fixed initial states; the middle panel gives exact eigenvalues. Right: numerical half-ranges over $t=800$–$880$ at $b=2.05,2.10,\ldots,3.20$ (dots), and the **local leading asymptotic** $\sqrt{4(b-2)/3}$ shown only to $b=2.2$ (dashed), without fitting a coefficient to distant cycles. The gold guide marks the current parameter, not a zero amplitude measurement.`,
       deps: ['mathbio-3.2', 'mathbio-3.10', 'ode-8.13'],
       tags: ['Hopf bifurcation', 'oscillation'],
-      refs: ['Edelstein-Keshet ch. 8'],
-      verify: true,
+      refs: ['Kuznetsov, Elements of Applied Bifurcation Theory, second edition, §§3.4–3.5 and Theorems 3.3–3.4; Edelstein-Keshet, ch. 7 problem 20 (Brusselator equations); direct planar cubic calculation'],
+      verify: false,
       viz(v) {
         const a = 1, bc = 1 + a * a;
         const b = v.slider('parameter $b$', 1.4, 3.2, 1.8, { step: 0.01 });
         const P = v.stage({ x: [0, 4.5], y: [0, 4.5], height: 340, axes: 'box', gutter: true, minWidth: 250, xlabel: 'x', ylabel: 'y', title: 'phase plane' });
         const E = v.stage({ x: [-1.6, 1.6], y: [-1.6, 1.6], equal: true, height: 340, axes: true, minWidth: 240, title: 'eigenvalues of the Jacobian' });
-        const A = v.stage({ x: [1.4, 3.2], y: [0, 2.2], height: 340, axes: 'box', gutter: true, minWidth: 250, xlabel: 'b', ylabel: 'cycle amplitude of x', title: 'amplitude against b' });
-        const pp = v.phasePlane(P, { f: (x, y, t, p) => [a - (p.b + 1) * x + x * x * y, p.b * x - x * x * y], params: { b }, field: 'none', nullclines: false, seeds: [[1.3, 1.2], [3, 3]], tMax: 300, trajColor: 'accent', method: 'rk45' });
+        const A = v.stage({ x: [1.35, 3.25], y: [-0.12, 2.2], height: 340, axes: 'box', gutter: true, minWidth: 250, xlabel: 'b', ylabel: 'cycle amplitude of x', title: 'amplitude against b' });
+        let phaseKey=null,phase=null;
         let amps = null;
         function amplitudes() {
           if (amps) return amps; amps = [];
-          for (let bb = 1.6; bb <= 3.2001; bb += 0.05) {
-            if (bb <= bc + 1e-9) { amps.push([bb, 0]); continue; }
-            const F = (t, s) => [a - (bb + 1) * s[0] + s[0] * s[0] * s[1], bb * s[0] - s[0] * s[0] * s[1]];
-            const tr = rk4sys(F, [a + 0.05, bb / a], 600, 12000);
-            const meas = rk4sys(F, tr.ys[tr.ys.length - 1], 40, 1600);
-            const xs = meas.ys.map((q) => q[0]); amps.push([bb, (Math.max(...xs) - Math.min(...xs)) / 2]);
-          }
+          for (let j=1;j<=24;j++) { const bb=2+j*.05; amps.push([bb,brusselatorAmplitude(bb).amplitude]); }
           return amps;
         }
         v.render(() => {
           const bb = b.value, tr = bb - 1 - a * a, dets = a * a;
-          pp.draw();
+          if(phaseKey!==bb){phase=brusselatorTrajectories(bb);phaseKey=bb;}
+          P.setView([-0.08,Math.max(4.5,phase.bounds[0]*1.06)],[-0.08,Math.max(4.5,phase.bounds[1]*1.06)]);
+          phase.paths.forEach((path,i)=>P.path(path,{color:i?'muted':'accent',width:i?1.3:2.2,alpha:i?.6:1}));
           P.dot(a, bb / a, { r: 5, color: tr < 0 ? 'green' : 'red' });
           const ev = eig2x2(bb - 1, a * a, -bb, -a * a);
           E.vline(0, { color: 'muted', dash: true });
@@ -273,13 +265,12 @@ with $m<1$. The predator nullcline is the vertical line $x=x^*=m/(1-m)$; the pre
           ev.forEach((z) => E.dot(z.re, z.im, { r: 7, color: z.re < 0 ? 'green' : 'red' }));
           const am = amplitudes();
           A.vline(bc, { color: 'orange', dash: true });
-          const fitPt = am.reduce((p, q) => (Math.abs(q[0] - 2.6) < Math.abs(p[0] - 2.6) ? q : p)), k = fitPt[1] / Math.sqrt(fitPt[0] - bc);
-          A.fn((x) => (x > bc ? k * Math.sqrt(x - bc) : NaN), { color: 'muted', dash: true, width: 2, domain: [bc, 3.2] });
-          am.forEach((q) => A.dot(q[0], q[1], { r: 4, color: q[0] > bc ? 'accent' : 'faint' }));
-          A.dot(bb, 0, { r: 6, color: 'gold' });
+          A.fn((x) => Math.sqrt(4*(x-bc)/3), { color: 'muted', dash: true, width: 2, domain: [bc, 2.2] });
+          am.forEach((q) => A.dot(q[0], q[1], { r: 4, color: 'accent' }));
+          A.vline(bb, { color: 'gold', width: 1.5 });
           void dets;
         });
-        v.readout(() => { const bb = b.value, tr = bb - 1 - a * a, ev = eig2x2(bb - 1, a * a, -bb, -a * a); return `$b=${v.fix(bb, 2)}$, $b_c=${v.fix(bc, 2)}$: equilibrium $(1,\\,${v.fix(bb, 2)})$, $\\operatorname{tr}J=${v.fix(tr, 2)}$, $\\lambda=${v.fix(ev[0].re, 3)}\\pm ${v.fix(Math.abs(ev[0].im), 3)}i$ → ${tr < 0 ? 'stable spiral' : tr > 0 ? 'unstable; trajectories settle on a limit cycle' : 'Hopf point'}`; });
+        v.readout(() => { const bb = b.value, tr = bb - 1 - a * a, ev = eig2x2(bb - 1, a * a, -bb, -a * a); return `$b=${v.fix(bb, 2)}$, $b_c=${v.fix(bc, 2)}$: equilibrium $(1,\\,${v.fix(bb, 2)})$, $\\operatorname{tr}J=${v.fix(tr, 2)}$, $\\lambda=${v.fix(ev[0].re, 3)}\\pm ${v.fix(Math.abs(ev[0].im), 3)}i$ → ${tr < 0 ? 'stable spiral' : tr > 0 ? 'unstable focus (finite simulated branch shown separately)' : 'Hopf point'}`; });
       },
     },
   ],

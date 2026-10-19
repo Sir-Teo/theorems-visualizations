@@ -1,4 +1,6 @@
 // Population Genetics & Evolution — Chapter 3 (part b): stepwise mutation, substitution, clock, neutral theory, age, Lewontin, Kimura 1968
+import { jcMismatch, clockDraw, poissonCentral, pearsonKnown, neutralDiversity, LEFFLER_EXAMPLES } from './source-audit-clock-diversity.shared.js';
+import { KIMURA_1968_RATE, historicalBudget } from './source-audit-kimura.shared.js';
 import { clamp, memo, binom, siteNext, pois, gammaDraw, harm, pow10 } from './ch03.shared.js';
 
 const sciT = (x) => { const e = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** e; return `${m.toFixed(1)}×10${String(e).replace('-', '⁻').replace(/\d/g, (d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[d])}`; };
@@ -153,50 +155,48 @@ independent of the population size. If instead a mutation has selection coeffici
       num: '3.9',
       kind: 'Concept',
       name: 'Molecular clock',
-      statement: String.raw`The molecular clock is the observation, and the hypothesis, that the number of differences between homologous sequences of two species grows roughly linearly with the time since they diverged. If substitutions arise at a constant rate $r$ per site per unit time along each lineage, the number of differences $d$ in $L$ sites between two species with common ancestor $t$ ago is approximately Poisson with mean $2rLt$, so $\mathbb E[d]\propto t$ and $\operatorname{Var}(d)=\mathbb E[d]$ (a dispersion index $R=\operatorname{Var}/\mathbb E=1$). Calibrating with one fossil-dated split gives the rate, and then dates the others.`,
-      idea: String.raw`If substitutions are neutral, their rate equals the mutation rate (3.8), which, measured per unit time, is steady for a given kind of site, so the sequence differences count the time elapsed. Substitutions arrive as a Poisson process, so the scatter around the line is as small as Poisson counting allows; larger scatter means that rates varied between lineages, and a value $R>1$ is evidence against the simplest clock. The idea was put forward by Zuckerkandl and Pauling from comparisons of proteins; Kimura’s neutral explanation (3.14) turned it into a prediction of the neutral theory.`,
-      caption: String.raw`**This is a model, not a data table**: pairs of species are simulated with divergence times drawn between 5 and 200 million years, a true rate $r$ you can set, and, optionally, rate variation between lineages (the coefficient of variation of the rate, $c$). Dots are the sequence differences; the line is the expected value and the band the Poisson 95% range. With $c=0$ about 5% of dots fall outside the band; raise $c$ and the dispersion index rises, the scatter fans out and the band fails. **Resample** draws new pairs.`,
+      statement: String.raw`A strict molecular-clock **model** assigns the same constant substitution-event rate $r$ per site per unit time to both descendant lineages. With independent Poisson events at $L$ sites, the total unobserved event count $K$ across two branches of length $t$ has $K\sim\operatorname{Poisson}(\lambda)$, $\lambda=2rLt$. This event count is not generally the number of differing sequence positions: repeated and reverse changes hide events. Under the symmetric four-state Jukes–Cantor model, the expected mismatch count is $\tfrac34L(1-e^{-8rt/3})$, approaching $3L/4$ instead of growing indefinitely. The two expectations agree only for small $rt$.`,
+      idea: String.raw`Independent Poisson probability-generating functions multiply, giving $\exp[2rLt(z-1)]$ and hence equal event-count mean and variance. For observable nucleotides, the four-state transition calculation gives the saturation formula. Neutral substitution has the mutation rate under the neutral model (3.8), but constancy per unit time is a separate assumption. The optional **pair-shared** rate multiplier $G$ has a gamma distribution with mean 1 and variance $c^2$, shared by both branches of each pair; conditional on $G$, $K$ is Poisson with mean $\lambda G$. Total variance is therefore $\lambda+c^2\lambda^2$. This is a specified mixture, not a model of independent branch-rate multipliers.`,
+      caption: String.raw`**Synthetic unobserved substitution counts, not sequence data.** Independent pairs have known divergence times between 5 and 200 million years. The green line and discrete central 95% prediction band (drawn on a 161-point time grid) use the strict Poisson model; their actual discrete tail probability is reported and can be less than 5%. The orange curve separately shows the expected number of differing nucleotide positions under Jukes–Cantor. The gold line estimates the event rate from the synthetic counts. The histogram includes every actual Pearson residual against the known strict rate, without clamping tails; the normal curve is a large-count reference, not their exact distribution. Rate variation raises the residual mean square in expectation, not necessarily in each finite resample.`,
       deps: ['popgen-3.8'],
-      refs: ['Gillespie'],
-      credit: 'Émile Zuckerkandl & Linus Pauling, 1965 (the idea); Motoo Kimura, 1968 (neutral explanation)',
-      scope: String.raw`Holds when substitutions are neutral or nearly so and the mutation rate per unit time is constant across lineages; generation-time effects, changes in selective constraint and episodic selection make the clock “overdispersed”. No real data are plotted here: the rate $r\approx10^{-3}$ per site per million years is only the order of magnitude of a slowly evolving protein, chosen for illustration.`,
+      refs: ['Durrett, Probability: Theory and Examples, fifth edition, §3.7 Theorems 3.7.1–3.7.2 and complete Poisson/exponential construction pp.174–176: https://sites.math.duke.edu/~rtd/PTE/PTE5_011119.pdf', 'Felsenstein, Theoretical Evolutionary Genetics (2019), complete Jukes–Cantor derivation §X.2 pp.457–459 Eqs.(X-1)–(X-5): https://felsenst.github.io/pgbook/pgbook.pdf'],
+      credit: 'Explicit constant-rate Poisson model and gamma mixture; observable nucleotide correction follows Felsenstein’s full derivation.',
+      scope: String.raw`These synthetic pairs share no genealogy or observations. Independent event arrivals, a chosen constant rate and known times are model assumptions. The gamma multiplier is independently drawn per pair, with coefficient of variation $c$ for that shared pair rate. No fossil-calibration uncertainty, ancestral coalescence, rate fitting from actual mismatches, selection, site-rate variation or sequence alignment is modeled. The chosen rate range is illustrative, not an empirical estimate for all proteins.`,
       tags: ['clock', 'substitution', 'neutral theory'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Molecular_clock' },
-      verify: true,
+      verify: false,
       viz(v) {
-        const rS = v.slider('true rate $r$ (per site per million years)', 1e-4, 5e-3, 1e-3, { log: true, sig: 2, fmt: (x) => sciT(x) });
+        const rS = v.slider('event rate $r$ per site per million years', 1e-4, 5e-3, 1e-3, { log: true, sig: 2, fmt: sciT });
         const LS = v.slider('sequence length $L$ (sites)', 50, 1000, 300, { int: true, log: true });
-        const cS = v.slider('rate variation between lineages $c$', 0, 1.2, 0, { step: 0.05 });
-        const PS = v.slider('species pairs', 10, 120, 40, { int: true });
+        const cS = v.slider('coefficient of variation of pair-shared rate $c$', 0, 1.2, 0, { step: 0.05 });
+        const PS = v.slider('independent pairs', 10, 120, 40, { int: true });
         let seed = 1;
         v.button('Resample', () => { seed++; });
-        const Lp = v.stage({ x: [0, 200], y: [0, 100], axes: 'box', gutter: true, height: 330, xlabel: 'time since divergence (million years)', ylabel: 'sequence differences', title: 'Differences against divergence time', weight: 1.3, minWidth: 320 });
-        const Rp = v.stage({ x: [-4, 4], y: [0, 0.6], axes: 'box', gutter: true, height: 330, xlabel: 'standardised residual (d − mean)/√mean', ylabel: 'density', title: 'Residuals against the Poisson ideal', minWidth: 260 });
-        const sim = memo();
-        let info = {};
+        const Lp = v.stage({ x: [0, 200], y: [0, 100], axes: 'box', gutter: true, height: 330, xlabel: 'known divergence time (million years)', ylabel: 'event count / expected mismatch count', title: 'Unobserved events and observable mismatches', weight: 1.3, minWidth: 320 });
+        const Rp = v.stage({ x: [-4, 4], y: [0, 0.6], axes: 'box', gutter: true, height: 330, xlabel: 'Pearson residual against known strict rate', ylabel: 'density', title: 'Full residual range; normal reference only', minWidth: 260 });
+        const sim = memo(), band = memo();let info = {};
         v.render(() => {
-          const r0 = rS.value, L = LS.value, c = cS.value, P = PS.value;
-          const D = sim(`${r0}|${L}|${c}|${P}|${seed}`, () => {
-            const r = v.rng(seed * 7 + 1), pts = [];
-            for (let i = 0; i < P; i++) { const t = 5 + 195 * r(), g = c > 0 ? gammaDraw(r, 1 / (c * c)) * c * c : 1, d = pois(r, 2 * r0 * L * t * g); pts.push([t, d]); }
-            return pts;
-          });
-          const slope = 2 * r0 * L, ymax = Math.max(...D.map((p) => p[1]), slope * 200 + 2 * Math.sqrt(slope * 200)) * 1.08;
-          Lp.setView([0, 200], [0, ymax]);
-          Lp.between((t) => Math.max(0, slope * t - 1.96 * Math.sqrt(slope * t)), (t) => slope * t + 1.96 * Math.sqrt(slope * t), 0, 200, { fill: 'green', fillAlpha: 0.18 });
-          Lp.line(0, 0, 200, slope * 200, { color: 'green', width: 2.2 });
-          let out = 0, st = 0, sd = 0; const z = [];
-          D.forEach(([t, d]) => { const m = slope * t, zz = (d - m) / Math.sqrt(m); z.push(zz); if (Math.abs(zz) > 1.96) out++; st += t; sd += d; Lp.dot(t, d, { r: 3.8, color: Math.abs(zz) > 1.96 ? 'red' : 'accent' }); });
-          const rhat = sd / (2 * L * st), Rd = z.reduce((a, b) => a + b * b, 0) / (P - 1);
-          Lp.line(0, 0, 200, 2 * rhat * L * 200, { color: 'gold', width: 2, dash: true });
-          const B = 16, h = new Float64Array(B); z.forEach((x) => { const j = Math.floor(((clamp(x, -3.999, 3.999) + 4) / 8) * B); h[j]++; });
-          Rp.setView([-4, 4], [0, Math.max(0.5, ...Array.from(h, (x) => (x / P) * (B / 8)) ) * 1.15]);
-          h.forEach((x, j) => Rp.rect(-4 + (j * 8) / B, 0, -4 + ((j + 1) * 8) / B, (x / P) * (B / 8), { fill: 'accent', fillAlpha: 0.4, color: 'accent', width: 1 }));
-          Rp.fn((x) => Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI), { domain: [-4, 4], n: 200, color: 'green', width: 2.4 });
-          info = { out, P, rhat, r0, Rd };
+          const r0=rS.value,L=LS.value,c=cS.value,P=PS.value,slope=2*r0*L;
+          const D=sim(`${r0}|${L}|${c}|${P}|${seed}`,()=>{const r=v.rng(seed*7+1);return Array.from({length:P},()=>{const t=5+195*r();return[t,clockDraw(r,v.M,r0,L,t,c).count];});});
+          const B=band(`${slope}`,()=>Array.from({length:161},(_,j)=>{const t=200*j/160;return{t,...poissonCentral(v.M,slope*t)};}));
+          const rhat=D.reduce((s,p)=>s+p[1],0)/(2*L*D.reduce((s,p)=>s+p[0],0)),fitted=2*rhat*L;
+          const ymax=Math.max(1,...D.map(p=>p[1]),...B.map(p=>p.hi),slope*200,fitted*200)*1.1;
+          Lp.setView([0,200],[0,ymax]);
+          Lp.poly([...B.map(p=>[p.t,p.lo]),...B.slice().reverse().map(p=>[p.t,p.hi])],{fill:'green',fillAlpha:.18,stroke:false});
+          Lp.line(0,0,200,slope*200,{color:'green',width:2.2});
+          Lp.fn(t=>L*jcMismatch(r0,t),{domain:[0,200],n:161,color:'orange',width:2.2});
+          Lp.line(0,0,200,fitted*200,{color:'gold',width:2,dash:true});
+          let out=0,expected=0;const {z,meanSquare}=pearsonKnown(D,slope);
+          D.forEach(([t,k])=>{const q=poissonCentral(v.M,slope*t),bad=k<q.lo||k>q.hi;out+=bad;expected+=q.outside;Lp.dot(t,k,{r:3.8,color:bad?'red':'accent'});});
+          const low=Math.min(-4,Math.floor(Math.min(...z))-1),high=Math.max(4,Math.ceil(Math.max(...z))+1),bins=24,width=(high-low)/bins,h=new Int32Array(bins);
+          z.forEach(x=>h[Math.min(bins-1,Math.floor((x-low)/width))]++);
+          Rp.setView([low,high],[0,Math.max(.4,...Array.from(h,n=>n/P/width))*1.15]);
+          h.forEach((n,j)=>Rp.rect(low+j*width,0,low+(j+1)*width,n/P/width,{fill:'accent',fillAlpha:.4,color:'accent'}));
+          Rp.fn(x=>Math.exp(-x*x/2)/Math.sqrt(2*Math.PI),{domain:[low,high],n:200,color:'green',width:2.4});
+          info={out,P,expected,rhat,r0,meanSquare,c};
         });
-        v.legend([['green', 'expected differences ± Poisson 95% band'], ['gold', 'fitted line (through the origin)', { dash: true }], ['red', 'outside the band', { dot: true }]]);
-        v.readout(() => `${info.out} of ${info.P} pairs outside the 95% Poisson band (expected about ${v.fix(0.05 * info.P, 1)} under a perfect clock). Dispersion index $R\\approx${v.fix(info.Rd, 2)}$ (a Poisson clock gives 1). Fitted rate ${sciT(info.rhat)} versus true ${sciT(info.r0)} per site per million years.`);
+        v.legend([['green','strict event expectation / central 95% band'],['orange','expected nucleotide mismatches'],['gold','rate fitted to synthetic events',{dash:true}],['red','outside discrete band',{dot:true}]]);
+        v.readout(() => `${info.out} of ${info.P} event counts outside the central 95% strict-clock band; exact expected number under that model ${v.fix(info.expected,2)}. Mean squared Pearson residual ${v.fix(info.meanSquare,3)} (expectation 1 against the known rate when c=0).\nSynthetic-event rate estimate ${info.rhat===0?'0':sciT(info.rhat)} versus chosen ${sciT(info.r0)} per site per million years. ${info.c===0?'Strict event-count model.':'Gamma rate mixture: finite scatter need not increase monotonically on resampling.'} Event counts may exceed the sequence length; mismatch counts cannot.`);
       },
     },
 
@@ -324,16 +324,16 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
       num: '3.12',
       kind: 'Paradox',
       name: 'Lewontin’s paradox of variation',
-      statement: String.raw`Under the neutral theory the diversity of a species is set by $\theta=4N_e\mu$, so species whose population sizes differ by many orders of magnitude should differ in diversity by a similar number. But the observed levels of genetic diversity vary only over about two to three orders of magnitude, from roughly $10^{-4}$ to $10^{-1}$ differences per site, while census sizes span many more; diversity is largely uncorrelated with how abundant a species is. Lewontin’s paradox is the mismatch between the huge range of $N$ and the narrow range of $\pi$.`,
-      idea: String.raw`With $\theta=4N_e\mu$ (3.4) and a mutation rate $\mu$ of order $10^{-8}$ per site per generation, a species with $N_e=10^{9}$ should have $\theta\approx40$ per site, far above anything seen; the observed range is explained only if $N_e$ is always much smaller than census size. Proposed explanations include linked selection (recurrent sweeps and background selection remove diversity at linked sites, lowering the effective size), fluctuations in size (the effective size is a harmonic mean dominated by the smallest sizes, 2.7), and covariation of mutation rate with life history; their relative importance is still debated. The simplest model of a cap, drawn here, sets $1/N_e=1/N+1/N_{\max}$.`,
-      caption: String.raw`Log–log plot of diversity $\pi$ against census size $N$. The green curve is the neutral prediction $\pi=\theta/(1+\tfrac43\theta)$ with $\theta=4N\mu$ (a Jukes–Cantor-type saturation); **mutation rate** shifts it. The grey band is the observed range of diversity across 167 species (0.01% to 8.01%); the three coloured bars are species with a census estimate (horizontal bar = estimate range). Turn on an **effective-size ceiling** and the curve flattens inside the band: the paradox “solved” by assuming $N_e\ll N$. The gold dot follows your census-size slider.`,
+      statement: String.raw`Lewontin’s paradox concerns the relatively narrow range of within-species diversity compared with the much wider range of species abundances. In Leffler et al.’s **2012 compilation**, autosomal nucleotide-diversity estimates for 167 species ranged from about 0.01% to 8.01% per site. Some ecological groups and geographic ranges were positively associated with diversity; this is not a claim of zero correlation with abundance. Simple expectations linking diversity to census size fail quantitatively, while mutation rates, demographic history, population structure and selection can all matter.`,
+      idea: String.raw`For the neutral constant-size panmictic coalescent, two copies have an exponential common-ancestor time $T$ with mean $2N_e$. Under symmetric four-state mutation, $$\mathbb E\pi=\int_0^\infty\frac{e^{-t/(2N_e)}}{2N_e}\frac34(1-e^{-8\mu t/3})\,dt=\frac{\theta}{1+4\theta/3},\qquad\theta=4N_e\mu.$$ Thus $\pi\approx\theta$ requires small $\theta$; extrapolating that approximation to $\theta=40$ is invalid, rather than a probability exceeding 1. The optional ceiling $1/N_e=1/N+1/N_{\max}$ is a synthetic assumption that flattens the curve. Choosing that ceiling does not explain its cause or resolve the empirical paradox.`,
+      caption: String.raw`The green curve is a **neutral coalescent/Jukes–Cantor model**, initially with $N_e=N$. Its finite-state saturation is distinguished from the small-mutation approximation. The shaded range and three species examples are historical values in Leffler et al. (2012); horizontal intervals are rough census estimate ranges, not confidence intervals. The gold dot is the chosen synthetic census size. Mutation rate is an illustrative input shared by the curve, not a measured common rate for these species. The effective-size ceiling is a hypothesis supplied by the control, not a fitted or inferred explanation.`,
       deps: ['popgen-3.4', 'popgen-2.7'],
-      refs: ['Gillespie'],
-      credit: 'Richard Lewontin, 1974 (The Genetic Basis of Evolutionary Change); Leffler et al., 2012 (167-species data)',
-      scope: String.raw`Data: the extreme values and three species are as reported by Leffler et al. (2012, PLoS Biology 10: e1001388): nucleotide diversity ranged from 0.01% per bp (*Lynx lynx*) to 8.01% (*Ciona savignyi*); the gibbon *Hoolock leuconedys* census was estimated at 10 000–50 000 with $\pi=0.21\%$, the collared flycatcher *Ficedula albicollis* at about 4–7 million with $\pi=0.38\%$ and the white-throated sparrow *Zonotrichia albicollis* at about 140 million with $\pi=0.66\%$. Census figures are rough estimates (the paper cites birdlife.org for the birds) and were read from the paper’s text; the prediction curve is a model, not a fit, and the default mutation rate $1.2\times10^{-8}$ per site per generation is the human germline estimate of Kong et al. (2012). Only these data points are used; the paper’s full table is not reproduced.`,
+      refs: ['Leffler et al. (2012), PLoS Biology 10:e1001388, complete original; “The Enduring Riddle” printed p.4, sampling caveats pp.1–3, possible resolutions pp.6–7 and Dataset S1: https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1001388', 'Felsenstein, Theoretical Evolutionary Genetics (2019), complete nucleotide-diversity derivation §X.7 pp.474–475 Eqs.(X-23)–(X-27), mutation derivation §X.2 pp.457–459: https://felsenst.github.io/pgbook/pgbook.pdf'],
+      credit: 'The named paradox and historical compilation are discussed by Leffler et al. (2012); the retained finite-state expectation follows Felsenstein’s complete derivation.',
+      scope: String.raw`The 167-species collection averages at least three nuclear loci, usually silent sites that need not be strictly neutral, and has uneven taxonomic and sampling coverage. The text gives gibbon Hoolock leuconedys: 10,000–50,000 individuals, 0.21%; collared flycatcher Ficedula albicollis: 4–7 million, 0.38%; white-throated sparrow Zonotrichia albicollis: 140 million, 0.66%. These are the paper’s historical census estimates, not present population counts. Dataset S1 retains a more precise 0.0103% lynx value while the main text rounds it to 0.01%. The displayed three points cannot establish a cross-species correlation or determine the relative roles of proposed mechanisms. No modern resolution or trend is asserted.`,
       tags: ['diversity', 'paradox', 'effective size'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Neutral_theory_of_molecular_evolution' },
-      verify: true,
+      verify: false,
       viz(v) {
         const muS = v.slider('mutation rate $\\mu$ per site per generation', 1e-9, 1e-7, 1.2e-8, { log: true, sig: 2, fmt: sciT });
         const capOn = v.toggle('effective-size ceiling $N_{\\max}$', false);
@@ -342,13 +342,13 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
         const Sp = v.stage({ x: [10, 1e13], y: [1e-5, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'census size N', ylabel: 'nucleotide diversity π', title: 'Diversity against population size', full: true });
         let info = {};
         v.render(() => {
-          const mu = muS.value, cap = capOn.value ? capS.value : 1e30, N = NS.value;
-          const ne = (x) => 1 / (1 / x + 1 / cap), pi = (x) => { const th = 4 * ne(x) * mu; return th / (1 + (4 / 3) * th); };
-          Sp.setView([10, 1e13], [1e-5, 1]);
+          const mu = muS.value, cap = capOn.value ? capS.value : Infinity, N = NS.value;
+          const model=x=>neutralDiversity(x,mu,cap),ne=x=>model(x).ne,pi=x=>model(x).pi;
+          Sp.setView([10,1e13],[Math.min(1e-5,pi(10)/2),1]);
           Sp.rect(10, 1e-4, 1e13, 8.01e-2, { fill: 'muted', fillAlpha: 0.12, stroke: false });
           Sp.text('observed range of π across 167 species: 0.01% – 8.01%', 3e12, 1.5e-4, { align: 'right', color: 'muted', size: 11.5 });
           Sp.fn(pi, { domain: [10, 1e13], n: 200, color: 'green', width: 2.8 });
-          [['gibbon', 1e4, 5e4, 2.1e-3], ['collared flycatcher', 4e6, 7e6, 3.8e-3], ['white-throated sparrow', 1.4e8, 1.4e8, 6.6e-3]].forEach(([nm, a, b, y], i) => {
+          LEFFLER_EXAMPLES.forEach(({name:nm,low:a,high:b,pi:y},i)=>{
             const col = ['purple', 'orange', 'teal'][i];
             if (b > a) Sp.line(a, y, b, y, { color: col, width: 4 });
             Sp.dot(Math.sqrt(a * b), y, { r: 5.5, color: col });
@@ -358,8 +358,8 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
           Sp.vline(N, { color: 'gold', dash: true, width: 1 });
           info = { mu, N, pred: pi(N), th: 4 * ne(N) * mu, ne: ne(N), capped: capOn.value };
         });
-        v.legend([['green', 'neutral prediction'], ['muted', 'observed range (Leffler et al. 2012)', { area: true }], ['purple', 'gibbon'], ['orange', 'flycatcher'], ['teal', 'sparrow'], ['gold', 'your species', { dot: true }]]);
-        v.readout(() => `$N=${v.sci(info.N, 2)}$, $N_e=${v.sci(info.ne, 2)}$: $\\theta=4N_e\\mu=${v.sci(info.th, 2)}$ per site, predicted $\\pi=${v.sci(info.pred, 2)}$ ${info.pred > 8.01e-2 ? '— above anything observed (8%).' : info.pred < 1e-4 ? '— below the lowest observed (0.01%).' : '— inside the observed band.'}\nCensus sizes of the three example species span ${v.fix(Math.log10(1.4e8 / 3e4), 1)} orders of magnitude; their diversities span a factor of ${v.fix(6.6e-3 / 2.1e-3, 1)} (the whole 167-species range is about 800-fold).`);
+        v.legend([['green', 'chosen neutral-model curve'], ['muted', '2012 compilation range', { area: true }], ['purple', 'gibbon'], ['orange', 'flycatcher'], ['teal', 'sparrow'], ['gold', 'your species', { dot: true }]]);
+        v.readout(() => `$N=${v.sci(info.N, 2)}$, $N_e=${v.sci(info.ne, 2)}$: $\\theta=4N_e\\mu=${v.sci(info.th, 2)}$ per site, predicted $\\pi=${v.sci(info.pred, 2)}$ ${info.pred > 8.01e-2 ? '— above the 2012 compilation’s upper value.' : info.pred < 1e-4 ? '— below its rounded lower value.' : '— inside the historical band, without establishing a fit.'}\nCensus sizes of the three example species span ${v.fix(Math.log10(1.4e8 / 3e4), 1)} orders of magnitude; their diversities span a factor of ${v.fix(6.6e-3 / 2.1e-3, 1)} (the whole 2012 167-species range is about 800-fold). The ceiling is chosen, not inferred; agreement with the band does not resolve its cause.`);
       },
     },
 
@@ -370,45 +370,45 @@ This increases with $p$: $\bar t\to 0$ as $p\to0$, $\bar t=4N\ln 2\approx2.8N$ a
       name: 'Evolutionary Rate at the Molecular Level',
       paper: { authors: 'Motoo Kimura', year: 1968, title: 'Evolutionary Rate at the Molecular Level', venue: 'Nature 217 (5129): 624–626', doi: '10.1038/217624a0' },
       introduces: ['popgen-3.10', 'popgen-3.8'],
-      statement: String.raw`Kimura compared the rate at which amino acids are replaced in well-studied proteins, which is remarkably steady per site and per year, with the genome size of a mammal. Scaled to all of the nucleotides in a mammalian genome, the observed rate of nucleotide substitution amounts to about one substitution in the population every two years. If each substitution were driven by natural selection and carried a Haldane-type “cost”, this would exceed by orders of magnitude the roughly one substitution per 300 generations that Haldane’s calculation allowed. Kimura concluded that the great majority of molecular substitutions must be selectively neutral, for which the rate $k$ equals the mutation rate $u$ and carries no cost.`,
-      idea: String.raw`In 1957 Haldane argued that every substitution selected to fixation imposes a “cost” in the form of selective deaths, and that a population can pay for only a limited number of them per generation (5.2, 5.4). Protein sequences compared between species had meanwhile shown remarkably steady rates of amino acid replacement in proteins such as haemoglobin and cytochrome c; summed over a whole genome these give a substitution rate far above what a Haldane-type budget could pay for. Kimura’s way out: if most substitutions are neutral the cost never arises, and since the neutral rate is equal to the mutation rate (3.8) the steady rate per site per year is just the steady mutation rate. The paper introduced the neutral theory (3.10) and the neutral substitution rate (3.8).`,
-      caption: String.raw`**An arithmetic reconstruction, not the paper’s table.** Set the genome size, the substitution rate per nucleotide per year, the generation time, Haldane’s cost per substitution $D$ and the load the population can bear. **Left**: substitutions per generation on a log axis, observed against the number Haldane’s budget allows ($L/D$). **Right**: the load incurred (log) if a fraction $a$ of the observed substitutions were adaptive, against the budget; the red mark is the largest adaptive fraction the budget can pay. Defaults are chosen to reproduce the quantities named in the paper’s argument (one substitution every two years; one per 300 generations).`,
+      statement: String.raw`Kimura’s 1968 paper argued that extrapolating protein replacement rates to a mammalian genome gave about one nucleotide-pair substitution per two years. His calculation used one amino-acid replacement per $28\times10^6$ years in 100 residues, 300 nucleotide pairs per 100 residues, a factor 1.2 to allow for synonymous changes, and a haploid complement of $4\times10^9$ nucleotide pairs. The resulting interval is 1.75 years (rounded to about two). He contrasted this with Haldane’s historical cost budget, $0.1/30=1/300$ substitutions per generation, and argued for a major role of neutral or nearly neutral mutations and drift. This is the paper’s conditional historical argument, not a universal upper bound on adaptive substitution.`,
+      idea: String.raw`At a selectively neutral site, mutation arrivals and fixation probability cancel: $2N_eu\times1/(2N_e)=u$. Neutral substitutions have no selective substitution cost. Kimura’s Eqs. (1′)–(2′), p.625, separately discuss the small but nonzero load of nearly neutral selected changes; nearly neutral must not be equated with exactly zero cost. His rounded rate of about 0.5 per year, combined with an assumed **four-year generation**, gives roughly two neutral mutations per gamete per generation. These were extrapolations from the evidence and assumptions available in 1968, not direct measurements of every genomic site or present estimates for all mammals.`,
+      caption: String.raw`**Interactive historical arithmetic, not an empirical fit.** The default per-nucleotide rate is $1.2/(28\times10^6\times300)$ per year. The left panel compares two rates in substitutions per generation; their dimensionless ratio is reported below. The right panel shows the explicitly chosen additive accounting $a\,kD$ and budget $L$. Its marked fraction $\min(1,L/(kD))$ is conditional on this accounting; it does not estimate the true adaptive share. If the budget accommodates all substitutions, the mark sits on the cost curve below the budget. Sliders explore assumptions, rather than uncertainty intervals from the paper.`,
       deps: ['popgen-5.4', 'popgen-2.4', 'popgen-3.1'],
-      refs: [],
-      credit: 'Motoo Kimura, 1968 (Nature 217: 624–626)',
-      scope: String.raw`Back-of-the-envelope: assumes a haploid genome size of $4\times10^9$ nucleotide pairs (the figure I take the paper to use; not confirmed against the paper), a constant rate per site, and Haldane’s cost accounting, which later work showed to be too pessimistic when selection acts on many loci at once. The default rate $1.2\times10^{-10}$ per nucleotide per year is my conversion of the protein rate that secondary summaries attribute to the paper (about one substitution per 28 million years in a polypeptide of 100 amino acids, i.e. $3.6\times10^{-10}$ per site per year) to one third of that per nucleotide. The paper itself was not accessible here: the “one substitution every two years” and “one per 300 generations” figures come from secondary summaries and the neutral-theory literature.`,
+      refs: ['Kimura (1968), Nature 217:624–626, complete original read, p.625 protein/genome calculation and Eqs.(1)–(2′), p.626 limitations and conclusion; publisher-permission reproduction: https://www.blackwellpublishing.com/ridley/classictexts/kimura.pdf'],
+      credit: 'Motoo Kimura, original 1968 argument; the adjustable linear budget is an explicitly defined reconstruction.',
+      scope: String.raw`The original assumes a mammalian haploid complement of $4\times10^9$ nucleotide pairs and extrapolates three protein comparisons to a genome-wide rate. It explicitly allows mutation rates per nucleotide per generation to differ between humans and Drosophila (p.626). The simple additive budget ignores interactions, linkage and alternative demographic/selection accounting; it cannot establish the present fraction of adaptive substitutions. The original’s more detailed selected-mutation load formula is not simulated.`,
       tags: ['neutral theory', 'Haldane', 'history'],
       links: { doi: 'https://doi.org/10.1038/217624a0', wikipedia: 'https://en.wikipedia.org/wiki/Neutral_theory_of_molecular_evolution' },
-      verify: true,
+      verify: false,
       viz(v) {
         const GS = v.slider('genome size (nucleotide pairs)', 1e8, 1e10, 4e9, { log: true, sig: 2, fmt: sciT });
-        const rS = v.slider('rate per nucleotide per year', 1e-11, 1e-9, 1.2e-10, { log: true, sig: 2, fmt: sciT });
-        const gS = v.slider('generation time (years)', 0.5, 30, 2, { log: true, sig: 2 });
-        const DS = v.slider('Haldane cost per substitution $D$', 3, 100, 30, { log: true, sig: 2 });
-        const LS = v.slider('tolerable load $L$ per generation', 0.01, 0.5, 0.1, { log: true, sig: 2 });
-        const Lp = v.stage({ x: [-0.6, 3.6], y: [1e-4, 1e4], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: '', ylabel: 'substitutions per generation', title: 'Observed rate against the budget', xticks: [[0, 'observed'], [1, 'Haldane limit L/D'], [2, 'ratio']], minWidth: 300 });
-        const Rp = v.stage({ x: [1e-4, 1], y: [1e-3, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'fraction a of the observed substitutions that were adaptive', ylabel: 'load per generation', title: 'Cost if the substitutions were adaptive', minWidth: 300 });
+        const rS = v.slider('rate per nucleotide per year', 1e-11, 1e-9, KIMURA_1968_RATE, { log: true, sig: 2, fmt: sciT });
+        const gS = v.slider('generation time (years)', 0.5, 30, 4, { log: true, sig: 2 });
+        const DS = v.slider('chosen cost per substitution $D$', 3, 100, 30, { log: true, sig: 2 });
+        const LS = v.slider('chosen budget $L$ per generation', 0.01, 0.5, 0.1, { log: true, sig: 2 });
+        const Lp = v.stage({ x: [-0.6, 1.6], y: [1e-5, 1e3], ylog: true, axes: 'box', gutter: true, height: 330, xlabel: '', ylabel: 'substitutions per generation', title: 'Extrapolated rate and chosen budget', xticks: [[0, 'extrapolated'], [1, 'budget L/D']], minWidth: 300 });
+        const Rp = v.stage({ x: [1e-4, 1.2], y: [1e-5, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 330, xlabel: 'hypothetical adaptive fraction a', ylabel: 'chosen additive cost per generation', title: 'Conditional accounting, not an adaptive-share estimate', minWidth: 300 });
         let info = {};
         v.render(() => {
           const G = GS.value, r = rS.value, g = gS.value, D = DS.value, Lm = LS.value;
-          const perYear = G * r, perGen = perYear * g, limit = Lm / D, ratio = perGen / limit, amax = Math.min(1, limit / perGen);
-          Lp.setView([-0.6, 3.6], [1e-4, 1e4]);
-          Lp.rect(-0.35, 1e-4, 0.35, Math.max(perGen, 1.01e-4), { fill: 'accent', fillAlpha: 0.45, color: 'accent', width: 1.5 });
-          Lp.rect(0.65, 1e-4, 1.35, limit, { fill: 'green', fillAlpha: 0.45, color: 'green', width: 1.5 });
-          Lp.rect(1.65, 1e-4, 2.35, Math.max(ratio, 1.01e-4), { fill: 'red', fillAlpha: 0.4, color: 'red', width: 1.5 });
-          Lp.text(`${v.fmt(perGen, 3)}`, 0, perGen * 1.6, { align: 'center', size: 12, weight: 700 });
-          Lp.text(`${v.fmt(limit, 2)}`, 1, limit * 1.6, { align: 'center', size: 12, weight: 700 });
-          Lp.text(`×${v.fmt(ratio, 3)}`, 2, ratio * 1.6, { align: 'center', size: 12, weight: 700 });
-          Rp.setView([1e-4, 1], [1e-3, 1e4]);
-          Rp.fn((a) => Math.max(1.01e-3, a * perGen * D), { domain: [1e-4, 1], n: 120, color: 'accent', width: 2.8 });
-          Rp.hline(Lm, { color: 'green', width: 2.2 });
-          Rp.vline(amax, { color: 'red', width: 2, dash: true });
-          Rp.dot(amax, Lm, { r: 5.5, color: 'red' });
-          Rp.text(`budget L = ${v.fmt(Lm, 2)}`, 2e-4, Lm * 1.6, { color: 'green', size: 12, weight: 600 });
-          info = { G, perYear, perGen, limit, ratio, amax, D, Lm, g, perHaldane: 1 / limit };
+          const q=historicalBudget(G,r,g,D,Lm),{perGen,limit,amax,actualLoad}=q;
+          const lo=Math.min(perGen,limit)/3,hi=Math.max(perGen,limit)*4;
+          Lp.setView([-0.6, 1.6], [lo,hi]);
+          Lp.rect(-0.3,lo,.3,perGen,{fill:'accent',fillAlpha:.45,color:'accent'});
+          Lp.rect(.7,lo,1.3,limit,{fill:'green',fillAlpha:.45,color:'green'});
+          Lp.text(v.fmt(perGen,3),0,perGen*1.4,{align:'center',size:12,weight:700});
+          Lp.text(v.fmt(limit,3),1,limit*1.4,{align:'center',size:12,weight:700});
+          const xmin=Math.min(1e-4,amax/3),slope=perGen*D;
+          Rp.setView([xmin,1.2],[Math.min(xmin*slope,Lm)/3,Math.max(slope,Lm)*4]);
+          Rp.fn(a=>a*slope,{domain:[xmin,1],n:120,color:'accent',width:2.8});
+          Rp.hline(Lm,{color:'green',width:2.2});
+          Rp.vline(amax,{color:'red',width:2,dash:true});
+          Rp.dot(amax,actualLoad,{r:5.5,color:'red'});
+          Rp.text(`budget L = ${v.fmt(Lm,2)}`,xmin*1.4,Lm*1.4,{color:'green',size:12,weight:600});
+          info={...q,D,Lm,g};
         });
-        v.legend([['accent', 'observed substitutions per generation'], ['green', 'Haldane’s budget $L/D$'], ['red', 'ratio / largest adaptive share', { dash: true }]]);
-        v.readout(() => `Genome-wide substitution rate ${v.fmt(info.perYear, 3)} per year, i.e. one every ${v.fmt(1 / info.perYear, 3)} years (the paper’s figure: about one every two years); with ${v.fmt(info.g, 2)}-year generations that is ${v.fmt(info.perGen, 3)} per generation. Haldane’s budget $L/D$ pays for one per ${v.fmt(info.perHaldane, 3)} generations.\nThe observed rate is ${v.fmt(info.ratio, 3)} times the budget: at most ${v.fix(100 * info.amax, 2)}% of the observed substitutions could have been adaptive. Neutral substitutions ($k=u$) cost nothing.`);
+        v.legend([['accent','extrapolated rate / hypothetical cost'],['green','chosen budget'],['red','fraction allowed by this accounting',{dash:true}]]);
+        v.readout(() => `Extrapolated rate ${v.fmt(info.perYear,4)} per year: one every ${v.fmt(info.interval,4)} years; with ${v.fmt(info.g,3)}-year generations, ${v.fmt(info.perGen,4)} per generation. Budget L/D allows one per ${v.fmt(info.generations,4)} generations.\nDimensionless rate/budget ratio ${v.fmt(info.ratio,4)}. Under this chosen additive model, fraction at most ${v.fmt(100*info.amax,4)}%; its actual cost ${v.fmt(info.actualLoad,4)} ${info.amax===1?'is at or below the budget: all substitutions fit this accounting.':'equals the budget.'} This is not a measured adaptive share. Exactly neutral substitutions incur no selective cost.`);
       },
     },
   ],

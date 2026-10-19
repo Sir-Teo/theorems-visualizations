@@ -1,3 +1,4 @@
+import { fourAges } from './mathbio-source-audit-age.js';
 // Mathematical Biology — Chapter 4: Structured populations (items 4.1–4.7; 4.8–4.14 in ch04-b.js)
 import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elSum, elRoot, r0T, project, nnClass } from './ch04.shared.js';
 
@@ -160,41 +161,30 @@ In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
       num: '4.4',
       kind: 'Theorem',
       name: 'Strong ergodic theorem: convergence to the stable age distribution',
-      credit: 'Lotka 1922 (stable age distribution); Perron–Frobenius proof',
       statement: String.raw`Let $L$ be a primitive Leslie matrix with dominant eigenvalue $\lambda_1>0$, right eigenvector $\mathbf u>0$ and left eigenvector $\mathbf w>0$, normalised so that $\sum u_x=1$. For every nonnegative initial vector $\mathbf n(0)\ne0$,
 $$\frac{\mathbf n(t)}{\lambda_1^{\,t}}\longrightarrow\frac{\mathbf w\cdot\mathbf n(0)}{\mathbf w\cdot\mathbf u}\,\mathbf u,\qquad\text{so}\qquad\frac{\mathbf n(t)}{\sum_x n_x(t)}\to\mathbf u .$$
 The age distribution tends to the **stable age distribution** $\mathbf u$ whatever the initial one, geometrically fast: the error decays like $(|\lambda_2|/\lambda_1)^t$, up to a polynomial factor if $\lambda_2$ is defective.`,
-      idea: String.raw`Expand $\mathbf n(0)$ in eigenvectors of $L$ (or in the Jordan basis). By 4.3(b) the dominant mode is simple and every other mode is multiplied at each step by a factor of modulus at most $|\lambda_2|<\lambda_1$ relative to the dominant one, so after dividing by $\lambda_1^t$ only the $\mathbf u$ term survives. The coefficient is the left-eigenvector projection $\mathbf w\cdot\mathbf n(0)/\mathbf w\cdot\mathbf u$, which is where reproductive value (4.9) comes from. Without primitivity (a period $h>1$) the shape keeps rotating around a cycle and the theorem fails.`,
-      scope: String.raw`Fixed rates, primitive $L$ (for a Leslie matrix: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
-      caption: String.raw`Four age classes. Left: the share of class 1 in the population for four very different starting distributions; the green line is $u_1$. Right: the $\ell^1$ distance to $\mathbf u$ on a log axis, with a dashed line of slope $\ln(|\lambda_2|/\lambda_1)$. Vary $F_3$ and $F_4$ to change the gap; set $F_3=0$ and the matrix becomes imprimitive (cycle length 4 only), and the shares never settle.`,
+      idea: String.raw`Expand $\mathbf n(0)$ in eigenvectors of $L$ (or in the Jordan basis). By 4.3(b) the dominant mode is simple and every other mode is multiplied at each step by a factor of modulus at most $|\lambda_2|<\lambda_1$ relative to the dominant one, so after dividing by $\lambda_1^t$ only the $\mathbf u$ term survives. The coefficient is the left-eigenvector projection $\mathbf w\cdot\mathbf n(0)/\mathbf w\cdot\mathbf u$, which is where reproductive value (4.9) comes from. An irreducible matrix of period $h>1$ can retain periodic shapes; some special initial vectors, including the dominant eigenvector itself, still have constant proportions.`,
+      scope: String.raw`Fixed rates, primitive $L$ (for a Leslie matrix with every subdiagonal survival strictly positive: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
+      caption: String.raw`Four chosen age classes. The four colours start from different age vectors. Left: share of class 1; right: $\ell^1$ distance to the positive eigenvector on a log scale, with distances below $10^{-12}$ displayed at the floor. If both fecundities are positive, the matrix is primitive. With only $F_4>0$ its period is 4; with only $F_3>0$ the reproductive core has period 3 and class 4 is transient. A trajectory ends when the population goes extinct, because its age proportions are then undefined. With both fecundities zero, every population is extinct by census 4. These finite trajectories illustrate the theorem and its hypotheses.`,
       deps: ['mathbio-4.3'],
       tags: ['stable age distribution', 'ergodicity'],
-      refs: ['Edelstein-Keshet ch. 1'],
-      verify: true,
+      refs: ['Edelstein-Keshet, Mathematical Models in Biology, ch. 1 problem 20 pp. 35–36; Caswell (2010), background B and §3', 'https://www.demographic-research.org/volumes/vol23/19/23-19.pdf'],
+      verify: false,
       viz(v) {
         const F3 = v.slider('$F_3$', 0, 4, 1.8, { step: 0.05 }), F4 = v.slider('$F_4$', 0, 4, 1.2, { step: 0.05 });
         const s = v.slider('survival $s$', 0.3, 1, 0.8, { step: 0.01 });
         const TT = 40;
-        const P = v.stage({ x: [0, TT], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'share in class 1', title: 'share of class 1', minWidth: 280 });
-        const D = v.stage({ x: [0, TT], y: [1e-12, 2], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'distance to u', title: 'ℓ¹ distance to the stable distribution', minWidth: 280 });
-        const starts = [[1, 0, 0, 0], [0, 0, 0, 1], [0.1, 0.2, 0.3, 0.4], [0.5, 0, 0.5, 0]];
-        const cols = ['accent', 'orange', 'purple', 'teal'];
-        let info = null;
+        const P = v.stage({ x: [-1, TT+1], y: [-.04, 1.04], height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'share in class 1', title: 'share of class 1', minWidth: 280 });
+        const D = v.stage({ x: [-1, TT+1], y: [5e-13, 2.2], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'census t', ylabel: 'distance to u (floor 10⁻¹²)', title: 'ℓ¹ distance, where population survives', minWidth: 280 });
+        const cols = ['accent', 'orange', 'purple', 'teal'];let info=null;
         v.render(() => {
-          const A = leslie([0, 0, F3.value, F4.value], [s.value, s.value, s.value]);
-          const E = domEig(A), ev = v.M.eig(A).values;
-          const ratio = ev.length > 1 ? ev[1].abs() / ev[0].abs() : 0;
-          const runs = starts.map((n0) => project(A, n0, TT).map((q) => q.map((x) => x / sumv(q))));
-          runs.forEach((r, k) => {
-            P.path(r.map((q, t) => [t, q[0]]), { color: cols[k], width: 2 });
-            D.path(r.map((q, t) => [t, Math.max(1e-12, sumv(q.map((x, i) => Math.abs(x - E.u[i]))))]), { color: cols[k], width: 2 });
-          });
-          P.hline(E.u[0], { color: 'green', dash: true, width: 1.5 });
-          if (ratio > 0 && ratio < 1) { const d0 = 1.2; D.path(Array.from({ length: TT + 1 }, (_, t) => [t, d0 * Math.pow(ratio, t)]), { color: 'ink', dash: true, alpha: 0.6 }); }
-          info = { ratio, lam: E.lam, u: E.u, d: runs.map((r) => sumv(r[TT].map((x, i) => Math.abs(x - E.u[i])))) };
+          info=fourAges(F3.value,F4.value,s.value);
+          info.runs.forEach((run,k)=>{const r=run.filter(q=>q.shape);P.path(r.map((q,t)=>[t,q.shape[0]]),{color:cols[k],width:2});if(info.u)D.path(r.map((q,t)=>[t,Math.max(1e-12,q.d)]),{color:cols[k],width:2});});
+          if(info.u)P.hline(info.u[0],{color:'green',dash:true,width:1.5});else D.text('No positive growth eigenvector: extinction',20,1e-5,{align:'center',size:11});
         });
         v.legend([['accent', 'start (1,0,0,0)'], ['orange', 'start (0,0,0,1)'], ['purple', 'start (.1,.2,.3,.4)'], ['teal', 'start (.5,0,.5,0)'], ['green', 'u₁', { dash: true }]]);
-        v.readout(() => `$\\lambda_1=${v.fix(info.lam, 4)}$, $|\\lambda_2|/\\lambda_1=${v.fix(info.ratio, 4)}$ → ${info.ratio < 0.999 ? 'primitive: shape converges' : '**no spectral gap** (imprimitive or defective): shape does not settle'}.\nStable distribution $\\mathbf u=(${info.u.map((x) => v.fix(x, 3)).join(',\\ ')})$; distances at $t=${TT}$: ${info.d.map((x) => v.sci(Math.max(x, 1e-16), 2)).map((x) => '$' + x + '$').join(', ')}.`);
+        v.readout(()=>`**${info.classification}.** ${info.u?`$\\lambda=${v.fix(info.lam,4)}$; positive eigenvector $u=(${info.u.map(x=>v.fix(x,3)).join(',\\ ')})$.`:'No age proportions after extinction.'} Surviving trajectories at census 40: ${info.runs.filter(r=>r[40].shape).length}/4.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.5

@@ -1,3 +1,4 @@
+import { auditedTurtle, STAGES, momentum, characteristicAges } from './mathbio-source-audit-age.js';
 // Mathematical Biology — Chapter 4 (part b): items 4.8–4.14
 import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elRoot, r0T, project, fisherV, turtleMatrix, TURTLE_STAGES } from './ch04.shared.js';
 
@@ -101,25 +102,25 @@ the present value of the offspring still to come, discounted at the population g
       num: '4.10',
       kind: 'Concept',
       name: 'Sensitivity and elasticity of λ',
-      credit: 'Caswell 1978 (sensitivity); de Kroon et al. 1986 (elasticity)',
+      credit: 'Crouse, Crowder & Caswell, 1987 (illustrated model)',
       statement: String.raw`Let $A$ be a primitive nonnegative matrix with dominant eigenvalue $\lambda$, right eigenvector $\mathbf u$ and left eigenvector $\mathbf v$. The **sensitivity** of $\lambda$ to the entry $a_{ij}$ is
 $$\frac{\partial\lambda}{\partial a_{ij}}=\frac{v_i\,u_j}{\mathbf v\cdot\mathbf u},$$
 and the **elasticity** (proportional sensitivity) is
-$$e_{ij}=\frac{a_{ij}}{\lambda}\frac{\partial\lambda}{\partial a_{ij}}=\frac{\partial\ln\lambda}{\partial\ln a_{ij}},\qquad e_{ij}\ge0,\quad\sum_{i,j}e_{ij}=1 .$$
+$$e_{ij}=\frac{a_{ij}}{\lambda}\frac{\partial\lambda}{\partial a_{ij}}=\frac{\partial\ln\lambda}{\partial\ln a_{ij}}\quad(a_{ij}>0),\qquad e_{ij}\ge0,\quad\sum_{i,j}e_{ij}=1 .$$
 So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ percent, and the elasticities partition the whole of the growth-rate response among the matrix entries.`,
       idea: String.raw`Differentiate $A\mathbf u=\lambda\mathbf u$ and multiply by $\mathbf v^{\mathsf T}$: the term with $\mathrm d\mathbf u$ cancels because $\mathbf v^{\mathsf T}A=\lambda\mathbf v^{\mathsf T}$, leaving $\mathrm d\lambda\,(\mathbf v\cdot\mathbf u)=\mathbf v^{\mathsf T}(\mathrm dA)\mathbf u$. Taking $\mathrm dA=\mathrm da_{ij}E_{ij}$ gives the sensitivity. Euler's theorem for the degree-one homogeneous function $\lambda(sA)=s\lambda(A)$ gives $\sum a_{ij}\partial\lambda/\partial a_{ij}=\lambda$, which is why the elasticities sum to one. The left eigenvector (reproductive value, 4.9) and right eigenvector (stable distribution) thus decide where management has leverage.`,
-      scope: String.raw`First-order, local statement: it is exact only as the change tends to zero; a 20% change in survival can make the linear prediction visibly wrong. Entries that are structurally zero have no sensitivity of interest. Biologically coupled entries (survival that appears in several positions) change together, as in the right panel. The matrix is the seven-stage loggerhead model of Crouse, Crowder & Caswell (Ecology 68, 1987), entered from a secondary transcription (H. Stevens, Introduction to Ecology) that quotes $\lambda=0.945$, which the code reproduces; it has not been checked against the paper's own table.`,
-      caption: String.raw`The matrix is the seven-stage loggerhead sea-turtle model of Crouse, Crowder and Caswell (1987), with entries copied from a secondary transcription, so treat the numbers as the published model's, not as new data (the dominant eigenvalue reproduces the value $0.945$ quoted there). Left: the elasticity $e_{ij}$ of each nonzero entry (row = destination stage, column = source stage). Right: the percentage change in $\lambda$ when one thing is raised by the chosen percentage — all fecundities, or the survival (stasis and growth together, capped at 1) of one stage. Raising fecundity barely moves $\lambda$ (it moves it exactly as much as hatchling survival, since both enter the same loop), while a few percent more survival of any later stage moves it several times more: why such analyses argued for protecting later stages rather than nests.`,
+      scope: String.raw`The derivative is local. At a zero entry the sensitivity can be positive: adding a previously absent transition can matter. Its elasticity is zero by the algebraic formula, while $\ln a_{ij}$ is undefined there. The baseline is checked directly against Table 4, p. 1416 of Crouse, Crowder & Caswell (1987); it is an historical estimated model, not current turtle data. The right panel scales each stage's existing stasis/growth entries together and caps their sum at 1; it holds their ratio fixed. This chosen perturbation differs from re-deriving transitions from annual survival and stage duration, as in the original paper's Fig. 4.`,
+      caption: String.raw`Left: elasticity of every nonzero entry in the original seven-stage matrix (row = destination; column = source). Blank cells have zero elasticity, not necessarily zero sensitivity. Right: finite percentage change in the dominant growth factor after increasing all fecundities or one stage's stasis and growth together. The percentage is a requested increase; probability constraints can reduce the effective increase. These are matrix experiments, not measured management outcomes. In this model changing fecundity and first-stage survival by the same feasible factor gives the same growth factor; later-stage survival often has a larger response. Stage numbers: 1 eggs/hatchlings, 2 small juveniles, 3 large juveniles, 4 subadults, 5 novice breeders, 6 first-year remigrants, 7 mature breeders.`,
       deps: ['mathbio-4.9'],
       tags: ['elasticity', 'sensitivity'],
-      refs: ['Edelstein-Keshet ch. 1'],
-      verify: true,
+      refs: ['Crouse, Crowder & Caswell (1987), Table 4 p. 1416; elasticity p. 1417 and Figs. 3–4 p. 1418', 'https://ecology-2023.gklab.org/pdf/Crouse_Ecology_1987.pdf', 'Caswell (2010) §3.1–3.4 pp. 539–541, equations 24–36', 'https://www.demographic-research.org/volumes/vol23/19/23-19.pdf'],
+      verify: false,
       viz(v) {
         const pct = v.slider('proportional increase (%)', 1, 30, 10, { int: true });
-        const NAMES = ['fecundities', ...TURTLE_STAGES.map((n, i) => 'surv. ' + (i + 1))];
+        const NAMES = ['fecundities', ...STAGES.map((n, i) => 'surv. ' + (i + 1))];
         const H = v.stage({ x: [-0.6, 7], y: [0, 7.6], equal: true, height: 380, axes: false, title: 'elasticity eᵢⱼ (row = to, column = from)', minWidth: 300 });
         const B = v.stage({ x: [0.4, 8.6], y: [0, 5], height: 380, axes: 'box', gutter: true, xlabel: 'what is raised: F = fecundities, 1–7 = survival of stage', ylabel: '% change in λ', title: 'effect on λ of raising one component', minWidth: 300, xticks: [[1, 'F'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5'], [7, '6'], [8, '7']] });
-        const A0 = turtleMatrix(), E0 = domEig(A0, 6000), lam0 = E0.lam;
+        const A0 = auditedTurtle(), E0 = domEig(A0, 6000), lam0 = E0.lam;
         const vu = dotv(E0.w, E0.u);
         const S = A0.map((row, i) => row.map((_, j) => (E0.w[i] * E0.u[j]) / vu)), El = A0.map((row, i) => row.map((a, j) => (a * S[i][j]) / lam0));
         const emax = Math.max(...El.flat());
@@ -134,8 +135,8 @@ So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ perc
           }
           for (let k = 0; k < 7; k++) { H.text(String(k + 1), k + 0.5, 7.25, { align: 'center', size: 11, color: 'muted' }); H.text(String(k + 1), -0.3, 6.5 - k, { align: 'center', baseline: 'middle', size: 11, color: 'muted' }); }
           const f = 1 + pct.value / 100, out = [];
-          out.push(100 * (domEig(turtleMatrix([1, 1, 1, 1, 1, 1, 1], f), 6000).lam / lam0 - 1));
-          for (let k = 0; k < 7; k++) { const sc = [1, 1, 1, 1, 1, 1, 1]; sc[k] = f; out.push(100 * (domEig(turtleMatrix(sc, 1), 6000).lam / lam0 - 1)); }
+          out.push(100 * (domEig(auditedTurtle([1, 1, 1, 1, 1, 1, 1], f), 6000).lam / lam0 - 1));
+          for (let k = 0; k < 7; k++) { const sc = [1, 1, 1, 1, 1, 1, 1]; sc[k] = f; out.push(100 * (domEig(auditedTurtle(sc, 1), 6000).lam / lam0 - 1)); }
           const top = Math.max(1, ...out) * 1.2; B.setView([0.4, 8.6], [Math.min(0, ...out) * 1.2, top]);
           B.bars(out, { x0: 1, color: (q, i) => (i === 0 ? 'orange' : 'accent') });
           res = { out, best: out.indexOf(Math.max(...out)) };
@@ -199,31 +200,26 @@ where $P_j$ is the probability of staying in stage $j$, $G_j$ of moving on to st
       num: '4.12',
       kind: 'Phenomenon',
       name: 'Population momentum',
-      credit: 'N. Keyfitz, 1971',
-      statement: String.raw`Let a population have stable age distribution $\mathbf u_0$ and be growing ($\lambda_0>1$). If fertility drops at once to replacement level, so that the new Leslie matrix $L_1$ has $R_0=1$ (hence $\lambda_1=1$) and left eigenvector $\mathbf v_1$, the population does not stop growing: it converges to the size
-$$N_\infty=\frac{\mathbf v_1\cdot\mathbf n(0)}{\mathbf v_1\cdot\mathbf u_1}\ \ (\text{with }\mathbf u_1\text{ normalised to total }1),\qquad \text{momentum}\ M=\frac{N_\infty}{N(0)}>1 .$$
-Momentum is the factor by which a growing population keeps growing after fertility is brought to replacement, solely because the age structure is young.`,
-      idea: String.raw`A young population has many individuals in or approaching the reproductive classes, who keep having children at replacement fertility, each cohort being larger than the one it replaces. In the new, stationary matrix $L_1$ the limit of $L_1^t\mathbf n(0)$ is the projection of $\mathbf n(0)$ on the dominant mode (4.4), with coefficient given by the reproductive values $\mathbf v_1$ (4.9); a young population has more weight on high-value classes than the stationary distribution does, so the limit exceeds $N(0)$. The size of $M$ grows with the initial growth rate and with how concentrated reproduction is.`,
-      scope: String.raw`Female-only, closed population, fixed survival and a stylised fertility schedule in 10 age classes (illustrative, not a country's data). Fertility is cut instantly to exactly replacement, which no real population does; real momentum is estimated with age-specific schedules and mortality change.`,
-      caption: String.raw`The population starts in its stable age distribution at the chosen initial $R_0$; at $t=0$ every fecundity is divided by $R_0$ so that $R_0=1$. Left: total size relative to its initial value (blue); dashed grey: what would have happened without the change. The horizontal line is the predicted momentum $M$ from the reproductive-value formula. Right: the age structure at the chosen time $t$ (blue) against the initial one (orange).`,
+      statement: String.raw`Suppose a fixed replacement-level Leslie matrix $L_1$ has a simple eigenvalue $1$, all other eigenvalues strictly inside the unit circle, and right and left eigenvectors $\mathbf u_1,\mathbf v_1$, with $\sum u_{1x}=1$. For a nonnegative initial population with nonzero reproductive value,
+$$N_\infty=\frac{\mathbf v_1\cdot\mathbf n(0)}{\mathbf v_1\cdot\mathbf u_1},\qquad M=\frac{N_\infty}{N(0)}.$$
+The **population momentum** $M$ describes the eventual size after replacement fertility is imposed: $M>1$ means further net growth, $M<1$ net decline. Setting $R_0=1$ does not by itself make the population stationary immediately; its age distribution also matters.`,
+      idea: String.raw`The asymptotic projection is $L_1^t\mathbf n(0)\to\mathbf u_1(\mathbf v_1\cdot\mathbf n(0))/(\mathbf v_1\cdot\mathbf u_1)$. Summing its components gives the formula. Thus momentum compares the initial population's average reproductive value with that of the new stationary population. A youthful initial distribution can give $M>1$, as in the chosen example; the projection, rather than an unconditional inequality, decides the answer.`,
+      scope: String.raw`Closed, one-sex, density-independent population with fixed survival. The ten-class illustration has a primitive reproductive core and transient post-reproductive classes, so its dominant mode still converges. Its age schedules are chosen, not fitted demographic data. Instant proportional replacement of fertility is a model experiment.`,
+      caption: String.raw`The population starts in the stable age distribution for the chosen initial $R_0$. At time zero every fecundity is divided by that $R_0$. Left, on a logarithmic population axis: the full replacement trajectory and the full no-change counterfactual, with no clipping. The green line is the asymptotic momentum; the gold point is the selected census, which need not have reached it. Right: individuals in each age class relative to initial total size, before the change and at that census.`,
       deps: ['mathbio-4.4'],
       tags: ['momentum', 'demography'],
-      refs: ['Edelstein-Keshet ch. 1'],
-      verify: true,
+      refs: ['Feichtinger & Wrzaczek (2024), §1 equations 2–4 pp. 51–52 (continuous-age momentum); the finite-matrix projection is derived here', 'https://pure.iiasa.ac.at/id/eprint/19383/1/1-s2.0-S0040580923000813-main.pdf', 'Caswell (2010), background B pp. 533 and §3', 'https://www.demographic-research.org/volumes/vol23/19/23-19.pdf'],
+      verify: false,
       viz(v) {
         const R0i = v.slider('initial $R_0$', 1, 3, 2, { step: 0.05 });
         const Tm = v.slider('time $t$', 0, 60, 20, { int: true });
-        const S = [0.985, 0.985, 0.98, 0.97, 0.96, 0.94, 0.9, 0.84, 0.7], M0 = [0, 0, 0.7, 1.3, 1.3, 0.9, 0.4, 0, 0, 0];
-        const A = v.stage({ x: [0, 60], y: [0, 3], height: 320, axes: 'box', gutter: true, xlabel: 'time t after the drop', ylabel: 'N(t) / N(0)', title: 'total population', minWidth: 300 });
+        const A = v.stage({ x: [-1.5, 61.5], y: [.8, 3], ylog: true, height: 320, axes: 'box', gutter: true, xlabel: 'time after replacement', ylabel: 'N(t) / N(0) (log scale)', title: 'total population: both full trajectories', minWidth: 300 });
         const B = v.stage({ x: [0.3, 10.7], y: [0, 0.3], height: 320, axes: 'box', gutter: true, xlabel: 'age class', ylabel: 'individuals / N(0)', title: 'age structure', minWidth: 260, xticks: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] });
         let st = null;
         v.render(() => {
-          const l = survivorship(S), R0b = r0T(l, M0).R0, F0 = M0.map((q) => (q * R0i.value) / R0b), F1 = F0.map((q) => q / R0i.value);
-          const A0 = leslie(F0, S), A1 = leslie(F1, S), E0 = domEig(A0), E1 = domEig(A1);
-          const n0 = E0.u, tr1 = project(A1, n0, 60), tr0 = project(A0, n0, 60);
-          const Mom = dotv(E1.w, n0) / dotv(E1.w, E1.u);
-          const N1 = tr1.map(sumv), N0 = tr0.map(sumv);
-          A.setView([0, 60], [0, Math.max(2.2, Mom * 1.35)]);
+          const R=momentum(R0i.value), {E0,E1,n0,runs:tr1,N:N1,reference:N0,M:Mom}=R;
+          const low=Math.min(...N1,...N0,Mom),high=Math.max(...N1,...N0,Mom),pad=Math.max(.5,Math.log(high/low))*.09;
+          A.setView([-1.5,61.5],[low*Math.exp(-pad),high*Math.exp(pad)]);
           A.path(N0.map((q, t) => [t, q]), { color: 'muted', dash: true, width: 1.5 });
           A.path(N1.map((q, t) => [t, q]), { color: 'accent', width: 2.2 });
           A.hline(Mom, { color: 'green', dash: true, width: 1.5 });
@@ -295,60 +291,33 @@ The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a
       num: '4.14',
       kind: 'Model',
       name: 'McKendrick–von Foerster equation',
-      credit: 'McKendrick 1926; von Foerster 1959',
       statement: String.raw`Let $n(a,t)$ be the density of individuals of age $a$ at time $t$, with age-specific mortality $\mu(a)$ and fertility $\beta(a)$. Then
 $$\frac{\partial n}{\partial t}+\frac{\partial n}{\partial a}=-\mu(a)\,n,\qquad n(0,t)=\int_0^\infty\beta(a)\,n(a,t)\,da,\qquad n(a,0)=n_0(a).$$
-Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t$, $n(a,t)=n_0(a-t)\,\ell(a)/\ell(a-t)$, and for $a<t$, $n(a,t)=B(t-a)\ell(a)$ with $B(t)=n(0,t)$ the birth rate, where $\ell(a)=e^{-\int_0^a\mu}$. Substituting the second form into the boundary condition gives Lotka's renewal equation (4.13), and solutions grow like $e^{rt}$ with the age profile tending to $e^{-ra}\ell(a)$, where $r$ solves $\int\beta(a)\ell(a)e^{-ra}da=1$.`,
-      idea: String.raw`The left side is the derivative of $n$ along the characteristic lines of slope one, because everyone ages at unit speed; the right side is pure death. The only coupling between ages is the boundary condition at $a=0$, which feeds newborns from all fertile ages. Solving along characteristics reduces the PDE to the renewal equation for $B(t)$, so everything proved about the latter (4.13) transfers, and the continuous analogue of the stable age distribution appears.`,
-      scope: String.raw`Linear, density-independent, one sex, with $\mu,\beta$ independent of time. The version with $\mu$ or $\beta$ depending on total population (Gurtin–MacCamy) is nonlinear and has equilibria and bifurcations.`,
-      caption: String.raw`Numerical solution on a grid (upwind along characteristics, step 0.1) with mortality $\mu(a)=0.05+0.0005a^3$ and a bump of fertility around age 5 (made-up shapes). Left: the age profile at the current time (blue) against the stable profile $e^{-ra}\ell(a)$ (green, same total). Right: the whole solution as a heat map over age (horizontal) and time (vertical), scaled by $e^{-rt}$ so that long-run behaviour is a time-independent pattern; the grey lines are characteristics and the gold line the current time. Choose the initial age profile and fertility level.`,
+Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t$, $n(a,t)=n_0(a-t)\,\ell(a)/\ell(a-t)$, and for $a<t$, $n(a,t)=B(t-a)\ell(a)$ with $B(t)=n(0,t)$ the birth rate, where $\ell(a)=e^{-\int_0^a\mu}$. Substituting the second form into the boundary condition gives Lotka's renewal equation (4.13), and an exponential solution has profile $e^{-ra}\ell(a)$, where $r$ solves $\int\beta(a)\ell(a)e^{-ra}da=1$. This exponential ansatz alone does not prove attraction from arbitrary initial conditions.`,
+      idea: String.raw`The left side is the derivative of $n$ along the characteristic lines of slope one, because everyone ages at unit speed; the right side is pure death. The only coupling between ages is the boundary condition at $a=0$, which feeds newborns from all fertile ages. Solving along characteristics reduces the PDE to the renewal equation for $B(t)$, and inserting an exponential birth rate gives the continuous-age Euler–Lotka relation. Convergence requires additional renewal assumptions; a finite computation does not establish them.`,
+      scope: String.raw`Linear, density-independent, one sex, with nonnegative time-independent mortality and fertility and integrable initial density. The characteristic formula is interpreted away from the corner $a=t$ (with compatible boundary/initial data for a classical solution). A positive integrable exponential profile is a candidate asymptotic mode, not a conclusion for every possible reproduction kernel. The simulation truncates ages at 12 with outflow there and zero fertility beyond, uses exact survival along grid characteristics and trapezoidal birth integrals, and sets a compatible initial newborn boundary. It is a finite-grid approximation, not an infinite-age exact solution.`,
+      caption: String.raw`Chosen mortality $\mu(a)=0.05+0.0005a^3$ and a Gaussian fertility bump around age 5. Choose fertility, initial ages and time. Left: grid density and the equal-total exponential profile. Right: the entire computed solution; colour is the square root of $n(a,t)e^{-rt}$ divided by its maximum over the full grid (range 0–1). Characteristics follow unit-speed aging. Step size is 0.1 in age and time; the growth exponent uses the same trapezoidal birth rule as the evolution. The readout compares it with births over the last five time units.`,
       deps: ['mathbio-4.13'],
       tags: ['age structure', 'PDE'],
-      refs: ['Murray I ch. 1'],
-      verify: true,
+      refs: ['Edelstein-Keshet, Mathematical Models in Biology, §10.8 pp. 465–468 equations 66–69', 'https://djvu.online/file/582JuTf6nykBh', 'Feichtinger & Wrzaczek (2024), §2 equation 7 p. 52', 'https://pure.iiasa.ac.at/id/eprint/19383/1/1-s2.0-S0040580923000813-main.pdf', 'Caswell (2010), background A equations A2–A5 p. 533', 'https://www.demographic-research.org/volumes/vol23/19/23-19.pdf'],
+      verify: false,
       viz(v) {
         const init = v.select('initial ages', [{ value: 'young', label: 'young bulge' }, { value: 'old', label: 'old bulge' }, { value: 'flat', label: 'uniform' }], 'young');
         const bsl = v.slider('fertility level $b$', 0.3, 2, 1, { step: 0.02 });
-        const h = 0.1, NA = 120, NT = 300, TMAX = 30;
-        const mu = (a) => 0.05 + 0.0005 * a * a * a, beta = (a, b) => b * Math.exp(-((a - 5) ** 2) / (2 * 1.2 * 1.2));
-        const P = v.stage({ x: [0, 12], y: [0, 0.5], height: 320, axes: 'box', gutter: true, xlabel: 'age a', ylabel: 'density n(a,t)', title: 'age profile', minWidth: 280 });
-        const H = v.stage({ x: [0, 12], y: [0, TMAX], height: 320, axes: 'box', gutter: true, xlabel: 'age a', ylabel: 'time t', title: '$n(a,t)\\,e^{-rt}$', minWidth: 280 });
-        let cache = { key: '' };
-        function solve() {
-          const key = init.value + '|' + bsl.value; if (cache.key === key) return cache;
-          const ell = [1]; for (let i = 1; i <= NA; i++) ell.push(ell[i - 1] * Math.exp(-h * mu((i - 0.5) * h)));
-          const f = (r) => { let s = 0; for (let i = 0; i <= NA; i++) s += (i === 0 || i === NA ? 0.5 : 1) * h * beta(i * h, bsl.value) * ell[i] * Math.exp(-r * i * h); return s - 1; };
-          let lo = -1, hi = 1; for (let it = 0; it < 80; it++) { const mid = 0.5 * (lo + hi); if (f(mid) > 0) lo = mid; else hi = mid; }
-          const r = 0.5 * (lo + hi);
-          const n0 = Array.from({ length: NA + 1 }, (_, i) => { const a = i * h; return init.value === 'young' ? Math.exp(-((a - 2) ** 2) / 1.2) : init.value === 'old' ? Math.exp(-((a - 8) ** 2) / 1.2) : 1; });
-          const m0 = sumv(n0) * h; for (let i = 0; i <= NA; i++) n0[i] /= m0;
-          const snaps = [n0]; let cur = n0, Bs = [];
-          for (let k = 0; k < NT; k++) {
-            const nx = new Array(NA + 1).fill(0);
-            for (let i = 0; i < NA; i++) nx[i + 1] = cur[i] * Math.exp(-h * mu((i + 0.5) * h));
-            let b = 0; for (let i = 1; i <= NA; i++) b += h * beta(i * h, bsl.value) * nx[i]; nx[0] = b;
-            snaps.push(nx); cur = nx;
-          }
-          Bs = snaps.map((s) => s[0]);
-          const stable = ell.map((q, i) => q * Math.exp(-r * i * h)); const ms = sumv(stable) * h; for (let i = 0; i <= NA; i++) stable[i] /= ms;
-          let mxs = 0; for (let k = 0; k <= NT; k += 5) for (let i = 0; i <= NA; i += 3) mxs = Math.max(mxs, snaps[k][i] * Math.exp(-r * k * h));
-          cache = { key, snaps, r, stable, Bs, mxs };
-          return cache;
-        }
+        const tm=v.slider('time $t$',0,30,12,{step:.1});
+        const P=v.stage({x:[-.25,12.25],y:[0,.5],height:320,axes:'box',gutter:true,xlabel:'age a',ylabel:'density n(a,t)',title:'age profile',minWidth:280});
+        const H=v.stage({x:[0,12],y:[0,30],height:320,axes:'box',gutter:true,xlabel:'age a',ylabel:'time t',title:'√(n e⁻ʳᵗ / grid maximum), colour 0–1',minWidth:280});
+        let cache={key:''};function solve(){const key=init.value+'|'+bsl.value;if(cache.key!==key)cache={...characteristicAges(bsl.value,init.value),key};return cache;}
         let st = null;
-        v.animate((t) => {
-          const S = solve(), k = Math.min(NT, Math.round(t / h)), cur = S.snaps[k];
-          const tot = sumv(cur) * h;
-          const mx = Math.max(...S.snaps[0], ...cur, ...S.stable.map((q) => q * tot)) * 1.15;
-          P.setView([0, 12], [0, mx]);
-          P.path(Array.from({ length: NA + 1 }, (_, i) => [i * h, cur[i]]), { color: 'accent', width: 2.2 });
-          P.fn((a) => { const i = Math.min(NA, Math.round(a / h)); return S.stable[i] * tot; }, { color: 'green', dash: true, width: 1.5, domain: [0, 12], n: 120 });
-          H.heat((a, tt) => { const i = Math.min(NA, Math.max(0, Math.round(a / h))), kk = Math.min(NT, Math.max(0, Math.round(tt / h))); return Math.sqrt(S.snaps[kk][i] * Math.exp(-S.r * kk * h) / S.mxs); }, { range: [0, 1], cmap: 'theme', res: 3, key: S.key });
-          for (let c = -10; c <= 12; c += 2) H.line(Math.max(0, c), Math.max(0, -c), Math.min(12, c + TMAX), Math.min(TMAX, 12 - c), { color: 'ink', alpha: 0.25, width: 1 });
-          H.hline(k * h, { color: 'gold', width: 2.5 });
-          const k5 = Math.max(0, NT - 50);
-          st = { r: S.r, tot, t: k * h, growth: Math.log(S.Bs[NT] / S.Bs[k5]) / (50 * h) };
-        }, { period: TMAX, still: 12 });
+        v.render(()=>{
+          const S=solve(),k=Math.min(S.nt,Math.round(tm.value/S.h)),cur=S.snaps[k],tot=S.masses[k];
+          P.setView([-.25,12.25],[0,Math.max(...S.snaps[0],...cur,...S.stable.map(q=>q*tot))*1.15]);
+          P.path(S.ages.map((a,i)=>[a,cur[i]]),{color:'accent',width:2.2});
+          P.path(S.ages.map((a,i)=>[a,S.stable[i]*tot]),{color:'green',dash:true,width:1.5});
+          H.heat((a,t)=>{const i=Math.min(S.na,Math.max(0,Math.round(a/S.h))),j=Math.min(S.nt,Math.max(0,Math.round(t/S.h)));return Math.sqrt(S.snaps[j][i]*Math.exp(-S.r*j*S.h)/S.maxScaled);},{range:[0,1],cmap:'theme',res:3,key:S.key});
+          for(let c=-10;c<=12;c+=2)H.line(Math.max(0,c),Math.max(0,-c),Math.min(12,c+30),Math.min(30,12-c),{color:'ink',alpha:.25,width:1});
+          H.hline(k*S.h,{color:'gold',width:2.5});st={r:S.r,tot,t:k*S.h,growth:Math.log(S.births[S.nt]/S.births[S.nt-50])/5};
+        });
         v.legend([['accent', 'n(a,t)'], ['green', '$e^{-ra}\\ell(a)$ (stable profile)', { dash: true }], ['gold', 'current time']]);
         v.readout(() => `$t=${v.fix(st.t, 1)}$, total population $${v.fix(st.tot, 3)}$ (started at 1). Euler–Lotka root $r=${v.fix(st.r, 4)}$; growth rate of births over the last 5 time units of the run: $${v.fix(st.growth, 4)}$.`);
       },
