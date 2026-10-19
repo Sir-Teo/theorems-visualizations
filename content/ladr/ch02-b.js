@@ -344,7 +344,7 @@ export default {
         const names = ['v_1', 'v_2', 'v_3', 'v_4', 'v_5'];
         function build() {
           const vs = H.map((h) => to3([h.x, h.y])), kept = [], del = [];
-          const F = [{ k: -1, kept: [], del: [], line: 1, note: 'Start with the spanning list $v_1,\\dots,v_5$ of $\\mathbf R^2$.' }];
+          const F = [{ k: -1, before: [], kept: [], del: [], line: 1, note: 'Start with the spanning list $v_1,\\dots,v_5$ of $\\mathbf R^2$.' }];
           for (let k = 0; k < 5; k++) {
             const before = kept.slice(), B = orth(before.map((j) => vs[j]));
             const inSp = distTo(vs[k], B) <= 1e-6 * Math.max(1, len3(vs[k]));
