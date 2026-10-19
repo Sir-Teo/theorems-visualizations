@@ -802,14 +802,14 @@
       "field": "econ",
       "writtenItems": 67,
       "betweenFields": {
-        "writtenToWritten": 23,
-        "writtenToAll": 27,
-        "allToAll": 29
+        "writtenToWritten": 25,
+        "writtenToAll": 29,
+        "allToAll": 31
       },
       "betweenCollections": {
-        "writtenToWritten": 25,
-        "writtenToAll": 37,
-        "allToAll": 44
+        "writtenToWritten": 27,
+        "writtenToAll": 39,
+        "allToAll": 46
       }
     },
     {
@@ -986,7 +986,6 @@
     "astro",
     "neuro",
     "sysbio",
-    "behav",
     "art",
     "arch",
     "ling"

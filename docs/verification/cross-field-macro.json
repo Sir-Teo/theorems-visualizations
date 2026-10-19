@@ -2605,6 +2605,32 @@
       "reason": "The model fits intercept log(M) and slope m by ordinary least squares; written opt-1.6 supplies precisely these line-fitting normal equations, replacing the equivalent planned stat-12.2 prerequisite.",
       "report": "docs/verification/demo-prerequisite-followup.md",
       "reviewScope": "Source/target semantic comparison and structural checks; no additional independent peer review claimed."
+    },
+    {
+      "from": "behav-3.13",
+      "to": "stat-2.1",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/behav/ch03-b.js",
+      "existingClaimAnchor": "calibration means $P(Y=1\\mid Q)=Q$ almost surely",
+      "reason": "Calibration conditions the outcome probability on the reported probability; target defines conditional distributions even without a joint density.",
+      "report": "docs/verification/behav-calibration-followup.md",
+      "reviewScope": "Source/target semantic comparison, independent correlated-trial counterexample and native checks; no additional independent peer review claimed."
+    },
+    {
+      "from": "behav-3.13",
+      "to": "prob-2.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/behav/ch03-b.js",
+      "existingClaimAnchor": "for $n$ **independent** intervals, each with coverage 90%, the number of hits",
+      "reason": "The binomial benchmark requires independent equal-coverage hit indicators; marginal calibration alone does not justify it.",
+      "report": "docs/verification/behav-calibration-followup.md",
+      "reviewScope": "Source/target semantic comparison, independent correlated-trial counterexample and native checks; no additional independent peer review claimed."
     }
   ],
   "syllabusMirrorRepairs": [
@@ -2863,6 +2889,22 @@
       "to": "opt-1.6"
     },
     "currentDemoCount": 25,
+    "previousSnapshotPreserved": true,
+    "independentPeerReview": "not claimed for this follow-up"
+  },
+  "calibrationFollowup": {
+    "report": "docs/verification/behav-calibration-followup.md",
+    "addedEdges": [
+      {
+        "from": "behav-3.13",
+        "to": "stat-2.1"
+      },
+      {
+        "from": "behav-3.13",
+        "to": "prob-2.1.1a"
+      }
+    ],
+    "currentBehavCount": 25,
     "previousSnapshotPreserved": true,
     "independentPeerReview": "not claimed for this follow-up"
   }

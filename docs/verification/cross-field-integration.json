@@ -35,11 +35,11 @@
     {
       "name": "macro",
       "file": "docs/verification/cross-field-macro.json",
-      "sha256": "86d00c2cc6ca32d5f95a727e0e199d406fd37b2e2a859cc6bdde9b307264468f",
-      "edges": 121
+      "sha256": "39cd072bca71f68c9fdc7997e80445fd8bacc0392ac091547fc7028c7a2f27e4",
+      "edges": 123
     }
   ],
-  "uniqueAddedEdges": 769,
+  "uniqueAddedEdges": 771,
   "issues": [],
   "graphNodes": 13661,
   "cycles": [],

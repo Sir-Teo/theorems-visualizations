@@ -191,11 +191,11 @@ export default {
     // ------------------------------------------------------------------ 3.13
     {
       num: '3.13', kind: 'Phenomenon', name: 'Overconfidence and calibration',
-      statement: String.raw`A judge is **calibrated** if events assigned probability $q$ happen a fraction $q$ of the time; for interval estimates, $90\%$ confidence intervals should contain the truth 9 times in 10. People's intervals are much too narrow: in the studies Tversky and Kahneman (1974) summarized, the true value fell outside subjects' 98% intervals (between their 1st and 99th percentiles) about 30% of the time instead of 2%, for naive and expert subjects alike and despite incentives through proper scoring rules. This **overprecision** is the most robust form of overconfidence; the others are overestimating one's own performance and overplacement (believing oneself better than others).`,
+      statement: String.raw`A judge is **calibrated** if events assigned probability $q$ happen a fraction $q$ of the time: if $Y$ is the outcome indicator and $Q$ the reported probability, calibration means $P(Y=1\mid Q)=Q$ almost surely; for interval estimates, $90\%$ confidence intervals should contain the truth 9 times in 10. People's intervals are much too narrow: in the studies Tversky and Kahneman (1974) summarized, the true value fell outside subjects' 98% intervals (between their 1st and 99th percentiles) about 30% of the time instead of 2%, for naive and expert subjects alike and despite incentives through proper scoring rules. This **overprecision** is the most robust form of overconfidence; the others are overestimating one's own performance and overplacement (believing oneself better than others).`,
       scope: String.raw`Overprecision is robust for interval estimates of quantities. Overestimation and overplacement depend on task difficulty: people overestimate themselves on hard tasks and underestimate on easy ones (the hard–easy effect). Calibration improves with fast, clear feedback, as in weather forecasting.`,
-      idea: String.raw`Interval estimates are typically made by anchoring on a best guess and adjusting outward (behav-3.4); the adjustment is insufficient, so the intervals are too tight. People also fail to imagine how their knowledge could be wrong. A good check is to count: for $n$ well-calibrated 90% intervals the number of hits is $\text{Bin}(n,0.9)$, so with 10 questions 9 or 10 hits is typical and 6 or fewer happens with probability under 2%.`,
-      caption: String.raw`For each of the ten questions, drag the two handles to make an interval you are 90% sure contains the true value, then press **lock in** to see the answer (green inside, red outside). Move between questions with the buttons. The right panel counts your hits against the binomial distribution of hits for a calibrated judge who has answered the same number of questions; most people land far to the left.`,
-      deps: [], refs: ['W&K ch. 4'], tags: ['overconfidence', 'calibration', 'probability'],
+      idea: String.raw`Interval estimates are typically made by anchoring on a best guess and adjusting outward (behav-3.4); the adjustment is insufficient, so the intervals are too tight. People also fail to imagine how their knowledge could be wrong. A good check is to count: for $n$ **independent** intervals, each with coverage 90%, the number of hits is $\text{Bin}(n,0.9)$, so with 10 questions 9 or 10 hits is typical and 6 or fewer happens with probability under 2%. Marginal 90% coverage alone does not imply a binomial hit count: errors across questions can be correlated.`,
+      caption: String.raw`For each of the ten questions, drag the two handles to make an interval you are 90% sure contains the true value, then press **lock in** to see the answer (green inside, red outside). Move between questions with the buttons. The right panel counts your hits against the binomial distribution of hits under an ideal independent-90%-coverage model. The fixed quiz can have correlated errors; its displayed tail probability is a model comparison, not a diagnostic test of your calibration.`,
+      deps: ['stat-2.1', 'prob-2.1.1a'], refs: ['W&K ch. 4'], tags: ['overconfidence', 'calibration', 'probability'],
       see: ['behav-3.4', 'behav-3.14'],
       credit: 'Alpert & Raiffa, 1969 (published 1982); Lichtenstein, Fischhoff & Phillips, 1982',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Overconfidence_effect' },
@@ -205,8 +205,8 @@ export default {
           ['bones in an adult human skeleton', 206, 50, 500], ['member states of the United Nations', 193, 50, 300], ['speed of sound in air at 20 °C (m/s)', 343, 100, 1000],
           ['keys on a standard piano', 88, 40, 150], ['year the Magna Carta was sealed', 1215, 800, 1600], ['mean diameter of the Earth (km)', 12742, 2000, 40000], ['melting point of iron (°C)', 1538, 300, 4000]];
         let q = 0; const iv = Qs.map(([, , lo, hi]) => [lo + 0.35 * (hi - lo), lo + 0.55 * (hi - lo)]), locked = Qs.map(() => false), touched = Qs.map(() => false);
-        const S = v.stage({ x: [0, 1], y: [0.15, 1], axes: false, height: 170, full: true });
-        const B = v.stage({ x: [-0.5, 10.5], y: [0, 0.5], axes: 'box', gutter: true, height: 250, weight: 1.2, xlabel: 'hits among locked-in intervals', ylabel: 'probability', title: 'your hits vs a calibrated judge' });
+        const S = v.stage({ x: [0, 1], y: [0.15, 1], axes: false, height: 190, full: true });
+        const B = v.stage({ x: [-0.5, 10.5], y: [0, 0.5], axes: 'box', gutter: true, height: 250, weight: 1.2, xlabel: 'hits among locked-in intervals', ylabel: 'probability', title: 'your hits vs independent 90% coverage' });
         const T = v.stage({ x: [0, 1], y: [0, 10], axes: false, height: 250, title: 'your ten intervals (scaled to each question’s range)' });
         const X0 = 0.06, X1 = 0.94, toX = (val) => X0 + ((val - Qs[q][2]) / (Qs[q][3] - Qs[q][2])) * (X1 - X0), fromX = (x) => Qs[q][2] + ((clamp(x, X0, X1) - X0) / (X1 - X0)) * (Qs[q][3] - Qs[q][2]);
         const hL = S.handle(toX(iv[0][0]), 0.45, { color: 'blue', constrain: (x) => [clamp(x, X0, X1), 0.45], label: 'low', labelPos: 's' });
@@ -228,7 +228,7 @@ export default {
           const hit = tru >= a && tru <= b;
           S.rect(toX(a), 0.4, toX(b), 0.5, { fill: locked[q] ? (hit ? 'green' : 'red') : 'blue', fillAlpha: 0.35, stroke: false });
           S.text(`your 90% interval: ${fmtv(a)} to ${fmtv(b)}${touched[q] ? '' : ' (drag the handles)'}`, 0.5, 0.7, { align: 'center', size: 12.5, color: 'blue', weight: 600 });
-          if (locked[q]) { S.line(toX(tru), 0.36, toX(tru), 0.6, { color: hit ? 'green' : 'red', width: 2.5 }); S.text(`true: ${fmtv(tru)}`, toX(tru), 0.62, { dy: -6, align: 'center', size: 12, weight: 700, color: hit ? 'green' : 'red' }); }
+          if (locked[q]) { S.line(toX(tru), 0.36, toX(tru), 0.6, { color: hit ? 'green' : 'red', width: 2.5 }); S.text(`true: ${fmtv(tru)}`, toX(tru), 0.62, { align: 'center', size: 12, weight: 700, color: hit ? 'green' : 'red' }); }
           // overview
           Qs.forEach(([, t, l0, h0], i) => {
             const y = 9.5 - i, s = (x) => 0.12 + 0.84 * ((x - l0) / (h0 - l0)), [aa, bb] = [Math.min(...iv[i]), Math.max(...iv[i])], ok = t >= aa && t <= bb;
@@ -241,14 +241,14 @@ export default {
           let ymax = 0; const pb = []; for (let k = 0; k <= n; k++) { pb.push(binomPmf(n, k, 0.9)); ymax = Math.max(ymax, pb[k]); }
           B.setView([-0.5, 10.5], [0, n ? Math.max(0.3, ymax * 1.2) : 0.5]);
           if (n) { pb.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: k === hits ? 'red' : 'green', fillAlpha: k === hits ? 0.9 : 0.45, stroke: false })); B.text(`you: ${hits} of ${n}`, hits, ymax * 1.12, { align: 'center', size: 11.5, weight: 700, color: 'red' }); }
-          else { const p10 = []; for (let k = 0; k <= 10; k++) p10.push(binomPmf(10, k, 0.9)); B.setView([-0.5, 10.5], [0, 0.5]); p10.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: 'green', fillAlpha: 0.3, stroke: false })); B.text('a calibrated judge, 10 questions', 0.2, 0.42, { size: 11.5, weight: 600, color: 'green' }); B.text('lock in intervals to add yours', 0.2, 0.37, { size: 11, color: 'muted' }); }
+          else { const p10 = []; for (let k = 0; k <= 10; k++) p10.push(binomPmf(10, k, 0.9)); B.setView([-0.5, 10.5], [0, 0.5]); p10.forEach((p, k) => B.rect(k - 0.38, 0, k + 0.38, p, { fill: 'green', fillAlpha: 0.3, stroke: false })); B.text('independent 90% coverage, 10 questions', 0.2, 0.42, { size: 11.5, weight: 600, color: 'green' }); B.text('lock in intervals to add yours', 0.2, 0.37, { size: 11, color: 'muted' }); }
           let cdf = 0; for (let k = 0; k <= hits; k++) cdf += pb[k] || 0;
           st = { n, hits, cdf };
         });
         v.readout(() => {
           const { n, hits, cdf } = st; if (n == null) return '';
-          if (!n) return 'Set an interval and lock it in to start. A calibrated judge’s 90% intervals catch the truth 9 times in 10; in the studies Tversky and Kahneman (1974) summarized, 98% intervals missed about 30% of the time.';
-          return `Hit rate **${hits} of ${n}** (${pct(hits / n)}) against the 90% you intended. For a calibrated judge, P(at most ${hits} hits in ${n}) = ${v.fix(cdf, 3)}${cdf < 0.05 ? ' — **overprecision**: your intervals are too narrow.' : '.'} In the studies Tversky and Kahneman (1974) summarized, 98% intervals missed the truth about 30% of the time.`;
+          if (!n) return 'Set an interval and lock it in to start. The bars assume independent intervals with 90% coverage; in the studies Tversky and Kahneman (1974) summarized, 98% intervals missed about 30% of the time.';
+          return `Hit rate **${hits} of ${n}** (${pct(hits / n)}) against the 90% you intended. Under independent 90% coverage, P(at most ${hits} hits in ${n}) ${cdf < 0.001 ? '< 0.001' : '= ' + v.fix(cdf, 3)}${cdf < 0.05 ? ' — a small lower tail under this model.' : '.'} Correlated errors can change this benchmark; the fixed quiz does not diagnose calibration. In the studies Tversky and Kahneman (1974) summarized, 98% intervals missed the truth about 30% of the time.`;
         });
       },
     },

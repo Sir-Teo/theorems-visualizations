@@ -143,7 +143,7 @@ export default {
           pic: 'Simulate a fair 50% shooter and compute the hit rate after three hits within short sequences: it comes out below 50% (the Miller–Sanjurjo bias), so the original null finding hides a real hot hand.' },
         { num: '3.12', kind: 'Phenomenon', name: 'Regression to the mean mistaken for causation', deps: ['stat-12.9', 'stat-1.19'], refs: ['Kahneman ch. 17'],
           pic: 'A normal skill-plus-luck “jinx” simulator: athletes selected for a record season have a lower conditional expected score next season; the finite league fluctuates around that prediction.' },
-        { num: '3.13', kind: 'Phenomenon', name: 'Overconfidence and calibration', deps: [], refs: ['W&K ch. 4'],
+        { num: '3.13', kind: 'Phenomenon', name: 'Overconfidence and calibration', deps: ['stat-2.1', 'prob-2.1.1a'], refs: ['W&K ch. 4'],
           pic: 'Give 90% confidence intervals for ten quantities; your hit rate is plotted on a calibration chart, and most people capture the truth far less than 90% of the time.' },
         { num: '3.14', kind: 'Phenomenon', name: 'The planning fallacy and the outside view', deps: ['behav-3.13'], refs: ['Kahneman ch. 23'],
           pic: 'Forecast a project’s duration, then see the distribution of overruns in a reference class of similar projects and the forecast it implies.' },
