@@ -72,6 +72,15 @@ test('small screens contain tables, formulas, readouts, and long toggles', async
     await open(page, '#/search?q=zzzzunfindable');
     assert.equal(await page.locator('.facet-panel').isVisible(), false);
     assert.equal(await page.locator('.empty-note').isVisible(), true);
+    await open(page, '#/t/fin-4.7');
+    await page.locator('.viz-controls').waitFor();
+    await page.evaluate(() => document.fonts.ready);
+    const paragraphs = await page.locator('.viz-caption > p').evaluateAll(es => es.map(e => {
+      const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, width: r.width };
+    }));
+    assert.ok(paragraphs.length >= 2, 'exercise a real multi-paragraph caption');
+    for (let i = 1; i < paragraphs.length; i++) assert.ok(paragraphs[i].top >= paragraphs[i - 1].bottom, 'caption paragraphs remain in reading order');
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, 'financial caption at 320px');
   }, { viewport: { width: 320, height: 900 } });
 });
 

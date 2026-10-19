@@ -285,6 +285,10 @@ main { flex: 1; }
 .viz-caption { font-size: 13.5px; color: var(--ink-2); padding: 2px 4px 10px; display: flex; gap: 8px; align-items: flex-start; }
 .viz-caption > svg { flex: none; margin-top: 3px; color: var(--bc); }
 .viz-caption p { margin: 0; }
+@media (max-width: 640px) {
+  .viz-caption { display: grid; grid-template-columns: auto minmax(0, 1fr); }
+  .viz-caption > :not(svg) { grid-column: 2; min-width: 0; }
+}
 .viz-share { border-top: 1px solid var(--line); margin-top: 16px; padding: 10px 4px 2px; font-size: 13px; color: var(--ink-2); }
 .viz-share summary { cursor: pointer; color: var(--ink); width: fit-content; }
 .viz-share p { margin: 10px 0; }

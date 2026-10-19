@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **200 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 636 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **198 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 638 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **200 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **198 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -640,3 +640,7 @@ Resolved micro10.4/10.5 against the complete stated Gruber/Ellison source sectio
 ## Deadline model and retracted-study context — October 19, 2026
 
 Resolved behav5.8 against the complete publisher notice and specified published replication sections. The syllabus now describes the actual authored cost model, with no experimental performance bars or unsupported beta-delta derivation. Root and a separate agent independently pass three exhaustive mathematical and four native groups, including endpoint hover halos and label clearance after a mobile overlap repair. The contextual present-bias link is moved to related reading. See [source, model and independent review](behav-deadlines-followup.md). **200 source reviews remain**.
+
+## Finance factor data and pricing units — October 19, 2026
+
+Resolved fin4.7/4.11 after parent source/model reading, independent fresh author-download comparison of all21,982 observations, five mathematical groups, eight final native groups, six UI tests and screenshot inspection. Factor maps disclose the revised vintage/rounding and use shared unsaturated scales. The premium model consistently uses log gross-return ratios, an uncapped fitted risk aversion and the actual finite-price domain. Normal-distribution and MGF prerequisites follow directly from the displayed calculation. Parent also fixed mobile multi-paragraph captions and verified a real320px reading-order regression. See [finance evidence](fin-factor-premium-followup.md). **198 source reviews remain**.

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 200,
+  "remainingFlags": 198,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "micro": 7,
-    "fin": 12,
+    "fin": 10,
     "game": 18,
     "behav": 4,
     "psych": 17,
@@ -328,39 +328,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot"
-      }
-    },
-    {
-      "id": "fin-4.7",
-      "file": "content/fin/ch04-b.js",
-      "name": "The Fama\u2013French three-factor model",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 10",
-        "BKM ch. 13"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Fama%E2%80%93French_three-factor_model",
-        "doi": "https://doi.org/10.1016/0304-405X(93)90023-5"
-      }
-    },
-    {
-      "id": "fin-4.11",
-      "file": "content/fin/ch04-b.js",
-      "name": "The equity premium puzzle",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 13"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Equity_premium_puzzle",
-        "doi": "https://doi.org/10.1016/0304-3932(85)90061-3"
       }
     },
     {
@@ -3878,7 +3845,9 @@
       "micro-10.12",
       "micro-10.4",
       "micro-10.5",
-      "behav-5.8"
+      "behav-5.8",
+      "fin-4.7",
+      "fin-4.11"
     ]
   },
   "additionalFollowups": [
@@ -7931,6 +7900,18 @@
       "status": "resolved",
       "report": "docs/verification/behav-deadlines-followup.md",
       "note": "Read the complete publisher retraction and published replication\u2019s intro/methods/performance/discussion; replace stale empirical syllabus with the explicitly assumed finite task-cost model. Root and a separate agent independently pass three exhaustive mathematical and four final native groups, including hover-circle and label clearance, static checks and screenshot inspection."
+    },
+    {
+      "id": "fin-4.7",
+      "status": "resolved",
+      "report": "docs/verification/fin-factor-premium-followup.md",
+      "note": "Read original factor construction and joint tests plus current author definitions; parent independently redownloaded the pinned ZIPs and reproduced all 21,982 observations. All 150 OLS fits agree with independent QR. Shared unsaturated color scales, explicit annualization/vintage and responsive multi-paragraph captions pass final eight native and six UI groups with source/model and screenshot review."
+    },
+    {
+      "id": "fin-4.11",
+      "status": "resolved",
+      "report": "docs/verification/fin-factor-premium-followup.md",
+      "note": "Read original Mehra\u2013Prescott historical/model sections, Mehra lognormal derivation and Benartzi\u2013Thaler original value/weighting/bootstrap pages. Correct arithmetic/log units, actual uncapped risk aversion, positive finite consumption-claim condition and separate Gaussian teaching model. Parent independently passes five math/eight final native groups, source/geometry/TeX/screens, and adds the genuinely used normal-law/MGF prerequisites."
     }
   ]
 }
