@@ -38,24 +38,34 @@ const KM_RULES = [{ value: 'dantzig', label: 'largest coefficient', col: 'red' }
 
 // ---------------------------------------------------------------- ellipsoid and barrier on a 2D polygon
 const POLY_CONS = [{ a: [-1, 0], b: -0.5 }, { a: [0, -1], b: -0.5 }, { a: [1, 1], b: 8 }, { a: [1, 0], b: 6 }, { a: [0, 1], b: 5 }, { a: [-1, 1], b: 3 }];
-function ellipsoidRun(cons, cobj, K = 60) {
-  const n = 2; let c = [4, 3], Q = [[100, 0], [0, 100]]; const out = [], optPoly = (() => { let P = [[0, 0], [20, 0], [20, 20], [0, 20]]; for (const q of cons) P = clipHalf(P, q.a, q.b); return P; })();
-  const opt = Math.max(...optPoly.map((p) => cobj[0] * p[0] + cobj[1] * p[1])); let best = -Infinity;
-  for (let k = 0; k <= K; k++) {
-    const viol = cons.find((q) => q.a[0] * c[0] + q.a[1] * c[1] > q.b + 1e-12), feas = !viol;
-    if (feas) best = Math.max(best, cobj[0] * c[0] + cobj[1] * c[1]);
-    const det = Q[0][0] * Q[1][1] - Q[0][1] ** 2;
-    out.push({ c: c.slice(), Q: Q.map((r) => r.slice()), feas, area: Math.PI * Math.sqrt(det), best, cut: viol ? viol.a : [-cobj[0], -cobj[1]], opt });
-    const a = viol ? viol.a : [-cobj[0], -cobj[1]], Qa = [Q[0][0] * a[0] + Q[0][1] * a[1], Q[1][0] * a[0] + Q[1][1] * a[1]], aQa = a[0] * Qa[0] + a[1] * Qa[1], g = [Qa[0] / Math.sqrt(aQa), Qa[1] / Math.sqrt(aQa)];
-    c = [c[0] - g[0] / (n + 1), c[1] - g[1] / (n + 1)];
-    const f = (n * n) / (n * n - 1), sc = 2 / (n + 1);
-    Q = [[f * (Q[0][0] - sc * g[0] * g[0]), f * (Q[0][1] - sc * g[0] * g[1])], [f * (Q[1][0] - sc * g[1] * g[0]), f * (Q[1][1] - sc * g[1] * g[1])]];
+export function ellipsoidRun(cons, cobj, K = 60) {
+  const ratio=4/(3*Math.sqrt(3));
+  let c=[4,3], B=[[10,0],[0,10]], area=100*Math.PI;
+  const out=[],optPoly=(()=>{let P=[[0,0],[20,0],[20,20],[0,20]];for(const q of cons)P=clipHalf(P,q.a,q.b);return P;})();
+  const opt=Math.max(...optPoly.map(p=>cobj[0]*p[0]+cobj[1]*p[1]));let best=-Infinity;
+  for(let k=0;k<=K;k++){
+    const viol=cons.find(q=>q.a[0]*c[0]+q.a[1]*c[1]>q.b+1e-12),feas=!viol;
+    if(feas)best=Math.max(best,cobj[0]*c[0]+cobj[1]*c[1]);
+    const cut=viol?viol.a:[-cobj[0],-cobj[1]];
+    out.push({c:c.slice(),B:B.map(r=>r.slice()),feas,area,best,cut,opt});
+    // Work with the ellipse factor B, not Q=B B^T: forming Q loses its
+    // tiny eigenvalue by cancellation after repeated parallel cuts.
+    const h=[B[0][0]*cut[0]+B[1][0]*cut[1],B[0][1]*cut[0]+B[1][1]*cut[1]],norm=Math.hypot(...h);
+    if(!(norm>0)||!Number.isFinite(norm))break;
+    const u=h.map(x=>x/norm),g=B.map(r=>r[0]*u[0]+r[1]*u[1]);
+    c=c.map((x,i)=>x-g[i]/3);
+    // The retained half-unit-disc is enclosed by axes 2/3 along u and
+    // 2/sqrt(3) perpendicular to u, centered at -u/3.
+    const wide=2/Math.sqrt(3),change=2/3-wide;
+    const S=[[wide+change*u[0]*u[0],change*u[0]*u[1]],[change*u[0]*u[1],wide+change*u[1]*u[1]]];
+    B=B.map(r=>[r[0]*S[0][0]+r[1]*S[1][0],r[0]*S[0][1]+r[1]*S[1][1]]);
+    area*=ratio;
   }
   return out;
 }
-function barrierPath(cons, cobj, N = 90) {
+export function barrierPath(cons, cobj, N = 90) {
   let x = [3, 2]; const out = [];
-  const grad = (t, x) => { let g = [t * cobj[0], t * cobj[1]], H = [[0, 0], [0, 0]]; for (const q of cons) { const sl = q.b - (q.a[0] * x[0] + q.a[1] * x[1]); g[0] += q.a[0] / sl; g[1] += q.a[1] / sl; for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) H[i][j] += (q.a[i] * q.a[j]) / (sl * sl); } return { g, H }; };
+  const grad = (t, x) => { let g = [t * cobj[0], t * cobj[1]], H = [[0, 0], [0, 0]]; for (const q of cons) { const sl = q.b - (q.a[0] * x[0] + q.a[1] * x[1]); g[0] -= q.a[0] / sl; g[1] -= q.a[1] / sl; for (let i = 0; i < 2; i++) for (let j = 0; j < 2; j++) H[i][j] += (q.a[i] * q.a[j]) / (sl * sl); } return { g, H }; };
   const phi = (t, x) => { let val = t * (cobj[0] * x[0] + cobj[1] * x[1]); for (const q of cons) { const sl = q.b - (q.a[0] * x[0] + q.a[1] * x[1]); if (sl <= 0) return -Infinity; val += Math.log(sl); } return val; };
   for (let k = 0; k <= N; k++) {
     const t = 10 ** (-1.5 + (k * 5) / N);
@@ -178,15 +188,15 @@ This is an explicit rescaling of Klee and Minty's $\varepsilon$-cube with $\vare
       num: '11.23',
       kind: 'Theorem',
       name: 'Linear programs are solvable in polynomial time (statement)',
-      statement: String.raw`There are algorithms that solve every linear program with rational data, given in binary, in time bounded by a polynomial in the number of variables, the number of constraints and the total bit length $L$ of the input: the **ellipsoid method** (Khachiyan, 1979) and **interior-point methods** (Karmarkar, 1984, and its successors). The ellipsoid method keeps an ellipsoid containing the feasible region (or its optimal part) and replaces it at each step by the smallest ellipsoid containing the half that survives a cut through the center; in $\R^n$ for $n\ge2$, the volume shrinks by at least the factor $e^{-1/(2(n+1))}$ per step. A modern log-barrier approach follows the **central path** $x^*(\mu)$, the maximizers of $\mu\,c^{\top}x+\sum_i\ln(b_i-a_i^{\top}x)$, for a bounded full-dimensional polytope with strict interior. This path lies in its interior and approaches the optimal face (which need not be a vertex) with duality gap at most $m/\mu$. Whether LP can be solved in *strongly* polynomial time, in a number of arithmetic operations polynomial in $n,m$ alone, is a famous open problem.`,
+      statement: String.raw`There are algorithms that solve every linear program with rational data, given in binary, in time bounded by a polynomial in the number of variables, the number of constraints and the total bit length $L$ of the input: the **ellipsoid method** (Khachiyan, 1979) and **interior-point methods** (Karmarkar, 1984, and its successors). In the ideal exact-arithmetic ellipsoid illustration, an ellipsoid contains a bounded search region and is replaced by the smallest ellipsoid containing the half retained by a cut through its center; in $\R^n$ for $n\ge2$, the volume shrinks by at least the factor $e^{-1/(2(n+1))}$ per step. A modern log-barrier approach follows the **central path** $x^*(\mu)$, the maximizers of $\mu\,c^{\top}x+\sum_i\ln(b_i-a_i^{\top}x)$, for a bounded full-dimensional polytope with strict interior. This path lies in its interior and approaches the optimal face (which need not be a vertex) with duality gap at most $m/\mu$. This bit-complexity result does not assert a *strongly* polynomial bound on arithmetic operations using only $n,m$.`,
       idea: String.raw`A hyperplane through the center divides an ellipsoid into equal-volume halves. The minimum-volume enclosing ellipsoid of the retained half is smaller by a dimension-dependent factor. The full-dimensional rational case has bit-length-dependent inner and outer size bounds; arbitrary rational LPs additionally need reductions for lower-dimensional or unbounded feasible sets and controlled finite-precision arithmetic. These steps are essential to the exact polynomial-time theorem. For the modern log barrier, self-concordance bounds Newton work: after initial centering, increasing the weight by $1+1/\sqrt m$ permits a bounded number of Newton steps per update, giving $O(\sqrt m\log(m/(\mu_0\epsilon)))$ steps to reach duality gap $\epsilon$ from initial weight $\mu_0$. A fixed factor independent of $m$ does not give the same worst-case bound on inner work. Exact rational recovery also needs input-dependent separation bounds; a fixed absolute gap $2^{-L}$ alone is not a general exactness certificate. The diagram illustrates real-arithmetic planar cuts and a modern barrier path, not Karmarkar's original projective algorithm or its bit-complexity proof.`,
-      caption: String.raw`The same polygon in two ways. **Left, ellipsoid method:** slide the iteration; the cutting half-plane goes through the center (red if the center is infeasible and a violated constraint is used, green if it is feasible and the objective cut is used), and the area falls by the constant factor $0.77$ per step in the plane, never worse than the bound $e^{-1/6}\approx0.85$. **Right, interior-point:** slide $\mu$; the point $x^*(\mu)$ glides through the middle of the polygon from the analytic center toward the optimal vertex.`,
+      caption: String.raw`The same polygon in two ways. **Left, ellipsoid method:** slide the iteration; the cutting half-plane goes through the center (red if the center is infeasible and a violated constraint is used, green if it is feasible and the objective cut is used), and the area falls by the constant factor approximately $0.77$ per step in the plane, never worse than the bound $e^{-1/6}\approx0.85$. **Right, interior-point:** slide $\mu$; the numerical approximation to $x^*(\mu)$ glides through the middle of the polygon from near the analytic center toward the optimal face for the selected direction (usually a vertex).`,
       deps: ['algo-11.15', 'algo-11.22'],
-      refs: ['CLRS 4e §29.1', 'Karmarkar, Combinatorica4 (1984), pp.373–395, §§1.6,2–5,7.4', 'Boyd–Vandenberghe, Convex Optimization, §§11.2.2–11.2.3 and 11.5.3, pp.564–567,590–592; Eqs.(11.27)–(11.29)'],
+      refs: ['CLRS 4e §29.1', 'Khachiyan, Dokl. Akad. Nauk SSSR244(5) (1979), pp.1093–1096, §§1–3; complete original text read through MathNet', 'Karmarkar, Combinatorica4 (1984), pp.373–395, §§1.6,2–5,7.4', 'Boyd–Vandenberghe, Convex Optimization, §§11.2.2–11.2.3 and 11.5.3, pp.564–567,590–592; Eqs.(11.27)–(11.29)'],
+      scope: String.raw`Khachiyan's original treats integer-coefficient feasibility using rounded, enlarged ellipsoids. Rational denominators can be cleared with polynomial encoding growth. The planar exact-arithmetic cuts and modern barrier path here illustrate geometry, not that finite-precision implementation. The barrier curve uses 101 logarithmically spaced weights and numerical Newton centering; the gap formula is the theoretical bound at an exactly centered point.`,
       tags: ['linear programming'],
       credit: 'L. G. Khachiyan, 1979 (ellipsoid); N. Karmarkar, 1984 (interior point)',
-      links: { doi: 'https://doi.org/10.1007/BF02579150' },
-      verify: true,
+      links: { doi: 'https://doi.org/10.1007/BF02579150', source: 'https://www.mathnet.ru/eng/dan42319' },
       viz(v) {
         const win = { x: [0, 8], y: [0, 6.5], equal: true, axes: 'box', gutter: true, height: 340, weight: 1 };
         const sE = v.stage({ ...win, title: 'Ellipsoid method', xlabel: '$x$', ylabel: '$y$' }), sB = v.stage({ ...win, title: 'Central path', xlabel: '$x$', ylabel: '$y$' });
@@ -197,7 +207,7 @@ This is an explicit rescaling of Klee and Minty's $\varepsilon$-cube with $\vare
         const cobj = () => [Math.cos((th.value * Math.PI) / 180), Math.sin((th.value * Math.PI) / 180)];
         const ensure = () => { if (!E) { E = ellipsoidRun(POLY_CONS, cobj(), 60); B = barrierPath(POLY_CONS, cobj(), 100); } };
         const poly = (() => { let P = [[0, 0], [20, 0], [20, 20], [0, 20]]; for (const q of POLY_CONS) P = clipHalf(P, q.a, q.b); return P; })();
-        const ellipse = (e) => { const [[a, b], [, d]] = e.Q, l11 = Math.sqrt(a), l21 = b / l11, l22 = Math.sqrt(Math.max(d - l21 * l21, 0)); return (q) => [e.c[0] + l11 * Math.cos(q), e.c[1] + l21 * Math.cos(q) + l22 * Math.sin(q)]; };
+        const ellipse = (e) => (q) => { const x=Math.cos(q),y=Math.sin(q);return [e.c[0]+e.B[0][0]*x+e.B[0][1]*y,e.c[1]+e.B[1][0]*x+e.B[1][1]*y]; };
         v.render(() => {
           ensure(); const kk = Math.min(k.value, E.length - 1), c = cobj();
           for (const [s0] of [[sE], [sB]]) s0.poly(poly, { fill: 'accent', fillAlpha: 0.12, color: 'accent', width: 2 });
@@ -216,8 +226,8 @@ This is an explicit rescaling of Klee and Minty's $\varepsilon$-cube with $\vare
         v.legend([['blue', 'current ellipsoid'], ['muted', 'earlier ellipsoids'], ['purple', 'central path $x^*(\\mu)$'], ['gold', 'current $x^*(\\mu)$', { dot: true }], ['green', 'optimal vertex', { dot: true }]]);
         v.readout(() => {
           ensure(); const kk = Math.min(k.value, E.length - 1), e = E[kk], p = kk ? E[kk - 1] : null, c = cobj(), gap = E[0].opt - e.best;
-          const t = 10 ** lm.value, cur = B.reduce((b, q) => (Math.abs(Math.log10(q.t) - lm.value) < Math.abs(Math.log10(b.t) - lm.value) ? q : b), B[0]);
-          return `ellipsoid step ${kk}: area $${num(e.area, 3)}$${p ? `, ratio to previous $${num(e.area / p.area, 4)}\\le e^{-1/6}=${num(Math.exp(-1 / 6), 4)}$` : ''} · best feasible objective $${isFinite(e.best) ? num(e.best, 4) : '-'}$ (gap to optimum $${isFinite(gap) ? num(gap, 4) : '-'}$)\ncentral path: $\\mu=${num(t, 3)}$, $x^*=(${num(cur.x[0], 3)},${num(cur.x[1], 3)})$ · duality gap $\\le m/\\mu=${num(POLY_CONS.length / cur.t, 3)}$ (here $m=${POLY_CONS.length}$) · objective $${num(c[0] * cur.x[0] + c[1] * cur.x[1], 4)}$`;
+          const cur = B.reduce((b, q) => (Math.abs(Math.log10(q.t) - lm.value) < Math.abs(Math.log10(b.t) - lm.value) ? q : b), B[0]);
+          return `ellipsoid step ${kk}: area $${num(e.area, 3)}$${p ? `, ratio to previous $${num(e.area / p.area, 4)}\\le e^{-1/6}=${num(Math.exp(-1 / 6), 4)}$` : ''} · best feasible objective $${isFinite(e.best) ? num(e.best, 4) : '-'}$ (gap to optimum $${isFinite(gap) ? num(gap, 4) : '-'}$)\nnumerical central path: $\\mu=${num(cur.t, 3)}$, $x_{\\mathrm{num}}\\approx(${num(cur.x[0], 3)},${num(cur.x[1], 3)})$ · exact-center theoretical gap $\\le m/\\mu=${num(POLY_CONS.length / cur.t, 3)}$ (here $m=${POLY_CONS.length}$) · objective $${num(c[0] * cur.x[0] + c[1] * cur.x[1], 4)}$`;
         });
       },
     },

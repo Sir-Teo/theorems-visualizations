@@ -42,3 +42,10 @@ Written and syllabus references are synchronized. Numerical algorithms,
 controls and handlers are unchanged. Focused static/native light-and-dark
 checks and the strict build validate the revised text; the source queue
 continues to count this flag, with a narrower, explicit gap.
+
+## Subsequent source closure
+
+The [Khachiyan follow-up](khachiyan-original-source-review.md) records a
+new successful full-text retrieval and its OCR/visual limitations. The
+scoped overview flag is closed; the retained-gap discussion above records
+the earlier access state.

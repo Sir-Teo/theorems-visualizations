@@ -150,6 +150,11 @@ sampling error. Compare an estimator with the truth for its own target group.
 
 ## Computer science
 
+Differentiate displayed optimization objectives independently when validating
+Newton steps; a plausible path does not establish stationarity. Test a case
+with a closed-form optimizer and distinguish ideal arithmetic geometry from
+finite-precision complexity guarantees.
+
 Say which variables a probability guarantee is uniform over. A bound at one
 fixed sample size does not automatically cover an entire curve, repeated runs
 or a sample-dependent hypothesis class. Match summary grid sizes to labels.

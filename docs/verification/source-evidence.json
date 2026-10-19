@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 233,
-    "reviewedBlocked": 233,
+    "open": 232,
+    "reviewedBlocked": 232,
     "unreviewed": 0,
     "ledgerRecords": 664,
-    "recordedClosed": 401,
+    "recordedClosed": 402,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 233,
-    "liveRemaining": 233,
+    "recordedRemaining": 232,
+    "liveRemaining": 232,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -25,11 +25,6 @@
     "matchesLive": true
   },
   "byCollection": {
-    "algo": {
-      "open": 1,
-      "reviewedBlocked": 1,
-      "unreviewed": 0
-    },
     "arch": {
       "open": 9,
       "reviewedBlocked": 9,
@@ -296,7 +291,7 @@
     {
       "path": "docs/verification/circuits-owned-source-disposition.json",
       "exists": true,
-      "sha256": "e83e0b7a171ab64cd7a4c4ee67340221d88def6358d5b4c1e000ce9d0c6033ef",
+      "sha256": "ed549537883bcc3ae343d9f6ab6a22eddc3df3d0808b29261e2c426902bae204",
       "records": 105
     },
     {
@@ -349,22 +344,6 @@
     }
   ],
   "open": [
-    {
-      "id": "algo-11.23",
-      "file": "content/algo/ch11-d.js",
-      "name": "Linear programs are solvable in polynomial time (statement)",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/77"
-      ],
-      "reports": [
-        "docs/verification/lp-complexity-primary-followup.md"
-      ],
-      "missingEvidence": [
-        "Complete Khachiyan1979 original finite-precision ellipsoid/rational-input argument and historical formulation. Karmarkar1984 complete relevant original algorithm, potential, exact-recovery/reduction and precision passages now read; modern barrier schedule corrected against full Boyd–Vandenberghe §11.5.3."
-      ]
-    },
     {
       "id": "arch-3.10",
       "file": "content/arch/ch03-b.js",
@@ -644,7 +623,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/92"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/91"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -660,7 +639,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/93"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/92"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -980,7 +959,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/88"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/87"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -996,7 +975,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/89"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/88"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -1012,7 +991,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/90"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/89"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -1028,7 +1007,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/86"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/85"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -1044,7 +1023,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/87"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/86"
       ],
       "reports": [
         "docs/verification/chacha-original-source-review.md"
@@ -1060,7 +1039,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/85"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/84"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -2875,7 +2854,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/94"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/93"
       ],
       "reports": [
         "docs/verification/pde-source-review.md"
@@ -3471,7 +3450,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/91"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/90"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -3984,7 +3963,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/78"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/77"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4000,7 +3979,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/79"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/78"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4016,7 +3995,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/82"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/81"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4032,7 +4011,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/83"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/82"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4048,7 +4027,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/84"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/83"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4064,7 +4043,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/80"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/79"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4080,7 +4059,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/81"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/80"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4197,18 +4176,16 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/77",
+      "pointer": "#/additionalReviewedClosed/10",
       "id": "algo-11.23",
-      "rawStatus": "reviewed_blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/lp-complexity-primary-followup.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/khachiyan-original-source-review.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Complete Khachiyan1979 original finite-precision ellipsoid/rational-input argument and historical formulation. Karmarkar1984 complete relevant original algorithm, potential, exact-recovery/reduction and precision passages now read; modern barrier schedule corrected against full Boyd–Vandenberghe §11.5.3."
-      ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/77",
+      "missingEvidence": [],
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/additionalReviewedClosed/10",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
@@ -4705,7 +4682,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/92",
+      "pointer": "#/retained/91",
       "id": "cg-3.3",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4714,7 +4691,7 @@
       "missingEvidence": [
         "Full de Berg§2.2 source passage and original DCEL attribution. Connected-graph scope repaired; general faces with holes need multiple boundary-component pointers. Complete de Berg/Mount source was not obtained."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/92",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/91",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -4733,7 +4710,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/93",
+      "pointer": "#/retained/92",
       "id": "cg-4.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4742,7 +4719,7 @@
       "missingEvidence": [
         "Full zone-theorem original(s), correct constant/edge-count convention and charging proof. Unverified best9.5m claim and unsupported five-new-edges induction removed. Explicitly separates tested arrangement counts from an uninspected linear-bound proof."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/93",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/92",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -5098,7 +5075,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/88",
+      "pointer": "#/retained/87",
       "id": "cplx-2.12",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5107,13 +5084,13 @@
       "missingEvidence": [
         "Full Mahaney general sparse-set proof and original Berman/Ogiwara–Watanabe claims. Current tally demonstration is explicitly narrower; non-sparse does not mean exponentially dense at every length."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/88",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/87",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/89",
+      "pointer": "#/retained/88",
       "id": "cplx-4.13",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5122,13 +5099,13 @@
       "missingEvidence": [
         "Full Borodin1977 and relevant Savitch1970 originals supporting exact uniform inclusions/attribution. NC1 path-workspace explanation repaired and Boolean squaring reviewed, but no original-source closure inferred."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/89",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/88",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/90",
+      "pointer": "#/retained/89",
       "id": "cplx-4.3",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5137,13 +5114,13 @@
       "missingEvidence": [
         "Full Lupanov1958 original for leading (1+o(1)) constant and exact gate-basis convention, plus Shannon–Muller attribution. Implemented O(2^n/n) block method independently tested for all3-variable functions and larger random tables; not a source proof of the optimal leading constant."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/90",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/89",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/86",
+      "pointer": "#/retained/85",
       "id": "crypto-4.10",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5152,13 +5129,13 @@
       "missingEvidence": [
         "An original source matching fixed-key CBC and its earliest attribution. Full US4074066A description/claim1 was read but it changes the key each block, so it does not match the displayed fixed-key formula. Complete NIST38A mode/IV/counter provisions and Diffie–Hellman1979 counter construction were read."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/86",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/85",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/87",
+      "pointer": "#/retained/86",
       "id": "crypto-4.2",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5167,13 +5144,13 @@
       "missingEvidence": [
         "Full Mantin-Shamir 2001 original for the RC4 second-byte bias and its exact key-schedule/distribution assumptions. Complete Bernstein 28 January 2008 original and relevant RFC 8439 sections/vectors checked in the follow-up; combined flag remains open for RC4."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/87",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/86",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/85",
+      "pointer": "#/retained/84",
       "id": "crypto-4.8",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -5182,7 +5159,7 @@
       "missingEvidence": [
         "Full Biham–Shamir, Matsui, and Coppersmith originals for DES data complexities/history, plus full PRESENT source for its table. Full Heys tutorial available: Table1 and complete piling-up independence argument checked. Removed universal-small-cell and unconditional round-independence errors."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/85",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/84",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -11247,7 +11224,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/94",
+      "pointer": "#/retained/93",
       "id": "pde-3.12",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -11256,7 +11233,7 @@
       "missingEvidence": [
         "Full Tychonoff1935 original Mat.Sb.42 pp199–216, historical attribution and precise original growth classes. Full Evans1st§2.3.3 pp57–59 read, but it refers to John for the construction. Uniform-strip growth error and invalid numerical rounding/tail certificate repaired; Gevrey construction derived independently. Official MathNet issue attempt returned403."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/94",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/93",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12410,7 +12387,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/91",
+      "pointer": "#/retained/90",
       "id": "robot-3.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -12419,7 +12396,7 @@
       "missingEvidence": [
         "Full Denavit–Hartenberg1955 original. Modern R/P-chain transforms and convention scope reviewed; broad multi-DoF/lower-pair claim narrowed. Full original-paper comparison remains open. Bounded new public Penn/GWU leads both resolved to modern lecture slides rather than the1955 original; no source closure inferred."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/91",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/90",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -13138,7 +13115,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/78",
+      "pointer": "#/retained/77",
       "id": "toc-3.10",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13147,13 +13124,13 @@
       "missingEvidence": [
         "Full Arden delayed-logic/finite-state-machines original and precise1960/1961 locator; mathematical epsilon case repaired and independently checked."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/78",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/77",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/79",
+      "pointer": "#/retained/78",
       "id": "toc-3.15",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13162,13 +13139,13 @@
       "missingEvidence": [
         "Full1956 Automata Studies chapter. Complete1951 RAND RM704 available and relevant sections checked, but exact1956 chapter/version comparison remains open."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/79",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/78",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/82",
+      "pointer": "#/retained/81",
       "id": "toc-4.12",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13177,13 +13154,13 @@
       "missingEvidence": [
         "Full Büchi1960/1962 original for historical claim and finite-union UV^omega characterization. Vardi–Wolper full author preprint supports acceptance definition; eventual-cycle overstatement repaired."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/82",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/81",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/83",
+      "pointer": "#/retained/82",
       "id": "toc-4.4",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13192,13 +13169,13 @@
       "missingEvidence": [
         "Full Myhill1957 report and Nerode1958 original, including precise attribution. AMS original PDF requests returned403; suffix/right-congruence mathematics checked."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/83",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/82",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/84",
+      "pointer": "#/retained/83",
       "id": "toc-4.5",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13207,13 +13184,13 @@
       "missingEvidence": [
         "Full Myhill1957/Nerode1958 originals, not secondary bibliographies. Canonical quotient proof reviewed; original source remains unavailable in this review."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/84",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/83",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/80",
+      "pointer": "#/retained/79",
       "id": "toc-4.6",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13222,13 +13199,13 @@
       "missingEvidence": [
         "Full original Myhill/Nerode minimal-automaton characterization supporting attribution; quotient/isomorphism proof reviewed."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/80",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/79",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/81",
+      "pointer": "#/retained/80",
       "id": "toc-4.8",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -13237,7 +13214,7 @@
       "missingEvidence": [
         "Full Brzozowski1962/1963 original and exact source version. Partial-DFA/empty-subset convention corrected; existing-state-ID collision fixed and exhaustive short-word regression passed."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/81",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/80",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
