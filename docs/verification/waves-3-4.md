@@ -694,3 +694,14 @@ The [exchange audit](micro-exchange-followup.md) resolves two original flags. St
 ## Bracketing and transaction-value follow-up — 2026-10-19
 
 The [bracketing/transaction audit](behav-bracketing-followup.md) resolves the last two original behavior flags. Finite acceptance intervals replace a false permanent threshold; exact binomial probabilities, dollar moments and Samuelson's all-reachable-wealth premise are explicit. Transaction-value curves now use exact reservation prices, actual full signed ranges and clearly assumed reference parameters around source-verified historical medians. Parent independently passes four mathematical/eight native groups plus scoped static checks, reads the actual original sections and inspects final screenshots. The genuine weak-law input is synchronized, and a parallel myopic-loss-aversion application is correctly a related link. **191 source reviews remain**.
+
+## Combined checkpoint through 1670918 — 2026-10-19
+
+[Checkpoint evidence](checkpoint-1670918.md): 1,436 passing tests, including all
+six UI tests; strict build 6,684 written + 6,890 planned and full static 6,621
+items, both with zero errors/warnings; 48 valid changed-page routes with zero
+runtime errors. Home JSON is 112,780 bytes gzipped. Ledger: 191 pending, 645
+original resolved, 3 additional flags; the tracked behavior queue is clear.
+Published cross-field shortfall is 874; 54/64 published and 27 whole-syllabus
+collections remain below target. Map performance, proof curation and remaining
+source work continue; Wave 5 has not started.

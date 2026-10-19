@@ -10485,8 +10485,8 @@
       "field": "econ",
       "target": 25,
       "writtenToWritten": 37,
-      "writtenToKnown": 38,
-      "wholeSyllabus": 41,
+      "writtenToKnown": 37,
+      "wholeSyllabus": 40,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -10722,13 +10722,6 @@
           "prerequisiteWritten": true
         },
         {
-          "item": "micro-9.7",
-          "prerequisite": "top-13.11",
-          "prerequisiteField": "math",
-          "itemWritten": true,
-          "prerequisiteWritten": false
-        },
-        {
           "item": "micro-9.10",
           "prerequisite": "fa-3.4",
           "prerequisiteField": "math",
@@ -10900,10 +10893,10 @@
       "collection": "fin",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 21,
-      "wholeSyllabus": 32,
-      "publishedShortfall": 9,
+      "writtenToWritten": 17,
+      "writtenToKnown": 22,
+      "wholeSyllabus": 33,
+      "publishedShortfall": 8,
       "unknown": [],
       "edges": [
         {
@@ -11031,6 +11024,13 @@
           "prerequisiteField": "social",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "fin-5.11",
+          "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "fin-5.13",
@@ -11288,10 +11288,10 @@
       "collection": "behav",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 10,
-      "writtenToKnown": 14,
-      "wholeSyllabus": 16,
-      "publishedShortfall": 15,
+      "writtenToWritten": 11,
+      "writtenToKnown": 15,
+      "wholeSyllabus": 17,
+      "publishedShortfall": 14,
       "unknown": [],
       "edges": [
         {
@@ -11377,6 +11377,13 @@
           "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "behav-4.6",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "behav-5.1",

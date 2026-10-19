@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 876 edges. Even
+written ideas in a different field**. Their combined shortfall is 874 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -52,3 +52,16 @@ and [discounting audit](behav-discounting-followup.md) document the independent
 source/model checks. Finance now has16 published cross-field edges and behavior10.
 The refreshed shortfall is876;54 of64 collections remain below25 published edges
 and27 remain below25 over the complete syllabus. The quota gate remains open.
+
+## Conditional tails and finite-average risk
+
+The rational-bubble forward identity in `fin-5.11` explicitly uses the written
+tower property `prob-4.1.13`; its dividend-tail and integrability conditions are
+now stated. The actual finite-variance weak law `prob-2.2.3` supplies the
+relative-risk limit in `behav-4.6`, with its bounded independent bets and correct
+dollar units. Both links are synchronized with the syllabi and independently
+audited in the [bubble](fin-bubbles-followup.md) and
+[bracketing](behav-bracketing-followup.md) reports. Parallel applications are
+related links. Finance now has17 published cross-field edges and behavior11.
+Published shortfall874;54/64collections and27whole-syllabus collections remain
+below25. The gate remains open.

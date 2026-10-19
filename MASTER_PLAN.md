@@ -62,7 +62,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    remains isolated. Follow §4.4 by measuring a persistent WebGL scene renderer.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
-The completed checkpoint through `72753a2` passes **1,422 tests**, including all six UI tests, and a **43-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is112,789 bytes gzipped. The route subset includes the recent monopoly, deadline, finance, discounting and screening audits and does not replace the earlier broader route audit. The extra screening audit repairs an unflagged neighboring item and leaves the196 pending count unchanged. See [checkpoint evidence](docs/verification/checkpoint-72753a2.md).
+The completed checkpoint through `1670918` passes **1,436 tests**, including all six UI tests, and a **48-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,780 bytes gzipped. The route subset includes the new bubble, exchange and bracketing audits and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 191 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-1670918.md).
 
 ### Where we started
 
