@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 238,
+  "remaining": 237,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
@@ -10,7 +10,7 @@
     "art": 1,
     "bighist": 7,
     "cg": 2,
-    "circ": 6,
+    "circ": 5,
     "cm": 14,
     "cplx": 3,
     "crypto": 3,
@@ -267,14 +267,6 @@
       "refs": [
         "Horowitz–Hill §1.6",
         "Agarwal–Lang §16.5"
-      ]
-    },
-    {
-      "id": "circ-4.9",
-      "file": "content/circ/ch04-b.js",
-      "name": "Universality of NAND gates",
-      "refs": [
-        "Agarwal–Lang §5.3"
       ]
     },
     {

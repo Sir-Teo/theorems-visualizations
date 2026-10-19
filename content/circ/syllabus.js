@@ -140,7 +140,7 @@ export default {
           pic: 'Drive the gate of a switch model above and below threshold: the drain–source path toggles between open and a small on-resistance, shown on its i–v plane.' },
         { num: '4.8', kind: 'Invention', name: 'CMOS inverter', deps: ['circ-4.7'], refs: ['Agarwal–Lang §11.5'],
           pic: 'Sweep the input of a complementary pair: the voltage transfer curve snaps steeply between rails and the supply current spikes only during the transition.' },
-        { num: '4.9', kind: 'Theorem', name: 'Universality of NAND gates', deps: ['circ-4.8', 'logic-2.5'], refs: ['Agarwal–Lang §5.3'],
+        { num: '4.9', kind: 'Theorem', name: 'Universality of NAND gates', deps: ['circ-4.8', 'logic-2.5'], refs: ['Agarwal–Lang §5.3', 'Sheffer (1913), Transactions AMS 14, pp. 481–488, §2 Theorem 1 and final duality footnote', 'Peirce, Collected Papers 4.12–20, A Boolian Algebra with One Constant (editorially dated c. 1880)'],
           pic: 'Build NOT, AND, OR and XOR by wiring NAND gates on a canvas; a truth-table checker confirms each construction for every input combination.' },
         { num: '4.10', kind: 'Model', name: 'MOSFET saturation model', deps: ['circ-4.7'], refs: ['Agarwal–Lang §7.4'],
           pic: 'Family of drain-current curves for several gate voltages: the square-law saturation region and the triode region are coloured, and the operating point is dragged between them.' },

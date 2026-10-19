@@ -3,7 +3,7 @@
   "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
   "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
   "initialSourceFlags": 203,
-  "retainedCount": 98,
+  "retainedCount": 97,
   "genuinelyUnreviewed": [],
   "collections": {
     "circ": {
@@ -14,7 +14,6 @@
       "retained": [
         "circ-3.5",
         "circ-4.5",
-        "circ-4.9",
         "circ-4.10",
         "circ-4.13",
         "circ-4.17"
@@ -312,13 +311,6 @@
       "status": "reviewed_blocked",
       "file": "content/circ/ch03.js",
       "missingFullSourceOrClaim": "Full Jacobi original for c1840 maximum-power/efficiency attribution; mathematical terminal-equivalent scope corrected.",
-      "report": "docs/verification/circ-ch04.md"
-    },
-    {
-      "id": "circ-4.9",
-      "status": "reviewed_blocked",
-      "file": "content/circ/ch04-b.js",
-      "missingFullSourceOrClaim": "Full Sheffer1913 original and Peirce unpublished priority source.",
       "report": "docs/verification/circ-ch04.md"
     },
     {
@@ -1059,6 +1051,14 @@
       "report": "docs/verification/transistor-primary-followup.md",
       "missingEvidence": [],
       "reason": "Complete 1948 original letter read in journal scan pp230–231, including both figures and Eq1. Corrected explanation follows its hole-injection and feedback account; original experimental reports separated from illustrative curves and parameters, including syllabus picture correction."
+    },
+    {
+      "id": "circ-4.9",
+      "status": "closed",
+      "file": "content/circ/ch04-b.js",
+      "report": "docs/verification/sheffer-peirce-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Full Sheffer1913 original read, especially §2 Theorem1 and final NAND-duality footnote; full Peirce original text in Collected Papers4.12–20 read. Credit distinguishes NOR and NAND and qualifies c1880 as editorial dating; no autograph inspection claimed."
     }
   ]
 }

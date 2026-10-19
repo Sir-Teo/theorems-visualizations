@@ -109,12 +109,11 @@ export default {
       statement: String.raw`Every Boolean function of a positive finite number of variables can be computed by a combinational circuit built only from two-input NAND gates, $\mathrm{NAND}(a,b)=\lnot(a\wedge b)$ (and signal fan-out). In particular, $\lnot a = \mathrm{NAND}(a,a)$, $a\wedge b = \lnot\,\mathrm{NAND}(a,b)$, $a\vee b=\mathrm{NAND}(\lnot a,\lnot b)$, and $a\oplus b=\mathrm{NAND}\bigl(\mathrm{NAND}(a,m),\mathrm{NAND}(b,m)\bigr)$ with $m=\mathrm{NAND}(a,b)$. The same holds for NOR.`,
       idea: String.raw`NOT, AND and OR together generate every Boolean function (write the truth table as an OR of ANDs of literals, the disjunctive normal form). Each of the three is built from NANDs as shown, so the family $\{\mathrm{NAND}\}$ suffices. This is what makes the CMOS NAND gate (4.8) the standard cell of digital design: one gate type, repeated, is enough, and the physical layer of the digital abstraction only has to provide one regenerating gate.`,
       caption: String.raw`Choose a target function; the network of NAND gates that computes it is drawn, with live signal values (green wires carry 1, grey wires 0). Flip inputs $A$ and $B$ and watch the values flow. The table checks the output against the target for every input row. "Break a gate" sticks the first gate's output at 1: the table then shows which rows fail, since a construction is only correct if every gate is.`,
-      credit: 'H. M. Sheffer, 1913 (a single binary connective suffices for Boolean algebra); C. S. Peirce found it earlier (unpublished)',
-      verify: true,
+      credit: 'H. M. Sheffer, 1913 (NOR and its NAND dual); earlier NOR construction by C. S. Peirce in an unpublished manuscript dated c. 1880 by the Collected Papers editors',
       deps: ['circ-4.8', 'logic-2.5'],
-      refs: ['Agarwal–Lang §5.3'],
+      refs: ['Agarwal–Lang §5.3', 'Sheffer (1913), Transactions AMS 14, pp. 481–488, §2 Theorem 1 and final duality footnote', 'Peirce, Collected Papers 4.12–20, A Boolian Algebra with One Constant (editorially dated c. 1880)'],
       tags: ['nand', 'boolean', 'universality'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/NAND_logic' },
+      links: { wikipedia: 'https://en.wikipedia.org/wiki/NAND_logic', source: 'https://archive.org/download/jstor-1988701/1988701.pdf', peirce: 'https://isidore.co/misc/Res%20pro%20Deo/Peirce/Done/4_local.html#cp4.fn25t.tm' },
       viz(v) {
         const NETS = {
           not: { name: 'NOT', gates: [['A', 'A']], f: (a) => !a },
