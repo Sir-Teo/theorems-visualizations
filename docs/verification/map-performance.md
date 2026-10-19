@@ -1,6 +1,10 @@
 # All-node map rendering
 
-2026-10-19. The map loads all6,684 written and6,890 planned nodes,23,068 prerequisite
+This report records the original 2026-10-19 steady-pan snapshot. The later
+[transition and hover audit](map-transitions-followup.md) records the updated graph,
+original-renderer comparisons, cold/settle costs and the open WebGL performance work.
+
+That snapshot loads all6,684 written and6,890 planned nodes,23,068 prerequisite
 edges and13 fields. Both definitions and planned ideas remain enabled in the benchmark.
 
 The initial continuous-pan run measured about22–24fps in its overview case. The renderer

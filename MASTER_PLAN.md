@@ -53,9 +53,10 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
    finds 54 of64 non-math collections below25 published edges, with27 below25 even across
    planned chapters. Add connections only when the argument or model actually requires them.
-   The home JSON gate passes. [All-node map measurements](docs/verification/map-performance.md)
-   reach60fps during tested steady panning; rebuild/zoom and oversized-view performance
-   remain separate from that result.
+   The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
+   reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)
+   preserve the original rendering and improve several transitions, while the full60fps gate
+   remains open. Follow §4.4 with a measured WebGL scene renderer.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `d8c7215` passes **1,362 tests**, the six UI tests and a **17-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,818 bytes gzipped. This route subset does not replace the earlier broader route audit. Subsequent ground-effect, solar-spectrum and map-transition changes remain under verification.
