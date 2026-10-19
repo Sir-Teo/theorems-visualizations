@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 239,
+  "remaining": 238,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
@@ -10,7 +10,7 @@
     "art": 1,
     "bighist": 7,
     "cg": 2,
-    "circ": 7,
+    "circ": 6,
     "cm": 14,
     "cplx": 3,
     "crypto": 3,
@@ -253,12 +253,6 @@
       "refs": [
         "Agarwal–Lang §10.7"
       ]
-    },
-    {
-      "id": "circ-4.14",
-      "file": "content/circ/ch04-c.js",
-      "name": "The Transistor, A Semi-Conductor Triode",
-      "refs": []
     },
     {
       "id": "circ-4.17",
