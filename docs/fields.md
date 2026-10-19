@@ -81,6 +81,11 @@ an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
   truncation error; use an analytic tail bound where available and distinguish zero-state
   behavior from internal stability (agent sample finding: sig 3.12).
 
+- In parcel models, distinguish pressure adjustment from linearized buoyancy.
+  Density-gradient formulas need their compressibility or Boussinesq assumptions.
+  Sample nonlinear reference curves through the plotted interval, and check axis
+  ranges at inversions as well as ordinary lapse rates.
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated

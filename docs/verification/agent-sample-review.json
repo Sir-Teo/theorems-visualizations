@@ -2269,6 +2269,117 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-6.19",
+      "file": "content/pma/ch06-a3.js",
+      "textHash": "aef85c23fdf6340e2bd44fd4389eecae4b40050fbc04e03e34ad9e829ba46076",
+      "textReview": "Reviewed the increasing continuous bijection and monotone-integrator hypotheses. Corresponding partitions preserve each cell's full value set and integrator increment, so upper/lower sums and integrability agree. The ordinary derivative substitution is explicitly routed through 6.17; numerical drag behavior and jump handling still need visual/interaction review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "stoch-4.2",
+      "file": "content/stoch/ch04.js",
+      "textHash": "2b7f0dd1942782e158f30f9821b8fffe8a9fed8bcc343e35ce05d5801c608ff9",
+      "textReview": "Reviewed the countable irreducible-chain return-time identity. Stationary avoidance-block probabilities telescope to the first-hit/first-return equality without assuming reversibility; recurrence makes the summed first-hit probabilities exhaustive. Excursion averages are finite-simulation estimates of reciprocal mean return times. No text correction identified; simulated tails and controls still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pde-1.11",
+      "file": "content/pde/ch01-b.js",
+      "textHash": "fdc6d3afe0431609ef23c3ee38ad37ce165aab746366f92fa03d8e44bd32b296",
+      "textReview": "Reviewed analytic data, solved highest-normal derivative and non-characteristic hypotheses. The Taylor recurrence determines the formal solution and majorants establish convergence. The heat equation example is characteristic in the order-two Cauchy formulation, so it does not contradict the theorem. The stated wave/Laplace convergence pictures still require direct numerical/visual inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-1.3.1c",
+      "file": "content/graph/ch01.js",
+      "textHash": "814b0bc7ea889902758989951d83097dceb31c2299170eb6ab55554d80595712",
+      "textReview": "Reviewed the BFS eccentricity computation and central-vertex triangle-inequality proof. The definition should state the nonempty finite-graph setting, or use suprema for general graphs: a connected infinite graph can have unbounded finite distances without a greatest pairwise distance. Disconnected graphs use infinite eccentricities. Empty-graph editing and readout behavior need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-2.10",
+      "file": "content/fa/ch02-a2.js",
+      "textHash": "c7852fdd17bf5acec0a10798f5f0b9c97569574294d9f0483c065b6049bfa521",
+      "textReview": "Reviewed neighborhood openness, equivalent images-of-open-sets definition, the open continuous-bijection criterion and propagation of openness at zero under linear translation. No additional continuity of the linear map is needed for that propagation. This definition has no visualization, so there are no figure controls to inspect; this note is a text review only.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-1.14",
+      "file": "content/comb/ch01-b.js",
+      "textHash": "3cb4fe6fad79e7201eb106a520409400a278219e054eb19de4f0d2d0f2d9665e",
+      "textReview": "Reviewed the Bell-number recurrence by selecting the complement of the new element's block. The triangle entry identity has consistent zero-based row/column indices and yields B(m+1) at the right edge. Enumeration and player still need visual/interaction review; this semantic pass does not certify the historical attribution from an original publication.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-3.2.3",
+      "file": "content/graph/ch03.js",
+      "textHash": "b0d00ec6b723c749bb8e0063249920c920ff624507cf8124689122fbc27527d8",
+      "textReview": "Reviewed the reduction/addition equivalence using the two explicitly named edge-deletion/suppression lemmas. Forward steps allow an edge between existing or newly subdividing vertices, with distinct subdivided edges. The displayed subdivisions and claimed 3-connectivity still need independent graph-state/visual checks; no text correction identified.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geo-1.4",
+      "file": "content/geo/ch01.js",
+      "textHash": "f23f2e3bd5d40c1fc73219a2f2504a769db99b0090a46fcc13dba01bacd7c484",
+      "textReview": "Corrected the distinction between pressure adjustment and linearization of buoyancy. The ocean density-gradient formula is qualified as Boussinesq; compressible in-situ density needs an adiabatic correction. Neutral motion and both unstable linear modes are stated, with release-from-rest used for the simulated cosh example. Typical periods now specify temperature/lapse-rate values. The caption identifies hard layer boundaries.",
+      "visualReview": "Inspected stable, inversion, unstable and zero-displacement captures in both themes. The dry adiabat now has 81 sampled heights; the inversion view includes its approximately 42 °C endpoint instead of clipping at 32 °C. Stable predicted/simulated traces agree closely, unstable motion stops at the declared layer boundary, and zero displacement stays at equilibrium.",
+      "interactionReview": "Actual range inputs exercise Γ=5,-8,14 K/km and initial displacements 300,600,-600,0 m in both themes. Stable predicted periods agree to displayed precision with independently evaluated g/T(g/cp−Γ). Readouts remain finite and runtime/real-TeX checks pass. Integrator and physical constants are unchanged.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Reviewed the dry-air small-displacement derivation of N squared from materially conserved potential temperature and environmental pressure adjustment. The ocean statement should use a Boussinesq or potential-density qualification, rather than arbitrary compressible in-situ density. The final scope sentence incorrectly conflates pressure equilibrium with a first-order approximation; the linear buoyancy law, not parcel pressure adjustment itself, is the small-displacement step. Initial velocity can also move a neutrally buoyant parcel. Flagged for correction.",
+      "initialTextHash": "fdfa0b59f4fb9d67fcf3ebf45dc48535140b232850c1e33177228b0fc3b439c3",
+      "correctionReport": "docs/verification/agent-buoyancy-review.md"
+    },
+    {
+      "id": "rca-1.18",
+      "file": "content/rca/ch01-a2.js",
+      "textHash": "9572963022c32769286a49fa20dd97b23669b22b52713f688d6078b6afa7f587",
+      "textReview": "Reviewed countable additivity, exclusion of the everywhere-infinite set function, the finite complex-valued definition, and the examples. Finiteness on some measurable set yields zero mass of the empty set. The geometric partition and point-mass boundary conventions still require visual/interaction review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "kin-1.1",
+      "file": "content/kin/ch01.js",
+      "textHash": "129a16f9331b184ce2287e47f2e0d69aaa9246571f046d327f070be2b75cb163",
+      "textReview": "Reviewed extent and species-rate identities at fixed volume for a single fixed-stoichiometry reaction. Atom conservation alone does not force a one-dimensional reaction coordinate in a multireaction network; the idea should explicitly invoke the single reaction. No accumulating intermediates is relevant to an overall reaction's rate identity, rather than a restriction on every elementary reaction in a mechanism. Native slopes and conventions still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-4.3.13",
+      "file": "content/prob/ch04-m2.js",
+      "textHash": "33dfe3cfcd9e2f2b110b740cbd5bced89224eea0523958b5944f888d68caec51",
+      "textReview": "Reviewed the supercritical one-ancestor, finite mean and x log x moment conditions. Finite-cutoff laws have W positive on survival, not always unconditionally; the caption's wording needs that explicit qualifier. The histogram's survivor conditioning and discarded explosive families must remain visible, since a finite plot cannot certify the infinite-tail theorem. The fixed-point and uniform-integrability argument is an outline rather than a full proof; numerical normalization and tails still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-7.63",
+      "file": "content/ladr/ch07-c.js",
+      "textHash": "cc9f5cd8603ade7a447c8ba69a269af19e86d750d02677c94e0f5bf455b0b6c4",
+      "textReview": "Reviewed Cholesky existence from positive-definite square root plus QR and uniqueness through the uniquely positive QR diagonal. The geometric description is explicitly two-dimensional; a parallel-column input violates positivity and may produce zero diagonal rather than the positive-definite factorization. Zero first column, snapping and the interpolated orthogonal transformation need native visual/interaction inspection. No theorem/proof correction identified.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }
