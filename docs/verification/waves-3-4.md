@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **251 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 587 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **248 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 590 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **251 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **248 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -500,3 +500,7 @@ The user removed all human-review/subjective-listening requirements in commit`19
 ## Ventricular geometry, original preparation and venous equilibrium — 2026-10-19
 
 Resolved `physio-3.8`, `physio-3.11` and `physio-4.17` against Mirsky1969, Patterson–Starling1914 and Guyton1955. Corrections distinguish thin-wall estimates from finite-thickness cut averages, imposed-inflow experiments from chosen pressure-response curves, and positive forward-flow equilibria from model states without venous supply. Parent read all three reports, independently reran nine mathematical and six native theme groups, and inspected the final geometry/preparation/no-flow screenshots plus Guyton p.128. See [wall geometry](physio-source-audit-wall-followup.md), [original preparation](physio-source-audit-patterson-followup.md) and [venous equilibrium](physio-source-audit-guyton-followup.md). **251 source reviews remain**.
+
+## Fluid and tracer model follow-up — 2026-10-19
+
+Resolved `physio-4.13`, `imaging-4.9` and `imaging-4.10` after source/model corrections: a hidden finite fluid equilibrium is now shown without the old15L cap; PET back-projections conserve each event and use a true4:1 uniform lesion; Patlak plotting uses the correct irreversible residual/intercept and declared sample times. Parent read all three reports, independently reran15 mathematical and six native theme groups, and inspected final uncapped-fluid, TOF and Patlak screenshots plus Budinger p.75. Sources support the stated assumptions rather than clinical calibration. See [fluid balance](physio-source-audit-oedema-followup.md), [TOF PET](imaging-tof-followup.md) and [Patlak](imaging-patlak-followup.md). **248 source reviews remain**.

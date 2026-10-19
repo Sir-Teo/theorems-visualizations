@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 251,
+  "remainingFlags": 248,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,9 +17,9 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 4,
+    "physio": 3,
     "pharm": 9,
-    "imaging": 4,
+    "imaging": 2,
     "circ": 1,
     "energy": 12,
     "solid": 7,
@@ -163,19 +163,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Wiggers_diagram"
       }
-    },
-    {
-      "id": "physio-4.13",
-      "file": "content/physio/ch04-c.js",
-      "name": "Oedema from unbalanced Starling forces",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {}
     },
     {
       "id": "physio-4.16",
@@ -380,34 +367,6 @@
         "Kak\u2013Slaney \u00a74.2"
       ],
       "links": {}
-    },
-    {
-      "id": "imaging-4.9",
-      "file": "content/imaging/ch04-c.js",
-      "name": "Time-of-flight PET",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Prince\u2013Links ch. 9"
-      ],
-      "links": {}
-    },
-    {
-      "id": "imaging-4.10",
-      "file": "content/imaging/ch04-c.js",
-      "name": "Tracer kinetics and the Patlak plot",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Prince\u2013Links ch. 9"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1038/jcbfm.1983.1"
-      }
     },
     {
       "id": "circ-4.17",
@@ -4596,7 +4555,10 @@
       "imaging-4.4",
       "physio-3.8",
       "physio-3.11",
-      "physio-4.17"
+      "physio-4.17",
+      "physio-4.13",
+      "imaging-4.9",
+      "imaging-4.10"
     ]
   },
   "additionalFollowups": [
@@ -8325,6 +8287,24 @@
       "status": "resolved",
       "report": "docs/verification/physio-source-audit-guyton-followup.md",
       "note": "Primary source and chosen-model scope reviewed; parent independently reran mathematical and native light/dark control suites and inspected final full-size screenshots. Corrected thick-wall interpretation, historical experiment scope or forward-flow equilibrium as documented."
+    },
+    {
+      "id": "physio-4.13",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-oedema-followup.md",
+      "note": "Primary/author source and model limitations checked. Parent independently reran mathematical and native light/dark suites and inspected full-size final screenshots. Corrected false runaway state, event-mass/sampling bias or irreversible tracer identity as documented."
+    },
+    {
+      "id": "imaging-4.9",
+      "status": "resolved",
+      "report": "docs/verification/imaging-tof-followup.md",
+      "note": "Primary/author source and model limitations checked. Parent independently reran mathematical and native light/dark suites and inspected full-size final screenshots. Corrected false runaway state, event-mass/sampling bias or irreversible tracer identity as documented."
+    },
+    {
+      "id": "imaging-4.10",
+      "status": "resolved",
+      "report": "docs/verification/imaging-patlak-followup.md",
+      "note": "Primary/author source and model limitations checked. Parent independently reran mathematical and native light/dark suites and inspected full-size final screenshots. Corrected false runaway state, event-mass/sampling bias or irreversible tracer identity as documented."
     }
   ]
 }

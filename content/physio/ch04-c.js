@@ -1,4 +1,5 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part c: 4.11–4.15)
+import { tissuePressure, oedemaModel, oedemaTrajectory } from './physio-source-audit-oedema.js';
 import { reynolds, reynoldsLine } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, MU_BLOOD, priesRel, twoLayerRel, hnoise, womersleyU, womersleyCentre } from './ch04.shared.js';
 
@@ -115,44 +116,33 @@ where $P_c, P_i$ are the capillary and interstitial hydrostatic pressures, $\pi_
       num: '4.13',
       kind: 'Phenomenon',
       name: 'Oedema from unbalanced Starling forces',
-      statement: String.raw`Oedema is an excess of fluid in the interstitial space. The interstitial volume $V$ obeys $\dot V=J_v(V)-J_\text{lymph}(V)$, with the filtration $J_v=K_f[(P_c-P_i(V))-(\pi_c-\pi_i(V))]$ of Starling's law (physio-4.12) and a lymph return that grows with interstitial pressure up to a ceiling. Oedema results when something pushes the filtration beyond what the lymph can remove: a **raised capillary pressure** (venous obstruction, heart failure), a **lowered plasma protein** (liver disease, nephrotic syndrome), a **leakier wall** (a lowered $\sigma$), or a **lymphatic obstruction**. A "safety factor" of several mmHg is provided by the rise of $P_i$ with volume, the washout of interstitial protein and the lymph increase.`,
-      idea: String.raw`At steady state the filtration and the lymph flow balance; the stable volume is the intersection of the two curves of flow against volume. As the interstitium swells, $P_i$ rises (reducing filtration), the interstitial protein is diluted (raising the net inward pull) and the lymph increases, all negative feedback; this is why a modest rise in capillary pressure produces no visible swelling. Once the pressure in the tissue becomes positive its compliance rises sharply (the gel loosens and free fluid collects), the feedback weakens, and the curves may no longer cross: the volume then grows without bound until another limit is reached.`,
-      caption: String.raw`**Left:** filtration (red) and lymph flow (blue) against the excess interstitial volume; the filled dot is the steady state (no dot: no equilibrium, runaway oedema). **Right:** the volume over the first day starting from normal. Raise **venous pressure** or lower **plasma protein**, or block the **lymphatics**, and watch the steady state move, then disappear. The readout shows the steady excess volume and the interstitial pressure.`,
-      scope: String.raw`A reconstruction with round-number parameters in the style of the textbook analysis ($K_f$ about 7 mL/min/mmHg for the whole body, $P_i$ about −3 mmHg, a capillary pressure of 17.3 mmHg and plasma oncotic pressure 28 mmHg, a lymph ceiling of 25 times its resting flow); the plasma volume is not tracked, whereas in a patient the loss of a litre of filtrate would drain it unless the kidney retained salt and water, so the swelling here is faster than in life; the interstitial pressure–volume curve and the lymph law are schematic. The conclusions are qualitative: which direction each factor pushes, and that there is a threshold. Nothing here is a clinical prediction.`,
+      statement: String.raw`Oedema means excess interstitial fluid. A compartment balance is $\dot x=(J_v-J_{lymph})/1000$ for excess volume $x$ in litres and flows in mL/min. In the chosen classical model, $J_v=K_f[(P_c-P_i(x))-\sigma(\pi_c-\pi_i(x))]$: increasing capillary pressure, decreasing plasma oncotic pressure or decreasing the protein reflection coefficient raises outward filtration at a fixed tissue state. Reducing lymph return also raises accumulation. Tissue pressure and protein dilution provide feedback as volume increases.`,
+      idea: String.raw`The steady state is where filtration equals lymph return. Here tissue pressure rises with volume, interstitial oncotic pressure falls and lymph flow rises toward a ceiling, so the net accumulation rate decreases strictly with volume. The chosen pressure law keeps rising even after its slope becomes smaller: therefore these particular curves **always have a finite stable equilibrium** over the controls shown. An intersection beyond an old plotting window does not establish runaway growth. The break in the chosen pressure curve at 1.5 L illustrates weaker feedback, not a universal diagnostic threshold.`,
+      caption: String.raw`The **left** panel shows the complete filtration and lymph curves through their computed intersection. The **right** panel integrates the volume balance for 24 hours from zero excess volume. Change **venous pressure**, **plasma oncotic pressure**, **lymph function** and **reflection coefficient** to compare the equilibrium with the fluid accumulated during the first day. Full trajectories are shown without a volume cap.`,
+      scope: String.raw`A classical compartment illustration with chosen parameters: $K_f=7$ mL/min/mmHg, initial $P_i=-3$ mmHg, $P_c=17.3+0.8\Delta P_v$ mmHg, $\pi_i=96/(12+x)$ mmHg, basal lymph flow 2.1 mL/min and a ceiling 52.5 mL/min before the lymph-function multiplier. The piecewise pressure–volume law and exponential lymph response are illustrative, not fitted measurements. Plasma depletion, protein transport, renal replacement and glycocalyx effects are omitted; large-volume equilibria are mathematical extrapolations. Starling's 1896 paper supplies historical pressure/protein reasoning and explicitly discusses lymphatic removal; it does not validate these chosen functions or numerical values. This panel does not predict clinical swelling or its timing.`,
       deps: ['physio-4.12'],
       see: ['physio-4.20'],
-      refs: ['Guyton–Hall'],
+      refs: ['Starling (1896), On the Absorption of Fluids from the Connective Tissue Spaces, J Physiol 19:312–326, pp.321–325 pressure/protein reasoning and lymphatic qualification; DOI 10.1113/jphysiol.1896.sp000596; constitutive laws chosen here'],
       tags: ['oedema', 'lymph', 'Starling'],
-      verify: true,
+      verify: false,
       viz(v) {
         const sPv = v.slider('rise in venous pressure', 0, 30, 13, { step: 0.5, fmt: (x) => `+${x} mmHg` });
         const sPi = v.slider('plasma oncotic pressure $\\pi_c$', 8, 28, 28, { step: 0.5, fmt: (x) => `${x} mmHg` });
         const sL = v.slider('lymph function', 0, 1, 1, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
         const sK = v.slider('capillary leakiness (σ lowered)', 0, 0.6, 0, { step: 0.05, fmt: (x) => `σ = ${v.fix(1 - x, 2)}` });
-        const KF = 7, PC0 = 17.3, J0 = 2.1, JMAX = 25 * J0, V0 = 12;
-        const Pi = (x) => (x < 1.5 ? -3 + 2 * x : 0.3 * (x - 1.5));
-        const piI = (x) => (8 * V0) / (V0 + x);
-        const a = v.stage({ x: [0, 15], y: [-25, 60], height: 300, axes: 'box', gutter: true, xlabel: 'excess interstitial volume (L)', ylabel: 'flow (mL/min)', weight: 1 });
-        const b = v.stage({ x: [0, 24], y: [0, 15], height: 300, axes: 'box', gutter: true, xlabel: 'time (hours)', ylabel: 'excess volume (L)', weight: 1 });
-        let o = null;
-        v.render(() => {
-          const Pc = PC0 + 0.8 * sPv.value, pc = sPi.value, sg = 1 - sK.value, f = sL.value;
-          const Jf = (x) => KF * ((Pc - Pi(x)) - sg * (pc - piI(x)));
-          const Jl = (x) => f * (J0 + (JMAX - J0) * (1 - Math.exp(-Math.max(Pi(x) + 3, 0) / 3)));
-          a.fn(Jf, { color: 'red', width: 2.8 }); a.fn(Jl, { color: 'accent', width: 2.8 });
-          a.hline(0, { color: 'muted', width: 1 }); a.vline(1.5, { color: 'faint', dash: [4, 4] }); a.text('Pi = 0', 1.6, 56, { size: 11, color: 'muted', align: 'left' });
-          // steady state: first sign change of Jf − Jl from x = 0
-          let xs = null; { let prev = Jf(0) - Jl(0); if (prev <= 0) xs = 0; else for (let x = 0.02; x <= 15 && xs === null; x += 0.02) { const cur = Jf(x) - Jl(x); if (cur <= 0) { let lo = x - 0.02, hi = x; for (let k = 0; k < 40; k++) { const m = (lo + hi) / 2; if (Jf(m) - Jl(m) > 0) lo = m; else hi = m; } xs = (lo + hi) / 2; } prev = cur; } }
-          if (xs !== null) a.dot(xs, Jf(xs), { r: 8, color: 'green' }); else a.text('no equilibrium: runaway', 7.5, 30, { size: 14, color: 'red', align: 'center', weight: 700 });
-          const o0 = xs;
-          // time course (explicit steps of 10 min)
-          const pts = []; let x = 0; const dt = 10, nS = 24 * 6; for (let k = 0; k <= nS; k++) { if (k % 2 === 0) pts.push([k / 6, Math.min(x, 15)]); x = Math.max(0, x + ((Jf(x) - Jl(x)) * dt) / 1000); }
-          b.path(pts, { color: 'purple', width: 2.8 }); b.hline(1.5, { color: 'faint', dash: [4, 4] }); b.setView([0, 24], [0, o0 === null ? 15 : Math.max(3.5, o0 * 1.4)]); b.text('Pi turns positive', 23.8, 1.5, { size: 11, color: 'muted', align: 'right', baseline: 'bottom', dy: -3 });
-          if (xs !== null) b.hline(xs, { color: 'green', dash: [5, 4] });
-          o = { xs, Pi: xs === null ? null : Pi(xs), Jl0: Jl(0), Jf0: Jf(0), end: pts[pts.length - 1][1] };
+        const a=v.stage({x:[0,15],y:[-25,60],height:300,axes:'box',gutter:true,xlabel:'excess interstitial volume (L)',ylabel:'flow (mL/min)',weight:1});
+        const b=v.stage({x:[0,24],y:[0,15],height:300,axes:'box',gutter:true,xlabel:'time (hours)',ylabel:'excess volume (L)',weight:1});
+        let o=null;
+        v.render(()=>{
+          const model=oedemaModel(sPv.value,sPi.value,sL.value,sK.value),xs=model.equilibrium,pts=oedemaTrajectory(model),xmax=Math.max(3.5,xs*1.18),ymin=Math.min(-5,model.filtration(xmax))*1.15,ymax=Math.max(5,model.filtration(0),model.lymph(xmax))*1.25;
+          a.setView([-xmax*.04,xmax],[ymin,ymax]);
+          a.fn(model.filtration,{color:'red',width:2.8,domain:[0,xmax]});a.fn(model.lymph,{color:'accent',width:2.8,domain:[0,xmax]});a.hline(0,{color:'muted',width:1});a.vline(1.5,{color:'faint',dash:[4,4]});a.text('chosen pressure-law break',1.5,ymax*.88,{size:11,color:'muted',align:'left'});a.dot(xs,model.filtration(xs),{r:8,color:'green'});
+          b.setView([-1,25],[-.04*xmax,xmax]);b.path(pts,{color:'purple',width:2.8});b.hline(xs,{color:'green',dash:[5,4]});b.hline(1.5,{color:'faint',dash:[4,4]});
+          o={xs,Pi:tissuePressure(xs),Jf0:model.filtration(0),Jl0:model.lymph(0),end:pts.at(-1)[1],model,pts};
         });
-        v.legend([['red', 'filtration $J_v$'], ['accent', 'lymph flow'], ['purple', 'volume over time']]);
-        v.readout(() => `at the start: filtration ${v.fix(o.Jf0, 1)} mL/min vs lymph ${v.fix(o.Jl0, 1)} mL/min (normal ≈ 2 mL/min each)\n${o.xs === null ? 'no steady state below 15 L: the filtration outruns the lymph (the volume plotted is clipped at 15 L)' : `steady state: excess ${v.fix(o.xs, 2)} L, interstitial pressure ${v.fix(o.Pi, 1)} mmHg → ${o.Pi > 0 ? 'oedema (positive tissue pressure)' : 'no visible oedema (the feedback has absorbed the load)'}`}\nin this model the first oedema appears once the capillary pressure has risen by about 9 mmHg (a textbook "safety factor" is larger, around 17 mmHg)`);
+        v.legend([['red','filtration $J_v$'],['accent','lymph flow'],['green','model equilibrium'],['purple','integrated volume']]);
+        v.readout(()=>`initial filtration ${v.fix(o.Jf0,1)} mL/min; lymph return ${v.fix(o.Jl0,1)} mL/min\nfinite model equilibrium: excess ${v.fix(o.xs,2)} L at tissue pressure ${v.fix(o.Pi,2)} mmHg; after 24 hours: ${v.fix(o.end,2)} L excess (plasma volume is not tracked)`);
+
       },
     },
     // ------------------------------------------------------------------ 4.14
