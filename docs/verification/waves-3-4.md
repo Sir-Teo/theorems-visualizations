@@ -672,3 +672,13 @@ IR/IC slacks establish the specified quadratic model, including intended-package
 choice at indifference. Parent independently passes four mathematical and eight
 native groups plus scoped static checks and inspects final screenshots. This
 adds a resolved follow-up without subtracting from the original queue;196 remain.
+
+## Combined checkpoint through72753a2 — 2026-10-19
+
+[Checkpoint evidence](checkpoint-72753a2.md):1,422 passing tests including all
+six UI tests; strict build6,684written+6,890planned with zero errors/warnings;
+full static6,621items with zero errors/warnings;43valid changed-page routes with
+zero runtime errors. Home JSON112,789bytes gzip. Ledger196pending,640original
+resolved,3additional flags. Cross-field shortfall876, with54/64published and
+27whole-syllabus collections still below target. The full-map60fps gate and
+proof flagship curation remain open. Wave5 remains prepared and unstarted.
