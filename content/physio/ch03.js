@@ -1,6 +1,8 @@
 // Human Physiology — Chapter 3: The heart as a pump (part a: 3.1–3.6)
 import { clamp, trace, heartBeat, beatAt, beatIdx, phases, phaseLoop, ecgAt, soundAt, drawLoop, cornerPoints, HEART } from './ch03.shared.js';
 
+import { OUTPUT_PRESETS, integrateSamples } from './physio-source-audit-cardiac.js';
+
 // ---------- helpers for this file ----------
 const fmt0 = (x) => String(Math.round(x));
 /** A sweep of beats over one parameter; cached per call site by the caller. */
@@ -273,40 +275,43 @@ where $P_{\mathrm{ed}}(V)$ is the passive (end-diastolic) pressure–volume curv
       num: '3.6',
       kind: 'Definition',
       name: 'Stroke volume, ejection fraction and cardiac output',
-      statement: String.raw`The **stroke volume** is the blood ejected by the ventricle in one beat, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, the difference of the end-diastolic and end-systolic volumes. The **ejection fraction** is the fraction of the filled volume that is ejected, $EF = SV/V_{\mathrm{ED}}$. The **cardiac output** is the volume ejected per minute, $CO = SV \times HR$, and in the steady state equals the output of the other ventricle and the venous return. In an echocardiographic reference study the normal range for the left-ventricular ejection fraction is quoted as roughly 52–72 % for men and 54–74 % for women (2015 ASE/EACVI chamber-quantification recommendations, as relayed by secondary sources); a resting cardiac output of about 5 L/min is typical of a healthy adult.`,
-      idea: String.raw`These three numbers are read straight from the pressure–volume loop (physio-3.2): the loop's width is $SV$, its right edge is $V_{\mathrm{ED}}$, and multiplying by the heart rate turns a per-beat quantity into a flow. $EF$ is a ratio, so it can look normal while the heart is small and the output low, and it can fall as a dilated heart ejects the same $SV$ out of a larger $V_{\mathrm{ED}}$. Cardiac output is the one the body needs, which is why a failing ventricle compensates by dilating (preload, physio-3.3) and by raising the heart rate.`,
-      caption: String.raw`Pick a **heart** (its typical heart rate is set for you; change it freely). The left panel is the pressure–volume loop, with the stroke volume as its width. The right panel is the area picture of $CO = SV \times HR$: a rectangle with width the heart rate and height the stroke volume, so its area is the output per minute; the dashed rectangle is the resting healthy heart. Compare the "failing" heart (a dilated ventricle with weak contraction, low ejection fraction) with the "athlete" (large stroke volume, slow rate): a similar area built from a tall, narrow rectangle against a short, wide one. The small, stiff ventricle keeps a normal ejection fraction yet a low output.`,
-      scope: String.raw`The four hearts are parameter sets of the chapter's illustrative model, not patient data. Ejection-fraction reference values are method-dependent (2-D echocardiography vs MRI, sex), and the numbers in the statement come from a secondary source, so they should be checked against the guideline itself before use. Nothing here is medical advice.`,
+      statement: String.raw`The **stroke volume** is the blood ejected by the ventricle in one beat, $SV = V_{\mathrm{ED}} - V_{\mathrm{ES}}$, the difference of the end-diastolic and end-systolic volumes. The **ejection fraction** is the fraction of the filled volume that is ejected, $EF = SV/V_{\mathrm{ED}}$. The **cardiac output** is the volume ejected per minute, $CO = SV \times HR$, and in the steady state equals the output of the other ventricle and the venous return. For mL and beats/min, divide $SV\times HR$ by 1000 to express output in L/min. The **2015 ASE/EACVI document** reports biplane 2-D echocardiographic reference ranges of 52–72% for men and 54–74% for women (Table 2, mean ± two standard deviations; Table 4). These method-specific reference values do not define the model parameters or diagnose an individual.`,
+      idea: String.raw`These three numbers are read straight from the pressure–volume loop (physio-3.2): the loop's width is $SV$, its right edge is $V_{\mathrm{ED}}$, and multiplying by the heart rate turns a per-beat quantity into a flow. $EF$ is a ratio, so it can look normal while the heart is small and the output low, and it can fall as a dilated heart ejects the same $SV$ out of a larger $V_{\mathrm{ED}}$. A numerical example makes the distinction: 60 mL ejected from 100 mL and from 150 mL gives the same stroke volume but ejection fractions of 60% and 40%. At the same heart rate these give equal cardiac output. Filling, loading and rate can all change the model’s stroke volume.`,
+      caption: String.raw`Choose a **model preset** and change its heart rate. The left panel shows the computed pressure–volume loop; its width is the stroke volume. On the right, rectangle area is $SV\times HR$ in mL/min, divided by 1000 in the output label. The dashed rectangle is the baseline model at 75 beats/min. The large-stroke-volume preset uses a slower default rate, while the dilated weak preset ejects a smaller fraction of its filled volume. At its default rate, the small stiff preset has an EF close to the baseline despite a smaller output; changing the rate can change both. Compare the actual numbers in the readout.`,
+      scope: String.raw`The four presets are chosen parameters of the chapter's lumped left-heart model, not patient data or measured athlete/disease populations. The source's 2015 reference ranges are specifically for biplane 2-D echocardiography and are presented as historical method-specific context. The simulation uses a finite warm-up; the readout reports its residual ventricular-volume drift over the displayed cycle. The pressure readout uses numerical time averaging, not a systolic/diastolic shortcut.`,
       deps: ['physio-3.2'],
       see: ['physio-3.5', 'physio-4.1'],
-      refs: ['Guyton–Hall'],
+      refs: ['Lang et al. (2015), ASE/EACVI chamber quantification, JASE 28:1–39; §§1.3, 2.2 and 2.4, pp. 6–7; Tables 2 (p. 7) and 4 (p. 10); DOI 10.1016/j.echo.2014.10.003'],
       tags: ['cardiac output', 'ejection fraction'],
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ejection_fraction' },
+      verify: false,
+      links: { source: 'https://www.asecho.org/wp-content/uploads/2016/02/2015_ChamberQuantificationREV.pdf#page=7', doi: 'https://doi.org/10.1016/j.echo.2014.10.003' },
       viz(v) {
-        const P = { healthy: { hr: 75 }, failing: { Ees: 1.0, V0: 40, Pv: 12, R: 1.5, hr: 90 }, athlete: { Ees: 3.4, V0: 10, A: 0.15, B: 0.028, Pv: 11, R: 1.0, hr: 52 }, stiff: { Ees: 4.2, V0: 10, A: 1.2, B: 0.04, Pv: 12, R: 1.5, hr: 85 } };
+        const P = OUTPUT_PRESETS;
         const hr = v.slider('heart rate', 40, 130, 75, { step: 1, fmt: (x) => `${fmt0(x)} /min` });
-        const type = v.select('heart', [{ value: 'healthy', label: 'healthy' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'athlete' }, { value: 'stiff', label: 'small, stiff' }], 'healthy', { onChange: (k) => hr.set(P[k.value ?? k].hr) });
+        const type = v.select('heart', [{ value: 'healthy', label: 'baseline' }, { value: 'failing', label: 'dilated, weak' }, { value: 'athlete', label: 'large stroke volume' }, { value: 'stiff', label: 'small, stiff' }], 'healthy', { onChange: (k) => hr.set(P[k.value ?? k].hr) });
         const sL = v.stage({ x: [20, 230], y: [0, 160], height: 330, axes: 'box', gutter: true, xlabel: 'ventricular volume (mL)', ylabel: 'ventricular pressure (mmHg)', weight: 1.2 });
         const sA = v.stage({ x: [0, 140], y: [0, 130], height: 330, axes: 'box', gutter: true, xlabel: 'heart rate (beats/min)', ylabel: 'stroke volume (mL)', weight: 1 });
         let R = null, B = null;
         v.render(() => {
           const { hr: _h, ...pp } = P[type.value]; R = heartBeat({ ...pp, HR: hr.value }); B = heartBeat({});
+          const pressureTop = Math.max(R.Pmax, B.Pmax) * 1.3;
+          sL.setView([Math.min(R.ESV, B.ESV) - 15, Math.max(R.EDV, B.EDV) + 35], [-5, pressureTop]);
+          sA.setView([0, 140], [0, Math.max(R.SV, B.SV) * 1.2]);
           sL.path(B.loop, { color: 'muted', dash: [5, 4], width: 1.4, close: true });
           drawLoop(sL, R);
           sL.vline(R.EDV, { color: 'faint', dash: [3, 4], width: 1 }); sL.vline(R.ESV, { color: 'faint', dash: [3, 4], width: 1 });
-          sL.measure(R.ESV, 150, R.EDV, 150, `SV = ${v.fix(R.SV, 0)} mL`);
-          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
-          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, 136, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.measure(R.ESV, pressureTop * .94, R.EDV, pressureTop * .94, `SV = ${v.fix(R.SV, 0)} mL`);
+          sL.text(`$V_{ES}$ = ${v.fix(R.ESV, 0)}`, R.ESV, pressureTop * .82, { size: 11, color: 'muted', align: 'left', dx: 4 });
+          sL.text(`$V_{ED}$ = ${v.fix(R.EDV, 0)}`, R.EDV, pressureTop * .82, { size: 11, color: 'muted', align: 'left', dx: 4 });
           const bs = B.SV, b75 = 75;
           sA.rect(0, 0, b75, bs, { fill: 'muted', fillAlpha: 0.1, stroke: true, color: 'muted', dash: [5, 4] });
           sA.rect(0, 0, hr.value, R.SV, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 2 });
           sA.text(`CO = ${v.fix(hr.value * R.SV / 1000, 1)} L/min`, hr.value / 2, R.SV / 2, { size: 14, color: 'ink', align: 'center', baseline: 'middle', weight: 700 });
         });
-        v.legend([['accent', 'this heart: area = cardiac output'], ['muted', 'resting healthy heart (75/min)', { dash: true }]]);
+        v.legend([['accent', 'this heart: area = cardiac output'], ['muted', 'baseline model (75/min)', { dash: true }]]);
         v.readout(() => {
           const co = (hr.value * R.SV) / 1000;
-          return `$SV = ${v.fix(R.EDV, 0)} - ${v.fix(R.ESV, 0)} = ${v.fix(R.SV, 0)}$ mL · $EF = ${v.fix(R.SV, 0)}/${v.fix(R.EDV, 0)} = ${v.fix(100 * R.EF, 0)}\\%$ · $CO = ${v.fix(R.SV, 0)} \\times ${fmt0(hr.value)} = ${v.fix(co, 1)}$ L/min · mean arterial pressure about ${v.fix((R.PaMax + 2 * R.PaMin) / 3, 0)} mmHg`;
+          return `$SV = ${v.fix(R.EDV, 1)} - ${v.fix(R.ESV, 1)} = ${v.fix(R.SV, 1)}$ mL · $EF = ${v.fix(R.SV, 1)}/${v.fix(R.EDV, 1)} = ${v.fix(100 * R.EF, 1)}\\%$ · $CO = ${v.fix(R.SV, 1)} \\times ${fmt0(hr.value)}/1000 = ${v.fix(co, 2)}$ L/min\nmean arterial pressure ${v.fix(integrateSamples(R.t, R.Pa) / R.t.at(-1), 1)} mmHg; residual cycle volume drift ${v.fix(R.drift, 3)} mL`;
         });
       },
     },

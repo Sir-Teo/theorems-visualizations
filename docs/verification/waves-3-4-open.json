@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 265,
+  "remainingFlags": 264,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 10,
+    "physio": 9,
     "pharm": 9,
     "imaging": 6,
     "sig": 2,
@@ -212,21 +212,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Wiggers_diagram"
-      }
-    },
-    {
-      "id": "physio-3.6",
-      "file": "content/physio/ch03.js",
-      "name": "Stroke volume, ejection fraction and cardiac output",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Ejection_fraction"
       }
     },
     {
@@ -4795,7 +4780,8 @@
       "physio-4.9",
       "physio-4.14",
       "physio-4.15",
-      "physio-4.18"
+      "physio-4.18",
+      "physio-3.6"
     ]
   },
   "additionalFollowups": [
@@ -8440,6 +8426,12 @@
       "status": "resolved",
       "report": "docs/verification/physio-source-audit-flow-followup.md",
       "note": "Primary Reynolds/Hatle source review; corrected dynamic-similarity, synthetic-sound and Bernoulli proximal/rounding claims; five independent mathematical and four native theme groups pass."
+    },
+    {
+      "id": "physio-3.6",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-cardiac-followup.md",
+      "note": "Original ASE2015 method-specific reference tables checked; corrected /1000 output conversion, inconsistent preset comparison and pressure average. Four independent model/unit groups and two native theme groups pass; parent reran both suites and inspected final full-size screenshot."
     }
   ]
 }
