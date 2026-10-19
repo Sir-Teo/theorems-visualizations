@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 241,
+  "remaining": 240,
   "originalAnalysis": 0,
   "byCollection": {
-    "algo": 2,
+    "algo": 1,
     "arch": 10,
     "art": 1,
     "bighist": 7,
@@ -54,14 +54,6 @@
     "toc": 7
   },
   "queue": [
-    {
-      "id": "algo-11.22",
-      "file": "content/algo/ch11-d.js",
-      "name": "Simplex can take exponentially many pivots (Klee–Minty)",
-      "refs": [
-        "Erickson notes: Linear Programming Algorithms"
-      ]
-    },
     {
       "id": "algo-11.23",
       "file": "content/algo/ch11-d.js",

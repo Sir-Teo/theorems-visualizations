@@ -25,6 +25,9 @@ function flowLPs(ids, arcs, s, t) {
 }
 
 // ---------------------------------------------------------------- Klee–Minty data
+// Explicit scaling of the original epsilon-cube (epsilon=0.1), not a literal
+// transcription of the 1972 coefficients. Full source and all-n gradient proof:
+// docs/verification/klee-minty-primary-followup.md.
 function kmLP(n) {
   const c = Array.from({ length: n }, (_, j) => 10 ** (n - 1 - j));
   const rows = Array.from({ length: n }, (_, i) => { const a = Array(n).fill(0); for (let j = 0; j < i; j++) a[j] = 2 * 10 ** (i - j); a[i] = 1; return { a, op: '<=', b: 100 ** i }; });
@@ -124,14 +127,14 @@ with one variable $y_e$ per capacity constraint and one potential $d_v$ per cons
       name: 'Simplex can take exponentially many pivots (Klee–Minty)',
       statement: String.raw`For every $n$ there is a linear program in $n$ variables and $n$ constraints (plus $x\ge0$), a "squashed $n$-cube", for which the simplex method with the **largest-coefficient** pivot rule, started at the origin, visits all $2^n$ vertices and so makes $2^n-1$ pivots. One such family is
 $$\max\ \sum_{j=1}^n10^{\,n-j}x_j\quad\text{s.t.}\quad 2\sum_{j<i}10^{\,i-j}x_j+x_i\le 100^{\,i-1}\ (i=1,\dots,n),\ x\ge0.$$
-So no bound polynomial in $n$ holds for this pivot rule. The same LP is solved in one pivot by other rules, so the example indicts a *rule*, not the LP.`,
+This is an explicit rescaling of Klee and Minty's $\varepsilon$-cube with $\varepsilon=0.1$, not a transcription of their printed coefficients. So no bound polynomial in $n$ holds for this pivot rule. The same LP is solved in one pivot by the greatest-increase rule, so the example indicts a *rule*, not the LP.`,
       idea: String.raw`Each constraint is a slightly tilted face of a cube; because the tilts are small, the vertices keep the combinatorial structure of a cube, and the objective increases along a path through all $2^n$ of them (a Hamiltonian path of the cube along which the objective is strictly increasing). Recursively, the path in dimension $n$ goes through the path of dimension $n-1$ on the face $x_n=0$, climbs the vertical edge, and traverses the path of dimension $n-1$ again, in reverse, on the opposite face; the coefficient scaling $10^{n-j}$ makes the largest-coefficient rule choose exactly these moves. Hence $T(n)=2T(n-1)+1$ pivots.`,
       caption: String.raw`Left: the Klee–Minty polytope for $n=3$ (each axis rescaled to $[0,1]$ so the squashed cube is visible), with the simplex path in the order of the pivots; step through it and drag to rotate. Right: pivot counts for $n=1,\dots,7$ under three rules, computed by actually running the simplex method; the dashed line is $2^n-1$. Largest-coefficient hits it on the nose; greatest-increase finishes in one pivot. Choose the rule for the path on the left.`,
       deps: ['opt-6.3'],
-      refs: ['Erickson notes: Linear Programming Algorithms'],
+      refs: ['Erickson notes: Linear Programming Algorithms', 'Klee–Minty, How Good Is the Simplex Algorithm?, Inequalities III (1972), pp.159–175; §4 pp.162–164, §7 pp.170–174, Eq.(29)'],
       tags: ['linear programming', 'counterexample'],
       credit: 'V. Klee & G. J. Minty, 1972 (“How good is the simplex algorithm?”)',
-      verify: true,
+      links: { source: 'https://sophie.huiberts.me/files/Klee-Minty-How-Good-Is-the-Simplex-Algorithm-1970.pdf' },
       viz(v) {
         const s = v.stage({ x: [-1.7, 1.7], y: [-1.5, 1.5], equal: true, axes: false, height: 380, weight: 1.1 });
         const bars = v.stage({ x: [0.3, 7.7], y: [0.7, 400], ylog: true, axes: 'box', gutter: true, height: 380, weight: 1, xlabel: 'dimension $n$', ylabel: 'pivots', xticks: [1, 2, 3, 4, 5, 6, 7] });

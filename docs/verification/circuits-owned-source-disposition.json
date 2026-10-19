@@ -3,7 +3,7 @@
   "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
   "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
   "initialSourceFlags": 203,
-  "retainedCount": 101,
+  "retainedCount": 100,
   "genuinelyUnreviewed": [],
   "collections": {
     "circ": {
@@ -182,7 +182,6 @@
         11
       ],
       "retained": [
-        "algo-11.22",
         "algo-11.23"
       ],
       "genuinelyUnreviewed": [],
@@ -864,13 +863,6 @@
       "report": "docs/verification/engineering-source-review.md"
     },
     {
-      "id": "algo-11.22",
-      "status": "reviewed_blocked",
-      "file": "content/algo/ch11-d.js",
-      "missingFullSourceOrClaim": "Full Klee–Minty1972 original, including its exact deformed-cube coefficients and pivot rule. Displayed family independently tested through n6; original source not obtained.",
-      "report": "docs/verification/computing-source-review.md"
-    },
-    {
       "id": "algo-11.23",
       "status": "reviewed_blocked",
       "file": "content/algo/ch11-d.js",
@@ -1045,6 +1037,14 @@
       "report": "docs/verification/konig-egervary-primary-followup.md",
       "missingEvidence": [],
       "reason": "Complete 1931 originals read. Corrected independence claim: Egervary explicitly starts with Konig theorem, provides a new proof and weighted generalization."
+    },
+    {
+      "id": "algo-11.22",
+      "status": "closed",
+      "file": "content/algo/ch11-d.js",
+      "report": "docs/verification/klee-minty-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Complete 1972 original read; explicit all-dimension change of variables and nonbasic-gradient proof connects displayed 10/100 coefficients to original epsilon-cube. Extended all-state implementation checks through dimension7."
     }
   ]
 }

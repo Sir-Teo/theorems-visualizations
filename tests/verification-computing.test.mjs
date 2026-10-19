@@ -92,9 +92,26 @@ test('All 512 bipartite 3×3 graphs have matching flow equal to exhaustive verte
   }
 });
 test('Displayed Klee–Minty family takes 2^n−1 largest-coefficient pivots, while greatest-improvement takes one',()=>{
-  for(let n=1;n<=6;n++){
+  for(let n=1;n<=7;n++){
     const c=Array.from({length:n},(_,j)=>10**(n-1-j)),rows=Array.from({length:n},(_,i)=>({a:Array.from({length:n},(_,j)=>j<i?2*10**(i-j):j===i?1:0),b:100**i,op:'<='}));
     const d=simplex(c,rows),g=simplex(c,rows,{rule:'greatest'});assert.equal(d.status,'optimal');assert.equal(d.pivots.length,2**n-1);assert.equal(g.pivots.length,1);assert.equal(d.value,g.value);
+    const states=[Array(n).fill(0),...d.pivots.map(p=>p.x)];
+    const bits=states.map(x=>{
+      let previous=0;const vertex=[];
+      for(let i=0;i<n;i++){
+        const u=x[i]/100**i+.1*previous,lower=.1*previous,upper=1-.1*previous;
+        assert.ok(Math.min(Math.abs(u-lower),Math.abs(u-upper))<1e-9);
+        vertex.push(Math.abs(u-upper)<1e-9?1:0);previous=u;
+      }
+      return vertex;
+    });
+    assert.equal(new Set(bits.map(b=>b.join(''))).size,2**n,'visits every original epsilon-cube vertex once');
+    for(let k=1;k<bits.length;k++){
+      const changed=bits[k].map((b,i)=>b!==bits[k-1][i]?i:-1).filter(i=>i>=0);
+      assert.equal(changed.length,1,'adjacent vertices flip one active facet');
+      const gradients=bits[k-1].map((_,i)=>bits[k-1].slice(i).reduce((s,b)=>s*(1-2*b),1)*10**(n-1-i));
+      assert.equal(changed[0],gradients.indexOf(Math.max(...gradients)),'chooses the original largest positive nonbasic gradient');
+    }
   }
 });
 test('Every square minor of a 4-cycle incidence matrix is TU; the triangle determinant is 2',()=>{
