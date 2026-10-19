@@ -1815,6 +1815,117 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-4.9",
+      "file": "content/fa/ch04.js",
+      "textHash": "1ecbb6468634acb98a0e01aa6e65dc3dd32171155840109e219321d7853624e6",
+      "textReview": "The dual/quotient isometries follow correctly from norm-preserving Hahn–Banach extension and factorization through the quotient. The open unit ball maps onto the quotient's open unit ball, so the norms agree without assuming an infimum is attained. The caption's strip between level lines assumes a nonzero annihilating functional; inspect the zero-functional handle case separately.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "epi-4.2",
+      "file": "content/epi/ch04.js",
+      "textHash": "c2a5d6b5faae31224e9c47f165d41520e82901402a1bcfd16d6a3b347669774b",
+      "textReview": "The causal-pie idea correctly shows that attributable fractions can sum to more than one, but the displayed P(D|component absent) is observational conditioning rather than the required intervention in general. Independence in the illustrative population can make them agree, not in arbitrary causal settings. Sharing pies does not force the sum above one: if A,B,C are all present and any pair suffices, removing any single component prevents no cases. Replace the universal claim and use intervention probabilities.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "nt-3.3",
+      "file": "content/nt/ch03.js",
+      "textHash": "b6bf643e49dbc2f4bc0811c3c4d23212bda6bc90c2485cd9587ea90367df588c",
+      "textReview": "The classification is unchanged. The proof now chooses h from g,g+p with h^(p-1) not equal to one modulo p² before binomial exponent lifting, instead of attributing order growth to Hensel root lifting. CRT and the power-of-two obstruction remain explicit, and CRT is mirrored as an actual prerequisite.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The primitive-root modulus classification is correct, including the conventional trivial unit group at n=1. The proof's lift is not supplied by ordinary Hensel lifting: a primitive residue mod p may lift to an element with smaller order mod p². Choose a representative with h^(p-1) not equal to one mod p², using g or g+p, and then use binomial exponent lifting. Mirror the actually used CRT prerequisite rather than a misleading Hensel dependency.",
+      "initialTextHash": "77e043179bbf3ce074b6f0b05c0c5536296b4b68a4a8ab45022a49d1d6983788",
+      "correctionReport": "docs/verification/agent-primitive-root-review.md"
+    },
+    {
+      "id": "tech-4.12",
+      "file": "content/tech/ch04-b.js",
+      "textHash": "e9c7a062fc6895bce15fbc60def3c0cfc67d24f90bb54effc63b5ea87c56c42d",
+      "textReview": "The statement carefully separates original Smeaton tables, six sail angles and empirical maxims from the modern illustrative water/blade models. Its original locators and model-scaling caveat are specific. The variable load-times-speed effect is the right quantity, and the power/head comparison is distinct from whole descent. Inspect the replay arithmetic and blade-angle conventions; this semantic reading does not acquire another original source.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-3.41",
+      "file": "content/pma/ch03-b2.js",
+      "textHash": "65dcfe7a1a7c9b6b3b5cc0606bd6e294cfd670b8730c03066aaa7ff49b081d14",
+      "textReview": "The finite summation-by-parts identity is correct, including its A_(p-1) boundary term and the empty interior sum when p=q. Substituting a_n=A_n-A_(n-1) and shifting indices proves it directly. The diagram assumes positive a_n but explicitly allows negative row differences when b increases; inspect signed-area accounting and handle ordering.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geol-4.6",
+      "file": "content/geol/ch04-b.js",
+      "textHash": "62487d97b99df2c92e9a48daafd16e43234d9e47ceb9b3c2a8e686b2b0fb4141",
+      "textReview": "Subtracting the linear steady geotherm gives initial transient 1-z/a, whose sine coefficients are 2/(n*pi), so the finite-plate heat series is correct for positive time. The long-time first-mode scale is a²/(pi²*kappa), about 32 Myr for 100 km and kappa=1e-6 m²/s. The boundary/initial incompatibility at the ridge is a standard t=0 limit. Empirical depth fits remain an explicitly flagged source question.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-11.2",
+      "file": "content/fa/ch11.js",
+      "textHash": "ec3b9364c57e192914c2a5d7328a8679d9a9456907bc6e28dd604c68ae6fdbe0",
+      "textReview": "An ideal containing a unit contains one, and continuity preserves ideal operations under closure, so the proposition is correct. In the caption, f1²+f2² has no zero only for the selected real-valued functions or an equivalent positivity condition; arbitrary complex functions with no common zero can have cancelling squares. State the real-valued example functions explicitly and inspect the coincident-zero transition.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "logic-2.11",
+      "file": "content/logic/ch02-b.js",
+      "textHash": "2bf5f6f71cb02de9469b69811d7bbae2b37acafb88388cc7262c89458fdfcbea",
+      "textReview": "Compactness in countably many letters follows from the infinite finitely branching assignment tree. To justify a surviving node at each level despite infinitely many formulas on that finite set of letters, a failed level would supply one refuting formula per finitely many assignment, yielding a finite unsatisfiable subset. That finite-witness step is implicit but valid. The six-variable display illustrates an infinite theorem and cannot certify arbitrary infinite satisfiability by itself.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "micro-2.5",
+      "file": "content/micro/ch02.js",
+      "textHash": "918e2edfa90b9cf4f9882dd497eb00295ab3e2dd7f834d62ded51a89c94a41bf",
+      "textReview": "The equilibrium and short-side rationing interpretation are standard under strictly downward demand and upward supply. Weakly monotone or flat curves can give multiple crossings, no strict surplus, or equality of the traded and equilibrium quantities away from one selected price, so the strict inequalities need corresponding assumptions. Bisection also requires a bracketed sign change; inspect nonintersection and clipped-zero cases.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-8.3",
+      "file": "content/music/ch08.js",
+      "textHash": "977eec924d93a97e0b0c7325fcd82d7bdf2f31e79805c0bfebc59702dc7b0f74",
+      "textReview": "The seven diatonic modes and relative-versus-parallel distinction are correct. The proof incorrectly invokes a pair of adjacent semitones SS: TTSTTTS has no adjacent S pair. Its seven rotations are distinct because length seven is prime and the nonconstant cyclic word cannot have a smaller period. Qualify the fifths-window claim by holding a tonic fixed, and distinguish medieval authentic/plagal conventions without claiming every shared modern name started on a different degree.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-1.5",
+      "file": "content/thermo/ch01.js",
+      "textHash": "c0b6bdb1df6f301cd5727e986964f1d34eb33cfa4bcccf0547d39c2fbc2e841b",
+      "textReview": "Ideal partial pressures add because each species contributes its own wall-momentum flux and equipartition fixes m<v_x²>=kT. The ideal/low-density restriction and finite-size departure are explicit. The crowded mixture's alone comparison must use each species' nonideal standalone pressure, distinct from its ideal density formula, as the caption's three bars intend. Inspect the multicomponent hard-sphere EOS and finite impact sampling.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "macro-2.2",
+      "file": "content/macro/ch02.js",
+      "textHash": "45e718d9fc22804aed0af4a2599d577f5ebe31ba34ebf23c7d485c700c50feca",
+      "textReview": "Differentiation gives the two Cobb–Douglas shares and Euler's theorem gives exhaustion for differentiable degree-one homogeneous production. Require positive K,L,A and nondegenerate 0<alpha<1 for the stated marginal products and unit-elasticity characterization. Degenerate one-factor limits do not furnish a varying-share CES counterexample. The plotted historical labour share and its adjustments still need their source provenance checked separately.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }

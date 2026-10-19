@@ -123,7 +123,7 @@ export default {
           pic: 'Pick a modulus and a unit and watch its powers circle the clock until they return to 1; the length of the cycle is the order and always divides φ(n).' },
         { num: '3.2', kind: 'Theorem', name: 'Primitive roots modulo a prime', deps: ['nt-3.1', 'nt-2.12', 'nt-2.10'], refs: ['Apostol §10.4', 'Ireland–Rosen ch. 4'],
           pic: 'For a prime p, a histogram counts units by order; each divisor d of p − 1 has exactly φ(d) of them, so φ(p − 1) primitive roots appear and are highlighted.' },
-        { num: '3.3', kind: 'Theorem', name: 'Gauss: which moduli have primitive roots', deps: ['nt-3.2', 'nt-2.13'], refs: ['Apostol §10.6', 'Apostol §10.8'],
+        { num: '3.3', kind: 'Theorem', name: 'Gauss: which moduli have primitive roots', deps: ['nt-3.2', 'nt-2.4'], refs: ['Apostol §10.6', 'Apostol §10.8'],
           pic: 'Scan moduli n up to 200 and test for an element of order φ(n); the hits are exactly 1, 2, 4, pᵏ and 2pᵏ, and for n = 8 every unit squares to 1.' },
         { num: '3.4', kind: 'Theorem', name: 'Structure of the unit group (ℤ/nℤ)ˣ', deps: ['nt-3.3', 'nt-2.4'], refs: ['Ireland–Rosen ch. 4'],
           pic: 'Type n; the unit group is drawn as a product of cycles from the prime factorization (with the extra factor for powers of 2) and its exponent λ(n) is read off.' },

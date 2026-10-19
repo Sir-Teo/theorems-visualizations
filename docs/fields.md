@@ -42,6 +42,9 @@ subpixel geometric examples should be explained rather than treated as render fa
 For grid searches, label the grid optimum and residual separately from an exact solution.
 No feasible grid points does not establish an empty feasible set, and a rounded grid
 optimizer can have positive slack while the exact constraint is active.
+Lifting a solution of a polynomial congruence does not automatically preserve or
+increase multiplicative order. Primitive-root lifts need a representative with the
+right first nonzero prime-power term and a separate order argument.
 
 ## Physics & astronomy, Earth & environment, engineering
 
