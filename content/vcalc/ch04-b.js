@@ -20,9 +20,9 @@ export default {
 - **Cylindrical:** $(x,y,z)=(r\cos\theta,r\sin\theta,z)$, $dV=r\,dr\,d\theta\,dz$.
 - **Spherical:** $(x,y,z)=(\rho\sin\varphi\cos\theta,\ \rho\sin\varphi\sin\theta,\ \rho\cos\varphi)$ with $\varphi\in[0,\pi]$ the polar angle from the $z$-axis, $dV=\rho^2\sin\varphi\,d\rho\,d\varphi\,d\theta$.
 
-Choose the system in which the region's description is simplest. For the unit ball $B$ all three give $\operatorname{vol}B=\tfrac{4\pi}{3}$, and $\iiint_B(x^2+y^2)\,dV=\tfrac{8\pi}{15}$.`,
-      idea: String.raw`Each coordinate system is a $C^1$ map from a box of parameters, one-to-one off a set of zero volume (the axis, the pole), and 4.6 applies with $|\det|=r$ or $\rho^2\sin\varphi$: the cells of a coordinate grid are curved boxes whose size is the product of side lengths $dr$, $r\,d\theta$, $dz$ (or $d\rho$, $\rho\,d\varphi$, $\rho\sin\varphi\,d\theta$). In coordinates adapted to the ball the limits are constants, so the integral is a product of three one-variable integrals; in Cartesian coordinates the curved boundary has to be approximated by cubes, which converges slowly.`,
-      caption: String.raw`Left: a slice (the $xz$-plane) of the unit ball cut into cells by the chosen coordinates, with $N$ cells per variable; orange cells are the ones used in the midpoint sum. Right: the relative error of the midpoint sum for the volume (or the second integral) against $N$ on log axes, for all three systems. Cartesian cubes (counted by their centres) converge erratically at about the rate $1/N$; the adapted systems converge like $1/N^2$. For these integrands nothing depends on $\theta$, so the $\theta$-sum is done exactly ($2\pi$) and each adapted system uses $N^2$ cells.`,
+Choose the system in which the region's description is simplest. The picture compares Cartesian, cylindrical and spherical coordinates for the unit ball $B$: each gives $\operatorname{vol}B=\tfrac{4\pi}{3}$ and $\iiint_B(x^2+y^2)\,dV=\tfrac{8\pi}{15}$.`,
+      idea: String.raw`Away from axes, poles and angular seams these maps are smooth one-to-one coordinate charts, so 4.6 applies with $|\det|=r$ or $\rho^2\sin\varphi$. Grid-cell sizes are products of local side lengths $dr$, $r\,d\theta$, $dz$ or $d\rho$, $\rho\,d\varphi$, $\rho\sin\varphi\,d\theta$. Spherical coordinates give constant ball limits $0\le\rho\le1$, $0\le\varphi\le\pi$, $0\le\theta\le2\pi$. Cylindrical coordinates instead have $-\sqrt{1-r^2}\le z\le\sqrt{1-r^2}$: after exact $z$ and $\theta$ integration, the radial integrands are $4\pi r\sqrt{1-r^2}$ or $4\pi r^3\sqrt{1-r^2}$. Their square-root endpoint reduces this midpoint rule's asymptotic rate to $N^{-3/2}$; the smooth spherical integrands give $N^{-2}$. Cartesian centre-counting has an $O(1/N)$ boundary-cell error bound, with oscillatory errors.`,
+      caption: String.raw`Left: an $xz$ slice of the unit ball cut into midpoint cells, with $N$ subdivisions per remaining variable. Right: relative error for volume or the second moment on log axes. The references distinguish the Cartesian $1/N$ boundary-error bound, cylindrical $1/N^{3/2}$ endpoint rate and spherical $1/N^2$ rate. The angular integral is exact in both adapted systems; the cylindrical $z$ integral is also exact, leaving a one-dimensional radial sum, while the spherical calculation uses $N^2$ midpoint cells.`,
       deps: ['vcalc-4.6', 'vcalc-1.6'],
       refs: ['Marsden–Tromba §6.2', 'Schey ch. II'],
       tags: ['polar', 'cylindrical', 'spherical'],
@@ -97,8 +97,10 @@ Choose the system in which the region's description is simplest. For the unit ba
             E.path(curve(mm, w).map(([n, e]) => [n, Math.max(e, 1e-7)]), { color: col, width: mm === m ? 3 : 1.4, alpha: mm === m ? 1 : 0.55 });
           }
           const guide = (p, c) => E.path([[2, c * 2 ** -p], [64, c * 64 ** -p]], { color: 'muted', dash: true, width: 1 });
-          guide(1, 0.9); guide(2, 0.9);
-          E.text('$1/N$', 40, 0.9 / 40 * 1.5, { color: 'muted', size: 12 }); E.text('$1/N^2$', 40, 0.9 / 1600 * 0.4, { color: 'muted', size: 12 });
+          guide(1, 0.9); guide(1.5, 0.9); guide(2, 0.9);
+          E.text('$1/N$', 40, 0.9 / 40 * 1.5, { color: 'muted', size: 12 });
+          E.text('$1/N^{3/2}$', 40, 0.9 / 40 ** 1.5 * 0.7, { color: 'muted', size: 12 });
+          E.text('$1/N^2$', 40, 0.9 / 1600 * 0.4, { color: 'muted', size: 12 });
           info = { s: sum(m, w, N), ex: exact(w), N, m };
         });
         v.legend([['red', 'Cartesian'], ['blue', 'cylindrical'], ['green', 'spherical']]);

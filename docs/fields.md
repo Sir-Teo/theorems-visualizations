@@ -45,6 +45,9 @@ optimizer can have positive slack while the exact constraint is active.
 Lifting a solution of a polynomial congruence does not automatically preserve or
 increase multiplicative order. Primitive-root lifts need a representative with the
 right first nonzero prime-power term and a separate order argument.
+Determine quadrature rates from the actual transformed integrand. Adapting coordinates
+to a boundary can leave a square-root endpoint: the cylindrical ball midpoint sum has
+an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
 
 ## Physics & astronomy, Earth & environment, engineering
 

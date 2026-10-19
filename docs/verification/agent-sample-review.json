@@ -2084,11 +2084,14 @@
     {
       "id": "vcalc-4.7",
       "file": "content/vcalc/ch04-b.js",
-      "textHash": "81743f75c7bdf468e3bdfb877b017660f653a551444b105dfd388f493672e39e",
-      "textReview": "The coordinate Jacobians and ball integrals 4pi/3 and 8pi/15 are correct. Only spherical coordinates give constant ball limits; cylindrical z limits depend on r. The actual cylindrical midpoint integrand contains sqrt(1-r²), so the claimed N^-2 rate for both adapted systems is false. Independent N-doubling of that implemented formula gives rates 1.53 down to 1.51, approaching N^-3/2. The caption should distinguish Cartesian/cylindrical/spherical in the ball comparison from the initial list including two-dimensional polar coordinates.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "985fefd36bbd2e41aba485ffafe3b62a8e3db217e5ec98cd2a3b1e95938ce7dd",
+      "textReview": "The ball comparison names Cartesian/cylindrical/spherical explicitly. The idea now distinguishes constant spherical limits from cylindrical z limits ±sqrt(1-r²), and explains the actual cylindrical N^-3/2 midpoint rate versus smooth spherical N^-2 and the Cartesian O(1/N) boundary bound. Independent radial sums confirm rates tending to 1.5 for both cylindrical integrands.",
+      "visualReview": "All eight coordinate/integrand mode captures inspected in both themes. The N^-3/2 guide is visible between N^-1 and N^-2. At N=8 the three volume estimates 4.37500/4.24276/4.19936 approach 4.18879 at different rates, and the spherical second-moment value 1.65331 is compared with 1.67552. Cell diagrams and mode highlights agree.",
+      "interactionReview": "Native checker mode switches exercise Cartesian and cylindrical volume views and the spherical second-moment view in both themes, with no runtime/TeX/blank/quality warnings. This covers those switches, not a fresh sweep of every resolution-slider value. The independent radial numerical checks cover N=64 through 1024.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The coordinate Jacobians and ball integrals 4pi/3 and 8pi/15 are correct. Only spherical coordinates give constant ball limits; cylindrical z limits depend on r. The actual cylindrical midpoint integrand contains sqrt(1-r²), so the claimed N^-2 rate for both adapted systems is false. Independent N-doubling of that implemented formula gives rates 1.53 down to 1.51, approaching N^-3/2. The caption should distinguish Cartesian/cylindrical/spherical in the ball comparison from the initial list including two-dimensional polar coordinates.",
+      "initialTextHash": "81743f75c7bdf468e3bdfb877b017660f653a551444b105dfd388f493672e39e",
+      "correctionReport": "docs/verification/agent-coordinate-midpoint-review.md"
     },
     {
       "id": "pma-7.12",
