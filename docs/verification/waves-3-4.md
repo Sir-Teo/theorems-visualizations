@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **196 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 640 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **195 flags**. The difference from the initial count reflects the review: 3 previously unflagged uncertainties remain newly marked, and 641 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **196 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **195 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -682,3 +682,7 @@ zero runtime errors. Home JSON112,789bytes gzip. Ledger196pending,640original
 resolved,3additional flags. Cross-field shortfall876, with54/64published and
 27whole-syllabus collections still below target. The full-map60fps gate and
 proof flagship curation remain open. Wave5 remains prepared and unstarted.
+
+## Rational-bubble and finite-asset follow-up — 2026-10-19
+
+The [bubble audit](fin-bubbles-followup.md) resolves one original flag. A genuinely finite dividend asset now ends with zero resale value, replacing the perpetual-payment finite mode. Explicit summability/tower hypotheses justify the conditional-tail result; almost-sure crashing is distinguished from the expected discounted tail, and zero bubbles and finite Monte Carlo estimates are classified correctly. The syllabus's false crash-excludes-bubbles statement is corrected. Both root and a separate reviewer independently pass five mathematical and eight native groups, compare the authored original source and inspect final screenshots. The actual tower-property prerequisite is synchronized in chapter and syllabus. **195 source reviews remain**.

@@ -5,8 +5,11 @@
 // had fewer, but not zero); Dufwenberg, Lindqvist & Moore, AER 95(5):1731–1737 (2005); Lei, Noussair & Plott, Econometrica 69(4):831–859 (2001);
 // Bachelier, Ann. sci. ENS 3e série 17:21–86 (1900), doi 10.24033/asens.476 (defended 29 March 1900 before Poincaré); Fama, J. Finance 25(2):383–417 (1970) (doi 10.2307/2325486);
 // Shiller, AER 71(3):421–436 (1981); LeRoy & Porter, Econometrica 49(3):555–574 (1981).
+// 5.11 independently reads Blanchard–Watson's authored 1982 chapter, pp.295–300; original-page formulas inspected.
+// Its explicit summability/finite-annuity illustration and checks are documented in the dedicated bubble follow-up.
 // Real data: Shiller's annual series (ch05.shared.js), the daily and monthly market and industry returns (French library). Models and reconstructions are labelled as such.
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, pricePath, rng, mean, sdev, IND_NAMES } from './ch05.shared.js';
+import { bubbleScenario, sampledBubbleReturn } from './source-audit-bubbles.js';
 
 export default {
   collection: 'fin',
@@ -14,67 +17,69 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.11
     {
-      num: '5.11',
-      kind: 'Theorem',
-      name: 'Rational bubbles and the transversality condition',
-      statement: String.raw`Let a stock pay dividends $d_t$ and let the required return be $r$, so that the price satisfies the **pricing equation**
-$$p_t=\frac{\mathrm E_t[\,p_{t+1}+d_{t+1}\,]}{1+r}.$$
-Every solution has the form $p_t=f_t+B_t$, where $f_t=\sum_{k\ge1}\mathrm E_t[d_{t+k}]/(1+r)^k$ is the **fundamental value** and the **bubble** $B_t$ is any process with
-$$\mathrm E_t[B_{t+1}]=(1+r)\,B_t .$$
-The fundamental solution $B\equiv 0$ is the only one if and only if the **transversality condition** $\lim_{T\to\infty}(1+r)^{-T}\,\mathrm E_t[p_{t+T}]=0$ holds. A bubble grows on average at the discount rate, so it satisfies the pricing equation exactly; but it is **ruled out** if the asset has a finite horizon (the price at the terminal date must equal the terminal payoff, so by backward induction $B\equiv0$), if a negative bubble would push the price below zero, and a positive bubble that must burst with a given probability each period has to grow faster, at rate $(1+r)/\pi$ while it survives (Blanchard's bursting bubble). Rational bubbles are therefore possible only for infinitely-lived assets, with unlimited growth of the price relative to dividends.
+      num: '5.11', kind: 'Theorem', name: 'Rational bubbles and the transversality condition',
+      statement: String.raw`Let $q=1+r>1$, let information $\mathcal F_t$ increase with time, and let the adapted, integrable ex-dividend price satisfy
+$$p_t=q^{-1}E_t[p_{t+1}+d_{t+1}].$$
+Assume nonnegative integrable dividends and $E[\sum_{j\ge1}q^{-j}d_j]<\infty$. Then the finite fundamental value is
+$$f_t=\sum_{k\ge1}q^{-k}E_t[d_{t+k}].$$
+Every solution is $p_t=f_t+B_t$, with $E_tB_{t+1}=qB_t$. Iterating gives
+$$p_t=\sum_{k=1}^{H}q^{-k}E_t[d_{t+k}]+q^{-H}E_t[p_{t+H}].$$
+The last term tends to **$B_t$**. Thus the solution is fundamental exactly when the transversality condition $\lim_{H\to\infty}q^{-H}E_t[p_{t+H}]=0$ holds at every date. The pricing equation alone does not impose this condition.
 
-Scope: a theorem about the *set of solutions* of a linear expectational difference equation, not a claim that bubbles occur.`,
-      idea: String.raw`Substituting $p_t=f_t+B_t$ in the pricing equation and using that $f$ already solves it leaves $B_t=\mathrm E_t[B_{t+1}]/(1+r)$, so $B$ grows on average at the discount rate; iterating the pricing equation forward $T$ times gives $p_t=f_t^{(T)}+\mathrm E_t[p_{t+T}]/(1+r)^T$, and the last term is the bubble's discounted contribution, which vanishes exactly under the transversality condition. A bubble that is known to end at $T$ cannot start, because everyone would sell the day before it ends and so on backwards; and a positive bubble can only be rational if buyers expect to be able to resell at an ever-higher price, which is possible only if the asset never ends. Blanchard avoids the "never bursts" implausibility with a stochastic bubble: with probability $\pi$ it survives and grows at $(1+r)/\pi$, with probability $1-\pi$ it collapses to 0, which still gives expected growth $1+r$.`,
-      caption: String.raw`A stock pays a constant dividend $d=5$, so the fundamental value is $5/r$ (green). Choose the regime. **Infinite horizon, bubble certain**: add a bubble $B_0$ growing at the discount rate; the price is above the fundamental and satisfies the pricing equation. **Bursting bubble**: it survives each period with probability $\pi$ and grows at $(1+r)/\pi$, then collapses (new history for another path). **Finite horizon**: the price must equal the fundamental value at $T$, the would-be bubble (dashed) contradicts it and cannot start. The readout checks the pricing equation by simulation: the mean one-period gross return of $B_0$ simulated 20,000 times equals $1+r$ in every regime.`,
-      deps: ['fin-1.11', 'fin-5.10'],
-      refs: ['Luenberger: General Principles'],
+A bubble can survive with probability $\pi$ each period, grow by $q/\pi$ on survival, and become permanently zero on a crash. Its expected growth is still $q$. A positive crash probability does **not** rule it out. A specified finite terminal payoff does: the bubble is zero at the terminal date and hence at all earlier dates.`,
+      idea: String.raw`The forward identity repeatedly uses the **tower property** of conditional expectation (prob-4.1.13). Discounted nonnegative dividends have an integrable sum, so their remaining expected tail tends to zero. Subtracting the fundamental solution leaves the homogeneous bubble equation; its discounted conditional expectation remains $B_t$ at every horizon.
+
+A bursting bubble with $B_0>0$ and $\pi<1$ crashes almost surely eventually, but its increasingly large surviving values keep $q^{-H}E_0[B_H]=B_0$. Taking the expectation after the pathwise limit would incorrectly discard that contribution. This is a statement about solutions of the pricing equation, not proof that an entire equilibrium economy supports them. Blanchard and Watson discuss the additional institutional and participant assumptions separately.`,
+      caption: String.raw`Prices are **after** the current dividend. The infinite asset pays 5 at every future date, giving $f=5/r$. A certain or bursting bubble is added to that fundamental; **New history** changes the random draws. At $B_0=0$ both infinite modes are simply fundamental.
+
+The **finite asset** instead pays 5 only at dates $1,\ldots,T$ and is worthless after the last payment: $p_T=0$ and $f_t=(5/r)(1-q^{-(T-t)})$ for $t\le T$. Its blue price falls toward zero. In the right panel, the dashed red candidate adds a discounted bubble contribution $B_0$ and violates the zero terminal condition when $B_0>0$. The initial-bubble slider controls only this rejected candidate in finite mode.
+
+The right panel shows **date-zero conditional expected discounted resale**, rather than the discounted realized history. Its infinite-horizon limit is $B_0$; the valid finite curve reaches zero exactly at $T$. The readout separates the exact branch-weighted expected gross return from a finite Monte Carlo sample and its theoretical standard error.`,
+      deps: ['fin-1.9', 'prob-4.1.13'], see: ['fin-5.10'],
+      refs: ['Blanchard & Watson (1982), Rationality, Arbitrage, and Bubbles; Bubbles and Transversality Conditions, pp. 296–300'],
       tags: ['rational bubbles', 'transversality', 'present value'],
-      credit: 'Blanchard, 1979; Blanchard & Watson, 1982; Tirole, 1982, 1985',
-      scope: String.raw`Applies to a single asset with a constant required return $r$ and an infinite horizon; heterogeneous or overlapping-generation economies (Tirole 1985) can allow bubbles on assets such as money or land.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Rational_bubble' },
+      credit: 'Olivier J. Blanchard & Mark W. Watson, 1982 (pricing-equation framework)',
+      scope: String.raw`An adapted integrable solution of a constant-required-return pricing equation under the explicit dividend summability condition; this is not a general equilibrium existence theorem. If prices are additionally nonnegative, the displayed limiting identity implies $B_t\ge0$. The chosen constant dividend, initial bubble, survival rate and random histories are teaching parameters, not market data. Only the stated sections of the author-hosted original are used; no direct reading of the earlier Blanchard or Tirole originals is claimed.`,
+      verify: false,
+      links: { source: 'https://www.princeton.edu/~mwatson/papers/Blanchard_Watson_Bubbles.pdf', doi: 'https://doi.org/10.3386/w0945' },
       viz(v) {
-        const reg = v.select('regime', [{ value: 'cert', label: 'infinite horizon' }, { value: 'burst', label: 'bursting bubble' }, { value: 'fin', label: 'finite horizon' }], 'cert');
-        const rr = v.slider('discount rate $r$', 0.02, 0.1, 0.05, { step: 0.0025, fmt: (x) => pct(x, 2) });
-        const B0 = v.slider('initial bubble $B_0$', 0, 60, 20, { step: 1 });
-        const pi = v.slider('survival probability $\\pi$', 0.5, 0.99, 0.9, { step: 0.01 });
-        const Th = v.slider('terminal date $T$', 5, 50, 25, { int: true });
+        const reg = v.select('asset / bubble', [{ value: 'cert', label: 'certain bubble' }, { value: 'burst', label: 'bursting bubble' }, { value: 'fin', label: 'finite asset' }], 'cert');
+        const rr = v.slider('required return $r$', .02, .1, .05, { step: .0025, fmt: x => pct(x, 2) });
+        const B0 = v.slider('initial bubble / rejected candidate $B_0$', 0, 60, 20, { step: 1 });
+        const pi = v.slider('survival probability $\\pi$', .5, .99, .9, { step: .01 });
+        const Th = v.slider('last dividend date $T$', 5, 50, 25, { int: true });
         let seed = 2; v.button('New history', () => { seed++; });
-        const N = 50;
-        const S = v.stage({ x: [0, N], y: [0, 400], axes: 'box', gutter: true, height: 340, weight: 1.3, minWidth: 320, xlabel: 'period t', ylabel: 'price', title: 'price = fundamental + bubble' });
-        let st = {};
+        const A = v.stage({ x: [-3, 53], y: [-10, 400], axes: 'box', gutter: true, height: 370, minWidth: 250, xlabel: 'date t (after its dividend)', ylabel: 'price', title: 'realized price and fundamental value' });
+        const B = v.stage({ x: [-3, 53], y: [-10, 200], axes: 'box', gutter: true, height: 370, minWidth: 250, xlabel: 'future horizon H from date zero', ylabel: 'expected discounted resale', title: 'conditional expectation, not one realized history' });
+        v.legend([['accent', 'valid price / expected discounted resale'], ['green', 'fundamental value', { dash: true }], ['gold', 'infinite expected bubble contribution'], ['red', 'rejected finite bubble candidate', { dash: true }]]);
+        let st;
         v.render(() => {
-          const r = rr.value, f = 5 / r, R = rng(seed * 523 + 1);
-          const pts = []; let B = B0.value, alive = true, crashAt = -1; const path = [];
-          for (let t = 0; t <= N; t++) {
-            path.push(f + (reg.value === 'fin' ? 0 : B));
-            if (reg.value === 'cert') B *= 1 + r;
-            else if (reg.value === 'burst') { if (alive) { if (R() < pi.value) B *= (1 + r) / pi.value; else { B = 0; alive = false; crashAt = t + 1; } } }
-          }
-          const cand = []; for (let t = 0; t <= N; t++) cand.push(f + B0.value * Math.pow(1 + r, t));
-          const top = Math.max(...path, reg.value === 'fin' ? cand[Math.min(N, Th.value)] : 0, f) * 1.12;
-          S.setView([0, N], [0, top]);
-          S.hline(f, { color: 'green', dash: true, width: 2 }); S.text(`fundamental value 5/r = ${f.toFixed(0)}`, N, f, { dx: -4, dy: 14, align: 'right', size: 11.5, color: 'green', weight: 700 });
+          pi.el.hidden = reg.value !== 'burst'; Th.el.hidden = reg.value !== 'fin';
+          const m = bubbleScenario({ r: rr.value, initial: B0.value, survival: pi.value, terminal: Th.value, regime: reg.value, random: rng(seed * 523 + 1) });
+          const sample = sampledBubbleReturn(m, rng(seed * 719 + 99));
+          const priceTop = Math.max(...m.prices.map(p => p[1]), ...m.fundamentals.map(p => p[1]));
+          const tailTop = Math.max(...m.discountedExpected.map(p => p[1]), ...(reg.value === 'fin' ? m.candidateDiscounted.map(p => p[1]) : []));
+          const timeView = [-.08 * m.end, 1.08 * m.end];
+          A.setView(timeView, [-.12 * priceTop, 1.2 * priceTop]); B.setView(timeView, [-.12 * tailTop, 1.2 * tailTop]);
+          A.path(m.fundamentals, { color: 'green', width: 2, dash: [5, 4] }); A.path(m.prices, { color: 'accent', width: 2.6 });
+          B.path(m.discountedExpected, { color: 'accent', width: 2.6 });
           if (reg.value === 'fin') {
-            const T = Th.value; S.vline(T, { color: 'red', dash: true });
-            S.path(cand.slice(0, T + 1).map((y, t) => [t, y]), { color: 'red', width: 2, dash: true });
-            S.path(path.map((y, t) => [t, y]), { color: 'accent', width: 2.6 });
-            S.dot(T, cand[T], { r: 6, color: 'red', hollow: true }); S.text('a bubble would have to be here at T…', T, cand[T], { dx: -8, dy: -6, align: 'right', size: 11, color: 'red' });
-            S.dot(T, f, { r: 6, color: 'accent' }); S.text('…but the price must equal the fundamental value', T, f, { dx: 8, dy: -10, align: T > 30 ? 'right' : 'left', size: 11, color: 'accent', weight: 700 });
+            A.vline(m.terminal, { color: 'muted', dash: true }); B.vline(m.terminal, { color: 'muted', dash: true });
+            B.path(m.candidateDiscounted, { color: 'red', width: 2, dash: [5, 4] });
+            A.dot(m.terminal, 0, { r: 6, color: 'accent' });
+            B.dot(m.terminal, m.initial, { r: 6, hollow: true, color: 'red' }); B.dot(m.terminal, 0, { r: 6, color: 'accent' });
           } else {
-            S.path(path.map((y, t) => [t, y]), { color: 'accent', width: 2.6 });
-            if (crashAt >= 0 && crashAt <= N) { S.dot(crashAt, f, { r: 6, color: 'red' }); S.text('bubble bursts', crashAt, path[crashAt - 1], { dx: 8, dy: 10, size: 11.5, color: 'red', weight: 700, align: 'left' }); }
+            B.line(0, m.initial, 50, m.initial, { color: 'gold', width: 1.5, dash: [4, 4] });
+            if (m.crash !== null) A.dot(m.crash, m.infiniteValue, { r: 6, color: 'red' });
           }
-          // pricing-equation check: one-step gross return of a share priced f + B0
-          let sum = 0; const M = 20000, R2 = rng(99);
-          for (let i = 0; i < M; i++) {
-            let Bn;
-            if (reg.value === 'cert') Bn = B0.value * (1 + r); else if (reg.value === 'burst') Bn = R2() < pi.value ? B0.value * (1 + r) / pi.value : 0; else Bn = 0;
-            const p0 = f + (reg.value === 'fin' ? 0 : B0.value); sum += (f + Bn + 5) / p0;
-          }
-          st = { f, ret: sum / M, r, crashAt, Bn: B, exp: reg.value === 'burst' ? 1 / (1 - pi.value) : null };
+          st = { ...m, sample };
         });
-        v.readout(() => `Fundamental value ${v.fix(st.f, 1)}. Mean one-period gross return of a share (dividend + resale) over 20,000 draws: **${v.fix(st.ret, 4)}**, required $1+r=${v.fix(1 + st.r, 4)}$ ✓ — the pricing equation holds for every bubble process with $\\mathrm E_t B_{t+1}=(1+r)B_t$.\n${reg.value === 'cert' ? 'Bubble certain: after 50 periods it is ' + v.fix(B0.value * Math.pow(1 + st.r, 50), 0) + ' (transversality violated: $(1+r)^{-T}p_T\\not\\to 0$).' : reg.value === 'burst' ? `The bubble survives each period with probability ${pct(pi.value, 0)} (expected life ${v.fix(st.exp, 1)} periods) and then grows ${pct((1 + st.r) / pi.value - 1, 1)} per period instead of ${pct(st.r, 1)}; ${st.crashAt >= 0 && st.crashAt <= 50 ? 'on this history it burst in period ' + st.crashAt + '.' : 'on this history it survived all 50 periods.'}` : 'Finite horizon: backward induction gives $B_T=0$, so $B_{T-1}=0$, …, $B_0=0$; the price is the fundamental value.'}`);
+        v.readout(() => {
+          const finite = st.regime === 'fin', s = st.sample;
+          const sampleText = s.draws ? `Monte Carlo: ${s.mean.toFixed(6)} from ${s.draws.toLocaleString()} independent one-step draws; theoretical standard error ${s.standardError.toFixed(6)}. A finite sample need not equal its expectation.` : 'This one-step return is deterministic; no Monte Carlo sample is needed.';
+          const conclusion = finite ? `Last dividend is at T=${st.terminal}; ex-dividend p_T=0. The ${st.initial > 0 ? 'positive candidate violates that boundary' : 'zero candidate is the valid fundamental solution'}.` : st.initial === 0 ? 'B0=0: this is the fundamental solution and transversality holds.' : `Discounted conditional expected resale tends to B0=${st.initial}, so transversality fails. ${st.regime === 'burst' ? (st.crash === null ? 'This history survives all 50 transitions.' : 'This history crashes at date ' + st.crash + '.') + ' The conditional-expectation curve includes rare surviving histories.' : 'The bubble grows by 1+r every period.'}`;
+          return `Initial fundamental ${fx(st.fundamentals[0][1], 4)}; initial valid price ${fx(st.price0, 4)}. Exact branch-weighted expected gross return ${st.expectedReturn.toFixed(6)}; required 1+r=${st.gross.toFixed(6)}.\n${sampleText}\n${conclusion}`;
+        });
       },
     },
     // ------------------------------------------------------------------ 5.12
