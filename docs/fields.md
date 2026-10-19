@@ -84,6 +84,10 @@ maps between dimensions (agent sample statement/hypothesis review).
   analysis, the cut certifying a max flow.
 - **Break it**: negative edge weights for Dijkstra, a non-matroid for greedy, adversarial input
   for quicksort, a bad hash function, a graph with a cycle for topological sort.
+- **Count the displayed candidates**: a type-checker panel must include the computed
+  higher-order type before claiming a matching candidate. After erasing annotations,
+  distinguish a ground principal type (one type) from a principal type containing
+  variables (infinitely many instances). Test edited literals as well as abstractions.
 - Kinds: `Algorithm` (statement = what it computes plus its guarantee), `Theorem` for
   correctness/optimality/lower bounds, `Concept`, `Method`.
 

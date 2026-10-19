@@ -115,7 +115,7 @@ export default {
       num: '4.8', kind: 'Theorem', name: 'Uniqueness of types and type checking',
       statement: String.raw`In the simply typed $\lambda$-calculus every term has **at most one type** in a given context: if $\Gamma\vdash t:T$ and $\Gamma\vdash t:T'$ then $T=T'$. Moreover the type is computed by a terminating recursive procedure that goes bottom-up: a variable looks itself up in $\Gamma$; $\lambda x{:}T_1.t_2$ computes the type $T_2$ of $t_2$ in $\Gamma,x{:}T_1$ and returns $T_1\to T_2$; an application computes the types of both parts and succeeds if the first is an arrow whose domain equals the second. Hence typability is decidable. The uniqueness uses the annotations on binders; without them a term such as $\lambda x.\,x$ has infinitely many types.`,
       idea: String.raw`The rules are syntax-directed (inversion, 4.2, for $\lambda$-terms): the last rule of any derivation is determined by the outermost constructor, and its premises are about the immediate subterms. By induction on $t$ the type of each subterm is therefore forced, so the type of $t$ is forced, and the checking procedure is just this induction run as a program, with a clause that fails where the rule's side condition fails. The annotation $\lambda x{:}T_1$ is what removes the only choice; the unannotated (Curry-style) calculus has principal types instead of unique ones.`,
-      caption: String.raw`Edit the term and step through the checker with the slider: nodes are visited children-first and each shows the type it returns. A failing node (red) stops the walk with the mismatch. Below the tree, the second panel tests each candidate type for the annotated term (at most one passes; an ill-typed term has none) and, with annotations erased, lists the many types the bare term can be given.`,
+      caption: String.raw`Edit the term and step through the checker with the slider: nodes are visited children-first and each shows the type it returns. A failing node (red) stops the walk with the mismatch. Below the tree, the second panel tests candidate types for the annotated term (at most one passes; an ill-typed term has none). With annotations erased it shows the principal type and sampled instances: a type variable in the principal type allows infinitely many instances, while a ground principal type has only one.`,
       deps: ['pl-4.7'], refs: ['Pierce §9.3'], tags: ['type checking', 'uniqueness'],
       viz(v) {
         const sT = pxStage(v, { height: 300, full: true, hover: true, title: 'The type checker walking the term bottom-up' });
@@ -153,9 +153,12 @@ export default {
           if (anno.value === 'on') {
             const actual = D.ty;
             sC.textPx(actual ? `each candidate type T, asking whether ⊢ t : T:` : 'the term has no type, so every candidate fails:', 12, 16, { size: 12, color: 'muted', align: 'left', halo: false });
-            drawChips(v, sC, TYPES1.map((T) => ({ text: `${tyStr(T)} ${actual && tyEq(actual, T) ? '✓' : '✗'}`, color: actual && tyEq(actual, T) ? 'green' : 'muted', fill: actual && tyEq(actual, T) ? 'green' : null })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 13 });
-            sC.textPx(actual ? 'exactly one candidate passes: the type is unique' : '', 12, sC.H - 16, { size: 12.5, weight: 700, color: 'green', align: 'left', halo: false });
-            res.cnt = actual ? 1 : 0;
+            // Put the inferred type first, including higher-order types absent from TYPES1.
+            const candidates = actual ? [actual, ...TYPES1.filter((T) => !tyEq(actual, T))] : TYPES1;
+            const passes = candidates.filter((T) => actual && tyEq(actual, T)).length;
+            const chips = drawChips(v, sC, candidates.map((T) => ({ text: `${tyStr(T)} ${actual && tyEq(actual, T) ? '✓' : '✗'}`, color: actual && tyEq(actual, T) ? 'green' : 'muted', fill: actual && tyEq(actual, T) ? 'green' : null })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 13 });
+            sC.textPx(`${passes} candidate${passes === 1 ? '' : 's'} pass${passes === 1 ? 'es' : ''}${chips.more ? `; ${chips.more} further candidates do not fit` : ''}`, 12, sC.H - 16, { size: 12.5, weight: 700, color: actual ? 'green' : 'red', align: 'left', halo: false });
+            res.cnt = passes;
           } else {
             const er = tErase(f.ast), inf = infer(er);
             if (!inf.ok) { sC.textPx('even without annotations the term has no type at all', 12, 30, { size: 13, color: 'red', align: 'left', halo: false }); res.cnt = 0; res.erased = null; return; }
@@ -170,7 +173,8 @@ export default {
             }
             sC.textPx(`principal type: ${tyStr(inf.ty)}   —   instances found among ${tried} annotations tried:`, 12, 16, { size: 12, color: 'muted', align: 'left', halo: false });
             drawChips(v, sC, [...found.keys()].map((k) => ({ text: k, color: 'orange', fill: 'orange' })), { region: [12, 30, sC.W - 12, sC.H - 30], size: 12.5 });
-            sC.textPx(`${found.size} different types, and infinitely many in all`, 12, sC.H - 16, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
+            const polymorphic = tyVars(inf.ty).size > 0;
+            sC.textPx(`${found.size} type${found.size === 1 ? '' : 's'} found; ${polymorphic ? 'infinitely many instances of the principal type' : 'the principal type is ground: only one type'}`, 12, sC.H - 16, { size: 12.5, weight: 700, color: 'orange', align: 'left', halo: false });
             res.cnt = found.size; res.erased = inf;
           }
         });
