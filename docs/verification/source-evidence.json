@@ -301,7 +301,7 @@
     {
       "path": "docs/verification/circuits-owned-source-disposition.json",
       "exists": true,
-      "sha256": "dd5d8a3756e9b681ffedae09d44951405d11af21a24ee56ed2b5347639fe3ed7",
+      "sha256": "f3302d64e6816957a8f8f264abc330974999f8762ea0fc69770e0bab8e7812d5",
       "records": 105
     },
     {
@@ -364,10 +364,10 @@
         "docs/verification/circuits-owned-source-disposition.json#/retained/79"
       ],
       "reports": [
-        "docs/verification/computing-source-review.md"
+        "docs/verification/lp-complexity-primary-followup.md"
       ],
       "missingEvidence": [
-        "Complete rational-input bit-complexity argument and original Khachiyan1979/Karmarkar1984 claims. Full Boyd barrier-gap derivation and complete Stanford ellipsoid lecture were read; these do not establish the full exact-bit theorem or original publication priority."
+        "Complete Khachiyan1979 original finite-precision ellipsoid/rational-input argument and historical formulation. Karmarkar1984 complete relevant original algorithm, potential, exact-recovery/reduction and precision passages now read; modern barrier schedule corrected against full Boyd–Vandenberghe §11.5.3."
       ]
     },
     {
@@ -4318,10 +4318,10 @@
       "id": "algo-11.23",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
-      "report": "docs/verification/computing-source-review.md",
+      "report": "docs/verification/lp-complexity-primary-followup.md",
       "reportOrigin": "record",
       "missingEvidence": [
-        "Complete rational-input bit-complexity argument and original Khachiyan1979/Karmarkar1984 claims. Full Boyd barrier-gap derivation and complete Stanford ellipsoid lecture were read; these do not establish the full exact-bit theorem or original publication priority."
+        "Complete Khachiyan1979 original finite-precision ellipsoid/rational-input argument and historical formulation. Karmarkar1984 complete relevant original algorithm, potential, exact-recovery/reduction and precision passages now read; modern barrier schedule corrected against full Boyd–Vandenberghe §11.5.3."
       ],
       "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/79",
       "reportExists": true,

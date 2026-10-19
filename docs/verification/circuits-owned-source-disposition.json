@@ -866,8 +866,22 @@
       "id": "algo-11.23",
       "status": "reviewed_blocked",
       "file": "content/algo/ch11-d.js",
-      "missingFullSourceOrClaim": "Complete rational-input bit-complexity argument and original Khachiyan1979/Karmarkar1984 claims. Full Boyd barrier-gap derivation and complete Stanford ellipsoid lecture were read; these do not establish the full exact-bit theorem or original publication priority.",
-      "report": "docs/verification/computing-source-review.md"
+      "report": "docs/verification/lp-complexity-primary-followup.md",
+      "missingEvidence": [
+        "Complete Khachiyan1979 original finite-precision ellipsoid/rational-input argument and historical formulation. Karmarkar1984 complete relevant original algorithm, potential, exact-recovery/reduction and precision passages now read; modern barrier schedule corrected against full Boyd–Vandenberghe §11.5.3."
+      ],
+      "verifiedSubgaps": [
+        {
+          "sourceURL": "https://www.stat.uchicago.edu/~lekheng/courses/302/classics/karmarkar.pdf",
+          "sha256": "23fe46887b005cb3da4e4f9d279ab38d5cd60707c7c643f8eb02039fde5a1ea3",
+          "anchors": "Original1984 §§1.6,2–5,7.4, complete relevant passages."
+        },
+        {
+          "sourceURL": "https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf",
+          "sha256": "40d976c83c18cce1900eff8c41bd5ad408c102b813af39d05ff85678ccf8d76e",
+          "anchors": "Complete relevant §§11.2.2–11.2.3 and §11.5.3, Eqs11.27–11.29."
+        }
+      ]
     },
     {
       "id": "toc-3.10",

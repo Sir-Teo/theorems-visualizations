@@ -59,7 +59,9 @@
       "file": "content/algo/ch11-d.js",
       "name": "Linear programs are solvable in polynomial time (statement)",
       "refs": [
-        "CLRS 4e §29.1"
+        "CLRS 4e §29.1",
+        "Karmarkar, Combinatorica4 (1984), pp.373–395, §§1.6,2–5,7.4",
+        "Boyd–Vandenberghe, Convex Optimization, §§11.2.2–11.2.3 and 11.5.3, pp.564–567,590–592; Eqs.(11.27)–(11.29)"
       ]
     },
     {
