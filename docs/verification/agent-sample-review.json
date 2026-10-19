@@ -121,7 +121,7 @@
       "file": "content/alg/ch03-b.js",
       "textHash": "2476963297b3900e1ea8af32bbe523d08a0ec318b1d1fc599997f4c4b525b4fb",
       "textReview": "The exponent identities are sound in a group. The caption overstates when an individual product-power equality implies commutativity: n=0 and n=1 agree even for noncommuting elements. Qualify this as agreement across every exponent.",
-      "visualReview": null,
+      "visualReview": "Inspected the D4 table with g=r,h=s: exponents 0 and 1 agree despite noncommutation, while rows −2,−1,2,3 disagree. This confirms the caption overclaim; the cycle and readout otherwise agree.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -139,7 +139,7 @@
       "file": "content/ladr/ch03-d.js",
       "textHash": "fbd870b230f0742893ec82a5bb9097abf7b79c5bf71f40fff0364098faf44018",
       "textReview": "The pullback definition directly gives additivity, scalar multiplication and reversal of composition. The wrong-order comparison is explicitly possible only because the displayed spaces coincide.",
-      "visualReview": null,
+      "visualReview": "Inspected the dual-map chain: the solid and dashed lines coincide in the correct order, with coefficient rows (−1.64,−0.10); the displayed wrong-order comparison differs.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -148,7 +148,7 @@
       "file": "content/prob/ch03.js",
       "textHash": "07b44f6801d19c54a10358b8449a736618b7ab82364525977ba90aaaefd096c2",
       "textReview": "The rational diagonal subsequence and monotonicity squeeze justify continuity-point convergence. Escape of mass at either end is explicit; terminology follows the collection's distribution-function convention, not an assertion of convergence to a probability law.",
-      "visualReview": null,
+      "visualReview": "Inspected stage four of the diagonal selection: survivors cluster at the chosen rationals, the displayed diagonal indices increase, and the limiting mass is 0.70 between heights 0.10 and 0.80.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -157,7 +157,7 @@
       "file": "content/comb/ch03.js",
       "textHash": "77a64150bdad64188157dd8d6219192b1d5577b981de6a9520acd521978ffa4b",
       "textReview": "The numbered-seat factor 2n! is consistent with fixing the alternating parity and the women. The cyclic rook coefficients give the stated Touchard formula. The asymptotic proof should invoke fixed Bonferroni truncations before interchanging the growing sum and limit.",
-      "visualReview": null,
+      "visualReview": "Inspected n=7: two adjacent spouse pairs are marked; the exact 579 good husband permutations agree with the displayed 579/5040 probability and the brute-force curve.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -166,7 +166,7 @@
       "file": "content/rca/ch18.js",
       "textHash": "a1994f35e2c31751bb33a95edf418930d93489e2feeda70dd679162867a63422",
       "textReview": "Neumann bounds and openness give compactness; a Hahn–Banach functional of the resolvent and Liouville give nonemptiness. The example does not claim finite matrices prove the Banach-algebra case.",
-      "visualReview": null,
+      "visualReview": "Inspected the diagonal-matrix example: eigenvalues 0.60 and −0.40 lie within spectral radius 0.60, and the separate resolvent probe is not mistaken for a spectral point.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -175,7 +175,7 @@
       "file": "content/qm/ch02-b.js",
       "textHash": "1cd0ce881a68197ddad9c2c6336db837862e19191647b5fe5bd56dca7db9548f",
       "textReview": "The hydrogen shooting reconstruction distinguishes the historical K notation, modern reduced-mass units and the later time-dependent equation. The displayed quantization condition has an ambiguous unparenthesized denominator and should be written as me²/(K√(−2mE))=n.",
-      "visualReview": null,
+      "visualReview": "Inspected the shooting and Balmer panels: a non-eigenvalue −3.9306 eV runs away, computed roots match the Bohr ticks, and the three wavelength rows are separately labelled. The statement denominator still needs clarification.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -184,7 +184,7 @@
       "file": "content/pharm/ch01.js",
       "textHash": "439ed431d353dd7bd1431645047b9b0e922e910a33e281e6f0a6b0c56c446651",
       "textReview": "Amount conservation yields Vp+KpVT. The apparent volume is distinguished from an anatomical volume, and the scope warns that initial, terminal and steady-state volumes differ in multicompartment models.",
-      "visualReview": null,
+      "visualReview": "Inspected the warfarin preset: 3 L and 39 L compartments give V=9.8 L at Kp≈0.17, and the dose fractions, plasma concentration and logarithmic volume ruler agree. Presets are labelled rounded literature figures.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -193,7 +193,7 @@
       "file": "content/mathbio/ch04.js",
       "textHash": "90efcf44031fe5b9180de0e278b471dc4324fb6dd9d30c369af2d2e650bd5283",
       "textReview": "Primitivity makes the Perron mode simple and dominant; the left eigenvector supplies its coefficient. Periodic, reducible and extinct cases are distinguished, and the historical continuous-age source is separated from the finite-matrix theorem.",
-      "visualReview": null,
+      "visualReview": "Inspected the primitive four-age-class example: four starting distributions approach u1≈0.411, with damped oscillations and a declining log-distance near the subdominant-eigenvalue slope.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -202,7 +202,7 @@
       "file": "content/sig/ch02.js",
       "textHash": "4804e5c74610771769861b260da463cb66de08fa54e1bd083ef47bc5be1231a4",
       "textReview": "Commutation with all shifts is the correct definition. Time reversal and time scaling are explicitly compared with the two composition orders; periodic modulation commuting with selected shifts does not establish time invariance.",
-      "visualReview": null,
+      "visualReview": "Inspected the tx(t) example at shift 1.50: the two composition routes visibly differ, their difference is shaded, and the mismatch-versus-shift curve vanishes at zero rather than falsely claiming invariance.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -211,7 +211,7 @@
       "file": "content/mfd/ch04.js",
       "textHash": "974447109c93fe335918c9cc6ee6e4bc7d2c70f02ebdbd5b03a359a5754943ef",
       "textReview": "Compactness supplies a uniform local flow time and uniqueness prevents escape through the zero field. The cutoff and uncut x² field test completeness versus finite-time blowup.",
-      "visualReview": null,
+      "visualReview": "Inspected the uncut x² field: positive trajectories exit the finite display, while negative ones approach zero. The readout distinguishes true blowup time 1.111 from reaching the numerical display threshold near 0.95.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -220,7 +220,7 @@
       "file": "content/prob/ch03.js",
       "textHash": "66012e7da70d476f264330fa0cadff4b597b256909f4f01193aac2c4c4d4b192",
       "textReview": "The contradiction via a subsequence bounded away from the common limit is valid. The bounded-continuous-test-function argument avoids relying solely on an unnamed metric; Kolmogorov distance is used only for the continuous normal limit.",
-      "visualReview": null,
+      "visualReview": "Inspected δ=0.40: the binomial distances fall toward zero while the shifted-normal even subsequence stays near 0.158, correctly witnessing failure of the every-subsequence hypothesis.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -229,7 +229,7 @@
       "file": "content/graph/ch02-b.js",
       "textHash": "1c2f4b5193f35f4bafb77574f88b3568936330fc04a44a447334aa6ea012f496",
       "textReview": "The exchange-chain partition argument separates edge-disjoint packing within classes from covering after contraction. Its lemma prerequisite is an actual proof dependency, and the multigraph scope permits parallel edges.",
-      "visualReview": null,
+      "visualReview": "Inspected k=2: the four-vertex class contains two differently coloured disjoint spanning trees; the contracted graph labels shared covering edges with both tree numbers and reports all coverage checks.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -238,7 +238,7 @@
       "file": "content/geol/ch03-b.js",
       "textHash": "edc62a3d88ac0c15b454727aa3ba8d5f4582966c0887adfaa3b3a8ec0b563ca2",
       "textReview": "The rigid rotation velocity is tangent to Euler-pole small circles; zero normal boundary velocity gives the transform condition. Synthetic noisy azimuths are labelled, and the existing original-evidence flag must remain open.",
-      "visualReview": null,
+      "visualReview": "Inspected the schematic transform globe and misfit bars: the trial pole gives large mismatches, while the separately reported least-squares pole has RMS 2.1 degrees against injected 3-degree noise. Synthetic observations are labelled.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -247,7 +247,7 @@
       "file": "content/ml/ch03.js",
       "textHash": "dcf66eaa0721bfb5a301c9c59ae49ab85740ff0a4c99c7f2e21354e198f09a26",
       "textReview": "True risk as expectation and empirical risk as an iid indicator average are correct. The scope's claim of exact risks on a 60×60 grid is inconsistent with the stated continuous instance distribution and sampling; label them numerical grid approximations.",
-      "visualReview": null,
+      "visualReview": "Inspected the noisy-label rectangle at ν=0.15: sample risks scatter around the displayed risk near 0.205 and can fall below the Bayes floor 0.15; this is correctly an estimator fluctuation. The grid-exactness claim still needs qualification.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -256,7 +256,7 @@
       "file": "content/ladr/ch04.js",
       "textHash": "06f37f56e8bdff0c1e08c49d29d8cae133c53619acb13e57a4629f4a39f3966c",
       "textReview": "The definition is field-relative; the real cubic graph and complex phase portrait illustrate why complex zeros need not be real zeros. The zero definition itself requires no existence theorem.",
-      "visualReview": null,
+      "visualReview": "Inspected z³−z+1.2: one real graph zero and a conjugate pair in the complex phase portrait give three complex zeros, with the movable probe evaluated separately.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -265,7 +265,7 @@
       "file": "content/rca/ch04.js",
       "textHash": "f0d9dc377bbcd5ba79c44da4008ab1df2bf5cbab58f48c49d146b58a1f2bfad3",
       "textReview": "The first-slot-linear convention and conjugation in the second slot are explicit. Positive-definite, semidefinite and indefinite real matrices separately test the positivity and definiteness axioms.",
-      "visualReview": null,
+      "visualReview": "Inspected the positive-definite matrix example: the norm-one ellipse and the metric-orthogonal line differ from Euclidean geometry, while the symmetry and positive self-inner-products agree in the readout.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -274,7 +274,7 @@
       "file": "content/music/ch08-b.js",
       "textHash": "184389a6533c2ee5d0944826c7a0fb7adf01ad47683975e10718b8841e221034",
       "textReview": "The unordered pair count, tritone convention and invariance under transposition/inversion are correct. The credit's claim that the interval vector defines a set class is too strong because Z-related classes share it; retain the existing original-source flag.",
-      "visualReview": null,
+      "visualReview": "Inspected the diatonic seven-note set: bars (2,5,4,3,6,1) total 21 unordered pairs, and the transposed-copy markers coincide with them. The source/credit overclaim remains a separate finding.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -283,7 +283,7 @@
       "file": "content/pchem/ch02-b.js",
       "textHash": "995e684189fa0f5dfab93eef5efc6e78e9fe14b92d76c75e7f1e883124c3a96d",
       "textReview": "Needs correction: Cv is molar, so the general first-law differential needs nCv dT. Heat loss does not universally increase compression work; compare with the isothermal limiting path. The ignition conclusion should remain a model threshold, not a prediction of combustion.",
-      "visualReview": null,
+      "visualReview": "Inspected r=16,γ=1.4: analytic and integrated temperatures both give 909 K; adiabatic work 12.67 kJ exceeds isothermal 6.92 kJ. This contradicts the blanket statement that heat loss increases required compression work.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -292,7 +292,7 @@
       "file": "content/ladr/ch02.js",
       "textHash": "5fe965af9e59347b34f9dba9c6648d3a1782a9b1955e44ab65c299bb005f5d25",
       "textReview": "Coefficientwise addition and scaling verify the vector-space claim by the subspace test. The quadratic coefficient-space picture correctly represents the finite-degree subspace of the full polynomial space.",
-      "visualReview": null,
+      "visualReview": "Inspected the coefficient-space parallelogram and quadratic graphs: the green coefficients and value at x0=0.90 agree with λp+q; the example represents the finite-degree subspace.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -301,7 +301,7 @@
       "file": "content/pchem/ch04-b.js",
       "textHash": "0160bf0560721116ce5632037a9579078929d04892751b1a590f2e21ca795bce",
       "textReview": "The liquid–gas continuity claim excludes solids and distinguishes the full supercritical region from universal liquid-like density. The vdW densities are explicitly model values rather than measured CO2 values.",
-      "visualReview": null,
+      "visualReview": "Inspected the route above the critical point: the reduced-state path avoids coexistence and the density varies continuously. The CO2 conversion is identified as a vdW model value.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -310,7 +310,7 @@
       "file": "content/cg/ch01.js",
       "textHash": "6198101d0589666c50184395583e4d4fa465a32a38e199c83cfd8711b0f6b06e",
       "textReview": "The 2×2 determinant gives signed area and orientation, with cyclic invariance and alternating sign. A directed line requires p≠q; state the degeneracy explicitly instead of discussing a side of an undefined line when p=q.",
-      "visualReview": null,
+      "visualReview": "Inspected the default left-turn triangle and parallelogram: Δ=16.39 gives signed triangle area 8.20 and the half-plane shading agrees with its orientation. Coincident base-point handling remains to inspect.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -319,7 +319,7 @@
       "file": "content/dist/ch04.js",
       "textHash": "9f1bac2ce07a38f57e352d7875658877b8a65e5378966142abe80e20a47f726d",
       "textReview": "Single-writer ownership, choosing flags and lexicographic ties are explicit. The explorer's atomic-register and bounded-ticket assumptions are correctly separated from Lamport's stronger algorithmic guarantee; inspect the explorer separately before accepting its traces.",
-      "visualReview": null,
+      "visualReview": "Inspected the three-process schedule and pseudocode: ticket reads are shown individually, choosing flags and ticket bars are separate, and the displayed partial run correctly reports no critical-section occupant. Exhaustive explorer traces remain to review.",
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
     },
@@ -760,6 +760,330 @@
       "file": "content/pchem/ch04.js",
       "textHash": "5bbe8f14c244f0f00bf4486cd572c42ce6279b82975a64c3f123d2924ccca529",
       "textReview": "The pressure depression and sign follow the local Clapeyron slope, and the assumed blade area is explicit. The scope correctly declines a large-pressure accuracy claim and separates friction's upper-bound energy budget from actual heat transfer.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-3.12",
+      "file": "content/comb/ch03-b.js",
+      "textHash": "9ec748bdf832794e24d1022b8ea6c118068b7cf57fb87e63734823549c4a6ed2",
+      "textReview": "The half-integer diamond has the stated 2n(n+1) squares and 2^(n(n+1)/2) tilings. Shuffling's uniformity needs its destruction/refill multiplicities, not just the assertion that all source choices have equal weight; inspect the implementation and enumeration checks before accepting that stronger claim.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "popgen-4.7",
+      "file": "content/popgen/ch04-b.js",
+      "textHash": "e7102eb48ee546809cb27eb26911aa901e42b6af061d3bf4113d69835f1261c3",
+      "textReview": "The contraction identity supplies the no-overshoot step that the sign of Δp alone would not prove. At s=t=1 it permits immediate arrival, and the finite-population absorption limitation is correctly separated from deterministic global stability.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-10.24",
+      "file": "content/fa/ch10-a3.js",
+      "textHash": "c81506096da9f308baf726213577478927145bc5450b8a01f737730b5bb53442",
+      "textReview": "The functional-calculus recurrence is valid when the contour excludes α and surrounds the spectrum. The picture's x^n specialization needs invertible x for negative n and must treat an eigenvalue on the contour as undefined; inspect those control cases.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "sig-3.12",
+      "file": "content/sig/ch03-b.js",
+      "textHash": "c15c16c607a1c56f58aae3fcd148b10c71d7928f567f3c2498c4487f6284d08a",
+      "textReview": "Corrected the counterexample inside the controls: a=-1 and even M cancel the pole, producing a stable FIR zero-state map. Replaced the 400-tap total with exact finite/geometric mass and tail bounds, added the BIBO prerequisite and distinguished hidden internal modes and roundoff. See agent-fir-review.md.",
+      "visualReview": "Inspected the corrected native M=10,a=−1 view: five nonzero taps of height 0.1, zero discarded tail at L=30 and overlapping outputs to roundoff. The readout labels FIR despite feedback and the distinction between arithmetic bound and measured difference.",
+      "interactionReview": "Independent native keyboard and label-toggle gestures in both themes exercise even-M cancellation, odd-M instability, zero feedback and growing clipped output. Real KaTeX, finite readouts and browser-error checks pass; see verification-sig-fir-browser.mjs.",
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-11.9",
+      "file": "content/algo/ch11-b.js",
+      "textHash": "c52581cd6101eb3e679fbfa3928f0826f1909cfd24522794641f1a82739303e7",
+      "textReview": "Shortest residual distances cannot decrease, and an edge becoming critical again requires a distance increase of at least two. The O(VE²) bound applies even to real capacities; finite exact edge counts should not be read as a literal V/2 bound without endpoint rounding.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qchem-2.6",
+      "file": "content/qchem/ch02-b.js",
+      "textHash": "280ce4c74e2d43864d768ad12954813823d133ab010891b4d32da69a31f0f5a7",
+      "textReview": "Needs correction: not every perturbation lifts Coulomb l-degeneracy (a constant shift or change of Coulomb strength does not), and low-l shifts are not universally downward. A repulsive finite-nucleus correction raises penetrating s states. Qualify the sign and the level-dependent fine-structure scale.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geog-1.4",
+      "file": "content/geog/ch01.js",
+      "textHash": "39e6dfa962385fd820910a4bb609b8a990b457b8d7feed57e064266b7f1c637e",
+      "textReview": "The haversine transformation avoids near-equal cosine subtraction at short distances and loses precision near antipodes, as acknowledged. Sphere-versus-ellipsoid error is distinct from arithmetic error; Vincenty's iterative method itself has antipodal convergence limits.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "info-1.5",
+      "file": "content/info/ch01.js",
+      "textHash": "4f4f6d23c3e358637cb7385c85befb7388ac67ab69f95d06cdd14717502940e8",
+      "textReview": "The prefix-tree/Kraft lower bound and rounded Shannon lengths prove H≤L*<H+1 on a finite positive-probability support. The equality condition is dyadic probabilities, and the singleton distribution can use a zero-question leaf.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "polsci-4.11",
+      "file": "content/polsci/ch04-b.js",
+      "textHash": "b32e52e6e95be0fff9a9b013f7dcf12f405b0a4bc78ee7ca968e78be84de3cc1",
+      "textReview": "The quadratic model has the stated derivative but its constrained peak must also be capped at τ=1 and assume α>0. The displayed α≥1 makes the upper cap inactive, which should be explicit rather than a universal formula. Qualify right-skewness as the illustrated distribution, not all income laws.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-4.15",
+      "file": "content/pma/ch04-a2.js",
+      "textHash": "4452052b37834e23f0fd2660ba4dcee1b8deef966174c0375ee41e977f7ec33f",
+      "textReview": "Compact image plus Heine–Borel gives closedness and boundedness in Rk. The open-disc examples separately demonstrate that boundedness need not fail when compactness is dropped, while closedness and boundedness are no longer guaranteed.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-3.1",
+      "file": "content/comb/ch03.js",
+      "textHash": "e355da5f08a5a47c9ba9958794253b256ce7639e4bdd9de7fe8b65bdeb6a1fac",
+      "textReview": "Counting an element in r sets gives the alternating binomial sum one; outside elements contribute zero. The empty-intersection convention correctly gives the complementary count in a finite universe.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-1.33",
+      "file": "content/fa/ch01-a4.js",
+      "textHash": "39590561a2b147e7828a2d5f7f74abf8605a43075c760676e62faa1d7f04bb29",
+      "textReview": "The algebraic seminorm axioms imply nonnegativity, and separation excludes a common nonzero kernel. The absorbing condition makes the convex gauge finite; the nonabsorbing segment/boundary-disc examples must be labelled as extended-value counterexamples rather than instances of that definition.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "em-1.18",
+      "file": "content/em/ch01-b.js",
+      "textHash": "d7b1f517ce6d71fd034fe1f8355b0377547d855763e6ef5b7d1a5aa172d56379",
+      "textReview": "The null-test mechanism follows from a nonconstant shell potential under a power-law perturbation. Photon-mass and exponent bounds are separate model-dependent interpretations, not generally equivalent parameterizations; review the stated original experimental limits before accepting them.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "solid-2.8",
+      "file": "content/solid/ch02-b.js",
+      "textHash": "9961ca0b4872185d11b88d61b8323efcea7dbde9496a1a38d371467caf8dff96",
+      "textReview": "The modulus identities and positivity bounds are correct for isotropic small-strain elasticity. The caption incorrectly equates the square's area strain with the 3D volumetric strain p/K; a section has linear strain −p/(3K), hence leading area strain −2p/(3K). Check the plotted deformation and its small-strain range.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "crypto-1.5",
+      "file": "content/crypto/ch01.js",
+      "textHash": "75bba046b854a2b25f2e496e7a4082e42306cce1a070fd4c343d2edbe7f9bddf",
+      "textReview": "A permutation preserves the letter-count multiset and index of coincidence; factorial key-space size does not remove that leakage. Counts alone need not uniquely recover a substitution for a finite text, so qualify the idea's claim that the permutation can simply be read off.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-11.29",
+      "file": "content/pma/ch11-a3.js",
+      "textHash": "0e8a36c7b61f2f179ccc9ffe3efdb2c4470e77cc24f2f36b63b6b85d7e8612d2",
+      "textReview": "Simple common refinements prove nonnegative additivity and monotone convergence passes to general nonnegative functions. Splitting the domain by sign reduces the integrable signed case without subtracting undefined infinities.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-7.69",
+      "file": "content/ladr/ch07-c.js",
+      "textHash": "97c889dd0fdc554ffdc9e92c52d92bd233191a3e6785ad9164bb9f50bde68f16",
+      "textReview": "The proof correctly uses all eigenvalues of S*S, including zeros under the collection's singular-value convention. Equal eigenvalues of S do not imply isometry, as the shear counterexample illustrates.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qinfo-4.2",
+      "file": "content/qinfo/ch04.js",
+      "textHash": "c94fc4019279e2258d357272f780f645038774aa4dee43d429bfc43171b74531",
+      "textReview": "Unitary elimination and Gray-code conjugation give the constructive exponential synthesis. Diagonal phases and controlled global phases must be counted; the optimized three-CNOT two-qubit result is explicitly distinct from the displayed textbook construction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "popgen-1.6",
+      "file": "content/popgen/ch01.js",
+      "textHash": "70578e87ee53741daf686c7ffcdd36ec39c5bec9ed28ec64fc63b4e2f8dfaea2",
+      "textReview": "The barycentric horizontal coordinate equals P+H/2, so deterministic random mating moves vertically to Hardy–Weinberg proportions. The finite-offspring cloud is explicitly stochastic and can shift realized allele frequency; assumptions for a chi-square asymptotic comparison still matter near boundaries.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "micro-5.14",
+      "file": "content/micro/ch05-b.js",
+      "textHash": "26f7288f00077dfc8280620cb33d283c294ccb9eae2ecc140e19094e96a0ab02",
+      "textReview": "Needs qualification: homogeneous demand is a correspondence unless the optimum is unique; MRS statements require smooth preferences and income elasticity is undefined for a good demanded in zero quantity. Preserve rankings, not only indifference, in the definition unless regularity assumptions are stated. Quasilinear/Stone–Geary examples need nontrivial parameters.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-1.10",
+      "file": "content/thermo/ch01.js",
+      "textHash": "d8d0d5c24cbf9c49bf8e72f39b7f2ecd24cd3bee0ee734e4546917adeb3b6da7",
+      "textReview": "Needs correction: bulk mixing can carry enthalpy by mass transfer rather than heat across a system boundary, and heat can flow while a piston simultaneously does work. The exactly defined thermochemical calorie is 4.184 J; heating 1 g of water by 1 K is temperature-dependent, not that exact definition.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "waves-3.14",
+      "file": "content/waves/ch03-b.js",
+      "textHash": "e39fdf426fc0e38c5f1b3555d152a77c57f05349edeb48b03b74aefbff63e92d",
+      "textReview": "The caption's advance has the wrong phase sign for its explicit transform convention ∫h(t)e^(+iωt)dt: h(t+τ) transforms as H(ω)e^(−iωτ). Inspect the implemented transform and time shift before correcting the labels. State sufficient decay/regularity for the causal analytic and principal-value claims.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-17.26",
+      "file": "content/rca/ch17-a4.js",
+      "textHash": "9f96e789c5c5899b847ce6a34d381ca1a5558923d9c901cf923cf5f4948b5a5a",
+      "textReview": "The H^p conjugate bound is correctly restricted to 1<p<∞, with p>2 obtained by duality and sharp constants distinguished from the original theorem. The nonnegative-function proof uses the positive-real-part branch of F^p; endpoint failures are examples, not finite-grid proofs.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "logic-1.8",
+      "file": "content/logic/ch01-b.js",
+      "textHash": "96794ea415a34a0eb09eec28c3952689ae839d70592e29a3d19bb566ca05a612",
+      "textReview": "The finite-description counting argument is sound. Distinguish a toy arithmetic grammar, where bounded searches can be computed externally, from a universal internal definability predicate; admitting the Berry primitive without a consistent semantic rule creates the paradox rather than a valid evaluation algorithm.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "soc-4.5",
+      "file": "content/soc/ch04.js",
+      "textHash": "64c1806d1b3f9ae4e25ea067a2a6f3e3b3529b78c5fbfd4a95054ea08121a032",
+      "textReview": "The rewiring model keeps each origin's k/2 edges and is correctly distinguished from G(n,p); the clustering formula is an approximation. One or a fixed handful of shortcuts does not change asymptotic distances to logarithmic in n. Qualify the crossover heuristic versus the fixed-positive-p large-n limit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-12.5",
+      "file": "content/fa/ch12.js",
+      "textHash": "09c21f808cf7749478c33c0d963d9207f67ef7b3f323117f786ac92ef5fae1db",
+      "textReview": "Orthogonal decomposition of the functional's null space gives the unique representer, and the conjugation in y=conjugate(Λz)z matches the first-slot-linear convention. Shrinking local averages illustrates the norm blowup that prevents point evaluation on L².",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-1.36",
+      "file": "content/ladr/ch01-b.js",
+      "textHash": "30311fc293d741f904f0c3fbc5704a295004af6fa76d8b33a9ff33194eb49d73",
+      "textReview": "The subspace sum definition and smallest-containing-subspace idea are correct. The caption needs the line not to lie in the plane before claiming their sum is all R³; containment is an essential hypothesis, not just a visual generic case.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "info-3.9",
+      "file": "content/info/ch03-b.js",
+      "textHash": "1fcca9aacd8950e7fb15a10ac6c6555fad4a35afac16cd0d9807526a971991cc",
+      "textReview": "Needs correction: an argmin over an arbitrary E need not exist, so the general bound needs an infimum. The asserted limit needs the usual interior/closure rate agreement and support assumptions (strictly positive Q is a sufficient simplification). Q on a boundary need not make the event probability tend to one, even when its exponent is zero.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-2.14",
+      "file": "content/thermo/ch02-b.js",
+      "textHash": "59175eb70dd9c07e358a8ac039b5be4c00bda8fbeeb62ff0e7368ff85c3cfc37",
+      "textReview": "The air-standard efficiency formulas follow from the ideal-gas adiabats and heat capacities. The Diesel expansion geometry requires 1<ρ<r, and heat capacities are per mole consistently. The intake/exhaust animation should remain distinct from the closed-charge ideal heat-addition/rejection cycle.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-3.52",
+      "file": "content/ladr/ch03-b.js",
+      "textHash": "0becf05d08b8100c79ac17b67cc96d6c8d7c02feae173bbb3a579880e0800a2e",
+      "textReview": "Column and row spans may be different subspaces even for a square matrix; their dimensional equality is a separate theorem. Editing a matrix tests rank rather than visually assuming a nonsingular generic example.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "cm-2.12",
+      "file": "content/cm/ch02-b.js",
+      "textHash": "7a40537ed6fd73460cb11af838680f9e7bf9f78aeabe47ee206c2bd2616bf8de",
+      "textReview": "Onsager area quantization gives the stated inverse-field period and distinguishes 2D fixed chemical potential from fixed particle number and 3D extremal orbits. Grand-potential kinks are a zero-temperature limit; finite-temperature Fermi factors smooth them.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "physio-1.11",
+      "file": "content/physio/ch01-b.js",
+      "textHash": "e82718292fa733f2f0c441efdc169773ad2cbc5f5067b7ad1c9231dc9dfc03fd",
+      "textReview": "The pump/leak, electroneutrality and instantaneous water constraints explain finite steady volume and swelling after pump failure in the stated infinite-bath model. Neuron-like parameters and minute times are explicitly illustrative rather than fitted measurements; infinite swelling excludes lysis and other real-cell mechanics.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ecol-4.3",
+      "file": "content/ecol/ch04.js",
+      "textHash": "b1e46d05f9061636d152bbc4e5f5820f1f08568367bad67418eeb6e443144a3c",
+      "textReview": "The two-essential-resource ZNGIs, consumption vectors and reciprocal invasion tests correctly distinguish exclusion, coexistence and priority effects. Constant consumption and chemostat supply are explicit; the one-resource R* rule is a directly used special case.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "physio-4.20",
+      "file": "content/physio/ch04-d.js",
+      "textHash": "4dc6495a0514e3c912bd8f1630948d312b5e976ecc0aa19f640fab64f3c38194",
+      "textReview": "The original Starling protocol is carefully separated from the modern perfusate model. The threshold 22.6 mmHg follows the stated polynomial and Pi=−3. The polynomial's primary source and typical muscle Kf are expressly still unverified, so the existing source flag remains open.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "tech-2.11",
+      "file": "content/tech/ch02-b.js",
+      "textHash": "29519d83e8b14aabc9407d678521bfcce7408a557ea1a898ad0e93e1f25f12a7",
+      "textReview": "The dynamic lever/sling explanation and disputed historical evidence are appropriately qualified. A frictionless chosen release trajectory is an optimistic estimate, not automatically a rigorous upper bound on every real machine's range; remove that overly general assertion or prove an energy bound.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fin-5.2",
+      "file": "content/fin/ch05.js",
+      "textHash": "d161c62f551bc6cf375d9b6dda26f1c34ab5137885b28e511466e64a8f1bbb08",
+      "textReview": "Needs correction: independent increments make future innovations independent of past prices, not future price levels unforecastable (the conditional mean includes the current price and drift). Exact Gaussian levels apply to the Brownian version, not every iid-increment random walk; weak-form efficiency is not equivalent to the full normal-iid model.",
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"

@@ -8,6 +8,11 @@ remains historical, and the worksheets below remain available for people.
 Audio findings must distinguish directly perceived sound from instrumented
 signal/playback checks. Preparing a worksheet is neither kind of review.
 
+The agent captured native Web Audio output and attempted to inspect it as
+audio input. This session explicitly reported that audio input is unsupported.
+No subjective listening observation can therefore be recorded here. Playback
+and signal checks can proceed; the subjective listening component stays open.
+
 The [master plan's wave gates](../../MASTER_PLAN.md#73-gates-at-the-end-of-each-wave)
 require an actual human 5% page sample, with findings fed back into field
 guides. The recorded sample contains 339 pages. Automated reviews and form
