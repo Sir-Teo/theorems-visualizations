@@ -16,11 +16,12 @@
 // - Read & van Leeuwen 1998 (OBHDP 76(2): 189–205; doi 10.1006/obhd.1998.2803): read in a PDF. 200 Amsterdam employees, 50 per
 //   condition. Table 1 gives for each condition the number choosing healthy in advance, the percentage of each advance group that changed
 //   its mind; the share choosing the unhealthy snack at the immediate choice is derived from those rounded percentages (approximate).
-// - Thaler 1981 and Loewenstein & Prelec 1992 (magnitude and sign effects): the $15/$250/$3,000 table is from course slides (see ch05.js);
-//   the sign-effect factor below is purely illustrative (verify: true on 5.9).
+// - For 5.9, read the complete original Thaler 1981 public article transcription (not a PDF), including Table 2 form A,
+//   and CMU-authored Loewenstein–Prelec 1992 §§II/III.1. Curve parameters and the loss multiplier are illustrative, not estimates.
 // - Loewenstein, O'Donoghue & Rabin 2003 (QJE 118(4): 1209–1248, Crossref) and Loewenstein 1996 (OBHDP 65(3): 272–292): citations only.
 import { clamp, num, pct, usdC, usdR, dExp, dHyp, logistic, logit, fx, errBar, wilson } from './ch05.shared.js';
 import { DEADLINE_WEEKS, BUSY_WEEKS, deadlineComparison } from './source-audit-deadlines.js';
+import { THALER_FORM_A_YEAR, magnitudeModel } from './source-audit-discounting.js';
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
 
@@ -133,45 +134,53 @@ $$\begin{aligned}C&=3+b(n_4+n_8)+g\sum_{w=1}^{12}\binom{n_w}{2},\\ &\hspace{1em}
     // ------------------------------------------------------------------ 5.9
     {
       num: '5.9', kind: 'Phenomenon', name: 'Magnitude and sign effects in discounting',
-      statement: String.raw`If a person had one discount rate, the amount $X$ that makes her indifferent between $a$ now and $X$ after a delay $t$ would give the same implied rate $\ln(X/a)/t$ whatever $a$ is. Experiments find instead (i) a **magnitude effect**: small amounts are discounted much more steeply than large ones (in Thaler's 1981 questions the median indifference points \$15 ~ \$60, \$250 ~ \$350 and \$3,000 ~ \$4,000 after one year imply 139%, 34% and 29% a year), and (ii) a **sign effect**: delayed losses are discounted less than delayed gains of the same size (Loewenstein and Prelec 1992; Thaler 1981). Both violate the single-rate assumption of behav-5.1.`,
-      scope: String.raw`Hypothetical questions, mostly student samples; the size of the effects depends on the elicitation. The functional form below is a convenience fitted by eye to the three amounts, and the loss factor is illustrative, not an estimate.`,
-      idea: String.raw`The pattern says that the premium people demand for waiting grows much less than in proportion to the amount (at 15 dollars a year's wait is paid with a factor 4, at 3,000 with a factor 1.33). Several readings compete: diminishing sensitivity of utility to money, borrowing constraints and the fact that small sums can be spent without any planning, and mental accounting of small amounts (behav-4.1). Loewenstein and Prelec (1992) related the magnitude and sign effects, and the asymmetry between delaying and speeding up, to a reference-dependent value function (behav-2.3). Whatever the cause, no single $\delta$ can describe these choices.`,
-      caption: String.raw`Left: the implied annual rate against the **amount**, on log axes. The **green dots** are Thaler's three medians (course-slide figures); the curve is $r(a)=r_\infty+(r_0-r_\infty)(15/a)^p$, adjustable with the sliders. The dashed line is a **single rate**. Drag the **gold point** along the amount. Right: what you would have to be paid, or would agree to pay, after a delay, for the chosen amount, under the curve and under the single rate. Switch to **losses** to see the sign effect.`,
-      deps: ['behav-5.1'], refs: ['W&K ch. 7'], tags: ['discounting', 'magnitude effect', 'sign effect'],
+      statement: String.raw`A **linear-money, single-rate benchmark** makes $a$ now equivalent to $X=a e^{rt}$ after $t$ years, so the money-equivalent rate $\ln(X/a)/t$ is independent of amount and sign. Thaler's 1981 Table 2, **form A, one-year column**, instead gives median gain amounts \$15 → \$60, \$250 → \$350 and \$3,000 → \$4,000: about 139%, 34% and 29% continuously compounded per year. His loss questionnaire produced substantially lower implied rates. These are the **magnitude** and **gain–loss sign** effects.
+
+This comparison rejects the stated linear-money benchmark, not every discounted-utility model. With nonlinear utility and a consumption baseline, a common utility discount factor can itself produce different money-equivalent rates for gains and losses (Loewenstein–Prelec 1992, pp. 576–577). The elicitation method and magnitude of the asymmetry then matter.`,
+      scope: String.raw`Original Thaler questions were hypothetical bank prizes and traffic fines, with about twenty usable responses per form from Oregon students recruited through a newspaper advertisement; payment risk was explicitly excluded. Medians are group summaries with substantial individual variation. The selected smooth curve and loss multiplier below are freely chosen teaching parameters, not estimates or new experimental observations. The positive-rate toy does not represent every response, including reported negative loss discounting.`,
+      idea: String.raw`The empirical green points show that the proportional compensation for a one-year wait was larger for small prizes. They do not determine an entire smooth function over all amounts and delays. The adjustable schedule lets you compare a decreasing, flat or increasing amount-dependent rate with a common money rate. Switching to losses scales the model rates by your chosen multiplier; it does not generate empirical loss observations. Loewenstein and Prelec develop a reference-dependent account, while explaining why a general nonlinear discounted-utility model must be assessed more carefully than the linear-money comparison.`,
+      caption: String.raw`**Left:** log amount/rate axes show the chosen positive schedule
+$$r(a)=r_\infty+(r_0-r_\infty)(15/a)^p,$$
+restricted to \$10 ≤ a ≤ \$5,000. It decreases when $r_0>r_\infty$, increases when $r_0<r_\infty$, and is constant when they are equal. The green points are the original **form-A, one-year gain medians**, not the form-C time series used in behav-5.3. They remain empirical references as you change the curve. Loss mode hides these gain points and applies only the explicitly illustrative multiplier.
+
+Drag the **gold handle** or use the amount slider. **Right:** for that chosen amount, the model assumes $X/a=e^{r(a)t}$. Plotting **$\ln(X/a)$** keeps every rate setting visible, including very large compensation ratios. Its straight line has slope $r(a)$; the dashed comparison uses the selected single rate. No additional observed delays are inferred from the three green points.`,
+      deps: ['behav-5.1'], refs: ['Thaler (1981), §§2–3 and Table 2 form A', 'Loewenstein & Prelec (1992), §II.2–3, pp. 575–577'], tags: ['discounting', 'magnitude effect', 'sign effect'],
       credit: 'Thaler, 1981; Loewenstein & Prelec, 1992',
       links: { doi: 'https://doi.org/10.1016/0165-1765(81)90067-7' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sign = v.select('outcomes', [{ value: 'g', label: 'gains' }, { value: 'l', label: 'losses' }], 'g');
-        const rInf = v.slider('rate for large sums $r_\\infty$ (per year)', 0.05, 0.6, 0.27, { step: 0.01 });
-        const r0 = v.slider('rate for \\$15, $r_0$', 0.4, 3, 1.386, { step: 0.01 });
+        const rInf = v.slider('large-amount limit $r_\\infty$ (per year)', 0.05, 0.6, 0.27, { step: 0.01 });
+        const r0 = v.slider('chosen rate at \\$15, $r_0$', 0.4, 3, 1.39, { step: 0.01 });
         const p = v.slider('curvature $p$', 0.3, 2, 1, { step: 0.05 });
-        const rs = v.slider('single rate $r$ (per year)', 0.05, 1.5, 0.3, { step: 0.01 });
-        const lossF = v.slider('losses discounted at this fraction of the gain rate (illustrative)', 0.2, 1, 0.5, { step: 0.05 });
+        const rs = v.slider('single money rate $r$ (per year)', 0.05, 1.5, 0.3, { step: 0.01 });
+        const lossF = v.slider('loss / gain rate multiplier (illustrative)', 0.2, 1, 0.5, { step: 0.05 });
         const t = v.slider('delay $t$ (years)', 0.25, 5, 1, { step: 0.25 });
-        const DATA = [[15, 60], [250, 350], [3000, 4000]];
-        const rate = (a) => (rInf.value + (r0.value - rInf.value) * Math.pow(15 / a, p.value)) * (sign.value === 'l' ? lossF.value : 1);
-        const A = v.stage({ x: [8, 6000], y: [0.1, 3], axes: 'box', gutter: true, xlog: true, ylog: true, height: 330, xlabel: 'amount a (dollars)', ylabel: 'implied rate (per year; 1 = 100%)', title: 'implied discount rate depends on the amount' });
-        const B = v.stage({ x: [0, 5], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'delay (years)', ylabel: 'amount later / amount now', title: 'compensation for waiting (chosen amount)' });
-        const h = A.handle(100, 0.5, { color: 'gold', r: 8, constrain: (x) => { const a = clamp(x, 10, 5000); return [a, rate(a)]; } });
-        v.legend([['blue', 'rate fitted to the three sums'], ['muted', 'single rate', { dash: true }], ['green', 'Thaler 1981, gains', { dot: true }]]);
+        const amount = v.slider('chosen amount (dollars)', 10, 5000, 100, { log: true, sig: 4, fmt: x => '$' + Math.round(x).toLocaleString('en-US') });
+        const model = () => magnitudeModel({ large: rInf.value, small: r0.value, curvature: p.value, single: rs.value, loss: sign.value === 'l', lossFraction: lossF.value });
+        const A = v.stage({ x: [5, 10000], y: [0.02, 10], axes: 'box', gutter: true, xlog: true, ylog: true, height: 340, xlabel: 'amount a (dollars)', ylabel: 'money rate (1 = 100% per year)', title: 'chosen curve and observed gain medians' });
+        const B = v.stage({ x: [-0.3, 5.6], y: [-0.1, 2], axes: 'box', gutter: true, height: 340, xlabel: 'delay t (years)', ylabel: 'log compensation ratio ln(X/a)', title: 'model compensation at the chosen amount' });
+        const h = A.handle(100, model().rate(100), { color: 'gold', r: 8, constrain: x => { const a = clamp(x, 10, 5000); return [a, model().rate(a)]; } });
+        h.onDrag = () => amount.set(h.x);
+        v.legend([['blue', 'chosen amount-dependent rate / log compensation'], ['muted', 'chosen single money rate', { dash: true }], ['green', 'Thaler 1981 form-A gains (hidden in loss mode)', { dot: true }]]);
         v.render(() => {
-          A.fn(rate, { color: 'blue', width: 2.6 });
-          A.hline(rs.value * (sign.value === 'l' ? lossF.value : 1), { color: 'muted', width: 2, dash: true });
-          if (sign.value === 'g') DATA.forEach(([a, X]) => { A.dot(a, Math.log(X / a), { r: 6, color: 'green' }); A.text(a + ' → ' + X, a, Math.log(X / a), a > 1000 ? { dx: -9, dy: -12, align: 'right', size: 11, color: 'green', weight: 700 } : { dx: 9, dy: -11, size: 11, color: 'green', weight: 700 }); });
-          const a = h.x; h.set(a, rate(a));
-          const ra = rate(a), rsingle = rs.value * (sign.value === 'l' ? lossF.value : 1);
-          B.setView([0, 5], [0.85, Math.max(1.6, Math.exp(Math.max(ra, rsingle) * 5) * 1.05)]);
-          B.fn((x) => Math.exp(ra * x), { color: 'blue', width: 2.6 });
-          B.fn((x) => Math.exp(rsingle * x), { color: 'muted', width: 2, dash: true });
-          B.vline(t.value, GUIDE);
-          B.dot(t.value, Math.exp(ra * t.value), { r: 6, color: 'blue' });
-          B.dot(t.value, Math.exp(rsingle * t.value), { r: 6, color: 'muted' });
+          const m = model(), a = amount.value, ra = m.rate(a), maxLog = Math.max(ra, m.singleRate) * 5;
+          h.set(a, ra);
+          A.setView([5, 10000], [m.low * 0.5, m.high * 1.8]);
+          A.fn(m.rate, { color: 'blue', width: 2.6, domain: [10, 5000] });
+          A.hline(m.singleRate, { color: 'muted', width: 2, dash: true });
+          if (sign.value === 'g') THALER_FORM_A_YEAR.forEach(({ now, later, rate }) => {
+            A.dot(now, rate, { r: 6, color: 'green' });
+            A.text(now + ' → ' + later, now, rate, now > 1000 ? { dx: -9, dy: 18, align: 'right', size: 11, color: 'green', weight: 700 } : { dx: 9, dy: -11, size: 11, color: 'green', weight: 700 });
+          });
+          B.setView([-0.3, 5.6], [-0.12 * maxLog, 1.2 * maxLog]);
+          B.line(0, 0, 5, 5 * ra, { color: 'blue', width: 2.6 });
+          B.line(0, 0, 5, 5 * m.singleRate, { color: 'muted', width: 2, dash: true });
+          B.vline(t.value, GUIDE); B.dot(t.value, ra * t.value, { r: 6, color: 'blue' }); B.dot(t.value, m.singleRate * t.value, { r: 6, color: 'muted' });
         });
         v.readout(() => {
-          const a = h.x, ra = rate(a), rsingle = rs.value * (sign.value === 'l' ? lossF.value : 1), g = sign.value === 'g';
-          const X1 = a * Math.exp(ra * t.value), X2 = a * Math.exp(rsingle * t.value);
-          return `${g ? 'Being paid' : 'Paying'} ${usdR(a)} now versus later: after ${t.value} year${t.value === 1 ? '' : 's'} the indifference amount is **${usdR(X1)}** under the fitted curve (rate ${pct(ra)}) but ${usdR(X2)} under a single rate (${pct(rsingle)}). The data say the rate falls from ${pct(rate(15))} at \\$15 to ${pct(rate(3000))} at \\$3,000; no single rate can fit both, since the first is ${num(rate(15) / rate(3000), 1)} times the second.`;
+          const a = amount.value, m = model(), ra = m.rate(a), X1 = a * Math.exp(ra * t.value), X2 = a * Math.exp(m.singleRate * t.value);
+          return `${sign.value === 'g' ? 'Gain' : 'Payment magnitude'}: ${usdR(a)} now; at ${t.value} years the chosen model gives ${usdR(X1)} later (rate ${pct(ra)}), versus ${usdR(X2)} under the single money rate (${pct(m.singleRate)}). Log ratios: ${(ra * t.value).toFixed(4)} / ${(m.singleRate * t.value).toFixed(4)}.\nYour curve ${m.direction} with amount: ${pct(m.rate(15))} at \\$15 and ${pct(m.rate(3000))} at \\$3,000. ${sign.value === 'l' ? 'Loss rates use your illustrative multiplier; no observed loss points are plotted.' : 'Observed form-A gain rates remain 138.6%, 33.6%, 28.8%; the adjustable curve is not an estimated fit.'}`;
         });
       },
     },

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 198,
+  "remainingFlags": 196,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "micro": 7,
     "fin": 10,
     "game": 18,
-    "behav": 4,
+    "behav": 2,
     "psych": 17,
     "soc": 16,
     "polsci": 11,
@@ -782,37 +782,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1287/mksc.4.3.199"
-      }
-    },
-    {
-      "id": "behav-5.9",
-      "file": "content/behav/ch05-b.js",
-      "name": "Magnitude and sign effects in discounting",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "W&K ch. 7"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1016/0165-1765(81)90067-7"
-      }
-    },
-    {
-      "id": "behav-5.3",
-      "file": "content/behav/ch05.js",
-      "name": "Hyperbolic discounting",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "W&K ch. 8"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1016/0165-1765(81)90067-7",
-        "wikipedia": "https://en.wikipedia.org/wiki/Hyperbolic_discounting"
       }
     },
     {
@@ -3847,7 +3816,9 @@
       "micro-10.5",
       "behav-5.8",
       "fin-4.7",
-      "fin-4.11"
+      "fin-4.11",
+      "behav-5.3",
+      "behav-5.9"
     ]
   },
   "additionalFollowups": [
@@ -7912,6 +7883,18 @@
       "status": "resolved",
       "report": "docs/verification/fin-factor-premium-followup.md",
       "note": "Read original Mehra\u2013Prescott historical/model sections, Mehra lognormal derivation and Benartzi\u2013Thaler original value/weighting/bootstrap pages. Correct arithmetic/log units, actual uncapped risk aversion, positive finite consumption-claim condition and separate Gaussian teaching model. Parent independently passes five math/eight final native groups, source/geometry/TeX/screens, and adds the genuinely used normal-law/MGF prerequisites."
+    },
+    {
+      "id": "behav-5.3",
+      "status": "resolved",
+      "report": "docs/verification/behav-discounting-followup.md",
+      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein\u2013Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
+    },
+    {
+      "id": "behav-5.9",
+      "status": "resolved",
+      "report": "docs/verification/behav-discounting-followup.md",
+      "note": "Parent independently read the complete Thaler article transcription and relevant Loewenstein\u2013Prelec original sections; checked coherent questionnaire forms, rate conventions, benchmark scope and exact model derivations; independently passed five math and eight native groups, scoped static checks and representative wide/narrow light/dark screenshots."
     }
   ]
 }
