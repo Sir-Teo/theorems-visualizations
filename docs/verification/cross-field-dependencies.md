@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 881 edges. Even
+written ideas in a different field**. Their combined shortfall is 880 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -32,3 +32,7 @@ weak law and standard-error calculation for independent repeated measurements. T
 now states those hypotheses and avoids promising that each sampled mean stays in its
 one-standard-error band. Both chemistry collections now have25 published cross-field edges.
 No source-review flags were cleared by adding these links.
+
+## Supporting planes in plastic collapse
+
+The audited argument for `solid-4.10` now explicitly uses the outward normal cone and supporting-hyperplane inequality of `opt-2.8` to obtain maximum plastic dissipation under associated flow. The chapter and syllabus both identify this written prerequisite. Solid mechanics now has7published cross-field edges; the overall published shortfall is880, with54of64collections still below25.

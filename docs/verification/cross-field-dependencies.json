@@ -9664,10 +9664,10 @@
       "collection": "solid",
       "field": "eng",
       "target": 25,
-      "writtenToWritten": 6,
-      "writtenToKnown": 7,
-      "wholeSyllabus": 26,
-      "publishedShortfall": 19,
+      "writtenToWritten": 7,
+      "writtenToKnown": 8,
+      "wholeSyllabus": 27,
+      "publishedShortfall": 18,
       "unknown": [],
       "edges": [
         {
@@ -9715,6 +9715,13 @@
         {
           "item": "solid-3.2",
           "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "solid-4.10",
+          "prerequisite": "opt-2.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **230 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 608 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **229 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 609 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **230 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **229 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -552,3 +552,7 @@ Resolved **solid-3.9** against the complete modern Bower derivation and UWA note
 ## Original decay heat and two-phase water balance — 2026-10-19
 
 Resolved **energy-3.9** against the complete original1952Argonne report, with five mathematical groups and four independently rerun final native viewport/theme groups covering24states each. Root reviewed the exact heat integral, sensible/latent balance and final narrow screenshot. Water stays at full mass while warming; exhaustion and the100-hour horizon are distinct. Full endpoint glyphs fit after plot margins were added. Historical empirical uncertainties remain explicit. See [decay audit](energy-decay-followup.md). **230 source reviews remain**.
+
+## Plastic-collapse bounds and actual convex prerequisite — 2026-10-19
+
+Resolved **solid-4.10** against Bower’s complete authored dissipation/upper/lower-bound derivations. Three mathematical groups verify all40,401integer static states and521hinge positions; four native viewport/theme groups check real sliders, pointer drags, full bound markers and the equality action. A second agent independently checked the source/proof and reran the mathematical groups without substantive findings. The statement now includes associated flow and positive reference-load work. The1000kNupper bound remains visible. Its supporting-hyperplane proof supplies a genuine new published prerequisite to **opt-2.8**; the syllabus and cross-field inventory are reconciled, with total published shortfall880. See [collapse audit](solid-collapse-followup.md). **229 source reviews remain**.

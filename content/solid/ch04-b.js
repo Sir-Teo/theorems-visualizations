@@ -2,9 +2,11 @@
 //
 // The fatigue pictures use the illustrative S–N model of ch04.shared.js (a straight line on log–log axes between 0.9 Su at 10^3 cycles and
 // the endurance strength Se; Se = 0.5 Su for steel at 10^6 cycles, 0.3 Su at 5·10^8 cycles for aluminium): a textbook idealisation, not test data;
-// scatter is a seeded log-normal model. Credits checked: Miner 1945 (Crossref 10.1115/1.4009458), Drucker–Greenberg–Prager 1951 (AMS review record).
+// scatter is a seeded log-normal model. Miner metadata checked: Crossref 10.1115/1.4009458. Limit theorems are reviewed against the authored Bower derivations (4.10).
 // From memory (flagged verify): Wöhler 1850s–70, Basquin 1910, Palmgren 1924, Goodman 1899 (Wikipedia: book "Mechanics Applied to Engineering"),
-// Gerber, Soderberg, Gvozdev, Kazinczy, Marco–Starkey (the nonlinear damage model of 4.8 is a generic illustration with invented exponents).
+// Gerber, Soderberg, Kazinczy, Marco–Starkey (the nonlinear damage model of 4.8 is a generic illustration with invented exponents).
+
+import {collapseStatic,collapseMechanism} from './source-audit-collapse.js';
 
 import { num as num0, rad, SN, snStress, snLife, cyc, curveOf } from './ch04.shared.js';
 
@@ -250,35 +252,32 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
       num: '4.10',
       kind: 'Theorem',
       name: 'Plastic collapse: lower- and upper-bound theorems',
-      statement: String.raw`Consider a structure of elastic–perfectly plastic material (4.5) under proportional loading $\lambda\mathbf P_0$, with true collapse load factor $\lambda_c$ (the load at which it deforms without limit). Then:
-(a) **Lower bound (static theorem).** If there is a stress field (or bending-moment distribution) that is in equilibrium with $\lambda\mathbf P_0$ and violates the yield condition nowhere, then $\lambda\le\lambda_c$: the structure certainly carries $\lambda\mathbf P_0$.
-(b) **Upper bound (kinematic theorem).** If there is a mechanism (a pattern of hinges and rigid motions) for which the work of $\lambda\mathbf P_0$ equals the energy dissipated in the hinges, then $\lambda\ge\lambda_c$: the structure certainly cannot carry more.
+      statement: String.raw`Consider a small-displacement, perfectly plastic structure with a convex yield set and an **associated flow rule** (maximum plastic dissipation), under proportional loading $\lambda\mathbf P_0$, with true collapse load factor $\lambda_c$ (the load at which it deforms without limit). Then:
+(a) **Lower bound (static theorem).** If there is a stress field (or bending-moment distribution) that is in equilibrium with $\lambda\mathbf P_0$ and violates the yield condition nowhere, then $\lambda\le\lambda_c$: this is a lower estimate of the ideal collapse factor.
+(b) **Upper bound (kinematic theorem).** For any kinematically admissible velocity mechanism with positive reference-load work $W_0$, its full plastic dissipation $D$ gives $\lambda_U=D/W_0\ge\lambda_c$. Every dissipating region or hinge must be included; this is an upper estimate of ideal collapse capacity.
 (c) When one admissible field and one mechanism give the same $\lambda$, that is the collapse load. The result is stated for small displacements and a convex yield condition; the example drawn is a beam fixed at both ends with a point load at mid-span, with plastic moment $M_p$.`,
-      idea: String.raw`For (a), compare the equilibrium field with the true collapse state: the difference of the two stress fields is in equilibrium with a load difference, and the virtual-work principle (8.3) together with the fact that the real field is at yield in the hinges gives $\lambda\le\lambda_c$. For (b), the work of the real, yielded state on the mechanism cannot exceed the maximum dissipation allowed by the yield condition, which the mechanism's hinges attain. For the fixed-ended beam, equilibrium gives $M_C+\tfrac12(M_A+M_B)=PL/4$ (with end moments counted hogging), and each moment is at most $M_p$ in size; the mechanism with hinges at the ends and the centre gives $P\,\tfrac L2\theta=M_p(\theta+2\theta+\theta)$. Both give $8M_p/L$. Statically indeterminate structures (1.10) show the point: collapse needs several hinges, and not the first one.`,
-      caption: String.raw`**Left (lower bound):** choose the end moments $m_A,m_B$ (hogging) with the sliders; the moment diagram stays inside the plastic band $\pm M_p$ and the largest load it can carry in equilibrium is shown. **Middle (upper bound):** drag the interior hinge along the span; the beam rotates about the end hinges and the hinge you placed, and the work balance gives a load that is never below the collapse load. **Right:** the bounds squeezed on one line: the lower one climbs as you raise the end moments to $M_p$, the upper one falls as the middle hinge moves to mid-span, and both meet at $8M_p/L$.`,
-      deps: ['solid-4.5', 'solid-1.10'],
-      refs: ['Gere–Goodno §2.12'],
+      idea: String.raw`Associated flow places the plastic strain-rate vector in the outward normal cone of the convex yield set. The supporting-hyperplane inequality (opt-2.8) then gives $(\sigma^*-\widehat\sigma):\dot\varepsilon^p\ge0$ for every stress $\widehat\sigma$ at or below yield and the actual yielding stress $\sigma^*$. Integrating this maximum-dissipation inequality and using equilibrium/virtual work supplies the two bounds. Convexity alone would not specify that flow rule.
+
+For the displayed beam, a linear moment diagram obeys $M_C+(m_A+m_B)/2=PL/4$, with hogging end magnitudes $m_A,m_B$. Keeping all three moments within $\pm M_p$ gives a static lower certificate. A unit-deflection triangular mechanism with a hinge at $x$ dissipates $2M_p(1/x+1/(L-x))$; divide by the deflection at the actual midspan load. The result is $4M_p/\min(x,L-x)$. At $m_A=m_B=M_p$ and $x=L/2$, both certificates give $8M_p/L$.`,
+      caption: String.raw`**Left (lower bound):** choose the end moments $m_A,m_B$ (hogging) with the sliders; the moment diagram stays inside the plastic band $\pm M_p$ and the largest load it can carry in equilibrium is shown. **Middle (upper bound):** drag the gold hinge horizontally along the span; the beam rotates about the end hinges and the hinge you placed, and the work balance gives a load that is never below the collapse load. **Last panel:** the bounds on one line: the lower one climbs as you raise the end moments to $M_p$, the upper one falls as the middle hinge moves to mid-span, and both meet at $8M_p/L$.`,
+      deps: ['solid-4.5', 'solid-1.10', 'solid-2.4', 'opt-2.8'],
+      refs: ['A. F. Bower, Applied Mechanics of Solids, §§6.3.1–6.3.3 and6.3.5: dissipation and complete upper/lower-bound derivations; read2026-10-19', 'Supporting-hyperplane argument applied here to a convex yield set; beam certificates derived independently'],
       tags: ['plasticity', 'limit analysis'],
-      credit: 'A. A. Gvozdev, late 1930s; Drucker, Greenberg & Prager, 1951',
-      verify: true,
-      scope: String.raw`Rigid- or elastic–perfectly plastic structures, small displacements, proportional loading, no instability or fracture. For beams, the yield condition is $|M|\le M_p$. Drucker, Greenberg and Prager, "The safety factor of an elastic-plastic body in plane strain", J. Appl. Mech. 18 (1951) 371–378 (checked in the AMS review record) is the standard citation for the bound theorems; Gvozdev's Russian proof (usually quoted as 1938, Proc. Conf. Plastic Deformations, Moscow) was not independently verified here.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Plastic_analysis' },
+      verify: false,
+      scope: String.raw`Rigid- or elastic–perfectly plastic response with a convex yield set, associated flow/maximum dissipation, proportional loading, positive reference-load work, fixed support conditions and small displacements. No strain softening, buckling, fracture or geometric instability. The beam has constant symmetric moment capacity $|M|\le M_p$, with axial/shear failure excluded. Finite deflections in the picture only display an infinitesimal mechanism shape; work uses its velocity slopes. Chosen $M_p=100$ kN·m and $L=6$ m are teaching inputs.`,
+      links: {source:'https://solidmechanics.org/Text/Chapter6_3/Chapter6_3.php'},
       viz(v) {
         const Mp = 100, L = 6, Pc = (8 * Mp) / L; // kN·m, m, kN
         const mA = v.slider('end moment $m_A$ (kN·m, hogging)', -100, 100, 0, { step: 1 });
-        const mB = v.slider('end moment $m_B$', -100, 100, 0, { step: 1 });
-        const A = v.stage({ x: [0, L], y: [-135, 135], axes: 'box', gutter: true, height: 340, xlabel: 'x (m)', ylabel: 'M (kN·m, sagging +)', title: 'a safe moment diagram (lower bound)' });
+        const mB = v.slider('end moment $m_B$ (kN·m, hogging)', -100, 100, 0, { step: 1 });
+        const A = v.stage({ x: [-.5, L+.5], y: [-135, 135], axes: 'box', gutter: true, height: 340, xlabel: 'x (m)', ylabel: 'M (kN·m, sagging +)', title: 'a safe moment diagram (lower bound)' });
         const B = v.stage({ x: [-0.4, L + 0.4], y: [-1.5, 2.4], equal: true, axes: false, height: 340, title: 'a collapse mechanism (upper bound)' });
         const C = v.stage({ x: [0, 2.2 * Pc], y: [0, 1], axes: 'box', gutter: true, height: 190, xlabel: 'load P (kN)', title: 'the bounds on the collapse load', full: true });
-        const Hh = B.handle(L / 4, 0, { color: 'gold', r: 8, constrain: { x: [0.4, L - 0.4], y: [0, 0] } });
+        const Hh = B.handle(L / 4, -.9, { color: 'gold', r: 8, constrain: { x: [0.4, L - 0.4], y: [-.9, -.9] } });
         v.legend([['green', 'lower bound'], ['red', 'upper bound'], ['ink', 'collapse load 8Mp/L']]);
-        const lower = () => (4 * (Mp + (mA.value + mB.value) / 2)) / L;
-        const upper = (x) => {
-          // unit deflection at the interior hinge; rotations θA = 1/x, θB = 1/(L−x), θx = θA+θB; load point at L/2
-          const tA = 1 / x, tB = 1 / (L - x), W = Mp * (tA + tB + tA + tB);
-          const dL = L / 2 <= x ? (L / 2) / x : (L - L / 2) / (L - x);
-          return { P: W / dL, tA, tB, dL };
-        };
+        const lower=()=>collapseStatic(Mp,L,mA.value,mB.value).load;
+        const upper=x=>{const u=collapseMechanism(Mp,L,x);return{...u,P:u.load};};
+        v.button('match both bounds',()=>{mA.set(Mp);mB.set(Mp);Hh.set(L/2,-.9);});
         v.render(() => {
           const x = Hh.x, u = upper(x), Pl = lower();
           // moment diagram for the load Pl
@@ -290,7 +289,7 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
           A.dots([[0, M0], [L / 2, M1], [L, M2]], { r: 5, color: 'green' });
           A.text(`P = ${num(Pl, 1)} kN`, L / 2, 118, { size: 12, color: 'green', align: 'center' });
           // mechanism
-          const s = 0.9, xh = x, defl = (t) => (t <= xh ? (t / xh) * s : ((L - t) / (L - xh)) * s);
+          const s = -0.9, xh = x, defl = (t) => (t <= xh ? (t / xh) * s : ((L - t) / (L - xh)) * s);
           B.line(0, 0, L, 0, { color: 'faint', width: 1.2, dash: [4, 4] });
           B.path([[0, 0], [xh, s], [L, 0]], { color: 'red', width: 4 });
           B.dot(0, 0, { r: 7, color: 'red' }); B.dot(L, 0, { r: 7, color: 'red' }); B.dot(xh, s, { r: 7, color: 'red' });
@@ -299,10 +298,12 @@ $n$ being the factor of safety for a load line through the origin. Variants repl
           B.dot(L / 2, defl(L / 2), { r: 4, color: 'ink' }); B.text(`P = ${num(u.P, 1)} kN`, L / 2 + 0.2, defl(L / 2) + 1.2, { size: 12, color: 'red', align: 'left' });
           B.rect(-0.1, -1.1, 0.0, 1.0, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.4 }); B.rect(L, -1.1, L + 0.1, 1.0, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.4 });
           // bounds
+          const meet=Math.abs(u.P-Pl)<1e-6*Pc;C.setView([-.08*u.P,(meet?1.3:1.12)*u.P],[0,1]);
           C.rect(Pl, 0.35, u.P, 0.65, { color: 'orange', width: 1, fill: 'orange', fillAlpha: 0.2 });
           C.line(Pc, 0.2, Pc, 0.8, { color: 'ink', width: 2 });
-          C.dot(Pl, 0.5, { r: 8, color: 'green' }); C.dot(u.P, 0.5, { r: 8, color: 'red' });
-          C.text('lower', Pl, 0.9, { size: 12, color: 'green', align: 'center' }); C.text('upper', Math.min(u.P, 2.15 * Pc), 0.9, { size: 12, color: 'red', align: 'center' });
+          C.dot(Pl,0.5,{r:meet?9:8,color:'green',hollow:meet,width:2});C.dot(u.P,0.5,{r:meet?5:8,color:'red'});
+          if(meet)C.text('lower = upper',Pc,.9,{size:12,color:'ink',align:'center'});
+          else{C.text('lower',Pl,.9,{size:12,color:'green',align:'left'});C.text('upper',u.P,.9,{size:12,color:'red',align:'right'});}
           C.text('8Mp/L', Pc, 0.08, { size: 12, color: 'ink', align: 'center' });
         });
         v.readout(() => {

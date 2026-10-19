@@ -145,7 +145,7 @@ export default {
           pic: 'Mix blocks of high and low stress cycles: damage fractions accumulate in a bar that fills toward one, and the predicted failure point is compared for different block orders.' },
         { num: '4.9', kind: 'Law', name: 'Goodman relation for mean stress', deps: ['solid-4.7'], refs: ['Gere–Goodno §2.9'],
           pic: 'Plot alternating against mean stress: the Goodman line joins the endurance limit to the ultimate strength, and a draggable operating point is flagged safe or unsafe.' },
-        { num: '4.10', kind: 'Theorem', name: 'Plastic collapse: lower- and upper-bound theorems', deps: ['solid-4.5', 'solid-1.10'], refs: ['Gere–Goodno §2.12'],
+        { num: '4.10', kind: 'Theorem', name: 'Plastic collapse: lower- and upper-bound theorems', deps: ['solid-4.5', 'solid-1.10', 'solid-2.4', 'opt-2.8'], refs: ['Gere–Goodno §2.12'],
           pic: 'For a frame or a set of bars, any equilibrium stress field below yield gives a load the structure can surely carry, and any collapse mechanism gives a load it surely cannot; the two bounds close in on the true collapse load.' },
       ],
     },
