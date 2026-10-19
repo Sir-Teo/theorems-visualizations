@@ -22,6 +22,7 @@ test('Wave 5 covers each unfinished collection once, preserves existing items an
   }
   assert.equal(plan.status, 'prepared-not-started');
   assert.equal(plan.gates.sourceReviewsPending, 265);
-  assert.equal(plan.gates.humanVisualReview, 'pending');
-  assert.equal(plan.gates.humanListeningReview, 'pending');
+  assert.equal(plan.gates.automatedVerification, 'pending');
+  assert.equal('humanVisualReview' in plan.gates, false);
+  assert.equal('humanListeningReview' in plan.gates, false);
 });

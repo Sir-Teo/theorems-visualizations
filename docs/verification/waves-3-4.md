@@ -1,5 +1,8 @@
 # Wave 3–4 verification — 2026-10-16
 
+**Current review policy (2026-10-19):** the user removed all human-review and subjective-listening requirements. Automated audio/input checks, source verification and agent screenshot inspection remain. Any historical human-review references below describe the superseded process and impose no current gate. The experimental human-review workspace and export requirements have been removed.
+
+
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
 The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **257 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 581 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
@@ -49,7 +52,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 1. Work through the **257 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
-3. Finish subjective audio listening, visual review of the wider collection, and the planned human sample. Browser success and waveform energy are useful functional evidence, not substitutes for these reviews.
+3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
 
 No new content wave has been started, and the source-verification backlog is not marked complete.
@@ -469,7 +472,7 @@ The inherited source/model corrections, fixtures and queue were preserved in com
 
 Five further original reviews resolve physio4.7/4.9/4.14/4.15/4.18, leaving **265 pending =833 initial+5 added−573 original resolved**. The [dynamics audit](physio-source-audit-dynamics-followup.md) checks primary circulation/Bessel derivations and corrects the quasi-steady limit. The [flow audit](physio-source-audit-flow-followup.md) corrects unconditional turbulence/sound implications and separates the Bernoulli upstream term from coefficient rounding. Parent independently reran 13 mathematical groups and 12 light/dark native input groups and inspected representative final screenshots; source flags and queue update together. The synthetic-sound selector in the existing audio regression was updated.
 
-The [human workspace](human-review.md), committed as `5619f2d`, draws 113 field-stratified visual examples (5% of the touched inventory) and includes all 149 atlas examples with sound calls. Local records/export/import reject stale source fingerprints and require explicit reviewer attestations. Five automated workspace tests exercise real browser persistence and export without recording repository human passes. Human listening/visual completion remains open, and Wave 5 has not started.
+The experimental human-review workspace was removed at the user’s request on2026-10-19. Source verification, automated sound/input tests and agent screenshot inspection continue autonomously; no user review or export is required.
 
 
 ## Cardiac output units and completed bridge inventory — 2026-10-19

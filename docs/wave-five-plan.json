@@ -4,9 +4,8 @@
   "status": "prepared-not-started",
   "gates": {
     "sourceReviewsPending": 257,
-    "humanVisualReview": "pending",
-    "humanListeningReview": "pending",
-    "note": "Planning does not authorize the authoring phase to bypass MASTER_PLAN §7.3. Source evidence, human exports and remaining wave gates must be checked before starting."
+    "automatedVerification": "pending",
+    "note": "Planning does not authorize the authoring phase to bypass MASTER_PLAN §7.3. Source evidence, automated checks and agent visual inspection must satisfy the remaining wave gates before starting."
   },
   "chapterCount": 80,
   "newItemCount": 1031,

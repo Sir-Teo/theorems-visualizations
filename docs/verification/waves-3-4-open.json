@@ -8342,43 +8342,43 @@
       "id": "physio-3.9",
       "status": "resolved",
       "report": "docs/verification/physio-source-audit-ecg-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "sig-4.6",
       "status": "resolved",
       "report": "docs/verification/sig-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "sig-4.13",
       "status": "resolved",
       "report": "docs/verification/sig-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "ctrl-4.4",
       "status": "resolved",
       "report": "docs/verification/ctrl-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "ctrl-4.8",
       "status": "resolved",
       "report": "docs/verification/ctrl-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "robot-4.7",
       "status": "resolved",
       "report": "docs/verification/robot-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     },
     {
       "id": "robot-4.8",
       "status": "resolved",
       "report": "docs/verification/robot-source-audit-followup.md",
-      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Human gate is separate."
+      "note": "Complete relevant primary/author-source review and mathematical/native-control correction; parent read the report, independently reran the dedicated unit and native theme suites, and inspected final representative screenshots. Automated audio and agent visual checks remain separate."
     }
   ]
 }
