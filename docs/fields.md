@@ -40,6 +40,10 @@ open-ended age groups that a replacement control retains.
 
 ## Mathematics (book-anchored and curated)
 
+Check an iterative formula at its declared initial index. Report a numerical
+maximum as a grid maximum, and distinguish finite-time quadrature values
+from an exact infinite-time limit.
+
 A zero functional has kernel the entire space and cannot define two distinct
 strip boundaries. Exclude a zero denominator from quotient-norm ratios and
 make boundary cases reachable in controls. Unequal deficiency indices mean

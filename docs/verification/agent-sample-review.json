@@ -3013,11 +3013,15 @@
     {
       "id": "prob-2.6.4a",
       "file": "content/prob/ch02-e.js",
-      "textHash": "c66c6f28a1c7f05d7b0340a5321389906090e1b9f190585909b42573fe4ea1c0",
-      "textReview": "The renewal decomposition and residual-life forcing1-F(t+x) are correct for a nonexplosive renewal process with positive interarrivals. Calling the convolution series a candidate avoids asserting convergence for arbitrary h, but iteration indexing is off: H0=h gives sum n=0..k for Hk, not n<k. The Gamma2 mean1 example has the stated equilibrium residual tail; grid errors remain pending.",
-      "visualReview": "Inspected both themes: residual-life example H4 has not yet reached the independent renewal solution; at t12 solution .2727 versus limit .2707 and grid cost are readable. H0=h indexing requires sum through k; correction pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "ccae3229203509ef829a4b67e42339e2e2de263f4c60e58afc7dbfb5be4737b8",
+      "textReview": "Corrected the iteration formula to H_k=sum n=0..k, consistent with H_0=h and the existing code. Positive interarrivals are explicit. The readout labels the finite-grid maximum and approximate finite-time solution separately from the infinite-time limit; the Gamma(2,rate2) residual limit is evaluated exactly as 2exp(-2).",
+      "visualReview": "Inspected 18 native states and isolated recaptures across all three forcings, k=0/4/25 and both themes. H_0 is the selected forcing; later iterates approach the dashed grid solution. Residual forcing shows grid endpoint .2727 versus exact limiting value .2707; tail and box endpoints show their distinct grid discrepancies.",
+      "interactionReview": "All three forcing buttons and iteration values 0/4/25 pass in both themes with finite readouts and no runtime/TeX errors. Repeated fresh-page captures confirm the same values. Eleven existing probability verification groups pass; no grid recurrence algorithm changed.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The renewal decomposition and residual-life forcing1-F(t+x) are correct for a nonexplosive renewal process with positive interarrivals. Calling the convolution series a candidate avoids asserting convergence for arbitrary h, but iteration indexing is off: H0=h gives sum n=0..k for Hk, not n<k. The Gamma2 mean1 example has the stated equilibrium residual tail; grid errors remain pending.",
+      "initialTextHash": "c66c6f28a1c7f05d7b0340a5321389906090e1b9f190585909b42573fe4ea1c0",
+      "initialVisualFinding": "Inspected both themes: residual-life example H4 has not yet reached the independent renewal solution; at t12 solution .2727 versus limit .2707 and grid cost are readable. H0=h indexing requires sum through k; correction pending.",
+      "correctionReport": "docs/verification/agent-renewal-iteration-review.md"
     },
     {
       "id": "epi-4.6",

@@ -390,14 +390,15 @@ If it is arithmetic with span $\delta$, then $U(\{n\delta\})\to\delta/\mu$ as $n
       name: 'Renewal equation',
       refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.6, pp. 96–99 (renewal equation, examples and Theorem 2.6.9)'],
       links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
-      statement: String.raw`Let $F$ be the interarrival distribution and $h$ a given function on $[0,\infty)$. The **renewal equation** for an unknown $H$ is
+      statement: String.raw`Let $F$ be the distribution of strictly positive interarrival times and $h$ a given function on $[0,\infty)$. The **renewal equation** for an unknown $H$ is
 $$H(t)=h(t)+\int_0^tH(t-s)\,dF(s),\qquad t\ge0,$$
 written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, where $U_0=\delta_0+U$ includes the renewal at time $0$.`,
-      idea: String.raw`Many renewal quantities satisfy such an equation by conditioning on the first renewal $\xi_1=s$: if $s>t$ the answer is a known $h(t)$, and if $s\le t$ the process starts afresh at $s$ and contributes $H(t-s)$. For example $H(t)=P(T_{N_t+1}-t>x)$, the chance that the residual life exceeds $x$, solves it with $h(t)=1-F(t+x)$. Iterating $H\mapsto h+H*F$ from $H_0=h$ produces the partial sums $\sum_{n<k}h*F^{*n}$.`,
+      idea: String.raw`Many renewal quantities satisfy such an equation by conditioning on the first renewal $\xi_1=s$: if $s>t$ the answer is a known $h(t)$, and if $s\le t$ the process starts afresh at $s$ and contributes $H(t-s)$. For example $H(t)=P(T_{N_t+1}-t>x)$, the chance that the residual life exceeds $x$, solves it with $h(t)=1-F(t+x)$. Iterating $H\mapsto h+H*F$ from $H_0=h$ produces $H_k=\sum_{n=0}^{k}h*F^{*n}$, including the initial term $H_0=h$.`,
       caption: String.raw`Gamma$(2)$ interarrivals with mean $1$, solved on a grid. The iterates $H_k=h+H_{k-1}*F$ (faint, $H_0=h$) build up to the bold $H_k$; the dashed curve is $h*U_0$, computed separately from the renewal density. For $h=1-F$ the solution is $H\equiv1$ (a renewal process is always somewhere in an interval). For $h(t)=1-F(t+1)$, $H(t)=P(\text{residual life}>1)$, which levels off at $\frac1\mu\int_1^\infty(1-F)$, the key renewal limit (2.6.12).`,
       deps: ['prob-2.6.1a'],
       see: ['demo-6.7', 'mathbio-4.13', 'prob-2.6.12'],
       tags: ['renewal'],
+      scope: String.raw`The displayed solutions use bounded forcings and Gamma(shape 2, rate 2) interarrivals of mean 1. Curves and residuals use a $\Delta t=0.01$ grid on $[0,12]$; a maximum over grid points is not a certified supremum over continuous time. Values at $t=12$ need not equal the infinite-time renewal limit. For the residual-life forcing the exact limit is $2e^{-2}$.`,
       viz(v) {
         const hSel = v.select('$h$', [{ value: 'tail', label: '$1-F(t)$' }, { value: 'res', label: '$1-F(t+1)$' }, { value: 'box', label: '$1\\{t\\le1\\}$' }], 'res');
         const kS = v.slider('iterations $k$', 0, 25, 4, { int: true });
@@ -413,7 +414,7 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
             const hv = Float64Array.from({ length: n + 1 }, (_, i) => h(i * dt));
             const its = [hv]; for (let k = 1; k <= 25; k++) { const c = convP(its[k - 1], pv); its.push(hv.map((x, i) => x + c[i])); }
             const sol = hv.map((x, i) => { let s = 0; for (let j = 1; j <= i; j++) s += hv[i - j] * mU[j]; return x + s; });
-            const lim = { tail: 1, res: simpson((y) => 1 - Lw.F(y), 1, 30, 2000), box: 1 }[hk];
+            const lim = { tail: 1, res: 2 * Math.exp(-2), box: 1 }[hk];
             cache[hk] = { its, sol, lim };
           }
           const C = cache[hk], k = kS.value;
@@ -426,7 +427,7 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
           v.legend([['accent', `$H_{${k}}$ (earlier iterates faint)`], ['ink', '$h*U_0$', { dash: true }], ['green', 'limit $\\frac1\\mu\\int_0^\\infty h$', { dash: true }]]);
           st = { k, err, lim: C.lim, end: C.sol[n] };
         });
-        v.readout(() => st && `$\\sup_{t\\le12}|H_{${st.k}}-h*U_0|=${v.fix(st.err, 4)}$. At $t=12$: $h*U_0=${v.fix(st.end, 4)}$, key renewal limit $\\frac1\\mu\\int_0^\\infty h=${v.fix(st.lim, 4)}$ (the grid $\\Delta t=0.01$ costs about $\\Delta t\\,h(0)/2\\mu$).`);
+        v.readout(() => st && `Grid maximum of $|H_{${st.k}}-h*U_0|$ on $[0,12]$: $${v.fix(st.err, 4)}$. At $t=12$: grid solution $h*U_0\\approx${v.fix(st.end, 4)}$; infinite-time key renewal limit $\\frac1\\mu\\int_0^\\infty h=${v.fix(st.lim, 4)}$. The grid spacing is $\\Delta t=0.01$; no continuous-time error bound is certified here.`);
       },
     },
     {
