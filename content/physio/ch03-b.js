@@ -16,12 +16,9 @@ const RSWEEP = Array.from({ length: 14 }, (_, k) => 0.5 + 0.2 * k);
 const wsweep = {};
 function workSweep(Ees) { return (wsweep[Ees] ??= RSWEEP.map((R) => { const B = heartBeat({ R, Ees }); return { R, SV: B.SV, SW: B.work * MMHG_ML_TO_J, Pmax: B.Pmax }; })); }
 
-// Wall geometry of the ventricle as a thick sphere of constant wall volume Vw (mL): cavity V → inner radius, outer radius, thickness (cm).
-function wall(V, Vw) {
-  const ri = Math.cbrt((3 * Math.max(V, 1)) / (4 * Math.PI)), ro = Math.cbrt(ri ** 3 + (3 * Vw) / (4 * Math.PI));
-  return { ri, ro, h: ro - ri };
-}
+import { sphereWall as wall, wallStress } from './physio-source-audit-wall.js';
 
+import { reservoirPressure, restoreOutput } from './physio-source-audit-patterson.js';
 import { ECG_LEADS as LEADS, leadAxis, projectLead as proj, heartVector as hvec } from './physio-source-audit-ecg.js';
 
 export default {
@@ -81,17 +78,17 @@ export default {
       name: 'Law of Laplace for the ventricular wall',
       statement: String.raw`For a thin-walled hollow sphere of cavity radius $r$ and wall thickness $h \ll r$, held open by an internal pressure $P$, the tension per unit length across the wall gives a **wall stress**
 $$\sigma = \frac{P\,r}{2h}.$$
-(A thin cylinder has $\sigma = Pr/h$ along the circumference.) Applied to the left ventricle as an approximation, it says that the stress each muscle fibre has to bear grows with the pressure and with the cavity radius, and falls with the thickness of the wall. Hence a dilated ventricle (large $r$) must develop more stress for the same pressure, and a ventricle facing a raised pressure can restore its stress to normal by thickening its wall (concentric hypertrophy) in proportion to $P$.`,
-      idea: String.raw`Cut the sphere in half: the pressure on the flat cross-section, $P\pi r^2$, is balanced by the wall tension acting around the rim of length $2\pi r$ and thickness $h$, giving $P\pi r^2 = \sigma\,2\pi r h$. This is the Young–Laplace pressure–curvature relation (fluid-2.7) for a thick membrane. The model beat of the chapter (physio-3.5) supplies $P(t)$ and the cavity volume $V(t)$; the wall is taken to have a fixed muscle volume, so as the cavity empties the wall must thicken, and the thickness follows from geometry, not from a fitted number. That is why the stress curve is not just the pressure curve rescaled.`,
-      caption: String.raw`The cursor runs through the beat and the cross-section shows the cavity and the wall at that moment (outlines of the normal heart at the same instant are dashed). The right panel plots the wall stress $\sigma(t)$ for the present ventricle, the pressure in kPa, and the normal baseline. Use the buttons: raising the **afterload** raises the pressure and the stress; adding **wall muscle** (hypertrophy) brings the stress back down; a **dilated** ventricle has a larger radius and so a larger stress at the same pressure.`,
-      scope: String.raw`A thin-wall, spherical, uniform-wall approximation (the actual ventricle is ellipsoidal and its wall has a stress gradient from the inner to the outer layer, so true fibre stresses differ by a geometry factor and with the formula used), with the cavity radius in the formula and a wall of fixed muscle volume. Numbers are illustrative; the laws of proportion are the point.`,
+(A thin cylinder has $\sigma = Pr/h$ along the circumference.) In this thin spherical model, increasing pressure or cavity radius at fixed thickness raises the membrane-stress estimate; increasing thickness lowers it. This motivates a qualitative discussion of ventricular dilation and thickening, but does not determine each fibre's stress in a real thick myocardium. Pressure means the internal-minus-external pressure; external pressure is set to zero here.`,
+      idea: String.raw`Cut the sphere in half: the pressure on the flat cross-section, $P\pi r^2$, is balanced by the wall tension acting around the rim of length $2\pi r$ and thickness $h$, giving $P\pi r^2 = \sigma\,2\pi r h$. This is a thin-membrane force balance (fluid-2.7), not a formula for local stress through a thick ventricular wall. For a spherical hemisphere of finite wall thickness, balancing pressure on the cavity disk against the resultant normal force on the annular cut instead gives the area-averaged cut stress $\bar\sigma_{cut}=P r_i^2/(r_o^2-r_i^2)$. Thus the inner-radius thin-wall estimate exceeds this cut average by the fraction $h/(2r_i)$; both approach one another as $h/r_i\to0$. The model beat of the chapter (physio-3.5) supplies $P(t)$ and the cavity volume $V(t)$; the wall is taken to have a fixed muscle volume, so as the cavity empties the wall must thicken, and the thickness follows from geometry, not from a fitted number. That is why the stress curve is not just the pressure curve rescaled.`,
+      caption: String.raw`The cursor runs through the beat and the cross-section shows the cavity and the wall at that moment (outlines of the baseline model at the same instant are dashed). The right panel plots the thin-wall estimate $\sigma(t)$, the finite-thickness cut average for the present ventricle, the pressure in kPa, and the baseline model. Use the buttons: raising the **afterload** raises the pressure and the stress; adding **wall muscle** (a chosen wall-volume change) brings the stress back down; a **dilated** ventricle has a larger radius and so a larger stress at the same pressure.`,
+      scope: String.raw`Spherical geometry with uniform thickness and constant chosen wall-muscle volume; the model beat supplies pressure and cavity volume. The thin-wall law requires $h/r\ll1$, which many control settings deliberately violate. The additional curve is an exact force-resultant average across the equatorial annulus for this static spherical geometry, not a local fibre-stress solution. Mirsky's 1969 thick-wall analysis demonstrates why geometry, radial stress and stress variation matter. The model does not predict clinical hypertrophy or myocardial material properties.`,
       deps: ['physio-3.5', 'fluid-2.7'],
       see: ['physio-3.7'],
-      refs: ['Guyton–Hall'],
+      refs: ['Mirsky (1969), Left Ventricular Stresses in the Intact Human Heart, Biophys J 9:189–208, assumptions pp. 190–193 and thin/thick comparison pp. 202–204; DOI 10.1016/S0006-3495(69)86379-4; cut-force average derived here'],
       tags: ['wall stress', 'hypertrophy'],
-      credit: 'Pierre-Simon Laplace and Thomas Young, 1805–06 (pressure–curvature relation); its use for the ventricular wall is a standard physiological approximation',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Young%E2%80%93Laplace_equation' },
-      verify: true,
+      credit: 'Young–Laplace thin-wall force balance; ventricular thick-wall comparison: I. Mirsky, 1969',
+      links: { source: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC1367427/' },
+      verify: false,
       viz(v) {
         const aft = v.slider('afterload (arterial resistance)', 0.7, 2.4, HEART.R, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·s/mL` });
         const mass = v.slider('wall muscle volume', 80, 320, 150, { step: 5, fmt: (x) => `${fmt0(x)} mL` });
@@ -104,13 +101,14 @@ $$\sigma = \frac{P\,r}{2h}.$$
         v.button('dilated, weak', () => set(HEART.R, 150, 45, 1.2));
         const sC = v.stage({ x: [-6, 6], y: [-5.2, 5.2], equal: true, axes: false, height: 340, weight: 0.9, minWidth: 260, title: 'cross-section at the cursor' });
         const sT = v.stage({ x: [0, 0.8], y: [0, 45], height: 340, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: 'kPa', weight: 1.2 });
-        const geo = (R, Vw) => R.V.map((V, i) => { const w = wall(V, Vw), P = R.P[i] * KPA; return { ...w, P, s: (P * w.ri) / (2 * w.h) }; });
+        const geo = (R, Vw) => R.V.map((V, i) => { const w = wall(V, Vw), P = R.P[i] * KPA; const stress = wallStress(P, w); return { ...w, P, s: stress.thin, cut: stress.cut, excess: stress.relativeExcess }; });
         let R = null, B = null, G = null, GB = null, tc = 0;
         const circ = (r) => Array.from({ length: 61 }, (_, k) => [r * Math.cos((2 * Math.PI * k) / 60), r * Math.sin((2 * Math.PI * k) / 60)]);
         v.animate((t) => {
           R = heartBeat({ R: aft.value, Ees: ino.value, V0: dil.value }); B = heartBeat({});
           G = geo(R, mass.value); GB = geo(B, 150); tc = ((t / 4) % 1) * R.T;
           const i = beatIdx(R, tc), g = G[i], iB = beatIdx(B, tc), gb = GB[iB];
+          const radius = Math.max(g.ro, gb.ro) * 1.3; sC.setView([-radius, radius], [-radius, radius]);
           sC.rings([circ(g.ro), circ(g.ri)], { evenodd: true, fill: 'red', fillAlpha: 0.35, color: 'red', width: 2 });
           sC.path(circ(gb.ro), { color: 'muted', dash: [4, 4], width: 1.2 }); sC.path(circ(gb.ri), { color: 'muted', dash: [4, 4], width: 1.2 });
           for (let k = 0; k < 8; k++) { const a = (k * Math.PI) / 4 + 0.2, L = 0.25 + g.P * 0.1; sC.arrow(0.5 * g.ri * Math.cos(a), 0.5 * g.ri * Math.sin(a), g.ri * 0.9 * Math.cos(a) * Math.min(1, 0.35 + g.P / 20), g.ri * 0.85 * Math.sin(a) * Math.min(1, 0.35 + g.P / 20), { color: 'accent', width: 1 + g.P / 8, head: 8 }); }
@@ -118,18 +116,19 @@ $$\sigma = \frac{P\,r}{2h}.$$
           sC.measure(0, -g.ri, 0, -g.ro, '');
           sC.text(`r = ${v.fix(g.ri, 1)} cm`, -g.ri * 0.74, g.ri * 0.74, { size: 11, color: 'ink', align: 'right', baseline: 'bottom' });
           sC.text(`h = ${v.fix(g.h * 10, 1)} mm`, 0.25, -(g.ri + g.ro) / 2, { size: 11, color: 'ink', align: 'left', baseline: 'middle' });
-          sT.setView([0, Math.max(R.T, B.T)], undefined);
+          sT.setView([-.03, Math.max(R.T, B.T) + .03], [-1, Math.max(...G.map(q => q.s), ...GB.map(q => q.s), ...G.map(q => q.P)) * 1.25]);
           sT.vband(R.tAVO, R.tAVC, { color: 'red', alpha: 0.08, edges: false });
           trace(sT, B.t, GB.map((q) => q.s), { color: 'muted', width: 1.6, dash: [5, 4] });
           trace(sT, R.t, G.map((q) => q.P), { color: 'teal', width: 1.8 });
           trace(sT, R.t, G.map((q) => q.s), { color: 'accent', width: 2.8 });
+          trace(sT, R.t, G.map(q => q.cut), { color: 'purple', width: 2.2 });
           sT.vline(tc, { color: 'gold', width: 1.6 }); sT.dot(tc, g.s, { r: 6, color: 'gold' });
         }, { period: 4, still: 1.4 });
-        v.legend([['accent', 'wall stress $\\sigma = Pr/2h$'], ['teal', 'pressure $P$ (kPa)'], ['muted', 'normal heart: stress', { dash: true }], ['red', 'wall (constant muscle volume)']]);
+        v.legend([['accent', 'thin-wall estimate $\\sigma = Pr/2h$'], ['purple', 'finite-thickness cut average'], ['teal', 'pressure $P$ (kPa)'], ['muted', 'baseline model: stress', { dash: true }], ['red', 'wall (constant muscle volume)']]);
         v.readout(() => {
           if (!G) return '';
           const i = beatIdx(R, tc), g = G[i], pk = Math.max(...G.map((q) => q.s)), pkB = Math.max(...GB.map((q) => q.s));
-          return `now: $\\sigma = P r/(2h) = ${v.fix(g.P, 1)} \\times ${v.fix(g.ri, 2)} / (2 \\times ${v.fix(g.h, 2)}) = ${v.fix(g.s, 1)}$ kPa · peak stress **${v.fix(pk, 0)} kPa** (normal heart ${v.fix(pkB, 0)} kPa, ${pk >= pkB ? '+' : '−'}${v.fix(100 * Math.abs(pk / pkB - 1), 0)}%) · end-diastolic wall ${v.fix(wall(R.EDV, mass.value).h * 10, 1)} mm, end-systolic ${v.fix(wall(R.ESV, mass.value).h * 10, 1)} mm`;
+          return `now: $\\sigma = P r/(2h) = ${v.fix(g.P, 1)} \\times ${v.fix(g.ri, 2)} / (2 \\times ${v.fix(g.h, 2)}) = ${v.fix(g.s, 1)}$ kPa · $h/r=${v.fix(g.ratio, 2)}$: thin estimate exceeds cut average by ${v.fix(100 * g.excess, 1)}%; cut average ${v.fix(g.cut, 1)} kPa · peak thin estimate **${v.fix(pk, 0)} kPa** (baseline model ${v.fix(pkB, 0)} kPa, ${pk >= pkB ? '+' : '−'}${v.fix(100 * Math.abs(pk / pkB - 1), 0)}%) · end-diastolic wall ${v.fix(wall(R.EDV, mass.value).h * 10, 1)} mm, end-systolic ${v.fix(wall(R.ESV, mass.value).h * 10, 1)} mm`;
         });
       },
     },
@@ -295,17 +294,17 @@ $$\sigma = \frac{P\,r}{2h}.$$
       name: 'On the Mechanical Factors Determining Ventricular Output',
       paper: { authors: 'S. W. Patterson and E. H. Starling', year: 1914, title: 'On the mechanical factors which determine the output of the ventricles', venue: 'Journal of Physiology 48 (5): 357–379', doi: '10.1113/jphysiol.1914.sp001669' },
       introduces: ['physio-3.3'],
-      statement: String.raw`Patterson and Starling studied the output of the mammalian left ventricle in the dog **heart–lung preparation**, in which the heart and lungs are kept working in a closed circuit that the experimenter controls: the filling pressure is set by the height of a venous reservoir, and the pressure the ventricle ejects against by an adjustable resistance, while the output is measured directly. As usually summarised, they found that the output of the ventricle is governed by the size of the heart in diastole, set by the filling: raising the venous pressure raises the output, and when the arterial resistance is raised the ventricle at first ejects less, then dilates, and the larger diastolic volume allows it to eject the same output against the higher pressure. The same preparation led to Starling's statement of the "law of the heart".`,
-      idea: String.raw`Before this paper, the output of the heart was widely thought to be set by the heart itself (by rate and force of beating as such), with the circulation adapting to it. The heart–lung preparation removed the nerves, hormones and the rest of the body and made the two loads (venous filling and arterial resistance) independent controls, so that the dependence of the output on each could be measured separately. Their central conclusion is the dependence of output on diastolic volume that became the Frank–Starling law (physio-3.3). The picture here is a **reconstruction with a model**, not the paper's own data: the original tracings and tables were not available to me, so the numbers are those of the chapter's left-heart model at a constant heart rate, with its venous side as the reservoir.`,
-      caption: String.raw`The **reservoir height** sets the venous (filling) pressure and the **resistance** is the arterial screw clamp. The left panel plots the output against filling pressure for three resistances, the right panel the diastolic volume (the size of the heart) reached; your setting is the gold dot. Raise the resistance: the curve drops at fixed filling (the ventricle ejects less), but climb the same curve to a higher filling pressure and the output comes back, at the price of a larger heart. The readout finds the filling pressure and diastolic volume at which the output returns to its resting value.`,
-      scope: String.raw`A model reconstruction at a fixed heart rate with no nervous or hormonal control, which is the situation of a heart–lung preparation but not of a patient; the dog preparation's own numbers are not reproduced. The summary of the paper's findings in the statement comes from secondary accounts and the paper's text was not checked, so it is flagged for verification. Nothing here is medical advice.`,
+      statement: String.raw`Patterson and Starling's 1914 heart–lung-preparation paper studies how venous inflow, venous pressure, arterial resistance and heart rate constrain ventricular output. In the preparation, the experimenters could change the venous supply and arterial load independently. Their conclusions distinguish increased filling pressure caused by increased inflow from increased venous pressure caused by pump failure: the latter need not mean a larger output. With a maintained inflow, output can remain nearly constant over substantial load changes while venous pressure changes. The paper is part of the mechanical foundation of the Frank–Starling account; it states that the detailed volume curve will be treated in a subsequent paper.`,
+      idea: String.raw`Controlling the preparation made mechanical relationships easier to examine than in the intact animal. The original paper's conclusions concern coupled flow and pressure, not simply an isolated pressure-to-output formula. The panel uses the chapter's **chosen left-heart model**, at fixed rate, to explore filling pressure and resistance: it does not reproduce the dog experiments, hold venous inflow fixed, or include their coupled right heart and pulmonary circulation. A numerical inverse finds how much model filling pressure is needed to recover the baseline model output after a load change.`,
+      caption: String.raw`The reservoir-height control sets the model's venous filling pressure; the resistance control sets its arterial load. The left panel plots output versus filling pressure, the right end-diastolic volume. Coloured curves use three fixed resistances, while the dashed curve uses your selected resistance and the gold markers show your setting. The dark markers solve for the filling pressure at which your model curve regains the baseline output. Raising filling pressure is a separate model intervention; the curve is not the original paper's fixed-inflow experiment.`,
+      scope: String.raw`Illustrative fixed-rate left-heart model, with chosen parameters and a finite warm-up. The 1914 experiments used a coupled heart–lung preparation and measured output and filling pressures; these panels are model calculations rather than digitized original tables. The hydrostatic conversion used here is the rounded convention 1 cm H₂O = 0.7356 mmHg. The inverse is searched only over the plotted 2–26 mmHg filling range and says when a target is outside that range.`,
       deps: ['physio-3.2'],
       see: ['physio-3.3'],
-      refs: [],
+      refs: ['Patterson & Starling (1914), J Physiol 48:357–379, pp. 357–360 and conclusions pp. 378–379; DOI 10.1113/jphysiol.1914.sp001669'],
       tags: ['Starling', 'heart–lung preparation'],
       credit: 'S. W. Patterson and E. H. Starling, 1914',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1914.sp001669' },
-      verify: true,
+      verify: false,
       viz(v) {
         const hgt = v.slider('venous reservoir height', 3, 32, 14, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} cm H₂O` });
         const rr = v.slider('arterial resistance', 0.7, 2.6, 2.0, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·s/mL` });
@@ -316,8 +315,11 @@ $$\sigma = \frac{P\,r}{2h}.$$
         const cols = ['green', 'accent', 'red'];
         let R = null, Pv = 0, base = null, need = null;
         v.render(() => {
-          Pv = hgt.value * 0.7356; R = heartBeat({ Pv, R: rr.value, HR: 75 });
-          base = heartBeat({ Pv: 14 * 0.7356, R: 1.25, HR: 75 });
+          Pv = reservoirPressure(hgt.value); R = heartBeat({ Pv, R: rr.value, HR: 75 });
+          base = heartBeat({ Pv: reservoirPressure(14), R: 1.25, HR: 75 });
+          const all = RS.flatMap(r => curve(r));
+          sO.setView([0, 28], [-.2, Math.max(R.CO, base.CO, ...all.map(p => p.CO), ...PVS.map(Pv => heartBeat({Pv,R:rr.value,HR:75}).CO)) * 1.25]);
+          sD.setView([0, 28], [Math.min(R.EDV, base.EDV, ...all.map(p => p.EDV)) * .8, Math.max(R.EDV, base.EDV, ...all.map(p => p.EDV), ...PVS.map(Pv => heartBeat({Pv,R:rr.value,HR:75}).EDV)) * 1.2]);
           RS.forEach((r, k) => {
             const c = curve(r);
             sO.path(c.map((p) => [p.Pv, p.CO]), { color: cols[k], width: 2, alpha: Math.abs(r - rr.value) < 0.01 ? 1 : 0.65 });
@@ -329,13 +331,12 @@ $$\sigma = \frac{P\,r}{2h}.$$
           sO.path(mine.map((p) => [p.Pv, p.CO]), { color: 'ink', width: 1.4, dash: [4, 3] }); sD.path(mine.map((p) => [p.Pv, p.EDV]), { color: 'ink', width: 1.4, dash: [4, 3] });
           sO.hline(base.CO, { color: 'faint', dash: [6, 4], width: 1.2 }); sO.text('resting output', 0.4, base.CO, { size: 11, color: 'muted', align: 'left', baseline: 'bottom', dy: -3 });
           sO.dot(Pv, R.CO, { r: 8, color: 'gold' }); sD.dot(Pv, R.EDV, { r: 8, color: 'gold' });
-          // filling pressure at which the output of this resistance returns to the resting value (linear interpolation along the curve)
-          need = null;
-          for (let k = 1; k < mine.length; k++) if (mine[k - 1].CO < base.CO && mine[k].CO >= base.CO) { const f = (base.CO - mine[k - 1].CO) / (mine[k].CO - mine[k - 1].CO); need = { Pv: mine[k - 1].Pv + f * 2, EDV: mine[k - 1].EDV + f * (mine[k].EDV - mine[k - 1].EDV) }; }
+          // Solve the same model response directly, rather than inverting a sparse polyline.
+          need = restoreOutput(Pv => heartBeat({Pv,R:rr.value,HR:75}), base.CO);
           if (need) { sO.dot(need.Pv, base.CO, { r: 5, color: 'ink' }); sD.dot(need.Pv, need.EDV, { r: 5, color: 'ink' }); }
         });
         v.legend([['green', 'low resistance 0.8'], ['accent', 'resting 1.25'], ['red', 'high 2.0'], ['ink', 'your resistance', { dash: true }], ['gold', 'your setting']]);
-        v.readout(() => `venous pressure ${v.fix(Pv, 1)} mmHg → output **${v.fix(R.CO, 2)}** L/min at diastolic volume ${v.fix(R.EDV, 0)} mL (resting: ${v.fix(base.CO, 2)} L/min at ${v.fix(base.EDV, 0)} mL)\n` + (need ? `at resistance ${v.fix(rr.value, 2)} the resting output is restored at filling pressure ${v.fix(need.Pv, 1)} mmHg and diastolic volume ${v.fix(need.EDV, 0)} mL (${need.EDV >= base.EDV ? '+' : '−'}${v.fix(Math.abs(need.EDV - base.EDV), 0)} mL vs rest): the heart has dilated to compensate` : `at resistance ${v.fix(rr.value, 2)} the resting output is not reached within the range of filling pressures shown`));
+        v.readout(() => `venous pressure ${v.fix(Pv, 1)} mmHg → output **${v.fix(R.CO, 2)}** L/min at diastolic volume ${v.fix(R.EDV, 0)} mL (resting: ${v.fix(base.CO, 2)} L/min at ${v.fix(base.EDV, 0)} mL)\n` + (need ? `at resistance ${v.fix(rr.value, 2)} the resting output is restored at filling pressure ${v.fix(need.Pv, 1)} mmHg and diastolic volume ${v.fix(need.EDV, 0)} mL (${need.EDV >= base.EDV ? '+' : '−'}${v.fix(Math.abs(need.EDV - base.EDV), 0)} mL vs rest): the model filling was adjusted to recover the target` : `at resistance ${v.fix(rr.value, 2)} the resting output is not reached within the range of filling pressures shown`));
       },
     },
   ],

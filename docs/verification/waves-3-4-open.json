@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 254,
+  "remainingFlags": 251,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "physio": 7,
+    "physio": 4,
     "pharm": 9,
     "imaging": 4,
     "circ": 1,
@@ -150,39 +150,6 @@
       "links": {}
     },
     {
-      "id": "physio-3.8",
-      "file": "content/physio/ch03-b.js",
-      "name": "Law of Laplace for the ventricular wall",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Young%E2%80%93Laplace_equation"
-      }
-    },
-    {
-      "id": "physio-3.11",
-      "file": "content/physio/ch03-b.js",
-      "name": "On the Mechanical Factors Determining Ventricular Output",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "A model reconstruction at a fixed heart rate with no nervous or hormonal control, which is the situation of a heart\u2013lung preparation but not of a patient; the dog preparation's own numbers are not reproduced. The summary of the paper's findings in the statement comes from secondary accounts and the paper's text was not checked, so it is flagged for verification. Nothing here is medical advice."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1113/jphysiol.1914.sp001669"
-      }
-    },
-    {
       "id": "physio-3.1",
       "file": "content/physio/ch03.js",
       "name": "The cardiac cycle and the Wiggers diagram",
@@ -223,21 +190,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1113/jphysiol.1902.sp000911"
-      }
-    },
-    {
-      "id": "physio-4.17",
-      "file": "content/physio/ch04-d.js",
-      "name": "Guyton\u2019s venous return and the cardiac-output equilibrium",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Guyton\u2013Hall"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1152/physrev.1955.35.1.123"
       }
     },
     {
@@ -4641,7 +4593,10 @@
       "robot-4.8",
       "physio-4.20",
       "imaging-3.16",
-      "imaging-4.4"
+      "imaging-4.4",
+      "physio-3.8",
+      "physio-3.11",
+      "physio-4.17"
     ]
   },
   "additionalFollowups": [
@@ -8352,6 +8307,24 @@
       "status": "resolved",
       "report": "docs/verification/imaging-collimator-followup.md",
       "note": "Primary source/model review with independent mathematical and native light/dark control checks; parent reran the dedicated suites and inspected the final full-size screenshot. No calibrated instrument/clinical-data claim is made."
+    },
+    {
+      "id": "physio-3.8",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-wall-followup.md",
+      "note": "Primary source and chosen-model scope reviewed; parent independently reran mathematical and native light/dark control suites and inspected final full-size screenshots. Corrected thick-wall interpretation, historical experiment scope or forward-flow equilibrium as documented."
+    },
+    {
+      "id": "physio-3.11",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-patterson-followup.md",
+      "note": "Primary source and chosen-model scope reviewed; parent independently reran mathematical and native light/dark control suites and inspected final full-size screenshots. Corrected thick-wall interpretation, historical experiment scope or forward-flow equilibrium as documented."
+    },
+    {
+      "id": "physio-4.17",
+      "status": "resolved",
+      "report": "docs/verification/physio-source-audit-guyton-followup.md",
+      "note": "Primary source and chosen-model scope reviewed; parent independently reran mathematical and native light/dark control suites and inspected final full-size screenshots. Corrected thick-wall interpretation, historical experiment scope or forward-flow equilibrium as documented."
     }
   ]
 }

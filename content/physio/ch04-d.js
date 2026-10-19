@@ -1,4 +1,5 @@
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part d: 4.16–4.20)
+import { cardiacFlow, venousFlow, circulationParameters, circulationEquilibrium } from './physio-source-audit-guyton.js';
 import { oncoticPressure, frozenFiltration } from './physio-source-audit-starling.js';
 import { stenosisFlow, BERNOULLI_MMHG } from './physio-source-audit-flow.js';
 import { clamp, RHO_BLOOD, PA_PER_MMHG } from './ch04.shared.js';
@@ -64,40 +65,41 @@ export default {
       num: '4.17',
       kind: 'Model',
       name: 'Guyton’s venous return and the cardiac-output equilibrium',
-      statement: String.raw`Cardiac output is the one flow that the heart and the vessels must agree on, and each side has its own curve against right-atrial pressure $P_{ra}$. The **cardiac function curve** $CO=f(P_{ra})$ (Frank–Starling, physio-3.3) rises with filling and then plateaus; the **venous return curve** is linear, $VR=(P_{msf}-P_{ra})/R_{VR}$, where $P_{msf}$ is the mean systemic filling pressure (the pressure everywhere in the circulation when the heart is stopped) and $R_{VR}$ the resistance to venous return, until it plateaus at negative $P_{ra}$ because the veins collapse as they enter the thorax. In steady state $CO=VR$: the operating point is the **intersection** of the two curves. A transfusion raises $P_{msf}$ and moves the venous curve right, sympathetic stimulation raises $P_{msf}$ and contractility, heart failure lowers the plateau of the cardiac curve.`,
-      idea: String.raw`The heart can only pump out what the veins deliver to it, and the veins deliver more when the right atrial pressure is lower (a bigger gradient from the periphery); the heart pumps more when it is filled more. These two monotone relations of opposite slope cross in exactly one point, which is stable (a transient rise of $P_{ra}$ reduces venous return below the output, lowering $P_{ra}$ again). The venous return curve is Ohm's law (physio-4.1) with the "voltage" $P_{msf}-P_{ra}$, and $P_{msf}$ is set by the stressed blood volume divided by the total compliance (physio-4.6). Guyton introduced the graphical solution in 1955.`,
-      caption: String.raw`The cardiac function curve (red) and venous return curve (blue) are plotted against right-atrial pressure; the green dot is their intersection, with the baseline equilibrium shown in grey. Drag **blood volume** (transfusion or haemorrhage), **sympathetic tone** or **heart contractility** and watch the intersection move: more volume moves the venous curve to the right and raises output at a higher $P_{ra}$; failure lowers the plateau and pushes the operating point to a high $P_{ra}$ and low output.`,
-      scope: String.raw`A reconstruction with round-number textbook-style parameters (normal $P_{msf}$ about 7 mmHg, $R_{VR}$ about 1.4 mmHg·min/L, a plateau of 13 L/min at normal contractility); the dependence of $P_{msf}$ on volume ($\Delta P_{msf}=\Delta V/100\,\text{mL/mmHg}$) and the sympathetic effects are schematic. Real operating points also involve the arterial side (afterload) and the heart rate, which this graphical model holds fixed.`,
+      statement: String.raw`In Guyton's graphical model, cardiac output and venous return are equal at a steady operating point. Both curves use right-atrial pressure $P_{ra}$ as a common coordinate: the cardiac curve rises with filling, whereas the venous-return curve falls as the downstream pressure rises. A simple forward-flow law is $VR=(P_f-P_{ra})/R_{VR}$ while $P_{ra}$ exceeds a chosen collapse threshold and remains below the filling-pressure intercept $P_f$. Below the collapse threshold, return plateaus; at pressures above $P_f$, this illustration sets forward return to zero. A positive intersection determines pressure and flow together.`,
+      idea: String.raw`The 1955 paper combines experimentally obtained cardiac-response and venous-return curves; its Figure 5 equates them graphically. It uses **mean circulatory filling pressure**, the equilibrated pressure of the whole circulation after flow stops. Mean systemic filling pressure concerns the systemic compartment; these terms need not have identical values. Here $P_f$ is a chosen lumped filling-pressure intercept. For the specified positive-flow curves, increasing atrial pressure increases pumping and reduces supply, so a positive intersection is unique. Its stability follows if a small atrial reservoir has $C\,dP_{ra}/dt=VR-CO$ with positive compliance.`,
+      caption: String.raw`Change **blood volume**, **sympathetic tone**, **contractility** and **venous resistance** to move the two chosen curves. The green dot is their positive intersection; the grey dot is the baseline model. The whole curves remain visible. At sufficiently low filling pressure the model supplies no positive venous return, so it reports that limit and removes the operating-point dot.`,
+      scope: String.raw`Illustrative curves, not a fit to Guyton's dog experiments or a prediction of transfusion, haemorrhage or heart failure. Chosen baseline values are $P_f=7$ mmHg, $R_{VR}=1.4$ mmHg·min/L and a cardiac asymptote 13 L/min; the volume-to-pressure compliance 100 mL/mmHg, sympathetic effects and collapse pressure −2 mmHg are chosen. The collapse threshold does not move with volume in this simplified model, so sufficiently negative $P_f$ falls outside a positive-circulation state. It holds arterial load and heart rate implicit and omits reflex and time-dependent volume redistribution.`,
       deps: ['physio-3.3', 'physio-4.6'],
       see: ['physio-8.7'],
-      refs: ['Guyton–Hall'],
+      refs: ['Guyton (1955), Determination of cardiac output by equating venous return curves with cardiac response curves, Physiol Rev 35:123–129; pp.124–126 collapse/filling pressure, pp.127–128 and Fig.5 equilibrium; DOI 10.1152/physrev.1955.35.1.123'],
       tags: ['cardiac output', 'venous return', 'Guyton'],
       credit: 'A. C. Guyton, 1955',
       links: { doi: 'https://doi.org/10.1152/physrev.1955.35.1.123' },
-      verify: true,
+      verify: false,
       viz(v) {
         const sV = v.slider('blood volume change', -1500, 1500, 0, { step: 50, fmt: (x) => `${x >= 0 ? '+' : ''}${x} mL` });
         const sS = v.slider('sympathetic tone', 0, 1, 0, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
         const sC = v.slider('cardiac contractility', 0.2, 1.6, 1, { step: 0.05, fmt: (x) => `${v.fix(100 * x, 0)}%` });
         const sR = v.slider('resistance to venous return', 0.8, 3, 1.4, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·min/L` });
         const s = v.stage({ x: [-4, 16], y: [0, 15], height: 330, axes: 'box', gutter: true, xlabel: 'right atrial pressure (mmHg)', ylabel: 'cardiac output = venous return (L/min)', weight: 1 });
-        const CO = (P, c) => 13 * c * (1 - Math.exp(-(P + 4) / 8.2));
-        const VR = (P, pm, r) => (pm - Math.max(P, -2)) / r;
-        const solve = (c, pm, r) => { let lo = -4, hi = 20; for (let k = 0; k < 60; k++) { const m = (lo + hi) / 2; if (CO(m, c) > VR(m, pm, r)) hi = m; else lo = m; } const P = (lo + hi) / 2; return { P, Q: VR(P, pm, r) }; };
+        const CO = cardiacFlow, VR = venousFlow, solve = circulationEquilibrium;
         let o = null;
         v.render(() => {
-          const sym = sS.value, pm = 7 + sV.value / 100 + 4 * sym, c = sC.value * (1 + 0.4 * sym), r = sR.value * (1 - 0.15 * sym);
-          s.fn((P) => CO(P, 1), { color: 'faint', width: 1.6, dash: [5, 4], domain: [-4, 16] }); s.fn((P) => VR(P, 7, 1.4), { color: 'faint', width: 1.6, dash: [5, 4], domain: [-4, 16] });
-          s.fn((P) => CO(P, c), { color: 'red', width: 2.8, domain: [-4, 16] });
-          s.fn((P) => Math.max(VR(P, pm, r), 0), { color: 'accent', width: 2.8, domain: [-4, 16] });
-          s.vline(pm, { color: 'accent', alpha: 0.4, dash: [3, 4] }); s.text('P_msf', pm, 0.6, { size: 11, color: 'accent', align: 'center' });
-          const e = solve(c, pm, r), e0 = solve(1, 7, 1.4); o = { e, e0, pm, c, r };
-          s.dot(e0.P, e0.Q, { r: 5, color: 'muted' }); s.dot(e.P, e.Q, { r: 8, color: 'green' });
-          s.text(`${v.fix(e.Q, 1)} L/min`, e.P + 0.4, e.Q + 0.9, { size: 12, color: 'green', align: 'left', weight: 700 });
-          s.text('cardiac function', 15.8, CO(15.8, c) + 0.7, { size: 11, color: 'red', align: 'right' }); s.text('venous return', -3.8, VR(-3.8, pm, r) + 0.7, { size: 11, color: 'accent', align: 'left' });
+          const {pm,c,r}=circulationParameters(sV.value,sS.value,sC.value,sR.value),xmin=Math.min(-4,pm)-2,xmax=Math.max(16,pm)+3;
+          const ymax=Math.max(CO(xmax,c),CO(xmax,1),VR(-4,pm,r),VR(-4,7,1.4))*1.3+1;
+          s.setView([xmin,xmax],[-1,ymax]);
+          s.fn((P)=>CO(P,1),{color:'faint',width:1.6,dash:[5,4],domain:[-4,xmax-1]});s.fn((P)=>VR(P,7,1.4),{color:'faint',width:1.6,dash:[5,4],domain:[-4,xmax-1]});
+          s.fn((P)=>CO(P,c),{color:'red',width:2.8,domain:[-4,xmax-1]});s.fn((P)=>VR(P,pm,r),{color:'accent',width:2.8,domain:[-4,xmax-1]});
+          s.vline(pm,{color:'accent',alpha:.4,dash:[3,4]});s.text('P_f',pm,.4,{size:11,color:'accent',align:'center'});
+          const e=solve(c,pm,r),e0=solve(1,7,1.4);o={e,e0,pm,c,r};
+          s.dot(e0.P,e0.Q,{r:5,color:'muted'});
+          if(e){s.dot(e.P,e.Q,{r:8,color:'green'});s.text(`${v.fix(e.Q,1)} L/min`,e.P+.4,e.Q+ymax*.04,{size:12,color:'green',align:'left',weight:700});}
+          else s.text('no positive forward-flow equilibrium',xmin+(xmax-xmin)*.5,ymax*.5,{size:12,color:'green',align:'center'});
+          s.text('cardiac function',xmax-1,CO(xmax-1,c)+ymax*.04,{size:11,color:'red',align:'right'});s.text('venous return',-3.8,VR(-3.8,pm,r)+ymax*.07,{size:11,color:'accent',align:'left'});
         });
-        v.legend([['red', 'cardiac function curve'], ['accent', 'venous return curve'], ['faint', 'normal curves', { dash: true }]]);
-        v.readout(() => `equilibrium: CO = ${v.fix(o.e.Q, 1)} L/min at $P_{ra}$ = ${v.fix(o.e.P + 0, 1).replace('−0.0', '0.0')} mmHg (normal: ${v.fix(o.e0.Q, 1)} at 0.0);  $P_{msf}$ = ${v.fix(o.pm, 1)} mmHg, $R_{VR}$ = ${v.fix(o.r, 2)}\ncheck: $(P_{msf}-P_{ra})/R_{VR}$ = ${v.fix((o.pm - o.e.P) / o.r, 2)} L/min`);
+        v.legend([['red','cardiac function curve'],['accent','venous return curve'],['faint','baseline model curves',{dash:true}]]);
+        v.readout(()=>`${o.e?`positive equilibrium: CO = ${v.fix(o.e.Q,2)} L/min at $P_{ra}$ = ${v.fix(o.e.P,2)} mmHg`:'no positive forward-flow equilibrium: filling pressure is at or below the chosen collapse threshold'}; baseline ${v.fix(o.e0.Q,2)} L/min at ${v.fix(o.e0.P,2)} mmHg\n$P_f$ = ${v.fix(o.pm,1)} mmHg; $R_{VR}$ = ${v.fix(o.r,2)} mmHg·min/L${o.e?`; check $\\max[0,(P_f-\\max(P_{ra},-2))/R_{VR}]$ = ${v.fix(VR(o.e.P,o.pm,o.r),2)} L/min`:''}`);
+
       },
     },
     // ------------------------------------------------------------------ 4.18
