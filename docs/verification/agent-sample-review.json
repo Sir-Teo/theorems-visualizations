@@ -1926,6 +1926,117 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-4.7",
+      "file": "content/qm/ch04.js",
+      "textHash": "fefb6a6a48ecb98a868e674cf626034f4997b740827c2d6705c3e6ae407cfe2f",
+      "textReview": "The coherent-state coefficients, Poisson number distribution, oscillator rotation and fixed Gaussian uncertainties are correct in the declared units. The real-space centre is sqrt(2)Re(alpha); a formal complex-shifted Gaussian in the idea should not suggest a physical complex position. A projection onto 60 Hermite modes only approximates the exact nonspreading packet, so 'never deviates' needs a truncation qualification and an inspected amplitude range.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-4.12",
+      "file": "content/rca/ch04-a2.js",
+      "textHash": "49b11e065e3b89a12f9c8ac3bd8b79651d556206f8a3e38fdf82788e18f758f6",
+      "textReview": "The Riesz representer proof has the correct conjugation for the convention linear in the first inner-product slot, and handles the zero functional. The local averaging example converges to f(c) for continuous functions or at Lebesgue points, not every point of an arbitrary L2 representative. Point evaluation is not even well-defined on L2 equivalence classes; the diverging box-representer norms show that evaluation on continuous representatives has no bounded L2 extension.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "soc-1.6",
+      "file": "content/soc/ch01-b.js",
+      "textHash": "48e9f838b4b224f7c4ff93ad2e327b907f9ca80a03877c04c573bfb626c388c2",
+      "textReview": "The normal-threshold fold condition follows from max phi=1/sqrt(2pi), so folds exist across incentive values only below that spread. An S-shaped curve does not guarantee three fixed points at every parameter: the three-crossing range is between its folds. Strict slope less than one is a sufficient local stability criterion for a differentiable nondecreasing map, while a neutral derivative-one crossing needs higher-order analysis. The Gaussian model is continuous, which matters for convergence to a fixed point.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "em-1.15",
+      "file": "content/em/ch01-b.js",
+      "textHash": "31a758e15ddaedb009544831e9653f034d70189b53413174885caed999eb6ffe",
+      "textReview": "The statement now separates the classical C1-field/continuous-density law from the weak test-function identity for locally integrable quantities. The symmetric-box O(h²) estimate is qualified by C² density. Numerical captions identify a sampled normalization scale and display floor rather than claiming an exact continuum relative error.",
+      "visualReview": "Inspected reset and cleared states in both themes: density and finite-difference maps agree visually, the nonempty error follows the h² reference at small h, and the cleared plot visibly retains the declared 1e-12 floor while the map readout says zero. Box corners can lie beyond the displayed map window at the largest side length.",
+      "interactionReview": "Native range endpoints, clear, negative-paint brush drag and reset pass in both themes. The cleared error-floor coordinate is verified inside the plot, and runtime/TeX/readout checks pass. See tests/verification-gauss-density-browser.mjs.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The claim that a merely integrable density satisfies the differential law at every point is false without weak/distributional qualification. Classical pointwise divergence needs field regularity; integrable-density averages converge at Lebesgue points almost everywhere. The symmetric-box O(h²) estimate also needs sufficient density smoothness and ultimately a numerical floor. The current smooth-blob visualization can illustrate the classical case without supplying these missing general hypotheses.",
+      "initialTextHash": "9dfc95b29428004929c0eb269285b2e13810899add81072b60304a46f29ab531",
+      "correctionReport": "docs/verification/agent-gauss-density-review.md"
+    },
+    {
+      "id": "pma-11.38",
+      "file": "content/pma/ch11-a5.js",
+      "textHash": "9f1edebdc69da5c417cf5cac92f7d806a95ed6882f2525b2c3a846ea9a07bc4f",
+      "textReview": "Simple-function approximation plus Lebesgue regularity and the continuous distance-ratio separator proves density in L2 on a finite interval. Choose the outer-minus-inner measure below epsilon² to achieve norm error below epsilon; the text uses epsilon for the squared-error bound, which is harmless after renaming but can be made explicit. Empty inner sets need the trivial zero approximation rather than an undefined distance quotient. The fat Cantor drawing must remain a finite approximation to the stated set.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "nla-3.9",
+      "file": "content/nla/ch03-b.js",
+      "textHash": "20736524fee2a81454c1b2c2974928c83d592464d6d8a38ea4a96adcf5ab4bfc",
+      "textReview": "Backward stability composed with local relative conditioning gives the first-order forward-error estimate. A normwise backward-stable linear solve also has a small appropriately normalized residual, even if forward error is large, provided the solve completes. The all-condition-number caption should handle breakdown or rounded singular inputs rather than promise a dot for every case. Relative errors and residuals need nonzero denominators, with trivial zero cases handled separately.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-13.14",
+      "file": "content/mech/ch13-b.js",
+      "textHash": "0677f6b6b73004a3e8d8f03c46843f6055517ec0026483064e63cdc11f3a53c5",
+      "textReview": "Quadratic criticality alone does not make every one-parameter system exhibit the Feigenbaum ratios. The claim needs the appropriate smooth unimodal renormalization class, an infinite cascade and a generic transverse parameter crossing; a singular reparametrization can change parameter ratios. The idea incorrectly says any family crosses transversally. Chaos beyond the accumulation point is interrupted by periodic windows, and finite sampled diagrams do not prove all asymptotic claims.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "info-1.3",
+      "file": "content/info/ch01.js",
+      "textHash": "13d5c88c5ba1e3f5b2a4e330bcbcdde3fb4f740a6c0ba4590cbde6a4e3bd2c4a",
+      "textReview": "Differentiation verifies the symmetry, strict concavity, peak, endpoint slopes and quadratic expansion. The p log(1/p) asymptotic dominates any fixed linear multiple near zero. Under-half-bit coding at p=0.1 is an asymptotic expected block-coding rate, not a guaranteed per-flip representation of each finite realization. Inspect endpoint tangent handling and finite-run surprisal fluctuations.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-10.25",
+      "file": "content/fa/ch10-source.js",
+      "textHash": "4a8c188169b91c926ca76e978932dceb8a4a7ec6a9d8ddc78e0198cc902d69b1",
+      "textReview": "The rational functional-calculus identity follows by finite linearity from polynomial and principal-part resolvent integrals, assuming an admissible contour with winding one on the spectrum and zero around excluded poles. The caption explicitly excludes enclosing the rational pole and labels the 256-node quadrature. Inspect a=0 or a pole on the contour so invalid hypotheses are reported rather than plotted as a failed theorem. Some prose needs spaces around inline formulas.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-3.76",
+      "file": "content/ladr/ch03-c.js",
+      "textHash": "45b3ca9146039b49dc5a8d33ced17117a9fda4cb21558faaf45240aa5c852cda",
+      "textReview": "Writing a vector in the domain basis and combining the coordinate columns proves the matrix-product formula. The statement correctly requires both lists to be bases. Because their handles can be dragged, the visualization must reject or label linearly dependent basis states rather than invert singular coordinate matrices. The first-handle control audit does not establish that every editable basis remains valid.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "bioinf-4.12",
+      "file": "content/bioinf/ch04-b.js",
+      "textHash": "0949a0d98d389a5332cc1ac1e5c2c08c8b36a4b755be5cbe04e0cc20a4a5395a",
+      "textReview": "Scaling and log-sum-exp are the right underflow remedies and agree in exact arithmetic. The normalization should explicitly use the provisional column alpha'_t formed from the previous normalized column, not ambiguously raw alpha_t divided by its incremental scale. Log-sum-exp avoids overflow from large positive exponents; exp(-|a-b|) can still have an arbitrarily negative argument and harmlessly underflow. Impossible observations need c_t=0 and all-minus-infinity guards. The normal versus subnormal limits are distinguished in scope.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "bighist-4.1",
+      "file": "content/bighist/ch04.js",
+      "textHash": "d43f153310573c242c92af4e6cf0175ba6c4a5343001ac24b636cfc34b021012",
+      "textReview": "The source-specific brain-power model and rounded fossil ranges are clearly separated. At 70 kg the total 3.39 M^0.75 W and 1.35-kg brain at 11.2 W/kg give a share near one fifth. Fixing the total while varying brain volume does not establish a gut trade-off, as the caption correctly warns. Fossil chronology/ranges remain flagged original-evidence work despite the already documented Aiello–Wheeler equation/table reading.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }

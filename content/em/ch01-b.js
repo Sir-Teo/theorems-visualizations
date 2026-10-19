@@ -445,11 +445,11 @@ whatever the shape and size of $S$ and wherever the charges outside it are — o
       num: '1.15',
       kind: 'Theorem',
       name: 'Gauss’s law in differential form',
-      statement: String.raw`For a charge density $\rho$ that is continuous (or merely integrable), the electric field satisfies at every point
+      statement: String.raw`If $\mathbf E$ is continuously differentiable, $\rho$ is continuous, and the integral form of Gauss's law holds on every bounded region with piecewise smooth boundary, then at every point
 $$\nabla\cdot\mathbf E = \frac{\rho}{\varepsilon_0}.$$
-Equivalently, the flux of $\mathbf E$ out of a small region around a point, divided by its volume, tends to $\rho/\varepsilon_0$ there as the region shrinks. Together with the divergence theorem this local statement is equivalent to the integral form of Gauss’s law.`,
-      idea: String.raw`Apply Gauss’s law (em-1.14) to a small box around the point: its flux is $Q_{\text{enc}}/\varepsilon_0 \approx \rho\,V/\varepsilon_0$, while by definition the flux per unit volume tends to the divergence (vcalc-3.6). Conversely, the divergence theorem (pma-10.51) turns $\int_V \nabla\cdot\mathbf E\,d\tau = \int_V \rho\,d\tau/\varepsilon_0$ for every region into the integral law. The error of the box estimate shrinks like the square of its size for a smooth density, since the first-order variation of $\rho$ across a symmetric box averages out.`,
-      caption: String.raw`Paint charge on the left (drag anywhere; choose the brush sign), or move the gold box and change its size. The density is a sum of smooth blobs, uniform along the third direction. The right map is $\varepsilon_0\nabla\cdot\mathbf E$ computed from the field alone by finite differences — it reproduces your painting. The readout compares the flux through the box divided by its area with $\rho/\varepsilon_0$ at its centre; the bottom panel shows the error falling like $h^2$ as the box shrinks.`,
+Conversely this pointwise identity implies the integral law by the divergence theorem. In this classical setting, the outward flux through a shrinking box divided by its volume tends to $\rho/\varepsilon_0$ at the centre. For merely locally integrable $\mathbf E$ and $\rho$, the differential law is instead interpreted weakly: $-\int\mathbf E\cdot\nabla\phi=\int\rho\phi/\varepsilon_0$ for every smooth compactly supported test function $\phi$. This does not assert classical derivatives at every point.`,
+      idea: String.raw`Apply the divergence theorem (pma-10.51) to the integral law (em-1.14): the integral of the continuous function $\nabla\cdot\mathbf E-\rho/\varepsilon_0$ vanishes over every small box, so that function vanishes pointwise. Equivalently its flux per unit volume tends to the divergence (vcalc-3.6) while its mean charge density tends to the central density. The converse is the same divergence theorem in the other direction. If $\rho$ has continuous second derivatives, the symmetric-box average differs from its central value by $O(h^2)$ because its linear Taylor term averages to zero. The weak formulation expresses integration by parts against test functions when classical derivatives are unavailable.`,
+      caption: String.raw`Paint charge on the left (drag anywhere; choose the brush sign), or move the gold box and change its size. The density is a sum of smooth blobs, uniform along the third direction. The right map approximates $\varepsilon_0\nabla\cdot\mathbf E$ by finite differences. Flux is per unit length in the third direction, so dividing it by the box's cross-sectional area gives the volume-normalized quantity. The bottom panel compares box-averaging error with an $h^2$ reference; errors are normalized to a sampled density scale, not the possibly zero central density. The log plot has a display floor of $10^{-12}$; quadrature and roundoff limit numerical convergence.`,
       deps: ['em-1.14', 'pma-10.51', 'vcalc-3.6'],
       refs: ['Griffiths §2.2'],
       tags: ['divergence', 'gauss'],
@@ -457,7 +457,7 @@ Equivalently, the flux of $\mathbf E$ out of a small region around a point, divi
         const M = v.M, C = M.CONST, KD = 1e-5 / C.eps0, SIG = 0.42;
         const sR = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 290, axes: false, title: 'charge density $\\rho$ (paint here)' });
         const sD = v.stage({ x: [-4, 4], y: [-3, 3], equal: true, height: 290, axes: false, title: '$\\varepsilon_0\\,\\nabla\\cdot\\mathbf E$ from the field, with $\\mathbf E$' });
-        const sc = v.stage({ x: [0.02, 4], y: [1e-7, 1], xlog: true, ylog: true, height: 170, axes: 'box', full: true, xlabel: 'box side h (cm)', title: 'relative error of flux/area against $\\rho/\\varepsilon_0$ at the box centre' });
+        const sc = v.stage({ x: [0.02, 4], y: [1e-7, 1], xlog: true, ylog: true, height: 170, axes: 'box', full: true, xlabel: 'box side h (cm)', title: 'box-averaging error, normalized to a sampled density scale' });
         const brush = v.select('brush', [{ value: 'p', label: 'paint $+$' }, { value: 'm', label: 'paint $-$' }], 'p');
         const hS = v.slider('box side $h$', 0.05, 3, 1.1, { log: true, fmt: (x) => `${x.toPrecision(2)} cm` });
         const initBlobs = () => { const b = []; for (let k = 0; k < 9; k++) { const a = (TAU * k) / 9; b.push({ x: -1.2 + 1.5 * Math.cos(a), y: 0.1 + 1.5 * Math.sin(a), q: 1 }); } b.push({ x: 2.1, y: 0.6, q: -1.5 }, { x: 2.5, y: -0.1, q: -1.5 }, { x: 1.9, y: -0.8, q: -1.5 }); return b; };
@@ -493,7 +493,7 @@ Equivalently, the flux of $\mathbf E$ out of a small region around a point, divi
           // convergence
           const pts = []; for (let k = 0; k <= 40; k++) { const hh = 0.02 * Math.pow(200, k / 40); pts.push([hh, Math.max(1e-12, Math.abs(boxFlux(B.x, B.y, hh) / (hh * hh) - r0) / vmax)]); }
           const ref = pts.find((p) => p[0] > 0.3) || pts[0], ys = pts.map((p) => p[1]);
-          sc.setView([0.02, 4], [Math.max(1e-10, Math.min(...ys)) / 3, Math.max(...ys) * 3]);
+          sc.setView([0.02, 4], [Math.max(1e-13, Math.min(...ys)) / 3, Math.max(...ys) * 3]);
           sc.fn((x) => ref[1] * (x / ref[0]) ** 2, { color: 'muted', dash: [4, 4], width: 1 });
           sc.text('slope 2', 0.06, ref[1] * (0.06 / ref[0]) ** 2, { size: 11, color: 'muted', dy: -10 });
           sc.path(pts, { color: 'accent', width: 2.4 });
@@ -502,7 +502,8 @@ Equivalently, the flux of $\mathbf E$ out of a small region around a point, divi
         });
         v.readout(() => {
           const { fA, r0 } = st;
-          return `flux through the box ÷ its area: ${M.si(fA * KD, 'V/m²')} · $\\rho/\\varepsilon_0$ at its centre: ${M.si(r0 * KD, 'V/m²')} ($\\rho$ = ${M.si(r0 * 1e-5, 'C/m³')}) · the finite-difference divergence matches $\\rho/\\varepsilon_0$ over the whole map to ${v.sci(Math.max(resid, 1e-12), 1).includes('times') ? '$' + v.sci(Math.max(resid, 1e-12), 1) + '$' : v.fix(resid, 5)} of the peak`;
+          const mapError = resid === 0 ? 'zero' : resid < 1e-12 ? 'below $10^{-12}$' : `$${v.sci(resid, 2)}$`;
+          return `flux per unit length ÷ box area: ${M.si(fA * KD, 'V/m²')} · $\\rho/\\varepsilon_0$ at its centre: ${M.si(r0 * KD, 'V/m²')} ($\\rho$ = ${M.si(r0 * 1e-5, 'C/m³')}) · finite-difference error on the sampled map: ${mapError} of the sampled density scale. Log-plot display floor: $10^{-12}$.`;
         });
       },
     },

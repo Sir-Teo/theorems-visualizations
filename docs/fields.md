@@ -48,6 +48,9 @@ right first nonzero prime-power term and a separate order argument.
 
 ## Physics & astronomy, Earth & environment, engineering
 
+- Distinguish a classical differential law from its weak formulation: integrable
+  densities alone do not supply classical derivatives at every point. Label sampled
+  normalization scales and log-plot floors, and keep a cleared zero-field state visible.
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
   taken as a postulate (Newton's second law, Maxwell's equations) may have only mathematical
   deps, or none.
