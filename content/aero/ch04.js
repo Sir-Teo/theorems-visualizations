@@ -234,7 +234,7 @@ at the price of a lower lift-curve slope, a lower usable lift coefficient and mo
 $$\frac{D_w}{q}=\frac{128\,V^2}{\pi\,l^4}.$$
 Since the wing adds area, the fuselage must be narrowed ('indented') where the wing is, so that the total area has no bump.`,
       idea: String.raw`In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S'(x(\theta))=\sum a_n\sin n\theta$, $x=\tfrac l2(1-\cos\theta)$, as $D_w/q=\tfrac\pi4\sum n a_n^2$. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics of the area slope, whose squared coefficients are weighted by $n$; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.`,
-      caption: String.raw`Top: the aircraft seen from above (radial scale exaggerated) and its area distribution. Slide the **indentation** $k$ from 0 (straight fuselage) to 1 (fuselage area reduced by exactly the wing's area) and the grey bump in $S(x)$ flattens into the ideal curve. Bottom: the wave drag, in units of the Sears–Haack minimum for the same volume, against $k$, from the Fourier formula; the dot is your setting. Make the wing larger or move it, and see the benefit change.`,
+      caption: String.raw`Top: the aircraft seen from above (radial scale exaggerated) and its area distribution. Slide the **indentation** $k$ from 0 (straight fuselage) to 1 (fuselage area reduced by exactly the wing's area): the blue total approaches the smooth ideal, while grey retains the unindented $k=0$ reference. Bottom: wave drag divided by the Sears–Haack minimum at each setting's own volume, against $k$, from the Fourier formula; the dot is your setting. Indentation changes volume as well as shape. Make the wing larger or move it, and see the benefit change.`,
       deps: ['aero-4.2', 'pma-8.10'],
       refs: ['Sheppard, ARC R&M 3077 (1957), §§2.1–2.3.1 and 4.2, printed pp. 2–5 and 17', 'Whitcomb, NACA RM L52H08 (1952), pp. 1–12'],
       tags: ['area rule', 'wave drag', 'transonic'],
@@ -265,7 +265,7 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
           const sh = sears(V, LBODY);
           S.fn(sh.S, { color: 'green', dash: true, width: 2, domain: [0, 1] });
           S.fn(tot, { color: 'accent', width: 2.8, domain: [0, 1], fill: true, base: 0 });
-          S.fn((x) => wingHump(x, Aw, xw, ww) * (1 - k) + fusIdeal(x, Af), { color: 'muted', width: 1, domain: [0, 1] });
+          S.fn((x) => wingHump(x, Aw, xw, ww) + fusIdeal(x, Af), { color: 'muted', width: 1, domain: [0, 1] });
           // drag against k
           const dsh = (kk) => { let vv = 0; for (let i = 0; i < 300; i++) { const x = (i + 0.5) / 300; vv += (fusIdeal(x, Af) + (1 - kk) * wingHump(x, Aw, xw, ww)) / 300; } return dragOfK(co, kk) / sears(vv, LBODY).dq; };
           const ks = []; for (let i = 0; i <= 40; i++) ks.push(i / 40);
@@ -278,7 +278,7 @@ Since the wing adds area, the fuselage must be narrowed ('indented') where the w
         v.readout(() => {
           const { dq, dq0, dq1, V, sh, ratio } = info;
           return `Slender-body wave drag $D_w/q=${fx(dq * 1e4, 3)}\\times10^{-4}$ (units of $l^2$); with a straight fuselage ($k=0$) $${fx(dq0 * 1e4, 3)}\\times10^{-4}$, fully indented ($k=1$) $${fx(dq1 * 1e4, 3)}\\times10^{-4}$: a reduction of $${fx(100 * (1 - dq1 / dq0), 1)}\\%$. `
-            + `Volume $V=${fx(V * 1e3, 3)}\\times10^{-3}\\,l^3$; Sears–Haack minimum $128V^2/(\\pi l^4)=${fx(sh * 1e4, 3)}\\times10^{-4}$, so you are at ${fx(ratio, 3)} times the minimum${Math.abs(ratio - 1) < 0.005 ? ' (at the minimum: the area distribution is the ideal one)' : ''}.`;
+            + `Current-setting volume $V=${fx(V * 1e3, 3)}\\times10^{-3}\\,l^3$; Sears–Haack minimum $128V^2/(\\pi l^4)=${fx(sh * 1e4, 3)}\\times10^{-4}$, so you are at ${fx(ratio, 3)} times the minimum${Math.abs(ratio - 1) < 0.005 ? ' (at the minimum: the area distribution is the ideal one)' : ''}. Indentation removes volume across the compared settings.`;
         });
       },
     },

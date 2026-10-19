@@ -51,6 +51,9 @@ right first nonzero prime-power term and a separate order argument.
 - Distinguish a classical differential law from its weak formulation: integrable
   densities alone do not supply classical derivatives at every point. Label sampled
   normalization scales and log-plot floors, and keep a cleared zero-field state visible.
+- Keep comparison curves at their labelled reference setting. A curve labelled
+  unindented must use zero indentation, and drag comparisons should state when
+  changing shape also changes the body's volume.
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law
   taken as a postulate (Newton's second law, Maxwell's equations) may have only mathematical
   deps, or none.

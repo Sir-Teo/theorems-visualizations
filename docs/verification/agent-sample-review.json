@@ -733,11 +733,15 @@
     {
       "id": "aero-4.4",
       "file": "content/aero/ch04.js",
-      "textHash": "7ecbe022f92c1b42a450a5ed6d8fd6fa747fd45280d4823e30fef3c2108f8c96",
-      "textReview": "The schematic is zero-lift slender-body wave drag, not total aircraft drag. Current-volume normalization, nonnegative fuselage area and the missing supersonic oblique cuts are explicit, preventing a false fixed-volume or finite-Mach extrapolation.",
-      "visualReview": "The default k=0.5 ratio is 1.123 times the same-current-volume Sears–Haack minimum. The quoted absolute drag at k=1 uses a smaller volume, so it need not exceed the minimum at the current k; the ratio curve recomputes its reference at each k. The source reveals a genuine reference-line error: the grey curve labelled straight fuselage uses (1-k) times the wing hump and duplicates the current total instead of the k=0 reference. Follow-up pending.",
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "aafe6d6650d001a5177bf77e6baa8ce462bbf696d93d6cdde07292699a81342a",
+      "textReview": "The area-rule and same-volume minimum statements remain unchanged. The caption now identifies the fixed unindented grey reference and makes explicit, consistently with the existing scope, that indentation changes volume as well as shape. Each drag ratio uses its own setting volume.",
+      "visualReview": "Inspected the fully indented, large aft-wing state in both themes. The corrected grey k=0 reference visibly retains its area hump while the blue current total follows the smooth ideal. The current-volume drag ratio is 1.000, with the changed volumes explicitly qualified in the readout.",
+      "interactionReview": "Existing native aerospace browser regression varies indentation to 1, wing hump to 0.6 and wing position to 0.54; both themes pass the 1.000 ratio assertion, input/readout changes, runtime and TeX checks. Existing independent numerical drag/minimum regressions also pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The schematic is zero-lift slender-body wave drag, not total aircraft drag. Current-volume normalization, nonnegative fuselage area and the missing supersonic oblique cuts are explicit, preventing a false fixed-volume or finite-Mach extrapolation.",
+      "initialTextHash": "7ecbe022f92c1b42a450a5ed6d8fd6fa747fd45280d4823e30fef3c2108f8c96",
+      "followUpFinding": "The default k=0.5 ratio is 1.123 times the same-current-volume Sears–Haack minimum. The quoted absolute drag at k=1 uses a smaller volume, so it need not exceed the minimum at the current k; the ratio curve recomputes its reference at each k. The source reveals a genuine reference-line error: the grey curve labelled straight fuselage uses (1-k) times the wing hump and duplicates the current total instead of the k=0 reference. Follow-up pending.",
+      "correctionReport": "docs/verification/agent-area-reference-review.md"
     },
     {
       "id": "neuro-2.2",
