@@ -86,6 +86,10 @@ an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
   Sample nonlinear reference curves through the plotted interval, and check axis
   ranges at inversions as well as ordinary lapse rates.
 
+- State the Fourier sign convention and check time advances against an actual
+  shifted causal response. Measure the resulting pre-zero signal and reconstruction
+  error; a conditional label alone does not establish a counter-example.
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated

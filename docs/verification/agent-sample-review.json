@@ -841,27 +841,27 @@
       "file": "content/comb/ch03-b.js",
       "textHash": "9ec748bdf832794e24d1022b8ea6c118068b7cf57fb87e63734823549c4a6ed2",
       "textReview": "The half-integer diamond has the stated 2n(n+1) squares and 2^(n(n+1)/2) tilings. Shuffling's uniformity needs its destruction/refill multiplicities, not just the assertion that all source choices have equal weight; inspect the implementation and enumeration checks before accepting that stronger claim.",
-      "visualReview": null,
+      "visualReview": "Inspected light/dark default captures: the order-six diamond has 84 occupied squares, colored dominoes, outlined new blocks, and the table distinguishes exhaustive checks through order five from the larger formula values. This picture alone does not establish uniform sampling by shuffling; that algorithm still needs its semantic check.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "popgen-4.7",
       "file": "content/popgen/ch04-b.js",
       "textHash": "e7102eb48ee546809cb27eb26911aa901e42b6af061d3bf4113d69835f1261c3",
       "textReview": "The contraction identity supplies the no-overshoot step that the sign of Δp alone would not prove. At s=t=1 it permits immediate arrival, and the finite-population absorption limitation is correctly separated from deterministic global stability.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: eleven interior trajectories approach p=1/3, the fitness parabola peaks at that value, and the numerical convergence factor agrees with 0.8889. The gold start trajectory and finite-horizon difference are visible. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-10.24",
       "file": "content/fa/ch10-a3.js",
       "textHash": "c81506096da9f308baf726213577478927145bc5450b8a01f737730b5bb53442",
       "textReview": "The functional-calculus recurrence is valid when the contour excludes α and surrounds the spectrum. The picture's x^n specialization needs invertible x for negative n and must treat an eigenvalue on the contour as undefined; inspect those control cases.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: three distinct eigenvalue handles lie within the circle and the readout reports tr P=3 with small reconstruction errors. The default nonnegative-power case is visually coherent; negative powers, contour collisions and partial-enclosure semantics remain for follow-up.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "sig-3.12",
@@ -877,99 +877,99 @@
       "file": "content/algo/ch11-b.js",
       "textHash": "c52581cd6101eb3e679fbfa3928f0826f1909cfd24522794641f1a82739303e7",
       "textReview": "Shortest residual distances cannot decrease, and an edge becoming critical again requires a distance increase of at least two. The O(VE²) bound applies even to real capacities; finite exact edge counts should not be read as a literal V/2 bound without endpoint rounding.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the currently chosen augmenting path, bottleneck edge, residual distance histories, pseudocode step and critical-edge count are legible. The default history has nondecreasing finite distances. No default-view defect identified; full random/input correctness is not established by these captures.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qchem-2.6",
       "file": "content/qchem/ch02-b.js",
       "textHash": "280ce4c74e2d43864d768ad12954813823d133ab010891b4d32da69a31f0f5a7",
       "textReview": "Needs correction: not every perturbation lifts Coulomb l-degeneracy (a constant shift or change of Coulomb strength does not), and low-l shifts are not universally downward. A repulsive finite-nucleus correction raises penetrating s states. Qualify the sign and the level-dependent fine-structure scale.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: shell levels, first-order markers and radial probability densities are distinct and legible, with the chosen attractive core shift lowering 2s more than 2p. The text's universal perturbation/finite-nucleus claim remains flagged; this chosen model does not establish that generalization.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "geog-1.4",
       "file": "content/geog/ch01.js",
       "textHash": "39e6dfa962385fd820910a4bb609b8a990b457b8d7feed57e064266b7f1c637e",
       "textReview": "The haversine transformation avoids near-equal cosine subtraction at short distances and loses precision near antipodes, as acknowledged. Sphere-versus-ellipsoid error is distinct from arithmetic error; Vincenty's iterative method itself has antipodal convergence limits.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the London–Singapore great circle and rhumb route are distinct, the log-scale comparison separates arithmetic and ellipsoid-model errors, and distance/unit readouts are visible. Antipodal and coincident-input behavior remains a separate interaction concern.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "info-1.5",
       "file": "content/info/ch01.js",
       "textHash": "4f4f6d23c3e358637cb7385c85befb7388ac67ab69f95d06cdd14717502940e8",
       "textReview": "The prefix-tree/Kraft lower bound and rounded Shannon lengths prove H≤L*<H+1 on a finite positive-probability support. The equality condition is dyadic probabilities, and the singleton distribution can use a zero-question leaf.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the initial balanced-depth tree has expected cost 3.000 versus Huffman 2.710 and entropy 2.682, within the displayed [H,H+1) band. Object probabilities, question-node probabilities and path depths are readable. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "polsci-4.11",
       "file": "content/polsci/ch04-b.js",
       "textHash": "b32e52e6e95be0fff9a9b013f7dcf12f405b0a4bc78ee7ca968e78be84de3cc1",
       "textReview": "The quadratic model has the stated derivative but its constrained peak must also be capped at τ=1 and assume α>0. The displayed α≥1 makes the upper cap inactive, which should be explicit rather than a universal formula. Qualify right-skewness as the illustrated distribution, not all income laws.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: income median/mean, consumption peaks and the decisive-voter tax-rate curve agree at the default α=2 setting. The general preferred-rate formula still needs the upper corner constraint already identified in the text review; the default view cannot test that missing regime.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "pma-4.15",
       "file": "content/pma/ch04-a2.js",
       "textHash": "4452052b37834e23f0fd2660ba4dcee1b8deef966174c0375ee41e977f7ec33f",
       "textReview": "Compact image plus Heine–Borel gives closedness and boundedness in Rk. The open-disc examples separately demonstrate that boundedness need not fail when compactness is dropped, while closedness and boundedness are no longer guaranteed.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the compact disc, bounded image, convergent sample points and attained maximum are shown distinctly. The open-disc and unbounded-map cases remain interaction follow-ups. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "comb-3.1",
       "file": "content/comb/ch03.js",
       "textHash": "e355da5f08a5a47c9ba9958794253b256ce7639e4bdd9de7fe8b65bdeb6a1fac",
       "textReview": "Counting an element in r sets gives the alternating binomial sum one; outside elements contribute zero. The empty-intersection convention correctly gives the complementary count in a finite universe.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: current one-term overcount colors agree with the partial sum 262 versus union 200, and the final sum bar reaches 200. The caption identifies cells as the finite universe. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-1.33",
       "file": "content/fa/ch01-a4.js",
       "textHash": "39590561a2b147e7828a2d5f7f74abf8605a43075c760676e62faa1d7f04bb29",
       "textReview": "The algebraic seminorm axioms imply nonnegativity, and separation excludes a common nonzero kernel. The absorbing condition makes the convex gauge finite; the nonabsorbing segment/boundary-disc examples must be labelled as extended-value counterexamples rather than instances of that definition.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the boundary point x/μ and dashed dilate are visible. The corner says membership holds exactly for t>μ while the caption calls μ the smallest dilate reaching x. This needs an explicit boundary convention and numerical-approximation wording. The origin and nonabsorbing-ray cases also need native inspection; no completed correctness claim is made.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "em-1.18",
       "file": "content/em/ch01-b.js",
       "textHash": "d7b1f517ce6d71fd034fe1f8355b0377547d855763e6ef5b7d1a5aa172d56379",
       "textReview": "The null-test mechanism follows from a nonconstant shell potential under a power-law perturbation. Photon-mass and exponent bounds are separate model-dependent interpretations, not generally equivalent parameterizations; review the stated original experimental limits before accepting them.",
-      "visualReview": null,
+      "visualReview": "Inspected light and the isolated dark recapture: the globe/electrometer and logarithmic historical-limit panel are distinct and readable. The first dark batch PNG duplicated the left panel over the right despite passing automated checks; preserved and documented in agent-capture-anomalies.md. Primary evidence for historical limits and photon-mass interpretations remains open.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "solid-2.8",
       "file": "content/solid/ch02-b.js",
       "textHash": "9961ca0b4872185d11b88d61b8323efcea7dbde9496a1a38d371467caf8dff96",
       "textReview": "The modulus identities and positivity bounds are correct for isotropic small-strain elasticity. The caption incorrectly equates the square's area strain with the 3D volumetric strain p/K; a section has linear strain −p/(3K), hence leading area strain −2p/(3K). Check the plotted deformation and its small-strain range.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: shear/bulk ratios and the deformed pressure/shear examples are readable. The pressure illustration is a square's area change, while p/K is a three-dimensional volume strain; the caption's identification remains a pending semantic correction. Large deformations near the auxetic endpoint need a linear-regime qualification.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "crypto-1.5",
       "file": "content/crypto/ch01.js",
       "textHash": "100a62f9a018b85dfc3bda09e52f9f8ab1913ae9f8b011ed302b6e91c215f179",
       "textReview": "Qualified substitution recovery: the histogram constrains candidate keys, while words and longer samples resolve ambiguity. The syllabus now says plaintext histogram, matching the editable input rather than assuming English.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: ciphertext counts permute plaintext bars and their sorted frequency profiles coincide. The corrected frequency-analysis wording remains honest about non-unique recovery. Key counts, index of coincidence and finite corpus comparison are legible; no default-view defect identified.",
       "interactionReview": null,
-      "status": "text-corrected-full-page-follow-up-pending",
+      "status": "text-and-visual-reviewed-follow-up-pending",
       "initialFinding": "A permutation preserves the letter-count multiset and index of coincidence; factorial key-space size does not remove that leakage. Counts alone need not uniquely recover a substitution for a finite text, so qualify the idea's claim that the permutation can simply be read off.",
       "initialTextHash": "75bba046b854a2b25f2e496e7a4082e42306cce1a070fd4c343d2edbe7f9bddf",
       "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
@@ -979,81 +979,85 @@
       "file": "content/pma/ch11-a3.js",
       "textHash": "0e8a36c7b61f2f179ccc9ffe3efdb2c4470e77cc24f2f36b63b6b85d7e8612d2",
       "textReview": "Simple common refinements prove nonnegative additivity and monotone convergence passes to general nonnegative functions. Splitting the domain by sign reduces the integrable signed case without subtracting undefined infinities.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: simple approximations and their common-refinement strip match the displayed exact finite-sum additivity and limiting integral identity. The arbitrary-sign mode still needs its interaction review. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ladr-7.69",
       "file": "content/ladr/ch07-c.js",
       "textHash": "97c889dd0fdc554ffdc9e92c52d92bd233191a3e6785ad9164bb9f50bde68f16",
       "textReview": "The proof correctly uses all eigenvalues of S*S, including zeros under the collection's singular-value convention. Equal eigenvalues of S do not imply isometry, as the shear counterexample illustrates.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the transformed house/circle, stretch profile and singular-radius circles show the non-isometric one-axis scaling. The readout correctly distinguishes singular values 1,0.6 from the displayed eigenvalues. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "qinfo-4.2",
       "file": "content/qinfo/ch04.js",
       "textHash": "c94fc4019279e2258d357272f780f645038774aa4dee43d429bfc43171b74531",
       "textReview": "Unitary elimination and Gray-code conjugation give the constructive exponential synthesis. Diagonal phases and controlled global phases must be counted; the optimized three-CNOT two-qubit result is explicitly distinct from the displayed textbook construction.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: matrix brightness, eliminated entries, two-level gate table and reconstruction error are legible. The CNOT count explicitly excludes diagonal phases and distinguishes this construction from optimal synthesis. No default-view defect identified.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "popgen-1.6",
       "file": "content/popgen/ch01.js",
       "textHash": "70578e87ee53741daf686c7ffcdd36ec39c5bec9ed28ec64fc63b4e2f8dfaea2",
       "textReview": "The barycentric horizontal coordinate equals P+H/2, so deterministic random mating moves vertically to Hardy–Weinberg proportions. The finite-offspring cloud is explicitly stochastic and can shift realized allele frequency; assumptions for a chi-square asymptotic comparison still matter near boundaries.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: offspring scatter lies near the Hardy–Weinberg parabola, with genotype handle, sampling histogram and χ² reference visible. Seven of ninety default replicates reject at a nominal 5% level, plausibly within sampling variation; the capture does not certify every model mode.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "micro-5.14",
       "file": "content/micro/ch05-b.js",
       "textHash": "26f7288f00077dfc8280620cb33d283c294ccb9eae2ecc140e19094e96a0ab02",
       "textReview": "Needs qualification: homogeneous demand is a correspondence unless the optimum is unique; MRS statements require smooth preferences and income elasticity is undefined for a good demanded in zero quantity. Preserve rankings, not only indifference, in the definition unless regularity assumptions are stated. Quasilinear/Stone–Geary examples need nontrivial parameters.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the default Cobb–Douglas expansion ray, scaled base/current indifference curves, linear Engel curves and constant budget share agree. The theorem's correspondence/regularity qualifications from the text review remain pending; alternative preference modes still require interaction review.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "thermo-1.10",
       "file": "content/thermo/ch01.js",
       "textHash": "d8d0d5c24cbf9c49bf8e72f39b7f2ecd24cd3bee0ee734e4546917adeb3b6da7",
       "textReview": "Needs correction: bulk mixing can carry enthalpy by mass transfer rather than heat across a system boundary, and heat can flow while a piston simultaneously does work. The exactly defined thermochemical calorie is 4.184 J; heating 1 g of water by 1 K is temperature-dependent, not that exact definition.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: gas temperatures approach each other and the collision-transfer counter follows the cold-side energy gain while the hot-side difference is identified as plate kinetic energy. The thermodynamic interpretation and mixing-heat wording remain pending semantic corrections; finite wall motion alone does not settle every heat/work definition.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "waves-3.14",
       "file": "content/waves/ch03-b.js",
-      "textHash": "e39fdf426fc0e38c5f1b3555d152a77c57f05349edeb48b03b74aefbff63e92d",
-      "textReview": "The caption's advance has the wrong phase sign for its explicit transform convention ∫h(t)e^(+iωt)dt: h(t+τ) transforms as H(ω)e^(−iωτ). Inspect the implemented transform and time shift before correcting the labels. State sufficient decay/regularity for the causal analytic and principal-value claims.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "328f998aa93ead73f5166ea1b7862736a2a1582c9b9c1b18e6887f48ee246603",
+      "textReview": "Corrected both the caption and the actual acausal-advance phase: with the forward +iωt convention, h(t+τ) multiplies χ by exp(-iωτ). The old implementation delayed the response and contradicted its unconditional fails label. The theorem now states real causal L1∩L2 hypotheses and distinguishes analytic interior, L2/a.e. principal-value boundary relations and stronger pointwise interpretations. The caption identifies finite FFT leakage.",
+      "visualReview": "Inspected one- and two-line cases at τ=0 and 3 in both themes. The corrected advance moves the response into negative time and separates the KK reconstruction from the exact real curve. Default causal curves remain nearly coincident; labels and numerical readouts are legible. The eight focused captures were inspected after the initial default-only visual pass.",
+      "interactionReview": "Native actual range and toggle inputs test τ=0,3 with one/two lines in both themes. Curve instrumentation confirms small pre-zero amplitude and KK error at zero advance, versus a negative-time peak and reconstruction errors exceeding 1.26 at τ=3. Numerical unit regression independently integrates a shifted causal exponential in time for signed frequencies and four advances. Runtime/TeX checks pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The caption's advance has the wrong phase sign for its explicit transform convention ∫h(t)e^(+iωt)dt: h(t+τ) transforms as H(ω)e^(−iωτ). Inspect the implemented transform and time shift before correcting the labels. State sufficient decay/regularity for the causal analytic and principal-value claims.",
+      "initialTextHash": "e39fdf426fc0e38c5f1b3555d152a77c57f05349edeb48b03b74aefbff63e92d",
+      "initialVisualFinding": "Inspected default light/dark captures: Lorentz real/imaginary curves, near-coincident KK reconstruction and time response after zero are readable. The advance sign identified by the text review must be checked against the implementation; default τ=0 cannot expose it.",
+      "correctionReport": "docs/verification/agent-causal-advance-review.md"
     },
     {
       "id": "rca-17.26",
       "file": "content/rca/ch17-a4.js",
       "textHash": "9f96e789c5c5899b847ce6a34d381ca1a5558923d9c901cf923cf5f4948b5a5a",
       "textReview": "The H^p conjugate bound is correctly restricted to 1<p<∞, with p>2 obtained by duality and sharp constants distinguished from the original theorem. The nonnegative-function proof uses the positive-real-part branch of F^p; endpoint failures are examples, not finite-grid proofs.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: the square wave and its conjugate's logarithmic singularity, finite p-norm ratio and sharp-bound curve are distinct. The visible singularity extends beyond the finite plot range. Endpoint p→1/∞ and alternative functions remain numerical/interaction follow-ups.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "logic-1.8",
       "file": "content/logic/ch01-b.js",
       "textHash": "96794ea415a34a0eb09eec28c3952689ae839d70592e29a3d19bb566ca05a612",
       "textReview": "The finite-description counting argument is sound. Distinguish a toy arithmetic grammar, where bounded searches can be computed externally, from a universal internal definability predicate; admitting the Berry primitive without a consistent semantic rule creates the paradox rather than a valid evaluation algorithm.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: definable-number cells, selected expression, current least undefinable number and log-scale count comparison are legible. The toy Berry-admission readout is visibly separate from the fixed arithmetic grammar; no default-view defect identified. Enumeration correctness remains a separate semantic check.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "soc-4.5",

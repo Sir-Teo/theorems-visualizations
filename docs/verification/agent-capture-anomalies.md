@@ -1,6 +1,6 @@
 # Sample capture anomalies
 
-Visual inspection found two PNGs with left-hand page content duplicated
+Initial visual inspection found two PNGs with left-hand page content duplicated
 over the right panel: `opt-4.3` and later `qchem-4.3`. Their automated
 runtime, TeX and blank-canvas checks passed. A passing automated report
 therefore did not establish that those particular captures were faithful.
@@ -17,3 +17,12 @@ a specific concurrency/font explanation has been established. The review
 records disclose the bad initial captures and use the inspected isolated
 recaptures for their panel findings. No production renderer or screenshot
 checker behaviour was changed on the strength of an unconfirmed cause.
+
+A third artifact occurred during the 24-page light/dark follow-up:
+`em-1.18.dark.png` duplicated the globe panel, caption and controls over
+the experiment-limit panel. Automated checks again passed. Its bad PNG
+was preserved as `/tmp/agent-review/em-1.18-duplicated.dark.png`.
+An isolated native recapture shows the distinct globe and limit-history
+panels correctly and was inspected. This is another observed artifact,
+not proof of a particular cause; the original-evidence flag for the
+historical limits remains open.

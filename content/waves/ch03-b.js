@@ -1,6 +1,12 @@
 // Waves & Optics — Chapter 3, part b: wakes, superluminal pulses, band gaps, cutoff, Klein–Gordon, solitons, Kramers–Kronig
 import { TAU, csqrt, cmul, cdiv } from './ch03.shared.js';
 
+/** Fourier convention ∫h(t)exp(+iωt)dt: h(t+τ) has multiplier exp(−iωτ). */
+export function advanceResponse(re, im, omega, tau) {
+  const c = Math.cos(omega * tau), s = Math.sin(omega * tau);
+  return [re * c + im * s, im * c - re * s];
+}
+
 const G = 9.81;
 
 /** Wavenumber k of the steady wave at propagation angle th in the frame of a source moving at speed U over water of depth h (h = Infinity: deep). */
@@ -488,16 +494,16 @@ whose speed $4\kappa^2$ is twice its height $2\kappa^2$, so taller solitons are 
       num: '3.14',
       kind: 'Theorem',
       name: 'Kramers–Kronig relations',
-      statement: String.raw`Let $\chi(\omega)$ be the linear response function of a medium (for example the susceptibility, with refractive index $n^2=1+\chi$) whose time response $\chi(t)$ is **causal** ($\chi(t)=0$ for $t<0$) and decays so that $\chi(\omega)\to0$ as $|\omega|\to\infty$. Then $\chi(\omega)$ is analytic in the upper half of the complex $\omega$-plane, and its real and imaginary parts on the real axis are Hilbert transforms of each other:
+      statement: String.raw`Let the real impulse response $h(t)$ of a linear, time-invariant medium be causal ($h(t)=0$ for $t<0$), with $h\in L^1(\mathbb R)\cap L^2(\mathbb R)$. Define $\chi(\omega)=\int_0^\infty h(t)e^{i\omega t}\,dt$ (for example a susceptibility, with $n^2=1+\chi$). Then $\chi$ is analytic in the open upper half-plane and tends to zero along the real axis at high frequency. Its boundary values satisfy the following Hilbert-transform relations in $L^2$ and almost everywhere as principal values; with sufficient smoothness and decay they hold pointwise:
 $$\mathrm{Re}\,\chi(\omega)=\frac1\pi\,\mathrm P\!\!\int_{-\infty}^{\infty}\frac{\mathrm{Im}\,\chi(\omega')}{\omega'-\omega}\,d\omega'=\frac2\pi\,\mathrm P\!\!\int_0^\infty\frac{\omega'\,\mathrm{Im}\,\chi(\omega')}{\omega'^2-\omega^2}\,d\omega',$$
 and the matching formula expresses $\mathrm{Im}\,\chi$ through $\mathrm{Re}\,\chi$ (P is the Cauchy principal value; the second form uses $\mathrm{Re}\,\chi$ even and $\mathrm{Im}\,\chi$ odd in $\omega$, which holds because $\chi(t)$ is real). So the **dispersion** of a medium (how $n$ varies with frequency) is determined by its **absorption** at all frequencies, and vice versa.`,
-      idea: String.raw`Causality means the Fourier integral $\chi(\omega)=\int_0^\infty\chi(t)e^{i\omega t}dt$ converges and stays bounded for $\mathrm{Im}\,\omega\ge0$, so $\chi$ is analytic there (rca-19.2 and sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\chi(\omega)=\frac{1}{i\pi}\mathrm P\!\int\frac{\chi(\omega')}{\omega'-\omega}d\omega'$; taking real and imaginary parts gives the relations. The Lorentz oscillator (em-11.12) is a causal model, so its real and imaginary parts are such a pair, and the relations tell us that any line of absorption must come with a characteristic wiggle of $n$ around it (anomalous dispersion, 3.9).`,
-      caption: String.raw`Set the Lorentz line (position $\omega_0$, width $\gamma$, strength) and optionally a second line. Top left: $\mathrm{Im}\,\chi$ (absorption, red), $\mathrm{Re}\,\chi$ from the closed formula (blue), and $\mathrm{Re}\,\chi$ recomputed from the red curve alone by the principal-value integral (orange dashed): they coincide. Top right: the time response $\chi(t)$ by an inverse FFT: it is zero for $t<0$. The slider *acausal advance* $\tau$ shifts the response earlier in time, $\chi(\omega)\to\chi(\omega)e^{i\omega\tau}$: the response now starts before $t=0$ (shaded), and the Kramers–Kronig integral of the new absorption no longer reproduces the new $\mathrm{Re}\,\chi$ (the error is the readout). The principal value is evaluated on a half-step shifted grid; the tail beyond $|\omega|=60$ is dropped.`,
+      idea: String.raw`Causality and integrability mean the Fourier integral $\chi(\omega)=\int_0^\infty\chi(t)e^{i\omega t}dt$ converges and stays bounded for $\mathrm{Im}\,\omega\ge0$, so $\chi$ is analytic in the open upper half-plane (rca-19.2 and sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\chi(\omega)=\frac{1}{i\pi}\mathrm P\!\int\frac{\chi(\omega')}{\omega'-\omega}d\omega'$; taking real and imaginary parts gives the relations. The Lorentz oscillator (em-11.12) is a causal model, so its real and imaginary parts are such a pair, and the relations tell us that any line of absorption must come with a characteristic wiggle of $n$ around it (anomalous dispersion, 3.9).`,
+      caption: String.raw`Set the Lorentz line (position $\omega_0$, width $\gamma$, strength) and optionally a second line. Top left: $\mathrm{Im}\,\chi$ (absorption, red), $\mathrm{Re}\,\chi$ from the closed formula (blue), and $\mathrm{Re}\,\chi$ recomputed from the red curve alone by the principal-value integral (orange dashed): they coincide. Top right: the time response $\chi(t)$ by an inverse FFT: the exact causal model is zero for $t<0$, while the finite frequency grid leaves small numerical leakage. The slider *acausal advance* $\tau$ shifts the response earlier in time, $h_\tau(t)=h(t+\tau)$ and $\chi(\omega)\to\chi(\omega)e^{-i\omega\tau}$: the response now starts before $t=0$ (shaded), and the Kramers–Kronig integral of the new absorption no longer reproduces the new $\mathrm{Re}\,\chi$ (the error is the readout). The principal value is evaluated on a half-step shifted grid; the tail beyond $|\omega|=60$ is dropped.`,
       deps: ['em-11.12', 'rca-19.2', 'sig-6.4', 'rca-10.15'],
       refs: ['Hecht ch. 3'],
       tags: ['causality', 'dispersion', 'Hilbert transform'],
       credit: 'R. de L. Kronig, 1926; H. A. Kramers, 1927 (independently)',
-      scope: String.raw`Requires a causal, linear, time-invariant response with $\chi\to0$ at high frequency (subtractions are needed otherwise); the picture uses sums of Lorentz lines and a pure time advance as the acausal counter-example.`,
+      scope: String.raw`Causal real L¹ ∩ L² impulse response and linear time invariance give the stated boundary-value relation. A nonvanishing instantaneous/high-frequency term requires a subtracted formulation and is outside these hypotheses. The picture uses Lorentz lines and a pure time advance as an acausal counter-example; FFT bandwidth, periodic sampling and quadrature introduce numerical errors.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Kramers%E2%80%93Kronig_relations' },
       viz(v) {
         const M = v.M, W = 60, H = 0.02, NF = 1024, DW = 0.03;
@@ -512,8 +518,7 @@ and the matching formula expresses $\mathrm{Im}\,\chi$ through $\mathrm{Re}\,\ch
         const chi = (w) => {
           let re = 0, im = 0;
           for (const [w0, g, wp] of lines()) { const d0 = w0 * w0 - w * w, d1 = -g * w, den = d0 * d0 + d1 * d1; re += (wp * d0) / den; im += (wp * g * w) / den; }
-          const tau = tS.value, c = Math.cos(w * tau), s = Math.sin(w * tau);
-          return [re * c - im * s, re * s + im * c];
+          return advanceResponse(re, im, w, tS.value);
         };
         let info = { err: 0, neg: 0, scale: 1 };
         v.render(() => {

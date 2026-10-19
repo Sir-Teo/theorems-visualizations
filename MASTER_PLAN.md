@@ -67,7 +67,7 @@ The [human-review and listening handoff](docs/verification/listening-review-hand
 
 **Reviewer instruction (2026-10-19):** the user directs the agent to perform the sample review ("you review"). Review the same 339 pages and record agent findings, corrections and field-guide feedback separately. This replaces the requested reviewer for this follow-up without relabelling agent work as human review. Distinguish direct audio perception from signal/playback instrumentation. The agent review is in progress.
 
-The [agent sample record](docs/verification/agent-sample-review.json) contains **252 semantic text reviews**, **90 visual inspections** and **twelve instrumented interaction reviews**. These are separate work-in-progress measures, not 252 completed full-page reviews. Initial findings remain recorded alongside corrections, and field-guide feedback is integrated.
+The [agent sample record](docs/verification/agent-sample-review.json) contains **252 semantic text reviews**, **113 visual inspections** and **thirteen instrumented interaction reviews**. These are separate work-in-progress measures, not 252 completed full-page reviews. Initial findings remain recorded alongside corrections, and field-guide feedback is integrated.
 
 The [default-mode control baseline](docs/verification/agent-controls-review.md) covers all 336 sampled visualizations; three sampled definitions have no visualization. Focused checks cover subsequent changes. [Capture anomalies](docs/verification/agent-capture-anomalies.md) are recorded separately from confirmed product defects; passing runtime checks alone do not establish visual correctness.
 
@@ -78,7 +78,7 @@ Corrected sample findings include:
 - Computation and interpretation: [optimization grid residuals](docs/verification/agent-optimization-grid-review.md), [spaced-seed expectations](docs/verification/agent-spaced-seeds-review.md),
   [type candidates](docs/verification/agent-type-candidates-review.md), [fixed area-rule reference](docs/verification/agent-area-reference-review.md),
   [local small-world routing](docs/verification/agent-small-world-routing-review.md) and [coordinate midpoint rates](docs/verification/agent-coordinate-midpoint-review.md).
-- Signals and playback: [full-buffer spectrum analysis](docs/verification/agent-spectrum-review.md) and the [articulation noise gate](docs/verification/agent-articulation-review.md). Subjective listening is still unsupported in this runtime.
+- Signals and playback: [full-buffer spectrum analysis](docs/verification/agent-spectrum-review.md), the [articulation noise gate](docs/verification/agent-articulation-review.md) and [causal time advance](docs/verification/agent-causal-advance-review.md). Subjective listening is still unsupported in this runtime.
 
 The corrected derivations supply directly used prerequisites, bringing integrated additions to **777**. Linguistics now has **22** qualifying written cross-field dependencies, leaving three below its target. The live source queue still has **233** original-evidence gaps, nine collection prerequisite shortfalls remain, and Wave 5 has not started.
 
