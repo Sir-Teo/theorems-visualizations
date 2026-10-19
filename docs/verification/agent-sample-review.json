@@ -119,11 +119,15 @@
     {
       "id": "alg-3.23",
       "file": "content/alg/ch03-b.js",
-      "textHash": "2476963297b3900e1ea8af32bbe523d08a0ec318b1d1fc599997f4c4b525b4fb",
-      "textReview": "The exponent identities are sound in a group. The caption overstates when an individual product-power equality implies commutativity: n=0 and n=1 agree even for noncommuting elements. Qualify this as agreement across every exponent.",
-      "visualReview": "Inspected the D4 table with g=r,h=s: exponents 0 and 1 agree despite noncommutation, while rows −2,−1,2,3 disagree. This confirms the caption overclaim; the cycle and readout otherwise agree.",
+      "textHash": "1b88af5b060cab0824c6e0f8b591e2255c3e7832754ba1cf222aa628bff5b056",
+      "textReview": "Corrected the distinction between agreement at an individual exponent and agreement for every exponent; the n=2 identity forces commutativity by cancellation. The D4 table visibly agrees at n=0,1 even for noncommuting r,s.",
+      "visualReview": "Reinspected the corrected D4 view: n=0 and n=1 agree in the noncommuting case, red rows identify failures, and the caption now correctly distinguishes table-wide agreement from individual exponents. The layout and controls remain legible.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The exponent identities are sound in a group. The caption overstates when an individual product-power equality implies commutativity: n=0 and n=1 agree even for noncommuting elements. Qualify this as agreement across every exponent.",
+      "initialTextHash": "2476963297b3900e1ea8af32bbe523d08a0ec318b1d1fc599997f4c4b525b4fb",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md",
+      "initialVisualFinding": "Inspected the D4 table with g=r,h=s: exponents 0 and 1 agree despite noncommutation, while rows −2,−1,2,3 disagree. This confirms the caption overclaim; the cycle and readout otherwise agree."
     },
     {
       "id": "music-4.5",
@@ -155,11 +159,14 @@
     {
       "id": "comb-3.8",
       "file": "content/comb/ch03.js",
-      "textHash": "77a64150bdad64188157dd8d6219192b1d5577b981de6a9520acd521978ffa4b",
-      "textReview": "The numbered-seat factor 2n! is consistent with fixing the alternating parity and the women. The cyclic rook coefficients give the stated Touchard formula. The asymptotic proof should invoke fixed Bonferroni truncations before interchanging the growing sum and limit.",
+      "textHash": "259bf203fd52bedda68c0760de7240b366c895c3788f6621bbef32e865e86a9f",
+      "textReview": "The ménage limit now uses fixed Bonferroni upper/lower truncations before passing to the infinite exponential sum. Read the written Bonferroni theorem and added its actual proof role as a mirrored prerequisite.",
       "visualReview": "Inspected n=7: two adjacent spouse pairs are marked; the exact 579 good husband permutations agree with the displayed 579/5040 probability and the brute-force curve.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The numbered-seat factor 2n! is consistent with fixing the alternating parity and the women. The cyclic rook coefficients give the stated Touchard formula. The asymptotic proof should invoke fixed Bonferroni truncations before interchanging the growing sum and limit.",
+      "initialTextHash": "77a64150bdad64188157dd8d6219192b1d5577b981de6a9520acd521978ffa4b",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "rca-18.6",
@@ -173,11 +180,14 @@
     {
       "id": "qm-2.14",
       "file": "content/qm/ch02-b.js",
-      "textHash": "1cd0ce881a68197ddad9c2c6336db837862e19191647b5fe5bd56dca7db9548f",
-      "textReview": "The hydrogen shooting reconstruction distinguishes the historical K notation, modern reduced-mass units and the later time-dependent equation. The displayed quantization condition has an ambiguous unparenthesized denominator and should be written as me²/(K√(−2mE))=n.",
-      "visualReview": "Inspected the shooting and Balmer panels: a non-eigenvalue −3.9306 eV runs away, computed roots match the Bohr ticks, and the three wavelength rows are separately labelled. The statement denominator still needs clarification.",
+      "textHash": "7dff750578029d8934da3aa925dcf8962eb1c32cf85a8a3db3a4b5dcb608a426",
+      "textReview": "Parenthesized the full denominator K√(−2mE) in the historical quantization condition. The shooting, continuum and modern-unit distinctions are retained; the syllabus now restricts the discrete energy claim to negative energies.",
+      "visualReview": "Inspected the shooting and Balmer panels: a non-eigenvalue −3.9306 eV runs away, computed roots match the Bohr ticks, and the three wavelength rows are separately labelled. The statement denominator is now parenthesized.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The hydrogen shooting reconstruction distinguishes the historical K notation, modern reduced-mass units and the later time-dependent equation. The displayed quantization condition has an ambiguous unparenthesized denominator and should be written as me²/(K√(−2mE))=n.",
+      "initialTextHash": "1cd0ce881a68197ddad9c2c6336db837862e19191647b5fe5bd56dca7db9548f",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "pharm-1.3",
@@ -245,11 +255,15 @@
     {
       "id": "ml-3.2a",
       "file": "content/ml/ch03.js",
-      "textHash": "dcf66eaa0721bfb5a301c9c59ae49ab85740ff0a4c99c7f2e21354e198f09a26",
-      "textReview": "True risk as expectation and empirical risk as an iid indicator average are correct. The scope's claim of exact risks on a 60×60 grid is inconsistent with the stated continuous instance distribution and sampling; label them numerical grid approximations.",
-      "visualReview": "Inspected the noisy-label rectangle at ν=0.15: sample risks scatter around the displayed risk near 0.205 and can fall below the Bayes floor 0.15; this is correctly an estimator fluctuation. The grid-exactness claim still needs qualification.",
+      "textHash": "96218dff65c71db20ee6fd2113088daafbe6ece4d873ea1f14f33d418d1a7910",
+      "textReview": "The scope now calls the 60×60 risk grid a numerical approximation to the continuous distribution. The readout uses ≈ for risk and labels the Bayes floor as a numerical estimate while retaining the exact theoretical inequality.",
+      "visualReview": "Reinspected the noisy-label rectangle and empirical-risk histogram after correction: the approximate continuous risk near 0.205 is distinct from sample variation; grid approximation and numerical Bayes-floor wording are explicit in the source/readout.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "True risk as expectation and empirical risk as an iid indicator average are correct. The scope's claim of exact risks on a 60×60 grid is inconsistent with the stated continuous instance distribution and sampling; label them numerical grid approximations.",
+      "initialTextHash": "dcf66eaa0721bfb5a301c9c59ae49ab85740ff0a4c99c7f2e21354e198f09a26",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md",
+      "initialVisualFinding": "Inspected the noisy-label rectangle at ν=0.15: sample risks scatter around the displayed risk near 0.205 and can fall below the Bayes floor 0.15; this is correctly an estimator fluctuation. The grid-exactness claim still needs qualification."
     },
     {
       "id": "ladr-4.5",
@@ -272,11 +286,14 @@
     {
       "id": "music-8.11",
       "file": "content/music/ch08-b.js",
-      "textHash": "184389a6533c2ee5d0944826c7a0fb7adf01ad47683975e10718b8841e221034",
-      "textReview": "The unordered pair count, tritone convention and invariance under transposition/inversion are correct. The credit's claim that the interval vector defines a set class is too strong because Z-related classes share it; retain the existing original-source flag.",
+      "textHash": "41300e7395f657e18dda90fcfbb2889169cb2fde5ab955d0e752944ec73615be",
+      "textReview": "Corrected the complete-invariant overclaim: Z-related set classes can share an interval vector. The pair-count definition and transformation invariance remain valid; the existing historical original-source flag remains open.",
       "visualReview": "Inspected the diatonic seven-note set: bars (2,5,4,3,6,1) total 21 unordered pairs, and the transposed-copy markers coincide with them. The source/credit overclaim remains a separate finding.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The unordered pair count, tritone convention and invariance under transposition/inversion are correct. The credit's claim that the interval vector defines a set class is too strong because Z-related classes share it; retain the existing original-source flag.",
+      "initialTextHash": "184389a6533c2ee5d0944826c7a0fb7adf01ad47683975e10718b8841e221034",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "pchem-2.7",
@@ -335,11 +352,14 @@
     {
       "id": "rca-9.10",
       "file": "content/rca/ch09-a2.js",
-      "textHash": "09be5ca99103e6338461b28bcd7e85eac61ab9bead4696b6fa777202aa40067c",
-      "textReview": "The Jensen/Fubini/translation argument proves finite-p convergence. The assertion of failure for every discontinuous representative is false in L∞, where null-set modifications do not matter; use the jump-function counterexample instead.",
+      "textHash": "bd320e07d410c15f9c13ac147971c84d0aa577af8c03246e6aa920cd71946c7c",
+      "textReview": "Replaced the false every-discontinuous-function claim with a jump-function counterexample and explained why null-set modifications of a representative do not alter the L∞ norm.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The Jensen/Fubini/translation argument proves finite-p convergence. The assertion of failure for every discontinuous representative is false in L∞, where null-set modifications do not matter; use the jump-function counterexample instead.",
+      "initialTextHash": "09be5ca99103e6338461b28bcd7e85eac61ab9bead4696b6fa777202aa40067c",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "fa-11.24",
@@ -362,11 +382,14 @@
     {
       "id": "vcalc-1.3",
       "file": "content/vcalc/ch01.js",
-      "textHash": "b3b94f85802ce85fbbb927986f2671e630bfac5fbcaeca9c568e8d99ec70ae9b",
-      "textReview": "Lagrange's identity proves the area and orthogonality claims. Include the zero-vector degeneracy when interpreting the word parallel; the direct component formula remains defined at zero.",
+      "textHash": "87c08e44af377d55aadfb17075237e59d235c586c30b363b9fc2568da53be3ae",
+      "textReview": "The cross product now handles zero vectors explicitly, defines angle and orientation only where meaningful, and states vanishing as linear dependence rather than relying on an undefined zero-vector direction.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "Lagrange's identity proves the area and orthogonality claims. Include the zero-vector degeneracy when interpreting the word parallel; the direct component formula remains defined at zero.",
+      "initialTextHash": "b3b94f85802ce85fbbb927986f2671e630bfac5fbcaeca9c568e8d99ec70ae9b",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "stat-4.4",
@@ -389,11 +412,14 @@
     {
       "id": "opt-4.3",
       "file": "content/opt/ch04.js",
-      "textHash": "d444b255bbedc9af1007fa99a599e7b12914a0e01d5c2a43a89ff248fa85a48b",
-      "textReview": "Epigraph equivalence and the slack mapping are correct; nonlinear slack equalities are expressly not a convex standard-form representation. The wording 'two reformulations keep convexity' should be conditional on the affine restriction already stated below.",
+      "textHash": "7bb687f54c368a0031ef248149e6029b968b35bcf18295f5d9a33b3dba0c2680",
+      "textReview": "The opening now states the affine restriction on slack equalities instead of promising unconditional convexity preservation. The epigraph and slack examples remain unchanged.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "Epigraph equivalence and the slack mapping are correct; nonlinear slack equalities are expressly not a convex standard-form representation. The wording 'two reformulations keep convexity' should be conditional on the affine restriction already stated below.",
+      "initialTextHash": "d444b255bbedc9af1007fa99a599e7b12914a0e01d5c2a43a89ff248fa85a48b",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "toc-4.13",
@@ -443,11 +469,14 @@
     {
       "id": "polsci-5.10",
       "file": "content/polsci/ch05-b.js",
-      "textHash": "933d1b0731a45d51f39189e5185c3f8ef4893f51c142e13bc494e8f6b39dc835",
-      "textReview": "The page distinguishes an equal-competence independent-voter reconstruction from the original text and simulated rankings from historical data. Growth with electorate size should be stated for odd juries, or specify how even ties are handled.",
+      "textHash": "05d7fe398aacf1341b56b09ae994da4c0342c52ee2abad7bebd0862440944d1d",
+      "textReview": "The jury statement and caption now specify equal competence, independence and monotonicity along odd sizes, matching the implemented 1,3,…,201 curve. Its epistemic interpretation is conditional on competence above one half.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The page distinguishes an equal-competence independent-voter reconstruction from the original text and simulated rankings from historical data. Growth with electorate size should be stated for odd juries, or specify how even ties are handled.",
+      "initialTextHash": "933d1b0731a45d51f39189e5185c3f8ef4893f51c142e13bc494e8f6b39dc835",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "energy-1.2",
@@ -470,11 +499,14 @@
     {
       "id": "pl-4.8",
       "file": "content/pl/ch04-b.js",
-      "textHash": "56ae98c3d90d77d33623e816bab76dff1007d93f8c84eb777b86c6da600f9c9d",
-      "textReview": "Uniqueness is correctly restricted to annotated simply typed terms in a fixed context, and structural recursion proves termination. The caption must say at most one candidate type passes, since ill-typed edited terms have none.",
+      "textHash": "314a4c80f64957d8ea1ceb1a979dd3f31441a8bbd8fa9092948acc06e8eb3559",
+      "textReview": "The candidate-type caption now says at most one passes and explicitly permits no type for an ill-typed edited term. The annotated-context uniqueness theorem remains unchanged.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "Uniqueness is correctly restricted to annotated simply typed terms in a fixed context, and structural recursion proves termination. The caption must say at most one candidate type passes, since ill-typed edited terms have none.",
+      "initialTextHash": "56ae98c3d90d77d33623e816bab76dff1007d93f8c84eb777b86c6da600f9c9d",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "rca-10.21",
@@ -488,11 +520,14 @@
     {
       "id": "toc-3.14",
       "file": "content/toc/ch03-b.js",
-      "textHash": "d97e912a313f77a0af8b9a72c197404a371e121b4112be72a47f62d52dfb84ee",
-      "textReview": "The last accepting position implements maximal munch, with earlier-rule priority only for equal-length matches. Require token patterns to reject the empty string so every successful scan step advances.",
+      "textHash": "57f322f180b3ba7c3fd01c575ae24be3ccdcd79cd44505ec139f05ae63c1ba2d",
+      "textReview": "Added the nonempty-token assumption so every successful longest-match scan advances. The displayed toy token expressions satisfy it.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The last accepting position implements maximal munch, with earlier-rule priority only for equal-length matches. Require token patterns to reject the empty string so every successful scan step advances.",
+      "initialTextHash": "d97e912a313f77a0af8b9a72c197404a371e121b4112be72a47f62d52dfb84ee",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "prob-1.2.1",
@@ -560,11 +595,14 @@
     {
       "id": "prob-4.3.2",
       "file": "content/prob/ch04-m1.js",
-      "textHash": "4c9f319b0594f29f37a15da5dee1793a4e66742bdd15b85270d29b6e9ed20452",
-      "textReview": "Conditional drift gives the predictable compensator, and the difference of two decompositions is a predictable martingale fixed by A0=0. The caption's absolute-value compensator is a zero-visit count only at p=1/2, so that qualification must cover both examples.",
+      "textHash": "e1550a46ec9996e42d0a492a2fe3e3e814674cb337cb46f4436e596d72670e80",
+      "textReview": "Both example compensators now share the p=1/2 qualification; the zero-visit count explicitly ranges over 0≤m<n. The general conditional-drift decomposition remains valid for the other controls.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "Conditional drift gives the predictable compensator, and the difference of two decompositions is a predictable martingale fixed by A0=0. The caption's absolute-value compensator is a zero-visit count only at p=1/2, so that qualification must cover both examples.",
+      "initialTextHash": "4c9f319b0594f29f37a15da5dee1793a4e66742bdd15b85270d29b6e9ed20452",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "dist-1.4",
@@ -578,20 +616,26 @@
     {
       "id": "algo-3.3",
       "file": "content/algo/ch03.js",
-      "textHash": "9970713c92a8ead61c2b3e5222a875b376dbc5626b874c93b5209aee3b599052",
-      "textReview": "The indicator expectation and linearity claim are correct without independence, but the hiring example is wrong: record indicators in a uniform random permutation are mutually independent. A hire at position 2 does not make a hire at 3 less likely; replace the purported dependence example.",
+      "textHash": "33c8da982eacf2a303c4ecb0c2a9464ac901795e0ca87539978731db7fed42ca",
+      "textReview": "Removed the false dependence claim for uniform-permutation record indicators. Relative ranks give an independent-uniform bijection proof; exhaustive counts of every record pattern for n=2 through 8 agree. Linearity still needs no independence.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The indicator expectation and linearity claim are correct without independence, but the hiring example is wrong: record indicators in a uniform random permutation are mutually independent. A hire at position 2 does not make a hire at 3 less likely; replace the purported dependence example.",
+      "initialTextHash": "9970713c92a8ead61c2b3e5222a875b376dbc5626b874c93b5209aee3b599052",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "mfd-1.11",
       "file": "content/mfd/ch01-b.js",
-      "textHash": "77f90c0d497881c228b0870043b868923fec334419fb72b7fe7c0ac147df6429",
-      "textReview": "The decaying bump construction can realize any closed zero set on a standard second-countable smooth manifold. Uniform derivative convergence is the essential extra step at accumulation points; finite-resolution pictures cannot verify positivity at every off-set point. Qualify the blanket claim about analytic zero sets.",
+      "textHash": "a971b06d39846fcac4b00218ae6b9580c89aceefac02a1106c2acacb8f19425a",
+      "textReview": "Qualified the analytic comparison: a nonzero analytic function on a connected analytic chart cannot be flat to infinite order at a point. The smooth bump construction and finite-grid limitations remain explicit.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The decaying bump construction can realize any closed zero set on a standard second-countable smooth manifold. Uniform derivative convergence is the essential extra step at accumulation points; finite-resolution pictures cannot verify positivity at every off-set point. Qualify the blanket claim about analytic zero sets.",
+      "initialTextHash": "77f90c0d497881c228b0870043b868923fec334419fb72b7fe7c0ac147df6429",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "logic-1.11",
@@ -605,11 +649,14 @@
     {
       "id": "mfd-3.8",
       "file": "content/mfd/ch03-b.js",
-      "textHash": "a538d9d9627776b29627c126e3655b27b40822a3230440a486758e1a67635a02",
-      "textReview": "The Sard statement has the correct Ck threshold and chart-wise null conclusion. Its proof incorrectly says arbitrary smooth maps preserve null sets; only the same-dimensional coordinate changes needed for localization have that property. For example a null line segment in R2 can project onto a positive-length interval.",
+      "textHash": "0194495f1cabc886ba249499291ec9653df6563ab3dee50e7605cde3fabe8f42",
+      "textReview": "Localized Sard using same-dimensional smooth coordinate changes, not the false assertion that every smooth image of a null set is null. The line-segment projection counterexample makes the distinction explicit.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The Sard statement has the correct Ck threshold and chart-wise null conclusion. Its proof incorrectly says arbitrary smooth maps preserve null sets; only the same-dimensional coordinate changes needed for localization have that property. For example a null line segment in R2 can project onto a positive-length interval.",
+      "initialTextHash": "a538d9d9627776b29627c126e3655b27b40822a3230440a486758e1a67635a02",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "micro-10.19",
@@ -623,11 +670,14 @@
     {
       "id": "ode-1.1",
       "file": "content/ode/ch01.js",
-      "textHash": "ca156abbe62bf93976f4480f190af48c60e56c9d98ca417bcc36a69478345fd5",
-      "textReview": "The IVP, state-space domain and first-order reduction are sound for equations explicitly solved for the highest derivative. The x² example blows up at a finite endpoint but its maximal interval is not bounded on both ends; correct that wording and qualify x0≠0.",
+      "textHash": "643e553d22c92cfeae1235d126b47258c6813d2c6f08b7ae6d80c3ebb719ce98",
+      "textReview": "Corrected finite-endpoint blowup for x′=x² with x0>0: its maximal interval extends indefinitely into the past and ends at t0+1/x0 in the future.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The IVP, state-space domain and first-order reduction are sound for equations explicitly solved for the highest derivative. The x² example blows up at a finite endpoint but its maximal interval is not bounded on both ends; correct that wording and qualify x0≠0.",
+      "initialTextHash": "ca156abbe62bf93976f4480f190af48c60e56c9d98ca417bcc36a69478345fd5",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "qchem-4.3",
@@ -695,11 +745,14 @@
     {
       "id": "graph-4.2.10",
       "file": "content/graph/ch04-a2.js",
-      "textHash": "7f5df43712335d063377ed83f98a2226dcd0949b4ccff39e9eab588fdf41d576",
-      "textReview": "Face incidence plus Euler gives the 3n−6 bound for a simple plane graph with n≥3. The collection's simple-graph convention matters: loops or unrestricted parallel edges would invalidate this statement; make the simplicity assumption explicit for clarity.",
+      "textHash": "0c8d170e177205d1d9faae830938ed632d6c150fb2bc60119b89d675e9a431e0",
+      "textReview": "The 3n−6 statement and syllabus now explicitly assume a simple plane graph. The Euler/triangulation proof and picture are unchanged.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "Face incidence plus Euler gives the 3n−6 bound for a simple plane graph with n≥3. The collection's simple-graph convention matters: loops or unrestricted parallel edges would invalidate this statement; make the simplicity assumption explicit for clarity.",
+      "initialTextHash": "7f5df43712335d063377ed83f98a2226dcd0949b4ccff39e9eab588fdf41d576",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "rca-0.7",
@@ -893,11 +946,14 @@
     {
       "id": "crypto-1.5",
       "file": "content/crypto/ch01.js",
-      "textHash": "75bba046b854a2b25f2e496e7a4082e42306cce1a070fd4c343d2edbe7f9bddf",
-      "textReview": "A permutation preserves the letter-count multiset and index of coincidence; factorial key-space size does not remove that leakage. Counts alone need not uniquely recover a substitution for a finite text, so qualify the idea's claim that the permutation can simply be read off.",
+      "textHash": "100a62f9a018b85dfc3bda09e52f9f8ab1913ae9f8b011ed302b6e91c215f179",
+      "textReview": "Qualified substitution recovery: the histogram constrains candidate keys, while words and longer samples resolve ambiguity. The syllabus now says plaintext histogram, matching the editable input rather than assuming English.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "A permutation preserves the letter-count multiset and index of coincidence; factorial key-space size does not remove that leakage. Counts alone need not uniquely recover a substitution for a finite text, so qualify the idea's claim that the permutation can simply be read off.",
+      "initialTextHash": "75bba046b854a2b25f2e496e7a4082e42306cce1a070fd4c343d2edbe7f9bddf",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "pma-11.29",
@@ -1001,11 +1057,14 @@
     {
       "id": "ladr-1.36",
       "file": "content/ladr/ch01-b.js",
-      "textHash": "30311fc293d741f904f0c3fbc5704a295004af6fa76d8b33a9ff33194eb49d73",
-      "textReview": "The subspace sum definition and smallest-containing-subspace idea are correct. The caption needs the line not to lie in the plane before claiming their sum is all R³; containment is an essential hypothesis, not just a visual generic case.",
+      "textHash": "1c4b01a01d4ea7755b0846e0f990844f46c89e0dfaff10fc3b5c402b9ecdb472",
+      "textReview": "The line-plus-plane caption now requires the line not to be contained in the plane. Random sums are described as a finite illustration of the full span, and the syllabus distinguishes coincident lines.",
       "visualReview": null,
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-corrected-full-page-follow-up-pending",
+      "initialFinding": "The subspace sum definition and smallest-containing-subspace idea are correct. The caption needs the line not to lie in the plane before claiming their sum is all R³; containment is an essential hypothesis, not just a visual generic case.",
+      "initialTextHash": "30311fc293d741f904f0c3fbc5704a295004af6fa76d8b33a9ff33194eb49d73",
+      "correctionReport": "docs/verification/agent-text-hypotheses-review.md"
     },
     {
       "id": "info-3.9",

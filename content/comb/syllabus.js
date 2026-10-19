@@ -130,7 +130,7 @@ export default {
           pic: 'Edit a small 0/1 matrix; its permanent is computed both by summing over all n! permutations and by Ryser’s 2ⁿ-term formula, with operation counters showing the speedup.' },
         { num: '3.7', kind: 'Definition', name: 'Rook polynomials and forbidden positions', deps: ['comb-3.1'], refs: ['Stanley EC1 §2.3'],
           pic: 'Shade forbidden squares on a chessboard and place non-attacking rooks; the rook numbers are counted and inclusion–exclusion turns them into the number of permutations avoiding every shaded square.' },
-        { num: '3.8', kind: 'Theorem', name: 'The ménage problem', deps: ['comb-3.7'], refs: ['Stanley EC1 §2.3'],
+        { num: '3.8', kind: 'Theorem', name: 'The ménage problem', deps: ['comb-3.7', 'comb-3.2'], refs: ['Stanley EC1 §2.3'],
           pic: 'Seat n couples alternately around a table so no one sits beside a partner; brute force for small n matches Touchard’s formula, and the probability tends to e⁻².' },
         { num: '3.9', kind: 'Method', name: 'Sign-reversing involutions', deps: ['comb-3.1'], refs: ['Stanley EC1 §2.6', 'Aigner ch. 5'],
           pic: 'Objects carrying signs are paired off by an involution that flips sign; cancelling pairs fade out and only the fixed points remain, whose number equals the alternating sum.' },

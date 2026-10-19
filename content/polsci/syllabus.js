@@ -201,7 +201,7 @@ export default {
         { num: '5.10', kind: 'Paper', name: 'Essai sur l’application de l’analyse à la probabilité…',
           paper: { authors: 'Marquis de Condorcet', year: 1785, title: 'Essai sur l’application de l’analyse à la probabilité des décisions rendues à la pluralité des voix', venue: 'Paris: Imprimerie Royale', url: 'https://archive.org/details/essaisurlapplica00cond' },
           introduces: ['polsci-5.4', 'polsci-2.1', 'polsci-1.6'], deps: ['polsci-1.5'], refs: [],
-          pic: 'Condorcet’s two discoveries side by side: a jury of n independent voters each right with probability p, where the chance that the majority is right climbs toward 1 as n grows if p > ½ and sinks toward 0 if p < ½; and three voters whose rankings make the majority preference cycle (A beats B, B beats C, C beats A), with a sampler that shows how often random electorates produce such a cycle.' },
+          pic: 'Condorcet’s two discoveries side by side: a jury of odd size n with independent voters each right with probability p, where the chance that the majority is right climbs toward 1 as n grows if p > ½ and sinks toward 0 if p < ½; and three voters whose rankings make the majority preference cycle (A beats B, B beats C, C beats A), with a sampler that shows how often random electorates produce such a cycle.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6

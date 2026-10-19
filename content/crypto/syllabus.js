@@ -37,7 +37,7 @@ export default {
         { num: '1.4', kind: 'Principle', name: 'Sufficient key-space principle', deps: ['crypto-1.3'], refs: ['Katz–Lindell §1.3'],
           pic: 'Brute-force time is plotted against key length for a range of attacker budgets; 2⁴⁰ falls in hours, while 2¹²⁸ outlasts the universe at any speed the reader sets.' },
         { num: '1.5', kind: 'Model', name: 'Monoalphabetic substitution cipher', deps: ["crypto-1.4","alg-1.14a","comb-1.5"], refs: ['Katz–Lindell §1.3'],
-          pic: 'A random letter permutation encrypts a paragraph; 26! keys defeat brute force, but the letter-frequency histogram of the ciphertext is just a shuffled copy of English’s.' },
+          pic: 'A random letter permutation encrypts a paragraph; 26! keys defeat brute force, but the letter-frequency histogram of the ciphertext is just a shuffled copy of the plaintext’s.' },
         { num: '1.6', kind: 'Method', name: 'Frequency analysis', deps: ['crypto-1.5'], refs: ['Katz–Lindell §1.3'],
           pic: 'Match ciphertext letter frequencies against English and refine with digrams; the reader drags letter assignments and the plaintext emerges word by word.' },
         { num: '1.7', kind: 'Model', name: 'Vigenère cipher', deps: ["crypto-1.6","comb-1.1"], refs: ['Katz–Lindell §1.3'],

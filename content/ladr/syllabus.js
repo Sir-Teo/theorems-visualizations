@@ -36,7 +36,7 @@ export default {
         { num: '1.34', kind: 'Theorem', name: 'Conditions for a subspace', deps: ['ladr-1.33', 'ladr-1.32'], tags: ['subspaces'],
           pic: 'Choose a subset of ℝ² (line through 0, offset line, parabola, two axes) and test 0 ∈ U, closure under addition and closure under scaling by dragging vectors, with the first failing condition flagged.' },
         { num: '1.36', kind: 'Definition', name: 'Sum of subspaces', deps: ['ladr-1.33'], tags: ['subspaces'],
-          pic: 'Two lines U and W through 0 in ℝ³; random u + w with u ∈ U and w ∈ W sprinkle points that fill out the plane U + W.' },
+          pic: 'Two lines U and W through 0 in ℝ³; random u + w with u ∈ U and w ∈ W illustrate the plane U + W when the lines differ, collapsing to a line when they coincide.' },
         { num: '1.40', kind: 'Theorem', name: 'Sum of subspaces is the smallest containing subspace', deps: ['ladr-1.36', 'ladr-1.34'], tags: ['subspaces'],
           pic: 'Pick two subspaces of ℝ³; their sum is shaded, and every other subspace you choose that contains both (a plane, all of ℝ³) visibly contains the shaded set.' },
         { num: '1.41', kind: 'Definition', name: 'Direct sum', deps: ['ladr-1.36'], tags: ['direct sums'],

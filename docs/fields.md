@@ -31,6 +31,12 @@ you can edit by dragging the images of basis vectors; use the n×n routines in `
 SVD, QR, …) rather than hand-rolled ones, and show the invariant the theorem talks about (a span,
 an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 
+Keep quantifiers and degenerate cases explicit: one example or one parameter value does
+not establish an every-state claim; zero vectors, coincident subspaces and ill-typed terms
+may change the conclusion. Distinguish pointwise properties of representatives from
+almost-everywhere norms, and coordinate changes within a fixed dimension from arbitrary
+maps between dimensions (agent sample statement/hypothesis review).
+
 ## Physics & astronomy, Earth & environment, engineering
 
 - **Deps** are derivational: the derivation starts from that law or uses that theorem. A law

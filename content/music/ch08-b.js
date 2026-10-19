@@ -165,7 +165,7 @@ export default {
       see: ['music-8.12', 'music-8.13'],
       refs: ['Benson §9.14 p. 334 (pair-count definition)'],
       tags: ['interval vector'],
-      credit: 'Allen Forte, 1964 ("A theory of set-complexes for music", Journal of Music Theory 8), who made the interval vector the defining invariant of a set class',
+      credit: 'Allen Forte, 1964 ("A theory of set-complexes for music", Journal of Music Theory 8), who used interval vectors to study set classes; the vector is not a complete invariant, since Z-related classes can share it',
       scope: String.raw`Counts each unordered pair once; $v_6$ counts tritone pairs once, so a set with an antipodal pair $\{a,a+6\}$ counts it once (unlike the interval function IF of 8.15, which counts the pair in both directions).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Interval_vector' },
       verify: true,

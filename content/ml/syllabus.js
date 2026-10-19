@@ -136,7 +136,7 @@ export default {
         { num: '3.2', kind: 'Corollary', name: 'Finite hypothesis classes are PAC learnable', deps: ['ml-3.1', 'ml-2.3'], refs: ['UML §3.1'],
           pic: 'The sample-complexity curve log(|H|/δ)/ε is plotted against |H| on a log axis, and the sample size a simulated ERM actually needs tracks below it.' },
         { num: '3.2a', kind: 'Definition', name: 'Distributions over X × Y; true and empirical risk', deps: ["ml-2.1a","prob-4.1.1a","prob-1.6.1"], refs: ['UML §3.2.1'], verify: true,
-          pic: 'A label-noise slider sets P[y = 1 | x] across the papaya square, so two identical-looking fruits can taste differently and no rule reaches zero error; the empirical risk is the same average over the sample as before.' },
+          pic: 'A label-noise slider sets P[y = 1 | x] across the papaya square, so two identical-looking fruits can taste differently and, with irreducible label noise, no rule reaches zero error; the empirical risk is the same average over the sample as before.' },
         { num: '3.2b', kind: 'Proposition', name: 'The Bayes optimal predictor', deps: ["ml-3.2a","prob-4.1.13","prob-1.6.1"], see: ['stat-11.2'], refs: ['UML §3.2.1'], verify: true,
           pic: 'Draw the regression function η(x) = P[y = 1 | x] on [0, 1]: the Bayes rule thresholds it at 1/2, and any other rule the reader sketches has a larger shaded error area.' },
         { num: '3.3', kind: 'Definition', name: 'Agnostic PAC learnability', deps: ['ml-3.1', 'ml-3.2a'], refs: ['UML §3.2.1'],

@@ -584,7 +584,7 @@ export default {
         { num: '4.3.1', kind: 'Theorem', name: 'Bounded increments: converge or oscillate wildly', deps: ['prob-4.2.9', 'prob-4.2.12'], tags: ['martingales'],
           pic: 'Martingales with bounded steps and shrinking variances: each seeded path is classified live as converging or swinging between ±∞, with nothing in between.' },
         { num: '4.3.2', kind: 'Theorem', name: 'Doob’s decomposition', deps: ['prob-4.2.1a', 'prob-4.2.7a'], tags: ['martingales'],
-          pic: 'A submartingale path (|Sₙ| for a random walk) is split into a martingale part and an increasing predictable part, both drawn below it.' },
+          pic: 'A submartingale path (|Sₙ| for an unbiased random walk) is split into a martingale part and an increasing predictable part, both drawn below it.' },
         { num: '4.3.4', kind: 'Theorem', name: 'Lévy’s extension of the Borel–Cantelli lemmas', deps: ['prob-4.3.1', 'prob-4.3.2'], tags: ['borel-cantelli', 'martingales'],
           pic: 'Dependent events whose conditional probabilities given the past are tracked: occurrences continue forever exactly when the sum of conditional probabilities diverges.' },
         { num: '4.3.4a', kind: 'Theorem', name: 'Pólya’s urn: the colour fraction converges to a Beta limit', deps: ['prob-4.2.12'], see: ['stoch-12.10', 'stat-10.4'], verify: true, tags: ['martingales', 'urns'],

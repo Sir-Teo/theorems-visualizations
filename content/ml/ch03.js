@@ -150,7 +150,7 @@ and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathca
       deps: ["ml-2.1a","prob-4.1.1a","prob-1.6.1"],
       refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.1, pp.45–46"],
       tags: ['noisy labels', 'true risk', 'empirical risk'],
-      scope: String.raw`Illustrative world: $\mathcal D_x$ a product of truncated normals on the unit square and $\eta$ one of the two noise models above; risks are computed exactly on a $60\times60$ grid (cells counted by their centres).`,
+      scope: String.raw`Illustrative world: $\mathcal D_x$ a product of truncated normals on the unit square and $\eta$ one of the two noise models above; risks are numerical approximations on a $60\times60$ grid (cells counted by their centres), while samples are drawn from the continuous instance distribution.`,
       viz(v) {
         const s = square(v, { height: 400, title: 'papayas with random labels' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 400, xlabel: 'empirical risk $L_S(h)$', ylabel: 'samples', yticks: [], title: 'the sample sees an estimate' });
@@ -183,7 +183,7 @@ and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathca
           info = { LD, LS: ls / m, m, mu: mean(vals), bayes: T.bayes, pe };
         });
         v.legend([['green', 'tasty', { dot: true }], ['pink', 'not tasty', { dot: true }], ['red', 'mistake of $h$', { dot: true }], ['ink', 'best possible risk', { dash: true }]]);
-        v.readout(() => info && String.raw`$L_{\mathcal D}(h)=${pr(info.LD)}$; on this sample of $m=${info.m}$, $L_S(h)=${pr(info.LS)}$; mean over 300 samples $${pr(info.mu)}$. No predictor at all can have risk below $${pr(info.bayes)}$ (the expected value of $\min(\eta,1-\eta)$), so with noisy labels zero error is out of reach. At the probe $\eta=${pr(info.pe, 2)}$.`);
+        v.readout(() => info && String.raw`$L_{\mathcal D}(h)\approx${pr(info.LD)}$ (grid approximation); on this sample of $m=${info.m}$, $L_S(h)=${pr(info.LS)}$; mean over 300 samples $${pr(info.mu)}$. Every predictor’s true risk is at least the Bayes risk $E[\min(\eta,1-\eta)]$, estimated numerically here as $${pr(info.bayes)}$. With irreducible label noise this floor is positive. At the probe $\eta=${pr(info.pe, 2)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.2b

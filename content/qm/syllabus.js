@@ -110,7 +110,7 @@ export default {
         { num: '2.14', kind: 'Paper', name: 'Quantisierung als Eigenwertproblem',
           paper: { authors: 'E. Schrödinger', year: 1926, title: 'Quantisierung als Eigenwertproblem (Erste Mitteilung)', venue: 'Annalen der Physik 384 (4): 361–376', doi: '10.1002/andp.19263840404' },
           introduces: ['qm-2.4'], deps: ['qm-1.9', 'qm-1.5', 'mech-12.16', 'qm-1.17'], refs: [],
-          pic: 'Solve Schrödinger’s eigenvalue problem for hydrogen on screen: only for E = −13.6 eV/n² does the radial solution stay finite far away, so whole quantum numbers appear as a boundary condition instead of a rule, and the Balmer formula drops out.' },
+          pic: 'Solve Schrödinger’s eigenvalue problem for hydrogen on screen: among negative energies, only E = −13.6 eV/n² gives a finite radial solution far away, so whole quantum numbers appear as a boundary condition instead of a rule, and the Balmer formula drops out.' },
         { num: '2.15', kind: 'Paper', name: 'Zur Quantenmechanik der Stoßvorgänge',
           paper: { authors: 'Max Born', year: 1926, title: 'Zur Quantenmechanik der Stoßvorgänge', venue: 'Zeitschrift für Physik 37: 863–867', doi: '10.1007/BF01397477' },
           introduces: ['qm-2.2', 'qm-13.22'], deps: ['qm-2.4', 'qm-13.16', 'qm-2.14'], refs: [],

@@ -319,7 +319,7 @@ export default {
         { num: '4.2.9', kind: 'Theorem', name: 'Euler’s formula n − m + ℓ = 2', deps: ['graph-1.5.1', 'graph-1.5.2', 'graph-4.2.4', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.2.9 and proof, p. 101'], see: ['top-10.9', 'top-11.17'],
           pic: 'Draw any connected plane graph; counters for vertices, edges and faces always satisfy n − m + ℓ = 2, and deleting a cycle edge lowers m and ℓ together.' },
         { num: '4.2.10', kind: 'Corollary', name: 'A plane graph has at most 3n − 6 edges', deps: ['graph-4.2.9', 'graph-4.2.8', 'graph-4.2.2'], refs: ['Diestel §4.2'],
-          pic: 'Add edges to a plane graph until it is a triangulation; the edge counter climbs to exactly 3n − 6 and refuses to go further.' },
+          pic: 'Add edges to a simple plane graph until it is a triangulation; the edge counter climbs to exactly 3n − 6 and refuses to go further.' },
         { num: '4.2.11', kind: 'Corollary', name: 'Plane graphs contain neither a topological K⁵ nor K₃,₃', deps: ['graph-4.2.10', 'graph-1.7.1b'], refs: ['Diestel §4.2'], see: ['top-10.8'],
           pic: 'Try to drag the vertices of K⁵ or K₃,₃ into a crossing-free drawing; the edge-count bounds 3n − 6 and 2n − 4 show at least one crossing must remain.' },
         { num: '4.3.1a', kind: 'Definition', name: 'Planar embeddings; topological and combinatorial isomorphism', deps: ['graph-4.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.3, pp. 102–104'],

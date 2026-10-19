@@ -390,7 +390,7 @@ export default {
         { num: '8.10', kind: 'Theorem', name: 'Counting set classes (Burnside)', deps: ['music-8.9'], refs: ['Benson ch. 9'], tags: ['burnside', 'counting'],
           pic: 'For a chosen chord size a table counts the sets fixed by each of the 24 transpositions and inversions; their average is the number of set classes, 224 in all under T/I and 352 under T alone, checked against brute-force enumeration.' },
         { num: '8.11', kind: 'Concept', name: 'The interval vector', deps: ['music-8.2', 'music-8.9'], refs: ['Benson ch. 9'], tags: ['interval vector'],
-          pic: 'Every pair of notes in a set is joined by a chord coloured by interval class, and the six-bar interval vector updates as you drag notes around the clock; the diatonic vector ⟨2,5,4,3,6,1⟩ has all entries different.' },
+          pic: 'Every pair of notes in a set is joined by a chord coloured by interval class, and the six-bar interval vector updates as you click the clock to edit the set; the diatonic vector ⟨2,5,4,3,6,1⟩ has all entries different.' },
         { num: '8.12', kind: 'Theorem', name: 'The hexachord theorem', deps: ['music-8.11'], refs: ['Benson ch. 9'], tags: ['interval vector', 'complement'],
           pic: 'Choose any six notes and the complementary six appear in a second colour with the two interval vectors side by side, always identical; switch to five notes and the complement’s vector exceeds the set’s by 2 in each class (1 for the tritone).' },
         { num: '8.13', kind: 'Concept', name: 'Z-related sets', deps: ['music-8.11', 'music-8.9'], refs: ['Benson ch. 9'], tags: ['interval vector', 'counterexample'],

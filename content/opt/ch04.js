@@ -174,7 +174,7 @@ Geometrically, $-\nabla f_0(x)$ makes an obtuse (or right) angle with every feas
       num: '4.3',
       kind: 'Theorem',
       name: 'Equivalent reformulations: epigraph form and slack variables',
-      statement: String.raw`Two optimization problems are **equivalent** when a solution of one is readily obtained from a solution of the other. Two reformulations keep convexity:
+      statement: String.raw`Two optimization problems are **equivalent** when a solution of one is readily obtained from a solution of the other. Epigraph form preserves convexity; introducing equality slack variables does so for affine inequalities:
 (a) **Epigraph form.** $\min_x f_0(x)$ s.t. $f_i(x)\le0$ is equivalent to $\min_{x,t} t$ s.t. $f_0(x)\le t,\ f_i(x)\le0$. In particular $\min_x\max_k f_k(x)$ becomes $\min_{x,t}t$ s.t. $f_k(x)\le t$ for all $k$.
 (b) **Slack variables.** $f_i(x)\le0$ is equivalent to $f_i(x)+s_i=0,\ s_i\ge0$. The new equality is affine only when $f_i$ is affine, so this reformulation preserves convexity only for affine inequalities.
 Epigraph form moves all nonlinearity into the constraints and gives a linear objective, which is why it is the working form of conic solvers.`,

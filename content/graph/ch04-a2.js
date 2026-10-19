@@ -308,7 +308,7 @@ export default {
     },
     {
       num: '4.2.10', kind: 'Corollary', name: 'A plane graph has at most 3n − 6 edges',
-      statement: String.raw`A plane graph with $n\ge3$ vertices has at most $3n-6$ edges. Every plane triangulation with $n$ vertices has exactly $3n-6$ edges.`,
+      statement: String.raw`A simple plane graph with $n\ge3$ vertices has at most $3n-6$ edges. Every plane triangulation with $n$ vertices has exactly $3n-6$ edges.`,
       idea: String.raw`By Proposition 4.2.8 it is enough to count the triangulations, since every plane graph extends to a maximal one. In a triangulation each face has three edges and each edge lies on exactly two faces (Lemma 4.2.2), so $2m=3\ell$. Replace $\ell$ by $2m/3$ in Euler's formula: $n-m+2m/3=2$, which gives $m=3n-6$.`,
       caption: String.raw`Choose $n$ and press **new points**. The graph starts as a plane path through $n$ points; **add an edge** or **saturate** inserts edges through faces (arcs may bend). The right panel plots $m$ against $n$: the green line is $3n-6$, and no plane graph reaches the red region. Saturation always stops exactly on the line. The red dot is $K^5$ ($n=5$, $m=10$).`,
       deps: ['graph-4.2.9', 'graph-4.2.8', 'graph-4.2.2'], refs: ['Diestel §4.2'], tags: ['edge bound', 'triangulation'],
