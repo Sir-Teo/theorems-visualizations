@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 218,
+  "remainingFlags": 217,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 1,
     "imaging": 1,
     "circ": 1,
-    "energy": 5,
+    "energy": 4,
     "robot": 1,
     "aero": 3,
     "micro": 15,
@@ -249,22 +249,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Multi-junction_solar_cell"
-      }
-    },
-    {
-      "id": "energy-4.1",
-      "file": "content/energy/ch04.js",
-      "name": "The solar spectrum and the solar constant",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 13",
-        "MacKay ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Solar_constant"
       }
     },
     {
@@ -4141,7 +4125,8 @@
       "solid-4.7",
       "solid-4.8",
       "solid-4.9",
-      "aero-3.7"
+      "aero-3.7",
+      "energy-4.1"
     ]
   },
   "additionalFollowups": [
@@ -8086,6 +8071,12 @@
       "status": "resolved",
       "report": "docs/verification/aero-ground-followup.md",
       "note": "Complete authored MIT33 and Mason6.3.7 sources; independently rerun3math/4native groups, original formula and final minimum/maximum-height screenshot inspection; full numerical curves and non-colliding labels."
+    },
+    {
+      "id": "energy-4.1",
+      "status": "resolved",
+      "report": "docs/verification/energy-solar-spectrum-followup.md",
+      "note": "Full original IAU B3/Kopp\u2013Lean reading; parent independently reran3math/4native groups and inspected source tables/measurement pages plus representative final layouts; analytic fractions, nominal/2008 distinction, full reference curve and separated absorption labels."
     }
   ]
 }

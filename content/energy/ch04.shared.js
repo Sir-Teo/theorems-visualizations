@@ -2,8 +2,8 @@
 //
 // MODELS AND CONSTANTS (checked October 2026 unless marked otherwise)
 //   Sun: IAU 2015 Resolution B3 nominal values (exact conversion constants, not measurements): effective temperature 5772 K, radius 6.957e8 m,
-//     total solar irradiance 1361 W/m2 at 1 au (1.495978707e11 m). sigma*T^4*(R/d)^2 with these values gives 1361.0 W/m2, so a blackbody Sun at 5772 K
-//     reproduces the nominal solar constant by construction. Kopp & Lean (2011) measured 1360.8 +/- 0.5 W/m2 at the 2008 minimum (SORCE/TIM).
+//     total solar irradiance1361 W/m2 at1au (1.495978707e11m). The separately rounded nominal R/T give sigma*T^4*(R/d)^2=1361.1632 W/m2,
+//     close to the independently defined nominal irradiance, not an exact identity. Original IAU B3 and Kopp–Lean2011 read in full for4.1.
 //   Detailed balance (Shockley & Queisser 1961): current of a band [E1, E2) is q[A - Em (exp(qV/kT) - 1)], A = absorbed photon flux, Em = emitted photon
 //     flux of a blackbody at the cell temperature. Series-connected tandems (Henry 1980, J. Appl. Phys. 51: 4494; De Vos 1980, J. Phys. D 13: 839)
 //     share one current; the model here has no photon recycling between the junctions and no non-radiative loss.
@@ -13,7 +13,7 @@ export * from './ch03.shared.js';
 export const KB = 8.617333262e-5, HPL = 4.135667696e-15, CLIGHT = 2.99792458e8, QE = 1.602176634e-19, SIGMA = 5.670374419e-8;
 export const T_SUN = 5772, R_SUN = 6.957e8, AU = 1.495978707e11;
 export const FW = (R_SUN / AU) ** 2;                 // (R/d)^2: flux dilution factor, 2.1627e-5
-export const S0 = SIGMA * T_SUN ** 4 * FW;            // 1361.0 W/m2
+export const S0 = SIGMA * T_SUN ** 4 * FW;            // 1361.1632 W/m2 for this blackbody model
 const PREF = (2 * Math.PI) / (HPL ** 3 * CLIGHT ** 2); // photons m^-2 s^-1 per eV^3
 
 /** Simpson integral of g over [a, b] with n (even) steps. */

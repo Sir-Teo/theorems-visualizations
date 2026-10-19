@@ -117,8 +117,8 @@ export default {
       title: 'Solar energy',
       summary: String.raw`The Sun delivers about a kilowatt per square metre at noon, with a spectrum close to that of a 5800 K blackbody, but the average a panel sees depends on latitude, tilt and weather. Photovoltaic cells convert sunlight with a semiconductor junction; a single band gap can capture at most about a third of the energy — the Shockley–Queisser limit — and practical issues such as temperature, shading and maximum-power tracking set real performance. Concentration and multiple junctions push beyond.`,
       items: [
-        { num: '4.1', kind: 'Law', name: 'The solar spectrum and the solar constant', deps: ['qm-1.1'], refs: ['Tester ch. 13', 'MacKay ch. 6'],
-          pic: 'The Sun’s spectrum outside the atmosphere is overlaid on a 5800 K blackbody curve; integrating it gives about 1361 W/m² at Earth’s distance, and absorption bands appear after passing through air.' },
+        { num: '4.1', kind: 'Model', name: 'The solar spectrum and the solar constant', deps: ['qm-1.1'], refs: ['Tester ch. 13', 'MacKay ch. 6'],
+          pic: 'Compare a chosen blackbody temperature with the 5772 K nominal reference, integrate its spectrum at one astronomical unit, and explore an illustrative atmospheric attenuation model. Nominal conversion constants and the measured 2008 solar-minimum irradiance are distinguished.' },
         { num: '4.2', kind: 'Model', name: 'Solar geometry: insolation, latitude and tilt', deps: ['energy-4.1'], refs: ['Tester ch. 13', 'MacKay ch. 6'],
           pic: 'Drag the latitude, date and panel tilt: the Sun’s path across the sky is drawn, and the daily energy on the panel follows the cosine of the incidence angle, peaking at a tilt near the latitude.' },
         { num: '4.3', kind: 'Model', name: 'The photovoltaic cell: an illuminated diode', deps: ['circ-4.1', 'cm-4.7'], refs: ['Tester ch. 13'],

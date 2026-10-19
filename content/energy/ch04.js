@@ -1,12 +1,8 @@
 // Energy Systems — Chapter 4: Solar energy (items 4.1–4.4; 4.5–4.8 in ch04-b.js, 4.9–4.11 in ch04-c.js, 4.12 in ch04-papers.js)
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
-//   4.1 Sun = blackbody at the IAU 2015 nominal effective temperature 5772 K (Resolution B3; exact conversion constants: T_eff 5772 K, R 6.957e8 m,
-//     S = 1361 W/m2). The curve drawn is the blackbody model, NOT a measured spectrum: the real extraterrestrial spectrum (e.g. ASTM E490) is weaker than a
-//     blackbody in the ultraviolet and carries absorption lines; I could not download a reference table, so none is drawn. Measured value: Kopp & Lean (2011),
-//     1360.8 +/- 0.5 W/m2 (SORCE/TIM, 2008 minimum). The "through air" curve is a SCHEMATIC model: Rayleigh optical depth 0.008735 lambda^-4.08 per air mass
-//     (lambda in um; coefficient from memory of the Bird–Riordan / Hegner form), an ozone ultraviolet edge and aerosol Angstrom term with ILLUSTRATIVE strengths,
-//     and Gaussian dips at the real positions of the O2 (760 nm), H2O (about 940, 1130, 1380, 1870 nm) and CO2 (about 2000 nm) bands with illustrative depths.
+//   4.1 Complete original IAU 2015 Resolution B3 and Kopp–Lean2011 read. Nominal conversion values are distinct from measured solar-minimum TSI.
+//     source-audit-solar.shared.js computes Planck spectra/fractions and an explicitly chosen attenuation toy; no measured spectral data or fitted atmospheric constants.
 //   4.2 Declination delta = 23.44 deg sin(360 (n - 81)/365) (standard approximation, good to about half a degree), no equation of time. Clear-sky beam model
 //     I = S (1 + 0.033 cos(360 n/365)) 0.7^(AM^0.678) (Meinel & Meinel, from memory — the form with a 0.7 base is equivalent to exp(-0.357 AM^0.678) in PyAstronomy's
 //     documentation of Meinel's formula); air mass from Kasten & Young (1989), from memory. Direct beam only: diffuse light is omitted.
@@ -14,24 +10,10 @@
 //   4.4 Green's empirical ideal fill factor FF0 = (v - ln(v + 0.72))/(v + 1), v = Voc/(n kT/q): M. A. Green, Solid-State Electronics 24 (1981), 788–789;
 //     formula and original attribution checked in PVEducation (https://www.pveducation.org/pvcdrom/solar-cell-operation/fill-factor), 2026-10-16.
 
-import { clamp, S0, T_SUN, FW, KB, SIGMA, cell, ivCurve, ffGreen } from './ch04.shared.js';
+import { clamp, S0, T_SUN, KB, cell, ivCurve, ffGreen } from './ch04.shared.js';
 
-// ───────────────────────────────────────────── 4.1 helpers
-const H_SI = 6.62607015e-34, C_SI = 2.99792458e8, K_SI = 1.380649e-23;
-/** Blackbody spectral irradiance at 1 au, W m^-2 nm^-1, for a Sun of effective temperature T. */
-function specSun(nm, T) {
-  const l = nm * 1e-9, x = (H_SI * C_SI) / (l * K_SI * T);
-  return (FW * 2 * Math.PI * H_SI * C_SI * C_SI) / (l ** 5 * Math.expm1(x)) * 1e-9;
-}
-const BANDS = [[690, 2.5, 0.25, 'O₂'], [720, 7, 0.35, 'H₂O'], [760, 3, 1.6, 'O₂'], [820, 8, 0.3, 'H₂O'], [940, 22, 1.6, 'H₂O'], [1130, 28, 1.7, 'H₂O'],
-  [1380, 45, 5, 'H₂O'], [1870, 70, 6, 'H₂O'], [2010, 14, 1.2, 'CO₂'], [2700, 90, 8, 'H₂O']];
-/** Schematic atmospheric transmission of the direct beam at air mass am. */
-function airT(nm, am) {
-  const um = nm / 1000;
-  let tau = 0.008735 * um ** -4.08 + 0.1 * (um / 0.5) ** -1.3 + 25 * Math.exp(-(nm - 250) / 20);
-  for (const [c, s, d] of BANDS) tau += d * Math.exp(-0.5 * ((nm - c) / s) ** 2);
-  return Math.exp(-tau * am);
-}
+import {solarSpectrumAudit as specSun,solarPowerAudit,solarFractionAudit,solarTransmissionAudit as airT} from './source-audit-solar.shared.js';
+
 const MONTHS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], MN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const dateLabel = (n) => { let d = Math.round(n), m = 0; while (m < 11 && d > MONTHS[m]) { d -= MONTHS[m]; m++; } return `${d} ${MN[m]}`; };
 
@@ -72,41 +54,42 @@ export default {
     // ───────────────────────────────────────────────────────── 4.1
     {
       num: '4.1',
-      kind: 'Law',
+      kind: 'Model',
       name: 'The solar spectrum and the solar constant',
-      statement: String.raw`The Sun radiates approximately as a blackbody of effective temperature $T_\odot \approx 5772\ \text{K}$ (the nominal value fixed by the IAU in 2015). At the mean Earth–Sun distance $d$ the radiant power per unit area facing the Sun, the **solar constant** or total solar irradiance, is the Stefan–Boltzmann flux diluted by the inverse-square law,
-$$S=\sigma T_\odot^{4}\left(\frac{R_\odot}{d}\right)^{2}\approx 1361\ \text{W/m}^2,$$
-and its spectral distribution is Planck's, $S_\lambda=(R_\odot/d)^2\,2\pi hc^2\lambda^{-5}/(e^{hc/\lambda kT_\odot}-1)$, peaking near $\lambda_{\max}=b/T_\odot\approx 500$ nm. About half the power lies in the visible and near infrared below 1 µm, a few per cent in the ultraviolet; the atmosphere removes part of it by scattering and by absorption in bands.
+      statement: String.raw`A blackbody Sun with nominal IAU temperature $T_\odot^{\rm N}=5772$ K and radius $R_\odot^{\rm N}=6.957\times10^8$ m gives, at one astronomical unit,
+$$S_{\rm model}=\sigma T^4(R/d)^2\approx1361.16\ \mathrm{W/m^2}.$$
+Planck's wavelength spectrum peaks near 502 nm. In this **blackbody model**, about 71.8% of the power is below 1 µm, 12.2% below 400 nm and 36.6% between 400 and 700 nm. These fractions describe the model, not a measured solar spectrum.
 
-Scope: the blackbody is a model of the Sun's visible-to-infrared output; the real spectrum is weaker in the ultraviolet and has absorption lines. The solar constant varies by about 0.1 % over the 11-year cycle.`,
-      idea: String.raw`A hot surface radiates according to Planck's law (qm-1.1); integrating over wavelength gives the Stefan–Boltzmann law, and the flux thins as the square of the distance because the same power spreads over a sphere of radius $d$. Plugging in the Sun's effective temperature and angular size gives 1361 W/m², in line with space measurements (Kopp and Lean 2011 found $1360.8\pm0.5$ W/m²). Wien's displacement law places the peak at 500 nm — the middle of the visible band — and all the later results in this chapter start from this one spectrum: it fixes what photons a cell can use (energy-4.5) and how hot a concentrator can get (energy-4.10).`,
-      caption: String.raw`The coloured curve is the Sun's spectral irradiance; the grey strip marks the visible band. Change the **solar temperature** and watch the peak slide (Wien) while the total area, shown in the readout, scales as $T^4$. Switch to **through air** and raise the air mass: the ultraviolet disappears, scattering bites into the blue, and notches appear at the oxygen, water and CO$_2$ bands. The right panel shows how much of the power lies below each wavelength. The air curve is a **schematic model** (band positions are real, depths illustrative).`,
+The IAU's nominal irradiance $S_\odot^{\rm N}=1361$ W/m² is a separately defined exact conversion constant; nominal values are not exact measurements of the Sun. Kopp and Lean (2011) reported $1360.8\pm0.5$ W/m² for the **2008 solar minimum**, supported by SORCE/TIM observations and radiometric laboratory comparisons. TSI varies with solar activity; their monthly means changed by roughly 0.12% between recent minima and maxima.`,
+      idea: String.raw`Planck's law (qm-1.1) gives the spectrum of an ideal thermal emitter. Its wavelength integral is $\sigma T^4$, and spreading the luminosity over a sphere dilutes the flux by $(R/d)^2$. Separately rounded nominal radius and temperature need not reproduce the independently defined nominal irradiance exactly. Wien's law controls the peak; integrating the spectrum, rather than estimating from its peak, determines the power fractions. A selective-attenuation toy illustrates how a path can remove different wavelengths unequally, without claiming to reconstruct actual air or solar absorption lines.`,
+      caption: String.raw`Change the temperature to move the blackbody peak and scale its total area as $T^4$; the grey reference remains at 5772 K. The shaded strip is 400–700 nm. The right curve integrates the **unattenuated blackbody** from zero wavelength to the chosen wavelength. The optional **chosen attenuation** uses positive optical depths: a blue-weighted term and illustrative bands. All band centers, widths and strengths are choices; the transmitted curve is not measured or fitted atmospheric data.`,
       deps: ['qm-1.1'],
-      refs: ['Tester ch. 13', 'MacKay ch. 6'],
+      refs: ['IAU 2015 Resolution B3, complete original recommendations, explanation and notes', 'Kopp & Lean, Geophys. Res. Lett.38, L01706 (2011), complete original paper', 'Planck integral and spectral fractions independently derived and numerically checked'],
       tags: ['solar', 'spectrum', 'blackbody'],
-      scope: String.raw`Holds for the spectrum outside the atmosphere to the accuracy of a blackbody model; ground-level spectra depend on air mass, water vapour, ozone and aerosols.`,
-      credit: 'Kopp & Lean, 2011 (modern measurement of the solar constant)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Solar_constant' },
-      verify: true,
+      scope: String.raw`An ideal blackbody at fixed nominal solar radius and 1 au, with temperature varied as a model input. The real solar spectral irradiance is not plotted. IAU nominal constants are exact unit conversions chosen near estimates, not exact present-day solar properties; the specific Kopp–Lean value is historical solar-minimum TSI, not a universal fixed measurement. The optional attenuation curve is exp(−AM×τλ), with chosen blue-weighted, broad ultraviolet and band terms; their species labels indicate intended qualitative absorbers, without a line database, calibrated transmission, scattering radiative transfer or diffuse sky contribution. Cumulative fractions always refer to the unattenuated model.`,
+      credit: 'IAU 2015 nominal constants; Kopp & Lean 2011 historical solar-minimum measurement',
+      links: {nominal:'https://www.iau.org/common/Uploaded%20files/IAUGA2015-Resolution-B3-recommended-nominal-conversion.pdf',measurement:'https://doi.org/10.1029/2010GL045777'},
+      verify: false,
       viz(v) {
         const Tsl = v.slider('solar temperature $T$ (K)', 4000, 7500, 5772, { step: 1 });
-        const view = v.select('view', [{ value: 'space', label: 'above the atmosphere' }, { value: 'air', label: 'through air (schematic)' }], 'space');
+        const view = v.select('view', [{ value: 'space', label: 'above the atmosphere' }, { value: 'air', label: 'chosen attenuation (illustrative)' }], 'space');
         const AM = v.slider('air mass', 1, 5, 1.5, { step: 0.1 });
-        const S = v.stage({ x: [200, 2500], y: [0, 2.4], axes: 'box', gutter: true, height: 340, weight: 1.5, minWidth: 300, xlabel: 'wavelength (nm)', ylabel: 'spectral irradiance (W m⁻² nm⁻¹)', title: 'sunlight at 1 au' });
-        const C = v.stage({ x: [100, 4000], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'wavelength (nm)', ylabel: 'fraction of power below λ', title: 'where the power is', yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
-        let cumKey = null, cum = null, st = null;
+        const S = v.stage({ x: [200, 2500], y: [0, 2.4], axes: 'box', gutter: {r:24}, height: 340, weight: 1.5, minWidth: 300, xlabel: 'wavelength (nm)', ylabel: 'spectral irradiance (W m⁻² nm⁻¹)', title: 'sunlight at 1 au' });
+        const C = v.stage({ x: [100, 4000], y: [-.05, 1.05], axes: 'box', gutter: {r:24}, height: 340, weight: 1, minWidth: 260, xlabel: 'wavelength (nm)', ylabel: 'fraction of power below λ', title: 'where the power is', yticks: [[0, '0'], [0.25, '25%'], [0.5, '50%'], [0.75, '75%'], [1, '100%']] });
+        let st = null;
         v.render(() => {
           const T = Tsl.value, air = view.value === 'air';
           AM.el.hidden = !air;
           const f = (nm) => specSun(nm, T), g = (nm) => f(nm) * airT(nm, AM.value);
-          const peak = f((2.897771955e6 / T)), top = peak * 1.12;
+          const peak=f(2.897771955e6/T),top=Math.max(peak,specSun(2.897771955e6/T_SUN,T_SUN))*1.12;
           S.setView([200, 2500], [0, top]);
           S.vband(400, 700, { color: 'muted', alpha: 0.12 });
           S.fn(f, { domain: [200, 2500], color: 'gold', fill: true, fillAlpha: air ? 0.12 : 0.28, width: 2.2, n: 500 });
           S.fn((nm) => specSun(nm, T_SUN), { domain: [200, 2500], color: 'muted', width: 1.2, dash: [5, 4], n: 300 });
           if (air) {
             S.fn(g, { domain: [200, 2500], color: 'accent', fill: true, fillAlpha: 0.35, width: 2, n: 1200 });
-            for (const [c, , , lab] of [[760, 0, 0, 'O₂'], [940, 0, 0, 'H₂O'], [1130, 0, 0, 'H₂O'], [1380, 0, 0, 'H₂O'], [1870, 0, 0, 'H₂O'], [2010, 0, 0, 'CO₂']]) {
+            const labels=S.width<500?[[760,0,0,'O₂'],[1380,0,0,'H₂O'],[1870,0,0,'H₂O'],[2010,0,0,'CO₂']]:[[760,0,0,'O₂'],[940,0,0,'H₂O'],[1130,0,0,'H₂O'],[1380,0,0,'H₂O'],[1870,0,0,'H₂O'],[2010,0,0,'CO₂']];
+            for (const [c, , , lab] of labels) {
               if (c === 2010) S.text(lab, 2100, top * 0.2, { size: 11, color: 'muted', align: 'left' }); else S.text(lab, c, top * 0.93 - (c > 1000 ? 0.0 : 0), { size: 11, color: 'muted', align: 'center', dy: c === 760 ? 0 : 0 });
             }
             S.text('O₃ edge', 205, top * 0.62, { size: 11, color: 'muted', align: 'left', plate: true });
@@ -114,30 +97,25 @@ Scope: the blackbody is a model of the Sun's visible-to-infrared output; the rea
           S.vline(2897771.955 / T, { color: 'orange', width: 1.2, dash: [3, 3] });
           S.text(`Wien peak ${v.fix(2897771.955 / T, 0)} nm`, 2897771.955 / T, top * 0.2, { dx: 6, align: 'left', size: 11.5, color: 'orange', weight: 600 });
           S.text('visible', 550, top * 0.04, { align: 'center', size: 11, color: 'muted' });
-          // cumulative fraction (cached on T)
-          if (cumKey !== T) {
-            cumKey = T; const n = 8000, dl = 4, arr = []; let s = 0; // 50 .. 32050 nm
-            for (let i = 0; i <= n; i++) { const nm = 50 + i * dl; if (i) s += 0.5 * (f(nm) + f(nm - dl)) * dl; arr.push(s); }
-            const tot = SIGMA * T ** 4 * FW; cum = (nm) => Math.min(1, arr[Math.max(0, Math.min(n, Math.round((nm - 50) / dl)))] / tot);
-          }
+          const cum=nm=>solarFractionAudit(nm,T);
           C.fn(cum, { domain: [100, 4000], color: 'gold', width: 2.4, n: 400 });
           C.vband(400, 700, { color: 'muted', alpha: 0.12 });
           const uv = cum(400), vis = cum(700) - cum(400);
           C.dot(400, uv, { r: 4, color: 'purple' }); C.dot(700, cum(700), { r: 4, color: 'green' });
-          C.text(`${v.fix(100 * uv, 0)}% UV`, 400, uv, { dx: -8, dy: -10, align: 'right', size: 11.5, color: 'purple', weight: 600 });
-          C.text(`${v.fix(100 * cum(700), 0)}% below 700 nm`, 700, cum(700), { dx: 10, dy: 12, align: 'left', size: 11.5, color: 'green', weight: 600 });
-          const total = SIGMA * T ** 4 * FW;
+          C.textPx(`${v.fix(100*uv,1)}% below 400 nm`,C.X(400)+8,C.Y(uv)-14,{align:'left',size:11,color:'purple',weight:600});
+          C.textPx(`${v.fix(100*cum(700),1)}% below 700 nm`,C.X(700)+8,C.Y(cum(700))+14,{align:'left',size:11,color:'green',weight:600});
+          const total=solarPowerAudit(T);
           let ground = null;
           if (air) { let s2 = 0; const dl = 5; for (let nm = 200; nm < 2500; nm += dl) s2 += g(nm + dl / 2) * dl; let s1 = 0; for (let nm = 200; nm < 2500; nm += dl) s1 += f(nm + dl / 2) * dl; ground = { s2, s1 }; }
-          st = { T, total, uv, vis, ground, air };
+          st = { T, total, uv, vis, belowMicron:cum(1000),ground,air };
         });
-        v.legend([['gold', 'blackbody Sun at the chosen $T$'], ['muted', '5772 K (nominal)', { dash: true }], ['accent', 'after the atmosphere (schematic, direct beam)', { area: true }]]);
+        v.legend([['gold', 'blackbody Sun at the chosen $T$'], ['muted', '5772 K (nominal)', { dash: true }], ['accent','after chosen attenuation',{area:true}]]);
         v.readout(() => {
           if (!st) return '';
-          const { T, total, uv, vis, ground, air } = st;
-          return `$T=${v.fix(T, 0)}$ K: $S=\\sigma T^4(R_\\odot/d)^2=$ **${v.fix(total, 0)} W/m²** (Wien peak ${v.fix(2897771.955 / T, 0)} nm) · below 400 nm ${v.fix(100 * uv, 1)}%, visible ${v.fix(100 * vis, 1)}%, beyond 700 nm ${v.fix(100 * (1 - uv - vis), 1)}%` +
-            (T === 5772 ? ` · measured: $1360.8\\pm0.5$ W/m² (Kopp & Lean 2011)` : '') +
-            (air && ground ? `\nBetween 200 and 2500 nm the schematic air path (air mass ${v.fix(AM.value, 1)}) passes ${v.fix(100 * ground.s2 / ground.s1, 0)}% of the beam power; a blackbody curve has no spectral lines, so treat the notches as illustrative.` : '');
+          const { T, total, uv, vis, belowMicron, ground, air } = st;
+          return `$T=${v.fix(T, 0)}$ K: $S=\\sigma T^4(R_\\odot/d)^2=$ **${v.fix(total, 0)} W/m²** (Wien peak ${v.fix(2897771.955 / T, 0)} nm) · below 400 nm ${v.fix(100 * uv, 1)}%, visible ${v.fix(100 * vis, 1)}%, beyond 700 nm ${v.fix(100*(1-uv-vis),1)}%; below 1 µm ${v.fix(100*belowMicron,1)}%. These are blackbody-model fractions.` +
+            (T === 5772 ? ` · historical 2008 solar-minimum measurement: $1360.8\\pm0.5$ W/m² (Kopp & Lean 2011)` : '') +
+            (air && ground ? `\nBetween 200 and 2500 nm the chosen attenuation path (air-mass parameter ${v.fix(AM.value, 1)}) passes ${v.fix(100 * ground.s2 / ground.s1, 0)}% of this model beam's power. The notch parameters are choices, not measured atmospheric data.` : '');
         });
       },
     },
