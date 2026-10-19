@@ -295,10 +295,14 @@
           "text": "Hounsfield described a scanner in which a narrow X-ray beam and detector traverse a slice of the head, take a row of transmission readings, then rotate by a small step and repeat; a computer reconstructs the absorption in a matrix of small elements from the whole set of readings and displays it as a picture, together with numerical values relative to water. Because the readings are digitised and used quantitatively, the system distinguishes tissues whose X-ray absorption differs by only about a per cent \u2014 grey and white matter, blood clot, cerebrospinal fluid \u2014 which a radiograph, where the shadow of bone and of the depth superimpose, cannot show. (Parameters of the first scanner \u2014 about $80\\times80$ picture elements and of the order of $160$ readings at each of $180$ one-degree steps \u2014 are as commonly reported and are marked unverified.)"
         }
       ],
-      "refs": [],
+      "refs": [
+        "Hounsfield (1973), BJR46:1016\u20131022, official abstract",
+        "Hounsfield Nobel lecture (1979), pp.569\u2013578"
+      ],
       "links": {
         "nobel": "https://www.nobelprize.org/prizes/medicine/1979/hounsfield/lecture/"
-      }
+      },
+      "reviewNote": "Synthetic projection and supported prose repaired; full named1973paper remains unavailable. Keep source-review-pending; see imaging-hounsfield-followup.md."
     },
     {
       "id": "circ-4.17",
@@ -8265,6 +8269,12 @@
       "status": "resolved",
       "report": "docs/verification/imaging-spect-followup.md",
       "note": "Primary/author text and chosen-model claims checked; parent independently reran mathematical and native light/dark input suites and inspected final full-size screenshots. Corrected sampled valve states/timing, exact myogenic response, historical arithmetic/valve direction or attenuation approximations as documented."
+    },
+    {
+      "id": "imaging-3.18",
+      "status": "partial-source-review-pending",
+      "report": "docs/verification/imaging-hounsfield-followup.md",
+      "note": "Primary abstract and separate full author lecture checked; exact last-paint projector replaces invalid additive overlap approximation. Parent reran six mathematical and two native theme groups and inspected final screenshot. Full1973original remains unavailable; flag retained."
     }
   ]
 }

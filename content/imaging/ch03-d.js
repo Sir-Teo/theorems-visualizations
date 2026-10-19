@@ -5,6 +5,7 @@ import {
   ellipsoidAt, fdk, rng32, gauss, noiseField, poissonFrom, MATS, mu,
 } from './ch03.shared.js';
 import { diffractionLocusAudit, diffractionGridAudit } from './source-audit-diffraction.shared.js';
+import { paintedProjectionAudit, paintedSinogramAudit, headClotIncrementAudit } from './source-audit-hounsfield.shared.js';
 import { CORMACK1963_AUDIT, cormackMuAudit, cormackProjectionAudit, cormackExactJAudit, cormackBeamAudit, cormackJAudit } from './source-audit-cormack.shared.js';
 
 const PI = Math.PI;
@@ -185,34 +186,23 @@ For nested constant layers, $J(r)=\sum_\ell\Delta\mu_\ell(R_\ell-r)_+$ is piecew
         venue: 'British Journal of Radiology 46 (552): 1016–1022', doi: '10.1259/0007-1285-46-552-1016',
       },
       introduces: ['imaging-3.13'],
-      statement: String.raw`Hounsfield described a scanner in which a narrow X-ray beam and detector traverse a slice of the head, take a row of transmission readings, then rotate by a small step and repeat; a computer reconstructs the absorption in a matrix of small elements from the whole set of readings and displays it as a picture, together with numerical values relative to water. Because the readings are digitised and used quantitatively, the system distinguishes tissues whose X-ray absorption differs by only about a per cent — grey and white matter, blood clot, cerebrospinal fluid — which a radiograph, where the shadow of bone and of the depth superimpose, cannot show. (Parameters of the first scanner — about $80\times80$ picture elements and of the order of $160$ readings at each of $180$ one-degree steps — are as commonly reported and are marked unverified.)`,
-      idea: String.raw`Cormack's mathematics (3.17) had remained unread by engineers; Hounsfield, at EMI, arrived at a reconstruction from projections independently, first with a gamma-ray laboratory machine (28,000 measurements, nine days per picture by his Nobel lecture's account), then with an X-ray tube (nine hours), a human brain specimen and finally the Atkinson Morley's Hospital prototype (first patient 1972). He reckoned the method would be about two orders of magnitude more sensitive than conventional radiography because all measurements contribute to every element of the slice. The picture elements are computed by an iterative algebraic reconstruction (see 3.11) in the original machine, and the numbers expressed relative to water became the scale named after him (3.13).`,
-      caption: String.raw`A head slice with the soft-tissue contrasts of today's HU values (grey matter ≈ 40, white matter ≈ 25, CSF ≈ 10, a fresh clot ≈ 65) is scanned on an 80×80 grid with a pencil beam: the slider adds **views** (one-degree steps, so the picture is incomplete until the half turn) and **photons per reading** sets the noise. Narrow the **window** around brain values and the tissues separate; the third panel shows a single radiograph-style projection, whose clot signal is lost under the bone and the long path of brain.`,
+      statement: String.raw`Hounsfield's 1973 system paper describes taking X-ray transmission readings through the head from many angles, calculating internal absorption values on a computer, and displaying pictures of cranial slices. Its abstract reports sensitivity about 100 times that of conventional X-ray systems, sufficient to display differences between soft tissues of nearly similar density. This is the paper's reported comparison, not a universal signal-to-noise or dose factor. The essential step is quantitative cross-sectional reconstruction: a projection superimposes material along a ray, while multiple angular measurements constrain where that material lies.`,
+      idea: String.raw`In his 1979 Nobel lecture, Hounsfield describes an improvised gamma-ray experiment with 28,000 digitized measurements and a nine-day scan, then a more intense X-ray tube reducing the scan to nine hours. The first preserved brain specimen exaggerated tissue differences because of formalin; fresh specimens were used to check the effect. His later clinical prototype demonstrated useful soft-tissue contrast. The lecture also explains the logarithmic transmission measurement, water-relative numbers and adjustable display windows. This illustration uses those principles with a synthetic modern-HU phantom and filtered back-projection; it does not reproduce the 1973 apparatus or its reconstruction program.`,
+      caption: String.raw`Acquire successive one-degree **views** of an illustrative head and vary the incident **photons per reading**. The simulation uses an 80×80 image, 160 detector bins and a half turn; these are chosen model parameters. The modern-HU phantom has grey matter 40, white matter 26, CSF 10 and a clot region 65. Narrow the **window** to emphasize soft-tissue differences. The third panel compares one full projection with the **increment caused by replacing underlying tissue with the clot**. A small projection increment can be obscured by superimposed structures; this is not a clinical lesion-detection test.`,
       deps: ['imaging-3.11', 'imaging-3.1'],
       tags: ['EMI scanner', 'Hounsfield', 'history'],
-      refs: [],
+      refs: ['Hounsfield (1973), BJR46:1016–1022, official abstract', 'Hounsfield Nobel lecture (1979), pp. 569–578: early tests, technique, sensitivity and windowing'],
       credit: 'G. N. Hounsfield, 1973 (Nobel Prize in Physiology or Medicine 1979, shared with A. M. Cormack)',
       links: { nobel: 'https://www.nobelprize.org/prizes/medicine/1979/hounsfield/lecture/' },
       verify: true,
-      scope: String.raw`A reconstruction in the spirit of the paper, not its data: the head phantom, the HU values (modern textbook numbers; the paper used its own EMI scale), the photon counts and the reconstruction method (filtered back-projection here, an iterative method in the original) are modelled. Scanner parameters (80×80 matrix, 160 readings × 180°) are reported by secondary sources; I did not verify them against the paper itself.`,
+      scope: String.raw`Only the 1973 paper's official abstract and bibliographic record were available; its full text and original scanner parameters remain unchecked. The author's complete 1979 Nobel lecture was read as a separate primary source. The visual is a synthetic monochromatic transmission/Poisson-noise model, with chosen modern HU values, arbitrary attenuation-length scale and Shepp–Logan filtered back-projection. Exact line integrals respect the last-painted tissue at overlapping ellipse boundaries. It excludes spectrum/beam hardening, scatter, motion, finite beam width and the original scanner's iterative algorithm. Photon counts are simulated incident counts per reading, not patient dose.`,
       viz(v) {
         const NP = 80, nd = 160, nA = 180;
-        // painter's list [HU, a, b, cx, cy, rot°]
-        const PAINT = [[40, 0.95, 0.78, 0, 0, 0], [900, 0.9, 0.73, 0, 0, 0], [10, 0.84, 0.67, 0, 0, 0], [40, 0.82, 0.65, 0, 0, 0], [26, 0.62, 0.46, 0, 0, 0],
-          [10, 0.14, 0.32, -0.16, 0.08, -12], [10, 0.14, 0.32, 0.16, 0.08, 12], [65, 0.12, 0.1, 0.38, -0.2, 20], [10, 0.05, 0.05, 0, -0.22, 0]];
-        const huAt = (x, y) => { let val = -1000; for (const [h, a, b, cx, cy, ro] of PAINT) { const t = (ro * PI) / 180, dx = x - cx, dy = y - cy, u = dx * Math.cos(t) + dy * Math.sin(t), w = -dx * Math.sin(t) + dy * Math.cos(t); if ((u / a) ** 2 + (w / b) ** 2 <= 1) val = h; } return val; };
-        // additive ellipse list (μ/μ_water) for the exact sinogram: each layer minus what lies under its centre
-        const E2 = [];
-        PAINT.forEach(([h, a, b, cx, cy, ro], i) => {
-          let under = 0; for (let j = 0; j < i; j++) { const [h2, a2, b2, cx2, cy2, ro2] = PAINT[j]; const t = (ro2 * PI) / 180, dx = cx - cx2, dy = cy - cy2, u = dx * Math.cos(t) + dy * Math.sin(t), w = -dx * Math.sin(t) + dy * Math.cos(t); if ((u / a2) ** 2 + (w / b2) ** 2 <= 1) under = 1 + h2 / 1000; }
-          E2.push([1 + h / 1000 - under, a, b, cx, cy, ro]);
-        });
-        const KAP = 2.0, sc = makeScan(nA, nd, 1.0), sinoC = sinoEll(E2, sc).map((x) => x * KAP);
+        const KAP = 2.0, sc = makeScan(nA, nd, 1.0), sinoC = paintedSinogramAudit(sc).map(x => x * KAP);
         const r = rng32(3), { u: U, z: Z } = noiseField(v.M, r, nA * nd);
-        const truthHU = raster((x, y) => { const h = huAt(x, y); return h; }, NP, NP, 1);
         const A = v.stage({ x: [0, NP], y: [0, NP], equal: true, axes: false, height: 290, title: 'Reconstruction (80 × 80)', minWidth: 230 });
         const S = v.stage({ x: [0, 180], y: [-1, 1], axes: 'box', gutter: true, height: 290, xlabel: 'step (1° each)', ylabel: 'beam position $s$', title: 'Readings so far', minWidth: 230, xticks: [0, 60, 120, 180] });
-        const R = v.stage({ x: [-1, 1], y: [0, 7], axes: 'box', gutter: true, height: 290, xlabel: 'beam position $s$', ylabel: 'log-attenuation $p$', title: 'One projection: the clot is invisible', minWidth: 230 });
+        const R = v.stage({ x: [-1, 1], y: [0, 7], axes: 'box', gutter: true, height: 290, xlabel: 'beam position $s$', ylabel: 'log-attenuation $p$', title: 'One projection and the clot increment', minWidth: 230 });
         const nv = v.slider('views acquired (1° steps)', 10, 180, 180, { step: 1, int: true });
         const ph = v.slider('photons per reading', 1e3, 1e8, 1e6, { log: true, sig: 2 });
         const lev = v.slider('window level (HU)', 0, 60, 30, { step: 1, int: true }), wid = v.slider('window width (HU)', 10, 400, 80, { step: 1, int: true });
@@ -233,17 +223,17 @@ For nested constant layers, $J(r)=\sum_\ell\Delta\mu_\ell(R_\ell-r)_+$ is piecew
           S.raster((a, s) => { const kk = Math.min(nA - 1, Math.floor(a)), j = Math.floor((s + 1) / sc.tau); if (kk >= n || j < 0 || j >= nd) return null; const c = Math.round(255 * clamp(res.noisy[kk * nd + j] / 6, 0, 1)); return [c, c, c]; }, { res: 2, id: 'sg', key });
           S.vline(n, { color: 'gold', width: 1.5 });
           const th = 0;
-          R.path(lin(-1, 1, 200).map((s) => [s, KAP * ellProj(E2, th, s)]), { color: 'accent', width: 2 });
-          const clot = [E2[PAINT.findIndex((q) => q[0] === 65)]]; R.path(lin(-1, 1, 200).map((s) => [s, KAP * ellProj(clot, th, s)]), { color: 'red', width: 2.4 });
+          R.path(lin(-1, 1, 200).map((s) => [s, KAP * paintedProjectionAudit(th, s)]), { color: 'accent', width: 2 });
+          R.path(lin(-1, 1, 200).map((s) => [s, KAP * headClotIncrementAudit(th, s)]), { color: 'red', width: 2.4 });
           R.text('clot', 0.45, 0.35, { color: 'red', size: 12 });
         });
-        v.legend([['accent', 'whole head'], ['red', 'clot alone']]);
+        v.legend([['accent', 'whole head'], ['red', 'increment from clot replacement']]);
         v.readout(() => {
           if (!res) return '';
           const roi = (cx, cy, rad) => { const vals = []; for (let j = 0; j < NP; j++) for (let i = 0; i < NP; i++) { const x = -1 + ((i + 0.5) * 2) / NP, y = 1 - ((j + 0.5) * 2) / NP; if (Math.hypot(x - cx, y - cy) < rad) vals.push(res.img[j * NP + i]); } return vals; };
-          const wm = roi(0, -0.3, 0.05), cl = roi(0.38, -0.2, 0.05), gm = roi(0, 0.5, 0.0);
-          void gm;
-          return `Noise (SD) in a uniform patch of white matter: $${fx(sd(wm), 1)}$ HU; mean white matter $${fx(mean(wm), 0)}$ HU, clot $${fx(mean(cl), 0)}$ HU.\nGrey–white contrast is only about 1% of water's attenuation (15 HU = 1.5%): to see it the noise must be well below that, which needs more photons — here ${fx(Math.round(ph.value), 0)} per reading. In the single projection the clot adds under 1% to the signal.`;
+          const wm = roi(0, -0.3, 0.05), cl = roi(0.38, -0.2, 0.05);
+          const fractions=lin(.27,.49,300).map(s=>headClotIncrementAudit(0,s)/Math.max(paintedProjectionAudit(0,s),1e-12)), fraction=Math.max(...fractions);
+          return `Noise (SD) in a uniform patch of white matter: $${fx(sd(wm), 1)}$ HU; mean white matter $${fx(mean(wm), 0)}$ HU, clot $${fx(mean(cl), 0)}$ HU.\nThe model grey–white difference is 14 HU = 1.4% of water's attenuation. This patch's SD includes reconstruction artifacts as well as count noise. Incident photons per reading: ${fx(Math.round(ph.value), 0)}. The maximum clot increment in the displayed noiseless projection is ${fx(100*fraction,2)}% of the whole-head log attenuation.`;
         });
       },
     },
