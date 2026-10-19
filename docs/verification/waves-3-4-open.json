@@ -8086,6 +8086,12 @@
       "status": "resolved",
       "report": "docs/verification/solid-fatigue-followup.md",
       "note": "Primary interaction equations and chosen negative-mean extension distinguished; independent ray-root bisection, symmetric tensile/compressive yield, zero load and actual pointer endpoints passed. Parent inspected original formulas and final compression/860MPa waveform screenshots; both yield guides and complete waveform fit."
+    },
+    {
+      "id": "energy-3.10",
+      "status": "partial-source-review-pending",
+      "report": "docs/verification/energy-fusion-followup.md",
+      "note": "Complete original Lawson1957 and Bosch-Hale1992 plus relevant Wurzel-Hsu authored derivation read. Parent reran four mathematical/four native groups, reviewed original fit/power-balance formulas and inspected final images. Corrected fit-domain extrapolation, transport/radiation accounting and fuel/scientific gain definitions; later1993 Bosch-Hale erratum remains unread, so verify:true and the queued review are retained."
     }
   ]
 }

@@ -576,3 +576,7 @@ Closed aero-4.1–4.3 against MIT's complete authored derivations, Jones's origi
 ## Fatigue follow-up — October 19, 2026
 
 Closed solid-4.7–4.9 against primary engineering model documentation and NIST censoring guidance, completing the solid-mechanics source queue. Parent reran four independent mathematical and six native groups and inspected original equations and final diagrams. Both artificial specimen sets preserve run-outs, Miner permutations use identical cycle counts, and mean-stress models include compressive yielding and complete stress cycles. All strengths/scatter remain explicitly chosen. See [fatigue audit](solid-fatigue-followup.md). **219 source reviews remain**.
+
+## Fusion partial checkpoint — October19,2026
+
+Corrected energy-3.10 using the complete Lawson1957 and Bosch–Hale1992 originals and the relevant modern authored power-balance derivation. Parent independently reran four mathematical and four native groups, inspected original formulas and final layouts, and confirmed the fit is used only within its printed domain. The later1993 erratum remains inaccessible and unread, so this item stays flagged. See [fusion audit and access limitation](energy-fusion-followup.md). **219 source reviews remain**.

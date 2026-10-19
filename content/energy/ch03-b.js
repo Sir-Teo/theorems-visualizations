@@ -8,17 +8,18 @@
 //   3.9 Untermyer & Weills, AECD-3454 (1952), inspected complete original: p4Eq2 finite-irradiation heat fit,
 //     natural uranium (conversion ratio≈0.8), including U239/Np239 and excluding delayed-neutron fission. Historical uncertainty is stated.
 //     source-audit-decay.shared.js integrates that fit and separates sensible warming from evaporation.
-//   3.10 D–T reactivity: Bosch & Hale, Nucl. Fusion 32, 611 (1992), S-factor coefficients (as quoted in the WarpX source), Maxwell-averaged here. Bremsstrahlung
-//     5.35e-37 n² √T W/m³ (T in keV) is the standard non-relativistic coefficient, from memory; no cyclotron loss, no impurities, equal D and T. Check: the minimum of the
-//     ignition triple product comes out 2.9×10²¹ keV s/m³ at 14 keV, matching the "about 3×10²¹ at about 14 keV" of Wikipedia "Lawson criterion". Lawson, Proc. Phys. Soc.
-//     B 70, 6 (1957) was checked in Crossref. Experiments: JT-60U reported triple product 1.53×10²¹ keV s/m³ (disputed as a steady-state value); JET 1991 Q ≈ 0.12;
-//     TFTR 1994 10.7 MW, Q ≈ 0.27; JET 1997 16.1 MW, Q ≈ 0.62–0.67 depending on the definition; NIF 5 Dec 2022 3.15 MJ from 2.05 MJ of laser energy on target (target gain 1.5).
+//   3.10 Original Lawson1957 complete paper read; modern transport/self-heating extension distinguished explicitly.
+//     Original Bosch–Hale1992 Eqs12–14/TableVII reactivity fit, used only within its 0.2–100keV range.
+//     Wurzel–Hsu2022 author manuscript SecIII: gain definitions, bremsstrahlung and modern power-balance derivation.
+//     source-audit-fusion.shared.js; no uninspected experiment-headline ladder or low-energy-fit extrapolation.
 
-import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, sigmavDT, tripleNeeded, gainQ, E_ALPHA, E_FUS, satT } from './ch03.shared.js';
+
+import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, satT } from './ch03.shared.js';
 
 import {kinStepCurveAudit, kinProgramAudit} from './source-audit-kinetics.shared.js';
 import {decayFractionAudit,decayWaterAudit} from './source-audit-decay.shared.js';
 import {CHAIN_MODERATORS_AUDIT,chainFactorsAudit,poissonSurvivalAudit,chainGenerationsAudit} from './source-audit-chain.shared.js';
+import {fusionReactivityAudit,fusionThresholdAudit,fusionBalanceAudit,fusionMinimumAudit} from './source-audit-fusion.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 
@@ -224,46 +225,44 @@ with $a=10$ and $b=2\times10^7$. All times in this fitted expression are numeric
     },
     // ───────────────────────────────────────────────────────────────────────────── 3.10
     {
-      num: '3.10', kind: 'Law', name: 'Fusion and the Lawson criterion',
-      statement: String.raw`For a deuterium–tritium plasma of density $n$ (each ion species $n/2$), ion and electron temperature $T$ and energy confinement time $\tau_E$, energy balance requires that fusion power $P_{\mathrm{fus}} = \tfrac14 n^2\langle\sigma v\rangle E_{\mathrm{fus}}$ ($E_{\mathrm{fus}}=17.6$ MeV) cover the losses, of which the alpha particles' share $E_\alpha=3.5$ MeV heats the plasma. Heating by external power $P_{\mathrm{ext}}=P_{\mathrm{fus}}/Q$ and the bremsstrahlung loss $P_B$ give
-$$n\,\tau_E \;\ge\; \frac{3T}{\tfrac14\langle\sigma v\rangle\bigl(E_\alpha + E_{\mathrm{fus}}/Q\bigr)-C_B\sqrt T},$$
-and for ignition ($Q\to\infty$) the triple product $n T \tau_E$ must exceed a minimum of about $3\times10^{21}\ \mathrm{keV\,s\,m^{-3}}$, reached near $T\approx 14$ keV. The reactivity $\langle\sigma v\rangle$ rises steeply with temperature because only the tail of the Maxwellian can tunnel through the Coulomb barrier.`,
-      idea: String.raw`Fusion releases energy because it moves nucleons up the binding-energy curve (3.5), but the nuclei repel each other, so the fuel must be hot (about $10^8$ K) and held long enough for enough of it to burn: the criterion balances the rate of fusion heating of the plasma against the rate at which it loses energy by conduction ($3nT/\tau_E$) and radiation. The product $nT\tau_E$ is the natural figure of merit because the best temperature, where $\langle\sigma v\rangle/T^2$ is largest, is nearly fixed by the cross section. J. D. Lawson derived the criterion in 1955–57.`,
-      caption: String.raw`The curves give the triple product needed for fusion gain $Q=1$ (scientific breakeven), 5, 20 and ignition ($Q=\infty$) against temperature, from the Bosch–Hale D–T cross section integrated over a Maxwellian. Set density, temperature and confinement time with the sliders: the gold point is your plasma and the readout gives its $Q$ (or "ignited"). The bars give gains reported by real experiments, which sit between $Q=0.1$ and 0.7 for magnetic devices.`,
+      num: '3.10', kind: 'Model', name: 'Fusion and the Lawson criterion',
+      statement: String.raw`For a pure, equimolar deuterium–tritium plasma, let $n$ be the total ion density, with $n_D=n_T=n/2$ and electron density $n$. At equal ion and electron temperatures $T$, expressed in energy units, the thermal energy density is $3nT$. Define $\tau_{\rm tr}$ using **transport loss alone**, with bremsstrahlung radiation counted separately. Fuel gain is $Q_f=P_{\rm fus}/P_{\rm abs}$, where $P_{\rm abs}$ is external heating actually absorbed by the fuel. All alpha energy is assumed absorbed. The steady power balance gives
+$$D_Q(T)=\tfrac14\langle\sigma v\rangle(E_\alpha+E_{\rm fus}/Q_f)-C_B\sqrt T,$$
+$$nT\tau_{\rm tr}\ge\frac{3T^2}{D_Q(T)},\qquad D_Q(T)>0.$$
+Here $E_\alpha\approx3.5$ MeV and $E_{\rm fus}\approx17.6$ MeV. The inequality describes gain at least $Q_f$; its $Q_f\to\infty$ limit is the ideal ignition condition. If $D_Q\le0$, no finite triple product reaches that gain at that temperature in this model.`,
+      idea: String.raw`The reaction rate per volume is $n_Dn_T\langle\sigma v\rangle=n^2\langle\sigma v\rangle/4$. Alpha heating plus absorbed external power must replace transport loss $3nT/\tau_{\rm tr}$ and bremsstrahlung $C_Bn^2\sqrt T$. Divide this balance by $n^2$ to derive the contour. Both density and confinement time matter, but temperature also changes the reaction rate: a triple product alone does not specify gain.
+
+Lawson's original 1957 paper considered ideal retained-product and pulsed escaping-product systems while neglecting conduction. The transport-loss, alpha-heated steady balance shown here is a modern extension. The Bosch–Hale thermal reactivity fit averages over Maxwellian velocities; it is an empirical nuclear-data parametrization. Fuel gain, externally applied scientific gain and electrical gain require different energy boundaries.`,
+      caption: String.raw`The curves show triple products for **fuel gain** $Q_f=1,5,20$ and the ideal ignition limit. Change density, temperature and transport confinement time: the gold point is the selected state, and the right bars recompute its alpha heating, transport loss, bremsstrahlung and required absorbed external heating. The plot expands to contain the state; contours are shown within its current window. Meeting the ignition inequality is a power-balance result, without a simulated ignition transient.`,
       deps: ['energy-3.5'],
-      refs: ['Tester ch. 9'],
+      refs: ['J. D. Lawson, Proc. Phys. Soc. B70, 6–10 (1957), complete original paper', 'H.-S. Bosch & G. M. Hale, Nucl. Fusion32, 611–631 (1992), original Eqs. 12–14 and Tables VII–VIII', 'S. E. Wurzel & S. C. Hsu, Physics of Plasmas29, 062103 (2022), author manuscript Sec. III, Eqs. 7, 11, 16 and22'],
       tags: ['fusion', 'Lawson criterion', 'plasma'],
-      scope: String.raw`Zero-dimensional steady-state balance for a pure D–T plasma with $T_i=T_e$, parabolic profiles ignored, only bremsstrahlung radiation (no synchrotron, no impurities, no fuel dilution by helium ash), and all alpha power absorbed. Real devices have profiles and pulses, so a quoted $Q$ is defined differently in magnetic and inertial fusion; the inertial point (NIF) is a target gain, not comparable to a magnetic $Q$. The experimental values are the published headline figures and were not recomputed.`,
-      credit: 'J. D. Lawson, 1957',
+      scope: String.raw`Uniform, steady, Maxwellian D–T with $T_i=T_e$, equal D/T ion fractions, quasineutrality, no impurities or helium-ash dilution, and all alpha power deposited. The transport time is thermal energy divided by transport-loss power; radiation is not included in that time, avoiding double counting. Bremsstrahlung is $5.34\times10^{-37}n^2\sqrt T$ W/m³ with $n$ in m⁻³ and numerical $T$ in keV; the calculation converts keV to joules consistently. No synchrotron, profiles, burnup, particle balance, stability, heating coupling or plant conversion losses are modeled. Bosch–Hale's printed 1992 reactivity fit is used within 0.2–100 keV (plot 1–100, controls 2–80), without extrapolating its low-energy cross-section fit. Original Lawson 1957 was read in full, but this is not a claim that his conduction-free scenarios used the displayed modern formula. The bars are calculated for the selected state, without unverified experiment headline comparisons. $Q_f=1$ is fuel breakeven, not a claim of scientific or electrical breakeven. The later Bosch–Hale1993 erratum remains unread; the printed1992 D–T fit is identified explicitly and the source-review flag remains open.`,
+      credit: 'J. D. Lawson, 1957; modern steady power-balance extension',
       verify: true,
-      links: { crossref: 'https://doi.org/10.1088/0370-1301/70/1/303' },
+      links: {original:'https://doi.org/10.1088/0370-1301/70/1/303',reactivity:'https://doi.org/10.1088/0029-5515/32/4/I07',balance:'https://arxiv.org/abs/2105.10954'},
       viz(v) {
-        const s = v.stage({ x: [1, 100], y: [1e19, 1e23], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, xlabel: 'ion temperature T (keV)', ylabel: 'n T τE (keV s m⁻³)', minWidth: 340 });
-        const sq = v.stage({ x: [0, 1.7], y: [0, 5.5], axes: false, height: 360, minWidth: 320 });
-        const n = v.slider('density $n$ (m⁻³)', 1e19, 3e21, 1e20, { log: true, fmt: (x) => x.toExponential(1) });
-        const T = v.slider('temperature $T$ (keV)', 2, 80, 15, { step: 0.5 });
-        const tau = v.slider('confinement time $\\tau_E$ (s)', 0.01, 20, 1, { log: true });
-        const Qs = [1, 5, 20, Infinity], cols = ['red', 'orange', 'purple', 'green'];
-        const exps = [['JET 1991', 0.12, 'about 10 % tritium, 1.7 MW peak'], ['TFTR 1994', 0.27, '10.7 MW'], ['JET 1997', 0.62, 'Q 0.62–0.67; 16 MW'], ['NIF 2022', 1.5, 'target gain (not Q)']];
-        const Ts = Array.from({ length: 90 }, (_, i) => 1 * 100 ** (i / 89));
-        let st = null;
-        v.render(() => {
-          Qs.forEach((Q, i) => { const pts = Ts.map((t) => [t, tripleNeeded(t, Q)]).filter((p) => isFinite(p[1])); s.path(pts, { color: cols[i], width: i === 3 ? 3 : 2 }); });
-          s.hline(1.53e21, { color: 'muted', dash: true, alpha: 0.7 }); s.text('JT-60U: 1.5×10²¹ (disputed)', 1.1, 1.53e21 * 0.62, { size: 11, color: 'muted', align: 'left' });
-          const tp = n.value * T.value * tau.value, Q = gainQ(n.value, T.value, tau.value);
-          s.dot(T.value, tp, { r: 7, color: 'gold' });
-          st = { tp, Q, need: tripleNeeded(T.value) };
-          // experiments ladder
-          sq.text('gain reported by experiments', 0.02, 5.2, { size: 12.5, weight: 700, color: 'ink', align: 'left' });
-          exps.forEach(([nm, q, note], i) => { const y = 4.1 - i * 1.0; sq.rect(0.02, y - 0.22, 0.02 + q * 0.7, y + 0.22, { fill: i === 3 ? 'teal' : 'accent', fillAlpha: 0.5, color: i === 3 ? 'teal' : 'accent' }); sq.text(`${nm}:  ${q}`, 0.02, y + 0.46, { size: 12, weight: 700, color: 'ink', align: 'left' }); sq.text(note, 0.02 + q * 0.7 + 0.04, y - 0.02, { size: 11, color: 'muted', align: 'left' }); });
-          sq.vline(0.02 + 0.7, { color: 'red', dash: true, alpha: 0.5 }); sq.text('Q = 1', 0.02 + 0.7, 0.2, { size: 11.5, color: 'red', align: 'center' });
-          sq.text(`your plasma: ${isFinite(Q) ? 'Q = ' + f2(v, Q) : 'ignited'}`, 0.02, 0.7, { size: 12.5, weight: 700, color: 'gold', align: 'left' });
+        const s=v.stage({x:[.8,125],y:[1e19,1e23],xlog:true,ylog:true,axes:'box',gutter:{r:24},height:360,xlabel:'temperature T (keV)',ylabel:'n T τtr (keV s m⁻³)',minWidth:340});
+        const sp=v.stage({x:[0,4],y:[-.18,1.2],axes:false,height:360,minWidth:320});
+        const n=v.slider('total ion density $n$ (m⁻³)',1e19,3e21,1e20,{log:true,fmt:x=>x.toExponential(1)});
+        const T=v.slider('temperature $T$ (keV)',2,80,15,{step:.5});
+        const tau=v.slider('transport time $\\tau_{\\rm tr}$ (s)',.01,20,1,{log:true});
+        const Qs=[1,5,20,Infinity],cols=['red','orange','purple','green'],Ts=Array.from({length:241},(_,i)=>100**(i/240)),minimum=fusionMinimumAudit();
+        let state;
+        v.render(()=>{
+          state=fusionBalanceAudit({n:n.value,T:T.value,tau:tau.value});
+          const ymin=Math.min(1e19,state.triple/4),ymax=Math.max(1e23,state.triple*4);s.setView([.8,125],[ymin,ymax]);
+          Qs.forEach((Q,i)=>{const pts=Ts.map(t=>[t,fusionThresholdAudit(t,Q)]).filter(p=>Number.isFinite(p[1])&&p[1]>=ymin&&p[1]<=ymax);s.path(pts,{color:cols[i],width:i===3?3:2});});
+          s.dot(T.value,state.triple,{r:7,color:'gold'});
+          const powers=[['alpha',state.alpha,'green'],['transport',state.transport,'red'],['brems',state.brems,'purple'],['external',state.external,'gold']],scale=Math.max(...powers.map(p=>p[1]));
+          sp.text('power density (MW/m³)',.08,1.12,{size:12,weight:700,color:'ink',align:'left'});
+          powers.forEach(([name,power,color],i)=>{const x=i+.5,y=power/scale;sp.rect(i+.17,0,i+.83,y,{color,fill:color,fillAlpha:.55});sp.text(v.fmt(power/1e6,3),x,y+.055,{size:11.5,color:'ink',weight:700,align:'center'});sp.text(name,x,-.09,{size:11,color,align:'center'});});
         });
-        v.legend([['red', '$Q=1$'], ['orange', '$Q=5$'], ['purple', '$Q=20$'], ['green', 'ignition'], ['gold', 'your plasma', { dot: true }]]);
-        v.readout(() => {
-          const sv = sigmavDT(T.value);
-          const tmin = Ts.reduce((b, t) => (tripleNeeded(t) < tripleNeeded(b) ? t : b), 1);
-          return `At $T=${f1(v, T.value)}$ keV, $\\langle\\sigma v\\rangle = ${v.sci(sv, 3)}$ m$^3$/s. Your triple product is $${v.sci(st.tp, 3)}$ keV s m$^{-3}$; ignition needs $${isFinite(st.need) ? v.sci(st.need, 3) : '\\infty'}$ at this temperature, so **${isFinite(st.Q) ? 'Q = ' + f2(v, st.Q) : 'the plasma ignites (self-heated)'}**.\nMinimum ignition triple product in this model: $${v.sci(tripleNeeded(tmin), 3)}$ keV s m$^{-3}$ at $T\\approx${f1(v, tmin)}$ keV (Lawson-criterion references give about $3\\times10^{21}$ near 14 keV).`;
+        v.legend([['red','$Q_f=1$'],['orange','$Q_f=5$'],['purple','$Q_f=20$'],['green','ideal ignition'],['gold','selected state',{dot:true}]]);
+        v.readout(()=>{
+          const need=Number.isFinite(state.need)?`Ideal ignition threshold here: $${v.sci(state.need,3)}$ keV s m$^{-3}$.`:'No finite ignition threshold at this temperature: alpha heating cannot exceed bremsstrahlung.';
+          const gain=state.net>0?`Fuel gain $Q_f=${f2(v,state.Q)}$.`:'The ideal ignition inequality is met: alpha heating covers the modeled losses; no external heating is required in this balance.';
+          return `$T=${f1(v,T.value)}$ keV; $\\langle\\sigma v\\rangle=${v.sci(fusionReactivityAudit(T.value),3)}$ m³/s. Selected triple product: $${v.sci(state.triple,3)}$ keV s m$^{-3}$. ${need}\n${gain} Fusion power density: ${v.fmt(state.fusion/1e6,3)} MW/m³.\nMinimum ideal ignition triple product in this model: $${v.sci(minimum.triple,3)}$ keV s m$^{-3}$ at ${f1(v,minimum.T)} keV. Fuel gain uses absorbed heating; coupling losses and electrical conversion are outside this balance.`;
         });
       },
     },
