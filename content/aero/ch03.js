@@ -1,3 +1,4 @@
+import{horseshoeGroundAudit,groundWakeAudit,groundStateAudit,groundCurveAudit}from'./source-audit-ground.js';
 // Aerospace Engineering — Chapter 3: Wings and drag
 //
 // Sources and what is from memory (Oct 2026). Items marked "checked" were confirmed against the cited record during writing.
@@ -12,9 +13,8 @@
 //       span efficiency from the Fourier series of the strip loading) was coded for this item and compared with Glauert's solution at zero sweep.
 //   3.5 Section drag data: NACA 0012 at R = 1.8e6 read off the figure of Critzos, Heyson & Boswinkle (NACA TN 3361, 1955) in chapter 1 (ch01.shared.js CRITZOS_18): +-0.03 in c_l and about +-0.001 in c_d.
 //   3.6 Standard parabolic-polar results (CL* = sqrt(CD0/K), (L/D)max = 1/(2 sqrt(K CD0))), re-derived and checked numerically in the readout. Density from the ISA of chapter 1.
-//   3.7 Ground effect: horseshoe-sheet lifting line with opposite-signed image trailing vortices (the usual lifting-line treatment; the bound-vortex image is neglected). The comparison curve
-//       sigma = (1 - 1.32 h/b)/(1.05 + 7.4 h/b), induced drag factor 1 - sigma, is a widely quoted engineering fit; it was recalled from a search summary (not opened in its source) and agrees with the
-//       computed curve to a few percent over 0.1 < h/b < 0.5, which is the only support claimed (verify: true). Wieselsberger and Prandtl as originators of the image treatment: Mantle (Aeronautical Journal 2016) abstract.
+//   3.7 MIT16.100 lecture33 and Mason2006 §6.3.7: image boundary, single-horseshoe centre formula and model limits.
+//     Numerical rectangular lifting line is distinguished from that analytic approximation; no recalled empirical fit.
 //   3.8 Lissaman & Shollenberger, "Formation flight of birds", Science 168 (3934), 1003-1005 (1970): abstract checked (Caltech record): 25 birds, range increase about 70 percent. Weimerskirch et al.,
 //       Nature 413, 697-698 (2001): heart-rate saving 11-14 percent in great white pelicans (value from a review quoting the paper; checked, one source). Portugal et al., Nature 505, 399-402 (2014): northern bald ibises,
 //       positions match upwash predictions (checked, abstract). The model here (elliptic loading, rolled-up tip vortex pair at +-pi b/8, semi-infinite trailing filaments, no decay or wake roll-up distance) is
@@ -121,18 +121,6 @@ const MESH = { coarse: { nx: 2, ny: 8 }, med: { nx: 4, ny: 20 }, fine: { nx: 6, 
 // ═════════════════════════════════════════════════════════════════════ helpers for 3.5 and 3.6
 function alphaFromCl(cl) { let lo = 0, hi = 14; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (clTab(CRITZOS_18, m) < cl) lo = m; else hi = m; } return (lo + hi) / 2; }
 const CL_SEC_MAX = 1.3;
-
-// ═════════════════════════════════════════════════════════════════════ helpers for 3.7
-const groundCache = new Map();
-function groundCurve(AR) {
-  let o = groundCache.get(AR); if (o) return o;
-  const free = weissinger({ AR, alpha: 0.1, h: 0, M: 60 }), f0 = free.CDi / free.CL ** 2, pts = [];
-  for (let k = 0; k <= 25; k++) { const h = 0.03 * Math.pow(1 / 0.03, k / 25), s = weissinger({ AR, alpha: 0.1, h, M: 60 }); pts.push([h, (s.CDi / s.CL ** 2) / f0, s.CL / free.CL]); }
-  o = { pts, free }; groundCache.set(AR, o); if (groundCache.size > 6) groundCache.delete(groundCache.keys().next().value);
-  return o;
-}
-const sigmaFit = (hb) => (1 - 1.32 * hb) / (1.05 + 7.4 * hb);
-const fitPhi = (hb) => (hb >= 0.7575 ? 1 : 1 - sigmaFit(hb));
 
 // ═════════════════════════════════════════════════════════════════════ helpers for 3.8
 const SV = Math.PI / 8, CORE = 0.06, NQ = 28;
@@ -544,57 +532,31 @@ where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ 
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.7
     {
-      num: '3.7',
-      kind: 'Phenomenon',
-      name: 'Ground effect',
-      statement: String.raw`A wing flying within about one span of the ground has lower induced drag, and more lift at a given angle of attack, than the same wing in free air. The ground is a streamline surface, so it can be replaced by an **image wing** at the mirror position with circulation of opposite sign. The image tip vortices lie below the real ones with opposite rotation and induce an upwash at the wing, which reduces the downwash and the induced angle of attack $\alpha_i$ (3.1). At equal lift,
-$$\Phi\equiv\frac{C_{D,i}(h/b)}{C_{D,i}(\infty)}=\frac{C_{D,i}\ \text{near ground}}{C_{D,i}\ \text{free air}}<1,$$
-with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the ground falls below about $b/4$.`,
-      idea: String.raw`This is the method of images (fluid-4.12) applied to the trailing vortex system of 3.1: a vortex at height $h$ over a rigid plane behaves like the pair formed with an opposite vortex at $-h$, which keeps the vertical velocity zero on the ground. The image trailing vortices, a distance $2h$ below the real ones, induce an upward velocity at the wing that grows as $h$ decreases, so the wing sees less downwash; the lift vector tilts back less, and for the same lift the induced drag falls. In the picture the loading of a rectangular wing is recomputed with the images included.`,
-      caption: String.raw`Drag the wing (gold handle) toward the ground, or use the sliders. The left picture is the front view: the real tip vortices (blue, rotating as shown) and their opposite-signed images (grey) in the mirror image of the picture; the arrows are the cross-flow they induce, which is horizontal on the ground. The middle graph is the induced-drag ratio $\Phi$ against $h/b$ from the lifting-line calculation (blue) and a fit quoted in textbooks (dashed). The right graph shows the downwash angle along the span at the same lift, with and without the ground.`,
-      deps: ['aero-3.1', 'fluid-4.12'],
-      refs: ['Anderson ch. 6'],
-      tags: ['ground effect', 'induced drag', 'images'],
-      scope: String.raw`Lifting-line model of a rectangular wing at small angles: only the images of the trailing vortices are included (the image of the bound vortex, and the effect of the ground on the wing's thickness, are neglected), and the wake is flat. The dashed comparison is a published-style engineering fit whose coefficients were recalled, not re-derived; it is meant as a plausibility check only.`,
-      credit: 'Image-vortex treatment of ground effect: Prandtl and Wieselsberger, early 1920s (summary in Mantle, Aeronautical Journal, 2016)',
-      verify: true,
-      viz(v) {
-        const hS = v.slider('height of the wing over the ground $h/b$', 0.03, 1, 0.15, { step: 0.01, log: true });
-        const arS = v.slider('aspect ratio AR (rectangular wing)', 4, 14, 8, { step: 0.5 });
-        const A = v.stage({ x: [-1.5, 1.5], y: [-1.1, 1.1], equal: true, axes: false, height: 330, minWidth: 330, title: 'front view: wing, vortices and images' });
-        const B = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: '$h/b$', ylabel: '$\\Phi=C_{D,i}/C_{D,i}(\\infty)$', title: 'induced drag at equal lift' });
-        const C = v.stage({ x: [-0.8, 0.8], y: [0, 3], axes: 'box', gutter: true, height: 300, minWidth: 280, xlabel: '$y/b$', ylabel: '$\\alpha_i$ (°) at $C_L=0.8$', title: 'downwash along the span' });
-        const hd = A.handle(0, 0.15, { color: 'gold', r: 8, constrain: (x, y) => [0, clamp(y, 0.03, 1)] });
-        let sync = false; hd.onDrag = () => { if (sync) return; sync = true; hS.set(Math.round(hd.y * 100) / 100); sync = false; };
-        const vort = (px, py, vx, vy, G) => { const dx = px - vx, dy = py - vy, r2 = dx * dx + dy * dy + 0.004; return [-G * dy / (2 * Math.PI * r2), G * dx / (2 * Math.PI * r2)]; };
-        let st = {};
-        v.render(() => {
-          const h = hS.value, AR = arS.value, gc = groundCurve(AR), sol = weissinger({ AR, alpha: 0.1, h, M: 60 }), s0 = gc.free;
-          const phi = (sol.CDi / sol.CL ** 2) / (s0.CDi / s0.CL ** 2);
-          // front view
-          A.rect(-1.5, -0.03, 1.5, 0.03, { fill: 'muted', fillAlpha: 0.35, hatch: true, stroke: false }); A.line(-1.5, 0, 1.5, 0, { color: 'ink', width: 2 });
-          A.text('ground (mirror plane)', 1.45, -0.12, { color: 'muted', size: 11, align: 'right' });
-          const sv = Math.PI / 8, G = 1, vs = [[sv, h, G], [-sv, h, -G], [sv, -h, -G], [-sv, -h, G]];
-          A.field((x, y) => { if (y < 0) return [0, 0]; let u = 0, w = 0; for (const [vx, vy, g] of vs) { const q = vort(x, y, vx, vy, g * 0.2); u += q[0]; w += q[1]; } const m = Math.hypot(u, w) || 1, cap = Math.min(m, 0.9) / m; return [u * cap, w * cap]; }, { spacing: 34, color: 'faint' });
-          A.line(-0.5, h, 0.5, h, { color: 'ink', width: 4 });
-          A.line(-0.5, -h, 0.5, -h, { color: 'muted', width: 2.5, dash: true });
-          for (const [vx, vy, g] of vs) { const real = vy > 0; A.dot(vx, vy, { r: 8, color: real ? 'accent' : 'muted', hollow: true }); A.tex(g > 0 ? String.raw`\circlearrowleft` : String.raw`\circlearrowright`, vx, vy, { color: real ? 'accent' : 'muted', size: 17, align: 'center', baseline: 'middle' }); }
-          A.measure(-1.0, 0, -1.0, h, `h = ${fx(h, 2)} b`);
-          sync = true; hd.set(0, h); sync = false;
-          A.text('image wing, opposite circulation', 0, -h - 0.08, { color: 'muted', size: 10.5, align: 'center' });
-          // phi curve
-          B.path(gc.pts.map((p) => [p[0], p[1]]), { color: 'accent', width: 2.6 });
-          B.fn((x) => fitPhi(x), { domain: [0.03, 1], color: 'muted', dash: true, width: 1.6, n: 200 });
-          B.hline(1, { color: 'faint' }); B.vline(h, { color: 'gold', dash: true, width: 1.2 }); B.dot(h, phi, { r: 6, color: 'gold' });
-          // downwash at CL = 0.8
-          const k = 0.8 / sol.CL, k0 = 0.8 / s0.CL;
-          C.hline(0, { color: 'grid' });
-          C.path(s0.mid.map((y, i) => [y, s0.w[i] * k0 / DEG]), { color: 'muted', width: 2, dash: true });
-          C.path(sol.mid.map((y, i) => [y, sol.w[i] * k / DEG]), { color: 'accent', width: 2.6 });
-          st = { h, phi, AR, clr: sol.CL / s0.CL, fit: fitPhi(h) };
-        });
-        v.legend([['accent', 'with the ground'], ['muted', 'free air', { dash: true }], ['muted', 'textbook fit, $1-\\sigma$', { dash: true }]]);
-        v.readout(() => `$h/b=${fx(st.h, 2)}$: induced drag at equal lift is $${fx(st.phi, 3)}$ of the free-air value (a reduction of $${fx(100 * (1 - st.phi), 0)}$ %), as if the aspect ratio were $${fx(st.AR / st.phi, 1)}$ instead of $${fx(st.AR, 1)}$. At equal angle of attack the lift is $${fx(st.clr, 3)}\\times$ the free-air value. The quoted fit $1-\\sigma$, $\\sigma=(1-1.32h/b)/(1.05+7.4h/b)$, gives $${fx(st.fit, 3)}$.\nFor $h/b>1$ the effect is under 3 %; at $h/b=0.05$ it is about $0.4$ of the free-air value.`);
+      num:'3.7',kind:'Phenomenon',name:'Ground effect',
+      statement:String.raw`An impermeable horizontal ground plane requires zero normal velocity. In an inviscid vortex model, opposite-signed mirror vortices enforce that condition. They provide upwash at a lifting wing and reduce its induced drag at fixed lift. For the **centre downwash of one horseshoe** with fixed circulation, the image construction gives
+$$\Phi_H=\frac{16(h/b)^2}{1+16(h/b)^2}.$$
+A rectangular wing with a re-solved spanwise loading is a different approximation; its drag ratio is computed separately below. Neither formula is a universal aircraft correction.`,
+      idea:String.raw`A trailing vortex at height $h$ and its opposite at $-h$ have equal and opposite vertical velocities on the wall. At the wing, the image pair partly cancels the original downwash. For one horseshoe, the image correction at the centre is $1/[1+16(h/b)^2]$ times the free-air value. Since induced drag is lift times the small induced angle, its centre-angle estimate has the same ratio at fixed circulation. The numerical lifting line instead redistributes circulation and compares $C_{D,i}/C_L^2$ at equal lift. Its change in lift slope is a separate equal-incidence result.`,
+      caption:String.raw`Drag the height handle or use the controls. Left: a **far-wake cross section** of the single horseshoe and its mirror pair; field arrows above the wall are capped for readability, and the model has zero normal velocity on the wall. Middle: the re-solved rectangular-wing drag ratio versus the distinct single-horseshoe centre estimate. Right: complete spanwise downwash-angle curves, both scaled to $C_L=0.8$.`,
+      deps:['aero-3.1','fluid-4.12'],refs:['MIT16.100 lecture33, Ground Effect Using Single Vortex Model, complete authored notes read 2026-10-19','Mason, Configuration Aerodynamics2006, §6.3.7, complete ground-effect discussion'],links:{source:'https://ocw.mit.edu/courses/16-100-aerodynamics-fall-2005/resources/16100lectre33_cj/',limitations:'https://archive.aoe.vt.edu/mason/Mason_f/ConfigAeroSubFoilWing.pdf'},tags:['ground effect','induced drag','images'],verify: false,
+      scope:String.raw`Steady incompressible small-angle, flat-wake idealisations. The rectangular lifting line includes trailing-vortex images and a chosen $2\pi$ section slope, with60 spanwise panels and a $10^{-4}b$ regularization of real filaments; it omits thickness, bound-vortex images, wake deformation and viscous effects. The displayed far-wake pair uses a separate $0.01b$ drawing core and is not the computed rectangular loading. The single-horseshoe formula estimates centre downwash, not an integrated general-wing solution. Mason's VLM discussion warns that close-ground predictions depend on geometry and boundary-condition treatment. No recalled empirical fit, historical priority or measured-aircraft accuracy is claimed.`,
+      viz(v){
+        const hS=v.slider('height over ground $h/b$',.03,1,.15,{step:.01,log:true}),arS=v.slider('rectangular aspect ratio',4,14,8,{step:.5});
+        const A=v.stage({x:[-1.5,1.5],y:[-1.35,1.35],equal:true,axes:false,height:330,minWidth:300,title:'single-horseshoe far wake and images'}),B=v.stage({x:[-.04,1.08],y:[-.04,1.12],axes:'box',gutter:true,height:300,minWidth:270,xlabel:'$h/b$',ylabel:'induced-drag ratio at fixed lift',title:'two different approximations'}),C=v.stage({x:[-.55,.55],y:[-.3,12],axes:'box',gutter:true,height:300,minWidth:270,xlabel:'$y/b$',ylabel:'downwash angle (°), $C_L=0.8$',title:'full numerical spanwise profile'});
+        const hd=A.handle(0,.15,{color:'gold',r:8,constrain:(x,y)=>[0,clamp(y,.03,1)]});let sync=false,info;
+        hd.onDrag=()=>{if(!sync){sync=true;hS.set(Math.round(hd.y*100)/100);sync=false;}};
+        v.render(()=>{
+          const h=hS.value,AR=arS.value,gc=groundCurveAudit(AR),state=groundStateAudit(AR,h),{free,near,phi,liftRatio}=state;
+          A.rect(-1.5,-.025,1.5,.025,{fill:'muted',fillAlpha:.3,hatch:true,stroke:false});A.line(-1.5,0,1.5,0,{color:'ink',width:2});A.text('wall: w = 0',1.4,-.2,{size:11,color:'muted',align:'right'});
+          A.field((x,z)=>{if(z<0)return[0,0];const q=groundWakeAudit(x,z,h),norm=Math.hypot(...q)||1;return q.map(a=>a*Math.min(norm,.9)/norm);},{spacing:34,color:'faint'});
+          A.line(-.5,h,.5,h,{color:'ink',width:3});A.line(-.5,-h,.5,-h,{color:'muted',width:2,dash:true});
+          for(const[x,z,g]of[[.5,h,1],[-.5,h,-1],[.5,-h,-1],[-.5,-h,1]]){A.dot(x,z,{r:8,color:z>0?'accent':'muted',hollow:true});A.tex(g>0?String.raw`\circlearrowleft`:String.raw`\circlearrowright`,x,z,{size:17,color:z>0?'accent':'muted',align:'center',baseline:'middle'});}
+          A.measure(-1.05,0,-1.05,h,null);A.corner(`h/b = ${fx(h,3)}`,'tl',{size:12,plate:true});A.text('opposite-signed images',0,-1.2,{size:11,color:'muted',align:'center'});sync=true;hd.set(0,h);sync=false;
+          B.path(gc.points,{color:'accent',width:2.6});B.fn(horseshoeGroundAudit,{domain:[.03,1],color:'orange',dash:true,width:2});B.hline(1,{color:'faint'});B.vline(h,{color:'gold',dash:true});B.dot(h,phi,{r:5,color:'gold'});
+          const p0=free.mid.map((y,i)=>[y,free.w[i]*.8/free.CL/DEG]),pn=near.mid.map((y,i)=>[y,near.w[i]*.8/near.CL/DEG]),all=[...p0,...pn].map(p=>p[1]),top=Math.max(...all)*1.12;
+          C.setView([-.55,.55],[Math.min(0,...all)-.03*top,top]);C.path(p0,{color:'muted',dash:true,width:2});C.path(pn,{color:'accent',width:2.6});info={h,AR,phi,liftRatio,horseshoe:horseshoeGroundAudit(h)};
+        });v.legend([['accent','rectangular lifting line'],['muted','free-air profile'],['orange','single-horseshoe centre estimate'],['gold','selected state']]);
+        v.readout(()=>`$h/b=${fx(info.h,3)}$: rectangular lifting-line drag ratio ${fx(info.phi,4)} at equal lift; single-horseshoe centre estimate ${fx(info.horseshoe,4)}. These are different loading approximations. At equal incidence, the numerical lift ratio is ${fx(info.liftRatio,4)}. Aspect ratio ${fx(info.AR,1)}; both numerical downwash profiles are shown in full. No universal percent-reduction claim is inferred.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.8

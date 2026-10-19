@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 219,
+  "remainingFlags": 218,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 5,
     "robot": 1,
-    "aero": 4,
+    "aero": 3,
     "micro": 15,
     "macro": 2,
     "fin": 12,
@@ -293,19 +293,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
       }
-    },
-    {
-      "id": "aero-3.7",
-      "file": "content/aero/ch03.js",
-      "name": "Ground effect",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Anderson ch. 6"
-      ],
-      "links": {}
     },
     {
       "id": "aero-4.5",
@@ -4153,7 +4140,8 @@
       "aero-4.3",
       "solid-4.7",
       "solid-4.8",
-      "solid-4.9"
+      "solid-4.9",
+      "aero-3.7"
     ]
   },
   "additionalFollowups": [
@@ -8092,6 +8080,12 @@
       "status": "partial-source-review-pending",
       "report": "docs/verification/energy-fusion-followup.md",
       "note": "Complete original Lawson1957 and Bosch-Hale1992 plus relevant Wurzel-Hsu authored derivation read. Parent reran four mathematical/four native groups, reviewed original fit/power-balance formulas and inspected final images. Corrected fit-domain extrapolation, transport/radiation accounting and fuel/scientific gain definitions; later1993 Bosch-Hale erratum remains unread, so verify:true and the queued review are retained."
+    },
+    {
+      "id": "aero-3.7",
+      "status": "resolved",
+      "report": "docs/verification/aero-ground-followup.md",
+      "note": "Complete authored MIT33 and Mason6.3.7 sources; independently rerun3math/4native groups, original formula and final minimum/maximum-height screenshot inspection; full numerical curves and non-colliding labels."
     }
   ]
 }
