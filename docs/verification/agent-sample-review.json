@@ -3022,11 +3022,15 @@
     {
       "id": "epi-4.6",
       "file": "content/epi/ch04.js",
-      "textHash": "f34615a82405a21c71eeec47f7a6e20a3f1b1245b6acc4f9b367d95fc68f0934",
-      "textReview": "Common-cause structure can permit confounding without forcing a nonzero crude/causal difference for every parameter choice; the displayed inequality is too categorical. Adjustment identifies the effect only with adequate exchangeability/positivity/consistency, not merely because C marks a common cause. Mediator exclusion concerns a total-effect target. The three-binary-variable model scope helps, but these qualifications need integration.",
-      "visualReview": "Inspected both themes: default confounder creates crude RR1.56 while each stratum and standardization give1 with true effect1. Diagram and estimate plot are distinct. Common cause does not universally imply bias and adjustment requires sufficient assumptions; qualification pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "1bb3a0daf26afeb0eb15e0e1bd1d342cf991742923a8d8313b778cd5833db037",
+      "textReview": "The standardization formula is now conditional on consistency, conditional exchangeability and positivity, with positive unexposed causal risk. Common-cause structure need not imply a nonzero numerical difference. Mediator/collider adjustment is qualified by the total-effect target and full causal structure. The slider explicitly controls the direct E-D factor, while the mediator truth includes both paths; 2% readout agreement is labelled as tolerance.",
+      "visualReview": "Inspected 30 native captures across common-cause/mediator/collider worlds, crude/adjusted/neutral-C-E/neutral-C-D/direct4 states and both themes. Default confounding is crude1.56 versus true1; mediator truth1.56 with direct slider1; collider adjustment.65 versus true1. Neutral links eliminate the displayed discrepancy.",
+      "interactionReview": "All role buttons, adjustment toggle and all three sliders exercised in both themes. Neutral-link cases agree within tolerance; direct4 distinguishes mediator total6.25 from direct4. Six existing epidemiology math/source groups pass; runtime and TeX checks pass. Joint probability and estimation code is unchanged.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Common-cause structure can permit confounding without forcing a nonzero crude/causal difference for every parameter choice; the displayed inequality is too categorical. Adjustment identifies the effect only with adequate exchangeability/positivity/consistency, not merely because C marks a common cause. Mediator exclusion concerns a total-effect target. The three-binary-variable model scope helps, but these qualifications need integration.",
+      "initialTextHash": "f34615a82405a21c71eeec47f7a6e20a3f1b1245b6acc4f9b367d95fc68f0934",
+      "initialVisualFinding": "Inspected both themes: default confounder creates crude RR1.56 while each stratum and standardization give1 with true effect1. Diagram and estimate plot are distinct. Common cause does not universally imply bias and adjustment requires sufficient assumptions; qualification pending.",
+      "correctionReport": "docs/verification/agent-confounding-review.md"
     },
     {
       "id": "em-3.7",

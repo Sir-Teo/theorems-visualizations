@@ -235,6 +235,11 @@ measurement does not establish indistinguishability.
 
 ## Medicine & health
 
+- State identification assumptions before equating an adjusted association to a
+  causal effect. Distinguish a direct-effect control from a total-effect target.
+  Neutral causal links can remove numerical bias; a small display difference
+  is a tolerance, not proof of exact absence of bias.
+
 - **A simulated population the reader controls**: cohorts on lifelines (Lexis-style), with
   prevalence, risk and rates measured live and compared with the formulas; icon arrays of 100 or
   1,000 people for risks and test results (natural frequencies beat percentages).
