@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 203,
+  "remainingFlags": 201,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 9,
+    "micro": 7,
     "fin": 12,
     "game": 18,
     "behav": 5,
@@ -328,37 +328,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot"
-      }
-    },
-    {
-      "id": "micro-10.4",
-      "file": "content/micro/ch10.js",
-      "name": "Deadweight loss of monopoly",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mankiw Ch. 15",
-        "Varian Ch. 25"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Deadweight_loss"
-      }
-    },
-    {
-      "id": "micro-10.5",
-      "file": "content/micro/ch10.js",
-      "name": "First-degree price discrimination",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 26"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Price_discrimination"
       }
     },
     {
@@ -3921,7 +3890,9 @@
       "energy-4.6",
       "micro-10.7",
       "micro-10.9",
-      "micro-10.12"
+      "micro-10.12",
+      "micro-10.4",
+      "micro-10.5"
     ]
   },
   "additionalFollowups": [
@@ -7956,6 +7927,18 @@
       "status": "resolved",
       "report": "docs/verification/micro-market-power-followup.md",
       "note": "Read Hommes local stability model/proof sections and Tseng cyclic coordinate-descent hypotheses/proof; distinguish interior modes from bounded clipped dynamics, derive the strictly convex potential, preserve the exact equilibrium. Parent independent reply searches, mode/potential checks, all native update/count/start corners, scoped static validation and final screenshot inspection pass."
+    },
+    {
+      "id": "micro-10.4",
+      "status": "resolved",
+      "report": "docs/verification/micro-monopoly-welfare-followup.md",
+      "note": "Read Gruber\u2019s complete welfare/perfect-discrimination sections; parent reviewed full stated sources and corrected finite efficient-crossing/differentiability hypotheses. Exact isoelastic roots and complete near-zero benefits replace the clipped bracket/integral. Five independent math groups, eight native groups, four final hypothesis layouts, static checks and screenshots pass."
+    },
+    {
+      "id": "micro-10.5",
+      "status": "resolved",
+      "report": "docs/verification/micro-monopoly-welfare-followup.md",
+      "note": "Read both Ellison first-degree source sections and assumptions; exact finite buyer accounting includes below-cost overproduction and equality-value acceptance, with a global common-price optimum. Parent independently reviewed sources/model and reran five math and eight native groups, static checks and signed-accounting/equality screenshots."
     }
   ]
 }

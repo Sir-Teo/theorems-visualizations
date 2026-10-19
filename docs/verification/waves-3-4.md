@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **203 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 633 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **201 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 635 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **203 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **201 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -632,3 +632,7 @@ Resolved micro 10.7/10.9/10.12 after parent source/model review, eight independe
 ## Combined checkpoint through fe4305d — October 19, 2026
 
 [The checkpoint](checkpoint-fe4305d.md) passes 1,397 default tests, including all six UI tests, strict build and full static checks with zero errors/warnings, and 35 valid changed routes with zero runtime errors. The home payload is 112,811 bytes gzipped. A smoke-runner guard now fails unexpected not-found pages; a deliberately mistyped route returns failure. The source ledger reconciles **203 pending =833 initial+3 added−633 original resolved**. The complete map performance, broader visual/proof and genuine prerequisite gates remain open; Wave5 has not started.
+
+## Monopoly welfare and individual offers — October 19, 2026
+
+Resolved micro10.4/10.5 against the complete stated Gruber/Ellison source sections. Parent reran five independent mathematical and eight native groups, checked four final hypothesis layouts, static validation and final screenshots. Exact roots retain the actual65,536-unit endpoint, surplus includes the integrable demand singularity, and finite offers account for both missed gains and inefficient sales. Parent also added the missing differentiability/finite-crossing hypotheses. See [source and evidence record](micro-monopoly-welfare-followup.md). **201 source reviews remain**.
