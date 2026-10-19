@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 206,
+  "remainingFlags": 203,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "micro": 12,
+    "micro": 9,
     "fin": 12,
     "game": 18,
     "behav": 5,
@@ -300,53 +300,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Walras%27s_law"
-      }
-    },
-    {
-      "id": "micro-10.7",
-      "file": "content/micro/ch10-b.js",
-      "name": "Third-degree price discrimination",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 26",
-        "Mankiw Ch. 15"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Price_discrimination#Third-degree_price_discrimination"
-      }
-    },
-    {
-      "id": "micro-10.9",
-      "file": "content/micro/ch10-b.js",
-      "name": "Monopolistic competition",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mankiw Ch. 16",
-        "Varian Ch. 26"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Monopolistic_competition"
-      }
-    },
-    {
-      "id": "micro-10.12",
-      "file": "content/micro/ch10-b.js",
-      "name": "Stability of Cournot adjustment",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Varian Ch. 28"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Cournot_competition"
       }
     },
     {
@@ -3965,7 +3918,10 @@
       "micro-10.14",
       "micro-10.15",
       "energy-4.5",
-      "energy-4.6"
+      "energy-4.6",
+      "micro-10.7",
+      "micro-10.9",
+      "micro-10.12"
     ]
   },
   "additionalFollowups": [
@@ -7982,6 +7938,24 @@
       "status": "resolved",
       "report": "docs/verification/macro-optimal-growth-followup.md",
       "note": "Read the complete Acemoglu OLG lecture and specified original Diamond model sections; explicitly identify the full-depreciation log-utility specialization, positive fixed point, exact log contraction and feasible resource allocation. Parent independent household-budget, convergence and finite resource-gain tests plus all eight native groups, static checks and final screenshot inspection pass."
+    },
+    {
+      "id": "micro-10.7",
+      "status": "resolved",
+      "report": "docs/verification/micro-market-power-followup.md",
+      "note": "Read the complete relevant Ellison and Schmalensee discrimination material; exact active-set and uniform-price interval optima, closed-market and zero-cost elasticity qualifications, full geometry. Parent independent constrained/global optimization and welfare-integral checks, native corner matrix, scoped static validation and final screenshot inspection pass."
+    },
+    {
+      "id": "micro-10.9",
+      "status": "resolved",
+      "report": "docs/verification/micro-market-power-followup.md",
+      "note": "Read the complete authored OpenStax monopolistic-competition section; identify the independent continuous entry-index family and exact off-grid tangency without empirical variety claims. Parent independent profit/entry checks over all 701 slider values, native endpoints/tangency, scoped static validation and final screenshot inspection pass."
+    },
+    {
+      "id": "micro-10.12",
+      "status": "resolved",
+      "report": "docs/verification/micro-market-power-followup.md",
+      "note": "Read Hommes local stability model/proof sections and Tseng cyclic coordinate-descent hypotheses/proof; distinguish interior modes from bounded clipped dynamics, derive the strictly convex potential, preserve the exact equilibrium. Parent independent reply searches, mode/potential checks, all native update/count/start corners, scoped static validation and final screenshot inspection pass."
     }
   ]
 }
