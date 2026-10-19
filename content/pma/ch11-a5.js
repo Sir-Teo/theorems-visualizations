@@ -39,21 +39,22 @@ export default {
       name: 'Continuous functions are dense in L²[a,b]',
       statement: String.raw`For every $f\in\mathscr L^2$ on $[a,b]$ and every $\eps>0$ there is a function $g$, continuous on $[a,b]$, with
 $$\|f-g\|=\Big(\int_a^b|f-g|^2\,dx\Big)^{1/2}<\eps .$$`,
-      idea: String.raw`Split $f$ into real and imaginary, positive and negative parts, approximate each by simple functions (11.20; the $\mathscr L^2$ error tends to $0$ by dominated convergence), and so reduce to $f=K_E$ with $E\subset[a,b]$ measurable. Choose a closed $F$ and an open $V$ with $F\subset E\subset V$ and $m(V-F)<\eps$, and put
+      idea: String.raw`Split $f$ into real and imaginary, positive and negative parts, approximate each by simple functions (11.20; the $\mathscr L^2$ error tends to $0$ by dominated convergence), and so reduce to $f=K_E$ with $E\subset[a,b]$ measurable. Choose a closed $F$ and a bounded open $V\subset\R$ with $F\subset E\subset V$ and $m(V-F)<\eps^2$. If $F=\varnothing$, use $g=0$, since $m(E)\le m(V)<\eps^2$. Otherwise put
 $$g(x)=\frac{d(x,V^c)}{d(x,V^c)+d(x,F)} .$$
-Then $g$ is continuous, $g=1$ on $F$, $g=0$ off $V$, and $|g-K_E|\le K_{V-F}$, so $\|g-K_E\|^2\le m(V-F)$.`,
-      caption: String.raw`$f=K_E$ (black). The green $g$ is the proof's continuous function for a closed $F\subset E$ and an open $V\supset E$ (orange band: $V-F$). Shrink $\eta$, which controls $m(V-F)$: the $\mathscr L^2$ error (red area $=|g-K_E|^2$) goes to $0$ while the sup error stays near $1$ — density holds in $\mathscr L^2$, not uniformly. For the fat Cantor set, $E$ is closed and nowhere dense, yet it too is approximated.`,
+Then $g$ is continuous, $g=1$ on $F$, $g=0$ off $V$, and $|g-K_E|\le K_{V-F}$, so $\|g-K_E\|^2\le m(V-F)<\eps^2$, hence $\|g-K_E\|<\eps$.`,
+      caption: String.raw`$f=K_E$ (black). The green $g$ is the proof's continuous function for a closed $F\subset E$ and an open $V\supset E$ (orange band: $V-F$). Shrink $\eta$, which controls $m(V-F)$: the $\mathscr L^2$ error (red area $=|g-K_E|^2$) goes to $0$ while uniform error does not tend to zero: for the two separated interval ramps it is $1/2$. A continuous function cannot uniformly approximate a discontinuous indicator. The fat-Cantor option draws a nine-stage finite-union proxy; the true limiting fat Cantor set is closed and nowhere dense. Both are approximable in $\mathscr L^2$, but the plotted proxy error is not the error against the limiting set.`,
+      scope: String.raw`The plotted L2 norm and maximum error are sampled at 20000 midpoints on $[0,1]$, so the displayed maximum is a sampled maximum, not a certified supremum. In the fat-Cantor option the stage-nine set $E_9$ has measure $1/2+2^{-10}$; its difference from the limiting set has measure $2^{-10}$ and indicator distance $2^{-5}=1/32$ in $L^2$. Refining the stage as well as shrinking $\eta$ approximates the limiting set. The triangle inequality adds at most $1/32$ to the proxy's $L^2$ error when comparing the same $g$ with the limit.`,
       deps: ['pma-11.20', 'pma-11.32', 'pma-11.10', 'pma-11.36', 'pma-11.34'],
       see: ['rca-3.14', 'rca-2.12'],
       tags: ['L2', 'density', 'approximation'],
       viz(v) {
         const M = v.M;
-        const which = v.select('$E=$', [{ value: 'int', label: 'two intervals' }, { value: 'fat', label: 'fat Cantor set' }], 'int');
+        const which = v.select('$E=$', [{ value: 'int', label: 'two intervals' }, { value: 'fat', label: 'fat Cantor proxy (stage 9)' }], 'int');
         const eS = v.slider('$\\eta$', 0.0005, 0.12, 0.05, { log: true, fmt: (x) => v.fmt(x, 2) });
         const T = v.stage({ x: [0, 1], y: [-0.3, 1.2], height: 280, full: true, axes: 'box', xticks: [0, 0.25, 0.5, 0.75, 1], yticks: [0.5, 1] });
-        const B = v.stage({ x: [-3.4, -0.9], y: [-0.08, 1.12], height: 170, full: true, axes: 'box', xticks: [[-3, '0.001'], [-2, '0.01'], [-1, '0.1']], yticks: [0, 0.5, 1], title: '$\\|g-K_E\\|$ (red) and $\\sup|g-K_E|$ (grey) against $\\eta$ (log scale)' });
+        const B = v.stage({ x: [-3.4, -0.9], y: [-0.08, 1.12], height: 170, full: true, axes: 'box', xticks: [[-3, '0.001'], [-2, '0.01'], [-1, '0.1']], yticks: [0, 0.5, 1], title: '$\\|g-K_E\\|$ (red) and sampled maximum error (grey) against $\\eta$ (log scale)' });
         const SETS = { int: [[0.15, 0.4], [0.55, 0.85]], fat: cantorKeep(9, true) };
-        // E for 'int' is open (a,b); F = shrunk closed intervals, V = enlarged open intervals. For the fat Cantor set E = F is closed.
+        // E for 'int' is open (a,b); F = shrunk closed intervals, V = enlarged open intervals. For the finite fat-Cantor proxy E = F is closed.
         const build = (w, eta) => {
           const E = SETS[w];
           const F = w === 'int' ? E.map(([a, b]) => [a + eta, b - eta]).filter(([a, b]) => b > a) : E;
@@ -95,7 +96,7 @@ Then $g$ is continuous, $g=1$ on $F$, $g=0$ off $V$, and $|g-K_E|\le K_{V-F}$, s
         });
         v.readout(() => {
           const s = st; if (s.l2 == null) return '';
-          return `$\\eta=${v.fmt(s.eta, 2)}$: $\\;\\|g-K_E\\|=${v.fix(s.l2, 4)}\\le\\sqrt{m(V-F)}=${v.fix(Math.sqrt(s.mVF), 4)}$, while $\\sup|g-K_E|=${v.fix(s.sup, 3)}$ does not shrink.`;
+          return `$\\eta=${v.fmt(s.eta, 2)}$: sampled $L^2$ error $\\approx${v.fix(s.l2, 4)}$; theoretical bound $\\|g-K_E\\|\\le\\sqrt{m(V-F)}=${v.fix(Math.sqrt(s.mVF), 4)}$, sampled maximum error $=${v.fix(s.sup, 3)}$ (a lower estimate of the supremum).`;
         });
       },
     },

@@ -63,3 +63,9 @@ unfinished threshold work. Fresh isolated native captures passed and
 were inspected: error curves, settled bifurcation/ratio panels, and
 packet/phase-plane/number-distribution panels are distinct. No specific
 cause of these artifacts has been established.
+
+Later batches duplicated `kin-1.1.dark.png` and `pchem-4.12.png`.
+Originals were preserved under `/tmp/agent-review/` with `-duplicated`
+filenames. Fresh isolated captures passed and were inspected: kinetic
+concentration curves and normalized-rate bars, and capillary-pressure
+curves and droplet-radius bars, are distinct. The cause remains unresolved.

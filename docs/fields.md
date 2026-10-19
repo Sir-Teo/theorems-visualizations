@@ -30,6 +30,10 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+When an error estimate bounds a squared norm, choose the measure tolerance
+at the square of the desired norm error. Distinguish finite-stage set proxies
+from their limits and sampled maxima from certified suprema.
+
 Distinguish functions from almost-everywhere equivalence classes. Point
 evaluation may be undefined on a class, while evaluation on a continuous
 subspace is defined but unbounded. Scope local-average limits to continuity
