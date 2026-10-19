@@ -50,6 +50,10 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 
 1. Continue the Wave 3–4 source-review queue: **251 items remain**. The named modern PWT/MRW input audit is complete; its evidence and reproducible extraction are in `docs/verification/pwt-10.0.json` and `scripts/verify-pwt.py`.
 2. Complete automated audio/input checks and agent screenshot inspection in light and dark themes. Human review, subjective listening and user approval are not required.
+   Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
+   finds 56 of64 non-math collections below25 published edges, with27 below25 even across
+   planned chapters. Add connections only when the argument or model actually requires them.
+   The home JSON gate passes; the all-node map frame-rate gate still needs measurement.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 ### Where we started
