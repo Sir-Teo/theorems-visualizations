@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 236,
+  "remainingFlags": 235,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 5,
     "imaging": 1,
     "circ": 1,
-    "energy": 8,
+    "energy": 7,
     "solid": 7,
     "robot": 1,
     "aero": 7,
@@ -305,19 +305,6 @@
       "links": {
         "crossref": "https://doi.org/10.1088/0370-1301/70/1/303"
       }
-    },
-    {
-      "id": "energy-3.4",
-      "file": "content/energy/ch03.js",
-      "name": "Energy density: fuels versus batteries",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MacKay ch. 26"
-      ],
-      "links": {}
     },
     {
       "id": "energy-4.5",
@@ -4401,7 +4388,8 @@
       "energy-3.7",
       "energy-3.8",
       "pharm-3.7",
-      "pharm-4.5"
+      "pharm-4.5",
+      "energy-3.4"
     ]
   },
   "additionalFollowups": [
@@ -8226,6 +8214,12 @@
       "status": "resolved",
       "report": "docs/verification/pharm-window-followup.md",
       "note": "Relevant complete official theophylline/digoxin label sections read, clinical limits distinguished from chosen comparison bands. Corrected true periodic profile, exact extrema/crossing duration and dose-unit/bioavailability centering. Root independently reran3math and2native theme groups and inspected final centred dark screenshot."
+    },
+    {
+      "id": "energy-3.4",
+      "status": "resolved",
+      "report": "docs/verification/energy-density-followup.md",
+      "note": "AFDC LHV, DOE hydrogen/fission references, NIST masses and named manufacturer specifications read; explicit model densities/burnup/boundaries. Root independently reran4calculation groups and4native viewport/theme groups (all16corners\u00d72outputmodes), reviewed conversion/helper/rendering code and narrow dark screenshot."
     }
   ]
 }

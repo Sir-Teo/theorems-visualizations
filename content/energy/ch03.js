@@ -7,16 +7,15 @@
 //     other bituminous coal 94.6 (confirmed from a reproduction of the default table; the crude-oil value was not confirmed and is left out).
 //   3.3 Knudsen et al. (2007), ECCE6 original Esbjerg pilot report: Table2 3.6–3.9GJ/t near90%capture; Table3 longer test3.7GJ/t at88%.
 //     The plant model is independent/illustrative. Reversible separation and ideal compression are audited in source-audit-capture.shared.js.
-//   3.4 Energy densities as tabulated in Wikipedia "Energy density" (petrol 46.4 MJ/kg, 34.2 MJ/L; diesel 45.6 and 38.6; hydrogen LHV 119.93 MJ/kg, 8.49 MJ/L liquid and
-//     4.5 MJ/L at 681 atm; Li-ion 0.36–0.875 MJ/kg and 0.9–2.63 MJ/L; lead-acid 0.17 and 0.56, a row the article does not source). Uranium rows are computed:
-//     200 MeV per fission of U-235 (Wikipedia "Nuclear fission": 202.8 MeV mean, about 200 MeV recoverable), metal density 19.05 g/cm³ and, as an ILLUSTRATIVE
-//     fuel-cycle point, 50 GWd per tonne of heavy metal with 9.2 kg of uranium per litre of pellets (from memory). Efficiencies of 25 % and 85 % are illustrative.
+//   3.4 DOE AFDC LHV values, DOE/NASA 2022 hydrogen reference densities and DOE tank-system projection;
+//     named Panasonic NCR18650BF and GS Yuasa NP7-12 manufacturer examples. Inspected inputs and explicit assumptions in source-audit-density.shared.js.
 //   3.5 Binding energies: AME2020 (see ch03.shared.js). The 200 MeV total and ≈169 MeV fragment kinetic energy per U-235 fission are from Wikipedia "Nuclear fission".
 
 import { clamp, lerp, BEA, NUC, MEV_U, LV, MH2O_PER_H, beaOf, bOf } from './ch03.shared.js';
 
 import {captureMinimumAudit, capturePenaltyAudit} from './source-audit-capture.shared.js';
 import {HEATING_FUELS_AUDIT, fuelHeatingAudit, FUEL_LATENT_AUDIT} from './source-audit-heating.shared.js';
+import {ENERGY_DENSITY_AUDIT, densityRequirementAudit} from './source-audit-density.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 const KJ_C = 393.51, KJ_W = 285.83; // kJ/mol of CO2 and liquid water formed
@@ -194,60 +193,46 @@ This is the Gibbs free-energy increase of the product and depleted streams; comp
     // ───────────────────────────────────────────────────────────────────────────── 3.4
     {
       num: '3.4', kind: 'Concept', name: 'Energy density: fuels versus batteries',
-      statement: String.raw`Two numbers decide whether an energy store suits a vehicle: the **specific energy** (megajoules per kilogram) and the **energy density** (megajoules per litre). Liquid hydrocarbons store about 46 MJ/kg and 34–39 MJ/L; hydrogen has the highest mass density of any chemical fuel (120 MJ/kg, lower heating value) but low volume density even when liquefied or compressed to several hundred bar; lithium-ion cells store a few tenths of a MJ/kg and 1–3 MJ/L; lead-acid batteries less. Nuclear fuel is a different order of magnitude, millions of megajoules per kilogram, because the energy per event is megaelectronvolts rather than electronvolts.`,
-      idea: String.raw`Chemical energy is of order an electronvolt per atom rearranged; with atoms weighing 1–200 u that fixes the scale at tens of MJ/kg. A fuel gets the oxygen free from the air, while a battery must carry both its reactants and the structure that holds them, which costs it a factor of 50–100 in specific energy. Nuclear reactions (3.5) release about 200 MeV per fission, a factor of $10^{7}$ more per atom than combustion. Energy density is not the whole story, since an electric drivetrain wastes much less of the stored energy than a combustion engine, narrowing the gap in useful distance.`,
-      caption: String.raw`Left: every store on log axes of MJ/kg against MJ/L; diagonal lines are constant density in kg per litre. Right: the same stored energy as a fuel tank, a battery pack, hydrogen and uranium, with areas proportional to volume. Move the energy slider, and switch on the drivetrain-efficiency toggle to compare *useful* energy instead.`,
+      statement: String.raw`An energy store has a **specific energy** (MJ/kg) and a **volumetric energy density** (MJ/L). On a lower-heating-value basis, the reference gasoline/E10 and diesel values here are about 42–43 MJ/kg and 32–36 MJ/L. Hydrogen supplies about 120 MJ/kg of fuel, but only about 8.5 MJ/L as a liquid or 4.8 MJ/L at the rounded 700 bar reference. Tank mass and volume reduce its system values substantially. The named Li-ion cell and lead-acid battery illustrate electrical stores with different boundaries. Nuclear fuel supplies millions of MJ/kg of heat under the stated burnup assumptions.`,
+      idea: String.raw`Divide energy by mass or by volume: for a uniform fuel, $e_V=\rho e_m$. A combustion fuel draws oxygen from the air, whereas a battery carries its electrochemical reactants and cell structure. That helps explain the fuel–cell specific-energy gap, but does not determine a universal factor. A tank, a battery pack, a fuel cell, or a reactor introduces further mass and volume. Conversion efficiency changes useful output: to deliver $E$ at efficiency $\eta$, the store must supply $E/\eta$, so its required mass and volume are $E/(\eta e_m)$ and $E/(\eta e_V)$. These equations compare energy, not vehicle range or power capability.`,
+      caption: String.raw`Left: source-based examples and explicit model points on logarithmic axes; diagonals are mass per litre of the stated boundary. Compare hydrogen fuel alone with **H₂ + tank**. Right: material or component quantities for the same energy target; square areas are proportional to their listed volumes. Toggle useful output and change each conversion efficiency. The nuclear heat references remain on the left; the vehicle-output panel has no nuclear drivetrain.`,
       deps: ['energy-3.1'],
-      refs: ['MacKay ch. 26'],
+      refs: ['DOE AFDC Fuel Properties Comparison and data notes', 'DOE/NASA Liquid Hydrogen Technologies 2022 Workshop Report §1.1', 'DOE Physical Hydrogen Storage: 700 bar single-tank projection', 'Panasonic NCR18650BF product specifications; GS Yuasa NP7-12 MKT-081 v1.0 (08-2025)', 'DOE-HDBK-1019/1-93 NP-01 pp. 60–62; NIST U-235 isotopic mass'],
+      links: {fuels:'https://afdc.energy.gov/fuels/properties',hydrogen:'https://www.energy.gov/cmei/fuels/physical-hydrogen-storage',cell:'https://industry.panasonic.eu/pd-35779/batteries/secondary-batteries/lithium-ion-batteries-for-europe/cylindrical-type/ncr-18650bf',lead:'https://gsyuasa-es.com/Downloads/NP7-12SPEC_SHEET.pdf'},
       tags: ['energy density', 'batteries'],
-      scope: String.raw`Cell-level or fuel-level values, with no packaging: a car's battery pack is perhaps half as good as the cell, a tank adds a little mass and a hydrogen tank much more. Lithium-ion values span a range because chemistries differ (the box). Uranium: 200 MeV per fission of pure U-235, and an illustrative light-water-reactor fuel point at 50 GWd per tonne of heavy metal. The drivetrain efficiencies (25 % and 85 %) are illustrative round numbers.`,
-      verify: true,
+      scope: String.raw`AFDC LHV gasoline/E10 112,114–116,090 Btu/US gal (midpoint shown), diesel 128,488 Btu/US gal and H₂ 33.3 kWh/kg. Gasoline and diesel mass values assume 0.75 and 0.84 kg/L; these are independent illustrative densities, not measured samples. DOE/NASA rounded H₂ fuel densities are 71 kg/m³ liquid and 40 kg/m³ at 700 bar, not an equation of state at arbitrary temperature. The separate DOE 700 bar single Type IV system projection assumes 5.6 kg usable H₂ and gives 1.4 kWh/kg-system and 0.8 kWh/L-system; it is not a current universal tank specification. Battery points use nominal voltage × rated capacity, **not integrated discharge-energy measurements**: NCR18650BF 3.6 V × minimum 3.25 Ah, approximate maximum mass 47.5 g and maximum 18.6 mm × 65.3 mm cylindrical envelope; NP7-12 12 V × 7 Ah (20 h rate, 1.75 V/cell cutoff, 25°C), 2.20 kg and 151 × 65 × 97.5 mm terminal-height box. No vehicle pack, motor, fuel-cell stack or fuel tank is added beyond those named boundaries. Ideal U-235 uses the rounded DOE 200 MeV/fission reactor-heat accounting (including capture gammas and excluding escaping neutrinos), NIST mass 235.0439301 g/mol and 18.95 kg/L natural-U metal density as a reference, not an isotope-specific density determination. The 50 GWd/tU point and 9.2 kgU/L pellet reference are chosen assumptions; cladding, coolant and reactor equipment are excluded. All three useful-output efficiencies are independent illustrative inputs. Upstream production, charging, compression/liquefaction, cycle life and discharge-rate losses are excluded.`,
+      verify: false,
       viz(v) {
-        const items = [
-          { n: 'petrol', kg: 46.4, L: 34.2, col: 'orange' },
-          { n: 'diesel', kg: 45.6, L: 38.6, col: 'orange' },
-          { n: 'H₂ liquid', kg: 119.93, L: 8.491, col: 'teal' },
-          { n: 'H₂ 681 atm', kg: 119.93, L: 4.5, col: 'teal' },
-          { n: 'lead-acid', kg: 0.17, L: 0.56, col: 'purple' },
-          { n: 'Li-ion (mid)', kg: 0.62, L: 1.77, col: 'green', box: [0.36, 0.875, 0.9, 2.63] },
-          { n: 'U-235 fully fissioned', kg: 200 * 1.602176634e-13 * 6.02214076e23 / 0.235 / 1e6, L: 0, col: 'red' },
-          { n: 'LWR fuel, 50 GWd/t', kg: 50e9 * 86400 / 1e3 / 1e6, L: 50e9 * 86400 / 1e3 / 1e6 * 9.2, col: 'red' },
-        ];
-        items[6].L = items[6].kg * 19.05; items[7].L = items[7].kg * 9.2;
-        const s = v.stage({ x: [0.01, 3e8], y: [0.2, 1e10], xlog: true, ylog: true, axes: 'box', gutter: true, height: 430, xlabel: 'specific energy, MJ/kg', ylabel: 'energy density, MJ/L', minWidth: 340 });
-        const sB = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 430, minWidth: 340 });
-        const E = v.slider('stored energy (MJ)', 100, 5000, 1000, { step: 50, log: true });
-        const usef = v.toggle('compare useful energy (engine vs electric drivetrain)', false);
-        const e1 = v.slider('engine efficiency', 0.15, 0.4, 0.25, { step: 0.01 });
-        const e2 = v.slider('battery drivetrain efficiency', 0.7, 0.95, 0.85, { step: 0.01 });
-        const tankSet = ['petrol', 'H₂ 681 atm', 'Li-ion (mid)', 'lead-acid', 'LWR fuel, 50 GWd/t'];
-        v.render(() => {
-          for (const rho of [0.1, 1, 10]) { const x0 = Math.max(0.01, 0.2 / rho), x1 = Math.min(3e8, 1e10 / rho); s.path([[x0, x0 * rho], [x1, x1 * rho]], { color: 'muted', dash: true, width: 1, alpha: 0.6 }); }
-          for (const it of items) {
-            if (it.box) s.rect(it.box[0], it.box[2], it.box[1], it.box[3], { color: it.col, fill: it.col, fillAlpha: 0.2 });
-            s.dot(it.kg, it.L, { r: 6, color: it.col, label: it.n, labelPos: ({ diesel: 'ne', petrol: 'nw', 'H₂ 681 atm': 'e', 'H₂ liquid': 'ne', 'lead-acid': 'n', 'Li-ion (mid)': 'ne', 'U-235 fully fissioned': 'sw', 'LWR fuel, 50 GWd/t': 'nw' })[it.n] || 'ne' });
-          }
-          s.textPx('1 kg/L', s.X(2e3), s.Y(2e3) - 10, { size: 10.5, color: 'faint', align: 'right', halo: false });
-          // equal-energy squares
-          const c = sB.ctx, W = sB.width, H = sB.height, Ej = E.value;
-          const ids = tankSet.map((n) => items.find((i) => i.n === n));
-          const eff = (it) => (!usef.value ? 1 : it.col === 'orange' ? e1.value : it.col === 'green' || it.col === 'purple' ? e2.value : it.col === 'teal' ? 0.5 : 1);
-          // use useful energy = E (target): required stored energy = E/eff, with eff only applied if toggled
-          const data = ids.map((it) => { const Es = Ej / eff(it), kg = Es / it.kg, L = Es / it.L; return { it, Es, kg, L }; });
-          const Lmax = Math.max(...data.map((d) => d.L)), S0 = Math.min(W / 2.5, 170), side = (L) => Math.sqrt(L / Lmax) * S0;
-          sB.textPx(usef.value ? `to deliver ${Math.round(Ej)} MJ of useful energy` : `to store ${Math.round(Ej)} MJ (${f1(v, Ej / 3.6)} kWh)`, 10, 16, { size: 13, weight: 700, color: 'ink', align: 'left' });
-          sB.textPx('square areas are proportional to volume', 10, 36, { size: 11, color: 'muted', align: 'left' });
-          let x0 = 14; const base = 60 + S0;
-          data.slice().sort((a, b) => b.L - a.L).forEach((d) => { const sd = Math.max(side(d.L), 2); c.fillStyle = v.color(d.it.col, 0.5); c.fillRect(x0, base - sd, sd, sd); c.strokeStyle = v.color(d.it.col); c.strokeRect(x0, base - sd, sd, sd); x0 += sd + 8; });
-          let yy = base + 28;
-          data.forEach((d) => { c.fillStyle = v.color(d.it.col, 0.6); c.fillRect(14, yy - 8, 14, 14);
-            const mass = d.kg >= 1 ? `${d.kg >= 100 ? Math.round(d.kg) : f1(v, d.kg)} kg` : `${v.fmt(d.kg * 1000, 2)} g`, vol = d.L >= 1 ? `${d.L >= 100 ? Math.round(d.L) : f1(v, d.L)} L` : `${v.fmt(d.L * 1000, 2)} mL`;
-            sB.textPx(`${d.it.n}: ${mass}, ${vol}`, 36, yy, { size: 12, weight: 600, color: 'ink', align: 'left', halo: false }); yy += 26; });
+        const items=ENERGY_DENSITY_AUDIT;
+        const s=v.stage({x:[.01,3e8],y:[.2,1e10],xlog:true,ylog:true,axes:'box',gutter:true,height:430,xlabel:'specific energy, MJ/kg',ylabel:'energy density, MJ/L',minWidth:340});
+        const sB=v.stage({x:[0,1],y:[0,1],axes:false,height:430,minWidth:340});
+        const E=v.slider('energy target (MJ)',100,5000,1000,{step:50,log:true});
+        const usef=v.toggle('compare useful output',false);
+        const e1=v.slider('engine conversion efficiency',.15,.4,.25,{step:.01});
+        const e2=v.slider('battery-to-output efficiency',.7,.95,.85,{step:.01});
+        const eh=v.slider('H₂-to-output efficiency',.3,.65,.5,{step:.01});
+        const keys=['gasoline','h2-system','li','lead'];
+        const data=()=>keys.map(key=>densityRequirementAudit(key,E.value,{useful:usef.value,engine:e1.value,electric:e2.value,fuelcell:eh.value}));
+        v.render(()=>{
+          for(const rho of [.1,1,10]){const x0=Math.max(.01,.2/rho),x1=Math.min(3e8,1e10/rho);s.path([[x0,x0*rho],[x1,x1*rho]],{color:'muted',dash:true,width:1,alpha:.6});}
+          const positions={gasoline:'nw',diesel:'ne','h2-liquid':'ne','h2-gas':'se','h2-system':'se',lead:'n',li:'n',u235:'sw',lwr:'nw'};
+          const short={li:'Li-ion cell',lead:'lead-acid'};
+          for(const it of items)s.dot(it.kg,it.L,{r:5,color:it.col,label:short[it.key]||it.n,labelPos:positions[it.key],labelSize:12});
+          const gas=items[0];s.path(gas.rangeL.map(q=>[q/.75,q]),{color:'orange',width:3});
+          s.textPx('1 kg/L',s.X(2e3),s.Y(2e3)-10,{size:10.5,color:'faint',align:'right',halo:false});
+          const c=sB.ctx,W=sB.width,Ej=E.value,rows=data(),maxL=Math.max(...rows.map(d=>d.L)),S0=Math.min(W/3.3,160,sB.height-205),base=60+S0;
+          sB.textPx(usef.value?`to deliver ${Math.round(Ej)} MJ of useful output`:`to supply ${Math.round(Ej)} MJ (${f1(v,Ej/3.6)} kWh)`,10,16,{size:13,weight:700,color:'ink',align:'left'});
+          sB.textPx(`areas ∝ listed volume; largest = ${Math.round(maxL)} L`,10,37,{size:11,color:'muted',align:'left'});
+          let x=14;
+          rows.slice().sort((a,b)=>b.L-a.L).forEach(d=>{const side=Math.sqrt(d.L/maxL)*S0;c.fillStyle=v.color(d.item.col,.5);c.fillRect(x,base-side,side,side);c.strokeStyle=v.color(d.item.col);c.strokeRect(x,base-side,side,side);x+=side+8;});
+          let y=base+29;
+          for(const d of rows){c.fillStyle=v.color(d.item.col,.6);c.fillRect(14,y-8,14,14);sB.textPx(`${({li:'Li-ion cell',lead:'lead-acid battery'})[d.item.key]||d.item.n}: ${f1(v,d.kg)} kg, ${f1(v,d.L)} L`,36,y,{size:12,weight:600,color:'ink',align:'left',halo:false});y+=27;}
         });
-        v.legend([['orange', 'hydrocarbons', { dot: true }], ['teal', 'hydrogen', { dot: true }], ['green', 'Li-ion (box = range)', { dot: true }], ['purple', 'lead-acid', { dot: true }], ['red', 'uranium', { dot: true }]]);
-        v.readout(() => {
-          const p = items[0], li = items[5], u = items[6];
-          return `Petrol holds ${f1(v, p.kg / li.kg)} times more energy per kilogram than a mid-range Li-ion cell (${f1(v, p.L / li.L)} times per litre); fully fissioned U-235 holds $${v.sci(u.kg / p.kg, 2)}$ times more than petrol per kilogram. At 25 % versus 85 % drivetrain efficiency the useful-energy gap shrinks by a factor ${f1(v, 0.85 / 0.25)}.`;
+        v.legend([['orange','fuel LHV', {dot:true}],['teal','H₂ fuel and storage system',{dot:true}],['green','named Li-ion cell',{dot:true}],['purple','named lead-acid battery',{dot:true}],['red','nuclear heat references',{dot:true}]]);
+        v.readout(()=>{
+          const p=items[0],li=items.find(x=>x.key==='li'),u=items.find(x=>x.key==='u235'),h=items.find(x=>x.key==='h2-gas'),hs=items.find(x=>x.key==='h2-system');
+          const outputGap=p.kg*e1.value/(li.kg*e2.value);
+          return `These specified examples: gasoline/E10 has ${f1(v,p.kg/li.kg)} times the Li-ion nominal energy proxy per kilogram and ${f1(v,p.L/li.L)} times per litre. At the selected ${Math.round(100*e1.value)}% engine and ${Math.round(100*e2.value)}% battery-to-output efficiencies, the useful-output gap is ${f1(v,outputGap)} per kilogram (reduced by ${f1(v,e2.value/e1.value)}).\nH₂ fuel at the rounded 700 bar reference: ${f1(v,h.kg)} MJ/kg and ${f1(v,h.L)} MJ/L; the separate DOE tank-system projection: ${f1(v,hs.kg)} MJ/kg-system and ${f1(v,hs.L)} MJ/L-system. Selected H₂ conversion ${Math.round(eh.value*100)}%. Fully fissioned U-235 gives $${v.sci(u.kg/p.kg,2)}$ times the gasoline heat per kilogram under the stated idealisation. These boundaries do not predict vehicle range.`;
         });
       },
     },
