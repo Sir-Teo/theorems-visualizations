@@ -877,14 +877,14 @@
       "field": "arts",
       "writtenItems": 121,
       "betweenFields": {
-        "writtenToWritten": 32,
-        "writtenToAll": 34,
-        "allToAll": 53
+        "writtenToWritten": 33,
+        "writtenToAll": 35,
+        "allToAll": 54
       },
       "betweenCollections": {
-        "writtenToWritten": 32,
-        "writtenToAll": 34,
-        "allToAll": 53
+        "writtenToWritten": 33,
+        "writtenToAll": 35,
+        "allToAll": 54
       }
     },
     {

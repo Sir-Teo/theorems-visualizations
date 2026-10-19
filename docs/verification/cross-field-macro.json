@@ -2631,6 +2631,19 @@
       "reason": "The binomial benchmark requires independent equal-coverage hit indicators; marginal calibration alone does not justify it.",
       "report": "docs/verification/behav-calibration-followup.md",
       "reviewScope": "Source/target semantic comparison, independent correlated-trial counterexample and native checks; no additional independent peer review claimed."
+    },
+    {
+      "from": "music-4.5",
+      "to": "rca-9.13",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "The Plancherel theorem",
+      "sourceFile": "content/music/ch04.js",
+      "existingClaimAnchor": "For finite-energy signals p∈L², the transform extends in the L² sense and preserves energy.",
+      "reason": "The continuous-spectrum statement explicitly invokes Plancherel; its L¹ transform and inversion prerequisites do not supply the L² extension and energy identity.",
+      "report": "docs/verification/agent-spectrum-review.md",
+      "reviewScope": "Direct comparison of the written source and target statements; no independent peer review claimed."
     }
   ],
   "syllabusMirrorRepairs": [
@@ -2907,5 +2920,16 @@
     "currentBehavCount": 25,
     "previousSnapshotPreserved": true,
     "independentPeerReview": "not claimed for this follow-up"
+  },
+  "spectrumFollowup": {
+    "scope": [
+      "music"
+    ],
+    "report": "docs/verification/agent-spectrum-review.md",
+    "addedEdge": {
+      "from": "music-4.5",
+      "to": "rca-9.13"
+    },
+    "previousSnapshotPreserved": true
   }
 }
