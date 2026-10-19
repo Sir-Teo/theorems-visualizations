@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 235,
-    "reviewedBlocked": 235,
+    "open": 234,
+    "reviewedBlocked": 234,
     "unreviewed": 0,
     "ledgerRecords": 664,
-    "recordedClosed": 399,
+    "recordedClosed": 400,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 235,
-    "liveRemaining": 235,
+    "recordedRemaining": 234,
+    "liveRemaining": 234,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -226,8 +226,8 @@
       "unreviewed": 0
     },
     "soc": {
-      "open": 3,
-      "reviewedBlocked": 3,
+      "open": 2,
+      "reviewedBlocked": 2,
       "unreviewed": 0
     },
     "stat": {
@@ -308,7 +308,7 @@
     {
       "path": "docs/verification/economics-social-owned-source-ledger.json",
       "exists": true,
-      "sha256": "e9961125b6ece1e04b7570a0ea2fe0fd062616cca58a6e0425c4b385f2bc0682",
+      "sha256": "3bd12fae4bbf82f9fb672caa0754b973869a2fc6336721f5c782de5e5bf4610a",
       "records": 31
     },
     {
@@ -1092,7 +1092,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/26"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/25"
       ],
       "reports": [
         "docs/verification/demo-source-review.md"
@@ -2102,7 +2102,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/29"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/28"
       ],
       "reports": [
         "docs/verification/ling-source-review.md"
@@ -2118,7 +2118,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/27"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/26"
       ],
       "reports": [
         "docs/verification/ling-source-review.md"
@@ -2134,7 +2134,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/28"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/27"
       ],
       "reports": [
         "docs/verification/ling-source-review.md"
@@ -3243,7 +3243,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/30"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/29"
       ],
       "reports": [
         "docs/verification/polsci-source-review.md"
@@ -3545,29 +3545,13 @@
       ]
     },
     {
-      "id": "soc-4.13",
-      "file": "content/soc/ch04-c.js",
-      "name": "Gibrat’s proportional growth and city-size laws",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/24"
-      ],
-      "reports": [
-        "docs/verification/soc-source-review.md"
-      ],
-      "missingEvidence": [
-        "Official Louisville2020 city population provenance: embedded633045 disagrees with checked Census city386884; consolidated geography not verified."
-      ]
-    },
-    {
       "id": "soc-4.15",
       "file": "content/soc/ch04-c.js",
       "name": "The long tail",
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/economics-social-owned-source-ledger.json#/retained/25"
+        "docs/verification/economics-social-owned-source-ledger.json#/retained/24"
       ],
       "reports": [
         "docs/verification/soc-source-review.md"
@@ -5222,7 +5206,7 @@
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/26",
+      "pointer": "#/retained/25",
       "id": "demo-4.8",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -5231,7 +5215,7 @@
       "missingEvidence": [
         "Complete Coale–Trussell1974 original inaccessible; UN ManualX1983 pp23–25/EqsE1–E7/Table3 read, corrected standards and fit, but cannot close original attribution."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/26",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/25",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -9490,7 +9474,7 @@
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/29",
+      "pointer": "#/retained/28",
       "id": "ling-3.10",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -9499,13 +9483,13 @@
       "missingEvidence": [
         "Complete Lieberman2007 main original and its methods, including lemma aggregation and blocking; full17-page official SI S1–S5/Eqs1–3 read and mathematical scaling checked."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/29",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/28",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/27",
+      "pointer": "#/retained/26",
       "id": "ling-3.6",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -9514,13 +9498,13 @@
       "missingEvidence": [
         "Complete Greenberg1960 DOI10.1086/464575/JSTOR1264155 original; 100-word sampling definition and segmentation of all four language examples."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/27",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/26",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/28",
+      "pointer": "#/retained/27",
       "id": "ling-3.8",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -9529,7 +9513,7 @@
       "missingEvidence": [
         "Remaining nominal lexical inventory maktaba/kutub and d-r-s needs McCarthy1979 nominal analysis or a primary lexicon; complete relevant1981 primary article sections verified root/template framework and participles."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/28",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/27",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -11730,7 +11714,7 @@
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/30",
+      "pointer": "#/retained/29",
       "id": "polsci-5.5",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -11739,7 +11723,7 @@
       "missingEvidence": [
         "Complete Ladha1992 DOI10.2307/2111584 original and precise correlated-jury assumptions; JSTOR served access/JavaScript shell. Separate common-leader model and boundary checked."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/30",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/29",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12504,22 +12488,20 @@
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/24",
+      "pointer": "#/additionalReviewedClosed/0",
       "id": "soc-4.13",
-      "rawStatus": "retained",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/soc-source-review.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/louisville-census-followup.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Official Louisville2020 city population provenance: embedded633045 disagrees with checked Census city386884; consolidated geography not verified."
-      ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/24",
+      "missingEvidence": [],
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/additionalReviewedClosed/0",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/economics-social-owned-source-ledger.json",
-      "pointer": "#/retained/25",
+      "pointer": "#/retained/24",
       "id": "soc-4.15",
       "rawStatus": "retained",
       "status": "reviewed-blocked",
@@ -12528,7 +12510,7 @@
       "missingEvidence": [
         "Complete Elberse2008 Rhapsody source supporting top1%=one-third claim; full Brynjolfsson2003 Table4 39.2% was verified."
       ],
-      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/25",
+      "ref": "docs/verification/economics-social-owned-source-ledger.json#/retained/24",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },

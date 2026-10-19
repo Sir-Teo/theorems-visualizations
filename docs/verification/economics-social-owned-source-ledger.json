@@ -16,7 +16,7 @@
     "ling",
     "polsci"
   ],
-  "reviewedRetainedCount": 31,
+  "reviewedRetainedCount": 30,
   "genuinelyUnreviewed": [],
   "retained": [
     {
@@ -188,13 +188,6 @@
       "report": "soc-source-review.md"
     },
     {
-      "id": "soc-4.13",
-      "disposition": "retained",
-      "reviewState": "reviewed-blocked",
-      "missingEvidence": "Official Louisville2020 city population provenance: embedded633045 disagrees with checked Census city386884; consolidated geography not verified.",
-      "report": "soc-source-review.md"
-    },
-    {
       "id": "soc-4.15",
       "disposition": "retained",
       "reviewState": "reviewed-blocked",
@@ -237,5 +230,15 @@
       "report": "polsci-source-review.md"
     }
   ],
-  "note": "All assigned source flags in these collections have been reviewed. Retention is an evidence blocker, not a pending review. Closed-item source evidence, corrections and validation are in the per-collection reports; macro follow-ups are in macro-followup.md. BIGHIST4.6/4.8 are a subsequent assignment and are recorded separately. Bounded follow-up: fin-5.10 closed using the explicitly cited complete Kirman1988 primary working paper; game-3.6 and psych-4.6 retain narrower later-source gaps. See economics-social-acquisition-followup.md."
+  "note": "All assigned source flags in these collections have been reviewed. Retention is an evidence blocker, not a pending review. Closed-item source evidence, corrections and validation are in the per-collection reports; macro follow-ups are in macro-followup.md. BIGHIST4.6/4.8 are a subsequent assignment and are recorded separately. Bounded follow-up: fin-5.10 closed using the explicitly cited complete Kirman1988 primary working paper; game-3.6 and psych-4.6 retain narrower later-source gaps. See economics-social-acquisition-followup.md.",
+  "additionalReviewedClosed": [
+    {
+      "id": "soc-4.13",
+      "status": "closed",
+      "file": "content/soc/ch04-c.js",
+      "report": "docs/verification/louisville-census-followup.md",
+      "missingEvidence": [],
+      "reason": "Full official Kentucky 2020 place rows and Census consolidated-city definition read. Displayed633045 is explicitly reconciled as separate GEOIDs2148000+2148006; city-unit wording qualifies the aggregate and distinguishes full consolidated government782969."
+    }
+  ]
 }

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 235,
+  "remaining": 234,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
@@ -45,7 +45,7 @@
     "rel": 1,
     "robot": 1,
     "sig": 2,
-    "soc": 3,
+    "soc": 2,
     "stat": 2,
     "stoch": 3,
     "sysbio": 1,
@@ -1677,14 +1677,6 @@
       "refs": [
         "E&K §12.2",
         "E&K §12.3"
-      ]
-    },
-    {
-      "id": "soc-4.13",
-      "file": "content/soc/ch04-c.js",
-      "name": "Gibrat’s proportional growth and city-size laws",
-      "refs": [
-        "Newman ch. 10"
       ]
     },
     {

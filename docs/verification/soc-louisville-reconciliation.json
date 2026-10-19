@@ -1,0 +1,35 @@
+{
+  "source": "https://tigerweb.geo.census.gov/tigerwebmain/Files/acs26/tigerweb_acs26_incplace_2020_tab20_ky.html",
+  "sourceSha256": "5a9931e38dc7084b034e800628cb493047a56da49f3fe725d658c9697bfd9f89",
+  "period": "2020 Census; data as of January 1, 2020",
+  "field": "POP100",
+  "components": [
+    {
+      "GEOID": "2148000",
+      "NAME": "Louisville city",
+      "FUNCSTAT": "N",
+      "PLACECC": "C9",
+      "POP100": "246161",
+      "AREALAND": "159230808",
+      "AREAWATER": "12488302"
+    },
+    {
+      "GEOID": "2148006",
+      "NAME": "Louisville/Jefferson County metro government (balance)",
+      "FUNCSTAT": "F",
+      "PLACECC": "C8",
+      "POP100": "386884",
+      "AREALAND": "682444887",
+      "AREAWATER": "30160213"
+    }
+  ],
+  "displayedAggregate": 633045,
+  "aggregation": "Louisville city plus Louisville/Jefferson County metro government (balance). These are separate places; the Census balance excludes other separately identified places.",
+  "geographyDefinition": "https://www.census.gov/programs-surveys/geography/about/glossary.html",
+  "fullConsolidatedGovernment": {
+    "population": 782969,
+    "source": "https://tigerweb.geo.census.gov/tigerwebmain/Files/acs25/tigerweb_acs25_concity_2020_tab20_ky.html",
+    "sourceSha256": "e49b7266a650446438158df623b2f8d5f04312c1214e3770e3d592506dd20dfb"
+  },
+  "interpretation": "The 633045 display is an explicitly constructed two-place aggregate, not either individual place, the entire consolidated government or a metropolitan agglomeration."
+}
