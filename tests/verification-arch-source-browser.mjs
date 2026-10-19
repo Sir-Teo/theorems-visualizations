@@ -37,6 +37,23 @@ try {
         await slider(0,1);await slider(2,1);assert.ok(await page.evaluate(()=>window.__vizStages[0].Y(38)>0));await slider(1,.2);assert.doesNotMatch(await read(),/NaN|Infinity/);
       }else if(num==='4.9'){
         await page.getByRole('button',{name:'separate spherical cap',exact:true}).click();await slider(1,1.2);assert.doesNotMatch(await read(),/NaN|Infinity/);await page.getByRole('button',{name:'same sphere (sail)',exact:true}).click();await slider(0,.6);assert.match(await read(),/leaves the square/);
+      }else if(num==='4.11'){
+        await page.evaluate(()=>{
+          window.__thrustWidths=[];
+          const stage=window.__vizStages[0],line=stage.line;
+          stage.line=function(...args){window.__thrustWidths.push(args[4]?.width);return line.apply(this,args);};
+        });
+        for(const shape of ['sail vault','cross vault','cloister vault']){
+          await page.getByRole('button',{name:shape,exact:true}).click();
+          // Large diagonal contrast formerly generated tensile edges and negative widths.
+          await slider(1,-10);await slider(2,12);await slider(3,-.5);await slider(4,12);
+          assert.doesNotMatch(await read(),/NaN|Infinity/);
+          assert.ok(await page.evaluate(()=>window.__thrustWidths.length>0&&window.__thrustWidths.every(w=>Number.isFinite(w)&&w>0)));
+        }
+        await page.locator('#viz .ctl-toggle label').click();assert.doesNotMatch(await read(),/NaN|Infinity/);
+        await page.locator('#viz .ctl-toggle label').click();
+        for(const section of ['y = 0.5','diagonal','y = 0'])await page.getByRole('button',{name:section,exact:true}).click();
+        await page.getByRole('button',{name:'find the best network',exact:true}).click();assert.doesNotMatch(await read(),/NaN|Infinity/);
       }
       assert.deepEqual(errors, []); assert.deepEqual(await page.evaluate(() => window.__vizErrors || []), []); assert.deepEqual(await page.evaluate(() => window.__texErrors || []), []);
       assert.ok(await page.evaluate(() => typeof window.katex?.render === 'function'));

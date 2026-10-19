@@ -48,7 +48,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 
 **Verification checkpoint (2026-10-19, cloud checkout `8e9e930`):** the authorized source, numerical, dependency and browser review passes are recorded in [the verification checkpoint](docs/verification/waves-3-4.md) and [final gate report](docs/verification/final-wave-gates.json). Current light/dark captures cover 6688 visualizations per theme and the 106-item conditional-control inventory; final strict build, regressions, native audio instrumentation and measured map movement pass. The goal remains **blocked**: 243 source flags retain precise original-evidence gaps, 12 written non-math collections fall below 25 cross-field prerequisites, actual human review is 0/339 pages, and subjective audio listening remains pending. The 768 reviewed cross-field additions are integrated; no weak links were invented to meet a quota. The original analysis flags are resolved. Wave 5 has not started. The original open-follow-up lists above describe the starting state; the checkpoint records subsequent closures and limits.
 
-**Sequential follow-up:** eight source flags are closed and two prerequisite shortfalls are resolved. The live source queue has **235** remaining flags; **10** written non-math collections remain below 25 cross-field prerequisites. Human review remains **0/339**, subjective listening is pending, and Wave 5 has not started. The earlier final-gate report is a historical checkpoint; fresh browser checks cover the changed visualizations.
+**Sequential follow-up:** eight source flags are closed and three prerequisite shortfalls are resolved. The live source queue has **235** remaining flags; **9** written non-math collections remain below 25 cross-field prerequisites. Human review remains **0/339**, subjective listening is pending, and Wave 5 has not started. The earlier final-gate report is a historical checkpoint; fresh browser checks cover the changed visualizations.
 
 - [Laitone original](docs/verification/laitone-primary-followup.md): closes aero-4.1 and fixes its invalid-pressure Mach readout.
 - [König–Egerváry originals](docs/verification/konig-egervary-primary-followup.md): corrects the independence claim and closes algo-11.12.
@@ -59,6 +59,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 - [Sheffer and Peirce originals](docs/verification/sheffer-peirce-primary-followup.md): closes circ-4.9 with precise NOR/NAND attribution and qualified manuscript dating.
 - [Lehmann–Rabin original](docs/verification/lehmann-rabin-primary-followup.md): closes dist-4.6/4.7, restores individual fork operations and distinguishes progress from starvation freedom.
 - [Demography prerequisite](docs/verification/demo-prerequisite-followup.md): replaces the planned least-squares link with its exact written treatment, reaching 25 qualifying edges.
+- [Thrust-network uniqueness](docs/verification/arch-thrust-prerequisite-followup.md): supplies the positive-definite matrix prerequisite, fixes negative diagonal forces and reaches 25 edges for architecture.
 - [Calibration](docs/verification/behav-calibration-followup.md): supplies conditional-probability and independence prerequisites, corrects the binomial benchmark and reaches 25 edges for behavioural economics.
 
 ### Where we started

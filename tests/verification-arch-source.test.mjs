@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { discreteRingTension, continuumRingTension, wholeDomeWeight, capProfile, pinnaclePier, groinHeight } from '../content/arch/assessment.shared.js';
 import { arch, bestFit, thrustRange } from '../content/arch/ch03.shared.js';
-import { domeSlice, sphereMid, crossVault, profile, membrane } from '../content/arch/ch04.shared.js';
+import { domeSlice, sphereMid, crossVault, profile, membrane, tnaSolve } from '../content/arch/ch04.shared.js';
 const close=(a,b,tol=1e-9)=>assert.ok(Math.abs(a-b)<tol,`${a} != ${b}`);
 test('groin vault opens at the edge arches and its surface weight matches the primary formula',()=>{
   const R=3,w=.3*22;
@@ -50,4 +50,37 @@ test('semicircular minimum thickness converges within the stated source-table to
 test('membrane reconstruction agrees with the independent spherical closed form',()=>{
   const R=3,w=7,P=profile({type:'sphere',R,phi1:90,n:1200}),m=membrane(P,w);
   for(const i of [200,500,900,1200]){const c=Math.cos(P[i].psi);close(m.Nphi[i],-w*R/(1+c),2e-5);close(m.Ntheta[i],w*R*(1/(1+c)-c),2e-5);}
+});
+
+test('Thrust-network force profiles stay compressive and solve every free-node balance at contrast extremes',()=>{
+  for(const n of [5,13])for(const contrast of [-.9,12])for(const diagonalContrast of [-.9,12])for(const diagonal of [false,true]){
+    const row=u=>Math.exp(-10)*(1+contrast*(1-u*u));
+    const diag=u=>Math.exp(-.5)*(1+diagonalContrast*(1-u*u));
+    const load=(i,j)=>.01*(1+i+2*j),boundary=(i,j)=>.1*i+.2*j;
+    const net=tnaSolve(n,row,row,diagonal?diag:null,load,boundary);
+    const balance=Array.from({length:n},()=>Array(n).fill(0));
+    for(const e of net.edges){
+      assert.ok(e.F>0 && e.q>0,`tension in ${e.fam} at contrast ${diagonalContrast}`);
+      const [i,j]=e.a,[k,l]=e.b;
+      if(e.fam==='d'||e.fam==='e'){
+        // Independently obtain a line's normalized offset from integer grid indices.
+        const offset=e.fam==='d'?(i-j)/(n-1):(i+j)/(n-1)-1;
+        close(e.F,Math.exp(-.5)*(1+diagonalContrast*(1-offset**2)),1e-12);
+      }
+      const force=e.q*(net.z[i][j]-net.z[k][l]);balance[i][j]+=force;balance[k][l]-=force;
+    }
+    for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+      assert.ok(Number.isFinite(net.z[i][j]));
+      if(i===0||j===0||i===n-1||j===n-1)close(net.z[i][j],boundary(i,j));
+      else close(balance[i][j],load(i,j),2e-8);
+    }
+  }
+});
+
+test('The anchored thrust-network solve recovers an affine harmonic height with and without diagonals',()=>{
+  for(const diagonal of [false,true]){
+    const height=(i,j)=>2+.3*i-.7*j;
+    const net=tnaSolve(9,()=>.03,()=>.2,diagonal?()=>.1:null,()=>0,height);
+    for(let i=0;i<9;i++)for(let j=0;j<9;j++)close(net.z[i][j],height(i,j),2e-13);
+  }
 });

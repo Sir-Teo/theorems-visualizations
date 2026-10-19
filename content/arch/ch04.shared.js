@@ -132,7 +132,8 @@ export function crossVault(R, t, gamma, n = 400) {
  * is q = F / (plan length). Vertical equilibrium of an interior node i, with downward load p_i, reads
  *   sum_j q_ij (z_i - z_j) = p_i,
  * a linear system for the heights z given the force densities and the heights of the boundary nodes (the supports).
- *   Fr(y), Fc(x): force of the row at y / column at x;  Fd(u): force of a diagonal line, u = (x -/+ y)/sqrt2 (null: no diagonals)
+ *   Fr(y), Fc(x): force of the row at y / column at x; Fd(u): diagonal force at normalized offset
+ *   u = (x -/+ y)/2 in [-1,1] (physical perpendicular offset divided by sqrt2; null: no diagonals).
  *   p(i, j): downward load of node (i, j);  zb(i, j): support height of a boundary node.
  * Returns {z (n x n), q-edge list, reactions Hx, Hy per boundary node: horizontal thrust vectors}.
  */
@@ -145,8 +146,8 @@ export function tnaSolve(n, Fr, Fc, Fd, p, zb) {
     // i = index in x, j = index in y
     if (i + 1 < n) add(i, j, i + 1, j, Fr(X(j)), 'r');
     if (j + 1 < n) add(i, j, i, j + 1, Fc(X(i)), 'c');
-    if (Fd && i + 1 < n && j + 1 < n) add(i, j, i + 1, j + 1, Fd((X(i) - X(j)) / Math.SQRT2), 'd');
-    if (Fd && i + 1 < n && j - 1 >= 0) add(i, j, i + 1, j - 1, Fd((X(i) + X(j)) / Math.SQRT2), 'e');
+    if (Fd && i + 1 < n && j + 1 < n) add(i, j, i + 1, j + 1, Fd((X(i) - X(j)) / 2), 'd');
+    if (Fd && i + 1 < n && j - 1 >= 0) add(i, j, i + 1, j - 1, Fd((X(i) + X(j)) / 2), 'e');
   }
   const A = Array.from({ length: m }, () => new Float64Array(m)), b = new Float64Array(m);
   for (let i = 1; i < n - 1; i++) for (let j = 1; j < n - 1; j++) b[idx.get(i * n + j)] = p(i, j);

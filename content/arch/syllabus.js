@@ -142,7 +142,7 @@ export default {
           pic: 'Cut a sphere by four vertical planes over a square: the spherical triangles left are pendentives that bring the dome’s ring down onto four piers, as at Hagia Sophia.' },
         { num: '4.10', kind: 'Concept', name: 'Compression rings, oculi and lanterns', deps: ['arch-4.3'], refs: ['Salvadori'],
           pic: 'Open an oculus at the crown: the meridional forces must be gathered by a compression ring, and adding a lantern’s weight changes the thrust lines below.' },
-        { num: '4.11', kind: 'Method', name: 'Thrust network analysis', deps: ['arch-4.3', 'arch-1.5', 'pde-1.5'], refs: ['Allen & Zalewski'],
+        { num: '4.11', kind: 'Method', name: 'Thrust network analysis', deps: ['arch-4.3', 'arch-1.5', 'pde-1.5', 'ladr-7.62'], refs: ['Allen & Zalewski'],
           pic: 'Edit a horizontal force network over a vault plan and its reciprocal diagram: the solver finds heights that place a compression-only network inside the vault’s thickness.' },
       ],
     },

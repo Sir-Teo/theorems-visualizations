@@ -2239,6 +2239,21 @@
         "quote": "y travels as a wave at the **Moens–Korteweg speed** $c=\\sqrt{Eh/(\\rho d)}$, where $E$ is the wall's elastic modulus, $h$ its thickness, $d$ the lumen diameter and $\\rho$ the blood density; stiffer arteries carry the pulse faster (about 4–5 m/s in a young adult's aorta, 8 m/s or more in an old o"
       },
       "reason": "The Moens-Korteweg wave speed depends on the arterial wall's elastic stress-strain modulus."
+    },
+    {
+      "source": "arch-4.11",
+      "target": "ladr-7.62",
+      "file": "content/arch/ch04-b.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Positive definite matrix",
+      "anchor": {
+        "field": "idea",
+        "quote": "Positive definiteness gives invertibility, so the prescribed loads and support heights determine exactly one height solution."
+      },
+      "reason": "The existing uniqueness claim for the finite weighted Poisson height system uses an anchored positive quadratic form. LADR7.62 identifies precisely these matrices as positive and invertible; the continuum Poisson definition alone does not establish uniqueness.",
+      "report": "docs/verification/arch-thrust-prerequisite-followup.md"
     }
   ],
   "rejectedCandidates": [
@@ -3435,5 +3450,15 @@
     "id": "physio-3.11",
     "report": "docs/verification/geology-bounded-source-followup.md",
     "meaning": "A later separately authorized complete-primary reading closes this source flag after the dependency-audit snapshot. No dependency counts or anchors changed."
+  },
+  "thrustNetworkFollowup": {
+    "report": "docs/verification/arch-thrust-prerequisite-followup.md",
+    "addedEdge": {
+      "from": "arch-4.11",
+      "to": "ladr-7.62"
+    },
+    "currentArchCount": 25,
+    "previousSnapshotPreserved": true,
+    "independentPeerReview": "not claimed for this follow-up"
   }
 }

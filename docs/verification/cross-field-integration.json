@@ -29,8 +29,8 @@
     {
       "name": "geology",
       "file": "docs/verification/cross-field-geology.json",
-      "sha256": "5e396feeac0321b98bf2a7f5208fd729c7d97af20fe2447032dda679d2bbb152",
-      "edges": 140
+      "sha256": "29a25e2b5036a30a55ed74b20fee9ebeb75bb94d517cf36837ef3e44ebe83db4",
+      "edges": 141
     },
     {
       "name": "macro",
@@ -39,7 +39,7 @@
       "edges": 123
     }
   ],
-  "uniqueAddedEdges": 771,
+  "uniqueAddedEdges": 772,
   "issues": [],
   "graphNodes": 13661,
   "cycles": [],

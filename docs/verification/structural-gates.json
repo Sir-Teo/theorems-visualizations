@@ -907,14 +907,14 @@
       "field": "arts",
       "writtenItems": 40,
       "betweenFields": {
-        "writtenToWritten": 24,
-        "writtenToAll": 26,
-        "allToAll": 41
+        "writtenToWritten": 25,
+        "writtenToAll": 27,
+        "allToAll": 42
       },
       "betweenCollections": {
-        "writtenToWritten": 24,
-        "writtenToAll": 26,
-        "allToAll": 45
+        "writtenToWritten": 25,
+        "writtenToAll": 27,
+        "allToAll": 46
       }
     },
     {
@@ -987,7 +987,6 @@
     "neuro",
     "sysbio",
     "art",
-    "arch",
     "ling"
   ],
   "bridges": [
