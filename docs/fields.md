@@ -6,6 +6,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Everywhere
 
+For nonclosed motion, distinguish time for an angular sweep, radial period
+and full state recurrence. A radial-extrema size proxy is not automatically
+the semi-major axis of an ellipse. Check exceptional force laws before
+making claims about every other exponent.
+
 Observation controls should follow the calculated visibility condition,
 including near-horizon exceptions. Distinguish a nearby star from a celestial
 pole, an epoch-specific constant from a current ephemeris, and a schematic

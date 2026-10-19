@@ -2876,11 +2876,15 @@
     {
       "id": "mech-8.8",
       "file": "content/mech/ch08.js",
-      "textHash": "e4f42149b151aa70a3ca5676c36f2996b240ea807b88eeb8bd482c04ddf4d6b6",
-      "textReview": "The ellipse-area derivation cancels b correctly and reduced mass gives G(M+m); Jupiter's .05 percent correction has the right scale. The claim that other exponents never share an eccentric-orbit law needs the harmonic-force exception (n=-1), and the azimuthal period of a rosette differs from its radial period. Native exponent/domain behavior remains pending.",
-      "visualReview": "Inspected both themes: inverse-square fit slope1.5000 and Halley75.31years are readable; catalogue and simulation points are distinct. The harmonic-force exception to broad rosette claims remains a text follow-up.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "ec8023155ba9191687fc26c3d74ce0fdf216dd0ec9dec2112f48ad739a06ed19",
+      "textReview": "Kepler inverse-square derivation is unchanged. Qualified the other-power-law claim with homothetic fixed-shape scaling and the harmonic-force exception. Defined the actual plotted quantity as launch-to-first-2pi azimuth time, distinct from radial period or full recurrence for rosettes, and the radial-size proxy as half observed extrema rather than a nonellipse semimajor axis.",
+      "visualReview": "Inspected twelve native captures: both themes, inner/outer systems, n=2/1.5/2.8. Kepler fit slope1.5000 and Halley75.31yr agree. Endpoint fits1.2444 and1.6766 differ from circular exponents1.25 and1.9; rosettes and radial-size/first-revolution labels are visible. The numerical trajectories are unchanged.",
+      "interactionReview": "Both system buttons and default/minimum/maximum force-exponent states pass in both themes, with finite readouts and no runtime/TeX failures. Repeated final-label checks pass. Existing full regression suite passed before this text/axis-label correction; no integrator change or new numerical guarantee is claimed.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The ellipse-area derivation cancels b correctly and reduced mass gives G(M+m); Jupiter's .05 percent correction has the right scale. The claim that other exponents never share an eccentric-orbit law needs the harmonic-force exception (n=-1), and the azimuthal period of a rosette differs from its radial period. Native exponent/domain behavior remains pending.",
+      "initialTextHash": "e4f42149b151aa70a3ca5676c36f2996b240ea807b88eeb8bd482c04ddf4d6b6",
+      "initialVisualFinding": "Inspected both themes: inverse-square fit slope1.5000 and Halley75.31years are readable; catalogue and simulation points are distinct. The harmonic-force exception to broad rosette claims remains a text follow-up.",
+      "correctionReport": "docs/verification/agent-orbital-times-review.md"
     },
     {
       "id": "geog-2.4",
