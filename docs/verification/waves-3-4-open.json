@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 231,
+  "remainingFlags": 230,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 2,
     "imaging": 1,
     "circ": 1,
-    "energy": 7,
+    "energy": 6,
     "solid": 6,
     "robot": 1,
     "aero": 7,
@@ -223,19 +223,6 @@
       "id": "energy-3.6",
       "file": "content/energy/ch03-b.js",
       "name": "Chain reaction and the multiplication factor",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 9"
-      ],
-      "links": {}
-    },
-    {
-      "id": "energy-3.9",
-      "file": "content/energy/ch03-b.js",
-      "name": "Decay heat after shutdown",
       "field": "eng",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -4332,7 +4319,8 @@
       "pharm-3.4",
       "pharm-4.6",
       "pharm-4.9",
-      "solid-3.9"
+      "solid-3.9",
+      "energy-3.9"
     ]
   },
   "additionalFollowups": [
@@ -8187,6 +8175,12 @@
       "status": "resolved",
       "report": "docs/verification/solid-cylinder-followup.md",
       "note": "Complete Bower4.1.7\u20139 derivation/constraints and UWA named-Lam\u00e9 derivation read; no original date claimed. Corrected inconsistent Airy proof via compatible displacement derivation, axial constraint, full signed range and exact hoop average. Root3math+4native viewport/theme groups passed; independent second agent reran3math, checked sources/force/limits and inspected final narrow/wide screenshots without substantive findings."
+    },
+    {
+      "id": "energy-3.9",
+      "status": "resolved",
+      "report": "docs/verification/energy-decay-followup.md",
+      "note": "Complete original Untermyer\u2013Weills1952 AECD3454 report read, including Eq2, corrections and appendices; declared historical natural-U limits. Exact heat integral and sensible-then-latent water balance replace unsupported fit/reference dots and false horizon-exhaustion label. Root independently reran5math groups and4final native viewport/theme groups after radius margins/local assets, reviewed helper/rendering and final narrow dark screenshot."
     }
   ]
 }

@@ -8,18 +8,19 @@
 //     facts that natural uranium cannot go critical in light water but can in graphite or heavy water; the picture is a model of a homogeneous lattice, not a lattice code.
 //     Sanity check: η of natural uranium comes out 1.35 (textbook 1.34); Wikipedia's "typical" thermal-reactor factors 1.65, 0.71, 0.87, 1.02 multiply to k∞ ≈ 1.04.
 //   3.7/3.8 DOE-HDBK-1019/1-93 NP02Table3; six printed fractions/half-lives and numerical models in source-audit-kinetics.shared.js.
-//   3.9 Way–Wigner fit P/P0 = 0.066 [t^−0.2 − (t+T)^−0.2] with the coefficient and validity range (10 s to 100 days) as printed in Wikipedia "Decay heat", which also
-//     gives the typical values 6.5 % at shutdown, 1.5 % after 1 h and 0.4 % after 1 day. The fit gives about 1.1 % at 1 h, so it is only a rough guide (a factor-of-two fit).
-//     Latent heat of boiling at 1 atm is 2257 kJ/kg (from the IAPWS-IF97 tables in ch02.shared.js). The Fukushima Daiichi event (11 March 2011) is mentioned qualitatively.
+//   3.9 Untermyer & Weills, AECD-3454 (1952), inspected complete original: p4Eq2 finite-irradiation heat fit,
+//     natural uranium (conversion ratio≈0.8), including U239/Np239 and excluding delayed-neutron fission. Historical uncertainty is stated.
+//     source-audit-decay.shared.js integrates that fit and separates sensible warming from evaporation.
 //   3.10 D–T reactivity: Bosch & Hale, Nucl. Fusion 32, 611 (1992), S-factor coefficients (as quoted in the WarpX source), Maxwell-averaged here. Bremsstrahlung
 //     5.35e-37 n² √T W/m³ (T in keV) is the standard non-relativistic coefficient, from memory; no cyclotron loss, no impurities, equal D and T. Check: the minimum of the
 //     ignition triple product comes out 2.9×10²¹ keV s/m³ at 14 keV, matching the "about 3×10²¹ at about 14 keV" of Wikipedia "Lawson criterion". Lawson, Proc. Phys. Soc.
 //     B 70, 6 (1957) was checked in Crossref. Experiments: JT-60U reported triple product 1.53×10²¹ keV s/m³ (disputed as a steady-state value); JET 1991 Q ≈ 0.12;
 //     TFTR 1994 10.7 MW, Q ≈ 0.27; JET 1997 16.1 MW, Q ≈ 0.62–0.67 depending on the definition; NIF 5 Dec 2022 3.15 MJ from 2.05 MJ of laser energy on target (target gain 1.5).
 
-import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, wayWigner, sigmavDT, tripleNeeded, gainQ, E_ALPHA, E_FUS, satT } from './ch03.shared.js';
+import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, sigmavDT, tripleNeeded, gainQ, E_ALPHA, E_FUS, satT } from './ch03.shared.js';
 
 import {kinStepCurveAudit, kinProgramAudit} from './source-audit-kinetics.shared.js';
+import {decayFractionAudit,decayWaterAudit} from './source-audit-decay.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 
@@ -181,46 +182,47 @@ with $\beta=\sum\beta_i$. For constant $\rho$ this is a linear system $\dot y = 
     // ───────────────────────────────────────────────────────────────────────────── 3.9
     {
       num: '3.9', kind: 'Phenomenon', name: 'Decay heat after shutdown',
-      statement: String.raw`When a reactor is shut down, fission stops within seconds, but the fission products, accumulated during operation, keep decaying and releasing heat. Right after shutdown this **decay heat** is about 6–7 % of the pre-shutdown thermal power, falling to about 1.5 % after an hour and about 0.4 % after a day. A useful fit for $P(t)/P_0$ at $t$ seconds after shutdown of a reactor that ran for $T$ seconds is
-$$\frac{P(t)}{P_0} \approx 0.066\Bigl[t^{-0.2}-(t+T)^{-0.2}\Bigr],$$
-valid roughly from 10 s to 100 days. The heat must be removed for days: for a 3000 MW(th) reactor, 1 % is still 30 MW.`,
-      idea: String.raw`Fission products are a large family of unstable nuclides with half-lives from fractions of a second to years; the total decay power is a sum of exponentials which, spread over many time scales, looks like a power law $t^{-0.2}$ (the Way–Wigner fit). The longer the reactor ran, the more long-lived products have built up, hence the dependence on $T$. Boil-off after a loss of cooling follows from an energy balance with the latent heat of water: this is the situation that arose at Fukushima Daiichi in March 2011, when a tsunami disabled the cooling of reactors that had already shut down.`,
-      caption: String.raw`The curve is the fit on log axes; dots mark typical quoted values (6.5 % at shutdown lies off the left edge, 1.5 % at 1 h, 0.4 % at 1 day). Drag the handle to choose when cooling is lost. The lower panel shows the water level (a vessel with the given inventory, started at 40 °C) falling as decay heat boils it away: the earlier cooling is lost, the faster the level drops.`,
+      statement: String.raw`Stopping a fission chain does not remove the radioactive products accumulated during operation. Their decays continue to release heat. A specific historical illustration is the empirical natural-uranium fit of Untermyer and Weills (1952, Eq. 2): after constant-power operation for $T$ seconds, the fractional heat at $t$ seconds after shutdown is
+$$f(t,T)=\frac{P(t)}{P_0}=0.1\{g(t)-g(t+T)\},$$
+$$g(t)=(t+a)^{-0.2}-0.87(t+b)^{-0.2},$$
+with $a=10$ and $b=2\times10^7$. All times in this fitted expression are numerical values in seconds. Its heat includes fission products and U-239/Np-239 decay. It demonstrates why power history and time since shutdown matter; it is not a universal modern fuel-inventory calculation. Even 1% of 3000 MW(th) is 30 MW.`,
+      idea: String.raw`For one radioactive species, $N(t)=N(0)e^{-\lambda t}$ and heat production is proportional to $\lambda N(t)$. Many species spread across many decay times can produce an approximate power-law envelope. Under steady irradiation, the older and younger products build up to different extents; this is why the empirical heat expression subtracts the response at $t+T$. The water illustration follows energy conservation: first $mc_p(100-40)$ warms the inventory, then each evaporated kilogram requires the latent heat. Water mass remains constant during the initial warming phase.`,
+      caption: String.raw`Change the operating history, power and water inventory; drag the gold handle to choose when cooling is lost. The blue curve uses the original 1952 fit, while grey shows the same fit after 10 days of operation. The water panel follows up to 100 hours, stopping if exhausted, starting at 40°C: a flat segment precedes boiling. If the inventory is not exhausted within that window, the readout reports the amount remaining.`,
       deps: ['energy-3.6'],
-      refs: ['Tester ch. 9'],
+      refs: ['Untermyer & Weills, Heat Generation in Irradiated Uranium, AECD-3454 (1952), pp. 3–5 and original appendices', 'IAPWS-IF97 saturated water reference at 100°C; constant liquid heat capacity is illustrative'],
+      links: {primary:'https://digital.library.unt.edu/ark:/67531/metadc1016891/m2/1/high_res_d/4376281.pdf'},
       tags: ['decay heat', 'nuclear safety', 'fission products'],
-      scope: String.raw`A fit, not a calculation: Way–Wigner is good to roughly a factor of two against detailed summations (it gives about 1.1 % at one hour where typical quoted values are 1.5 %), and the standard design tool is a summation over fission-product nuclides. The boil-off estimate is adiabatic at 1 atm: it ignores pressure, metal heat capacity, steam condensation and any makeup water.`,
-      verify: true,
+      credit: 'Original empirical fit: S. Untermyer and J. T. Weills, Argonne National Laboratory (1952)',
+      scope: String.raw`Read the complete original 24-page report, including the experimental and summation appendices; the plotted fit is its Eq. 2, not an unread original Way–Wigner formula. The report's natural-uranium curves refer to conversion ratio about 0.8. Delayed-neutron fission is excluded. Its stated historical uncertainties are ±50% at 1–100 s, ±30% at 100–10⁴ s, ±10% at 10⁴–10⁶ s and ±50% at 10⁶–10⁸ s. The displayed decay times are 10 s–100 days; the water window extends at most 100 h beyond the selected time, still below 10⁸ s. The fit is not current decay-heat design data or a safety calculation. Water is a perfectly mixed, adiabatic, unpressurized inventory with chosen constant $c_p=4186$ J/(kg K), warming from 40 to 100°C, then evaporating at the 100°C saturation reference ($h_{fg}\approx2256.5$ kJ/kg). It neglects metal/fuel heat capacity, pressure changes, makeup, condensation and other heat transfer. No particular accident or actual core-uncover time is inferred.`,
+      verify: false,
       viz(v) {
-        const s = v.stage({ x: [10, 8.64e6], y: [3e-4, 0.1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: 'time after shutdown', ylabel: 'decay heat / full power', minWidth: 340,
-          xticks: [[10, '10 s'], [60, '1 min'], [600, '10 min'], [3600, '1 h'], [86400, '1 d'], [864000, '10 d'], [8.64e6, '100 d']] });
-        const sl = v.stage({ x: [0, 100], y: [0, 100], axes: 'box', gutter: true, height: 260, xlabel: 'hours after cooling is lost', ylabel: 'water left (%)', minWidth: 340 });
-        const P0 = v.slider('thermal power $P_0$ (MW)', 100, 4000, 3000, { step: 50 });
-        const Top = v.slider('operating time $T$ (days)', 10, 1500, 365, { step: 5, log: true });
-        const inv = v.slider('water above the fuel (tonnes)', 20, 600, 150, { step: 5 });
-        const h = s.handle(3600, wayWigner(3600, 365 * 86400), { color: 'gold', label: 'cooling lost', constrain: (x) => { x = clamp(x, 10, 8.64e6); return [x, wayWigner(x, Top.value * 86400)]; } });
-        const HFG = (satT(100).hg - satT(100).hf) * 1000; // J/kg at 1 atm
-        const CP = 4186, DT = 60;
-        const boil = (t0, m, P, T) => { // integrate P(t) from t0 until energy = m (cp ΔT + hfg); step in log time
-          const Etot = m * (CP * DT + HFG); let E = 0, t = t0; const pts = [[0, 100]];
-          while (E < Etot && t < t0 + 3e7) { const dt = Math.max(30, (t - t0) * 0.01); const p = P * wayWigner(t + dt / 2, T) * 1e6; E += p * dt; t += dt; pts.push([(t - t0) / 3600, 100 * Math.max(0, 1 - E / Etot)]); }
-          return { t: t - t0, pts };
-        };
-        let B = null;
-        v.render(() => {
-          const T = Top.value * 86400; h.set(h.x, wayWigner(h.x, T));
-          s.fn((t) => wayWigner(t, T), { color: 'accent', width: 2.6 });
-          s.dots([[3600, 0.015], [86400, 0.004]], { r: 5, color: 'purple' });
-          s.text('typical 1.5 %', 3600 / 1.3, 0.0185, { size: 11, color: 'purple', align: 'right' }); s.text('typical 0.4 %', 86400 * 1.3, 0.0037, { size: 11, color: 'purple', align: 'left' });
-          s.hline(0.01, { color: 'faint', dash: true }); s.text('1 %', 12, 0.0112, { size: 11, color: 'muted', align: 'left' });
-          B = boil(h.x, inv.value * 1000, P0.value, T);
-          sl.setView([0, Math.max(B.t / 3600 * 1.08, 0.5)], [0, 105]);
-          sl.path(B.pts.filter((p) => p[0] <= 100), { color: 'accent', width: 2.6 });
+        const s=v.stage({x:[6,1.4e7],y:[1e-5,.1],xlog:true,ylog:true,axes:'box',gutter:{r:24},height:320,xlabel:'time after shutdown',ylabel:'decay heat / operating power',minWidth:340,
+          xticks:[[10,'10 s'],[60,'1 min'],[600,'10 min'],[3600,'1 h'],[86400,'1 d'],[864000,'10 d'],[8.64e6,'100 d']]});
+        const sl=v.stage({x:[0,100],y:[-5,105],axes:'box',gutter:{r:24},height:320,xlabel:'hours after cooling is lost',ylabel:'water left (%)',minWidth:340});
+        const P0=v.slider('thermal power (MW)',100,4000,3000,{step:50});
+        const Top=v.slider('operating time (days)',10,1500,365,{log:true});
+        const inv=v.slider('water inventory (tonnes)',20,600,150,{step:5});
+        const h=s.handle(3600,decayFractionAudit(3600,365*86400),{color:'gold',constrain:x=>{x=clamp(x,10,8.64e6);return[x,decayFractionAudit(x,Top.value*86400)];}});
+        const HFG=(satT(100).hg-satT(100).hf)*1000;
+        let B;
+        v.render(()=>{
+          const T=Top.value*86400;h.set(h.x,decayFractionAudit(h.x,T));
+          s.fn(t=>decayFractionAudit(t,10*86400),{domain:[10,8.64e6],color:'muted',width:1.5,dash:true});
+          s.fn(t=>decayFractionAudit(t,T),{domain:[10,8.64e6],color:'accent',width:2.6});
+          s.textPx('cooling lost',clamp(s.X(h.x),s.X(10)+42,s.X(8.64e6)-42),s.Y(h.y)-13,{size:11,color:'gold',align:'center'});
+          s.hline(.01,{color:'faint',dash:true});s.text('1 %',12,.012,{size:11,color:'muted',align:'left'});
+          B=decayWaterAudit({t0:h.x,T,powerMW:P0.value,massKg:inv.value*1000,latent:HFG});
+          sl.setView([0,B.dryTime===null?100:Math.max(.05,B.dryTime/3600*1.15)],[-5,105]);
+          sl.path(B.points,{color:'accent',width:2.6});
+          if(B.boilTime!==null){sl.dot(B.boilTime/3600,100,{r:4,color:'orange'});sl.textPx('boiling starts',clamp(sl.X(B.boilTime/3600),sl.X(0)+52,sl.X(sl.bounds.x[1])-52),sl.Y(100)+15,{size:11,color:'orange',align:'center'});}
+          if(B.dryTime!==null){sl.dot(B.dryTime/3600,0,{r:4,color:'red'});sl.textPx('inventory exhausted',clamp(sl.X(B.dryTime/3600),sl.X(0)+68,sl.X(sl.bounds.x[1])-68),sl.Y(0)-13,{size:11,color:'red',align:'center'});}
         });
-        v.readout(() => {
-          const T = Top.value * 86400, f = wayWigner(h.x, T), P = f * P0.value, m = P * 1e6 / HFG;
-          const hrs = h.x / 3600, tl = h.x < 3600 ? `${f1(v, h.x / 60)} min` : h.x < 172800 ? `${f1(v, hrs)} h` : `${f1(v, hrs / 24)} d`;
-          return `${tl} after shutdown: decay heat $${v.fix(100 * f, 2)}\\ \\%$ of full power $= ${f1(v, P)}$ MW, enough to boil ${f1(v, m)} kg/s (${Math.round(m * 3.6)} t/h) of water at 1 atm.\nIf cooling is lost then, the ${Math.round(inv.value)} t of water is gone after ${B.t / 3600 > 99 ? 'more than 100' : f1(v, B.t / 3600)} h. Fit check: 1 h gives ${v.fix(100 * wayWigner(3600, T), 2)} % and 1 day ${v.fix(100 * wayWigner(86400, T), 2)} % (quoted 1.5 % and 0.4 %).`;
+        v.legend([['accent','selected operating history'],['muted','10 days operation',{dash:true}],['orange','sensible warming complete',{dot:true}]]);
+        v.readout(()=>{
+          const T=Top.value*86400,f=decayFractionAudit(h.x,T),P=f*P0.value;
+          const state=B.dryTime!==null?`Inventory exhausted after ${v.fmt(B.dryTime/3600,3)} h in this model.`:`After 100 h: ${f1(v,B.left/1000)} t (${f1(v,100*B.left/(inv.value*1000))}%) remain; exhaustion is not reached within the window.`;
+          const warm=B.boilTime===null?'Water has not yet reached boiling within 100 h.':`Boiling starts after ${v.fmt(B.boilTime/3600,3)} h; no mass is removed before then.`;
+          return `${v.fmt(h.x/3600,3)} h after shutdown: fitted heat ${v.fix(100*f,3)}% of operating power = ${f1(v,P)} MW. Its saturated-water evaporation equivalent is ${f1(v,P*1e6/HFG)} kg/s; the initially cool water must warm first.\n${warm} ${state} Heat admitted by the stopping time: ${v.fmt(B.energy/1e9,4)} GJ. This is an idealized energy balance, not a reactor safety prediction.`;
         });
       },
     },

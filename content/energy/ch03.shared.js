@@ -27,10 +27,6 @@ export const bOf = (A) => A * beaOf(A);
 // ───────────────────────────────────────────────── six-group delayed neutron model
 export {DN_BETA,DN_LAM,BETA,kinMatrix,kinEq,kinAdvance,inhour} from './source-audit-kinetics.shared.js';
 
-// ───────────────────────────────────────────────── decay heat
-/** Way–Wigner fit: fraction of pre-shutdown power, t seconds after shutdown, after T seconds of operation (valid ~10 s to 100 days). */
-export const wayWigner = (t, T) => 0.066 * (t ** -0.2 - (t + T) ** -0.2);
-
 // ───────────────────────────────────────────────── D–T fusion
 const AFS = 1 / 137.035999, MDC2 = 2.01410178 * MEV_U * 1e3, MTC2 = 3.01604928 * MEV_U * 1e3; // keV
 const MRC2 = MDC2 * MTC2 / (MDC2 + MTC2);
