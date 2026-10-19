@@ -4,10 +4,10 @@
 // Sources checked (Oct 2026):
 // - Ashraf, Karlan & Yin 2006 (QJE 121(2): 635–672; Crossref + abstract): SEARCH commitment savings account in the Philippines; offered
 //   to 710 randomly chosen clients, 202 (28.4%) opened it, average balances up 81 percentage points after 12 months relative to control.
-// - Ariely & Wertenbroch 2002 (Psychological Science 13(3): 219–224): Crossref lists the article as RETRACTED (retraction notice dated
-//   2 September 2026, DOI 10.1177/09567976261488042). Data Colada post 138 (31 August 2026) reports a failed replication (Hyndman &
-//   Bisin, forthcoming; preprint 2025) and alleges that Study 2's data were tampered with or fabricated; I read that post only through
-//   a fetch summary. No number from the study is used below; the deadline picture is a model computed for this page (verify: true).
+// - Read the complete publisher retraction notice (2 September 2026, doi 10.1177/09567976261488042),
+//   and the published Hyndman–Bisin 2026 replication's introduction, methods, main performance results and discussion.
+//   The notice withdraws confidence in the original findings. No original experimental numbers are used in 5.8;
+//   its finite task-cost model is authored independently, with nonnegative busy/congestion costs.
 // - Watts, Duncan & Quan 2018 (Psychological Science 29(7): 1159–1177; doi 10.1177/0956797618761661): read in the full-text PDF.
 //   n = 918 at age 15, children of mothers without a college degree (NICHD SECCYD). Standardized coefficients of minutes waited
 //   (Table 4): Grade 1 .279 / .102 / .047 (SE .038 / .033 / .030), age 15 .236 / .081 / .050 (SE .037 / .034 / .032) without controls, with
@@ -20,6 +20,7 @@
 //   the sign-effect factor below is purely illustrative (verify: true on 5.9).
 // - Loewenstein, O'Donoghue & Rabin 2003 (QJE 118(4): 1209–1248, Crossref) and Loewenstein 1996 (OBHDP 65(3): 272–292): citations only.
 import { clamp, num, pct, usdC, usdR, dExp, dHyp, logistic, logit, fx, errBar, wilson } from './ch05.shared.js';
+import { DEADLINE_WEEKS, BUSY_WEEKS, deadlineComparison } from './source-audit-deadlines.js';
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
 
@@ -80,53 +81,52 @@ export default {
     },
     // ------------------------------------------------------------------ 5.8
     {
-      num: '5.8', kind: 'Phenomenon', name: 'Self-imposed deadlines (Ariely–Wertenbroch, retracted)',
-      statement: String.raw`Present-biased people who know it may set deadlines for themselves that carry a cost for missing them, even though a deadline can only add constraints (behav-5.7). Ariely and Wertenbroch (2002) argued from a proofreading experiment that students did choose binding deadlines, that this helped, and that deadlines spread evenly by an experimenter helped more. **That article has been retracted** (retraction recorded in September 2026, after a failed preregistered replication and a public data-forensic analysis alleging that the Study 2 data were tampered with or fabricated), so its numbers are not used here. What stands is the logic of the mechanism, shown as a model: with three tasks and a procrastinator who does each on its deadline, **when** the deadlines fall decides how many tasks pile into one week and whether they fall in the weeks that are costly for you.`,
-      scope: String.raw`A computational illustration of why a rational planner might choose deadlines, **not** evidence that people do or that spaced deadlines raise performance. The pure-procrastinator assumption (each task done in its last permitted week) and the cost numbers are mine. Whether externally imposed deadlines beat self-chosen ones is, after the retraction, an open empirical question.`,
-      idea: String.raw`With no deadline but the last, a procrastinator piles all three tasks into week 12, paying the convex crunch cost. Each additional deadline spreads the work, at the price of fixing a week for each task whether or not that week suits. A planner who knows which weeks are busy can place the deadlines in the good weeks and beat both the end deadline and mechanical spacing; an externally imposed even spacing ignores that knowledge, which is the argument for letting people choose. The same logic with an exponential discounter would be vacuous: it would simply pick the cheap weeks itself.`,
-      caption: String.raw`Weeks 1–12; red columns are **busy** (every task done then costs extra). Drag the two **gold flags** to set the first two deadlines (the third is week 12). The bars on the right compare the total cost of the schedule you chose with the single end deadline, evenly spaced deadlines, the best self-chosen schedule (found by brute force), and the benchmark of someone with no present bias. Nothing here comes from the retracted study.`,
-      deps: ['behav-5.6'], refs: ['W&K ch. 8'], tags: ['deadlines', 'procrastination'],
-      credit: 'Ariely & Wertenbroch, 2002 (retracted 2026)',
-      links: { doi: 'https://doi.org/10.1111/1467-9280.00441' },
-      verify: true,
+      num: '5.8', kind: 'Model', name: 'Deadlines and task congestion (retracted study context)',
+      statement: String.raw`A deadline changes the feasible dates for work; whether it helps depends on behaviour and costs. Ariely and Wertenbroch's 2002 deadline article was **retracted on September 2, 2026**: the journal editor withdrew confidence in its findings because of concerns about the underlying data. Hyndman and Bisin's published 2026 replication did not reproduce the original performance advantage of evenly spaced deadlines. Here an independent finite model assumes three tasks, twelve weeks and a worker who completes each task in its deadline week. If $n_w$ tasks fall in week $w$, total cost is
+$$\begin{aligned}C&=3+b(n_4+n_8)+g\sum_{w=1}^{12}\binom{n_w}{2},\\ &\hspace{1em}b,g\ge0.\end{aligned}$$`,
+      scope: String.raw`All costs and behaviour in the picture are authored assumptions, not experimental observations. Deadline compliance is imposed, rather than derived from a present-bias parameter. The third task has deadline week 12; the first two may be set to any integer week 1–12. Tasks can share a week. The flexible-schedule benchmark may choose all three completion dates freely. The cited replication does not establish a universal zero deadline effect.`,
+      idea: String.raw`Every task contributes at least one unit of cost, so $C\ge3$. Scheduling in weeks 1, 2 and 12 attains 3 even with the fixed last deadline; weeks 1, 2 and 3 attain the same lower bound with unrestricted dates. In contrast, putting all three tasks in week 12 costs $3+3g$, and spacing them at 4, 8 and 12 costs $3+2b$. Thus an imposed deadline can move work away from congestion or into a costly busy week in this model. The best deadline schedule and the flexible benchmark tie here. A worker who already minimizes this same cost with full information cannot improve its optimum by adding constraints.`,
+      caption: String.raw`Red columns mark busy weeks 4 and 8. Set the first two task deadlines with the sliders or drag the two **gold handles**; their different heights keep both reachable when they share a week. The third deadline is week 12. Bars compare the end-only, evenly spaced, chosen, best deadline and flexible schedules. **These are model costs, not study results.**`,
+      deps: [], see: ['behav-5.6'], refs: ['Psychological Science retraction notice (2026), doi:10.1177/09567976261488042', 'Hyndman & Bisin (2026), introduction, methods, performance results and discussion'], tags: ['deadlines', 'procrastination'],
+      credit: 'Ariely & Wertenbroch, 2002 (retracted 2026); independent scheduling illustration',
+      links: { doi: 'https://doi.org/10.1177/09567976261488042' },
+      verify: false,
       viz(v) {
-        const W = 12, BUSY = [4, 8];
-        const bz = v.slider('extra cost of a busy week', 0, 3, 1.5, { step: 0.25 });
-        const gz = v.slider('crunch cost $g$ per pair of tasks in one week', 0, 3, 1.5, { step: 0.25 });
-        const A = v.stage({ x: [0.5, W + 0.5], y: [-0.6, 4.2], axes: false, height: 320, title: 'a procrastinator does each task in its deadline week', hover: false });
-        const B = v.stage({ x: [0, 5], y: [0, 10], axes: 'box', gutter: true, height: 320, ylabel: 'total cost of the three tasks', xticks: [[0.5, 'end only'], [1.5, 'even'], [2.5, 'yours'], [3.5, 'best'], [4.5, 'no bias']], title: 'which schedule is cheapest?' });
-        const f1 = A.handle(4, 3.7, { color: 'gold', r: 9, label: 'd₁', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
-        const f2 = A.handle(8, 3.7, { color: 'gold', r: 9, label: 'd₂', constrain: (x) => [clamp(Math.round(x), 1, 11), 3.7] });
-        const cost = (ds) => {
-          const n = {}; ds.forEach((d) => { n[d] = (n[d] || 0) + 1; });
-          let tot = 0;
-          for (const d in n) tot += n[d] * (1 + (BUSY.includes(+d) ? bz.value : 0)) + gz.value * n[d] * (n[d] - 1) / 2;
-          return tot;
-        };
-        const best = () => { let b = [1e9, null]; for (let a = 1; a <= W; a++) for (let c = a; c <= W; c++) { const k = cost([a, c, W]); if (k < b[0] - 1e-9) b = [k, [a, c, W]]; } return b; };
-        const free = () => { const cs = []; for (let t = 1; t <= W; t++) cs.push(1 + (BUSY.includes(t) ? bz.value : 0)); return cs.sort((x, y) => x - y).slice(0, 3).reduce((s, x) => s + x, 0); };
+        const W = DEADLINE_WEEKS, BUSY = BUSY_WEEKS;
+        const bz = v.slider('extra cost per task in a busy week', 0, 3, 1.5, { step: 0.25 });
+        const gz = v.slider('crunch cost $g$ per pair in one week', 0, 3, 1.5, { step: 0.25 });
+        const first = v.slider('first task deadline (week)', 1, W, 4, { step: 1, int: true });
+        const second = v.slider('second task deadline (week)', 1, W, 8, { step: 1, int: true });
+        const A = v.stage({ x: [0.5, W + 0.5], y: [-0.6, 4.9], axes: false, height: 340, title: 'assumption: each task is done in its deadline week', hover: false });
+        const B = v.stage({ x: [0, 5], y: [-0.35, 10], axes: 'box', gutter: true, height: 340, ylabel: 'total cost (model units)', xticks: [[0.5, 'end only'], [1.5, 'even'], [2.5, 'yours'], [3.5, 'best'], [4.5, 'flexible']], title: 'compare feasible schedules' });
+        const f1 = A.handle(4, 3.75, { color: 'gold', r: 9, constrain: x => [clamp(Math.round(x), 1, W), 3.75], onDrag: h => first.set(h.x) });
+        const f2 = A.handle(8, 4.35, { color: 'gold', r: 9, constrain: x => [clamp(Math.round(x), 1, W), 4.35], onDrag: h => second.set(h.x) });
+        const comparison = () => deadlineComparison(first.value, second.value, bz.value, gz.value);
         v.render(() => {
-          const d1 = Math.min(f1.x, f2.x), d2 = Math.max(f1.x, f2.x), ds = [d1, d2, W];
-          f1.set(Math.round(f1.x), 3.7); f2.set(Math.round(f2.x), 3.7);
+          const p = comparison(), ds = p.dates;
+          f1.set(first.value, 3.75); f2.set(second.value, 4.35);
           for (let t = 1; t <= W; t++) {
             const busy = BUSY.includes(t);
             A.rect(t - 0.45, 0.2, t + 0.45, 3.3, { fill: busy ? 'red' : 'panel', fillAlpha: busy ? 0.18 : 1, color: 'faint', width: 1, radius: 6 });
             A.text(String(t), t, 0.2, { dy: 14, align: 'center', size: 11.5, color: busy ? 'red' : 'muted', weight: 700 });
-            const n = ds.filter((d) => d === t).length;
+            const n = ds.filter(d => d === t).length;
             for (let j = 0; j < n; j++) A.rect(t - 0.36, 0.55 + 0.9 * j, t + 0.36, 1.35 + 0.9 * j, { fill: 'accent', fillAlpha: 0.6, color: 'accent', width: 1.3, radius: 5 });
           }
-          A.text('week', 6.5, 0.2, { dy: 34, align: 'center', size: 11.5, color: 'muted' });
-          const [bc, bd] = best();
-          const vals = [[cost([W, W, W]), 'muted'], [cost([4, 8, 12]), 'orange'], [cost(ds), 'accent'], [bc, 'green'], [free(), 'purple']];
-          B.setView([0, 5], [0, Math.max(6, ...vals.map((x) => x[0])) * 1.18]);
-          vals.forEach(([val, col], i) => {
+          for (const [h, label] of [[f1, 'd₁'], [f2, 'd₂']]) {
+            A.line(h.x, 3.3, h.x, h.y, { color: 'gold', width: 1 });
+            A.text(label, h.x, h.y, { dx: h.x <= 6 ? 18 : -18, align: h.x <= 6 ? 'left' : 'right', color: 'gold', size: 12, weight: 700 });
+          }
+          const cols = ['muted', 'orange', 'accent', 'green', 'purple'];
+          B.setView([0, 5], [-0.35, Math.max(6, ...p.values) * 1.18]);
+          p.values.forEach((val, i) => {
+            const col = cols[i];
             B.rect(i + 0.12, 0, i + 0.88, val, { fill: col, fillAlpha: 0.6, color: col, width: 1.4 });
             B.text(val.toFixed(2), i + 0.5, val, { dy: -10, align: 'center', size: 12, weight: 800, color: col });
           });
         });
         v.readout(() => {
-          const ds = [Math.min(f1.x, f2.x), Math.max(f1.x, f2.x), W], [bc, bd] = best();
-          return `Your deadlines: weeks ${ds.join(', ')} (cost **${cost(ds).toFixed(2)}**). End deadline only: ${cost([W, W, W]).toFixed(2)}; evenly spaced (4, 8, 12): ${cost([4, 8, 12]).toFixed(2)}; best self-chosen: weeks ${bd.join(', ')} at **${bc.toFixed(2)}**; no present bias: ${free().toFixed(2)}. ${bc < cost([4, 8, 12]) - 1e-9 ? 'Mechanical spacing loses to a schedule that knows which weeks are busy.' : 'Here even spacing already avoids the busy weeks.'}`;
+          const p = comparison();
+          return `Your deadlines: weeks ${p.dates.join(', ')}; cost **${p.values[2].toFixed(2)}**. End only: ${p.values[0].toFixed(2)}; even (4, 8, 12): ${p.values[1].toFixed(2)}. Best deadlines: ${p.bestDates.join(', ')}; cost **${p.values[3].toFixed(2)}**. Flexible schedule: **${p.values[4].toFixed(2)}**. ${bz.value > 0 ? 'Even spacing incurs busy-week surcharges.' : 'Busy weeks have no surcharge at this setting.'} ${gz.value > 0 ? 'Same-week task pairs incur congestion costs.' : 'Task congestion is free at this setting.'}`;
         });
       },
     },

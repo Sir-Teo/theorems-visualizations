@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 201,
+  "remainingFlags": 200,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "micro": 7,
     "fin": 12,
     "game": 18,
-    "behav": 5,
+    "behav": 4,
     "psych": 17,
     "soc": 16,
     "polsci": 11,
@@ -815,21 +815,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1287/mksc.4.3.199"
-      }
-    },
-    {
-      "id": "behav-5.8",
-      "file": "content/behav/ch05-b.js",
-      "name": "Self-imposed deadlines (Ariely\u2013Wertenbroch, retracted)",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "W&K ch. 8"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1111/1467-9280.00441"
       }
     },
     {
@@ -3892,7 +3877,8 @@
       "micro-10.9",
       "micro-10.12",
       "micro-10.4",
-      "micro-10.5"
+      "micro-10.5",
+      "behav-5.8"
     ]
   },
   "additionalFollowups": [
@@ -7939,6 +7925,12 @@
       "status": "resolved",
       "report": "docs/verification/micro-monopoly-welfare-followup.md",
       "note": "Read both Ellison first-degree source sections and assumptions; exact finite buyer accounting includes below-cost overproduction and equality-value acceptance, with a global common-price optimum. Parent independently reviewed sources/model and reran five math and eight native groups, static checks and signed-accounting/equality screenshots."
+    },
+    {
+      "id": "behav-5.8",
+      "status": "resolved",
+      "report": "docs/verification/behav-deadlines-followup.md",
+      "note": "Read the complete publisher retraction and published replication\u2019s intro/methods/performance/discussion; replace stale empirical syllabus with the explicitly assumed finite task-cost model. Root and a separate agent independently pass three exhaustive mathematical and four final native groups, including hover-circle and label clearance, static checks and screenshot inspection."
     }
   ]
 }
