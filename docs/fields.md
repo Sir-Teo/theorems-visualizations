@@ -50,6 +50,12 @@ open-ended age groups that a replacement control retains.
 
 ## Mathematics (book-anchored and curated)
 
+State field characteristic and stochastic initial conditions locally. Apply
+prime-power cyclicity only in its valid cases. A numerical proximity guard
+is not an exact singularity test. Projection fallbacks must remain in the
+claimed subspace, including when the projected vector vanishes. Label
+scaled norms with their actual normalization and any denominator floor.
+
 Check an iterative formula at its declared initial index. Report a numerical
 maximum as a grid maximum, and distinguish finite-time quadrature values
 from an exact infinite-time limit.

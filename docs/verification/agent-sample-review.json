@@ -860,11 +860,15 @@
     {
       "id": "fa-10.24",
       "file": "content/fa/ch10-a3.js",
-      "textHash": "c81506096da9f308baf726213577478927145bc5450b8a01f737730b5bb53442",
-      "textReview": "The functional-calculus recurrence is valid when the contour excludes α and surrounds the spectrum. The picture's x^n specialization needs invertible x for negative n and must treat an eigenvalue on the contour as undefined; inspect those control cases.",
-      "visualReview": "Inspected both themes: three distinct eigenvalue handles lie within the circle and the readout reports tr P=3 with small reconstruction errors. The default nonnegative-power case is visually coherent; negative powers, contour collisions and partial-enclosure semantics remain for follow-up.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "2b2c47bedce035360bcad62f681afcafd4c7a9a07bbc1efe4823a71c3f038688",
+      "textReview": "The shifted integer-power lemma remains unchanged. The caption scopes this widget to n=0..5 and states invertibility and zero-winding conditions for negative powers of x. Quadrature is approximate, and the near-spectrum guard is labelled as numerical proximity rather than exact contour intersection. Scaled Frobenius readouts now display the actual denominator and do not add an artificial error floor.",
+      "visualReview": "Ten native states inspect powers0/5, empty/one-eigenvalue contours and the near-spectrum rejection in both themes. Projection traces0/1/3 and the x^nP comparison agree with the enclosing geometry.",
+      "interactionReview": "Both sliders and a native contour-centre drag pass in both themes. Ten focused states repeated after final readout labels; no runtime/TeX errors. The quadrature and proximity guard are unchanged.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The functional-calculus recurrence is valid when the contour excludes α and surrounds the spectrum. The picture's x^n specialization needs invertible x for negative n and must treat an eigenvalue on the contour as undefined; inspect those control cases.",
+      "initialTextHash": "c81506096da9f308baf726213577478927145bc5450b8a01f737730b5bb53442",
+      "initialVisualFinding": "Inspected both themes: three distinct eigenvalue handles lie within the circle and the readout reports tr P=3 with small reconstruction errors. The default nonnegative-power case is visually coherent; negative powers, contour collisions and partial-enclosure semantics remain for follow-up.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "sig-3.12",
@@ -1246,11 +1250,15 @@
     {
       "id": "fa-10.31",
       "file": "content/fa/ch10-a3.js",
-      "textHash": "60e5ab7f6c7aadc83c9336f6ed39fd13828feb55e75cb89b3d373ab2dbc175af",
-      "textReview": "Hermite interpolation at the polynomial roots cancels f/P's principal parts, and functional calculus reduces modulo the annihilating polynomial. Matching derivatives is essential for a nontrivial Jordan block; values-only interpolation cannot reproduce its nilpotent term.",
-      "visualReview": "Inspected both themes: default Jordan/Hermite action matches the power-series exponential to displayed 3.59e-16 error. Degenerate and colliding interpolation cases still need controls/scope review.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "5e091e690e088ecc31963bef4c2c8850c8c6e83850cca011b9e72f0cd4ff3477",
+      "textReview": "Hermite reduction remains unchanged, with positive polynomial degree, distinct roots and positive integer multiplicities explicit. The repeated-root derivative condition matters for a nontrivial Jordan entry; values-only interpolation succeeds at k=0.",
+      "visualReview": "Eight native captures inspect Hermite, values-only, zero Jordan entry and Hermite k2 in both themes. Values-only error is1.35 at k1 and roundoff at k0; Hermite errors remain at roundoff.",
+      "interactionReview": "Both interpolation buttons and Jordan slider0/2 pass in both themes, with no runtime/TeX errors. Three existing FA10 groups include independent power-series verification of the Hermite derivative term.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Hermite interpolation at the polynomial roots cancels f/P's principal parts, and functional calculus reduces modulo the annihilating polynomial. Matching derivatives is essential for a nontrivial Jordan block; values-only interpolation cannot reproduce its nilpotent term.",
+      "initialTextHash": "60e5ab7f6c7aadc83c9336f6ed39fd13828feb55e75cb89b3d373ab2dbc175af",
+      "initialVisualFinding": "Inspected both themes: default Jordan/Hermite action matches the power-series exponential to displayed 3.59e-16 error. Degenerate and colliding interpolation cases still need controls/scope review.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "rca-8.7",
@@ -1321,11 +1329,15 @@
     {
       "id": "nt-3.11",
       "file": "content/nt/ch03-b.js",
-      "textHash": "67109631a610ab2bfe5c644655a6aebe7383aeef3ea77d14d1985dae613787e6",
-      "textReview": "Korselt's statement is correct, but the proof falsely says all prime-power unit groups are cyclic. First exclude even n using the base −1; then the odd prime-power cyclic theorem supplies the claimed exponent argument. Powers of two need not be cyclic.",
-      "visualReview": "Inspected both themes: n561 factors3*11*17, all320 coprime bases pass, and the divisibility checks match560. The finite grid/readout agree; the pending general proof's even prime-power unit-group issue is separate.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "9b2a8d02c407a7c5b1cdb0566ee67968cdda27a96386b569d534c227ce8e7bbf",
+      "textReview": "The proof first excludes even composite n with base-1, then applies cyclic prime-power unit groups only to odd primes. This removes the false blanket cyclicity claim for powers of two. CRT and subgroup-index arguments otherwise remain unchanged; the syllabus mirrors the existing CRT dependency.",
+      "visualReview": "Eight native captures inspect561,8,9 and the next-Carmichael button in both themes. Fermat pass fractions are320/320,1/4 and2/6, respectively; the grid and Korselt readout agree.",
+      "interactionReview": "The integer slider and next-Carmichael button pass in both themes. An initial external assertion incorrectly expected50% at8; the product correctly reports25%, and the assertion was corrected. No runtime/TeX failures.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Korselt's statement is correct, but the proof falsely says all prime-power unit groups are cyclic. First exclude even n using the base −1; then the odd prime-power cyclic theorem supplies the claimed exponent argument. Powers of two need not be cyclic.",
+      "initialTextHash": "67109631a610ab2bfe5c644655a6aebe7383aeef3ea77d14d1985dae613787e6",
+      "initialVisualFinding": "Inspected both themes: n561 factors3*11*17, all320 coprime bases pass, and the divisibility checks match560. The finite grid/readout agree; the pending general proof's even prime-power unit-group issue is separate.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "comb-4.8",
@@ -1441,11 +1453,15 @@
     {
       "id": "ladr-9.16",
       "file": "content/ladr/ch09-b.js",
-      "textHash": "f29308ab7f3bcde2ef42c7ff25bc176091c57e1f0ded500323a0c6cddbe66b6d",
-      "textReview": "Expanding alpha(u+w,u+w) proves alternating implies skew symmetry; the converse needs characteristic different from two, as the proof explicitly notes. State the underlying real/complex field convention in the standalone statement if it is not inherited visibly. The R3 example's normal (0,-1,1) gives exactly the listed bilinear form.",
-      "visualReview": "Inspected both themes: default alternating form gives cross terms plus/minus1.404, zero diagonal terms and zero sum; 3D vectors/parallelogram and four bars are distinct. The characteristic-two converse caveat remains a text follow-up.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "40ee5cc98d745e80e0e8ec95c1d9cac73158fb1cb88880b8fb99ae19d3a392e1",
+      "textReview": "The statement now explicitly requires characteristic different from two, including the real/complex convention. Expanding the alternating form proves skew symmetry; the converse uses 2 nonzero. No numerical model changed.",
+      "visualReview": "Six native captures inspect symmetric coefficient0/1/-1 in both themes. At0 the diagonal terms vanish and cross terms cancel; nonzero coefficients produce nonzero diagonal terms and totals of opposite signs.",
+      "interactionReview": "The symmetric-part slider crosses zero and both endpoints in both themes, with finite readouts and no runtime/TeX errors.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Expanding alpha(u+w,u+w) proves alternating implies skew symmetry; the converse needs characteristic different from two, as the proof explicitly notes. State the underlying real/complex field convention in the standalone statement if it is not inherited visibly. The R3 example's normal (0,-1,1) gives exactly the listed bilinear form.",
+      "initialTextHash": "f29308ab7f3bcde2ef42c7ff25bc176091c57e1f0ded500323a0c6cddbe66b6d",
+      "initialVisualFinding": "Inspected both themes: default alternating form gives cross terms plus/minus1.404, zero diagonal terms and zero sum; 3D vectors/parallelogram and four bars are distinct. The characteristic-two converse caveat remains a text follow-up.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "micro-7.7",
@@ -2064,11 +2080,15 @@
     {
       "id": "ladr-3.76",
       "file": "content/ladr/ch03-c.js",
-      "textHash": "45b3ca9146039b49dc5a8d33ced17117a9fda4cb21558faaf45240aa5c852cda",
-      "textReview": "Writing a vector in the domain basis and combining the coordinate columns proves the matrix-product formula. The statement correctly requires both lists to be bases. Because their handles can be dragged, the visualization must reject or label linearly dependent basis states rather than invert singular coordinate matrices. The first-handle control audit does not establish that every editable basis remains valid.",
-      "visualReview": "Inspected both themes: basis grids,coordinate steps and transformed vector align; default product coordinates(-.69,1.67) match the direct solve. Allowing editable basis vectors to become dependent needs an explicit guard/scope check; the default is nonsingular.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "95ac2abf95c4be6257a579a1b0e9da9337a092ba26de35e0b993a4a8de3f2d97",
+      "textReview": "The theorem and existing basis guard remain unchanged. The caption/readout now distinguish mathematical basis validity from the numerical rejection of parallel or nearly parallel pairs; invalid coordinates are withheld instead of inverted.",
+      "visualReview": "Twelve native captures inspect accepted bases, domain/both/codomain degeneracy, restored bases and quarter-turn operator in both themes. Coordinate steps disappear under rejection and recover after restoration.",
+      "interactionReview": "Native drags exercise each editable basis pair separately and together, then restore both pairs and change the operator. Both themes pass rejection/readout/runtime/TeX checks; no new basis computation was introduced.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Writing a vector in the domain basis and combining the coordinate columns proves the matrix-product formula. The statement correctly requires both lists to be bases. Because their handles can be dragged, the visualization must reject or label linearly dependent basis states rather than invert singular coordinate matrices. The first-handle control audit does not establish that every editable basis remains valid.",
+      "initialTextHash": "45b3ca9146039b49dc5a8d33ced17117a9fda4cb21558faaf45240aa5c852cda",
+      "initialVisualFinding": "Inspected both themes: basis grids,coordinate steps and transformed vector align; default product coordinates(-.69,1.67) match the direct solve. Allowing editable basis vectors to become dependent needs an explicit guard/scope check; the default is nonsingular.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "bioinf-4.12",
@@ -2289,11 +2309,15 @@
     {
       "id": "prob-4.3.11",
       "file": "content/prob/ch04-m2.js",
-      "textHash": "9801034370d35647c70ced25424d7c036632f6a0f474ef6f6c8c63a5564e2df8",
-      "textReview": "For a Galton–Watson process starting from one ancestor, the nonnegative critical martingale converges, integer-valued convergence makes it eventually constant, and nondegeneracy excludes a positive eventual constant. The pgf expansion has coefficient sigma²/2 because mean one makes f''(1)=variance. Reciprocal differences yield n*s_n->2/sigma², and conditional mean 1/s_n explains rare large survivors. Make the one-ancestor initial condition explicit in a standalone statement.",
-      "visualReview": "Inspected both themes: critical mean-one Poisson model at n40 shows survival .0465,nP1.858 approaching2; conditional mean21.2 versus theory21.5. Finite simulation and limiting formulas are distinguished; initial population scope needs follow-up.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "ad3b491d63fa0180a4a3457c9642cfa221d697245cc90799b6352ff0b84a0ccc",
+      "textReview": "The standalone critical Galton-Watson statement now specifies one initial ancestor Z0=1, required by EZn=1 and the displayed survival constant. The martingale proof and finite-variance pgf refinement remain unchanged.",
+      "visualReview": "Six native captures inspect Poisson, binary0/2 and geometric laws in both themes. Their variances1/1/2 and limiting n*s_n constants2/2/1 agree with the curves and readouts.",
+      "interactionReview": "All offspring-law buttons pass in both themes with finite exact/Monte Carlo readouts and no runtime/TeX errors. The simulation still starts from one ancestor.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "For a Galton–Watson process starting from one ancestor, the nonnegative critical martingale converges, integer-valued convergence makes it eventually constant, and nondegeneracy excludes a positive eventual constant. The pgf expansion has coefficient sigma²/2 because mean one makes f''(1)=variance. Reciprocal differences yield n*s_n->2/sigma², and conditional mean 1/s_n explains rare large survivors. Make the one-ancestor initial condition explicit in a standalone statement.",
+      "initialTextHash": "9801034370d35647c70ced25424d7c036632f6a0f474ef6f6c8c63a5564e2df8",
+      "initialVisualFinding": "Inspected both themes: critical mean-one Poisson model at n40 shows survival .0465,nP1.858 approaching2; conditional mean21.2 versus theory21.5. Finite simulation and limiting formulas are distinguished; initial population scope needs follow-up.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "demo-2.9",
@@ -2840,11 +2864,15 @@
     {
       "id": "ladr-3.130",
       "file": "content/ladr/ch03-d.js",
-      "textHash": "530dcaa18f3bcb0b52d4ed1fd21448b12ecd86e3c72cce83724e1c396615e86b",
-      "textReview": "Reviewed the finite-dimensional rank calculation for the dual and annihilator inclusion followed by equality of dimensions. The coefficient-vector picture explicitly chooses Euclidean coordinates for the annihilator. At rank one the nullspace grows while the dual range/annihilator shrink; a producing dual functional is then nonunique and needs a stated choice in the UI. No theorem/proof correction identified; rank-mode geometry and drags remain pending.",
-      "visualReview": "Inspected both themes: dual vector(.53,.93,.14) lies in the annihilator plane and vanishes on the red null line; rank2 agrees across spaces. Rank-one inverse-choice/drag behavior remains pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "ede3a699a1b46cc95c7d29a0f88bd7bcde7cc983e4fa3870e1f12865e864f7d2",
+      "textReview": "The rank and annihilator proof is unchanged. The caption distinguishes rank1 null plane/dual-range line, nonunique producing functionals, the minimum-Euclidean-norm reverse choice and nonzero handle limits. A zero projected drag previously fell back to the ambient x-axis outside the annihilator; it now falls back along a row-space basis direction.",
+      "visualReview": "Ten focused native captures inspect rank2/rank1, functional/reverse drags and a reverse-origin drag in both themes. Null-space pairings stay zero; dimensions2/1 and line/plane geometry agree.",
+      "interactionReview": "Rank buttons and native functional/scene drags pass in both themes after the fix. An actual-widget snap regression independently tests null orthogonality, row collinearity at rank1 and radius.25 for exact/near-zero projections at both ranks. No runtime/TeX failures.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Reviewed the finite-dimensional rank calculation for the dual and annihilator inclusion followed by equality of dimensions. The coefficient-vector picture explicitly chooses Euclidean coordinates for the annihilator. At rank one the nullspace grows while the dual range/annihilator shrink; a producing dual functional is then nonunique and needs a stated choice in the UI. No theorem/proof correction identified; rank-mode geometry and drags remain pending.",
+      "initialTextHash": "530dcaa18f3bcb0b52d4ed1fd21448b12ecd86e3c72cce83724e1c396615e86b",
+      "initialVisualFinding": "Inspected both themes: dual vector(.53,.93,.14) lies in the annihilator plane and vanishes on the red null line; rank2 agrees across spaces. Rank-one inverse-choice/drag behavior remains pending.",
+      "correctionReport": "docs/verification/agent-mathematical-boundaries-review.md"
     },
     {
       "id": "ladr-1.3",

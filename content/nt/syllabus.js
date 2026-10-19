@@ -139,7 +139,7 @@ export default {
           pic: 'Evaluate Φₙ(kn) for growing k and factor it; every prime factor not dividing n is ≡ 1 (mod n), producing new primes in the progression on demand.' },
         { num: '3.10', kind: 'Hypothesis', name: 'Artin’s primitive root conjecture', deps: ['nt-3.2'], refs: ['Ireland–Rosen ch. 4'],
           pic: 'For each prime up to 10⁶, test whether 2 (or another base you choose) is a primitive root; the running proportion settles near Artin’s constant 0.3739….' },
-        { num: '3.11', kind: 'Theorem', name: 'Korselt’s criterion and Carmichael numbers', deps: ['nt-3.4'], refs: ['Hardy–Wright §6.9'],
+        { num: '3.11', kind: 'Theorem', name: 'Korselt’s criterion and Carmichael numbers', deps: ['nt-3.4', 'nt-2.4'], refs: ['Hardy–Wright §6.9'],
           pic: 'Test 561 = 3·11·17 and other composites against Fermat’s test for every base; Carmichael numbers pass for all coprime bases, as Korselt’s divisibility condition predicts.' },
         { num: '3.12', kind: 'Algorithm', name: 'Miller–Rabin primality test', deps: ['nt-3.11', 'algo-2.12'], refs: ['Hardy–Wright §6.14'],
           pic: 'Run the strong test on a chosen n with random bases; the square-root chain to 1 is displayed, composite witnesses appear for at least three quarters of the bases, and primes pass every round.' },

@@ -79,7 +79,7 @@ In particular, these identities apply to integration along contours.`,
 $$\frac1{2\pi i}\int_\Gamma(\alpha-\lambda)^n(\lambda e-x)^{-1}\,d\lambda=(\alpha e-x)^n.$$
 In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge0$.`,
       idea: String.raw`The resolvent identity gives a recurrence between the integrals for exponents $n$ and $n+1$. The exponent-zero integral is $e$, by the Neumann series on a large circle and contour deformation. The recurrence then works in both directions because $\alpha e-x$ is invertible.`,
-      caption: String.raw`$x$ is a $3\times3$ matrix with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) — a similarity hides its triangular form. Drag the contour circle and change its radius and the power $n$. The integral is computed with $192$ nodes. If the circle encloses the whole spectrum, the result is $x^n$ to rounding error. If it encloses only part of it, you get $x^nP$ instead, where $P$ is the Riesz projection onto the enclosed eigenvalues — the readout reports both comparisons and $\operatorname{tr}P$ = the number enclosed.`,
+      caption: String.raw`$x$ is a $3\times3$ matrix with eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) — a similarity hides its triangular form. Drag the contour circle and change its radius and the power $n$. The integral is computed with $192$ nodes, for the displayed nonnegative powers $n=0,\dots,5$. Negative powers of $x$ would additionally require $0\notin\sigma(x)$ and a contour with winding number zero at $0$, as in the shifted statement above. If the circle encloses the whole spectrum, quadrature approximates $x^n$; accuracy deteriorates near an eigenvalue. If it encloses only part of it, you get $x^nP$ instead, where $P$ is the Riesz projection onto the enclosed eigenvalues — the readout reports both comparisons and $\operatorname{tr}P$ = the number enclosed.`,
       deps: ['fa-10.22', 'fa-10.23', 'fa-10.13'],
       tags: ['Banach algebras', 'Cauchy integrals'],
       viz(v) {
@@ -97,7 +97,7 @@ In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge
           const tooClose = l.some((z) => Math.abs(cabs(csub(z, c)) - r) < 0.05);
           S.circle(c[0], c[1], r, { color: tooClose ? 'red' : 'purple', width: 2.4, fill: 'purple', fillAlpha: 0.06 });
           H.forEach((h, k) => { h.color = inside[k] ? 'red' : 'muted'; });
-          if (tooClose) { S.corner('Γ passes through the spectrum', 'tl', { color: 'red', weight: 600 }); st = { bad: true }; return; }
+          if (tooClose) { S.corner('Γ too near the spectrum for this quadrature', 'tl', { color: 'red', weight: 600 }); st = { bad: true }; return; }
           const I = cauchy((z) => { let p = [1, 0]; for (let k = 0; k < n; k++) p = cmul(p, z); return p; }, X, [[c, r]]);
           const P = cauchy(() => [1, 0], X, [[c, r]]);
           let Xn = ident(3); for (let k = 0; k < n; k++) Xn = mmul(Xn, X);
@@ -106,8 +106,8 @@ In particular, integrating $\lambda^n$ around the spectrum gives $x^n$ for $n\ge
           st = { bad: false, e1, e2, tr, cnt: inside.filter(Boolean).length, n };
         });
         v.readout(() => {
-          const s = st; if (s.bad) return 'Move the contour off the eigenvalues.';
-          return `Encloses ${s.cnt} of 3 eigenvalues; $\\operatorname{tr}P = ${v.fix(s.tr[0], 6)}$. Relative errors: $\\|\\tfrac1{2\\pi i}\\oint\\lambda^{${s.n}}R(\\lambda)d\\lambda-x^{${s.n}}\\| = ${v.sci(s.e1 + 1e-17, 1)}$, $\\;\\|\\cdots-x^{${s.n}}P\\| = ${v.sci(s.e2 + 1e-17, 1)}$.`;
+          const s = st; if (s.bad) return 'Move the contour farther from the eigenvalues.';
+          return `Encloses ${s.cnt} of 3 eigenvalues; $\\operatorname{tr}P = ${v.fix(s.tr[0], 6)}$. Scaled Frobenius errors ($d=\\max(\\|x^{${s.n}}\\|_F,10^{-12})$): $\\|\\tfrac1{2\\pi i}\\oint\\lambda^{${s.n}}R(\\lambda)d\\lambda-x^{${s.n}}\\|_F/d = ${v.sci(s.e1, 1)}$, $\\;\\|\\cdots-x^{${s.n}}P\\|_F/d = ${v.sci(s.e2, 1)}$.`;
         });
       },
     },
@@ -325,7 +325,7 @@ $$\tilde h(x)=\tilde g\big(\tilde f(x)\big).$$`,
     },
     {
       num: '10.31', kind: 'Theorem', name: 'Polynomial identities reduce the functional calculus',
-      statement: String.raw`Let $P(\lambda)=\prod_j(\lambda-a_j)^{m_j}$ have degree $n$, and suppose $P(x)=0$. Then $\sigma(x)\subset\{a_j\}$. For any $f$ holomorphic on an open neighborhood of these roots, there is a polynomial $Q$ of degree less than $n$ with $f-Q=Pg$ for a holomorphic $g$ on that neighborhood, and $\tilde f(x)=Q(x)$.`,
+      statement: String.raw`Let $P(\lambda)=\prod_j(\lambda-a_j)^{m_j}$ have positive degree $n\ge1$ (distinct roots $a_j$, positive integer multiplicities $m_j$), and suppose $P(x)=0$. Then $\sigma(x)\subset\{a_j\}$. For any $f$ holomorphic on an open neighborhood of these roots, there is a polynomial $Q$ of degree less than $n$ with $f-Q=Pg$ for a holomorphic $g$ on that neighborhood, and $\tilde f(x)=Q(x)$.`,
       idea: String.raw`Cancel the principal parts of $f/P$ at the roots of $P$. This produces the Hermite interpolation polynomial $Q$, matching derivatives through order $m_j-1$ at $a_j$. The algebra property gives $\tilde f(x)-Q(x)=P(x)\tilde g(x)=0$.`,
       caption: String.raw`A Jordan block $x=\mu I+kN$, $N^2=0$, satisfies $(x-\mu I)^2=0$. The exact Hermite polynomial for $f=\exp$ is $Q(\lambda)=e^\mu[1+(\lambda-\mu)]$. Compare its action on the draggable vector with a matrix exponential computed by its power series. Switch to values-only interpolation to see why the derivative condition matters when $k\ne0$.`,
       deps: ['fa-10.27', 'fa-10.28'], tags: ['functional calculus', 'Hermite interpolation'], viz: hermiteJordan,
