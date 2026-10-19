@@ -326,10 +326,10 @@
     {
       "id": "xtal-1.4",
       "file": "content/xtal/ch01.js",
-      "textHash": "66a367729f420fa13a58a10c84b12835b7908a54ade4640ee0d79ad0a87f92b9",
-      "textReview": "Needs correction: high-index faces are not impossible, three lattice points must be noncollinear, and an irrational plane can contain a lattice line. Rational staircases need not have uniform terrace widths; finite floating-point approximations cannot certify irrationality. Qualify energy and growth claims.",
-      "visualReview": null,
-      "interactionReview": null,
+      "textHash": "fc2c40bce924c07b742fee42b1cebffcadc90f307632941ffe680439bc44c934",
+      "textReview": "Corrected universal facet claims, the noncollinearity hypothesis, lattice-line counterexample and the false rational/irrational staircase classifier. Added the actual cross-product derivation and preserved the 2/3 preset at the largest aspect ratio; see agent-rational-facets-review.md.",
+      "visualReview": "Inspected the corrected native dark 2/3 view at c/a=1.6: the cut slope is 0.6667, the small-denominator approximation is 2/3, observed terrace widths are 1 and 2, and near-zero errors use a labelled display floor.",
+      "interactionReview": "Native browser gestures exercise all four presets at both aspect-ratio endpoints, verify the formerly clipped 2/3 preset, and drag the cut handle. Real KaTeX and error/readout checks pass in both themes.",
       "status": "text-reviewed-follow-up-pending"
     },
     {

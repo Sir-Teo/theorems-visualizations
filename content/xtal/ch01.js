@@ -260,10 +260,13 @@ export default {
       num: '1.4',
       kind: 'Law',
       name: 'Haüy’s law of rational indices',
-      statement: String.raw`Every natural face of a crystal cuts the crystal axes at distances $m\,a$, $n\,b$, $p\,c$ whose ratios are rational numbers — after multiplying by a common factor, small integers. Equivalently, the reciprocals of the intercepts, in units of the cell edges, are in the ratio of three integers $h:k:l$ (the Miller indices of the face). Faces with very large indices are not observed; the common ones have indices of 0, 1, 2 or 3.`,
-      idea: String.raw`Haüy built the crystal from identical bricks. A plane that is a smooth surface of the brick stack must contain lattice points, and any plane through three lattice points has rational intercept ratios, because the intercepts solve linear equations with integer coefficients. A plane with irrational slope contains at most one lattice point of the stack and can only be imitated by a staircase of unit steps that is then actually a union of rational faces. The simple (small $|m|,|n|$) faces are the planes with the densest lattice points, hence the lowest surface energy and the slowest growth, which is why those are seen.`,
-      caption: String.raw`A section through a stack of bricks of width $a$ and height $c$ (set the axial ratio $c/a$). Drag the gold handle to cut a face of any slope: the bricks whose centres lie below the cut stay, and the surface becomes a staircase. Terrace widths are computed from it. The right-hand plot shows the error of the best rational approximation $p/q$ of the slope for every denominator $q$: for a rational slope the error hits zero, for an irrational one it never does (try *golden*, *√2*), and the terrace widths then take two neighbouring values forever.`,
-      deps: ['xtal-1.3'],
+      statement: String.raw`Haüy's empirical law describes the rational orientations commonly found among macroscopic facets of periodic crystals. In fractional lattice coordinates $(X,Y,Z)$, a plane parallel to a two-dimensional lattice net has an equation
+$$hX+kY+lZ=d,$$
+with integers $h,k,l$, not all zero: its **Miller indices**. For $d\ne0$ its finite intercepts are $d/h$, $d/k$, $d/l$, so their ratios are rational. A zero index means the plane is parallel to that axis, with infinite intercept. Low-index facets are common, but high-index faces are possible; this is not a prohibition of every other surface orientation.`,
+      idea: String.raw`Three **noncollinear** lattice points give two independent integer-coordinate displacement vectors. The cross product of those coordinate triples supplies nonzero integer coefficients $(h,k,l)$ for the plane equation, which proves the rational-index statement for that lattice plane and its parallel translates. A plane without a two-dimensional lattice net may still contain a whole lattice line: for example $X+\sqrt2Y=0$ contains the $Z$ axis. In the two-dimensional brick section, a rational slope $p/q$ gives a staircase that repeats after $q$ columns and $p$ rows; its individual terraces need not all have the same width. Simple broken-bond models help explain why some low-index faces are common, but actual facet energies and growth rates also depend on crystal chemistry and conditions.`,
+      caption: String.raw`Drag the cut through the finite brick stack and change the axial ratio $c/a$. The remaining bricks form a staircase. The right plot gives the best numerator $p$ for each denominator $q=1,\dots,12$; errors at or below $10^{-12}$ are shown at the display floor. Try $2/3$: its periodic staircase has both one- and two-column terraces. The golden-ratio and $\sqrt2-1$ presets represent known irrational numbers by floating-point approximations. A finite plot or a small approximation error cannot certify rationality or irrationality.`,
+      scope: String.raw`Periodic-crystal lattice geometry and an illustrative finite two-dimensional brick section. The model does not predict surface energies, growth kinetics, rough surfaces or quasicrystal facets. Displayed approximation errors use floating-point arithmetic.`,
+      deps: ['xtal-1.3', 'vcalc-1.3'],
       refs: ['Hammond ch. 5'],
       credit: 'R. J. Haüy, 1784 (Essai d’une théorie sur la structure des crystaux)',
       tags: ['morphology', 'rational indices'],
@@ -272,14 +275,16 @@ export default {
         const N = 16;
         const s = v.stage({ x: [-0.6, N + 0.6], y: [-0.5, 11], equal: false, axes: false, height: 420, weight: 1.55, title: 'brick stack and the cut face' });
         const hnd = s.handle(10, 6.2, { color: 'gold', r: 8, label: 'cut' });
-        const q = v.stage({ x: [0.5, 12.5], y: [-9, 0.3], axes: 'box', gutter: true, height: 420, weight: 1, xlabel: 'denominator q', ylabel: 'log₁₀ |slope − p/q|', xticks: [2, 4, 6, 8, 10, 12], title: 'best rational approximations' });
-        const setSlope = (m) => { const r = R.value; hnd.set(10, clamp(10 * m * r, 0.3, 10.4)); };
-        v.button('golden 1/φ', () => setSlope(0.6180339887));
+        const q = v.stage({ x: [0.5, 12.5], y: [-12.5, 0.3], axes: 'box', gutter: true, height: 420, weight: 1, xlabel: 'denominator q', ylabel: 'log₁₀ |slope − p/q|', xticks: [2, 4, 6, 8, 10, 12], title: 'best rational approximations' });
+        // The view expands with the brick stack; clipping y would change the
+        // promised fractional slope (notably 2/3 when c/a is 1.6).
+        const setSlope = (m) => { hnd.set(10, 10 * m * R.value); };
+        v.button('golden 1/φ', () => setSlope((Math.sqrt(5) - 1) / 2));
         v.button('2/3', () => setSlope(2 / 3));
         v.button('√2 − 1', () => setSlope(Math.SQRT2 - 1));
         v.button('1/3', () => setSlope(1 / 3));
         let info = null;
-        // continued-fraction best approximation of m with denominator <= qmax
+        // Best numerator for each fixed denominator.
         const bestFor = (m, qd) => { const p = Math.round(m * qd); return [p, qd, Math.abs(m - p / qd)]; };
         v.render(() => {
           const r = R.value, hx = Math.max(hnd.x, 2), hy = Math.max(hnd.y, 0.3);
@@ -310,16 +315,15 @@ export default {
           s.text('origin', 0.1, -0.35, { size: 11, color: 'muted', align: 'left' });
           s.corner(`slope = ${v.fix(m, 4)} rows per column`, 'tl', { size: 12.5, weight: 700, plate: true });
           // error plot
-          for (let qd = 1; qd <= 12; qd++) { const [, , e] = bestFor(m, qd); const y = e < 1e-12 ? -9 : Math.log10(e); q.dot(qd, Math.max(-9, y), { r: 5, color: e < 1e-12 ? 'green' : 'accent' }); }
-          q.hline(-9, { color: 'faint' });
-          q.text('exact (error 0)', 12.4, -8.55, { align: 'right', size: 10.5, color: 'green' });
+          for (let qd = 1; qd <= 12; qd++) { const [, , e] = bestFor(m, qd); const y = e <= 1e-12 ? -12 : Math.log10(e); q.dot(qd, Math.max(-12, y), { r: 5, color: e <= 1e-12 ? 'green' : 'accent' }); }
+          q.hline(-12, { color: 'faint' });
+          q.text('≤10⁻¹² (display floor)', 12.4, -11.55, { align: 'right', size: 10.5, color: 'green' });
           info = { m, best, widths, steps: runs.length - 1 };
         });
         v.readout(() => {
           if (!info) return '';
           const { m, best, widths, steps } = info;
-          const exact = best.e < 1e-9;
-          return `Cut slope $c\\,\\text{rows}/a\\,\\text{columns}=${v.fix(info.m, 4)}$ → intercept ratio $x{:}z = ${best.q}{:}${best.p}$ ${exact ? '(exactly rational, a flat face — the brick stack reproduces it with every tread the same width)' : `(nearest with $q\\le12$: $p/q=${best.p}/${best.q}$, error $${v.sci(best.e, 2)}$)`}.\nTerrace widths seen over ${steps} steps: ${widths.length ? widths.join(', ') : '—'} bricks${exact ? '' : ' (two neighbouring values, never one: a staircase imitating an irrational face)'}.`;
+          return `Cut slope = ${v.fix(m, 4)} rows per column. Best approximation with $q\\le12$: $p/q=${best.p}/${best.q}$, numerical error $${v.sci(best.e, 2)}$.\nTerrace widths observed in this finite window (${steps} complete steps): ${widths.length ? widths.join(', ') : '—'} bricks. A rational slope can have different terrace widths; small errors here do not certify rationality.`;
         });
       },
     },

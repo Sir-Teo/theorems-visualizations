@@ -397,14 +397,14 @@
       "field": "chem",
       "writtenItems": 34,
       "betweenFields": {
-        "writtenToWritten": 26,
-        "writtenToAll": 28,
-        "allToAll": 44
+        "writtenToWritten": 27,
+        "writtenToAll": 29,
+        "allToAll": 45
       },
       "betweenCollections": {
-        "writtenToWritten": 26,
-        "writtenToAll": 29,
-        "allToAll": 48
+        "writtenToWritten": 27,
+        "writtenToAll": 30,
+        "allToAll": 49
       }
     },
     {

@@ -17,8 +17,8 @@
     {
       "name": "energy",
       "file": "docs/verification/cross-field-energy.json",
-      "sha256": "a9a30f2f92dbd242326b13d61d9814475fc7df2ba72621aaefc21b3edafefc6d",
-      "edges": 172
+      "sha256": "dd4c18715faef588c6dfc7b8545ecb80f85ffb1ae553e18f1465de15fe5b507d",
+      "edges": 173
     },
     {
       "name": "circuits",
@@ -39,7 +39,7 @@
       "edges": 124
     }
   ],
-  "uniqueAddedEdges": 773,
+  "uniqueAddedEdges": 774,
   "issues": [],
   "graphNodes": 13661,
   "cycles": [],

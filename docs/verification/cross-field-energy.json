@@ -2524,6 +2524,15 @@
         "field": "idea",
         "quote": "put its kinetic energy $V^2/2$ somewhere; adiabatically the enthalpy rises by that amount, $c_pT_0=c_pT+V^2/2$, which gives the formula for $T_0$ (and the $M^2$ growth). Close to the wall the gas cannot be brought to rest without conducting heat into the sur"
       }
+    },
+    {
+      "source": "xtal-1.4",
+      "target": "vcalc-1.3",
+      "reason": "The revised lattice-plane derivation takes the cross product of independent integer-coordinate displacement triples to obtain nonzero integer plane coefficients. The written target supplies that operation and its orthogonality; this does not assert a Euclidean physical normal in an oblique cell.",
+      "sourceFile": "content/xtal/ch01.js",
+      "targetName": "Cross product as oriented area",
+      "report": "docs/verification/agent-rational-facets-review.md",
+      "reviewScope": "Direct comparison of source derivation and target formula; no independent peer review claimed."
     }
   ],
   "shortfalls": [
@@ -2606,6 +2615,11 @@
     {
       "source": "qinfo-3.5",
       "scope": "State that Eve intercepts each qubit independently with probability q, exactly as the existing r()<q simulation already implements. This is the probability model required by the retained product-rule dependency; no computation or source flag changed."
+    },
+    {
+      "source": "xtal-1.4",
+      "report": "docs/verification/agent-rational-facets-review.md",
+      "scope": "Qualify facet and finite-staircase claims and add the cross-product step used in the revised plane-equation derivation; baseline audit snapshot preserved."
     }
   ]
 }

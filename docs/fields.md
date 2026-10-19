@@ -93,6 +93,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   changes rates but not the equilibrium.
 - Spectra and orbitals: use `v.M.schrodinger1D` for 1D models, `v.M.wavelengthRGB` for colours;
   3D shapes through `v.scene3`.
+- In crystallography, separate lattice-plane geometry from empirical facet selection.
+  Rational staircase slopes imply a repeating pattern, not identical terraces; a finite
+  denominator search cannot certify irrationality. Check presets at every cell-aspect-ratio
+  endpoint (agent sample finding: xtal 1.4).
 
 ## Biology
 
