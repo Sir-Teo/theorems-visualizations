@@ -6,8 +6,8 @@
 //     from 1 to 295 that has measured masses, the most tightly bound measured isobar: [A, Z, binding energy per nucleon in keV].
 //     NUC lists chosen nuclides as [A, Z, atomic mass excess in keV, total binding energy in keV] (experimental values, no "#" extrapolations).
 //   Delayed neutrons: DOE-HDBK-1019/1-93 NP-02Table3; printed fractions/half-lives in source-audit-kinetics.shared.js (sum0.00649).
-//   Thermal cross sections (2200 m/s): NIST Center for Neutron Research table (ncnr.nist.gov/resources/n-lengths): 235U absorption 680.9 b,
-//     238U 2.68 b, 1H 0.3326 b, 2H 0.000519 b, C 0.0035 b, O 0.00019 b; fission of 235U 585 b (nuclear-power.com, 0.0253 eV).
+//   Chain-reaction inputs: inspected DOE-HDBK-1019/2-93 p7 teaching example and NIST NCNR moderator table;
+//     all measured versus chosen parameters are separated in source-audit-chain.shared.js.
 //   D–T reactivity: Bosch & Hale, Nucl. Fusion 32, 611 (1992): the S-factor fit for T(d,n)4He with the coefficients quoted in the WarpX source,
 //     integrated here over a Maxwellian (the paper's own reactivity fit is not used). Check: 1.14e-22 m^3/s at 10 keV.
 export * from './ch02.shared.js';

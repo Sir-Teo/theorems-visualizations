@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 227,
+  "remainingFlags": 226,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 2,
     "imaging": 1,
     "circ": 1,
-    "energy": 6,
+    "energy": 5,
     "solid": 3,
     "robot": 1,
     "aero": 7,
@@ -218,19 +218,6 @@
         "wikipedia": "https://en.wikipedia.org/wiki/CMOS",
         "doi": "https://doi.org/10.1109/ISSCC.1963.1157450"
       }
-    },
-    {
-      "id": "energy-3.6",
-      "file": "content/energy/ch03-b.js",
-      "name": "Chain reaction and the multiplication factor",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 9"
-      ],
-      "links": {}
     },
     {
       "id": "energy-3.10",
@@ -4273,7 +4260,8 @@
       "energy-3.9",
       "solid-4.10",
       "solid-4.3",
-      "solid-4.4"
+      "solid-4.4",
+      "energy-3.6"
     ]
   },
   "additionalFollowups": [
@@ -8152,6 +8140,12 @@
       "status": "resolved",
       "report": "docs/verification/solid-failure-followup.md",
       "note": "Read primary Itasca Mohr-Coulomb criterion, signs and omitted tensile/flow branches; independently reran sign-converted principal traction/tangency checks and all native slider corners. Full configured circles and visible envelope segments fit, with no unique plane in the degenerate hydrostatic case."
+    },
+    {
+      "id": "energy-3.6",
+      "status": "resolved",
+      "report": "docs/verification/energy-chain-followup.md",
+      "note": "Read original DOE neutron-life-cycle source and p7 teaching inputs plus NIST moderator table. Parent independently reviewed formulas/content/helper, reran four math and four native layout/theme groups, inspected source image and wide/narrow screenshots. Full Poisson populations are retained, near-critical survival is stable, and chosen scalar factors make no real-core prediction."
     }
   ]
 }

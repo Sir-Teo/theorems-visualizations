@@ -1,12 +1,9 @@
 // Energy Systems — Chapter 3: Fuels and nuclear energy (items 3.6–3.10; part b)
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
-//   3.6 Thermal cross sections at 2200 m/s from the NIST Center for Neutron Research table: U-235 absorption 680.9 b, U-238 2.68 b, H 0.3326 b, D 0.000519 b, C 0.0035 b,
-//     O 0.00019 b; U-235 fission 585 b (0.0253 eV). ν = 2.43 neutrons per thermal fission is a round value from memory (evaluated data give about 2.43–2.44; the Wikipedia
-//     article on nuclear fission quotes 2.5). Moderating powers ξΣs per molecule/atom (H2O 40 b, D2O 5.3 b, graphite 0.75 b) are from memory of textbook tables (Lamarsh).
-//     The effective resonance integral I_eff = 25 b and the fast-fission factor ε = 1.03 are ILLUSTRATIVE tuning values chosen so that the model reproduces the textbook
-//     facts that natural uranium cannot go critical in light water but can in graphite or heavy water; the picture is a model of a homogeneous lattice, not a lattice code.
-//     Sanity check: η of natural uranium comes out 1.35 (textbook 1.34); Wikipedia's "typical" thermal-reactor factors 1.65, 0.71, 0.87, 1.02 multiply to k∞ ≈ 1.04.
+//   3.6 DOE-HDBK-1019/2-93 NP03 pp1–16, including the stated U235/U238 teaching inputs and p7 reproduction example.
+//     Moderator absorption: NIST NCNR 2200m/s table. Resonance/slowing and fast-fission parameters are declared choices.
+//     source-audit-chain.shared.js separates source inputs from this schematic model and retains full Poisson populations.
 //   3.7/3.8 DOE-HDBK-1019/1-93 NP02Table3; six printed fractions/half-lives and numerical models in source-audit-kinetics.shared.js.
 //   3.9 Untermyer & Weills, AECD-3454 (1952), inspected complete original: p4Eq2 finite-irradiation heat fit,
 //     natural uranium (conversion ratio≈0.8), including U239/Np239 and excluding delayed-neutron fission. Historical uncertainty is stated.
@@ -21,6 +18,7 @@ import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, sigmavDT,
 
 import {kinStepCurveAudit, kinProgramAudit} from './source-audit-kinetics.shared.js';
 import {decayFractionAudit,decayWaterAudit} from './source-audit-decay.shared.js';
+import {CHAIN_MODERATORS_AUDIT,chainFactorsAudit,poissonSurvivalAudit,chainGenerationsAudit} from './source-audit-chain.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 
@@ -31,58 +29,56 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────── 3.6
     {
       num: '3.6', kind: 'Model', name: 'Chain reaction and the multiplication factor',
-      statement: String.raw`Let $k$ be the average number of neutrons of the next generation produced by one neutron of the present generation. If $k<1$ the chain is **subcritical** and dies out, if $k=1$ it is **critical** and steady, and if $k>1$ it is **supercritical** and the population grows as $k^g$ after $g$ generations. For an infinite uniform medium the multiplication factor is the product of four factors,
-$$k_\infty = \eta\, f\, p\, \varepsilon,$$
-the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of thermal neutrons absorbed in fuel ($f$), the probability of escaping resonance capture while slowing down ($p$) and the fast-fission boost ($\varepsilon$); a finite core multiplies by the probability $P_{NL}$ of not leaking out, $k_{\mathrm{eff}} = k_\infty P_{NL}$. A single neutron starts a growing chain with probability less than one even when $k_{\mathrm{eff}}>1$, because the lineage can die out by chance.`,
-      idea: String.raw`Each factor is a ratio of cross sections. Enrichment raises $\eta$ by adding U-235, whose fission-to-absorption ratio is high, and lowers the share of U-238 that only absorbs. A moderator must slow neutrons without absorbing them: light water is a superb slowing-down medium but absorbs enough neutrons (hydrogen's absorption cross section is 0.33 b against 0.0005 b for deuterium) that natural uranium cannot reach $k_\infty=1$ in it, whereas graphite and heavy water allow natural uranium. The branching statistics are those of a Galton–Watson process: with Poisson offspring of mean $k$, extinction probability is the smaller root of $q = e^{k(q-1)}$.`,
-      caption: String.raw`Choose a moderator, then move the enrichment, the moderator-to-uranium ratio, the control absorber and the leakage: the four bars show $\eta,f,p,\varepsilon$ and the product turns green once $k_{\mathrm{eff}}\ge 1$. The tree follows four source neutrons through the generations (each neutron leaves a Poisson number of successors); press *Resample* for another run. Try natural uranium (0.72 %) in light water, then in graphite.`,
+      statement: String.raw`Let $k$ be the mean number of next-generation neutrons per present neutron. With independent offspring and a fixed $k$, the **expected** population is $\mathbb E[Z_g]=Z_0k^g$. Subcritical ($k<1$) means a decreasing mean, critical ($k=1$) a constant mean, and supercritical ($k>1$) an increasing mean. A random lineage need not follow that mean. For a thermal-reactor neutron balance neglecting leakage,
+$$k_\infty=\eta f p\varepsilon,$$
+where $\eta$ is fission neutrons per thermal absorption in fuel, $f$ the share of thermal absorptions occurring in fuel, $p$ the probability of avoiding resonance absorption during slowing down, and $\varepsilon$ the fast-fission multiplier. Combining the fast and thermal non-leakage factors into $P_{NL}$ gives $k_{\rm eff}=k_\infty P_{NL}$. These factors summarize a neutron life cycle; they do not determine the spatial flux.`,
+      idea: String.raw`For the two-isotope teaching mixture, under the equal-thermal-flux approximation,
+$$\eta=\frac{\nu e\sigma_{f,235}}{e\sigma_{a,235}+(1-e)\sigma_{a,238}},$$
+where $e$ is the U-235 **atom fraction**. Utilization $f$ divides fuel absorption by total absorption in fuel, moderator and the chosen control absorber. Thus $\eta f$ is fission-neutron production divided by total thermal absorption. Increasing moderator content improves the chosen resonance-escape factor while adding thermal absorption; both effects matter.
+
+The separate stochastic illustration assumes Poisson offspring of mean $k_{\rm eff}$. Its extinction probability is the smallest root of $q=\exp[k_{\rm eff}(q-1)]$, since all children must become extinct. For $k_{\rm eff}\le1$, extinction occurs with probability one even at criticality, despite the constant critical mean. Above one, a positive survival probability remains; four independent sources survive with probability $1-q^4$.`,
+      caption: String.raw`Choose a moderator and move the U-235 atom fraction, moderator ratio, absorber and non-leakage controls. The bars show the four factors and their products. The tree follows four sources through nine Poisson generations; *Resample* changes the random run. Every child is retained in the simulation. When a generation exceeds 60 neutrons, evenly spaced representatives and their incoming branches are drawn; the readout reports the full population.`,
       deps: ['energy-3.5'],
-      refs: ['Tester ch. 9'],
+      refs: ['DOE-HDBK-1019/2-93, NP-03 pp. 1–16: complete neutron-life-cycle section and p. 7 reproduction example', 'NIST NCNR neutron cross-section table: moderator absorption at 2200 m/s', 'Poisson branching mean and extinction equation derived here'],
+      links: {primary:'https://ncsp.llnl.gov/sites/ncsp/files/2024-03/doe_fundamentals_handbook_nuclear_physics_and_reactor_theory_vol_2_of_2.pdf',moderator:'https://www.ncnr.nist.gov/resources/n-lengths/list.html'},
       tags: ['chain reaction', 'criticality', 'neutron multiplication'],
-      scope: String.raw`A homogeneous four-factor model of a thermal reactor with illustrative resonance and fast-fission parameters (see the source note), real thermal cross sections, no spatial structure and no burnup. It shows trends and thresholds (natural uranium in light water versus graphite or heavy water), not the $k$ of any real design.`,
-      verify: true,
+      scope: String.raw`Schematic neutron balance, not a lattice or transport calculation. The inspected DOE teaching example supplies $\nu=2.42$, $\sigma_{f,235}=582$ b, $\sigma_{a,235}=694$ b and $\sigma_{a,238}=2.71$ b; these historical rounded inputs are not presented as a current evaluated library. Moderator absorption uses the inspected NIST table, with molecular sums for water and no impurities. The utilization formula assumes equal thermal flux in fuel and moderator. Chosen effective slowing parameters are 40, 5.3 and 0.75 b per H₂O molecule, D₂O molecule and C atom; $p=\exp[-(1-e)25/(R b_{\rm slow})]$ and $\varepsilon=1.03$ are illustrative choices. They are not a computed resonance integral, geometry or homogeneous-core fast-fission result. No real design's criticality or natural-uranium feasibility is inferred. The Poisson process is an independent mathematical analogy with fixed mean, no source replenishment, feedback, spatial coupling or burnup.`,
+      verify: false,
       viz(v) {
-        const MOD = {
-          h2o: { n: 'light water', sa: 2 * 0.3326 + 0.00019, xs: 40, N0: 3, lab: 'H₂O molecules per U atom' },
-          d2o: { n: 'heavy water', sa: 2 * 0.000519 + 0.00019, xs: 5.3, N0: 150, lab: 'D₂O molecules per U atom' },
-          c: { n: 'graphite', sa: 0.0035, xs: 0.75, N0: 400, lab: 'C atoms per U atom' },
-        };
-        const NU = 2.43, SF5 = 585, SA5 = 680.9, SA8 = 2.68, IEFF = 25, EPS = 1.03;
-        const s = v.stage({ x: [0, 5.4], y: [-0.3, 2.3], axes: false, height: 270, minWidth: 340 });
-        const s2 = v.stage({ x: [0, 10], y: [-0.14, 1.14], axes: false, height: 270, minWidth: 340 });
-        const mod = v.select('moderator', Object.entries(MOD).map(([k, m]) => ({ value: k, label: m.n })), 'h2o', { onChange: () => { ratio.set(MOD[mod.value].N0); } });
-        const en = v.slider('enrichment (% U-235)', 0.72, 20, 3, { step: 0.01, log: true });
-        const ratio = v.slider('moderator per uranium atom', 0.3, 1000, 3, { step: 0.1, log: true });
-        const ctl = v.slider('control absorber (barns per U atom)', 0, 30, 6, { step: 0.5 });
-        const leak = v.slider('non-leakage probability $P_{NL}$', 0.5, 1, 0.97, { step: 0.005 });
-        let seed = 7; v.button('Resample', () => { seed++; });
-        const calc = () => {
-          const m = MOD[mod.value], e = en.value / 100, SaF = e * SA5 + (1 - e) * SA8, SaM = ratio.value * m.sa;
-          const eta = NU * e * SF5 / SaF, f = SaF / (SaF + SaM + ctl.value);
-          const p = Math.exp(-(1 - e) * IEFF / (ratio.value * m.xs)), kinf = eta * f * p * EPS;
-          return { eta, f, p, eps: EPS, kinf, keff: kinf * leak.value };
-        };
-        const extinct = (k) => { if (k <= 1) return 1; let q = 0.5; for (let i = 0; i < 200; i++) q = Math.exp(k * (q - 1)); return q; };
-        const pois = (r, lam) => { if (lam > 40) return Math.max(0, Math.round(lam + Math.sqrt(lam) * r.normal())); const L = Math.exp(-lam); let k = 0, pp = 1; do { k++; pp *= r(); } while (pp > L); return k - 1; };
-        let C = null;
-        v.render(() => {
-          C = calc(); const keff = C.keff;
-          const fac = [['η', C.eta, 'accent'], ['f', C.f, 'orange'], ['p', C.p, 'purple'], ['ε', C.eps, 'teal'], ['k∞', C.kinf, 'gold'], ['k_eff', keff, keff >= 1 ? 'green' : 'red']];
-          fac.forEach(([n, val, col], i) => { s.rect(i * 0.9 + 0.15, 0, i * 0.9 + 0.8, Math.min(val, 2.2), { fill: col, fillAlpha: 0.55, color: col }); s.text(n, i * 0.9 + 0.475, -0.16, { size: 13, weight: 700, color: col, align: 'center' }); s.text(v.fix(val, 3), i * 0.9 + 0.475, Math.min(val, 2.2) + 0.1, { size: 12, weight: 700, color: 'ink', align: 'center' }); });
-          s.hline(1, { color: 'ink', dash: true, alpha: 0.6 }); s.text('k = 1', 5.35, 1.07, { size: 11, color: 'muted', align: 'right' });
-          // lineage tree
-          const r = v.rng(seed * 101 + 3), G = 9, gens = [[0]], edges = [], pop = [1]; let ids = [{ g: 0, i: 0, par: -1 }]; let cur = [0]; const layers = [[{ par: -1 }, { par: -1 }, { par: -1 }, { par: -1 }]];
-          for (let g = 1; g <= G; g++) { const prev = layers[g - 1], lay = []; let total = 0; for (let i = 0; i < prev.length && lay.length < 60; i++) { const c = pois(r, keff); for (let j = 0; j < c && lay.length < 60; j++) lay.push({ par: i }); total += c; } pop.push(lay.length >= 60 ? 60 : lay.length); layers.push(lay); if (!lay.length) break; }
-          const cx = (g) => 0.4 + g * (9.2 / G);
-          layers.forEach((lay, g) => { const n = lay.length; lay.forEach((nd, i) => { nd.y = (i + 0.5) / Math.max(n, 1); if (g > 0) { const p = layers[g - 1][nd.par]; s2.line(cx(g - 1), p.y, cx(g), nd.y, { color: 'faint', width: 1 }); } });
-            { const c = s2.ctx; c.fillStyle = v.color(g === 0 ? 'gold' : 'accent'); for (const nd of lay) { c.beginPath(); c.arc(s2.X(cx(g)), s2.Y(nd.y), n > 30 ? 3 : 5, 0, 6.2832); c.fill(); } } s2.text(`g${g}`, cx(g), -0.07, { size: 10.5, color: 'muted', align: 'center' }); });
-          const last = layers.length - 1; if (!layers[last].length) s2.text('chain died out (press Resample)', Math.min(cx(last) + 0.25, 5.6), 0.78, { size: 13, weight: 700, color: 'red', align: 'left' });
-          s2.text(`four source neutrons, Poisson(${f2(v, keff)}) offspring each`, 0.1, 1.07, { size: 11.5, color: 'muted', align: 'left' });
+        const MOD=CHAIN_MODERATORS_AUDIT;
+        const s=v.stage({x:[0,5.4],y:[-.3,2.35],axes:false,height:270,minWidth:340});
+        const s2=v.stage({x:[0,10],y:[-.17,1.28],axes:false,height:270,minWidth:340});
+        const mod=v.select('moderator',Object.entries(MOD).map(([value,m])=>({value,label:m.n})),'h2o',{onChange:()=>ratio.set(MOD[mod.value].N0)});
+        const en=v.slider('U-235 atom fraction (%)',.72,20,3,{step:.01,log:true});
+        const ratio=v.slider('moderator units per uranium atom',.3,1000,3,{step:.1,log:true});
+        const ctl=v.slider('control absorber (barns per U atom)',0,30,6,{step:.5});
+        const leak=v.slider('non-leakage probability $P_{NL}$',.5,1,.97,{step:.005});
+        let seed=7,C,layers;v.button('Resample',()=>{seed++;});
+        const calc=()=>chainFactorsAudit({moderator:mod.value,fraction:en.value/100,ratio:ratio.value,absorber:ctl.value,nonleakage:leak.value});
+        v.render(()=>{
+          C=calc();layers=chainGenerationsAudit(v.rng(seed*101+3),C.keff);
+          const fac=[['η',C.eta,'accent'],['f',C.f,'orange'],['p',C.p,'purple'],['ε',C.eps,'teal'],['k∞',C.kinf,'gold'],['k_eff',C.keff,C.keff>=1?'green':'red']];
+          fac.forEach(([n,val,col],i)=>{const x=.9*i+.475;s.rect(.9*i+.15,0,.9*i+.8,val,{fill:col,fillAlpha:.55,color:col});s.text(n,x,-.16,{size:13,weight:700,color:col,align:'center'});s.text(v.fix(val,3),x,val+.1,{size:12,weight:700,color:'ink',align:'center'});});
+          s.hline(1,{color:'ink',dash:true,alpha:.6});s.text('k = 1',5.3,1.07,{size:11,color:'muted',align:'right'});
+          const cx=g=>.4+g*9.2/9;
+          layers.forEach(lay=>lay.forEach((nd,i)=>{nd.y=(i+.5)/lay.length;}));
+          layers.forEach((lay,g)=>{
+            const shown=Math.min(60,lay.length);
+            for(let j=0;j<shown;j++){
+              const nd=lay[Math.floor((j+.5)*lay.length/shown)];
+              if(g>0)s2.line(cx(g-1),layers[g-1][nd.par].y,cx(g),nd.y,{color:'faint',width:1});
+              s2.dot(cx(g),nd.y,{r:lay.length>30?2.5:4.5,color:g===0?'gold':'accent'});
+            }
+            s2.text(`g${g}`,cx(g),-.09,{size:10.5,color:'muted',align:'center'});
+          });
+          const extinct=layers.findIndex(lay=>!lay.length);
+          if(extinct>=0)s2.text(`lineages extinct by g${extinct}`,5,.65,{size:12,weight:700,color:'red',align:'center'});
+          s2.text(`four sources; Poisson(${f2(v,C.keff)}) offspring`,.1,1.2,{size:11,color:'muted',align:'left'});
+          s2.text('up to 60 visible per generation',.1,1.1,{size:11,color:'muted',align:'left'});
         });
-        v.readout(() => {
-          const k = C.keff, q = extinct(k);
-          const note = k < 1 ? 'subcritical: every lineage dies out.' : k === 1 ? 'critical.' : `supercritical: a single neutron seeds a growing chain with probability ${f1(v, 100 * (1 - q))} %.`;
-          return `$\\eta f p \\varepsilon = ${v.fix(C.eta, 3)}\\times${v.fix(C.f, 3)}\\times${v.fix(C.p, 3)}\\times${v.fix(C.eps, 3)} = ${v.fix(C.kinf, 3)}$, and $k_{\\mathrm{eff}} = k_\\infty P_{NL} = ${v.fix(k, 3)}$: ${note}\nExpected population after 10 generations: $k^{10} = ${v.sci(k ** 10, 3)}$ neutrons per starting neutron.`;
+        v.readout(()=>{
+          const k=C.keff,survival=poissonSurvivalAudit(k),note=k<1?'subcritical mean':k===1?'critical mean':'supercritical mean';
+          return `$k_\\infty=${v.fix(C.kinf,3)}$, $k_{\\rm eff}=${v.fix(k,3)}$: ${note}. ${MOD[mod.value].lab}.\nFull simulated population at generation 9: $${layers[9].length}$; expected population from four sources: $4k^9=${v.sci(4*k**9,3)}$.\nInfinite-process survival probability: ${(100*survival).toFixed(2)}% from one source, ${(100*(1-(1-survival)**4)).toFixed(2)}% from four. These probabilities concern the unbounded Poisson model, not survival through only nine generations.`;
         });
       },
     },
