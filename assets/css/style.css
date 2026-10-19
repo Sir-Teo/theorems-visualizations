@@ -307,6 +307,13 @@ main { flex: 1; }
 .embed-view .thm-grid { margin-top: 12px; }
 .embed-view .viz-card { padding: 10px; box-shadow: none; }
 .embed-view .embed-attribution { display: block; margin-top: 12px; font-size: 12px; color: var(--ink-3); }
+.bridge-picture { margin: 0 0 28px; padding: 18px; }
+.bridge-picture h2 { margin: 8px 0 12px; font-size: 25px; }
+.bridge-model, .bridge-model-limit, .bridge-picture-sources { font-size: 13.5px; line-height: 1.65; color: var(--ink-2); overflow-wrap: anywhere; }
+.bridge-model-limit { border-top: 1px solid var(--line); margin-top: 16px; padding-top: 12px; }
+.bridge-picture-sources { margin-bottom: 0; }
+.bridge-picture-sources a { white-space: normal; }
+@media (max-width: 440px) { .bridge-picture { padding: 10px; } .bridge-picture h2 { font-size: 22px; } }
 .prose { position: relative; min-width: 0; overflow-wrap: anywhere; font-family: var(--font-serif); font-size: 18px; line-height: 1.6; color: var(--ink); }
 .katex { position: relative; }
 .prose .katex { font-size: 1.02em; }

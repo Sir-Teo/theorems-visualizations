@@ -672,6 +672,7 @@ async function pageBridge(slug) {
     <h1>${escapeHTML(B.title)}</h1>
     <p class="sub">${inlineHTML(B.blurb || '')}</p>
   </div>
+  <div class="bridge-picture-host"></div>
   <ol class="journey">${B.steps.map((st, i) => { const it = G.byId.get(st.id); if (!it) return ''; const C = G.colById.get(it.col); const F = G.fieldById.get(C.field); return `<li class="j-step${it.planned ? ' planned' : ''}" data-col="${it.col}" style="--fc:var(--f-${F.id})">
       <div class="j-rail"><span class="j-num">${i + 1}</span></div>
       <a class="card j-card" href="#/t/${it.id}">
@@ -680,6 +681,13 @@ async function pageBridge(slug) {
         <div class="note">${inlineHTML(st.note || '')}</div>
       </a></li>`; }).join('')}</ol></div>`);
   app.replaceChildren(el);
+  let alive = true, destroyPicture = null;
+  cleanup = () => { alive = false; destroyPicture?.(); };
+  try {
+    const { mountBridgePicture } = await import('./bridge-viz.js');
+    if (!alive) return;
+    destroyPicture = mountBridgePicture(el.querySelector('.bridge-picture-host'), slug, id => { const it = G.byId.get(id); return it ? `${colShort(it.col)} ${displayNum(it)} · ${it.name.replace(/\$/g, '')}` : id; });
+  } catch (error) { if (alive) el.querySelector('.bridge-picture-host').textContent = `Shared picture could not load: ${error.message}`; }
 }
 
 async function pageTimeline(params) {

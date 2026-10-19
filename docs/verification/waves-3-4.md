@@ -540,3 +540,7 @@ Resolved **pharm-3.4** after complete original Mark1957 paper reading and explic
 ## Renal-clearance and intermittent-infusion models — 2026-10-19
 
 Resolved **pharm-4.6** and **pharm-4.9** after original-paper reading and six independently rerun mathematical groups plus four native light/dark groups. Root inspected both final dark screenshots and reviewed the model implementations. Historical creatinine clearance is no longer secretly floored, the impairment cap is explicit, and both modified periodic means are checked. Intermittent infusions now use exact periodic peaks/crossing durations and distinguish steady daily AUC from startup exposure. Chosen inputs and aggregate clinical evidence remain separate. See [renal audit](pharm-renal-followup.md) and [infusion audit](pharm-infusion-followup.md). **232 source reviews remain**.
+
+## Shared bridge pictures — 2026-10-19
+
+All15written bridges now have distinct interactive canonical examples and context selectors, with numerical readouts, scope limits and links to written steps. Root independently reran16mathematical groups and all60native light/dark desktop/320px cases, including the genuinely held lazy-module navigation regression. Reviewed the model/renderer integration and representative narrow/wide screenshots. Endpoint glyphs fit their plot clips at every checked native control endpoint. See [bridge-picture evidence](bridge-pictures-followup.md). This feature does not clear underlying source-review flags or complete the remaining performance/prerequisite/content gates.
