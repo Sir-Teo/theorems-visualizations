@@ -8,301 +8,301 @@
       "id": "pde-4.2",
       "name": "Normal modes of a vibrating string",
       "file": "content/pde/ch04.js",
-      "sourceHash": "b52ef4eda2eb3549a6e99319915c77c93a1a46e1a8dc1045e96f2a6e8d05956a"
+      "sourceHash": "f895c7fb3d1ee3b928e5c9552080dae2ae53b49b08bc6370bc314db6b27511c9"
     },
     {
       "id": "physio-4.14",
       "name": "Reynolds number, turbulence and bruits",
       "file": "content/physio/ch04-c.js",
-      "sourceHash": "bbe27d48de7bb084a6d744eafe90201cb223fe1cd5b121f6780b2df54bac256e"
+      "sourceHash": "431ece5cfc456a337ea1934807ef702020dfbe7dcced8e6a129a1eabf154323d"
     },
     {
       "id": "sig-3.15",
       "name": "Reverberation as convolution with a room response",
       "file": "content/sig/ch03-b.js",
-      "sourceHash": "6cbc74dda2974629f49b7a5fa45da490339073bbd5c1d3bea1a43ce5c3989efb"
+      "sourceHash": "73bd68e60e8105c13ef10814de0f042ab3030d7a199e9b061833365b23c2508c"
     },
     {
       "id": "sig-4.12",
       "name": "Spectra of square, triangle and sawtooth waves",
       "file": "content/sig/ch04-c.js",
-      "sourceHash": "6cbc74dda2974629f49b7a5fa45da490339073bbd5c1d3bea1a43ce5c3989efb"
+      "sourceHash": "73bd68e60e8105c13ef10814de0f042ab3030d7a199e9b061833365b23c2508c"
     },
     {
       "id": "music-7.7",
       "name": "Quarter-comma meantone",
       "file": "content/music/ch07-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.8",
       "name": "Well temperaments",
       "file": "content/music/ch07-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.9",
       "name": "Twelve-tone equal temperament",
       "file": "content/music/ch07-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.11",
       "name": "Why twelve: 7/12 is a convergent of log₂(3/2)",
       "file": "content/music/ch07-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.12",
       "name": "19- and 31-tone equal temperament",
       "file": "content/music/ch07-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.13",
       "name": "53-tone equal temperament",
       "file": "content/music/ch07-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.14",
       "name": "The circle of fifths",
       "file": "content/music/ch07-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.15",
       "name": "Unison vectors and periodicity blocks (Fokker)",
       "file": "content/music/ch07-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.16",
       "name": "Adaptive tuning",
       "file": "content/music/ch07-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.17",
       "name": "The Bohlen–Pierce scale",
       "file": "content/music/ch07-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.1",
       "name": "Pythagorean tuning",
       "file": "content/music/ch07.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.3",
       "name": "The Pythagorean comma",
       "file": "content/music/ch07.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.4",
       "name": "The wolf fifth",
       "file": "content/music/ch07.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.5",
       "name": "Just intonation",
       "file": "content/music/ch07.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-7.6",
       "name": "The syntonic comma and comma drift",
       "file": "content/music/ch07.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.8",
       "name": "Modes of limited transposition",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.9",
       "name": "Set classes and prime form",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.11",
       "name": "The interval vector",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.12",
       "name": "The hexachord theorem",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.13",
       "name": "Z-related sets",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.14",
       "name": "The Fourier transform of a pitch-class set",
       "file": "content/music/ch08-b.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.15",
       "name": "Interval content from Fourier magnitudes",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.16",
       "name": "Twelve-tone rows and the row matrix",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.18",
       "name": "Interval names: number and quality",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.19",
       "name": "Major and minor scales; relative and parallel keys",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.20",
       "name": "Key signatures",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.21",
       "name": "Change ringing and permutations",
       "file": "content/music/ch08-c.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.1",
       "name": "Pitch classes and ℤ/12",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.2",
       "name": "Intervals and interval classes",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.3",
       "name": "The diatonic scale and its modes",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.4",
       "name": "Maximal evenness",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.6",
       "name": "Well-formed scales and the three-gap theorem",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "music-8.7",
       "name": "Transposition and inversion as a group action",
       "file": "content/music/ch08.js",
-      "sourceHash": "340f4f9a8060ecdfa6d47bee8a840221c475f0996e69de77f6ff7b61cc919cb6"
+      "sourceHash": "d526d6dc563e2dd1b9a5194edebe806c30391e7781ccad83ab571b809e64b5d6"
     },
     {
       "id": "ling-1.9",
       "name": "The acoustic vowel space: F1 against F2",
       "file": "content/ling/ch01-b.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.11",
       "name": "Reading speech spectrograms",
       "file": "content/ling/ch01-b.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.12",
       "name": "Coarticulation and formant transitions",
       "file": "content/ling/ch01-b.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.13",
       "name": "Categorical perception of stop consonants",
       "file": "content/ling/ch01-b.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.15",
       "name": "Tone and intonation",
       "file": "content/ling/ch01-b.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.1",
       "name": "Speech production as source and filter",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.2",
       "name": "The International Phonetic Alphabet",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.3",
       "name": "Place of articulation",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.4",
       "name": "Manner of articulation",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.5",
       "name": "Voicing and voice onset time",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.6",
       "name": "Vowels: height, backness and rounding",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.7",
       "name": "Formants: resonances of the vocal tract",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     },
     {
       "id": "ling-1.8",
       "name": "The uniform tube: a quarter-wave resonator",
       "file": "content/ling/ch01.js",
-      "sourceHash": "f576ace535fa11716cbb4a28e3d76270bc8acbbfc4963f78bd74a104da44c5e3"
+      "sourceHash": "8447f85641781259707813f4348a16d89484ebdbe6d8137ec5e5413759769562"
     }
   ]
 }

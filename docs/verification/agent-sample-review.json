@@ -2832,6 +2832,360 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-8.8",
+      "file": "content/mech/ch08.js",
+      "textHash": "e4f42149b151aa70a3ca5676c36f2996b240ea807b88eeb8bd482c04ddf4d6b6",
+      "textReview": "The ellipse-area derivation cancels b correctly and reduced mass gives G(M+m); Jupiter's .05 percent correction has the right scale. The claim that other exponents never share an eccentric-orbit law needs the harmonic-force exception (n=-1), and the azimuthal period of a rosette differs from its radial period. Native exponent/domain behavior remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geog-2.4",
+      "file": "content/geog/ch02.js",
+      "textHash": "76d051cc2c9f412280a407400a250d180b49908f58e7a56a98452797881de396",
+      "textReview": "The noon-Sun north/south branches follow H=90-|phi-delta| when the Sun is above the horizon; the Polaris correction is first order in its polar distance. Absolute invisibility south of the equator is too strong: a star with nonzero polar distance can rise slightly south of it, with refraction adding another caveat. Southern/small-altitude and near-zenith cases need native/scope checks.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-3.5",
+      "file": "content/thermo/ch03.js",
+      "textHash": "c52374a2f089984a68bbbee65b8cbc70a9766063f2b2a7b888aa2ac608cb3f54",
+      "textReview": "Differentiating a degree-one entropy relation gives the Euler identity where S is differentiable and T nonzero. Nonextensive terms generally break it, rather than every conceivable nonextensive state failing individually. The caption's exact numerical balance is stronger than finite-difference slopes support; photon chemical-potential and surface models need native inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ling-4.13",
+      "file": "content/ling/ch04-c.js",
+      "textHash": "201921e42ff9df01d99c1c352ea404309a0b3899870abc849d10d2379cddd56c",
+      "textReview": "The text appropriately separates empirical rank/abbreviation tendencies, proposed mechanisms and the later1949 account, and identifies the demonstration novels rather than claiming they are Zipf's tables. It makes no unique-mechanism inference. The prior primary-source disposition supplies the historical evidence; this semantic pass is not a new source certification. Native fit/length binning remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-4.6",
+      "file": "content/fa/ch04.js",
+      "textHash": "a3d0020e96ca3c044275c303b8be4c103e8e70d0bb7c2105469f4302a879daf4",
+      "textReview": "The intersection-of-continuous-kernels argument proves both closure assertions, including weak-star closure of M-perp. The Hilbert identification and general dual-space distinction are correct. A zero functional has all X as its kernel rather than a plane, so the caption needs a nonzero qualification or an explicit visualization exclusion.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-3.10",
+      "file": "content/algo/ch03.js",
+      "textHash": "feeb42e4675e233c390e7a257c7c1e483cadbe16ca5ac0bc7b984c11e3ecbc3c",
+      "textReview": "The comparison model now explicitly excludes pivot selection; sorted-input count is exactly n(n-1)/2, with n^2/2 identified only as a leading term. The balance assumption permits integer floors, proof uses the shifted child-size contraction and adds the binary-tree depth-sum lower bound. The fixed proportional recurrence has the entropy coefficient; the generic balance condition is only sufficient. Row counts include singleton leaves, and the ideal logarithm is labelled separately from rounded depth.",
+      "visualReview": "Inspected six controlled states in each theme: alpha0,.01,.3,.5 with n8,64,128. The staircase at alpha.01,n64 legitimately has63edges; balanced n8/n128 show4/8rows. Counts28,8128,2016,315,13,649 match the independent pivot-tree sums. Exact dots and dashed leading reference are distinct and legible.",
+      "interactionReview": "Twelve actual native range-input states agree with an independently traversed pivot tree for cost/depth; alpha0 obeys n(n-1)/2 and alpha.5 has floor(log2n) edge depth. Runtime/TeX and finite readouts pass. No sorting algorithm or numerical recurrence changed.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Worst-case recurrence gives exactly n(n-1)/2, contradicting the caption's exactly n^2/2. The unrounded balanced-child assumption is stronger than the displayed floor split and impossible for some small even sizes at alpha=.5; numerical depth should distinguish the rounded model from the ideal shrink scale. The entropy leading coefficient is for a fixed proportional recurrence. A lower-bound justification should accompany Theta rather than only its upper bound.",
+      "initialTextHash": "7735688d2dab0c153d59f41f1e511cf8d087dd9f04f21f7d51e3c894611e1f8d",
+      "correctionReport": "docs/verification/agent-quicksort-count-review.md"
+    },
+    {
+      "id": "rel-3.2",
+      "file": "content/rel/ch03.js",
+      "textHash": "4e3a41db71ead90c27a52a3d0c5303cfd551e75ad23643edb4d5b164099f9bfd",
+      "textReview": "The swapped-coordinate direction solves Minkowski orthogonality in1+1 dimensions, and a nonzero timelike vector has a spacelike orthogonal line. At A=0 the complement is the whole plane, not one line; B=0 has no protractor angle. Arbitrary lambda gives parallel reflected directions, not necessarily equal-length mirror-image arrows. Native zero/negative-scale behavior remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "toc-4.6",
+      "file": "content/toc/ch04-b.js",
+      "textHash": "6dca2ccfd6f62a24d8af8496bdbaba265bd1e440c0f2d77ef6e48e3b5f919928",
+      "textReview": "The map from reachable states to right-congruence classes is well-defined, onto and transition/acceptance preserving; equal cardinality gives the stated minimal-DFA isomorphism. Complete-DFA scope is explicit. The partial-trim aside needs the empty-language/start-state convention; deleting a dead start state is not generally an ordinary DFA. Native overmerge witness remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geog-4.4",
+      "file": "content/geog/ch04.js",
+      "textHash": "b55594f3f149ef375f22eb60f5c8a333e8de05e1a3a638490a71827cbc2a814b",
+      "textReview": "Mercator's local area factor sec^2(phi) and Africa/Greenland area ratio are arithmetically plausible and clearly distinguished from true spherical area. Africa's stated37-degree edge gives1.568, within1.6. A spherical rigid move preserves area, but finite sampled outlines/projection integration need checks near seams/poles. Source area values are not newly verified here.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-1.5",
+      "file": "content/comb/ch01.js",
+      "textHash": "f8f9cf498021b9a8769368571723872aef270fd749ab3d1fe34833b4e815f3a8",
+      "textReview": "Sequential injective choices prove the falling factorial for integer0<=k<=n, including the empty ordering and zero beyond n. It correctly separates changing identities of remaining people from their constant count. Native seat-prefix removal and the claimed exhaustive/nested candidate display remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "climate-2.17",
+      "file": "content/climate/ch02-d.js",
+      "textHash": "8152e069db04ef989b7fb6b4c672e15f0267175658118a2b4a674a985a7b5f27",
+      "textReview": "The chlorine cycle sums to O3+O->2O2 and regenerates chlorine; one-box lifetime/linear ozone calibration and reconstructed emissions are explicitly scoped. The caption's real-history wording should match its illustrative reconstruction. The categorical only-sink statement is attributed to the historical argument, not a newly established exhaustive modern sink inventory. Original lifetime/chain-length numbers rely on their source review, not this semantic reading.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-2.1.1c",
+      "file": "content/graph/ch02.js",
+      "textHash": "07d3d574b06405b516f44cfe19ceb64527f8f0e3c0571bf59362eb202879547e",
+      "textReview": "Disjoint matching edges require distinct cover vertices, proving the weak inequality; bipartite equality and triangle/Petersen counterexamples are consistent. Finite brute-force minimum and maximum matching should be checked on editable graphs, including isolated vertices. This page does not claim equality for arbitrary graphs.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-4.2.9",
+      "file": "content/graph/ch04-a2.js",
+      "textHash": "4a825161d78d069ac37fba8ec3c6551d674f654aca01b67a43adcdf137b3f1c7",
+      "textReview": "The cycle-edge deletion induction preserves connectedness and decreases edges/faces together, with the tree base giving Euler's formula. The disconnected1+c extension is correct for finite plane graphs. Editable crossings must not be silently treated as a plane embedding; native editing and face counts remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ml-2.1b",
+      "file": "content/ml/ch02.js",
+      "textHash": "9ca64a5cb00f8de141ab947d0240b0cb4b3fedbfe446a46dce0d9acb108e08f3",
+      "textReview": "For m>0 and a nonempty class, empirical0-1 risk takes finitely many values, so a minimizer exists even for an infinite hypothesis class; tie handling is explicit. Added label noise does not guarantee no perfect rectangle on every finite draw, contrary to the categorical caption. Exact rectangle search and candidate-histogram scope remain native follow-ups.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-2.6.4a",
+      "file": "content/prob/ch02-e.js",
+      "textHash": "c66c6f28a1c7f05d7b0340a5321389906090e1b9f190585909b42573fe4ea1c0",
+      "textReview": "The renewal decomposition and residual-life forcing1-F(t+x) are correct for a nonexplosive renewal process with positive interarrivals. Calling the convolution series a candidate avoids asserting convergence for arbitrary h, but iteration indexing is off: H0=h gives sum n=0..k for Hk, not n<k. The Gamma2 mean1 example has the stated equilibrium residual tail; grid errors remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "epi-4.6",
+      "file": "content/epi/ch04.js",
+      "textHash": "f34615a82405a21c71eeec47f7a6e20a3f1b1245b6acc4f9b367d95fc68f0934",
+      "textReview": "Common-cause structure can permit confounding without forcing a nonzero crude/causal difference for every parameter choice; the displayed inequality is too categorical. Adjustment identifies the effect only with adequate exchangeability/positivity/consistency, not merely because C marks a common cause. Mediator exclusion concerns a total-effect target. The three-binary-variable model scope helps, but these qualifications need integration.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "em-3.7",
+      "file": "content/em/ch03-b.js",
+      "textHash": "4d0181898768c4d37224586a144a5dcbfbc030b7c6da831ecbc835cbdd1d10cb",
+      "textReview": "The empty electrostatic cavity follows from Dirichlet uniqueness; Gauss fixes inner induced charge and fixed conductor net charge plus internal total determines the exterior boundary problem. The field also depends on outer geometry/boundary conditions, implicitly held fixed. Electrostatic versus dynamic shielding and softened line-charge singularities are explicitly scoped. Native equipotential/rescaling behavior remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-7.43",
+      "file": "content/ladr/ch07-b.js",
+      "textHash": "744dfd90761814e8cdb49bf1e2d3115162ee80362df1781fd8a729149b752f5c",
+      "textReview": "The positive square-root factorization proves Tv=0 from zero quadratic form. An indefinite counterexample works over either field. A non-self-adjoint operator with a real nonnegative quadratic form is a real-space caveat: over a complex space, a real-valued nonnegative form for every vector already implies self-adjointness. That distinction should be stated for the displayed real2D counterexample.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-4.17",
+      "file": "content/comb/ch04-b.js",
+      "textHash": "e54943d44e5d488a8e4df20bd624e65a5098a9cd01a75565260d1c04917b8f6e",
+      "textReview": "The greedy remainder is below F(k-1), ensuring nonconsecutive indices, and the maximum nonconsecutive tail telescopes to F(k+1)-1, proving uniqueness by induction. Starting at F2 avoids the duplicated1. Finite subset enumeration is illustrative verification only; the count of included Fibonacci terms and m<=300 native table remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ode-4.2",
+      "file": "content/ode/ch04.js",
+      "textHash": "508ddd504eb9685119dc50a112830b4415fa64525d91bf2b60cf4886ab5c3cf5",
+      "textReview": "Ordinary/regular-singular definitions and indicial polynomial are correct. Repeated/resonant roots can require logarithmic factors, so two pure t^r asymptotics are not universal. Complex exponents give oscillations in log t; log absolute real/imaginary solutions does not approach two straight lines with complex slopes. The caption and actual local-solution algorithm need a focused follow-up.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-5.8.5",
+      "file": "content/prob/ch05-z2.js",
+      "textHash": "38c9dcc29a44b438eea78fb61436d0733af13328d10a9a0d78cd728b94248bd4",
+      "textReview": "The two-step even/odd kernels follow the stated splitting identities; the auxiliary alpha state yields a fixed post-regeneration row independent of arrival history. The displayed41-cell simulation is a finite approximation to the kernel, not proof of convergence or exact independence from finite histograms. Kernel composition/indexing and alpha mass need native inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rel-4.11",
+      "file": "content/rel/ch04-b.js",
+      "textHash": "1ed76edc1ae32afd726f403ee8e88af65e32eef88ac0a2c4e5195de21a18fd4f",
+      "textReview": "Mass defect gives nuclear binding energy and reactions release positive Q when product mass is smaller, with the broad iron/nickel peak described appropriately. Neutral-atom masses cancel electron rest masses when hydrogen replaces protons, but electron binding-energy differences remain; exact nuclear binding requires that small correction. The AME selection/peak claim needs its own source evidence, not this semantic pass.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "waves-4.2",
+      "file": "content/waves/ch04.js",
+      "textHash": "362dd80431878f3d62278a9f6863e9e5f16a639edc271a7fe2b6ad805cc8ef57",
+      "textReview": "The boxcar average of a single lossless plane-wave cos-squared flux gives the stated sinc ripple and mean. A general Poynting vector is not simply always nonnegative because it is quadratic; the sign claim needs the fixed single-wave propagation direction. The index formula requires a transparent nonmagnetic medium, and finite beat averaging suppresses rather than exactly removes arbitrary fast terms. Native window alignment remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "em-1.7",
+      "file": "content/em/ch01.js",
+      "textHash": "16d2681018c45b90dff826c284a89611d7cc26d15ff746b987948c366c9bde02",
+      "textReview": "The Coulomb integral is locally integrable at a point of bounded volume density, but boundedness alone does not control infinite-support tails; finite compact support or suitable decay is needed for the stated everywhere convergence. Smooth fixed-distance quadrature gives the quoted endpoint/midpoint orders, with symmetry allowing faster or zero error. Native on-support probe/relative-zero handling remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "waves-4.11",
+      "file": "content/waves/ch04-b.js",
+      "textHash": "0d82d5fe08c7662c7fba163ea4c7cbd9b237da22f37f9dbb6c222cc9d9c43f8e",
+      "textReview": "The real-coefficient reversal equations r^2+tt'=1 and t(r+r')=0 produce the stated Stokes relations below critical incidence with the fixed Fresnel conventions. The lossless/propagating restriction is explicit and avoids applying real-amplitude algebra to total internal reflection. Native polarization/critical-limit behavior remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-17.24",
+      "file": "content/rca/ch17-a4.js",
+      "textHash": "e234b62a4b44a1c33544d6bde39fb915d03e0b3d579b8e61a71e80dc2adc4278",
+      "textReview": "Herglotz expansion gives the stated Hilbert-transform multiplier, mean-zero L2 isometry and conjugation signs. Unboundedness refers to an operator L1->L1 or Linfinity->Linfinity, not lack of a.e radial limits. The strip mapping requires a nontrivial proper arc, excluding degenerate empty/full arcs. Arc endpoint collisions and logarithmic clipping remain native follow-ups.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rep-4.4",
+      "file": "content/rep/ch04.js",
+      "textHash": "49947ce7ada4648bc26fd00fe4415f3e69839f41724436f0e12c247ebd5e4d70",
+      "textReview": "The class sizes, four linear characters, degree-two character and different involution counts correctly distinguish group structure from matching character tables. Real versus quaternionic representation type is a further discriminator, with later dependencies named as context. Automatic permutation matching and element-order enumeration remain native checks.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-3.12",
+      "file": "content/music/ch03-b.js",
+      "textHash": "a7bf4be5fc9bea73a05c1060769566ffd1d5f460f57773e06af8a157fb5ba7ea",
+      "textReview": "The ideal nominal is twice the prime, so its octave-below strike-note frequency coincides with the prime; the text should distinguish the perceptual mechanism from saying its frequency is usually not the prime. Mode labels, measured bell ratios and2026 replica attribution need their original evidence. Schematic shapes and illustrative synthesis levels/decays are explicit. No subjective listening credit is claimed.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-4.13",
+      "file": "content/thermo/ch04-b.js",
+      "textHash": "bb165c71c6c8a71299b5939ea1167a3dadaf8a6ef6812e601449f370d1fe6851",
+      "textReview": "The thermodynamic-limit mixing formula is standard for two separable ideal gases, but the text says factorial counting cancels exactly while using an asymptotic binomial approximation; finite-N corrections remain. The Sackur-Tetrode specialization needs monatomic classical ideal-gas assumptions. A binary membrane-resolution toy does not establish universally discontinuous accessible entropy for partially distinguishable species.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-9.63",
+      "file": "content/ladr/ch09-f.js",
+      "textHash": "f794bb863e4665f9fb087c69da2711d8a8c640ed81c8bc440e445d94bedbbeb0",
+      "textReview": "The determinant expansion proves monicity/degree and eigenvalue zeros independently of interpolation. The caption's finite gold-dot agreement illustrates rather than proves the polynomial theorem. Distinct interpolation nodes are essential and dragging can collide them; determinant-convention sign and complex-zero numerics need native checks.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-13.20",
+      "file": "content/fa/ch13-a2.js",
+      "textHash": "591f488db7d0af61f512c7ed9d4ab4b4012c109a0d412981b75641c907be14bd",
+      "textReview": "For closed densely defined symmetric operators the deficiency-index criterion and Cayley-extension argument are correct, including unequal half-line first-derivative indices. The caption should not imply boundary choices always produce a self-adjoint operator: its own unequal-index case has no such extension. Compact-support domains are restrictions whose closures are used. Native root integrability/counting remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "energy-3.1",
+      "file": "content/energy/ch03.js",
+      "textHash": "544ff189fbb8ec54cc5efa2c65121db850f6575df0c334f84564c41143caa110",
+      "textReview": "At common reference temperature/pressure the HHV-LHV difference is the water vaporization enthalpy per fuel mass, with8.94h stoichiometry for dry fuel. Initial moisture and dry/wet mass bases must remain distinct; the scope identifies coal/wood parameters as illustrative. Hess-law enthalpy calculation is appropriate at constant pressure. Native moisture endpoints and original NIST inputs are not newly certified here.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-4.8.7",
+      "file": "content/prob/ch04-z3.js",
+      "textHash": "d524f540ec0fb214778cd5d8d67122e31c14739e94e298b65d8841192c8bd4a8",
+      "textReview": "The geometric absorption-tail bound supplies finite EN before using the stopped quadratic martingale, making the hit probabilities and (x-a)(b-x) time formula justified. The idea could make that ordering explicit to avoid circular optional stopping. Monte Carlo and six seeded paths are finite illustrations, not proof of almost-sure absorption; native caps/large widths remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-9.59",
+      "file": "content/ladr/ch09-f.js",
+      "textHash": "48cd32fc30b2ff2ab24b02d4607f1378f128bf569943bd0d34fe841488bcff27",
+      "textReview": "The spectral-product proof of nonnegative determinant is valid in finite dimension. The converse example must be nonsingular and have a positive even number of negative eigenvalues: zero eigenvalues give determinant zero, and zero negative eigenvalues is itself positive. The caption's saddle/determinant sign assumes the other eigenvalue stays positive; native all-sign cases remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-1.21",
+      "file": "content/fa/ch01-a2.js",
+      "textHash": "b79a24cecfa65633abaf61f0a4c9a59861138458857e7d77b3f9572b8f87ff4b",
+      "textReview": "With the collection's Hausdorff TVS convention, the compact sphere separation/balanced neighborhood argument gives inverse continuity and compact-ball closure gives closed Y. At a closure point, use the open tV neighborhood to restrict approximating points to that ball. The real-coefficient C[0,1] visualization is a valid analogue of the complex theorem. Bernstein convergence is a counterexample to infinite-dimensional closedness, not to finite-dimensional equivalence; coefficient basis/numerical growth remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-1.1.1c",
+      "file": "content/graph/ch01.js",
+      "textHash": "2aa7c8e97022717c9f6752b63a6211c1b704fe5d11598288252bc3b55b7f2d16",
+      "textReview": "The subgraph/induced/spanning distinctions and deletion operations are consistent for the collection's simple graph convention. G+F is a graph on V only if the added pairs have distinct endpoints in V; the definition should restrict F accordingly. Clicking retained/deleted edges and isolated selected vertices still needs native validation.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-7.10",
+      "file": "content/qm/ch07-b.js",
+      "textHash": "bac90d536ace6c73a1bec60bac9c616b5b21bd497455226ca2a0176d435c59da",
+      "textReview": "Normalized two-component rays correspond to the Bloch sphere; the projector trace identity yields the overlap formula and antipodal orthogonality. Mixed-state Bloch vectors lie in the closed unit ball, with the boundary pure. Relative phase at a pole is coordinate-redundant, so native polar dragging/spinor display needs a nonsingular convention. No new original-source certification is assigned.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qinfo-4.3",
+      "file": "content/qinfo/ch04.js",
+      "textHash": "230b53a1d931f08edcff407fcbea77e7a37699ce6944e1c7ed0ae78586e83f57",
+      "textReview": "The Pauli quotient counts, Clifford orders modulo phase and T conjugation formula are consistent. Since the normalizer in U(2^n) includes arbitrary global phases, H/S/CNOT generation must also be stated modulo phase; conjugation determines a Clifford only up to that phase. Verifying generators proves inclusion, not the converse generation theorem. Native word order/T^2 restoration remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-14.14a",
+      "file": "content/rca/ch14-a2.js",
+      "textHash": "1d3446170afd0b0471f12569ea5458c7e9ecefaa7b3cfb30e4da5e9e1659d55f",
+      "textReview": "The normalized automorphism's a2 bound yields the stated logarithmic derivative inequality and sharp distortion bounds; the lower growth argument correctly lifts a shortest image segment instead of incorrectly integrating a modulus lower bound along a fixed radius. Koebe attains all four bounds. The720-point extrema are explicitly numerical, with radial approach to1 and sharp peaks still needing native checks.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }

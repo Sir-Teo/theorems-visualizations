@@ -117,6 +117,10 @@ sampling error. Compare an estimator with the truth for its own target group.
 
 ## Computer science
 
+Match integer recursion trees to rounded recurrences. Separate exact operation
+counts from asymptotic leading terms, and count leaf rows separately from edge
+depth. A sufficient balance condition need not be necessary.
+
 For cryptographic experiments, state the sampled keys, nonce/counter distribution,
 output position and whether diffusion is measured before feedforward. Match
 the cipher variant to its specification. A finite bias threshold or avalanche

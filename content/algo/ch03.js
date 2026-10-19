@@ -913,13 +913,13 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
       num: '3.10',
       kind: 'Theorem',
       name: 'Quicksort: Θ(n²) worst case, Θ(n log n) for balanced splits',
-      statement: String.raw`Let $T(n)$ be the number of comparisons quicksort makes on $n$ distinct keys.
+      statement: String.raw`Let $T(n)$ count partition comparisons in quicksort on $n$ distinct keys: partitioning $m$ keys costs $m-1$, and $T(0)=T(1)=0$. Pivot-selection costs are excluded.
 
 (a) **Worst case.** If every partition is maximally unbalanced (sizes $0$ and $n-1$), as happens on sorted input with the first or last element as pivot, then $T(n)=T(n-1)+(n-1)=\binom n2=\Theta(n^2)$; this is the worst case.
 
-(b) **Balanced splits.** If every partition of a subarray of size $m$ leaves at least $\alpha(m-1)$ keys on each side, for a constant $0<\alpha\le\tfrac12$, then the recursion has depth at most $\log_{1/(1-\alpha)} n$ and $T(n)=\Theta(n\log n)$; for the exact proportional split, $T(n)\sim n\log_2 n/H(\alpha)$ with $H(\alpha)=-\alpha\log_2\alpha-(1-\alpha)\log_2(1-\alpha)$.`,
-      idea: String.raw`Draw the recursion tree (2.6): the subarrays at one depth are disjoint, so each level costs fewer than $n$ comparisons, and the total is at most $n$ times the depth. With splits $0$ and $n-1$ the depth is $n-1$ and the level costs $n-1, n-2,\dots$ add up to $\binom n2$; a larger split cannot make the sum bigger. With proportional splits a subproblem shrinks by a factor $1-\alpha$ or better per level, so the depth is logarithmic; $\alpha=\tfrac12$ is the master-theorem case $T(n)=2T(n/2)+\Theta(n)$ (2.7). Even a 1 : 9 split is $\Theta(n\log n)$; only splits that fail to be proportional degrade the bound.`,
-      caption: String.raw`Slide the split fraction $\alpha$. Left: the recursion tree as stacked rows, one row per level, each subarray a bar (its pivot a gold tick); the bars on the right of each row are that level's cost. At $\alpha=\tfrac12$ the tree has $\log_2 n$ rows; as $\alpha\to 0$ it stretches into a staircase of $n$ rows. Right: comparisons against $n$ on log axes; the $\alpha$-split curve (blue) and the measured runs of real quicksort on sorted input (red, exactly $n^2/2$) and on random input (green).`,
+(b) **Balanced splits.** If every partition of a subarray of size $m$ leaves at least $\lfloor\alpha(m-1)\rfloor$ keys on each side, for a fixed $0<\alpha\le\tfrac12$, then the recursion has depth $O(\log n)$ and $T(n)=\Theta(n\log n)$ (constants depend on $\alpha$). For the fixed proportional recurrence, with integer rounding, $T(n)\sim n\log_2 n/H(\alpha)$ with $H(\alpha)=-\alpha\log_2\alpha-(1-\alpha)\log_2(1-\alpha)$.`,
+      idea: String.raw`Draw the recursion tree (2.6): the subarrays at one depth are disjoint, so each level costs fewer than $n$ comparisons, and the total is at most $n$ times the depth. With splits $0$ and $n-1$ the depth is $n-1$ and the level costs $n-1, n-2,\dots$ add up to $\binom n2$; a larger split cannot make the sum bigger. For rounded proportional splits a child size $m_1$ satisfies $m_1-1\le(1-\alpha)(m-1)$; this gives logarithmic depth. The total partition cost is the sum of key depths in the binary pivot tree; placing $n$ keys in a binary tree requires total depth at least $n\log_2 n-O(n)$, giving the lower bound. In the ideal recurrence, $\alpha=\tfrac12$ is the master-theorem case $T(n)=2T(n/2)+\Theta(n)$ (2.7). Even a 1 : 9 split is $\Theta(n\log n)$; the constant split condition is sufficient, not necessary, for this bound.`,
+      caption: String.raw`Slide the split fraction $\alpha$. Left: the recursion tree as stacked rows, one row per level, each subarray a bar (its pivot a gold tick); the bars on the right of each row are that level's cost. At $\alpha=\tfrac12$ the displayed rounded tree has $\lfloor\log_2 n\rfloor+1$ rows (including singleton leaves); at $\alpha=0$ it is a staircase of $n$ rows. Small positive fractions can still round to zero on small subarrays. Right: comparisons against $n$ on log axes; the $\alpha$-split curve (blue) and the measured runs of real quicksort on sorted input (red, exactly $n(n-1)/2$; the dashed red reference is its leading term $n^2/2$) and on random input (green).`,
       deps: ['algo-3.9', 'algo-2.7', 'algo-2.6'],
       refs: ['CLRS 4e §7.2'],
       tags: ['sorting'],
@@ -978,7 +978,7 @@ then sort $A[p..q-1]$ and $A[q+1..r]$ recursively. No combining step is needed.
         v.readout(() => {
           if (!info) return '';
           const { a, n, depth, Tn, H } = info;
-          const pred = a > 0 ? `$\\log_{1/(1-\\alpha)} n = ${v.fix(Math.log(n) / -Math.log(1 - a), 1)}$` : 'the worst case: depth $n-1$';
+          const pred = a > 0 ? `ideal shrink scale $\\log_{1/(1-\\alpha)} n = ${v.fix(Math.log(n) / -Math.log(1 - a), 1)}$; integer splits include rounding` : 'the worst case: depth $n-1$';
           const tail = a === 0 ? ` · $T(n) = \\binom{n}{2}$: quadratic` : ` · growth constant of $T(n)/n$ per doubling, fitted for $n\\le 2^{17}$: **${v.fix(slope, 3)}**, theory $1/H(\\alpha) = ${v.fix(1 / H, 3)}$` + (a < 0.02 ? ' (floors still matter: subarrays shorter than $1/\\alpha$ split $0\\,|\\,m{-}1$)' : '');
           return `$\\alpha = ${v.fix(a, 2)}$: depth **${depth}** for $n=${n}$ (${pred}) · $T(${n}) = ${Tn}$ comparisons` + tail;
         });
