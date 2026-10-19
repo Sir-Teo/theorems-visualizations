@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 225,
+  "remainingFlags": 222,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 5,
     "solid": 3,
     "robot": 1,
-    "aero": 7,
+    "aero": 4,
     "micro": 15,
     "macro": 2,
     "fin": 12,
@@ -402,57 +402,6 @@
       "links": {
         "ntrs": "https://ntrs.nasa.gov/citations/19930087283",
         "wikipedia": "https://en.wikipedia.org/wiki/Richard_T._Whitcomb"
-      }
-    },
-    {
-      "id": "aero-4.1",
-      "file": "content/aero/ch04.js",
-      "name": "Prandtl\u2013Glauert compressibility correction",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "H. Glauert, 1928 (Proc. R. Soc. A 118, 113\u2013119); the rule is usually attributed to Prandtl and Glauert, with Prandtl\u2019s own earlier statement not checked"
-        }
-      ],
-      "refs": [
-        "Anderson ch. 5"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1098/rspa.1928.0039",
-        "wikipedia": "https://en.wikipedia.org/wiki/Prandtl%E2%80%93Glauert_transformation"
-      }
-    },
-    {
-      "id": "aero-4.2",
-      "file": "content/aero/ch04.js",
-      "name": "Critical Mach number and drag divergence",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Anderson ch. 5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Drag-divergence_Mach_number"
-      }
-    },
-    {
-      "id": "aero-4.3",
-      "file": "content/aero/ch04.js",
-      "name": "Swept wings delay drag divergence",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Anderson ch. 5"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Swept_wing"
       }
     },
     {
@@ -4249,7 +4198,10 @@
       "solid-4.3",
       "solid-4.4",
       "energy-3.6",
-      "pharm-3.9"
+      "pharm-3.9",
+      "aero-4.1",
+      "aero-4.2",
+      "aero-4.3"
     ]
   },
   "additionalFollowups": [
@@ -8146,6 +8098,24 @@
       "status": "partial-source-review-pending",
       "report": "docs/verification/pharm-context-partial.md",
       "note": "Original PubMed abstract directly confirms concentration-holding infusion. Parent independently reran three mathematical and two native groups, reviewed both input definitions and inspected final curves; unsupported published-fit and recovery claims removed. Full original Methods/parameter tables remain unread, so verify:true and the queued source review remain."
+    },
+    {
+      "id": "aero-4.1",
+      "status": "resolved",
+      "report": "docs/verification/aero-compressibility-followup.md",
+      "note": "Read both complete MIT authored notes and original formula pages; corrected potential/coordinate transformation, full sonic-root interval, clipped high suction and nonpositive-pressure interpretation. Four independent math groups and12 native item/theme/layout groups pass; second-agent source/math/screenshot review clean."
+    },
+    {
+      "id": "aero-4.2",
+      "status": "resolved",
+      "report": "docs/verification/aero-compressibility-followup.md",
+      "note": "Read Mason original authored correlation derivation and limitations. Separated pressure onset from Korn/Lock technology and removed invented shock location. Complete adaptive drag curves and analytic divergence derivative pass mathematical/native checks; second-agent independent review clean."
+    },
+    {
+      "id": "aero-4.3",
+      "status": "resolved",
+      "report": "docs/verification/aero-compressibility-followup.md",
+      "note": "Read Jones original authored analysis and original formula pages plus Mason strip derivation. Fixed nonorthogonal normal vector, showed both projections and full planform, distinguished leading-edge from half-chord sweep and checked correlation turnover. Independent mathematical/native and second-agent reviews passed."
     }
   ]
 }
