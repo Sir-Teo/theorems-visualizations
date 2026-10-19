@@ -24,4 +24,4 @@ Completed **pchem-4.9, pchem-4.11, pchem-4.13**. Source/math/native/screenshot r
 - `node tests/verification-pchem-source-audit-surfaces.mjs`: **6/6item/theme groups** in real light/dark browser controls. Frame4liquids×2lengths×2models×2drags plus water temperature endpoints; sphere2interfaces×8parameter corners and play to cutoff, state/clock resets and conserved volume; capillary3liquids×3angles×2radius corners plus3correctioncases. Checks actual output markers, pressure bars, circles, coordinate containment, no browser/TeX errors.
 - Inspected `/tmp/atlas-pchem-surfaces-frame-light.png`, `...-laplace-dark.png`, `...-capillary-light.png`; both-theme captures exist for all3. Extreme extension,0.6cmstopped sphere and186mmcapillary depression shown honestly.
 
-No subjective listening/human gate or Wave5 closure.
+No Wave5 closure.

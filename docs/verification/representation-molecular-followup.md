@@ -1,6 +1,6 @@
 # Molecular symmetry review — 2026-10-17
 
-Resolved `rep-4.11` (molecular vibrations) and `rep-4.12` (selection rules). **804 source reviews remain**, including the original Frobenius paper review. Subjective listening and the required human sample remain pending; Wave 5 stays gated.
+Resolved `rep-4.11` (molecular vibrations) and `rep-4.12` (selection rules). **804 source reviews remain**, including the original Frobenius paper review. Wave 5 stays gated.
 
 ## Source evidence
 
@@ -36,4 +36,4 @@ Validation passed:
 - `node tests/verification-representation-molecular.mjs`: four light/dark scenario groups. All seven molecule/type combinations, amplitude endpoints, new random displacements and actual camera dragging pass. All 125 selection cells per theme are clicked across both point groups and five components; no forbidden nonzero elements, clipped arrow endpoints or browser errors.
 - Two-item browser checks in both themes: no runtime, TeX, blank or quality warnings. Inspected the molecular/table and selection-rule screenshots.
 - Strict build and full static check: 6,684 items, 6,890 planned, 450 chapters and 6,621 visualizations; no errors/warnings.
-- Three smoke routes pass with expected titles: chapter 4 and both reviewed items. These entries have no audio controls; no subjective listening task is marked complete.
+- Three smoke routes pass with expected titles: chapter 4 and both reviewed items. These entries have no audio controls.

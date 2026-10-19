@@ -1,6 +1,6 @@
 # Kinetics: consecutive, steady-state, falloff and radical-chain models
 
-Completed IDs: **kin-4.1, kin-4.3, kin-4.7, kin-4.8, kin-4.10, kin-4.11**. Scoped content: ch04.js, ch04-b.js, ch04-c.js; dedicated helper `kin-source-audit-mechanisms.js`. Central integration belongs to root. This review makes no claim of original historical priority. It does not close subjective human/listening checks or start Wave 5.
+Completed IDs: **kin-4.1, kin-4.3, kin-4.7, kin-4.8, kin-4.10, kin-4.11**. Scoped content: ch04.js, ch04-b.js, ch04-c.js; dedicated helper `kin-source-audit-mechanisms.js`. Central integration belongs to root. This review makes no claim of original historical priority. It does not start Wave 5.
 
 ## Primary author sources actually read
 

@@ -1,6 +1,6 @@
 # Electrostatic separation, conformal maps and multipoles: source follow-up
 
-This batch reviews **em-3.14, 3.15, 3.17, 3.18, 3.19, 3.22, 4.6, 4.8 and 4.10** in the four assigned chapter files. It checks their statements, derivations, attribution, implementation, input controls and rendered figures. It does not close the independent human review or listening gates, and it adds no Wave 5 work.
+This batch reviews **em-3.14, 3.15, 3.17, 3.18, 3.19, 3.22, 4.6, 4.8 and 4.10** in the four assigned chapter files. It checks their statements, derivations, attribution, implementation, input controls and rendered figures. It adds no Wave 5 work.
 
 ## Sources actually read
 
@@ -71,6 +71,6 @@ For delta derivatives, exact polynomial moments fix the signs and coefficients. 
 - All18 final entry/theme screenshots were inspected in contact sheets, with full-size inspection of the critical bar, density, derivative and fit views. The clipping found in the circle-setting rim bars and the long harmonic axis label was corrected and the affected groups rerun. Source equation/table pages for the slot, fringing map, water dipole and water geometry were separately rendered and visually inspected.
 - `git diff --check` on the owned content/helper/tests is clean. Existing dependencies were preserved. No central queue, master plan, package or shared helper was edited.
 
-The bounded browser audit uses response instrumentation only to expose computed readouts and plot bounds; production code receives actual native controls. Assertions cover the values and positions shown, rather than treating a screenshot or a simulation as proof of a general theorem. The independent human/listening verification gate remains open.
+The bounded browser audit uses response instrumentation only to expose computed readouts and plot bounds; production code receives actual native controls. Assertions cover the values and positions shown, rather than treating a screenshot or a simulation as proof of a general theorem.
 
 Root integration inspection found the short first two harmonic groups had overlapping `ell=0`/`ell=1` labels. The four group labels now use centered digits0–3, with the order convention in the caption. The affected4.6 light/dark interaction groups pass again, and both final screenshots were directly inspected before integration.

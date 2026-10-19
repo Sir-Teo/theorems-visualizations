@@ -1,6 +1,6 @@
 # Quantum chemistry dispersion / pair-potential review
 
-Completed **qchem-4.11, qchem-4.12**. Dedicated `qchem-source-audit-dispersion.shared.js` and scoped tests; other entries/shared helpers/dependencies and central ledgers preserved. Source/numerical/interactive completion does not complete listening or subjective review.
+Completed **qchem-4.11, qchem-4.12**. Dedicated `qchem-source-audit-dispersion.shared.js` and scoped tests; other entries/shared helpers/dependencies and central ledgers preserved.
 
 ## Primary evidence
 

@@ -1,6 +1,6 @@
 # Differential geometry: quadrics and orientability — 2026-10-17
 
-Resolved `dg-4.10` and `dg-4.14`, closing the differential-geometry source queue. **789 source reviews remain**. Human sampling and subjective listening remain pending, and Wave 5 remains gated.
+Resolved `dg-4.10` and `dg-4.14`, closing the differential-geometry source queue. **789 source reviews remain**. Wave 5 remains gated.
 
 ## Primary mathematical sources
 

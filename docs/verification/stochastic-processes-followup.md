@@ -1,6 +1,6 @@
 # Stochastic processes: historical sources and finite models — 2026-10-17
 
-Reviewed `stoch-3.12`, `3.13`, `4.10`, `4.14` and `4.16`. Limited adjacent branching/censoring corrections in 3.9–3.11 and removal of a fabricated residual floor in 4.9 do not count as additional resolved queue flags. Human/listening checks remain open.
+Reviewed `stoch-3.12`, `3.13`, `4.10`, `4.14` and `4.16`. Limited adjacent branching/censoring corrections in 3.9–3.11 and removal of a fabricated residual floor in 4.9 do not count as additional resolved queue flags.
 
 ## Primary sources
 
@@ -33,4 +33,4 @@ Families not followed beyond the 4000-parent cap have unknown later outcomes. Th
 - `scripts/verify-stoch-sources.py` writes [90-digit references](stoch-sources-references.json) for the Watson law and all 57 selectable mean-band thresholds. The implementation uses a different root method from this reference iteration.
 - `node --test tests/verification-stoch-sources.test.mjs`: six groups cover binary and near-critical least roots, deterministic laws, reference iterates, independently convolved finite family laws, explicit cropped/censored paths, exact integer walk counts through 16 steps in every displayed dimension, every simple five-state cycle, principal determinants for 100 weighted chains including tiny positive edges, parity/mean evolution and mean-band thresholds, and explicitly censored return samplers.
 - `node tests/verification-stoch-sources.mjs` covers five reviewed entries and three neighboring branching entries in both themes, using real selectors, sliders, toggles and buttons. It checks both original offspring examples, all-zero/deterministic laws and censoring; all walk dimensions/time endpoints; every displayed cycle; every tree root over five seeds; and N=4,5,60 with full plot ranges and return statistics. Neighbor tests cover all three offspring families, mean endpoints and final exploration steps. All sixteen final light/dark groups pass without runtime or TeX errors; combined repository outcomes are recorded centrally.
-- Direct inspections of the original pages and representative light/dark product screenshots check readable labels, correct colors, projection visibility, displayed time scales and complete chart ranges. These agent checks do not complete the separately required human-sample review. These eight entries expose no audio controls.
+- Direct inspections of the original pages and representative light/dark product screenshots check readable labels, correct colors, projection visibility, displayed time scales and complete chart ranges. These eight entries expose no audio controls.

@@ -1,6 +1,6 @@
 # Topology: cover radii and compactness equivalence — 2026-10-17
 
-Resolved `top-4.12` and `top-4.16`, closing all eight queued topology reviews. Also corrected the finite-prefix illustration in `top-4.15`. **795 source reviews remain** in other collections. Human sampling and subjective listening remain pending; Wave 5 remains gated.
+Resolved `top-4.12` and `top-4.16`, closing all eight queued topology reviews. Also corrected the finite-prefix illustration in `top-4.15`. **795 source reviews remain** in other collections. Wave 5 remains gated.
 
 ## Primary text
 

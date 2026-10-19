@@ -1,6 +1,6 @@
 # Condensed matter: melting, polaritons, polarons and dislocations
 
-Completed source reviews: **cm-3.11, cm-3.12, cm-3.14, cm-3.16** in `content/cm/ch03-b.js`. Unique helper: `content/cm/cm-source-audit-phonons.js`; dedicated math/browser tests: `tests/verification-cm-source-audit-phonons{.test,}.mjs`. Existing shared helpers, deps and central queue/master/package files are unchanged. Together with the separate lattice subset,6 of15 assigned CM reviews are complete;9 semiconductor/device reviews continue. Human/listening and Wave5 gates remain open.
+Completed source reviews: **cm-3.11, cm-3.12, cm-3.14, cm-3.16** in `content/cm/ch03-b.js`. Unique helper: `content/cm/cm-source-audit-phonons.js`; dedicated math/browser tests: `tests/verification-cm-source-audit-phonons{.test,}.mjs`. Existing shared helpers, deps and central queue/master/package files are unchanged. Together with the separate lattice subset,6 of15 assigned CM reviews are complete;9 semiconductor/device reviews continue. Wave5 remains gated.
 
 ## Primary evidence actually read
 
@@ -40,4 +40,4 @@ No original Landau/Pekar chronology, Orowan–Polanyi–Taylor1934 priority or u
 
 Standard browser/static routes pass **4/4 per theme**, zero errors/warnings/TeX/blank/quality warnings. All8 full-size screenshots `/tmp/atlas-cm-phonons-{3.11,3.12,3.14,3.16}-{light,dark}.png` were inspected. Final prose spacing and scientific-notation ratio display were applied, and all8input groups rerun. No shared helpers/global build/central files were changed.
 
-Flags are cleared only after these source, mathematical and input/visual checks. This is not completion of subjective human sampling/listening or permission to start Wave5.
+Flags are cleared only after these source, mathematical and input/visual checks. This does not authorize starting Wave5.

@@ -1,6 +1,6 @@
 # Physical chemistry source audit: calorimetric entropy and Gibbs–Helmholtz
 
-Reviewed 2026-10-18. Scope: **pchem-3.9 and pchem-3.13** in `content/pchem/ch03-b.js`. Follows the four completed potential/work reviews in [pchem-source-audit-potentials-followup.md](pchem-source-audit-potentials-followup.md). Other source flags, human/listening gates and Wave5 remain unchanged.
+Reviewed 2026-10-18. Scope: **pchem-3.9 and pchem-3.13** in `content/pchem/ch03-b.js`. Follows the four completed potential/work reviews in [pchem-source-audit-potentials-followup.md](pchem-source-audit-potentials-followup.md). Other source flags and Wave5 remain unchanged.
 
 ## Primary evidence
 
@@ -42,4 +42,4 @@ The full plot, tangent, draggable reference state and target control now all sta
 
 `node tests/verification-pchem-source-audit-calorimetry.mjs`: **4/4 real light/dark groups passed**. All8 argon parameter corners use native controls and check the actual298.15K endpoint plus plotted Cp/entropy values. All3 reactions×4 tangent/target corners use real pointer drags and controls, comparing displayed slopes/markers/error values, source domains and complete plot extents. Browser/TeX/nonfinite errors are checked. All four screenshots were inspected directly; a clipped reference-handle label and the argon mismatch sign were corrected before the final run. Screenshots: `/tmp/atlas-pchem-calorimetry-{argon,gibbs-helmholtz}-{light,dark}.png`; representative `/tmp/atlas-pchem-calorimetry-argon-dark.png`.
 
-No shared chapter2/3 data helper, dependency array, central queue/master plan, package/global test or human/listening gate was changed. Only supported source flags are cleared after the final scoped passes.
+No shared chapter2/3 data helper, dependency array, central queue/master plan or package/global test was changed. Only supported source flags are cleared after the final scoped passes.

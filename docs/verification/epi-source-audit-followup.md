@@ -31,4 +31,4 @@ Ready for root's independent review and atomic integration: **epi-3.13, epi-4.4,
 
 Sixteen screenshots `/tmp/atlas-epi-{3.13-common,3.13-sample,4.4-wide,4.5-washed,4.5-unwashed,4.12-cc,4.12-cohort,4.15-adjacent-cell}-{light,dark}.png` inspected with contact sheets and full-size representative views. Final label/tick refinements reran3.13and4.5 in both themes (4focusednativegroups pass), refreshed screenshots and full-size inspection. Scoped syntax/diff-whitespace checks pass. No global build, package/central ledger edits or commits.
 
-No population denominator, causal intervention effect, individual clinical recommendation, subjective human/listening check or Wave5gate is inferred from these finite calculations.
+No population denominator, causal intervention effect, individual clinical recommendation or Wave5 readiness is inferred from these finite calculations.

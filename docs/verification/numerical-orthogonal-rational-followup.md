@@ -41,4 +41,4 @@ Sources retrieved 2026-10-17. Course item numbers are not source-book theorem nu
 | Gutknecht–Trefethen PDF | `65c6a33b0f121d4a6f792865f7107ea3b289fde5f9fd4e7b5149bc58c3fd9864` |
 | Gonnet–Güttel–Trefethen PDF | `b983c05ca1d63fb7cf0064263a2d62a08ad7c6e190b7c8e069809849f3c22148` |
 
-The reviewed numerical pages retain explicit limits: discretized quadrature, finite Hankel matrices, numerical extrema and rank/noise heuristics do not prove the source theorems. Human/listening gates remain separate. No global build or commit was performed; root owns central integration.
+The reviewed numerical pages retain explicit limits: discretized quadrature, finite Hankel matrices, numerical extrema and rank/noise heuristics do not prove the source theorems. No global build or commit was performed; root owns central integration.

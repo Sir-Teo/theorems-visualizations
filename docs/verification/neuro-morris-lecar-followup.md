@@ -1,6 +1,6 @@
 # Neuroscience source review A4 — SNIC and chosen Morris–Lecar examples
 
-**neuro-3.5 and neuro-3.6 are ready for central integration; both source flags remain true.** These are two queue resolutions. Human/listening checks and Wave 5 remain open.
+**neuro-3.5 and neuro-3.6 are ready for central integration; both source flags remain true.** These are two queue resolutions. Wave 5 remains gated.
 
 ## Primary sources actually read
 

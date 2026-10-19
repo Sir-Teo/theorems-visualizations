@@ -1,6 +1,6 @@
 # Frobenius original-paper review — 2026-10-17
 
-Resolved `rep-3.16`, the final queued representation-theory review. **803 source reviews remain** in the other collections. Human sampling and subjective listening remain pending; Wave 5 remains gated.
+Resolved `rep-3.16`, the final queued representation-theory review. **803 source reviews remain** in the other collections. Wave 5 remains gated.
 
 ## Primary sources and exact anchors
 
@@ -41,4 +41,4 @@ Passed validation:
 - Strict build and full static check: 6,684 items, 6,890 planned, 450 chapters and 6,621 visualizations; no warnings/errors.
 - Chapter 3 and the paper smoke routes pass with their expected titles.
 
-This clears the last of the fourteen representation-theory flags in the Wave 3–4 queue. It does not close the other collections or the human/listening requirements.
+This clears the last of the fourteen representation-theory flags in the Wave 3–4 queue. It does not close the other collections.

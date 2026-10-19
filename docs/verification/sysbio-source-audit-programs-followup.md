@@ -26,4 +26,4 @@ Both displays now use exact prescribed exponential X and RK4 downstream dynamics
 - `/tmp/atlas-sysbio-programs-SIM-fast-order-preserved-light.png`
 - `/tmp/atlas-sysbio-programs-FFL-fast-different-order-dark.png`
 
-Default and incomplete-window opposite-theme screenshots retained. No empirical fit, universal biological timing guarantee, subjective listening closure or Wave5 work.
+Default and incomplete-window opposite-theme screenshots retained. No empirical fit, universal biological timing guarantee or Wave5 work.

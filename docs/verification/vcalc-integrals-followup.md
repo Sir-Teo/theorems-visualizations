@@ -72,5 +72,4 @@ the radial disc integral and accurately describes which values are numerical.
   domain-strip screenshots directly.
 - Three targeted chapter/item smoke routes pass with the expected titles.
 
-**824 queued source reviews remain.** Human sampling and subjective listening
-remain pending; Wave 5 has not started.
+**824 queued source reviews remain.** Wave 5 has not started.

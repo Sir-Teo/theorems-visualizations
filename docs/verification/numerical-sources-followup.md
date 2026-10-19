@@ -20,4 +20,4 @@ Validation:
 - `node tests/verification-numerical-sources.mjs`: 12/12 light/dark groups. Real menu selections, slider keyboard extremes, marker/coefficient pointer drags, snap/perturb, original Runge reset; all plotted high-degree Lebesgue values and ratio bounds inspected programmatically. No runtime, TeX or blank-stage failures.
 - Targeted static check of the three touched chapters: 17 items, zero errors/warnings. Screenshots inspected: `/tmp/atlas-numerical-gibbs-dark.png`, `/tmp/atlas-numerical-minimax-light.png`.
 
-Limits: finite numerical maxima and tolerances are examples, not proofs of global minimax optimality or asymptotic theorems. No human/listening gate is marked complete. The seven orthogonal/rational queue flags remain open for Batch B.
+Limits: finite numerical maxima and tolerances are examples, not proofs of global minimax optimality or asymptotic theorems. The seven orthogonal/rational queue flags remain open for Batch B.

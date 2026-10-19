@@ -1,6 +1,6 @@
 # Fluid force review: d’Alembert, cylinder circulation, Blasius and lift
 
-Reviewed **fluid-4.8, fluid-4.9, fluid-4.10, fluid-4.11**, all in `content/fluid/ch04-b.js`. The neighboring4.7 block and all five dependency arrays are byte-identical to their starting versions. Existing shared flow helpers remain unchanged. These reviews do not close the four remaining fluid flags or subjective human/listening gates.
+Reviewed **fluid-4.8, fluid-4.9, fluid-4.10, fluid-4.11**, all in `content/fluid/ch04-b.js`. The neighboring4.7 block and all five dependency arrays are byte-identical to their starting versions. Existing shared flow helpers remain unchanged. These reviews do not close the four remaining fluid flags.
 
 ## Full primary derivations actually read
 
@@ -35,4 +35,4 @@ All three mapped-body pressure calculations now use a scoped analytic-tangent mi
 - `node tests/verification-fluid-forces.mjs`: **8/8 actual light/dark groups pass**. Uses native slider keys and toggle keyboard activation: eight paradox corners plus actual thrust/drag, zero/merger/exterior cylinder states and actual play/pause/restart, all64 Blasius shape/angle/circulation/contour corners, and all eight lift-control corners for four shapes. Test-only instrumentation exposes actual state and stage bounds; it does not substitute programmatic control setters. Raw pressure values, curves, contours, force vectors, arrows, finite readouts and TeX/runtime diagnostics are checked.
 - Standard renderer: all four entries pass in light/dark, zero static/runtime/TeX/blank/quality errors. All eight `/tmp/atlas-fluid-forces-{4.8,4.9,4.10,4.11}-{light,dark}.png` screenshots were directly inspected. The first screenshot pass exposed missing residual math delimiters; these were corrected and the full native sweep repeated.
 
-Only these four source flags are cleared after source, mathematical, real-input and visual checks. Wave5 and subjective human/listening remain open.
+Only these four source flags are cleared after source, mathematical, real-input and visual checks. Wave5 remains gated.

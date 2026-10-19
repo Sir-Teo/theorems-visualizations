@@ -1,6 +1,6 @@
 # Thermodynamics source follow-up: limits, molecules and ensembles
 
-Reviewed 2026-10-18. Completes **thermo-5.11, thermo-5.19, thermo-6.12, thermo-6.14, thermo-6.16, thermo-6.17, thermo-6.19**. The other seven assigned canonical items are documented separately in [thermo-canonical-followup.md](thermo-canonical-followup.md). These are theorem/model/definition reviews; no historical original-paper priority claim is retained without its original source. Human/listening gates remain open.
+Reviewed 2026-10-18. Completes **thermo-5.11, thermo-5.19, thermo-6.12, thermo-6.14, thermo-6.16, thermo-6.17, thermo-6.19**. The other seven assigned canonical items are documented separately in [thermo-canonical-followup.md](thermo-canonical-followup.md). These are theorem/model/definition reviews; no historical original-paper priority claim is retained without its original source.
 
 ## Primary evidence actually inspected
 
@@ -40,4 +40,4 @@ All **16 Cp values** were checked against the full official [JANAF H-050](https:
 
 Screenshots generated for every item and both themes: `/tmp/atlas-thermo-{sackur,ratchet,equipartition,freezing,canonical-gas,ensembles,density}-{light,dark}.png`. All seven representative screenshots directly inspected, covering both themes; plots, units, controls and legends are legible. Representative: `/tmp/atlas-thermo-ensembles-dark.png`.
 
-All unassigned item blocks in both edited chapter files are byte-identical to the initial backups; dependency arrays preserved. Source flags cleared only after the source, mathematical, browser and screenshot passes. No central queue, master-plan, package/global checks, Wave5 or subjective human/listening completion was changed in this batch.
+All unassigned item blocks in both edited chapter files are byte-identical to the initial backups; dependency arrays preserved. Source flags cleared only after the source, mathematical, browser and screenshot passes. No central queue, master-plan, package/global checks or Wave5 change was made in this batch.

@@ -1,6 +1,6 @@
 # Physical chemistry fluid coexistence / Kelvin review
 
-Completed **pchem-4.7, pchem-4.12**, the final two of the21assigned pchem flags. These close only source/math/interactive reviews; human/listening gates remain separate. Dedicated helper `pchem-source-audit-coexistence.shared.js`; existing shared helpers, dependencies, central ledgers and package preserved.
+Completed **pchem-4.7, pchem-4.12**, the final two of the21assigned pchem flags. These close only source/math/interactive reviews. Dedicated helper `pchem-source-audit-coexistence.shared.js`; existing shared helpers, dependencies, central ledgers and package preserved.
 
 ## Primary evidence
 
@@ -22,4 +22,4 @@ The old Euler update in **radius**, followed by deleting droplets below0.8nm, fa
 - `node tests/verification-pchem-source-audit-coexistence.mjs`: **4/4item/theme groups**, actual light/dark controls. Both route buttons,4waypointcorners andnear-critical drag×2progressends; physical root markers, branch segmentation/readout;2temperatures×2curvatures×3radiusdrags, native resetclock, play through extinction, volume/reference bars and containment. No browser/TeXerrors.
 - Inspected `/tmp/atlas-pchem-coexistence-critical-route-light.png` and `...-kelvin-dark.png`; both-theme captures exist. The route visibly breaks at a small resolved jump; the coarsening readout exposes its conserved volume/numerical error and separate scope.
 
-All21pchem source reviews now total **51math groups and42native item/theme groups** across seven scoped audit subsets. This is not a completion claim for remaining collection queues, Wave5, subjective human review or listening checks.
+All21pchem source reviews now total **51math groups and42native item/theme groups** across seven scoped audit subsets. This is not a completion claim for remaining collection queues or Wave5.

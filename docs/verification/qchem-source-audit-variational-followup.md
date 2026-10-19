@@ -1,6 +1,6 @@
 # Quantum chemistry variational source review
 
-Completed **qchem-4.1, qchem-4.2, qchem-4.3**. This closes source/mathematical/interactive review only. Other qchem flags, central ledgers, dependency arrays and subjective gates remain separate.
+Completed **qchem-4.1, qchem-4.2, qchem-4.3**. This closes source/mathematical/interactive review only. Other qchem flags, central ledgers and dependency arrays remain separate.
 
 ## Full primary evidence
 

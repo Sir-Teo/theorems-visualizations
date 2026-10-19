@@ -159,5 +159,4 @@ these finite searches or the 480 generated Schnyder examples.
 Finite examples remain intentionally small and simple on the primal side;
 small multigraph/disconnected edge cases are verified by dedicated calculations.
 The plane picture's outer vertex remains a labeled schematic identification.
-No subjective human or listening check was marked complete by these automated
-checks. The five source flags are cleared only for this reviewed scope.
+The five source flags are cleared only for this reviewed scope.

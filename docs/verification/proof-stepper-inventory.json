@@ -1,7 +1,7 @@
 {
   "version": 1,
   "scope": "Written theorem-like items whose viz directly calls v.steps",
-  "limitation": "Native first/next/last control checks do not establish proof validity, flagship selection, visual quality in all frames or independent human review.",
+  "limitation": "Native first/next/last control checks do not establish proof validity, flagship selection or visual quality in all frames.",
   "total": 102,
   "passed": 102,
   "results": [

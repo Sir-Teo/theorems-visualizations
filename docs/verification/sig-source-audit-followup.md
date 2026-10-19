@@ -20,4 +20,4 @@ The source's §5.34 lower-bound constant drops the normalization by 2π when car
 
 `node tests/verification-sig-source-audit.mjs`: **4 native groups pass**, two entries in both themes. Actual preset buttons, harmonic endpoints, native drawing, both log block-size endpoints, all31 harmonic bins and all14 assembly bars are exercised. Final run includes path-bound checks; no page or TeX errors.
 
-Personally inspected final native screenshots `/tmp/atlas-sig-parseval-drawn-light.png`, `/tmp/atlas-sig-parseval-zero-safe-light.png`, and `/tmp/atlas-sig-divergence-weighted-blocks-dark.png`. No subjective audio or human review gate is claimed.
+Personally inspected final native screenshots `/tmp/atlas-sig-parseval-drawn-light.png`, `/tmp/atlas-sig-parseval-zero-safe-light.png`, and `/tmp/atlas-sig-divergence-weighted-blocks-dark.png`.

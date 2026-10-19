@@ -1,6 +1,6 @@
 # Quantum chemistry force / virial / crossing source review
 
-Completed **qchem-4.8, qchem-4.9, qchem-4.10**. Dedicated identities helper and tests; existing shared helpers, dependency arrays, other entries and central ledgers preserved. Human/listening checks are separate.
+Completed **qchem-4.8, qchem-4.9, qchem-4.10**. Dedicated identities helper and tests; existing shared helpers, dependency arrays, other entries and central ledgers preserved.
 
 ## Primary evidence actually read
 
@@ -24,4 +24,4 @@ Completed **qchem-4.8, qchem-4.9, qchem-4.10**. Dedicated identities helper and 
 - `node tests/verification-qchem-source-audit-identities.mjs`: **6/6item/theme groups**, actual light/dark input. HF2systems×3levels×2parameterendpoints×2widthendpoints; virialall21exponents×3levels; crossing5qvalues including0and±.01, bothsymmetries, native3Drotation and full projected-cone containment. Checks all displayed path/bar/marker geometry, missing/hidden controls and actual numerical values. No page/TeX/nonfinite errors.
 - Inspected `/tmp/atlas-qchem-identities-frozen-trial-light.png`, `...-log-virial-light.png`, `...-tuned-crossing-dark.png`; both-theme captures and shallow-potential captures saved. Cone margin was corrected after inspection and scoped UI tests rerun.
 
-Together with the variational subset, six of twelve assigned qchem flags are closed; this is not a claim that the whole qchem queue or any subjective gate is complete.
+Together with the variational subset, six of twelve assigned qchem flags are closed; this is not a claim that the whole qchem queue is complete.

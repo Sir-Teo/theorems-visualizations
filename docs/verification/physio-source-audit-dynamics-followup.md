@@ -1,6 +1,6 @@
 # Physiology dynamics source audit
 
-Resolved after parent integration: **physio-4.7, physio-4.9, physio-4.15**. Source flags and the central ledger were updated together after independent parent reruns. The independent follow-up read the exact original sources and reran both dedicated suites after the inherited implementation. No human/listening gate is claimed.
+Resolved after parent integration: **physio-4.7, physio-4.9, physio-4.15**. Source flags and the central ledger were updated together after independent parent reruns. The independent follow-up read the exact original sources and reran both dedicated suites after the inherited implementation.
 
 ## Sources actually read
 

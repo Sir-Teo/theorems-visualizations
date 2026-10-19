@@ -31,6 +31,6 @@ Model scales were checked against NIST phase-change compilation rows: [Ar](https
 
 `node tests/verification-pchem-source-audit-potentials.mjs`: **8/8 light/dark interaction groups passed**. All four representative screenshots were directly inspected, spanning both themes; a clipped Maxwell bar label was shortened/centered and the final browser run repeated. Tests use native constraints/gas/potential/resistance controls, actual state/current/temperature drags and play/restart. They compare displayed bars/markers with independent references, inspect finite readouts/TeX/browser errors and full plot extents.
 
-New scoped helper: `content/pchem/pchem-source-audit-potentials.shared.js`. New tests and this report only; unrelated item blocks/dependency arrays are preserved. Central queue/master-plan/package files and subjective human/listening/Wave5 gates are untouched.
+New scoped helper: `content/pchem/pchem-source-audit-potentials.shared.js`. New tests and this report only; unrelated item blocks/dependency arrays are preserved. Central queue/master-plan/package files and the Wave5 gate are untouched.
 
 Screenshots: `/tmp/atlas-pchem-potentials-{free-energy,fuel-cell,maxwell,internal-pressure}-{light,dark}.png`; representative `/tmp/atlas-pchem-potentials-maxwell-light.png`. All unassigned item blocks were checked byte-identical to the initial backup. Flags were cleared only after the final source/math/browser/screenshot checks.

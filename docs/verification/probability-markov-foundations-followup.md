@@ -169,9 +169,7 @@ closedness, no-return singletons, fallback behavior and reset.
   `/tmp/atlas-markov-queue-dark.png`. Reflection and class captures are also
   saved by the browser suite in both themes.
 
-Only the eight source flags listed above are cleared. The separate subjective
-human sample and subjective audio listening remain pending; these entries have
-no audio actions. This report does not close the central verification gate or
+Only the eight source flags listed above are cleared. These entries have no audio actions. This report does not close the central verification gate or
 start Wave 5. Incidental unflagged birth-and-death issues identified in the same module were
 reviewed separately in [the analytical follow-up](probability-birth-death-followup.md);
 those corrections are not counted among this batch's eight queue resolutions.

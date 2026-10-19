@@ -1,6 +1,6 @@
 # Population-genetics source review C1 — sickle-cell trade-off
 
-**popgen-4.8 is ready for central integration; its source flag remains true.** No subjective human/listening check or Wave 5 gate is closed.
+**popgen-4.8 is ready for central integration; its source flag remains true.** The Wave 5 gate remains unchanged.
 
 ## Complete primary treatments read
 

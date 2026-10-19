@@ -1,6 +1,6 @@
 # Distributed concurrency source review — 2026-10-18
 
-Resolves **dist-4.4, dist-4.6, dist-4.7 and dist-4.13**. Reviewed original statements, model assumptions, proofs, transcriptions and actual controls. The scope is these four entries in three chapter files, a dedicated helper/tests, and the `flagSpec` function in `ch04.shared.js`; the shared explorer and other algorithms are unchanged. Existing dependency arrays remain intact. Human/listening checks and the Wave-5 gate remain open.
+Resolves **dist-4.4, dist-4.6, dist-4.7 and dist-4.13**. Reviewed original statements, model assumptions, proofs, transcriptions and actual controls. The scope is these four entries in three chapter files, a dedicated helper/tests, and the `flagSpec` function in `ch04.shared.js`; the shared explorer and other algorithms are unchanged. Existing dependency arrays remain intact. The Wave-5 gate remains unchanged.
 
 ## Primary sources read
 
@@ -38,4 +38,4 @@ Random-run buttons previously repeated the same seed after the second click; see
 - Standard static/browser harness: all four IDs in light and dark, **4 per theme, zero errors/warnings, failed runs, TeX/blank or quality warnings**. `git diff --check` and module parsing pass. Dependency arrays and shared code outside `flagSpec` are unchanged.
 - Inspected all four representative light views: `/tmp/atlas-dist-{cover,deterministic,random,dijkstra}-light.png`; complementary dark outputs are produced by the same interaction suite.
 
-Source theorems, proof sketches/omitted lemmas, independent finite model arguments, sampled runs and human checks remain distinct. No subjective listening/human-review gate was completed here.
+Source theorems, proof sketches/omitted lemmas, independent finite model arguments and sampled runs remain distinct.

@@ -21,4 +21,4 @@ Primary evidence actually read:
 - `node tests/verification-lu-growth.mjs`: **4 passing light/dark real-input groups**. The actual three table draws and product residuals are checked at every textbook frame; first/previous/next/end, both breakdown choices and 16 random resets per theme are exercised. Growth checks cover every size at two seeds, histogram mass and drawn bars, exact worst-curve endpoint and changed samples. No runtime, TeX or blank-stage failures.
 - Targeted static validation: two entries, zero warnings/errors. Product screenshots inspected: `/tmp/atlas-lu-partial-light.png`, `/tmp/atlas-lu-breakdown-dark.png`, `/tmp/atlas-lu-growth-dark.png`.
 
-Finite calculations test implementation and counterexamples; source proofs support universal claims. Subjective human/listening checks and the Wave 5 gate remain open.
+Finite calculations test implementation and counterexamples; source proofs support universal claims. The Wave 5 gate remains unchanged.

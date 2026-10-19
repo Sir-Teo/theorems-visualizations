@@ -50,4 +50,4 @@ The slow integer example states **positive integer C**, tests every UI value 1â€
 - Targeted static check: **3 items, zero errors/warnings**. Scoped diff check clean. All **seven** pre-existing dependency arrays in the owned chapter are unchanged.
 - Representative inspected screenshots: `/tmp/atlas-flow-irrational-dark.png`, `/tmp/atlas-flow-shortest-light.png`, `/tmp/atlas-flow-konig-dark.png`. Source discrepancy renders: `/tmp/atlas-erickson-flow-10.png`, `/tmp/atlas-zwick-3.png`.
 
-Finite tests check implementations and independently derived identities; they do not substitute for the source/theorem arguments or complete subjective human/listening gates. Decimal plot output is approximate even when the underlying irrational updates are exact. Root owns central queue reconciliation and global checks.
+Finite tests check implementations and independently derived identities; they do not substitute for the source/theorem arguments. Decimal plot output is approximate even when the underlying irrational updates are exact. Root owns central queue reconciliation and global checks.

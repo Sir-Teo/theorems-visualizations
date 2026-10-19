@@ -1,6 +1,6 @@
 # Population-genetics source review B1 — Kimura 1968
 
-**popgen-3.14 is ready for central integration; its `verify: true` flag remains set.** This is a full named-original review, separate from the selection A5 batch. No human/listening or Wave 5 gate is closed.
+**popgen-3.14 is ready for central integration; its `verify: true` flag remains set.** This is a full named-original review, separate from the selection A5 batch. The Wave 5 gate remains unchanged.
 
 ## Original source actually read
 

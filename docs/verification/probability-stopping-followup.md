@@ -169,7 +169,5 @@ law, not a claim that a single capped sample equals its expectation.
   branching and upcrossing captures in both themes.
 
 The source flags above are cleared only for the seven fully reviewed queue
-entries. These mathematical, visual and automated interaction checks do not
-complete the separately required subjective human sample or subjective audio
-listening. None of these items has an audio action. Wave 5 remains gated by the
+entries. These are mathematical, visual and automated interaction checks. None of these items has an audio action. Wave 5 remains gated by the
 central verification ledger, maintained separately by the coordinating agent.

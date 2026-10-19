@@ -27,4 +27,4 @@ Changing any parameter now resets the gold point to a current-model equilibrium;
 - `/tmp/atlas-sysbio-toggle-both-pulses-and-memory-light.png`
 - `/tmp/atlas-sysbio-toggle-drag-and-current-equilibrium-reset-dark.png`
 
-Subsequent spacing-only prose edits in lambda/toggle change no calculations. No infinite biological memory, original-data fit, human/listening completion or Wave5 advancement.
+Subsequent spacing-only prose edits in lambda/toggle change no calculations. No infinite biological memory, original-data fit or Wave5 advancement.

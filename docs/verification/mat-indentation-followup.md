@@ -1,6 +1,6 @@
 # Materials source review H1 — hardness testing
 
-**mat-4.11 is ready for central integration.** Its `verify: true` flag remains set for the parent to reconcile with the queue. No historical-original-paper closure, human/listening completion or Wave 5 permission is implied.
+**mat-4.11 is ready for central integration.** Its `verify: true` flag remains set for the parent to reconcile with the queue. No historical-original-paper closure or Wave 5 permission is implied.
 
 ## Primary evidence read
 

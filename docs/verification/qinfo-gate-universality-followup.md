@@ -26,4 +26,4 @@ For the irrational product, `2cos(theta)=sqrt2−1/2`, giving `4z⁴+4z³+z²+4z
 - `node tests/verification-qinfo-gate-universality.mjs`: **6/6 light/dark groups pass**. Actual controls cover four presets/every elimination step/five new random unitaries;15 selected Paulis in three words, all16 signed bars, T² cancellation, the10-letter cap, undo/clear; both orbit generators, completed-depth endpoints, real target dragging and pole zero. All plotted coefficient centers/widths and analytic single-T/S images are checked, not just internal arrays. Runtime/TeX/nonfinite errors are rejected.
 - Final inverse-factor labels and coefficient-bar corrections were rerun in both themes (**2 groups each**). All six final screenshots were directly inspected: `/tmp/atlas-qinfo-{elimination,clifford,orbit}-{light,dark}.png`. Standard renderer checks on all three items pass in both themes: no runtime, TeX/blank or quality warnings. Syntax/dependency preservation and whitespace checks pass.
 
-These close three source reviews only. Human/listening gates remain pending, and no Wave5 content is started.
+These close three source reviews only. No Wave5 content is started.

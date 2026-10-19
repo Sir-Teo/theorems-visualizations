@@ -1,6 +1,6 @@
 # Population-genetics source review C3 — resistance model
 
-**popgen-4.14 ready for central integration; its source flag remains true.** This completes the assigned11 popgen source reviews after the separately reported A5/B1/B2/C1/C2 batches, subject to central reconciliation. Subjective human/listening checks and Wave 5 remain open.
+**popgen-4.14 ready for central integration; its source flag remains true.** This completes the assigned11 popgen source reviews after the separately reported A5/B1/B2/C1/C2 batches, subject to central reconciliation. Wave 5 remains gated.
 
 ## Primary evidence actually read
 

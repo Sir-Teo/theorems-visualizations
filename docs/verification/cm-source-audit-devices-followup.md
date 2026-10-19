@@ -1,6 +1,6 @@
 # Condensed matter: diode, LED, MOSFET, quantum well and exciton sources
 
-Completed reviews: **cm-4.8, cm-4.9, cm-4.10, cm-4.11, cm-4.12**, scoped to `content/cm/ch04-b.js`. Dedicated helper `content/cm/cm-source-audit-devices.js`; tests `tests/verification-cm-source-audit-devices{.test,}.mjs` and `tests/verification-cm-source-audit-led-animation.mjs`. The already accepted p–n junction entry 4.7 and existing shared helpers are preserved. This completes all 15 assigned CM flags across the four separate subset reports. Central ledger/package/master updates belong to root. Human/listening checks remain open; no Wave 5 work was started.
+Completed reviews: **cm-4.8, cm-4.9, cm-4.10, cm-4.11, cm-4.12**, scoped to `content/cm/ch04-b.js`. Dedicated helper `content/cm/cm-source-audit-devices.js`; tests `tests/verification-cm-source-audit-devices{.test,}.mjs` and `tests/verification-cm-source-audit-led-animation.mjs`. The already accepted p–n junction entry 4.7 and existing shared helpers are preserved. This completes all 15 assigned CM flags across the four separate subset reports. Central ledger/package/master updates belong to root. No Wave 5 work was started.
 
 ## Sources actually read
 

@@ -1,6 +1,6 @@
 # Materials source review G2 — precipitation and annealing
 
-Ready for central integration: **mat-4.9 and mat-4.10**. Their `verify: true` flags deliberately remain set until the parent integrates this evidence and the queue together. No new queue closures, listening checks, human assessment or Wave 5 authorization are claimed here.
+Ready for central integration: **mat-4.9 and mat-4.10**. Their `verify: true` flags deliberately remain set until the parent integrates this evidence and the queue together. No new queue closures or Wave 5 authorization are claimed here.
 
 ## Primary sources actually read
 
@@ -24,6 +24,6 @@ Grain regions now use the same eight-neighbor connectivity as the dynamics, incl
 - `node --test tests/verification-mat-aging.test.mjs`: **6/6 independent math groups passed**. Tests derive Orowan units from force balance, solve the crossing independently by log-radius bisection over 54 parameter cases and compare sampled visible extrema, check clock/height separation and off-window cases, exhaust **512 binary periodic 3×3 configurations × 9 sites × 8 proposals** against a separately counted pair Hamiltonian, check diagonal/wrapped components, and independently compare energies, zero-embryo invariance and seeded replay over finite sweeps.
 - `node tests/verification-mat-aging.mjs`: **4/4 actual browser groups passed**, two items in each light/dark theme. Precipitation: all 16 four-parameter corners, time endpoints and both directions of a real logarithmic graph-handle drag. Annealing: actual advance button, zero embryos, decay switch, all eight stored-energy/embryo/seed corners and actual playback. Runtime and KaTeX checks plus finite plotted dot/path extents pass.
 - `node scripts/check.mjs mat-4.9 mat-4.10 --static`: **2 items, 0 errors, 0 warnings**. All three chapter dependency arrays are preserved; the entire 4.11 entry remains unchanged for its separate source review. Whitespace check is clean.
-- Screenshots captured in both themes; inspected `/tmp/atlas-mat-precipitation-light.png` and `/tmp/atlas-mat-annealing-light.png`. These verify actual rendering, not human scientific/subjective sign-off.
+- Screenshots captured in both themes; inspected `/tmp/atlas-mat-precipitation-light.png` and `/tmp/atlas-mat-annealing-light.png`. These verify actual rendering.
 
 New scoped helper: `content/mat/source-audit-aging.shared.js`. Finite tests check implementation and stated invariants; they do not validate real alloy calibration, asymptotic grain growth, physical kinetics or universal constitutive laws. The Taylor 1934 named-original item remains a separate source-access question.

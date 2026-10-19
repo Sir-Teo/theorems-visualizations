@@ -1,6 +1,6 @@
 # Electrostatic boundaries and images — 2026-10-18
 
-Review of `em-3.4`, `em-3.7`, `em-3.11` and `em-3.12`. Scoped changes preserve every dependency array and the unreviewed entries in `ch03.js` and `ch03-b.js`. The other nine EM reviews belong to a separate parallel batch. Human/listening requirements and the Wave 5 gate remain open.
+Review of `em-3.4`, `em-3.7`, `em-3.11` and `em-3.12`. Scoped changes preserve every dependency array and the unreviewed entries in `ch03.js` and `ch03-b.js`. The other nine EM reviews belong to a separate parallel batch. The Wave 5 gate remains unchanged.
 
 ## Primary sources examined
 

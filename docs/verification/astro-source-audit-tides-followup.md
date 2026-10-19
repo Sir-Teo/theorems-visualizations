@@ -1,6 +1,6 @@
 # Astronomy source audit A: tides, spin and thermal escape
 
-Reviewed source queue entries: **astro-3.2, astro-3.3, astro-3.4, astro-3.7, astro-3.9** in `content/astro/ch03.js`. **astro-3.6 was left open at this five-item batch completion** because the1979original could not be acquired. It has since been reviewed separately against a full1984author treatment with unsupported ancillary history removed; see `astro-source-audit-rings-followup.md`. This report counts only the five entries listed above. Other astronomy entries are a later batch. No human/listening gate is closed here.
+Reviewed source queue entries: **astro-3.2, astro-3.3, astro-3.4, astro-3.7, astro-3.9** in `content/astro/ch03.js`. **astro-3.6 was left open at this five-item batch completion** because the1979original could not be acquired. It has since been reviewed separately against a full1984author treatment with unsupported ancillary history removed; see `astro-source-audit-rings-followup.md`. This report counts only the five entries listed above. Other astronomy entries are a later batch.
 
 ## Primary evidence actually read
 
@@ -32,4 +32,4 @@ Reviewed source queue entries: **astro-3.2, astro-3.3, astro-3.4, astro-3.7, ast
 - `node tests/verification-astro-source-audit-tides.mjs`: **10/10 actual light/dark groups passed** (five entries in each theme), including all288 locking planet/material/parameter corner combinations,16 Mercury parameter corners plus actual despin buttons, lunar zero-lag/time endpoints, both hypothetical escape bodies and log/linear toggles, and real canvas-handle drags for3.2/3.3/3.4/3.7. All five source flags above were cleared after this pass. It operates actual slider endpoints/selects/toggles/buttons and canvas-handle drags; instruments raw output coordinates to reject clipped/nonfinite path/dot values and checks TeX/runtime diagnostics.
 - Final five-entry static: **5items,0errors,0warnings**. All10 chapter dependency arrays preserved (including nine dependency edges of the five reviewed entries). Final whitespace check clean. Representative actual screenshots inspected: `/tmp/atlas-astro-locking-spinup-light.png`, `/tmp/atlas-astro-io-light.png`, `/tmp/atlas-astro-jeans-light.png`; dark counterparts were also generated and the final dark rendering checked. A final copy edit after the full interaction run renames the spin panel to cover spin-up and corrects the Io marker description; calculations and controls are unchanged.
 
-Source PDF SHA256 values are recorded in `astro-source-audit-tides-sources.json`. Primary-source review does not certify subjective human rendering/listening checks; those remain open, as does Wave5.
+Source PDF SHA256 values are recorded in `astro-source-audit-tides-sources.json`. Wave5 remains gated.

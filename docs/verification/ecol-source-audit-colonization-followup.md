@@ -12,4 +12,4 @@ Corrections include the physically infeasible old initial state: at D=.99 it use
 
 `node tests/verification-ecol-source-audit-colonization.mjs`: **2 native item/theme groups pass**. Actual sliders traverse all8 rate/mortality corners, each with D=0 and .99 handle interactions, verifying plotted equilibria, every finite trajectory's physical simplex, failure messages and zero-endpoint interval. Default parameters are then changed to c2=6 to verify inclusive D=0 and the corrected .0025 start at D=.99. No runtime, TeX or nonfinite diagnostics.
 
-Inspected `/tmp/atlas-ecol-colonization-coexistence-includes-zero-light.png` and `/tmp/atlas-ecol-colonization-feasible-destroyed-habitat-dark.png`; matching opposite-theme captures retained. Human/listening gates remain untouched.
+Inspected `/tmp/atlas-ecol-colonization-coexistence-includes-zero-light.png` and `/tmp/atlas-ecol-colonization-feasible-destroyed-habitat-dark.png`; matching opposite-theme captures retained.

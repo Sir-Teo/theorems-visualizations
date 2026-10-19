@@ -14,4 +14,4 @@ Removed the false one-bonded-wire-per-net count. A net can require several links
 
 `node tests/verification-circ-source-audit-kilby.mjs`: **2 native light/dark groups pass**, each exercising32 actual resistance/capacitance/gain/construction combinations, including exactly A=29. Verified waveform samples, amplitude, finite-window status, construction-count language and finite plot values; no page/TeX errors. Personally inspected source `/tmp/atlas-circ-kilby-original-oscillator.png` and both final screenshots `/tmp/atlas-circ-kilby-original-patent-critical-oscillator-model-light.png`, `-dark.png`.
 
-Original technical content is supported; the patent's legal scope/novelty, later priority disputes, exact original device accuracy, subjective human/audio gates and Wave5 are not claimed verified by these tests.
+Original technical content is supported; the patent's legal scope/novelty, later priority disputes, exact original device accuracy and Wave5 readiness are not claimed verified by these tests.

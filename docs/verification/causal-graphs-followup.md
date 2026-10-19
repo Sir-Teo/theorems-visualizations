@@ -1,6 +1,6 @@
 # Causal graphs and conditioning — 2026-10-18
 
-Resolved **causal-3.2, causal-3.3, causal-3.4 and causal-3.9**, after full source comparison, corrections and actual browser controls. Scope: the four entries in `content/causal/ch03.js` and `ch03-b.js`, the chapter summary's collider sentence, the dedicated `graph-sources-audit.shared.js` helper and dedicated tests. Existing dependency arrays and other entries are preserved. This does not complete human/listening checks or open Wave 5.
+Resolved **causal-3.2, causal-3.3, causal-3.4 and causal-3.9**, after full source comparison, corrections and actual browser controls. Scope: the four entries in `content/causal/ch03.js` and `ch03-b.js`, the chapter summary's collider sentence, the dedicated `graph-sources-audit.shared.js` helper and dedicated tests. Existing dependency arrays and other entries are preserved. This does not open Wave 5.
 
 ## Primary sources actually read
 
@@ -44,4 +44,4 @@ When both strengths and leak are zero, no alarm-conditioned table exists. An ala
 - Standard static/browser harness on the four exact IDs in light/dark: **4 per theme**, no errors, warnings, failed runs, TeX/blank or quality warnings. Scoped modules parse; `git diff --check` clean.
 - Directly inspected `/tmp/atlas-causal-{factor-light,struct-dark,triples-dark,impossible-light,degenerate-dark}.png`, covering all four corrected visuals and zero-event handling. Test screenshots retain the complementary themes as well.
 
-Finite enumerations check these implementations and exact finite identities; the stated general results rely on the source statements and the displayed mathematical arguments. No subjective human or listening gate was marked complete.
+Finite enumerations check these implementations and exact finite identities; the stated general results rely on the source statements and the displayed mathematical arguments.

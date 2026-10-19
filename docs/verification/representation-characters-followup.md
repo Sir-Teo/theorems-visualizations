@@ -1,6 +1,6 @@
 # Representation theory: characters — 2026-10-17
 
-Resolved eight queued reviews: `rep-3.4`, `3.5`, `3.6`, `3.7`, `3.8`, `3.9`, `3.12`, `3.13`. Six representation-theory reviews remain open. The total source queue is **809**; human sampling and subjective listening remain pending, and the Wave 5 gate remains closed.
+Resolved eight queued reviews: `rep-3.4`, `3.5`, `3.6`, `3.7`, `3.8`, `3.9`, `3.12`, `3.13`. Six representation-theory reviews remain open. The total source queue is **809**; the Wave 5 gate remains closed.
 
 ## Primary-source evidence
 
@@ -52,4 +52,4 @@ Validation passed:
 - Strict build: 6,684 items and 6,890 planned items in 450 chapters, no warnings/errors. Full static check: 6,621 visualizations, no warnings/errors.
 - Nine smoke routes: the chapter and all eight reviewed items, each with the expected title and no errors.
 
-The theorem sources and independent checks support clearing only these eight flags. No subjective human or listening task is inferred complete from this validation.
+The theorem sources and independent checks support clearing only these eight flags.

@@ -1,6 +1,6 @@
 # Neuroscience source review A1 — Izhikevich hybrid model
 
-**neuro-3.9 is ready for central integration; `verify: true` remains set.** The other11 assigned neuroscience reviews remain separate. Human/listening gates and Wave 5 remain open.
+**neuro-3.9 is ready for central integration; `verify: true` remains set.** The other11 assigned neuroscience reviews remain separate. Wave 5 remains gated.
 
 ## Full original source actually read
 
@@ -23,6 +23,6 @@ The displayed integration now uses RK4 flow with bracketed threshold events and 
 - Reproducible independent source: `tests/reference-neuro-izhikevich.py`; bounded committed reference `tests/fixtures/neuro-izhikevich-reference.json` records solver, tolerances, source URL/hash and every reference event/reset. The Python generator requires SciPy; it is not a new browser/runtime dependency.
 - `node tests/verification-neuro-izhikevich.mjs`: **2/2 actual light/dark groups passed**, all five presets, all three numerical resolutions, all32 actual slider corners, zero-input pre-stimulus spikes, the real preset loader and input keys restoring RS9, and actual reset markers. Runtime/KaTeX, finite path/dot extents and widened recovery views pass. An initial harness only intercepted individual dots while the batched marker call was invisible to its counter; markers were expressed as individual dots, preserving actual rendering and making the native assertion direct. A nullcline test was also corrected to allow a genuine empty visible intersection, not a false requirement that every window meet the curve.
 - `node scripts/check.mjs neuro-3.9 --static`: **one item,0errors,0warnings**. All four dependency arrays and all other chapter entries preserved byte-for-byte. No existing shared helper, central queue or package changed. Whitespace clean.
-- Screens `/tmp/atlas-neuro-izh-{source,corner,spontaneous}-{light,dark}.png`; inspected source dark and the original Fig.2 scan `/tmp/atlas-neuro-izh-figure2-2.png`. These checks do not complete subjective human review or validate quantitative biological equivalence.
+- Screens `/tmp/atlas-neuro-izh-{source,corner,spontaneous}-{light,dark}.png`; inspected source dark and the original Fig.2 scan `/tmp/atlas-neuro-izh-figure2-2.png`. These checks do not validate quantitative biological equivalence.
 
 Scoped implementation `content/neuro/source-audit-izhikevich.shared.js`.

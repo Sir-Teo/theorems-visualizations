@@ -129,4 +129,3 @@ silently reusing its final term.
 
 Finite checks validate the offered pictures and computations. The general
 statements are justified by the source proofs and corrected derivations.
-No subjective human/listening check was marked complete from these tests.

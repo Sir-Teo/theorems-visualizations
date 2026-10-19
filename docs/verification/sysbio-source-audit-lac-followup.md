@@ -22,4 +22,4 @@ The left bifurcation diagram is parameterized directly by X and e=sigma/(1−sig
 
 `node tests/verification-sysbio-source-audit-lac.mjs`: **2 groups pass**, light/dark. Actual18parameter combinations ×3histories per theme. Every plotted branch point satisfies its equilibrium; root counts match; all histogram bin probabilities sum to1; full high-expression tail visible; no page/TeX errors. Personally inspected `/tmp/atlas-sysbio-lac-all-high-cells-visible-light.png` and `/tmp/atlas-sysbio-lac-separate-fold-branches-dark.png`.
 
-The final wording clarification scopes history dependence to a bistable window; no computation changed. No original-data fitting, universal lactose bistability, subjective listening closure or Wave5 work.
+The final wording clarification scopes history dependence to a bistable window; no computation changed. No original-data fitting, universal lactose bistability or Wave5 work.

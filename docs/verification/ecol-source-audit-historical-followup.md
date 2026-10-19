@@ -21,4 +21,4 @@ Validation:
 - `node tests/verification-ecol-source-audit-historical.mjs`: **4native item/theme groups passed**. In each theme4.1exercises eight actual parameter/removal corners and samples the rendered functions against the threshold calculations;4.2exercises both presets×five parameter choices, including zero interaction, exact invasion boundary and priority effect. Checks actual readouts and drawn nullcline coordinates, runtime/TeX errors and nonfinite values.
 - Inspected screenshots `/tmp/atlas-ecol-historical-barnacle-direct-effects-light.png` and `/tmp/atlas-ecol-historical-zero-competition-finite-isoclines-dark.png`; both themes and priority captures retained. Source table captures `/tmp/atlas-ecol-gause-appendix-158.png`, `-159.png`.
 
-No evidence gap is hidden: the omitted bursaria experiment was not read in its1935original and is no longer asserted here. No subjective/human/audio completion claimed.
+No evidence gap is hidden: the omitted bursaria experiment was not read in its1935original and is no longer asserted here.

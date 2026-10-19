@@ -31,4 +31,4 @@ Validation:
 - `node tests/verification-ode.mjs`: exact Green kernels and unit-load solutions for three operators; 12 operator/load combinations; pointer reciprocity; all preset/boundary combinations for spectra and expansions; slider endpoints; six eigenvalue jumps; Rayleigh sampling/orthogonalisation/zero trial; 15 forcing/resonance cases and a near-resonance case; and damping extremes.
 - Sixteen chapter/item visualizations checked in light and selector/toggle modes; the nine affected/neighboring items also checked in dark mode, with representative screenshots inspected. Strict build, full static validation and five targeted route smoke checks pass.
 
-These checks resolve the eight queued ODE source flags. The wider human sample and subjective audio listening remain pending. Wave 5 remains gated.
+These checks resolve the eight queued ODE source flags. Wave 5 remains gated.

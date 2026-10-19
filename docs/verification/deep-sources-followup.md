@@ -47,4 +47,4 @@ The former “exact flow (RK4)” labels are replaced by an 800-step numerical r
 - No runtime errors, malformed TeX, blank canvases, nonfinite plotted paths or literal TeX escapes in readouts. All four affected modules and the helper pass `node --check`. Scoped-byte comparison confirms unrelated items and all seven dependency edges are unchanged.
 - Representative reviewed screenshots: `/tmp/atlas-deep-{adaptive,linear,ode,scale}-{light,dark}.png`.
 
-All four assigned source flags are resolved. No general convergence, exact numerical solver, empirical predictive performance, unverified publication priority, subjective human/listening check or Wave-5 readiness is claimed by these tests.
+All four assigned source flags are resolved. No general convergence, exact numerical solver, empirical predictive performance, unverified publication priority or Wave-5 readiness is claimed by these tests.

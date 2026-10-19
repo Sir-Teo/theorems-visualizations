@@ -35,7 +35,7 @@ Two neighboring unflagged items were corrected during this comparison:
 - `npm test`: 47 math, 20 science-kit and **23 content-verification tests** pass. The four new tests cover exact D/N spectra, both Robin thresholds, boundary residuals, energy/norm identities, triangular projections and energy, exact Fourier coefficients and finite Parseval identities, the lamina closed form and heat-mode residuals.
 - `node tests/verification-pde.mjs`: eight browser scenario groups pass, including real pointer edits, both PDEs, both Robin left ends at four coefficient settings and two selected modes, all nine symmetric endpoint combinations, the coupled-end exception, jump probes, exact normalized coefficients, and slider extremes.
 - All 11 chapter-4 visualizations pass in light/dark and selector/toggle modes. Representative screenshots inspected; extra interaction checks cover formerly clipped sums, pluck bars, growing modes/envelopes and analytic peaks.
-- `node tests/verification-interactions.mjs pde-4.2`: one real Web Audio action, nonzero signal energy, finite samples and no autoplay. The script now accepts optional item IDs without changing its default full selection. Subjective listening remains pending.
+- `node tests/verification-interactions.mjs pde-4.2`: one real Web Audio action, nonzero signal energy, finite samples and no autoplay. The script now accepts optional item IDs without changing its default full selection.
 - Strict build and full static validation pass. Five affected chapter/item routes pass smoke checks.
 
-The source-review queue now has **828** pending entries. Wave 5 remains gated by verification and the pending human/listening checks.
+The source-review queue now has **828** pending entries. Wave 5 remains gated by verification.

@@ -170,5 +170,4 @@ asymptotic n0. Completed exclusions and budget stops remain distinct.
   `/tmp/atlas-brooks-vizing-{light,dark}.png`.
 
 The seven source flags are cleared for the reviewed statements, proofs,
-inputs and finite demonstrations. Subjective human/listening checks remain
-separate; none was marked complete from these automated checks.
+inputs and finite demonstrations.

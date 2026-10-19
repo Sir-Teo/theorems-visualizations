@@ -82,5 +82,4 @@ browser's antiderivatives to rounding precision.
   coordinate-convergence screenshots directly.
 - Four chapter/item smoke routes pass with their expected titles.
 
-**822 queued source reviews remain.** No Wave 5 work has begun. Subjective
-listening and the required human sample remain open.
+**822 queued source reviews remain.** No Wave 5 work has begun.

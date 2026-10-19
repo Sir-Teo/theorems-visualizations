@@ -1,6 +1,6 @@
 # Neuroscience source review A2 — explicit HH gate closure
 
-**neuro-3.1 is ready for central integration; `verify: true` remains set.** This is separate from the completed Izhikevich review. Human/listening checks and Wave 5 remain open.
+**neuro-3.1 is ready for central integration; `verify: true` remains set.** This is separate from the completed Izhikevich review. Wave 5 remains gated.
 
 ## Primary treatment actually read
 
@@ -19,7 +19,7 @@ The full and reduced models start from the same V,n, but the substituted h is di
 - `node tests/verification-neuro-reduction.mjs`: **2/2 actual light/dark groups passed**. Both real fit/fixed buttons and actual range-key inputs0,8,15,40; unavailable fit/intervals at rest; default full5/reduced6 and high-input full7/reduced9 finite counts; cloud/line/trace extents including negative visible h and widened voltage ranges; runtime and KaTeX clean. Screens `/tmp/atlas-neuro-reduction-{rest,high}-{light,dark}.png`; high dark inspected.
 - `node scripts/check.mjs neuro-3.1 --static`: **one item,0errors,0warnings**. All five chapter dependency arrays and entries3.2–3.5 preserved byte-for-byte. Existing shared helpers, central queue and package unchanged; whitespace clean.
 
-Scoped implementation: `content/neuro/source-audit-reduction.shared.js`. Finite reference and browser checks do not establish the general validity of this closure or complete subjective review.
+Scoped implementation: `content/neuro/source-audit-reduction.shared.js`. Finite reference and browser checks do not establish the general validity of this closure.
 
 ## Subsequent primary cross-check
 

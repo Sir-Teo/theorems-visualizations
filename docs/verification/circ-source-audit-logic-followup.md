@@ -34,4 +34,4 @@ Personally inspected source images `/tmp/atlas-circ-wanlass-patent-inverter.png`
 - `/tmp/atlas-circ-logic-latch-critical-stable-midpoint-light.png`
 - `/tmp/atlas-circ-logic-latch-diagonal-saddle-finite-trace-dark.png`
 
-No human/listening gates or Wave5 advancement claimed.
+No Wave5 advancement claimed.

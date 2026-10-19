@@ -1,6 +1,6 @@
 # Probability: conditional expectation, kernels and martingales — 2026-10-17
 
-Resolved `prob-4.1.1a`, `prob-4.1.8`, `prob-4.1.15a`, `prob-4.1.17` and `prob-4.2.1a`. The custom `a` suffixes identify definitions that are unnumbered in the source; they do not claim that the book numbers those definitions. Human sampling and subjective listening remain pending, and Wave 5 remains gated.
+Resolved `prob-4.1.1a`, `prob-4.1.8`, `prob-4.1.15a`, `prob-4.1.17` and `prob-4.2.1a`. The custom `a` suffixes identify definitions that are unnumbered in the source; they do not claim that the book numbers those definitions. Wave 5 remains gated.
 
 ## Primary source
 

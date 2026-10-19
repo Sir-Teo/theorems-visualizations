@@ -1,6 +1,6 @@
 # Relativity source audit: light, clocks, muons, Einstein and Compton
 
-This batch reviews **rel-1.3, rel-1.5, rel-1.12, rel-4.16 and rel-4.17**. The owned content files are `content/rel/ch01.js`, `ch01-b.js` and `ch04-c.js`; the dedicated helper is `content/rel/rel-source-audit.js`. Central queue/master/package files and existing shared helpers are unchanged. Human review/listening gates remain open, and no Wave 5 work is included.
+This batch reviews **rel-1.3, rel-1.5, rel-1.12, rel-4.16 and rel-4.17**. The owned content files are `content/rel/ch01.js`, `ch01-b.js` and `ch04-c.js`; the dedicated helper is `content/rel/rel-source-audit.js`. Central queue/master/package files and existing shared helpers are unchanged. No Wave 5 work is included.
 
 ## Primary evidence actually read
 
@@ -52,4 +52,4 @@ For Compton scattering, an independent calculation starts with `E′=E/[1+(E/mc�
 - Explicit five-ID `scripts/check.mjs` runs in light/dark: **5/5 each**, zero static errors/warnings, runtime failures, TeX/blank or quality warnings. A final run follows the axis/wording corrections; no global build is used.
 - All ten light/dark screenshots inspected; full-size inspections cover the high-speed pulse ledger, the Compton spectrum/unit readout, dynamic muon plot and both animated diagrams. Corrected layout details are rechecked after the final native-input run.
 - Original Einstein pages639–641 and Frisch–Smith TableI p.348 were rendered and visually inspected against OCR/translation. Downloaded invalid/partial PDFs were not counted as source evidence. The Compton full primary PDF was accessible through the web reader despite direct-download failures, which is why its local hash is absent.
-- `git diff --check` on the owned files/helper/tests/report is clean. Existing dependency arrays are preserved; original historical papers not actually read are not represented as verified originals. Human review/listening and the Wave5 gate remain open.
+- `git diff --check` on the owned files/helper/tests/report is clean. Existing dependency arrays are preserved; original historical papers not actually read are not represented as verified originals. The Wave5 gate remains unchanged.

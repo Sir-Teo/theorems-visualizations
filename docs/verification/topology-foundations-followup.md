@@ -1,6 +1,6 @@
 # Topology: covers, Cantor sets and compactification — 2026-10-17
 
-Resolved `top-3.15`, `top-4.1`, `top-4.14` and `top-4.18`. **799 source reviews remain**, including four topology entries. Human sampling and subjective listening remain pending, and Wave 5 remains gated.
+Resolved `top-3.15`, `top-4.1`, `top-4.14` and `top-4.18`. **799 source reviews remain**, including four topology entries. Wave 5 remains gated.
 
 ## Primary text and source anchors
 

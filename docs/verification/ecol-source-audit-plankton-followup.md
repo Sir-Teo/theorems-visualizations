@@ -21,4 +21,4 @@ The exact balance is a useful independent invariant: because mortality=turnover=
 
 `node tests/verification-ecol-source-audit-plankton.mjs`: **2native item/theme groups pass**. Actual5→12→5 selection repeated twice in each theme; checks the rendered cohort start times and0.1levels, every actual positive plotted ordinate and log bounds, final counts, dashed identities and finite difference-plot limits; no runtime/TeX/nonfinite diagnostics.
 
-Inspected screenshots `/tmp/atlas-ecol-plankton-unintroduced-species-omitted-light.png` and `/tmp/atlas-ecol-plankton-finite-sensitive-dependence-dark.png`; matching opposite-theme captures retained. No human/listening completion claimed.
+Inspected screenshots `/tmp/atlas-ecol-plankton-unintroduced-species-omitted-light.png` and `/tmp/atlas-ecol-plankton-finite-sensitive-dependence-dark.png`; matching opposite-theme captures retained.

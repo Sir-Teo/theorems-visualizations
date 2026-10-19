@@ -23,4 +23,4 @@ The UI now plots site-index registry and actual residual history from a finite f
 - `node scripts/check.mjs mat-3.13 --static`: **one item, 0 errors, 0 warnings**. All three chapter dependency arrays and the completed 3.11/3.12 entries are preserved. Whitespace check clean.
 - Captured `/tmp/atlas-mat-taylor-pending-{light,dark}.png`; final dark screenshot inspected. Scope/source flag explicitly retain the original-paper uncertainty.
 
-New helper `content/mat/source-audit-finite-chain.shared.js`; dedicated math/browser checks `tests/verification-mat-finite-chain{.test,}.mjs`. Required remaining source work is acquisition and complete review of Taylor's original before any paper-specific verification closure. Human/listening and Wave 5 gates remain untouched.
+New helper `content/mat/source-audit-finite-chain.shared.js`; dedicated math/browser checks `tests/verification-mat-finite-chain{.test,}.mjs`. Required remaining source work is acquisition and complete review of Taylor's original before any paper-specific verification closure. The Wave 5 gate remains unchanged.

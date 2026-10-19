@@ -21,4 +21,4 @@ Ready for root review: **bioinf-3.9, bioinf-4.1, bioinf-4.5**. All three `verify
 
 Ten screenshots saved under `/tmp/atlas-bioinf-{4.1,4.5,3.9-w3,3.9-w4,3.9-twohit}-{light,dark}.png`, inspected through contact sheets and representative full-size views. Both sparse/high-threshold and populated/lower-threshold word neighbourhoods were inspected. All charts/labels/controls readable.
 
-These checks establish these implementations and supported source claims, not biological validity of a first-order chain, original benchmark reproduction, subjective human review, audio, or the Wave5gate.
+These checks establish these implementations and supported source claims, not biological validity of a first-order chain, original benchmark reproduction, audio validation or Wave5 readiness.

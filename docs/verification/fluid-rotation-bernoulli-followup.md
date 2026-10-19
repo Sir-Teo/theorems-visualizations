@@ -1,6 +1,6 @@
 # Fluid source audit: swirl, rotating columns and unsteady Bernoulli
 
-Reviewed 2026-10-18: **fluid-3.6, fluid-3.11, fluid-4.3**. These three reviews concern the complete retained statements, proofs, model assumptions and visualizations. They do not close other fluid entries, subjective human/listening checks or the Wave5 gate.
+Reviewed 2026-10-18: **fluid-3.6, fluid-3.11, fluid-4.3**. These three reviews concern the complete retained statements, proofs, model assumptions and visualizations. They do not close other fluid entries or the Wave5 gate.
 
 ## Primary material actually read
 
@@ -43,4 +43,4 @@ The equal-arm solution is exactly harmonic within the ideal1D model; unequal arm
 
 `node tests/verification-fluid-rotation-bernoulli.mjs`: **8/8 actual light/dark groups pass**. Native slider keys, selector buttons and pointer drags cover12 signed/zero vortex corners, the nonzero core edge, real velocity-peak drag, two rotation modes×three heights×two probe positions, eight tube geometry/amplitude corners, true full-cycle measurement and energy. Real play/pause/restart checks both animations, time scaling, stationary zero-amplitude behavior and cleared state/history. Instrumentation exposes state/stage bounds only; controls are not replaced with programmatic setters. Six screenshots `/tmp/atlas-fluid-{rankine,column,utube}-{light,dark}.png` were directly inspected.
 
-Standard three-entry render checks pass in light and dark with zero static/runtime/TeX/blank/quality errors. All14 unassigned item blocks and all17 dependency arrays across the two files remain byte-identical to their starting versions. Only these three supported source flags are cleared after source, math, interaction and visual checks. Browser success does not certify subjective human or listening completion.
+Standard three-entry render checks pass in light and dark with zero static/runtime/TeX/blank/quality errors. All14 unassigned item blocks and all17 dependency arrays across the two files remain byte-identical to their starting versions. Only these three supported source flags are cleared after source, math, interaction and visual checks.

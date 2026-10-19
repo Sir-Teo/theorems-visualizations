@@ -1,6 +1,6 @@
 # Neuroscience source review A3 — local Hopf branch versus observed firing
 
-**neuro-3.4 is ready for central integration; `verify: true` remains set.** No further queue count is attached to the narrow chapter-summary qualification. Human/listening checks and Wave 5 remain open.
+**neuro-3.4 is ready for central integration; `verify: true` remains set.** No further queue count is attached to the narrow chapter-summary qualification. Wave 5 remains gated.
 
 ## Primary treatments actually read
 

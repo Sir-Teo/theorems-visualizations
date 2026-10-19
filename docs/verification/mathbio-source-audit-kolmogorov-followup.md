@@ -15,4 +15,4 @@ The entry now states the supported modern conditional result and clearly labels 
 
 `node tests/verification-mathbio-source-audit-kolmogorov.mjs`: **2 native light/dark groups pass**, each covering5models×2death-rate endpoints, both corrected counterexamples, readout's explicit non-certification and proper line breaks, native clear/click and runtime/TeX/blank checks. Four screenshots `/tmp/atlas-mathbio-kolmogorov-{invasion,missing-root}-{light,dark}.png` visually inspected. These are partial-correction checks, **not** closure of the original1936 source claim.
 
-Scoped helper/test/report names use `mathbio-source-audit-kolmogorov`. `verify:true`, human/listening and Wave5 gates remain intact.
+Scoped helper/test/report names use `mathbio-source-audit-kolmogorov`. `verify:true` and the Wave5 gate remain intact.

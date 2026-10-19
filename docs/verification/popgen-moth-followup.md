@@ -1,6 +1,6 @@
 # Population-genetics source review C2 — peppered-moth evidence
 
-**popgen-4.13 ready for central integration; flag remains true.** Human/listening checks and Wave 5 remain open.
+**popgen-4.13 ready for central integration; flag remains true.** Wave 5 remains gated.
 
 ## Original primary source read
 

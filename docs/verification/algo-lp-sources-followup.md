@@ -46,4 +46,4 @@ The parent authorized editing only the simplex section of `ch11.shared.js`. Iter
 - All affected modules/helpers pass `node --check`. Dependency arrays are preserved. Shared bytes outside the authorized simplex block remain unchanged; unrelated chapter11-c items remain unchanged. No global build was run.
 - Inspected representative screenshots: `/tmp/atlas-algo-{duality,klee,polynomial,tu,ff1956}-{light,dark}.png`. Extreme full-history ellipse views are additionally saved as `/tmp/atlas-algo-polynomial-extreme-{light,dark}.png`.
 
-All five assigned source flags are resolved. Finite numerical checks are evidence about these implementations, not proofs of the general mathematical theorems or bit-complexity guarantees. No human/listening check or Wave-5 gate was marked complete.
+All five assigned source flags are resolved. Finite numerical checks are evidence about these implementations, not proofs of the general mathematical theorems or bit-complexity guarantees. The Wave-5 gate remains unchanged.

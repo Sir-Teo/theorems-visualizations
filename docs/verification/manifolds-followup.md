@@ -1,6 +1,6 @@
 # Manifolds: Morse critical points and Lie derivatives — 2026-10-17
 
-Resolved `mfd-3.14`, `mfd-4.6` and `mfd-4.8`, closing the three queued manifold reviews. **792 source reviews remain**. Subjective listening and human sampling remain open, and Wave 5 remains gated.
+Resolved `mfd-3.14`, `mfd-4.6` and `mfd-4.8`, closing the three queued manifold reviews. **792 source reviews remain**. Wave 5 remains gated.
 
 ## Primary sources and scope
 

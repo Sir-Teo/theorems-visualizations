@@ -1,6 +1,6 @@
 # Bridge expansion and source-grounding audit
 
-Audit date: 2026-10-19. Agent inspection; no human-review gate is closed by this report.
+Audit date: 2026-10-19. Agent inspection.
 
 The inventory now has **15 distinct curated bridges**, comprising **138 ordered steps through 135 unique written ideas across 12 fields**. Every step has connecting prose, a written statement, an interactive visualization and a book anchor, explicit reference or original-paper metadata. No bridge step points to a planned-only item or an alias.
 
@@ -58,7 +58,7 @@ Results on the final bridge content:
 - **17 structural tests passed**: inventory target, unique routes/titles/walks, source-anchored written interactive items, nonempty notes, at least two collections/fields per bridge, and substantive new concepts.
 - Browser audit: **30 desktop route/theme checks** at 1280 × 900 and **30 narrow route/theme checks** at 320 × 900. Every bridge’s title, step count and target hrefs match content; no planned cards, KaTeX errors, horizontal overflow, runtime errors or console errors.
 - Full-page screenshots for all 15 bridges in both themes: /tmp/theorems-bridges/<slug>-light.png and <slug>-dark.png. Machine results: /tmp/theorems-bridges/results.json. These are reproducible local inspection artifacts rather than committed assets.
-- Agent screenshot inspection of the seven new pages in both light and dark confirms readable hierarchy, formula rendering, numbered rails and field colors. This is agent visual inspection, not the plan’s independent human sample or subjective audio listening.
+- Agent screenshot inspection of the seven new pages in both light and dark confirms readable hierarchy, formula rendering, numbered rails and field colors. This is agent visual inspection.
 
 ## Remaining master-plan capability
 

@@ -1,6 +1,6 @@
 # Neuroscience source review A7 — modified Connor–Stevens teaching model
 
-**neuro-2.8 is ready for central integration; `verify: true` remains set.** Four assigned neuroscience flags remain separate. Human/listening checks and Wave 5 remain open.
+**neuro-2.8 is ready for central integration; `verify: true` remains set.** Four assigned neuroscience flags remain separate. Wave 5 remains gated.
 
 ## Complete primary sources actually read
 

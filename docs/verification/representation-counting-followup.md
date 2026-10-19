@@ -1,6 +1,6 @@
 # Representation theory: counting and real types — 2026-10-17
 
-Resolved `rep-3.15`, `rep-4.1` and `rep-4.10`; corrected neighboring `rep-4.8` and `rep-4.9`. **806 source reviews remain**, including the Frobenius historical paper and the two molecular-symmetry entries. Subjective listening and the human sample remain pending. Wave 5 remains gated.
+Resolved `rep-3.15`, `rep-4.1` and `rep-4.10`; corrected neighboring `rep-4.8` and `rep-4.9`. **806 source reviews remain**, including the Frobenius historical paper and the two molecular-symmetry entries. Wave 5 remains gated.
 
 ## Sources and conclusions
 
@@ -34,4 +34,4 @@ For all ten indicator groups, tests directly enumerate squares element by elemen
 - Strict build and full static check pass: 6,684 items, 6,890 planned, 450 chapters; 6,621 visualizations; no warnings/errors.
 - Seven smoke routes pass with expected chapter/item titles: chapters 3–4 and the three reviewed plus two neighboring corrected entries.
 
-The three flags are cleared only for the source-backed entries above. Human/listening checks remain explicitly open.
+The three flags are cleared only for the source-backed entries above.

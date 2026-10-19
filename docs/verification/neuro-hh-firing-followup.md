@@ -1,6 +1,6 @@
 # Neuroscience source review A6 — finite HH firing curves and input history
 
-**neuro-2.7 is ready for central integration; `verify: true` remains set.** Five assigned neuroscience flags remain separate. Human/listening checks and Wave 5 remain open.
+**neuro-2.7 is ready for central integration; `verify: true` remains set.** Five assigned neuroscience flags remain separate. Wave 5 remains gated.
 
 ## Primary author treatments actually read
 
@@ -24,4 +24,4 @@ The old “spiking initial state” trace then turned input off for5ms before th
 - `node tests/verification-neuro-hh-firing.mjs`: **2/2 actual light/dark groups pass**. All eight temperature/range/initial-state combinations; real current-handle drags0,8,149.5; actual nearest-grid150 versus exact-selected149.5 distinction; unresolved rates, full series/trace extents, runtime and KaTeX clean. Screenshot `/tmp/atlas-neuro-hh-firing-history-dark.png` inspected; companion `history/high-{light,dark}.png` stored.
 - `node scripts/check.mjs neuro-2.7 --static`: **one item,0errors,0warnings**. Four dependency arrays preserved; adjacent2.6/2.8/2.9 not edited. Flag remains for central integration; no central/package edits or existing shared-helper modifications; whitespace clean.
 
-Scoped implementation `content/neuro/source-audit-hh-firing.shared.js`. Native controls and numerical comparisons do not complete subjective human review.
+Scoped implementation `content/neuro/source-audit-hh-firing.shared.js`.

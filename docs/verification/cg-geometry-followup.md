@@ -35,4 +35,4 @@ The [Meisters author-repository record](https://digitalcommons.unl.edu/mathfacpu
 
 Screenshots: `/tmp/atlas-cg-{dcel,ears,backwards,welzl,zone}-{light,dark}.png`. Five item representatives were directly inspected spanning both themes; final corrected ear-clipping and recovered arrangement screenshots were re-inspected. Representative full count screenshot: `/tmp/atlas-cg-zone-dark.png`.
 
-These source and finite behavior checks close only these five source-review flags. They do not substitute for the atlas-wide human review, subjective listening, or the Wave5 gate. No new content wave was started.
+These source and finite behavior checks close only these five source-review flags. They do not satisfy the Wave5 gate. No new content wave was started.

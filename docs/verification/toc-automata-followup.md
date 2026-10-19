@@ -1,6 +1,6 @@
 # Theory of computation: automata, language equations and infinite-word verification
 
-Source review dated 2026-10-18 for `toc-3.8`, `toc-3.10`, `toc-3.15`, `toc-4.1`, `toc-4.4`, `toc-4.5`, `toc-4.6`, `toc-4.8`, `toc-4.12` and `toc-4.13`. All10 assigned source flags are resolved and cleared after source/proof review, independent calculations, actual light/dark controls and screenshot inspection. This review does not complete the separate human/listening gate or advance Wave 5.
+Source review dated 2026-10-18 for `toc-3.8`, `toc-3.10`, `toc-3.15`, `toc-4.1`, `toc-4.4`, `toc-4.5`, `toc-4.6`, `toc-4.8`, `toc-4.12` and `toc-4.13`. All10 assigned source flags are resolved and cleared after source/proof review, independent calculations, actual light/dark controls and screenshot inspection. This review does not advance Wave 5.
 
 Only the five assigned TOC chapter files and the dedicated helper/tests/report were edited. Existing dependency arrays and shared chapter helpers were preserved. No central queue, master plan, package, generated files or global test/report was edited, and no build or commit was made.
 
@@ -47,7 +47,7 @@ Downloaded bytes, SHA-256 (sources retained in `/tmp`):
 
 `node scripts/check.mjs` on all10 explicit IDs with `--modes --still --quiet`, once light and once `--dark`: **10 runs per theme**, zero static errors/warnings, runtime failures, TeX/blank warnings or quality warnings. The final4 changed entries were checked again in both themes,4/4 clean each. `git diff --check` on all assigned/dedicated files passes. No global build or test was run.
 
-All**20 custom entry/theme screenshots** were inspected through four contact sheets and full-size critical views. Original Kleene pages26/31/37 and Brzozowski printed556–557 were rendered and inspected. Final inspection corrected the Büchi long-edge overlap with a triangular layout and the truncated representative list with explicit shown/total counts; both themes were inspected again. Custom screenshot paths are `/tmp/atlas-toc-<num>-light.png` and `-dark.png`; source render directories are `/tmp/atlas-kleene-pages/` and `/tmp/atlas-brzozowski-pages/`. These are bounded agent inspections and leave the separate subjective human/listening requirements open.
+All**20 custom entry/theme screenshots** were inspected through four contact sheets and full-size critical views. Original Kleene pages26/31/37 and Brzozowski printed556–557 were rendered and inspected. Final inspection corrected the Büchi long-edge overlap with a triangular layout and the truncated representative list with explicit shown/total counts; both themes were inspected again. Custom screenshot paths are `/tmp/atlas-toc-<num>-light.png` and `-dark.png`; source render directories are `/tmp/atlas-kleene-pages/` and `/tmp/atlas-brzozowski-pages/`. These are bounded agent inspections.
 
 Resolved IDs: `toc-3.8`, `toc-3.10`, `toc-3.15`, `toc-4.1`, `toc-4.4`, `toc-4.5`, `toc-4.6`, `toc-4.8`, `toc-4.12`, `toc-4.13`. No pending source flags remain in these five assigned files. Central ledger integration belongs to the parent reviewer.
 

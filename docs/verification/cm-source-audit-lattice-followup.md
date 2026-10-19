@@ -1,6 +1,6 @@
 # Condensed matter: lattice binding and sound source audit
 
-Completed IDs: **cm-3.2 and cm-3.6**. This first subset owns only their entries in `content/cm/ch03.js`, the unique `cm-source-audit-lattice.js` helper and dedicated tests. The other13 condensed-matter flags remain pending. No central ledger, package, existing shared helper or human/listening gate is changed.
+Completed IDs: **cm-3.2 and cm-3.6**. This first subset owns only their entries in `content/cm/ch03.js`, the unique `cm-source-audit-lattice.js` helper and dedicated tests. The other13 condensed-matter flags remain pending. No central ledger, package or existing shared helper is changed.
 
 ## Primary evidence read
 
@@ -27,4 +27,4 @@ These are author derivations; no original1924 priority verification is claimed. 
 
 Standard `node scripts/check.mjs cm-3.2 cm-3.6 --still` and `--dark` pass **2/2 each**, with zero static errors/warnings and zero browser/TeX/blank/quality warnings. Screenshots `/tmp/atlas-cm-lattice-{3.2,3.6}-{light,dark}.png` were inspected at full size. A redundant shell label overlapping the first bar was removed and all4groups rerun. Dedicated helper/tests pass diff whitespace checks. No global build was run.
 
-The two source flags are cleared after this evidence. Subjective wider human review and listening remain open. No Wave5 work is included.
+The two source flags are cleared after this evidence. No Wave5 work is included.

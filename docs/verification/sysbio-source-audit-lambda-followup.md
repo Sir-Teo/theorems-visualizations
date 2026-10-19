@@ -24,4 +24,4 @@ Infection colors/bars explicitly classify CI> Cro at finite time60, rather than 
 - `/tmp/atlas-sysbio-lambda-strong-cohort-all-paths-visible-light.png`
 - `/tmp/atlas-sysbio-lambda-induction-finite-time-scope-dark.png`
 
-No empirical infection probabilities, physical UV calibration, subjective checks or Wave5 work are asserted. Central ledgers unchanged.
+No empirical infection probabilities, physical UV calibration or Wave5 work are asserted. Central ledgers unchanged.

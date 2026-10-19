@@ -1,6 +1,6 @@
 # Cryptography source verification: nine computational-security and cipher entries
 
-Completed 2026-10-18. Resolved `crypto-3.4`, `crypto-3.8`, `crypto-3.14`, `crypto-3.15`, `crypto-4.2`, `crypto-4.3`, `crypto-4.5`, `crypto-4.8`, and `crypto-4.10`. The content flags are cleared after source review, independent numerical checks, actual light/dark controls and screenshot inspection. This audit does not close project-wide human/listening checks or authorize Wave 5.
+Completed 2026-10-18. Resolved `crypto-3.4`, `crypto-3.8`, `crypto-3.14`, `crypto-3.15`, `crypto-4.2`, `crypto-4.3`, `crypto-4.5`, `crypto-4.8`, and `crypto-4.10`. The content flags are cleared after source review, independent numerical checks, actual light/dark controls and screenshot inspection. This audit does not authorize Wave 5.
 
 Only the five assigned crypto chapter files and dedicated helper/tests/this report/reference JSON were changed. Existing dependency arrays and shared cipher helpers were preserved. No central queue, master plan, package file, generated data, global report or global test was edited; no build or commit was made.
 
@@ -50,7 +50,7 @@ Downloaded bytes, SHA-256 (files remain in `/tmp` for repeat inspection):
 
 `node scripts/check.mjs` on the nine explicit IDs with `--modes --still --quiet`, once light and once `--dark`: **9 runs pertheme**, zero static errors/warnings, runtime failures, TeX/blank warnings or quality warnings. There are no additional standard harness modes for these entries; the dedicated test traverses the actual selectors. `git diff --check` passes.
 
-Screenshots of **all18 custom theme/entry outputs were inspected**, including contact sheets and full-size GM/SPN/cryptanalysis/CBC views. Original GM construction/figures, Heys tables and DES permutation pages were rendered and inspected. Screenshot paths are `/tmp/atlas-crypto-<num>-light.png` and `-dark.png`; sources `/tmp/atlas-crypto-{gm-source,gm-figure,heys-source,des-source}.png`. GM inspection found overlapping labels, which were removed and re-inspected in both themes. These are bounded agent inspections, not replacements for the project's subjective human review gate.
+Screenshots of **all18 custom theme/entry outputs were inspected**, including contact sheets and full-size GM/SPN/cryptanalysis/CBC views. Original GM construction/figures, Heys tables and DES permutation pages were rendered and inspected. Screenshot paths are `/tmp/atlas-crypto-<num>-light.png` and `-dark.png`; sources `/tmp/atlas-crypto-{gm-source,gm-figure,heys-source,des-source}.png`. GM inspection found overlapping labels, which were removed and re-inspected in both themes. These are bounded agent inspections.
 
 ## Limits preserved
 

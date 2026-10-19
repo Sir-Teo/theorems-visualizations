@@ -1,6 +1,6 @@
 # Population-genetics source review A5 — selection
 
-**Ready for central integration: popgen-4.2, 4.4, 4.5, 4.7 and 4.12.** Their five `verify: true` flags remain set for central integration. Adjacent 4.1 and 4.3 corrections below do not add closures. No human/listening completion or Wave 5 permission is implied.
+**Ready for central integration: popgen-4.2, 4.4, 4.5, 4.7 and 4.12.** Their five `verify: true` flags remain set for central integration. Adjacent 4.1 and 4.3 corrections below do not add closures. No Wave 5 permission is implied.
 
 ## Primary evidence actually read
 
@@ -28,6 +28,6 @@ Adjacent **4.1** now restricts fertility equivalence to parent-factorable contri
 - `node --test tests/verification-popgen-selection.test.mjs`: **9/9 independent math groups passed**. Signed/neutral closed forms versus independent recursion; actual integer population absorption; existing mode-inversion binomial sampler versus an independently computed finite probability law; genotype-survivor Wright identity; **450 exact BigInt rational** three-allele cases including zeros and boundaries with a Jensen/KL bound; a nonsymmetric counterexample; exact overdominance contraction and finite-difference multiplier; all 32 five-generation environment histories weighted by their probabilities; and an independently enumerated nonfactorable mating-pair fertility counterexample.
 - `node tests/verification-popgen-selection.mjs`: **14/14 actual light/dark browser groups passed**. Signed/neutral selection across all eight slider corners with and without drift, a zero-copy start, reseeding and unavailable fit; five Wright presets across fitness corners and actual frequency drags; all mean-fitness presets/randomization, three simplex vertices and cyclic-game controls; overdominance corners and start drags; fluctuating-environment corners, reseeding and nonconstant zero-growth case; fertility range ends; and the neutral continuum with actual drag. Runtime, KaTeX, finite plotted paths/dots and plot extents pass.
 - Scoped static review: **seven items, 0 errors, 0 warnings**. All **15 dependency arrays preserved**, and all entries outside the five reviewed plus two approved adjacent entries remain byte-for-byte unchanged against the pre-edit file backups. No existing shared helper, central file or package changed. Whitespace check clean.
-- Final screenshots: `/tmp/atlas-popgen-{haploid,wright,fitness-game,overdominance,geometric-mean}-{light,dark}.png`. Inspected haploid dark, geometric-mean light and fitness-game dark. Mathematical sampling and automated browser checks do not certify empirical fitness, subjective visual review or listening.
+- Final screenshots: `/tmp/atlas-popgen-{haploid,wright,fitness-game,overdominance,geometric-mean}-{light,dark}.png`. Inspected haploid dark, geometric-mean light and fitness-game dark. Mathematical sampling and automated browser checks do not certify empirical fitness.
 
 Scoped implementation: `content/popgen/source-audit-selection.shared.js`. Remaining molecular-clock, diversity, original Kimura and empirical case-study reviews are separate work.

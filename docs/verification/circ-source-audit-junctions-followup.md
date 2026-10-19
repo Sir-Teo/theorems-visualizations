@@ -30,6 +30,6 @@ Personally inspected `/tmp/atlas-circ-bardeen-original.png`, `/tmp/atlas-circ-sh
 - `/tmp/atlas-circ-junctions-junction-zero-bias-log-scope-light.png`
 - `/tmp/atlas-circ-junctions-junction-wide-base-low-gain-visible-dark.png`
 
-The exact physical devices/data/frequency responses are not reconstructed by these toy models. No subjective human/audio or Wave5 gate claimed.
+The exact physical devices/data/frequency responses are not reconstructed by these toy models. No Wave5 completion is claimed.
 
 Archive.org complete OCR SHA256: `06413dc7b4e226b42a9c0ac38bc3bdce1818f2bd7b2279c4117679f36799f630`.

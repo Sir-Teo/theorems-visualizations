@@ -24,4 +24,4 @@ Completed queue IDs: **pchem-3.1, pchem-3.4, pchem-3.7, pchem-3.8**. The four fl
 - `node tests/verification-pchem-source-audit-entropy.mjs`: **8/8 item/theme groups pass**. Actual native select/range/pointer controls in light and dark:16ledger corners,8cycle corners,5particle sizes×4occupancies,4frozen-orientation corners and Gray-code traversal of all16central-star configurations. Asserts numerical diagram values against the independent helper, all1000 marker counts, actual selected occupancy, endpoint probability margins, zero adiabats, finite primitive coordinates, no browser/TeX errors.
 - Inspected screenshots `/tmp/atlas-pchem-entropy-ledger-light.png`, `clausius-dark.png`, `boltzmann-light.png`, `residual-dark.png` (all same prefix); both-theme captures exist for each. Clear axes, labels, mathematical rendering and input/readout agreement. The residual panel's star and sampling arrows remain explicitly illustrative.
 
-No listening, subjective human gate or Wave5 completion is claimed.
+No Wave5 completion is claimed.

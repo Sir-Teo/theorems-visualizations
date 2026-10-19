@@ -26,4 +26,4 @@ Noise is new seeded simulation: incident expectation is a free control, distinct
 
 `node tests/verification-imaging-cormack.mjs`: **2/2 actual light/dark groups pass**, each exercising3 samplings×2 noise modes×4 width/count endpoint combinations. Checks actual26/51/126 samples, original-vs-simulated count/J labels and all finite unclipped plotted points/curves; no JS, TeX or blank-canvas errors. Screenshots `/tmp/atlas-imaging-cormack-{ideal,noisy}-{light,dark}.png`; ideal/light and noisy/dark visually inspected against original Fig.1's quantity and model labels.
 
-Final static: **1 item,0 errors,0 warnings**; whitespace clean. This resolves the named original-paper review on actually read original evidence. It does not validate clinical images or mark subjective/human/listening or Wave5 gates complete.
+Final static: **1 item,0 errors,0 warnings**; whitespace clean. This resolves the named original-paper review on actually read original evidence. It does not validate clinical images or complete the Wave5 gate.

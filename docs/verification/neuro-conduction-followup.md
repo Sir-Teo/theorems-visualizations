@@ -26,4 +26,4 @@ Complete [Gerstner et al. §3.3](https://neuronaldynamics.epfl.ch/online/Ch3.S3.
 
 `node tests/verification-neuro-conduction.mjs`: **2/2 actual light/dark groups pass**. Both temperatures×both resolution selectors×diameter endpoints, finite probe counts, seven dots, exact cell centres, full plot/guide extents, and actual play/pause/restart are checked. No JavaScript/TeX errors. Screenshots `/tmp/atlas-neuro-conduction-{reference,large}-{light,dark}.png`; reference/dark visually inspected.
 
-Final scoped static check: **3 items(4.5/4.6/4.7),0 errors,0 warnings**; whitespace clean. Original4.7 prerequisites neuro-4.2/neuro-2.3 and other chapter dependencies preserved. Existing shared helpers untouched. Source flag remains true for coordinator integration; subjective listening/sampling and Wave5 remain pending.
+Final scoped static check: **3 items(4.5/4.6/4.7),0 errors,0 warnings**; whitespace clean. Original4.7 prerequisites neuro-4.2/neuro-2.3 and other chapter dependencies preserved. Existing shared helpers untouched. Source flag remains true for coordinator integration; Wave5 remains pending.

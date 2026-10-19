@@ -1,6 +1,6 @@
 # Topology: extrema and uniform continuity — 2026-10-17
 
-Resolved `top-4.11` and `top-4.13`. **797 source reviews remain**, including the Lebesgue-number and compactness-equivalence entries. Human sampling and subjective listening remain pending. Wave 5 remains gated.
+Resolved `top-4.11` and `top-4.13`. **797 source reviews remain**, including the Lebesgue-number and compactness-equivalence entries. Wave 5 remains gated.
 
 ## Primary text
 

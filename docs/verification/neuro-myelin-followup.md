@@ -1,6 +1,6 @@
 # Neuroscience myelination source follow-up
 
-Ready for central integration: **neuro-4.8**. Its source flag remains true until the coordinator integrates this evidence. This completes the assigned neuroscience source batch subject to that integration; human/listening checks remain separate.
+Ready for central integration: **neuro-4.8**. Its source flag remains true until the coordinator integrates this evidence. This completes the assigned neuroscience source batch subject to that integration.
 
 ## Primary treatment actually read
 
@@ -24,4 +24,4 @@ Saved primary HTML `/tmp/atlas-neuro-gerstner-ch3s3.html`, SHA256 `f9bd870f38e11
 
 `node tests/verification-neuro-myelin.mjs`: **2/2 real light/dark groups pass**. Each group exercises both numerical selectors×three insulation modes×all eight diameter/g-ratio/internode keyboard corners. Tests twelve actual nodal markers, resolved sweep counts and null gaps, high speeds above150m/s without clipping, full trace extents, unavailable slopes, real play/pause/restart, JavaScript/TeX errors. Screenshots `/tmp/atlas-neuro-myelin-{default,high,censored}-{light,dark}.png`; high/dark and censored/light visually inspected. The final still frame is60% through the movie to expose the advancing nodal waveform.
 
-Final scoped static check: **1 item,0 errors,0 warnings**; whitespace clean. Existing `neuro-4.7` prerequisite and all unreviewed4.9/4.10 content/dependencies preserved. Existing shared helpers are untouched; previous cable/conduction helpers unchanged. The source flag remains true for central integration. No experimental-original access, global convergence, human sample or listening completion is inferred from these finite checks, and Wave5 remains pending.
+Final scoped static check: **1 item,0 errors,0 warnings**; whitespace clean. Existing `neuro-4.7` prerequisite and all unreviewed4.9/4.10 content/dependencies preserved. Existing shared helpers are untouched; previous cable/conduction helpers unchanged. The source flag remains true for central integration. No experimental-original access or global convergence is inferred from these finite checks, and Wave5 remains pending.

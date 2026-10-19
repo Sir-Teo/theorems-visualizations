@@ -24,4 +24,4 @@ Clarified that inverse-C ripple scaling and bridge halving are small-ripple appr
 
 `node tests/verification-circ-source-audit-rectifier.mjs`: **2 native light/dark groups pass**, each exercising all64 actual type/frequency/voltage/capacitance/load combinations. Checked waveform samples, analytic minimum/maximum/ripple readouts, ripple frequency, actual gold marker, and both full curve extents. Real Home/End input operates log sliders. No browser exceptions or TeX errors.
 
-Personally inspected `/tmp/atlas-circ-rectifier-source.png` and both final screenshots `/tmp/atlas-circ-rectifier-periodic-bridge-small-ripple-visible-light.png`, `/tmp/atlas-circ-rectifier-periodic-bridge-small-ripple-visible-dark.png`. No measured-device accuracy, human/listening check or Wave5 completion inferred.
+Personally inspected `/tmp/atlas-circ-rectifier-source.png` and both final screenshots `/tmp/atlas-circ-rectifier-periodic-bridge-small-ripple-visible-light.png`, `/tmp/atlas-circ-rectifier-periodic-bridge-small-ripple-visible-dark.png`. No measured-device accuracy or Wave5 completion inferred.

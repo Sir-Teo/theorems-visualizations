@@ -70,7 +70,7 @@ try {
   }
 } finally { await browser.close(); await new Promise(r => server.close(r)); }
 const report = { version: 1, scope: 'Written theorem-like items whose viz directly calls v.steps',
-  limitation: 'Native first/next/last control checks do not establish proof validity, flagship selection, visual quality in all frames or independent human review.',
+  limitation: 'Native first/next/last control checks do not establish proof validity, flagship selection or visual quality in all frames.',
   total: results.length, passed: results.filter(r => r.status === 'interaction-checked').length, results };
 await writeFile(join(ROOT, 'docs/verification/proof-stepper-inventory.json'), JSON.stringify(report, null, 2) + '\n');
 console.log(`${report.passed}/${report.total} candidate proof steppers pass native control checks`);

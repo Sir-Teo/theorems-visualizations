@@ -23,4 +23,4 @@ The chosen Hill model is not the source data. Exact regulator relaxation and an 
 - `/tmp/atlas-sysbio-arabinose-positive-below-sharp-threshold-light.png`
 - `/tmp/atlas-sysbio-arabinose-onset-versus-half-response-dark.png`
 
-Companion opposite-theme screenshots are retained. No original numerical dataset fitting, human/listening completion, broad theorem guarantee, or Wave5 advancement is asserted. Central ledgers and package files were not edited.
+Companion opposite-theme screenshots are retained. No original numerical dataset fitting, broad theorem guarantee or Wave5 advancement is asserted. Central ledgers and package files were not edited.

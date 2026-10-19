@@ -1,6 +1,6 @@
 # Neuroscience compartment source follow-up
 
-Ready for central integration: **neuro-4.6**, source flag still true for coordinator integration. No additional closure or human-gate completion is claimed.
+Ready for central integration: **neuro-4.6**, source flag still true for coordinator integration. No additional closure is claimed.
 
 ## Actually read primary treatment
 
@@ -22,4 +22,4 @@ Spatial refinement at fixeddt is a finite comparison, with a fixed single-compar
 
 `node tests/verification-neuro-compartments.mjs`: **2/2 real light/dark groups pass**. Actual proximal/distal map clicks, both colour selectors, Home/End mesh changes preserve the physical site and pulse. The six true somatic peaks and selected mesh lie within their dynamic axes. Actual play, pause and restart update the recorded frame. All traces are finite, with no JavaScript/TeX errors. Screenshots `/tmp/atlas-neuro-compartments-{proximal,distal}-{light,dark}.png`; proximal/dark visually inspected.
 
-Final scoped static check: **1 item,0 errors,0 warnings**, whitespace clean. Scoped helper `content/neuro/source-audit-cable.shared.js`; existing shared helpers unchanged. Other chapter entries and dependencies preserved. The source flag remains true for coordinator integration; subjective sampling/listening and Wave5 remain pending.
+Final scoped static check: **1 item,0 errors,0 warnings**, whitespace clean. Scoped helper `content/neuro/source-audit-cable.shared.js`; existing shared helpers unchanged. Other chapter entries and dependencies preserved. The source flag remains true for coordinator integration; Wave5 remains pending.

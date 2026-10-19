@@ -1,6 +1,6 @@
 # Quantum chemistry Hund-rule review
 
-**qchem-3.8 ready for root integration**. Its verify:true flag is intentionally retained until root updates the queue/report together. Dedicated helper/tests; other chapter entries, dependency arrays, central ledgers and subjective gates preserved.
+**qchem-3.8 ready for root integration**. Its verify:true flag is intentionally retained until root updates the queue/report together. Dedicated helper/tests; other chapter entries, dependency arrays and central ledgers preserved.
 
 ## Primary sources
 

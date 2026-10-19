@@ -80,5 +80,4 @@ These are sampled validation results, not a proof of every floating-point value.
   representative screenshots inspected. Strict build and full static validation
   pass; the chapter and both reviewed item routes pass smoke checks.
 
-The source queue now contains **826** pending reviews. Subjective listening and
-the wider human sample remain open; Wave 5 remains gated.
+The source queue now contains **826** pending reviews. Wave 5 remains gated.

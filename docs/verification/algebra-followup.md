@@ -116,5 +116,4 @@ Neighboring corrections are recorded separately from the five queued entries:
 - Strict build and full static validation: zero errors or warnings.
 - Eight chapter/item smoke routes pass with their expected titles.
 
-**817 queued source reviews remain.** The goal continues. Wave 5, subjective
-listening and the required human sample remain pending.
+**817 queued source reviews remain.** The goal continues. Wave 5 remains gated.

@@ -1,6 +1,6 @@
 # Condensed matter: optical gaps, equilibrium carriers and impurities
 
-Completed source reviews: **cm-4.1, cm-4.2, cm-4.4, cm-4.5** in `content/cm/ch04.js`. Dedicated helper `content/cm/cm-source-audit-carriers.js`; mathematical and native browser tests `tests/verification-cm-source-audit-carriers{.test,}.mjs`. Only these four entries and their local optical helper are changed; previously accepted neighboring entries and existing shared helpers are preserved. Together with lattice/phonon subsets, 10 of 15 assigned CM flags are closed; five device flags continue. This does not close human/listening or Wave 5 gates.
+Completed source reviews: **cm-4.1, cm-4.2, cm-4.4, cm-4.5** in `content/cm/ch04.js`. Dedicated helper `content/cm/cm-source-audit-carriers.js`; mathematical and native browser tests `tests/verification-cm-source-audit-carriers{.test,}.mjs`. Only these four entries and their local optical helper are changed; previously accepted neighboring entries and existing shared helpers are preserved. Together with lattice/phonon subsets, 10 of 15 assigned CM flags are closed; five device flags continue. This does not close the Wave 5 gate.
 
 ## Evidence actually read
 

@@ -1,6 +1,6 @@
 # Population-genetics source review B2 — clock and diversity
 
-**Ready for central integration: popgen-3.9 and popgen-3.12. Both source flags remain true.** The earlier original Kimura 3.14 review is recorded separately. Human/listening checks and the Wave 5 gate remain open.
+**Ready for central integration: popgen-3.9 and popgen-3.12. Both source flags remain true.** The earlier original Kimura 3.14 review is recorded separately. The Wave 5 gate remains unchanged.
 
 ## Primary sources actually read
 
@@ -26,6 +26,6 @@ The mathematical model is explicitly a neutral constant-size panmictic coalescen
 - `node --test tests/verification-popgen-clock-diversity.test.mjs`: **6/6 independent groups passed**. Four-state matrix uniformization independently checks pairwise mismatches; SciPy**1.18.1** Poisson quantiles/tails cover means.005 through9000; high-mean sampler masses agree with independent PMF recurrence on30000 stratified uniforms and low-count independent draws check moments; gamma integral moments independently give the mixture variance; Simpson integration checks the coalescent expectation for theta from1e−7 through4000; historical species numbers/units and low viewport regression are explicit. Finite sampling is a regression, not a proof of the theorem or empirical calibration.
 - `node tests/verification-popgen-clock-diversity.mjs`: **4/4 actual light/dark groups passed**. All16 clock control corners, reseeding, high-count observations beyondL, full residual tails and histogram mass1; all8 diversity control corners before and after the actual ceiling toggle, including the point below the old y-minimum. Runtime, KaTeX, finite paths/dots and actual extents pass.
 - `node scripts/check.mjs popgen-3.9 popgen-3.12 --static`: **two items,0errors,0warnings**. All seven dependency arrays preserved; chapter entries outside3.9/3.12 and the separately completed3.14 unchanged. No existing shared helper or central file edited; whitespace clean.
-- Screenshots `/tmp/atlas-popgen-clock-{light,dark}.png` and `/tmp/atlas-popgen-diversity-{light,dark}.png`; inspected clock dark and diversity light. These support the finite UI review and do not complete subjective human checks.
+- Screenshots `/tmp/atlas-popgen-clock-{light,dark}.png` and `/tmp/atlas-popgen-diversity-{light,dark}.png`; inspected clock dark and diversity light. These support the finite UI review.
 
 Scoped helper: `content/popgen/source-audit-clock-diversity.shared.js`.

@@ -26,4 +26,4 @@ The lapse-atmosphere helper follows ideal-gas hydrostatic equilibrium with chose
 - `node tests/verification-pchem-source-audit-clapeyron.mjs`: **6/6 item/theme groups**. Native logarithmic pressure at5cases, all4transition menus×5actual pointer cases,4altitude/enthalpy corners,3coincident-handle pointer regressions at source endpoints and interior. Inspects actual plotted markers/bars/slope, source-domain omissions, geometry containment, browser/TeX errors in light and dark.
 - Screenshots inspected: `/tmp/atlas-pchem-clapeyron-chemical-potential-light.png`, `...-clapeyron-dark.png`, `...-clausius-clapeyron-light.png`; both-theme captures exist. Final readout/spacing cleanup rerun: all6native item/theme groups passed again.
 
-No simulations replace source proofs; no subjective human/listening gate or Wave5 completion.
+No simulations replace source proofs; no Wave5 completion.

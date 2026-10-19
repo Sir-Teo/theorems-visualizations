@@ -2,7 +2,7 @@
 
 This batch resolves `macro-3.9`, `macro-3.11`, `macro-4.7` and `macro-4.9`.
 It leaves the Ramsey and Diamond reviews open, along with the rest of the atlas
-queue. No human listening or manual sample gate is marked complete.
+queue.
 
 ## Growth accounting (`macro-3.9`)
 
@@ -112,5 +112,4 @@ using `pandas` and `numpy`.
 - Seven affected chapter/item routes pass their smoke checks. The earlier full
   272-route run remains recorded in the main report; this batch uses targeted
   route checks because the router and UI engine did not change.
-- Screenshots are reviewed for layout. These automated/source reviews do not
-  replace the project's planned human sample or subjective audio listening.
+- Screenshots are reviewed for layout.

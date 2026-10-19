@@ -24,4 +24,4 @@ The caption now identifies the grey exact-spectrum backdrop as a reference rathe
 
 `node tests/verification-imaging-diffraction.mjs`: **2/2 light/dark groups pass**. Each covers both geometries and all eight actual frequency/count/span endpoint combinations. Moving the probe through both direction endpoints leaves the actual reconstruction canvas unchanged; all states retain finite readouts, explicit acquisition limitations and zero runtime/console/TeX/blank-canvas errors. Screenshots `/tmp/atlas-imaging-diffraction-{light,dark}.png` were visually inspected in both themes for legibility, scale, labels and the finite-cutoff distinction.
 
-`node scripts/check.mjs imaging-3.16 --static`: **1 item, 0 errors, 0 warnings**. No clinical performance, independent human review or subjective audio gate is claimed.
+`node scripts/check.mjs imaging-3.16 --static`: **1 item, 0 errors, 0 warnings**. No clinical performance is claimed.

@@ -47,4 +47,4 @@ The legacy shared parser, substitution, translator, generator and pathStats help
 
 Inputs wait for the real160ms text-field debounce. Checks reject browser exceptions, visualization errors, KaTeX errors, nonfinite coordinates and out-of-range plot points. Representative inspected screenshots: `/tmp/atlas-pl-parallel-light.png`, `/tmp/atlas-pl-bracket-dark.png`, `/tmp/atlas-pl-stlc-light.png`, `/tmp/atlas-pl-normalization-dark.png`.
 
-Scoped static checks cover all five items with zero errors/warnings; `git diff --check` passes. No central queue, master plan, package, global tests, preexisting shared helpers, commits or global build were changed. Finite computations illustrate source theorems; they do not prove universal confluence or normalization. Human/listening and Wave5 gates remain unchanged.
+Scoped static checks cover all five items with zero errors/warnings; `git diff --check` passes. No central queue, master plan, package, global tests, preexisting shared helpers, commits or global build were changed. Finite computations illustrate source theorems; they do not prove universal confluence or normalization. The Wave5 gate remains unchanged.

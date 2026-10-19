@@ -29,4 +29,4 @@ Personally inspected primary equation pages `/tmp/atlas-circ-mos-source-CLM.png`
 - `/tmp/atlas-circ-devices-MOS-high-gate-CLM-full-range-light.png`
 - `/tmp/atlas-circ-devices-BJT-load-knee-large-gain-dark.png`
 
-Model checks support the stated illustrations, not measured device accuracy or subjective human/audio gates. No Wave 5 work.
+Model checks support the stated illustrations, not measured device accuracy. No Wave 5 work.

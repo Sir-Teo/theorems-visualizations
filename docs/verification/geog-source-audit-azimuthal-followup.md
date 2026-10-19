@@ -23,4 +23,4 @@ Validation:
 - `node tests/verification-geog-source-audit-azimuthal.mjs`:8native item/theme groups. Both themes: all4route presets/toggle plus airport drag; through-antipode button followed by radius100°enclosing case and3°endpoint; orthographic point drag to centre/limb with actual clipped length; all6equidistant centre presets plus Qdrag. Runtime/TeX errors and nonfinite diagnostic geometry/readouts checked. Deliberately clipped map paths are not falsely required to lie inside rectangular stage bounds.
 - Inspected screenshots `/tmp/atlas-geog-azimuthal-enclosing-antipode-is-circle-light.png` and `/tmp/atlas-geog-azimuthal-orthographic-clipped-arc-dark.png`; final post-clipping capture rerun. All four routes captured per theme with names in the test.
 
-These are spherical models; no ellipsoidal navigation guarantees or subjective/audio checks claimed.
+These are spherical models; no ellipsoidal navigation guarantees are claimed.

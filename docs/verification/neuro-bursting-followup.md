@@ -1,6 +1,6 @@
 # Neuroscience source review A5 — finite fast–slow dissection
 
-**neuro-3.8 is ready for central integration; `verify: true` remains set.** Six assigned neuroscience flags remain separate. Human/listening checks and Wave 5 remain open.
+**neuro-3.8 is ready for central integration; `verify: true` remains set.** Six assigned neuroscience flags remain separate. Wave 5 remains gated.
 
 ## Primary source actually read
 
@@ -20,4 +20,4 @@ The z and voltage views include all recorded full states and all computed frozen
 - `tests/reference-neuro-bursting.py` independently implements the original3D equations and original frozen2D equations, SciPy1.18.1 DOP853 rtol1e−10, atol1e−12, maxstep.5ms. Bounded fixture `tests/fixtures/neuro-bursting-reference.json` contains five full20-second cases and six frozen1500ms cases. All full event counts agree: default16 in four4-spike groups, low-input corners0, high-input corners197/195 in one tonic group. Observed full-event errors are below.133ms at dt.25 and.0085ms at.125 after the full20seconds; frozen errors below.022/.0015ms, sampled extrema below.001mV. These are observed comparisons, not certified global error bounds. An initial frozen-event tolerance.02ms was too tight for the measured.02173ms accumulated error; the final regression records the measured bound and requires convergence under halving.
 - `node tests/verification-neuro-bursting.mjs`: **2/2 actual light/dark groups pass**. Default clustered case; all four actual input/slow-rate corners; quiescent no-event and tonic one-group cases; unavailable interior means; z view above3; finite paths/dots and runtime/KaTeX clean. Actual Play/Pause/Restart controls change and reset the recorded time. There is no scrub control; final caption says play/restart.
 - `node scripts/check.mjs neuro-3.8 --static`: **one item,0errors,0warnings**. Existing shared helpers unchanged. Four chapter dependency arrays preserved, previous completed3.6/3.9 preserved and3.7 untouched. Source flag remains pending central integration, no package/ledger edits, whitespace clean.
-- Screens `/tmp/atlas-neuro-burst-{clustered,tonic}-{light,dark}.png`; tonic dark inspected. Scoped helper `content/neuro/source-audit-bursting.shared.js`. Finite branches, event checks and animation success do not complete subjective review or prove a global bifurcation classification.
+- Screens `/tmp/atlas-neuro-burst-{clustered,tonic}-{light,dark}.png`; tonic dark inspected. Scoped helper `content/neuro/source-audit-bursting.shared.js`. Finite branches, event checks and animation success do not prove a global bifurcation classification.

@@ -1,6 +1,6 @@
 # Quantum chemistry Stark / degenerate perturbation review
 
-**qchem-4.6 and qchem-4.7 ready for root integration**. Their verify:true flags are intentionally retained until root integrates queue and evidence together. Dedicated perturbation helper/tests; other entries, prior edits, dependencies, central ledgers and subjective gates preserved.
+**qchem-4.6 and qchem-4.7 ready for root integration**. Their verify:true flags are intentionally retained until root integrates queue and evidence together. Dedicated perturbation helper/tests; other entries, prior edits, dependencies and central ledgers preserved.
 
 ## Actual primary proofs
 
@@ -24,4 +24,4 @@ All coefficients now enter the cloud. Thresholding small raw coefficients was in
 - `node tests/verification-qchem-source-audit-perturbation.mjs`: **4/4item/theme groups**, real light/dark inputs. Stark4fieldvalues×3states×2panelmenus, actualcurve count/markers, changing cloud canvas and above-saddle endpoint; square3perturbations×3strengths×3wavefunctionmenus, actualeigenvalue markers and overlap readouts. Full path/line/marker geometry contained; no browser/TeX/nonfinite readout errors.
 - Inspected `/tmp/atlas-qchem-perturbation-upper-stark-above-saddle-light.png`, `...-square-finite-basis-dark.png`; both-theme counterparts and ground-response captures saved. Readability spacing was corrected and the final scoped suites rerun.
 
-These two bring the assigned qchem batch to **11supported reviews**, with39independent math groups and22native item/theme groups across five subsets. **qchem-3.13 remains pending**: the accessible German abstract/translation cannot establish full review of the pinned Russian original. No source flag for that paper or human/listening gate is cleared by these numerical checks.
+These two bring the assigned qchem batch to **11supported reviews**, with39independent math groups and22native item/theme groups across five subsets. **qchem-3.13 remains pending**: the accessible German abstract/translation cannot establish full review of the pinned Russian original. No source flag for that paper is cleared by these numerical checks.

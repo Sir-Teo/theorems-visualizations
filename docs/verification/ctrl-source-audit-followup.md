@@ -22,4 +22,4 @@ Readout metrics now solve actual response crossings instead of classifying the f
 
 `node tests/verification-ctrl-source-audit.mjs`: **4 native groups pass**, both entries ×two themes, after final formula changes. Actual slider corners, stable/unstable native pole drags, long-settling axis extent, complete error-curve bounds and movable extra pole; no page or TeX errors.
 
-Personally inspected `/tmp/atlas-ctrl-regions-long-settling-light.png`, `/tmp/atlas-ctrl-regions-unstable-dark.png`, and `/tmp/atlas-ctrl-dominant-pole-exact-cascade-dark.png`. No human review gate is claimed.
+Personally inspected `/tmp/atlas-ctrl-regions-long-settling-light.png`, `/tmp/atlas-ctrl-regions-unstable-dark.png`, and `/tmp/atlas-ctrl-dominant-pole-exact-cascade-dark.png`.

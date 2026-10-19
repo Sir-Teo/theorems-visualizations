@@ -112,8 +112,6 @@ include horizons through 10,000.
   `/tmp/atlas-birth-death-huge-scale-dark.png`.
 
 The finite samples illustrate the now justified analytical conclusions. They
-are not proofs of recurrence, convergence or an infinite-time outcome. This
-follow-up adds no queue-count reduction and does not complete subjective human
-or listening checks.
+are not proofs of recurrence, convergence or an infinite-time outcome. This follow-up adds no queue-count reduction.
 
 The coordinator also corrected the adjacent `5.3.10` wording from all integers to the nonnegative integers, specified reflection at zero and restricted its interior probabilities to i>=1 and exit interval to 0<=a<x<b. This matches the source setup in Example 5.3.9 and the unchanged finite UI. It does not change the numerical algorithm or queue count.

@@ -1,6 +1,6 @@
 # Imaging Radon/slice/filtered-back-projection follow-up
 
-Ready for central integration: **imaging-3.4, imaging-3.5, imaging-3.7**. All three retain `verify:true` until coordinator integration. No named-original-paper review or subjective human gate is claimed.
+Ready for central integration: **imaging-3.4, imaging-3.5, imaging-3.7**. All three retain `verify:true` until coordinator integration. No named-original-paper review is claimed.
 
 ## Complete primary proofs actually read
 
@@ -29,6 +29,6 @@ Dependency correction: existing `rca-9.1` is the Fourier definition, not Fubini.
 
 `node --test tests/verification-imaging-radon.test.mjs`: **8/8 groups pass**. Continuous quadrature agrees with analytic ellipse transforms within2e−13; JS Bessel evaluations within4e−9. Sample sums, all Cartesian coefficients/image values, direct dense convolution, angular weights and inverse-frequency lobes agree within stated floating-point tolerances. A compact smooth mixed derivative gives a concrete two-direction null-data example, illustrating the distinction between finite directions and an open interval; it is not a numerical proof of the analytic-continuation theorem. Empty/one-view and missing-data paths are covered. All original prerequisites plus the one explicit Fubini addition are checked.
 
-`node tests/verification-imaging-radon.mjs`: **6/6 actual control groups pass** (three entries×light/dark). Object switches, angle/detector/view/range endpoints, an intermediate35° coarse-sampling case, filter switches and the89° FBP view exercise actual inputs. Checks finite unclipped complex/projection/kernel points, DC/finite-window labels, one-view reconstruction and limited-angle descriptions, JavaScript and TeX errors. Screenshots `/tmp/atlas-imaging-radon-{slice,limited,filter}-{light,dark}.png`; limited/light and filter/dark visually inspected. These tests do not claim a human sample or clinical image validation.
+`node tests/verification-imaging-radon.mjs`: **6/6 actual control groups pass** (three entries×light/dark). Object switches, angle/detector/view/range endpoints, an intermediate35° coarse-sampling case, filter switches and the89° FBP view exercise actual inputs. Checks finite unclipped complex/projection/kernel points, DC/finite-window labels, one-view reconstruction and limited-angle descriptions, JavaScript and TeX errors. Screenshots `/tmp/atlas-imaging-radon-{slice,limited,filter}-{light,dark}.png`; limited/light and filter/dark visually inspected. These tests do not establish clinical image validation.
 
-Final scoped static check: **3 items,0 errors,0 warnings**; whitespace clean. Helpers/tests/report are dedicated to this stable batch; existing shared imaging helpers are unchanged. Source flags remain true for coordinator integration. Human/listening and Wave5 gates remain pending.
+Final scoped static check: **3 items,0 errors,0 warnings**; whitespace clean. Helpers/tests/report are dedicated to this stable batch; existing shared imaging helpers are unchanged. Source flags remain true for coordinator integration. Wave5 remains gated.

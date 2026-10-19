@@ -21,4 +21,4 @@ The2.6RH retirement rule is labelled a chosen prescription. Particles crossing t
 - `node tests/verification-astro-source-audit-rings.mjs`: **3/3 groups passed**: light and dark each all8mass/diffusion/presence corners, reset and total-retirement case; separate actual Play-animation click confirms changing time/output with finite/unclipped coordinates. The harness initially freezes animation, so the test uses the actual Play animation control to resume it.
 - **Final static:1item,0errors,0warnings; astro-3.6 source flag cleared. All10 chapter dependency arrays preserved; whitespace clean.** Representative actual default/light and total-retirement/dark screenshots inspected: `/tmp/atlas-astro-rings-default-light.png`, `/tmp/atlas-astro-rings-dark.png`. Final legend copy says retired markers rather than scattered trajectories; calculations and controls are unchanged.
 
-No central queue/master/package/global tests changed. No human/listening gate or Wave5 completion is asserted.
+No central queue/master/package/global tests changed. No Wave5 completion is asserted.

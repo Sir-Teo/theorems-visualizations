@@ -1,6 +1,6 @@
 # Fáry–Milnor source and curvature audit — 2026-10-17
 
-Resolved `dg-3.12`. **791 source reviews remain**, including the two differential-geometry quadric/orientability entries. Human sampling and subjective listening remain pending; Wave 5 remains gated.
+Resolved `dg-3.12`. **791 source reviews remain**, including the two differential-geometry quadric/orientability entries. Wave 5 remains gated.
 
 ## Original papers
 
