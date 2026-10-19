@@ -1,3 +1,4 @@
+import {redistributionTrace,redistributionCrossings} from './source-audit-redistribution.js';
 import { hepaticClearance, hepaticElasticities } from './source-audit-hepatic.js';
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part a: items 3.1–3.6)
 import { LN2, clamp, logSlope, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal } from './ch03.shared.js';
@@ -206,76 +207,42 @@ export default {
     // ------------------------------------------------------------------ 3.4
     {
       num: '3.4',
-      kind: 'Phenomenon',
-      name: 'Thiopental redistribution: waking before elimination',
-      statement: String.raw`After an intravenous bolus of the lipophilic anaesthetic thiopental the brain, which is richly perfused, equilibrates with plasma within a few minutes (most of that is the plasma peak itself) and the patient falls asleep; within minutes, however, the plasma concentration, and with it the brain concentration, falls below the level needed for unconsciousness although almost all of the dose is still in the body and metabolism has removed little. The fall is **redistribution**: drug moves down its concentration gradient into less perfused tissue, first lean tissue and later fat. Elimination by the liver is slow and sets the time course only for repeated doses or long infusions, when the tissues are already loaded.`,
-      idea: String.raw`This is the distribution phase of 3.3 applied to a drug with a large, lipophilic peripheral space. Plasma and brain are fast-exchanging, so the brain follows plasma (with a short delay), and plasma falls as the muscle compartment, which has good flow and a large capacity, takes up drug at rate $Q_m(C_1-C_m)$. The gentle second phase, fat filling slowly, hardly lowers the plasma level over the first half hour. Early pharmacological work attributed the termination of action to this redistribution rather than to metabolism, and credited body fat; later analyses stressed that lean tissue takes up most of the drug in the first minutes.`,
-      caption: String.raw`A bolus is injected at $t=0$. Left: the relative concentration in the brain (effect site, solid) and plasma (dashed) against the waking level you set; the time when the brain curve crosses it is the waking time. Right: where the dose is, stacked: plasma and brain, muscle, fat and metabolised. Switch off **muscle uptake** and the brain level stays up noticeably longer (waking comes later); switch off **liver metabolism** and the patient still wakes up at nearly the same time, because waking is redistribution, not elimination. **Second dose at 30 min** shows the tissues already partly filled, so waking is delayed. All parameters are rounded illustrations.`,
-      scope: String.raw`Illustrative three-compartment model with a one-minute-scale equilibration of brain with plasma (an assumed rate constant, not a measured one), a single bolus, and parameters of the order reported for thiopental in adults (volume of distribution about 2 L/kg, clearance about 0.2 L/min) chosen as round numbers; they are not fitted to data. The waking level is a free slider. Not clinical guidance.`,
-      credit: 'Brodie, Bernstein & Mark, 1952 (role of body fat); Price et al., 1960 (tissue uptake and duration of narcosis)',
+      kind: 'Model',
+      name: 'Thiopental redistribution: concentration falls before elimination',
+      statement: String.raw`A falling central concentration need not mean that most drug has left the body: exchange with initially empty tissues can lower it while total drug remains high. Thiopental motivates this distinction. In the primary experiments of Mark and colleagues (1957), serial dog brain/plasma samples showed rapid brain entry and declining concentrations in both tissues; additional dogs sampled at 30 seconds supported rapid passage. Those measurements support rapid brain access, not a universal human waking concentration or the numerical parameters below.`,
+      idea: String.raw`The chosen model exchanges drug between a central pool, a muscle-like pool and a large fat-like pool. Exchange terms $Q_j(C_1-C_j)$ move mass without removing it; only $\mathrm{CL}C_1$ removes mass. A separate, massless effect-site proxy obeys $\dot C_e=k_{e0}(C_1-C_e)$ and follows central concentration with an assumed delay. Setting clearance to zero isolates redistribution: concentrations can cross a chosen reference even while the entire dose remains in the three pools.`,
+      caption: String.raw`Left: central and effect-site concentrations, divided by the first effect-site peak. The reference slider defines a mathematical crossing, not observed waking. Right: central, muscle-like, fat-like and eliminated amounts as fractions of the dose given so far. Toggle exchange or elimination and compare the crossings. A second bolus at 30 minutes can produce another above-reference episode; every downward crossing within the full 120-minute window is reported.`,
+      scope: String.raw`Three linear, instantly mixed pools and a massless effect-site proxy; all volumes, clearances, dose and the assumed $k_{e0}=0.55$ per minute are chosen teaching values, not fitted dog or human thiopental parameters. The 1957 dog study does not validate this proxy, a human waking threshold, or the second-dose prediction. The threshold is tied to the first-dose peak in each configuration. Fractions use one dose before 30 minutes and two after a second bolus.`,
+      credit: 'Mark, Burns, Campomanes, Ngai, Trousof, Papper & Brodie, 1957 (rapid brain passage in dogs)',
       deps: ['pharm-3.3'],
-      refs: ['Goodman–Gilman ch. 2'],
+      refs: ['Mark et al., The Passage of Thiopental into Brain, J Pharmacol Exp Ther 119(1):35–38 (1957), complete Methods, Results, Tables I–II and Discussion read 2026-10-19; PMID13417057'],
+      links: {source:'https://pubmed.ncbi.nlm.nih.gov/13417057/'},
       tags: ['redistribution', 'anaesthesia'],
-      verify: true,
+      verify: false,
       viz(v) {
-        const P = { V1: 6, V2: 22, V3: 130, CL: 0.2, Q2: 1.0, Q3: 0.3 }, ke0 = 0.55, D = 300, TEND = 120;
-        const lvl = v.slider('waking level (fraction of peak brain level)', 0.05, 0.6, 0.3, { step: 0.01 });
-        const tMus = v.toggle('muscle uptake', true);
-        const tFat = v.toggle('fat uptake', true);
-        const tLiv = v.toggle('liver metabolism', true);
-        const tSec = v.toggle('second dose at 30 min', false);
-        const sB = v.stage({ x: [0, 60], y: [0, 1.05], axes: 'box', gutter: true, xlabel: 'time (min)', ylabel: 'relative concentration', height: 330, weight: 1.1, minWidth: 260 });
-        const sD = v.stage({ x: [0, 120], y: [0, 1], axes: 'box', gutter: true, xlabel: 'time (min)', ylabel: 'fraction of dose', height: 330, weight: 1, minWidth: 250 });
-        const sim = memo();
-        let info = null;
-        v.render(() => {
-          const key = `${tMus.value}|${tFat.value}|${tLiv.value}|${tSec.value}`;
-          const S = sim(key, () => {
-            const Q2 = tMus.value ? P.Q2 : 0, Q3 = tFat.value ? P.Q3 : 0, CL = tLiv.value ? P.CL : 0;
-            const f = ([a1, a2, a3, ce, el]) => {
-              const c1 = a1 / P.V1, c2 = a2 / P.V2, c3 = a3 / P.V3;
-              return [-CL * c1 - Q2 * (c1 - c2) - Q3 * (c1 - c3), Q2 * (c1 - c2), Q3 * (c1 - c3), ke0 * (c1 - ce), CL * c1];
-            };
-            const dt = 0.05, n = Math.round(TEND / dt), out = { t: [], c1: [], ce: [], a1: [], a2: [], a3: [], el: [] };
-            let y = [D, 0, 0, 0, 0], dosed2 = false;
-            for (let i = 0; i <= n; i++) {
-              const t = i * dt;
-              if (tSec.value && !dosed2 && t >= 30) { y[0] += D; dosed2 = true; }
-              if (i % 4 === 0) { out.t.push(t); out.c1.push(y[0] / P.V1); out.ce.push(y[3]); out.a1.push(y[0]); out.a2.push(y[1]); out.a3.push(y[2]); out.el.push(y[4]); }
-              y = rk4(f, y, t, dt);
-            }
-            return out;
-          });
-          const peakE = Math.max(...S.ce.slice(0, 150)), thr = lvl.value * peakE;
-          // waking: first time after the brain peak that Ce falls to the threshold
-          const ip = S.ce.indexOf(peakE);
-          let tw = NaN;
-          for (let i = ip + 1; i < S.t.length; i++) if (S.ce[i] <= thr) { tw = S.t[i - 1] + ((S.ce[i - 1] - thr) / (S.ce[i - 1] - S.ce[i])) * (S.t[i] - S.t[i - 1]); break; }
-          const iw = isFinite(tw) ? idxAt(S.t, tw) : S.t.length - 1;
-          const tot = D * (tSec.value && tw > 30 ? 2 : 1);
-          info = { tw, peakE, remain: isFinite(tw) ? 1 - S.el[iw] / tot : NaN, fMus: S.a2[iw] / tot, fFat: S.a3[iw] / tot, fPl: S.a1[iw] / tot, el: S.el[iw] / tot, ip };
-          const x1 = Math.min(TEND, tSec.value ? 60 : 60);
-          sB.hline(thr / peakE, { color: 'red', dash: true, width: 1.6 });
-          sB.text('waking level', 59, thr / peakE, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom', dy: -3 });
-          sB.path(S.t.map((t, i) => [t, S.c1[i] / peakE]), { color: 'muted', dash: [5, 3], width: 1.8 });
-          sB.path(S.t.map((t, i) => [t, S.ce[i] / peakE]), { color: 'accent', width: 2.6 });
-          if (isFinite(tw) && tw < x1) { sB.vline(tw, { color: 'green', dash: true }); sB.dot(tw, thr / peakE, { r: 6, color: 'green' }); }
-          if (tSec.value) sB.vline(30, { color: 'gold', dash: [3, 4] });
-          // stacked fractions of the total dose given
-          const totAt = (i) => D * (tSec.value && S.t[i] >= 30 ? 2 : 1);
-          const N = S.t.length, pts = (g) => S.t.map((t, i) => [t, g(i)]);
-          const base1 = (i) => S.a1[i] / totAt(i), base2 = (i) => (S.a1[i] + S.a2[i]) / totAt(i), base3 = (i) => (S.a1[i] + S.a2[i] + S.a3[i]) / totAt(i);
-          const stack = (lo, hi, col) => sD.poly([...pts(hi), ...pts(lo).reverse()], { fill: col, fillAlpha: 0.38, color: col, width: 1.4 });
-          stack(() => 0, base1, 'accent'); stack(base1, base2, 'orange'); stack(base2, base3, 'purple'); stack(base3, () => 1, 'green');
-          if (isFinite(tw)) sD.vline(tw, { color: 'ink', dash: true });
-          if (tSec.value) sD.vline(30, { color: 'gold', dash: [3, 4] });
-          void N;
+        const lvl=v.slider('reference (fraction of first effect-site peak)',.05,.6,.3,{step:.01});
+        const tMus=v.toggle('muscle-like exchange',true),tFat=v.toggle('fat-like exchange',true),tLiv=v.toggle('central elimination',true),tSec=v.toggle('second bolus at 30 min',false);
+        const sB=v.stage({x:[-2,122],y:[-.03,2],axes:'box',gutter:true,xlabel:'time (min)',ylabel:'relative concentration',height:330,weight:1.1,minWidth:260});
+        const sD=v.stage({x:[-2,122],y:[-.03,1.04],axes:'box',gutter:true,xlabel:'time (min)',ylabel:'fraction of dose given',height:330,weight:1,minWidth:250});
+        const sim=memo();let info;
+        v.render(()=>{
+          const options={muscle:tMus.value,fat:tFat.value,liver:tLiv.value,second:tSec.value},key=Object.values(options).join('|'),S=sim(key,()=>redistributionTrace(options)),R=redistributionCrossings(S,lvl.value),{peak}=R;
+          const max=Math.max(...S.c1,...S.ce)/peak;
+          sB.setView([-2,122],[-max*.03,max*1.07]);
+          sB.hline(lvl.value,{color:'red',dash:true,width:1.6});sB.text('chosen reference',120,lvl.value,{size:10.5,color:'red',align:'right',baseline:'bottom',dy:-3});
+          sB.path(S.t.map((t,i)=>[t,S.c1[i]/peak]),{color:'muted',dash:[5,3],width:1.8});sB.path(S.t.map((t,i)=>[t,S.ce[i]/peak]),{color:'accent',width:2.6});
+          for(const c of R.crossings){sB.vline(c.t,{color:'green',dash:true});sB.dot(c.t,lvl.value,{r:6,color:'green'});sD.vline(c.t,{color:'ink',dash:true});}
+          const pts=g=>S.t.map((t,i)=>[t,g(i)]),b1=i=>S.a1[i]/S.given[i],b2=i=>(S.a1[i]+S.a2[i])/S.given[i],b3=i=>(S.a1[i]+S.a2[i]+S.a3[i])/S.given[i];
+          const stack=(lo,hi,col)=>sD.poly([...pts(hi),...pts(lo).reverse()],{fill:col,fillAlpha:.38,color:col,width:1.4});
+          stack(()=>0,b1,'accent');stack(b1,b2,'orange');stack(b2,b3,'purple');stack(b3,()=>1,'green');
+          if(tSec.value){sB.vline(30,{color:'gold',dash:[3,4]});sD.vline(30,{color:'gold',dash:[3,4]});}
+          info={...R,options,balanceError:Math.max(...S.t.map((_,i)=>Math.abs((S.a1[i]+S.a2[i]+S.a3[i]+S.el[i])/S.given[i]-1)))};
         });
-        v.legend([['accent', 'brain (effect site)'], ['muted', 'plasma', { dash: true }], ['orange', 'muscle'], ['purple', 'fat'], ['green', 'metabolised']]);
-        v.readout(() => isFinite(info.tw)
-          ? `Brain level crosses the waking level at $t=${v.fix(info.tw, 1)}$ min (peak at ${v.fix(S0(info), 1)} min). At that moment ${v.fix(100 * info.remain, 1)} % of the dose given is still in the body: plasma ${v.fix(100 * info.fPl, 0)} %, muscle ${v.fix(100 * info.fMus, 0)} %, fat ${v.fix(100 * info.fFat, 0)} %, metabolised only ${v.fix(100 * info.el, 1)} %.`
-          : `The brain level has not fallen to the waking level within 120 min in this configuration.`);
-        function S0(i) { return i.ip * 0.2; }
+        v.legend([['accent','effect-site proxy / central amount'],['muted','central concentration',{dash:true}],['orange','muscle-like amount'],['purple','fat-like amount'],['green','eliminated amount']]);
+        v.readout(()=>{
+          const last=info.crossings.at(-1),times=info.crossings.map(c=>v.fix(c.t,1)).join(', '),common=`First effect-site peak at ${v.fix(info.peakTime,1)} min; maximum mass-balance error ${info.balanceError.toExponential(1)}.`;
+          return last?`Downward reference crossings at ${times} min. At the last crossing ${v.fix(100*(1-last.el/last.given),1)}% of the dose given remains: central ${v.fix(100*last.a1/last.given,1)}%, muscle-like ${v.fix(100*last.a2/last.given,1)}%, fat-like ${v.fix(100*last.a3/last.given,1)}%; eliminated ${v.fix(100*last.el/last.given,1)}%.\n${common}`:`No downward reference crossing within 120 min. ${common}`;
+        });
       },
     },
     // ------------------------------------------------------------------ 3.5

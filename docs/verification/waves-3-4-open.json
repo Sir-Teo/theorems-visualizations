@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 235,
+  "remainingFlags": 234,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "pharm": 5,
+    "pharm": 4,
     "imaging": 1,
     "circ": 1,
     "energy": 7,
@@ -182,19 +182,6 @@
       "links": {
         "doi": "https://doi.org/10.1097/00000542-199203000-00003"
       }
-    },
-    {
-      "id": "pharm-3.4",
-      "file": "content/pharm/ch03.js",
-      "name": "Thiopental redistribution: waking before elimination",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Goodman\u2013Gilman ch. 2"
-      ],
-      "links": {}
     },
     {
       "id": "pharm-4.6",
@@ -4389,7 +4376,8 @@
       "energy-3.8",
       "pharm-3.7",
       "pharm-4.5",
-      "energy-3.4"
+      "energy-3.4",
+      "pharm-3.4"
     ]
   },
   "additionalFollowups": [
@@ -8220,6 +8208,12 @@
       "status": "resolved",
       "report": "docs/verification/energy-density-followup.md",
       "note": "AFDC LHV, DOE hydrogen/fission references, NIST masses and named manufacturer specifications read; explicit model densities/burnup/boundaries. Root independently reran4calculation groups and4native viewport/theme groups (all16corners\u00d72outputmodes), reviewed conversion/helper/rendering code and narrow dark screenshot."
+    },
+    {
+      "id": "pharm-3.4",
+      "status": "resolved",
+      "report": "docs/verification/pharm-redistribution-followup.md",
+      "note": "Complete Mark1957 original dog study, tables and limits read. Removed unsupported human-waking/fitted-parameter claims; corrected full120-minute trace, exact double-bolus jump, cumulative-dose mass accounting and all downward crossings. Root independently reran3matrix-exponential/conservation groups and2native theme groups (all16toggle configurations\u00d7boththresholdends), reviewed helper/rendering code and final two-crossing light screenshot."
     }
   ]
 }

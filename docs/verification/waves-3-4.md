@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **235 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 603 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **234 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 604 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **235 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **234 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -532,3 +532,7 @@ Resolved **pharm-3.7** and **pharm-4.5** after primary mathematical/official-lab
 ## Source-based energy-density boundaries — 2026-10-19
 
 Resolved **energy-3.4** after primary official/manufacturer reading and independent unit/energy calculations. Root reran four mathematical groups and four native viewport/theme groups, including all16target/efficiency corners in both output modes, and inspected the final narrow dark screenshot. Fuel values now share an LHV basis; battery examples identify nominal-energy proxies; hydrogen fuel and the separate tank-system projection remain distinct; nuclear heat references are excluded from the vehicle-output panel. See [density audit](energy-density-followup.md). **235 source reviews remain**.
+
+## Redistribution and exact bolus events — 2026-10-19
+
+Resolved **pharm-3.4** after complete original Mark1957 paper reading and explicit separation of measured dog observations from chosen model inputs. Root reran three independent mathematical groups and two native light/dark groups, reviewed the mass/crossing implementation and inspected the final two-crossing screenshot. The full120-minute plot preserves both sides of the second bolus; every downward reference crossing reports correctly conserved mass relative to the dose already given. No human waking prediction remains. See [redistribution audit](pharm-redistribution-followup.md). **234 source reviews remain**.
