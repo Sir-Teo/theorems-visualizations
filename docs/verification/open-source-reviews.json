@@ -426,7 +426,9 @@
       "name": "RC4 and ChaCha20",
       "refs": [
         "Katz–Lindell §7.1.4",
-        "Katz–Lindell §7.1.5"
+        "Katz–Lindell §7.1.5",
+        "Bernstein, ChaCha, a variant of Salsa20, 28 Jan 2008, §§1–3",
+        "RFC 8439 §§2.1–2.4 (IETF state and test vectors)"
       ]
     },
     {

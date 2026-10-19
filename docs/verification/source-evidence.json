@@ -296,7 +296,7 @@
     {
       "path": "docs/verification/circuits-owned-source-disposition.json",
       "exists": true,
-      "sha256": "6606dd0fdf63842a82fa543bfcbe1c7b59ff8c3f49c26190b2afa919878f2da1",
+      "sha256": "e83e0b7a171ab64cd7a4c4ee67340221d88def6358d5b4c1e000ce9d0c6033ef",
       "records": 105
     },
     {
@@ -1047,10 +1047,10 @@
         "docs/verification/circuits-owned-source-disposition.json#/retained/87"
       ],
       "reports": [
-        "docs/verification/computing-source-review.md"
+        "docs/verification/chacha-original-source-review.md"
       ],
       "missingEvidence": [
-        "Full Mantin–Shamir2001 original for RC4 bias and exact key-schedule assumptions, and Bernstein2008 original for historical variant/date claims. Complete RFC8439 relevant sections and published quarter-round/block vectors checked; initial-PRGA bias condition corrected."
+        "Full Mantin-Shamir 2001 original for the RC4 second-byte bias and its exact key-schedule/distribution assumptions. Complete Bernstein 28 January 2008 original and relevant RFC 8439 sections/vectors checked in the follow-up; combined flag remains open for RC4."
       ]
     },
     {
@@ -5162,10 +5162,10 @@
       "id": "crypto-4.2",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
-      "report": "docs/verification/computing-source-review.md",
+      "report": "docs/verification/chacha-original-source-review.md",
       "reportOrigin": "record",
       "missingEvidence": [
-        "Full Mantin–Shamir2001 original for RC4 bias and exact key-schedule assumptions, and Bernstein2008 original for historical variant/date claims. Complete RFC8439 relevant sections and published quarter-round/block vectors checked; initial-PRGA bias condition corrected."
+        "Full Mantin-Shamir 2001 original for the RC4 second-byte bias and its exact key-schedule/distribution assumptions. Complete Bernstein 28 January 2008 original and relevant RFC 8439 sections/vectors checked in the follow-up; combined flag remains open for RC4."
       ],
       "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/87",
       "reportExists": true,

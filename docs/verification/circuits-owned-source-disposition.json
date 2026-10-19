@@ -930,8 +930,8 @@
       "id": "crypto-4.2",
       "status": "reviewed_blocked",
       "file": "content/crypto/ch04.js",
-      "missingFullSourceOrClaim": "Full Mantin–Shamir2001 original for RC4 bias and exact key-schedule assumptions, and Bernstein2008 original for historical variant/date claims. Complete RFC8439 relevant sections and published quarter-round/block vectors checked; initial-PRGA bias condition corrected.",
-      "report": "docs/verification/computing-source-review.md"
+      "missingFullSourceOrClaim": "Full Mantin-Shamir 2001 original for the RC4 second-byte bias and its exact key-schedule/distribution assumptions. Complete Bernstein 28 January 2008 original and relevant RFC 8439 sections/vectors checked in the follow-up; combined flag remains open for RC4.",
+      "report": "docs/verification/chacha-original-source-review.md"
     },
     {
       "id": "cplx-2.12",

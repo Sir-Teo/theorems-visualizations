@@ -26,3 +26,11 @@ An isolated native recapture shows the distinct globe and limit-history
 panels correctly and was inspected. This is another observed artifact,
 not proof of a particular cause; the original-evidence flag for the
 historical limits remains open.
+
+The next batch produced two further duplicated-panel PNGs: `rel-2.14.png`
+(light) and `info-3.9.dark.png`. Both passed automated runtime/TeX checks.
+The bad files were preserved under `/tmp/agent-review/` with `-duplicated`
+in their names. Fresh isolated native captures passed and were visually
+inspected: relativity shows distinct carried-axis and velocity-loop panels;
+information theory shows distinct simplex and probability panels. The cause
+remains unresolved; these observations do not establish a production defect.

@@ -117,6 +117,11 @@ sampling error. Compare an estimator with the truth for its own target group.
 
 ## Computer science
 
+For cryptographic experiments, state the sampled keys, nonce/counter distribution,
+output position and whether diffusion is measured before feedforward. Match
+the cipher variant to its specification. A finite bias threshold or avalanche
+measurement does not establish indistinguishability.
+
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights
   (`v.graph(stage, …)` with `editable`), shuffle or type an array, draw points. Use the
   step-through player `v.steps(…)` with pseudocode for anything with more than a handful of steps,

@@ -56,3 +56,10 @@ Final follow-up to earlier batches: ODE's eight purely optional historical credi
 ## Bounded new-primary follow-up
 
 The later [bounded acquisition pass](computing-bounded-primary-followup.md) obtained full Ford–Fulkerson1956 from a new Yale faculty archive and full Meisters1975 from the official UNL repository. It corrects the1956 source summary (nonconstructive general theorem and source–sink-planar algorithm), distinguishes the unchanged modern residual-labeling demonstration, and removes the unsupported optional Dehn-priority aside. Flags **algo-11.25** and **cg-3.5** are now cleared; earlier access failures listed above remain historical records, not current gaps. New Penn/GWU Denavit–Hartenberg leads proved to be modern slides, so **robot-3.7** retains its exact1955-original gap. Queue delta−2; numerical/interaction code frozen.
+
+## ChaCha original follow-up
+
+The [ChaCha original review](chacha-original-source-review.md) reads Bernstein's
+complete 28 January 2008 paper and corrects the widget's counter/diffusion
+scope. Bernstein is no longer a missing original. `crypto-4.2` remains
+flagged for the full Mantin–Shamir RC4 original and its exact assumptions.
