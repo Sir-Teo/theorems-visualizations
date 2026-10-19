@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 232,
+  "remainingFlags": 231,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "imaging": 1,
     "circ": 1,
     "energy": 7,
-    "solid": 7,
+    "solid": 6,
     "robot": 1,
     "aero": 7,
     "micro": 15,
@@ -320,21 +320,6 @@
         "MacKay ch. 6"
       ],
       "links": {}
-    },
-    {
-      "id": "solid-3.9",
-      "file": "content/solid/ch03.js",
-      "name": "Thick-walled cylinders: Lam\u00e9\u2019s solution",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Timoshenko\u2013Goodier ch. 4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Cylinder_stress"
-      }
     },
     {
       "id": "solid-4.7",
@@ -4346,7 +4331,8 @@
       "energy-3.4",
       "pharm-3.4",
       "pharm-4.6",
-      "pharm-4.9"
+      "pharm-4.9",
+      "solid-3.9"
     ]
   },
   "additionalFollowups": [
@@ -8195,6 +8181,12 @@
       "status": "resolved",
       "report": "docs/verification/pharm-infusion-followup.md",
       "note": "Complete original Barza1996 meta-analysis scans and limitations read, distinct from underlying-trial reanalysis. Corrected exact periodic peak ratio/MIC durations and startup/AUC distinction. Root independently reran3math and2native theme groups, reviewed analytic helper/content diff and inspected long-half-life q24h dark screenshot."
+    },
+    {
+      "id": "solid-3.9",
+      "status": "resolved",
+      "report": "docs/verification/solid-cylinder-followup.md",
+      "note": "Complete Bower4.1.7\u20139 derivation/constraints and UWA named-Lam\u00e9 derivation read; no original date claimed. Corrected inconsistent Airy proof via compatible displacement derivation, axial constraint, full signed range and exact hoop average. Root3math+4native viewport/theme groups passed; independent second agent reran3math, checked sources/force/limits and inspected final narrow/wide screenshots without substantive findings."
     }
   ]
 }

@@ -4,7 +4,9 @@
 // Q4 finite-element solve for the strain-rosette item). Stresses are in MPa; geometry is schematic unless a caption says otherwise.
 // Material numbers (E = 200 GPa, nu = 0.3) are round illustrative values, not data for a specific alloy.
 // Credits: Mohr's 1882 paper is confirmed by two secondary sources (Cambridge "Plasticity and Geomechanics" reference list, Wikipedia);
-// Lamé's attribution is by name only (the year of the thick-cylinder solution was not confirmed), so item 3.9 is flagged verify.
+// Lamé's named solution: modern derivation checked against Bower §§4.1.7–4.1.9 and Wright's UWA notes; no original date claimed.
+
+import {cylinderStress, cylinderThinRatio} from './source-audit-cylinder.js';
 
 import { num as num0, pmat, P3, drawBox, deg, rad, tr2, prin2, rot, drawElem, primeAxes, plateFE } from './ch03.shared.js';
 
@@ -466,46 +468,44 @@ and a sphere of the same $r$ and $t$ carries $\sigma=\dfrac{pr}{2t}$ in every ta
       num: '3.9',
       kind: 'Model',
       name: 'Thick-walled cylinders: Lamé’s solution',
-      statement: String.raw`Let a long circular cylinder with inner radius $r_i$ and outer radius $r_o$ carry uniform internal pressure $p_i$ and external pressure $p_o$, and let it deform axisymmetrically in plane stress or plane strain. Then the radial and hoop stresses at radius $r$ are
-$$\sigma_r=A-\frac{B}{r^2},\qquad \sigma_\theta=A+\frac{B}{r^2},\qquad A=\frac{p_ir_i^2-p_or_o^2}{r_o^2-r_i^2},\quad B=\frac{r_i^2r_o^2(p_i-p_o)}{r_o^2-r_i^2},$$
-with compressive radial stress equal to the applied pressure on each surface, $\sigma_r(r_i)=-p_i$, $\sigma_r(r_o)=-p_o$. With a closed end the axial stress is uniform, $\sigma_z=p_ir_i^2/(r_o^2-r_i^2)$ (for $p_o=0$). For internal pressure alone the hoop stress is largest at the bore, $\sigma_\theta(r_i)=p_i\,\dfrac{r_o^2+r_i^2}{r_o^2-r_i^2}$.`,
-      idea: String.raw`In axisymmetry the equilibrium equation of 2.4 reduces to $d\sigma_r/dr+(\sigma_r-\sigma_\theta)/r=0$. Writing $\sigma_r$ and $\sigma_\theta$ through the Airy function $\phi(r)$ (2.12), $\sigma_r=\phi'/r$, $\sigma_\theta=\phi''$, and demanding compatibility gives an Euler equation whose bounded solutions are $\phi=\tfrac A2r^2+B\ln r$ (plus a term in $r^2\ln r$ that is excluded when the displacement must be single-valued). The two constants $A,B$ come from the pressures at the two surfaces. The sum $\sigma_r+\sigma_\theta=2A$ is uniform across the wall, and as $r_o/r_i\to1$ the solution tends to the thin-wall result of 3.8.`,
-      caption: String.raw`The left plot shows $\sigma_\theta$ (orange) and $\sigma_r$ (accent) through the wall from the bore ($r=r_i=1$) to the outer surface. The dashed line is the thin-wall estimate $p\,r_m/t$ with the mean radius: for thin walls it is nearly the average of the exact curve, for thick walls it badly underestimates the stress at the bore. The right plot sets the exact bore stress against the thin-wall value as the radius ratio grows. Add an external pressure with the second slider; the two boundary values of $\sigma_r$ stay pinned to the pressures.`,
-      deps: ['solid-3.8', 'solid-2.12'],
-      refs: ['Timoshenko–Goodier ch. 4'],
+      statement: String.raw`For a homogeneous isotropic linear-elastic cylinder with radii $r_i<r_o$, uniform pressures $p_i,p_o$ and no body force or temperature gradient, the axisymmetric radial and hoop stresses are
+$$\sigma_r=A-\frac{B}{r^2},\qquad \sigma_\theta=A+\frac{B}{r^2},$$
+$$A=\frac{p_ir_i^2-p_or_o^2}{r_o^2-r_i^2}.$$
+$$B=\frac{r_i^2r_o^2(p_i-p_o)}{r_o^2-r_i^2}.$$
+Tension is positive, so $\sigma_r(r_i)=-p_i$ and $\sigma_r(r_o)=-p_o$. For closed pressure-loaded ends free to extend, axial force balance gives $\sigma_z=A$ away from the ends. This is generalized plane strain: the constant axial strain need not be zero. With $p_o=0$, the greatest hoop tension is at the bore:
+$$\sigma_\theta(r_i)=p_i\frac{r_o^2+r_i^2}{r_o^2-r_i^2}.$$`,
+      idea: String.raw`Radial equilibrium is $\sigma_r'+(\sigma_r-\sigma_\theta)/r=0$. Combining the radial displacement strains $\varepsilon_r=u'$ and $\varepsilon_\theta=u/r$ with Hooke's law gives $u''+u'/r-u/r^2=0$. Its solution $u=Cr+D/r$ produces a constant stress term and an inverse-square term; the two surface tractions fix $A,B$. As a separate check, integrating equilibrium in the form $(r\sigma_r)'=\sigma_\theta$ gives $\int_{r_i}^{r_o}\sigma_\theta\,dr=p_ir_i-p_or_o$. Equal pressures therefore give uniform compression, not a stress-free wall.`,
+      caption: String.raw`Left: hoop (orange), radial (accent), and the exact through-thickness **average hoop stress** (dashed). Change both pressures, including external pressure alone and equal pressures; the whole signed stress range stays visible. Right: a separate internal-pressure-only comparison of bore hoop tension with the thin-wall approximation $p_i r_m/t$. Its ratio depends on geometry alone and approaches one as the wall becomes thin.`,
+      deps: ['solid-3.8', 'solid-2.4', 'solid-2.7'],
+      refs: ['A. F. Bower, Applied Mechanics of Solids, complete §§4.1.7–4.1.9: governing equations, axial constraint and pressurized-cylinder derivation', 'Douglas Wright, UWA DANotes, Thick cylinders, derivation through equations(2)–(3); read2026-10-19'],
       tags: ['elasticity', 'pressure vessel'],
       credit: 'G. Lamé',
-      scope: String.raw`Linear elasticity, uniform pressures, long cylinder far from the ends, isotropic homogeneous material; the axial stress given is for a closed end, away from the end caps.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cylinder_stress' },
+      scope: String.raw`Small-strain homogeneous isotropic linear elasticity, axisymmetric uniform loading, no thermal gradient, rotation or body force. A long pressure-loaded cylinder is modeled away from its ends. The radial/hoop solution also applies with other uniform axial constraints, but strict plane strain gives $\sigma_z=2\nu A$, rather than the closed-end value $A$. No yield, fracture, external-pressure buckling or geometric instability is modeled; extreme slider stresses are formal elastic results, not allowable operating loads.`,
+      verify: false,
+      links: {source:'https://solidmechanics.org/Text/Chapter4_1/Chapter4_1.php',derivation:'https://danotes.mech.uwa.edu.au/cylinders/thick/thick.html'},
       viz(v) {
-        const k = v.slider('radius ratio $r_o/r_i$', 1.02, 5, 2, { step: 0.01 });
-        const pi = v.slider('internal pressure $p_i$ (MPa)', 0, 100, 100, { step: 1 });
-        const po = v.slider('external pressure $p_o$', 0, 100, 0, { step: 1 });
-        const sol = () => { const ri = 1, ro = k.value, d = ro * ro - ri * ri, A = (pi.value * ri * ri - po.value * ro * ro) / d, B = (ri * ri * ro * ro * (pi.value - po.value)) / d; return { A, B, ri, ro, sr: (r) => A - B / (r * r), st: (r) => A + B / (r * r) }; };
-        const G = v.stage({ x: [1, 5], y: [-110, 330], axes: 'box', gutter: true, height: 340, xlabel: 'radius r / rᵢ', ylabel: 'stress (MPa)', title: 'stress through the wall' });
-        const R = v.stage({ x: [1, 5], y: [0, 3], axes: 'box', gutter: true, height: 340, xlabel: 'radius ratio rₒ/rᵢ', ylabel: 'σθ(bore) / (p rₘ/t)', title: 'thin-wall estimate vs exact (pᵢ only)' });
-        const thinRatio = (kk) => { const ex = (kk * kk + 1) / (kk * kk - 1), rm = (1 + kk) / 2, tt = kk - 1; return ex / (rm / tt); };
-        v.legend([['orange', 'hoop σθ'], ['accent', 'radial σr'], ['muted', 'thin-wall pr/t', { dash: true }]]);
-        v.render(() => {
-          const s = sol();
-          G.setView([1, Math.max(1.5, s.ro * 1.02)], [Math.min(-110, -pi.value * 1.1), Math.max(120, s.st(1) * 1.12)]);
-          G.fn(s.st, { color: 'orange', width: 2.6, domain: [1, s.ro], n: 80 });
-          G.fn(s.sr, { color: 'accent', width: 2.6, domain: [1, s.ro], n: 80 });
-          const thin = ((pi.value - po.value) * ((1 + s.ro) / 2)) / (s.ro - 1);
-          G.hline(thin, { color: 'muted', width: 1.6, dash: [6, 4] });
-          G.hline(0, { color: 'faint', width: 1 });
-          G.dot(1, s.st(1), { r: 6, color: 'orange' }); G.dot(s.ro, s.st(s.ro), { r: 6, color: 'orange' });
-          G.dot(1, s.sr(1), { r: 6, color: 'accent' }); G.dot(s.ro, s.sr(s.ro), { r: 6, color: 'accent' });
-          R.fn(thinRatio, { color: 'orange', width: 2.6, domain: [1.02, 5], n: 120 }); R.hline(1, { color: 'muted', width: 1.2, dash: [5, 4] });
-          R.dot(k.value, thinRatio(k.value), { r: 7, color: 'gold' });
-          R.text('thin-wall value = 1', 3.4, 0.9, { size: 12, color: 'muted' });
+        const k=v.slider('radius ratio $r_o/r_i$',1.02,5,2,{step:.01});
+        const pi=v.slider('internal pressure $p_i$ (MPa)',0,100,100,{step:1});
+        const po=v.slider('external pressure $p_o$ (MPa)',0,100,0,{step:1});
+        const sol=()=>cylinderStress(k.value,pi.value,po.value);
+        const G=v.stage({x:[.9,5.1],y:[-110,330],axes:'box',gutter:true,height:340,xlabel:'radius r / rᵢ',ylabel:'stress (MPa)',title:'stress through the wall'});
+        const R=v.stage({x:[.8,5.2],y:[.95,1.5],axes:'box',gutter:true,height:340,xlabel:'radius ratio rₒ/rᵢ',ylabel:'bore hoop / thin-wall estimate',title:'internal pressure only: pᵢ > 0, pₒ = 0'});
+        v.legend([['orange','hoop σθ'],['accent','radial σr'],['muted','wall average / ratio 1',{dash:true}]]);
+        v.render(()=>{
+          const s=sol(),values=[0,s.radial(1),s.radial(s.outer),s.hoop(1),s.hoop(s.outer),s.average],lo=Math.min(...values),hi=Math.max(...values),pad=Math.max(10,(hi-lo)*.1);
+          const span=Math.max(.5,s.outer-1);G.setView([1-span*.1,s.outer+span*.1],[lo-pad,hi+pad]);
+          G.fn(s.hoop,{color:'orange',width:2.6,domain:[1,s.outer],n:120});
+          G.fn(s.radial,{color:'accent',width:2.6,domain:[1,s.outer],n:120});
+          G.hline(s.average,{color:'muted',width:1.6,dash:[6,4]});G.hline(0,{color:'faint',width:1});
+          for(const r of [1,s.outer]){G.dot(r,s.hoop(r),{r:6,color:'orange'});G.dot(r,s.radial(r),{r:6,color:'accent'});}
+          R.fn(cylinderThinRatio,{color:'orange',width:2.6,domain:[1.02,5],n:120});R.hline(1,{color:'muted',width:1.2,dash:[5,4]});
+          R.dot(k.value,cylinderThinRatio(k.value),{r:7,color:'gold'});
+          R.text('thin-wall value = 1',3.3,1.02,{size:12,color:'muted'});
         });
-        v.readout(() => {
-          const s = sol(), n = 4000; let I = 0;
-          for (let i = 0; i < n; i++) { const r = 1 + ((s.ro - 1) * (i + 0.5)) / n; I += s.st(r) * ((s.ro - 1) / n); }
-          const bal = pi.value * 1 - po.value * s.ro;
-          return `$\\sigma_r(r_i)=${num(s.sr(1), 2)}$ (= $-p_i=${num(-pi.value, 0)}$), $\\sigma_r(r_o)=${num(s.sr(s.ro), 2)}$ (= $-p_o$). · $\\sigma_\\theta(r_i)=${num(s.st(1), 1)}$, $\\sigma_\\theta(r_o)=${num(s.st(s.ro), 1)}$ MPa; $\\sigma_r+\\sigma_\\theta=2A=${num(2 * s.A, 2)}$ at every $r$. · Force balance $\\int\\sigma_\\theta\\,dr=${num(I, 3)}$ vs $p_ir_i-p_or_o=${num(bal, 3)}$. · For $p_i$ alone the exact bore stress is ${num(thinRatio(s.ro), 2)}× the thin-wall $p\\,r_m/t$.`;
+        v.readout(()=>{
+          const s=sol(),n=4000,dr=(s.outer-1)/n;let I=0;
+          for(let i=0;i<n;i++)I+=s.hoop(1+(i+.5)*dr)*dr;
+          return `$\\sigma_r(r_i)=${num(s.radial(1),2)}$ (= $-p_i$), $\\sigma_r(r_o)=${num(s.radial(s.outer),2)}$ (= $-p_o$) MPa. Bore/outer hoop stress ${num(s.hoop(1),1)} / ${num(s.hoop(s.outer),1)} MPa; wall average ${num(s.average,2)} MPa; closed-end axial stress ${num(s.axial,2)} MPa.\nForce check: numerical $\\int\\sigma_\\theta\\,dr=${num(I,3)}$ versus $p_ir_i-p_or_o=${num(s.force,3)}$ MPa·rᵢ. Separate internal-pressure-only bore/thin ratio: ${num(cylinderThinRatio(s.outer),4)} (geometry only).`;
         });
       },
     },

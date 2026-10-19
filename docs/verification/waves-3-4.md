@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **232 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 606 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **231 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 607 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **232 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **231 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -544,3 +544,7 @@ Resolved **pharm-4.6** and **pharm-4.9** after original-paper reading and six in
 ## Shared bridge pictures — 2026-10-19
 
 All15written bridges now have distinct interactive canonical examples and context selectors, with numerical readouts, scope limits and links to written steps. Root independently reran16mathematical groups and all60native light/dark desktop/320px cases, including the genuinely held lazy-module navigation regression. Reviewed the model/renderer integration and representative narrow/wide screenshots. Endpoint glyphs fit their plot clips at every checked native control endpoint. See [bridge-picture evidence](bridge-pictures-followup.md). This feature does not clear underlying source-review flags or complete the remaining performance/prerequisite/content gates.
+
+## Thick-cylinder compatibility and signed stresses — 2026-10-19
+
+Resolved **solid-3.9** against the complete modern Bower derivation and UWA notes, with three mathematical groups and four native viewport/theme groups. A second agent independently reread the governing/source claims, reran the mathematical groups and inspected final screenshots without substantive findings. The revised explanation distinguishes closed-end generalized plane strain; external-pressure stresses remain fully visible, the exact hoop average respects both pressures, and all endpoint glyphs and mobile formulas fit. The content and syllabus identify the actual equilibrium/Hooke-law dependencies. See [cylinder audit](solid-cylinder-followup.md). **231 source reviews remain**.

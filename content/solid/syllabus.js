@@ -115,7 +115,7 @@ export default {
           pic: 'Glue three strain gauges at 0°, 45° and 90° on a loaded part: from their three readings the full strain state and its Mohr’s circle are reconstructed and compared with the true field.' },
         { num: '3.8', kind: 'Model', name: 'Thin-walled pressure vessels', deps: ['solid-3.1'], refs: ['Gere–Goodno §8.2', 'Gere–Goodno §8.3'],
           pic: 'Pressurise a cylinder and a sphere of the same radius and wall: the cylinder’s hoop stress is twice its axial stress and twice the sphere’s, which is why sausages and pipes split lengthwise.' },
-        { num: '3.9', kind: 'Model', name: 'Thick-walled cylinders: Lamé’s solution', deps: ['solid-3.8', 'solid-2.12'], refs: ['Timoshenko–Goodier ch. 4'],
+        { num: '3.9', kind: 'Model', name: 'Thick-walled cylinders: Lamé’s solution', deps: ['solid-3.8', 'solid-2.4', 'solid-2.7'], refs: ['Timoshenko–Goodier ch. 4'],
           pic: 'Thicken the wall of a pressurised tube: the hoop stress varies through the wall, peaking at the bore, and the thin-wall estimate becomes increasingly optimistic as the radius ratio grows.' },
         { num: '3.10', kind: 'Method', name: 'Combined loadings', deps: ['solid-3.3'], refs: ['Gere–Goodno §8.5'],
           pic: 'A signpost carries wind load, its own weight and a twisting moment: stresses from bending, torsion and axial force are superposed at chosen points and the critical point is located on Mohr’s circle.' },
