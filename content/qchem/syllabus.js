@@ -51,7 +51,7 @@ export default {
           pic: 'Squeeze a Gaussian wave packet in position and watch its momentum distribution (computed by FFT) widen; the product of spreads is read out and never drops below ħ/2, touching it only for the Gaussian.' },
         { num: '1.11', kind: 'Phenomenon', name: 'Tunnelling and the ammonia inversion', deps: ['qchem-1.4', 'qm-3.17'], refs: ['McQuarrie ch. 4'],
           pic: 'A double-well potential with adjustable barrier height: the lowest two levels split into a symmetric and antisymmetric pair, and the splitting — the inversion frequency — falls exponentially as the barrier grows.' },
-        { num: '1.12', kind: 'Postulate', name: 'Expectation values and measurement', deps: ['qchem-1.2', 'qchem-1.3'], refs: ['McQuarrie ch. 4'],
+        { num: '1.12', kind: 'Postulate', name: 'Expectation values and measurement', deps: ['qchem-1.2', 'qchem-1.3', 'prob-2.2.3'], refs: ['McQuarrie ch. 4'],
           pic: 'Prepare a superposition of box states with draggable amplitudes; repeated simulated energy measurements return only eigenvalues, and their average converges to ⟨H⟩ computed from the amplitudes.' },
         { num: '1.13', kind: 'Method', name: 'Ladder operators for the oscillator', deps: ['qchem-1.7', 'qchem-1.10', 'qm-4.2'], refs: ['McQuarrie ch. 5'],
           pic: 'Apply a† and a to oscillator states as buttons: each press moves one rung up or down by ħω with the √n factors shown, and pressing a on the ground state returns exactly zero.' },

@@ -76,7 +76,7 @@ export default {
       items: [
         { num: '2.1', kind: 'Law', name: 'First law of thermodynamics', deps: ['mech-3.6', 'thermo-1.11'], refs: ['Atkins 2A', 'M–S ch. 19'],
           pic: 'Pump heat in and draw work out of a gas through a piston: two bars for q and w change with the path you drag on a pV diagram, while their sum ΔU depends only on the endpoints.' },
-        { num: '2.2', kind: 'Definition', name: 'Expansion work: reversible and irreversible', deps: ['pchem-2.1', 'pchem-1.4'], refs: ['Atkins 2A', 'M–S ch. 19'],
+        { num: '2.2', kind: 'Definition', name: 'Expansion work: reversible and irreversible', deps: ['pchem-2.1', 'pchem-1.4', 'pma-6.21'], refs: ['Atkins 2A', 'M–S ch. 19'],
           pic: 'Expand a gas against a single drop in external pressure, then in two, five and many steps: the shaded work area grows toward the reversible isotherm’s nRT ln(V₂/V₁), which it never exceeds.' },
         { num: '2.3', kind: 'Theorem', name: 'State functions and exact differentials', deps: ['pchem-2.1', 'pma-9.41', 'pma-10.39'], refs: ['Atkins 2D', 'M–S ch. 19'],
           pic: 'Integrate dU and đq around closed loops you draw on a pV diagram: the U loop integral is always zero, the heat loop integral equals the enclosed area, and the mixed-partials test flags which is exact.' },

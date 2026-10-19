@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 56,
+  "publishedBelowTarget": 54,
   "wholeSyllabusBelowTarget": 27,
   "entries": [
     {
@@ -4110,10 +4110,10 @@
       "collection": "pchem",
       "field": "chem",
       "target": 25,
-      "writtenToWritten": 24,
-      "writtenToKnown": 25,
-      "wholeSyllabus": 50,
-      "publishedShortfall": 1,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 51,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -4190,6 +4190,13 @@
           "item": "pchem-2.1",
           "prerequisite": "thermo-1.11",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pchem-2.2",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -4645,10 +4652,10 @@
       "collection": "qchem",
       "field": "chem",
       "target": 25,
-      "writtenToWritten": 24,
-      "writtenToKnown": 37,
-      "wholeSyllabus": 53,
-      "publishedShortfall": 1,
+      "writtenToWritten": 25,
+      "writtenToKnown": 38,
+      "wholeSyllabus": 54,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -4662,6 +4669,13 @@
           "item": "qchem-1.11",
           "prerequisite": "qm-3.17",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "qchem-1.12",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
