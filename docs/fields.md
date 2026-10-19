@@ -111,6 +111,10 @@ an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
 
 ## Chemistry & materials
 
+- A general electron wavefunction is a spatial spinor; product spatial/spin states
+  are special cases. Angular-momentum projection counts describe measurement outcomes,
+  not a set of definite three-dimensional vector directions.
+  Distinguish angular amplitude |Y| from probability density |Y|².
 - **Molecular and quantitative**: particles in a box (`v.mol` kit) whose measured pressure,
   speeds or reaction counts are compared with the macroscopic law; real constants (`v.M.CONST`,
   SI via `v.M.si`) and real substance data (van der Waals a, b; heats of formation) with sources

@@ -2158,6 +2158,117 @@
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-4.10",
+      "file": "content/music/ch04-b.js",
+      "textHash": "2655f347893fae7837facb10537451776b830f24b964702c85c8ede6b44911c7",
+      "textReview": "The source/filter account, harmonic envelope sampling and high-pitch interaction limits are stated sensibly. A fundamental only slightly above F1 can still lie within its bandwidth, so 'no harmonic falls near F1 whenever f0>F1' is too absolute; use a sufficiently undersampled/below-fundamental peak qualification. Static LTI assumptions apply with settings fixed, while a formant glide varies the filter. Formant table values and historical singer/formant-tuning claims still need their original evidence checked; subjective listening is unsupported.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pl-3.3",
+      "file": "content/pl/ch03.js",
+      "textHash": "4726129ecb5ad662475386ca9b7d42e3a01aca5a241295740f1908e6617a935f",
+      "textReview": "The parallel relation, sandwich between one-step and multistep beta reduction, complete-development recursion and diamond lemma are standard and correctly stated. The substitution compatibility lemma supplies the key duplicated-redex step. Scope explicitly distinguishes original redexes from newly created ones and requires capture avoidance. Inspect exhaustive-reduct limits and the number-of-ordinary-steps counter rather than treating finite examples as the general confluence proof.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "micro-9.4",
+      "file": "content/micro/ch09.js",
+      "textHash": "a27cbf8be5662a895596f7927a049ed0f86ab37672c639abd7e28064cc038391",
+      "textReview": "The explicit weak-blocking convention makes the two-trader core exactly the feasible Pareto-efficient, individually rational allocations. Singleton coalitions give the endowment bounds and the grand coalition gives Pareto efficiency. The set characterization is general; calling it one segment of a curve assumes the particular regular preferences used in the diagram and need not describe every exchange economy.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-9.13",
+      "file": "content/mech/ch09-b.js",
+      "textHash": "812415c214b23d397ddae74193c63adc6c913b61d062d1dd05dbdb16d246fc2c",
+      "textReview": "Choosing omega=-qB/(2m) cancels the velocity-dependent Lorentz and Coriolis terms. The remaining quadratic term includes both the centrifugal term and the transformed Lorentz term; calling it solely centrifugal obscures their net inward radial contribution. First-order harmonic frequency splitting is correct. Inspect matched initial velocities in the rotating frame and the finite time interval before accepting the plotted O(B²) trajectory error.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-8.20",
+      "file": "content/pma/ch08-a4.js",
+      "textHash": "4097da78b41f044ae48d9337e00bcf6be97473daeeb9bea28313630d9cdbe1fe",
+      "textReview": "The beta integral has the correct positive-parameter hypotheses. Holder makes B(x,y) log-convex in x; multiplying by the shifted gamma factor preserves log convexity, and the recurrence and f(1)=1 meet Bohr–Mollerup. Numerical integrals have integrable endpoint singularities when x or y is below one, so the 'falls exactly' caption requires accuracy/truncation inspection rather than literal exact numerical equality.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-3.5.1a",
+      "file": "content/graph/ch03-b.js",
+      "textHash": "5be2c09767f81b557d93f086b5080384fe0d09656768e08e74387573cf749de1",
+      "textReview": "The prescribed disjoint-path definition and padding of smaller terminal sets are correct. The planar four-terminal common-face obstruction explains the cube example; stronger connectivity alone is insufficient. k-linked graphs satisfy at least the stated weaker k-connectivity conclusion. Inspect the exhaustive placement/path search, avoidance of unmatched X vertices and actual octahedron/Petersen verdicts.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "cplx-2.12",
+      "file": "content/cplx/ch02-b.js",
+      "textHash": "08e3b04638904857dff359b190c8361e4bc71e63602fd3d5c68c380c64e6170a",
+      "textReview": "The sparse-language theorem correctly avoids an exponential density claim at every length and distinguishes the tally case from general sparse sets. The idea explicitly recognizes that sparse yes-images do not bound no-images and leaves the ordered left-set argument outside the drawing. The hypothetical image pool uses satisfiability to construct an illustration, not a known polynomial reduction; that distinction is candid. Original Mahaney/Berman/Ogiwara–Watanabe evidence remains flagged.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "imaging-4.10",
+      "file": "content/imaging/ch04-c.js",
+      "textHash": "4e3cc69dd25a87cced58229c203d7f278843b96e3d27870608eb608fc48b1704",
+      "textReview": "The exact irreversible-compartment identity retains the early transient term, so the intercept argument avoids integrating a late-time equilibrium approximation back to zero. The Patlak line is an approximation once C1/Cp is approximately constant, rather than exact at an arbitrary finite t*. Units and illustrative plasma/rate data are scoped, and reversible trapping can bias a late slope. Original Patlak/Phelps quantitative evidence remains flagged.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qchem-2.7",
+      "file": "content/qchem/ch02-b.js",
+      "textHash": "44ee751b80f51c8bd935484bc30d0435d6cbc4ee82d8ddc2e7d2c0e489b9bb19",
+      "textReview": "The general electron state is now a spatial spinor; a product spatial/spin wavefunction is explicitly a special case. A normalized spin vector is labelled a pure spin state, and the two silver components are an even projection count associated with half-integer spin. The caption/readout distinguish allowed deflections from occupied spots and describe the chosen classical ensemble without a universal exclusion claim. The adjacent rotor prerequisite was corrected separately without sampled-page credit.",
+      "visualReview": "Inspected eight spin-model/preparation captures in both themes and the aligned prepared-spin captures. The unpolarized spin-half beam has two groups, the angular-momentum-one comparison three, and the isotropic classical model a smear. An aligned prepared spin occupies only the + group while the empty allowed - position remains marked; the readout correctly says two allowed deflections.",
+      "interactionReview": "Native model/preparation mode checks pass in both themes. Additional actual range-input checks at prepared angles 0,90,180 give predicted probabilities [100,0],[50,50],[0,100], finite readouts, and no runtime/TeX errors. The qchem-1.9 prerequisite modes were also checked but add no fixed-sample credit.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The spin-half algebra, two outcomes and cos²(theta/2) transition probability are correct. The claim that the full electron wavefunction is always a product of spatial and spin parts is false: a general two-component spatial spinor can have nonproportional components, and Stern–Gerlach evolution entangles them. The idea also calls two a 'half-integer number of projections'; two is an even count corresponding to a half-integer spin quantum number. Correct both statements.",
+      "initialTextHash": "d2725a5246f071bce4ae31617c8064d54ac560e0b9552fa09d704366ee3f4093",
+      "correctionReport": "docs/verification/agent-electron-spin-review.md"
+    },
+    {
+      "id": "prob-4.3.11",
+      "file": "content/prob/ch04-m2.js",
+      "textHash": "9801034370d35647c70ced25424d7c036632f6a0f474ef6f6c8c63a5564e2df8",
+      "textReview": "For a Galton–Watson process starting from one ancestor, the nonnegative critical martingale converges, integer-valued convergence makes it eventually constant, and nondegeneracy excludes a positive eventual constant. The pgf expansion has coefficient sigma²/2 because mean one makes f''(1)=variance. Reciprocal differences yield n*s_n->2/sigma², and conditional mean 1/s_n explains rare large survivors. Make the one-ancestor initial condition explicit in a standalone statement.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "demo-2.9",
+      "file": "content/demo/ch02-b.js",
+      "textHash": "2474f3e8d6ca275065b9f118b570145c200b5f51fff13e97e2a4cdee47c866df",
+      "textReview": "The text rightly rejects interpreting low life expectancy at birth as the typical adult age at death. Its claim that historical differences are overwhelmingly childhood rather than adult mortality conflicts with its own model where swapping under-five rates closes only about a third of the gap. Adult mortality can contribute substantially; qualify the generalization. The Siler table is illustrative and the swap order can matter, not necessarily only a little. Conditional adult longevity ranges need context rather than universal historical coverage.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "imaging-3.14",
+      "file": "content/imaging/ch03-c.js",
+      "textHash": "8d34e7784b05f9af7be22c196f279c699ff6b191f52a293396af2a4b9ece484b",
+      "textReview": "The log of a polychromatic exponential mixture is concave in path length, explaining beam-hardening underestimation and cupping. It does not truly saturate at large length when all attenuation coefficients are positive: it approaches a line with slope equal to the smallest coefficient. Detector floors/photon starvation can saturate measured log values, a separate effect. Beam-hardening data can violate Radon consistency, but a symmetric water cylinder can instead be consistent with the wrong nonuniform image, so avoid an unqualified no-image assertion for every dense object.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
     }
   ]
 }
