@@ -7,8 +7,7 @@
 //     The effective resonance integral I_eff = 25 b and the fast-fission factor ε = 1.03 are ILLUSTRATIVE tuning values chosen so that the model reproduces the textbook
 //     facts that natural uranium cannot go critical in light water but can in graphite or heavy water; the picture is a model of a homogeneous lattice, not a lattice code.
 //     Sanity check: η of natural uranium comes out 1.35 (textbook 1.34); Wikipedia's "typical" thermal-reactor factors 1.65, 0.71, 0.87, 1.02 multiply to k∞ ≈ 1.04.
-//   3.7, 3.8 Six-group delayed-neutron data for thermal fission of U-235 (β_i and λ_i; total β = 0.0065) as tabulated in the Wikipedia article "Delayed neutron" (the
-//     Keepin–Wimett–Zeigler set; the original 1957 tables were not fetched). Generation time Λ = 1e-4 s is the article's "order 10⁻⁴ s" for a thermal reactor.
+//   3.7/3.8 DOE-HDBK-1019/1-93 NP02Table3; six printed fractions/half-lives and numerical models in source-audit-kinetics.shared.js.
 //   3.9 Way–Wigner fit P/P0 = 0.066 [t^−0.2 − (t+T)^−0.2] with the coefficient and validity range (10 s to 100 days) as printed in Wikipedia "Decay heat", which also
 //     gives the typical values 6.5 % at shutdown, 1.5 % after 1 h and 0.4 % after 1 day. The fit gives about 1.1 % at 1 h, so it is only a rough guide (a factor-of-two fit).
 //     Latent heat of boiling at 1 atm is 2257 kJ/kg (from the IAPWS-IF97 tables in ch02.shared.js). The Fukushima Daiichi event (11 March 2011) is mentioned qualitatively.
@@ -19,6 +18,8 @@
 //     TFTR 1994 10.7 MW, Q ≈ 0.27; JET 1997 16.1 MW, Q ≈ 0.62–0.67 depending on the definition; NIF 5 Dec 2022 3.15 MJ from 2.05 MJ of laser energy on target (target gain 1.5).
 
 import { clamp, lerp, BETA, DN_BETA, DN_LAM, kinMatrix, kinEq, inhour, wayWigner, sigmavDT, tripleNeeded, gainQ, E_ALPHA, E_FUS, satT } from './ch03.shared.js';
+
+import {kinStepCurveAudit, kinProgramAudit} from './source-audit-kinetics.shared.js';
 
 const f1 = (v, x) => v.fix(x, 1), f2 = (v, x) => v.fix(x, 2);
 
@@ -87,15 +88,16 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
     // ───────────────────────────────────────────────────────────────────────────── 3.7
     {
       num: '3.7', kind: 'Concept', name: 'Delayed neutrons make reactors controllable',
-      statement: String.raw`Almost all neutrons of a fission appear within about $10^{-14}$ s (**prompt**), but a fraction $\beta\approx 0.0065$ for thermal fission of U-235 come out later, from the decay of fission products, with delays from a fraction of a second to about a minute (**delayed**). Because the prompt neutron generation time $\Lambda$ is of order $10^{-4}$ s, a reactivity $\rho=(k-1)/k$ that keeps the reactor **below prompt critical** ($\rho<\beta$, one "dollar") makes the power change with the slow delayed-neutron time scale, seconds, rather than with $\Lambda$. If $\rho>\beta$ the chain is critical on prompt neutrons alone and power rises on the millisecond scale.`,
-      idea: String.raw`A neutron generation then has two kinds of members: the prompt ones, fast, and the delayed ones, lagging by an average of about 13 s. Averaged over both, the effective generation time is $\Lambda + \sum_i \beta_i/\lambda_i\approx 0.085$ s, about a thousand times longer than $\Lambda$. The asymptotic growth rate $\omega$ solves the inhour equation $\rho = \Lambda\omega + \sum_i \beta_i\omega/(\omega+\lambda_i)$ (derived in 3.8): for small $\rho$ the delayed groups dominate, for $\rho>\beta$ the prompt term does.`,
-      caption: String.raw`Power after a sudden reactivity step $\rho$ (in dollars, $\$1 = \beta$), on log–log axes from 0.1 ms to 100 s. Blue: the real reactor with six delayed groups. Red: the same reactor with delayed neutrons removed. Slide $\rho$ up toward \$1 and beyond, and change $\Lambda$: below a dollar, the blue curve makes a small prompt jump and then rises with a period of seconds; at a dollar it joins the red.`,
+      statement: String.raw`Most fission neutrons appear promptly, but thermal U-235 fission produces about 0.65% as **delayed neutrons** following precursor beta decay. In a point-kinetics model, a positive reactivity $\rho=(k-1)/k$ below $\beta$ is **delayed supercritical** while the prompt population alone remains subcritical. The delayed groups then substantially slow sustained growth. At $\rho=\beta$ the model is **prompt critical**; above it, growth can become much faster. The exact period still follows the inhour equation and depends on the distance above threshold and on $\Lambda$, not a universal millisecond rule.`,
+      idea: String.raw`The six groups contribute an additional low-reactivity time scale $\sum_i\beta_i/\lambda_i$. For small positive $\rho$, expanding the inhour equation gives $\omega\approx\rho/(\Lambda+\sum_i\beta_i/\lambda_i)$. This is a small-reactivity approximation, not the period at arbitrary reactivity. The conditional mean precursor delay is $\sum_i\beta_i/\lambda_i\,/\,\beta$. At larger reactivity solve $\rho=\Lambda\omega+\sum_i\beta_i\omega/(\omega+\lambda_i)$ directly. A finite prompt relaxation precedes the approximate jump $\beta/(\beta-\rho)$; the approximation deteriorates near prompt criticality.`,
+      caption: String.raw`Compare a synthetic six-group model (blue) with the counterfactual $\beta=0$ model at the **same reactivity** (red), starting at unit power. Time and power use logarithmic axes. Curves end when they reach the displayed power ceiling. Crossing one dollar does not make the blue and red curves coincide. Green is the sub-prompt-critical jump approximation; gold is the exact inhour period when it lies in the time window.`,
       deps: ['energy-3.6'],
-      refs: ['Tester ch. 9'],
+      refs: ['DOE-HDBK-1019/1-93, NP-02 pp. 29–32 and Table 3 (delayed groups and neutron generation time)', 'Tester ch. 9'],
+      links: {primary:'https://www.energy.gov/sites/default/files/2026-04/DOE-HDBK-1019-93_VOL1.pdf'},
       tags: ['delayed neutrons', 'reactor control', 'reactor period'],
-      scope: String.raw`Zero-power point-kinetics model with the six-group thermal U-235 delayed-neutron data, constant reactivity step from an exactly critical steady state, no feedback and no spatial effects. The value $\beta=0.0065$ is for U-235; plutonium-239 has $\beta\approx 0.002$ and fast reactors have lower values, which is why their margin to prompt critical is thinner.`,
-      credit: 'Delayed-neutron data: Keepin, Wimett and Zeigler, 1957',
-      verify: true,
+      scope: String.raw`Read the complete relevant DOE “Prompt and Delayed Neutrons” section and Table 3. The six printed fractions sum to 0.00649, rounding to the table's 0.0065 total; decay constants are $\ln2/t_{1/2}$ from its six half-lives. No unread 1957 paper is claimed as the numerical source. The model treats those fractions as effective kinetics coefficients, omitting spatial/energy importance weighting and fuel evolution. The prompt-only comparison sets $\beta=0$; it does not model physically removing delayed neutrons from the same fuel. Zero-power, constant-reactivity, initially critical conditions; no feedback, spatial shape change or thermal evolution.`,
+      credit: 'Six-group data: US Department of Energy, DOE-HDBK-1019/1-93 Table 3',
+      verify: false,
       viz(v) {
         const s = v.stage({ x: [1e-4, 100], y: [0.5, 1e6], xlog: true, ylog: true, axes: 'box', gutter: true, height: 350, xlabel: 'time since the step (s)', ylabel: 'power relative to initial', minWidth: 340 });
         const sb = v.stage({ x: [0, 7], y: [0, 1], axes: false, height: 350, minWidth: 300 });
@@ -104,17 +106,16 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
         const ts = Array.from({ length: 70 }, (_, i) => 1e-4 * 10 ** (6 * i / 69));
         let res = null;
         v.render(() => {
-          const L = Lam.value, r = rho.value * BETA, A = (t) => v.M.expm(kinMatrix(r, L, t));
-          const y0 = kinEq(L);
-          const del = ts.map((t) => [t, v.M.matVec(A(t), y0)[0]]);
+          const L = Lam.value, r = rho.value * BETA;
+          const del = kinStepCurveAudit(v.M,r,L,ts);
           const omega = inhour(v.M, r, L), jump = r < BETA ? BETA / (BETA - r) : null;
-          const pr = ts.map((t) => [t, Math.exp(r * t / L)]);
-          s.clip(() => { s.path(pr.filter((p) => p[1] < 1e7), { color: 'red', width: 2.2 }); s.path(del, { color: 'accent', width: 2.6 }); });
+          const endPrompt=Math.min(100,Math.log(1e6)*L/r),pr=ts.filter(t=>t<endPrompt).map(t=>[t,Math.exp(r*t/L)]);pr.push([endPrompt,Math.min(1e6,Math.exp(r*endPrompt/L))]);
+          s.clip(() => { s.path(pr, { color: 'red', width: 2.2 }); s.path(del, { color: 'accent', width: 2.6 }); });
           if (jump) s.hline(jump, { color: 'green', dash: true, alpha: 0.7 });
-          if (omega > 0) s.vline(1 / omega, { color: 'gold', dash: true, alpha: 0.7 });
+          if (omega > 0 && 1/omega>=1e-4 && 1/omega<=100) s.vline(1 / omega, { color: 'gold', dash: true, alpha: 0.7 });
           s.hline(1, { color: 'faint' });
           if (jump) s.text(`prompt jump ${f2(v, jump)}`, 2e-4, jump * 1.6, { size: 11.5, color: 'green', align: 'left' });
-          if (omega > 0) s.text(`1/ω = ${v.fmt(1 / omega, 3)} s`, 1 / omega / 1.15, 3, { size: 11.5, color: 'gold', align: 'right' });
+          if (omega > 0 && 1/omega>=1e-4 && 1/omega<=100) s.text(`1/ω = ${v.fmt(1 / omega, 3)} s`, 1 / omega / 1.15, 3, { size: 11.5, color: 'gold', align: 'right' });
           res = { omega, jump, tPrompt: r > 0 ? L / r : Infinity, r };
           // delayed groups bar chart
           const mx = Math.max(...DN_BETA);
@@ -128,7 +129,7 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
         v.legend([['accent', 'with delayed neutrons'], ['red', 'prompt neutrons only'], ['green', 'prompt jump $\\beta/(\\beta-\\rho)$', { dash: true }], ['gold', 'stable period', { dash: true }]]);
         v.readout(() => {
           const lam = DN_BETA.reduce((a, b, i) => a + b / DN_LAM[i], 0), T = res.omega > 0 ? 1 / res.omega : Infinity;
-          return `$\\rho=${f2(v, rho.value)}\\,\\$ = ${v.fix(res.r * 1e5, 0)}$ pcm. Prompt-only e-folding time $\\Lambda/\\rho = ${v.fmt(res.tPrompt, 3)}$ s; with delayed neutrons the stable period is $1/\\omega = ${v.fmt(T, 3)}$ s (inhour equation), ${v.fmt(T / res.tPrompt, 3)} times slower.\nEffective generation time $\\Lambda+\\sum\\beta_i/\\lambda_i = ${v.fmt(Lam.value + lam, 3)}$ s versus $\\Lambda = ${v.fmt(Lam.value, 2)}$ s. ${rho.value >= 1 ? '**Prompt critical: the delayed neutrons no longer set the time scale.**' : `Prompt jump factor $\\beta/(\\beta-\\rho) = ${f2(v, res.jump)}$.`}`;
+          return `$\\rho=${f2(v, rho.value)}\\,\\$ = ${v.fix(res.r * 1e5, 0)}$ pcm. Prompt-only e-folding time $\\Lambda/\\rho = ${v.fmt(res.tPrompt, 3)}$ s; with delayed neutrons the stable period is $1/\\omega = ${v.fmt(T, 3)}$ s (inhour equation), ${v.fmt(T / res.tPrompt, 3)} times slower.\nSmall-reactivity time scale $\\Lambda+\\sum\\beta_i/\\lambda_i = ${v.fmt(Lam.value + lam, 3)}$ s versus $\\Lambda = ${v.fmt(Lam.value, 2)}$ s. ${rho.value >= 1 ? '**At or above prompt critical: the jump approximation is unavailable; the exact period still follows the inhour equation.**' : `Prompt jump factor $\\beta/(\\beta-\\rho) = ${f2(v, res.jump)}$.`}`;
         });
       },
     },
@@ -137,17 +138,18 @@ the neutrons produced per neutron absorbed in fuel ($\eta$), the fraction of the
       num: '3.8', kind: 'Model', name: 'Point reactor kinetics',
       statement: String.raw`For a reactor treated as a single point, the neutron population $n(t)$ (relative power) and the concentrations $c_i(t)$ of the six delayed-neutron precursor groups obey
 $$\frac{dn}{dt} = \frac{\rho(t)-\beta}{\Lambda}\,n + \sum_{i=1}^{6}\lambda_i c_i,\qquad \frac{dc_i}{dt} = \frac{\beta_i}{\Lambda}\,n - \lambda_i c_i,$$
-with $\beta=\sum\beta_i$. For constant $\rho$ this is a linear system $\dot y = A y$ with 7 eigenvalues, and the largest, $\omega$, is the root of the inhour equation $\rho = \Lambda\omega + \sum_i \beta_i\omega/(\omega+\lambda_i)$. A step $\rho<\beta$ makes the power jump instantly by $\beta/(\beta-\rho)$, then follow the stable period $1/\omega$; for $\rho>\beta$ there is no prompt jump to speak of, and the period is of order $\Lambda/(\rho-\beta)$.`,
-      idea: String.raw`Neutron balance: of the $k$ neutrons per generation, a fraction $\beta_i$ is held back in precursor group $i$ and released at rate $\lambda_i$; the rest return within a time $\Lambda$. Because the prompt time is so short, the power adjusts almost instantaneously to the "quasi-static" level $n\approx \beta/(\beta-\rho)$ (the prompt jump) while the precursors slowly catch up. The system is stiff (rates from $0.01$ to $10^{4}$ per second), so we propagate it with the exact matrix exponential $y(t+\Delta t)=e^{A\Delta t}y(t)$, which is exact for a piecewise-constant reactivity.`,
-      caption: String.raw`Choose a reactivity program (step, slow rod withdrawal, or a step followed by a scram) and a size in dollars. The top curve is power on a log scale against time; the dashed lines are the predicted prompt jump and the asymptotic exponential from the inhour equation. Push the step past \$1: the power runs away on the scale of $\Lambda$. Switch on the energy feedback and the same excursion is cut short, as in a Doppler-damped reactor.`,
+with $\beta=\sum\beta_i$. For constant $\rho$ this is a linear system $\dot y = A y$ with 7 eigenvalues, and the largest, $\omega$, is the root of the inhour equation $\rho = \Lambda\omega + \sum_i \beta_i\omega/(\omega+\lambda_i)$. For $0<\rho<\beta$, a short finite prompt transient is often approximated by the factor $\beta/(\beta-\rho)$, followed by asymptotic growth with period $1/\omega$. Well above prompt critical, when the prompt term dominates, the period approaches $\Lambda/(\rho-\beta)$.`,
+      idea: String.raw`Neutron balance: of the $k$ neutrons per generation, a fraction $\beta_i$ is held back in precursor group $i$ and released at rate $\lambda_i$; the rest return within a time $\Lambda$. Because the prompt time is so short, the power adjusts almost instantaneously to the "quasi-static" level $n\approx \beta/(\beta-\rho)$ (the prompt jump) while the precursors slowly catch up. The system is stiff (rates from $0.01$ to $10^{4}$ per second), so we propagate it with the exact matrix exponential $y(t+\Delta t)=e^{A\Delta t}y(t)$, which is exact for constant reactivity. Ramps and feedback require time stepping and an error check; freezing a changing reactivity over a step is an approximation.`,
+      caption: String.raw`Choose a reactivity program (step, slow rod withdrawal, or a step followed by a scram) and a size in dollars. The left curve is power on a log scale against time; the dashed lines are the predicted prompt jump and the asymptotic exponential from the inhour equation. Above \$1, the growth rate depends on both $\rho-\beta$ and $\Lambda$; the exact period follows the inhour equation. The optional energy feedback is a schematic negative-feedback law. Runs stop at the stated power ceiling; the readout reports the actual end time.`,
       deps: ['energy-3.7', 'ode-3.1'],
-      refs: ['Tester ch. 9'],
+      refs: ['DOE-HDBK-1019/1-93, NP-02 pp. 29–32 and Table 3; six-group balance and inhour derivation shown here', 'Tester ch. 9'],
+      links: {primary:'https://www.energy.gov/sites/default/files/2026-04/DOE-HDBK-1019-93_VOL1.pdf'},
       tags: ['reactor kinetics', 'stiff ODE', 'inhour equation'],
-      scope: String.raw`Zero-dimensional kinetics with six delayed groups and constant $\Lambda=10^{-4}$ s (adjustable). The feedback option subtracts $\alpha E$ from the reactivity, with $E$ the energy released since the start in full-power seconds and $\alpha$ an illustrative coefficient; real feedback involves fuel and coolant temperatures with their own delays. Not valid when the core changes shape or the power gets so high that materials change state.`,
-      verify: true,
+      scope: String.raw`Same inspected DOE six-group inputs as 3.7. The equations assume fixed spatial shape and effective group coefficients; no spatial transport or importance calculation is performed. Constant-reactivity substeps use a matrix exponential. Ramps and the feedback law $\rho=\rho_{\rm external}-\alpha\beta E$, $E=\int n\,dt$, use midpoint freezing and full-step/two-half-step error control (relative power/energy tolerance 0.001); these are numerical approximations. Runs stop at power 10⁵ or the 60 s horizon, and any step-budget truncation is reported. Energy feedback is chosen independently, not calibrated Doppler or coolant physics. There is no core-temperature, material-damage or reactor-safety prediction.`,
+      verify: false,
       viz(v) {
-        const s = v.stage({ x: [1e-3, 60], y: [0.3, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'time (s)', ylabel: 'power relative to initial', minWidth: 340 });
-        const sr = v.stage({ x: [1e-3, 60], y: [-6, 1.6], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'time (s)', ylabel: 'reactivity (dollars)', minWidth: 340 });
+        const s = v.stage({ x: [1e-6, 60], y: [0.3, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'time (s)', ylabel: 'power relative to initial', minWidth: 340 });
+        const sr = v.stage({ x: [1e-6, 60], y: [-6, 1.6], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'time (s)', ylabel: 'reactivity (dollars)', minWidth: 340 });
         const prog = v.select('program', [{ value: 'step', label: 'step' }, { value: 'ramp', label: 'slow ramp (0.02 \\$/s)' }, { value: 'scram', label: 'step, scram at 10 s' }], 'step');
         const rho = v.slider('reactivity $\\rho$ (dollars)', -1, 1.4, 0.3, { step: 0.01 });
         const Lam = v.slider('$\\Lambda$ (s)', 1e-5, 1e-3, 1e-4, { log: true });
@@ -155,38 +157,24 @@ with $\beta=\sum\beta_i$. For constant $\rho$ this is a linear system $\dot y = 
         const alpha = v.slider('feedback $\\alpha$ (\\$ per full-power second)', 0.005, 0.2, 0.05, { step: 0.005, log: true });
         let sim = null;
         const run = () => {
-          const L = Lam.value, M = v.M, cache = new Map();
-          const E = (r, dt) => { const k = `${r.toFixed(9)}|${dt.toFixed(9)}`; let m = cache.get(k); if (!m) { m = M.expm(kinMatrix(r, L, dt)); if (cache.size > 300) cache.clear(); cache.set(k, m); } return m; };
-          let y = kinEq(L), t = 0, En = 0; const out = [[1e-3, 1]], rr = [], T = 60; let guard = 0;
-          const ext = (tt) => (prog.value === 'step' ? rho.value : prog.value === 'ramp' ? 0.02 * tt : tt < 10 ? rho.value : -6) * BETA;
-          while (t < T && guard++ < 2500) {
-            const r0 = ext(t + 1e-9) - (fb.value ? alpha.value * BETA * En : 0);
-            const growth = Math.max(0, (r0 - BETA) / L, inhour(M, Math.min(r0, 0.9999 * BETA * 5), L) * 1);
-            let dt = Math.max(t * 0.025, 1e-3); if (fb.value || prog.value === 'ramp') dt = Math.min(dt, 0.04 / Math.max(growth, 1));
-            if (prog.value === 'scram' && t < 10 && t + dt > 10) dt = 10 - t;
-            dt = Math.min(dt, T - t);
-            const rm = ext(t + dt / 2) - (fb.value ? alpha.value * BETA * En : 0);
-            const mt = fb.value || prog.value === 'ramp' ? rm : r0;
-            y = M.matVec(E(mt, dt), y); En += 0.5 * (out[out.length - 1][1] + y[0]) * dt; t += dt;
-            out.push([t, Math.max(y[0], 1e-6)]); rr.push([t, mt / BETA]);
-          }
-          const L2 = rr.length ? rr : [[1e-3, 0]];
-          sim = { out, rr: L2, E: En, omega: inhour(M, ext(1e-6) , L) };
+          sim=kinProgramAudit(v.M,{program:prog.value,dollars:rho.value,Lam:Lam.value,feedback:fb.value,alpha:alpha.value});
         };
         v.render(() => {
           run(); const r = rho.value * BETA;
+          const ymax=Math.max(1,...sim.out.map(p=>p[1]))*1.1,ymin=Math.max(1e-6,Math.min(.3,...sim.out.map(p=>p[1]))*.8);s.setView([1e-6,60],[ymin,ymax]);
+          const rmin=Math.min(-6,...sim.rr.map(p=>p[1])),rmax=Math.max(1.6,...sim.rr.map(p=>p[1]));sr.setView([1e-6,60],[rmin-.05*(rmax-rmin),rmax+.05*(rmax-rmin)]);
           s.clip(() => s.path(sim.out, { color: 'accent', width: 2.5 }));
-          if (prog.value !== 'ramp' && r < BETA && r > 0) s.hline(BETA / (BETA - r), { color: 'green', dash: true, alpha: 0.7 });
-          if (prog.value === 'step' && !fb.value && r > 0 && sim.omega > 0) { const tt = 0.5 * sim.out[sim.out.length - 1][0], pt = sim.out.reduce((b, p) => (Math.abs(p[0] - tt) < Math.abs(b[0] - tt) ? p : b)), A = pt[1] / Math.exp(sim.omega * pt[0]); s.clip(() => s.fn((t) => A * Math.exp(sim.omega * t), { color: 'gold', dash: true, width: 1.8, domain: [0.05, 60] })); }
+          if (prog.value !== 'ramp' && !fb.value && r < BETA && r > 0) s.hline(BETA / (BETA - r), { color: 'green', dash: true, alpha: 0.7 });
+          if (prog.value === 'step' && !fb.value && r > 0 && sim.omega > 0) { const tt = 0.5 * sim.out[sim.out.length - 1][0], pt = sim.out.reduce((b, p) => (Math.abs(p[0] - tt) < Math.abs(b[0] - tt) ? p : b)), A = pt[1] / Math.exp(sim.omega * pt[0]); s.clip(() => s.fn((t) => A * Math.exp(sim.omega * t), { color: 'gold', dash: true, width: 1.8, domain: [Math.min(.05,sim.endTime),sim.endTime] })); }
           sr.path(sim.rr, { color: 'purple', width: 2.2 }); sr.hline(0, { color: 'faint' }); sr.hline(1, { color: 'red', dash: true, alpha: 0.7 });
           sr.text('prompt critical ($1)', 0.0015, 1.17, { size: 11, color: 'red', align: 'left' });
         });
         v.legend([['accent', 'power $n(t)$'], ['green', 'prompt jump', { dash: true }], ['gold', 'inhour asymptote', { dash: true }], ['purple', 'net reactivity'], ['red', 'prompt critical', { dash: true }]]);
         v.readout(() => {
           const r = rho.value * BETA, pk = Math.max(...sim.out.map((p) => p[1])), end = sim.out[sim.out.length - 1][1];
-          const jump = prog.value !== 'ramp' && r < BETA ? `predicted prompt jump $\\beta/(\\beta-\\rho)=${f2(v, BETA / (BETA - r))}$, ` : '';
-          const per = sim.omega > 0 && prog.value !== 'ramp' && r > 0 ? `stable period $1/\\omega = ${v.fmt(1 / sim.omega, 3)}$ s (inhour), ` : '';
-          return `${jump}${per}peak power $${v.sci(pk, 3)}$ of initial, power at 60 s $${v.sci(end, 3)}$.\nEnergy released $${v.sci(sim.E, 3)}$ full-power seconds. ${rho.value >= 1 && !fb.value && prog.value === 'step' ? '**Above \\$1 the power runs away on the scale of $\\Lambda$; only feedback or a scram stops it.**' : ''}`;
+          const jump = prog.value !== 'ramp' && !fb.value && r < BETA ? `predicted prompt jump $\\beta/(\\beta-\\rho)=${f2(v, BETA / (BETA - r))}$, ` : '';
+          const per = sim.omega > 0 && prog.value === 'step' && !fb.value && r > 0 ? `stable period $1/\\omega = ${v.fmt(1 / sim.omega, 3)}$ s (inhour), ` : '';
+          return `${jump}${per}peak power $${v.sci(pk, 3)}$ of initial, power at ${v.fmt(sim.endTime,3)} s $${v.sci(end, 3)}$. Run ${sim.reason}.\nEnergy released $${v.sci(sim.E, 3)}$ full-power seconds. ${rho.value >= 1 && !fb.value && prog.value === 'step' ? '**Prompt-supercritical constant-reactivity growth; the run stops at the displayed power ceiling.**' : ''}`;
         });
       },
     },

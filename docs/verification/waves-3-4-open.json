@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 240,
+  "remainingFlags": 238,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "pharm": 7,
     "imaging": 1,
     "circ": 1,
-    "energy": 10,
+    "energy": 8,
     "solid": 7,
     "robot": 1,
     "aero": 7,
@@ -296,32 +296,6 @@
       "id": "energy-3.6",
       "file": "content/energy/ch03-b.js",
       "name": "Chain reaction and the multiplication factor",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 9"
-      ],
-      "links": {}
-    },
-    {
-      "id": "energy-3.7",
-      "file": "content/energy/ch03-b.js",
-      "name": "Delayed neutrons make reactors controllable",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tester ch. 9"
-      ],
-      "links": {}
-    },
-    {
-      "id": "energy-3.8",
-      "file": "content/energy/ch03-b.js",
-      "name": "Point reactor kinetics",
       "field": "eng",
       "category": "historical-credit-empirical-input-or-reference",
       "status": "source-review-pending",
@@ -4450,7 +4424,9 @@
       "pharm-3.11",
       "pharm-3.6",
       "energy-3.1",
-      "energy-3.3"
+      "energy-3.3",
+      "energy-3.7",
+      "energy-3.8"
     ]
   },
   "additionalFollowups": [
@@ -8251,6 +8227,18 @@
       "status": "resolved",
       "report": "docs/verification/energy-capture-followup.md",
       "note": "Complete primary Esbjerg2007 pilot report checked; exact separation integral and consistent ideal-compression work accounting independently tested. Parent reran4mathematical and2native theme groups and inspected final screenshot; chosen plant proxy remains separate from pilot measurements."
+    },
+    {
+      "id": "energy-3.7",
+      "status": "resolved",
+      "report": "docs/verification/energy-kinetics-followup.md",
+      "note": "Official DOE printed six-group fractions and half-lives checked, with derived decay constants and rounding disclosed. False one-dollar/coincident-curve and universal-period claims corrected. Parent reran6mathematical and4native theme groups for3.7/3.8, inspected final plots and DOE Table3."
+    },
+    {
+      "id": "energy-3.8",
+      "status": "resolved",
+      "report": "docs/verification/energy-kinetics-followup.md",
+      "note": "Exact constant-reactivity substeps and adaptive ramp/feedback approximation independently checked; true ceiling/end-time and scram boundary reported. Parent reran6mathematical and4native theme groups for3.7/3.8, inspected final plots and DOE Table3; coefficients remain an illustrative point model."
     }
   ]
 }

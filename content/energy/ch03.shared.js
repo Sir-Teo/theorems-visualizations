@@ -5,7 +5,7 @@
 //     file mass_1.mas20.txt from the IAEA Nuclear Data Section mirror (www-nds.iaea.org/amdc/ame2020/). BEA lists, for every mass number A
 //     from 1 to 295 that has measured masses, the most tightly bound measured isobar: [A, Z, binding energy per nucleon in keV].
 //     NUC lists chosen nuclides as [A, Z, atomic mass excess in keV, total binding energy in keV] (experimental values, no "#" extrapolations).
-//   Delayed neutrons: the six-group thermal U-235 set (Keepin-style), as tabulated in the Wikipedia article "Delayed neutron" (β = 0.0065).
+//   Delayed neutrons: DOE-HDBK-1019/1-93 NP-02Table3; printed fractions/half-lives in source-audit-kinetics.shared.js (sum0.00649).
 //   Thermal cross sections (2200 m/s): NIST Center for Neutron Research table (ncnr.nist.gov/resources/n-lengths): 235U absorption 680.9 b,
 //     238U 2.68 b, 1H 0.3326 b, 2H 0.000519 b, C 0.0035 b, O 0.00019 b; fission of 235U 585 b (nuclear-power.com, 0.0253 eV).
 //   D–T reactivity: Bosch & Hale, Nucl. Fusion 32, 611 (1992): the S-factor fit for T(d,n)4He with the coefficients quoted in the WarpX source,
@@ -25,25 +25,7 @@ export function beaOf(A) { const r = BEA[Math.round(A) - 1]; return r ? r[2] / 1
 export const bOf = (A) => A * beaOf(A);
 
 // ───────────────────────────────────────────────── six-group delayed neutron model
-export const DN_BETA = [0.000215, 0.001424, 0.001274, 0.002568, 0.000748, 0.000273];
-export const DN_LAM = [0.0124, 0.0305, 0.111, 0.301, 1.14, 3.01];
-export const BETA = DN_BETA.reduce((a, b) => a + b, 0);
-/** 7×7 matrix of the point-kinetics equations for fixed reactivity rho (absolute, not dollars) and generation time Lam (s). */
-export function kinMatrix(rho, Lam, scale = 1) {
-  const A = [[(rho - BETA) / Lam * scale, ...DN_LAM.map((l) => l * scale)]];
-  for (let i = 0; i < 6; i++) { const r = [DN_BETA[i] / Lam * scale, 0, 0, 0, 0, 0, 0]; r[i + 1] = -DN_LAM[i] * scale; A.push(r); }
-  return A;
-}
-/** Steady state at unit power: [n, c1..c6] with c_i = β_i n / (Λ λ_i). */
-export const kinEq = (Lam) => [1, ...DN_BETA.map((b, i) => b / (Lam * DN_LAM[i]))];
-/** Advance the state y by dt seconds at constant reactivity (exact matrix exponential). */
-export function kinAdvance(M, y, rho, Lam, dt) { return M.matVec(M.expm(kinMatrix(rho, Lam, dt)), y); }
-/** Largest root ω (1/s) of the inhour equation ρ = Λω + Σ β_i ω/(ω+λ_i): the asymptotic exponential growth rate. */
-export function inhour(M, rho, Lam) {
-  if (Math.abs(rho) < 1e-14) return 0;
-  const f = (w) => Lam * w + DN_BETA.reduce((s, b, i) => s + b * w / (w + DN_LAM[i]), 0) - rho;
-  return rho > 0 ? M.bisect(f, 0, rho / Lam + 1, 1e-13) : M.bisect(f, -DN_LAM[0] + 1e-9, 0, 1e-13);
-}
+export {DN_BETA,DN_LAM,BETA,kinMatrix,kinEq,kinAdvance,inhour} from './source-audit-kinetics.shared.js';
 
 // ───────────────────────────────────────────────── decay heat
 /** Way–Wigner fit: fraction of pre-shutdown power, t seconds after shutdown, after T seconds of operation (valid ~10 s to 100 days). */
