@@ -54,6 +54,11 @@ Determine quadrature rates from the actual transformed integrand. Adapting coord
 to a boundary can leave a square-root endpoint: the cylindrical ball midpoint sum has
 an N^(-3/2) rate, while its smooth spherical counterpart has an N^(-2) rate.
 
+For gauges, distinguish a minimum from an infimum and state whether the set
+contains its boundary. Check the origin before normalizing a ray. A labelled
+tangent shape must actually be tangent; a coarse ray search must not turn a
+small interior region into a false nonabsorbing example.
+
 ## Physics & astronomy, Earth & environment, engineering
 
 - Distinguish a classical differential law from its weak formulation: integrable

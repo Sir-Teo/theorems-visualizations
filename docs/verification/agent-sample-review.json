@@ -941,11 +941,15 @@
     {
       "id": "fa-1.33",
       "file": "content/fa/ch01-a4.js",
-      "textHash": "39590561a2b147e7828a2d5f7f74abf8605a43075c760676e62faa1d7f04bb29",
-      "textReview": "The algebraic seminorm axioms imply nonnegativity, and separation excludes a common nonzero kernel. The absorbing condition makes the convex gauge finite; the nonabsorbing segment/boundary-disc examples must be labelled as extended-value counterexamples rather than instances of that definition.",
-      "visualReview": "Inspected both themes: the boundary point x/μ and dashed dilate are visible. The corner says membership holds exactly for t>μ while the caption calls μ the smallest dilate reaching x. This needs an explicit boundary convention and numerical-approximation wording. The origin and nonabsorbing-ray cases also need native inspection; no completed correctness claim is made.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "99b1c9f65953a729943c3cfaca78be9af2d74227fef92b5c21e9bb310780df1c",
+      "textReview": "The closed pictured sets now have an inclusive t≥μ membership threshold, with rounded numeric values identified. The origin has gauge zero and no undefined x/μ marker. The supposed boundary disc formerly contained zero; it is now an exact tangent disc and its gauge follows the analytic disc inequality. Polygon ray/edge intersections replace coarse ray sampling, and the segment absorbs only its own line.",
+      "visualReview": "Inspected all four modes and 20 actual drag states in both themes. The tangent disc visibly touches zero, the origin has no spurious ray/boundary marker, inward and outward disc rays have finite/infinite gauges as appropriate, and the segment shows finite gauge only when snapped onto its axis. The closed-set inequality includes the boundary. The earlier visual discrepancy is preserved as an initial finding.",
+      "interactionReview": "Native mouse drags reach the origin in every mode, a nonzero test point in all modes, an outward tangent-disc ray, and a near-axis point snapped onto the segment. All 20 states pass with finite or mathematical-infinity readouts as expected, no NaN, and no runtime/TeX failures. Numerical regressions independently check rectangle norms, exact disc membership thresholds and off-axis segment exclusion; the full regression suite passes.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The algebraic seminorm axioms imply nonnegativity, and separation excludes a common nonzero kernel. The absorbing condition makes the convex gauge finite; the nonabsorbing segment/boundary-disc examples must be labelled as extended-value counterexamples rather than instances of that definition.",
+      "initialTextHash": "39590561a2b147e7828a2d5f7f74abf8605a43075c760676e62faa1d7f04bb29",
+      "initialVisualFinding": "Inspected both themes: the boundary point x/μ and dashed dilate are visible. The corner says membership holds exactly for t>μ while the caption calls μ the smallest dilate reaching x. This needs an explicit boundary convention and numerical-approximation wording. The origin and nonabsorbing-ray cases also need native inspection; no completed correctness claim is made.",
+      "correctionReport": "docs/verification/agent-minkowski-gauge-review.md"
     },
     {
       "id": "em-1.18",
@@ -2495,6 +2499,114 @@
       "file": "content/fa/ch02.js",
       "textHash": "8dbcb5b7497ade0c23bf0d5f538ffc8c85e335926ced55a686f3884a720417d8",
       "textReview": "Reviewed the common-neighborhood proof that an equicontinuous linear family maps a bounded set into a uniformly bounded union. The moving-average and difference-quotient comparison is plausible, but the 2/s operator norm needs a nontrivial circle translation and the picture samples only finitely many sine inputs; a displayed finite-K maximum is not automatically the supremum over every k. Inspect s→0 behavior, the exact parameter range and labels before granting a completed review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "stat-5.2",
+      "file": "content/stat/ch05.js",
+      "textHash": "3e93f3d2422112a8291b6c196a6f971d82633059d8475402d7d5d99ad01208c3",
+      "textReview": "Reviewed the consistent score-root expansion, CLT numerator, LLN/information-identity denominator and third-derivative control. The word regular must include the score and information interchange/integrability conditions, not only parameter-independent support. The moving-support uniform example has the stated faster rate. No text correction identified under those explicit regularity conventions; finite-sample lattice/QQ behavior still needs inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "circ-1.6",
+      "file": "content/circ/ch01-b.js",
+      "textHash": "1fd8af57876c11a10bb12e5956654dd4cc1e1a0f3406fe421e0cc6cfba6d3b0c",
+      "textReview": "Reviewed source/load intersection and zero-source short/open equivalences in the passive sign convention shown. Unlimited-current/voltage language is a limiting statement: a nonzero ideal voltage source directly shorted, or a nonzero ideal current source directly opened, has inconsistent finite DC equations rather than a finite operating point. Readout and endpoint controls still need review; no ordinary finite-load formula error identified.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "demo-2.7",
+      "file": "content/demo/ch02.js",
+      "textHash": "cc8f025d70baa92120dcef497ac7e112320fe4b82da5430f86988ce7f94d2656",
+      "textReview": "Reviewed vertical versus cohort-diagonal hazard integration. Nonincreasing future hazards imply a weak survival/expectancy inequality; strict improvement affecting positive-survival ages yields a strict gap when expectancies are finite. The toy forecast explicitly freezes its rates after 2020 and is not presented as observed future mortality. Lexis dragging and truncated numerical integrals still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "phil-1.5",
+      "file": "content/phil/ch01.js",
+      "textHash": "f9fc08b87b8c36a456b39f9ca74a23df96073ec688463e2fe48ff71c56eedd8d",
+      "textReview": "Reviewed linked versus convergent support and attack/rebuttal graph semantics. The probability aggregation is explicitly a chosen independence/noisy-OR/multiplicative-defeat model, not a universal account of argumentative support. Numeric strengths and which premise is most critical can depend on that model; purely topological single-point-of-failure claims should be distinguished from numerical rankings. The Crito reconstruction and cyclic attack behavior still need direct review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pchem-2.2",
+      "file": "content/pchem/ch02.js",
+      "textHash": "740f2905f27330e6f9968e201225429f00534de7a188117e37370fab58958b98",
+      "textReview": "Reviewed work-on-system sign and the isothermal ideal-gas logarithm. The fixed-endpoint reversible work comparison is valid with a single thermal bath and the appropriate closed-system/PV-work conditions; the scope's claim that the same inequality holds for any substance and any path is too broad. The pointwise pressure inequality also assumes the displayed monotone step idealization and need not hold during an inertial transient. Flagged scope/proof wording for correction; staircase controls need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-5.5.2",
+      "file": "content/graph/ch05-z2.js",
+      "textHash": "fb1016e41aa1301fe81a928f650f8bda749ec66d898e044c1e62ceded2f10b74",
+      "textReview": "Reviewed the clique-pasting coloring proof and induced-subgraph closure. Reverse perfect-elimination greedy coloring sees an earlier-neighbor clique and uses at most omega colors. Maximum-cardinality-search order needs the same orientation convention; nonchordal examples may fail the greedy equality without all being imperfect. No theorem correction identified; induced selections and order verification remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "stat-6.21",
+      "file": "content/stat/ch06-b.js",
+      "textHash": "3898e0c249494ca0e3039410c1a4e3a7a1be59315843a4be64cf2aefd87c642a",
+      "textReview": "Reviewed fixed-size maximum-power interpretation of the likelihood ratio. The universal region p1≥k p0 needs tie/boundary randomization or an assumption that the likelihood ratio has a continuous null distribution; identical hypotheses are a degenerate tie everywhere. The caption's exactly on a fine grid should say numerical grid approximation. Original-paper history and the no-data claim are not certified by this semantic read; parameter degeneracies and grid-size errors still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rep-1.4",
+      "file": "content/rep/ch01.js",
+      "textHash": "3ce1fd9977a39f4f97351e9b0f85f2ef9d85a32d4f253512ef0c662dae60e0f8",
+      "textReview": "Reviewed the linear intertwining equations, common change-of-basis requirement and invertibility criterion. Solving a generator equation suffices for the cyclic example; arbitrary noisy matrices are explicitly counter-examples to equivariance. Character language is motivational and not a claim that characters classify every nonsemisimple representation. Basis singularity and nullspace dimension changes still require native inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "causal-1.8",
+      "file": "content/causal/ch01-b.js",
+      "textHash": "913851282c649b8c57b3cd31d5d3822ec4abe9452ee1be65e4d366cd7d708ef9",
+      "textReview": "Reviewed the positivity identification condition. The displayed P(L=l)>0 formulation is vacuous for continuously distributed covariates; it should hold for almost every covariate value under the target population distribution. Empty cells in a finite sample can occur despite population positivity, and finite data cannot certify global overlap. Restricting overlap also does not automatically make a misspecified linear outcome model unbiased. Flagged these identification/diagnostic qualifications for correction.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-6.24",
+      "file": "content/ladr/ch06.js",
+      "textHash": "5e14c51a119fb211ef0bd23ef84362bae86053139e948e98938a541f22c88cd6",
+      "textReview": "Reviewed repeated Pythagoras and normalization for arbitrary scalar coefficients of an orthonormal list. The three displayed polynomial examples each have norm one; the constant and x-squared cross term correctly breaks orthogonality. The illustration is explicitly real-valued. No text correction identified; integral quadrature and mode/sliders still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "sysbio-1.10",
+      "file": "content/sysbio/ch01-b.js",
+      "textHash": "07fec376a1782ca4b2ebb14f6e94d390fd9a3bb4c7c07a289c9168a07b13d35a",
+      "textReview": "Reviewed the Hill identity x90/x10=81^(1/n) and logarithmic slope n/2 at half-maximum. A general response needs nonzero dynamic range, positive finite threshold inputs, and continuous/strict-enough monotonicity to define the 10% and 90% crossings; any increasing function without those conditions is too broad. Spline monotonicity, threshold inversion and sensitivity computation still require native inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "top-4.17",
+      "file": "content/top/ch04-c.js",
+      "textHash": "4c264b71843c7d366e4b2bff9ba3096611ac9aea2cd004592d8a6db18c4d57ad",
+      "textReview": "Reviewed the compact-containing-neighborhood definition and the Hausdorff compact-closure basis equivalence. Rational intervals have missing irrational limit points, and an unrestricted coordinate projection disproves local compactness of the countable product of real lines. Nonheredity is correctly illustrated by Q inside R. No text correction identified; the finite rational sequence/product display still needs visual/interaction review.",
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"

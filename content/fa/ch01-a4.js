@@ -23,6 +23,15 @@ function rayExit(poly, ux, uy) {
 }
 /** Minkowski functional of a polygon that is star-shaped about an interior point 0. */
 function gauge(poly, x, y) { const r = Math.hypot(x, y); if (r < 1e-15) return 0; return r / rayExit(poly, x / r, y / r); }
+/** Closed examples: polygon star-shaped about interior 0, disk tangent at 0,
+ * or the horizontal segment [−halfLength, halfLength]. */
+export function exampleSetGauge(shape, x, y) {
+  const r2 = x * x + y * y;
+  if (r2 === 0) return 0;
+  if (shape.poly) return gauge(shape.poly, x, y);
+  if (shape.tangentDiskRadius) return x > 0 ? r2 / (2 * shape.tangentDiskRadius * x) : Infinity;
+  return y === 0 ? Math.abs(x) / shape.halfLength : Infinity;
+}
 function hull(pts) {
   const p = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
   if (p.length < 3) return p;
@@ -167,37 +176,34 @@ Then (a)⇒(b)⇒(c). If $X$ is metrizable, also (c)⇒(d)⇒(a), so all four ar
 A set $A\subset X$ is **absorbing** if every $x\in X$ lies in $tA$ for some $t=t(x)>0$. For a convex absorbing $A$, its **Minkowski functional** is
 $$\mu_A(x)=\inf\{t>0:\ t^{-1}x\in A\}\qquad(x\in X).$$`,
       idea: String.raw`$\mu_A(x)$ measures how far $A$ must be dilated to reach $x$; the absorbing property makes this finite. Every balanced neighbourhood of $0$ in a TVS is absorbing (1.15(a)), so convex balanced neighbourhoods give seminorms (1.35, 1.36), and seminorms give convex balanced neighbourhoods (1.34) — the two descriptions of local convexity.`,
-      caption: String.raw`Choose $A$ and drag $x$. The dashed copy is the smallest dilate $tA$ that reaches $x$, so $t=\mu_A(x)$; the readout also checks whether $A$ is absorbing. A segment through $0$ only absorbs its own line, and a disc with $0$ on its boundary misses a whole half-plane: for such $x$ no dilate contains $x$ and $\mu_A(x)=\infty$.`,
+      caption: String.raw`Choose a closed set $A$ and drag $x$. For nonzero $x$ on a ray meeting $A$ beyond $0$, the dashed copy is the smallest dilate $tA$ that reaches $x$: $t=\mu_A(x)$, and every larger dilate contains $x$ too. At $x=0$ the infimum is 0 and every $t>0$ works; $x/\mu_A(x)$ is then undefined and is not plotted. The star illustrates the same radial gauge without convexity. A horizontal segment absorbs only its own line, and a disc tangent to $0$ misses the opposite half-plane. The handle snaps to the origin and, in segment mode, to the horizontal axis. Values are rounded in the readout.`,
       deps: ['fa-1.4'],
       tags: ['seminorms', 'Minkowski functional'],
       viz(v) {
         const SH = {
           pent: { label: 'convex pentagon', poly: [[1.3, 0.1], [0.4, 1.0], [-0.9, 0.7], [-0.8, -0.6], [0.5, -0.9]], abs: true },
           star: { label: 'star (not convex)', poly: Array.from({ length: 10 }, (_, k) => { const r = k % 2 ? 0.4 : 1.15, t = k * Math.PI / 5 + 0.3; return [r * Math.cos(t), r * Math.sin(t)]; }), abs: true },
-          tang: { label: '$0$ on the boundary', poly: circlePoly(0.75, 0.1, 0.76, 120), abs: false },
-          seg: { label: 'segment', poly: null, abs: false },
+          tang: { label: '$0$ on the boundary', tangentDiskRadius: 0.75, abs: false },
+          seg: { label: 'segment', halfLength: 1.2, abs: false },
         };
         const which = v.select('$A$', Object.entries(SH).map(([value, o]) => ({ value, label: o.label })), 'pent');
         const S = v.stage({ x: [-2.8, 2.8], y: [-1.9, 1.9], equal: true, height: 360, ticks: false });
-        const hx = S.handle(1.7, 1.15, { color: 'accent', label: 'x' });
+        const hx = S.handle(1.7, 1.15, { color: 'accent', label: 'x', constrain: (x, y) => Math.hypot(x, y) < 0.05 ? [0, 0] : which.value === 'seg' && Math.abs(y) < 0.05 ? [x, 0] : [x, y] });
         let st = {};
         v.render(() => {
-          const sh = SH[which.value], x = [hx.x, hx.y], r = Math.hypot(...x), u = [x[0] / r, x[1] / r];
-          let smax = 0;
-          if (sh.poly) {
-            for (let i = 1; i <= 800; i++) { const s = 4 * i / 800; if (inPoly(s * u[0], s * u[1], sh.poly)) smax = s; }
-            S.poly(sh.poly, { fill: 'blue', fillAlpha: 0.2, color: 'blue', width: 2 });
-          } else {
-            S.line(-1.2, 0, 1.2, 0, { color: 'blue', width: 4 });
-            if (Math.abs(u[1]) < 0.01) smax = 1.2;
-          }
-          const mu = smax > 0 ? r / smax : Infinity;
-          S.line(0, 0, u[0] * 8, u[1] * 8, { color: 'faint', width: 1, dash: [3, 4] });
-          if (isFinite(mu)) {
+          const sh = SH[which.value], x = [hx.x, hx.y], r = Math.hypot(...x), u = r > 0 ? [x[0] / r, x[1] / r] : [0, 0];
+          const mu = exampleSetGauge(sh, ...x), smax = Number.isFinite(mu) && mu > 0 ? r / mu : 0;
+          if (sh.poly) S.poly(sh.poly, { fill: 'blue', fillAlpha: 0.2, color: 'blue', width: 2 });
+          else if (sh.tangentDiskRadius) S.circle(sh.tangentDiskRadius, 0, sh.tangentDiskRadius, { fill: 'blue', fillAlpha: 0.2, color: 'blue', width: 2 });
+          else S.line(-sh.halfLength, 0, sh.halfLength, 0, { color: 'blue', width: 4 });
+          if (r > 0) S.line(0, 0, u[0] * 8, u[1] * 8, { color: 'faint', width: 1, dash: [3, 4] });
+          if (r === 0) S.corner('x = 0: every t > 0 works; μ_A(0) = 0', 'tl', { color: 'green', weight: 600 });
+          else if (Number.isFinite(mu)) {
             if (sh.poly) S.poly(sh.poly.map(([a, b]) => [mu * a, mu * b]), { color: 'orange', width: 1.8, dash: [6, 4] });
-            else S.line(-1.2 * mu, 0, 1.2 * mu, 0, { color: 'orange', width: 2, dash: [6, 4] });
+            else if (sh.tangentDiskRadius) S.circle(mu * sh.tangentDiskRadius, 0, mu * sh.tangentDiskRadius, { color: 'orange', width: 1.8, dash: [6, 4] });
+            else S.line(-sh.halfLength * mu, 0, sh.halfLength * mu, 0, { color: 'orange', width: 2, dash: [6, 4] });
             S.dot(smax * u[0], smax * u[1], { color: 'blue', r: 4, label: 'x/μ', labelPos: 'se', labelSize: 13 });
-            S.corner(`x ∈ tA exactly for t > ${v.fmt(mu, 3)}`, 'tl', { color: 'green', weight: 600 });
+            S.corner('closed A: x ∈ tA for t ≥ μ_A(x)', 'tl', { color: 'green', weight: 600 });
           } else S.corner('no t > 0 with x ∈ tA', 'tl', { color: 'red', weight: 600 });
           S.dot(0, 0, { color: 'ink', r: 3 });
           S.tex('A', sh.poly ? 0.2 : 0.9, sh.poly ? -0.3 : -0.25, { color: 'blue', size: 17 });
