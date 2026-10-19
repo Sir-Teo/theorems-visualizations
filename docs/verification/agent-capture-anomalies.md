@@ -69,3 +69,10 @@ Originals were preserved under `/tmp/agent-review/` with `-duplicated`
 filenames. Fresh isolated captures passed and were inspected: kinetic
 concentration curves and normalized-rate bars, and capillary-pressure
 curves and droplet-radius bars, are distinct. The cause remains unresolved.
+
+The final sample batches duplicated `qm-3.7.png`, `crypto-4.2.dark.png`,
+`em-3.7.png` and `em-1.7.dark.png`. Each original was preserved with a
+`-duplicated` filename under `/tmp/agent-review/`. Fresh isolated native
+captures passed and were inspected: eigenfunctions/node staircase,
+cipher histogram/diffusion curve, conductor cavity/exterior charges,
+and Coulomb contributions/error curve are distinct. Cause unresolved.

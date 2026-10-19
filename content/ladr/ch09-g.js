@@ -283,8 +283,8 @@ $$\dim \mathcal B(V, W) = (\dim V)(\dim W).$$`,
 - The **tensor product** $V \otimes W$ is the vector space $\mathcal B(V', W')$ of bilinear functionals on $V' \times W'$.
 - For $v \in V$ and $w \in W$, the **tensor product** $v \otimes w \in V \otimes W$ is the bilinear functional on $V' \times W'$ given by
 $$(v \otimes w)(\varphi, \tau) = \varphi(v)\,\tau(w) \qquad \text{for all } \varphi \in V',\ \tau \in W'.$$`,
-      idea: String.raw`We want a product of $v \in V$ with $w \in W$ that is bilinear and lives in a space of dimension $(\dim V)(\dim W)$; the product space $V \times W$ has the wrong dimension, $\dim V + \dim W$. The spaces $\mathcal B(V, W)$, $\mathcal L(V, W)$ and $\mathbf F^{m,n}$ have the right dimension, but none of them offers a basis-free formula for $v \otimes w$. Using the duals does: $\varphi(v)\tau(w)$ needs no basis, and it is bilinear in $(\varphi, \tau)$ (9.69). In coordinates (Axler's example 9.76), with standard bases of $\mathbf F^m$ and $\mathbf F^n$, $v \otimes w$ has coefficients $v_j w_k$; written as an $m$-by-$n$ matrix this is the rank-one matrix $v w^{\mathsf T}$, and its value at $(\varphi, \tau)$ is $\varphi^{\mathsf T}(v w^{\mathsf T})\tau$.`,
-      caption: String.raw`$V = \mathbf R^2$, $W = \mathbf R^3$. Drag the bar tips: $v$ (left, blue) and $w$ (top, orange) fill the grid with their **multiplication table** $v_j w_k$ — the array of $v \otimes w$. Every row is a multiple of $w$ and every column a multiple of $v$; right, the singular values show it: $\sigma_1 = \|v\|\,\|w\|$ and $\sigma_2 = 0$, rank one. The purple bars $\varphi \in V'$ (right) and teal bars $\tau \in W'$ (bottom) are a pair of functionals that $v \otimes w$ eats; the readout checks $(v \otimes w)(\varphi, \tau) = \varphi(v)\tau(w) = \sum_{j,k}\varphi_j\tau_k\, v_j w_k$. Set $\varphi = (1, 0)$, $\tau = (0, 1, 0)$ to read off one cell. Switch on *perturb one entry* to get an array that is no longer $v \otimes w$ for any $v, w$.`,
+      idea: String.raw`We want a product of $v \in V$ with $w \in W$ that is bilinear and lives in a space of dimension $(\dim V)(\dim W)$; the product space $V \times W$ has the wrong dimension, $\dim V + \dim W$. The spaces $\mathcal B(V, W)$, $\mathcal L(V, W)$ and $\mathbf F^{m,n}$ have the right dimension, but none of them offers a basis-free formula for $v \otimes w$. Using the duals does: $\varphi(v)\tau(w)$ needs no basis, and it is bilinear in $(\varphi, \tau)$ (9.69). In coordinates (Axler's example 9.76), with standard bases of $\mathbf F^m$ and $\mathbf F^n$, $v \otimes w$ has coefficients $v_j w_k$; written as an $m$-by-$n$ matrix this is the matrix $v w^{\mathsf T}$ of rank at most one (rank zero if either factor is zero), and its value at $(\varphi, \tau)$ is $\varphi^{\mathsf T}(v w^{\mathsf T})\tau$.`,
+      caption: String.raw`$V = \mathbf R^2$, $W = \mathbf R^3$. Drag the bar tips: $v$ (left, blue) and $w$ (top, orange) fill the grid with their **multiplication table** $v_j w_k$ — the array of $v \otimes w$. Every row is a multiple of $w$ and every column a multiple of $v$; right, the singular values show it: $\sigma_1 = \|v\|\,\|w\|$ and $\sigma_2 = 0$, rank at most one, with rank zero when either factor is zero. The purple bars $\varphi \in V'$ (right) and teal bars $\tau \in W'$ (bottom) are a pair of functionals that $v \otimes w$ eats; the readout checks $(v \otimes w)(\varphi, \tau) = \varphi(v)\tau(w) = \sum_{j,k}\varphi_j\tau_k\, v_j w_k$. Set $\varphi = (1, 0)$, $\tau = (0, 1, 0)$ to read off one cell. Switch on *perturb one entry*: the array is generally rank two and hence not simple, but exceptional choices (for example $v=0$) remain simple. The readout checks the resulting rank.`,
       deps: ['ladr-9.68', 'ladr-3.110'],
       tags: ['tensors'],
       credit: 'H. Whitney, 1938',
@@ -320,15 +320,16 @@ $$(v \otimes w)(\varphi, \tau) = \varphi(v)\,\tau(w) \qquad \text{for all } \var
             G.text(pn(x, 3), 0.75 + i * 1.1, Math.max(x, 0), { dy: -11, align: 'center', size: 12, color: col, weight: 600 });
             G.tex(`\\sigma_${i + 1}`, 0.75 + i * 1.1, 0, { dy: 13, size: 14, color: 'ink' });
           });
-          G.corner(s[1] < 1e-9 ? 'rank 1: a simple tensor' : 'rank 2: not of the form v ⊗ w', 'tl', { color: s[1] < 1e-9 ? 'green' : 'red', weight: 700 });
+          const rank = nrank(s);
+          G.corner(rank === 0 ? 'rank 0: the zero tensor' : rank === 1 ? 'rank 1: a simple tensor' : 'rank 2: not of the form v ⊗ w', 'tl', { color: rank < 2 ? 'green' : 'red', weight: 700 });
           const pv = dot(PH, V), tw = dot(TA, W), ev = dot(PH, mv(X, TA));
-          st = { pv, tw, ev, s, nv: len(V) * len(W) };
+          st = { pv, tw, ev, s, rank, nv: len(V) * len(W) };
         });
         v.readout(() => {
           if (!st) return '';
-          const { pv, tw, ev, s, nv } = st, ok = Math.abs(ev - pv * tw) < 1e-9;
-          const sv = s[1] < 1e-9 ? `$\\sigma_1 = ${tn(s[0], 3)} = \\|v\\|\\,\\|w\\|$ and $\\sigma_2 = ${etx(M, s[1])}$: rank one, as every $v \\otimes w$ must be.` : `$\\sigma_2 = ${tn(s[1], 3)} > 0$: rank two, so this array is **not** $v' \\otimes w'$ for any $v', w'$ (a simple tensor always has rank $\\le 1$).`;
-          return `$\\varphi(v)\\,\\tau(w) = ${tp(pv, 3)} \\times ${tp(tw, 3)} = ${tn(pv * tw, 3)}$ and $\\sum_{j,k} \\varphi_j \\tau_k X_{j,k} = ${tn(ev, 3)}$ ${mark(ok)}${ok ? '' : ' — the perturbed array is a different functional'}. ${sv}${s[1] < 1e-9 ? '' : ` (Unperturbed, $\\sigma_1$ would be $\\|v\\|\\|w\\| = ${tn(nv, 3)}$.)`}`;
+          const { pv, tw, ev, s, rank, nv } = st, ok = Math.abs(ev - pv * tw) < 1e-9;
+          const sv = rank === 0 ? 'Both singular values are zero: rank zero, the zero tensor.' : rank === 1 ? (pert.value ? `$\\sigma_1 = ${tn(s[0], 3)}$, $\\sigma_2 \\approx 0$: this exceptional perturbed array is still a simple tensor.` : `$\\sigma_1 = ${tn(s[0], 3)} = \\|v\\|\\,\\|w\\|$ and $\\sigma_2 \\approx 0$: rank one; a zero factor would give rank zero.`) : `$\\sigma_2 = ${tn(s[1], 3)} > 0$: rank two, so this array is **not** $v' \\otimes w'$ for any $v', w'$ (a simple tensor always has rank $\\le 1$).`;
+          return `$\\varphi(v)\\,\\tau(w) = ${tp(pv, 3)} \\times ${tp(tw, 3)} = ${tn(pv * tw, 3)}$ and $\\sum_{j,k} \\varphi_j \\tau_k X_{j,k} = ${tn(ev, 3)}$ ${mark(ok)}${pert.value ? ' — perturbing changes the array; equality for this one functional pair need not certify equality of arrays' : ''}. ${sv}${pert.value ? ` (Unperturbed, $\\sigma_1 = \\|v\\|\\|w\\| = ${tn(nv, 3)}$.)` : ''}`;
         });
       },
     },

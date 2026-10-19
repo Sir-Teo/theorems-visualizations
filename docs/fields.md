@@ -30,6 +30,10 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+Check zero vectors, zero-dimensional spaces and singular matrices before
+claiming rank one, a positive exponent or a positive determinant. State the
+field when a real quadratic-form counterexample fails over complex scalars.
+
 When an error estimate bounds a squared norm, choose the measure tolerance
 at the square of the desired norm error. Distinguish finite-stage set proxies
 from their limits and sampled maxima from certified suprema.

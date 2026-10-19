@@ -397,7 +397,7 @@ export default {
       num: '8.18',
       kind: 'Theorem',
       name: 'Nilpotent ⟺ minimal polynomial zᵐ ⟺ strictly triangular',
-      statement: String.raw`Suppose $T \in \mathcal L(V)$. The following are equivalent:
+      statement: String.raw`Suppose $V$ is nonzero and finite-dimensional and $T \in \mathcal L(V)$. The following are equivalent:
 (a) $T$ is nilpotent;
 (b) the minimal polynomial of $T$ is $z^m$ for some positive integer $m$;
 (c) $V$ has a basis with respect to which the matrix of $T$ is strictly upper triangular — all entries on and below the diagonal are $0$.`,
