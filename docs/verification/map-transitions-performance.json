@@ -2,7 +2,7 @@
   "status": "complete",
   "date": "2026-10-19T22:56:16.478Z",
   "allNode60FPSGate": "open",
-  "inventoryNote": "Earlier unselected runs used 13,574 nodes / 23,068 edges; selected follow-ups and final runs use 13,574 nodes / 23,073 edges. Each case records counts. Final old/new selected comparison has identical index/planned hashes.",
+  "inventoryNote": "Every saved transition case records 13,574 nodes / 23,073 edges. Early method strings mistakenly hardcoded 23,068; per-case inventories are authoritative. Final old/new selected comparison has identical index/planned hashes.",
   "memory": {
     "combinedExtraRasterPixels": 16000000,
     "maximumRasterEdge": 8192,
@@ -8285,5 +8285,12 @@
     "finalGraphSHA256": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
     "change": "Clear _tipMeasure when an asynchronous tooltip statement failure changes the message height.",
     "evidence": "Four native theme/DPR groups assert cache invalidation, DOM remeasurement, height growth and viewport containment after rejection. Original renderer audit rerun against final graph. Timed successful-statement paths unchanged; no retiming."
+  },
+  "rendererProvenanceFollowup": {
+    "historicalRendererCaptured": false,
+    "historicalLaunch": "Chromium 153.0.8010.12 headless shell, default Playwright launch, no explicit ANGLE selection",
+    "laterMatchingProbe": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (LLVM 10.0.0) (0x0000C0DE)), SwiftShader driver)",
+    "historicalIdentificationIsInference": true,
+    "qualification": "Recorded failures are conditional on the tested headless configuration. They do not establish hardware-accelerated Canvas failure. Separate full Chrome / Apple M1 Metal measurements are required."
   }
 }

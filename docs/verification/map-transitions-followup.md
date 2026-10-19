@@ -2,12 +2,18 @@
 
 2026-10-19. This follow-up covers continuous zoom, selected-node focus/fit,
 changing hover, and the oversized direct-render fallback. All runs enable
-13,574 nodes, all 13 fields, planned items and definitions. The early zoom and
-unselected-hover snapshot has 23,068 edges; after source-backed prerequisite
-updates the selected follow-up has 23,073 edges. Actual inventory and source
-hashes accompany each case; the later runs also hash both input JSON files.
-The full MASTER_PLAN §7.3 60 fps gate remains open: reducing rebuild work does
-not make every measured transition reach 60 fps.
+13,574 nodes and 23,073 edges, all 13 fields, planned items and definitions.
+Every saved case records that actual inventory; the early method strings
+mistakenly hardcoded 23,068 edges. This prose now follows the recorded cases.
+Source hashes accompany each case; the later runs also hash both input JSON files.
+The full MASTER_PLAN §7.3 60 fps gate remains open. These historical runs used
+the default Chromium headless-shell launch configuration. A later probe of the
+same binary and default configuration on this host reported ANGLE SwiftShader,
+a software renderer. The original artifacts did not capture a GPU renderer ID,
+so that historical identification is an inference from the matching probe.
+The recorded failures establish limits of that test configuration; they do not
+establish that hardware-accelerated Canvas fails the same gate. See the
+[hardware protocol](map-hardware-followup.md) for the separate Metal assessment.
 The complete measured snapshot is
 [map-transitions-performance.json](map-transitions-performance.json).
 
@@ -83,9 +89,9 @@ complete before the end measurement. The focused animation cases were rerun
 with this stronger drain; earlier one-drain animation rates are superseded.
 The benchmark fails if the logical target is not reached within ten seconds.
 The final rendering drain is included in the recorded frame cadence. Hover visits eight
-visible real nodes and verifies that focus changes. The timed target statements
-are supplied in memory so that their asynchronous detail fetches do not measure
-network latency as rendering work; failed-request/retry behavior is covered by
+visible real nodes and verifies that focus changes. The timed target/candidate statements
+are cached or primed to empty strings in memory so asynchronous detail fetches
+and full statement-content layout do not enter the rendering timing; failed-request/retry behavior is covered by
 the separate correctness suite.
 
 CPU draw submission and wall-clock frame cadence are different measurements.
@@ -286,12 +292,14 @@ timing path is unchanged; timings were not repeated for this error-layout fix.
 
 ## Remaining performance gate
 
-The all-node 60 fps gate remains open, particularly for DPR 2 scene rebuilds,
-selected transitions and the oversized fallback. MASTER_PLAN §4.4 calls for
-WebGL when Canvas cannot sustain the full graph. The next implementation step
-is a measured WebGL-backed scene renderer that retains the current hit rules,
-focus/selection, labels, themes, filters, exact settled output and bounded
-fallback. This Canvas follow-up supplies an improved baseline and independent
-original-renderer comparisons for that work.
+The all-node 60 fps gate remains open. The DPR 2 rebuild, selected-transition
+and oversized failures above apply to the recorded headless configuration;
+the completed [controlled hardware follow-up](map-hardware-followup.md) now
+separates those results from Apple M1 Metal acceleration. Normal hardware pan,
+focus and hover are near 60 fps, while continuous zoom is about 48–51 fps;
+oversized unselected motion is slower. MASTER_PLAN §4.4 therefore keeps the
+scene-backend investigation open. The isolated edge-only WebGL prototype
+regressed performance and remains outside production. This follow-up preserves
+the historical baseline and independent original-renderer comparisons.
 
 Parent verification independently reran the final transition/failure and original-renderer suites, then reviewed the renderer, measurement code, recorded datasets/latency qualifications and paired dark selected-hover images. The legacy raster/fallback and fractional suites also pass independently. Logs: `/tmp/atlas-root-map-transitions-final.log`, `/tmp/atlas-root-map-original-rendering.log`, `/tmp/atlas-root-map-rendering.log` and `/tmp/atlas-root-map-fractional.log`.

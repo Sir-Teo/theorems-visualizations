@@ -56,7 +56,10 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
    reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)
    preserve the original rendering and improve several transitions, while the full60fps gate
-   remains open. Follow §4.4 with a measured WebGL scene renderer.
+   remains open. The [controlled hardware run](docs/verification/map-hardware-followup.md)
+   confirms normal zoom at about48–51fps and slower oversized motion; normal pan, focus
+   and hover are near60fps. The edge-only WebGL prototype regressed performance and
+   remains isolated. Follow §4.4 by measuring a persistent WebGL scene renderer.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `fe4305d` passes **1,397 tests**, including all six UI tests, and a **35-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,811 bytes gzipped. The route subset covers the recent source, audio and map changes and does not replace the earlier broader route audit. The smoke runner now rejects unexpected not-found pages; an intentionally mistyped route fails as expected. See [checkpoint evidence](docs/verification/checkpoint-fe4305d.md).
