@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **222 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 616 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **219 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 619 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **222 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **219 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -572,3 +572,7 @@ Closed pharm-3.9 after full authored mathematical-source reading, independent am
 ## Compressibility and sweep follow-up — October 19, 2026
 
 Closed aero-4.1–4.3 against MIT's complete authored derivations, Jones's original analysis and Mason's authored correlation derivation. Corrected the potential transformation, sonic-root bracket, clipped pressure/drag ranges and an incorrectly directed normal vector. Pressure diagnostics no longer pretend to locate a shock, and sweep conventions are explicit. Four independent mathematical groups and12 native theme/layout groups pass, with a clean second-agent review. See [compressibility audit](aero-compressibility-followup.md). **222 source reviews remain**.
+
+## Fatigue follow-up — October 19, 2026
+
+Closed solid-4.7–4.9 against primary engineering model documentation and NIST censoring guidance, completing the solid-mechanics source queue. Parent reran four independent mathematical and six native groups and inspected original equations and final diagrams. Both artificial specimen sets preserve run-outs, Miner permutations use identical cycle counts, and mean-stress models include compressive yielding and complete stress cycles. All strengths/scatter remain explicitly chosen. See [fatigue audit](solid-fatigue-followup.md). **219 source reviews remain**.

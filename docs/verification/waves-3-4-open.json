@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 222,
+  "remainingFlags": 219,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,6 @@
     "imaging": 1,
     "circ": 1,
     "energy": 5,
-    "solid": 3,
     "robot": 1,
     "aero": 4,
     "micro": 15,
@@ -281,56 +280,6 @@
         "MacKay ch. 6"
       ],
       "links": {}
-    },
-    {
-      "id": "solid-4.7",
-      "file": "content/solid/ch04-b.js",
-      "name": "Fatigue: S\u2013N curves and the endurance limit",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gere\u2013Goodno \u00a72.9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/S-N_curve"
-      }
-    },
-    {
-      "id": "solid-4.8",
-      "file": "content/solid/ch04-b.js",
-      "name": "Miner\u2019s rule for cumulative damage",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Variable-amplitude loading at stresses above the endurance limit, crack initiation dominated life; ignores sequence, mean-stress and overload effects, so it is a rough estimate with a factor-of-two-or-worse uncertainty. Miner's paper (J. Appl. Mech. 12, A159\u2013A164, 1945) is verified; Palmgren's earlier priority (1924) is from memory. S\u2013N values are the illustrative steel curve of 4.7."
-        }
-      ],
-      "refs": [
-        "Gere\u2013Goodno \u00a72.9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Fatigue_(material)#Miner%27s_rule"
-      }
-    },
-    {
-      "id": "solid-4.9",
-      "file": "content/solid/ch04-b.js",
-      "name": "Goodman relation for mean stress",
-      "field": "eng",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gere\u2013Goodno \u00a72.9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Goodman_relation"
-      }
     },
     {
       "id": "robot-3.7",
@@ -4201,7 +4150,10 @@
       "pharm-3.9",
       "aero-4.1",
       "aero-4.2",
-      "aero-4.3"
+      "aero-4.3",
+      "solid-4.7",
+      "solid-4.8",
+      "solid-4.9"
     ]
   },
   "additionalFollowups": [
@@ -8116,6 +8068,24 @@
       "status": "resolved",
       "report": "docs/verification/aero-compressibility-followup.md",
       "note": "Read Jones original authored analysis and original formula pages plus Mason strip derivation. Fixed nonorthogonal normal vector, showed both projections and full planform, distinguished leading-edge from half-chord sweep and checked correlation turnover. Independent mathematical/native and second-agent reviews passed."
+    },
+    {
+      "id": "solid-4.7",
+      "status": "resolved",
+      "report": "docs/verification/solid-fatigue-followup.md",
+      "note": "Read complete relevant primary COMSOL stress-life documentation and NIST censoring guidance; parent inspected original equations, reviewed final helper/content and independently reran four math/six native groups plus final screenshots. Both artificial material sets correctly distinguish failure, censoring and life outside the supplied curve."
+    },
+    {
+      "id": "solid-4.8",
+      "status": "resolved",
+      "report": "docs/verification/solid-fatigue-followup.md",
+      "note": "Primary Miner sum and sequence limitations checked; parent independently reran numerical incremental histories/crossings and actual controls. Both orders now use exactly identical cycle bins, with equal final damage and explicit post-threshold accounting; formerly silent amplitude adjustment removed."
+    },
+    {
+      "id": "solid-4.9",
+      "status": "resolved",
+      "report": "docs/verification/solid-fatigue-followup.md",
+      "note": "Primary interaction equations and chosen negative-mean extension distinguished; independent ray-root bisection, symmetric tensile/compressive yield, zero load and actual pointer endpoints passed. Parent inspected original formulas and final compression/860MPa waveform screenshots; both yield guides and complete waveform fit."
     }
   ]
 }
