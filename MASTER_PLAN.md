@@ -67,6 +67,8 @@ The [human-review and listening handoff](docs/verification/listening-review-hand
 
 **Reviewer instruction (2026-10-19):** the user directs the agent to perform the sample review ("you review"). Review the same 339 pages and record agent findings, corrections and field-guide feedback separately. This replaces the requested reviewer for this follow-up without relabelling agent work as human review. Distinguish direct audio perception from signal/playback instrumentation. The agent review is pending.
 
+The [agent sample record](docs/verification/agent-sample-review.json) currently contains **84 semantic text reviews**, **13 visual inspections** and one instrumented interaction review. These are separate work-in-progress measures, not 84 completed full-page reviews. The full 336-visualization light-theme sample passes native mode checks; three sampled definitions have no visualization. The [Planck-response correction](docs/verification/agent-planck-review.md) and [spectrum/playback correction](docs/verification/agent-spectrum-review.md) are committed and fed back into the field guides. The latter supplies a directly used Plancherel prerequisite, bringing integrated additions to **773**. Original-source gaps, nine prerequisite shortfalls and subjective listening remain open.
+
 ### Where we started
 
 

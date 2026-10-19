@@ -43,6 +43,10 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   for dissipative systems. Show phase space next to real space when it helps.
 - Show conserved quantities live (energy, momentum, angular momentum) and the quantity the law
   predicts beside the measured one (period vs amplitude, orbit period vs semi-major axis³ᐟ²).
+- Keep an assessed response, a simplified model and an elementary limiting estimate distinct.
+  For example, the black-body slope at an effective emission temperature does not by itself
+  give the assessed atmospheric Planck response. Check numerical comparisons in the explanation
+  as carefully as values in the simulation (agent sample finding: climate 3.4).
 
 ## Statistics & data science
 
@@ -133,6 +137,11 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Music theory items about structure (scales, chords, rhythm) use pitch-class clocks, the
   Tonnetz, piano rolls and necklaces; acoustics items use honest physics (standing waves solved,
   spectra computed by FFT).
+- Analyze the same sample buffer that the Listen control plays, and handle finite-window
+  releases explicitly. A finite click or noise burst need not have a perfectly flat spectrum;
+  distinguish these from ideal impulses and white-noise power spectra. State the integrability
+  or finite-energy assumptions when invoking Fourier inversion or Plancherel (agent sample
+  finding: music 4.5). Signal checks do not establish subjective listening quality.
 - Visual-art items use real optics and colour science (perspective projection computed, colour
   converted through actual colour spaces).
 - **Break it**: inharmonic partials, a different temperament, a vanishing point moved off the

@@ -1,0 +1,768 @@
+{
+  "schemaVersion": 1,
+  "kind": "user-authorized-agent-review",
+  "reviewer": "Codex (AI agent)",
+  "authorization": "User instruction: you review (2026-10-19). Keep agent review separate from actual human review.",
+  "sampleSeed": "wave-3-4-cloud-8e9e930-2026-10-18",
+  "populationHash": "239b618489b6b48db3fe07df2e70ce34ebdaaf0b2d4a4713cc62934fb6db02a1",
+  "required": 339,
+  "meaning": "Work in progress. Individual text findings are semantic review, not original-source verification. Visual and native interaction findings are recorded only where performed; audio instrumentation is not subjective listening. No human review credit is assigned.",
+  "records": [
+    {
+      "id": "nt-2.8",
+      "file": "content/nt/ch02.js",
+      "textHash": "5ed249a8409deaa9ed8663e43c5e43079c4e847e632144ef8c9ec9dd43f5c64f",
+      "textReview": "The unit-permutation argument proves the Euler congruence; the coset argument separately justifies the stronger order-divisibility statement. The nonunit control tests the indispensable gcd hypothesis.",
+      "visualReview": "Inspected the clock at n=21,a=5: order 6, φ=12 and two six-member cosets agree with the readout; nonunits are grey.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-3.5",
+      "file": "content/algo/ch03.js",
+      "textHash": "980a229cf68a84c8d61b4b68159743669d611bc582d53cafefda34c7ccbd7989",
+      "textReview": "The child-subtrees hypothesis and the single sinking-node invariant support the logarithmic swap/comparison bounds. Multiple bad edges may share the sinking node; the caption correctly says one place rather than one edge.",
+      "visualReview": "Inspected step 4/8: the promoted 96 repairs the root; both remaining red edges share the sinking 8. The counters show one swap within height three and four comparisons within six.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "crypto-3.14",
+      "file": "content/crypto/ch03-b.js",
+      "textHash": "91cd2c0ce621b492f8d392bfd2bb47278c27cf83da8574967a71302230975012",
+      "textReview": "The coupling must reuse answers to repeated queries and sample fresh outputs only at distinct inputs. The collision event gives q(q−1)/(2N); the caption correctly caps distinct queries at N.",
+      "visualReview": "Inspected the coupled answer tables and exact/simulated collision curves: the first repeat appears at query 10, the permutation stays collision-free, and the bound is visibly capped at one.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-5.4",
+      "file": "content/qm/ch05.js",
+      "textHash": "17ec3c212af69c6bb2067def6b415661260a60ed406c9e6fa40feab22ad93590",
+      "textReview": "Moving the self-adjoint operator across the inner product proves real eigenvalues and orthogonality. Completeness is explicitly restricted to finite dimensions and attributed to the separate spectral theorem.",
+      "visualReview": "Inspected the symmetric 2×2 default: green eigen-directions are perpendicular and both plotted eigenvalues are real. The columns, ellipse, matrix and 90-degree readout agree.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-11.31",
+      "file": "content/fa/ch11-a2.js",
+      "textHash": "3d08c4743dececc3732c12326dcc0b5f67fdd3aeb68044556427d04bae675835",
+      "textReview": "Positivity supplies a positive semidefinite sesquilinear form and its Cauchy–Schwarz inequality. The proof addresses discontinuous involutions rather than silently assuming continuity; the 2×2 density-matrix picture illustrates the B*-algebra specialization.",
+      "visualReview": "Inspected the default Bloch vector inside the positivity circle: all sampled inequality points lie below the diagonal and the norm readout equals F(e)=1.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-1.33",
+      "file": "content/rca/ch01-a4.js",
+      "textHash": "f04a548f84e26ce6732fe9c6a0e59226cf02eed739f90e058fd14d469b3c426c",
+      "textReview": "Rotating the complex integral onto the positive real axis reduces the claim to pointwise Re(αf)≤|f|. The vector-chain equality example matches constant phase.",
+      "visualReview": "Inspected the complex vector chain within its radius-∫|f| circle and the pointwise Re(αf) curve below |f|. The numerical ratio is 0.7502≤1.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-4.2.11",
+      "file": "content/graph/ch04-a2.js",
+      "textHash": "b9e057872edf5c1b6d8490d948f3435aca52df582cf531b12f60535bfc5ac985",
+      "textReview": "The K5 edge bound and the triangle-free K3,3 face bound establish nonplanarity; suppressing subdivided paths transfers the result to topological minors. A search drawing is illustrative evidence, not the proof.",
+      "visualReview": "Inspected the five-vertex complete graph: all ten edges are drawn with five crossing markers; m=10 exceeds 3n−6=9 in the readout.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "climate-3.4",
+      "file": "content/climate/ch03.js",
+      "textHash": "6a6f92c296bc4bfe6d0d2dc259a39ca9319272d2873719f31c1b249ae68c0019",
+      "textReview": "Corrected the false claim that 3.22 lies between 3.8 and 5.4 and the syllabus's incorrect black-body derivative. The explanation now distinguishes black-body, fixed-emissivity estimate and assessed radiative-kernel response; see agent-planck-review.md.",
+      "visualReview": "Inspected native light and dark defaults. Fixed-q and fixed-RH column slopes and balancing warmings are separated from the assessed AR6 bars; labels and legends are readable.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fluid-2.4",
+      "file": "content/fluid/ch02.js",
+      "textHash": "367120e3ee5e5d2b19b71fe051982ed2de1096c108b0cbb9f89adac2d79348bb",
+      "textReview": "Parcel and environmental lapse rates give the stated restoring acceleration and N² sign. Dry ideal gas, small-displacement frequency and the nonlinear numerical trajectory are distinguished.",
+      "visualReview": "Inspected stable dry stratification at Γ=4 K/km: the parcel trajectory oscillates near the dashed linear solution. Measured period 444 s is close to the small-displacement 448 s prediction.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "vcalc-2.3",
+      "file": "content/vcalc/ch02.js",
+      "textHash": "39197d321d037d9943c853ea84777b52d0b1d2cb1420723b5f317374a67ab0e7",
+      "textReview": "Both axial difference quotients vanish while oblique rays yield m/(1+m²), proving discontinuity despite existing partials. The angle control directly tests the conflicting directional limits.",
+      "visualReview": "Inspected the ray at 35 degrees: the constant ray value 0.4698 is separated from the zero origin and the two axis directions; the surface and angle plot agree.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-7.53",
+      "file": "content/ladr/ch07-b.js",
+      "textHash": "6efd48d1616ad31c995cae9e69cd6847e22775bb1d21e68a3f565910e37f9612",
+      "textReview": "The equivalence chain uses finite-dimensional isometry/invertibility and orthonormal basis length. Complex row conjugation is accounted for; the real rotation/reflection picture illustrates rather than exhausts the field-general statement.",
+      "visualReview": "Inspected the rotation default: column and row frames are orthonormal; both Gram matrices are identity and the inverse equals the transpose. All six diagnostic values agree.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-3.71",
+      "file": "content/ladr/ch03-c.js",
+      "textHash": "74db81b7a3016f62df127bf0c66b3aed23d982ae3f580439273bebeb809ba478",
+      "textReview": "A linear map is determined by its basis values, so its columns give injectivity and arbitrary columns give surjectivity. The R²→R³ example appropriately uses a rectangular matrix.",
+      "visualReview": "Inspected the tilted-plane 3×2 example: matrix columns match the two image handles, and Tx=(0.79,0.55,0.68) matches the displayed basis combination.",
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "alg-3.23",
+      "file": "content/alg/ch03-b.js",
+      "textHash": "2476963297b3900e1ea8af32bbe523d08a0ec318b1d1fc599997f4c4b525b4fb",
+      "textReview": "The exponent identities are sound in a group. The caption overstates when an individual product-power equality implies commutativity: n=0 and n=1 agree even for noncommuting elements. Qualify this as agreement across every exponent.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-4.5",
+      "file": "content/music/ch04.js",
+      "textHash": "c794b71077efadea703d192c604111a94c4f13fa85bdcab476db12c843cefd30",
+      "textReview": "Corrected finite-window Fourier-series, L¹ inversion and L² Plancherel hypotheses, ideal-versus-finite signal claims and the real-cosine line approximation. Playback now uses the analyzed 4.096 s buffer with a common final fade; see agent-spectrum-review.md.",
+      "visualReview": "Inspected the native light default picture: guitar spectrum has the expected harmonic lines; measured half-power width 0.401 Hz matches the isolated-line prediction 0.398 Hz at τ=0.8 s. Waveform envelope, zoom, caption, controls and readout are legible.",
+      "interactionReview": "Native browser test activates all six sound presets and their speaker button in both themes, then uses End to set the guitar decay to 3.00 s. Full-length finite buffers, silent endpoints and no autoplay pass. This is instrumented playback review, not subjective listening.",
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-3.120",
+      "file": "content/ladr/ch03-d.js",
+      "textHash": "fbd870b230f0742893ec82a5bb9097abf7b79c5bf71f40fff0364098faf44018",
+      "textReview": "The pullback definition directly gives additivity, scalar multiplication and reversal of composition. The wrong-order comparison is explicitly possible only because the displayed spaces coincide.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-3.2.12",
+      "file": "content/prob/ch03.js",
+      "textHash": "07b44f6801d19c54a10358b8449a736618b7ab82364525977ba90aaaefd096c2",
+      "textReview": "The rational diagonal subsequence and monotonicity squeeze justify continuity-point convergence. Escape of mass at either end is explicit; terminology follows the collection's distribution-function convention, not an assertion of convergence to a probability law.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "comb-3.8",
+      "file": "content/comb/ch03.js",
+      "textHash": "77a64150bdad64188157dd8d6219192b1d5577b981de6a9520acd521978ffa4b",
+      "textReview": "The numbered-seat factor 2n! is consistent with fixing the alternating parity and the women. The cyclic rook coefficients give the stated Touchard formula. The asymptotic proof should invoke fixed Bonferroni truncations before interchanging the growing sum and limit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-18.6",
+      "file": "content/rca/ch18.js",
+      "textHash": "a1994f35e2c31751bb33a95edf418930d93489e2feeda70dd679162867a63422",
+      "textReview": "Neumann bounds and openness give compactness; a Hahn–Banach functional of the resolvent and Liouville give nonemptiness. The example does not claim finite matrices prove the Banach-algebra case.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-2.14",
+      "file": "content/qm/ch02-b.js",
+      "textHash": "1cd0ce881a68197ddad9c2c6336db837862e19191647b5fe5bd56dca7db9548f",
+      "textReview": "The hydrogen shooting reconstruction distinguishes the historical K notation, modern reduced-mass units and the later time-dependent equation. The displayed quantization condition has an ambiguous unparenthesized denominator and should be written as me²/(K√(−2mE))=n.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pharm-1.3",
+      "file": "content/pharm/ch01.js",
+      "textHash": "439ed431d353dd7bd1431645047b9b0e922e910a33e281e6f0a6b0c56c446651",
+      "textReview": "Amount conservation yields Vp+KpVT. The apparent volume is distinguished from an anatomical volume, and the scope warns that initial, terminal and steady-state volumes differ in multicompartment models.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mathbio-4.4",
+      "file": "content/mathbio/ch04.js",
+      "textHash": "90efcf44031fe5b9180de0e278b471dc4324fb6dd9d30c369af2d2e650bd5283",
+      "textReview": "Primitivity makes the Perron mode simple and dominant; the left eigenvector supplies its coefficient. Periodic, reducible and extinct cases are distinguished, and the historical continuous-age source is separated from the finite-matrix theorem.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "sig-2.3",
+      "file": "content/sig/ch02.js",
+      "textHash": "4804e5c74610771769861b260da463cb66de08fa54e1bd083ef47bc5be1231a4",
+      "textReview": "Commutation with all shifts is the correct definition. Time reversal and time scaling are explicitly compared with the two composition orders; periodic modulation commuting with selected shifts does not establish time invariance.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mfd-4.4",
+      "file": "content/mfd/ch04.js",
+      "textHash": "974447109c93fe335918c9cc6ee6e4bc7d2c70f02ebdbd5b03a359a5754943ef",
+      "textReview": "Compactness supplies a uniform local flow time and uniqueness prevents escape through the zero field. The cutoff and uncut x² field test completeness versus finite-time blowup.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-3.2.15",
+      "file": "content/prob/ch03.js",
+      "textHash": "66012e7da70d476f264330fa0cadff4b597b256909f4f01193aac2c4c4d4b192",
+      "textReview": "The contradiction via a subsequence bounded away from the common limit is valid. The bounded-continuous-test-function argument avoids relying solely on an unnamed metric; Kolmogorov distance is used only for the continuous normal limit.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-2.4.4",
+      "file": "content/graph/ch02-b.js",
+      "textHash": "1c2f4b5193f35f4bafb77574f88b3568936330fc04a44a447334aa6ea012f496",
+      "textReview": "The exchange-chain partition argument separates edge-disjoint packing within classes from covering after contraction. Its lemma prerequisite is an actual proof dependency, and the multigraph scope permits parallel edges.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geol-3.6",
+      "file": "content/geol/ch03-b.js",
+      "textHash": "edc62a3d88ac0c15b454727aa3ba8d5f4582966c0887adfaa3b3a8ec0b563ca2",
+      "textReview": "The rigid rotation velocity is tangent to Euler-pole small circles; zero normal boundary velocity gives the transform condition. Synthetic noisy azimuths are labelled, and the existing original-evidence flag must remain open.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ml-3.2a",
+      "file": "content/ml/ch03.js",
+      "textHash": "dcf66eaa0721bfb5a301c9c59ae49ab85740ff0a4c99c7f2e21354e198f09a26",
+      "textReview": "True risk as expectation and empirical risk as an iid indicator average are correct. The scope's claim of exact risks on a 60×60 grid is inconsistent with the stated continuous instance distribution and sampling; label them numerical grid approximations.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-4.5",
+      "file": "content/ladr/ch04.js",
+      "textHash": "06f37f56e8bdff0c1e08c49d29d8cae133c53619acb13e57a4629f4a39f3966c",
+      "textReview": "The definition is field-relative; the real cubic graph and complex phase portrait illustrate why complex zeros need not be real zeros. The zero definition itself requires no existence theorem.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-4.1",
+      "file": "content/rca/ch04.js",
+      "textHash": "f0d9dc377bbcd5ba79c44da4008ab1df2bf5cbab58f48c49d146b58a1f2bfad3",
+      "textReview": "The first-slot-linear convention and conjugation in the second slot are explicit. Positive-definite, semidefinite and indefinite real matrices separately test the positivity and definiteness axioms.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "music-8.11",
+      "file": "content/music/ch08-b.js",
+      "textHash": "184389a6533c2ee5d0944826c7a0fb7adf01ad47683975e10718b8841e221034",
+      "textReview": "The unordered pair count, tritone convention and invariance under transposition/inversion are correct. The credit's claim that the interval vector defines a set class is too strong because Z-related classes share it; retain the existing original-source flag.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pchem-2.7",
+      "file": "content/pchem/ch02-b.js",
+      "textHash": "995e684189fa0f5dfab93eef5efc6e78e9fe14b92d76c75e7f1e883124c3a96d",
+      "textReview": "Needs correction: Cv is molar, so the general first-law differential needs nCv dT. Heat loss does not universally increase compression work; compare with the isothermal limiting path. The ignition conclusion should remain a model threshold, not a prediction of combustion.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-2.10",
+      "file": "content/ladr/ch02.js",
+      "textHash": "5fe965af9e59347b34f9dba9c6648d3a1782a9b1955e44ab65c299bb005f5d25",
+      "textReview": "Coefficientwise addition and scaling verify the vector-space claim by the subspace test. The quadratic coefficient-space picture correctly represents the finite-degree subspace of the full polynomial space.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pchem-4.7",
+      "file": "content/pchem/ch04-b.js",
+      "textHash": "0160bf0560721116ce5632037a9579078929d04892751b1a590f2e21ca795bce",
+      "textReview": "The liquid–gas continuity claim excludes solids and distinguishes the full supercritical region from universal liquid-like density. The vdW densities are explicitly model values rather than measured CO2 values.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "cg-1.2",
+      "file": "content/cg/ch01.js",
+      "textHash": "6198101d0589666c50184395583e4d4fa465a32a38e199c83cfd8711b0f6b06e",
+      "textReview": "The 2×2 determinant gives signed area and orientation, with cyclic invariance and alternating sign. A directed line requires p≠q; state the degeneracy explicitly instead of discussing a side of an undefined line when p=q.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "dist-4.3",
+      "file": "content/dist/ch04.js",
+      "textHash": "9f1bac2ce07a38f57e352d7875658877b8a65e5378966142abe80e20a47f726d",
+      "textReview": "Single-writer ownership, choosing flags and lexicographic ties are explicit. The explorer's atomic-register and bounded-ticket assumptions are correctly separated from Lamport's stronger algorithmic guarantee; inspect the explorer separately before accepting its traces.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "xtal-1.4",
+      "file": "content/xtal/ch01.js",
+      "textHash": "66a367729f420fa13a58a10c84b12835b7908a54ade4640ee0d79ad0a87f92b9",
+      "textReview": "Needs correction: high-index faces are not impossible, three lattice points must be noncollinear, and an irrational plane can contain a lattice line. Rational staircases need not have uniform terrace widths; finite floating-point approximations cannot certify irrationality. Qualify energy and growth claims.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-9.10",
+      "file": "content/rca/ch09-a2.js",
+      "textHash": "09be5ca99103e6338461b28bcd7e85eac61ab9bead4696b6fa777202aa40067c",
+      "textReview": "The Jensen/Fubini/translation argument proves finite-p convergence. The assertion of failure for every discontinuous representative is false in L∞, where null-set modifications do not matter; use the jump-function counterexample instead.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-11.24",
+      "file": "content/fa/ch11-source.js",
+      "textHash": "a71ba1468a0e65205c1f576652401523dd47601d6844d7e42684e0bad9321aae",
+      "textReview": "The normal-set definition combines pairwise commutation and closure under the involution; it is stronger than each member being normal. This definition has no visualization, so no browser-picture claim is applicable.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "bioinf-3.8",
+      "file": "content/bioinf/ch03-b.js",
+      "textHash": "1ba887e7744ce30fe3bf1a218295d42516d9090f1cbd474c27f7ec8c23cbcd9c",
+      "textReview": "Needs correction: equal weight gives equal per-placement hit probability, but different spans yield different numbers of placements in a fixed-length region. Therefore equal expected total hits is not generally true; separate expectation from reduced overlap correlations.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "vcalc-1.3",
+      "file": "content/vcalc/ch01.js",
+      "textHash": "b3b94f85802ce85fbbb927986f2671e630bfac5fbcaeca9c568e8d99ec70ae9b",
+      "textReview": "Lagrange's identity proves the area and orthogonality claims. Include the zero-vector degeneracy when interpreting the word parallel; the direct component formula remains defined at zero.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "stat-4.4",
+      "file": "content/stat/ch04.js",
+      "textHash": "0372aca490e093d3471f254633e24095d42a53c68ccaf1e821d4fec9286c5fb0",
+      "textReview": "Differentiating the estimator mean gives covariance with the score; Cauchy–Schwarz yields the biased and unbiased bounds. The regularity and finite second-moment assumptions are explicit, and the simulation distinguishes estimator variance from Monte Carlo uncertainty.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pchem-3.12",
+      "file": "content/pchem/ch03-b.js",
+      "textHash": "64b5de48cdbf12ea631f74aa545f93b2311ea56ea3044341a6094ba05a63e03d",
+      "textReview": "The signs in all four Maxwell relations follow from the stated potentials. Add fixed composition and a smooth single-phase equilibrium region to the scope: closed one-component systems can still change species or cross nonsmooth phase boundaries.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "opt-4.3",
+      "file": "content/opt/ch04.js",
+      "textHash": "d444b255bbedc9af1007fa99a599e7b12914a0e01d5c2a43a89ff248fa85a48b",
+      "textReview": "Epigraph equivalence and the slack mapping are correct; nonlinear slack equalities are expressly not a convex standard-form representation. The wording 'two reformulations keep convexity' should be conditional on the affine restriction already stated below.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "toc-4.13",
+      "file": "content/toc/ch04-c.js",
+      "textHash": "5f89023f89558d64ec9159d0af364fea0e810c0639a928de4ee70b1b0bad34a5",
+      "textReview": "The product/accepting-cycle reduction is correct for total finite transition systems, with explicit deadlock-stuttering semantics. Its cycle test is a Büchi adaptation of reachability, not the DFA final-state reachability criterion alone.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "tech-4.4",
+      "file": "content/tech/ch04.js",
+      "textHash": "2042c82b39979cdd2f3e65b59a6b387cda26a6434e7c1cc8d8def7379955d4f3",
+      "textReview": "Needs correction: the flat-float force formula gives a half-power maximum at u=v/2, but the stated exit velocity v−2u would then be zero, contradicting its explanation. The bound is specific to flat-impact floats and is not universal for curved undershot blades. Retain the original-source gap.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-13.32",
+      "file": "content/fa/ch13-a5.js",
+      "textHash": "103b7851204203dc82555e5e02a9dc9b79efed20cc9e2c289a230f5c74c95683",
+      "textReview": "The core approximation is necessary to extend the norm identity beyond D(N*N); closedness supplies the domain conclusion. Adjoint inclusion then rules out a proper normal extension; the diagonal multiplier is a specialization.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-13.7",
+      "file": "content/mech/ch13.js",
+      "textHash": "88fdb03b5d8340c498a718fb7e6e854d22136c5fcdd2a28207dc9891b41448b5",
+      "textReview": "Needs correction: KAM gives persistence for sufficiently nonresonant tori in a regular compact action region, not destruction of every resonant torus or a global phase-space measure theorem. Golden-circle robustness and Greene residues need to be distinguished from KAM's rigorous conclusion.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "psych-4.2",
+      "file": "content/psych/ch04.js",
+      "textHash": "5e021302e51e31011a72876941fe3345751c4cdc63e81cfd5858ad743639c10e",
+      "textReview": "The lower-envelope construction and bleaching dependence are labelled qualitative models. The original experiment is separated from the foveal and rod-only switches rather than being claimed to contain those exact conditions.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "polsci-5.10",
+      "file": "content/polsci/ch05-b.js",
+      "textHash": "933d1b0731a45d51f39189e5185c3f8ef4893f51c142e13bc494e8f6b39dc835",
+      "textReview": "The page distinguishes an equal-competence independent-voter reconstruction from the original text and simulated rankings from historical data. Growth with electorate size should be stated for odd juries, or specify how even ties are handled.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "energy-1.2",
+      "file": "content/energy/ch01.js",
+      "textHash": "6ce06a49fa64513955b61271e5c24932717086b000760bc0121d623b8bc1ed3b",
+      "textReview": "The Sankey conservation and fixed-service efficiency comparison are coherent; accounting conventions for noncombustion primary electricity are explicit. Annual LLNL totals and estimated sector efficiencies require their separately recorded source evidence, not visual acceptance alone.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-16.12",
+      "file": "content/rca/ch16-a2.js",
+      "textHash": "eb143560988081c49cae669f0f1b89e0ecd7e24c4d4abc75d5d9b581f457f57a",
+      "textReview": "The square's collapsed vertical sides impose fixed endpoints. A straight-line family is valid in the punctured plane only when the entire swept image avoids the puncture; the caption expressly demonstrates this failure.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pl-4.8",
+      "file": "content/pl/ch04-b.js",
+      "textHash": "56ae98c3d90d77d33623e816bab76dff1007d93f8c84eb777b86c6da600f9c9d",
+      "textReview": "Uniqueness is correctly restricted to annotated simply typed terms in a fixed context, and structural recursion proves termination. The caption must say at most one candidate type passes, since ill-typed edited terms have none.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-10.21",
+      "file": "content/rca/ch10-a4.js",
+      "textHash": "ee070105d02dd2c3b9669eb5aed809b5e5bddd5c6d53644fa56c59fb68e07bd1",
+      "textReview": "Failure of density supplies a bounded reciprocal; removable extension and its zero order give the removable/pole alternatives. A finite sampled essential image cannot prove density for every target; the caption's readout should remain illustrative.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "toc-3.14",
+      "file": "content/toc/ch03-b.js",
+      "textHash": "d97e912a313f77a0af8b9a72c197404a371e121b4112be72a47f62d52dfb84ee",
+      "textReview": "The last accepting position implements maximal munch, with earlier-rule priority only for equal-length matches. Require token patterns to reject the empty string so every successful scan step advances.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-1.2.1",
+      "file": "content/prob/ch01.js",
+      "textHash": "1dd295dbf3f0037df8f0cc1a908a251c8dd1d51392952589f472fe22326b71e3",
+      "textReview": "Continuity of the probability measure gives right continuity and tail limits. The increasing left events yield P(X<x), correctly distinguishing the jump mass from the value F(x).",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-5.18",
+      "file": "content/qm/ch05-c.js",
+      "textHash": "5a454f357e90e1cd5dadc3390178aeddc09fdb9f857a6390b45bca117d1e5f9c",
+      "textReview": "Needs correction: the finite-dimensional proof and common eigenbasis claim need that scope; unbounded operators require domain and strong-commutation care. Frozen probabilities in one initial state do not imply a zero commutator; the every-state quantifier is essential.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "climate-3.2",
+      "file": "content/climate/ch03.js",
+      "textHash": "8c9db1edf45d381231b7ac4bf73cf4cfada1a1b11408b6c063d97f29da725578",
+      "textReview": "The scope correctly calls independent Gaussian sampling a simplification of AR6. The idea nevertheless states independent error combination as an assessed fact; qualify it as the page model and avoid implying the histogram reproduces AR6's method.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "game-2.9",
+      "file": "content/game/ch02-b.js",
+      "textHash": "f3e4daea820f6695adaa23e7c74bb53aad54bede38e26b9aad0161cc31edde80",
+      "textReview": "The unconditional obedience inequalities correctly avoid dividing by zero-probability recommendations. Nash product measures give nonemptiness and convex mixtures remain feasible by linearity; the higher-payoff claim is existential rather than guaranteed in every game.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "energy-1.7",
+      "file": "content/energy/ch01-b.js",
+      "textHash": "7abc48f54b2520b71409ffbb21b0e9c5a030d89e2d06507f82348aa51b8186b6",
+      "textReview": "The two cumulative-emission lines yield the stated break-even formula under the displayed higher EV production cost. Model boundaries, charging losses and scenario midpoints are explicit; country and generation comparisons must use consistent life-cycle factors.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "imaging-3.12",
+      "file": "content/imaging/ch03-c.js",
+      "textHash": "309055e745de74e886f1e39f6d730b06f6142d791e7c107acbd8e619ebebcbe9",
+      "textReview": "The normalization and 0<λ<2 convergence claim require positive active row/column sums and nonnegative weights, both supplied. The SART panel is explicitly distinguished from the original bilinear and Hamming-weighted method; retain its original-source flag.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-10.12",
+      "file": "content/fa/ch10-a2.js",
+      "textHash": "7a66d9ae2dd8d1fe7078b208b9a723f1d4433e489786cddbba14d9efeb6a0aaa",
+      "textReview": "The local inversion estimate gives continuity on the open invertible group, and inversion being an involution supplies a continuous inverse. The plane-slice picture shares its numerical model with the preceding remainder theorem.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-4.3.2",
+      "file": "content/prob/ch04-m1.js",
+      "textHash": "4c9f319b0594f29f37a15da5dee1793a4e66742bdd15b85270d29b6e9ed20452",
+      "textReview": "Conditional drift gives the predictable compensator, and the difference of two decompositions is a predictable martingale fixed by A0=0. The caption's absolute-value compensator is a zero-visit count only at p=1/2, so that qualification must cover both examples.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "dist-1.4",
+      "file": "content/dist/ch01.js",
+      "textHash": "d07a6d054b9fc65edd6c7f4232a54a20dfacfcd2c5892720f6bc63cf738e1111",
+      "textReview": "One-register read/write steps are correctly distinguished from atomic read-modify-write. The dynamic-programming histogram claims exact interleaving counts, so its enumerator needs separate numerical comparison before accepting it as evidence.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-3.3",
+      "file": "content/algo/ch03.js",
+      "textHash": "9970713c92a8ead61c2b3e5222a875b376dbc5626b874c93b5209aee3b599052",
+      "textReview": "The indicator expectation and linearity claim are correct without independence, but the hiring example is wrong: record indicators in a uniform random permutation are mutually independent. A hire at position 2 does not make a hire at 3 less likely; replace the purported dependence example.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mfd-1.11",
+      "file": "content/mfd/ch01-b.js",
+      "textHash": "77f90c0d497881c228b0870043b868923fec334419fb72b7fe7c0ac147df6429",
+      "textReview": "The decaying bump construction can realize any closed zero set on a standard second-countable smooth manifold. Uniform derivative convergence is the essential extra step at accumulation points; finite-resolution pictures cannot verify positivity at every off-set point. Qualify the blanket claim about analytic zero sets.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "logic-1.11",
+      "file": "content/logic/ch01-b.js",
+      "textHash": "874de2f25cb4f8ced20be13491d489dad24d5edc4033f326e18b8e696b8c62d6",
+      "textReview": "The height enumeration and nested-interval argument are distinguished from the later diagonal proof. A finite list certifies only a finite prefix of the limiting construction, not that a displayed finite approximation is transcendental; remove the unsupported anecdote about the deliberately bland title or source it.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mfd-3.8",
+      "file": "content/mfd/ch03-b.js",
+      "textHash": "a538d9d9627776b29627c126e3655b27b40822a3230440a486758e1a67635a02",
+      "textReview": "The Sard statement has the correct Ck threshold and chart-wise null conclusion. Its proof incorrectly says arbitrary smooth maps preserve null sets; only the same-dimensional coordinate changes needed for localization have that property. For example a null line segment in R2 can project onto a positive-length interval.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "micro-10.19",
+      "file": "content/micro/ch10-d.js",
+      "textHash": "e4f464d2d0cf431393a192c631594d661670c58da57fd7f2f8de9f87d5edf1c4",
+      "textReview": "The revenue conclusion is too broad: correlation alone does not decide bundling's benefit, and negative covariance does not necessarily make the sum less dispersed than either marginal. Perfectly coincident valuations give equivalence, but strongly positively correlated values can still favor a bundle. Separate the chosen sample distribution from a general theorem.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ode-1.1",
+      "file": "content/ode/ch01.js",
+      "textHash": "ca156abbe62bf93976f4480f190af48c60e56c9d98ca417bcc36a69478345fd5",
+      "textReview": "The IVP, state-space domain and first-order reduction are sound for equations explicitly solved for the highest derivative. The x² example blows up at a finite endpoint but its maximal interval is not bounded on both ends; correct that wording and qualify x0≠0.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qchem-4.3",
+      "file": "content/qchem/ch04.js",
+      "textHash": "10c05c08f62e8b9231b62255d31444a3f9b343ed334536f02f0ff1ae066f6927",
+      "textReview": "Differentiating the quadratic energy gives ζ=Z−5/16, and normalization of the 1s product is consistent with atomic units. The infinite-mass reference convention and failure to bind H− are explicit; the variational upper bound is not mistaken for proof of nonbinding.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "algo-3.7",
+      "file": "content/algo/ch03.js",
+      "textHash": "8c659825a4b5af2fe124cc386df2014bab78ea967d2d83948125fc94f8a0e1af",
+      "textReview": "The sorted-suffix/max-heap invariant and linear heap build give O(n log n). O(1) auxiliary space needs an iterative sift-down; a recursive implementation uses logarithmic stack space. Inspect the actual implementation before treating its memory claim as demonstrated.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-2.15",
+      "file": "content/qm/ch02-b.js",
+      "textHash": "e351c2e997caeb69904cec98b2bd3d45ae841f2aa3c9fd254048f6e2759c65a7",
+      "textReview": "The preliminary note's proof correction to squared amplitude is clearly separated from the page-made scattering reconstruction. The displayed elastic amplitude and outgoing flux motivate |f|²; the explanation should explicitly normalize by incident flux when naming the differential cross-section.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qchem-1.12",
+      "file": "content/qchem/ch01-b.js",
+      "textHash": "47a331e692af8dba22256438b1cb581313d729ce3a450175f27ac0d9e62958a5",
+      "textReview": "Needs correction: measurement outcomes need not be eigenvalues for continuous spectra, and a degenerate discrete outcome projects onto its whole eigenspace rather than an arbitrary single eigenfunction. Scope the nondegenerate sum and state the projector rule. A running sample mean is not guaranteed to stay inside one standard-error band.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "aero-4.4",
+      "file": "content/aero/ch04.js",
+      "textHash": "7ecbe022f92c1b42a450a5ed6d8fd6fa747fd45280d4823e30fef3c2108f8c96",
+      "textReview": "The schematic is zero-lift slender-body wave drag, not total aircraft drag. Current-volume normalization, nonnegative fuselage area and the missing supersonic oblique cuts are explicit, preventing a false fixed-volume or finite-Mach extrapolation.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "neuro-2.2",
+      "file": "content/neuro/ch02.js",
+      "textHash": "bb76e5fcc483ea90f03c8dcbb9377f58b04d2fa8456e3c387f3b1ff78305c4c0",
+      "textReview": "The empirical m³h kinetics and slower inactivation correctly explain the transient under clamp. The modern claim of exactly three physical voltage sensors is not justified by a phenomenological exponent and needs correction; independence is already identified as a model limitation.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "geol-3.12",
+      "file": "content/geol/ch03-c.js",
+      "textHash": "b73045c4863192cb0b720e7c55d93e5c6dca5690b763c13dedc2f78b97964923",
+      "textReview": "A one-trench constant-rate cartoon is labelled rather than presented as a universal timescale or inevitable basin history. Growth depends on spreading minus consumption, not spreading alone. Keep the original Wilson evidence flag open.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "graph-4.2.10",
+      "file": "content/graph/ch04-a2.js",
+      "textHash": "7f5df43712335d063377ed83f98a2226dcd0949b4ccff39e9eab588fdf41d576",
+      "textReview": "Face incidence plus Euler gives the 3n−6 bound for a simple plane graph with n≥3. The collection's simple-graph convention matters: loops or unrestricted parallel edges would invalidate this statement; make the simplicity assumption explicit for clarity.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-0.7",
+      "file": "content/rca/ch00.js",
+      "textHash": "9f982e95b5b03cc5b67ddf31f6c65e342a2fa4a30fa0655ef0604b38c09db627",
+      "textReview": "The quadrant-by-quadrant intermediate-value argument proves surjectivity, and the exponential derivative gives unit-speed winding. Periodicity accounts for the displayed infinitely many preimages.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-4.30",
+      "file": "content/pma/ch04-a4.js",
+      "textHash": "1979d107d26063a5eaa606f6a7fbc7a8465858166d3e52cef8efe23c61412f8e",
+      "textReview": "Disjoint nonempty jump intervals inject into Q, proving countability. The construction has finitely many visible jumps at each N; density is an infinite-limit property, not something the finite image establishes.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fa-10.11",
+      "file": "content/fa/ch10-a2.js",
+      "textHash": "cff7228a21b3baf61bd840cb8d2effdbf4b7118dbbc6eb29a37dbe573533c4e7",
+      "textReview": "The noncommutative order in the Neumann-series expansion is correct: the inverse factor is on the right. The geometric tail gives the factor-two quadratic remainder, and the slice uses an operator norm compatible with its perturbation radius.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mech-4.3",
+      "file": "content/mech/ch04.js",
+      "textHash": "a44bd4fe13f42008933f2be25f5243628def988056e9c551d42337366818d82b",
+      "textReview": "Needs correction: C3 regularity gives the harmonic limit but does not justify the stated universal O(a²) period shift. A potential x²/2+|x|^(7/2) is C3 and gives an a^(3/2) shift. Require C4 for the stronger estimate and correct the parity explanation for the force versus potential terms.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "mfd-3.2",
+      "file": "content/mfd/ch03.js",
+      "textHash": "23377511c202332615f8194964cc48564170cf4f6012b4d3c1805902c7b3e82b",
+      "textReview": "The local rank condition is correctly separated from global injectivity and subspace topology. Compactness plus Hausdorffness makes an injective immersion an embedding; the accumulating open-end example targets the missing global condition.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "toc-1.1",
+      "file": "content/toc/ch01.js",
+      "textHash": "011275017896af13e4d92494323cfe7f7b97d8753a58db5b9c65ed8088f1fddd",
+      "textReview": "The empty word, empty language and singleton empty-word language are correctly distinguished. Product counting, n+1 prefix boundaries and concatenation identity are consistent with finite alphabets.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pchem-4.6",
+      "file": "content/pchem/ch04.js",
+      "textHash": "5bbe8f14c244f0f00bf4486cd572c42ce6279b82975a64c3f123d2924ccca529",
+      "textReview": "The pressure depression and sign follow the local Clapeyron slope, and the assumed blade area is explicit. The scope correctly declines a large-pressure accuracy claim and separates friction's upper-bound energy budget from actual heat transfer.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    }
+  ]
+}
