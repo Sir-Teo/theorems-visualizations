@@ -342,25 +342,24 @@ export default {
       num: '3.13',
       kind: 'Paper',
       name: 'A Description of Helioscopes, and Some Other Instruments',
-      paper: { authors: 'Robert Hooke', year: 1676, title: 'A Description of Helioscopes, and Some Other Instruments', venue: 'London, 1676; the arch is announced as an anagram, deciphered after his death (published 1705): “Ut pendet continuum flexile, sic stabit contiguum rigidum inversum”', url: 'https://archive.org/details/bim_early-english-books-1641-1700_a-description-of-heliosc_hooke-robert_1676' },
+      paper: { authors: 'Robert Hooke', year: 1676, title: 'A Description of Helioscopes, and Some Other Instruments', venue: 'London, p. 31, invention 2; decipherment published by Richard Waller (1705), The Life of Dr. Robert Hooke, pp. xx–xxi', url: 'https://doi.org/10.3931/e-rara-2171' },
       introduces: ['arch-3.1'],
-      statement: String.raw`In a list of inventions that he intended to publish, appended to this small book of instruments, Hooke named as the second "the true mathematical and mechanical form of all manner of arches for building, with the true butment necessary to each of them", a problem, he wrote, that no architectural writer had attempted, still less solved. He gave the answer only as an anagram, the letters of a Latin sentence set in alphabetical order. The sentence, deciphered after his death, is *ut pendet continuum flexile, sic stabit contiguum rigidum inversum*: as the flexible line hangs, so, inverted, the rigid arch will stand. In modern terms: the shape of a hanging chain turned upside down is the line of thrust of an arch carrying the same weights, so the arch, built along it, is in pure compression.`,
-      idea: String.raw`Before Hooke the arch was designed by rules of proportion (arch-3.12) and by the geometry of the circle or the pointed arch; Galileo had compared the hanging chain with a parabola, and the equation of the chain (the catenary) was found only in 1691, by Leibniz, Huygens and Johann Bernoulli. Hooke's idea is not an equation but a principle: tension and compression are the same equilibrium with opposite sign (arch-1.4, arch-1.5), so any arch with any weights has a hanging chain that is its mirror image, and the mason can draw it with a string. He introduced what arch-3.1 calls Hooke's inversion; it passed to Poleni's analysis of St Peter's dome (1748, arch-4.6), to the funicular models of Gaudí, and to the safe theorem (arch-3.5). With equal links the chain is the catenary, and a ring of constant thickness laid along it carries its own weight with essentially no thickness at all (the picture computes this; the semicircle, by contrast, needs $t/R \ge 0.1075$, arch-3.7).`,
-      caption: String.raw`The paper contains no figure or data for this: what is recreated is the experiment its anagram describes. Left, a chain of 24 equal links hangs from two pins; right, the same curve inverted with 24 voussoirs of constant thickness laid along it. Choose the rise and the thickness, then push part of the arch off the inverted chain with **bump**: the line of thrust can no longer follow the curve, and the thickness the ring then needs rises. Press **decipher** to turn the alphabetised letters of the solution back into Hooke's sentence.`,
+      statement: String.raw`In the list of inventions at the end of this book, Hooke announced a method for finding the form and abutments of building arches (p. 31, invention 2). He asserted that architectural writers had not solved the problem, but gave his answer only as an alphabetised anagram. Richard Waller published its decipherment in 1705: *ut pendet continuum flexile, sic stabit contiguum rigidum inversum*: as the flexible line hangs, so, inverted, the rigid arch will stand. In the ideal planar equilibrium interpretation, reflecting a hanging cable and reversing its tensile forces produces compressive equilibrium under the corresponding downward loads. An arch containing that thrust line satisfies the no-tension equilibrium condition, subject to adequate supports, compressive strength and resistance to sliding.`,
+      idea: String.raw`The principle follows by reflecting the vertical coordinate and reversing the internal forces: horizontal equilibrium is preserved, while the loads are again downward (arch-1.4, arch-1.5). It constructs a funicular arch for a specified cable and load distribution; it does not say every prescribed arch shape is funicular for arbitrary weights. A uniform flexible cable under its own weight has a catenary shape (arch-2.1). In the thin continuous idealization, its inversion can carry the corresponding weight through its centreline. The picture instead samples a smooth catenary at 25 equal-arc-length positions and constructs 24 finite polygonal voussoirs with their own centroidal weights. Their computed minimum thickness is a result of that discretized model and the numerical tolerances, not a proof that every positive thickness works.`,
+      caption: String.raw`A modern illustration of the inversion principle, rather than a figure from the announcement. Left, a smooth uniform cable with 25 markers at equal arc-length intervals; right, 24 constant-thickness polygonal voussoirs arranged along its inversion. Choose the rise and thickness, then deform the ring with **bump** while the reference cable stays fixed. The solver searches for a thrust line within all joints; its thickness estimate uses a lower search bound of 0.0001 half-span. Press **decipher** to reveal the Latin sentence published by Waller.`,
       deps: ['arch-2.1'],
-      refs: [],
+      refs: ['Hooke (1676), p. 31, invention 2, ETH e-rara 2171', 'Waller (1705), The Life of Dr. Robert Hooke, pp. xx–xxi, in The Posthumous Works of Robert Hooke; Wellcome b30454621_0001, scans 32–33'],
       credit: 'R. Hooke, 1676',
-      scope: String.raw`Modern reconstruction. The letters shown are the alphabetised letters of the deciphered sentence (with u for v, as in 17th-century type); the printed 1676 string is not reproduced because the scan I could read is too corrupt and transcriptions differ in a few letters. The deciphering is reported (secondary sources) as published in 1705 after Hooke's death, which I have not seen.`,
-      verify: true,
+      scope: String.raw`Ideal planar, vertical-load inversion and a modern finite-block reconstruction. The no-tension solver assumes rigid blocks, sufficient compression capacity and no sliding; it does not assess an actual building. The displayed letters are recomputed from Waller's Latin sentence with v normalized to u, not a diplomatic transcription of the 1676 typesetting. The original announcement and Waller's decipherment have been checked in digitized scans; Waller says he found the decipherment, but does not date when he did so.`,
       tags: ['hooke', 'history', 'catenary'],
-      links: { archive: 'https://archive.org/details/bim_early-english-books-1641-1700_a-description-of-heliosc_hooke-robert_1676', wikipedia: 'https://en.wikipedia.org/wiki/Catenary' },
+      links: { original: 'https://doi.org/10.3931/e-rara-2171', decipherment: 'https://wellcomecollection.org/works/xxggvyj3/items?canvas=33', wikipedia: 'https://en.wikipedia.org/wiki/Catenary' },
       viz(v) {
         const M_ = 24, phrase = 'ut pendet continuum flexile sic stabit contiguum rigidum inversum', letters = phrase.replace(/[^a-z]/g, '').replace(/v/g, 'u').split('').sort().join('');
         let shown = false;
         const hS = v.slider('rise of the chain / half-span', 0.2, 1.3, 0.7, { step: 0.01 }), tS = v.slider('thickness of the ring', 0.005, 0.12, 0.05, { step: 0.0025 });
         const bS = v.slider('bump: push the arch off the chain', -0.2, 0.2, 0, { step: 0.005 }), xS = v.slider('bump position', -0.85, 0.85, -0.4, { step: 0.01 });
         v.button('decipher the anagram', () => { shown = !shown; });
-        const S = v.stage({ x: [-1.4, 1.4], y: [-1.5, 0.25], equal: true, axes: false, height: 280, title: 'a chain of equal links hangs' });
+        const S = v.stage({ x: [-1.4, 1.4], y: [-1.75, 0.25], equal: true, axes: false, height: 280, title: 'a uniform cable hangs' });
         const A = v.stage({ x: [-1.4, 1.4], y: [-0.25, 1.5], equal: true, axes: false, height: 280, title: 'turned over: the arch' });
         const catA = (h) => { let lo = 0.02, hi = 200; for (let i = 0; i < 80; i++) { const a = Math.sqrt(lo * hi); if (a * (Math.cosh(1 / a) - 1) > h) lo = a; else hi = a; } return Math.sqrt(lo * hi); };
         let Mo = null;
@@ -372,20 +371,21 @@ export default {
           const u = c ? c.u : fit ? fit.u : rg ? rg.min : null, tl = u ? thrustLine(g, [], u) : null;
           const curve = Array.from({ length: 81 }, (_, i) => { const x = -1 + (2 * i) / 80; return [x, a * (Math.cosh(1 / a) - Math.cosh(x / a))]; });
           S.path(curve.map(([x, y]) => [x, -y]), { color: 'red', width: 2.4 }); base.forEach(([x, y]) => S.dot(x, -y, { r: 3.2, color: 'accent' })); for (const x of [-1, 1]) S.dot(x, 0, { r: 5.5, color: 'ink' });
-          S.text(`catenary: equal links, $y = a\\cosh(x/a)$ with $a = ${f2(a, 3)}$`, 0, -h - 0.25, { size: 12, color: 'muted', align: 'center' });
+          S.text(`uniform cable: catenary parameter $a = ${f2(a, 3)}$`, 0, -h - 0.25, { size: 12, color: 'muted', align: 'center' });
           drawArch(v, A, g, { fillAlpha: 0.14 });
           A.path(curve, { color: 'muted', width: 1.4, dash: [5, 4] });
           if (tl) drawThrust(v, A, tl, { color: c ? 'red' : 'orange', width: 2.6 });
-          A.corner(c ? 'a line of thrust fits: the arch stands' : 'no line fits: the arch falls', 'tl', { color: c ? 'muted' : 'red' });
+          A.corner(c ? 'a thrust line fits in this model' : 'no admissible thrust line found', 'tl', { color: c ? 'muted' : 'red' });
           for (const x of [-1, 1]) A.dot(x, 0, { r: 5.5, color: 'ink' });
-          v.legend([['red', 'chain / line of thrust'], ['muted', 'inverted catenary', { dash: true }], ['accent', 'links']]);
+          v.legend([['red', 'chain / line of thrust'], ['muted', 'inverted catenary', { dash: true }], ['accent', 'equal-arc markers']]);
           Mo = { a, g, rg, c, fit, h };
         });
         v.readout(() => {
           if (!Mo) return '';
           const { fit, rg, c, g } = Mo;
           const txt = shown ? `**Ut pendet continuum flexile, sic stabit contiguum rigidum inversum**: “as hangs the flexible line, so, inverted, will the rigid arch stand”.` : `Alphabetised letters of the solution (${letters.length}): ${letters}`;
-          return `${txt}\nWith the ring ${tS.value.toFixed(3)} thick (half-span 1) and the bump ${bS.value.toFixed(3)}: the smallest ring that fits a thrust line is $t_{\\min} ${fit && fit.t < 5e-4 ? '< 0.0005' : '= ' + f2(fit ? fit.t : NaN, 4)}$; ${c ? `the line is ${f2(c.eps, 3)} from the nearest edge at its best.` : 'the ring is too thin: the line leaves the stone.'}${bS.value === 0 ? ' (With no bump the ring follows the chain, and any thickness will do.)' : ''}`;
+          const minimum = fit ? `$t_{\\min} ${fit.t < 5e-4 ? '< 0.0005' : '\\approx ' + f2(fit.t, 4)}$` : 'no feasible thickness found up to 1';
+          return `${txt}\nWith the ring ${tS.value.toFixed(3)} thick (half-span 1) and the bump ${bS.value.toFixed(3)}: finite-block thickness search: ${minimum}; ${c ? `an admissible line has minimum joint clearance ${f2(c.eps, 3)}.` : 'no admissible line was found for the current thickness.'}${bS.value === 0 ? ' The undeformed ring approximates the inverted continuous cable; small thickness estimates are limited by discretization and solver tolerance.' : ''}`;
         });
       },
     },

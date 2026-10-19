@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 234,
-    "reviewedBlocked": 234,
+    "open": 233,
+    "reviewedBlocked": 233,
     "unreviewed": 0,
     "ledgerRecords": 664,
-    "recordedClosed": 400,
+    "recordedClosed": 401,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 234,
-    "liveRemaining": 234,
+    "recordedRemaining": 233,
+    "liveRemaining": 233,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -31,8 +31,8 @@
       "unreviewed": 0
     },
     "arch": {
-      "open": 10,
-      "reviewedBlocked": 10,
+      "open": 9,
+      "reviewedBlocked": 9,
       "unreviewed": 0
     },
     "art": {
@@ -326,7 +326,7 @@
     {
       "path": "docs/verification/geology-owned-source-ledger.json",
       "exists": true,
-      "sha256": "be0bc90331308b717a635e38e49f8271825ac644c9ad5d3c32ff91da4e98f3c8",
+      "sha256": "8e017f6deea6768e5d37ddd83495da72fa68b71cf19e99e1dd7ff8210b82cc42",
       "records": 143
     },
     {
@@ -395,22 +395,6 @@
       ],
       "missingEvidence": [
         "Complete Derand (1643) original, the stated proportional intervals, and Huerta's survey interpretation; the illustrative third-point construction is not independently certified as the historical rule."
-      ]
-    },
-    {
-      "id": "arch-3.13",
-      "file": "content/arch/ch03-b.js",
-      "name": "A Description of Helioscopes, and Some Other Instruments",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/geology-owned-source-ledger.json#/entries/3"
-      ],
-      "reports": [
-        "docs/verification/arch-source-review.md"
-      ],
-      "missingEvidence": [
-        "Hooke's original 1676 publication and the 1705 deciphering account; primary evidence for the retained Galileo/1691/Gaudí history."
       ]
     },
     {
@@ -4275,17 +4259,15 @@
       "ledger": "docs/verification/geology-owned-source-ledger.json",
       "pointer": "#/entries/3",
       "id": "arch-3.13",
-      "rawStatus": "retained",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/arch-source-review.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/hooke-original-source-review.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Hooke's original 1676 publication and the 1705 deciphering account; primary evidence for the retained Galileo/1691/Gaudí history."
-      ],
+      "missingEvidence": [],
       "owner": "review_geology",
       "ref": "docs/verification/geology-owned-source-ledger.json#/entries/3",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/geology-owned-source-ledger.json",

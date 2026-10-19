@@ -53,3 +53,10 @@ Browser evidence is written to `/tmp/arch-source-verification-browser.json`; scr
 ## Bounded final acquisition
 
 A new public-source pass on arch-3.14 did not yield its full original. Its source flag and precise missing-evidence record remain. New routes and their limits are recorded in [geology-bounded-source-followup.md](geology-bounded-source-followup.md).
+
+## Subsequent original-source closure
+
+The [Hooke follow-up](hooke-original-source-review.md) closes arch-3.13 after
+checking the 1676 announcement and Waller’s 1705 decipherment in primary
+scans, removing unsupported asides and qualifying the finite-block model.
+The retained row above records the earlier acquisition state.

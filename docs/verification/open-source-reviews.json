@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 234,
+  "remaining": 233,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
-    "arch": 10,
+    "arch": 9,
     "art": 1,
     "bighist": 7,
     "cg": 2,
@@ -78,12 +78,6 @@
       "refs": [
         "Heyman"
       ]
-    },
-    {
-      "id": "arch-3.13",
-      "file": "content/arch/ch03-b.js",
-      "name": "A Description of Helioscopes, and Some Other Instruments",
-      "refs": []
     },
     {
       "id": "arch-3.14",

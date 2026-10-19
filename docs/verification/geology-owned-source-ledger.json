@@ -4,8 +4,8 @@
   "counts": {
     "initial": 143,
     "reviewed": 116,
-    "closed": 37,
-    "retained": 79,
+    "closed": 38,
+    "retained": 78,
     "genuinelyUnreviewed": 0,
     "transferred": 27
   },
@@ -36,10 +36,10 @@
     },
     {
       "id": "arch-3.13",
-      "disposition": "retained",
+      "disposition": "closed",
       "reviewState": "reviewed",
-      "missingEvidence": "Hooke's original 1676 publication and the 1705 deciphering account; primary evidence for the retained Galileo/1691/Gaudí history.",
-      "report": "docs/verification/arch-source-review.md",
+      "missingEvidence": null,
+      "report": "docs/verification/hooke-original-source-review.md",
       "owner": "review_geology"
     },
     {

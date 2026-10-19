@@ -15,6 +15,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 - **Kinds.** Use the most honest kind (see docs/syllabus.md). The statement of a `Law`, `Model`
   or `Principle` should include the regime where it holds, either in the statement or in the
   optional `scope` field (rendered as "Holds when …").
+- **Historical reconstructions.** Cite the original passage and the later decipherment
+  or interpretation separately. Publication dates need not date the underlying discovery.
+  Distinguish a recomputed anagram from a transcription, a sampled continuous curve
+  from an equilibrated finite-link chain, and numerical feasibility from a real
+  structure's safety.
 - **Optional fields** shown on the page: `refs` (where to read more, e.g. `['Taylor §7.3']`),
   `credit` (who and when, e.g. `'Noether, 1918'`), `links` (`{ wikipedia: 'https://…' }`),
   `scope` (see above).
