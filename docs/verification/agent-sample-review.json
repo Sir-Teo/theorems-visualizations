@@ -3000,11 +3000,15 @@
     {
       "id": "ml-2.1b",
       "file": "content/ml/ch02.js",
-      "textHash": "9ca64a5cb00f8de141ab947d0240b0cb4b3fedbfe446a46dce0d9acb108e08f3",
-      "textReview": "For m>0 and a nonempty class, empirical0-1 risk takes finitely many values, so a minimizer exists even for an infinite hypothesis class; tie handling is explicit. Added label noise does not guarantee no perfect rectangle on every finite draw, contrary to the categorical caption. Exact rectangle search and candidate-histogram scope remain native follow-ups.",
-      "visualReview": "Inspected both themes: user rectangle7/30 mistakes versus ERM0/30, true errors .167/.061 illustrate empirical-versus-true risk. Histogram is distinct. Random label noise does not guarantee finite-sample nonseparability; qualification pending.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "01378b7d02dc58fe7d8137e9878aed19579e2090fae0975826f56000c07c3683",
+      "textReview": "Corrected the claim that every noisy finite sample forces training mistakes. Clean-rule error and fresh noisy-label risk are distinct; the readout uses eta+(1-2eta) times clean error for the latter. The ERM button now handles NONE by a zero-mass corner rectangle, rather than leaving a nonoptimal candidate unchanged.",
+      "visualReview": "Inspected all 16 native light/dark captures: default/noisy/noisy-ERM/small-noisy/perfect-noisy-fit/empty-optimum/drag-from-empty/restore-empty. At noise .3 the six-point ERM fit has zero training errors but noisy-label risk .411 and clean-rule error .278. The all-negative sample displays the corner optimum and zero training errors.",
+      "interactionReview": "Both sliders, new-sample and ERM buttons, and native corner dragging pass in both themes. Two actual-widget regressions verify noisy-label risk and the empty optimum; three existing ML math groups verify rectangle/disc minimization and quantization. No runtime/TeX failures.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "For m>0 and a nonempty class, empirical0-1 risk takes finitely many values, so a minimizer exists even for an infinite hypothesis class; tie handling is explicit. Added label noise does not guarantee no perfect rectangle on every finite draw, contrary to the categorical caption. Exact rectangle search and candidate-histogram scope remain native follow-ups.",
+      "initialTextHash": "9ca64a5cb00f8de141ab947d0240b0cb4b3fedbfe446a46dce0d9acb108e08f3",
+      "initialVisualFinding": "Inspected both themes: user rectangle7/30 mistakes versus ERM0/30, true errors .167/.061 illustrate empirical-versus-true risk. Histogram is distinct. Random label noise does not guarantee finite-sample nonseparability; qualification pending.",
+      "correctionReport": "docs/verification/agent-erm-risk-review.md"
     },
     {
       "id": "prob-2.6.4a",

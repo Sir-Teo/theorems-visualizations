@@ -83,12 +83,13 @@ The learner can see only the sample, never $L_{\mathcal D,f}$.`,
       statement: String.raw`The **empirical risk** (training error) of a predictor $h$ on a sample $S=((x_1,y_1),\dots,(x_m,y_m))$ is the fraction of the sample it gets wrong,
 $$L_S(h)=\frac{|\{i\in[m]:h(x_i)\neq y_i\}|}{m}.$$
 The **ERM** learning paradigm outputs a predictor with the smallest empirical risk. Given a class $\mathcal H$ of candidate predictors, $\mathrm{ERM}_{\mathcal H}(S)\in\operatorname*{argmin}_{h\in\mathcal H}L_S(h)$; a minimizer need not be unique, and any one of them may be returned.`,
-      idea: String.raw`ERM replaces the unreachable true error $L_{\mathcal D,f}$ (ml-2.1a) by the quantity the learner can compute, the average over the sample, and hopes that a rule that fits the sample fits the world. Whether that hope is justified depends entirely on which predictors the minimization ranges over (ml-2.1c, ml-2.1d). Computationally ERM is a search problem: for axis-aligned rectangles it can be solved exactly by trying every pair of vertical sides and sweeping a maximum-gain interval along the other axis, which is what the button below runs.`,
-      caption: String.raw`Drag the blue corners to sketch a rectangle: the ringed points are its mistakes and the counter shows the training error live. Press **ERM** and the rectangle snaps to one with the fewest mistakes (found exactly, over all rectangles). Add label noise and no rectangle is perfect. On the right, 1500 random rectangles are scored on the same sample: ERM sits at the far left tail of the histogram.`,
+      idea: String.raw`ERM minimizes the average loss over the sample, the quantity the learner can compute, and hopes that a rule that fits the sample fits the world. With clean labels this estimates $L_{\mathcal D,f}$ (ml-2.1a); with label noise it estimates risk against fresh noisy labels instead. Whether that hope is justified depends entirely on which predictors the minimization ranges over (ml-2.1c, ml-2.1d). Computationally ERM is a search problem: for axis-aligned rectangles it can be solved exactly by trying every pair of vertical sides and sweeping a maximum-gain interval along the other axis, which is what the button below runs.`,
+      caption: String.raw`Drag the blue corners to sketch a rectangle: the ringed points are its mistakes and the counter shows the training error live. Press **ERM** and the rectangle snaps to one with the fewest mistakes (found exactly, over all rectangles). Label noise can force training mistakes, but a finite noisy sample may still admit a perfect fit. On the right, 1500 random rectangles are scored on the same sample: ERM sits at the far left tail of the histogram.`,
       deps: ["ml-2.1a","opt-1.1"],
       see: ['deep-1.7'],
       refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.2, p.35"],
       tags: ['empirical risk', 'ERM'],
+      scope: String.raw`The noise control flips each label independently with probability $\eta$, in training and in the fresh-label risk $L_{\rm noisy}(h)=\eta+(1-2\eta)L_{\mathcal D,f}(h)$. Error against the clean hidden rule is reported separately. A zero-area rectangle at the origin represents an empty ERM choice: the continuous sampler places no points at that corner, and its population mass is zero.`,
       viz(v) {
         const s = square(v, { height: 380, title: 'sketch a rectangle' });
         const sH = v.stage({ x: [0, 30], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'training mistakes of a rectangle', ylabel: 'rectangles', yticks: [], title: '1500 random rectangles on this sample' });
@@ -97,7 +98,9 @@ The **ERM** learning paradigm outputs a predictor with the smallest empirical ri
         let seed = 1; v.button('New sample', () => { seed++; });
         const hA = s.handle(0.25, 0.4, { color: 'accent', label: '$h$', labelPos: 'sw' }), hB = s.handle(0.7, 0.7, { color: 'accent' });
         const d = makeDens(0.5, 0.5, 0.45), samp = memo(), rnd = memo();
-        v.button('ERM: snap to the best rectangle', () => { const S = samp([seed, mS.value, nS.value].join(), () => drawSample(d, rand(hashStr('b' + seed)), mS.value, HID, nS.value)); const R = ermRect(S); if (R.t === 'rect') { hA.set(R.x0, R.y0); hB.set(R.x1, R.y1); } });
+        // NONE is also a valid optimum; display it as a zero-mass corner rectangle.
+        const displayRect = (R) => R.t === 'rect' ? R : RECT(0, 0, 0, 0);
+        v.button('ERM: snap to the best rectangle', () => { const S = samp([seed, mS.value, nS.value].join(), () => drawSample(d, rand(hashStr('b' + seed)), mS.value, HID, nS.value)); const R = displayRect(ermRect(S)); hA.set(R.x0, R.y0); hB.set(R.x1, R.y1); });
         let info = null;
         v.render(() => {
           const m = mS.value, S = samp([seed, m, nS.value].join(), () => drawSample(d, rand(hashStr('b' + seed)), m, HID, nS.value));
@@ -115,10 +118,11 @@ The **ERM** learning paradigm outputs a predictor with the smallest empirical ri
           sH.vline(E.mist + 0.5, { color: 'green', width: 3 }); sH.vline(mine + 0.5, { color: 'accent', width: 2.4, dash: true });
           sH.text('ERM', E.mist + 0.5, top, { color: 'green', dx: 6, dy: 14, size: 12, weight: 700 });
           if (mine !== E.mist) sH.text('yours', mine + 0.5, top * 0.86, { color: 'accent', dx: 6, size: 12, weight: 700 });
-          info = { m, mine, best: E.mist, LD: disagree(h, HID, d), LDe: disagree(E.R, HID, d) };
+          const clean = disagree(h, HID, d), cleanERM = disagree(displayRect(E.R), HID, d), eta = nS.value;
+          info = { m, mine, best: E.mist, clean, cleanERM, eta, noisy: eta + (1 - 2 * eta) * clean, noisyERM: eta + (1 - 2 * eta) * cleanERM };
         });
         v.legend([['green', 'tasty', { dot: true }], ['pink', 'not tasty', { dot: true }], ['red', 'mistake of your rectangle', { dot: true }], ['purple', 'hidden rule', { dash: true }]]);
-        v.readout(() => info && String.raw`Your rectangle: $L_S(h)=${info.mine}/${info.m}=${pr(info.mine / info.m)}$ ${info.mine === info.best ? '— **it is an ERM output**' : String.raw`(an ERM output has only $${info.best}/${info.m}$ mistakes: no rectangle does better)`}. Its true error is $${pr(info.LD)}$, the ERM rectangle shown by the button has true error $${pr(info.LDe)}$ — ERM minimizes the empirical risk, which only estimates the true error.`);
+        v.readout(() => info && String.raw`Your rectangle: $L_S(h)=${info.mine}/${info.m}=${pr(info.mine / info.m)}$ ${info.mine === info.best ? '— **it is an ERM output**' : String.raw`(an ERM output has only $${info.best}/${info.m}$ mistakes: no rectangle does better)`}. With fresh labels flipped at $\eta=${pr(info.eta)}$, noisy-label risk is $L_{\rm noisy}(h)=${pr(info.noisy)}$ (button's ERM: $${pr(info.noisyERM)}$). Error against the clean hidden rule is $L_{\mathcal D,f}(h)=${pr(info.clean)}$ (button's ERM: $${pr(info.cleanERM)}$). ERM minimizes training error; a perfect training fit need not have zero population risk.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 2.1c

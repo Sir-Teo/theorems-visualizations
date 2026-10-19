@@ -6,6 +6,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Everywhere
 
+When labels are noisy, distinguish population loss against fresh noisy labels
+from disagreement with a clean latent rule. A noisy finite sample can still
+have zero training loss. Optimization controls must handle empty optima as
+well as nonempty solutions.
+
 A model-specific contribution is not a universal historical explanation.
 Check comparative claims against every available population and endpoint.
 Distinguish age-schedule replacement from causal intervention, and disclose
