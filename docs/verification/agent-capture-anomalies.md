@@ -55,3 +55,11 @@ The next dark batch duplicated content in `causal-3.10.dark.png` and
 `-duplicated` in their names. Fresh isolated native captures passed and
 were inspected: admissions scatter/contingency table and box-eigenfunction/
 log-energy panels are distinct. The cause remains unresolved.
+
+The following batch duplicated `nla-3.9.png`, `mech-13.14.png` and
+`qm-4.7.dark.png`. Originals were preserved under `/tmp/agent-review/`
+with `-duplicated` filenames. The first mechanics image also showed
+unfinished threshold work. Fresh isolated native captures passed and
+were inspected: error curves, settled bifurcation/ratio panels, and
+packet/phase-plane/number-distribution panels are distinct. No specific
+cause of these artifacts has been established.

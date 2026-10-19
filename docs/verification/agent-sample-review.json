@@ -1078,11 +1078,15 @@
     {
       "id": "fa-12.5",
       "file": "content/fa/ch12.js",
-      "textHash": "09c21f808cf7749478c33c0d963d9207f67ef7b3f323117f786ac92ef5fae1db",
-      "textReview": "Orthogonal decomposition of the functional's null space gives the unique representer, and the conjugation in y=conjugate(Λz)z matches the first-slot-linear convention. Shrinking local averages illustrates the norm blowup that prevents point evaluation on L².",
-      "visualReview": "Inspected both themes: at h=.08 the local-average representer has height 6.25 and norm 2.5. The displayed .7706 functional and .7693 inner product expose numerical quadrature differences rather than exact identity. Point-evaluation and approximation scope remain text follow-ups.",
-      "interactionReview": null,
-      "status": "text-and-visual-reviewed-follow-up-pending"
+      "textHash": "9f4fe4e2d8127d480b6fa0a3096b7316874b051fd1e423d08c6ac52b689f201f",
+      "textReview": "The page now distinguishes point evaluation, undefined on L2 equivalence classes, from evaluation on continuous functions, unbounded in the L2 norm. Continuous tent functions give the explicit unboundedness proof. Local-average convergence is scoped to continuous functions/the precise representative at Lebesgue points. Width conventions and boundedness at each fixed positive width remain explicit. The grid inner product and quadrature null-space residual are labelled approximate; the Riesz identity remains exact.",
+      "visualReview": "Inspected ten controlled native captures in both themes: default,small/large width,moment and difference functionals. The height50 box at h.01 is explicitly marked off scale; norm7.071 agrees with1/sqrt(2h). Default direct functional.7706 versus grid inner product.7693 and residual.0006 are labelled numerical approximations.",
+      "interactionReview": "Ten native states exercise all three functional buttons and h endpoints.01/.25 in both themes; expected representer norms7.071/1.414 and finite readouts pass. Runtime/TeX checks and nine existing FA12 groups pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Orthogonal decomposition of the functional's null space gives the unique representer, and the conjugation in y=conjugate(Λz)z matches the first-slot-linear convention. Shrinking local averages illustrates the norm blowup that prevents point evaluation on L².",
+      "initialTextHash": "09c21f808cf7749478c33c0d963d9207f67ef7b3f323117f786ac92ef5fae1db",
+      "initialVisualFinding": "Inspected both themes: at h=.08 the local-average representer has height 6.25 and norm 2.5. The displayed .7706 functional and .7693 inner product expose numerical quadrature differences rather than exact identity. Point-evaluation and approximation scope remain text follow-ups.",
+      "correctionReport": "docs/verification/agent-point-evaluation-review.md"
     },
     {
       "id": "ladr-1.36",
@@ -1962,27 +1966,31 @@
       "file": "content/qm/ch04.js",
       "textHash": "fefb6a6a48ecb98a868e674cf626034f4997b740827c2d6705c3e6ae407cfe2f",
       "textReview": "The coherent-state coefficients, Poisson number distribution, oscillator rotation and fixed Gaussian uncertainties are correct in the declared units. The real-space centre is sqrt(2)Re(alpha); a formal complex-shifted Gaussian in the idea should not suggest a physical complex position. A projection onto 60 Hermite modes only approximates the exact nonspreading packet, so 'never deviates' needs a truncation qualification and an inspected amplitude range.",
-      "visualReview": null,
+      "visualReview": "Inspected valid light and isolated dark recapture: Gaussian packet, phase plane and number distribution are distinct. Default mean/variance3.625,Poisson TV7e-16 and finite eigenstate residual3e-6 are displayed. The original dark PNG duplicated content, documented separately. General complex-Gaussian/Hermite-truncation scope remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-4.12",
       "file": "content/rca/ch04-a2.js",
-      "textHash": "49b11e065e3b89a12f9c8ac3bd8b79651d556206f8a3e38fdf82788e18f758f6",
-      "textReview": "The Riesz representer proof has the correct conjugation for the convention linear in the first inner-product slot, and handles the zero functional. The local averaging example converges to f(c) for continuous functions or at Lebesgue points, not every point of an arbitrary L2 representative. Point evaluation is not even well-defined on L2 equivalence classes; the diverging box-representer norms show that evaluation on continuous representatives has no bounded L2 extension.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "662f658bde88f28546b556f85a38015be14ce2664d4898d0f42e46abbfa630b4",
+      "textReview": "The page now distinguishes point evaluation, undefined on L2 equivalence classes, from evaluation on continuous functions, unbounded in the L2 norm. Continuous tent functions give the explicit unboundedness proof. Local-average convergence is scoped to continuous functions/the precise representative at Lebesgue points. Width conventions and boundedness at each fixed positive width remain explicit. The zero functional has kernel all of H and is separated from the nonzero construction.",
+      "visualReview": "Inspected eight controlled native captures in both themes: default,small/large width and zero functional. The box at h.004 is explicitly truncated with height250 arrow/label; norm15.81 agrees with1/sqrt(h). At L0 the panel labels kernel all of H and representer0.",
+      "interactionReview": "Eight native states exercise h endpoints.004/.5 and both finite-dimensional coefficients0 in both themes,with finite readouts and correct norm/zero-functional behavior. Runtime/TeX checks pass.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "The Riesz representer proof has the correct conjugation for the convention linear in the first inner-product slot, and handles the zero functional. The local averaging example converges to f(c) for continuous functions or at Lebesgue points, not every point of an arbitrary L2 representative. Point evaluation is not even well-defined on L2 equivalence classes; the diverging box-representer norms show that evaluation on continuous representatives has no bounded L2 extension.",
+      "initialTextHash": "49b11e065e3b89a12f9c8ac3bd8b79651d556206f8a3e38fdf82788e18f758f6",
+      "initialVisualFinding": "Inspected both initial themes: finite-dimensional kernel/representer and local-average box are distinct. Default functional norm1.415 and h=.16 average-.9397 versus f(c)=-.9840 are legible. The point-evaluation/equivalence-class and convergence qualifications require the focused correction now in progress.",
+      "correctionReport": "docs/verification/agent-point-evaluation-review.md"
     },
     {
       "id": "soc-1.6",
       "file": "content/soc/ch01-b.js",
       "textHash": "48e9f838b4b224f7c4ff93ad2e327b907f9ca80a03877c04c573bfb626c388c2",
       "textReview": "The normal-threshold fold condition follows from max phi=1/sqrt(2pi), so folds exist across incentive values only below that spread. An S-shaped curve does not guarantee three fixed points at every parameter: the three-crossing range is between its folds. Strict slope less than one is a sufficient local stability criterion for a differentiable nondecreasing map, while a neutral derivative-one crossing needs higher-order analysis. The Gaussian model is continuous, which matters for convergence to a fixed point.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default response curve has two stable endpoints, unstable threshold.5 and folds near incentive plus/minus.209. Cobweb and hysteresis trace are distinct. The text's three-fixed-point claim outside the fold range and slope-one boundary remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "em-1.15",
@@ -2001,108 +2009,108 @@
       "file": "content/pma/ch11-a5.js",
       "textHash": "9f1edebdc69da5c417cf5cac92f7d806a95ed6882f2525b2c3a846ea9a07bc4f",
       "textReview": "Simple-function approximation plus Lebesgue regularity and the continuous distance-ratio separator proves density in L2 on a finite interval. Choose the outer-minus-inner measure below epsilon² to achieve norm error below epsilon; the text uses epsilon for the squared-error bound, which is harmless after renaming but can be made explicit. Empty inner sets need the trivial zero approximation rather than an undefined distance quotient. The fat Cantor drawing must remain a finite approximation to the stated set.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: continuous ramps and L2-error plot are distinct; default L2 error.1826 lies below sqrt(measure(V-F))=.6325. The actual sup error is.500, contradicting the caption's stays-near1 description. Epsilon-squared/empty-closed-set proof qualifications also remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "nla-3.9",
       "file": "content/nla/ch03-b.js",
       "textHash": "20736524fee2a81454c1b2c2974928c83d592464d6d8a38ea4a96adcf5ab4bfc",
       "textReview": "Backward stability composed with local relative conditioning gives the first-order forward-error estimate. A normwise backward-stable linear solve also has a small appropriately normalized residual, even if forward error is large, provided the solve completes. The all-condition-number caption should handle breakdown or rounded singular inputs rather than promise a dot for every case. Relative errors and residuals need nonzero denominators, with trivial zero cases handled separately.",
-      "visualReview": null,
+      "visualReview": "Inspected valid dark and isolated light recapture: forward/backward-error curves and condition-number reference are distinct. Default n6,p24 has maximum backward error3.66eps and scaled forward ratio3.67 for the declared regime. Initial light PNG duplicated content, recorded separately. Relative-zero and rounded-input interpretation remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "mech-13.14",
       "file": "content/mech/ch13-b.js",
       "textHash": "0677f6b6b73004a3e8d8f03c46843f6055517ec0026483064e63cdc11f3a53c5",
       "textReview": "Quadratic criticality alone does not make every one-parameter system exhibit the Feigenbaum ratios. The claim needs the appropriate smooth unimodal renormalization class, an infinite cascade and a generic transverse parameter crossing; a singular reparametrization can change parameter ratios. The idea incorrectly says any family crosses transversally. Chaos beyond the accumulation point is interrupted by periodic windows, and finite sampled diagrams do not prove all asymptotic claims.",
-      "visualReview": null,
+      "visualReview": "Inspected settled dark and isolated light recapture: complete bifurcation cascade and measured ratio panel are distinct. Pendulum ratios4.671/4.664 and logistic ratio4.66920 are legible. The first light PNG duplicated content and showed unfinished threshold work; final recapture is settled. Generic quadratic-critical scope and periodic windows remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "info-1.3",
       "file": "content/info/ch01.js",
       "textHash": "13d5c88c5ba1e3f5b2a4e330bcbcdde3fb4f740a6c0ba4590cbde6a4e3bd2c4a",
       "textReview": "Differentiation verifies the symmetry, strict concavity, peak, endpoint slopes and quadratic expansion. The p log(1/p) asymptotic dominates any fixed linear multiple near zero. Under-half-bit coding at p=0.1 is an asymptotic expected block-coding rate, not a guaranteed per-flip representation of each finite realization. Inspect endpoint tangent handling and finite-run surprisal fluctuations.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: binary entropy, component terms,tangent and200 flips are distinct. At p=.2 entropy.7219 and slope2 agree;49heads give observed surprisal.812bits/flip, which need not equal the expectation. Asymptotic coding interpretation remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-10.25",
       "file": "content/fa/ch10-source.js",
       "textHash": "4a8c188169b91c926ca76e978932dceb8a4a7ec6a9d8ddc78e0198cc902d69b1",
       "textReview": "The rational functional-calculus identity follows by finite linearity from polynomial and principal-part resolvent integrals, assuming an admissible contour with winding one on the spectrum and zero around excluded poles. The caption explicitly excludes enclosing the rational pole and labels the 256-node quadrature. Inspect a=0 or a pole on the contour so invalid hypotheses are reported rather than plotted as a failed theorem. Some prose needs spaces around inline formulas.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default contour radius.5 encloses spectrum0 and excludes pole1.2, with integral/inverse error1.11e-16. Pole-on-contour, enclosed pole and invertibility limits remain pending controls/scope cases.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "ladr-3.76",
       "file": "content/ladr/ch03-c.js",
       "textHash": "45b3ca9146039b49dc5a8d33ced17117a9fda4cb21558faaf45240aa5c852cda",
       "textReview": "Writing a vector in the domain basis and combining the coordinate columns proves the matrix-product formula. The statement correctly requires both lists to be bases. Because their handles can be dragged, the visualization must reject or label linearly dependent basis states rather than invert singular coordinate matrices. The first-handle control audit does not establish that every editable basis remains valid.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: basis grids,coordinate steps and transformed vector align; default product coordinates(-.69,1.67) match the direct solve. Allowing editable basis vectors to become dependent needs an explicit guard/scope check; the default is nonsingular.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "bioinf-4.12",
       "file": "content/bioinf/ch04-b.js",
       "textHash": "0949a0d98d389a5332cc1ac1e5c2c08c8b36a4b755be5cbe04e0cc20a4a5395a",
       "textReview": "Scaling and log-sum-exp are the right underflow remedies and agree in exact arithmetic. The normalization should explicitly use the provisional column alpha'_t formed from the previous normalized column, not ambiguously raw alpha_t divided by its incremental scale. Log-sum-exp avoids overflow from large positive exponents; exp(-|a-b|) can still have an arbitrarily negative argument and harmlessly underflow. Impossible observations need c_t=0 and all-minus-infinity guards. The normal versus subnormal limits are distinguished in scope.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: raw recursion underflows at423double/64single,while scaling/log-space curves agree through length600 at log10P=-454.7. Underflow marker and threshold line are distinct. Scaling-index/logsumexp/all-minus-infinity cases remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "bighist-4.1",
       "file": "content/bighist/ch04.js",
       "textHash": "d43f153310573c242c92af4e6cf0175ba6c4a5343001ac24b636cfc34b021012",
       "textReview": "The source-specific brain-power model and rounded fossil ranges are clearly separated. At 70 kg the total 3.39 M^0.75 W and 1.35-kg brain at 11.2 W/kg give a share near one fifth. Fixing the total while varying brain volume does not establish a gut trade-off, as the caption correctly warns. Fossil chronology/ranges remain flagged original-evidence work despite the already documented Aiello–Wheeler equation/table reading.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: rounded species-range boxes and approximate energy-budget bars are distinct. Default model gives brain15.1W of78W,19percent; the caption explicitly says changing brain volume reallocates a fixed total and does not simulate a smaller gut. Historical biological range/energy sources remain separately flagged.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "rca-11.20",
       "file": "content/rca/ch11-a3.js",
       "textHash": "8fd717da77867587f09ea074ba849fc2e1975acdd72c66ba04555a220405241f",
       "textReview": "The nontangential maximal bound reduces to total variation and a kernel majorant; the radial inequality with constant one follows from the even decreasing Poisson kernel. The conservative cone constant is identified as proof-derived rather than fitted. The caption carefully distinguishes finite sampled suprema from exact maxima and truncates the unbounded atom case. Inspect the stated geometric constant against the actual cone definition and the numerical atom neighbourhoods.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: Poisson heatmap,approach region and finite maximal estimates are distinct. At alpha.5 conservative constant25 exceeds sampled max ratio1.481. Caption correctly distinguishes sampled maxima and divergent atomic limits from exact suprema; no new source claim is made.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "vcalc-3.3",
       "file": "content/vcalc/ch03.js",
       "textHash": "20326db245b11f7846cb77b2eea99f7fde91bcdebad3181d040bedf725855868",
       "textReview": "The gradient-field definition, constant ambiguity on connected domains and vanishing closed-loop integral are correct for the stated C1 potential. Rotating a gradient by 90 degrees does not always destroy conservativity: on a simply connected planar domain a harmonic potential has conservative rotated gradient, for example phi=x gives the constant gradient of y. Restrict the example claim to the selected bump fields and loops; numerical circulation may have quadrature error rather than only roundoff. Zero gradients have no unique steepest direction.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: gradient arrows,contours and loop integrand are distinct; default circulation is zero within1e-11. A90degree rotated gradient can still be conservative for harmonic potentials,including the zero field,so the universal not-a-gradient toggle wording remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "graph-4.2.7a",
       "file": "content/graph/ch04-a2.js",
       "textHash": "2c9cc9b424ab44feb0fd0febaf473209147b8cfb7c74fc182208d7a260f722a0",
       "textReview": "Under the collection's simple plane-graph convention, maximality is about adding an arc through a common face, not just a straight segment. A triangular face has all vertex pairs already adjacent, and the converse explicitly refers to order at least three. Inspect nonconvex face routing, disconnected drawings and the outer face before certifying the saturation algorithm.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default hexagon has6vertices,6edges,two six-sided faces and nine remaining nonedges; inner/outer face labels are legible. Saturation/arc placement needs native checks; the default is correctly labelled nonmaximal and nontriangulated.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "fa-3.4",
       "file": "content/fa/ch03.js",
       "textHash": "0b60c9b8264067c547c8d8a59f8b92f3589249d07c54815a23b02df6c2f6e0bd",
       "textReview": "The disjoint convex-set separation statements have the standard openness and compact-versus-closed/local-convexity hypotheses. The Minkowski/Hahn–Banach argument and compact uniform gap explain them. The finite disc-versus-convex-hull picture should report overlap or touching rather than claim strict separation in a violated-hypothesis state. No new mathematical defect found in the text.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: disc and convex hull are distinct with a positive separating slab; displayed support values-.577 and.779 give gap1.355. Overlap/tangency controls and the intended strict-separation convention remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "vcalc-4.7",
@@ -2121,54 +2129,54 @@
       "file": "content/pma/ch07-a2.js",
       "textHash": "bad4300e44bf231b9ad4c34373b121d8ac8535c03aa9716124ab5e602c2d7c36",
       "textReview": "The uniform-limit continuity theorem and epsilon/3 proof are correct; nx/(1+n²x²) is a valid continuous-limit nonuniform converse counterexample. Source inspection confirms the displayed Rudin 7.3 family is instead the geometric partial sum with discontinuous limit (1+x² off zero, zero at zero), so the caption's failed continuity box at zero is consistent. The separate arctangent family also has a discontinuous limit.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: at n12 the uniform error.105 is belowepsilon/3=.200,the delta window.126 stays within the displayed epsilon box,and the local limit variation.211 is below.6. Nonuniform presets are separate controls and not certified by this default.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "stoch-1.5",
       "file": "content/stoch/ch01.js",
       "textHash": "bd95e75a5f59b4fc0c44379fe335d2af259a2dc267a858e66a706a20b297110a",
       "textReview": "Accessibility including n=0 is reflexive, mutual accessibility gives communicating classes, and Chapman–Kolmogorov supplies transitivity. The condensation graph is acyclic. In a finite chain every nonclosed communicating class is transient and eventual occupancy lies in closed classes, though a finite 5000-step run only illustrates that limit. Inspect graph editing when a state loses every outgoing edge and make its stochastic interpretation explicit.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: communicating classes and occupancy bars are distinct; the run ends in closed class{3,4} with roughly equal occupancy. The current readout explicitly assigns a self-loop to a state with no outgoing arrow. Removing/editing every arrow still needs actual interaction validation.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "solid-1.4",
       "file": "content/solid/ch01.js",
       "textHash": "d287350420649138596569a35b19264a23384f3c866babf400cffbdb8cec27e0",
       "textReview": "Hooke's linear approximation follows from a first-order differentiability expansion about the unstressed state, not from every smooth function having a convergent Taylor series. A single-valued reversible constitutive law is an additional elastic-model assumption. Typical steel moduli are near 200–210 GPa rather than literally all steels sharing exactly 210; concrete and other handbook numbers vary. The 0.5% departure criterion is a chosen numerical test, not a universal sharp physical proportional limit.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default steel fitted slope210GPa agrees with its chosen handbook value;235MPa at strain.00112 lies on the virtual linear curve. The.5percent deviation band and proportional-limit marker are distinct. Smoothness-versus-analyticity and material-parameter sources remain pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "top-4.8",
       "file": "content/top/ch04-b.js",
       "textHash": "a5b4fcbee794bf9fa014d613bf9bcce8df4cb12e9a8c3a226f039983fd25504d",
       "textReview": "The compact-factor closed-projection proof by the tube lemma is correct for arbitrary X. The hyperbola with Y=R is a valid failure example. The parenthetical 'for noncompact Y this fails' should say compactness cannot be omitted in general: a fixed projection can still be closed with noncompact Y, for instance when X is a point. The diagram formula |x|>=a/L assumes its positive-a parameter range.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: hyperbola and compact-Y projection are distinct; a1.2,L2 gives closed rays|x|>=.6 and the omitted neighborhood around0. Noncompact Y only supplies a counterexample in this fixed X setting,not a universal converse; text scope remains pending.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "toc-4.12",
       "file": "content/toc/ch04-c.js",
       "textHash": "491fa99b1a5f8f9b49fe6df9c4c26750c0df4d90f8d7486103fb9c367aec16d7",
       "textReview": "The nondeterministic Buchi definition and infinitely-often acceptance are correct. A reachable accepting cycle/lasso decides existence in the finite product for a fixed ultimately periodic word, while the idea explicitly avoids saying all infinite accepting runs repeat a cycle. Require a nonempty loop word or reject empty v in the editor. The original 1962 proceedings text remains a flagged source gap; bibliographic search results alone do not close it.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: b(ab)^omega has a recurring accepting q1 in its witness loop,with input letters aligned below the run. Empty-loop input and the historical1962 source remain pending; the displayed nonempty-loop example is consistent.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "soc-4.17",
       "file": "content/soc/ch04-papers.js",
       "textHash": "9f3ecf544f7fe4770a77c39d34eaa94180708c59235962138656201b59b42df5",
       "textReview": "The experiment is now described as one locally selected acquaintance chain per folder. Completed-chain length is distinguished from shortest-path distance and from exhaustive BFS exploration. The existing distance prerequisite still supplies the upper-bound comparison; the structural Watts–Strogatz statement and replication comparisons are scoped more precisely.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: completed-chain histogram and folder attrition are distinct. Primary-data mean330/64=5.16 and median5 are separated from the dropout model's no-dropout median6 and White's historical5-to7 estimate. Modern shortest-path numbers are labelled separately; their sources are not newly certified.",
       "interactionReview": null,
-      "status": "text-corrected-full-page-follow-up-pending",
+      "status": "text-and-visual-reviewed-follow-up-pending",
       "initialFinding": "The completed-chain data, dropout correction and the separation between found paths and graph shortest paths are explicit. The idea nevertheless incorrectly calls the experiment breadth-first search: each folder follows one locally selected acquaintance at a time rather than exploring all vertices in distance layers. Replace that algorithm claim with decentralized single-chain routing; the distance definition in soc-2.2 still supports the shortest-path upper-bound comparison.",
       "initialTextHash": "46a6f19d24954040c57af536e196bcaf7ccdcc0ce5485d01a70cea68ce89c5dd",
       "correctionReport": "docs/verification/agent-small-world-routing-review.md"
@@ -2178,9 +2186,9 @@
       "file": "content/game/ch04.js",
       "textHash": "b301d63df498cdf8b598db465e1120ef891da6cf57374488766a312dfd31aeaa",
       "textReview": "Backward induction on a finite perfect-information tree gives a pure subgame-perfect equilibrium, with arbitrary optimal tie breaking generating exactly the pure SPE profiles. Strict continuation-payoff comparisons give uniqueness. If chance nodes are included their continuation value is the fixed probability-weighted expectation. Inspect the verifier and corrupted off-path choice example; no new defect found in the player-decision induction.",
-      "visualReview": null,
+      "visualReview": "Inspected both themes: default binary game has15decision nodes,32768pure profiles and all15subgames passing at payoff(4,5). Tree choices and scaling plot are distinct. Chance-node expected-value scope and corrupted off-path choices remain pending controls/text checks.",
       "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "status": "text-and-visual-reviewed-follow-up-pending"
     },
     {
       "id": "music-4.10",

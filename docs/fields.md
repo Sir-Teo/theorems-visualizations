@@ -30,6 +30,11 @@ tools to reach for. Read the section for your field before writing a chapter.
 
 ## Mathematics (book-anchored and curated)
 
+Distinguish functions from almost-everywhere equivalence classes. Point
+evaluation may be undefined on a class, while evaluation on a continuous
+subspace is defined but unbounded. Scope local-average limits to continuity
+or Lebesgue points; distinguish exact identities from quadrature readouts.
+
 In complex function algebras, use conjugate squares for positivity. State when
 a drawing uses real-valued generators. A sampled positive minimum does not
 certify invertibility; supply a bound or an exact zero argument, including

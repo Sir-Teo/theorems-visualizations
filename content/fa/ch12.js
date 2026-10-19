@@ -196,7 +196,8 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
       name: 'Riesz representation: H* is H',
       statement: String.raw`For each $y\in H$ the functional $\Lambda_y x=(x,y)$ is bounded with $\|\Lambda_y\|=\|y\|$. Conversely every bounded linear functional $\Lambda$ on $H$ equals $\Lambda_y$ for exactly one $y\in H$. The map $y\mapsto\Lambda_y$ is thus a conjugate-linear isometry of $H$ onto $H^*$.`,
       idea: String.raw`Schwarz gives $\|\Lambda_y\|\le\|y\|$ and $x=y$ gives equality. For the converse, if $\Lambda\ne0$ its null space $N$ is a closed proper subspace, so by the orthogonal decomposition there is a unit vector $z\perp N$. Since $(\Lambda x)z-(\Lambda z)x\in N$, taking inner products with $z$ yields $\Lambda x=(x,y)$ with $y=\overline{\Lambda z}\,z$.`,
-      caption: String.raw`$H=L^2[0,1]$ (real-valued, for the picture). Choose a functional and watch its representer $y$ (green). The function $x$ splits as a multiple of $y$ plus a part $z$ in the null space of $\Lambda$; the readout checks $\Lambda x=(x,y)$ and $\Lambda z=0$. For the local average, shrink $h$: $\|\Lambda\|=\|y\|=1/\sqrt{2h}$ blows up, which is why evaluation at a point has no representer in $L^2$.`,
+      caption: String.raw`$H=L^2[0,1]$ (real-valued, for the picture). Choose a functional and watch its representer $y$ (green). The function $x$ splits as a multiple of $y$ plus a part $z$ in the null space of $\Lambda$; the readout compares numerical estimates of $\Lambda x=(x,y)$ and $\Lambda z=0$. For the local average, shrink $h$: $\|\Lambda\|=\|y\|=1/\sqrt{2h}$ blows up, while each fixed-width average remains bounded. Point evaluation is not defined on $L^2$ equivalence classes; even on continuous functions with the $L^2$ norm it is unbounded, so it has no bounded extension to $L^2$ and no representer there.`,
+      scope: String.raw`The plotted $x$ is continuous. Its local averages tend to $x(a)$; for arbitrary $L^2$ representatives this is only an almost-everywhere Lebesgue-point assertion. Changing one point does not change an $L^2$ class. Continuous tents of height 1 and half-width $\varepsilon$ at $a$ have norm $\sqrt{2\varepsilon/3}\to0$, ruling out bounded evaluation even on the continuous subspace. The finite grid and quadrature checks in the picture are approximations; tall boxes are marked off scale.`,
       deps: ['fa-12.4','fa-12.2'],
       see: ['rca-4.12'],
       tags: ['Hilbert space', 'duality'],
@@ -241,7 +242,7 @@ Then $\|x\|=(x,x)^{1/2}$ is a norm, by the Schwarz inequality $|(x,y)|\le\|x\|\,
           st = { lam, ip: G.ip(X, Y), lamZ, ny: Math.sqrt(ny2), mode, h };
           v.legend([['ink', '$x$'], ['green', 'representer $y$', { area: true }], ['orange', '$z = x-\\frac{\\Lambda x}{\\|y\\|^2}\\,y\\in\\mathscr N(\\Lambda)$', { dash: true }]]);
         });
-        v.readout(() => `$\\Lambda x = ${v.fix(st.lam, 4)}$, $\\;(x,y) = ${v.fix(st.ip, 4)}$, $\\;\\Lambda z = ${v.fix(st.lamZ + 0, 4)}$, $\\;\\|\\Lambda\\| = \\|y\\| = ${v.fix(st.ny, 3)}$` + (st.mode === 'avg' ? ` $=1/\\sqrt{2h}\\to\\infty$ as $h\\to0$: $x\\mapsto x(a)$ is not bounded on $L^2$.` : '.'));
+        v.readout(() => `$\\Lambda x = ${v.fix(st.lam, 4)}$, $\\;(x,y)_{\\rm grid}\\approx${v.fix(st.ip, 4)}$, $\\;(\\Lambda z)_{\\rm quad}\\approx${v.fix(st.lamZ + 0, 4)}$, $\\;\\|\\Lambda\\| = \\|y\\| = ${v.fix(st.ny, 3)}$` + (st.mode === 'avg' ? ` $=1/\\sqrt{2h}\\to\\infty$ as $h\\to0$: evaluation on continuous functions is unbounded in the $L^2$ norm.` : '.'));
       },
     },
     {
