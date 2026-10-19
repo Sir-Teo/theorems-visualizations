@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **244 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 594 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **243 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 595 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **244 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **243 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -512,3 +512,7 @@ Resolved `physio-3.1`, `physio-4.16`, `physio-4.19` and `imaging-4.5`. The queue
 ## Supported Hounsfield repairs, original-paper flag retained — 2026-10-19
 
 `imaging-3.18` now uses exact last-painted material along each ray, including overlapping clot/ventricle regions; its increment means replacement of underlying tissue. Unsupported scanner parameters and historical priority claims were removed, and computed small-signal/noise statements have explicit model limits. Parent read the [report](imaging-hounsfield-followup.md), reran six mathematical and two native theme groups and inspected the final CT screenshot. The official abstract and separate complete Nobel lecture support only their identified claims. The named1973fullpaper remains unavailable, so `verify: true` and the queued review remain. **244 source reviews remain**.
+
+## Recirculation and remaining exposure — 2026-10-19
+
+Resolved `pharm-3.11` using directly read official label claims and separate chosen-model equations. The solver now conserves mass across meal events, stops exactly at72h and includes future exposure from gut and bile instead of a terminal-plasma exponential alone. Parent independently reran three mathematical and two native theme groups and inspected the high-return screenshot. See [recirculation audit](pharm-recirculation-followup.md). **243 source reviews remain**.

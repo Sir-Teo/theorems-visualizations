@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 244,
+  "remainingFlags": 243,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "pharm": 9,
+    "pharm": 8,
     "imaging": 1,
     "circ": 1,
     "energy": 12,
@@ -171,19 +171,6 @@
       "explicitUncertainty": [],
       "refs": [
         "Rowland\u2013Tozer"
-      ],
-      "links": {}
-    },
-    {
-      "id": "pharm-3.11",
-      "file": "content/pharm/ch03-b.js",
-      "name": "Enterohepatic recirculation",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Goodman\u2013Gilman ch. 2"
       ],
       "links": {}
     },
@@ -4498,7 +4485,8 @@
       "physio-3.1",
       "physio-4.16",
       "physio-4.19",
-      "imaging-4.5"
+      "imaging-4.5",
+      "pharm-3.11"
     ]
   },
   "additionalFollowups": [
@@ -8275,6 +8263,12 @@
       "status": "partial-source-review-pending",
       "report": "docs/verification/imaging-hounsfield-followup.md",
       "note": "Primary abstract and separate full author lecture checked; exact last-paint projector replaces invalid additive overlap approximation. Parent reran six mathematical and two native theme groups and inspected final screenshot. Full1973original remains unavailable; flag retained."
+    },
+    {
+      "id": "pharm-3.11",
+      "status": "resolved",
+      "report": "docs/verification/pharm-recirculation-followup.md",
+      "note": "Official CELLCEPT label section12.3 read; chosen recirculation model now has exact between-meal propagation, all remaining-state future exposure and complete72h bounds. Parent read report, reran3mathematical and2native theme groups, and inspected final high-return screenshot."
     }
   ]
 }

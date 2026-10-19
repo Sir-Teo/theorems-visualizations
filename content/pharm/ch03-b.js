@@ -1,4 +1,5 @@
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part b: items 3.7–3.12)
+import { recirculation, recirculationPeaks, RECIRCULATION } from './source-audit-recirculation.js';
 import { LN2, clamp, logSlope, trapz, trapzLog, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal, cshtHold, cshtRate, cHoldTrace, ANAES, jacobiSym, bateman } from './ch03.shared.js';
 
 const nice = (x) => (x >= 100 ? Math.round(x) : x >= 10 ? Math.round(x * 10) / 10 : Math.round(x * 100) / 100);
@@ -284,16 +285,17 @@ export default {
       num: '3.11',
       kind: 'Phenomenon',
       name: 'Enterohepatic recirculation',
-      statement: String.raw`Some drugs, or their conjugates, are secreted into bile, stored in the gallbladder and released into the gut at meals; there the conjugate may be hydrolysed back to the parent drug, which is **reabsorbed** into the portal blood. The drug is thus recycled instead of being lost. The plasma concentration shows **secondary peaks** several hours after each meal-induced emptying, and the terminal phase is prolonged. If a fraction $f_b$ of the elimination goes to bile and a fraction $f_r$ of the emptied bile returns to the circulation, the cycle multiplies the exposure by $1/(1-f_bf_r)$ once the stored bile has been emptied.`,
-      idea: String.raw`Each pass through the cycle is a fraction $f_bf_r$ of what the previous one returned, a geometric series (pma-3.26): the total amount that ever passes through plasma is $D\,(1+f_bf_r+(f_bf_r)^2+\dots)=D/(1-f_bf_r)$, and since $\mathrm{AUC}=(\text{amount through plasma})/\mathrm{CL}$ (1.5, with CL the total clearance) the exposure grows by that factor. The gallbladder is a delay line: bile accumulates between meals and is released in a pulse, so the returning drug arrives in bursts, hours after the first-pass absorption (2.7); the burst timing sets the secondary peaks. Breaking the cycle, for instance by a binding agent in the gut that lowers $f_r$, reduces exposure. For mycophenolic acid the prescribing information describes secondary plasma peaks about 6 to 12 hours after dosing and a reduction of exposure by a bile-acid sequestrant.`,
-      caption: String.raw`A dose is swallowed at $t=0$. Plasma concentration (solid) is compared with the same drug without recirculation (dashed); orange lines mark meals, when the gallbladder empties completely (a simplification). Raise the **biliary fraction** $f_b$ or the **reabsorbed fraction** $f_r$ and the secondary peaks grow, the tail lengthens and the AUC ratio rises toward $1/(1-f_bf_r)$. The right panel shows the amount stored in the gallbladder, which fills between meals and empties at each. Set $f_r=0$ (a sequestrant that binds everything) and the peaks disappear.`,
-      scope: String.raw`Illustrative one-compartment model with first-order absorption, biliary secretion as a fixed share of elimination, instantaneous complete gallbladder emptying at meals and a fixed reabsorbed fraction. Real emptying is partial and variable, and bile also flows between meals. The parameter values are round numbers, not data for any drug; the label statement about mycophenolic acid is taken from the prescribing information as summarized by search results and was not reread in full.`,
+      statement: String.raw`Biliary secretion followed by intestinal reabsorption can return a drug, or its regenerated parent compound, to the circulation. Delayed return can produce secondary concentration peaks and increase total exposure. In a simple linear model where a fraction $f_b$ of each plasma outflow enters bile and a fraction $f_r$ of that bile eventually returns, the total infinite-time exposure is multiplied by $1/(1-f_bf_r)$, provided meals continue, all reabsorbed drug reaches the model's central compartment and $f_bf_r<1$.`,
+      idea: String.raw`Each recycled pass contributes the fraction $f_bf_r$ of the preceding pass, giving a convergent geometric series. Meal timing changes the concentration profile but not the infinite-time exposure in this chosen model. The official CELLCEPT label's section 12.3 reports mycophenolic-acid secondary peaks usually 6–12 hours after dosing, and an approximately 40% exposure decrease in a12-volunteer cholestyramine interaction study. These specific label observations illustrate recirculation; they are not the data or parameters of the model below.`,
+      caption: String.raw`A chosen oral dose enters a gut compartment at time zero. Compare central concentration with and without recirculation over the complete 72 hours. Orange lines mark complete gallbladder emptying; its amount drops vertically at each meal. Change the biliary fraction, returned fraction and meal schedule. The readout separates exposure already accumulated from the analytically computed future exposure, including drug still in the gut and gallbladder.`,
+      scope: String.raw`Illustrative parent-equivalent mass model: dose 100 mg, volume 40 L, total plasma-outflow clearance 6 L/h and absorption rate 1.2 h$^{-1}$ are chosen. Between meals the linear equations are solved exactly; at each meal stored bile is completely emptied, fraction $f_r$ returns to gut and the remainder is lost. Future-AUC calculation assumes meals continue indefinitely. There is no separate conjugate, first-pass loss or partial gallbladder emptying, so this is not a fitted mycophenolate model or a prediction of a sequestrant's clinical effect. CELLCEPT's current official label was read directly for the named empirical example.`,
       deps: ['pharm-2.7', 'pma-3.26'],
-      refs: ['Goodman–Gilman ch. 2'],
+      refs: ['CELLCEPT official prescribing information, DailyMed setid37241e87-4af4-4dc3-a1aa-ea6f20d8dc40, section 12.3 Metabolism and Drug Interaction Studies/Cholestyramine; read2026-10-19'],
+      links: { source: 'https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=37241e87-4af4-4dc3-a1aa-ea6f20d8dc40' },
       tags: ['biliary excretion', 'reabsorption'],
-      verify: true,
+      verify: false,
       viz(v) {
-        const D = 100, V = 40, CLt = 6, ka = 1.2, k = CLt / V, TEND = 72;
+        const {dose:D,volume:V,clearance:CLt,absorptionRate:ka}=RECIRCULATION,TEND=72;
         const fb = v.slider('biliary share of elimination $f_b$', 0, 0.9, 0.5, { step: 0.05 });
         const fr = v.slider('reabsorbed fraction $f_r$', 0, 1, 0.8, { step: 0.05 });
         const gap = v.slider('time between meals (h)', 4, 10, 6, { step: 0.5 });
@@ -301,42 +303,25 @@ export default {
         const sP = v.stage({ x: [0, 48], y: [0, 3], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 330, weight: 1.2, minWidth: 260 });
         const sG = v.stage({ x: [0, 48], y: [0, 40], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'amount (mg)', height: 330, weight: 1, minWidth: 250 });
         const sim = memo();
-        const run = (fbv, frv) => {
-          const dt = 0.01, N = Math.round(TEND / dt);
-          let G = D, A = 0, GB = 0, feces = 0, el = 0, nextMeal = first.value; const out = { t: [], c: [], gb: [], g: [] }; const meals = [];
-          for (let i = 0; i <= N; i++) {
-            const t = i * dt;
-            if (t >= nextMeal - 1e-9) { if (fbv > 0) { G += frv * GB; feces += (1 - frv) * GB; GB = 0; } meals.push(nextMeal); nextMeal += gap.value; }
-            if (i % 5 === 0) { out.t.push(t); out.c.push(A / V); out.gb.push(GB); out.g.push(G); }
-            const f = ([g, a, gb, el_]) => [-ka * g, ka * g - k * a, fbv * k * a, (1 - fbv) * k * a];
-            const y = rk4(f, [G, A, GB, el], t, dt);
-            G = y[0]; A = y[1]; GB = y[2]; el = y[3];
-          }
-          out.meals = meals; out.end = { G, A, GB, feces, el };
-          return out;
-        };
+        const run=(fbv,frv)=>recirculation(fbv,frv,gap.value,first.value);
         let info = null;
         v.render(() => {
           const S = sim(`${fb.value}|${fr.value}|${gap.value}|${first.value}`, () => ({ w: run(fb.value, fr.value), wo: run(0, 0) }));
-          const auc = (o) => trapz(o.t, o.c) + o.c[o.c.length - 1] / k;
-          // secondary peaks: local maxima of the plasma curve after the first
-          let peaks = [];
-          const c = S.w.c, t = S.w.t;
-          let tmaxIdx = c.indexOf(Math.max(...c.slice(0, 400)));
-          for (let i = tmaxIdx + 10; i < c.length - 2; i++) if (c[i] > c[i - 1] && c[i] >= c[i + 1] && c[i] > 0.02 * c[tmaxIdx]) peaks.push(t[i]);
+          const peaks=recirculationPeaks(S.w).secondary.map(p=>p.time),c=S.w.c,t=S.w.t;
           const lastMeal = S.w.meals[S.w.meals.length - 1];
-          info = { ratio: auc(S.w) / auc(S.wo), pred: 1 / (1 - fb.value * fr.value), peaks, meals: S.w.meals.length, tailLeft: S.w.end.GB + S.w.end.G, lastMeal };
-          sP.setView([0, 48], [0, Math.max(...S.wo.c) * 1.0 * 1.3 + 0.0001]);
-          S.w.meals.forEach((m) => { if (m <= 48) sP.vline(m, { color: 'orange', alpha: 0.5, dash: [3, 4] }); });
+          info = { ratio: S.w.totalAuc/S.wo.totalAuc, pred: 1 / (1 - fb.value * fr.value), peaks, meals: S.w.meals.length, tailLeft: S.w.end.GB + S.w.end.G, lastMeal, auc:S.w.auc,tail:S.w.tail,mass:S.w.mass,end:S.w.end };
+          sP.setView([-2,TEND+2],[-.1,Math.max(...S.wo.c,...S.w.c)*1.3+.1]);
+          S.w.meals.forEach((m) => { if (m <= TEND) sP.vline(m, { color: 'orange', alpha: 0.5, dash: [3, 4] }); });
           sP.path(S.wo.t.map((tt, i) => [tt, S.wo.c[i]]), { color: 'muted', dash: [6, 4], width: 1.8 });
           sP.path(S.w.t.map((tt, i) => [tt, S.w.c[i]]), { color: 'accent', width: 2.6 });
-          peaks.filter((p) => p < 48).forEach((p) => sP.dot(p, c[idxAt(t, p)], { r: 4.5, color: 'gold' }));
-          S.w.meals.forEach((m) => { if (m <= 48) sG.vline(m, { color: 'orange', alpha: 0.5, dash: [3, 4] }); });
-          sG.setView([0, 48], [0, Math.max(5, Math.max(...S.w.gb) * 1.15)]);
+          peaks.filter((p)=>p<TEND).forEach((p) => sP.dot(p, c[idxAt(t, p)], { r: 4.5, color: 'gold' }));
+          S.w.meals.forEach((m) => { if (m <= TEND) sG.vline(m, { color: 'orange', alpha: 0.5, dash: [3, 4] }); });
+          sG.setView([-2,TEND+2],[-2,Math.max(5,...S.w.gb)*1.2]);
           sG.poly([...S.w.t.map((tt, i) => [tt, S.w.gb[i]]), [TEND, 0], [0, 0]], { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 2 });
         });
         v.legend([['accent', 'with recirculation'], ['muted', 'no recirculation', { dash: true }], ['orange', 'meal (gallbladder empties)', { dash: true }], ['gold', 'secondary peak', { dot: true }]]);
-        v.readout(() => `AUC with / without recirculation $=${v.fix(info.ratio, 3)}$ (run to 72 h plus a tail estimate); predicted $1/(1-f_bf_r)=${v.fix(info.pred, 3)}$. ${info.peaks.length} secondary peak${info.peaks.length === 1 ? '' : 's'} in the first 72 h${info.peaks.length ? `, the first at $t=${v.fix(info.peaks[0], 1)}$ h` : ''}. Drug still in gut or gallbladder at 72 h: $${v.fix(info.tailLeft, 2)}$ mg of 100.`);
+        v.readout(()=>`infinite-time AUC ratio ${v.fix(info.ratio,3)}; geometric prediction $1/(1-f_bf_r)=${v.fix(info.pred,3)}$\nAUC through 72 h ${v.fix(info.auc,2)} + exact future exposure ${v.fix(info.tail,2)} mg·h/L; mass accounted for ${v.fix(info.mass,6)} of 100 mg\n${info.peaks.length} secondary local maxima detected after the first peak within 72 h; gut+bile at 72 h ${v.fix(info.tailLeft,2)} mg`);
+
       },
     },
     // ------------------------------------------------------------------ 3.12
