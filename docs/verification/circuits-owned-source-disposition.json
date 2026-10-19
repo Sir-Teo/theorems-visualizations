@@ -3,7 +3,7 @@
   "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
   "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
   "initialSourceFlags": 203,
-  "retainedCount": 100,
+  "retainedCount": 99,
   "genuinelyUnreviewed": [],
   "collections": {
     "circ": {
@@ -243,8 +243,7 @@
       ],
       "retained": [
         "dist-4.6",
-        "dist-4.7",
-        "dist-4.13"
+        "dist-4.7"
       ],
       "genuinelyUnreviewed": []
     },
@@ -989,13 +988,6 @@
       "report": "docs/verification/computing-source-review.md"
     },
     {
-      "id": "dist-4.13",
-      "status": "reviewed_blocked",
-      "file": "content/dist/ch04-d.js",
-      "missingFullSourceOrClaim": "Exact one-page Dijkstra1965 CACM note and its code. Full author EWD123 is available but contains a related integer b/c/turn0 construction rather than the exact claimed note; it cannot certify this memory transcription.",
-      "report": "docs/verification/computing-source-review.md"
-    },
-    {
       "id": "robot-3.7",
       "status": "reviewed_blocked",
       "file": "content/robot/ch03.js",
@@ -1059,6 +1051,14 @@
       "report": "docs/verification/klee-minty-primary-followup.md",
       "missingEvidence": [],
       "reason": "Complete 1972 original read; explicit all-dimension change of variables and nonbasic-gradient proof connects displayed 10/100 coefficients to original epsilon-cube. Extended all-state implementation checks through dimension7."
+    },
+    {
+      "id": "dist-4.13",
+      "status": "closed",
+      "file": "content/dist/ch04-d.js",
+      "report": "docs/verification/dijkstra-primary-followup.md",
+      "missingEvidence": [],
+      "reason": "Complete original note read in scanned reprint, including program and proof. Conditional assignment split into individual shared-memory accesses; every reachable state checked for N=2,3 and every initial k. Finite-state results explicitly do not establish livelock or starvation freedom."
     }
   ]
 }

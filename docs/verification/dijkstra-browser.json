@@ -1,0 +1,24 @@
+{
+  "sources": {
+    "content/dist/ch04-d.js": "957cea86b8103f0dae546bd34e28cace1b4cc8a04d3477252226a0e394eb23cc",
+    "content/dist/ch04.shared.js": "6b24c6f5829c4b1603d9417aa1bdc2521ecfc12ba1adb8da7e5161c1f28bcb64"
+  },
+  "results": [
+    {
+      "theme": "light",
+      "renderer": "KaTeX 0.16.11",
+      "checks": "both process counts, complete exploration, random run, both naive counterexamples and replays, reset and individual step",
+      "readout": "After 1 steps: b = [1,1,1], c = [1,1,1], k = 0. In the critical section: nobody. No violation so far.\nComplete reachable-state search over 52674 states: no mutual-exclusion violation found; no frozen state found; no blocked lone contender found. This does not check livelock or starvation freedom.",
+      "screenshot": "/tmp/dijkstra-followup/light.png",
+      "errors": []
+    },
+    {
+      "theme": "dark",
+      "renderer": "KaTeX 0.16.11",
+      "checks": "both process counts, complete exploration, random run, both naive counterexamples and replays, reset and individual step",
+      "readout": "After 1 steps: b = [1,1,1], c = [1,1,1], k = 0. In the critical section: nobody. No violation so far.\nComplete reachable-state search over 52674 states: no mutual-exclusion violation found; no frozen state found; no blocked lone contender found. This does not check livelock or starvation freedom.",
+      "screenshot": "/tmp/dijkstra-followup/dark.png",
+      "errors": []
+    }
+  ]
+}

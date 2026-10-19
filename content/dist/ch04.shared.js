@@ -101,19 +101,23 @@ export function bakerySpec(n = 3, variant = 'ok', cap = Infinity) {
 /** Dijkstra's 1965 algorithm for n processes, and two naive flag protocols. kind: 'dijkstra' | 'flags' (raise a flag, wait for the others to be down) | 'look' (look, then raise the flag). */
 export function flagSpec(n = 3, kind = 'dijkstra') {
   if (kind === 'dijkstra') {
+    // Li3 reads k, reads b[k], then may write k: these are separate shared-memory
+    // operations in the original note, not an atomic conditional assignment.
     const prog = [
       { t: 'remainder section', reg: 'R', f: () => 1 },
-      { t: 'b[i] ← false', reg: 'T', f: (S, i) => { S.sh.b[i] = 0; return 2; } },
-      { t: 'L1: if k ≠ i then goto L2 else goto L4', reg: 'T', f: (S, i) => (S.sh.k !== i ? 3 : 5) },
-      { t: 'L2: c[i] ← true', reg: 'T', f: (S, i) => { S.sh.c[i] = 1; return 4; } },
-      { t: '    if b[k] then k ← i;  goto L1', reg: 'T', f: (S, i) => { if (S.sh.b[S.sh.k]) S.sh.k = i; return 2; } },
-      { t: 'L4: c[i] ← false', reg: 'T', f: (S, i) => { S.sh.c[i] = 0; S.lo[i].j = 0; return 6; } },
-      { t: '    for j ≠ i: if ¬c[j] then goto L1', reg: 'T', f: (S, i) => { const L = S.lo[i]; if (L.j === i) L.j++; if (L.j >= n) return 7; if (!S.sh.c[L.j]) return 2; L.j++; if (L.j === i) L.j++; return L.j >= n ? 7 : 6; } },
-      { t: 'critical section', reg: 'C', f: () => 8 },
-      { t: 'c[i] ← true', reg: 'E', f: (S, i) => { S.sh.c[i] = 1; return 9; } },
+      { t: 'Li0: b[i] ← false', reg: 'T', f: (S, i) => { S.sh.b[i] = 0; return 2; } },
+      { t: 'Li1: if k ≠ i then goto Li2 else goto Li4', reg: 'T', f: (S, i) => (S.sh.k !== i ? 3 : 7) },
+      { t: 'Li2: c[i] ← true', reg: 'T', f: (S, i) => { S.sh.c[i] = 1; return 4; } },
+      { t: 'Li3: candidate ← k   // local snapshot', reg: 'T', f: (S, i) => { S.lo[i].candidate = S.sh.k; return 5; } },
+      { t: '    if b[candidate] then continue else goto Li1', reg: 'T', f: (S, i) => { const free = S.sh.b[S.lo[i].candidate]; S.lo[i].candidate = 0; return free ? 6 : 2; } },
+      { t: '    k ← i; goto Li1', reg: 'T', f: (S, i) => { S.sh.k = i; return 2; } },
+      { t: 'Li4: c[i] ← false', reg: 'T', f: (S, i) => { S.sh.c[i] = 0; S.lo[i].j = 0; return 8; } },
+      { t: '    for j ≠ i: if ¬c[j] then goto Li1', reg: 'T', f: (S, i) => { const L = S.lo[i]; if (L.j === i) L.j++; if (L.j >= n) return 9; if (!S.sh.c[L.j]) return 2; L.j++; if (L.j === i) L.j++; return L.j >= n ? 9 : 8; } },
+      { t: 'critical section', reg: 'C', f: () => 10 },
+      { t: 'c[i] ← true', reg: 'E', f: (S, i) => { S.sh.c[i] = 1; return 11; } },
       { t: 'b[i] ← true', reg: 'E', f: (S, i) => { S.sh.b[i] = 1; return 0; } },
     ];
-    return mkSpec({ id: `dijkstra-${n}`, n, prog, sh: { b: Array(n).fill(1), c: Array(n).fill(1), k: 0 }, lo: { j: 0 }, show: (S) => `b = [${S.sh.b}], c = [${S.sh.c}], k = ${S.sh.k}` });
+    return mkSpec({ id: `dijkstra-${n}`, n, prog, sh: { b: Array(n).fill(1), c: Array(n).fill(1), k: 0 }, lo: { j: 0, candidate: 0 }, show: (S) => `b = [${S.sh.b}], c = [${S.sh.c}], k = ${S.sh.k}` });
   }
   const others = (S, i, a) => a.every((x, j) => j === i || !x);
   const prog = kind === 'flags' ? [

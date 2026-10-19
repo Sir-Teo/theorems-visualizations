@@ -4,11 +4,11 @@
   "reproduction": "node scripts/verification-source-evidence.mjs --write; node scripts/verification-source-evidence.mjs --check",
   "summary": {
     "writtenItems": 6771,
-    "open": 240,
-    "reviewedBlocked": 240,
+    "open": 239,
+    "reviewedBlocked": 239,
     "unreviewed": 0,
     "ledgerRecords": 664,
-    "recordedClosed": 394,
+    "recordedClosed": 395,
     "issues": 0
   },
   "queue": {
@@ -16,8 +16,8 @@
     "exists": true,
     "recordedWrittenItems": 6771,
     "liveWrittenItems": 6771,
-    "recordedRemaining": 240,
-    "liveRemaining": 240,
+    "recordedRemaining": 239,
+    "liveRemaining": 239,
     "duplicateIds": [],
     "missingFromQueue": [],
     "noLongerFlagged": [],
@@ -76,8 +76,8 @@
       "unreviewed": 0
     },
     "dist": {
-      "open": 3,
-      "reviewedBlocked": 3,
+      "open": 2,
+      "reviewedBlocked": 2,
       "unreviewed": 0
     },
     "ecol": {
@@ -301,7 +301,7 @@
     {
       "path": "docs/verification/circuits-owned-source-disposition.json",
       "exists": true,
-      "sha256": "f3302d64e6816957a8f8f264abc330974999f8762ea0fc69770e0bab8e7812d5",
+      "sha256": "d71496974b2682787e2fc031bcf099eb4b229840b9fbbf45474d456e64af0853",
       "records": 105
     },
     {
@@ -665,7 +665,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/97"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/96"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -681,7 +681,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/98"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/97"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -1136,22 +1136,6 @@
       ],
       "missingEvidence": [
         "Complete Coale–Trussell1974 original inaccessible; UN ManualX1983 pp23–25/EqsE1–E7/Table3 read, corrected standards and fit, but cannot close original attribution."
-      ]
-    },
-    {
-      "id": "dist-4.13",
-      "file": "content/dist/ch04-d.js",
-      "name": "Solution of a Problem in Concurrent Programming Control",
-      "status": "reviewed-blocked",
-      "remainsOpen": true,
-      "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/95"
-      ],
-      "reports": [
-        "docs/verification/computing-source-review.md"
-      ],
-      "missingEvidence": [
-        "Exact one-page Dijkstra1965 CACM note and its code. Full author EWD123 is available but contains a related integer b/c/turn0 construction rather than the exact claimed note; it cannot certify this memory transcription."
       ]
     },
     {
@@ -2976,7 +2960,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/99"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/98"
       ],
       "reports": [
         "docs/verification/pde-source-review.md"
@@ -3572,7 +3556,7 @@
       "status": "reviewed-blocked",
       "remainsOpen": true,
       "evidence": [
-        "docs/verification/circuits-owned-source-disposition.json#/retained/96"
+        "docs/verification/circuits-owned-source-disposition.json#/retained/95"
       ],
       "reports": [
         "docs/verification/computing-source-review.md"
@@ -4824,7 +4808,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/97",
+      "pointer": "#/retained/96",
       "id": "cg-3.3",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4833,7 +4817,7 @@
       "missingEvidence": [
         "Full de Berg§2.2 source passage and original DCEL attribution. Connected-graph scope repaired; general faces with holes need multiple boundary-component pointers. Complete de Berg/Mount source was not obtained."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/97",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/96",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -4852,7 +4836,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/98",
+      "pointer": "#/retained/97",
       "id": "cg-4.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -4861,7 +4845,7 @@
       "missingEvidence": [
         "Full zone-theorem original(s), correct constant/edge-count convention and charging proof. Unverified best9.5m claim and unsupported five-new-edges induction removed. Explicitly separates tested arrangement counts from an uninspected linear-bound proof."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/98",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/97",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -5378,18 +5362,16 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/95",
+      "pointer": "#/additionalReviewedClosed/5",
       "id": "dist-4.13",
-      "rawStatus": "reviewed_blocked",
-      "status": "reviewed-blocked",
-      "report": "docs/verification/computing-source-review.md",
+      "rawStatus": "closed",
+      "status": "closed",
+      "report": "docs/verification/dijkstra-primary-followup.md",
       "reportOrigin": "record",
-      "missingEvidence": [
-        "Exact one-page Dijkstra1965 CACM note and its code. Full author EWD123 is available but contains a related integer b/c/turn0 construction rather than the exact claimed note; it cannot certify this memory transcription."
-      ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/95",
+      "missingEvidence": [],
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/additionalReviewedClosed/5",
       "reportExists": true,
-      "substantiveBlockedRecord": true
+      "substantiveBlockedRecord": false
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
@@ -11376,7 +11358,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/99",
+      "pointer": "#/retained/98",
       "id": "pde-3.12",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -11385,7 +11367,7 @@
       "missingEvidence": [
         "Full Tychonoff1935 original Mat.Sb.42 pp199–216, historical attribution and precise original growth classes. Full Evans1st§2.3.3 pp57–59 read, but it refers to John for the construction. Uniform-strip growth error and invalid numerical rounding/tail certificate repaired; Gevrey construction derived independently. Official MathNet issue attempt returned403."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/99",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/98",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },
@@ -12539,7 +12521,7 @@
     },
     {
       "ledger": "docs/verification/circuits-owned-source-disposition.json",
-      "pointer": "#/retained/96",
+      "pointer": "#/retained/95",
       "id": "robot-3.7",
       "rawStatus": "reviewed_blocked",
       "status": "reviewed-blocked",
@@ -12548,7 +12530,7 @@
       "missingEvidence": [
         "Full Denavit–Hartenberg1955 original. Modern R/P-chain transforms and convention scope reviewed; broad multi-DoF/lower-pair claim narrowed. Full original-paper comparison remains open. Bounded new public Penn/GWU leads both resolved to modern lecture slides rather than the1955 original; no source closure inferred."
       ],
-      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/96",
+      "ref": "docs/verification/circuits-owned-source-disposition.json#/retained/95",
       "reportExists": true,
       "substantiveBlockedRecord": true
     },

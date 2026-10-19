@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
   "writtenItems": 6771,
-  "remaining": 240,
+  "remaining": 239,
   "originalAnalysis": 0,
   "byCollection": {
     "algo": 1,
@@ -15,7 +15,7 @@
     "cplx": 3,
     "crypto": 3,
     "demo": 1,
-    "dist": 3,
+    "dist": 2,
     "ecol": 7,
     "energy": 5,
     "epi": 1,
@@ -466,12 +466,6 @@
       "refs": [
         "PHG ch. 9"
       ]
-    },
-    {
-      "id": "dist-4.13",
-      "file": "content/dist/ch04-d.js",
-      "name": "Solution of a Problem in Concurrent Programming Control",
-      "refs": []
     },
     {
       "id": "dist-4.6",

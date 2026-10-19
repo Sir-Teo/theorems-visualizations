@@ -151,7 +151,7 @@ export default {
         { num: '4.13', kind: 'Paper', name: 'Solution of a Problem in Concurrent Programming Control',
           paper: { authors: 'E. W. Dijkstra', year: 1965, title: 'Solution of a Problem in Concurrent Programming Control',
                    venue: 'Communications of the ACM 8 (9): 569', doi: '10.1145/365559.365617' },
-          introduces: ['dist-4.1'], deps: ['dist-1.4'], refs: [],
+          introduces: ['dist-4.1'], deps: ['dist-1.4'], refs: ['Dijkstra (1965), CACM 8(9), p. 569; original note in scanned reprint, pp. 348–350'],
           pic: 'N processes share a few variables and run Dijkstra’s entry protocol under a scheduler the reader controls adversarially; the violation counter stays at zero, while a naive flag protocol lets two processes in or deadlocks.' },
       ],
     },
