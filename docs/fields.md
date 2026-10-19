@@ -110,6 +110,11 @@ small interior region into a false nonabsorbing example.
 - Machine learning items train on data the reader places (click to add points) and show the
   generalization gap against the bound.
 
+For continuous covariates, state positivity under the target distribution almost
+everywhere. Distinguish population zeros from sparse empirical bins; restricting
+observed overlap changes the target and does not by itself remove model or
+sampling error. Compare an estimator with the truth for its own target group.
+
 ## Computer science
 
 - **Algorithms run on input the reader can edit**: drag graph nodes and edit weights

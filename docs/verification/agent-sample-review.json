@@ -2578,11 +2578,14 @@
     {
       "id": "causal-1.8",
       "file": "content/causal/ch01-b.js",
-      "textHash": "913851282c649b8c57b3cd31d5d3822ec4abe9452ee1be65e4d366cd7d708ef9",
-      "textReview": "Reviewed the positivity identification condition. The displayed P(L=l)>0 formulation is vacuous for continuously distributed covariates; it should hold for almost every covariate value under the target population distribution. Empty cells in a finite sample can occur despite population positivity, and finite data cannot certify global overlap. Restricting overlap also does not automatically make a misspecified linear outcome model unbiased. Flagged these identification/diagnostic qualifications for correction.",
-      "visualReview": null,
-      "interactionReview": null,
-      "status": "text-reviewed-follow-up-pending"
+      "textHash": "f8a9c10e269f3f55b9b14d5de51943048ef3f39078a2af289584921c34e9e19a",
+      "textReview": "The binary-treatment positivity condition is now stated almost everywhere under the target covariate distribution, with the positive-mass formula explicitly discrete. The page separates population structural zeros from finite-sample sparse bins under its strictly positive logistic assignment. Conditional identification invokes consistency as well as exchangeability, with the used prerequisite mirrored. Book §3.3, Technical Point 2.3 and Fine Point 12.2 were read. Retaining empirical overlap changes the target and does not guarantee unbiasedness.",
+      "visualReview": "Inspected default, flat, steep-left, steep-right and redrawn-treatment captures in both themes, plus the default checker captures. Red bands match the stated occupied-bin sparsity criterion. Outcomes and extrapolated line endpoints now fit the expanded vertical range. The default retained-bin estimate differs from its own simulated truth and is labelled as an estimate rather than automatically correct.",
+      "interactionReview": "Actual range inputs cover steepness 0,4.5,9 and switch positions -1,0,.5,1; the redraw button changes treatment allocation. Ten controlled native states pass in both themes with finite readouts and no runtime/TeX failures. Population positivity remains a model property; those finite checks do not certify population overlap from empirical bins.",
+      "status": "corrected-agent-follow-up-recorded",
+      "initialFinding": "Reviewed the positivity identification condition. The displayed P(L=l)>0 formulation is vacuous for continuously distributed covariates; it should hold for almost every covariate value under the target population distribution. Empty cells in a finite sample can occur despite population positivity, and finite data cannot certify global overlap. Restricting overlap also does not automatically make a misspecified linear outcome model unbiased. Flagged these identification/diagnostic qualifications for correction.",
+      "initialTextHash": "913851282c649b8c57b3cd31d5d3822ec4abe9452ee1be65e4d366cd7d708ef9",
+      "correctionReport": "docs/verification/agent-positivity-review.md"
     },
     {
       "id": "ladr-6.24",
@@ -2607,6 +2610,114 @@
       "file": "content/top/ch04-c.js",
       "textHash": "4c264b71843c7d366e4b2bff9ba3096611ac9aea2cd004592d8a6db18c4d57ad",
       "textReview": "Reviewed the compact-containing-neighborhood definition and the Hausdorff compact-closure basis equivalence. Rational intervals have missing irrational limit points, and an unrestricted coordinate projection disproves local compactness of the countable product of real lines. Nonheredity is correctly illustrated by Q inside R. No text correction identified; the finite rational sequence/product display still needs visual/interaction review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "ladr-9.90",
+      "file": "content/ladr/ch09-h.js",
+      "textHash": "be08f630ce5c1abdb6b7853b5b2cf1b6f4f01fe9e4e35c1cde5c147aa3b2db0a",
+      "textReview": "Reviewed dual-functional coefficient extraction and finite-dimensional product-dimension count for the tensor basis. The inverse change-of-basis operation acts separately along each index. The broken-basis picture concerns its fixed target; a singular spanning family can still represent other tensors inside its smaller span. No theorem correction identified; eight-step reconstruction and rotation still need native inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-3.3.17",
+      "file": "content/prob/ch03-b.js",
+      "textHash": "14a89d01a42549f5a0d98c841d8d01591f1f86271285b5667a4d9ac96ffe34ce",
+      "textReview": "Reviewed bounded-continuous convergence, the integrated characteristic-function tail bound, tightness and uniqueness of subsequential limits. The symmetric integral is real by conjugate symmetry even for nonsymmetric laws, and u is positive. The discontinuous-at-zero escape examples correctly violate the hypothesis. No text correction identified; finite quadrature and escaping-tail plots still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "crypto-4.2",
+      "file": "content/crypto/ch04.js",
+      "textHash": "561866ecfd61ffb237c7d788ea719692ca953c68ca4b851e68d0d9ef30257cb2",
+      "textReview": "Reviewed RC4's second-byte bias mechanism and the separation of ChaCha diffusion from a security proof. The RC4 lookup needs its modulo-256 index convention explicit, and the Mantin–Shamir conditional statement should say second output byte rather than the output byte. The original source flag remains; this semantic read does not certify the full original or the historical dates. RFC implementation vectors, key sampling and diffusion still need direct review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "prob-1.1.2a",
+      "file": "content/prob/ch01.js",
+      "textHash": "0869bc78b3c2813617552c48ceb341561ac95db82e8b966a8f5c30cd9a57b01c",
+      "textReview": "Reviewed arbitrary nonempty intersections of sigma-fields, existence of the generated field and finite-generator atoms/unions. The finite closure recipe is correct; no such recipe for Borel sets should mean no finite terminating closure procedure, since transfinite Borel generation exists. Very thin continuous Venn regions may be missed by a finite canvas/grid and need an approximation label if used for counting. Native geometry/counting remains pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "pma-6.23",
+      "file": "content/pma/ch06-a4.js",
+      "textHash": "46add5f3f42967cd0070a80cc8785737bcce333fa20437033af33b82d6eec26e",
+      "textReview": "Reviewed coordinatewise Riemann–Stieltjes integrability for a finite-dimensional real vector map and monotone integrator. Coordinatewise linearity, interval additivity and substitution statements carry over; the scalar mean-value equality need not. This is the third sampled definition without a visualization, so there are no figure controls to inspect. No text correction identified.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qm-3.7",
+      "file": "content/qm/ch03.js",
+      "textHash": "ebd6e83231c0d696932d9f83e461d66328d0a65ba06ca389d84a09d951af7fe6",
+      "textReview": "Reviewed the regular Dirichlet node theorem, simplicity/interlacing and the ground state's positive choice. The shooting count must specify a nonzero solution, for example u(a)=0,u'(a)=1; the stated boundary value alone also admits the identically zero solution. The finite-left-wall shooting assertion should be distinguished from the whole-line confining problem. Staircase conventions exactly at an eigenvalue and potential-editing controls need review.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "rca-10.26",
+      "file": "content/rca/ch10-b1.js",
+      "textHash": "11e7a7e8db5aff7c89d8bd053f4886bf72a2c825a088b5bdcb349cc9285d934e",
+      "textReview": "Reviewed Parseval on interior circles and r→R to obtain the exact Cauchy derivative bound from an assumed uniform disc bound. The plotted maximum on the radius-R circle needs an analytic extension to that closed circle, and a sampled numerical maximum is not automatically the supremum or a certified upper bound. The chosen polynomial/rational examples may allow exact bounds; inspect the actual maximum calculation and pole constraint.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "popgen-2.8",
+      "file": "content/popgen/ch02-b.js",
+      "textHash": "1d2f1537476bf883d2eb525ae712009e63e30dbac5035ac57f0d43246a315b24",
+      "textReview": "Reviewed the paternal/maternal one-step coalescence calculation and the standard autosomal effective-size expression, including its sex-balance maximum and rare-sex limits. Exact long-run finite-population inbreeding dynamics can retain parental-origin correlations; the simulation/theory comparison needs its approximation convention checked. The X/mitochondrial qualification is separate from the autosomal model. Native stochastic decay and finite-size effects remain pending.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "fluid-4.2",
+      "file": "content/fluid/ch04.js",
+      "textHash": "2006fbfa97015a1c1c524e2d832e633ad710aadab19ca4f009cef6dbefc3a00d",
+      "textReview": "Reviewed divergence-free potential flow, Neumann compatibility and the energy uniqueness argument. Solvability/uniqueness needs a bounded connected suitably regular domain, or additional far-field conditions on an unbounded one; simple connectivity alone is insufficient. A second-order interior stencil does not guarantee second-order whole-domain accuracy with staircase wall geometry. Flagged those scope claims for correction; flux conservation and residual controls still need inspection.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "thermo-4.11",
+      "file": "content/thermo/ch04-b.js",
+      "textHash": "febaa9b9f22f7010766c7d65c2a2fb771dc1f56248cc89187bf8fbc590749ff6",
+      "textReview": "Reviewed steady-flow enthalpy conservation and the Maxwell identity for the Joule–Thomson coefficient. Conservation of H additionally neglects changes of bulk kinetic and gravitational potential energy. The low-density van der Waals coefficient and inversion-curve algebra are consistent. Numerical NIST points, inversion limits and phase/liquid-yield interpretation require their own source and native review; the semiclassical derivation alone does not certify them.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "qchem-4.11",
+      "file": "content/qchem/ch04-b.js",
+      "textHash": "88339ef9f629ede2c86113d4f2b3a9c065f537a88b7593e013efbcb27a6d0356",
+      "textReview": "Reviewed second-order dipole coupling and the nonretarded R^-6 regime. Expanding the longitudinal Drude pair and the two half-strength transverse pairs gives the stated 3/4 coefficient. Experimental polarizability and model ionization-frequency data are explicitly distinguished from a benchmark C6 prediction. No text correction identified; near-instability and large-distance numerical behavior remain to inspect.",
+      "visualReview": null,
+      "interactionReview": null,
+      "status": "text-reviewed-follow-up-pending"
+    },
+    {
+      "id": "opt-2.13",
+      "file": "content/opt/ch02-b.js",
+      "textHash": "e2d06cb32364915cd00f9ee875fea2443674795e91dabd4a04891e17922b7929",
+      "textReview": "Reviewed the finite-dimensional Radon partition proof and reduction by merging sets, plus the compactness condition for an infinite closed family. The caption's fine-grid common-point computation cannot certify that an intersection is empty; a narrow intersection can be missed. This may falsely appear to violate Helly if every triple has a sampled witness but the full intersection has no sampled point. Native geometry and feasibility wording require follow-up.",
       "visualReview": null,
       "interactionReview": null,
       "status": "text-reviewed-follow-up-pending"

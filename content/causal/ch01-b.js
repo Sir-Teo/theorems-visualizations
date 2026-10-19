@@ -78,11 +78,12 @@ export default {
     // ------------------------------------------------------------------ 1.8
     {
       num: '1.8', kind: 'Definition', name: 'Positivity',
-      statement: String.raw`**Positivity** (overlap): every kind of unit has a chance of receiving each treatment value of interest. In terms of covariates $L$: $P(A=a\mid L=l)>0$ for every $a$ and every $l$ with $P(L=l)>0$. If it fails in a stratum, that stratum contains only treated or only untreated units, so its outcome under the missing treatment is never observed and no comparison of treated with untreated is possible there: any estimate for that stratum is an extrapolation from a model, not a feature of the data. Violations may be **structural** (nobody of that kind can be treated) or **random** (by chance, in a finite sample).`,
-      idea: String.raw`Under conditional exchangeability the stratum-specific effect is $E[Y\mid A=1,L=l]-E[Y\mid A=0,L=l]$, which requires both conditional means to exist: positivity is what makes these conditional expectations defined. Where propensities approach 0 or 1 the estimates become imprecise too (extreme weights, item 5.5). Positivity is checkable from the data on measured $L$, unlike exchangeability.`,
-      caption: String.raw`500 simulated patients with a covariate $x$ (say, age); the **steepness** of the treatment rule is set by the slider. Top: the probability of treatment, with each patient as a dot on the rug. Red bands are $x$-ranges where one arm is (nearly) empty. Bottom: observed outcomes with the truth (dashed curves, which bend) and a straight-line outcome model fitted to each arm (solid), extended across the red band: the model's average effect over everyone is off, while the comparison restricted to the overlap is sound but answers a smaller question.`,
-      deps: ['causal-1.7'], refs: ['Hernán–Robins §3.3'], tags: ['positivity', 'overlap', 'extrapolation'],
+      statement: String.raw`For a binary treatment $A$ and adjustment covariates $L$, **positivity** (overlap) requires $0<P(A=1\mid L=l)<1$ for almost every $l$ under the target population's covariate distribution. Thus both treatments are possible throughout the covariate regions needed for the causal contrast. For discrete $L$ this reduces to $P(A=a\mid L=l)>0$ for $a=0,1$ whenever $P(L=l)>0$. If one treatment is impossible on a region of positive target-population probability, its conditional outcome there is not identified nonparametrically from the observed data. A **structural zero** is an impossible treatment; a **random or practical violation** is a sparse or empty sampled treatment group that can occur even when its population probability is positive.`,
+      idea: String.raw`With consistency and conditional exchangeability, the conditional causal contrast is identified by $E[Y\mid A=1,L=l]-E[Y\mid A=0,L=l]$ wherever both treatment probabilities are positive. Positivity ensures that both conditional outcome functions are determined by the observed distribution for the target contrast. When propensities approach 0 or 1, finite-sample estimates can also become unstable (extreme weights, item 5.5). Observed treatment counts and propensity diagnostics can expose poor overlap on measured covariates, but a finite continuous-covariate sample cannot certify overlap everywhere in the population. Restricting the target population can reduce extrapolation; sampling error, coarse strata and model misspecification may still affect the estimate.`,
+      caption: String.raw`500 simulated patients with a covariate $x$ (say, age); set the **steepness** and position of a logistic treatment rule. Its population propensity remains strictly between 0 and 1 throughout the displayed range. Top: propensity and sampled treatment groups. Red bands mark occupied bins with fewer than three patients in either arm: practical sparsity, not a demonstration of structural zeros. Bottom: observed outcomes, curved conditional means (dashed), and straight-line outcome fits (solid). The readout compares the full-sample linear-model contrast and the retained-bin contrast with their respective simulated truths. Retaining bins with at least three observations in each arm changes the target group; it does not guarantee an unbiased estimate.`,
+      deps: ['causal-1.7', 'causal-1.5'], refs: ['Hernán–Robins, What If (2 Jan 2025), §3.3, Technical Point 2.3 and Fine Point 12.2'], tags: ['positivity', 'overlap', 'extrapolation'],
       credit: 'Rosenbaum & Rubin, 1983 (strong ignorability)',
+      links: { book: 'https://miguelhernan.org/s/hernanrobins_WhatIf_2jan25.pdf' },
       viz(v) {
         const N = 500, r = rng(5), xs = new Float64Array(N), e0 = new Float64Array(N), e1 = new Float64Array(N);
         for (let i = 0; i < N; i++) { xs[i] = clamp(r.normal(), -2.99, 2.99); e0[i] = 4 * r.normal(); e1[i] = 4 * r.normal(); }
@@ -104,11 +105,15 @@ export default {
           const L1 = ols(tx, ty), L0 = ols(ux, uy);
           const extrap = mean(Array.from(xs, (x) => L1.a + L1.b * x - (L0.a + L0.b * x)));
           let num = 0, den = 0, tnum = 0; for (let b = 0; b < NBIN; b++) if (cnt[b] > 0 && !bad[b]) { num += cnt[b] * (s1[b] / n1[b] - s0[b] / n0[b]); tnum += tau[b]; den += cnt[b]; }
-          return { A, bad, L1, L0, extrap, ate: mean(y1.map((q, i) => q - y0[i])), overlap: den ? num / den : NaN, overlapTruth: den ? tnum / den : NaN, share: den / N };
+          return { A, bad, L1, L0, extrap, ate: mean(y1.map((q, i) => q - y0[i])), overlap: den ? num / den : NaN, overlapTruth: den ? tnum / den : NaN, share: den / N, occupied: cnt.filter(c => c > 0).length };
         });
-        v.legend([['accent', 'treated: $Y^1$ seen', { dot: true }], ['orange', 'untreated: $Y^0$ seen', { dot: true }], ['red', 'one arm missing']]);
+        v.legend([['accent', 'treated: $Y^1$ seen', { dot: true }], ['orange', 'untreated: $Y^0$ seen', { dot: true }], ['red', 'sparse treatment arm (fewer than 3)']]);
         v.render(() => {
           const C = calc();
+          const values = C.A.map((a, i) => a ? y1[i] : y0[i]);
+          values.push(C.L0.a - 3 * C.L0.b, C.L0.a + 3 * C.L0.b, C.L1.a - 3 * C.L1.b, C.L1.a + 3 * C.L1.b);
+          const lo = Math.min(10, ...values), hi = Math.max(90, ...values), pad = 0.04 * (hi - lo);
+          sB.setView([-3, 3], [lo - pad, hi + pad]);
           for (let b = 0; b < NBIN; b++) if (C.bad[b]) { sA.vband(-3 + b * BW, -3 + (b + 1) * BW, { color: 'red', alpha: 0.14 }); sB.vband(-3 + b * BW, -3 + (b + 1) * BW, { color: 'red', alpha: 0.14 }); }
           sA.fn((x) => logistic(kS.value * (x - cS.value)), { color: 'ink', width: 2.2, domain: [-3, 3] });
           for (let i = 0; i < N; i++) sA.dot(xs[i], C.A[i] ? 0.96 : 0.04, { r: 2.3, color: C.A[i] ? 'accent' : 'orange' });
@@ -118,8 +123,11 @@ export default {
         });
         v.readout(() => {
           const C = calc(), nb = C.bad.filter(Boolean).length;
-          return `${nb ? `**${nb}** of ${NBIN} $x$-bins have fewer than 3 patients in one arm (${pct(1 - C.share, 0)} of patients).` : 'Every bin contains both treated and untreated patients.'} True average effect over all 500: **$${fx(C.ate, 2)}$**. ` +
-            `Straight-line outcome model: $${fx(C.extrap, 2)}$ (error $${sg(C.extrap - C.ate, 2)}$). Comparison within the overlap only: $${fx(C.overlap, 2)}$ vs the true effect in those bins $${fx(C.overlapTruth, 2)}$, a correct answer to a narrower question.`;
+          const retained = C.share > 0
+            ? `Retained-bin contrast: $${fx(C.overlap, 2)}$ vs simulated truth for those bins $${fx(C.overlapTruth, 2)}$ (difference $${sg(C.overlap - C.overlapTruth, 2)}$). This is a different target group; finite sampling and binning can still affect the estimate.`
+            : 'No occupied bin has at least 3 patients in both arms; the retained-bin contrast is unavailable.';
+          return `${nb ? `**${nb}** of ${C.occupied} occupied $x$-bins have fewer than 3 patients in one arm (${pct(1 - C.share, 0)} of patients).` : 'Every occupied bin has at least 3 patients in each arm.'} Simulated true average effect over all 500: **$${fx(C.ate, 2)}$**. ` +
+            `Straight-line outcome-model contrast: $${fx(C.extrap, 2)}$ (difference $${sg(C.extrap - C.ate, 2)}$). ${retained}`;
         });
       },
     },
