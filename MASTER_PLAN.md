@@ -566,6 +566,10 @@ These are features only an atlas can have, and the main reason to build one.
    (cover with balls → extract a finite subcover → take the minimum radius).
 4. **Shareable states and embeds**: control and handle state encoded in the URL
    (`#/t/mech-5.3?s=…`), plus `?embed=1` for course pages and slides.
+   **Implemented (2026-10-19):** runtime controls, native2D handles, Stage3D camera,
+   proof step and paused clock round trip; custom edited data has an explicit opt-in API
+   and visible coverage limits. Malformed or outdated states restore fresh defaults.
+   See [implementation and native evidence](docs/verification/shareable-state-followup.md).
 5. **Status dashboard** (`#/status`): coverage, review state, verify flags, unknown deps, kit usage.
 6. **External cross-references**: Wikipedia for everything; Mathlib declaration names for math
    items where they exist (checked by script); Feynman Lectures and OpenStax for physics.

@@ -194,6 +194,7 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.button(label, fn)` | e.g. “Resample”, “Step”. |
 | `v.sound()`, `v.soundButton(label, fn)` | audio controller / a speaker button that calls `fn(sound)` — see *Audio* below. |
 | `v.onCleanup(fn)` | run `fn` when the viz is destroyed (clear your own `setInterval`s, observers…). |
+| `v.shareState(key, {get, set, validate?})` | register opaque custom data for share links; see *Shareable state* below. |
 | `ctl.el.hidden = true` | every control exposes its element as `.el` (a button *is* its element): hide controls that do nothing in the current mode. |
 | `v.readout(fn)` | live rich text under the panels (TeX allowed); recomputed after each draw. A `\n` in the string starts a new line. |
 | `v.legend([[color, label], [color, label, {dash, dot, area}]])` | legend row (call once, or inside render if it changes). |
@@ -202,6 +203,42 @@ feed + `rac`, `\;` becomes `;`); the checker flags the detectable cases as TeX e
 | `v.color(name, alpha)` | palette colour as CSS string. `v.rgb(name)` → `[r,g,b,a]`; `v.mix(a, b, t)`. |
 | `v.M` | math library (below). `v.Cx`, `v.cx(re, im)` complex numbers. `v.rng(seed)` seeded RNG. |
 | `v.fmt(x, digits)` / `v.fix(x, decimals)` | number formatting with a real minus sign (plain text). `v.sci(x, digits)` gives TeX (`1.2\times10^{-5}`) for use inside `$…$`. |
+
+### Shareable state
+
+The item page's **Share / embed** panel creates `#/t/<id>?s=…` links and an iframe with
+`?embed=1`. Core slider, toggle, segmented-choice and formula values are read from the runtime,
+not scraped from the DOM. Native 2D handles, native Stage3D cameras, proof-step indices and the
+animation clock are included. Opening a state pauses playback. Controls replay `onChange`;
+handles replay their constraint and `onDrag` callbacks before the first draw. Create controls
+and handles once, in a stable order, with stable labels. Changed component inventories and
+select options are rejected rather than applied to a different control.
+
+**Opaque state needs an adapter.** Edited graph nodes/edges, freehand points, random samples,
+button counters, custom-kit handles/cameras and simulation histories are not automatically
+reconstructible from controls. The sharing panel says so. Register the data that determines
+the picture, including seeds or samples when relevant:
+
+```js
+const G = v.graph(stage, { nodes, edges, editable: true });
+v.shareState('edited network', {
+  get: () => ({
+    nodes: G.nodes.map(({ id, x, y }) => ({ id, x, y })),
+    edges: G.edges.map(({ from, to }) => ({ from, to })),
+  }),
+  validate: data => Array.isArray(data.nodes) && Array.isArray(data.edges),
+  set: data => G.set({ ...data, layout: 'none' }),
+});
+```
+
+Use a unique, stable key and validate your data's actual mathematical constraints (the small
+example above only checks its shape). Adapters run after controls and handles and before the
+camera, clock and proof step are restored; update any dependent caches in `set`. The snapshot
+is copied, so later edits do not change an existing link. Values must be finite numbers,
+booleans, text, arrays or plain objects; convert typed arrays explicitly. Functions, audio,
+pointer hover and external resources are not serialized. The versioned codec limits decoded
+state to 18,000 UTF-8 bytes and rejects malformed or oversized links. Links are tied to one
+item. A bad link reports the problem while leaving the visualization available.
 
 ### Stage options
 

@@ -77,6 +77,10 @@ gzipped by the build. Other routes load the full index when needed. The first no
 search loads written and planned records plus collection details; idle time and empty
 search focus do not download those details.
 
+Use **Share / embed** on an idea's page to capture its controls and native handles in a
+link, or copy an interactive iframe for a course page. The panel explains which custom
+edits are included. Saved animations open paused at the shared time.
+
 ## Deploying
 
 `.github/workflows/pages.yml` rebuilds the data and publishes the site with GitHub Pages on

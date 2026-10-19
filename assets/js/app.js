@@ -1,9 +1,11 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
 import { buildIndex, runSearch, highlight, norm } from './search.js';
+import { decodeState, stateURL } from './share-state.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, renderChord, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
+if (new URLSearchParams(location.search).get('embed') === '1' && location.hash.startsWith('#/t/')) document.documentElement.classList.add('embed-view');
 document.querySelector('.skip-link').addEventListener('click', (e) => { e.preventDefault(); app.focus(); app.scrollIntoView(); });
 const SITE = 'Ideas, Visualized';
 let G = null;           // current atlas state; home.json is upgraded on demand to the complete index
@@ -457,7 +459,7 @@ async function pagePlanned(it) {
   wireLineage(el, it);
 }
 
-async function pageTheorem(id) {
+async function pageTheorem(id, params = new URLSearchParams()) {
   const isCurrent = viewIsCurrent();
   await ensurePlanned().catch(() => {});
   if (!isCurrent()) return;
@@ -488,7 +490,15 @@ async function pageTheorem(id) {
     ${paperBlock(it)}
     <div class="statement">${richHTML(it.st || '')}${it.scope ? `<div class="scope"><span class="eyebrow">Holds when</span> ${inlineHTML(it.scope)}</div>` : ''}</div>
     <div class="thm-grid">
-      <div class="card viz-card" ${it.viz ? '' : 'hidden'}><div class="viz-caption" id="caption"></div><div id="viz"><div class="viz-placeholder">Loading visualization…</div></div></div>
+      <div class="card viz-card" ${it.viz ? '' : 'hidden'}><div class="viz-caption" id="caption"></div><div id="viz"><div class="viz-placeholder">Loading visualization…</div></div>
+        <details class="viz-share"><summary>Share / embed</summary>
+          <p>Includes controls, 2D handles, 3D camera, proof step and a paused animation time. Other edited data and simulation history are included only when this visualization supports sharing them.</p>
+          <p class="share-adapters"></p>
+          <button class="btn share-create" type="button">Create state link</button>
+          <div class="share-output" hidden><label>Link to this state<input class="share-url" readonly aria-label="Link to this visualization state"></label><button class="btn share-copy" type="button">Copy link</button>
+          <label>Embed in a course page<textarea class="share-embed" readonly rows="3" aria-label="Embed code for this visualization state"></textarea></label><a class="share-preview" target="_blank" rel="noopener">Preview embed ↗</a></div>
+          <p class="share-status" role="status"></p>
+        </details></div>
       <div class="side-grid">
         <div class="card panel"><h2>Why it's true</h2><div class="prose" id="idea"><span class="faint">…</span></div>
           ${it.refs || links.length ? `<div class="refs-inline">${it.refs ? `<span class="eyebrow">Read more</span> ${escapeHTML(it.refs.join(' · '))}` : ''}${links.map(([k, u]) => ` · <a href="${escapeHTML(u)}" target="_blank" rel="noopener">${escapeHTML(k)}</a>`).join('')}</div>` : ''}
@@ -507,8 +517,13 @@ async function pageTheorem(id) {
       ${lineageBlock(it)}
     </div>
     <p class="kbd-hint" style="margin-top:18px">Tip: use ← and → to step through ${escapeHTML(C.short)} in order.</p>
+    <a class="embed-attribution" target="_blank" rel="noopener">Ideas, visualized · Open full explanation ↗</a>
   </div>`);
   app.replaceChildren(el);
+  const fullURL = new URL(location.href); fullURL.searchParams.delete('embed');
+  const fullParams = new URLSearchParams(params); fullParams.delete('embed');
+  fullURL.hash = `/t/${encodeURIComponent(id)}${fullParams.size ? `?${fullParams}` : ''}`;
+  el.querySelector('.embed-attribution').href = fullURL.href;
   wireLineage(el, it);
   // keyboard prev/next
   const onKey = (e) => {
@@ -526,7 +541,30 @@ async function pageTheorem(id) {
     el.querySelector('#idea').innerHTML = richHTML(full.idea || '');
     if (full.viz) {
       el.querySelector('#caption').innerHTML = full.caption ? ICON_HAND + richHTML(full.caption) : '';
-      destroyViz = mount(el.querySelector('#viz'), full.viz);
+      let state = null, stateError = '';
+      const status = el.querySelector('.share-status');
+      if (params.has('s')) {
+        try { const saved = decodeState(params.get('s')); if (saved.item !== id) throw new Error('This saved state belongs to a different idea.'); state = saved; }
+        catch (error) { status.textContent = stateError = `Saved state could not be read: ${error.message}`; el.querySelector('.viz-share').open = true; }
+      }
+      destroyViz = mount(el.querySelector('#viz'), full.viz, { state, onStateError: error => { status.textContent = `Saved state could not be restored: ${error.message}`; el.querySelector('.viz-share').open = true; } });
+      if (stateError) { const notice = document.createElement('div'); notice.className = 'viz-state-notice'; notice.setAttribute('role', 'status'); notice.textContent = stateError; el.querySelector('#viz').prepend(notice); }
+      const custom = destroyViz.stateInfo().custom;
+      el.querySelector('.share-adapters').textContent = custom.length ? `Also includes: ${custom.join(', ')}. Other custom edits and samples are excluded.` : 'Custom graph edits, drawn points, random samples and simulation history are excluded from this link.';
+      el.querySelector('.share-create').addEventListener('click', () => {
+        try {
+          const saved = destroyViz.snapshot(), url = stateURL(location.href, id, saved), embed = stateURL(location.href, id, saved, true);
+          el.querySelector('.share-url').value = url;
+          el.querySelector('.share-embed').value = `<iframe src="${escapeHTML(embed)}" title="${escapeHTML(it.name.replace(/\$/g, ''))}" width="100%" height="640" loading="lazy" style="border:0"></iframe>`;
+          el.querySelector('.share-preview').href = embed; el.querySelector('.share-output').hidden = false;
+          status.textContent = 'State link created. Recreate the link after making further changes.';
+        } catch (error) { status.textContent = error.message; }
+      });
+      el.querySelector('.share-copy').addEventListener('click', async () => {
+        const input = el.querySelector('.share-url');
+        try { await navigator.clipboard.writeText(input.value); status.textContent = 'State link copied.'; }
+        catch { input.focus(); input.select(); status.textContent = 'Link selected. Copy it with your keyboard.'; }
+      });
     }
   } catch (e) {
     console.error(e);
@@ -729,6 +767,7 @@ async function route(event) {
   const [path, qs] = raw.split('?');
   const params = new URLSearchParams(qs || '');
   const parts = path.split('/').filter(Boolean);
+  document.documentElement.classList.toggle('embed-view', parts[0] === 't' && (new URLSearchParams(location.search).get('embed') === '1' || params.get('embed') === '1'));
   closeSearch();
   app.replaceChildren(h('<div class="loading" role="status">Loading…</div>'));
   // old book routes
@@ -739,8 +778,8 @@ async function route(event) {
     else if (parts[0] === 'f' && parts[1]) pageField(parts[1]);
     else if (parts[0] === 'c' && parts.length === 2) await pageCollection(parts[1]);
     else if (parts[0] === 'c' && parts.length === 3) await pageChapter(parts[1], +parts[2]);
-    else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}`);
-    else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]));
+    else if (parts[0] === 't' && parts[1] && G.alias.has(decodeURIComponent(parts[1]))) location.replace(`#/t/${G.alias.get(decodeURIComponent(parts[1]))}${qs ? `?${qs}` : ''}`);
+    else if (parts[0] === 't' && parts[1]) await pageTheorem(decodeURIComponent(parts[1]), params);
     else if (parts[0] === 'map') await pageMap(params);
     else if (parts[0] === 'status') pageStatus();
     else if (parts[0] === 'timeline') await pageTimeline(params);
