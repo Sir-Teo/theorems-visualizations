@@ -10,16 +10,20 @@ const browser=await chromium.launch({executablePath:findBrowser(),headless:true}
 const syntheticReviewer='AUTOMATED PACKET TEST — NOT A HUMAN REVIEW';
 try{
  const context=await browser.newContext({viewport:{width:1400,height:1100},acceptDownloads:true});
- await installBrowserAssets(context,{local:true});
+ await installBrowserAssets(context);
  const page=await context.newPage(),errors=[];
  page.on('pageerror',error=>errors.push(error.message));
  await page.goto(`http://127.0.0.1:${server.address().port}/docs/verification/human-review.html`);
  assert.equal(await page.locator('nav button').count(),339);
  await page.frameLocator('#page').locator('#app[data-route]').waitFor();
+ await page.frameLocator('#page').locator('.katex').first().waitFor();
  // The required name guard is actual worksheet behavior, not skipped by the test.
  await page.locator('#export').click();
  assert.match(await page.locator('#state').innerText(),/Enter the actual human reviewer/);
  await page.locator('nav button').nth(1).click();
+ // Wait for the embedded application's route focus before typing in its parent.
+ await page.frameLocator('#page').locator('#app[data-route="#/t/algo-3.5"]').waitFor();
+ await page.frameLocator('#page').locator('.katex').first().waitFor();
  await page.locator('#reviewer').pressSequentially(syntheticReviewer);
  await page.waitForFunction(name=>document.getElementById('reviewer').value===name&&saved.reviewer===name&&JSON.parse(localStorage.getItem(key)).reviewer===name,syntheticReviewer);
  await page.locator('#notes').pressSequentially('Automated form test only; no human findings.');

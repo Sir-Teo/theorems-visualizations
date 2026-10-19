@@ -7,11 +7,10 @@ import { chromium } from 'playwright-core';
 import { loadAll } from '../scripts/lib.mjs';
 import { createServer } from '../scripts/serve.mjs';
 import { findBrowser, installBrowserAssets } from '../scripts/browser.mjs';
+import { isListeningTarget } from '../scripts/verification-audio-targets.mjs';
 
 const { items } = await loadAll();
-const targets = items.filter(i => typeof i.viz === 'function' && i.viz.toString().includes('soundButton') && (
-  ['sig-3.15', 'sig-4.12', 'physio-4.14', 'pde-4.2'].includes(i.id) ||
-  (i.col === 'music' && [7, 8].includes(i.chapter)) || i.col === 'ling'));
+const targets = items.filter(isListeningTarget);
 assert.ok(targets.length >= 20, 'expected named audio chapters to be loaded');
 const selected = process.argv.length > 2 ? targets.filter(i => process.argv.slice(2).includes(i.id)) : targets;
 assert.ok(selected.length, 'select at least one known audio item');

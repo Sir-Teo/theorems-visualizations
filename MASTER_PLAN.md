@@ -63,6 +63,10 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 - [Thrust-network uniqueness](docs/verification/arch-thrust-prerequisite-followup.md): supplies the positive-definite matrix prerequisite, fixes negative diagonal forces and reaches 25 edges for architecture.
 - [Calibration](docs/verification/behav-calibration-followup.md): supplies conditional-probability and independence prerequisites, corrects the binomial benchmark and reaches 25 edges for behavioural economics.
 
+The [human-review and listening handoff](docs/verification/listening-review-handoff.md) links the prepared 339-page human worksheet and 50-page listening worksheet. The listening inventory shares its target selection with the native audio checks and records actual reviewer observations; generation and synthetic form tests grant no review credit.
+
+**Reviewer instruction (2026-10-19):** the user directs the agent to perform the sample review ("you review"). Review the same 339 pages and record agent findings, corrections and field-guide feedback separately. This replaces the requested reviewer for this follow-up without relabelling agent work as human review. Distinguish direct audio perception from signal/playback instrumentation. The agent review is pending.
+
 ### Where we started
 
 
