@@ -157,7 +157,7 @@ export default {
           pic: 'Cohorts all have two children but postpone them by a month each year; the period TFR drops below two while postponement lasts, and the Bongaarts–Feeney adjustment recovers the true level.' },
         { num: '4.7', kind: 'Model', name: 'Proximate determinants of fertility (Bongaarts)', deps: ['demo-4.2'], refs: ['PHG ch. 5'],
           pic: 'Start from a biological maximum of about fifteen births and apply multiplicative indices for marriage, contraception, postpartum infecundability and abortion; each slider’s effect on TFR is shown.' },
-        { num: '4.8', kind: 'Model', name: 'Natural versus controlled fertility (Coale–Trussell)', deps: ['demo-4.1', 'stat-12.2'], refs: ['PHG ch. 9'],
+        { num: '4.8', kind: 'Model', name: 'Natural versus controlled fertility (Coale–Trussell)', deps: ['demo-4.1', 'opt-1.6'], refs: ['PHG ch. 9'],
           pic: 'Fit natural-fertility level M and control m to an age schedule; under stopping behaviour, fertility at older ages falls away from the natural shape, raising m.' },
         { num: '4.9', kind: 'Definition', name: 'Princeton fertility indices (I_f, I_g, I_m)', deps: ['demo-4.1'], refs: ['PHG ch. 5'],
           pic: 'Benchmark a population’s births against Hutterite rates; the indices for overall, marital fertility and marriage multiply together, and provinces of 19th-century Europe are mapped by I_g.' },

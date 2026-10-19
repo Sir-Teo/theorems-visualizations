@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "meaning": "Six author ledgers reconciled structurally against live written prerequisites, registered fields and syllabus mirrors. Different-field title matches alone do not establish semantic validity; reciprocal peer reports supply that review. Existing alternate graph paths do not invalidate a separately documented direct proof role.",
+  "meaning": "Six author ledgers reconciled structurally against live written prerequisites, registered fields and syllabus mirrors. Different-field title matches alone do not establish semantic validity. Baseline reciprocal peer reports and subsequent linked follow-up reports record their own semantic review scope; structural passes do not imply new independent peer review. Existing alternate graph paths do not invalidate a separately documented direct proof role.",
   "batches": [
     {
       "name": "probability",
@@ -35,11 +35,11 @@
     {
       "name": "macro",
       "file": "docs/verification/cross-field-macro.json",
-      "sha256": "528a946a0036246571350c1c83dbaae052c0f17ce569bc0c51908026f7a12870",
-      "edges": 120
+      "sha256": "86d00c2cc6ca32d5f95a727e0e199d406fd37b2e2a859cc6bdde9b307264468f",
+      "edges": 121
     }
   ],
-  "uniqueAddedEdges": 768,
+  "uniqueAddedEdges": 769,
   "issues": [],
   "graphNodes": 13661,
   "cycles": [],

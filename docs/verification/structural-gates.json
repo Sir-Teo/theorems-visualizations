@@ -862,12 +862,12 @@
       "field": "social",
       "writtenItems": 50,
       "betweenFields": {
-        "writtenToWritten": 24,
+        "writtenToWritten": 25,
         "writtenToAll": 26,
         "allToAll": 37
       },
       "betweenCollections": {
-        "writtenToWritten": 24,
+        "writtenToWritten": 25,
         "writtenToAll": 26,
         "allToAll": 37
       }
@@ -987,7 +987,6 @@
     "neuro",
     "sysbio",
     "behav",
-    "demo",
     "art",
     "arch",
     "ling"

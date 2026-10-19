@@ -2592,6 +2592,19 @@
       "sourceFile": "content/ling/ch02-c.js",
       "existingClaimAnchor": " and the candidates and constraints are shared. The set of attested systems is the factorial typology: the winners over all $k!$ rankings.",
       "reason": "The factorial typology explicitly enumerates all permutations of the constraint ranking."
+    },
+    {
+      "from": "demo-4.8",
+      "to": "opt-1.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/demo/ch04-b.js",
+      "existingClaimAnchor": "Taking logs, $\\ln\\bigl(r(a)/n(a)\\bigr) = \\ln M + m\\,v(a)$ is a straight line in $v$, so $M$ and $m$ are read off a regression.",
+      "reason": "The model fits intercept log(M) and slope m by ordinary least squares; written opt-1.6 supplies precisely these line-fitting normal equations, replacing the equivalent planned stat-12.2 prerequisite.",
+      "report": "docs/verification/demo-prerequisite-followup.md",
+      "reviewScope": "Source/target semantic comparison and structural checks; no additional independent peer review claimed."
     }
   ],
   "syllabusMirrorRepairs": [
@@ -2838,5 +2851,19 @@
       "art": 5,
       "ling": 5
     }
+  },
+  "subsequentPrerequisiteFollowup": {
+    "report": "docs/verification/demo-prerequisite-followup.md",
+    "replacedPlannedEdge": {
+      "from": "demo-4.8",
+      "to": "stat-12.2"
+    },
+    "writtenEdge": {
+      "from": "demo-4.8",
+      "to": "opt-1.6"
+    },
+    "currentDemoCount": 25,
+    "previousSnapshotPreserved": true,
+    "independentPeerReview": "not claimed for this follow-up"
   }
 }
