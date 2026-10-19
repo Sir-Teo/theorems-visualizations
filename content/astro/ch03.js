@@ -2,7 +2,7 @@
 
 import {
   TAU, DEG, clamp, memo, sci, G, C_LIGHT, AU, GM_SUN, L_SUN, K_B, M_H, AMU, YEAR, BODY, interp,
-  rocheBranch, orbitTable, spinOrbit, hillKick, HILL_MIN,
+  rocheBranch, orbitTable, spinOrbit, hillKick, HILL_MIN, tidalLockModel, lockingSpin, moonTideState, jeansParameters, tidalPower, eccentricityDamping,
 } from './ch03.shared.js';
 
 // ── quantities shared by several items (NASA NSSDC fact-sheet values via BODY; G CODATA 2018) ─────────────────
@@ -84,18 +84,17 @@ export default {
       statement: String.raw`Because Earth turns faster than the Moon orbits, friction in the oceans and solid body drags the tidal bulge ahead of the Earth–Moon line by a small lag angle $\delta$. The Moon's pull on the bulge slows Earth's spin and the bulge's pull on the Moon speeds it up, so spin angular momentum passes into the orbit: the day lengthens and the Moon recedes. For a circular orbit with a constant lag the torque is $N = \tfrac32 k_2 \frac{G M_\mathbb{C}^2 R^5}{a^6}\sin 2\delta$ and the orbit grows as $\dot a = 3\,\frac{k_2}{Q}\,\frac{M_\mathbb{C}}{M_\oplus}\left(\frac{R}{a}\right)^5 n\,a$ with $\sin2\delta = 1/Q$. Total angular momentum of Earth's spin plus the lunar orbit is conserved (neglecting the Sun). Laser ranging gives a present recession of $\approx 3.8$ cm per year.`,
       idea: String.raw`The pulls of Moon on bulge and bulge on Moon are equal and opposite (a pair of forces along lines that miss the centres by $R\sin\delta$), so they exchange angular momentum without creating any: $C\dot\omega = -\dot L_\mathrm{orb}$ (mech 2.12, spin plus orbital angular momentum). Because $L_\mathrm{orb} \propto \sqrt{a}$ and the bulge's torque falls like $a^{-6}$, the recession slows as the Moon moves out: $\dot a \propto a^{-11/2}$ and $a^{13/2}$ grows linearly in time. Only the product $k_2/Q$ is needed; here it is fixed so that the model reproduces the measured $3.8$ cm/yr, and $k_2 = 0.3$ is assumed to draw the lag angle.`,
       caption: String.raw`Drag the **handle** on the dial to change the lag angle $\delta$ (angles are drawn eight times too large; the green ring marks the lag implied by today's measured recession, for an assumed $k_2 = 0.3$). The bulge, being ahead of the Earth–Moon line, pulls the Moon forward along its orbit (red). Move the **time** slider: the Moon's distance and the length of the day follow from constant lag plus conservation of angular momentum. Run it backwards: with today's lag the Moon would have touched Earth within about 1.5 Gyr — so the lag, hence the dissipation, cannot have been constant.`,
-      scope: String.raw`Constant-lag, circular, equatorial orbit; Earth's spin, the lunar orbit and nothing else (the Sun's tide is ignored, as is the Moon's spin). Valid for $a \gg R_\oplus$. The real dissipation depends on the arrangement of oceans and varied strongly over geological time.`,
-      deps: ['mech-9.3', 'mech-2.12'],
-      refs: ['Murray–Dermott §4.9', 'Murray–Dermott §4.13'],
+      scope: String.raw`Constant positive phase lag (not constant time lag), circular, equatorial orbit; the evolution is shown only while Earth spins faster than the orbit and the bodies have not reached contact; Earth's spin, the lunar orbit and nothing else (the Sun's tide is ignored, as is the Moon's spin). Valid for $a \gg R_\oplus$. The real dissipation depends on the arrangement of oceans and varied strongly over geological time.`,
+      deps: ['mech-9.3', 'mech-2.12', 'ode-1.3'],
+      refs: ['Frouard et al.(2016), §2.1 eqs.(1)–(3), AppendixA eq.(A13); Williams, Turyshev & Boggs2014, Results: Lunar tidal acceleration and recession rate'],
       tags: ['tides', 'angular momentum', 'Moon'],
       credit: 'Apollo lunar laser ranging, 1969 onward',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tidal_acceleration' },
-      verify: true,
       viz(v) {
         const E = BODY.earth, Mm = BODY.moon.M, a0 = BODY.moon.a, R = E.R;
         const C = 0.3307 * E.M * R * R, w0 = TAU / 86164.1; // moment of inertia factor 0.3307 (approximate), sidereal rotation
         const mu0 = (E.M * Mm) / (E.M + Mm), n0 = Math.sqrt(G * (E.M + Mm) / a0 ** 3);
-        const rate0 = 0.038 / YEAR; // m/s, 3.8 cm per year (NASA Moon fact sheet; lunar laser ranging)
+        const rate0 = 0.038 / YEAR; // m/s, rounded38.08mm/yr LLR estimate (Williams et al.2014)
         const kq = rate0 / (3 * (Mm / E.M) * (R / a0) ** 5 * n0 * a0); // implied k2/Q
         const K2 = 0.3, delta0 = 0.5 * Math.asin(kq / K2);
         const Lorb = (a) => mu0 * Math.sqrt(G * (E.M + Mm) * a), Ltot = C * w0 + Lorb(a0);
@@ -112,7 +111,7 @@ export default {
           const aOf = (t) => { const z = a0 ** 6.5 + 6.5 * A * t * 1e9 * YEAR; return z > 0 ? Math.pow(z, 1 / 6.5) : NaN; };
           const wOf = (a) => (Ltot - Lorb(a)) / C;
           const tContact = -(a0 ** 6.5 - R ** 6.5) / (6.5 * A) / (1e9 * YEAR);
-          const a = aOf(tS.value), w = wOf(a);
+          const chosen=moonTideState(tS.value,sc),{a,w,valid}=chosen;
           // left picture
           const bulge = (ang) => { const pts = []; for (let i = 0; i <= 160; i++) { const p = (TAU * i) / 160, r = 1 + 0.26 * 0.5 * (3 * Math.cos(p - ang) ** 2 - 1); pts.push([r * Math.cos(p), r * Math.sin(p)]); } return pts; };
           const Mx = 4.4;
@@ -140,19 +139,21 @@ export default {
           // curves
           const T = []; for (let i = 0; i <= 130; i++) T.push(-1.6 + (6.6 * i) / 130);
           const pa = [], pl = [];
-          for (const t of T) { const aa = aOf(t); if (!(aa > R * 1.01) || !isFinite(aa)) continue; const ww = wOf(aa); pa.push([t, aa / 1e6]); if (ww > 0) pl.push([t, (TAU / ww) / 3600]); }
+          for (const t of T) { const z=moonTideState(t,sc);if(!z.valid)continue;pa.push([t,z.a/1e6]);pl.push([t,TAU/z.w/3600]); }
+          gl.setView([-1.6,5],[0,Math.max(160,...pl.map(q=>q[1]*1.05))]);
           ga.hline(a0 / 1e6, { color: 'faint', width: 1, dash: [3, 4] });
-          ga.path(pa, { color: 'accent', width: 2.4 }); ga.dot(tS.value, a / 1e6, { r: 6, color: 'gold' });
-          gl.path(pl, { color: 'accent', width: 2.4 }); if (w > 0) gl.dot(tS.value, (TAU / w) / 3600, { r: 6, color: 'gold' });
+          ga.path(pa, { color: 'accent', width: 2.4 }); if(valid)ga.dot(tS.value, a / 1e6, { r: 6, color: 'gold' });
+          gl.path(pl, { color: 'accent', width: 2.4 }); if (valid) gl.dot(tS.value, (TAU / w) / 3600, { r: 6, color: 'gold' });
           gl.hline(TAU / w0 / 3600, { color: 'faint', width: 1, dash: [3, 4] });
           if (isFinite(tContact) && tContact > -1.6) { ga.dot(tContact, 0, { r: 5, color: 'red' }); ga.text('contact', tContact, 0, { color: 'red', size: 10, dx: 8, dy: -10, align: 'left' }); }
-          cur = { del, sc, a, w, tContact };
+          cur = { del, sc, a, w, tContact,valid,reason:chosen.reason };
           const dadt = rate0 * sc, dLdt = 0.5 * Lorb(a0) / a0 * dadt, dwdt = -dLdt / C;
           cur.dLODms = ((TAU / w0) * (-dwdt / w0) * 36525 * 86400) * 1000; // ms per century
         });
         v.readout(() => {
           if (!cur) return '';
-          return String.raw`lag factor $\sin2\delta/\sin2\delta_0 = ${v.fix(cur.sc, 2)}$ · today's recession in this model: $${v.fix(3.8 * cur.sc, 1)}$ cm/yr, day lengthening $+${v.fix(cur.dLODms, 2)}$ ms/century (tidal friction on Earth; implied $k_2/Q = ${v.fix(kq, 3)}$) · at $t = ${v.fix(tS.value, 2)}$ Gyr: $a = ${v.fix(cur.a / 1e6, 0)}\times10^3$ km, rotation period $${cur.w > 0 ? v.fix(TAU / cur.w / 3600, 1) : '\\infty'}$ h` + (isFinite(cur.tContact) ? String.raw` · contact at $t \approx ${v.fix(cur.tContact, 2)}$ Gyr` : '') + String.raw` · reference values: NASA's lunar-recession figure $3.8$ cm/yr; tidal day-lengthening $\approx 2.3$ ms/century against $\approx 1.7$–$1.8$ ms/century from ancient eclipses (post-glacial rebound subtracts some)`;
+          return String.raw`lag factor $\sin2\delta/\sin2\delta_0 = ${v.fix(cur.sc, 2)}$ · today's recession in this model: $${v.fix(3.8 * cur.sc, 1)}$ cm/yr, day lengthening $+${v.fix(cur.dLODms, 2)}$ ms/century (implied $k_2/Q = ${v.fix(kq, 3)}$)` + (cur.valid ? String.raw` · at $t=${v.fix(tS.value,2)}$ Gyr: $a=${v.fix(cur.a/1e6,0)}\times10^3$ km, spin period $${v.fix(TAU/cur.w/3600,1)}$ h` : ` · at ${v.fix(tS.value,2)} Gyr: ${cur.reason}; no state is shown`) + String.raw` · formal contact at $t\approx${v.fix(cur.tContact,2)}$ Gyr (the distant-tide approximation fails before contact) · reference normalization: Williams et al.(2014) LLR recession rounded to $3.8$ cm/yr`;
+
         });
       },
     },
@@ -162,15 +163,14 @@ export default {
       kind: 'Phenomenon',
       name: 'Tidal locking',
       statement: String.raw`A satellite on a circular orbit about a much heavier planet is flexed by the planet's tide. Dissipation in that flexing exerts a torque that drives its spin $\omega$ toward the mean motion $n$ (keeping one face toward the planet) in a time of order
-$$t_\mathrm{lock} \approx \frac{\omega\,a^6\, I\, Q}{3\,G M_p^2\,k_2 R^5},\qquad k_2 = \frac{3/2}{1 + 19\mu/(2\rho g R)},\quad I \approx 0.4\,mR^2,$$
-where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rigidity, $\rho$, $g$, $R$ the satellite's density, surface gravity and radius. The strong $a^6$ dependence means locking is quick for close moons and takes longer than the age of the Solar System for distant ones. Most large regular moons are locked.`,
-      idea: String.raw`The same lagging bulge as in 3.2, now on the satellite: the planet's pull on the lagging bulge brakes the spin until the bulge stops sweeping around the body (spin $=$ orbital rate). The braking torque is $\propto k_2 G M_p^2R^5/(Q a^6)$ (steep in $a$, since tides scale as $a^{-3}$ and the lag torque as the tide squared) and it acts on the moment of inertia $I$, so dividing the initial spin by the resulting deceleration gives the estimate. The Love number $k_2$ is the satellite's response: small for a rigid rocky body ($\mu$ large), $3/2$ for a fluid one.`,
-      caption: String.raw`Choose the **planet** and the **rigidity** of the moon, then drag the **orbit handle** along the curve of locking time against distance (in planet radii). The right panel is the spin of that moon against time (log scales) from its initial spin down to synchronous rotation $\omega = n$. Compare the locking time with the age of the Solar System (dashed line). The Moon sits at 60 Earth radii.`,
-      scope: String.raw`An order-of-magnitude estimate: it assumes a homogeneous body, constant $Q$, an initially fast spin, circular orbit and no resonances; the result is extremely sensitive to $a$, $Q$ and $\mu$ and may be uncertain by orders of magnitude. Nonuniform bodies and eccentric orbits can lock elsewhere (3.4).`,
-      deps: ['astro-3.2'],
-      refs: ['Murray–Dermott §5.2'],
+$$t_\mathrm{lock} \approx \frac{2|\omega_0-n|\,a^6\, I\, Q}{3\,G M_p^2\,k_2 R^5},\qquad k_2 = \frac{3/2}{1 + 19\mu/(2\rho g R)},\quad I \approx 0.4\,mR^2,$$
+where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rigidity, $\rho$, $g$, $R$ the satellite's density, surface gravity and radius. The strong $a^6$ dependence means locking is quick for close moons and takes longer than the age of the Solar System for distant ones. This constant-torque estimate uses $Q^{-1}=|\sin 2\delta|$; other dissipation conventions can change prefactors.`,
+      idea: String.raw`The same lagging bulge as in 3.2, now on the satellite: the planet's pull on the lagging bulge brakes a fast spin, or accelerates a slow one, until the bulge stops sweeping around the body (spin $=$ orbital rate). The braking torque is $\propto k_2 G M_p^2R^5/(Q a^6)$ (steep in $a$, since tides scale as $a^{-3}$ and the lag torque as the tide squared) and it acts on the moment of inertia $I$, so dividing the required change $|\omega_0-n|$ by the magnitude of the angular acceleration gives the estimate. The Love number $k_2$ is the satellite's response: small for a rigid rocky body ($\mu$ large), $3/2$ for a fluid one.`,
+      caption: String.raw`Choose the **planet** and the **rigidity** of the moon, then drag the **orbit handle** along the curve of locking time against distance (in planet radii). The right panel is the spin of that moon against time (log scales) from its initial spin towards synchronous rotation $\omega = n$. Compare the locking time with the age of the Solar System (dashed line). The Moon sits at 60 Earth radii.`,
+      scope: String.raw`An order-of-magnitude estimate: it assumes a homogeneous body, constant magnitude of torque with $Q^{-1}=|\sin 2\delta|$, circular orbit and no resonances; the spin is clamped at synchronism. The static elastic Love number is used as an approximation to the dynamical response; a real frequency-dependent rheology changes the torque near synchronism, so the finite arrival time is only a toy estimate; the result is extremely sensitive to $a$, $Q$ and $\mu$ and may be uncertain by orders of magnitude. Nonuniform bodies and eccentric orbits can lock elsewhere (3.4).`,
+      deps: ['astro-3.2', 'ode-1.4'],
+      refs: ['Frouard et al.(2016), arXiv:1601.08222, §2.1–2.2 eqs.(1)–(6); Goldreich–Peale1966 eq.(7)'],
       tags: ['tides', 'spin', 'moons'],
-      verify: true,
       viz(v) {
         const PL = { earth: BODY.earth, jupiter: BODY.jupiter, saturn: BODY.saturn };
         const MU = { rock: 3e10, ice: 4e9 }; // typical rigidity values (rock, ice), Pa
@@ -181,21 +181,18 @@ where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rig
         const Qs = v.slider('dissipation factor $Q$', 10, 1000, 100, { log: true, sig: 2 });
         const P0 = v.slider('initial spin period (h)', 2, 100, 12, { log: true, sig: 2 });
         const g = v.stage({ x: [1.5, 300], xlog: true, y: [1e2, 1e16], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'orbit radius $a$ / planet radius', ylabel: 'locking time (yr)', title: 'locking time vs distance' });
-        const h = v.stage({ x: [1e2, 1e12], xlog: true, y: [1, 2000], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'time (yr)', ylabel: 'spin rate $\\omega/n$', title: 'despinning at the chosen distance' });
+        const h = v.stage({ x: [1e2, 1e12], xlog: true, y: [0.01, 2000], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'time (yr)', ylabel: 'spin rate $\\omega/n$', title: 'spin approaches synchronism' });
         const A = g.handle(60, 1e8, { color: 'accent', r: 7, label: 'moon', labelPos: 'ne', constrain: (x) => { const X = clamp(x, 1.6, 280); return [X, tl(X)]; } });
         const mu = () => (mat.value === 'rubble' ? 1e8 : MU[mat.value]);
         function model(aRp) {
-          const p = PL[planet.value], R = Rs.value * 1e3, rho = rhoS.value, m = (4 / 3) * Math.PI * rho * R ** 3, a = aRp * p.R;
-          const gs = (G * m) / R ** 2, k2 = 1.5 / (1 + (19 * mu()) / (2 * rho * gs * R)), I = 0.4 * m * R * R, w0 = TAU / (P0.value * 3600);
-          const rate = (3 * G * p.M ** 2 * k2 * R ** 5) / (a ** 6 * I * Qs.value); // |dω/dt|
-          const n = Math.sqrt((G * (p.M + m)) / a ** 3);
-          return { tl: (w0 - n) / rate / YEAR, k2, rate, n, w0, p };
+          return tidalLockModel({planet:PL[planet.value],radius:Rs.value*1e3,density:rhoS.value,rigidity:mu(),Q:Qs.value,periodHours:P0.value,aRp});
         }
         function tl(aRp) { return Math.max(model(aRp).tl, 1e-30); }
         let cur = null;
         v.render(() => {
           const xs = []; for (let i = 0; i <= 140; i++) xs.push(1.5 * Math.pow(300 / 1.5, i / 140));
           const pts = xs.map((x) => [x, tl(x)]);
+          g.setView([1.5,300],[Math.max(1e-12,Math.min(1e2,...pts.map(p=>p[1]))*.5),Math.max(1e16,...pts.map(p=>p[1]*1.1))]);
           g.hline(4.5e9, { color: 'green', width: 1.2, dash: [6, 4] });
           g.text('age of the Solar System', 1.7, 4.5e9, { color: 'green', size: 10, dy: -9, align: 'left' });
           g.path(pts, { color: 'accent', width: 2.4 });
@@ -204,21 +201,22 @@ where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rig
           const D = model(X); cur = D;
           if (BODY.moon && planet.value === 'earth') { g.vline(BODY.moon.a / BODY.earth.R, { color: 'faint', width: 1, dash: [3, 4] }); g.text('Moon', BODY.moon.a / BODY.earth.R, 1e3, { color: 'faint', size: 10, dx: 5, dy: 0, align: 'left' }); }
           // despinning history
-          const tEnd = Math.max(D.tl, 1e2), N = 120, hp = [];
+          const tMin=Math.max(1e-12,Math.min(1e2,D.tl/1000)),tMax=Math.max(1e12,D.tl*3),N=240,hp=[];
+          h.setView([tMin,tMax],[.01,Math.max(2000,1.1*D.w0/D.n)]);
           for (let i = 0; i <= N; i++) {
-            const t = 1e2 * Math.pow(1e12 / 1e2, i / N), w = D.w0 - D.rate * t * YEAR;
-            hp.push([t, Math.max(w, D.n) / D.n]);
+            const t = tMin*Math.pow(tMax/tMin,i/N), w = lockingSpin(D,t);
+            hp.push([t, w / D.n]);
           }
           h.hline(1, { color: 'faint', width: 1 });
           h.vline(4.5e9, { color: 'green', width: 1.2, dash: [6, 4] });
           h.path(hp, { color: 'accent', width: 2.4 });
-          if (isFinite(D.tl) && D.tl > 1e2 && D.tl < 1e12) h.dot(D.tl, 1, { r: 6, color: 'gold' });
+          if (isFinite(D.tl) && D.tl > tMin && D.tl < tMax) h.dot(D.tl, 1, { r: 6, color: 'gold' });
         });
         v.legend([['accent', 'model'], ['green', 'age of the Solar System', { dash: true }], ['gold', 'spin reaches $\\omega = n$']]);
         v.readout(() => {
           if (!cur) return '';
           const D = cur, T = D.tl;
-          return String.raw`$a = ${v.fix(A.x, 1)}\,R_p = ${v.fix((A.x * D.p.R) / 1e6, 1)}\times10^3$ km · $k_2 = ${v.fix(D.k2, 3)}$ · orbital period $${v.fix(TAU / D.n / 86400, 2)}$ d · locking time $\approx ${fmtSci(v, T, 2)}$ yr` + (T < 4.5e9 ? ' — locked within the age of the Solar System' : ' — not locked by tides in 4.5 Gyr (for these parameters)');
+          return String.raw`$a = ${v.fix(A.x, 1)}\,R_p = ${v.fix((A.x * D.p.R) / 1e6, 1)}\times10^3$ km · $k_2 = ${v.fix(D.k2, 3)}$ · orbital period $${v.fix(TAU / D.n / 86400, 2)}$ d · locking time $\approx ${fmtSci(v, T, 2)}$ yr` + (T < 4.5e9 ? ' — model arrival within 4.5 Gyr' : ' — model arrival later than 4.5 Gyr');
         });
       },
     },
@@ -229,16 +227,15 @@ where $a$ is the orbital radius, $Q$ the tidal dissipation factor, $\mu$ the rig
       name: 'Mercury’s 3:2 spin–orbit resonance',
       statement: String.raw`Mercury turns three times on its axis for every two orbits around the Sun (rotation $58.65$ d, orbit $87.97$ d). A slightly elongated (triaxial) planet feels a torque from the Sun, and with the orbit's eccentricity ($e = 0.2056$) the rotation angle $\theta$ obeys
 $$\ddot\theta = -\tfrac32\,\frac{B-A}{C}\,\frac{GM_\odot}{r^3}\,\sin 2(\theta - f),$$
-a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It has stable resonant states at $\dot\theta = \tfrac p2 n$ ($p$ an integer) when $e\neq 0$; the half-integer ones ($3/2$, $5/2$, …) exist only because the orbit is eccentric. Tidal despinning that slows a fast-rotating planet can capture it into one of these states as it passes; the capture probability depends on the eccentricity history, and Mercury's final state is the 3:2.`,
-      idea: String.raw`Averaged over an orbit the torque has a nonzero mean only when $\theta$ advances by a multiple of $\pi$ per orbit, and the strength of the term at $\dot\theta = \frac p2 n$ is set by an eccentricity-expansion coefficient that grows with $e$. Near each resonance the dynamics is a pendulum (mech 4.15): a libration island in the spin phase portrait bounded by a separatrix, whose width scales as $\sqrt{(B-A)/C}$. Slow tidal braking pushes $\omega$ down through the islands; whether the planet is trapped depends on the phase at which it arrives, hence a probability.`,
-      caption: String.raw`Left: Poincaré section of the spin, sampled once per orbit at perihelion — the angle $\theta$ against spin rate $\omega = \dot\theta/n$. Each curve is one initial condition followed for 260 orbits; the closed loops at $\omega = 1,\ 3/2,\ 2,\ 5/2$ are resonance islands. Drag the **gold point** to launch your own spin. Raise $e$ and the half-integer islands grow; at $e = 0$ they vanish. Press **Despin ×40** (right): forty spins with random phase start fast and feel a tidal braking torque proportional to $\omega - n$; each curve either stays at an island or slides on toward $\omega = 1$. With $e = 0$ every one ends at 1:1; with the present eccentricity a fraction is caught at 3/2. This toy model's counts are not the published capture probabilities.`,
-      scope: String.raw`Rigid, planar spin with a fixed axis, Keplerian orbit; the triaxiality $\sigma = (B-A)/C$ is exaggerated by default so that the islands are visible (Mercury's value, estimated from the MESSENGER gravity coefficient $C_{22}$ and the polar moment of inertia, is of order $10^{-4}$). The tidal torque is modelled as a viscous term $-\kappa(\omega - n)$ (it must depend on $\omega$: a torque of constant sign is conservative and can never capture); real tidal torques are not linear, and actual capture involves the eccentricity history and core–mantle friction.`,
-      deps: ['astro-3.3', 'mech-4.15'],
-      refs: ['Murray–Dermott §5.4', 'Murray–Dermott §5.5'],
+a pendulum equation driven by the changing distance $r$ and true anomaly $f$. For small triaxiality, its averaged dynamics can have stable resonant states near $\dot\theta = \tfrac p2 n$ ($p$ an integer) when the corresponding eccentricity coefficient is nonzero and restoring torque overcomes the tidal torque; the half-integer ones ($3/2$, $5/2$, …) exist only because the orbit is eccentric. Tidal despinning that slows a fast-rotating planet can capture it into one of these states as it passes; the capture probability depends on the eccentricity history, and Mercury's final state is the 3:2.`,
+      idea: String.raw`Averaged over an orbit the torque has a nonzero mean only when $\theta$ advances by a multiple of $\pi$ per orbit, and the strength of the term at $\dot\theta = \frac p2 n$ is set by an eccentricity-expansion coefficient $H(p/2,e)$. Its leading order for nonsynchronous resonances vanishes with $e$, but the full coefficients need not increase monotonically: for example $H(3/2,e)=7e/2-123e^3/16+\cdots$. Near each resonance the dynamics is a pendulum (mech 4.15): a libration island in the spin phase portrait bounded by a separatrix, whose width scales as $\sqrt{(B-A)/C}$. Slow tidal braking pushes $\omega$ down through the islands; whether the planet is trapped depends on the phase at which it arrives, hence a probability.`,
+      caption: String.raw`Left: Poincaré section of the spin, sampled once per orbit at perihelion — the angle $\theta$ against spin rate $\omega = \dot\theta/n$. Each curve is one initial condition followed for 260 orbits; the closed loops at $\omega = 1,\ 3/2,\ 2,\ 5/2$ are resonance islands. Drag the **gold point** to launch your own spin. Raise $e$ from zero to create nonsynchronous islands; at $e = 0$ they vanish. Press **Despin ×40** (right): forty spins with random phase start fast and feel a tidal braking torque proportional to $\omega - n$; each curve either stays at an island or slides on toward $\omega = 1$. At $e=0$ the only restoring resonance is 1:1; at nonzero eccentricity the toy can retain spins near other commensurabilities. This toy model's counts are not the published capture probabilities.`,
+      scope: String.raw`Rigid, planar spin with a fixed axis, Keplerian orbit; the triaxiality $\sigma = (B-A)/C$ is exaggerated by default so that the islands are visible (the paper explores much smaller $\sigma=10^{-4}$). The tidal torque is modelled as a viscous term $-\kappa(\omega - n)$ (in the averaged fixed-orbit model, a torque independent of spin, phase and time does not permit capture); real tidal torques are not linear, and actual capture involves the eccentricity history and core–mantle friction.`,
+      deps: ['astro-3.3', 'mech-4.15', 'num-7.4'],
+      refs: ['Goldreich & Peale1966, AJ71 pp.426–431, eqs.(2),(5),(10)–(20) and TableI'],
       tags: ['resonance', 'spin–orbit', 'Mercury'],
-      credit: 'Colombo, 1965; Goldreich & Peale, 1966',
+      credit: 'Goldreich & Peale, Spin–Orbit Coupling (1966)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mercury_(planet)' },
-      verify: true,
       viz(v) {
         const eS = v.slider('orbital eccentricity $e$', 0, 0.4, 0.2056, { step: 0.001 });
         const sS = v.slider('triaxiality $\\sigma = (B-A)/C$', 1e-4, 3e-2, 8e-3, { log: true, sig: 2 });
@@ -304,9 +301,9 @@ a pendulum equation driven by the changing distance $r$ and true anomaly $f$. It
         v.readout(() => {
           const e = eS.value;
           let out = String.raw`$e = ${v.fix(e, 4)}$, $\sigma = ${fmtSci(v, sS.value, 2)}$` + (e < 1e-3 ? ' · circular orbit: only $\\omega = 1$ (synchronous) survives; the half-integer islands vanish' : '');
-          if (cur) out += String.raw` · your trajectory has $\omega \in [${v.fix(cur.wmin, 2)},\, ${v.fix(cur.wmax, 2)}]$` + (cur.wmax - cur.wmin < 0.4 ? ' — librating in a resonance island' : ' — circulating/chaotic (outside the islands)');
+          if (cur) out += String.raw` · your trajectory has $\omega \in [${v.fix(cur.wmin, 2)},\, ${v.fix(cur.wmax, 2)}]$` + ' (range alone does not identify libration or chaos; inspect the phase portrait)';
           if (ens && runKey === `${eS.value}|${sS.value}|${kS.value}`) { const c = ens.count; out += String.raw` · of 40 despinning spins: $${c['3/2']}$ in 3:2, $${c['2']}$ in 2:1, $${c['5/2']}$ in 5:2, $${c['1']}$ reached 1:1, $${c.other + c['3']}$ other`; }
-          out += String.raw` · published capture estimates (secondary source): about $7\%$ for 3:2 from Goldreich and Peale (eccentricity fixed at its present value) and about $55\%$ from Correia and Laskar (eccentricity evolving chaotically)`;
+          out += ' · ensemble classifications use a finite-time mean spin tolerance of 0.06n; these counts are model outcomes, not physical capture probabilities';
           return out;
         });
       },
@@ -393,16 +390,15 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
       num: '3.6',
       kind: 'Phenomenon',
       name: 'Planetary rings and shepherd moons',
-      statement: String.raw`The giant planets' rings lie mostly inside the Roche limit, where tides prevent ring particles from accreting into a moon. A ring spreads radially by collisions between its particles. Narrow rings can nevertheless stay narrow if a small moon orbits on each side: each shepherd repels the ring particles near it (a particle just outside the moon's orbit gains angular momentum at every conjunction and is pushed out; one just inside loses it and is pushed in), so a pair confines the ring between them. Resonances with larger moons (for example the 2:1 resonance with Mimas at the Cassini Division's boundary) clear sharp gaps; a moon inside a gap, like Pan in the Encke gap, keeps it open by the same repulsion.`,
-      idea: String.raw`Two forces compete: viscous spreading, which pushes the ring's edges outward and inward, and the gravitational torque of a moon that is overtaken (or overtakes) a ring particle at each synodic conjunction. The change in the particle's orbital radius per conjunction falls steeply with the separation, as $\propto \Delta^{-5}$ in Hill-radius units for $\Delta \gtrsim 3R_H$. Where it exceeds the spreading, the edge is held. Inside $\approx 2.5\,R_H$ the particles are on horseshoe-type orbits or are scattered, so the moon clears its path. Shepherding was proposed by Goldreich and Tremaine in 1979; small moons flanking Saturn's F ring (Prometheus) and Uranus's ε ring (Cordelia and Ophelia) were then found in Voyager images.`,
-      caption: String.raw`A ring of particles (blue, radial scale stretched ×7) between two small moons. The kick each conjunction gives a particle is computed from Hill's equations (the encounter integral is evaluated numerically for a table of separations). Viscous spreading is a random walk in orbital radius. Lower the **moon mass** and the ring oozes out toward and past the moons; raise it and the ring is confined. Grey outline: the same ring with no moons. Particles that fall within $2.6\,R_H$ of a moon are scattered out (red).`,
-      scope: String.raw`Toy model: the moons are on fixed circular orbits; the mass ratio used is far larger than for the real shepherds so that the confinement shows within a few hundred orbits; spreading is a diffusion step in orbital radius rather than a collisional ring simulation; each encounter uses the Hill-approximation kick (small $\Delta a/a$).`,
-      deps: ['astro-3.5', 'astro-2.8'],
-      refs: ['Murray–Dermott §10.5', 'Carroll–Ostlie §21.3'],
+      statement: String.raw`Strong tides near a planet impede accretion into a strengthless moon; ring particles can still have material strength or form temporary aggregates. A ring spreads radially by collisions between its particles. Narrow rings can nevertheless stay narrow if a small moon orbits on each side: each shepherd repels the ring particles near it (a particle just outside the moon's orbit gains angular momentum on average over encounters and is pushed out; one just inside loses it and is pushed in), so a pair confines the ring between them. Resonances with larger moons (for example the 2:1 resonance with Mimas at the Cassini Division's boundary) clear sharp gaps; a moon inside a gap, in the Encke gap, keeps it open by the same repulsion.`,
+      idea: String.raw`Two forces compete: viscous spreading, which pushes the ring's edges outward and inward, and the gravitational torque of a moon that is overtaken (or overtakes) a ring particle at each synodic conjunction. The change in the particle's orbital radius per conjunction falls steeply with the separation, as $\propto |\Delta|^{-5}$ for distant encounters in the local Hill approximation. The secular migration rate has one fewer inverse power because the conjunction rate is proportional to $|\Delta|$. Where it exceeds the spreading, the edge is held. Close encounters can enter horseshoe or strongly scattered trajectories, where this passing-orbit kick model no longer applies. Goldreich and Porco's 1987 analysis describes the sources and sinks of angular momentum at Uranian ring edges and explains why real sharp-edge confinement also needs nonlinear stress/flux reversal.`,
+      caption: String.raw`A ring of particles (blue, radial scale stretched ×7) between two small moons. The kick each conjunction gives a particle is computed from Hill's equations (the encounter integral is evaluated numerically for a table of separations). Viscous spreading is a random walk in orbital radius. Lower the **moon mass** and the ring oozes out toward and past the moons; raise it and the ring is confined. Grey outline: the same ring with no moons. Changing a parameter reruns the same seeded initial state at the displayed time. Particles whose guiding-centre separations fall within the chosen $2.6\,R_H$ cutoff are removed (red); this is a toy removal rule, not an integrated scattering outcome.`,
+      scope: String.raw`Toy model: the moons are on fixed circular orbits; the mass ratio used is far larger than for the real shepherds so that the confinement shows within a few hundred orbits; spreading is a diffusion step in orbital radius rather than a collisional ring simulation; each encounter uses the Hill-approximation kick (small $\Delta a/a$), tabulated with distant boundaries proportional to the encounter separation and continued by the distant-encounter fifth-power law. The diffusion does not enforce pairwise angular-momentum conservation or compute the stress reversals needed for real sharp edges.`,
+      deps: ['astro-3.5', 'astro-2.8', 'num-7.4', 'prob-2.2.1'],
+      refs: ['Goldreich–Tremaine1980, ApJ241, §IIIa–b pp.429–433, eqs.(32)–(65); Goldreich–Porco1987, AJ93, §IIa–b pp.730–731'],
       tags: ['rings', 'resonance', 'moons'],
-      credit: 'Goldreich & Tremaine, 1979',
+      credit: 'encounter formulation: Goldreich & Tremaine1980; ring-edge analysis: Goldreich & Porco1987',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Shepherd_moon' },
-      verify: true,
       viz(v) {
         const mS = v.slider('moon mass ratio $m/M_p$', 1e-7, 1e-4, 1e-5, { log: true, sig: 2, fmt: (x) => x.toExponential(1) });
         const dS = v.slider('viscous spreading (rms step per √orbit)', 2e-4, 3e-3, 1e-3, { log: true, sig: 2 });
@@ -437,10 +433,12 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
           }
           st.t += dt;
         }, { dt: 0.05 });
-        const rmsOf = (arr, mask) => { let m = 0, c = 0; for (let i = 0; i < NP; i++) if (!mask || !mask[i]) { m += arr[i]; c++; } m /= c; let q = 0; for (let i = 0; i < NP; i++) if (!mask || !mask[i]) q += (arr[i] - m) ** 2; return Math.sqrt(q / c); };
+        let simulationKey='';
+        const rmsOf = (arr, mask) => { let m = 0, c = 0; for (let i = 0; i < NP; i++) if (!mask || !mask[i]) { m += arr[i]; c++; } if(!c)return null; m /= c; let q = 0; for (let i = 0; i < NP; i++) if (!mask || !mask[i]) q += (arr[i] - m) ** 2; return Math.sqrt(q / c); };
         let cur = null;
         const fmtHist = (arr, mask) => { const nb = 48, lo = 0.88, hi = 1.12, counts = new Array(nb).fill(0); for (let i = 0; i < NP; i++) { if (mask && mask[i]) continue; const k = Math.floor(((arr[i] - lo) / (hi - lo)) * nb); if (k >= 0 && k < nb) counts[k]++; } const edges = []; for (let k = 0; k <= nb; k++) edges.push(lo + ((hi - lo) * k) / nb); return { edges, counts }; };
         v.animate((t) => {
+          const key=`${mS.value}|${dS.value}|${on.value}`;if(key!==simulationKey){S.reset();simulationKey=key;}
           S.advance(t * 6);
           const st = S.state, mu = mS.value, RH = Math.cbrt(mu / 3);
           const T = st.t;
@@ -469,7 +467,7 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
         v.legend([['accent', 'ring with shepherd moons', { dot: true }], ['muted', 'ring without moons', { dash: true }], ['red', 'moons / scattered particles', { dot: true }]]);
         v.readout(() => {
           if (!cur) return '';
-          return String.raw`$R_H = a(m/3M_p)^{1/3} = ${v.fix(cur.RH, 4)}\,a$, moons at $\pm 0.07a$ = ${v.fix(0.07 / cur.RH, 1)}$R_H$ from the ring centre · after ${v.fix(cur.T, 0)} orbits the ring's rms radial width is $${fmtSci(v, cur.rm, 2)}\,a$ with the moons, $${fmtSci(v, cur.rf, 2)}\,a$ without · scattered away: ${cur.nLost} of ${NP} · a touching pair of identical spheres can bind only beyond $a = (12\rho_p/\rho)^{1/3}R_p \approx 2.3\,R_p(\rho_p/\rho)^{1/3}$: for Saturn and ice (assumed $900$ kg/m³) that is $${v.fix((Math.cbrt(12 * BODY.saturn.rho / 900) * BODY.saturn.R) / 1e6, 0)}\times10^{3}$ km`;
+          return String.raw`$R_H = a(m/3M_p)^{1/3} = ${v.fix(cur.RH, 4)}\,a$, moons at $\pm 0.07a$ = ${v.fix(0.07 / cur.RH, 1)}$R_H$ from the ring centre · after ${v.fix(cur.T, 0)} orbits the ring's rms radial width is $${cur.rm===null?"\\text{no survivors}":fmtSci(v, cur.rm, 2)}\,a$ with the moons, $${fmtSci(v, cur.rf, 2)}\,a$ without · scattered away: ${cur.nLost} of ${NP}`;
         });
       },
     },
@@ -480,21 +478,20 @@ where $\rho_m$ is the satellite's density; the value $2.44$ is Roche's result fo
       name: 'Tidal heating of Io',
       statement: String.raw`Io keeps one face toward Jupiter, but its orbit is slightly eccentric ($e = 0.004$), so the tide Jupiter raises on it grows and shrinks, and its bulge is flexed once per $1.77$-day orbit. The internal friction turns orbital energy into heat at a rate
 $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
-($M_J$ Jupiter's mass, $R$, $a$, $n$ Io's radius, orbital radius and mean motion). This is proportional to $e^2$, and tides alone would circularise the orbit in roughly $10^5$ years (for $k_2/Q$ of order $10^{-2}$); the heating continues because Io's mean motions are locked in the Laplace resonance with Europa and Ganymede (2.10), which keeps pumping its eccentricity. The result is the most volcanic body of the Solar System, radiating of order $10^{14}$ W.`,
-      idea: String.raw`The tidal energy is dissipated only in the time-varying part of the tide. For a synchronous satellite on a circular orbit the bulge is fixed and nothing flexes (tidal locking, 3.3, has already removed the steady part); with eccentricity the distance changes by $\pm ae$ and the tide amplitude $\propto (a/r)^3$ by $\pm3e$, and the dissipation scales with the square of that, hence $e^2$ and the steep $a^{-6}$. Tides also act to reduce $e$, on a time $\tau_e = \frac{2}{21n}\frac{Q}{k_2}\frac{m}{M_J}\left(\frac aR\right)^5$; only the resonance (2.10), which transfers angular-momentum and energy among the three moons, can sustain a forced $e$ against this. Peale, Cassen and Reynolds (1979) predicted that this heating should melt much of Io, shortly before Voyager 1 found its volcanoes.`,
-      caption: String.raw`Left: the strength of Jupiter's tide on Io over one orbit, $(a/r)^3$: its swing is $\pm3e$. Middle: dissipated power against eccentricity for the chosen $k_2/Q$; drag the **eccentricity handle** (the cross marks Io's value, the band the published range of the observed total). Right: with the resonance **off**, tides alone damp $e$ (and the heating) away in $\tau_e$; with it **on**, $e$ is maintained.`,
-      scope: String.raw`Synchronously rotating satellite on a nearly circular orbit, uniform dissipation described by a single $k_2/Q$, with the eccentricity given. $k_2/Q$ of Io is uncertain; the slider shows what value would be needed to match the observed output. Observed heat-flow estimates differ between studies and between methods.`,
-      deps: ['astro-3.2', 'astro-2.10'],
-      refs: ['Murray–Dermott §4.11'],
+($M_J$ Jupiter's mass, $R$, $a$, $n$ Io's radius, orbital radius and mean motion). This is proportional to $e^2$, and tides alone would circularise the orbit in roughly $10^5$ years (for $k_2/Q$ of order $10^{-2}$); the heating continues because Io's mean motions are locked in the Laplace resonance with Europa and Ganymede (2.10), which keeps pumping its eccentricity. The model illustrates a source of sustained interior heat; the marked $10^{14}$ W reference is a chosen comparison scale.`,
+      idea: String.raw`The tidal energy is dissipated only in the time-varying part of the tide. For a synchronous satellite on a circular orbit the bulge is fixed and nothing flexes (tidal locking, 3.3, has already removed the steady part); with eccentricity the distance changes by $\pm ae$ and the tide amplitude $\propto (a/r)^3$ by $\pm3e$, and the dissipation scales with the square of that, hence $e^2$ and the steep $a^{-6}$. Tides also act to reduce $e$, on a time $\tau_e = \frac{2}{21n}\frac{Q}{k_2}\frac{m}{M_J}\left(\frac aR\right)^5$; resonant forcing (2.10), which transfers angular momentum and energy among the three moons, can sustain a forced $e$ against this. At leading order, the damping follows by setting $\dot E=-dE_{\rm orb}/dt$ at fixed orbital angular momentum, $E_{\rm orb}=-GM_Jm/(2a)$ and $a(1-e^2)=\mathrm{constant}$. Peale, Cassen and Reynolds (1979) predicted that this heating should melt much of Io, shortly before Voyager 1 found its volcanoes.`,
+      caption: String.raw`Left: the strength of Jupiter's tide on Io over one orbit, $(a/r)^3$: its swing is $\pm3e$. Middle: dissipated power against eccentricity for the chosen $k_2/Q$; drag the **eccentricity handle** (the cross marks Io's value, the horizontal line a chosen $10^{14}$ W reference). Right: with the resonance **off**, tides alone damp $e$ (and the heating) away in $\tau_e$; with it **on**, $e$ is maintained.`,
+      scope: String.raw`Synchronously rotating satellite on a nearly circular orbit, uniform dissipation described by a single $k_2/Q$, with the eccentricity given. $k_2/Q$ of Io is uncertain; the slider shows what value would be needed to reach the chosen reference power. The toggle imposes a fixed eccentricity or its exponential decay; it does not integrate the coupled three-moon resonance or thermal feedback.`,
+      deps: ['astro-3.2', 'astro-2.10', 'ode-1.4'],
+      refs: ['Henning, O’Connell & Sasselov2009, §3 pp.4–5, eq.(1); Peale, Cassen & Reynolds1979, Science203 pp.892–894, eq.(7) and forced-eccentricity discussion'],
       tags: ['tides', 'Io', 'volcanism'],
       credit: 'Peale, Cassen & Reynolds, 1979',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tidal_heating' },
-      verify: true,
       viz(v) {
         const Io = BODY.io, MJ = BODY.jupiter.M, n = TAU / Io.P;
         const kq = v.slider('$k_2/Q$ of Io', 0.003, 0.1, 0.015, { log: true, sig: 2 });
         const res = v.toggle('Laplace resonance maintains $e$', true);
-        const P = (e, k) => 10.5 * k * G * MJ ** 2 * Io.R ** 5 * n * e * e / Io.a ** 6;
+        const P = (e, k) => tidalPower({M:MJ,R:Io.R,a:Io.a,n,e,kq:k});
         const s = v.stage({ x: [0, 360], y: [0.95, 1.05], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'orbital phase (mean anomaly, °)', ylabel: 'tide strength $(a/r)^3$', title: 'the tide flexes Io', xticks: [0, 90, 180, 270, 360] });
         const p = v.stage({ x: [0, 0.01], y: [0, 3], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'eccentricity $e$', ylabel: 'tidal power (10¹⁴ W)', title: 'power against eccentricity' });
         const d = v.stage({ x: [0, 1], y: [0, 4.2], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'time (Myr)', ylabel: 'power (10¹⁴ W)', title: 'with and without the resonance' });
@@ -511,25 +508,25 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
           // power curve
           p.setView([0, 0.01], [0, Math.max(3, P(0.01, k) / 1e14 * 1.05)]);
           p.fn((x) => P(x, k) / 1e14, { color: 'accent', width: 2.4, n: 60 });
-          p.hband(0.65, 1.25, { color: 'green', alpha: 0.18 });
-          p.text('observed total (approx.)', 0.0001, 1.25, { color: 'green', size: 10, dy: -9, align: 'left' });
+          p.hline(1,{color:'green',width:1.3,dash:[5,4]});
+          p.text('chosen reference: 10¹⁴ W', 0.0001, 1, { color: 'green', size: 10, dy: -9, align: 'left' });
           p.vline(Io.e, { color: 'faint', width: 1, dash: [3, 4] });
           // eccentricity damping
-          const tauE = (2 / (21 * n)) * (1 / k) * (Io.M / MJ) * (Io.a / Io.R) ** 5 / YEAR; // yr
-          const ytop = 4.2, xmax = Math.max(0.05, 3 * tauE / 1e6);
+          const tauE = eccentricityDamping({M:MJ,m:Io.M,R:Io.R,a:Io.a,n,kq:k}); // yr
+          const ytop = Math.max(4.2,P(e,k)/1e14*1.1), xmax = Math.max(0.05, 3 * tauE / 1e6);
           d.setView([0, xmax], [0, ytop]);
-          d.hband(0.65, 1.25, { color: 'green', alpha: 0.18 });
+          d.hline(1,{color:'green',width:1.3,dash:[5,4]});
           const e0 = e;
           if (res.value) d.hline(P(e0, k) / 1e14, { color: 'accent', width: 2.4 });
           else d.fn((t) => P(e0 * Math.exp(-(t * 1e6) / tauE), k) / 1e14, { color: 'red', width: 2.4, n: 200, domain: [0, xmax] });
           d.vline(tauE / 1e6, { color: 'faint', width: 1, dash: [3, 4] });
           cur = { e, k, Pw: P(e, k), tauE, need: 1e14 / P(Io.e, 1) };
         });
-        v.legend([['accent', 'tidal power'], ['green', 'observed total (approx.)', { area: true }], ['red', 'decay without resonance']]);
+        v.legend([['accent', 'tidal power'], ['green', 'chosen 10¹⁴ W reference', { dash: true }], ['red', 'decay without resonance']]);
         v.readout(() => {
           if (!cur) return '';
           const n1 = 1 / 1.769138, n2 = 1 / 3.551181, n3 = 1 / 7.154553;
-          return String.raw`$\dot E = ${v.fix(cur.Pw / 1e14, 2)}\times10^{14}$ W at $e = ${v.fix(cur.e, 4)}$, $k_2/Q = ${v.fix(cur.k, 3)}$ · circularisation time $\tau_e = ${fmtSci(v, cur.tauE, 1)}$ yr · matching $10^{14}$ W at Io's $e = 0.004$ needs $k_2/Q \approx ${v.fix(cur.need, 3)}$ · Laplace relation from the orbital periods $1/P_1 - 3/P_2 + 2/P_3 = ${v.fix(n1 - 3 * n2 + 2 * n3, 5)}$ d$^{-1}$ ≈ 0 · observed total estimates are around $6\times10^{13}$ to $10^{14}$ W (see scope)`;
+          return String.raw`$\dot E = ${v.fix(cur.Pw / 1e14, 2)}\times10^{14}$ W at $e = ${v.fix(cur.e, 4)}$, $k_2/Q = ${v.fix(cur.k, 3)}$ · circularisation time $\tau_e = ${fmtSci(v, cur.tauE, 1)}$ yr · matching $10^{14}$ W at Io's $e = 0.004$ needs $k_2/Q \approx ${v.fix(cur.need, 3)}$ · Laplace relation from the orbital periods $1/P_1 - 3/P_2 + 2/P_3 = ${v.fix(n1 - 3 * n2 + 2 * n3, 5)}$ d$^{-1}$ ≈ 0 · the $10^{14}$ W line is a chosen reference, not an observed uncertainty band`;
         });
       },
     },
@@ -595,31 +592,29 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
       name: 'Jeans escape of planetary atmospheres',
       statement: String.raw`Gas molecules at the exobase (the level above which they rarely collide) move with a Maxwell–Boltzmann distribution of speeds at the local temperature $T$. Those in the high-speed tail that exceed the escape speed $v_\mathrm{esc} = \sqrt{2GM/r}$ and are moving outward leave. The outcome is controlled by the Jeans parameter $\lambda = \dfrac{GMm}{k_BT\,r} = \dfrac{v_\mathrm{esc}^2}{v_0^2}$ ($v_0 = \sqrt{2k_BT/m}$): the escaping flux per unit area is $\Phi = n_c\,\dfrac{v_0}{2\sqrt\pi}\,(1+\lambda)\,e^{-\lambda}$, which falls exponentially with $\lambda$. Light species and low gravity (small $\lambda$) escape; heavy ones on massive planets do not.`,
       idea: String.raw`The speed distribution (thermo 6.15) $f(v) \propto v^2 e^{-mv^2/2k_BT}$ is Gaussian in the velocity, so the fraction beyond a speed $v_\mathrm{esc}$ falls like $e^{-\lambda}$ with $\lambda = mv_\mathrm{esc}^2/2k_BT$, the ratio of the gravitational binding energy to the thermal energy. Escape speed (mech 3.13) fixes the cutoff; mass $m$ and temperature $T$ set the width. The $e^{-\lambda}$ makes the effect extremely selective: a factor of 4 in mass (H against He) changes the loss rate by many orders of magnitude.`,
-      caption: String.raw`Left: the speed distributions of H, He, N$_2$ and CO$_2$ at the chosen temperature; the vertical line is the escape speed and the **shaded tails** beyond it are the escaping fractions. Change the **body**, the **temperature** (and, for Earth, the exobase **altitude**) and watch the tails vanish for heavy gases. Right: the time for the Jeans flux to drain one exobase column (a lower bound if the gas is resupplied), against the age of the Solar System.`,
-      scope: String.raw`Static, collisionless exobase with a Maxwellian distribution. The exobase temperature of Earth varies strongly with solar activity (the value here is illustrative); Jeans escape is not the only loss process — for hydrogen on Earth it is limited by diffusion from below, and heavier species are lost mainly by non-thermal processes (ionisation by sunlight and solar-wind interaction). The drain time ignores resupply from below.`,
-      deps: ['mech-3.13', 'thermo-6.15'],
-      refs: ['Carroll–Ostlie §19.3'],
+      caption: String.raw`Left: the speed distributions of H, He, N$_2$ and CO$_2$ at the chosen temperature; the vertical line is the escape speed and the **shaded tails** beyond it are the fractions of molecules above the speed cutoff, irrespective of direction; these are not the speed-weighted outward escape flux. Change the **body**, the **temperature** (and, for Earth, the exobase **altitude**) and watch the tails vanish for heavy gases. Right: the formal time $n_cH/\Phi$ to drain one local scale-height column $H=kT/(mg)=r/\lambda$, without resupply. This is not the lifetime of a planet’s atmosphere. Bars cap at $10^{24}$ yr; small-$\lambda$ examples are explicitly outside the classical Jeans regime.`,
+      scope: String.raw`Classical Jeans approximation: negligible bulk flow, a locally Maxwellian isotropic distribution at a nearly collisionless exobase, and a bound atmosphere. For small $\lambda$ (roughly below $3$), bulk hydrodynamic escape and non-Maxwellian distributions invalidate this formula; the displayed small-$\lambda$ numbers are formal extrapolations. The plane-parallel scale-height column approximation itself needs $H\ll r$, hence $\lambda\gg1$. The Moon surface choice is only a mathematical comparison, not a model of a collisional lunar atmosphere. The exobase temperature of Earth varies strongly with solar activity (the value here is illustrative); Jeans escape is not the only loss process — for hydrogen on Earth it is limited by diffusion from below, and heavier species are lost mainly by non-thermal processes (ionisation by sunlight and solar-wind interaction). The drain time ignores resupply from below.`,
+      deps: ['mech-3.13', 'thermo-6.15', 'pma-6.22'],
+      refs: ['Volkov et al.(2011), arXiv:1009.5110, §§2–3 pp.3–12; Catling–Kasting2017 §5.6 pp.138–141 eqs.(5.15)–(5.30)'],
       tags: ['atmospheres', 'escape', 'Maxwell–Boltzmann'],
       credit: 'J. H. Jeans',
-      verify: true,
       viz(v) {
         const SP = [{ k: 'H', m: 1.008 * AMU, color: 'orange' }, { k: 'He', m: 4.0026 * AMU, color: 'purple' }, { k: 'N₂', m: 28.014 * AMU, color: 'blue' }, { k: 'CO₂', m: 44.009 * AMU, color: 'red' }];
         const body = v.select('body', [{ value: 'earth', label: 'Earth (exobase)' }, { value: 'moon', label: 'Moon (surface)' }], 'earth', { onChange: (k) => { T.set(k === 'earth' ? 1000 : 390); alt.el.hidden = k !== 'earth'; } });
         const T = v.slider('temperature $T$ (K)', 100, 3000, 1000, { log: true, sig: 3 });
         const alt = v.slider('exobase altitude (km)', 0, 1500, 500, { step: 10 });
         const logy = v.toggle('logarithmic density axis (shows the tails)', true);
-        const s = v.stage({ x: [0, 14], y: [1e-12, 2], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.25, xlabel: 'molecular speed (km/s)', ylabel: 'probability density (per km/s, scaled)', title: 'Maxwell–Boltzmann speeds' });
-        const g = v.stage({ x: [0.4, 4.6], y: [-3, 24], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '', ylabel: '$\\log_{10}$ drain time (yr)', title: 'time to drain the exobase column',
+        const s = v.stage({ x: [0, 14], y: [1e-12, 2], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1.25, xlabel: 'molecular speed (km/s)', ylabel: 'probability density (per km/s)', title: 'Maxwell–Boltzmann speeds' });
+        const g = v.stage({ x: [0.4, 4.6], y: [-3, 24], axes: 'box', gutter: true, height: 330, weight: 1, xlabel: '', ylabel: '$\\log_{10}$ drain time (yr)', title: 'formal local column-drain time',
           xticks: [[1, 'H'], [2, 'He'], [3, 'N₂'], [4, 'CO₂']], yticks: [[-2, '10⁻²'], [0, '1'], [4, '10⁴'], [9, '10⁹'], [14, '10¹⁴'], [19, '10¹⁹'], [24, '10²⁴']] });
         let cur = null;
         v.render(() => {
           const isE = body.value === 'earth', Mb = isE ? BODY.earth.M : BODY.moon.M, Rb = (isE ? BODY.earth.R + alt.value * 1e3 : BODY.moon.R), vesc = Math.sqrt(2 * G * Mb / Rb), TT = T.value;
           alt.el.hidden = !isE;
           const rows = SP.map((sp) => {
-            const v0 = Math.sqrt(2 * K_B * TT / sp.m), lam = (vesc / v0) ** 2, x = vesc / v0;
+            const jp=jeansParameters({M:Mb,r:Rb,m:sp.m,T:TT}),{v0,lambda:lam,log10Years}=jp,x=vesc/v0;
             const frac = v.M.erfc(x) + (2 / Math.sqrt(Math.PI)) * x * Math.exp(-x * x);
-            const tau = ((Rb / Math.max(lam, 1e-9)) * 2 * Math.sqrt(Math.PI)) / (v0 * (1 + lam) * Math.exp(-lam)) / YEAR;
-            return { ...sp, v0, lam, frac, tau };
+            return { ...sp, v0, lam, frac, log10Years };
           });
           const dens = (sp, vk) => { const v_ = vk * 1e3, a = sp.m / (2 * Math.PI * K_B * TT); return 4 * Math.PI * a ** 1.5 * v_ * v_ * Math.exp(-sp.m * v_ * v_ / (2 * K_B * TT)) * 1e3; }; // per km/s
           let top = 0; for (const r of rows) { for (let i = 0; i < 80; i++) top = Math.max(top, dens(r, (i * 14) / 80)); }
@@ -635,8 +630,10 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
           g.hline(Math.log10(4.5e9), { color: 'green', width: 1.2, dash: [6, 4] });
           g.text('age of the Solar System', 0.45, Math.log10(4.5e9), { color: 'green', size: 10, dy: -9, align: 'left' });
           rows.forEach((r, i) => {
-            const y = clamp(Math.log10(Math.max(r.tau, 1e-30)), -3, 24);
-            g.rect(i + 0.65, -3, i + 1.35, y, { fill: r.color, fillAlpha: 0.45, color: r.color });
+            const y = clamp(r.log10Years, -3, 24);
+            g.rect(i + 0.65, -3, i + 1.35, y, { fill: r.color, fillAlpha: r.lam<3?.15:.45, color: r.color });
+            if(r.log10Years>24)g.text('≥10²⁴',i+1,23,{color:r.color,size:10,align:'center'});
+            if(r.lam<3)g.text('formal only',i+1,Math.max(y,0)+1,{color:r.color,size:9,align:'center'});
           });
           cur = { rows, vesc, Rb };
         });
@@ -644,7 +641,7 @@ $$\dot E = \frac{21}{2}\,\frac{k_2}{Q}\,\frac{G M_J^2 R^5\, n\, e^2}{a^6},$$
         v.readout(() => {
           if (!cur) return '';
           const r = cur.rows;
-          return String.raw`$v_\mathrm{esc}=\sqrt{2GM/r} = ${v.fix(cur.vesc / 1e3, 2)}$ km/s at $r = ${v.fix(cur.Rb / 1e3, 0)}$ km (NASA: $11.19$ km/s at Earth's surface, $2.38$ km/s for the Moon) · Jeans parameters $\lambda$: H $${v.fix(r[0].lam, 1)}$, He $${v.fix(r[1].lam, 1)}$, N$_2$ $${v.fix(r[2].lam, 1)}$, CO$_2$ $${v.fix(r[3].lam, 1)}$ · fraction above $v_\mathrm{esc}$: H $${fmtSci(v, r[0].frac, 1)}$, He $${fmtSci(v, r[1].frac, 1)}$, N$_2$ $${fmtSci(v, r[2].frac, 1)}$ · drain times (yr): H $${fmtSci(v, r[0].tau, 1)}$, He $${fmtSci(v, r[1].tau, 1)}$, N$_2$ $${fmtSci(v, r[2].tau, 1)}$, CO$_2$ $${fmtSci(v, r[3].tau, 1)}$`;
+          return String.raw`$v_\mathrm{esc}=\sqrt{2GM/r} = ${v.fix(cur.vesc / 1e3, 2)}$ km/s at $r = ${v.fix(cur.Rb / 1e3, 0)}$ km · Jeans parameters $\lambda$: H $${v.fix(r[0].lam, 1)}$, He $${v.fix(r[1].lam, 1)}$, N$_2$ $${v.fix(r[2].lam, 1)}$, CO$_2$ $${v.fix(r[3].lam, 1)}$ · fraction above $v_\mathrm{esc}$: H $${fmtSci(v, r[0].frac, 1)}$, He $${fmtSci(v, r[1].frac, 1)}$, N$_2$ $${fmtSci(v, r[2].frac, 1)}$ · formal local column-drain times (yr): H $10^{${v.fix(r[0].log10Years,1)}}$, He $10^{${v.fix(r[1].log10Years,1)}}$, N$_2$ $10^{${v.fix(r[2].log10Years,1)}}$, CO$_2$ $10^{${v.fix(r[3].log10Years,1)}}$` + (r.some(x=>x.lam<3)?' · λ<3: classical Jeans/scale-height assumptions fail for the marked species':'') + String.raw` · speed-tail fractions below floating-point range are shown as zero`;
         });
       },
     },
@@ -659,7 +656,7 @@ $$\mathbf F_\mathrm{rad} = \beta\,\frac{GMm}{r^2}\left[\Big(1 - \frac{\dot r}{c}
       idea: String.raw`To first order in $v/c$ the radiation is aberrated: seen from the Sun the light a moving grain absorbs comes from a direction tilted by $v/c$ (relativistic aberration, rel 2.10), and the radiation pressure (em 11.6) it exerts is not quite radial. The tangential piece $-\beta\,GMm\,v/(c\,r^2)$ is a drag. On a circular orbit the angular momentum is $h = \sqrt{GMr}$, so $\dot h = -\beta (GM)^{3/2}/(c\,r^{3/2})$ gives $\dot r = -2\beta GM/(cr)$ and integrates to $r^2 = r_0^2 - 4\beta GM\,t/c$. A grain launched from a circular parent orbit starts on an ellipse of eccentricity $e = \beta/(1-\beta)$, which the drag then circularises as it shrinks (orbit elements, 1.1).`,
       caption: String.raw`Choose $\beta$ (small grains have large $\beta$). The simulation integrates the full force law with the speed of light set to $c = 20$ circular speeds (the real value, $\approx 10^4$ circular speeds at 1 AU, would make the spiral invisible); time is in orbital periods. Left: the spiral; middle: semi-major axis against time, with the analytic $a^2 = a_0^2 - 4\beta GM t/c$ dashed; right: the real inspiral time for the grain radius and density you pick, from the same law with the real $c$.`,
       scope: String.raw`Valid to first order in $v/c$, for a perfectly absorbing, isotropically re-emitting spherical grain (the constant $Q_\mathrm{pr}\approx1$ needs $s$ larger than the wavelength of sunlight, a few micrometres or more). The simulated $c$ is deliberately small; the analytic law for circular orbits neglects the small eccentricity corrections. Very small grains are blown out by radiation pressure instead ($\beta > 1/2$).`,
-      deps: ['rel-2.10', 'astro-1.1', 'em-11.6'],
+      deps: ['rel-2.10', 'astro-1.1', 'em-11.6', 'ode-1.3'],
       refs: ['Murray–Dermott §3.14'],
       tags: ['dust', 'radiation', 'orbits'],
       credit: 'Poynting, 1903; Robertson, 1937',

@@ -188,10 +188,9 @@ export default {
       idea: String.raw`(a) $c^{\top}x\le (A^{\top}y)^{\top}x=y^{\top}(Ax)\le y^{\top}b$, using $x\ge0$ in the first step and $y\ge0$ in the second. (b) Farkas' lemma (opt-5.14, via cross-listing 11.18) says that a system $Mz\le q$ has no solution exactly when a nonnegative combination of its rows gives $0\le -1$; applied to the system "$x$ primal feasible, $y$ dual feasible, $c^{\top}x\ge b^{\top}y+\varepsilon$" the alternative contradicts weak duality's bound, so a feasible pair with equal values exists. In the simplex method the same fact appears as the multipliers in the optimal tableau, which are a dual feasible $y$ with $b^{\top}y=c^{\top}x^*$.`,
       caption: String.raw`Left: the primal region; right: a number line of objective values. Blue dots are values $c^\top x$ of random primal feasible points (big dots: vertices), red dots are values $b^\top y$ of dual feasible points. Every red dot lies to the right of every blue one (weak duality); the shaded gap between the best of each closes exactly at the common optimum when the vertices are included. Edit $c$ or the first right-hand side $b_1$, and switch the case to make the primal unbounded (the dual then has no points) or infeasible.`,
       deps: ['opt-5.14', 'algo-11.15'],
-      refs: ['CLRS 4e §29.3'],
+      refs: ['Erickson, Linear Programming, §§H.5–H.7, pp. 11–15'], sourceUrl: 'https://jeffe.cs.illinois.edu/teaching/algorithms/notes/H-lp.pdf',
       tags: ['linear programming', 'duality'],
-      credit: 'J. von Neumann, 1947 (unpublished); D. Gale, H. W. Kuhn & A. W. Tucker, 1951 (first published proof)',
-      verify: true,
+      credit: 'Duality statement and proof: Erickson, Linear Programming, §§H.5–H.7; historical first-publication claims omitted',
       viz(v) {
         const s = v.stage({ x: [0, 8], y: [0, 8], equal: true, axes: 'box', gutter: true, height: 340, xlabel: '$x_1$', ylabel: '$x_2$', title: 'Primal feasible region', weight: 1 });
         const nl = v.stage({ x: [0, 20], y: [0, 3], axes: 'box', gutter: true, height: 340, xlabel: 'objective value', weight: 1.2, title: 'Primal values (blue) and dual values (red)', yticks: [[1, 'primal'], [2, 'dual']] });

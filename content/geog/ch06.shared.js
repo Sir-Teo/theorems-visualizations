@@ -8,15 +8,20 @@ const SQ2 = Math.SQRT2, HALF = PI / 2;
 export const sgn = (x) => (x < 0 ? -1 : 1);
 
 // ---------------------------------------------------------------- the projections (unit sphere; l = longitude from the central meridian, f = latitude, radians)
-/** Mollweide auxiliary angle theta: 2 theta + sin 2 theta = pi sin phi (Newton from 2 phi; returns theta and the iterates of t = 2 theta). */
+/** Mollweide auxiliary angle theta: 2 theta + sin 2 theta = pi sin phi (bracketed Newton from 2 phi; returns theta and optional safeguarded iterates of t = 2 theta). */
 export function mollTheta(f, trace) {
   if (Math.abs(f) > HALF - 1e-9) return sgn(f) * HALF;
-  const k = PI * Math.sin(f); let t = 2 * f;
+  const k = PI * Math.sin(f); let t = 2 * f, lo = -PI, hi = PI;
   if (trace) trace.push(t);
-  for (let i = 0; i < 60; i++) {
-    const dd = 1 + Math.cos(t); if (dd < 1e-14) break;
-    const dt = (t + Math.sin(t) - k) / dd; t -= dt; if (trace) trace.push(t);
-    if (Math.abs(dt) < 1e-13) break;
+  for (let i = 0; i < 80; i++) {
+    const g = t + Math.sin(t) - k;
+    if (Math.abs(g) < 2e-15) break;
+    if (g > 0) hi = t; else lo = t;
+    const dd = 1 + Math.cos(t), trial = t - g / dd;
+    const next = Number.isFinite(trial) && trial > lo && trial < hi ? trial : (lo + hi) / 2;
+    if (trace) trace.push(next);
+    if (Math.abs(next - t) < 1e-13) { t = next; break; }
+    t = next;
   }
   return t / 2;
 }
@@ -88,7 +93,7 @@ export function jacEllipse(s, x, y, J, r0, col, alpha = 0.26) {
 export function sphereGrid(nLat = 34, per = 68) {
   const out = [];
   for (let i = 0; i < nLat; i++) {
-    const f = Math.asin(-1 + (2 * i + 1) / nLat), m = Math.max(1, Math.round(per * Math.cos(f)));
+    const f = Math.asin(-1 + (2 * i + 1) / nLat), m = per;
     for (let j = 0; j < m; j++) out.push([-PI + ((j + 0.5) * 2 * PI) / m, f]);
   }
   return out;

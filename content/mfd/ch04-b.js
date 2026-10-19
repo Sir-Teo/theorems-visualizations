@@ -94,12 +94,10 @@ in any chart. In particular $[X,Y]_p=\tfrac12 c''(0)$ for the curve $c$ (which s
 $$(\mathcal L_XT)_p=\frac{d}{dt}\Big|_{t=0}(\theta_t^*T)_p,$$
 where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)}Y_{\theta_t(p)}$ and $(\theta_t^*g)_p(w,w)=g_{\theta_t(p)}(d\theta_tw,d\theta_tw)$. For functions $\mathcal L_Xf=Xf$. For a metric the derivative vanishes exactly when the flow acts by isometries ($X$ is a Killing field).`,
       idea: String.raw`The definition uses only the flow, so it needs no chart and no extra structure; the price is that one must know how to transport each kind of object. A function is transported by composition. A vector is transported by the differential of the inverse flow (the minus sign, so that the whole assignment is a pull-back along $\theta_t$). A covariant tensor is transported by evaluating on pushed-forward arguments. In each case the dependence on $t$ is smooth because $\theta$ is smooth (4.3), so the derivative at $0$ exists. The three cases are computed in coordinates in 4.9 and in chapters 6 and 8.`,
-      caption: String.raw`Pick the kind of object and the field $X$; the slider $t$ is the flow time of the difference quotient $(\theta_t^*T-T)/t$. Left: the object (contours of $f$; the field $Y$ in blue and its pull-back in orange; or the unit circles of $g$ in blue and of $\theta_t^*g$ in orange). Right: the difference quotient as a heat map or arrow field. It converges to the exact $\mathcal L_XT$ as $t\to0$ (the readout gives the largest deviation over a grid); for the metric and a rotation it is zero for every $t$: a Killing field.`,
+      caption: String.raw`Pick the kind of object and the field $X$; the slider $t$ is the flow time of the difference quotient $(\theta_t^*T-T)/t$. Left: the object (contours of $f$; the field $Y$ in blue and its pull-back in orange; or the unit circles of $g$ in blue and of $\theta_t^*g$ in orange). Right: the difference quotient as a heat map or arrow field. It converges to the exact $\mathcal L_XT$ as $t\to0$ (the readout gives the largest deviation over a grid); for the metric and a rotation it is zero for every $t$ in exact arithmetic: a Killing field. The displayed calculation uses numerical flows and finite differences.`,
       deps: ['mfd-4.3'],
-      refs: ['Lee SM Ch. 9'],
+      refs: ['Nicolaescu, Lectures on the Geometry of Manifolds, §3.1.2 pp.83–87; Exercise4.1.50, p.163 (Killing fields)'],
       tags: ['Lie derivative', 'pull-back'],
-      credit: 'W. Ślebodziński, 1931; named after Lie by D. van Dantzig',
-      verify: true,
       viz(v) {
         const kind = v.select('object', [{ value: 'f', label: 'function $f$' }, { value: 'Y', label: 'vector field $Y$' }, { value: 'g', label: 'metric $g$' }], 'f');
         const xs = v.select('field $X$', Object.entries(XS).map(([value, o]) => ({ value, label: o.label })), 'rot');
@@ -161,7 +159,7 @@ where $\theta_t^*f=f\circ\theta_t$, $(\theta_t^*Y)_p=d(\theta_{-t})_{\theta_t(p)
         v.readout(() => {
           const t = tS.value;
           const what = { f: '$\\mathcal L_Xf=Xf$ (colour: quotient; grey contours: exact)', Y: '$\\mathcal L_XY=[X,Y]$ (green: exact; orange arrows: quotient)', g: '$(\\mathcal L_Xg)(w,w)=2g(w,DX\\,w)$ for the Euclidean $g$ and the direction $w$ above' }[kind.value];
-          return `${what}.\nWith $t=${v.fix(t, 2)}$ the quotient differs from the exact Lie derivative by at most $${v.sci(Math.max(dev, 1e-12), 2)}$ on the grid — the error is proportional to $t$ (first-order difference quotient).` + (kind.value === 'g' && xs.value === 'rot' ? '\nRotation: the quotient is $0$ for every $t$ — a Killing field.' : '');
+          return `${what}.\nWith $t=${v.fix(t === 0 ? 0.001 : t, t === 0 ? 3 : 2)}$${t === 0 ? ' (the zero slider position uses $t=0.001$)' : ''} the quotient differs from the exact Lie derivative by at most $${v.sci(Math.max(dev, 1e-12), 2)}$ on the grid — the error is proportional to $t$ (first-order difference quotient).` + (kind.value === 'g' && xs.value === 'rot' ? '\nRotation: in exact arithmetic the quotient is $0$ for every $t$; numerical integration and differences introduce a small residual.' : '');
         });
       },
     },

@@ -13,6 +13,12 @@ import {
 const nrm = (x) => 0.5 * (1 + erf(x / Math.SQRT2));
 function erf(x) { const s = Math.sign(x), t = 1 / (1 + 0.3275911 * Math.abs(x)), y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return s * y; }
 
+export function noisyOrAlarmTable(pB,pE,sB,sE,leak) {
+  const T={};
+  for(const b of [0,1])for(const e of [0,1])T[b+''+e]={pri:(b?pB:1-pB)*(e?pE:1-pE),al:1-(1-leak)*(b?1-sB:1)*(e?1-sE:1)};
+  return T;
+}
+
 export default {
   collection: 'causal',
   chapter: 3,
@@ -104,13 +110,12 @@ export default {
     // ------------------------------------------------------------------ 3.9
     {
       num: '3.9', kind: 'Phenomenon', name: 'Explaining away',
-      statement: String.raw`If $A\to C\leftarrow B$ is a collider with $A\perp\!\!\!\perp B$, then conditioning on the effect $C$ (or a descendant) makes the causes **dependent**: typically *negatively* so for causes that each tend to produce $C$ — learning that one cause is present makes the other less probable. In the noisy-OR alarm example, $P(\text{burglary}\mid\text{alarm},\text{earthquake})<P(\text{burglary}\mid\text{alarm})$, although burglary and earthquake are independent a priori.`,
-      idea: String.raw`Bayes' rule: $P(a,b\mid c)\propto P(a)P(b)P(c\mid a,b)$. The prior factors, but the likelihood $P(c\mid a,b)$ does not, so the conditional table need not factor either. For a noisy-OR the alarm is likely whenever at least one cause is present, so once the alarm has rung the "both absent" cell is nearly ruled out; mass moves to the mixed cells, and the odds ratio of $A,B$ falls below 1. This is the opposite of the chain and fork, where conditioning removes dependence (3.4).`,
+      statement: String.raw`If $A\to C\leftarrow B$ is a collider with $A\perp\!\!\!\perp B$, then conditioning on the effect $C$ (or a descendant) can make the causes **dependent**: typically *negatively* so for causes that each tend to produce $C$ — learning that one cause is present makes the other less probable. In the noisy-OR alarm example, $P(\text{burglary}\mid\text{alarm},\text{earthquake})<P(\text{burglary}\mid\text{alarm})$, although burglary and earthquake are independent a priori.`,
+      idea: String.raw`Bayes' rule: $P(a,b\mid c)\propto P(a)P(b)P(c\mid a,b)$. The prior factors, but the likelihood $P(c\mid a,b)$ need not factor, so the conditional table need not factor either. For a noisy-OR the alarm is likely whenever at least one cause is present, so once the alarm has rung the "both absent" cell is nearly ruled out; mass moves to the mixed cells, and the odds ratio of $A,B$ falls below 1. This is the opposite of the chain and fork, where conditioning removes dependence (3.4).`,
       caption: String.raw`The mosaic is the joint table of burglary (columns) and earthquake (rows): the area of each cell is its probability. With **condition on the alarm** off, the rows line up across the columns (independence); switch it on and the row boundaries jump, the odds ratio drops below 1. Right: the exact probability of a burglary under four states of knowledge. Learning of the earthquake lowers it; learning there was none raises it. Make the alarm hard to trigger by an earthquake (strength 0) and the effect disappears.`,
       deps: ['causal-3.4'], refs: ['Pearl §1.2'], tags: ['explaining away', 'colliders'],
-      credit: 'Pearl, 1988 (burglar–earthquake–alarm example)',
-      verify: true,
-      scope: String.raw`Exact for the noisy-OR model with the probabilities set below; the sign of the induced dependence depends on how the causes combine (for an AND-like effect conditioning on it induces positive dependence).`,
+      credit: 'Noisy-OR illustration; collider mechanism discussed by Ding & Miratrix, 2015',
+      scope: String.raw`Exact for the noisy-OR model with the probabilities set below; the sign of the induced dependence depends on how the causes combine (no universal “AND means positive” rule holds; a deterministic AND conditioned on being true fixes both causes at1 rather than producing positive dependence).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Explaining_away' },
       viz(v) {
         const pB = v.slider('burglary probability', 0.01, 0.5, 0.1, { step: 0.01 }), pE = v.slider('earthquake probability', 0.01, 0.5, 0.15, { step: 0.01 });
@@ -120,36 +125,38 @@ export default {
         const sb = v.stage({ x: [0.4, 4.6], y: [0, 1], axes: 'box', gutter: true, height: 320, ylabel: 'probability of a burglary', xlabel: 'what we know', title: 'belief about the burglary', minWidth: 300 });
         sb.setTicks([[1, 'nothing'], [2, 'alarm'], [3, '+ quake'], [4, '+ no quake']], null);
         v.legend([['accent', 'burglary'], ['orange', 'earthquake'], ['muted', 'neither']]);
-        const jt = () => {
-          const T = {}; for (const b of [0, 1]) for (const e of [0, 1]) { const al = 1 - (1 - leak.value) * (b ? 1 - sB.value : 1) * (e ? 1 - sE.value : 1); T[b + '' + e] = { pri: (b ? pB.value : 1 - pB.value) * (e ? pE.value : 1 - pE.value), al }; }
-          return T;
-        };
+        const jt = () => noisyOrAlarmTable(pB.value,pE.value,sB.value,sE.value,leak.value);
         let info = {};
         v.render(() => {
           const T = jt(); let Z = 0; for (const k in T) Z += T[k].pri * T[k].al;
-          const P = {}; for (const k in T) P[k] = cond.value ? T[k].pri * T[k].al / Z : T[k].pri;
+          const P = {}; for (const k in T) P[k] = cond.value ? (Z>0 ? T[k].pri*T[k].al/Z : 0) : T[k].pri;
           const pb = [P['00'] + P['01'], P['10'] + P['11']], x0 = [0, pb[0]], x1 = [pb[0], 1];
           const cells = [[0, 0], [0, 1], [1, 0], [1, 1]];
           for (const [b, e] of cells) {
-            const colW = pb[b], pe1 = P[b + '1'] / colW, h = e ? pe1 : 1 - pe1, y0 = e ? 1 - pe1 : 0, xa = b ? pb[0] : 0;
+            const colW = pb[b]; if(!(colW>0))continue; const pe1 = P[b + '1'] / colW, h = e ? pe1 : 1 - pe1, y0 = e ? 1 - pe1 : 0, xa = b ? pb[0] : 0;
             sm.rect(xa + 0.004, y0 + 0.004, xa + colW - 0.004, y0 + h - 0.004, { fill: b && !e ? 'accent' : e && !b ? 'orange' : b && e ? 'purple' : 'muted', fillAlpha: 0.38, color: 'ink', width: 1 });
             if (colW > 0.06 && h > 0.06) sm.text(pct(P[b + '' + e], 1), xa + colW / 2, y0 + h / 2, { size: 11.5, weight: 700, plate: true });
           }
-          const pe0 = P['01'] / pb[0], pe1x = P['11'] / pb[1];
+          const pe0 = pb[0]>0 ? P['01']/pb[0] : 0, pe1x = pb[1]>0 ? P['11']/pb[1] : 0;
+          if(cond.value && !Z)sm.text('Alarm impossible: conditional law undefined', .5,.5,{align:'center',size:12,color:'red',plate:true});
           for (const yy of [1 - pe0, 1 - pe1x]) sm.hline(yy, { color: 'muted', dash: true, width: 0.8 });
           sm.text('no burglary', pb[0] / 2, 1.07, { size: 12, color: 'muted' }); sm.text('burglary', pb[0] + pb[1] / 2, 1.07, { size: 12, color: 'accent' });
           sm.text('no quake', -0.02, (1 - pe0) / 2, { size: 11, color: 'muted', align: 'right' }); sm.text('quake', -0.02, 1 - pe0 / 2, { size: 11, color: 'orange', align: 'right' });
-          const OR = (P['11'] * P['00']) / (P['10'] * P['01']);
-          const q = (cb) => { let n = 0, d = 0; for (const k in T) if (cb(+k[1])) { const w = T[k].pri * T[k].al; d += w; if (k[0] === '1') n += w; } return n / d; };
+          const denom=P['10']*P['01'], OR=denom>0 ? P['11']*P['00']/denom : null;
+          const q = (cb) => { let n = 0, d = 0; for (const k in T) if (cb(+k[1])) { const w = T[k].pri * T[k].al; d += w; if (k[0] === '1') n += w; } return d>0 ? n/d : null; };
           const pr = pB.value, pA = q(() => true), pAq = q((e) => e === 1), pAn = q((e) => e === 0);
-          [[1, pr, 'muted'], [2, pA, 'accent'], [3, pAq, 'orange'], [4, pAn, 'purple']].forEach(([x, y, c]) => { sb.rect(x - 0.32, 0, x + 0.32, y, { fill: c, fillAlpha: 0.4, color: c }); sb.text(pct(y, 1), x, y + 0.045, { size: 12, weight: 700, plate: true }); });
+          [[1, pr, 'muted'], [2, pA, 'accent'], [3, pAq, 'orange'], [4, pAn, 'purple']].forEach(([x, y, c]) => { if(y===null){sb.text('undefined',x,.05,{size:10,align:'center',color:'muted'});return;} sb.rect(x - 0.32, 0, x + 0.32, y, { fill: c, fillAlpha: 0.4, color: c }); sb.text(pct(y, 1), x, y + 0.045, { size: 12, weight: 700, plate: true }); });
           info = { OR, pr, pA, pAq, pAn };
         });
-        v.readout(() => `Odds ratio of burglary and earthquake in the table shown: **${v.fix(info.OR, 3)}** ${Math.abs(info.OR - 1) < 1e-9 ? '(independent)' : info.OR < 1 ? '(negatively dependent)' : '(positively dependent)'}.\n` +
-          `$P(\\text{burglary})=${pct(info.pr, 1)}$; given the alarm **${pct(info.pA, 1)}**; given the alarm *and* an earthquake **${pct(info.pAq, 1)}**; given the alarm and no earthquake **${pct(info.pAn, 1)}**. The earthquake explains the alarm away: ${fx(100 * (info.pAq - info.pA), 1)} percentage points.`);
+        v.readout(() => {
+          const prob=x=>x===null?'undefined (zero-probability condition)':pct(x,1);
+          return `Odds ratio of burglary and earthquake: **${info.OR===null?'undefined (a denominator cell is zero)':v.fix(info.OR,3)}** ${info.OR===null?'':Math.abs(info.OR-1)<1e-9?'(independent)':info.OR<1?'(negatively dependent)':'(positively dependent)'}.\n`+
+            `$P(\\text{burglary})=${prob(info.pr)}$; given the alarm **${prob(info.pA)}**; given the alarm and earthquake **${prob(info.pAq)}**; given the alarm and no earthquake **${prob(info.pAn)}**. `+
+            (info.pA===null||info.pAq===null?'A zero-probability alarm condition does not define a posterior.':`Learning of the earthquake changes burglary probability by ${fx(100*(info.pAq-info.pA),1)} percentage points.`);
+        });
       },
     },
-    // ------------------------------------------------------------------ 3.10
+// ------------------------------------------------------------------ 3.10
     {
       num: '3.10', kind: 'Paradox', name: 'Berkson’s paradox',
       statement: String.raw`Two conditions that are independent in the population can appear **associated among the people selected into a sample** if selection into the sample depends on both. If admission to hospital becomes more likely the more conditions a person has, then among hospital patients the conditions are *negatively* associated, though in the population they are independent. In causal terms the sample is formed by conditioning on a common effect (admission) of the two conditions.`,

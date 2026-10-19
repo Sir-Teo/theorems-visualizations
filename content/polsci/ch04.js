@@ -1,6 +1,8 @@
 // Political Science & Social Choice — Chapter 4: Spatial models and the median voter
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, median, mean, pct, dist2, votesFor, beats, yolk, medianLines, tournament, coverage, sophisticated, chaosPath, mixGrid, binX, gridMedian, gridMean, LINE } from './ch04.shared.js';
 
+import { maxOpenHalfplane } from './verification-models.js';
+
 // ---------- local helpers (items 4.1-4.7; the rest are in ch04-b.js)
 const LET = 'ABCDEFGHIJ';
 /** Utility of a voter with peak p at position x: three single-peaked shapes (only the order of utilities matters). */
@@ -384,18 +386,17 @@ In model (a) below, two candidates with ideal points $a < b$ choose platforms $x
       num: '4.5',
       kind: 'Theorem',
       name: 'Plott’s symmetry condition',
-      statement: String.raw`Let an odd number $n$ of voters have **Euclidean preferences** in the plane: voter $i$ has an ideal point $p_i \in \mathbb{R}^2$ and prefers the point nearer to $p_i$. A point $x^*$ is a **majority-rule equilibrium** (a Condorcet winner) if no point $y$ is preferred to $x^*$ by a strict majority. Then $x^*$ is an equilibrium **if and only if** the ideal points are arranged symmetrically about it, in Plott's sense: $x^*$ is the ideal point of one voter, and the remaining $n - 1$ voters split into pairs whose ideal points lie on opposite sides of $x^*$ on a common line through $x^*$.
+      statement: String.raw`Let an odd number $n$ of voters have **Euclidean preferences** in the plane: voter $i$ has an ideal point $p_i \in \mathbb{R}^2$ and prefers the point nearer to $p_i$. A point $x^*$ is a **majority-rule equilibrium** (a Condorcet winner) if no point $y$ is preferred to $x^*$ by a strict majority. When **exactly one voter** has ideal point $x^*$, it is an equilibrium **if and only if** the other ideal points satisfy Plott's pairing condition: $x^*$ is the ideal point of one voter, and the remaining $n - 1$ voters split into pairs whose ideal points lie on opposite sides of $x^*$ on a common line through $x^*$.
 
-Equivalently, every line through $x^*$ has at most $(n-1)/2$ ideal points strictly on each side: $x^*$ is a median in every direction. Plott's symmetry is a knife-edge: perturb one voter generically and the equilibrium is gone, so with generic ideal points in two dimensions a majority-rule equilibrium does not exist.`,
-      idea: String.raw`**Sufficiency.** If $x^*$ is a median in every direction and $y \ne x^*$, the voters who prefer $y$ to $x^*$ are those strictly nearer to $y$, which lie in the open half-plane beyond the perpendicular bisector of $x^*$ and $y$. That half-plane is contained in an open half-plane bounded by the parallel line through $x^*$, which holds at most $(n-1)/2$ ideal points by the median property. So at most $(n-1)/2$ voters prefer $y$, which is not a majority, and $x^*$ is never beaten. **Necessity.** Rotate a line about $x^*$: the count of ideal points on its left changes by one each time it sweeps past an ideal point, yet it must stay equal to $(n-1)/2$ throughout, so each ideal point passed on one side must be matched by one passed on the other at the opposite angle; the voter left over has no partner and must sit at $x^*$. On a line (polsci-4.2) a median always exists; in the plane the condition fails as soon as the pairs stop being exactly antipodal.`,
+In full generality, allowing several voters at the same ideal point, the equivalent criterion is that every line through $x^*$ has at most $(n-1)/2$ ideal points strictly on each side: $x^*$ is a median in every direction. Plott's symmetry is a knife-edge: perturb one voter generically and the equilibrium is gone, so with generic ideal points in two dimensions a majority-rule equilibrium does not exist.`,
+      idea: String.raw`**Sufficiency.** If $x^*$ is a median in every direction and $y \ne x^*$, the voters who prefer $y$ to $x^*$ are those strictly nearer to $y$, which lie in the open half-plane beyond the perpendicular bisector of $x^*$ and $y$. That half-plane is contained in an open half-plane bounded by the parallel line through $x^*$, which holds at most $(n-1)/2$ ideal points by the median property. So at most $(n-1)/2$ voters prefer $y$, which is not a majority, and $x^*$ is never beaten. **Necessity.** If an open half-plane through $x^*$ contains a majority, a sufficiently small move into it strictly improves all their distances. Thus the half-plane criterion is necessary. With exactly one voter at $x^*$, rotate a line about it: the count of ideal points on its left changes by one each time it sweeps past an ideal point, yet it must stay equal to $(n-1)/2$ throughout, so each ideal point passed on one side must be matched by one passed on the other at the opposite angle; the voter left over has no partner and must sit at $x^*$. On a line (polsci-4.2) a median always exists; in the plane the condition fails as soon as the pairs stop being exactly antipodal.`,
       caption: String.raw`Seven possible voters; pick $n$ and drag any ideal point. The orange shading is the **winset** of the gold status quo $q$: the points that a majority prefers to $q$. A Condorcet winner exists exactly when some point has an empty winset. Start from the symmetric arrangement (voter 1 at the centre, the others paired through it) and the winset of the centre is empty; press **nudge** (or drag a voter off the line) and a small lens appears around it: the **yolk** circle (gold ring) is the smallest circle meeting every median line, and its radius is zero exactly when Plott's symmetry holds.`,
-      deps: ['polsci-4.2'],
+      deps: ['polsci-4.2', 'opt-2.3'],
       see: ['polsci-4.6', 'polsci-4.7'],
       refs: ['Shepsle: spatial model', 'Plott (1967), American Economic Review 57: 787–806'],
       tags: ['spatial voting', 'majority-rule equilibrium'],
       credit: 'Charles R. Plott, 1967',
-      scope: String.raw`Euclidean preferences (circular indifference curves), an odd number of voters and a policy space of dimension two or more. For other utility shapes the symmetry conditions differ. The necessity half of the statement is established here for the Euclidean case by the rotating-line argument; the original paper is usually cited for sufficiency.`,
-      verify: true,
+      scope: String.raw`Euclidean preferences (circular indifference curves), an odd number of voters and a policy space of dimension two or more. For other utility shapes the symmetry conditions differ. The necessity half of the statement is established here for the Euclidean case by the rotating-line argument; Plott’s original §II B–C and Appendix Theorem2 state necessity and sufficiency under the exactly-one-maximum qualification. Coincident ideals need the more general half-plane criterion; antipodal pairing is then not necessary. The yolk ring is a numerical approximation, while equilibrium existence is checked from half-plane counts at every voter ideal (tolerance10⁻⁹).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Median_voter_theorem' },
       viz(v) {
         const S = v.stage({ x: [-3.2, 3.2], y: [-3.2, 3.2], equal: true, axes: false, height: 440, full: true, title: 'ideal points in a plane, winset of the status quo, and the yolk' });
@@ -426,9 +427,9 @@ Equivalently, every line through $x^*$ has at most $(n-1)/2$ ideal points strict
           // median lines through pairs of ideal points
           yk.lines.filter((l) => l.pair).forEach((l) => { const tx = -l.ny, ty = l.nx, bx = l.nx * l.b, by = l.ny * l.b; S.line(bx - 9 * tx, by - 9 * ty, bx + 9 * tx, by + 9 * ty, { color: 'muted', alpha: 0.35, width: 1 }); });
           S.circle(yk.x, yk.y, Math.max(yk.r, 0.001), { color: 'gold', width: 2.4, fill: yk.r > 0.002 ? 'gold' : undefined, fillAlpha: 0.2 });
-          const eq = yk.r < 0.004;
+          const winner = V.findIndex(p=>maxOpenHalfplane(V,p)<=Math.floor(n/2)), eq = winner>=0; const center = eq ? V[winner] : [yk.x,yk.y];
           V.forEach((p, i) => S.dot(p[0], p[1], { r: 8.5, color: CC[i % 5] }));
-          if (eq) { S.dot(yk.x, yk.y, { r: 13, hollow: true, color: 'green' }); S.text('equilibrium', yk.x, yk.y - 0.42, { color: 'green', size: 12, weight: 700 }); }
+          if (eq) { S.dot(center[0], center[1], { r: 13, hollow: true, color: 'green' }); S.text('equilibrium', center[0], center[1] - 0.42, { color: 'green', size: 12, weight: 700 }); }
           // area of the winset of q and of the centre of the yolk
           const cnt = (c) => { let k = 0, tot = 0; for (let i = 0; i < 48; i++) for (let j = 0; j < 48; j++) { const y = [-3.2 + (6.4 * (i + 0.5)) / 48, -3.2 + (6.4 * (j + 0.5)) / 48]; tot++; if (votesFor(V, y, c) > n / 2) k++; } return k / tot; };
           const angs = pairs.slice(0, (n - 1) / 2).map(([a, b]) => {
@@ -436,14 +437,14 @@ Equivalently, every line through $x^*$ has at most $(n-1)/2$ ideal points strict
             const cs = (u[0] * w[0] + u[1] * w[1]) / (Math.hypot(...u) * Math.hypot(...w) || 1);
             return 180 - (Math.acos(clamp(cs, -1, 1)) * 180) / Math.PI;
           });
-          info = { n, r: yk.r, c: [yk.x, yk.y], wq: cnt(q), wc: cnt([yk.x, yk.y]), angs, eq };
+          info = { n, r: yk.r, c: [yk.x, yk.y], wq: cnt(q), wc: cnt(center), angs, eq, winner };
         });
         v.legend([['orange', 'winset of $q$', { area: true }], ['gold', 'yolk'], ['muted', 'lines through pairs of ideal points']]);
         v.readout(() => {
-          const { n, r, wq, wc, angs, eq } = info;
+          const { n, r, wq, wc, angs, eq, winner } = info;
           const head = eq
-            ? `Yolk radius **${v.fix(r, 3)}**: the ideal points are symmetric about voter 1, a majority-rule equilibrium exists, and **no point beats it** (the winset of the centre covers ${v.fix(100 * wc, 1)}% of the window).`
-            : `Yolk radius **${v.fix(r, 3)}**: no equilibrium. Any point can be beaten; even the best candidate, the yolk's centre, has a winset covering ${v.fix(100 * wc, 1)}% of the window.`;
+            ? `Approximate yolk radius **${v.fix(r, 3)}**: half-plane counts certify a majority-rule equilibrium at voter ${winner+1}’s ideal, and **no point beats it** (the winset of the centre covers ${v.fix(100 * wc, 1)}% of the window).`
+            : `Approximate yolk radius **${v.fix(r, 3)}**: half-plane counts find no equilibrium at any voter ideal. Any point can be beaten; even the best candidate, the yolk's centre, has a winset covering ${v.fix(100 * wc, 1)}% of the window.`;
           return `${head}\nWinset of $q$: ${v.fix(100 * wq, 1)}% of the window. Deviation of the ${(n - 1) / 2} pair${n > 3 ? 's' : ''} from exact opposition through voter 1: ${angs.map((a) => v.fix(a, 1) + '°').join(', ')}.`;
         });
       },

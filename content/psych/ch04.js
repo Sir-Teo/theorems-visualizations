@@ -12,16 +12,15 @@ export default {
       num: '4.1',
       kind: 'Concept',
       name: 'Duplex retina: rods and cones',
-      statement: String.raw`The human retina contains two kinds of photoreceptor with complementary jobs. **Cones** (three types, about 4.6 million per eye) work in bright light, are packed most densely at the **fovea** and give fine detail and colour. **Rods** (about 92 million per eye) are far more sensitive, work in dim light, are absent from a rod-free zone about $1.25^\circ$ across at the centre of the fovea, reach their highest density some $15$–$20^\circ$ off the centre and give no colour. Which system carries vision depends on the light level: cones in daylight (*photopic*), rods in starlight (*scotopic*) and both in between (*mesopic*). The eye is therefore two sensors in one, with a hand-over between them.`,
-      idea: String.raw`The two systems have different photochemistry and wiring, and the numbers above are anatomical counts from human retinas (Curcio et al. 1990). The rod pigment catches single photons and its signal is pooled over many receptors (4.4), which buys sensitivity; cones are sparse enough in the periphery to be outnumbered by rods but dense enough in the fovea to sample the image at about a micrometre-scale grid, which buys acuity. A cone mosaic of spacing $s$ cannot resolve gratings finer than one cycle per $2s$ (the sampling limit), which is why the fovea, and only the fovea, resolves detail at the limit of the optics.`,
+      statement: String.raw`The human retina contains two kinds of photoreceptor with complementary jobs. **Cones** (three types, a mean of about4.6million in the mapped retinas of Curcio et al.,1990) work in bright light, are packed most densely at the **fovea** and give fine detail and colour. **Rods** (about92million in the same study) are far more sensitive, work in dim light, are absent from a rod-free zone about $1.25^\circ$ across at the centre of the fovea, reach their highest density some $15$–$20^\circ$ off the centre and give no colour. Which system carries vision depends on the light level: cones in daylight (*photopic*), rods in starlight (*scotopic*) and both in between (*mesopic*). The eye is therefore two sensors in one, with a hand-over between them.`,
+      idea: String.raw`The two systems have different photochemistry and wiring, and the numbers above are anatomical counts from human retinas (Curcio et al. 1990). The rod pigment catches single photons and its signal is pooled over many receptors (4.4), which buys sensitivity; cones are sparse enough in the periphery to be outnumbered by rods but dense enough in the fovea to sample the image at about a micrometre-scale grid, which buys acuity. A cone mosaic of spacing $s$ cannot resolve gratings finer than one cycle per $2s$ (the sampling limit), which helps explain the fovea’s high spatial acuity; actual resolution also depends on optics, sampling direction and neural processing.`,
       caption: String.raw`**Top:** receptor density against distance from the fovea along the temporal retina (log scale). Drag the **gold** handle. **Bottom:** a 30 µm square patch of retina at that place, drawn as a random mosaic with the density given by the curves: large **blue** discs are cones and small **orange** dots are rods. The *Lighting* control switches which receptors are active (the rest are dimmed). Notice that the fovea has no rods at all, so a faint star vanishes when you look straight at it. The density curves are a **stylised model** built through the published peak values, not the measured profile.`,
       deps: [],
       refs: ['Goldstein ch. 2'],
       tags: ['retina', 'rods and cones', 'acuity'],
-      credit: 'Max Schultze proposed the duplex (rod and cone) theory, 1866; counts from Curcio et al., 1990, J. Comp. Neurol. 292: 497–523',
-      scope: String.raw`The curves are drawn along the temporal horizontal meridian; the nasal side differs (the optic disc sits at about 15° nasal on the retina), and cone density at the fovea varies several-fold between people. Light levels for the scotopic, mesopic and photopic ranges are conventional, not sharp.`,
+      credit: 'Anatomical counts: Curcio et al.,1990, J. Comp. Neurol.292:497–523 (complete original checked)',
+      scope: String.raw`The anatomical study sampled eight eyes from seven donors aged27–44; these averages are not universal per-eye counts. The model curves follow the temporal horizontal meridian; the nasal side differs (the optic disc sits at about 15° nasal on the retina), and cone density at the fovea varies several-fold between people. Light levels for the scotopic, mesopic and photopic ranges are conventional, not sharp.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Photoreceptor_cell', pubmed: 'https://pubmed.ncbi.nlm.nih.gov/2324310/' },
-      verify: true,
       viz(v) {
         const M = v.M;
         const light = v.select('Lighting', [{ value: 'day', label: 'daylight' }, { value: 'dusk', label: 'twilight' }, { value: 'star', label: 'starlight' }], 'day');
@@ -59,7 +58,7 @@ export default {
         });
         v.readout(() => {
           if (!st) return '';
-          const s = light.value === 'day' ? 'photopic: cones carry vision' : light.value === 'dusk' ? 'mesopic: rods and cones both contribute' : 'scotopic: rods carry vision' + (st.rr === 0 ? ' — **but there are no rods here, so nothing is seen**' : '');
+          const s = light.value === 'day' ? 'photopic: cones carry vision' : light.value === 'dusk' ? 'mesopic: rods and cones both contribute' : 'scotopic: rods carry vision' + (st.rr === 0 ? ' — **the model’s rod-only channel receives no signal here**' : '');
           return `At $${v.fix(st.e, 1)}^\\circ$: cones ${v.fmt(st.rc, 3)} /mm², rods ${v.fmt(st.rr, 3)} /mm² (cone : rod = 1 : ${st.rr > 0 ? v.fmt(st.rr / st.rc, 2) : '0'}) · cone-mosaic spacing ≈ ${v.fix(st.spacing, 1)} µm, sampling limit ≈ ${v.fix(st.nyq, 0)} cycles/degree (taking 1° ≈ 288 µm) · ${s}`;
         });
       },
@@ -69,16 +68,15 @@ export default {
       num: '4.2',
       kind: 'Phenomenon',
       name: 'Dark adaptation and the rod–cone break',
-      statement: String.raw`After exposure to bright light, the threshold for seeing a faint flash falls with time in the dark, over about half an hour and by some four to five log units. The curve is **biphasic**: first a fast fall (cones, levelling off within a few minutes at a threshold well above the rods' limit), then, after the **rod–cone break** at roughly 7–10 minutes, a second, slower fall (rods) to the final dark-adapted threshold. At any moment the threshold is the lower of the cone and rod curves. The break disappears if the test spot is confined to the rod-free fovea (cone branch only) and, in a person with no functioning cones (rod monochromat), only a single rod branch remains.`,
-      idea: String.raw`Two independent receptor systems (4.1), each with its own recovery after pigment bleaching, and a detector that uses whichever is more sensitive: the observed curve is the lower envelope $\min(T_\mathrm{cone}(t),T_\mathrm{rod}(t))$. Cones recover quickly but to a limited sensitivity; rods start recovering later (their pigment regenerates more slowly, so the delay grows with the bleaching dose) but go much further. The break occurs where the curves cross. Hecht and colleagues used exactly the tests the toggle offers: confining the stimulus to the fovea removes the rod branch, and rod monochromats lack the cone branch.`,
+      statement: String.raw`After exposure to bright light, the threshold for seeing a faint flash falls with time in the dark, over about half an hour and by some four to five log units. The curve is **biphasic**: first a fast fall (cones, levelling off within a few minutes at a threshold well above the rods' limit), then, after the **rod–cone break** at roughly 7–10 minutes, a second, slower fall (rods) to the final dark-adapted threshold. At any moment the threshold is the lower of the cone and rod curves. The break disappears if the test spot is confined to the rod-free fovea (cone branch only) and, in a person with no functioning cones in this idealization (rod monochromat), only a single rod branch remains.`,
+      idea: String.raw`Two independent receptor systems (4.1), each with its own recovery after pigment bleaching, and a detector that uses whichever is more sensitive: the observed curve is the lower envelope $\min(T_\mathrm{cone}(t),T_\mathrm{rod}(t))$. Cones recover quickly but to a limited sensitivity; rods start recovering later (their pigment regenerates more slowly, so the delay grows with the bleaching dose) but go much further. The break occurs where the curves cross. Hecht, Haig and Chase (1937) varied preadaptation intensity and red/violet test lights in three observers. The foveal and rod-only switches here are idealized ways of isolating the receptor branches, not conditions reproduced from that experiment.`,
       caption: String.raw`Log threshold against minutes in the dark. The **blue** curve is the cone branch, the **purple** curve the rod branch and the thick **black** curve is what you would measure: the lower of the two. *Test* switches between a normal observer, a spot confined to the **fovea** (rod-free, so the cone branch only) and a **rod monochromat** (rod branch only). Increase the *bleaching light* and the rod branch starts later, so the break moves right. Time constants and levels are a **qualitative model** chosen to put the break at about 8 minutes, not fitted data.`,
       deps: ['psych-4.1'],
       refs: ['Goldstein ch. 2'],
       tags: ['dark adaptation', 'rods and cones', 'threshold'],
-      credit: 'Hecht, Haig & Chase, 1937, J. Gen. Physiol. 20: 831–850 (dark-adaptation curves and the rod–cone break); earlier observations by Aubert, 1865 (unconfirmed)',
+      credit: 'Hecht, Haig & Chase, 1937, J. Gen. Physiol. 20: 831–850 (dark-adaptation curves and the rod–cone break); qualitative model branches, not a fit to their data',
       scope: String.raw`The time of the break depends on the bleaching intensity and duration, on the colour and position of the test spot (a red test light shows little break, since rods are insensitive to long wavelengths; a peripheral violet one shows it clearly) and on the person; textbook values quote about 7–10 minutes, with full adaptation after 30 minutes or more.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Adaptation_(eye)#Dark_adaptation' },
-      verify: true,
       viz(v) {
         const test = v.select('Test', [{ value: 'norm', label: 'normal, peripheral spot' }, { value: 'fov', label: 'fovea only' }, { value: 'mono', label: 'rod monochromat' }], 'norm');
         const bl = v.slider('bleaching light', 0, 1, 0.5, { step: 0.01 });
@@ -89,6 +87,7 @@ export default {
         let brk = null;
         v.render(() => {
           const t0 = 0.5 + 3.5 * bl.value, m = test.value;
+          s.setView([0,40],[-6.5,m==='mono'?5.5:1.5]);
           const T = (t) => (m === 'fov' ? cone(t) : m === 'mono' ? rod(t, t0) : Math.min(cone(t), rod(t, t0)));
           s.fn(cone, { domain: [0, 40], color: 'accent', width: 1.8, dash: m === 'mono' ? [4, 4] : false, alpha: m === 'mono' ? 0.4 : 1 });
           s.fn((t) => rod(t, t0), { domain: [t0, 40], color: 'purple', width: 1.8, dash: m === 'fov' ? [4, 4] : false, alpha: m === 'fov' ? 0.4 : 1 });
@@ -115,16 +114,15 @@ export default {
       num: '4.3',
       kind: 'Phenomenon',
       name: 'The Purkinje shift',
-      statement: String.raw`Two coloured surfaces that look equally bright in daylight do not stay equally bright as the light fades. Because the rods' spectral sensitivity peaks at a shorter wavelength (about 507 nm) than the cones' (about 555 nm), red and orange surfaces lose brightness faster than blue and green ones: in dim light the red looks nearly black while the blue still looks light. The change from photopic to scotopic vision thus shifts the peak of the brightness-versus-wavelength curve toward the blue end of the spectrum.`,
+      statement: String.raw`Two coloured surfaces that look equally bright in daylight do not stay equally bright as the light fades. Because the rods' spectral sensitivity peaks at a shorter wavelength (about507nm) than the cones' (about 555 nm), red and orange surfaces lose brightness faster than blue and green ones: in dim light the red looks nearly black while the blue still looks light. The change from photopic to scotopic vision thus shifts the peak of the brightness-versus-wavelength curve toward the blue end of the spectrum.`,
       idea: String.raw`The brightness of a surface is roughly the integral of its reflected spectrum against the sensitivity curve of the receptors in use: $B=\int R(\lambda)\,E\,S(\lambda)\,d\lambda$. Replace the cone curve $V(\lambda)$ by the rod curve $V'(\lambda)$ (which is nearly zero beyond 640 nm) and a long-wavelength surface contributes almost nothing. In the mesopic range the effective curve is a blend whose weights slide from cones to rods as the light dims, so the shift is gradual.`,
       caption: String.raw`**Left:** relative spectral sensitivity of the cones ($V$, blue) and of the rods ($V'$, purple), with the blend you are seeing with (black). The faint red and blue areas are the reflectance spectra of the two flowers. **Right:** the two flowers as they look at the chosen light level; they were scaled to be equally bright in daylight. Drag the **light level** down through the mesopic range and watch the peak slide from 555 toward 507 nm while the red flower goes dark first. The curves are smooth analytic stand-ins that reproduce the two peak wavelengths and the long-wavelength tails (they are not the tabulated CIE functions), and the red and blue reflectances are invented.`,
       deps: ['psych-4.1'],
       refs: ['Goldstein ch. 2'],
       tags: ['spectral sensitivity', 'rods and cones', 'brightness'],
-      credit: 'Jan Evangelista Purkyně, 1825 (unconfirmed)',
-      scope: String.raw`Photopic and scotopic standard observers (CIE) are averages; the transition levels used here (rods dominating below about 0.01 cd/m², cones above about 3 cd/m²) are conventional round numbers. Rods are absent from the fovea, so the shift is a peripheral effect for small, centrally fixated objects.`,
+      credit: 'CIE2019 photopic/scotopic luminous-efficiency datasets, Tables1–2 of CIE018:2019; analytic illustration',
+      scope: String.raw`The complete CIE2019 datasets were checked: photopic maximum555nm; scotopic tabulation is flat at1 over506–507nm, conventionally described as a507nm peak. These analytic curves are stand-ins; the transition levels used here (rods dominating below about 0.01 cd/m², cones above about 3 cd/m²) are conventional round numbers. Rods are absent from the fovea, so the shift is a peripheral effect for small, centrally fixated objects.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
-      verify: true,
       viz(v) {
         const lv = v.slider('light level, $\\log_{10}$ luminance (cd/m²)', -4.5, 2, -1, { step: 0.05 });
         const sp = v.stage({ x: [400, 700], y: [0, 1.12], axes: 'box', gutter: true, height: 300, weight: 1.2, minWidth: 320, xlabel: 'wavelength (nm)', ylabel: 'relative sensitivity', title: 'spectral sensitivity', xticks: [400, 450, 500, 550, 600, 650, 700] });
@@ -176,7 +174,7 @@ export default {
       statement: String.raw`Many receptors feed one ganglion cell, and the ratio differs across the retina: in the central fovea one cone drives (through bipolar cells) about one ganglion cell, while in the periphery hundreds of rods converge on one. Pooling $g$ receptors that have independent noise raises the signal-to-noise ratio of a faint, extended stimulus by $\sqrt g$, so convergence raises **sensitivity**; but the pooled cell cannot tell which receptor was hit, so the finest grating it can resolve has period about $2g$ receptor spacings. Sensitivity thus rises and acuity falls as $g$ grows, and the best pool for detecting a spot is one about as large as the spot.`,
       idea: String.raw`The sum of $g$ receptor signals each carrying signal $s$ and independent noise of standard deviation $\sigma$ has signal $gs$ and noise $\sigma\sqrt g$, so the ratio is $\sqrt g\,s/\sigma$, for as long as the whole pool lies inside the stimulus; if the spot covers only $k<g$ of the receptors, the signal is $ks$ while the noise still grows as $\sqrt g$, which is why detection peaks at $g\approx k$. Averaging over the pool is a box-shaped blur, whose frequency response $|\operatorname{sinc}(\pi f g)|$ cuts the contrast of fine gratings, and sampling at one value per pool aliases anything finer than $1/(2g)$ cycles per receptor.`,
       caption: String.raw`A row of 48 receptors (top, **blue**) is wired into groups of $g$ (the **orange** brackets), each giving one output (bottom). Choose *grating* or *dim spot*. Raise the **pool size** $g$: the grating's modulation at the ganglion level collapses once its frequency passes the sampling limit (the **green** line in the middle panel), while the dim spot's detectability $d'$ (right panel) climbs as $\sqrt g$ up to the spot's size and then falls. A model with independent, Gaussian receptor noise and a flat pool; real pooling is weighted and noise is partly shared.`,
-      deps: ['psych-4.1'],
+      deps: ['psych-4.1', 'prob-2.2.1'],
       refs: ['Goldstein ch. 3'],
       tags: ['convergence', 'acuity', 'sensitivity'],
       scope: String.raw`Holds for independent noise and uniform pooling over the stimulus; shared noise (for example from the photon statistics of the stimulus itself) is not reduced by pooling in the same way.`,
@@ -240,7 +238,7 @@ export default {
       deps: ['psych-4.4'],
       refs: ['Goldstein ch. 3'],
       tags: ['spatial summation', 'temporal summation', 'threshold'],
-      credit: 'Ricco, 1877 (spatial); A.-M. Bloch, 1885 (temporal) — dates unconfirmed',
+      credit: 'Ricco1877 (spatial original still unverified); Bloch1885, complete English translation in Gorea2015, i-Perception6(4):1–6',
       scope: String.raw`Complete summation holds for near-threshold flashes on a dark background; the critical area and duration both depend on the retinal location, the background level and the state of adaptation (they get larger in the dark), and the transition between the two regimes is gradual, not the sharp corner drawn here.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ricco%27s_law' },
       verify: true,

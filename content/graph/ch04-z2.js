@@ -83,11 +83,12 @@ export default {
       },
     },
     {
-      num: '4.5.2', kind: 'Theorem', name: 'Kelmans’s planarity criterion for 3-connected graphs', credit: 'A. K. Kelmans', verify: true,
+      num: '4.5.2', kind: 'Theorem', name: 'Kelmans’s planarity criterion for 3-connected graphs', credit: 'A. K. Kelmans, 1978',
       statement: String.raw`A 3-connected graph is planar if and only if every edge lies on at most two non-separating induced cycles (equivalently, on exactly two).`,
-      idea: String.raw`In a plane drawing of a 3-connected graph the non-separating induced cycles are exactly the facial cycles (4.2.7), and an edge borders exactly two faces (4.2.2); so planar graphs satisfy the condition with equality. For the converse one uses that the non-separating induced cycles generate the cycle space (3.2.6): if every edge lay on at most two of them, a suitable choice of $m-n+1$ of them would form a simple basis, and MacLane's theorem 4.5.1 applies. (The attribution and the exact formulation, in particular "at most" versus "exactly", should be compared with the book; the year of Kelmans's papers was not confirmed.)`,
+      idea: String.raw`In a 3-connected plane graph, the non-separating induced cycles are exactly its facial cycles (4.2.7), and every edge lies on exactly two of them (4.2.2, 4.2.6). Conversely, all non-separating induced cycles generate the cycle space by 3.2.6; if every edge lies on at most two, a basis chosen from this generating set is sparse, and MacLane's theorem 4.5.1 gives planarity.`,
       caption: String.raw`Each edge is labelled with the number of non-separating induced cycles that contain it (all of them found by brute force). In a planar graph every label is 2; in a non-planar 3-connected graph some edge is on three or more (red). Click an edge, then use the slider to run through the non-separating induced cycles through it; the cycle shown is drawn in green.`,
-      deps: ['graph-3.2.6', 'graph-4.2.7', 'graph-4.2.2'], refs: ['Diestel §4.5'], tags: ['planar', 'induced cycles'],
+      deps: ['graph-3.2.6', 'graph-4.2.7', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.5.2 and proof, p. 113'], tags: ['planar', 'induced cycles'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k33', 'k5', 'pet']), 'cube', { onChange: () => load() });
         const which = v.slider('cycle through the selected edge', 1, 8, 1, { int: true });
@@ -117,11 +118,12 @@ export default {
       },
     },
     {
-      num: '4.5.3', kind: 'Theorem', name: 'Schnyder: planar iff incidence poset has dimension ≤ 3', credit: 'W. Schnyder, 1989', verify: true,
+      num: '4.5.3', kind: 'Theorem', name: 'Schnyder: planar iff incidence poset has dimension ≤ 3', credit: 'W. Schnyder, 1989',
       statement: String.raw`A graph $G$ is planar if and only if its **incidence poset** — the set $V\cup E$ with $v<e$ whenever the vertex $v$ is an end of the edge $e$ — has order dimension at most $3$, i.e. it is the intersection of three linear orders.`,
-      idea: String.raw`For a plane triangulation Schnyder constructs a *Schnyder wood*: the inner edges are oriented and coloured $1,2,3$ so that every inner vertex has exactly one outgoing edge of each colour, the colour-$i$ edges form a tree rooted at the outer vertex $a_i$, and around each vertex the outgoing edges and the incoming bundles alternate. The three paths from a vertex $v$ to $a_1,a_2,a_3$ cut the triangulation into three regions, and the three linear orders realising the incidence poset are read off from the wood; any planar graph is a subgraph of a triangulation and dimension does not grow for subposets. Conversely, a non-planar graph contains a subdivision of $K^5$ or $K_{3,3}$ (4.4.6) whose incidence poset already has dimension $4$. Only the first, constructive half is visualised; the details of the orders and of the converse should be compared with the book.`,
-      caption: String.raw`A random plane triangulation with outer vertices $a_1,a_2,a_3$ and its Schnyder wood from a canonical ordering: every inner edge is an arrow in colour 1, 2 or 3 (each inner vertex has one outgoing arrow of each colour). Click a vertex $v$: its three paths to the corners cut the triangle into three shaded regions $R_1,R_2,R_3$. The right panel places each vertex at (number of faces in $R_1$, number of faces in $R_2$): Schnyder's grid drawing, which is crossing-free — the same wood that realises the three linear orders of the theorem.`,
-      deps: ['graph-4.4.1a', 'graph-4.2.7a', 'graph-4.4.6'], refs: ['Diestel §4.5'], see: ['comb-8.1'], tags: ['planar', 'order dimension', 'Schnyder wood'],
+      idea: String.raw`The source states this characterization without a proof. The diagram illustrates a related constructive object, a Schnyder wood of a plane triangulation: every inner vertex has one outgoing edge of each of three colours, with the colour paths leading to the three outer vertices. These paths divide the triangulation into regions, whose face counts give grid coordinates. The drawing is checked for crossings below; it does not construct or verify three linear orders of the full incidence poset.`,
+      caption: String.raw`A random plane triangulation with outer vertices $a_1,a_2,a_3$ and its Schnyder wood from a canonical ordering: every inner edge is an arrow in colour 1, 2 or 3 (each inner vertex has one outgoing arrow of each colour). Click a vertex $v$: its three paths to the corners cut the triangle into three shaded regions $R_1,R_2,R_3$. The right panel places each vertex at (number of faces in $R_1$, number of faces in $R_2$): Schnyder's grid drawing, which is crossing-free — a related geometric illustration; the three incidence-poset orders are not computed here.`,
+      deps: ['graph-4.4.1a', 'graph-4.2.7a', 'graph-4.4.6'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.5.3 (no proof supplied), p. 113'], see: ['comb-8.1'], tags: ['planar', 'order dimension', 'Schnyder wood'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const nS = v.slider('$n$', 5, 12, 8, { int: true, onChange: () => make() });
         v.button('new triangulation', () => { seed++; make(); });
@@ -168,11 +170,12 @@ export default {
     },
     // =====================================================================================================  4.6
     {
-      num: '4.6.1a', kind: 'Definition', name: 'Plane duals', verify: true,
+      num: '4.6.1a', kind: 'Definition', name: 'Plane duals',
       statement: String.raw`Let $G=(V,E)$ be a connected plane graph. Its **plane dual** $G^*=(V^*,E^*)$ is the multigraph with one vertex $v^*(f)$ in the interior of every face $f$ of $G$ and, for every edge $e$ of $G$, an edge $e^*$ crossing $e$ exactly once and no other edge of $G$, joining the vertices of the two faces on either side of $e$ (a loop if $e$ is a bridge). The dual of a connected plane graph is a connected plane multigraph.`,
       idea: String.raw`The construction exchanges the roles of vertices and faces: $G^*$ has $\ell$ vertices and $m$ edges, where $\ell$ is the number of faces of $G$; the degree of $v^*(f)$ is the length of the boundary walk of $f$. Euler's formula $n-m+\ell=2$ is symmetric under this exchange, and for a connected plane graph one finds $G^{**}\cong G$. Parallel edges arise when two faces share more than one edge, so duals of simple graphs are in general multigraphs. Different drawings of the same abstract graph can have non-isomorphic duals; for 3-connected graphs the drawing is unique (4.3.2), and so is the dual.`,
       caption: String.raw`The plane graph is drawn in blue; its dual is drawn on top in orange: one hollow dot per bounded face, the dashed circle standing for the unbounded face (all dual edges that end there run to it), and a dual edge crossing each primal edge. Change the outer face with the slider and watch the dual change. $K_{2,4}$ has four faces of length 4 sharing two edges at a time: its dual has parallel edges; two $K^4$ glued along an edge give a dual with multiple edges as well.`,
-      deps: ['graph-4.2.1a', 'graph-1.10.1a'], refs: ['Diestel §4.6'], tags: ['duality', 'plane graphs'],
+      deps: ['graph-4.2.1a', 'graph-1.10.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.6, pp. 114–115'], tags: ['duality', 'plane graphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k24', 'k4k4']), 'cube', { onChange: () => load() });
         const out = v.slider('outer face', 0, 11, 0, { int: true, onChange: () => load() });
@@ -231,11 +234,12 @@ export default {
       },
     },
     {
-      num: '4.6.1b', kind: 'Definition', name: 'Abstract duals', verify: true,
+      num: '4.6.1b', kind: 'Definition', name: 'Abstract duals',
       statement: String.raw`A graph $G^*$ (or multigraph) is an **abstract dual** of $G$ if there is a bijection $\varphi\colon E(G)\to E(G^*)$ such that a set $F\subseteq E(G)$ is the edge set of a cycle of $G$ if and only if $\varphi(F)$ is a bond of $G^*$. By 4.6.1, the plane dual of a connected plane graph is an abstract dual.`,
-      idea: String.raw`The definition forgets the drawing and keeps only the matroidal content: which edge sets are cycles on one side and bonds on the other. The bijection matters: a graph can be an abstract dual of $G$ through one pairing of the edges and fail through another. $K^4$ is an abstract dual of itself, but only if every edge is paired with its *opposite* edge.`,
+      idea: String.raw`The definition forgets the drawing and keeps only the matroidal content: which edge sets are cycles on one side and bonds on the other. The bijection matters: a graph can be an abstract dual of $G$ through one pairing of the edges and fail through another. $K^4$ is an abstract dual of itself: pairing each edge with its opposite gives one valid pairing, as do pairings obtained from this by automorphisms.`,
       caption: String.raw`The left graph is $G$ with numbered edges. On the right is a candidate $G^*$; each of its edges carries the number of the edge of $G$ it is paired with. The app tests the definition on every cycle of $G$ and tells you whether it maps to a bond. For the plane dual of $G$ the test succeeds; click two edges of the candidate to swap their labels and break the pairing (a failing cycle is shown in red on both sides). For $K^4$, choose **$G$ itself** and fix the pairing by swapping edges until it works.`,
-      deps: ['graph-4.6.1', 'graph-1.9.1b'], refs: ['Diestel §4.6'], tags: ['duality', 'abstract dual'],
+      deps: ['graph-4.6.1', 'graph-1.9.1b'], refs: ['Diestel, Graph Theory, 6th ed., §4.6, pp. 115–116'], tags: ['duality', 'abstract dual'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['k4', 'cube', 'prism', 'w5']), 'k4', { onChange: () => load() });
         const cand = v.select('candidate $G^*$', [{ value: 'dual', label: 'plane dual' }, { value: 'self', label: '$G$ itself' }], 'dual', { onChange: () => load() });
@@ -316,12 +320,12 @@ export default {
       },
     },
     {
-      num: '4.6.3', kind: 'Theorem', name: 'Whitney: planar iff an abstract dual exists', credit: 'H. Whitney, 1932', verify: true,
+      num: '4.6.3', kind: 'Theorem', name: 'Whitney: planar iff an abstract dual exists', credit: 'H. Whitney, 1932',
       statement: String.raw`A graph is planar if and only if it has an abstract dual.`,
-      idea: String.raw`A planar graph has a drawing, and the plane dual of that drawing is an abstract dual (4.6.1). Conversely let $G^*$ be an abstract dual of $G$. The vertex stars of $G^*$ are cuts, and in a 2-connected $G^*$ they are bonds, so $\varphi^{-1}$ turns them into cycles of $G$ (4.6.1b); each edge lies in exactly two stars (its two ends), the stars span the cut space of $G^*$ and all but one of them form a basis, which by 4.6.2 corresponds to a basis of the cycle space of $G$ in which every edge occurs at most twice. By MacLane's criterion (4.5.1) $G$ is planar. (This is the argument in the usual presentations; check against the book for the exact order of steps.)`,
+      idea: String.raw`For a planar $G$, take the plane dual of each connected component of a drawing and form their disjoint union as abstract multigraphs. Its bonds correspond exactly to the cycles of $G$. Conversely, if $G^*$ is an abstract dual, 4.6.2 identifies $\mathcal C(G)$ with $\mathcal B(G^*)$. The cut space has a sparse basis: in each non-trivial component choose all vertex stars except one; every edge is in at most two chosen stars (loops occur in none). MacLane's theorem therefore makes $G$ planar. No 2-connectivity assumption on the abstract dual is needed.`,
       caption: String.raw`For a planar graph the app draws the plane dual with its natural edge pairing and checks the definition on every cycle (the readout reports the test). For $K^5$, $K_{3,3}$ and the Petersen graph there is no drawing to take a dual of. Suppose there were an abstract dual: the proof turns it into a simple basis of the cycle space, so the app runs the exhaustive search of 4.5.1 — it fails, and the picture on the right shows the largest simple independent family it could assemble, which stops one cycle short of a basis.`,
-      deps: ['graph-4.6.1', 'graph-4.6.2', 'graph-4.5.1', 'graph-1.9.2'], refs: ['Diestel §4.6'], see: ['circ-3.11'], tags: ['duality', 'planar'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Dual_graph' },
+      deps: ['graph-4.6.1', 'graph-4.6.2', 'graph-4.5.1', 'graph-1.9.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.6.3 and proof, pp. 116–117'], see: ['circ-3.11'], tags: ['duality', 'planar'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Dual_graph' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k4', 'k24', 'k33', 'k5', 'pet']), 'cube', { onChange: () => load() });
         const sL = gstage(v, { height: 340, title: 'graph $G$' }), sR = gstage(v, { height: 340, title: 'its dual, or a failed search' });

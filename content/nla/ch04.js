@@ -24,16 +24,14 @@ export default {
       num: '4.1',
       kind: 'Algorithm',
       name: 'Gaussian elimination as LU factorization',
-      statement: String.raw`Gaussian elimination turns $A\in\mathbb R^{n\times n}$ into an upper triangular $U$ by subtracting multiples of row $k$ from the rows below it. Step $k$ uses the multipliers $\ell_{ik}=a^{(k)}_{ik}/a^{(k)}_{kk}$ ($i>k$) and sets
+      statement: String.raw`For a nonsingular matrix $A$, Gaussian elimination turns $A\in\mathbb R^{n\times n}$ into an upper triangular $U$ by subtracting multiples of row $k$ from the rows below it. Step $k$ uses the multipliers $\ell_{ik}=a^{(k)}_{ik}/a^{(k)}_{kk}$ ($i>k$) and sets
 $$a^{(k+1)}_{ij}=a^{(k)}_{ij}-\ell_{ik}\,a^{(k)}_{kj}\qquad(i,j>k).$$
 Collecting the multipliers in a unit lower triangular $L$ gives $A=LU$, with $L=L_1^{-1}\cdots L_{n-1}^{-1}$ simply the multipliers placed in their columns. The factorization exists (without row exchanges) iff all leading principal minors $\det A_{1:k,1:k}$, $k<n$, are nonzero, and is then unique. The cost is $\sum_k 2(n-k)^2\approx\tfrac23 n^3$ flops; afterwards $Ax=b$ is solved by $Ly=b$, $Ux=y$ at $O(n^2)$ each.`,
       idea: String.raw`Each elimination step is multiplication by a lower triangular matrix $L_k=I-\ell_k e_k^{\top}$ that differs from the identity in column $k$ only; $L_{n-1}\cdots L_1A=U$. The inverse of $L_k$ just flips the signs of its multipliers, and — the small miracle — the product $L_1^{-1}L_2^{-1}\cdots$ simply collects the columns side by side with no cross terms, so the multipliers can be stored in the zeros they create. The operation count is dominated by the rank-one updates of the shrinking trailing block (the $2(n-k)^2$ flops of step $k$, 1.11).`,
       caption: String.raw`Step through elimination of a $4\times4$ matrix (a classical textbook example, or a random one). Left: the working matrix; the zeros created by step $k$ are replaced by the multipliers $\ell_{ik}$ (gold), the rows still being reduced are blue. Right: the factors $L$ and $U$ as they stand; at the last step the product $LU$ is compared with $A$. The flop counter is compared with the leading-order $2n^3/3$.`,
       deps: ['nla-1.1', 'nla-1.11'],
-      credit: 'Chinese "Nine Chapters", c. 200 BCE–100 CE; Gauss, c. 1809; matrix formulation as LU: Turing, 1948',
       tags: ['lu', 'elimination'],
-      refs: ['Trefethen–Bau Lec. 20', 'Golub–Van Loan ch. 3'],
-      verify: true,
+      refs: ['Demmel, Math221 (Fall2009), Lecture4, complete LU existence/uniqueness proof'],
       viz(v) {
         const kind = v.select('matrix', [{ value: 'tb', label: 'textbook example' }, { value: 'rand', label: 'random' }], 'tb', { onChange: () => S2.reset() });
         let seed = 1;
@@ -285,15 +283,14 @@ Gaussian elimination with partial pivoting performs **no** row exchanges on $W_n
       num: '4.6',
       kind: 'Phenomenon',
       name: 'Gaussian elimination is stable in practice',
-      statement: String.raw`Although the growth factor of partial pivoting can reach $2^{n-1}$ (4.5), in numerical practice it essentially never does. For random matrices with independent standard normal entries the observed growth factor is small and grows slowly with $n$ — a few units for $n=10$ to $100$, about like a low power of $n$ (Trefethen & Schreiber, 1990, report roughly $n^{2/3}$ for the typical size; the exponent fitted to the experiment below, over a modest range of $n$, is shown in the readout). Matrices with $\rho$ of exponential size are known only as constructions such as Wilkinson's, and no genuine large-scale problem is known to have been spoiled by such growth. Why they are so rare is not fully understood: this is one of the "mysteries of Gaussian elimination".`,
-      idea: String.raw`There is no complete theorem. A heuristic: large growth needs a very particular sign and magnitude pattern in many entries *at once*, so that the multipliers stay near $-1$ and the pivoting never intervenes; the set of such matrices has tiny measure, and a small random perturbation of $W_n$ destroys the growth (try it: add noise to the matrix of 4.5 and rerun). Trefethen and Schreiber gave statistical models of the pivoting process together with extensive experiments. The specific exponent $2/3$ is quoted from a secondary source (and from memory), hence the flag; the picture itself is my own simulation, in double precision.`,
+      statement: String.raw`Although the growth factor of partial pivoting can reach $2^{n-1}$ (4.5), in numerical practice it essentially never does. For random matrices with independent standard normal entries the observed growth factor is usually small over the displayed range. Trefethen–Schreiber (1990), §6, report mean growth near $n^{2/3}$ for $n\le1024$ when the largest generated element is divided by the initial distribution’s standard deviation. They explicitly do not assert that exponent as an asymptotic law. Here $\rho$ instead divides by the largest original entry, and the plot reports medians, so its fitted exponent and normalization need not match that result. Why they are so rare is not fully understood: this is one of the "mysteries of Gaussian elimination".`,
+      idea: String.raw`There is no complete theorem. A heuristic: large growth needs a very particular sign and magnitude pattern in many entries *at once*, so that the multipliers stay near $-1$ and the pivoting never intervenes; the set of such matrices has tiny measure, and a small random perturbation of $W_n$ destroys the growth (try it: add noise to the matrix of 4.5 and rerun). Trefethen and Schreiber gave statistical models of the pivoting process together with extensive experiments. The power $2/3$ and its normalization were checked against the original §6 and conclusions; the picture is a separate double-precision simulation.`,
       caption: String.raw`Left: histogram of $\rho$ for many random Gaussian $n\times n$ matrices (choose $n$), computed in double precision with partial pivoting, with the median marked. Right: median (blue) and 95th percentile (orange) of $\rho$ against $n$ on log–log axes, with the reference lines $n^{1/2}$, $n^{2/3}$ and the worst case $2^{n-1}$, which immediately leaves the picture. Resample to see how little the statistics move.`,
       deps: ['nla-4.5'],
       credit: 'L. N. Trefethen & R. S. Schreiber, 1990',
       links: { doi: 'https://doi.org/10.1137/0611023' },
       tags: ['growth-factor', 'random-matrices'],
       refs: ['Trefethen–Bau Lec. 22', 'Trefethen & Schreiber, SIMAX 11 (1990) 335–360'],
-      verify: true,
       viz(v) {
         const nsel = v.select('matrix size', [8, 16, 32, 64].map((k) => ({ value: k, label: `$n=${k}$` })), 32);
         let seed = 1;

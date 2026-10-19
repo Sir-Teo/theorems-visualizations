@@ -20,7 +20,7 @@ export default {
       statement: String.raw`Let $\mathbf a,\mathbf b,\mathbf c$ be the edges of a chosen unit cell. A lattice vector is $\mathbf r=U\mathbf a+V\mathbf b+W\mathbf c$ with integers $U,V,W$. Its **direction indices** are the components divided by their greatest common divisor, $[uvw]=[U,V,W]/\gcd(U,V,W)$: the smallest integers with the same ratios. A bar over an index marks a negative sign. The whole parallel family is one symbol $[uvw]$, and the symbols of all directions that the crystal's symmetry carries into one another are bundled as $\langle uvw\rangle$.`,
       idea: String.raw`Directions are only defined up to a positive multiple, so the integers are scaled until they have no common factor; this picks the first lattice point met along the ray, i.e. the shortest lattice vector in that direction. The indices depend on the cell chosen but not on its origin. In a cubic cell $[100],[010],[001]$ are related by the 3-fold axes and form $\langle100\rangle$; in a tetragonal or monoclinic cell the same three symbols fall into different families because the symmetry no longer exchanges the axes.`,
       caption: String.raw`Drag the gold handle (it snaps to lattice points; rotate the scene to move it in depth) or use the sliders for the components of $\mathbf r$. The long arrow is the lattice vector, the green one the shortest vector on its line, and the orange arrows are the other members of $\langle uvw\rangle$ under the symmetry of the chosen cell. Switch the cell to see $\langle100\rangle$ split.`,
-      deps: ['xtal-1.2'],
+      deps: ['xtal-1.2', 'alg-2.9a'],
       refs: ['Hammond ch. 5'],
       tags: ['direction indices', 'unit cell', 'lattice vectors'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Miller_index#Case_of_cubic_structures' },
@@ -74,7 +74,7 @@ export default {
       statement: String.raw`Take a family of parallel lattice planes and the plane of the family nearest the origin (but not through it). If it cuts the cell axes $\mathbf a,\mathbf b,\mathbf c$ at $\mathbf a/h,\ \mathbf b/k,\ \mathbf c/l$ with $h,k,l$ integers without common factor, the plane is labelled by the **Miller indices** $(hkl)$. Equivalently the intercepts, measured in units of the cell edges, are $p,q,r$; the indices are $1/p,\,1/q,\,1/r$ multiplied by the smallest number that clears all fractions and then reduced to coprime integers. A plane parallel to an axis meets it "at infinity" and receives the index $0$. The symbol $(hkl)$ names the whole stack of planes $hx+ky+lz=m$, $m\in\mathbb Z$ (with $x,y,z$ in cell coordinates); a bar marks a negative index, and $\{hkl\}$ denotes all planes equivalent by symmetry.`,
       idea: String.raw`A lattice plane contains lattice points, so it meets the axes at rational multiples of the edges (Haüy's law of rational indices). Writing the plane as $x/p+y/q+z/r=1$ and clearing denominators gives integer coefficients $(h,k,l)$; reciprocals are used because they stay finite for planes parallel to an axis, where intercepts blow up, and because the stack of planes $hx+ky+lz=m$ is then exactly the set of lattice planes of that orientation. The indices refer to the cell axes, so the same symbol is a different physical plane in a different cell. The notation was popularized by W. H. Miller's *Treatise on Crystallography* (1839), building on Weiss's intercept parameters and Whewell's reciprocal form.`,
       caption: String.raw`Set where the plane cuts each axis (gold dots; "$\infty$" means it never does). The orange plane is the one you chose; the indices below are the reciprocals cleared of fractions. The faint planes are the rest of the stack $(hkl)$ inside the cell: the plane you drew need not be the nearest one to the origin, and the stack is what the symbol labels.`,
-      deps: ['xtal-1.4', 'xtal-4.1'],
+      deps: ['xtal-1.4', 'xtal-4.1', 'vcalc-1.5'],
       refs: ['Hammond ch. 5'],
       tags: ['Miller indices', 'lattice planes', 'intercepts'],
       credit: 'W. H. Miller, A Treatise on Crystallography, 1839 (reciprocal-intercept notation; after Weiss and Whewell)',
@@ -138,12 +138,11 @@ export default {
       statement: String.raw`For a hexagonal (or trigonal, hexagonal-axes) cell use three coplanar axes $\mathbf a_1,\mathbf a_2,\mathbf a_3$ at $120^\circ$ with $\mathbf a_3=-(\mathbf a_1+\mathbf a_2)$, plus $\mathbf c$. A plane is labelled $(hkil)$ with $h,k,l$ the ordinary Miller indices with respect to $\mathbf a_1,\mathbf a_2,\mathbf c$, and the **redundant third index fixed by**
 $$i=-(h+k),\qquad\text{i.e. } h+k+i=0 .$$
 The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. Equivalent planes related by the 3-fold or 6-fold axis are then obtained by permuting $h,k,i$ cyclically (and, with a mirror, in any order), and the six faces of the first-order hexagonal prism are $\{10\bar10\}$.`,
-      idea: String.raw`The three axes in the basal plane are dependent, so any plane's trace on the basal plane, $hx_1+kx_2=1$ in coordinates along $\mathbf a_1,\mathbf a_2$, also meets the $\mathbf a_3$ axis. Putting $\mathbf a_3=-\mathbf a_1-\mathbf a_2$, i.e. $(x_1,x_2)=(-t,-t)$, gives $-(h+k)t=1$, so the intercept is $1/i$ with $i=-(h+k)$. The extra index carries no new information, but it makes the sixfold symmetry visible: rotating by $60^\circ$ shifts $(h,k,i)$ one step cyclically (with sign changes), whereas the three-index labels $(100),(010),(\bar110),\dots$ of equivalent faces look unrelated. The four-index scheme is usually credited to Bravais (the year is not confirmed here).`,
+      idea: String.raw`The three axes in the basal plane are dependent, so any plane's trace on the basal plane, $hx_1+kx_2=1$ in coordinates along $\mathbf a_1,\mathbf a_2$, also meets the $\mathbf a_3$ axis. Putting $\mathbf a_3=-\mathbf a_1-\mathbf a_2$, i.e. $(x_1,x_2)=(-t,-t)$, gives $-(h+k)t=1$, so the intercept is $1/i$ with $i=-(h+k)$. The extra index carries no new information, but it makes the sixfold symmetry visible: rotating by $60^\circ$ shifts $(h,k,i)$ one step cyclically (with sign changes), whereas the three-index labels $(100),(010),(\bar110),\dots$ of equivalent faces look unrelated. This redundant index is useful notation, not an additional independent coordinate.`,
       caption: String.raw`Choose $h,k,l$ (or press *next prism face*). The blue line is the trace of the plane $(hk\cdot l)$ on the basal plane; gold dots are its intercepts on the three axes. With the lock on they are always collinear, because $i=-(h+k)$; unlock it and set $i$ by hand to see the third intercept leave the line. The table lists the six prism faces in both notations.`,
       deps: ['xtal-4.2'],
-      refs: ['Hammond ch. 5'],
+      refs: ['IUCr OnlineDictionary, complete Bravais-Miller-indices definition'],
       tags: ['Miller–Bravais indices', 'hexagonal', 'symmetry'],
-      verify: true,
       links: { iucr: 'https://dictionary.iucr.org/Bravais-Miller_indices', wikipedia: 'https://en.wikipedia.org/wiki/Miller_index#Case_of_hexagonal_and_rhombohedral_structures' },
       viz(v) {
         const A1 = [1, 0], A2 = [-0.5, Math.sqrt(3) / 2], A3 = [-0.5, -Math.sqrt(3) / 2];
@@ -199,6 +198,8 @@ The index $i$ is the reciprocal of the intercept on $\mathbf a_3$. Equivalent pl
         });
         v.readout(() => {
           const { h, k, i, l, off, locked } = info;
+          if(h+k+i!==0)return `Invalid four-index plane: $h+k+i=${h+k+i}$; this includes inconsistent infinite intercepts.`;
+          if(!h&&!k&&!l)return 'The zero tuple (0000) does not define a plane.';
           if (!h && !k) return `$(hkil)=(${[h, k, i, l].map(barTex).join('')})$: with $h=k=0$ the plane is parallel to the basal plane and its trace is at infinity (this is the plane $(000l)$, perpendicular to $\\mathbf c$).`;
           const sum = h + k + i;
           return `Plane $(hkil)=${idxTex([h, k, i, l])}$ with $h+k+i=${sum}$${locked ? ' (forced to 0 by $i=-(h+k)$)' : ''}.\n${off === null ? 'An intercept is at infinity, so the three-point collinearity test is trivially met or not needed.' : sum === 0 ? `The three intercepts lie on one line (distance of the $\\mathbf a_3$ intercept from the line through the other two: ${fmt(off, 3)}).` : `With $h+k+i\\ne0$ the $\\mathbf a_3$ intercept (red) is ${fmt(off, 3)} off the line through the other two: no plane has these four indices.`}`;
@@ -221,7 +222,7 @@ which gives, for the common cells,
 If $h,k,l$ have a common factor $n$, the formula gives $d_{hkl}=d_{hkl/n}/n$.`,
       idea: String.raw`The planes $hx+ky+lz=m$ are the level sets of the linear function $\mathbf h\cdot\mathbf f$ of the fractional coordinates $\mathbf f$; two neighbouring ones differ by $1$ in that function. The gradient of $\mathbf h\cdot\mathbf f$ in Cartesian space is the reciprocal vector $\mathbf g=h\mathbf a^*+k\mathbf b^*+l\mathbf c^*$ (here $\mathbf a_i\cdot\mathbf a^*_j=\delta_{ij}$), so the spacing is $1/|\mathbf g|$ and $|\mathbf g|^2=\mathbf h^{\mathsf T}G^{-1}\mathbf h$ because the Gram matrix of the reciprocal basis is $G^{-1}$. Each special form is this expression for the corresponding Gram matrix.`,
       caption: String.raw`Choose a crystal system and $(hkl)$ and adjust the cell edges. The faint polygons are the planes of the stack inside the cell; the gold arrow is the **measured** spacing, found geometrically as the distance from the plane through the origin to the next plane (using two lattice vectors in the plane and a cross product, no formula). The readout compares it with the formula. Try $(200)$: the spacing halves.`,
-      deps: ['xtal-4.2'],
+      deps: ['xtal-4.2', 'vcalc-2.8'],
       refs: ['Hammond ch. 5'],
       tags: ['interplanar spacing', 'metric tensor', 'reciprocal lattice'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Miller_index#Crystallographic_planes_and_directions' },

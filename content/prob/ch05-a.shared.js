@@ -6,6 +6,10 @@
 export * from './ch03.shared.js';
 import { fr } from './ch03.shared.js';
 
+/** Durrett 5.1.5: waiting customers at service entry, excluding the one in service. */
+export const serviceEntryQueueStep = (waiting, arrivals) => Math.max(0, waiting + arrivals - 1);
+export const serviceEntryQueueMean = (rho, serviceCV2) => rho < 1 ? rho * rho * (1 + serviceCV2) / (2 * (1 - rho)) : Infinity;
+
 // ------------------------------------------------------------------ simulation
 /** Cumulative rows of a stochastic matrix. */
 export const cumRows = (P) => P.map((row) => { let c = 0; return row.map((p) => (c += p)); });

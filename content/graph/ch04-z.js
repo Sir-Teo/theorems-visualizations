@@ -41,14 +41,14 @@ export default {
   items: [
     // =====================================================================================================  4.3
     {
-      num: '4.3.1a', kind: 'Definition', name: 'Planar embeddings; topological and combinatorial isomorphism', verify: true,
-      statement: String.raw`A **planar embedding** (or plane drawing) of an abstract graph $G$ is a plane graph isomorphic to $G$; its faces are the faces of that plane graph. Let $G$ and $G'$ be plane graphs and $\varphi$ an isomorphism between the underlying abstract graphs.
+      num: '4.3.1a', kind: 'Definition', name: 'Planar embeddings; topological and combinatorial isomorphism',
+      statement: String.raw`A **planar embedding** of an abstract graph $G$ is an isomorphism from $G$ to a plane graph, called its drawing. Let $\varphi$ be an abstract isomorphism between plane graphs $H,H'$.
 
-(a) $\varphi$ is a **combinatorial isomorphism** if it maps the boundary of every face of $G$ onto the boundary of a face of $G'$, and every facial subgraph of $G'$ arises this way: it induces a bijection between the sets of facial subgraphs.
-(b) $\varphi$ is a **topological isomorphism** if it extends to a homeomorphism of the plane that maps $G$ onto $G'$.`,
-      idea: String.raw`Two different drawings of one abstract graph may cut the plane differently: only the abstract graph is common to both. A homeomorphism of the plane maps faces (the connected pieces of the complement) onto faces, so every topological isomorphism is combinatorial. The converse needs a hypothesis and an argument (4.3.1): a combinatorial isomorphism only records which cycles bound faces, not which face is the unbounded one, and for graphs that are not 2-connected the boundaries are not cycles. Note that the wording of (a) and (b) follows the usual formulation and should be checked against the text.`,
+It is **topological** if the corresponding drawings on the sphere are carried to one another by a homeomorphism of $S^2$ inducing $\varphi$ on vertices and edges. It is **combinatorial** if it extends to a bijection of vertices, edges and faces preserving all incidences. It is **graph-theoretical** if it maps the set of facial boundary subgraphs of $H$ onto that of $H'$, without specifying a bijection of faces.`,
+      idea: String.raw`Diestel uses the sphere so that the outer face has no special status. A homeomorphism preserving the drawings induces a face bijection, hence topological implies combinatorial, which implies graph-theoretical. A homeomorphism of the plane additionally preserves the unbounded face; this extra condition is displayed separately below. Theorem 4.3.1 proves the relevant converses.`,
       caption: String.raw`The left drawing $A$ is fixed, with each bounded face tinted. Drag the vertices of $B$: as long as no two edges cross, the app computes the faces of $B$ and compares their boundaries with those of $A$ edge by edge (the identity map of the vertex labels is $\varphi$). Matching faces get matching tints; a face of $B$ whose boundary is not a face boundary of $A$ is red. The buttons redraw $B$ with another outer face or with another embedding (possible when $G$ is only 2-connected).`,
-      deps: ['graph-4.2.1a'], refs: ['Diestel §4.3'], tags: ['plane graphs', 'isomorphism'],
+      deps: ['graph-4.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.3, pp. 102–104'], tags: ['plane graphs', 'isomorphism'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'k4k4', 'k24', 'w5']), 'cube', { onChange: () => reset() });
         const sA = gstage(v, { height: 320, title: 'drawing $A$ (fixed)' }), sB = gstage(v, { height: 320, title: 'drawing $B$ (drag the vertices)' });
@@ -87,14 +87,14 @@ export default {
       },
     },
     {
-      num: '4.3.1', kind: 'Theorem', name: 'Abstract, combinatorial and topological isomorphisms', verify: true,
-      statement: String.raw`Let $G$ and $G'$ be 2-connected plane graphs and $\varphi\colon G\to G'$ an isomorphism of the abstract graphs.
+      num: '4.3.1', kind: 'Theorem', name: 'Abstract, combinatorial and topological isomorphisms',
+      statement: String.raw`(i) Every graph-theoretical isomorphism between two plane graphs is combinatorial. Its extension to a face bijection is unique if and only if the graph is not a cycle.
 
-(i) If $\varphi$ maps the facial cycles of $G$ onto the facial cycles of $G'$ (a combinatorial isomorphism), then $\varphi$ extends to a homeomorphism of the sphere taking $G$ onto $G'$, face by face; it is a homeomorphism of the plane exactly when the outer face goes to the outer face.
-(ii) A topological isomorphism is always combinatorial. An abstract isomorphism need not be combinatorial: the same abstract graph can have drawings with different facial cycles.`,
-      idea: String.raw`In a 2-connected plane graph every face is bounded by a cycle (4.2.6), and an edge lies on exactly two faces (4.2.2). Given $\varphi$, extend it over each facial cycle to a homeomorphism of the closed discs these cycles bound, using that homeomorphisms between circles extend to the discs (4.1.4), and glue along the edges; since each edge borders two faces the pieces fit. Conversely, a homeomorphism of the plane carries the components of the complement of $G$ to those of $G'$, hence faces to faces. The statement of the sphere-versus-plane clause is paraphrased and should be compared with the text.`,
-      caption: String.raw`The left drawing uses one embedding of the graph, the right drawing another embedding (or another choice of outer face) of the *same* abstract graph, with $\varphi$ the identity of labels. The three rows of the readout test: abstract isomorphism (always), combinatorial (same facial cycles) and topological in the plane (additionally the same outer face). Slide **faces glued** to extend $\varphi$ over one more face at a time; a face whose cycle is missing on the right turns red and the extension stops there. $K_{2,4}$ and the glued $K^4$s have several embeddings; the cube and the prism have only one.`,
-      deps: ['graph-4.3.1a', 'graph-4.1.4', 'graph-4.2.5', 'graph-4.2.6'], refs: ['Diestel §4.3'], tags: ['plane graphs', 'isomorphism'],
+(ii) Every combinatorial isomorphism between two 2-connected plane graphs is topological, with topological understood on the sphere as in 4.3.1a.`,
+      idea: String.raw`For (i), a plane graph that is not a cycle has distinct boundary subgraphs for distinct faces (4.2.5), so the boundary correspondence gives the unique face bijection. A cycle has two faces with the same boundary and either pairing works. For (ii), extend the vertex map over each edge, then extend over each facial disc using 4.1.4; 2-connectivity makes every facial boundary a cycle. The extensions agree along edges and glue to a homeomorphism of the sphere. Preserving the outer face is an additional plane condition.`,
+      caption: String.raw`The left drawing uses one embedding of the graph, the right drawing another embedding (or another choice of outer face) of the *same* abstract graph, with $\varphi$ the identity of labels. The three rows of the readout test: abstract isomorphism (always), combinatorial (same facial cycles) topological on the sphere (same answer for these 2-connected graphs), and additionally whether the outer face is preserved. Slide **faces glued** to extend $\varphi$ over one more face at a time; a face whose cycle is missing on the right turns red and the extension stops there. $K_{2,4}$ and the glued $K^4$s have several embeddings; the cube and the prism have only one.`,
+      deps: ['graph-4.3.1a', 'graph-4.1.4', 'graph-4.2.5', 'graph-4.2.6'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.3.1 and proof, pp. 104–106'], tags: ['plane graphs', 'isomorphism'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'k24', 'k4k4']), 'k24', { onChange: () => reset() });
         const emb = v.slider('embedding of $G\'$', 0, 5, 2, { int: true, onChange: () => redo() });
@@ -124,15 +124,16 @@ export default {
           info = { comb, top: comb && oA.key === oB.key, fa: FA.length, upto, stop: !!stop, total: order.length };
         });
         v.legend([['accent', 'face of $G$ and its image under $\\varphi$', { area: true }], ['red', 'facial cycle of $G$ that is not a facial cycle of $G\'$', { area: true }]]);
-        v.readout(() => info && `abstract isomorphism: **✓** (identity of labels) · combinatorial: **${info.comb ? '✓' : '✗'}** · topological in the plane: **${info.top ? '✓' : '✗'}**${info.comb && !info.top ? ' (different unbounded face, still a homeomorphism of the sphere)' : ''}\nextension over ${info.upto} of ${info.total} bounded faces${info.stop ? ' — **stops: a facial cycle of $G$ is not a facial cycle of $G\'$**' : info.comb ? ' — glues without obstruction' : ''}`);
+        v.readout(() => info && `abstract isomorphism: **✓** (identity of labels) · combinatorial: **${info.comb ? '✓' : '✗'}** · topological on the sphere: **${info.comb ? '✓' : '✗'}** · extends over the plane: **${info.top ? '✓' : '✗'}**${info.comb && !info.top ? ' (different unbounded face, still a homeomorphism of the sphere)' : ''}\nextension over ${info.upto} of ${info.total} bounded faces${info.stop ? ' — **stops: a facial cycle of $G$ is not a facial cycle of $G\'$**' : info.comb ? ' — glues without obstruction' : ''}`);
       },
     },
     {
-      num: '4.3.2', kind: 'Theorem', name: 'Whitney: 3-connected planar graphs embed uniquely', credit: 'H. Whitney, 1932', verify: true,
+      num: '4.3.2', kind: 'Theorem', name: 'Whitney: 3-connected planar graphs embed uniquely', credit: 'H. Whitney, 1933',
       statement: String.raw`Any two planar embeddings of a 3-connected planar graph are combinatorially isomorphic through the identity of the abstract graph: all embeddings have the same facial cycles, namely the non-separating induced cycles of the graph. Equivalently, a 3-connected planar graph has an essentially unique embedding on the sphere.`,
       idea: String.raw`By 4.2.7 the facial cycles of any plane drawing of a 3-connected graph are exactly its non-separating induced cycles, a set which does not depend on the drawing. Since faces of 2-connected plane graphs are bounded by cycles, two embeddings therefore have the same facial cycles, and 4.3.1 turns this into a homeomorphism of the sphere. For graphs that are merely 2-connected the set of non-separating induced cycles is not forced and different embeddings occur: flipping a piece across a 2-separator changes the facial cycles.`,
       caption: String.raw`Press **sample** to run many randomised embedding procedures (each makes different choices when it may place a piece in several faces). The bars count how often each distinct set of facial cycles occurs; the slider shows one of them. For the 3-connected graphs there is exactly one bar, and its faces are the non-separating induced cycles that the app lists independently. For $K_{2,4}$ or two $K^4$ glued along an edge, flipping across the 2-separator produces further bars.`,
-      deps: ['graph-4.3.1', 'graph-4.2.7'], refs: ['Diestel §4.3'], tags: ['planar', 'uniqueness of embedding'],
+      deps: ['graph-4.3.1', 'graph-4.2.7'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.3.2 and proof, p. 106'], tags: ['planar', 'uniqueness of embedding'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k24', 'k4k4']), 'cube', { onChange: () => run() });
         const sel = v.slider('embedding shown', 1, 6, 1, { int: true });
@@ -169,11 +170,12 @@ export default {
     },
     // =====================================================================================================  4.4
     {
-      num: '4.4.1a', kind: 'Definition', name: 'Planar and maximally planar graphs', verify: true,
+      num: '4.4.1a', kind: 'Definition', name: 'Planar and maximally planar graphs',
       statement: String.raw`A graph is **planar** if it can be drawn in the plane, i.e. if it is isomorphic to a plane graph. A planar graph is **maximally planar** if it is planar but adding any edge between two non-adjacent vertices produces a non-planar graph.`,
       idea: String.raw`Planarity is a property of the abstract graph, witnessed by one crossing-free drawing, while "plane" refers to a drawing that has been fixed. The planar graphs are closed under taking subgraphs, so maximal planar graphs are the natural extremal objects: every planar graph is a spanning subgraph of a maximally planar one on the same vertex set (add edges while possible), which is why bounds on the number of edges of maximally planar graphs bound those of all planar graphs.`,
       caption: String.raw`Drag the vertices to remove the crossings (crossing edges and their crossing points are red). Whenever the graph is planar, **untangle** finds a crossing-free drawing for you. The readout tests planarity exactly (independently of the picture) and counts how many non-edges could still be added keeping the graph planar; when that number is $0$ the graph is maximally planar. Edit the graph freely (${EDIT}).`,
-      deps: ['graph-4.3.1a'], refs: ['Diestel §4.4'], tags: ['planar', 'maximally planar'],
+      deps: ['graph-4.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.4, pp. 106–107'], tags: ['planar', 'maximally planar'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('start', opts(['k5m', 'k5', 'k33', 'cube', 'pet', 'oct']), 'k5m', { onChange: () => load(true) });
         const s = gstage(v, { height: 340, x: [0, 10], y: [0, 6.4] });
@@ -252,11 +254,12 @@ export default {
       },
     },
     {
-      num: '4.4.2', kind: 'Lemma', name: 'K⁵ or K₃,₃ as a minor iff as a topological minor', verify: true,
+      num: '4.4.2', kind: 'Lemma', name: 'K⁵ or K₃,₃ as a minor iff as a topological minor',
       statement: String.raw`A graph contains $K^5$ or $K_{3,3}$ as a minor if and only if it contains $K^5$ or $K_{3,3}$ as a topological minor (i.e. a subdivision of one of them as a subgraph).`,
-      idea: String.raw`A topological minor is always a minor. For the converse note first that $K_{3,3}$ has maximum degree $3$, so a $K_{3,3}$ minor already gives a subdivision (1.7.3). For $K^5$ take a minimal graph with a $K^5$ minor: its five branch sets are trees whose leaves carry the cross edges. If every branch tree can be replaced by one vertex carrying all four of its cross edges, the graph is a $TK^5$. Otherwise some branch tree splits its four cross edges over several vertices, and a short case analysis ($2{+}2$, $3{+}1$, $2{+}1{+}1$, …) shows that either a $K^5$ subdivision survives (a vertex of degree $2$ is just a subdividing vertex) or a $K_{3,3}$ subdivision appears. The app carries out the search by brute force on the cases below; the case analysis itself is the proof in the book and is not reproduced here.`,
+      idea: String.raw`A topological minor is a minor. Conversely, $K_{3,3}$ has maximum degree three, so 1.7.3 handles that case. Take a minimal $K^5$ model. Each branch set is a tree with exactly one edge to each other branch set. Adding its four outgoing edges gives a tree with exactly four leaves. If all five such trees are subdivisions of $K_{1,4}$, the model is a $TK^5$. Otherwise one has two degree-three vertices: contract it to these two and the other four branch sets to single vertices. The resulting six-vertex graph contains $K_{3,3}$, and 1.7.3 gives its subdivision in $G$.`,
       caption: String.raw`A $K^5$ minor model is shown on the left: each vertex of $K^5$ has been blown up into a path (its branch set, the shaded blob), with the four incident edges attached at various points. The right panel lets the app search for a subgraph that is a subdivision of $K^5$ or $K_{3,3}$ and shows what it finds. Choose the splitting pattern: $2{+}2$ at one vertex forces a $K_{3,3}$, $3{+}1$ leaves a $K^5$ subdivision, and with two vertices split as $2{+}2$ there are only three vertices of degree $\ge4$.`,
-      deps: ['graph-1.7.3'], refs: ['Diestel §4.4'], tags: ['minors', 'topological minors'],
+      deps: ['graph-1.7.3'], refs: ['Diestel, Graph Theory, 6th ed., Lemma 4.4.2 and proof, p. 107'], tags: ['minors', 'topological minors'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const PAT = { plain: [[1, 2, 3, 4]], s22: [[1, 2], [3, 4]], s31: [[1, 2, 3], [4]], s211: [[1, 2], [3], [4]] };
         const MODELS = {
@@ -307,11 +310,12 @@ export default {
       },
     },
     {
-      num: '4.4.3', kind: 'Lemma', name: '3-connected graphs without a K⁵ or K₃,₃ minor are planar', verify: true,
+      num: '4.4.3', kind: 'Lemma', name: '3-connected graphs without a K⁵ or K₃,₃ minor are planar',
       statement: String.raw`Every 3-connected graph that contains neither $K^5$ nor $K_{3,3}$ as a minor is planar.`,
       idea: String.raw`Induction on $|G|$. For $K^4$ draw a triangle with a centre. Otherwise there is an edge $xy$ such that $G/xy$ is still 3-connected (3.2.4); as a minor of $G$ it has no $K^5$ or $K_{3,3}$ minor, so it has a plane drawing by induction, and in it the faces around the contracted vertex $w$ are bounded by cycles (4.2.6). One then has to split $w$ back into $x$ and $y$ inside this picture: if the neighbours of $x$ and of $y$ on the cycles around $w$ interleave in a way that blocks every such splitting, one finds a $K^5$ or $K_{3,3}$ minor from them (case analysis in the book, not reproduced here). The app runs the induction as a procedure and stops at the first graph for which the drawing fails.`,
       caption: String.raw`The app contracts edges whose contraction keeps the graph 3-connected until $K^4$ remains, then runs the proof backwards: each step splits a vertex (the pair $x,y$ in orange) and redraws the larger graph. Planar examples go all the way up. For $K^5$, $K_{3,3}$ or the Petersen graph the process stops at the first graph that is no longer planar, where the app displays the subdivision of $K^5$ or $K_{3,3}$ that has appeared. Pick the graph and step with the player.`,
-      deps: ['graph-3.2.4', 'graph-4.2.1', 'graph-4.2.6', 'graph-4.4.1a'], refs: ['Diestel §4.4'], tags: ['planar', 'contraction'],
+      deps: ['graph-3.2.4', 'graph-4.2.1', 'graph-4.2.6', 'graph-4.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., Lemma 4.4.3 and proof, pp. 108–109'], tags: ['planar', 'contraction'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const ex = v.select('graph', opts(['cube', 'prism', 'w5', 'oct', 'k5', 'k33', 'pet']), 'cube', { onChange: () => rebuild() });
         const s = gstage(v, { height: 340 });
@@ -364,11 +368,12 @@ export default {
       },
     },
     {
-      num: '4.4.4', kind: 'Lemma', name: 'Edge-maximal graphs without X split along K²', verify: true,
-      statement: String.raw`Let $X=\{K^5,K_{3,3}\}$ and let $G$ be an edge-maximal graph without a topological minor in $X$ (adding any edge to $G$ creates a $TK^5$ or $TK_{3,3}$). If $G=G_1\cup G_2$ with $|G_1\cap G_2|\le 2$ and no edge of $G$ between $G_1\setminus G_2$ and $G_2\setminus G_1$, then $G_1\cap G_2$ is a $K^2$: two vertices joined by an edge.`,
-      idea: String.raw`Suppose the separator $S$ is not a $K^2$: it has at most one vertex, or two non-adjacent vertices. Add a missing edge $xy$ inside $S$ (or an edge between the two sides); by edge-maximality this creates a $TK^5$ or $TK_{3,3}$ that uses the new edge. Because each side is joined to both ends of $S$, a path through the other side can stand in for the new edge, which gives such a subdivision inside $G$ itself, a contradiction. Hence $S$ consists of two adjacent vertices. The lemma is stated here for $X=\{K^5,K_{3,3}\}$ and the rerouting step is only sketched; in the book it is formulated for a more general class of forbidden graphs, which should be checked.`,
+      num: '4.4.4', kind: 'Lemma', name: 'Edge-maximal graphs without X split along K²',
+      statement: String.raw`Let $\mathcal X$ be a set of 3-connected graphs, and let $G$ have a **proper separation** $\{V_1,V_2\}$ of order $\kappa(G)\le2$ (so the overlap is a minimum separator). If $G$ is edge-maximal without a topological minor in $\mathcal X$, then both $G_i=G[V_i]$ are likewise edge-maximal without one, and $G_1\cap G_2=K^2$. The picture specializes to $\mathcal X=\{K^5,K_{3,3}\}$.`,
+      idea: String.raw`Minimality of the separator $S=V_1\cap V_2$ implies that every vertex of $S$ has a neighbour in every component on either side. Adding a cross edge when $S$ is empty or a singleton would create a forbidden subdivision whose branch vertices, by 3-connectivity, all lie on one side; reroute its excursion through the other side to get a forbidden subdivision already in $G$. Thus $|S|=2$. If its vertices $x,y$ were non-adjacent, replace the added edge $xy$ in the forbidden subdivision by an $x$–$y$ path through the other side. Hence $xy\in G$. Finally, any edge added inside $G_i$ creates a forbidden subdivision there: replace an excursion through the other side by $xy$.`,
       caption: String.raw`Glue two graphs $G_1$ and $G_2$ along a separator of your choice: an edge ($K^2$), a single vertex, or two non-adjacent vertices. The readout tests whether the result has a $TK^5/TK_{3,3}$ (planarity test), and whether it could be edge-maximal: it counts the edges between the two sides that could still be added without creating one. Only the gluing along $K^2$ is even allowed in a graph that is edge-maximal; but there too the app finds an addable edge between the sides, so the sides cannot both be large (4.4.5).`,
-      deps: ['graph-1.4.1b', 'graph-1.7.1b'], refs: ['Diestel §4.4'], tags: ['topological minors', 'edge-maximal'],
+      deps: ['graph-1.4.1b', 'graph-1.7.1b'], refs: ['Diestel, Graph Theory, 6th ed., Lemma 4.4.4 and proof, pp. 109–110'], tags: ['topological minors', 'edge-maximal'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const a = v.select('$G_1$', opts(['w5', 'oct', 'cube', 'prism']), 'w5', { onChange: () => load() });
         const b = v.select('$G_2$', opts(['oct', 'w5', 'cube', 'prism']), 'oct', { onChange: () => load() });
@@ -415,11 +420,12 @@ export default {
       },
     },
     {
-      num: '4.4.5', kind: 'Lemma', name: 'Edge-maximal graphs without TK⁵, TK₃,₃ are 3-connected', verify: true,
+      num: '4.4.5', kind: 'Lemma', name: 'Edge-maximal graphs without TK⁵, TK₃,₃ are 3-connected',
       statement: String.raw`Let $G$ be an edge-maximal graph with $n\ge4$ vertices that contains neither $TK^5$ nor $TK_{3,3}$. Then $G$ is 3-connected.`,
-      idea: String.raw`Suppose $G$ has a separator of at most two vertices. Then $G=G_1\cup G_2$ with $|G_1\cap G_2|\le2$ and no edge between $G_1\setminus G_2$ and $G_2\setminus G_1$, and by 4.4.4 the intersection is a $K^2$ $xy$. Add an edge $e$ between the two sides: by edge-maximality $G+e$ contains a $TK^5$ or $TK_{3,3}$ which uses $e$. A subdivision of $K^5$ or $K_{3,3}$ is essentially 3-connected, so the two vertices $x,y$ cannot cut it apart except along a subdividing path, and the part of it on the other side can be rerouted so that $e$ is no longer needed; that gives a forbidden subdivision in $G$, a contradiction. (This is a sketch of the argument; the precise details, including the case of small graphs, are in the book and should be compared.) The app shows the statement empirically: the connectivity rises to $3$ exactly when no edge can be added.`,
+      idea: String.raw`Induct on $|G|$, starting with $K^4$. If $\kappa(G)\le2$, Lemma 4.4.4 splits $G$ into two smaller edge-maximal graphs meeting in an edge $xy$. Each side is a triangle or is 3-connected by induction, hence planar by 4.4.2–4.4.3. Choose a face containing $xy$ on each side and another vertex $z_i$ on its boundary. By maximality, adding $z_1z_2$ creates a forbidden subdivision. If all branch vertices lie on one side, its excursion can be replaced inside a planar extension of that side. Otherwise the separator forces a $TK_{3,3}$ with one branch vertex on one side, again realizable in a planar extension of the other side. Both cases contradict 4.2.11. The diagram illustrates edge addition; it does not replace this argument.`,
       caption: String.raw`Choose a starting graph with a small separator. The player adds, one at a time, edges that keep the graph free of $TK^5$ and $TK_{3,3}$ (that is: planar), in a random order, until no edge can be added. The orange vertices form a smallest separator at each step and the readout gives $\kappa$; the right panel plots $\kappa$ against the step. Whatever the start, the final graph has $\kappa\ge3$ (for $n\ge4$), and at the end the edge count is $3n-6$.`,
-      deps: ['graph-4.4.4', 'graph-4.4.2', 'graph-4.4.3', 'graph-4.2.11'], refs: ['Diestel §4.4'], tags: ['edge-maximal', 'connectivity'],
+      deps: ['graph-4.4.4', 'graph-4.4.2', 'graph-4.4.3', 'graph-4.2.11'], refs: ['Diestel, Graph Theory, 6th ed., Lemma 4.4.5 and proof, pp. 110–111'], tags: ['edge-maximal', 'connectivity'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         const START = {
           path: (n) => Array.from({ length: n - 1 }, (_, i) => [i, i + 1]),

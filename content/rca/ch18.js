@@ -1,8 +1,7 @@
+import {algebraIntroduction,holomorphicResolvent,nonemptySpectrum,spectralRadiusDefinition,spectralRemarks,discAlgebraExample,quotientAlgebraDefinition,quotientNormDefinition} from './banach-restorations.shared.js';
 // Rudin, Real and Complex Analysis — Chapter 18: Elementary Theory of Banach Algebras
 //
-// Numbering note: in the 3rd edition the chapter has four sections (Introduction, The Invertible
-// Elements, Ideals and Homomorphisms, Applications). The exact paragraph numbers below could not be
-// checked against the book, so every item except 18.1 carries `verify: true`.
+// Canonical numbers follow the inspected third edition; lettered entries mark editorial splits.
 
 // ---------------------------------------------------------------- helpers shared by this file
 // Largest eigenvalue of a 3×3 Hermitian matrix with real diagonal d1,d2,d3 and complex
@@ -88,6 +87,7 @@ export default {
   title: 'Elementary Theory of Banach Algebras',
   summary: String.raw`A Banach algebra is a Banach space whose elements can also be multiplied, with $\norm{xy}\le\norm{x}\norm{y}$ and a unit of norm $1$. Neumann series show that the invertible elements form an open set on which inversion is continuous; Liouville's theorem then forces every element to have a nonempty compact spectrum, whose radius is $\lim\norm{x^n}^{1/n}$, and the Gelfand–Mazur theorem follows. For commutative algebras, maximal ideals are exactly the kernels of complex homomorphisms, so invertibility becomes a pointwise question — which yields Gelfand's short proof of Wiener's lemma on absolutely convergent Fourier series.`,
   items: [
+    algebraIntroduction,holomorphicResolvent,nonemptySpectrum,spectralRadiusDefinition,spectralRemarks,discAlgebraExample,quotientAlgebraDefinition,quotientNormDefinition,
     // ------------------------------------------------------------------ introduction
     {
       num: '18.1',
@@ -102,7 +102,7 @@ and $A$ contains a **unit** $e$ with $ex=xe=x$ for every $x$ and $\norm{e}=1$. I
 Typical examples: $C(X)$ ($X$ compact Hausdorff) with the supremum norm; the bounded operators on a Banach space (e.g. $n\times n$ matrices) with the operator norm; $\ell^1(\Z)$ with convolution.`,
       idea: String.raw`Submultiplicativity makes multiplication jointly continuous, since $xy-x_0y_0=(x-x_0)y+x_0(y-y_0)$, and completeness lets power series such as $\sum x^n$ or $\sum x^n/n!$ converge as soon as the numerical series of norms does. The condition $\norm e=1$ is a normalisation: replacing $\norm x$ by the operator norm of $y\mapsto xy$ gives an equivalent submultiplicative norm in which the unit has norm $1$. The definition extends the one used for $L^1$ in 9.19, now with a unit.`,
       caption: String.raw`A concrete Banach algebra: real $2\times2$ matrices inside $M_2(\C)$. Drag the columns of $x$ (blue) and of $y$ (orange). Left: the unit circle $S$, its image $y(S)$ and the image $xy(S)$; in the operator norm $xy(S)$ always fits inside the green circle of radius $\norm x\norm y$. Switch the norm: the column-sum norm also works, the Frobenius norm is submultiplicative but gives $\norm e=\sqrt2$, and the largest-entry norm violates $\norm{xy}\le\norm x\norm y$ (try the counterexample button).`,
-      deps: ['rca-5.1', 'rca-9.19'],
+      deps: ['rca-5.1', 'rca-9.18'],
       tags: ['Banach algebras', 'definitions'],
       viz(v) {
         const M = v.M;
@@ -166,8 +166,9 @@ Typical examples: $C(X)$ ($X$ compact Hausdorff) with the supremum norm; the bou
       },
     },
     {
-      num: '18.2',
+      num: '18.1a',
       kind: 'Definition',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definitions18.1, pp.356–357; spectral radius Definition18.8, p.360; resolvent Exercise11, p.369'],
       name: 'Invertible elements, spectrum, spectral radius',
       statement: String.raw`Let $A$ be a Banach algebra. An element $x\in A$ is **invertible** if some $x^{-1}\in A$ satisfies $xx^{-1}=x^{-1}x=e$; the invertible elements form a group $G=G(A)$ under multiplication.
 
@@ -181,7 +182,6 @@ For an $n\times n$ matrix, $\sigma(x)$ is the set of eigenvalues; in $C(X)$, $\s
       deps: ['rca-18.1'],
       see: ['fa-10.13'],
       tags: ['spectrum', 'Banach algebras', 'definitions'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const mode = v.select('', [{ value: 'fun', label: '$f\\in C(\\T)$, sup norm' }, { value: 'mat', label: '$x\\in M_2(\\C)$, operator norm' }], 'fun');
@@ -249,16 +249,16 @@ For an $n\times n$ matrix, $\sigma(x)$ is the set of eigenvalues; in $C(X)$, $\s
     {
       num: '18.3',
       kind: 'Theorem',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.3 and complete proof, pp.357–358 (replace x by −x)'],
       name: 'Neumann series: e − x is invertible when ‖x‖ < 1',
       statement: String.raw`Let $A$ be a Banach algebra and $x\in A$ with $\norm{x}<1$. Then
 (a) $e-x$ is invertible, and $(e-x)^{-1}=\sum_{n=0}^{\infty}x^n$, the series converging in norm;
 (b) $\norm{(e-x)^{-1}-e-x}\le\dfrac{\norm{x}^2}{1-\norm{x}}$.`,
-      idea: String.raw`Submultiplicativity gives $\norm{x^n}\le\norm x^n$, so the partial sums $s_N=e+x+\dots+x^N$ form a Cauchy sequence and converge in the Banach space $A$. Telescoping, $(e-x)s_N=s_N(e-x)=e-x^{N+1}\to e$, so the limit is a two-sided inverse. The estimate (b) is the tail $\sum_{n\ge2}\norm x^n$. Only convergence of $\sum\norm{x^n}$ is needed — which, by the spectral radius formula (18.5), happens exactly when $\rho(x)<1$.`,
+      idea: String.raw`Submultiplicativity gives $\norm{x^n}\le\norm x^n$, so the partial sums $s_N=e+x+\dots+x^N$ form a Cauchy sequence and converge in the Banach space $A$. Telescoping, $(e-x)s_N=s_N(e-x)=e-x^{N+1}\to e$, so the limit is a two-sided inverse. The estimate (b) is the tail $\sum_{n\ge2}\norm x^n$. Only convergence of $\sum\norm{x^n}$ is needed — which, by the spectral radius formula (18.9), happens exactly when $\rho(x)<1$.`,
       caption: String.raw`$x$ is a real $2\times2$ matrix: drag its columns $xe_1,xe_2$ (blue) and the vector $b$. Left: the unit circle and the ellipse $x(S)$ — it lies inside the circle exactly when $\norm x<1$. The gold path visits $s_0b,s_1b,s_2b,\dots$ and homes in on $u=(e-x)^{-1}b$ (green). Right: $\norm{s_N-(e-x)^{-1}}$ on a log scale against the geometric bound $\norm x^{N+1}/(1-\norm x)$. Try the shear: $\norm x>1$, yet the series still converges because $\rho(x)<1$.`,
-      deps: ['rca-18.1', 'rca-18.2', 'rca-5.1'],
+      deps: ['rca-18.1', 'rca-18.1a', 'rca-5.1'],
       see: ['pma-3.26'],
       tags: ['Neumann series', 'invertibility'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const PRE = {
@@ -323,15 +323,15 @@ For an $n\times n$ matrix, $\sigma(x)$ is the set of eigenvalues; in $C(X)$, $\s
     {
       num: '18.4',
       kind: 'Theorem',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.4 and Corollaries1–3, pp.358–359'],
       name: 'G(A) is open and inversion is continuous',
-      statement: String.raw`Let $A$ be a Banach algebra and $G=G(A)$. If $x\in G$, $h\in A$ and $\norm{h}<\tfrac12\norm{x^{-1}}^{-1}$, then $x+h\in G$ and
-$$\norm{(x+h)^{-1}-x^{-1}+x^{-1}hx^{-1}}\le 2\norm{x^{-1}}^3\norm{h}^2 .$$
-Consequently $G$ is an open subset of $A$, and $x\mapsto x^{-1}$ is a homeomorphism of $G$ onto $G$ — in fact it is differentiable, with derivative $h\mapsto -x^{-1}hx^{-1}$ at $x$.`,
-      idea: String.raw`Write $x+h=x(e+x^{-1}h)$ with $\norm{x^{-1}h}<\tfrac12$; by 18.3 the second factor is invertible, so $x+h\in G$ and $(x+h)^{-1}=\sum_{n\ge0}(-x^{-1}h)^n x^{-1}$. Removing the terms $n=0,1$ leaves a tail of norm at most $\norm{x^{-1}}\sum_{n\ge2}(\norm{x^{-1}}\norm h)^n\le 2\norm{x^{-1}}^3\norm h^2$. Inversion is continuous by this estimate and is its own inverse, hence a homeomorphism.`,
+      statement: String.raw`Let $A$ be a Banach algebra and $G=G(A)$. If $x\in G$, $c=\|x^{-1}\|$ and $c\|h\|<1$, then $x+h\in G$ and
+$$\|(x+h)^{-1}-x^{-1}+x^{-1}hx^{-1}\|\le\frac{c^3\|h\|^2}{1-c\|h\|}.$$
+In particular the remainder is at most$2c^3\|h\|^2$ when$c\|h\|<1/2$. Thus$G$ is open, inversion is a homeomorphism of$G$ onto itself, and its differential at$x$ is$h\mapsto-x^{-1}hx^{-1}$.`,
+      idea: String.raw`Factor$x+h=x(e+x^{-1}h)$ and apply18.3. The terms beyond degree1 of$(x+h)^{-1}=\sum_{n\ge0}(-x^{-1}h)^n x^{-1}$ have total norm at most$c\sum_{n\ge2}(c\|h\|)^n=c^3\|h\|^2/(1-c\|h\|)$. Continuity follows, and inversion is its own inverse. Dividing the remainder by$\|h\|$ proves differentiability.`,
       caption: String.raw`A two-dimensional slice of $M_2(\R)$: the symmetric matrices $pI+uE+wF$ with $E=\mathrm{diag}(1,-1)$, $F=\begin{pmatrix}0&1\\1&0\end{pmatrix}$, plotted at $(u,w)$; in this slice $\norm{h}$ is the Euclidean length. The red circle is where $\det=0$, the colour is $\log_{10}\norm{y^{-1}}$. Drag $x$ and $x+h$: the green ball of radius $\tfrac12\norm{x^{-1}}^{-1}$ never reaches the red circle (the dashed ring of radius $\norm{x^{-1}}^{-1}$ touches it exactly). Right: the second-order error along the ray through $h$ stays under $2\norm{x^{-1}}^3r^2$ inside the ball.`,
-      deps: ['rca-18.3', 'rca-18.2'],
+      deps: ['rca-18.3', 'rca-18.1a'],
       tags: ['invertibility', 'continuity'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const sp = v.slider('$p$ (multiple of $I$)', 0.5, 1.6, 1, { step: 0.01 });
@@ -380,16 +380,16 @@ Consequently $G$ is an open subset of $A$, and $x\mapsto x^{-1}$ is a homeomorph
           const s = st; if (s.hn == null) return '';
           return `$\\norm h = ${v.fix(s.hn, 3)}$, $\\;\\tfrac12\\norm{x^{-1}}^{-1} = ${v.fix(s.r0, 3)}$. ` + (s.inside
             ? `Inside the ball: $x+h\\in G$ and the error $${v.fix(s.eh, 4)} \\le 2\\norm{x^{-1}}^3\\norm h^2 = ${v.fix(2 * s.nxi ** 3 * s.hn ** 2, 4)}$.`
-            : `Outside the ball the theorem says nothing; here $x+h$ is ${s.inv ? 'still invertible' : 'singular'}.`);
+            : `Outside the displayed half-radius ball, its plotted quadratic bound is not guaranteed; here $x+h$ is ${s.inv ? 'still invertible' : 'singular'}.`);
         });
       },
     },
     {
-      num: '18.5',
+      num: '18.9',
       kind: 'Theorem',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem18.9 and complete proof, pp.360–361; compact nonempty spectrum18.6, p.359'],
       name: 'Nonempty compact spectrum; spectral radius formula',
-      credit: 'Gelfand, 1941',
-      statement: String.raw`Let $A$ be a Banach algebra and $x\in A$. Then
+            statement: String.raw`Let $A$ be a Banach algebra and $x\in A$. Then
 (a) $\sigma(x)$ is compact and nonempty, and $\abs\lambda\le\norm x$ for every $\lambda\in\sigma(x)$;
 (b) the spectral radius satisfies $$\rho(x)=\lim_{n\to\infty}\norm{x^n}^{1/n}=\inf_{n\ge1}\norm{x^n}^{1/n}.$$`,
       idea: String.raw`If $\abs\lambda>\norm x$ then $\lambda e-x=\lambda(e-x/\lambda)$ is invertible by 18.3, and the complement of $\sigma(x)$ is open because $G$ is (18.4); so $\sigma(x)$ is closed and bounded. For $\Lambda\in A^*$ the function $f(\lambda)=\Lambda((\lambda e-x)^{-1})$ is holomorphic off $\sigma(x)$ (18.4) and tends to $0$ at $\infty$. If $\sigma(x)$ were empty, Liouville (10.23) would give $f\equiv0$ for every $\Lambda$, hence $(\lambda e-x)^{-1}=0$ by Hahn–Banach (5.21) — absurd. For (b): $\lambda\in\sigma(x)$ forces $\lambda^n\in\sigma(x^n)$, so $\rho(x)^n\le\norm{x^n}$. Conversely $f(\lambda)=\sum\Lambda(x^n)\lambda^{-n-1}$ converges for $\abs\lambda>\rho(x)$ (10.16), so $\{x^n/\lambda^n\}$ is weakly bounded and, by Banach–Steinhaus (5.8), norm bounded: $\limsup\norm{x^n}^{1/n}\le\abs\lambda$.`,
@@ -397,7 +397,6 @@ Consequently $G$ is an open subset of $A$, and $x\mapsto x^{-1}$ is a homeomorph
       deps: ['rca-18.4', 'rca-18.3', 'rca-10.23', 'rca-5.21', 'rca-10.16', 'rca-5.8'],
       see: ['fa-10.13', 'rca-10.10'],
       tags: ['spectrum', 'spectral radius', 'Liouville'],
-      verify: true,
       viz(v) {
         const M = v.M; const { Cx } = M;
         const pic = v.select('left', [{ value: 'phase', label: 'phase of $\\Lambda((\\lambda e-x)^{-1})$' }, { value: 'norm', label: '$\\norm{(\\lambda e-x)^{-1}}$' }], 'phase');

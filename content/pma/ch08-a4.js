@@ -222,7 +222,7 @@ $$\int_0^1 t^{x-1}(1-t)^{y-1}\,dt=\frac{\Gamma(x)\Gamma(y)}{\Gamma(x+y)} .$$`,
       idea: String.raw`(a) and (b) are changes of variable in 8.20 and in 8.17; with $x=y=\frac12$ the trigonometric integral is $2\cdot\frac\pi2=\pi=\Gamma(\frac12)^2$. For (c), the right side $f(x)$ satisfies $f(1)=1$ (by (a)), $f(x+1)=xf(x)$ and is log-convex as a product of log-convex functions, so the Bohr–Mollerup theorem (8.19) identifies it with $\Gamma$.`,
       caption: String.raw`Left: the Gaussian $e^{-s^2}$ with its area over $[-L,L]$ approaching $\sqrt\pi=\Gamma(\frac12)$. Right: drag $x$; $\Gamma(x)$ (black) and the duplication formula $\frac{2^{x-1}}{\sqrt\pi}\Gamma(\frac x2)\Gamma(\frac{x+1}2)$ (gold dashed), built from the two smaller values marked in purple, coincide.`,
       deps: ['pma-8.20', 'pma-8.19'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 8.21, p. 194'],
       tags: ['gamma function', 'Gaussian integral'],
       viz(v) {
         const M = v.M;

@@ -73,17 +73,20 @@ function polarImage(g, radii, nRays = 16, rmax = 0.995) {
   return { circles, rays };
 }
 
+import { nonsimpleExamples } from './univalent-examples.shared.js';
+
 export default {
   collection: 'rca',
   chapter: 14,
   items: [
+    nonsimpleExamples,
     // ------------------------------------------------------------------ continuity at the boundary
     {
       num: '14.16',
       kind: 'Definition',
       name: 'Simple boundary point',
-      verify: true,
-      statement: String.raw`Let $\Omega$ be a region. A point $\beta\in\partial\Omega$ is a **simple boundary point** of $\Omega$ if for every sequence $\{\alpha_n\}$ in $\Omega$ with $\alpha_n\to\beta$ there are a continuous curve $\gamma:[0,1]\to\C$ and numbers $0<t_1<t_2<\cdots\to1$ such that $\gamma(t_n)=\alpha_n$ for all $n$, $\gamma(t)\in\Omega$ for $0\le t<1$, and $\gamma(1)=\beta$.`,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 14.16, p. 289'],
+      statement: String.raw`Let $\Omega$ be a simply connected plane region. A point $\beta\in\partial\Omega$ is a **simple boundary point** of $\Omega$ if for every sequence $\{\alpha_n\}$ in $\Omega$ with $\alpha_n\to\beta$ there are a continuous curve $\gamma:[0,1]\to\C$ and numbers $0<t_1<t_2<\cdots\to1$ such that $\gamma(t_n)=\alpha_n$ for all $n$, $\gamma(t)\in\Omega$ for $0\le t<1$, and $\gamma(1)=\beta$.`,
       idea: String.raw`A simple boundary point can be reached by a curve inside $\Omega$ through *any* sequence converging to it — in particular the region does not approach $\beta$ from two "sides" that are only connected far away. Points of a smooth or polygonal boundary, and even the tip of an inward cusp, are simple. A point in the middle of a slit is not: a sequence alternating between the two banks of the slit can only be threaded by a curve that runs around the end of the slit each time, so the curve cannot converge.`,
       caption: String.raw`Drag the boundary point $\beta$ (it stays on $\partial\Omega$). The gold points $\alpha_n\to\beta$ alternate between the two sides; the blue curve threads them, built as the image of a polygon through the preimages $g^{-1}(\alpha_n)$ in the disc (middle panel). Right: the diameter of the tail of the curve after $\alpha_n$. It tends to $0$ at every point of the circle, at the tip of the slit and at the cusp — but on the slit itself it stays above the distance to the tip.`,
       deps: ['rca-14.7'],
@@ -153,14 +156,14 @@ export default {
       },
     },
     {
-      num: '14.17',
+      num: '14.17a',
       kind: 'Lemma',
       name: 'A bounded function vanishing on an arc of T is 0',
-      verify: true,
+      refs: ['Editorial lemma: consequence of Rudin, Real and Complex Analysis, 3rd ed., Schwarz reflection 11.14, pp. 237–239, and identity theorem 10.18; boundary-arc uniqueness used in 14.18, p. 290'],
       statement: String.raw`Let $V=U\cap D(\beta;r)$ for some $\beta\in T$ and $r>0$, and let $J=T\cap D(\beta;r)$. If $f$ is bounded and holomorphic in $V$ and $f(z_n)\to0$ for every sequence $\{z_n\}$ in $V$ that converges to a point of $J$, then $f(z)=0$ for every $z\in V$.`,
-      idea: String.raw`The point is that a nonzero bounded holomorphic function cannot have zero boundary values along a whole arc. One way to see it: $V$ is a lune bounded by $J$ and an arc of the circle $|z-\beta|=r$, and the harmonic measure $\omega(z)$ of $J$ in $V$ is explicit (a Möbius map sends $V$ to a sector, where $\omega$ is a normalized angle). If $|f|\le M$ in $V$ and $|f|\le\eps$ near $J$, the maximum principle applied to $\log|f|-(1-\omega)\log M-\omega\log\eps$ gives $|f(z)|\le M^{1-\omega(z)}\eps^{\omega(z)}$. Since $\eps$ is arbitrary and $\omega(z)>0$, $f(z)=0$. The lemma is what turns "the inverse map tends to one boundary point along a whole arc" into a contradiction in 14.18.`,
-      caption: String.raw`The lune $V$ (move $r$) with the arc $J$ in green. Shown is the extremal bounded function $f_\eps=\eps^{\Phi}$, $\Re\Phi=\omega$: $|f_\eps|\le1$ in $V$ and $|f_\eps|=\eps$ on $J$; colour = $|f_\eps|$, curves = level sets of $\omega$. Drag $z$ and push $\eps\to0$: every bounded $f$ with $|f|\le\eps$ near $J$ satisfies $|f(z)|\le\eps^{\omega(z)}$, which goes to $0$ at every point of $V$.`,
-      deps: ['rca-10.24', 'rca-12.4'],
+      idea: String.raw`Choose a smaller circular boundary arc contained in $J$, and use a Möbius map to straighten it to a real interval. The assumed zero boundary limits give a continuous extension there with value0. Schwarz reflection (11.14) extends $f$ holomorphically across the interval. The extension vanishes on an interval inside its domain, so the identity theorem (10.18) forces it, and hence $f$ on the connected lune $V$, to be zero. The harmonic-measure bound in the illustration is a quantitative version after normalizing $|f|\le1$ throughout $V$. This is an editorial lemma, not the book's numbered14.17.`,
+      caption: String.raw`The lune $V$ (move $r$) with the arc $J$ in green. Shown is the extremal bounded function $f_\eps=\eps^{\Phi}$, $\Re\Phi=\omega$: $|f_\eps|\le1$ in $V$ and $|f_\eps|=\eps$ on $J$; colour = $|f_\eps|$, curves = level sets of $\omega$. Drag $z$ and push $\eps\to0$: every holomorphic $f$ with $|f|\le1$ throughout $V$ and boundary modulus at most $\eps$ on $J$ satisfies $|f(z)|\le\eps^{\omega(z)}$, which goes to $0$ at every point of $V$.`,
+      deps: ['rca-11.14', 'rca-10.18', 'rca-14.3'],
       tags: ['boundary behaviour', 'maximum principle'],
       viz(v) {
         const rS = v.slider('$r$', 0.35, 1.5, 0.95, { step: 0.01 });
@@ -285,11 +288,10 @@ export default {
     {
       num: '14.19',
       kind: 'Theorem',
-      name: 'Jordan regions: boundary map is a homeomorphism',
-      credit: 'Carathéodory, 1913',
-      verify: true,
-      statement: String.raw`If $\Omega$ is a bounded region whose boundary is a Jordan curve, then every boundary point of $\Omega$ is simple; hence (14.18) every conformal map of $\Omega$ onto $U$ extends to a homeomorphism of $\overline\Omega$ onto $\overline U$, and in particular restricts to a homeomorphism of the Jordan curve $\partial\Omega$ onto the circle $T$.`,
-      idea: String.raw`Near a point $\beta$ of a Jordan curve the region cannot approach $\beta$ from two separated sides (that would need the curve to pass through $\beta$ twice), and the Jordan curve theorem lets one connect points of $\Omega$ near $\beta$ inside $\Omega$ by short arcs; threading a sequence $\alpha_n\to\beta$ by such arcs gives the curve required in the definition. Then 14.18 applies. Without the Jordan hypothesis the extension can fail to be one-to-one: for a slit disc the two banks of the slit come from two different arcs of $T$.`,
+      name: 'Simple boundary points give a homeomorphism of the closures',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 14.19 and proof, pp. 290–291; Jordan-curve converse in Remark 14.20(a), p. 291'],
+      statement: String.raw`If $\Omega$ is a bounded simply connected plane region and every boundary point is simple, every conformal map $f:\Omega\to U$ onto $U$ extends to a homeomorphism $\overline\Omega\to\overline U$. In particular this holds when $\partial\Omega$ is a Jordan curve: Remark14.20(a) states the converse topological fact that every point of such a boundary is simple.`,
+      idea: String.raw`Theorem14.18 gives a continuous extension at each boundary point and says that distinct simple boundary points have distinct images. To show continuity on the whole closure, approximate each point of a convergent boundary sequence by a nearby interior point, also with nearby image. The extension's image is compact, contains $U$, and lies in $\overline U$, so it is all of $\overline U$. A continuous bijection from a compact space to a Hausdorff space has continuous inverse. The Jordan-boundary case then uses the topological converse stated in14.20(a).`,
       caption: String.raw`Drag $\zeta$ around $T$. Middle: the extended map $g=f^{-1}$ sends it to $g(\zeta)\in\partial\Omega$; the boundary is coloured by the angle of its preimage. Right: the boundary correspondence $\arg\zeta\mapsto\arg g(\zeta)$. For the Jordan regions (a cardioid with a cusp, a triangle) it is strictly increasing — a homeomorphism of $T$ onto $\partial\Omega$, even at the cusp and at the corners. For the slit disc a whole arc of $T$ is folded onto the slit (flat red part): each slit point has two preimages.`,
       deps: ['rca-14.18', 'rca-14.16'],
       tags: ['boundary behaviour', 'Jordan curves', 'Carathéodory'],

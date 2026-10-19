@@ -64,7 +64,7 @@ where $\omega_T$ denotes the pullback of $\omega$ to $E$ (substitute $y=T(x)$ in
       caption: String.raw`Drag the end points and the grey control point of the curve $\Phi$ in $E$ (left). The right panel shows $T\Phi$, the image of a grid under $T$, and the form $\omega$; the left panel shows $\omega_T$ (arrows are coefficient vectors). The bottom panel plots both running integrals against the parameter $u$: along $T\Phi$ in $V$ (blue) and along $\Phi$ in $E$ (orange, dashed). They coincide for every $u$; the gold arrows are the velocities $\Phi'(u)$ and $(T\Phi)'(u)=T'(\Phi(u))\Phi'(u)$.`,
       deps: ['pma-10.24', 'pma-10.23', 'pma-10.21'],
       tags: ['differential forms', 'change of variables'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 10.25 and proof, pp. 265–266'],
       viz(v) {
         const MAPS = {
           sq: { label: '$T(z)=z^2$ (not one-to-one)', T: (x, y) => [x * x - y * y, 2 * x * y], J: (x, y) => [[2 * x, -2 * y], [2 * y, 2 * x]] },

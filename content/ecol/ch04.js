@@ -1,4 +1,5 @@
 // Ecology — Chapter 4: Competition and coexistence
+import { runPlankton } from './plankton.shared.js';
 import { rcSpec, rcRun, monoEq, invasionOutcome, zngiCross, drawZngi, lvComp, hwStep, hwMu, monodK, spcol, SPCOL } from './ch04.shared.js';
 
 const OUT = { A: 'A excludes B', B: 'B excludes A', coexist: 'stable coexistence', either: 'either can win (priority effect)', none: 'neither persists' };
@@ -15,15 +16,14 @@ export default {
       kind: 'Concept',
       name: 'Fundamental and realized niche (Connell’s barnacles)',
       credit: 'J. H. Connell, 1961 (building on G. E. Hutchinson’s 1957 niche concept)',
-      statement: String.raw`The **fundamental niche** of a species is the range of conditions in which it could survive and reproduce if no other species interfered; its **realized niche** is the smaller range it actually occupies in the presence of competitors, predators and other enemies. On a rocky shore, adults of the small barnacle *Chthamalus stellatus* live high on the shore, although its larvae settle over a much wider band; in Connell’s experiments, the larvae that settled lower down survived and grew when the larger barnacle *Semibalanus balanoides* was removed, but were crowded off and undercut by it when it was present.`,
-      scope: String.raw`The picture is for a physical gradient with one dominant competitor. The upper limit of each species was set by physical stress (desiccation) and the lower limit of *Chthamalus* by competition, an asymmetry that is typical of rocky shores but not a general law. The curves below are a schematic model, not Connell’s counts.`,
-      idea: String.raw`Competition can only *shrink* a niche: it subtracts from the fundamental niche the set of conditions where a rival does better. So the realized niche is the fundamental niche minus the region of competitive loss, and the way to measure the fundamental niche is to remove the competitor and see how far the species spreads. Connell did exactly this on a Scottish shore: scraping off *Semibalanus* let *Chthamalus* occupy the lower zone, showing that the lower boundary of its realized range was set by competition while the upper boundary was physiological.`,
+      statement: String.raw`In a model of negative species interactions, the **fundamental niche** is the range of conditions permitting a population to persist without the competitor under consideration; its **realized niche** is the part occupied when that competitor is present. Hutchinson’s niche is a set of environmental conditions, rather than simply a geographical range. On a rocky shore, adults of the small barnacle *Chthamalus stellatus* live high on the shore, although its larvae settle over a much wider band; in Connell’s experiments, the larvae that settled lower down survived and grew when the larger barnacle *Semibalanus balanoides* was removed, but were crowded off and undercut by it when it was present.`,
+      scope: String.raw`The picture is for a physical gradient with one dominant competitor. Connell attributed the upper-limit contrast mainly to tolerance of heat and/or desiccation, and the lower adult limit of *Chthamalus* chiefly to competition with the faster-growing barnacle. Settlement, predation and other factors also mattered; removal of one competitor does not identify every limit of the fundamental niche. The curves below are a schematic model, not Connell’s counts.`,
+      idea: String.raw`In this competition-only model, the rival removes conditions from the focal species’ available niche. Removing that rival tests its contribution to the realized boundary while holding the other conditions fixed; it does not remove every biotic interaction. Connell also excluded predatory snails in cages and transplanted barnacles below their usual settlement zone. Connell did exactly this on a Scottish shore: scraping off *Semibalanus* let *Chthamalus* occupy the lower zone, showing that the lower boundary of its realized range was set by competition while the upper boundary was physiological.`,
       caption: String.raw`The horizontal axis is height on the shore. Dashed blue is where *Chthamalus* could survive on physiology alone (its fundamental niche); the solid blue area is where it survives given the crowding by *Semibalanus* (orange). Switch on **remove *Semibalanus*** and the blue area expands downward to the dashed curve. Raise the competition strength, or lower the orange species’ upper limit, to see how the realized niche responds.`,
       deps: ['ecol-1.1'],
-      refs: ['Begon ch. 8'],
+      refs: ['Connell (1961), Ecology 42, pp. 710–723, Methods, Figs. 2–5 and Discussion; doi:10.2307/1933500', 'Hutchinson (1957), Concluding Remarks, pp. 416–418 (niche formalization and limitations); doi:10.1101/SQB.1957.022.01.039'],
       tags: ['niche', 'competition', 'field experiment'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Niche_differentiation', doi: 'https://doi.org/10.2307/1933500' },
-      verify: true,
       viz(v) {
         const kS = v.slider('competition strength (crowding and undercutting)', 0, 6, 4, { step: 0.1 });
         const hS = v.slider('upper limit of the dominant barnacle (desiccation)', 4, 8, 6, { step: 0.1 });
@@ -56,12 +56,12 @@ export default {
       kind: 'Phenomenon',
       name: 'Gause’s Paramecium experiments',
       credit: 'G. F. Gause, 1932–1934',
-      statement: String.raw`Gause grew the ciliates *Paramecium aurelia*, *P. caudatum* and *P. bursaria* in small tubes of a bacteria-fed medium. Each species alone grew along a logistic curve to its own carrying capacity. Mixed in one tube, *P. aurelia* drove *P. caudatum* extinct, whereas *P. caudatum* and *P. bursaria*, which in Gause’s account use different parts of the tube (different food and zone of the culture), persisted together. Gause interpreted the first outcome with the Lotka–Volterra competition equations, which he fitted to the monocultures and used to predict the mixture.`,
-      scope: String.raw`Laboratory microcosms with a constant, controlled feeding schedule. Gause's culture medium was replaced regularly, so the growth rates and competition coefficients are fitted constants of a particular protocol. The curves below are a model reconstruction with illustrative parameters of the right order of magnitude, not Gause’s raw counts.`,
+      statement: String.raw`Gause grew the ciliates *Paramecium aurelia*, *P. caudatum* and *P. bursaria* in small tubes of a bacteria-fed medium. The monocultures could be approximated by logistic growth with species-specific carrying capacities. Mixed in one tube, *P. aurelia* drove *P. caudatum* extinct, whereas *P. caudatum* and *P. bursaria*, which in Gause’s account use different parts of the tube (different food and zone of the culture), persisted together. Gause compared the first outcome with Lotka–Volterra competition theory, while explicitly noting that competition coefficients changed during culture growth and that early interactions could even be facilitative (The Struggle for Existence, Chapter V, §III).`,
+      scope: String.raw`Laboratory microcosms with a constant, controlled feeding schedule. Gause replaced the medium daily in the cited *aurelia*/*caudatum* experiments. The fixed positive competition coefficients here simplify his more complex account; they are illustrative constants, not his fitted coefficients. The separate *caudatum*/*bursaria* historical example still requires its original experimental report. The curves below are a model reconstruction with illustrative parameters of the right order of magnitude, not Gause’s raw counts.`,
       idea: String.raw`Alone, each species obeys $dN/dt=rN(1-N/K)$. Together, each one's growth is reduced by the other as if every individual of the rival were $\alpha$ individuals of its own kind. Species 1 wins when its carrying capacity is high enough that species 2 cannot invade at $N_1=K_1$ (and vice versa), the four cases of mathbio-3.16; Gause's *aurelia*/*caudatum* tubes were the classic example of exclusion (mathbio-3.17), and the *caudatum*/*bursaria* tubes of coexistence through niche differentiation.`,
       caption: String.raw`Choose the pair. Left: monocultures follow logistic curves. Middle: the same species mixed, with the model's competition coefficients (sliders). Right: the phase plane with the two isoclines, the trajectory and the final state. For *aurelia*/*caudatum* the default coefficients let *aurelia* win; lower both coefficients (less overlap) and they coexist, raise both and the winner depends on who starts ahead.`,
       deps: ['mathbio-3.17'],
-      refs: ['Begon ch. 8'],
+      refs: ['Gause (1934), The Struggle for Existence, Chapter V, §§II–III (aurelia/caudatum methods, logistic approximations and changing competition coefficients)', 'Begon ch. 8 (secondary reference for the caudatum/bursaria example)'],
       tags: ['competitive exclusion', 'experiment', 'Lotka–Volterra'],
       links: { doi: 'https://doi.org/10.1126/science.79.2036.16.b', wikipedia: 'https://en.wikipedia.org/wiki/Competitive_exclusion_principle' },
       verify: true,
@@ -122,7 +122,7 @@ export default {
         const tA = v.slider('consumption angle of A (°, from the $R_1$ axis)', 5, 85, 30, { step: 1 });
         const tB = v.slider('consumption angle of B (°)', 5, 85, 60, { step: 1 });
         const A = v.stage({ x: [0, 10], y: [0, 10], equal: true, axes: 'box', gutter: true, height: 340, xlabel: 'resource 1', ylabel: 'resource 2', title: 'resource space', weight: 1 });
-        const B = v.stage({ x: [0, 150], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'time', ylabel: 'abundance', title: 'abundances', weight: 1 });
+        const B = v.stage({ x: [0, 150], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'time (days)', ylabel: 'abundance', title: 'abundances', weight: 1 });
         const ha = A.handle(5, 2, { color: 'accent', r: 8, label: 'A', constrain: { x: [0.5, 9.5], y: [0.5, 9.5] } });
         const hb = A.handle(2, 5, { color: 'orange', r: 8, label: 'B', constrain: { x: [0.5, 9.5], y: [0.5, 9.5] } });
         const hs = A.handle(9, 9, { color: 'gold', r: 8, label: 'S', constrain: { x: [0.5, 9.8], y: [0.5, 9.8] } });
@@ -165,9 +165,9 @@ $R^*_A=(${v.fix(info.sa.z[0], 1)},${v.fix(info.sa.z[1], 1)})$, $R^*_B=(${v.fix(i
       name: 'Two-resource coexistence: isoclines and consumption vectors',
       credit: 'D. Tilman, 1980–1982',
       statement: String.raw`Two species compete for two essential resources. They can coexist at a stable equilibrium only if (i) their ZNGIs cross, so that each species is the better competitor for a different resource (species A needs less of $R_2$, species B needs less of $R_1$); (ii) each species consumes proportionally more of the resource that limits **it** at the crossing point (A, limited by $R_1$ there, consumes relatively more $R_1$ than B does; B consumes relatively more $R_2$); and (iii) the supply point lies in the cone spanned by the two consumption vectors drawn from the crossing point. If the ZNGIs cross but (ii) is reversed, the crossing point is an unstable equilibrium and the species that gets ahead excludes the other.`,
-      scope: String.raw`The same essential-resource chemostat as 4.3. The statement describes generic parameter values; in the borderline case of equal consumption ratios there is no equilibrium with both species.`,
-      idea: String.raw`At the crossing point both species just break even. For the resource levels to stay put, the supply vector $S-R^*$ has to be balanced by the consumption of both species, so it must be a positive combination of their consumption vectors: that is the cone condition. Stability comes from self-limitation: if A's abundance rises, it depletes mostly $R_1$, which is the resource limiting A itself, so A is held back; with the vectors reversed, A depletes the resource that limits B instead and helps B at its own expense.`,
-      caption: String.raw`The ZNGIs are fixed (A in blue, B in orange); they cross at the black dot. Turn the consumption vectors with the sliders and drag the supply point (gold). The shaded wedge is the cone in which coexistence is possible. The right panel starts the chemostat from three different mixes and plots the fraction of A: when coexistence is stable all three curves converge to the same value; when the consumption vectors are reversed they separate to 0 or 1.`,
+      scope: String.raw`The same essential-resource chemostat as 4.3. The statement describes generic parameter values; with equal consumption ratios there is generically no equilibrium containing both species, but if the supply vector lies on their common ray there is a continuum of neutrally balanced mixtures.`,
+      idea: String.raw`At the crossing point both species just break even. For the resource levels to stay put, the supply vector $S-R^*$ has to be balanced by the consumption of both species, so it must be a positive combination of their consumption vectors: that is the cone condition. Stability comes from self-limitation: if A's abundance rises, it depletes mostly $R_1$, which is the resource limiting A itself, so A is held back; with the vectors reversed, A depletes the resource limiting B more strongly than its own limiting resource, suppressing its rival and reinforcing its initial advantage.`,
+      caption: String.raw`The ZNGIs are fixed (A in blue, B in orange); they cross at the black dot. Turn the consumption vectors with the sliders and drag the supply point (gold). The shaded wedge is the cone in which coexistence is possible. The right panel starts the chemostat from three different mixes and plots the fraction of A: when coexistence is stable all three curves converge to the same value; when the consumption vectors are reversed, unequal starting mixes approach different single-species states (an exactly symmetric start can remain at the unstable equilibrium).`,
       deps: ['ecol-4.3'],
       refs: ['Begon ch. 8'],
       tags: ['coexistence', 'stability', 'Tilman'],
@@ -202,10 +202,10 @@ $R^*_A=(${v.fix(info.sa.z[0], 1)},${v.fix(info.sa.z[1], 1)})$, $R^*_B=(${v.fix(i
             B.path(r.t.map((t, i) => [t, r.NA[i] / Math.max(1e-9, r.NA[i] + r.NB[i])]), { color: cols[q], width: 2.2 });
             const n = r.t.length - 1; fr.push(r.NA[n] / Math.max(1e-9, r.NA[n] + r.NB[n]));
           });
-          info = { th, fr, stable: tA.value < tB.value };
+          info = { th, fr, stable: tA.value < tB.value, equal: tA.value === tB.value, aligned: Math.abs((S[0] - 5) * sa.c[1] - (S[1] - 5) * sa.c[0]) < 1e-9 };
         });
         v.legend([['accent', 'start: mostly A'], ['gold', 'start: even'], ['orange', 'start: mostly B']]);
-        v.readout(() => info && String.raw`Consumption condition (A takes relatively more $R_1$ than B): **${info.stable ? 'satisfied' : 'violated'}**. Invasion test: **${OUT[info.th]}**. Final fraction of A from the three starts: $${info.fr.map((x) => v.fix(x, 2)).join(',\\ ')}$.`);
+        v.readout(() => info && String.raw`Consumption condition (A takes relatively more $R_1$ than B): **${info.equal ? 'equal ratios (degenerate)' : info.stable ? 'satisfied' : 'violated'}**. Invasion test: **${info.equal ? info.aligned ? 'neutral family of coexistence mixtures' : 'no interior coexistence at these equal ratios' : OUT[info.th]}**. Final fraction of A from the three starts: $${info.fr.map((x) => v.fix(x, 2)).join(',\\ ')}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.5
@@ -227,7 +227,7 @@ $R^*_A=(${v.fix(info.sa.z[0], 1)},${v.fix(info.sa.z[1], 1)})$, $R^*_B=(${v.fix(i
         const nS = v.slider('number of species $n$', 2, 12, 10, { int: true });
         let seed = 11;
         v.button('New draw', () => { seed += 1; });
-        const A = v.stage({ x: [0, 600], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'time', ylabel: 'abundance', title: 'abundances in the chemostat', weight: 1.5 });
+        const A = v.stage({ x: [0, 600], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'time (days)', ylabel: 'abundance', title: 'abundances in the chemostat', weight: 1.5 });
         const B = v.stage({ x: [0, 4], y: [0, 13], axes: 'box', gutter: true, height: 330, xticks: [[1, 'k'], [2, 'present'], [3, 'persisting']], ylabel: 'number of species', title: 'species vs resources', weight: 0.8 });
         let key = '', res = null, info = null;
         v.render(() => {
@@ -267,45 +267,27 @@ $R^*_A=(${v.fix(info.sa.z[0], 1)},${v.fix(info.sa.z[1], 1)})$, $R^*_B=(${v.fix(i
       name: 'Chaotic coexistence of plankton (Huisman–Weissing)',
       credit: 'J. Huisman & F. J. Weissing, 1999',
       statement: String.raw`In a chemostat model of species competing for essential resources, species can generate sustained oscillations and chaos. Huisman and Weissing showed that five species competing for five resources can fluctuate chaotically without any species being lost, and that with twelve species on five resources all twelve can persist: more species coexist than there are resources, because the resource supply is never at equilibrium and the identity of the limiting resource keeps changing.`,
-      scope: String.raw`A deterministic model with a parameter set that Huisman and Weissing chose to produce chaos (here the five- and twelve-species sets of their Figs 2 and 4, as reproduced in the R package *rescomp*). Persistence of all twelve species was found in long numerical runs, not proved; numerical chaotic trajectories depend on the integrator and its step size, so only the qualitative behaviour is reproducible.`,
+      scope: String.raw`A deterministic model with a parameter set that Huisman and Weissing chose to produce chaos (here the five- and twelve-species sets of their Figs 2 and 4, checked against the original paper’s Methods; species introduced after time zero start at abundance 0.1). Persistence of all twelve species was found in long numerical runs, not proved; numerical chaotic trajectories depend on the integrator and its step size, so only the qualitative behaviour is reproducible.`,
       idea: String.raw`Each species is limited by whichever resource is scarcest for it, and each draws that resource down, so the limiting resource flips back and forth as species rise and fall. When consumption is arranged so that each species has most impact on the resource for which it is an intermediate competitor, the cycle of limiting resources becomes irregular. Because no species can ever fully exclude the others during a transient, the system never reaches the equilibrium to which the competitive-exclusion argument of 4.5 applies.`,
-      caption: String.raw`Left: abundances of the five species (chemostat model, essential resources). Right: two copies of the system started with a difference of $10^{-6}$ in one abundance; the difference grows by many orders of magnitude, the signature of chaos. Switch to **12 species** to see Huisman–Weissing's staged introduction of the extra species (at times 1000, 3000 and 5000), which here all keep persisting for 10 000 time units; the 12-species run takes a moment to compute.`,
+      caption: String.raw`Left: abundances of the five species (chemostat model, essential resources). Right: two copies of the system started with a difference of $10^{-6}$ in one abundance; the difference grows by many orders of magnitude, the signature of chaos. Switch to **12 species** to see Huisman–Weissing's staged introduction of the extra species (at times 1000, 3000 and 5000), which here are followed for 10 000 days. Abundances below 0.001 are omitted from the logarithmic plot; the readout counts species above the stated finite-run threshold; the 12-species run takes a moment to compute.`,
       deps: ['ecol-4.5', 'ecol-4.4'],
-      refs: ['Begon ch. 19'],
+      refs: ['Huisman & Weissing (1999), Nature 402, pp. 407–410, eqs. (1)–(3), Fig. 4 and Methods'],
       tags: ['chaos', 'plankton', 'coexistence'],
       links: { doi: 'https://doi.org/10.1038/46540' },
-      verify: true,
       viz(v) {
-        const K = [[0.39, 0.22, 0.27, 0.30, 0.34], [0.34, 0.39, 0.22, 0.24, 0.30], [0.30, 0.34, 0.39, 0.22, 0.22], [0.24, 0.30, 0.34, 0.39, 0.20], [0.23, 0.27, 0.30, 0.34, 0.39],
-          [0.41, 0.16, 0.07, 0.28, 0.40], [0.20, 0.15, 0.11, 0.12, 0.50], [0.45, 0.05, 0.05, 0.13, 0.26], [0.14, 0.38, 0.38, 0.27, 0.12], [0.15, 0.29, 0.41, 0.33, 0.29], [0.38, 0.37, 0.24, 0.04, 0.09], [0.28, 0.31, 0.25, 0.41, 0.16]];
-        const Q = [[0.04, 0.08, 0.10, 0.05, 0.07], [0.04, 0.08, 0.10, 0.03, 0.09], [0.07, 0.08, 0.10, 0.03, 0.07], [0.04, 0.10, 0.10, 0.03, 0.07], [0.04, 0.08, 0.14, 0.03, 0.07],
-          [0.22, 0.14, 0.22, 0.09, 0.05], [0.10, 0.22, 0.24, 0.07, 0.24], [0.08, 0.04, 0.12, 0.06, 0.05], [0.02, 0.18, 0.03, 0.03, 0.08], [0.17, 0.06, 0.24, 0.03, 0.10], [0.25, 0.20, 0.17, 0.11, 0.02], [0.03, 0.04, 0.01, 0.05, 0.04]];
-        const S = [6, 10, 14, 4, 9];
         const mode = v.select('community', [{ value: '5', label: '5 species' }, { value: '12', label: '12 species' }], '5');
-        const A = v.stage({ x: [0, 1000], y: [0, 60], axes: 'box', gutter: true, height: 330, xlabel: 'time', ylabel: 'abundance', title: 'species abundances', weight: 1.4 });
-        const B = v.stage({ x: [0, 1000], y: [-8, 2], axes: 'box', gutter: true, height: 330, xlabel: 'time', ylabel: '$\\log_{10}$ |difference|', title: 'sensitive dependence (5 species)', weight: 1 });
+        const A = v.stage({ x: [0, 1000], y: [0, 60], axes: 'box', gutter: true, height: 330, xlabel: 'time (days)', ylabel: 'abundance', title: 'species abundances', weight: 1.4 });
+        const B = v.stage({ x: [0, 1000], y: [-8, 2], axes: 'box', gutter: true, height: 330, xlabel: 'time (days)', ylabel: '$\\log_{10}$ |difference|', title: 'sensitive dependence (5 species)', weight: 1 });
         const cache = {};
-        const run = (n, T, intro, N0, pert) => {
-          const P = { K: K.slice(0, n), Q: Q.slice(0, n), S, D: 0.25, m: 0.25, r: 1 };
-          const st = { N: Array(n).fill(0), R: S.slice(), t: 0 };
-          const dt = 0.05, rec = []; const rate = Math.round(5 / dt);
-          for (let s = 0; s <= Math.round(T / dt); s++) {
-            const t = s * dt;
-            if (Math.abs(t - Math.round(t)) < 1e-9) for (const [ti, ids] of intro) if (ti === Math.round(t)) ids.forEach((i) => { st.N[i] = 0.1 + (i + 1) / 100 + (i === 0 ? pert : 0); });
-            if (s % rate === 0) rec.push(Float64Array.from(st.N));
-            hwStep(P, st, dt);
-          }
-          return rec;
-        };
         let info = null;
         v.render(() => {
           const m = mode.value;
           if (!cache[m]) {
             if (m === '5') {
-              const a = run(5, 1000, [[0, [0, 1, 2, 3, 4]]], 0, 0), b = run(5, 1000, [[0, [0, 1, 2, 3, 4]]], 0, 1e-6);
+              const a = runPlankton(5, 1000), b = runPlankton(5, 1000, 1e-6);
               cache[m] = { a, b, T: 1000 };
             } else {
-              const a = run(12, 10000, [[0, [0, 1, 2, 3, 4]], [1000, [5, 6, 7]], [3000, [8, 9]], [5000, [10, 11]]], 0, 0);
+              const a = runPlankton(12);
               cache[m] = { a, T: 10000 };
             }
           }
@@ -313,7 +295,7 @@ $R^*_A=(${v.fix(info.sa.z[0], 1)},${v.fix(info.sa.z[1], 1)})$, $R^*_B=(${v.fix(i
           const mx = Math.max(...c.a.map((r) => Math.max(...r)));
           A.setView([0, c.T], m === '5' ? [0, mx * 1.08] : [0.0005, mx * 1.5]);
           A.setScale({ ylog: m === '12', y: m === '12' ? [0.001, mx * 1.5] : [0, mx * 1.08] });
-          for (let i = 0; i < n; i++) A.path(c.a.map((r, q) => [q * 5, m === '12' ? Math.max(r[i], 0.0011) : r[i]]), { color: spcol(i), width: 1.5 });
+          for (let i = 0; i < n; i++) A.path(c.a.map((r, q) => [q * 5, m === '12' && r[i] < 0.001 ? NaN : r[i]]), { color: spcol(i), width: 1.5 });
           B.el.style.display = m === '5' ? '' : 'none';
           if (m === '5') {
             B.path(c.a.map((r, q) => [q * 5, Math.log10(Math.max(1e-9, Math.hypot(...Array.from(r).map((x, i) => x - c.b[q][i]))))]), { color: 'red', width: 2.2 });

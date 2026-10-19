@@ -8,6 +8,17 @@ const ancestors = (n) => { const s = new Set(); for (let x = n; x; x = x.par) s.
 const profilePay = (n, prof) => { let x = n; while (!isLeaf(x)) x = x.kids[prof[x.id]].n; return x.u; };
 const bestDev = (n, j, prof) => (isLeaf(n) ? n.u[j] : n.p === j + 1 ? Math.max(...n.kids.map((k) => bestDev(k.n, j, prof))) : bestDev(n.kids[prof[n.id]].n, j, prof));
 
+/** Pure subgame-perfect profiles (Out/In, Fight/Accept), including both indifference boundaries. */
+export function entrySPE(fightPayoff, entrantIfFought) {
+  const result = [];
+  for (const j of [0, 1]) {
+    if ((j === 0 ? fightPayoff : 1) < Math.max(fightPayoff, 1)) continue;
+    const entryPayoff = j === 0 ? entrantIfFought : 1;
+    for (const i of [0, 1]) if ((i === 0 ? 0 : entryPayoff) >= Math.max(0, entryPayoff)) result.push([i, j]);
+  }
+  return result;
+}
+
 export default {
   collection: 'game',
   chapter: 4,
@@ -25,11 +36,10 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       idea: String.raw`The tree says *when* things happen, the matrix says *what each player has committed to*. A strategy must name an action at every decision node because it has to tell a mover what to do whatever happens: it is what a player could write on a card and hand to a deputy. The number of strategies is the product of the action counts over the player's nodes, so it grows far faster than the tree itself, while many different strategies lead to the same outcome. This is why the strategic form hides the order of moves, and why game-4.4 will need subgames to say which equilibria are sensible.`,
       caption: String.raw`Choose a game. Left: its tree (blue = player 1 moves, orange = player 2, payoffs at the leaves are player 1's, player 2's). Click a leaf and use the two sliders to change its payoffs. Right: the strategic form, one row or column per complete plan. Click a cell to light up the path that profile produces; green cells are Nash equilibria of the table.`,
       credit: 'Kuhn, 1950–53 (extensive form; von Neumann & Morgenstern, 1944)',
-      deps: ['game-1.1'],
+      deps: ['game-1.1', 'comb-1.1'],
       refs: ['Osborne §5.1', 'MSZ §3.3'],
       tags: ['extensive form', 'strategy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Extensive-form_game' },
-      verify: true,
       viz(v) {
         const MAKE = {
           entry: () => dec(1, [['Out', leaf(0, 2)], ['In', dec(2, [['Fight', leaf(-1, -1)], ['Accept', leaf(1, 1)]])]]),
@@ -78,12 +88,11 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       statement: String.raw`In a finite game of perfect information (game-4.1), solve the tree from the leaves toward the root. At a node whose children are all already valued, the mover picks a child that maximises her own payoff coordinate, and the node is assigned that child's payoff vector. Repeating this up to the root assigns a payoff vector to every node. Following the chosen branches from the root gives the **equilibrium path**; the choices at *all* nodes, on or off that path, form a strategy profile. If several children tie for the mover, any may be chosen.`,
       idea: String.raw`The method rests on one observation: whoever moves at the last decision nodes faces a plain one-person optimisation, whose answer does not depend on anything else. Replace each last node by its resulting payoffs; the tree is now shorter, and the same reasoning applies again. Each step assumes that the people moving later will do what is best for themselves, so the profile built this way never relies on an empty threat. That property is made precise by subgame perfection (game-4.4).`,
       caption: String.raw`Step through the solution (or press play). The node being processed gets a gold ring, the chosen branch turns green and the node shows the payoff pair it hands upward. Change the depth, branching or roll a new random tree. Ties (the mover is indifferent) are shown by two green branches.`,
-      credit: 'Zermelo, 1913; Kuhn, 1953',
+      credit: 'Kuhn, 1950, Theorem 1; expanded treatment, 1953',
       deps: ['game-4.1'],
       refs: ['Osborne §5.5'],
       tags: ['backward induction', 'algorithm'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
-      verify: true,
       viz(v) {
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, title: 'solving a random game tree' });
         let seed = 7, P, order = [];
@@ -124,15 +133,14 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       kind: 'Theorem',
       name: 'Zermelo: chess is determined',
       statement: String.raw`Consider a finite two-player game of perfect information with no chance moves whose outcomes are *win for player 1*, *draw* or *win for player 2* (chess is such a game once the draw rules guarantee that play is finite). Then exactly one of the following holds: player 1 has a strategy that forces a win; player 2 has a strategy that forces a win; or both players have strategies that guarantee at least a draw. The game is **determined**: there is a value of the game, and with best play from the start it is realised.`,
-      idea: String.raw`This is backward induction (game-4.2) applied to the three-valued payoffs $+1, 0, -1$ for player 1. Label each final position by its result and then label every earlier position by what the mover can force: win if some move leads to a position that is lost for the opponent, loss if all moves do, draw otherwise. Induction on the distance to the end gives every position, in particular the start, one of the three labels. For a game as large as chess the labelling exists but nobody has computed it; for small games it can be computed completely.`,
+      idea: String.raw`This is backward induction (game-4.2) applied to the three-valued payoffs $+1, 0, -1$ for player 1. Label each final position by its result and then label every earlier position by what the mover can force: win if some move leads to a position that is lost for the opponent, loss if all moves lead to positions won for the opponent, draw otherwise. Induction on the distance to the end gives every position, in particular the start, one of the three labels. For a game as large as chess the labelling exists but nobody has computed it; for small games it can be computed completely.`,
       caption: String.raw`Pick a game; the computer has solved every position reachable from the empty board. Each empty square is coloured by what the player to move gets by playing there: green = forces a win, gold = draw, red = loses against best play. Click squares to play (the other side is played by the computer if the switch is on) and watch the colours change. The bars count all reachable positions by value for the player to move.`,
-      credit: 'Zermelo, 1913 (correct proof by Kálmán, 1928)',
+      credit: 'Zermelo, 1913 (the finite-tree formulation and induction proof are modern)',
       scope: String.raw`Finite games of perfect information without chance. Zermelo’s own argument concerned chess; the usual modern proof is by induction as above.`,
       deps: ['game-4.2'],
       refs: ['MSZ ch. 1'],
       tags: ['determinacy', 'chess', 'combinatorial game'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)' },
-      verify: true,
       viz(v) {
         const mkLines = (W, H, K) => {
           const L = [];
@@ -222,12 +230,11 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       statement: String.raw`In an extensive game with perfect information (game-4.1), each node $h$ starts a **subgame**: the part of the tree below $h$, with the same payoffs. A strategy profile is a **subgame perfect equilibrium** (SPE) if for *every* subgame the restriction of the profile to it is a Nash equilibrium (game-1.3) of that subgame. Equivalently no player can gain by changing her choices at some node while the others keep to the profile, even at nodes that the profile never reaches. Every SPE is a Nash equilibrium of the whole game; the converse fails.`,
       idea: String.raw`A Nash equilibrium only tests deviations that change what happens on the path actually played, so it can rest on a *threat* that would be carried out only off the path, where carrying it out hurts the threatener. Requiring equilibrium in each subgame forces every threat to be one the player would really want to execute once there. In finite perfect-information games this selects exactly the profiles that survive backward induction (game-4.2).`,
       caption: String.raw`Entry game: the entrant may stay out or enter; if she enters, the incumbent fights or accepts. Drag the sliders for the incumbent’s payoff from fighting and the entrant’s loss when fought. The table lists the pure Nash equilibria: green = also subgame perfect, red = Nash only, because it relies on a non-credible threat (dashed red). Click a cell to see its path.`,
-      credit: 'Selten, 1965',
+      credit: 'Selten, 1965; definition restated in The Chain Store Paradox, 1974 working paper, §7',
       deps: ['game-4.2', 'game-1.3'],
       refs: ['Osborne §5.4', 'MSZ §7.1'],
       tags: ['subgame perfection', 'credible threat'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Subgame_perfect_equilibrium' },
-      verify: true,
       viz(v) {
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 1.05, title: 'entry game (payoffs: entrant, incumbent)' });
         const M = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, weight: 0.95, title: 'strategic form' });
@@ -243,7 +250,7 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
           const P = prep(root); backward(root);
           const F = strategicForm(P), ne = pureNash(F.U);
           // F.S1 order: Out, In ; F.S2: Fight, Accept
-          const spe = [[1, f > 1 ? 0 : 1]]; if (f > 1) spe[0] = [0, 0]; else spe[0] = [1, 1];
+          const spe = entrySPE(f, l);
           const isSPE = (i, j) => spe.some(([a, b]) => a === i && b === j);
           const play = playBeh(P, asBeh(P, F.S1[sel[0]], F.S2[sel[1]])), end = [...play.leafP.keys()][0], onp = ancestors(end);
           T.setView([-1.4, 2.7], [-3.0, 0.8]);
@@ -261,12 +268,12 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
           TB.draw({
             data: F.U, fill: (i, j) => (ne.some(([a, b]) => a === i && b === j) ? (isSPE(i, j) ? ['green', 0.32] : ['red', 0.25]) : null), highlight: [[sel[0], sel[1], 'gold']],
           });
-          info = { ne, spe: spe[0], f, F };
+          info = { ne, spe, f, F };
         });
         v.readout(() => {
           const { ne, spe, f, F } = info, nameOf = ([i, j]) => `(${['Out', 'In'][i]}, ${['Fight', 'Accept'][j]})`;
           const sub = f > 1 ? 'Fighting pays the incumbent more than accepting, so the threat is credible and the entrant stays out.' : f === 1 ? 'The incumbent is indifferent between fighting and accepting.' : 'In the subgame the incumbent prefers to accept, so “Fight” is an empty threat.';
-          return `pure Nash equilibria: ${ne.map(nameOf).join(' and ')}; subgame perfect: **${nameOf(spe)}**\n${sub}`;
+          return `pure Nash equilibria: ${ne.map(nameOf).join(' and ')}; subgame perfect: **${spe.map(nameOf).join(' and ')}**\n${sub}`;
         });
       },
     },
@@ -278,12 +285,11 @@ A **pure strategy** of a player is a *complete plan*: a choice of one action at 
       statement: String.raw`Every finite extensive game with perfect information has a subgame perfect equilibrium in pure strategies (game-4.4). One is obtained by backward induction (game-4.2); if no player is ever indifferent between two payoffs at a node, it is the only one. More generally the profiles produced by backward induction, with arbitrary tie-breaking, are exactly the pure subgame perfect equilibria.`,
       idea: String.raw`Induct on the height of the tree. A game of height $0$ is a single payoff vector. In a game of height $h+1$, solve each immediate subgame by the induction hypothesis, giving payoffs at the children; the mover at the root picks a child that is best for her, and plays on in that subgame as prescribed. No deviation helps in the subgames by hypothesis, and at the root the mover has chosen optimally among the continuation values, so no deviation helps there either. No mixing is needed because each choice is a single optimisation over finitely many numbers.`,
       caption: String.raw`A random tree with the backward-induction profile. The verifier tests every subgame: for each player it computes the best payoff she could get by changing her own choices (a dynamic programme over her nodes) and compares it with the profile’s payoff. Press “corrupt a choice” to flip one decision to a worse branch: the subgames above it fail. A corrupted choice off the equilibrium path can still leave a Nash equilibrium of the whole game, though not a subgame perfect one. The right plot shows why brute force does not scale.`,
-      credit: 'Kuhn, 1953 (backward induction: Zermelo, 1913)',
+      credit: 'Kuhn, 1950, Theorem 1 (expanded treatment, 1953)',
       deps: ['game-4.4'],
       refs: ['MSZ §4.13', 'Osborne §5.5'],
       tags: ['subgame perfection', 'existence'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Backward_induction' },
-      verify: true,
       viz(v) {
         const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.35, title: 'a game tree and a pure profile' });
         const C = v.stage({ x: [1, 6], y: [0, 12], axes: 'box', gutter: true, height: 340, weight: 0.65, xlabel: 'depth of the tree (binary)', ylabel: 'log₁₀ of the count', title: 'strategies explode, the solution does not' });

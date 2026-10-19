@@ -114,7 +114,7 @@ $$EX_N\ \le\ EX_0 .$$`,
       num: '4.8.5',
       kind: 'Theorem',
       name: 'Optional stopping with bounded increments and EN < ∞',
-      statement: String.raw`Let $X_n$ be a martingale (submartingale) with $|X_{n+1}-X_n|\le K$ a.s., and let $N$ be a stopping time with $EN<\infty$. Then $X_N$ is integrable and $EX_N=EX_0$ ($EX_N\ge EX_0$).`,
+      statement: String.raw`Let $X_n$ be a martingale (submartingale) with $|X_{n+1}-X_n|\le K$ a.s., and let $N$ be a stopping time for the natural filtration $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$, with $EN<\infty$. Then $X_N$ is integrable and $EX_N=EX_0$ ($EX_N\ge EX_0$).`,
       idea: String.raw`Write $|X_{N\wedge n}-X_0|\le\sum_{k\le N}|X_k-X_{k-1}|\le KN$, which is integrable. So $X_{N\wedge n}$ is dominated by $|X_0|+KN$ and converges to $X_N$; dominated convergence (1.6.7) passes the identity $EX_{N\wedge n}=EX_0$ (4.4.1) to the limit. If $EN=\infty$, the dominating bound disappears and the identity can fail.`,
       caption: String.raw`Walk with mean-zero bounded steps (coin $\pm1$, or $-1$ w.p. $\frac23$ and $+2$ w.p. $\frac13$, which overshoots the upper barrier), stopped when leaving $(-a,b)$; tick "no lower barrier" to stop only at $\ge b$. Left (log–log): the tail $P(N>n)$ from 3000 runs; $EN$ is finite for a two-sided exit (exponential tail) and infinite without the lower barrier (tail $\sim n^{-1/2}$, straight line of slope $-\frac12$). Right: running average of $X_{N\wedge3000}$ over the runs (blue) approaching $EX_0=0$ and of $X_N$ over the runs that finished (orange): the two agree when $EN<\infty$; without the lower barrier the finished runs all have $X_N\ge b$ while the capped runs sit far below.`,
       deps: ['prob-4.4.1', 'prob-1.6.7'],
@@ -151,15 +151,15 @@ $$EX_N\ \le\ EX_0 .$$`,
       num: '4.8.6',
       kind: 'Theorem',
       name: 'Wald’s equation via optional stopping',
-      statement: String.raw`Let $\xi_1,\xi_2,\dots$ be i.i.d. with $E|\xi_1|<\infty$ and mean $\mu$, $S_n=\xi_1+\dots+\xi_n$, and let $N$ be a stopping time with $EN<\infty$. Then
+      statement: String.raw`Let $\xi_1,\xi_2,\dots$ be i.i.d. with $E|\xi_1|<\infty$ and mean $\mu$, $S_n=\xi_1+\dots+\xi_n$, and let $N$ be a stopping time for the natural filtration $\mathcal F_n=\sigma(\xi_1,\dots,\xi_n)$, with $EN<\infty$. Then
 $$E S_N=\mu\,EN .$$`,
       idea: String.raw`$M_n=S_n-n\mu$ is a martingale. Its increments are not bounded, but the argument of 4.8.5 only needs a dominating integrable variable: $|M_{N\wedge n}|\le\sum_{k\le N}|\xi_k-\mu|$, and since $\{N\ge k\}\in\mathcal F_{k-1}$ is independent of $\xi_k$, $E\sum_{k\le N}|\xi_k-\mu|=EN\cdot E|\xi_1-\mu|<\infty$. Dominated convergence (1.6.7) then gives $EM_N=EM_0=0$, i.e. $ES_N=\mu\,EN$.`,
       caption: String.raw`Stop the walk at the first $n$ with $S_n\ge L$, capped at $T=2000$ steps (so $N\wedge T$ is bounded and Wald's identity holds exactly for it). Step law: exponential ($\mu=1$), uniform on $(-1,3)$ ($\mu=1$) or normal with mean $\mu$ (slider). Left: histogram of the stopped value $S_N$: it overshoots $L$. Right: $ES_{N\wedge T}$ and $\mu\,E(N\wedge T)$ from 6000 seeded runs, with 95% whiskers: equal within noise. Slide the normal's $\mu$ to $0$ or below: $N$ is often capped (and $EN=\infty$ without the cap), yet the capped identity still holds.`,
       deps: ['prob-4.8.5'],
       see: ['prob-2.6.2', 'stoch-12.5'],
       tags: ['optional stopping', 'random walk'],
-      credit: 'A. Wald, 1944',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.8.6 and proof, p. 257; Theorem 4.8.5, pp. 256–257'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const law = v.select('steps', [{ value: 'exp', label: 'exponential(1)' }, { value: 'unif', label: 'uniform$(-1,3)$' }, { value: 'norm', label: 'normal$(\\mu,1)$' }], 'exp');
         const muS = v.slider('$\\mu$', -0.3, 1.5, 0.5, { step: 0.05 });
@@ -318,13 +318,14 @@ If $p>\frac12$ and $T_b$ is the hitting time of $b$ (no lower barrier), $E_xT_b=
       num: '4.9.1',
       kind: 'Theorem',
       name: 'Reflection principle (path counting)',
-      statement: String.raw`Let $x,y>0$. The number of paths of the simple walk from $(0,x)$ to $(n,y)$ that touch $0$ equals the number of all paths from $(0,-x)$ to $(n,y)$:
+      statement: String.raw`Let $x,y$ be positive integers. The number of paths of the simple walk from $(0,x)$ to $(n,y)$ that touch $0$ equals the number of all paths from $(0,-x)$ to $(n,y)$:
 $$\#\{\text{paths }x\to y\text{ in }n\text{ steps touching }0\}=\binom{n}{\frac{n+y+x}{2}} .$$
+The coefficient is $0$ when its lower argument is not an integer in $[0,n]$.
 Consequently, for the symmetric walk, $P_x(S_n=y,\ \min_{k\le n}S_k\le0)=P_x(S_n=-y)$ (for $y>0$).`,
       idea: String.raw`Reflect the initial segment of a touching path, up to its first visit to $0$, across the line $y=0$. This maps touching paths from $x$ to $y$ bijectively onto paths from $-x$ to $y$: every path from $-x$ to $y>0$ must cross $0$, and reflecting back up to its first crossing returns the original. The number of up-steps in a path from $-x$ to $y$ is $(n+y+x)/2$, giving the binomial coefficient.`,
       caption: String.raw`Set $n$, the start $x$ and the endpoint $y$. All $\binom{n}{(n+y-x)/2}$ paths are enumerated; the ones touching $0$ are listed. Choose one with the slider "touching path #": red is the path, the dashed blue path is its reflection up to the first zero (dot), which starts at $-x$. Right: the counts: all paths $x\to y$, those touching $0$ (enumerated), and the number of paths from $-x$ to $y$ (formula): the last two bars are equal for every $(n,x,y)$.`,
-      credit: 'D. André, 1887 (ballot-problem bijection); the picture with a reflected segment came later',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.9.1 and proof, p. 263'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: [],
       see: ['comb-5.2', 'stoch-2.10'],
       tags: ['random walk', 'combinatorics'],

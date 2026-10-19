@@ -132,7 +132,7 @@ export function burstOrbit(p, T, { dt = 0.25, every = 4, I = p.I, y0 } = {}) {
 }
 
 // ---------------------------------------------------------------- Izhikevich simple model
-/** Parameter sets of Izhikevich (2003), Fig. 2 / Table: a, b, c, d and a typical step current (our choice). */
+/** Parameter sets of Izhikevich (2003), Fig.2 parameter diagram: a,b,c,d; I=10 for the five displayed cortical examples. RZ drive is an atlas illustration. */
 export const IZH = {
   RS: { name: 'regular spiking', a: 0.02, b: 0.2, c: -65, d: 8, I: 10 },
   IB: { name: 'intrinsically bursting', a: 0.02, b: 0.2, c: -55, d: 4, I: 10 },
@@ -141,13 +141,13 @@ export const IZH = {
   LTS: { name: 'low-threshold spiking', a: 0.02, b: 0.25, c: -65, d: 2, I: 10 },
   RZ: { name: 'resonator', a: 0.1, b: 0.26, c: -65, d: 2, I: 0.3 },
 };
-/** Simulate to tEnd ms with step 0.1 ms (two half-steps of the voltage equation per step, as in the paper's code); Ifn(t) in pA-like units. */
-export function izhRun(p, Ifn, tEnd, { dt = 0.5 } = {}) {
-  let v = -65, u = p.b * v; const o = { t: [], v: [], u: [], spikes: [] }, N = Math.round(tEnd / dt);
+/** Simulate on the paper’s ms/mV scales using its split-Euler update: two half voltage steps, then one recovery step. I has the model’s input scale, not an independently specified physical current unit. */
+export function izhRun(p, Ifn, tEnd, { dt = 0.025 } = {}) {
+  let v = -65, u = p.b * v; const o = { t: [], v: [], u: [], spikes: [], resets: [] }, N = Math.round(tEnd / dt);
   for (let i = 0; i <= N; i++) {
     const t = i * dt;
-    if (v >= 30) { o.v.push(30); o.spikes.push(t); v = p.c; u += p.d; } else o.v.push(v);
-    o.t.push(t); o.u.push(u);
+    if (v >= 30) { o.v.push(30); o.u.push(u); o.spikes.push(t); v = p.c; u += p.d; o.resets.push({t,v,u}); } else {o.v.push(v);o.u.push(u);}
+    o.t.push(t);
     const I = Ifn(t);
     for (let j = 0; j < 2; j++) v += 0.5 * dt * (0.04 * v * v + 5 * v + 140 - u + I);
     u += dt * p.a * (p.b * v - u);
@@ -163,11 +163,22 @@ export function mlCurve(name, Is, opt) {
   if (!_curve.has(k)) _curve.set(k, Is.map((I) => [I, mlRate(ML_SETS[name], I, opt)]));
   return _curve.get(k);
 }
-/** Current at which the stable node and the saddle of the 'snic' set merge (bisection on the number of equilibria). */
+/** First fold maximum of the equilibrium current curve (SNIC set): solve dIeq/dV=0, not a grid-dependent root count. */
 export function snicCurrent(p = ML_SETS.snic) {
-  let lo = 30, hi = 50;
-  for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (mlEquilibria(p, m).length > 1) lo = m; else hi = m; }
-  return (lo + hi) / 2;
+  const slope = V => {
+    const m = mlMinf(p, V), w = mlWinf(p, V);
+    const dm = .5 / (p.V2 * Math.cosh((V - p.V1) / p.V2) ** 2), dw = .5 / (p.V4 * Math.cosh((V - p.V3) / p.V4) ** 2);
+    return p.gL + p.gCa * (m + (V - p.VCa) * dm) + p.gK * (w + (V - p.VK) * dw);
+  };
+  for (let hi = -79.5; hi <= 60; hi += .5) {
+    if (slope(hi - .5) > 0 && slope(hi) <= 0) {
+      let lo = hi - .5;
+      for (let j = 0; j < 60; j++) { const m = (lo + hi) / 2; if (slope(m) > 0) lo = m; else hi = m; }
+      const V = (lo + hi) / 2;
+      return p.gL * (V - p.VL) + p.gCa * mlMinf(p,V) * (V - p.VCa) + p.gK * mlWinf(p,V) * (V - p.VK);
+    }
+  }
+  return NaN;
 }
 /** Equilibria of the fast subsystem of BURST at frozen z: [{V, stable}]. */
 export function burstFastEq(p, z, I = p.I) {

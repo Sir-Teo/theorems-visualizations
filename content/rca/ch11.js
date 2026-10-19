@@ -484,7 +484,7 @@ so $P[f]=P[f\,d\sigma]$ with $\sigma$ the normalised Lebesgue measure. For real 
       num: '11.8',
       kind: 'Theorem',
       name: 'The Dirichlet problem for the disc',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.8 and proof, pp. 234–235'],
       statement: String.raw`Let $f\in C(T)$ and define $Hf$ on the closed unit disc $\bar U$ by
 $$(Hf)(re^{i\theta})=\begin{cases}f(e^{i\theta}) & r=1,\\ P[f](re^{i\theta}) & 0\le r<1.\end{cases}$$
 Then $Hf\in C(\bar U)$. Thus $Hf$ is continuous on $\bar U$, harmonic in $U$, and equal to $f$ on $T$; moreover $\|Hf\|_\infty=\|f\|_\infty$ and $P[f]_r\to f$ uniformly on $T$ as $r\to1$.`,
@@ -572,7 +572,7 @@ Split the integral at $|t-\theta|=\delta$: uniform continuity of $f$ makes the n
       num: '11.9',
       kind: 'Theorem',
       name: 'Harmonic functions continuous on Ū are Poisson integrals',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.9 and proof, p. 235'],
       statement: String.raw`Let $u$ be a continuous real function on the closed unit disc $\bar U$ that is harmonic in $U$. Then in $U$, $u$ is the Poisson integral of its restriction to $T$, $u=P[u|_T]$, and $u$ is the real part of the holomorphic function
 $$f(z)=\frac{1}{2\pi}\int_{-\pi}^{\pi}\frac{e^{it}+z}{e^{it}-z}\,u(e^{it})\,dt\qquad(z\in U).$$
 More generally, if $u$ is continuous on a closed disc $\bar D(a;R)$ and harmonic in $D(a;R)$, then $u(a+re^{i\theta})=\frac{1}{2\pi}\int_{-\pi}^{\pi}\frac{R^2-r^2}{R^2-2Rr\cos(\theta-t)+r^2}\,u(a+Re^{it})\,dt$ for $0\le r<R$.`,

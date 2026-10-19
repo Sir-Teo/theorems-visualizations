@@ -1,6 +1,15 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly — items 10.13–10.17
 import { clamp, fx, bisect, argmax, plateText, bar, lin, mstage, tag, integ, tween } from './ch10.shared.js';
 
+/** Global leader solution including follower exit; candidates are the two quadratic maxima and their kink. */
+export function stackelbergOutcome(a, b, c1, c2) {
+  const reply = q => Math.max(0, (a - c2 - b * q) / (2 * b));
+  const profit = q => q * (a - b * (q + reply(q)) - c1);
+  const candidates = [0, Math.max(0, (a - c2) / b), Math.max(0, (a - c1) / (2 * b)), Math.max(0, (a - 2 * c1 + c2) / (2 * b))];
+  let q1 = 0; for (const q of candidates) if (profit(q) > profit(q1)) q1 = q;
+  return { q1, q2: reply(q1), profit: profit(q1) };
+}
+
 export default {
   collection: 'micro',
   chapter: 10,
@@ -8,10 +17,10 @@ export default {
     // ------------------------------------------------------------------ 10.13
     {
       num: '10.13', kind: 'Model', name: 'Stackelberg leadership',
-      statement: String.raw`In the **Stackelberg** model one firm (the **leader**) commits to its quantity first; the other (the **follower**) observes it and then picks its best reply, $q_2 = R_2(q_1)$. The leader therefore maximizes its profit along the follower's reaction curve, $\max_{q_1}\; \pi_1\bigl(q_1, R_2(q_1)\bigr)$. With $P = a - bQ$ and constant costs,
+      statement: String.raw`In the **Stackelberg** model one firm (the **leader**) commits to its quantity first; the other (the **follower**) observes it and then picks its best reply, $q_2 = R_2(q_1)$. The leader therefore maximizes its profit along the follower's reaction curve, $\max_{q_1}\; \pi_1\bigl(q_1, R_2(q_1)\bigr)$. With $P = a - bQ$ and constant costs, if both firms are active and the optimum is on the interior follower branch,
 $$q_1^S = \frac{a - 2c_1 + c_2}{2b}, \qquad q_2^S = \frac{a - 3c_2 + 2c_1}{4b}.$$
-Compared with Cournot the leader produces more and earns more, the follower produces less and earns less, total output is larger and the price lower: there is a **first-mover advantage**, which comes from commitment (a leader that could revise its output would end up at the Cournot point).`,
-      idea: String.raw`The leader knows that every output it picks will be met by $R_2$, which falls with $q_1$ (10.10): extra output crowds the follower out. So the leader's choice set is the follower's reaction line, and it picks the point on that line touching its highest iso-profit curve, which lies at a tangency, not at the intersection of the two reaction lines. The Cournot point is on the line too, so the leader can only do at least as well as at Cournot. It cannot do better by sticking to the Cournot quantity because the follower's reply is already built into the choice.`,
+For equal costs below the demand intercept, compared with Cournot the leader produces more and earns more, the follower produces less and earns less, total output is larger and the price lower: there is a **first-mover advantage**, which comes from commitment (a leader that could revise its output would end up at the Cournot point).`,
+      idea: String.raw`The leader knows that every output it picks will be met by $R_2$, which falls with $q_1$ (10.10): extra output crowds the follower out. So the leader's choice set is the follower's reaction line, and it picks the point on that line touching its highest iso-profit curve, which lies at a tangency, not at the intersection of the two reaction lines. The Cournot point is on the line too, so the leader can only do at least as well as at Cournot. The displayed closed form must be replaced by a boundary solution if the follower exits.`,
       caption: String.raw`The orange line is the follower's reaction curve, the purple curves are the leader's iso-profit curves (profit rises toward the lower left). **Drag the gold point** along the follower's line: the leader's profit is read off the iso-profit curve through it (right panel plots the same profit against $q_1$). The Stackelberg optimum is where an iso-profit curve is tangent to the line; the Cournot equilibrium (green) lies on a lower curve. Change the costs to see the advantage shrink or grow.`,
       deps: ['micro-10.10'],
       see: ['game-1.3'],
@@ -29,12 +38,12 @@ Compared with Cournot the leader produces more and earns more, the follower prod
         const R2f = () => (q1) => Math.max(0, (a - c2S.value - b * q1) / (2 * b));
         const H = s.handle(2, 4, { color: 'gold', r: 9, label: 'q₁', labelPos: 'ne', constrain: (x) => { const q = clamp(x, 0.05, 11.9); return [q, R2f()(q)]; } });
         let st = {};
-        v.button('go to the optimum', () => { const c1 = c1S.value, R2 = R2f(); const o = argmax((q) => q * (a - b * (q + R2(q)) - c1), 0, 12, 120); H.set(o.x, R2(o.x)); });
+        v.button('go to the optimum', () => { const c1 = c1S.value, R2 = R2f(); const o = stackelbergOutcome(a, b, c1, c2S.value); H.set(o.q1, o.q2); });
         v.render(() => {
           const c1 = c1S.value, c2 = c2S.value, R2 = R2f(), R1 = (q2) => Math.max(0, (a - c1 - b * q2) / (2 * b));
           const pi1 = (q1, q2) => q1 * (a - b * (q1 + q2) - c1), pi2 = (q1, q2) => q2 * (a - b * (q1 + q2) - c2);
           const lead = (q) => pi1(q, R2(q));
-          const o = argmax(lead, 0, 12, 120);
+          const exact = stackelbergOutcome(a, b, c1, c2), o = { x: exact.q1, f: exact.profit };
           const [e1, e2] = v.M.solve([[2 * b, b], [b, 2 * b]], [a - c1, a - c2]);
           H.set(H.x, R2(H.x));
           const q1 = H.x, q2 = H.y;
@@ -43,26 +52,26 @@ Compared with Cournot the leader produces more and earns more, the follower prod
           s.dot(e1, e2, { r: 8, color: 'green' }); s.dot(o.x, R2(o.x), { r: 8, color: 'purple' });
           tag(s, 'Stackelberg', o.x, R2(o.x), 'purple', { dy: -18, dx: 20 }); tag(s, 'Cournot', e1, e2, 'green', { dy: 18, dx: -22 });
           s.dot(q1, q2, { r: 6, color: 'gold' });
+          G.setView([0, 12], [Math.min(-4, lead(12)) * 1.1, Math.max(30, o.f) * 1.1]);
           G.hline(0, { color: 'muted' }); G.fn(lead, { domain: [0, 12], color: 'ink', width: 2.4 });
           G.hline(pi1(e1, e2), { color: 'green', width: 1.5, dash: [4, 3] });
           G.dot(o.x, o.f, { r: 7, color: 'purple' }); G.dot(q1, lead(q1), { r: 6, color: 'gold' });
           const Q = o.x + R2(o.x);
-          st = { q1, q2, o, e1, e2, p1: lead(q1), pS1: o.f, pS2: pi2(o.x, R2(o.x)), pC1: pi1(e1, e2), pC2: pi2(e1, e2), QS: Q, QC: e1 + e2, PS: a - b * Q, PC: a - b * (e1 + e2), q2S: R2(o.x), cf: (a - 2 * c1 + c2) / (2 * b) };
+          st = { q1, q2, o, e1, e2, p1: lead(q1), pS1: o.f, pS2: pi2(o.x, R2(o.x)), pC1: pi1(e1, e2), pC2: pi2(e1, e2), QS: Q, QC: e1 + e2, PS: a - b * Q, PC: a - b * (e1 + e2), q2S: R2(o.x), cf: exact.q2 > 1e-8 ? (a - 2 * c1 + c2) / (2 * b) : null };
         });
-        v.readout(() => `Leader at your $q_1 = ${fx(st.q1)}$ earns $${fx(st.p1)}$. Optimum: $q_1^S = ${fx(st.o.x, 3)}$ (formula $${fx(st.cf, 3)}$), follower $q_2 = ${fx(st.q2S, 3)}$, profits $${fx(st.pS1)}$ and $${fx(st.pS2)}$, price $${fx(st.PS)}$.\nCournot: outputs $(${fx(st.e1)}, ${fx(st.e2)})$, profits $${fx(st.pC1)}$ and $${fx(st.pC2)}$, price $${fx(st.PC)}$. First-mover gain for the leader $${fx(st.pS1 - st.pC1)}$; total output $${fx(st.QS)}$ against $${fx(st.QC)}$.`);
+        v.readout(() => `Leader at your $q_1 = ${fx(st.q1)}$ earns $${fx(st.p1)}$. Optimum: $q_1^S = ${fx(st.o.x, 3)}$ (${st.cf === null ? 'boundary solution: follower exits' : `interior formula $${fx(st.cf, 3)}$`}), follower $q_2 = ${fx(st.q2S, 3)}$, profits $${fx(st.pS1)}$ and $${fx(st.pS2)}$, price $${fx(st.PS)}$.\nCournot: outputs $(${fx(st.e1)}, ${fx(st.e2)})$, profits $${fx(st.pC1)}$ and $${fx(st.pC2)}$, price $${fx(st.PC)}$. First-mover gain for the leader $${fx(st.pS1 - st.pC1)}$; total output $${fx(st.QS)}$ against $${fx(st.QC)}$.`);
       },
     },
     // ------------------------------------------------------------------ 10.14
     {
       num: '10.14', kind: 'Model', name: 'Bertrand competition',
-      statement: String.raw`Two firms with the same constant marginal cost $c$ sell an identical good and choose **prices** simultaneously; every buyer buys from the cheaper firm and demand is split equally if the prices are equal. With market demand $D(p)$ the profit of firm $i$ is $(p_i - c)D(p_i)$ if $p_i < p_j$, half of it if $p_i = p_j$, and zero if $p_i > p_j$. The unique Nash equilibrium (in pure strategies) is $p_1^* = p_2^* = c$: both firms price at marginal cost and earn zero profit, the competitive outcome, already with two firms.`,
+      statement: String.raw`Two firms with the same constant marginal cost $c$ sell an identical good and choose **prices** simultaneously; every buyer buys from the cheaper firm and demand is split equally if the prices are equal. With market demand $D(p)$ the profit of firm $i$ is $(p_i - c)D(p_i)$ if $p_i < p_j$, half of it if $p_i = p_j$, and zero if $p_i > p_j$. Assume continuous prices, unlimited capacity, and continuous demand positive at $c$, with $c$ below the choke price. The unique Nash equilibrium (in pure strategies) is $p_1^* = p_2^* = c$: both firms price at marginal cost and earn zero profit, the competitive outcome, already with two firms.`,
       idea: String.raw`If $p_j > c$ is the rival's price, firm $i$ gains by pricing just below it (it takes the whole market for a negligible loss of margin), as long as the undercut price is above $c$ (or the monopoly price, if the rival charges more than that). So no price above $c$ is a best reply to itself: any common price above cost invites an undercut, which invites another. At $p = c$ the profit is zero either way, undercutting would make a loss and raising the price loses all customers. The result is the contrast to Cournot (10.10): the choice variable (price rather than quantity) turns two sellers into perfect competitors.`,
-      caption: String.raw`Demand is $D(p) = 10 - p$. Left: the price plane $(p_1, p_2)$; press play and the firms **undercut one another** in steps of $\delta$ from the monopoly price down to marginal cost (the path ends at $(c, c)$). Right: the profit of the firm about to move, as a function of its own price when the rival's price is fixed at the current value: profit **jumps** at the rival's price (the market is all or nothing), so the best reply is just below it. Change the step $\delta$ or the cost $c$.`,
-      deps: ['micro-10.2'],
+      caption: String.raw`Demand is $D(p) = 10 - p$. Left: the price plane $(p_1, p_2)$; press play and the firms **undercut one another** in steps of $\delta$ from the monopoly price down to marginal cost (the path ends at $(c, c)$). Right: the profit of the firm about to move, as a function of its own price when the rival's price is fixed at the current value: profit **jumps** at the rival's price (the market is all or nothing), so a profitable undercut can be chosen just below it; with continuous prices a best reply need not exist at an arbitrary rival price. Change the step $\delta$ or the cost $c$.`,
+      deps: ['micro-10.2', 'game-1.2'],
       see: ['game-1.2'],
       refs: ['Varian Ch. 28'], tags: ['oligopoly'],
       credit: 'J. Bertrand, review of Walras and Cournot in the Journal des savants, 1883',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bertrand_competition' },
       viz(v) {
         const cS = v.slider('marginal cost $c$', 1, 5, 2, { step: 0.05 });
@@ -100,13 +109,12 @@ Compared with Cournot the leader produces more and earns more, the follower prod
     // ------------------------------------------------------------------ 10.15
     {
       num: '10.15', kind: 'Paradox', name: 'Bertrand paradox',
-      statement: String.raw`The **Bertrand paradox**: two (or any number $\ge 2$ of) firms selling a homogeneous good at equal constant marginal cost, competing in prices with no capacity limit, price at marginal cost and earn nothing (10.14), which is far from the quantity-competition (Cournot, 10.10) result and from what is seen in many concentrated industries. The paradox disappears when one of its assumptions is relaxed. With **capacity limits** (Edgeworth) a firm cannot serve the whole market at a low price, so the rival can raise its price safely and the pure-strategy equilibrium either lies **above** cost or does not exist. With **product differentiation** buyers do not all switch for a small price cut, and equilibrium prices exceed marginal cost, rising as the products become less substitutable. If firms first choose capacities and then prices, then under suitable conditions (efficient rationing and not-too-convex demand) the outcome is that of Cournot (Kreps and Scheinkman).`,
+      statement: String.raw`The **Bertrand paradox**: two (or any number $\ge 2$ of) firms selling a homogeneous good at equal constant marginal cost, competing in prices with no capacity limit, price at marginal cost and earn nothing (10.14), which is far from the quantity-competition (Cournot, 10.10) result and from what is seen in many concentrated industries. The paradox disappears when one of its assumptions is relaxed. With **capacity limits** a firm cannot serve the whole market at a low price, so the rival can raise its price safely and the pure-strategy equilibrium either lies **above** cost or does not exist. With **product differentiation** buyers do not all switch for a small price cut, and equilibrium prices exceed marginal cost, rising as the products become less substitutable. If firms first choose capacities and then prices, then under suitable conditions (efficient rationing, decreasing concave inverse demand and convex capacity costs strictly positive on the margin) the outcome is that of Cournot (Kreps and Scheinkman).`,
       idea: String.raw`The undercutting argument needs two things: that a small price cut wins the entire market, and that the firm can serve it. Differentiation breaks the first: with demands $q_i = [(a - p_i) - s(a - p_j)]/(1 - s^2)$ the best reply $p_i = [(1-s)a + c + s\,p_j]/2$ has slope $s/2 < 1$ and the equilibrium markup shrinks to zero only as $s \to 1$. Capacity breaks the second: if the rival cannot serve more than $k$ units, the residual demand $D(p) - k$ at a higher price is still positive, so raising the price pays and the common price $c$ cannot be an equilibrium unless $k$ is as large as $D(c)$. Whether the markup survives is therefore an empirical matter of how substitutable the products are and how fast capacity can be added.`,
       caption: String.raw`Choose what to relax. **Differentiation:** slide the substitutability $s$ from $0$ (independent products) to $1$ (identical); the Bertrand price falls from the monopoly price to $c$; it is never above the Cournot price, the two coincide at $s = 0$ and the gap is widest at $s = 1$, the paradox. **Capacity:** slide the capacity $k$ of each firm (demand $D(p) = 10 - p$, $c = 2$, efficient rationing): where a pure equilibrium exists it is plotted; in the shaded range a deviation to a higher price pays and no pure equilibrium exists. The right panel shows the test at the chosen $k$ (or the reaction lines at the chosen $s$).`,
       deps: ['micro-10.14', 'micro-10.10'],
       refs: ['Varian Ch. 28'], tags: ['oligopoly'],
-      credit: 'J. Bertrand, 1883 (the paradox); F. Y. Edgeworth, 1897 (capacity constraints); D. Kreps & J. Scheinkman, Bell Journal of Economics 14 (2): 326–337, 1983',
-      verify: true,
+      credit: 'J. Bertrand, 1883; D. Kreps & J. Scheinkman, Bell Journal of Economics 14 (2): 326–337, 1983 (capacity-constrained subgames and capacity-first game)',
       scope: String.raw`Linear demand, equal constant costs, and (for the capacity mode) efficient rationing; the pure-equilibrium test is computed numerically for the stated rationing rule only.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bertrand_paradox_(economics)' },
       viz(v) {
@@ -142,7 +150,7 @@ Compared with Cournot the leader produces more and earns more, the follower prod
             T.dot(p, p, { r: 8, color: 'gold' }); T.line(0, 0, 10, 10, { color: 'muted', width: 1, dash: [3, 3] });
             st = { diff, s: s_, p, pc: pC(s_), markup: (p - c) / p, };
           } else {
-            S.setView([0, kmax], [0, 7]); S.setLabels('capacity $k$ of each firm', 'pure-equilibrium price'); S.setTitle('equilibrium price against capacity');
+            S.setView([0, kmax], [0, 10]); S.setLabels('capacity $k$ of each firm', 'pure-equilibrium price'); S.setTitle('equilibrium price against capacity');
             S.rect(8 / 3, 0, 8, 7, { fill: 'red', fillAlpha: 0.08, stroke: false }); plateText(S, 'no pure equilibrium', 5.3, 6.2, { color: 'red', align: 'center' });
             S.path([[0.05, a - 0.1], [8 / 3, a - 16 / 3]], { color: 'ink', width: 2.6 }); S.path([[8, c], [kmax, c]], { color: 'ink', width: 2.6 });
             S.hline((a + 2 * c) / 3, { color: 'purple', width: 1.6, dash: [4, 3] }); S.hline((a + c) / 2, { color: 'muted', width: 1.4, dash: [4, 3] }); S.hline(c, { color: 'orange', width: 2.2 });

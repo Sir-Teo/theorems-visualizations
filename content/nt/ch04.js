@@ -74,10 +74,9 @@ In particular $a^{(p-1)/2}\equiv\pm1$ always, the symbol is multiplicative, $\le
       idea: String.raw`By Fermat's little theorem (2.5), $b=a^{(p-1)/2}$ satisfies $b^2\equiv1$, hence $b\equiv\pm1$ since $\Z/p\Z$ has no zero divisors. If $a\equiv x^2$ then $b\equiv x^{p-1}\equiv1$. So the $(p-1)/2$ residues are roots of $y^{(p-1)/2}-1$, and Lagrange's theorem (2.12) says that polynomial has at most $(p-1)/2$ roots; these are therefore all of its roots, and every non-residue must give $b\equiv-1$. (With a primitive root $g$ (3.2): $a=g^k$ is a square iff $k$ is even, and $g^{k(p-1)/2}=(-1)^k$.)`,
       caption: String.raw`Slide $p$ and $a$. The first panel plots $a^{(p-1)/2}$ reduced to $(-p/2,p/2]$ for every $a$: the bars sit at $\pm1$ and their colour (green square, red non-square) is decided independently by brute-force squaring. The second panel lists the repeated squarings $a,a^2,a^4,\dots$ and the product that builds the exponent $(p-1)/2$. Tick *composite* and use $n=15$ or $21$: the powers scatter and no longer decide anything.`,
       deps: ['nt-4.1', 'nt-3.2', 'nt-2.5', 'nt-2.12'],
-      refs: ['Apostol §9.2', 'Hardy–Wright §6.5'],
+      refs: ['Apostol §9.2', 'Hardy–Wright §6.5', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Euler', 'quadratic residue', 'fast power'],
-      credit: 'Euler, 1748 (criterion stated and proved)',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Euler%27s_criterion' },
       viz(v) {
         const P = v.slider('modulus $p$', 3, 61, 23, { int: true });
@@ -184,10 +183,9 @@ Moreover the absolute values of the reduced multiples are exactly the numbers $1
       idea: String.raw`If two reduced multiples had the same absolute value, then $ja\equiv\pm ka$ forces $j\equiv\pm k$, impossible for distinct $j,k\le(p-1)/2$; so the absolute values are a permutation of $1,\dots,(p-1)/2$. Multiply all the reduced multiples: $a^{(p-1)/2}\left(\tfrac{p-1}2\right)!\equiv(-1)^\mu\left(\tfrac{p-1}2\right)!$. Cancel the factorial (it is a unit) and apply Euler's criterion (4.2).`,
       caption: String.raw`Choose $p$ and $a$. Top: the number line $(-p/2,p/2)$ with the reduced multiples $ka$ labelled by $k$; blue ones are positive, red ones negative — count the red. Bottom: $|ka \bmod p|$ plotted against $k$: the heights are a permutation of $1,\dots,(p-1)/2$ (each level is used once). Move $a$ and the picture reshuffles, but the parity of the red count always matches $\left(\frac ap\right)$.`,
       deps: ['nt-4.1', 'nt-4.2'],
-      refs: ['Hardy–Wright §6.11', 'Apostol §9.4'],
+      refs: ['Hardy–Wright §6.11', 'Apostol §9.4', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Gauss', 'quadratic residue', 'reciprocity'],
-      credit: 'Gauss, 1808 (third proof of reciprocity)',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gauss%27s_lemma_(number_theory)' },
       viz(v) {
         const P = v.slider('prime $p$', 5, 61, 17, { int: true });

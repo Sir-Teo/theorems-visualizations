@@ -21,7 +21,8 @@ For a single integrable $X$ this is dominated convergence; for a family it asks 
       caption: String.raw`Pick a family and drag $M$. Left (log scale): the thin curves are $M\mapsto E(|X_i|;|X_i|>M)$ for individual members, the thick curve is their supremum. For $n\mathbf 1_{(U<1/n)}$ every single member drops to $0$ at $M=n$, yet the supremum stays at $1$: not UI. With $1/n^2$ instead of $1/n$ the supremum is $1/(\lfloor M\rfloor+1)\to0$. Normals with $\sigma\le s$ are UI; raise the cap $s$ and the curve shifts but still vanishes. Right: the laws themselves; mass above $M$ is shaded.`,
       deps: ['prob-1.6.1a'],
       tags: ['uniform integrability'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.6, pp. 243–244 (uniform integrability)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       scope: String.raw`The definition is stated for probability spaces (finite measure). Textbooks differ on whether UI also requires $\sup_iE|X_i|<\infty$; on a probability space the two formulations are equivalent for the $L^1$ story used here.`,
       viz(v) {
         const fam = v.select('family', [
@@ -114,13 +115,13 @@ For a single integrable $X$ this is dominated convergence; for a family it asks 
       name: 'de la Vallée-Poussin criterion',
       statement: String.raw`Let $\varphi\ge0$ with $\varphi(x)/x\to\infty$ as $x\to\infty$. If $\sup_iE\varphi(|X_i|)\le C<\infty$, then $\{X_i\}$ is uniformly integrable. In fact
 $$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 .$$
-(Conversely every UI family admits such a $\varphi$, convex and increasing.)`,
+This is the sufficient criterion stated in Durrett 4.6.2.`,
       idea: String.raw`On $\{|X_i|>M\}$ we have $|X_i|=\varphi(|X_i|)\cdot|X_i|/\varphi(|X_i|)\le\varphi(|X_i|)\sup_{x\ge M}x/\varphi(x)$. Integrate over that event and bound $E\varphi(|X_i|)$ by $C$. Superlinear growth of $\varphi$ is exactly what makes the supremum tend to $0$. This is the working test for UI: in practice one checks a bound on $E|X_i|^{1+\delta}$.`,
       caption: String.raw`Family: Pareto laws $P(X>x)=x^{-\alpha}$ ($x\ge1$) with $\alpha\ge\alpha_0$. Thin curves: the exact tails $E(X;X>M)=\frac{\alpha}{\alpha-1}M^{1-\alpha}$ for several $\alpha$ (log–log). Red: the criterion's bound $C\sup_{x\ge M}x/\varphi(x)$ with $C=\sup_\alpha E\varphi(X)$ (attained at $\alpha_0$). Try $\varphi(x)=x^p$ and $\varphi(x)=x\ln(1+x)$. Push $p$ up to $\alpha_0$: $C$ blows up and the bound disappears, while the family itself stays UI (the criterion is only sufficient for a given $\varphi$).`,
       deps: ['prob-4.6.1a'],
       tags: ['uniform integrability'],
-      credit: 'C. de la Vallée-Poussin, 1915',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.2 and proof, p. 245'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const phiS = v.select('$\\varphi$', [{ value: 'pow', label: '$x^p$' }, { value: 'xlog', label: '$x\\ln(1+x)$' }], 'pow');
         const aS = v.slider('$\\alpha_0$', 1.2, 4, 2.2, { step: 0.05 });
@@ -145,12 +146,12 @@ $$E(|X_i|;|X_i|>M)\ \le\ C\sup_{x\ge M}\frac{x}{\varphi(x)}\ \longrightarrow\ 0 
       kind: 'Theorem',
       name: 'Vitali: L¹ convergence ⇔ UI and convergence in probability',
       statement: String.raw`Let $X_n,X$ be integrable. Then $X_n\to X$ in $L^1$ if and only if $X_n\to X$ in probability and $\{X_n\}$ is uniformly integrable.`,
-      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the first term tends to $0$ by bounded convergence (1.6.7), the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability (2.2.2 with $p=1$), and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
+      idea: String.raw`($\Leftarrow$) Truncate at level $M$: $E|X_n-X|\le E|\phi_M(X_n)-\phi_M(X)|+E(|X_n|;|X_n|>M)+E(|X|;|X|>M)$ with $\phi_M$ the clamp to $[-M,M]$; the first term tends to $0$ by bounded convergence in probability (Exercise 2.3.5), the others are small by UI. ($\Rightarrow$) $L^1$ convergence implies convergence in probability (2.2.2 with $p=1$), and a convergent sequence in $L^1$ is UI because $E(|X_n|;A)\le E(|X|;A)+E|X_n-X|$ is uniformly small once $P(A)$ is.`,
       caption: String.raw`$X_n=n^a\mathbf 1_{(U<1/n)}$ converges to $0$ in probability for every $a$. Left (log–log): $P(|X_n|>\frac12)=1/n$ (gold), $E|X_n|=n^{a-1}$ (accent) and the UI tail $\sup_{m\ge n}E(X_m;X_m>M)$ (red). For $a<1$ the three tend to $0$: $L^1$ convergence. At $a=1$ the mean sticks at $1$ and the tail sticks at $1$: escaping mass. Right: the function $X_n$ for the chosen $n$, a taller and thinner spike as $n$ grows, with area $n^{a-1}$.`,
       deps: ['prob-4.6.1a', 'prob-1.6.7', 'prob-2.2.2'],
       tags: ['uniform integrability', 'convergence'],
-      credit: 'G. Vitali (convergence theorem; the date is not confirmed here)',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.3 and proof, pp. 245–246'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const aS = v.slider('exponent $a$', 0.1, 1.5, 0.6, { step: 0.05 });
         const MS = v.slider('$M$', 1, 100, 10, { step: 1, log: true });
@@ -347,7 +348,8 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
       deps: ['prob-4.6.7', 'prob-4.6.1', 'prob-4.1.13', 'prob-2.1.6'],
       tags: ['martingales', 'conditional expectation'],
       credit: 'P. Lévy',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.8 and proof, p. 247'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const fS = v.select('$Y$', dfunOpts(), 'smooth');
         const nS = v.slider('level $n$', 0, 11, 3, { int: true });
@@ -384,12 +386,13 @@ $$E(Y\mid\mathcal F_n)\ \longrightarrow\ E(Y\mid\mathcal F_\infty)\qquad\text{al
       kind: 'Theorem',
       name: 'Lévy’s 0-1 law',
       statement: String.raw`If $\mathcal F_n\uparrow\mathcal F_\infty$ and $A\in\mathcal F_\infty$, then $P(A\mid\mathcal F_n)\to\mathbf 1_A$ almost surely.`,
-      idea: String.raw`Apply the upward theorem (4.6.8) to $Y=\mathbf 1_A$: $P(A\mid\mathcal F_n)\to E(\mathbf 1_A\mid\mathcal F_\infty)=\mathbf 1_A$, since $A\in\mathcal F_\infty$. So the conditional probability of any event decided by the whole sequence is pulled, path by path, to $0$ or $1$. For tail events the limit is a constant, which gives Kolmogorov's 0-1 law.`,
+      idea: String.raw`Apply the upward theorem (4.6.8) to $Y=\mathbf 1_A$: $P(A\mid\mathcal F_n)\to E(\mathbf 1_A\mid\mathcal F_\infty)=\mathbf 1_A$, since $A\in\mathcal F_\infty$. So the conditional probability of any event decided by the whole sequence is pulled, path by path, to $0$ or $1$. For independent variables with their natural filtration, a tail event is independent of every finite past, so these conditional probabilities are constant; this gives Kolmogorov's 0-1 law.`,
       caption: String.raw`Hidden coin: with probability $\frac12$ each, a walk steps up with probability $\frac12+\delta$ or $\frac12-\delta$. The event $A=\{S_n>0$ for all large $n\}$ equals (a.s.) "the drift is positive". Top: ten seeded paths (green when $A$ occurs, red otherwise). Bottom: $P(A|\mathcal F_n)=1/(1+\rho^{-S_n})$, $\rho=\frac{1/2+\delta}{1/2-\delta}$ (Bayes), for the same paths, each drifting to $1$ or $0$. The gold dots are Monte Carlo estimates: among a pool of 12 000 further simulated futures, the fraction with $A$ among those at the same position $S_n$ at time $n$.`,
       deps: ['prob-4.6.8'],
       tags: ['zero-one laws', 'martingales'],
       credit: 'P. Lévy',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.6.9 and independent-tail application, pp. 247–248'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const dS = v.slider('bias $\\delta$', 0.03, 0.2, 0.08, { step: 0.01 });
         let seed = 1; v.button('New paths', () => { seed++; });

@@ -536,7 +536,7 @@ $$\lim_{t\to x}\left|\frac{\mathbf f(t)-\mathbf f(x)}{t-x}-\mathbf f'(x)\right|=
 If $f_1,\dots,f_k$ are the components of $\mathbf f$, then $\mathbf f'=(f_1',\dots,f_k')$, and $\mathbf f$ is differentiable at $x$ if and only if each $f_i$ is. Theorem 5.2 and parts (a), (b) of Theorem 5.3 (with $\mathbf f\cdot\mathbf g$ in place of $fg$) remain valid.`,
       idea: String.raw`The limit is taken in the norm of $\R^k$, and a vector converges exactly when each coordinate does, so differentiation is coordinatewise. What is lost is the order of $\R$: the mean value theorem and L'Hospital's rule compare real numbers, and Rudin's Examples 5.17 ($e^{ix}$ on $[0,2\pi]$) and 5.18 show that both fail for complex-valued functions. Theorem 5.19 rescues an inequality.`,
       caption: String.raw`Drag $\mathbf f(x)$ along the curve and shrink $t-x$. The gold arrow is the difference quotient $\frac{\mathbf f(t)-\mathbf f(x)}{t-x}$, a vector in $\R^2$, drawn from $\mathbf f(x)$; the green arrow is its limit $\mathbf f'(x)$, tangent to the curve. Right: the same quotient as a point of the velocity plane — as $t\to x$ the gold point runs along the gold curve into the green point $\mathbf f'(x)$. Near the four sharp turns the speed $|\mathbf f'|$ is tiny.`,
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Remarks 5.16, pp. 111–112'],
       deps: ['pma-5.1', 'pma-1.36'],
       see: ['pma-9.11'],
       tags: ['derivative', 'vector-valued'],

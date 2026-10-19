@@ -1,3 +1,4 @@
+import { measureWeightTerm } from './measure-weight.shared.js';
 // Rudin, Real and Complex Analysis — Chapter 6 (part 2): absolute continuity and the Lebesgue–Radon–Nikodym theorem
 const TAU = 2 * Math.PI;
 
@@ -203,11 +204,11 @@ export default {
       num: '6.9',
       kind: 'Lemma',
       name: 'A σ-finite measure has an integrable positive weight',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma 6.9 and proof, p. 121 (construction rescaled by 1/2 to cover the zero measure)'],
       statement: String.raw`If $\mu$ is a positive σ-finite measure on a σ-algebra $\mathfrak M$ in $X$, then there is $w\in L^1(\mu)$ with $0<w(x)<1$ for every $x\in X$.`,
       idea: String.raw`Write $X=\bigcup_n E_n$ with $\mu(E_n)<\infty$ and set
-$$w=\sum_{n=1}^\infty w_n,\qquad w_n=\frac{2^{-n}}{1+\mu(E_n)}\,\chi_{E_n}.$$
-Each $x$ lies in some $E_n$, so $w(x)>0$; also $w<\sum 2^{-n}=1$, and $\int w\,d\mu=\sum 2^{-n}\mu(E_n)/(1+\mu(E_n))<1$ by monotone convergence (1.27). The point: $d\tilde\mu=w\,d\mu$ is a *finite* measure with exactly the same null sets as $\mu$, which lets 6.10 and 6.16 reduce to finite measures.`,
+$$w=\sum_{n=1}^\infty w_n,\qquad w_n=\frac{2^{-n-1}}{1+\mu(E_n)}\,\chi_{E_n}.$$
+Each $x$ lies in some $E_n$, so $w(x)>0$; also $w\le\sum 2^{-n-1}=1/2<1$, and $\int w\,d\mu=\sum 2^{-n-1}\mu(E_n)/(1+\mu(E_n))<1$ by monotone convergence (1.27). The factor $1/2$ rescales the book's construction so the strict upper bound also holds when $\mu=0$. The point: $d\tilde\mu=w\,d\mu$ is a *finite* measure with exactly the same null sets as $\mu$, which lets 6.10 and 6.16 reduce to finite measures.`,
       caption: String.raw`Pick a σ-finite measure and its exhausting sets $E_n$, and add the terms $w_n$ one by one (stacked layers, one colour per $n$). Top: the partial sums $w_N$ on a linear scale. Bottom: $\log_{10}w_N$, which shows that every point eventually gets a positive weight, however small, while the total $\int w\,d\mu$ stays below $1$.`,
       deps: ['rca-2.16', 'rca-1.27', 'rca-1.30'],
       tags: ['σ-finite measures', 'weights'],
@@ -221,12 +222,12 @@ Each $x$ lies in some $E_n$, so $w(x)>0$; also $w<\sum 2^{-n}=1$, and $\int w\,d
         };
         const which = v.select('', Object.entries(SETS).map(([value, o]) => ({ value, label: o.label })), 'nest');
         const NS = v.slider('terms $N$', 1, 12, 4, { int: true });
-        const T = v.stage({ x: [-8.6, 8.6], y: [0, 0.3], height: 250, full: true, axes: 'box', xlabel: 'x', title: 'stacked terms $w_n=\\frac{2^{-n}}{1+\\mu(E_n)}\\chi_{E_n}$, $n\\le N$' });
+        const T = v.stage({ x: [-8.6, 8.6], y: [0, 0.3], height: 250, full: true, axes: 'box', xlabel: 'x', title: 'stacked terms $w_n=\\frac{2^{-n-1}}{1+\\mu(E_n)}\\chi_{E_n}$, $n\\le N$' });
         const B = v.stage({ x: [-8.6, 8.6], y: [-9, 0], height: 190, full: true, axes: 'box', xlabel: 'x', title: '$\\log_{10} w_N(x)$ (dashed: the full sum $w$)' });
         let st = null;
         v.render(() => {
           const S = SETS[which.value], N = NS.value;
-          const h = (n) => Math.pow(2, -n) / (1 + S.mu(n));
+          const h = (n) => measureWeightTerm(n, S.mu(n));
           const wN = (x, NN) => { let s = 0; for (let n = 1; n <= NN; n++) if (S.inE(x, n)) s += h(n); return s; };
           const top = Math.max(wN(0, 40), wN(0.5, 40)) * 1.15;
           T.setView(null, [-0.07 * top, top]);
@@ -254,15 +255,15 @@ Each $x$ lies in some $E_n$, so $w(x)>0$; also $w<\sum 2^{-n}=1$, and $\int w\,d
             B.path(logPts(60), { color: 'muted', width: 1.6, dash: [5, 4] });
             B.path(logPts(N), { color: 'accent', width: 2.4 });
           }
-          const integral = M.range(N, 1).reduce((s, n) => s + Math.pow(2, -n) * S.mu(n) / (1 + S.mu(n)), 0);
-          const full = M.range(60, 1).reduce((s, n) => s + Math.pow(2, -n) * S.mu(n) / (1 + S.mu(n)), 0);
+          const integral = M.range(N, 1).reduce((s, n) => s + Math.pow(2, -n - 1) * S.mu(n) / (1 + S.mu(n)), 0);
+          const full = M.range(60, 1).reduce((s, n) => s + Math.pow(2, -n - 1) * S.mu(n) / (1 + S.mu(n)), 0);
           const covered = S.disc ? `|k| ≤ ${N}` : which.value === 'nest' ? `|x| ≤ ${N}` : `|x| < ${N}`;
           B.corner(`w_N > 0 exactly where ${covered}`, 'bl', { color: 'accent', weight: 600, dx: 22, dy: -14 });
           st = { N, integral, full, w0: wN(0, 60), w8: wN(8, 60) };
         });
         v.readout(() => {
           if (!st) return '';
-          return String.raw`$\int w_{${st.N}}\,d\mu=${v.fix(st.integral, 4)}$, $\;\int w\,d\mu=\sum_n 2^{-n}\frac{\mu(E_n)}{1+\mu(E_n)}=${v.fix(st.full, 4)}<1$; $\;w(0)=${v.fmt(st.w0, 3)}$, $\;w(8)=${v.fmt(st.w8, 3)}>0$.`;
+          return String.raw`$\int w_{${st.N}}\,d\mu=${v.fix(st.integral, 4)}$, $\;\int w\,d\mu=\sum_n 2^{-n-1}\frac{\mu(E_n)}{1+\mu(E_n)}=${v.fix(st.full, 4)}<1$; $\;w(0)=${v.fmt(st.w0, 3)}$, $\;w(8)=${v.fmt(st.w8, 3)}>0$.`;
         });
       },
     },

@@ -334,10 +334,10 @@ export default {
       idea: String.raw`Any order with no idle time and an *inversion* (job $i$ immediately before $j$ although $d_i>d_j$) can be improved by swapping that adjacent pair. After the swap the jobs outside the pair finish exactly when they did. Job $j$ now finishes earlier, so its lateness only drops, and job $i$ now finishes where $j$ used to, at $C_j$, so its new lateness is $C_j-d_i<C_j-d_j$, below $j$'s old lateness. So $L_{\max}$ does not increase. Removing inversions one adjacent swap at a time turns any schedule into the EDF one, so EDF is optimal: an exchange argument (10.3). The idea goes back to Jackson's rule for single-machine scheduling.`,
       caption: String.raw`**Drag the five points** (duration to the right, deadline up) and pick an order; the schedule below shows each job as a bar ending at its completion time, with a stalk and dot at its deadline and a red strip along the part that runs past it. **Swap an inverted pair** exchanges the first adjacent pair out of deadline order: $L_{\max}$ never rises. The readout also compares with an exhaustive search over all $5!=120$ orders.`,
       deps: ['algo-10.3'],
-      refs: ['KT §4.2'],
+      refs: ['Wayne, Greedy Algorithms I, §4.2, slides 24–32; KT §4.2'], sourceUrl: 'https://www.cs.princeton.edu/~wayne/kleinberg-tardos/pdf/04GreedyAlgorithmsI.pdf',
       tags: ['greedy', 'scheduling'],
-      credit: 'Jackson, 1955 (earliest-due-date rule)',
-      verify: true,
+      credit: 'Exchange proof: Kevin Wayne, Algorithm Design lecture 4, §4.2, slides 24–32; the proof also applies to the signed lateness convention used here',
+      scope: String.raw`All jobs are available at time zero, on one nonpreemptive machine, with positive processing times. Wayne’s slides clip lateness at zero; the same adjacent-swap inequality holds for the signed $C_j-d_j$ objective here, including schedules in which every job is early. No original-publication priority is claimed.`,
       viz(v) {
         const N = 5, NAMES = 'ABCDE', COL = ['blue', 'orange', 'purple', 'teal', 'pink'];
         const ord = v.select('order', [{ value: 'edf', label: 'earliest deadline' }, { value: 'spt', label: 'shortest first' }, { value: 'lpt', label: 'longest first' }, { value: 'idx', label: 'A, B, C, D, E' }, { value: 'rev', label: 'latest deadline' }], 'rev', { onChange: () => { order = byRule(ord.value); lastSwap = null; } });

@@ -1,12 +1,12 @@
 // Human Physiology — Chapter 3: The heart as a pump (part b: 3.7–3.11)
 import { clamp, trace, heartBeat, beatAt, beatIdx, phases, drawLoop, HEART, MMHG_ML_TO_J, gauss, makeSheet, cableProps } from './ch03.shared.js';
 
+import { wall, hvec, LEADS, leadAxis, proj } from './cardiac-observables.shared.js';
+
 // ---------- helpers for this file ----------
 const fmt0 = (x) => String(Math.round(x));
 const KPA = 0.133322; // 1 mmHg in kPa
 
-/** Area under the loop segment from sample index i0 to i1 (wrapping), ∫P|dV| in mmHg·mL. */
-function segArea(R, idx) { let a = 0; for (let k = 1; k < idx.length; k++) a += Math.abs(R.V[idx[k]] - R.V[idx[k - 1]]) * (R.P[idx[k]] + R.P[idx[k - 1]]) / 2; return a; }
 const range = (a, b) => { const o = []; for (let i = a; i <= b; i++) o.push(i); return o; };
 function ejectionIdx(R) { return range(R.ev.iAVO, R.ev.iAVC); }
 function fillingIdx(R) { const n = R.t.length - 1; return [...range(R.ev.iMVO, n), ...range(0, R.ev.iMVC)]; }
@@ -16,26 +16,6 @@ const RSWEEP = Array.from({ length: 14 }, (_, k) => 0.5 + 0.2 * k);
 const wsweep = {};
 function workSweep(Ees) { return (wsweep[Ees] ??= RSWEEP.map((R) => { const B = heartBeat({ R, Ees }); return { R, SV: B.SV, SW: B.work * MMHG_ML_TO_J, Pmax: B.Pmax }; })); }
 
-// Wall geometry of the ventricle as a thick sphere of constant wall volume Vw (mL): cavity V → inner radius, outer radius, thickness (cm).
-function wall(V, Vw) {
-  const ri = Math.cbrt((3 * Math.max(V, 1)) / (4 * Math.PI)), ro = Math.cbrt(ri ** 3 + (3 * Vw) / (4 * Math.PI));
-  return { ri, ro, h: ro - ri };
-}
-
-// Frontal-plane heart vector: sum of Gaussian waves, each with a fixed direction (clinical angle: 0° = lead I, +90° = pointing down).
-const WAVES = [
-  { n: 'P', mu: 0.045, sd: 0.02, amp: 0.15, ang: 60 }, { n: 'Q', mu: 0.07, sd: 0.007, amp: 0.13, ang: 150 }, { n: 'R', mu: 0.088, sd: 0.011, amp: 1.0, ang: 60 },
-  { n: 'S', mu: 0.108, sd: 0.01, amp: 0.3, ang: -135 }, { n: 'T', mu: 0.3, sd: 0.05, amp: 0.32, ang: 45 },
-];
-/** Heart vector [x, y] (screen coordinates, y up) at time t, with the whole family of directions rotated by `rot` degrees. */
-function hvec(t, rot, which) {
-  let x = 0, y = 0;
-  for (const w of WAVES) { if (which && !which.includes(w.n)) continue; const a = ((w.ang + rot) * Math.PI) / 180, g = w.amp * gauss(t, w.mu, w.sd); x += g * Math.cos(a); y -= g * Math.sin(a); }
-  return [x, y];
-}
-const LEADS = [{ n: 'I', ang: 0, color: 'accent' }, { n: 'II', ang: 60, color: 'green' }, { n: 'III', ang: 120, color: 'orange' }];
-const leadAxis = (ang) => [Math.cos((ang * Math.PI) / 180), -Math.sin((ang * Math.PI) / 180)];
-const proj = (H, ang) => { const u = leadAxis(ang); return H[0] * u[0] + H[1] * u[1]; };
 
 export default {
   collection: 'physio',
@@ -46,13 +26,13 @@ export default {
       num: '3.7',
       kind: 'Concept',
       name: 'Stroke work: the area of the PV loop',
-      statement: String.raw`The work done by the ventricle on the blood in one beat, the **stroke work**, is the area enclosed by its pressure–volume loop: $SW = \oint P\,dV$. It is the work done during ejection, $\int P\,dV$ over the decreasing-volume segment, minus the small work returned during filling. The units are mmHg·mL (1 mmHg·mL $=1.333\times10^{-4}$ J), and multiplying by the heart rate gives the power. Because the work is the area, not the width, it depends on both stroke volume and the pressure against which it is ejected: roughly $SW \approx SV \times (\text{mean ejection pressure} - \text{filling pressure})$. Raising the arterial load makes the loop taller and narrower, so the stroke work can rise even while the stroke volume falls.`,
-      idea: String.raw`The pressure–volume loop (physio-3.2) plots the pressure the muscle exerts against the volume it displaces, and force times displacement is work, so the closed-loop integral is the net work per beat; the ejection segment is positive work done on the blood and the filling segment is a small amount of work done by the inflowing blood on the ventricle. Evaluating the area numerically (the trapezoid rule along the sampled loop) needs no assumption about the shape of the loop. Stroke work rises with afterload at first because the extra pressure outweighs the lost volume, and it levels off when the stroke volume has fallen far enough.`,
-      caption: String.raw`The **left** panel shades the loop (switch the toggle to see the same area as the ejection region minus the filling region, each integrated separately). The **right** panels sweep the arterial resistance from 0.5 to 3.1 mmHg·s/mL for the chosen ventricle and mark the present beat: stroke volume falls steadily, while stroke work rises and then flattens. Drag the **afterload** and watch the area grow while the width shrinks. Choose the **weak** ventricle (low contractility) and both curves drop: it ejects less volume and does less work at every load.`,
+      statement: String.raw`The work done by the ventricle on the blood in one beat, the **stroke work**, is the area enclosed by its pressure–volume loop: $SW = -\oint P\,dV$ for the counter-clockwise loop with ventricular volume on the horizontal axis. It is the work done during ejection, $-\int_{\rm ejection} P\,dV>0$ over the decreasing-volume segment, minus the small work returned during filling. The units are mmHg·mL (1 mmHg·mL $=1.333\times10^{-4}$ J), and multiplying by the heart rate in beats per second gives the power. Because the work is the area, not the width, it depends on both stroke volume and the pressure against which it is ejected: roughly $SW \approx SV \times (\text{mean ejection pressure} - \text{filling pressure})$. Raising the arterial load makes the loop taller and narrower, so the stroke work can rise even while the stroke volume falls.`,
+      idea: String.raw`The pressure–volume loop (physio-3.2) plots the pressure the muscle exerts against the volume it displaces, and force times displacement is work, so work delivered to blood is $-P\,dV$: the negative closed-loop integral is the net work per beat; the ejection segment is positive work done on the blood and the filling segment is a small amount of work done by the inflowing blood on the ventricle. Evaluating the area numerically (the trapezoid rule along the sampled loop) needs no assumption about the shape of the loop. Stroke work rises with afterload at first because the extra pressure outweighs the lost volume, and it can level off or decline when the stroke volume has fallen far enough.`,
+      caption: String.raw`The **left** panel shades the loop (switch the toggle to see the same area as the ejection region minus the filling region, each integrated separately). The **right** panels sweep the arterial resistance from 0.5 to 3.1 mmHg·s/mL for the chosen ventricle and mark the present beat: stroke volume falls steadily, while stroke work rises and then flattens or, for the weak ventricle, declines. Drag the **afterload** and watch the area grow while the width shrinks. Choose the **weak** ventricle (low contractility) and both curves drop: it ejects less volume and does less work at every load.`,
       scope: String.raw`Computed for the chapter's model ventricle at fixed filling pressure, heart rate and contractility. The work done on the blood (external work) is what the loop encloses; the oxygen the muscle uses also depends on the pressure it develops during isovolumic contraction, which the loop area does not capture.`,
-      deps: ['physio-3.2'],
+      deps: ['physio-3.2', 'thermo-1.9'],
       see: ['physio-3.5', 'physio-3.8'],
-      refs: ['Guyton–Hall'],
+      refs: ['Guyton–Hall', 'Klabunde, Cardiovascular Physiology Concepts: Ventricular Pressure–Volume Relationship (revised 2023), https://cvphysiology.com/cardiac-function/cf024'],
       tags: ['stroke work', 'heart'],
       viz(v) {
         const aft = v.slider('afterload (arterial resistance)', 0.5, 3.1, 1.25, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·s/mL` });
@@ -66,11 +46,11 @@ export default {
           const Ees = +vent.value;
           R = heartBeat({ R: aft.value, Ees });
           const ej = ejectionIdx(R), fl = fillingIdx(R);
-          parts = { ej: segArea(R, ej), fl: segArea(R, fl) };
+          parts = { ej: R.ejectionWork, fl: R.fillingWork };
           if (split.value) {
             sL.poly([...ej.map((i) => [R.V[i], R.P[i]]), [R.V[ej[ej.length - 1]], 0], [R.V[ej[0]], 0]], { fill: 'red', fillAlpha: 0.25, stroke: false });
             sL.poly([...fl.map((i) => [R.V[i], R.P[i]]), [R.V[fl[fl.length - 1]], 0], [R.V[fl[0]], 0]], { fill: 'accent', fillAlpha: 0.55, stroke: false });
-            sL.text('ejection: ∫P dV', (R.ESV + R.EDV) / 2, 0.5 * Math.max(R.Pes, 20) + 12, { size: 12, color: 'red', align: 'center', weight: 700 });
+            sL.text('ejection: −∫P dV', (R.ESV + R.EDV) / 2, 0.5 * Math.max(R.Pes, 20) + 12, { size: 12, color: 'red', align: 'center', weight: 700 });
           } else sL.poly(R.loop, { fill: 'accent', fillAlpha: 0.25, stroke: false });
           drawLoop(sL, R);
           if (!split.value) sL.text(`SW = ${v.fix(R.work * MMHG_ML_TO_J, 2)} J`, (R.ESV + R.EDV) / 2, R.Pes * 0.45, { size: 15, color: 'ink', align: 'center', weight: 700 });
@@ -95,7 +75,7 @@ export default {
       statement: String.raw`For a thin-walled hollow sphere of cavity radius $r$ and wall thickness $h \ll r$, held open by an internal pressure $P$, the tension per unit length across the wall gives a **wall stress**
 $$\sigma = \frac{P\,r}{2h}.$$
 (A thin cylinder has $\sigma = Pr/h$ along the circumference.) Applied to the left ventricle as an approximation, it says that the stress each muscle fibre has to bear grows with the pressure and with the cavity radius, and falls with the thickness of the wall. Hence a dilated ventricle (large $r$) must develop more stress for the same pressure, and a ventricle facing a raised pressure can restore its stress to normal by thickening its wall (concentric hypertrophy) in proportion to $P$.`,
-      idea: String.raw`Cut the sphere in half: the pressure on the flat cross-section, $P\pi r^2$, is balanced by the wall tension acting around the rim of length $2\pi r$ and thickness $h$, giving $P\pi r^2 = \sigma\,2\pi r h$. This is the Young–Laplace pressure–curvature relation (fluid-2.7) for a thick membrane. The model beat of the chapter (physio-3.5) supplies $P(t)$ and the cavity volume $V(t)$; the wall is taken to have a fixed muscle volume, so as the cavity empties the wall must thicken, and the thickness follows from geometry, not from a fitted number. That is why the stress curve is not just the pressure curve rescaled.`,
+      idea: String.raw`Cut the sphere in half: the pressure on the flat cross-section, $P\pi r^2$, is balanced by the wall tension acting around the rim of length $2\pi r$ and thickness $h$, giving $P\pi r^2 = \sigma\,2\pi r h$. This is the Young–Laplace pressure–curvature relation (fluid-2.7) for a thin membrane. The model beat of the chapter (physio-3.5) supplies $P(t)$ and the cavity volume $V(t)$; the wall is taken to have a fixed muscle volume, so as the cavity empties the wall must thicken, and the thickness follows from geometry, not from a fitted number. That is why the stress curve is not just the pressure curve rescaled.`,
       caption: String.raw`The cursor runs through the beat and the cross-section shows the cavity and the wall at that moment (outlines of the normal heart at the same instant are dashed). The right panel plots the wall stress $\sigma(t)$ for the present ventricle, the pressure in kPa, and the normal baseline. Use the buttons: raising the **afterload** raises the pressure and the stress; adding **wall muscle** (hypertrophy) brings the stress back down; a **dilated** ventricle has a larger radius and so a larger stress at the same pressure.`,
       scope: String.raw`A thin-wall, spherical, uniform-wall approximation (the actual ventricle is ellipsoidal and its wall has a stress gradient from the inner to the outer layer, so true fibre stresses differ by a geometry factor and with the formula used), with the cavity radius in the formula and a wall of fixed muscle volume. Numbers are illustrative; the laws of proportion are the point.`,
       deps: ['physio-3.5', 'fluid-2.7'],
@@ -131,7 +111,7 @@ $$\sigma = \frac{P\,r}{2h}.$$
           sC.measure(0, -g.ri, 0, -g.ro, '');
           sC.text(`r = ${v.fix(g.ri, 1)} cm`, -g.ri * 0.74, g.ri * 0.74, { size: 11, color: 'ink', align: 'right', baseline: 'bottom' });
           sC.text(`h = ${v.fix(g.h * 10, 1)} mm`, 0.25, -(g.ri + g.ro) / 2, { size: 11, color: 'ink', align: 'left', baseline: 'middle' });
-          sT.setView([0, Math.max(R.T, B.T)], undefined);
+          sT.setView([0, Math.max(R.T, B.T)], [0, 1.15 * Math.max(45, ...G.map(q => q.s), ...GB.map(q => q.s), ...G.map(q => q.P))]);
           sT.vband(R.tAVO, R.tAVC, { color: 'red', alpha: 0.08, edges: false });
           trace(sT, B.t, GB.map((q) => q.s), { color: 'muted', width: 1.6, dash: [5, 4] });
           trace(sT, R.t, G.map((q) => q.P), { color: 'teal', width: 1.8 });
@@ -142,7 +122,7 @@ $$\sigma = \frac{P\,r}{2h}.$$
         v.readout(() => {
           if (!G) return '';
           const i = beatIdx(R, tc), g = G[i], pk = Math.max(...G.map((q) => q.s)), pkB = Math.max(...GB.map((q) => q.s));
-          return `now: $\\sigma = P r/(2h) = ${v.fix(g.P, 1)} \\times ${v.fix(g.ri, 2)} / (2 \\times ${v.fix(g.h, 2)}) = ${v.fix(g.s, 1)}$ kPa · peak stress **${v.fix(pk, 0)} kPa** (normal heart ${v.fix(pkB, 0)} kPa, ${pk >= pkB ? '+' : '−'}${v.fix(100 * Math.abs(pk / pkB - 1), 0)}%) · end-diastolic wall ${v.fix(wall(R.EDV, mass.value).h * 10, 1)} mm, end-systolic ${v.fix(wall(R.ESV, mass.value).h * 10, 1)} mm`;
+          return `now: $\\sigma = P r/(2h) = ${v.fix(g.P, 1)} \\times ${v.fix(g.ri, 2)} / (2 \\times ${v.fix(g.h, 2)}) = ${v.fix(g.s, 1)}$ kPa · peak stress **${v.fix(pk, 0)} kPa** (normal heart ${v.fix(pkB, 0)} kPa, ${pk >= pkB ? '+' : '−'}${v.fix(100 * Math.abs(pk / pkB - 1), 0)}%) · end-diastolic wall ${v.fix(wall(R.EDV, mass.value).h * 10, 1)} mm, end-systolic ${v.fix(wall(R.ESV, mass.value).h * 10, 1)} mm · current $h/r=${v.fix(g.h/g.ri, 2)}$${g.h/g.ri > .1 ? ' — wall is not thin: stress is an illustrative extrapolation' : ''}`;
         });
       },
     },
@@ -152,13 +132,13 @@ $$\sigma = \frac{P\,r}{2h}.$$
       num: '3.9',
       kind: 'Concept',
       name: 'The ECG as a rotating cardiac dipole (Einthoven’s triangle)',
-      statement: String.raw`The electrical activity of the heart, as seen from the body surface, behaves like a single current dipole whose moment, the **heart vector** $\mathbf{H}(t)$, changes in size and direction through the beat. Far from a dipole the potential is $\phi \propto \mathbf p\cdot\hat{\mathbf r}/r^2$, so an electrode records the component of $\mathbf H$ along the line from the heart to it. A **limb lead** is the potential difference between two limb electrodes; with the right arm (RA), left arm (LA) and left leg (LL) at the corners of **Einthoven's triangle** in the frontal plane, lead I (RA→LA) lies along $0^\circ$, lead II (RA→LL) along $60^\circ$ and lead III (LA→LL) along $120^\circ$, and each lead records the projection of $\mathbf H$ on its axis. As differences of three potentials, the leads satisfy **Einthoven's law**, $\mathrm{I} + \mathrm{III} = \mathrm{II}$. In a normal heart the mean QRS vector points down and to the left, an electrical axis between about $-30^\circ$ and $+90^\circ$ (some sources say $+105^\circ$).`,
+      statement: String.raw`In the equivalent-dipole approximation, the electrical activity of the heart as seen from the body surface is represented by a single current dipole whose moment, the **heart vector** $\mathbf{H}(t)$, changes in size and direction through the beat. Far from a dipole the potential is $\phi \propto \mathbf p\cdot\hat{\mathbf r}/r^2$, so an electrode records the component of $\mathbf H$ along the line from the heart to it. A **limb lead** is the potential difference between two limb electrodes; in the idealized equilateral geometry, with the right arm (RA), left arm (LA) and left leg (LL) at the corners of **Einthoven's triangle** in the frontal plane, lead I (RA→LA) lies along $0^\circ$, lead II (RA→LL) along $60^\circ$ and lead III (LA→LL) along $120^\circ$, and each lead records the projection of $\mathbf H$ on its axis. As differences of three potentials, the leads satisfy **Einthoven's law**, $\mathrm{I} + \mathrm{III} = \mathrm{II}$. In a normal heart the mean QRS vector points down and to the left, an electrical axis between about $-30^\circ$ and $+90^\circ$ (some sources say $+105^\circ$).`,
       idea: String.raw`Depolarization spreads through the ventricles as a wavefront; a wavefront of depolarized tissue is a sheet of dipoles, whose sum is one resultant vector (the dipole of em-2.14, summed). As the wave sweeps from septum to the apex and then to the base, that vector grows, rotates and shrinks, tracing a loop; repolarization traces a slower, smaller loop (the T wave). Projecting the moving arrow on three fixed axes gives three scalar traces at once: the ECG leads. The triangle is a model of the body as a homogeneous conductor in which the three limb electrodes are equidistant from a point-like heart, which is why the triangle is drawn as equilateral and the three projections are consistent with each other.`,
       caption: String.raw`The red arrow is the heart vector in the frontal plane, in slow motion; its tip leaves a trail (P, QRS and T loops). The coloured bars on the triangle's sides are the projections of the arrow on lead axes I, II and III; the traces on the right are those projections over time (the P, QRS and T waves) and the cursor shows the same instant. **Rotate** the heart's electrical axis until the mean QRS axis in the readout reaches about $-60^\circ$ (left-axis deviation) and the lead II complex turns negative; at about $+110^\circ$ (right-axis deviation) it is lead I that turns negative. Check Einthoven's law in the readout at any instant.`,
       scope: String.raw`A schematic frontal-plane model: the vector loop is built from five Gaussian waves of chosen directions and sizes (it is not a recording or a bidomain simulation), the torso is taken as a homogeneous volume conductor, and only the frontal plane is shown. The normal axis range is conventional (about $-30^\circ$ to $+90^\circ$, sometimes up to $+105^\circ$). Not for interpreting a real ECG.`,
       deps: ['physio-2.9', 'em-2.14'],
       see: ['physio-3.1'],
-      refs: ['Guyton–Hall'],
+      refs: ['Einthoven, Nobel Lecture (11 December 1925), pp. 102–105: limb-lead identity and resultant potentials; clinical axis limits and early dates require separate sources'],
       tags: ['ECG', 'dipole'],
       credit: 'Willem Einthoven (string galvanometer, c. 1901–03; the triangle scheme, c. 1912; Nobel Prize 1924); the dates are from secondary sources and some accounts differ',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Einthoven%27s_triangle' },
@@ -167,7 +147,7 @@ $$\sigma = \frac{P\,r}{2h}.$$
         const rot = v.slider('rotate the heart’s electrical axis', -120, 90, 0, { step: 1, fmt: (x) => `${x > 0 ? '+' : x < 0 ? '−' : ''}${fmt0(Math.abs(x))}°` });
         const sT = v.stage({ x: [-1.7, 1.7], y: [-1.75, 1.2], equal: true, axes: false, height: 360, weight: 1, minWidth: 280, title: 'frontal plane' });
         const sL = v.stage({ x: [0, 0.8], y: [-3.9, 3.9], height: 360, axes: 'box', gutter: { l: 44, r: 10, t: 16, b: 34 }, xlabel: 't (s)', ylabel: 'leads', yticks: [], weight: 1.2, minWidth: 300 });
-        const RA = [-1.15, 0.7], LA = [1.15, 0.7], LL = [0, -1.3], C = [0, -0.1], SC = 0.95;
+        const RA = [-1.15, 0.7], LA = [1.15, 0.7], LL = [0, 0.7 - 1.15 * Math.sqrt(3)], C = [0, -0.1], SC = 0.95;
         const tip = (t) => { const H = hvec(t, rot.value); return [C[0] + SC * H[0], C[1] + SC * H[1]]; };
         let tc = 0, info = null;
         v.animate((t) => {
@@ -211,7 +191,7 @@ $$\sigma = \frac{P\,r}{2h}.$$
         v.readout(() => {
           if (!info) return '';
           const [a, b, c] = info.vals, ax = info.axis;
-          const kind = ax > 105 ? 'right-axis deviation' : ax < -30 ? 'left-axis deviation' : 'within the conventional normal range';
+          const kind = ax > 90 ? 'right-axis deviation' : ax < -30 ? 'left-axis deviation' : 'within the conventional normal range';
           return `at the cursor: I = ${v.fix(a, 2)}, II = ${v.fix(b, 2)}, III = ${v.fix(c, 2)} → I + III = ${v.fix(a + c, 2)} = II (Einthoven's law) · mean QRS axis **${v.fix(ax, 0)}°** (${kind})`;
         });
       },
@@ -308,22 +288,21 @@ $$\sigma = \frac{P\,r}{2h}.$$
       name: 'On the Mechanical Factors Determining Ventricular Output',
       paper: { authors: 'S. W. Patterson and E. H. Starling', year: 1914, title: 'On the mechanical factors which determine the output of the ventricles', venue: 'Journal of Physiology 48 (5): 357–379', doi: '10.1113/jphysiol.1914.sp001669' },
       introduces: ['physio-3.3'],
-      statement: String.raw`Patterson and Starling studied the output of the mammalian left ventricle in the dog **heart–lung preparation**, in which the heart and lungs are kept working in a closed circuit that the experimenter controls: the filling pressure is set by the height of a venous reservoir, and the pressure the ventricle ejects against by an adjustable resistance, while the output is measured directly. As usually summarised, they found that the output of the ventricle is governed by the size of the heart in diastole, set by the filling: raising the venous pressure raises the output, and when the arterial resistance is raised the ventricle at first ejects less, then dilates, and the larger diastolic volume allows it to eject the same output against the higher pressure. The same preparation led to Starling's statement of the "law of the heart".`,
-      idea: String.raw`Before this paper, the output of the heart was widely thought to be set by the heart itself (by rate and force of beating as such), with the circulation adapting to it. The heart–lung preparation removed the nerves, hormones and the rest of the body and made the two loads (venous filling and arterial resistance) independent controls, so that the dependence of the output on each could be measured separately. Their central conclusion is the dependence of output on diastolic volume that became the Frank–Starling law (physio-3.3). The picture here is a **reconstruction with a model**, not the paper's own data: the original tracings and tables were not available to me, so the numbers are those of the chapter's left-heart model at a constant heart rate, with its venous side as the reservoir.`,
-      caption: String.raw`The **reservoir height** sets the venous (filling) pressure and the **resistance** is the arterial screw clamp. The left panel plots the output against filling pressure for three resistances, the right panel the diastolic volume (the size of the heart) reached; your setting is the gold dot. Raise the resistance: the curve drops at fixed filling (the ventricle ejects less), but climb the same curve to a higher filling pressure and the output comes back, at the price of a larger heart. The readout finds the filling pressure and diastolic volume at which the output returns to its resting value.`,
-      scope: String.raw`A model reconstruction at a fixed heart rate with no nervous or hormonal control, which is the situation of a heart–lung preparation but not of a patient; the dog preparation's own numbers are not reproduced. The summary of the paper's findings in the statement comes from secondary accounts and the paper's text was not checked, so it is flagged for verification. Nothing here is medical advice.`,
+      statement: String.raw`Patterson and Starling studied the dog **heart–lung preparation** with the systemic circulation replaced by an externally controlled circuit. They varied venous inflow by reservoir height in earlier experiments and by a clip on the venous tube in later ones; a separate artificial arterial resistance set the load. Left-ventricular output was measured by collecting blood in a graduated vessel and timing it. Within the preparation's working range, sustained output matched venous inflow, and output per beat depended on diastolic filling. Greater arterial resistance required higher venous pressure for a given inflow and increased residual blood; at excessive distension or failure, output could fall despite rising venous pressure. These limits matter: raising filling pressure does not increase output without bound.`,
+      idea: String.raw`The isolated preparation let the authors distinguish inflow, venous pressure and arterial load. Their fixed-inflow result is different from holding venous pressure fixed: when the load rises, more filling pressure may be needed to maintain that inflow and output. The original apparatus (Fig. 1, p. 363), pressure–output curves (Fig. 2, p. 367), experimental tables and conclusions (pp. 378–379) were checked in the complete paper. The picture here is a **modern model reconstruction**, not a digitization of those measurements: it uses the chapter's left-heart model at a fixed rate and treats venous pressure as an independent control. It does not model the original preparation's two-sided failure, changing heart rate or fatigue.`,
+      caption: String.raw`The **reservoir height** sets the model's venous filling pressure and **resistance** varies its arterial load. In the original experiments the venous clip controlled inflow; the artificial arterial resistance was controlled pneumatically. Left: model output against filling pressure for three resistances. Right: the corresponding end-diastolic volume; your setting is the gold dot. Raising resistance lowers model output at fixed filling pressure. Increasing filling pressure can restore the baseline model output at a larger diastolic volume; the readout finds this point when it lies in the plotted range. These curves are illustrative, not the original dog's measured values.`,
+      scope: String.raw`The complete 1914 paper supports the experimental protocol and the conditioned inflow–output/filling interpretation above. This simulation is a one-sided, fixed-rate teaching model without nervous or hormonal feedback; the actual preparation retained circulating blood, and some reported experiments used adrenaline. Its artificial pressure conditions differ from an intact animal, as the authors emphasize (pp. 361–363, 375–376). Neither the numerical presets nor the model's baseline are presented as measured patient or resting-dog values.`,
       deps: ['physio-3.2'],
       see: ['physio-3.3'],
-      refs: [],
+      refs: ['Patterson and Starling (1914), Journal of Physiology 48:357–379, doi:10.1113/jphysiol.1914.sp001669; complete public scan https://archive.org/details/sim_journal-of-physiology_the-journal-of-physiology_1914_48/page/n364/mode/2up'],
       tags: ['Starling', 'heart–lung preparation'],
       credit: 'S. W. Patterson and E. H. Starling, 1914',
       links: { doi: 'https://doi.org/10.1113/jphysiol.1914.sp001669' },
-      verify: true,
       viz(v) {
         const hgt = v.slider('venous reservoir height', 3, 32, 14, { step: 0.5, fmt: (x) => `${v.fix(x, 1)} cm H₂O` });
         const rr = v.slider('arterial resistance', 0.7, 2.6, 2.0, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} mmHg·s/mL` });
-        const sO = v.stage({ x: [0, 25], y: [0, 9], height: 330, axes: 'box', gutter: true, xlabel: 'venous (filling) pressure (mmHg)', ylabel: 'output (L/min)', weight: 1.1 });
-        const sD = v.stage({ x: [0, 25], y: [40, 190], height: 330, axes: 'box', gutter: true, xlabel: 'venous (filling) pressure (mmHg)', ylabel: 'diastolic volume (mL)', weight: 1.1 });
+        const sO = v.stage({ x: [0, 27], y: [0, 9], height: 330, axes: 'box', gutter: true, xlabel: 'venous (filling) pressure (mmHg)', ylabel: 'output (L/min)', weight: 1.1 });
+        const sD = v.stage({ x: [0, 27], y: [30, 190], height: 330, axes: 'box', gutter: true, xlabel: 'venous (filling) pressure (mmHg)', ylabel: 'diastolic volume (mL)', weight: 1.1 });
         const RS = [0.8, 1.25, 2.0], PVS = Array.from({ length: 13 }, (_, k) => 2 + 2 * k);
         const curves = {}; const curve = (R) => (curves[R] ??= PVS.map((Pv) => { const B = heartBeat({ Pv, R, HR: 75 }); return { Pv, CO: B.CO, EDV: B.EDV }; }));
         const cols = ['green', 'accent', 'red'];

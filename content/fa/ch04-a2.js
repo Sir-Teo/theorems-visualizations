@@ -194,8 +194,8 @@ $$\mathscr N(T^*)=\mathscr R(T)^\perp\qquad\text{and}\qquad \mathscr N(T)={}^\pe
       idea: String.raw`(a) $\mathscr N(T^*)=\mathscr R(T)^\perp$ (4.12), and annihilators are weak$^*$-closed (4.6). (b) By 4.7(a) the closure of $\mathscr R(T)$ is $\,{}^\perp(\mathscr R(T)^\perp)={}^\perp\mathscr N(T^*)$, which is all of $Y$ exactly when $\mathscr N(T^*)=\{0\}$. (c) By 4.7(b) the weak$^*$-closure of $\mathscr R(T^*)$ is $({}^\perp\mathscr R(T^*))^\perp=\mathscr N(T)^\perp$, which is $X^*$ exactly when $\mathscr N(T)=\{0\}$. Quantitatively: the distance from $y$ to $\overline{\mathscr R(T)}$ is the size of the part of $y$ seen by $\mathscr N(T^*)$.`,
       caption: String.raw`Operators on real $\ell^2$ (so $T^*$ is the transpose). Left: the corner of the infinite matrix. Right: least-squares attempts to solve $Tx=y$ for $y=(0.9/n)$ using $x$ supported on the first $N$ coordinates (log scale). The residual (blue) tends to $0$ iff $\mathscr R(T)$ is dense iff $T^*$ is one-to-one; for the forward shift it stalls at $|y_1|$ because $e_1\in\mathscr N(T^*)$. The orange curve $\|x^{(N)}\|$ grows without bound: dense is not the same as closed (or onto).`,
       deps: ['fa-4.12', 'fa-4.7', 'fa-4.6'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §4.12, pp. 99'],
       tags: ['adjoint', 'dense range', 'weak* topology'],
-      verify: true,
       viz(v) {
         const OPS = {
           diag: { label: '$\\operatorname{diag}(1/n)$' },

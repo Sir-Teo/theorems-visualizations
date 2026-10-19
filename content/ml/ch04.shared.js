@@ -66,3 +66,10 @@ export function drawCurves(s, L, emp, half) {
 export const q2 = (x, d = 2) => x.toFixed(d);
 export const geo = (a, b, n) => Array.from({ length: n }, (_, i) => Math.round(a * Math.pow(b / a, i / (n - 1))));
 export function quantileSorted(a, q) { return a[Math.min(a.length - 1, Math.floor(q * a.length))]; }
+
+/** Midpoint-cell quantization; beyond52 bits the browser cannot represent every midpoint. */
+export function quantizeUnit(x,bits) {
+  if (!Number.isInteger(bits) || bits < 1 || bits > 52) throw new RangeError('Drawing precision must be between1 and52 bits');
+  const count=2**bits,index=Math.min(count-1,Math.max(0,Math.floor(clamp(x,0,1)*count)));
+  return (index+.5)/count;
+}

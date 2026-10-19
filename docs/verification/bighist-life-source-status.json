@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "id": "bighist-3.1",
+      "status": "reviewed-blocked",
+      "missingEvidence": "Full Schlesinger–Miller1983 JME19 pp376–382, DOI10.1007/BF02101642, is required to check the exact1.2–4.7% band and H2/CO2=0 endpoint against complete conditions, protocol and time. Complete Miller1953 and Johnson2008 originals were reviewed; the complete earlier conference communication reports a different1.5–4.7% band and does not establish the exact zero-hydrogen endpoint or duration. No genuinely unreviewed item remains.",
+      "report": "docs/verification/bighist-life-source-review.md"
+    },
+    {
+      "id": "bighist-3.2",
+      "status": "closed",
+      "missingEvidence": "",
+      "report": "docs/verification/bighist-life-source-review.md"
+    },
+    {
+      "id": "bighist-3.3",
+      "status": "closed",
+      "missingEvidence": "",
+      "report": "docs/verification/bighist-life-source-review.md"
+    },
+    {
+      "id": "bighist-3.4",
+      "status": "closed",
+      "missingEvidence": "",
+      "report": "docs/verification/bighist-life-source-review.md"
+    },
+    {
+      "id": "bighist-3.5",
+      "status": "closed",
+      "missingEvidence": "",
+      "report": "docs/verification/bighist-life-source-review.md"
+    }
+  ]
+}

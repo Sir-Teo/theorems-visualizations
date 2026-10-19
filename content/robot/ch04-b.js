@@ -95,7 +95,7 @@ $$\mathcal E_f(\theta)=\{\,F:\ \|J^{\mathsf T}F\|\le1\,\}=\{\,F:\ F^{\mathsf T}(
 It has **the same principal axes $u_i$** as the manipulability ellipsoid $\mathcal E_v=\{V:V^{\mathsf T}(JJ^{\mathsf T})^{-1}V\le1\}$ of 4.5, but semi-axis lengths $1/\sigma_i$ instead of $\sigma_i$. Along each principal axis, (speed gain)$\times$(force gain)$=\sigma_i\cdot\sigma_i^{-1}=1$: where the arm moves fast it pushes weakly and vice versa. At a singularity ($\sigma_{\min}\to0$) the force ellipsoid becomes infinitely long in the singular direction: the arm can resist unbounded force there with finite torque (zero torque, in fact, 4.2).`,
       idea: String.raw`The two quadratic forms use the same matrix $JJ^{\mathsf T}$, one with its inverse: in the eigenbasis $u_i$ with eigenvalues $\sigma_i^2$, $\mathcal E_v$ is $\sum c_i^2/\sigma_i^2\le1$ and $\mathcal E_f$ is $\sum\sigma_i^2c_i^2\le1$. The reciprocal lengths are the geometric face of the power identity $\tau\cdot\dot\theta=F\cdot V$ (2.10, 4.2): a given joint effort times joint speed budget buys either speed or force at the tool, not both. In a general direction $u$ the product of the two gains is at most 1 with equality only along principal axes, by Cauchy–Schwarz applied to $JJ^{\mathsf T}$.`,
       caption: String.raw`Drag the gold tool handle. The green ellipse (velocity) and the orange ellipse (force, drawn at its own scale) share their axes, and their lengths are reciprocal. The right plot shows, for a direction $\alpha$, the best tool speed $g_v(\alpha)$ and the best holding force $g_f(\alpha)$ for unit joint rates/torques: where one peaks the other dips. The gold line marks the direction $\alpha$ you choose with the slider; the readout multiplies the two gains.`,
-      deps: ['robot-4.5', 'robot-4.2'],
+      deps: ['robot-4.5', 'robot-4.2', 'pma-1.35'],
       refs: ['Lynch–Park §5.4'],
       tags: ['manipulability', 'force', 'duality'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
@@ -151,18 +151,17 @@ It has **the same principal axes $u_i$** as the manipulability ellipsoid $\mathc
       num: '4.7',
       kind: 'Definition',
       name: 'Manipulability measures',
-      statement: String.raw`A **manipulability measure** condenses the ellipsoid of 4.5 into one number that tells how well-conditioned a posture is. With the singular values $\sigma_1\ge\dots\ge\sigma_m>0$ of the Jacobian (for a task whose coordinates share one unit) the standard choices are:
+      statement: String.raw`A **manipulability measure** condenses the ellipsoid of 4.5 into one scalar summary of a posture; volume and conditioning measure different features. With the singular values $\sigma_1\ge\dots\ge\sigma_m>0$ of the Jacobian (for a task whose coordinates share one unit) the standard choices are:
 (a) Yoshikawa's index $w=\sqrt{\det(JJ^{\mathsf T})}=\sigma_1\cdots\sigma_m$, proportional to the volume of the ellipsoid, which vanishes exactly at singularities;
 (b) the smallest singular value $\sigma_m$, the speed in the worst direction;
 (c) the condition number $\kappa=\sigma_1/\sigma_m\ge1$, or its inverse $1/\kappa\in(0,1]$ (the *isotropy*); $\kappa=1$ means an **isotropic** posture, where the ellipsoid is a ball and the tool moves equally easily in every direction.
 For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on $\theta_2$ alone: $w=\ell_1\ell_2|\sin\theta_2|$, and the eigenvalues of $JJ^{\mathsf T}$ are $\tfrac12\big(t\pm\sqrt{t^2-4w^2}\big)$ with $t=\ell_1^2+2\ell_2^2+2\ell_1\ell_2\cos\theta_2$. The condition number reaches $1$ only if $\ell_1=\sqrt2\,\ell_2$, at $\theta_2=\pm135^\circ$.`,
       idea: String.raw`All three are functions of the spectrum of $JJ^{\mathsf T}$, which for the $2$R arm has trace $t$ and determinant $w^2$ (columns of lengths $|c_1|^2=\ell_1^2+\ell_2^2+2\ell_1\ell_2\cos\theta_2$ and $|c_2|^2=\ell_2^2$, inner product $\ell_2^2+\ell_1\ell_2\cos\theta_2$), so the eigenvalues follow from the quadratic formula and depend on $\theta_2$ only. They disagree about what “best” means: $w$ is largest at an elbow of $90^\circ$ whatever the lengths, $\sigma_{\min}$ and $\kappa$ are optimised elsewhere. Isotropy requires the two columns to be orthogonal ($\cos\theta_2=-\ell_2/\ell_1$) and of equal length ($\cos\theta_2=-\ell_1/(2\ell_2)$), and both hold only for $\ell_1^2=2\ell_2^2$.`,
       caption: String.raw`The map colours the tool's workspace by the chosen measure (bright = good); because only $\theta_2$ matters the colour depends only on distance from the base, giving the concentric bands. Drag the tool handle and read the numbers; the plot on the right shows the measure against the elbow angle with the best angle marked. Slide $\ell_2/\ell_1$: for $\ell_1=\sqrt2\,\ell_2$ (ratio $0.707$) the condition number touches $1$ at $\theta_2=\pm135^\circ$.`,
-      deps: ['robot-4.5'],
-      refs: ['Lynch–Park §5.4'],
+      deps: ['robot-4.5', 'ladr-7.111'],
+      refs: ['Lynch–Park §5.4, pp. 194–197, Eq. (5.27)'], sourceUrl: 'https://hades.mech.northwestern.edu/images/2/25/MR-v2.pdf',
       tags: ['manipulability', 'condition number', 'isotropy'],
-      credit: 'Manipulability index: Yoshikawa, 1985; condition number as a measure: Salisbury & Craig, 1982',
-      verify: true,
+      credit: 'Manipulability ellipsoid and scalar measures: Lynch–Park, Modern Robotics, §5.4; planar 2R formulas follow by the displayed trace and determinant calculation',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
       viz(v) {
         const meas = v.select('measure', [
@@ -235,16 +234,15 @@ For the planar $2$R arm with link lengths $\ell_1,\ell_2$ all of these depend on
       num: '4.8',
       kind: 'Concept',
       name: 'Redundancy and null-space self-motion',
-      statement: String.raw`An arm is **kinematically redundant** for a task when it has more joints than the task has coordinates: $n>m$, for instance a planar three-joint arm positioning its tool point in the plane ($n=3$, $m=2$). At any configuration where $J(\theta)\in\R^{m\times n}$ has rank $m$, rank–nullity (ladr-3.21) gives $\dim\ker J=n-m\ge1$. A joint velocity $\dot\theta\in\ker J$ is a **self-motion**: the joints move and the tool does not. The set of configurations reaching one fixed tool position is a curve (a union of loops, for the planar 3R arm) in joint space, and every solution of $J\dot\theta=V$ has the form
+      statement: String.raw`An arm is **kinematically redundant** for a task when it has more joints than the task has coordinates: $n>m$, for instance a planar three-joint arm positioning its tool point in the plane ($n=3$, $m=2$). At any configuration where $J(\theta)\in\R^{m\times n}$ has rank $m$, rank–nullity (ladr-3.21) gives $\dim\ker J=n-m\ge1$. A joint velocity $\dot\theta\in\ker J$ is a **self-motion**: the tool velocity is zero at that instant. Integrating a continuously updated null vector field preserves the task position in exact continuous time; a finite Euler step generally has a second-order position error. Near a regular value, the set of configurations reaching one fixed tool position is a manifold of dimension $n-m$ (locally a curve for the planar 3R arm) in joint space, and every solution of $J\dot\theta=V$ has the form
 $$\dot\theta=J^{+}V+(I-J^{+}J)\,z,\qquad z\in\R^n\ \text{arbitrary},$$
-the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta)$ for a secondary objective $H$ (distance from joint limits, from obstacles, a manipulability index of 4.7) uses the freedom without disturbing the task.`,
+the minimum-norm solution plus a null-space motion. Choosing $z=-\nabla H(\theta)$ decreases a secondary cost $H$ along a pure null motion, since $\dot H=-\|(I-J^+J)\nabla H\|^2\le0$. To maximize a manipulability index, minimize its negative. The primary task velocity remains unchanged; during a nonzero primary motion, its contribution can still increase $H$.`,
       idea: String.raw`Rank–nullity counts the freedom: $n$ joint rates, $m$ of them needed to produce the task velocity, $n-m$ left over. The matrix $I-J^{+}J$ is the orthogonal projector onto $\ker J$, so adding any vector it produces changes no tool velocity, and $J^{+}V$ is the shortest solution because it is orthogonal to the kernel. For the planar 3R arm the self-motion is easy to draw without Jacobians: fix the tool point $p$ and let the tool's heading $\phi$ vary; for each $\phi$ the wrist point $p-\ell_3(\cos\phi,\sin\phi)$ is fixed and the first two links reach it in at most two ways (4.3 and 3.3), so the family of postures is one-dimensional. Its tangent is the null vector of $J$.`,
       caption: String.raw`The tool is pinned at $p$ (drag the gold handle to move $p$). The slider $\phi$ is the tool's heading, the single parameter of the self-motion: as you move it, the elbow sweeps through a family of postures while the tool stays put (faint ghosts show the whole family for the chosen elbow branch). The right plot is the self-motion manifold in joint space $(\theta_1,\theta_2)$: a closed loop per elbow branch. The readout checks that the joint velocity along the loop is annihilated by $J$ and parallel to the null vector. Drag $p$ toward the edge of the workspace: the loop shrinks and breaks into arcs when the first two links can no longer reach.`,
       deps: ['robot-4.1', 'ladr-3.21'],
-      refs: ['Lynch–Park §6.3', 'Siciliano ch. 3'],
+      refs: ['Buss §4, pp. 8–9, Eq. (7); §6, pp. 10–11, Eq. (13)', 'Lynch–Park §6.3'], sourceUrl: 'https://mathweb.ucsd.edu/~sbuss/ResearchWeb/ikmethods/iksurvey.pdf',
       tags: ['redundancy', 'null space', 'self-motion'],
-      credit: 'Null-space projection of a secondary objective: Liégeois, 1977',
-      verify: true,
+      credit: 'Projection formula and secondary tasks: S. R. Buss, Introduction to Inverse Kinematics with Jacobian Transpose, Pseudoinverse and Damped Least Squares Methods, §4, Eq. (7)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robot_kinematics' },
       viz(v) {
         const L = [1.0, 0.9, 0.6];

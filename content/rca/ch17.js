@@ -63,15 +63,18 @@ function freeX(pts, y, cands, win) {
 }
 const mixRGB = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t];
 
+import { logSubharmonic } from './hardy-restorations.shared.js';
+
 export default {
   collection: 'rca',
   chapter: 17,
   title: 'Hᵖ-Spaces',
   summary: String.raw`Which holomorphic functions in the disc have boundary values, and how much of a function do those boundary values remember? Rudin answers with subharmonic functions: $\log|f|$ and $|f|^p$ lie below their circle averages, so the integral means $M_p(f;r)$ increase and the Hardy spaces $H^p$ and the Nevanlinna class $N$ make sense. Their members have radial limits a.e., factor canonically as (Blaschke product) × (singular inner function) × (outer function), and $H^p$ sits inside $L^p(\T)$ as the functions with no negative frequencies. The chapter ends with the F. and M. Riesz theorem, Beurling's description of the invariant subspaces of the shift on $H^2$, and M. Riesz's theorem that conjugation is bounded on $L^p$ for $1<p<\infty$.`,
   items: [
+    logSubharmonic,
     // ------------------------------------------------------------------ subharmonic functions
     {
-      num: '17.2',
+      num: '17.1',
       kind: 'Definition',
       name: 'Subharmonic function',
       statement: String.raw`Let $\Omega$ be an open set in the plane. A function $u$ on $\Omega$ is **subharmonic** if it has the following four properties.
@@ -153,16 +156,16 @@ $$u(a)\le\frac1{2\pi}\int_{-\pi}^{\pi}u(a+re^{i\theta})\,d\theta .$$
       },
     },
     {
-      num: '17.3',
+      num: '17.2',
       kind: 'Theorem',
       name: 'Increasing convex functions of subharmonic functions',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem17.2 and complete proof, p.336'],
       statement: String.raw`Suppose $u$ is subharmonic in $\Omega$ and $\varphi$ is a monotonically increasing convex function on $\R$, with $\varphi(-\infty)=\lim_{t\to-\infty}\varphi(t)$. Then $\varphi\circ u$ is subharmonic in $\Omega$.
 
 In particular, if $f\in H(\Omega)$ then $\log^+|f|=\max(\log|f|,0)$ and $|f|^p$ $(0<p<\infty)$ are subharmonic in $\Omega$, since $\log|f|$ is (when $f\not\equiv0$ on every component; $|f|^p$ is trivially subharmonic where $f\equiv0$).`,
       idea: String.raw`$\varphi$ is continuous and increasing, so $\varphi\circ u$ is again upper semicontinuous. For the mean value inequality chain two facts: since $\varphi$ increases, $\varphi(u(a))\le\varphi\big(\tfrac1{2\pi}\int u\big)$; since $\varphi$ is convex, Jensen's inequality (3.3) for the probability measure $d\theta/2\pi$ gives $\varphi\big(\tfrac1{2\pi}\int u\big)\le\tfrac1{2\pi}\int\varphi\circ u$. Taking $u=\log|f|$ (subharmonic by Jensen's formula) and $\varphi(t)=e^{pt}$ or $\varphi(t)=\max(t,0)$ gives $|f|^p$ and $\log^+|f|$.`,
       caption: String.raw`Here $u=\log|f|$ with $f(z)=1.8(z-\alpha_1)(z-\alpha_2)$. Drag $a$ and change $r$; the right panel plots $\varphi$ together with the 72 points $\big(u(\zeta),\varphi(u(\zeta))\big)$ for $\zeta$ on the circle (gold). Their centre of mass (green) lies above the graph — that is Jensen's inequality — and to the right of $u(a)$ — that is subharmonicity of $u$. Choosing a decreasing or a non-convex $\varphi$ moves the disc to a spot where the chain breaks: next to a zero ($1/|f|$ exceeds its circle mean) or in a zero-free region where $u>0$ is harmonic and $\arctan$ is concave.`,
-      deps: ['rca-17.2', 'rca-3.3', 'rca-15.18'],
+      deps: ['rca-17.1', 'rca-3.3', 'rca-15.18'],
       tags: ['subharmonic', 'convexity'],
       viz(v) {
         const Z = [[-0.5, 0.38], [0.52, -0.32]];
@@ -231,11 +234,11 @@ In particular, if $f\in H(\Omega)$ then $\log^+|f|=\max(\log|f|,0)$ and $|f|^p$ 
       num: '17.4',
       kind: 'Theorem',
       name: 'Harmonic majorants of continuous subharmonic functions',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem17.4 and complete proof, pp.336–337'],
       statement: String.raw`Suppose $u$ is a continuous subharmonic function in $\Omega$, $K$ is a compact subset of $\Omega$, and $h$ is a continuous real function on $K$ which is harmonic in the interior of $K$. If $u(z)\le h(z)$ at every boundary point $z$ of $K$, then $u(z)\le h(z)$ for every $z\in K$.`,
       idea: String.raw`Put $w=u-h$ on $K$; it is continuous, and in the interior of $K$ it still satisfies the sub-mean-value inequality on small discs (harmonic functions have the exact mean value property). If $w$ had a positive maximum $m$ at an interior point, the set where $w=m$ would be closed, and open in the interior because a value $\le m$ can only *average* to $m$ if it equals $m$ on every small circle. Following this set to the boundary contradicts $w\le0$ on $\partial K$. So the maximum of $u-h$ over $K$ is attained on $\partial K$.`,
       caption: String.raw`$K$ is the closed disc with the draggable centre and radius; $h$ is the harmonic function in $K$ with $h=u$ on $\partial K$ (computed as a Poisson integral). Inside $K$ the colour shows $h-u$: green where $h\ge u$, red where $u$ pokes above $h$. Right: $u$ and $h$ along the horizontal diameter of $K$. For every subharmonic choice the green never turns red; the superharmonic $-|f|^2$ does the opposite.`,
-      deps: ['rca-17.2', 'rca-11.12'],
+      deps: ['rca-17.1', 'rca-11.12'],
       tags: ['subharmonic', 'maximum principle'],
       viz(v) {
         const f = (x, y) => [x * x - y * y + 0.3 * x - 0.35, 2 * x * y + 0.3 * y]; // z² + 0.3z − 0.35
@@ -312,7 +315,7 @@ In particular, if $f\in H(\Omega)$ then $\log^+|f|=\max(\log|f|,0)$ and $|f|^p$ 
       num: '17.5',
       kind: 'Theorem',
       name: 'Circle means of a subharmonic function increase',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem17.5 and proof, p.337'],
       statement: String.raw`Suppose $u$ is a continuous subharmonic function in the open unit disc $U$, and put
 $$m(r)=\frac1{2\pi}\int_{-\pi}^{\pi}u(re^{i\theta})\,d\theta\qquad(0\le r<1).$$
 If $0\le r_1<r_2<1$, then $m(r_1)\le m(r_2)$.`,
@@ -384,14 +387,13 @@ $$m(r_1)\le\frac1{2\pi}\int h(r_1e^{i\theta})\,d\theta=h(0)=\frac1{2\pi}\int u(r
       num: '17.6',
       kind: 'Theorem',
       name: 'Integral means of holomorphic functions increase',
-      credit: 'Hardy, 1915',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Notation17.6, p.337, and Remarks17.8(a), p.338'],
       statement: String.raw`Let $f\in H(U)$ and, for $0\le r<1$ and $0<p<\infty$, put
 $$M_p(f;r)=\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}|f(re^{i\theta})|^p\,d\theta\Big\}^{1/p},\qquad M_0(f;r)=\exp\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}\log^+|f(re^{i\theta})|\,d\theta\Big\},$$
 and $M_\infty(f;r)=\max_\theta|f(re^{i\theta})|$. Then each of $M_0(f;r)$, $M_p(f;r)$ $(0<p\le\infty)$ is a nondecreasing function of $r$ on $[0,1)$.`,
       idea: String.raw`$|f|^p$ and $\log^+|f|$ are *continuous* subharmonic functions (17.3), so their circle means increase by 17.5; the case $p=\infty$ is the maximum modulus theorem. For fixed $r$ the means also increase with $p$, because $d\theta/2\pi$ is a probability measure (Hölder, or Jensen's inequality). Together these monotonicities make $\sup_r M_p(f;r)=\lim_{r\to1}M_p(f;r)$, which is how the $H^p$-norms of 17.7 are computed.`,
       caption: String.raw`Choose $f$ and drag the circle radius $r$. On the right, $\log_{10}$ of the integral means as functions of $r$: every curve rises (in $r$) and the curves are stacked in the order of $p$. For $\frac1{1-z}$ the means with $p\ge1$ blow up as $r\to1$ while $M_{1/2}$ stays bounded; the inner function $e^{-\frac{1+z}{1-z}}$ climbs to $1$. The last choice, $1-|z|^2$, is not holomorphic, and its means *decrease*.`,
-      deps: ['rca-17.3', 'rca-17.5', 'rca-10.24'],
+      deps: ['rca-17.2', 'rca-17.5', 'rca-10.24'],
       tags: ['integral means', 'subharmonic'],
       viz(v) {
         const { Cx } = v.M;

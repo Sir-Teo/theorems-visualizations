@@ -252,15 +252,12 @@ Equivalently, $\Lambda^{-1}:Y\to X$ is a bounded linear transformation.`,
       num: '5.11',
       kind: 'Theorem',
       name: 'Continuous functions with divergent Fourier series',
-      credit: 'du Bois-Reymond, 1873',
-      statement: String.raw`For $f\in C(T)$ let $s_n(f;x)=\sum_{k=-n}^{n}\hat f(k)e^{ikx}=\int f(t)D_n(x-t)\,dm(t)$, where $D_n(t)=\sum_{k=-n}^n e^{ikt}$. Then $\norm{D_n}_1\to\infty$, and there is a dense $G_\delta$ set $E\subset C(T)$ such that for every $f\in E$ the set
-$$Q_f=\{x:\ \sup_n\abs{s_n(f;x)}=\infty\}$$
-is a dense $G_\delta$ in $T$. In particular, the Fourier series of some continuous functions diverge at a dense $G_\delta$ of points.`,
+      statement: String.raw`For $f\in C(T)$ let $s_n(f;x)=\sum_{k=-n}^{n}\hat f(k)e^{ikx}$ and $D_n(t)=\sum_{k=-n}^{n}e^{ikt}$. At each fixed $x$, the functional $f\mapsto s_n(f;x)$ has norm $\norm{D_n}_1$, and $\norm{D_n}_1\to\infty$. Hence $\{f\in C(T):\sup_n|s_n(f;x)|=\infty\}$ is a dense $G_\delta$ in $C(T)$.`,
       idea: String.raw`The functionals $\Lambda_nf=s_n(f;0)$ on the Banach space $C(T)$ have norms exactly $\norm{D_n}_1$ (test against continuous approximations of $\operatorname{sgn}D_n$ and use dominated convergence), and $\norm{D_n}_1\ge\frac{4}{\pi^2}\sum_{k\le n}\frac1k\to\infty$. Banach–Steinhaus (5.8) gives a dense $G_\delta$ of $f$ with $\sup_n\abs{s_n(f;0)}=\infty$; repeating this at a countable dense set of points and intersecting (Baire again) yields $E$, and for each $f$ the set $Q_f$ is a $G_\delta$ that contains that dense set.`,
       caption: String.raw`Choose $N$. Top: the Dirichlet kernel $D_N$, its positive and negative lobes shaded. Middle: the continuous function $f=\max(-1,\min(1,D_N))$, with $\norm{f}_\infty=1$, which copies the sign of $D_N$; its partial sum $s_N(f;0)=\int fD_N\,dm$ nearly equals $\norm{D_N}_1$. Bottom: the Lebesgue constants $\norm{D_N}_1$, computed by quadrature, against the asymptote $\frac{4}{\pi^2}\log N+1.27$ — unbounded, which is all Banach–Steinhaus needs.`,
       deps: ['rca-5.8', 'rca-5.6', 'rca-1.34', 'rca-4.26'],
       see: ['pma-8.14'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Sections 5.11–5.12 and complete proof, pp. 100–103'],
       tags: ['Fourier series', 'uniform boundedness'],
       viz(v) {
         const M = v.M;

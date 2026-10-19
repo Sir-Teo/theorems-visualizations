@@ -1,7 +1,7 @@
 // Rudin, Functional Analysis — Chapter 13 (part 4): maximal symmetric operators, Ψ(f) for unbounded f,
 // change of measure, the spectral theorem for normal operators, and more on semigroups
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Source audit: complete relevant statements/proofs in Rudin, second edition, pp.347–385 inspected.
 
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
 const csub = (a, b) => [a[0] - b[0], a[1] - b[1]];
@@ -53,14 +53,14 @@ export default {
     // ------------------------------------------------------------------ 13.21
     {
       num: '13.21',
-      kind: 'Theorem',
-      name: 'Maximal symmetric operators',
-      statement: String.raw`Let $T$ be closed, symmetric and densely defined, with deficiency indices $n_\pm$ (13.20). Then $T$ has no proper symmetric extension — it is **maximal symmetric** — if and only if $n_+=0$ or $n_-=0$. If $n_+\ne n_-$, then $T$ has no self-adjoint extension. Example: $T=-i\,d/dx$ on $\{f\in L^2(0,\infty):f\text{ absolutely continuous},\,f'\in L^2,\,f(0)=0\}$ has $(n_+,n_-)=(1,0)$: it is maximal symmetric but not self-adjoint.`,
-      idea: String.raw`Symmetric extensions of $T$ correspond to isometric extensions of its Cayley transform $U$ (13.19). $U$ maps $\mathscr R(T+iI)$ onto $\mathscr R(T-iI)$, and the orthogonal complements have dimensions $n_+$ and $n_-$. An isometry can be enlarged exactly when both complements are nonzero: map a vector of one onto a vector of the other. A unitary extension, which is what self-adjointness requires, must map one complement onto the other, so it needs $n_+=n_-$. In the example $\mathscr N(T^*-i)$ is spanned by $e^{-x}$, while $e^{x}\notin L^2$.`,
+      kind: "Concept",
+      name: "A maximally symmetric operator need not be self-adjoint",
+      statement: String.raw`Let V be the right shift on ℓ² and let T be its inverse Cayley transform. Then T is closed, densely defined and maximally symmetric, but not self-adjoint: its deficiency indices are(0,1). A continuous analogue with the opposite orientation is $T=-i\,d/dx$ on H¹ functions of the positive half-line vanishing at0; its indices are(1,0), since the deficiency solutions are e⁻ˣ and eˣ.`,
+      idea: String.raw`For the right shift, D(V)=ℓ² and R(V) misses exactly its first coordinate, while I−V is injective and has dense range.13.19 and13.20 give the claims. For the differential analogue, solving (T*∓i)f=0 gives e∓ˣ, and only e⁻ˣ is square-integrable.`,
       caption: String.raw`What the missing self-adjoint extension would have to do. $-iT$ generates the right shifts $V_tf(x)=f(x-t)$ ($t\ge0$) on $L^2(0,\infty)$, which are isometries. A self-adjoint extension $A$ would give a unitary group $e^{-itA}$ (Stone, 13.38) that could also be run backwards. Drag $t$ below $0$: shifting left pushes part of $f$ (red) through the boundary point $0$, and the norm drops (bottom). No boundary condition at $0$ can repair this, because the deficiency is one-sided.`,
-      deps: ['fa-13.20', 'fa-13.19'],
+      deps: ["fa-13.18", "fa-13.19", "fa-13.20"],
       tags: ['symmetric operators', 'deficiency indices', 'self-adjoint extensions'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.21 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const tS = v.slider('$t$', -4, 4, -0.8, { step: 0.01 });
@@ -77,9 +77,9 @@ export default {
           T.vline(0, { color: 'ink', width: 2 });
           T.fn((x) => Math.exp(-x) * 0.6, { domain: [0, 9], color: 'green', width: 1.4, dash: [5, 4] });
           T.fn(f, { color: 'blue', width: 1.4, alpha: 0.35, domain: [0, 9] });
-          T.fn((x) => bump(x - t, c, r), { domain: [0, 9], color: 'blue', width: 2.6, fill: 'blue', fillAlpha: 0.15, n: 700 });
-          if (t < 0) T.fn((x) => bump(x - t, c, r), { domain: [-3, 0], color: 'red', width: 2.6, fill: 'red', fillAlpha: 0.15, n: 300 });
-          const ratio = (s) => Math.sqrt(M.integrate((x) => bump(x - s, c, r) ** 2, Math.max(0, c + s - r), Math.max(0, c + s + r), 400) / nf);
+          T.fn((x) => f(x - t), { domain: [0, 9], color: 'blue', width: 2.6, fill: 'blue', fillAlpha: 0.15, n: 700 });
+          if (t < 0) T.fn((x) => f(x - t), { domain: [-3, 0], color: 'red', width: 2.6, fill: 'red', fillAlpha: 0.15, n: 300 });
+          const ratio = (s) => Math.sqrt(M.integrate((x) => f(x - s) ** 2, Math.max(0,s,c+s-r), Math.max(0, c + s + r), 400) / nf);
           const ts = M.linspace(-4, 4, 161);
           B.path(ts.map((s) => [s, ratio(s)]), { color: 'ink', width: 2.4 });
           B.hline(1, { color: 'green', width: 1.2, dash: [5, 4] });
@@ -103,9 +103,9 @@ Then $\mathscr D_f$ is dense, and there is a unique closed normal operator $\Psi
 (d) $\Psi(f)+\Psi(g)\subset\Psi(f+g)$.`,
       idea: String.raw`Truncate: on $\omega_n=\{|f|<n\}$ the function $f_n=f\chi_{\omega_n}$ is bounded, and $\Psi(f_n)$ is the bounded operator of 12.21. For $x\in\mathscr D_f$, $\norm{\Psi(f_n)x-\Psi(f_m)x}^2=\int_{\omega_n\setminus\omega_m}|f|^2dE_{x,x}\to0$, so $\Psi(f)x=\lim\Psi(f_n)x$ exists. $\mathscr D_f$ contains every range $E(\omega_n)H$, and these exhaust a dense set because $E(\omega_n)\to I$ strongly. The identities hold for the $f_n$ and pass to the limit. In (c), $x\in\mathscr D(\Psi(f)\Psi(g))$ means $x\in\mathscr D_g$ and $\Psi(g)x\in\mathscr D_f$, and $\int|f|^2dE_{\Psi(g)x,\Psi(g)x}=\int|fg|^2dE_{x,x}$. Closedness and normality follow from (a) and (b).`,
       caption: String.raw`Take for $E$ the resolution of the identity of multiplication by $x$ on $L^2(\R)$, where $E(\omega)$ multiplies by $\chi_\omega$. Then $\Psi(f)$ is multiplication by $f(x)$ and $\mathscr D_f=\{h:fh\in L^2\}$. For $h=(1+x^2)^{-\alpha}$, membership is a decay condition: $x^kh\in L^2$ iff $\alpha>\frac k2+\frac14$. Left: $x\,|x^kh(x)|^2$ on log–log axes; $x^kh\in L^2$ exactly when the curve eventually goes down (green). Right: the domains in (c) and (d), as sets of exponents $\alpha$, for $f=x$ and $g=x^2$. $\Psi(g)+\Psi(-g)$ lives only on $\mathscr D_g$, while $\Psi(g-g)=0$ is defined everywhere, so (d) is a strict inclusion. $\Psi(f)\Psi(g)$ lives on $\mathscr D_g\cap\mathscr D_{fg}=\mathscr D_{x^3}$.`,
-      deps: ['fa-12.17', 'fa-12.21', 'fa-12.24', 'fa-13.3'],
+      deps: ["fa-13.23", "fa-12.21", "fa-13.2", "fa-13.9"],
       tags: ['resolution of the identity', 'functional calculus', 'unbounded operators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.24 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const aS = v.slider('decay exponent $\\alpha$ of $h=(1+x^2)^{-\\alpha}$', 0.3, 2.5, 1.1, { step: 0.01 });
@@ -160,10 +160,10 @@ is a resolution of the identity on $\Omega'$, and
 $$\int_{\Omega'}f\,dE'=\int_\Omega(f\circ\varphi)\,dE$$
 for every bounded measurable $f$ on $\Omega'$; for unbounded $f$ the two operators have the same domain and agree. In particular, if $T=\int\lambda\,dE(\lambda)$, then $\varphi(T)=\int\mu\,dE'(\mu)$: the spectral measure of $\varphi(T)$ is the image of that of $T$.`,
       idea: String.raw`$\omega'\mapsto\varphi^{-1}(\omega')$ preserves complements, intersections and countable unions, so every defining property of a resolution of the identity passes from $E$ to $E'$. For each $x,y$, $E'_{x,y}$ is the image of the complex measure $E_{x,y}$ under $\varphi$, so $\int f\,dE'_{x,y}=\int f\circ\varphi\,dE_{x,y}$. The operator identity follows because both sides are characterised by these scalar integrals (12.21); unbounded $f$ are handled by truncation.`,
-      caption: String.raw`$T=-d^2/dx^2$ on $[0,\pi]$ with Dirichlet conditions: $E_{x,x}$ puts mass $|c_k|^2$ at $\lambda=k^2$ (top row, positions $\sqrt\lambda=k$). Choose $\varphi$. The bottom row is the image measure $E'_{x,x}$, on the $\mu$-axis: each atom moves to $\varphi(k^2)$, and atoms that land on the same point merge. Faint lines show where each atom goes. The readout checks $\int\mu\,dE'_{x,x}=\int\varphi\,dE_{x,x}=(\varphi(T)x,x)$ and the same with $\mu^2$.`,
+      caption: String.raw`$T=-d^2/dx^2$ on $[0,\pi]$ with Dirichlet conditions: $E_{x,x}$ puts mass $|c_k|^2$ at $\lambda=k^2$ (top row, positions $\sqrt\lambda=k$). Use the16-mode sine projection of the selected profile for $x$, and choose $\varphi$. The bottom row is the image measure $E'_{x,x}$, on the $\mu$-axis: each atom moves to $\varphi(k^2)$, and atoms that land on the same point merge. Faint lines show where each atom goes. The readout checks $\int\mu\,dE'_{x,x}=\int\varphi\,dE_{x,x}=(\varphi(T)x,x)$ and the same with $\mu^2$.`,
       deps: ['fa-12.17', 'fa-12.21'],
       tags: ['resolution of the identity', 'spectral theorem', 'functional calculus'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.28 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const phiS = v.select('$\\varphi(\\lambda)=$', [{ value: 'cos', label: '$\\cos(s\\sqrt\\lambda)$' }, { value: 'heat', label: '$e^{-s\\lambda}$' }, { value: 'mod', label: '$\\sqrt\\lambda\\bmod s$' }], 'cos');
@@ -210,13 +210,13 @@ for every bounded measurable $f$ on $\Omega'$; for unbounded $f$ the two operato
       name: 'The spectral theorem for unbounded normal operators',
       statement: String.raw`If $T$ is a closed, densely defined, normal operator in $H$, there is a unique resolution of the identity $E$ on the Borel sets of $\C$ such that
 $$(Tx,y)=\int_\C\lambda\,dE_{x,y}(\lambda)\qquad(x\in\mathscr D(T),\ y\in H),\qquad\mathscr D(T)=\Big\{x:\int|\lambda|^2dE_{x,x}<\infty\Big\}.$$
-$E$ is concentrated on $\sigma(T)$. Moreover, if $S\in B(H)$ and $ST\subset TS$, then $S$ commutes with every $E(\omega)$, hence with every $f(T)$.`,
+$E$ is concentrated on $\sigma(T)$. Moreover, if $S\in B(H)$ and $ST\subset TS$, then $S$ commutes with every $E(\omega)$, hence with every bounded $f(T)$ (and $Sf(T)\subset f(T)S$ for unbounded measurable f).`,
       idea: String.raw`Use von Neumann's bounded pair (13.13): $B=(I+T^*T)^{-1}$ and $C=TB$ are bounded, and normality makes them commuting normal operators. They generate a commutative $B^*$-algebra of operators, which is $\int\hat a\,dE_0$ for one resolution $E_0$ on its maximal ideal space (12.22). Since $\hat b>0$ and $T=C B^{-1}$, $T$ is $\int\hat c/\hat b\,dE_0$, and pushing $E_0$ forward by $\hat c/\hat b$ (13.28) gives $E$ on $\C$. If $ST\subset TS$, then $S$ commutes with $B$ and $C$, hence with everything they generate, including all $E(\omega)$.`,
-      caption: String.raw`On $L^2(\T)$, $T=-b\,\frac{d^2}{d\theta^2}+a\,\frac d{d\theta}$ is normal and unbounded, with eigenvalues $\lambda_k=bk^2+iak$ on a parabola (dots). For $x=\sum c_ke^{ik\theta}$, $E_{x,x}$ has mass $|c_k|^2$ at $\lambda_k$ (dot area). Drag the disc $\omega$; $E(\omega)$ keeps the frequencies with $\lambda_k\in\omega$. Choose $S$. A rotation $R_\alpha$ commutes with $T$ and keeps every mass where it is (orange rings coincide with the dots), so $SE(\omega)=E(\omega)S$. Multiplication by $e^{i\theta}$ does not commute with $T$: it shifts mass from $\lambda_k$ to $\lambda_{k+1}$, and the commutator $SE(\omega)-E(\omega)S$ is nonzero.`,
-      deps: ['fa-13.13', 'fa-12.22', 'fa-13.28', 'fa-12.24'],
+      caption: String.raw`On $L^2(\T)$, $T=-b\,\frac{d^2}{d\theta^2}+a\,\frac d{d\theta}$ is normal and unbounded, with eigenvalues $\lambda_k=bk^2+iak$ on a parabola (dots). For the chosen finite Fourier sum $x=\sum c_ke^{ik\theta}$, $E_{x,x}$ has mass $|c_k|^2$ at $\lambda_k$ (dot area). Drag the disc $\omega$; $E(\omega)$ keeps the frequencies with $\lambda_k\in\omega$. Choose $S$. A rotation $R_\alpha$ commutes with $T$ and keeps every mass where it is (orange rings coincide with the dots), so $SE(\omega)=E(\omega)S$. Multiplication by $e^{i\theta}$ does not commute with $T$: it shifts mass from $\lambda_k$ to $\lambda_{k+1}$, and the commutator $SE(\omega)-E(\omega)S$ is nonzero.`,
+      deps: ["fa-13.13", "fa-13.32", "fa-12.23", "fa-13.24", "fa-13.27", "fa-13.28"],
       see: ['fa-12.23', 'fa-13.30'],
       tags: ['spectral theorem', 'normal operators', 'unbounded operators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.33 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const aS = v.slider('$a$', 0, 3, 1.6, { step: 0.01 });
@@ -261,19 +261,17 @@ $E$ is concentrated on $\sigma(T)$. Moreover, if $S\in B(H)$ and $ST\subset TS$,
       num: '13.36',
       kind: 'Theorem',
       name: 'Uniformly continuous semigroups have bounded generators',
-      statement: String.raw`Let $\{Q(t)\}_{t\ge0}$ be a semigroup of bounded operators on a Banach space $X$. Then $\norm{Q(t)-I}\to0$ as $t\downarrow0$ if and only if
-$$Q(t)=e^{tA}=\sum_{n\ge0}\frac{t^nA^n}{n!}$$
-for some $A\in B(X)$; $A$ is then the infinitesimal generator, defined on all of $X$. Semigroups with unbounded generators (heat, transport, Schrödinger) are therefore only strongly continuous.`,
+      statement: String.raw`For a strongly continuous semigroup as in13.35, the following are equivalent: D(A)=X; ‖Q(t)−I‖→0 as t↓0; and A is bounded with Q(t)=e^{tA} for all t≥0. An unbounded generator therefore prevents continuity at0 in operator norm, although every orbit is norm-continuous.`,
       idea: String.raw`If $A$ is bounded, $\norm{e^{tA}-I}\le e^{t\norm A}-1$. Conversely, for small $s$ the average $V_s=\frac1s\int_0^sQ(t)\,dt$ is within $1$ of $I$ in norm, hence invertible (10.7). From $Q(h)V_s-V_s=\frac1s\big(\int_s^{s+h}-\int_0^h\big)Q$ one finds $\frac{Q(h)-I}h\to\frac1s(Q(s)-I)V_s^{-1}=:A$ in norm, so $A$ is bounded and generates $Q$. Both $Q(t)$ and $e^{tA}$ solve $u'=Au$, $u(0)=I$, so they coincide.`,
-      caption: String.raw`Left: $\norm{Q(t)-I}$ against $\log_{10}t$. For the matrix semigroup $e^{tA}$ (bounded generator, blue) it goes to $0$, like $t\norm A$. For the heat semigroup on $L^2[0,\pi]$ (multipliers $e^{-k^2t}$) it is $1$ for every $t>0$ (red dashed). Truncating to the first $K$ modes (orange) gives a bounded generator, and the curve falls to $0$ only for $t\ll K^{-2}$. Strong continuity is still there: $\norm{Q(t)f-f}\to0$ for each fixed $f$ (green). Right: the multipliers $1-e^{-k^2t}$ of $Q(t)-I$ at the current $t$. However small $t$ is, they reach $1$ at high frequencies.`,
-      deps: ['fa-13.35', 'fa-10.7'],
+      caption: String.raw`Left: $\norm{Q(t)-I}$ against $\log_{10}t$. For the matrix semigroup $e^{tA}$ (bounded generator, blue) it goes to $0$, like $t\norm A$. For the heat semigroup on $L^2[0,\pi]$ (multipliers $e^{-k^2t}$) it is $1$ for every $t>0$ (red dashed). Truncating to the first $K$ modes (orange) gives a bounded generator, and the curve falls to $0$ only for $t\ll K^{-2}$. Strong continuity is still there: $\norm{Q(t)f-f}\to0$ for each fixed $f$ (green;400-term approximation for $f_k=k^{-2}$, with omitted squared norm at most $1/(3\cdot400^3)$). Right: the multipliers $1-e^{-k^2t}$ of $Q(t)-I$ at the current $t$. However small $t$ is, they reach $1$ at high frequencies.`,
+      deps: ["fa-13.35", "fa-2.5", "fa-10.7"],
       tags: ['semigroups', 'generators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.36 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const KS = v.slider('truncation $K$', 2, 200, 20, { int: true, log: true });
         const tS = v.slider('$\\log_{10}t$', -4, 0, -1.5, { step: 0.01 });
-        const L = v.stage({ x: [-4, 0], y: [0, 1.12], height: 300, axes: 'box', xticks: decTicks(-4, 0), xlabel: 't', title: '$\\|Q(t)-I\\|$ and $\\|Q(t)f-f\\|$' });
+        const L = v.stage({ x: [-4, 0], y: [0, 1.6], height: 300, axes: 'box', xticks: decTicks(-4, 0), xlabel: 't', title: '$\\|Q(t)-I\\|$ and $\\|Q(t)f-f\\|$' });
         const R = v.stage({ x: [0, 60], y: [0, 1.1], height: 300, axes: 'box', xlabel: 'k', title: 'multipliers $1-e^{-k^2t}$ at the current $t$' });
         const A = [[-1, 3], [-2, -0.5]];
         const expm = (t) => { let S = [[1, 0], [0, 1]], P = [[1, 0], [0, 1]]; for (let n = 1; n < 40; n++) { P = [[(P[0][0] * A[0][0] + P[0][1] * A[1][0]) * t / n, (P[0][0] * A[0][1] + P[0][1] * A[1][1]) * t / n], [(P[1][0] * A[0][0] + P[1][1] * A[1][0]) * t / n, (P[1][0] * A[0][1] + P[1][1] * A[1][1]) * t / n]]; S = [[S[0][0] + P[0][0], S[0][1] + P[0][1]], [S[1][0] + P[1][0], S[1][1] + P[1][1]]]; } return S; };
@@ -283,7 +281,7 @@ for some $A\in B(X)$; $A$ is then the infinitesimal generator, defined on all of
         v.legend([['blue', '$e^{tA}$, $A\\in B(\\R^2)$'], ['red', 'heat semigroup', { dash: true }], ['orange', 'heat, first $K$ modes'], ['green', '$\\|Q(t)f-f\\|$, heat, $f_k=k^{-2}$']]);
         v.render(() => {
           const K = KS.value, lt = tS.value, t = 10 ** lt, ls = M.linspace(-4, 0, 161);
-          L.path(ls.map((l) => [l, nr([[expm(10 ** l)[0][0] - 1, expm(10 ** l)[0][1]], [expm(10 ** l)[1][0], expm(10 ** l)[1][1] - 1]])]).map(([x, y]) => (y > 1.12 ? null : [x, y])), { color: 'blue', width: 2.4 });
+          L.path(ls.map((l) => [l, nr([[expm(10 ** l)[0][0] - 1, expm(10 ** l)[0][1]], [expm(10 ** l)[1][0], expm(10 ** l)[1][1] - 1]])]), { color: 'blue', width: 2.4 });
           L.hline(1, { color: 'red', width: 2, dash: [6, 4] });
           L.path(ls.map((l) => [l, 1 - Math.exp(-K * K * 10 ** l)]), { color: 'orange', width: 2.2 });
           L.path(ls.map((l) => { const s = 10 ** l; let e = 0; for (let k = 1; k <= 400; k++) e += ((1 - Math.exp(-k * k * s)) * cf[k - 1]) ** 2; return [l, Math.sqrt(e) / ncf]; }), { color: 'green', width: 2.2 });
@@ -303,16 +301,13 @@ for some $A\in B(X)$; $A$ is then the infinitesimal generator, defined on all of
     {
       num: '13.37',
       kind: 'Theorem',
-      name: 'The Yosida approximation',
-      credit: 'Yosida, 1948',
-      statement: String.raw`Let $A$ generate a strongly continuous contraction semigroup $Q(t)$ on a Banach space $X$, so that $\norm{(\lambda I-A)^{-1}}\le1/\lambda$ for $\lambda>0$. Put
-$$A_\lambda=\lambda A(\lambda I-A)^{-1}=\lambda^2(\lambda I-A)^{-1}-\lambda I\in B(X).$$
-Then $\norm{e^{tA_\lambda}}\le1$, $A_\lambda x\to Ax$ for $x\in\mathscr D(A)$, and $e^{tA_\lambda}x\to Q(t)x$ as $\lambda\to\infty$, uniformly for $t$ in compact intervals.`,
-      idea: String.raw`$J_\lambda=\lambda(\lambda I-A)^{-1}$ has norm $\le1$ and $J_\lambda x\to x$ (first on $\mathscr D(A)$, where $J_\lambda x-x=(\lambda I-A)^{-1}Ax$, then everywhere by density), so $A_\lambda x=J_\lambda Ax\to Ax$. Next $e^{tA_\lambda}=e^{-\lambda t}e^{\lambda tJ_\lambda}$ has norm $\le e^{-\lambda t}e^{\lambda t}=1$. Finally $e^{tA_\lambda}x-e^{tA_\mu}x=\int_0^te^{(t-s)A_\mu}e^{sA_\lambda}(A_\lambda-A_\mu)x\,ds$ is Cauchy, and the limit is the semigroup generated by $A$ (13.35). This is Yosida's half of the Hille–Yosida theorem.`,
-      caption: String.raw`$A=d/dx$ on $L^2$ of the circle generates the rotations $Q(t)f(x)=f(x+t)$. On the frequency $e^{ikx}$, $A$ multiplies by $ik$ and $A_\lambda$ by $\frac{\lambda ik}{\lambda-ik}$: the imaginary axis is folded onto the circle of radius $\lambda/2$ about $-\lambda/2$ (bottom left), a bounded set, and high frequencies are damped (bottom right). Top: $Q(t)f$ (green) and $e^{tA_\lambda}f$ (gold), computed by FFT. For small $\lambda$ the approximation lags and smears out high frequencies; as $\lambda$ grows it locks onto the true translate.`,
-      deps: ['fa-13.35', 'fa-13.36'],
+      name: "Hille\u2013Yosida theorem",
+      statement: String.raw`A densely defined operator A in a Banach space generates a strongly continuous semigroup exactly when there are constants C≥1 and γ∈ℝ such that every real λ>γ belongs to its resolvent set and $\|(\lambda I-A)^{-m}\|\le C(\lambda-\gamma)^{-m}$ for every integer m≥1. These conditions imply closedness. The resulting semigroup satisfies ‖Q(t)‖≤Ce^{γt}. For C=1 and γ=0 this is the contraction-semigroup criterion; a mere first-power bound with C>1 does not replace the bounds for all m.`,
+      idea: String.raw`The Laplace transform formula from13.35 expresses the mth resolvent power as the integral of t^{m−1}e^{−λt}Q(t)/(m−1)!, giving the necessary bound. Conversely define S(ε)=(I−εA)⁻¹ and the bounded approximants AS(ε). The power bounds control their exponentials. A difference-of-exponentials identity makes these approximants strongly Cauchy, first on D(A) and then on all X. Their limit is a semigroup with generator A.`,
+      caption: String.raw`$A=d/dx$ on $L^2$ of the circle generates the rotations $Q(t)f(x)=f(x+t)$. On the frequency $e^{ikx}$, $A$ multiplies by $ik$ and $A_\lambda$ by $\frac{\lambda ik}{\lambda-ik}$: the imaginary axis is folded onto the circle of radius $\lambda/2$ about $-\lambda/2$ (bottom left), a bounded set, and high frequencies are damped (bottom right). Top: $Q(t)f$ (green) and $e^{tA_\lambda}f$ (gold), computed from the512-sample trigonometric interpolant by FFT. The displayed relative error is for that interpolant, not the whole infinite-dimensional operator norm. For small $\lambda$ the approximation lags and smears out high frequencies; as $\lambda$ grows it locks onto the true translate. This is the C=1, γ=0 example of the source theorem; the plotted bounded Yosida operators are those used in its sufficiency proof.`,
+      deps: ["fa-13.35", "fa-10.7"],
       tags: ['semigroups', 'Hille–Yosida', 'Yosida approximation'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §13.37 (full relevant statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const tS = v.slider('$t$', 0, 3, 1.6, { step: 0.01 });
@@ -352,22 +347,23 @@ Then $\norm{e^{tA_\lambda}}\le1$, $A_\lambda x\to Ax$ for $x\in\mathscr D(A)$, a
     {
       num: '13.39',
       kind: 'Theorem',
-      name: 'Dissipative generators (Lumer–Phillips)',
-      credit: 'Lumer & Phillips, 1961',
+      name: "Lumer\u2013Phillips theorem (editorial supplement)",
       statement: String.raw`Let $A$ be a densely defined operator in a Hilbert space $H$. Then $A$ generates a strongly continuous contraction semigroup if and only if
 (a) $A$ is **dissipative**: $\operatorname{Re}(Ax,x)\le0$ for all $x\in\mathscr D(A)$, and
 (b) $\mathscr R(I-A)=H$.
-For a matrix, (b) is automatic, and $\norm{e^{tA}}\le1$ for all $t\ge0$ exactly when the numerical range $\{(Ax,x):\norm x=1\}$ lies in the closed left half-plane.`,
-      idea: String.raw`If $A$ is dissipative, then for $\lambda>0$, $\norm{(\lambda I-A)x}\norm x\ge\operatorname{Re}((\lambda I-A)x,x)\ge\lambda\norm x^2$. So $\lambda I-A$ is one-to-one with $\norm{(\lambda I-A)^{-1}}\le1/\lambda$ on its range, and (b) makes the range everything. These are the Hille–Yosida hypotheses of 13.35. Conversely, $\operatorname{Re}(Q(t)x-x,x)\le\norm{Q(t)x}\norm x-\norm x^2\le0$, and dividing by $t$ gives (a). For matrices, $\frac d{dt}\norm{e^{tA}x}^2=2\operatorname{Re}(Ae^{tA}x,e^{tA}x)$.`,
-      caption: String.raw`$A=\begin{pmatrix}\lambda_1&k\\0&\lambda_2\end{pmatrix}$. Drag the eigenvalues and set the non-normality $k$. Left: the numerical range $W(A)$, an ellipse with foci $\lambda_1,\lambda_2$ and minor axis $k$. Right: $\norm{e^{tA}}$ against $t$, with the bound $e^{t\omega}$, $\omega=\max\operatorname{Re}W(A)$ (dashed). With both eigenvalues in the left half-plane but $k$ large, the ellipse pokes into $\operatorname{Re}>0$ (red) and $\norm{e^{tA}}$ rises above $1$ before it decays. Eigenvalues alone do not decide contractivity; the numerical range does.`,
-      deps: ['fa-13.35', 'fa-13.37'],
+For a dissipative finite matrix, (b) follows from injectivity, and $\norm{e^{tA}}\le1$ for all $t\ge0$ exactly when the numerical range $\{(Ax,x):\norm x=1\}$ lies in the closed left half-plane.`,
+      idea: String.raw`If $A$ is dissipative, then for $\lambda>0$, $\norm{(\lambda I-A)x}\norm x\ge\operatorname{Re}((\lambda I-A)x,x)\ge\lambda\norm x^2$. So $\lambda I-A$ is one-to-one with $\norm{(\lambda I-A)^{-1}}\le1/\lambda$ on its range, and (b) makes the range everything. The resolvent at1 extends to every positive λ by a Neumann-series continuation, retaining the1/λ bound. Surjectivity and the lower bound also make A closed. The powers then satisfy the contraction case of Hille–Yosida13.37. Conversely, $\operatorname{Re}(Q(t)x-x,x)\le\norm{Q(t)x}\norm x-\norm x^2\le0$, and dividing by $t$ gives (a). For matrices, $\frac d{dt}\norm{e^{tA}x}^2=2\operatorname{Re}(Ae^{tA}x,e^{tA}x)$.`,
+      caption: String.raw`$A=\begin{pmatrix}\lambda_1&k\\0&\lambda_2\end{pmatrix}$. Drag the eigenvalues and set the non-normality $k$. Left: the numerical range $W(A)$, an ellipse with foci $\lambda_1,\lambda_2$ and minor axis $k$. Right: $\norm{e^{tA}}$ on a logarithmic vertical scale against $t$, with the bound $e^{t\omega}$, $\omega=\max\operatorname{Re}W(A)$ (dashed). With both eigenvalues in the left half-plane but $k$ large, the ellipse pokes into $\operatorname{Re}>0$ (red) and $\norm{e^{tA}}$ rises above $1$ before it decays. Eigenvalues alone do not decide contractivity; the numerical range does.`,
+      deps: ["fa-13.37", "fa-13.35"],
       tags: ['semigroups', 'dissipative operators', 'numerical range'],
-      verify: true,
+      refs: ['Engel–Nagel, One-Parameter Semigroups for Linear Evolution Equations, II.3.13–3.15 pp.82–84 and II.3.23 p.88 (complete proofs); not Rudin13.39'],
+      scope: String.raw`Editorial supplement:13.39 is a legacy atlas URL, not a number in Rudin’s chapter, which ends at13.38. The authoritative source for this entry is Engel–Nagel, not Rudin.`,
+
       viz(v) {
         const M = v.M;
         const kS = v.slider('non-normality $k$', 0, 5, 2.6, { step: 0.01 });
         const L = v.stage({ x: [-4, 2], y: [-2.5, 2.5], equal: true, height: 330, axes: true, title: 'eigenvalues and numerical range $W(A)$' });
-        const R = v.stage({ x: [0, 6], y: [0, 2.5], height: 330, axes: 'box', xlabel: 't', title: '$\\|e^{tA}\\|$' });
+        const R = v.stage({ x: [0, 6], y: [0, 2.5], height: 330, axes: 'box', xlabel: 't', title: '$\\log_{10}\\|e^{tA}\\|$ (dashed: log bound)' });
         const h1 = L.handle(-0.6, 0.8, { color: 'blue', label: 'λ₁' });
         const h2 = L.handle(-1.4, -0.5, { color: 'blue', label: 'λ₂' });
         let st = {};
@@ -376,7 +372,7 @@ For a matrix, (b) is automatic, and $\norm{e^{tA}}\le1$ for all $t\ge0$ exactly 
           const l1 = [h1.x, h1.y], l2 = [h2.x, h2.y], k = kS.value;
           L.rect(0, -3, 3, 3, { color: 'red', fill: 'red', fillAlpha: 0.07, stroke: false });
           const cen = [(l1[0] + l2[0]) / 2, (l1[1] + l2[1]) / 2], d = cabs(csub(l2, l1)), u = d > 1e-9 ? [(l2[0] - l1[0]) / d, (l2[1] - l1[1]) / d] : [1, 0];
-          const sa = Math.sqrt(d * d / 4 + k * k / 4), sb = k / 2;
+          const sa = Math.sqrt(d * d / 4 + k * k / 4), sb = k / 2;const xe=Math.hypot(sa*u[0],sb*u[1]),ye=Math.hypot(sa*u[1],sb*u[0]);L.setView([Math.min(-4,cen[0]-xe-.3),Math.max(2,cen[0]+xe+.3)],[Math.min(-2.5,cen[1]-ye-.3),Math.max(2.5,cen[1]+ye+.3)]);
           L.curve((th) => [cen[0] + sa * Math.cos(th) * u[0] - sb * Math.sin(th) * u[1], cen[1] + sa * Math.cos(th) * u[1] + sb * Math.sin(th) * u[0]], 0, 2 * Math.PI, { color: 'purple', width: 2, fill: 'purple', fillAlpha: 0.15, n: 240 });
           const om = (l1[0] + l2[0]) / 2 + Math.sqrt(((l1[0] - l2[0]) / 2) ** 2 + k * k / 4);
           L.vline(om, { color: 'orange', width: 1.6, dash: [5, 4] });
@@ -387,15 +383,15 @@ For a matrix, (b) is automatic, and $\norm{e^{tA}}\le1$ for all $t\ge0$ exactly 
             return norm22(e1, off, [0, 0], e2);
           };
           const vals = ts.map(nrm), peak = Math.max(...vals);
-          R.setView(null, [0, Math.max(1.3, Math.min(peak, 8) * 1.12)]);
-          R.hline(1, { color: 'muted', width: 1.2, dash: [3, 3] });
-          R.fn((t) => Math.exp(om * t), { domain: [0, 6], color: 'orange', width: 1.6, dash: [5, 4] });
-          R.path(ts.map((t, i) => [t, vals[i]]), { color: peak > 1 + 1e-9 ? 'red' : 'ink', width: 2.6 });
+          const logs=vals.map(z=>Math.log10(z)),boundEnd=om*6/Math.LN10;const low=Math.min(-.1,...logs,boundEnd),high=Math.max(.15,...logs,boundEnd);R.setView(null,[low-.05*(high-low),high+.05*(high-low)]);R.setTicks(null,decTicks(low,high,Math.max(1,Math.ceil((high-low)/6))));
+          R.hline(0, { color: 'muted', width: 1.2, dash: [3, 3] });
+          R.fn((t) => om*t/Math.LN10, { domain: [0, 6], color: 'orange', width: 1.6, dash: [5, 4] });
+          R.path(ts.map((t, i) => [t, logs[i]]), { color: peak > 1 + 1e-9 ? 'red' : 'ink', width: 2.6 });
           st = { om, peak, re: Math.max(l1[0], l2[0]) };
         });
         v.readout(() => {
           const s = st;
-          return `$\\max\\operatorname{Re}\\sigma(A)=${v.fix(s.re, 3)}$, $\\omega=\\max\\operatorname{Re}W(A)=${v.fix(s.om, 3)}$, $\\sup_t\\|e^{tA}\\|=${v.fix(s.peak, 3)}$. ` + (s.om <= 1e-9 ? '**Dissipative**: $e^{tA}$ is a contraction semigroup.' : s.re < 0 ? 'Stable eigenvalues, but $A$ is not dissipative, and $e^{tA}$ is not a contraction.' : 'An eigenvalue has $\\operatorname{Re}\\lambda\\ge0$: no decay.');
+          return `$\\max\\operatorname{Re}\\sigma(A)=${v.fix(s.re, 3)}$, $\\omega=\\max\\operatorname{Re}W(A)=${v.fix(s.om, 3)}$, $\\max_{t\\in\\mathcal G}\\|e^{tA}\\|=${v.fix(s.peak, 3)}$ on the 241-point grid $\\mathcal G\\subset[0,6]$. ` + (s.om <= 1e-9 ? '**Dissipative**: $e^{tA}$ is a contraction semigroup.' : s.re < 0 ? 'Stable eigenvalues, but $A$ is not dissipative, and $e^{tA}$ is not a contraction.' : 'An eigenvalue has $\\operatorname{Re}\\lambda\\ge0$: no decay.');
         });
       },
     },

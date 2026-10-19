@@ -403,7 +403,7 @@ export default {
           pic: 'Choose an inter-event distribution (uniform, gamma, heavy-tailed); renewal times are drawn on a line and the renewal function m(t) = E N(t) is estimated and solved from the renewal equation.' },
         { num: '11.2', kind: 'Theorem', name: 'Elementary renewal theorem', deps: ['stoch-11.1'], refs: ['Grimmett–Stirzaker §10.2'],
           pic: 'Plot N(t)/t and m(t)/t for several distributions with mean μ; both converge to 1/μ, slowly for heavy tails.' },
-        { num: '11.3', kind: 'Theorem', name: 'Blackwell’s renewal theorem', deps: ['stoch-11.2', 'fa-9.13'], refs: ['Grimmett–Stirzaker §10.2'],
+        { num: '11.3', kind: 'Theorem', name: 'Blackwell’s renewal theorem', deps: ['stoch-11.2'], refs: ['Grimmett–Stirzaker §10.2'],
           pic: 'Estimate the expected number of renewals in a window [t, t + h] as t grows; it settles at h/μ for non-lattice gaps and keeps oscillating for lattice ones.' },
         { num: '11.4', kind: 'Theorem', name: 'Renewal–reward theorem', deps: ['stoch-11.2'], refs: ['Grimmett–Stirzaker §10.5'],
           pic: 'Attach a reward to each cycle (machine repairs, inventory costs); the long-run reward rate converges to E[reward per cycle]/E[cycle length], shown on a running average.' },

@@ -270,69 +270,27 @@ In particular $E(K)\ne\emptyset$.`,
     {
       num: '3.24',
       kind: 'Theorem',
-      name: 'Linear functionals attain their maximum at extreme points',
-      statement: String.raw`Let $X$ be a topological vector space on which $X^*$ separates points, and $K\ne\emptyset$ a compact convex subset of $X$.
-(a) Every compact extreme set of $K$ contains an extreme point of $K$.
-(b) For each $\Lambda\in X^*$, the set $K_\Lambda=\{x\in K:\Re\Lambda x=\max_K\Re\Lambda\}$ is a compact extreme set; hence $\Re\Lambda$ attains its maximum over $K$ at an extreme point of $K$.`,
-      idea: String.raw`(b) If $(1-t)x+ty\in K_\Lambda$ with $x,y\in K$ and $0<t<1$, then $\Re\Lambda x,\Re\Lambda y\le\max$ and their weighted average equals the max, so both equal it. (a) is the Zorn's-lemma step of the Krein–Milman proof: a minimal compact extreme subset is a point, since otherwise some $\Re\Lambda$ is non-constant on it and its maximum set is a smaller extreme set.`,
-      caption: String.raw`Drag the arrow tip to choose $\Lambda$ (it snaps to the normals of flat sides). The orange set is $K_\Lambda$, where $\Lambda$ is maximal: a point or a whole side — and in either case it contains extreme points of $K$ (green). Right: $\Lambda$ along the boundary of $K$ (by arc length), drawn green on extreme points and blue on flat sides; the maximum always occurs on green.`,
-      deps: ['fa-3.22', 'fa-3.23'],
-      tags: ['extreme points', 'Krein–Milman', 'linear functionals'],
-      verify: true,
+      name: 'Compact sets lie in the closed hull of their extreme points',
+      statement: String.raw`If $K$ is a compact subset of a locally convex space $X$, then
+$$K\subset\overline{\co}(E(K)),\qquad\text{equivalently}\qquad\overline{\co}(K)=\overline{\co}(E(K)),$$
+where $E(K)$ denotes the extreme points of $K$. Convexity of $K$ is not required, and its closed convex hull need not be compact.`,
+      idea: String.raw`The compact-extreme-set argument from the Krein–Milman proof still supplies an extreme point in each compact extreme subset of $K$. If a point of $K$ were outside the closed convex hull of $E(K)$, local convexity supplies a separating continuous linear functional. Its maximum set on $K$ is compact and extreme, so contains an extreme point of $K$—contradicting separation.`,
+      caption: String.raw`Drag the points of a finite compact set $K$. The blue polygon is its convex hull; green rings mark its vertices, which are extreme points of $K$. Every point of $K$ lies in the hull of these marked extreme points, so the two hulls agree. Other points of a nonconvex finite set may also be extreme in $K$: the green rings certify hull vertices without claiming to list all of $E(K)$.`,
+      deps: ['fa-3.22', 'fa-3.23', 'fa-3.4'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., Theorem 3.24, p. 76'],
+      tags: ['extreme points', 'Krein–Milman', 'compact sets'],
       viz(v) {
-        const M = v.M;
-        const LIB = shapeLib(M);
-        const which = v.select('$K=$', Object.entries(LIB).map(([value, o]) => ({ value, label: o.label })), 'hex');
-        const L = v.stage({ x: [-2.1, 2.1], y: [-1.75, 1.75], equal: true, height: 340, ticks: false, axes: false, title: '$K$, the functional $\\Lambda$ and its face $K_\\Lambda$' });
-        const R = v.stage({ x: [0, 1], y: [-1, 1], height: 340, axes: 'box', xlabel: 'arc length', title: '$\\Lambda x$ for $x$ running once around $\\partial K$' });
-        const normals = () => LIB[which.value].flats.map(([P, Q]) => M.normalize([Q[1] - P[1], -(Q[0] - P[0])]));
-        const tip = L.handle(0.78, 0.19, {
-          color: 'green', label: 'Λ',
-          constrain: (x, y) => {
-            const r = M.clamp(Math.hypot(x, y), 0.5, 1.6), a = Math.atan2(y, x);
-            for (const n of normals()) { const b = Math.atan2(n[1], n[0]); let d = Math.abs(a - b); d = Math.min(d, M.TAU - d); if (d < 0.08) return [r * n[0], r * n[1]]; }
-            return [r * Math.cos(a), r * Math.sin(a)];
-          },
+        const S = v.stage({ x: [-2.2,2.2], y: [-1.8,1.8], equal: true, height: 360, ticks: false, axes: false, title: 'finite compact $K$ and its convex hull' });
+        const P = [[-1.6,-.7],[-1.2,1],[.8,1.2],[1.6,-.8],[.1,-1.1],[.2,.1],[-.7,-.1]].map(([x,y])=>S.handle(x,y,{color:'purple',r:6}));
+        let st={};
+        v.render(()=>{
+          const pts=P.map(h=>[h.x,h.y]), H=v.M.hull(pts);
+          S.poly(H,{fill:'blue',fillAlpha:.13,color:'blue',width:2});
+          for(const p of H) S.dot(...p,{color:'green',hollow:true,r:11,width:3});
+          st={n:pts.length,h:H.length};
         });
-        let st = {}, snapped = null;
-        v.render(() => {
-          const K = LIB[which.value], poly = K.poly;
-          if (snapped !== which.value) { snapped = which.value; const q = tip.constrain(tip.x, tip.y); tip.x = q[0]; tip.y = q[1]; }
-          const lam = M.normalize([tip.x, tip.y]);
-          const vals = poly.map((z) => d2(lam, z)), mx = Math.max(...vals);
-          const face = poly.filter((z, i) => vals[i] > mx - 1e-6);
-          const f0 = face[0], f1 = face[face.length - 1];
-          let ends = [f0];
-          if (face.length > 1) { let a = face[0], b = face[0], best = 0; for (const p of face) for (const q of face) { const d = M.dist(p, q); if (d > best) { best = d; a = p; b = q; } } ends = best > 1e-6 ? [a, b] : [a]; }
-          const t = [-lam[1], lam[0]];
-          L.poly(poly, { fill: 'blue', fillAlpha: 0.14, color: 'blue', width: 2 });
-          for (const a of K.arcs) L.path(a, { color: 'green', width: 3.5, alpha: 0.75 });
-          for (const z of K.verts) L.dot(z[0], z[1], { color: 'green', r: 4.5 });
-          L.line(mx * lam[0] - 6 * t[0], mx * lam[1] - 6 * t[1], mx * lam[0] + 6 * t[0], mx * lam[1] + 6 * t[1], { color: 'orange', width: 1.3, dash: [6, 4] });
-          L.arrow(0, 0, tip.x, tip.y, { color: 'green', width: 2.2, head: 10 });
-          if (ends.length === 2) L.line(ends[0][0], ends[0][1], ends[1][0], ends[1][1], { color: 'orange', width: 6, alpha: 0.85 });
-          ends.forEach((z) => L.dot(z[0], z[1], { color: 'green', r: 7 }));
-          if (ends.length === 1) L.dot(ends[0][0], ends[0][1], { color: 'orange', r: 3 });
-          L.dot(0, 0, { color: 'ink', r: 2.5 });
-          // boundary profile
-          const pts = poly.concat([poly[0]]); let s = 0; const prof = [[0, d2(lam, pts[0])]], flags = [];
-          for (let i = 1; i < pts.length; i++) {
-            s += M.dist(pts[i - 1], pts[i]); prof.push([s, d2(lam, pts[i])]);
-            const mid = [(pts[i - 1][0] + pts[i][0]) / 2, (pts[i - 1][1] + pts[i][1]) / 2];
-            flags.push(!!flatAt(M, K.flats, mid, 1e-3));
-          }
-          const Ltot = s, lo = Math.min(...prof.map((q) => q[1])) - 0.15, hi = mx + 0.25;
-          R.setView([0, Ltot], [lo, hi]);
-          R.hline(mx, { color: 'orange', width: 1.3, dash: [6, 4] });
-          for (let i = 1; i < prof.length; i++) R.line(prof[i - 1][0], prof[i - 1][1], prof[i][0], prof[i][1], { color: flags[i - 1] ? 'blue' : 'green', width: flags[i - 1] ? 2 : 3 });
-          if (K.verts.length) prof.slice(0, -1).forEach((q) => R.dot(q[0], q[1], { color: 'green', r: 4 }));
-          prof.forEach((q, i) => { if (q[1] > mx - 1e-6 && i < prof.length - 1) R.dot(q[0], q[1], { color: 'orange', r: 3.2 }); });
-          st = { mx, n: ends.length, len: ends.length === 2 ? M.dist(ends[0], ends[1]) : 0 };
-        });
-        v.legend([['blue', '$K$; flat sides (not extreme)', { area: true }], ['green', 'extreme points'], ['orange', '$K_\\Lambda$ and the level $\\max_K\\Lambda$', { dash: true }]]);
-        v.readout(() => st.n === 2
-          ? `$\\max_K\\Lambda = ${v.fix(st.mx, 3)}$ is attained on a whole side (length $${v.fix(st.len, 3)}$): $K_\\Lambda$ is an extreme set, and its two endpoints are extreme points of $K$.`
-          : `$\\max_K\\Lambda = ${v.fix(st.mx, 3)}$ is attained at a single point, which is an extreme point of $K$.`);
+        v.legend([['purple','points of $K$'],['blue','$\\co(K)$',{area:true}],['green','hull vertices: extreme in $K$']]);
+        v.readout(()=>`${st.n} points in $K$; ${st.h} marked hull vertices generate $\\co(K)$. Since these vertices lie in $E(K)\\subset K$, their hulls agree.`);
       },
     },
     {

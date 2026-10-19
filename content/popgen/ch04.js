@@ -1,5 +1,5 @@
 // Population Genetics & Evolution — Chapter 4: Natural selection
-import { clamp, memo, binom, selStep, wbarD, dwbarD, dpSel, intEq, selPath, hapStep, logit, expit, lsq, SEL_PRESETS } from './ch04.shared.js';
+import { clamp, memo, binom, selStep, wbarD, dwbarD, dpSel, intEq, selPath, hapStep, logit, expit, lsq, SEL_PRESETS, alleleFitness, alleleSelectionStep } from './ch04.shared.js';
 
 const SQ3 = Math.sqrt(3) / 2;
 const toXY = (p) => [p[1] + p[2] / 2, p[2] * SQ3];
@@ -73,17 +73,16 @@ export default {
       num: '4.2',
       kind: 'Model',
       name: 'Haploid selection',
-      statement: String.raw`In a large haploid population (or for gametic selection), let allele $A$ have relative fitness $1+s$ and the alternative allele $a$ fitness $1$. The frequency of $A$ changes by
+      statement: String.raw`In a large haploid population (or for gametic selection), let allele $A$ have relative fitness $1+s>0$ and the alternative allele $a$ fitness $1$, with $0<p_0<1$. The frequency of $A$ changes by
 $$p_{t+1}=\frac{(1+s)\,p_t}{1+s\,p_t},\qquad\text{equivalently}\qquad \frac{p_{t+1}}{1-p_{t+1}}=(1+s)\,\frac{p_t}{1-p_t},$$
-so the **odds** grow by the factor $1+s$ every generation and $p_t=\dfrac{p_0(1+s)^t}{1-p_0+p_0(1+s)^t}$, a logistic curve. The log-odds $\ln\frac{p_t}{1-p_t}$ is a straight line in $t$ of slope $\ln(1+s)\approx s$. For $s>0$ the allele fixes; for $s<0$ it is lost.`,
-      idea: String.raw`After selection the number of $A$ copies is multiplied by $1+s$ and the number of $a$ copies by $1$, so the *ratio* of the two simply gets the factor $1+s$ each generation, with no dependence on frequency; that is a geometric sequence, and writing it back as a frequency gives the logistic form. In continuous time the same model is $\dot p=s\,p(1-p)$, exactly the logistic growth equation (mathbio-1.4) with the allele's “carrying capacity” being the whole population. The sweep takes about $\frac1s\ln\frac{1}{p_0}$ generations from a rare start to near fixation, so even $s=1\%$ needs a few hundred generations.`,
-      caption: String.raw`Choose the selection coefficient $s$ and the starting frequency $p_0$. **Left**: $p_t$ (blue) is an S-shaped curve. **Right**: the same data as log-odds, a straight line (blue) whose slope is read off by regression and compared with $\ln(1+s)$. Switch on **drift** to run a finite Wright–Fisher population of $N$ haploid copies with the same selection (gold): the log-odds line becomes a random walk about the line, and fixation or loss ends the run. Rare alleles are lost by chance even when $s>0$ (see 6.2).`,
+so the **odds** grow by the factor $1+s$ every generation and $p_t=\dfrac{p_0(1+s)^t}{1-p_0+p_0(1+s)^t}$, a logistic curve. The log-odds $\ln\frac{p_t}{1-p_t}$ is a straight line in $t$ of slope $\ln(1+s)\approx s$. For $s>0$, $p_t$ tends to 1; for $-1<s<0$, it tends to 0. These deterministic limits are approached asymptotically; $s=0$ is neutral and an absent allele remains absent.`,
+      idea: String.raw`After selection the number of $A$ copies is multiplied by $1+s$ and the number of $a$ copies by $1$, so the *ratio* of the two simply gets the factor $1+s$ each generation, with no dependence on frequency; that is a geometric sequence, and writing it back as a frequency gives the logistic form. The interpolation of this discrete solution satisfies $\dot p=\ln(1+s)\,p(1-p)$; for weak selection this becomes $\dot p\approx s\,p(1-p)$, the logistic growth equation (mathbio-1.4) with the allele's “carrying capacity” being the whole population. The exact time to a target frequency $p_*>p_0$ is $[\operatorname{logit}(p_*)-\operatorname{logit}(p_0)]/\ln(1+s)$, rounded up to a generation; the estimate $s^{-1}\ln(1/p_0)$ reaches an order-one frequency under weak selection and does not specify near fixation.`,
+      caption: String.raw`Choose the selection coefficient $s$ and the starting frequency $p_0$. **Left**: $p_t$ (blue) is an S-shaped curve. **Right**: the same data as log-odds, a straight line (blue) whose slope is read off by regression and compared with $\ln(1+s)$. Switch on **drift** to run a finite Wright–Fisher population of $N$ haploid copies with the same selection (gold): random binomial sampling perturbs the trajectory, and fixation or loss ends the run. The initial count is rounded to $Np_0$; if it rounds to zero, the allele starts absent. Log-odds noise is nonlinear, so its mean need not follow the deterministic line. Rare alleles are lost by chance even when $s>0$ (see 6.2).`,
       deps: ['popgen-4.1', 'mathbio-1.4'],
-      refs: ['Gillespie'],
+      refs: ['Bürger (2020), §3.2 pp. 14–15, equations (3.7)–(3.8) and Example 3.3'],
       credit: 'Haldane, 1924 (deterministic selection theory)',
       scope: String.raw`Infinite population unless “drift” is on; constant, frequency-independent fitnesses; haploid or gametic selection. The diploid case adds a dominance parameter (4.3, 4.6).`,
       tags: ['selection', 'haploid', 'logistic'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Selection_coefficient' },
       viz(v) {
         const sS = v.slider('selection coefficient $s$', 0.01, 0.5, 0.1, { step: 0.005 });
@@ -110,7 +109,7 @@ so the **odds** grow by the factor $1+s$ every generation and $p_t=\dfrac{p_0(1+
           if (drift.value) {
             const N = Math.round(NS.value);
             const S = sim(`${s}|${p0}|${N}|${seed}|${T}`, () => {
-              const r = v.rng(seed * 977 + 3), path = [p0]; let k = Math.max(1, Math.round(p0 * N));
+              const r = v.rng(seed * 977 + 3); let k = Math.round(p0 * N); const path = [k / N];
               for (let t = 1; t <= T; t++) { if (k > 0 && k < N) k = binom(r, N, hapStep(k / N, s)); path.push(k / N); }
               return path;
             });
@@ -183,14 +182,13 @@ The equilibria are $p=0$, $p=1$ and, if it lies in $(0,1)$, $\hat p=\dfrac{w_{Aa
       statement: String.raw`For constant viability selection at one locus with two alleles, random mating, and genotype fitnesses $w_{AA},w_{Aa},w_{aa}$, the mean fitness is $\bar w(p)=p^2w_{AA}+2pq\,w_{Aa}+q^2w_{aa}$ and the exact change in the frequency of $A$ in one generation is
 $$\Delta p=\frac{p\,q}{2\bar w}\,\frac{d\bar w}{dp}.$$
 So $\Delta p$ has the sign of the slope of $\bar w$: allele frequency always moves uphill on the mean-fitness curve, and equilibria are exactly the points where the curve is flat (or the boundaries $p=0,1$).`,
-      idea: String.raw`Differentiate the mean fitness: $\frac{d\bar w}{dp}=2\left[p(w_{AA}-w_{Aa})+q(w_{Aa}-w_{aa})\right]=2(w_A-w_a)$, because $w_A-w_a=p(w_{AA}-w_{Aa})+q(w_{Aa}-w_{aa})$. Substituting into the formula $\Delta p=pq(w_A-w_a)/\bar w$ of 4.3 gives the claim. Its meaning is geometric: $pq/\bar w$ is a positive “mobility” factor, so the dynamics are a (weighted) gradient ascent of $\bar w$ in the single variable $p$. Wright used this form to picture selection as climbing an adaptive landscape (4.10); the same gradient form fails in general when fitnesses depend on frequency (4.11).`,
+      idea: String.raw`Differentiate the mean fitness: $\frac{d\bar w}{dp}=2\left[p(w_{AA}-w_{Aa})+q(w_{Aa}-w_{aa})\right]=2(w_A-w_a)$, because $w_A-w_a=p(w_{AA}-w_{Aa})+q(w_{Aa}-w_{aa})$. Substituting into the formula $\Delta p=pq(w_A-w_a)/\bar w$ of 4.3 gives the claim. Its meaning is geometric: $pq/\bar w$ is a positive “mobility” factor, so the one-generation displacement points along the weighted gradient of $\bar w$. That sign identity alone does not prove a finite step increases fitness; the discrete Lyapunov inequality in 4.5 supplies that conclusion. Wright used this form to picture selection as climbing an adaptive landscape (4.10); the same gradient form fails in general when fitnesses depend on frequency (4.11).`,
       caption: String.raw`**Left**: the mean-fitness curve $\bar w(p)$ with its tangent at the gold handle (drag it) and the next 25 generations as gold dots climbing the curve. **Right**: $\Delta p$ computed directly from the recursion (blue) and from Wright’s formula (green, dashed) — they coincide to rounding error for any fitnesses you set. Presets show a rise to the boundary, a hill with a peak inside (heterozygote advantage) and a valley (heterozygote disadvantage).`,
       deps: ['popgen-4.3'],
-      refs: ['Ewens §1.4'],
+      refs: ['Bürger (2020), §3.3 pp. 15–17, equation (3.12); derivative of the mean fitness defined in (3.6)'],
       credit: 'Sewall Wright, 1930s (formula usually cited to Wright 1937)',
-      scope: String.raw`Exact for constant genotype fitnesses with two alleles and random mating. With several alleles the vector version holds with the metric $p_i(\delta_{ij}-p_j)$ (4.5); with frequency-dependent fitness the factor $\bar w$ is no longer a function whose slope drives the change.`,
+      scope: String.raw`Exact for constant nonnegative genotype fitnesses with $\bar w(p)>0$, two alleles and random mating. With several alleles the vector version holds with the metric $p_i(\delta_{ij}-p_j)$ (4.5); with frequency-dependent fitness the factor $\bar w$ is no longer a function whose slope drives the change.`,
       tags: ['selection', 'adaptive landscape', 'gradient'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fitness_landscape' },
       viz(v) {
         let ws;
@@ -228,24 +226,23 @@ So $\Delta p$ has the sign of the slope of $\bar w$: allele frequency always mov
       num: '4.5',
       kind: 'Theorem',
       name: 'Mean fitness increases under constant viability selection',
-      statement: String.raw`Consider one autosomal locus with $k$ alleles $A_1,\dots,A_k$ at frequencies $p_i$, random mating, and constant genotype fitnesses $w_{ij}=w_{ji}$. Let $w_i=\sum_j w_{ij}p_j$ and $\bar w=\sum_{i,j}w_{ij}p_ip_j$. After one generation of viability selection, $p_i'=p_iw_i/\bar w$, and
+      statement: String.raw`Consider one autosomal locus with $k$ alleles $A_1,\dots,A_k$ at frequencies $p_i$, random mating, and constant nonnegative genotype fitnesses $w_{ij}=w_{ji}\ge0$. Assume $\bar w>0$ so the next generation exists. Let $w_i=\sum_j w_{ij}p_j$ and $\bar w=\sum_{i,j}w_{ij}p_ip_j$. After one generation of viability selection, $p_i'=p_iw_i/\bar w$, and
 $$\bar w(\mathbf p')\;\ge\;\bar w(\mathbf p),$$
 with equality only at an equilibrium. Hence the mean fitness is a Lyapunov function: it never decreases from one generation to the next, and the frequencies converge to the set of equilibria.`,
-      idea: String.raw`For two alleles this is Wright’s formula (4.4): $\Delta p$ always has the sign of $d\bar w/dp$. For $k$ alleles the update $p_i\mapsto p_iw_i/\bar w$ is a map on the simplex built from the homogeneous quadratic $\bar w$ with non-negative coefficients; it is a special case of the Baum–Eagon inequality for such polynomials (Baum and Eagon, 1967), and was proved directly for the genetical problem by Mulholland and Smith (1959) and by Scheuer and Mandel (1959), and for the general case by Kingman (1961). The idea is to compare $\bar w(\mathbf p')=\sum_{ij}w_{ij}p_ip_jw_iw_j/\bar w^2$ with $\bar w$ by an arithmetic–geometric-mean style (Jensen-type) inequality applied to the weights $p_ip_jw_{ij}$.`,
-      caption: String.raw`The triangle is the space of frequencies of three alleles (corners = fixed for one allele); colour is the mean fitness $\bar w$ (light = low, saturated = high). Drag the gold handle to choose a start; the path runs uphill in $\bar w$ to a peak at a corner or inside. **Right**: $\bar w$ against generation never decreases. Choose a fitness matrix or draw a random one. Then switch on **fitnesses depend on frequency**: the genotypes now play a cyclic game, the guarantee is gone, and $\bar w$ rises and falls.`,
+      idea: String.raw`Wright’s formula (4.4) gives the direction of a two-allele update; the finite-step increase requires an additional inequality. For $k$ alleles the update $p_i\mapsto p_iw_i/\bar w$ is a map on the simplex built from the homogeneous quadratic $\bar w$ with non-negative coefficients; it is a special case of the Baum–Eagon inequality for such polynomials (Baum and Eagon, 1967), and was proved directly for the genetical problem by Mulholland and Smith (1959) and by Scheuer and Mandel (1959), and for the general case by Kingman (1961). The idea is to compare $\bar w(\mathbf p')=\sum_{ij}w_{ij}p_ip_jw_iw_j/\bar w^2$ with $\bar w$ by an arithmetic–geometric-mean style (Jensen-type) inequality applied to the weights $p_ip_jw_{ij}$.`,
+      caption: String.raw`The triangle is the space of frequencies of three alleles (corners = fixed for one allele); colour is the mean fitness $\bar w$ (light = low, saturated = high). Drag the gold handle to choose a start; the path runs uphill in $\bar w$ to a peak at a corner or inside. **Right**: $\bar w$ against generation never decreases. Choose a fitness matrix or draw a random one. Then switch on **fitnesses depend on frequency**: the alleles now receive frequency-dependent payoffs from a nonsymmetric cyclic-game matrix, the guarantee is gone, and $\bar w$ rises and falls.`,
       deps: ['popgen-4.4'],
-      refs: ['Ewens §2.9'],
+      refs: ['Bürger (2020), §3.4 pp. 18–20, Theorem 3.4 and Kingman proof (3.19)–(3.20); §3.5 pp. 23–24 and 30–31, Theorems 3.8, 3.12–3.13'],
       credit: 'Mulholland & Smith, 1959; Scheuer & Mandel, 1959; Kingman, 1961',
       scope: String.raw`Constant genotype fitnesses (symmetric matrix, as for any diploid), viability selection, random mating, one locus, any number of alleles, large population. It fails for frequency-dependent fitnesses and for several loci with recombination (8.5); the multi-allele inequality was first proved by Mulholland–Smith and Scheuer–Mandel, with the sharper general statement by Kingman (1961). Fisher’s “fundamental theorem” is a different statement about the *rate* of increase (9.6).`,
       tags: ['selection', 'mean fitness', 'Lyapunov'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fisher%27s_fundamental_theorem_of_natural_selection' },
       viz(v) {
         const PRE = {
           het: { name: 'all heterozygotes fitter than homozygotes', W: [[0.85, 1.0, 0.9], [1.0, 0.75, 1.1], [0.9, 1.1, 0.8]] },
           dir: { name: 'a single fittest allele', W: [[1.0, 1.05, 1.1], [1.05, 1.1, 1.15], [1.1, 1.15, 1.25]] },
           under: { name: 'three stable corners (underdominance)', W: [[1.0, 0.8, 0.8], [0.8, 1.0, 0.8], [0.8, 0.8, 1.0]] },
-          mixed: { name: 'corner peak and an interior peak', W: [[1.2, 1.0, 0.8], [1.0, 0.7, 1.1], [0.8, 1.1, 1.0]] },
+          mixed: { name: 'corner peak and an edge peak', W: [[1.2, 1.0, 0.8], [1.0, 0.7, 1.1], [0.8, 1.1, 1.0]] },
         };
         const pre = v.select('fitness matrix', [...Object.entries(PRE).map(([k, x]) => ({ value: k, label: x.name })), { value: 'rand', label: 'random' }], 'het');
         const fd = v.toggle('fitnesses depend on frequency (breaks the hypothesis)', false);
@@ -266,9 +263,8 @@ with equality only at an equilibrium. Hence the mean fitness is a Lyapunov funct
         let info = {};
         v.render(() => {
           const W = matrix(), freqDep = fd.value, A = freqDep ? CYC : W;
-          const wi = (p) => A.map((row) => row[0] * p[0] + row[1] * p[1] + row[2] * p[2]);
-          const wb = (p) => { const w = wi(p); return p[0] * w[0] + p[1] * w[1] + p[2] * w[2]; };
-          const step = (p) => { const w = wi(p), b = p[0] * w[0] + p[1] * w[1] + p[2] * w[2]; return [p[0] * w[0] / b, p[1] * w[1] / b, p[2] * w[2] / b]; };
+          const wb = (p) => alleleFitness(p, A).mean;
+          const step = (p) => alleleSelectionStep(p, A);
           let lo = Infinity, hi = -Infinity;
           for (let i = 0; i <= 24; i++) for (let j = 0; j <= 24 - i; j++) { const b = wb([i / 24, j / 24, (24 - i - j) / 24]); lo = Math.min(lo, b); hi = Math.max(hi, b); }
           const key = `${pre.value}|${seed}|${freqDep}`;

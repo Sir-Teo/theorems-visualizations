@@ -69,12 +69,12 @@ export default {
   items: [
     // =====================================================================================================  5.4
     {
-      num: '5.4.1a', kind: 'Definition', name: 'List colouring and choice number', verify: true,
+      num: '5.4.1a', kind: 'Definition', name: 'List colouring and choice number',
       statement: String.raw`A **list assignment** gives every vertex $v$ of a graph $G$ a set $L(v)$ of colours. A **colouring from the lists** is a proper vertex colouring $c$ with $c(v)\in L(v)$ for all $v$. The graph $G$ is **$k$-choosable** if a colouring from the lists exists for every assignment with $|L(v)|=k$ at every vertex. The **choice number** (list-chromatic number) $\operatorname{ch}(G)$ is the least $k$ for which $G$ is $k$-choosable. Giving all vertices the same list shows $\chi(G)\le\operatorname{ch}(G)$.`,
       idea: String.raw`The point of lists is that the adversary may give neighbouring vertices *different* lists, so a colour that is fine at one vertex may be forbidden at another. Ordinary colouring is the special case of identical lists, hence $\chi\le\operatorname{ch}$; the two can differ a lot (5.4.1), and for some graphs they agree (5.4.5). Greedy colouring shows $\operatorname{ch}(G)\le\Delta(G)+1$ just as it does for $\chi$.`,
       caption: String.raw`Click a vertex, then click colours in the strip below to add them to or remove them from its list. The app searches for a colouring from the lists (shown as filled vertices) and counts how many there are. *Adversarial lists* gives size-2 lists for which $K_{3,3}$, $K_{2,4}$ and $C_5$ have **no** colouring although $\chi(K_{3,3})=\chi(K_{2,4})=2$. *Identical lists* is ordinary colouring.`,
-      deps: ['graph-5.1.1a'], refs: ['Diestel §5.4'], tags: ['list colouring', 'choice number'], credit: 'Vizing, 1976; Erdős, Rubin & Taylor, 1979',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/List_coloring' },
+      deps: ['graph-5.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.4, p. 134'], tags: ['list colouring', 'choice number'], credit: 'Vizing, 1976; Erdős, Rubin & Taylor, 1979',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/List_coloring' },
       viz(v) {
         const PRE = { c4: GAL.c4, c5: GAL.c5, k33: GAL.k33, k24: K24 };
         const ex = v.select('graph', [{ value: 'c4', label: '$C_4$' }, { value: 'c5', label: '$C_5$' }, { value: 'k33', label: '$K_{3,3}$' }, { value: 'k24', label: '$K_{2,4}$' }], 'k33', { onChange: () => load('adv') });
@@ -113,14 +113,13 @@ export default {
       },
     },
     {
-      num: '5.4.1', kind: 'Theorem', name: 'Alon: the choice number grows with the average degree', verify: true,
-      statement: String.raw`There is a function $o(1)\to0$ such that every graph $G$ of average degree $d$ satisfies
-$$\operatorname{ch}(G)\;\ge\;\bigl(\tfrac12+o(1)\bigr)\log_2 d\qquad(d\to\infty).$$
-In particular there are bipartite graphs, for which $\chi=2$, with arbitrarily large choice number.`,
-      idea: String.raw`Alon's proof is probabilistic: it assigns random lists of size $k$ and shows that, once the degrees are large compared with roughly $4^k$, some vertex always has all its colours forbidden by its neighbours. The picture shows the same mechanism in its cleanest explicit form, the Erdős–Rubin–Taylor lists on $K_{n,n}$: give the vertices on each side **all** $k$-subsets of a palette of $2k-1$ colours. The colours used on the top side form a set $X$ that must hit every $k$-subset of the palette, so $|X|\ge k$; likewise the colours used on the bottom side must number at least $k$, and they must be disjoint from $X$. Needing $2k$ colours from a palette of $2k-1$ is impossible, so $K_{n,n}$ with $n=\binom{2k-1}{k}\approx4^k$ is not $k$-choosable.`,
+      num: '5.4.1', kind: 'Theorem', name: 'Alon: the choice number grows with the average degree',
+      statement: String.raw`There is a function $f\colon\mathbb N\to\mathbb N$ such that, for every integer $k$, every graph $G$ with average degree $d(G)\ge f(k)$ satisfies $\operatorname{ch}(G)\ge k$. Thus arbitrarily large average degree forces arbitrarily large choice number, including for bipartite graphs.`,
+      idea: String.raw`Diestel states Alon's theorem qualitatively and refers to probabilistic methods. The diagram gives an explicit complete-bipartite obstruction, rather than a quantitative bound for all graphs. Give the vertices on each side of $K_{n,n}$ all $k$-subsets of a $(2k-1)$-colour palette, where $n=\binom{2k-1}{k}$. Each side must use at least $k$ colours to meet every list, while adjacent sides must use disjoint colours. That would require $2k$ colours from a palette of $2k-1$, impossible. Hence this example has choice number at least $k+1$.`,
       caption: String.raw`Choose $k$ and click colours in the strip to put them into the set $X$ of colours used on the top side. A top vertex can be coloured if its list meets $X$; a bottom vertex if its list is **not** inside $X$. Red cells are vertices left without a colour. Whatever $X$ you try, some cell is red: with $|X|<k$ the top side fails, with $|X|\ge k$ the bottom side does. The chart records the bound $\operatorname{ch}(K_{n,n})\ge k+1$ at $n=\binom{2k-1}{k}$ against the curve $\tfrac12\log_2 n$.`,
-      deps: ['graph-5.4.1a', 'graph-1.2.1a'], refs: ['Diestel §5.4'], tags: ['list colouring', 'probabilistic method'], credit: 'Alon, 1990s',
-      scope: String.raw`The $o(1)$ is asymptotic: for small $d$ the bound says nothing. The explicit instance uses only the complete bipartite graph; Alon's theorem is for arbitrary graphs.`,
+      deps: ['graph-5.4.1a', 'graph-1.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.4.1, pp. 134–135'], tags: ['list colouring', 'probabilistic method'], credit: 'Alon, 1993',
+      scope: String.raw`The curve $\tfrac12\log_2 n$ compares the growth of the explicit examples $n=\binom{2k-1}{k}$; it is not presented as a general lower bound for arbitrary graphs. The numbered book theorem is qualitative.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const kS = v.slider('list size $k$', 1, 4, 3, { int: true, onChange: () => reset() });
         let k = 3, pal = 5, lists = [], X = 0, cols = 5, rows = 2;
@@ -151,7 +150,7 @@ In particular there are bipartite graphs, for which $\chi=2$, with arbitrarily l
           pts.forEach(([x, y], i) => sC.dot(x, y, { r: i + 1 === k ? 7 : 4.5, color: i + 1 === k ? 'accent' : 'orange', label: i + 1 === k ? `$k=${k}$` : null, labelPos: 'nw' }));
           info = { uA, uB, a: popc(X), n: lists.length };
         });
-        v.legend([['orange', 'bound $\\operatorname{ch}\\ge k+1$ at $n=\\binom{2k-1}{k}$', { dot: true }], ['muted', '$\\tfrac12\\log_2 n$ (order of Alon’s bound)', { dash: true }], ['green', 'vertex can be coloured', { area: true }], ['red', 'vertex has no colour left', { area: true }]]);
+        v.legend([['orange', 'bound $\\operatorname{ch}\\ge k+1$ at $n=\\binom{2k-1}{k}$', { dot: true }], ['muted', '$\\tfrac12\\log_2 n$ (growth comparison for these examples)', { dash: true }], ['green', 'vertex can be coloured', { area: true }], ['red', 'vertex has no colour left', { area: true }]]);
         v.readout(() => `$K_{n,n}$ with $n=\\binom{${2 * k - 1}}{${k}}=${info.n}$ and a palette of ${2 * k - 1} colours. $|X|=${info.a}$: top vertices without a colour **${info.uA}** (every list outside $X$), bottom vertices without a colour **${info.uB}** (every list inside $X$). Always at least one, so $K_{${info.n},${info.n}}$ is not ${k}-choosable.`);
       },
     },
@@ -217,12 +216,13 @@ In particular there are bipartite graphs, for which $\chi=2$, with arbitrarily l
       },
     },
     {
-      num: '5.4.2a', kind: 'Hypothesis', name: 'List colouring conjecture', verify: true,
+      num: '5.4.2a', kind: 'Hypothesis', name: 'List colouring conjecture',
       statement: String.raw`The **list-chromatic index** $\operatorname{ch}'(G)$ of a graph (or multigraph) $G$ is the choice number of its line graph, the least $k$ such that for every assignment of $k$ colours to each *edge* a proper edge colouring from the lists exists. The **list colouring conjecture** asserts $\operatorname{ch}'(G)=\chi'(G)$ for every (multi)graph $G$. It is open in general; it is known for bipartite graphs (5.4.4).`,
       idea: String.raw`Since identical lists give ordinary edge colourings, $\chi'\le\operatorname{ch}'$ always, and the conjecture says the adversary gains nothing from lists. By Vizing's theorem (5.3.2) the number $\chi'$ is either $\Delta$ or $\Delta+1$, so the conjecture predicts that $\Delta+1$ list colours always suffice for simple graphs. No counterexample is known, and the evidence below is of course not a proof.`,
-      caption: String.raw`Choose a graph and a list size $k$. *Search* tries to make the number of colourings from the lists as small as possible by changing one colour of one edge list at a time (hill climbing with restarts, counted up to 300). With $k<\chi'$ every assignment fails already (identical lists). With $k=\chi'$ the search should never reach 0; it reports the smallest number found. The thin dashed edges show a failing assignment when $k<\chi'$.`,
-      deps: ['graph-5.4.1a', 'graph-5.1.1b'], refs: ['Diestel §5.4'], tags: ['list colouring', 'conjecture'], credit: 'origin unclear, 1970s–80s',
-      scope: String.raw`Verified here only for the few small graphs of the picture, and only by random search for bad lists.`,
+      caption: String.raw`Choose a graph and a list size $k$. *Search* tries to reduce the number of list colourings by changing one colour of one edge list at a time (hill climbing with restarts, counts capped at 300). With $k<\chi'$ identical lists fail, although different lists may succeed. At $k=\chi'$ a zero count would refute the conjecture; a positive result only reports that this search has not found bad lists. Dashed red edges indicate that the current lists have no colouring.`,
+      deps: ['graph-5.4.1a', 'graph-5.1.1b'], refs: ['Diestel, Graph Theory, 6th ed., §5.4, List Colouring Conjecture, p. 137'], tags: ['list colouring', 'conjecture'],
+      scope: String.raw`Only a bounded search for bad lists on a few small graphs is performed; surviving it does not verify the conjecture for those graphs or in general.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const PRE = { k4: GAL.k4, c5: GAL.c5, k33: GAL.k33, pet: GAL.petersen, house: GAL.house };
         const ex = v.select('graph', [{ value: 'k4', label: '$K^4$' }, { value: 'c5', label: '$C_5$' }, { value: 'house', label: 'house' }, { value: 'k33', label: '$K_{3,3}$' }, { value: 'pet', label: 'Petersen' }], 'k4', { onChange: () => load() });
@@ -262,17 +262,18 @@ In particular there are bipartite graphs, for which $\chi=2$, with arbitrarily l
             const na = G.node(H.ids[a]), nb = G.node(H.ids[b]), c = s.ctx, bs = bitsOf(L[k2]), tt = 0.3 + 0.1 * (k2 % 3), mx = s.X(na.x) + tt * (s.X(nb.x) - s.X(na.x)), my = s.Y(na.y) + tt * (s.Y(nb.y) - s.Y(na.y));
             bs.forEach((x, j) => { c.beginPath(); c.arc(mx + (j - (bs.length - 1) / 2) * 8, my - 8, 3.4, 0, 2 * Math.PI); c.fillStyle = v.color(CP[x]); c.fill(); c.lineWidth = 0.8; c.strokeStyle = v.color('panel'); c.stroke(); });
           });
-          info = { m, found: !!ec, cnt: ec ? countListColourings(LA, full(m), L, 999) : 0, k: kS.value };
+          info = { m, timeout: !!col?.timeout, found: !!ec, cnt: ec ? countListColourings(LA, full(m), L, 999) : 0, k: kS.value };
         });
-        v.readout(() => !info ? '' : `${info.m} edges, $\\chi'=${chiP}$, list size $k=${info.k}$. Colourings from the current lists: **${info.found ? (info.cnt >= 999 ? '≥ 999' : info.cnt) : 'none'}**.${bestCnt != null ? ` Search (${tried} restarts): fewest colourings found = **${bestCnt}**${bestCnt === 0 ? (info.k < chiP ? ' — as it must be for $k<\\chi\'$' : ' — a counterexample to the conjecture!') : ' — the conjecture survives this search'}.` : ''}`);
+        v.readout(() => !info ? '' : `${info.m} edges, $\\chi'=${chiP}$, list size $k=${info.k}$. Colourings from the current lists: **${info.timeout ? 'search capped; undecided' : info.found ? (info.cnt >= 999 ? '≥ 999' : info.cnt) : 'none'}**.${bestCnt != null ? ` Search (${tried} restarts): fewest colourings found = **${bestCnt}**${bestCnt === 0 ? (info.k < chiP ? ' — identical lists already fail for $k<\\chi\'$' : ' — a counterexample to the conjecture!') : ' — the conjecture survives this search'}.` : ''}`);
       },
     },
     {
-      num: '5.4.2b', kind: 'Definition', name: 'Kernels of directed graphs', verify: true,
+      num: '5.4.2b', kind: 'Definition', name: 'Kernels of directed graphs',
       statement: String.raw`Let $D$ be a directed graph. A set $K\subseteq V(D)$ is a **kernel** of $D$ if it is independent (no arc has both ends in $K$) and **absorbing**: every vertex outside $K$ is the tail of an arc ending in $K$.`,
-      idea: String.raw`Think of a kernel as a set of "winning positions": nobody in it can move to another member, and from everywhere else one can move into it. Not every digraph has one: the directed triangle has none, since a single vertex leaves its predecessor unabsorbed and two vertices are joined by an arc. Digraphs without directed cycles always have a kernel (take the sinks and work backwards), and so, by a theorem of Richardson, do digraphs without directed odd cycles. Kernels turn out to be exactly what is needed to colour from lists (5.4.3).`,
+      idea: String.raw`Think of a kernel as a set of "winning positions": nobody in it can move to another member, and from everywhere else one can move into it. Not every digraph has one: the directed triangle has none, since a single vertex leaves its successor unabsorbed and two vertices are joined by an arc. Digraphs without directed cycles always have a kernel (take the sinks and work backwards), and so, by a theorem of Richardson, do digraphs without directed odd cycles. Kernels turn out to be exactly what is needed to colour from lists (5.4.3).`,
       caption: String.raw`Click vertices to build a set $K$ (ringed), click an arc to reverse it. Arcs inside $K$ are drawn red (independence fails); a vertex outside $K$ with no arc into $K$ gets a red ring (not absorbed). *Show a kernel* selects one if it exists; *reset* restores the preset. Try the directed triangle and pentagon (no kernel), the directed square (two kernels) and the transitive tournament (exactly one).`,
-      deps: ['graph-1.10.1a'], refs: ['Diestel §5.4'], tags: ['kernels', 'directed graphs'],
+      deps: ['graph-1.10.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.4, p. 137'], tags: ['kernels', 'directed graphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const PR = {
           c3: () => ({ P: [[0, 1], [-0.87, -0.5], [0.87, -0.5]], A: [[0, 2], [2, 1], [1, 0]] }),

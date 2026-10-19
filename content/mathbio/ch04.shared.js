@@ -66,6 +66,14 @@ export function r0T(l, m) {
 /** Project n_{t+1} = A n_t; returns the array of states (steps+1 of them). */
 export function project(A, n0, steps) { const out = [n0.slice()]; let x = n0.slice(); for (let t = 0; t < steps; t++) { x = matVec(A, x); out.push(x); } return out; }
 
+/** Normalize after each projection to avoid under/overflow; null marks an extinct population. */
+export function normalizedProjection(A, n0, steps) {
+ let state=n0.slice(), total=sumv(state); state=total>0?state.map(x=>x/total):null;
+ const out=[state];
+ for(let t=0;t<steps;t++) { if(state){const next=matVec(A,state),mass=sumv(next);state=mass>0?next.map(x=>x/mass):null;}out.push(state); }
+ return out;
+}
+
 /** Fisher's reproductive value v_x (v_1 = 1) in closed form: λ^{x-1}/l_x · Σ_{y≥x} λ^{-y} l_y m_y. */
 export function fisherV(l, m, lam) {
   const n = l.length, v = new Array(n).fill(0); let tail = 0;
@@ -88,8 +96,7 @@ export function nnClass(A, tol = 1e-12) {
   return { irreducible: true, period: g };
 }
 
-/** The seven-stage loggerhead (Caretta caretta) matrix as tabulated in Crouse, Crowder & Caswell 1987 (values copied from a secondary
-    transcription; see the item). Stages: hatchlings, small juveniles, large juveniles, subadults, novice breeders, 1st-year remigrants, mature breeders. */
+/** The seven-stage loggerhead (Caretta caretta) matrix as tabulated in original Crouse, Crowder & Caswell 1987 Table 4, p. 1416 (all entries checked). Stages: hatchlings, small juveniles, large juveniles, subadults, novice breeders, 1st-year remigrants, mature breeders. */
 export const TURTLE_STAGES = ['hatchling', 'small juv.', 'large juv.', 'subadult', 'novice br.', '1st-yr rem.', 'mature br.'];
 export function turtleMatrix(survScale = [1, 1, 1, 1, 1, 1, 1], fecScale = 1) {
   const A = Array.from({ length: 7 }, () => new Array(7).fill(0));

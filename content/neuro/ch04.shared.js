@@ -191,14 +191,18 @@ export function treeSim(tr, prm) {
 
 // ---------------------------------------------------------------- uniform and myelinated axons
 /** Uniform unmyelinated axon of diameter d (µm), HH channels at squid densities, T °C: arrival times at x1, x2 (cm) and the speed in m/s. */
-export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x1 = 1, x2 = 2.4, frames = 0, tEnd = 60, p = HH } = {}) {
+export function unmyelinatedSpeed(d, { T = 18.5, Ra = 35.4, dx = 100, N = 300, x1 = 1, x2 = 2.4, frames = 0, tEnd = 60, dt = 0.02, p = HH } = {}) {
   const segs = [{ parent: -1, len: N * dx, dia: d }], tr = buildTree(segs, { dxMax: dx, Ra });
   const i1 = Math.round((x1 * 1e4) / dx), i2 = Math.round((x2 * 1e4) / dx);
-  let t1 = null, t2 = null;
-  const stim = (t, I) => { if (t < 0.5) for (let i = 0; i < 10; i++) I[i] = 500 * tr.area[i] * 1e3; };
+  let t1 = null, t2 = null, lastT = 0, lastV1 = -65, lastV2 = -65;
+  const stim = (t, I) => { if (t < 0.5) for (let i = 0; i < Math.min(tr.n, Math.round(1000 / dx)); i++) I[i] = 500 * tr.area[i] * 1e3; };
   const r = treeSim(tr, {
-    dt: 0.02, tEnd, cm: 1, gL: p.gL, gNa: p.gNa, gK: p.gK, ENa: p.ENa, EK: p.EK, T, stim, rec: [i1, i2], frames,
-    stopWhen: (t, V) => { if (t1 == null && V[i1] > 0) t1 = t; if (t2 == null && V[i2] > 0) t2 = t; return !frames && t2 != null; },
+    dt, tEnd, cm: 1, gL: p.gL, gNa: p.gNa, gK: p.gK, ENa: p.ENa, EK: p.EK, T, stim, rec: [i1, i2], frames,
+    stopWhen: (t, V) => {
+      if (t1 == null && V[i1] > 0) t1 = lastT + (t - lastT) * (-lastV1) / (V[i1] - lastV1);
+      if (t2 == null && V[i2] > 0) t2 = lastT + (t - lastT) * (-lastV2) / (V[i2] - lastV2);
+      lastT = t; lastV1 = V[i1]; lastV2 = V[i2]; return !frames && t2 != null;
+    },
   });
   const speed = t1 != null && t2 != null ? ((x2 - x1) * 1e-2) / ((t2 - t1) * 1e-3) : NaN; // m/s
   return { speed, t1, t2, sim: r, tr, dx, i1, i2 };

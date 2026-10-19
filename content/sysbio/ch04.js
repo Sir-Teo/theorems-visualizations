@@ -22,7 +22,7 @@ $$\dot u=\frac{\alpha}{1+v^{\,n}}-u,\qquad \dot v=\frac{\alpha}{1+u^{\,n}}-v,$$
 and in the **double-positive** loop (mutual activation) $\dot u=\alpha\,\dfrac{v^n}{1+v^n}-u$, $\dot v=\alpha\,\dfrac{u^n}{1+u^n}-v$. The sign of a feedback loop is the product of the signs of its edges, so both circuits are **positive feedback loops**: a change in $u$ comes back to $u$ with the same sign. The steady states are the crossings of the two nullclines $\dot u=0$ and $\dot v=0$; for strong promoters ($\alpha$ large) and cooperativity $n>1$ the nullclines cross three times, giving two stable states separated by an unstable saddle.`,
       idea: String.raw`A steady state of a two-gene system is where the two nullcline curves cross. Each nullcline is a (monotone) Hill curve, decreasing for repression and increasing for activation, and the two are mirror images of each other across the diagonal. Mutual repression: if $u$ is high it keeps $v$ low, which keeps $u$ high — and the same holds with the roles exchanged, so there are two "winner-take-all" states. Mutual activation gives an "off–off" and an "on–on" state in the same way. A positive loop is what makes several stable states possible at all (the rule that René Thomas conjectured and Soulé proved), and a sigmoid nullcline (Hill $n>1$, from 1.3) is what lets the curves cross three times. The middle crossing is a saddle: its stable manifold is the watershed between the two memories.`,
       caption: String.raw`Switch between the two wirings, then drag the strength $\alpha$ and the cooperativity $n$. The orange and purple curves are the nullclines of $u$ and $v$; filled green dots are stable states, hollow red ones unstable, and the half-filled dot is the saddle. Click anywhere to launch a trajectory and see which memory it falls into. Lower $n$ to 1 and the extra crossings vanish (mutual repression keeps a single state; mutual activation loses its stable "off" state).`,
-      deps: ['sysbio-1.3', 'ctrl-1.12'],
+      deps: ['sysbio-1.3', 'ctrl-1.12', 'ode-3.8'],
       refs: ['Alon: Positive Feedback, Bistability and Memory'],
       tags: ['feedback', 'bistability', 'phase plane'],
       scope: String.raw`Deterministic, well-mixed model of two genes with Hill input functions, instantaneous binding and identical removal rates for the two proteins; real circuits add transcription–translation delays, mRNA, and noise.`,
@@ -227,22 +227,21 @@ where $\alpha_{1,2}$ are the effective rates of synthesis and $\beta,\gamma$ the
       name: 'Lac operon bistability',
       statement: String.raw`In *E. coli* the lactose permease LacY imports the inducer that inactivates the Lac repressor and so switches on the *lac* genes, including *lacY*: the inducer feeds back positively on its own uptake. A minimal model with permease level $P$ and internal inducer $X$ is
 $$\dot P=\alpha\,\frac{\varepsilon+X^{n}}{1+X^{n}}-P,\qquad \dot X=\kappa\,(\varphi+P)\,\frac{e}{1+e}-X,$$
-with a small basal expression $\varepsilon$, a permease-independent leak $\varphi$ and external inducer $e$ (units of the uptake constant). For cooperative derepression $n>1$ and a strong promoter there is a window of external inducer in which an uninduced and a fully induced state are both stable. Cells grown from an uninduced history stay low, cells from an induced history stay high, and a mixed culture splits into two sub-populations — the all-or-none response seen with a non-metabolised inducer such as TMG.`,
+with a small basal expression $\varepsilon$, a permease-independent leak $\varphi$ and external inducer $e$ (units of the uptake constant). With sufficient nonlinear feedback (requiring $n>1$ here, but also suitable basal expression, transport and promoter strength), there can be a window of external inducer in which an uninduced and a fully induced state are both stable. Cells grown from an uninduced history stay low, cells from an induced history stay high, and a mixed culture splits into two sub-populations — the all-or-none response seen with a non-metabolised inducer such as TMG.`,
       idea: String.raw`At steady state the permease is a function of the inducer inside, $P=\alpha D(X)$ with $D$ the sigmoidal derepression curve, and the inducer is the permease times a transport factor, so $X=\kappa\sigma(\varphi+\alpha D(X))$ with $\sigma=e/(1+e)$. The right side is a sigmoid in $X$, the left a line; for $e$ in a window the line cuts the sigmoid three times (two stable, one unstable), which is the double-positive loop of 4.1 realised through a transporter rather than a second gene. Outside the window one crossing remains, so the memory is lost: below it every cell is uninduced, above it every cell is induced. The loop gain is the product of the derepression slope and the transport gain, and it must exceed 1 somewhere, which again requires $n>1$ (see 2.5 for a self-activating gene).`,
       caption: String.raw`**Left**: the steady-state internal inducer $X$ against external inducer $e$ (log axis): solid green = stable, dashed red = unstable. The gold line is the current $e$. Inside the S-shaped fold two stable states coexist. **Right**: a simulated culture of 200 cells (promoter strength scattered by a few percent) shown as a histogram of $\log_{10}X$, for three histories. At an intermediate $e$ a mixed history gives two peaks and an unmixed one gives one; move $e$ out of the window and the peaks merge. Reduce $n$ or $\alpha$ until the fold disappears.`,
       deps: ['sysbio-4.1', 'sysbio-2.5'],
-      refs: ['Alon: Positive Feedback, Bistability and Memory'],
+      refs: ['Ozbudak et al. 2004, Nature 427:737–740, Figs. 1–4 and Methods'],
       tags: ['lac operon', 'bistability', 'history dependence'],
-      scope: String.raw`An illustrative reduction with made-up parameters (not fitted): it keeps only the inducer–permease loop, ignores the *lacZ* and *lacA* products, glucose and cAMP control, growth-rate effects and noise, and treats the inducer as non-metabolised (TMG-like). Real lactose or IPTG experiments can differ in where and whether bistability appears.`,
+      scope: String.raw`An illustrative reduction with made-up parameters (not fitted): it keeps only the inducer–permease loop, ignores the *lacZ* and *lacA* products, glucose and cAMP control, growth-rate effects and noise, and treats the inducer as non-metabolised (TMG-like). Ozbudak et al. used non-metabolised TMG with independently varied glucose, chromosomal lac–GFP and a gat–HcRed reporter. In glucose-free medium they found history-dependent switching near 3 and 30 µM TMG after 20 hours; these concentrations are not the dimensionless e axis here. Lowering effective LacI repression converted the response to graded. Real lactose or IPTG experiments can differ in where and whether bistability appears. Root counts use a finite scan and can miss a pair very close to a fold.`,
       credit: 'A. Novick & M. Weiner, 1957 (PNAS 43: 553–566); E. M. Ozbudak, M. Thattai, H. N. Lim, B. I. Shraiman & A. van Oudenaarden, 2004 (Nature 427: 737–740)',
       links: { doi: 'https://doi.org/10.1038/nature02298', wikipedia: 'https://en.wikipedia.org/wiki/Lac_operon' },
-      verify: true,
       viz(v) {
         const le = v.slider('external inducer e (log₁₀, units of the uptake constant)', -1.5, 1.5, -0.3, { step: 0.01, fmt: (x) => v.fix(Math.pow(10, x), 2) });
         const al = v.slider(String.raw`promoter strength $\alpha$`, 3, 30, 10, { log: true, sig: 2 });
         const nn = v.slider(String.raw`cooperativity $n$`, 1, 4, 3, { step: 0.1 });
         const hist = v.select('culture history', [{ value: 'low', label: 'grown uninduced' }, { value: 'high', label: 'grown induced' }, { value: 'mix', label: 'half and half' }], 'mix');
-        const S1 = v.stage({ x: [-1.5, 1.5], y: [0, 12], axes: 'box', gutter: true, height: 330, weight: 1.2, minWidth: 290, xlabel: 'external inducer e (log₁₀)', ylabel: 'internal inducer X (K)', xticks: [[-1, '0.1'], [0, '1'], [1, '10']] });
+        const S1 = v.stage({ x: [-1.5, 1.5], y: [0, 12], axes: 'box', gutter: true, height: 330, weight: 1.2, minWidth: 290, xlabel: 'external inducer e (log scale)', ylabel: 'internal inducer X (K)', xticks: [[-1, '0.1'], [0, '1'], [1, '10']] });
         const S2 = v.stage({ x: [-3, 1.3], y: [0, 1], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'log₁₀ X in each cell', ylabel: 'fraction of cells' });
         const base = { kap: 1, phi: 0.05, eps: 0.02 };
         const rng = v.rng(5), zs = []; for (let i = 0; i < 200; i++) zs.push(rng.normal());
@@ -255,12 +254,17 @@ with a small basal expression $\varepsilon$, a permease-independent leak $\varph
             for (let i = 0; i <= 150; i++) { const x = -1.5 + (3 * i) / 150; curve.push([x, lacRoots(Math.pow(10, x), p, 300)]); }
           }
           const top = Math.max(2, ...curve.flatMap(([, r]) => r.map((q) => q.X))) * 1.08; S1.setView([-1.5, 1.5], [0, top]);
-          for (const stable of [false, true]) {
-              for (let idx = 0; idx < 2; idx++) {
-              // plot each stable/unstable root as separate dots joined by consecutive points
-              let run = [];
-              curve.forEach(([x, r]) => { const q = r.filter((z) => z.stable === stable)[idx]; if (q) run.push([x, q.X]); else { if (run.length > 1) S1.path(run, { color: stable ? 'green' : 'red', width: stable ? 3 : 2, dash: !stable }); run = []; } });
-              if (run.length > 1) S1.path(run, { color: stable ? 'green' : 'red', width: stable ? 3 : 2, dash: !stable });
+          // Connect only mutual nearest roots of the same stability. A lower
+          // branch ending at a fold must not jump to the surviving upper branch.
+          for (let j = 1; j < curve.length; j++) {
+            const [xa, ra] = curve[j - 1], [xb, rb] = curve[j];
+            for (const a of ra) {
+              const candidates = rb.filter(b => b.stable === a.stable);
+              if (!candidates.length) continue;
+              const b = candidates.reduce((u, w) => Math.abs(u.X - a.X) < Math.abs(w.X - a.X) ? u : w);
+              const back = ra.filter(q => q.stable === b.stable).reduce((u, w) => Math.abs(u.X - b.X) < Math.abs(w.X - b.X) ? u : w);
+              if (back !== a) continue;
+              S1.line(xa, a.X, xb, b.X, {color: a.stable ? 'green' : 'red', width: a.stable ? 3 : 2, dash: !a.stable});
             }
           }
           S1.vline(le.value, { color: 'gold', width: 2 });
@@ -271,7 +275,9 @@ with a small basal expression $\varepsilon$, a permease-independent leak $\varph
             const high = hist.value === 'high' || (hist.value === 'mix' && i % 2 === 0);
             return Math.log10(high ? rr[rr.length - 1] : rr[0]);
           });
-          const hh = v.M.histogram(vals, { bins: 52, range: [-3, 1.3] });
+          const bounds = [Math.min(-3, Math.min(...vals) - 0.1), Math.max(1.3, Math.max(...vals) + 0.1)];
+          S2.setView(bounds, [0, 1]);
+          const hh = v.M.histogram(vals, { bins: 52, range: bounds });
           S2.hist({ edges: hh.edges, counts: hh.counts.map((c) => c / vals.length) }, { color: 'accent' });
           info = { nst: st.length, hi: vals.filter((x) => x > (Math.min(...vals) + Math.max(...vals)) / 2 && Math.max(...vals) - Math.min(...vals) > 0.5).length, spread: Math.max(...vals) - Math.min(...vals), e };
         });

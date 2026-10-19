@@ -1,0 +1,646 @@
+{
+  "meaning": "Actual final command exit codes. The cross-field strict gate is expected to fail and remains unresolved; source/human accounting passes do not certify missing sources or actual human review.",
+  "results": [
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T01:47:47.274Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 10.6,
+      "log": "docs/verification/final-checks/build.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "tests",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-19T01:47:57.879Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 56.546,
+      "log": "docs/verification/final-checks/tests.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "queue-write",
+      "command": [
+        "node",
+        "scripts/verification-status.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T01:48:54.430Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 5.85,
+      "log": "docs/verification/final-checks/queue-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "source-write",
+      "command": [
+        "node",
+        "scripts/verification-source-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T01:49:00.282Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 6.552,
+      "log": "docs/verification/final-checks/source-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "structure-write",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T01:49:06.836Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 6.642,
+      "log": "docs/verification/final-checks/structure-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "prerequisite-write",
+      "command": [
+        "node",
+        "scripts/verification-prerequisite-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T01:49:13.478Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 5.911,
+      "log": "docs/verification/final-checks/prerequisite-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "sample-write",
+      "command": [
+        "node",
+        "scripts/verification-human-sample.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T01:49:19.398Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 9.251,
+      "log": "docs/verification/final-checks/sample-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "worksheet-write",
+      "command": [
+        "node",
+        "scripts/verification-human-review-packet.mjs"
+      ],
+      "startedAt": "2026-10-19T01:49:28.650Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.869,
+      "log": "docs/verification/final-checks/worksheet-write.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "queue",
+      "command": [
+        "node",
+        "scripts/verification-status.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:49:29.520Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 7.393,
+      "log": "docs/verification/final-checks/queue.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "sources",
+      "command": [
+        "node",
+        "scripts/verification-source-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:49:36.916Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 6.798,
+      "log": "docs/verification/final-checks/sources.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "structure",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:49:43.716Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 11.609,
+      "log": "docs/verification/final-checks/structure.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "prerequisites",
+      "command": [
+        "node",
+        "scripts/verification-prerequisite-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:49:55.326Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 5.572,
+      "log": "docs/verification/final-checks/prerequisites.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "sample",
+      "command": [
+        "node",
+        "scripts/verification-human-sample.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:50:00.902Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 7.659,
+      "log": "docs/verification/final-checks/sample.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "worksheet",
+      "command": [
+        "node",
+        "scripts/verification-human-review-packet.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:50:08.563Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 0.753,
+      "log": "docs/verification/final-checks/worksheet.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "cross-field-gate",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--check",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T01:50:09.320Z",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationSeconds": 6.984,
+      "log": "docs/verification/final-checks/cross-field-gate.log",
+      "exitMatchesExpected": true,
+      "gatePassed": false
+    },
+    {
+      "name": "static",
+      "command": [
+        "node",
+        "scripts/check.mjs",
+        "--static",
+        "--quiet",
+        "--fail-on-warnings"
+      ],
+      "startedAt": "2026-10-19T01:50:16.307Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 5.902,
+      "log": "docs/verification/final-checks/static.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "diff",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T01:50:22.210Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationSeconds": 1.064,
+      "log": "docs/verification/final-checks/diff.log",
+      "exitMatchesExpected": true,
+      "gatePassed": true
+    },
+    {
+      "name": "build-final",
+      "command": [
+        "npm",
+        "run",
+        "build",
+        "--",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T02:43:00.759Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 12.849,
+      "log": "docs/verification/final-checks/build-final.log"
+    },
+    {
+      "name": "queue-write-final",
+      "command": [
+        "node",
+        "scripts/verification-status.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T02:43:13.622Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 4.764,
+      "log": "docs/verification/final-checks/queue-write-final.log"
+    },
+    {
+      "name": "source-write-final",
+      "command": [
+        "node",
+        "scripts/verification-source-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T02:43:18.388Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.266,
+      "log": "docs/verification/final-checks/source-write-final.log"
+    },
+    {
+      "name": "structure-write-final",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T02:43:24.655Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 4.813,
+      "log": "docs/verification/final-checks/structure-write-final.log"
+    },
+    {
+      "name": "prerequisite-write-final",
+      "command": [
+        "node",
+        "scripts/verification-prerequisite-evidence.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T02:43:29.473Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 5.109,
+      "log": "docs/verification/final-checks/prerequisite-write-final.log"
+    },
+    {
+      "name": "sample-write-final",
+      "command": [
+        "node",
+        "scripts/verification-human-sample.mjs",
+        "--write"
+      ],
+      "startedAt": "2026-10-19T02:43:34.585Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.414,
+      "log": "docs/verification/final-checks/sample-write-final.log"
+    },
+    {
+      "name": "worksheet-write-final",
+      "command": [
+        "node",
+        "scripts/verification-human-review-packet.mjs"
+      ],
+      "startedAt": "2026-10-19T02:43:41.000Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 0.858,
+      "log": "docs/verification/final-checks/worksheet-write-final.log"
+    },
+    {
+      "name": "queue-final",
+      "command": [
+        "node",
+        "scripts/verification-status.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:43:41.870Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.901,
+      "log": "docs/verification/final-checks/queue-final.log"
+    },
+    {
+      "name": "sources-final",
+      "command": [
+        "node",
+        "scripts/verification-source-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:43:48.777Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 5.402,
+      "log": "docs/verification/final-checks/sources-final.log"
+    },
+    {
+      "name": "structure-final",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:43:54.182Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 7.124,
+      "log": "docs/verification/final-checks/structure-final.log"
+    },
+    {
+      "name": "prerequisites-final",
+      "command": [
+        "node",
+        "scripts/verification-prerequisite-evidence.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:44:01.310Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.724,
+      "log": "docs/verification/final-checks/prerequisites-final.log"
+    },
+    {
+      "name": "sample-final",
+      "command": [
+        "node",
+        "scripts/verification-human-sample.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:44:08.035Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 5.512,
+      "log": "docs/verification/final-checks/sample-final.log"
+    },
+    {
+      "name": "worksheet-final",
+      "command": [
+        "node",
+        "scripts/verification-human-review-packet.mjs",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:44:13.548Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 0.682,
+      "log": "docs/verification/final-checks/worksheet-final.log"
+    },
+    {
+      "name": "cross-field-gate-final",
+      "command": [
+        "node",
+        "scripts/verification-audit.mjs",
+        "--check",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T02:44:14.249Z",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "exitMatchesExpected": true,
+      "gatePassed": false,
+      "durationSeconds": 6.356,
+      "log": "docs/verification/final-checks/cross-field-gate-final.log"
+    },
+    {
+      "name": "static-final",
+      "command": [
+        "node",
+        "scripts/check.mjs",
+        "--static",
+        "--quiet",
+        "--fail-on-warnings"
+      ],
+      "startedAt": "2026-10-19T02:44:20.608Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 5.585,
+      "log": "docs/verification/final-checks/static-final.log"
+    },
+    {
+      "name": "diff-final",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T02:44:26.195Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 1.116,
+      "log": "docs/verification/final-checks/diff-final.log"
+    },
+    {
+      "name": "browser-current-census",
+      "command": [
+        "node",
+        "scripts/verification-browser-evidence.mjs",
+        "docs/verification/browser-modes-light-1.json",
+        "docs/verification/browser-modes-light-2.json",
+        "docs/verification/browser-modes-light-algo-refresh.json",
+        "docs/verification/browser-modes-light-tech-imports.json",
+        "docs/verification/browser-modes-light-corrections.json",
+        "docs/verification/browser-modes-dark-1.json",
+        "docs/verification/browser-modes-dark-2.json",
+        "docs/verification/browser-modes-dark-algo-refresh.json",
+        "docs/verification/browser-modes-dark-tech-imports.json",
+        "docs/verification/browser-modes-dark-corrections.json",
+        "--write=docs/verification/browser-evidence.json",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T03:14:59.371Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 10.745,
+      "log": "docs/verification/final-checks/browser-current-census.log"
+    },
+    {
+      "name": "conditional-current-census",
+      "command": [
+        "node",
+        "scripts/verification-conditional-evidence.mjs",
+        "docs/verification/conditional-modes-light.json",
+        "docs/verification/conditional-modes-dark.json",
+        "--write=docs/verification/conditional-evidence.json",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T03:15:10.141Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.589,
+      "log": "docs/verification/final-checks/conditional-current-census.log"
+    },
+    {
+      "name": "conditional-visual-census",
+      "command": [
+        "node",
+        "scripts/verification-conditional-visual-evidence.mjs",
+        "docs/verification/conditional-visual-circuits.json",
+        "docs/verification/conditional-visual-energy.json",
+        "docs/verification/conditional-visual-geology.json",
+        "docs/verification/conditional-visual-macro.json",
+        "--light=docs/verification/conditional-modes-light.json",
+        "--dark=docs/verification/conditional-modes-dark.json",
+        "--write=docs/verification/conditional-visual-evidence.json",
+        "--strict"
+      ],
+      "startedAt": "2026-10-19T03:15:16.731Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 0.857,
+      "log": "docs/verification/final-checks/conditional-visual-census.log"
+    },
+    {
+      "name": "tests-final",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-19T03:15:17.590Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 26.244,
+      "log": "docs/verification/final-checks/tests-final.log"
+    },
+    {
+      "name": "map-performance",
+      "command": [
+        "node",
+        "scripts/measure-map.mjs",
+        "--report=docs/verification/map-performance.json"
+      ],
+      "startedAt": "2026-10-19T03:15:43.836Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 11.519,
+      "log": "docs/verification/final-checks/map-performance.log"
+    },
+    {
+      "name": "human-packet-native",
+      "command": [
+        "node",
+        "/tmp/check-human-packet.mjs"
+      ],
+      "startedAt": "2026-10-19T03:15:55.356Z",
+      "exitCode": 1,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": false,
+      "gatePassed": false,
+      "durationSeconds": 33.175,
+      "log": "docs/verification/final-checks/human-packet-native-first.log"
+    },
+    {
+      "name": "human-packet-native",
+      "command": [
+        "node",
+        "tests/verification-human-review-packet-browser.mjs"
+      ],
+      "startedAt": "2026-10-19T03:19:30.041Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 6.644,
+      "log": "docs/verification/final-checks/human-packet-native.log",
+      "note": "Replaces the fill-based synthetic form attempt with native typing, explicit saved-value assertions before/after reload, parsed export and stale-source invalidation. Instrumented rerun and the first hardened-driver run passed; the original failure log is preserved. No product-source change or actual human credit."
+    },
+    {
+      "name": "diff-final-docs",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "startedAt": "2026-10-19T03:19:51.745Z",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "exitMatchesExpected": true,
+      "gatePassed": true,
+      "durationSeconds": 0.825,
+      "log": "docs/verification/final-checks/diff-final-docs.log"
+    }
+  ]
+}

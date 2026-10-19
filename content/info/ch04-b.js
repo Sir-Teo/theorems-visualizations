@@ -1,11 +1,10 @@
 // Information & Coding Theory — Chapter 4: Source coding (items 4.6, 4.7, 4.10, 4.11, 4.12; the rest in ch04.js and ch04-c.js)
 //
-// Credits checked Oct 2026 (Crossref and library records): Shannon 1948; Rissanen, IBM J. Res. Dev. 20 (3): 198–203 (1976);
-// Witten–Neal–Cleary, Commun. ACM 30 (6): 520–540 (1987). The attribution of Shannon–Fano–Elias coding and of the first
-// arithmetic coders (Pasco 1976, Rissanen 1976) is the usual textbook one and is marked verify.
+// Full-source review: arithmetic coding follows Witten–Neal–Cleary (1987) and Cover–Thomas §13.3.
+// Shannon–Fano–Elias original attribution remains flagged; see the verification report.
 
 import { clamp, sum, H, h2, KL, hashStr, LET, barEd, resizeP, shannonLens, expLen, huffLens, canon, isPrefixFree, lbinom, lbinPmf, binomCdf, cdfPick,
-  fracBits, mono, pw2, log2, commas, setProb } from './ch04.shared.js';
+  fracBits, arithmeticTag, mono, pw2, log2, commas, setProb } from './ch04.shared.js';
 
 const COL3 = ['accent', 'orange', 'teal', 'purple', 'pink', 'gold'];
 
@@ -193,13 +192,13 @@ So designing for the wrong distribution costs about $D(p\|q)$ extra bits per sym
       num: '4.11',
       kind: 'Algorithm',
       name: 'Shannon–Fano–Elias coding',
-      statement: String.raw`Order the symbols $x=1,\dots,m$ and let $F(x)=\sum_{a<x}p(a)$, $\bar F(x)=F(x)+\tfrac12p(x)$ (the midpoint of the interval $[F(x),F(x)+p(x))$). Give $x$ the codeword consisting of the first $\ell(x)=\lceil\log_2\frac1{p(x)}\rceil+1$ binary digits of $\bar F(x)$. Then the code is a prefix code and
+      statement: String.raw`Let $p(x)>0$ on the encoded support, order its symbols $x=1,\dots,m$, and let $F(x)=\sum_{a<x}p(a)$, $\bar F(x)=F(x)+\tfrac12p(x)$ (the midpoint of the interval $[F(x),F(x)+p(x))$). Give $x$ the codeword consisting of the first $\ell(x)=\lceil\log_2\frac1{p(x)}\rceil+1$ binary digits of $\bar F(x)$. Then the code is a prefix code and
 $$H(X)+1\ \le\ L\ <\ H(X)+2 .$$
 No sorting of the symbols is needed, and the code needs only the cumulative distribution, which is the idea that arithmetic coding (4.12) extends to long strings.`,
       idea: String.raw`Truncating $\bar F(x)$ to $\ell$ bits gives a number $c$ with $\bar F-2^{-\ell}<c\le\bar F$. The dyadic interval $[c,c+2^{-\ell})$ then contains $\bar F(x)$, and because $2^{-\ell}\le p(x)/2$ it lies inside $[F(x),F(x)+p(x))$: it sticks out neither to the left of $F$ (it starts within $p/2$ below the midpoint) nor beyond the right end. The symbols' intervals are disjoint, so the dyadic intervals are disjoint; and two codewords, one a prefix of the other, would have nested dyadic intervals. Hence the code is prefix-free. The lengths exceed $\log\frac1p$ by at most $2$, giving $L<H+2$.`,
       caption: String.raw`Edit the distribution (bars) and the number of symbols. Each symbol owns the interval $[F,F+p)$ of $[0,1)$ (top bar of each row); its midpoint $\bar F$ is the dot, and its codeword is the dyadic interval of length $2^{-\ell}$ below, which must lie inside the symbol's interval. Switch to the broken variant without the extra bit (length $\lceil\log\frac1p\rceil$) to break the construction: dyadic intervals then stick out (red) and codewords can collide.`,
       deps: ['info-4.3'],
-      refs: ['Cover–Thomas §5.9'],
+      refs: ['Cover–Thomas 2nd ed. §5.9 pp. 127–130, Eqs. (5.73)–(5.76); historical notes p. 158 (Gilbert–Moore construction)'],
       tags: ['arithmetic coding', 'prefix codes'],
       credit: 'Shannon (1948) and Fano (1949); the cumulative-distribution version is attributed to Elias (unpublished; via Abramson, 1963)',
       verify: true,
@@ -249,17 +248,17 @@ No sorting of the symbols is needed, and the code needs only the cumulative dist
       num: '4.12',
       kind: 'Algorithm',
       name: 'Arithmetic coding',
-      statement: String.raw`Given a model that assigns each next symbol a conditional probability $P(x_t\mid x_1,\dots,x_{t-1})$ (it may be adaptive), arithmetic coding encodes the string $x_1\dots x_N$ as follows. Start with the interval $I_0=[0,1)$. At step $t$ divide $I_{t-1}$ into subintervals proportional to the model's probabilities for the next symbol and let $I_t$ be the subinterval of the symbol that occurs. The final interval has width $\prod_tP(x_t\mid x_{<t})=P(x_1\dots x_N)$; the code is the shortest binary fraction $0.b_1\dots b_k$ inside $I_N$, and
+      statement: String.raw`Given a model that assigns each next symbol a conditional probability $P(x_t\mid x_1,\dots,x_{t-1})$ (it may be adaptive), arithmetic coding encodes the string $x_1\dots x_N$ as follows. Start with the interval $I_0=[0,1)$. At step $t$ divide $I_{t-1}$ into subintervals proportional to the model's probabilities for the next symbol and let $I_t$ be the subinterval of the symbol that occurs. The final interval has width $\prod_tP(x_t\mid x_{<t})=P(x_1\dots x_N)$; choose a dyadic cell $[0.b_1\dots b_k,\ 0.b_1\dots b_k+2^{-k})$ wholly inside $I_N$ and transmit its $k$ bits. Such a cell exists with
 $$k\ <\ \log_2\frac1{P(x_1\dots x_N)}+2 .$$
-The decoder, running the same model, recovers the string from the number. The cost is within $2$ bits of the ideal $-\log P$ for the **whole string**, not $1$ bit per symbol, so the coder follows the model's entropy with no integer-length loss, and the model can learn as it goes.`,
+The decoder, running the same model and knowing $N$, recovers the string from a value in this cell. A variable-length stream instead needs an end-of-message symbol or separate framing; that cost is additional to this bound. The cost is within $2$ bits of the ideal $-\log P$ for the **whole string**, not $1$ bit per symbol, so the integer-length overhead per symbol vanishes for long messages, and the model can learn as it goes.`,
       idea: String.raw`Nested intervals: each step multiplies the width by the probability of the actual symbol, so after $N$ symbols the width is exactly the model probability of the whole message. A dyadic interval of width at most half the final width fits inside it (as in 4.11), and its length is at most $\lceil\log\frac1P\rceil+1<\log\frac1P+2$ bits. The decoder reverses the process, comparing the code value with the model's cumulative probabilities. Practical coders use finite-precision integer arithmetic and emit a bit as soon as the interval lies within one half of the current range, which is the "output bits as soon as the interval fits" pictured below.`,
       caption: String.raw`Type a message over $\{a,b,c\}$ (up to 14 symbols) and choose the model: a **fixed** model (drag the three bars) or an **adaptive** one that starts with one count per letter and counts what it has seen (Laplace). Each row is the current interval magnified to full width and cut according to the model; the chosen slice is outlined and zoomed into the next row. The bits on the right are those already fixed because the interval lies in a single dyadic half, quarter, … The slider steps through the message; at the end the code, the ideal length $-\log_2P$ and a decoding check are shown.`,
       deps: ['info-4.11'],
-      refs: ['Cover–Thomas §13.3', 'MacKay ch. 6'],
+      refs: ['Cover–Thomas 2nd ed. §13.3 pp. 436–440 (known block length)', 'Witten–Neal–Cleary (1987), Commun. ACM 30: 520–540, pp. 521–523 and 532–535 (intervals, EOF, finite precision)'],
       tags: ['arithmetic coding', 'adaptive models'],
-      credit: 'R. Pasco (1976, Stanford thesis) and J. Rissanen (1976, IBM J. Res. Dev. 20: 198–203), independently; popularised by Witten, Neal & Cleary (Commun. ACM 30 (6): 520–540, 1987)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Arithmetic_coding' },
+      credit: 'R. Pasco (1976, Stanford thesis) and J. Rissanen (1976, IBM J. Res. Dev. 20: 198–203); practical methods described by Witten, Neal & Cleary (Commun. ACM 30 (6): 520–540, 1987)',
+      scope: String.raw`Positive model probability for every encoded symbol; decoder knows the message length. The visualization uses floating-point intervals for at most 14 symbols, not the paper's renormalized integer coder; it reports zero-probability messages and unresolved intervals explicitly. The shortest contained dyadic cell is used, so same-length messages have prefix-free tags. Pasco/Rissanen priority is corroborated by the full 1987 primary account, whose algorithm is distinct.`,
+      links: { source: 'https://web.stanford.edu/class/ee398a/handouts/papers/WittenACM87ArithmCoding.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Arithmetic_coding' },
       viz(v) {
         const model = v.select('model', [{ value: 'fixed', label: 'fixed $p$' }, { value: 'adapt', label: 'adaptive (Laplace)' }], 'adapt');
         const msg = v.input('message', 'abaabcaab', { width: 220 });
@@ -274,13 +273,14 @@ The decoder, running the same model, recovers the string from the number. The co
           const adaptive = model.value === 'adapt';
           ed.draw({ values: true, alpha: 0.4 });
           const pf = ed.p, cnt = [1, 1, 1];
-          let lo = 0, hi = 1, logP = 0; const rows = [];
+          let lo = 0, hi = 1, logP = 0, impossible = false; const rows = [];
           for (let t = 0; t < text.length; t++) {
             const pr = adaptive ? cnt.map((c) => c / (cnt[0] + cnt[1] + cnt[2])) : pf.slice();
-            const j = SYM.indexOf(text[t]); let cum = 0; const cs = [0, pr[0], pr[0] + pr[1], 1];
+            const j = SYM.indexOf(text[t]); if (!(pr[j] > 0)) { impossible = true; break; } let cum = 0; const cs = [0, pr[0], pr[0] + pr[1], 1];
             const w = hi - lo; rows.push({ pr, j, lo, hi, cs, bits: commonBits(lo, hi) });
-            hi = lo + w * cs[j + 1]; lo = lo + w * cs[j]; logP -= log2(Math.max(pr[j], 1e-12)); cnt[j]++;
+            hi = lo + w * cs[j + 1]; lo = lo + w * cs[j]; logP -= log2(pr[j]); cnt[j]++;
           }
+          if (impossible) { info = { text, impossible: true }; return; }
           const final = { lo, hi, bits: commonBits(lo, hi) };
           const shown = Math.min(stepS.value, text.length);
           const R = Math.min(shown + 1, 15);
@@ -305,8 +305,9 @@ The decoder, running the same model, recovers the string from the number. The co
           const done = shown === text.length && text.length > 0;
           let code = '', dec = '', ok = false;
           if (done) {
-            let k = 0, x = 0; for (k = 1; k < 60; k++) { x = Math.ceil(lo * pw2(k) - 1e-15); if (x / pw2(k) < hi) break; }
-            code = x.toString(2).padStart(k, '0').slice(-k); const val = x / pw2(k);
+            const tag = arithmeticTag(lo, hi);
+            if (!tag) { info = { text, precision: true }; return; }
+            code = tag.code; const val = tag.value;
             // decode
             const cnt2 = [1, 1, 1]; let l2 = 0, h2_ = 1; dec = '';
             for (let t = 0; t < text.length; t++) { const pr = adaptive ? cnt2.map((c) => c / (cnt2[0] + cnt2[1] + cnt2[2])) : pf.slice(); const w = h2_ - l2; const cs = [0, pr[0], pr[0] + pr[1], 1]; let a = 0; while (a < 2 && val >= l2 + w * cs[a + 1]) a++; dec += SYM[a]; h2_ = l2 + w * cs[a + 1]; l2 = l2 + w * cs[a]; cnt2[a]++; }
@@ -316,8 +317,10 @@ The decoder, running the same model, recovers the string from the number. The co
         });
         v.readout(() => {
           const i = info; if (!i.text.length) return 'Type a message over a, b, c.';
+          if (i.impossible) return 'The model assigns probability zero to a symbol in this message. Raise its fixed-model bar or choose the adaptive model.';
+          if (i.precision) return 'The interval is too narrow for this floating-point demonstration. Use a shorter message or less extreme probabilities; practical coders renormalize.';
           if (!i.done) return `Step ${i.shown} of ${i.text.length}: move the slider to the end to see the final code and the decoding check.`;
-          return `Message \`${i.text}\`: ideal length $-\\log_2P=${v.fix(i.logP, 2)}$ bits. Arithmetic code: \`${i.code}\` (${i.code.length} bits, < ${v.fix(i.logP + 2, 2)}). Decoded with the same ${i.adaptive ? 'adaptive ' : ''}model: \`${i.dec}\` ${i.ok ? '✓' : '✗'}. A plain symbol code would need at least ${i.text.length} bits.`;
+          return `Message \`${i.text}\`: ideal length $-\\log_2P=${v.fix(i.logP, 2)}$ bits. Arithmetic code: \`${i.code}\` (${i.code.length} bits, < ${v.fix(i.logP + 2, 2)}). Decoded with the same ${i.adaptive ? 'adaptive ' : ''}model and known length $N=${i.text.length}$: \`${i.dec}\` ${i.ok ? '✓' : '✗'}. A plain symbol code would need at least ${i.text.length} bits.`;
         });
       },
     },

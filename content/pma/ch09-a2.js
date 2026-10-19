@@ -293,7 +293,7 @@ export default {
       num: '9.9',
       kind: 'Definition',
       name: 'The matrix of a linear map; ‖A‖ ≤ (Σ aᵢⱼ²)^½',
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 9.9, pp. 210–211'],
       statement: String.raw`Let $\{x_1,\dots,x_n\}$ and $\{y_1,\dots,y_m\}$ be bases of $X$ and $Y$. Each $A\in L(X,Y)$ determines numbers $a_{ij}$ by $Ax_j=\sum_{i=1}^m a_{ij}y_i$; the $m\times n$ array $[A]=(a_{ij})$ is the *matrix* of $A$ relative to these bases. The coordinates of $Ax_j$ form the $j$-th column, and if $x=\sum c_jx_j$ then $Ax=\sum_i\big(\sum_j a_{ij}c_j\big)y_i$. Conversely every $m\times n$ matrix defines a linear map, and $[BA]=[B][A]$.
 
 For $A\in L(\R^n,\R^m)$ with the standard bases,

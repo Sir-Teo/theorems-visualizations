@@ -1,0 +1,2842 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-18",
+  "scope": [
+    "macro",
+    "fin",
+    "game",
+    "behav",
+    "psych",
+    "soc",
+    "polsci",
+    "demo",
+    "art",
+    "ling",
+    "phil"
+  ],
+  "criterion": "Distinct directed dependencies from a written card to a written card in a different registry FIELD. Planned endpoints, same-field links, see-links, implementation-only techniques, unrelated results and redundant foundations do not count.",
+  "policy": "Only prerequisites substantively used by existing statements or derivations were added; source-verification dispositions were not changed. Direct named proof steps may be linked even if a remote prerequisite chain already reaches that theorem; duplicate derivations supplied by an immediate prerequisite were rejected.",
+  "summary": {
+    "additions": 120,
+    "affectedWrittenCards": 103,
+    "collectionsMeetingThreshold": 7,
+    "collectionsBelowThreshold": [
+      "behav",
+      "demo",
+      "art",
+      "ling"
+    ]
+  },
+  "collections": [
+    {
+      "id": "macro",
+      "field": "econ",
+      "writtenItems": 48,
+      "before": 12,
+      "added": 13,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "macro-1.8",
+          "to": "stoch-4.1"
+        },
+        {
+          "from": "macro-1.10",
+          "to": "demo-1.4"
+        },
+        {
+          "from": "macro-2.11",
+          "to": "pma-5.8"
+        },
+        {
+          "from": "macro-2.11",
+          "to": "prob-4.1.1a"
+        },
+        {
+          "from": "macro-2.12",
+          "to": "prob-4.2.1a"
+        },
+        {
+          "from": "macro-2.14",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "macro-2.4",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "macro-2.4",
+          "to": "pma-9.23"
+        },
+        {
+          "from": "macro-3.8",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "macro-3.8",
+          "to": "ode-1.5"
+        },
+        {
+          "from": "macro-3.9",
+          "to": "pma-9.15"
+        },
+        {
+          "from": "macro-3.10",
+          "to": "ladr-6.55"
+        },
+        {
+          "from": "macro-3.2",
+          "to": "mathbio-1.5"
+        },
+        {
+          "from": "macro-3.3",
+          "to": "pma-4.23"
+        },
+        {
+          "from": "macro-3.4",
+          "to": "pma-5.8"
+        },
+        {
+          "from": "macro-3.6",
+          "to": "demo-1.4"
+        },
+        {
+          "from": "macro-3.7",
+          "to": "pma-5.3"
+        },
+        {
+          "from": "macro-4.6",
+          "to": "ode-1.4"
+        },
+        {
+          "from": "macro-4.7",
+          "to": "pma-9.15"
+        },
+        {
+          "from": "macro-4.8",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "macro-4.1",
+          "to": "ode-3.8"
+        },
+        {
+          "from": "macro-4.2",
+          "to": "pma-3.14"
+        },
+        {
+          "from": "macro-4.3",
+          "to": "ode-1.5"
+        },
+        {
+          "from": "macro-4.5",
+          "to": "ode-1.13"
+        },
+        {
+          "from": "macro-9.11",
+          "to": "opt-1.6"
+        }
+      ]
+    },
+    {
+      "id": "fin",
+      "field": "econ",
+      "writtenItems": 68,
+      "before": 17,
+      "added": 16,
+      "after": 33,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "fin-1.7",
+          "to": "pma-4.23"
+        },
+        {
+          "from": "fin-1.8",
+          "to": "pma-8.8"
+        },
+        {
+          "from": "fin-1.9",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "fin-1.1",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "fin-1.2",
+          "to": "pma-3.31"
+        },
+        {
+          "from": "fin-1.2",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "fin-1.4",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "fin-2.11",
+          "to": "prob-2.7.1a"
+        },
+        {
+          "from": "fin-2.12",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "fin-2.2",
+          "to": "rca-3.1"
+        },
+        {
+          "from": "fin-2.3",
+          "to": "pma-5.1"
+        },
+        {
+          "from": "fin-2.4",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "fin-2.5",
+          "to": "rca-3.3"
+        },
+        {
+          "from": "fin-3.13",
+          "to": "stat-1.3"
+        },
+        {
+          "from": "fin-3.14",
+          "to": "stat-1.19"
+        },
+        {
+          "from": "fin-3.14",
+          "to": "prob-2.7.1a"
+        },
+        {
+          "from": "fin-3.1",
+          "to": "rca-3.3a"
+        },
+        {
+          "from": "fin-3.1",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "fin-3.2",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "fin-3.3",
+          "to": "prob-1.6.1"
+        },
+        {
+          "from": "fin-3.3",
+          "to": "prob-1.6.3"
+        },
+        {
+          "from": "fin-3.6",
+          "to": "opt-1.4"
+        },
+        {
+          "from": "fin-4.3",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "fin-4.5",
+          "to": "ladr-3.21"
+        },
+        {
+          "from": "fin-5.6",
+          "to": "prob-4.1.15"
+        },
+        {
+          "from": "fin-5.9",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "fin-5.11",
+          "to": "prob-4.1.13"
+        },
+        {
+          "from": "fin-5.13",
+          "to": "prob-3.4.1"
+        },
+        {
+          "from": "fin-5.15",
+          "to": "prob-4.1.15"
+        },
+        {
+          "from": "fin-5.1",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "fin-5.2",
+          "to": "prob-2.2.1"
+        },
+        {
+          "from": "fin-5.2",
+          "to": "prob-3.4.1"
+        },
+        {
+          "from": "fin-5.5",
+          "to": "prob-3.3.13"
+        }
+      ]
+    },
+    {
+      "id": "game",
+      "field": "econ",
+      "writtenItems": 45,
+      "before": 8,
+      "added": 19,
+      "after": 27,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "game-1.2",
+          "to": "pma-4.16"
+        },
+        {
+          "from": "game-1.2",
+          "to": "opt-1.4"
+        },
+        {
+          "from": "game-1.3",
+          "to": "prob-1.6.1"
+        },
+        {
+          "from": "game-1.3",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "game-1.8",
+          "to": "pma-3.20"
+        },
+        {
+          "from": "game-1.10",
+          "to": "prob-1.2.4"
+        },
+        {
+          "from": "game-2.9",
+          "to": "algo-11.15"
+        },
+        {
+          "from": "game-2.9",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "game-2.10",
+          "to": "pma-3.6"
+        },
+        {
+          "from": "game-2.11",
+          "to": "prob-1.2.2a"
+        },
+        {
+          "from": "game-2.1",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "game-2.1",
+          "to": "prob-1.6.1"
+        },
+        {
+          "from": "game-2.4",
+          "to": "opt-2.12"
+        },
+        {
+          "from": "game-2.5",
+          "to": "graph-1.2.1"
+        },
+        {
+          "from": "game-2.5",
+          "to": "opt-2.3"
+        },
+        {
+          "from": "game-3.7",
+          "to": "stat-1.16"
+        },
+        {
+          "from": "game-3.9",
+          "to": "algo-11.19"
+        },
+        {
+          "from": "game-3.10",
+          "to": "rca-4.10"
+        },
+        {
+          "from": "game-3.10",
+          "to": "prob-4.1.1a"
+        },
+        {
+          "from": "game-3.11",
+          "to": "pma-4.16"
+        },
+        {
+          "from": "game-3.3",
+          "to": "fa-3.4"
+        },
+        {
+          "from": "game-3.4",
+          "to": "algo-11.19"
+        },
+        {
+          "from": "game-3.5",
+          "to": "opt-3.6"
+        },
+        {
+          "from": "game-3.5",
+          "to": "opt-2.12"
+        },
+        {
+          "from": "game-4.9",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "game-4.10",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "game-4.1",
+          "to": "comb-1.1"
+        }
+      ]
+    },
+    {
+      "id": "behav",
+      "field": "econ",
+      "writtenItems": 67,
+      "before": 10,
+      "added": 12,
+      "after": 22,
+      "required": 25,
+      "shortfall": 3,
+      "meetsThreshold": false,
+      "shortfallExplanation": "Three edges remained missing at the prerequisite-only audit. The subsequent Gaussian-model correction adds one, leaving a current shortfall of two. Planned Bayes/regression cards and descriptive classification examples are not counted as exact squared-error theorems.",
+      "qualifyingEdges": [
+        {
+          "from": "behav-1.9",
+          "to": "pma-6.22"
+        },
+        {
+          "from": "behav-1.14",
+          "to": "opt-2.12"
+        },
+        {
+          "from": "behav-1.1",
+          "to": "pma-3.21"
+        },
+        {
+          "from": "behav-1.2",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "behav-1.4",
+          "to": "rca-3.3"
+        },
+        {
+          "from": "behav-1.5",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "behav-1.6",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "behav-1.7",
+          "to": "ode-1.5"
+        },
+        {
+          "from": "behav-1.8",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "behav-2.12",
+          "to": "prob-1.2.5"
+        },
+        {
+          "from": "behav-2.13",
+          "to": "psych-1.11"
+        },
+        {
+          "from": "behav-2.3",
+          "to": "psych-1.11"
+        },
+        {
+          "from": "behav-3.16",
+          "to": "psych-3.8"
+        },
+        {
+          "from": "behav-3.1",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "behav-3.1",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "behav-3.8",
+          "to": "prob-1.1.1"
+        },
+        {
+          "from": "behav-3.9",
+          "to": "stat-1.3"
+        },
+        {
+          "from": "behav-3.10",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "behav-4.6",
+          "to": "prob-2.2.6"
+        },
+        {
+          "from": "behav-5.10",
+          "to": "causal-3.4"
+        },
+        {
+          "from": "behav-5.1",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "behav-5.3",
+          "to": "prob-1.2.4"
+        }
+      ]
+    },
+    {
+      "id": "psych",
+      "field": "social",
+      "writtenItems": 54,
+      "before": 16,
+      "added": 9,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "psych-1.7",
+          "to": "stoch-1.1"
+        },
+        {
+          "from": "psych-1.8",
+          "to": "prob-2.1.20"
+        },
+        {
+          "from": "psych-1.10",
+          "to": "music-1.8"
+        },
+        {
+          "from": "psych-1.11",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "psych-1.13",
+          "to": "prob-2.1.20"
+        },
+        {
+          "from": "psych-1.14",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "psych-1.1",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "psych-1.3",
+          "to": "prob-1.2.5"
+        },
+        {
+          "from": "psych-1.3",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "psych-1.4",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "psych-1.4",
+          "to": "stat-5.5"
+        },
+        {
+          "from": "psych-2.10",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "psych-2.12",
+          "to": "stat-6.4"
+        },
+        {
+          "from": "psych-2.13",
+          "to": "prob-2.1.11"
+        },
+        {
+          "from": "psych-2.13",
+          "to": "ladr-6.14"
+        },
+        {
+          "from": "psych-2.15",
+          "to": "stat-6.4"
+        },
+        {
+          "from": "psych-2.1",
+          "to": "stat-6.2"
+        },
+        {
+          "from": "psych-2.5",
+          "to": "ladr-3.63"
+        },
+        {
+          "from": "psych-2.6",
+          "to": "stat-6.5"
+        },
+        {
+          "from": "psych-2.7",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "psych-3.9",
+          "to": "music-1.9"
+        },
+        {
+          "from": "psych-3.10",
+          "to": "ladr-7.29"
+        },
+        {
+          "from": "psych-4.8",
+          "to": "rca-8.13"
+        },
+        {
+          "from": "psych-4.8",
+          "to": "pma-5.15"
+        },
+        {
+          "from": "psych-4.4",
+          "to": "prob-2.2.1"
+        }
+      ]
+    },
+    {
+      "id": "soc",
+      "field": "social",
+      "writtenItems": 53,
+      "before": 18,
+      "added": 7,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "soc-1.6",
+          "to": "mathbio-2.3"
+        },
+        {
+          "from": "soc-1.7",
+          "to": "game-1.5"
+        },
+        {
+          "from": "soc-1.7",
+          "to": "game-1.4"
+        },
+        {
+          "from": "soc-2.9",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "soc-2.13",
+          "to": "stat-8.12"
+        },
+        {
+          "from": "soc-2.14",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "soc-2.2",
+          "to": "algo-8.5"
+        },
+        {
+          "from": "soc-2.3",
+          "to": "prob-3.6.1"
+        },
+        {
+          "from": "soc-2.4",
+          "to": "prob-1.6.9a"
+        },
+        {
+          "from": "soc-3.1",
+          "to": "algo-8.4"
+        },
+        {
+          "from": "soc-3.2",
+          "to": "ladr-5.5"
+        },
+        {
+          "from": "soc-3.3",
+          "to": "stoch-4.15"
+        },
+        {
+          "from": "soc-3.4",
+          "to": "stoch-4.1"
+        },
+        {
+          "from": "soc-3.4",
+          "to": "stoch-4.7"
+        },
+        {
+          "from": "soc-3.5",
+          "to": "prob-2.2.1"
+        },
+        {
+          "from": "soc-3.5",
+          "to": "prob-1.6.4"
+        },
+        {
+          "from": "soc-4.8",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "soc-4.9",
+          "to": "ode-1.3"
+        },
+        {
+          "from": "soc-4.13",
+          "to": "prob-3.4.1"
+        },
+        {
+          "from": "soc-4.14",
+          "to": "stoch-3.9"
+        },
+        {
+          "from": "soc-4.14",
+          "to": "ladr-6.14"
+        },
+        {
+          "from": "soc-4.16",
+          "to": "algo-8.7"
+        },
+        {
+          "from": "soc-4.16",
+          "to": "stoch-3.9"
+        },
+        {
+          "from": "soc-4.1",
+          "to": "prob-3.6.1"
+        },
+        {
+          "from": "soc-4.2",
+          "to": "stoch-3.9"
+        }
+      ]
+    },
+    {
+      "id": "polsci",
+      "field": "social",
+      "writtenItems": 62,
+      "before": 20,
+      "added": 6,
+      "after": 26,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "polsci-1.11",
+          "to": "comb-1.5"
+        },
+        {
+          "from": "polsci-1.1",
+          "to": "micro-4.3"
+        },
+        {
+          "from": "polsci-1.1",
+          "to": "comb-1.5"
+        },
+        {
+          "from": "polsci-1.1",
+          "to": "comb-1.11"
+        },
+        {
+          "from": "polsci-1.2",
+          "to": "comb-1.2"
+        },
+        {
+          "from": "polsci-1.5",
+          "to": "comb-1.4"
+        },
+        {
+          "from": "polsci-2.8",
+          "to": "game-4.2"
+        },
+        {
+          "from": "polsci-2.9",
+          "to": "game-1.7"
+        },
+        {
+          "from": "polsci-2.12",
+          "to": "logic-2.3"
+        },
+        {
+          "from": "polsci-2.2",
+          "to": "prob-3.4.1"
+        },
+        {
+          "from": "polsci-3.11",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "polsci-3.12",
+          "to": "logic-2.4"
+        },
+        {
+          "from": "polsci-3.13",
+          "to": "micro-4.3"
+        },
+        {
+          "from": "polsci-3.2",
+          "to": "micro-4.3"
+        },
+        {
+          "from": "polsci-4.13",
+          "to": "micro-10.17"
+        },
+        {
+          "from": "polsci-4.3",
+          "to": "micro-10.17"
+        },
+        {
+          "from": "polsci-4.5",
+          "to": "opt-2.3"
+        },
+        {
+          "from": "polsci-5.7",
+          "to": "behav-1.3"
+        },
+        {
+          "from": "polsci-5.8",
+          "to": "prob-2.2.6"
+        },
+        {
+          "from": "polsci-5.9",
+          "to": "behav-1.3"
+        },
+        {
+          "from": "polsci-5.1",
+          "to": "behav-1.3"
+        },
+        {
+          "from": "polsci-5.3",
+          "to": "pma-8.22"
+        },
+        {
+          "from": "polsci-5.3",
+          "to": "comb-1.6"
+        },
+        {
+          "from": "polsci-5.4",
+          "to": "stat-1.16"
+        },
+        {
+          "from": "polsci-5.4",
+          "to": "prob-2.2.6"
+        },
+        {
+          "from": "polsci-5.5",
+          "to": "stat-2.1"
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "field": "social",
+      "writtenItems": 50,
+      "before": 13,
+      "added": 11,
+      "after": 24,
+      "required": 25,
+      "shortfall": 1,
+      "meetsThreshold": false,
+      "shortfallExplanation": "One additional edge would be needed. Most remaining statements derive life-table bookkeeping from existing demography and renewal dependencies. No additional theorem was added solely to reach the threshold.",
+      "qualifyingEdges": [
+        {
+          "from": "demo-1.6",
+          "to": "ladr-3.21"
+        },
+        {
+          "from": "demo-1.6",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "demo-1.8",
+          "to": "causal-4.4"
+        },
+        {
+          "from": "demo-1.10",
+          "to": "mathbio-1.4"
+        },
+        {
+          "from": "demo-1.1",
+          "to": "mathbio-1.1"
+        },
+        {
+          "from": "demo-1.2",
+          "to": "pma-6.1"
+        },
+        {
+          "from": "demo-1.4",
+          "to": "mathbio-1.3"
+        },
+        {
+          "from": "demo-2.8",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "demo-2.11",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "demo-2.1",
+          "to": "mathbio-4.1"
+        },
+        {
+          "from": "demo-2.4",
+          "to": "rca-8.16"
+        },
+        {
+          "from": "demo-2.5",
+          "to": "pma-5.1"
+        },
+        {
+          "from": "demo-2.6",
+          "to": "pma-6.21"
+        },
+        {
+          "from": "demo-2.6",
+          "to": "pma-8.6"
+        },
+        {
+          "from": "demo-3.1",
+          "to": "mathbio-1.8"
+        },
+        {
+          "from": "demo-3.1",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "demo-3.3",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "demo-3.5",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "demo-3.6",
+          "to": "ladr-7.70"
+        },
+        {
+          "from": "demo-3.6",
+          "to": "nla-1.8"
+        },
+        {
+          "from": "demo-4.10",
+          "to": "prob-1.6.9a"
+        },
+        {
+          "from": "demo-4.10",
+          "to": "prob-1.6.13"
+        },
+        {
+          "from": "demo-4.3",
+          "to": "mathbio-4.5"
+        },
+        {
+          "from": "demo-4.5",
+          "to": "mathbio-4.5"
+        }
+      ]
+    },
+    {
+      "id": "art",
+      "field": "arts",
+      "writtenItems": 55,
+      "before": 12,
+      "added": 8,
+      "after": 20,
+      "required": 25,
+      "shortfall": 5,
+      "meetsThreshold": false,
+      "shortfallExplanation": "Five additional edges would be needed. Several actual optical prerequisites remain planned (thin lenses, diffraction and related wave optics); perspective constructions and colour examples do not justify duplicate elementary foundations.",
+      "qualifyingEdges": [
+        {
+          "from": "art-1.9",
+          "to": "ladr-6.10"
+        },
+        {
+          "from": "art-1.10",
+          "to": "ladr-3.1"
+        },
+        {
+          "from": "art-1.15",
+          "to": "waves-4.5"
+        },
+        {
+          "from": "art-2.2",
+          "to": "mech-5.2"
+        },
+        {
+          "from": "art-3.10",
+          "to": "qm-1.1"
+        },
+        {
+          "from": "art-3.1",
+          "to": "mech-5.2"
+        },
+        {
+          "from": "art-3.3",
+          "to": "mech-2.3"
+        },
+        {
+          "from": "art-3.4",
+          "to": "mech-5.2"
+        },
+        {
+          "from": "art-3.4",
+          "to": "pma-5.8"
+        },
+        {
+          "from": "art-3.6",
+          "to": "waves-4.15"
+        },
+        {
+          "from": "art-4.12",
+          "to": "ladr-3.22"
+        },
+        {
+          "from": "art-4.14",
+          "to": "ladr-1.20"
+        },
+        {
+          "from": "art-4.15",
+          "to": "ladr-3.63"
+        },
+        {
+          "from": "art-4.16",
+          "to": "ladr-3.84"
+        },
+        {
+          "from": "art-4.1",
+          "to": "ladr-3.1"
+        },
+        {
+          "from": "art-4.2",
+          "to": "ladr-3.63"
+        },
+        {
+          "from": "art-4.3",
+          "to": "ladr-3.15"
+        },
+        {
+          "from": "art-4.5",
+          "to": "ladr-3.84"
+        },
+        {
+          "from": "art-4.6",
+          "to": "pma-9.4"
+        },
+        {
+          "from": "art-4.7",
+          "to": "opt-2.1"
+        }
+      ]
+    },
+    {
+      "id": "ling",
+      "field": "humanities",
+      "writtenItems": 52,
+      "before": 10,
+      "added": 10,
+      "after": 20,
+      "required": 25,
+      "shortfall": 5,
+      "meetsThreshold": false,
+      "shortfallExplanation": "Five additional edges would be needed. Much of written phonology and morphology is descriptive. The actual spectrogram result is planned; generic Fourier definitions and unrelated Catalan-pattern results were not substituted to manufacture a written prerequisite.",
+      "qualifyingEdges": [
+        {
+          "from": "ling-1.1",
+          "to": "music-4.10"
+        },
+        {
+          "from": "ling-1.1",
+          "to": "sig-3.10"
+        },
+        {
+          "from": "ling-1.1",
+          "to": "sig-4.1"
+        },
+        {
+          "from": "ling-1.7",
+          "to": "music-4.9"
+        },
+        {
+          "from": "ling-1.8",
+          "to": "music-3.3"
+        },
+        {
+          "from": "ling-2.6",
+          "to": "comb-1.5"
+        },
+        {
+          "from": "ling-2.13",
+          "to": "comb-1.5"
+        },
+        {
+          "from": "ling-4.6",
+          "to": "ode-1.4"
+        },
+        {
+          "from": "ling-4.8",
+          "to": "info-1.2"
+        },
+        {
+          "from": "ling-4.8",
+          "to": "info-2.7"
+        },
+        {
+          "from": "ling-4.9",
+          "to": "stat-3.5"
+        },
+        {
+          "from": "ling-4.9",
+          "to": "stoch-1.1"
+        },
+        {
+          "from": "ling-4.10",
+          "to": "info-1.2"
+        },
+        {
+          "from": "ling-4.12",
+          "to": "prob-1.6.13"
+        },
+        {
+          "from": "ling-4.12",
+          "to": "stat-2.11"
+        },
+        {
+          "from": "ling-4.14",
+          "to": "info-1.2"
+        },
+        {
+          "from": "ling-4.14",
+          "to": "info-1.7"
+        },
+        {
+          "from": "ling-4.1",
+          "to": "opt-1.6"
+        },
+        {
+          "from": "ling-4.2",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "ling-4.2",
+          "to": "comb-1.1"
+        }
+      ]
+    },
+    {
+      "id": "phil",
+      "field": "humanities",
+      "writtenItems": 34,
+      "before": 18,
+      "added": 9,
+      "after": 27,
+      "required": 25,
+      "shortfall": 0,
+      "meetsThreshold": true,
+      "qualifyingEdges": [
+        {
+          "from": "phil-1.1",
+          "to": "logic-2.3"
+        },
+        {
+          "from": "phil-1.1",
+          "to": "logic-2.4"
+        },
+        {
+          "from": "phil-1.2",
+          "to": "logic-3.4"
+        },
+        {
+          "from": "phil-1.3",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "phil-1.5",
+          "to": "prob-2.1.1a"
+        },
+        {
+          "from": "phil-1.6",
+          "to": "logic-4.1"
+        },
+        {
+          "from": "phil-2.1",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "phil-2.2",
+          "to": "pma-3.26"
+        },
+        {
+          "from": "phil-2.3",
+          "to": "pma-5.1"
+        },
+        {
+          "from": "phil-2.5",
+          "to": "pma-3.1"
+        },
+        {
+          "from": "phil-2.6",
+          "to": "pma-2.4"
+        },
+        {
+          "from": "phil-2.8",
+          "to": "pma-2.4"
+        },
+        {
+          "from": "phil-2.8",
+          "to": "pma-2.12"
+        },
+        {
+          "from": "phil-2.9",
+          "to": "pma-3.28"
+        },
+        {
+          "from": "phil-2.10",
+          "to": "rca-2.20"
+        },
+        {
+          "from": "phil-2.10",
+          "to": "pma-2.43a"
+        },
+        {
+          "from": "phil-2.10",
+          "to": "pma-2.14"
+        },
+        {
+          "from": "phil-3.1",
+          "to": "logic-4.1"
+        },
+        {
+          "from": "phil-3.4",
+          "to": "logic-2.3"
+        },
+        {
+          "from": "phil-3.6",
+          "to": "psych-1.9"
+        },
+        {
+          "from": "phil-3.7",
+          "to": "ode-1.8"
+        },
+        {
+          "from": "phil-4.7",
+          "to": "logic-1.6"
+        },
+        {
+          "from": "phil-4.8",
+          "to": "stat-2.1"
+        },
+        {
+          "from": "phil-4.9",
+          "to": "pma-2.14"
+        },
+        {
+          "from": "phil-4.1",
+          "to": "logic-1.7"
+        },
+        {
+          "from": "phil-4.5",
+          "to": "logic-4.2"
+        },
+        {
+          "from": "phil-4.5",
+          "to": "logic-4.1"
+        }
+      ]
+    }
+  ],
+  "additions": [
+    {
+      "from": "macro-2.11",
+      "to": "prob-4.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Conditional expectation",
+      "sourceFile": "content/macro/ch02-b.js",
+      "existingClaimAnchor": "e real rate $r$ satisfies, at every date and at an interior optimum, the first-order condition $$u'(c_t)=\\beta(1+r)\\,\\mathbb E_t\\,u'(c_{t+1}).$$ Under certainty the expectation drops out. For CRRA utility $u'(c)=c^{-\\theta}$ this gives the consumption-growth rule $$\\frac{c_{t+1}}{c_t}=\\bigl[\\beta(1+r)\\bigr]^{1/\\theta",
+      "reason": "The stochastic Euler equation explicitly conditions marginal utility on current information."
+    },
+    {
+      "from": "macro-2.12",
+      "to": "prob-4.2.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Filtration and martingale (sub-, super-)",
+      "sourceFile": "content/macro/ch02-b.js",
+      "existingClaimAnchor": "quadratic utility and $\\beta(1+r)=1$, the Euler equation (macro-2.11) becomes $\\mathbb E_t\\,c_{t+1}=c_t$: consumption is a **martingale**, $$c_{t+1}=c_t+\\varepsilon_{t+1},\\qquad \\mathbb E_t\\,\\varepsilon_{t+1}=0,$$ and no variable known at date $t$ — in particular lagged income or its growth — helps to predict the change in ",
+      "reason": "The displayed conditional-mean restriction is the defining martingale property."
+    },
+    {
+      "from": "macro-2.4",
+      "to": "pma-9.23",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Contraction principle (Banach fixed point theorem)",
+      "sourceFile": "content/macro/ch02.js",
+      "existingClaimAnchor": " the dynamics, write the one-line recursion as an affine map $u\\mapsto(1-s-f)u+s$ with slope $\\lvert 1-s-f\\rvert<1$; it is a contraction (its iterates are partial sums of a geometric series, pma-3.26), so iterates converge to its unique fixed point at the geometric rate $(1-s-f)^t$. Because the monthly job-finding rate in th",
+      "reason": "The explanation explicitly invokes contraction to obtain convergence to the unique unemployment fixed point."
+    },
+    {
+      "from": "macro-3.9",
+      "to": "pma-9.15",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Chain rule",
+      "sourceFile": "content/macro/ch03-b.js",
+      "existingClaimAnchor": "t the elasticity of output with respect to capital is capital's income share $\\alpha$ and with respect to labour $1-\\alpha$. Differentiating logarithms in time gives the exact decomposition $$\\frac{\\dot Y}{Y} = \\alpha\\,\\frac{\\dot K}{K} + (1-\\alpha)\\,\\frac{\\dot L}{L} + \\frac{\\dot A}{A},$$ and the **Solow residual** $\\dot A/A$ ",
+      "reason": "The derivation differentiates the multivariate production function along the capital and labour paths."
+    },
+    {
+      "from": "macro-3.10",
+      "to": "ladr-6.55",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Orthogonal projection P_U",
+      "sourceFile": "content/macro/ch03-b.js",
+      "existingClaimAnchor": "er samples at about 2% a year. Here the same regression is run on Penn World Table data from 1960 to 2019, with the controls partialled out by the Frisch–Waugh theorem.",
+      "reason": "Partialling out controls is the orthogonal projection used in the existing regression explanation."
+    },
+    {
+      "from": "macro-4.8",
+      "to": "opt-1.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/macro/ch04-b.js",
+      "existingClaimAnchor": "hree inputs, lowering the implied capital share to a plausible value while raising the fit. The test is a *restriction*: the coefficients on $\\ln s_k$, $\\ln s_h$ and $\\ln(n+g+\\delta)$ should sum to zero, which the data do not reject.",
+      "reason": "The written empirical growth equation is fitted by least squares, whose normal equations are supplied by the target."
+    },
+    {
+      "from": "macro-9.11",
+      "to": "opt-1.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/macro/ch09-papers.js",
+      "existingClaimAnchor": "ndex as the rate of change, averaged the 53 years into six unemployment bands to wash out the cycle, and fitted his curve by least squares plus trial and error. Samuelson and Solow (1960) recast it as a trade-off between inflation and unemployment that policy could exploit, which made the curve the centre of 1960s macroeconomi",
+      "reason": "The source-card explanation explicitly describes fitting the wage-change curve by least squares."
+    },
+    {
+      "from": "macro-3.8",
+      "to": "ode-1.5",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Exponential growth and decay",
+      "sourceFile": "content/macro/ch03-b.js",
+      "existingClaimAnchor": "on $\\delta$, let $\\hat k$ be capital per effective worker with steady state $\\hat k^*$. Near the steady state the gap closes exponentially: $$\\hat k(t) - \\hat k^* \\approx \\big(\\hat k(0) - \\hat k^*\\big)\\,e^{-\\lambda t},\\qquad \\lambda = (1-\\alpha)(n+g+\\delta).$$ The same rate applies to output per effective worker. For $\\alpha",
+      "reason": "The existing linearized gap closes exponentially, using the solution of a constant-coefficient scalar growth/decay equation."
+    },
+    {
+      "from": "macro-4.2",
+      "to": "pma-3.14",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Monotone sequences converge iff bounded",
+      "sourceFile": "content/macro/ch04.js",
+      "existingClaimAnchor": "they saved. The saving map is increasing and concave with $k_{t+1}(0)=0$ and infinite slope there, so iterating it converges monotonically to its single fixed point, as in the Solow model. The difference from Solow is that nobody chooses the *aggregate* saving rate for the good of the dynasty: each household saves for it",
+      "reason": "The explanation obtains convergence of positive capital iterates by monotonicity and boundedness."
+    },
+    {
+      "from": "macro-3.7",
+      "to": "pma-5.3",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Sum, product and quotient rules",
+      "sourceFile": "content/macro/ch03.js",
+      "existingClaimAnchor": "roductivity of labour at rate $g$: $Y = F(K, AL)$ with $\\dot A/A = g$, $\\dot L/L = n$. In *effective-labour* units $\\hat k = K/(AL)$ and $\\hat y = Y/(AL) = f(\\hat k)$, $$\\dot{\\hat k} = s f(\\hat k) - (n+g+\\delta)\\hat k ,$$ which has the same shape as macro-3.6 with $\\delta$ replaced by $n+g+\\delta$. So $\\hat k\\to\\hat k^*",
+      "reason": "The effective-worker transformation differentiates a quotient and a product to obtain the dilution terms."
+    },
+    {
+      "from": "macro-4.7",
+      "to": "pma-9.15",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Chain rule",
+      "sourceFile": "content/macro/ch04-b.js",
+      "existingClaimAnchor": "Let technology advance at a rate $g_A$ and let population growth be capped at a biological maximum $n_{\\max}$. In the Malthusian economy of 4.6, income per head is $y \\propto A\\,N^{-(1-\\alpha)}$, so $$\\frac{\\dot y}{y} = g_A - (1-\\alpha)\\,\\frac{\\dot N}{N}",
+      "reason": "The per-capita production identity is logarithmically differentiated to compare technical and population growth."
+    },
+    {
+      "from": "fin-2.5",
+      "to": "rca-3.3",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Jensen's inequality",
+      "sourceFile": "content/fin/ch02.js",
+      "existingClaimAnchor": "LL)\\ge0$. A barbell's convexity exceeds the single date $H$ because $\\sum w_iT_i(T_i+1)\\ge H(H+1)$ whenever $\\sum w_iT_i=H$ (Jensen). The method only controls parallel shifts: a twist changes rates at $T_1$ and $T_2$ differently from the rate at $H$, so the first-order term no longer vanishes and the surplus can be nega",
+      "reason": "The immunization proof explicitly applies Jensen to the cash-flow maturity weights."
+    },
+    {
+      "from": "fin-2.11",
+      "to": "prob-2.7.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Moment-generating function",
+      "sourceFile": "content/fin/ch02-b.js",
+      "existingClaimAnchor": " diffusion $$dr_t=a\\,(b-r_t)\\,dt+\\sigma\\,dW_t ,$$ with speed $a>0$, long-run mean $b$ and volatility $\\sigma$. Then $r_t$ is Gaussian with $E[r_t]=b+(r_0-b)e^{-at}$ and $\\operatorname{Var}r_t=\\sigma^2(1-e^{-2at})/(2a)$. If bonds are priced by $P(0,T)=E\\bigl[e^{-\\int_0^Tr_u\\,du}\\bigr]$ (risk-neutral expectation under the m",
+      "reason": "The bond-price calculation evaluates the exponential moment of an integrated Gaussian short rate."
+    },
+    {
+      "from": "fin-2.12",
+      "to": "pma-5.15",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Taylor's theorem",
+      "sourceFile": "content/fin/ch02-b.js",
+      "existingClaimAnchor": ", so with a flat riskless rate $r$ the price is $X/(1+r)^T$ and the yield satisfies $1+y=(1+r)\\,X^{-1/T}$. For small $q$, $s\\approx(1-R)\\,q$: the spread pays for the expected loss given default. Read backwards, an observed spread and an assumed recovery imply a default probability $q\\approx s/(1-R)$. Today's price is th",
+      "reason": "The displayed small-default-probability credit-spread relation is a first-order expansion."
+    },
+    {
+      "from": "fin-3.3",
+      "to": "prob-1.6.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linearity and monotonicity of expectation",
+      "sourceFile": "content/fin/ch03.js",
+      "existingClaimAnchor": "rrelations are $1$. Scope: one period, returns with finite second moments; $\\Sigma$ is symmetric and positive semidefinite. Expectation is linear, so $\\mu_p$ is the weighted mean. For the variance, expand $\\bigl(\\sum w_i(r_i-\\mu_i)\\bigr)^2$ and take expectations: every pair $(i,j)$ contributes $w_iw_j\\sigma_{ij}$, the diagonal terms ",
+      "reason": "Portfolio mean is explicitly derived by linearity of expectation."
+    },
+    {
+      "from": "fin-3.3",
+      "to": "prob-1.6.3",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Hölder’s inequality for expectations",
+      "sourceFile": "content/fin/ch03.js",
+      "existingClaimAnchor": "air $(i,j)$ contributes $w_iw_j\\sigma_{ij}$, the diagonal terms being the variances. Since $\\sigma_{ij}\\le\\sigma_i\\sigma_j$ (Cauchy–Schwarz), the double sum is at most $(\\sum w_i\\sigma_i)^2$, which proves the inequality for non-negative weights; every correlation below $1$ makes the off-diagonal terms smaller. These cro",
+      "reason": "The covariance bound in the derivation is Cauchy–Schwarz, the p=q=2 case of the target."
+    },
+    {
+      "from": "fin-3.6",
+      "to": "opt-1.4",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "First-order necessary condition: ∇f = 0",
+      "sourceFile": "content/fin/ch03.js",
+      "existingClaimAnchor": "tic in $w$ with $w^2$-coefficient $\\sigma_A^2+\\sigma_B^2-2\\rho\\sigma_A\\sigma_B=\\operatorname{Var}(r_A-r_B)\\ge0$; setting its derivative to zero gives $w^*$. For $\\rho=1$ the variance is the perfect square $(w\\sigma_A+(1-w)\\sigma_B)^2$, so $\\sigma_p$ is linear in $w$ and the curve is a segment (no diversification, fin-3.3); ",
+      "reason": "The minimum-variance weight is obtained by setting the derivative of the quadratic objective to zero."
+    },
+    {
+      "from": "fin-3.13",
+      "to": "stat-1.3",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Moments of the sample mean; unbiasedness of S²",
+      "sourceFile": "content/fin/ch03-b.js",
+      "existingClaimAnchor": "ns are most favourable — which are also those whose estimation errors are most favourable. With $T$ monthly observations the standard error of an annual mean return is about $\\sigma/\\sqrt{T/12}$, typically far larger than the differences between the true means of similar assets; the optimal weights $\\hat w\\propto\\hat\\Sigma^{-1}",
+      "reason": "The stated error of an estimated mean scales as sample standard deviation divided by square root of sample size."
+    },
+    {
+      "from": "fin-3.14",
+      "to": "stat-1.19",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Multivariate normal: marginals and conditionals",
+      "sourceFile": "content/fin/ch03-b.js",
+      "existingClaimAnchor": "ion with finite variance, since $\\mathbb E u=\\mu-\\tfrac b2(\\mu^2+\\sigma^2)$; and (ii) **any** utility if returns are jointly normal (more generally elliptically distributed; Chamberlain, 1983), because the distribution of every portfolio is then determined by its mean and variance. For exponential (CARA) utility $u(x)=-",
+      "reason": "The mean–variance reduction explicitly relies on every linear portfolio of jointly normal returns being normal."
+    },
+    {
+      "from": "fin-3.14",
+      "to": "prob-2.7.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Moment-generating function",
+      "sourceFile": "content/fin/ch03-b.js",
+      "existingClaimAnchor": "istributed; Chamberlain, 1983), because the distribution of every portfolio is then determined by its mean and variance. For exponential (CARA) utility $u(x)=-e^{-ax}$ and a normal return $X\\sim N(\\mu,\\sigma^2)$, $$\\mathbb E\\,u(X)=-\\exp\\!\\bigl(-a(\\mu-\\tfrac a2\\sigma^2)\\bigr),\\qquad \\text{certainty equivalent } \\mu-\\tfrac a2\\",
+      "reason": "The CARA certainty-equivalent calculation evaluates an exponential moment of normal portfolio wealth."
+    },
+    {
+      "from": "fin-4.3",
+      "to": "opt-1.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/fin/ch04.js",
+      "existingClaimAnchor": "$ has a standard error, and beta itself moves over time. A regression line is the best linear predictor of $r_i$ from $r_M$ (least squares, opt-1.6), so its slope is the covariance over the variance and the residual is uncorrelated with the market by construction. The market part of the return is what cannot be diversified awa",
+      "reason": "Market-model beta and residual orthogonality are the normal equations of least squares."
+    },
+    {
+      "from": "fin-4.5",
+      "to": "ladr-3.21",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Fundamental theorem of linear maps",
+      "sourceFile": "content/fin/ch04.js",
+      "existingClaimAnchor": "ance matrix of $n$ assets estimated from $T$ monthly observations has $n(n+1)/2$ entries each with sampling error, and it is singular if $T\\le n$; an optimiser (fin-3.7, fin-3.13) loves to exploit those errors. Forcing the structure $\\beta\\beta^{\\!\\top}\\sigma_M^2+\\operatorname{diag}(\\sigma_\\varepsilon^2)$ throws away real",
+      "reason": "The sample-covariance singularity statement uses the rank bound of the centred observation matrix."
+    },
+    {
+      "from": "fin-5.2",
+      "to": "prob-2.2.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Variance of a sum of uncorrelated variables",
+      "sourceFile": "content/fin/ch05.js",
+      "existingClaimAnchor": "*random-walk model** the price changes $\\Delta P_t=P_t-P_{t-1}$ are independent, identically distributed with mean $\\mu$ and variance $\\sigma^2$; in **Bachelier's version** they are normal and the price is Brownian motion with drift, $$P_t=P_0+\\mu t+\\sigma W_t .$$ Consequences: (i) price changes are uncorrelated, $\\operat",
+      "reason": "The random-walk calculation adds independent increment variances."
+    },
+    {
+      "from": "fin-5.2",
+      "to": "prob-3.4.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Central limit theorem (i.i.d.)",
+      "sourceFile": "content/fin/ch05.js",
+      "existingClaimAnchor": "t $t$ and many small independent changes made by buyers and sellers who each have no edge over the market, so by the central limit theorem the total change is normal with variance proportional to the time elapsed. Variances of independent increments add, so the standard deviation grows like $\\sqrt t$, and the density $",
+      "reason": "The explanation explicitly identifies the central-limit argument for aggregated price increments."
+    },
+    {
+      "from": "fin-5.6",
+      "to": "prob-4.1.15",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Conditional expectation as an L² projection",
+      "sourceFile": "content/fin/ch05-b.js",
+      "existingClaimAnchor": " a variance decomposition: a forecast cannot be more variable than the quantity it forecasts, because forecast and error are orthogonal. $p^*$ is smooth because dividends are smooth and a discounted sum of many of them averages out their fluctuations; the price is not. The calculation needs a terminal value for $p^*$ at the",
+      "reason": "The variance-bound proof is the orthogonal conditional-expectation decomposition."
+    },
+    {
+      "from": "fin-5.9",
+      "to": "stat-3.5",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Maximum likelihood estimation",
+      "sourceFile": "content/fin/ch05-b.js",
+      "existingClaimAnchor": "-2\\alpha^2}$ whenever the denominator is positive. Scope: a parametric model of the conditional variance, fitted by maximum likelihood; the fit to U.S. equity data has $\\alpha\\approx0.1$ and $\\beta\\approx0.9$ with $\\alpha+\\beta$ close to 1. After a large shock $r_{t-1}^2$ is large, so $\\sigma_t^2$ jumps up; because $\\beta$",
+      "reason": "The conditional Gaussian GARCH objective is explicitly maximized as a likelihood."
+    },
+    {
+      "from": "fin-5.11",
+      "to": "prob-4.1.13",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Tower property",
+      "sourceFile": "content/fin/ch05-c.js",
+      "existingClaimAnchor": " and using that $f$ already solves it leaves $B_t=\\mathrm E_t[B_{t+1}]/(1+r)$, so $B$ grows on average at the discount rate; iterating the pricing equation forward $T$ times gives $p_t=f_t^{(T)}+\\mathrm E_t[p_{t+T}]/(1+r)^T$, and the last term is the bubble's discounted contribution, which vanishes exactly under the tra",
+      "reason": "Forward iteration of the conditional pricing equation uses the tower property."
+    },
+    {
+      "from": "game-1.2",
+      "to": "pma-4.16",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Extreme value theorem",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": "i(a_i, a_{-i}) \\ge u_i(a_i', a_{-i}) \\text{ for all } a_i'\\in A_i \\,\\}.$$ $B_i(a_{-i})$ is nonempty when $A_i$ is finite (or compact with $u_i$ continuous in $a_i$), and it may contain several actions; when it is always a single action, $b_i(a_{-i})$ is called the **best-response function**. In a bimatrix, player 1's bes",
+      "reason": "Nonempty best responses on compact action spaces are obtained by the extreme value theorem."
+    },
+    {
+      "from": "game-1.2",
+      "to": "opt-1.4",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "First-order necessary condition: ∇f = 0",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": "r exists when payoffs are continuous on a compact set, and for a smooth concave payoff it solves the first-order condition $\\partial u_i/\\partial a_i = 0$: for $u_i = a_i\\,(c + b\\,a_j - a_i)$ this gives the line $b_i(a_j) = (c + b\\,a_j)/2$, clipped at the edges of the action set. Its slope says whether actions are *strat",
+      "reason": "The smooth interior best response is obtained by setting its action derivative to zero."
+    },
+    {
+      "from": "game-1.3",
+      "to": "prob-1.6.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linearity and monotonicity of expectation",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": "each cell is a best reply for player 1 with probability $1/m$ and for player 2 with probability $1/n$, independently, so the expected number of pure equilibria is exactly $mn\\cdot\\frac1m\\cdot\\frac1n = 1$, and the chance that there is none tends to $1/e$ (Dresher, 1970). Existence in general needs mixed strategies (game-2.",
+      "reason": "The expected count of pure equilibria is the sum of the individual cell indicator expectations."
+    },
+    {
+      "from": "game-1.3",
+      "to": "prob-2.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": "h continuous payoffs, each cell is a best reply for player 1 with probability $1/m$ and for player 2 with probability $1/n$, independently, so the expected number of pure equilibria is exactly $mn\\cdot\\frac1m\\cdot\\frac1n = 1$, and the chance that there is none tends to $1/e$ (Dresher, 1970). Existence in general needs mixed ",
+      "reason": "The cell probability factors as 1/m times 1/n using independence of players’ payoff draws."
+    },
+    {
+      "from": "game-1.8",
+      "to": "pma-3.20",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Some special sequences",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": " version, player $i$'s payoff is $-|x_i - t|$). Guesses above $100p$ are dominated; once they are deleted, guesses above $100p^2$ are dominated in the remaining game, and so on: after $k$ rounds of iterated elimination only $[0, 100p^k]$ survives, so the unique Nash equilibrium is for everybody to guess $0$. Experim",
+      "reason": "The iterated surviving action bound tends to zero by geometric-power convergence."
+    },
+    {
+      "from": "game-1.10",
+      "to": "prob-1.2.4",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Exponential distribution",
+      "sourceFile": "content/game/ch01.js",
+      "existingClaimAnchor": ", t_2) = (t, 0)$ or $(0, t)$ with $t\\ge v$. There is also a symmetric equilibrium in which each player concedes at a random, exponentially distributed time with mean $v$; then each player's expected payoff is $0$ — the fight dissipates the whole prize (game-2.2). Fix the opponent's time $t_2$. Conceding at once gives 0; hold",
+      "reason": "The symmetric mixed quitting time is explicitly exponentially distributed."
+    },
+    {
+      "from": "game-2.1",
+      "to": "prob-2.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/game/ch02.js",
+      "existingClaimAnchor": "\\sigma_i(a)=1$; the set of these is the simplex $\\Delta(A_i)$, and the pure strategies are its vertices. Players randomize **independently**, so the profile $\\sigma=(\\sigma_1,\\dots,\\sigma_n)$ induces the product distribution on action profiles, and player $i$'s **expected payoff** is $$U_i(\\sigma)=\\sum_{a\\in A}\\Bigl(\\prod_{j",
+      "reason": "Independent mixing gives joint cell probability p_i q_j."
+    },
+    {
+      "from": "game-2.1",
+      "to": "prob-1.6.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linearity and monotonicity of expectation",
+      "sourceFile": "content/game/ch02.js",
+      "existingClaimAnchor": "*, so the profile $\\sigma=(\\sigma_1,\\dots,\\sigma_n)$ induces the product distribution on action profiles, and player $i$'s **expected payoff** is $$U_i(\\sigma)=\\sum_{a\\in A}\\Bigl(\\prod_{j}\\sigma_j(a_j)\\Bigr)\\,u_i(a).$$ The payoffs $u_i$ are now meaningful **up to positive affine maps** $u_i\\mapsto\\alpha u_i+\\beta$, $\\alph",
+      "reason": "The indifference equations are weighted expected payoffs."
+    },
+    {
+      "from": "game-2.9",
+      "to": "stat-2.1",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/game/ch02-b.js",
+      "existingClaimAnchor": "s generally larger, and can contain outcomes with higher payoffs than any Nash equilibrium. Each obedience inequality says: *conditional on being told $a_i$, following it is a best reply*, with the other players' behaviour computed from $\\mu$. A Nash equilibrium satisfies them because the conditional distribution of $a_{-i}$",
+      "reason": "Obedience is evaluated conditional on the player’s recommendation."
+    },
+    {
+      "from": "game-2.10",
+      "to": "pma-3.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Convergent subsequences (Bolzano–Weierstrass)",
+      "sourceFile": "content/game/ch02-b.js",
+      "existingClaimAnchor": "em (game-2.3) to the perturbed games, which are finite-dimensional games on compact convex sets, and passing to a convergent subsequence by compactness.",
+      "reason": "The perturbation-limit proof explicitly chooses a convergent subsequence in the finite-dimensional simplex."
+    },
+    {
+      "from": "game-2.11",
+      "to": "prob-1.2.2a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Density function",
+      "sourceFile": "content/game/ch02-b.js",
+      "existingClaimAnchor": "omes $u_i(a,\\cdot)+\\varepsilon\\,\\theta_i^a$, where the $\\theta_i^a$ are independent across players and actions with a smooth density, and $\\varepsilon>0$ is small. In this game of incomplete information every equilibrium consists of **pure** decision rules: given her shock, a player chooses the action with the highest pe",
+      "reason": "Continuous private payoff shocks induce the threshold probabilities used by the purification argument."
+    },
+    {
+      "from": "game-2.5",
+      "to": "graph-1.2.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Handshake lemma: an even number of odd-degree vertices",
+      "sourceFile": "content/game/ch02.js",
+      "existingClaimAnchor": "$P$ (or $Q$) that releases it — and then repeatedly pivot in the *other* polytope on the label that was just duplicated. The path of vertex pairs cannot revisit a pair and must end at a completely labelled pair other than $(0,0)$: **an equilibrium is found**. This gives a constructive proof that equilibria exist and t",
+      "reason": "The finite complementary-pivot path argument uses even parity of degree-one endpoints."
+    },
+    {
+      "from": "game-2.5",
+      "to": "opt-2.3",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Halfspaces, balls, ellipsoids and polyhedra",
+      "sourceFile": "content/game/ch02.js",
+      "existingClaimAnchor": "rop an arbitrary label $k$ — move along the edge of $P$ (or $Q$) that releases it — and then repeatedly pivot in the *other* polytope on the label that was just duplicated. The path of vertex pairs cannot revisit a pair and must end at a completely labelled pair other than $(0,0)$: **an equilibrium is found**. This gives",
+      "reason": "Best-response polytopes are defined by linear half-space inequalities."
+    },
+    {
+      "from": "game-2.4",
+      "to": "opt-2.12",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linear functionals are maximized at extreme points",
+      "sourceFile": "content/game/ch02.js",
+      "existingClaimAnchor": "Let $K\\subset\\R^d$ be nonempty, compact and convex, and let $\\Phi$ assign to every $x\\in K$ a **nonempty convex** subset $\\Phi(x)\\subseteq K$, in such a way that the graph $\\{(x,y):y\\in\\Phi(x)\\}$ is **closed**. Then $\\Phi$ has a fixed point",
+      "reason": "Best-response maximizers of a linear payoff on the simplex form a convex face."
+    },
+    {
+      "from": "game-3.5",
+      "to": "opt-3.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Operations that preserve convex functions",
+      "sourceFile": "content/game/ch03.js",
+      "existingClaimAnchor": "in $p$. Against a column player who chooses the worst column, her guarantee is the **lower envelope** $g(p)=\\min_jL_j(p)$, a concave piecewise-linear function. The **value** is $v=\\max_{p\\in[0,1]}g(p)$ (game-3.3) and the maximiser $p^*$ is an optimal strategy. At $p^*$ either the maximum is at an end point of $[0,1]$ or ",
+      "reason": "The lower envelope of affine payoff functions is concave."
+    },
+    {
+      "from": "game-3.5",
+      "to": "opt-2.12",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linear functionals are maximized at extreme points",
+      "sourceFile": "content/game/ch03.js",
+      "existingClaimAnchor": "nstruction with $m\\times2$ games uses the upper envelope. Fixing $p$, the column player's best reply to the row mixture is a pure column (a minimum of linear functions over the simplex is attained at a vertex), so the guarantee is the lower envelope of $n$ lines, and the row player's problem is to find its highest poi",
+      "reason": "A linear payoff over the opponent’s simplex attains a minimum at a pure vertex."
+    },
+    {
+      "from": "game-3.7",
+      "to": "stat-1.16",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Hoeffding’s inequality",
+      "sourceFile": "content/game/ch03-b.js",
+      "existingClaimAnchor": "n\\sum_i e^{\\eta G_t(i)}$ with $G_t(i)$ the cumulative gain. Each round raises it by at most $\\eta\\,x_t\\!\\cdot g_t+\\eta^2/8$ (Hoeffding's lemma), while at the end $\\Phi_T\\ge\\eta\\max_iG_T(i)$ and at the start $\\Phi_0=\\ln m$; rearranging yields the regret bound. For the game, regret against the best fixed row says: the row pl",
+      "reason": "The exponential-weights potential proof invokes the Hoeffding exponential-moment bound supplied in the target’s idea."
+    },
+    {
+      "from": "game-3.10",
+      "to": "prob-4.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Conditional expectation",
+      "sourceFile": "content/game/ch03-b.js",
+      "existingClaimAnchor": "t-1}^2+\\|r_t-c\\|^2$: the cross term has the right sign. For realized sampled actions this inequality holds after conditional expectation; summing controls expected squared distance, and Blackwell’s probability argument establishes almost-sure convergence. Necessity: if some half-space $\\{z:u\\cdot z\\le h\\}\\supset S$ is not ap",
+      "reason": "The realized-path approachability proof takes conditional expected distance increments."
+    },
+    {
+      "from": "game-4.1",
+      "to": "comb-1.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Sum and product rules",
+      "sourceFile": "content/game/ch04.js",
+      "existingClaimAnchor": "what to do whatever happens: it is what a player could write on a card and hand to a deputy. The number of strategies is the product of the action counts over the player's nodes, so it grows far faster than the tree itself, while many different strategies lead to the same outcome. This is why the strategic form hides the",
+      "reason": "The strategy-count formula multiplies action counts across all decision nodes."
+    },
+    {
+      "from": "behav-1.9",
+      "to": "pma-6.22",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Integration by parts",
+      "sourceFile": "content/behav/ch01-b.js",
+      "existingClaimAnchor": "he CDFs of a pair related only by second-order dominance cross, and those of an unranked pair have integrals that cross too. Integrating by parts, $E\\,u(A)-E\\,u(B)=\\int_a^b u'(x)\\,[F_B(x)-F_A(x)]\\,dx$, which is non-negative for all increasing $u$ exactly when $F_B-F_A\\ge0$ everywhere (test with step utilities). Integrating once more,",
+      "reason": "The displayed smooth dominance derivation explicitly integrates by parts. Ordinary integration by parts supplies this smooth step; it does not alone prove the extension to arbitrary CDFs or step utilities."
+    },
+    {
+      "from": "behav-1.14",
+      "to": "opt-2.12",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linear functionals are maximized at extreme points",
+      "sourceFile": "content/behav/ch01-b.js",
+      "existingClaimAnchor": "to be the priors with $b$ in an interval around 1/3. Expected payoffs are linear in $b$, so each bet's worst case sits at an end of the interval: bet II (black) is judged as if few balls were black, bet III (red or yellow) as if many were black, while I and IV, whose chances are known, are unaffected. Hence I beats II and IV beats I",
+      "reason": "The worst prior minimizes a linear expected payoff over an interval at an endpoint."
+    },
+    {
+      "from": "behav-1.7",
+      "to": "ode-1.5",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Exponential growth and decay",
+      "sourceFile": "content/behav/ch01.js",
+      "existingClaimAnchor": " not depend on wealth (close to Merton's $(\\mu-r)/(\\gamma\\sigma^2)$). Constant $A$ means $u''/u'$ is constant, so $u'$ is an exponential and adding a sure amount to wealth multiplies $u$ by a constant: preferences over additive gambles ignore the level of wealth. Constant $R$ means $u'(w)\\propto w^{-\\gamma}$, so scaling weal",
+      "reason": "Solving constant absolute risk aversion makes marginal utility an exponential."
+    },
+    {
+      "from": "behav-3.1",
+      "to": "stat-2.1",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/behav/ch03.js",
+      "existingClaimAnchor": ": accept the first offer above the reservation value $r^*$ solving $c=E[(X-r^*)^+]$. A satisficer with aspiration $a$ earns $E[X\\mid X\\ge a]-c/(1-F(a))$, which is maximized at $a=r^*$ but is flat near it, so a roughly chosen aspiration loses little while needing no knowledge of $F$. The optimal stopping rule needs the de",
+      "reason": "The aspiration-rule payoff explicitly uses the conditional distribution above the acceptance threshold."
+    },
+    {
+      "from": "behav-3.1",
+      "to": "pma-5.15",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Taylor's theorem",
+      "sourceFile": "content/behav/ch03.js",
+      "existingClaimAnchor": "th with a maximum at $r^*$, so its derivative vanishes there and an aspiration that is off by $\\Delta$ costs only of order $\\Delta^2$. Aspirations that adapt to experience then home in on a good threshold without any calculation (behav-3.19). \"Bounded\" does not mean irrational: the procedure is rational given the cost of",
+      "reason": "The stated second-order loss around the optimal aspiration is the Taylor expansion at a stationary point."
+    },
+    {
+      "from": "behav-3.9",
+      "to": "stat-1.3",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Moments of the sample mean; unbiasedness of S²",
+      "sourceFile": "content/behav/ch03.js",
+      "existingClaimAnchor": "counties: their extreme rates are what small populations produce by chance. The proportion of boys in a day's $n$ births has standard deviation $\\sqrt{p(1-p)/n}$, so a deviation of 10 percentage points is about 0.8 standard deviations for $n=15$ but 1.3 for $n=45$. Exactly, $P(\\text{more than }60\\%\\text{ boys})$ is $P(X\\ge10)$ for ",
+      "reason": "The small-sample explanation uses the sample proportion standard error sqrt(p(1-p)/n)."
+    },
+    {
+      "from": "behav-3.10",
+      "to": "prob-2.1.1a",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/behav/ch03.js",
+      "existingClaimAnchor": "The **gambler's fallacy** is the belief that independent chance events balance out over short runs: after several reds at roulette black feels \"due\", although the probability is unchanged. It shows up when people produce or judge random sequences",
+      "reason": "The gambler’s-fallacy diagnosis uses independence of the next outcome from previous outcomes."
+    },
+    {
+      "from": "behav-5.3",
+      "to": "prob-1.2.4",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Exponential distribution",
+      "sourceFile": "content/behav/ch05.js",
+      "existingClaimAnchor": "thetical monetary questions. Mathematically the hyperbola is the discount function you get by averaging exponentials over an exponentially distributed nonnegative rate with mean $k$ (a specific mixture of impatiences) and it has a fatter tail than any single exponential matched to the same one-year value.",
+      "reason": "The hyperbolic discount function is derived as a mixture over an exponential rate distribution."
+    },
+    {
+      "from": "behav-5.10",
+      "to": "causal-3.4",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Chains, forks and colliders",
+      "sourceFile": "content/behav/ch05-b.js",
+      "existingClaimAnchor": "**0.24** with age-15 achievement, **0.28** at first grade, roughly half the original size, which fell to about **0.05** once family background, early cognitive ability and the home environment were controlled. Most of the association came from waiting at least 20 seconds. Children who can wait differ from those who cannot in many ",
+      "reason": "The discussion identifies common causes of waiting and achievement as the confounding fork behind the uncontrolled association."
+    },
+    {
+      "from": "psych-1.1",
+      "to": "stat-3.5",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Maximum likelihood estimation",
+      "sourceFile": "content/psych/ch01.js",
+      "existingClaimAnchor": "exactly at the criterion. Repeating each intensity turns yes/no answers into proportions, and a curve fitted through them by maximum likelihood locates the 50% point with a confidence interval that narrows as trials accumulate (1.4).",
+      "reason": "The absolute threshold is located by fitting the psychometric curve by maximum likelihood."
+    },
+    {
+      "from": "psych-1.13",
+      "to": "prob-2.1.20",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Sums of independent normals are normal",
+      "sourceFile": "content/psych/ch01-b.js",
+      "existingClaimAnchor": "iation $wn$, the difference of the two estimates is normal with mean $n_2-n_1$ and standard deviation $w\\sqrt{n_1^2+n_2^2}$ (independent normals add), and the observer is correct when its sign is right. Writing $n_2=rn_1$, the ratio of mean to spread is $(r-1)/(w\\sqrt{1+r^2})$: $n_1$ cancels. So plotting accuracy against the difference ",
+      "reason": "The number-sense discrimination formula subtracts independent Gaussian magnitude codes."
+    },
+    {
+      "from": "psych-2.7",
+      "to": "stat-3.5",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Maximum likelihood estimation",
+      "sourceFile": "content/psych/ch02.js",
+      "existingClaimAnchor": "ad of one. The binormal model (noise $N(0,1)$, signal $N(\\mu,\\sigma^2)$, $m-1$ boundaries) is fitted to the rating counts by maximum likelihood (Dorfman & Alf, 1969). The method assumes that the criteria stay put through the session and that ratings and yes/no decisions rest on the same evidence; it is much quicker than running sep",
+      "reason": "Rating-category counts are fitted by a multinomial likelihood over the ROC parameters and thresholds."
+    },
+    {
+      "from": "psych-2.10",
+      "to": "stat-2.1",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/psych/ch02-b.js",
+      "existingClaimAnchor": "r the curve there has height $H(k)=P(x_S>k)$. Summing the strips gives $\\int P(x_S>k)\\,f_N(k)\\,dk$, which is $P(x_S>x_N)$ by conditioning on the value of $x_N$. So the area counts, over all pairs of one noise and one signal observation, the fraction in which the signal is larger, which is exactly what the forced-choice observer ",
+      "reason": "The AUC identity is explicitly obtained by integrating the conditional signal-win probability over the noise observation."
+    },
+    {
+      "from": "psych-2.13",
+      "to": "prob-2.1.11",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence means the joint law is a product measure",
+      "sourceFile": "content/psych/ch02-b.js",
+      "existingClaimAnchor": " observer effectively uses (Tanner & Birdsall, 1958). For a signal known exactly, a pattern with pixel values $s_i$ added to independent Gaussian pixel noise of standard deviation $\\sigma$, the ideal observer is a **template matcher**: it correlates the image $x$ with the signal, $r=\\sum_i s_ix_i$, and $$d'_{\\text{ideal}}=\\frac{\\lVer",
+      "reason": "Independent pixel-noise densities multiply before forming the ideal-observer likelihood ratio."
+    },
+    {
+      "from": "psych-2.13",
+      "to": "ladr-6.14",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Cauchy–Schwarz inequality",
+      "sourceFile": "content/psych/ch02-b.js",
+      "existingClaimAnchor": " s\\rVert}{\\sigma}=\\frac{\\sqrt{\\sum_i s_i^2}}{\\sigma}.$$ A matcher using another template $t$ reaches only $d'_{\\text{ideal}}\\cos\\theta$, where $\\theta$ is the angle between $t$ and $s$ as vectors of pixel values. Human efficiencies for simple patterns in visual noise are well below one but can reach about 50% (Burgess, Wag",
+      "reason": "Cauchy–Schwarz bounds the template response by the signal and template norms, with equality for the matched template; this is the stated cos(theta) efficiency loss."
+    },
+    {
+      "from": "psych-4.4",
+      "to": "prob-2.2.1",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Variance of a sum of uncorrelated variables",
+      "sourceFile": "content/psych/ch04.js",
+      "existingClaimAnchor": "lar cells) about one ganglion cell, while in the periphery hundreds of rods converge on one. Pooling $g$ receptors that have independent noise raises the signal-to-noise ratio of a faint, extended stimulus by $\\sqrt g$, so convergence raises **sensitivity**; but the pooled cell cannot tell which receptor was hit, so the finest gra",
+      "reason": "The receptor-pooling signal-to-noise gain adds independent receptor variances."
+    },
+    {
+      "from": "psych-4.8",
+      "to": "pma-5.15",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Taylor's theorem",
+      "sourceFile": "content/psych/ch04-b.js",
+      "existingClaimAnchor": "eading order, like a second derivative: $w*L\\approx\\tfrac{1}{2}(\\sigma_c^2-k\\sigma_s^2)L''$ for slowly varying $L$ (from the Taylor expansion of $L(x-y)$ in the convolution integral, the convolution of rca-8.13), and a piecewise-linear $L$ has $L''$ concentrated at the knees, with positive sign at the one and negative at the othe",
+      "reason": "The stated second-derivative approximation is explicitly obtained by Taylor expansion inside the convolution."
+    },
+    {
+      "from": "soc-2.3",
+      "to": "prob-3.6.1",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Poisson convergence (law of rare events)",
+      "sourceFile": "content/soc/ch02.js",
+      "existingClaimAnchor": "ws the tail. In a random graph where each pair is joined independently with probability $p$, degrees are binomial, close to Poisson with mean $\\langle k\\rangle$ and variance $\\approx\\langle k\\rangle$: a narrow peak with a thin tail. Many real networks instead have much larger variance and a **long tail**: a few hubs wit",
+      "reason": "The sparse random-graph degree distribution uses the binomial-to-Poisson limit."
+    },
+    {
+      "from": "soc-2.4",
+      "to": "prob-1.6.9a",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Moments and variance",
+      "sourceFile": "content/soc/ch02.js",
+      "existingClaimAnchor": "ree. Weighting by degree raises the mean from $\\sum_k k p_k$ to $\\sum_k k\\cdot kp_k/\\langle k\\rangle$, and the excess is the variance divided by the mean. Popular people are over-represented among everyone's friends.",
+      "reason": "The friendship-paradox gap uses E[K²]=Var(K)+(EK)²."
+    },
+    {
+      "from": "soc-2.9",
+      "to": "prob-2.1.1a",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/soc/ch02-b.js",
+      "existingClaimAnchor": "omophily by this baseline test when its observed cross-type share is significantly lower. If each edge's two ends were drawn independently from the population, the chance that they differ is $2p(1-p)$. Shuffling the type labels over the same graph keeps its structure and breaks only the link between structure and type, so the ",
+      "reason": "The cross-type random-mixing baseline 2p(1-p) factors independent endpoint probabilities."
+    },
+    {
+      "from": "soc-3.4",
+      "to": "stoch-4.7",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Convergence theorem",
+      "sourceFile": "content/soc/ch03.js",
+      "existingClaimAnchor": "\\to \\mathbf 1 s^{\\!\\top}$ where $s$ is the unique probability vector with $s^{\\!\\top}T = s^{\\!\\top}$, and everyone's opinion converges to the same **consensus** $\\sum_i s_i\\,p_i(0)$. The weight $s_i$ is person $i$'s **influence**. When trust is symmetric and each person splits their attention equally, $s_i$ is proportiona",
+      "reason": "Consensus is derived from convergence of the finite stochastic-matrix powers, beyond existence of a stationary distribution."
+    },
+    {
+      "from": "soc-3.5",
+      "to": "prob-2.2.1",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Variance of a sum of uncorrelated variables",
+      "sourceFile": "content/soc/ch03.js",
+      "existingClaimAnchor": " $n$ starts with a noisy belief $p_i(0)\\in[0,1]$ about a true value $\\mu$, the beliefs being independent with mean $\\mu$ and variance at least $\\sigma^2>0$. Beliefs evolve by DeGroot updating with a trust matrix $T(n)$ that is strongly connected and aperiodic, with influence vector $s(n)$ (so every belief converges to $\\s",
+      "reason": "The consensus-error variance is the sum of weighted independent initial-belief variances."
+    },
+    {
+      "from": "soc-3.5",
+      "to": "prob-1.6.4",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Chebyshev’s (Markov’s) inequality",
+      "sourceFile": "content/soc/ch03.js",
+      "existingClaimAnchor": "0,1]$). Since $\\sum_i s_i^2\\le \\max_i s_i\\cdot\\sum_i s_i=\\max_i s_i$, the variance vanishes when the largest influence does (Chebyshev gives convergence in probability), and since $\\sum_i s_i^2\\ge(\\max_i s_i)^2$ it stays bounded away from 0 when the largest influence does not. A prominent person or group who keep a fixed s",
+      "reason": "The vanishing-influence sufficiency proof controls consensus error using a variance probability bound."
+    },
+    {
+      "from": "polsci-2.12",
+      "to": "logic-2.3",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Truth assignments and truth tables",
+      "sourceFile": "content/polsci/ch02-b.js",
+      "existingClaimAnchor": "r a defendant is liable for breach of contract. By doctrine, liability ($C$) holds exactly when there was a valid contract ($P$) **and** it was breached ($Q$): $C \\leftrightarrow P \\wedge Q$. Judge 1 accepts $P$ and $Q$, judge 2 accepts $P$ but not $Q$, judge 3 accepts $Q$ but not $P$; each applies the doctrine con",
+      "reason": "Premise-versus-conclusion aggregation is evaluated on valuations of the conjunction p and q."
+    },
+    {
+      "from": "polsci-3.12",
+      "to": "logic-2.4",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Tautology, satisfiability and logical consequence",
+      "sourceFile": "content/polsci/ch03-b.js",
+      "existingClaimAnchor": "h accepts or rejects every proposition on an agenda containing $p$, $q$, $p \\wedge q$ and their negations, with complete and consistent individual judgments. An **aggregation function** turns every such profile into collective judgments. List and Pettit proved that no aggregation function satisfies all of (a) **universal do",
+      "reason": "The impossibility is about preservation of logical consistency and consequence across the judgment agenda."
+    },
+    {
+      "from": "polsci-5.3",
+      "to": "comb-1.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Binomial coefficients",
+      "sourceFile": "content/polsci/ch05.js",
+      "existingClaimAnchor": "th probability $q$ and for $B$ otherwise. Your vote is decisive exactly when the others tie, which has probability $$P_n(q)=\\binom{n}{n/2}\\,\\bigl(q(1-q)\\bigr)^{n/2}.$$ (a) If $q=\\tfrac12$ then $P_n \\sim \\sqrt{\\dfrac{2}{\\pi n}}$ as $n\\to\\infty$. (b) If $q\\neq\\tfrac12$ then $P_n \\le \\dfrac{(4q(1-q))^{n/2}}{\\sqrt{\\pi n/2}",
+      "reason": "The pivotal-vote probability explicitly counts half-A ballots with the binomial coefficient."
+    },
+    {
+      "from": "polsci-5.4",
+      "to": "prob-2.2.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Weak law from a variance bound",
+      "sourceFile": "content/polsci/ch05.js",
+      "existingClaimAnchor": ", so the jury is wrong only when this falls to at most $n/2$, which is a deviation of $n(p-\\tfrac12)$ below the mean. By the law of large numbers (or sharply by Hoeffding's inequality) such deviations have vanishing probability. Monotonicity comes from comparing a jury of $n$ with one of $n+2$: the extra two voters change the outcome",
+      "reason": "The independent-jury majority converges to the correct decision by the variance-bound weak law."
+    },
+    {
+      "from": "polsci-5.5",
+      "to": "stat-2.1",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/polsci/ch05.js",
+      "existingClaimAnchor": "\\to\\infty$ it tends to $1$ if $\\rho<1-\\frac1{2p}$, to $p$ if $\\rho>1-\\frac1{2p}$, and to $(1+p)/2$ exactly at the threshold. Conditional on whether the leader is right, the voters are independent, so the jury theorem applies in each case with the competence of that case. When the leader is right a voter is right with probabilit",
+      "reason": "The exact common-leader mixture is obtained by conditioning on leader correctness; voters are independent within each conditional law."
+    },
+    {
+      "from": "demo-1.6",
+      "to": "ladr-3.21",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Fundamental theorem of linear maps",
+      "sourceFile": "content/demo/ch01-b.js",
+      "existingClaimAnchor": "ndent — the cohort column equals the period column minus the age column — so the least-squares problem has a one-dimensional null space spanned by the tilt $(+\\theta, -\\theta, +\\theta)$ (ladr 3.11; the extreme case of multicollinearity, stat 12.12). Moving along the null space changes the parameters without changing any fit",
+      "reason": "Age–period–cohort nonidentification is proved using the design matrix’s nonzero null vector."
+    },
+    {
+      "from": "demo-2.8",
+      "to": "stat-2.1",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/demo/ch02-b.js",
+      "existingClaimAnchor": "0$ averages over everyone including those who die as infants. By 2.4, $x + e_x = \\frac{1}{S(x)}\\int_x^\\infty t\\,f(t)\\,dt$, a conditional mean of $T$ given $T>x$, and conditioning on a smaller set that always removes the lowest values can only raise it. Where early hazard is large, surviving the first years removes the bulk of the",
+      "reason": "Expected age at death among survivors is computed from the conditional truncated distribution."
+    },
+    {
+      "from": "demo-2.11",
+      "to": "prob-2.1.1a",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/demo/ch02-b.js",
+      "existingClaimAnchor": "Suppose causes act independently, so that removing cause $c$ leaves the other cause-specific hazards unchanged. Then the survival function of the *associated single-decrement table* is $$\\ell^{(-c)}(x) = \\exp\\!\\Big(-\\int_0",
+      "reason": "Cause elimination relies on independent competing survival mechanisms, an assumption not testable from marginal hazards."
+    },
+    {
+      "from": "demo-3.1",
+      "to": "opt-1.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/demo/ch03.js",
+      "existingClaimAnchor": "puted) extreme old age. Take logarithms: $\\ln\\mu(x)=\\ln B+\\alpha x$, a line, so slope and intercept can be read from data by least squares. The hazard of 2.5 is $-\\,d\\ln S/dx$, so a geometric hazard integrates to the closed-form survival above (2.6). The slope $\\alpha$ varies far less across populations than the level of morta",
+      "reason": "The Gompertz explanation explicitly estimates log-hazard slope and intercept by least squares."
+    },
+    {
+      "from": "demo-3.3",
+      "to": "stat-2.1",
+      "sourceField": "social",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/demo/ch03.js",
+      "existingClaimAnchor": " falls with age: selection by death. At each age the frailest die first, so the survivors are a selected, more robust group. Conditioning a gamma prior on survival to $x$ multiplies its density by $e^{-zH_0(x)}$, which keeps it gamma with the rate increased by $H_0(x)$ (the same weighting that gives the survival function in 2",
+      "reason": "The posterior frailty among survivors is obtained by weighting and renormalizing the birth density by survival."
+    },
+    {
+      "from": "demo-3.6",
+      "to": "ladr-7.70",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Singular value decomposition",
+      "sourceFile": "content/demo/ch03.js",
+      "existingClaimAnchor": " **mortality index** for the year and $b_x$ how strongly each age responds to it. The parameters are the leading term of the singular value decomposition of the matrix of centred log rates. To forecast, $k_t$ is modelled as a random walk with drift, $k_{t+1}=k_t+\\delta+\\eta_t$, and projected rates $\\hat m_{x,t}=\\exp(a_x+b_x\\hat k_t)$ give fo",
+      "reason": "The mortality-index factorization is explicitly constructed by SVD."
+    },
+    {
+      "from": "demo-3.6",
+      "to": "nla-1.8",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Eckart–Young: best low-rank approximation",
+      "sourceFile": "content/demo/ch03.js",
+      "existingClaimAnchor": "izes most of the variation in the matrix of log rates; the rank-one approximation of the singular value decomposition is the best least-squares fit with that structure. The index falls almost on a line, so a random walk with the estimated drift is the simplest forecast, and the rates are pushed through the life table of 2.3 to give",
+      "reason": "The rank-one mortality fit minimizes squared residuals, so the relevant low-rank theorem is the Frobenius-norm Eckart–Young result, not the operator-norm-only LADR result."
+    },
+    {
+      "from": "demo-3.5",
+      "to": "opt-1.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/demo/ch03.js",
+      "existingClaimAnchor": " ages become roughly additive shifts, and curves of similar shape differ by a line. This makes $(\\alpha,\\beta)$ estimable by ordinary least squares and the standard a free choice. Life tables of 2.3 supply $\\ell(x)$.",
+      "reason": "The Brass logit relation is explicitly estimated by ordinary least squares."
+    },
+    {
+      "from": "demo-4.10",
+      "to": "prob-1.6.9a",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Moments and variance",
+      "sourceFile": "content/demo/ch04-b.js",
+      "existingClaimAnchor": "ut a child chosen at random comes from a family whose size has the length-biased distribution $q_k = k\\,p_k/\\mu$, with mean $E[K^2]/\\mu = \\mu + \\sigma^2/\\mu$ (Preston, 1976). For $\\sigma^2 > 0$ this exceeds $\\mu$; for a Poisson number of births it is $\\mu+1$. So the typical child has more siblings (counting itself) than",
+      "reason": "The length-biased family-size gap uses the identity between second moment, squared mean and variance."
+    },
+    {
+      "from": "demo-4.10",
+      "to": "prob-1.6.13",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Poisson distribution",
+      "sourceFile": "content/demo/ch04-b.js",
+      "existingClaimAnchor": "q_k = k\\,p_k/\\mu$, with mean $E[K^2]/\\mu = \\mu + \\sigma^2/\\mu$ (Preston, 1976). For $\\sigma^2 > 0$ this exceeds $\\mu$; for a Poisson number of births it is $\\mu+1$. So the typical child has more siblings (counting itself) than the average woman has children, even though nothing is wrong with either number. It is the insp",
+      "reason": "The special-case extra-child formula uses equality of Poisson mean and variance."
+    },
+    {
+      "from": "art-1.9",
+      "to": "ladr-6.10",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Orthogonal vectors",
+      "sourceFile": "content/art/ch01-b.js",
+      "existingClaimAnchor": ", the foot of the perpendicular from the eye. The eye’s distance $d$ from the picture satisfies $$d^2=-\\overrightarrow{HV_i}\\cdot\\overrightarrow{HV_j}\\qquad(i\\neq j).$$ Conversely, three points forming a right or obtuse triangle cannot be the vanishing points of three perpendicular directions. The sight lines from the",
+      "reason": "The three-vanishing-point orthocentre proof uses orthogonality expressed by a vanishing inner product."
+    },
+    {
+      "from": "art-1.10",
+      "to": "ladr-3.1",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linear map",
+      "sourceFile": "content/art/ch01-b.js",
+      "existingClaimAnchor": "ts a different scene: standing nearer than $d$ compresses its depth, standing farther stretches it, and standing to one side shears it so that lines running straight back still point at the viewer. Each picture point fixes only a direction from the eye. A viewer at $V$, eye at the horizon’s height, who assumes that eve",
+      "reason": "Changing station point is explicitly derived as a linear shear and scale of reconstructed floor coordinates."
+    },
+    {
+      "from": "art-1.15",
+      "to": "waves-4.5",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetWritten": true,
+      "targetName": "Law of reflection",
+      "sourceFile": "content/art/ch01-b.js",
+      "existingClaimAnchor": "Shadows and reflections can be constructed inside the picture. - **Sun.** Light rays are parallel, so they vanish at the image of the sun (or, with the sun behind the viewer, at the antisolar point below the hor",
+      "reason": "The equal-height reflection construction uses the plane-mirror equal-angle law."
+    },
+    {
+      "from": "art-3.6",
+      "to": "waves-4.15",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetWritten": true,
+      "targetName": "Beer–Lambert law",
+      "sourceFile": "content/art/ch03.js",
+      "existingClaimAnchor": "tly of the others, and attenuations compose by multiplication since a layer removes a fixed fraction of what reaches it (the Beer–Lambert law). That is why the subtractive primaries are the colours that remove one third of the spectrum each: cyan removes red, magenta removes green, yellow removes blue, so that any pai",
+      "reason": "The filter-composition derivation explicitly invokes Beer–Lambert attenuation."
+    },
+    {
+      "from": "art-4.3",
+      "to": "ladr-3.15",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Injectivity ⟺ null space equals {0}",
+      "sourceFile": "content/art/ch04.js",
+      "existingClaimAnchor": " illuminant $I_a$, it does not follow that the same holds for another illuminant $I_b$. The difference $R_1-R_2$ lies in the kernel of the map spectrum $\\to$ colour for $I_a$, but that kernel changes with the illuminant. The map from reflectance spectra to colour is a linear map to $\\mathbb R^3$ (art-4.2), whose kernel ",
+      "reason": "Metamerism is explicitly explained by noninjectivity of the linear cone-response map, equivalently a nonzero kernel; the chosen target allows infinite-dimensional domains."
+    },
+    {
+      "from": "art-4.7",
+      "to": "opt-2.1",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Affine sets, convex sets and convex hulls",
+      "sourceFile": "content/art/ch04.js",
+      "existingClaimAnchor": "positive combination of monochromatic lights, so its chromaticity is an average of locus points and cannot leave the locus’s convex hull. The projection divides by a positive sum, so scaling a light does not move its point (proportionality, art-4.4): the diagram is the plane of colours with brightness divided out, and the th",
+      "reason": "The chromaticity region is derived as the convex hull of monochromatic locus points."
+    },
+    {
+      "from": "ling-1.1",
+      "to": "sig-3.10",
+      "sourceField": "humanities",
+      "targetField": "eng",
+      "targetWritten": true,
+      "targetName": "System function and frequency response",
+      "sourceFile": "content/ling/ch01.js",
+      "existingClaimAnchor": "rs linearly, convolution in time becomes multiplication in frequency, so each harmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve,",
+      "reason": "Source harmonics are multiplied by the vocal-tract frequency response, as the existing derivation states."
+    },
+    {
+      "from": "ling-1.1",
+      "to": "sig-4.1",
+      "sourceField": "humanities",
+      "targetField": "eng",
+      "targetWritten": true,
+      "targetName": "Fourier series of a periodic signal",
+      "sourceFile": "content/ling/ch01.js",
+      "existingClaimAnchor": "rmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve, while a noise source gives a continuous spectrum with the same peaks. The idea goes back ",
+      "reason": "The voiced-source line spectrum is explicitly its Fourier series."
+    },
+    {
+      "from": "ling-2.6",
+      "to": "comb-1.5",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Permutations and falling factorials",
+      "sourceFile": "content/ling/ch02-b.js",
+      "existingClaimAnchor": "/, which raising needs to see, into a voiced tap). Because the rules are not independent, the data decide the order: of the $k!$ possible orders only those whose derivations match the attested pronunciations are admissible, and the tool counts the sites each order creates or destroys to show which relation you get.",
+      "reason": "The candidate orderings of k phonological rules are explicitly counted as k! permutations."
+    },
+    {
+      "from": "ling-4.1",
+      "to": "opt-1.6",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/ling/ch04.js",
+      "existingClaimAnchor": "e tail falls in a staircase because the least frequent words all tie at $f=1$ (hapax legomena), $f=2$, and so on. Fitting by least squares on the log–log plot is convenient but statistically crude; the next items show that very different mechanisms (4.2, 4.3) also produce power-law-like plots.",
+      "reason": "The discussion explicitly fits the log frequency–log rank line by least squares, with a warning about that fit."
+    },
+    {
+      "from": "ling-4.2",
+      "to": "prob-2.1.1a",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/ling/ch04.js",
+      "existingClaimAnchor": "Let a “monkey” type independently at each step a space with probability $\\sigma$ or one of $M$ letters, each with probability $(1-\\sigma)/M$. Cut the stream at spaces into “words”. Then the word of rank $r$ has frequency $$",
+      "reason": "The word-probability derivation multiplies independent keystroke probabilities."
+    },
+    {
+      "from": "ling-4.2",
+      "to": "comb-1.1",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Sum and product rules",
+      "sourceFile": "content/ling/ch04.js",
+      "existingClaimAnchor": "lpha},\\qquad \\alpha=1-\\frac{\\ln(1-\\sigma)}{\\ln M}\\;\\approx\\;1\\ (\\text{for}\\ \\sigma\\ \\text{small}),$$ up to a staircase: all $M^{\\ell}$ words of length $\\ell$ have the same probability $\\tfrac{\\sigma}{1-\\sigma}\\bigl(\\tfrac{1-\\sigma}{M}\\bigr)^{\\ell}$. Shorter words are exponentially more probable, but there are exponen",
+      "reason": "The rank calculation counts M^ell possible strings of a fixed length."
+    },
+    {
+      "from": "ling-4.8",
+      "to": "info-2.7",
+      "sourceField": "humanities",
+      "targetField": "cs",
+      "targetWritten": true,
+      "targetName": "Conditioning reduces entropy (on average)",
+      "sourceFile": "content/ling/ch04-b.js",
+      "existingClaimAnchor": " q_i,$$ where the lower bound requires an ideal guesser ranking the true conditional probabilities. True conditional entropy cannot increase with more context, but finite-sample estimates of these bounds can fluctuate. With long context he found about 0.6 to 1.3 bits per letter, so English is more than 70% redundant compared wit",
+      "reason": "The text explicitly states that true conditional entropy cannot increase with context."
+    },
+    {
+      "from": "ling-4.9",
+      "to": "stoch-1.1",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Markov chain and transition matrix",
+      "sourceFile": "content/ling/ch04-b.js",
+      "existingClaimAnchor": "H}$, with $H$ the average negative $\\log_2$ probability per held-out word, is the effective branching factor. The model is a Markov chain on words. Going from unigram to bigram uses real local structure (*of the* is common, *the of* is not) and perplexity drops sharply. At trigrams and beyond the counts get so sparse that a c",
+      "reason": "The n-gram model is explicitly identified with a Markov chain on word contexts."
+    },
+    {
+      "from": "phil-1.2",
+      "to": "logic-3.4",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Tarski’s definition of satisfaction",
+      "sourceFile": "content/phil/ch01.js",
+      "existingClaimAnchor": "ry choice that satisfies the premises satisfies the conclusion (validity as in 1.1), and when one does not, it is a concrete counter-model, a population of individuals that makes the premises true and the conclusion false. Existential import adds “there are $X$” to every universal premise. That removes the counter-models in wh",
+      "reason": "The Venn decision procedure evaluates quantified categorical statements in set-valued interpretations."
+    },
+    {
+      "from": "phil-1.3",
+      "to": "stat-2.1",
+      "sourceField": "humanities",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/phil/ch01.js",
+      "existingClaimAnchor": "he consequent it is $\\Pr(P\\mid Q) = \\Pr(P)\\,/\\,\\bigl(\\Pr(P)+\\Pr(\\neg P)\\Pr(Q\\mid\\neg P)\\bigr)$, the base-rate calculation of Bayes’ theorem. Treating a fallacious form as an inference to the best explanation, or as a probable inference, is reasonable in some contexts; how far this rehabilitates the fallacies is still d",
+      "reason": "The explicit probabilistic qualification of affirming the consequent computes a conditional probability."
+    },
+    {
+      "from": "phil-1.5",
+      "to": "prob-2.1.1a",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Independence of events, variables and σ-fields",
+      "sourceFile": "content/phil/ch01.js",
+      "existingClaimAnchor": "ctions and rebuttals form chains, and an answered objection loses most of its force. The numbers depend on the model chosen. Independence, noisy-OR combination and multiplicative defeat are simplifications, and the quantitative theory of argument strength (Bayesian, abstract argumentation semantics, and others) is an open res",
+      "reason": "The existing quantitative argument-strength model uses independent noisy-OR probabilities."
+    },
+    {
+      "from": "phil-1.6",
+      "to": "logic-4.1",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "A deductive calculus: axioms and modus ponens",
+      "sourceFile": "content/phil/ch01.js",
+      "existingClaimAnchor": "emise has the form “if all the previous premises are true, Z is true”. It is itself one of the conditionals that a rule like modus ponens would be needed to *use*, so adding it reproduces exactly the situation it was meant to resolve. The regress is vicious, because the gap between the premises and Z is never narrowed. Writte",
+      "reason": "The Tortoise regress distinguishes adding a conditional premise from applying modus ponens."
+    },
+    {
+      "from": "phil-3.1",
+      "to": "logic-4.1",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "A deductive calculus: axioms and modus ponens",
+      "sourceFile": "content/phil/ch03.js",
+      "existingClaimAnchor": "fference. (c) *Clear case.* One million grains, suitably piled, make a heap. By (a) and $999\\,999$ applications of (b) with modus ponens, one million grains do not make a heap, contradicting (c). The argument is valid by ordinary logic, (a) and (c) look true, and each instance of (b) looks true. The same pattern works for an",
+      "reason": "The sorites derives the endpoint by repeated modus ponens from tolerance instances."
+    },
+    {
+      "from": "phil-3.4",
+      "to": "logic-2.3",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Truth assignments and truth tables",
+      "sourceFile": "content/phil/ch03.js",
+      "existingClaimAnchor": "fication, **superfalse** if false under all, and otherwise neither. Truth is identified with supertruth. Consequences: every classical logical truth is supertrue, so “$n$ grains are a heap or not” holds even for a borderline $n$; “there is a cut-off” is supertrue; but for no particular $n$ is “$n$ is the cut-off” supertrue, and for a bo",
+      "reason": "Supertruth is evaluated under classical valuations at every admissible precisification."
+    },
+    {
+      "from": "phil-4.5",
+      "to": "logic-4.2",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Deduction theorem",
+      "sourceFile": "content/phil/ch04.js",
+      "existingClaimAnchor": "eedom to use an assumption twice (**contraction**): assume $C$; then what $C$ says holds, so $C\\to F$; by modus ponens, $F$. Discharging the assumption gives $C\\to F$, which is $C$; applying modus ponens to $C$ and $C\\to F$ gives $F$. Since $F$ was arbitrary, the theory proves everything. No negation appears anywhere in the ",
+      "reason": "Curry’s proof explicitly discharges the assumption to infer the conditional."
+    },
+    {
+      "from": "phil-4.5",
+      "to": "logic-4.1",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "A deductive calculus: axioms and modus ponens",
+      "sourceFile": "content/phil/ch04.js",
+      "existingClaimAnchor": "e its own syntax, or in naive truth theory with the T-schema.) Then $F$ can be proved by the following steps, which use only modus ponens, conditional proof, and the freedom to use an assumption twice (**contraction**): assume $C$; then what $C$ says holds, so $C\\to F$; by modus ponens, $F$. Discharging the assumption gives $",
+      "reason": "Curry’s proof explicitly uses modus ponens before and after conditional proof."
+    },
+    {
+      "from": "phil-4.8",
+      "to": "stat-2.1",
+      "sourceField": "humanities",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Conditional distributions and conditional independence",
+      "sourceFile": "content/phil/ch04-b.js",
+      "existingClaimAnchor": "teacher picks the exam day at random, the students’ credence on each morning that the exam is today (given none yet) is the *hazard rate* $h_d=p_d/\\sum_{j\\ge d}p_j$. The last day with $p_d>0$ always has $h=1$: a strictly positive probability of an exam on the last possible day makes that exam a non-surprise. So no distributi",
+      "reason": "The stated surprise-exam hazard is a probability conditional on no earlier exam."
+    },
+    {
+      "from": "macro-2.14",
+      "to": "opt-1.6",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/macro/ch02-b.js",
+      "existingClaimAnchor": "Cobb and Douglas fitted an aggregate production function to annual U.S. manufacturing data for 1899–1922, with indexes (1899 = 100) of fixed capital $C$, employed labour $L$ and physical product $P$, imposing cons",
+      "reason": "The historical production-function fit is explicitly a straight-line fit of log output per worker on log capital per worker."
+    },
+    {
+      "from": "macro-4.1",
+      "to": "ode-3.8",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Classification of planar linear systems",
+      "sourceFile": "content/macro/ch04.js",
+      "existingClaimAnchor": "ocus is vertical at $k^*$; along $\\dot k = 0$ consumption equals net output, a hump. Linearising at their intersection gives one stable and one unstable eigenvalue (a saddle), so convergence needs the jump variable $c$ to land on the stable arm. The two-period Euler equation of the Fisher problem reappears here in continuous time, and the capital dyna",
+      "reason": "The Ramsey phase-portrait argument explicitly classifies the linearization as a planar saddle from its opposite-sign eigenvalues."
+    },
+    {
+      "from": "behav-1.8",
+      "to": "pma-3.26",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Geometric series",
+      "sourceFile": "content/behav/ch01.js",
+      "existingClaimAnchor": "e $r=U(w)-U(w-l)$, so she also turns down \"lose $L=2kl$, gain $G$\" for every $G$ below a computable bound. Utility gains are capped at $\\frac{g}{g-l}\\,r$, so once the loss bound passes the cap no gain at all can compensate. Rabin's Table I: rejecting \"lose $\\$100$, gain $\\$110$\" at all wealth levels implies rejecting \"l",
+      "reason": "The calibration bound explicitly caps a geometric sum of future utility increments."
+    },
+    {
+      "from": "behav-3.8",
+      "to": "prob-1.1.1",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Monotonicity, subadditivity and continuity of measures",
+      "sourceFile": "content/behav/ch03.js",
+      "existingClaimAnchor": "(behav-3.6), even though every added detail can only remove possibilities. In a Venn diagram the feminist bank tellers are a subset of the bank tellers, so their probability is at most that of the larger set, whatever the numbers. Critics argued that people read \"bank teller\" as \"bank teller and not feminist\", or \"proba",
+      "reason": "The Linda inequality is explicitly derived from probability monotonicity under event inclusion."
+    },
+    {
+      "from": "behav-2.12",
+      "to": "prob-1.2.5",
+      "sourceField": "econ",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Standard normal distribution",
+      "sourceFile": "content/behav/ch02-b.js",
+      "existingClaimAnchor": "log return is roughly normal with mean $\\mu h$ and standard deviation $\\sigma\\sqrt h$, so the probability of a loss, about $\\Phi(-\\mu\\sqrt h/\\sigma)$, falls as $h$ grows. With loss aversion $\\lambda\\approx2.25$ (behav-2.2), what matters is how often the evaluator sees red: a daily evaluator sees losses almost half th",
+      "reason": "The displayed horizon-dependent loss probability is the normal CDF evaluated after standardizing the stated normal log-return model."
+    },
+    {
+      "from": "psych-2.5",
+      "to": "ladr-3.63",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Invertibility ⟺ injectivity and surjectivity",
+      "sourceFile": "content/psych/ch02.js",
+      "existingClaimAnchor": "nges with the criterion. $z$ is strictly increasing, so $(F,H)\\mapsto(z(F),z(H))$ is a bijection onto $\\mathbb R^2$, and the linear map $(z_F,z_H)\\mapsto\\big(z_H-z_F,\\,-\\tfrac12(z_H+z_F)\\big)$ is invertible. A payoff that makes false alarms expensive moves the criterion to the right: both rates fall, along the curve of cons",
+      "reason": "The sensitivity/bias identification proof explicitly inverts a two-dimensional linear transformation of normal quantiles."
+    },
+    {
+      "from": "soc-4.9",
+      "to": "ode-1.3",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Separation of variables",
+      "sourceFile": "content/soc/ch04-b.js",
+      "existingClaimAnchor": "rence* (a vertex with many links is more likely to gain another). Writing $k_i(t)$ for the degree, linear preference gives $\\mathrm d k/\\mathrm dt=k/2t$ per link, so $k_i(t)\\propto (t/t_i)^{1/2}$: degree is a power of age. Nonlinear attachment $\\propto k^\\gamma$ changes the feedback: if $\\gamma<1$ the advantage saturates; i",
+      "reason": "The preferential-attachment age-degree power law is obtained by separating dk/k=dt/(2t)."
+    },
+    {
+      "from": "polsci-4.5",
+      "to": "opt-2.3",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Halfspaces, balls, ellipsoids and polyhedra",
+      "sourceFile": "content/polsci/ch04.js",
+      "existingClaimAnchor": " every direction and $y \\ne x^*$, the voters who prefer $y$ to $x^*$ are those strictly nearer to $y$, which lie in the open half-plane beyond the perpendicular bisector of $x^*$ and $y$. That half-plane is contained in an open half-plane bounded by the parallel line through $x^*$, which holds at most $(n-1)/2$ ideal points",
+      "reason": "The Plott proof identifies voters nearer a challenger with an open halfspace beyond a perpendicular-bisector hyperplane."
+    },
+    {
+      "from": "demo-1.6",
+      "to": "opt-1.6",
+      "sourceField": "social",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Least squares as an optimization problem",
+      "sourceFile": "content/demo/ch01-b.js",
+      "existingClaimAnchor": "lumns of the design matrix are linearly dependent — the cohort column equals the period column minus the age column — so the least-squares problem has a one-dimensional null space spanned by the tilt $(+\\theta, -\\theta, +\\theta)$ (ladr 3.11; the extreme case of multicollinearity, stat 12.12). Moving along the null space change",
+      "reason": "The age–period–cohort ambiguity is stated as a least-squares design with a null direction, hence unchanged fitted values and residual objective."
+    },
+    {
+      "from": "art-3.4",
+      "to": "pma-5.8",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Interior extrema have zero derivative",
+      "sourceFile": "content/art/ch03.js",
+      "existingClaimAnchor": "ell’s law (mech-5.2) turns the family of parallel rays into a map $b\\mapsto\\psi$; light is concentrated where that map has a stationary point, since $\\psi$ changes least there. That is a fold caustic of the ray bundle, and it is why a rainbow is a thin ring and not a disc. Descartes found the 42° ring by tracing rays through a la",
+      "reason": "The rainbow angle is selected by the interior stationary point of the ray-direction map."
+    },
+    {
+      "from": "art-3.3",
+      "to": "mech-2.3",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetWritten": true,
+      "targetName": "Centre of mass",
+      "sourceFile": "content/art/ch03.js",
+      "existingClaimAnchor": "igo, violet, with the purples closing the gap between violet and red). To find the colour of a mixture of lights, put at the centre of gravity of each colour’s arc a weight equal to the amount of that colour in the mixture, and find the centre of gravity $Z$ of all the weights. The direction of $Z$ from the centre $O$ gives the **",
+      "reason": "Newton’s mixture rule explicitly computes the centre of gravity of weighted arc locations."
+    },
+    {
+      "from": "ling-4.6",
+      "to": "ode-1.4",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Linear equations and integrating factors",
+      "sourceFile": "content/ling/ch04-b.js",
+      "existingClaimAnchor": "ws word length rising far less than in proportion to syllable count. Altmann derives the functional family from the proposed relative rate $y\\prime/y=b/x-c$ and explicitly allows nonmonotone cases. A constant total budget gives only the special case $y\\propto1/x$, not the whole family; the cause of the empirical association is",
+      "reason": "The stated Altmann family follows by integrating the nonconstant linear ODE y′=(b/x-c)y."
+    },
+    {
+      "from": "ling-2.13",
+      "to": "comb-1.5",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetWritten": true,
+      "targetName": "Permutations and falling factorials",
+      "sourceFile": "content/ling/ch02-c.js",
+      "existingClaimAnchor": " and the candidates and constraints are shared. The set of attested systems is the factorial typology: the winners over all $k!$ rankings.",
+      "reason": "The factorial typology explicitly enumerates all permutations of the constraint ranking."
+    }
+  ],
+  "syllabusMirrorRepairs": [
+    {
+      "id": "macro-2.4",
+      "before": [
+        "macro-1.8",
+        "pma-9.23"
+      ],
+      "after": [
+        "macro-1.8",
+        "pma-3.26",
+        "pma-9.23"
+      ]
+    },
+    {
+      "id": "fin-3.13",
+      "before": [
+        "fin-3.7",
+        "stat-1.3"
+      ],
+      "after": [
+        "fin-3.7",
+        "fin-3.9",
+        "stat-1.3"
+      ]
+    },
+    {
+      "id": "game-3.7",
+      "before": [
+        "game-3.3",
+        "stat-1.16"
+      ],
+      "after": [
+        "game-3.3",
+        "game-3.6",
+        "stat-1.16"
+      ]
+    },
+    {
+      "id": "behav-1.9",
+      "before": [
+        "behav-1.4",
+        "pma-6.22"
+      ],
+      "after": [
+        "behav-1.4",
+        "micro-13.1",
+        "pma-6.22"
+      ]
+    },
+    {
+      "id": "psych-2.13",
+      "before": [
+        "psych-2.12",
+        "prob-2.1.11",
+        "ladr-6.14"
+      ],
+      "after": [
+        "psych-2.12",
+        "psych-2.3",
+        "prob-2.1.11",
+        "ladr-6.14"
+      ]
+    }
+  ],
+  "semanticRepairs": [
+    {
+      "id": "fin-4.3",
+      "file": "content/fin/ch04.js",
+      "before": "least squares, pma-5.15 in spirit",
+      "after": "least squares, opt-1.6",
+      "reason": "Taylor’s theorem is not the normal-equations result used for market-model beta and residual orthogonality."
+    },
+    {
+      "id": "behav-3.18",
+      "before": "deps: stat-3.2",
+      "after": "see: stat-3.2",
+      "reason": "Independent peer review: qualitative classification bias–variance reasoning does not directly use the target’s exact parameter-estimator squared-error MSE decomposition."
+    }
+  ],
+  "existingRestoredFADependencyAudit": [
+    {
+      "from": "game-3.3",
+      "to": "fa-3.4",
+      "disposition": "correct semantic match: Hahn–Banach separation",
+      "note": "No owned dependency points to the semantically different restored fa-5.11. It was rejected as a substitute for the correspondence fixed-point theorem."
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "from": "macro-3.12",
+      "to": "ode-1.5",
+      "anchor": "compound",
+      "reason": "The existing instability explanation compares exponentially compounding warranted and natural paths.",
+      "why": "Do not use a new link to endorse the existing unbounded-unemployment wording; flag for a separate model correction."
+    },
+    {
+      "from": "behav-3.12",
+      "to": "stat-1.19",
+      "anchor": "rho",
+      "reason": "The standardized-score conditional prediction rho*x is the bivariate normal regression formula.",
+      "why": "The existing conditional linear prediction needs a Gaussian or linear-conditional-mean assumption absent from the general wording; retain the planned regression item instead."
+    },
+    {
+      "from": "psych-2.11",
+      "to": "prob-2.1.20",
+      "anchor": "independent Gaussian",
+      "reason": "The sqrt(2) d-prime relation follows from the Gaussian difference distribution.",
+      "why": "The existing dependency psych-1.8 already supplies this same 2AFC Gaussian-difference calculation."
+    },
+    {
+      "from": "psych-2.12",
+      "to": "stat-2.1",
+      "anchor": "posterior odds",
+      "reason": "The payoff-optimal criterion explicitly computes posterior signal odds by conditioning.",
+      "why": "Existing stat-10.1 already names Bayes, whose conditional-distribution foundation would be redundant here."
+    },
+    {
+      "from": "soc-1.8",
+      "to": "pma-3.14",
+      "anchor": "monoton",
+      "reason": "The threshold cascade settles because its bounded nondecreasing participation sequence converges.",
+      "why": "Finite bounded integer cascades settle combinatorially; the analytic monotone-sequence theorem adds an unnecessary foundation."
+    },
+    {
+      "from": "soc-3.3",
+      "to": "ladr-7.70",
+      "anchor": "A^{",
+      "reason": "Hubs and authorities are the paired left and right singular-vector equations of the adjacency matrix.",
+      "why": "The existing proof uses power iteration on AᵀA, already supplied by stoch-4.15; SVD is an alternative description, not a needed step."
+    },
+    {
+      "from": "polsci-5.6",
+      "to": "stat-2.1",
+      "anchor": "pivotal",
+      "reason": "Strategic voting conditions posterior guilt on being pivotal, rather than just the private signal.",
+      "why": "Existing stat-10.1 names the directly used Bayes calculation; adding its generic conditional foundation is redundant."
+    },
+    {
+      "from": "polsci-5.9",
+      "to": "stat-2.1",
+      "anchor": "conditional",
+      "reason": "The swing voter compares expected outcomes conditional on the two pivotal events.",
+      "why": "Existing polsci-5.6 supplies the same pivotal-event conditioning logic."
+    },
+    {
+      "from": "demo-1.4",
+      "to": "pma-8.6",
+      "anchor": "exponential",
+      "reason": "The explanation explicitly solves the doubling-time equation using logarithms and the exponential.",
+      "why": "Existing mathbio-1.3 already derives the same doubling-time calculation from the exponential."
+    },
+    {
+      "from": "art-3.7",
+      "to": "ode-1.6",
+      "anchor": "coupled",
+      "reason": "The two-flux pigment model solves a coupled linear forward/backward radiance system.",
+      "why": "The written pigment explanation does not derive the two-flux differential system, and ode-1.6 is logistic growth rather than that system."
+    },
+    {
+      "from": "art-4.8",
+      "to": "opt-2.1",
+      "anchor": "convex hull",
+      "reason": "The mixture-gamut result explicitly identifies normalized positive mixtures with a convex hull.",
+      "why": "After linking art-4.7 to convex hulls, the dependent finite-gamut card needs no duplicate foundation."
+    },
+    {
+      "from": "ling-1.11",
+      "to": "rca-9.1",
+      "anchor": "Fourier transform",
+      "reason": "The spectrogram is explicitly formed by Fourier transforming windowed speech.",
+      "why": "Existing planned sig-8.13 is the actual short-time Fourier/spectrogram result; a generic Fourier definition does not replace its uncertainty tradeoff."
+    },
+    {
+      "from": "behav-3.18",
+      "to": "stat-3.2",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "targetWritten": true,
+      "targetName": "Bias–variance decomposition of the MSE",
+      "sourceFile": "content/behav/ch03-b.js",
+      "existingClaimAnchor": "tter than regression. Heuristics that fit the structure of the environment are **ecologically rational**. A heuristic trades bias for variance. Regression estimates one weight per cue and, from a small training sample, those weights are noisy, so its out-of-sample accuracy falls well below its in-sample fit. Take-the-best estimate",
+      "reason": "The existing predictive comparison explicitly explains the bias–variance tradeoff.",
+      "why": "Removed after independent peer review: classification-accuracy discussion has no squared-error estimator step; retained as see/context only."
+    }
+  ],
+  "outOfScopeModelObservations": [
+    {
+      "id": "macro-3.12",
+      "observation": "The phrase unemployment rate rises without bound cannot hold for a fraction; the dynamics with Y=min(K/v,L) should be reviewed separately before attaching additional differential-equation claims.",
+      "status": "resolved-in-followup",
+      "report": "docs/verification/macro-behav-model-followup.md"
+    },
+    {
+      "id": "behav-3.12",
+      "observation": "The general conditional-mean claim rho*x needs joint Gaussian scores or an explicit linear-conditional-mean assumption; independence of skill and luck alone does not imply that exact conditional expectation.",
+      "status": "resolved-in-followup",
+      "report": "docs/verification/macro-behav-model-followup.md"
+    }
+  ],
+  "validation": [
+    {
+      "command": "node scripts/check.mjs --static --fail-on-warnings macro fin game behav psych soc polsci demo art ling phil",
+      "result": "588 written cards; 0 errors, 0 warnings; exit 0"
+    },
+    {
+      "check": "Fresh loadAll registry and per-addition assertions",
+      "result": "120/120 written targets, different FIELDs, matching existing text anchors, unique new source deps, full syllabus/card dependency-array equality for all 103 edited cards"
+    },
+    {
+      "check": "validate dependency-cycle scan, written plus planned graph",
+      "result": "0 dependency-cycle errors"
+    },
+    {
+      "command": "git diff --check",
+      "result": "clean"
+    }
+  ],
+  "snapshot": "Prerequisite-only batch; the subsequent model correction is recorded separately below.",
+  "postAuditModelFollowup": {
+    "report": "docs/verification/macro-behav-model-followup.md",
+    "addedEdge": {
+      "from": "behav-3.12",
+      "to": "stat-1.19",
+      "reason": "The corrected normal skill-plus-luck model explicitly uses the jointly Gaussian conditional mean, with matching simulation assumptions."
+    },
+    "currentCounts": {
+      "macro": 25,
+      "fin": 33,
+      "game": 27,
+      "behav": 23,
+      "psych": 25,
+      "soc": 25,
+      "polsci": 26,
+      "demo": 24,
+      "art": 20,
+      "ling": 20,
+      "phil": 27
+    },
+    "currentShortfalls": {
+      "behav": 2,
+      "demo": 1,
+      "art": 5,
+      "ling": 5
+    }
+  }
+}

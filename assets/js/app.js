@@ -1,6 +1,7 @@
 // Single-page app: hash router, pages, search, theme.
 import { mount, richHTML, inlineHTML, escapeHTML, resetColors } from './viz/core.js';
 import { buildIndex, runSearch, highlight, norm } from './search.js';
+import { decodeCatalog } from './catalog.js';
 import { renderLineage, renderChapterGraph, renderFlow, chapterFlow, collectionFlow, renderChord, MapView, TimelineView, renderTreemap, fullLabel, displayNum, kindAbbr, setAtlas, colShort, depsOf } from './graph.js';
 
 const app = document.getElementById('app');
@@ -15,7 +16,7 @@ const modCache = new Map();
 // ------------------------------------------------------------ data
 async function loadCatalog() {
   const res = await fetch('data/index.json', { cache: 'no-cache' });
-  const cat = await res.json();
+  const cat = decodeCatalog(await res.json());
   const byId = new Map(cat.items.map((it) => [it.id, it]));
   const children = new Map(cat.items.map((it) => [it.id, []]));
   for (const it of cat.items) for (const d of it.deps) children.get(d)?.push(it.id);
@@ -31,9 +32,6 @@ async function loadCatalog() {
   setAtlas(G);
   buildSearch();
   buildNav();
-  // background: planned items (for the map, chapter pages, lineages) and statements (for search)
-  const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1200));
-  idle(() => { ensurePlanned().catch(() => {}); Promise.all(G.live.map((C) => loadShard(C.id))).then(buildSearch).catch(() => {}); });
 }
 /** order and reverse edges over written + planned items */
 function indexGraph() {
@@ -70,6 +68,12 @@ function loadShard(col) {
   return shards.get(col);
 }
 const loadShards = (cols) => Promise.all([...new Set(cols)].map(loadShard));
+let searchDetailsP = null;
+function ensureSearchDetails() {
+  if (!searchDetailsP) searchDetailsP = Promise.all([ensurePlanned(), loadShards(G.live.map(C => C.id))])
+    .then(buildSearch).catch(e => { searchDetailsP = null; throw e; });
+  return searchDetailsP;
+}
 const chapterOf = (col, c) => G.colById.get(col)?.chapters.find((C) => C.n === c);
 const chapterLabel = (col, c) => G.colById.get(col)?.chapterLabels?.[c] || `Chapter ${c}`;
 async function loadModule(file) {
@@ -210,16 +214,16 @@ function pageHome() {
   fl.innerHTML = top.map((e) => `<li data-a="${e.from}" data-b="${e.to}"><span class="fl-t"><span style="color:var(--f-${e.from})">${escapeHTML(G.fieldById.get(e.from).short)}</span> → <span style="color:var(--f-${e.to})">${escapeHTML(G.fieldById.get(e.to).short)}</span></span><span class="fl-bar"><i style="width:${(100 * e.n) / maxN}%;background:var(--f-${e.from})"></i></span><span class="fl-n">${e.n}</span></li>`).join('');
   for (const li of fl.children) { li.addEventListener('pointerenter', () => chord?.focus(li.dataset.a, li.dataset.b)); li.addEventListener('pointerleave', () => chord?.focus(null)); }
   // landmark papers: a compact timeline and a few to open (interactive ones first)
-  if (G.paperCount) ensurePlanned().then(() => {
+  if (G.paperCount) {
     const host = el.querySelector('#home-ptl'); if (!host?.isConnected) return;
-    const papers = [...G.items, ...G.planned].filter((it) => it.kind === 'Paper');
+    const papers = [...G.items.filter(it => it.kind === 'Paper'), ...(G.plannedPapers || [])];
     const view = new TimelineView(host, G, { items: papers, what: 'papers', fit: true, onOpen: (id) => go(`#/t/${id}`) });
     const prev = cleanup; cleanup = () => { prev?.(); view.destroy(); };
     const pick = [...papers.filter((p) => !p.planned).sort((a, b) => (a.yr ?? 0) - (b.yr ?? 0))];
     const famous = ['info-5.18', 'toc-7.13', 'rel-1.14', 'astro-10.19', 'bioinf-1.13', 'popgen-1.17', 'game-1.11', 'ode-10.15'];
-    for (const id of famous) { const p = G.byId.get(id); if (p && !pick.includes(p)) pick.push(p); }
+    for (const id of famous) { const p = papers.find(it => it.id === id); if (p && !pick.includes(p)) pick.push(p); }
     el.querySelector('#home-papers').innerHTML = pick.slice(0, 6).map((p) => `<a class="paper-row${p.planned ? ' planned' : ''}" data-col="${p.col}" href="#/t/${p.id}"><span class="yr">${p.yr ?? ''}</span><span><div class="tt">${inlineHTML(p.name)}</div><div class="au">${escapeHTML(p.au || '')} · ${escapeHTML(G.colById.get(p.col).short)}</div></span><span class="st">${p.planned ? 'planned' : '● interactive'}</span></a>`).join('');
-  }).catch(() => {});
+  }
   const chainEl = el.querySelector('#chain');
   if (chainEl) chainEl.innerHTML = chain.map((it) => link(it)).join('<span class="faint" aria-hidden="true">→</span>');
   const grid = el.querySelector('#field-grid');
@@ -514,9 +518,12 @@ async function pageMap(params) {
   const host = document.createElement('div');
   app.replaceChildren(host);
   const q0 = params.get('q') || '';
-  const apply = (q, fit) => {
+  let queryVersion = 0;
+  const apply = async (q, fit) => {
+    const version = ++queryVersion;
     if (!q.trim()) { view.setHighlight(null); history.replaceState(null, '', '#/map'); return; }
-    if (!SIDX.some((e) => e.planned)) buildSearch();
+    await ensureSearchDetails().catch(() => {});
+    if (!isCurrent() || version !== queryVersion) return;
     const R = runSearch(SIDX, q, G, { limit: 1e6 }); view.setHighlight(new Set(R.all.map((it) => it.id)), { fit });
     history.replaceState(null, '', `#/map?q=${encodeURIComponent(q)}`);
   };
@@ -613,6 +620,7 @@ async function pageTimeline(params) {
   const isCurrent = viewIsCurrent();
   setTitle('Timeline'); setNav('timeline'); curCol = null;
   await ensurePlanned().catch(() => {});
+  if (params?.get('q')) await ensureSearchDetails().catch(() => {});
   if (!isCurrent()) return;
   const items = [...G.items, ...G.planned].filter((it) => it.yr != null);
   if (!items.length) { app.replaceChildren(h(`<div class="wrap page-head"><h1>Timeline</h1><p class="sub">No dated ideas yet: items gain a place on the timeline when they carry a <code>credit</code> with a year.</p></div>`)); return; }
@@ -721,6 +729,7 @@ async function route(event) {
     app.replaceChildren(h(`<div class="wrap page-head"><h1>Something went wrong</h1><p class="sub">${escapeHTML(e.message)}</p></div>`));
   }
   if (version !== routeVersion) return;
+  app.dataset.route = location.hash || '#/';
   if (parts[0] !== 'map' && parts[0] !== 'timeline') window.scrollTo(0, 0);
   if (event?.type === 'hashchange') {
     const focusTarget = parts[0] === 'search' ? app.querySelector('.search-big input') : app;
@@ -767,7 +776,7 @@ function renderSearch() {
 function closeSearch() { sBox.classList.remove('open'); sInput.setAttribute('aria-expanded', 'false'); sInput.removeAttribute('aria-activedescendant'); sHrefs = []; }
 function goSearch(href) { go(href); sInput.value = ''; sInput.blur(); closeSearch(); }
 sInput.addEventListener('input', () => { sSel = 0; renderSearch(); });
-sInput.addEventListener('focus', () => { ensurePlanned().then(() => { if (!SIDX.some((e) => e.planned)) buildSearch(); if (sInput.value.trim() && document.activeElement === sInput) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
+sInput.addEventListener('focus', () => { ensureSearchDetails().then(() => { if (sInput.value.trim() && document.activeElement === sInput) renderSearch(); }).catch(() => {}); if (sInput.value.trim()) renderSearch(); });
 sInput.addEventListener('keydown', (e) => {
   if (e.key === 'ArrowDown') { sSel = Math.min(sHrefs.length - 1, sSel + 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
   else if (e.key === 'ArrowUp') { sSel = Math.max(0, sSel - 1); renderSearch(); sBox.querySelector('.sel')?.scrollIntoView({ block: 'nearest' }); e.preventDefault(); }
@@ -782,7 +791,7 @@ window.addEventListener('keydown', (e) => { if (e.key === '/' && !e.metaKey && !
 /** Full results page: facets, results, and the matches shown on the map and timeline. */
 async function pageSearch(params) {
   const isCurrent = viewIsCurrent();
-  await ensurePlanned().catch(() => {});
+  await ensureSearchDetails().catch(() => {});
   if (!isCurrent()) return;
   buildSearch();
   const q = params.get('q') || '';

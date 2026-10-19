@@ -19,16 +19,17 @@ export default {
       num: '3.3.1a',
       kind: 'Definition',
       name: 'Characteristic function',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.3.1, pp. 125–128; Examples 3.3.3–3.3.10'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`The **characteristic function** of a random variable $X$ is
 $$\varphi(t)=Ee^{itX}=E\cos tX+i\,E\sin tX,\qquad t\in\R,$$
 where the expectation of a complex variable is taken separately on its real and imaginary parts. It depends only on the distribution of $X$. Durrett's examples (3.3.3–3.3.10):
 
 - coin flips $\pm1$: $\cos t$; Poisson$(\lambda)$: $\exp(\lambda(e^{it}-1))$; standard normal: $e^{-t^2/2}$;
 - uniform on $(a,b)$: $(e^{itb}-e^{ita})/it(b-a)$; triangular density $1-|x|$ on $(-1,1)$: $2(1-\cos t)/t^2$;
-- exponential $e^{-x}$ on $(0,\infty)$: $1/(1-it)$; two-sided exponential $\tfrac12e^{-|x|}$: $1/(1+t^2)$.`,
+- exponential $e^{-x}$ on $(0,\infty)$: $1/(1-it)$; two-sided exponential $\tfrac12e^{-|x|}$: $1/(1+t^2)$. At $t=0$, the expressions with removable singularities are assigned their continuous value $1$.`,
       idea: String.raw`For each $t$, $e^{itX}$ is a random point on the unit circle, and $\varphi(t)$ is its centre of mass. As $t$ moves, the points wind around the circle at speeds proportional to the values of $X$. The centre of mass traces a curve inside the unit disc that starts at $\varphi(0)=1$. The point of the transform is Theorem 3.3.2: independent sums become products. Inversion (Theorem 3.3.11) shows nothing about the law is lost.`,
-      caption: String.raw`Left, in the complex plane: the gold dots are $e^{itX_j}$ for 300 of the seeded samples at the current $t$, and their average is the empirical $\varphi(t)$ (gold ring). The blue curve is the exact $t\mapsto\varphi(t)$ for $t\ge0$, and the dashed gold curve is the empirical average traced over the same range. Right: real (blue) and imaginary (orange) parts against $t$. Drag $t$ to watch the cloud spread around the circle. More samples bring the empirical curve onto the exact one, with an error of order $1/\sqrt n$.`,
+      caption: String.raw`Left, in the complex plane: the gold dots are $e^{itX_j}$ for 300 of the seeded samples at the current $t$, and the empirical $\varphi(t)$ (gold ring) averages all $n$ samples. The blue curve is the exact $t\mapsto\varphi(t)$ for $t\ge0$, and the dashed gold curve is the empirical average traced over the same range. Right: real (blue) and imaginary (orange) parts against $t$. Drag $t$ to watch the cloud spread around the circle. More samples bring the empirical curve onto the exact one, with an error of order $1/\sqrt n$.`,
       deps: ['prob-1.6.1a'],
       see: ['rca-9.1'],
       tags: ['characteristic functions'],

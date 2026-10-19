@@ -12,6 +12,16 @@ export function mix32(x) {
 }
 export const mix2 = (a, b) => mix32((mix32(a >>> 0) ^ Math.imul(b >>> 0, 0x9e3779b1)) >>> 0);
 export const hex = (x, w = 4) => (x >>> 0).toString(16).toUpperCase().padStart(w, '0');
+/** Coupled lazy function/permutation answers at distinct inputs; agree until the first collision. */
+export function coupledOracleAnswers(r, N, count) {
+  const f = [], p = [], used = new Set();
+  for (let i = 0; i < Math.min(count, N); i++) {
+    const y = Math.floor(r() * N); let z = y;
+    if (used.has(z)) do { z = Math.floor(r() * N); } while (used.has(z));
+    f.push(y); p.push(z); used.add(z);
+  }
+  return { f, p };
+}
 /** 1.96 standard errors of a proportion p estimated from n samples. */
 export const ci95 = (p, n) => 1.96 * Math.sqrt(Math.max(p * (1 - p), 1e-12) / n);
 /** Exact Pr[no collision among q uniform draws from N values] as a log. */

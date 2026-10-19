@@ -29,8 +29,7 @@ export default {
       see: ['crypto-1.3'],
       refs: ['Judson §7.1'],
       tags: ['cryptography', 'modular arithmetic'],
-      credit: 'Julius Caesar (Suetonius reports a shift by three), 1st century BC',
-      verify: true,
+      credit: 'Julius Caesar',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Caesar_cipher' },
       viz(v) {
         const mode = v.select('Mode', ['Encrypt', 'Decrypt'], 'Encrypt');
@@ -149,9 +148,7 @@ export default {
       see: ['crypto-1.6'],
       refs: ['Judson §7.1'],
       tags: ['cryptography', 'frequency analysis'],
-      credit: 'al-Kindi, c. 850 (earliest known description of frequency analysis)',
       scope: String.raw`Works for monoalphabetic ciphers on texts long enough to resemble the language’s statistics. The English table is the commonly quoted published one, rounded.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Frequency_analysis' },
       viz(v) {
         const len = v.select('Text length', [{ value: 'short', label: 'short (12 letters)' }, { value: 'medium', label: 'medium (53)' }, { value: 'long', label: 'long (207)' }], 'long');

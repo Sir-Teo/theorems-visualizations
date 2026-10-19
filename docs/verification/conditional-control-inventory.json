@@ -1,0 +1,3120 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-19",
+  "scope": "Written visualizations with source-confirmed conditional segmented/toggle controls. 102 direct-control items plus4 array/object-built items. Candidate inventory includes default-visible controls whose conditional hiding is already covered by default-mode checks; new-branch evidence is reported separately.",
+  "count": 106,
+  "writtenEndpointCheck": {
+    "method": "loadAll() registry membership, viz function required",
+    "directCandidateItems": 102,
+    "allDirectCandidatesWritten": true,
+    "loadErrors": []
+  },
+  "excludedPatterns": [
+    "Stage/canvas/overlay display only",
+    "handle.visible or graph-node hidden only",
+    "sliders/text/button-only visibility without conditional segmented/toggle controls"
+  ],
+  "coveragePolicy": "Traverse individual default-visible control alternatives, then recursively only newly exposed or option-signature-changed controls. Restore parent selections; no Cartesian product of independent siblings. Explicit bounded range/text triggers supplement two non-mode parents. Unreached initially-hidden controls remain unresolved, never passed by a zero-state count.",
+  "items": [
+    {
+      "id": "alg-3.30",
+      "file": "content/alg/ch03-c.js",
+      "sourceLine": 122,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pre",
+          "kind": "select",
+          "declaration": "pre = v.select('subset of $\\\\mathbb Z$', [{ value: 'm3', label: '$3\\\\mathbb Z$' }, { value: 'nat', label: '$\\\\{0,1,2,\\\\ldots\\\\}$' }, { value: 'small', label: '$\\\\{-1,0,1\\\\}$' }, { value: 'odd', label: 'odd' }, { value: 'u23', label: '$2\\\\mathbb Z\\\\cup3\\\\mathbb Z$' }], 'nat');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 137,
+          "source": "const which = v.select('group', [{ value: 'Z12', label: '$\\\\mathbb Z_{12}$' }, { value: 'D3', label: '$S_3 = D_3$' }, { value: 'Z', label: '$\\\\mathbb Z$' }], 'Z12', { onChange: (k) => { H = new Set(k === 'D3' ? [0, 1, 3] : [0, 3, 6, 9]); pre.el.hidden = k !== 'Z'; } });"
+        },
+        {
+          "line": 140,
+          "source": "pre.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "covered",
+        "script": "tests/verification-alg-inverse-browser.mjs",
+        "evidence": "Explicitly switches group to integers and clicks all five subset choices in both themes; docs/verification/alg-inverse-followup.md and /tmp/alg-inverse-followup/browser.json."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "algo-10.1",
+      "file": "content/algo/ch10.js",
+      "sourceLine": 54,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "sys",
+          "kind": "select",
+          "declaration": "sys = v.select('coin system', [{ value: 'us', label: '1, 5, 10, 25' }, { value: 'odd', label: '1, 3, 4' }, { value: 'mix', label: '1, 5, 10, 20, 25' }, { value: 'pow', label: '1, 2, 4, 8, 16' }], 'odd');"
+        },
+        {
+          "sourceVariable": "rule",
+          "kind": "select",
+          "declaration": "rule = v.select('greedy rule', RULES, 'short');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 71,
+          "source": "const sync = () => { const c = mode.value === 'coins'; sys.el.hidden = !c; amt.el.hidden = !c; rule.el.hidden = c; seed.el.hidden = c; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "algo-4.16",
+      "file": "content/algo/ch04-p.js",
+      "sourceLine": 86,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "Nsel",
+          "kind": "select",
+          "declaration": "Nsel = v.select('$N$', [{ value: 8, label: '8' }, { value: 16, label: '16' }], 16, { onChange: () => S.reset(undefined, { at: 2 }) });"
+        },
+        {
+          "sourceVariable": "fac",
+          "kind": "select",
+          "declaration": "fac = v.select('$N = r_1 \\\\times r_2$', [{ value: '3x4', label: '3 × 4' }, { value: '4x3', label: '4 × 3' }, { value: '3x5', label: '3 × 5' }, { value: '4x4', label: '4 × 4' }], '3x4', { onChange: () => S.reset(undefined, { at: 2 }) });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 114,
+          "source": "const syncCtl = () => { Nsel.el.hidden = mode.value !== 'r2'; fac.el.hidden = mode.value === 'r2'; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "algo-6.1",
+      "file": "content/algo/ch06.js",
+      "sourceLine": 187,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "dec",
+          "kind": "toggle",
+          "declaration": "dec = v.toggle('allow DECREMENT', false, { onChange: () => reset() });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 256,
+          "source": "b2.hidden = isC() ? !dec.value : !isS(); b3.hidden = !isS(); dec.el.hidden = !isC();"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "algo-6.4",
+      "file": "content/algo/ch06.js",
+      "sourceLine": 513,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pc",
+          "kind": "select",
+          "declaration": "pc = v.select('$\\\\Phi$ =', [{ value: 'ones', label: '# 1 bits' }, { value: 'two', label: '2 × # 1 bits' }, { value: 'zero', label: '0' }, { value: 'zeros', label: '# 0 bits' }], 'ones');"
+        },
+        {
+          "sourceVariable": "ps",
+          "kind": "select",
+          "declaration": "ps = v.select('$\\\\Phi$ =', [{ value: 'size', label: 'stack size' }, { value: 'zero', label: '0' }, { value: 'neg', label: '− stack size' }], 'size');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 557,
+          "source": "b2.hidden = b3.hidden = isC(); pc.el.hidden = !isC(); ps.el.hidden = isC();"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "arch-3.3",
+      "file": "content/arch/ch03.js",
+      "sourceLine": 160,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "key",
+          "kind": "toggle",
+          "declaration": "key = v.toggle('keystone set', false), cen = v.toggle('centering in place', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 189,
+          "source": "const g = g0(tS.value), n = nn.value, full = n === nS; key.el.hidden = !full; if (!full) key.value = false;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "range_endpoint"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": [
+        {
+          "kind": "range",
+          "index": 1,
+          "key": "End",
+          "label": "stones set on each side = 8"
+        }
+      ]
+    },
+    {
+      "id": "astro-1.6",
+      "file": "content/astro/ch01-b.js",
+      "sourceLine": 154,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "ldT",
+          "kind": "toggle",
+          "declaration": "ldT = v.toggle('limb darkening', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 244,
+          "source": "kS.el.hidden = bS.el.hidden = ldT.el.hidden = fitB.hidden = !Pp.transit;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "causal-2.12",
+      "file": "content/causal/ch02-b.js",
+      "sourceLine": 314,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "cups",
+          "kind": "select",
+          "declaration": "cups = v.select('cups', [{ value: '6', label: '6' }, { value: '8', label: '8' }, { value: '10', label: '10' }, { value: '12', label: '12' }], '8');"
+        },
+        {
+          "sourceVariable": "reveal",
+          "kind": "toggle",
+          "declaration": "reveal = v.toggle('reveal the tray', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 355,
+          "source": "cups.el.hidden = !tea; reveal.el.hidden = !tea;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "causal-2.2",
+      "file": "content/causal/ch02.js",
+      "sourceLine": 82,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "reps",
+          "kind": "select",
+          "declaration": "reps = v.select('draws (40 units)', [{ value: '1000', label: '1,000' }, { value: '20000', label: '20,000' }], '1000');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 120,
+          "source": "kk.el.hidden = !choose_.value; reps.el.hidden = +popN.value !== 40 && !choose_.value ? true : false;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "cg-2.12",
+      "file": "content/cg/ch02-b.js",
+      "sourceLine": 241,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "dsel",
+          "kind": "select",
+          "declaration": "dsel = v.select('points', [{ value: 'ball', label: 'ball' }, { value: 'sphere', label: 'sphere' }, { value: 'cube', label: 'cube' }, { value: 'gauss', label: 'Gaussian' }], 'sphere');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 249,
+          "source": "const fam = v.select('polytope', [{ value: 'rand', label: 'hull of random points' }, { value: 'prism', label: 'prism' }, { value: 'bip', label: 'bipyramid' }], 'rand', { onChange: () => { dsel.el.hidden = fam.value !== 'rand'; } });"
+        },
+        {
+          "line": 268,
+          "source": "dsel.el.hidden = fam.value !== 'rand';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "cg-3.6",
+      "file": "content/cg/ch03-b.js",
+      "sourceLine": 39,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "cones",
+          "kind": "toggle",
+          "declaration": "cones = v.toggle('tip cones (comb)', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 60,
+          "source": "nsl.el.hidden = kind.value === 'comb'; ksl.el.hidden = kind.value === 'rand'; cones.el.hidden = kind.value === 'rand';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "cm-2.10",
+      "file": "content/cm/ch02-b.js",
+      "sourceLine": 184,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "plane",
+          "kind": "select",
+          "declaration": "plane = v.select('rotate B in the', [{ value: '110', label: '(110) plane' }, { value: '100', label: '(100) plane' }], '110');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 222,
+          "source": "plane.el.hidden = !!m.iso; th.el.hidden = !!m.iso;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "cplx-2.10",
+      "file": "content/cplx/ch02-b.js",
+      "sourceLine": 408,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "size",
+          "kind": "select",
+          "declaration": "size = v.select('Sudoku size', [{ value: 2, label: '4×4' }, { value: 3, label: '9×9' }], 3);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 466,
+          "source": "size.el.hidden = mode.value !== 'su';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "cplx-2.6",
+      "file": "content/cplx/ch02.js",
+      "sourceLine": 467,
+      "reason": "Array-built plane/cube clause toggles pT/cT; cube toggles hidden in default two-variable mode.",
+      "controls": [],
+      "visibilityEvidence": [
+        {
+          "line": 505,
+          "source": "pT.forEach((t) => { t.el.hidden = m3; }); cT.forEach((t) => { t.el.hidden = !m3; }); phi.el && (phi.el.hidden = m3);"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "crypto-2.3",
+      "file": "content/crypto/ch02.js",
+      "sourceLine": 156,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "cBits",
+          "kind": "select",
+          "declaration": "cBits = v.select('Ciphertext $c$', Array.from({ length: 8 }, (_, i) => ({ value: i, label: bits(i, 3) })), 5);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 178,
+          "source": "cIn.el.hidden = bm; cBits.el.hidden = !bm;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ctrl-4.7",
+      "file": "content/ctrl/ch04-b.js",
+      "sourceLine": 82,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "tunedT",
+          "kind": "toggle",
+          "declaration": "tunedT = v.toggle('resonator tuned to $\\\\omega_0$', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 111,
+          "source": "dS.el.hidden = tunedT.value || cS.value !== 'res'; tunedT.el.hidden = cS.value !== 'res';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "deep-1.8",
+      "file": "content/deep/ch01-b.js",
+      "sourceLine": 139,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "landS",
+          "kind": "select",
+          "declaration": "landS = v.select('landscape', [{ value: 'ce', label: 'cross-entropy' }, { value: 'mse', label: 'squared error' }], 'ce');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 181,
+          "source": "landS.el.hidden = !bern; O.forEach((h) => (h.visible = !bern)); St.visible = bern;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "deep-2.11",
+      "file": "content/deep/ch02-b.js",
+      "sourceLine": 242,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "tgS",
+          "kind": "select",
+          "declaration": "tgS = v.select('target', [{ value: 'smooth', label: 'smooth' }, { value: 'kinks', label: 'kinks' }, { value: 'rough', label: 'rough (Weierstrass-type)' }], 'smooth');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 279,
+          "source": "tgS.el.hidden = nS.el.hidden = lS.el.hidden = disc; bC.hidden = bR.hidden = !disc; MH.forEach((h, i) => { h.visible = disc; h.color = h.y >= 0 ? 'accent' : 'red'; });"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "dg-3.7",
+      "file": "content/dg/ch03-b.js",
+      "sourceLine": 15,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pre",
+          "kind": "select",
+          "declaration": "pre = v.select('preset', [{ value: 'egg', label: 'egg' }, { value: 'bean', label: 'bean' }, { value: 'ellipse', label: 'ellipse' }, { value: 'rosette', label: 'rosette' }], 'egg', {"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 41,
+          "source": "hs.forEach((h) => { h.visible = !lim; }); pre.el.hidden = lim; bS.el.hidden = !lim;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "dg-4.8",
+      "file": "content/dg/ch04-b.js",
+      "sourceLine": 22,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pre",
+          "kind": "select",
+          "declaration": "pre = v.select('preset', [{ value: 'vase', label: 'vase' }, { value: 'cap', label: 'cap (right angle)' }, { value: 'cone', label: 'cone tip' }], 'vase', {"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 48,
+          "source": "function sync() { H.forEach((h) => { h.visible = mode.value === 'free'; }); pre.el.hidden = mode.value !== 'free'; Rr.el.hidden = mode.value !== 'circle'; }"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "em-1.1",
+      "file": "content/em/ch01.js",
+      "sourceLine": 104,
+      "reason": "Oil-drop cont toggle is hidden in default pith-ball mode; array references cont.el.",
+      "controls": [],
+      "visibilityEvidence": [
+        {
+          "line": 201,
+          "source": "for (const b of [b1, b2, b3, b4, b5]) b.hidden = !balls;"
+        },
+        {
+          "line": 202,
+          "source": "for (const c of [sigma.el, cont.el]) c.hidden = balls;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "energy-1.1",
+      "file": "content/energy/ch01.js",
+      "sourceLine": 44,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "eu",
+          "kind": "select",
+          "declaration": "eu = v.select('unit', EU.map((u) => ({ value: u.id, label: u.label })), 'kWh', { onChange: () => fix() });"
+        },
+        {
+          "sourceVariable": "pu",
+          "kind": "select",
+          "declaration": "pu = v.select('unit', PU.map((u) => ({ value: u.id, label: u.label })), 'kWh/d', { onChange: () => fix() });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 61,
+          "source": "const qty = v.select('quantity', [{ value: 'E', label: 'energy' }, { value: 'P', label: 'power' }], 'E', { onChange: (q) => { eu.el.hidden = q === 'P'; pu.el.hidden = q === 'E'; amt.set(q === 'E' ? '1' : '100'); (q === 'E' ? eu : pu).set(q === 'E' ? 'kWh' : 'kWh/d'); fix(); } });"
+        },
+        {
+          "line": 64,
+          "source": "pu.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "energy-1.8",
+      "file": "content/energy/ch01-b.js",
+      "sourceLine": 99,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "xs",
+          "kind": "select",
+          "declaration": "xs = v.select('x axis', [{ value: 'gdp', label: 'GDP per person' }, { value: 'hdi', label: 'Human Development Index' }], 'gdp');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 123,
+          "source": "const show = () => { const k = view.value; sW.el.hidden = k !== 'world'; sS.el.hidden = k !== 'scn'; sC.el.hidden = k !== 'cty'; [mP, mG, mE, mC].forEach((c) => (c.el.hidden = k !== 'scn')); [b1, b2, b3].forEach((b) => (b.hidden = k !== 'scn')); xs.el.hidden = k !== 'cty'; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "fin-5.1",
+      "file": "content/fin/ch05.js",
+      "sourceLine": 20,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "samp",
+          "kind": "select",
+          "declaration": "samp = v.select('sample', [{ value: 'b', label: '1990–2026' }, { value: 'a', label: '1963–1989' }, { value: 'all', label: '1963–2026' }], 'b');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 64,
+          "source": "samp.el.hidden = cost.el.hidden = !weak; leak.el.hidden = tau.el.hidden = ent.el.hidden = weak;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "game-1.2",
+      "file": "content/game/ch01.js",
+      "sourceLine": 284,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "shade",
+          "kind": "select",
+          "declaration": "shade = v.select('shade', [{ value: 1, label: '$u_1$ by row' }, { value: 2, label: '$u_2$ by column' }], 1);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 314,
+          "source": "ed.s1.el.hidden = ed.s2.el.hidden = !fin; cS.el.hidden = bS.el.hidden = shade.el.hidden = fin;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "game-4.11",
+      "file": "content/game/ch04-c.js",
+      "sourceLine": 141,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "sH",
+          "kind": "select",
+          "declaration": "sH = v.select('Hex board', [2, 3, 4].map((x) => ({ value: x, label: `${x} × ${x}` })), 3, { onChange: (x) => { hx = x; reset(); } });"
+        },
+        {
+          "sourceVariable": "steal",
+          "kind": "toggle",
+          "declaration": "steal = v.toggle('show the stealing argument', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 166,
+          "source": "const vis = () => { sR.el.hidden = sC.el.hidden = game !== 'chomp'; sH.el.hidden = game !== 'hex'; steal.el.hidden = game !== 'chomp'; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "game-4.12",
+      "file": "content/game/ch04-c.js",
+      "sourceLine": 273,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "comp",
+          "kind": "toggle",
+          "declaration": "comp = v.toggle('computer replies', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 296,
+          "source": "const vis = () => { [gsel, sa, sb].forEach((c) => { c.el.hidden = mode !== 'sum'; }); comp.el.hidden = mode !== 'nim'; bNew.hidden = bRst.hidden = mode !== 'nim'; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "imaging-1.3",
+      "file": "content/imaging/ch01.js",
+      "sourceLine": 160,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "obj",
+          "kind": "select",
+          "declaration": "obj = v.select('image', [{ value: 'sl', label: 'Shepp–Logan' }, { value: 'star', label: 'Siemens star' }, { value: 'bars', label: 'bar target' }], 'sl');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 198,
+          "source": "obj.el.hidden = mk === 'wave';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "kin-1.5",
+      "file": "content/kin/ch01.js",
+      "sourceLine": 261,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "truth",
+          "kind": "select",
+          "declaration": "truth = v.select('true law (synthetic)', [{ value: 1, label: 'first order' }, { value: 2, label: 'second order' }], 1);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 283,
+          "source": "truth.el.hidden = real; kS.el.hidden = real; noise.el.hidden = real;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-6.26",
+      "file": "content/ladr/ch06.js",
+      "sourceLine": 1077,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "m3",
+          "kind": "select",
+          "declaration": "m3 = v.select('$m =$', [{ value: 1, label: '1' }, { value: 2, label: '2' }, { value: 3, label: '3' }], 2);"
+        },
+        {
+          "sourceVariable": "fsel",
+          "kind": "select",
+          "declaration": "fsel = v.select('$f =$', [{ value: 'step', label: 'a step' }, { value: 'abs', label: '$|x|$' }, { value: 'exp', label: '$e^x$' }], 'step');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 1098,
+          "source": "const show = () => { const fn = mode.value === 'fn'; layout(v, [[S3, !fn], [SF, fn], [R, true]]); m3.el.hidden = fn; fsel.el.hidden = mf.el.hidden = !fn; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-6.48",
+      "file": "content/ladr/ch06-b.js",
+      "sourceLine": 789,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "kS",
+          "kind": "select",
+          "declaration": "kS = v.select('set', [{ value: '0', label: '$\\\\{0\\\\}$' }, { value: '1', label: '$+\\\\,g_1$' }, { value: '2', label: '$+\\\\,g_2$' }, { value: '3', label: '$+\\\\,g_3$' }], '2');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 815,
+          "source": "kS.el.hidden = md !== 'e'; lam.el.hidden = md !== 'a';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-6.61",
+      "file": "content/ladr/ch06-c.js",
+      "sourceLine": 406,
+      "reason": "Target-function selector tgt hidden until the function-space mode; hidden via array loop.",
+      "controls": [],
+      "visibilityEvidence": [
+        {
+          "line": 423,
+          "source": "const tgt = v.select('$v$', [{ value: 'sin', label: '$\\\\sin x$' }, { value: 'abs', label: '$|x|$' }], 'sin', { onChange: (t) => { bTay.hidden = t !== 'sin'; setTaylor(); best = Infinity; } });"
+        },
+        {
+          "line": 455,
+          "source": "for (const c of [tgt, nS]) c.el.hidden = m !== 'F';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-8.49",
+      "file": "content/ladr/ch08-d.js",
+      "sourceLine": 155,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "size",
+          "kind": "select",
+          "declaration": "size = v.select('shapes', [{ value: '23', label: '$2\\\\times3$, $3\\\\times2$' }, { value: '13', label: '$1\\\\times3$, $3\\\\times1$' }, { value: '33', label: '$3\\\\times3$, $3\\\\times3$' }], '23');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 195,
+          "source": "size.el.hidden = !two();"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-8.57",
+      "file": "content/ladr/ch08-d.js",
+      "sourceLine": 645,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "nsel",
+          "kind": "select",
+          "declaration": "nsel = v.select('$n$', [2, 3, 4], 3);"
+        },
+        {
+          "sourceVariable": "tgt",
+          "kind": "select",
+          "declaration": "tgt = v.select('target $K$', [{ value: 'I', label: '$K = I$' }, { value: 'Z', label: '$K = \\\\operatorname{diag}(1, -1, 0, \\\\dots)$' }], 'I');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 694,
+          "source": "nsel.el.hidden = tgt.el.hidden = it.el.hidden = btn.hidden = !gd; np.el.hidden = gd;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ladr-9.23",
+      "file": "content/ladr/ch09-b.js",
+      "sourceLine": 529,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "conj",
+          "kind": "toggle",
+          "declaration": "conj = v.toggle('keep $e_2$ $\\\\rho$-orthogonal to $e_1$', true, { onChange: (b) => { if (!b) e2h.set(e2h.x + 0.45, e2h.y + 0.3); } });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 559,
+          "source": "e1h.visible = own; e2h.visible = own; conj.el.hidden = !own;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "ling-3.9",
+      "file": "content/ling/ch03-b.js",
+      "sourceLine": 256,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "stemTl",
+          "kind": "select",
+          "declaration": "stemTl = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'too');"
+        },
+        {
+          "sourceVariable": "stemId",
+          "kind": "select",
+          "declaration": "stemId = v.select('Stem', REDUP.id.stems.map((x) => ({ value: x[0], label: x[0] })), 'isip');"
+        },
+        {
+          "sourceVariable": "ruleSel",
+          "kind": "select",
+          "declaration": "ruleSel = v.select('Rule', [{ value: 'full', label: 'full' }, { value: 'CV', label: 'first CV' }, { value: 'CVC', label: 'first CVC' }], 'CV');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 279,
+          "source": "stemTl.el.hidden = lang.value !== 'tl'; stemId.el.hidden = lang.value !== 'id'; inp.el.hidden = lang.value !== 'free'; ruleSel.el.hidden = lang.value !== 'free';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "logic-1.2",
+      "file": "content/logic/ch01.js",
+      "sourceLine": 188,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "ex",
+          "kind": "select",
+          "declaration": "ex = v.select('f(n) =', [{ value: 'bin', label: 'binary digits of n − 1' }, { value: 'div', label: 'divisors of n' }, { value: 'low', label: '{m : m < n}' }, { value: 'cop', label: 'coprime to n' }], 'bin');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 232,
+          "source": "ex.el.hidden = fin; nS.el.hidden = !fin; bAim.hidden = !fin; bRand.hidden = !fin; bSing.hidden = !fin;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "logic-5.13",
+      "file": "content/logic/ch05-b.js",
+      "sourceLine": 356,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "sg",
+          "kind": "select",
+          "declaration": "sg = v.select('ε is', [{ value: '1', label: 'positive' }, { value: '-1', label: 'negative' }], '1');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 382,
+          "source": "sg.el.hidden = !ast || !/abs/.test(inp.value);"
+        }
+      ],
+      "parentTriggerTypes": [
+        "text_input",
+        "ordinary_button"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "Next example also reaches abs(x); no existing complete sign-picker native coverage identified."
+      },
+      "boundedTriggers": [
+        {
+          "kind": "text",
+          "index": 0,
+          "value": "abs(x)",
+          "label": "absolute-value expression exposes epsilon sign"
+        }
+      ]
+    },
+    {
+      "id": "macro-1.5",
+      "file": "content/macro/ch01.js",
+      "sourceLine": 446,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "ch",
+          "kind": "select",
+          "declaration": "ch = v.select('what gives', [{ value: 'I', label: 'investment' }, { value: 'NX', label: 'net exports' }, { value: 'C', label: 'consumption (saving rises)' }, { value: 'mix', label: 'a mix' }], 'NX');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 471,
+          "source": "ch.el.hidden = brk.value;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mat-3.4",
+      "file": "content/mat/ch03.js",
+      "sourceLine": 229,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "hexFam",
+          "kind": "select",
+          "declaration": "hexFam = v.select('hcp family', [{ value: 'basal', label: 'basal' }, { value: 'prism', label: 'prismatic' }, { value: 'pyr', label: 'pyramidal ⟨c+a⟩' }], 'basal');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 285,
+          "source": "idx.el.hidden = !cubic; cas.el.hidden = cubic; hexFam.el.hidden = cubic;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "partial",
+        "script": "tests/verification-physics-browser.mjs",
+        "evidence": "Explicit case selects hcp and clicks the final family; does not enumerate every hcp-family choice."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mech-1.7",
+      "file": "content/mech/ch01.js",
+      "sourceLine": 464,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "par",
+          "kind": "toggle",
+          "declaration": "par = v.toggle('parallel velocities', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 496,
+          "source": "m1s.el.hidden = m2s.el.hidden = !spr; par.el.hidden = spr; q1.visible = q2.visible = !spr;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mech-13.1",
+      "file": "content/mech/ch13.js",
+      "sourceLine": 78,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "mapS",
+          "kind": "select",
+          "declaration": "mapS = v.select('map', [{ value: 'cat', label: 'cat map, det 1' }, { value: 'lossy', label: '$(i + j,\\\\ i + 3j)$, det 2' }], 'cat');"
+        },
+        {
+          "sourceVariable": "fric",
+          "kind": "toggle",
+          "declaration": "fric = v.toggle('dissipation (break it)', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 163,
+          "source": "Ns.el.hidden = mapS.el.hidden = !grid; epsS.el.hidden = fric.el.hidden = grid; h0.visible = !grid;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-1.1",
+      "file": "content/mfd/ch01.js",
+      "sourceLine": 17,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pair",
+          "kind": "select",
+          "declaration": "pair = v.select('transition', [{ value: '0', label: 'top → right' }, { value: '1', label: 'top → left' }, { value: '2', label: 'top → bottom' }, { value: '3', label: 'right → top' }], '0');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 51,
+          "source": "cut.el.hidden = atlas.value !== 'ang'; pair.el.hidden = atlas.value === 'ang';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-2.1",
+      "file": "content/mfd/ch02.js",
+      "sourceLine": 38,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "fs",
+          "kind": "select",
+          "declaration": "fs = v.select('function $f$', Object.entries(FUNS).map(([value, o]) => ({ value, label: o.label })), 'poly');"
+        },
+        {
+          "sourceVariable": "gs",
+          "kind": "select",
+          "declaration": "gs = v.select('bijection $F$', Object.entries(LINE).map(([value, o]) => ({ value, label: o.label })), 'cube');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 74,
+          "source": "fs.el.hidden = R; ang.el.hidden = R; gs.el.hidden = !R; hp.visible = R;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-2.9",
+      "file": "content/mfd/ch02-b.js",
+      "sourceLine": 185,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pun",
+          "kind": "toggle",
+          "declaration": "pun = v.toggle('puncture the domain at $\\\\theta=0$', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 212,
+          "source": "kk.el.hidden = !circ; dl.el.hidden = !circ; pun.el.hidden = !circ; rr.el.hidden = circ; Q.visible = circ; Pp.visible = !circ;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-3.13",
+      "file": "content/mfd/ch03-b.js",
+      "sourceLine": 421,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "dsel",
+          "kind": "select",
+          "declaration": "dsel = v.select('degree $d$', ['1', '2', '3'], '2');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 493,
+          "source": "dsel.el.hidden = !circ; amp.el.hidden = !circ; yy.el.hidden = !circ; tt.el.hidden = circ;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-3.14",
+      "file": "content/mfd/ch03-b.js",
+      "sourceLine": 547,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "which",
+          "kind": "select",
+          "declaration": "which = v.select('critical point (by value)', [{ value: 0, label: 'lowest' }, { value: 1, label: '2nd' }, { value: 2, label: '3rd' }, { value: 3, label: 'highest' }], 0);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 599,
+          "source": "which.el.hidden = degenerate; rad.el.hidden = degenerate;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "range"
+      ],
+      "existingFocusedCoverage": {
+        "status": "partial",
+        "script": "tests/verification-pure-math-browser.mjs",
+        "evidence": "Critical selector is visible by default; explicit case changes tilt to1, not every degenerate/nondegenerate toggle configuration."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "mfd-3.6",
+      "file": "content/mfd/ch03.js",
+      "sourceLine": 417,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "slice",
+          "kind": "select",
+          "declaration": "slice = v.select('slice through $I$', [{ value: 'A', label: 'drop $s$: $(p,q,r)$' }, { value: 'B', label: 'drop $r$: $(q,p,s)$' }], 'B');"
+        },
+        {
+          "sourceVariable": "sheet",
+          "kind": "select",
+          "declaration": "sheet = v.select('sheet', [{ value: 1, label: 'upper' }, { value: -1, label: 'lower' }], 1);"
+        },
+        {
+          "sourceVariable": "comp",
+          "kind": "select",
+          "declaration": "comp = v.select('component', [{ value: 'rot', label: 'rotations $SO(2)$' }, { value: 'ref', label: 'reflections' }], 'rot');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 442,
+          "source": "kk.el.hidden = O; ww.el.hidden = O; th.el.hidden = O; if (O) sheet.el.hidden = true; slice.el.hidden = O; tt.el.hidden = !O; comp.el.hidden = !O;"
+        },
+        {
+          "line": 445,
+          "source": "sheet.el.hidden = !(Kp > 1e-9);"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle",
+        "range"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "micro-6.2",
+      "file": "content/micro/ch06.js",
+      "sourceLine": 114,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "fam",
+          "kind": "select",
+          "declaration": "fam = v.select('preferences', Object.entries(FAM).map(([value, o]) => ({ value, label: o.label })), 'cd');"
+        },
+        {
+          "sourceVariable": "sys",
+          "kind": "select",
+          "declaration": "sys = v.select('demand system', Object.entries(SYS).map(([value, o]) => ({ value, label: o.label })), 'cd');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 157,
+          "source": "fam.el.hidden = !one; p1.el.hidden = !one; dp.el.hidden = !one; sys.el.hidden = one; q1.el.hidden = one; q2.el.hidden = one;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "music-3.3",
+      "file": "content/music/ch03.js",
+      "sourceLine": 290,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "capT",
+          "kind": "toggle",
+          "declaration": "capT = v.toggle('cap the left end', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 335,
+          "source": "capT.el.hidden = reed;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "music-6.14",
+      "file": "content/music/ch06-b.js",
+      "sourceLine": 363,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "fmS",
+          "kind": "select",
+          "declaration": "fmS = v.select('mean frequency', FMS.map((f) => ({ value: f, label: `${f} Hz` })), 500, { onChange: () => v.invalidate() });"
+        },
+        {
+          "sourceVariable": "helm",
+          "kind": "toggle",
+          "declaration": "helm = v.toggle('scale by a fixed 132 Hz (Helmholtz)', false);"
+        },
+        {
+          "sourceVariable": "rateS",
+          "kind": "select",
+          "declaration": "rateS = v.select('your rating', ['—', '1', '2', '3', '4', '5', '6', '7'], '—', { onChange: (x) => { if (pending && x !== '—') { mine.push({ ...pending, r: +x }); pending = null; } rateS.value = '—'; v.invalidate(); } });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 386,
+          "source": "function vis() { const r = mode.value === 'rate'; fmS.el.hidden = !r; testB.hidden = !r; rateS.el.hidden = !r; helm.el.hidden = mode.value !== 'one'; v.invalidate(); }"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "opt-2.2",
+      "file": "content/opt/ch02.js",
+      "sourceLine": 118,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "objSel",
+          "kind": "select",
+          "declaration": "objSel = v.select('set built from the generators', [{ value: 'cone', label: 'convex cone' }, { value: 'rays', label: 'rays only' }, { value: 'hull', label: 'conv{0, g}' }], 'cone');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 154,
+          "source": "nG.el.hidden = is3; objSel.el.hidden = is3;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "opt-3.6",
+      "file": "content/opt/ch03.js",
+      "sourceLine": 329,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "s2",
+          "kind": "select",
+          "declaration": "s2 = v.select('$f_2$', opts, 'abs');"
+        },
+        {
+          "sourceVariable": "gS",
+          "kind": "select",
+          "declaration": "gS = v.select('$g$', [{ value: 'exp', label: '$e^{t/2}$' }, { value: 'sq', label: '$t^2$' }, { value: 'sqrt', label: '$\\\\sqrt{t+3}$' }], 'exp');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 360,
+          "source": "alpha.el.hidden = beta.el.hidden = o !== 'sum'; s2.el && (s2.el.hidden = o === 'aff' || o === 'tan' || o === 'comp');"
+        },
+        {
+          "line": 361,
+          "source": "aS.el.hidden = bS.el.hidden = o !== 'aff'; mS.el.hidden = o !== 'tan'; gS.el.hidden = o !== 'comp';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pchem-2.12",
+      "file": "content/pchem/ch02-c.js",
+      "sourceLine": 95,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "salt",
+          "kind": "select",
+          "declaration": "salt = v.select('salt', Object.keys(SALTS).map((k) => ({ value: k, label: k })), 'NaCl');"
+        },
+        {
+          "sourceVariable": "bsel",
+          "kind": "select",
+          "declaration": "bsel = v.select('reaction', Object.keys(BONDS).map((k) => ({ value: k, label: BONDS[k].name })), 'ch4');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 132,
+          "source": "salt.el.hidden = !isBH; shown.el.hidden = !isBH; U.el.hidden = !isBH; bClose.hidden = !isBH; bBorn.hidden = !isBH; bsel.el.hidden = isBH;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pde-1.9",
+      "file": "content/pde/ch01-b.js",
+      "sourceLine": 150,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "ex",
+          "kind": "select",
+          "declaration": "ex = v.select('example', [{ value: 'tricomi', label: 'Tricomi' }, { value: 'circle', label: 'type changes on a circle' }, { value: 'shear', label: 'a, b, c = 1, x, 0.2' }], 'tricomi', { onChange: (k) => { aI.set(EX[k][0]); bI.set(EX[k][1]); cI.set(EX[k][2]); } });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 184,
+          "source": "ex.el.hidden = isC; aS.el.hidden = bS.el.hidden = cS.el.hidden = !isC; aI.el.hidden = bI.el.hidden = cI.el.hidden = isC; P.visible = !isC;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pde-4.5",
+      "file": "content/pde/ch04-b.js",
+      "sourceLine": 21,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "L",
+          "kind": "select",
+          "declaration": "L = v.select('left end', [{ value: 'D', label: 'D' }, { value: 'N', label: 'N' }, { value: 'R', label: 'Robin' }], 'D');"
+        },
+        {
+          "sourceVariable": "R",
+          "kind": "select",
+          "declaration": "R = v.select('right end', [{ value: 'D', label: 'D' }, { value: 'N', label: 'N' }, { value: 'R', label: 'Robin' }], 'R');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 61,
+          "source": "aS.el.hidden = !brk.value; hS.el.hidden = brk.value || (L.value !== 'R' && R.value !== 'R'); L.el.hidden = brk.value; R.el.hidden = brk.value;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pharm-1.2",
+      "file": "content/pharm/ch01.js",
+      "sourceLine": 130,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "sched",
+          "kind": "select",
+          "declaration": "sched = v.select('sampling', [{ value: 'even', label: 'even' }, { value: 'early', label: 'early-heavy' }], 'even');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 194,
+          "source": "sched.el.hidden = src.value === 'real'; nS.el.hidden = src.value === 'real';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "phil-2.1",
+      "file": "content/phil/ch02.js",
+      "sourceLine": 46,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pace",
+          "kind": "toggle",
+          "declaration": "pace = v.toggle('constant speed', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 77,
+          "source": "pace.el.hidden = reg;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "phil-2.7",
+      "file": "content/phil/ch02.js",
+      "sourceLine": 510,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "tail",
+          "kind": "select",
+          "declaration": "tail = v.select('reapers beyond #10', [{ value: 'none', label: 'none strike' }, { value: 'all', label: 'all strike' }], 'none');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 542,
+          "source": "tail.el.hidden = finite;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pl-1.3",
+      "file": "content/pl/ch01.js",
+      "sourceLine": 413,
+      "reason": "Judgment-specific Rule segmented pickers are built into an object; three are initially hidden.",
+      "controls": [],
+      "visibilityEvidence": [
+        {
+          "line": 438,
+          "source": "for (const [k, c] of Object.entries(pickers)) c.el.hidden = k !== kindSel.value;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pl-3.1",
+      "file": "content/pl/ch03.js",
+      "sourceLine": 36,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "exL",
+          "kind": "select",
+          "declaration": "exL = v.select('Examples', [{ value: 'dup', label: 'duplicating' }, { value: 'disj', label: 'disjoint' }, { value: 'erase', label: 'erasing' }, { value: 'nest', label: 'nested' }], 'dup', { onChange: () => f.set(EX[exL.value]) });"
+        },
+        {
+          "sourceVariable": "exA",
+          "kind": "select",
+          "declaration": "exA = v.select('System', [{ value: 'fork', label: 'a fork, no join' }, { value: 'square', label: 'square' }, { value: 'lop', label: 'lopsided' }], 'fork', { onChange: () => v.invalidate() });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 57,
+          "source": "const sync = () => { const lam = mode.value === 'lam'; f.ctl.el.hidden = !lam; exL.el.hidden = !lam; exA.el.hidden = lam; v.invalidate(); };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "pma-11.5",
+      "file": "content/pma/ch11.js",
+      "sourceLine": 344,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "kind",
+          "kind": "select",
+          "declaration": "kind = v.select('$A=$', ['[a,b]', '[a,b)', '(a,b]', '(a,b)'].map((s) => ({ value: s, label: `$${s}$` })), '[a,b)');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 373,
+          "source": "kind.el.hidden = !mu; ha.visible = mu;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "polsci-1.12",
+      "file": "content/polsci/ch01-b.js",
+      "sourceLine": 531,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "bigR",
+          "kind": "select",
+          "declaration": "bigR = v.select('big map', RULES.map((r, i) => ({ value: i, label: r === 'Instant runoff' ? 'IRV' : r })), 0);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 624,
+          "source": "kS.el.hidden = findBtn.hidden = resetBtn.hidden = map; bigR.el.hidden = sig.el.hidden = !map;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "prob-4.1.9",
+      "file": "content/prob/ch04-a.js",
+      "sourceLine": 184,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "sel",
+          "kind": "select",
+          "declaration": "sel = v.select('$X$', xfOpts(['wave', 'bump', 'saw']), 'wave');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 211,
+          "source": "a.el.hidden = m !== 'lin'; sh.el.hidden = m !== 'mon'; nn.el.hidden = m !== 'mct'; sel.el.hidden = m === 'mct';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "prob-4.8.3",
+      "file": "content/prob/ch04-z3.js",
+      "sourceLine": 21,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "fS",
+          "kind": "select",
+          "declaration": "fS = v.select('$Y$', dfunOpts(['smooth', 'jump', 'rough']), 'smooth');"
+        },
+        {
+          "sourceVariable": "rule",
+          "kind": "select",
+          "declaration": "rule = v.select('rule', [{ value: 'hi', label: '$X_n\\\\ge c$' }, { value: 'jump', label: '$|X_n-X_{n-1}|\\\\ge c$' }, { value: 'fix', label: '$N=4$' }], 'hi');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 42,
+          "source": "const isW = mart.value === 'srw'; fS.el.hidden = isW; rule.el.hidden = isW; cS.el.hidden = isW;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "prob-5.2.2",
+      "file": "content/prob/ch05-a.js",
+      "sourceLine": 251,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "tg",
+          "kind": "select",
+          "declaration": "tg = v.select('target $f$', [{ value: 'sqrt', label: '$\\\\sqrt x$' }, { value: 'sin', label: '$(1+\\\\sin 2\\\\pi x)/2$' }], 'sqrt');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 277,
+          "source": "const isPi = fam.value === 'pi'; tg.el.hidden = !isPi; nS.el.hidden = !isPi;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "psych-1.9",
+      "file": "content/psych/ch01-b.js",
+      "sourceLine": 386,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "dark",
+          "kind": "toggle",
+          "declaration": "dark = v.toggle('dark light $I_0$ (see 1.10)', false);"
+        },
+        {
+          "sourceVariable": "big",
+          "kind": "toggle",
+          "declaration": "big = v.toggle('preview 5 JNDs', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 448,
+          "source": "bL.hidden = bR.hidden = bRes.hidden = !isYou; bNew.hidden = kS.el.hidden = dark.el.hidden = big.el.hidden = isYou; probe.visible = !isYou;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "psych-2.14",
+      "file": "content/psych/ch02-b.js",
+      "sourceLine": 436,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "yourP",
+          "kind": "select",
+          "declaration": "yourP = v.select('your bags', [{ value: 'hi', label: '50% contain a knife' }, { value: 'lo', label: 'low prevalence' }], 'lo');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 507,
+          "source": "yourP.el.hidden = !isYou; bStart.hidden = bT.hidden = bC.hidden = bRes.hidden = !isYou;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "qchem-1.10",
+      "file": "content/qchem/ch01-b.js",
+      "sourceLine": 12,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "shape",
+          "kind": "select",
+          "declaration": "shape = v.select('wave packet', [{ value: 'g', label: 'Gaussian' }, { value: 'c', label: 'chirped Gaussian' }, { value: 's', label: 'sech' }, { value: 'b', label: 'two bumps' }], 'g', { onChange: () => sync() });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 42,
+          "source": "shape.el.hidden = sp; sig.el.hidden = sp; chirp.el.hidden = sp || shape.value !== 'c';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "qm-1.3",
+      "file": "content/qm/ch01.js",
+      "sourceLine": 257,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "src",
+          "kind": "select",
+          "declaration": "src = v.select('photons', Object.entries(SRC).map(([value, S]) => ({ value, label: S.label })), 'mo');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 295,
+          "source": "Pw.el.hidden = lam.el.hidden = !cnt; src.el.hidden = cnt; hd.visible = !cnt;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "qm-5.20",
+      "file": "content/qm/ch05-c.js",
+      "sourceLine": 288,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "pre",
+          "kind": "select",
+          "declaration": "pre = v.select('start', [{ value: 'box', label: 'box' }, { value: 'two', label: 'two bumps' }, { value: 'tri', label: 'triangle' }, { value: 'move', label: 'moving lump' }], 'two', { onChange: () => { drawn = null; S.reset(); v.restart(); } });"
+        },
+        {
+          "sourceVariable": "def",
+          "kind": "select",
+          "declaration": "def = v.select('deformation', [{ value: 'sk', label: 'skew' }, { value: 'fl', label: 'flat top' }, { value: 'ch', label: 'chirp' }], 'sk');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 309,
+          "source": "const mode = v.select('mode', [{ value: 'opt', label: 'optimize' }, { value: 'pert', label: 'perturb a Gaussian' }], 'opt', { onChange: () => { pre.el.hidden = mode.value !== 'opt'; eps.el.hidden = def.el.hidden = mode.value === 'opt'; } });"
+        },
+        {
+          "line": 313,
+          "source": "eps.el.hidden = def.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rca-16.22",
+      "file": "content/rca/ch16-a3.js",
+      "sourceLine": 331,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "which",
+          "kind": "select",
+          "declaration": "which = v.select('$f$', Object.entries(FN).map(([value, o]) => ({ value, label: o.label })), 'exp');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 379,
+          "source": "which.el.hidden = md !== 'cov'; Rs.el.hidden = md !== 'cov';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rca-16.6",
+      "file": "content/rca/ch16.js",
+      "sourceLine": 346,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "which",
+          "kind": "select",
+          "declaration": "which = v.select('$f$', Object.entries(GAP).map(([value, o]) => ({ value, label: o.label })), 'two');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 384,
+          "source": "which.el.hidden = md !== 'T'; zoom.el.hidden = md !== 'T';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rep-1.2",
+      "file": "content/rep/ch01.js",
+      "sourceLine": 68,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "g3",
+          "kind": "select",
+          "declaration": "g3 = v.select('element $g$', D3.L.map((l, i) => ({ value: i, label: `$${l}$` })), 1);"
+        },
+        {
+          "sourceVariable": "g4",
+          "kind": "select",
+          "declaration": "g4 = v.select('element $g$', D4.L.map((l, i) => ({ value: i, label: `$${l}$` })), 1);"
+        },
+        {
+          "sourceVariable": "conv",
+          "kind": "select",
+          "declaration": "conv = v.select('convention', [{ value: 'L', label: '$x\\\\mapsto gx$' }, { value: 'R', label: '$x\\\\mapsto xg$ (wrong)' }, { value: 'Ri', label: '$x\\\\mapsto xg^{-1}$' }], 'L');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 92,
+          "source": "const sync = () => { const a = ACT[key.value]; g3.el.hidden = a.G !== D3; g4.el.hidden = a.G !== D4; conv.el.hidden = !a.regular; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rep-1.6",
+      "file": "content/rep/ch01-b.js",
+      "sourceLine": 12,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "what",
+          "kind": "select",
+          "declaration": "what = v.select('search for invariant', [{ value: 'lines', label: 'lines' }, { value: 'planes', label: 'planes (normal lines)' }], 'lines');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 60,
+          "source": "what.el.hidden = rep.dim === 2;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rep-1.9",
+      "file": "content/rep/ch01-b.js",
+      "sourceLine": 240,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "g3",
+          "kind": "select",
+          "declaration": "g3 = v.select('element $g$', D3.L.map((l, i) => ({ value: i, label: `$${l}$` })), 1);"
+        },
+        {
+          "sourceVariable": "g4",
+          "kind": "select",
+          "declaration": "g4 = v.select('element $g$', D4.L.map((l, i) => ({ value: i, label: `$${l}$` })), 1);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 261,
+          "source": "const reset = () => { const n = REP[rs.value].n; X = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => ((i * 3 + j * 2 + (i > j ? 2 : 0)) % 5) - 2)); const r = REP[rs.value]; g3.el.hidden = r.G !== D3; g4.el.hidden = r.G !== D4; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "rep-3.3",
+      "file": "content/rep/ch03.js",
+      "sourceLine": 150,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "aS3",
+          "kind": "select",
+          "declaration": "aS3 = v.select('$A$', opts(s3), 2), bS3 = v.select('$B$', opts(s3), 3);"
+        },
+        {
+          "sourceVariable": "bS3",
+          "kind": "select",
+          "declaration": "bS3 = v.select('$B$', opts(s3), 3);"
+        },
+        {
+          "sourceVariable": "aZ5",
+          "kind": "select",
+          "declaration": "aZ5 = v.select('$A$', opts(z5), 0), bZ5 = v.select('$B$', opts(z5), 1);"
+        },
+        {
+          "sourceVariable": "bZ5",
+          "kind": "select",
+          "declaration": "bZ5 = v.select('$B$', opts(z5), 1);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 185,
+          "source": "const syncSel = () => { const s = gsel.value === 'S3'; aS3.el.hidden = bS3.el.hidden = !s; aZ5.el.hidden = bZ5.el.hidden = s; };"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "robot-1.1",
+      "file": "content/robot/ch01.js",
+      "sourceLine": 17,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "layout",
+          "kind": "select",
+          "declaration": "layout = v.select('pins', [{ value: 'gen', label: 'generic' }, { value: 'line', label: 'on one line' }], 'gen');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 67,
+          "source": "nPins.el.hidden = layout.el.hidden = planar; clear.hidden = !planar;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "robot-1.3",
+      "file": "content/robot/ch01.js",
+      "sourceLine": 196,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "limits",
+          "kind": "toggle",
+          "declaration": "limits = v.toggle('joint limits ±150°', false);"
+        },
+        {
+          "sourceVariable": "obs",
+          "kind": "toggle",
+          "declaration": "obs = v.toggle('obstacles', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 272,
+          "source": "limits.el.hidden = obs.el.hidden = grow.el.hidden = scrub.el.hidden = clr.hidden = !arm; spin.el.hidden = arm;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "sig-2.5",
+      "file": "content/sig/ch02.js",
+      "sourceLine": 386,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "noisy",
+          "kind": "toggle",
+          "declaration": "noisy = v.toggle('add noise of size $10^{-3}$ to $y$ before inverting', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 410,
+          "source": "noisy.el.hidden = !sys.inverse;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "soc-2.7",
+      "file": "content/soc/ch02.js",
+      "sourceLine": 341,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "order",
+          "kind": "select",
+          "declaration": "order = v.select('Delete first', [{ value: 'weak', label: 'weak ties' }, { value: 'strong', label: 'strong ties' }, { value: 'random', label: 'random' }], 'weak');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 415,
+          "source": "T.el.hidden = !spread; ratio.el.hidden = !spread; order.el.hidden = spread; frac.el.hidden = spread;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-1.1",
+      "file": "content/stat/ch01.js",
+      "sourceLine": 174,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "tC",
+          "kind": "select",
+          "declaration": "tC = v.select('true law', [{ value: 'in', label: '$N(1.2,\\\\,0.9^2)$' }, { value: 'out', label: 'skewed (gamma)' }], 'in');"
+        },
+        {
+          "sourceVariable": "tD",
+          "kind": "select",
+          "declaration": "tD = v.select('true law', [{ value: 'in', label: '$\\\\mathrm{Poisson}(4.2)$' }, { value: 'out', label: 'overdispersed' }], 'in');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 235,
+          "source": "tC.el.hidden = f === 'poisson'; tD.el.hidden = f !== 'poisson';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-1.20",
+      "file": "content/stat/ch01-p.js",
+      "sourceLine": 76,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "varSel",
+          "kind": "select",
+          "declaration": "varSel = v.select('measurement', [{ value: 'height', label: 'height' }, { value: 'finger', label: 'finger length' }], 'height');"
+        },
+        {
+          "sourceVariable": "src",
+          "kind": "select",
+          "declaration": "src = v.select('counts', [{ value: 'paper', label: 'Student 1908' }, { value: 'sim', label: 're-shuffle the cards' }], 'paper');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 121,
+          "source": "varSel.el.hidden = src.el.hidden = V !== 'cards'; shuffle.hidden = V !== 'cards' || src.value !== 'sim'; nS.el.hidden = V !== 'tab';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-1.7",
+      "file": "content/stat/ch01.js",
+      "sourceLine": 688,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "popSel",
+          "kind": "select",
+          "declaration": "popSel = v.select('population', popOpts(['normal', 'expo', 'cauchy']), 'expo');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 740,
+          "source": "popSel.el.hidden = isC; rhoS.el.hidden = !isC;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-2.10",
+      "file": "content/stat/ch02-b.js",
+      "sourceLine": 270,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "aS",
+          "kind": "select",
+          "declaration": "aS = v.select('statistic $A$', [{ value: 's2', label: '$S^2$' }, { value: 'range', label: 'range $R$' }, { value: 'med', label: 'median $-\\\\,\\\\bar X$' }, { value: 'x1', label: '$X_1$ (not ancillary)' }], 's2');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 317,
+          "source": "aS.el.hidden = mod === 'unif';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-2.17",
+      "file": "content/stat/ch02-c.js",
+      "sourceLine": 371,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "flipT",
+          "kind": "toggle",
+          "declaration": "flipT = v.toggle('condition on $\\\\sigma_1$ instead', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 415,
+          "source": "nS.el.hidden = mode === 'mom'; s2S.el.hidden = mode !== 'suff'; flipT.el.hidden = mode !== 'suff'; aS.el.hidden = mode !== 'mom'; ngS.el.hidden = mode !== 'mom';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-3.7",
+      "file": "content/stat/ch03.js",
+      "sourceLine": 618,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "zeroT",
+          "kind": "toggle",
+          "declaration": "zeroT = v.toggle('all-zero sample', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 650,
+          "source": "zeroT.el.hidden = !F.degen;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-6.16",
+      "file": "content/stat/ch06-b.js",
+      "sourceLine": 358,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "revS",
+          "kind": "toggle",
+          "declaration": "revS = v.toggle('reveal the truth', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 403,
+          "source": "mS.el.hidden = !tea; revS.el.hidden = !tea; bNew.hidden = !tea; bRnd.hidden = !tea;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stat-6.20",
+      "file": "content/stat/ch06-b.js",
+      "sourceLine": 665,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "srcS",
+          "kind": "select",
+          "declaration": "srcS = v.select('dice counts', [{ value: 'weldon', label: 'Weldon’s 26,306 casts' }, { value: 'fair', label: 'simulated fair dice' }], 'weldon');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 714,
+          "source": "pS.el.hidden = !dice; bI.hidden = !dice; bII.hidden = !dice; srcS.el.hidden = !dice; bRe.hidden = !dice || srcS.value !== 'fair';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "stoch-2.10",
+      "file": "content/stoch/ch02-b.js",
+      "sourceLine": 193,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "refl",
+          "kind": "toggle",
+          "declaration": "refl = v.toggle('show reflections', true);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 209,
+          "source": "function sync() { [n, a, b].forEach((c) => { c.el.hidden = mode.value !== 'refl'; }); [pv, qv].forEach((c) => { c.el.hidden = mode.value !== 'ballot'; }); refl.el.hidden = mode.value !== 'refl'; }"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "tech-2.2",
+      "file": "content/tech/ch02.js",
+      "sourceLine": 159,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "wet",
+          "kind": "toggle",
+          "declaration": "wet = v.toggle('wet the sand in front of the sledge', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 196,
+          "source": "wet.el.hidden = s !== 'sand';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "tech-3.10",
+      "file": "content/tech/ch03-b.js",
+      "sourceLine": 481,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "set",
+          "kind": "select",
+          "declaration": "set = v.select('weights', Object.entries(SETS).map(([k, s]) => ({ value: k, label: s.label })), 'bin');"
+        },
+        {
+          "sourceVariable": "heavy",
+          "kind": "toggle",
+          "declaration": "heavy = v.toggle('heavy hook', false);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 526,
+          "source": "const m = mode.value; cp.visible = m === 'sy'; set.el.hidden = m !== 'bal'; load.el.hidden = m !== 'bal'; heavy.el.hidden = m !== 'sy';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "tech-4.12",
+      "file": "content/tech/ch04-b.js",
+      "sourceLine": 451,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "wheel",
+          "kind": "select",
+          "declaration": "wheel = v.select('wheel', [{ value: 'under', label: 'undershot' }, { value: 'over', label: 'overshot' }], 'over');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 495,
+          "source": "A.el.style.display = w ? '' : 'none'; wheel.el.hidden = !w; load.el.hidden = !w;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "thermo-2.1",
+      "file": "content/thermo/ch02.js",
+      "sourceLine": 30,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "plan",
+          "kind": "select",
+          "declaration": "plan = v.select('plan', [{ value: 'slow', label: 'slow out, slow back' }, { value: 'fast', label: 'fast out, slow back' }, { value: 'adC', label: 'insulated squeeze' }, { value: 'adE', label: 'insulated expansion' }], 'adC', { onChange: () => make() });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 72,
+          "source": "plan.el.hidden = !K; mass.el.hidden = K; TL0.el.hidden = K;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "thermo-2.18",
+      "file": "content/thermo/ch02-b.js",
+      "sourceLine": 710,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "heatAs",
+          "kind": "select",
+          "declaration": "heatAs = v.select('heat as', [{ value: 'cal', label: 'caloric (1824)' }, { value: 'en', label: 'energy (1850)' }], 'cal');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 761,
+          "source": "heatAs.el.hidden = m !== 'fall'; tA.el.hidden = m !== 'fall';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "toc-3.13",
+      "file": "content/toc/ch03-b.js",
+      "sourceLine": 314,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "hs",
+          "kind": "select",
+          "declaration": "hs = v.select('$h$', Object.entries(HOM).map(([k, h]) => ({ value: k, label: h.name })), 'h1', { onChange: (k) => { hk = k; build(); } }); hs.el.hidden = true;"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 333,
+          "source": "v.select('operation', [{ value: 'rev', label: 'reversal' }, { value: 'hom', label: 'homomorphism' }], 'rev', { onChange: (k) => { op = k; hs.el.hidden = k !== 'hom'; build(); } });"
+        },
+        {
+          "line": 334,
+          "source": "const hs = v.select('$h$', Object.entries(HOM).map(([k, h]) => ({ value: k, label: h.name })), 'h1', { onChange: (k) => { hk = k; build(); } }); hs.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "toc-3.5",
+      "file": "content/toc/ch03.js",
+      "sourceLine": 318,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "naive",
+          "kind": "toggle",
+          "declaration": "naive = v.toggle('naive star (no new start state)', false); naive.el.hidden = true;"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 333,
+          "source": "v.select('operation', [{ value: 'union', label: 'union' }, { value: 'cat', label: 'concatenation' }, { value: 'star', label: 'star' }], 'union', { onChange: (x) => { op = x; naive.el.hidden = x !== 'star'; } });"
+        },
+        {
+          "line": 334,
+          "source": "const naive = v.toggle('naive star (no new start state)', false); naive.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "toc-3.9",
+      "file": "content/toc/ch03-b.js",
+      "sourceLine": 15,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "nS",
+          "kind": "select",
+          "declaration": "nS = v.select('NFA', [{ value: 'n1', label: '2nd from end is a' }, { value: 'n2', label: 'contains aa or bb' }, { value: 'n3', label: 'ends in ab' }], 'n1'); nS.el.hidden = true;"
+        },
+        {
+          "sourceVariable": "dS",
+          "kind": "select",
+          "declaration": "dS = v.select('DFA', [{ value: 'd1', label: 'even number of a' }, { value: 'd2', label: 'ends in ab' }, { value: 'd3', label: '# of a divisible by 3' }], 'd1'); dS.el.hidden = true;"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 28,
+          "source": "const kind = v.select('start from', [{ value: 'R', label: 'a regular expression' }, { value: 'N', label: 'an NFA' }, { value: 'D', label: 'a DFA' }], 'R', { onChange: (k) => { nS.el.hidden = k !== 'N'; dS.el.hidden = k !== 'D'; } });"
+        },
+        {
+          "line": 30,
+          "source": "const nS = v.select('NFA', [{ value: 'n1', label: '2nd from end is a' }, { value: 'n2', label: 'contains aa or bb' }, { value: 'n3', label: 'ends in ab' }], 'n1'); nS.el.hidden = true;"
+        },
+        {
+          "line": 31,
+          "source": "const dS = v.select('DFA', [{ value: 'd1', label: 'even number of a' }, { value: 'd2', label: 'ends in ab' }, { value: 'd3', label: '# of a divisible by 3' }], 'd1'); dS.el.hidden = true;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "toc-7.13",
+      "file": "content/toc/ch07-papers.js",
+      "sourceLine": 51,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "abbr",
+          "kind": "toggle",
+          "declaration": "abbr = v.toggle('Turing’s abbreviated table', false, { onChange: () => resetSteps(0) });"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 75,
+          "source": "const part = v.select('part', [{ value: 'm', label: 'the machine' }, { value: 'd', label: 'the diagonal argument' }], 'm', { onChange: () => { abbr.el.hidden = part.value !== 'm'; resetSteps(0); } });"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "top-1.15",
+      "file": "content/top/ch01-b.js",
+      "sourceLine": 420,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "seq",
+          "kind": "select",
+          "declaration": "seq = v.select('$x_n$', [{ value: 'r', label: '$1/n$ (from the right)' }, { value: 'l', label: '$-1/n$ (from the left)' }], 'l');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 441,
+          "source": "seq.el.hidden = W !== 'seq'; eps.el.hidden = W === 'clopen';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "top-1.2",
+      "file": "content/top/ch01.js",
+      "sourceLine": 167,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "seqN",
+          "kind": "select",
+          "declaration": "seqN = v.select('sequence', Object.entries(SEQ).map(([value, o]) => ({ value, label: o.label })), 'id');"
+        },
+        {
+          "sourceVariable": "seqS",
+          "kind": "select",
+          "declaration": "seqS = v.select('sequence', Object.entries(SSEQ).map(([value, o]) => ({ value, label: o.label })), 'alt');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 214,
+          "source": "seqN.el.hidden = sier; seqS.el.hidden = !sier; kS.el.hidden = T !== 'cof';"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "top-1.8",
+      "file": "content/top/ch01.js",
+      "sourceLine": 804,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "brush",
+          "kind": "select",
+          "declaration": "brush = v.select('brush', [{ value: 'csq', label: 'closed squares' }, { value: 'cell', label: 'single cells' }, { value: 'erase', label: 'erase' }], 'csq');"
+        },
+        {
+          "sourceVariable": "view",
+          "kind": "select",
+          "declaration": "view = v.select('show', [{ value: 'all', label: 'all' }, { value: 'A', label: '$A$' }, { value: 'int', label: '$\\\\operatorname{int}A$' }, { value: 'cl', label: '$\\\\overline A$' }, { value: 'bd', label: '$\\\\partial A$' }], 'all');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 895,
+          "source": "brush.el.hidden = fin; view.el.hidden = fin; bReset.hidden = fin; bClear.hidden = fin; bNext.hidden = !fin;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "top-3.2",
+      "file": "content/top/ch03.js",
+      "sourceLine": 77,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "kind",
+          "kind": "select",
+          "declaration": "kind = v.select('cut point $c$ is', [{ value: 'irr', label: 'irrational' }, { value: 'rat', label: 'rational' }], 'irr');"
+        },
+        {
+          "sourceVariable": "put",
+          "kind": "select",
+          "declaration": "put = v.select('put $c$ into', [{ value: 'A', label: 'lower piece' }, { value: 'B', label: 'upper piece' }], 'A');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 95,
+          "source": "const upd = () => { const sq = sp.value === 'sq'; L.el.style.display = sq ? 'none' : ''; Sq.el.style.display = sq ? '' : 'none'; kind.el.hidden = sp.value !== 'Q'; };"
+        },
+        {
+          "line": 122,
+          "source": "put.el.hidden = (space === 'Q' && kind.value === 'irr') || (space === 'hole' && Math.abs(hc.x - 0.5) <= 0.02);"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle",
+        "pointer"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "Default irrational rational-space cut hides put selector; choosing rational cut reveals it. Pointer location also affects punctured-space visibility; pointer interactions are outside generic supplemental traversal."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "vcalc-4.11",
+      "file": "content/vcalc/ch04-b.js",
+      "sourceLine": 316,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "way",
+          "kind": "select",
+          "declaration": "way = v.select('slice by', [{ value: 'dom', label: 'domain strips (Riemann)' }, { value: 'ran', label: 'range bands (Lebesgue)' }], 'ran');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 383,
+          "source": "mS.el.hidden = isSeq; nSeq.el.hidden = !isSeq; way.el.hidden = isSeq;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "waves-4.12",
+      "file": "content/waves/ch04-b.js",
+      "sourceLine": 207,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "ord",
+          "kind": "select",
+          "declaration": "ord = v.select('bow', [{ value: 1, label: 'primary (1 reflection)' }, { value: 2, label: 'secondary (2 reflections)' }], 1);"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 248,
+          "source": "ord.el.hidden = !isDrop; bS.el.hidden = !isDrop; AS.el.hidden = isDrop; iS.el.hidden = isDrop;"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    },
+    {
+      "id": "xtal-3.6",
+      "file": "content/xtal/ch03.js",
+      "sourceLine": 489,
+      "reason": "Source conditionally hides/shows actual segmented or toggle controls, rather than only a stage/handle. This is a candidate, not a claim that the default state hides every listed control.",
+      "controls": [
+        {
+          "sourceVariable": "gSel",
+          "kind": "select",
+          "declaration": "gSel = v.select('glide', [{ value: 'm', label: 'm (mirror)' }, { value: 'a', label: 'a' }, { value: 'c', label: 'c' }, { value: 'n', label: 'n' }, { value: 'd', label: 'd' }], 'a');"
+        }
+      ],
+      "visibilityEvidence": [
+        {
+          "line": 533,
+          "source": "sIdx.el.hidden = gl; gSel.el.hidden = !gl; hid(B, gl); hid(Cp, gl);"
+        }
+      ],
+      "parentTriggerTypes": [
+        "segmented_or_toggle"
+      ],
+      "existingFocusedCoverage": {
+        "status": "not_established",
+        "note": "No complete conditional-branch coverage is inferred merely from a generic visible-controls loop or collection source review. Supplemental runner records actual branches reached."
+      },
+      "boundedTriggers": []
+    }
+  ]
+}

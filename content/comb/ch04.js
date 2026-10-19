@@ -165,15 +165,14 @@ Factor the denominator as $(1-r_1x)(1-r_2x)$ ($r_i$ the roots of $r^2=c_1r+c_2$)
       num: '4.3',
       kind: 'Theorem',
       name: 'Fibonacci numbers and Binet’s formula',
-      credit: 'Binet, 1843 (the closed form was known earlier, to de Moivre and D. Bernoulli)',
-      verify: true,
+      credit: 'Binet’s formula',
       statement: String.raw`Let $F_0=0$, $F_1=1$, $F_{n}=F_{n-1}+F_{n-2}$. Then $\sum_{n\ge0}F_nx^n=\dfrac{x}{1-x-x^2}$ and
 $$F_n=\frac{\varphi^n-\psi^n}{\sqrt5},\qquad \varphi=\frac{1+\sqrt5}{2},\ \ \psi=\frac{1-\sqrt5}{2}=-\frac1\varphi .$$
 Consequently $F_n$ is the integer nearest to $\varphi^n/\sqrt5$, and $F_{n+1}/F_n\to\varphi$. Combinatorially, $F_{n+1}$ is the number of tilings of a $1\times n$ strip by squares ($1\times1$) and dominoes ($1\times2$).`,
       idea: String.raw`Tilings: look at the last tile — a square leaves a tiling of length $n-1$, a domino one of length $n-2$ — so $t_n=t_{n-1}+t_{n-2}$ with $t_0=1$, $t_1=1$; hence $t_n=F_{n+1}$. Generating function: summing the recurrence gives $F(x)=x/(1-x-x^2)$ (4.2). The roots of $r^2=r+1$ are $\varphi,\psi$, and partial fractions give $F_n=(\varphi^n-\psi^n)/\sqrt5$. Because $|\psi|<1$, the second term is below $\tfrac12$ in absolute value, which gives the rounding statement.`,
-      caption: String.raw`Slide $n$ to see **every** tiling of the $1\times n$ strip (blue = square, orange = domino); the tilings ending in a domino number $F_{n-1}$ and those ending in a square $F_n$ — the recurrence. Right: the ratios $F_{n+1}/F_n$ zigzag around $\varphi$ with error $\approx\psi^n$-sized, the content of Binet's formula.`,
+      caption: String.raw`Slide $n$ to see **every** tiling of the $1\times n$ strip (blue = square, orange = domino); the tilings ending in a domino number $F_{n-1}$ and those ending in a square $F_n$ — the recurrence. Right: the ratios $F_{n+1}/F_n$ zigzag around $\varphi$ with error of order $\varphi^{-2n}$, the content of Binet's formula.`,
       deps: ['comb-4.2'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Cameron, Notes on Counting, §1.2, pp.7–8 (index shifted by one)'],
       tags: ['Fibonacci', 'generating functions'],
       viz(v) {
         const nS = v.slider('strip length $n$', 1, 9, 6, { int: true });

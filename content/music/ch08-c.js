@@ -17,7 +17,7 @@ export default {
       name: 'Interval content from Fourier magnitudes',
       statement: String.raw`For $S\subseteq\Z/12$ let $\mathrm{IF}_S(d)=\#\{(a,b)\in S^2: b-a\equiv d\}$ (the **interval function**, an autocorrelation) and $f_k(S)=\sum_{j\in S}e^{-2\pi ijk/12}$. Then
 $$|f_k(S)|^2=\sum_{d=0}^{11}\mathrm{IF}_S(d)\,e^{-2\pi ikd/12},\qquad \mathrm{IF}_S(d)=\frac1{12}\sum_{k=0}^{11}|f_k(S)|^2\,e^{2\pi ikd/12}.$$
-So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals the entry $v_{\operatorname{ic}(d)}$ for $d\ne0,6$ and $2v_6$ for $d=6$) and the Fourier magnitudes determine each other. Consequently two sets have the same interval vector exactly when $|f_k|$ agrees for all $k$: this holds for $S$ and its complement ($f_k(S^c)=-f_k(S)$ for $k\ne0$), which is the hexachord theorem, and for every Z-related pair.`,
+So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals the entry $v_{\operatorname{ic}(d)}$ for $d\ne0,6$ and $2v_6$ for $d=6$) and the Fourier magnitudes determine each other. Consequently two sets of the same cardinality have the same interval vector exactly when $|f_k|$ agrees for all $k$. A set and its complement always agree at $k\ne0$; they also agree at $k=0$ precisely when both are hexachords, giving the hexachord theorem. Every Z-related pair agrees at all frequencies.`,
       idea: String.raw`Multiplying $f_k$ by its conjugate gives $\sum_{a,b\in S}e^{-2\pi ik(b-a)/12}$, a sum over all ordered pairs grouped by their difference, which is the first formula; the second is its inverse transform (compare Parseval, 8.16 in Rudin: $\sum|f_k|^2=12|S|$). Complement: $f_k(\Z/12)=0$ for $k\ne0$, so $f_k(S^c)=-f_k(S)$ and the magnitudes agree for $k\ge1$; only $|f_0|^2=|S|^2$ versus $(12-|S|)^2$ differ, and their difference spread over the 12 differences, $\frac{(12-k)^2-k^2}{12}=12-2k$ for $k=|S|$, is the shift of 8.12.`,
       caption: String.raw`Choose a set and what to compare it with. Top right: the interval function of the set (blue) and of the comparison (red), with purple rings showing the interval function rebuilt from the squared Fourier magnitudes below. Bottom: $|f_k|^2$ for both. Complements share all magnitudes for $k\ge1$; a Z-mate shares everything; the transposed or inverted copy shares everything too.`,
       deps: ['music-8.14', 'music-8.12', 'pma-8.16'],
@@ -80,7 +80,7 @@ So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals th
       caption: String.raw`The matrix of the row of Berg's Violin Concerto, or type your own row (12 numbers 0–11, or note names like C, Eb, F#). Click a row, column or any edge label to select a form: the form is outlined and its pitches listed and played. Random rows and rows with symmetry (try the chromatic scale and the circle of fifths) change the count of distinct forms.`,
       deps: ['music-8.7'],
       see: ['music-8.8'],
-      refs: ['Benson ch. 9'],
+      refs: ['Benson §9.8 pp. 322–324; §9.13 pp. 330–332'],
       tags: ['serialism', 'symmetry'],
       credit: 'Arnold Schoenberg (method developed from about 1921; the Suite for Piano, Op. 25 is generally cited as the first piece to use it throughout) and, independently, Josef Matthias Hauer (a twelve-note system from about 1920); the default row is that of Alban Berg\'s Violin Concerto (1935)',
       scope: String.raw`The 48 forms count the orderings obtained by transposition, inversion and retrograde; symmetric rows give fewer distinct forms. The default row is given as G B♭ D F♯ A C E G♯ B C♯ E♭ F (program notes), checked against two sources.`,
@@ -362,7 +362,7 @@ So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals th
       caption: String.raw`Each bell's path across the rows is drawn as a line (the treble in gold; choose another bell to follow in orange). Move the slider to ring the changes row by row, and press the speaker to hear the whole composition (bell 1 is the highest note). Pick a method or type your own place notation: the check counts how many distinct rows occur before rounds returns, and compares with $n!$.`,
       deps: ['comb-1.5'],
       see: ['music-8.7', 'comb-1.5'],
-      refs: ['Benson ch. 9'],
+      refs: ['Benson §9.4 pp. 314–316', 'Tintinnalogia, 1671 edition, title page and sections Of the Changes / Plain Changes on four Bells (Project Gutenberg18567)'],
       tags: ['permutations', 'bells'],
       credit: 'Change ringing in England from the early seventeenth century; the first printed treatments are Tintinnalogia (1668, published by Fabian Stedman, text attributed to Richard Duckworth) and Stedman\'s Campanalogia (1677); dates from secondary sources (one gives 1667 for Tintinnalogia)',
       scope: String.raw`Plain methods on 4–6 bells as given by their place notation. A "true" extent of $n!$ rows is feasible only for small $n$ (24 rows on 4 bells, 120 on 5, 720 on 6, 40320 on 8); the viz stops after 130 changes.`,
@@ -387,7 +387,14 @@ So the interval content (the interval vector, since $\mathrm{IF}_S(d)$ equals th
         const pitch = (b, n) => [0, 200, 400, 500, 700, 900, 1100, 1200][n - b];
         v.soundButton('ring the whole thing', (sd) => { const r = res(); if (!r.rows) return; const n = nb.value, parts = []; r.rows.slice(0, 48).forEach((row) => { parts.push(seqCents(row.map((b) => [pitch(b, n)]), C4, 0.17, 0.0)); parts.push(new Float32Array(Math.round(0.07 * SR))); }); const L = parts.reduce((a, q) => a + q.length, 0), out = new Float32Array(L); let o = 0; parts.forEach((q) => { out.set(q, o); o += q.length; }); sd.samples(out, SR, { gain: 0.9 }); });
         v.render(() => {
-          const r = res(), n = nb.value; if (!r.rows) return;
+          const r = res(), n = nb.value;
+          if (!r.rows) {
+            s.setView([0, 10], [0, 4]);
+            s.text('No rows: invalid place notation', 5, 2.6, { size: 18, weight: 700, color: 'red', align: 'center' });
+            s.text(`For ${n} bells, every unfixed place needs an adjacent swap partner.`, 5, 2, { size: 14, color: 'ink', align: 'center' });
+            s.text('Choose a matching method, or edit the place notation.', 5, 1.4, { size: 14, color: 'muted', align: 'center' });
+            return;
+          }
           const R = r.rows, last = R.length - 1, cur = Math.min(pos.value, last), xs = (i) => i;
           s.setView([-1, Math.max(8, last + 1)], [0.3, n + 0.7]);
           const f = Math.min(fol.value, n);

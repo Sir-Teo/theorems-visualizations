@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "meaning": "Current-input supplemental evidence for the source-discovered conditional-control inventory. Individual default-visible alternatives and recursively revealed/signature-changed controls are exercised, with listed bounded non-mode triggers. Independent sibling Cartesian products and unrestricted text/range/pointer inputs are excluded. Unreachable hidden controls and failed, stale or missing captures cannot pass. This does not establish sources, subjective picture quality or human review.",
+  "inventory": {
+    "path": "docs/verification/conditional-control-inventory.json",
+    "hash": "0a96e4bb5714569b37431a8ca605dccb8c5ba8265da69bdc1db7b144eb9a12fa",
+    "candidates": 106
+  },
+  "runnerHash": "41a8da2d35621f341c10610dfe29b8d3cc921cedf4ddc2cd1de5fcd5faca1e7d",
+  "runtimeHash": "04334952d8599da288b55dca4e023caf32f6a330a5952725e7ced92088d3decd",
+  "gates": {
+    "lightConditionalControls": true,
+    "darkConditionalControls": true
+  },
+  "themes": {
+    "light": {
+      "passingItems": 106,
+      "rootVisibleStates": 411,
+      "newConditionalStates": 263,
+      "restorationStates": 568,
+      "screenshots": 552,
+      "missing": []
+    },
+    "dark": {
+      "passingItems": 106,
+      "rootVisibleStates": 411,
+      "newConditionalStates": 263,
+      "restorationStates": 568,
+      "screenshots": 552,
+      "missing": []
+    }
+  },
+  "sources": [
+    {
+      "path": "/workspace/theorems-visualizations/docs/verification/conditional-modes-light.json",
+      "sha256": "53210a14ad8c941e3a35102f96cde45454432c829865bc6c00864b7b0fe0f906",
+      "complete": true,
+      "accepted": 106,
+      "failed": [],
+      "stale": [],
+      "unsupported": [],
+      "missingScreenshots": []
+    },
+    {
+      "path": "/workspace/theorems-visualizations/docs/verification/conditional-modes-dark.json",
+      "sha256": "f1678d0b21af2d240da513c9ed24a95fcf3d483764f0275eac8ba10b42dcf322",
+      "complete": true,
+      "accepted": 106,
+      "failed": [],
+      "stale": [],
+      "unsupported": [],
+      "missingScreenshots": []
+    }
+  ]
+}

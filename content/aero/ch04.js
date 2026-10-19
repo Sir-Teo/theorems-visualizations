@@ -1,18 +1,14 @@
 // Aerospace Engineering — Chapter 4: Compressibility and high-speed flight (items 4.1-4.4; 4.5-4.8 are in ch04-b.js)
 //
 // Sources and what is from memory (Oct 2026). "checked" = confirmed against the cited record during writing.
-//   4.1 Prandtl-Glauert rule: Glauert, "The effect of compressibility on the lift of an aerofoil", Proc. R. Soc. A 118, 113-119 (1928), DOI 10.1098/rspa.1928.0039 (checked, Crossref).
-//       The rule is usually credited to Prandtl (early 1920s) and Glauert (1928); the date and form of Prandtl's own statement were not checked (credit worded accordingly, verify: true).
-//       The Karman-Tsien and Laitone corrections are textbook forms, recalled and used only as comparison laws; the incompressible Cp comes from this atlas's panel method (chapter 1), not from data.
+//   4.1 Full Glauert1928 original pp113–119 read in the public library scan, IA in.ernet.dli.2015.240251; §3 pp117–119/Eq16 and limitations visually checked.
+//       Karman–Tsien matches full Spreiter–Alksne NACA TN3970 pp16–18, Eqs32–36. The exact Laitone comparison formula remains open (verify:true).
+//       Both higher corrections remain comparison models; the incompressible Cp comes from this atlas's panel method (chapter 1), not measured data.
 //       Critical pressure coefficient: Cp* = 2/(gamma M^2) [((1 + 0.2 M^2)/1.2)^3.5 - 1], derived from the isentropic relations and recomputed in the readout.
-//   4.2 Drag divergence: model, not data. Korn's relation M_dd = kappa/cos(L) - (t/c)/cos^2(L) - C_L/(10 cos^3(L)) with kappa = 0.87 (conventional 6-series section) or 0.95 (supercritical) and Lock's
-//       C_Dw = 20 (M - M_crit)^4 with M_crit = M_dd - (0.1/80)^(1/3): both as implemented in the AeroSandbox library documentation, which cites Mason, Configuration Aerodynamics, section 7.5.2
-//       (checked, one secondary source; Mason's text itself was not opened). The offset (0.1/80)^(1/3) = 0.108 is exactly the Mach number at which dC_D/dM = 0.1, the usual definition of
-//       M_dd, which the readout recomputes. Base drag C_D0 = 0.008 is an arbitrary round number.
-//   4.3 Sweep: Busemann proposed sweep at the Volta Congress in Rome in 1935 (checked, secondary sources); R. T. Jones (NACA) found it independently in 1944-45 (NACA TN 1033 was not opened). The independence principle
-//       and the Korn relation are as above.
-//   4.4 Area rule: Whitcomb, NACA RM L52H08 (see 4.8); slender-body wave drag in Fourier form (ch04.shared.js waveDrag), coefficient confirmed numerically against a direct double integral
-//       and the Sears-Haack closed form 128 V^2/(pi l^4).
+//   4.2,4.3 Reviewed2026-10-18: Mason Configuration Aerodynamics §§7.2,7.4.3,7.5.2, Eqs7-2–7-9; full Jones NACA TN1033 pp1–7 for normal flow and sweep history.
+//   4.4 Reviewed2026-10-18: full Sheppard ARC R&M3077 §§2.1–2.3.1,4.2; correct Fourier coefficients are those of area slope, not area.
+//       Wing positions keep remaining fuselage area nonnegative; each setting's minimum uses its current volume. See docs/verification/aero-ch04.md.
+
 
 import {
   clamp, DEG, atmo, naca4, panelModel, panelSolve, cpCrit, machFromCp, pgCorr, ktCorr, laitoneCorr, machCritical,
@@ -37,9 +33,9 @@ function cp0Dist(t, alphaDeg) {
 }
 const LAWS = { pg: pgCorr, kt: ktCorr, lait: laitoneCorr };
 /** Korn drag-divergence Mach number and Lock wave-drag rise (see header). */
-const KORN_OFFSET = Math.pow(0.1 / 80, 1 / 3);
-const mddKorn = (kappa, tc, cl, sweep) => { const c = Math.cos(sweep); return kappa / c - tc / (c * c) - Math.abs(cl) / (10 * c ** 3); };
-const cdWave = (M, mcrit) => (M > mcrit ? 20 * (M - mcrit) ** 4 : 0);
+export const KORN_OFFSET = Math.pow(0.1 / 80, 1 / 3);
+export const mddKorn = (kappa, tc, cl, sweep) => { const c = Math.cos(sweep); return kappa / c - tc / (c * c) - Math.abs(cl) / (10 * c ** 3); };
+export const cdWave = (M, mcrit) => (M > mcrit ? 20 * (M - mcrit) ** 4 : 0);
 const CD0_MODEL = 0.008;
 
 export default {
@@ -58,11 +54,11 @@ $$C_p=\frac{C_{p,0}}{\sqrt{1-M_\infty^2}},\qquad c_l=\frac{c_{l,0}}{\sqrt{1-M_\i
 The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\infty\to1$, which is where the linearisation fails: the rule is useful up to about $M_\infty\approx0.7$ for thin sections and is not valid in transonic flow.`,
       idea: String.raw`The linearised potential equation for a small disturbance, $(1-M_\infty^2)\phi_{xx}+\phi_{yy}=0$, becomes Laplace's equation (the incompressible case) after stretching the $y$ coordinate by $\beta$. The disturbance velocity potential of the compressible flow past the original airfoil equals that of an incompressible flow past an airfoil whose thickness and incidence are reduced by the same factor, so the pressure coefficient, which is proportional to the streamwise perturbation $u'/V_\infty=\phi_x/V_\infty$, is $1/\beta$ times the incompressible value for the same shape. It builds on the speed of sound (1.6) and on the incompressible lift curve (2.2).`,
       caption: String.raw`Left: $-C_p$ round the section (grey incompressible, from the atlas's panel method; blue corrected). The red dashed line is the critical pressure coefficient $C_p^*$: wherever the blue curve rises above it the local flow is supersonic. Right: the suction peak against $M_\infty$ for three correction laws (Prandtl–Glauert, Kármán–Tsien and Laitone, the last two as comparison models) and the critical value $-C_p^*(M_\infty)$; their crossing is the critical Mach number. Raise $M_\infty$ and watch the Prandtl–Glauert curve race ahead as $M_\infty\to1$, where the approximation has no right to be trusted.`,
-      deps: ['aero-2.2', 'aero-1.6'],
-      refs: ['Anderson ch. 5'],
+      deps: ['aero-2.2', 'aero-1.6', 'pde-1.10'],
+      refs: ['Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251', 'Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36); exact Laitone comparison still unreviewed'],
       tags: ['compressibility', 'subsonic', 'similarity'],
       scope: String.raw`Small disturbances (thin section, small incidence), subsonic and not near sonic: roughly $M_\infty\lesssim0.7$ and never close to $1$. The incompressible $C_{p,0}$ here is a full panel-method solution for a symmetric NACA 00xx section, so the 'thin' hypothesis is only approximate for the thicker sections; the Kármán–Tsien and Laitone curves are comparison models, and no experimental data are plotted.`,
-      credit: 'H. Glauert, 1928 (Proc. R. Soc. A 118, 113–119); the rule is usually attributed to Prandtl and Glauert, with Prandtl’s own earlier statement not checked',
+      credit: 'H. Glauert, 1928 (Proc. R. Soc. A118,113–119); Ackeret (1925), NACA TM317 p.1, cites an unpublished Göttingen lecture by Prandtl',
       verify: true,
       links: { doi: 'https://doi.org/10.1098/rspa.1928.0039', wikipedia: 'https://en.wikipedia.org/wiki/Prandtl%E2%80%93Glauert_transformation' },
       viz(v) {
@@ -111,14 +107,13 @@ The factor $1/\beta$, $\beta=\sqrt{1-M_\infty^2}$, grows without bound as $M_\in
       name: 'Critical Mach number and drag divergence',
       statement: String.raw`As the free-stream Mach number of a lifting airfoil rises, the flow accelerates over the upper surface until, at the **critical Mach number** $M_{cr}$, the local speed first reaches Mach 1 at the suction peak. Above $M_{cr}$ a pocket of supersonic flow grows and ends in a shock wave; the shock and its interaction with the boundary layer add **wave drag**. The drag coefficient stays almost flat until the **drag-divergence Mach number** $M_{dd}$ (conventionally where $\mathrm dC_D/\mathrm dM=0.1$, a little above $M_{cr}$) and then climbs steeply, roughly as $(M-M_{cr})^4$, so thin sections, low lift and 'supercritical' shapes push the divergence to higher Mach numbers.`,
       idea: String.raw`At $M_{cr}$ the isentropic pressure coefficient at the suction peak equals $C_p^*$, which depends only on $M_\infty$ (4.1). Beyond it, fluid leaving the supersonic pocket must be slowed back to subsonic speed; it does so through a shock, whose entropy rise is the wave drag, and a strong shock can also separate the boundary layer. The drag rise is therefore tied to the size of the supersonic region, which grows very quickly once it exists; the fourth-power form $20(M-M_{cr})^4$ is an empirical fit, not a derivation.`,
-      caption: String.raw`Left: the section at the chosen Mach number; the orange part of the upper surface is supersonic according to the Kármán–Tsien-corrected panel-method pressure (extrapolated beyond $M_{cr}$, so the pocket's extent is only indicative) and the shock is drawn where the pocket ends. Right: a model drag curve — Korn's relation for $M_{dd}$ and Lock's fourth-power rise — together with the critical Mach number from the left-hand picture. Raise the angle of attack or thickness and both move left; choose the supercritical technology factor and they move right.`,
+      caption: String.raw`Left: the section at the chosen Mach number; the orange part of the upper surface is supersonic according to the Kármán–Tsien-corrected panel-method pressure (extrapolated beyond $M_{cr}$, so the pocket's extent is only indicative) and the shock is drawn where the pocket ends. Right: a model drag curve — Korn's relation for $M_{dd}$ and Lock's fourth-power rise — together with the critical Mach number from the left-hand picture. Raise the angle of attack or thickness and both move left; choose the supercritical technology factor and the right-hand correlation moves right; the symmetric panel section is unchanged.`,
       deps: ['aero-4.1'],
-      refs: ['Anderson ch. 5'],
+      refs: ['Mason, Configuration Aerodynamics (2006), §§7.2, 7.4.3 and 7.5.2, Eqs. (7-2)–(7-9)'],
       tags: ['transonic', 'wave drag', 'shock'],
       scope: String.raw`Two-dimensional sections at transonic speed. The left picture uses a panel method plus a compressibility law (so it is quantitative only up to about $M_{cr}$); the right-hand curve is an engineering correlation (Korn's equation and Lock's wave-drag law as quoted in Mason's text) with an arbitrary round-number base drag $C_{D,0}=0.008$ — it is a model, not a measured polar.`,
       credit: 'Korn’s relation and Lock’s fourth-power wave-drag rise as quoted in Mason (Configuration Aerodynamics, §7.5.2)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Drag-divergence_Mach_number' },
+      links: { source: 'https://archive.aoe.vt.edu/mason/Mason_f/ConfigAeroTransonics.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Drag-divergence_Mach_number' },
       viz(v) {
         const M = v.slider('Mach number $M_\\infty$', 0.5, 1.0, 0.8, { step: 0.005 });
         const al = v.slider('angle of attack $\\alpha$ (°)', 0, 6, 2, { step: 0.1 });
@@ -179,11 +174,10 @@ at the price of a lower lift-curve slope, a lower usable lift coefficient and mo
       idea: String.raw`The pressure on an infinite yawed wing depends only on the flow normal to the leading edge, because translating along the wing leaves the flow unchanged ('independence principle', which follows from the symmetry of the potential equation under a shift along the span). A section whose normal Mach number is $M_\infty\cos\Lambda$ reaches Mach 1 only when $M_\infty=M_{cr}/\cos\Lambda$. Real wings do less well: the root and tip disturb the flow, and a section cut parallel to the stream is thinner and carries a smaller lift than the normal section, which is why Korn's relation (4.2) is written with $\cos^2\Lambda$ and $\cos^3\Lambda$ terms.`,
       caption: String.raw`Left: plan view with the free stream, its normal and spanwise components. Middle: drag-divergence Mach number against sweep, from the cosine rule (dashed) and from Korn's relation, which includes thickness and lift effects (solid). Right: the model drag curve of the unswept wing (grey) and of the swept wing (blue). Increase the sweep to see $M_{dd}$ move right; set the thickness high and the lift coefficient up to see how the cosine rule overstates the gain.`,
       deps: ['aero-4.2'],
-      refs: ['Anderson ch. 5'],
+      refs: ['Jones, Wing Plan Forms for High-Speed Flight, NACA TN1033 (1945), pp. 1–7, Eqs. (1)–(6)', 'Mason, Configuration Aerodynamics (2006), §7.5.2, Eqs. (7-4)–(7-9)'],
       tags: ['sweep', 'transonic', 'wing design'],
       scope: String.raw`An infinite yawed wing in inviscid flow, and a correlation for finite wings. The streamwise thickness ratio $t/c$ and lift coefficient used in Korn's relation are the values for the wing section parallel to the flight direction; the drag curves are the same model as in 4.2 (not measured data).`,
-      credit: 'A. Busemann, Volta Congress, Rome, 1935 (swept wings at supersonic speed); R. T. Jones, NACA, independent theory, 1944–45',
-      verify: true,
+      credit: 'R. T. Jones, NACA TN1033, 1945; A. Busemann’s 1935 work is discussed and cited in that report (reference9).',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Swept_wing' },
       viz(v) {
         const sw = v.slider('sweep $\\Lambda$ (°)', 0, 60, 30, { step: 1 });
@@ -238,18 +232,18 @@ at the price of a lower lift-curve slope, a lower usable lift coefficient and mo
       statement: String.raw`At transonic and low supersonic speeds the wave drag of a slender aircraft depends mainly on how its **cross-sectional area $S(x)$** is distributed along its length, and hardly on the detailed shape. A wing–body combination has nearly the same zero-lift wave drag as the body of revolution that has the same $S(x)$. To keep the drag low, make the area distribution smooth, like that of the Sears–Haack body, which has the least wave drag for a given length $l$ and volume $V$:
 $$\frac{D_w}{q}=\frac{128\,V^2}{\pi\,l^4}.$$
 Since the wing adds area, the fuselage must be narrowed ('indented') where the wing is, so that the total area has no bump.`,
-      idea: String.raw`In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S(\theta)=\sum A_n\sin n\theta$ as $D_w/q=(6\pi/l^2)\sum nA_n^2$ in the units used here. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics, which cost $n$ times as much as the fundamental; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.`,
+      idea: String.raw`In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S'(x(\theta))=\sum a_n\sin n\theta$, $x=\tfrac l2(1-\cos\theta)$, as $D_w/q=\tfrac\pi4\sum n a_n^2$. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics of the area slope, whose squared coefficients are weighted by $n$; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.`,
       caption: String.raw`Top: the aircraft seen from above (radial scale exaggerated) and its area distribution. Slide the **indentation** $k$ from 0 (straight fuselage) to 1 (fuselage area reduced by exactly the wing's area) and the grey bump in $S(x)$ flattens into the ideal curve. Bottom: the wave drag, in units of the Sears–Haack minimum for the same volume, against $k$, from the Fourier formula; the dot is your setting. Make the wing larger or move it, and see the benefit change.`,
-      deps: ['aero-4.2'],
-      refs: ['Anderson ch. 5'],
+      deps: ['aero-4.2', 'pma-8.10'],
+      refs: ['Sheppard, ARC R&M 3077 (1957), §§2.1–2.3.1 and 4.2, printed pp. 2–5 and 17', 'Whitcomb, NACA RM L52H08 (1952), pp. 1–12'],
       tags: ['area rule', 'wave drag', 'transonic'],
-      scope: String.raw`Slender bodies at zero lift in transonic and low supersonic flow (the slender-body limit). The wing's cross-sectional-area hump is a smooth $\sin^2$ model and the aircraft is a schematic, not a particular design; drag is slender-body wave drag only (no friction, no separation, no lift-dependent drag). For a finite Mach number above 1 the relevant cuts are slanted at the Mach angle, which is not modelled.`,
+      scope: String.raw`Slender bodies at zero lift in transonic and low supersonic flow (the slender-body limit). The wing's cross-sectional-area hump is a smooth $\sin^2$ model and the aircraft is a schematic, not a particular design. Indentation removes volume; each drag ratio uses the minimum at its own current volume, and the wing-position range keeps the remaining fuselage area nonnegative; drag is slender-body wave drag only (no friction, no separation, no lift-dependent drag). For a finite Mach number above 1 the relevant cuts are slanted at the Mach angle, which is not modelled.`,
       credit: 'R. T. Whitcomb, NACA Langley, 1952 (NACA RM L52H08); slender-body drag formula: von Kármán, Sears and Haack',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Area_rule' },
       viz(v) {
         const kS = v.slider('indentation $k$', 0, 1, 0.5, { step: 0.01 });
         const awS = v.slider('wing area hump $A_w/A_f$', 0.05, 0.6, 0.3, { step: 0.01 });
-        const xwS = v.slider('wing position $x_w/l$', 0.2, 0.6, 0.35, { step: 0.01 });
+        const xwS = v.slider('wing position $x_w/l$', 0.2, 0.54, 0.35, { step: 0.01 });
         const Af = 0.006, ww = 0.4;
         const T = v.stage({ x: [0, 1], y: [-0.4, 0.4], axes: false, height: 220, minWidth: 340, full: true, title: 'top view (radial scale exaggerated)' });
         const S = v.stage({ x: [0, 1], y: [0, Af * 1.35], axes: 'box', gutter: true, height: 240, minWidth: 320, xlabel: 'station $x/l$', ylabel: 'area $S(x)$', title: 'cross-sectional area' });

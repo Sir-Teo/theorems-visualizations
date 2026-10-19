@@ -226,10 +226,9 @@ The transform of a projection is the **slice** of the 2-D transform along the li
       caption: String.raw`The left panel shows the object and the family of rays at angle $\theta$ (drag the **angle**). The middle panel is the magnitude of the exact 2-D Fourier transform; the gold line is the slice at the same angle. The right panel compares, as a function of $\omega$, the 1-D Fourier transform of the *measured, sampled* projection (computed by a discrete sum, solid) with the 2-D transform read off along the slice (dots). Reduce the number of **detector samples** or enlarge the object to see where the sampled projection stops agreeing.`,
       deps: ['imaging-3.2', 'rca-9.1'],
       tags: ['Fourier slice', 'projection'],
-      refs: ['Kak–Slaney §3.2'],
+      refs: ['Bracewell–Riddle (1967), Astrophys. J. 150: 427–434, §II pp. 429–431 (full slice-theorem proof)', 'Kak–Slaney §3.2 pp. 56–59, Eqs. (7)–(23)'],
       credit: 'R. N. Bracewell, 1956 (radio astronomy); in tomography Bracewell & Riddle 1967, and Kak & Slaney’s text',
-      verify: true,
-      scope: String.raw`Exact for integrable functions with compact support and continuous (not sampled) projections. The sampled projection agrees with the slice up to the Nyquist frequency of the detector, $1/(2\tau)$, and aliasing sets in beyond it. The 2-D transform here is the closed form for ellipses (Bessel $J_1$).`,
+      scope: String.raw`Exact for integrable functions with compact support and continuous (not sampled) projections. A sampled projection approximates the slice when detector coverage and sampling are adequate. Frequencies above the Nyquist limit $1/(2\tau)$ alias into the represented band unless suppressed before sampling. The 2-D transform here is the closed form for ellipses (Bessel $J_1$).`,
       viz(v) {
         const PH = slEllipses(0.9), OD = [[1, 0.35, 0.22, 0.25, -0.2, 30]];
         const obj = v.select('object', [{ value: 'ph', label: 'head phantom' }, { value: 'od', label: 'one off-centre ellipse' }], 'ph');
@@ -289,9 +288,9 @@ The transform of a projection is the **slice** of the 2-D transform along the li
       num: '3.5',
       kind: 'Theorem',
       name: 'Uniqueness of Radon inversion',
-      statement: String.raw`If $f$ is an integrable function of compact support on the plane, then $f$ is determined (almost everywhere) by its Radon transform $\mathcal Rf(\theta,s)$ for $\theta\in[0,\pi)$: if $\mathcal Rf=\mathcal Rg$ then $f=g$ a.e. Explicitly, the Fourier slice theorem (3.4) gives $F$ on every line through the origin, i.e. everywhere, and the inverse Fourier transform recovers $f$:
+      statement: String.raw`If $f$ is an integrable function of compact support on the plane, then $f$ is determined (almost everywhere) by its Radon transform $\mathcal Rf(\theta,s)$ for $\theta\in[0,\pi)$: if $\mathcal Rf=\mathcal Rg$ then $f=g$ a.e. The Fourier slice theorem (3.4) gives $F$ on every line through the origin. For sufficiently regular $f$ (for example, smooth with compact support), Fourier inversion gives the ordinary integral formula:
 $$f(x,y)=\int_0^{\pi}\!\!\int_{-\infty}^{\infty}P_\theta(\omega)\,e^{2\pi i\omega(x\cos\theta+y\sin\theta)}\,|\omega|\,d\omega\,d\theta .$$
-The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. If only a range of angles is known, $F$ is unknown in the missing wedge and the object is not determined.`,
+The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. A missing angular wedge prevents direct Fourier inversion. With compact support, exact continuous data over any open angular interval still determine $f$ by analytic continuation; recovering unmeasured directions this way is severely unstable. Finite sampled data do not provide that ideal guarantee.`,
       idea: String.raw`By 3.4 the data are the values of $F$ on all lines through the origin, which together cover the whole plane, so $F$ is known everywhere; by the uniqueness theorem for the Fourier transform (rca-9.12) two integrable functions with equal transforms agree a.e. The explicit formula is the 2-D inversion formula written in polar coordinates $\mathbf k=\omega(\cos\theta,\sin\theta)$ with $d k_xdk_y=|\omega|\,d\omega\,d\theta$ (change of variables, pma-10.9) — the factor $|\omega|$ is what the ramp filter implements in 3.7.`,
       caption: String.raw`The **left** panel is Fourier space: every projection fills one line (spoke) through the origin; the **right** reconstruction is the inverse FFT of the gridded spokes. Add **views** and the gaps close and the image sharpens towards the phantom; restrict the **angular range** to see what a missing wedge of data does — streaks and lost edges in exactly the directions that were not measured. The readout gives the error against the true phantom.`,
       deps: ['imaging-3.4', 'rca-9.12', 'pma-10.9'],
@@ -332,7 +331,7 @@ The Jacobian $|\omega|$ is that of polar coordinates in the $(k_x,k_y)$ plane. I
           showImage(Tr, truth, N, N, { lo: -0.05, hi: 1.05, id: 't', smooth: true }); frame(Tr, N, N);
         });
         v.legend([['orange', 'projection directions']]);
-        v.readout(() => cur ? `${nv.value} views over ${rg.value}°: RMS error against the phantom $${fx(rmse(cur.out, truth), 4)}$ (phantom RMS $${fx(rms(truth), 3)}$), i.e. $${fx(100 * rmse(cur.out, truth) / rms(truth), 1)}\\%$.\n${rg.value >= 179.5 ? 'All directions are measured: the Fourier plane is covered by spokes (left), $F$ is known up to the gaps between them, and the object follows. More views close the gaps.' : `Only ${rg.value}° of the 180° of directions are measured: the empty wedge of Fourier space (and nothing fills it, apart from the mirror wedge given by $F(-k)=\\overline{F(k)}$) removes the detail whose edges lie across that wedge.`}` : '');
+        v.readout(() => cur ? `${nv.value} views over ${rg.value}°: RMS error against the phantom $${fx(rmse(cur.out, truth), 4)}$ (phantom RMS $${fx(rms(truth), 3)}$), i.e. $${fx(100 * rmse(cur.out, truth) / rms(truth), 1)}\\%$.\n${rg.value >= 179.5 ? 'All directions are measured: the Fourier plane is covered by spokes (left), $F$ is known up to the gaps between them, and the object follows. More views close the gaps.' : `Only ${rg.value}° of the 180° of directions are measured: this reconstruction leaves the unmeasured Fourier wedge empty, producing missing-edge artifacts. Compact-support analytic continuation is unique for ideal continuous noiseless angular data, but unstable and not implemented here.`}` : '');
       },
     },
   ],

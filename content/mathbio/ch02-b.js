@@ -209,7 +209,7 @@ i.e. $(T,D)$ lies in the open triangle with vertices $(-2,1)$, $(2,1)$ and $(0,-
       idea: String.raw`The eigenvalues are the roots of $p(z)=z^2-Tz+D$ with $p(1)=1-T+D$ and $p(-1)=1+T+D$. For a complex pair $|z|^2=D$, so they are inside the circle iff $D<1$. For real roots, both lie in $(-1,1)$ iff $p(\pm1)>0$ and the vertex lies between $\pm1$, which (with $|D|<1$) is the triangle. The conditions are the two-dimensional case of the linearization theorem for maps (the derivative is the Jacobian matrix, pma-9.17), and they are the counterpart for maps of the Routh–Hurwitz conditions of chapter 3.`,
       scope: String.raw`Gives linear (local) stability; on the boundary of the triangle linearization is inconclusive and nonlinear terms decide. The orbit shown is the linear map $\mathbf x\mapsto J\mathbf x$ with $J=\begin{pmatrix}0&-D\\1&T\end{pmatrix}$, a matrix with the chosen trace and determinant.`,
       caption: String.raw`Drag the gold point in the trace–determinant plane. Left: the stability triangle (green), with the parabola $D=T^2/4$ separating real from complex eigenvalues. Middle: the eigenvalues against the unit circle. Right: the orbit of $\mathbf x_0=(1,0)$ under $J$: it spirals in or out when the eigenvalues are complex and tilts to a straight run when they are real. Cross each edge and note which eigenvalue reaches the circle.`,
-      deps: ['mathbio-2.4', 'pma-9.17'],
+      deps: ['mathbio-2.4', 'pma-9.17', 'ladr-9.65'],
       tags: ['Jury conditions', 'stability triangle', 'planar maps'],
       refs: ['Edelstein-Keshet ch. 2'],
       viz(v) {
@@ -308,19 +308,20 @@ The coexistence equilibrium is $aP^*=\ln\lambda$, $N^*=\lambda\ln\lambda/\bigl(a
       credit: 'May, 1978 (negative-binomial attack model)',
       statement: String.raw`The Nicholson–Bailey equilibrium is unstable for every $\lambda>1$ (mathbio-2.13). If instead attacks per host follow a negative binomial distribution with clumping parameter $k$ (small $k$ = parasitoids concentrate on few hosts, $k\to\infty$ = random Poisson attacks), then the fraction of hosts escaping is $g(P)=(1+aP/k)^{-k}$ and
 $$N_{t+1}=\lambda N_t\Bigl(1+\frac{aP_t}k\Bigr)^{-k},\qquad P_{t+1}=cN_t\Bigl[1-\Bigl(1+\frac{aP_t}k\Bigr)^{-k}\Bigr].$$
-The determinant of the Jacobian at the coexistence equilibrium is below $1$ if and only if $k<1$ (computed here; it equals $1$ exactly at $k=1$); for $k\ge1$ the equilibrium is unstable, and for $k<1$ it is stable over a wide range of $\lambda$, so aggregation of attacks can stabilize the interaction.`,
+The determinant of the Jacobian at the coexistence equilibrium is below $1$ if and only if $k<1$ (computed here; it equals $1$ exactly at $k=1$); for $k>1$ the equilibrium is unstable, for $k=1$ the linear multipliers have unit modulus (so the strict linear test is inconclusive), and for every $0<k<1$ it is locally asymptotically stable for all $\lambda>1$, so aggregation of attacks can stabilize the interaction.`,
       idea: String.raw`Clumping makes a host's risk depend on where it lives: parasitoids spend their effort on hosts that are already attacked, so some hosts are in a refuge from parasitism and a rising parasitoid density protects the rest of the host population less than in the random model, which damps the delayed feedback. In the Jury conditions of mathbio-2.12 this moves the determinant $D$ from above $1$ to below it; the Poisson model of mathbio-2.13 is the limit $k\to\infty$.`,
-      scope: String.raw`A phenomenological model for aggregated attacks (May 1978); the threshold $k<1$ and the stable range of $\lambda$ are computed here numerically from the Jacobian rather than quoted from the paper, and the attribution of the model and of the $k<1$ condition to the 1978 paper should be checked against the original (flagged for verification). Other stabilizing mechanisms (host density dependence, refuges) are not in this model.`,
-      caption: String.raw`Right: for each clumping parameter $k$ (log scale) and host rate $\lambda$, the equilibrium is stable (green) or unstable (red); drag the gold point. Left: the orbit from a small displacement (orange) against the random-search Nicholson–Bailey orbit (dashed): for $k<1$ the spiral turns inward and both species persist, for $k>1$ it spirals outward as before.`,
+      scope: String.raw`May (1978), Eqs. (3)–(7) and Appendix 2, proves the local threshold analytically for all host reproduction factors $\lambda>1$. The paper reports numerical evidence about large disturbances rather than a general global proof. Here populations are rescaled as $N=acH$ and $P=aP_\mathrm{original}$ so $a=c=1$ in the map. The displayed matrix is the exact derivative at equilibrium. At $k=1$ the linear test establishes neither attraction nor nonlinear instability. Other stabilizing mechanisms (host density dependence, refuges) are not in this model.`,
+      caption: String.raw`Right: for each clumping parameter $k$ (log scale) and host rate $\lambda$, the equilibrium is stable (green) or unstable (red); drag the gold point. Left: the orbit from a small displacement (orange) against the random-search Nicholson–Bailey orbit (dashed): for $k<1$ small displacements decay (sometimes without oscillation), for $k>1$ they grow. The dashed $k=1$ line marks the marginal linear case.`,
       deps: ['mathbio-2.13'],
-      verify: true,
       tags: ['aggregation', 'negative binomial', 'stabilization'],
-      refs: ['Edelstein-Keshet ch. 3'],
+      refs: ['May (1978), J. Animal Ecology 47:833–844, Eqs. (3)–(7), Appendix 2'],
+      links: { doi: 'https://doi.org/10.2307/3674' },
       viz(v) {
         const A = v.stage({ x: [-1.3, 1.3], y: [1.05, 12], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 300, xlabel: 'clumping $k$', ylabel: 'host rate $\\lambda$', title: 'is the equilibrium stable?', xticks: [[-1, '0.1'], [-0.5, '0.3'], [0, '1'], [0.5, '3'], [1, '10']] });
         const B = v.stage({ x: [-3, 3], y: [-3, 3], equal: true, axes: true, height: 340, weight: 1, minWidth: 280, xlabel: '$\\ln(N/N^*)$', ylabel: '$\\ln(P/P^*)$', title: 'orbit from a small displacement' });
         v.legend([['green', 'stable', { area: true }], ['red', 'unstable', { area: true }], ['orange', 'aggregated attacks (this $k$)'], ['purple', 'random attacks ($k\\to\\infty$)', { dash: true }]]);
         const h = A.handle(-0.4, 3, { color: 'gold', r: 8, constrain: (x, y) => [v.M.clamp(x, -1.3, 1.3), v.M.clamp(y, 1.1, 12)] });
+        v.button('Set k = 1', () => h.set(0, h.y));
         let info = { D: 0, T: 0, k: 1, L: 2, st: false }, ext = false;
         const green = v.rgb('green'), red = v.rgb('red');
         v.render(() => {
@@ -340,8 +341,8 @@ The determinant of the Jacobian at the coexistence equilibrium is below $1$ if a
           B.dot(0, 0, { r: 6, color: info.st ? 'green' : 'red', hollow: true });
           ext = o1.length < 121 && Math.hypot(...o1[o1.length - 1]) > 7.9;
         });
-        v.readout(() => String.raw`$k=${v.fmt(info.k, 3)}$, $\lambda=${v.fix(info.L, 2)}$: determinant $D=${v.fix(info.D, 4)}$ (${info.D < 1 ? '<1' : '≥1'}), trace $T=${v.fix(info.T, 3)}$ ⇒ equilibrium **${info.st ? 'stable' : 'unstable'}**
- the orbit from a $0.3$-sized displacement ${ext ? 'leaves the plotted window (growing oscillation)' : 'stays near the equilibrium'}; $D<1$ exactly when $k<1$: this $k$ is ${info.k < 1 ? 'below' : 'at or above'} $1$`);
+        v.readout(() => String.raw`$k=${v.fmt(info.k, 3)}$, $\lambda=${v.fix(info.L, 2)}$: determinant $D=${v.fix(info.D, 4)}$ (${info.D < 1 ? '<1' : '≥1'}), trace $T=${v.fix(info.T, 3)}$ ⇒ equilibrium **${info.k === 1 ? 'marginal: unit-modulus multipliers' : info.st ? 'locally asymptotically stable' : 'unstable'}**
+ the orbit from a $0.3$-sized displacement ${ext ? 'leaves the plotted window (growing oscillation)' : 'stays near the equilibrium'}; $D<1$ exactly when $k<1$: this $k$ is ${info.k < 1 ? 'below' : info.k === 1 ? 'equal to' : 'above'} $1$`);
       },
     },
   ],

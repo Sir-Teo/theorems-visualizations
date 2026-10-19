@@ -1,12 +1,12 @@
+import { wholeDomeWeight, continuumRingTension, capProfile } from './assessment.shared.js';
 // Architecture & Structural Form — Chapter 4: Vaults and domes (items 4.6–4.11; 4.1–4.5 are in ch04.js)
 //
 // Sources checked (Oct 2026):
-//   Poleni and St Peter's: Giovanni Poleni, Memorie istoriche della gran cupola del tempio vaticano (Padua, 1748). Historical outline
-//     (cracks noted in 1742, an expert report by Boscovich, Le Seur and Jacquier recommending iron rings, Poleni called to Rome in 1743,
-//     Vanvitelli carrying out the work, first five iron rings by Zabaglia with a sixth added later, book 1748; his catenary analysis
-//     described as an early use of the safe theorem) from a literature search: López Manzanares, "Poleni's manuscripts about the Dome of
-//     Saint Peter's" (Univ. Alcalá repository) and MacTutor's Poleni biography; not re-checked against the Memorie itself.
-//     The number of slices (50) is quoted from memory and flagged verify. The dome profile and weights drawn here are a MODEL, not Poleni's data.
+//   Poleni and St Peter's: original Memorie (1748), ETH Rar 1229, doi:10.3931/e-rara-13403.
+//     Read complete relevant Book I §§73–89, Book IV §§583–596 and Book V §§658–669 in the original OCR;
+//     visually checked Plate E, Fig. XIV and the original weight table (pp. 47–48).
+//     The 50 idealized sectors and 16 weighted links per side are not counts of observed cracks.
+//     The dome profile and weights drawn here are an illustrative model, not Poleni's measured data.
 //   Pantheon: Wikipedia "Pantheon, Rome" (read in Oct 2026): interior diameter 43.3 m = height to the oculus; oculus about 9 m across;
 //     dome thickness about 6.4 m at the base and 1.2 m at the oculus; aggregate from travertine and tufa/terracotta at the base to tufa and
 //     pumice at the top; five rings of 28 coffers; dedicated about 126 (Hadrian), construction possibly begun about 114. The stepped rings on the
@@ -35,16 +35,15 @@ export default {
       num: '4.6',
       kind: 'Event',
       name: 'Poleni’s hanging-chain analysis of St Peter’s (1748)',
-      statement: String.raw`When the dome of St Peter's in Rome was found to be cracked in the 1740s, Giovanni Poleni examined it for the Pope and published his study in 1748. He treated the dome as a set of slices (gores) cut by its meridional cracks, computed the weight of each part of a slice, hung a chain loaded with weights in the same proportions, and compared the inverted shape of the chain with the section of the dome. The chain fitted inside the masonry, so there existed a line of compressive force that the dome could carry its weight on: the cracked dome was in equilibrium, and what was needed was to confine its outward thrust with iron hoops, which were added to the dome and drum between 1743 and 1748.`,
-      idea: String.raw`This is Hooke's inversion (arch-3.1) applied to a dome with the argument of arch-4.5: after cracking, a dome is a set of arches, and for each of them the funicular of its own weights is a possible line of thrust. If *one* such line lies inside the stone, the safe theorem (arch-3.5) says the dome stands, whatever the true, unknowable state of stress. Poleni did not state the theorem, and a modern reader sees in his argument its first application to a real building; the iron rings were a precaution against further spreading of the base, not a cure for a failing structure. The quantity the chain supplies is the horizontal thrust, and with it the force that the hoops must resist, $T=nH/2\pi$ for $n$ gores.`,
-      caption: String.raw`The left panel is a model of a pointed dome of the St Peter's type (the profile and sizes are my reconstruction from round numbers, not Poleni's drawing or data). The shell is cut into a gore and its opposite; the **thrust** slider moves through the range of horizontal thrusts for which a line fits, and the green line is the line of thrust. The right panel is the same line turned upside down: the chain with weights proportional to the stones, hanging from the crown joint. Add the lantern, thin the shell, and see when the chain no longer fits.`,
+      statement: String.raw`When the dome of St Peter's in Rome was found to be cracked in the 1740s, Giovanni Poleni examined it for the Pope and published his study in 1748. He idealized it as 50 sectors cut by 25 vertical planes through the axis, not as 50 observed cracks. He divided a pair of opposite sectors into 16 pieces per side and hung a chain with proportional weights, including the lantern contribution, then compared the inverted chain with the dome section (Book I, §§83–88). The weighted chain fitted inside the masonry in his drawing. In a modern no-tension interpretation this supplies an admissible compressive load path for the idealized slices; Poleni also recommended iron hoops, added to the dome and drum between 1743 and 1748.`,
+      idea: String.raw`This is Hooke's inversion (arch-3.1) applied to a dome with the argument of arch-4.5: after cracking, a dome is a set of arches, and for each of them the funicular of its own weights is a possible line of thrust. If *one* such line lies inside the stone, the safe theorem (arch-3.5) says the dome stands, whatever the true, unknowable state of stress. Poleni did not state the modern safe theorem. He argued that the dome had continued to stand by its own strength even when old hoops had broken (§659), while recommending reinforcement; five new hoops were installed in 1743–44 (§595) and a sixth in 1748 (§§660–665). This is his historical assessment, not a present-day structural diagnosis. The chain supplies a horizontal thrust per gore. For that thrust spread uniformly around a circular hoop, $T\approx nH/(2\pi)$; retaining $n$ discrete radial gore forces gives $T=H/[2\sin(\pi/n)]$.`,
+      caption: String.raw`The left panel is a model of a pointed dome of the St Peter's type (the profile and sizes are my reconstruction from round numbers, not Poleni's drawing or data). The shell is cut into a gore and its opposite; the **thrust** slider moves through the range of horizontal thrusts for which a line fits, and the green line is the line of thrust. The right panel is the same line turned upside down: the chain with weights proportional to the stones, hanging between the modeled end supports. Add the lantern, thin the shell, and see when the chain no longer fits.`,
       deps: ['arch-4.5', 'arch-3.1'],
       see: ['arch-3.5', 'arch-3.13'],
       tags: ['poleni', 'hanging chain', 'history'],
-      refs: ['Heyman'],
+      refs: ['Poleni (1748), Memorie istoriche della gran cupola del tempio vaticano, Book I §§73–89 and Plate E; Book IV §595; Book V §§658–669; ETH Rar 1229, doi:10.3931/e-rara-13403', 'Heyman (1966), The stone skeleton, pp. 267–269 (modern limit-analysis interpretation)'],
       credit: 'Giovanni Poleni, Memorie istoriche della gran cupola del tempio vaticano, 1748 (analysis of the cracked dome of St Peter\'s, made from 1743)',
-      scope: String.raw`Model of a dome of revolution cut into $n$ gores by radial cracks; masonry unit weight 20 kN/m³, no tensile strength, no sliding. The dimensions are a round-number reconstruction (span 42 m, base thickness a variable), the lantern load is a free parameter.`,
-      verify: true,
+      scope: String.raw`Model of a dome of revolution divided into $n$ idealized gores by vertical planes; the subdivision does not count observed cracks; masonry unit weight 20 kN/m³, no tensile strength, no sliding. The dimensions are a round-number reconstruction (span 42 m, base thickness a variable), the lantern load is a free parameter.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Giovanni_Poleni', mactutor: 'https://mathshistory.st-andrews.ac.uk/Biographies/Poleni.html' },
       viz(v) {
         const GAM = 20, S = 42, m = 24;
@@ -52,10 +51,10 @@ export default {
         const mid = prof.map((q) => [q.r, q.z]); mid[0][0] = 0;
         const tb = v.slider('thickness at the base (m)', 1.0, 6, 3.2, { step: 0.05 });
         const lant = v.slider('lantern weight (MN)', 0, 12, 4, { step: 0.1 });
-        const ngs = v.slider('number of gores (cracks)', 16, 64, 50, { int: true });
+        const ngs = v.slider('number of idealized gores', 16, 64, 50, { int: true });
         const thr = v.slider('thrust: min (0) → max (1)', 0, 1, 0.5, { step: 0.01 });
         const A = v.stage({ x: [-24, 24], y: [-3, 33], equal: true, axes: false, height: 340, weight: 1.15, minWidth: 300, title: 'the dome slice and its line of thrust' });
-        const B = v.stage({ x: [-24, 24], y: [-33, 3], equal: true, axes: false, height: 340, weight: 1.15, minWidth: 300, title: 'the chain, hung from the crown' });
+        const B = v.stage({ x: [-24, 24], y: [-33, 3], equal: true, axes: false, height: 340, weight: 1.15, minWidth: 300, title: 'the chain, hung from the end supports' });
         let Mo = null;
         const model = () => {
           const mk = (sc) => domeSlice(mid, (i) => sc * (0.4 + 0.6 * (i / m) ** 1.4) * (tb.value / 1), { gamma: GAM, dtheta: (2 * Math.PI) / ngs.value });
@@ -77,7 +76,7 @@ export default {
           if (d.tl) {
             const pts = d.tl.map((q) => [q.p[0], -q.p[1]]);
             B.path(pts, { color: 'green', width: 2.6 });
-            d.g.blocks.forEach((b, k) => { const a = pts[k], c = pts[k + 1], x = (a[0] + c[0]) / 2, y = (a[1] + c[1]) / 2; B.dot(x, y, { r: 2 + 7 * Math.sqrt(b.W / Math.max(...d.g.blocks.map((q) => q.W))), color: 'accent' }); });
+            d.g.blocks.forEach((b, k) => { const a = pts[k], c = pts[k + 1], x = (a[0] + c[0]) / 2, y = (a[1] + c[1]) / 2; B.dot(x, y, { r: 9 * Math.sqrt(b.W / Math.max(...d.g.blocks.map((q) => q.W))), color: 'accent' }); });
             B.dot(pts[0][0], pts[0][1], { r: 4, color: 'ink' }); B.dot(pts[pts.length - 1][0], pts[pts.length - 1][1], { r: 4, color: 'ink' });
           }
           B.line(-23, 0, 23, 0, { color: 'faint', dash: [3, 4], width: 1 });
@@ -85,9 +84,9 @@ export default {
         });
         v.readout(() => {
           const d = Mo;
-          if (!d.rng) return `**No thrust line fits** the gore with this thickness: the dome would collapse. It needs the base thickness scaled by at least ${d.fit ? f2(d.fit.t * tb.value, 2) : '—'} m (about ${d.fit ? f2(d.fit.t, 2) : '—'} × the current).`;
-          const H = d.u[0], T = (H * ngs.value) / (2 * Math.PI);
-          return `Range of horizontal thrust per gore: ${f2(d.rng.Hmin, 0)} to ${f2(d.rng.Hmax, 0)} kN; at the chosen value $H=${f2(H, 0)}$ kN the hoops at the base must resist $T=nH/2\\pi=${f2(T / 1000, 2)}$ MN. The thinnest shell of this shape that still holds a line would be ${f2(d.fit.t, 2)}× the current thickness (${f2(d.fit.t * tb.value, 2)} m at the base). Dome weight: ${f2((d.g.W * ngs.value) / 1000, 0)} MN (model).`;
+          if (!d.rng) return `**No thrust line fits** the gore with this thickness: this discretized slice model does not certify equilibrium. Failure to find a line alone does not prove collapse of the real dome. It needs the base thickness scaled by at least ${d.fit ? f2(d.fit.t * tb.value, 2) : '—'} m (about ${d.fit ? f2(d.fit.t, 2) : '—'} × the current).`;
+          const H = d.u[0], T = continuumRingTension(H, ngs.value);
+          return `Range of horizontal thrust per gore: ${f2(d.rng.Hmin, 0)} to ${f2(d.rng.Hmax, 0)} kN; at the chosen value $H=${f2(H, 0)}$ kN the hoops at the base have the continuum estimate $T\\approx nH/(2\\pi)=${f2(T / 1000, 2)}$ MN. The thinnest shell of this shape that still holds a line would be ${f2(d.fit.t, 2)}× the current thickness (${f2(d.fit.t * tb.value, 2)} m at the base). Whole shell weight: ${f2(wholeDomeWeight(d.g.W, ngs.value) / 1000, 0)} MN (model; the diametral slice contains two opposite gores).`;
         });
       },
     },
@@ -97,12 +96,12 @@ export default {
       kind: 'Concept',
       name: 'The Pantheon: step rings, coffers and graded concrete',
       statement: String.raw`The dome of the Pantheon in Rome (interior diameter about 43.3 m, equal to its height to the oculus) is a mass-concrete hemisphere, unreinforced, whose builders managed its weight in three ways: the thickness grows from about 1.2 m at the oculus to about 6.4 m at the base, with stepped rings on the outside of the haunch that add weight where it presses the springing inward and upward; the concrete is made with lighter and lighter aggregate with height, from travertine and tufa low down to tufa and pumice near the top; and sunken coffers in the inside surface remove material where it is least needed. Together they lighten the upper dome and keep the lower dome heavy, which reduces the hoop tension that a uniform shell would develop (arch-4.4).`,
-      idea: String.raw`The membrane forces of arch-4.3 depend on the weight of the cap above each parallel circle, and the hoop force at a given level is the difference between the weight carried by the meridians and the weight sitting on that level itself. Weight placed *high* on the dome (a heavy crown) raises the meridional thrust and therefore the hoop tension below; weight placed *low* (the step rings) loads the haunch directly and presses the parallels together. So lightening the top and loading the bottom both move the hoop force toward compression. The thick base is also its own buttress, so the thrust line stays inside the wall (arch-3.9). The oculus does the converse job: it removes the heaviest part of a closed crown.`,
+      idea: String.raw`The membrane forces of arch-4.3 depend on the weight of the cap above each parallel circle, and the hoop force at a given level is the difference between the weight carried by the meridians and the weight sitting on that level itself. Weight placed *high* on the dome (a heavy crown) raises the meridional thrust and therefore the hoop tension below; weight placed *low* (the step rings) loads the haunch directly and presses the parallels together. So lightening the top and loading the bottom both move the hoop force toward compression. The thick base is also its own buttress, so the thrust line stays inside the wall (arch-3.9). The oculus removes crown material and changes the top boundary condition; it does not remove the heaviest part of this thickened-base dome.`,
       caption: String.raw`The left panel is the dome in section (a schematic reconstruction from the published thicknesses; the step rings are schematic and their number is not claimed). Pick the **concrete** (as built: heavy low, light high; uniform heavy; uniform light), vary the density at the top and the coffer void fraction, and switch the stepped extrados on or off (the jumps in the stepped curve are where the thickness jumps: membrane theory cannot smooth them, a real shell would bend there). The right panel is the hoop force $N_\theta$ from the membrane theory with the true variable weight; the dashed curve is the same dome made of uniform heavy concrete with no coffers. The densities and the coffer fraction are illustrative, not measured.`,
       deps: ['arch-4.4'],
       see: ['arch-4.3', 'arch-3.9'],
       tags: ['pantheon', 'roman concrete', 'dome'],
-      refs: ['Salvadori'],
+      refs: ['Italian Ministry of Culture, Pantheon: Historical background, https://direzionemuseiroma.cultura.gov.it/en/pantheon/historical-background/ (dimensions and Hadrianic reconstruction)', 'Salvadori (thickness/aggregate survey remains to be checked)'],
       scope: String.raw`Membrane model on the inner sphere of radius 21.65 m with the weight of the thick shell reduced to the inner surface (weight per inner area $\rho g\,[(a+t)^3-a^3]/(3a^2)$); the real dome has bending near the base and meridional cracks that this model ignores. The thickness law, the aggregate zones and the coffer zone (25°–75° from the crown) are schematic.`,
       credit: 'built under the emperor Hadrian, dedicated about 126 CE (construction possibly begun about 114 CE)',
       verify: true,
@@ -146,6 +145,8 @@ export default {
           A.text('oculus', 0, a + 1, { size: 12, color: 'muted', align: 'center' });
           // plot
           const pts = (o) => o.P.map((q, i) => [deg(q.psi), o.m.Ntheta[i]]).filter((p) => p[0] >= 10);
+          const forceValues = [...d.cur.m.Ntheta, ...d.ref.m.Ntheta];
+          B.setView([10, 90], [1.12 * Math.min(0, ...forceValues), 1.12 * Math.max(1, ...forceValues)]);
           B.hline(0, { color: 'faint', width: 1 });
           B.path(pts(d.ref), { color: 'muted', width: 1.6, dash: [4, 4], alpha: 0.9 });
           B.path(pts(d.cur), { color: 'red', width: 2.8 });
@@ -155,7 +156,7 @@ export default {
         v.readout(() => {
           const { cur, ref } = data, tmax = (o) => Math.max(...o.m.Ntheta.map((x, i) => (deg(o.P[i].psi) >= 12 ? x : -1e9)));
           const tc = Math.max(0, tmax(cur)), tr = Math.max(0, tmax(ref)), z = hoopZero(cur.P, cur.m.Ntheta);
-          return `Model dome mass: ${f2(cur.mass / 1000, 0)} kt (uniform heavy, no coffers: ${f2(ref.mass / 1000, 0)} kt, so ${f2(100 * (1 - cur.mass / ref.mass), 0)}% lighter; masses of this model are not checked against any survey). Peak membrane hoop tension at the base: **${f2(tc, 0)} kN/m** (${f2(tc / thick(90, steps.value), 0)} kPa on the section) against ${f2(tr, 0)} kN/m for the uniform heavy dome. Hoop force changes sign at ${z !== null && deg(z) > 12 ? `$\\varphi=${f2(deg(z), 1)}^\\circ$` : 'no angle (compression above the base band)'}. These are membrane estimates under invented densities, not a structural assessment of the Pantheon.`;
+          return `Model dome mass: ${f2(cur.mass / 1000, 0)} kt (uniform heavy, no coffers: ${f2(ref.mass / 1000, 0)} kt, so ${f2(100 * (1 - cur.mass / ref.mass), 0)}% lighter; masses of this model are not checked against any survey). Peak membrane hoop tension: **${f2(tc, 0)} kN/m** (${f2(tc / thick(90, steps.value), 0)} kPa on the section) against ${f2(tr, 0)} kN/m for the uniform heavy dome. Hoop force changes sign at ${z !== null && deg(z) > 12 ? `$\\varphi=${f2(deg(z), 1)}^\\circ$` : 'no angle (compression above the base band)'}. These are membrane estimates under invented densities, not a structural assessment of the Pantheon.`;
         });
       },
     },
@@ -165,15 +166,15 @@ export default {
       num: '4.8',
       kind: 'Invention',
       name: 'Brunelleschi’s dome in Florence',
-      statement: String.raw`The dome of Florence Cathedral, designed by Filippo Brunelleschi after a competition announced in 1418, begun in 1420 and closed in 1436, spans about 44 m on an octagonal drum. It combines several devices: a **pointed profile** (the "quinto acuto" arcs, steeper than a hemisphere, which lowers the hoop tension); a **double shell** of brick, the two shells joined by ribs and stairs, so that the dome is deep without being heavy; **herringbone brickwork** that locks each course into the ones below it; and **horizontal chains** of stone beams, wooden and iron elements at several levels that take the hoop tension the masonry cannot. Together they let the dome be built without a full timber centering supporting the whole shell.`,
-      idea: String.raw`Each device answers a question from the statics of arch-4.4. The tension belt of a hemisphere starts at $51.8^\circ$ from the crown; a pointed profile is steeper at the base, so the meridional thrust is more vertical and the hoop tension is smaller and covers less of the dome. The chains are placed in the bands that remain in tension and are sized by the sum of the hoop force in the band they serve. The courses can be laid without centering as long as the bed joints are not steeper than the friction of the mortar allows; above that height the courses are held by their interlocking bond and by closing each ring (a closed ring is an arch in its own plane). The numbers below are a membrane estimate for a single equivalent shell, not a model of Brunelleschi's structure.`,
-      caption: String.raw`The left panel is the dome section: the part built so far is solid, the rest is outlined, and the courses where friction alone cannot hold the bed joints are orange. Drag the **gold handles** to move the chains and read the hoop tension each of them must carry; change the profile between semicircle and quinto acuto (arcs of $0.8\times$ the span); set the friction of the mortar. The right panel is the hoop force (per unit weight of shell) against height, with the semicircular dome dashed.`,
-      deps: ['arch-4.4'],
+      statement: String.raw`The dome of Florence Cathedral, designed by Filippo Brunelleschi after a competition announced in 1418, begun in 1420 and closed in 1436, has an interior diameter reported by the Opera di Santa Maria del Fiore as 45.5 m, on an octagonal drum. It combines several devices: a **pointed profile** (the "quinto acuto" arcs, steeper than a hemisphere, which lowers the hoop tension); a **double shell** of brick, the two shells joined by ribs and stairs, so that the dome is deep without being heavy; **herringbone brickwork** that locks each course into the ones below it; and **horizontal chains** of stone beams, wooden and iron elements at several levels that take the hoop tension the masonry cannot. Together they let the dome be built without a full timber centering supporting the whole shell.`,
+      idea: String.raw`Each device answers a question from the statics of arch-4.4. The tension belt of a hemisphere starts at $51.8^\circ$ from the crown; a pointed profile is steeper at the base, so the meridional thrust is more vertical and the hoop tension is smaller and covers less of the dome. In this reconstruction each chain is assigned the positive part of its band’s net integrated hoop resultant. Compression and tension can cancel within that integral, so the displayed band resultant is not a validated design force for an actual chain. The courses can be laid without centering as long as the bed joints are not steeper than the friction of the mortar allows; above that height the courses are held by their interlocking bond and by closing each ring (a closed ring is an arch in its own plane). The numbers below are a membrane estimate for a single equivalent shell, not a model of Brunelleschi's structure.`,
+      caption: String.raw`The left panel is the dome section: the part built so far is solid, the rest is outlined, and the courses where friction alone cannot hold the bed joints are orange. Drag the **gold handles** to move the chains and read the net hoop-force resultant assigned to each idealized band; change the profile between semicircle and quinto acuto (arcs of $0.8\times$ the span); set the friction of the mortar. The right panel is the hoop force (per unit weight of shell) against height, with the semicircular dome dashed.`,
+      deps: ['arch-4.4', 'mech-1.15'],
       see: ['arch-4.5', 'arch-4.7'],
       tags: ['brunelleschi', 'chains', 'construction'],
-      refs: ['Salvadori'],
+      refs: ['Opera di Santa Maria del Fiore, official Dome page (interior diameter, double shell, ribs, herringbone)', 'Opera Magazine, On 30 August 1436 the work on Brunelleschi’s Dome was completed (archival construction dates)', 'Salvadori'],
       credit: 'Filippo Brunelleschi, competition 1418, dome begun 1420, completed 1436 (lantern completed 1461)',
-      scope: String.raw`Membrane theory of an equivalent axisymmetric shell of uniform weight $w$ per unit area, with a pointed profile of two circular arcs of radius $k\cdot$span. The real dome is an octagon of two shells with ribs; the friction check treats each course as a rigid ring on a bed that is normal to the meridian.`,
+      scope: String.raw`Membrane theory of an equivalent axisymmetric shell of uniform weight $w$ per unit area, with a pointed profile of two circular arcs of radius $k\cdot$span. The illustration uses a rounded 44-m span; it is not a dimensional survey of the actual 45.5-m interior. The real dome is an octagon of two shells with ribs; the friction check treats each course as a rigid ring on a bed that is normal to the meridian.`,
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Florence_Cathedral' },
       viz(v) {
@@ -189,6 +190,7 @@ export default {
         const compute = (k) => { const P = profile({ type: 'pointed', S, k, n: 400 }), m = membrane(P, 1); return { P, m, rise: P[0].z }; };
         v.render(() => {
           const d = data = compute(kq.value), ref = compute(0.5), { P, m } = d;
+          A.setView([-27, 36], [-3, Math.max(36, d.rise + 2)]); B.setView([0, Math.max(36, d.rise)], [-30, 30]);
           const psiC = 90 - deg(Math.atan(mu.value)), zb = built.value * d.rise;
           for (let i = 1; i < P.length; i++) {
             const q = P[i], p0 = P[i - 1], done = q.z <= zb, ok = deg(q.psi) >= psiC;
@@ -226,10 +228,10 @@ export default {
       num: '4.9',
       kind: 'Concept',
       name: 'Pendentives: a dome on a square',
-      statement: String.raw`A circular dome cannot sit directly on four arches over a square, because the circle and the square do not match. **Pendentives** solve this: take a sphere through the four corners of the square, cut it by the four vertical planes through the sides of the square (these cut four semicircular arches), and keep the four spherical triangles that remain between the arches below the horizontal circle that touches the arches' crowns. For a square of side $2a$ the sphere has radius $\sqrt2\,a$, the four cuts are semicircles of radius $a$, and the circle at height $a$ has radius $a$, so a dome can be built on it. The four pendentives carry the dome's weight to the four corner piers and give a continuous ring on which any dome can be set.`,
-      idea: String.raw`The geometry is exact: at height $z$ the sphere $x^2+y^2+z^2=2a^2$ has horizontal radius $\sqrt{2a^2-z^2}$, which equals $a$ at $z=a$, where the vertical planes $x=\pm a$ and $y=\pm a$ are tangent to it; below that level the sphere is cut by those planes in the arches $z=\sqrt{a^2-y^2}$. The load path is the one of arch-4.1: a dome's weight comes down on a ring, the ring is carried by the arches through the pendentives, and everything reaches the four corner piers. The ring at the pendentives' top is in compression (arch-4.10). The sphere through the corners is the smallest one that can serve, so the pendentive dome above it is a shell of the same sphere (a sail vault) or, as in Hagia Sophia, a different, shallower dome set on the ring.`,
-      caption: String.raw`Drag the picture to rotate. **Dome** chooses a dome on the same sphere (a "sail" vault) or a separate shallow dome of chosen rise on the ring. Move the **ring height** to see why it has to be at the arch crowns: lower, and the circle at that level pokes out through the arches (red) because the vertical planes cut the sphere away; higher, and a band of sphere is added below the dome. The plan shows the share of the square taken by the four pendentives.`,
-      deps: ['arch-4.3'],
+      statement: String.raw`A circular dome cannot sit directly on four arches over a square, because the circle and the square do not match. **Pendentives** solve this: take a sphere through the four corners of the square, cut it by the four vertical planes through the sides of the square (these cut four semicircular arches), and keep the four spherical triangles that remain between the arches below the horizontal circle that touches the arches' crowns. For a square of side $2a$ the sphere has radius $\sqrt2\,a$, the four cuts are semicircles of radius $a$, and the circle at height $a$ has radius $a$, so a dome can be built on it. The four pendentives carry the dome's weight to the four corner piers and create a circular transition for a dome; geometrical fit alone does not establish load-bearing capacity.`,
+      idea: String.raw`The geometry is exact: at height $z$ the sphere $x^2+y^2+z^2=2a^2$ has horizontal radius $\sqrt{2a^2-z^2}$, which equals $a$ at $z=a$, where the vertical planes $x=\pm a$ and $y=\pm a$ are tangent to it; below that level the sphere is cut by those planes in the arches $z=\sqrt{a^2-y^2}$. The load path is the one of arch-4.1: a dome's weight comes down on a ring, the ring is carried by the arches through the pendentives, and everything reaches the four corner piers. The forces in the transition ring depend on the upper dome and its restraints; their sign does not follow from this geometry alone. The sphere through the corners is the smallest one that can serve, so the pendentive dome above it is a shell of the same sphere (a sail vault) or, as in Hagia Sophia, a different, shallower dome set on the ring.`,
+      caption: String.raw`Drag the picture to rotate. **Dome** chooses a dome on the same sphere (a "sail" vault) or a separate spherical cap of chosen rise on the ring (the rise control can pass the hemispherical value). Move the **ring height** to see why it has to be at the arch crowns: lower, and the circle at that level pokes out through the arches (red) because the vertical planes cut the sphere away; higher, and a band of sphere is added below the dome. The plan shows the share of the square taken by the four pendentives.`,
+      deps: ['arch-4.3', 'vcalc-1.5'],
       see: ['arch-4.10', 'arch-4.1'],
       tags: ['pendentive', 'byzantine', 'geometry'],
       refs: ['Salvadori'],
@@ -238,7 +240,7 @@ export default {
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pendentive' },
       viz(v) {
-        const type = v.select('dome', [{ value: 'sail', label: 'same sphere (sail)' }, { value: 'sep', label: 'separate shallow dome' }], 'sail');
+        const type = v.select('dome', [{ value: 'sail', label: 'same sphere (sail)' }, { value: 'sep', label: 'separate spherical cap' }], 'sail');
         const z0 = v.slider('ring height z / a (1 = arch crowns)', 0.6, 1.4, 1, { step: 0.01 });
         const rise = v.slider('rise of the separate dome / a', 0.2, 1.2, 0.35, { step: 0.01 });
         const S3 = v.stage({ x: [-1.9, 1.9], y: [-1.5, 1.9], equal: true, axes: false, height: 370, weight: 1.15, minWidth: 300, title: 'a dome on a square' });
@@ -256,18 +258,17 @@ export default {
             const x0 = -1 + (2 * i) / G, x1 = x0 + 2 / G, y0 = -1 + (2 * j) / G, y1 = y0 + 2 / G, xc = (x0 + x1) / 2, yc = (y0 + y1) / 2, rc = Math.hypot(xc, yc), zc = zs(xc, yc);
             const gx = xc / zc, gy = yc / zc, dA = (4 / (G * G)) * Math.sqrt(1 + gx * gx + gy * gy);
             const inCircle = rc < 1, pend = !inCircle, band = !sep && zc > 1 && zc < Z0 && inCircle;
+            if (pend) areaP += dA; else areaC += dA;
             if (inCircle && sep) continue;
             const below = zc <= Z0 + 1e-9, col = pend || band ? 'orange' : 'accent';
-            if (pend) areaP += dA; else areaC += dA;
             if (!sep && !pend && !below && !band) { /* dome above the ring */ }
             sc.poly([P(x0, y0, zs(x0, y0)), P(x1, y0, zs(x1, y0)), P(x1, y1, zs(x1, y1)), P(x0, y1, zs(x0, y1))], { fill: !sep && below && !pend && zc <= Z0 ? 'orange' : col, fillAlpha: 0.2 + 0.1 * ((i + j) % 2), edge: false });
           }
           if (sep) {
-            const h = rise.value, Rc = (1 + h * h) / (2 * h), n = 12;
+            const h = rise.value, meridian = capProfile(1, h, 40), n = 12;
             for (let i = 0; i < 40; i++) for (let j = 0; j < n; j++) {
-              const a0 = (2 * Math.PI * j) / n, a1 = (2 * Math.PI * (j + 1)) / n, r0 = (i / 40) ** 0.9, r1 = ((i + 1) / 40) ** 0.9;
-              const zz = (r) => 1 + Math.sqrt(Math.max(0, Rc * Rc - r * r)) - (Rc - h);
-              sc.poly([P(r0 * Math.cos(a0), r0 * Math.sin(a0), zz(r0)), P(r1 * Math.cos(a0), r1 * Math.sin(a0), zz(r1)), P(r1 * Math.cos(a1), r1 * Math.sin(a1), zz(r1)), P(r0 * Math.cos(a1), r0 * Math.sin(a1), zz(r0))], { fill: 'accent', fillAlpha: 0.2 + 0.1 * ((i + j) % 2), edge: false });
+              const a0 = (2 * Math.PI * j) / n, a1 = (2 * Math.PI * (j + 1)) / n, [r0, z0] = meridian[i], [r1, z1] = meridian[i + 1];
+              sc.poly([P(r0 * Math.cos(a0), r0 * Math.sin(a0), 1 + z0), P(r1 * Math.cos(a0), r1 * Math.sin(a0), 1 + z1), P(r1 * Math.cos(a1), r1 * Math.sin(a1), 1 + z1), P(r0 * Math.cos(a1), r0 * Math.sin(a1), 1 + z0)], { fill: 'accent', fillAlpha: 0.2 + 0.1 * ((i + j) % 2), edge: false });
             }
           }
           // arches
@@ -288,7 +289,7 @@ export default {
           info = { out, areaP, areaC, ringR, Z0, sep };
           v.legend([['orange', 'pendentives'], ['accent', 'dome'], ['green', 'ring (supported)'], ['red', 'ring outside the arches']]);
         });
-        v.readout(() => `Square of side $2a$, sphere radius $\\sqrt2\\,a=1.414\\,a$; arches are semicircles of radius $a$. In plan the four pendentives cover $(4-\\pi)/4=${f2((4 - Math.PI) / 4, 3)}\\,a^2$ each, ${f2(100 * (1 - Math.PI / 4), 1)}% of the square. Ring: radius ${f2(info.ringR, 3)}$a$ at height ${f2(info.sep ? 1 : info.Z0, 2)}$a$ — ${info.out ? '**it leaves the square**: the arches cut it, so no dome can rest on it' : 'inside the square, resting on the arch crowns'}. Surface area of the four pendentives ${f2(info.areaP, 2)}$a^2$ against ${f2(info.areaC, 2)}$a^2$ for the cap of the same sphere.`);
+        v.readout(() => `Square of side $2a$, sphere radius $\\sqrt2\\,a=1.414\\,a$; arches are semicircles of radius $a$. In plan the four pendentives cover $(4-\\pi)/4=${f2((4 - Math.PI) / 4, 3)}\\,a^2$ each, ${f2(100 * (1 - Math.PI / 4), 1)}% of the square. Ring: radius ${f2(info.ringR, 3)}$a$ at height ${f2(info.sep ? 1 : info.Z0, 2)}$a$ — ${info.out ? '**it leaves the square**: the arches cut it, so no dome can rest on it' : 'inside the square; any band above the arch crowns connects it to the pendentives'}. Surface area of the four pendentives ${f2(info.areaP, 2)}$a^2$ against ${f2(info.areaC, 2)}$a^2$ for the reference cap above $z=a$ of the original sphere.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.10
@@ -349,7 +350,7 @@ larger for a small, flat-topped oculus and smaller for a steep one. The extra we
       statement: String.raw`**Thrust network analysis** (Block and Ochsendorf, 2007) extends the graphic statics of arch-1.5 to vaults. A *thrust network* is a three-dimensional net of straight compressive members that carries the vertical loads. It is found in two linear steps. First, its plan is fixed and the **horizontal forces** are chosen: the plan network Γ and a force diagram Γ* are reciprocal (parallel edges, dual graphs), so every node is in horizontal equilibrium, and each edge gets a *force density* $q=F/\ell$, its horizontal force over its plan length. Second, with the $q$ known, the **heights** $z$ of the nodes follow from vertical equilibrium, which is *linear*: $\sum_j q_{ij}(z_i-z_j)=p_i$ at every free node, with the loads $p_i$ and the heights of the supports given. The vault is safe if some network found in this way fits inside the thickness of the masonry (the safe theorem, arch-3.5, in three dimensions).`,
       idea: String.raw`In a cable net under a given load, shape and force are coupled non-linearly. Fixing the plan and the horizontal forces first removes the coupling: vertical equilibrium is then a discrete Poisson equation (arch-4.3 solves the same kind of equation in the continuum) and has one solution. The designer's freedom is the force diagram, i.e. the distribution of horizontal thrust; moving it moves the network up and down inside the vault, the same freedom as the choice of the pole in arch-1.5. Here the force diagram is a degenerate one: straight lines of constant horizontal force (rows, columns and, optionally, diagonals), which makes equilibrium of the horizontal forces hold automatically; the general method takes any reciprocal pair.`,
       caption: String.raw`Pick a vault (sail, cross or cloister; its middle surface is the shaded band of thickness $t$) and press **find the best network**: the optimiser changes four numbers (force level and its centre/edge contrast, for the rows-and-columns family and for the diagonals) to bring the network inside the band. The left plot is the plan with line widths proportional to the horizontal force, nodes green when inside the vault and red when outside; the middle plot is a section; the right plot is the force diagram, the force of each line. Thin the vault, or turn the diagonals off, and see which networks stop fitting: a cross vault needs forces along its groins, which rows and columns alone cannot give.`,
-      deps: ['arch-4.3', 'arch-1.5'],
+      deps: ['arch-4.3', 'arch-1.5', 'pde-1.5'],
       see: ['arch-3.5', 'arch-4.1'],
       tags: ['form-finding', 'graphic statics', 'vaults'],
       refs: ['Allen & Zalewski'],

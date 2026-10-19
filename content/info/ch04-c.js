@@ -110,7 +110,7 @@ so one scheme is asymptotically optimal for all such sources at once, although t
 Both are prefix codes for all positive integers at once (no bound on $n$ is needed), and $\sum_{n\ge1}2^{-|\gamma(n)|}=1$. They are universal codes: for any decreasing probability law on the integers the expected length is within a constant factor ($\gamma$) or $1+o(1)$ factor ($\delta$ with $H\to\infty$) of the entropy.`,
       idea: String.raw`A plain binary number is not self-delimiting: the decoder does not know where it stops. The gamma code fixes this by announcing the length first, in unary: $L$ zeros tell how many digits follow the first 1. That spends about $\log n$ bits on the number and another $\log n$ on its length. The delta code announces the length $L+1$ itself with the gamma code, which needs only $2\log\log n$ bits, so the total is $\log n+2\log\log n+O(1)$. Kraft's inequality (4.3) confirms the codes are prefix codes: $\gamma$ uses $2^L$ codewords of length $2L+1$ for each $L$, so $\sum_n2^{-|\gamma(n)|}=\sum_L2^L2^{-2L-1}=1$.`,
       caption: String.raw`Choose an integer $n$ (log slider) and a code: its codeword is drawn with the unary length prefix in orange and the binary digits in blue. In the second box type several integers: their concatenated gamma/delta codewords form one bit stream with no separators, and the decoder reads it back, cutting it uniquely. Right: the codeword length against $n$ (log axis) for gamma, delta and plain binary; the gap above $\log_2n$ is the price of not knowing the size in advance.`,
-      deps: ['info-4.3'],
+      deps: ['info-4.3', 'pma-3.26'],
       refs: ['MacKay ch. 7'],
       tags: ['universal codes', 'integers'],
       credit: 'P. Elias, 1975 (IEEE Trans. Inform. Theory 21 (2): 194–203)',
@@ -239,13 +239,13 @@ with $E=H(p)$ exactly when all $p_i$ are powers of $\frac12$. No scheme using fa
       num: '4.16',
       kind: 'Theorem',
       name: 'Kolmogorov complexity and entropy',
-      statement: String.raw`Let $K(x\mid n)$ be the Kolmogorov complexity of a binary string $x$ of known length $n$ (the length of the shortest program for a fixed universal computer that prints $x$), and let $X_1,\dots,X_n$ be i.i.d. Bernoulli($p$) (more generally, i.i.d. on a finite alphabet $\mathcal X$) with entropy $H(p)$. Then
+      statement: String.raw`Let $K(x\mid n)$ be the prefix Kolmogorov complexity of a binary string $x$ of known length $n$ (the length of the shortest program for a fixed universal prefix computer that prints $x$, with $n$ supplied as auxiliary input), and let $X_1,\dots,X_n$ be i.i.d. Bernoulli($p$) (more generally, i.i.d. on a finite alphabet $\mathcal X$) with entropy $H(p)$. Then
 $$H(X^n)\ \le\ \mathbb E\,K(X^n\mid n)\ \le\ H(X^n)+|\mathcal X|\log_2n+c,$$
 and therefore $\dfrac1n\mathbb E\,K(X^n\mid n)\longrightarrow H(p)$. The expected description length per symbol of a random string is the entropy, even though $K$ of an individual string cannot be computed.`,
-      idea: String.raw`Program lengths form a prefix-free set, so $\mathbb E K\ge H$ by the source coding bound (4.5). For the upper bound, describe $X^n$ by its type (the counts of each symbol, $|\mathcal X|\log n$ bits) and then its index in the type class, about $nH$ bits (3.7) — a program of length $nH(p)+O(\log n)$ exists for every string whose type is the type of a typical sequence (3.1, 3.2). Averaging, the expected complexity is $nH+O(\log n)$. A real compressor gives a computable **upper bound** on $K$, up to an additive constant for the decompressor; the true $K$ can be much smaller when a string has hidden structure.`,
-      caption: String.raw`For a biased coin with $P(1)=p$ the graph shows, for $p$ on a grid, the compressed length per symbol of one random string of length $n$ under two real compressors: an adaptive arithmetic coder (Krichevsky–Trofimov model, orange) and LZ78 (purple). Both are upper bounds on $K/n$; the arithmetic coder hugs the entropy curve $h(p)$ (green) from $n$ in the hundreds, while LZ78 lies well above it and approaches it only slowly. Choose “pseudorandom” to feed the compressors the output of a tiny deterministic generator: it looks like a biased coin to them, but its true complexity is only the length of the generator, a constant, so the bound is far from tight. The right panel follows one value of $p$ as $n$ grows.`,
-      deps: ['toc-11.11', 'info-3.1'],
-      refs: ['Cover–Thomas §14.3'],
+      idea: String.raw`Program lengths form a prefix-free set, so $\mathbb E K\ge H$ by the source coding bound (4.5). For the upper bound, describe $X^n$ by its type (the first $|\mathcal X|-1$ symbol counts, at most $(|\mathcal X|-1)\lceil\log_2(n+1)\rceil$ bits) and then its index in the type class, at most $nH(\hat p)+1$ bits for empirical law $\hat p$ (3.7). This bound holds for every string, including atypical ones. Concavity gives $\mathbb E H(\hat p)\le H(p)$, so averaging yields $nH(p)+O(\log n)$ without dropping a tail of rare strings. A real compressor gives a computable **upper bound** on $K$, up to an additive constant for the decompressor; the true $K$ can be much smaller when a string has hidden structure.`,
+      caption: String.raw`For a biased coin with $P(1)=p$ the graph shows, for $p$ on a grid, the ideal or approximate description rate of one random string of length $n$ under two computable models: Krichevsky–Trofimov prediction (orange) and an LZ78 phrase-length estimate (purple). A fully specified terminated encoding built from either model, plus the fixed decoding-program overhead, bounds $K/n$; the plotted rates omit that overhead and termination rounding. The KT model hugs the entropy curve $h(p)$ (green) from $n$ in the hundreds, while LZ78 lies well above it and approaches it only slowly. Choose “pseudorandom” to feed the compressors the output of a tiny deterministic generator: it looks like a biased coin to them, but its true complexity is only the length of the generator, a constant, so the bound is far from tight. The right panel follows one value of $p$ as $n$ grows.`,
+      deps: ['toc-11.11', 'info-3.1', 'prob-1.6.2'],
+      refs: ['Cover–Thomas 2nd ed. §14.3 pp. 473–475, Lemma 14.3.1, Theorem 14.3.1 and Eqs. (14.26)–(14.35)'],
       tags: ['Kolmogorov complexity', 'entropy'],
       credit: 'A. N. Kolmogorov, 1965 (Problems of Information Transmission 1 (1)); independently R. Solomonoff, 1964 and G. Chaitin, 1966; the entropy relation is Cover & Thomas, Thm 14.3.1',
       verify: true,
@@ -276,7 +276,7 @@ and therefore $\dfrac1n\mathbb E\,K(X^n\mid n)\longrightarrow H(p)$. The expecte
           s1.path(Array.from({ length: 53 }, (_, i) => [i / 100, h2(i / 100)]), { color: 'green', width: 2.2 });
           s1.path(cache.pts.map((q) => [q.p, q.lz]), { color: 'purple', width: 1.4, alpha: 0.7 }); cache.pts.forEach((q) => s1.dot(q.p, q.lz, { r: 3.5, color: 'purple' }));
           s1.path(cache.pts.map((q) => [q.p, q.kt]), { color: 'orange', width: 1.4, alpha: 0.7 }); cache.pts.forEach((q) => s1.dot(q.p, q.kt, { r: 3.5, color: 'orange' }));
-          if (mode === 'prng') { s1.hline(260 / n, { color: 'red', dash: true, width: 1.6 }); s1.text('a few hundred bits of program, divided by n (illustrative size)', 0.98, 260 / n, { align: 'right', dy: -10, size: 11, color: 'red' }); }
+          if (mode === 'prng') { s1.hline(260 / n, { color: 'red', dash: true, width: 1.6 }); s1.text('illustrative generator-program rate', 0.51, 260 / n, { align: 'right', dy: -10, size: 11, color: 'red' }); }
           s1.vline(pf, { color: 'faint', dash: true });
           // convergence for p
           const NN = 20000, x = gen(NN, pf, mode, `${mode}|${seed}|${pf}`), P = lz78(x), kt = [], lz = [];
@@ -290,7 +290,7 @@ and therefore $\dfrac1n\mathbb E\,K(X^n\mid n)\longrightarrow H(p)$. The expecte
           info = { h: h2(pf), kt: kt[kt.length - 1][1], lz: lz[lz.length - 1][1], mode, n };
         });
         v.legend([['green', 'entropy $h(p)$'], ['orange', 'adaptive arithmetic coder (KT)'], ['purple', 'LZ78']]);
-        v.readout(() => `At $p=${v.fix(pS.value, 2)}$ the entropy is $h(p)=${v.fix(info.h, 3)}$ bits/symbol; after $20000$ symbols the arithmetic coder uses $${v.fix(info.kt, 3)}$ and LZ78 $${v.fix(info.lz, 3)}$ (both upper bounds on $K/n$; LZ78 converges more slowly).` + (info.mode === 'prng' ? ' The generator has a short program, so the true $K/n\\to0$ although both compressors stay near $h(p)$: they cannot see the structure.' : ''));
+        v.readout(() => `At $p=${v.fix(pS.value, 2)}$ the entropy is $h(p)=${v.fix(info.h, 3)}$ bits/symbol; after $20000$ symbols the arithmetic coder uses $${v.fix(info.kt, 3)}$ and LZ78 $${v.fix(info.lz, 3)}$ (model code-length rates; prefix termination and a fixed decoder overhead are needed for literal bounds on $K/n$; LZ78 converges more slowly).` + (info.mode === 'prng' ? ' The generator has a short program, so the true $K/n\\to0$ although both compressors stay near $h(p)$: they cannot see the structure.' : ''));
       },
     },
     // ───────────────────────────────────────────────────────────── 4.17

@@ -41,7 +41,8 @@ If $\mu$ is a probability measure it is a **stationary distribution**: a chain s
       deps: ['prob-5.1.1a'],
       see: ['stoch-4.1'],
       tags: ['stationary measures'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.5, pp. 299–300 (stationary measure definition and examples)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const KEYS = ['gen5', 'bd5', 'wea3', 'two'];
         const cS = v.select('chain', chainOpts(KEYS), 'gen5', { onChange: () => reset() });
@@ -79,7 +80,8 @@ $$\mu(x)\,p(x,y)=\mu(y)\,p(y,x)\qquad\text{for all }x,y.$$
       deps: ['prob-5.5.1a'],
       see: ['stoch-4.9'],
       tags: ['stationary measures', 'reversibility'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.5, p. 300, equation (5.5.1)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const mode = v.select('chain', [{ value: 'bd', label: 'birth–death' }, { value: 'ring', label: 'ring' }], 'ring');
         const aS = v.slider('forward probability $a$ (ring)', 0.1, 0.8, 0.6, { step: 0.01 });
@@ -145,15 +147,16 @@ The chain is reversible exactly when $\hat p=p$.`,
       num: '5.5.6',
       kind: 'Theorem',
       name: 'Kolmogorov’s cycle condition',
-      statement: String.raw`Let $p$ be an irreducible transition probability with a stationary measure $\mu$. Then $\mu$ is reversible, $\mu(x)p(x,y)=\mu(y)p(y,x)$ for all $x,y$, if and only if (a) $p(x,y)>0$ implies $p(y,x)>0$, and (b) for every loop $x_0,x_1,\dots,x_k=x_0$ with $\prod_ip(x_i,x_{i+1})>0$,
-$$\prod_{i=0}^{k-1}p(x_i,x_{i+1})=\prod_{i=0}^{k-1}p(x_{i+1},x_i).$$`,
-      idea: String.raw`If detailed balance holds, around a cycle the factors $\pi(x_i)$ cancel between the two products, giving equality. Conversely, fix $x_0$ and define $\mu(x)=\prod p(x_i,x_{i+1})/p(x_{i+1},x_i)$ along any path from $x_0$ to $x$; the cycle condition says this does not depend on the path, and then $\mu$ satisfies detailed balance. Being reversible it is stationary, so by uniqueness of the stationary measure (5.5.9, in the recurrent case) it is a multiple of the given $\mu$.`,
+      statement: String.raw`An irreducible transition probability $p$ has a nonzero reversible measure if and only if (a) $p(x,y)>0$ implies $p(y,x)>0$, and (b) for every loop $x_0,x_1,\dots,x_k=x_0$ with positive transition probabilities,
+$$\prod_{i=0}^{k-1}p(x_i,x_{i+1})=\prod_{i=0}^{k-1}p(x_{i+1},x_i).$$
+The conclusion is existence of a reversible measure; for a transient chain it does not assert that every stationary measure is reversible.`,
+      idea: String.raw`Detailed balance makes the measure factors cancel around every cycle. Conversely, set $\mu(a)=1$ at one state and define $\mu(x)$ by multiplying $p(x_i,x_{i+1})/p(x_{i+1},x_i)$ along a path from $a$ to $x$. Reversing a second path forms a loop, so the cycle condition makes this definition independent of the path. Comparing a path to $x$ with the same path followed by $x\to y$ gives detailed balance. This constructs a reversible measure without assuming recurrence or a pre-existing stationary measure.`,
       caption: String.raw`A four-state ring: $p(i,i+1)=f_i$, $p(i,i-1)=0.3$, and the rest stays put. Move the sliders $f_0,\dots,f_3$. The left bars compare the product of the forward probabilities around the cycle with the product of the backward ones; the right bars show the detailed-balance defect of the stationary distribution on each edge. The defect is $0$ exactly when the two products agree ("Make reversible" adjusts $f_3$).`,
       deps: ['prob-5.5.2a'],
       see: ['stoch-4.10'],
       tags: ['reversibility'],
-      credit: 'A. N. Kolmogorov, 1936',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.5.6 and proof, p. 302; counterexample from Example 5.5.2, p. 300'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const fS = [0, 1, 2, 3].map((i) => v.slider(`$f_${i}$`, 0.1, 0.65, i === 3 ? 0.45 : 0.3, { step: 0.01 }));
         v.button('Make reversible', () => { const t = 0.3 ** 4 / (fS[0].value * fS[1].value * fS[2].value); fS[3].set(clampN(t, 0.1, 0.65)); });
@@ -287,8 +290,8 @@ $$\pi(x)=\frac1{E_xT_x},\qquad T_x=\inf\{n\ge1:X_n=x\}.$$`,
       deps: ['prob-5.5.7', 'prob-5.5.9', 'prob-5.5.10'],
       see: ['stoch-4.2'],
       tags: ['stationary measures'],
-      credit: 'M. Kac, 1947',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.5.11 and proof, p. 306'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const cS = v.select('chain', chainOpts(['gen5', 'bd5', 'wea3']), 'gen5');
         const kS = v.slider('excursions $K$ per state', 20, 5000, 500, { log: true, int: true, sig: 2 });
@@ -322,7 +325,8 @@ $$\pi(x)=\frac1{E_xT_x},\qquad T_x=\inf\{n\ge1:X_n=x\}.$$`,
       deps: ['prob-5.3.1a'],
       see: ['stoch-3.7'],
       tags: ['recurrence'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.5, pp. 306–307 (definitions and Theorem 5.5.12)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const pS = v.slider('$p$ (up)', 0.3, 0.7, 0.4, { step: 0.01 });
         let seed = 1; v.button('Resample', () => { seed++; });

@@ -105,15 +105,15 @@ export default {
       num: '4.13',
       kind: 'Theorem',
       name: 'Oscillation theorem: the n-th eigenfunction has n − 1 zeros',
-      statement: String.raw`For a regular Sturm–Liouville problem with Dirichlet conditions, let $u(\cdot;\lambda)$ be the solution with $u(0)=0,\ pu'(0)=1$. The number of zeros of $u(\cdot;\lambda)$ in the open interval $(0,1)$ equals the number of eigenvalues smaller than $\lambda$. In particular the $n$-th eigenfunction (ordered by $\lambda_1<\lambda_2<\cdots$) has exactly $n-1$ zeros in $(0,1)$, and the eigenvalues can be located by counting zeros while $\lambda$ increases. (Other separated boundary conditions change the count by a fixed offset.)`,
+      statement: String.raw`For a regular Sturm–Liouville problem with Dirichlet conditions, let $u(\cdot;\lambda)$ be the solution with $u(0)=0,\ pu'(0)=1$. The number of zeros of $u(\cdot;\lambda)$ in the open interval $(0,1)$ equals the number of eigenvalues smaller than $\lambda$. In particular the $n$-th eigenfunction (ordered by $\lambda_1<\lambda_2<\cdots$) has exactly $n-1$ zeros in $(0,1)$, and the eigenvalues can be located by counting zeros while $\lambda$ increases. For other separated boundary conditions the eigenfunction still has $n-1$ interior zeros, but counting eigenvalues from a general shooting solution requires the boundary Prüfer phase.`,
       idea: String.raw`By the Sturm comparison theorem (4.11), if $\lambda$ increases then $u(\cdot;\lambda)$ oscillates faster: the zeros move monotonically to the left (towards $0$) as $\lambda$ grows, never coalescing, since zeros are simple. A new zero can therefore enter the interval only through the right endpoint $x=1$, which happens exactly when $u(1;\lambda)=0$, i.e. at an eigenvalue. Starting from $\lambda$ very negative, where $u$ has no zero, each eigenvalue passed adds exactly one zero. The Prüfer angle $\theta$, defined by $u=r\sin\theta$, $pu'=r\cos\theta$, makes this precise: $\theta(1;\lambda)$ is increasing in $\lambda$ and the eigenvalues are where it crosses multiples of $\pi$.`,
       caption: String.raw`Top: the shooting solution $u(x;\lambda)$ for the chosen problem, with its interior zeros marked. Middle: the end value $u(1;\lambda)$; its roots (orange) are the eigenvalues. Bottom: the number of interior zeros as a function of $\lambda$: a staircase that steps up exactly at each eigenvalue, together with the count of eigenvalues below $\lambda$ (dashed green). Slide $\lambda$ or press *next eigenvalue*: at $\lambda_n$ the solution touches $0$ at $x=1$ and has $n-1$ zeros inside.`,
       deps: ['ode-4.9', 'ode-4.11'],
-      refs: ['Teschl §5.5'],
+      refs: ['Teschl §5.5 pp. 166–170, Lemmas 5.14–5.16 and Theorems 5.17–5.18'],
       tags: ['oscillation', 'Sturm–Liouville', 'zeros'],
-      credit: 'C. Sturm, 1836 (Prüfer angle: H. Prüfer, 1926)',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory#Sturm%E2%80%93Liouville_theory' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sS = v.stage({ x: [0, 1], y: [-1.4, 1.4], axes: 'box', gutter: true, height: 260, xlabel: 'x', ylabel: 'u', title: 'shooting solution $u(x;\\lambda)$', weight: 1.1, minWidth: 280 });
         const sG = v.stage({ x: [0, 400], y: [-1, 1], axes: 'box', gutter: true, height: 260, xlabel: 'λ', ylabel: 'u(1; λ)', title: 'end value', weight: 1.1, minWidth: 260 });
@@ -123,7 +123,7 @@ export default {
         v.button('next eigenvalue', () => { const pr = SL.prob(); if (!pr) return; const ev = slEigenvalues(pr, 'DD', 8); const nx = ev.find((e) => e > lam.value + 1e-6); if (nx !== undefined) lam.set(nx); });
         v.button('previous', () => { const pr = SL.prob(); if (!pr) return; const ev = slEigenvalues(pr, 'DD', 8).filter((e) => e < lam.value - 1e-6); lam.set(ev.length ? ev[ev.length - 1] : 0); });
         let cache = { key: '', g: null, cnt: null };
-        const countAt = (pr, l) => { const { u } = slPath(pr, l, 0, 1, 1); const N = pr.N; let c = 0; for (let i = 1; i < N - 1; i++) if ((u[i] < 0 && u[i + 1] >= 0) || (u[i] > 0 && u[i + 1] <= 0)) c++; return { c, u, end: u[N] }; };
+        const countAt = (pr, l) => { const { u } = slPath(pr, l, 0, 1, 1); return { c: nodeZeros(u).length, u, end: u[pr.N] }; };
         let info = null;
         v.render(() => {
           const pr = SL.prob(); if (!pr) return;
@@ -136,7 +136,8 @@ export default {
           let mx = 1e-9; for (let i = 0; i <= pr.N; i++) mx = Math.max(mx, Math.abs(r.u[i]));
           sS.setView([0, 1], [-1.25 * mx, 1.25 * mx]);
           const pts = nodePts(r.u); sS.path(pts, { color: 'accent', width: 2.6 });
-          const zs = nodeZeros(r.u, 0).filter((z) => z < 0.998);
+          const atEigen = ev.some(e => Math.abs(e - l) < 1e-6);
+          const zs = nodeZeros(r.u, 0).filter(z => !atEigen || z < 1 - 1 / pr.N);
           for (const z of zs) sS.dot(z, 0, { r: 5, color: 'red' });
           sS.dot(1, r.end, { r: 5, color: 'gold' });
           const gm = Math.max(...cache.g.map((q) => Math.abs(q[1])), 0.1); sG.setView([0, 400], [-1.15 * gm, 1.15 * gm]);
@@ -162,17 +163,17 @@ export default {
       num: '4.14',
       kind: 'Theorem',
       name: 'Rayleigh quotient and min–max for eigenvalues',
-      statement: String.raw`For a regular Sturm–Liouville problem with Dirichlet conditions let $\mathcal R[\varphi]=\dfrac{\int_0^1\big(p\varphi'^2+q\varphi^2\big)dx}{\int_0^1w\varphi^2\,dx}$ for $\varphi\in C^1$ (or $H^1$) with $\varphi(0)=\varphi(1)=0$, $\varphi\neq0$. Then
+      statement: String.raw`For a regular Sturm–Liouville problem with Dirichlet conditions let $\mathcal R[\varphi]=\dfrac{\int_0^1\big(p\varphi'^2+q\varphi^2\big)dx}{\int_0^1w\varphi^2\,dx}$ for real-valued $\varphi\in C^1$ (or $H^1$) with $\varphi(0)=\varphi(1)=0$, $\varphi\neq0$. Then
 $$\lambda_1=\min_\varphi\mathcal R[\varphi],\qquad \lambda_n=\min_{\varphi\perp u_1,\dots,u_{n-1}}\mathcal R[\varphi]=\min_{\dim V=n}\ \max_{\varphi\in V}\mathcal R[\varphi],$$
 orthogonality being in $L^2(w\,dx)$. The minimum in the first formula is attained exactly at multiples of the ground state $u_1$.`,
       idea: String.raw`Expand $\varphi=\sum d_nu_n$ (4.10). Integration by parts, which uses the boundary conditions, gives $\int(p\varphi'^2+q\varphi^2)=\sum\lambda_nd_n^2$ while $\int w\varphi^2=\sum d_n^2$, so $\mathcal R[\varphi]=\sum\lambda_nd_n^2/\sum d_n^2$ is a *weighted average* of the eigenvalues. It cannot be smaller than $\lambda_1$, and equals it only if all weight sits on $u_1$; if $\varphi\perp u_1$ the weight on $\lambda_1$ is gone and the average is at least $\lambda_2$, and so on. This is why one can estimate eigenvalues from above by any trial function (the Rayleigh–Ritz method).`,
-      caption: String.raw`Drag the five handles to shape a trial function $\varphi$ with fixed ends (left, gold; the green dashed curve is its projection onto the true ground state). Its Rayleigh quotient (gold marker on the eigenvalue axis) never falls below $\lambda_1$, and touches it when $\varphi$ becomes proportional to $u_1$ (press *snap to ground state*). Switch on *orthogonalise against $u_1$* and the quotient can no longer go below $\lambda_2$. The bars show the weights $d_n^2/\|\varphi\|^2$ of the average.`,
+      caption: String.raw`Drag the five handles to shape a trial function $\varphi$ with fixed ends (left, gold; the green dashed curve is its projection onto the true ground state). Its Rayleigh quotient (gold marker on the eigenvalue axis) never falls below $\lambda_1$, and touches it when $\varphi$ becomes proportional to $u_1$ (press *snap to ground state*). Switch on *orthogonalise against $u_1$* and the quotient can no longer go below $\lambda_2$. The snap button fits five knots to the ground state, so the displayed interpolant approaches its quotient rather than reproducing it exactly. The bars show the weights $d_n^2/\|\varphi\|^2$ of the average.`,
       deps: ['ode-4.9'],
-      refs: ['Teschl §5.4'],
+      refs: ['Teschl §5.4 pp. 161–163, quadratic form (5.71)–(5.74) and Lemma 5.12; higher min–max follows by eigenfunction expansion'],
       tags: ['Rayleigh quotient', 'variational principle', 'min–max'],
-      credit: 'Lord Rayleigh, 1877 (Theory of Sound); min–max principle: E. Fischer, 1905, R. Courant, 1920',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rayleigh_quotient' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sT = v.stage({ x: [0, 1], y: [-1.7, 1.7], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'φ', title: 'trial function', weight: 1.2, minWidth: 280 });
         const sL = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 150, title: 'Rayleigh quotient on the eigenvalue axis', weight: 1.4, minWidth: 300 });
@@ -218,18 +219,18 @@ orthogonality being in $L^2(w\,dx)$. The minimum in the first formula is attaine
       num: '4.15',
       kind: 'Theorem',
       name: 'Fredholm alternative for boundary value problems',
-      statement: String.raw`Let $L$ be a regular Sturm–Liouville operator with separated (Dirichlet) boundary conditions on $[0,1]$ and $\mu\in\mathbb R$. Exactly one of the following holds.
+      statement: String.raw`Let $L u=-(p u′)′+q u$ (weight $w=1$) be a regular Sturm–Liouville operator with Dirichlet boundary conditions on $[0,1]$ and $\mu\in\mathbb R$. Exactly one of the following holds.
 (a) $\mu$ is not an eigenvalue of $L$: then $Lu-\mu u=f$ has a unique solution for every continuous $f$.
 (b) $\mu$ is an eigenvalue with eigenfunction $u_0$ (simple): then $Lu-\mu u=f$ has a solution if and only if $\int_0^1f\,u_0\,dx=0$, and then the solutions form the one-parameter family $u_p+c\,u_0$.
 In particular the homogeneous problem has a nonzero solution exactly when the adjoint problem does, and solvability is decided by orthogonality to the null space.`,
-      idea: String.raw`Solutions of the inhomogeneous equation with $u(0)=0$ form the line $u=u_p+s\,\varphi$, with $u_p$ the solution with data $(0,0)$ and $\varphi$ the solution of the homogeneous equation with data $(0,1)$ (compare 4.6). The right boundary condition reads $u_p(1)+s\varphi(1)=0$: a single linear equation for $s$. If $\varphi(1)\ne0$ it has a unique root; if $\varphi(1)=0$ ($\mu$ an eigenvalue, $\varphi\propto u_0$) it is solvable iff $u_p(1)=0$. Green's identity applied to $u_p$ and $u_0$ gives $p\,(u_p'u_0-u_pu_0')\big|_0^1=-\int f\,u_0$ up to sign, i.e. $u_p(1)=\mp\frac1{p(1)u_0'(1)}\int fu_0$: solvability *is* orthogonality to $u_0$. For a compact operator on a Hilbert space this is the Fredholm alternative (fa-4.25) applied to the Green operator (4.8).`,
+      idea: String.raw`Solutions of the inhomogeneous equation with $u(0)=0$ form the line $u=u_p+s\,\varphi$, with $u_p$ the solution with data $(0,0)$ and $\varphi$ the solution of the homogeneous equation with data $(0,1)$ (compare 4.6). The right boundary condition reads $u_p(1)+s\varphi(1)=0$: a single linear equation for $s$. If $\varphi(1)\ne0$ it has a unique root; if $\varphi(1)=0$ ($\mu$ an eigenvalue, $\varphi\propto u_0$) it is solvable iff $u_p(1)=0$. Green's identity applied to $u_p$ and $u_0$ gives $p\,(u_pu_0'-u_p'u_0)\big|_0^1=\int f\,u_0$, hence $u_p(1)=\frac1{p(1)u_0'(1)}\int fu_0$: solvability *is* orthogonality to $u_0$. For a compact operator on a Hilbert space this is the Fredholm alternative (fa-4.25) applied to the Green operator (4.8).`,
       caption: String.raw`The problem is $u''+\lambda u=f$ on $[0,\pi]$ with $u(0)=u(\pi)=0$, whose eigenvalues are $\lambda=1,4,9,\dots$ with eigenfunctions $\sin nx$. Choose a forcing $f$ (or draw one by dragging over the top panel). Solutions are shot from $0$ with slope $s$; the shot that lands on $0$ at $\pi$ is the solution. For generic $\lambda$ one shot lands. Press $\lambda=1$: all shots now arrive at the same height $u_p(\pi)$, which is exactly $\int_0^\pi f\sin x\,dx$ — zero for $f=\sin2x$ or $\cos x$ (infinitely many solutions, green), nonzero for $f=1$ or $\sin x$ (no solution, red). The forcing $x-\pi/2$ is odd about the midpoint while $\sin x$ is even, so it is orthogonal to $\sin x$ at $\lambda=1$ and $\lambda=9$ but not at $\lambda=4$.`,
       deps: ['ode-4.8', 'fa-4.25'],
-      refs: ['Teschl §5.2'],
+      refs: ['Teschl §5.4 pp. 157–163 (resolvent and complete eigenfunction expansion); §5.3 Eq. (5.56) (Lagrange identity)'],
       tags: ['Fredholm alternative', 'solvability', 'orthogonality'],
-      credit: 'I. Fredholm, 1900–1903 (integral equations)',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fredholm_alternative' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sF = v.stage({ x: [0, Math.PI], y: [-1.6, 1.6], axes: 'box', gutter: true, height: 250, xlabel: 'x', ylabel: 'f', title: 'forcing $f$ (drag to draw)', weight: 1, minWidth: 260 });
         const sU = v.stage({ x: [0, Math.PI], y: [-3, 3], axes: 'box', gutter: true, height: 250, xlabel: 'x', ylabel: 'u', title: 'shots from $u(0)=0$', weight: 1.2, minWidth: 280 });

@@ -5,7 +5,7 @@
 //     file mass_1.mas20.txt from the IAEA Nuclear Data Section mirror (www-nds.iaea.org/amdc/ame2020/). BEA lists, for every mass number A
 //     from 1 to 295 that has measured masses, the most tightly bound measured isobar: [A, Z, binding energy per nucleon in keV].
 //     NUC lists chosen nuclides as [A, Z, atomic mass excess in keV, total binding energy in keV] (experimental values, no "#" extrapolations).
-//   Delayed neutrons: the six-group thermal U-235 set (Keepin-style), as tabulated in the Wikipedia article "Delayed neutron" (β = 0.0065).
+//   Delayed neutrons: rounded thermal U-235 groups from DOE-HDBK-1019/1-93, NP-02 Table 3, p. 30; decay constants are ln(2)/half-life.
 //   Thermal cross sections (2200 m/s): NIST Center for Neutron Research table (ncnr.nist.gov/resources/n-lengths): 235U absorption 680.9 b,
 //     238U 2.68 b, 1H 0.3326 b, 2H 0.000519 b, C 0.0035 b, O 0.00019 b; fission of 235U 585 b (nuclear-power.com, 0.0253 eV).
 //   D–T reactivity: Bosch & Hale, Nucl. Fusion 32, 611 (1992): the S-factor fit for T(d,n)4He with the coefficients quoted in the WarpX source,
@@ -20,13 +20,14 @@ export const MEV_U = 931.49410242;      // MeV per atomic mass unit (CODATA 2018
 export const LV = 2.442;                // MJ/kg, latent heat of water at 25 °C (44.0 kJ/mol; NIST WebBook Antoine fit gives 44 kJ/mol at 298 K)
 export const MH2O_PER_H = 18.015 / 2.016; // kg water per kg hydrogen burnt
 /** Binding energy per nucleon (MeV) of the most bound isobar of mass number A (linear interpolation outside the table gives 0). */
-export function beaOf(A) { const r = BEA[Math.round(A) - 1]; return r ? r[2] / 1000 : 0; }
+const BEA_BY_A = new Map(BEA.map(([A, Z, keV]) => [A, keV / 1000]));
+export function beaOf(A) { return BEA_BY_A.get(Math.round(A)) ?? 0; }
 /** Total binding energy (MeV) of the most bound measured isobar with A nucleons. */
 export const bOf = (A) => A * beaOf(A);
 
 // ───────────────────────────────────────────────── six-group delayed neutron model
-export const DN_BETA = [0.000215, 0.001424, 0.001274, 0.002568, 0.000748, 0.000273];
-export const DN_LAM = [0.0124, 0.0305, 0.111, 0.301, 1.14, 3.01];
+export const DN_BETA = [0.00021, 0.00142, 0.00127, 0.00257, 0.00075, 0.00027];
+export const DN_LAM = [55.7, 22.7, 6.2, 2.3, 0.61, 0.23].map(t => Math.LN2 / t);
 export const BETA = DN_BETA.reduce((a, b) => a + b, 0);
 /** 7×7 matrix of the point-kinetics equations for fixed reactivity rho (absolute, not dollars) and generation time Lam (s). */
 export function kinMatrix(rho, Lam, scale = 1) {

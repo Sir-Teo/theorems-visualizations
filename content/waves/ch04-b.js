@@ -17,10 +17,9 @@ the refracted ray grazes the surface ($\theta_2=90^\circ$), and for $\theta_1>\t
       idea: String.raw`Snell’s law (4.6) gives $\sin\theta_2=(n_1/n_2)\sin\theta_1$, which exceeds 1 beyond $\theta_c$, so $\cos\theta_2$ becomes imaginary. In the Fresnel equations (4.7) this makes $r_s$ and $r_p$ pure phases of modulus one: all the incident power comes back, and the second medium carries only a field that decays away from the surface (4.10). Total reflection is lossless, unlike a metal mirror, which is why prisms, fibres (4.13) and diamond’s fire depend on it.`,
       caption: String.raw`Left: the incident ray (blue) in the denser medium above, the reflected ray (red) and the refracted ray (green), whose widths follow the power in each. Raise $\theta_1$ and the green ray swings toward the surface, then vanishes at $\theta_c$ (dotted), leaving the reflected ray at full strength. Right: $R_s$ and $R_p$ against angle; both reach 1 exactly at $\theta_c$ and stay there. Presets give glass, water and diamond to air.`,
       deps: ['waves-4.6', 'waves-4.7'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §33–6, Eqs.(33.45),(33.59) and evanescent-field discussion'],
       tags: ['total internal reflection', 'critical angle'],
-      credit: 'described by Kepler, 1611',
-      verify: true,
+      credit: 'Total internal reflection: Feynman Lectures II, §33–6',
       scope: String.raw`Plane wave, real indices with $n_1>n_2$, an interface that is flat over many wavelengths. Beyond the critical angle the reflected light is totally reflected only if nothing absorbs or scatters the evanescent field (4.10).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Total_internal_reflection' },
       viz(v) {
@@ -31,7 +30,7 @@ the refracted ray grazes the surface ($\theta_2=90^\circ$), and for $\theta_1>\t
         v.button('water → air', () => { n1S.set(1.333); n2S.set(1); });
         v.button('diamond → air', () => { n1S.set(2.42); n2S.set(1); });
         v.button('glass → water', () => { n1S.set(1.5); n2S.set(1.333); });
-        v.button('go to critical angle', () => { if (n1S.value > n2S.value) aS.set(Math.round(deg(Math.asin(n2S.value / n1S.value)) * 10) / 10); });
+        v.button('go to critical angle', () => { if (n1S.value > n2S.value) aS.set(deg(Math.asin(n2S.value / n1S.value))); });
         const B = v.stage({ x: [-2.2, 2.2], y: [-1.9, 1.9], equal: true, axes: false, height: 330, weight: 1, minWidth: 280, title: 'the rays' });
         const A = v.stage({ x: [0, 90], y: [0, 1.04], axes: 'box', gutter: true, xlabel: 'angle of incidence θ₁ (degrees)', height: 330, weight: 1.3, minWidth: 300, title: 'reflectance' });
         let st = null;
@@ -71,16 +70,15 @@ the refracted ray grazes the surface ($\theta_2=90^\circ$), and for $\theta_1>\t
       name: 'Evanescent waves and frustrated TIR',
       statement: String.raw`Beyond the critical angle the field does not stop at the interface: in the rarer medium it is an **evanescent wave**, travelling along the surface with wavenumber $k_x=n_1k_0\sin\theta_1$ and decaying away from it as $e^{-\kappa z}$ with
 $$\kappa=k_0\sqrt{n_1^2\sin^2\theta_1-n_2^2},$$
-so its intensity falls by $1/e$ in a distance $1/(2\kappa)$, a fraction of a wavelength. It carries no net power across the interface. If a second dense medium is brought within this distance, the field there is not zero and **light tunnels across the gap** (frustrated total internal reflection). For a gap $d$ of vacuum between two identical media and s polarization, the transmitted power fraction is
+so its intensity falls by $1/e$ in a distance $1/(2\kappa)$, which can be many wavelengths near the critical angle. It carries no net power across the interface. If a second dense medium is brought within this distance, the field there is not zero and **light tunnels across the gap** (frustrated total internal reflection). For a gap $d$ of vacuum between two identical media and s polarization, the transmitted power fraction is
 $$T=\left[1+\left(\frac{k_z^2+\kappa^2}{2k_z\kappa}\right)^{2}\sinh^2(\kappa d)\right]^{-1},\qquad k_z=n_1k_0\cos\theta_1,\ \kappa=k_0\sqrt{n_1^2\sin^2\theta_1-1},$$
 which decays as $e^{-2\kappa d}$ for $\kappa d\gg1$.`,
-      idea: String.raw`The boundary conditions of 4.7 still hold past $\theta_c$, but $k_z$ in the rare medium, $\sqrt{n_2^2k_0^2-k_x^2}$, is imaginary: the phase is matched along the surface (so Snell's law holds in the form $k_x$ conserved), and the only decaying solution of the wave equation is $e^{-\kappa z}$. Because the decaying field is not zero, a second interface can couple it to a propagating wave; matching the fields at both gap faces (a short calculation with exponentials, the optical twin of quantum tunnelling through a barrier) gives the formula above. Newton saw light cross a small gap between two prisms; the same decay underlies near-field microscopy and the dependence of the penetration on angle in TIRF imaging.`,
+      idea: String.raw`The boundary conditions of 4.7 still hold past $\theta_c$, but $k_z$ in the rare medium, $\sqrt{n_2^2k_0^2-k_x^2}$, is imaginary: the phase is matched along the surface (so Snell's law holds in the form $k_x$ conserved), and the only decaying solution of the wave equation is $e^{-\kappa z}$. Because the decaying field is not zero, a second interface can couple it to a propagating wave; matching the fields at both gap faces (a short calculation with exponentials, the optical twin of quantum tunnelling through a barrier) gives the formula above. A finite gap contains both decaying and growing exponentials required by the two boundary conditions; the single-interface decay length is a useful scale, not a sharp tunnelling threshold.`,
       caption: String.raw`The map shows the real electric field of an s-polarized plane wave coming up from the lower prism at an angle beyond the critical angle (red and blue are opposite signs; the wave is drawn at a moving phase). In the gap the field fades exponentially; with a second prism beyond the gap a faint transmitted wave appears. Raise $\theta_1$ or the gap $d$ and the transmission (lower graph, log scale, with the exponential asymptote dashed) falls. At $d=0$ the prisms are one piece of glass: $T=1$. The readout checks that reflected plus transmitted power is 1 for each setting.`,
-      deps: ['waves-4.9', 'waves-3.11'],
-      refs: ['Hecht ch. 4'],
+      deps: ['waves-4.9', 'waves-3.11', 'em-10.7'],
+      refs: ['Gehring, Rochester thesis, complete §§5.2 and5.4.1, pp.82–85 and90–92, Eqs.(5.3)–(5.7),(5.13)–(5.19), TE coefficient summary'],
       tags: ['evanescent wave', 'tunnelling'],
-      credit: 'observed by Newton (Opticks, 1704)',
-      verify: true,
+      credit: 'Symmetric-gap TE boundary matching: Gehring, Rochester thesis, §§5.2 and5.4.1',
       scope: String.raw`Plane wave, lossless media, s polarization (p is similar with different numerical factors). Valid for angles beyond the critical angle; below it the gap acts as a thin film (6.5). A finite beam adds a lateral shift (Goos–Hänchen) not drawn here.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Evanescent_field' },
       viz(v) {
@@ -127,7 +125,8 @@ which decays as $e^{-2\kappa d}$ for $\kappa d\gg1$.`,
           G.fn((x) => calc(n1, thc, x, xS.value).T, { color: 'accent', width: 2.4, n: 160 });
           G.fn(asym, { color: 'orange', width: 1.5, dash: [5, 4], n: 120 });
           G.vline(d, { color: 'gold', width: 1.5 });
-          G.dot(d, Math.max(S.T, 1e-4), { r: 5, color: 'gold' });
+          G.setView([0,2], [Math.max(1e-25, calc(n1,thc,2,xS.value).T * 0.4),1.5]);
+          G.dot(d, S.T, { r: 5, color: 'gold' });
           st = { S, thc, d, th: deg(S.th) };
         }, { period: 4, still: 0.6 });
         v.readout(() => st ? `$\\theta_c=${v.fix(st.thc, 2)}^\\circ$, $\\theta_1=${v.fix(st.th, 2)}^\\circ$ · $\\kappa=${v.fix(st.S.kap / TAU, 3)}\\,k_0$: field amplitude $\\propto e^{-\\kappa z}$ with $1/\\kappa=${v.fix(1 / st.S.kap, 3)}\\,\\lambda_0$, intensity falls by $1/e$ in $1/(2\\kappa)=${v.fix(1 / (2 * st.S.kap), 3)}\\,\\lambda_0$ · at $d=${v.fix(st.d, 2)}\\,\\lambda_0$: $T=${v.sci(st.S.T, 3)}$, $R=|r|^2=${v.fix(st.S.R, 6)}$, $R+T=${v.fix(st.S.R + st.S.T, 6)}$` : '');
@@ -139,16 +138,16 @@ which decays as $e^{-2\kappa d}$ for $\kappa d\gg1$.`,
       kind: 'Theorem',
       name: 'Stokes relations',
       statement: String.raw`Let $r,t$ be the amplitude reflection and transmission coefficients for a wave going from medium 1 to medium 2 and $r',t'$ those for the **reversed** wave coming from medium 2 along the refracted ray (same polarization). If neither medium absorbs light, then
-$$r'=-r,\qquad tt'=1-r^2 \;(=1-R).$$
+$$r'=-r,\qquad tt'=1-r^2 \;(=1-R)$$
+for the real coefficients below the critical angle.
 The reflection for the reversed incidence therefore has the opposite sign, and $T=tt'$ for the transmitted power fraction.`,
-      idea: String.raw`Maxwell's equations are invariant under time reversal when there is no absorption (the reversed solution is also a solution). Run the experiment backwards: the reflected ray (amplitude $r$) and the transmitted ray (amplitude $t$) now arrive together and must combine into a single ray of amplitude 1 along the original incident direction and nothing along the other. The first ray contributes $r\cdot r+t\cdot t'$ to the outgoing wave, which must be 1; the other direction receives $r\cdot t+t\cdot r'$, which must vanish. Those two conditions are exactly the two relations. Stokes (1849) used them to show that the centre of Newton's rings is dark (6.7). The Fresnel coefficients of 4.7 satisfy them for both polarizations, which is a good numerical check.`,
+      idea: String.raw`Maxwell's equations are invariant under time reversal when there is no absorption (the reversed solution is also a solution). Run the experiment backwards: the reflected ray (amplitude $r$) and the transmitted ray (amplitude $t$) now arrive together and must combine into a single ray of amplitude 1 along the original incident direction and nothing along the other. The first ray contributes $r\cdot r+t\cdot t'$ to the outgoing wave, which must be 1; the other direction receives $r\cdot t+t\cdot r'$, which must vanish. Those two conditions are exactly the two relations. The identities also account for the relative reflection sign in two-interface interference. The Fresnel coefficients of 4.7 satisfy them for both polarizations, which is a good numerical check.`,
       caption: String.raw`Left: the forward experiment (amplitude 1 in, $r$ and $t$ out), then the reversed pair: two incoming rays $r$ and $t$ produce outgoing amplitudes $r^2+tt'$ (back along the original ray) and $rt+tr'$ (along the other). Set the indices, angle and polarization: the numbers on the rays are computed from the Fresnel equations for both directions. Right: $r_s(\theta)$ and $-r'_s$ at the matching angle coincide, and $r^2$ plus $tt'$ stays at 1.`,
       deps: ['waves-4.7'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §§33–3–33–4, Fresnel coefficients; the real-coefficient reversal algebra is given explicitly here'],
       tags: ['Stokes', 'time reversal'],
-      credit: 'Stokes, 1849',
-      verify: true,
-      scope: String.raw`Lossless, non-absorbing interface and angles below the critical angle (beyond it, the relations hold with complex $t$ but the coefficients are not real). The relation with $r'=-r$ uses the amplitude conventions of 4.7; with a different sign convention for $r_p$ the sign of $r'$ changes accordingly.`,
+      credit: 'Stokes reversal identities for a lossless interface below the critical angle',
+      scope: String.raw`Lossless, non-absorbing interface and angles below the critical angle; the ray-reversed construction shown requires propagating waves on both sides. The relation with $r'=-r$ uses the amplitude conventions of 4.7; with a different sign convention for $r_p$ the sign of $r'$ changes accordingly.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fresnel_equations#Stokes_relations' },
       viz(v) {
         const n1S = v.slider('$n_1$', 1, 2.5, 1, { step: 0.01 });
@@ -211,14 +210,13 @@ The reflection for the reversed incidence therefore has the opposite sign, and $
       statement: String.raw`Because the index of a transparent material depends on wavelength (normal dispersion: $n$ is larger for blue than for red), refraction separates colours. A prism of apex angle $A$ deviates a ray by $D=\theta_1+\theta_4-A$, with a minimum $D_{\min}$ when the ray passes symmetrically, where
 $$n=\frac{\sin\frac{A+D_{\min}}2}{\sin\frac A2}.$$
 In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal reflections is turned through $D=k\pi+2i-2(k+1)r$ with $\sin i=n\sin r$; this has a **minimum** at $\cos^2 i=(n^2-1)/(k(k+2))$, so rays crowd into directions near $D_{\min}$ and a bright bow appears at angle $180^\circ-D_{\min}$ from the antisolar point for $k=1$ (about $42^\circ$ for red) and $D_{\min}-180^\circ$ for $k=2$ (about $51^\circ$), with the colours in reverse order.`,
-      idea: String.raw`Snell's law (4.6) applied at each surface with a wavelength-dependent $n$ (3.3, em-11.13) gives the deviation of each colour. For the drop, the deviation as a function of $b$ is stationary at its minimum, so many neighbouring rays leave in nearly the same direction and their combined intensity peaks there (Descartes, 1637). Since $D_{\min}$ depends on $n$, the colours land at slightly different angles: red outermost in the primary bow, innermost in the secondary. The region between the bows is darker (Alexander's band). Rays leaving beyond the minimum angle do not exist, which is the sharp inner edge of the bright arc. This geometric picture omits the Airy interference that produces the faint supernumerary bows.`,
+      idea: String.raw`Snell's law (4.6) applied at each surface with a wavelength-dependent $n$ (3.3, em-11.13) gives the deviation of each colour. For the drop, the deviation as a function of $b$ is stationary at its minimum, so many neighbouring rays leave in nearly the same direction and their combined intensity peaks there. Since $D_{\min}$ depends on $n$, the colours land at slightly different angles: red outermost in the primary bow, innermost in the secondary. The region between the bows is darker (Alexander's band). For the primary bow the minimum deviation gives the largest angular radius, hence its sharp outer edge; the secondary bow instead has a sharp inner edge. This geometric picture omits the Airy interference that produces the faint supernumerary bows.`,
       caption: String.raw`Choose the drop or the prism. Drop: the slider sets the impact height $b$ (gold in the graph); the ray is traced through one or two internal reflections for the colour you pick (or all three); the right graph shows $D(b)$ with its minimum (dot). The faint bundle shows how rays crowd where the curve is flat. Prism: set the apex angle and the incidence angle; three colours leave at different angles, and the right graph shows the deviation for each against $\theta_1$, with the minimum marked. Colours use a model index (water: Cauchy fit through $n(656)$ and $n(486)$; prism glass: $n=1.6+0.012/\lambda^2$ with $\lambda$ in µm).`,
       deps: ['waves-4.6', 'em-11.13'],
-      refs: ['Hecht ch. 5'],
+      refs: ['Fitzpatrick, complete Rainbows lecture; Rose-Hulman Prism Spectrometer laboratory introduction, Eq.(1); stationary-angle formulas derived from Snell'],
       tags: ['dispersion', 'rainbow', 'prism'],
-      credit: 'Theodoric of Freiberg, c. 1304–10; Descartes, 1637; Newton, 1666–1704',
-      verify: true,
-      scope: String.raw`Geometric optics of one spherical drop of radius much larger than the wavelength (drops of about 0.5 mm or more); fine structure (supernumerary bows, polarization of the bow, small-drop bows) needs wave optics. The water and glass indices are model values accurate to roughly $10^{-3}$, not catalogue data.`,
+      credit: 'Geometric prism and drop ray tracing from Snell’s law',
+      scope: String.raw`Geometric optics of one spherical drop of radius much larger than the wavelength; fine structure (supernumerary bows, polarization of the bow, small-drop bows) needs wave optics. Both index curves are illustrative models, not calibrated material data or accuracy claims.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rainbow' },
       viz(v) {
         const M = v.M;
@@ -227,12 +225,12 @@ In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal
         const col = v.select('colour', [{ value: 'all', label: 'red, green, violet' }, { value: 656, label: 'red' }, { value: 550, label: 'green' }, { value: 405, label: 'violet' }], 'all');
         const bS = v.slider('impact height $b$', 0.02, 0.995, 0.8, { step: 0.001 });
         const AS = v.slider('prism apex angle $A$ (degrees)', 30, 75, 60, { step: 1 });
-        const iS = v.slider('angle of incidence $\\theta_1$ (degrees)', 25, 80, 55, { step: 0.5 });
+        const iS = v.slider('angle of incidence $\\theta_1$ (degrees)', 0, 89.5, 55, { step: 0.5 });
         const G = v.stage({ x: [-2.4, 2.4], y: [-1.6, 1.6], equal: true, axes: false, height: 360, weight: 1.15, minWidth: 300, title: 'rays' });
         const D = v.stage({ x: [0, 1], y: [130, 190], axes: 'box', gutter: true, xlabel: 'impact height b', ylabel: 'deviation D (degrees)', height: 360, weight: 1, minWidth: 280, title: 'deviation' });
         const cols = { 656: 'red', 550: 'green', 405: 'purple' };
         let st = null;
-        const prismDev = (A, t1, n) => { const t2 = Math.asin(Math.sin(t1) / n), t3 = A - t2, s4 = n * Math.sin(t3); if (s4 > 1 || t3 < 0) return NaN; return t1 + Math.asin(s4) - A; };
+        const prismDev = (A, t1, n) => { const t2 = Math.asin(Math.sin(t1) / n), t3 = A - t2, s4 = n * Math.sin(t3); if (Math.abs(s4) > 1) return NaN; return t1 + Math.asin(s4) - A; };
         const trace = (b, n, k) => { // returns polyline points of the ray through the drop and the final direction
           let P = [-Math.sqrt(1 - b * b), b], d = [1, 0];
           const pts = [[-3, b], P.slice()];
@@ -268,9 +266,12 @@ In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal
             if (cs.length > 1) D.vline(bS.value, { color: 'gold', width: 1.4 });
             st = { drop: true, mins, k };
           } else {
-            G.setView([-4, 4], [-1.4, 3.6]); D.setView([25, 80], [30, 80]);
+            G.setView([-4, 4], [-1.4, 3.6]);
             D.setLabels('angle of incidence θ₁ (degrees)', 'deviation D (degrees)');
             const A = rad(AS.value), h = 2.6, w = h * Math.tan(A / 2);
+            const deviations = [];
+            for (const nm of [656,550,405]) for (let j=0;j<180;j++) { const d=deg(prismDev(A,rad(j/2),nFlint(nm))); if (Number.isFinite(d)) deviations.push(d); }
+            D.setView([0,90], [0,Math.max(80,...deviations)*1.12]);
             G.poly([[0, h], [-w, 0], [w, 0]], { color: 'ink', fill: 'blue', fillAlpha: 0.1, width: 1.6 });
             const nL = [-Math.cos(A / 2), Math.sin(A / 2)], nR = [Math.cos(A / 2), Math.sin(A / 2)];
             const Mx = [-0.5 * w, 0.5 * h];
@@ -301,7 +302,7 @@ In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal
         v.readout(() => {
           if (!st) return '';
           if (st.drop) return st.mins.map((m) => `$\\lambda=${m.nm}$ nm, $n=${v.fix(m.n, 4)}$: $D_{\\min}=${v.fix(m.Dm, 2)}^\\circ$ at $b=${v.fix(m.bm, 3)}$, so the ${st.k === 1 ? 'primary' : 'secondary'} bow is at $${v.fix(m.bow, 2)}^\\circ$ from the antisolar point; the traced ray at the handle: $D=${v.fix(m.Dnow, 2)}^\\circ$ (formula), angle of the traced exit ray $${v.fix(m.Dtr, 2)}^\\circ$ from the forward axis (equals $D$ or $360^\\circ-D$)`).join('\n');
-          return st.res.map((m) => `$\\lambda=${m.nm}$ nm, $n=${v.fix(m.n, 4)}$: $D=${v.fix(m.Dm, 2)}^\\circ$ now; $D_{\\min}=${v.fix(m.Dmin, 2)}^\\circ$ and $\\sin\\frac{A+D_{\\min}}2/\\sin\\frac A2=${v.fix(m.check, 4)}=n$`).join('\n');
+          return st.res.map((m) => `$\\lambda=${m.nm}$ nm, $n=${v.fix(m.n, 4)}$: ${Number.isFinite(m.Dm) ? `$D=${v.fix(m.Dm, 2)}^\\circ$ now` : 'no transmitted exit ray (total internal reflection)'}; ${Number.isFinite(m.Dmin) ? `$D_{\\min}=${v.fix(m.Dmin, 2)}^\\circ$, index check $${v.fix(m.check, 4)}=n$` : 'no symmetric transmitted minimum for this apex and index'}`).join('\n');
         });
       },
     },
@@ -313,13 +314,12 @@ In a spherical raindrop, a ray with impact parameter $b=\sin i$ and $k$ internal
       statement: String.raw`A **step-index fibre** is a glass core (index $n_1$) inside a cladding of slightly lower index $n_2$. A ray in the core at angle $\alpha$ to the axis meets the wall at incidence angle $90^\circ-\alpha$ and is trapped by total internal reflection (4.9) provided $\alpha\le\alpha_{\max}=\arccos(n_2/n_1)$. A ray entering from air at angle $\theta_0$ is guided when $\sin\theta_0\le \mathrm{NA}=\sqrt{n_1^2-n_2^2}$, the **numerical aperture**. Different trapped rays travel different path lengths, so over a length $L$ a short pulse is spread (**modal dispersion**) by at most
 $$\Delta t=\frac{Ln_1}{c}\left(\frac{n_1}{n_2}-1\right),$$
 the delay of the steepest guided ray relative to the axial ray; this limits the bit rate of a multimode fibre.`,
-      idea: String.raw`The condition for trapping is the critical angle of 4.9 at the core–cladding interface. The axial ray takes time $n_1L/c$; a ray at angle $\alpha$ travels $L/\cos\alpha$ at speed $c/n_1$, so its delay is $(n_1L/c)(1/\cos\alpha-1)$, which is largest at $\alpha_{\max}$, where $\cos\alpha_{\max}=n_2/n_1$. Narrowing the core until only one mode is guided (a single-mode fibre, which needs wave optics) removes modal dispersion; the remaining pulse broadening comes from the frequency dependence of the index (3.4–3.6). Kao and Hockham (1966) argued that losses in glass could be cut to a few tens of dB/km, which opened the way to fibre communications.`,
+      idea: String.raw`The condition for trapping is the critical angle of 4.9 at the core–cladding interface. The axial ray takes time $n_1L/c$; a ray at angle $\alpha$ travels $L/\cos\alpha$ at speed $c/n_1$, so its delay is $(n_1L/c)(1/\cos\alpha-1)$, which is largest at $\alpha_{\max}$, where $\cos\alpha_{\max}=n_2/n_1$. Narrowing the core until only one mode is guided (a single-mode fibre, which needs wave optics) removes modal dispersion; the remaining pulse broadening comes from the frequency dependence of the index (3.4–3.6). The pulse plot normalizes the accepted-ray profile to show delay spreading; its height does not estimate coupling efficiency or attenuation.`,
       caption: String.raw`Top: rays launched into a fibre at the angle you set. Green rays are trapped by total internal reflection; red ones leak into the cladding after the first bounce, and the faint bundle shows which launch angles are accepted (the cone of half-angle $\arcsin\mathrm{NA}$). Bottom: a short input pulse (dashed) and the pulse that arrives after length $L$, built from rays spread evenly over the launch cone you choose; accepted rays are delayed by $(n_1L/c)(1/\cos\alpha-1)$. The readout compares the measured spread with the formula.`,
       deps: ['waves-4.9', 'waves-3.4'],
-      refs: ['Hecht ch. 5'],
+      refs: ['MIT6.974 optical-fibres notes, complete step-index/acceptance discussion pp.146–149, Eq.(2.383); meridional path-length delay derived here'],
       tags: ['optical fibre', 'modal dispersion'],
-      credit: 'Colladon and Babinet, 1841–42 (light guiding); Kao and Hockham, 1966',
-      verify: true,
+      credit: 'Step-index fibre acceptance: MIT6.974, Eq.(2.383)',
       scope: String.raw`Ray model of a step-index multimode fibre: core diameter much larger than the wavelength; meridional rays only (skew rays travel further and are also guided); material dispersion, bends and attenuation are ignored. The numbers $n_1=1.48$, $n_2\approx1.46$ are typical, not those of a particular product.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Optical_fiber' },
       viz(v) {
@@ -334,8 +334,8 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
         const T = v.stage({ x: [-5, 80], y: [0, 1.15], axes: 'box', gutter: true, xlabel: 'time after the axial ray (ns)', yticks: [], height: 240, full: true, title: 'a short pulse after length L' });
         let st = null;
         v.render(() => {
-          const n1 = n1S.value, n2 = Math.min(n2S.value, n1 - 0.002), L = LS.value, sg = wS.value / 2.355;
-          const NA = Math.sqrt(n1 * n1 - n2 * n2), accept = Math.asin(Math.min(1, NA)), amax = Math.acos(n2 / n1);
+          const n1 = n1S.value, n2 = n2S.value, L = LS.value, sg = wS.value / 2.355;
+          const guiding = n1 > n2, NA = Math.sqrt(Math.max(0, n1 * n1 - n2 * n2)), accept = Math.asin(Math.min(1, NA)), amax = guiding ? Math.acos(n2 / n1) : 0;
           F.rect(0, 1, 16, 2.2, { fill: 'orange', fillAlpha: 0.12, stroke: false }); F.rect(0, -2.2, 16, -1, { fill: 'orange', fillAlpha: 0.12, stroke: false });
           F.rect(0, -1, 16, 1, { fill: 'blue', fillAlpha: 0.1, stroke: false });
           F.line(0, 1, 16, 1, { color: 'ink', width: 1.2 }); F.line(0, -1, 16, -1, { color: 'ink', width: 1.2 });
@@ -344,7 +344,7 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           const rayPts = (th0deg, y0) => {
             const s0 = Math.sin(rad(th0deg)) / n1;
             if (Math.abs(s0) >= 1) return { pts: [[0, y0]], bound: false };
-            const al = Math.asin(s0), slope = Math.abs(Math.tan(al)) * 0.55, bound = Math.abs(al) <= amax + 1e-12;
+            const al = Math.asin(s0), slope = Math.abs(Math.tan(al)) * 0.55, bound = guiding && Math.abs(al) <= amax + 1e-12;
             const pts = [[0, y0]]; let x = 0, y = y0, dir = Math.sign(al) || 1; // stretched vertical scale
             let leak = null;
             while (x < 16) {
@@ -356,8 +356,9 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
             }
             return { pts, bound, leak };
           };
-          for (let a = -accept * 1.5; a <= accept * 1.5 + 1e-9; a += (accept * 3) / 10) {
-            const R = rayPts(deg(a) , 0); F.path(R.pts, { color: R.bound ? 'green' : 'red', width: 0.9, alpha: 0.28 });
+          for (let j = 0; j <= 10; j++) {
+            const a = (-1 + 2 * j / 10) * Math.min(accept * 1.5, rad(89.9));
+            const R = rayPts(deg(a), 0); F.path(R.pts, { color: R.bound ? 'green' : 'red', width: 0.9, alpha: 0.28 });
           }
           const Rm = rayPts(aS.value, 0);
           F.path(Rm.pts, { color: Rm.bound ? 'green' : 'red', width: 2.6 });
@@ -367,9 +368,9 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           const delays = [];
           for (let i = 0; i < N; i++) {
             const th0 = rad(cone) * (i + 0.5) / N, s = Math.sin(th0) / n1, al = Math.asin(s);
-            if (al <= amax) delays.push(t0 * (1 / Math.cos(al) - 1));
+            if (guiding && al <= amax) delays.push(t0 * (1 / Math.cos(al) - 1));
           }
-          const tmax = (L * 1000 * n1 / C0) * 1e9 * (n1 / n2 - 1);
+          const tmax = guiding ? (L * 1000 * n1 / C0) * 1e9 * (n1 / n2 - 1) : 0;
           const xr = Math.max(8 * sg + 4, 1.35 * tmax + 5 * sg + 2);
           T.setView([-3 * sg - 0.04 * xr, xr], [0, 1.15]);
           const g = (x, m) => Math.exp(-0.5 * ((x - m) / sg) ** 2);
@@ -378,10 +379,10 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           T.fn((x) => g(x, 0), { color: 'muted', width: 1.4, dash: [5, 4], n: 400 });
           T.fn((x) => out(x) / peak * 0.95, { color: 'accent', width: 2.4, n: 400, fill: true });
           const dm = delays.length ? Math.max(...delays) : 0;
-          st = { NA, accept: deg(accept), amax: deg(amax), tmax, dm, acc: delays.length / N, Rm, cone };
+          st = { guiding, n1, n2, NA, accept: deg(accept), amax: deg(amax), tmax, dm, acc: delays.length / N, Rm, cone };
         });
         v.legend([['green', 'trapped ray'], ['red', 'leaking ray'], ['muted', 'input pulse', { dash: true }], ['accent', 'output pulse']]);
-        v.readout(() => st ? `$\\mathrm{NA}=\\sqrt{n_1^2-n_2^2}=${v.fix(st.NA, 4)}$, acceptance half-angle $\\arcsin\\mathrm{NA}=${v.fix(st.accept, 2)}^\\circ$ (inside the fibre: $\\alpha_{\\max}=${v.fix(st.amax, 2)}^\\circ$) · the ray you launched is ${st.Rm.bound ? 'trapped' : 'not trapped'} · ${v.fix(st.acc * 100, 0)}% of the rays in the cone are accepted\nformula $\\Delta t=(Ln_1/c)(n_1/n_2-1)=${v.fix(st.tmax, 2)}$ ns · largest delay among the accepted rays in the simulation: ${v.fix(st.dm, 2)} ns${st.cone < st.accept ? ' (cone narrower than the acceptance: smaller than the formula)' : ''}` : '');
+        v.readout(() => st ? !st.guiding ? `Actual indices $n_1=${v.fix(st.n1,3)}$, $n_2=${v.fix(st.n2,3)}$: no total-internal-reflection guiding when $n_1\\le n_2$.` : `$\\mathrm{NA}=\\sqrt{n_1^2-n_2^2}=${v.fix(st.NA, 4)}$, acceptance half-angle $\\arcsin(\\min(1,\\mathrm{NA}))=${v.fix(st.accept, 2)}^\\circ$ (inside the fibre: $\\alpha_{\\max}=${v.fix(st.amax, 2)}^\\circ$) · the ray you launched is ${st.Rm.bound ? 'trapped' : 'not trapped'} · ${v.fix(st.acc * 100, 0)}% of the sampled rays in the cone are accepted\nformula $\\Delta t=(Ln_1/c)(n_1/n_2-1)=${v.fix(st.tmax, 2)}$ ns · largest delay among the accepted rays in the simulation: ${v.fix(st.dm, 2)} ns${st.cone < st.accept ? ' (cone narrower than the acceptance: smaller than the formula)' : ''}` : '');
       },
     },
     // ------------------------------------------------------------------ 4.14
@@ -389,14 +390,13 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
       num: '4.14',
       kind: 'Phenomenon',
       name: 'Phase flip on reflection',
-      statement: String.raw`At normal incidence on a boundary between media of index $n_1$ and $n_2$ the reflected electric amplitude is $r=\dfrac{n_1-n_2}{n_1+n_2}$ times the incident amplitude. If $n_2>n_1$ (reflection off the *denser* medium, “external” reflection) $r<0$: the reflected wave is **inverted**, a phase shift of $\pi$ (half a wavelength of path). If $n_2<n_1$ (reflection off the rarer medium, “internal”) $r>0$ and there is no phase change. The transmitted wave is never inverted ($t=2n_1/(n_1+n_2)>0$). For s polarization the shift stays $\pi$ at all angles of external reflection; for internal reflection it is $0$ below the critical angle and then grows toward $-\pi$ at grazing incidence.`,
-      idea: String.raw`Continuity of the tangential electric field at the boundary requires $1+r=t$; continuity of the tangential $H$ field, $n_1(1-r)=n_2t$, fixes $r=(n_1-n_2)/(n_1+n_2)$ (the normal-incidence case of 4.7). The same bookkeeping holds for a string joined to a heavier one (1.9), which inverts a reflected pulse. This sign decides whether interference at a thin film is constructive or destructive (6.5): it is why a soap film is black where it is thinnest, and why the centre of Newton's rings is dark (6.7); Young inferred it from the rings, and Stokes (1849) established it from time-reversal (4.11). Beyond the critical angle the coefficient is a pure phase that varies with angle (the Goos–Hänchen shift is its derivative).`,
-      caption: String.raw`A single pulse of electric field meets the boundary at $x=0$ (right side shaded). Choose air to glass or glass to air, and the index of glass: for external reflection the reflected pulse comes back upside down, for internal reflection upright; its height is $|r|=|n_1-n_2|/(n_1+n_2)$ and the transmitted pulse is shorter in space but never inverted. The right graph shows the phase of $r_s$ against angle (the chosen case bold): $180^\circ$ for external reflection, $0^\circ$ up to the critical angle and then falling for internal reflection.`,
+      statement: String.raw`At normal incidence on a boundary between media of index $n_1$ and $n_2$ the reflected electric amplitude is $r=\dfrac{n_1-n_2}{n_1+n_2}$ times the incident amplitude. If $n_2>n_1$ (reflection off the *denser* medium, “external” reflection) $r<0$: the reflected wave is **inverted**, a phase shift of $\pi$ (half a wavelength of path). If $n_2<n_1$ (reflection off the rarer medium, “internal”) $r>0$ and there is no phase change. The transmitted wave is never inverted ($t=2n_1/(n_1+n_2)>0$). For s polarization the shift stays $\pi$ at all angles of external reflection; for internal reflection it is $0$ below the critical angle and then decreases toward $-\pi$ at grazing incidence.`,
+      idea: String.raw`Continuity of the tangential electric field at the boundary requires $1+r=t$; continuity of the tangential $H$ field, $n_1(1-r)=n_2t$, fixes $r=(n_1-n_2)/(n_1+n_2)$ (the normal-incidence case of 4.7). The same bookkeeping holds for a string joined to a heavier one (1.9), which inverts a reflected pulse. This sign decides whether interference at a thin film is constructive or destructive (6.5): it is why a soap film is black where it is thinnest, and why the centre of Newton's rings is dark (6.7); it also follows from the real-coefficient reversal relations (4.11). Beyond the critical angle the coefficient is a pure phase that varies with angle (a finite beam can then acquire a lateral Goos–Hänchen shift).`,
+      caption: String.raw`A single pulse of electric field meets the boundary at $x=0$ (right side shaded). Choose air to glass or glass to air, and the index of glass: for external reflection the reflected pulse comes back upside down, for internal reflection upright; its height is $|r|=|n_1-n_2|/(n_1+n_2)$ and the transmitted pulse changes its spatial width with the speed but is never inverted. The animation clock is scaled to the incident-medium travel time. The right graph shows the phase of $r_s$ against angle (the chosen case bold): $180^\circ$ for external reflection, $0^\circ$ up to the critical angle and then falling for internal reflection.`,
       deps: ['waves-4.7'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §§33–3–33–4 and33–6, electric-amplitude reflection sign and TIR continuation'],
       tags: ['phase shift', 'reflection'],
-      credit: 'Young, c. 1801–02; Stokes, 1849',
-      verify: true,
+      credit: 'Reflection-amplitude phase: Feynman Lectures II, §§33–4 and33–6',
       scope: String.raw`Lossless dielectrics. For metals the phase shift is not $\pi$ but depends on the complex index. The sign of $r_p$ depends on the choice of axes in the textbook, which is why the graph shows $r_s$, whose sign is unambiguous.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Phase_transition_of_light_on_reflection' },
       viz(v) {
@@ -410,7 +410,7 @@ the delay of the steepest guided ray relative to the axial ray; this limits the 
           const ext = dir.value === 'ext', n = nS.value, n1 = ext ? 1 : n, n2 = ext ? n : 1;
           const v1 = 1 / n1, v2 = 1 / n2, r = (n1 - n2) / (n1 + n2), tt = 2 * n1 / (n1 + n2);
           const g = (u) => Math.exp(-((u / 0.9) ** 2));
-          const tm = (t % 16);
+          const tm = (t % 16) / v1; // animation clock measured in incident-medium travel units
           E.rect(0, -1.5, 8, 1.5, { fill: 'blue', fillAlpha: 0.08 + 0.05 * (n2 - 1), stroke: false });
           E.vline(0, { color: 'ink', width: 1.3 });
           E.hline(0, { color: 'faint', width: 1 });
@@ -440,7 +440,7 @@ $$I=I_0\,10^{-\varepsilon c\ell}=I_0e^{-\alpha\ell},\qquad A\equiv\log_{10}\frac
 where $\varepsilon$ is the molar absorptivity (L mol$^{-1}$ cm$^{-1}$) and $A$ the absorbance. Each thin slice absorbs the same *fraction* of the light that reaches it, so $-\log I$ is linear in both $\ell$ and $c$. The law fails at high concentration (interactions between absorbers), with scattering, with broadband light, and with stray light in the instrument, which makes the apparent absorbance level off.`,
       idea: String.raw`In a thin slice $dx$ the irradiance (4.2) lost is proportional to the irradiance present, to the number of absorbers per volume and to their absorption cross-section: $dI=-\alpha I\,dx$, which integrates to the exponential. Bouguer (1729) found the exponential dependence on thickness, Lambert (1760) stated it as a law of thickness, and Beer (1852) showed the dependence on concentration. A spectrophotometer reads $A$ rather than $I$ because $A$ is proportional to $c$, so a calibration line gives concentrations; stray light $s$ adds a floor to the detected signal, giving $A_{\rm app}=-\log_{10}[(T+s)/(1+s)]$, which saturates at $-\log_{10}s$ however dark the sample.`,
       caption: String.raw`A cuvette (top) of an illustrative dye with $\varepsilon=10\,000$ L mol$^{-1}$ cm$^{-1}$: the dots are absorbing molecules (their number follows $c$) and the gold curve is the fraction of the light remaining, $10^{-\varepsilon cx}$. Lower graph: absorbance against concentration for the path length you set: a straight line (green). The gold dots are what an instrument with stray light $s$ would report; with $s=0$ they sit on the line, and with $s>0$ they bend over at high absorbance. Double the path length and the line steepens two-fold.`,
-      deps: ['waves-4.2', 'em-11.13'],
+      deps: ['waves-4.2', 'em-11.13', 'ode-1.5'],
       refs: ['Hecht ch. 3'],
       tags: ['absorption', 'spectroscopy'],
       credit: 'Bouguer, 1729; Lambert, 1760; Beer, 1852',

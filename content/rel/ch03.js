@@ -155,7 +155,7 @@ $$u^\mu=\gamma\,(c,\ \mathbf v),\qquad \eta(u,u)=c^2.$$
 It is a four-vector (the quotient of the displacement four-vector $dx^\mu$ by the invariant $d\tau$), always future timelike with Minkowski length $c$: it is the unit tangent to the worldline.`,
       idea: String.raw`$d\tau=dt/\gamma$ (rel-1.9), so $dx^\mu/d\tau=\gamma\,dx^\mu/dt$ gives the components above. Its length is fixed because $d\tau^2=\eta(dx,dx)/c^2$ (rel-3.1) is exactly the statement $\eta(u,u)=c^2$. Geometrically, in a boost the tip of $u$ slides along the hyperboloid $\eta(u,u)=c^2$, which is the set of all possible velocities; the ordinary speed $v$ is only a coordinate on it, and is bounded by $c$ while $u$ itself is not.`,
       caption: String.raw`The particle moves with $v(t)=V\sin\omega t$ (sliders for $V$ and $\omega$). **Slide the time** to move along the worldline (gold dots mark equal steps of proper time $\Delta\tau=0.5$, crowding together as the speed rises). The blue arrow is $u$; it keeps Minkowski length $1$ although it looks longer when the worldline tilts. Right: the unit hyperbola of all four-velocities, with the whole trip traced on it.`,
-      deps: ['rel-3.1', 'rel-1.9'],
+      deps: ['rel-3.1', 'rel-1.9', 'pma-9.15'],
       refs: ['Schutz §2.3', 'Carroll ch. 1'],
       tags: ['four-velocity', 'worldline', 'proper time'],
       viz(v) {

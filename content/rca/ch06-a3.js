@@ -392,7 +392,7 @@ and $\|\Phi\|=\|g\|_q$. Thus $L^q(\mu)$ is isometrically isomorphic to the dual 
       num: '6.18',
       kind: 'Definition',
       name: 'Regular complex Borel measures; the space M(X)',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 6.18, pp. 129–130'],
       statement: String.raw`Let $X$ be a locally compact Hausdorff space. A complex Borel measure $\mu$ on $X$ is **regular** if the positive measure $|\mu|$ is regular in the sense of 2.15. The regular complex Borel measures on $X$ form a vector space $M(X)$, normed by $\|\mu\|=|\mu|(X)$. Each $\mu\in M(X)$ defines a linear functional on $C_0(X)$,
 $$\Phi_\mu(f)=\int_X f\,d\mu=\int_X fh\,d|\mu|\qquad(d\mu=h\,d|\mu|\text{ as in 6.12}),$$
 which is bounded, with $|\Phi_\mu(f)|\le\|f\|_\infty|\mu|(X)$.`,

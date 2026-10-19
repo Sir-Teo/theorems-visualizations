@@ -58,15 +58,13 @@ export default {
       num: '4.11',
       kind: 'Theorem',
       name: 'Orthogonal polynomials and the three-term recurrence',
-      statement: String.raw`Let $w\ge0$ be a weight on $[-1,1]$ with positive total mass and $\langle f,g\rangle_w=\int fgw$. Gram–Schmidt applied to $1,x,x^2,\dots$ produces monic polynomials $\pi_0,\pi_1,\dots$, $\deg\pi_k=k$, orthogonal to all polynomials of lower degree. They satisfy a **three-term recurrence**
+      statement: String.raw`Let $w\ge0$ be an integrable weight on $[-1,1]$ with $0<\int_{-1}^1w<\infty$ and $\langle f,g\rangle_w=\int fgw$. Gram–Schmidt applied to $1,x,x^2,\dots$ produces monic polynomials $\pi_0,\pi_1,\dots$, $\deg\pi_k=k$, orthogonal to all polynomials of lower degree. They satisfy a **three-term recurrence**
 $$\pi_{k+1}(x)=(x-\alpha_k)\pi_k(x)-\beta_k\pi_{k-1}(x),\qquad\alpha_k=\tfrac{\langle x\pi_k,\pi_k\rangle}{\langle\pi_k,\pi_k\rangle},\ \beta_k=\tfrac{\langle\pi_k,\pi_k\rangle}{\langle\pi_{k-1},\pi_{k-1}\rangle},$$
-equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the orthonormal basis. The zeros of $\pi_n$ are real, simple, lie inside the interval and interlace those of $\pi_{n-1}$ (and are the eigenvalues of the $n\times n$ Jacobi matrix). Conversely (Favard) any such recurrence with $\beta_k>0$ comes from a positive measure.`,
+Here $\pi_{-1}=0$, $\pi_0=1$, $\beta_0=0$, and the quotient defining $\beta_k$ is for $k\ge1$; equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the orthonormal basis. The zeros of $\pi_n$ are real, simple, lie inside the interval and interlace those of $\pi_{n-1}$ (and are the eigenvalues of the $n\times n$ Jacobi matrix).`,
       idea: String.raw`Since $\langle x\pi_k,\pi_j\rangle=\langle\pi_k,x\pi_j\rangle$ and $x\pi_j$ has degree $j+1<k$ whenever $j<k-1$, the projection of $x\pi_k$ onto $\pi_j$ vanishes for $j<k-1$: only three terms survive. Real simple zeros: a sign-change argument — if $\pi_n$ had fewer than $n$ sign changes, a polynomial of lower degree would not be orthogonal to it. Interlacing follows from the recurrence (Sturm-type argument). The tridiagonal matrix of $x$ is the same structure that appears in Lanczos’s method for symmetric eigenproblems.`,
       caption: String.raw`Choose a weight (Legendre, Chebyshev, Jacobi with sliders $\alpha,\beta$, or $|x|$). The page runs Gram–Schmidt on the monomials in the weighted inner product (discretized by Gauss–Chebyshev quadrature) and shows the orthonormal polynomials, the matrix of $\langle x\pi_k,\pi_j\rangle$ (only the three central diagonals are nonzero — the readout lists the largest off-diagonal entry) and, below, the zeros of $\pi_n$ (gold) and $\pi_{n-1}$ (blue), which interlace.`,
       deps: ['num-4.10'],
-      refs: ['Süli–Mayers ch. 9', 'Trefethen ATAP ch. 17'],
-      credit: 'Chebyshev, 1850s; Favard, 1935 (converse)',
-      verify: true,
+      refs: ['Trefethen ATAP ch.17 recurrence derivation (17.7–9); ch.18 zero argument; recurrence/interlacing induction given here'],
       tags: ['orthogonal polynomials', 'recurrence'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Orthogonal_polynomials' },
       viz(v) {
@@ -171,14 +169,12 @@ equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the ortho
       num: '4.13',
       kind: 'Method',
       name: 'Carathéodory–Fejér approximation',
-      statement: String.raw`Let $f=\sum a_kT_k$ and form the Hankel matrix $H_n=(a_{n+1+i+j})_{i,j\ge0}$ with largest singular value $\sigma_1$ (for the real symmetric $H_n$, the dominant eigenvalue $\lambda$ in modulus, with eigenvector $u$). The **CF approximant** of degree $n$ is the polynomial obtained from $f$ by subtracting the curve $e_{CF}(\theta)=\lambda\cos\big((n+1)\theta+2\arg u(e^{i\theta})\big)$, $u(z)=\sum u_jz^j$, and keeping the coefficients of $T_0,\dots,T_n$. For functions whose Chebyshev coefficients decay quickly its error is within a hair of $|\lambda|=\sigma_1$ and of the best error $E_n^*$, and it is computed with one small eigenvalue problem, no iteration.`,
+      statement: String.raw`Let $f$ be a real polynomial (or a Lipschitz function with an absolutely convergent Chebyshev expansion), $f=\sum a_kT_k$ and form the Hankel matrix $H_n=(a_{n+1+i+j})_{i,j\ge0}$ with largest singular value $\sigma_1$ (for the real symmetric $H_n$, the dominant eigenvalue $\lambda$ in modulus, with eigenvector $u$). The **CF approximant** of degree $n$ is the polynomial obtained from $f$ by subtracting the curve $e_{CF}(\theta)=\lambda\cos\big((n+1)\theta+2\arg u(e^{i\theta})\big)$, $u(z)=\sum u_jz^j$, and keeping the coefficients of $T_0,\dots,T_n$. For functions whose Chebyshev coefficients decay quickly its error can be very close to $|\lambda|=\sigma_1$ and to the best error $E_n^*$, and it is computed with one small eigenvalue problem, no iteration.`,
       idea: String.raw`Nehari / AAK theory gives the *exact* best approximation of the anti-analytic tail of $f$ (on the unit circle) by analytic functions: its error has constant modulus $\sigma_1$ and winding number set by $u$. The Chebyshev problem is the real part of that circle problem, with the neglected coefficients (those beyond the Hankel truncation and the small mismatch between the two problems) controlling the gap. Hence a near-equioscillating error of size $\approx\sigma_1$, essentially the Remez curve, with no iteration (cf. Remez, 4.8; near-best interpolants, 4.9).`,
-      caption: String.raw`Left: error curves of the CF approximant (accent) and of the true best approximation (green), with the level $\pm\sigma_1$ (red): the two are almost indistinguishable and CF equioscillates nearly perfectly. Right: $\sigma_1$, the CF error and the best error against $n$ — three curves lying on top of one another on the log scale (the $|x|$ example, with slowly decaying coefficients, shows where the approximation degrades).`,
+      caption: String.raw`Left: error curves of the CF approximant (accent) and of the numerical Remez approximation (green), with the level $\pm\sigma_1$ (red): the two are almost indistinguishable and CF equioscillates nearly perfectly. Right: $\sigma_1$, the CF error and the best error against $n$ — three curves lying on top of one another on the log scale (the $|x|$ example, with slowly decaying coefficients, shows where the approximation degrades).`,
       deps: ['num-4.9'],
-      refs: ['Trefethen ATAP ch. 20'],
-      credit: 'Carathéodory & Fejér, 1911; as an approximation method: Trefethen & Gutknecht, early 1980s',
-      verify: true,
-      scope: String.raw`The construction here is the polynomial case; the $\sigma_1\approx E_n^*$ agreement relies on rapidly decaying $a_k$ (it is excellent for $e^x$, good for the Runge function, only approximate for $|x|$).`,
+      refs: ['Trefethen ATAP ch.20, construction and Theorems20.1–20.2; full author manuscript chap20.m'],
+      scope: String.raw`The displayed calculation truncates the Hankel matrix to $50$ rows and samples the error curve at $513$ angles, then truncates its Chebyshev expansion; it estimates errors on a grid. The construction here is the polynomial case; the $\sigma_1\approx E_n^*$ agreement relies on rapidly decaying $a_k$ (it is excellent for $e^x$, good for the Runge function, only approximate for $|x|$).`,
       tags: ['best approximation', 'hankel', 'svd'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Carath%C3%A9odory%E2%80%93Fej%C3%A9r_problem' },
       viz(v) {
@@ -214,23 +210,21 @@ equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the ortho
       num: '4.14',
       kind: 'Phenomenon',
       name: 'Rational functions beat polynomials for |x| (Newman)',
-      statement: String.raw`The best degree-$n$ polynomial approximation of $|x|$ on $[-1,1]$ has error $E_n(|x|)\sim\beta/n$ with $\beta=0.2801694990\ldots$ (Bernstein’s constant, Varga–Carpenter): painfully slow. But rational functions of type $(n,n)$ achieve $\|\,|x|-r\|\le 3e^{-\sqrt n}$ (Newman, 1964), with the explicit $r(x)=x\frac{p(x)-p(-x)}{p(x)+p(-x)}$, $p(x)=\prod_{k=0}^{n-1}(x+e^{-k/\sqrt n})$, and the best rational error is $\approx8e^{-\pi\sqrt n}$ (Stahl). The singularity at $0$ is resolved by poles piling up along the imaginary axis.`,
-      idea: String.raw`A polynomial cannot bend sharply at $0$ without large degree, which is why smoothness controls polynomial convergence (4.3). A rational function can place poles and zeros near $0$, geometrically clustered toward the singular point with ratio $e^{-1/\sqrt n}$: Newman’s product is a single clever choice of them, and his estimate of $\prod$ ratios gives the root-exponential rate. This is the same “exponential clustering near the singularity” that underlies the approximation of $x^\alpha$ and of $\sqrt{x}$.`,
-      caption: String.raw`Slide $n$. Left: $|x|$ near the origin with the best polynomial of degree $n$ (Remez, orange) and Newman’s rational function of the same degree (accent). Right: both errors against $n$ on a log scale; polynomial errors follow $0.28/n$ (dashed) while the rational error falls like $e^{-\sqrt n}$, far below Newman’s bound $3e^{-\sqrt n}$ and near Stahl’s asymptotic $8e^{-\pi\sqrt n}$ for the best rational.`,
+      statement: String.raw`The best degree-$n$ polynomial approximation of $|x|$ on $[-1,1]$ has error $E_n(|x|)\sim\beta/n$ with $\beta=0.2801694990\ldots$ (Bernstein’s constant, Varga–Carpenter): painfully slow. But rational functions of type $(n,n)$ achieve $\|\,|x|-r\|\le 3e^{-\sqrt n}$ (Newman’s bound). One illustrative Newman-type construction for even $n$ is $r(x)=x\frac{p(x)-p(-x)}{p(x)+p(-x)}$, $p(x)=\prod_{k=0}^{n-1}(x+e^{-k/\sqrt n})$. Separately, the best rational error is $\approx8e^{-\pi\sqrt n}$ (Stahl). The singularity at $0$ is resolved by poles piling up along the imaginary axis.`,
+      idea: String.raw`A polynomial cannot bend sharply at $0$ without large degree, which is why smoothness controls polynomial convergence (4.3). A rational function can place poles and zeros near $0$, geometrically clustered toward the singular point with ratio $e^{-1/\sqrt n}$: The product shown is one explicit construction with geometric scales. The quoted existence bound and sharp best-error asymptotic are separate theorems; the figure does not prove them. This is the same “exponential clustering near the singularity” that underlies the approximation of $x^\alpha$ and of $\sqrt{x}$.`,
+      caption: String.raw`Slide $n$. Left: $|x|$ near the origin with the best polynomial of degree $n$ (Remez, orange) and Newman’s rational function of the same degree (accent). Right: both errors against $n$ on a log scale; polynomial errors follow $0.28/n$ (dashed) while the rational error falls like $e^{-\sqrt n}$, far below Newman’s bound $3e^{-\sqrt n}$ The green curve is Stahl’s asymptotic for the optimal rational error; it is not a predicted error for this explicit product.`,
       deps: ['num-4.7'],
-      refs: ['Trefethen ATAP ch. 23', 'Trefethen ATAP ch. 25'],
-      credit: 'Bernstein, 1913 (polynomial rate); Newman, 1964; Stahl, 1993 (sharp rational rate)',
-      verify: true,
+      refs: ['Trefethen ATAP Theorem25.1 and (25.3), full author manuscript chap25.m; explicit even-degree product illustrated here'],
       tags: ['rational approximation', 'singularity'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bernstein%27s_constant' },
       viz(v) {
-        const nn = v.slider('degree $n$', 2, 40, 12, { int: true });
+        const nn = v.slider('even degree $n$', 2, 40, 12, { int: true, step: 2 });
         const A = v.stage({ x: [-0.4, 0.4], y: [-0.02, 0.45], axes: 'box', gutter: true, xlabel: 'x', height: 340, title: '$|x|$ near the origin' });
         const B = v.stage({ x: [2, 40], y: [1e-5, 1], ylog: true, axes: 'box', gutter: true, xlabel: 'degree n', height: 340, title: 'sup error on $[-1,1]$' });
         const NS = []; for (let n = 2; n <= 40; n += 2) NS.push(n);
         const polyE = NS.map((n) => bestErr(Math.abs, n, { iters: 14, M: 2000 }));
         const ratE = (n) => { const r = newmanAbs(n); let e = 0; for (let i = 0; i <= 3000; i++) { const x = (i / 3000) ** 2; e = Math.max(e, Math.abs(x - r(x))); } return e; };
-        const ratAll = []; for (let n = 2; n <= 40; n++) ratAll.push([n, ratE(n)]);
+        const ratAll = []; for (let n = 2; n <= 40; n += 2) ratAll.push([n, ratE(n)]);
         let info = {};
         v.legend([['ink', '$|x|$'], ['orange', 'best polynomial'], ['accent', 'Newman rational'], ['muted', '$0.28/n$', { dash: true }], ['red', '$3e^{-\\sqrt n}$ (Newman bound)', { dash: true }], ['green', '$8e^{-\\pi\\sqrt n}$ (Stahl)', { dash: true }]]);
         v.render(() => {
@@ -242,7 +236,7 @@ equivalently multiplication by $x$ is a tridiagonal (Jacobi) matrix in the ortho
           B.path(ratAll.map((q) => [q[0], 3 * Math.exp(-Math.sqrt(q[0]))]), { color: 'red', dash: true });
           B.path(ratAll.map((q) => [q[0], 8 * Math.exp(-Math.PI * Math.sqrt(q[0]))]), { color: 'green', dash: true });
           B.vline(n, { color: 'gold', alpha: 0.6 });
-          info = { n, pe, ep: polyE[NS.indexOf(pe)], er: ratAll[n - 2][1] };
+          info = { n, pe, ep: polyE[NS.indexOf(pe)], er: ratAll[(n - 2) / 2][1] };
         });
         v.readout(() => `degree ${info.n} (polynomial: ${info.pe}): polynomial error $${v.sci(info.ep, 3)}$ ($n\\,E_n=${v.fix(info.pe * info.ep, 4)}$, tending to $\\beta=0.2802$), Newman rational error $${v.sci(info.er, 3)}$ — smaller by a factor $${v.fix(info.ep / info.er, 1)}$`);
       },

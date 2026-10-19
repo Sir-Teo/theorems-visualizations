@@ -25,13 +25,12 @@ export default {
       num: '7.13',
       kind: 'Phenomenon',
       name: 'Spin magnetic moment and g ≈ 2',
-      statement: String.raw`A charge $-e$ moving in an orbit has a magnetic moment proportional to its orbital angular momentum, $\boldsymbol\mu_L=-\tfrac{e}{2m_e}\mathbf L=-g_L\mu_B\mathbf L/\hbar$ with $g_L=1$ ($\mu_B=e\hbar/2m_e$ is the Bohr magneton). The electron's *spin* has a moment $\boldsymbol\mu_S=-g_s\mu_B\mathbf S/\hbar$ with $g_s\approx2$, **twice** what the classical orbital relation would give; the Dirac equation gives exactly $2$, and radiative corrections raise it to $g_s=2.0023193\ldots$ (CODATA 2018 and 2022: $2.002\,319\,304\,36$). In a field $\mathbf B$ the moments precess at the angular frequencies $g\,\mu_BB/\hbar$: the spin turns about twice as fast as an orbit.`,
-      idea: String.raw`In a uniform field $H=-\boldsymbol\mu\cdot\mathbf B$, so $H=g\omega_L\,\hat{\mathbf b}\cdot\mathbf J$ with $\omega_L=\mu_BB/\hbar$, and by qm-7.12 the expectation of the angular momentum precesses at $g\omega_L$. The classical relation $\mu=\frac q{2m}L$ holds for orbital motion, but for spin there is no classical orbit to compare with: the anomalous ratio $g_s\simeq2$ was seen in the Zeeman effect and in the Stern–Gerlach experiment (qm-1.14), and follows from the relativistic wave equation of Dirac; the small excess comes from the electron's coupling to the quantum electromagnetic field (it was first computed by Schwinger as $\alpha/2\pi$).`,
-      caption: String.raw`**Choose the field $B$** (log scale, in tesla) and watch an orbital moment ($l=1$, left, blue) and a spin ($s=\tfrac12$, right, orange) start along $x$ and precess about $B$. Both are computed by evolving the real state vectors with the matrices of qm-7.12; the right panel plots the unwrapped precession angle of each. The slope ratio is the readout’s $g$. **Toggle** the QED correction to switch between the Dirac value $2$ and the measured $2.0023$. The frequencies are real numbers for this field: about $14.0$ GHz per tesla for the orbit, $28.0$ GHz per tesla for the spin.`,
+      statement: String.raw`A charge $-e$ moving in an orbit has a magnetic moment proportional to its orbital angular momentum, $\boldsymbol\mu_L=-\tfrac{e}{2m_e}\mathbf L=-g_L\mu_B\mathbf L/\hbar$ with $g_L=1$ ($\mu_B=e\hbar/2m_e$ is the Bohr magneton). The electron's *spin* has a moment $\boldsymbol\mu_S=-g_s\mu_B\mathbf S/\hbar$ with $g_s\approx2$, **twice** what the classical orbital relation would give; the free-electron Dirac equation gives $2$ before radiative corrections, and radiative corrections raise it to $g_s=2.0023193\ldots$ (CODATA2022 magnitude: $2.002\,319\,304\,360\,92(36)$). In a field $\mathbf B$ the moments precess at the angular frequencies $g\,\mu_BB/\hbar$: the spin turns about twice as fast as an orbit.`,
+      idea: String.raw`In a uniform field $H=-\boldsymbol\mu\cdot\mathbf B$, so $H=g\omega_L\,\hat{\mathbf b}\cdot\mathbf J$ with $\omega_L=\mu_BB/\hbar$, and by qm-7.12 the expectation of the angular momentum precesses at $g\omega_L$. The classical relation $\mu=\frac q{2m}L$ holds for orbital motion, but for spin there is no classical orbit to compare with: the ratio $g_s\simeq2$ follows from the relativistic Dirac equation; the small excess comes from the electron's coupling to the quantum electromagnetic field (the leading anomalous moment is $a_e=(g_s-2)/2=\alpha/(2\pi)+\cdots$).`,
+      caption: String.raw`**Choose the field $B$** (log scale, in tesla) and watch an orbital angular momentum ($l=1$, left, blue) and a spin angular momentum ($s=\tfrac12$, right, orange) start along $x$ and precess about $B$. Both are computed by evolving the real state vectors with the matrices of qm-7.12; the right panel plots the unwrapped precession angle of each. The slope ratio is the readout’s $g$. **Toggle** the QED correction to switch between the Dirac value $2$ and the measured $2.0023$. The frequencies are real numbers for this field: about $14.0$ GHz per tesla for the orbit, $28.0$ GHz per tesla for the spin.`,
       deps: ['qm-7.7', 'em-7.17'],
-      refs: ['Griffiths §4.4'],
-      credit: 'Dirac, 1928 (g = 2); Schwinger, 1948 (first correction)',
-      verify: true,
+      refs: ['Fitzpatrick §10.6 Eqs10.57–10.77; NIST CODATA2022 full constants table'],
+      credit: 'Dirac magnetic moment and radiative anomaly',
       tags: ['spin', 'magnetic moment', 'g-factor'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gyromagnetic_ratio#Electron_g-factor' },
       viz(v) {
@@ -40,7 +39,7 @@ export default {
         const B = v.slider('field $B$ (tesla)', 0.01, 10, 1, { log: true, sig: 2 });
         const qed = v.toggle('include the QED correction ($g_s=2.0023$)', true);
         const M = v.M, S1 = spinOps(1), S2 = spinOps(0.5);
-        const GE = 2.00231930436;
+        const GE = 2.00231930436092;
         const x1 = [[1, 0], [0, 0], [0, 0]], psiL = (() => { const E = heig(S1.Sx); return E.vectors[E.values.indexOf(Math.max(...E.values))]; })();
         const x2 = (() => { const E = heig(S2.Sx); return E.vectors[E.values.indexOf(Math.max(...E.values))]; })();
         const ang = (S, psi, H, t) => { const u = mvec(propagator(H, t), psi); const ex = (O) => ip(u, mvec(O, u))[0]; return [ex(S.Sx), ex(S.Sy)]; };
@@ -132,9 +131,8 @@ with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention
       idea: String.raw`The top state $|j_1+j_2,\,j_1+j_2\rangle$ is a single product state; lowering with $J_-=J_{1-}+J_{2-}$ (qm-7.3) produces the rest of that multiplet. Each new highest state $|J,J\rangle$ is the vector in the $M=J$ subspace orthogonal to the higher multiplets already built, fixed in sign by the convention; lowering again fills in the multiplet. Both sets $\{|J,M\rangle\}$ and $\{|m_1,m_2\rangle\}$ are orthonormal bases of the same space, so the transformation is orthogonal; $J_z=J_{1z}+J_{2z}$ is diagonal in both, which is the selection $m_1+m_2=M$.`,
       caption: String.raw`**Choose the pair $(j_1,j_2)$.** The grid is the table of coefficients: rows are product states $|m_1,m_2\rangle$ (sorted by $m_1+m_2$), columns are coupled states $|J,M\rangle$; each non-zero entry is a disc of area $\propto$ modulus (colour: sign, blue positive, orange negative) labelled with its exact value. The entries are produced by *lowering from the top state with the matrices of $J_-$*; the readout compares them with Racah's closed formula and checks orthogonality. The **trial $J$** slider tests the triangle rule: outside the allowed range every coefficient is zero.`,
       deps: ['qm-7.14'],
-      refs: ['Griffiths §4.4'],
-      credit: 'Clebsch, Gordan (19th-century invariant theory); Racah, 1942 (closed formula)',
-      verify: true,
+      refs: ['NIST DLMF34.1.1,34.2.1–5,34.3.16–17; Fitzpatrick §11.3'],
+      credit: 'Clebsch–Gordan angular-momentum coupling',
       tags: ['angular momentum', 'Clebsch–Gordan'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Clebsch%E2%80%93Gordan_coefficients' },
       viz(v) {
@@ -171,7 +169,7 @@ with real **Clebsch–Gordan coefficients** (in the Condon–Shortley convention
           let tw = 0; if (okT) for (let M = -Jtr; M <= Jtr + 1e-9; M++) for (let m1 = -a; m1 <= a + 1e-9; m1++) tw += cg(a, m1, b, M - m1, Jtr, M) ** 2;
           st = { maxd, orth, nonzero, n, offblock, okT, Jtr, tw, Jmin, Jmax, a, b };
         });
-        v.readout(() => `lowering vs Racah's formula: max difference $${v.sci(Math.max(st.maxd, 1e-17), 1)}$; orthogonality $\\|C^{\\mathsf T}C-I\\|_{\\max}=${v.sci(Math.max(st.orth, 1e-17), 1)}$; ${st.nonzero} non-zero entries of ${st.n * st.n}, of which ${st.offblock} violate $m_1+m_2=M$.\n` +
+        v.readout(() => `lowering vs Racah's formula: max difference $${v.sci(st.maxd, 1)}$; orthogonality $\\|C^{\\mathsf T}C-I\\|_{\\max}=${v.sci(st.orth, 1)}$; ${st.nonzero} non-zero entries of ${st.n * st.n}, of which ${st.offblock} violate $m_1+m_2=M$.\n` +
           `Allowed $J$: $${half(st.Jmin)},\\dots,${half(st.Jmax)}$. Trial $J=${v.fix(st.Jtr, 1)}$: ${st.okT ? `allowed; $\\sum_{M,m_1}|\\langle\\cdot|J M\\rangle|^2=${v.fix(st.tw, 3)}=2J+1$.` : '**forbidden by the triangle rule** — all coefficients vanish.'}`);
       },
     },
@@ -223,17 +221,16 @@ The triplet states are symmetric and the singlet antisymmetric under exchange of
       statement: String.raw`Let $T^{(k)}_q$ ($q=-k,\dots,k$) be the components of a **spherical tensor operator** of rank $k$, i.e. transforming under rotations like $Y_k^q$ (a scalar for $k=0$, a vector for $k=1$). Then the matrix elements between angular-momentum eigenstates factor as
 $$\langle\alpha',j',m'|T^{(k)}_q|\alpha,j,m\rangle=\langle j\,m;k\,q|j'\,m'\rangle\;\frac{\langle\alpha'j'\|T^{(k)}\|\alpha j\rangle}{\sqrt{2j'+1}} :$$
 the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebsch–Gordan coefficient (geometry), while the **reduced matrix element** $\langle\alpha'j'\|T\|\alpha j\rangle$ carries the dynamics and is independent of $m,q,m'$. In particular the matrix element vanishes unless $m'=m+q$ and $|j-k|\le j'\le j+k$.`,
-      idea: String.raw`Because $T_q^{(k)}|j,m\rangle$ transforms under rotations exactly like the product $|k,q\rangle|j,m\rangle$ (qm-7.6), it lies in the space $V_k\otimes V_j$ of qm-7.14, and projecting it on $V_{j'}$ gives a multiple of the Clebsch–Gordan state $|j',m'\rangle$ of qm-7.15: the same multiple for every $m,q$, since any rotation moves all of them together. The multiple is the reduced element. All the $m$-dependence of every dipole transition rate is thus computable once and for all.`,
-      caption: String.raw`**Choose the pair of multiplets $(l\to l')$ and the operator** — the components of the unit vector $\hat{\mathbf r}$ (rank 1), of $Y_2^q$ (rank 2), or a *mixture* of rank 1 and rank 3 ($\hat r_q+0.9\,T^{(3)}_q$), which is not a single tensor. Ranks 1 and 3 have the same parity, so for $1\to2$ both contribute; the rank-2 operator connects only multiplets with $l+l'$ even. The top bars are the angular matrix elements $\langle Y_{l'}^{m'}|T_q|Y_l^m\rangle$ computed by quadrature on the sphere; the middle bars are the Clebsch–Gordan coefficients of rank 1 (or 2 for the second operator); the bottom dots are their ratio. For a true tensor operator the dots lie on one horizontal line (the reduced element); the mixture breaks it (the ratio is taken against the rank-1 coefficients), and parity-forbidden pairs give zero.`,
+      idea: String.raw`Because $T_q^{(k)}|j,m\rangle$ transforms under rotations exactly like the product $|k,q\rangle|j,m\rangle$ (qm-7.6), it lies in the space $V_k\otimes V_j$ of qm-7.14, and projecting it on $V_{j'}$ gives a multiple of the Clebsch–Gordan state $|j',m'\rangle$ of qm-7.15: the same multiple for every $m,q$, since any rotation moves all of them together. The multiple is the reduced element divided by $\sqrt{2j\prime+1}$ in the convention displayed above. All the $m$-dependence of every dipole transition rate is thus computable once and for all.`,
+      caption: String.raw`**Choose the pair of multiplets $(l\to l')$ and the operator** — the components of the unit vector $\hat{\mathbf r}$ (rank 1), of $\sqrt{4\pi/5}Y_2^q$ (rank 2), or a *mixture* of rank 1 and rank 3 ($\hat r_q+0.9\,T^{(3)}_q$), which is not a single tensor. Ranks 1 and 3 have the same parity, so for $1\to2$ both contribute; the rank-2 operator connects only multiplets with $l+l'$ even. The top bars are the angular matrix elements $\langle Y_{l'}^{m'}|T_q|Y_l^m\rangle$ computed by quadrature on the sphere; the middle bars are the Clebsch–Gordan coefficients of rank 1 (or 2 for the second operator); the bottom dots are their ratio. For a true tensor operator the dots lie on one horizontal line (the reduced element divided by $\sqrt{2l'+1}$); the mixture breaks it (the ratio is taken against the rank-1 coefficients), and parity-forbidden pairs give zero.`,
       deps: ['qm-7.15'],
-      refs: ['Griffiths §6.7', 'Sakurai ch. 3'],
-      credit: 'Eckart, 1930; Wigner, 1931 (dates to be confirmed)',
-      verify: true,
+      refs: ['MIT5.73 Lecture27,complete spherical-tensor formulation and applications'],
+      credit: 'Wigner–Eckart factorization',
       tags: ['angular momentum', 'selection rules', 'tensor operators'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Wigner%E2%80%93Eckart_theorem' },
       viz(v) {
         const pairSel = v.select('$(l\\to l\')$', [{ value: '1,2', label: '$1\\to2$' }, { value: '1,0', label: '$1\\to0$' }, { value: '2,3', label: '$2\\to3$' }, { value: '1,1', label: '$1\\to1$' }, { value: '2,2', label: '$2\\to2$' }], '1,2');
-        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $Y_2^q$' }, { value: 'mix', label: 'mixture of ranks 1 and 3' }], '1');
+        const op = v.select('operator', [{ value: '1', label: 'rank 1: $\\hat{\\mathbf r}$' }, { value: '2', label: 'rank 2: $\\sqrt{4\\pi/5}Y_2^q$' }, { value: 'mix', label: 'mixture of ranks 1 and 3' }], '1');
         const SA = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle Y_{l\'}^{m\'}|T_q|Y_l^m\\rangle$', title: 'matrix elements (by quadrature)', full: true });
         const SB = v.stage({ x: [-0.7, 16.7], y: [-1, 1], axes: 'box', gutter: true, height: 190, ylabel: '$\\langle lm;kq|l\'m\'\\rangle$', title: 'Clebsch–Gordan coefficients of rank $k$ ($k=1$ for the mixture)', full: true });
         const SC = v.stage({ x: [-0.7, 16.7], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 190, ylabel: 'ratio', xlabel: 'index of $(m,q)$', title: 'ratio matrix element / CG', full: true });
@@ -259,8 +256,8 @@ the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebs
           const xr = [-0.7, Math.max(rows.length, 3) - 0.3]; SA.setView(xr, [-1.05, 1.05]); SB.setView(xr, [-1.05, 1.05]);
           { const mm = rows.filter((r) => Math.abs(r.c) > 1e-9).map((r) => r.me / r.c), mu = mm.length ? mm.reduce((a, b) => a + b, 0) / mm.length : 0; SC.setView(xr, [Math.min(-1.5, mu - 1.2), Math.max(1.5, mu + 1.2)]); SC.hline(mu, { color: 'green', width: 1, dash: [4, 4] }); }
           rows.forEach((r, i) => {
-            SA.rect(i - 0.35, 0, i + 0.35, r.me / mx, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
-            SB.rect(i - 0.35, 0, i + 0.35, r.c / mc, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
+            SA.rect(i - 0.35, 0, i + 0.35, r.me, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
+            SB.rect(i - 0.35, 0, i + 0.35, r.c, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1 });
             if (Math.abs(r.c) > 1e-9) SC.dot(i, r.me / r.c, { color: 'green', r: 5 });
             SA.text(`${r.m},${r.q}`, i, -0.92, { size: 9.5, align: 'center', color: 'muted' });
           });
@@ -272,7 +269,7 @@ the dependence on the magnetic quantum numbers $m,q,m'$ is entirely in the Clebs
           st = { n: rows.length, mean, spread, maxMe, l, lp, k, o, imMax: Math.max(0, ...rows.map((r) => Math.abs(r.im))) };
         });
         v.readout(() => st.maxMe < 1e-6 ? `$l=${st.l}\\to l'=${st.lp}$: every matrix element vanishes (parity / triangle selection rule: $|l-k|\\le l'\\le l+k$ fails, or $l+k+l'$ is odd) — no reduced element to compare.` :
-          `${st.n} matrix elements; ratio (matrix element)/(CG) has mean $${v.fix(st.mean, 4)}$ (the reduced element) and maximal deviation $${v.sci(Math.max(st.spread, 1e-17), 1)}$ ${st.o === 'mix' ? '— **not constant**: the operator is not a spherical tensor of a single rank.' : '— constant up to quadrature error.'}`);
+          `${st.n} matrix elements; ratio (matrix element)/(CG) has mean $${v.fix(st.mean, 4)}$ (reduced element divided by $\\sqrt{2l'+1}$) and maximal deviation $${v.sci(st.spread, 1)}$ ${st.o === 'mix' ? '— **not constant**: the operator is not a spherical tensor of a single rank.' : '— constant up to quadrature error.'}`);
       },
     },
   ],

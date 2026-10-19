@@ -1,0 +1,26 @@
+
+> test:ui
+> node --test tests/ui.test.mjs
+
+✔ home keeps its paper timeline without background detail downloads (5617.216332ms)
+✔ a pending page cannot replace a newer navigation (6911.753575ms)
+✔ pending map and paper queries stop when leaving their pages (6847.04035ms)
+✔ small screens contain tables, formulas, readouts, and long toggles (5703.948464ms)
+✔ treemap fields and chapters can be opened with the keyboard (3633.498829ms)
+✔ map and timeline expose zoom controls and keyboard zoom (5178.718633ms)
+✔ a timeline touch tap opens a point without a preceding hover (2853.693101ms)
+✔ map panning preserves pixels and picking, and filters and theme invalidate the raster (1887.315518ms)
+✔ native map dragging keeps all nodes and restores details after movement (2680.799304ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 42222.424952
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

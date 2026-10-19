@@ -1,8 +1,29 @@
 // Climate Science — Chapter 3 (part b): transient response, Arrhenius, Pinatubo, evidence synthesis, aerosol–cloud interactions
+import { sensitivityDistribution } from './sensitivity.shared.js';
 import { F2X, fx, twoBox, at } from './ch03.shared.js';
 
 const LN2 = Math.log(2);
 const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+
+/** Nonabsorbing slab with Henyey–Greenstein scattering; report unfinished paths separately. */
+export function cloudPhotonAlbedo(tau, random, n = 1500, g = .85, maxScatter = 100000) {
+  let reflected = 0, unresolved = 0;
+  for (let p = 0; p < n; p++) {
+    let z = 0, mu = 1, escaped = false;
+    for (let k = 0; k < maxScatter; k++) {
+      z += mu * -Math.log(1 - random());
+      if (z < 0) { reflected++; escaped = true; break; }
+      if (z > tau) { escaped = true; break; }
+      const u = random(), t = (1 - g*g) / (1 - g + 2*g*u);
+      const cosine = Math.abs(g) < 1e-12 ? 2*u-1 : (1 + g*g - t*t) / (2*g);
+      const azimuth = 2 * Math.PI * random();
+      mu = clamp(mu*cosine - Math.sqrt(Math.max(0,1-mu*mu))*Math.sqrt(Math.max(0,1-cosine*cosine))*Math.cos(azimuth), -1, 1);
+    }
+    if (!escaped) unresolved++;
+  }
+  const a = reflected / n;
+  return [a, Math.sqrt(a * (1-a) / n), unresolved];
+}
 
 export default {
   collection: 'climate',
@@ -105,23 +126,22 @@ export default {
       num: '3.8',
       kind: 'Phenomenon',
       name: 'Volcanic cooling: Pinatubo as a test of sensitivity',
-      credit: 'Mount Pinatubo eruption, 15 June 1991; sensitivity tests e.g. Soden et al., Science 2002; AR6 WG1 §7.3.4.6 and §7.5.4.1',
-      statement: String.raw`The climactic eruption of Mount Pinatubo on 15 June 1991 put roughly 15–20 million tonnes of sulphur dioxide into the stratosphere, where it became a sulphate aerosol veil that spread around the world and scattered sunlight for about two years. The aerosol optical depth rose to around 0.1–0.15 globally, and with an effective radiative forcing of about $-20\pm5$ W m⁻² per unit optical depth (AR6) the global forcing reached a few watts per square metre negative. The lower atmosphere cooled by roughly half a kelvin in 1991–93 before recovering as the aerosol fell out, with an e-folding time of about a year. Because the cause is known and sudden, the cooling can be compared with model response, but the amplitude constrains the climate sensitivity only weakly.`,
+      credit: 'transient comparison: Soden et al. (2002), Science 296: 727–730; forcing and ECS scope: IPCC AR6 WG1 (2021), §§7.3.4.6 and 7.5.2.4',
+      statement: String.raw`The June 1991 eruption of Mount Pinatubo injected sulphur dioxide into the stratosphere, where reflective sulphate aerosols reduced solar heating. AR6 assesses the effective forcing efficiency at $-20\pm5$ W m⁻² per unit stratospheric aerosol optical depth. Soden et al. (2002) compared satellite lower-tropospheric temperatures with model simulations: the observed peak cooling was about 0.5 K nearly 18 months after the eruption, accompanied by atmospheric drying. The event tests transient radiative response, but its short duration provides only a weak direct constraint on equilibrium sensitivity.`,
       idea: String.raw`A short forcing pulse produces a short temperature pulse: the surface layer, with heat capacity of a few years' worth of forcing (climate-1.9), cools within a year or two and then relaxes as the aerosol decays, long before the deep ocean or the slow feedbacks matter. The peak cooling is therefore set mainly by the forcing amplitude and the heat capacity of the layer that responds, not by the equilibrium feedback strength: the response to a short forcing depends only weakly on the feedbacks, so Pinatubo cannot discriminate well between a sensitivity of 2 K and one of 5 K. Studies using it find values consistent with the other lines of evidence, and some point to water vapour as the amplifier of the observed cooling.`,
-      caption: String.raw`Left: the aerosol optical depth (assumed shape: a rise to the peak then an exponential decay) and the forcing it produces. Middle: the global cooling of the two-layer ocean model for your ECS, with the other ECS values faint. Right: peak cooling against ECS, which is nearly flat; the band is the roughly 0.4–0.6 K cooling quoted in the literature. Slide the optical depth, forcing efficiency and mixed-layer depth: they move the answer far more than ECS does.`,
+      caption: String.raw`Left: the aerosol optical depth (assumed shape: a rise to the peak then an exponential decay) and the forcing it produces. Middle: the global cooling of the two-layer ocean model for your ECS, with the other ECS values faint. Right: peak cooling against ECS, which grows less steeply than direct proportionality to ECS; the band is an illustrative 0.4–0.6 K guide around the approximately 0.5 K lower-tropospheric reference, not an observational confidence interval. Slide the optical depth, forcing efficiency and mixed-layer depth: they move the answer far more than ECS does.`,
       deps: ['climate-3.2', 'climate-1.9', 'climate-3.5'],
-      refs: ['IPCC AR6 WG1 ch. 7'],
+      refs: ['Soden et al. (2002), pp. 727–730, Figs. 1–4', 'IPCC AR6 WG1 (2021), §§7.3.4.6 and 7.5.2.4, pp. 958 and 999'],
       tags: ['volcanoes', 'aerosols', 'sensitivity'],
-      verify: true,
-      scope: String.raw`Verified from AR6 §7.3.4.6: ERF −20 ± 5 W m⁻² per unit stratospheric aerosol optical depth, and §7.5.2.4: the temperature response to volcanic eruptions depends only weakly on radiative feedbacks, so it is not a direct estimate of ECS. The peak global optical depth (about 0.1–0.15; sources differ), the cooling of about 0.5 K (a lower-troposphere satellite value after removing ENSO; other estimates range about 0.4–0.6 K), the e-folding time of about 12 months, and the rise time to the peak (assumed here as 5 months) were taken from several secondary sources, not from the original datasets, so they are marked as to be verified; the page shows a model, not the observed temperature series. The model is global-mean, linear, with generic two-layer ocean parameters; with the default mixed-layer capacity it cools by about 0.3 K at around two years, less and later than the roughly 0.5 K seen about a year after the eruption in the lower troposphere, because land and air respond faster than a 60 m ocean layer. Reduce the capacity slider to see the amplitude and timing move toward the observations; we did not tune the default to match.`,
+      scope: String.raw`Illustrative global-mean two-layer ocean model, not the observed temperature series or Soden et al.'s GCM. The 0.15 peak optical depth, 0.42-year rise and one-year e-folding decay are chosen forcing inputs, not a fitted reconstruction of the aerosol record. AR6 §7.3.4.6 supplies the forcing-efficiency range; §7.5.2.4 explains the weak ECS constraint. Soden et al. (2002), p. 728 and Fig. 2, compare global lower-tropospheric MSU temperatures, smoothed over seven months, relative to the January–May 1991 mean; they report a roughly 0.5 K peak nearly 18 months after eruption. The ±0.1 K shaded guide is illustrative. Ocean-surface and atmospheric temperatures need not have the same peak magnitude or timing.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/1991_eruption_of_Mount_Pinatubo' },
       viz(v) {
         const aod = v.slider('peak optical depth', 0.05, 0.3, 0.15, { step: 0.005 });
         const eff = v.slider('forcing per unit optical depth (W/m²)', -30, -10, -20, { step: 0.5 });
         const ecs = v.slider('ECS (K)', 1.5, 6, 3, { step: 0.05 });
         const Cm = v.slider('mixed-layer capacity $C$', 3, 20, 8, { step: 0.1 });
-        const sA = v.stage({ x: [-0.25, 6], y: [-4.2, 0.3], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 250, xlabel: 'years after 15 June 1991', ylabel: 'forcing (W/m²)', title: 'aerosol forcing' });
-        const sB = v.stage({ x: [-0.25, 6], y: [-1.1, 0.15], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 260, xlabel: 'years after 15 June 1991', ylabel: 'global cooling (K)', title: 'model response' });
+        const sA = v.stage({ x: [-0.25, 6], y: [-4.2, 0.3], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 250, xlabel: 'years after June 1991', ylabel: 'forcing (W/m²)', title: 'aerosol forcing' });
+        const sB = v.stage({ x: [-0.25, 6], y: [-1.1, 0.15], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 260, xlabel: 'years after June 1991', ylabel: 'global cooling (K)', title: 'model response' });
         const sC = v.stage({ x: [1, 8], y: [0, 1.0], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 240, xlabel: 'ECS (K)', ylabel: 'peak cooling (K)', title: 'how much it depends on ECS' });
         const tp = 0.42, tau = 1.0; // assumed rise time (yr), e-folding decay (yr)
         const saod = (t) => (t <= 0 ? 0 : t < tp ? aod.value * (2 * (t / tp) - (t / tp) ** 2) : aod.value * Math.exp(-(t - tp) / tau));
@@ -130,6 +150,7 @@ export default {
         let R = null;
         v.render(() => {
           const ts = Array.from({ length: 121 }, (_, i) => -0.25 + (i * 6.25) / 120);
+          sA.setView([-.25, 6], [Math.min(-4.2, 1.2 * eff.value * aod.value), .3]);
           sA.hline(0, { color: 'faint' });
           sA.path(ts.map((t) => [t, eff.value * saod(t)]), { color: 'red', width: 2.6 });
           sA.path(ts.map((t) => [t, (-4.2 * saod(t)) / 0.3]), { color: 'gold', width: 1.8, dash: [4, 3] });
@@ -138,17 +159,18 @@ export default {
           sB.hline(0, { color: 'faint' }); sB.hband(-0.6, -0.4, { color: 'green', alpha: 0.12 });
           [1.5, 6].forEach((e) => { const s = run(e); sB.path(Array.from(s.t).map((t, i) => [t, s.T[i]]).filter((_, i) => i % 2 === 0), { color: 'muted', width: 1.4, alpha: 0.6 }); });
           const s = run(ecs.value); sB.path(Array.from(s.t).map((t, i) => [t, s.T[i]]).filter((_, i) => i % 2 === 0), { color: 'accent', width: 2.8 });
-          const [pk, tpk] = peak(s); sB.dot(tpk, pk, { color: 'gold', r: 6, label: fx(v, pk, 2) + ' K', labelPos: 'se' });
-          sB.text('quoted 0.4–0.6 K', 5.9, -0.5, { size: 10.5, color: 'green', align: 'right', baseline: 'middle' });
+          const [pk, tpk] = peak(s); sB.setView([-.25, 6], [Math.min(-1.1, pk * 1.3), .15]); sB.dot(tpk, pk, { color: 'gold', r: 6, label: fx(v, pk, 2) + ' K', labelPos: 'se' });
+          sB.text('illustrative 0.4–0.6 K guide', 5.9, -0.5, { size: 10.5, color: 'green', align: 'right', baseline: 'middle' });
           const curve = []; for (let e = 1; e <= 8.001; e += 0.35) curve.push([e, -peak(run(e))[0]]);
+          sC.setView([1, 8], [0, Math.max(1, ...curve.map(p => p[1])) * 1.15]);
           sC.hband(0.4, 0.6, { color: 'green', alpha: 0.14 });
           sC.path(curve, { color: 'accent', width: 2.6 });
           sC.dot(ecs.value, -pk, { color: 'gold', r: 6 });
           sC.vband(2.5, 4, { color: 'blue', alpha: 0.1 }); sC.text('AR6 likely ECS', 3.25, 0.06, { size: 10.5, color: 'blue', align: 'center' });
           R = { fpk, pk, tpk, lo: -peak(run(1.5))[0], hi: -peak(run(6))[0] };
         });
-        v.legend([['red', 'forcing'], ['accent', 'cooling for this ECS'], ['muted', 'ECS 1.5 and 6 K'], ['green', 'quoted cooling', { area: true }]]);
-        v.readout(() => R && String.raw`peak forcing ${fx(v, R.fpk, 1)} W/m² → peak cooling **${fx(v, -R.pk, 2)} K** about ${fx(v, R.tpk, 1)} years after the eruption · ECS 1.5 K gives ${fx(v, R.lo, 2)} K, ECS 6 K gives ${fx(v, R.hi, 2)} K: only ${fx(v, (R.hi / R.lo - 1) * 100, 0)} % more cooling for a fourfold sensitivity, while ±25 % in optical depth shifts it by ±25 %`);
+        v.legend([['red', 'forcing'], ['accent', 'cooling for this ECS'], ['muted', 'ECS 1.5 and 6 K'], ['green', '0.5 K reference guide', { area: true }]]);
+        v.readout(() => R && String.raw`peak forcing ${fx(v, R.fpk, 1)} W/m² → peak cooling **${fx(v, -R.pk, 2)} K** about ${fx(v, R.tpk, 1)} years after the eruption · ECS 1.5 K gives ${fx(v, R.lo, 2)} K, ECS 6 K gives ${fx(v, R.hi, 2)} K: ${fx(v, (R.hi / R.lo - 1) * 100, 0)} % more cooling for a fourfold sensitivity, while ±25 % in optical depth shifts it by ±25 %`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.9
@@ -156,15 +178,14 @@ export default {
       num: '3.9',
       kind: 'Method',
       name: 'Combining lines of evidence on climate sensitivity',
-      credit: 'Sherwood et al., Reviews of Geophysics 2020; IPCC AR6 WG1 §7.5.5 (2021)',
-      statement: String.raw`Several independent kinds of evidence each give a probability distribution for the equilibrium climate sensitivity: **process understanding** of feedbacks, the **instrumental record** of warming and energy imbalance, **paleoclimates** such as the last glacial maximum and warm periods, and **emergent constraints** from variations in models and observations. If errors are independent, the combined likelihood is the product of the individual ones, so a value of ECS that one line cannot rule out but another makes improbable becomes improbable overall, and the combined range is narrower than any single one. The logic is Bayesian; AR6 applied it with expert judgement and gave a best estimate 3 °C, likely 2.5 to 4 °C, very likely 2 to 5 °C.`,
-      idea: String.raw`It is natural to combine in feedback space: with $\Delta F_{2\times}$ fixed, ECS $=\Delta F_{2\times}/\lambda$, and each line constrains the feedback $\lambda=-\alpha$ roughly as a normal distribution (climate-3.5, process understanding gives $\alpha=-1.16\pm0.40$). Multiplying normal likelihoods gives an inverse-variance weighted mean and a narrower width; mapping back to ECS turns the symmetric distribution into the familiar skewed one with the long upper tail. If lines share errors (they use some of the same models and data) the gain shrinks, and with a common error a fraction $\rho$ of each one's variance, adding lines helps much less.`,
-      caption: String.raw`Four thin curves are probability densities of ECS from the four lines, each a normal distribution in the feedback (drag the handles on the axis to move a line's centre; the widths are fixed to values chosen to resemble AR6's ranges for each line and to scale with the width slider). The thick curve is their combination. Raise the dependence $\rho$ to see the combination lose its advantage; switch lines off to see which ones carry the lower and upper ends. Below, the AR6 ranges for each line as published, with the combination from this page.`,
-      deps: ['climate-3.5', 'climate-3.8'],
-      refs: ['IPCC AR6 WG1 ch. 7'],
+      credit: 'evidence-synthesis assessment: IPCC AR6 WG1 (2021), §7.5.5 and Table 7.13; schematic Gaussian likelihood model',
+      statement: String.raw`Several kinds of evidence constrain the probability distribution for the equilibrium climate sensitivity: **process understanding** of feedbacks, the **instrumental record** of warming and energy imbalance, **paleoclimates** such as the last glacial maximum and warm periods, and **emergent constraints** from variations in models and observations. For conditionally independent errors, the combined likelihood is the product of the individual likelihoods, so a value of ECS that one line cannot rule out but another makes improbable becomes improbable overall, and combining complementary constraints can narrow the range. A posterior distribution also requires a prior; the toy uses a flat prior on positive restoring feedback. Formal Bayesian synthesis is one approach; AR6 combined evidence using expert judgement and gave a best estimate 3 °C, likely 2.5 to 4 °C, very likely 2 to 5 °C.`,
+      idea: String.raw`It is natural to combine in feedback space: with $\Delta F_{2\times}$ fixed, ECS $=\Delta F_{2\times}/\lambda$, and each line constrains the feedback $\lambda=-\alpha$ roughly as a normal likelihood (the process-based toy uses $\alpha=-1.16\pm0.40$ W m⁻² K⁻¹). Multiplying normal likelihoods gives an inverse-variance weighted mean and a narrower width; mapping back to ECS turns the symmetric distribution into the familiar skewed one with the long upper tail. If lines share errors (they use some of the same models and data) the gain shrinks, and with a common error a fraction $\rho$ of each one's variance, adding lines helps much less.`,
+      caption: String.raw`Four thin curves are probability densities of ECS from the four lines, each a normal likelihood in restoring feedback, conditioned on its positive branch (drag the handles on the axis to move a line's centre; the widths are fixed to values chosen to resemble AR6's ranges for each line and to scale with the width slider). The thick curve is their combination. Raise the dependence $\rho$ to see the combination lose its advantage; switch lines off to see which ones carry the lower and upper ends. Below, the AR6 ranges for each line as published, with the combination from this page.`,
+      deps: ['climate-3.5', 'climate-3.8', 'prob-1.6.9', 'stat-12.16', 'stat-2.11', 'stat-2.1'],
+      refs: ['IPCC AR6 WG1 (2021), §7.5.5 and Table 7.13, pp. 1005–1007'],
       tags: ['climate sensitivity', 'Bayesian', 'uncertainty'],
-      verify: true,
-      scope: String.raw`Schematic. Process understanding uses AR6's own numbers (net feedback −1.16 ± 0.40 W m⁻² K⁻¹, doubling forcing 3.93 W m⁻², which reproduce the Table 7.13 process-understanding ranges: likely 2.5 to 5.1, very likely 2.1 to 7.7). The centres and widths of the other three lines were set by us so that the curves resemble the corresponding ranges in AR6 Table 7.13 (instrumental: central 2.5–3.5, likely above 2.2; paleoclimate: central 3.3–3.4, likely below 4.5; emergent: central 2.4–3.3, very likely 1.5 to 5.0); they are not the published likelihoods, which are asymmetric and include dependencies. The AR6 combined assessment is not computed by this product (it is judgement informed by it), and AR6 notes the lines are not fully independent; the default ρ = 0 therefore gives a narrower range than AR6's.`,
+      scope: String.raw`Schematic. Process understanding uses AR6's own numbers (net feedback −1.16 ± 0.40 W m⁻² K⁻¹, doubling forcing 3.93 W m⁻², a rounded Gaussian illustration rather than an exact reproduction of the assessed uncertainty. Table 7.13 reports process-understanding ranges: likely 2.5 to 5.1, very likely 2.1 to 7.7). The centres and widths of the other three lines were set by us so that the curves resemble the corresponding ranges in AR6 Table 7.13 (instrumental: central 2.5–3.5, likely above 2.2; paleoclimate: central 3.3–3.4, likely below 4.5; emergent: central 2.4–3.3, very likely 1.5 to 5.0); they are not the published likelihoods, which are asymmetric and include dependencies. The AR6 combined assessment is not computed by this product (it is judgement informed by it), and AR6 notes the lines are not fully independent; the default ρ = 0 therefore gives a narrower range than AR6's.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Climate_sensitivity' },
       viz(v) {
         const LINES = [
@@ -180,12 +201,10 @@ export default {
         const sB = v.stage({ x: [0, 8], y: [0, 6.6], axes: 'box', height: 300, full: true, xlabel: 'ECS (K)', ylabel: '', gutter: { l: 96, b: 40, t: 8, r: 8 }, title: 'AR6 ranges by line (likely: thick; very likely: thin) and this page', yticks: [[6, 'process'], [5, 'instrumental'], [4, 'paleoclimate'], [3, 'emergent'], [2, 'AR6 combined'], [1, 'this page']] });
         const hs = LINES.map((L) => sA.handle(L.e, 0, { color: L.col, r: 7, constrain: (x) => [clamp(x, 1.4, 7), 0] }));
         hs.forEach((h, i) => { h.onDrag = () => { LINES[i].e = h.x; v.invalidate(); }; });
-        const pdf = (e, mu, sd) => (e > 0.05 ? (phi((F2X / e - mu) / sd) / sd) * (F2X / (e * e)) : 0);
-        function phi(z) { return Math.exp(-0.5 * z * z) / Math.sqrt(2 * Math.PI); }
-        // quantiles of ECS from normal feedback λ ~ N(mu, sd): ECS_q = F/λ_{1-q}
-        const qE = (mu, sd, q) => { const lam = mu + sd * zq(1 - q); return lam > 0.02 ? F2X / lam : Infinity; };
-        function zq(p) { let lo = -8, hi = 8; for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (0.5 * (1 + erf(m / Math.SQRT2)) < p) lo = m; else hi = m; } return (lo + hi) / 2; }
-        function erf(x) { const t = 1 / (1 + 0.3275911 * Math.abs(x)); const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-x * x); return x < 0 ? -y : y; }
+        // lambda=1-f is Gaussian. Normalize the positive lambda branch consistently.
+        const distribution = (mu, sd) => sensitivityDistribution(1 - mu, sd, F2X);
+        const pdf = (e, mu, sd) => distribution(mu, sd).pdf(e);
+        const qE = (mu, sd, q) => distribution(mu, sd).quantile(q);
         let R = null;
         v.render(() => {
           const act = LINES.map((L, i) => ({ ...L, on: tg[i].value, mu: F2X / L.e, s: L.sd * wid.value }));
@@ -198,22 +217,25 @@ export default {
             const tot = w.reduce((a, b) => a + b, 0), mu = use.reduce((a, L, i) => a + w[i] * L.mu, 0) / tot, sd = Math.sqrt(1 / tot);
             comb = { mu, sd };
             sA.fn((e) => pdf(e, mu, sd), { color: 'ink', width: 3.2, domain: [0.2, 8], n: 260 });
-            sA.vline(F2X / mu, { color: 'ink', dash: [4, 4] });
+            sA.vline(qE(mu, sd, .5), { color: 'ink', dash: [4, 4] });
           }
+          const displayed = act.filter(L => L.on).concat(comb ? [{ mu: comb.mu, s: comb.sd }] : []);
+          const densityMax = Math.max(1, ...displayed.map(L => Math.max(...Array.from({ length: 240 }, (_, i) => pdf(.1 + i * 7.9 / 239, L.mu, L.s)))));
+          sA.setView([0, 8], [0, 1.15 * densityMax]);
           // AR6 intervals
           const seg = (y, a, b, w, col, arrowR, arrowL) => { sB.line(a, y, b, y, { color: col, width: w }); if (arrowR) sB.arrow(b - 0.4, y, b, y, { color: col, width: w, head: 8 }); if (arrowL) sB.arrow(a + 0.4, y, a, y, { color: col, width: w, head: 8 }); };
           seg(6, 2.1, 7.7, 1.5, 'blue'); seg(6, 2.5, 5.1, 6, 'blue'); sB.dot(3.4, 6, { color: 'ink', r: 4 });
           seg(5, 1.8, 8, 1.5, 'orange', true); seg(5, 2.2, 8, 6, 'orange', true); sB.line(2.5, 4.8, 2.5, 5.2, { color: 'ink', width: 1.5 }); sB.line(3.5, 4.8, 3.5, 5.2, { color: 'ink', width: 1.5 });
-          seg(4, 0, 4.5, 6, 'green', false, true); seg(4, 1.5, 8, 1.5, 'green'); sB.line(3.3, 3.8, 3.3, 4.2, { color: 'ink', width: 1.5 }); sB.line(3.4, 3.8, 3.4, 4.2, { color: 'ink', width: 1.5 });
+          seg(4, 0, 4.5, 6, 'green', false, true); seg(4, 1.5, 8, 1.5, 'green', true); sB.line(3.3, 3.8, 3.3, 4.2, { color: 'ink', width: 1.5 }); sB.line(3.4, 3.8, 3.4, 4.2, { color: 'ink', width: 1.5 });
           seg(3, 1.5, 5.0, 1.5, 'purple'); sB.line(2.4, 2.8, 2.4, 3.2, { color: 'ink', width: 1.5 }); sB.line(3.3, 2.8, 3.3, 3.2, { color: 'ink', width: 1.5 });
           seg(2, 2.0, 5.0, 1.5, 'ink'); seg(2, 2.5, 4.0, 6, 'ink'); sB.dot(3, 2, { color: 'panel', r: 4, hollow: true });
           let lik = null, vl = null;
-          if (comb) { lik = [qE(comb.mu, comb.sd, 0.17), qE(comb.mu, comb.sd, 0.83)]; vl = [qE(comb.mu, comb.sd, 0.05), qE(comb.mu, comb.sd, 0.95)]; const c8 = (x) => Math.min(8, x); seg(1, c8(vl[0]), c8(vl[1]), 1.5, 'red'); seg(1, c8(lik[0]), c8(lik[1]), 6, 'red'); sB.dot(F2X / comb.mu, 1, { color: 'panel', r: 4, hollow: true }); }
+          if (comb) { lik = [qE(comb.mu, comb.sd, 0.17), qE(comb.mu, comb.sd, 0.83)]; vl = [qE(comb.mu, comb.sd, 0.05), qE(comb.mu, comb.sd, 0.95)]; const c8 = (x) => Math.min(8, x); seg(1, c8(vl[0]), c8(vl[1]), 1.5, 'red', vl[1] > 8); seg(1, c8(lik[0]), c8(lik[1]), 6, 'red', lik[1] > 8); sB.dot(qE(comb.mu, comb.sd, .5), 1, { color: 'panel', r: 4, hollow: true }); }
           sB.text('dots / ticks: central value or central range', 7.9, 0.2, { size: 10.5, color: 'muted', align: 'right' });
           R = { comb, lik, vl, n: use.length };
         });
         v.legend([['blue', 'process'], ['orange', 'instrumental'], ['green', 'paleoclimate'], ['purple', 'emergent'], ['ink', 'combination (thick)'], ['red', 'this page: likely (17–83 %) and very likely (5–95 %)']]);
-        v.readout(() => R && (R.comb ? String.raw`${R.n} line(s), shared error ρ = ${fx(v, rho.value, 2)}: combined feedback ${fx(v, R.comb.mu, 2)} ± ${fx(v, R.comb.sd, 2)} W m⁻² K⁻¹ → ECS **${fx(v, F2X / R.comb.mu, 2)} K**, likely ${fx(v, R.lik[0], 1)} to ${fx(v, R.lik[1], 1)}, very likely ${fx(v, R.vl[0], 1)} to ${R.vl[1] === Infinity ? '∞' : fx(v, R.vl[1], 1)} · AR6: 3 K, likely 2.5–4, very likely 2–5 · process alone: 3.4 K, likely 2.5–5.1` : 'switch on at least one line'));
+        v.readout(() => R && (R.comb ? String.raw`${R.n} line(s), shared error ρ = ${fx(v, rho.value, 2)}: combined feedback ${fx(v, R.comb.mu, 2)} ± ${fx(v, R.comb.sd, 2)} W m⁻² K⁻¹ → conditional ECS median **${fx(v, qE(R.comb.mu, R.comb.sd, .5), 2)} K**, likely ${fx(v, R.lik[0], 1)} to ${fx(v, R.lik[1], 1)}, very likely ${fx(v, R.vl[0], 1)} to ${R.vl[1] === Infinity ? '∞' : fx(v, R.vl[1], 1)} · Gaussian mass outside positive restoring branch ${fx(v, distribution(R.comb.mu, R.comb.sd).runaway * 100, 2)} % (excluded and normalized separately) · AR6: 3 K, likely 2.5–4, very likely 2–5 · process alone: 3.4 K, likely 2.5–5.1` : 'switch on at least one line'));
       },
     },
     // ───────────────────────────────────────────────────────────── 3.10
@@ -221,15 +243,14 @@ export default {
       num: '3.10',
       kind: 'Phenomenon',
       name: 'Aerosol–cloud interactions (Twomey effect)',
-      credit: 'Sean Twomey, 1974 (Atmospheric Environment 8: 1251) and 1977 (J. Atmos. Sci. 34: 1149); ship tracks from satellite images, Conover 1966 (J. Atmos. Sci. 23: 778)',
+      credit: 'S. Twomey (1977), J. Atmospheric Sciences 34: 1149–1152; aerosol assessment: IPCC AR6 WG1 (2021), §7.3.3.2 and Table 7.8',
       statement: String.raw`For a cloud of fixed liquid water, adding aerosol particles that serve as cloud condensation nuclei increases the number $N$ of droplets and shrinks each one: with the water divided among more drops, the effective radius scales as $r_e\propto N^{-1/3}$, and the optical depth $\tau\propto N^{1/3}$ grows. A brighter cloud reflects more sunlight; for a non-absorbing cloud the albedo is approximately $A\approx (1-g)\tau/[2+(1-g)\tau]$ with asymmetry parameter $g\approx 0.85$, and $\mathrm{d}A/\mathrm{d}\ln N=A(1-A)/3$, greatest for clouds of albedo near one half. This is the **Twomey effect**, one part of the aerosol–cloud forcing that AR6 assesses at $-0.84$ [$-1.45$ to $-0.25$] W m⁻² for 1750–2019, together with adjustments of cloud water and cover.`,
       idea: String.raw`Mie scattering by droplets (climate-1.11) is efficient at visible wavelengths, so cloud optical depth is proportional to the total droplet cross-section per unit area, $\tau=3\,\mathrm{LWP}/(2\rho_w r_e)$. At fixed liquid water path (LWP) more, smaller drops expose more surface; the rise in $\tau$ with $N^{1/3}$ gives the brightening. The factor $A(1-A)$ explains why thin clouds and the dim oceanic low clouds are sensitive and why very thick or very thin ones are not. Tracks of bright cloud behind ships, visible in satellite images, show the effect directly: the particles in the ship's exhaust raise $N$ along a line.`,
       caption: String.raw`Set the liquid water path and the droplet number. Left: a cross-section of the cloud's droplets (drawn with their relative size and count). Middle: albedo against droplet number, from the two-stream formula (curve) and from a Monte Carlo of 1500 photons through the same cloud (dot with error bar). Right: a satellite-style view of a cloud deck with a ship track where the droplet number is raised from the clean value to the polluted value.`,
-      deps: ['climate-3.2', 'climate-1.11'],
-      refs: ['IPCC AR6 WG1 ch. 7'],
+      deps: ['climate-3.2', 'climate-1.11', 'prob-2.2.1'],
+      refs: ['Twomey (1977), §§2–3, pp. 1149–1152', 'IPCC AR6 WG1 (2021), §7.3.3.2, pp. 950–954 and Table 7.8, p. 960'],
       tags: ['aerosols', 'clouds', 'albedo'],
-      verify: true,
-      scope: String.raw`Single non-absorbing liquid layer at fixed liquid water path, $g=0.85$, normal incidence; the two-stream albedo formula is approximate (the Monte Carlo shows how closely). The forcing readout multiplies the albedo change by the global-mean insolation 340 W m⁻² and an area fraction that is a free parameter (it is not an observation), ignoring absorption above the cloud, changes in cloud water or cover (the adjustments AR6 includes in its aerosol–cloud ERF) and the day–night and latitude weighting; it shows the scaling, not an estimate. The ship-track image is a schematic; the Conover 1966 paper is cited for the observation of the anomalous cloud lines, whose attribution to ships was made later. Reference title and journal details of Twomey (1974, 1977) and Conover (1966) were confirmed in Crossref; the quoted AR6 value is from Table 7.8.`,
+      scope: String.raw`Single non-absorbing liquid layer at fixed liquid water path, $g=0.85$, normal incidence; the two-stream albedo formula is approximate (the Monte Carlo shows how closely). The forcing readout multiplies the albedo change by the global-mean insolation 340 W m⁻² and an area fraction that is a free parameter (it is not an observation), ignoring absorption above the cloud, changes in cloud water or cover (the adjustments AR6 includes in its aerosol–cloud ERF) and the day–night and latitude weighting; it shows the scaling, not an estimate. The ship-track image is a schematic, not a satellite observation. The quoted AR6 value is the final 2019 single-year forcing in Table 7.8, which includes adjustments and differs from the Twomey-only fixed-water diagnostic.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cloud_condensation_nuclei' },
       viz(v) {
         const lwp = v.slider('liquid water path (g/m²)', 20, 300, 100, { log: true, sig: 2 });
@@ -242,18 +263,9 @@ export default {
         const rOf = (N, w) => { const lwc = (w * 1e-3) / H; return Math.cbrt((3 * lwc) / (4 * Math.PI * 1000 * N * 1e6)) * 1e6; };
         const mcCache = new Map();
         function mc(tau) {
-          const key = tau.toFixed(1); if (mcCache.has(key)) return mcCache.get(key);
-          const r = v.rng(11); let refl = 0; const n = 1500;
-          for (let p = 0; p < n; p++) {
-            let z = 0, mu = 1;
-            for (let k = 0; k < 4000; k++) {
-              z += mu * -Math.log(1 - r()) ; if (z < 0) { refl++; break; } if (z > tau) break;
-              const u = r(), t = (1 - G * G) / (1 - G + 2 * G * u), ms = (1 + G * G - t * t) / (2 * G), ph = 2 * Math.PI * r();
-              mu = mu * ms - Math.sqrt(Math.max(0, 1 - mu * mu)) * Math.sqrt(Math.max(0, 1 - ms * ms)) * Math.cos(ph);
-              if (mu > 1) mu = 1; if (mu < -1) mu = -1;
-            }
-          }
-          const a = refl / n, res = [a, Math.sqrt((a * (1 - a)) / n)]; mcCache.set(key, res); return res;
+          const key = tau.toPrecision(10);
+          if (!mcCache.has(key)) mcCache.set(key, cloudPhotonAlbedo(tau, v.rng(11)));
+          return mcCache.get(key);
         }
         const sA = v.stage({ x: [0, 10], y: [0, 10], equal: true, axes: false, height: 300, weight: 0.8, minWidth: 220, title: 'droplets (schematic cross-section)' });
         const sB = v.stage({ x: [10, 1000], xlog: true, y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'droplet number $N$ (cm⁻³)', ylabel: 'cloud albedo', title: 'albedo against droplet number' });
@@ -279,15 +291,15 @@ export default {
           sC.raster((x, y) => {
             const d = Math.abs((y - (2 + 0.55 * x)) / Math.sqrt(1 + 0.55 * 0.55)), k = Math.exp(-(d * d) / (2 * wk * wk)) * (x < 0.5 ? x / 0.5 : 1);
             const lN = Math.log(N0.value) + k * (Math.log(N1.value) - Math.log(N0.value)), t = tauOf(Math.exp(lN), lwp.value * (0.82 + 0.36 * noise(x, y)));
-            return v.ramp(clamp((albOf(t) - 0.3) / 0.4, 0, 1), 'accent', 'panel');
+            return v.ramp(albOf(t), 'accent', 'panel');
           }, { res: 4, key: `${N0.value.toFixed(1)}|${N1.value.toFixed(1)}|${lwp.value.toFixed(1)}` });
-          sC.colorbar([0.3, 0.7], (t) => v.ramp(t, 'accent', 'panel'), { pos: 'left', label: 'albedo' });
-          sC.text('track of raised droplet number', 9.8, 8.0, { size: 10.5, color: 'ink', align: 'right', plate: true });
+          sC.colorbar([0, 1], (t) => v.ramp(t, 'accent', 'panel'), { pos: 'left', label: 'albedo' });
+          sC.text('track of changed droplet number', 9.8, 8.0, { size: 10.5, color: 'ink', align: 'right', plate: true });
           const dA = A2 - A1, forcing = -340 * frac.value * dA;
           R = { t1, t2, A1, A2, dA, forcing, sus: (A1 * (1 - A1)) / 3, m1, m2 };
         });
         v.legend([['blue', 'clean $N_1$', { dot: true }], ['red', 'polluted $N_2$', { dot: true }], ['accent', 'two-stream albedo']]);
-        v.readout(() => R && String.raw`τ = ${fx(v, R.t1, 1)} → ${fx(v, R.t2, 1)}; albedo ${fx(v, R.A1, 3)} → ${fx(v, R.A2, 3)} (Monte Carlo ${fx(v, R.m1[0], 3)} ± ${fx(v, R.m1[1], 3)} → ${fx(v, R.m2[0], 3)} ± ${fx(v, R.m2[1], 3)}) · susceptibility A(1−A)/3 = ${fx(v, R.sus, 3)} · for ${fx(v, frac.value * 100, 1)} % of the Earth's area: forcing ≈ **${fx(v, R.forcing, 2)} W/m²** (AR6 aerosol–cloud ERF 1750–2019: −0.84, −1.45 to −0.25, which includes adjustments)`);
+        v.readout(() => R && String.raw`τ = ${fx(v, R.t1, 1)} → ${fx(v, R.t2, 1)}; albedo ${fx(v, R.A1, 3)} → ${fx(v, R.A2, 3)} (Monte Carlo ${fx(v, R.m1[0], 3)} ± ${fx(v, R.m1[1], 3)} → ${fx(v, R.m2[0], 3)} ± ${fx(v, R.m2[1], 3)}) · susceptibility A(1−A)/3 = ${fx(v, R.sus, 3)} · for ${fx(v, frac.value * 100, 1)} % of the Earth's area: forcing ≈ **${fx(v, R.forcing, 2)} W/m²** (AR6 aerosol–cloud ERF 1750–2019: −0.84, −1.45 to −0.25, which includes adjustments) · unresolved photon paths ${R.m1[2] + R.m2[2]} of 3000`);
       },
     },
 //@@B

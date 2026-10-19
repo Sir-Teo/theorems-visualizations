@@ -17,11 +17,11 @@ export default {
       num: '6.1', kind: 'Theorem', name: 'Boltzmann distribution',
       statement: String.raw`Let a small system $s$ be in thermal contact with a much larger reservoir $R$, the combination being isolated with total energy $E_{\rm tot}$ and all its microstates equally likely. Then the probability that $s$ is found in a particular microstate of energy $E$ is
 $$P(E)=\frac{e^{-E/kT}}{Z},\qquad Z=\sum_{\text{microstates}}e^{-E/kT},$$
-where $T$ is the temperature of the reservoir, $1/T=\partial S_R/\partial U_R$. Corrections are of relative order $E/U_R$ and vanish as the reservoir grows.`,
+where $T$ is the temperature of the reservoir, $1/T=\partial S_R/\partial U_R$. For a reservoir with positive heat capacity $C_R$, the next term in the log weight is $-E^2/(2kT^2C_R)$; it must be negligible over the appreciably occupied energies.`,
       idea: String.raw`With the system in a definite microstate, the number of microstates of the whole is just the number of the reservoir's, $\Omega_R(E_{\rm tot}-E)$, so by equal a priori probability $P(E)\propto\Omega_R(E_{\rm tot}-E)=e^{S_R(E_{\rm tot}-E)/k}$. Because $E\ll U_R$, expand $S_R(E_{\rm tot}-E)\approx S_R(E_{\rm tot})-E\,\partial S_R/\partial U$; the slope is $1/T$ (statistical temperature, 5.8), leaving $e^{-E/kT}$. The sum of all probabilities fixes the constant, $Z$.`,
       caption: String.raw`The small system is a **single oscillator** with energy $n\varepsilon$; the reservoir is an Einstein solid (5.3) of $N_R$ oscillators sharing the rest of $q$ quanta. The chain below visits the combined microstates with equal probability (it accepts a move $n\to n\pm1$ with probability $\min(1,\Omega_R'/\Omega_R)$). **Grow the reservoir** and the exact finite-reservoir probabilities (orange) and the sampled histogram (bars) converge onto the pure exponential (green); on the log panel it becomes a straight line.`,
-      deps: ['thermo-5.8', 'thermo-5.5'], refs: ['Schroeder §6.1'], tags: ['boltzmann factor', 'canonical ensemble'],
-      credit: 'Boltzmann, 1868; Gibbs, 1902', verify: true,
+      deps: ['thermo-5.8', 'thermo-5.5'], refs: ["Tong §1.3, Eqs. (1.19)–(1.22)"], tags: ['boltzmann factor', 'canonical ensemble'],
+      credit: 'Canonical ensemble',
       scope: String.raw`The reservoir must be large enough that its temperature does not change appreciably when it exchanges the energy $E$ with the system; the system itself may be of any size.`,
       viz(v) {
         const NR = v.slider('reservoir oscillators $N_R$', 3, 400, 40, { int: true, log: true, onChange: () => reset() });
@@ -50,8 +50,9 @@ where $T$ is the temperature of the reservoir, $1/T=\partial S_R/\partial U_R$. 
         v.render(() => {
           const N = NR.value, nmax = 12;
           const x = q / (q + N - 1), be = -Math.log(x);
-          const ex = Array.from({ length: nmax + 1 }, (_, k) => tab[q - k]), mx = Math.max(...ex);
-          const Pr = ex.map((l) => Math.exp(l - mx)), sP = Pr.reduce((a, b) => a + b, 0), pr = Pr.map((p) => p / sP);
+          const logTotal = lnEin(N + 1, q);
+          const full = Array.from({ length: q + 1 }, (_, k) => Math.exp(tab[q - k] - logTotal));
+          const pr = Array.from({ length: nmax + 1 }, (_, k) => full[k] || 0);
           const pb = Array.from({ length: nmax + 1 }, (_, k) => (1 - x) * x ** k);
           const ps = Array.from({ length: nmax + 1 }, (_, k) => (counts[k] || 0) / total);
           sa.setView([-0.5, nmax + 0.5], [0, Math.max(pb[0], ps[0], pr[0]) * 1.15]);
@@ -60,10 +61,10 @@ where $T$ is the temperature of the reservoir, $1/T=\partial S_R/\partial U_R$. 
           sa.dots(pb.map((p, k) => [k, p]), { r: 3.5, color: 'green' });
           sa.dots(pr.map((p, k) => [k, p]), { r: 4.5, color: 'orange', hollow: true });
           sb.path(pb.map((p, k) => [k, Math.log(p)]), { color: 'green', width: 2.2 });
-          sb.dots(pr.map((p, k) => [k, Math.log(p)]), { r: 4.5, color: 'orange', hollow: true });
+          sb.dots(pr.map((p, k) => p > 0 ? [k, Math.log(p)] : null).filter(Boolean), { r: 4.5, color: 'orange', hollow: true });
           sb.dots(ps.map((p, k) => (p > 0 ? [k, Math.log(p)] : null)).filter(Boolean), { r: 3, color: 'accent' });
-          const tv = 0.5 * pr.reduce((s, p, k) => s + Math.abs(p - pb[k]), 0);
-          st = { N, q, kT: 1 / be, mean: ps.reduce((s, p, k) => s + k * p, 0), meanB: x / (1 - x), tv, total };
+          const tv = 0.5 * (full.reduce((s, p, k) => s + Math.abs(p - (1 - x) * x ** k), 0) + x ** (q + 1));
+          st = { N, q, kT: 1 / be, mean: counts.reduce((s, c, k) => s + k * c / total, 0), meanB: x / (1 - x), tv, total };
         });
         v.legend([['accent', 'sampled (equal-probability chain)'], ['orange', 'exact $\\Omega_R(q-n)$ (finite reservoir)', { dot: true }], ['green', 'Boltzmann $(1-x)x^n$, $x=e^{-\\varepsilon/kT}$']]);
         v.readout(() => st && `$N_R=${st.N}$, $q=${st.q}$ quanta: reservoir temperature $kT=${fix(st.kT, 2)}\\,\\varepsilon$ · $\\langle n\\rangle$ sampled **${fix(st.mean, 3)}**, Boltzmann ${fix(st.meanB, 3)} · distance between the exact finite-reservoir law and the exponential (total variation) **${fix(st.tv, 4)}** · ${st.total.toLocaleString('en-US')} steps`);
@@ -74,11 +75,11 @@ where $T$ is the temperature of the reservoir, $1/T=\partial S_R/\partial U_R$. 
       num: '6.2', kind: 'Definition', name: 'Partition function',
       statement: String.raw`For a system with microstates $s$ of energy $E_s$ in equilibrium with a bath at temperature $T$, $\beta=1/kT$, the **partition function** is
 $$Z=\sum_s e^{-\beta E_s}=\sum_i g_i\,e^{-\beta E_i},$$
-the second sum running over distinct energy levels of degeneracy $g_i$. It is the normalization of the Boltzmann distribution, $P_s=e^{-\beta E_s}/Z$, and counts roughly how many states are thermally accessible: $Z\to g_0e^{-\beta E_0}$ as $T\to0$ and $Z\to\sum g_i$ as $T\to\infty$.`,
+the second sum running over distinct energy levels of degeneracy $g_i$. It is the normalization of the Boltzmann distribution, $P_s=e^{-\beta E_s}/Z$, and counts roughly how many states are thermally accessible: $Z\to g_0e^{-\beta E_0}$ as $T\to0$ and $Z\to\sum g_i$ as $T\to\infty$ for a finite set of microstates; an unbounded spectrum need not have a finite hot limit.`,
       idea: String.raw`Boltzmann factors are only relative probabilities; $Z$ is what turns them into absolute ones. Its real importance is that thermodynamic quantities are derivatives of $\ln Z$ (next results), so one sum, done once, contains the whole thermodynamics of the system. The energy zero is a convention: shifting every $E_s$ by $c$ multiplies $Z$ by $e^{-\beta c}$ and leaves all probabilities unchanged.`,
       caption: String.raw`**Drag the level handles** up and down (the ground level stays at $0$); choose the degeneracies; move $kT$. Each bar is the Boltzmann weight $g_ie^{-E_i/kT}$ of a level and the stacked column shows $Z$ as their total length. At low $kT$ the ground level takes everything and $Z\to g_0$; at high $kT$ all weights approach $g_i$.`,
-      deps: ['thermo-6.1'], refs: ['Schroeder §6.1'], tags: ['partition function', 'canonical ensemble'],
-      credit: 'Boltzmann; Gibbs, 1902', verify: true,
+      deps: ['thermo-6.1'], refs: ["Tong §1.3.1, Eqs. (1.21)–(1.24)"], tags: ['partition function', 'canonical ensemble'],
+      credit: 'Canonical ensemble',
       viz(v) {
         const kT = v.slider('$kT$', 0.05, 8, 1, { log: true, sig: 2 });
         const gs = v.select('degeneracies', [{ value: 'a', label: '$1,1,1,1,1,1$' }, { value: 'b', label: '$1,3,5,7,9,11$' }, { value: 'c', label: '$1,2,4,8,16,32$' }], 'a');
@@ -164,11 +165,11 @@ The same derivative gives the variance of the energy, $\langle E^2\rangle-\langl
       num: '6.4', kind: 'Theorem', name: 'Energy fluctuations and heat capacity',
       statement: String.raw`In the canonical ensemble the energy of a system fluctuates, with variance
 $$\sigma_E^2=\langle E^2\rangle-\langle E\rangle^2=kT^2C_V.$$
-Since $C_V$ and $U$ are extensive, the relative fluctuation $\sigma_E/U$ is of order $1/\sqrt N$: for a macroscopic body the energy is, for all practical purposes, fixed even though the system exchanges heat with a bath.`,
+Away from singular thermodynamic regimes, if $C_V$ and the chosen mean excitation energy $U$ scale extensively and $U/N$ stays nonzero, the relative fluctuation $\sigma_E/U$ is of order $1/\sqrt N$: for a macroscopic body the energy is, for all practical purposes, fixed even though the system exchanges heat with a bath.`,
       idea: String.raw`From 6.3, $\sigma_E^2=\partial^2_\beta\ln Z=-\partial U/\partial\beta$, and $-\partial U/\partial\beta=kT^2\,\partial U/\partial T=kT^2C_V$. Heat capacity, an equilibrium response, therefore equals a fluctuation of the very quantity it measures: a fluctuation–response relation, the simplest of its kind. Because $\ln Z$ of $N$ independent parts is a sum of $N$ terms, its derivatives grow like $N$, so $\sigma_E/U\sim N^{-1/2}$.`,
       caption: String.raw`A system of $N$ quantum oscillators in a bath at $kT$ (Einstein solid, canonical). Each dot-cloud histogram is **2000 sampled energies**; the orange curve is a Gaussian with the predicted variance $kT^2C_V$. **Change $N$**: the histogram narrows relative to its mean. The right panel shows the sampled relative width for $N=1\ldots1000$ against the predicted $N^{-1/2}$ line.`,
-      deps: ['thermo-6.3'], refs: ['Tong ch. 1', 'Kardar §4.6'], tags: ['fluctuations', 'heat capacity'],
-      credit: 'Gibbs, 1902; Einstein, 1904', verify: true,
+      deps: ['thermo-6.3', 'prob-1.6.9a'], refs: ["Tong §1.3.2, Eqs. (1.25)–(1.28)"], tags: ['fluctuations', 'heat capacity'],
+      credit: 'Canonical fluctuation relation',
       viz(v) {
         const Ns = v.slider('oscillators $N$', 1, 500, 30, { int: true, log: true });
         const kT = v.slider('$kT/\\varepsilon$', 0.3, 5, 1.2, { step: 0.05 });
@@ -217,10 +218,10 @@ Since $C_V$ and $U$ are extensive, the relative fluctuation $\sigma_E/U$ is of o
       statement: String.raw`The Helmholtz free energy of a system in equilibrium with a bath is
 $$F=-kT\ln Z,$$
 and all its thermodynamic derivatives agree with ensemble averages: $S=-\partial F/\partial T$ equals $-k\sum_sP_s\ln P_s$, $\;P=-\partial F/\partial V=-\langle\partial E_s/\partial V\rangle$, $\;\mu=\partial F/\partial N$, and $U=F+TS=\langle E\rangle$.`,
-      idea: String.raw`Write $U=-\partial_\beta\ln Z$ (6.3) and compare with the thermodynamic relation $U=\partial(\beta F)/\partial\beta$; both are solved by $\beta F=-\ln Z$ (the constant is fixed by $F\to E_0$ as $T\to0$). The Maxwell-style relations of 3.8 ($dF=-SdT-PdV+\mu\,dN$) then turn derivatives of $\ln Z$ into $S$, $P$, $\mu$. Pressure is the average force: each level's energy depends on the volume, and $-\partial E_s/\partial V$ is the force on the wall in state $s$.`,
+      idea: String.raw`Counting the arrangements of many copies with fractions $P_s$ gives the Gibbs entropy $S=-k\sum_sP_s\ln P_s$. Substituting $\ln P_s=-\beta E_s-\ln Z$ yields $S=k(\beta U+\ln Z)$ and hence $F=U-TS=-kT\ln Z$. The cold limit alone would not fix an additive term proportional to $T$. The Maxwell-style relations of 3.8 ($dF=-SdT-PdV+\mu\,dN$) then turn derivatives of $\ln Z$ into $S$, $P$, $\mu$. Pressure is the average force: each level's energy depends on the volume, and $-\partial E_s/\partial V$ is the force on the wall in state $s$.`,
       caption: String.raw`The model is a solid of independent oscillators whose frequency rises as the volume shrinks, $\hbar\omega=\hbar\omega_0(V_0/V)^\gamma$ ($\gamma$ is the Grüneisen-like exponent). **Change $kT$, $V$ and $\gamma$.** Left: $F(T)$ with its tangent, whose slope is $-S$. Right: $F(V)$ with its tangent, whose slope is $-P$. The readout compares these derivatives with the direct averages over the levels $(n+\tfrac12)\hbar\omega$ (computed by summing explicitly).`,
-      deps: ['thermo-6.2', 'thermo-3.8'], refs: ['Schroeder §6.5'], tags: ['free energy', 'partition function'],
-      credit: 'Gibbs, 1902', verify: true,
+      deps: ['thermo-6.2', 'thermo-3.8'], refs: ["Tong §§1.3.3–1.3.4, Eqs. (1.30)–(1.36)"], tags: ['free energy', 'partition function'],
+      credit: 'Gibbs canonical ensemble',
       viz(v) {
         const kT = v.slider('$kT/\\hbar\\omega_0$', 0.1, 4, 1.0, { step: 0.01 });
         const Vs = v.slider('volume $V/V_0$', 0.5, 2, 1, { step: 0.01 });
@@ -232,7 +233,8 @@ and all its thermodynamic derivatives agree with ensemble averages: $S=-\partial
         let st = null;
         v.render(() => {
           const T = kT.value, V = Vs.value, d = 1e-4;
-          sa.setView([0.05, 4], [-4.5, 1.5]);
+          const ft = Array.from({length: 81}, (_, i) => Fp(0.05 + 3.95 * i / 80, V));
+          sa.setView([0.05, 4], [Math.min(...ft) - .2, Math.max(...ft) + .2]);
           sa.fn((t) => Fp(t, V), { color: 'accent', width: 2.4, n: 120 });
           const Sd = -(Fp(T + d, V) - Fp(T - d, V)) / (2 * d), Pd = -(Fp(T, V + d) - Fp(T, V - d)) / (2 * d);
           const F0 = Fp(T, V);
@@ -260,8 +262,8 @@ $$S=-k\sum_sP_s\ln P_s.$$
 For $\Omega$ equally likely states it reduces to Boltzmann's $S=k\ln\Omega$, and for the Boltzmann distribution it equals $(U-F)/T$, the thermodynamic entropy.`,
       idea: String.raw`Boltzmann's $k\ln\Omega$ only makes sense when all accessible states are equally likely. Gibbs's expression is its natural extension: $-\ln P_s$ is the "surprise" of state $s$ and $S/k$ is its average, which is also Shannon's entropy of the distribution (info-1.2). For $P_s=e^{-\beta E_s}/Z$ we get $-\ln P_s=\beta E_s+\ln Z$, so $S=k(\beta U+\ln Z)=(U-F)/T$ with $F=-kT\ln Z$ (6.5).`,
       caption: String.raw`Six states with energies $0,1,\dots,5$. In **drag** mode pull the top of any bar (the others rescale to keep the sum $1$); **uniform** spreads probability over the first $m$ states ($S=k\ln m$); **Boltzmann** uses the chosen $kT$. The right panel shows each state's contribution $-P_s\ln P_s$.`,
-      deps: ['thermo-6.5', 'thermo-5.6', 'info-1.2'], refs: ['Tong ch. 1'], tags: ['entropy', 'information'],
-      credit: 'Gibbs, 1902', verify: true,
+      deps: ['thermo-6.5', 'thermo-5.6', 'info-1.2'], refs: ["Tong §1.3.3, Eqs. (1.29)–(1.31)"], tags: ['entropy', 'information'],
+      credit: 'Gibbs canonical ensemble',
       viz(v) {
         const E = [0, 1, 2, 3, 4, 5];
         let p = [0.4, 0.25, 0.15, 0.1, 0.06, 0.04];
@@ -304,7 +306,7 @@ For $\Omega$ equally likely states it reduces to Boltzmann's $S=k\ln\Omega$, and
       statement: String.raw`Among all probability distributions $\{P_s\}$ over the states of a system with prescribed mean energy $\sum P_sE_s=\bar E$, the Gibbs entropy $-k\sum P_s\ln P_s$ is largest for the Boltzmann distribution $P_s=e^{-\beta E_s}/Z$, where $\beta$ is chosen so that $\langle E\rangle=\bar E$. Moreover for any other admissible $P$: $S[\text{Boltzmann}]-S[P]=k\,D(P\,\|\,P_{\rm B})\ge0$, with $D=\sum P\ln(P/P_{\rm B})$.`,
       idea: String.raw`Because $\sum P_s\ln P^{\rm B}_s=-\beta\bar E-\ln Z$ depends on $P$ only through the constraint, one finds $S[P]=S_{\rm B}-kD(P\|P_{\rm B})$, and Gibbs' inequality (from Jensen's inequality, rca-3.3: $\ln x\le x-1$) says $D\ge0$ with equality only for $P=P_{\rm B}$. This is the information-theoretic reading of statistical mechanics (Jaynes): the Boltzmann law is the least-biased guess that agrees with the known mean energy (see maximum-entropy distributions in info-6.4).`,
       caption: String.raw`Three states with energies $0,1,2$. Probabilities live in the triangle (colour = entropy, brighter is larger); the fixed mean energy $\bar E$ (slider) cuts it in a **line**. **Drag the gold handle along that line**: the right panel shows the entropy along it, peaking exactly at the Boltzmann point (green), where the exponential family curve (dashed) crosses the line. The gap is $kD(P\|P_{\rm B})$.`,
-      deps: ['thermo-6.6', 'rca-3.3', 'info-6.4'], refs: ['Kardar §2.7'], tags: ['entropy', 'maximum entropy', 'information'],
+      deps: ['thermo-6.6', 'rca-3.3', 'info-6.4', 'info-2.2'], refs: ['Kardar §2.7'], tags: ['entropy', 'maximum entropy', 'information'],
       credit: 'Jaynes, 1957', scope: String.raw`A statement about inference (what to assume given only the mean energy); that equilibrium systems actually realize it needs the dynamical or counting arguments of chapters 5 and 6.1.`,
       viz(v) {
         const Eb = v.slider('mean energy $\\bar E$', 0.1, 1.9, 0.8, { step: 0.01 });
@@ -354,7 +356,7 @@ $$Z_{AB}=Z_AZ_B,\qquad F_{AB}=F_A+F_B,\qquad P(a,b)=P_A(a)P_B(b).$$
 Equivalently $\ln Z$, $U$, $S$, $C$ are additive. If the parts interact, $E_{ab}=E_a+E_b+W_{ab}$, the factorization fails.`,
       idea: String.raw`The exponential turns a sum of energies into a product of Boltzmann factors, $e^{-\beta(E_a+E_b)}=e^{-\beta E_a}e^{-\beta E_b}$, and a double sum of a product of factors is a product of sums. The probabilities factor too, so independent parts are statistically independent. Any coupling $W_{ab}$ spoils the factorization by the extra factor $e^{-\beta W_{ab}}$. For $N$ identical independent parts this gives $Z=Z_1^N$ (and $Z_1^N/N!$ for indistinguishable ones, 6.16).`,
       caption: String.raw`System A has four evenly spaced levels, system B has three. The picture is a **tiling**: column widths are A's Boltzmann weights, row heights are B's, so each cell's area is the joint weight and the total area is $Z_AZ_B$. Turn on the **coupling** $J$ (energy $J$ per pair of excitation quanta, $E_{ab}=a\varepsilon_A+b\varepsilon_B+Jab$): the cells that feel it shrink or grow and the area no longer equals $Z_AZ_B$.`,
-      deps: ['thermo-6.2'], refs: ['Schroeder §6.6'], tags: ['partition function', 'independence'],
+      deps: ['thermo-6.2', 'prob-2.1.11'], refs: ['Schroeder §6.6'], tags: ['partition function', 'independence'],
       viz(v) {
         const kT = v.slider('$kT$', 0.2, 5, 1.2, { log: true, sig: 2 });
         const eA = v.slider('$\\varepsilon_A$', 0.2, 2, 1, { step: 0.05 });
@@ -397,11 +399,11 @@ Equivalently $\ln Z$, $U$, $S$, $C$ are additive. If the parts interact, $E_{ab}
       statement: String.raw`A system with two levels $0$ and $\Delta$ (degeneracies $g_0,g_1$) has $Z=g_0+g_1e^{-\Delta/kT}$, upper-level occupation $\bigl[1+(g_0/g_1)e^{\Delta/kT}\bigr]^{-1}$ and heat capacity per particle
 $$\frac{C}{k}=\frac{g_0g_1\,(\Delta/kT)^2e^{\Delta/kT}}{\bigl(g_0e^{\Delta/kT}+g_1\bigr)^2}.$$
 It vanishes both at low $T$ (exponentially) and at high $T$ (as $T^{-2}$) and has a single maximum, the **Schottky anomaly**: for $g_0=g_1$ it lies at $kT\approx0.42\Delta$ and has height $\approx0.44\,k$.`,
-      idea: String.raw`At low $T$ the upper level is frozen out, so energy can hardly be absorbed; at high $T$ the two levels are equally populated and the system is saturated, again unable to absorb more. Only when $kT\sim\Delta$ does warming move population, and the energy absorbed per kelvin peaks. The entropy meanwhile climbs from $k\ln g_0$ to $k\ln(g_0+g_1)$; the area under $C/T$ is that entropy, which is also why the peak area is fixed.`,
+      idea: String.raw`At low $T$ the upper level is frozen out, so energy can hardly be absorbed; at high $T$ the microstates are equally populated (level populations are proportional to their degeneracies) and the system is saturated, again unable to absorb more. Only when $kT\sim\Delta$ does warming move population, and the energy absorbed per kelvin peaks. The entropy meanwhile climbs from $k\ln g_0$ to $k\ln(g_0+g_1)$; the integral of $C/T$ is the entropy change, which is also why the peak area is fixed.`,
       caption: String.raw`**Drag the gold dot along the heat-capacity curve** (or the temperature slider) and watch the populations of the two levels in the middle panel. Change the degeneracy ratio $g_1/g_0$: the peak moves and grows. The right panel shows the entropy, which must rise by $k\ln\frac{g_0+g_1}{g_0}$ and does.`,
-      deps: ['thermo-6.3'], refs: ['Tong ch. 1'], tags: ['two-level', 'heat capacity'],
-      credit: 'Schottky, 1922', verify: true,
-      scope: String.raw`Applies to a bounded spectrum (here two levels): unbounded spectra have no high-temperature drop. Paramagnetic salts, nuclear spins in a field and tunnelling defects in glasses show such peaks (examples only; no data are plotted here).`,
+      deps: ['thermo-6.3'], refs: ["Tong §1.3.2: two-state system; finite-level partition sum"], tags: ['two-level', 'heat capacity'],
+      credit: 'Schottky anomaly',
+      scope: String.raw`Applies to a bounded spectrum (here two levels): an unbounded spectrum need not have this high-temperature limit. Paramagnetic salts, nuclear spins in a field and tunnelling defects in glasses show such peaks (examples only; no data are plotted here).`,
       viz(v) {
         const r = v.slider('degeneracy ratio $g_1/g_0$', 1, 6, 1, { int: true });
         const kT = v.slider('$kT/\\Delta$', 0.05, 5, 0.42, { log: true, sig: 2 });
@@ -423,7 +425,7 @@ It vanishes both at low $T$ (exponentially) and at high $T$ (as $T^{-2}$) and ha
           const p1 = g / (g + Math.exp(1 / T));
           sb.rect(0.1, 0, 0.45, 1 - p1, { fill: 'accent', fillAlpha: 0.65, color: 'accent', width: 1 });
           sb.rect(0.55, 0, 0.9, p1, { fill: 'orange', fillAlpha: 0.65, color: 'orange', width: 1 });
-          
+
           sc.fn((t) => Sf(t, g), { color: 'purple', width: 2.4, n: 200 });
           sc.hline(Math.log(1 + g), { color: 'faint', dash: true }); sc.dot(T, Sf(T, g), { r: 5.5, color: 'gold' }); sc.vline(tm, { color: 'green', dash: true });
           st = { tm, cm, p1, C: Cf(T, g), S: Sf(T, g), g };
@@ -438,10 +440,10 @@ It vanishes both at low $T$ (exponentially) and at high $T$ (as $T^{-2}$) and ha
 $$M=Ng\mu_BJ\,\mathcal B_J(x),\quad x=\frac{g\mu_BJB}{kT},\quad \mathcal B_J(x)=\frac{2J+1}{2J}\coth\frac{(2J+1)x}{2J}-\frac1{2J}\coth\frac{x}{2J}.$$
 For $x\ll1$ this is **Curie's law** $M=\dfrac{N g^2\mu_B^2J(J+1)}{3k}\dfrac BT$; for $x\gg1$ it saturates at $Ng\mu_BJ$; as $J\to\infty$ the Brillouin function becomes the classical Langevin function $\coth x-1/x$.`,
       idea: String.raw`The partition function of one atom is a geometric series in $e^{g\mu_BB/kT}$ over the $2J+1$ levels, $Z_1=\sinh\frac{(2J+1)x}{2J}/\sinh\frac x{2J}$, and $M=NkT\,\partial_B\ln Z_1$ (6.3, 6.5). Expanding at small $x$ gives the linear Curie law, which depends on $B/T$ only; at large $x$ all moments align. The spin-$\frac12$ limit is $\tanh x$ and the large-$J$ limit is the classical orientation average of a freely rotating dipole.`,
-      caption: String.raw`Plotted against $x=g\mu_BJB/kT$ (for $g=2$, $x=1.343\,J\,B/T$ with $B$ in tesla and $T$ in kelvin): the full Brillouin curve for the chosen $J$ (blue), the Curie-law tangent (orange dashed), and the classical Langevin limit (grey). **Move $B$ and $T$** (only $B/T$ matters) and choose $J$; the right panel shows how the $2J+1$ Zeeman levels are populated. Curie's law is accurate only while $g\mu_BB\ll kT$.`,
-      deps: ['thermo-6.3', 'qm-7.13', 'em-8.3'], refs: ['Schroeder §3.3'], tags: ['paramagnet', 'magnetization'],
-      credit: 'Curie, 1895; Langevin, 1905; Brillouin, 1927', verify: true,
-      scope: String.raw`Non-interacting moments with spin-only magnetism ($g=2$ assumed here), ignoring crystal-field effects; real salts follow the curve only at low enough concentration and temperature (Henry, Phys. Rev. 88, 559 (1952), compared measured magnetization of Gd³⁺, Fe³⁺ and Cr³⁺ salts at liquid-helium temperatures with Brillouin functions; the curves here are theory, not his data).`,
+      caption: String.raw`Plotted against $x=g\mu_BJB/kT$ (for $g=2$, $x=1.343\,J\,B/T$ with $B$ in tesla and $T$ in kelvin): the full Brillouin curve for the chosen $J$ (blue), the Curie-law tangent (orange dashed), and the classical Langevin limit (grey). **Move $B$ and $T$** (only $B/T$ matters) and choose $J$; the right panel shows how the $2J+1$ Zeeman levels are populated. Curie’s law is the small-$x$ approximation, $g\mu_BJB\ll kT$.`,
+      deps: ['thermo-6.3', 'qm-7.13', 'em-8.3'], refs: ["MIT 8.044 (2013), Lecture 16, panels B2–B4"], tags: ['paramagnet', 'magnetization'],
+      credit: 'Curie, Langevin and Brillouin functions',
+      scope: String.raw`Independent moments with $g=2$ assumed here, ignoring exchange interactions and crystal-field splitting. The curves are the finite Zeeman-level model, with no experimental salt data.`,
       viz(v) {
         const Js = v.select('angular momentum $J$', ['1/2', '1', '3/2', '5/2', '7/2', '15/2'], '7/2');
         const Bs = v.slider('field $B$ (tesla)', 0.05, 10, 2, { log: true, sig: 2 });
@@ -449,16 +451,17 @@ For $x\ll1$ this is **Curie's law** $M=\dfrac{N g^2\mu_B^2J(J+1)}{3k}\dfrac BT$;
         const gmu = 2 * v.M.CONST.muB / v.M.CONST.kB;      // g μB/k in kelvin per tesla (g = 2)
         const Jv = () => ({ '1/2': 0.5, '1': 1, '3/2': 1.5, '5/2': 2.5, '7/2': 3.5, '15/2': 7.5 }[Js.value]);
         const sa = v.stage({ x: [0, 6], y: [0, 1.05], axes: 'box', gutter: true, height: 300, xlabel: '$x=g\\mu_BJB/kT$', ylabel: '$M/M_{\\rm sat}$', title: 'magnetization', weight: 1.3 });
-        const h = sa.handle(1, 0.5, { color: 'gold', r: 7, constrain: (x) => { const t = clamp(x, 0.01, 6); return [t, brillouin(Jv(), t)]; } });
-        h.onDrag = () => { const x = clamp(h.x, 0.01, 6), bt = x / (gmu * Jv()); Bs.set(clamp(bt * Ts.value, 0.05, 10)); };
+        const h = sa.handle(1, 0.5, { color: 'gold', r: 7, constrain: (x) => { const t = clamp(x, gmu * Jv() * .05 / Ts.value, gmu * Jv() * 10 / Ts.value); return [t, brillouin(Jv(), t)]; } });
+        h.onDrag = () => { const x = h.x, bt = x / (gmu * Jv()); Bs.set(clamp(bt * Ts.value, 0.05, 10)); };
         const sb = v.stage({ x: [-0.5, 7.5], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 0.8, minWidth: 190, ylabel: 'population', title: 'Zeeman levels $m$' });
         let st = null;
         v.render(() => {
-          const J = Jv(), bt = Bs.value / Ts.value, x = gmu * J * bt;
-          sa.fn((t) => brillouin(J, t), { color: 'accent', width: 2.6, n: 240, domain: [0, 6] });
-          sa.fn((t) => Math.min(1.3, ((J + 1) / (3 * J)) * t), { color: 'orange', width: 1.6, dash: true, domain: [0, 6] });
-          sa.fn(langevin, { color: 'muted', width: 1.4, alpha: 0.9, domain: [0, 6], n: 200 });
-          const xc = clamp(x, 0.01, 6);
+          const J = Jv(), bt = Bs.value / Ts.value, x = gmu * J * bt, xmax = Math.max(6, 1.05 * x);
+          sa.setView([0, xmax], [0, 1.05]);
+          sa.fn((t) => brillouin(J, t), { color: 'accent', width: 2.6, n: 240, domain: [0, xmax] });
+          sa.fn((t) => ((J + 1) / (3 * J)) * t, { color: 'orange', width: 1.6, dash: true, domain: [0, xmax] });
+          sa.fn(langevin, { color: 'muted', width: 1.4, alpha: 0.9, domain: [0, xmax], n: 200 });
+          const xc = x;
           sa.vline(xc, { color: 'faint', dash: true }); h.set(xc, brillouin(J, xc));
           const n = Math.round(2 * J + 1), ms = Array.from({ length: n }, (_, i) => J - i);
           const cc = canon(ms.map((m) => ({ E: -gmu * Bs.value * m })), 1 / Ts.value);

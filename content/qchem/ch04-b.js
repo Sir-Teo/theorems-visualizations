@@ -12,16 +12,15 @@ export default {
       num: '4.7',
       kind: 'Method',
       name: 'Degenerate perturbation theory',
-      credit: 'Schrödinger, 1926 (Stark effect of the Balmer lines, the degenerate case)',
+      credit: 'Degenerate Rayleigh–Schrödinger perturbation theory',
       statement: String.raw`Suppose $E^{(0)}$ is a $g$-fold degenerate level of $H^{(0)}$ with orthonormal eigenfunctions $\phi_1,\dots,\phi_g$, and $H=H^{(0)}+\lambda W$. To first order the energies that emerge from $E^{(0)}$ are $E^{(0)}+\lambda w_i$, where $w_1,\dots,w_g$ are the eigenvalues of the $g\times g$ matrix $W_{ab}=\langle\phi_a|W|\phi_b\rangle$, and the correct zeroth-order states are the corresponding eigenvectors $\sum_a c_a\phi_a$, in general *mixtures* of the original functions. The nondegenerate formula of 4.4 and 4.5 would divide by $E^{(0)}-E^{(0)}=0$.`,
       scope: String.raw`If $W$ is diagonal in the degenerate subspace (for instance because of a symmetry) the original functions are already the good ones. If all $w_i$ coincide the degeneracy survives to first order and must be resolved at second order, by the same method applied to the effective matrix there.`,
       idea: String.raw`In the degenerate subspace $H^{(0)}$ acts as a multiple of the identity, so any combination is a legitimate zeroth-order state and the perturbation decides which one the true eigenstate approaches as $\lambda\to0$. Projecting $(H^{(0)}+\lambda W)\psi=E\psi$ onto the subspace at order $\lambda$ gives $\sum_b(W_{ab}-w\,\delta_{ab})c_b=0$: the eigenproblem of a small Hermitian matrix (1.3 guarantees real $w$ and orthogonal $c$), the same secular determinant as in the linear variation method (4.2) restricted to the degenerate block.`,
-      caption: String.raw`Two electrons in a unit square box ($\hbar=m=1$): the levels $(n_x,n_y)=(1,2)$ and $(2,1)$ both have $E=5\pi^2/2$. Choose a perturbation (a cross term $\lambda xy$, a one-sided $\lambda x^2$, or a tilt $\lambda x$) and drag $\lambda$. Left: the exact pair of levels from a 36-function basis (solid) and the first-order prediction from the $2\times2$ block (dashed). Right: the exact wavefunction of the lower or upper level, or the unperturbed $\psi_{12}$. For $xy$ the correct states are $\psi_{12}\pm\psi_{21}$, rotated $45^\circ$ from the original ones, and the splitting is $\pm\lambda|W_{12,21}|$; for $x^2$ the original states are already right; for $x$ nothing splits at first order.`,
+      caption: String.raw`One particle in a unit square box ($\hbar=m=1$): the levels $(n_x,n_y)=(1,2)$ and $(2,1)$ both have $E=5\pi^2/2$. Choose a perturbation (a cross term $\lambda xy$, a one-sided $\lambda x^2$, or a tilt $\lambda x$) and drag $\lambda$. Left: the pair of levels from a 36-function basis (solid) and the first-order prediction from the $2\times2$ block (dashed). Right: the finite-basis wavefunction of the lower or upper level, or the unperturbed $\psi_{12}$. For $xy$ the correct states are $\psi_{12}\pm\psi_{21}$, rotated $45^\circ$ from the original ones, with shifts $\lambda/4\pm\lambda|W_{12,21}|$ and splitting $2\lambda|W_{12,21}|$; for $x^2$ the original states are already right; for $x$ nothing splits at first order.`,
       deps: ['qchem-4.4', 'qchem-1.6', 'qm-11.4'],
       see: ['qm-11.4'],
-      refs: ['McQuarrie ch. 8'],
+      refs: ['Fitzpatrick §12.6, Eqs.(12.91)–(12.102); Skylaris §2.2, pp.8–11'],
       tags: ['degenerate perturbation theory', 'mixing', 'square box'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perturbation_theory_(quantum_mechanics)#Degenerate_energy_levels' },
       viz(v) {
         const M = v.M, N = 6, LMAX = 60, nS = N * N;
@@ -37,7 +36,7 @@ export default {
         };
         const kindS = v.select('perturbation $W$', [{ value: 'xy', label: '$xy$' }, { value: 'x2', label: '$x^2$' }, { value: 'x', label: '$x$' }], 'xy');
         const lamS = v.slider('strength $\\lambda$', 0, LMAX, 30, { step: 0.5 });
-        const showS = v.select('wavefunction', [{ value: 'lo', label: 'lower exact' }, { value: 'hi', label: 'upper exact' }, { value: 'p', label: 'unperturbed $\\psi_{12}$' }], 'lo');
+        const showS = v.select('wavefunction', [{ value: 'lo', label: 'lower finite-basis' }, { value: 'hi', label: 'upper finite-basis' }, { value: 'p', label: 'unperturbed $\\psi_{12}$' }], 'lo');
         const sL = v.stage({ x: [0, LMAX], y: [-8, 8], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'λ', ylabel: 'E − 5π²/2', title: 'the degenerate pair' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 330, weight: 0.9, xlabel: 'x', ylabel: 'y', title: 'wavefunction ψ(x, y)' });
         const cache = {}; const curves = (kind) => cache[kind] ||= Array.from({ length: 31 }, (_, i) => { const l = (LMAX * i) / 30; return [l, pair(kind, l).E]; });
@@ -46,6 +45,7 @@ export default {
         v.render(() => {
           const kind = kindS.value, lam = lamS.value, cv = curves(kind), pr = pair(kind, lam), e0 = E0[P];
           const wpp = Wm[kind][P][P], wqq = Wm[kind][Q][Q], wpq = Wm[kind][P][Q];
+          const ys=cv.flatMap(q=>q[1].map(e=>e-e0));sL.setView([0,LMAX],[Math.min(-2,...ys)*1.1,Math.max(2,...ys)*1.15]);
           const mid = (wpp + wqq) / 2, half = Math.hypot((wpp - wqq) / 2, wpq);
                     sL.setView([0, LMAX], [-(Math.abs(mid) + half) * LMAX * 0.15 - 0.5, (Math.abs(mid) + half) * LMAX * 1.1 + 0.5]);
           sL.hline(0, { color: 'faint' });
@@ -64,7 +64,7 @@ export default {
           const cp = sel === 'p' ? 1 : (pr.c[sel === 'lo' ? 0 : 1][P]), cq = sel === 'p' ? 0 : (pr.c[sel === 'lo' ? 0 : 1][Q]);
           info = { kind, lam, wpp, wqq, wpq, split: pr.E[1] - pr.E[0], pred: 2 * half * lam, cp, cq, sel };
         });
-        v.legend([['green', 'exact lower'], ['accent', 'exact upper'], ['orange', 'degenerate first order', { dash: true }], ['muted', 'naive $\\lambda W_{aa}$', { dash: [2, 4] }]]);
+        v.legend([['green', 'finite-basis lower'], ['accent', 'finite-basis upper'], ['orange', 'degenerate first order', { dash: true }], ['muted', 'naive $\\lambda W_{aa}$', { dash: [2, 4] }]]);
         v.readout(() => info && `block $W=\\begin{pmatrix}${v.fix(info.wpp, 4)}&${v.fix(info.wpq, 4)}\\\\${v.fix(info.wpq, 4)}&${v.fix(info.wqq, 4)}\\end{pmatrix}$ in the basis $(\\psi_{12},\\psi_{21})$ · predicted splitting $2\\lambda\\sqrt{((W_{11}-W_{22})/2)^2+W_{12}^2}=${v.fix(info.pred, 3)}$, exact $${v.fix(info.split, 3)}$\nthe state drawn has coefficients $(c_{12},c_{21})=(${v.fix(info.cp, 3)},${v.fix(info.cq, 3)})$ · ordinary second order would contain $|W_{12}|^2/(E^{(0)}-E^{(0)})=${Math.abs(info.wpq) > 1e-6 ? `${v.fix(info.wpq ** 2, 4)}/0\\to\\infty` : '0/0 (no coupling)'}$`);
       },
     },
@@ -73,18 +73,17 @@ export default {
       num: '4.8',
       kind: 'Theorem',
       name: 'Hellmann–Feynman theorem',
-      credit: 'Güttinger, 1932; Pauli, 1933; Hellmann, 1937; Feynman, 1939 (independently; for forces on nuclei: Feynman, Phys. Rev. 56, 340)',
+      credit: 'Feynman,1939; Hellmann–Feynman identity',
       statement: String.raw`Let $H(\lambda)$ depend differentiably on a real parameter and let $\psi(\lambda)$ be a normalised eigenstate, $H\psi=E\psi$. Then
 $$\frac{dE}{d\lambda}=\Big\langle\psi\Big|\frac{\partial H}{\partial\lambda}\Big|\psi\Big\rangle.$$
-The same holds for a trial function that makes $\langle H\rangle$ stationary with respect to *all* of its own parameters. With $\lambda$ a nuclear coordinate it says that the force on a nucleus is the classical electrostatic force from the electron density, with no term from the change of the wavefunction.`,
-      scope: String.raw`Exact eigenstates, or approximate states that are variationally optimal within a family that is complete enough that the family itself does not move with $\lambda$ (for an atom-centred basis set that does move, the extra Pulay force must be added). A trial function that is not stationary does not obey it.`,
+For a parameter-independent trial family, the same holds for a trial function that makes $\langle H\rangle$ stationary with respect to *all* of its own parameters. With $\lambda$ a nuclear coordinate it says that the force on a nucleus is the classical electrostatic force from the electron density, with no term from the change of the wavefunction.`,
+      scope: String.raw`Exact eigenstates, or approximate states that are variationally optimal within a family that is complete enough that the family itself does not move with $\lambda$ (for an atom-centred basis set that does move, the extra Pulay force must be added). A fixed trial function still obeys the derivative identity for its own expectation curve; it need not reproduce the exact eigenvalue slope. A moving, nonstationary trial state generally has extra response terms.`,
       idea: String.raw`Differentiate $E=\langle\psi|H|\psi\rangle$ with $\langle\psi|\psi\rangle=1$ (differentiation under the integral sign, pma-9.42): $E'=\langle\psi|H'|\psi\rangle+\langle\psi'|H|\psi\rangle+\langle\psi|H|\psi'\rangle=\langle H'\rangle+E\,\frac{d}{d\lambda}\langle\psi|\psi\rangle=\langle H'\rangle$, because $H\psi=E\psi$ makes the two extra terms multiples of $\langle\psi'|\psi\rangle+\langle\psi|\psi'\rangle=0$. For a stationary trial function the same cancellation holds with $\partial E/\partial c_i=0$.`,
-      caption: String.raw`Choose a one-dimensional oscillator whose parameter is the frequency $\omega$ or the quartic coupling $\lambda$, and a level $n$. The curve is the exact $E_n(p)$ (finite differences). The green tangent has slope $\langle\partial H/\partial p\rangle$ computed from the exact *state* and it lies exactly along the curve (the readout compares it with the numerical derivative). For the ground state the dashed orange curve is the best Gaussian trial $\psi_s\propto e^{-sx^2/2}$ re-optimised at each $p$; its tangent, with slope computed from the optimised trial function, also touches *its* curve. The red tangent uses the same quantity from a Gaussian with a **frozen** width $s_0$ (second slider) that is not re-optimised, and misses the true slope unless $s_0$ happens to be optimal.`,
+      caption: String.raw`Choose a one-dimensional oscillator whose parameter is the frequency $\omega$ or the quartic coupling $\lambda$, and a level $n$. The curve approximates $E_n(p)$ by finite differences. The green tangent has slope $\langle\partial H/\partial p\rangle$ computed from the numerical state and follows the curve to numerical accuracy (the readout compares it with the numerical derivative). For the ground state the dashed orange curve is the best Gaussian trial $\psi_s\propto e^{-sx^2/2}$ re-optimised at each $p$; its tangent, with slope computed from the optimised trial function, also touches *its* curve. The red tangent belongs to the Gaussian expectation curve with a **frozen** width $s_0$ (second slider). It correctly differentiates that curve, but generally misses the exact eigenvalue slope.`,
       deps: ['qchem-1.3', 'pma-9.42', 'qm-11.7'],
       see: ['qm-11.7', 'qchem-4.6'],
-      refs: ['Szabo–Ostlund ch. 1'],
+      refs: ['Feynman, Phys.Rev.56(1939),340–343, Eqs.(1)–(5); Parr–Yang §1.6, pp.22–23'],
       tags: ['Hellmann–Feynman', 'forces', 'derivative of energy'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hellmann%E2%80%93Feynman_theorem' },
       viz(v) {
         const M = v.M;
@@ -108,7 +107,7 @@ The same holds for a trial function that makes $\langle H\rangle$ stationary wit
         v.render(() => {
           upd();
           const sys = sysS.value, k = +nS.value, p = (sys === 'w' ? pw : pl).value, lo = sys === 'w' ? 0.5 : 0, hi = sys === 'w' ? 2.5 : 1.5, s0 = sf.value;
-          const pts = curve(sys, k), ymin = Math.min(...pts.map((q) => q[1])), ymax = Math.max(...pts.map((q) => q[1]));
+          const pts = curve(sys, k), displayed=[...pts.map(q=>q[1]),...(k===0?[Et(sys,lo,s0),Et(sys,hi,s0),Et(sys,lo,sOpt(sys,lo)),Et(sys,hi,sOpt(sys,hi))]:[])], ymin = Math.min(...displayed), ymax = Math.max(...displayed);
           sE.setView([lo, hi], [ymin - 0.15 * (ymax - ymin), ymax + 0.2 * (ymax - ymin)]); sE.setLabels(sys === 'w' ? 'ω' : 'λ', 'E');
           sE.path(pts, { color: 'accent', width: 2.6 });
           const sol = solve(sys, p, k + 1), E = sol.E[k], slopeExact = exp(sol, k, (x) => dH(sys, p, x));
@@ -132,8 +131,8 @@ The same holds for a trial function that makes $\langle H\rangle$ stationary wit
           const h = 0.01, fd = (solve(sys, Math.min(hi, p + h), k + 1).E[k] - solve(sys, Math.max(lo, p - h), k + 1).E[k]) / (Math.min(hi, p + h) - Math.max(lo, p - h));
           info = { sys, k, p, E, slopeExact, fd, so, s0, eo: Et(sys, p, so), dopt: dEt(sys, p, so), dfr: dEt(sys, p, s0) };
         });
-        v.legend([['accent', 'exact $E_n(p)$'], ['green', 'tangent from $\\langle\\partial H/\\partial p\\rangle_{\\rm exact}$'], ['orange', 'optimised Gaussian', { dash: true }], ['red', 'frozen-width Gaussian', { dash: [2, 3] }]]);
-        v.readout(() => info && `exact: $dE/dp$ from finite differences $=${v.fix(info.fd, 4)}$, $\\langle\\partial H/\\partial p\\rangle=${v.fix(info.slopeExact, 4)}$ — they agree.` + (info.k === 0 ? `\noptimised Gaussian ($s=${v.fix(info.so, 3)}$): $E=${v.fix(info.eo, 4)}\\ge${v.fix(info.E, 4)}$, slope of its own curve $=\\langle\\partial H/\\partial p\\rangle_{\\rm trial}=${v.fix(info.dopt, 4)}$ (HF holds for a stationary trial function)\nfrozen $s_0=${v.fix(info.s0, 2)}$: expectation $${v.fix(info.dfr, 4)}$ $\\ne$ true slope $${v.fix(info.slopeExact, 4)}$ (off by ${v.fix(info.dfr - info.slopeExact, 4)})` : '\n(trial Gaussians describe only the ground state; they are hidden for $n>0$)'));
+        v.legend([['accent', 'finite-difference $E_n(p)$'], ['green', 'tangent from $\\langle\\partial H/\\partial p\\rangle_{\\rm exact}$'], ['orange', 'optimised Gaussian', { dash: true }], ['red', 'frozen-width Gaussian', { dash: [2, 3] }]]);
+        v.readout(() => info && `finite-difference state: $dE/dp$ from finite differences $=${v.fix(info.fd, 4)}$, $\\langle\\partial H/\\partial p\\rangle=${v.fix(info.slopeExact, 4)}$ (numerical comparison).` + (info.k === 0 ? `\noptimised Gaussian ($s=${v.fix(info.so, 3)}$): $E=${v.fix(info.eo, 4)}\\ge${v.fix(info.E, 4)}$, slope of its own curve $=\\langle\\partial H/\\partial p\\rangle_{\\rm trial}=${v.fix(info.dopt, 4)}$ (HF holds for a stationary trial function)\nfrozen $s_0=${v.fix(info.s0, 2)}$: expectation $${v.fix(info.dfr, 4)}$; exact-state slope $${v.fix(info.slopeExact, 4)}$ (off by ${v.fix(info.dfr - info.slopeExact, 4)})` : '\n(trial Gaussians describe only the ground state; they are hidden for $n>0$)'));
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -141,18 +140,17 @@ The same holds for a trial function that makes $\langle H\rangle$ stationary wit
       num: '4.9',
       kind: 'Theorem',
       name: 'Quantum virial theorem',
-      credit: 'Fock, 1930 (Z. Phys. 63, 855); the classical theorem is Clausius, 1870',
+      credit: 'Quantum virial theorem',
       statement: String.raw`For a stationary state of $H=T+V(\mathbf r)$ with kinetic energy $T=\mathbf p^2/2m$,
 $$2\langle T\rangle=\langle\mathbf r\cdot\nabla V\rangle .$$
 For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\rangle=\tfrac s2\langle V\rangle$, so $E=\tfrac{s+2}{2}\langle V\rangle=\tfrac{s+2}{s}\langle T\rangle$: for the Coulomb potential ($s=-1$) $\langle T\rangle=-E$, $\langle V\rangle=2E$ and $\langle V\rangle/\langle T\rangle=-2$; for the oscillator ($s=2$) $\langle T\rangle=\langle V\rangle=E/2$.`,
-      scope: String.raw`For eigenstates (or any state stationary under dilations of the wavefunction). With fixed nuclei in a molecule the potential includes $r^{-1}$ terms *and* the force on the nuclei: $2\langle T\rangle+\langle V\rangle=-\sum_A\mathbf R_A\cdot\mathbf F_A$, which vanishes only at an equilibrium geometry.`,
+      scope: String.raw`For eigenstates (or any state stationary under dilations of the wavefunction). With fixed nuclei in a molecule the potential includes $r^{-1}$ terms *and* the force on the nuclei: $2\langle T\rangle+\langle V\rangle=\sum_A\mathbf R_A\cdot\mathbf F_A$, which vanishes only at an equilibrium geometry.`,
       idea: String.raw`Scale the eigenfunction, $\psi_a(\mathbf r)=a^{3/2}\psi(a\mathbf r)$. Then $\langle T\rangle_a=a^2\langle T\rangle$ and, for $V\propto r^s$, $\langle V\rangle_a=a^{-s}\langle V\rangle$. Because $\psi$ makes the energy stationary (4.1), $dE_a/da|_{a=1}=2\langle T\rangle-s\langle V\rangle=0$. The same follows from Hellmann–Feynman (4.8) with the scale as the parameter, or from $\langle[H,\,\mathbf r\cdot\mathbf p]\rangle=0$ in a stationary state, the quantum counterpart of Clausius's classical average (mech-8.16).`,
       caption: String.raw`Radial $s$-wave bound states ($\hbar=m=1$) in the potential $V=\operatorname{sgn}(s)\,r^s$ (attractive $-1/r^{|s|}$ for $s<0$, and the logarithm $\ln r$ for $s=0$). Drag the exponent $s$ and choose the level: the left panel shows the potential, the energy and $u^2(r)$ (computed by diagonalising the radial equation); the middle panel gives the bars $\langle T\rangle$, $\langle V\rangle$ and $E$ and the two sides $2\langle T\rangle$ and $\langle rV'\rangle=s\langle V\rangle$ of the theorem, which are equal; the right panel plots the ratio $\langle T\rangle/\langle V\rangle$ for the 1s state against $s$, together with the line $s/2$. For Coulomb it reads $-\tfrac12$, for the oscillator 1.`,
       deps: ['qchem-4.8', 'mech-8.16'],
       see: ['mech-8.16', 'qchem-4.3'],
-      refs: ['McQuarrie ch. 8'],
+      refs: ['Tong §2.1.3, pp.33–34, Eq.(2.9); Parr–Yang §1.6, Eqs.(1.6.10)–(1.6.18)'],
       tags: ['virial theorem', 'kinetic and potential energy', 'scaling'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Virial_theorem' },
       viz(v) {
         const M = v.M;
@@ -198,16 +196,15 @@ For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\ra
       num: '4.10',
       kind: 'Theorem',
       name: 'Non-crossing rule',
-      credit: 'von Neumann and Wigner, 1929 (Phys. Z. 30, 467); Teller, 1937 (polyatomic molecules, conical intersections)',
+      credit: 'Generic non-crossing rule',
       statement: String.raw`Let a real symmetric Hamiltonian depend on one parameter (the internuclear distance of a diatomic). Two of its eigenvalues belonging to states of the **same symmetry** (same $\Lambda$, spin, parity…) generically do not cross: they approach and then repel, $E_\pm=\bar E\pm\sqrt{d^2+V_{12}^2}$, whose minimum gap $2|V_{12}|$ is nonzero whenever the coupling is. States of **different** symmetry have $V_{12}\equiv0$ and may cross freely. In a molecule with $f$ internal coordinates, same-symmetry levels can cross only on a set of dimension $f-2$, a cone-shaped point in two coordinates.`,
-      scope: String.raw`A statement of genericity for real Hamiltonians, with $f$ the number of internal coordinates: accidental crossings are exceptional, not strictly impossible, and the Born–Oppenheimer curves lose meaning exactly where they approach. Complex (e.g. magnetic) Hamiltonians need three parameters.`,
+      scope: String.raw`A statement of genericity for real Hamiltonians, with $f$ the number of internal coordinates: accidental crossings are exceptional, not strictly impossible, and a single-surface Born–Oppenheimer approximation can fail near degeneracy. Complex (e.g. magnetic) Hamiltonians need three parameters.`,
       idea: String.raw`In the two-dimensional space of the two levels the Hamiltonian is a real symmetric matrix $\begin{pmatrix}H_{11}&V\\V&H_{22}\end{pmatrix}$ and the eigenvalues coincide only if both conditions $H_{11}=H_{22}$ and $V=0$ hold. A real parameter family can satisfy one condition by tuning, but two independent conditions need two parameters. This is the same counting that makes the degenerate perturbation problem of 4.7 split: the repulsion is the secular determinant of 4.2 with the coupling in the off-diagonal. Symmetry sets $V=0$ identically, which is the one way to cross for free (cf. mech-11.13).`,
       caption: String.raw`Left: two diabatic energies (straight lines, blue and orange) cross as $R$ varies. With **same** symmetry and a nonzero coupling the solid adiabatic curves repel; their colour shows which diabatic state they resemble, swapping across the avoided crossing. Choose **different** symmetry and they cross. Right: the energy surface over the two parameters (half the diabatic difference $d$, the coupling $V$) is a double cone. Your one-parameter sweep is the hyperbola at fixed $V$; the second slider $q$ moves it by changing $V=g\,q$, and it hits the tip (a true crossing) only when $q=0$, something a diatomic molecule has no coordinate to do.`,
       deps: ['qchem-4.7', 'qchem-4.2', 'mech-11.13'],
       see: ['mech-11.13', 'qm-11.5'],
-      refs: ['McQuarrie ch. 11'],
+      refs: ['Malhado,Bearpark,Hynes, Front.Chem.2(2014)97, p.6 Eqs.(23)–(31)'],
       tags: ['avoided crossing', 'conical intersection', 'symmetry'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Avoided_crossing' },
       viz(v) {
         const M = v.M, G = 0.5, A = 1.0;       // coupling V = G q; half-difference of the diabats d = A (R − R0)
@@ -246,18 +243,17 @@ For a potential homogeneous of degree $s$, $V\propto r^s$, this is $\langle T\ra
       num: '4.11',
       kind: 'Phenomenon',
       name: 'London dispersion forces',
-      credit: 'London, 1930 (Eisenschitz and London, Z. Phys. 60, 491; London, Z. Phys. 63, 245); Drude oscillator model of London, 1937',
+      credit: 'London dispersion and the coupled Drude-oscillator model',
       statement: String.raw`Two neutral, spherically symmetric atoms at large separation $R$ attract one another even though each has no permanent dipole. Second-order perturbation theory in the dipole–dipole interaction gives
-$$E_{\rm disp}(R)=-\frac{C_6}{R^6},\qquad C_6=\sum_{m,n\ne0}\frac{|\langle0|\boldsymbol\mu_A|m\rangle|^2\,|\langle0|\boldsymbol\mu_B|n\rangle|^2}{3\,(4\pi\varepsilon_0)^2\,(E_m-E_0^A+E_n-E_0^B)},$$
+$$E_{\rm disp}(R)=-\frac{C_6}{R^6},\qquad C_6=\sum_{m,n\ne0}\frac{2|\langle0|\boldsymbol\mu_A|m\rangle|^2\,|\langle0|\boldsymbol\mu_B|n\rangle|^2}{3\,(4\pi\varepsilon_0)^2\,(E_m-E_0^A+E_n-E_0^B)},$$
 and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$ the ionisation energy and polarizability volume $\alpha'=\alpha/4\pi\varepsilon_0$ for both atoms, $C_6\approx\tfrac34\hbar\omega_0\alpha'^2$.`,
-      scope: String.raw`Valid at distances where the electron clouds do not overlap and retardation is negligible ($R\ll$ the wavelength of the dominant transitions; beyond that the $R^{-7}$ Casimir–Polder law takes over). The Drude estimate is accurate only to tens of percent: for argon it gives $\approx53$ a.u. while the best dipole-oscillator-strength and *ab initio* values are near $64$ a.u. (quoted from a literature range 62–65, not looked up in the primary source).`,
-      idea: String.raw`The first-order dipole–dipole energy vanishes because each atom's ground state has $\langle\boldsymbol\mu\rangle=0$ (4.4). At second order (4.5) the ground state is lowered by mixing in simultaneous excitations of both atoms, which is an effect of the *correlation* of the two fluctuating dipoles: the energy is $-\sum|W_{0,mn}|^2/(\Delta E)$ with $W\propto R^{-3}$, hence $R^{-6}$. The Drude model makes this exact: two oscillators coupled by $-2\mu_1\mu_2/4\pi\varepsilon_0R^3$ have normal modes $\omega_\pm=\omega_0\sqrt{1\pm\kappa}$ with $\kappa=2\alpha'/R^3$, and the zero-point energy sinks by $\tfrac12\hbar(\omega_++\omega_--2\omega_0)\approx-\hbar\omega_0\kappa^2/8$; adding the two transverse pairs ($\kappa/2$) gives $-\tfrac34\hbar\omega_0\alpha'^2/R^6$.`,
+      scope: String.raw`The nonretarded dipole approximation requires separated electron clouds and distances well below the relevant transition wavelengths. The one-frequency Drude coefficient is a model estimate, not a benchmark atomic coefficient. Static polarizabilities are the experimental values compiled in Dzuba et al.,TableI; first ionization energies use the NIST elemental tables. No empirical percentage-accuracy claim is made.`,
+      idea: String.raw`The first-order dipole–dipole energy vanishes because each atom's ground state has $\langle\boldsymbol\mu\rangle=0$ (4.4). At second order (4.5) the ground state is lowered by mixing in simultaneous excitations of both atoms, which is an effect of the *correlation* of the two fluctuating dipoles: the energy is $-\sum|W_{0,mn}|^2/(\Delta E)$ with $W=-\boldsymbol\mu_B\cdot\mathbf E_A$ from the dipole field (em-1.11), hence $W\propto R^{-3}$, hence $R^{-6}$. The Drude model makes this exact: two oscillators coupled by $-2\mu_1\mu_2/4\pi\varepsilon_0R^3$ have normal modes $\omega_\pm=\omega_0\sqrt{1\pm\kappa}$ with $\kappa=2\alpha'/R^3$, and the zero-point energy sinks by $\tfrac12\hbar(\omega_++\omega_--2\omega_0)\approx-\hbar\omega_0\kappa^2/8$; adding the two transverse pairs ($\kappa/2$) gives $-\tfrac34\hbar\omega_0\alpha'^2/R^6$.`,
       caption: String.raw`Pick a noble gas (polarizability $\alpha'$ from experiment and $\hbar\omega_0=$ the first ionisation energy, as London proposed) or edit the sliders, and drag the separation $R$. Left, on log-log axes: the exact zero-point energy shift of three coupled Drude oscillator pairs (blue) and the $-C_6/R^6$ asymptote (dashed); they merge at large $R$ with slope $-6$, and the model breaks down (grey zone, far inside the region where real atoms overlap) where $\kappa\to1$ and the soft mode collapses. Shrink $R$ to see the correlation tilt grow. Right: samples of the joint ground-state distribution of the two dipole coordinates along the axis, $(x_1,x_2)$ in units of $\sqrt{\hbar/m\omega_0}$: the cloud is tilted onto the diagonal because the fluctuations are correlated, and that correlation is what the energy comes from.`,
-      deps: ['qchem-4.5', 'qchem-4.6', 'qm-11.17'],
+      deps: ['qchem-4.5', 'qchem-4.6', 'qm-11.17', 'em-1.11'],
       see: ['qm-11.17', 'qchem-4.12'],
-      refs: ['McQuarrie ch. 8'],
+      refs: ['Skylaris §4.5, pp.32–34, Eqs.(150)–(159); Dzuba et al., arXiv1805.04989v2, p.3 TableI; NIST noble-gas atomic-data tables'],
       tags: ['dispersion', 'van der Waals', 'Drude model'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/London_dispersion_force' },
       viz(v) {
         const M = v.M;
@@ -277,7 +273,8 @@ and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$
         v.render(() => {
           const al = aS.value, w = wS.value, R = rS.value, C6 = 0.75 * w * al * al, k = (2 * al) / R ** 3;
           const Rc = (2 * al) ** (1 / 3);
-          sE.vband(1.2, Math.max(1.2001, Rc), { color: 'muted', alpha: 0.18 });
+          sE.setView([1.2,14],[Math.min(1e-4,.7*C6/14**6*1e3),Math.max(1e4,1.2*C6/1.2**6*1e3)]);
+          if(Rc>1.2) sE.vband(1.2,Rc,{color:'muted',alpha:.18});
           sE.fn((x) => (C6 / x ** 6) * 1e3, { color: 'orange', dash: true, width: 1.8, domain: [1.2, 14] });
           sE.fn((x) => { const e = dE(x, al, w); return Number.isNaN(e) ? NaN : -e * 1e3; }, { color: 'accent', width: 2.6, domain: [Math.max(1.2, Rc * 1.0001), 14] });
           const e = dE(R, al, w);
@@ -285,7 +282,7 @@ and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$
           sE.text('κ ≥ 1: model collapses', 1.3, 3e-4, { color: 'muted', size: 11 });
           // correlated Gaussians for the axial pair: modes (x1 ± x2)/√2 with ω² = ω0²(1 ∓ κ), variances 1/(2√(1∓κ)) in units of ħ/mω0
           if (k < 1) {
-            const vs = 1 / (2 * Math.sqrt(1 - k)), va = 1 / (2 * Math.sqrt(1 + k)), pts = Zs.map(([a, b]) => { const X = a * Math.sqrt(vs), Y = b * Math.sqrt(va); return [(X + Y) / Math.SQRT2, (X - Y) / Math.SQRT2]; });
+            const vs = 1 / (2 * Math.sqrt(1 - k)), va = 1 / (2 * Math.sqrt(1 + k)), span=Math.max(3.2,3*Math.sqrt((vs+va)/2));sS.setView([-span,span],[-span,span]);const pts = Zs.map(([a, b]) => { const X = a * Math.sqrt(vs), Y = b * Math.sqrt(va); return [(X + Y) / Math.SQRT2, (X - Y) / Math.SQRT2]; });
             sS.dots(pts, { r: 2, color: 'accent', alpha: 0.5 });
             sS.line(-3, -3, 3, 3, { color: 'faint', dash: true });
             sS.curve((t) => { const X = 2 * Math.sqrt(vs) * Math.cos(t), Y = 2 * Math.sqrt(va) * Math.sin(t); return [(X + Y) / Math.SQRT2, (X - Y) / Math.SQRT2]; }, 0, 2 * Math.PI, { color: 'orange', width: 2 });
@@ -301,21 +298,20 @@ and in London's one-frequency (Drude) approximation, with $\hbar\omega_0\approx$
       num: '4.12',
       kind: 'Model',
       name: 'Lennard-Jones potential',
-      credit: 'J. E. Jones, 1924 (Proc. R. Soc. A 106, 441 and 463; the $r^{-6}$ attraction, repulsive exponent fitted); named for Lennard-Jones, who developed it in 1931',
+      credit: 'Lennard-Jones12–6 and illustrative alternative repulsive walls',
       statement: String.raw`The Lennard-Jones (12–6) potential between two closed-shell atoms or molecules is
 $$U(r)=4\varepsilon\Big[\Big(\frac\sigma r\Big)^{12}-\Big(\frac\sigma r\Big)^{6}\Big],$$
-with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122\,\sigma$, and an attractive tail $-C_6/r^6$ with $C_6=4\varepsilon\sigma^6$ equal to the London dispersion coefficient (4.11). The repulsion $r^{-12}$ is a convenience (it is the square of $r^{-6}$); the real repulsion is closer to exponential.`,
-      scope: String.raw`An effective pair potential: its two parameters are fitted, so $C_6=4\varepsilon\sigma^6$ is generally larger than the true dispersion coefficient (for argon with $\varepsilon/k_B=119.8$ K and $\sigma=3.405$ Å it gives $\approx108$ a.u. against the Drude estimate $53$ a.u. of 4.11, because it also absorbs three-body and repulsion effects). The argon parameters are commonly used values; their original source was not checked.`,
-      idea: String.raw`Dispersion fixes the long-range form $-C_6/r^6$ (4.11) and the Pauli repulsion from overlapping closed shells (exclusion, 3.1) fixes a steep wall; any two-parameter curve with these two features has a well of the same character. Choosing the twelfth power makes the algebra trivial: setting $dU/dr=0$ gives $r_m=2^{1/6}\sigma$ and $U(r_m)=-\varepsilon$. How arbitrary the wall is shows up in the second virial coefficient $B_2(T)=2\pi N_A\int_0^\infty(1-e^{-U/k_BT})r^2dr$, which is sensitive to the well but only mildly to the steepness once the position and depth of the minimum are fixed.`,
+with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122\,\sigma$, and an attractive tail $-C_6/r^6$ with $C_6=4\varepsilon\sigma^6$ the tail coefficient of this fitted model (compare 4.11). The repulsion $r^{-12}$ is a convenience (it is the square of $r^{-6}$); the real repulsion is closer to exponential.`,
+      scope: String.raw`An effective pair potential: its two parameters are fitted, so $C_6=4\varepsilon\sigma^6$ need not equal the isolated-atom dispersion coefficient (for argon with $\varepsilon/k_B=119.8$ K and $\sigma=3.405$ Å it gives $\approx108$ a.u. against the Drude estimate $53$ a.u. of 4.11, a discrepancy that a two-parameter fit does not uniquely explain). The119.8K/3.405Å model scales are independently tabulated by Krekelberg et al.,Table1. Their simulation uses a shifted cutoff; this example uses the untruncated12–6 model. The exp-6 inner turnover is replaced by an explicitly artificial hard core for the integral.`,
+      idea: String.raw`Dispersion fixes the long-range form $-C_6/r^6$ (4.11) and the Pauli repulsion from overlapping closed shells (exclusion, 3.1) fixes a steep wall; any two-parameter curve with these two features has a well of the same character. Choosing the twelfth power makes the algebra trivial: setting $dU/dr=0$ gives $r_m=2^{1/6}\sigma$ and $U(r_m)=-\varepsilon$. How arbitrary the wall is shows up in the second virial coefficient $B_2(T)=2\pi N_A\int_0^\infty(1-e^{-U/k_BT})r^2dr$, obtained from the canonical Boltzmann factor (thermo-6.2), and sensitive to the well but only mildly to the steepness once the position and depth of the minimum are fixed.`,
       caption: String.raw`The curve uses the parameters of argon, $\varepsilon/k_B=119.8$ K ($10.32$ meV) and $\sigma=3.405$ Å. Choose the repulsive wall: the classical **12–6**, a generalised **$n$–6** with the same minimum $r_m$ and depth $\varepsilon$ and steepness $n$, or an **exp-6** (Buckingham) with steepness $\alpha$. Drag the steepness: the well stays put and the wall moves, and the exp-6 form turns over at very small $r$ and becomes unphysical (shaded). Right: the second virial coefficient computed from whatever $U$ you have, with the temperature where it changes sign (the Boyle temperature); for the 12–6 form it is $3.42\,\varepsilon/k_B\approx410$ K for argon's parameters. The potentials are models, not fits to measured data.`,
-      deps: ['qchem-4.11', 'qchem-3.1'],
+      deps: ['qchem-4.11', 'qchem-3.1', 'thermo-6.2'],
       see: ['qchem-4.11'],
-      refs: ['McQuarrie ch. 8'],
+      refs: ['Tong, Statistical Physics §2.5, pp.49–53, Eqs.(2.21)–(2.27); Krekelberg et al., NIST manuscript922033, §2.1 and Table1'],
       tags: ['Lennard-Jones', 'intermolecular potential', 'second virial coefficient'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lennard-Jones_potential' },
       viz(v) {
-        const EPS = 119.8 * KB_MEV, SIG = 3.405, RM = 2 ** (1 / 6) * SIG, NA = 0.6022140857;     // meV, Å, Å, 10⁻²⁴ mol⁻¹ (so Å³ → cm³/mol)
+        const EPS = 119.8 * KB_MEV, SIG = 3.405, RM = 2 ** (1 / 6) * SIG, NA = 0.602214076;     // meV, Å, Å, 10⁻²⁴ mol⁻¹ (so Å³ → cm³/mol)
         const form = v.select('repulsive wall', [{ value: 'lj', label: '12–6' }, { value: 'nm', label: '$n$–6' }, { value: 'exp', label: 'exp-6' }], 'lj', { onChange: (f) => { stp.el.hidden = f === 'lj'; if (f === 'nm') stp.set(16); if (f === 'exp') stp.set(14); } });
         const stp = v.slider('steepness ($n$ or $\\alpha$)', 8, 24, 14, { step: 0.1 });
         stp.el.hidden = true;
@@ -332,7 +328,7 @@ with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122
           for (let r = Math.max(rc, 0.3) + h / 2; r < 40; r += h) { const e = Math.exp(-U(f, s, r) / kT); I += (1 - (Number.isFinite(e) ? e : 0)) * r * r * h; }
           I += (Math.max(rc, 0.3) ** 3) / 3;
           const C6 = f === 'lj' ? 4 * EPS * SIG ** 6 : f === 'nm' ? (EPS * s * RM ** 6) / (s - 6) : (EPS * RM ** 6) / (1 - 6 / s);
-          I += (C6 / kT) / (3 * 40 ** 3);
+          I -= (C6 / kT) / (3 * 40 ** 3);
           return 2 * Math.PI * NA * I;
         };
         let info = null;
@@ -350,6 +346,7 @@ with $U(\sigma)=0$, a minimum $U=-\varepsilon$ at $r_m=2^{1/6}\sigma\approx1.122
           sU.text('σ', SIG, 27, { color: 'muted', align: 'center' });
           const Ts = Array.from({ length: 36 }, (_, i) => 60 + (940 * i) / 35), pts = Ts.map((T) => [T, B2(f, s, T)]);
           const ref = f === 'lj' ? null : Ts.map((T) => [T, B2('lj', 12, T)]);
+          const bv=[...pts,...(ref||[])].map(p=>p[1]);sB.setView([60,1000],[Math.min(-20,...bv)*1.12,Math.max(10,...bv)*1.15]);
           if (ref) sB.path(ref, { color: 'muted', dash: true, width: 1.6 });
           sB.hline(0, { color: 'faint' });
           sB.path(pts, { color: 'accent', width: 2.6 });

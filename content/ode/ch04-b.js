@@ -60,7 +60,7 @@ export default {
       name: 'Sturm–Liouville problems',
       statement: String.raw`A (regular) *Sturm–Liouville problem* on $[0,1]$ consists of the equation
 $$-(p\,u')'+q\,u=\lambda\,w\,u$$
-with $p\in C^1$, $p>0$, $w>0$ and $q$ real and continuous on $[0,1]$, together with separated boundary conditions $\cos\alpha\,u(0)-\sin\alpha\,p(0)u'(0)=0$ and $\cos\beta\,u(1)-\sin\beta\,p(1)u'(1)=0$ (Dirichlet: $u=0$; Neumann: $u'=0$). A number $\lambda$ is an *eigenvalue* if there is a nonzero solution (an *eigenfunction*) satisfying both conditions. Equivalently $\tau u=\lambda u$ for $\tau=\frac1w\big(-\frac d{dx}p\frac d{dx}+q\big)$, a symmetric operator in $L^2([0,1];w\,dx)$.`,
+with $p\in C^1$, $p>0$, $w>0$, with $w$ and $q$ real and continuous on $[0,1]$, together with separated boundary conditions $\cos\alpha\,u(0)-\sin\alpha\,p(0)u'(0)=0$ and $\cos\beta\,u(1)-\sin\beta\,p(1)u'(1)=0$ (Dirichlet: $u=0$; Neumann: $u'=0$). A number $\lambda$ is an *eigenvalue* if there is a nonzero solution (an *eigenfunction*) satisfying both conditions. Equivalently $\tau u=\lambda u$ for $\tau=\frac1w\big(-\frac d{dx}p\frac d{dx}+q\big)$, a symmetric operator in $L^2([0,1];w\,dx)$.`,
       idea: String.raw`Almost every second-order linear equation can be put into this *self-adjoint* form by multiplying by an integrating factor ($p=e^{\int a_1}$ for $u''+a_1u'+\dots$), and almost every classical equation of mathematical physics (vibrating strings and rods, quantum wells, Bessel and Legendre equations on intervals) is of this kind. The eigenvalue problem is solved here by *shooting*: for each $\lambda$ solve the initial value problem that satisfies the left condition and look for the $\lambda$ at which the right condition also holds (compare 4.6, where this was done by hand).`,
       caption: String.raw`Choose a preset or type your own $p,q,w$ (functions of $x$; $p,w$ must stay positive) and the boundary conditions. The eigenvalues are found by shooting and bisection; the first eigenfunctions are drawn (their eigenvalues are listed under the picture) and the coefficient functions are shown on the right. A heavier right end ($w$ large) lowers the eigenvalues, a stiffer middle ($p$ large) raises them, and Neumann ends allow $\lambda=0$ when $q=0$.`,
       deps: ['ode-4.6'],
@@ -101,17 +101,17 @@ with $p\in C^1$, $p>0$, $w>0$ and $q$ real and continuous on $[0,1]$, together w
       num: '4.8',
       kind: 'Definition',
       name: 'Green’s function of a boundary value problem',
-      statement: String.raw`For $Lu=-(pu')'+qu$ with Dirichlet conditions $u(0)=u(1)=0$ such that $0$ is not an eigenvalue, let $u_1,u_2$ be solutions of $Lu=0$ with $u_1(0)=0$ and $u_2(1)=0$. The *Green's function* is
+      statement: String.raw`For real $p\in C^1$, $p>0$, continuous real $q$, and $Lu=-(pu')'+qu$ with Dirichlet conditions $u(0)=u(1)=0$ such that $0$ is not an eigenvalue, let $u_1,u_2$ be nonzero solutions of $Lu=0$ with $u_1(0)=0$ and $u_2(1)=0$. The *Green's function* is
 $$G(x,s)=\frac{u_1(\min(x,s))\,u_2(\max(x,s))}{C},\qquad C=p\,(u_1'u_2-u_1u_2')\ \text{(a nonzero constant)}.$$
 It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditions in $x$, solves $LG(\cdot,s)=0$ away from $x=s$ and has the jump $p\,\partial_xG\big|_{s^-}^{s^+}=-1$ there (a unit point force at $s$). For every continuous $f$ the problem $Lu=f$, $u(0)=u(1)=0$ has the unique solution $u(x)=\int_0^1G(x,s)f(s)\,ds$.`,
       idea: String.raw`Fix $s$ and ask for the solution of $Lu=\delta_s$. To the left of $s$ it must satisfy the left boundary condition, so it is a multiple of $u_1$; to the right a multiple of $u_2$; the two multiples are fixed by continuity at $s$ and by the jump of $pu'$ equal to $-1$, which is where the constant $C$ (the Wronskian of $u_1,u_2$ times $p$, constant by Abel's identity 3.11) enters. Symmetry is visible from the formula. Superposing point forces gives $u=\int G f$: this is variation of constants (3.12) with boundary conditions in place of initial ones.`,
       caption: String.raw`The blue curve is the displacement $G(\cdot,s)$ of a string (or beam on an elastic foundation, or a tapered string) held at both ends under a unit force at $s$; the dashed orange curve is $G(\cdot,t)$ for a force at $t$. Drag the point $(t,s)$ in the right-hand map of $G(x,s)$: the two heights $G(t,s)$ and $G(s,t)$ (dots) are always equal. Pick a load $f$ to see the solution $\int Gf$ (green) match a direct finite-difference solution of $Lu=f$ (black dashed).`,
       deps: ['ode-4.7', 'ode-3.12'],
-      refs: ['Teschl §5.3'],
+      refs: ['Teschl §5.4 pp. 157–160, Eqs. (5.59)–(5.68), Lemma 5.10'],
       tags: ['Green function', 'boundary value problem', 'impulse response'],
-      credit: 'G. Green, 1828 (Green’s functions); the one-dimensional boundary-value form is later',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Green%27s_function' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
                 const sA = v.stage({ x: [0, 1], y: [-0.03, 0.34], axes: 'box', gutter: true, height: 330, xlabel: 'x', ylabel: 'G', title: 'response to a unit force', weight: 1.2, minWidth: 290 });
         const sM = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 330, xlabel: 'x', ylabel: 's', title: 'the map of $G(x,s)$', weight: 0.9, minWidth: 250 });
@@ -176,14 +176,14 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
       kind: 'Theorem',
       name: 'Regular Sturm–Liouville eigenvalues and eigenfunctions',
       statement: String.raw`For a regular Sturm–Liouville problem (4.7) the eigenvalues are real and simple and form a sequence $\lambda_1<\lambda_2<\lambda_3<\cdots\to+\infty$ (bounded below). The eigenfunctions $u_n$ can be chosen real; eigenfunctions of different eigenvalues are orthogonal in $L^2([0,1];w\,dx)$, $\int_0^1u_mu_nw\,dx=0$ for $m\ne n$; and (4.10) they form an orthonormal basis of that space. Asymptotically $\lambda_n\sim\big(n\pi/\int_0^1\sqrt{w/p}\,dx\big)^2$.`,
-      idea: String.raw`Self-adjointness does the work: for $\tau u=\lambda u$, $\tau v=\mu v$ integration by parts leaves only boundary terms, which vanish for separated conditions, so $(\lambda-\mu)\int uvw=0$; taking $v=\bar u$ shows $\lambda$ real, and different eigenvalues give orthogonal functions. Simplicity: both solutions of the initial value problem satisfying the left condition are multiples of one function, so the eigenspace is one-dimensional. Existence of infinitely many eigenvalues follows from the Green function (4.8) giving a compact self-adjoint inverse operator, to which the spectral theorem for compact operators applies (fa-12.30); the Weyl asymptotics follow from the Prüfer-angle argument behind 4.13.`,
+      idea: String.raw`Self-adjointness does the work: for $\tau u=\lambda u$, $\tau v=\mu v$ integration by parts leaves only boundary terms, which vanish for separated conditions, so $(\lambda-\mu)\int uvw=0$; taking $v=\bar u$ shows $\lambda$ real, and different eigenvalues give orthogonal functions. Simplicity: both solutions of the initial value problem satisfying the left condition are multiples of one function, so the eigenspace is one-dimensional. Existence of infinitely many eigenvalues follows from the Green function (4.8) giving a compact self-adjoint inverse operator, to which the spectral expansion for compact self-adjoint operators applies (fa-12.29 and fa-12.30); the Weyl asymptotics follow from the Prüfer-angle argument behind 4.13.`,
       caption: String.raw`The first eigenfunctions are computed by shooting (left); the matrix in the middle is $\langle u_i,u_j\rangle_w$ computed by quadrature: ones on the diagonal and zeros (to about $10^{-8}$) elsewhere. Right: $\lambda_n$ divided by the Weyl prediction $(n\pi/S)^2$ approaches $1$. Edit $p,q,w$ or the boundary conditions — the structure survives, only the numbers move.`,
       deps: ['ode-4.8', 'fa-12.30', 'fa-4.25'],
-      refs: ['Teschl §5.4', 'Teschl §5.2'],
+      refs: ['Teschl §5.4 pp. 158–163, Theorem 5.11 and Lemma 5.12; §5.5 p. 173, Theorem 5.25 (Weyl asymptotics for p,w in C¹)'],
       tags: ['Sturm–Liouville', 'spectral theorem', 'orthogonality'],
-      credit: 'C. Sturm & J. Liouville, 1836–1837 (operator-theoretic proofs: Hilbert, Steklov, early 1900s)',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sE = v.stage({ x: [0, 1], y: [-2.2, 2.2], axes: 'box', gutter: true, height: 300, xlabel: 'x', ylabel: 'u_n', title: 'eigenfunctions', weight: 1.1, minWidth: 260 });
         const sG = v.stage({ x: [-0.9, 6.15], y: [-0.2, 6.2], aspect: 1, axes: false, title: 'Gram matrix $\\langle u_i,u_j\\rangle_w$', weight: 0.9, minWidth: 250 });
@@ -223,15 +223,15 @@ It is continuous and symmetric, $G(x,s)=G(s,x)$, satisfies the boundary conditio
       name: 'Eigenfunction expansions',
       statement: String.raw`Let $u_1,u_2,\dots$ be the orthonormal eigenfunctions of a regular Sturm–Liouville problem in $L^2([0,1];w\,dx)$. Every $f$ in this space is the $L^2$-limit of its eigenfunction series,
 $$f=\sum_{n\ge1}c_nu_n,\qquad c_n=\int_0^1f\,u_n\,w\,dx,\qquad \|f\|_w^2=\sum_n|c_n|^2\ \ (\text{Parseval}),$$
-i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is also continuous, piecewise $C^1$ and satisfies the boundary conditions, the series converges absolutely and uniformly.`,
-      idea: String.raw`The partial sums are orthogonal projections onto $\operatorname{span}(u_1,\dots,u_N)$, so by Pythagoras $\|f-S_N\|^2=\|f\|^2-\sum_{n\le N}c_n^2$ and Bessel's inequality holds. Parseval, i.e. completeness, is the nontrivial part: the eigenfunctions of the compact self-adjoint Green operator (4.8) span the orthogonal complement of its kernel, and the kernel is $\{0\}$ because $0$ is not an eigenvalue. Smoothness controls speed: integrating by parts twice with $\tau u_n=\lambda_nu_n$ gives $c_n=\langle\tau f,u_n\rangle/\lambda_n$, so $c_n$ decays like $n^{-2}$ if $f$ is smooth enough and satisfies the boundary conditions, and much more slowly otherwise.`,
+i.e. $\big\|f-\sum_{n\le N}c_nu_n\big\|_w\to0$. If $f$ is continuous, piecewise $C^1$ and satisfies any Dirichlet endpoint conditions, the series converges absolutely and uniformly. Derivative conditions at Neumann or Robin endpoints are not required for this form-domain conclusion.`,
+      idea: String.raw`The partial sums are orthogonal projections onto $\operatorname{span}(u_1,\dots,u_N)$, so by Pythagoras $\|f-S_N\|^2=\|f\|^2-\sum_{n\le N}|c_n|^2$ and Bessel's inequality holds. Parseval, i.e. completeness, is the nontrivial part: the eigenfunctions of the compact self-adjoint Green operator (4.8) span the orthogonal complement of its kernel, and the kernel of this inverse is $\{0\}$. If $0$ is an eigenvalue of the differential operator, first use the inverse of a shift $L-z$ with $z$ outside its spectrum; this has the same eigenfunctions. Smoothness controls speed: integrating by parts twice with $\tau u_n=\lambda_nu_n$ gives $c_n=\langle\tau f,u_n\rangle/\lambda_n$, so $c_n$ decays like $n^{-2}$ if $f$ is smooth enough and satisfies the boundary conditions, and much more slowly otherwise.`,
       caption: String.raw`Pick a function or draw your own by dragging across the top panel, pick a Sturm–Liouville problem (the classical case $p=w=1$ gives sine or cosine series), and add terms with the slider: the partial sum (orange) approaches $f$ (blue) in mean square. Middle: the coefficients $c_n$. Right: the weighted $L^2$ error against $N$ on a log scale, together with the Parseval value $\sqrt{\|f\|^2-\sum c_n^2}$, which agrees with it. A function that violates the boundary conditions (the parabola with Dirichlet ends is fine; $1$ is not) converges slowly and shows the Gibbs effect near the ends.`,
       deps: ['ode-4.9', 'rca-4.18'],
-      refs: ['Teschl §5.4'],
+      refs: ['Teschl §5.4 pp. 160–163, Theorem 5.11 and Lemma 5.13 (form-domain uniform convergence)'],
       tags: ['eigenfunction expansion', 'Fourier series', 'completeness'],
-      credit: 'J. Fourier (special cases, 1822); general completeness: V. Steklov, 1896 onward',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sturm%E2%80%93Liouville_theory#Sturm%E2%80%93Liouville_theory' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sF = v.stage({ x: [0, 1], y: [-1.5, 1.5], axes: 'box', gutter: true, height: 300, xlabel: 'x', ylabel: 'f', title: 'function and partial sum (drag to draw)', weight: 1.3, minWidth: 290 });
         const sC = v.stage({ x: [0, 31], y: [-1, 1], axes: 'box', gutter: true, height: 300, xlabel: 'n', ylabel: 'c_n', title: 'coefficients', weight: 0.9, minWidth: 230 });

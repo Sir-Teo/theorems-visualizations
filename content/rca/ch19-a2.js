@@ -1,7 +1,8 @@
+import {quasiIntroduction,derivativeClassAlgebra,quasiDefinition} from './quasianalytic-restorations.shared.js';
 // Rudin, Real and Complex Analysis — Chapter 19 (part 2): quasi-analytic classes and the Denjoy–Carleman theorem
 //
 // 19.11 is Rudin's number for the Denjoy–Carleman theorem. The numbers of the definition (19.5) and of the
-// statement that C{n!} is quasi-analytic (19.6) could not be confirmed and carry `verify: true`.
+// Canonical numbering follows the inspected third edition; definitions19.6/8 are separate.
 
 // ---------------------------------------------------------------- helpers shared by this file
 const TAU = 2 * Math.PI;
@@ -107,20 +108,20 @@ function dcSums(kind, s) {
 export default {
   collection: 'rca',
   chapter: 19,
-  items: [
+  items: [quasiIntroduction,derivativeClassAlgebra,quasiDefinition,
     // ------------------------------------------------------------------ quasi-analytic classes
     {
-      num: '19.5',
+      num: '19.6',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section19.6, pp.377–378; quasi-analytic definition19.8, p.378'],
       kind: 'Definition',
-      name: 'The classes C{Mₙ}; quasi-analytic classes',
-      verify: true,
+      name: 'The derivative classes C{Mₙ}',
       statement: String.raw`Let $M_0,M_1,M_2,\dots$ be positive numbers. $C\{M_n\}$ is the class of all $f\in C^\infty(\R)$ for which there are constants $\beta_f$ and $B_f$, depending on $f$ but not on $n$, with
 $$\|D^nf\|_\infty\le\beta_f\,B_f^{\,n}\,M_n\qquad(n=0,1,2,\dots);$$
 here $D^nf$ is the $n$-th derivative of $f$ and $\|\cdot\|_\infty$ is the supremum norm on $\R$.
 
 A class $C\subset C^\infty(\R)$ is **quasi-analytic** if the only $f\in C$ with $(D^nf)(0)=0$ for every $n\ge0$ is $f\equiv0$. Because $C\{M_n\}$ is a vector space and is invariant under translations, $C\{M_n\}$ is quasi-analytic exactly when any two of its members whose derivatives of all orders agree at one point coincide everywhere.`,
-      idea: String.raw`Holomorphic functions are rigid — by the identity theorem a function is determined by its germ at one point — and real-analytic functions obey bounds $\|D^nf\|\le\beta B^nn!$; such bounds by themselves already force rigidity (19.6). Plain $C^\infty$ is not rigid at all: $e^{-1/x}$, extended by $0$ for $x\le0$, has every derivative equal to $0$ at the origin. Its derivatives grow roughly like $(2n)!\approx4^n(n!)^2$, so it lies in $C\{(n!)^2\}$, which is therefore *not* quasi-analytic. How fast $M_n$ may grow before rigidity is lost is exactly what the Denjoy–Carleman theorem 19.11 decides.`,
-      caption: String.raw`Pick a function and raise the Taylor degree $N$. Left: $f$ (ink), its Taylor polynomial $T_N$ at $0$ (gold) and, when there is one, a *different* function with the same derivatives of every order at $0$ (blue, dashed). Right: the constant $B_n=(\|D^nf\|_\infty/M_n)^{1/n}$ that the order-$n$ inequality demands, for $M_n=n!$ and for $M_n=(n!)^2$, computed from exact formulas for $D^nf$; a bounded sequence means $f$ belongs to the class. $\frac1{1+x^2}$ lies in $C\{n!\}$; the flat function $e^{-1/x}$ escapes $C\{n!\}$ but sits in $C\{(n!)^2\}$, so that larger class cannot be quasi-analytic.`,
+      idea: String.raw`Holomorphic functions are rigid — by the identity theorem a function is determined by its germ at one point — and real-analytic functions obey bounds $\|D^nf\|\le\beta B^nn!$; such bounds by themselves already force rigidity (19.9). Plain $C^\infty$ is not rigid at all: $e^{-1/x}$, extended by $0$ for $x\le0$, has every derivative equal to $0$ at the origin. For the positive branch, Cauchy estimates on discs of radius$x/2$ give$|f^{(n)}(x)|\le n!(2/x)^n e^{-c/x}$ for an absolute$c>0$. Maximizing in$x$ bounds this by$C^n(n!)^2$, so it lies in$C\{(n!)^2\}$, which is therefore *not* quasi-analytic. How fast $M_n$ may grow before rigidity is lost is exactly what the Denjoy–Carleman theorem 19.11 decides.`,
+      caption: String.raw`Pick a function and raise the Taylor degree $N$. Left: $f$ (ink), its Taylor polynomial $T_N$ at $0$ (gold) and, when there is one, a *different* function with the same derivatives of every order at $0$ (blue, dashed). Right: sampled estimates of$B_n=(\|D^nf\|_\infty/M_n)^{1/n}$ that the order-$n$ inequality demands, for $M_n=n!$ and for $M_n=(n!)^2$, estimated by sampling exact formulas for$D^nf$ on finite grids. These24orders do not prove a supremum over all$x$ or boundedness of an infinite sequence; the analytic arguments establish class membership. $\frac1{1+x^2}$ lies in $C\{n!\}$; the flat function $e^{-1/x}$ escapes $C\{n!\}$ but sits in $C\{(n!)^2\}$, so that larger class cannot be quasi-analytic.`,
       deps: ['pma-5.14'],
       see: ['rca-10.18a', 'pma-5.15', 'pma-8.5'],
       tags: ['quasi-analytic', 'smooth functions'],
@@ -186,18 +187,18 @@ A class $C\subset C^\infty(\R)$ is **quasi-analytic** if the only $f\in C$ with 
       },
     },
     {
-      num: '19.6',
+      num: '19.9',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem19.9 and complete proof, pp.378–379'],
       kind: 'Theorem',
       name: 'The class C{n!} is quasi-analytic',
-      verify: true,
-      statement: String.raw`Let $f\in C\{n!\}$, say $\|D^nf\|_\infty\le\beta B^n n!$ for $n=0,1,2,\dots$ Then $f$ is the restriction to $\R$ of a function $F$ holomorphic in the strip $\{z:|\Im z|<1/B\}$: for every real $a$ the Taylor series of $f$ at $a$ converges to $f$ on $(a-1/B,a+1/B)$, and its sum is $F$ on the disc $D(a;1/B)$.
+      statement: String.raw`Let $f\in C\{n!\}$, say $\|D^nf\|_\infty\le\beta B^n n!$ for $n=0,1,2,\dots$ Then $f$ is the restriction to $\R$ of a function $F$ holomorphic in the strip $\{z:|\Im z|<1/B\}$: for every real $a$ the Taylor series of $f$ at $a$ converges to $f$ on $(a-1/B,a+1/B)$, and its sum is$F$ on$D(a;1/B)$. For each$0<b<1/B$,$|F(z)|\le\beta/(1-Bb)$ on$|\Im z|<b$.
 
 Conversely, if $F$ is holomorphic in a strip $\{|\Im z|<\delta\}$ and $|F|\le\beta$ there, then $f=F|_{\R}$ satisfies $\|D^nf\|_\infty\le\beta\,n!\,\delta^{-n}$, so $f\in C\{n!\}$.
 
 In particular $C\{n!\}$ is quasi-analytic.`,
-      idea: String.raw`Taylor's formula with remainder at $a$ gives $|f(x)-T_N(x)|\le\|D^{N+1}f\|_\infty\frac{|x-a|^{N+1}}{(N+1)!}\le\beta\,(B|x-a|)^{N+1}\to0$ when $|x-a|<1/B$, and the coefficients satisfy $|f^{(n)}(a)|/n!\le\beta B^n$, so the series also converges in the complex disc $D(a;1/B)$. Sums centred at different points agree on overlapping real intervals, hence (identity theorem) on overlapping discs, and glue to one $F$ on the strip. If every derivative vanishes at $0$, then $F=0$ on $D(0;1/B)$ and hence on the connected strip. The converse is Cauchy's estimate on discs of radius $r<\delta$ centred on $\R$.`,
+      idea: String.raw`Taylor's formula with remainder at $a$ gives $|f(x)-T_N(x)|\le\|D^{N+1}f\|_\infty\frac{|x-a|^{N+1}}{(N+1)!}\le\beta\,(B|x-a|)^{N+1}\to0$ when $|x-a|<1/B$, and the coefficients satisfy $|f^{(n)}(a)|/n!\le\beta B^n$, so the series also converges in the complex disc $D(a;1/B)$. Sums centred at different points agree on overlapping real intervals, hence (identity theorem) on overlapping discs, and glue to one $F$ on the strip. If every derivative vanishes at $0$, then $F=0$ on $D(0;1/B)$ and hence on the connected strip. The Taylor coefficients at$\Re z$ also give$|F(z)|\le\beta\sum(Bb)^n$ on each narrower strip. The converse is Cauchy's estimate on discs of radius $r<\delta$ centred on $\R$.`,
       caption: String.raw`Drag the base point $a$ along the real axis and the point $w$ anywhere. Left: phase portrait of the holomorphic extension $F$, the strip $|\Im z|<1/B$ forced by the derivative bound (green), the disc $D(a;1/B)$ (orange) and the true disc of convergence (dashed). Right: the partial sums $S_N(w)=\sum_{n\le N}\frac{f^{(n)}(a)}{n!}(w-a)^n$, built from the derivatives at $a$ alone, spiral into $F(w)$ when $w$ is inside the disc and fly off when it is not. Chaining such discs covers the strip, so the germ at one point fixes $f$. The flat function $e^{-1/x}$ admits no strip: its discs shrink to a point at $0$, and its germ at any $a\le0$ is $0$.`,
-      deps: ['rca-19.5', 'rca-10.16', 'rca-10.18', 'rca-10.26', 'pma-5.15'],
+      deps: ['rca-19.6', 'rca-10.16', 'rca-10.18', 'rca-10.26', 'pma-5.15'],
       see: ['pma-8.1a'],
       tags: ['quasi-analytic', 'power series'],
       viz(v) {
@@ -325,7 +326,7 @@ For (e)$\Rightarrow$(a), convolve normalised boxes of half-widths $\lambda_1,\la
 
 For (a)$\Rightarrow$(c), take $f\in C\{M_n\}$, $f\not\equiv0$, flat at $0$. Integrating by parts $n$ times bounds its Laplace transform $\int_0^\infty f(t)e^{-wt}\,dt$ by a constant times $1/q(|w|/B)$ in a half-plane; a bounded holomorphic function there that is not identically $0$ has $\log|F|$ integrable against the Poisson weight on the boundary (as for $H^\infty$ of the disc), and that is (c).`,
       caption: String.raw`Pick a log-convex sequence: $(n!)^s$ with adjustable $s$, or the borderline $n!(\log n)^n$ and $n!(\log n)^{2n}$. Top: partial sums of (d) and (e), and the integral (c) up to $x_N=M_N/M_{N-1}$, against $N$ on a logarithmic axis (exact up to $10^5$ terms, then continued by the Euler–Maclaurin integral up to $10^9$); they converge or diverge together. Bottom: the construction behind (e)$\Rightarrow$(a), the convolution $\varphi_K$ of $K+1$ normalised boxes of half-widths $\lambda_1,\lambda_1,\lambda_2,\dots,\lambda_K$ with $\lambda_k=M_{k-1}/M_k$ (faint: fewer boxes). When $\sum\lambda_k<\infty$ the supports stay inside $[-a_\infty,a_\infty]$ and the limit is a nonzero member of $C\{M_n\}$ with compact support; when it diverges ($s\le1$, or $n!(\log n)^n$) the support runs off to infinity.`,
-      deps: ['rca-19.5', 'rca-19.3', 'rca-17.17', 'rca-15.6'],
+      deps: ['rca-19.6', 'rca-19.3', 'rca-17.17', 'rca-15.6'],
       see: ['pma-8.22', 'rca-15.5'],
       tags: ['quasi-analytic', 'Denjoy–Carleman', 'Fourier transform'],
       viz(v) {

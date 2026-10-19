@@ -95,7 +95,8 @@ $$E(X-Y)^2=E\big(X-E(X\mid\mathcal F)\big)^2+E\big(E(X\mid\mathcal F)-Y\big)^2 .
       num: '4.1.15a',
       kind: 'Definition',
       name: 'Regular conditional distribution',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.1.3, p. 214 (regular conditional distribution definition)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $X:(\Omega,\mathcal F_0)\to(S,\mathcal S)$ be measurable and $\mathcal G\subset\mathcal F_0$ a σ-field. A **regular conditional distribution** for $X$ given $\mathcal G$ is a function $\mu:\Omega\times\mathcal S\to[0,1]$ such that
 
 (i) for each $A\in\mathcal S$, $\omega\mapsto\mu(\omega,A)$ is a version of $P(X\in A\mid\mathcal G)$;
@@ -191,7 +192,8 @@ $$E\big(f(X)\mid\mathcal F\big)(\omega)=\int\mu(\omega,dx)\,f(x)\quad\text{a.s.}
       caption: String.raw`Here $S=\R$ and $\varphi=\mathrm{id}$, for one conditioning value (slide the mean $m$). The dots are versions $G(q)$ of $P(X\le q\mid\mathcal G)$ at rational points $q$ (you choose how many); since each version is only defined a.s., every point carries an independent error, drawn here between $-0.3\epsilon$ and $\epsilon$ (red = out of order). The blue step curve is $F(x)=\inf_{q>x}G(q)$. With the toggle on, the exceptional null set is discarded ($\epsilon$ becomes $0$) and $F$ is the true conditional distribution function (green dashed). With it off, $F$ is still nondecreasing and right-continuous, but it does not reach $0$ at $-\infty$ and misses the truth: this is exactly why the null sets must be thrown away.`,
       deps: ['prob-4.1.15a', 'prob-3.2.12', 'prob-4.1.9', 'prob-2.1.22'],
       credit: 'Existence on nice spaces as in Durrett; counterexample by Dieudonné, 1948 (as cited by Durrett)',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.1.17 and proof, pp. 214–215; Theorem 2.1.22 (nice spaces)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['conditional expectation', 'kernels'],
       viz(v) {
         const mS = v.slider('conditioning value (mean $m$)', -1.5, 1.5, 0.3, { step: 0.05 });
@@ -273,17 +275,17 @@ So the conditional law is a kernel in the *value* $y$ of $Y$, not merely a funct
       num: '4.2.1a',
       kind: 'Definition',
       name: 'Filtration and martingale (sub-, super-)',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.2, pp. 217–218 (filtration, adaptedness and martingale definitions)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A **filtration** is an increasing sequence of σ-fields $\mathcal F_0\subset\mathcal F_1\subset\cdots$. A sequence $X_n$ is **adapted** to $(\mathcal F_n)$ if $X_n\in\mathcal F_n$ for every $n$. An adapted sequence with $E|X_n|<\infty$ is a
 
 - **martingale** if $E(X_{n+1}\mid\mathcal F_n)=X_n$ for all $n$ (a fair game);
 - **supermartingale** if $E(X_{n+1}\mid\mathcal F_n)\le X_n$ (an unfavourable game);
 - **submartingale** if $E(X_{n+1}\mid\mathcal F_n)\ge X_n$ (a favourable game).`,
-      idea: String.raw`$\mathcal F_n$ is the information available at time $n$ and $X_n$ is your fortune. The definition asks that the best prediction of tomorrow's fortune from today's information equals (or is below, or above) today's fortune. The names are historical: "super" refers to superharmonic functions, for which the value at a point is at least the average over a ball, not to a favourable game. The word *martingale* in this probabilistic sense is due to Ville (1939), after earlier work of Lévy.`,
+      idea: String.raw`$\mathcal F_n$ is the information available at time $n$ and $X_n$ is your fortune. The definition asks that the best prediction of tomorrow's fortune from today's information equals (or is below, or above) today's fortune. The names are historical: "super" refers to superharmonic functions, for which the value at a point is at least the average over a ball, not to a favourable game. The terminology follows Durrett §4.2.`,
       caption: String.raw`A game of $\pm1$ steps that is won with probability $p$. The thin grey curves are 39 of 2000 seeded plays; the blue path is the one followed. Drag the gold handle along it to move the current time $m$: the two arrows show the possible next values, and the ring marks $E(X_{m+1}\mid\mathcal F_m)=X_m+2p-1$. For $p=\tfrac12$ it sits exactly on the current value (martingale); for $p>\tfrac12$ above it (submartingale); below for $p<\tfrac12$ (supermartingale). The dashed orange line is the mean over the 2000 plays, which tracks $X_0+n(2p-1)$.`,
       deps: ['prob-4.1.1a'],
       see: ['stoch-12.1'],
-      credit: 'Ville, 1939 (the term); developed by Doob',
       tags: ['martingales', 'foundations'],
       viz(v) {
         const pS = v.slider('win probability $p$', 0.2, 0.8, 0.5, { step: 0.01 });

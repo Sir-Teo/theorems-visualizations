@@ -1,5 +1,5 @@
 // Atmosphere & Ocean Dynamics — Chapter 3: Balanced flow (items 3.6–3.9; 3.1–3.5 are in ch03.js)
-import { clamp, RAD, TAU, fcor, sgn, log10, pAt, gradP, lapP, geoWind, adjustSim, etaFinal, cubicRoots, betaOf, potentialIntensity, hollandP, hollandV, deficitForVmax, saffirName, RHO_TC } from './ch03.shared.js';
+import { clamp, RAD, TAU, fcor, sgn, log10, pAt, gradP, lapP, geoWind, adjustSim, etaFinal, cubicRoots, betaOf, potentialIntensity, hollandP, hollandV, deficitForVmax, hollandMaximum, RHO_TC } from './ch03.shared.js';
 
 const fsafe = (lat) => { const f = fcor(lat); return Math.abs(f) < 1e-6 ? (f < 0 ? -1e-6 : 1e-6) : f; };
 
@@ -210,26 +210,26 @@ for a single shallow-water layer. Divergent flow is slaved to the balanced flow,
     {
       num: '3.9', kind: 'Phenomenon', name: 'Tropical cyclones',
       verify: true,
-      statement: String.raw`A tropical cyclone is a warm-core, nearly axisymmetric vortex that draws its energy from the enthalpy flux from the warm sea. Outside the core the wind is in **gradient-wind balance** (3.3); within the eyewall the Rossby number $V/fr$ is of order 100, so the balance is nearly cyclostrophic. A parametric radial profile (Holland) $p(r)=p_c+(p_n-p_c)e^{-(R_m/r)^B}$ gives a gradient wind that peaks at the radius of maximum wind $R_m$ with $V_{\max}\approx\sqrt{B\,\Delta p/(\rho e)}$, $\Delta p=p_n-p_c$. Emanuel's thermodynamic theory bounds the intensity: the **maximum potential intensity** satisfies
+      statement: String.raw`A tropical cyclone is a warm-core, nearly axisymmetric vortex that draws its energy from the enthalpy flux from the warm sea. Outside the core the wind is in **gradient-wind balance** (3.3); within the eyewall the Rossby number $V/fr$ is large, so the balance is nearly cyclostrophic. A parametric radial profile (Holland) $p(r)=p_c+(p_n-p_c)e^{-(R_m/r)^B}$ has its cyclostrophic wind maximum at the radius parameter $R_m$, with $V_{\max}\approx\sqrt{B\,\Delta p/(\rho e)}$, $\Delta p=p_n-p_c$. The Coriolis term shifts the gradient-wind maximum slightly inward. With dissipative heating included, the Bister–Emanuel thermodynamic model gives a potential intensity: the **maximum potential intensity** satisfies
 $$V_p^2=\frac{C_k}{C_d}\,\frac{T_s-T_o}{T_o}\,\bigl(k_0^*-k\bigr),$$
-with sea-surface temperature $T_s$, outflow temperature $T_o$, exchange coefficients $C_k$ and $C_d$ of enthalpy and momentum, and the enthalpy difference between the saturated sea surface and the boundary-layer air. Warmer ocean means a larger bound and a deeper central pressure.`,
-      idea: String.raw`Treat the storm as a Carnot-like engine: air spirals in over the sea, picks up enthalpy at nearly the sea-surface temperature, rises in the eyewall and flows out at the cold tropopause $T_o$, so a fraction $(T_s-T_o)/T_o$ of the enthalpy taken up is turned into kinetic energy, which friction dissipates (the ratio $C_k/C_d$ sets how much enthalpy is picked up per unit drag). Equating the work done by the engine with the dissipation near the surface gives $V_p^2$ above. The balanced wind associated with a pressure profile follows from 3.3, and the thermal structure (the warm core, thermal wind 3.4, a vortex that weakens with height) from hydrostatic balance with the temperature excess of the core. A warmer sea raises $k_0^*$ exponentially through Clausius–Clapeyron (1.5, applying its saturation vapour pressure at the sea surface).`,
-      caption: String.raw`**Drag the gold handle** along the potential-intensity curve to change the sea-surface temperature, then set how much of the bound the storm reaches, the profile shape $B$, the radius of maximum wind $R_m$ and the latitude. The plan view is the wind speed of the Holland vortex whose central pressure is chosen (numerically) so that its **gradient wind** peaks at the target speed; the middle panel compares that gradient wind with the geostrophic and cyclostrophic estimates. This is a **parametric vortex plus a simplified potential-intensity formula**, not a time-stepping hurricane simulation (the syllabus plan), and the numbers are model values: $T_o=203$ K, $C_k/C_d=1$, boundary-layer air at $T_s-1$ K and 80% humidity, so the potential intensity is only indicative at low SST.`,
-      deps: ['geo-3.3', 'geo-1.7'],
-      refs: ['Vallis', 'Pierrehumbert'],
+with sea-surface temperature $T_s$, outflow temperature $T_o$, exchange coefficients $C_k$ and $C_d$ of enthalpy and momentum, and the enthalpy difference between the saturated sea surface and the boundary-layer air. Holding outflow temperature and the chosen boundary-layer humidity fixed, a warmer sea raises this illustrative bound.`,
+      idea: String.raw`Air gains enthalpy from the warm sea and flows out at a colder temperature. The Carnot efficiency is $(T_s-T_o)/T_s$. Bister and Emanuel include the return of dissipated kinetic energy as atmospheric heat: in their simplified steady high-wind balance this replaces that factor by $(T_s-T_o)/T_o$ in the intensity equation (1998, eq. 21). This coefficient is not the ordinary Carnot efficiency. The prescribed pressure profile determines gradient wind through $V^2/r+fV=\rho^{-1}dp/dr$; solving it, and locating its maximum, sets the model's pressure deficit for the target speed.`,
+      caption: String.raw`**Drag the gold handle** along the potential-intensity curve to change the sea-surface temperature, then set how much of the bound the storm reaches, the profile shape $B$, the cyclostrophic radius scale $R_m$ and the latitude. The plan view is the wind speed of the Holland vortex whose central pressure is chosen (numerically) so that its **gradient wind** peaks at the target speed; the middle panel compares that gradient wind with the geostrophic and cyclostrophic estimates. This is a **parametric vortex plus a simplified potential-intensity formula**, not a time-stepping hurricane simulation (the syllabus plan), and the numbers are model values: $T_o=203$ K, $C_k/C_d=1$, boundary-layer air at $T_s-1$ K and 80% humidity, so the potential intensity is only indicative at low SST.`,
+      deps: ['geo-3.3', 'geo-1.7', 'thermo-2.7'],
+      refs: ['Holland (1980), Mon. Weather Rev. 108, 1212–1218', 'Bister & Emanuel (1998), §3.1 eq. (21), p. 235'],
       tags: ['hurricane', 'potential intensity', 'gradient wind', 'warm core'],
-      credit: 'radial profile: G. J. Holland, Monthly Weather Review 108 (1980) 1212–1218; potential intensity: K. A. Emanuel, J. Atmospheric Sciences 43 (1986) 585–605',
-      scope: String.raw`Axisymmetric, steady, gradient-wind balanced above the boundary layer; the maximum potential intensity is an upper bound that real storms rarely reach (shear, dry air, ocean cooling), and the simplified evaluation here (fixed outflow temperature) is not Emanuel's full algorithm.`,
+      credit: 'radial profile: G. J. Holland, Monthly Weather Review 108 (1980) 1212–1218; dissipative-heating potential intensity: M. Bister & K. A. Emanuel (1998), Meteorol. Atmos. Phys. 65: 233–240',
+      scope: String.raw`Axisymmetric, steady, gradient-wind balanced above the boundary layer; the maximum potential intensity is an upper bound that real storms rarely reach (shear, dry air, ocean cooling), and the simplified evaluation here (fixed outflow temperature) is not the full potential-intensity algorithm. The displayed wind is above-boundary-layer gradient wind; it is not a prediction of the surface sustained wind used in hurricane categories.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Maximum_potential_intensity' },
       viz(v) {
         const frac = v.slider('fraction of the potential intensity reached', 0.3, 1, 0.8, { step: 0.01 });
         const Bs = v.slider('profile shape $B$', 1, 2.5, 1.4, { step: 0.05 });
-        const Rms = v.slider('radius of maximum wind $R_m$ (km)', 10, 100, 35, { step: 1 });
+        const Rms = v.slider('cyclostrophic radius scale $R_m$ (km)', 10, 100, 35, { step: 1 });
         const lat = v.slider('latitude $\\varphi$ (°)', 8, 40, 20, { step: 1 });
         const sP = v.stage({ x: [-250, 250], y: [-250, 250], equal: true, axes: 'box', gutter: true, xlabel: 'distance east (km)', ylabel: 'north (km)', height: 380, weight: 1, minWidth: 280, title: 'wind speed (m/s), plan view' });
         const sR = v.stage({ x: [0, 300], y: [0, 100], axes: 'box', gutter: true, xlabel: 'radius $r$ (km)', ylabel: 'tangential wind (m/s)', height: 380, weight: 1.1, minWidth: 280, title: 'radial profile' });
         const sS = v.stage({ x: [18, 33], y: [0, 110], axes: 'box', gutter: true, xlabel: 'sea-surface temperature (°C)', ylabel: 'potential intensity $V_p$ (m/s)', height: 380, weight: 1, minWidth: 260, title: 'potential intensity vs SST' });
-        const hS = sS.handle(28, potentialIntensity(28).V, { color: 'gold', label: 'SST', constrain: (x) => { const t = clamp(x, 18, 33); return [t, potentialIntensity(t).V]; } });
+        const hS = sS.handle(28, potentialIntensity(28).V, { color: 'gold', label: 'SST', labelPos: 'nw', constrain: (x) => { const t = clamp(x, 18, 33); return [t, potentialIntensity(t).V]; } });
         const PN = 101000;
         let key = '', M = null, st = {};
         const model = (sst, fr, B, Rm, la) => {
@@ -263,15 +263,13 @@ with sea-surface temperature $T_s$, outflow temperature $T_o$, exchange coeffici
           // SST curve
           sS.fn((x) => potentialIntensity(x).V, { domain: [18, 33], color: 'accent', width: 2.6, n: 80 });
           sS.fn((x) => frac.value * potentialIntensity(x).V, { domain: [18, 33], color: 'gold', width: 1.6, dash: [5, 4] });
-          for (const [V, nm] of [[32.9, 'hurricane'], [49.4, 'cat 3'], [70.5, 'cat 5']]) { sS.hline(V, { color: 'muted', dash: [3, 4], alpha: 0.6 }); sS.text(nm, 32.9, V, { size: 11, color: 'muted', dy: -9, align: 'right' }); }
-          sS.vline(26, { color: 'green', dash: [3, 4], alpha: 0.5 });
-          let mx = 0, rmx = 0; for (let r = 2; r <= 300; r += 1) { const V = Vr(r * 1e3); if (V > mx) { mx = V; rmx = r; } }
+          const peak = hollandMaximum(Mo.pc, PN, Mo.Rm, Mo.B, Mo.f), mx = peak.speed, rmx = peak.radius / 1e3;
           st = { Mo, mx, rmx, sst: Math.round(sst * 20) / 20, pi: potentialIntensity(sst), Vr };
         });
         v.legend([['accent', 'gradient wind'], ['purple', 'geostrophic', { dash: true }], ['orange', 'cyclostrophic', { dash: true }], ['gold', 'target (fraction of $V_p$)', { dash: true }]]);
         v.readout(() => {
           const Mo = st.Mo, cyc = Math.sqrt(Mo.B * Mo.dp / (RHO_TC * Math.E)), Ro = st.mx / (Mo.f * st.rmx * 1e3);
-          return `SST ${v.fix(st.sst, 1)} °C → potential intensity $V_p=${v.fix(Mo.Vp, 1)}$ m/s (enthalpy difference $k_0^*-k=${v.fix(st.pi.dk / 1000, 1)}$ kJ/kg, efficiency $(T_s-T_o)/T_o=${v.fix(st.pi.eff, 3)}$); target ${v.fix(Mo.Vt, 1)} m/s = **${saffirName(Mo.Vt)}** (NHC Saffir–Simpson wind thresholds)\ncentral pressure ${v.fix(Mo.pc / 100, 0)} hPa (deficit ${v.fix(Mo.dp / 100, 0)} hPa, ambient 1010 hPa); computed gradient-wind maximum ${v.fix(st.mx, 1)} m/s at ${v.fix(st.rmx, 0)} km; cyclostrophic estimate $\\sqrt{B\\Delta p/\\rho e}=${v.fix(cyc, 1)}$ m/s; Rossby number there $V/fR_m=${v.fix(Ro, 0)}$ (the Coriolis force is small in the eyewall, large far out)`;
+          return `SST ${v.fix(st.sst, 1)} °C → potential intensity $V_p=${v.fix(Mo.Vp, 1)}$ m/s (enthalpy difference $k_0^*-k=${v.fix(st.pi.dk / 1000, 1)}$ kJ/kg, dissipative-heating coefficient $(T_s-T_o)/T_o=${v.fix(st.pi.eff, 3)}$); target **${v.fix(Mo.Vt, 1)} m/s** (gradient wind above the boundary layer)\ncentral pressure ${v.fix(Mo.pc / 100, 0)} hPa (deficit ${v.fix(Mo.dp / 100, 0)} hPa, ambient 1010 hPa); computed gradient-wind maximum ${v.fix(st.mx, 1)} m/s at ${v.fix(st.rmx, 0)} km; cyclostrophic estimate $\\sqrt{B\\Delta p/\\rho e}=${v.fix(cyc, 1)}$ m/s; Rossby number there $V/(fr_{\\mathrm{peak}})=${v.fix(Ro, 0)}$ (the Coriolis force is small in the eyewall, large far out)`;
         });
       },
     },

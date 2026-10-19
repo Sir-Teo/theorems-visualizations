@@ -37,13 +37,13 @@ export default {
   items: [
     // ====================================================================== 4.1 Topological prerequisites
     {
-      num: '4.1.1a', kind: 'Definition', name: 'Polygons, arcs, regions and frontiers', verify: true,
+      num: '4.1.1a', kind: 'Definition', name: 'Polygons, arcs, regions and frontiers',
       statement: String.raw`A **polygonal arc** is a subset of the plane that is a union of finitely many straight segments and homeomorphic to $[0,1]$; the images of $0$ and $1$ are its **endpoints**, and the rest is its interior. A **polygon** is such a union homeomorphic to a circle. (Diestel simply says *arc* for polygonal arcs throughout the chapter.)
 
 For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equivalence relation; its classes are the **regions** of $O$. Unions of finitely many arcs and points are compact, so the complement $\R^2\setminus X$ of such an $X$ is open and has regions. The **frontier** of a set $Y$ consists of the points every neighbourhood of which meets both $Y$ and $\R^2\setminus Y$.`,
       idea: String.raw`Nothing is proved here: these are the words in which every later argument about drawings is phrased. Regions are the connected pieces of the complement that can be reached from each other by a polygonal path, and the frontier of a region is the part of $X$ that touches it. The pictures to keep in mind: an arc leaves one region, a polygon cuts the plane in two, and a region can be touched by only part of $X$.`,
       caption: String.raw`Drag the vertices of the drawn set $X$ (choose one of five examples). Its complement is cut into **regions**, each tinted; the gold point $p$ selects one region, which turns blue, and its **frontier** is traced in bold. Try to make the polygon cross itself: the count of regions changes, and the frontier of a region is then no longer all of $X$.`,
-      deps: [], refs: ['Diestel §4.1'], tags: ['regions', 'polygonal arcs'], links: { wikipedia: 'https://en.wikipedia.org/wiki/Polygonal_chain' },
+      deps: [], refs: ['Diestel, Graph Theory, 6th ed., §4.1, pp. 94–95'], tags: ['regions', 'polygonal arcs'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Polygonal_chain' },
       viz(v) {
         const SETS = {
           arc: { name: 'an arc', parts: [{ n: 5, closed: false, pts: [[1.2, 1.6], [3.0, 4.8], [4.8, 2.0], [6.6, 5.0], [8.6, 2.4]] }] },
@@ -248,9 +248,9 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
       num: '4.1.4', kind: 'Theorem', name: 'Homeomorphisms of circles extend to the discs they bound',
       statement: String.raw`Let $\varphi\colon C_1\to C_2$ be a homeomorphism between two circles on the sphere $S^2$ (images, under the inverse of a stereographic projection $\pi\colon S^2\setminus\{N\}\to\R^2$, of polygons in the plane), let $O_1$ be a region of $S^2\setminus C_1$ and $O_2$ a region of $S^2\setminus C_2$. Then $\varphi$ extends to a homeomorphism $C_1\cup O_1\to C_2\cup O_2$.`,
       idea: String.raw`This is the Jordan–Schoenflies theorem. It says that every circle is a standard circle up to a homeomorphism of the whole surface, so the two regions of a circle on the sphere are discs, and a homeomorphism between the boundary circles is enough to glue a disc to a disc. In the picture the target circle is star-shaped around a point $c$, and the extension is the cone construction: a point at relative radius $r$ and angle $\theta$ goes to the point at relative radius $r$ on the ray towards $\varphi(\theta)$.`,
-      caption: String.raw`Left: the unit circle with a polar mesh. Right: a closed curve (choose its shape) with four coloured handles; drag them along the curve to choose the boundary map $\varphi$ (the markers stay in order around the circle). The mesh is carried to the curve's disc by the cone extension. The readout checks that every mesh cell keeps its orientation, which is what an honest extension has to do.`,
-      deps: ['graph-4.1.1a'], refs: ['Diestel §4.1'], see: ['top-10.6'], tags: ['Jordan–Schoenflies', 'homeomorphism'],
-      credit: 'Schoenflies, 1906 (gap closed by Brouwer, 1909)', verify: true, links: { wikipedia: 'https://en.wikipedia.org/wiki/Schoenflies_problem' },
+      caption: String.raw`Left: the unit circle with a polar mesh. Right: a closed curve (choose its shape) with four coloured handles; drag them along the curve to choose the boundary map $\varphi$ (the markers stay in order around the circle). The mesh is carried to the curve's disc by the cone extension. The readout checks that every mesh cell keeps its orientation, as expected for this orientation-preserving cone extension. A reversed boundary map would instead give an orientation-reversing homeomorphism.`,
+      deps: ['graph-4.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.1.4, p. 96'], see: ['top-10.6'], tags: ['Jordan–Schoenflies', 'homeomorphism'],
+      credit: 'Jordan–Schoenflies theorem',  links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Schoenflies_problem' },
       viz(v) {
         const RHO = {
           blob: (a) => 1 + 0.28 * Math.cos(3 * a) + 0.12 * Math.sin(2 * a + 0.6),
@@ -316,11 +316,11 @@ For an open set $O\subseteq\R^2$, "can be joined by an arc inside $O$" is an equ
     },
     // ====================================================================== 4.2 Plane graphs
     {
-      num: '4.2.1a', kind: 'Definition', name: 'Plane graphs and faces', verify: true,
+      num: '4.2.1a', kind: 'Definition', name: 'Plane graphs and faces',
       statement: String.raw`A **plane graph** is a pair $(V,E)$ of finite sets with $V\subseteq\R^2$, in which every edge is an arc between two vertices, different edges have different sets of endpoints, and the interior of an edge contains no vertex and no point of any other edge. The **faces** of a plane graph $G$ are the regions of $\R^2\setminus G$. Exactly one face is unbounded, the **outer face**; the others are **inner faces**. $F(G)$ is the set of faces.`,
       idea: String.raw`A plane graph is a graph together with one particular crossing-free drawing. The faces are the pieces the drawing leaves of the plane, so they are determined by the drawing and not by the abstract graph, and the same graph can have differently shaped faces in different drawings. Every face is open and its frontier lies in $G$.`,
       caption: String.raw`Edit the drawing (${'click empty space to add a vertex, click two vertices to join them, drag to move, Alt-click to delete'}); edges that would cross are refused. Faces are tinted and numbered, the outer face is grey. For a plane graph with $c$ components, $n-m+\ell=1+c$.`,
-      deps: ['graph-4.1.1a', 'graph-1.1.1a'], refs: ['Diestel §4.2'], tags: ['plane graph', 'faces'], links: { wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
+      deps: ['graph-4.1.1a', 'graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.2, pp. 96–97'], tags: ['plane graph', 'faces'], links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
       viz(v) {
         const PRE = {
           house: () => planeSpec({ a: [2, 1], b: [7, 1], c: [7, 4], d: [4.5, 5.4], e: [2, 4], f: [4.5, 6.0] }, 'ab bc cd de ea ac df'),

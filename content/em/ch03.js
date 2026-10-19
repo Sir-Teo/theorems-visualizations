@@ -139,7 +139,7 @@ where $E=\sigma/\varepsilon_0$ is the field just outside. It is the force of the
       idea: String.raw`The field at the surface charge itself is not defined (it jumps by $\sigma/\varepsilon_0$ across the sheet), but the charge on a small patch feels the field of everything *except* that patch. The patch contributes $\mp\sigma/2\varepsilon_0$ on either side (by symmetry and em-3.2), so the rest of the conductor contributes $\sigma/2\varepsilon_0$ on both sides, which is the average of $E_{out}=\sigma/\varepsilon_0$ and $E_{in}=0$. Force per area is $\sigma\cdot\sigma/2\varepsilon_0$. Energy check (em-2.11): the field energy density is $\varepsilon_0E^2/2$, so letting the surface advance by $\delta$ changes the energy by that density times the volume swept.`,
       caption: String.raw`A conducting sphere of radius $R$ with charge $Q$ (left, to scale; arrows show the outward pressure). On the right the energy $U(R)=Q^2/8\pi\varepsilon_0R$ at fixed charge: inflating the sphere by $\delta R$ costs no work from outside, the energy drops by $-U'\,\delta R$, and this equals $(\sigma^2/2\varepsilon_0)\cdot4\pi R^2\,\delta R$ (bars). Push $Q$ up until the surface field reaches the breakdown field of air and the sphere flashes into corona.`,
       scope: String.raw`Applies to any conductor surface in equilibrium. The sphere picture takes isolated conducting sphere in air; the breakdown field $\approx3\times10^6$ V/m is a typical textbook value for dry air (depends on humidity, pressure and surface roughness). The comparison with the soap film's Laplace pressure $4\gamma/R$ uses a typical $\gamma\approx0.025$ N/m.`,
-      deps: ['em-3.2', 'em-2.11'],
+      deps: ['em-3.2', 'em-2.11', 'fluid-2.7'],
       refs: ['Griffiths §2.5', 'Purcell ch. 3'],
       tags: ['pressure', 'energy'],
       viz(v) {
@@ -178,29 +178,28 @@ where $E=\sigma/\varepsilon_0$ is the field just outside. It is the force of the
       num: '3.4',
       kind: 'Phenomenon',
       name: 'Charge crowds at sharp points',
-      statement: String.raw`On a conductor the surface charge density, and therefore the field just outside, is largest where the surface is most sharply curved. For two conducting spheres of radii $R_1,R_2$ far apart and joined by a thin wire (a common potential $V$), the charges split as $Q_i\propto R_i$, so
+      statement: String.raw`An exposed sharp tip can enhance a conductor’s surface field. Curvature alone does not determine that field: the whole geometry and nearby charges matter. For two conducting spheres of radii $R_1,R_2$ far apart and joined by a thin wire (a common potential $V$), the charges split as $Q_i\propto R_i$, so
 $$\sigma_i=\frac{Q_i}{4\pi R_i^2}\propto\frac1{R_i},\qquad E_i=\frac{V}{R_i}.$$
-The smaller sphere has the larger field, and it is the first to ionize the air around it.`,
-      idea: String.raw`A sphere of radius $R$ at potential $V$ has $V=kQ/R$ (em-2.6), hence $Q=4\pi\varepsilon_0RV$ and $E=kQ/R^2=V/R$. Joined by a wire, the spheres share $V$ (em-3.1), which forces $Q_i\propto R_i$ and $E_i\propto1/R_i$. The same scaling holds locally for any sharp tip: it behaves like a small sphere at the potential of the whole conductor, which is why a lightning rod works and why a needle “sprays” charge into the air.`,
-      caption: String.raw`Total charge $Q_{tot}$ is shared between a big sphere ($R_2=8$ cm) and a small one (radius $R_1$ — slide it) connected by a wire. The circle sizes are to scale; the dots on each rim have area growing with the surface charge density; the right panel plots the surface field of the small sphere against its radius with the breakdown field of air as a line. Shrink the small sphere and it eventually glows (corona).`,
-      scope: String.raw`Spheres far apart so that each sees the other only as a distant charge (to leading order $R_i\ll$ separation). Breakdown field of dry air about $3\times10^6$ V/m (typical value; it depends on humidity and pressure). Real tips are not spheres; the $1/R$ trend is robust, the prefactor is not.`,
-      credit: String.raw`Franklin’s pointed lightning rod, 1750s`,
+In this approximation the smaller sphere has the larger field.`,
+      idea: String.raw`A sphere of radius $R$ at potential $V$ has $V=kQ/R$ (em-2.6), hence $Q=4\pi\varepsilon_0RV$ and $E=kQ/R^2=V/R$. Joined by a wire, the spheres share $V$ (em-3.1), which forces $Q_i\propto R_i$ and $E_i\propto1/R_i$. This gives a qualitative model for field enhancement at an exposed tip; it is not a local curvature law for arbitrary conductors.`,
+      caption: String.raw`Total charge $Q_{tot}$ is shared between a big sphere ($R_2=8$ cm) and a small one (radius $R_1$ — slide it) connected by a wire. The circle sizes are to scale; the dots on each rim have area growing with the surface charge density; the right panel plots the surface field of the small sphere against its radius with an illustrative air-field threshold as a line. The glow marks crossing that threshold; it is not a discharge calculation.`,
+      scope: String.raw`Spheres far apart so that each sees the other only as a distant charge (to leading order $R_i\ll$ separation). The $3\times10^6$ V/m line is an illustrative threshold, not a corona prediction: gas pressure, geometry and discharge conditions matter. Sphere radii share one drawing scale; centre spacing is compressed and does not represent the far-separated limit.`,
+      credit: String.raw`Two-sphere estimate: Feynman Lectures II, §6–11`,
       deps: ['em-3.1', 'em-2.6'],
-      refs: ['Purcell ch. 3', 'Feynman II ch. 6'],
+      refs: ['Feynman Lectures II, complete §6–11, Eq.(6.35) and two-sphere estimate'],
       tags: ['lightning rod', 'corona'],
-      verify: true,
       viz(v) {
         const EB = 3e4, R2 = 8;
-        const s = v.stage({ x: [-10, 11], y: [-6, 6], equal: true, height: 300, axes: false, weight: 1.2, title: 'two spheres joined by a wire' });
-        const sE = v.stage({ x: [0.1, 8], y: [3e2, 1e6], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, weight: 0.9, minWidth: 240, xlabel: 'small sphere radius $R_1$ (cm)', ylabel: '$E_1$ (V/cm)', title: 'surface field of the small sphere' });
+        const s = v.stage({ x: [-10, 15], y: [-6, 6], equal: true, height: 300, axes: false, weight: 1.2, title: 'two spheres joined by a wire' });
+        const sE = v.stage({ x: [0.1, 8], y: [1e2, 5e6], xlog: true, ylog: true, height: 300, axes: 'box', gutter: true, weight: 0.9, minWidth: 240, xlabel: 'small sphere radius $R_1$ (cm)', ylabel: '$E_1$ (V/cm)', title: 'surface field of the small sphere' });
         const Rs = v.slider('small radius $R_1$', 0.1, 8, 3, { log: true, fmt: (x) => `${x.toPrecision(2)} cm` });
         const Qs = v.slider('total charge $Q_{tot}$', 5, 400, 120, { step: 5, fmt: (x) => `${x} nC` });
         let info = {};
         v.render(() => {
           const R1 = Rs.value, Q = Qs.value, Q1 = (Q * R1) / (R1 + R2), Q2 = Q - Q1, Vc = (KV * Q) / (R1 + R2);
-          const E = (R) => Vc / R, E1 = E(R1), over = E1 >= EB;
+          const E = (R) => (KV * Q) / ((R + R2) * R), E1 = E(R1), over = E1 >= EB;
           s.circle(-2, 0, R2 * 0.6, { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.2 });
-          const cs = 6.2;
+          const cs = 9;
           s.circle(cs, 0, Math.max(R1 * 0.6, 0.06), { color: 'ink', width: 2, fill: 'muted', fillAlpha: 0.2 });
           s.path([[-2 + R2 * 0.6, 0], [cs - Math.max(R1 * 0.6, 0.06), 0]], { color: 'faint', width: 1.4, dash: true });
           if (over) for (let k = 0; k < 3; k++) s.circle(cs, 0, Math.max(R1 * 0.6, 0.06) * (1.3 + 0.35 * k) + 0.2 * k, { fill: 'gold', fillAlpha: 0.2 - 0.05 * k, stroke: false });
@@ -212,11 +211,11 @@ The smaller sphere has the larger field, and it is the first to ionize the air a
           s.text(`$R_2=8$ cm`, -2, -5.3, { align: 'center', size: 12, color: 'muted' }); s.text(`$R_1=${R1.toPrecision(2)}$ cm`, cs, -2.8 - R1 * 0.4, { align: 'center', size: 12, color: 'muted' });
           s.text('to scale ×0.6', 9.2, 5.2, { align: 'right', size: 10, color: 'faint' });
           sE.fn((R) => E(R), { color: 'accent', width: 2.2, domain: [0.1, 8] });
-          sE.hline(EB, { color: 'red', dash: true }); sE.text('breakdown of air', 0.13, EB * 1.3, { size: 11, color: 'red' });
-          sE.dot(R1, Math.max(E1, 3.1e2), { r: 6, color: over ? 'gold' : 'green' });
+          sE.hline(EB, { color: 'red', dash: true }); sE.text('illustrative threshold', 0.13, EB * 1.3, { size: 11, color: 'red' });
+          sE.dot(R1, E1, { r: 6, color: over ? 'gold' : 'green' });
           info = { Q1, Q2, Vc, E1, E2: E(R2), s1: dens(Q1, R1), s2: dens(Q2, R2), over };
         });
-        v.readout(() => `Common potential $V=${v.fix(info.Vc / 1000, 1)}$ kV. Charges $Q_1=${v.fix(info.Q1, 1)}$ nC, $Q_2=${v.fix(info.Q2, 1)}$ nC (ratio = ratio of radii).\nSurface fields: small sphere $E_1=${v.sci(info.E1 * 100, 3)}$ V/m, big sphere $E_2=${v.sci(info.E2 * 100, 3)}$ V/m, ratio $E_1/E_2=${v.fix(info.E1 / info.E2, 2)}=R_2/R_1$.${info.over ? ' **The small sphere is above the breakdown field: corona discharge.**' : ''}`);
+        v.readout(() => `Common potential $V=${v.fix(info.Vc / 1000, 1)}$ kV. Charges $Q_1=${v.fix(info.Q1, 1)}$ nC, $Q_2=${v.fix(info.Q2, 1)}$ nC (ratio = ratio of radii).\nSurface fields: small sphere $E_1=${v.sci(info.E1 * 100, 3)}$ V/m, big sphere $E_2=${v.sci(info.E2 * 100, 3)}$ V/m, ratio $E_1/E_2=${v.fix(info.E1 / info.E2, 2)}=R_2/R_1$.${info.over ? ' **The small sphere exceeds the illustrative field threshold.**' : ''}`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.5

@@ -39,7 +39,7 @@ export default {
       statement: String.raw`If $0\le\varphi(\alpha)\le\infty$ for each $\alpha$ in a set $A$, then $\sum_{\alpha\in A}\varphi(\alpha)$ denotes the supremum of all finite sums $\varphi(\alpha_1)+\dots+\varphi(\alpha_n)$ with distinct $\alpha_i\in A$ — the integral of $\varphi$ against counting measure on $A$. The space $\ell^2(A)$ consists of all complex $\varphi$ on $A$ with $\sum_{\alpha\in A}|\varphi(\alpha)|^2<\infty$; it is $L^2$ of counting measure, hence a Hilbert space with inner product $(\varphi,\psi)=\sum_{\alpha\in A}\varphi(\alpha)\overline{\psi(\alpha)}$. Each $\varphi\in\ell^2(A)$ vanishes off a countable set, and the functions with finite support are dense in $\ell^2(A)$.`,
       idea: String.raw`Completeness is Theorem 3.11 applied to counting measure. If $\sum|\varphi|^2<\infty$ then for each $n$ only finitely many $\alpha$ have $|\varphi(\alpha)|^2>1/n$, so the support is countable; and truncating to a finite set changes the norm by a tail that can be made small. $\ell^2(A)$ is the model target space: by 4.17–4.19 every Hilbert space is isomorphic to some $\ell^2(A)$.`,
       deps: ['rca-3.11'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 4.15, pp. 83–84'],
       tags: ['Hilbert space', 'counting measure'],
     },
 
@@ -57,7 +57,7 @@ Then $f$ is an isometry of $X$ onto $Y$.`,
       idea: String.raw`Continuity carries the identity $d(f(x),f(x'))=d(x,x')$ from the dense set $X_0$ to all of $X$. For $y\in Y$ pick $x_n\in X_0$ with $f(x_n)\to y$; since $f$ is an isometry, $(x_n)$ is Cauchy in $X$, so it converges to some $x$ by completeness, and $f(x)=\lim f(x_n)=y$ by continuity. Rudin uses this in 4.17 with $X=\overline P$ and $Y=\ell^2(A)$.`,
       caption: String.raw`$X=[0,1]$ (top), $Y=[0,1]$ (bottom), $f(t)=1-t$, and $X_0$ the dyadic rationals, whose images are dense in $Y$. Drag the gold target $y\in Y$ and add terms with the slider: dyadic points $x_n$ with $f(x_n)\to y$ are exactly as close together as their images, so they form a Cauchy sequence, and completeness of $X$ supplies the green preimage. The lower panel zooms in (with $Y$ flipped so $f$ maps straight down). Now remove the point $c=1/\sqrt2$ from $X$: when $y=f(c)$ (the handle snaps there) the Cauchy sequence has no limit in $X$ — $f$ is still an isometry with dense image, but no longer onto.`,
       deps: ['pma-3.12'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Lemma 4.16, p. 84'],
       tags: ['completeness', 'isometry'],
       viz(v) {
         const M = v.M;
@@ -339,7 +339,7 @@ A maximal orthonormal set is also called complete, or an orthonormal basis.`,
       idea: String.raw`Under (ii) of 4.18 the closure $\overline P$ is all of $H$, so 4.17 makes $x\mapsto\hat x$ an isometry of $H$ onto $\ell^2(A)$, and Parseval (iv) says it preserves inner products. Together with 4.22 (maximal orthonormal sets exist) this shows every Hilbert space is, up to isomorphism, an $\ell^2(A)$; the cardinality of $A$ is the only invariant.`,
       deps: ['rca-4.17', 'rca-4.18'],
       see: ['rca-9.13'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 4.19, p. 86'],
       tags: ['isomorphism', 'Hilbert space'],
     },
 

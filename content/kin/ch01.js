@@ -263,7 +263,7 @@ a straight line in $t$ that reaches zero at $t=[\mathrm A]_0/k$; $k$ has units $
 $$[\mathrm A](t)=[\mathrm A]_0e^{-kt},\qquad \ln[\mathrm A]=\ln[\mathrm A]_0-kt,\qquad t_{1/2}=\frac{\ln2}{k}=\frac{0.693}{k}.$$
 $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a straight line of slope $-k$, and the half-life is independent of the initial concentration: after every interval $t_{1/2}$ half of what remains is gone, $[\mathrm A]=[\mathrm A]_0/2^{n}$ after $n$ half-lives. This is the unique order for which the half-life is constant; the mean lifetime is $\tau=1/k$.`,
       idea: String.raw`The equation $[\mathrm A]'=-k[\mathrm A]$ is the linear ODE of ode-1.5 and its solution is the exponential. Taking logarithms linearises it, which is why $\ln[\mathrm A]$ against $t$ is the diagnostic plot; setting $[\mathrm A]=[\mathrm A]_0/2$ gives $t_{1/2}=\ln 2/k$ with no dependence on $[\mathrm A]_0$, since scaling the solution by a constant solves the same equation.`,
-      caption: String.raw`Choose the **real** textbook data (N₂O₅ in CCl₄ at 45 °C) or synthetic data with a rate-constant slider, noise and *Resample*. Both panels show the same data: concentration with the fitted exponential and its half-life ladder, and $\ln[\mathrm A]$ with the least-squares line. Switch the true law to *second order* to break the hypothesis: the logarithm bends and the measured half-lives are no longer equal.`,
+      caption: String.raw`Choose the **real** textbook data (N₂O₅ in CCl₄ at 45 °C) or synthetic data with a reference-rate slider, noise and *Resample*. Both panels show the same data: concentration with the fitted exponential and its half-life ladder, and $\ln[\mathrm A]$ with the least-squares line. Switch the true law to *second order* to break the hypothesis: the logarithm bends and the measured half-lives are no longer equal. The slider sets a first-order reference rate $k_1$; the second-order comparison uses $k_2=k_1/([\mathrm A]_0\ln2)$ with $[\mathrm A]_0=1$ M, so the two true laws have the same initial half-life.`,
       deps: ['kin-1.2', 'pma-8.6', 'ode-1.5'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['first order', 'half-life', 'exponential decay'],
@@ -272,7 +272,7 @@ $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a str
       viz(v) {
         const src = v.select('data', [{ value: 'real', label: 'N₂O₅ in CCl₄, 45 °C (textbook)' }, { value: 'syn', label: 'synthetic' }], 'real');
         const truth = v.select('true law (synthetic)', [{ value: 1, label: 'first order' }, { value: 2, label: 'second order' }], 1);
-        const kS = v.slider('$k$ (s⁻¹)', 0.005, 0.5, 0.05, { log: true });
+        const kS = v.slider('reference $k_1$ (s⁻¹)', 0.005, 0.5, 0.05, { log: true });
         const noise = v.slider('noise (relative)', 0, 0.15, 0.04, { step: 0.005 });
         let seed = 3; v.button('Resample', () => { seed++; });
         const sc = v.stage({ x: [0, 1], y: [0, 1], height: 320, axes: 'box', gutter: true, xlabel: 't (s)', ylabel: '[A] (M)', title: 'concentration and half-life ladder', weight: 1.1 });
@@ -287,7 +287,7 @@ $k$ has units $\mathrm{s^{-1}}$. A plot of $\ln[\mathrm A]$ against $t$ is a str
             const k = kS.value, ord = +truth.value; c0 = 1;
             const n = 10; T = 4 * Math.LN2 / k; const g = noiser(v, seed * 31 + ord);
             ts = Array.from({ length: n + 1 }, (_, i) => T * i / n * 0.95);
-            // true curve: second order uses the same initial rate k [A]0 (so that half-life t1/2(1) = 1/(k c0) ... matched to first-order ln2/k)
+            // Match the initial half-life, not the initial rate, of the two true laws.
             const k2 = k / Math.LN2 * 1; // second-order constant with equal first half-life ln2/k at c0 = 1
             cs = ts.map((t) => (ord === 1 ? c0 * Math.exp(-k * t) : c0 / (1 + k2 * c0 * t)) * Math.exp(noise.value * g()));
           }

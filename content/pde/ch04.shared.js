@@ -4,8 +4,9 @@ export * from './ch03.shared.js';
 
 /** Solutions of X'' = -lam X with X(0) = 0, X'(0) = 1 (S) and X(0) = 1, X'(0) = 0 (C), valid for lam of either sign. */
 export function CS(lam, x) {
-  if (lam > 1e-12) { const m = Math.sqrt(lam); return [Math.cos(m * x), Math.sin(m * x) / m]; }
-  if (lam < -1e-12) { const k = Math.sqrt(-lam); return [Math.cosh(k * x), Math.sinh(k * x) / k]; }
+  if (Math.abs(lam) < 1e-5) { const z = lam * x * x; return [1 - z / 2 + z * z / 24 - z * z * z / 720, x * (1 - z / 6 + z * z / 120 - z * z * z / 5040)]; }
+  if (lam > 0) { const m = Math.sqrt(lam); return [Math.cos(m * x), Math.sin(m * x) / m]; }
+  if (lam < 0) { const k = Math.sqrt(-lam); return [Math.cosh(k * x), Math.sinh(k * x) / k]; }
   return [1, x];
 }
 
@@ -25,22 +26,23 @@ export function eigModes(left, right, h0 = 0, h1 = 0, K = 8) {
   };
   const lams = [];
   const bis = (f, a, b) => { let fa = f(a); for (let i = 0; i < 100; i++) { const m = 0.5 * (a + b), fm = f(m); if ((fa < 0) === (fm < 0)) { a = m; fa = fm; } else b = m; } return 0.5 * (a + b); };
-  const zero = Math.abs(g(0)) < 1e-9;
+  const zero = Math.abs(g(0)) < 2e-14 * Math.max(1, Math.abs(h0), Math.abs(h1), Math.abs(h0 * h1));
   if (zero) lams.push(0);
   // negative eigenvalue(s)
   const gk = (k) => g(-k * k);
-  let prev = gk(2e-3);
-  for (let k = 2e-3 + 0.01; k < 30; k += 0.01) {
+  const start = zero ? 1e-5 : 0;
+  let prev = gk(start);
+  for (let k = start + 0.01; k < 30; k += 0.01) {
     const cur = gk(k);
-    if (prev === 0 || (prev < 0) !== (cur < 0)) { const r = bis(gk, k - 0.01, k); if (r > 2e-3) lams.push(-r * r); }
+    if (prev === 0 || (prev < 0) !== (cur < 0)) { const r = bis(gk, k - 0.01, k); if (r > 0) lams.push(-r * r); }
     prev = cur;
   }
   const gm = (m) => g(m * m);
   const mMax = (K + 3) * Math.PI, dm = 0.004;
-  prev = gm(1e-3);
-  for (let m = 1e-3 + dm; m < mMax; m += dm) {
+  prev = gm(start);
+  for (let m = start + dm; m < mMax; m += dm) {
     const cur = gm(m);
-    if ((prev < 0) !== (cur < 0)) { const r = bis(gm, m - dm, m); if (r > 2e-3 || !zero) lams.push(r * r); }
+    if ((prev < 0) !== (cur < 0)) { const r = bis(gm, m - dm, m); if (r > 0) lams.push(r * r); }
     prev = cur;
   }
   lams.sort((p, q) => p - q);

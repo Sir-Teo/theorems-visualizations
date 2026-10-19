@@ -144,7 +144,7 @@ The **concatenation** $xy$ writes $y$ after $x$; it is associative with identity
 A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite. The empty language $\varnothing$ and the language $\{\varepsilon\}$ are different: the second contains one string.`,
       idea: String.raw`Everything a computer reads or writes is a finite string over a finite alphabet, so strings are the universal data type of the theory, and a yes/no question about inputs is the same thing as the set of inputs whose answer is yes. Counting is immediate: each of the $n$ positions of a string in $\Sigma^n$ is chosen independently from $|\Sigma|$ symbols, giving $|\Sigma|^n$ strings, and a prefix is fixed by where it stops, which can be any of the $n+1$ boundaries.`,
       caption: String.raw`Type a string with the letter buttons and switch the top panel between its **prefixes** (bars from the left end), **suffixes** and its **reversal**. The bottom panel lists every string of length at most 4 (3 for three letters), one row $\Sigma^n$ per length; a language $L$ is a choice of strings, shown in green, counted against $|\Sigma|^n$ at the right. Note that $\varnothing$ and $\{\varepsilon\}$ differ in row $\Sigma^0$.`,
-      deps: [],
+      deps: ["comb-1.1"],
       refs: ['Sipser §0.2'],
       tags: ['strings', 'languages'],
       viz(v) {
@@ -237,7 +237,7 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
 So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varepsilon\}$, and $A^*$ is infinite as soon as $A$ contains a nonempty string. Concatenation is associative with identity $\{\varepsilon\}$ and absorbing element $\varnothing$, but not commutative, and $|AB|\le|A|\,|B|$ with strict inequality when two pairs glue to the same string.`,
       idea: String.raw`These are the operations a pattern needs: alternatives (union), sequencing (concatenation) and repetition (star). Concatenation multiplies choices, but the count $|A|\,|B|$ is only an upper bound, because a string such as $abb$ may split as $a\cdot bb$ and as $ab\cdot b$; the same ambiguity makes the strings of $A^*$ factor in several ways. Kleene's theorem (Chapter 3) shows that these three operations, starting from single letters, describe exactly the languages finite automata recognise.`,
       caption: String.raw`Click the chips in rows $A$ and $B$ to put short strings in or out of each language, then choose the operation. Every result string is drawn with the pieces it was glued from coloured ($A$ blue, $B$ orange; alternating shades for the factors of a star); a red badge counts strings that arise from several factorizations, which is why $|AB|$ can fall short of $|A|\cdot|B|$.`,
-      deps: ['toc-1.1'],
+      deps: ["toc-1.1","alg-1.2"],
       refs: ['Sipser §1.1'],
       credit: 'Kleene, 1956 (star)',
       tags: ['languages', 'regular operations'],
@@ -606,7 +606,7 @@ $$\mathrm{CONNECTED}=\{\langle G\rangle : G\text{ is a connected undirected grap
 and solving the problem means deciding membership in that language (strings that encode nothing are rejected). Reasonable encodings are interconvertible in polynomial time and have polynomially related lengths, so whether a problem is decidable, or decidable in polynomial time, does not depend on which one is chosen. Writing numbers in unary instead of binary is the classic unreasonable encoding: it is exponentially longer.`,
       idea: String.raw`An adjacency list for a graph with $n$ vertices and $m$ edges has length about $(n+m)\log n$, an adjacency matrix exactly $n^2$ bits plus separators; since $m\le n^2$ and $n$ is at most the length of either string, each length is bounded by a polynomial in the other, and converting between them takes polynomial time. So the encoding is a detail that can be fixed once and forgotten — as long as it is not padded exponentially.`,
       caption: String.raw`Edit the graph: click empty space to add a vertex, click two vertices in turn to add or remove the edge between them, drag to move, Alt-click to delete. The right panel shows $\langle G\rangle$ in two encodings, and the problem selector asks whether the string lies in the chosen language. Below, lengths are plotted on log–log axes against the number of vertices: the reader's graph (dots) lies between sparse and complete graphs, and all curves are polynomials.`,
-      deps: ['toc-1.1'],
+      deps: ["toc-1.1","alg-1.7a","graph-1.4.1a"],
       refs: ['Sipser §3.3'],
       tags: ['encodings', 'decision problems'],
       viz(v) {
@@ -705,7 +705,7 @@ and solving the problem means deciding membership in that language (strings that
 This is ordinary induction on the length $|w|$, organised along the way strings are built (every nonempty string is uniquely $u\sigma$). It is the standard tool for facts defined by recursion on strings — reversal ($\varepsilon^R=\varepsilon$, $(u\sigma)^R=\sigma u^R$), the extended transition function of an automaton (2.2), derivations of grammars — and the inductive step must work for *every* $u$ and $\sigma$, not just for the first few.`,
       idea: String.raw`Every string is reached from $\varepsilon$ by appending one symbol at a time, so the strings form a tree rooted at $\varepsilon$ in which each node has its parent as the shorter case; the base case settles the root and the inductive step pushes truth from each node to its children. For $(xy)^R=y^Rx^R$ one inducts on $y$: $(xu\sigma)^R=\sigma(xu)^R=\sigma u^Rx^R=(u\sigma)^Rx^R$, using the recursive definition twice and the hypothesis once. A false claim such as $w^R=w$ passes the base case and the one-letter strings, but its inductive step needs $\sigma u=u\sigma$, which fails at $u=a$, $\sigma=b$.`,
       caption: String.raw`Step through the strings in shortlex order. Each step verifies the claim at the gold node by the inductive template on the right, which uses only the parent's case (the highlighted edge) — the concrete strings are filled in and evaluated. Choose the false claim $w^R=w$ and watch the step break at **ab**: everything below it is left unproved.`,
-      deps: ['toc-1.1'],
+      deps: ["toc-1.1","alg-2.1"],
       refs: ['Sipser §0.4'],
       tags: ['induction', 'proof method'],
       viz(v) {
@@ -796,7 +796,7 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
 A **literal** is a variable or its negation, a **clause** is an $\lor$ of literals, and a formula is in **conjunctive normal form** (CNF) if it is an $\land$ of clauses. Every formula is equivalent to a CNF formula: take one clause per falsifying assignment, the clause that is false exactly there.`,
       idea: String.raw`The value of a formula under an assignment is a bottom-up evaluation of its parse tree, so a truth table with $2^n$ rows lists the formula's whole meaning, and satisfiability asks whether that column contains a 1. The clause $(\ell_1\lor\dots\lor\ell_n)$ with $\ell_i=\neg x_i$ when $x_i=1$ and $\ell_i=x_i$ when $x_i=0$ is false on exactly one row, so the $\land$ of these clauses over the falsifying rows is false exactly where $\varphi$ is: an equivalent CNF, at worst exponentially long — which is why later chapters convert to CNF more cleverly (Tseitin) when size matters.`,
       caption: String.raw`Click an operator in the parse tree to cycle it (∧ ∨ → ↔ ⊕) and a leaf to change its variable; pick a row of the truth table to evaluate the tree under that assignment (green = true, red = false). Step through the CNF conversion: each step adds the clause killing one falsifying row, and the last column, the CNF built so far, converges to $\varphi$.`,
-      deps: ['logic-2.3'],
+      deps: ["logic-2.3","logic-2.4","logic-2.5"],
       refs: ['Sipser §0.2', 'Sipser §7.4'],
       tags: ['logic', 'satisfiability'],
       viz(v) {
@@ -866,7 +866,7 @@ $$\mathrm{FACTOR}=\{\langle N,k\rangle : N\text{ has a divisor }d\text{ with }1<
 yields the smallest prime factor of $N$ by binary search on $k$ in about $\tfrac12\log_2 N$ calls, and the whole factorization in $O((\log N)^2)$ calls. So restricting the theory to decision problems loses nothing up to polynomial factors.`,
       idea: String.raw`The answers to "a factor $\le k$?" switch from no to yes exactly at $k=p$, the smallest prime factor, so the switching point can be located by halving the interval $[2,\lfloor\sqrt N\rfloor]$, one oracle call per halving; then divide by $p$ and repeat. There are at most $\log_2 N$ prime factors, and each costs at most $\lceil\log_2\sqrt N\rceil+1$ calls — polynomial in the bit length of $N$ (encodings, 1.6), even though $\sqrt N$ itself is exponential in it.`,
       caption: String.raw`Drag the gold marker to a value $k$ and press **Ask** — the oracle answers whether $N$ has a factor at most $k$ (green yes, red no) and the shaded interval of candidates for the smallest factor shrinks. **Ask at midpoint** plays binary search. Each factor found is split off in the bar below (widths proportional to $\log p$). Try the prime 1 000 003: the very first question already answers "no factor".`,
-      deps: ['toc-1.6'],
+      deps: ["toc-1.6","nt-1.6"],
       refs: ['Sipser §7.4'],
       tags: ['decision problems', 'self-reducibility'],
       viz(v) {

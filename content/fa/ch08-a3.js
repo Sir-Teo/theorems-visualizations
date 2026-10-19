@@ -1,7 +1,7 @@
 // Rudin, Functional Analysis — Chapter 8 (part 3): solutions with compact support, Sobolev spaces,
 // distributions that are locally Hˢ
 //
-// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
+// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
 
 // complex arithmetic on [re, im]
 const C = {
@@ -67,6 +67,14 @@ function slope(pts, a, b) {
   let sxy = 0, sxx = 0; for (const [x, y] of q) { sxy += (x - mx) * (y - my); sxx += (x - mx) ** 2; }
   return sxy / sxx;
 }
+/** Orthogonal projection onto all homogeneous constraints, rejecting dependent rows. */
+export function projectKernel(rows,a,limit=1.4){
+ const basis=[];
+ for(const row of rows){const q=row.slice();for(const u of basis){const dot=q.reduce((s,x,i)=>s+x*u[i],0);for(let i=0;i<q.length;i++)q[i]-=dot*u[i];}const n=Math.hypot(...q);if(n>1e-10)basis.push(q.map(x=>x/n));}
+ const out=a.slice();for(const u of basis){const dot=out.reduce((s,x,i)=>s+x*u[i],0);for(let i=0;i<out.length;i++)out[i]-=dot*u[i];}
+ const scale=Math.min(1,limit/Math.max(...out.map(Math.abs),1e-300));return out.map(x=>x*scale);
+}
+
 export default {
   collection: 'fa',
   chapter: 8,
@@ -76,14 +84,13 @@ export default {
       num: '8.4',
       kind: 'Theorem',
       name: 'Solutions with compact support',
-      statement: String.raw`Suppose $P$ is a polynomial in $n$ variables, $v\in\mathscr D'(\R^n)$, and $v$ has compact support. Then the equation
+      statement: String.raw`Suppose $P$ is a nonzero polynomial in $n$ variables, $v\in\mathscr D'(\R^n)$, and $v$ has compact support. Then the equation
 $$P(D)u=v$$
 has a solution $u$ with compact support if and only if there is an entire function $g$ on $\C^n$ such that $Pg=\hat v$, where $\hat v$ is the entire extension of the Fourier transform of $v$ (7.23). Such a solution is unique, and its support lies in the convex hull of the support of $v$.`,
       idea: String.raw`If $u$ has compact support, then $\hat u$ is entire (Paley–Wiener–Schwartz 7.23) and $P\hat u=\hat v$, so $g=\hat u$ works. Conversely, if $Pg=\hat v$ with $g$ entire, Lemma 8.3 bounds $|g(z)|$ by an average of $|\hat v|=|Pg|$ over a torus around $z$. So $g$ inherits from $\hat v$ the growth estimate $|g(z)|\le\gamma(1+|z|)^Ne^{r|\operatorname{Im}z|}$ of 7.23, and the converse half of 7.23 makes $g$ the transform of a distribution $u$ with support in $rB$; then $P(D)u=v$. Two compactly supported solutions differ by $w$ with $P\hat w=0$, hence $w=0$. In one variable the condition says that $\hat v$ vanishes at every zero of $P$, to at least the same order.`,
-      caption: String.raw`$n=1$. Choose $P(D)$; its zeros are the red rings in the complex $\zeta$-plane (right). $v$ is a sum of three bumps (drag their tops). Left: $v$ (orange) and the solution $u_0$ (purple) that vanishes to the left of $\operatorname{supp}v$, computed by convolution with the forward Green's function. To the right of $\operatorname{supp}v$, $u_0$ is a solution of $P(D)u=0$, and it vanishes there exactly when $\hat v$ vanishes at the zeros of $P$. Right: $\log_{10}|\hat v(\zeta)|$, so the zeros of $\hat v$ are the dark spots. Press the button to adjust the heights so that $\hat v$ vanishes at the zeros of $P$: then $\hat v/P$ is entire and $u_0$ is the compactly supported solution, inside the convex hull of $\operatorname{supp}v$ (shaded).`,
+      caption: String.raw`$n=1$. Choose $P(D)$; its zeros are the red rings in the complex $\zeta$-plane (right). $v$ is a sum of three bumps (drag their tops). Left: $v$ (orange) and the solution $u_0$ (purple) that vanishes to the left of $\operatorname{supp}v$, computed by convolution with the forward Green's function. To the right of $\operatorname{supp}v$, $u_0$ is a solution of $P(D)u=0$, and it vanishes there exactly when $\hat v$ vanishes at the zeros of $P$. Right: $\log_{10}|\hat v(\zeta)|$, so the zeros of $\hat v$ are the dark spots. The button projects the three heights onto all vanishing constraints, handling the dependent conjugate equations. Residuals are numerical: exact vanishing makes $\hat v/P$ entire and $u_0$ compactly supported inside the shaded convex hull.`,
       deps: ['fa-8.3', 'fa-7.23', 'fa-8.1'],
       tags: ['differential equations', 'Paley–Wiener', 'compact support'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const OPS = {
@@ -98,17 +105,13 @@ has a solution $u$ with compact support if and only if there is an entire functi
         const H = [[-1.6, 0.9], [-0.2, -0.6], [1.3, 0.7]].map(([x, y]) => L.handle(x, y, { color: 'orange', r: 6, constrain: (a, b) => [M.clamp(a, -2.6, 2.6), M.clamp(b, -1.4, 1.4)] }));
         const NQ = 120, bq = M.linspace(-r, r, NQ + 1), wq = bq.map((_, j) => (j === 0 || j === NQ ? 1 : j % 2 ? 4 : 2) * (2 * r / NQ) / 3);
         // ∫ bump(y − c) e^{−iyζ} dy for complex ζ = (a, b): e^{−iyζ} = e^{yb}(cos ya − i sin ya)
-        const bumpHat = (c, z) => { let re = 0, im = 0; for (let j = 0; j <= NQ; j++) { const y = c + bq[j], w = wq[j] * bump(y, c, r), e = Math.exp(y * z[1]); re += w * e * Math.cos(y * z[0]); im -= w * e * Math.sin(y * z[0]); } return [re, im]; };
+        const bumpHat = (c, z) => { let re = 0, im = 0; for (let j = 0; j <= NQ; j++) { const y = c + bq[j], w = wq[j] * bump(y, c, r), e = Math.exp(y * z[1]); re += w * e * Math.cos(y * z[0]); im -= w * e * Math.sin(y * z[0]); } return [re/Math.sqrt(2*Math.PI), im/Math.sqrt(2*Math.PI)]; };
         const vhat = (z) => H.reduce((s, h) => C.add(s, C.scale(bumpHat(h.x, z), h.y)), [0, 0]);
-        v.button('make $\\hat v$ vanish at the zeros of $P$', () => {
+        v.button('Project onto vanishing constraints', () => {
           const zs = OPS[op.value].zeros, rows = [];
           zs.forEach((z) => { const b = H.map((h) => bumpHat(h.x, z)); rows.push(b.map((q) => q[0]), b.map((q) => q[1])); });
-          const Mx = rows.filter((row) => row.some((q) => Math.abs(q) > 1e-12));
-          const a = H.map((h) => h.y), m = Mx.length;
-          if (!m) return;
-          const G = Mx.map((ri) => Mx.map((rj) => ri.reduce((s, q, k) => s + q * rj[k], 0))), rhs = Mx.map((ri) => ri.reduce((s, q, k) => s + q * a[k], 0));
-          const sol = m === 1 ? [rhs[0] / G[0][0]] : (() => { const det = G[0][0] * G[1][1] - G[0][1] * G[1][0]; return [(rhs[0] * G[1][1] - rhs[1] * G[0][1]) / det, (G[0][0] * rhs[1] - G[1][0] * rhs[0]) / det]; })();
-          H.forEach((h, k) => { const na = a[k] - Mx.reduce((s, ri, i) => s + ri[k] * sol[i], 0); h.set(h.x, M.clamp(na, -1.4, 1.4)); });
+          const amplitudes=projectKernel(rows,H.map(h=>h.y));
+          H.forEach((h,k)=>h.set(h.x,amplitudes[k]));
         });
         let st = {};
         v.legend([['orange', '$v$'], ['purple', '$u_0$'], ['red', 'zeros of $P$']]);
@@ -135,7 +138,7 @@ has a solution $u$ with compact support if and only if there is an entire functi
         v.readout(() => {
           const s = st;
           const vz = s.vals.map((q) => v.sci(q + 1e-17, 1)).join(', ');
-          return `$|\\hat v|$ at the zeros of $P$: $${vz}$. $\\max|u_0|$ to the right of $\\operatorname{supp}v$: $${v.fix(s.tail, 4)}$. ` + (s.ok ? '**$\\hat v/P$ is entire**, and $u_0$ is the solution with compact support, inside the hull $[' + v.fix(s.lo, 2) + ',' + v.fix(s.hi, 2) + ']$.' : 'Here $\\hat v/P$ has a pole, and no solution of $P(D)u=v$ has compact support.');
+          return `$|\\hat v|$ at the zeros of $P$: $${vz}$. $\\max|u_0|$ to the right of $\\operatorname{supp}v$: $${v.fix(s.tail, 4)}$. ` + (s.ok ? 'The numerical vanishing constraints are met to tolerance. Exact vanishing would make $\\hat v/P$ entire and give a compactly supported solution inside $[' + v.fix(s.lo, 2) + ',' + v.fix(s.hi, 2) + ']$.' : 'Here $\\hat v/P$ has a pole, and no solution of $P(D)u=v$ has compact support.');
         });
       },
     },
@@ -144,25 +147,24 @@ has a solution $u$ with compact support if and only if there is an entire functi
       num: '8.8',
       kind: 'Definition',
       name: 'Sobolev spaces Hˢ',
-      credit: 'Sobolev, 1938',
+      credit: 'Sobolev',
       statement: String.raw`To each real number $s$ associate the positive measure $d\mu_s(y)=(1+|y|^2)^s\,dm_n(y)$ on $\R^n$. $H^s$ is the space of tempered distributions $u$ whose Fourier transform is a function with
 $$\norm u_s=\Big(\int_{\R^n}|\hat u|^2\,d\mu_s\Big)^{1/2}<\infty ,$$
 that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and for an integer $p\ge0$, $H^p$ consists of the $f\in L^2$ with $D^\alpha f\in L^2$ for $|\alpha|\le p$.`,
       idea: String.raw`The weight $(1+|\xi|^2)^{s/2}$ measures smoothness by the decay of $\hat u$: by Plancherel (7.9) and $(D^\alpha u)^\wedge=\xi^\alpha\hat u$, having $p$ derivatives in $L^2$ means $(1+|\xi|^2)^{p/2}\hat u\in L^2$. Real and negative $s$ interpolate and extend this scale. $\delta\in H^s$ exactly when $s<-n/2$. Sobolev's lemma (7.25) says that elements of $H^s$ are $C^{(r)}$ functions when $s>r+\frac n2$.`,
-      caption: String.raw`One variable. Choose $u$ and the order $s$. Middle: $\xi\,(1+\xi^2)^s|\hat u(\xi)|^2$ (locally averaged over the oscillations) against $\log_{10}\xi$. The area under this curve is $\norm u_{(s)}^2$, so $u\in H^s$ exactly when the curve eventually goes down (dashed: the borderline, slope $0$). Right: the truncated norm $\int_{|\xi|<\Xi}(1+\xi^2)^s|\hat u|^2$ against $\Xi$. It levels off for $s<s^*$ and keeps growing for $s\ge s^*$.`,
+      caption: String.raw`One variable. Choose $u$ and the order $s$. Middle: $\xi\,(1+\xi^2)^s|\hat u(\xi)|^2/\sqrt{2\pi}$ (locally averaged over the oscillations) against $\log_{10}\xi$. The log–log curve shows the integrand after logarithmic substitution, including the normalized-measure factor. For these explicit power-law tails, a negative asymptotic power means convergence; the slope-zero cases diverge. Right: the truncated norm $\int_{|\xi|<\Xi}(1+\xi^2)^s|\hat u|^2$ against $\Xi$. It levels off for $s<s^*$ and keeps growing for $s\ge s^*$.`,
       deps: ['fa-7.15', 'fa-7.9'],
       see: ['fa-7.25'],
       tags: ['Sobolev spaces', 'Fourier transform'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const sinc = (t) => (Math.abs(t) < 1e-8 ? 1 : Math.sin(t) / t);
         const U = {
           delta: { label: '$\\delta$', u2: () => 1, s: -0.5, x: null },
           ddelta: { label: "$\\delta'$", u2: (x) => x * x, s: -1.5, x: null },
-          box: { label: '$\\chi_{[-1,1]}$', u2: (x) => 4 * sinc(x) ** 2, s: 0.5, x: (t) => (Math.abs(t) <= 1 ? 1 : 0) },
-          tent: { label: '$(1-|x|)^+$', u2: (x) => sinc(x / 2) ** 4, s: 1.5, x: (t) => Math.max(0, 1 - Math.abs(t)) },
-          gauss: { label: '$e^{-x^2/2}$', u2: (x) => 2 * Math.PI * Math.exp(-x * x), s: Infinity, x: (t) => Math.exp(-t * t / 2) },
+          box: { label: '$\\chi_{[-1,1]}$', u2: (x) => (2/Math.PI) * sinc(x) ** 2, s: 0.5, x: (t) => (Math.abs(t) <= 1 ? 1 : 0) },
+          tent: { label: '$(1-|x|)^+$', u2: (x) => sinc(x / 2) ** 4 / (2*Math.PI), s: 1.5, x: (t) => Math.max(0, 1 - Math.abs(t)) },
+          gauss: { label: '$e^{-x^2/2}$', u2: (x) => Math.exp(-x * x), s: Infinity, x: (t) => Math.exp(-t * t / 2) },
         };
         const which = v.select('$u=$', Object.entries(U).map(([value, o]) => ({ value, label: o.label })), 'box');
         const sS = v.slider('order $s$', -3, 3, 0.25, { step: 0.05 });
@@ -172,7 +174,7 @@ that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and 
         let st = {};
         v.legend([['blue', 'local average of $\\xi(1+\\xi^2)^s|\\hat u|^2$'], ['muted', 'borderline (slope 0)', { dash: true }], ['green', 'truncated norm: converges'], ['red', 'truncated norm: diverges']]);
         v.render(() => {
-          const o = U[which.value], s = sS.value, g = (x) => (1 + x * x) ** s * o.u2(x);
+          const o = U[which.value], s = sS.value, g = (x) => (1 + x * x) ** s * o.u2(x) / Math.sqrt(2*Math.PI);
           // u in x-space
           X.setTitle(`$u=${o.label.slice(1, -1)}$`);
           if (o.x) X.fn(o.x, { color: 'blue', width: 2.4, fill: 'blue', fillAlpha: 0.12, n: 600 });
@@ -201,11 +203,12 @@ that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and 
           B.setView(null, span(cum.map((p) => p[1]), 1, 0.1));
           B.setTicks(decTicks(-1, 4), logTicks(...B.bounds.y));
           B.path(cum, { color: conv ? 'green' : 'red', width: 2.6 });
-          st = { s, star: o.s, conv, last: tot, sl };
+          st = { s, star: o.s, conv, last: tot, sl, key:which.value };
         });
         v.readout(() => {
           const S = st, star = S.star === Infinity ? '\\infty' : v.fix(S.star, 1);
-          return `$u\\in H^s$ iff $s<s^*=${star}$. Now $s=${v.fix(S.s, 2)}$: ` + (S.conv ? `**$u\\in H^s$**, $\\int(1+\\xi^2)^s|\\hat u|^2d\\xi\\approx${v.fix(S.last, 3)}$ (the integrand falls off with slope $${v.fix(S.sl, 2)}$).` : `**$u\\notin H^s$** — the integrand falls off too slowly (slope $${v.fix(S.sl, 2)}\\ge0$), and the truncated norms grow without bound.`);
+          if(S.key==='gauss')return `The Gaussian belongs to every $H^s$. Its normalized truncated squared norm is $${v.fix(S.last,4)}$; the far-tail plot reaches the numerical underflow floor, so a fitted slope there has no asymptotic meaning.`;
+          return `$u\\in H^s$ iff $s<s^*=${star}$. Now $s=${v.fix(S.s, 2)}$: ` + (S.conv ? `**$u\\in H^s$**, $\\int(1+\\xi^2)^s|\\hat u|^2dm_1\\approx${v.fix(S.last, 3)}$ (the integrand falls off with slope $${v.fix(S.sl, 2)}$).` : `**$u\\notin H^s$** — the integrand falls off too slowly (slope $${v.fix(S.sl, 2)}\\ge0$), and the truncated norms grow without bound.`);
         });
       },
     },
@@ -214,18 +217,13 @@ that is, $\hat u\in L^2(\mu_s)$. So $H^0=L^2$, $H^t\subset H^s$ when $s<t$, and 
       num: '8.9',
       kind: 'Theorem',
       name: 'Properties of the Sobolev spaces Hˢ',
-      statement: String.raw`(a) Every distribution with compact support lies in some $H^s$.
-(b) If $-\infty<t<\infty$, the mapping $u\mapsto v$ given by $\hat v=(1+|y|^2)^{t/2}\hat u$ is a linear isometry of $H^s$ onto $H^{s-t}$.
-(d) Every $D^\alpha$ maps $H^s$ into $H^{s-|\alpha|}$.
-(e) If $\psi\in\mathscr S_n$ and $u\in H^s$, then $\psi u\in H^s$.
-(Rudin's part (c) is not reproduced here.)`,
+      statement: String.raw`(a) Every compactly supported distribution belongs to some $H^s$. (b) The Fourier multiplier $(1+|\xi|^2)^{t/2}$ is an isometry $H^s\to H^{s-t}$ with inverse of order $-t$. (c) Every bounded measurable Fourier multiplier $\widehat v=b\widehat u$ has order zero: it maps each $H^s$ continuously to itself. (d) Each $D_\alpha$ has order $|\alpha|$. (e) Multiplication by a Schwartz function has order zero.`,
       idea: String.raw`(a) By the Paley–Wiener–Schwartz theorem (7.23), $\hat u$ grows at most like $(1+|\xi|)^N$, so $s<-N-\frac n2$ works. (b) is immediate from the definition, since $|\hat v|^2d\mu_{s-t}=|\hat u|^2d\mu_s$. (d) $|y^\alpha|\le(1+|y|^2)^{|\alpha|/2}$. (e) $(\psi u)^\wedge$ is the convolution of $\hat\psi$ with $\hat u$. **Peetre's inequality**
 $$(1+|\xi|^2)^{s/2}\le2^{|s|/2}(1+|\xi-\eta|^2)^{|s|/2}(1+|\eta|^2)^{s/2}$$
 moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\xi-\eta$, which the rapidly decreasing $\hat\psi(\xi-\eta)$ absorbs. Then Young's inequality bounds the convolution in $L^2$. Parts (d) and (e) are what the proof of 8.12 uses to control the commutator terms.`,
-      caption: String.raw`Left: Peetre's ratio $(1+\xi^2)^{s/2}/\big[(1+(\xi-\eta)^2)^{|s|/2}(1+\eta^2)^{s/2}\big]$ on the $(\xi,\eta)$-plane, in $\log_2$, coloured from $-6$ (dark) up to the bound $|s|/2$ (bright). Its actual maximum, in the corner, stays below the bound. Drag the point to read off the factors. Right: $u=\chi_{[-1,1]}\in H^s$ for $s<\frac12$ and $\psi u$ for a bump $\psi$ (drag its centre). $|\widehat{\psi u}|$ never decays slower than $|\hat u|\sim\xi^{-1}$. It decays faster when $\psi$ vanishes at both jumps: multiplication by $\psi$ can only improve membership in $H^s$.`,
+      caption: String.raw`Left: Peetre's ratio $(1+\xi^2)^{s/2}/\big[(1+(\xi-\eta)^2)^{|s|/2}(1+\eta^2)^{s/2}\big]$ on the $(\xi,\eta)$-plane, in $\log_2$, coloured from $-6$ (dark) up to the bound $|s|/2$ (bright). Its sampled maximum, in the corner, stays below the bound. Drag the point to read off the factors. Right: $u=\chi_{[-1,1]}\in H^s$ for $s<\frac12$ and $\psi u$ for a bump $\psi$ (drag its centre). The envelope of $|\widehat{\psi u}|$ has at least the $O(\xi^{-1})$ decay of $\hat u$; this is a decay-rate statement, not pointwise domination at Fourier zeros. It decays faster when $\psi$ vanishes at both jumps: multiplication by $\psi$ can only improve membership in $H^s$.`,
       deps: ['fa-8.8', 'fa-7.23', 'fa-7.19'],
       tags: ['Sobolev spaces', 'Fourier transform'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const sS = v.slider('$s$', -3, 3, 1.5, { step: 0.05 });
@@ -251,7 +249,7 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
             for (let t = 0; t <= 2.3; t += 0.004) {
               const q = 10 ** t; let a = 0, b = 0, a2 = 0, b2 = 0;
               for (let j = 0; j <= NX; j++) { const x = -1 + j * hx, co = Math.cos(q * x), si = Math.sin(q * x), p = bump(x, c, r), wj = w(j); a += wj * co; b -= wj * si; a2 += wj * p * co; b2 -= wj * p * si; }
-              xi.push(t); U1.push(Math.hypot(a, b)); U2.push(Math.hypot(a2, b2));
+              xi.push(t); U1.push(Math.hypot(a, b)/Math.sqrt(2*Math.PI)); U2.push(Math.hypot(a2, b2)/Math.sqrt(2*Math.PI));
             }
             const env = (Y) => { const out = []; for (let i = 0; i < xi.length; i += 12) { let m = 0; for (let k = i; k < Math.min(xi.length, i + 12); k++) m = Math.max(m, Y[k]); out.push([xi[Math.min(xi.length - 1, i + 6)], Math.log10(Math.max(m, 1e-7))]); } return out; };
             cache = { key, e1: env(U1), e2: env(U2) };
@@ -271,7 +269,7 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
         });
         v.readout(() => {
           const S = st, q = S.r1 / (S.r2 * S.r3);
-          return `At the point: $(1+\\xi^2)^{s/2}=${v.fmt(S.r1, 4)}$, $(1+(\\xi-\\eta)^2)^{|s|/2}(1+\\eta^2)^{s/2}=${v.fmt(S.r2 * S.r3, 4)}$, ratio $${v.fix(q, 3)}\\le2^{|s|/2}=${v.fix(2 ** (Math.abs(S.s) / 2), 3)}$. Decay rates: $|\\hat u|\\sim\\xi^{${v.fix(S.sl1, 2)}}$, $|\\widehat{\\psi u}|\\sim\\xi^{${v.fix(S.sl2, 2)}}$` + (S.edge < 1e-9 ? ' — $\\psi$ vanishes at both jumps, so $\\psi u$ is smooth.' : '.');
+          return `At the point: $(1+\\xi^2)^{s/2}=${v.fmt(S.r1, 4)}$, $(1+(\\xi-\\eta)^2)^{|s|/2}(1+\\eta^2)^{s/2}=${v.fmt(S.r2 * S.r3, 4)}$, ratio $${v.fix(q, 3)}\\le2^{|s|/2}=${v.fix(2 ** (Math.abs(S.s) / 2), 3)}$. Decay rates: $|\\hat u|\\sim\\xi^{${v.fix(S.sl1, 2)}}$, $|\\widehat{\\psi u}|\\sim\\xi^{${v.fix(S.sl2, 2)}}$` + (S.edge === 0 ? ' — $\\psi$ vanishes at both jumps, so $\\psi u$ is smooth.' : '.');
         });
       },
     },
@@ -284,7 +282,6 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
       idea: String.raw`Membership in $H^s$ is a global condition, both on smoothness and on decay at infinity, and it does not even make sense for a distribution on $\Omega$. The local version keeps only the smoothness: near each point $u$ must agree with some element of $H^s$. Theorem 8.11 shows that this is the same as asking $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$.`,
       deps: ['fa-8.8'],
       tags: ['Sobolev spaces', 'localization'],
-      verify: true,
     },
     // ------------------------------------------------------------------ 8.11
     {
@@ -293,12 +290,12 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
       name: 'Locally Hˢ ⇔ ψu ∈ Hˢ for every test function ψ',
       statement: String.raw`If $u\in\mathscr D'(\Omega)$ and $-\infty<s<\infty$, the following two statements are equivalent:
 (a) $u$ is locally $H^s$;
-(b) $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$.`,
+(b) $\psi u\in H^s$ for every $\psi\in\mathscr D(\Omega)$.
+If $s$ is a nonnegative integer, these are also equivalent to (c) every distribution derivative $D_\alpha u$, $|\alpha|\le s$, being locally $L^2$.`,
       idea: String.raw`(a)$\Rightarrow$(b): the support of $\psi$ is compact, so finitely many neighbourhoods $\omega_i$, on which $u=v_i\in H^s$, cover it. Choose a partition of unity $\psi_i\in\mathscr D(\omega_i)$ with $\sum\psi_i=1$ on $\operatorname{supp}\psi$. Then $\psi u=\sum\psi_i\psi v_i$, and each term lies in $H^s$ by 8.9(e). (b)$\Rightarrow$(a): given $x$, take $\psi\in\mathscr D(\Omega)$ equal to $1$ near $x$. Then $v=\psi u\in H^s$ and $u=v$ near $x$.`,
       caption: String.raw`One variable, and $u$ with three singularities that you can drag: a jump (orange), a kink (purple), and a jump of $u''$ (teal). Drag the window $\psi$ and set its radius. Right: the decay of $|\widehat{\psi u}|$ (FFT, $2^{16}$ points), with the slope fitted at high frequency. If $|\widehat{\psi u}|\sim\xi^{-k}$, then $\psi u\in H^s$ exactly for $s<k-\frac12$. The three singularities give $s<\frac12$, $s<\frac32$ and $s<\frac52$. Bottom: the open set $\Omega$ (drag its ends). $u$ is locally $H^s$ in $\Omega$ exactly when $s$ is below the smallest of these thresholds over the singularities inside $\Omega$. That is also the worst decay over all windows inside $\Omega$, as (b) says.`,
       deps: ['fa-8.10', 'fa-8.9', 'fa-6.20'],
       tags: ['Sobolev spaces', 'localization', 'partitions of unity'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const rS = v.slider('radius of the window $\\psi$', 0.3, 1.5, 0.5, { step: 0.01 });
@@ -324,7 +321,7 @@ moves the weight from $\xi$ to $\eta$ at the price of a polynomial factor in $\x
             const re = new Float64Array(NF), im = new Float64Array(NF);
             for (let j = 0; j < NF; j++) { const x = X0 + j * h; re[j] = bump(x, xc, r) * u(x); }
             fft(re, im);
-            const A = new Float64Array(NF / 2); for (let k = 0; k < NF / 2; k++) A[k] = h * Math.hypot(re[k], im[k]);
+            const A = new Float64Array(NF / 2); for (let k = 0; k < NF / 2; k++) A[k] = h * Math.hypot(re[k], im[k]) / Math.sqrt(2*Math.PI);
             const e = envelope(A, dxi, 1, 3.9, 0.05);
             cache = { key, e, s: slope(e, 3.0, 3.85) };
           }

@@ -208,7 +208,7 @@ export default {
           pic: 'Flute, clarinet, trumpet and violin play the same pitch at the same loudness with waveforms and spectra side by side; graft one instrument’s spectrum onto another’s envelope and hear which identity wins.' },
         { num: '4.2', kind: 'Theorem', name: 'Fourier series of a periodic tone', deps: ['music-2.6', 'pma-8.9', 'pma-8.10', 'pma-8.14'], refs: ['Benson ch. 2', 'Loy II ch. 3'], tags: ['fourier', 'harmonics'],
           pic: 'Draw one period of a waveform: its harmonic amplitudes and phases appear as bars, the partial sum with N harmonics is overlaid and played, and you hear it converge on the drawn wave as N grows.' },
-        { num: '4.3', kind: 'Theorem', name: 'Smoothness controls how fast harmonics decay', deps: ['music-4.2', 'rca-5.12'], refs: ['Benson ch. 2'], tags: ['fourier', 'brightness'],
+        { num: '4.3', kind: 'Theorem', name: 'Smoothness controls how fast harmonics decay', deps: ['music-4.2', 'rca-5.14'], refs: ['Benson ch. 2'], tags: ['fourier', 'brightness'],
           pic: 'Round off the corners of a square wave with a slider: on a log–log spectrum the harmonics fall like 1/n for a jump, 1/n² for a kink and faster still for a smooth wave, and the tone darkens audibly as the slope steepens.' },
         { num: '4.4', kind: 'Theorem', name: 'Parseval: a tone’s energy is the sum over harmonics', deps: ['music-4.2', 'pma-8.16'], refs: ['Benson ch. 2'], tags: ['fourier', 'energy'],
           pic: 'Drag harmonic amplitudes and scramble their phases: the waveform changes shape wildly, but its RMS readout, always equal to the root-sum-square of the bars, and the loudness you hear stay put.' },

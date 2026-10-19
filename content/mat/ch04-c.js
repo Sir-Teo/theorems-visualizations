@@ -36,7 +36,7 @@ function mcInit(N, nuc, seed, v) {
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (Math.abs(dx) + Math.abs(dy) > 1) continue; const i = ((cy + dy + N) % N) * N + ((cx + dx + N) % N); o[i] = id; f[i] = 0; }
     id++;
   }
-  return { N, o, f, r, t: 0, hist: [] };
+  const st = { N, o, f, r, t: 0, hist: [] }; const q = mcStats(st); st.hist.push({t:0,fx:1-q.fdef,ng:q.ng}); return st;
 }
 function mcSweep(S, Es) {
   const { N, o, f, r } = S, NN = N * N;
@@ -100,14 +100,14 @@ export default {
           let pk = { s: 0, t: 0 };
           for (let k = 0; k <= 300; k++) { const tt = 0.01 * Math.pow(1e6, k / 300), c = curve(tt); if (c.s > pk.s) pk = { s: c.s, t: tt, r: c.r }; }
           B.setView([0.01, 10000], [0, Math.max(300, pk.s * 1.2)]);
-          B.fn((x) => SIG_MATRIX + Math.min(shearing(radiusAt(x, TS.value, QS.value), f, rcS.value), 900), { domain: [0.01, 10000], color: 'accent', width: 1.8, dash: true, alpha: 0.7 });
-          B.fn((x) => SIG_MATRIX + Math.min(orowan(radiusAt(x, TS.value, QS.value), f), 900), { domain: [0.01, 10000], color: 'red', width: 1.8, dash: true, alpha: 0.7 });
+          B.fn((x) => SIG_MATRIX + shearing(radiusAt(x, TS.value, QS.value), f, rcS.value), { domain: [0.01, 10000], color: 'accent', width: 1.8, dash: true, alpha: 0.7 });
+          B.fn((x) => SIG_MATRIX + orowan(radiusAt(x, TS.value, QS.value), f), { domain: [0.01, 10000], color: 'red', width: 1.8, dash: true, alpha: 0.7 });
           B.fn((x) => curve(x).s, { domain: [0.01, 10000], color: 'ink', width: 3 });
           B.vline(pk.t, { color: 'green', dash: true, alpha: 0.7 }); B.text('peak', pk.t * 1.08, pk.s * 0.12, { color: 'green', size: 12, align: 'left' });
           B.text('under-aged: sheared', 0.02, pk.s * 1.12, { color: 'accent', size: 11.5, align: 'left' });
           B.text('over-aged: bypassed', 9000, pk.s * 1.12, { color: 'red', size: 11.5, align: 'right' });
           hB.set(t, cur.s);
-          C.setView([0.01, 10000], [0, 60]);
+          C.setView([0.01, 10000], [0, Math.max(60, radiusAt(10000, TS.value, QS.value) * 1.08)]);
           C.fn((x) => radiusAt(x, TS.value, QS.value), { domain: [0.01, 10000], color: 'orange', width: 2.6 });
           const rc = (() => { let lo = 0.01, hi = 1e4; const g = (x) => shearing(radiusAt(x, TS.value, QS.value), f, rcS.value) - orowan(radiusAt(x, TS.value, QS.value), f); for (let i = 0; i < 60; i++) { const m = Math.sqrt(lo * hi); if (g(m) < 0) lo = m; else hi = m; } return Math.sqrt(lo * hi); })();
           C.vline(pk.t, { color: 'green', dash: true, alpha: 0.7 }); C.vline(t, { color: 'accent', alpha: 0.4, dash: true });
@@ -130,7 +130,7 @@ export default {
           }
           // dislocation line: straight through particles when sheared, bowed arcs between particles when bypassed
           const pts = [];
-          if (sheared) { A.line(x0, -0.3 * Lc, x1, -0.3 * Lc, { color: 'accent', width: 3 }); A.text('shears the particles: each step is one $b$', x0 + 0.1 * span, -0.5 * Lc, { color: 'accent', size: 12, align: 'left' }); }
+          if (sheared) { A.line(x0, -0.3 * Lc, x1, -0.3 * Lc, { color: 'accent', width: 3 }); A.text('shears the particles: offsets exaggerated (not to scale)', x0 + 0.1 * span, -0.5 * Lc, { color: 'accent', size: 12, align: 'left' }); }
           else {
             for (let k = -1; k < 4; k++) {
               const ca = k * Lc + Lc * 0.2 + r, cb = (k + 1) * Lc + Lc * 0.2 - r, mid = (ca + cb) / 2, R = Math.max((cb - ca) / 2, 1e-3);
@@ -154,15 +154,14 @@ export default {
       num: '4.10',
       kind: 'Phenomenon',
       name: 'Recovery, recrystallization and grain growth',
-      statement: String.raw`Cold work stores energy in a metal as dislocations (the energy density grows like the dislocation density $\rho$, 3.8). Heating it releases that energy in three overlapping stages. **Recovery**: point defects annihilate and dislocations rearrange into low-energy arrays; the strength falls only a little, the grains do not change. **Recrystallization**: new strain-free grains nucleate and their boundaries sweep through the deformed metal, driven by the stored energy; the dislocation density drops by orders of magnitude and the strength falls to its annealed value. **Grain growth**: with the stored energy gone, the boundary energy drives the strain-free grains to coarsen, and the mean grain diameter grows roughly as $d^2-d_0^2=kt$ (Burke and Turnbull).`,
+      statement: String.raw`Cold work stores energy in a metal as dislocations (the energy density grows like the dislocation density $\rho$, 3.8). Heating it releases that energy in three overlapping stages. **Recovery**: point defects annihilate and dislocations rearrange into low-energy arrays; the strength falls only a little, the coarse grain structure is largely retained. **Recrystallization**: new strain-free grains nucleate and their boundaries sweep through the deformed metal, driven by the stored energy; the dislocation density drops by orders of magnitude and the strength falls to its annealed value. **Grain growth**: with the stored energy gone, the boundary energy drives the strain-free grains to coarsen, and ideal normal grain growth with constant boundary mobility and energy, without pinning, gives $d^2-d_0^2=kt$ (Burke and Turnbull).`,
       idea: String.raw`Each stage has its own driving force and its own kinetics. Recrystallization trades stored energy $E_s$ per volume for boundary energy: a nucleus grows into the deformed matrix wherever the energy released by consuming strained metal outweighs the curvature cost of the boundary, so it has a threshold stored energy (a sluggish or heavily recovered metal never recrystallizes). The stored energy also feeds the hardness through Taylor's $\sigma\propto\sqrt\rho$ (3.8), so the hardness falls in proportion to the square root of the unrecrystallized, unrecovered fraction. Grain growth after recrystallization is pure curvature-driven boundary motion, which a lattice Monte Carlo (Potts) model with an energy for every unlike neighbour pair reproduces. Temperature enters through the Arrhenius law (2.7) for the rates, represented here by running the clock faster.`,
-      caption: String.raw`Press play: a 96×96 patch of cold-worked metal (elongated deformed grains, grey) with strain-free nuclei (coloured) grows by a Monte Carlo grain-boundary model. Right: the recrystallized fraction (green), the relative hardness (blue), the remaining stored energy (orange), and the mean grain area after the new grains meet. Lower the stored energy or switch on recovery and the nuclei stop growing: recrystallization has a threshold. Change the nuclei count and watch the final grain size.`,
-      deps: ['mat-3.8', 'mat-2.7'],
-      refs: ['Callister §7.11', 'Callister §7.12'],
+      caption: String.raw`Press play: a 96×96 patch of cold-worked metal (elongated deformed grains, grey) with strain-free nuclei (coloured) grows by a Monte Carlo grain-boundary model. Right: the recrystallized fraction (green), the relative hardness (blue), the remaining stored energy (orange), and the mean area of all connected grains, including the deformed grains before recrystallization. Lower the stored energy or switch on recovery and the nuclei stop growing: recrystallization has a threshold. Change the nuclei count and watch the final grain size.`,
+      deps: ['mat-3.8', 'mat-2.7', 'thermo-4.10'],
+      refs: ['Bhadeshia, Metals and Alloys, Lectures6–7 pp37–45; NPTEL Physical Metallurgy, PartVII module2 normal-grain-growth kinetics'],
       tags: ['annealing', 'recrystallization', 'grain growth'],
       credit: 'J. E. Burke and D. Turnbull, 1952 (review of recrystallization and grain growth); M. P. Anderson, D. J. Srolovitz, G. S. Grest and P. S. Sahni, 1984 (Monte Carlo grain growth)',
-      scope: String.raw`A two-dimensional $Q$-state Potts model at zero temperature with eight-neighbour boundary energy 1 per unlike pair, periodic edges, and a stored energy $E_s$ (in the same units) for each deformed site; it gives the qualitative sequence and a $\sqrt t$-type growth law, not absolute times or sizes (a Monte Carlo step is not a second). The recovery law $E_s(t)=E_s(0)\,[\,0.4+0.6e^{-t/40}\,]$ and the hardness range (60 to 140 HV, copper-like) are assumptions of the illustration.`,
-      verify: true,
+      scope: String.raw`A two-dimensional $Q$-state Potts model at zero temperature with eight-neighbour boundary energy 1 per unlike pair, periodic edges, and a stored energy $E_s$ (in the same units) for each deformed site; it illustrates the qualitative sequence, with possible grid pinning; it does not guarantee a $\sqrt t$ law or predict absolute times or sizes (a Monte Carlo step is not a second). The recovery law $E_s(t)=E_s(0)\,[\,0.4+0.6e^{-t/40}\,]$ and the hardness range (60 to 140 HV, copper-like) are assumptions of the illustration.`,
       viz(v) {
         const N = 96;
         let S;
@@ -201,13 +200,13 @@ export default {
           // plots
           const h = st.hist, Hm = (p) => 0;
           const tmax = Math.max(720, st.t + 20);
-          B.setView([0, 720], [0, 1.05]); C.setView([0, 720], [0, Math.max(100, ...h.map((p) => (N * N) / p.ng)) * 1.1]);
+          B.setView([0, 720], [0, 1.05]); C.setView([0, 720], [0, Math.max(100, ...h.filter(p => p.ng > 0).map((p) => (N * N) / p.ng)) * 1.1]);
           const rel = h.map((p) => ({ t: p.t, fx: p.fx, rho: Math.sqrt((1 - p.fx) * R(p.t)), er: R(p.t) * (1 - p.fx) }));
           B.path(rel.map((p) => [p.t, p.fx]), { color: 'green', width: 2.6 });
           B.path(rel.map((p) => [p.t, p.rho]), { color: 'accent', width: 2.6 });
           B.path(rel.map((p) => [p.t, p.er]), { color: 'orange', width: 2.2, dash: true });
           const last = h[h.length - 1] || { fx: 0, ng: 0, t: 0 };
-          C.path(h.map((p) => [p.t, (N * N) / p.ng]), { color: 'purple', width: 2.4 });
+          C.path(h.filter(p => p.ng > 0).map((p) => [p.t, (N * N) / p.ng]), { color: 'purple', width: 2.4 });
           // power-law exponent of the mean diameter after recrystallization (fx > 0.98)
           const post = h.filter((p) => p.fx > 0.98 && p.t > 0);
           let nExp = NaN;
@@ -218,7 +217,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { st, last, nExp, Es, hard } = info;
-          return `Step ${st.t}: ${v.fix(last.fx * 100, 0)} % recrystallized, hardness ≈ ${v.fix(hard, 0)} HV (60 annealed, 140 cold-worked), stored energy per deformed site ${v.fix(Es, 2)}, ${last.ng} grains of mean area ${v.fix((N * N) / Math.max(1, last.ng), 0)} sites.\n${Number.isFinite(nExp) ? `After recrystallization the fitted growth exponent of the mean diameter is $${v.fix(nExp, 2)}$ in this run (Burke–Turnbull's ideal is $1/2$)${nExp < 0.25 ? ': growth has nearly stalled, because at zero temperature the boundaries of a small lattice pin on the grid, a known artifact of the Potts model' : ''}.` : last.fx < 0.02 && st.t > 200 ? 'The nuclei have not grown: the stored energy is below the threshold set by boundary curvature.' : ''}`;
+          return `Step ${st.t}: ${v.fix(last.fx * 100, 0)} % recrystallized, hardness ≈ ${v.fix(hard, 0)} HV (60 annealed, 140 cold-worked), stored energy per deformed site ${v.fix(Es, 2)}, ${last.ng} grains of mean area ${last.ng ? v.fix((N * N) / last.ng, 0) : 'undefined'} sites.\n${Number.isFinite(nExp) ? `After recrystallization the fitted growth exponent of the mean diameter is $${v.fix(nExp, 2)}$ in this run (Burke–Turnbull's ideal is $1/2$)${nExp < 0.25 ? ': growth has nearly stalled, because at zero temperature the boundaries of a small lattice pin on the grid, a known artifact of the Potts model' : ''}.` : last.fx < 0.02 && st.t > 200 ? 'The nuclei have not grown: the stored energy is below the threshold set by boundary curvature.' : ''}`;
         });
       },
     },
@@ -227,46 +226,47 @@ export default {
       num: '4.11',
       kind: 'Method',
       name: 'Hardness testing and Tabor’s relation',
-      statement: String.raw`Hardness is the resistance to permanent indentation, measured by pressing a hard indenter into the surface under a load $P$ and measuring the impression. **Brinell** (ball of diameter $D$, chordal impression diameter $d$): $\mathrm{HB}=\dfrac{2P}{\pi D\big(D-\sqrt{D^2-d^2}\big)}$. **Vickers** (136° diamond pyramid, mean diagonal $d$): $\mathrm{HV}=1.854\,P/d^2$. **Rockwell** reads the permanent *depth* $h$ of a cone or ball on an arbitrary scale ($\mathrm{HRC}=100-h/0.002\,\mathrm{mm}$). **Tabor's relation**: the mean contact pressure (Meyer hardness) of a plastic indentation is about three times the flow stress at a representative strain, $H\approx3\sigma_r$, with $\sigma_r$ read at $\varepsilon_r\approx0.08$ for sharp indenters; so for a metal that does not harden $H\approx3\sigma_y$, and for steels the tensile strength is roughly $3.45\,$HB (in MPa).`,
-      idea: String.raw`Under the indenter the metal is constrained by the elastic material around the plastic zone, so it can flow only at a higher stress than in a tensile test: slip-line and cavity-expansion analyses give a constraint factor of about 3, so the average pressure is $p_m\approx3\sigma_r$. The flow stress has to be taken at the strain the indenter imposes, which is roughly $0.2\cot\alpha$ for a cone or pyramid of half-angle $\alpha$ (about 8 % for Vickers) and $0.2\,a/D$ for a ball of contact radius $a$. For a hardening metal $\sigma_r$ exceeds the 0.2 % yield stress by the factor $(\varepsilon_r/0.002)^n$ from Hollomon's law (4.5), which is why $H/\sigma_y$ is above 3 for work-hardened metals. Here the impression size is computed by solving $P=p_m\,A_{\rm proj}$ with that $\sigma_r$.`,
-      caption: String.raw`Choose a test and a load; set the material's yield strength $\sigma_{0.2}$ and hardening exponent $n$. Left: the impression seen from above (with its measured size) and in cross-section. Right: $H/\sigma_{0.2}$ against $n$ for this indenter's representative strain: the constraint factor 3 appears only for a metal that does not harden, and the dashed line shows where yours sits. The readout converts to HB or HV and compares the model's tensile strength with $3.45\,$HB.`,
+      statement: String.raw`Hardness is the resistance to permanent indentation, measured by pressing a hard indenter into the surface under a load $P$ and measuring the impression. **Brinell** (ball of diameter $D$, chordal impression diameter $d$): $\mathrm{HB}=\dfrac{2P}{\pi D\big(D-\sqrt{D^2-d^2}\big)}$. **Vickers** (136° diamond pyramid, mean diagonal $d$): $\mathrm{HV}=1.854\,P/d^2$. **Rockwell** reads the permanent *depth difference* $h$ between preliminary-load readings before and after the major-load cycle of a cone or ball on an arbitrary scale ($\mathrm{HRC}=100-h/0.002\,\mathrm{mm}$). **Tabor's relation**: the mean contact pressure (Meyer hardness) of a plastic indentation is about three times the flow stress at a representative strain, $H\approx3\sigma_r$, with $\sigma_r$ read at $\varepsilon_r\approx0.08$ for sharp indenters; so for a metal that does not harden $H\approx3\sigma_y$, and for steels the tensile strength is roughly $3.45\,$HB (in MPa).`,
+      idea: String.raw`Under the indenter the metal is constrained by the elastic material around the plastic zone, so it can flow only at a higher stress than in a tensile test: slip-line and cavity-expansion analyses give a constraint factor of about 3, so the average pressure is $p_m\approx3\sigma_r$. The flow stress has to be taken at the strain the indenter imposes, which is roughly $0.2\cot\alpha$ for a cone or pyramid of half-angle $\alpha$ (about 8 % for Vickers) and $0.4\,a/D$ for a ball of contact radius $a$. For a hardening metal $\sigma_r$ exceeds the 0.2 % yield stress by the factor $(\varepsilon_r/0.002)^n$ from Hollomon's law (4.5), which is why $H/\sigma_y$ is above 3 for work-hardened metals. Here the impression size is computed by solving $P=p_m\,A_{\rm proj}$ with that $\sigma_r$.`,
+      caption: String.raw`Choose a test and a load; set the material's yield strength $\sigma_{0.2}$ and hardening exponent $n$. Left: the impression seen from above (with its measured size) and in cross-section. Right: $H/\sigma_{0.2}$ against $n$ for this indenter's representative strain: the constraint factor 3 appears only for a metal that does not harden, and the dashed line shows where yours sits. The readout converts the model to HB or HV and compares its tensile strength with $3.45\,$HB. For Rockwell C, set the independently measured depth difference; no HB/HV conversion is inferred.`,
       deps: ['mat-4.3', 'mat-4.5'],
       refs: ['Callister §6.10'],
       tags: ['hardness', 'indentation', 'Tabor'],
       credit: 'J. A. Brinell, 1900 (ball test); R. L. Smith and G. E. Sandland, 1922 (Vickers pyramid); S. P. Rockwell, patent 1914 (depth test); D. Tabor, 1951 (The Hardness of Metals)',
-      scope: String.raw`A rigid-plastic indentation model with a constraint factor $C=3$ and the Hollomon flow stress $\sigma=K\varepsilon_p^n$ at the representative strain; elastic recovery, pile-up and sink-in are ignored. Rockwell C is computed from the Vickers geometry of the same load (permanent depth $h\approx d_V/7$), which is only approximately the standard scale: use the ASTM E140 tables for real conversions. The $3.45\,$HB rule for the tensile strength is the usual steel correlation quoted in textbooks; it is an empirical rule of thumb, not a theorem.`,
+      scope: String.raw`A rigid-plastic indentation model with a constraint factor $C=3$ and the Hollomon flow stress $\sigma=K\varepsilon_p^n$ at the representative strain; elastic recovery, pile-up and sink-in are ignored. Rockwell C is computed only from an independent measured depth difference, not converted from the model HV. Its cone outline is a schematic for the depth increment, not the complete indentation profile. The right-hand cone constraint-factor reference is independent of that depth reading. The $3.45\,$HB rule for the tensile strength is the usual steel correlation quoted in textbooks; it is an empirical rule of thumb, not a theorem.`,
       verify: true,
       viz(v) {
         const test = v.select('test', [{ value: 'brinell', label: 'Brinell (10 mm ball)' }, { value: 'vickers', label: 'Vickers (pyramid)' }, { value: 'rockwell', label: 'Rockwell C (150 kgf)' }], 'vickers', { onChange: (id) => { P.set({ brinell: 3000, vickers: 30, rockwell: 150 }[id]); } });
         const s0S = v.slider('yield strength $\\sigma_{0.2}$ (MPa)', 50, 1800, 250, { step: 5 });
-        const nS = v.slider('hardening exponent $n$', 0.02, 0.5, 0.2, { step: 0.01 });
+        const nS = v.slider('hardening exponent $n$', 0, 0.5, 0.2, { step: 0.01 });
         const P = v.slider('load $P$ (kgf)', 1, 3000, 30, { log: true, decimals: 0 });
+        const hS = v.slider('measured Rockwell depth difference $h$ (mm)', 0.02, 0.16, 0.08, {step:0.001});
         const A = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 280, weight: 1, minWidth: 240, title: 'impression, from above' });
         const B = v.stage({ x: [-1.2, 1.2], y: [-1.1, 0.6], equal: true, axes: false, height: 280, weight: 1, minWidth: 240, title: 'cross-section' });
-        const C = v.stage({ x: [0, 0.5], y: [1.5, 5.5], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 250, xlabel: 'hardening exponent $n$', ylabel: '$H/\\sigma_{0.2}$', title: 'Tabor: how much more than 3?' });
+        const C = v.stage({ x: [0, 0.5], y: [1.5, 5.5], axes: 'box', gutter: true, height: 280, weight: 1, minWidth: 250, xlabel: 'hardening exponent $n$', ylabel: '$H/\\sigma_{0.2}$', title: 'constraint-factor reference' });
         const hC = C.handle(0.2, 3, { color: 'accent', r: 7, constrain: 'x' });
-        hC.onDrag = () => nS.set(clamp(hC.x, 0.02, 0.5));
+        hC.onDrag = () => nS.set(clamp(hC.x, 0, 0.5));
         const g = 9.80665;
         function solve(tt, s0, n, Pk) {
           const K = s0 * Math.pow(500, n), flow = (e) => K * Math.pow(Math.max(e, 1e-6), n), PN = Pk * g;
           if (tt === 'brinell') {
             const D = 10; let lo = 1e-3, hi = D / 2 - 1e-6;
-            const f = (a) => PN / (Math.PI * a * a) - 3 * flow((0.2 * a) / D);
+            const f = (a) => PN / (Math.PI * a * a) - 3 * flow((0.4 * a) / D);
             if (f(hi) > 0) return { sat: true, D, a: hi, pm: PN / (Math.PI * hi * hi) };
             for (let i = 0; i < 60; i++) { const m = (lo + hi) / 2; if (f(m) > 0) lo = m; else hi = m; }
             const a = (lo + hi) / 2, d = 2 * a, HB = (2 * Pk) / (Math.PI * D * (D - Math.sqrt(D * D - d * d)));
-            return { D, a, d, pm: PN / (Math.PI * a * a), HB, er: (0.2 * a) / D, h: (D / 2) * (1 - Math.sqrt(1 - (d / D) ** 2)) };
+            return { D, a, d, pm: PN / (Math.PI * a * a), HB, er: (0.4 * a) / D, h: (D / 2) * (1 - Math.sqrt(1 - (d / D) ** 2)) };
           }
           const er = tt === 'vickers' ? 0.2 / Math.tan((68 * Math.PI) / 180) : 0.2 / Math.tan((60 * Math.PI) / 180);
           const pm = 3 * flow(er), dV = Math.sqrt((2 * PN) / pm), HV = (1.8544 * Pk) / (dV * dV);
           if (tt === 'vickers') return { d: dV, pm, HV, er, h: dV / 7 };
-          const dR = Math.sqrt((2 * 150 * g) / pm), hR = dR / 7, HRC = clamp(100 - hR / 0.002, 0, 100);
-          return { d: dR, pm, HV: (1.8544 * 150) / (dR * dR), er, h: hR, HRC };
+          const hR = hS.value, dR = 2 * hR * Math.tan(Math.PI / 3), HRC = 100 - hR / 0.002;
+          return { d: dR, pm, er, h: hR, HRC };
         }
         let info = null;
         v.render(() => {
           const tt = test.value, s0 = s0S.value, n = nS.value, Pk = tt === 'rockwell' ? 150 : P.value;
-          P.el.hidden = tt === 'rockwell';
+          P.el.hidden = tt === 'rockwell'; hS.el.hidden = tt !== 'rockwell';
           const r = solve(tt, s0, n, Pk);
           // top view
           const half = tt === 'brinell' ? r.D / 2 * 0.9 : r.d * 1.1;
@@ -275,7 +275,7 @@ export default {
             A.circle(0, 0, r.a, { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
             A.arrow(-r.a, -r.a * 0.15 - half * 0.1, r.a, -r.a * 0.15 - half * 0.1, { both: true, color: 'red', head: 6 });
             A.text(`$d=${r.d.toFixed(2)}$ mm`, 0, -r.a * 0.15 - half * 0.2, { color: 'red', size: 13, plate: true });
-          } else {
+          } else if (tt === 'rockwell') { A.circle(0,0,r.d/2,{fill:'accent',fillAlpha:.18,color:'accent'}); A.text('depth increment',0,-r.d*.7,{size:11}); } else {
             const d = r.d / 2; A.poly([[d, 0], [0, d], [-d, 0], [0, -d]], { fill: 'accent', fillAlpha: 0.18, color: 'accent', width: 2.5 });
             A.arrow(-d, 0, d, 0, { both: true, color: 'red', head: 6 });
             A.text(`$d=${r.d.toFixed(3)}$ mm`, 0, -d * 0.4, { color: 'red', size: 13, plate: true });
@@ -311,10 +311,14 @@ export default {
           if (!info) return '';
           const { r, tt, su, HBeq, ratio: ra } = info;
           if (r.sat) return 'The ball would sink in beyond its equator: lower the load.';
+          if(tt === 'rockwell')return `Measured depth difference $h=${v.fix(r.h,3)}$ mm gives $\\mathrm{HRC}=100-h/0.002=${v.fix(r.HRC,1)}$. The preliminary load is 10 kgf and total load 150 kgf. The cone outline and Tabor reference do not infer an HV/HB conversion.`;
           const name = tt === 'brinell' ? `HB $=${v.fix(r.HB, 0)}$` : tt === 'vickers' ? `HV $=${v.fix(r.HV, 0)}$` : `HRC $=${v.fix(r.HRC, 0)}$ (HV $=${v.fix(r.HV, 0)}$)`;
-          return `Representative strain $\\varepsilon_r=${v.fix(r.er, 3)}$; contact pressure (Meyer hardness) $p_m=3\\sigma_r=${v.fix(r.pm, 0)}$ MPa $=${v.fix(ra, 2)}\\,\\sigma_{0.2}$. ${name}.\nModel tensile strength $Kn^ne^{-n}=${v.fix(su, 0)}$ MPa; the steel rule of thumb $3.45\\,$HB gives ${v.fix(3.45 * HBeq, 0)} MPa (HB ≈ ${v.fix(HBeq, 0)}${tt === 'brinell' ? '' : ' from $p_m$'}).`;
+          const comparison = tt === 'brinell' ? `The steel rule of thumb $3.45\\,$HB gives ${v.fix(3.45 * r.HB, 0)} MPa.` : 'The steel HB correlation requires a Brinell measurement; none is inferred from HV.';
+          return `Representative strain $\\varepsilon_r=${v.fix(r.er, 3)}$; contact pressure (Meyer hardness) $p_m=3\\sigma_r=${v.fix(r.pm, 0)}$ MPa $=${v.fix(ra, 2)}\\,\\sigma_{0.2}$. ${name}.\nModel tensile strength $Kn^ne^{-n}=${v.fix(su, 0)}$ MPa. ${comparison}`;
         });
       },
     },
   ],
 };
+
+export { radiusAt, shearing, orowan, mcInit, mcSweep, mcStats };

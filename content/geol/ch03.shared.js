@@ -123,14 +123,16 @@ export function fitPole(sites, azs, start = [0, 60], sense) {
 }
 
 // ── geomagnetic polarity time scale (normal-polarity intervals, Ma) ────────
-// Rounded from the Cande & Kent (1995) / GPTS 2012–2020 values for the last 5.9 Myr (agreement better than 0.06 Myr);
-// intervals not listed are reversed. Subchron names: Jaramillo 0.99–1.07, Olduvai 1.77–1.95, Kaena/Mammoth reversed gaps in the Gauss.
+// Cande & Kent (1995), as transcribed in Maurice Tivey's complete WHOI CK95.M table:
+// https://website.whoi.edu/deeptow/research/jurassic-magnetism/jurassic-magnetism-1992-survey/the-geomagnetic-polarity-time-scale-gpts/table-of-ages-for-cande-and-kent-gpts/
+// Historical CK95 calibration, not a blend with later GPTS releases. Intervals not listed are reversed.
+// Subchrons include Jaramillo 0.99–1.07, Olduvai 1.77–1.95 and Reunion 2.14–2.15 Ma.
 export const NORMALS = [
-  [0, 0.78], [0.99, 1.07], [1.77, 1.95], [2.58, 3.04], [3.11, 3.22], [3.33, 3.58],
-  [4.18, 4.29], [4.48, 4.62], [4.80, 4.89], [4.98, 5.23], [5.89, 6.14],
+  [0, 0.78], [0.99, 1.07], [1.77, 1.95], [2.14, 2.15], [2.581, 3.04], [3.11, 3.22], [3.33, 3.58],
+  [4.18, 4.29], [4.48, 4.62], [4.80, 4.89], [4.98, 5.23], [5.894, 6.137],
 ];
 export const CHRONS = [
-  { name: 'Brunhes', t0: 0, t1: 0.78, pol: 1 }, { name: 'Matuyama', t0: 0.78, t1: 2.58, pol: -1 }, { name: 'Gauss', t0: 2.58, t1: 3.58, pol: 1 }, { name: 'Gilbert', t0: 3.58, t1: 6.03, pol: -1 },
+  { name: 'Brunhes', t0: 0, t1: 0.78, pol: 1 }, { name: 'Matuyama', t0: 0.78, t1: 2.581, pol: -1 }, { name: 'Gauss', t0: 2.581, t1: 3.58, pol: 1 }, { name: 'Gilbert', t0: 3.58, t1: 5.894, pol: -1 },
 ];
 export function polarityAt(t) { for (const [a, b] of NORMALS) if (t >= a && t < b) return 1; return -1; }
 /** Polarity boundaries (Ma) up to tmax. */

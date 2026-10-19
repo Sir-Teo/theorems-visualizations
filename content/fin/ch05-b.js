@@ -7,6 +7,21 @@
 // Real data: Shiller's annual series and the daily market in ch05.shared.js; monthly industry returns (French library) via ch04.shared.js. Simulations are labelled.
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, kurtosis, simGarch, rng, monthLabel } from './ch05.shared.js';
 
+/** Exact daily transition for the stated OU spread model (spread units are percent). */
+export function ouSpreadStep(m, kappa, sigma, z) {
+  if (kappa === 0) return m + sigma * z;
+  return m * Math.exp(-kappa) + sigma * Math.sqrt(-Math.expm1(-2 * kappa) / (2 * kappa)) * z;
+}
+/** Daily margin monitoring: exit at the actual first observed equity, including gap losses. */
+export function marginOutcome(path, leverage, maintenance) {
+  if (maintenance * leverage >= 1) return { day: 0, equity: 1, admissible: false };
+  for (let day = 1; day < path.length; day++) {
+    const equity = 1 + leverage * (path[0] - path[day]) / 100;
+    if (equity <= maintenance * leverage) return { day, equity, admissible: true };
+  }
+  return { day: -1, equity: 1 + leverage * (path[0] - path.at(-1)) / 100, admissible: true };
+}
+
 export default {
   collection: 'fin',
   chapter: 5,
@@ -25,7 +40,7 @@ $$\operatorname{var}(p_t^*)=\operatorname{var}(p_t)+\operatorname{var}(u_t)\ \ge
 Scope: a statement about a constant discount rate and stationary (detrended) series; whether the violation measures irrationality, time-varying discount rates or small-sample and non-stationarity problems is still debated (see fin-5.15).`,
       idea: String.raw`The bound is a variance decomposition: a forecast cannot be more variable than the quantity it forecasts, because forecast and error are orthogonal. $p^*$ is smooth because dividends are smooth and a discounted sum of many of them averages out their fluctuations; the price is not. The calculation needs a terminal value for $p^*$ at the end of the sample and detrending to make both series stationary (a long-run growth trend is divided out); the conclusion survives different choices. Shiller read the gap as evidence that prices respond to something other than dividend news (fads, changing risk premia); later work (fin-5.15) examines how robust the test is.`,
       caption: String.raw`**Left**: the real S&P composite index (blue, detrended) and the ex-post rational price $p^*$ (green, the discounted dividends that actually followed) for 1871–2022; the price swings through crashes and booms while $p^*$ is a smooth curve. Drag the **discount rate** and choose the **terminal value**: $p^*$ moves up and down but never becomes as variable as the price. **Right**: the standard deviation of $p^*$ against the discount rate, with the price's own standard deviation as the line it should stay above. (Real data: Shiller's annual series; discount rates are after removing the growth trend.)`,
-      deps: ['fin-5.1', 'fin-1.11'],
+      deps: ['fin-5.1', 'fin-1.11', 'prob-4.1.15'],
       refs: ['BKM ch. 12'],
       tags: ['excess volatility', 'present value', 'variance bounds'],
       credit: 'Shiller, 1981; LeRoy & Porter, 1981',
@@ -65,19 +80,18 @@ Scope: a statement about a constant discount rate and stationary (detrended) ser
       num: '5.7',
       kind: 'Concept',
       name: 'Limits to arbitrage',
-      statement: String.raw`Arbitrage is supposed to push a mispriced asset back to its fundamental value (fin-1.13). But a real arbitrageur has **limited capital**, borrows at the margin, and answers to investors who judge her by recent performance. If the mispricing $m_t$ can widen before it closes (**noise-trader risk**), a levered position can lose money in the short run, be forced to liquidate at the worst moment, and never collect the profit. Then a mispricing can persist and even grow, although it is certain to disappear eventually.
+      statement: String.raw`Arbitrage is supposed to push a mispriced asset back to its fundamental value (fin-1.13). But a real arbitrageur has **limited capital**, borrows at the margin, and answers to investors who judge her by recent performance. If the mispricing $m_t$ can widen before it closes (**noise-trader risk**), a levered position can lose money in the short run, be forced to liquidate at the worst moment, and never collect the profit. Then a mispricing can persist and even grow, even when the arbitrageur expects it to narrow.
 
-In a standard setup, with capital $K=1$, leverage $\Lambda$ (position $\Lambda K$) and an initial mispricing $m_0$ that mean-reverts, $dm=-\kappa m\,dt+\sigma\,dW$, the position has equity $E_t=1+\Lambda(m_0-m_t)$ and is closed out when $E_t\le\rho\Lambda$ (maintenance margin $\rho$). The probability of forced liquidation rises with $\Lambda$ and $\sigma$ although the *expected* terminal gain is positive.
+In a standard setup, with capital $K=1$, leverage $\Lambda$ (position $\Lambda K$) and an initial mispricing $m_0$ that mean-reverts, $dm=-\kappa m\,dt+\sigma\,dW$, the position has equity $E_t=1+\Lambda(m_0-m_t)$ and is closed out when $E_t\le\rho\Lambda$ (maintenance margin $\rho$); opening requires $\rho\Lambda<1$. The probability of forced liquidation rises with $\Lambda$ and $\sigma$ although the *expected* terminal gain is positive.
 
-Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The twin-shares example (Royal Dutch and Shell, fixed 60:40 claim on joint cash flows) is the classical case in which the fundamental ratio is known.`,
+Scope: a separate stylised margin model of the argument (Shleifer–Vishny; De Long et al.), with exact OU transitions and daily margin checks. OU noise does not vanish: at day 250 the gap is not guaranteed to be zero. The original Shleifer–Vishny model instead has certain convergence at its final date. The twin-shares example (Royal Dutch and Shell, fixed 60:40 claim on joint cash flows) is the classical case in which the fundamental ratio is known.`,
       idea: String.raw`The no-arbitrage argument of fin-1.13 assumes arbitrage is riskless and costless. When the position must be held for some time, the trader bears the risk of the spread moving against her, and because her capital is finite she must liquidate when losses exceed her margin, even if the expected profit is large. Rational arbitrageurs therefore take smaller positions than would close the gap, and the mispricing can survive: "markets can stay irrational longer than you can stay solvent". This also qualifies the efficient-market argument of fin-5.1, which relied on arbitrage eliminating predictable profits.`,
-      caption: String.raw`A stylised twin-shares spread $m_t$ starts at a gap you set; an arbitrageur goes long the cheap and short the dear share with the leverage you choose. **Left**: the gap, with the level at which she is liquidated. **Middle**: her equity. **Right**: over 400 simulated paths, the share liquidated and her average outcome as functions of leverage: moderate leverage collects the convergence profit, high leverage is wiped out before it comes. Raise **noise-trader risk** $\sigma$ or lower the **reversion speed** and the safe leverage shrinks. (Model; not the actual Royal Dutch/Shell data.)`,
+      caption: String.raw`A stylised twin-shares spread $m_t$ starts at a gap you set; an arbitrageur goes long the cheap and short the dear share with the leverage you choose. An initial position whose required maintenance is at least its capital cannot be opened; its capital remains 1. **Left**: the gap, with the level at which she is liquidated. **Middle**: her equity. **Right**: over 400 simulated paths, the share liquidated and her average outcome as functions of leverage: moderate leverage collects the convergence profit, high leverage is wiped out before it comes. Raise **noise-trader risk** $\sigma$ or lower the **reversion speed** and the safe leverage shrinks. (Model; not the actual Royal Dutch/Shell data.)`,
       deps: ['fin-5.1', 'fin-1.13'],
       refs: ['BKM ch. 12'],
       tags: ['arbitrage', 'noise traders', 'leverage'],
       credit: 'De Long, Shleifer, Summers & Waldmann, 1990; Shleifer & Vishny, 1997',
-      scope: String.raw`Describes arbitrage by levered, performance-judged intermediaries; for unconstrained, long-horizon investors the standard no-arbitrage logic applies.`,
-      verify: true,
+      scope: String.raw`Describes arbitrage by levered, performance-judged intermediaries; a riskless, costless replicating trade is the setting for the standard no-arbitrage argument.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Limits_to_arbitrage' },
       viz(v) {
         const m0 = v.slider('initial gap $m_0$ (%)', 1, 12, 5, { step: 0.25 });
@@ -89,15 +103,15 @@ Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The t
         const T = 250;
         const A = v.stage({ x: [0, T], y: [-2, 16], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'trading day', ylabel: 'price gap m (%)', title: 'the mispricing' });
         const B = v.stage({ x: [0, T], y: [0, 4], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'trading day', ylabel: 'equity (capital = 1)', title: 'the arbitrageur’s equity' });
-        const C = v.stage({ x: [1, 30], y: [0, 100], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'leverage Λ', ylabel: '% of paths', title: '400 paths: who survives?' });
+        const C = v.stage({ x: [1, 30], y: [0, 100], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 250, xlabel: 'leverage Λ', ylabel: 'closed (%) / 50 × equity', title: '400 paths: margin exits' });
         // simulate an OU path (daily steps, in percent)
-        const path = (R, m, k, s) => { const out = [m]; for (let t = 1; t <= T; t++) { m = m - k * m + s * R.normal(); out.push(m); } return out; };
+        const path = (R, m, k, s) => { const out = [m]; for (let t = 1; t <= T; t++) { m = ouSpreadStep(m, k, s, R.normal()); out.push(m); } return out; };
         let stat = { liq: 0 };
         v.render(() => {
           const k = kap.value, s = sig.value, L = lev.value, r0 = rho.value / 100;
           const R = rng(seed * 4099 + 13), mp = path(R, m0.value, k, s);
           const thr = m0.value + (1 - r0 * L) / L * 100; // gap (in %) at which equity hits the maintenance margin: 1 + L(m0 - m)/100 = r0 L
-          let liqAt = -1; const eq = []; for (let t = 0; t <= T; t++) { const e = 1 + L * (m0.value - mp[t]) / 100; eq.push(e); if (liqAt < 0 && e <= r0 * L) { liqAt = t; break; } }
+          const outcome = marginOutcome(mp, L, r0), liqAt = outcome.day, eq = mp.slice(0, liqAt < 0 ? T + 1 : liqAt + 1).map(m => 1 + L * (m0.value - m) / 100);
           A.setView([0, T], [Math.min(-2, ...mp) - 0.5, Math.max(16, thr + 1, ...mp) + 0.5]);
           A.hline(0, { color: 'green', dash: true }); A.text('fundamental ratio (gap 0)', T, 0, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'green' });
           A.hline(thr, { color: 'red', dash: true }); A.text('liquidation level', T, thr, { dx: -4, dy: -9, align: 'right', size: 10.5, color: 'red', weight: 700 });
@@ -105,24 +119,25 @@ Scope: stylised model of the argument (Shleifer–Vishny; De Long et al.). The t
           A.path(mp.map((y, t) => [t, y]), { color: liqAt >= 0 ? 'muted' : 'accent', width: 1.6 });
           A.path(mp.slice(0, upto + 1).map((y, t) => [t, y]), { color: 'accent', width: 2.4 });
           if (liqAt >= 0) { A.dot(liqAt, mp[liqAt], { r: 7, color: 'red' }); A.text('forced out', liqAt, mp[liqAt], { dx: -8, dy: -12, align: 'right', size: 11.5, color: 'red', weight: 700 }); }
-          const ymax = Math.max(4, ...eq) + 0.2; B.setView([0, T], [0, ymax]);
+          const ymax = Math.max(4, ...eq) + 0.2; B.setView([0, T], [Math.min(0, ...eq) - .05, ymax]);
           B.hline(1, { color: 'faint', dash: true }); B.hline(r0 * L, { color: 'red', dash: true });
           B.path(eq.map((y, t) => [t, y]), { color: liqAt >= 0 ? 'red' : 'green', width: 2.6 });
           if (liqAt >= 0) B.dot(liqAt, eq[liqAt], { r: 7, color: 'red' }); else B.dot(T, eq[T], { r: 6, color: 'green' });
           // Monte-Carlo over leverage
-          const M = 400, R2 = rng(777), mx = [], fin = [];
-          for (let i = 0; i < M; i++) { const p = path(R2, m0.value, k, s); mx.push(Math.max(...p)); fin.push(p[T]); }
+          const M = 400, R2 = rng(777), samples = [];
+          for (let i = 0; i < M; i++) samples.push(path(R2, m0.value, k, s));
           const liqP = [], mean = []; const Ls = []; for (let l = 1; l <= 30; l += 0.5) Ls.push(l);
-          for (const l of Ls) { let nl = 0, sm = 0; const th = m0.value + (1 - r0 * l) / l * 100; for (let i = 0; i < M; i++) { if (mx[i] >= th) { nl++; sm += r0 * l; } else sm += 1 + l * (m0.value - fin[i]) / 100; } liqP.push(100 * nl / M); mean.push(sm / M); }
+          for (const l of Ls) { let nl = 0, sm = 0; for (const sample of samples) { const o = marginOutcome(sample, l, r0); if (o.day >= 0) nl++; sm += o.equity; } liqP.push(100 * nl / M); mean.push(sm / M); }
+          C.setView([1, 30], [Math.min(0, ...mean.map(x => 50 * x)) - 2, Math.max(105, ...mean.map(x => 55 * x))]);
           C.path(Ls.map((l, i) => [l, liqP[i]]), { color: 'red', width: 2.4 });
-          C.path(Ls.map((l, i) => [l, clamp(50 * mean[i], 0, 100)]), { color: 'green', width: 2.4 });
-          C.text('liquidated before day 250', 30, liqP[liqP.length - 1], { dx: -4, dy: 14, align: 'right', size: 11, color: 'red', weight: 700 });
+          C.path(Ls.map((l, i) => [l, 50 * mean[i]]), { color: 'green', width: 2.4 });
+          C.text('closed / unable to open by day 250', 30, liqP[liqP.length - 1], { dx: -4, dy: 14, align: 'right', size: 11, color: 'red', weight: 700 });
           C.text('mean final equity (50 = 1.0)', 30, 8, { dx: -4, align: 'right', size: 11, color: 'green', weight: 700 });
           C.vline(L, { color: 'gold', width: 2 });
-          let nl = 0, sm = 0; const th = m0.value + (1 - r0 * L) / L * 100; for (let i = 0; i < M; i++) { if (mx[i] >= th) { nl++; sm += r0 * L; } else sm += 1 + L * (m0.value - fin[i]) / 100; }
-          stat = { liq: nl / M, mean: sm / M, liqAt, thr, eqEnd: eq[eq.length - 1] };
+          let nl = 0, sm = 0; for (const sample of samples) { const o = marginOutcome(sample, L, r0); if (o.day >= 0) nl++; sm += o.equity; }
+          stat = { liq: nl / M, mean: sm / M, liqAt, thr, eqEnd: eq[eq.length - 1], admissible: outcome.admissible };
         });
-        v.readout(() => `This path: ${stat.liqAt >= 0 ? `liquidated on day **${stat.liqAt}** when the gap reached ${v.fix(stat.thr, 1)}% (it started at ${v.fix(m0.value, 1)}%); the gap later closes, but she is no longer in the trade.` : `still in the trade at day ${T}, equity **${v.fix(stat.eqEnd, 2)}**.`}\nAt leverage ${v.fix(lev.value, 1)}: **${v.fix(100 * stat.liq, 0)}%** of 400 paths are liquidated; average final equity ${v.fix(stat.mean, 2)}. Fundamental value is certain to be recovered, yet the leveraged arbitrageur often does not survive to see it.`);
+        v.readout(() => `This path: ${!stat.admissible ? `cannot open: required maintenance ${v.fix(rho.value / 100 * lev.value, 2)} is at least the initial capital 1; capital remains 1.` : stat.liqAt >= 0 ? `liquidated on day **${stat.liqAt}** when the gap reached ${v.fix(stat.thr, 1)}% (it started at ${v.fix(m0.value, 1)}%); the gap may narrow later, but she is no longer in the trade.` : `still in the trade at day ${T}, equity **${v.fix(stat.eqEnd, 2)}**.`}\nAt leverage ${v.fix(lev.value, 1)}: **${v.fix(100 * stat.liq, 0)}%** of 400 positions are closed or unable to open; average final equity ${v.fix(stat.mean, 2)}. The OU spread mean-reverts; convergence by day 250 is not guaranteed. Daily margin checks can miss intraday breaches, and a sampled breach can overshoot the margin threshold.`);
       },
     },
     // ------------------------------------------------------------------ 5.8
@@ -185,7 +200,7 @@ If $\alpha+\beta<1$ the process is covariance-stationary with long-run variance 
 Scope: a parametric model of the conditional variance, fitted by maximum likelihood; the fit to U.S. equity data has $\alpha\approx0.1$ and $\beta\approx0.9$ with $\alpha+\beta$ close to 1.`,
       idea: String.raw`After a large shock $r_{t-1}^2$ is large, so $\sigma_t^2$ jumps up; because $\beta$ is close to 1 the elevated variance decays slowly, producing a cluster of large moves. A mixture of normals with a persistent random variance gives fat tails; the tail weight rises with $\alpha$ and with the persistence $\alpha+\beta$. Rewriting $\sigma^2_t$ as an exponentially weighted moving average of past $r^2$ shows why the model is a smoother, parametric version of the rolling-window volatility estimators of practice (Engle 1982 for ARCH; Bollerslev 1986 for the generalisation). Estimating $(\omega,\alpha,\beta)$ by maximum likelihood $\sum_t\big[\ln\sigma_t^2+r_t^2/\sigma_t^2\big]$ uses the one-step-ahead variance forecasts.`,
       caption: String.raw`**Top**: a simulated return path (grey) and its conditional $\pm2\sigma_t$ band (blue): volatility clusters when $\alpha$ and $\beta$ are large. **Middle**: the histogram of its standardised returns on a log scale against the normal. **Bottom**: autocorrelation of $|r_t|$ in the simulation (bars) and in the real market series (dots). Set $\alpha=\beta=0$ to recover the i.i.d. benchmark; press **Fit to the real market** to estimate $(\alpha,\beta)$ by maximum likelihood on the 15 897 real daily returns; choose **Student-t** shocks for even heavier tails. (Simulation plus a real-data fit.)`,
-      deps: ['fin-5.8'],
+      deps: ['fin-5.8', 'stat-3.5'],
       refs: ['Hull ch. 23'],
       tags: ['GARCH', 'volatility', 'maximum likelihood'],
       credit: 'Engle, 1982; Bollerslev, 1986',
@@ -237,19 +252,18 @@ Scope: a parametric model of the conditional variance, fitted by maximum likelih
       num: '5.10',
       kind: 'Phenomenon',
       name: 'Speculative bubbles: tulips, South Sea, dot-com',
-      statement: String.raw`A **speculative bubble** is a rapid, large rise in an asset's price that cannot be explained by changes in fundamentals and ends in a sharp collapse. Famous episodes: the Dutch **tulip mania** (1636–37, contract prices for bulbs collapsing in February 1637), the **South Sea bubble** (1720, the company's shares rising roughly eightfold within months and falling back to near their starting level), and the **dot-com bubble** (U.S. technology stocks, boom in 1995–2000, bust 2000–2002). Rescaled to their peaks, the price histories share a shape: accelerating run-up, peak, and a collapse that is faster than the climb.
+      statement: String.raw`A **speculative bubble** is a rapid, large rise in an asset's price that cannot be explained by changes in fundamentals and ends in a sharp collapse. Famous episodes: the Dutch **tulip mania** (1636–37, contract prices for bulbs collapsing in February 1637), the **South Sea bubble** (1720, the company's shares rising roughly eightfold within months and falling back to near their starting level), and the **dot-com bubble** (U.S. technology stocks, boom in 1995–2000, bust 2000–2002). These selected episodes show large rises and reversals; a shared visual shape does not identify irrational pricing or establish a universal crash timetable.
 
 Contested points: how large the fundamental component was (the tulip case in particular is debated) and whether the price at the top was irrational or reflected hard-to-measure fundamentals, e.g. in the South Sea case, the ex-ante prospects of the company's debt conversion scheme.
 
 Scope: qualitative regularities from a handful of historical episodes; the dot-com series below is real data, the historical anchors are approximate and the herding panel is a model.`,
       idea: String.raw`Excess volatility (fin-5.6) says prices move more than dividends justify; bubbles are the extreme case. Several mechanisms are proposed: positive feedback (investors buy because prices are rising), herding and information cascades (observing others' choices outweighs one's own signal), limits to arbitrage (fin-5.7: the skeptic is wiped out before the collapse), and rational bubbles (fin-5.11). The herding panel shows the simplest version: when agents copy each other, the share of optimists drifts to extremes for long periods, and the price, which depends on it, runs away from the fundamental value and falls back when the herd turns.`,
-      caption: String.raw`**Left**: price histories rescaled to 100 at their peak and aligned on the peak month. Real data: the U.S. high-technology and telecom industry portfolios and the whole market around the 2000 peak (monthly, French library); the red dots are approximate South Sea anchors (about 128 in January 1720, a peak a little above 1000 in mid-1720, about 150 by late September), drawn only as markers. **Right**: a herding model of 100 agents each either optimistic or pessimistic; the price is $100\,e^{1.2(x-1/2)}$ with $x$ the share of optimists, and the fundamental value stays at 100. Switch from **independent** to **herding** and lower the **independent-thinking rate** $\varepsilon$: long boom-and-bust episodes appear without any news. (Stylised model.)`,
+      caption: String.raw`**Left**: price histories rescaled to 100 at their peak and aligned on the peak month. Real data: the U.S. high-technology and telecom industry portfolios and the whole market around the 2000 peak (monthly, French library); the red dots are approximate South Sea anchors (about 128 in January 1720, a peak a little above 1000 in mid-1720, about 150 by the end of 1720), drawn only as markers. **Right**: an independently specified copying model, inspired by Kirman, with 100 agents each either optimistic or pessimistic; the price is $100\,e^{1.2(x-1/2)}$ with $x$ the share of optimists, and the fundamental value stays at 100. Switch from **independent** to **herding** and lower the **independent-thinking rate** $\varepsilon$: long boom-and-bust episodes appear without any news. (Stylised model.)`,
       deps: ['fin-5.6', 'soc-5.4'],
-      refs: ['BKM ch. 12'],
+      refs: ['BKM ch. 12', 'Kirman (1988), On Ants and Markets, EUI Working Paper 88/351, pp. 4–8, 11–17; https://cadmus.eui.eu/bitstreams/895f210b-2f8c-59c0-b7b6-2980b5636cb3/download'],
       tags: ['bubbles', 'herding', 'history'],
-      credit: 'Kindleberger; Temin & Voth, 2004; Kirman, 1993 (the herding model)',
-      scope: String.raw`Historical episodes are one-off; the herding model is an illustration of a mechanism, not a calibrated description of any of them.`,
-      verify: true,
+      credit: 'Garber, 1989; Temin & Voth, 2004; Kirman, 1988, EUI Working Paper 88/351 (copying-mechanism inspiration)',
+      scope: String.raw`Historical episodes are one-off; the herding model is an illustration of a mechanism, not a calibrated description of any of them. Kirman's 1988 working paper supplies the random recruitment mechanism; the exponential price rule here is independently chosen, rather than his exchange-rate equation.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Economic_bubble' },
       viz(v) {
         const d = data();
@@ -270,7 +284,7 @@ Scope: qualitative regularities from a handful of historical episodes; the dot-c
           A.hline(100, { color: 'faint', dash: true }); A.vline(0, { color: 'faint', dash: true });
           A.path(ser(hi), { color: 'accent', width: 2.6 }); A.path(ser(te), { color: 'purple', width: 2 }); A.path(ser(mk), { color: 'muted', width: 2 });
           A.text('high-tech (US)', -50, 24, { size: 11.5, color: 'accent', weight: 700 }); A.text('telecom', -14, 72, { size: 11.5, color: 'purple', weight: 700 }); A.text('whole market', 12, 65, { size: 11.5, color: 'muted', weight: 700 });
-          A.dots([[-6, 12.8], [3, 15]], { r: 6, color: 'red' }); A.text('South Sea (anchors)', -6, 12.8, { dx: 8, dy: -12, size: 11, color: 'red', weight: 700 });
+          A.dots([[-6, 12.8], [6, 15]], { r: 6, color: 'red' }); A.text('South Sea (anchors)', -6, 12.8, { dx: 8, dy: -12, size: 11, color: 'red', weight: 700 });
           A.corner(`peak: ${peakLabel}`, 'tr', { color: 'muted' });
           // herding model
           const N = 100, T = 400, R = rng(seed * 1237); let k = 50; const xs = [];
@@ -291,7 +305,7 @@ Scope: qualitative regularities from a handful of historical episodes; the dot-c
           B.hline(130, { color: 'red', dash: true, width: 1 }); B.text('bubble: > 130', 2, 130, { dx: 4, dy: -9, size: 10.5, color: 'red' });
           st = { above: above / T, mx, mn };
         });
-        v.readout(() => `Real data: from its peak (${peakLabel}) the high-tech portfolio fell **${v.fix(100 - 100 * hi[Math.min(hi.length - 1, pk + 30)] / hi[pk], 0)}%** in 30 months, after rising **${v.fix(100 * hi[pk] / hi[Math.max(0, pk - 60)] - 100, 0)}%** in the five years before (total returns, dividends reinvested).\nHerding model: price ranged from ${v.fix(st.mn, 0)} to ${v.fix(st.mx, 0)} around a fixed fundamental value of 100; it was above 130 on **${pct(st.above, 0)}** of days. With independent traders the price barely leaves the 95–105 range.`);
+        v.readout(() => `Real data: from its peak (${peakLabel}) the high-tech portfolio fell **${v.fix(100 - 100 * hi[Math.min(hi.length - 1, pk + 30)] / hi[pk], 0)}%** in 30 months, after rising **${v.fix(100 * hi[pk] / hi[Math.max(0, pk - 60)] - 100, 0)}%** in the five years before (total returns, dividends reinvested).\nHerding model: price ranged from ${v.fix(st.mn, 0)} to ${v.fix(st.mx, 0)} around a fixed fundamental value of 100; it was above 130 on **${pct(st.above, 0)}** of days. The independent setting concentrates the optimistic share near one half; finite samples can leave any fixed narrow price band.`);
       },
     },
   ],

@@ -41,7 +41,7 @@ If the temperature is the same everywhere ($T = T_s$) the answer is simply $B_\n
       scope: String.raw`Plane-parallel, non-scattering, local thermodynamic equilibrium (valid below about 60 km); in the thermal infrared scattering by cloud droplets and aerosols must be added. Here the diffusivity approximation (a slant factor 1.66) turns the angular integral into a single flux.`,
       idea: String.raw`Kirchhoff's law (1.4) says that the gas emits as much as it absorbs at the same wavenumber when it is at the same temperature as the radiation field, so a thin slab pushes the beam toward $B_\nu(T)$: absorbing a fraction $d\tau$ of $I_\nu$ and emitting $B_\nu\,d\tau$. Solving the linear equation (Beer–Lambert, 2.5) gives the integral. The greenhouse effect is the statement that $B_\nu(T)$ is smaller in the cold upper air than at the ground; with no temperature drop there is nothing to trap.`,
       caption: String.raw`Choose a wavenumber. Left: the temperature of the air (orange) and the brightness temperature of the upward radiation (blue) as the beam climbs layer by layer: in an opaque wavenumber the blue curve follows the orange one, in a window it stays at the surface value. Middle: the spectrum computed by integrating the equation at every wavenumber. Right: the greenhouse effect against the lapse rate $\Gamma$ — drag $\Gamma$ to zero (an isothermal atmosphere) and it vanishes; make it negative (an inversion) and gases cool the planet instead.`,
-      deps: ['climate-2.5', 'climate-1.4'],
+      deps: ['climate-2.5', 'climate-1.4', 'ode-1.4'],
       refs: ['Pierrehumbert'],
       tags: ['radiative transfer', 'greenhouse'],
       viz(v) {

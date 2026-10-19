@@ -1,3 +1,4 @@
+import {curtinHammett} from './verification-models.shared.js';
 // Chemical Kinetics — Chapter 3: Transition-state theory (items 3.7–3.12)
 import { R, clamp, KB, HP, RJ, kTh, HC_K, mkRng, dwell, langevinStep, mfpt, expmSmall, saddle, mep, hessXY, eig2, gradXY, vXY, vRel, fromXY, toXY, M_EFF, H2 } from './ch03.shared.js';
 
@@ -63,18 +64,18 @@ so a more exothermic member of the family has a lower barrier. The slope $\alpha
       num: '3.8', kind: 'Law', name: 'Hammett equation',
       statement: String.raw`For meta- and para-substituted benzene derivatives reacting at a side-chain, the rate (or equilibrium) constant relative to the unsubstituted compound obeys
 $$\log_{10}\frac{k}{k_0}\;=\;\rho\,\sigma,$$
-where the **substituent constant** $\sigma$ depends only on the substituent and its position (it is defined by the ionisation of substituted benzoic acids in water at 25 °C, for which $\rho=1$), and the **reaction constant** $\rho$ depends only on the reaction, its solvent and temperature. A positive $\rho$ means negative charge builds up (or positive charge is lost) at the reaction centre in the transition state, and electron-withdrawing substituents accelerate the reaction; a negative $\rho$ means the opposite. Equivalently $\Delta\Delta G^\ddagger=-2.303\,RT\,\rho\sigma$.`,
-      idea: String.raw`If a substituent changes the free energy of the transition state by the same fraction of its effect on the benzoate ionisation, $\log k$ is linear in $\log K_{\rm benzoic}$ and so in $\sigma$: a linear free-energy relationship (3.7). The sign of $\rho$ says which way the charge moves at the reaction centre, and its size how sensitive the transition state is, in the sense of Hammond's postulate: a large $|\rho|$ goes with a transition state that has developed much charge. Hammett's 1937 paper introduced $\sigma$ and $\rho$.`,
-      caption: String.raw`**Synthetic data:** each point is $\rho\sigma$ plus a fixed small scatter (seeded), not a measured rate constant. The $\sigma$ values are Hammett's, and the five $\rho$ values are those quoted in the literature for the named reactions. Choose a reaction, switch between meta, para or both, and drag the orange handle to set your own $\rho$ against the least-squares line; click a point to pick a substituent. Right: the change of barrier $\Delta\Delta G^\ddagger$ at 298 K implied by the fitted $\rho$.`,
+where the **substituent constant** $\sigma$ depends only on the substituent and its position (it is defined by the ionisation of substituted benzoic acids in water at 25 °C, for which $\rho=1$), and the **reaction constant** $\rho$ depends only on the reaction, its solvent and temperature. A positive $\rho$ means electron-withdrawing substituents increase the correlated rate or equilibrium constant; in suitable mechanisms this is consistent with negative-charge development (or positive-charge loss), while a negative $\rho$ has the opposite substituent trend. The correlation alone does not establish a unique charge distribution or mechanism. Equivalently $\Delta\Delta G^\ddagger=-2.303\,RT\,\rho\sigma$.`,
+      idea: String.raw`If a substituent changes the free energy of the transition state by the same fraction of its effect on the benzoate ionisation, $\log k$ is linear in $\log K_{\rm benzoic}$ and so in $\sigma$: a linear free-energy relationship (3.7). The sign of $\rho$ says which way the charge moves at the reaction centre, and its size how sensitive the transition state is, in the sense of Hammond's postulate: large $|\rho|$ indicates strong substituent sensitivity, whose mechanistic interpretation requires additional evidence. Hammett's 1937 paper introduced $\sigma$ and $\rho$.`,
+      caption: String.raw`**Synthetic data:** each point is $\rho\sigma$ plus a fixed small scatter (seeded), not a measured rate constant. The listed $\sigma$ constants and five named-reaction slopes are provisional literature-derived fixtures whose original tables/conditions have not been checked; they are not measured data here. Choose a reaction, switch between meta, para or both, and drag the orange handle to set your own $\rho$ against the least-squares line; click a point to pick a substituent. Right: the change of barrier $\Delta\Delta G^\ddagger$ at 298 K implied by the fitted $\rho$.`,
       deps: ['kin-3.7', 'pchem-7.3'],
       refs: ['Houston'],
       tags: ['linear free energy', 'substituent effects'],
       credit: 'Hammett, 1937',
       verify: true,
-      scope: String.raw`Meta- and para-substituted benzenes, side-chain reactions; fails for ortho substituents (steric effects) and for strong resonance interactions with the reaction centre, which need modified constants ($\sigma^+$, $\sigma^-$). The $\sigma$ values here follow Hammett's original table; later compilations differ in the second decimal.`,
+      scope: String.raw`Meta- and para-substituted benzenes, side-chain reactions; fails for ortho substituents (steric effects) and for strong resonance interactions with the reaction centre, which need modified constants ($\sigma^+$, $\sigma^-$). The exact provenance of the listed constants and named-reaction slopes remains unverified; this flag includes that gap.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hammett_equation' },
       viz(v) {
-        // sigma values (para, meta) from Hammett's 1937 table as reproduced on Wikipedia
+        // Provisional compiled sigma fixtures (para, meta); original table not yet verified.
         const SUB = [['NO₂', 0.778, 0.710], ['CN', 0.66, 0.56], ['CF₃', 0.54, 0.43], ['Br', 0.232, 0.393], ['Cl', 0.227, 0.373], ['F', 0.062, 0.337], ['H', 0, 0], ['CH₃', -0.170, -0.069], ['OCH₃', -0.268, 0.115], ['OH', -0.37, 0.12], ['NH₂', -0.66, -0.161]];
         const RX = { e: ['alkaline hydrolysis of ethyl benzoates', 2.498], p: ['ionisation of phenols', 2.008], a: ['bromination of acetophenones', 0.417], s: ['esterification of benzoic acids (ethanol)', -0.085], b: ['hydrolysis of benzyl chlorides (acetone–water)', -1.875] };
         const rx = v.select('reaction', [{ value: 'e', label: 'ethyl benzoate + OH⁻' }, { value: 'p', label: 'phenol ionisation' }, { value: 'a', label: 'acetophenone bromination' }, { value: 's', label: 'benzoic acid esterification' }, { value: 'b', label: 'benzyl chloride hydrolysis' }], 'e');
@@ -116,7 +117,7 @@ where the **substituent constant** $\sigma$ depends only on the substituent and 
           info = { fit, rho, rh, sel: cur, dd: cur ? -Math.LN10 * RT * fit.slope * cur.sg : NaN, fac: cur ? Math.pow(10, fit.slope * cur.sg) : NaN };
         });
         v.legend([['accent', 'para', { dot: true }], ['purple', 'meta', { dot: true }], ['green', 'least squares', { dash: true }], ['orange', 'your $\\rho$']]);
-        v.readout(() => `least squares: $\\rho=${v.fix(info.fit.slope, 3)}\\pm${v.fix(info.fit.seSlope, 3)}$, $r^2=${v.fix(info.fit.r2, 4)}$ (value used to make the data: $${v.fix(info.rho, 3)}$) · your line: $\\rho=${v.fix(info.rh, 2)}$ — ${info.fit.slope > 0.05 ? 'negative charge builds up at the reaction centre: electron-withdrawing groups speed it up' : info.fit.slope < -0.05 ? 'positive charge builds up: electron-donating groups speed it up' : 'almost no charge change: substituents hardly matter'}\n${info.sel ? `selected ${info.sel.n}: $\\sigma=${v.fix(info.sel.sg, 3)}$ → $k/k_0=${v.fix(info.fac, info.fac < 10 ? 2 : 0)}$, $\\Delta\\Delta G^\\ddagger=${v.fix(info.dd, 1)}$ kJ/mol` : ''}`);
+        v.readout(() => `least squares: $\\rho=${v.fix(info.fit.slope, 3)}\\pm${v.fix(info.fit.seSlope, 3)}$, $r^2=${v.fix(info.fit.r2, 4)}$ (value used to make the data: $${v.fix(info.rho, 3)}$) · your line: $\\rho=${v.fix(info.rh, 2)}$ — ${info.fit.slope > 0.05 ? 'electron-withdrawing groups increase the fitted constant; charge development needs further evidence' : info.fit.slope < -0.05 ? 'electron-donating groups increase the fitted constant; charge development needs further evidence' : 'small fitted substituent sensitivity'}\n${info.sel ? `selected ${info.sel.n}: $\\sigma=${v.fix(info.sel.sg, 3)}$ → $k/k_0=${v.fix(info.fac, info.fac < 10 ? 2 : 0)}$, $\\Delta\\Delta G^\\ddagger=${v.fix(info.dd, 1)}$ kJ/mol` : ''}`);
       },
     },
     // ------------------------------------------------------------------ 3.9
@@ -144,37 +145,31 @@ with both transition-state energies measured from the same reference. If interco
         const hA = A.handle(-1, 76, { color: 'accent', label: 'TS A', constrain: (x, y) => [-1, clamp(y, 50, 105)] });
         const hT = A.handle(5.6, 82, { color: 'purple', label: 'TS B', constrain: (x, y) => [5.6, clamp(y, 50, 105)] });
         const gPA = -35, gPB = -35;
-        const ratio = (T, gB, gA, gTB, gI, st) => {
-          const RT = RJ * T / 1000, f = (G) => kTh(T) * Math.exp(-G / RT);
-          const GI = Math.max(gI, Math.max(0, gB) + 2);
-          const kAB = f(GI), kBA = f(GI - gB), kA = f(gA), kB = f(gTB - gB);
-          const K = Math.exp(-gB / RT), x0 = st === 'eq' ? [1 / (1 + K), K / (1 + K)] : [1, 0];
-          // integral of [A],[B] over all time: -M^{-1} x0, M = [[-(kAB+kA), kBA], [kAB, -(kBA+kB)]]
-          const a = -(kAB + kA), b = kBA, c = kAB, d = -(kBA + kB), det = a * d - b * c;
-          const IA = -(d * x0[0] - b * x0[1]) / det, IB = -(-c * x0[0] + a * x0[1]) / det;
-          return { r: (kB * IB) / (kA * IA), kA, kB, kAB, kBA, K, GI };
-        };
+        const ratio = curtinHammett;
         const ledge = (x, y, col, lab, w = 0.35) => { A.line(x - w, y, x + w, y, { color: col, width: 3.4 }); if (lab) A.tex(lab, x, y - 11, { size: 13, color: 'muted', align: 'center' }); };
         const link = (x1, y1, x2, y2, w = 0.35) => A.curve((x) => [x, y1 + (y2 - y1) * (1 - Math.cos(Math.PI * (x - (x1 + w)) / ((x2 - w) - (x1 + w)))) / 2], x1 + w, x2 - w, { n: 30, color: 'ink', width: 1.6, alpha: 0.7 });
         let info = {};
         v.render(() => {
           const gB = hB.y, gA = hA.y, gTB = hT.y, T = Tm.value, st = start.value;
           const RT = RJ * T / 1000, GI = Math.max(gInt.value, Math.max(0, gB) + 2);
+          A.setView([-3.2,8.2],[-50,Math.max(120,GI+15,gA+15,gTB+15)]);
           const xs = [-2.2, -1, 1, 2.6, 4.2, 5.6, 7], ys = [gPA, gA, 0, GI, gB, gTB, gPB];
           for (let i = 0; i < 6; i++) link(xs[i], ys[i], xs[i + 1], ys[i + 1]);
           ledge(-2.2, gPA, 'ink', '\\mathrm P_A'); ledge(-1, gA, 'accent'); ledge(1, 0, 'ink', '\\mathrm A'); ledge(2.6, GI, 'ink'); ledge(4.2, gB, 'orange'); ledge(5.6, gTB, 'purple'); ledge(7, gPB, 'ink', '\\mathrm P_B');
           A.text('interconversion', 2.6, GI + 7, { size: 11, color: 'muted', align: 'center' });
           const here = ratio(T, gB, gA, gTB, GI, st), CH = Math.exp(-(gTB - gA) / RT), K = Math.exp(-gB / RT);
-          const f = (a) => Math.max(1e-4, Math.min(1e3, a));
+          const f = (a) => a;
           const pts1 = [], pts2 = []; for (let g = 30; g <= 140; g += 2) { pts1.push([g, f(ratio(T, gB, gA, gTB, g, 'eq').r)]); pts2.push([g, f(ratio(T, gB, gA, gTB, g, 'A').r)]); }
+          const values = [...pts1,...pts2].map(p=>p[1]).concat(CH,K).filter(x=>x>0&&Number.isFinite(x));
+          B.setView([30,140], [Math.min(...values)/2,Math.max(...values)*2]);
           B.hline(f(CH), { color: 'green', width: 2, dash: [7, 4] });
           B.hline(f(K), { color: 'faint', width: 1.6, dash: [3, 4] });
           B.path(pts2, { color: 'orange', width: 2, dash: [5, 3] }); B.path(pts1, { color: 'accent', width: 2.6 });
           B.dot(GI, f(here.r), { r: 6.5, color: 'gold' });
-          info = { r: here.r, CH, K, gB, dG: gTB - gA, GI, kA: here.kA, kB: here.kB, kint: here.kAB, T, st };
+          info = { r: here.r, CH, K, gB, dG: gTB - gA, GI, kA: here.kA, kB: here.kB, kint: here.kAB, krev: here.kBA, T, st };
         });
         v.legend([['accent', 'start at equilibrium'], ['orange', 'start with pure A', { dash: true }], ['green', 'Curtin–Hammett prediction', { dash: true }], ['faint', 'initial ratio $K$', { dash: true }], ['gold', 'your barrier', { dot: true }]]);
-        v.readout(() => `$[\\mathrm P_{\\rm B}]/[\\mathrm P_{\\rm A}]=${v.sci(info.r, 3)}$ · Curtin–Hammett $e^{-\\Delta\\Delta G^\\ddagger/RT}=${v.sci(info.CH, 3)}$ (with $\\Delta\\Delta G^\\ddagger=G^\\ddagger_{\\rm B}-G^\\ddagger_{\\rm A}=${v.fix(info.dG, 1)}$ kJ/mol) · population ratio $K=[\\mathrm B]/[\\mathrm A]=${v.sci(info.K, 2)}$\nrate constants: interconversion $${v.sci(info.kint, 2)}\\ \\mathrm{s^{-1}}$, $k_{\\rm A}=${v.sci(info.kA, 2)}$, $k_{\\rm B}=${v.sci(info.kB, 2)}$ s⁻¹ — ${info.kint > 30 * Math.max(info.kA, info.kB) ? 'interconversion is much faster than reaction: the principle applies' : info.kint < Math.max(info.kA, info.kB) / 30 ? 'interconversion is much slower than reaction: products record the starting populations' : 'in between: neither limit holds'}`);
+        v.readout(() => `$[\\mathrm P_{\\rm B}]/[\\mathrm P_{\\rm A}]=${v.sci(info.r, 3)}$ · Curtin–Hammett $e^{-\\Delta\\Delta G^\\ddagger/RT}=${v.sci(info.CH, 3)}$ (with $\\Delta\\Delta G^\\ddagger=G^\\ddagger_{\\rm B}-G^\\ddagger_{\\rm A}=${v.fix(info.dG, 1)}$ kJ/mol) · population ratio $K=[\\mathrm B]/[\\mathrm A]=${v.sci(info.K, 2)}$\nrate constants: interconversion $${v.sci(info.kint, 2)}\\ \\mathrm{s^{-1}}$, $k_{\\rm A}=${v.sci(info.kA, 2)}$, $k_{\\rm B}=${v.sci(info.kB, 2)}$ s⁻¹ — ${Math.min(info.kint,info.krev) > 30 * Math.max(info.kA, info.kB) ? 'interconversion is much faster than reaction: the principle applies' : Math.max(info.kint,info.krev) < Math.min(info.kA, info.kB) / 30 ? 'interconversion is much slower than reaction: products record the starting populations' : 'in between: neither limit holds'}`);
       },
     },
     // ------------------------------------------------------------------ 3.10
@@ -239,7 +234,7 @@ $$k\;=\;\frac{\omega_a}{2\pi}\;\frac{\sqrt{\gamma^2/4+\omega_b^2}-\gamma/2}{\ome
 which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gamma\to0$ and falls as $\omega_b/\gamma$ for $\gamma\gg\omega_b$. For weak friction the rate is limited by energy supply instead, $k=\gamma\,(I_b/k_BT)\,(\omega_a/2\pi)\,e^{-E_b/k_BT}$ with $I_b$ the action of the orbit at the barrier energy, which *rises* with $\gamma$. The rate therefore passes through a maximum below the TST value as $\gamma$ varies: the **Kramers turnover**.`,
       idea: String.raw`Transition-state theory (3.1) assumes that a trajectory that crosses the barrier top never comes back. Friction breaks this in two opposite ways: at large $\gamma$ the bath keeps kicking the particle back across the top, so each successful escape is a diffusive random walk and $k\propto1/\gamma$; at small $\gamma$ the particle does not exchange energy with the bath quickly enough to be re-supplied after leaving the well, so the rate is proportional to $\gamma$. Between them TST is a ceiling that is approached from below. The Fokker–Planck equation (thermo-7.12) is the exact description from which Kramers derived both limits; a unified formula for all $\gamma$ was found much later.`,
       caption: String.raw`**Simulation:** Langevin dynamics with the BAOAB integrator for a double well $V=\Delta V(x^2-1)^2$ with $\Delta V=5\,k_BT$ (reduced units $m=k_BT=1$). The gold dots are $1/\tau$, with $\tau$ the mean time to go from the left minimum to the right minimum over 50 runs per point (error bars are one standard error); the green curve is Kramers' formula for moderate and strong friction, the red dashed curve the weak-friction formula, and the line at 1 is exact classical TST. The upper panel shows one trajectory at your friction. They are computed at load time (a few seconds for the whole curve) and recomputed with *Resample*.`,
-      deps: ['kin-3.1', 'pchem-10.4', 'thermo-7.12'],
+      deps: ['kin-3.1', 'pchem-10.4', 'thermo-7.12', 'mech-4.7'],
       refs: ['Steinfeld et al.'],
       tags: ['friction', 'Kramers turnover'],
       credit: 'Kramers, 1940',
@@ -293,9 +288,9 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
     // ------------------------------------------------------------------ 3.12
     {
       num: '3.12', kind: 'Paper', name: 'The Activated Complex in Chemical Reactions',
-      statement: String.raw`Eyring formulated the calculation of **absolute reaction rates** in terms of quantities that can be obtained from a potential energy surface: the reactants' partition functions, and those of the **activated complex**, a molecule-like configuration at the saddle point of the surface. The probability of the activated state follows from ordinary statistical mechanics, and multiplying that probability by the rate at which complexes pass through to products gives the specific rate, which takes the form $k=(k_BT/h)\,K^\ddagger$ (with a transmission coefficient to be added). The paper also pointed out that vibrations of the complex that are quantized, while the corresponding degrees of freedom in the reactants are not, lead to rate ratios for isotopes that differ from the predictions of simple kinetic theory, and it gave the conditions under which the general treatment reduces to ordinary collision theory.`,
-      idea: String.raw`Before 1935 the rate of a reaction could be estimated from collision theory (2.3), which needs an unknown steric factor, or from the Arrhenius law (2.1), which needs two fitted constants. Potential energy surfaces had meanwhile been constructed semi-empirically for simple systems, for instance for three hydrogen atoms by Eyring and Polanyi around 1930 (2.6), and Pelzer and Wigner (1932) had pointed to the saddle point as the bottleneck. Eyring's step was to give the saddle-point region a *thermodynamic* status, treating the complex as an ordinary molecule in equilibrium with the reactants except for one degree of freedom, which crosses the barrier at frequency $k_BT/h$. This introduced the activated complex, the quasi-equilibrium (3.1) and the rate equation that is now named for him (3.2), and it came out, within a month, of Evans and Polanyi's parallel derivation.`,
-      caption: String.raw`**Not Eyring's calculation:** the figure below is a modern classical reconstruction on a model surface (the LEPS surface of 2.6, three hydrogen-mass atoms in a line, barrier set by the weight $w$). The reactive flux through the dividing surface is computed by trajectories started on the surface from the Boltzmann flux distribution, the way a modern chemist would test the assumptions of the 1935 paper. Left: the surface with sample trajectories (green: ends as product; red: comes back to reactants). Middle: the transmission coefficient $\kappa(t)$ falls from 1 to a plateau. Right: the TST rate (blue line) and $\kappa\,k_{\rm TST}$ (gold) against $1/T$; the slope is the activation energy, to be compared with the barrier.`,
+      statement: String.raw`Eyring formulated the calculation of **absolute reaction rates** in terms of quantities that can be obtained from a potential energy surface: the reactants' partition functions, and those of the **activated complex**, a molecule-like configuration at the saddle point of the surface. The probability of the activated state follows from ordinary statistical mechanics, and multiplying that probability by the rate at which complexes pass through to products gives the specific rate, which takes the form $k=(k_BT/h)\,K^\ddagger$ (including his recrossing coefficient c). The paper also pointed out that vibrations of the complex that are quantized, while the corresponding degrees of freedom in the reactants are not, lead to rate ratios for isotopes that differ from the predictions of simple kinetic theory, and it gave the conditions under which the general treatment reduces to ordinary collision theory.`,
+      idea: String.raw`Before 1935 the rate of a reaction could be estimated from collision theory (2.3), which needs an unknown steric factor, or from the Arrhenius law (2.1), which needs two fitted constants. Potential energy surfaces had meanwhile been constructed semi-empirically for simple systems, for instance for three hydrogen atoms by Eyring and Polanyi around 1930 (2.6), and Pelzer and Wigner (1932) had pointed to the saddle point as the bottleneck. Eyring's step was to give the saddle-point region a *thermodynamic* status, treating the complex as an ordinary molecule in equilibrium with the reactants except for one degree of freedom, which crosses the barrier at frequency $k_BT/h$. This introduced the activated complex, the quasi-equilibrium (3.1) and the rate equation that is now named for him (3.2), Evans and Polanyi developed a parallel formulation; their original paper has not yet been read here.`,
+      caption: String.raw`**Not Eyring's calculation:** the figure below is a modern classical reconstruction on a model surface (the LEPS surface of 2.6, three hydrogen-mass atoms in a line, barrier set by the weight $w$). The reactive flux through the dividing surface is computed by trajectories started on the surface from the Boltzmann flux distribution, the way a modern chemist would test the assumptions of the 1935 paper. Left: the surface with sample trajectories (green: ends as product; red: comes back to reactants). Middle: the finite-sample reactive-flux estimate starts at 1; its late 36–60 fs window is used as an illustrative transmission estimate, with sampling uncertainty, rather than a proved infinite-time plateau. Right: the TST rate (blue line) and $\kappa\,k_{\rm TST}$ (gold) against $1/T$; the slope is the activation energy, to be compared with the barrier.`,
       deps: ['kin-2.6', 'kin-2.7', 'thermo-6.2', 'kin-2.12'],
       refs: [],
       tags: ['history', 'transition-state theory'],
@@ -303,7 +298,7 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
       verify: true,
       paper: { authors: 'Henry Eyring', year: 1935, title: 'The Activated Complex in Chemical Reactions', venue: 'The Journal of Chemical Physics 3 (2): 107–115', doi: '10.1063/1.1749604' },
       introduces: ['kin-3.1', 'kin-3.2'],
-      scope: String.raw`The summary of the paper is based on its published abstract and standard secondary accounts; I could not consult the full text, so which reactions it treats and what numbers it reports are not claimed here. The model is a collinear, classical, three-hydrogen-mass LEPS surface with Morse constants of $\mathrm H_2$ (quoted from memory, 2.6), not a calculation of the paper or an accurate $\mathrm H+\mathrm H_2$ surface.`,
+      scope: String.raw`The full 1935 original pp. 107–115 has now been read: it treats three-atom, four-atom, unimolecular and general reactions, derives the kBT/h factor and already includes a recrossing coefficient c. The independent Evans–Polanyi publication history and physical parameters of the modern illustrative surface remain unverified. The model is a collinear, classical, three-hydrogen-mass LEPS surface with Morse constants of $\mathrm H_2$ (quoted from memory, 2.6), not a calculation of the paper or an accurate $\mathrm H+\mathrm H_2$ surface.`,
       viz(v) {
         const SURF = { l: [0.68, 'low barrier'], h: [0.75, 'H₃-like barrier'], t: [0.9, 'high barrier'] };
         const sel = v.select('barrier', Object.keys(SURF).map((k) => ({ value: k, label: SURF[k][1] })), 'h');
@@ -331,7 +326,7 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
         };
         const flux = (S, T) => {
           if (S.kTD[T]) return S.kTD[T];
-          const kT = KB_EV * T, rnd = mkRng(1935 + T), nT = TF, kap = new Float64Array(nT + 1), trs = [];
+          const kT = KB_EV * T, rnd = mkRng(1935 + T), nT = TF, kap = new Float64Array(nT + 1), trs = []; let plus=0,minus=0,plus2=0,minus2=0;
           // inverse-CDF sample of the position s along the dividing surface ~ exp(-(V-V0)/kT)
           const smax = 1.8, ng = 721, cdf = new Float64Array(ng); let acc = 0;
           for (let i = 0; i < ng; i++) { const s = -smax + 2 * smax * i / (ng - 1); acc += Math.exp(-(S.Vs(s) - S.sd.V) / kT); cdf[i] = acc; }
@@ -341,19 +336,21 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
           for (let n = 0; n < NTR; n++) {
             const s0 = sampleS(), sign = n % 2 === 0 ? 1 : -1, vn = sign * Math.sqrt(-2 * kT / M_EFF * Math.log(1 - rnd())), vt = sv * rnd.normal();
             let X = sd.X + s0 * u2[0], Y = sd.Y + s0 * u2[1], VX = vn * u1[0] + vt * u2[0], VY = vn * u1[1] + vt * u2[1];
-            let g = gradXY(X, Y, P); const keep = n < 28 && sign > 0, pts = keep ? [[X, Y]] : null; let nx = 0;
+            let g = gradXY(X, Y, P); const keep = n < 28 && sign > 0, pts = keep ? [[X, Y]] : null; let late=0,lateCount=0;
             for (let st = 1; st <= TF / DT; st++) {
               VX -= 0.5 * DT * g[0] / M_EFF; VY -= 0.5 * DT * g[1] / M_EFF; X += DT * VX; Y += DT * VY; g = gradXY(X, Y, P);
               VX -= 0.5 * DT * g[0] / M_EFF; VY -= 0.5 * DT * g[1] / M_EFF;
               if (keep && st % 2 === 0) pts.push([X, Y]);
-              if (st % 5 === 0) { const q = (X - sd.X) * u1[0] + (Y - sd.Y) * u1[1]; kap[st / 5] += sign * (q > 0 ? 1 : 0); }
+              if (st % 5 === 0) { const q = (X - sd.X) * u1[0] + (Y - sd.Y) * u1[1]; kap[st / 5] += sign * (q > 0 ? 1 : 0); if(st/5>=36){late+=(q>0?1:0);lateCount++;} }
             }
+            const mean=late/lateCount;if(sign>0){plus+=mean;plus2+=mean*mean;}else{minus+=mean;minus2+=mean*mean;}
             if (keep) { const q = (X - sd.X) * u1[0] + (Y - sd.Y) * u1[1]; trs.push({ pts, prod: q > 0 }); }
           }
           // kappa(t) = P(product side | forward start) - P(product side | backward start); half the starts go each way
           const ts = [], ks = []; for (let i = 0; i <= nT; i++) { ts.push(i); ks.push(i === 0 ? 1 : (kap[i] / NTR) * 2); }
           const plateau = ks.slice(Math.floor(nT * 0.6)).reduce((a, b) => a + b, 0) / (nT - Math.floor(nT * 0.6) + 1);
-          return (S.kTD[T] = { ts, ks, plateau, trs });
+          const nh=NTR/2,se=Math.sqrt(Math.max(0,(plus2-plus*plus/nh)/(nh*(nh-1))+(minus2-minus*minus/nh)/(nh*(nh-1))));
+          return (S.kTD[T] = { ts, ks, plateau, se, trs });
         };
         let info = {};
         const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 340, title: 'surface and trajectories', weight: 1.1, minWidth: 250 });
@@ -379,13 +376,14 @@ which equals the transition-state value $(\omega_a/2\pi)e^{-E_b/k_BT}$ for $\gam
           const vals = Tg.map(ln); C.setView([1000 / 3300, 1000 / 400], [Math.min(...vals) - 1.5, Math.max(...vals) + 1.5]);
           C.curve((x) => [x, ln(1000 / x)], 1000 / 3200, 1000 / 450, { n: 70, color: 'accent', width: 2.4 });
           const pk = TL.map((t) => ({ t, k: flux(S, t).plateau * tst(S, t).k, kap: flux(S, t).plateau }));
-          pk.forEach((p) => C.dot(1000 / p.t, Math.log(p.k), { r: 5, color: p.t === T ? 'gold' : 'orange' }));
+          const plotted=vals.concat(pk.filter(p=>p.k>0).map(p=>Math.log(p.k)));C.setView([1000/3300,1000/400],[Math.min(...plotted)-1.5,Math.max(...plotted)+1.5]);
+          pk.filter(p=>p.k>0).forEach((p) => C.dot(1000 / p.t, Math.log(p.k), { r: 5, color: p.t === T ? 'gold' : 'orange' }));
           const Ta = T * 0.85, Tb = T * 1.15, ea = -(ln(Tb) - ln(Ta)) / (1000 / Tb - 1000 / Ta) * 1000 * KB_EV;
-          info = { V: sd.V, T, kappa: F.plateau, tst: tst(S, T), ea, Eth: sd.V + 0.5 * KB_EV * T, kth: KB * T / HP, nu: Math.sqrt(Math.abs(S.E.values[1]) / M_EFF) / (2 * Math.PI * 2.99792458e-5), nTraj: NTR, nProd: F.trs.filter((t) => t.prod).length, nShown: F.trs.length };
+          info = { V: sd.V, T, kappa: F.plateau, se:F.se, tst: tst(S, T), ea, Eth: sd.V + 0.5 * KB_EV * T, kth: KB * T / HP, nu: Math.sqrt(Math.abs(S.E.values[1]) / M_EFF) / (2 * Math.PI * 2.99792458e-5), nTraj: NTR, nProd: F.trs.filter((t) => t.prod).length, nShown: F.trs.length };
         });
-        v.legend([['orange', 'dividing surface', { dash: true }], ['green', 'trajectory ends as product'], ['red', 'trajectory returns to reactants'], ['gold', '$\\kappa$ plateau'], ['accent', '$k_{\\rm TST}$']]);
+        v.legend([['orange', 'dividing surface', { dash: true }], ['green', 'trajectory ends as product'], ['red', 'trajectory returns to reactants'], ['gold', 'late-window $\\kappa$ estimate'], ['accent', '$k_{\\rm TST}$']]);
         v.readout(() => `model barrier $V^\\ddagger=${v.fix(info.V, 3)}$ eV (accepted classical barrier of $\\mathrm H+\\mathrm H_2$ from ab initio work: about 9.6 kcal/mol $=0.42$ eV) · $k_BT/h=${v.sci(info.kth, 3)}\\ \\mathrm{s^{-1}}$ at $T=${info.T}$ K
-reactive flux over ${info.nTraj} trajectories: $\\kappa=${v.fix(info.kappa, 2)}$ · $k_{\\rm TST}=${v.sci(info.tst.k, 3)}$ Å/fs (a one-dimensional bimolecular rate), i.e. $K^\\ddagger=k_{\\rm TST}h/k_BT=${v.sci(info.tst.k * 1e5 * HP / (KB * info.T) * 1e10, 2)}$ Å
+late-window reactive flux over ${info.nTraj} trajectories: $\\kappa=${v.fix(info.kappa, 2)}\\pm${v.fix(info.se,2)}$ (sampling s.e.; finite-time bias unchecked) · $k_{\\rm TST}=${v.sci(info.tst.k, 3)}$ Å/fs (a one-dimensional bimolecular rate), i.e. $K^\\ddagger=k_{\\rm TST}h/k_BT=${v.sci(info.tst.k * 1e5 * HP / (KB * info.T) * 1e10, 2)}$ Å
 slope of the Arrhenius line around $T$: $E_a=${v.fix(info.ea, 3)}$ eV, against $V^\\ddagger+\\tfrac12k_BT=${v.fix(info.Eth, 3)}$ eV expected for harmonic modes`);
       },
     },

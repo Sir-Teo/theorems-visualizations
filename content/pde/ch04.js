@@ -5,7 +5,7 @@ export default {
   collection: 'pde',
   chapter: 4,
   title: 'Separation of variables and Fourier series',
-  summary: String.raw`On a bounded interval, looking for solutions that are products of a function of $x$ and a function of $t$ turns the PDE into an eigenvalue problem. The eigenfunctions for the standard boundary conditions are sines and cosines, so solving a problem means expanding the data in a Fourier series. Convergence in mean square, pointwise and uniformly depends on the smoothness of the data, and jumps produce the Gibbs overshoot. Fourier invented the whole scheme to solve the heat equation in 1807–1822.`,
+  summary: String.raw`On a bounded interval, looking for solutions that are products of a function of $x$ and a function of $t$ turns the PDE into an eigenvalue problem. The eigenfunctions for the standard boundary conditions are sines and cosines, so solving a problem means expanding the data in a Fourier series. Convergence in mean square, pointwise and uniformly depends on the smoothness of the data, and jumps produce the Gibbs overshoot. Fourier developed this approach for heat conduction in his 1822 book.`,
   items: [
     // ------------------------------------------------------------------ 4.1
     {
@@ -13,12 +13,11 @@ export default {
       kind: 'Method',
       name: 'Separation of variables with Dirichlet conditions',
       statement: String.raw`Consider $u_t=k\,u_{xx}$ (heat) or $u_{tt}=c^2u_{xx}$ (wave) on $0<x<\ell$ with $u(0,t)=u(\ell,t)=0$. Look for product solutions $u=X(x)T(t)$. Dividing by $XT$ separates the variables: $X''/X=T'/(kT)$ (resp. $T''/(c^2T)$) is a function of $x$ alone and of $t$ alone, hence a constant $-\lambda$. The spatial problem $-X''=\lambda X$, $X(0)=X(\ell)=0$ has nontrivial solutions only for $\lambda_n=(n\pi/\ell)^2$, $X_n=\sin(n\pi x/\ell)$, $n=1,2,\dots$; the time factors are $T_n=e^{-k\lambda_nt}$ (heat) or $T_n=A\cos(c\sqrt{\lambda_n}t)+B\sin(c\sqrt{\lambda_n}t)$ (wave). Because both equations and the boundary conditions are linear and homogeneous, every finite sum $\sum c_nX_nT_n$ is again a solution, and the series with $c_n$ the sine coefficients of the initial data is the candidate for the solution of the full initial–boundary value problem.`,
-      idea: String.raw`The product ansatz works because $\partial_t$ acts only on $T$ and $\partial_x^2$ only on $X$, so the PDE becomes an identity between a function of $t$ and a function of $x$, which forces both to be constant. The constant must be positive (otherwise the only function vanishing at both ends is $0$, an elementary ODE fact), and the boundary conditions then quantise it. The set of solutions is a vector space (superposition, 1.1), so one assembles arbitrary data from the product solutions; whether the infinite sum really represents the data is the question answered by the Fourier convergence theorems later in this chapter.`,
+      idea: String.raw`The product ansatz works because $\partial_t$ acts only on $T$ and $\partial_x^2$ only on $X$, so the PDE becomes an identity between a function of $t$ and a function of $x$, which forces both to be constant. The parameter $\lambda$ must be positive (otherwise the only function vanishing at both ends is $0$, an elementary ODE fact), and the boundary conditions then quantise it. The set of solutions is a vector space (superposition, 1.1), so one assembles arbitrary data from the product solutions; whether the infinite sum really represents the data is the question answered by the Fourier convergence theorems later in this chapter.`,
       caption: String.raw`Choose the heat or the wave equation and drag the four coefficient handles $c_1,\dots,c_4$ (right). The left panel shows $u(x,t)$ animated; the orange curve is the single product solution $c_n\sin(n\pi x)T_n(t)$ for the highlighted $n$, the faint ones are the others. Heat: higher modes die at rate $n^2\pi^2$ and the profile relaxes to the fundamental sine; wave: every mode oscillates at its own frequency $n\pi c$. The readout evaluates the PDE residual by finite differences of the whole sum, so you are checking that superposition really solves the equation.`,
       deps: ['pde-1.6', 'ode-4.6'],
-      refs: ['Strauss §4.1', 'Evans §4.1'],
-      credit: 'd’Alembert, D. Bernoulli, Euler (strings, 1740s–50s); Fourier (heat, 1807–22)',
-      verify: true,
+      refs: ['Teschl, Ordinary Differential Equations and Dynamical Systems, §5.1, pp. 141–144, equations (5.2)–(5.15); heat time factor derived directly'],
+      scope: String.raw`The wave series requires regularity of the initial data for a classical solution; finite sums always satisfy the equation. The heat series is smoothed for positive times.`,
       tags: ['separation of variables', 'eigenvalues', 'superposition'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Separation_of_variables' },
       viz(v) {
@@ -40,7 +39,7 @@ export default {
           A.fn((x) => H[nn - 1].y * Math.sin(nn * Math.PI * x) * Tn(nn, tphys), { color: 'orange', width: 2.4 });
           A.corner(`t = ${v.fix(tphys, 3)}`, 'tr', { color: 'ink', weight: 600 });
           // PDE residual by finite differences of the full sum
-          const h = 1e-3; res = 0;
+          const h = 1e-4; res = 0;
           for (let i = 1; i <= 15; i++) {
             const x = i / 16, ut = (uAt(x, tphys + h) - uAt(x, tphys - h)) / (2 * h), utt = (uAt(x, tphys + h) - 2 * uAt(x, tphys) + uAt(x, tphys - h)) / (h * h);
             const uxx = (uAt(x + h, tphys) - 2 * uAt(x, tphys) + uAt(x - h, tphys)) / (h * h);
@@ -52,7 +51,7 @@ export default {
         v.readout(() => {
           const n = nS.value, lam = (n * Math.PI) ** 2;
           return `mode $n=${n}$: $X''/X=-\\lambda_n=-(n\\pi)^2=${v.fix(-lam, 2)}$, and $T'/(kT)$ is the same constant for $T=e^{-\\lambda_nt}$ (heat), $T''/T=-\\lambda_n$ for $T=\\cos(n\\pi t)$ (wave)\n` +
-            `max over $x$ of the residual of the PDE for the whole sum: $${v.sci(res, 2)}$ · $\\max|u|$ at the ends: $${v.sci(bdry, 2)}$ (finite-difference noise only)`;
+            `max over $x$ of the residual of the PDE for the whole sum: $${v.sci(res, 2)}$ · $\\max|u|$ at the ends: $${v.sci(bdry, 2)}$ (finite-difference truncation and rounding)`;
         });
       },
     },
@@ -61,13 +60,11 @@ export default {
       num: '4.2',
       kind: 'Model',
       name: 'Normal modes of a vibrating string',
-      statement: String.raw`A string of length $\ell$ fixed at both ends and released from rest in the shape $\varphi$ moves as $u(x,t)=\sum_{n\ge1}b_n\sin(n\pi x/\ell)\cos(n\pi ct/\ell)$ with $b_n=\frac2\ell\int_0^\ell\varphi(x)\sin(n\pi x/\ell)\,dx$. It is a superposition of *normal modes*: standing waves with nodes at $x=j\ell/n$ vibrating at the frequencies $f_n=nc/(2\ell)$, integer multiples of the fundamental. For a string plucked into a triangle with peak height $h$ at $x=p\ell$, $b_n=\dfrac{2h}{n^2\pi^2p(1-p)}\sin(n\pi p)$. The $n$-th harmonic is absent when $np$ is an integer, and a pickup placed at a node of the $n$-th mode does not register it.`,
-      idea: String.raw`Each normal mode is a separated solution (4.1) whose time factor is a pure cosine, so the whole motion is periodic with period $2\ell/c$ and its spectrum consists of the harmonics of one fundamental. The amplitudes are the sine coefficients of the initial shape, here computed by integrating a piecewise-linear function by parts twice, which produces the $1/n^2$ decay (the kink of the pluck) and the factor $\sin(n\pi p)$ (the value of the $n$-th mode at the pluck point). Plucking at a node of a mode puts zero energy into it, because the mode's shape is orthogonal to the pluck's "weight" at that point.`,
+      statement: String.raw`An ideal, uniform string obeying the linear wave equation, of length $\ell$ fixed at both ends and released from rest in the shape $\varphi$ moves as $u(x,t)=\sum_{n\ge1}b_n\sin(n\pi x/\ell)\cos(n\pi ct/\ell)$ with $b_n=\frac2\ell\int_0^\ell\varphi(x)\sin(n\pi x/\ell)\,dx$. It is a superposition of *normal modes*: standing waves with nodes at $x=j\ell/n$ vibrating at the frequencies $f_n=nc/(2\ell)$, integer multiples of the fundamental. For a string plucked into a triangle with peak height $h$ at $x=p\ell$, $b_n=\dfrac{2h}{n^2\pi^2p(1-p)}\sin(n\pi p)$. The $n$-th harmonic is absent when $np$ is an integer, and an ideal displacement pickup placed at a node of the $n$-th mode does not register it. Smooth compatible initial data give a classical solution; the triangular pluck gives an energy solution, with kinks propagating along characteristics.`,
+      idea: String.raw`Each normal mode is a separated solution (4.1) whose time factor is a pure cosine, so the whole motion is periodic with period $2\ell/c$ and its spectrum consists of the harmonics of one fundamental. The amplitudes are the sine coefficients of the initial shape, here computed by integrating a piecewise-linear function by parts twice, which produces the $1/n^2$ decay (the kink of the pluck) and the factor $\sin(n\pi p)$ (the value of the $n$-th mode at the pluck point). Plucking at a node of a mode puts zero energy into it, as the explicit coefficient formula shows.`,
       caption: String.raw`Drag the gold handle to choose where and how high to pluck the string (with *snap* on, the pluck point jumps to multiples of $1/12$ so you can hit exact nodes). The top panel animates the motion. The bar chart shows the pluck's harmonic content $|b_n|$ (blue bars); the gold dots are $|b_n\sin(n\pi x_{\rm p})|$, what a pickup at the position $x_{\rm p}$ (the second slider) would register. Pluck at $p=1/3$ and the 3rd, 6th, … harmonics vanish; place the pickup at the middle and all even harmonics vanish. The speaker plays the string's first sixteen partials with exactly these weights (a model, not a physical string synthesis: no damping, no stiffness).`,
       deps: ['pde-4.1'],
-      refs: ['Strauss §4.1'],
-      credit: 'Daniel Bernoulli (superposition of modes, 1750s); Taylor (fundamental mode, 1713)',
-      verify: true,
+      refs: ['Teschl, §5.1, equations (5.9)–(5.15); triangular coefficients from direct piecewise integration'],
       tags: ['vibrating string', 'harmonics', 'normal modes'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Normal_mode' },
       viz(v) {
@@ -112,13 +109,11 @@ export default {
       num: '4.3',
       kind: 'Method',
       name: 'Neumann and Robin boundary conditions',
-      statement: String.raw`On $0<x<\ell$ the eigenvalue problem $-X''=\lambda X$ with the end conditions $X'(0)=0$ (insulated, Neumann) or $X(0)=0$ (Dirichlet) at the left and the Robin condition $X'(\ell)+hX(\ell)=0$ at the right ($h=0$ is Neumann, $h\to\infty$ is Dirichlet) is solved by $X=\cos\mu x$ or $\sin\mu x$ with $\lambda=\mu^2$ and the *transcendental* equation for $\mu$ obtained from the right end: $-\mu\sin\mu\ell+h\cos\mu\ell=0$, i.e. $\mu\tan\mu\ell=h$ (left Neumann), resp. $\mu\cos\mu\ell+h\sin\mu\ell=0$, i.e. $\tan\mu\ell=-\mu/h$ (left Dirichlet). For $h\ge0$ all eigenvalues are positive (and $\lambda=0$ with $X=1$ occurs exactly for Neumann at both ends); for $h<0$ (the boundary *adds* heat in proportion to the temperature) one eigenvalue can be negative, $\lambda=-\kappa^2$ with $X=\cosh\kappa x$ or $\sinh\kappa x$, and the corresponding heat mode grows like $e^{\kappa^2kt}$.`,
+      statement: String.raw`On $0<x<\ell$ the eigenvalue problem $-X''=\lambda X$ with the end conditions $X'(0)=0$ (insulated, Neumann) or $X(0)=0$ (Dirichlet) at the left and the Robin condition $X'(\ell)+hX(\ell)=0$ at the right ($h=0$ is Neumann, $h\to\infty$ is Dirichlet) is solved by $X=\cos\mu x$ or $\sin\mu x$ with $\lambda=\mu^2$ and the *transcendental* equation for $\mu$ obtained from the right end: $-\mu\sin\mu\ell+h\cos\mu\ell=0$, i.e. $\mu\tan\mu\ell=h$ (left Neumann), resp. $\mu\cos\mu\ell+h\sin\mu\ell=0$, i.e. $\tan\mu\ell=-\mu/h$ (left Dirichlet). For $h\ge0$ all eigenvalues are nonnegative, with zero occurring only for Neumann at both ends; otherwise they are positive. With a left Dirichlet end, zero occurs at $h=-1/\ell$ with $X=x$, and exactly one negative eigenvalue occurs when $h<-1/\ell$. With a left Neumann end, exactly one negative eigenvalue occurs whenever $h<0$. These heat-gaining boundaries have $\lambda=-\kappa^2$ with $X=\cosh\kappa x$ or $\sinh\kappa x$, and the corresponding heat mode grows like $e^{\kappa^2kt}$.`,
       idea: String.raw`Separation (4.1) is unchanged; only the boundary condition at the end where the sine or cosine was fixed changes the quantisation. Substituting $X=\cos\mu x$ (or $\sin\mu x$) into the right-hand condition gives a nonlinear equation for $\mu$ with infinitely many roots, interlaced with $n\pi/\ell$ shifts; no closed form, so they are found numerically. The sign of $h$ is the energy story: $\int_0^\ell X'^2\,dx=\lambda\int X^2+\dots$ after integrating by parts picks up the boundary term $-hX(\ell)^2$, which for $h\ge0$ is non-positive for the heat energy balance and for $h<0$ can overpower the interior diffusion.`,
-      caption: String.raw`Choose the left end (insulated or held at zero) and slide the Robin coefficient $h$ at the right end. Top: the first five eigenfunctions (the selected one thick, a growing mode in red). Bottom: that mode evolving under the heat equation, with its envelope $\pm e^{-\lambda kt}$: it decays for $\lambda>0$ and *grows* for the red mode. Set $h=0$ and cosines with a constant mode appear; push $h$ up and the modes turn into sines; go negative (heat gain at the end) and a negative eigenvalue enters once $h<-1$ (Dirichlet left) or already at any $h<0$ (Neumann left). The eigenvalues are found numerically by scanning the boundary residual and bisecting.`,
+      caption: String.raw`Choose the left end (insulated or held at zero) and slide the Robin coefficient $h$ at the right end. Top: the first five eigenfunctions (the selected one thick, a growing mode in red). Bottom: that mode evolving under the heat equation, with its envelope $\pm e^{-\lambda kt}$: it decays for $\lambda>0$ and *grows* for the red mode. Set $h=0$ and cosines with a constant mode appear; push $h$ up and the right end approaches a Dirichlet condition; go negative (heat gain at the end) and a negative eigenvalue enters once $h<-1$ (Dirichlet left) or already at any $h<0$ (Neumann left). The eigenvalues are found numerically by scanning the boundary residual and bisecting.`,
       deps: ['pde-4.1'],
-      refs: ['Strauss §4.2', 'Strauss §4.3'],
-      credit: 'named for Gustave Robin (1855–1897); the attribution is disputed',
-      verify: true,
+      refs: ['Teschl, §5.4, pp. 155–157, equations (5.54)–(5.58); constant-coefficient roots and zero/negative thresholds derived directly'],
       tags: ['boundary conditions', 'eigenvalues', 'Robin'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robin_boundary_condition' },
       viz(v) {

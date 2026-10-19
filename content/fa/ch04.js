@@ -51,7 +51,7 @@ export default {
     // ------------------------------------------------------------------ 4.1
     {
       num: '4.1',
-      kind: 'Definition',
+      kind: 'Theorem',
       name: 'Bounded operators and the normed dual',
       statement: String.raw`For normed spaces $X$ and $Y$, $\mathscr B(X,Y)$ is the vector space of all bounded linear maps $T:X\to Y$ (bounded = continuous for linear maps), normed by
 $$\|T\|=\sup\{\|Tx\|:\ x\in X,\ \|x\|\le1\},$$
@@ -60,8 +60,8 @@ so that $\|Tx\|\le\|T\|\,\|x\|$ for every $x$. With this norm $\mathscr B(X,Y)$ 
       caption: String.raw`$T$ is a $2\times2$ matrix from $X=(\R^2,\|\cdot\|_p)$ to $Y=(\R^2,\|\cdot\|_r)$; drag its columns $Te_1,Te_2$ and pick the two norms. The blue region on the right is $T(B_X)$; the green ball is $\|T\|\,B_Y$, the smallest $Y$-ball containing it, and it touches at $Tx_0$. Drag $x$ around the unit sphere of $X$: $\|Tx\|_r$ never exceeds $\|T\|$. The readout checks the numerical supremum against closed forms where they exist.`,
       deps: ['fa-1.2'],
       see: ['rca-5.2', 'fa-3.1'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §4.1, pp. 92–93'],
       tags: ['operator norm', 'Banach spaces', 'duality'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const PS = [{ value: 1, label: '$1$' }, { value: 2, label: '$2$' }, { value: 4, label: '$4$' }, { value: Infinity, label: '$\\infty$' }];

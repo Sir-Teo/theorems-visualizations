@@ -453,6 +453,8 @@ $$(v_1 \otimes \cdots \otimes v_m)(\varphi_1, \dots, \varphi_m) = \varphi_1(v_1)
         let st = null;
         v.render(() => {
           const k = st0.value, prod = k === 'prod';
+          // Entangled modes use the stage's text overlay instead of its canvas.
+          L.canvas.style.visibility = prod ? 'visible' : 'hidden';
           bs.forEach((b) => b.show(prod));
           let T;
           if (prod) T = outer3(V[0], V[1], V[2]);

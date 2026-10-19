@@ -1,25 +1,8 @@
 // Computational Neuroscience — Chapter 2: The Hodgkin–Huxley model (part b: 2.6–2.9)
 //
-// Facts and how they were checked (Oct 2026):
-// - Hodgkin & Huxley model: see ch02.js. That the model reproduces anode-break excitation, refractoriness and threshold is stated by
-//   secondary sources (encyclopedia entry on the HH model, lecture notes, Wikipedia "Anode break excitation" citing H&H 1952);
-//   all numbers shown on these pages are computed here.
-// - Hodgkin (1948), J. Physiol. 107: 165–181 (Crossref-checked title and pages): classification of axons by their repetitive
-//   response. The definitions of class 1 (firing frequency can be arbitrarily low) and class 2 (onset at a non-zero minimum
-//   frequency) are as given by several review articles (not read in the original), so 2.7 and 2.8 carry verify: true.
-// - Connor & Stevens (1971): three papers, J. Physiol. 213: 1–19 (doi 10.1113/jphysiol.1971.sp009364), 21–30 (sp009365)
-//   and 31–53 (sp009366, "Prediction of repetitive firing behaviour from voltage clamp data on an isolated neurone soma"), all
-//   Crossref-checked. The parameter set used here (ḡNa = 120, ḡK = 20, ḡA = 47.7, ḡL = 0.3 mS/cm², E_Na = 55, E_K = −72,
-//   E_A = −75, E_L = −17 mV, rate factor 3.8, A-current kinetics with the constants 0.0761, 94.22, 31.84, 1.17, 28.93, 0.3632,
-//   1.158, 55.96, 20.12, 53.3, 14.54, 1.24, 2.678, 50, 16.027) was read from the XPP implementation distributed with the Pitt
-//   computational-neuroscience course (sites.pitt.edu/~phase/bard/bardware/classes/compneuro/model/cs.ode), a teaching file that
-//   follows Connor, Walter & McKown (1977); it was not compared with the 1971/1977 tables, hence verify: true.
-//   Leak reversal is re-tuned here so that rest stays at −68 mV when ḡA is changed (our assumption, stated on the page).
-// - Stochastic channels: Chow & White (1996), Biophys. J. 71: 3013–3021 ("Spontaneous action potentials due to channel
-//   fluctuations"); Schneidman, Freedman & Segev (1998), Neural Comput. 10: 1679–1703; White, Rubinstein & Kay (2000),
-//   Trends Neurosci. 23: 131–137 (all Crossref-checked). Channel densities 60 Na⁺ and 18 K⁺ channels per µm² with 20 pS each are the
-//   standard parameter set of stochastic-HH studies (found in several arXiv/PMC parameter tables; the set reproduces ḡNa = 120 and
-//   ḡK = 36 mS/cm²: 60·20 pS/µm² = 120 mS/cm²). Which of these papers used exactly these numbers was not confirmed, hence verify: true.
+// Source follow-up: complete author Connor–Stevens code, Goldwyn et al. channel-chain model sections,
+// Gerstner phase-plane sections, independent DOP853 references and light/dark checks are recorded in
+// docs/verification/neuro-source-review.md. All numbers in the panels are computed, not digitized data.
 import { HH, ION_COL, gateInf, clamp, trace, hhSim, hhRun, spikeTimes, pulse, hhRest, CS, csRun, csSpikes, csA, hhStochastic } from './ch02.shared.js';
 
 const GC = { n: ION_COL.K, m: ION_COL.Na, h: 'teal' };
@@ -103,16 +86,15 @@ export default {
       num: '2.7',
       kind: 'Phenomenon',
       name: 'Repetitive firing and the Hodgkin–Huxley f–I curve',
-      statement: String.raw`Held under a constant injected current $I$ the Hodgkin–Huxley model fires periodically once $I$ exceeds a critical value. Its firing rate does not start at zero: on a slow upward ramp the rate jumps from zero to a non-zero minimum at the critical current, and on a ramp back down the neuron keeps firing to a lower current than the one where it started, so that the $f$–$I$ curve has a **bistable** window in which both rest and repetitive firing are stable. At large current the spikes shrink and firing stops altogether (depolarization block). Hodgkin (1948) distinguished axons whose repetitive response can be arbitrarily slow (class 1) from those that start at a minimum frequency (class 2); the Hodgkin–Huxley model is of the second kind (type II).`,
-      idea: String.raw`The gates $h$ and $n$ respond slowly (neuro-2.3), so rest is stable for a range of currents, while a limit cycle born in a subcritical Hopf bifurcation can coexist with it. The rate on that cycle is set by the time $n$ and $h$ need to recover after each spike (neuro-2.5), which is about 17 ms at 6.3 °C, hence a minimum rate near 58 Hz in this model. At the other end of the window the rest state itself loses stability, giving the abrupt jump on the upward ramp. The transition type is analysed in neuro-3.4 (Hopf, type II) and contrasted with neuro-3.5 (saddle-node on an invariant circle, type I).`,
-      caption: String.raw`Left: the firing rate (inverse of the last interspike interval) against constant current, computed by slowly ramping the current up from rest (blue), down from the spiking state (orange), and for a sudden step from rest (green circles); drag the handle along the axis to choose $I$. Right: the voltage at that current, starting from rest or from the spiking state: in the bistable window the same current gives silence or spiking depending on the history. (A sudden step from rest, as in the right-hand trace, already kicks the state over the unstable cycle and fires from about 6.5 µA/cm²; only a slow ramp keeps the membrane silent up to about 10.) Choose the 0–150 range to see depolarization block. At 18.5 °C every rate is about 3.5 times faster, but the shape is the same.`,
+      statement: String.raw`Held under a constant injected current $I$ the Hodgkin–Huxley model fires periodically once $I$ exceeds a critical value. Its firing rate does not start at zero: on a slow upward ramp the rate jumps from zero to a non-zero minimum at the critical current, and on a ramp back down the neuron keeps firing to a lower current than the one where it started, so that the $f$–$I$ curve has a **bistable** window in which both rest and repetitive firing are stable at the classical low-temperature parameters; other temperatures must be checked separately. At large current the spikes shrink and firing stops altogether (depolarization block). Hodgkin (1948) distinguished axons whose repetitive response can be arbitrarily slow (class 1) from those that start at a minimum frequency (class 2); the Hodgkin–Huxley model is of the second kind (type II).`,
+      idea: String.raw`The gates $h$ and $n$ respond slowly (neuro-2.3), so rest is stable for a range of currents, while a stable large-amplitude cycle can coexist with an unstable small cycle that shrinks into rest at a subcritical Hopf bifurcation. The rate on that cycle is set by the time $n$ and $h$ need to recover after each spike (neuro-2.5), which is about 17 ms at 6.3 °C, hence a minimum rate near 58 Hz in this model. At the other end of the window the rest state itself loses stability, giving the abrupt jump on the upward ramp. The transition type is analysed in neuro-3.4 (Hopf, type II) and contrasted with neuro-3.5 (saddle-node on an invariant circle, type I).`,
+      caption: String.raw`Left: the firing rate (inverse of the last interspike interval) against constant current, computed by slowly ramping the current up from rest (blue), down from the spiking state (orange), and for a sudden step from rest (green circles); drag the handle along the axis to choose $I$. Right: the voltage at that current, starting from rest or from the spiking state: in the bistable window the same current gives silence or spiking depending on the history. (A sudden step from rest, as in the right-hand trace, already kicks the state over the unstable cycle and fires from about 6.5 µA/cm²; only a slow ramp keeps the membrane silent up to about 10.) Choose the 0–150 range to see depolarization block. At 18.5 °C the gating rates alone are multiplied by $3^{(18.5-6.3)/10}=3.8202$. The voltage equation is not multiplied, so the firing curve is recomputed and neither its shape nor firing frequency is obtained by a uniform time rescaling.`,
       scope: String.raw`Space-clamped Hodgkin–Huxley membrane under constant current. The numbers (onset near 58 Hz; on a slow current ramp the bistable window runs from about 7 up to about 10 µA/cm² at 6.3 °C, while a sudden step from rest already fires from about 6.5) are those of this model at the stated temperature and settle times (300 ms per current), not measurements; in a real axon, sustained firing at these currents is also limited by ion accumulation.`,
       deps: ['neuro-2.3'],
       see: ['neuro-2.8', 'neuro-3.4'],
       refs: ['Gerstner §4.4'],
       tags: ['f–I curve', 'bistability'],
       credit: 'Classification of repetitive responses by A. L. Hodgkin, 1948 (J. Physiol. 107: 165–181); model of Hodgkin and Huxley, 1952',
-      verify: true,
       viz(v) {
         const Tsel = v.select('temperature', [{ value: 6.3, label: '6.3 °C' }, { value: 18.5, label: '18.5 °C' }], 6.3);
         const rng = v.select('current range', [{ value: 15, label: '0–15 µA/cm²' }, { value: 150, label: '0–150 µA/cm²' }], 15);
@@ -157,7 +139,7 @@ export default {
           const S = h._S || sweeps(), I = h._I ?? 8, o = h._o, sp = o ? spikeTimes(o.t, o.V, 0).filter((t) => t > 5) : [];
           const f = (arr) => arr.reduce((a, p) => (Math.abs(p[0] - I) < Math.abs(a[0] - I) ? p : a), arr[0])[1];
           return String.raw`at $I = ${v.fix(I, 2)}$ µA/cm²: ramp up ${v.fix(f(S.up), 1)} Hz · ramp down ${v.fix(f(S.down), 1)} Hz · step from rest ${v.fix(f(S.step), 1)} Hz · this trace: ${sp.length} spikes in 145 ms` + '\n' +
-            String.raw`lowest sustained rate on the way down: $${v.fix(S.fmin ?? 0, 1)}$ Hz at $I \approx ${v.fix(S.dLo ?? 0, 2)}$ · the upward ramp starts firing at $I \approx ${v.fix(S.uJump ?? 0, 2)}$ µA/cm²: bistable between them (grid step 0.25)`;
+            String.raw`lowest sustained rate on the way down: $${v.fix(S.fmin ?? 0, 1)}$ Hz at $I \approx ${v.fix(S.dLo ?? 0, 2)}$ · the upward ramp starts firing at $I \approx ${v.fix(S.uJump ?? 0, 2)}$ µA/cm²: history-dependent interval between these grid onsets (steps 0.25 below 12, 2 through 40, 10 above)`;
         });
       },
     },
@@ -167,16 +149,15 @@ export default {
       num: '2.8',
       kind: 'Model',
       name: 'Connor–Stevens A-current and type I firing',
-      statement: String.raw`Adding a fast, transient potassium **A-current** $I_A = \bar g_A\, a^3 b\,(V-E_A)$, with its own activation $a$ and a slow inactivation $b$, to the sodium and delayed-rectifier currents of the Hodgkin–Huxley kind gives the **Connor–Stevens model**. Its $f$–$I$ curve starts continuously from zero frequency at the critical current (**type I**), unlike the Hodgkin–Huxley neuron, and near that current the first spike appears only after a long latency. Removing the A-current ($\bar g_A\to 0$) restores a non-zero minimum frequency (type II).`,
-      idea: String.raw`After each spike the A-current is activated by the voltage and, because $b$ inactivates slowly, it adds an extra outward current that delays the next spike as the membrane climbs toward threshold. Near the critical input this delay can be arbitrarily long, so the rate can be arbitrarily low and the transition becomes a saddle-node on an invariant circle rather than a Hopf bifurcation (neuro-3.5, neuro-3.4). Connor and Stevens fitted their current to voltage-clamp records of an isolated gastropod neurone and used it to predict repetitive firing from the clamp data (neuro-1.5), the first such quantitative prediction after Hodgkin and Huxley.`,
-      caption: String.raw`Choose the A-conductance. Left: firing rate against current step for your $\bar g_A$ (blue) and for $\bar g_A=0$ (red): the blue curve starts at zero, the red one at a high rate. Top right: latency to the first spike against current, on log axes; with the A-current it grows to more than 100 ms near threshold, while without it the first spike comes after about 3 ms. Drag the handle to pick the current. Bottom: the voltage trace (blue; red for $\bar g_A=0$) and the A-current conductance $\bar g_A a^3 b$ along the blue trace.`,
-      scope: String.raw`Single-compartment model with the parameter set quoted on this page (rates multiplied by 3.8, a temperature factor); not checked against the original 1971 tables (verify). Voltages are in the convention of that parameter set (rest near −68 mV). The leak reversal is re-tuned so that rest stays fixed when $\bar g_A$ is varied, and the rates come from 600 ms runs, so rates below roughly 2 Hz read as zero.`,
+      statement: String.raw`Adding a fast, transient potassium **A-current** $I_A = \bar g_A\, a^3 b\,(V-E_A)$, with its own activation $a$ and a slow inactivation $b$, to the sodium and delayed-rectifier currents of the Hodgkin–Huxley kind gives the **Connor–Stevens model**. For appropriate kinetics and a sufficiently strong A-current, this model family supports continuous, zero-frequency onset (**type I**) and long first-spike latency. Low-A-current members can instead have nonzero onset (**type II**). This is a parameter-dependent bifurcation change, not a consequence of adding any positive A-current; the finite grid below illustrates the rate and latency contrast without resolving arbitrarily small onset frequencies.`,
+      idea: String.raw`After each spike the A-current is activated by the voltage and, because $b$ inactivates slowly, it adds an extra outward current that delays the next spike as the membrane climbs toward threshold. In the type I regime of this model family, the delay can be arbitrarily long and onset occurs through a saddle-node on an invariant circle rather than a Hopf bifurcation (neuro-3.5, neuro-3.4). Barreiro, Thilo & Shea-Brown (2012), Fig. 2 and their bifurcation-analysis section, explicitly compare type II members near $g_A=0$ and type I members near $g_A=60$ in their parameter family. The author-code variant below keeps $g_K$ fixed and re-tunes the leak reversal when $g_A$ changes, so those published numerical thresholds are not transferred to this panel.`,
+      caption: String.raw`Choose the A-conductance. Left: firing rate against current step for your $\bar g_A$ (blue) and for $\bar g_A=0$ (red): the points show the computed rates, with zero used when fewer than two spikes are detected in the run; connecting lines do not locate the bifurcation. Top right: latency to the first spike against current, on log axes; a strong A-current can produce a much longer latency near threshold; the readout gives values for the selected current. Drag the handle to pick the current. Bottom: the voltage trace (blue; red for $\bar g_A=0$) and the A-current conductance $\bar g_A a^3 b$ along the blue trace.`,
+      scope: String.raw`Single-compartment teaching variant checked against Ermentrout’s complete author-hosted cs.ode implementation: $g_K=20$, $g_A=47.7$, $E_A=-75$, $E_L=-17$ at the reference conductance, gate-rate factor 3.8, and an extra factor 2 in the n time constant. Its initial state is equilibrated here, unlike the author file’s approximate initial condition and pulse. The A activation exponent 1/3 replaces the code’s rounded 0.3333. This is not claimed to reproduce the original 1971/1977 fitted tables or Barreiro et al.’s separate parameter family. Voltages are in the convention of that parameter set (rest near −68 mV). The leak reversal is re-tuned so that rest stays fixed when $\bar g_A$ is varied, and the rates come from 600 ms runs, so rates below roughly 2 Hz read as zero.`,
       deps: ['neuro-2.3', 'neuro-2.7'],
       see: ['neuro-3.5', 'neuro-3.4', 'neuro-1.5'],
-      refs: ['Gerstner §2.3', 'Dayan–Abbott ch. 6'],
+      refs: ['Ermentrout, author-hosted cs.ode (complete equations and parameters)', 'Barreiro, Thilo & Shea-Brown (2012), Neuron model and Characterizing the dynamics of spike generation sections; Fig. 2'],
       tags: ['A-current', 'type I'],
       credit: 'J. A. Connor and C. F. Stevens, 1971 (J. Physiol. 213: 1–53); J. A. Connor, D. Walter and R. McKown, 1977',
-      verify: true,
       viz(v) {
         const gsel = v.select('A-conductance $\\bar g_A$', [0, 15, 30, 47.7].map((g) => ({ value: g, label: `${g}` })), 47.7);
         const IG = []; for (let I = 7; I <= 14.01; I += 0.5) IG.push(I);
@@ -225,32 +206,31 @@ export default {
       num: '2.9',
       kind: 'Phenomenon',
       name: 'Channel noise and spontaneous spikes',
-      statement: String.raw`A membrane has a finite number $N$ of ion channels, each opening and closing at random, so the conductances fluctuate around the deterministic Hodgkin–Huxley values with relative size of order $1/\sqrt N$. For a large patch this noise is negligible and the deterministic model is the limit $N\to\infty$ of the stochastic one. For a small patch (a thin axon, a dendritic spine, a small area of soma) the fluctuations are large enough to trigger **spontaneous spikes** from a subthreshold or zero input, to miss responses to input that would reach threshold, and to **jitter** the spike time in response to a repeated identical stimulus.`,
-      idea: String.raw`Each channel is a continuous-time Markov chain (neuro-1.6, stoch-10.2). A potassium channel with four independent $n$-gates has five lumped states (number of open gates, with rates $(4-k)\alpha_n$ up and $k\beta_n$ down), a sodium channel has eight (three $m$-gates and one $h$-gate), and the channels are independent. Their mean obeys the Hodgkin–Huxley equations, while the variance of the open fraction is $p(1-p)/N$ for each gate (law of large numbers and central limit theorem). Threshold is a steep function of the state (neuro-2.4), so a random fluctuation of a few channels is enough to start a spike when the patch is small; this was shown in simulations of small membrane patches by Chow and White (1996), and its consequences for spike-timing reliability by Schneidman, Freedman and Segev (1998) and reviewed by White, Rubinstein and Kay (2000).`,
-      caption: String.raw`The patch area sets the channel numbers ($60$ Na⁺ and $18$ K⁺ channels per µm², 20 pS each, which reproduces $\bar g_{Na}=120$ and $\bar g_K=36$ mS/cm²). The input current is constant and below the deterministic threshold, so the deterministic model (dashed) stays at rest. Top left: one stochastic run. Bottom left: spike rasters of six runs and of the deterministic model. Right: the distribution of the first-spike latency after a fixed suprathreshold 1 ms pulse over 40 repeated trials, with the deterministic latency marked. Shrink the patch and watch spikes appear from nothing and the latency histogram widen; enlarge it and both collapse onto the deterministic picture. Latencies near zero are spontaneous spikes that happen to fall just after the pulse starts; trials without a spike after the pulse are counted as missed. Press "new runs" for fresh random numbers.`,
-      scope: String.raw`Space-clamped Hodgkin–Huxley kinetics at 6.3 °C with independent channels of 20 pS and densities 60 (Na⁺) and 18 (K⁺) per µm², a parameter set common in stochastic-HH studies; the sampler advances the lumped channel states with binomial draws per 0.025 ms step (an approximation of the exact Gillespie scheme, accurate when rate × step is small). Which paper first used these exact numbers was not confirmed here (verify).`,
-      deps: ['neuro-2.3', 'neuro-1.6'],
+      statement: String.raw`A membrane has a finite number $N$ of ion channels, each opening and closing at random, so, under voltage clamp, the open-channel fraction has fluctuations of order $1/\sqrt N$ (the coefficient depends on its opening probability). In a freely evolving membrane, the resulting voltage feedback can amplify small channel fluctuations into spikes. For a large patch this noise is negligible and the deterministic model is the limit $N\to\infty$ of the stochastic one. For a small patch (a thin axon, a dendritic spine, a small area of soma) the fluctuations are large enough to trigger **spontaneous spikes** from a subthreshold or zero input, to miss responses to input that would reach threshold, and to **jitter** the spike time in response to a repeated identical stimulus.`,
+      idea: String.raw`Each channel is a continuous-time Markov chain (neuro-1.6, stoch-10.2). A potassium channel with four independent $n$-gates has five lumped states (number of open gates, with rates $(4-k)\alpha_n$ up and $k\beta_n$ down), a sodium channel has eight (three $m$-gates and one $h$-gate), conditionally on a voltage trajectory, channels have independent transition noise; their common voltage couples them in a freely evolving patch. Under voltage clamp, the fraction of open **channels** has variance $p_{\rm open}(1-p_{\rm open})/N$, with $p_{K}=n_\infty^4$ and $p_{Na}=m_\infty^3h_\infty$. In the large-population continuous-time limit the macroscopic fractions follow Hodgkin–Huxley (law of large numbers and central limit theorem). Threshold is a steep function of the state (neuro-2.4), so a random fluctuation of a few channels is enough to start a spike when the patch is small; this was shown in simulations of small membrane patches by Chow and White (1996), and its consequences for spike-timing reliability by Schneidman, Freedman and Segev (1998) and reviewed by White, Rubinstein and Kay (2000).`,
+      caption: String.raw`The patch area sets the channel numbers ($60$ Na⁺ and $18$ K⁺ channels per µm², 20 pS each, which reproduces $\bar g_{Na}=120$ and $\bar g_K=36$ mS/cm²). The constant input is below the sustained-firing range, so the deterministic model (dashed) settles to rest; a sudden step at the larger settings can produce transient spikes. Top left: one stochastic run. Bottom left: spike rasters of six runs and of the deterministic model. Right: the distribution of the first-spike latency after a fixed suprathreshold 1 ms pulse over 40 repeated trials, with the deterministic latency marked. Shrink the patch and watch spikes appear from nothing and compare the latency distribution; enlarging the patch reduces fluctuations toward the deterministic picture. Forty trials give a noisy empirical histogram, not a monotonic-width theorem. Latencies near zero are spontaneous spikes that happen to fall just after the pulse starts; trials without a spike after the pulse are counted as missed. Press "new runs" for fresh random numbers.`,
+      scope: String.raw`Space-clamped Hodgkin–Huxley kinetics at 6.3 °C with independent channels of 20 pS and densities 60 (Na⁺) and 18 (K⁺) per µm², a parameter set common in stochastic-HH studies; Goldwyn et al. (arXiv:1009.4172v1), Table I and §IV.A.1, give these densities and maximal conductances, compatible with 20 pS per channel, and the five/eight-state chains. This implementation uses exact frozen-voltage channel transition probabilities, sampled by binomial inversion and multinomial redistribution at 0.01 ms; voltage is advanced by forward Euler. It includes multiple gate transitions per step, but voltage/channel coupling remains a finite-step approximation, unlike event-driven Gillespie. The paper uses a different 60 mV-above-rest spike criterion and long-run ISI experiments; our 0 mV crossing and 40 short pulse trials are explicitly separate protocols.`,
+      deps: ['neuro-2.3', 'neuro-1.6', 'stoch-10.2'],
       see: ['neuro-2.4', 'stoch-1.4'],
-      refs: ['Gerstner §2.2', 'White, Rubinstein & Kay, Trends Neurosci. 23 (2000)'],
+      refs: ['Goldwyn, Imennov, Famulare & Shea-Brown, arXiv:1009.4172v1, §§II.A–B, III.A.1, IV.A.1 and Tables I–II'],
       tags: ['channel noise', 'stochastic'],
       credit: 'Chow and White, 1996; Schneidman, Freedman and Segev, 1998',
-      verify: true,
       viz(v) {
         const As = v.slider('patch area', 1, 300, 6, { log: true, fmt: (x) => `${v.fix(x, x < 10 ? 1 : 0)} µm²` });
         const Is = v.slider('constant current $I$', 0, 6, 2, { step: 0.1, fmt: (x) => `${v.fix(x, 1)} µA/cm²` });
         let seed = 1; v.button('new runs', () => { seed++; });
         const sV = v.stage({ x: [0, 200], y: [-90, 55], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'V (mV)', height: 200, weight: 1.3, minWidth: 340 });
         const sR = v.stage({ x: [0, 200], y: [0.3, 7.7], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'run', height: 200, weight: 1.3, minWidth: 340, yticks: [[1, 'det.'], [2, '1'], [3, '2'], [4, '3'], [5, '4'], [6, '5'], [7, '6']] });
-        const sH = v.stage({ x: [0, 8], y: [0, 1], axes: 'box', gutter: true, xlabel: 'first-spike latency after pulse onset (ms)', ylabel: 'fraction of trials', height: 420, weight: 1, minWidth: 280 });
+        const sH = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, xlabel: 'first-spike latency after pulse onset (ms)', ylabel: 'fraction of trials', height: 420, weight: 1, minWidth: 280 });
         const NR = 6, NT = 40, PUL = pulse(2, 1, 9);
         let key = '', C = null;
         const get = () => {
           const k = `${As.value}|${Is.value}|${seed}`; if (k === key) return C; key = k;
           const A = As.value, NNa = Math.round(60 * A), NK = Math.round(18 * A), I = Is.value;
           const det = hhSim(() => I, { tEnd: 200, dt: 0.05, every: 4 });
-          const runs = Array.from({ length: NR }, (_, r) => hhStochastic(() => I, { NNa, NK, tEnd: 200, dt: 0.025, every: 8, rng: v.rng(seed * 1000 + r) }));
+          const runs = Array.from({ length: NR }, (_, r) => hhStochastic(() => I, { NNa, NK, tEnd: 200, dt: 0.01, every: 20, rng: v.rng(seed * 1000 + r) }));
           const lats = []; let miss = 0;
-          for (let t = 0; t < NT; t++) { const o = hhStochastic(PUL, { NNa, NK, tEnd: 12, dt: 0.025, every: 8, rng: v.rng(seed * 7919 + 100 + t) }); const s = o.spikes.find((x) => x > 2); if (s) lats.push(s - 2); else miss++; }
+          for (let t = 0; t < NT; t++) { const o = hhStochastic(PUL, { NNa, NK, tEnd: 12, dt: 0.01, every: 20, rng: v.rng(seed * 7919 + 100 + t) }); const s = o.spikes.find((x) => x > 2); if (s) lats.push(s - 2); else miss++; }
           const dl = hhRun(PUL, { tEnd: 12, dt: 0.04 }).spikes[0] - 2;
           C = { A, NNa, NK, det, runs, lats, miss, dl, I };
           return C;
@@ -262,10 +242,10 @@ export default {
           sR.hline(1.5, { color: 'grid' });
           D.runs.forEach((r, i) => sR.dots(r.spikes.map((t) => [t, i + 2]), { r: 3.2, color: 'accent' }));
           sR.dots(spikeTimes(D.det.t, D.det.V, 0).map((t) => [t, 1]), { r: 3.2, color: 'ink' });
-          const bins = 20, w = 8 / bins, cnt = new Array(bins).fill(0);
-          for (const l of D.lats) { const b = Math.floor(l / w); if (b >= 0 && b < bins) cnt[b]++; }
+          const bins = 25, w = 10 / bins, cnt = new Array(bins).fill(0);
+          for (const l of D.lats) { const b = Math.min(bins - 1, Math.floor(l / w)); if (l >= 0 && l <= 10 && b >= 0 && b < bins) cnt[b]++; }
           const fr = cnt.map((c) => c / NT), fm = Math.max(0.2, ...fr);
-          sH.setView([0, 8], [0, fm * 1.2]);
+          sH.setView([0, 10], [0, fm * 1.2]);
           sH.bars(fr, { x0: w / 2, dx: w, color: 'accent' });
           if (D.dl) sH.vline(D.dl, { color: 'ink', dash: [5, 4], width: 1.6 });
           sH.text('deterministic', D.dl || 3, fm * 1.12, { size: 10.5, color: 'ink', align: 'left', dx: 5 });
@@ -274,8 +254,8 @@ export default {
         v.readout(() => {
           const D = get(), sp = D.runs.reduce((a, r) => a + r.spikes.length, 0), m = D.lats.length ? D.lats.reduce((a, b) => a + b, 0) / D.lats.length : NaN;
           const sd = D.lats.length > 1 ? Math.sqrt(D.lats.reduce((a, b) => a + (b - m) ** 2, 0) / (D.lats.length - 1)) : NaN;
-          return String.raw`patch of $${v.fix(D.A, D.A < 10 ? 1 : 0)}$ µm²: $N_{Na} = ${D.NNa}$, $N_K = ${D.NK}$ channels · relative size of fluctuations $\sim 1/\sqrt{N_{Na}} = ${v.fix(100 / Math.sqrt(D.NNa), 1)}\,\%$` + '\n' +
-            String.raw`at $I = ${v.fix(D.I, 1)}$ µA/cm² the deterministic model is silent; the six stochastic runs fired ${sp} spikes in 200 ms (${v.fix(sp / (NR * 0.2), 1)} spikes/s per patch) · pulse response: latency $${isFinite(m) ? v.fix(m, 2) : '—'} \pm ${isFinite(sd) ? v.fix(sd, 2) : '—'}$ ms over ${D.lats.length} spiking trials (deterministic $${v.fix(D.dl ?? NaN, 2)}$ ms), ${D.miss} of ${NT} trials missed`;
+          return String.raw`patch of $${v.fix(D.A, D.A < 10 ? 1 : 0)}$ µm²: $N_{Na} = ${D.NNa}$, $N_K = ${D.NK}$ channels · channel-count scaling factor $1/\sqrt{N_{Na}} = ${v.fix(100 / Math.sqrt(D.NNa), 1)}\,\%$` + '\n' +
+            String.raw`at $I = ${v.fix(D.I, 1)}$ µA/cm² deterministic run: ${spikeTimes(D.det.t, D.det.V, 0).length} transient/sustained crossings in this window; the six stochastic runs fired ${sp} spikes in 200 ms (${v.fix(sp / (NR * 0.2), 1)} spikes/s per patch) · pulse response: latency $${isFinite(m) ? v.fix(m, 2) : '—'} \pm ${isFinite(sd) ? v.fix(sd, 2) : '—'}$ ms over ${D.lats.length} spiking trials (deterministic $${v.fix(D.dl ?? NaN, 2)}$ ms), ${D.miss} of ${NT} trials missed`;
         });
       },
     },

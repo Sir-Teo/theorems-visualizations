@@ -1,4 +1,5 @@
 // Mathematical Biology — Chapter 3 (part c): items 3.13–3.18
+import { nicheOverlap, symmetricCompetitionOutcome } from './niche-overlap.shared.js';
 import { rk4sys, envelope, rmField, rmEq } from './ch03.shared.js';
 
 export default {
@@ -67,8 +68,8 @@ export default {
 (c) $F(0,0)>0$; there are $K,L>0$ with $F(0,K)=0$, $F(L,0)=0$; and $G(B,0)=0$ for some $0<B<L$.
 Then the system has either a **stable equilibrium** or a **stable limit cycle** in the positive quadrant (and, as seen from the phase plane, solutions stay bounded).`,
       idea: String.raw`The sign conditions force the nullclines to be graphs over the right axes, make the prey-free and predator-free axes behave as in an ecologically sensible model, and make a bounded region of the quadrant positively invariant, so every solution is bounded and no solution leaves for the boundary. Poincaré–Bendixson (3.11) then applies: the only possible $\omega$-limit sets in an invariant region are equilibria and cycles. The theorem is a general statement behind the Rosenzweig–MacArthur model; it says that no matter what functional forms are chosen the dichotomy is the same, and that in the planar case chaos is impossible.`,
-      scope: String.raw`Statement recalled from textbook accounts (Murray, Freedman); the exact inequalities and the regions on which they must hold differ slightly between sources, so the viz tests them on a finite box and is a numerical check of the hypotheses, not a proof. Systems violating a hypothesis may still behave well, e.g. the Lotka–Volterra system has $\partial G/\partial P=0$ and cycles that are neutral.`,
-      caption: String.raw`Pick a model and drag the predator death rate $m$. The checklist tests each hypothesis on a grid over the box $0<N\le L$, $0<P\le K$ (✓ = holds, ✗ = violated). For the first three models everything holds and the phase plane shows the dichotomy: below the Hopf value the equilibrium is stable, above it a cycle. The last two models each break one hypothesis (predator cooperation: $\partial G/\partial P>0$; an Allee effect: $F(0,0)<0$) and the theorem does not apply.`,
+      scope: String.raw`Statement recalled from textbook accounts (Murray, Freedman); the exact inequalities and the regions on which they must hold differ slightly between sources, so the viz tests them on a finite box and is a numerical check of the hypotheses, not a proof. Systems violating a hypothesis may still behave well. Classical Lotka–Volterra has neutral cycles and no finite prey-only carrying-capacity root $F(L,0)=0$; $\partial G/\partial P=0$ itself is allowed by condition (b).`,
+      caption: String.raw`Pick a model and drag the predator death rate $m$. The checklist tests each hypothesis on a grid over the box $0<N\le L$, $0<P\le K$ (✓ = holds, ✗ = violated). The type-I example is stable for the displayed parameters; type II can cross a Hopf point. Type III fails the finite $F(0,K)=0$ condition because its predation rate vanishes at zero prey. A sampled grid cannot establish global inequalities. The last two models each break one hypothesis (predator cooperation: $\partial G/\partial P>0$; an Allee effect: $F(0,0)<0$) and the theorem does not apply.`,
       deps: ['mathbio-3.9', 'mathbio-3.11'],
       tags: ['Kolmogorov', 'predator–prey'],
       refs: ['Murray I ch. 3'],
@@ -117,7 +118,7 @@ Then the system has either a **stable equilibrium** or a **stable limit cycle** 
         }
         v.render(() => { test(); pp.draw(); });
         pp.legend();
-        v.readout(() => { test(); const all = checks.every((c) => c[0]); return `${checks.map((c) => `${c[0] ? '✓' : '✗'} ${c[1]}`).join('\n')}\n${all ? '**All hypotheses hold**: expect a stable equilibrium or a stable limit cycle.' : '**A hypothesis fails**: the theorem makes no claim.'}\n${pp.describe({ max: 3 })}`; });
+        v.readout(() => { test(); const all = checks.every((c) => c[0]); return `${checks.map((c) => `${c[0] ? '✓' : '✗'} ${c[1]}`).join('\n')}\n${all ? '**Listed numerical checks pass on this grid**; this does not certify the global hypotheses or prove an attractor.' : '**A listed check fails**: this checklist supplies no theorem-based conclusion.'}\n${pp.describe({ max: 3 })}`; });
       },
     },
     // ───────────────────────────────────────────────────────────── 3.15
@@ -202,28 +203,27 @@ Here $K_i$ is the carrying capacity of species $i$ alone and $\alpha_{12}$ (resp
       num: '3.17',
       kind: 'Principle',
       name: 'Competitive exclusion principle (Gause)',
-      credit: 'Gause, 1932–34 (experiments); Hardin, 1960 (the name)',
-      statement: String.raw`Two species that compete for the same limiting resource in the same way cannot coexist at constant population sizes: if their niches are identical, the one that makes better use of the resource drives the other to extinction. In the Lotka–Volterra model with equal competition coefficients $\alpha_{12}=\alpha_{21}=\alpha$ (the overlap between the species' resource use) coexistence is stable iff $\alpha<\min(K_2/K_1,\ K_1/K_2)\le1$. So as the overlap tends to $1$ the coexistence region shrinks to nothing, unless $K_1=K_2$ exactly, when it is neutral.`,
-      idea: String.raw`From the four outcomes (3.16): coexistence needs both species to limit themselves more than they limit the other, $\alpha<1$ in scaled terms. Identical niches means $\alpha\to1$, and then $\alpha_{12}K_2/K_1<1$ and $\alpha_{21}K_1/K_2<1$ cannot both hold unless $K_1=K_2$. Intuitively, the species with the larger carrying capacity on the shared resource can persist at a resource level where the other cannot. The principle is a model statement (and, with more resources than species, false: see 3.20).`,
-      scope: String.raw`Holds for the Lotka–Volterra competition model and for the chemostat with one resource (3.20); more generally, at most as many species can coexist at equilibrium as there are limiting factors. It does not apply with fluctuating environments, spatial structure, or non-equilibrium coexistence. Gause's own experiments used *Paramecium* and yeast cultures; here only the model is shown.`,
-      caption: String.raw`Left: two species' resource-use curves (Gaussians of width $\sigma$) with their overlap shaded; the competition coefficient is the overlap fraction $\alpha=e^{-d^2/4\sigma^2}$. Middle: the model run from small densities; Right: the $(\alpha,K_2/K_1)$ plane with the coexistence wedge ($\alpha<\min(\kappa,1/\kappa)$). Slide the separation $d$ to zero and the wedge closes: one species disappears.`,
+      credit: 'Gause, 1934 (experimental synthesis); Hardin, 1960 (review advocating the competitive-exclusion name)',
+      statement: String.raw`Under constant conditions in the competition model, two complete competitors with unequal competitive ability cannot coexist at a stable positive equilibrium. Exact equality is a neutral degeneracy, so a claim excluding every possible constant positive coexistence would be too strong. In the Lotka–Volterra model with equal competition coefficients $\alpha_{12}=\alpha_{21}=\alpha$ (the overlap between the species' resource use) coexistence is stable iff $\alpha<\min(K_2/K_1,\ K_1/K_2)\le1$. So as the overlap tends to $1$ the coexistence region shrinks to nothing, unless $K_1=K_2$ exactly, when it is neutral.`,
+      idea: String.raw`From the four outcomes (3.16): coexistence needs both species to limit themselves more than they limit the other, $\alpha<1$ in scaled terms. At $\alpha=1$ the two strict invasion inequalities require both $K_2<K_1$ and $K_1<K_2$, which is impossible; when $K_1=K_2$ neither is strict, and a neutral line of equilibria replaces an attracting interior equilibrium. Intuitively, the species with the larger carrying capacity on the shared resource can persist at a resource level where the other cannot. The principle is conditional on the specified resource interactions and environment; having more resources than species does not itself make exclusion false.`,
+      scope: String.raw`Here this is the symmetric Lotka–Volterra competition model with positive initial densities. The familiar resource-count bound concerns robust isolated equilibrium coexistence under additional resource-model assumptions; exact ties can instead give neutral continua. It does not apply with fluctuating environments, spatial structure, or non-equilibrium coexistence. Gause’s 1934 book reports *Paramecium* and yeast cultures, including coexistence where resource use differs; this illustration is not a fit to those measurements. Hardin’s 1960 review explicitly distinguishes the unequal-growth assumption and discusses the difficulties of turning a conditional principle into an empirical test.`,
+      caption: String.raw`Left: two Gaussian resource-use curves of width $\sigma$; the green curve is their product divided by the self-product integral, so its area is the normalized inner product $\alpha=e^{-d^2/4\sigma^2}$. It is not the area beneath the lesser Gaussian. Middle: the model run from small densities; Right: the $(\alpha,K_2/K_1)$ plane with the coexistence wedge ($\alpha<\min(\kappa,1/\kappa)$). Slide $d$ to zero: unequal capacities select one species asymptotically, while exactly equal capacities give neutral coexistence. The 60-time-unit preview can retain both species near a slow exclusion boundary.`,
       deps: ['mathbio-3.16'],
       tags: ['Gause', 'niche'],
-      refs: ['Edelstein-Keshet ch. 6'],
+      refs: ['Gause (1934), The Struggle for Existence, ch. V; Hardin (1960), Science 131:1292–1297'],
       links: { doi: 'https://doi.org/10.1126/science.131.3409.1292' },
-      verify: true,
       viz(v) {
         const d = v.slider('niche separation $d/\\sigma$', 0, 4, 1.2, { step: 0.01 });
         const kap = v.slider('capacity ratio $\\kappa=K_2/K_1$', 0.6, 1.6, 1.1, { step: 0.01 });
-        const A = v.stage({ x: [-4, 8], y: [0, 0.5], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'resource axis (e.g. prey size)', ylabel: 'use', title: 'niches' });
+        const A = v.stage({ x: [-4, 8], y: [0, 0.65], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'resource axis (e.g. prey size)', ylabel: 'use', title: 'niches' });
         const B = v.stage({ x: [0, 60], y: [0, 1.7], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'time', ylabel: 'density', title: 'competition run from small densities' });
         const C = v.stage({ x: [0, 1], y: [0.6, 1.6], height: 300, axes: 'box', gutter: true, minWidth: 260, xlabel: 'overlap α', ylabel: 'κ = K₂/K₁', title: 'coexistence wedge' });
         v.legend([['accent', 'species 1'], ['orange', 'species 2'], ['green', 'overlap', { area: true }]]);
         const g = (x, mu) => Math.exp(-0.5 * (x - mu) ** 2) / Math.sqrt(2 * Math.PI);
         let key = '', sol = null;
         v.render(() => {
-          const dd = d.value, k = kap.value, al = Math.exp(-dd * dd / 4);
-          A.between((x) => Math.min(g(x, 0), g(x, dd)), () => 0, -4, 8, { fill: 'green', fillAlpha: 0.35 });
+          const dd = d.value, k = kap.value, al = nicheOverlap(dd);
+          A.between((x) => 2 * Math.sqrt(Math.PI) * g(x, 0) * g(x, dd), () => 0, -4, 8, { fill: 'green', fillAlpha: 0.35 });
           A.fn((x) => g(x, 0), { color: 'accent', width: 2.5 }); A.fn((x) => g(x, dd), { color: 'orange', width: 2.5 });
           const kk = [al, k].join(); if (kk !== key) { key = kk; sol = rk4sys((t, s) => [s[0] * (1 - s[0] - al * s[1] / 1), s[1] * (1 - s[1] / k - al * s[0] / k)], [0.05, 0.05], 60, 1500, 1e-9); }
           B.path(sol.ts.map((t, i) => [t, sol.ys[i][0]]), { color: 'accent', width: 2.4 }); B.path(sol.ts.map((t, i) => [t, sol.ys[i][1]]), { color: 'orange', width: 2.4 });
@@ -232,7 +232,7 @@ Here $K_i$ is the carrying capacity of species $i$ alone and $\alpha_{12}$ (resp
           C.fn((a) => a, { color: 'green', width: 2, domain: [0.6, 1] }); C.fn((a) => 1 / Math.max(a, 1e-6), { color: 'green', width: 2, domain: [0.625, 1] });
           C.dot(al, k, { r: 7, color: 'gold' });
         });
-        v.readout(() => { const dd = d.value, k = kap.value, al = Math.exp(-dd * dd / 4), lim = Math.min(k, 1 / k), co = al < lim; return `overlap $\\alpha=${v.fix(al, 3)}$; coexistence needs $\\alpha<\\min(\\kappa,1/\\kappa)=${v.fix(lim, 3)}$ → **${co ? 'stable coexistence' : k > 1 ? 'species 2 excludes species 1' : k < 1 ? 'species 1 excludes species 2' : 'neutral: identical species'}** (final densities $${sol ? v.fix(sol.ys[sol.ys.length - 1][0], 3) : ''},\\ ${sol ? v.fix(sol.ys[sol.ys.length - 1][1], 3) : ''}$)`; });
+        v.readout(() => { const dd = d.value, k = kap.value, al = nicheOverlap(dd), lim = Math.min(k, 1 / k), co = al < lim; return `overlap $\\alpha=${v.fix(al, 3)}$; coexistence needs $\\alpha<\\min(\\kappa,1/\\kappa)=${v.fix(lim, 3)}$ → **${symmetricCompetitionOutcome(al, k)}** (densities at t=60 $${sol ? v.fix(sol.ys[sol.ys.length - 1][0], 3) : ''},\\ ${sol ? v.fix(sol.ys[sol.ys.length - 1][1], 3) : ''}$)`; });
       },
     },
     // ───────────────────────────────────────────────────────────── 3.18

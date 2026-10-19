@@ -16,12 +16,11 @@ export default {
       statement: String.raw`Let $f\colon X\to Y$ be continuous, where $(X,d_X)$ is a compact metric space and $(Y,d_Y)$ is any metric space. Then $f$ is **uniformly continuous**: for every $\varepsilon>0$ there is one $\delta>0$ such that $d_X(x,x')<\delta$ implies $d_Y(f(x),f(x'))<\varepsilon$ for all $x,x'\in X$.`,
       idea: String.raw`Fix $\varepsilon$. By continuity each $x$ has a ball $B(x,\delta_x)$ mapped into the ball of radius $\varepsilon/2$ around $f(x)$; hence any two points of that ball have images less than $\varepsilon$ apart. These balls form an open cover of $X$, and a Lebesgue number $\delta$ of it (4.12) works for all pairs at once: two points closer than $\delta$ lie in a common ball $B(x,\delta_x)$. The Lebesgue number is precisely the “minimum of the local $\delta$'s” that compactness keeps positive.`,
       caption: String.raw`The bottom panel plots, for the given $\varepsilon$, the largest $\delta(x)$ that works at each point $x$ (log scale), and its minimum (dashed). Drag the point on the graph to see the box $|y-x|<\delta(x)$ keeping the graph inside the band of height $\varepsilon$. For $\sin 3x^2$ on a closed interval the minimum is positive. For $1/x$ on $[a,1]$ it is positive for every $a>0$ but sinks toward $0$ as $a\to0$: on $(0,1]$ no single $\delta$ works.`,
-      credit: String.raw`Dirichlet, 1852 lectures (published 1904); Heine, 1872`,
+      credit: String.raw`General topology`,
       deps: ['top-4.12'],
       see: ['pma-4.19'],
       refs: ['Munkres §27'],
       tags: ['compactness', 'uniform continuity'],
-      verify: true,
       viz(v) {
         const fs = v.select('function', [{ value: 'sin', label: '$\\sin(3x^2)$ on $[0,2]$' }, { value: 'inv', label: '$1/x$ on $[a,1]$' }], 'sin');
         const eps = v.slider('$\\varepsilon$', 0.05, 1.5, 0.4, { step: 0.01 });
@@ -74,12 +73,11 @@ export default {
       statement: String.raw`Let $X$ be a nonempty compact Hausdorff space with no isolated points. Then $X$ is uncountable. In particular $[0,1]$, the Cantor set and every nonempty compact subset of $\R$ without isolated points are uncountable.`,
       idea: String.raw`Given any sequence $x_1,x_2,\dots$ in $X$, build nonempty closed neighbourhoods $\overline U_1\supset\overline U_2\supset\cdots$ with $x_n\notin\overline U_n$: since $x_n$ is not isolated, $U_{n-1}$ contains a point other than $x_n$, and by regularity (compact Hausdorff spaces are regular; 5.10) a small closed neighbourhood of that point avoids $x_n$. By the finite intersection property (4.9) $\bigcap\overline U_n\ne\varnothing$, and any point $y$ of this intersection differs from every $x_n$. So no sequence lists $X$: Cantor's diagonal argument, with nested closed sets in place of digits.`,
       caption: String.raw`The space is the Cantor set. A list $x_1,x_2,\dots$ of its points is given (random points, or the endpoints of the removed intervals in order). At step $n$ the current basic interval $I_{n-1}$ splits into two children; the one **not** containing $x_n$ becomes $I_n$. Raise $n$: the intervals nest, the point they pin down (its ternary digits are shown) avoids every $x_k$ so far. “New list” redraws the random list; the construction works for any list.`,
-      credit: String.raw`Cantor, 1874 (uncountability of $\R$); the nested-interval proof is Cantor's 1874 argument`,
+      credit: String.raw`General topology`,
       deps: ['top-4.9', 'top-4.3'],
       see: ['pma-2.43'],
       refs: ['Munkres §27'],
       tags: ['compactness', 'uncountability', 'cantor set'],
-      verify: true,
       viz(v) {
         const lst = v.select('the list $x_1,x_2,\\dots$', [{ value: 'rand', label: 'random Cantor points' }, { value: 'end', label: 'endpoints of removed intervals' }], 'rand');
         const nn = v.slider('steps $n$', 1, 14, 5, { int: true });
@@ -190,14 +188,13 @@ export default {
       kind: 'Theorem',
       name: 'In metric spaces the compactness notions agree',
       statement: String.raw`For a metric space $X$ the following are equivalent: (a) $X$ is compact; (b) $X$ is limit point compact; (c) $X$ is sequentially compact. For general topological spaces, (a) implies (b), and (c) implies (b), but no other implication holds.`,
-      idea: String.raw`(a)$\Rightarrow$(b): an infinite set with no limit point would be closed and discrete, and the open sets isolating each of its points together with the complement would be a cover with no finite subcover. (b)$\Leftrightarrow$(c) uses countable neighbourhood bases: a sequence either repeats a value or takes infinitely many values, which then have a limit point. (c)$\Rightarrow$(a): a sequentially compact metric space has a Lebesgue number for every open cover (4.12) and is totally bounded (a sequence of centres without convergent subsequences would give an $\varepsilon$-separated sequence), so finitely many balls of radius $\delta/3$ cover it, and each lies in a member of the cover.`,
+      idea: String.raw`(a)$\Rightarrow$(b): an infinite set with no limit point would be closed and discrete, and the open sets isolating each of its points together with the complement would be a cover with no finite subcover. (b)$\Leftrightarrow$(c) uses countable neighbourhood bases: a sequence either repeats a value or takes infinitely many values, which then have a limit point. (c)$\Rightarrow$(a): first prove a Lebesgue number exists without assuming compactness: otherwise choose sets $B_n$ of diameter less than $1/n$, each contained in no cover member, and points $x_n\in B_n$. A convergent subsequence tends to $x$ inside an open cover member $U$; eventually the entire corresponding $B_n$ lies in $U$, a contradiction. Also $X$ is totally bounded (a sequence of centres without convergent subsequences would give an $\varepsilon$-separated sequence), so finitely many balls of radius $\delta/3$ cover it, and each lies in a member of the cover.`,
       caption: String.raw`Choose a space. The three boxes light up green or red according to the property; the arrows are the implications. Solid arrows hold in every space; dashed arrows need the space to be metrizable (the chip says whether it is). When an arrow has a true tail and a false head it turns red: that is a counterexample, and it can only occur outside metric spaces: the ordinal space $[0,\omega_1)$ is limit point compact and sequentially compact but not compact, and $[0,1]^{[0,1]}$ is compact but not sequentially compact.`,
-      credit: String.raw`Fréchet, 1906 (compactness by sequences in metric spaces); Alexandroff and Urysohn, 1920s (compactness by covers)`,
+      credit: String.raw`General topology`,
       deps: ['top-4.15', 'top-4.12'],
       see: ['pma-2.37'],
       refs: ['Munkres §28'],
       tags: ['compactness', 'metric spaces'],
-      verify: true,
       viz(v) {
         const EX = {
           I: { name: '$[0,1]$', c: 1, l: 1, q: 1, m: 1, why: 'a closed bounded interval: every sequence has a convergent subsequence (bisection), and every cover has a finite subcover (4.10).' },
@@ -304,12 +301,11 @@ export default {
       statement: String.raw`Let $X$ be a locally compact Hausdorff space that is not compact. Adding one point $\infty$ and declaring the open sets to be the open sets of $X$ together with the sets $\{\infty\}\cup(X\setminus K)$, $K\subset X$ compact, gives a compact Hausdorff space $X^+$ containing $X$ as an open dense subspace. It is the only such space with one extra point. For $X=\R^n$ it is the sphere $S^n$, and $\C^+=\C\cup\{\infty\}$ is the Riemann sphere.`,
       idea: String.raw`A cover of $X^+$ contains a set $V\ni\infty$, whose complement $K$ in $X^+$ is a compact subset of $X$; finitely many other members cover $K$, so $X^+$ is compact. Local compactness is what makes the points of $X$ separable from $\infty$: a point $x$ has a neighbourhood with compact closure $\overline U$, and $U$ and $X^+\setminus\overline U$ are disjoint open neighbourhoods of $x$ and $\infty$. For the plane, stereographic projection (2.5) is exactly the homeomorphism of $\R^2{}^+$ with the sphere, sending $\infty$ to the north pole.`,
       caption: String.raw`The plane (left) is wrapped onto the sphere by stereographic projection; $\infty$ is the north pole. Choose a compact disc $K=\{|z|\le R\}$: the shaded green outside is a basic neighbourhood of $\infty$, which on the sphere is a cap around the pole. Increase the number of terms of a sequence that leaves every disc: its images creep up the sphere and converge to the pole. Drag the sphere to rotate it.`,
-      credit: String.raw`Alexandroff, 1924`,
+      credit: String.raw`General topology`,
       deps: ['top-4.17', 'top-4.3'],
       see: ['rca-13.1'],
       refs: ['Munkres §29'],
       tags: ['compactness', 'compactification'],
-      verify: true,
       viz(v) {
         const seq = v.select('sequence $z_n$', [{ value: 'out', label: '$z_n=\\tfrac n4e^{in}$ (leaves every disc)' }, { value: 'in', label: '$z_n=\\tfrac3n e^{in}$ (tends to $0$)' }], 'out');
         const R = v.slider('radius $R$ of the compact disc', 0.5, 4, 1.5, { step: 0.05 });

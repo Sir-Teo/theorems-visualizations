@@ -253,7 +253,7 @@ exists and does not depend on $\theta$.`,
       num: '14.3',
       kind: 'Proposition',
       name: 'Linear fractional transformations',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 14.3, pp. 279–281'],
       statement: String.raw`If $a,b,c,d\in\C$ and $ad-bc\ne0$, the map $\varphi(z)=\dfrac{az+b}{cz+d}$ is a **linear fractional transformation**; regarded as a map of the Riemann sphere $S^2$ (with $\varphi(-d/c)=\infty$, $\varphi(\infty)=a/c$) it is a bijection whose inverse is again linear fractional, and compositions of such maps are linear fractional. Moreover:
 (a) every $\varphi$ is a composition of translations, rotation–dilations $z\mapsto\lambda z$ and the inversion $z\mapsto1/z$;
 (b) $\varphi$ maps every circle or straight line onto a circle or straight line;

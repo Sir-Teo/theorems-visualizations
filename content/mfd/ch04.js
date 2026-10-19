@@ -267,10 +267,8 @@ It is a derivation of $C^\infty(M)$, hence a smooth vector field; in coordinates
       idea: String.raw`Each of $X$ and $Y$ is a first-order differential operator, and the second-order parts of $XY$ and $YX$ are both $X^iY^j\partial_{ij}$ (up to the order of the factors), so they cancel in the commutator and what is left is first order: a derivation, i.e. a vector field. The coordinate formula is the product rule applied to $X^i\partial_i(Y^j\partial_jf)-Y^j\partial_j(X^i\partial_if)$, where the mixed second derivatives of $f$ cancel by equality of mixed partials. That is exactly the reason $[\partial_i,\partial_j]=0$.`,
       caption: String.raw`Choose a pair of fields; $X$ (blue), $Y$ (orange) and their bracket (green) are drawn as arrow fields. Drag $p$: the readout evaluates $[X,Y]_p$ from the coordinate formula and, independently, from $X(Yf)-Y(Xf)$ applied to the test function $f=\sin x+\tfrac12y^2+0.3xy$ by differences, and the two agree. The pairs coordinate fields, rotation and dilation have zero bracket; rotation with a translation does not; the last one is nonlinear.`,
       deps: ['mfd-4.1'],
-      refs: ['Lee SM Ch. 8'],
+      refs: ['Nicolaescu, Lectures on the Geometry of Manifolds, §3.1.2, Lemma3.1.10 pp.84–85 and Corollary3.1.13 p.87'],
       tags: ['Lie bracket', 'commutator'],
-      credit: 'Sophus Lie (transformation groups) and Carl Jacobi (Jacobi identity), 19th century',
-      verify: true,
       viz(v) {
         const sel = v.select('pair $(X,Y)$', Object.entries(PAIRS).map(([value, o]) => ({ value, label: o.label })), 'rottr');
         const mk = (title) => v.stage({ x: [-2, 2], y: [-2, 2], equal: true, axes: 'box', gutter: true, height: 290, weight: 1, minWidth: 250, xlabel: 'x', ylabel: 'y', title });

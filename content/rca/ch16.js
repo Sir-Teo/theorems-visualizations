@@ -346,8 +346,7 @@ The regular points form an open subset of $\partial D$, so the singular points f
       num: '16.6',
       kind: 'Theorem',
       name: 'Hadamard gap theorem',
-      credit: 'Hadamard, 1892',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 16.6 and preceding gap argument 16.5, pp. 321–322'],
       statement: String.raw`Let $\lambda$ be a positive integer and $p_1<p_2<p_3<\cdots$ positive integers with
 $$p_{k+1}>\Big(1+\frac1\lambda\Big)\,p_k\qquad(k=1,2,3,\dots).$$
 If the lacunary series $f(z)=\sum_{k\ge1}c_kz^{p_k}$ has radius of convergence $1$, then no point of $T$ is a regular point of $f$: the unit circle is the natural boundary of $f$.`,
@@ -560,7 +559,7 @@ If $\gamma:[0,1]\to\C$ is a curve and there are numbers $0=s_0<s_1<\dots<s_n=1$ 
       num: '16.10',
       kind: 'Lemma',
       name: 'Direct continuation is transitive through a common point',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Proposition 16.10 and proof, p. 324'],
       statement: String.raw`Suppose $D_0\cap D_1\cap D_2\ne\emptyset$, $(f_0,D_0)\sim(f_1,D_1)$ and $(f_1,D_1)\sim(f_2,D_2)$. Then $(f_0,D_0)\sim(f_2,D_2)$.
 
 Without a common point of the three discs the conclusion can fail, even when $D_0\cap D_2\neq\emptyset$.`,

@@ -119,15 +119,15 @@ export function spinOrbit(tab, sigma, kappa, s) {
 // ── Hill's problem: change of a ring particle's guiding centre in one passage of a small moon ────────────────────
 // Units: n = 1, length in the moon's Hill radius R_H = a (m/3M)^{1/3}; ẍ = 2ẏ + 3x − 3x/r³, ÿ = −2ẋ − 3y/r³.
 // The guiding-centre offset is x_g = 2(ẏ + 2x); kick = change of x_g for a particle that starts on a circular orbit at x_g = Δ > 0
-// (outside the moon: it moves backward relative to the moon and the moon approaches from y > 0). The truncated path leaves an error ∝ 1/Y0,
-// removed by Richardson extrapolation from Y0 and 2Y0. Returns NaN for trapped (horseshoe-type) orbits that never pass.
-function hillKickRaw(D, Y0) {
+// (outside the moon: it moves backward relative to the moon and the moon approaches from y > 0). The encounter boundaries scale with separation (Y0=100D,200D);
+// two-boundary extrapolation suppresses the leading finite-distance error. Returns NaN for trapped (horseshoe-type) orbits that never pass.
+export function hillKickRaw(D, Y0, maxStep=.025) {
   let x = D, y = Y0, u = 0, w = -1.5 * D, guard = 0;
   const acc = (X, Y, U, W) => { const r2 = X * X + Y * Y, k = 3 / (r2 * Math.sqrt(r2)); return [2 * W + 3 * X - k * X, -2 * U - k * Y]; };
   const g0 = 2 * (w + 2 * x);
   while (y > -Y0) {
     if (guard++ > 60000) return NaN;
-    const r = Math.hypot(x, y), h = Math.min(0.05, 0.02 * r);
+    const r = Math.hypot(x, y), h = Math.min(maxStep, 0.02 * r);
     const k1 = acc(x, y, u, w);
     const x2 = x + 0.5 * h * u, y2 = y + 0.5 * h * w, u2 = u + 0.5 * h * k1[0], w2 = w + 0.5 * h * k1[1], k2 = acc(x2, y2, u2, w2);
     const x3 = x + 0.5 * h * u2, y3 = y + 0.5 * h * w2, u3 = u + 0.5 * h * k2[0], w3 = w + 0.5 * h * k2[1], k3 = acc(x3, y3, u3, w3);
@@ -137,13 +137,13 @@ function hillKickRaw(D, Y0) {
   }
   return 2 * (w + 2 * x) - g0;
 }
-/** Guiding-centre kick (in Hill radii) for offset Δ (either sign, |Δ| ≥ Δmin); table computed once. */
+/** Guiding-centre kick (in Hill radii) for offset Δ (either sign, |Δ| ≥ Δmin); table computed once; far-tail Δ^-5 continuation. */
 export const HILL_MIN = 2.6;
 let hillTab = null;
 export function hillKick(Delta) {
   if (!hillTab) {
-    const D = [2.6, 2.8, 3.0, 3.25, 3.5, 3.8, 4.2, 4.7, 5.3, 6, 7, 8.5, 10, 12], K = [];
-    for (const d of D) K.push(2 * hillKickRaw(d, 60) - hillKickRaw(d, 30));
+    const D = [2.6, 2.8, 3.0, 3.25, 3.5, 3.8, 4.2, 4.7, 5.3, 6, 7, 8.5, 10, 12, 16], K = [];
+    for (const d of D) K.push(2 * hillKickRaw(d, 200*d) - hillKickRaw(d, 100*d));
     hillTab = { D, lnD: D.map(Math.log), lnK: K.map(Math.log) };
   }
   const a = Math.abs(Delta), sg = Math.sign(Delta);
@@ -154,3 +154,43 @@ export function hillKick(Delta) {
   else { let i = 0; while (D[i + 1] < a) i++; const t = (Math.log(a) - lnD[i]) / (lnD[i + 1] - lnD[i]); v = Math.exp(lnK[i] + t * (lnK[i + 1] - lnK[i])); }
   return sg * v;
 }
+
+/** Circular, constant-|torque| locking toy. Q^{-1}=|sin epsilon_2|;
+ * static incompressible elastic k2 (Frouard et al.2016 eqs.2,4–6).
+ * Near synchronism a physical rheology must replace this discontinuous torque. */
+export function tidalLockModel({planet, radius, density, rigidity, Q, periodHours, aRp}) {
+  const m=4*Math.PI*density*radius**3/3,a=aRp*planet.R,g=G*m/radius**2;
+  const k2=1.5/(1+19*rigidity/(2*density*g*radius)),I=.4*m*radius**2;
+  const n=Math.sqrt(G*(planet.M+m)/a**3),w0=TAU/(periodHours*3600);
+  const torque=1.5*G*planet.M**2*k2*radius**5/(a**6*Q),rate=torque/I;
+  const tl=Math.abs(w0-n)/rate/YEAR;
+  return {m,a,g,k2,I,n,w0,torque,rate,tl,p:planet};
+}
+export function lockingSpin(model, years) {
+  const {w0,n,rate}=model,dir=Math.sign(n-w0),w=w0+dir*rate*years*YEAR;
+  return dir>0?Math.min(w,n):Math.max(w,n);
+}
+
+/** Analytic circular, fixed positive phase-lag Earth–Moon branch, normalized
+ * to the chosen present recession0.038m/yr. Stops at contact or synchronism. */
+export function moonTideState(tGyr, lagFactor=1) {
+  const E=BODY.earth,Mm=BODY.moon.M,a0=BODY.moon.a,C=.3307*E.M*E.R**2,w0=TAU/86164.1;
+  const mu=E.M*Mm/(E.M+Mm),Lorb=a=>mu*Math.sqrt(G*(E.M+Mm)*a),Ltot=C*w0+Lorb(a0);
+  const A=.038/YEAR*lagFactor*a0**5.5,z=a0**6.5+6.5*A*tGyr*1e9*YEAR;
+  const a=z>0?z**(1/6.5):0,w=a>0?(Ltot-Lorb(a))/C:0,n=a>0?Math.sqrt(G*(E.M+Mm)/a**3):0;
+  const valid=a>E.R&&w>n;
+  return {a,w,n,C,Ltot,Lorb:a>0?Lorb(a):0,A,valid,reason:a<=E.R?'formal contact has already occurred':'positive-lag, faster-spin branch has ended',tContact:-(a0**6.5-E.R**6.5)/(6.5*A)/(1e9*YEAR)};
+}
+
+/** Classical isotropic Jeans effusion at a chosen level, with log-domain
+ * local one-scale-height drain time; not a whole-atmosphere lifetime. */
+export function jeansParameters({M,r,m,T}) {
+  const v0=Math.sqrt(2*K_B*T/m),vesc=Math.sqrt(2*G*M/r),lambda=G*M*m/(K_B*T*r);
+  const logEffusion=Math.log(v0/(2*Math.sqrt(Math.PI)))+Math.log1p(lambda)-lambda;
+  const log10Years=(Math.log(r/lambda)-logEffusion-Math.log(YEAR))/Math.LN10;
+  return {v0,vesc,lambda,effusion:Math.exp(logEffusion),logEffusion,log10Years};
+}
+
+/** Leading e² synchronous, zero-obliquity, single-k2/Q heating model. */
+export function tidalPower({M,R,a,n,e,kq}) { return 10.5*kq*G*M**2*R**5*n*e**2/a**6; }
+export function eccentricityDamping({M,m,R,a,n,kq}) { return 2/(21*n*kq)*(m/M)*(a/R)**5/YEAR; }

@@ -109,7 +109,8 @@ then $S_n=X_{n,1}+\dots+X_{n,n}\Rightarrow Z$, where $Z$ is Poisson$(\lambda)$: 
       num: '3.6.3a',
       kind: 'Definition',
       name: 'Total variation distance',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.6.1, p. 168 (definition before Lemma 3.6.4)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`For probability measures $\mu,\nu$ on a countable set $S$, the **total variation distance** is
 $$\|\mu-\nu\|=\frac12\sum_{z\in S}|\mu(z)-\nu(z)|=\sup_{A\subset S}|\mu(A)-\nu(A)|.$$`,
       idea: String.raw`For any $A$, $\sum_z|\mu(z)-\nu(z)|\ge|\mu(A)-\nu(A)|+|\mu(A^c)-\nu(A^c)|=2|\mu(A)-\nu(A)|$, because the two differences are equal and opposite. Equality holds for $A=\{z:\mu(z)\ge\nu(z)\}$, which collects exactly the excess of $\mu$ over $\nu$. Geometrically, $\|\mu-\nu\|$ is the area of the part of one bar chart not covered by the other.`,
@@ -490,12 +491,13 @@ Then $N(0,t)$ has the Poisson distribution with mean $\lambda t$.`,
       num: '3.7.2a',
       kind: 'Definition',
       name: 'Poisson process',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.7, pp. 175–176 (definition and exponential-gap construction)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A family $(N_t)_{t\ge0}$ is a **Poisson process with rate $\lambda$** if
 (i) for $0=t_0<t_1<\dots<t_n$ the increments $N(t_k)-N(t_{k-1})$, $1\le k\le n$, are independent, and
 (ii) $N(t)-N(s)$ is Poisson$(\lambda(t-s))$ for $s<t$.
-**Construction:** with $\xi_1,\xi_2,\dots$ i.i.d. exponential$(\lambda)$ and $T_n=\xi_1+\dots+\xi_n$, the counting process $N_t=\sup\{n:T_n\le t\}$ is a Poisson process; $T_n$ is the $n$-th arrival time.`,
-      idea: String.raw`$T_n$ has the gamma density $\lambda^ns^{n-1}e^{-\lambda s}/(n-1)!$, so $P(N_t=n)=P(T_n\le t<T_{n+1})=\int_0^tf_{T_n}(s)e^{-\lambda(t-s)}ds=e^{-\lambda t}(\lambda t)^n/n!$. Independence of increments comes from the lack of memory of the exponential: given $N_t=n$, the wait from $t$ to the next arrival is again exponential$(\lambda)$ and independent of the past, so the process starts afresh at every fixed time.`,
+**Construction:** with $\xi_1,\xi_2,\dots$ i.i.d. exponential$(\lambda)$ and $T_0=0$, $T_n=\xi_1+\dots+\xi_n$, the counting process $N_t=\sup\{n:T_n\le t\}$ is a Poisson process; $T_n$ is the $n$-th arrival time.`,
+      idea: String.raw`For $n\ge1$, $T_n$ has the gamma density $\lambda^ns^{n-1}e^{-\lambda s}/(n-1)!$, so $P(N_t=n)=P(T_n\le t<T_{n+1})=\int_0^tf_{T_n}(s)e^{-\lambda(t-s)}ds=e^{-\lambda t}(\lambda t)^n/n!$. For $n=0$, $P(N_t=0)=P(\xi_1>t)=e^{-\lambda t}$. Independence of increments comes from the lack of memory of the exponential: given $N_t=n$, the wait from $t$ to the next arrival is again exponential$(\lambda)$ and independent of the past, so the process starts afresh at every fixed time.`,
       caption: String.raw`Top: 14 seeded paths built from exponential gaps; drag the four handles to set two windows $I_1$ (accent) and $I_2$ (orange). Bottom left: the count in $I_1$ over 4000 seeded paths against Poisson$(\lambda|I_1|)$. Bottom right: the joint frequencies of the two counts. For disjoint windows the correlation is near $0$; slide them to overlap and it turns positive.`,
       deps: ['prob-3.7.2', 'prob-2.1.18'],
       see: ['stoch-9.3'],

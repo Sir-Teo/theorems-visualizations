@@ -215,13 +215,13 @@ export default {
       num: '2.44',
       kind: 'Theorem',
       name: 'The Cantor set',
-      credit: 'Cantor, 1883',
+      credit: 'Discussed by Cantor, 1883',
       statement: String.raw`Let $E_0=[0,1]$ and let $E_{n}$ be obtained from $E_{n-1}$ by removing the open middle third of each of its $2^{n-1}$ intervals, so that $E_n$ is a union of $2^n$ closed intervals of length $3^{-n}$. The **Cantor set** $P=\bigcap_{n\ge1}E_n$ is a nonempty compact perfect subset of $\R$ that contains no segment; in particular it is uncountable (2.43).`,
       idea: String.raw`$P$ is an intersection of closed sets inside $[0,1]$, so it is compact, and it contains $0$. A segment $(\alpha,\beta)$ cannot lie in $P$: once $3^{-m}<(\beta-\alpha)/6$ it contains an interval $\bigl(\tfrac{3k+1}{3^m},\tfrac{3k+2}{3^m}\bigr)$, and no point of such an interval survives (its $m$-th ternary digit is $1$). Every $x\in P$ lies in an interval of $E_m$ of length $3^{-m}$ whose endpoints (other than $x$) are in $P$, so $x$ is a limit point of $P$: $P$ is perfect. Equivalently, $P$ consists of the numbers with a ternary expansion using only the digits $0$ and $2$.`,
       caption: String.raw`Rows $E_0,\dots,E_n$ of the construction. Drag $x$: its ternary digits choose left ($0$) or right ($2$) at each stage, and the path turns red at the first stage that deletes $x$ (digit $1$). The lower panel magnifies the stage-2 interval containing $x$ nine times — the same picture again (and $x=\tfrac14=(0.0202\ldots)_3$ even sits at the same relative position). Switch the probe to a segment and watch it get cut.`,
       deps: ['pma-2.24', 'pma-2.35', 'pma-2.40', 'pma-2.43'],
       tags: ['Cantor set', 'perfect sets'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 2.44 (Cantor-set construction), pp. 41–42'],
       viz(v) {
         const M = v.M;
         const probe = v.select('probe', [{ value: 'pt', label: 'a point $x$' }, { value: 'seg', label: 'a segment $(\\alpha,\\beta)$' }], 'pt');

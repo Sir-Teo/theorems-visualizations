@@ -208,28 +208,53 @@ export function csSpikes(I, gA, { tEnd = 800, t0 = 20, dt = 0.05 } = {}) {
 }
 
 // ---------------------------------------------------------------- lumped Markov channels (binomial transitions per step)
-/** Binomial(n, p) draw from the uniform generator r (exact for small n, normal / Poisson approximations for large). */
+const CHANNEL_LFACT = [0, 0];
+/** Binomial(n,p) by exact-probability inversion from the mode; no normal/Poisson variance approximation. */
 export function binom(n, p, r) {
   if (n <= 0 || p <= 0) return 0;
   if (p >= 1) return n;
-  if (n < 25) { let k = 0; for (let i = 0; i < n; i++) if (r() < p) k++; return k; }
-  const mu = n * p;
-  if (mu < 12) { const L = Math.exp(-mu); let k = 0, q = r(); while (q > L) { k++; q *= r(); if (k > n) break; } return Math.min(k, n); }
-  if (n - mu < 12) return n - binom(n, 1 - p, r);
-  const u1 = Math.max(r(), 1e-12), u2 = r(), z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-  return Math.max(0, Math.min(n, Math.round(mu + Math.sqrt(mu * (1 - p)) * z)));
+  for (let i = CHANNEL_LFACT.length; i <= n; i++) CHANNEL_LFACT.push(CHANNEL_LFACT[i - 1] + Math.log(i));
+  const q = 1 - p, mode = Math.min(n, Math.floor((n + 1) * p));
+  const mass = Math.exp(CHANNEL_LFACT[n] - CHANNEL_LFACT[mode] - CHANNEL_LFACT[n - mode] + mode * Math.log(p) + (n - mode) * Math.log1p(-p));
+  let u = r() - mass, lo = mode, hi = mode, left = mass, right = mass;
+  if (u < 0) return mode;
+  while (lo > 0 || hi < n) {
+    if (lo > 0) { left *= lo * q / ((n - lo + 1) * p); --lo; u -= left; if (u < 0) return lo; }
+    if (hi < n) { right *= (n - hi) * p / ((hi + 1) * q); ++hi; u -= right; if (u < 0) return hi; }
+  }
+  return mode; // only floating-point residual mass can reach this fallback
+}
+/** Exact transition probabilities for independent HH subunits while voltage is held fixed over dt. */
+export function channelTransition(kind, V, dt, T = 6.3) {
+  const phi = phiT(T), gates = (gate, count) => {
+    const [a,b] = gateRates(gate,V), move = -Math.expm1(-phi*(a+b)*dt), opening = a/(a+b)*move, closing = b/(a+b)*move;
+    return Array.from({length:count+1},(_,k) => {
+      let row = [1];
+      for(let j=0;j<count;j++){const p = j<k ? 1-closing : opening, next = Array(row.length+1).fill(0);row.forEach((q,i)=>{next[i]+=q*(1-p);next[i+1]+=q*p;});row=next;}
+      return row;
+    });
+  };
+  if(kind==='K') return gates('n',4);
+  const m = gates('m',3), h = gates('h',1);
+  return Array.from({length:8},(_,s) => Array.from({length:8},(_,u) => m[s%4][u%4]*h[s>=4?1:0][u>=4?1:0]));
+}
+/** Simultaneous multinomial redistribution of channel populations by a transition matrix. */
+export function channelAdvance(counts, P, rng) {
+  const next = counts.map(()=>0);
+  counts.forEach((count,i)=>{let left=count,mass=1;for(let j=0;j<counts.length-1&&left;j++){const p=mass>0?Math.min(1,Math.max(0,P[i][j]/mass)):0,k=binom(left,p,rng);next[j]+=k;left-=k;mass=Math.max(0,mass-P[i][j]);}next[next.length-1]+=left;});
+  return next;
 }
 /**
  * HH membrane with finite channel numbers: NK potassium channels (five states, k = number of open n-gates 0..4) and NNa sodium
- * channels (eight states: j open m-gates 0..3 with h open or closed). Gates flip with the HH rates; channels are independent.
- * Currents are conductance·(channel fraction open)·driving force, so the deterministic HH model is the N → ∞ limit.
+ * channels (eight states: j open m-gates 0..3 with h open or closed). Gates flip with HH rates; transition noise is independent conditional on the common voltage.
+ * Currents are conductance·(channel fraction open)·driving force, so the continuous-time large-N limit is deterministic HH (the implemented voltage step still has numerical error).
  * Ifn(t) in µA/cm². Returns {t, V, spikes}; seed makes the run reproducible.
  */
 export function hhStochastic(Ifn, { NNa, NK, T = 6.3, tEnd = 100, dt = 0.025, every = 4, seed = 1, rng }) {
   const phi = phiT(T), r = rng, V0 = -65;
   const [m0, h0, n0] = [gateInf('m', V0), gateInf('h', V0), gateInf('n', V0)];
   // initial binomial draws of the gate patterns
-  const K = new Array(5).fill(0), Na = new Array(8).fill(0); // Na index = j + 4·(h open ? 1 : 0)
+  let K = new Array(5).fill(0), Na = new Array(8).fill(0); // Na index = j + 4·(h open ? 1 : 0)
   for (let c = 0; c < NK; c++) { let k = 0; for (let g = 0; g < 4; g++) if (r() < n0) k++; K[k]++; }
   for (let c = 0; c < NNa; c++) { let j = 0; for (let g = 0; g < 3; g++) if (r() < m0) j++; Na[j + (r() < h0 ? 4 : 0)]++; }
   let V = V0;
@@ -246,32 +271,10 @@ export function hhStochastic(Ifn, { NNa, NK, T = 6.3, tEnd = 100, dt = 0.025, ev
     const open = Na[3 + 4] / Math.max(1, NNa);
     const iK = gKMax * fK * (V - HH.EK), iNa = gNaMax * open * (V - HH.ENa), iL = HH.gL * (V - HH.EL);
     const Vn = V + dt * (Ifn(t) - iK - iNa - iL) / HH.C;
-    // transitions at the current V (Euler for the channel chain)
-    const [an, bn] = gateRates('n', V), [am, bm] = gateRates('m', V), [ah, bh] = gateRates('h', V);
-    const pn = (a) => 1 - Math.exp(-phi * a * dt);
-    // potassium: state k → k+1 at (4−k)α, k → k−1 at kβ
-    const dK = new Array(5).fill(0);
-    for (let k = 0; k < 5; k++) {
-      const up = k < 4 ? (4 - k) * an : 0, dn = k > 0 ? k * bn : 0, tot = up + dn;
-      if (!tot) continue;
-      const leave = binom(K[k], 1 - Math.exp(-phi * tot * dt), r);
-      const nUp = binom(leave, up / tot, r);
-      dK[k] -= leave; if (k < 4) dK[k + 1] += nUp; if (k > 0) dK[k - 1] += leave - nUp;
-    }
-    for (let k = 0; k < 5; k++) K[k] += dK[k];
-    // sodium: m-chain (j: 0..3 with rates (3−j)αm and jβm) and independent h flip
-    const dNa = new Array(8).fill(0);
-    for (let s = 0; s < 8; s++) {
-      const j = s % 4, hh = s >= 4 ? 1 : 0;
-      const up = j < 3 ? (3 - j) * am : 0, dn = j > 0 ? j * bm : 0, hf = hh ? bh : ah, tot = up + dn + hf;
-      if (!Na[s]) continue;
-      const leave = binom(Na[s], 1 - Math.exp(-phi * tot * dt), r);
-      const nUp = binom(leave, up / tot, r), nDn = binom(leave - nUp, dn / (dn + hf || 1), r), nH = leave - nUp - nDn;
-      dNa[s] -= leave;
-      if (nUp) dNa[s + 1] += nUp; if (nDn) dNa[s - 1] += nDn; if (nH) dNa[hh ? s - 4 : s + 4] += nH;
-    }
-    for (let s = 0; s < 8; s++) Na[s] += dNa[s];
+    // Exact channel transitions at frozen voltage include multiple subunit flips within a step.
+    K = channelAdvance(K, channelTransition('K',V,dt,T), r);
+    Na = channelAdvance(Na, channelTransition('Na',V,dt,T), r);
     V = Vn;
   }
-  return o;
+  return {...o, finalK: K, finalNa: Na};
 }

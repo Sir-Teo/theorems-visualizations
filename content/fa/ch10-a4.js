@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 10 (part 4): the group of invertible elements; Lomonosov's theorem
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Source: full Rudin second-edition sections and proofs reviewed; see verification ledger.
 
 const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
 const cabs = (a) => Math.hypot(a[0], a[1]);
@@ -23,12 +23,12 @@ export default {
       statement: String.raw`Let $G=G(A)$ and let $G_1$ be the component of $G$ that contains $e$. Then
 (a) $G_1$ is an open normal subgroup of $G$, and it is the set of all finite products $\exp(y_1)\cdots\exp(y_n)$, $y_i\in A$;
 (b) if $A$ is commutative, $G_1=\exp(A)$;
-(c) the components of $G$ are the cosets of $G_1$, so $G/G_1$ is a discrete group (the **index group** of $A$).`,
-      idea: String.raw`Each $\exp(ty)$, $0\le t\le1$, is a path in $G$ from $e$, so products of exponentials lie in $G_1$; they form a subgroup $\Gamma$, which is open because every element near $e$ is an exponential (10.30: $\sigma(x)$ near $1$ does not separate $0$ from $\infty$). An open subgroup is also closed (its complement is a union of cosets), so $\Gamma=G_1$. Normality: $x\exp(y)x^{-1}=\exp(xyx^{-1})$. In the commutative case $\exp(y_1)\exp(y_2)=\exp(y_1+y_2)$.`,
+(c) if $A$ is commutative, $G/G_1$ has no nonidentity element of finite order.
+The components of $G$ are the cosets of $G_1$, so $G/G_1$ is a discrete group (the **index group** of $A$).`,
+      idea: String.raw`Each $\exp(ty)$, $0\le t\le1$, is a path in $G$ from $e$, so products of exponentials lie in $G_1$; they form a subgroup $\Gamma$, which is open because every element near $e$ is an exponential (10.30: $\sigma(x)$ near $1$ does not separate $0$ from $\infty$). An open subgroup is also closed (its complement is a union of cosets), so $\Gamma=G_1$. Normality: $x\exp(y)x^{-1}=\exp(xyx^{-1})$. In the commutative case $\exp(y_1)\exp(y_2)=\exp(y_1+y_2)$. If $x^n=\exp(a)$, put $z=x\exp(-a/n)$; then $z^n=e$, so10.30 gives a logarithm of $z$ and therefore $x\in G_1$.`,
       caption: String.raw`$A=\ell^1(\Z)$ (commutative) and $x$ an invertible element, i.e. $\hat x$ never vanishes on $\T$. Its component in $G$ is labelled by the winding number $k$ of $\hat x(\T)$ about $0$, and $x=z^k\exp(y)$ with $z=\delta_1$ ($\hat z(e^{i\theta})=e^{i\theta}$). Slide $t$: the curves $\widehat{x_t}(\T)$ with $x_t=z^k\exp(ty)$ are a path in $G$ from $z^k$ (at $t=0$) to $x$ (at $t=1$), never touching $0$. For $k=0$ the path starts at $e$: $x\in G_1=\exp(A)$. Elements of different winding numbers cannot be joined: $G/G_1\cong\Z$.`,
       deps: ['fa-10.30', 'fa-10.12'],
       tags: ['Banach algebras', 'invertible group', 'winding number'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const tS = v.slider('$t$', 0, 1, 0.6, { step: 0.01 });
@@ -60,8 +60,8 @@ export default {
           st = { bad: false, k, minPath: Math.min(...mins) };
         });
         v.readout(() => {
-          const s = st; if (s.bad) return '$\\hat x$ vanishes on $\\T$: $x\\notin G$.';
-          return `Winding number $k=${s.k}$: $x\\in z^{${s.k}}G_1$. Along the whole path $\\min|\\widehat{x_t}| \\ge ${v.fix(s.minPath, 3)}>0$, so it stays in $G$.` + (s.k === 0 ? ' The path starts at $e$: $x=\\exp(y)\\in G_1$.' : ` It starts at $z^{${s.k}}$, not at $e$ — no path in $G$ connects $x$ to $e$.`);
+          const s = st; if (s.bad) return 'The sampled curve comes near zero; this plot cannot classify invertibility reliably.';
+          return `Winding number $k=${s.k}$: $x\\in z^{${s.k}}G_1$. Sampled minimum along the path: $\\min|\\widehat{x_t}| \\approx ${v.fix(s.minPath, 3)}>0$. For an exactly nonvanishing curve, the exponential path stays in $G$.` + (s.k === 0 ? ' The path starts at $e$: $x=\\exp(y)\\in G_1$.' : ` It starts at $z^{${s.k}}$, not at $e$ — no path in $G$ connects $x$ to $e$.`);
         });
       },
     },
@@ -69,13 +69,11 @@ export default {
       num: '10.35',
       kind: 'Theorem',
       name: "Lomonosov's invariant subspace theorem",
-      credit: 'Lomonosov, 1973',
       statement: String.raw`Suppose $X$ is an infinite-dimensional complex Banach space and $T\in\mathscr B(X)$ is compact, $T\ne0$. Then there is a closed subspace $M$ of $X$, $M\ne\{0\}$, $M\ne X$, that is invariant under every $S\in\mathscr B(X)$ commuting with $T$ (a nontrivial **hyperinvariant** subspace of $T$).`,
-      idea: String.raw`If $T$ has an eigenvalue $\lambda$, the eigenspace $\ker(T-\lambda I)$ works, since $ST=TS$ maps it into itself — and it is proper because a nonzero compact operator is not a multiple of $I$ in infinite dimensions. Otherwise $\sigma(T)=\{0\}$. Suppose no hyperinvariant subspace existed; then for every $x\ne0$ the orbit $\{Sx:S\in\Gamma\}$ under the commutant $\Gamma$ would be dense. A compactness argument with finitely many $S_i$ and a continuous partition of unity produces a continuous map of a compact convex set into itself, built from $T$; Schauder's fixed point theorem gives a fixed point, which turns out to be an eigenvector of a compact operator in the algebra generated by $\Gamma$ and $T$ for the eigenvalue $1$ — and then of $T$, a contradiction with $\sigma(T)=\{0\}$.`,
+      idea: String.raw`If the closed commutant orbit of any nonzero vector is proper, it is already a common invariant subspace. Otherwise every orbit is dense. Compactness gives finitely many commutant operators that repeatedly return a ball to itself after applying $T$. Iterating yields a positive lower bound for $\norm{T^n}^{1/n}$, so the spectral radius is positive. The compact-operator theorem4.25 supplies a nonzero eigenvalue; its finite-dimensional eigenspace is then proper and invariant under the entire commutant, a contradiction.`,
       caption: String.raw`The Volterra operator $Vf(x)=\int_0^xf$ on $L^2(0,1)$ is compact and has **no** eigenvalues ($\sigma(V)=\{0\}$), so the easy case does not apply — yet its hyperinvariant subspaces are visible: $M_a=\{f:f=0\text{ on }[0,a]\}$. Choose $f\in M_a$ (two bumps you place to the right of $a$). $Vf$ (green) and $Sf$ for an operator $S=V+\frac12V^2-V^3$ in the commutant (purple) stay $0$ on $[0,a]$ (grey). The reflection $Rf(x)=f(1-x)$ (red), which does not commute with $V$, leaves $M_a$.`,
       deps: ['fa-4.18', 'fa-4.25', 'fa-10.13'],
       tags: ['invariant subspaces', 'compact operators', 'Volterra operator'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const aS = v.slider('$a$', 0.05, 0.7, 0.35, { step: 0.01 });

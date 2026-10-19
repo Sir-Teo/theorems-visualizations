@@ -1,6 +1,6 @@
 // Cryptography — Chapter 3 (part b): chosen-plaintext security, pseudorandom functions, the birthday bound, Goldwasser–Micali
 import {
-  clamp, pixc as pix, hex, ci95, logNoColl, prf16, mix2, feistel8, ladder, paintBits, shuffled,
+  clamp, pixc as pix, hex, ci95, coupledOracleAnswers, logNoColl, prf16, mix2, feistel8, ladder, paintBits, shuffled,
 } from './ch03.shared.js';
 
 const SUPD = { 0: '⁰', 1: '¹', 2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', '-': '⁻' };
@@ -91,10 +91,10 @@ export default {
       num: '3.10',
       kind: 'Theorem',
       name: 'Deterministic encryption cannot be CPA-secure',
-      statement: String.raw`If $\mathsf{Enc}_k(m)$ is a deterministic function of $k$ and $m$ (a stateless scheme with no randomness at encryption), then $\Pi$ is not CPA-secure: for any two distinct messages $m_0\ne m_1$ the following adversary wins with probability $1$. Query the oracle on $m_0$ to get $c_0$; output $(m_0,m_1)$ and receive $c^*$; output $b'=0$ if $c^*=c_0$ and $b'=1$ otherwise. For an encryption that uses $w$ bits of fresh randomness per encryption (and is otherwise injective in the message), the same adversary wins with probability exactly $\tfrac12+2^{-(w+1)}$.`,
-      idea: String.raw`If $b=0$ the challenge is an encryption of $m_0$ under the same key; determinism forces it to equal the oracle’s answer $c_0$. If $b=1$ it encrypts a different message, and a correct scheme maps different messages to different ciphertexts under a fixed key (decryption is a function), so $c^*\neq c_0$. The attack needs one query and one comparison, hence efficiency cannot save it. With $w$ random bits the two ciphertexts of $m_0$ agree only when the random value repeats, probability $2^{-w}$: the attack’s advantage is the *collision probability of the randomness*, the quantity bounded in 3.12–3.13.`,
+      statement: String.raw`If $\mathsf{Enc}_k(m)$ is a deterministic function of $k$ and $m$ (a stateless scheme with no randomness at encryption), then $\Pi$ is not CPA-secure: for any two distinct messages $m_0\ne m_1$ the following adversary wins with probability $1$. Query the oracle on $m_0$ to get $c_0$; output $(m_0,m_1)$ and receive $c^*$; output $b'=0$ if $c^*=c_0$ and $b'=1$ otherwise. For randomized encryption, let $\kappa_{k,m_0}=\Pr[\mathsf{Enc}_k(m_0;R)=\mathsf{Enc}_k(m_0;R') ]$ for independent fresh coins. Conditional on a fixed key, the same attack wins with probability $\tfrac12+\kappa_{k,m_0}/2$. With uniform $w$-bit coins, $\kappa_{k,m_0}\ge2^{-w}$; equality holds when distinct coins produce distinct ciphertexts of that message, as in the displayed construction that includes $r$ in the ciphertext.`,
+      idea: String.raw`If $b=0$ the challenge is an encryption of $m_0$ under the same key; determinism forces it to equal the oracle’s answer $c_0$. If $b=1$ it encrypts a different message, and a correct scheme maps different messages to different ciphertexts under a fixed key (decryption is a function), so $c^*\neq c_0$. The attack needs one query and one comparison, hence efficiency cannot save it. For the displayed ciphertext $(r,F_k(r)\oplus m)$, the two encryptions of $m_0$ agree exactly when $r$ repeats, probability $2^{-w}$. A general encryption algorithm can map different random values to the same ciphertext, so its collision probability may be larger. The attack’s advantage is half the *ciphertext collision probability for the fixed message*, the quantity bounded in 3.12–3.13.`,
       caption: String.raw`The adversary plays 2000 games against $\mathsf{Enc}_k(m)=(r,\,F_k(r)\oplus m)$ with a $w$-bit random $r$ ($w=0$: no randomness, deterministic). Left: one game as a message diagram. Middle: the running win rate with the exact value $\tfrac12+2^{-(w+1)}$. Right: the advantage $2^{-(w+1)}$ against $w$ on a log scale — it is $\tfrac12$ at $w=0$ and negligible only when the randomness grows with the security parameter.`,
-      deps: ['crypto-3.9'],
+      deps: ["crypto-3.9","prob-2.1.11","prob-1.1.1"],
       tags: ['cpa', 'attacks'],
       refs: ['Katz–Lindell §3.4.2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Deterministic_encryption' },
@@ -150,7 +150,7 @@ export default {
       idea: String.raw`The random function is never written down: it can be sampled **lazily**. Keep a table; on a new input draw a fresh uniform output and store it, on a repeated input answer from the table (a random permutation draws among the unused outputs). A distinguisher sees only these answers, so every test is a question about the pattern of answers to $q$ queries: collisions, linear relations, repeated structure. A PRF is a PRG whose output can be accessed at random positions (3.5), and it is the primitive from which CPA-secure encryption (3.12) and message authentication are built.`,
       caption: String.raw`Left: a $16\times16$ table of all $256$ inputs of an 8-bit function. Click cells to query the box (*Real* = a keyed function, *Ideal* = a lazily filled random function or permutation): answers appear, entries that collide are ringed. Right: an automatic distinguisher (collision test, or a linearity test using $F(0)\oplus F(x)\oplus F(y)\oplus F(x\oplus y)$) is run 1500 times against each world, and $\Pr[D=1]$ is plotted for both. Pairs that the test cannot separate have advantage $\approx0$; the XOR cipher $F_k(x)=x\oplus k$ is wrecked by the linearity test.`,
       scope: String.raw`The keyed functions are toys on 8-bit inputs with a 32-bit key (a hash-based function, a 4-round Feistel permutation on nibbles, and the linear map $x\oplus k$); none is claimed to be a PRF or PRP, and with $2^{32}$ keys an unbounded distinguisher could always win.`,
-      deps: ['crypto-3.5'],
+      deps: ["crypto-3.5","alg-1.14a"],
       tags: ['prf', 'prp'],
       refs: ['Katz–Lindell §3.5.1', 'Boneh–Shoup ch. 4'],
       credit: 'Goldreich, Goldwasser & Micali, 1986 (PRFs; JACM 33(4):792–807)',
@@ -233,7 +233,7 @@ export default {
       idea: String.raw`First replace $F_k$ by a random function $f$; any efficient adversary that notices the swap is a PRF distinguisher (3.11), which costs the $\mathsf{negl}(n)$ term. With $f$ random, the pad $f(r^*)$ for the challenge nonce $r^*$ is uniform, and encryption is a one-time pad *unless* $r^*$ equals one of the $q$ nonces $r_i$ used to answer oracle queries — then $f(r^*)$ is already known to $\mathcal A$. A union bound over the $q$ queries gives $\Pr[r^*\in\{r_i\}]\le q/2^n$. Randomized encryption is exactly what defeats the attack of 3.10.`,
       caption: String.raw`The adversary queries $m_0$ $q$ times, then asks for the challenge; if the challenge nonce $r^*$ equals one of the returned nonces it reads off $F(r^*)$ and always wins, otherwise it guesses. The plot shows its advantage $\Pr[\mathsf{win}]-\tfrac12=\tfrac12\Pr[\mathrm{hit}]$ against the number of queries $q$ for $n$-bit nonces: simulated games (dots, 300 each), the exact value $\tfrac12\bigl(1-(1-2^{-n})^q\bigr)$ and the theorem’s union bound $q/2^n$. Switch the nonce to *constant* (a broken implementation) and the advantage jumps to $\tfrac12$ after a single query.`,
       scope: String.raw`The simulation uses a truly random function (the first step of the proof); the nonce length $n$ is kept small (up to 12 bits) so that repeats can be seen. The loss from replacing $F_k$ by a random function is the PRF distinguishing advantage, which is not simulated.`,
-      deps: ['crypto-3.11', 'crypto-3.9'],
+      deps: ["crypto-3.11","crypto-3.9","prob-1.1.1"],
       tags: ['cpa', 'prf', 'randomized encryption'],
       refs: ['Katz–Lindell §3.5.2'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation' },
@@ -281,7 +281,7 @@ export default {
       statement: String.raw`Throw $q$ balls independently and uniformly into $N$ bins. The probability that some bin receives two balls is $$\mathrm{coll}(N,q)=1-\prod_{i=1}^{q-1}\Bigl(1-\frac iN\Bigr),$$ and for $q\le\sqrt{2N}$ it satisfies $$\Bigl(1-e^{-1/2}\Bigr)\frac{q(q-1)}{2N}\le\mathrm{coll}(N,q)\le\frac{q(q-1)}{2N}.$$ Consequently $\mathrm{coll}$ reaches $\tfrac12$ at $q\approx\sqrt{2\ln2}\,\sqrt N\approx1.18\sqrt N$, and $q=\Theta(\sqrt N)$ throws are necessary and sufficient to see a collision with constant probability.`,
       idea: String.raw`The $q$ balls form $\binom q2$ pairs, each colliding with probability $1/N$; the union bound over pairs gives the upper bound. For the lower bound, the factor $1-i/N\le e^{-i/N}$ gives $\Pr[\text{no collision}]\le e^{-q(q-1)/2N}$ — and $1-e^{-x}\ge(1-e^{-1/2})\,x$ for $x\le\tfrac12$. The surprise is the scale $\sqrt N$ instead of $N$: collisions among $q$ items appear when the number of *pairs* reaches $N$. In cryptography this is why an $n$-bit hash or random nonce offers only $n/2$ bits of collision resistance, and why the term $q^2/2^n$ appears in so many proofs (3.12, 3.14).`,
       caption: String.raw`Drag the gold handle along the exact collision-probability curve to choose the number of throws $q$, and change the number of bins $N$ (slider, up to $2^{36}$). Dots: first-collision times of 400 simulated experiments (for $N\le2\cdot10^7$). Dashed: $1-e^{-q^2/2N}$ and the union bound $q(q-1)/2N$. For $N\le4096$ the left panel throws the $q$ balls into the bins one by one: single-ball bins blue, collisions red. For $N=365$ the curve crosses $\tfrac12$ at $q=23$.`,
-      deps: [],
+      deps: ["comb-1.6","prob-1.1.1"],
       tags: ['birthday paradox', 'collisions'],
       refs: ['Katz–Lindell §6.4.1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Birthday_problem' },
@@ -350,12 +350,11 @@ export default {
       name: 'PRP/PRF switching lemma',
       statement: String.raw`Let $\pi$ be a uniformly random permutation of $\{0,1\}^n$ and $f$ a uniformly random function $\{0,1\}^n\to\{0,1\}^n$. For every distinguisher $D$ (computationally unbounded) that makes at most $q$ oracle queries, $$\bigl|\Pr[D^{\pi}=1]-\Pr[D^{f}=1]\bigr|\le\frac{q(q-1)}{2^{n+1}}\le\frac{q^2}{2^{n+1}}.$$ Hence a PRP on $n$-bit blocks is also a PRF against distinguishers making $q\ll2^{n/2}$ queries, with loss $q^2/2^{n+1}$.`,
       idea: String.raw`Assume without loss of generality that $D$ never repeats a query (a repeated query gets the same answer in both worlds). Then a lazily sampled random function answers each new query with a fresh uniform value, and a random permutation answers with a fresh uniform value *among the unused ones*. The two behave identically until the function produces a **collision** — an output equal to an earlier one — which a permutation never does. So the gap is at most the probability that $q$ uniform values collide, which is the birthday bound of 3.13. It is also what limits block ciphers: with $n=64$ the lemma is vacuous after about $2^{32}$ queries.`,
-      caption: String.raw`Both oracles are queried at distinct points $x_1,x_2,\dots$ with the same random coins. The left table shows the first answers in each world; the function’s answers are ringed in red at the first repeat, which the permutation can never show. The plot gives the probability that a random function collides within $q$ queries (dots: simulated, $1200$ runs per point; the permutation’s collision rate is $0$) with the exact value $1-\prod(1-i/N)$ and the lemma’s bound $q(q-1)/2N$. Move $n$ and $q$ and watch the advantage track the bound.`,
-      credit: 'attributed to Impagliazzo & Rudich (1989); game-based proof by Bellare & Rogaway (2006)',
-      verify: true,
+      caption: String.raw`Both oracles are queried at distinct points $x_1,x_2,\dots$ with the same random coins. The demonstration caps the number of distinct inputs at $N=2^n$; repeating inputs adds no information. The left table shows the first answers in each world; the function’s answers are ringed in red at the first repeat, which the permutation can never show. The plot gives the probability that a random function collides within $q$ queries (dots: simulated, $1200$ runs per point; the permutation’s collision rate is $0$) with the exact value $1-\prod(1-i/N)$ and the lemma’s bound $q(q-1)/2N$. Move $n$ and $q$ and watch the advantage track the bound.`,
+      credit: 'Folklore lemma; explicit game-based proof in Bellare & Rogaway, The Game-Playing Technique, 2004 draft, §2',
       deps: ['crypto-3.11', 'crypto-3.13'],
       tags: ['prp', 'prf', 'birthday'],
-      refs: ['Boneh–Shoup ch. 4'],
+      refs: ['Bellare–Rogaway, The Game-Playing Technique, draft 0.4 (11 December 2004), §2 pp. 6–7, Lemma 1; Boneh–Shoup §4.4'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Pseudorandom_permutation' },
       viz(v) {
         const sT = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 300, weight: 1 });
@@ -366,14 +365,12 @@ export default {
         const T = 1200;
         let info = null;
         v.render(() => {
-          const n = nS.value, N = 2 ** n, q = qS.value, qmax = Math.ceil(3 * Math.sqrt(N)), r = v.rng(seed * 4219 + n);
+          const n = nS.value, N = 2 ** n, q = Math.min(qS.value, N), qmax = Math.min(N, Math.max(q, Math.ceil(3 * Math.sqrt(N)))), r = v.rng(seed * 4219 + n);
           // table: one run
-          const rr = v.rng(seed * 733 + n * 5 + 1), show = Math.min(q, 14), fOut = [], pOut = [], usedP = new Set();
-          let firstColl = -1; const seenF = new Map();
-          for (let i = 0; i < show; i++) {
-            const y = Math.floor(rr() * N); fOut.push(y); if (seenF.has(y) && firstColl < 0) firstColl = i; seenF.set(y, i);
-            let z; do { z = Math.floor(rr() * N); } while (usedP.has(z)); usedP.add(z); pOut.push(z);
-          }
+          const rr = v.rng(seed * 733 + n * 5 + 1), show = Math.min(q, 14);
+          const { f: fOut, p: pOut } = coupledOracleAnswers(rr, N, show);
+          let firstColl = -1; const seenF = new Set();
+          for (let i = 0; i < show; i++) { if (seenF.has(fOut[i]) && firstColl < 0) firstColl = i; seenF.add(fOut[i]); }
           const P = pix(sT), rh = Math.min(22, (P.H - 70) / (show + 1)), x1 = P.W * 0.2, x2 = P.W * 0.55, x3 = P.W * 0.86;
           P.text('x', x1 - 40, 18, { size: 12, weight: 700, color: 'muted', halo: false }); P.text('random function f(x)', x2 - 30, 18, { size: 12, weight: 700, color: 'orange', halo: false }); P.text('permutation π(x)', x3 - 8, 18, { size: 12, weight: 700, color: 'green', halo: false });
           for (let i = 0; i < show; i++) {
@@ -400,7 +397,7 @@ export default {
           info = { n, N, q, adv: exact(q), bound: Math.min(1, q * (q - 1) / (2 * N)), fc: firstColl };
         });
         v.legend([['accent', 'exact $\\Pr[f$ collides$]$'], ['red', 'lemma bound $q(q-1)/2N$', { dash: true }], ['orange', 'function: collision seen', { dot: true }], ['green', 'permutation: collision seen', { dot: true }]]);
-        v.readout(() => `$N=2^{${info.n}}$, $q=${info.q}$: the distinguisher “output 1 iff two answers coincide” says 1 with probability $${v.fix(info.adv, 4)}$ for a random function and $0$ for a permutation, so its advantage is $${v.fix(info.adv, 4)}\\le q(q-1)/2N=${v.fix(info.bound, 4)}$. ` + (info.fc >= 0 ? `In the table the function repeats an answer at query ${info.fc + 1}.` : 'In the table shown the function happens not to repeat yet.'));
+        v.readout(() => `$N=2^{${info.n}}$, $q=${info.q}$: the distinguisher “output 1 iff two answers coincide” says 1 with probability $${v.fix(info.adv, 4)}$ for a random function and $0$ for a permutation, so its advantage is $${v.fix(info.adv, 4)}\\le\\min\\{1,q(q-1)/2N\\}=${v.fix(info.bound, 4)}$. ` + (info.fc >= 0 ? `In the table the function repeats an answer at query ${info.fc + 1}.` : 'In the table shown the function happens not to repeat yet.'));
       },
     },
 
@@ -412,14 +409,13 @@ export default {
       paper: { authors: 'Shafi Goldwasser and Silvio Micali', year: 1984, title: 'Probabilistic Encryption', venue: 'Journal of Computer and System Sciences 28 (2): 270–299', doi: '10.1016/0022-0000(84)90070-9' },
       introduces: ['crypto-3.3', 'crypto-3.4', 'crypto-3.8', 'crypto-9.13'],
       credit: 'Shafi Goldwasser & Silvio Micali, 1984 (conference version: STOC 1982)',
-      statement: String.raw`Goldwasser and Micali argued that deterministic public-key encryption leaks partial information about the plaintext and replaced it by **probabilistic encryption**, defined with a security notion — *semantic security*, which they showed equivalent to *polynomial security* (what is now called indistinguishability of encryptions), a computational counterpart of Shannon’s perfect secrecy. Their construction encrypts one bit at a time with a trapdoor predicate: with public key $(N,y)$, $N=pq$ for primes $p,q\equiv3\pmod 4$ and $y$ a *pseudosquare* (a non-square modulo $N$ with Jacobi symbol $+1$), a bit $b$ is encrypted as $c=y^{b}r^{2}\bmod N$ for a fresh random $r\in\mathbb Z_N^*$; the holder of $p,q$ decrypts by testing whether $c$ is a square modulo $p$. Under the **quadratic residuosity assumption** — that no efficient algorithm distinguishes squares from pseudosquares modulo $N$ without the factors — the scheme is secure, and longer messages are handled bit by bit by a hybrid argument.`,
-      idea: String.raw`Before 1982 cryptography was judged by resistance to attacks that had been thought of. The paper made two moves: it *defined* what the adversary must not learn (any function of the plaintext; indistinguishability of two chosen plaintexts) with efficient adversaries and negligible advantage (3.2–3.4), and it gave a scheme whose security *reduces* to a number-theoretic assumption about quadratic residues (nt-4.1), proved by reduction (3.6) and a hybrid argument over the bits of the message (3.8). The ciphertext of a bit is randomised so that the same bit encrypts differently each time, the fix for the weakness of deterministic encryption (3.10). The scheme itself is inefficient (a full modulus-sized ciphertext per bit) and became the prototype for later probabilistic systems (9.13).`,
-      caption: String.raw`A reconstruction on small moduli — the paper has no data or figures to reproduce, so this is a model of its construction with toy primes. Left: the residues modulo $N$ as a grid; blue = squares, orange = pseudosquares (Jacobi symbol $+1$ but not squares), light grey = Jacobi symbol $-1$, dark = not coprime to $N$. Click a cell for its square/Jacobi status. Encrypt the same bit repeatedly: the ciphertexts differ. Right: the indistinguishability game against several adversaries, 4000 games each; only an adversary who knows the factors (or runs an exhaustive search of cost $\approx N$) wins, while cheap tests stay at advantage $\approx0$ (error bars: $\pm1.96\sigma$).`,
+      statement: String.raw`Goldwasser and Micali argued that deterministic public-key encryption leaks partial information about the plaintext and replaced it by **probabilistic encryption**, defined with a security notion — *semantic security*, which they showed equivalent to *polynomial security* (what is now called indistinguishability of encryptions), a computational counterpart of Shannon’s perfect secrecy. Their construction encrypts one bit at a time with a trapdoor predicate: with public key $(N,y)$, $N=pq$ for primes $p,q\equiv3\pmod 4$ and $y$ a *pseudosquare* (a non-square modulo $N$ with Jacobi symbol $+1$), a bit $b$ is encrypted as $c=y^{b}r^{2}\bmod N$ for a fresh random $r\in\mathbb Z_N^*$; the holder of $p,q$ decrypts by testing whether $c$ is a square modulo $p$. Key generation samples $y$ uniformly from those pseudosquares, rather than choosing an arbitrary factor-dependent value. Under the **quadratic residuosity assumption** — that no efficient algorithm distinguishes squares from pseudosquares modulo $N$ without the factors — the scheme is secure, and longer messages are handled bit by bit by a hybrid argument.`,
+      idea: String.raw`The paper made two moves: it *defined* what the adversary must not learn (any function of the plaintext; indistinguishability of two chosen plaintexts) with efficient adversaries and negligible advantage (3.2–3.4), and it gave a scheme whose security *reduces* to a number-theoretic assumption about quadratic residues (nt-4.1), proved by reduction (3.6) and a hybrid argument over the bits of the message (3.8). The ciphertext of a bit is randomised so that the same bit encrypts differently each time, the fix for the weakness of deterministic encryption (3.10). The scheme itself is inefficient (a full modulus-sized ciphertext per bit) and became the prototype for later probabilistic systems (9.13).`,
+      caption: String.raw`A reconstruction on small moduli — the paper has no data or figures to reproduce, so this is a model of its construction with toy primes. Left: the residues modulo $N$ as a grid; blue = squares, orange = pseudosquares (Jacobi symbol $+1$ but not squares), light grey = Jacobi symbol $-1$, dark = not coprime to $N$. Click a cell for its square/Jacobi status. Encrypt the same bit repeatedly: randomization changes the ciphertext distribution, although samples may repeat. Right: the indistinguishability game against several adversaries, 4000 games each; among the displayed strategies, factoring-aware and exhaustive square-membership tests distinguish perfectly, while the elementary tests can have small biases at these finite toy moduli (error bars: $\pm1.96\sigma$).`,
       scope: String.raw`Toy moduli of up to 7 digits: with such $N$ an exhaustive search factors $N$ at once, so the security statement is only meaningful as $N$ grows; the scheme is the one of the paper as presented in textbooks (bit encryption $y^br^2$), not the paper’s exact notation.`,
-      deps: ['crypto-3.2', 'nt-4.1'],
+      deps: ["crypto-3.2","nt-4.1","nt-4.8"],
       tags: ['probabilistic encryption', 'quadratic residuosity'],
-      verify: true,
-      refs: [],
+      refs: ['Goldwasser–Micali (1984), §4.4 pp. 281–282 (construction); §5 pp. 282–290 (security notions and hybrid proof); §7 pp. 292–297, especially Theorem 2 (random pseudosquare auxiliary key)'],
       links: { doi: 'https://doi.org/10.1016/0022-0000(84)90070-9' },
       viz(v) {
         const sG = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 400, minWidth: 330, weight: 1.15 });
@@ -490,7 +486,7 @@ export default {
         v.legend([['accent', 'square mod $N$', { dot: true }], ['orange', 'pseudosquare', { dot: true }], ['faint', 'Jacobi $-1$', { dot: true }], ['ink', 'not coprime', { dot: true }]]);
         v.readout(() => {
           const { p, q, N, cls } = K, fm = (a) => a.map((c) => String(c)).join(', ');
-          let s = `Encryptions of the bit $0$ (squares): ${fm(enc[0])}; of the bit $1$ (pseudosquares): ${fm(enc[1])} — the same bit, four different ciphertexts.`;
+          let s = `Encryptions of the bit $0$ (squares): ${fm(enc[0])}; of the bit $1$ (pseudosquares): ${fm(enc[1])} — four independent randomized samples per bit; repetitions are possible.`;
           if (sel > 0) { const nm = ['not coprime to $N$', 'a **square** mod $N$', 'a **pseudosquare** (Jacobi $+1$, not a square)', 'Jacobi symbol $-1$']; s += `\nSelected residue $c=${sel}$ is ${nm[cls[sel]]}.`; }
           s += `\nTrial division factors $N$ after about $${Math.min(p, q)}$ divisions — for a 2048-bit modulus the same search needs more than $2^{1000}$.`;
           return s;

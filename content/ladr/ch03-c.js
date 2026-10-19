@@ -187,7 +187,6 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
       caption: String.raw`Choose $\dim V$ and $\dim W$. Click a cell of the grid to see the elementary map $E_{j,k}$: a single arrow $v_k\to w_j$, every other basis vector going to $0$. Switch to a general $T$ (or press Resample): its arrows are weighted by the matrix entries, and it decomposes as $\sum a_{j,k}E_{j,k}$ — the coefficients are computed by solving a linear system, and they are exactly the entries.`,
       deps: ['ladr-3.71', 'ladr-3.70', 'ladr-3.40'],
       tags: ['linear maps', 'dimension'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const n = v.slider(String.raw`$n=\dim V$`, 1, 4, 3, { int: true });
@@ -230,7 +229,7 @@ $$\dim\mathcal L(V,W)=(\dim V)(\dim W).$$`,
           if (!info) return '';
           const { N, Mm, rank, res, E } = info;
           return String.raw`$\dim\mathcal L(V,W)=(\dim V)(\dim W)=${N}\cdot${Mm}=${N * Mm}$: the ${N * Mm} maps $E_{j,k}$ are linearly independent (rank of their matrices, flattened: ${rank}) and span. ` +
-            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy $${v.sci(res + 1e-17, 1)}$$).`);
+            (E ? String.raw`$E_{${sel[0] + 1},${sel[1] + 1}}$ sends $v_{${sel[1] + 1}}\mapsto w_{${sel[0] + 1}}$ and the other $v_i\mapsto 0$.` : String.raw`$T=\sum a_{j,k}E_{j,k}$ with coefficients = matrix entries (largest discrepancy $${v.sci(res + 1e-17, 1)}$).`);
         });
       },
     },

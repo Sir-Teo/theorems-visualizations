@@ -1,5 +1,5 @@
 // Stochastic Processes — Chapter 4 (part b): items 4.9–4.16 (reversibility, ergodic theorem, tree theorem, PageRank, Ehrenfest)
-import { STATE_COL, stationary, vecP, l1, tv, ringPos, cumRows, nextState, binom, reverseChain, arborescences, treeWeight, presetChain } from './ch04.shared.js';
+import { ehrenfestMean, ehrenfestMeanBandTime, STATE_COL, stationary, vecP, l1, tv, ringPos, cumRows, nextState, binom, reverseChain, arborescences, treeWeight, presetChain } from './ch04.shared.js';
 
 const vtex = (x, d = 3) => '(' + x.map((t) => t.toFixed(d)).join(',\\ ') + ')';
 
@@ -58,9 +58,9 @@ Then $\pi$ is stationary for $P$ (sum over $x$), and $P$ is called **reversible*
       statement: String.raw`Let $P$ be an irreducible transition matrix on a finite state space. Then $P$ is reversible with respect to its stationary distribution if and only if, for every cycle $x_0\to x_1\to\cdots\to x_{k}=x_0$ of states,
 $$p_{x_0x_1}\,p_{x_1x_2}\cdots p_{x_{k-1}x_0}\;=\;p_{x_0x_{k-1}}\,p_{x_{k-1}x_{k-2}}\cdots p_{x_1x_0},$$
 the probability of going round the cycle equals that of going round it in the opposite direction. No knowledge of $\pi$ is needed to test it, and it suffices to check cycles without repeated vertices; if $p_{xy}>0$ then also $p_{yx}>0$ is required for reversibility.`,
-      idea: String.raw`If detailed balance holds, multiplying $\pi(x_i)p_{x_ix_{i+1}}=\pi(x_{i+1})p_{x_{i+1}x_i}$ around a cycle makes all the $\pi$'s cancel and leaves the cycle identity. Conversely, fix a base state $o$ and *define* $\pi(x)=\pi(o)\prod p_{ox_1}\cdots p_{x_{m-1}x}/\prod p_{xx_{m-1}}\cdots p_{x_1o}$ along any path from $o$ to $x$; the cycle condition says exactly that the value does not depend on the path, and the resulting $\pi$ satisfies detailed balance on every edge (4.9).`,
+      idea: String.raw`If detailed balance holds, multiplying $\pi(x_i)p_{x_ix_{i+1}}=\pi(x_{i+1})p_{x_{i+1}x_i}$ around a cycle makes all the $\pi$'s cancel and leaves the cycle identity. Conversely, fix a base state $o$ and *define* $\pi(x)=\pi(o)\prod p_{ox_1}\cdots p_{x_{m-1}x}/\prod p_{xx_{m-1}}\cdots p_{x_1o}$ along any path of positive-probability edges from $o$ to $x$ (the reverse edges must also be positive); the cycle condition says exactly that the value does not depend on the path, and the resulting $\pi$ satisfies detailed balance on every edge (4.9).`,
       caption: String.raw`A complete weighted graph on five vertices with symmetric weights, to which a circulation $e^{\theta}$ is added around the triangle $1\to2\to3\to1$ (and $e^{-\theta}$ against it); rows are then renormalised. Choose a cycle: orange arrows go forward and red ones backward, labelled by their probabilities. The bars show $\log(\text{forward}/\text{backward})$ for six cycles. At $\theta=0$ all are zero; for $\theta\ne0$ the cycles through the twisted triangle are nonzero but the cycle $3\to4\to5$ stays balanced: *every* cycle must pass for reversibility, and one failure is enough.`,
-      deps: ['stoch-4.9'], refs: ['Grimmett–Stirzaker §6.5'], credit: 'A. N. Kolmogorov, 1936', verify: true, tags: ['reversibility', 'cycles'],
+      deps: ['stoch-4.9'], refs: ['Kolmogoroff (1936), Zur Theorie der Markoffschen Ketten, Mathematische Annalen 112, §4, p. 159, equation (10); doi:10.1007/BF01565412'], credit: 'A. N. Kolmogorov, 1936', tags: ['reversibility', 'cycles'],
       links: { doi: 'https://doi.org/10.1007/bf01565412' },
       viz(v) {
         const CYC = [[0, 1, 2], [0, 2, 3], [2, 3, 4], [0, 1, 2, 3], [0, 1, 3, 4], [0, 1, 2, 3, 4]];
@@ -251,10 +251,10 @@ No aperiodicity is needed. If $\mathbb E_xT_x^+=\infty$ (null recurrence or tran
       num: '4.14', kind: 'Theorem', name: 'Markov chain tree theorem',
       statement: String.raw`Let $P$ be an irreducible transition matrix on a finite state set $S$. For a state $r$ let $\mathcal T_r$ be the set of spanning trees of the directed graph (edge $x\to y$ when $p_{xy}>0$) in which every state $x\ne r$ has exactly one outgoing edge and all edges lead towards $r$ (spanning in-trees, or arborescences, rooted at $r$), and put $w(T)=\prod_{(x\to y)\in T}p_{xy}$. Then the stationary distribution is
 $$\pi(r)=\frac{\sum_{T\in\mathcal T_r}w(T)}{\sum_{s\in S}\sum_{T\in\mathcal T_s}w(T)}.$$
-Self-loops play no role. For a random walk on a weighted graph this reduces to Kirchhoff's matrix-tree theorem.`,
-      idea: String.raw`The numerators solve $\pi P=\pi$: the unnormalised vector $\tilde\pi(r)=\sum_{T\in\mathcal T_r}w(T)$ is the vector of cofactors of $I-P$, which is proportional to the left null vector because $I-P$ has rank $|S|-1$ for an irreducible chain (4.4), and the all-minors matrix-tree theorem of Kirchhoff (circ-2.12) expands each cofactor of the Laplacian-like matrix $I-P$ as a sum of weights of spanning in-trees. The formula gives positivity of $\pi$ directly. For a reversible walk it recovers $\pi\propto\deg$ (4.11).`,
-      caption: String.raw`A four-state chain whose off-diagonal weights come from a seed (new weights: button). Pick the root $r$: the tiles show every spanning in-tree towards $r$ (arrows point from each non-root state to its unique successor), with its weight below. The bars on the right are the total tree weight for each root, normalised, against the stationary distribution computed by solving $\pi P=\pi$ (green dots): they agree. A state with a large weight is simply one that many cheap trees lead to.`,
-      deps: ['stoch-4.4', 'circ-2.12'], refs: ['Norris §1.7'], credit: 'G. Kirchhoff, 1847 (matrix-tree theorem); T. L. Hill, 1966 (for Markov chains)', verify: true, tags: ['spanning trees', 'matrix-tree theorem'],
+Self-loops play no role. For random walk on an undirected weighted graph this is consistent with Kirchhoff’s matrix-tree theorem and the degree-weighted stationary law (4.11).`,
+      idea: String.raw`The numerators solve $\pi P=\pi$: the unnormalised vector $\tilde\pi(r)=\sum_{T\in\mathcal T_r}w(T)$ is the vector of cofactors of $I-P$, which is proportional to the left null vector because $I-P$ has rank $|S|-1$ for an irreducible chain (4.4), and the directed matrix-tree identity (the undirected Kirchhoff case is circ-2.12) expands each cofactor of the Laplacian-like matrix $I-P$ as a sum of weights of spanning in-trees. The formula gives positivity of $\pi$ directly. For a reversible walk it recovers $\pi\propto\deg$ (4.11).`,
+      caption: String.raw`A four-state chain whose off-diagonal weights come from a seed (new weights: button). Pick the root $r$: the tiles show every spanning in-tree towards $r$ (arrows point from each non-root state to its unique successor), with its weight below. The bars on the right are the total tree weight for each root, normalised, against the stationary distribution computed by solving $\pi P=\pi$ (green dots): they agree. A state with a large total weight has in-trees with a large sum of transition-probability products.`,
+      deps: ['stoch-4.4', 'circ-2.12'], refs: ['Anantharam & Tsoucas (1988), A Proof of the Markov Chain Tree Theorem, UMD TR 88-97, pp. 2–4 (irreducible theorem and proof)', 'Norris §1.7'], credit: 'G. Kirchhoff, 1847 (matrix-tree theorem); T. L. Hill, 1966 (attribution reported by Anantharam–Tsoucas, p. 2)', verify: true, tags: ['spanning trees', 'matrix-tree theorem'],
       links: { doi: 'https://doi.org/10.1016/0022-5193(66)90137-8' },
       viz(v) {
         const root = v.slider('root $r$', 0, 3, 0, { int: true, step: 1 });
@@ -336,11 +336,11 @@ Because every entry of $G$ is at least $(1-d)/n>0$, the chain is irreducible and
     // ───────────────────────────────────────────────────────────────── 4.16
     {
       num: '4.16', kind: 'Paradox', name: 'Ehrenfest model and the recurrence paradox',
-      statement: String.raw`In the **Ehrenfest urn** model $N$ balls are distributed between two urns; at each step a ball is chosen uniformly at random and moved to the other urn. The number $k$ of balls in urn A is a Markov chain on $\{0,\dots,N\}$ with $p_{k,k-1}=k/N$, $p_{k,k+1}=(N-k)/N$. Its stationary distribution is binomial, $\pi(k)=\binom Nk2^{-N}$, and the mean number of balls in A starting from $k_0$ is $\tfrac N2+(k_0-\tfrac N2)(1-\tfrac2N)^t$, so equilibrium is reached after about $\tfrac N4\log N$ steps. Yet the chain is recurrent: by Kac's formula (4.2) the mean time to come back to the state "everything in A" is $1/\pi(N)=2^N$.`,
-      idea: String.raw`The chain is irreducible on a finite set, hence positive recurrent (3.4), so Kac's formula applies and $\mathbb E_N T_N^+=1/\pi(N)=2^N$. The two time scales differ astronomically: relaxation is polynomial in $N$ (the mean offset from $N/2$ decays geometrically by the factor $1-2/N$ per step), while a return to a very ordered state requires a fluctuation of order $N$ in a variable whose typical fluctuation is only $\sqrt N$, which has probability $2^{-N}$. Poincaré's recurrence theorem (Zermelo's objection to Boltzmann's $H$-theorem) is therefore true but irrelevant on physical time scales: for $N\sim10^{23}$ the return time is not of this universe.`,
-      caption: String.raw`Choose the number of balls $N$. Left: one run started with all balls in urn A (blue), the exact mean (black) and the equilibrium band $N/2\pm\sqrt N$ (grey): the system relaxes within a few multiples of $N$ steps and then fluctuates. Middle: occupation histogram of a long run against the binomial law. Right, on a log scale: the mean return time $2^N$ to "all in A" (black), dots measured in simulation for $N\le12$, and the relaxation time $\approx\tfrac N2\ln(\sqrt N/2)$ (orange). The two curves separate exponentially.`,
-      deps: ['stoch-4.2', 'stoch-1.11'], refs: ['LPW §2.3'], credit: 'P. and T. Ehrenfest, 1907', verify: true, tags: ['Ehrenfest urn', 'recurrence', 'statistical mechanics'],
-      scope: String.raw`A toy model of diffusion of gas through a hole: balls do not interact, and each step moves exactly one ball. The real system has $N\sim10^{23}$ molecules.`,
+      statement: String.raw`In the **Ehrenfest urn** model $N$ balls are distributed between two urns; at each step a ball is chosen uniformly at random and moved to the other urn. The number $k$ of balls in urn A is a Markov chain on $\{0,\dots,N\}$ with $p_{k,k-1}=k/N$, $p_{k,k+1}=(N-k)/N$. Its stationary distribution is binomial, $\pi(k)=\binom Nk2^{-N}$, and the mean number of balls in A starting from $k_0$ is $\tfrac N2+(k_0-\tfrac N2)(1-\tfrac2N)^t$, so its mean offset from $N/2$ reaches the stationary fluctuation scale after about $\tfrac N4\log N$ steps. The chain has period 2: from a fixed initial state its distribution alternates between even and odd states and does not converge to the stationary law. Yet the chain is recurrent: by Kac's formula (4.2) the mean time to come back to the state "everything in A" is $1/\pi(N)=2^N$.`,
+      idea: String.raw`The chain is irreducible on a finite set, hence positive recurrent (3.4), so Kac's formula applies and $\mathbb E_N T_N^+=1/\pi(N)=2^N$. The two time scales differ astronomically: decay of the mean offset is polynomial in $N$ (the mean offset from $N/2$ decays geometrically by the factor $1-2/N$ per step), while a return to a very ordered state requires a fluctuation of order $N$ in a variable whose typical fluctuation is only $\sqrt N$, which has probability $2^{-N}$. The Ehrenfests used this urn in §6 of their 1907 paper to show how the tendency for a large imbalance to decrease is compatible with eventual large fluctuations and recurrence. For an illustrative molecular count $N\sim10^{23}$, the mean return time $2^N$ steps dwarfs the polynomial time for the mean imbalance to fall.`,
+      caption: String.raw`Choose the number of balls $N$. Left: one run started with all balls in urn A (blue), the exact mean (black) and one stationary standard-deviation band $N/2\pm\sqrt N/2$ (grey). The mean approaches the middle while individual paths alternate parity. Middle: time-averaged occupation histogram of a long run against the stationary binomial law. Right, on a log scale: the mean return time $2^N$ to "all in A" (black), dots measured in simulation for $N\le12$, and the exact time when the all-in-A mean offset reaches one stationary standard deviation (orange). The two curves separate exponentially.`,
+      deps: ['stoch-4.2', 'stoch-1.11'], refs: ['P. & T. Ehrenfest (1907), Über zwei bekannte Einwände gegen das Boltzmannsche H-Theorem, Physikalische Zeitschrift 8, pp. 311–314, especially §6', 'Levin & Peres, Markov Chains and Mixing Times, 2nd ed., §2.3 (pp. 23–25), Prop. 1.19 (mean return time)'], credit: 'P. and T. Ehrenfest, 1907', tags: ['Ehrenfest urn', 'recurrence', 'statistical mechanics'],
+      scope: String.raw`A toy model of diffusion of gas through a hole: balls do not interact, and each step moves exactly one ball. The molecular count $N\sim10^{23}$ and the readout’s one-microsecond step are illustrative scale comparisons, not a calibrated gas-diffusion model.`,
       viz(v) {
         const NN = v.slider('number of balls $N$', 4, 60, 20, { int: true, step: 1, onChange: () => rebuild() });
         let seed = 3; v.button('resample', () => { seed++; rebuild(); });
@@ -361,24 +361,25 @@ Because every entry of $G$ is at least $(1-d)/n>0$, the chain is irreducible and
           for (let t = 1; t <= tmax; t++) { k = R() < k / N ? k - 1 : k + 1; run.push(k); }
           hist = new Array(N + 1).fill(0); const L = 100000; for (let t = 0; t < L; t++) { k = R() < k / N ? k - 1 : k + 1; hist[k]++; }
           hist = hist.map((c) => c / L);
+          s3.setView([2, Math.max(40, N)], [1, Math.max(1e12, 1.2 * 2 ** N)]);
           s1.setView([0, tmax], [0, N]); s2.setView([-0.5, N + 0.5], [0, Math.max(...hist, binom(N, Math.floor(N / 2)) / 2 ** N) * 1.2]);
           v.invalidate();
         }
         rebuild();
         v.render(() => {
-          const sd = Math.sqrt(N);
+          const sd = Math.sqrt(N) / 2;
           s1.poly([[0, N / 2 - sd], [tmax, N / 2 - sd], [tmax, N / 2 + sd], [0, N / 2 + sd]], { fill: 'muted', fillAlpha: 0.2, stroke: false });
           s1.path(run.map((y, t) => [t, y]), { color: 'accent', width: 1.4 });
-          s1.fn((t) => N / 2 + (N / 2) * (1 - 2 / N) ** t, { color: 'ink', width: 2, domain: [0, tmax], n: 120 });
+          s1.fn((t) => ehrenfestMean(N, N, t), { color: 'ink', width: 2, domain: [0, tmax], n: 120 });
           s2.bars(hist, { x0: 0, dx: 1, color: 'accent' });
           for (let k = 0; k <= N; k++) s2.dot(k, binom(N, k) / 2 ** N, { r: 3.5, color: 'ink' });
-          s3.fn((n) => 2 ** n, { color: 'ink', width: 2, domain: [2, 40], n: 60 });
-          s3.fn((n) => Math.max(1, (n / 2) * Math.log(Math.sqrt(n) / 2)), { color: 'orange', width: 2, domain: [4, 40], n: 60 });
+          s3.fn((n) => 2 ** n, { color: 'ink', width: 2, domain: [2, Math.max(40, N)], n: 100 });
+          s3.fn((n) => ehrenfestMeanBandTime(n), { color: 'orange', width: 2, domain: [4, Math.max(40, N)], n: 100 });
           retPts.forEach(([n, t]) => s3.dot(n, t, { r: 4, color: 'green' }));
           s3.vline(N, { color: 'gold' });
         });
-        v.legend([['ink', 'mean return time $2^N$'], ['orange', 'relaxation time'], ['green', 'measured mean return', { dot: true }]]);
-        v.readout(() => `$N=${N}$: stationary $\\pi(N)=2^{-N}=${v.sci(2 ** -N, 2)}$, so the mean return time to "all in A" is $2^N=${v.sci(2 ** N, 3)}$ steps (at one step per microsecond: ${(2 ** N * 1e-6 < 3.15e7 ? v.fix(2 ** N * 1e-6, 2) + ' s' : v.sci(2 ** N * 1e-6 / 3.15e7, 2) + ' years')}), whereas the relaxation time is about ${v.fix(Math.max(1, (N / 2) * Math.log(Math.sqrt(N) / 2)), 0)} steps.`);
+        v.legend([['ink', 'mean return time $2^N$'], ['orange', 'mean reaches one stationary s.d.'], ['green', 'measured mean return', { dot: true }]]);
+        v.readout(() => `$N=${N}$: stationary $\\pi(N)=2^{-N}=${v.sci(2 ** -N, 2)}$, so the mean return time to "all in A" is $2^N=${v.sci(2 ** N, 3)}$ steps (at one step per microsecond: ${(2 ** N * 1e-6 < 3.15e7 ? v.fix(2 ** N * 1e-6, 2) + ' s' : v.sci(2 ** N * 1e-6 / 3.15e7, 2) + ' years')}), whereas the mean reaches one stationary standard deviation after ${v.fix(ehrenfestMeanBandTime(N), 1)} steps. Period 2: a fixed-time distribution alternates parity; the binomial law describes stationary and long-run occupation averages.`);
       },
     },
   ],

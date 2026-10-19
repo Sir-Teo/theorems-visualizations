@@ -85,11 +85,10 @@ export default {
       caption: String.raw`Row $i$ shows whom villager $i$ shaves (click cells to flip them). The grey row under the table is the flipped diagonal, the pattern the barber's row would need. Choose the barber $b$ and press **Make row $b$ obey the rule**: every entry is set to match except the cell on the diagonal, which cannot match whatever you put in it. Switch **barber lives outside the village** and the difficulty disappears: the barber has his own row below the table, and it matches the flipped diagonal everywhere.`,
       deps: ['logic-1.6'],
       refs: ['Sainsbury', 'SEP “Russell’s Paradox”'],
-      credit: 'Russell found his paradox in 1901 and wrote to Frege in June 1902; the barber story is popularly attributed to Russell (who used it as an illustration in 1918) but its origin is uncertain',
+      credit: 'Russell, The Philosophy of Logical Atomism (1918), lecture VII: the barber illustration is explicitly described as having been suggested to him',
       scope: String.raw`The table is finite; Russell’s paradox applies to sets with unrestricted comprehension, and the argument is the same for any binary relation $R$ with the rule “$b$ is related to exactly those $x$ not related to themselves”.`,
       tags: ['paradox', 'sets', 'diagonal'],
       links: { sep: 'https://plato.stanford.edu/entries/russell-paradox/' },
-      verify: true,
       viz(v) {
         const nS = v.slider('villagers', 3, 7, 5, { int: true });
         const bS = v.slider('barber $b$', 1, 7, 3, { int: true });
@@ -161,15 +160,14 @@ export default {
       kind: 'Paradox',
       name: 'The surprise examination',
       statement: String.raw`A teacher announces on Friday that there will be an exam next week, on one of the school days, and that it will be a surprise: on the morning of the exam day the students will not know that the exam is that day. The students reason backwards. It cannot be on the last day, since if it had not happened by then they would know on that morning it must be today. With the last day excluded, the same argument rules out the day before it, and so on back to the first day: no exam is possible. Yet the exam is given on, say, Wednesday, and the students are surprised.`,
-      idea: String.raw`The students’ argument assumes that they know the announcement is true *and* can use it, including its surprise clause, as a premise when reasoning about what they would know on later mornings; the last step of the elimination only works if they know on Thursday evening that the announcement still holds, which is exactly what the argument is trying to show it can’t. A precise model separates the two readings. If the teacher picks the exam day at random, the students’ credence on each morning that the exam is today (given none yet) is the *hazard rate* $h_d=p_d/\sum_{j\ge d}p_j$. The last day with $p_d>0$ always has $h=1$: a strictly positive probability of an exam on the last possible day makes that exam a non-surprise. So no distribution can guarantee surprise whatever happens, but the students’ elimination of earlier days does not follow from this. A connection to Gödel’s second incompleteness theorem was made by Kritchman and Raz (2010).`,
+      idea: String.raw`The students’ argument assumes that they know the announcement is true *and* can use it, including its surprise clause, as a premise when reasoning about what they would know on later mornings; the last step of the elimination only works if they know on Thursday evening that the announcement still holds, which is exactly what the argument is trying to show it can’t. A precise model separates the two readings. If the teacher picks the exam day at random, the students’ credence on each morning that the exam is today (given none yet) is the *hazard rate* $h_d=p_d/\sum_{j\ge d}p_j$. The last day with $p_d>0$ always has $h=1$: a strictly positive probability of an exam on the last possible day makes that exam a non-surprise. So no distribution can guarantee surprise whatever happens, but the students’ elimination of earlier days does not follow from this. Kritchman and Raz (2010, pp.5–7) give a separate formal reconstruction using provability and consistency: internally proving consistency is the step blocked by Gödel’s second incompleteness theorem. The hazard model here is not their proof.`,
       caption: String.raw`Drag the five bars to choose the teacher’s plan (relative weights of the exam day). The second panel shows, for each day, the students’ credence $h_d$ on that morning that the exam is today given that it hasn't happened yet; a bar is red when it reaches $1$ (no surprise: the exam can't be a surprise on that day). Press **Teacher repairs** to zero the last day that is a non-surprise; repeat and watch the whole plan collapse, the students’ backward induction as a game. The readout gives the chance that the exam is a complete non-surprise.`,
-      deps: ['phil-4.1'],
+      deps: ['phil-4.1', 'stat-2.1'],
       refs: ['Sainsbury ch. 5', 'SEP “Epistemic Paradoxes”'],
-      credit: 'Discussed in the philosophical literature from the 1940s; link to Gödel’s second theorem: S. Kritchman & R. Raz, Notices AMS 57 (2010)',
+      credit: 'S. Kritchman & R. Raz, Notices AMS 57 (2010), pp.1454–1458',
       scope: String.raw`The hazard-rate picture is one reconstruction (a probabilistic reading of "surprise" as credence below 1), not the only analysis; the epistemic and game-theoretic treatments disagree about what the students may assume. The five-day week is a modelling choice.`,
       tags: ['paradox', 'knowledge', 'backward induction'],
       links: { sep: 'https://plato.stanford.edu/entries/epistemic-paradoxes/' },
-      verify: true,
       viz(v) {
         const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'], N = 5;
         const P = v.stage({ x: [0.3, 5.7], y: [0, 1.08], axes: 'box', gutter: true, height: 300, title: 'the teacher’s plan: weight of each exam day', xticks: DAYS.map((d, i) => [i + 1, d]), yticks: [0, 0.5, 1], weight: 1 });

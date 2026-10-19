@@ -1,0 +1,535 @@
+[
+  {
+    "id": "alg-6.10",
+    "file": "content/alg/ch06.js",
+    "status": "closed",
+    "source": "Judson2023cosets/crypt"
+  },
+  {
+    "id": "alg-7.4",
+    "file": "content/alg/ch07-b.js",
+    "status": "closed",
+    "source": "Judson2023cosets/crypt"
+  },
+  {
+    "id": "alg-7.5",
+    "file": "content/alg/ch07-b.js",
+    "status": "closed",
+    "source": "Judson2023cosets/crypt"
+  },
+  {
+    "id": "alg-7.1",
+    "file": "content/alg/ch07.js",
+    "status": "closed",
+    "source": "Judson2023cosets/crypt"
+  },
+  {
+    "id": "alg-7.2",
+    "file": "content/alg/ch07.js",
+    "status": "closed",
+    "source": "Judson2023cosets/crypt"
+  },
+  {
+    "id": "comb-4.15",
+    "file": "content/comb/ch04-b.js",
+    "status": "closed",
+    "source": "Cameron Notes on Counting §§1.2,7.1; Knuth Fibonacci Multiplication pp57–58 and explicit induction"
+  },
+  {
+    "id": "comb-4.17",
+    "file": "content/comb/ch04-b.js",
+    "status": "closed",
+    "source": "Cameron Notes on Counting §§1.2,7.1; Knuth Fibonacci Multiplication pp57–58 and explicit induction"
+  },
+  {
+    "id": "comb-4.3",
+    "file": "content/comb/ch04.js",
+    "status": "closed",
+    "source": "Cameron Notes on Counting §§1.2,7.1; Knuth Fibonacci Multiplication pp57–58 and explicit induction"
+  },
+  {
+    "id": "nt-4.6",
+    "file": "content/nt/ch04-b.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.8",
+    "file": "content/nt/ch04-b.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.11",
+    "file": "content/nt/ch04-c.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.12",
+    "file": "content/nt/ch04-c.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.13",
+    "file": "content/nt/ch04-c.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.15",
+    "file": "content/nt/ch04-c.js",
+    "status": "closed",
+    "source": "Gauss1801 full contents/preface; articles365–366 pp662–665, original scans690/692 inspected"
+  },
+  {
+    "id": "nt-4.2",
+    "file": "content/nt/ch04.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "nt-4.4",
+    "file": "content/nt/ch04.js",
+    "status": "closed",
+    "source": "Stein4.1–4.4,Exercise4.9; Conrad2.2–2.3,3.10–3.14; composite/parity derivations in report"
+  },
+  {
+    "id": "top-3.15",
+    "file": "content/top/ch03-c.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.11",
+    "file": "content/top/ch04-b.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.12",
+    "file": "content/top/ch04-b.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.13",
+    "file": "content/top/ch04-c.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.14",
+    "file": "content/top/ch04-c.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.16",
+    "file": "content/top/ch04-c.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.18",
+    "file": "content/top/ch04-c.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "top-4.1",
+    "file": "content/top/ch04.js",
+    "status": "closed",
+    "source": "Munkres2 §§23,26–29: full statements/proofs;27Exercise6"
+  },
+  {
+    "id": "dg-1.8",
+    "file": "content/dg/ch01.js",
+    "status": "closed",
+    "source": "do Carmo §4-4 Lemma1 p253; FTC applied twice with explicit uniqueness proof"
+  },
+  {
+    "id": "dg-3.12",
+    "file": "content/dg/ch03-b.js",
+    "status": "closed",
+    "source": "Milnor1950 complete original pp248–257; Lemma1.1/Corollary1.2 pp249–250, Theorems2.2/3.1/4.2 pp251–255 and Corollaries4.4–4.6 pp255–256; critical original pages visually inspected.",
+    "sourceUrl": "https://paperzz.com/doc/7254332/on-the-total-curvature-of-knots",
+    "sourcePdfUrl": "https://s3p.paperzz.com/store/data/007254332.pdf?k=AwAAAaFQsEEPAAACWFpgsLkrXlYcve1rNQiZN596en1d",
+    "sha256": "db75ff2d20da489355e9a4ed541198ef23d3e50bdf7b4dcf68f6c9938deecd54",
+    "resolution": "Strict equality exclusion verified from original Corollary4.4: an isotopic inscribed knot polygon admits a sufficiently small noncoplanar vertex slide that decreases curvature and preserves knot type. Together with crookedness>=2 and the integral identity this proves >4π, including finite-total-curvature knots. Replaced incomplete equality discussion with this proof; no computation changes."
+  },
+  {
+    "id": "dg-4.10",
+    "file": "content/dg/ch04-b.js",
+    "status": "closed",
+    "source": "Axler4 Theorem7.29 p245; do Carmo §2-2 Proposition2 pp61–63; completion of squares"
+  },
+  {
+    "id": "dg-4.14",
+    "file": "content/dg/ch04-b.js",
+    "status": "closed",
+    "source": "Hatcher Corollaries3.28,3.45,3.46 pp238,255–256, full proofs; do Carmo §2-6"
+  },
+  {
+    "id": "mfd-3.14",
+    "file": "content/mfd/ch03-b.js",
+    "status": "closed",
+    "source": "Nicolaescu Morse2nd Theorem1.1.12 pp10–14,2.2.2–2.2.3 pp38–42,Cor2.2.6 and2.3.3 pp48–49; Geometry3.1.1–2 pp81–87,Exercise4.1.50 p163 and explicit pullback derivative"
+  },
+  {
+    "id": "mfd-4.8",
+    "file": "content/mfd/ch04-b.js",
+    "status": "closed",
+    "source": "Nicolaescu Morse2nd Theorem1.1.12 pp10–14,2.2.2–2.2.3 pp38–42,Cor2.2.6 and2.3.3 pp48–49; Geometry3.1.1–2 pp81–87,Exercise4.1.50 p163 and explicit pullback derivative"
+  },
+  {
+    "id": "mfd-4.6",
+    "file": "content/mfd/ch04.js",
+    "status": "closed",
+    "source": "Nicolaescu Morse2nd Theorem1.1.12 pp10–14,2.2.2–2.2.3 pp38–42,Cor2.2.6 and2.3.3 pp48–49; Geometry3.1.1–2 pp81–87,Exercise4.1.50 p163 and explicit pullback derivative"
+  },
+  {
+    "id": "vcalc-4.8",
+    "file": "content/vcalc/ch04-b.js",
+    "status": "closed",
+    "source": "Rudin PMA3 10.7–10.9 pp248–253 full proofs; Conrad Gaussian §1 pp1–2 and Fubini appendix pp14–15; explicit injective cylindrical/Pappus derivation"
+  },
+  {
+    "id": "vcalc-4.10",
+    "file": "content/vcalc/ch04-b.js",
+    "status": "closed",
+    "source": "Rudin PMA3 10.7–10.9 pp248–253 full proofs; Conrad Gaussian §1 pp1–2 and Fubini appendix pp14–15; explicit injective cylindrical/Pappus derivation"
+  },
+  {
+    "id": "vcalc-4.11",
+    "file": "content/vcalc/ch04-b.js",
+    "status": "closed",
+    "source": "Lebesgue1902 thesis full intro pp1–5,ChI §§1–14 pp5–18,ChII §§15–25 pp18–30; actual bounded-convergence inequality p30 scan inspected"
+  },
+  {
+    "id": "vcalc-4.6",
+    "file": "content/vcalc/ch04.js",
+    "status": "closed",
+    "source": "Rudin PMA3 10.7–10.9 pp248–253 full proofs; Conrad Gaussian §1 pp1–2 and Fubini appendix pp14–15; explicit injective cylindrical/Pappus derivation"
+  },
+  {
+    "id": "rep-3.9",
+    "file": "content/rep/ch03-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.12",
+    "file": "content/rep/ch03-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.13",
+    "file": "content/rep/ch03-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.15",
+    "file": "content/rep/ch03-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.16",
+    "file": "content/rep/ch03-b.js",
+    "status": "closed",
+    "source": "Full original scans acquired from ETH/e-rara. Character paper complete §§1–6 pp985–1006 read; companion complete §§1–9 pp1343–1372 read, including coefficient definition§3 and full general degree=multiplicity proof§9. Critical printed pages visually inspected; modern representation formula already checked in full Etingof§§4.10–4.11.",
+    "sourceUrls": [
+      "https://doi.org/10.3931/e-rara-18877",
+      "https://www.e-rara.ch/zut/download/pdf/5929612",
+      "https://doi.org/10.3931/e-rara-18882",
+      "https://www.e-rara.ch/zut/download/pdf/5929750"
+    ],
+    "sourceHashes": {
+      "frobenius-gruppen.pdf": "5f5821c769c4d6b4a9c664eb24977fbdbf7286349288ef2b1448fc007d14fd1c",
+      "frobenius-primfactoren.pdf": "e7725eed752285ee731e436826af3bffd58d7734c29f1979cfca1f5862e817aa"
+    },
+    "resolution": "Corrected historical direction: character paper builds class functions from class equations; companion builds determinant factors and proves degree=multiplicity. Verified derivative/coefficient characterization atδe. Removed unverified precise1897/Molien chronology and the claim that characters were introduced through representation matrices. Demo remains explicitly a modern reconstruction; no numerical/helper changes."
+  },
+  {
+    "id": "rep-3.4",
+    "file": "content/rep/ch03.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.5",
+    "file": "content/rep/ch03.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.6",
+    "file": "content/rep/ch03.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.7",
+    "file": "content/rep/ch03.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-3.8",
+    "file": "content/rep/ch03.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-4.10",
+    "file": "content/rep/ch04-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-4.11",
+    "file": "content/rep/ch04-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-4.12",
+    "file": "content/rep/ch04-b.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "rep-4.1",
+    "file": "content/rep/ch04.js",
+    "status": "closed",
+    "source": "Etingof4.1–4.7,5.1; MilneGT7.41–7.52; derived finite-dimensional applications"
+  },
+  {
+    "id": "num-3.11",
+    "file": "content/num/ch03-b.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-3.17",
+    "file": "content/num/ch03-b.js",
+    "status": "closed",
+    "source": "Runge1901 full original pp224–243, exact pole remainder and deviations p243 scan inspected; independent product-remainder test"
+  },
+  {
+    "id": "num-4.6",
+    "file": "content/num/ch04-b.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.7",
+    "file": "content/num/ch04-b.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.9",
+    "file": "content/num/ch04-b.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.11",
+    "file": "content/num/ch04-c.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.13",
+    "file": "content/num/ch04-c.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.14",
+    "file": "content/num/ch04-c.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.15",
+    "file": "content/num/ch04-d.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.16",
+    "file": "content/num/ch04-d.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.17",
+    "file": "content/num/ch04-d.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.18",
+    "file": "content/num/ch04-d.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "num-4.5",
+    "file": "content/num/ch04.js",
+    "status": "closed",
+    "source": "Trefethen full author ATAP chap9,10,15,16,17,20,25,27,28 manuscript relevant complete passages/proofs; source-quoted deep asymptotics explicitly distinguished from proofs in report; Gutknecht–Trefethen1982 §1; Gonnet–Güttel–Trefethen2013 §§2–4,7–8"
+  },
+  {
+    "id": "nla-3.15",
+    "file": "content/nla/ch03-b.js",
+    "status": "reviewed-blocked",
+    "source": "Modern Demmel backward-error arguments and actual p-bit reconstruction reviewed; correct original DOI10.1090/S0002-9904-1947-08909-6.",
+    "blocker": "Full von Neumann–Goldstine1947 pp1021–1099 not acquired: AMS full PDF HTTP403, ProjectEuclid guessed route returns HTML. Exact original error hypotheses/constants, positive-definite versus general scope and Hotelling/Turing historical attributions remain unchecked. Removed unsupported still-best-known claim and universal κ-only error wording.",
+    "followup": "Official IAS Electronic Computer Project archive https://www.ias.edu/library/ecp read in full. Entry6 links only the same AMS1947PDF (HTTP403); no IAS scan of the Numerical Inverting original is supplied. Entry13 is the distinct1951PartII and cannot establish1947hypotheses/history. Retain exact original-proof gap.",
+    "attemptedSourceUrls": [
+      "https://www.ias.edu/library/ecp",
+      "https://www.ams.org/journals/bull/1947-53-11/S0002-9904-1947-08909-6/S0002-9904-1947-08909-6.pdf"
+    ]
+  },
+  {
+    "id": "nla-4.9",
+    "file": "content/nla/ch04-b.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "nla-4.10",
+    "file": "content/nla/ch04-b.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "nla-4.11",
+    "file": "content/nla/ch04-b.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "nla-4.12",
+    "file": "content/nla/ch04-b.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "nla-4.1",
+    "file": "content/nla/ch04.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "nla-4.6",
+    "file": "content/nla/ch04.js",
+    "status": "closed",
+    "source": "Demmel MA221 Fall09 complete relevant Lecture04/09 arguments; Trefethen–Schreiber1990 full §§1,6–7,9 pp335–337,348–354,358–359; LAPACK Working Note165 Algorithm1 and full §2.1 pp6–8; DSYTF2 lower-pivot/update source"
+  },
+  {
+    "id": "ladr-3.72",
+    "file": "content/ladr/ch03-c.js",
+    "status": "closed",
+    "source": "Axler4"
+  },
+  {
+    "id": "ladr-5.47",
+    "file": "content/ladr/ch05-b.js",
+    "status": "closed",
+    "source": "Axler4"
+  },
+  {
+    "id": "ladr-8.30",
+    "file": "content/ladr/ch08-c.js",
+    "status": "closed",
+    "source": "Axler4"
+  },
+  {
+    "id": "opt-4.10",
+    "file": "content/opt/ch04-b.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.11",
+    "file": "content/opt/ch04-b.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.12",
+    "file": "content/opt/ch04-b.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.13",
+    "file": "content/opt/ch04-b.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.14",
+    "file": "content/opt/ch04-b.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.4",
+    "file": "content/opt/ch04.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "opt-4.5",
+    "file": "content/opt/ch04.js",
+    "status": "closed",
+    "source": "Boyd–Vandenberghe4; GoemansLP; Grant–Boyd–Ye6.4,10"
+  },
+  {
+    "id": "logic-4.8",
+    "file": "content/logic/ch04-b.js",
+    "status": "closed",
+    "source": "OpenLogic32.18; Buss OnHerbrand§2 Theorems1–2; explicit resource caps"
+  },
+  {
+    "id": "logic-4.10",
+    "file": "content/logic/ch04-b.js",
+    "status": "closed",
+    "source": "OpenLogic22.7,23.9; Weiss–D’Mello2–3; explicit diagram/compactness derivations"
+  },
+  {
+    "id": "logic-4.12",
+    "file": "content/logic/ch04-b.js",
+    "status": "closed",
+    "source": "Gödel1930a complete Stefan Bauer-Mengelberg translation in van Heijenoort1967 pp583–591; all TheoremsI–X and complete proofs read, actual formula scans pp586–588 inspected"
+  },
+  {
+    "id": "logic-4.2",
+    "file": "content/logic/ch04.js",
+    "status": "closed",
+    "source": "OpenLogic22.7,23.9; Weiss–D’Mello2–3; explicit diagram/compactness derivations"
+  },
+  {
+    "id": "logic-5.2",
+    "file": "content/logic/ch05.js",
+    "status": "closed",
+    "source": "OpenLogic22.7,23.9; Weiss–D’Mello2–3; explicit diagram/compactness derivations"
+  },
+  {
+    "id": "logic-5.4",
+    "file": "content/logic/ch05.js",
+    "status": "closed",
+    "source": "Weiss–D’Mello Definition24 pp20–21, Lemma7 pp21–22; complete Lemmas12–13 pp41–43 read. Explicit uniform ordered-real-closure construction and full cardinal/cofinality proof independently checked in report.",
+    "sourceUrl": "https://www.math.toronto.edu/weiss/model_theory.pdf",
+    "resolution": "For every uncountable cardinal κ (including singularκ), real closures of successively ordered rational-function fields indexed by κ·ω and κ·ω₁ have sizeκ but cofinalitiesω andω₁. Order-preserving RCF embedding followed by relative algebraic closure yields algebraic RCF; Cauchy root bounds work in all ordered fields, and finite variable supports prove the two cofinalities. This is our explicit proof, not a claim that Weiss p38 prints it. All other seven model-count rows had already been fully checked."
+  }
+]

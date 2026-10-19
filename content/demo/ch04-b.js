@@ -1,3 +1,4 @@
+import {CT_NATURAL,CT_DEPARTURE,fitCoaleTrussell} from './verification-models.js';
 // Demography — Chapter 4: Fertility and reproduction (part b: 4.7–4.12)
 import { clamp, sum, int, CNAME, SEXY, AGE22, NS22, FAGES, FMID, FY0, FY1, asfr, women, indAt, ind, tfrOf, HUT, lxSex, LxSex, SRBNAME, stepPath, cOpts } from './ch04.shared.js';
 
@@ -70,13 +71,13 @@ export default {
       name: 'Natural versus controlled fertility (Coale–Trussell)',
       statement: String.raw`In a population practising no deliberate limitation, marital fertility follows a characteristic age pattern $n(a)$ (**natural fertility**) that falls with age through declining fecundity. Coale and Trussell's model writes observed marital fertility at age $a$ as $r(a) = M\,n(a)\,\exp\bigl(m\,v(a)\bigr)$. The parameter $M$ scales the overall level relative to the standard; $v(a)$ is a standard pattern of departure from natural fertility that becomes more negative with age, because couples who control by **stopping** once they reach a desired family size cut fertility most at older ages; $m$ measures how far the population has gone in that direction ($m = 0$ is natural fertility). Taking logs, $\ln\bigl(r(a)/n(a)\bigr) = \ln M + m\,v(a)$ is a straight line in $v$, so $M$ and $m$ are read off a regression.`,
       idea: String.raw`Without parity-dependent control, the chance of a birth depends mostly on a woman's age, so schedules from different natural-fertility populations are close to one shape up to a scale factor. Birth control that responds to the number of children already born (stopping) removes births mainly at older ages, where women are further along in their families, and so tilts the schedule; the log ratio to natural fertility declines roughly in a pattern that is the same across populations, which is what the standard $v(a)$ encodes. The point of the model is that a single number, $m$, measures the degree of control from the age pattern alone, using no data on contraception.`,
-      caption: String.raw`Choose a country and year. The model is fitted to the age-specific rates of ages 20–49 (blue bars) by a straight line of $\ln(r/n)$ against $v$ (right panel). The dashed curve is natural fertility at the fitted level, $M\,n(a)$, and the solid curve is the fit with control. Compare China in 1990 (strong stopping, $m$ about 2) with Nigeria in 1990 ($m$ near 0, natural fertility). Switch to **manual** to set $M$ and $m$ yourself and see how stopping bends the older ages down. Because these are rates for all women (not marital rates), a population where many women are unmarried shows a low $M$.`,
-      deps: ['demo-4.1'],
+      caption: String.raw`Choose a country and year. The model is fitted to the age-specific rates of ages 20–49 (blue bars) by a straight line of $\ln(r/n)$ against $v$ (right panel), using ages20–44 for fitting and showing ages20–49. The dashed curve is natural fertility at the fitted level, $M\,n(a)$, and the solid curve is the fit with control. Compare the fitted age shapes for China and Nigeria in1990; because these are overall rates, these fits do not identify contraceptive stopping. Switch to **manual** to set $M$ and $m$ yourself and see how stopping bends the older ages down. Because these are rates for all women (not marital rates), a population where many women are unmarried shows a low $M$.`,
+      deps: ['demo-4.1', 'stat-12.2'],
       refs: ['PHG ch. 9'],
       tags: ['natural fertility', 'fertility control'],
       credit: 'Coale & Trussell, 1974',
       verify: true,
-      scope: String.raw`The model form $r(a)=M\,n(a)\,e^{m v(a)}$ is the published one. The standard patterns used here are **reconstructions**: $n(a)$ is taken proportional to the Hutterite marital schedule (the 1920s benchmark of Coale's indices, 4.9) and $v(a)$ is a stylised decreasing pattern of about the right size, not the published Coale–Trussell tables. So $M$ and $m$ computed here are illustrative and are not comparable with published estimates. They are fitted to overall age-specific rates (WPP 2024) rather than the marital fertility the model describes.`,
+      scope: String.raw`The model form $r(a)=M\,n(a)\,e^{m v(a)}$ is the published one. The natural-fertility and departure standards are the published values in UN Manual X (1983), p.24, Table3; the log-linear fit uses ages20–44 as recommended there. The resulting $M$ and $m$ still are not comparable with published marital-fertility estimates because these data describe all women. They are fitted to overall age-specific rates (WPP 2024) rather than the marital fertility the model describes.`,
       links: { doi: 'https://doi.org/10.2307/2733910' },
       viz(v) {
         const co = v.select('country', cOpts(), 'CHN');
@@ -84,7 +85,7 @@ export default {
         const man = v.toggle('manual M and m', false);
         const Ms = v.slider('M', 0.1, 1.2, 0.7, { step: 0.01 });
         const ms = v.slider('m (control)', 0, 4, 0.5, { step: 0.02 });
-        const NAT = HUT.slice(2, 8), VST = [0, -0.279, -0.667, -1.042, -1.414, -1.671];
+        const NAT = CT_NATURAL, VST = CT_DEPARTURE;
         const AG6 = FMID.slice(2, 8);
         const s = v.stage({ x: [10, 55], y: [0, 400], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'births per 1 000 women', height: 360, title: 'Observed rates and the model' });
         const t = v.stage({ x: [-2, 0.3], y: [-4, 0.5], axes: 'box', gutter: true, xlabel: 'v(a)', ylabel: 'ln( r(a) / n(a) )', height: 360, title: 'The log-linear fit' });
@@ -92,23 +93,23 @@ export default {
         v.render(() => {
           const f = asfr(co.value, yr.value);
           const pts = f.slice(2, 8).map((x, i) => ({ v: VST[i], y: x > 0 ? Math.log(x / NAT[i]) : NaN, a: AG6[i], f: x })).filter((p) => isFinite(p.y));
-          const n = pts.length, mv = sum(pts.map((p) => p.v)) / n, my = sum(pts.map((p) => p.y)) / n;
-          const sxx = sum(pts.map((p) => (p.v - mv) ** 2)), sxy = sum(pts.map((p) => (p.v - mv) * (p.y - my))), syy = sum(pts.map((p) => (p.y - my) ** 2));
-          const mfit = sxx > 0 ? sxy / sxx : 0, lnM = my - mfit * mv, r2 = syy > 0 ? (sxy * sxy) / (sxx * syy) : 1;
-          const M = man.value ? Ms.value : Math.exp(lnM), mm = man.value ? ms.value : mfit;
+          const fit = fitCoaleTrussell(f.slice(2,8));
+          const M = man.value ? Ms.value : fit.M, mm = man.value ? ms.value : fit.m, r2 = fit.r2;
           if (!man.value) { Ms.set(clamp(M, 0.1, 1.2)); ms.set(clamp(mm, 0, 4)); }
-          s.setView([10, 55], [0, Math.max(...f.map((x) => x * 1000), M * 550, 100) * 1.15]);
+          s.setView([10, 55], [0, Math.max(...f.map((x) => x * 1000), M * Math.max(...NAT) * 1000, 100) * 1.15]);
           FAGES.forEach((a, i) => s.rect(a, 0, a + 5, f[i] * 1000, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.5 }));
           s.path(AG6.map((a, i) => [a, M * NAT[i] * 1000]), { color: 'muted', width: 2.2, dash: true });
           s.path(AG6.map((a, i) => [a, M * NAT[i] * Math.exp(mm * VST[i]) * 1000]), { color: 'green', width: 2.8 });
           s.dots(AG6.map((a, i) => [a, M * NAT[i] * Math.exp(mm * VST[i]) * 1000]), { r: 4, color: 'green' });
+          const yvalues = [...pts.map((p) => p.y), Math.log(M) + mm * -1.9, Math.log(M) + mm * 0.1];
+          t.setView([-2, 0.3], [Math.min(-1,...yvalues)-0.3,Math.max(0.5,...yvalues)+0.3]);
           t.hline(0, { color: 'muted', alpha: 0.5 });
           t.line(-1.9, Math.log(M) + mm * -1.9, 0.1, Math.log(M) + mm * 0.1, { color: 'green', width: 2.4 });
           pts.forEach((p) => t.dot(p.v, p.y, { color: 'accent', r: 5, label: (p.a - 2.5) + '–' + (p.a + 1.5), labelPos: pts.indexOf(p) % 2 ? 's' : 'n' }));
           R = { M, mm, r2, nat: 5 * M * sum(NAT) , obs: 5 * sum(f.slice(2, 8)), ctl: 5 * sum(AG6.map((a, i) => M * NAT[i] * Math.exp(mm * VST[i]))) };
         });
         v.legend([['accent', 'observed rates', { area: true }], ['muted', 'natural fertility M·n(a)', { dash: true }], ['green', 'with control']]);
-        v.readout(() => `${man.value ? 'Manual' : 'Fitted'}: $M$ = **${v.fix(R.M, 2)}**, $m$ = **${v.fix(R.mm, 2)}**${man.value ? '' : ` ($R^2$ = ${v.fix(R.r2, 2)})`}.\nTFR from ages 20–49: natural $5M\\sum n$ = ${v.fix(R.nat, 2)}; with control = **${v.fix(R.ctl, 2)}**${man.value ? '' : `; observed ${v.fix(R.obs, 2)}`}. The gap is what stopping removes.`);
+        v.readout(() => `${man.value ? 'Manual' : 'Fitted'}: $M$ = **${v.fix(R.M, 2)}**, $m$ = **${v.fix(R.mm, 2)}**${man.value ? '' : ` ($R^2$ = ${v.fix(R.r2, 2)})`}.\nTFR from ages 20–49: natural $5M\\sum n$ = ${v.fix(R.nat, 2)}; with control = **${v.fix(R.ctl, 2)}**${man.value ? '' : `; observed ${v.fix(R.obs, 2)}`}. The gap is the modelled difference between these schedules; this fit to overall rates does not identify births prevented by stopping.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.9
@@ -116,15 +117,14 @@ export default {
       num: '4.9',
       kind: 'Definition',
       name: 'Princeton fertility indices (I_f, I_g, I_m)',
-      statement: String.raw`The Princeton indices measure fertility against the **Hutterite schedule** of marital fertility $F^H_a$, the highest recorded for a large population (the Hutterites of the 1920s). With $B$ births, $W_a$ women and $M_a$ married women in age group $a$: the **overall index** is $I_f = B\big/\sum_a W_a F^H_a$; the **marital index** is $I_g = B^{\text{marital}}\big/\sum_a M_a F^H_a$; and the **proportion-married index** is $I_m = \sum_a M_a F^H_a\big/\sum_a W_a F^H_a$. If all births are marital, $I_f = I_g\,I_m$; in general $I_f = I_g I_m + I_h(1-I_m)$ with $I_h$ the same ratio for nonmarital births among unmarried women.`,
-      idea: String.raw`By comparing a population's births with what the same women would have under a fixed high schedule, the indices remove the age structure, so they can be compared across times and places. Because $I_f$ is a product of how many women are married (weighted by when marital fertility is highest) and how fertile married women are, taking logs splits a decline in overall fertility into a marriage part and a marital part. In the Princeton European Fertility Project the marital index turned out to be the one that fell as the fertility transition spread across 19th-century European provinces.`,
+      statement: String.raw`The Princeton indices measure fertility against the **Hutterite schedule** of marital fertility $F^H_a$, a high-fertility reference based on married Hutterites in1921–1930. Coale deliberately substituted0.300 for ages15–19 because the small, selected group of teenage married Hutterites had an unrepresentative observed rate above0.700 (1965, p.205). With $B$ births, $W_a$ women and $M_a$ married women in age group $a$: the **overall index** is $I_f = B\big/\sum_a W_a F^H_a$; the **marital index** is $I_g = B^{\text{marital}}\big/\sum_a M_a F^H_a$; and the **proportion-married index** is $I_m = \sum_a M_a F^H_a\big/\sum_a W_a F^H_a$. If all births are marital, $I_f = I_g\,I_m$; in general $I_f = I_g I_m + I_h(1-I_m)$ with $I_h$ the same ratio for nonmarital births among unmarried women.`,
+      idea: String.raw`By comparing a population's births with what the same women would have under a fixed high schedule, the indices use the actual age counts with a common reference schedule (indirect standardisation). Ratios can still depend on age weights when observed age-specific rates are not proportional to the standard. Because $I_f$ is a product of how many women are married (weighted by when marital fertility is highest) and how fertile married women are, taking logs splits a decline in overall fertility into a marriage part and a marital part. Coale’s1965 historical comparison uses these indices to distinguish changes in marriage exposure from changes in fertility within marriage (pp.205–208).`,
       caption: String.raw`Blue bars: observed rates of the chosen country and year. Grey: the Hutterite marital schedule applied to every woman (its total is the denominator of $I_f$). Orange: the same schedule applied only to married women, for a nuptiality curve you set with the age at marriage and the share ever married. The bars on the right are the three indices: $I_f$ comes from the data (births and women of the UN estimates), while $I_m$ and $I_g$ depend on the nuptiality curve you assume; change it and watch $I_m$ and $I_g$ trade off while $I_f$ stays put.`,
       deps: ['demo-4.1'],
       refs: ['PHG ch. 5'],
       tags: ['Hutterite', 'fertility indices', 'marriage'],
-      credit: 'Coale and the Princeton European Fertility Project, 1960s–1980s',
-      verify: true,
-      scope: String.raw`$I_f$ is computed from the UN WPP 2024 estimates of births and women by age (ages 15–49); the shares married are an illustrative logistic curve set by you, not census data, so $I_m$ and $I_g$ show how the decomposition works and are not estimates for these countries. The Hutterite rates for 20–49 are the standard values and the 15–19 value of 0.300 is quoted from memory.`,
+      credit: 'Ansley J. Coale, 1965, pp.205–209, Tables1–2 and Eq1',
+      scope: String.raw`$I_f$ is computed from the UN WPP 2024 estimates of rounded fertility rates and recovered exposures for ages10–54, against the reference schedule for ages15–49 (zero outside); the shares married are an illustrative logistic curve set by you, not census data, so $I_m$ and $I_g$ show how the decomposition works and are not estimates for these countries. All seven reference values are transcribed from Coale1965, Table1,p.209; the teenage value is a chosen standard, not the observed teenage Hutterite rate.`,
       viz(v) {
         const co = v.select('country', cOpts(), 'FRA');
         const yr = v.slider('year', FY0, FY1, 1950, { int: true });
@@ -144,12 +144,13 @@ export default {
           s.path(stepPath(HUT, 1000), { color: 'muted', width: 2, dash: true });
           s.path(stepPath(HUT.map((x, i) => x * m[i]), 1000), { color: 'orange', width: 2.6 });
           const bars = [[If, 'accent'], [Ig, 'green'], [Im, 'orange'], [Ig * Im, 'purple']];
+          t.setView([0, 4], [0, Math.max(1.1, ...bars.map(([value]) => value * 1.2 + 0.08))]);
           bars.forEach(([val, col], i) => { t.rect(i + 0.15, 0, i + 0.85, val, { fill: col, fillAlpha: 0.45, color: col, width: 1.5 }); t.text(v.fix(val, 3), i + 0.5, val + 0.02, { size: 12, color: 'ink', align: 'center', baseline: 'bottom' }); });
           t.hline(1, { color: 'muted', dash: true, alpha: 0.6 });
           R = { If, Ig, Im, Ih, B, tfr: tfrOf(f), prod: Ig * Im + Ih * (1 - Im) };
         });
         v.legend([['accent', 'observed', { area: true }], ['muted', 'Hutterite, all women', { dash: true }], ['orange', 'Hutterite, married women only']]);
-        v.readout(() => `$I_f$ = **${v.fix(R.If, 3)}** (births ${int(R.B)} thousand; TFR ${v.fix(R.tfr, 2)}).  For the nuptiality curve you set: $I_m$ = **${v.fix(R.Im, 3)}**, $I_g$ = **${v.fix(R.Ig, 3)}**${R.Ig > 1 ? ' (above 1: more births than the Hutterite maximum implies, so this marriage curve is too low for these data)' : ''}.\n$I_g I_m + I_h(1-I_m)$ = ${v.fix(R.prod, 3)} = $I_f$ (nonmarital index $I_h$ = ${v.fix(R.Ih, 3)}).`);
+        v.readout(() => `$I_f$ = **${v.fix(R.If, 3)}** (births ${int(R.B)} thousand; TFR ${v.fix(R.tfr, 2)}).  For the nuptiality curve you set: $I_m$ = **${v.fix(R.Im, 3)}**, $I_g$ = **${v.fix(R.Ig, 3)}**${R.Ig > 1 ? ' (above the reference: inspect the assumed marriage exposure and nonmarital share)' : ''}.\n$I_g I_m + I_h(1-I_m)$ = ${v.fix(R.prod, 3)} = $I_f$ (nonmarital index $I_h$ = ${v.fix(R.Ih, 3)}).`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.10
@@ -160,7 +161,7 @@ export default {
       statement: String.raw`Let a woman's number of children be a random variable $K$ with mean $\mu$ and variance $\sigma^2$ (including women with none). The average family size **of women** is $\mu$, but a child chosen at random comes from a family whose size has the length-biased distribution $q_k = k\,p_k/\mu$, with mean $E[K^2]/\mu = \mu + \sigma^2/\mu$ (Preston, 1976). For $\sigma^2 > 0$ this exceeds $\mu$; for a Poisson number of births it is $\mu+1$. So the typical child has more siblings (counting itself) than the average woman has children, even though nothing is wrong with either number.`,
       idea: String.raw`It is the inspection paradox: sampling children rather than mothers gives each mother weight proportional to her number of children, so large families are over-represented and childless women vanish from the sample. The mean of the weighted distribution is $\sum k\cdot k p_k/\mu = E[K^2]/\mu$, and $E[K^2] = \sigma^2 + \mu^2$ turns it into $\mu + \sigma^2/\mu$. The more unequal the family sizes, the larger the gap; and the same arithmetic explains why the average class size experienced by students, or the crowd density seen by a person, exceeds the average.`,
       caption: String.raw`Blue bars: the distribution of family sizes among women (mean $\mu$). Orange: the distribution among children, $k p_k/\mu$. Set the mean and the dispersion (variance to mean ratio) and watch the orange mean exceed the blue by exactly $\sigma^2/\mu$. Right: a random sample of 24 women (one row each); the gold ring marks a child chosen at random from all of their children, whose family is highlighted. Press **Resample** to draw again; over many draws the chosen family is larger than the average row.`,
-      deps: ['demo-4.2'],
+      deps: ['demo-4.2', 'prob-1.6.9a', 'prob-1.6.13'],
       refs: ['PHG ch. 5'],
       tags: ['inspection paradox', 'sampling'],
       credit: 'Preston, 1976',

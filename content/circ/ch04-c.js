@@ -17,12 +17,12 @@ export default {
       name: 'The Transistor, A Semi-Conductor Triode',
       paper: { authors: 'J. Bardeen and W. H. Brattain', year: 1948, title: 'The Transistor, A Semi-Conductor Triode', venue: 'Physical Review 74 (2): 230–231', doi: '10.1103/PhysRev.74.230' },
       introduces: ['tech-11.16', 'mat-9.9'],
-      credit: 'J. Bardeen and W. H. Brattain, Bell Telephone Laboratories (letter dated 15 July 1948; the device was first demonstrated in December 1947)',
+      credit: 'J. Bardeen and W. H. Brattain, Bell Telephone Laboratories, Physical Review 74, 230–231 (1948)',
       verify: true,
       statement: String.raw`The letter announces a three-electrode device made from a block of germanium: two metal point contacts, the *emitter* and the *collector*, touch the surface very close together, and a large-area *base* contact is made to the block. The emitter is biased in the forward direction, the collector in the reverse direction. The collector current is controlled by the emitter current: part of the current entering through the emitter reaches the collector, and the device can amplify, giving both voltage and power gain in a circuit with a load resistor in the collector lead.`,
-      idea: String.raw`Before the transistor, amplification meant a vacuum tube: a heated filament, a grid and a plate in a glass envelope. Bell Labs had been looking for a solid-state replacement since the 1930s, and field-effect schemes (voltage on a plate near a semiconductor) did not work as predicted because surface states trapped the induced charge. Bardeen and Brattain, working in Shockley's group, found that a second reverse-biased point contact placed within about a hundredth of a millimetre of a forward-biased one collects the carriers the first injects. The paper calls the device a semiconductor *triode* and describes it by its electrical behaviour; the physical picture (injection of minority carriers, "holes", into n-type germanium) was refined in their longer 1949 paper and in Shockley's junction theory (4.15).`,
-      caption: String.raw`**A model, not the paper's data.** Left: a germanium block with emitter and collector points; the gold dots are holes injected by the emitter, fewer of which reach the collector as the contacts are moved apart (the spacing slider). Right: collector characteristics $i_C=i_{C0}+\alpha\,i_E$ for several emitter currents, with a collector supply and load resistor: the thick line is the load line, and the band shows the swing in collector current when the emitter current is varied by the signal. Close spacing gives $\alpha>1$ (a point-contact peculiarity); the readout gives the model's voltage and power gain, whose values depend entirely on the assumed spacing, load and input resistance.`,
-      scope: String.raw`Illustrative point-contact model: $\alpha(d)=3e^{-d/40\,\mu\mathrm{m}}$, input resistance $26\,\Omega\,/\,I_E[\mathrm{mA}]$ plus $200\,\Omega$ spreading resistance. The paper's own quantitative results are not reproduced here.`,
+      idea: String.raw`Before the transistor, amplification meant a vacuum tube: a heated filament, a grid and a plate in a glass envelope. Bell Labs had been looking for a solid-state replacement since the 1930s, and field-effect schemes (voltage on a plate near a semiconductor) did not work as predicted because surface states trapped the induced charge. Bardeen and Brattain, working in Shockley's group, found that a second reverse-biased point contact placed close to a forward-biased one collects the carriers the first injects. The paper calls the device a semiconductor *triode* and describes it by its electrical behaviour; the physical picture (injection of minority carriers, "holes", into n-type germanium) was refined in their longer 1949 paper and in Shockley's junction theory (4.15).`,
+      caption: String.raw`**A model, not the paper's data.** Left: a germanium block with emitter and collector points; the gold dots are holes injected by the emitter, fewer of which reach the collector as the contacts are moved apart (the spacing slider). Right: collector characteristics $i_C=i_{C0}+\alpha\,i_E(1-e^{-|v_C|/0.5\,\mathrm V})$ for several emitter currents, with a collector supply and load resistor: the thick line is the load line, and the band shows the swing in collector current when the emitter current is varied by the signal. Close spacing gives $\alpha>1$ (a point-contact peculiarity); the readout gives the model's voltage and power gain, whose values depend entirely on the assumed spacing, load and input resistance.`,
+      scope: String.raw`Illustrative point-contact model: $\alpha(d)=3e^{-d/40\,\mu\mathrm{m}}$, input resistance $26\,\Omega\,/\,I_E[\mathrm{mA}]$ plus $200\,\Omega$ spreading resistance. A smooth collector-voltage compliance factor forces current to vanish at zero collector voltage. The paper's own quantitative results are not reproduced here.`,
       deps: ['mat-9.5'],
       refs: [],
       tags: ['transistor', 'point contact', 'germanium'],
@@ -38,6 +38,7 @@ export default {
         const Vcc = 30, ic0 = (vc) => 0.02 * (vc / 5);
         v.render(() => {
           const al = 3 * Math.exp(-d.value / 40), ie = Ie.value, R = RL.value;
+          const cur = (vc, e) => ic0(vc) + al * e * (1 - Math.exp(-vc / 0.5));
           // block
           sb.rect(0.6, 0.6, 9.4, 2.6, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.07, radius: 6 });
           sb.text('n-type germanium', 7.6, 1.0, { size: 12, color: 'muted' });
@@ -55,19 +56,21 @@ export default {
             sb.dot(x, y, { r: 3, color: 'gold' });
           }
           // characteristics
-          for (let e = 0; e <= 4; e++) sc.fn((vc) => ic0(vc) + al * e, { domain: [0, 30], color: 'accent', width: 1.3, alpha: 0.55 });
-          sc.fn((vc) => ic0(vc) + al * ie, { domain: [0, 30], color: 'accent', width: 3 });
+          for (let e = 0; e <= 4; e++) sc.fn((vc) => cur(vc, e), { domain: [0, 30], color: 'accent', width: 1.3, alpha: 0.55 });
+          sc.fn((vc) => cur(vc, ie), { domain: [0, 30], color: 'accent', width: 3 });
           sc.line(0, Vcc / R * 1e3, Vcc, 0, { color: 'ink', width: 2 });
-          const vq = bisectDec((x) => (Vcc - x) / R * 1e3 - (ic0(x) + al * ie), 0, Vcc);
+          const vq = bisectDec((x) => (Vcc - x) / R * 1e3 - cur(x, ie), 0, Vcc);
           const iq = (Vcc - vq) / R * 1e3;
           const lo = Math.max(ie - dIe.value, 0), hi = ie + dIe.value;
-          sc.hband(al * lo + ic0(vq), al * hi + ic0(vq), { color: 'orange', alpha: 0.2 });
+          sc.hband(cur(vq, lo), cur(vq, hi), { color: 'orange', alpha: 0.2 });
           sc.dot(vq, iq, { color: 'gold', r: 7, label: 'Q', labelPos: 'ne' });
-          const rin = 26 / Math.max(ie, 0.05) + 200, vgain = (al * R) / rin, pgain = al * al * R / rin;
+          const rin = 26 / Math.max(ie, 0.05) + 200;
+          const ge = al * (1 - Math.exp(-vq / 0.5)), go = (0.004 + al * ie * Math.exp(-vq / 0.5) / 0.5) * 1e-3;
+          const reff = 1 / (1 / R + go), vgain = ge * reff / rin, pgain = ge * ge * reff * reff / (R * rin);
           info = { al, vq, iq, vgain, pgain, rin };
         });
         v.legend([['accent', '$i_C(v_C)$ for $I_E = 0\\dots4$ mA'], ['ink', 'load line'], ['orange', 'collector-current swing'], ['gold', 'holes']]);
-        v.readout(() => info && `Model: $\\alpha = ${v.fix(info.al, 2)}$; operating point $v_C = ${v.fix(info.vq, 1)}$ V, $i_C = ${v.fix(info.iq, 2)}$ mA; input resistance $\\approx ${v.fix(info.rin, 0)}\\,\\Omega$; small-signal voltage gain $\\alpha R_L/r_{in} = ${v.fix(info.vgain, 0)}$ and power gain $\\alpha^2R_L/r_{in} = ${v.fix(info.pgain, 0)}$. The letter reports amplification of both voltage and power; its numbers are not used here.`);
+        v.readout(() => info && `Model: $\\alpha = ${v.fix(info.al, 2)}$; operating point $v_C = ${v.fix(info.vq, 1)}$ V, $i_C = ${v.fix(info.iq, 2)}$ mA; input resistance $\\approx ${v.fix(info.rin, 0)}\\,\\Omega$; small-signal voltage gain $g_e(R_L\\parallel r_o)/r_{in} = ${v.fix(info.vgain, 0)}$ and power gain $g_e^2(R_L\\parallel r_o)^2/(R_Lr_{in}) = ${v.fix(info.pgain, 0)}$. The letter reports amplification of both voltage and power; its numbers are not used here.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.15
@@ -80,10 +83,10 @@ export default {
       credit: 'W. Shockley, Bell Telephone Laboratories, 1949 (BSTJ 28, July 1949)',
       statement: String.raw`The paper treats a junction of p- and n-type semiconductor by the diffusion of minority carriers. (a) Biased at voltage $V$ in the forward direction, the junction injects holes into the n side and electrons into the p side, whose excess concentration at the edge of the depletion layer is $p_{n0}(e^{qV/kT}-1)$ and which decays with the diffusion length, $e^{-x/L_p}$; the current is $I=I_0(e^{qV/kT}-1)$ (the diode equation, 4.1). (b) Two junctions back to back, with a base thinner than the diffusion length $L$, form a *junction transistor*: the fraction of injected carriers that cross the base is $\operatorname{sech}(W/L)$, and the current gain is $\beta=\alpha/(1-\alpha)$ with $\alpha=\gamma\operatorname{sech}(W/L)$, where $\gamma$ (the injection efficiency) is close to $1$ when the emitter is much more heavily doped than the base. A thin, lightly doped base and a heavily doped emitter therefore give $\beta\gg1$.`,
       idea: String.raw`The point-contact transistor (4.14) worked but was erratic and not well understood. Shockley predicted that carrier injection across a junction obeys simple diffusion physics (cm-4.7) and showed that the same junction-based theory predicted a three-layer amplifier which the earlier device was not. The paper derives the exponential law from continuity of the minority-carrier flow, shows the current is a sum of two diffusion currents (so doping decides which carrier dominates), and works out the transistor: the collector current follows the *emitter* current, only slightly reduced by recombination in the base. Practical junction transistors were made soon afterwards.`,
-      caption: String.raw`**Junction** (left selector): bias the junction and watch the minority-carrier excess on both sides (logarithmic axis); the right plot is the current, which follows $I_0(e^{V/V_T}-1)$ (current axis logarithmic, a straight line). **Transistor**: the injected electrons cross a base of width $W$ that ends at the collector, where they are swept away (the concentration is zero there); thin the base and more arrive. The right plot gives the gain $\beta$ against $W/L$ (log scale) for the chosen emitter-to-base doping ratio, together with the approximation $\beta\approx 1/(W^2/2L^2+W/(LD))$.`,
-      scope: String.raw`Low-level injection, one-dimensional, abrupt junction, no recombination in the depletion layer; the transistor formulas are a simplified version of the paper's treatment ($\gamma = 1/(1+(W/L)/D)$ with $D$ the emitter-to-base doping ratio, in my notation).`,
+      caption: String.raw`**Junction** (left selector): bias the junction and watch the minority-carrier density, including its equilibrium background, on both sides (logarithmic axis); the right plot is the current, which follows $I_0(e^{V/V_T}-1)$ (current axis logarithmic, a straight line). **Transistor**: the injected electrons cross a base of width $W$ that ends at the collector, where they are swept away (the concentration is zero there); thin the base and more arrive. The right plot gives the gain $\beta$ against $W/L$ (log scale) for the chosen illustrative injection parameter $D$, together with the approximation $\beta\approx 1/(W^2/2L^2+W/(LD))$.`,
+      scope: String.raw`Low-level injection, one-dimensional, abrupt junction, no recombination in the depletion layer; the transistor formulas are a simplified version of the paper's treatment. The plotted injection efficiency $\gamma = 1/(1+(W/L)/D)$ is an illustrative parametrization, with $D$ a dimensionless injection parameter absorbing doping, mobility and diffusion-length effects; it is not a formula in the paper or a measured doping ratio.`,
       deps: ['mat-9.5', 'cm-4.7'],
-      refs: [],
+      refs: ['Shockley (1949), §§4.2–4.3, Eqs. (4.4), (4.8), (4.13), pp. 458–461; §6, Eqs. (6.1)–(6.4), pp. 472–474'],
       tags: ['p-n junction', 'transistor', 'diffusion'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Shockley_diode_equation', doi: 'https://doi.org/10.1002/j.1538-7305.1949.tb03645.x' },
       viz(v) {
@@ -92,15 +95,15 @@ export default {
         const s2 = v.stage({ x: [0, 0.75], y: [1e-12, 1e-1], ylog: true, axes: 'box', gutter: true, height: 330, weight: 0.9, xlabel: '$V$ (V)', ylabel: '$I/I_{0}$   (normalised current)', title: 'current against voltage' });
         const V = v.slider('forward bias $V$', 0, 0.7, 0.45, { step: 0.005, fmt: (x) => `${v.fix(x * 1000, 0)} mV` });
         const W = v.slider('base width $W/L$', 0.02, 3, 0.1, { log: true, sig: 2, fmt: (x) => v.fix(x, 2) });
-        const Dr = v.slider('emitter / base doping', 1, 1000, 100, { log: true, sig: 2, fmt: (x) => v.fix(x, 0) });
+        const Dr = v.slider('injection parameter $D$', 1, 1000, 100, { log: true, sig: 2, fmt: (x) => v.fix(x, 0) });
         let info = null;
         v.render(() => {
           const t = mode.value === 't', vb = V.value, ex = Math.exp(vb / vT(300)) - 1;
-          W.el.hidden = !t; Dr.el.hidden = !t;
+          W.el.hidden = !t; Dr.el.hidden = !t; V.el.hidden = t;
           const beta = (w, D) => { const g = 1 / (1 + w / D), a = g / Math.cosh(w); return a / (1 - a); };
           if (!t) {
             s1.setScale({ ylog: true, y: [1, Math.max(ex * 3, 10)] });
-            s1.setLabels('position $x/L$ (junction at 0)', 'excess carriers $/\\,$ equilibrium');
+            s1.setLabels('position $x/L$ (junction at 0)', 'minority-carrier density / equilibrium');
             s1.fn((x) => 1 + ex * Math.exp(-x), { domain: [0, 3], color: 'accent', width: 2.6 });
             s1.fn((x) => 1 + ex * Math.exp(x), { domain: [-3, 0], color: 'red', width: 2.6 });
             s1.vline(0, { color: 'ink', width: 1.5 });
@@ -144,14 +147,13 @@ export default {
       name: 'Miniaturized Electronic Circuits',
       paper: { authors: 'Jack S. Kilby', year: 1959, title: 'Miniaturized Electronic Circuits', venue: 'US Patent 3,138,743 (filed 6 February 1959, granted 23 June 1964)', url: 'https://patents.google.com/patent/US3138743A/en' },
       introduces: ['tech-11.17'],
-      credit: 'J. S. Kilby, Texas Instruments: demonstration September 1958; patent filed 6 February 1959, granted 23 June 1964',
-      verify: true,
+      credit: 'J. S. Kilby, Texas Instruments; US3138743A filed 6 February 1959, granted 23 June 1964',
       statement: String.raw`The patent describes an electronic circuit in which every component, resistors, capacitors and active devices alike, is made from the same body of semiconductor material (germanium or silicon), so that the whole circuit is a single piece instead of discrete parts wired together; the parts are formed in the slab by the processes of doping and etching that also make transistors, and connections between them are made on or between regions of the slab. The point is a change in how circuits are *made*: the components of a circuit are fabricated together, not first made separately and then joined by hand. Resistance is provided by the bulk resistivity of a length of semiconductor, capacitance by the capacitance of a reverse-biased junction.`,
-      idea: String.raw`By 1958 a circuit of hundreds of transistors, resistors and capacitors was a tangle of thousands of soldered joints, each a chance of failure (the "tyranny of numbers"). Kilby, newly hired at Texas Instruments, saw that resistors and capacitors can be made of the same semiconductor as the transistor, and so a whole circuit can be cut from one slab. The first demonstrations were small circuits (an oscillator and an amplifier) on germanium, still with gold wires connecting the parts. Fairchild's planar process and Robert Noyce's monolithic design (1959) later replaced the wires with deposited metal strips; the integrated circuit is credited to both men, and the 2000 Nobel Prize in Physics recognised Kilby.`,
-      caption: String.raw`**An illustrative model.** The oscillator is a three-section $RC$ phase-shift oscillator, an amplifier of gain $-A$ with a ladder of three equal resistors and capacitors from output to input. The blue wave is the simulated output (with the amplifier clipping at the supply): it grows only if $A$ exceeds the threshold $29$, at the frequency $\sqrt6/(2\pi RC)$. The lower panel contrasts the construction: *discrete* parts, each soldered by two leads, against the *one slab* where the same ladder is made in place, with resistor length $\propto R$ and capacitor area $\propto C$ (a schematic, not Kilby's layout).`,
-      scope: String.raw`Idealised ladder ($R$ and $C$ equal, loading of the ladder included), amplifier with tanh saturation. The patent's claims and drawings are summarised from memory and the counts of joints are a model (one lead per terminal, one bonded wire per net), so treat them as illustrative.`,
+      idea: String.raw`The patent addresses the fabrication and assembly steps required to miniaturize a circuit. Its examples form resistors, junction or oxide-dielectric capacitors and transistors in a semiconductor wafer, then interconnect selected regions. Figures 6–7 describe a multivibrator; Figures 8a–8c describe a phase-shift oscillator using a distributed RC network. The specification allows bonded gold wires and also describes deposited conductors on an insulating layer, so a single semiconductor body does not mean that every material or every interconnection is semiconductor.`,
+      caption: String.raw`**An illustrative model.** An amplifier of gain $-A$ feeds back through a loaded low-pass ladder of three equal series resistors and shunt capacitors. The blue wave is the simulated output (with the amplifier clipping at the supply): it grows only if $A$ exceeds the threshold $29$, with onset frequency $\sqrt6/(2\pi RC)$; saturation can shift the measured frequency. The lower panel contrasts the construction: *discrete* parts, each soldered by two leads, against the *one slab* where the same ladder is made in place, with resistor length $\propto R$ and capacitor area $\propto C$ (a schematic, not Kilby's layout).`,
+      scope: String.raw`Idealised low-pass ladder ($R$ and $C$ equal, loading included), amplifier with tanh saturation; its small-signal characteristic equation is $z^3+5z^2+6z+(1+A)=0$, $z=sRC$, giving threshold $A=29$ and $\omega RC=\sqrt6$. This is not a reconstruction of the patent's distributed network. Counts of joints are schematic model counts, not historical measurements.`,
       deps: ['tech-11.16', 'circ-4.11'],
-      refs: [],
+      refs: ['Kilby, US3138743A, specification describing Figs. 1–8c and claims 1–5; bonded-wire and deposited-conductor interconnections'],
       tags: ['integrated circuit', 'oscillator', 'history'],
       links: { patent: 'https://patents.google.com/patent/US3138743A/en', wikipedia: 'https://en.wikipedia.org/wiki/Jack_Kilby' },
       viz(v) {
@@ -221,7 +223,7 @@ export default {
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.17
     {
-      num: '4.17',
+      num: '4.17', verify: true,
       kind: 'Paper',
       name: 'Nanowatt Logic Using Field-Effect MOS Triodes',
       paper: { authors: 'F. M. Wanlass and C. T. Sah', year: 1963, title: 'Nanowatt Logic Using Field-Effect Metal-Oxide Semiconductor Triodes', venue: '1963 IEEE International Solid-State Circuits Conference, Digest of Technical Papers: 32–33', doi: '10.1109/ISSCC.1963.1157450' },
@@ -229,8 +231,8 @@ export default {
       credit: 'F. M. Wanlass and C.-T. Sah, 1963 (ISSCC, February 1963); Wanlass filed the CMOS patent US 3,356,858 on 18 June 1963',
       statement: String.raw`The paper shows that logic built from complementary pairs of n-channel and p-channel metal-oxide-semiconductor field-effect transistors dissipates almost no power while a circuit is idle: in the complementary inverter exactly one transistor of the pair is conducting in either logic state, so the only supply current is the leakage of the off transistor (nanowatts per gate), and power is dissipated chiefly while switching. Compared with a resistor-load inverter, whose output-low state draws a steady current $V_{DD}/(R+R_{\mathrm{on}})$, the complementary circuit has a static power many orders of magnitude lower, with output levels equal to the supply rails.`,
       idea: String.raw`Earlier MOS and bipolar logic gates (resistor- or depletion-load) drew current whenever the output was low, so power scaled with the number of gates. The complementary pair (4.8, 4.7) removes the static path from supply to ground. What remains is the dynamic energy $CV_{DD}^2$ dissipated per charge–discharge cycle of the load capacitance $C$, the quantity that, multiplied by the clock frequency and the number of switching gates, sets the power of every modern chip. The paper gave the idea its first public presentation; the patent (filed in June 1963) followed. In the decades after, CMOS replaced nearly all other logic families because power, not speed, limits density.`,
-      caption: String.raw`**A model with illustrative numbers.** Power of one gate against clock frequency (log–log): the resistor-load inverter (red) dissipates a constant static power whenever its output is low, the complementary inverter (blue) only its leakage plus the dynamic power $\tfrac12 \cdot CV_{DD}^2f$ (activity factor $\tfrac12$), which rises in proportion to the frequency. Below the crossover frequency (gold) the complementary gate is much cheaper. The right plot shows the supply current during switching: spikes for the complementary pair, a flat current as long as the output of the resistor-load gate is low, as seen after the second transition (the complementary pair draws supply current only when its output rises).`,
-      scope: String.raw`Quasi-static model with output resistance $R_{\mathrm{on}}=1$ kΩ of the on transistor, load resistor $R$, assumed leakage current; the paper's measured nanowatt figures are not reproduced.`,
+      caption: String.raw`**A model with illustrative numbers.** Power of one gate against clock frequency (log–log): the resistor-load inverter (red) dissipates a constant static power whenever its output is low, the complementary inverter (blue) only its leakage plus the dynamic power $\tfrac12 \cdot CV_{DD}^2f$ (activity factor $\tfrac12$), which rises in proportion to the frequency. Below the marked frequency (gold), where the shared dynamic term equals the resistor-load static term, the static saving dominates. The curves do not cross: their static-power difference is constant in this model. The right plot shows the supply current during switching: spikes for the complementary pair, current approaching a nonzero plateau for the resistor-load gate after its output falls at the second transition (the complementary pair draws supply current only when its output rises).`,
+      scope: String.raw`Average-power comparison assumes half a complete charge–discharge event per clock and equal switched energy for both gates; it extrapolates beyond the settling limit and omits short-circuit current. The transient panel is a separate local RC step response, not a waveform at the selected clock. Quasi-static model with output resistance $R_{\mathrm{on}}=1$ kΩ of the on transistor, load resistor $R$, assumed leakage current; the paper's measured nanowatt figures are not reproduced.`,
       deps: ['circ-4.7', 'cm-4.10'],
       refs: [],
       tags: ['cmos', 'power', 'history'],
@@ -251,23 +253,24 @@ export default {
           sp.fn(Pc, { domain: [1e3, 1e10], color: 'accent', width: 2.6 });
           sp.fn(Pr, { domain: [1e3, 1e10], color: 'red', width: 2.6 });
           sp.fn((x) => 0.5 * C * V * V * x, { domain: [1e3, 1e10], color: 'muted', width: 1.2, dash: true, alpha: 0.7 });
-          const fx = (V * V / (R + Ron) - 2 * V * lk) / (C * V * V);
+          const fx = 1 / ((R + Ron) * C);
           if (fx > 1e3 && fx < 1e10) { sp.vline(fx, { color: 'gold', dash: true }); sp.dot(fx, Pr(fx), { color: 'gold', r: 5 }); }
           sp.vline(f, { color: 'orange', width: 1.5 });
           sp.dot(f, Pc(f), { color: 'accent', r: 6 }); sp.dot(f, Pr(f), { color: 'red', r: 6 });
           // supply current around one pair of transitions, time in units of tau = Ron*C: the output rises at t = 0 and falls at t = 8 tau
-          const tau = Ron * C, ipk = V / Ron, iRes = V / (R + Ron) / ipk, np = 400, cm = [], rs = [];
+          const ipk = V / Ron, vlow = V * Ron / (R + Ron), v8 = V + (vlow - V) * Math.exp(-8 * Ron / R), np = 400, cm = [], rs = [];
           for (let k = 0; k <= np; k++) {
             const t = (16 * k) / np;
             cm.push([t, (t < 8 ? Math.exp(-t) : 0) + lk / ipk]);
-            rs.push([t, t < 8 ? (V / R / ipk) * Math.exp(-t * tau / (R * C)) : iRes]);
+            const vr = t < 8 ? V + (vlow - V) * Math.exp(-t * Ron / R) : vlow + (v8 - vlow) * Math.exp(-(t - 8) * (R + Ron) / R);
+            rs.push([t, (V - vr) / R / ipk]);
           }
           si.path(rs, { color: 'red', width: 2 });
           si.path(cm, { color: 'accent', width: 2.2 });
           info = { Pc: Pc(f), Pr: Pr(f), fx, ratio: Pr(f) / Pc(f), Ps: V * lk, dyn: 0.5 * C * V * V * f };
         });
-        v.legend([['accent', 'complementary pair'], ['red', 'resistor-load inverter'], ['muted', 'dynamic power alone', { dash: true }], ['gold', 'crossover']]);
-        v.readout(() => info && `At $f = ${engTex(fs.value, 2, 'Hz')}$: complementary gate $${engTex(info.Pc, 3, 'W')}$ (static $${engTex(info.Ps, 2, 'W')}$ + dynamic $${engTex(info.dyn, 2, 'W')}$), resistor-load gate $${engTex(info.Pr, 3, 'W')}$: ratio $${v.fix(info.ratio, 1)}$. ${info.fx > 1e3 && info.fx < 1e10 ? `Above $${engTex(info.fx, 2, 'Hz')}$ the two are dominated by the same dynamic term.` : ''}`);
+        v.legend([['accent', 'complementary pair'], ['red', 'resistor-load inverter'], ['muted', 'dynamic power alone', { dash: true }], ['gold', 'dynamic = resistor-load static']]);
+        v.readout(() => info && `At $f = ${engTex(fs.value, 2, 'Hz')}$: complementary gate $${engTex(info.Pc, 3, 'W')}$ (static $${engTex(info.Ps, 2, 'W')}$ + dynamic $${engTex(info.dyn, 2, 'W')}$), resistor-load gate $${engTex(info.Pr, 3, 'W')}$: ratio $${v.fix(info.ratio, 1)}$. ${info.fx > 1e3 && info.fx < 1e10 ? `Above $${engTex(info.fx, 2, 'Hz')}$ the dynamic term exceeds the resistor-load static term; at much higher frequencies their ratio approaches one in this energy model. Real settling limits are omitted.` : ''}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 4.18
@@ -278,17 +281,15 @@ export default {
       paper: { authors: 'Gordon E. Moore', year: 1965, title: 'Cramming More Components onto Integrated Circuits', venue: 'Electronics 38 (8): 114–117 (reprinted in Proceedings of the IEEE 86 (1): 82–85, 1998)', doi: '10.1109/JPROC.1998.658762' },
       introduces: ['tech-11.18'],
       credit: 'G. E. Moore, Fairchild Semiconductor, Electronics, 19 April 1965; revised forecast (doubling every two years), 1975',
-      verify: true,
-      statement: String.raw`The article argues that integrated electronics will make electronics cheaper, and supports it with two graphs. (a) For a given year there is a number of components per integrated circuit at which the manufacturing cost *per component* is minimal: fewer components waste the fixed cost of the package, more components lower the yield. (b) That optimum number has been growing, and had doubled about every year since the planar process of 1959; extrapolating, Moore projected as many as 65,000 components on a single chip by 1975. In 1975 he revised the rate to a doubling about every two years, which is the form in which "Moore's law" is usually quoted.`,
-      idea: String.raw`Moore, then head of research at Fairchild, was asked to forecast ten years of semiconductor electronics. His observation was economic as much as technical: cost per component is a U-shaped function of complexity, the minimum moves right as process control (yield) improves, and the cost at the minimum falls. Plotting the complexity at minimum cost against year on a logarithmic axis gave a straight line, with only a handful of points. The statement is an empirical trend, not a law of nature; it became a self-fulfilling roadmap for the industry. The unit is *components* (transistors, resistors, diodes, capacitors), not transistors alone.`,
-      caption: String.raw`**A reconstruction.** Left: relative cost per component against components per chip, from a simple model (cost $=(a/n+b)\,e^{n/N_0}$ per component: a fixed cost spread over $n$ components, plus a yield penalty, with $N_0$ growing by a factor 2 per $T_d$ years), for 1962, 1965 and 1970; the minima (gold) move right and down. The figures are the model's, not the paper's. Right: $\log_2$ of components per chip against year. The two gold points are Moore's anchors (about one component in 1959, about 64 = $2^6$ in 1965, implied by the paper's growth to 65,000 in 1975); the dashed line is his projection; the blue points are later microprocessors (transistor counts from Wikipedia's table). Slide the doubling time and compare.`,
-      scope: String.raw`Empirical trend in the industry's densest commercial chips, not a physical law; the cost curves are a toy model and the later chip counts are secondary-source figures.`,
+      statement: String.raw`The article argues that integrated electronics will make electronics cheaper, and supports it with two graphs. (a) For a given year there is a number of components per integrated circuit at which the manufacturing cost *per component* is minimal: fewer components waste the fixed cost of the package, more components lower the yield. (b) That optimum number has been growing, and had doubled about every year since the planar process of 1959; extrapolating, Moore projected as many as 65,000 components on a single chip by 1975. In 1975 he predicted a slowing toward doubling about every two years by the end of that decade, which is the form in which "Moore's law" is usually quoted.`,
+      idea: String.raw`Moore, then director of research and development at Fairchild, forecast ten years of semiconductor electronics. His observation was economic as much as technical: cost per component is a U-shaped function of complexity, the minimum moves right as process control (yield) improves, and the cost at the minimum falls. Plotting the complexity at minimum cost against year on a logarithmic axis gave a straight line, with only a handful of points. The statement is an empirical trend, not a law of nature; both original papers extrapolate from engineering and economic observations. The unit is *components* (transistors, resistors, diodes, capacitors), not transistors alone. The article states 50 components at the current cost minimum; its approximate annual trend extrapolates to about 65,000 in 1975.`,
+      caption: String.raw`**An illustrative economic model.** Left: relative cost per component, $(a/n+b)e^{n/N_0}$, for 1962, 1965 and 1970, with $N_0$ growing by a factor 2 per $T_d$ years; these curves and their minima are not the paper's measured values. Right: the gold point is the article's stated current minimum, 50 components in 1965, and the orange point is its forecast of about 65,000 components in 1975. The grey line is an annual-growth illustration anchored at $2^6=64$ in 1965; it is approximate and does not pass exactly through 50. Blue shows an illustrative continuation from the 1975 forecast with a two-year doubling time, the slower rate Moore predicted in his 1975 paper for the end of that decade. Slide the doubling time to vary the grey scenario.`,
+      scope: String.raw`The 1965 article concerns complexity at minimum manufacturing cost per component, not transistor count alone. Its 1975 follow-up examines the most complex commercially available devices and forecasts a slowing toward two-year doubling by the end of the decade. Cost curves and the blue continuation are models, not digitized observations.`,
       deps: ['tech-11.17'],
-      refs: [],
+      refs: ['Moore (1965), Costs and curves, reprint p. 83; Moore (1975), Progress in Digital Integrated Electronics, pp. 11–13, especially Fig. 5'],
       tags: ['moore\'s law', 'scaling', 'history'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Moore%27s_law', doi: 'https://doi.org/10.1109/JPROC.1998.658762' },
       viz(v) {
-        const chips = [[1971, 2250, '4004'], [1978, 29000, '8086'], [1985, 275000, '80386'], [1993, 3.1e6, 'Pentium'], [2000, 42e6, 'Pentium 4'], [2023, 19e9, 'A17']];
         const s1 = v.stage({ x: [1, 1e6], y: [0.05, 100], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'components per integrated circuit', ylabel: 'relative cost per component', title: 'cost per component' });
         const s2 = v.stage({ x: [1957, 2034], y: [-2, 38], axes: 'box', gutter: true, height: 340, weight: 1.1, xlabel: 'year', ylabel: '$\\log_2$(components per chip)', title: 'complexity against year' });
         const Td = v.slider('doubling time $T_d$', 0.5, 3, 1, { step: 0.05, fmt: (x) => `${v.fix(x, 2)} yr` });
@@ -313,16 +314,15 @@ export default {
           const y0 = 1965, l0 = 6, slope = 1 / td;
           s2.line(1957, l0 + slope * (1957 - y0), 2034, l0 + slope * (2034 - y0), { color: 'muted', width: 1.6, dash: true });
           s2.vline(1975, { color: 'faint', dash: true });
-          s2.dot(1959, 0, { color: 'gold', r: 6 }); s2.dot(1965, 6, { color: 'gold', r: 6 });
+          s2.dot(1965, Math.log2(50), { color: 'gold', r: 6 });
+          s2.text('50 in 1965 (article)', 1965, Math.log2(50), { size: 11.5, color: 'gold', dx: 6, dy: 17, align: 'left', plate: true });
           s2.dot(1975, 16, { color: 'orange', r: 6, hollow: true });
-          s2.text('65 000 in 1975 (Moore)', 1975, 16, { size: 11.5, color: 'orange', dx: -10, dy: 0, align: 'right', plate: true });
-          chips.forEach(([yr, n, name]) => { s2.dot(yr, Math.log2(n), { color: 'accent', r: 5 }); s2.text(name, yr, Math.log2(n), { size: 11, color: 'muted', dx: 6, dy: 13, align: 'left' }); });
-          const ys = chips.map((c) => c[0]), ls = chips.map((c) => Math.log2(c[1])), fit = v.M.linreg(ys, ls);
-          s2.line(1971, fit.predict(1971), 2023, fit.predict(2023), { color: 'accent', width: 1.6 });
-          info = { td, pred1975: Math.pow(2, l0 + slope * 10), fitTd: 1 / fit.slope, opt: [1962, 1965, 1970].map(opt) };
+          s2.text('65 000 in 1975 (Moore)', 1975, 16, { size: 11.5, color: 'orange', dx: 8, dy: 0, align: 'left', plate: true });
+          s2.line(1975, 16, 2034, 16 + (2034 - 1975) / 2, { color: 'accent', width: 1.8 });
+          info = { td, pred1975: Math.pow(2, l0 + slope * 10), opt: [1962, 1965, 1970].map(opt) };
         });
-        v.legend([['gold', 'Moore\'s anchor points / cost minima'], ['muted', 'projection', { dash: true }], ['accent', 'later chips and their fit']]);
-        v.readout(() => info && `Projection with $T_d = ${v.fix(info.td, 2)}$ yr: ${info.pred1975 >= 1e6 ? v.sci(info.pred1975, 2) : Math.round(info.pred1975).toLocaleString('en-US')} components in 1975 (the paper: about 65,000 for $T_d=1$). A straight-line fit through the six later chips gives a doubling time of $${v.fix(info.fitTd, 2)}$ years, close to the two years of the 1975 revision. Model cost minima (components): ${info.opt.map((x) => Math.round(x).toLocaleString('en-US')).join(', ')} for 1962, 1965, 1970.`);
+        v.legend([['gold', '1965 value / model cost minima'], ['muted', 'adjustable scenario', { dash: true }], ['accent', 'two-year continuation (illustrative)'], ['orange', '1975 forecast']]);
+        v.readout(() => info && `Projection with $T_d = ${v.fix(info.td, 2)}$ yr: ${info.pred1975 >= 1e6 ? `$${v.sci(info.pred1975, 2)}$` : Math.round(info.pred1975).toLocaleString('en-US')} components in 1975 (the paper: about 65,000 for $T_d=1$). The blue continuation doubles every two years; its anchor is the 1965 forecast for 1975, not an observed 1975 count. Model cost minima (components): ${info.opt.map((x) => Math.round(x).toLocaleString('en-US')).join(', ')} for 1962, 1965, 1970.`);
       },
     },
   ],

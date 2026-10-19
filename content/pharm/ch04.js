@@ -1,3 +1,5 @@
+import { infusionRegimen } from './infusion-regimen.shared.js';
+import { renalScaling } from './renal.shared.js';
 // Pharmacology — Chapter 4: Dosing regimens
 import { LN2, clamp, memo, DRUGS, BODY, clOf, cSingle, cMulti, cSS, meanOver, extrema, odeDoses, nPrev } from './ch04.shared.js';
 
@@ -18,7 +20,7 @@ export default {
       idea: String.raw`Linearity means the response to a sum of inputs is the sum of the responses, so a second dose does not care that a first one is still in the body: each dose decays on its own schedule (the one-compartment decay of pharm-2.1). Adding the shifted copies gives the whole history. Nothing here needs a differential equation per dose; the same sum is recovered by integrating the ODE across the dose jumps, which the readout does as a check.`,
       caption: String.raw`Each thin coloured curve is the contribution of one dose; the thick curve is their sum. Drag the **interval** and the **half-life**: when $\tau$ is short compared with $t_{1/2}$ the contributions pile up, when it is long they hardly overlap. Switch to an **oral** dose to see the same superposition with the Bateman curve. The dashed lines mark the steady-state peak and trough that the sawtooth is heading for.`,
       scope: String.raw`Holds only for linear kinetics: first-order absorption and elimination, constant parameters. It fails for saturable elimination (chapter 5), time-varying clearance, or autoinduction. Values here are a model (V = 40 L, dose 100 mg), not a particular drug.`,
-      deps: ['pharm-2.1'],
+      deps: ['pharm-2.1', 'sig-2.2', 'sig-2.3'],
       refs: ['Rowland–Tozer'],
       tags: ['superposition', 'accumulation'],
       viz(v) {
@@ -187,13 +189,12 @@ export default {
       num: '4.5',
       kind: 'Concept',
       name: 'Therapeutic window and target concentration',
-      statement: String.raw`A **therapeutic window** is the band of plasma concentrations between a minimum effective level and a minimum toxic level, within which most patients get benefit without unacceptable harm. A regimen is designed so the steady-state trough stays above the lower edge and the peak below the upper one; the dosing rate follows from a target average concentration, $\text{dose rate}=\mathrm{CL}\,\bar C_{\text{target}}/F$ (pharm-4.3), and the interval is chosen so the swing fits inside the band.`,
+      statement: String.raw`A **therapeutic window** is the band of plasma concentrations between a minimum effective level and a minimum toxic level, used as a population-level reference for balancing efficacy and toxicity. It is not a guarantee of efficacy or safety for an individual. In this sustained-effect teaching model one aims to keep trough and peak inside that reference band; other treatment strategies deliberately allow concentrations to fall below a target. The dosing rate follows from a target average concentration, $\text{dose rate}=\mathrm{CL}\,\bar C_{\text{target}}/F$ (pharm-4.3), and the interval is chosen so the swing fits inside the band.`,
       idea: String.raw`Two constraints compete. The average level (set by dose rate and clearance) must sit inside the band, and the peak-to-trough swing (set by $\tau/t_{1/2}$ and by absorption, pharm-4.4) must be narrow enough to fit. A narrow window and a short half-life force frequent doses or a slow-release form; a wide window tolerates a once-daily tablet. Windows are population statistics, not sharp thresholds: individuals differ in sensitivity (chapters 6 and 7).`,
       caption: String.raw`Pick a drug, then drag the dose and interval until the steady-state sawtooth (accent) lies in the green band. **Centre on target** sets the dose rate so the mean sits at the geometric middle of the band. The readout gives the fraction of the steady-state cycle spent inside the band.`,
-      scope: String.raw`The windows used here are commonly quoted textbook ranges (theophylline about 10–20 mg/L, digoxin about 0.5–2 ng/mL), which differ between sources, indications and decades; the pharmacokinetic values are rounded teaching figures (pharm-1.x presets) and ka values are assumed. Not dosing advice.`,
-      verify: true,
+      scope: String.raw`The plotted bands are label-supported total-serum references, not universal targets: theophylline’s label describes 10–20 mg/L historically, but recommends peaks 10–15 mg/L for most benefit with lower adverse-event risk and notes toxicity within 10–20 with reduced protein binding. Digoxin’s label associates <0.5 ng/mL with reduced efficacy and >2 ng/mL with increased toxicity, while toxicity can occur lower; measurements are taken at least six hours after dosing, not at the absorption peak. The curve’s sharp band edges are teaching cutoffs, not physiological boundaries; the pharmacokinetic values are rounded teaching figures (pharm-1.x presets) and ka values are assumed. Not dosing advice.`,
       deps: ['pharm-4.4'],
-      refs: ['Rowland–Tozer', 'Goodman–Gilman ch. 3'],
+      refs: ['DailyMed theophylline extended-release label, Serum Concentration–Effect Relationship, Distribution and Monitoring sections, setid=f93e20b1-97aa-088d-e053-6394a90a25d4; Digoxin label §§2.5 and 5.3, setid=dba3b3f7-3ff2-4996-8653-b0e54a398bf9 (retrieved 18 October 2026)'],
       tags: ['therapeutic window', 'target concentration'],
       viz(v) {
         const cfg = {
@@ -227,13 +228,14 @@ export default {
           s.setLabels(undefined, `C (${c.unit})`);
           s.hband(c.lo, c.hi, { color: 'green', alpha: 0.16 });
           s.hline(c.lo, { color: 'green', width: 1.2, dash: true }); s.hline(c.hi, { color: 'red', width: 1.2, dash: true });
-          s.fn(f, { domain: [0, tShow], color: 'accent', width: 2.5, n: 900 });
-          s.text('toxic above', tShow, c.hi, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
-          s.text('ineffective below', tShow, c.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
+          s.fn(f, { domain: [0, tShow], color: 'muted', width: 1.4, dash: [5,4], n: 900 });
+          s.fn(t => ss(t % T), { domain: [0, tShow], color: 'accent', width: 2.5, n: 900 });
+          s.text('above reference band', tShow, c.hi, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
+          s.text('below reference band', tShow, c.lo, { size: 10.5, color: 'green', align: 'right', baseline: 'top' });
           info = { ex, inside: inside / M, mean: (c.d.F * dose.value * sc) / (clOf(c.d) * T), c };
         });
-        v.legend([['accent', 'concentration'], ['green', 'therapeutic window (assumed)', { area: true }]]);
-        v.readout(() => `Steady state: peak $${fx(info.ex.hi)}$, trough $${fx(info.ex.lo)}$, mean $${fx(info.mean)}$ ${info.c.unit} (window ${info.c.lo}–${info.c.hi}). Fraction of the cycle inside the window: $${v.fix(100 * info.inside, 0)}\\%$ ${info.ex.hi > info.c.hi ? '(peak above the toxic edge)' : ''} ${info.ex.lo < info.c.lo ? '(trough below the effective edge)' : ''}`);
+        v.legend([['accent', 'periodic steady state'], ['muted', 'starting drug-free', { dash: true }], ['green', 'reference band', { area: true }]]);
+        v.readout(() => `Steady state: peak $${fx(info.ex.hi)}$, trough $${fx(info.ex.lo)}$, mean $${fx(info.mean)}$ ${info.c.unit} (window ${info.c.lo}–${info.c.hi}). Fraction of the cycle inside the window: $${v.fix(100 * info.inside, 0)}\\%$ ${info.ex.hi > info.c.hi ? '(peak above reference band)' : ''} ${info.ex.lo < info.c.lo ? '(trough below reference band)' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 4.6
@@ -243,13 +245,13 @@ export default {
       name: 'Dose adjustment in renal impairment',
       statement: String.raw`Estimate creatinine clearance by the Cockcroft–Gault formula, $\mathrm{CrCl}=\dfrac{(140-\text{age})\times\text{weight (kg)}}{72\times S_{cr}\,(\text{mg/dL})}\ (\times 0.85$ for women$)$ mL/min. If a fraction $f_e$ of the drug is normally excreted unchanged and renal drug clearance is taken as proportional to CrCl, then with $K_F=\mathrm{CrCl}/\mathrm{CrCl}_{\text{normal}}$ total clearance falls to the fraction $Q=1-f_e(1-K_F)$ of normal. To keep the same average steady-state concentration (pharm-4.3) either give the dose $Q\cdot D$ at the usual interval, or the usual dose at the interval $\tau/Q$.`,
       idea: String.raw`The average concentration is dose rate over clearance, so if clearance falls to $Q$ times its normal value the dose rate must fall by the same factor. Only the renal part of clearance (fraction $f_e$) shrinks with kidney function, hence $Q$. Both ways of lowering the rate give the same mean: smaller doses give a smaller swing, a longer interval gives a larger swing (pharm-4.4). The first choice suits drugs with a narrow window, the second those whose effect depends on the peak.`,
-      caption: String.raw`Enter the patient and the drug. Red: the **unadjusted** regimen, whose mean climbs to $1/Q$ times the intended one. Blue: the **dose reduced** to $QD$. Orange: the **interval lengthened** to $\tau/Q$. All three adjusted and unadjusted means are marked, and the readout gives the factor $Q$.`,
-      scope: String.raw`A rough rule. Cockcroft–Gault was derived in men in the 1970s and is only an estimate (extremes of age, body size and muscle mass mislead); the normal value of 120 mL/min used here is an assumption (texts use 100–125); proportionality of renal clearance to CrCl and unchanged non-renal clearance are assumed, and active metabolites are ignored. The drug is a model (V = 40 L, $t_{1/2}$ 6 h normally, IV bolus).`,
+      caption: String.raw`Enter the patient and the drug. Red: the **unadjusted** regimen, whose mean climbs to $1/Q$ times the intended one. Blue: the **dose reduced** to $QD$. Orange: the **interval lengthened** to $\tau/Q$. The dashed line marks the shared target steady-state mean of both adjustments; the readout also gives the unadjusted steady-state mean and $Q$. Curves begin drug-free and may be far from steady state after 96 hours when clearance is very low.`,
+      scope: String.raw`A rough rule. Cockcroft–Gault was derived from 249 men aged 18–92; its 15% reduction for women was a recommendation, not a separately fitted female equation. The original requires stable renal function/serum creatinine and a usual relation between muscle mass and body weight; it can overestimate function after muscle wasting or during acute renal failure. Creatinine clearance is not identical to glomerular filtration rate; the normal value of 120 mL/min used here is an assumption (texts use 100–125); normalized kidney function is capped at 1 because this is an impairment model; proportionality of renal clearance to CrCl and unchanged non-renal clearance are assumed, and active metabolites are ignored. The drug is a model (V = 40 L, $t_{1/2}$ 6 h normally, IV bolus).`,
       verify: true,
       credit: 'Cockcroft & Gault, 1976 (creatinine clearance); Giusti & Hayton, 1973 (dose adjustment method)',
       links: { doi: 'https://doi.org/10.1159/000180580' },
       deps: ['physio-7.5', 'pharm-4.3'],
-      refs: ['Rowland–Tozer'],
+      refs: ['Cockcroft & Gault (1976), Prediction of creatinine clearance from serum creatinine, Nephron 16:31–41, complete original; https://www.drugtnt.com/ref/RenalDosing/Cockcroft_1976.pdf', 'Giusti & Hayton (1973), Dosage regimen adjustments in renal impairment, Drug Intell Clin Pharm 7:382–387, doi:10.1177/106002807300700902 (full paper still inaccessible)'],
       tags: ['renal clearance', 'dose adjustment'],
       viz(v) {
         const V = 40, k0 = LN2 / 6, D0 = 200, T0 = 8, CLn = 120;
@@ -261,8 +263,8 @@ export default {
         const s = v.stage({ x: [0, 96], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
         let info = null;
         v.render(() => {
-          const crcl = Math.max(5, ((140 - age.value) * wt.value) / (72 * scr.value) * (sex.value === 'f' ? 0.85 : 1));
-          const KF = clamp(crcl / CLn, 0.04, 1.2), Q = 1 - fe.value * (1 - Math.min(KF, 1));
+          const scale = renalScaling(age.value, wt.value, scr.value, sex.value === 'f', fe.value, CLn);
+          const crcl = scale.creatinineClearance, KF = scale.kidneyFraction, Q = scale.clearanceFraction;
           const k = k0 * Q, tEnd = 96;
           const reg = (D, T) => { const ts = []; for (let t = 0; t <= tEnd; t += T) ts.push(t); return (t) => cMulti(t, ts, V, k, Infinity, 0, D); };
           const fN = reg(D0, T0), fD = reg(D0 * Q, T0), fI = reg(D0, T0 / Q);
@@ -277,7 +279,7 @@ export default {
           info = { crcl, KF, Q, mean: mean(D0, T0), meanRef, adj: mean(D0 * Q, T0) };
         });
         v.legend([['muted', 'normal kidneys, usual regimen', { dash: true }], ['red', 'impaired, unadjusted'], ['blue', 'dose × Q'], ['orange', 'interval ÷ Q'], ['green', 'intended mean', { dash: true }]]);
-        v.readout(() => `$\\mathrm{CrCl}\\approx${v.fix(info.crcl, 0)}$ mL/min ($K_F=${v.fix(info.KF, 2)}$); $Q=1-f_e(1-K_F)=${v.fix(info.Q, 2)}$. Usual dose ${D0} mg every ${T0} h → give **${v.fix(D0 * info.Q, 0)} mg every ${T0} h** or **${D0} mg every ${v.fix(T0 / info.Q, 1)} h**. Mean without adjustment $=${v.fix(info.mean, 2)}$ mg/L ($${v.fix(info.mean / info.meanRef, 2)}\\times$ intended); adjusted $=${v.fix(info.adj, 2)}$ mg/L.`);
+        v.readout(() => `$\\mathrm{CrCl}\\approx${v.fix(info.crcl, 0)}$ mL/min ($K_F=${v.fix(info.KF, 2)}$); $Q=1-f_e(1-K_F)=${v.fix(info.Q, 2)}$. Model reference ${D0} mg every ${T0} h → adjusted model regimens: **${v.fix(D0 * info.Q, 0)} mg every ${T0} h** or **${D0} mg every ${v.fix(T0 / info.Q, 1)} h**. Mean without adjustment $=${v.fix(info.mean, 2)}$ mg/L ($${v.fix(info.mean / info.meanRef, 2)}\\times$ intended); adjusted $=${v.fix(info.adj, 2)}$ mg/L.`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -289,7 +291,7 @@ export default {
       idea: String.raw`The concentration is the superposition of the doses actually taken (pharm-4.1): each missed dose deletes one term. The effect of the deletion lasts about one half-life, and what matters is how that compares with the interval. With a long half-life the missing term is small relative to the stored sum from many earlier doses; with a short one it is most of the signal.`,
       caption: String.raw`A 14-day record of once-daily oral dosing with misses drawn at random for the chosen adherence (the same seed for every slider position; **resample** draws a new patient). Faint curve: perfect adherence. The band is an illustrative window of 0.5–1.5 times the planned mean. The readout also averages 60 simulated patients, so a short and a long half-life can be compared on the same adherence.`,
       scope: String.raw`Model: independent misses, no “catching up”, a fixed dose time each day, oral absorption $k_a=1.5$ h$^{-1}$, history of perfect adherence before day 0. Real adherence is patterned (drug holidays, clusters of misses), which is worse than independent misses. The window is illustrative, not drug-specific.`,
-      deps: ['pharm-4.1'],
+      deps: ['pharm-4.1', 'prob-2.4.1'],
       refs: ['Rowland–Tozer'],
       tags: ['adherence', 'missed doses'],
       viz(v) {
@@ -338,7 +340,7 @@ export default {
       idea: String.raw`The area under each single-dose curve is the same, $FD/\mathrm{CL}$, whatever the release (pharm-1.5), and so is the mean. What changes is how that area is spread in time: a zero-order input with duration $T$ is a rectangle of rate $D/T$, whose response $\tfrac{D}{TkV}(1-e^{-kt})$ rises smoothly, and consecutive rectangles abut to a constant rate. Note that “zero-order” here describes the **input**; elimination is still first-order (not the saturation of chapter 5).`,
       caption: String.raw`Steady-state profiles for the same daily dose given three ways: immediate release ($k_a=3$ h$^{-1}$), a first-order slow release (drag $k_a$), and a zero-order release lasting $T$ hours of each interval (drag $T$). Dashed line: the common mean. The readout lists the fluctuation index $(C_{\max}-C_{\min})/\bar C$ of each.`,
       scope: String.raw`Linear elimination and complete release inside the absorption window; real sustained-release forms are limited by transit through the gut and by gastric emptying. Model values only (V = 40 L, daily dose 240 mg).`,
-      deps: ['pharm-2.4', 'pharm-2.7'],
+      deps: ['pharm-2.4', 'pharm-2.7', 'ode-3.12'],
       refs: ['Rowland–Tozer'],
       tags: ['sustained release', 'zero-order input'],
       viz(v) {
@@ -368,7 +370,7 @@ export default {
       num: '4.9',
       kind: 'Method',
       name: 'Intermittent infusion and aminoglycoside dosing',
-      statement: String.raw`For a drug given as short infusions (duration $T_{inf}$) every $\tau$, the concentration is the superposition of constant-rate rectangles (pharm-4.1). For the same total daily dose, giving it as one large infusion per day rather than three smaller ones raises the peak $C_{\max}$ roughly threefold, leaves the 24-h average (hence the daily AUC) unchanged, and lets the trough fall far lower. For aminoglycosides, whose killing is **concentration-dependent**, higher $C_{\max}/\mathrm{MIC}$ is the aim, and a drug-free trough is thought to limit toxicity; this is the rationale of extended-interval (“once-daily”) dosing.`,
+      statement: String.raw`For a drug given as short infusions (duration $T_{inf}$) every $\tau$, the concentration is the superposition of constant-rate rectangles (pharm-4.1). For the same total daily dose, giving it as one large infusion per day rather than three smaller ones raises the peak $C_{\max}$ (nearly threefold only when accumulation on the shorter interval is small), leaves the 24-h average (hence the daily AUC) unchanged, and lets the trough fall far lower. For aminoglycosides, whose killing is **concentration-dependent**, higher $C_{\max}/\mathrm{MIC}$ is the aim, and a drug-free trough is thought to limit toxicity; this is the rationale of extended-interval (“once-daily”) dosing.`,
       idea: String.raw`Because the mean is set by the daily dose and clearance (pharm-4.3), only the shape differs, and the shape is governed by $\tau/t_{1/2}$ (pharm-4.4). Gentamicin's half-life of a few hours with normal kidneys lets one daily dose decay to a negligible trough by the next, while still giving the peak per MIC the antibiotic needs. The benefit is the use of two pharmacodynamic properties, concentration-dependent killing and a post-antibiotic effect that continues suppressing growth after the level falls below the MIC.`,
       caption: String.raw`Gentamicin-like model drug ($V=0.25$ L/kg, 70 kg). Choose the daily dose, the dosing frequency (same daily total) and the half-life (slower with poor kidney function). The red band marks the concentration below the MIC. Drag the MIC and see the peak/MIC ratio and the hours per day spent below the MIC change, and notice that AUC$_{24}$ is the same for all schedules.`,
       scope: String.raw`Illustrative model: one compartment, 30-min infusions, daily doses 3–7 mg/kg, no protein binding. The pharmacodynamic targets (a peak/MIC around 8–10 is often cited) and the claim that extended intervals reduce toxicity are summarised from memory and the evidence is debated; not dosing advice.`,
@@ -387,12 +389,10 @@ export default {
         v.render(() => {
           const k = LN2 / t12.value, T = freq.value, D = (daily.value * 70 * T) / 24;
           const ss = (t) => cSS(t, T, D, Vd, k, Infinity, Tinf);
-          const ex = extrema(ss, 0, T, 480);
+          const exact = infusionRegimen(daily.value * 70, Vd, t12.value, T, Tinf, mic.value), ex = { hi: exact.peak, lo: exact.trough };
           const times = []; for (let t = 0; t < 72; t += T) times.push(t);
           const f = (t) => cMulti(t, times, Vd, k, Infinity, Tinf, D);
-          const auc = meanOver(ss, 0, T, 480) * T * (24 / T);
-          let below = 0; for (let i = 0; i < 480; i++) if (ss((T * (i + 0.5)) / 480) < mic.value) below++;
-          const hb = (24 * below) / 480 * (T / T);
+          const auc = exact.dailyAUC, hb = exact.hoursBelow;
           s.setView([0, 72], [0, Math.max(ex.hi * 1.15, 8)]);
           s.hband(0, mic.value, { color: 'red', alpha: 0.15 });
           s.hline(mic.value, { color: 'red', width: 1.3, dash: true });
@@ -415,7 +415,7 @@ export default {
       scope: String.raw`The exponents 0.75 and 1 are typical, not exact (fitted exponents for clearance in practice vary widely with drug and species set). The values shown are a model/reconstruction generated from the sliders, not measured data. Prediction from four animals carries a large uncertainty (shown as the readout's fold-range); allometry is a first estimate, not a substitute for human data.`,
       credit: 'Dedrick, 1973; Boxenbaum, 1982',
       links: { doi: 'https://doi.org/10.1007/bf01062336' },
-      deps: ['ecol-1.5'],
+      deps: ['ecol-1.5', 'opt-1.6'],
       see: ['ecol-1.4'],
       refs: ['Rowland–Tozer'],
       tags: ['allometry', 'scaling'],

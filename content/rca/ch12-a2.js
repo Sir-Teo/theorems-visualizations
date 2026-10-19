@@ -1,8 +1,9 @@
+import { orthonormalEndpoints } from './orthonormal-endpoints.shared.js';
+const TAU = 2 * Math.PI;
 // Rudin, Real and Complex Analysis — Chapter 12, part 2: the Phragmén–Lindelöf method (12.7–12.9),
 // an interpolation theorem (12.11) and a converse of the maximum modulus theorem (12.13).
 // 12.1, 12.10 and 12.12 are taken to be expository paragraphs; see the verify flags below.
 
-const TAU = 2 * Math.PI;
 const blend = (p, q, k) => [p[0] + (q[0] - p[0]) * k, p[1] + (q[1] - p[1]) * k, p[2] + (q[2] - p[2]) * k];
 // theme-aware diverging colour for a log-modulus L: blue where |f| < 1, red where |f| > 1, panel at |f| = 1
 function divRGB(pal, L, scale) {
@@ -11,24 +12,6 @@ function divRGB(pal, L, scale) {
   return blend(pal.panel, L > 0 ? pal.red : pal.blue, 0.04 + 0.66 * t);
 }
 const palette = (v) => ({ panel: v.rgb('panel'), red: v.rgb('red'), blue: v.rgb('blue'), green: v.rgb('green'), ink: v.rgb('ink') });
-// ℓ^a-norm with a = 1/p in [0, 1] (a = 0 is the sup norm), for vectors in the plane
-function lpn(u, w, a) {
-  u = Math.abs(u); w = Math.abs(w); const m = Math.max(u, w);
-  if (m === 0) return 0; if (a <= 1e-9) return m;
-  return m * Math.pow(Math.pow(u / m, 1 / a) + Math.pow(w / m, 1 / a), a);
-}
-// operator norm of a 2×2 matrix with nonnegative entries from ℓ^{1/a} to ℓ^{1/b}: the sup is attained on
-// nonnegative vectors, so a dense sweep of the quarter-sphere plus a golden-section refinement is exact to ~1e-12.
-function opNorm(T, a, b, n = 64) {
-  const f = (th) => { const c = Math.cos(th), s = Math.sin(th), nx = lpn(c, s, a); return lpn((T[0][0] * c + T[0][1] * s) / nx, (T[1][0] * c + T[1][1] * s) / nx, b); };
-  let best = -1, bt = 0;
-  for (let i = 0; i <= n; i++) { const th = (Math.PI / 2) * i / n, val = f(th); if (val > best) { best = val; bt = th; } }
-  let lo = Math.max(0, bt - Math.PI / 2 / n), hi = Math.min(Math.PI / 2, bt + Math.PI / 2 / n);
-  for (let k = 0; k < 28; k++) { const m1 = lo + (hi - lo) * 0.382, m2 = lo + (hi - lo) * 0.618; if (f(m1) < f(m2)) lo = m1; else hi = m2; }
-  const thm = (lo + hi) / 2, vm = f(thm);
-  return vm >= best ? { norm: vm, th: thm } : { norm: best, th: bt };
-}
-
 export default {
   collection: 'rca',
   chapter: 12,
@@ -43,7 +26,7 @@ export default {
       caption: String.raw`The strip $0<x<1$ is shaded by $\log\abs{fh_\eps}$ (blue $<1$, red $>1$); the right panel plots, at each height $y$, the largest value across the strip on a $\log_{10}$ scale. The damping $h_\eps$ pushes $\abs{fh_\eps}$ below the dashed bound $B/(\eps\abs y)$, so on the green rectangle $\abs y\le B/\eps$ the boundary values are $\le1$. The second example, $\exp(e^{-i\pi(z-1/2)})$, equals $1$ in modulus on both edges but grows like a double exponential: it is not bounded, no $h_\eps$ helps, and the conclusion fails.`,
       deps: ['rca-10.24'],
       tags: ['Phragmén–Lindelöf', 'maximum modulus', 'strip'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 12.7 and the bounded-strip argument in the proof of 12.8, pp. 256–257'],
       viz(v) {
         const M = v.M;
         const EX = {
@@ -276,98 +259,7 @@ Then $\abs{f(z)}\le1$ for all $z\in\Omega$. The condition $\alpha<1$ cannot be w
         });
       },
     },
-    // ------------------------------------------------------------------ 12.11 interpolation
-    {
-      num: '12.11',
-      kind: 'Theorem',
-      name: 'Riesz–Thorin interpolation theorem',
-      credit: 'M. Riesz & Thorin, 1927',
-      statement: String.raw`Let $(X,\mu)$ and $(Y,\nu)$ be $\sigma$-finite measure spaces, let $1\le p_0,p_1,q_0,q_1\le\infty$, and let $T$ be a linear map, defined on the complex simple functions on $X$ that vanish outside sets of finite measure, with values measurable functions on $Y$, such that
-$$\norm{Tf}_{q_0}\le M_0\norm{f}_{p_0},\qquad\norm{Tf}_{q_1}\le M_1\norm{f}_{p_1}.$$
-For $0<t<1$ define $p_t,q_t$ by $\dfrac1{p_t}=\dfrac{1-t}{p_0}+\dfrac t{p_1}$ and $\dfrac1{q_t}=\dfrac{1-t}{q_0}+\dfrac t{q_1}$. Then
-$$\norm{Tf}_{q_t}\le M_0^{1-t}M_1^{t}\,\norm{f}_{p_t}$$
-for all such $f$; so, when $p_t<\infty$, $T$ extends to a bounded operator $L^{p_t}(\mu)\to L^{q_t}(\nu)$ of norm at most $M_0^{1-t}M_1^t$. In other words, $\log\norm{T}_{p\to q}$ is a convex function of $(1/p,1/q)$.`,
-      idea: String.raw`Fix simple $f$ and $g$ normalised in $L^{p_t}$ and $L^{q_t'}$. Let the exponents of $\abs f$ and $\abs g$ depend linearly on a complex variable $z$, giving simple functions $f_z,g_z$ with $f_t=f$, $g_t=g$, and put $F(z)=\int (Tf_z)\,g_z\,d\nu$. Then $F$ is a finite sum of exponentials — entire and bounded on $0\le\Re z\le1$ — and Hölder's inequality (3.5) gives $\abs F\le M_0$ on $\Re z=0$ and $\abs F\le M_1$ on $\Re z=1$. The three-lines theorem (12.8) yields $\abs{F(t)}=\abs{\int (Tf)g}\le M_0^{1-t}M_1^t$, and taking the supremum over $g$ recovers $\norm{Tf}_{q_t}$ (density of simple functions, 3.13).`,
-      caption: String.raw`A finite instance: $T$ is a $2\times2$ matrix with nonnegative entries (drag its columns $Te_1,Te_2$ in the middle panel), so its norms between the $\ell^p$ spaces of $\C^2$ can be computed exactly. Left: the Riesz diagram — $\log\norm{T}_{p\to q}$ over $(1/p,1/q)$ — with draggable endpoints; the gold point moves along the segment as $t$ varies. Middle: the $\ell^{p_t}$ unit ball, its image, and the smallest $\ell^{q_t}$ ball containing it. Bottom: $\log\norm T_{p_t\to q_t}$ stays under the chord. The Hausdorff–Young preset interpolates $(1,\infty)$ and $(2,2)$, the classical application.`,
-      deps: ['rca-12.8', 'rca-3.5', 'rca-3.13'],
-      see: ['rca-6.16'],
-      tags: ['interpolation', 'Lp spaces', 'three lines'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const preset = v.select('endpoints', [
-          { value: 'schur', label: String.raw`$(1,1)$ and $(\infty,\infty)$` },
-          { value: 'hy', label: String.raw`$(1,\infty)$ and $(2,2)$` },
-          { value: 'mix', label: String.raw`$(\tfrac54,4)$ and $(4,\tfrac54)$` },
-        ], 'schur', { onChange: (k) => setPreset(k) });
-        const tS = v.slider('$t$', 0, 1, 0.4, { step: 0.005 });
-        const Q = v.stage({ x: [-0.08, 1.1], y: [-0.08, 1.14], equal: true, height: 300, axes: 'box', xticks: [[0, '0'], [0.5, '½'], [1, '1']], yticks: [[0, '0'], [0.5, '½'], [1, '1']], xlabel: '1/p', ylabel: '1/q', weight: 0.9, minWidth: 240, title: String.raw`Riesz diagram: $\log\norm{T}_{p\to q}$` });
-        const G = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 300, axes: true, weight: 1.1, title: String.raw`$\ell^{p_t}$ ball, its image, and the $\ell^{q_t}$ ball of radius $\norm T$` });
-        const C = v.stage({ x: [-0.02, 1.02], y: [-1, 1], height: 170, full: true, axes: 'box', xlabel: 't', title: String.raw`$\log\norm{T}_{p_t\to q_t}$ (blue) under the chord $(1-t)\log M_0+t\log M_1$ (green)` });
-        const P0 = Q.handle(1, 1, { color: 'purple', label: 'P₀', constrain: { x: [0, 1], y: [0, 1] } });
-        const P1 = Q.handle(0, 0, { color: 'teal', label: 'P₁', labelPos: 'ne', constrain: { x: [0, 1], y: [0, 1] } });
-        const c1 = G.handle(1.0, 0.2, { color: 'orange', label: 'Te₁', constrain: { x: [0, 1.2], y: [0, 1.2] } });
-        const c2 = G.handle(0.45, 0.85, { color: 'pink', label: 'Te₂', constrain: { x: [0, 1.2], y: [0, 1.2] } });
-        function setPreset(k) {
-          const P = { schur: [[1, 1], [0, 0]], hy: [[1, 0], [0.5, 0.5]], mix: [[0.8, 0.25], [0.25, 0.8]] }[k];
-          P0.set(P[0][0], P[0][1]); P1.set(P[1][0], P[1][1]);
-        }
-        v.legend([['accent', String.raw`image of the $\ell^{p_t}$ ball`, { area: true }], ['orange', String.raw`$\ell^{p_t}$ unit ball`], ['green', String.raw`$\ell^{q_t}$ ball of radius $\norm{T}_{p_t\to q_t}$`, { dash: true }], ['gold', 'extremal vector and its image']]);
-        const ballPts = (a, r = 1, n = 200) => M.linspace(0, TAU, n + 1).map((th) => { const c = Math.cos(th), s = Math.sin(th), k = r / lpn(c, s, a); return [c * k, s * k]; });
-        let st = null;
-        v.render(() => {
-          const T = [[c1.x, c2.x], [c1.y, c2.y]];
-          const pal = palette(v);
-          // Riesz diagram heat map (log-norm, centred on its own range)
-          const key = `${T}|${pal.panel}`;
-          let lo = Infinity, hi = -Infinity;
-          for (let i = 0; i <= 6; i++) for (let j = 0; j <= 6; j++) { const l = Math.log(opNorm(T, i / 6, j / 6, 24).norm); lo = Math.min(lo, l); hi = Math.max(hi, l); }
-          Q.raster((x, y) => {
-            if (x < 0 || x > 1 || y < 0 || y > 1) return null;
-            const l = Math.log(opNorm(T, x, y, 24).norm);
-            const c = M.cmap((l - lo) / (hi - lo + 1e-9), 'viridis');
-            return blend(c, pal.panel, 0.2);
-          }, { key, res: 6 });
-          Q.rect(0, 0, 1, 1, { color: 'ink', width: 1.4 });
-          const a0 = P0.x, b0 = P0.y, a1 = P1.x, b1 = P1.y, t = tS.value;
-          Q.line(a0, b0, a1, b1, { color: 'panel', width: 5 });
-          Q.line(a0, b0, a1, b1, { color: 'ink', width: 2 });
-          const at = (1 - t) * a0 + t * a1, bt = (1 - t) * b0 + t * b1;
-          Q.dot(at, bt, { color: 'gold', r: 6.5 });
-          // the curve along the segment
-          const ts = M.linspace(0, 1, 81);
-          const lt = ts.map((s) => Math.log(opNorm(T, (1 - s) * a0 + s * a1, (1 - s) * b0 + s * b1).norm));
-          const L0 = lt[0], L1 = lt[lt.length - 1], chord = (s) => (1 - s) * L0 + s * L1;
-          const lo2 = Math.min(...lt, L0, L1), hi2 = Math.max(...lt, L0, L1), pad = Math.max(0.12, (hi2 - lo2) * 0.25);
-          C.setView(null, [lo2 - pad, hi2 + pad]);
-          C.between(chord, (s) => lt[Math.round(s * 80)], 0, 1, { fill: 'green', fillAlpha: 0.12, n: 80 });
-          C.fn(chord, { domain: [0, 1], color: 'green', width: 2, dash: [7, 4] });
-          C.path(ts.map((s, i) => [s, lt[i]]), { color: 'accent', width: 2.6 });
-          const cur = opNorm(T, at, bt);
-          C.line(t, Math.log(cur.norm), t, chord(t), { color: 'gold', width: 2.4 });
-          C.dot(t, Math.log(cur.norm), { color: 'gold', r: 5.5 });
-          C.dot(0, L0, { color: 'purple', r: 5, label: 'log M₀', labelPos: 'ne', labelSize: 12 });
-          C.dot(1, L1, { color: 'teal', r: 5, label: 'log M₁', labelPos: 'nw', labelSize: 12 });
-          // geometry: ℓ^{p_t} ball, image, ℓ^{q_t} ball of radius ‖T‖
-          const ball = ballPts(at), img = ball.map(([x, y]) => [T[0][0] * x + T[0][1] * y, T[1][0] * x + T[1][1] * y]);
-          G.poly(ballPts(bt, cur.norm), { color: 'green', width: 2, dash: [7, 4], fill: 'green', fillAlpha: 0.06 });
-          G.poly(ball, { color: 'orange', width: 2 });
-          G.poly(img, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.22 });
-          const th = cur.th, cx = Math.cos(th), sx = Math.sin(th), nx = lpn(cx, sx, at), xv = [cx / nx, sx / nx];
-          const yv = [T[0][0] * xv[0] + T[0][1] * xv[1], T[1][0] * xv[0] + T[1][1] * xv[1]];
-          for (const sg of [1, -1]) { G.dot(sg * xv[0], sg * xv[1], { color: 'gold', r: 4.5 }); G.dot(sg * yv[0], sg * yv[1], { color: 'gold', r: 5.5 }); }
-          G.arrow(0, 0, T[0][0], T[1][0], { color: 'orange', width: 1.6, head: 8 });
-          G.arrow(0, 0, T[0][1], T[1][1], { color: 'pink', width: 1.6, head: 8 });
-          const pS = (a) => (a < 1e-6 ? '\\infty' : v.fmt(1 / a, 3));
-          st = { pt: pS(at), qt: pS(bt), n: cur.norm, bound: Math.exp(chord(t)), M0: Math.exp(L0), M1: Math.exp(L1), t, convex: Math.max(...lt.slice(1, -1).map((l, i) => l - chord(ts[i + 1]))) };
-        });
-        v.readout(() => {
-          const s = st; if (!s) return '';
-          return `$t=${v.fix(s.t, 3)}$: $\\;p_t = ${s.pt}$, $q_t = ${s.qt}$; $\\;\\norm{T}_{p_t\\to q_t} = ${v.fix(s.n, 4)}\\;\\le\\; M_0^{1-t}M_1^{t} = ${v.fix(s.M0, 3)}^{${v.fix(1 - s.t, 2)}}\\cdot${v.fix(s.M1, 3)}^{${v.fix(s.t, 2)}} = ${v.fix(s.bound, 4)}$. Over $0<t<1$: $\\;\\max_t\\big(\\log\\norm T_{p_t\\to q_t}-\\text{chord}\\big) = ${v.fix(s.convex, 5)}\\le0$.`;
-        });
-      },
-    },
-    // ------------------------------------------------------------------ 12.13 converse
+    orthonormalEndpoints,
     {
       num: '12.13',
       kind: 'Theorem',
@@ -376,12 +268,12 @@ for all such $f$; so, when $p_t<\infty$, $T$ extends to a bounded operator $L^{p
 (a) $\mathscr M$ contains the constants, and $zf\in\mathscr M$ whenever $f\in\mathscr M$ (so $\mathscr M$ is closed under multiplication by polynomials);
 (b) every $f\in\mathscr M$ satisfies the maximum modulus inequality $\abs{f(a)}\le\norm{f}_T=\max_{T}\abs f$ for all $a\in U$.
 Then every $f\in\mathscr M$ is holomorphic in $U$.`,
-      idea: String.raw`By (b), $f\mapsto f(a)$ has norm $\le1$ on $\mathscr M$ viewed inside $C(T)$, so (Hahn–Banach and Riesz, 5.23) there is a positive measure $\mu_a$ on $T$ with $f(a)=\int f\,d\mu_a$ for all $f\in\mathscr M$. By (a) this holds for every polynomial, and such a representing measure is unique: it is the Poisson measure (5.24, 5.25). Hence every member of $\mathscr M$ is the Poisson integral of its boundary values, i.e. harmonic in $U$. Apply this to $f$ and to $zf$: if both are harmonic then $0=\Delta(zf)=4\,\partial(z\bar\partial f)=4\bar\partial f$, so $f$ satisfies the Cauchy–Riemann equation.`,
+      idea: String.raw`By (b), $f\mapsto f(a)$ has norm $\le1$ on $\mathscr M$ viewed inside $C(T)$, so (Hahn–Banach and Riesz, 5.22) there is a positive measure $\mu_a$ on $T$ with $f(a)=\int f\,d\mu_a$ for all $f\in\mathscr M$. By (a) this holds for every polynomial, and such a representing measure is unique: it is the Poisson measure (5.24, 5.25). Hence every member of $\mathscr M$ is the Poisson integral of its boundary values, i.e. harmonic in $U$. Apply this to $f$ and to $zf$: if both are harmonic then $0=\Delta(zf)=4\,\partial(z\bar\partial f)=4\bar\partial f$, so $f$ satisfies the Cauchy–Riemann equation.`,
       caption: String.raw`Pick a continuous $f$. The space $\mathscr M$ generated by $1$ and $f$ under (a) contains $g=P+Qf$ for all polynomials $P,Q$; the readout shows a specific $g$ (scaled by $\lambda$). Left: the surface $\abs{g}$ over $\bar U$ with the rim $\abs g$ on $T$ in green. For every non-holomorphic choice and a suitable $\lambda$ (the readout says when), $\abs g$ peaks *inside* the disc, so (b) fails; for $z^2$ it always peaks on the rim. Right: the proof — drag $a$ and compare $f(a)$, $af(a)$ with the Poisson integrals of their boundary values (weight $P_a$ shown on the rim). The shading is the defect $\abs{af(a)-P[\zeta f](a)}+\abs{f(a)-P[f](a)}$.`,
-      deps: ['rca-5.23', 'rca-5.24', 'rca-5.25'],
+      deps: ['rca-5.22', 'rca-5.24', 'rca-5.25'],
       see: ['rca-10.24', 'rca-11.5'],
       tags: ['maximum modulus', 'Poisson integral', 'converse'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 12.13 and proof, pp. 262–263'],
       viz(v) {
         const M = v.M, { Cx } = M;
         // f as a polynomial in z and z̄: [coef, m, n] ↦ coef·z^m z̄^n; witness g = P + Q f

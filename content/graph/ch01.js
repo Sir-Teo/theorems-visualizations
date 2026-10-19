@@ -40,11 +40,12 @@ export default {
   items: [
     // ================================================================== 1.1 Graphs
     {
-      num: '1.1.1a', kind: 'Definition', name: 'Graph: vertices and edges', verify: true,
+      num: '1.1.1a', kind: 'Definition', name: 'Graph: vertices and edges',
       statement: String.raw`A **graph** is a pair $G=(V,E)$ of disjoint sets with $E\subseteq[V]^2$, the set of 2-element subsets of $V$. The elements of $V$ are the **vertices** of $G$, the elements of $E$ its **edges**; an edge $\{x,y\}$ is written $xy$, it **joins** its **ends** $x$ and $y$, which are then **adjacent** (neighbours), and it is **incident** with each of them. The number of vertices is the **order** $|G|$, the number of edges is $\|G\|$. A graph is determined by which pairs are edges — not by how it is drawn.`,
       idea: String.raw`Everything in graph theory is built on this one combinatorial datum: a set and a family of 2-subsets of it. Loops (an edge from a vertex to itself) and repeated edges are excluded by the definition; they return in multigraphs (1.10.1a). Since $E\subseteq[V]^2$, a graph of order $n$ has at most $\binom n2$ edges, with equality exactly for the complete graph $K^n$.`,
       caption: String.raw`The left panel is one drawing of $G$, the right panel is $G$ itself: the triangle of all pairs $\{x,y\}$ with the edges filled in. Click a cell to toggle that pair, or edit the drawing (${EDIT}); both views and the sets below stay in sync. Vertex 6 is isolated: it belongs to $V$ but to no edge.`,
-      deps: [], see: ['algo-8.1'], refs: ['Diestel §1.1'], tags: ['graphs'],
+      deps: [], see: ['algo-8.1'], refs: ['Diestel, Graph Theory, 6th ed., §1.1, pp. 2–3'], tags: ['graphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { y: [0, 6.6], height: 320, title: 'a drawing of $G=(V,E)$' });
         const t = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 320, title: 'the edge set $E\\subseteq[V]^2$' });
@@ -75,11 +76,12 @@ export default {
       },
     },
     {
-      num: '1.1.1b', kind: 'Definition', name: 'Isomorphism, graph properties and invariants', verify: true,
+      num: '1.1.1b', kind: 'Definition', name: 'Isomorphism, graph properties and invariants',
       statement: String.raw`A map $\varphi\colon V\to V'$ is a **homomorphism** from $G=(V,E)$ to $G'=(V',E')$ if it sends adjacent vertices to adjacent vertices. If $\varphi$ is bijective and $xy\in E\iff\varphi(x)\varphi(y)\in E'$ for all $x,y\in V$, it is an **isomorphism**, and $G$ and $G'$ are **isomorphic**, $G\cong G'$; an isomorphism from $G$ to itself is an **automorphism**. A class of graphs closed under isomorphism is a **graph property**, and a map that assigns equal values to isomorphic graphs is a **graph invariant** — the order, the number of edges, the degree sequence, the girth and the diameter are examples.`,
       idea: String.raw`An isomorphism is a renaming of the vertices that carries edges to edges *and* non-edges to non-edges, so isomorphic graphs are the same abstract graph drawn differently. Invariants give a cheap one-way test: if any invariant differs the graphs cannot be isomorphic, while equal invariants prove nothing — deciding isomorphism in general needs a search like the backtracking used here.`,
       caption: String.raw`Click a vertex of $G$, then a vertex of $G'$ to set its image. An edge turns green when its image is an edge and red when it is not (on the right, red marks an edge whose preimage is a non-edge). **Complete** extends your partial map by backtracking, if it can be extended. Switch $G'$ to the pentagonal prism: the order, size and degrees agree, but the girth does not, so no bijection can ever turn everything green.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §1.1'], tags: ['graphs', 'isomorphism'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.1, p. 3'], tags: ['graphs', 'isomorphism'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const which = v.select("$G'$ =", [{ value: 'pet', label: 'Petersen, redrawn' }, { value: 'prism', label: 'pentagonal prism' }], 'pet', { onChange: () => setRight() });
         const L = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.3], axes: false, equal: true, height: 300, title: '$G$ (Petersen graph)' });
@@ -140,11 +142,12 @@ export default {
       },
     },
     {
-      num: '1.1.1c', kind: 'Definition', name: 'Subgraphs, induced subgraphs and spanning subgraphs', verify: true,
+      num: '1.1.1c', kind: 'Definition', name: 'Subgraphs, induced subgraphs and spanning subgraphs',
       statement: String.raw`Let $G=(V,E)$ and $G'=(V',E')$ be graphs. If $V'\subseteq V$ and $E'\subseteq E$, then $G'$ is a **subgraph** of $G$, written $G'\subseteq G$. It is an **induced** subgraph if it contains every edge of $G$ with both ends in $V'$; then $V'$ **induces** (spans) $G'$ and we write $G'=G[V']$. It is a **spanning** subgraph if $V'=V$. For $U\subseteq V$ we write $G-U:=G[V\setminus U]$, and for a set $F$ of pairs, $G-F:=(V,E\setminus F)$ and $G+F:=(V,E\cup F)$.`,
       idea: String.raw`A subgraph may drop vertices and edges freely; an induced subgraph is pinned down by its vertex set alone, since it keeps *all* edges among those vertices; a spanning subgraph keeps all vertices and may drop edges. The two restrictions are independent: $G$ itself is both, $G[U]$ for $U\ne V$ is induced but not spanning, and $G-e$ is spanning but not induced.`,
       caption: String.raw`Click vertices to put them in $U$ (filled) or take them out; the subgraph $H$ starts as $G[U]$. Click an edge of $G[U]$ to delete it from $H$ (dashed red) or restore it. The badges in the corner report whether $H$ is induced, spanning, both or neither.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §1.1'], tags: ['graphs', 'subgraphs'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.1, pp. 3–4'], tags: ['graphs', 'subgraphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [1, 1.2], b: [3.1, 0.6], c: [5.2, 1.1], d: [7.4, 0.8], j: [9.2, 2.0], e: [2.1, 3.3], f: [4.3, 3.4], g: [6.6, 3.1], h: [3.2, 5.5], i: [5.8, 5.6], k: [8.4, 4.9] },
@@ -184,11 +187,12 @@ export default {
     },
     // ================================================================== 1.2 The degree of a vertex
     {
-      num: '1.2.1a', kind: 'Definition', name: 'Degree; minimum, maximum and average degree', verify: true,
+      num: '1.2.1a', kind: 'Definition', name: 'Degree; minimum, maximum and average degree',
       statement: String.raw`The **degree** $d(v)=d_G(v)$ of a vertex $v$ is the number $|E(v)|$ of edges at $v$, which in a graph equals the number of its neighbours; a vertex of degree $0$ is **isolated**. The **minimum degree** is $\delta(G)=\min_v d(v)$, the **maximum degree** $\Delta(G)=\max_v d(v)$, and the **average degree** $d(G)=\frac1{|V|}\sum_v d(v)$, so that $\delta(G)\le d(G)\le\Delta(G)$. If all degrees equal $k$, $G$ is **$k$-regular** (**cubic** when $k=3$). The ratio $\varepsilon(G)=|E|/|V|$ of edges per vertex satisfies $\varepsilon(G)=\tfrac12 d(G)$.`,
       idea: String.raw`Summing the degrees counts every edge exactly twice, once from each end: $\sum_v d(v)=2|E|$. Dividing by $|V|$ gives $d(G)=2\varepsilon(G)$, so the average degree and the edge density are the same global quantity on two scales, while $\delta$ and $\Delta$ record the local extremes.`,
       caption: String.raw`Each vertex shows its degree; blue rings mark the vertices of minimum degree and red rings those of maximum degree. Edit the graph (${EDIT}) and watch the degree histogram, $\delta\le d(G)\le\Delta$ and $\varepsilon = d/2$ update.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §1.2'], tags: ['degree'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.2, p. 5'], tags: ['degree'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 300 });
         const p = v.stage({ x: [-0.6, 6.6], y: [0, 4], axes: 'box', gutter: true, height: 300, xlabel: 'degree', ylabel: 'vertices', title: 'degree histogram' });
@@ -304,11 +308,12 @@ export default {
     },
     // ================================================================== 1.3 Paths and cycles
     {
-      num: '1.3.1a', kind: 'Definition', name: 'Paths and cycles', verify: true,
+      num: '1.3.1a', kind: 'Definition', name: 'Paths and cycles',
       statement: String.raw`A **path** is a non-empty graph $P=(\{x_0,\dots,x_k\},\{x_0x_1,x_1x_2,\dots,x_{k-1}x_k\})$ with the $x_i$ all distinct; it **links** its **ends** $x_0$ and $x_k$, and its **length** is its number $k$ of edges ($P^k$ denotes the path of length $k$). If $P=x_0\dots x_{k-1}$ is a path with $k\ge3$, then $C:=P+x_{k-1}x_0$ is a **cycle** of length $k$, a $k$-cycle $C^k$. A **walk** of length $k$ is an alternating sequence $v_0e_0v_1\dots e_{k-1}v_k$ with $e_i=v_iv_{i+1}$; it is **closed** if $v_0=v_k$. A walk may repeat vertices and edges, but every walk between two vertices contains a path between them.`,
       idea: String.raw`Paths and cycles are the subgraphs that a walk traces when it never revisits a vertex (except, for a cycle, its start at the end). To extract a path from a walk, repeatedly cut out the stretch between two visits to the same vertex; what remains still joins the same ends and repeats nothing.`,
       caption: String.raw`Click vertices one after another to trace a walk (each click must be a neighbour of the last vertex). Edge labels give the step numbers. The app classifies the walk as a path, a cycle or a general walk, and in the last case draws in green the path obtained by cutting out the repeated stretches. **Undo** removes the last step.`,
-      deps: ['graph-1.1.1c'], refs: ['Diestel §1.3'], tags: ['paths', 'cycles'],
+      deps: ['graph-1.1.1c'], refs: ['Diestel, Graph Theory, 6th ed., §1.3, pp. 6–8, 10'], tags: ['paths', 'cycles'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [1.2, 1.0], b: [3.8, 0.8], c: [6.4, 1.0], d: [8.8, 1.4], e: [1.0, 3.6], f: [3.6, 3.2], g: [6.2, 3.4], h: [8.8, 4.0], i: [2.4, 5.8], j: [5.2, 5.6], k: [7.8, 6.0] },
@@ -349,11 +354,12 @@ export default {
       },
     },
     {
-      num: '1.3.1b', kind: 'Definition', name: 'Girth and circumference', verify: true,
+      num: '1.3.1b', kind: 'Definition', name: 'Girth and circumference',
       statement: String.raw`The **girth** $g(G)$ of a graph is the minimum length of a cycle in $G$, and its **circumference** the maximum length of a cycle; for a graph without cycles (a forest) we set $g(G)=\infty$ and the circumference to $0$. An edge joining two vertices of a cycle without lying on it is a **chord**; a cycle with no chord is **induced**.`,
       idea: String.raw`Both numbers are graph invariants, but they are very different to compute: a shortest cycle is found by breadth-first search from every vertex (polynomial time), while deciding whether the circumference equals $|G|$ is the Hamiltonian cycle problem, which is NP-complete. A shortest cycle is always induced, since a chord would split it into two shorter cycles.`,
-      caption: String.raw`Left: a shortest cycle (blue); right: a longest cycle (orange), both recomputed after every edit (${EDIT}; the panels share the vertices). The Petersen graph has girth 5 and circumference 9 — it has no Hamiltonian cycle.`,
-      deps: ['graph-1.3.1a'], refs: ['Diestel §1.3'], tags: ['cycles', 'girth'],
+      caption: String.raw`Left: a shortest cycle (blue); right: a longest cycle (orange), the longest-cycle search is capped and reports a lower bound if exhausted; both recomputed after every edit (${EDIT}; the panels share the vertices). The Petersen graph has girth 5 and circumference 9 — it has no Hamiltonian cycle.`,
+      deps: ['graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.3, p. 8'], tags: ['cycles', 'girth'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const PRE = { pet: () => named('petersen'), k33: () => named('kmn', 3, 3), cube: () => named('cube'), wheel: () => { const W = v.graphs('wheel', 7); return { nodes: W.nodes, edges: W.edges.map((e) => [e.from, e.to]), layout: 'fit' }; } };
         const pre = v.select('', [{ value: 'pet', label: 'Petersen' }, { value: 'k33', label: '$K_{3,3}$' }, { value: 'cube', label: 'cube' }, { value: 'wheel', label: 'wheel' }], 'pet', { onChange: () => load() });
@@ -374,7 +380,7 @@ export default {
         });
         v.readout(() => {
           const H = ix(G), sc = girth(H), lc = longestCycle(H);
-          return `$|G| = ${H.n}$, $\\|G\\| = ${H.m}$ · girth $g(G) = ${sc.g === Infinity ? '\\infty' : sc.g}$ · circumference ${lc.cycle.length}${lc.cycle.length === H.n && H.n ? ' (a Hamiltonian cycle)' : H.n ? ` < |G| = ${H.n}: not Hamiltonian` : ''}`;
+          return `$|G| = ${H.n}$, $\\|G\\| = ${H.m}$ · girth $g(G) = ${sc.g === Infinity ? '\\infty' : sc.g}$ · ${lc.exact ? 'circumference' : 'longest cycle found (search capped): at least'} ${lc.cycle.length}${lc.cycle.length === H.n && H.n ? ' (a Hamiltonian cycle)' : H.n && lc.exact ? ` < |G| = ${H.n}: not Hamiltonian` : H.n ? '; Hamiltonicity undecided by this search' : ''}`;
         });
       },
     },
@@ -420,11 +426,12 @@ export default {
       },
     },
     {
-      num: '1.3.1c', kind: 'Definition', name: 'Distance, diameter and radius', verify: true,
+      num: '1.3.1c', kind: 'Definition', name: 'Distance, diameter and radius',
       statement: String.raw`The **distance** $d_G(x,y)$ of two vertices is the length of a shortest $x$–$y$ path in $G$, and $d_G(x,y)=\infty$ if there is none. The **diameter** $\operatorname{diam}(G)$ is the greatest distance between two vertices. A vertex is **central** if its greatest distance to any other vertex (its eccentricity) is as small as possible; this smallest eccentricity is the **radius** $\operatorname{rad}(G)=\min_x\max_y d_G(x,y)$. One always has $\operatorname{rad}(G)\le\operatorname{diam}(G)\le2\operatorname{rad}(G)$.`,
       idea: String.raw`Breadth-first search from $x$ visits the vertices in layers $D_0=\{x\},D_1,D_2,\dots$ by distance, so one search per vertex gives every eccentricity. The diameter is the largest and the radius the smallest eccentricity; and since any two vertices are within $\operatorname{rad}(G)$ of a central vertex $z$, the triangle inequality gives $\operatorname{diam}(G)\le 2\operatorname{rad}(G)$.`,
       caption: String.raw`Click a vertex to make it the root: every vertex shows its distance from it, coloured by BFS layer. Green rings mark the central vertices; the orange dashed path joins a diametral pair. The bars on the right are the eccentricities, with $\operatorname{rad}$, $\operatorname{diam}$ and $2\operatorname{rad}$. Choose *edit* to change the graph (${EDIT}).`,
-      deps: ['graph-1.3.1a'], see: ['algo-8.5'], refs: ['Diestel §1.3'], tags: ['distance'],
+      deps: ['graph-1.3.1a'], see: ['algo-8.5'], refs: ['Diestel, Graph Theory, 6th ed., §1.3, pp. 8–9'], tags: ['distance'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const mode = v.select('click to', [{ value: 'root', label: 'choose the root' }, { value: 'edit', label: 'edit the graph' }], 'root');
         const s = gstage(v, { height: 300, weight: 1.5 });

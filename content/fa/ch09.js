@@ -34,7 +34,7 @@ function windowRange(y, w) {
 function suffixMax(y) { const out = new Float64Array(y.length); let m = -Infinity; for (let i = y.length - 1; i >= 0; i--) { m = Math.max(m, y[i]); out[i] = m; } return out; }
 /** Partial sums S(x) = Σ_{1≤k≤x} (−1)^k k^{−1/2}; S(∞) = −η(1/2) = −0.604899… */
 const ALT = (() => { const s = [0]; for (let k = 1; k <= 400; k++) s.push(s[k - 1] + (k % 2 ? -1 : 1) / Math.sqrt(k)); return s; })();
-const altS = (x) => (x < 1 ? 0 : ALT[Math.min(400, Math.floor(x))]);
+const altS = (x) => {if(x<1)return 0;const n=Math.floor(x);for(let k=ALT.length;k<=n;k++)ALT.push(ALT[k-1]+(k%2?-1:1)/Math.sqrt(k));return ALT[n];};
 const ALT_LIM = -0.6048986434;
 /** Solve the symmetric positive definite system G c = b (Cholesky). */
 function cholSolve(G, b) {
@@ -51,6 +51,15 @@ function cholSolve(G, b) {
 }
 const decadeTicks = (lo, hi) => { const out = []; for (let k = Math.ceil(lo); k <= Math.floor(hi); k++) out.push([k, k === 0 ? '1' : k === 1 ? '10' : `1e${k}`]); return out; };
 
+/** Bounds for the preset one-sided oscillations over the entire infinite tail. */
+export function presetOscillationBound(kind,A,delta){
+ if(kind==='chirp'||kind==='flip')return 2;
+ if(kind==='sin')return 2*Math.sin(Math.min(delta,Math.PI)/2);
+ if(kind==='sqrt')return Math.min(2,2*(Math.sqrt(A+delta)-Math.sqrt(A)));
+ if(kind==='alt')return 1/Math.sqrt(Math.floor(A)+1);
+ throw new Error('Unknown oscillation preset');
+}
+
 export default {
   collection: 'fa',
   chapter: 9,
@@ -66,11 +75,11 @@ export default {
 $$\hat h(t)=\hat f(t_0)-\hat f(t)$$
 for every $t$ in some neighbourhood of $t_0$.`,
       idea: String.raw`Multiplying $f$ by a character shifts $\hat f$ (7.2), so one may take $t_0=0$. Fix $g\in L^1$ whose transform is $1$ near $0$ and has compact support, and dilate: $g_\lambda(x)=\lambda^n g(\lambda x)$ has $\hat g_\lambda(t)=\hat g(t/\lambda)$, equal to $1$ on a $\lambda$-neighbourhood of $0$, while $\|g_\lambda\|_1=\|g\|_1$ for every $\lambda$. Put $h_\lambda=\hat f(0)g_\lambda-f*g_\lambda$; its transform is $(\hat f(0)-\hat f)\hat g_\lambda$, as required. Writing $h_\lambda(x)=\int f(y)\,[g_\lambda(x)-g_\lambda(x-y)]\,dy$ gives $\|h_\lambda\|_1\le\int|f(y)|\,\|g-\tau_{\lambda y}g\|_1\,dy$, which tends to $0$ as $\lambda\to0$ by continuity of translation in $L^1$ and dominated convergence.`,
-      caption: String.raw`An instance on $\R$ (transforms taken with plain $dx$). Top: drag $t_0$ along $\hat f$. The orange curve is $\hat f(t_0)\hat g_\lambda$, the purple one is $\hat f\,\hat g_\lambda$, and the green gap between them is $\hat h_\lambda$, which equals $\hat f(t_0)-\hat f$ on the inner window $|t-t_0|\le\lambda$. Bottom left: the same three functions on the space side, plotted against $u=\lambda x$ so that areas are $L^1$ norms. $f*g_\lambda$ nearly cancels $\hat f(t_0)g_\lambda$ because $g_\lambda$ is spread over a length $1/\lambda$. Bottom right: shrink $\lambda$ until $\|h_\lambda\|_1<\eps$.`,
+      caption: String.raw`An instance on $\R$ (transforms taken with plain $dx$). Top: drag $t_0$ along $\hat f$. The orange curve is $\hat f(t_0)\hat g_\lambda$, the purple one is $\hat f\,\hat g_\lambda$, and the green gap between them is $\hat h_\lambda$, which equals $\hat f(t_0)-\hat f$ on the inner window $|t-t_0|\le\lambda$. Bottom left: the same three functions on the space side, plotted against $u=\lambda x$ so that full-line areas would be $L^1$ norms; the displayed integrals use a finite window and approximate the norms. $f*g_\lambda$ nearly cancels $\hat f(t_0)g_\lambda$ because $g_\lambda$ is spread over a length $1/\lambda$. Bottom right: shrink $\lambda$ until $\|h_\lambda\|_1<\eps$.`,
       deps: ['fa-7.2', 'fa-7.7'],
       see: ['rca-9.5', 'rca-9.2'],
       tags: ['Wiener', 'Fourier transform', 'L¹'],
-      verify: true,
+
       viz(v) {
         const M = v.M;
         const FS = {
@@ -152,8 +161,8 @@ for every $t$ in some neighbourhood of $t_0$.`,
         v.legend([['blue', '$\\hat f$'], ['orange', '$\\hat f(t_0)\\,g_\\lambda$ (both sides)'], ['purple', '$f*g_\\lambda$ (both sides)'], ['green', '$h_\\lambda$ and $\\hat h_\\lambda$', { area: true }]]);
         v.readout(() => {
           const s = st; if (s.hn == null) return '';
-          return `$t_0=${v.fix(s.t0, 2)}$, $\\hat f(t_0)=${v.fix(s.c0, 3)}$. $\\;\\|g_\\lambda\\|_1=${v.fix(gNorm, 3)}$ for every $\\lambda$, $\\;\\|f*g_\\lambda\\|_1=${v.fix(s.fgn, 3)}$, but $\\|h_\\lambda\\|_1=${v.fix(s.hn, 4)}$ ` +
-            (s.ok ? `$<\\varepsilon=${v.fix(s.eps, 3)}$: this $h=h_\\lambda$ works, and $\\hat h=\\hat f(t_0)-\\hat f$ on $|t-t_0|\\le\\lambda$.` : `$\\ge\\varepsilon=${v.fix(s.eps, 3)}$` + (s.lamEps != null ? ` — take $\\lambda\\lesssim${v.fix(10 ** s.lamEps, 3)}$.` : ' — shrink $\\lambda$.'));
+          return `$t_0=${v.fix(s.t0, 2)}$, $\\hat f(t_0)=${v.fix(s.c0, 3)}$. $\\;\\|g_\\lambda\\|_1=${v.fix(gNorm, 3)}$ for every $\\lambda$, $\\;\\|f*g_\\lambda\\|_1=${v.fix(s.fgn, 3)}$, but the finite-window estimate of $\\|h_\\lambda\\|_1$ is $${v.fix(s.hn, 4)}$ ` +
+            (s.ok ? `$<\\varepsilon=${v.fix(s.eps, 3)}$: the sampled norm is below epsilon; the exact Fourier identity is $\\hat h=\\hat f(t_0)-\\hat f$ on $|t-t_0|\\le\\lambda$.` : `$\\ge\\varepsilon=${v.fix(s.eps, 3)}$` + (s.lamEps != null ? ` — take $\\lambda\\lesssim${v.fix(10 ** s.lamEps, 3)}$.` : ' — shrink $\\lambda$.'));
         });
       },
     },
@@ -162,7 +171,7 @@ for every $t$ in some neighbourhood of $t_0$.`,
       num: '9.4',
       kind: 'Theorem',
       name: "Wiener's theorem on translation-invariant subspaces",
-      credit: 'Wiener, 1932',
+      credit: 'Wiener',
       statement: String.raw`For $Y\subset L^1(\R^n)$ let $Z(Y)$ be the set of all $t\in\R^n$ at which $\hat f(t)=0$ for **every** $f\in Y$. If $Y$ is a closed subspace of $L^1(\R^n)$ that is invariant under all translations ($f\in Y\Rightarrow\tau_xf\in Y$ for every $x\in\R^n$) and $Z(Y)=\emptyset$, then $Y=L^1(\R^n)$.`,
       idea: String.raw`(i) $Y$ is an ideal: if $f\in Y$ and $g\in L^1$ then $f*g\in Y$. Otherwise Hahn–Banach (3.5) gives $\Lambda\in(L^1)^*=L^\infty$ vanishing on $Y$ with $\Lambda(f*g)\ne0$, yet $\Lambda(f*g)=\int g(y)\,\Lambda(\tau_yf)\,dy=0$.
 (ii) Fix $t_0$ and pick $f\in Y$ with $c=\hat f(t_0)\ne0$. Lemma 9.2 gives $h$ with $\|h\|_1<|c|$ and $\hat f=c-\hat h$ near $t_0$, so the Neumann series $u=\sum_k c^{-k-1}h^{*k}*g$ converges for every $g$. If $\hat g$ is supported in that neighbourhood, $\hat u=\hat g/\hat f$ there, and $f*u=g$ lies in $Y$ by (i).
@@ -170,9 +179,9 @@ for every $t$ in some neighbourhood of $t_0$.`,
 A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $Y$, translation invariance turns it into a bounded $\varphi$ with $f*\varphi=0$ for all $f\in Y$. Then $\operatorname{supp}\hat\varphi\subset Z(Y)=\emptyset$, so $\varphi=0$, and Hahn–Banach gives $Y=L^1$.`,
       caption: String.raw`On $\R$, $Y$ is the closed span of the translates of one or two generators. The top panel shows the least-squares combination of $N$ translates of the generator(s), placed at the gold ticks, approximating a fixed target $g$. Bottom left: $|\hat f|$ of each generator, with the common zeros $Z(Y)$ in red. Bottom right: the $L^1$ error against $N$. When $Z(Y)\ne\emptyset$ the error can never fall below $\sup_{t\in Z(Y)}|\hat g(t)|$ (red floor), because $e^{-it_0x}\in L^\infty$ annihilates $Y$. The last option uses two generators, each with zeros, whose zeros do not overlap. Then $Z(Y)=\emptyset$ and the error goes to $0$.`,
       deps: ['fa-9.2', 'fa-9.3', 'fa-3.5', 'fa-7.2'],
-      see: ['rca-9.16', 'rca-9.21', 'rca-18.21'],
+      see: ['rca-9.17', 'rca-9.23', 'rca-18.21'],
       tags: ['Wiener', 'ideals', 'translation invariance'],
-      verify: true,
+
       viz(v) {
         const M = v.M;
         const NX = 561, xs = M.linspace(-7, 7, NX), dx = 14 / (NX - 1);
@@ -251,9 +260,9 @@ A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $
         v.legend([['ink', 'target $g$'], ['accent', '$\\sum_k c_k\\tau_{a_k}f$ (least squares)'], ['red', 'error region', { area: true }], ['purple', '$|\\hat f|$ (generators)'], ['red', 'common zeros $Z(Y)$', { dot: true }]]);
         v.readout(() => {
           const s = st; if (s.err == null) return '';
-          const head = `$Z(Y)=${s.zl}$. With $N=${s.N}$: $\\|g-\\sum c_k\\tau_{a_k}f\\|_1=${v.fix(s.err, 4)}$`;
+          const head = `$Z(Y)=${s.zl}$. With $N=${s.N}$, sampled finite-window error $\\approx${v.fix(s.err, 4)}$`;
           if (s.floor > 0) return `${head} $\\ge\\sup_{t\\in Z(Y)}|\\hat g(t)|=${v.fix(s.floor, 4)}$ — every $h\\in Y$ has $\\hat h=0$ on $Z(Y)$, so $\\|g-h\\|_1\\ge|\\hat g(t_0)|$ and $Y\\ne L^1$.`;
-          return `${head}. No common zero, so by Wiener's theorem $Y=L^1(\\R)$ and the error tends to $0$ as $N\\to\\infty$ (here until the floating-point floor).`;
+          return `${head}. No common zero, so by Wiener's theorem $Y=L^1(\\R)$ and finite combinations of arbitrary translates can approximate the target in $L^1$. The displayed finite-grid least-squares run is illustrative.`;
         });
       },
     },
@@ -262,15 +271,15 @@ A shorter route goes through 9.3: if a bounded functional on $L^1$ vanishes on $
       num: '9.5',
       kind: 'Theorem',
       name: 'Translates of K are dense iff K̂ has no zero',
-      credit: 'Wiener, 1932',
+      credit: 'Wiener',
       statement: String.raw`Suppose $K\in L^1(\R^n)$ and $Y$ is the smallest closed translation-invariant subspace of $L^1(\R^n)$ that contains $K$, the closed span of the translates of $K$. Then
 $$Y=L^1(\R^n)\quad\text{if and only if}\quad\hat K(t)\ne0\ \text{for every }t\in\R^n .$$`,
       idea: String.raw`Every element of $Y$ is a limit of combinations $\sum c_jK(x-s_j)$, whose transforms are $\hat K(t)\sum c_je^{-is_j\cdot t}$. So $Z(Y)$ is exactly the zero set of $\hat K$. If that set is empty, Theorem 9.4 gives $Y=L^1$. If $\hat K(t_0)=0$, every $h\in Y$ has $\hat h(t_0)=0$, while the Gaussian $g$ has $\hat g(t_0)\ne0$; since $|\hat g(t_0)-\hat h(t_0)|\le\norm{g-h}_1$, $g$ stays at distance at least $|\hat g(t_0)|$ from $Y$. Dually, the bounded function $e^{it_0\cdot x}$ annihilates every translate of $K$: $K*e^{it_0\cdot x}=\hat K(t_0)e^{it_0\cdot x}=0$.`,
       caption: String.raw`The duality behind 9.5, on $\R$. Choose a kernel $K$ and a bounded $\varphi$. Top: $\varphi$ and the normalised averages $(K*\varphi)/\hat K(0)$ and $(f*\varphi)/\hat f(0)$, where $f$ is a narrow Gaussian. Bottom: $\hat K$, $\hat f$ and the frequencies in $\varphi-1$ (gold). For the tone $\varphi=1+\sin\omega x$, $K*\varphi=\hat K(0)+\operatorname{Im}(\hat K(\omega)e^{i\omega x})$. Press the button to put $\omega$ in $Z(K)$: the tone vanishes from every translate's average. Then $\sin\omega x$ is a nonzero bounded function orthogonal to all translates of $K$, so they are not dense. The Gaussian and $\frac12e^{-|x|}$ have no zeros, no tone is invisible to them, and their translates are dense. For the chirp, every average converges; that is Wiener's Tauberian theorem 9.7.`,
       deps: ['fa-9.4', 'fa-7.2'],
-      see: ['rca-9.16'],
+      see: ['rca-9.17'],
       tags: ['Wiener', 'Tauberian', 'convolution'],
-      verify: true,
+
       viz(v) {
         const M = v.M;
         const dx = 0.025, X0 = 0, X1 = 80, NO = Math.round((X1 - X0) / dx) + 1;
@@ -342,9 +351,9 @@ $$Y=L^1(\R^n)\quad\text{if and only if}\quad\hat K(t)\ne0\ \text{for every }t\in
           let msg = `On the tail $60\\le x\\le80$: $\\;(K*\\varphi)/\\hat K(0)\\in${rng(s.kt)}$, $\\;(f*\\varphi)/\\hat f(0)\\in${rng(s.ft)}$`;
           if (s.tones) msg += `; $\\;|\\hat K(\\omega)|/\\hat K(0)=${v.fix(Math.abs(s.Kw), 4)}$`;
           msg += '. ';
-          if (Kok && Fok) msg += s.zeroFree ? '$\\hat K$ has no zero, so the translates of $K$ are dense, and here every average converges (9.7).' : 'Both averages converge here, although $\\hat K$ has zeros.';
-          else if (Kok && !Fok) msg += 'The tone is invisible to $K$ (it converges) but not to $f$: $\\hat K(\\omega)=0$, so $\\sin\\omega x$ annihilates every translate of $K$, and those translates are not dense in $L^1$.';
-          else msg += '$K*\\varphi$ does not converge, so the theorem makes no prediction.';
+          if(s.tones && Math.abs(s.Kw)<1e-10) msg += 'The exact multiplier vanishes at this tone, so it annihilates every translate of $K$; those translates are not dense. The chirp component, if present, has vanishing averages.';
+          else if(s.tones) msg += 'The exact nonzero tone multiplier leaves a persistent oscillation: $K*\\varphi$ has no limit, even if this finite-window oscillation is small.';
+          else msg += 'For this chirp all integrable-kernel averages converge by the oscillatory-integral argument (Chapter 9 Exercise 6). '+(s.zeroFree?'This zero-free kernel also has dense translates.':'This kernel has zeros, so its translates are not dense.');
           return msg;
         });
       },
@@ -354,14 +363,12 @@ $$Y=L^1(\R^n)\quad\text{if and only if}\quad\hat K(t)\ne0\ \text{for every }t\in
       num: '9.6',
       kind: 'Definition',
       name: 'Slowly oscillating function',
-      statement: String.raw`A function $\varphi$ on $\R$ is **slowly oscillating** (at $+\infty$) if for every $\eps>0$ there exist $A$ and $\delta>0$ such that
-$$|\varphi(s)-\varphi(t)|<\eps\qquad\text{whenever } s>A,\ t>A,\ |s-t|<\delta;$$
-equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
+      statement: String.raw`A bounded function $\varphi\in L^\infty(\mathbb R^n)$ is **slowly oscillating** if for every $\varepsilon>0$ some $A<\infty$ and $\delta>0$ satisfy $|\varphi(x)-\varphi(y)|<\varepsilon$ whenever $|x|>A$, $|y|>A$ and $|x-y|<\delta$. On the real line the one-sided version at $+\infty$ uses $x>A$, $y>A$ instead; the diagram illustrates that version. Uniform continuity implies slow oscillation, but continuity is not required.`,
       idea: String.raw`The condition is uniform continuity at infinity and nothing more. Jumps are allowed if they shrink, and convergence is not required: $\sin x$ and $\sin2\sqrt x$ qualify. What it rules out is oscillation on ever shorter scales, like $\sin(x^2)$. It is exactly what lets one recover $\varphi(x)$ from its short averages $\frac1\delta\int_{x-\delta}^x\varphi$, which is how it enters the Tauberian theorem 9.7.`,
-      caption: String.raw`Top: $\varphi$, the threshold $A$ (drag it), and the worst pair $s,t>A$ with $|s-t|<\delta$ (gold). Bottom: the oscillation $\omega(A,\delta)=\sup\{|\varphi(s)-\varphi(t)|:s,t>A,\ |s-t|<\delta\}$ over the $(A,\delta)$ plane, green where it is below $\eps$. Drag the dot there too. $\varphi$ is slowly oscillating iff the green region is non-empty for every $\eps>0$. For $\sin(x^2/4)$ and $(-1)^{\lfloor x\rfloor}$ it is empty for every $\eps<2$.`,
+      caption: String.raw`Top: $\varphi$, the threshold $A$ (drag it), and a sampled near-worst pair $s,t>A$ with $|s-t|<\delta$ (gold). Bottom: analytic bounds for the infinite-tail oscillation $\omega(A,\delta)=\sup\{|\varphi(s)-\varphi(t)|:s,t>A,\ |s-t|<\delta\}$ (exact for the sine, staircase, and non-slow presets; an upper bound for the square-root sine) over the $(A,\delta)$ plane, green where it is below $\eps$. Drag the dot there too. $\varphi$ is slowly oscillating iff the green region is non-empty for every $\eps>0$. For $\sin(x^2/4)$ and $(-1)^{\lfloor x\rfloor}$ it is empty for every $\eps<2$.`,
       deps: [],
       tags: ['Tauberian', 'oscillation'],
-      verify: true,
+
       viz(v) {
         const M = v.M;
         const EX = {
@@ -375,7 +382,7 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
         const epsS = v.slider('$\\varepsilon$', 0.02, 1.5, 0.25, { step: 0.01 });
         const A = v.stage({ x: [0, 60], y: [-1.45, 1.45], height: 240, full: true, axes: 'box', xlabel: 'x', title: '$\\varphi$ and the worst pair beyond $A$' });
         const LD = [Math.log10(0.02), Math.log10(4)];
-        const B = v.stage({ x: [0, 50], y: LD, height: 230, full: true, axes: 'box', xlabel: 'A', title: 'the oscillation $\\omega(A,\\delta)$; green where $\\omega<\\varepsilon$',
+        const B = v.stage({ x: [0, 50], y: LD, height: 230, full: true, axes: 'box', xlabel: 'A', title: 'analytic bound on $\\omega(A,\\delta)$; green certifies $\\omega<\\varepsilon$',
           ylabel: 'δ', yticks: [[Math.log10(0.05), '0.05'], [-1, '0.1'], [Math.log10(0.5), '0.5'], [0, '1'], [Math.log10(2), '2']] });
         const hA = A.handle(12, -1.3, { color: 'accent', label: 'A', constrain: (x) => [M.clamp(x, 0, 50), -1.3] });
         const hB = B.handle(12, Math.log10(0.6), { color: 'ink', constrain: (x, y) => [M.clamp(x, 0, 50), M.clamp(y, LD[0], LD[1])] });
@@ -397,7 +404,7 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
           });
           return (tables[key] = { y, T });
         }
-        const look = (T, Av, ld) => { const j = M.clamp(Math.round((ld - LD[0]) / (LD[1] - LD[0]) * (ND - 1)), 0, ND - 1); return T[j].row[M.clamp(Math.round(Av / AG), 0, NA - 1)]; };
+        const look = (T, Av, ld) => presetOscillationBound(which.value,Av,10**ld);
         const G = v.rgb('green'), R = v.rgb('red');
         let st = {};
         v.render(() => {
@@ -409,7 +416,7 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
           B.axes();
           const om = look(T, Av, ld);
           B.dot(Av, ld, { color: om < eps ? 'green' : 'red', r: 4 });
-          B.corner(om < eps ? `ω(A, δ) = ${v.fmt(om, 3)} < ε` : `ω(A, δ) = ${v.fmt(om, 3)} ≥ ε`, 'tr', { color: om < eps ? 'green' : 'red', weight: 600 });
+          B.corner(om < eps ? `bound = ${v.fmt(om, 3)} < ε` : `bound = ${v.fmt(om, 3)} ≥ ε`, 'tr', { color: om < eps ? 'green' : 'red', weight: 600 });
           // ---- top: φ, region beyond A, worst pair in view
           A.vband(Av, 60, { color: 'accent', alpha: 0.06 });
           A.vline(Av, { color: 'accent', width: 1.2, dash: [4, 4] });
@@ -439,19 +446,19 @@ equivalently, $\varphi(s)-\varphi(t)\to0$ as $s,t\to+\infty$ with $s-t\to0$.`,
       num: '9.7',
       kind: 'Theorem',
       name: "Wiener's Tauberian theorem",
-      credit: 'Wiener, 1932',
+      credit: 'Wiener',
       statement: String.raw`Suppose $\varphi\in L^\infty(\R^n)$, $K\in L^1(\R^n)$, $\hat K(t)\ne0$ for every $t\in\R^n$, and
-$$\lim_{x\to\infty}(K*\varphi)(x)=a\hat K(0).$$
-(a) Then $\lim_{x\to\infty}(f*\varphi)(x)=a\hat f(0)$ for **every** $f\in L^1(\R^n)$.
-(b) If, in addition, $\varphi$ is slowly oscillating (9.6), then $\varphi(x)\to a$ as $x\to\infty$.
-(On $\R$ everything holds with $x\to+\infty$ in place of $|x|\to\infty$.)`,
+$$\lim_{|x|\to\infty}(K*\varphi)(x)=a\hat K(0).$$
+(a) Then $\lim_{|x|\to\infty}(f*\varphi)(x)=a\hat f(0)$ for **every** $f\in L^1(\R^n)$.
+(b) If, in addition, $\varphi$ is slowly oscillating (9.6), then $\varphi(x)\to a$ as $|x|\to\infty$.
+(On $\mathbb R$, the one-sided version at $+\infty$ is Remark 9.8.)`,
       idea: String.raw`(a) Let $Y$ be the set of $f\in L^1$ with $(f*\varphi)(x)-a\hat f(0)\to0$. It is a subspace, closed because $\norm{(f-g)*\varphi}_\infty\le\norm{f-g}_1\norm\varphi_\infty$, and translation-invariant because $(\tau_sf)*\varphi=\tau_s(f*\varphi)$ while $\widehat{\tau_sf}(0)=\hat f(0)$. It contains $K$, so it is all of $L^1$ by 9.5. (b) Take for $f$ the indicator of $[0,\delta]$, normalised so that $(f*\varphi)(x)/\hat f(0)=A_\delta\varphi(x)=\frac1\delta\int_{x-\delta}^x\varphi$. Then
 $$|\varphi(x)-a|\le|\varphi(x)-A_\delta\varphi(x)|+|A_\delta\varphi(x)-a|.$$
 The first term is at most $\omega(x-\delta,\delta)$, which is below $\eps$ for large $x$ once $\delta$ is chosen by slow oscillation. The second tends to $0$ by Wiener.`,
-      caption: String.raw`$a=1$. Top: $\varphi$ (grey), $(K*\varphi)/\hat K(0)$ (blue) and the backward average $A_\delta\varphi$ (green). At the draggable point the bars split $|\varphi(x)-1|$ into the slow-oscillation term $|\varphi-A_\delta\varphi|$ (orange) and the Wiener term $|A_\delta\varphi-1|$ (green). Bottom: the tail suprema $\sup_{y\ge x}|\cdot-1|$ on a log scale. The staircase satisfies every hypothesis and converges, slowly. The chirp is not slowly oscillating, so the orange term never shrinks. The tone at $\pi$ is slowly oscillating, but with the box kernel $\hat K(\pi)=0$, so the green term never shrinks.`,
+      caption: String.raw`$a=1$. Top: $\varphi$ (grey), $(K*\varphi)/\hat K(0)$ (blue) and the backward average $A_\delta\varphi$ (green). At the draggable point the bars split $|\varphi(x)-1|$ into the slow-oscillation term $|\varphi-A_\delta\varphi|$ (orange) and the Wiener term $|A_\delta\varphi-1|$ (green). Bottom: finite-grid tail maxima on $x\le y\le90$ on a log scale. The staircase satisfies every hypothesis and converges, slowly. The chirp is not slowly oscillating, so the orange term never shrinks. The tone at $\pi$ is slowly oscillating, but with the box kernel $\hat K(\pi)=0$, so the green term never shrinks.`,
       deps: ['fa-9.5', 'fa-9.6', 'fa-9.4'],
       tags: ['Tauberian', 'Wiener', 'oscillation'],
-      verify: true,
+
       viz(v) {
         const M = v.M;
         const dx = 0.02, X1 = 90, NO = Math.round(X1 / dx) + 1;
@@ -468,7 +475,7 @@ The first term is at most $\omega(x-\delta,\delta)$, which is below $\eps$ for l
         const kS = v.select('', Object.entries(KS).map(([value, o]) => ({ value, label: o.label })), 'gauss');
         const dS = v.slider('averaging length $\\delta$', 0.1, 3, 0.4, { step: 0.05 });
         const A = v.stage({ x: [0, 60], y: [-0.15, 2.2], height: 270, full: true, axes: 'box', xlabel: 'x', title: '$\\varphi$, $(K*\\varphi)/\\hat K(0)$ and $A_\\delta\\varphi=\\frac1\\delta\\int_{x-\\delta}^x\\varphi$' });
-        const B = v.stage({ x: [0, 60], y: [-4, 0.4], height: 210, full: true, axes: 'box', xlabel: 'x', title: 'tails $\\sup_{y\\ge x}|\\,\\cdot\\,-1|$ (log scale)', yticks: decadeTicks(-4, 0.4) });
+        const B = v.stage({ x: [0, 60], y: [-4, 0.4], height: 210, full: true, axes: 'box', xlabel: 'x', title: 'sampled tail maxima on $x\\le y\\le90$ (log scale)', yticks: decadeTicks(-4, 0.4) });
         const hx = A.handle(24, 1, { color: 'ink', r: 6, constrain: (x) => { const t = M.clamp(x, 4, 57); return [t, EX[eS.value].f(t)]; } });
         const kc = {};
         let ck = '', R = null, st = {};
@@ -514,10 +521,10 @@ The first term is at most $\omega(x-\delta,\delta)$, which is below $\eps$ for l
         v.readout(() => {
           const s = st; if (!s.E) return '';
           const ok = (b) => (b ? '✓' : '✗');
-          const hypK = s.tailK < 0.01;
+          const hypK = eS.value!=='tone'||kS.value==='box';
           return `At $x=${v.fix(s.x0, 1)}$: $|\\varphi-1|=${v.fix(Math.abs(s.pv - 1), 3)}\\le|\\varphi-A_\\delta\\varphi|+|A_\\delta\\varphi-1|=${v.fix(Math.abs(s.pv - s.av), 3)}+${v.fix(Math.abs(s.av - 1), 3)}$. ` +
-            `Hypotheses: slowly oscillating ${ok(s.E.so)}, $\\hat K\\ne0$ ${ok(s.Ko.zf)}, $K*\\varphi\\to\\hat K(0)$ ${ok(hypK)} (tail beyond 50: $${v.sci(s.tailK, 2)}$). ` +
-            `Conclusion $\\varphi\\to1$: ${s.tailP < 0.12 ? 'yes, slowly' : 'no'} (tail beyond 50: $${v.fix(s.tailP, 3)}$).`;
+            `Hypotheses: slowly oscillating ${ok(s.E.so)}, $\\hat K\\ne0$ ${ok(s.Ko.zf)}, $K*\\varphi\\to\\hat K(0)$ ${ok(hypK)} (sampled window $50\\le x\\le90$: $${v.sci(s.tailK, 2)}$). ` +
+            `Conclusion $\\varphi\\to1$: ${eS.value==='alt' ? 'yes, by the alternating-series remainder bound' : 'no, the oscillation has fixed amplitude'} (sampled window $50\\le x\\le90$: $${v.fix(s.tailP, 3)}$).`;
         });
       },
     },

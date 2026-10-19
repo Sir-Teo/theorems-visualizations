@@ -20,10 +20,9 @@ export default {
       idea: String.raw`All irreducibles of an abelian group are one-dimensional (2.6), so an irreducible character is a homomorphism $G\to\mathbb C^\times$ and must send the generators to roots of unity of the right orders; this leaves exactly $mn$ choices, one for each pair $(a,b)$. Orthonormality is 3.5 in this case, and can be seen directly because a nontrivial character sums to zero over the group (the roots of unity add up to $0$). Multiplying two homomorphisms gives a homomorphism, which is the group structure on $\widehat G$.`,
       caption: String.raw`Choose $m$ and $n$. Each row of the grid is one character, each column a group element; the colour is the phase of $\chi_{a,b}(x,y)$ (the number printed in a cell is the exponent $e$ in $e^{2\pi i e/(mn)}$). Click two rows: the readout computes their inner product ($0$ unless they are the same row) and checks that the pointwise product of the two rows is again a row of the table, namely the one labelled by the sum.`,
       deps: ['rep-2.6'],
-      refs: ['Serre §5.1', 'Serre §3.1'],
+      refs: ['Serre §5.1', 'Serre §3.1', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['abelian groups', 'character table', 'duality'],
-      credit: 'Characters of abelian groups: Gauss and Dirichlet (as roots-of-unity sums); the dual group, Pontryagin, 1934 (for locally compact groups)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Character_group' },
       viz(v) {
         const ms = v.slider('$m$', 1, 6, 2, { int: true }), ns = v.slider('$n$', 1, 6, 3, { int: true });

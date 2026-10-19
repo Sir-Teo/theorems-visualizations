@@ -6,13 +6,14 @@ const AJR = AJR_DATA.split(' ').map((r) => { const f = r.split(','); return { co
 const GROUP = ['other (mostly Latin America, Caribbean)', 'Africa', 'Asia', 'neo-Europes (AUS, CAN, NZL, USA)'];
 const GCOL = ['accent', 'orange', 'teal', 'green'];
 
-/** Malthusian economy: y = A T^{1-a} N^{a-1} (T = 1), subsistence 1, dlnN/dt = eta ln y, clipped. Returns [[t, N, y, lnA]]. */
-function malthus(a, eta, boost, gA, T = 1500) {
-  const out = []; let lnN = 0;
+/** Exact log-linear Malthusian flow; A jumps at year 300. Subsistence and land = 1. */
+export function malthus(a, eta, boost, gA, T = 1500) {
+  const out = [], b = (1 - a) * eta;
   for (let t = 0; t <= T; t++) {
-    const lnA = (t > 300 ? Math.log(boost) : 0) + gA * t, lny = lnA - (1 - a) * lnN;
+    const shock = t >= 300 ? Math.log(boost) : 0, lnA = shock + gA * t;
+    const lny = (gA / b) * (-Math.expm1(-b * t)) + shock * Math.exp(-b * (t - 300));
+    const lnN = (lnA - lny) / (1 - a);
     out.push([t, Math.exp(lnN), Math.exp(lny), lnA]);
-    lnN += clamp(eta * lny, -0.02, 0.02);
   }
   return out;
 }
@@ -26,12 +27,12 @@ export default {
       num: '4.6', kind: 'Model', name: 'The Malthusian economy',
       statement: String.raw`Output is produced from a fixed amount of land $T$ and labour $N$ with technology $A$: $Y = A\,T^{1-\alpha}N^{\alpha}$, so income per head is $y = A\,(T/N)^{1-\alpha}$, falling in population. Population responds to living standards: births exceed deaths when $y$ is above a **subsistence level** $\bar y$ and fall short when it is below, for example $\dot N/N = \eta\,\ln(y/\bar y)$. The only steady state has $y = \bar y$, with population
 $$N^* = T\,\Big(\frac{A}{\bar y}\Big)^{1/(1-\alpha)} .$$
-A permanent rise in $A$ therefore raises **population, not living standards**: income per head jumps up, then is pushed back to $\bar y$ as population grows by the factor $(A'/A)^{1/(1-\alpha)}$. If technology grows at a constant rate $g$, population grows at $g/(1-\alpha)$ and income per head stays at $\bar y$.
+A permanent rise in $A$ therefore raises **population, not living standards**: income per head jumps up, then is pushed back to $\bar y$ as population grows by the factor $(A'/A)^{1/(1-\alpha)}$. If technology grows at a constant rate $g>0$, population growth tends to $g/(1-\alpha)$ and income per head tends to $\bar y\exp\!\big[g/(\eta(1-\alpha))\big]$, above subsistence. Population needs above-subsistence income to keep growing in this demographic specification.
 
 Scope: a stylised pre-industrial economy with fixed land and a fertility/mortality response to income; it is a model for the long Malthusian epoch, not a description of any one country.`,
-      idea: String.raw`Diminishing returns to labour on fixed land mean that more people lower the average product, so the income curve slopes down in $N$; the demographic response slopes the other way, making population rise when income is above subsistence. The two forces meet at one point, and the dynamics are those of a stable one-dimensional system, as in the Solow model with land in place of capital. A technology shock shifts the curve up; the economy slides back down the new curve to the same income level and a larger population. The model reproduces the broad pattern of the world before about 1800: technologically more advanced societies were denser, but not much richer.`,
-      caption: String.raw`**Left (log population axis):** income per head against population. The dashed curve is the economy before the technology jump, the solid curve after it; the red line is subsistence, and the gold dot moves along the path (play/pause). **Right:** the same history against time. Raise the jump or the land share $1-\alpha$ and see how large the population gain is; add a small steady technological progress $g$ and income stays at subsistence while population grows without limit. Illustrative parameters, not data.`,
-      deps: ['demo-7.1', 'macro-2.1'], refs: ['CORE The Economy 1.0 U2'], tags: ['growth', 'Malthus', 'population'],
+      idea: String.raw`Diminishing returns to labour on fixed land mean that more people lower the average product, so the income curve slopes down in $N$; the demographic response slopes the other way, making population rise when income is above subsistence. The two forces meet at one point, and the dynamics are those of a stable one-dimensional system, as in the Solow model with land in place of capital. With technology held fixed after the shock, a technology shock shifts the curve up; the economy slides back down the new curve to the same income level and a larger population. The model reproduces the broad pattern of the world before about 1800: technologically more advanced societies were denser, but not much richer.`,
+      caption: String.raw`**Left (log population axis):** income per head against population. The dashed curve is the initial technology, the solid curve is technology at the selected year; the red line is subsistence, and the gold dot moves along the path (play/pause). **Right:** the same history against time. Raise the jump to increase the eventual population; a larger land share $1-\alpha$ reduces that multiplier. With steady technological progress $g>0$, income settles above subsistence while population keeps growing. Illustrative parameters, not data.`,
+      deps: ['demo-7.1', 'macro-2.1', 'ode-1.4'], refs: ['CORE The Economy 1.0 U2'], tags: ['growth', 'Malthus', 'population'],
       credit: 'Thomas Malthus, 1798 (An Essay on the Principle of Population)',
       scope: String.raw`Fixed land, population responding to income through births and deaths, technology that does not itself depend on population (that link is added in 4.7).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Malthusian_trap' },
@@ -52,7 +53,7 @@ Scope: a stylised pre-industrial economy with fixed land and a fertility/mortali
           D.hline(1, { color: 'red', width: 2.2 });
           D.text('subsistence', 1.7, 1, { dy: -10, align: 'left', color: 'red', weight: 700, size: 12 });
           D.fn((N) => N ** (a - 1), { color: 'ink', dash: [5, 4], width: 2, domain: [0.5, lim], n: 200 });
-          if (b > 1.001) D.fn((N) => b * N ** (a - 1), { color: 'accent', width: 2.6, domain: [0.5, lim], n: 200 });
+          D.fn((N) => Math.exp(cur[3]) * N ** (a - 1), { color: 'accent', width: 2.6, domain: [0.5, lim], n: 200 });
           D.path(path.filter((p, i) => i % 5 === 0).map((p) => [p[1], p[2]]), { color: 'purple', width: 2.2 });
           D.dot(cur[1], cur[2], { r: 7, color: 'gold' });
           const Nstar = b ** (1 / (1 - a));
@@ -68,7 +69,7 @@ Scope: a stylised pre-industrial economy with fixed land and a fertility/mortali
           st = { N: cur[1], y: cur[2], tau, Nstar, g, a, b, Nend: path[1500][1], yend: path[1500][2] };
         }, { period: 14, still: 11 });
         v.legend([['accent', 'population'], ['orange', 'income per head'], ['red', 'subsistence'], ['purple', 'path in the diagram']]);
-        v.readout(() => st && `Year ${fx(st.tau, 0)}: population ×${fx(st.N, 2)}, income per head ${fx(st.y, 2)}× subsistence. ${st.g === 0 ? `A technology jump of ×${fx(st.b, 2)} raises the long-run population by ×$${fx(st.b, 2)}^{1/(1-\\alpha)}$ = ×${fx(st.Nstar, 2)} and leaves income per head at subsistence.` : `With steady progress $g$, population grows at $g/(1-\\alpha) = ${pc(st.g / (1 - st.a), 3)}$ a year and income stays near subsistence (${fx(st.yend, 2)}× in year 1500).`}`);
+        v.readout(() => st && `Year ${fx(st.tau, 0)}: population ×${fx(st.N, 2)}, income per head ${fx(st.y, 2)}× subsistence. ${st.g === 0 ? `A technology jump of ×${fx(st.b, 2)} raises the long-run population by ×$${fx(st.b, 2)}^{1/(1-\\alpha)}$ = ×${fx(st.Nstar, 2)} and leaves income per head at subsistence.` : `With steady progress $g$, population growth tends to $g/(1-\\alpha) = ${pc(st.g / (1 - st.a), 3)}$ a year and income tends to ${fx(Math.exp(st.g / (eS.value * (1 - st.a))), 2)}× subsistence (${fx(st.yend, 2)}× in year 1500).`}`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -76,12 +77,12 @@ Scope: a stylised pre-industrial economy with fixed land and a fertility/mortali
       num: '4.7', kind: 'Concept', name: 'Escaping the Malthusian trap',
       statement: String.raw`Let technology advance at a rate $g_A$ and let population growth be capped at a biological maximum $n_{\max}$. In the Malthusian economy of 4.6, income per head is $y \propto A\,N^{-(1-\alpha)}$, so
 $$\frac{\dot y}{y} = g_A - (1-\alpha)\,\frac{\dot N}{N}.$$
-While $g_A < (1-\alpha)\,n_{\max}$ population can absorb all of the progress and income per head returns to subsistence. If $g_A$ rises above $(1-\alpha)\,n_{\max}$, however (for instance because a larger population means more ideas, as in Romer's model), population cannot keep pace and income per head takes off. A **demographic transition**, in which fertility falls once income is high, then removes the drag of population growth, so that income grows at the full rate $g_A$: the *hockey stick* of world income (1.10).
+While $g_A < (1-\alpha)\,n_{\max}$ population growth can eventually absorb the progress, with constant income above subsistence in the log-linear demographic model. If $g_A$ rises above $(1-\alpha)\,n_{\max}$, however (for instance because a larger population means more ideas, as in Romer's model), population cannot keep pace and income per head takes off. A **demographic transition**, in which population growth falls toward zero once income is high, then removes the population drag, so that income growth approaches $g_A$: the *hockey stick* of world income (1.10).
 
-Scope: a stylised reduced form in the spirit of Galor and Weil (2000) and Kremer (1993); the parameters are chosen for illustration, not estimated.`,
-      idea: String.raw`The escape needs two ingredients. First, the rate of technological progress must itself rise with the size of the world, since more people create more ideas (the non-rivalry of 4.4), so the growth rate of $A$ is not constant but accelerates. Second, population growth must hit a ceiling, because the biological response to income is bounded. The race between $g_A$ and $(1-\alpha)\dot N/N$ decides the outcome; once $g_A$ wins, income rises, and in the second stage lower fertility at high income (the transition) shifts the effort from quantity to quality of children and lets the gains stay in income per head. Ashraf and Galor (2011) find cross-country evidence for the Malthusian regime, in which technology raises density rather than income, in the pre-1500 data.`,
-      caption: String.raw`**Left (log scale):** income per head over 1,600 simulated years; red is subsistence. **Right:** the race: progress $g_A$ (green) against the drag $(1-\alpha)\dot N/N$ (orange). The gold marker moves with time. Lower *spillovers* $\nu$ or the technology scale $g_0$ and the economy stays trapped; lift them and income escapes about when the green curve crosses the orange one. Switch the demographic transition off to see population absorb part of the gains. Illustrative parameters.`,
-      deps: ['macro-4.6', 'macro-4.4', 'demo-7.4'], refs: ['CORE The Economy 1.0 U2'], tags: ['growth', 'Malthus', 'demographic transition'],
+Scope: a stylised reduced form in the spirit of Galor and Weil (2000) and Kremer (1993); the parameters are chosen for illustration, not estimated. The simulation caps progress at 2% per year and imposes a logistic decline in population growth at high income; it does not solve the education and fertility choices in Galor–Weil.`,
+      idea: String.raw`The escape needs two ingredients. In this illustration, the rate of technological progress rises with the size of the world, since more people create more ideas (the non-rivalry of 4.4), so the growth rate of $A$ is not constant but accelerates. Second, population growth must hit a ceiling, because the biological response to income is bounded. The race between $g_A$ and $(1-\alpha)\dot N/N$ decides the outcome; once $g_A$ wins, income rises, and in the second stage lower fertility at high income (the transition) shifts the effort from quantity to quality of children and lets the gains stay in income per head. Ashraf and Galor (2011) find cross-country evidence for the Malthusian regime, in which technology raises density rather than income, in the pre-1500 data.`,
+      caption: String.raw`**Left (log scale):** income per head over 1,600 simulated years; red is subsistence. **Right:** the race: progress $g_A$ (green) against the drag $(1-\alpha)\dot N/N$ (orange). The gold marker moves with time. Lower *spillovers* $\nu$ or the technology scale $g_0$ and the economy stays trapped; lift them and income escapes once progress persistently exceeds the maximum population drag (the dashed threshold). Switch the demographic transition off to see population absorb part of the gains. Illustrative parameters.`,
+      deps: ['macro-4.6', 'macro-4.4', 'demo-7.4', 'pma-9.15'], refs: ['CORE The Economy 1.0 U2'], tags: ['growth', 'Malthus', 'demographic transition'],
       credit: 'Oded Galor and David Weil, 2000 (American Economic Review 90(4), 806–828)',
       scope: String.raw`Stylised long-run story; the timing of the escape in the simulation is fixed by the parameters shown, not by history.`,
       links: { doi: 'https://doi.org/10.1257/aer.90.4.806' },
@@ -126,7 +127,7 @@ Scope: a stylised reduced form in the spirit of Galor and Weil (2000) and Kremer
           st = { cur, esc, nm, thr: (1 - A) * nm, tp, end: pts[T] };
         }, { period: 14, still: 11 });
         v.legend([['orange', 'income per head / population drag'], ['green', 'technical progress g_A'], ['red', 'subsistence']]);
-        v.readout(() => st && `Year ${fx(st.tp, 0)}: income ${fx(st.cur[1], 2)}× subsistence, progress ${pc(st.cur[2], 2)} a year, drag ${pc(st.cur[3], 2)}. Escape threshold $(1-\\alpha) n_{\\max} = ${pc(st.thr, 2)}$; ${st.esc === null ? 'progress never exceeds it in 1,600 years: the economy stays trapped.' : `progress overtakes it around year ${st.esc}, and income reaches ${fx(st.end[1], 0)}× subsistence by year 1,600.`}`);
+        v.readout(() => st && `Year ${fx(st.tp, 0)}: income ${fx(st.cur[1], 2)}× subsistence, progress ${pc(st.cur[2], 2)} a year, drag ${pc(st.cur[3], 2)}. Escape threshold $(1-\\alpha) n_{\\max} = ${pc(st.thr, 2)}$; ${st.esc === null ? 'the maximum-drag threshold is not crossed with income above 1.49× in 1,600 years; actual income growth is progress minus the plotted drag.' : `income exceeds 1.49× subsistence with progress above that threshold around year ${st.esc}, and income reaches ${fx(st.end[1], 0)}× subsistence by year 1,600.`}`);
       },
     },
     // ------------------------------------------------------------------ 4.8
@@ -134,14 +135,14 @@ Scope: a stylised reduced form in the spirit of Galor and Weil (2000) and Kremer
       num: '4.8', kind: 'Model', name: 'Human-capital-augmented Solow (Mankiw–Romer–Weil)',
       statement: String.raw`Let output be $Y = K^{\alpha} H^{\beta} (AL)^{1-\alpha-\beta}$ with physical capital $K$ and human capital $H$ accumulated at the rates $s_k$ and $s_h$ of output, with $\alpha+\beta<1$. In the steady state income per worker is
 $$\ln\frac{Y}{L} = \ln A(0) + gt - \frac{\alpha+\beta}{1-\alpha-\beta}\ln(n+g+\delta) + \frac{\alpha}{1-\alpha-\beta}\ln s_k + \frac{\beta}{1-\alpha-\beta}\ln s_h .$$
-Mankiw, Romer and Weil (1992) estimate this on cross-country data for 1960–1985. Without human capital the data imply a capital share $\alpha$ of about $0.6$ (twice the national-accounts value of about one third); with schooling added, the fit improves from an adjusted $R^2$ of $0.59$ (75-country intermediate sample) to $0.78$ (98 non-oil countries) and the implied shares fall to $\alpha \approx 0.31$, $\beta \approx 0.28$, close to their prior values.
+Mankiw, Romer and Weil (1992) estimate this on cross-country data for 1960–1985. Without human capital the data imply a capital share $\alpha$ of about $0.6$ (twice the national-accounts value of about one third); with schooling added, the fit improves from an adjusted $R^2$ of $0.59$ to $0.78$ in the same 98-country non-oil sample and the implied shares fall to $\alpha \approx 0.31$, $\beta \approx 0.28$, close to their prior values.
 
-Scope: the original uses secondary-school enrolment as a proxy for the human-capital investment rate and assumes $g+\delta = 0.05$ and common technology levels across countries; both are strong, and later work (conditional convergence, 3.10) questions the second.`,
+Scope: the original uses secondary-school enrolment as a proxy for the human-capital investment rate and assumes $g+\delta = 0.05$ and technology differences uncorrelated with saving, schooling and population growth. The latter is a strong identifying assumption: the original permits country-specific technology levels in its error term.`,
       idea: String.raw`In the textbook model, saving and population growth must explain all of the cross-country variation in income through a single exponent $\alpha/(1-\alpha)$, which comes out too big if the omitted variable is correlated with them: countries that save more also tend to be better educated, so the saving coefficient absorbs the effect of human capital. Adding human capital as a third factor spreads the same variation over three inputs, lowering the implied capital share to a plausible value while raising the fit. The test is a *restriction*: the coefficients on $\ln s_k$, $\ln s_h$ and $\ln(n+g+\delta)$ should sum to zero, which the data do not reject.`,
       caption: String.raw`Re-estimation on Penn World Table 10 (85 countries; income per worker in 2019, investment share and population growth averaged over 1960–2019, PWT human-capital index in 2019). Choose a **model** and see fitted against actual log income per worker (45° line = perfect fit; orange = long-standing OECD members). **Right:** adjusted $R^2$ of all four models. Change $g+\delta$ (MRW fix it at 0.05) or restrict to OECD members to see how fragile the textbook fit is. The human-capital index is a *level* of efficiency per worker, so theory predicts a coefficient of 1 on its log, unlike MRW's enrolment-rate proxy.`,
-      deps: ['macro-3.7'], refs: ['Romer ch. 4'], tags: ['growth', 'empirics', 'human capital'],
+      deps: ['macro-3.7', 'stat-12.2', 'opt-1.6'], refs: ['Romer ch. 4'], tags: ['growth', 'empirics', 'human capital'],
       credit: 'N. Gregory Mankiw, David Romer and David Weil, 1992 (Quarterly Journal of Economics 107(2), 407–437)',
-      scope: String.raw`Steady-state cross-section; assumes identical technology paths and the same $g+\delta$ everywhere. Estimates here are a modern re-estimation, not MRW's table.`,
+      scope: String.raw`Steady-state cross-section; assumes a common technology growth rate, the same $g+\delta$ everywhere and country-specific technology levels uncorrelated with the regressors. Estimates here are a modern re-estimation, not MRW's table.`,
       links: { doi: 'https://doi.org/10.2307/2118477' },
       viz(v) {
         const MODELS = [
@@ -174,8 +175,8 @@ Scope: the original uses secondary-school enrolment as a proxy for the human-cap
           const r2s = [res.sol, res.sol3, res.aug, res.aug3].map((m) => adj(m.r2, m.p === 1 ? 1 : m.p));
           const names = ['sol', 'sol3', 'aug', 'aug3'];
           B.setView([0.4, 4.6], [Math.min(0, ...r2s) - 0.05, 1]);
-          B.bars(r2s.map((r) => Math.max(r, 0)), { x0: 1, dx: 1, color: (val, i) => (names[i] === sel.value ? 'accent' : 'faint'), });
-          r2s.forEach((r, i) => B.text(fx(r, 2), i + 1, Math.max(r, 0), { dy: -8, align: 'center', color: names[i] === sel.value ? 'accent' : 'muted', weight: 700, size: 12 }));
+          B.bars(r2s, { x0: 1, dx: 1, color: (val, i) => (names[i] === sel.value ? 'accent' : 'faint'), });
+          r2s.forEach((r, i) => B.text(fx(r, 2), i + 1, r, { dy: -8, align: 'center', color: names[i] === sel.value ? 'accent' : 'muted', weight: 700, size: 12 }));
           const bs = m1.o.b, bA = m3.o.b;
           st = { pts, n, r2s, a1: bs[1] / (1 + bs[1]), a3: bA[1] / (1 + bA[1]), b1: bs, bA, adjCur: adj(cur.r2, 3), hcCoef: bA[3] };
         });
@@ -191,10 +192,9 @@ Scope: the original uses secondary-school enrolment as a proxy for the human-cap
 Scope: an identification argument for colonised countries only; effect size and instrument validity are contested.`,
       idea: String.raw`If institutions were fixed by income alone, a regression of income on institutional quality would only record reverse causation, and measurement error in an index of expropriation risk would bias it. The instrument has to satisfy two conditions: it must predict institutions (relevance: here the first-stage slope is about $-0.6$) and affect income only through institutions (exclusion). The two-stage estimate is the ratio of the reduced-form to the first-stage slope. The strongest criticisms are that many of the 64 mortality values are borrowed from neighbouring countries (Albouy, 2012), that the result depends on a few groups of countries, and that the instrument might act through other channels, which AJR answer in their reply. A frequently cited illustration of the idea (not used in the regression) is the divergence of North and South Korea after 1945 from the same starting point.`,
       caption: String.raw`The authors' base sample of 64 former colonies (data from their replication file). **Left:** log income per head in 1995 against protection from expropriation, with the OLS line (blue) and the 2SLS line (green). **Right:** the first stage, institutions against log settler mortality. Drop a group of countries with the switches and watch the first stage and the 2SLS slope move: dropping Africa or the four neo-Europes is the standard sensitivity test. Click a dot to see which country it is.`,
-      deps: ['macro-4.8'], refs: ['Romer ch. 4', 'CORE Macro U9'], tags: ['development', 'institutions', 'instrumental variables'],
+      deps: ['macro-4.8', 'stat-12.2'], refs: ['Romer ch. 4', 'CORE Macro U9'], tags: ['development', 'institutions', 'instrumental variables'],
       credit: 'Daron Acemoglu, Simon Johnson and James Robinson, 2001 (American Economic Review 91(5), 1369–1401); critique by David Albouy, 2012 (American Economic Review 102(6), 3059–3076)',
       scope: String.raw`Estimates depend on the sample and instrument; a debated causal claim rather than a settled result.`,
-      verify: true,
       links: { doi: 'https://doi.org/10.1257/aer.91.5.1369' },
       viz(v) {
         const dA = v.toggle('drop Africa', false), dN = v.toggle('drop the neo-Europes', false), dS = v.toggle('drop Asia', false);
@@ -218,7 +218,7 @@ Scope: an identification argument for colonised countries only; effect size and 
           st = { data, e };
         });
         v.legend(GROUP.map((g, i) => [GCOL[i], g, { dot: true }]).concat([['accent', 'OLS line'], ['green', '2SLS line']]));
-        v.readout(() => st && st.e && `${st.data.length} countries. OLS slope ${fx(st.e.ols.slope, 2)}; first stage ${fx(st.e.fs.slope, 2)} (R² ${fx(st.e.fs.r2, 2)}); 2SLS slope ${fx(st.e.tsls.slope, 2)} (se ${fx(st.e.tsls.se, 2)}). Full base sample: OLS 0.52, first stage −0.61, 2SLS 0.94, as in AJR's Table 4 (replicated here from their file).`);
+        v.readout(() => st && st.e && `${st.data.length} countries. OLS slope ${fx(st.e.ols.slope, 2)}; first stage ${fx(st.e.fs.slope, 2)} (R² ${fx(st.e.fs.r2, 2)}); 2SLS slope ${fx(st.e.tsls.slope, 2)} (conventional homoskedastic se ${fx(st.e.tsls.se, 2)}). Full base sample: OLS 0.52, first stage −0.61, 2SLS 0.94, as in AJR's Table 4 (replicated here from their file).`);
       },
     },
   ],

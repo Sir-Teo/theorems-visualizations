@@ -27,7 +27,7 @@ $$\sigma_{x'}=\tfrac{\sigma_x+\sigma_y}{2}+\tfrac{\sigma_x-\sigma_y}{2}\cos2\the
 and $\sigma_{y'}$ is the same with $\theta+90^\circ$. All three are sinusoids of $2\theta$, and $\sigma_{x'}+\sigma_{y'}=\sigma_x+\sigma_y$ for every $\theta$. Tension is positive; the formulas hold for equilibrium of an element with no body couples (so $\tau_{yx}=\tau_{xy}$).`,
       idea: String.raw`Cut a small wedge whose inclined face has the normal $\mathbf n'=(\cos\theta,\sin\theta)$. Cauchy's formula (2.2) gives the traction $\mathbf t=\boldsymbol\sigma\mathbf n'$ on that face, and $\sigma_{x'}=\mathbf n'\!\cdot\!\mathbf t$, $\tau_{x'y'}=\mathbf e'_y\!\cdot\!\mathbf t$ are its components along the new axes. Products of $\cos\theta$ and $\sin\theta$ appear twice, which the double-angle identities turn into functions of $2\theta$. The symmetry $\tau_{yx}=\tau_{xy}$ (2.3) is what makes the matrix $\boldsymbol\sigma$ rotate as $\mathsf R\boldsymbol\sigma\mathsf R^{\mathsf T}$.`,
       caption: String.raw`Turn the dial $\theta$ (or drag in the plot): the dashed square is the original element, the solid one is turned, and the arrows on its faces are the components $\sigma_{x'},\sigma_{y'},\tau_{x'y'}$ (blue tension, red compression, orange shear). The plot shows the three components as functions of $\theta$: sinusoids that repeat every $180^\circ$, with $\sigma_{x'}$ and $\sigma_{y'}$ always summing to the same constant. Change the original state with the three sliders.`,
-      deps: ['solid-2.9'],
+      deps: ['solid-2.9', 'ladr-9.7'],
       refs: ['Gere–Goodno §7.2'],
       tags: ['stress', 'transformation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stress_(mechanics)#Transformation_rule_of_the_stress_tensor' },
@@ -66,7 +66,7 @@ and $\sigma_{y'}$ is the same with $\theta+90^\circ$. All three are sinusoids of
       statement: String.raw`Let $\boldsymbol\sigma$ be the (symmetric) stress matrix at a point. Then there is an orthonormal basis of **principal directions** $\mathbf n_1,\mathbf n_2(,\mathbf n_3)$ in which $\boldsymbol\sigma$ is diagonal. The diagonal entries, the **principal stresses** $\sigma_1\ge\sigma_2(\ge\sigma_3)$, are the eigenvalues of $\boldsymbol\sigma$, i.e. the roots of $\det(\boldsymbol\sigma-\sigma\mathsf I)=0$, and on the plane with normal $\mathbf n_i$ the shear stress is zero. Among all planes through the point, $\sigma_1$ is the largest and $\sigma_3$ (or $\sigma_2$ in plane stress) the smallest normal stress. In plane stress: $\sigma_{1,2}=\tfrac{\sigma_x+\sigma_y}{2}\pm\sqrt{(\tfrac{\sigma_x-\sigma_y}{2})^2+\tau_{xy}^2}$.`,
       idea: String.raw`The normal stress on the plane with unit normal $\mathbf n$ is $\sigma_n=\mathbf n^{\mathsf T}\boldsymbol\sigma\mathbf n$ (3.1), a quadratic form on the unit circle. Its stationary points satisfy $\boldsymbol\sigma\mathbf n=\lambda\mathbf n$ by Lagrange multipliers, which is the eigenvalue equation, and the real spectral theorem (ladr-7.29) guarantees real eigenvalues and orthogonal eigenvectors because $\boldsymbol\sigma$ is symmetric (2.3). At such a $\mathbf n$ the traction $\boldsymbol\sigma\mathbf n=\lambda\mathbf n$ is purely normal, so the shear stress vanishes; differentiating $\sigma_{x'}(\theta)$ and setting $\tau_{x'y'}=-\tfrac12\,d\sigma_{x'}/d\theta=0$ is the same condition.`,
       caption: String.raw`Turn the element with the dial and watch $\tau_{x'y'}$ in the lower curve cross zero exactly where $\sigma_{x'}$ (upper curve) touches its maximum $\sigma_1$ and minimum $\sigma_2$. The dashed lines through the element are the eigenvectors of the $2\times2$ matrix computed numerically; the green horizontal lines are its eigenvalues. "Snap" turns the element onto a principal direction, where the shear arrows disappear.`,
-      deps: ['solid-3.1', 'ladr-7.29'],
+      deps: ['solid-3.1', 'ladr-7.29', 'vcalc-2.14'],
       refs: ['Gere–Goodno §7.3'],
       tags: ['stress', 'eigenvalues'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cauchy_stress_tensor#Principal_stresses_and_stress_invariants' },
@@ -278,7 +278,7 @@ $$I_1=\operatorname{tr}\boldsymbol\sigma,\qquad I_2=\tfrac12\big[(\operatorname{
 the coefficients of the characteristic polynomial $\sigma^3-I_1\sigma^2+I_2\sigma-I_3$; they do not change when the axes are rotated, and in terms of the principal stresses $I_1=\sigma_1+\sigma_2+\sigma_3$, $I_2=\sigma_1\sigma_2+\sigma_2\sigma_3+\sigma_3\sigma_1$, $I_3=\sigma_1\sigma_2\sigma_3$. The tensor splits uniquely into a **hydrostatic** part $\sigma_m\mathsf I$ with $\sigma_m=I_1/3$ and a **deviatoric** part $\mathbf s=\boldsymbol\sigma-\sigma_m\mathsf I$, which has zero trace. The invariant $J_2=\tfrac12\mathbf s\!:\!\mathbf s=\tfrac13(I_1^2-3I_2)$ and the von Mises stress $\sigma_{\rm vM}=\sqrt{3J_2}$ are also invariant.`,
       idea: String.raw`Rotating the axes replaces $\boldsymbol\sigma$ by $\mathsf R\boldsymbol\sigma\mathsf R^{\mathsf T}$, which has the same eigenvalues (3.2): the characteristic polynomial is built from the eigenvalues alone, so its coefficients are unchanged. The split into $\sigma_m\mathsf I$ and $\mathbf s$ commutes with rotations, because $\mathsf R\,\mathsf I\,\mathsf R^{\mathsf T}=\mathsf I$. The hydrostatic part changes volume and not shape, the deviatoric part changes shape and not (to first order) volume; this is the basis of the yield criteria of chapter 4.`,
       caption: String.raw`Set the principal stresses and then spin the axes with the angle slider about an axis you can re-roll: the six components in the first plot (all different functions of the rotation angle) wobble, while the three invariant-based stresses in the second plot stay perfectly flat. The right panel shows the split: a cube that only changes size (hydrostatic) and a box that only changes shape (deviatoric); dimensions are drawn $\propto1+0.006\,\sigma$, schematically.`,
-      deps: ['solid-3.2'],
+      deps: ['solid-3.2', 'ladr-9.65'],
       refs: ['Timoshenko–Goodier ch. 7'],
       tags: ['stress', 'invariants'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cauchy_stress_tensor#Stress_deviator_tensor' },
@@ -339,7 +339,7 @@ $$\varepsilon_{x'}=\tfrac{\varepsilon_x+\varepsilon_y}{2}+\tfrac{\varepsilon_x-\
 so that there is a Mohr's circle in the plane $(\varepsilon,\gamma/2)$ and principal strains $\varepsilon_{1,2}=\tfrac{\varepsilon_x+\varepsilon_y}{2}\pm\sqrt{(\tfrac{\varepsilon_x-\varepsilon_y}{2})^2+(\tfrac{\gamma_{xy}}2)^2}$. A strain gauge measures only the normal strain along its own axis, so three gauges in three different directions are needed: for the **rectangular rosette** (gauges at $0^\circ,45^\circ,90^\circ$ to a reference axis) the full state is $\varepsilon_x=\varepsilon_a$, $\varepsilon_y=\varepsilon_c$, $\gamma_{xy}=2\varepsilon_b-\varepsilon_a-\varepsilon_c$.`,
       idea: String.raw`Strain is the symmetric part of the displacement gradient (2.5), so the normal strain along a unit direction $\mathbf n$ is $\mathbf n^{\mathsf T}\boldsymbol\varepsilon\,\mathbf n$, the same quadratic form as in 3.1 with $\gamma/2$ in the role of $\tau$. A plane state has three unknowns, and the readings at $\theta=0^\circ,45^\circ,90^\circ$ give three linear equations that can be solved by hand: the $45^\circ$ gauge fixes $\gamma_{xy}$. The conversion from the solved strains to stress needs Hooke's law (2.7) and a known material, which is a separate step. Bonded-wire strain gauges themselves date to the late 1930s (Simmons at Caltech and Ruge at MIT, developing them independently).`,
       caption: String.raw`The coloured plate is a clamped cantilever loaded at its free end (a plane-stress finite-element solution, steel-like $E=200$ GPa, $\nu=0.3$, illustrative), coloured by von Mises stress. Drag the black dot: three gauges (a, b, c at $\alpha,\alpha+45^\circ,\alpha+90^\circ$) read the true normal strain along their axes. The right panel rebuilds the Mohr circle of strain from those three readings (accent) and compares it with the FE strain (green, dashed; the two circles coincide until you add gauge error). Add gauge noise to see how errors in three numbers move the principal strains and especially the principal direction.`,
-      deps: ['solid-2.5', 'solid-3.1'],
+      deps: ['solid-2.5', 'solid-3.1', 'ladr-3.59'],
       refs: ['Gere–Goodno §7.7'],
       tags: ['strain', 'measurement'],
       scope: String.raw`Small strains; a plane-stress model of the plate with perfectly bonded, point-like gauges (no gauge-length averaging or transverse sensitivity).`,
@@ -466,17 +466,16 @@ and a sphere of the same $r$ and $t$ carries $\sigma=\dfrac{pr}{2t}$ in every ta
       num: '3.9',
       kind: 'Model',
       name: 'Thick-walled cylinders: Lamé’s solution',
-      statement: String.raw`Let a long circular cylinder with inner radius $r_i$ and outer radius $r_o$ carry uniform internal pressure $p_i$ and external pressure $p_o$, and let it deform axisymmetrically in plane stress or plane strain. Then the radial and hoop stresses at radius $r$ are
+      statement: String.raw`Let a long circular cylinder with inner radius $r_i$ and outer radius $r_o$ carry uniform internal pressure $p_i$ and external pressure $p_o$, and let it deform axisymmetrically with uniform axial strain (including plane stress or plane strain as special cases for the in-plane solution). Then the radial and hoop stresses at radius $r$ are
 $$\sigma_r=A-\frac{B}{r^2},\qquad \sigma_\theta=A+\frac{B}{r^2},\qquad A=\frac{p_ir_i^2-p_or_o^2}{r_o^2-r_i^2},\quad B=\frac{r_i^2r_o^2(p_i-p_o)}{r_o^2-r_i^2},$$
 with compressive radial stress equal to the applied pressure on each surface, $\sigma_r(r_i)=-p_i$, $\sigma_r(r_o)=-p_o$. With a closed end the axial stress is uniform, $\sigma_z=p_ir_i^2/(r_o^2-r_i^2)$ (for $p_o=0$). For internal pressure alone the hoop stress is largest at the bore, $\sigma_\theta(r_i)=p_i\,\dfrac{r_o^2+r_i^2}{r_o^2-r_i^2}$.`,
-      idea: String.raw`In axisymmetry the equilibrium equation of 2.4 reduces to $d\sigma_r/dr+(\sigma_r-\sigma_\theta)/r=0$. Writing $\sigma_r$ and $\sigma_\theta$ through the Airy function $\phi(r)$ (2.12), $\sigma_r=\phi'/r$, $\sigma_\theta=\phi''$, and demanding compatibility gives an Euler equation whose bounded solutions are $\phi=\tfrac A2r^2+B\ln r$ (plus a term in $r^2\ln r$ that is excluded when the displacement must be single-valued). The two constants $A,B$ come from the pressures at the two surfaces. The sum $\sigma_r+\sigma_\theta=2A$ is uniform across the wall, and as $r_o/r_i\to1$ the solution tends to the thin-wall result of 3.8.`,
-      caption: String.raw`The left plot shows $\sigma_\theta$ (orange) and $\sigma_r$ (accent) through the wall from the bore ($r=r_i=1$) to the outer surface. The dashed line is the thin-wall estimate $p\,r_m/t$ with the mean radius: for thin walls it is nearly the average of the exact curve, for thick walls it badly underestimates the stress at the bore. The right plot sets the exact bore stress against the thin-wall value as the radius ratio grows. Add an external pressure with the second slider; the two boundary values of $\sigma_r$ stay pinned to the pressures.`,
+      idea: String.raw`In axisymmetry the equilibrium equation of 2.4 reduces to $d\sigma_r/dr+(\sigma_r-\sigma_\theta)/r=0$. Writing $\sigma_r$ and $\sigma_\theta$ through the Airy function $\phi(r)$ (2.12), $\sigma_r=\phi'/r$, $\sigma_\theta=\phi''$, and demanding compatibility gives an Euler equation whose bounded solutions are $\phi=\tfrac A2r^2-B\ln r$ (plus a term in $r^2\ln r$ that is excluded when the displacement must be single-valued). The two constants $A,B$ come from the pressures at the two surfaces. The sum $\sigma_r+\sigma_\theta=2A$ is uniform across the wall, and as $r_o/r_i\to1$ the solution tends to the thin-wall result of 3.8.`,
+      caption: String.raw`The left plot shows $\sigma_\theta$ (orange) and $\sigma_r$ (accent) through the wall from the bore ($r=r_i=1$) to the outer surface. The dashed line is the thin-wall estimate $(p_i-p_o)r_m/t-p_o$ with the mean radius: for thin walls it is nearly the average of the exact curve, for thick walls it badly underestimates the stress at the bore. The right plot sets the exact bore stress against the thin-wall value as the radius ratio grows. Add an external pressure with its slider; the two boundary values of $\sigma_r$ stay pinned to the pressures.`,
       deps: ['solid-3.8', 'solid-2.12'],
-      refs: ['Timoshenko–Goodier ch. 4'],
+      refs: ['MIT22.314J NoteL.4 §4, pp.27–30, Eqs.(4.1)–(4.20)'],
       tags: ['elasticity', 'pressure vessel'],
-      credit: 'G. Lamé',
+      credit: 'Lamé cylinder solution',
       scope: String.raw`Linear elasticity, uniform pressures, long cylinder far from the ends, isotropic homogeneous material; the axial stress given is for a closed end, away from the end caps.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Cylinder_stress' },
       viz(v) {
         const k = v.slider('radius ratio $r_o/r_i$', 1.02, 5, 2, { step: 0.01 });
@@ -486,13 +485,13 @@ with compressive radial stress equal to the applied pressure on each surface, $\
         const G = v.stage({ x: [1, 5], y: [-110, 330], axes: 'box', gutter: true, height: 340, xlabel: 'radius r / rᵢ', ylabel: 'stress (MPa)', title: 'stress through the wall' });
         const R = v.stage({ x: [1, 5], y: [0, 3], axes: 'box', gutter: true, height: 340, xlabel: 'radius ratio rₒ/rᵢ', ylabel: 'σθ(bore) / (p rₘ/t)', title: 'thin-wall estimate vs exact (pᵢ only)' });
         const thinRatio = (kk) => { const ex = (kk * kk + 1) / (kk * kk - 1), rm = (1 + kk) / 2, tt = kk - 1; return ex / (rm / tt); };
-        v.legend([['orange', 'hoop σθ'], ['accent', 'radial σr'], ['muted', 'thin-wall pr/t', { dash: true }]]);
+        v.legend([['orange', 'hoop σθ'], ['accent', 'radial σr'], ['muted', 'thin-wall hoop estimate', { dash: true }]]);
         v.render(() => {
           const s = sol();
-          G.setView([1, Math.max(1.5, s.ro * 1.02)], [Math.min(-110, -pi.value * 1.1), Math.max(120, s.st(1) * 1.12)]);
+          const ends=[s.st(1),s.st(s.ro),s.sr(1),s.sr(s.ro)];G.setView([1,s.ro+.02*(s.ro-1)],[Math.min(-110,...ends.map(x=>1.12*x)),Math.max(120,...ends.map(x=>1.12*x))]);
           G.fn(s.st, { color: 'orange', width: 2.6, domain: [1, s.ro], n: 80 });
           G.fn(s.sr, { color: 'accent', width: 2.6, domain: [1, s.ro], n: 80 });
-          const thin = ((pi.value - po.value) * ((1 + s.ro) / 2)) / (s.ro - 1);
+          const thin = ((pi.value - po.value) * ((1 + s.ro) / 2)) / (s.ro - 1)-po.value;
           G.hline(thin, { color: 'muted', width: 1.6, dash: [6, 4] });
           G.hline(0, { color: 'faint', width: 1 });
           G.dot(1, s.st(1), { r: 6, color: 'orange' }); G.dot(s.ro, s.st(s.ro), { r: 6, color: 'orange' });

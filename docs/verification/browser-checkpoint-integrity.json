@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "case": "pma-2.43",
+  "meaning": "Actual checker integration: a temporary non-executable source comment is always restored; no renderer, control or visual-source behavior changes.",
+  "checks": [
+    {
+      "name": "source change after the default screenshot rejects the case",
+      "passed": true
+    },
+    {
+      "name": "failed case reruns and stable restored content passes",
+      "passed": true
+    },
+    {
+      "name": "unchanged passing content resumes",
+      "passed": true
+    },
+    {
+      "name": "changed collection content invalidates previous passing content and reruns",
+      "passed": true
+    }
+  ]
+}

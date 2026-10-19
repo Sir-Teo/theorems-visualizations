@@ -146,7 +146,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           let mats = ir.mats;
           if (t > 0) { const P = Array.from({ length: d }, (_, i) => Array.from({ length: d }, (_, j) => (i === j ? 1 : 0) + (d > 1 && i === 0 && j === 1 ? t : d === 1 ? 0 : 0))); const Pi = inv(P), Pc = cm(P), Pic = cm(Pi); mats = mats.map((R) => cmm(cmm(Pc, R), Pic)); }
           const all = formSpace(v.M, mats, 'all'), sym = formSpace(v.M, mats, 'sym'), alt = formSpace(v.M, mats, 'alt');
-          const T = tableOf(key), row = T.rows.find((r) => r.name === ir.name), isReal = row.vals.every((z) => Math.abs(z[1]) < 1e-9);
+          const T = tableOf(key), row = T.rows.find((r) => r.tex === ir.tex), isReal = row.vals.every((z) => Math.abs(z[1]) < 1e-9);
           const type = sym.length ? 'real' : alt.length ? 'quaternionic' : 'complex';
           const form = (sym[0] || alt[0] || null);
           return (cache[id] = { ir, all: all.length, sym: sym.length, alt: alt.length, type, form, isReal, nirr: irrepMats(key).length });
@@ -165,7 +165,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
         });
         v.readout(() => {
           const key = gsel.value, r = solve(key, Math.min(idx, irrepMats(key).length - 1), sh.value);
-          const T = tableOf(key), row = T.rows.find((q) => q.name === r.ir.name);
+          const T = tableOf(key), row = T.rows.find((q) => q.tex === r.ir.tex);
           return `$${T.G.tex}$, irreducible ${Math.min(idx, r.nirr - 1) + 1} of ${r.nirr}: $${r.ir.tex}$ of degree ${r.ir.d}. Dimensions of the spaces of invariant forms: all ${r.all}, symmetric ${r.sym}, alternating ${r.alt} — so the type is **${r.type}**. Character real-valued: ${r.isReal ? 'yes' : 'no'}${r.type === 'complex' ? ' (so $V\\not\\cong V^*$)' : ''}.${sh.value > 0 ? ' (Basis changed: the form is different, the verdict is not.)' : ''}`;
         });
       },
@@ -176,13 +176,12 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       kind: 'Theorem',
       name: 'Frobenius–Schur indicator',
       statement: String.raw`For an irreducible character $\chi$ of a finite group $G$ put $\nu(\chi)=\frac1{|G|}\sum_{g\in G}\chi(g^2)$. Then $\nu(\chi)\in\{+1,0,-1\}$, and $\nu(\chi)=+1$, $0$, $-1$ exactly when the representation is of real, complex, quaternionic type (4.9). Moreover $\sum_\chi\nu(\chi)\chi(1)$ equals the number of $g\in G$ with $g^2=e$, and more generally $\sum_\chi\nu(\chi)\chi(g)=\#\{h:h^2=g\}$.`,
-      idea: String.raw`The key identity is $\chi(g^2)=\chi_{S^2V}(g)-\chi_{\Lambda^2V}(g)$ (the eigenvalues of $g$ are $\lambda_i$, those of $g^2$ are $\lambda_i^2$, and $\sum_{i\le j}\lambda_i\lambda_j-\sum_{i<j}\lambda_i\lambda_j=\sum\lambda_i^2$), so so $\nu(\chi)=\dim(S^2V)^G-\dim(\Lambda^2V)^G$ (3.3, 3.6). The invariants of $V\otimes V$ are the invariant bilinear forms; by Schur there is at most one, either symmetric ($+1$) or alternating ($-1$), and none exactly when $V\not\cong V^*$ ($0$). The second formula follows by expanding the class function $g\mapsto\#\{h:h^2=g\}$ in the irreducible characters and computing the coefficients $\nu(\chi)$.`,
+      idea: String.raw`The key identity is $\chi(g^2)=\chi_{S^2V}(g)-\chi_{\Lambda^2V}(g)$ (the eigenvalues of $g$ are $\lambda_i$, those of $g^2$ are $\lambda_i^2$, and $\sum_{i\le j}\lambda_i\lambda_j-\sum_{i<j}\lambda_i\lambda_j=\sum\lambda_i^2$), so $\nu(\chi)=\dim(S^2V)^G-\dim(\Lambda^2V)^G$ (3.3, 3.6). The invariants of $V\otimes V$ are the invariant bilinear forms; by Schur there is at most one, either symmetric ($+1$) or alternating ($-1$), and none exactly when $V\not\cong V^*$ ($0$). The second formula follows by expanding the class function $g\mapsto\#\{h:h^2=g\}$ in the irreducible characters and computing the coefficients $\nu(\chi)$.`,
       caption: String.raw`Choose a group. The left bars show $\nu(\chi)=\frac1{|G|}\sum\chi(g^2)$ computed from the character table for each irreducible, coloured by type (green real, red complex, purple quaternionic); a marker records whether the explicit search for invariant bilinear forms of 4.9 reached the same verdict (that search needs matrices, which we have for the irreducibles of the smaller groups). The right bars compare, on each class, the number of square roots $\#\{h:h^2\in C\}/|C|$ counted by brute force with $\sum\nu(\chi)\chi(C)$.`,
       deps: ['rep-4.9', 'rep-3.5'],
-      refs: ['Serre §13.2', 'Fulton–Harris §3.5'],
+      refs: ['Serre §13.2', 'Fulton–Harris §3.5', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['Frobenius–Schur', 'real structure'],
-      credit: 'Frobenius & Schur, 1906 (Sitzungsberichte der Preussischen Akademie der Wissenschaften, pp. 186–208)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['Z3', 'Z4', 'S3', 'D4', 'Q8', 'D5', 'A4', 'S4', 'A5', 'S5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'Q8');
@@ -197,7 +196,7 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
           const roots = G.classes.map((c, i) => cnt[i] / c.size);
           const viaChars = G.classes.map((_, i) => T.rows.reduce((s, r, j) => s + nu[j] * r.vals[i][0], 0));
           const found = {};
-          irrepMats(key).forEach((ir) => { const row = T.rows.findIndex((r) => r.name === ir.name); const s = formSpace(v.M, ir.mats, 'sym').length, a = formSpace(v.M, ir.mats, 'alt').length; found[row] = s ? 1 : a ? -1 : 0; });
+          irrepMats(key).forEach((ir) => { const row = T.rows.findIndex((r) => r.tex === ir.tex); const s = formSpace(v.M, ir.mats, 'sym').length, a = formSpace(v.M, ir.mats, 'alt').length; found[row] = s ? 1 : a ? -1 : 0; });
           return (cache[key] = { T, G, nu, roots, viaChars, found, inv: cnt.reduce((s, x, i) => s + (i === 0 ? x : 0), 0) });
         };
         v.render(() => {
@@ -227,15 +226,14 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       num: '4.11',
       kind: 'Theorem',
       name: 'Counting molecular vibrations by symmetry',
-      statement: String.raw`Let a molecule with $N$ atoms have symmetry group $G$ (its point group). The $3N$ displacement coordinates form a representation $\Gamma_{3N}$ of $G$ whose character is $\chi_{3N}(g)=(\text{number of atoms fixed by }g)\cdot\operatorname{tr}(g)$, where $\operatorname{tr}(g)$ is the trace of $g\in O(3)$. Then the vibrations (normal modes) form the representation $\Gamma_{\mathrm{vib}}=\Gamma_{3N}-\Gamma_{\mathrm{trans}}-\Gamma_{\mathrm{rot}}$, where $\Gamma_{\mathrm{trans}}$ is the representation on vectors $(x,y,z)$ and $\Gamma_{\mathrm{rot}}$ the one on axial vectors ($\chi_{\mathrm{rot}}(g)=\det g\cdot\operatorname{tr}g$). The multiplicity of each irreducible $\Gamma_i$ in $\Gamma_{\mathrm{vib}}$, computed by 3.6, is the number of modes of that symmetry type (for a non-linear molecule $3N-6$ in all). For example $\Gamma_{\mathrm{vib}}(\mathrm{H_2O})=2A_1\oplus B_1$ and $\Gamma_{\mathrm{vib}}(\mathrm{NH_3})=2A_1\oplus2E$.`,
-      idea: String.raw`A symmetry of the molecule permutes the atoms and rotates or reflects the displacement of each; the trace of the resulting $3N\times3N$ matrix only gets contributions from atoms that stay where they are, each contributing $\operatorname{tr}g$. Because the force constants are invariant under $G$, the Hessian commutes with this representation, so normal modes with distinct frequencies span subrepresentations (Schur, 2.5); the six trivial motions (translations and rotations of the whole molecule) have known characters, and the rest is multiplicity counting with 3.6. The same logic was introduced for vibrations of symmetric systems by Wigner.`,
+      statement: String.raw`Let a non-linear molecule with $N$ atoms have symmetry group $G$ (its point group). The $3N$ displacement coordinates form a representation $\Gamma_{3N}$ of $G$ whose character is $\chi_{3N}(g)=(\text{number of atoms fixed by }g)\cdot\operatorname{tr}(g)$, where $\operatorname{tr}(g)$ is the trace of $g\in O(3)$. Then the vibrations (normal modes) form the representation $\Gamma_{\mathrm{vib}}=\Gamma_{3N}-\Gamma_{\mathrm{trans}}-\Gamma_{\mathrm{rot}}$, where $\Gamma_{\mathrm{trans}}$ is the representation on vectors $(x,y,z)$ and $\Gamma_{\mathrm{rot}}$ the one on axial vectors ($\chi_{\mathrm{rot}}(g)=\det g\cdot\operatorname{tr}g$). The multiplicity of each irreducible $\Gamma_i$ in $\Gamma_{\mathrm{vib}}$, computed by 3.6, counts copies of that symmetry type; a type of dimension $d_i$ contributes $d_i$ modes per copy (for a non-linear molecule $3N-6$ in all). For example $\Gamma_{\mathrm{vib}}(\mathrm{H_2O})=2A_1\oplus B_1$ and $\Gamma_{\mathrm{vib}}(\mathrm{NH_3})=2A_1\oplus2E$.`,
+      idea: String.raw`A symmetry of the molecule permutes the atoms and rotates or reflects the displacement of each; the trace of the resulting $3N\times3N$ matrix only gets contributions from atoms that stay where they are, each contributing $\operatorname{tr}g$. Because the force constants are invariant under $G$, the Hessian commutes with this representation, so normal modes with distinct frequencies span subrepresentations (Schur, 2.5); the six trivial motions (translations and rotations of the whole molecule) have known characters, and the rest is multiplicity counting with 3.6. The picture illustrates the representation calculation; it does not predict frequencies or force constants.`,
       caption: String.raw`Choose water ($C_{2v}$) or ammonia ($C_{3v}$). The table is computed from the actual geometry: atoms fixed by each class, the trace of the matrix, and the characters of $\Gamma_{3N}$, translations, rotations; the decomposition appears in the readout. In the picture, a random displacement of the atoms (new random button) is projected onto one irreducible type with the projection formula of 3.12: what remains is a symmetry-adapted displacement of that type. Projecting onto a type that does not occur in $\Gamma_{\mathrm{vib}}$ leaves only a translation or rotation (or zero); types that do occur show what a mode of that symmetry looks like.`,
       deps: ['rep-3.6'],
-      refs: ['Serre Ch. 5'],
+      refs: ['Etingof et al., Introduction to Representation Theory, §§4.4–4.5 (derived application)'],
       see: ['qchem-8.9'],
       tags: ['molecular vibrations', 'point groups', 'chemistry'],
-      credit: 'E. Wigner, Nachrichten der Gesellschaft der Wissenschaften zu Göttingen, 1930, pp. 133–146 (vibrations of symmetric systems); geometries are approximate textbook values',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const mols = { H2O: moleculeData('H2O'), NH3: moleculeData('NH3') };
         let seed = 7, irx = 0;
@@ -290,11 +288,10 @@ For irreducible $\rho$ the space of invariant bilinear forms has dimension $0$ o
       idea: String.raw`The number $\langle\psi_f|V|\psi_i\rangle$ is a $G$-invariant pairing, i.e. an invariant linear form on $\Gamma_f^*\otimes\Gamma_V\otimes\Gamma_i$. By Maschke (2.2) and Schur (2.5) a representation with no trivial summand has no non-zero invariant linear form; the multiplicity of the trivial summand is computed from characters by 3.6 and 3.3 (the character of a tensor product is the product of characters).`,
       caption: String.raw`Choose a point group ($C_{2v}$ or $C_{3v}$) and an operator ($x,y,z$ are dipole components, $xy$ and $x^2+y^2$ quadratic, as in Raman scattering). Rows are initial and columns final symmetry types; green cells are predicted allowed by the character rule, grey cells forbidden. The small number in each cell is a numerical check: we build functions of each type by projecting random functions on a symmetric set of points, and compute the normalised sum $\sum\psi_f V\psi_i$ — it is zero (to rounding) in every forbidden cell. Click a cell to see the products $\chi_f\chi_V\chi_i$ class by class.`,
       deps: ['rep-3.6', 'rep-3.3'],
-      refs: ['Serre Ch. 5'],
+      refs: ['Etingof et al., Introduction to Representation Theory, §§4.4–4.5 (derived application)'],
       see: ['qchem-8.10', 'qchem-9.2'],
       tags: ['selection rules', 'point groups', 'quantum mechanics'],
-      credit: 'Wigner; Bethe, 1929 (group theory in the quantum mechanics of crystals and molecules)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const PG = { C2v: C2V, C3v: C3V };
         let sel = [0, 2];

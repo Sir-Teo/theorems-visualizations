@@ -1,0 +1,1161 @@
+{
+  "schemaVersion": 1,
+  "scope": "Initial source flags assigned to review_geology, current cloud checkout; includes later kin and bighist4.1–4.3 assignments. Transferred items are tracked without claiming the successor review result.",
+  "counts": {
+    "initial": 143,
+    "reviewed": 116,
+    "closed": 37,
+    "retained": 79,
+    "genuinelyUnreviewed": 0,
+    "transferred": 27
+  },
+  "entries": [
+    {
+      "id": "arch-3.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Couplet and Milankovitch originals, including the claimed 0.1095R vertical-joint value and 54.5°/58.8° critical-angle history. Nikolić's complete modern table does not establish every earlier attribution.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-3.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original historical account for the 1966–67 pinnacle attribution and evidence connecting the simplified load path and assumed dimensions to an actual building.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Derand (1643) original, the stated proportional intervals, and Huerta's survey interpretation; the illustrative third-point construction is not independently certified as the historical rule.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-3.13",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Hooke's original 1676 publication and the 1705 deciphering account; primary evidence for the retained Galileo/1691/Gaudí history.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-3.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original figure/equation scan inspection and the precise earlier Couplet attribution. The accessible full prose supports the assumptions and theorem but does not resolve those remaining parts.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.1",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary evidence for Roman-vault history and complete web-reaction transfer in a statically admissible three-dimensional solution. Current force curves explicitly omit web-arch horizontal reactions.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary Durham dating/development evidence and a complete coupled web–rib load-transfer model or measured survey supporting the structural sharing claims.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.6",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "A primary survey of shell thickness, aggregate profile and construction chronology. The membrane approximation reduces a thick shell to an inner sphere and is not an assessment of the actual cracked dome.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original evidence for the quinto-acuto construction, chain specifications and lantern chronology, plus the non-axisymmetric geometry/loading needed to turn an illustrative band resultant into an actual chain design force.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "arch-4.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary evidence for the claimed Roman origin and Hagia Sophia's dimensions, original/rebuilt-dome chronology and architects. Independent spherical geometry does not establish building history or load capacity.",
+      "report": "docs/verification/arch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bioinf-3.9",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/bioinf-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bioinf-4.1",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/bioinf-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bioinf-4.5",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/bioinf-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.1",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original *caudatum*/*bursaria* experimental report, including the specific food/vertical-zone explanation. The accessible 1934 Chapter V establishes the *aurelia*/*caudatum* account, not that separate claim.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.4",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Tilman 1980/1982 resource-competition derivation and its exact stability assumptions. The corrected degenerate case is independently demonstrated, but that does not certify the full historical attribution.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete MacArthur–Levins1967 public body and figure captions pp377–385 have now been read, supporting overlap/invasion and unequal fixed-K comparisons. Remaining: intact original1967 equation/figure scans (public text has damaged equations and no usable diagrams), and complete May–MacArthur1972 PNAS69(5):1109–1113 body/methods/figures. The finite random-but-fixed K experiment is not their temporal environmental-variability model; metadata/abstracts are not full-source verification.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology",
+      "note": "Exact-original follow-up recorded in ecol-4-7-source-followup.md; source flag remains open, computations and interactions unchanged."
+    },
+    {
+      "id": "ecol-4.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Brown–Wilson, Slatkin, Schluter–Price–Grant and Grant–Grant originals for the term, particular gradient-model attribution, competing explanations and both finch examples. The illustrative symmetric model does not establish any field mechanism.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Chesson–Warner 1981 paper and conditions for protected coexistence in its original model. The modern equal-mortality/lognormal specialization is independently checked, not the whole historical paper.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.11",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Janzen 1970/Connell 1971 originals plus primary empirical evidence supporting the retained 'well documented' sentence. The toy forest and enemy kernel are not measurements or an estimate of the contribution to tropical diversity.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "ecol-4.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Levins–Culver 1971, Hastings 1980 and Nee–May 1992 originals for the combined credit and habitat-destruction extension. Tilman 1994 supports the mathematics and explicitly reports the earlier work, but cannot replace each historical original.",
+      "report": "docs/verification/ecol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "epi-3.13",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Cornfield1951 original remains unread; its case-control odds-ratio/sampling interpretation and exact historical claim require the original. Cornfield1959 full reprint does not substitute for the1951 paper.",
+      "report": "docs/verification/epi-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "epi-4.4",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/epi-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "epi-4.5",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/epi-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "epi-4.12",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/epi-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.1",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Bullard–Everett–Smith fit definition and Table 1 are now fully checked. Sources for the displayed fossil/fold/basalt locality pairs and precise Wegener lecture details remain missing. The localities are approximate, not observations.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "The entire modeled interval list is now checked against WHOI’s Cande–Kent CK95.M table. The independent Morley credit and historical publication details still need primary evidence. The consulted 1963 paper supplies neither chronology nor spreading-rate calibration.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.5",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Rigid-sphere derivation, unit conversion, and Morgan pp. 1959–1966 are checked. Independent Le Pichon attribution and schematic ridge provenance are not source-checked.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.6",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Morgan’s original text, pp. 1959–1966 (complete third-party transcription), now supports the small-circle geometry; original Wilson/McKenzie–Parker sources still needed for the combined historical attribution; actual bathymetry if synthetic azimuths are ever presented as measurements. Current noise and hidden pole remain labelled synthetic.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original seamount age/coordinate table, uncertainty conventions, Sharp–Clague bend chronology and Tarduno hotspot-motion evidence. Memory-derived numbers cannot be certified.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary evidence for seismicity/depth interpretation, historical credit and the quoted discontinuity depths. Synthetic event depths are not a Wadati–Benioff catalogue.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.11",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original Creer–Irving–Runcorn/Runcorn papers and the field-averaging/primary-remanence assumptions. Synthetic APW rotations stay illustrative.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Wilson 1966 paper and geological basis for the stage examples; DOI metadata alone is insufficient.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.13",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete original Wegener 1912 paper, its precise argument, and authoritative elevation/land-fraction figures. The hypsometric mixture is synthetic.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "The central model and principal Fig. 4 facts are now checked from the full original. The item additionally asserts Morley's independent publication history and subsequent Vine–Wilson calibration; those primary sources remain unread. Exact observed profiles and block geometry are not reconstructed.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-3.15",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete McKenzie–Parker paper, historical interpretation and source for the numerical reference pole. Synthetic slip data do not establish agreement with measured earthquakes or MORVEL.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.1",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Full Birch/Roy/Lachenbruch 1968 sources for province relationships, definitions, credits and 7.5/10-km regional slopes. Current fitted points are synthetic.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.3",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.4",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Full Stein & Stein 1992 for all GDH1 depth coefficients and domains. Parsons–Sclater coefficients and their overlapping domains are checked; switching their two approximations at 20 Ma is allowed by their stated >20-Ma domain.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.5",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Full Stein & Stein 1992/1994 and Parsons 1982 for heat-flow coefficients, hydrothermal interpretation and age–area law. The corrected quadrature does not make the illustrative hydrothermal curve data.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.6",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Full GDH1 source for the comparison curve. Plate-series mathematics, limits and P&S curve are checked, but that alone does not certify every curve in this item.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary onset results for all boundary conditions and stronger numerical convergence checks of the convection solver. Its time step freezes velocity through the two thermal stages, so it should not be assumed to be second-order for the coupled nonlinear problem.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary boundary-layer scaling sources, and reproducible convergence evidence for each offline Nu and velocity table entry. These are model outputs, not laboratory data.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete plume papers underlying attribution/claims and solver-resolution assessment. A constant-viscosity 2-D plume is illustrative.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "geol-4.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Resolve Hirschmann coefficient discrepancy against original table/supplement; read complete McKenzie–Bickle model and source the stated crust thickness/ranges. The 500-K latent term and 700-K liquidus interval are illustrative, not fitted petrological values.",
+      "report": "docs/verification/geol-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-2.14",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.6",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Andronov–Pontryagin1937 source for structural-stability attribution/hypotheses. Local perturbed Lotka–Volterra trace/determinant checked; isolated cycles require hyperbolicity for the stated persistence conclusion.",
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.8",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Hopf1942 original and a complete authoritative derivation for this model’s cubic coefficient/supercriticality. Linear Jacobian and transversal crossing independently checked; local subcriticality alone does not force a jump to a distant attractor.",
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete exact Kolmogorov1936 predator–prey source and theorem hypotheses, distinct from the stochastic chain paper. All five rate-function cases reviewed; finite-grid checks do not certify global hypotheses.",
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.17",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.19",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.20",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.22",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-3.23",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-4.4",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-4.10",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-4.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Keyfitz1971 original, exact stationary/proportional-fertility assumptions and momentum derivation. Exact IA issue located but fullPDF/OCR returnedHTTP403. Independent stationary projection confirms the illustrated model.",
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "mathbio-4.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete McKendrick1926 and vonFoerster1959 originals and precise renewal/asynchronous-growth theorem conditions. Characteristic PDE/birth-boundary scheme independently checked; finite age12 truncation and initial corner mismatch disclosed.",
+      "report": "docs/verification/mathbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "neuro-2.7",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-2.8",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-2.9",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.1",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.4",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.5",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.6",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.8",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-3.9",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-4.6",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-4.7",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "neuro-4.8",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/neuro-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "pharm-3.4",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Brodie–Bernstein–Mark1952 and Price1960 originals, conditioned thiopental volume/clearance values and clinical brain/waking interpretation remain unread. Reviewed all amount/effect-site equations; independent conservation tests, final-post-last-bolus crossing and full concentration/time plot extents corrected.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-3.6",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete original parallel-tube model comparison and combined historical attribution. Benet2010 supports modern well-stirred clearance; each model’s sensitivities independently checked.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-3.7",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-3.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Bischoff–Dedrick1968 original and primary anatomical/flow parameters remain unread. Reviewed full perfusion/capacity/eigen/ODE model. Corrected tissue/plasma versus whole-blood reference, effective unbound intrinsic capacity and finite-tail interpretation; independent organ flux and amount balance tested.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-3.11",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Hughes–Glass–Jacobs1992 original (publisherHTTP402) for exact drug parameters, infusion simulation scheme and six-drug1–306minute range, plus full Shafer comparison source. Toy post-infusion ODE independently checked.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-4.5",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-4.6",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Giusti–Hayton1973 original (HTTP403), its impairment-scaling conditions and priority. Complete Cockcroft–Gault1976 original read and formula checked.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "pharm-4.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete primary clinical peak/MIC8–10 and comparative aminoglycoside nephro/ototoxicity evidence. Exact rectangular-infusion pharmacokinetics independently checked.",
+      "report": "docs/verification/pharm-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-2.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Helmholtz1850 recording and conditioned mammalian twitch/fusion evidence remain unread. The entire calcium/force model was reviewed, boundedness and slow/fast fusion tested; removed unsupported universal fusion-frequency/body-temperature claims.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-3.1",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete original Wiggers diagram/history and full authoritative pressure/valve-phase account remain unread. Reviewed all model equations/events, tested event ordering and beat flow/volume balance over heart-rate endpoints; values are explicitly illustrative.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-3.6",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-3.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete original Young/Laplace1805–06 source and directly applicable thick-ventricular-wall stress evidence. Independent thin-shell geometry is checked; it cannot validate a thick-wall clinical stress model.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-3.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Original triangle/dating sources for1901–03/1912 and complete clinical guideline supporting stated normal-axis cutoffs. Complete relevant Einthoven1925 lecture supports lead definitions/identity, not these remaining attributions.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-3.11",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology",
+      "note": "Bounded follow-up read complete publicly downloadable original1914 paper pp357–379 and visually checked Figs1–2, TablesI/III/IV and conclusions. Corrected venous/pneumatic control protocol and fixed-inflow versus fixed-pressure scope; model numbers remain illustrative. See geology-bounded-source-followup.md."
+    },
+    {
+      "id": "physio-4.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete original Poiseuille/Hagen source and conditioned whole-blood/plasma viscosities3.5/1.2mPa·s. Force balance and SI flux checked independently.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.6",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary evidence for physiological compartment volumes, compliance magnitudes, pressure ordering and stated volume-shift interpretation. Exact toy compliance inverse is independently checked.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete relevant Frank/Windkessel original and empirical time-constant/parameter evidence. Periodic toy-model solution, mean pressure and decay independently checked.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Moens/Korteweg1878 original and measured human pulse-wave velocity ranges with conditions. Thin-wall scaling and round-trip delay independently checked.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary source and conditions for all seven total vascular cross-sectional area values. Continuity/units and model axes are independently checked.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.13",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete primary evidence for whole-body Kf7, Pi−3, Pc17.3, oncotic28, 25-fold lymph ceiling and safety-factor history remains unread. Reviewed full equations; corrected missing sigma and false global-runaway claim: this unbounded Pi law always has an eventual finite equilibrium.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Reynolds1883 original, conditioned vessel diameter/velocity values and primary murmur-acoustics evidence remain unread. Reviewed units and cartoon controls; corrected equal-Re-alone dynamic similarity and diagnostic/synthetic-sound claims.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.15",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.16",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Bayliss1902 original remains inaccessible; organ-specific 60–160mmHg plateau data and historical priority are unread. Reviewed the entire pressure-target feedback model; tested exact gain, fixed passive-curve clipping and used exact first-order transient rather than a shifted Euler sample.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.17",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Guyton1955 source for original graphical argument, normal Pmsf7/RVR1.4/plateau13 values and volume/compliance calibration remains unread. Reviewed equations and equilibrium; corrected negative forward flow at severe blood-volume loss, collapse-limit readout and extreme plot extents.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.18",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Hatle1980 Doppler paper and lesion-specific clinical applicability evidence remain unread. Reviewed SI pressure conversion, proximal term, continuity and assumed recovery; corrected total-drop quadrupling and exact-versus-rounded coefficient wording.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.19",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "physio-4.20",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Landis–Pappenheimer source for oncotic-pressure polynomial and stated Kf. Complete Starling1896 original supports corrected experiment but not these later numerical constants.",
+      "report": "docs/verification/physio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "popgen-2.10",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "popgen-3.9",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-3.12",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "popgen-3.14",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "popgen-4.2",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.4",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.5",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.7",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.8",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.12",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.13",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "popgen-4.14",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/popgen-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "stoch-2.6",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "root",
+      "note": "Root read official complete Hasbro A4756 board image and traced all19 endpoints; exact URLs and hashes in source report."
+    },
+    {
+      "id": "stoch-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Primary evidence for Bienaymé's 1845 assertion, Steffensen's 1930 priority and the exact historical claim about absence of a published proof. These remain in the item and are not deleted merely to clear the flag.",
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "stoch-3.13",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Complete Watson 1939 and McCrea–Whipple 1940 originals for the retained numerical-history sentence. The value itself is independently recovered by a lattice sum with its Pólya asymptotic tail and is accurately attributed to MathWorld as a secondary reference.",
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "stoch-4.10",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "stoch-4.14",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Hill's 1966 original for the primary historical attribution, and Kirchhoff's original if the precise joint historical credit is to be certified. Anantharam–Tsoucas supports the theorem but is secondary evidence about the earlier history.",
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "stoch-4.16",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/stoch-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "sysbio-3.1",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "sysbio-3.4",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "sysbio-3.7",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "sysbio-3.8",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "sysbio-3.9",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "sysbio-4.5",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "sysbio-4.6",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "sysbio-4.10",
+      "disposition": "transferred",
+      "reviewState": "transferred",
+      "missingEvidence": "Review and current disposition are owned by review_climate; consult that reviewer’s report.",
+      "report": "docs/verification/sysbio-source-review.md",
+      "owner": "review_climate"
+    },
+    {
+      "id": "kin-2.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. The entire synthetic Arrhenius fit, kJ/mol versus cal/mol conversion, finite one-degree increase and collision-frequency comparison were checked. Complete Arrhenius1889 pp226–248 is still needed for active/inactive interpretation, exact q notation and historical claims; a primary conditioned sucrose-inversion activation-energy source is needed for the107kJ/mol fixture.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-3.4",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-3.5",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Wigner1932/Bell1959 originals and the original finite-lower-limit Kemble treatment remain unread. Distinguished the finite E≥0 integral from Bell's extended-energy expression, its u<2π convergence restriction and Wigner's high-temperature expansion. Removed unrestricted kappa≥1 wording. Large low-temperature tunnelling/isotope results now stay inside dynamically scaled plots.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-3.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Hammett1937 original table, provenance of all22 meta/para sigma entries and five named-reaction rho values with solvent/temperature conditions are still required. They are explicitly provisional literature-derived fixtures; seeded points are synthetic. Qualified the inference from a correlation to charge distribution/mechanism. The barrier/linear-regression units and all controls were inspected.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-3.9",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete original Curtin/Hammett, Seeman1983 and Winstein–Holness sources remain unread, including the combined historical attribution. Exact integrated final yields were independently checked across192 temperature/energy/start combinations. Replaced the cancelling determinant by positive product-yield terms, removed hidden log-axis saturation and made the fast/slow diagnostic check both interconversion directions.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-3.12",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Full Eyring1935 original now supports its theoretical summary, including the original recrossing factor. Evans–Polanyi publication history, the memory-derived H2 Morse constants and the stated ab-initio0.42eV comparison still need primary evidence. The LEPS simulation is explicitly a modern teaching reconstruction. Late-window flux now has a per-trajectory sampling standard error and explicit finite-time bias limitation; nonpositive estimated rates are omitted from logarithmic plotting rather than logged.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.1",
+      "disposition": "closed",
+      "reviewState": "reviewed",
+      "missingEvidence": null,
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.3",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Bodenstein1913 and Chapman–Underhill1913 originals for the combined attribution remain unread. Replaced a sampled finite12-time-window quantity described as an all-time maximum by the exact intermediate maximum: Pss−Pexact=B. Clarified absolute normalized error versus nonuniform early relative error, the k2>k1 condition on the long-time ratio, and the large failed-approximation intermediate axis.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.7",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Lindemann1922, Christiansen and Hinshelwood1926 originals and the empirical crossover-pressure claim remain unread. The exact slow eigenvalue and SSA limits are independently checked; exact total-pool high-pressure decay is kinfinity/(1+k1/kminus1), differing by up to0.1% over these controls. Clarified near agreement and the distinction from the SSA limit; included the lowest-pressure curve in the view.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.8",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Gilbert–Luther–Troe1983 parametrization, primary support for the stated Fcent range, and Chambers–Kistiakowsky1934/Schlag–Rabinovitch1960 experimental accounts remain unread. Independent quadrature verifies the RRK thermal limit and broadening bound. Corrected exact equality between shifted Troe F(Pr=1) and its Fcent parameter; Match centre now solves for the actual Troe curve value within slider limits.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.10",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Complete Bodenstein–Lind1906–07 and Christiansen/Herzfeld/Polanyi1919–20 originals are required for the combined history and empirical H2/Br2 rate law. Full mechanism reviewed; independent H/Br atom conservation and extreme-control positivity checked. Steady-state radical algebra recovers the displayed rate, but it is only approximately equal along a changing batch trajectory. Stable-species and radical axes now include all control outputs.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "kin-4.11",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "Reviewed; retained. Original-author1956 accounts support wall/three-body limits and historical collaboration, but complete primary evidence for the elementary H2/O2 branching/HO2 steps, precise p/1-p/p² scaling and third-limit chemistry remains missing. Independent linear balance and exact cubic pressure roots checked. Finite-fuel limitation, critical n=νt case and asymptotic rather than exact doubling time are explicit. The plot includes small stable radical levels and the root finder no longer misses an upper limit beyond its drawing range.",
+      "report": "docs/verification/kin-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bighist-4.1",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "**Retained.** Full relevant Aiello–Wheeler original supports the metabolic comparison and hypothesis. Numerical coefficients now match its Eq3 and Table1; volume-to-mass conversion is explicitly an assumed1g/cm³. Fixed-body-mass brain sliders reallocate a fixed total and do not simulate or establish gut reduction. Removed an unsupported causal inference from the arithmetic to bipedal locomotion/diet. Remaining: complete primary fossil/specimen evidence for all eight named species' age and braincase-volume box endpoints; the six-to-seven-Ma lineage split; Ardipithecus4.4, Laetoli3.66 and Lucy3.2Ma markers and bipedal interpretations. The paper's older Fig6 is not a source for every modern species range.",
+      "report": "docs/verification/bighist-human-origins-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bighist-4.2",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "**Retained.** Full relevant Hays1976/Imbrie1980 readings support orbital-band/pacemaker interpretation, chronology limitations and asymmetric relaxation. Corrected amplitude labeled as power to squared Fourier amplitude, made the frequency/reciprocal-period axis explicit, corrected the claim that eccentricity only modulates precession, and stated that orbit toggles control visibility. Exact relaxation now integrates each one-kyr fixed-forcing interval and includes the initial state, avoiding a one-step time shift. Added4,000kyr of spin-up before the complete2,000kyr spectral window, and independently checked insensitivity to a10-unit initial-state change. Plots include all computed values; settings that remove/reverse slow-growth/fast-melt asymmetry are identified. Remaining: complete original Milankovitch1941/Croll/Adhémar sources for the combined history; primary chronological evidence for the2.6Ma onset and last-million-year spectral transition; original insolation derivation/provenance if the toy is to be certified as a physical orbital reconstruction. The shown orbit is explicitly synthetic, not Laskar data.",
+      "report": "docs/verification/bighist-human-origins-source-review.md",
+      "owner": "review_geology"
+    },
+    {
+      "id": "bighist-4.3",
+      "disposition": "retained",
+      "reviewState": "reviewed",
+      "missingEvidence": "**Retained.** Complete Vidal2022 original closes the Omo-specific reading gap and corrects its interpretation to older than an overlying233±22ka ash, with uncertainty shown on the map. Preserved root's distance/dated-site-gap readout, and corrected the caption/idea's contrary speed claims. Changing Madjedbebe's marker changes the age gap and not geographic distance or a measured migration speed. Switching flat/globe now preserves the selected geographic view. Remaining: complete primary Jebel Irhoud/Hublin–Richter2017, Misliya/Hershkovitz2018, Qafzeh–Skhul, Madjedbebe/Clarkson2017 and the50ka alternative, Lake Mungo, Bacho Kiro/Hublin2020, Ust’-Ishim/Fu2014, Tianyuan, White Sands/Bennett2021 and subsequent corroboration/controversy, and Monte Verde originals, each with exact age uncertainty and fossil/artefact context; primary coordinates for all sites; genetic50–70ka expansion evidence and claims about ancestry of earlier dispersals. All eleven map records were reviewed as records, but the ten non-Omo original site reports remain unread.",
+      "report": "docs/verification/bighist-human-origins-source-review.md",
+      "owner": "review_geology"
+    }
+  ]
+}

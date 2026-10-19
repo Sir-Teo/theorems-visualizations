@@ -334,7 +334,7 @@ $$D(p\,\|\,q)\ \ge\ 2\,\delta^2\qquad\Big(\text{equivalently } \delta\le\sqrt{\t
 In bits the bound reads $D(p\|q)\ge\frac{2}{\ln 2}\delta^2$. Small divergence therefore forces the two distributions to be close in total variation, so no test can tell them apart well. The converse fails: $\delta$ may be small while $D$ is infinite.`,
       idea: String.raw`Reduce to two outcomes: let $A=\{x:p(x)>q(x)\}$ and merge outcomes into $A$ and its complement. By the data-processing inequality (2.10) merging cannot increase $D$, and it preserves $\delta$, so it suffices to prove the binary case $d(a\|b)\ge2(a-b)^2$. The derivative in $b$ of $d(a\|b)-2(a-b)^2$ is $(b-a)\big(\frac{1}{b(1-b)}-4\big)$, which is negative for $b<a$ and positive for $b>a$ because $b(1-b)\le\frac14$; so the minimum is at $b=a$, where both sides vanish. The constant $2$ cannot be improved.`,
       caption: String.raw`Left: the probability triangle of distributions on three outcomes; drag $p$ (blue) and $q$ (orange). Right: every grey point is one random pair $(p,q)$ drawn from the triangle, plotted by total-variation distance and divergence; the gold point is your pair. All of them lie above the red parabola $D=2\delta^2$; the pairs that nearly touch it are those with $p$ and $q$ close to each other.`,
-      deps: ['info-2.2', 'info-2.10'],
+      deps: ['info-2.2', 'info-2.10', 'pma-5.11'],
       refs: ['Cover–Thomas §11.6'],
       tags: ['Pinsker', 'total variation'],
       credit: 'Pinsker, 1960 (the sharp constant, independently: Csiszár and Kullback, 1967)',

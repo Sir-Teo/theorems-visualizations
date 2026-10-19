@@ -1,3 +1,6 @@
+import {PBPK_ORGANS,PBPK_PARTITIONS,pbpkSystem} from './pbpk.shared.js';
+import { simulateRecirculation, recirculationTailAUC } from './recirculation.shared.js';
+import { hepaticExposure, oralTailAUC } from './liver.shared.js';
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part b: items 3.7–3.12)
 import { LN2, clamp, logSlope, trapz, trapzLog, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal, cshtHold, cshtRate, cHoldTrace, ANAES, jacobiSym, bateman } from './ch03.shared.js';
 
@@ -15,13 +18,12 @@ export default {
       kind: 'Concept',
       name: 'First-pass effect',
       statement: String.raw`A drug absorbed from the gut reaches the systemic circulation only after the portal blood has passed through the gut wall and the liver, where enzymes may remove part of it. The oral bioavailability is the product of three fractions, $F=F_{abs}\,F_{gut}\,F_{H}$, and in the well-stirred model the hepatic factor is $F_H=1-E=\dfrac{Q}{Q+f_u\mathrm{CL}_{int}}$ (3.6). A high-extraction drug loses most of an oral dose to the liver, and for such a drug that is eliminated only by the liver the oral exposure is $\mathrm{AUC}_{po}=F\,D/\mathrm{CL}_H=F_{abs}F_{gut}\,D/(f_u\mathrm{CL}_{int})$, which does not contain the liver blood flow $Q$ at all, so oral exposure is very sensitive to enzyme changes.`,
-      idea: String.raw`Dose enters the portal vein first, so the same extraction ratio $E$ that sets hepatic clearance (3.6) acts on the whole absorbed dose before the systemic circulation sees any of it; the fraction that survives is $1-E$. Bioavailability is defined as the ratio of oral to intravenous AUC with the same dose (1.6), and $\mathrm{AUC}_{iv}=D/\mathrm{CL}_H$ with $\mathrm{CL}_H=QE$, so $\mathrm{AUC}_{po}/\mathrm{AUC}_{iv}=F$ gives the identity above: the factor $Q E$ in clearance and the factor $1-E$ in $F$ cancel except for $f_u\mathrm{CL}_{int}$. For a low-extraction drug $F_H\approx1$ and enzyme changes barely matter to exposure.`,
-      caption: String.raw`Left: the dose as a flow, from the swallowed tablet, through incomplete absorption and the gut wall (grey) and the liver (orange), to what reaches the circulation (blue). Right: plasma concentration after an intravenous dose and after an oral dose of the same size (one-compartment body that is cleared only by the liver); the areas under them are computed by the trapezoid rule and their ratio is $F$. Set the enzyme capacity $f_u\mathrm{CL}_{int}$ high or low and switch the enzymes to **inhibited** ($\mathrm{CL}_{int}\div4$) or **induced** ($\times3$): for a high-extraction drug the oral AUC changes by almost the whole factor, for a low-extraction one hardly at all, whatever the blood flow.`,
-      scope: String.raw`One-compartment body, linear metabolism, drug eliminated by the liver only, absorption first order and complete except for the stated fractions. The gut-wall factor is an input here, not computed. The blood flow of about 90 L/h is a commonly quoted round figure that I did not re-check against a primary source.`,
+      idea: String.raw`Dose enters the portal vein first, so the same extraction ratio $E$ that sets hepatic clearance (3.6) acts on the whole absorbed dose before the systemic circulation sees any of it; the fraction that survives is $1-E$. Bioavailability is defined as the ratio of oral to intravenous AUC with the same dose (1.6), and $\mathrm{AUC}_{iv}=D/\mathrm{CL}_H$ with $\mathrm{CL}_H=QE$, so $\mathrm{AUC}_{po}/\mathrm{AUC}_{iv}=F$ gives the identity above: the factor $Q E$ in clearance and the factor $1-E$ in $F$ cancel except for $f_u\mathrm{CL}_{int}$. For a low-extraction drug $F_H\approx1$, so enzyme changes hardly alter first-pass survival, but they still change systemic clearance: oral AUC has the same inverse dependence on capacity at low and high extraction in this model.`,
+      caption: String.raw`Left: the dose as a flow, from the swallowed tablet, through incomplete absorption and the gut wall (grey) and the liver (orange), to what reaches the circulation (blue). Right: blood concentration after an intravenous dose and after an oral dose of the same size (one-compartment body that is cleared only by the liver); the areas under them are computed by the trapezoid rule and their ratio is $F$. Set the enzyme capacity $f_u\mathrm{CL}_{int}$ high or low and switch the enzymes to **inhibited** ($\mathrm{CL}_{int}\div4$) or **induced** ($\times3$): oral AUC increases fourfold with the inhibited capacity and falls to one third with induction, at both low and high extraction; first-pass survival itself is much less sensitive at low extraction.`,
+      scope: String.raw`One-compartment body, linear metabolism, drug eliminated by the liver only, absorption first order and complete except for the stated fractions. The gut-wall factor is an input here, not computed. Flows, clearances, concentrations and unbound fraction use blood as reference (a plasma-based clearance requires a blood/plasma conversion). The illustrative default 90 L/h equals the 1,500 mL/min average for a 70-kg man used by Benet (2010); it is not an individual measurement. The liver-only linear model excludes transporter limitations and other elimination routes.`,
       deps: ['pharm-3.6', 'pharm-1.6'],
-      refs: ['Rowland–Tozer'],
+      refs: ['Benet (2010), Clearance (née Rowland) concepts: a downdate and an update, J Pharmacokinet Pharmacodyn 37:529–539, complete relevant clearance/first-pass discussion pp. 529–534, Eqs. (1)–(6), doi:10.1007/s10928-010-9187-8'],
       tags: ['bioavailability', 'first pass'],
-      verify: true,
       viz(v) {
         const D = 100, V = 100, ka = 1.0;
         const fa = v.slider('fraction absorbed $F_{abs}$', 0.2, 1, 0.9, { step: 0.01 });
@@ -33,8 +35,8 @@ export default {
         const sC = v.stage({ x: [0, 24], y: [0, 2], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340, weight: 1, minWidth: 250 });
         const mult = () => (en.value === 'i' ? 0.25 : en.value === 'u' ? 3 : 1);
         const prof = (xv) => {
-          const cl = clWS(Q.value, xv), E = cl / Q.value, k = cl / V, FH = 1 - E;
-          return { cl, E, k, FH, F: fa.value * fg.value * FH };
+          const h = hepaticExposure(Q.value, xv, fa.value, fg.value, D);
+          return { cl: h.clearance, E: h.extraction, k: h.clearance / V, FH: h.survival, F: h.availability };
         };
         let info = null;
         v.render(() => {
@@ -43,7 +45,7 @@ export default {
           const ts = Array.from({ length: 1201 }, (_, i) => (i / 1200) * tEnd);
           const civ = ts.map((t) => (D / V) * Math.exp(-P.k * t));
           const cpo = ts.map((t) => bateman(P.F, D, V, ka, P.k, t));
-          const aivN = trapz(ts, civ) + civ[civ.length - 1] / P.k, apoN = trapz(ts, cpo) + cpo[cpo.length - 1] / P.k;
+          const aivN = trapz(ts, civ) + civ[civ.length - 1] / P.k, apoN = trapz(ts, cpo) + oralTailAUC(cpo[cpo.length - 1], P.F, D, V, ka, P.k, tEnd);
           info = { P, P0, x, aivN, apoN, pred: (fa.value * fg.value * D) / x, ratio: apoN / aivN };
           // flow diagram: widths proportional to fractions of the dose
           const H = 4.2, y0 = 4.0, xs = [0.6, 2.9, 5.2, 7.5], Wd = 1.7;
@@ -72,7 +74,7 @@ export default {
           if (en.value !== 'n') sC.path(ts.map((t) => [t, bateman(P0.F, D, V, ka, P0.k, t)]), { color: 'muted', dash: [5, 4], width: 1.6 });
         });
         v.legend([['orange', 'intravenous'], ['accent', 'oral'], ['muted', 'oral, normal enzymes', { dash: true }]]);
-        v.readout(() => `$E=${v.fix(info.P.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.P.cl, 1)}$ L/h. $F=F_{abs}F_{gut}(1-E)=${v.fix(info.P.F, 3)}$; trapezoid AUC ratio oral/IV $=${v.fix(info.ratio, 3)}$.\n$\\mathrm{AUC}_{po}=${v.fix(info.apoN, 2)}$ mg·h/L by trapezoids vs $F_{abs}F_{gut}D/(f_u\\mathrm{CL}_{int})=${v.fix(info.pred, 2)}$ (no $Q$ in it).${en.value !== 'n' ? ` Compared with normal enzymes, oral $F$ changes by $\\times${v.fix(info.P.F / info.P0.F, 2)}$ while hepatic clearance changes by $\\times${v.fix(info.P.cl / info.P0.cl, 2)}$.` : ''}`);
+        v.readout(() => `$E=${v.fix(info.P.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.P.cl, 1)}$ L/h. $F=F_{abs}F_{gut}(1-E)=${v.fix(info.P.F, 3)}$; trapezoid AUC ratio oral/IV $=${v.fix(info.ratio, 3)}$.\n$\\mathrm{AUC}_{po}=${v.fix(info.apoN, 2)}$ mg·h/L by trapezoids plus the remaining central/gut tail vs $F_{abs}F_{gut}D/(f_u\\mathrm{CL}_{int})=${v.fix(info.pred, 2)}$ (no $Q$ in it).${en.value !== 'n' ? ` Compared with normal enzymes, oral $F$ changes by $\\times${v.fix(info.P.F / info.P0.F, 2)}$ while hepatic clearance changes by $\\times${v.fix(info.P.cl / info.P0.cl, 2)}$.` : ''}`);
       },
     },
     // ------------------------------------------------------------------ 3.8
@@ -84,7 +86,7 @@ export default {
       idea: String.raw`The total elimination rate is the sum of the pathway rates, $\sum_i\mathrm{CL}_i\,C=\mathrm{CL}\,C$, so by definition the sum is the clearance (1.4). Integrating each pathway's rate over time, the amount it removes is $\mathrm{CL}_i\int C\,dt=\mathrm{CL}_i\,\mathrm{AUC}$; all pathways share the same AUC, so they split the dose in proportion to their clearances, and since the amounts must sum to the dose, $D=\mathrm{CL}\cdot\mathrm{AUC}$ (1.5). The additivity is the algebraic form of parallel resistors: pathways draw on the same blood concentration, which is not true of organs in series (first-pass, 3.7).`,
       caption: String.raw`The tank is the body; each pipe out of it is a pathway whose thickness is its clearance, labelled with the fraction of the dose it removes. Set the three clearances, then use **blocked pathway** to switch one off (kidney failure, an inhibited enzyme). The right panel integrates the elimination equations of all three pathways by RK4 for the normal and the blocked body: the amounts removed split in the proportions $f_i$, and the AUC ratio, computed from the integrated curves with the trapezoid rule, equals the predicted $1/(1-f_j)$.`,
       scope: String.raw`Pathways must be linear and independent and must act on the same concentration. A pathway that saturates, or that is fed by another (metabolite excreted by the kidney), or organs in series, break the simple sum.`,
-      deps: ['pharm-1.4', 'pharm-1.5'],
+      deps: ['pharm-1.4', 'pharm-1.5', 'kin-4.6'],
       refs: ['Rowland–Tozer'],
       tags: ['clearance', 'parallel pathways'],
       viz(v) {
@@ -136,24 +138,22 @@ export default {
       num: '3.9',
       kind: 'Model',
       name: 'Physiologically based pharmacokinetic (PBPK) models',
-      statement: String.raw`A **PBPK model** replaces abstract compartments by organs: each tissue $t$ has its anatomical volume $V_t$, its blood flow $Q_t$ and a tissue/plasma partition coefficient $K_{p,t}$ (the ratio of tissue to venous plasma concentration at equilibrium). For flow-limited tissues $V_t\,dC_t/dt=Q_t\bigl(C_b-C_t/K_{p,t}\bigr)$ and for the blood pool $V_b\,dC_b/dt=\sum_tQ_t\bigl(C_t/K_{p,t}-C_b\bigr)$; the liver additionally loses drug at $\mathrm{CL}_{int}C_{liver}/K_p$ (the well-stirred form of 3.6). Concentration–time curves for every organ come out of one set of linear ODEs, and the plasma curve is a sum of as many exponentials as there are organs and blood.`,
-      idea: String.raw`Mass balance on each organ (inflow minus outflow of drug) is the same bookkeeping as in 3.1, but the exchange rates are physiological: flow over capacity, $Q_t/(V_tK_{p,t})$. Write $z_t=C_t/K_{p,t}$ for the venous concentration and $W=\mathrm{diag}(V_b,\,V_tK_{p,t})$ for the capacities: the system is $W\dot z=Gz$ with a **symmetric** conductance matrix $G$ (flows off the diagonal, minus flow and elimination on it), so the real spectral theorem gives real, negative decay rates. A lipophilic drug (large $K_p$ in fat) has huge fat capacity and low fat flow, hence a slow terminal phase, while brain and other well-perfused tissues follow plasma within minutes.`,
-      caption: String.raw`Left: blood and five organs, arrows thickened by blood flow; the shade shows each tissue's venous concentration relative to the first plasma level at the **time marker** (log scale, minutes after an intravenous bolus). Right: concentrations in blood, brain, liver, muscle and fat on a semilog plot. Choose a **drug type** (illustrative partition coefficients), scale the cardiac output, or raise the liver's intrinsic clearance. The fat curve rises for hours on a lipophilic drug, the brain follows blood closely, and the readout checks that the amount in the body plus the amount eliminated equals the dose and compares the slowest eigenvalue with the slope of the simulated tail.`,
-      scope: String.raw`Flow-limited (perfusion-limited) tissues, linear kinetics, instantaneous mixing in blood, no lung compartment, liver as the only eliminating organ. Organ volumes and flows are rounded adult values of the order used in the literature, and the partition coefficients are made-up round numbers for three illustrative drug types; none of it is measured data.`,
+      statement: String.raw`A **PBPK model** replaces abstract compartments by organs: each tissue $t$ has its anatomical volume $V_t$, its blood flow $Q_t$ and a tissue/blood partition coefficient $K_{p,t}$ (the ratio of tissue to venous blood concentration at equilibrium). For flow-limited tissues $V_t\,dC_t/dt=Q_t\bigl(C_b-C_t/K_{p,t}\bigr)$ and for the blood pool $V_b\,dC_b/dt=\sum_tQ_t\bigl(C_t/K_{p,t}-C_b\bigr)$; the liver additionally loses drug at $f_u\mathrm{CL}_{int}C_{liver}/K_p$ (the well-stirred form of 3.6). Concentration–time curves for every organ come out of one set of linear ODEs, and the blood curve is a sum of as many exponentials as there are organs and blood.`,
+      idea: String.raw`Mass balance on each organ (inflow minus outflow of drug) is the same bookkeeping as in 3.1, but the exchange rates are physiological: flow over capacity, $Q_t/(V_tK_{p,t})$. Write $z_t=C_t/K_{p,t}$ for the venous concentration and $W=\mathrm{diag}(V_b,\,V_tK_{p,t})$ for the capacities: the system is $W\dot z=Gz$ with a **symmetric** conductance matrix $G$ (flows off the diagonal, minus flow and elimination on it), so the real spectral theorem gives real, negative decay rates. A lipophilic drug (large $K_p$ in fat) has huge fat capacity and low fat flow, hence a slow terminal phase, while well-perfused tissues exchange rapidly with blood in this illustration.`,
+      caption: String.raw`Left: blood and five organs, arrows thickened by blood flow; the shade shows each tissue's venous concentration relative to the initial blood level at the **time marker** (log scale, minutes after an intravenous bolus). Right: concentrations in blood, brain, liver, muscle and fat on a semilog plot. Choose a **drug type** (illustrative partition coefficients), scale the cardiac output, or raise the liver's effective unbound intrinsic capacity. The fat curve rises for hours on a lipophilic drug, the brain follows blood closely, and the readout checks that the amount in the body plus the amount eliminated equals the dose and compares the slowest eigenvalue with the slope of the simulated tail.`,
+      scope: String.raw`Flow-limited (perfusion-limited) tissues, linear kinetics, instantaneous mixing in blood, no lung compartment, liver as the only eliminating organ. Concentrations and partition coefficients use whole blood consistently; the liver capacity represents fu·CLint (fu=1 in the numerical model), not the resulting whole-organ clearance. A finite 2500–3000-minute tail fit need not yet isolate the slowest mode. Organ volumes and flows are rounded adult values of the order used in the literature, and the partition coefficients are made-up round numbers for three illustrative drug types; none of it is measured data.`,
       credit: 'Bischoff & Dedrick, 1968 (multi-organ model of thiopental)',
-      deps: ['pharm-3.1', 'physio-4.1'],
+      deps: ['pharm-3.1', 'physio-4.1', 'fluid-1.8'],
       refs: ['Rowland–Tozer'],
       tags: ['PBPK', 'organs'],
       verify: true,
       viz(v) {
         const D = 100;
         // organs: [name, volume L, flow L/min, short, colour]
-        const ORG = [['brain', 1.4, 0.7, 'brain', 'purple'], ['liver', 1.8, 1.5, 'liver', 'orange'], ['muscle', 28, 1.0, 'muscle', 'green'], ['fat', 14, 0.3, 'fat', 'gold'], ['rest', 18, 2.5, 'rest of body', 'muted']];
-        const VB = 5;
-        const KP = { lip: [3, 4, 2, 25, 2], mod: [1, 2, 1, 4, 1], hyd: [0.15, 0.8, 0.4, 0.2, 0.6] };
+        const ORG = PBPK_ORGANS, VB = 5, KP = PBPK_PARTITIONS;
         const kind = v.select('drug type', [{ value: 'lip', label: 'lipophilic' }, { value: 'mod', label: 'moderate' }, { value: 'hyd', label: 'hydrophilic' }], 'lip');
         const co = v.slider('cardiac output (× 6 L/min)', 0.5, 1.5, 1, { step: 0.05 });
-        const CI = v.slider('liver intrinsic clearance (L/min)', 0.02, 5, 0.5, { log: true, sig: 2 });
+        const CI = v.slider('liver fu·CLint (L/min)', 0.02, 5, 0.5, { log: true, sig: 2 });
         const tm = v.slider('time marker (min)', 0.5, 3000, 20, { log: true, sig: 2 });
         const win = v.select('time axis', [{ value: 600, label: '0–10 h' }, { value: 3000, label: '0–50 h' }], 600);
         const sB = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 350, weight: 0.9, minWidth: 250 });
@@ -163,21 +163,15 @@ export default {
         v.render(() => {
           const kp = KP[kind.value], f = co.value, ci = CI.value;
           const S = sim(`${kind.value}|${f}|${ci}`, () => {
-            const n = ORG.length, W = [VB, ...ORG.map((o, i) => o[1] * kp[i])], Q = ORG.map((o) => o[2] * f), Qt = Q.reduce((a, b) => a + b, 0);
-            // z = [Cb, z_brain, ...] venous concentrations; W dz/dt = G z
-            const G = Array.from({ length: n + 1 }, () => new Array(n + 1).fill(0));
-            G[0][0] = -Qt;
-            for (let i = 0; i < n; i++) { G[0][i + 1] = G[i + 1][0] = Q[i]; G[i + 1][i + 1] = -Q[i] - (i === 1 ? ci : 0); }
-            const M = G.map((r, i) => r.map((g, j) => g / Math.sqrt(W[i] * W[j])));
+            const n = ORG.length, {W,Q,Qt,M,field:F,elimination:Fe} = pbpkSystem(kp,f,ci);
             const ev = jacobiSym(M).values.map((x) => -x).sort((a, b) => a - b);
             const dt = 0.1, N = 30000; // 3000 min
             let z = new Array(n + 1).fill(0); z[0] = D / VB;
-            const F = (zz) => zz.map((_, i) => G[i].reduce((s, g, j) => s + g * zz[j], 0) / W[i]);
             const out = { t: [], z: [], el: [], tot: [] };
             let el = 0;
-            const Fe = (zz) => ci * zz[2]; // elimination rate (mg/min), liver venous conc is index 2
             for (let s = 0; s <= N; s++) {
               if (s % 10 === 0) { out.t.push(s * dt); out.z.push(z.slice()); out.el.push(el); out.tot.push(z.reduce((a, c, i) => a + c * W[i], 0)); }
+              if (s === N) break;
               // RK4 for [z..., el]
               const f4 = (y) => { const zz = y.slice(0, n + 1), dz = F(zz); return [...dz, Fe(zz)]; };
               const y0 = [...z, el], k1 = f4(y0), k2 = f4(y0.map((a, i) => a + 0.5 * dt * k1[i])), k3 = f4(y0.map((a, i) => a + 0.5 * dt * k2[i])), k4 = f4(y0.map((a, i) => a + dt * k3[i]));
@@ -212,7 +206,7 @@ export default {
           [0, 1, 2, 3].forEach((j) => sC.path(S.t.map((t, i) => [t, conc(j + 1, i)]), { color: ORG[j][4], width: 2 }));
         });
         v.legend([['accent', 'blood'], ['purple', 'brain'], ['orange', 'liver'], ['green', 'muscle'], ['gold', 'fat']]);
-        v.readout(() => `At $t=${v.fix(info.t, 1)}$ min: (drug in the body + eliminated)/dose $=${v.fix(info.bal, 6)}$ (mass balance). Six half-lives from the real eigenvalues of the symmetric matrix (min): ${info.ev.slice().reverse().map((x) => `$${v.fix(LN2 / x, x < 0.1 ? 0 : 1)}$`).join(', ')}; the longest is the terminal $t_{1/2}=${v.fix(LN2 / info.ev[0], 0)}$ min, against $${v.fix(LN2 / info.slope, 0)}$ min from the simulated blood tail (2500–3000 min).`);
+        v.readout(() => `At $t=${v.fix(info.t, 1)}$ min: (drug in the body + eliminated)/dose $=${v.fix(info.bal, 6)}$ (mass balance). Six half-lives from the real eigenvalues of the symmetric matrix (min): ${info.ev.slice().reverse().map((x) => `$${v.fix(LN2 / x, x < 0.1 ? 0 : 1)}$`).join(', ')}; the longest is the terminal $t_{1/2}=${v.fix(LN2 / info.ev[0], 0)}$ min, against $${v.fix(LN2 / info.slope, 0)}$ min from the finite simulated blood tail (2500–3000 min), which need not yet be terminal.`);
       },
     },
     // ------------------------------------------------------------------ 3.10
@@ -225,7 +219,7 @@ export default {
       caption: String.raw`Choose the hidden truth: one, two or three compartments (the same clearance $\mathrm{CL}=5$ L/h in all). Samples (dots) are taken at ten log-spaced times up to the **last sampling time** and carry lognormal noise. Left: $C(t)$ with the observed AUC shaded and the extrapolated tail hatched; right: $tC(t)$ with AUMC. The red vertical line is the MRT. Shorten the sampling and the tail of AUMC grows far faster than that of AUC, so $V_{ss}=D\,\mathrm{AUMC}/\mathrm{AUC}^2$ is underestimated for a drug with a long terminal phase. The true values come from the exact model.`,
       scope: String.raw`Linear kinetics, elimination from the sampled (central) pool, a single intravenous bolus. The moments use observed data only through the trapezoid rule (linear up, logarithmic down) and a log-linear tail from the last three points; accuracy depends on sampling.`,
       credit: 'Yamaoka, Nakagawa & Uno, 1978 (statistical moments in pharmacokinetics)',
-      deps: ['pharm-1.2', 'pharm-1.5'],
+      deps: ['pharm-1.2', 'pharm-1.5', 'prob-1.6.1a'],
       refs: ['Rowland–Tozer'],
       tags: ['NCA', 'moments'],
       viz(v) {
@@ -284,14 +278,13 @@ export default {
       num: '3.11',
       kind: 'Phenomenon',
       name: 'Enterohepatic recirculation',
-      statement: String.raw`Some drugs, or their conjugates, are secreted into bile, stored in the gallbladder and released into the gut at meals; there the conjugate may be hydrolysed back to the parent drug, which is **reabsorbed** into the portal blood. The drug is thus recycled instead of being lost. The plasma concentration shows **secondary peaks** several hours after each meal-induced emptying, and the terminal phase is prolonged. If a fraction $f_b$ of the elimination goes to bile and a fraction $f_r$ of the emptied bile returns to the circulation, the cycle multiplies the exposure by $1/(1-f_bf_r)$ once the stored bile has been emptied.`,
+      statement: String.raw`Some drugs, or their conjugates, are secreted into bile, stored in the gallbladder and released into the gut at meals; there the conjugate may be hydrolysed back to the parent drug, which is **reabsorbed** into the portal blood. The drug is thus recycled instead of being lost. The plasma concentration can show **secondary peaks** after meal-induced emptying, and recycling can prolong the terminal phase. If a fraction $f_b$ of the elimination goes to bile and a fraction $f_r$ of the emptied bile returns to the circulation, the cycle multiplies the exposure by $1/(1-f_bf_r)$ once the stored bile has been emptied.`,
       idea: String.raw`Each pass through the cycle is a fraction $f_bf_r$ of what the previous one returned, a geometric series (pma-3.26): the total amount that ever passes through plasma is $D\,(1+f_bf_r+(f_bf_r)^2+\dots)=D/(1-f_bf_r)$, and since $\mathrm{AUC}=(\text{amount through plasma})/\mathrm{CL}$ (1.5, with CL the total clearance) the exposure grows by that factor. The gallbladder is a delay line: bile accumulates between meals and is released in a pulse, so the returning drug arrives in bursts, hours after the first-pass absorption (2.7); the burst timing sets the secondary peaks. Breaking the cycle, for instance by a binding agent in the gut that lowers $f_r$, reduces exposure. For mycophenolic acid the prescribing information describes secondary plasma peaks about 6 to 12 hours after dosing and a reduction of exposure by a bile-acid sequestrant.`,
       caption: String.raw`A dose is swallowed at $t=0$. Plasma concentration (solid) is compared with the same drug without recirculation (dashed); orange lines mark meals, when the gallbladder empties completely (a simplification). Raise the **biliary fraction** $f_b$ or the **reabsorbed fraction** $f_r$ and the secondary peaks grow, the tail lengthens and the AUC ratio rises toward $1/(1-f_bf_r)$. The right panel shows the amount stored in the gallbladder, which fills between meals and empties at each. Set $f_r=0$ (a sequestrant that binds everything) and the peaks disappear.`,
-      scope: String.raw`Illustrative one-compartment model with first-order absorption, biliary secretion as a fixed share of elimination, instantaneous complete gallbladder emptying at meals and a fixed reabsorbed fraction. Real emptying is partial and variable, and bile also flows between meals. The parameter values are round numbers, not data for any drug; the label statement about mycophenolic acid is taken from the prescribing information as summarized by search results and was not reread in full.`,
+      scope: String.raw`Illustrative one-compartment model with first-order absorption, biliary secretion as a fixed share of elimination, instantaneous complete gallbladder emptying at meals and a fixed reabsorbed fraction. Real emptying is partial and variable, and bile also flows between meals. The parameter values are round numbers, not data for any drug; the mycophenolic-acid example is supported by the complete relevant pharmacokinetics and cholestyramine sections of the CELLCEPT prescribing information (§12.3, DailyMed). Its reported 6–12-hour secondary peaks do not mean every meal causes a separate observed peak. The geometric AUC factor assumes that meals continue indefinitely and $f_b f_r<1$.`,
       deps: ['pharm-2.7', 'pma-3.26'],
-      refs: ['Goodman–Gilman ch. 2'],
+      refs: ['CELLCEPT US prescribing information, §12.3 Pharmacokinetics: Absorption, Metabolism and cholestyramine interaction study; https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=37241e87-4af4-4dc3-a1aa-ea6f20d8dc40 (retrieved 18 October 2026)', 'Illustrative meal-timed linear model; infinite AUC factor derived by mass balance'],
       tags: ['biliary excretion', 'reabsorption'],
-      verify: true,
       viz(v) {
         const D = 100, V = 40, CLt = 6, ka = 1.2, k = CLt / V, TEND = 72;
         const fb = v.slider('biliary share of elimination $f_b$', 0, 0.9, 0.5, { step: 0.05 });
@@ -301,31 +294,18 @@ export default {
         const sP = v.stage({ x: [0, 48], y: [0, 3], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 330, weight: 1.2, minWidth: 260 });
         const sG = v.stage({ x: [0, 48], y: [0, 40], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'amount (mg)', height: 330, weight: 1, minWidth: 250 });
         const sim = memo();
-        const run = (fbv, frv) => {
-          const dt = 0.01, N = Math.round(TEND / dt);
-          let G = D, A = 0, GB = 0, feces = 0, el = 0, nextMeal = first.value; const out = { t: [], c: [], gb: [], g: [] }; const meals = [];
-          for (let i = 0; i <= N; i++) {
-            const t = i * dt;
-            if (t >= nextMeal - 1e-9) { if (fbv > 0) { G += frv * GB; feces += (1 - frv) * GB; GB = 0; } meals.push(nextMeal); nextMeal += gap.value; }
-            if (i % 5 === 0) { out.t.push(t); out.c.push(A / V); out.gb.push(GB); out.g.push(G); }
-            const f = ([g, a, gb, el_]) => [-ka * g, ka * g - k * a, fbv * k * a, (1 - fbv) * k * a];
-            const y = rk4(f, [G, A, GB, el], t, dt);
-            G = y[0]; A = y[1]; GB = y[2]; el = y[3];
-          }
-          out.meals = meals; out.end = { G, A, GB, feces, el };
-          return out;
-        };
+        const run = (fbv, frv) => simulateRecirculation({ dose:D,volume:V,clearance:CLt,ka,biliary:fbv,reabsorbed:frv,firstMeal:first.value,mealGap:gap.value,duration:TEND });
         let info = null;
         v.render(() => {
           const S = sim(`${fb.value}|${fr.value}|${gap.value}|${first.value}`, () => ({ w: run(fb.value, fr.value), wo: run(0, 0) }));
-          const auc = (o) => trapz(o.t, o.c) + o.c[o.c.length - 1] / k;
+          const auc = (o, fbv, frv) => trapz(o.t, o.c) + recirculationTailAUC(o.end, CLt, fbv, frv);
           // secondary peaks: local maxima of the plasma curve after the first
           let peaks = [];
           const c = S.w.c, t = S.w.t;
           let tmaxIdx = c.indexOf(Math.max(...c.slice(0, 400)));
           for (let i = tmaxIdx + 10; i < c.length - 2; i++) if (c[i] > c[i - 1] && c[i] >= c[i + 1] && c[i] > 0.02 * c[tmaxIdx]) peaks.push(t[i]);
           const lastMeal = S.w.meals[S.w.meals.length - 1];
-          info = { ratio: auc(S.w) / auc(S.wo), pred: 1 / (1 - fb.value * fr.value), peaks, meals: S.w.meals.length, tailLeft: S.w.end.GB + S.w.end.G, lastMeal };
+          info = { ratio: auc(S.w, fb.value, fr.value) / auc(S.wo, 0, 0), pred: 1 / (1 - fb.value * fr.value), peaks, meals: S.w.meals.length, tailLeft: S.w.end.GB + S.w.end.G, lastMeal };
           sP.setView([0, 48], [0, Math.max(...S.wo.c) * 1.0 * 1.3 + 0.0001]);
           S.w.meals.forEach((m) => { if (m <= 48) sP.vline(m, { color: 'orange', alpha: 0.5, dash: [3, 4] }); });
           sP.path(S.wo.t.map((tt, i) => [tt, S.wo.c[i]]), { color: 'muted', dash: [6, 4], width: 1.8 });
@@ -336,7 +316,7 @@ export default {
           sG.poly([...S.w.t.map((tt, i) => [tt, S.w.gb[i]]), [TEND, 0], [0, 0]], { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 2 });
         });
         v.legend([['accent', 'with recirculation'], ['muted', 'no recirculation', { dash: true }], ['orange', 'meal (gallbladder empties)', { dash: true }], ['gold', 'secondary peak', { dot: true }]]);
-        v.readout(() => `AUC with / without recirculation $=${v.fix(info.ratio, 3)}$ (run to 72 h plus a tail estimate); predicted $1/(1-f_bf_r)=${v.fix(info.pred, 3)}$. ${info.peaks.length} secondary peak${info.peaks.length === 1 ? '' : 's'} in the first 72 h${info.peaks.length ? `, the first at $t=${v.fix(info.peaks[0], 1)}$ h` : ''}. Drug still in gut or gallbladder at 72 h: $${v.fix(info.tailLeft, 2)}$ mg of 100.`);
+        v.readout(() => `AUC with / without recirculation $=${v.fix(info.ratio, 3)}$ (run to 72 h plus the exact remaining central/gut/bile tail for continuing meals); predicted $1/(1-f_bf_r)=${v.fix(info.pred, 3)}$. ${info.peaks.length} secondary peak${info.peaks.length === 1 ? '' : 's'} in the first 72 h${info.peaks.length ? `, the first at $t=${v.fix(info.peaks[0], 1)}$ h` : ''}. Drug still in gut or gallbladder at 72 h: $${v.fix(info.tailLeft, 2)}$ mg of 100.`);
       },
     },
     // ------------------------------------------------------------------ 3.12
@@ -347,7 +327,7 @@ export default {
       paper: { authors: 'Michael A. Hughes, Peter S. A. Glass and James R. Jacobs', year: 1992, title: 'Context-sensitive half-time in multicompartment pharmacokinetic models for intravenous anesthetic drugs', venue: 'Anesthesiology 76 (3): 334–341', doi: '10.1097/00000542-199203000-00003' },
       introduces: ['pharm-3.5'],
       statement: String.raw`Hughes, Glass and Jacobs examined whether the elimination half-life is a useful guide to how long an intravenous anaesthetic takes to wear off after a long infusion. They simulated infusions of six drugs (fentanyl, alfentanil, sufentanil, propofol, midazolam and thiopental) of durations from 1 minute to 8 hours and to steady state, and defined the **context-sensitive half-time** as the time for the plasma concentration to fall by 50 % after the infusion ends, the context being its duration. The half-times ranged from 1 to 306 minutes, differed markedly from the elimination half-lives, and they concluded that elimination half-life has little value for these drugs at anaesthetically relevant dosing periods; the half-time is a more useful descriptor of post-infusion central-compartment kinetics. They explained the differences with a hydraulic analogue of each multicompartment model.`,
-      idea: String.raw`Before this paper the elimination half-life was the usual descriptor of how long a drug acts. For a one-compartment drug it is also the context-sensitive half-time (2.2), but for drugs with large, slowly exchanging peripheral compartments the half-time depends on how long the tissues have been loading (3.5, plateau principle 2.4): short infusions leave the tissues empty, so redistribution speeds the fall; long ones refill them. The paper introduced the context-sensitive half-time as the replacement, and with it the observation that the rank order of drugs by speed of recovery can change with the duration of infusion, so that the drug with the shortest elimination half-life is not always the one that wears off fastest. A teaching handout by S. Shafer makes the same point for two opioids: after infusions shorter than about 8 hours sufentanil concentrations fall faster than alfentanil's, although sufentanil's terminal half-life (about 9 h there) is much longer than alfentanil's (about 2 h).`,
+      idea: String.raw`The paper contrasts elimination half-life with post-infusion central-compartment decay. For a one-compartment drug it is also the context-sensitive half-time (2.2), but for drugs with large, slowly exchanging peripheral compartments the half-time depends on how long the tissues have been loading (3.5, plateau principle 2.4): short infusions leave the tissues empty, so redistribution speeds the fall; long ones refill them. The paper introduced the context-sensitive half-time as the replacement, and with it the observation that the rank order of drugs by speed of recovery can change with the duration of infusion, so that the drug with the shortest elimination half-life is not always the one that wears off fastest. A teaching handout by S. Shafer makes the same point for two opioids: after infusions shorter than about 8 hours sufentanil concentrations fall faster than alfentanil's, although sufentanil's terminal half-life (about 9 h there) is much longer than alfentanil's (about 2 h).`,
       caption: String.raw`**A reconstruction, not the paper's data.** I could not read the paper's parameter tables, so the six curves use rounded illustrative three-compartment models of my own (orders of magnitude only; fentanyl $V_1$ and $V_{ss}$ follow commonly quoted round values), with an infusion that holds the plasma concentration constant. Left: context-sensitive half-time against infusion duration, 1 min to 8 h on a log axis, for the six drugs; the dots mark the duration you choose. Right: bars of the half-time at that duration beside each drug's terminal half-life (log scale): they are not the same, and the ranking changes with the duration. The readout compares the span of the model values with the 1 to 306 minutes reported in the abstract. Switch the infusion to a constant rate to see how the definition matters.`,
       scope: String.raw`Parameter sets are illustrative, not the paper's; the paper's exact simulation scheme (including whether the infusion held a constant plasma concentration, as the definition is usually stated) was not checked beyond its abstract. Only qualitative features should be compared: the half-time differs from the elimination half-life, grows with duration at different rates for different drugs, and the ranking of drugs can change. Not a guide to drug choice or dosing.`,
       credit: 'Hughes, Glass & Jacobs, 1992',

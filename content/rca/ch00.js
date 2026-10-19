@@ -133,7 +133,7 @@ With $e=\exp(1)$ one writes $e^z$ for $\exp(z)$.`,
       deps: ['pma-3.34', 'pma-7.10', 'pma-7.12', 'pma-3.50'],
       see: ['pma-8.6'],
       tags: ['exponential', 'power series', 'Cauchy product'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, equations (1)–(2), p. 1'],
       viz(v) {
         const { Cx } = v.M;
         const A = v.stage({ x: [-2.6, 2.6], y: [-3.05, 3.05], equal: true, height: 400, weight: 0.8, minWidth: 200, title: 'exponents $a,\\ b$ and $a+b$' });
@@ -229,7 +229,7 @@ and consequently $e^{z}\neq0$.`,
       deps: ['rca-0.1'],
       see: ['pma-8.6'],
       tags: ['exponential', 'zeros'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (a), pp. 1–3'],
       viz(v) {
         const { Cx } = v.M;
         const view = { x: [-10, 14], y: [-12, 12] };
@@ -284,7 +284,7 @@ $$\lim_{h\to0}\frac{e^{z+h}-e^{z}}{h}=e^{z}\qquad(z\in\C,\ h\in\C\setminus\{0\})
       deps: ['rca-0.1'],
       see: ['pma-8.6', 'pma-8.1', 'rca-10.6'],
       tags: ['exponential', 'derivative'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (b), pp. 1–3'],
       viz(v) {
         const { Cx } = v.M;
         const Z = v.stage({ x: [-2.2, 2.2], y: [-2.2, 2.2], equal: true, height: 380, title: 'the point $z$ and the increment $h$' });
@@ -340,7 +340,7 @@ $$\lim_{x\to+\infty}e^{x}=+\infty,\qquad \lim_{x\to-\infty}e^{x}=0 .$$`,
       deps: ['rca-0.1', 'rca-0.2', 'rca-0.3', 'pma-5.11'],
       see: ['pma-8.6'],
       tags: ['exponential', 'monotone functions'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (c), pp. 1–3'],
       viz(v) {
         const S = v.stage({ x: [-4.8, 2.6], y: [-1.25, 6.3], height: 370, full: true, xlabel: 'x' });
         const showS = v.toggle('compare with the partial sum $S_N$', true);
@@ -415,7 +415,7 @@ Here, with $\cos t=\Re e^{it}$ and $\sin t=\Im e^{it}$ for real $t$, the number 
       deps: ['rca-0.1', 'rca-0.3', 'rca-0.4', 'pma-4.23', 'pma-6.21'],
       see: ['pma-8.7'],
       tags: ['pi', 'trigonometric functions'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (d), pp. 1–3'],
       viz(v) {
         const G = v.stage({
           x: [-0.3, 7.0], y: [-1.3, 1.62], height: 380, minWidth: 280,
@@ -490,7 +490,7 @@ $$e^{z+2\pi i}=e^{z}\qquad(z\in\C).$$`,
       deps: ['rca-0.1', 'rca-0.5'],
       see: ['pma-8.7'],
       tags: ['exponential', 'periodicity'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (e), pp. 1–3'],
       viz(v) {
         const { Cx } = v.M;
         const Z = v.stage({ x: [-2.2, 2.2], y: [-7.7, 10.5], equal: true, height: 450, title: '$z$-plane over the phase portrait of $e^z$' });
@@ -568,7 +568,7 @@ $$e^{z+2\pi i}=e^{z}\qquad(z\in\C).$$`,
       deps: ['rca-0.1', 'rca-0.5', 'pma-4.23'],
       see: ['pma-8.7'],
       tags: ['unit circle', 'trigonometric functions'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (f), pp. 1–3'],
       viz(v) {
         const L = v.stage({ x: [-2.25, 2.25], y: [-2.25, 2.25], equal: true, height: 380, ticks: false, title: 'winding the line $1+it$ onto the unit circle' });
         const R = v.stage({
@@ -668,7 +668,7 @@ $$e^{z+2\pi i}=e^{z}\qquad(z\in\C).$$`,
       deps: ['rca-0.1', 'rca-0.4', 'rca-0.5', 'rca-0.7'],
       see: ['pma-8.7', 'rca-13.11'],
       tags: ['exponential', 'logarithm'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Prologue, unnumbered theorem (g), pp. 1–3'],
       viz(v) {
         const Z = v.stage({ x: [-2.9, 2.1], y: [-4.7, 8.2], equal: true, height: 545, weight: 0.75, minWidth: 240, title: '$z$-plane: all solutions of $e^z=w$' });
         const W = v.stage({ x: [-4.9, 4.9], y: [-4.9, 4.9], equal: true, height: 443, weight: 1.25, title: '$w$-plane: $w=e^z$' });

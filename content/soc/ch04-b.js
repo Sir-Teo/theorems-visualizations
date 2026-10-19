@@ -1,11 +1,7 @@
-// Networks & Collective Behavior — Chapter 4, part b: power laws and preferential attachment (items 4.7–4.11)
-//
-// Sources checked (Oct 2026): Clauset, Shalizi & Newman, SIAM Review 51 (4): 661–703 (2009), doi 10.1137/070710111 (Crossref);
-// Price, J. Am. Soc. Inf. Sci. 27 (5): 292–306 (1976), doi 10.1002/asi.4630270505 (Crossref); Broido & Clauset, Nature
-// Communications 10: 1017 (2019): 928 data sets from the Index of Complex Networks, 3,662 graphs; shares Not scale-free 49%,
-// super-weak 46%, weakest 29%, weak 19%, strong 10%, strongest 4%; the lognormal fits at least as well as the power law for
-// 88% of networks (text of the paper on PubMed Central). The rate-equation recursion in 4.10 is derived on the page and is
-// checked against the exact result P(k) = 2m(m+1)/(k(k+1)(k+2)) at a = 0. All networks drawn here are simulations (models).
+// Networks & Collective Behavior — Chapter 4b.
+// Full originals reviewed: Clauset et al.2009 §2; Barabási–Albert1999 main text;
+// Krapivsky et al.2000 Eqs1–2 and kernel regimes; Dorogovtsev et al.2000 Eqs2–13;
+// Broido–Clauset2019 classifications/Table1/Methods. See docs/verification/soc-source-review.md.
 import {
   rng32, mkGraph, gnpSkip, baMix, rateEq, hillDisc, logBin, nonlinearPA, powerSample, lognormalSample, lsq,
   plBestXminCont, plFitCont, lnFitCont, lnLogLik, plPointwiseCont, vuong, normCdf, analyseDegrees, degreeSequence, configModel,
@@ -31,7 +27,7 @@ equivalently the density is $p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha
 
 (b) **Scale-free**: $P(X>2x)/P(X>x)=2^{-(\alpha-1)}$ whatever $x$ is: there is no typical size.
 
-(c) **Moments**: $E[X^m]$ is finite only if $m<\alpha-1$. The mean is infinite for $\alpha\le2$, the variance for $\alpha\le3$ (most networks and cities have $2<\alpha<3$, so sample averages converge slowly and are dominated by the few largest values).
+(c) **Moments**: $E[X^m]$ is finite only if $m<\alpha-1$. The mean is infinite for $\alpha\le2$, the variance for $\alpha\le3$ (for $2<\alpha<3$ the mean is finite but the variance diverges, so sample averages can converge slowly).
 
 (d) **Concentration**: a small number of observations carry a large share of the total (the "80/20" rule is a power law with $\alpha\approx2.16$).`,
       idea: String.raw`Under an exponential or Gaussian tail the probability of exceeding $x$ falls faster than any power, so a sample is described by its mean and spread. With a power-law tail, $P(X>x)$ falls only polynomially, so an observation a thousand times larger than the median is merely rare, not impossible. The running mean of a sample then keeps jumping each time a new giant arrives, and for $\alpha\le2$ it never settles, because the expectation $\int x\,p(x)\,dx$ diverges. Drawing $X=x_{\min}(1-U)^{-1/(\alpha-1)}$ from a uniform $U$ (inverse-transform sampling) shows the whole family from one random stream.`,
@@ -40,9 +36,8 @@ equivalently the density is $p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha
       deps: ['soc-2.3'],
       refs: ['E&K §18.2', 'Newman ch. 10'],
       tags: ['power laws', 'heavy tails'],
-      credit: 'Pareto, 1896 (wealth); Zipf, 1949 (words, cities)',
+      credit: 'Clauset, Shalizi & Newman, 2009, §2 (continuous power law)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Power_law' },
-      verify: true,
       viz(v) {
         const aS = v.slider('exponent $\\alpha$', 1.3, 4.5, 2.5, { step: 0.05 });
         const nS = v.slider('sample size $n$', 100, 100000, 3000, { log: true, sig: 2, int: true });
@@ -157,21 +152,20 @@ Lognormal fit on the same tail: $\mu=${v.fix(ln.mu, 2)}$, $\sigma=${v.fix(ln.sig
     {
       num: '4.9',
       kind: 'Model',
-      name: 'Preferential attachment (Price, Barabási–Albert)',
+      name: 'Preferential attachment in growing networks',
       statement: String.raw`**Growth with preferential attachment** builds a network one vertex at a time. Each newcomer brings $m$ links, and each link goes to an existing vertex $i$ with probability proportional to its current degree $k_i$ (the "rich get richer", "cumulative advantage", or "Matthew effect").
 
-The idea has an old pedigree: Yule (1925) for species and genera, Simon (1955) for word frequencies and city sizes, de Solla Price (1965, 1976) for citations to papers, Barabási and Albert (1999) for the Web and other networks. It produces a **heavy-tailed degree distribution** with hubs, and the oldest vertices are the biggest.
+Barabási and Albert’s 1999 growing-network model combines these two ingredients; Krapivsky, Redner and Leyvraz’s 2000 rate-equation treatment analyzes linear and nonlinear attachment kernels. It produces a **heavy-tailed degree distribution** with hubs, and older vertices have larger expected degrees; individual rankings fluctuate.
 
-Attachment probability must be **linear** in degree for a power law: with probability $\propto k^{\gamma}$ for $\gamma<1$ the tail is a stretched exponential, and for $\gamma>1$ a single hub ends up linked to almost everyone.`,
-      idea: String.raw`Two ingredients, both necessary: *growth* (older vertices have had more time to collect links) and *preference* (a vertex with many links is more likely to gain another). Writing $k_i(t)$ for the degree, linear preference gives $\mathrm d k/\mathrm dt=k/2t$ per link, so $k_i(t)\propto (t/t_i)^{1/2}$: degree is a power of age. Nonlinear attachment $\propto k^\gamma$ changes the feedback: if $\gamma<1$ the advantage saturates; if $\gamma>1$ it compounds, and the first vertex to get ahead keeps its lead (a "gel" phase).`,
+For the pure-power attachment kernels considered here, the power-law case is **linear** (more generally asymptotically linear): with probability $\propto k^{\gamma}$ for $\gamma<1$ the tail is a stretched exponential, and for $\gamma>1$ a single hub ends up linked to almost everyone.`,
+      idea: String.raw`This mechanism combines two ingredients: *growth* (older vertices have had more time to collect links) and *preference* (a vertex with many links is more likely to gain another). Writing $k_i(t)$ for the degree, linear preference gives $\mathrm d k/\mathrm dt=k/2t$ per link, so $k_i(t)\propto (t/t_i)^{1/2}$: degree is a power of age. Nonlinear attachment $\propto k^\gamma$ changes the feedback: if $\gamma<1$ the advantage saturates; if $\gamma>1$ it compounds, and the first vertex to get ahead keeps its lead (a "gel" phase).`,
       caption: String.raw`A model: a tree ($m=1$) grows to 20 000 vertices with attachment $\propto k^{\gamma}$. **Left**: the degree survival function on log–log axes against the linear case $\gamma=1$ (dashed). **Right**: the degrees of the first 40 vertices in order of arrival: with $\gamma=1$ old vertices are big but not enormous; for $\gamma>1$ the very first ones swallow the network. Slide $\gamma$ from 0 to 2.`,
       scope: String.raw`The exponent-3 tail is for the linear model with $m$ links per newcomer and unlimited growth; real citation, web and collaboration networks add ageing, fitness, deletion and other effects (and 4.11 discusses how often the power law is really supported).`,
-      deps: ['soc-4.7', 'stoch-12.10'],
+      deps: ['soc-4.7', 'stoch-12.10', 'ode-1.3'],
       refs: ['E&K §18.3', 'Newman ch. 13'],
       tags: ['preferential attachment', 'growth', 'networks'],
-      credit: 'Yule, 1925; Simon, 1955; de Solla Price, 1965 and 1976; Barabási & Albert, 1999',
+      credit: 'Barabási & Albert, 1999; Krapivsky, Redner & Leyvraz, 2000',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Preferential_attachment' },
-      verify: true,
       viz(v) {
         const gS = v.slider('kernel exponent $\\gamma$', 0, 2, 1, { step: 0.05 });
         const n = 20000;
@@ -211,16 +205,15 @@ Attachment probability must be **linear** in degree for a power law: with probab
 $$P(m)=\frac1{1+\beta(m+a)},\qquad P(k)=P(k-1)\,\frac{\beta\,(k-1+a)}{1+\beta\,(k+a)}\quad(k>m),\qquad \beta=\frac{m}{2m+a},$$
 whose tail is the power law
 $$P(k)\sim k^{-\gamma},\qquad \gamma=3+\frac am .$$
-For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m^2k^{-3}$, **exponent exactly 3, independent of $m$**. Mixing in uniform attachment (probability $p$ for a uniformly random target) is the same as $a=2mp/(1-p)$, giving $\gamma=3+2p/(1-p)$, larger than 3: random attachment thins the hubs.`,
-      idea: String.raw`Let $N_k(t)$ be the number of vertices of degree $k$ at time $t$. A degree-$k$ vertex gains a link in one step with probability $m(k+a)/\big((2m+a)t\big)$, since the total weight is $\sum_i(k_i+a)=(2m+a)t$. Balancing the flow into and out of the class $k$ at stationarity, $N_k=t\,P(k)$ gives $P(k)=\beta[(k-1+a)P(k-1)-(k+a)P(k)]$, which is the recursion above (the class $k=m$ is only fed by newcomers). The ratio $P(k)/P(k-1)\approx1-(3+a/m)/k$ makes $P(k)$ decay like $k^{-(3+a/m)}$. This is the argument that Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz gave in 2000; Bollobás, Riordan, Spencer and Tusnády proved the exact law rigorously for a precise version of the model.`,
+For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m(m+1)k^{-3}$, **exponent exactly 3, independent of $m$**. Mixing in uniform attachment (probability $p$ for a uniformly random target) is the same as $a=2mp/(1-p)$, giving $\gamma=3+2p/(1-p)$, larger than 3: random attachment thins the hubs.`,
+      idea: String.raw`Let $N_k(t)$ be the number of vertices of degree $k$ at time $t$. A degree-$k$ vertex gains a link in one step with probability $m(k+a)/\big((2m+a)t\big)$, since asymptotically the total weight is $\sum_i(k_i+a)\sim(2m+a)t$. Balancing the flow into and out of the class $k$ at stationarity, $N_k=t\,P(k)$ gives $P(k)=\mathbf1_{k=m}+\beta[(k-1+a)P(k-1)-(k+a)P(k)]$, with $P(m-1)=0$; the source term represents newcomers, while the loss term includes degree-$m$ vertices that acquire another link. This gives the recursion above. The ratio $P(k)/P(k-1)\approx1-(3+a/m)/k$ makes $P(k)$ decay like $k^{-(3+a/m)}$. This is the argument that Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz gave in 2000. The calculation is a stationary rate-equation argument, not a finite-network identity.`,
       caption: String.raw`Networks of $10^3$, $10^4$, $10^5$ vertices are grown with the chosen $m$ and a fraction $p$ of uniformly random attachments. Dots: the simulated degree distribution (log-binned). Green curve: the recursion above, with no fitted parameter. Dashed: the asymptotic power law $k^{-\gamma}$. The tail exponent estimate (maximum likelihood on the discrete tail) tends to the prediction as the network grows; raise $p$ and the tail steepens.`,
       scope: String.raw`Rate-equation (mean-field) result for the model with *independent* choices of the $m$ targets; the simulation chooses $m$ distinct targets, a small difference for $m\ge2$. The exponent 3 is a property of this model; real networks measured with exponents between 2 and 3 need extra mechanisms.`,
       deps: ['soc-4.9'],
       refs: ['E&K §18.7', 'Newman ch. 13'],
       tags: ['preferential attachment', 'power laws', 'rate equation'],
-      credit: 'Barabási & Albert, 1999 (simulation, continuum argument); Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz, 2000 (rate equation); Bollobás et al., 2001 (proof)',
+      credit: 'Barabási & Albert, 1999 (simulation, continuum argument); Dorogovtsev–Mendes–Samukhin and Krapivsky–Redner–Leyvraz, 2000 (rate equation)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Barab%C3%A1si%E2%80%93Albert_model' },
-      verify: true,
       viz(v) {
         const mS = v.slider('links per newcomer $m$', 1, 6, 3, { int: true, step: 1 });
         const pS = v.slider('share of random attachments $p$', 0, 0.8, 0, { step: 0.05 });
@@ -243,7 +236,7 @@ For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m^2k^{-3}$, **exponent exactl
         v.readout(() => {
           if (!st) return '';
           const { m, p, a, gam, fit, kmin, N, kmax } = st;
-          return String.raw`$m=${m}$, $p=${v.fix(p, 2)}$ → $a=\frac{2mp}{1-p}=${v.fix(a, 2)}$, predicted exponent $\gamma=3+a/m=$ **${v.fix(gam, 2)}** · maximum-likelihood tail estimate for $k\ge${kmin}$ (${fit.n} vertices): **${v.fix(fit.gamma, 2)}** · $N=${N.toLocaleString('en-US')}$ vertices, largest degree ${kmax} (theory: about $m\sqrt N=${Math.round(m * Math.sqrt(N))}$ for $p=0$)`;
+          return String.raw`$m=${m}$, $p=${v.fix(p, 2)}$ → $a=\frac{2mp}{1-p}=${v.fix(a, 2)}$, predicted exponent $\gamma=3+a/m=$ **${v.fix(gam, 2)}** · maximum-likelihood tail estimate for $k\ge${kmin}$ (${fit.n} vertices): **${fit.n ? v.fix(fit.gamma, 2) : 'not estimable: no tail observations'}** · $N=${N.toLocaleString('en-US')}$ vertices, largest degree ${kmax} (theory: about $m\sqrt N=${Math.round(m * Math.sqrt(N))}$ for $p=0$)`;
         });
       },
     },
@@ -254,16 +247,15 @@ For $a=0$: $P(k)=\dfrac{2m(m+1)}{k(k+1)(k+2)}\sim 2m^2k^{-3}$, **exponent exactl
       name: 'Are real networks scale-free? (debated)',
       statement: String.raw`**Hypothesis.** Most real-world networks — social, biological, technological — have degree distributions that follow a power law $P(k)\sim k^{-\gamma}$ with $2<\gamma<3$ ("scale-free").
 
-The hypothesis was widely taken for granted after Barabási and Albert (1999) on the strength of straight-looking log–log plots. When Broido and Clauset (2019) tested a large corpus of network data sets (928 data sets, 3,662 graphs from the Index of Complex Networks) with the statistical methods of 4.8, they found that only about **4%** met their strongest criterion for scale-freeness and about **49%** none of their criteria, and that a lognormal fitted at least as well as the power law for 88% of the networks (social networks were at best weakly scale-free). Others (for example Barabási and co-authors) have objected that the criteria are too strict. The hypothesis in its strong form is **contested**; heavy tails are common, strict power laws less so.`,
+Barabási and Albert’s 1999 paper helped motivate this hypothesis. When Broido and Clauset (2019) tested a large corpus of network data sets (928 data sets, 3,662 graphs from the Index of Complex Networks) with the statistical methods of 4.8, they found that only about **4%** met their strongest criterion for scale-freeness and about **49%** none of their criteria, and that a lognormal fitted at least as well as the power law for 88% of the networks (social networks were at best weakly scale-free). These findings depend on their explicit classification criteria and preprocessing choices; heavy tails are common, strict power laws less so.`,
       idea: String.raw`A power law is one particular heavy-tailed family, and over the few decades of degree that real networks span it is hard to tell from a lognormal or a power law with exponential cutoff. The test is therefore comparative: fit each family by maximum likelihood to the tail above a data-chosen $k_{\min}$ (4.8) and ask by a likelihood-ratio test which one the data prefer. The answer depends on the strictness of "scale-free" (exponent in $(2,3)$? at least 50 vertices in the tail? the power law not beaten by any rival?) and on whether networks are analysed whole or by projection, which is what the debate is about.`,
       caption: String.raw`A hands-on version of the test on model networks (the real corpus is not reproduced here): pick a network family and size; the page fits a discrete power law, a lognormal and a geometric tail above the KS-optimal $k_{\min}$ and reports the Vuong test of the power law against each. Bars on the right: the shares reported for the real corpus by Broido and Clauset. The Les Misérables network is a real (tiny) data set. Preferential attachment typically passes with $\gamma$ near 3; Erdős–Rényi and lognormal-degree graphs do not.`,
-      scope: String.raw`This is a simplified version of the published pipeline: no goodness-of-fit bootstrap, discrete-data approximations as in 4.8, one fit per degree sequence rather than per layer or component. The shares quoted are the paper's corpus-wide figures (categories overlap in the paper's nested definitions: "strongest" implies "strong", and so on). The verdict labels below are illustrative.`,
+      scope: String.raw`This is a simplified version of the published pipeline: no goodness-of-fit bootstrap, discrete-data approximations as in 4.8, one fit per degree sequence rather than per layer or component. The shares quoted are the paper's corpus-wide figures (Weakest, Weak, Strong and Strongest are nested; Super-Weak is a separate comparative-model requirement that Strong also includes). The verdict labels below are illustrative.`,
       deps: ['soc-4.8', 'soc-4.10'],
       refs: ['Newman ch. 10'],
       tags: ['power laws', 'scale-free', 'statistics'],
       credit: 'Broido & Clauset, 2019 (Nature Communications 10: 1017)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Scale-free_network', doi: 'https://doi.org/10.1038/s41467-019-08746-5' },
-      verify: true,
       viz(v) {
         const fam = v.select('network', [
           { value: 'ba', label: 'preferential attachment' }, { value: 'er', label: 'Erdős–Rényi' }, { value: 'pl', label: 'configuration, power-law degrees' },
@@ -288,7 +280,7 @@ The hypothesis was widely taken for granted after Barabási and Albert (1999) on
         v.render(() => {
           const { deg, A } = build(); nS.el.hidden = fam.value === 'lm';
           const n = deg.length, c = new Map(); for (const k of deg) if (k > 0) c.set(k, (c.get(k) || 0) + 1);
-          const ks = [...c.keys()].sort((a, b) => a - b); let acc = n; const pts = ks.map((k) => { const p = [k, acc / n]; acc -= c.get(k); return p; });
+          const ks = [...c.keys()].sort((a, b) => a - b); let acc = deg.filter((k) => k > 0).length; const pts = ks.map((k) => { const p = [k, acc / n]; acc -= c.get(k); return p; });
           CS.setView([1, Math.max(20, ks[ks.length - 1] * 1.4)], [Math.min(0.3 / n, 0.01), 1.3]);
           CS.dots(pts, { r: 3.2, color: 'accent' });
           if (A) {

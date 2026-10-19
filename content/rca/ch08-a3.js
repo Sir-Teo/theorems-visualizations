@@ -44,7 +44,7 @@ at every $x$ for which $\int|f(x-y)g(y)|\,dy<\infty$. The substitution $y\mapsto
       deps: ['rca-2.20', 'rca-1.30'],
       see: ['fa-6.30'],
       tags: ['convolution'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Sections 8.13–8.14, pp. 170–171'],
       viz(v) {
         const M = v.M;
         const ragged = (t) => (t < -1.4 || t > 1.4 ? 0 : t < -0.7 ? 0.5 : t < -0.2 ? 1 : t < 0.15 ? 0.3 : t < 0.6 ? 1.1 : t < 1 ? 0.65 : 0.2);
@@ -184,14 +184,14 @@ Then $h\in L^1(\R)$ and $\|h\|_1\le\|f\|_1\,\|g\|_1$, where $\|f\|_1=\int|f(x)|\
       num: '8.15',
       kind: 'Definition',
       name: 'Distribution function',
-      statement: String.raw`Let $f$ be a complex measurable function on a measure space $(X,\mathfrak M,\mu)$. The **distribution function** of $f$ is the function on $[0,\infty)$ that assigns to each $t\ge0$ the number
+      statement: String.raw`Let $f$ be a complex measurable function on a positive σ-finite measure space $(X,\mathfrak M,\mu)$. The **distribution function** of $f$ is the function on $[0,\infty)$ that assigns to each $t\ge0$ the number
 $$\mu\{|f|>t\}=\mu(\{x\in X:|f(x)|>t\}).$$
 It is nonincreasing and right-continuous in $t$.`,
       idea: String.raw`The distribution function records how much of $X$ lies above each height, forgetting *where*. Two functions with the same distribution function — for instance $f$ and its decreasing rearrangement $f^*$ — have the same integrals $\int\varphi(|f|)\,d\mu$ for every reasonable $\varphi$, by Theorem 8.16. Monotonicity is clear; right-continuity follows from $\{|f|>t\}=\bigcup_n\{|f|>t+1/n\}$ and continuity of measures from below (1.19).`,
       caption: String.raw`$X=[0,1]$ with Lebesgue measure. Drag the level $t$ (gold handle on the right edge). The green segments are the set $\{|f|>t\}$, whose length is plotted on the right as a function of $t$. The dashed purple curve is the decreasing rearrangement $f^*$ (toggle it off to compare): it has exactly the same distribution function, but for $f^*$ the set $\{f^*>t\}$ is the single interval $[0,\mu\{|f|>t\})$ (purple bar).`,
       deps: ['rca-1.18', 'rca-1.19'],
       tags: ['distribution function', 'measure'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 8.15, p. 172'],
       viz(v) {
         const M = v.M;
         const FN = {
@@ -247,14 +247,14 @@ It is nonincreasing and right-continuous in $t$.`,
       num: '8.16',
       kind: 'Theorem',
       name: 'Integrals from the distribution function (layer cake)',
-      statement: String.raw`Let $f$ be a complex measurable function on $(X,\mathfrak M,\mu)$, and let $\varphi:[0,\infty]\to[0,\infty]$ be monotonic, absolutely continuous on $[0,T]$ for every $T<\infty$, with $\varphi(0)=0$ and $\varphi(t)\to\varphi(\infty)$ as $t\to\infty$. Then
+      statement: String.raw`Let $f$ be a complex measurable function on a positive σ-finite measure space $(X,\mathfrak M,\mu)$, and let $\varphi:[0,\infty]\to[0,\infty]$ be monotonic, absolutely continuous on $[0,T]$ for every $T<\infty$, with $\varphi(0)=0$ and $\varphi(t)\to\varphi(\infty)$ as $t\to\infty$. Then
 $$\int_X(\varphi\circ|f|)\,d\mu=\int_0^\infty\mu\{|f|>t\}\,\varphi'(t)\,dt .$$
 In particular, for $0<p<\infty$, $\displaystyle\int_X|f|^p\,d\mu=p\int_0^\infty t^{p-1}\mu\{|f|>t\}\,dt$.`,
       idea: String.raw`Let $E=\{(x,t)\in X\times[0,\infty):|f(x)|>t\}$, the region under the graph of $|f|$. Approximating $|f|$ by simple functions (1.17) shows $E$ is product-measurable. Integrate $\chi_E(x,t)\varphi'(t)$ over $X\times[0,\infty)$ in both orders (Fubini 8.8): slicing at fixed $t$ gives $\varphi'(t)\,\mu\{|f|>t\}$; slicing at fixed $x$ gives $\int_0^{|f(x)|}\varphi'(t)\,dt=\varphi(|f(x)|)$, by the fundamental theorem of calculus for absolutely continuous functions. (If $\mu\{|f|>t\}<\infty$ for all $t>0$, the set $\{f\neq0\}$ is $\sigma$-finite, so Fubini applies.)`,
       caption: String.raw`$X=[0,1]$. The shaded region is $E=\{(x,t):t<|f(x)|\}$, darker where the weight $\varphi'(t)$ is larger. Slice it vertically: each slice contributes $\varphi(|f(x)|)$. Slice it horizontally: each contributes $\varphi'(t)\,\mu\{|f|>t\}$. The right panel accumulates the chosen slices as the sweep moves; both totals agree. Change $\varphi$ (and $p$ for $t^p$).`,
       deps: ['rca-8.15', 'rca-8.8', 'rca-1.17', 'rca-7.20'],
       tags: ['distribution function', 'Fubini', 'Lᵖ'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 8.16 and complete proof, pp. 172–173'],
       viz(v) {
         const M = v.M;
         const FN = {

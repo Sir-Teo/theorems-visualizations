@@ -1,0 +1,58 @@
+static check: 53 item(s)
+  0 error(s), 0 warning(s)
+✓ tech-1.6     The eyed needle and sewn clothing
+✓ tech-1.7     Pottery
+✓ tech-1.8     Domestication of plants and animals
+✓ tech-1.9     Spinning and the loom
+✓ tech-1.1     Oldowan stone tools: conchoidal fracture
+✓ tech-1.2     The Acheulean hand axe
+✓ tech-1.3     Control of fire
+✓ tech-1.4     The spear-thrower (atlatl)
+✓ tech-1.5     The bow and arrow
+✓ tech-2.7     The shadoof
+✓ tech-2.8     Archimedes’ screw
+✓ tech-2.9     Gear trains and the Antikythera mechanism
+✓ tech-2.10    The crank and connecting rod
+✓ tech-2.11    The counterweight trebuchet
+✓ tech-2.1     The law of the lever (Archimedes)
+✓ tech-2.2     The wheel and axle
+✓ tech-2.3     The inclined plane and the wedge
+✓ tech-2.4     The screw
+✓ tech-2.5     Pulleys and the block and tackle
+✓ tech-2.6     Mechanical advantage and conservation of work
+✓ tech-3.6     Writing (Mesopotamia and Egypt)
+✓ tech-3.7     Paper
+✓ tech-3.8     Counting boards and the abacus
+✓ tech-3.9     Place-value numerals with zero
+✓ tech-3.10    The balance and standard weights
+✓ tech-3.1     Copper smelting
+✓ tech-3.2     Bronze
+✓ tech-3.3     Iron and the bloomery
+✓ tech-3.4     Steel: carburising and quenching
+✓ tech-3.5     Glass
+✓ tech-4.7     The cam and the trip hammer
+✓ tech-4.8     The heavy plough and the horse collar
+✓ tech-4.9     The stirrup
+✓ tech-4.10    The canal pound lock
+✓ tech-4.11    Sternpost rudder and lateen sail
+✓ tech-4.12    The Natural Powers of Water and Wind to Turn Mills
+✓ tech-4.1     The true arch in Roman engineering
+✓ tech-4.2     Roman concrete (pozzolana)
+✓ tech-4.3     Aqueducts and the inverted siphon
+✓ tech-4.4     The water wheel
+✓ tech-4.5     Smeaton’s water-wheel experiments
+✓ tech-4.6     The windmill
+✓ tech-5.7     The anchor escapement
+✓ tech-5.8     The balance spring
+✓ tech-5.9     The longitude problem
+✓ tech-5.10    Harrison’s marine chronometer
+✓ tech-5.11    The octant and sextant
+✓ tech-5.1     The water clock (clepsydra)
+✓ tech-5.2     The astrolabe
+✓ tech-5.3     The magnetic compass
+✓ tech-5.4     Mechanical clock with verge-and-foliot escapement
+✓ tech-5.5     The mainspring and fusee
+✓ tech-5.6     The pendulum clock (Huygens)
+
+browser check: 53 run, 0 failed, 0 with TeX/blank warnings, 0 with quality warnings
+External content-import guard: stable; 2 files.

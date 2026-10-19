@@ -23,6 +23,18 @@ function imageSet(mode, x, y, G, N = 14) {
   return L;
 }
 
+// Closed periodic sum of the infinite vertical image lattice (period2W).
+// Real-vortex self velocity excludes its symmetric singular contribution.
+export function imageVelocity(mode, x0, y0, G, x, y, self = false) {
+  if (G === 0) return [0, 0];
+  if (mode !== 'channel') return vtxVel(imageSet(mode, x0, y0, G), x, y, self ? 0 : -1);
+  if (self) return [G / (4 * WCH) / Math.tan(Math.PI * y0 / WCH), 0];
+  const a = Math.PI * (x - x0) / WCH, b = Math.PI * (y - y0) / WCH, c = Math.PI * (y + y0) / WCH;
+  const d1 = 2 * (Math.sinh(a / 2) ** 2 + Math.sin(b / 2) ** 2), d2 = 2 * (Math.sinh(a / 2) ** 2 + Math.sin(c / 2) ** 2);
+  if (d1 < 1e-20 || d2 < 1e-20) return null;
+  return [G / (4 * WCH) * (Math.sin(c) / d2 - Math.sin(b) / d1), G / (4 * WCH) * Math.sinh(a) * (1 / d1 - 1 / d2)];
+}
+
 export default {
   collection: 'fluid',
   chapter: 4,
@@ -34,13 +46,12 @@ export default {
       name: 'Method of images',
       statement: String.raw`To satisfy the no-penetration condition $\partial\phi/\partial n=0$ at a fixed plane wall, add to the singularities in the fluid their mirror images in the plane, a source for a source, and a **vortex of opposite sign** for a vortex. The sum is a flow in the whole space that is symmetric about the wall, so its velocity is tangent to the wall; its restriction to the fluid side has the original singularities only and satisfies the boundary condition. A vortex of circulation $\Gamma$ at distance $d$ from a wall therefore drifts parallel to the wall at speed $\Gamma/4\pi d$ (induced by its image at distance $2d$). Between two parallel walls a distance $W$ apart there is an infinite lattice of images, and the drift speed is $\dfrac{\Gamma}{4W}\cot\dfrac{\pi y}{W}$; in a right-angle corner three images are needed and the vortex moves along $x^{-2}+y^{-2}=\text{const}$.`,
       idea: String.raw`Laplace's equation is linear (4.2), so the solutions for the original singularities and the images add, and uniqueness of the Neumann problem (4.2) shows the sum, restricted to the fluid, is *the* solution. The reflection of a source in a plane is a source (the normal velocities of the pair cancel at the wall, the tangential ones add), but the reflection of a vortex must be reversed in sign, because the normal velocity induced at the wall by the vortex is odd about the vortex's own height. Walls at an angle $\pi/m$ need $2m-1$ images.`,
-      credit: 'method of electrical images: William Thomson (Kelvin), 1845',
-      verify: true,
-      caption: String.raw`Drag the gold handle to place a point vortex near a wall, between two walls or in a corner, choose its circulation, and watch it move under the velocity induced by its images (open dots, opposite sign; a few of the infinite lattice are drawn for the channel). The streamlines are traced from the real vortex plus all images and are drawn only in the fluid; the walls are streamlines (the readout gives the largest normal velocity found along them, which is rounding error). The measured drift is compared with the closed formulas: $\Gamma/4\pi d$ at a wall, $(\Gamma/4W)\cot(\pi y/W)$ in the channel (the vortex moves one way near the lower wall, the other way near the upper), and in the corner the path conserves $x^{-2}+y^{-2}$.`,
+      credit: 'Image construction: Fitzpatrick Fluid Mechanics, §§6.6–6.7',
+      caption: String.raw`Drag the gold handle to place a point vortex near a wall, between two walls or in a corner, choose its circulation, and watch it move under the velocity induced by its images (open dots, opposite sign; a few of the infinite lattice are drawn for the channel). The streamlines are traced from the real vortex plus all images and are drawn only in the fluid; the walls are streamlines (the readout gives the largest normal velocity found along them). The drift is compared with the closed formulas: $\Gamma/4\pi d$ at a wall, $(\Gamma/4W)\cot(\pi y/W)$ in the channel (the vortex moves one way near the lower wall, the other way near the upper), and in the corner the path conserves $x^{-2}+y^{-2}$.`,
       deps: ['fluid-4.5'],
-      refs: ['Kundu §7.3'],
+      refs: ['Fitzpatrick Fluid Mechanics, complete §§6.6–6.7, Eqs.(6.42)–(6.67); repeated wall images and periodic-kernel derivative'],
       tags: ['images', 'vortex', 'wall'],
-      scope: String.raw`Ideal, incompressible, irrotational flow with fixed straight walls (planes or wedges of angle $\pi/m$). The image construction for a wall of any other shape requires a conformal map (4.15) or the circle theorem (4.13).`,
+      scope: String.raw`Ideal, incompressible, irrotational flow with fixed straight walls (planes or wedges of angle $\pi/m$). The channel velocity uses the exact periodic-lattice kernel; only the drawn image dots are truncated. The image construction for a wall of any other shape requires a conformal map (4.15) or the circle theorem (4.13).`,
       viz(v) {
         const mode = v.select('boundary', [{ value: 'wall', label: 'one wall' }, { value: 'channel', label: 'two walls' }, { value: 'corner', label: 'corner' }], 'wall', { onChange: () => { place(); S.reset(); } });
         const gs = v.slider('circulation $\\Gamma$', -10, 10, 6, { step: 0.5, onChange: () => S.reset() });
@@ -50,9 +61,9 @@ export default {
         H.onDrag = () => S.reset();
         function place() { const m = mode.value; if (m === 'wall') H.set(-2.5, 0.8); else if (m === 'channel') H.set(-2.5, 0.6); else H.set(0.9, 2.2); }
         const inside = (x, y) => (mode.value === 'wall' ? y > 0 : mode.value === 'channel' ? y > 0 && y < WCH : x > 0 && y > 0);
-        const speedAt = (st) => { const L = imageSet(mode.value, st.x, st.y, gs.value); return vtxVel(L, st.x, st.y, 0); };
+        const speedAt = (st) => imageVelocity(mode.value, st.x, st.y, gs.value, st.x, st.y, true);
         const S = v.sim(() => ({ x: H.x, y: H.y, t: 0, trail: [[H.x, H.y]], k: 0, c0: 1 / (H.x * H.x) + 1 / (H.y * H.y) }), (st, dt) => {
-          const f = (x, y) => vtxVel(imageSet(mode.value, x, y, gs.value, 10), x, y, 0);
+          const f = (x, y) => imageVelocity(mode.value, x, y, gs.value, x, y, true);
           if (Math.abs(st.x) > 6 || st.y > 7 || st.y < 0.03) return;
           const k1 = f(st.x, st.y), k2 = f(st.x + dt / 2 * k1[0], st.y + dt / 2 * k1[1]), k3 = f(st.x + dt / 2 * k2[0], st.y + dt / 2 * k2[1]), k4 = f(st.x + dt * k3[0], st.y + dt * k3[1]);
           st.x += dt / 6 * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0]); st.y += dt / 6 * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1]); st.t += dt; st.k++;
@@ -62,7 +73,7 @@ export default {
         v.animate((t) => {
           const st = S.advance(t), m = mode.value, L = imageSet(m, st.x, st.y, gs.value);
           const Ls = imageSet(m, st.x, st.y, gs.value, 8);
-          const lines = streamlines((x, y) => (inside(x, y) ? vtxVel(Ls, x, y) : null), [-4.6, 4.6, m === 'channel' ? 0 : 0, m === 'channel' ? WCH : 3.3], { sep: 0.2, step: 0.04, seeds: [[st.x + 0.9, st.y]] });
+          const lines = streamlines((x, y) => (inside(x, y) ? imageVelocity(m, st.x, st.y, gs.value, x, y) : null), [-4.6, 4.6, m === 'channel' ? 0 : 0, m === 'channel' ? WCH : 3.3], { sep: 0.2, step: 0.04, seeds: [[st.x + 0.9, st.y]] });
           // walls
           const hat = { fill: 'muted', fillAlpha: 0.3, hatch: true, color: 'ink', width: 2.4 };
           if (m === 'wall') s.rect(-4.6, -1.5, 4.6, 0, hat);
@@ -76,7 +87,7 @@ export default {
           let vn = 0;
           for (let i = -20; i <= 20; i++) {
             const x = (i * 0.2) + 0.013;
-            if (m === 'wall' || m === 'channel') { vn = Math.max(vn, Math.abs(vtxVel(L, x, 0)[1])); if (m === 'channel') vn = Math.max(vn, Math.abs(vtxVel(imageSet(m, st.x, st.y, gs.value, 60), x, WCH)[1])); }
+            if (m === 'wall' || m === 'channel') { vn = Math.max(vn, Math.abs(imageVelocity(m, st.x, st.y, gs.value, x, 0)[1])); if (m === 'channel') vn = Math.max(vn, Math.abs(imageVelocity(m, st.x, st.y, gs.value, x, WCH)[1])); }
             else { vn = Math.max(vn, Math.abs(vtxVel(L, x > 0 ? x : -x, 0)[1])); vn = Math.max(vn, Math.abs(vtxVel(L, 0, Math.abs(x))[0])); }
           }
           const sp = speedAt(st);
@@ -85,7 +96,7 @@ export default {
           else if (m === 'channel') ex = (gs.value / (4 * WCH)) / Math.tan((Math.PI * st.y) / WCH);
           info = { sp, vn, ex, inv: 1 / (st.x * st.x) + 1 / (st.y * st.y), c0: st.c0, x: st.x, y: st.y };
         }, { period: 12, still: 6 });
-        v.readout(() => `vortex at $(${v.fix(info.x, 2)},\\,${v.fix(info.y, 2)})$, velocity from the images $(${v.fix(info.sp[0], 4)},\\,${v.fix(info.sp[1], 4)})$${info.ex !== null ? `; closed formula for the drift: $${v.fix(info.ex, 4)}$` : `; $x^{-2}+y^{-2}=${v.fix(info.inv, 4)}$ (started at $${v.fix(info.c0, 4)}$): conserved`}\nlargest normal velocity found on the walls: $${v.sci(info.vn + 1e-18, 1)}$ — the images cancel it`);
+        v.readout(() => `vortex at $(${v.fix(info.x, 2)},\\,${v.fix(info.y, 2)})$, velocity from the images $(${v.fix(info.sp[0], 4)},\\,${v.fix(info.sp[1], 4)})$${info.ex !== null ? `; closed formula for the drift: $${v.fix(info.ex, 4)}$` : `; $x^{-2}+y^{-2}=${v.fix(info.inv, 4)}$ (started at $${v.fix(info.c0, 4)}$): conserved`}\nlargest normal velocity found on the walls: $${v.sci(info.vn, 1)}$ — the images cancel it`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.13
@@ -186,13 +197,12 @@ is the flow that has the same singularities outside the circle and in addition h
       name: 'Conformal maps carry potential flows',
       statement: String.raw`Let $z=F(\zeta)$ be a conformal map (analytic with $F'\ne0$) from a region $D'$ of the $\zeta$-plane onto the flow region $D$ of the $z$-plane. If $W(\zeta)$ is the complex potential of a flow in $D'$ then
 $$w(z)=W\big(F^{-1}(z)\big)$$
-is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$ are carried to those of $w$ (they remain orthogonal), a streamline that is a boundary of $D'$ maps to a boundary streamline of $D$, and the velocities are related by $\dfrac{dw}{dz}=\dfrac{dW/d\zeta}{dF/d\zeta}$. Circulation and flux through corresponding curves are the same. By the Riemann mapping theorem (rca-14.8) a simply connected region has such a map onto a disk; for the exterior of a body, onto the exterior of the unit disk, so the flow past any simply connected obstacle can be obtained from the flow past a circle (4.7, 4.9).`,
+is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$ are carried to those of $w$ (they remain orthogonal), a streamline that is a boundary of $D'$ maps to a boundary streamline of $D$, and the velocities are related by $\dfrac{dw}{dz}=\dfrac{dW/d\zeta}{dF/d\zeta}$. Circulation and flux through corresponding curves are the same. For a bounded simply connected Jordan obstacle, the exterior domain with infinity included maps conformally to the exterior of the unit disk (the exterior form of rca-14.8). Thus its potential flow can be obtained from circle flow (4.7,4.9).`,
       idea: String.raw`Composition of analytic functions is analytic, so $W\circ F^{-1}$ is analytic and its real and imaginary parts are conjugate harmonic functions: a legitimate flow. Because $\psi$ is simply carried along, level sets of $\psi$ map to level sets and the boundary streamline stays a streamline. The map preserves angles at every point where $F'\neq0$ (rca-14.2), so orthogonality of the two families is kept, while the speed is rescaled by $|F'|$: wherever the map stretches lengths the flow slows down and vice versa (the chain rule above).`,
       caption: String.raw`The left panel is the simplest flow of all: uniform stream (angle and circulation adjustable) past the unit circle in the $\zeta$-plane. Drag the eight gold handles on the right (each slides along its ray) to draw a star-shaped obstacle. The exterior of the obstacle is mapped onto the exterior of the unit disk numerically (Theodorsen's iteration, computed here with a discrete Fourier transform), and the streamlines of the circle flow are pushed forward through the map. They hug your shape, because the circle was a streamline. The readout gives the number of iterations and the largest mismatch between the mapped circle and your outline; very elongated shapes make the iteration fail, which is reported.`,
       deps: ['fluid-4.4', 'rca-14.2', 'rca-14.8'],
-      refs: ['Kundu §7.6', 'Acheson ch. 4'],
-      credit: 'numerical method: T. Theodorsen, NACA Report 411, 1931, and T. Theodorsen and I. E. Garrick, NACA Report 452, 1933',
-      verify: true,
+      refs: ['Fitzpatrick Fluid Mechanics, complete §6.7, Eqs.(6.53)–(6.74)', 'Theodorsen NACA Report411, complete mapping derivation pp.231–232, Eqs.(a)–(e),(VIII), appendix p.237 successive approximations'],
+      credit: 'Numerical method: Theodorsen, NACA Report411, Fourier conjugacy and successive approximations',
       tags: ['conformal map', 'Theodorsen', 'obstacle'],
       scope: String.raw`Plane, ideal, irrotational flow; simply connected obstacle. The numerical method here needs a star-shaped outline (a single-valued radius as a function of angle) and moderate aspect ratio.`,
       viz(v) {
@@ -215,7 +225,7 @@ is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$
           if (k !== key) { key = k; Rf = trigInterp(rr); mp = theodorsen(Rf, 96, 40); }
           const alpha = deg(al.value), G = gm.value, c0 = Math.exp(mp.c0 ?? 0), Uz = c0;
           const dW = (zt) => { const z2 = cmul(zt, zt); const t1 = cmul([Uz, 0], cadd(cpolar(1, -alpha), cmul([-1, 0], cdiv(cpolar(1, alpha), z2)))); return cadd(t1, cdiv([0, G / TAU], zt)); };
-          const k2 = al.value + '|' + gm.value;
+          const k2 = al.value + '|' + gm.value + '|' + c0;
           if (ck !== k2) { ck = k2; circLines = streamlines((x, y) => { if (x * x + y * y < 1.004) return null; const d = dW([x, y]); return [d[0], -d[1]]; }, [-3.2, 3.2, -2.4, 2.4], { sep: 0.2, step: 0.045, seeds: [[-3.1, 0.2]] }); }
           // left: circle flow
           drawLines(a, circLines, { color: 'accent', width: 1.1, alpha: 0.85 });
@@ -240,13 +250,12 @@ is the complex potential of a flow in $D$. Streamlines and equipotentials of $W$
       num: '4.16',
       kind: 'Theorem',
       name: 'Circulation as a free parameter',
-      statement: String.raw`Let a body occupy a bounded region in the plane and let the fluid outside it be irrotational and incompressible with a prescribed uniform stream at infinity and no flow through the body. The potential problem ($\nabla^2\phi=0$, $\partial_n\phi=0$ on the body, $\nabla\phi\to\mathbf U$) has **infinitely many solutions**, one for each real number $\Gamma$: any two differ by a multiple of the circulation flow round the body, $\Gamma\,\nabla\theta$-like field, which is harmonic, tangent to the body and decays at infinity. The circulation $\oint_C\mathbf u\cdot d\mathbf l$ equals $-\Gamma$ (in the clockwise-positive convention) for every closed curve $C$ that winds once round the body and $0$ for every curve that does not. The potential $\phi$ is many-valued, changing by $\Gamma$ on going once round. If the body is removed (the region is simply connected), the circulation must vanish.`,
+      statement: String.raw`Let a body occupy a bounded region in the plane and let the fluid outside it be irrotational and incompressible with a prescribed uniform stream at infinity and no flow through the body. The potential problem ($\nabla^2\phi=0$, $\partial_n\phi=0$ on the body, $\nabla\phi\to\mathbf U$) has **infinitely many solutions**, one for each real number $\Gamma$: any two differ by a multiple of the circulation flow round the body, $\Gamma\,\nabla\theta$-like field, which is harmonic, tangent to the body and decays at infinity. For a counter-clockwise curve $C$ winding once round the body, $\oint_C\mathbf u\cdot d\mathbf l=-\Gamma$; a clockwise curve gives $+\Gamma$, and a contractible curve gives0. The potential is many-valued, changing by $-\Gamma$ on a counter-clockwise circuit. If the body is removed (the region is simply connected), the circulation must vanish.`,
       idea: String.raw`In a simply connected region every closed loop is contractible and the circulation round it is the flux of vorticity through it, hence zero (4.1, 1.11). Round a hole the loops fall into classes labelled by their winding number, and homotopic loops give the same circulation (rca-10.40; the field is closed). The difference of two solutions is a harmonic function with zero normal derivative on the body and zero at infinity whose single-valued potential would have to vanish by the uniqueness argument of 4.2, so any difference must be many-valued, and the only many-valued possibility is a multiple of the angle round the hole. This leaves $\Gamma$ undetermined by the equations: something outside potential flow theory (the Kutta condition, chapter 5) has to choose it.`,
       caption: String.raw`The stream flows past the unit cylinder with circulation $\Gamma$ (slider). Two circular loops (blue and orange) can be moved and resized: drag each centre handle and its radius handle. Each loop's circulation is computed by integrating $\mathbf u\cdot d\mathbf l$ numerically: a loop that winds round the cylinder gives exactly $\Gamma$ whatever its shape, one that stays away from it gives $0$, and a loop that crosses the cylinder is not in the fluid (greyed). The right-hand plot shows the blue loop's circulation as a function of its radius, with its centre fixed: zero, then a gap while it crosses the body, then $\Gamma$. Switch the body off and $\Gamma$ is forced to zero: the region is no longer multiply connected.`,
       deps: ['fluid-4.2', 'fluid-4.9', 'rca-10.40', 'vcalc-5.7'],
-      refs: ['Acheson ch. 4'],
-      credit: 'cyclic constants of multiply connected regions: Kelvin, 1869',
-      verify: true,
+      refs: ['Fitzpatrick Fluid Mechanics, complete §§4.13,5.7 and9.2; circulation convention translated to clockwise positive'],
+      credit: 'Circulation freedom in exterior potential flow',
       tags: ['circulation', 'multiply connected', 'Kutta'],
       scope: String.raw`Plane, ideal, irrotational flow past a single body. For several bodies there is one free circulation per body.`,
       viz(v) {
@@ -304,13 +313,12 @@ where $V$ is the volume of the body and $C_a$ the added-mass coefficient ($C_a=\
 $$\dot U=\frac{(\rho_f-\rho_b)\,g}{\rho_b+C_a\rho_f},$$
 which for a sphere much lighter than the fluid tends to $2g$ rather than to the naive $(\rho_f/\rho_b-1)g$.`,
       idea: String.raw`A sphere of radius $a$ moving at $U$ in fluid at rest has velocity potential $\phi=-\dfrac{Ua^3\cos\theta}{2r^2}$, a doublet, which satisfies $\partial_r\phi=U\cos\theta$ on $r=a$. The kinetic energy of the fluid is $\tfrac12(\tfrac12\rho_fV)U^2$. The unsteady Bernoulli equation (4.3) gives a pressure $p=-\rho_f\,\partial\phi/\partial t=\tfrac12\rho_fa\dot U\cos\theta$ that is larger on the front; integrating $-p\,\mathbf n\,dS$ gives $F=-\tfrac12\rho_fV\dot U$. In the cylinder, $\phi=-Ua^2\cos\theta/r$ gives $F=-\rho_f\pi a^2\dot U$ per unit length. The steady (quadratic) part of the pressure cancels, as in d'Alembert's paradox (4.8), which is why only the acceleration term remains.`,
-      credit: 'F. W. Bessel, 1828 (pendulum experiments); G. Green, 1833 and G. G. Stokes, 1843 (theory)',
-      verify: true,
-      caption: String.raw`A ball (or a circular cylinder, a cross-section of a long rod) is released from rest in water and accelerates upward. The picture follows the ball; the streamlines are the instantaneous dipole flow of the fluid pushed aside, with red arrows where the acceleration raises the pressure and blue where it lowers it, which is integrated numerically to the force $-m_a\dot U$ of the readout. The right panel shows the height gained: the dashed grey curve is the naive result that ignores the fluid's inertia, the blue curve includes the added mass. A very light sphere rises at $2g$, a very light cylinder at $g$; a neutrally buoyant ball does not move at all.`,
-      deps: ['fluid-4.3', 'fluid-4.8'],
-      refs: ['Kundu §7.8'],
+      credit: 'Added mass: Fitzpatrick Fluid Mechanics, §§5.8 and7.8',
+      caption: String.raw`A ball (or a circular cylinder, a cross-section of a long rod) is released from rest in water and accelerates upward. The picture follows the body; density ratios above1 make it sink and reverse the acceleration and pressure arrows. The streamlines are the instantaneous dipole flow of the fluid pushed aside, with red arrows where the acceleration raises the pressure and blue where it lowers it, which is integrated numerically to the force $-m_a\dot U$ of the readout. The right panel shows the height gained: the dashed grey curve is the naive result that ignores the fluid's inertia, the blue curve includes the added mass. A very light sphere rises at $2g$, a very light cylinder at $g$; a neutrally buoyant ball does not move at all.`,
+      deps: ['fluid-4.3', 'fluid-4.8', 'mech-1.6'],
+      refs: ['Fitzpatrick Fluid Mechanics, complete §§5.8 and7.8, Eqs.(5.84)–(5.105) and(7.59)–(7.78)'],
       tags: ['added mass', 'buoyancy', 'unsteady'],
-      scope: String.raw`Ideal fluid, no wake or vorticity, constant acceleration for the first instants of the motion; in real fluids drag and vortex shedding soon dominate, and the added-mass coefficient is modified by a nearby wall or by deformation (a bubble's shape).`,
+      scope: String.raw`Ideal fluid, no wake or vorticity, constant acceleration for the first instants of the motion; the height axis follows the added-mass curve, so the naive curve may leave that plotting window; in real fluids drag and vortex shedding soon dominate, and the added-mass coefficient is modified by a nearby wall or by deformation (a bubble's shape).`,
       viz(v) {
         const shape = v.select('body', [{ value: 'sph', label: 'sphere' }, { value: 'cyl', label: 'circular cylinder' }], 'sph', { onChange: () => v.invalidate() });
         const sg = v.slider('density ratio $\\rho_b/\\rho_f$', 0, 1.6, 0.1, { step: 0.01 });
@@ -319,7 +327,7 @@ which for a sphere much lighter than the fluid tends to $2g$ rather than to the 
         let lines = [], key = '';
         let info = {};
         v.animate((t) => {
-          const sph = shape.value === 'sph', Ca = sph ? 0.5 : 1, sig = Math.max(sg.value, 1e-6), a = ((1 - sig) * G0) / (sig + Ca), an = ((1 - sig) * G0) / sig;
+          const sph = shape.value === 'sph', Ca = sph ? 0.5 : 1, sig = sg.value, a = ((1 - sig) * G0) / (sig + Ca), an = sig > 0 ? ((1 - sig) * G0) / sig : null;
           const U = a * t, a0 = 1;
           const k = shape.value;
           if (key !== k) {
@@ -328,20 +336,21 @@ which for a sphere much lighter than the fluid tends to $2g$ rather than to the 
               : (x, y) => { const r = Math.hypot(x, y); if (r < 1.004) return null; const c = y / r, sn = x / r, ur = c / (r * r), ut = sn / (r * r); return [ur * sn + ut * c, ur * c - ut * sn]; };
             lines = streamlines(f, [-3, 3, -2.3, 2.3], { sep: 0.22, step: 0.04, seeds: [[0.6, 1.8]] });
           }
-          drawLines(s, lines, { color: 'accent', width: 1.1, alpha: 0.75 });
+          if (Math.abs(U) > 1e-12) drawLines(s, U >= 0 ? lines : lines.map(L => L.slice().reverse()), { color: 'accent', width: 1.1, alpha: 0.75 });
           s.circle(0, 0, a0, { fill: 'gold', fillAlpha: 0.35, color: 'ink', width: 2.4 });
           // pressure from the acceleration term: p ~ cos(theta) (in units of rho a Udot (1/2 or 1))
           for (let j = 0; j < 24; j++) {
-            const th = (TAU * (j + 0.5)) / 24, c = Math.cos(th), sn = Math.sin(th), pp = c; // normalised
+            const th = (TAU * (j + 0.5)) / 24, c = Math.cos(th), sn = Math.sin(th), pp = (a / G0) * c; // acceleration sign and magnitude
+            if (Math.abs(pp) < 1e-12) continue;
             const L = 0.4 * Math.abs(pp) + 0.03, x = sn, y = c; // theta measured from +y (direction of motion)
             if (pp > 0) s.arrow(x * (1 + L), y * (1 + L), x, y, { color: 'red', width: 1.6, head: 5 }); else s.arrow(x, y, x * (1 + L), y * (1 + L), { color: 'blue', width: 1.6, head: 5 });
           }
-          s.arrow(0, 0, 0, 0.8, { color: 'green', width: 3.5 }); s.text('acceleration', 0.1, 0.55, { color: 'green', align: 'left' });
+          if (a !== 0) { const ay = 0.8 * Math.sign(a); s.arrow(0, 0, 0, ay, { color: 'green', width: 3.5 }); s.text('acceleration', 0.1, ay * 0.7, { color: 'green', align: 'left' }); }
           // plot
           const hh = 0.5 * a * 1.44, lo = Math.min(0, hh), hi = Math.max(0, hh), pad = 0.12 * (hi - lo) + 0.05;
           q.setView([0, 1.2], [lo - pad, hi + pad]);
           q.hline(0, { color: 'muted', alpha: 0.6 });
-          q.fn((x) => 0.5 * clamp(an, -60, 60) * x * x, { color: 'muted', width: 2, dash: true, domain: [0, 1.2] });
+          if (an !== null) q.fn((x) => 0.5 * an * x * x, { color: 'muted', width: 2, dash: true, domain: [0, 1.2] });
           q.fn((x) => 0.5 * a * x * x, { color: 'accent', width: 2.8, domain: [0, 1.2] });
           q.dot(t % 1.2, 0.5 * a * (t % 1.2) ** 2, { r: 7, color: 'gold' });
           // exact integration of the pressure force per unit rho*V
@@ -349,7 +358,7 @@ which for a sphere much lighter than the fluid tends to $2g$ rather than to the 
           info = { a, an, Ca, ratio, sig, U };
         }, { period: 1.2, still: 0.8 });
         v.legend([['accent', 'with added mass'], ['muted', 'naive: ignores the fluid’s inertia', { dash: true }]]);
-        v.readout(() => `$C_a=${info.Ca}$: pressure integrated over the surface gives $F=${v.fix(info.ratio, 4)}\\,\\rho_fV\\dot U$ (the theory: $-C_a$)\nacceleration $\\dot U=(1-\\sigma)g/(\\sigma+C_a)=${v.fix(info.a / G0, 3)}\\,g$ — the naive $(1-\\sigma)g/\\sigma$ would give $${info.sig < 0.02 ? 'a huge value' : v.fix(info.an / G0, 2) + '\\,g'}$`);
+        v.readout(() => `$C_a=${info.Ca}$: pressure integrated over the surface gives $F=${v.fix(info.ratio, 4)}\\,\\rho_fV\\dot U$ (the theory: $-C_a$)\nacceleration $\\dot U=(1-\\sigma)g/(\\sigma+C_a)=${v.fix(info.a / G0, 3)}\\,g$ — the naive $(1-\\sigma)g/\\sigma$ would give $${info.an === null ? '\\text{undefined at }\\sigma=0' : v.fix(info.an / G0, 2) + '\\,g'}$`);
       },
     },
   ],

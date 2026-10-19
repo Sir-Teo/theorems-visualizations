@@ -153,13 +153,12 @@ A **deduction** of $\varphi$ from a set $\Gamma$ of formulas is a finite sequenc
       statement: String.raw`For any set $\Gamma$ of formulas and formulas $\varphi,\psi$:
 $$\Gamma \cup \{\varphi\} \vdash \psi \quad\Longleftrightarrow\quad \Gamma \vdash \varphi \to \psi .$$
 In words, to prove an implication it is enough to assume its antecedent and derive its consequent. In the calculus of logic-4.1 there is no restriction on free variables of $\varphi$, because the only rule is modus ponens and the logical axioms are closed under generalization.`,
-      idea: String.raw`($\Leftarrow$) is one use of modus ponens. For ($\Rightarrow$), take a deduction $\theta_1,\dots,\theta_n=\psi$ from $\Gamma\cup\{\varphi\}$ and prove by induction on $i$ that $\Gamma\vdash\varphi\to\theta_i$. If $\theta_i$ is an axiom or in $\Gamma$, write $\theta_i$, then the tautology $\theta_i\to(\varphi\to\theta_i)$, then $\varphi\to\theta_i$ by modus ponens. If $\theta_i=\varphi$, then $\varphi\to\varphi$ is a tautology. If $\theta_i$ comes from $\theta_j$ and $\theta_j\to\theta_i$, use the tautology $(\varphi\to\theta_j)\to\big((\varphi\to(\theta_j\to\theta_i))\to(\varphi\to\theta_i)\big)$ and two modus ponens steps. The conversion is a program: it runs in time linear in the length of the deduction (each line becomes at most three).`,
+      idea: String.raw`($\Leftarrow$) is one use of modus ponens. For ($\Rightarrow$), take a deduction $\theta_1,\dots,\theta_n=\psi$ from $\Gamma\cup\{\varphi\}$ and prove by induction on $i$ that $\Gamma\vdash\varphi\to\theta_i$. If $\theta_i$ is an axiom or in $\Gamma$, write $\theta_i$, then the tautology $\theta_i\to(\varphi\to\theta_i)$, then $\varphi\to\theta_i$ by modus ponens. If $\theta_i=\varphi$, then $\varphi\to\varphi$ is a tautology. If $\theta_i$ comes from $\theta_j$ and $\theta_j\to\theta_i$, use the tautology $(\varphi\to\theta_j)\to\big((\varphi\to(\theta_j\to\theta_i))\to(\varphi\to\theta_i)\big)$ and two modus ponens steps. The conversion is a program: the output has at most three lines per input line. This counts proof lines, not character-copying or axiom-checking time.`,
       caption: String.raw`The top panel is a deduction of $\psi$ from $\Gamma\cup\{\varphi\}$ (the hypothesis $\varphi$ is highlighted). Step through it: the bottom panel grows by the one to three lines that replace the current line, and the result is a deduction of $\varphi\to\psi$ from $\Gamma$ alone. Every line of the new deduction is re-checked by the checker of 4.1 (green labels). Very long tautology lines are abbreviated as a schema in terms of the original line numbers.`,
       deps: ['logic-4.1'],
-      refs: ['Enderton §2.4'],
-      credit: 'Jacques Herbrand, 1930 (doctoral thesis)',
+      refs: ['Enderton §2.4', 'Open Logic Project, §§22.7, 23.9, 32.8; Weiss–D’Mello, Fundamentals of Model Theory, chs.2–3'],
+      credit: 'First-order logic',
       tags: ['proofs', 'calculus'],
-      verify: true,
       viz(v) {
         const sc = v.select('derivation', DED.map((d) => ({ value: d.id, label: d.label })), 'a', { onChange: () => { setup(); S.reset(null, { at: 'end' }); } });
         const TOP = rowStage(v, { height: 190 });

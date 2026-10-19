@@ -53,7 +53,7 @@ $$\liminf_{n\to\infty}\frac{c_{n+1}}{c_n}\;\le\;\liminf_{n\to\infty}\sqrt[n]{c_n
       caption: String.raw`Choose a sequence. Orange dots are ratios $c_{n+1}/c_n$, blue dots are roots $c_n^{1/n}$, on a logarithmic scale. The gauges at the right show the limiting ranges: the blue $[\liminf,\limsup]$ of the roots always sits inside the orange range of the ratios. In Rudin's two examples from 3.35 the ratios never settle, while the roots converge ($\frac12,1,\frac18,\frac14,\dots$) or nearly do ($\frac12,\frac13,\frac1{2^2},\frac1{3^2},\dots$); for random ratios the roots converge to their geometric mean. Press “Resample” for a new random sequence.`,
       deps: ['pma-3.17', 'pma-3.20'],
       see: ['pma-3.33', 'pma-3.34'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 3.37, pp. 68–69'],
       tags: ['limsup', 'convergence tests'],
       viz(v) {
         const NMAX = 80;
@@ -446,7 +446,7 @@ Then $\sum c_n$ converges.`,
       caption: String.raw`Drag $z$ around the unit circle and change the coefficients and the number of terms. Right: the partial sums of $\sum c_nz^n$ (gold) curl in, always staying inside the orange disc of radius $\frac{2c_{N+1}}{|1-z|}$ around $S_N$ that the proof provides; purple dots are the bounded partial sums of $\sum z^n$, which run round a circle of radius $\frac{1}{|1-z|}$. Move $z$ towards $1$: both blow up, and at $z=1$ the series $\sum c_n$ diverges.`,
       deps: ['pma-3.42', 'pma-3.38', 'pma-3.39'],
       see: ['pma-8.2'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 3.44, p. 71'],
       tags: ['power series', 'summation by parts'],
       viz(v) {
         const { Cx } = v.M;

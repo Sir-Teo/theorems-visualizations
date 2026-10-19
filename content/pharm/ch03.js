@@ -1,3 +1,5 @@
+import { simulateRedistribution, lastDownwardCrossing } from './redistribution.shared.js';
+import {hepaticModel} from './liver.shared.js';
 // Pharmacology — Chapter 3: Multi-compartment and physiological models (part a: items 3.1–3.6)
 import { LN2, clamp, logSlope, rk4, idxAt, memo, sig, box, wire, mamm, cBolus, cDecay, aucBolus, firstBelow, tTerminal } from './ch03.shared.js';
 
@@ -18,7 +20,7 @@ export default {
       idea: String.raw`Two coupled linear equations are a $2\times2$ linear ODE (kin-1.5 for one compartment, here for a vector), solved by the eigenvalues and eigenvectors of its matrix. Written for concentrations the exchange is reversible, so after the scaling $x_i=\sqrt{V_i}\,C_i$ the matrix becomes **symmetric**; the real spectral theorem (ladr-7.29) then guarantees two real eigenvalues, hence no oscillation, and orthogonal modes. The weights are $A/(D/V_1)=u_{1}^2$ and $B/(D/V_1)=u_{2}^2$, the squared first components of the two orthonormal eigenvectors, which add to one. The fast mode $\alpha$ is mostly exchange between the compartments, the slow mode $\beta$ the draining of the equilibrated body.`,
       caption: String.raw`Two tanks whose widths are proportional to $V_1$ and $V_2$ exchange drug through pipes whose thickness is $Q$ and drain through CL; the fill level is concentration. The right panel is the plasma curve on a semilog plot: the **bend** is where the fast mode $A e^{-\alpha t}$ (orange, dashed) has died away and the slow mode $B e^{-\beta t}$ (green, dashed) takes over. Make $V_2$ small or $Q$ tiny and the bend disappears (one compartment, 2.1); make $V_2$ large and the terminal slope flattens. The readout compares the eigenvalues with the trace and determinant of the rate matrix and checks the formula against RK4 integration of the two ODEs.`,
       scope: String.raw`Needs linear (first-order) exchange and elimination from the central compartment only, with instantaneous mixing within each compartment. Real bodies have a continuum of tissues, so the number of exponentials needed grows with sampling time and assay precision; three are common for lipophilic drugs.`,
-      deps: ['pharm-2.1', 'ladr-7.29'],
+      deps: ['pharm-2.1', 'ladr-7.29', 'ode-3.5'],
       refs: ['Rowland–Tozer'],
       tags: ['two-compartment', 'eigenvalues'],
       viz(v) {
@@ -85,7 +87,7 @@ export default {
       idea: String.raw`If $\alpha\gg\beta$ the fast term has vanished by the late times, so there the curve is the single exponential $B e^{-\beta t}$ and the straight-line regression of 2.3 applies. Extending that line backward and subtracting it from the early data leaves what the fast term alone contributes, again an exponential, so a second regression finishes the job. The method is only as good as the separation of the two phases: if the terminal points still contain some fast term, $\hat\beta$ is too large and every later step inherits the error, and residuals can become negative (their logarithm does not exist) where noise exceeds the small difference.`,
       caption: String.raw`Left: fourteen noisy samples of a biexponential curve (true curve dashed green). The **last $n$ samples (gold)** define the terminal line (orange), extended back to $t=0$; the stripped fit is the accent curve and the joint nonlinear fit (Nelder–Mead on $\ln C$) the purple one. Right: the residuals of the early samples on a semilog plot with their fitted line; points with non-positive residual cannot be plotted and are counted. Slide $n$ up until distribution-phase points contaminate the terminal fit, bring $\alpha$ close to $\beta$, or raise the noise, and watch the stripped estimates drift away from the truth while the joint fit stays closer. **Resample** draws new noise.`,
       scope: String.raw`Requires well-separated phases ($\alpha/\beta$ of about 5 or more) and samples in both phases. Stripping weights the residuals as if the noise were additive; with a proportional error the joint fit on $\ln C$ is preferred. Here the noise is lognormal and the data are simulated, not measured.`,
-      deps: ['pharm-3.1'],
+      deps: ['pharm-3.1', 'opt-1.6'],
       refs: ['Rowland–Tozer'],
       tags: ['curve stripping', 'regression'],
       viz(v) {
@@ -209,7 +211,7 @@ export default {
       name: 'Thiopental redistribution: waking before elimination',
       statement: String.raw`After an intravenous bolus of the lipophilic anaesthetic thiopental the brain, which is richly perfused, equilibrates with plasma within a few minutes (most of that is the plasma peak itself) and the patient falls asleep; within minutes, however, the plasma concentration, and with it the brain concentration, falls below the level needed for unconsciousness although almost all of the dose is still in the body and metabolism has removed little. The fall is **redistribution**: drug moves down its concentration gradient into less perfused tissue, first lean tissue and later fat. Elimination by the liver is slow and sets the time course only for repeated doses or long infusions, when the tissues are already loaded.`,
       idea: String.raw`This is the distribution phase of 3.3 applied to a drug with a large, lipophilic peripheral space. Plasma and brain are fast-exchanging, so the brain follows plasma (with a short delay), and plasma falls as the muscle compartment, which has good flow and a large capacity, takes up drug at rate $Q_m(C_1-C_m)$. The gentle second phase, fat filling slowly, hardly lowers the plasma level over the first half hour. Early pharmacological work attributed the termination of action to this redistribution rather than to metabolism, and credited body fat; later analyses stressed that lean tissue takes up most of the drug in the first minutes.`,
-      caption: String.raw`A bolus is injected at $t=0$. Left: the relative concentration in the brain (effect site, solid) and plasma (dashed) against the waking level you set; the time when the brain curve crosses it is the waking time. Right: where the dose is, stacked: plasma and brain, muscle, fat and metabolised. Switch off **muscle uptake** and the brain level stays up noticeably longer (waking comes later); switch off **liver metabolism** and the patient still wakes up at nearly the same time, because waking is redistribution, not elimination. **Second dose at 30 min** shows the tissues already partly filled, so waking is delayed. All parameters are rounded illustrations.`,
+      caption: String.raw`A bolus is injected at $t=0$. Left: the relative concentration in the brain (effect site, solid) and plasma (dashed) against the waking level you set; the final downward crossing after the last bolus is the illustrative waking time. Right: where the dose is, stacked: central pool, muscle, fat and metabolised. The effect site tracks a concentration and is not an additional drug-mass compartment. Switch off **muscle uptake** and the brain level stays up noticeably longer (waking comes later); switch off **liver metabolism** and the patient still wakes up at nearly the same time, because waking is redistribution, not elimination. **Second dose at 30 min** adds a second bolus and reports the final crossing after that dose; the free threshold is not a validated clinical waking concentration. All parameters are rounded illustrations.`,
       scope: String.raw`Illustrative three-compartment model with a one-minute-scale equilibration of brain with plasma (an assumed rate constant, not a measured one), a single bolus, and parameters of the order reported for thiopental in adults (volume of distribution about 2 L/kg, clearance about 0.2 L/min) chosen as round numbers; they are not fitted to data. The waking level is a free slider. Not clinical guidance.`,
       credit: 'Brodie, Bernstein & Mark, 1952 (role of body fat); Price et al., 1960 (tissue uptake and duration of narcosis)',
       deps: ['pharm-3.3'],
@@ -223,39 +225,25 @@ export default {
         const tFat = v.toggle('fat uptake', true);
         const tLiv = v.toggle('liver metabolism', true);
         const tSec = v.toggle('second dose at 30 min', false);
-        const sB = v.stage({ x: [0, 60], y: [0, 1.05], axes: 'box', gutter: true, xlabel: 'time (min)', ylabel: 'relative concentration', height: 330, weight: 1.1, minWidth: 260 });
+        const sB = v.stage({ x: [0, 120], y: [0, 2.5], axes: 'box', gutter: true, xlabel: 'time (min)', ylabel: 'relative concentration', height: 330, weight: 1.1, minWidth: 260 });
         const sD = v.stage({ x: [0, 120], y: [0, 1], axes: 'box', gutter: true, xlabel: 'time (min)', ylabel: 'fraction of dose', height: 330, weight: 1, minWidth: 250 });
         const sim = memo();
         let info = null;
         v.render(() => {
           const key = `${tMus.value}|${tFat.value}|${tLiv.value}|${tSec.value}`;
           const S = sim(key, () => {
-            const Q2 = tMus.value ? P.Q2 : 0, Q3 = tFat.value ? P.Q3 : 0, CL = tLiv.value ? P.CL : 0;
-            const f = ([a1, a2, a3, ce, el]) => {
-              const c1 = a1 / P.V1, c2 = a2 / P.V2, c3 = a3 / P.V3;
-              return [-CL * c1 - Q2 * (c1 - c2) - Q3 * (c1 - c3), Q2 * (c1 - c2), Q3 * (c1 - c3), ke0 * (c1 - ce), CL * c1];
-            };
-            const dt = 0.05, n = Math.round(TEND / dt), out = { t: [], c1: [], ce: [], a1: [], a2: [], a3: [], el: [] };
-            let y = [D, 0, 0, 0, 0], dosed2 = false;
-            for (let i = 0; i <= n; i++) {
-              const t = i * dt;
-              if (tSec.value && !dosed2 && t >= 30) { y[0] += D; dosed2 = true; }
-              if (i % 4 === 0) { out.t.push(t); out.c1.push(y[0] / P.V1); out.ce.push(y[3]); out.a1.push(y[0]); out.a2.push(y[1]); out.a3.push(y[2]); out.el.push(y[4]); }
-              y = rk4(f, y, t, dt);
-            }
-            return out;
+            return simulateRedistribution({ ...P, Q2: tMus.value ? P.Q2 : 0, Q3: tFat.value ? P.Q3 : 0, CL: tLiv.value ? P.CL : 0, ke0, D, second: tSec.value, end: TEND });
           });
-          const peakE = Math.max(...S.ce.slice(0, 150)), thr = lvl.value * peakE;
-          // waking: first time after the brain peak that Ce falls to the threshold
+          const peakE = Math.max(...S.ce.filter((_, i) => S.t[i] < 30)), thr = lvl.value * peakE;
           const ip = S.ce.indexOf(peakE);
-          let tw = NaN;
-          for (let i = ip + 1; i < S.t.length; i++) if (S.ce[i] <= thr) { tw = S.t[i - 1] + ((S.ce[i - 1] - thr) / (S.ce[i - 1] - S.ce[i])) * (S.t[i] - S.t[i - 1]); break; }
+          const tw = lastDownwardCrossing(S.t, S.ce, thr, tSec.value ? 30 : 0);
+          sB.setView([0, TEND], [0, 1.08 * Math.max(...S.c1, ...S.ce) / peakE]);
           const iw = isFinite(tw) ? idxAt(S.t, tw) : S.t.length - 1;
           const tot = D * (tSec.value && tw > 30 ? 2 : 1);
           info = { tw, peakE, remain: isFinite(tw) ? 1 - S.el[iw] / tot : NaN, fMus: S.a2[iw] / tot, fFat: S.a3[iw] / tot, fPl: S.a1[iw] / tot, el: S.el[iw] / tot, ip };
-          const x1 = Math.min(TEND, tSec.value ? 60 : 60);
+          const x1 = TEND;
           sB.hline(thr / peakE, { color: 'red', dash: true, width: 1.6 });
-          sB.text('waking level', 59, thr / peakE, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom', dy: -3 });
+          sB.text('waking level', 119, thr / peakE, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom', dy: -3 });
           sB.path(S.t.map((t, i) => [t, S.c1[i] / peakE]), { color: 'muted', dash: [5, 3], width: 1.8 });
           sB.path(S.t.map((t, i) => [t, S.ce[i] / peakE]), { color: 'accent', width: 2.6 });
           if (isFinite(tw) && tw < x1) { sB.vline(tw, { color: 'green', dash: true }); sB.dot(tw, thr / peakE, { r: 6, color: 'green' }); }
@@ -272,7 +260,7 @@ export default {
         });
         v.legend([['accent', 'brain (effect site)'], ['muted', 'plasma', { dash: true }], ['orange', 'muscle'], ['purple', 'fat'], ['green', 'metabolised']]);
         v.readout(() => isFinite(info.tw)
-          ? `Brain level crosses the waking level at $t=${v.fix(info.tw, 1)}$ min (peak at ${v.fix(S0(info), 1)} min). At that moment ${v.fix(100 * info.remain, 1)} % of the dose given is still in the body: plasma ${v.fix(100 * info.fPl, 0)} %, muscle ${v.fix(100 * info.fMus, 0)} %, fat ${v.fix(100 * info.fFat, 0)} %, metabolised only ${v.fix(100 * info.el, 1)} %.`
+          ? `Final brain-level downward crossing after the last dose at $t=${v.fix(info.tw, 1)}$ min (peak at ${v.fix(S0(info), 1)} min). At that moment ${v.fix(100 * info.remain, 1)} % of the dose given is still in the body: plasma ${v.fix(100 * info.fPl, 0)} %, muscle ${v.fix(100 * info.fMus, 0)} %, fat ${v.fix(100 * info.fFat, 0)} %, metabolised only ${v.fix(100 * info.el, 1)} %.`
           : `The brain level has not fallen to the waking level within 120 min in this configuration.`);
         function S0(i) { return i.ip * 0.2; }
       },
@@ -359,12 +347,12 @@ export default {
       kind: 'Model',
       name: 'Well-stirred liver model and hepatic extraction',
       statement: String.raw`In the **well-stirred model** the liver is one mixed compartment fed by blood flow $Q$; the drug concentration inside it equals that in the leaving blood, and enzymes remove only the unbound drug with intrinsic clearance $\mathrm{CL}_{int}$ (the clearance the enzymes would show without any flow limit). Mass balance gives the hepatic clearance $\mathrm{CL}_H=\dfrac{Q\,f_u\mathrm{CL}_{int}}{Q+f_u\mathrm{CL}_{int}}$ and extraction ratio $E=\mathrm{CL}_H/Q=\dfrac{f_u\mathrm{CL}_{int}}{Q+f_u\mathrm{CL}_{int}}$. If $f_u\mathrm{CL}_{int}\ll Q$ (low extraction) then $\mathrm{CL}_H\approx f_u\mathrm{CL}_{int}$ and depends on enzymes and binding but not on flow; if $f_u\mathrm{CL}_{int}\gg Q$ (high extraction) then $\mathrm{CL}_H\to Q$ and depends on flow only. The elasticities are $\partial\ln\mathrm{CL}_H/\partial\ln Q=E$ and $\partial\ln\mathrm{CL}_H/\partial\ln(f_u\mathrm{CL}_{int})=1-E$.`,
-      idea: String.raw`Steady state: what enters the liver minus what leaves equals what the enzymes remove, $Q(C_{in}-C_{out})=f_u\mathrm{CL}_{int}\,C_{out}$ with $C_{out}$ the concentration in the liver. Solving for $C_{out}/C_{in}=Q/(Q+f_u\mathrm{CL}_{int})$ gives $E=1-C_{out}/C_{in}$, and $\mathrm{CL}_H=QE$ is the clearance defined in 1.4. The expression is a harmonic combination of the two resistances, delivery $Q$ and enzymatic capacity $f_u\mathrm{CL}_{int}$, so the smaller one decides, like two resistors in series. The alternative **parallel-tube** model (enzymes spread along flow-through sinusoids) gives $\mathrm{CL}_H=Q\bigl(1-e^{-f_u\mathrm{CL}_{int}/Q}\bigr)$; the two agree at low extraction and differ at high.`,
+      idea: String.raw`Steady state: what enters the liver minus what leaves equals what the enzymes remove, $Q(C_{in}-C_{out})=f_u\mathrm{CL}_{int}\,C_{out}$ with $C_{out}$ the concentration in the liver. Solving for $C_{out}/C_{in}=Q/(Q+f_u\mathrm{CL}_{int})$ gives $E=1-C_{out}/C_{in}$, and $\mathrm{CL}_H=QE$ is the clearance defined in 1.4. The expression is a harmonic combination of the two resistances, delivery $Q$ and enzymatic capacity $f_u\mathrm{CL}_{int}$, so the smaller one decides, like two resistors in series. The alternative **parallel-tube** model (enzymes spread along flow-through sinusoids) gives $\mathrm{CL}_H=Q\bigl(1-e^{-f_u\mathrm{CL}_{int}/Q}\bigr)$; the two have the same low- and high-capacity limits but differ between them. The elasticities $E,1-E$ above belong to the well-stirred model; for the parallel tube, writing $z=f_u\mathrm{CL}_{int}/Q$, they are $1-z/(e^z-1)$ and $z/(e^z-1)$.`,
       caption: String.raw`Left: hepatic clearance against $f_u\mathrm{CL}_{int}$ (log axis) for the current blood flow (blue) and for half and double that flow (faint): the curve follows the diagonal $\mathrm{CL}_H=f_u\mathrm{CL}_{int}$ at the left and flattens at $Q$ at the right. Right: the liver as a mixing chamber, blood in at concentration 1 and out at $1-E$, with bars showing what happens to $\mathrm{CL}_H$ if you **double the flow** or **double the enzyme capacity**, computed from the model, beside the predicted elasticities $E$ and $1-E$. Use the preset buttons for a low-, intermediate- and high-extraction drug, or switch the model to the parallel tube.`,
-      scope: String.raw`Assumes linear (unsaturated) metabolism, instantaneous equilibrium of unbound drug between blood and liver cells, a uniform liver, and the liver as the only eliminating organ. The flow value used here, about 90 L/h (1.5 L/min) of total hepatic blood flow, is a commonly quoted round textbook figure that I did not re-check against a primary source.`,
+      scope: String.raw`Assumes linear (unsaturated) metabolism, instantaneous equilibrium of unbound drug between blood and liver cells, a uniform liver, and the liver as the only eliminating organ. All clearances, concentrations and the unbound fraction use whole blood as reference; plasma values require a blood/plasma conversion. The 90 L/h flow is the 1,500 mL/min average for a 70-kg man stated in Benet (2010), whose complete clearance derivation supports the well-stirred account. The original Pang–Rowland parallel-tube comparison and combined historical attributions remain unverified.`,
       credit: 'Rowland, Benet & Graham, 1973; Wilkinson & Shand, 1975 (physiological approach to hepatic clearance); Pang & Rowland, 1977 (comparison with the parallel-tube model)',
-      deps: ['pharm-1.4', 'pharm-1.7'],
-      refs: ['Rowland–Tozer'],
+      deps: ['pharm-1.4', 'pharm-1.7', 'fluid-1.8'],
+      refs: ['Benet (2010), Clearance concepts: a downdate and an update, pp. 529–534, Eqs. 1–6; https://europepmc.org/articles/PMC3005114?pdf=render', 'Original parallel-tube/historical sources still require verification'],
       tags: ['hepatic clearance', 'extraction'],
       verify: true,
       viz(v) {
@@ -378,16 +366,16 @@ export default {
         v.button('high extraction', set(0.8, 3000));
         const sL = v.stage({ x: [0.1, 1e4], y: [0, 330], xlog: true, axes: 'box', gutter: true, xlabel: 'enzyme capacity $f_u$CL$_{int}$ (L/h, log)', ylabel: 'CL$_H$ (L/h)', height: 330, weight: 1.1, minWidth: 260 });
         const sR = v.stage({ x: [0, 10], y: [0, 10], axes: false, height: 330, weight: 1, minWidth: 250 });
-        const CLH = (q, x) => (mod.value === 'ws' ? (q * x) / (q + x) : q * (1 - Math.exp(-x / q)));
+        const CLH = (q, x) => hepaticModel(q,x,mod.value).clearance;
         let info = null;
         v.render(() => {
           const q = Q.value, x = fu.value * CI.value, cl = CLH(q, x), E = cl / q;
           const dQ = CLH(2 * q, x) / cl, dX = CLH(q, 2 * x) / cl;
           // numerical elasticities by a 1 % change
           const eQ = Math.log(CLH(q * 1.01, x) / cl) / Math.log(1.01), eX = Math.log(CLH(q, x * 1.01) / cl) / Math.log(1.01);
-          info = { q, x, cl, E, dQ, dX, eQ, eX };
-          sL.setView([0.1, 1e4], [0, q * 2.05]);
-          const xs = Array.from({ length: 121 }, (_, i) => 10 ** (-1 + (i / 120) * 5));
+          const analytic=hepaticModel(q,x,mod.value); info = { q, x, cl, E, dQ, dX, eQ, eX,analytic };
+          const xmax=Math.max(1e4,x*1.2); sL.setView([0.1, xmax], [0, q * 2.05]);
+          const xs = Array.from({ length: 121 }, (_, i) => 10 ** (-1 + (i / 120) * (Math.log10(xmax)+1)));
           sL.path(xs.map((t) => [t, t]), { color: 'orange', dash: [5, 4], width: 1.4 });
           sL.hline(q, { color: 'green', dash: [5, 4], width: 1.4 });
           sL.hline(q / 2, { color: 'faint', alpha: 0.7, dash: [3, 4] });
@@ -416,8 +404,8 @@ export default {
             sR.text(lab, xc, y0 - 0.5, { size: 11, color: 'ink', align: 'center', baseline: 'middle' });
             sR.text(pred, xc, y0 - 1.1, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
           };
-          bar(3, dQ, 'double the flow', `elasticity $E$ = ${v.fix(E, 2)}`, 'accent');
-          bar(7, dX, 'double the enzymes', `elasticity $1-E$ = ${v.fix(1 - E, 2)}`, 'orange');
+          bar(3, dQ, 'double the flow', `flow elasticity = ${v.fix(analytic.flowElasticity, 2)}`, 'accent');
+          bar(7, dX, 'double the enzymes', `capacity elasticity = ${v.fix(analytic.capacityElasticity, 2)}`, 'orange');
         });
         v.legend([['accent', '$Q$ as set'], ['orange', '$f_u$CL$_{int}$ asymptote', { dash: true }], ['green', '$Q$ asymptote', { dash: true }], ['gold', 'this drug', { dot: true }]]);
         v.readout(() => `$f_u\\mathrm{CL}_{int}=${v.fix(info.x, 1)}$ L/h against $Q=${v.fix(info.q, 0)}$ L/h: $E=${v.fix(info.E, 3)}$, $\\mathrm{CL}_H=${v.fix(info.cl, 1)}$ L/h (${info.E > 0.7 ? 'high extraction: flow-limited' : info.E < 0.3 ? 'low extraction: enzyme-limited' : 'intermediate'}).\nNumerical elasticities (+1 %): $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln Q=${v.fix(info.eQ, 3)}$ ${mod.value === 'ws' ? `(model: $E=${v.fix(info.E, 3)}$)` : ''}, $\\partial\\ln\\mathrm{CL}_H/\\partial\\ln(f_u\\mathrm{CL}_{int})=${v.fix(info.eX, 3)}$ ${mod.value === 'ws' ? `(model: $1-E=${v.fix(1 - info.E, 3)}$)` : ''}.`);

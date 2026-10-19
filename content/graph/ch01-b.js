@@ -31,11 +31,12 @@ export default {
   items: [
     // ================================================================== 1.4 Connectivity
     {
-      num: '1.4.1a', kind: 'Definition', name: 'Connected graphs and components', verify: true,
+      num: '1.4.1a', kind: 'Definition', name: 'Connected graphs and components',
       statement: String.raw`A graph $G$ is **connected** if it is non-empty and any two of its vertices are linked by a path in $G$; a vertex set $U$ is connected if $G[U]$ is. A maximal connected subgraph of $G$ is a **component** of $G$. The components are induced subgraphs and their vertex sets partition $V(G)$.`,
       idea: String.raw`"Linked by a path in $G$" is an equivalence relation on $V$: reflexive (paths of length $0$), symmetric, and transitive because the union of an $x$–$y$ path and a $y$–$z$ path contains an $x$–$z$ path. Its classes induce exactly the components; no edge can join two classes, which is why components are induced and partition the vertex set.`,
       caption: String.raw`Each component has its own colour. Click an edge to delete it and watch the graph fall apart; click two vertices to add an edge back and merge components (${EDIT}).`,
-      deps: ['graph-1.3.1a'], refs: ['Diestel §1.4'], tags: ['connectivity'],
+      deps: ['graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.4, pp. 10–11'], tags: ['connectivity'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [1.0, 1.2], b: [2.8, 0.7], c: [2.2, 2.8], d: [4.4, 2.2], e: [5.8, 1.0], f: [6.0, 3.4], g: [8.0, 2.4], h: [9.2, 1.0], i: [8.6, 4.6], j: [1.4, 5.0], k: [3.4, 5.6], l: [5.6, 5.4] },
@@ -91,11 +92,12 @@ export default {
       },
     },
     {
-      num: '1.4.1b', kind: 'Definition', name: 'k-connectivity, edge-connectivity and separators', verify: true,
+      num: '1.4.1b', kind: 'Definition', name: 'k-connectivity, edge-connectivity and separators',
       statement: String.raw`A set $X$ of vertices or edges **separates** $A$ from $B$ if every $A$–$B$ path meets $X$; it is a **separator** of $G$ if it separates two vertices not in $X$. A **cutvertex** separates two vertices of its component, a **bridge** is an edge separating its ends. $G$ is **$k$-connected** if $|G|>k$ and $G-X$ is connected for every $X\subseteq V$ with $|X|<k$; the largest such $k$ is the **connectivity** $\kappa(G)$. $G$ is **$\ell$-edge-connected** if $|G|>1$ and $G-F$ is connected for every edge set $F$ with $|F|<\ell$; the largest such $\ell$ is the **edge-connectivity** $\lambda(G)$.`,
       idea: String.raw`So $\kappa(G)$ is the size of a smallest vertex separator (or $|G|-1$ for complete graphs) and $\lambda(G)$ the size of a smallest disconnecting edge set. Both are computed here by Menger's theorem (Chapter 3): the least number of vertices separating $s$ from $t$ equals the greatest number of independent $s$–$t$ paths, found as a maximum flow.`,
       caption: String.raw`Click vertices or edges to delete them (click again to restore); the remaining components are coloured. The buttons delete a smallest separator or a smallest disconnecting edge set computed by max-flow, so the graph breaks with exactly $\kappa(G)$ or $\lambda(G)$ deletions.`,
-      deps: ['graph-1.4.1a'], see: ['algo-8.18'], refs: ['Diestel §1.4'], tags: ['connectivity', 'separators'],
+      deps: ['graph-1.4.1a'], see: ['algo-8.18'], refs: ['Diestel, Graph Theory, 6th ed., §1.4, pp. 11–12'], tags: ['connectivity', 'separators'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [0.9, 1.4], b: [2.6, 0.6], c: [2.6, 3.0], d: [0.9, 4.6], e: [2.8, 5.6], f: [4.6, 2.2], g: [5.4, 4.4], h: [7.2, 1.0], i: [7.4, 3.4], j: [9.2, 2.2], k: [8.8, 5.4], l: [6.6, 5.8] },
@@ -204,11 +206,12 @@ export default {
     },
     // ================================================================== 1.5 Trees and forests
     {
-      num: '1.5.1a', kind: 'Definition', name: 'Trees, forests and leaves', verify: true,
+      num: '1.5.1a', kind: 'Definition', name: 'Trees, forests and leaves',
       statement: String.raw`An **acyclic** graph, one containing no cycle, is a **forest**; a connected forest is a **tree**, so a forest is a graph whose components are trees. The vertices of degree $1$ in a tree are its **leaves**, the others its **inner vertices**. Every non-trivial tree has at least two leaves, for instance the ends of a longest path, and deleting a leaf from a tree leaves a tree.`,
       idea: String.raw`If $x_0\dots x_k$ is a longest path in a tree, every neighbour of $x_k$ lies on the path; a neighbour other than $x_{k-1}$ would close a cycle. So $x_k$ (and likewise $x_0$) is a leaf. This is the standard start of inductions on trees: remove a leaf, apply the hypothesis, put the leaf back.`,
-      caption: String.raw`Build a graph edge by edge (${EDIT}). Edges lying on a cycle turn red; while there are none the graph is a forest, and a tree when it is also connected. Leaves are drawn hollow, inner vertices filled.`,
-      deps: ['graph-1.4.1a', 'graph-1.3.1a'], refs: ['Diestel §1.5'], tags: ['trees'],
+      caption: String.raw`Build a graph edge by edge (${EDIT}). Edges lying on a cycle turn red; while there are none the graph is a forest, and a tree when it is also connected. Vertices of degree at most one are drawn hollow (including isolated vertices), higher-degree vertices filled.`,
+      deps: ['graph-1.4.1a', 'graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.5, pp. 13–14, including footnote 5'], tags: ['trees'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...fixed({ a: [1.0, 3.0], b: [2.6, 1.4], c: [2.6, 4.6], d: [4.4, 3.0], e: [4.0, 0.8], f: [6.4, 1.2], g: [7.8, 2.8], h: [9.2, 1.4], i: [7.4, 5.0], j: [9.2, 4.6], k: [5.4, 5.6] }, 'ab ac ad be fg gh gi ij dk'), editable: true, r: 14 });
@@ -219,7 +222,7 @@ export default {
           const forest = cyc.size === 0, tree = forest && C.k === 1;
           s.corner(tree ? 'a tree' : forest ? `a forest of ${C.k} trees` : 'contains a cycle', 'tl', { color: tree || forest ? 'green' : 'red', weight: 700, size: 13 });
         });
-        v.legend([['red', 'edge on a cycle'], ['muted', 'hollow = leaf', { dot: true }]]);
+        v.legend([['red', 'edge on a cycle'], ['muted', 'hollow = degree at most 1', { dot: true }]]);
         v.readout(() => {
           const H = ix(G), d = degrees(H), br = bridges(H), C = comps(H), leaves = H.ids.filter((_, u) => d[u] === 1);
           return `${C.k} component(s), ${H.m - br.size} edges on cycles · ${br.size === H.m ? (C.k === 1 ? '**tree**' : '**forest**') : 'not a forest'} · leaves: ${leaves.join(', ') || 'none'}`;
@@ -349,11 +352,12 @@ export default {
       },
     },
     {
-      num: '1.5.3a', kind: 'Definition', name: 'Rooted trees, tree-order and normal trees', verify: true,
-      statement: String.raw`A tree $T$ with a fixed vertex $r$, its **root**, is a **rooted tree**. Writing $x\le y$ when $x$ lies on the path $rTy$ defines a partial order on $V(T)$, the **tree-order**: the root is its least element, the leaves are maximal, the **down-closure** $\lceil y\rceil=\{x: x\le y\}$ of every vertex is a chain, and the vertices at distance $k$ from $r$ form the $k$-th **level**. A rooted tree $T\subseteq G$ is **normal** in $G$ if the ends of every $T$-path in $G$ are comparable; for a spanning tree this means that any two vertices adjacent in $G$ are comparable in the tree-order.`,
+      num: '1.5.3a', kind: 'Definition', name: 'Rooted trees, tree-order and normal trees',
+      statement: String.raw`A tree $T$ with a fixed vertex $r$, its **root**, is a **rooted tree**. Writing $x\le y$ when $x$ lies on the path $rTy$ defines a partial order on $V(T)$, the **tree-order**: the root is its least element, the non-root leaves are maximal (a singleton root is maximal too), the **down-closure** $\lceil y\rceil=\{x: x\le y\}$ of every vertex is a chain, and the vertices at distance $k$ from $r$ form the $k$-th **level**. A rooted tree $T\subseteq G$ is **normal** in $G$ if the ends of every $T$-path in $G$ are comparable; for a spanning tree this means that any two vertices adjacent in $G$ are comparable in the tree-order.`,
       idea: String.raw`In a normal spanning tree every edge of $G$ runs "vertically", between a vertex and one of its ancestors, never across between two branches. That is what makes such trees a tool for reading off the separation structure of $G$ (1.5.4); depth-first search produces them, breadth-first search usually does not.`,
       caption: String.raw`Choose how the spanning tree $T$ (green) is grown and click a vertex to make it the root. The right panel redraws $G$ with $T$ laid out by levels: edges of $G$ between incomparable vertices are red, so $T$ is normal exactly when there is no red edge. DFS trees are always normal; BFS trees rarely are.`,
-      deps: ['graph-1.5.1a'], refs: ['Diestel §1.5'], tags: ['trees', 'normal trees'],
+      deps: ['graph-1.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.5, pp. 15–16'], tags: ['trees', 'normal trees'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const kind = v.select('grow $T$ by', [{ value: 'dfs', label: 'depth-first search' }, { value: 'bfs', label: 'breadth-first search' }, { value: 'random', label: 'random' }], 'bfs');
         const A = gstage(v, { height: 300, title: '$G$ and the spanning tree $T$' });
@@ -468,11 +472,12 @@ export default {
     },
     // ================================================================== 1.6 Bipartite graphs
     {
-      num: '1.6.1a', kind: 'Definition', name: 'Bipartite and r-partite graphs', verify: true,
+      num: '1.6.1a', kind: 'Definition', name: 'Bipartite and r-partite graphs',
       statement: String.raw`Let $r\ge2$. A graph $G=(V,E)$ is **$r$-partite** if $V$ admits a partition into $r$ classes such that every edge has its ends in different classes; **bipartite** means 2-partite. An $r$-partite graph in which any two vertices from different classes are adjacent is **complete**; the complete $r$-partite graph with classes of sizes $n_1,\dots,n_r$ is $K_{n_1,\dots,n_r}$, and $K^r_s$ denotes the one with $r$ classes of size $s$. The graphs $K_{1,n}$ are **stars**.`,
       idea: String.raw`An $r$-partition is the same thing as a proper colouring with $r$ colours (Chapter 5): each class is an independent set. So "$r$-partite" means "chromatic number at most $r$". Deciding 2-partiteness is easy (1.6.1), while for $r\ge3$ it is NP-complete.`,
       caption: String.raw`Click a vertex to cycle its class through the $r$ colours. Edges inside a class turn red; the graph is $r$-partite once nothing is red. **Find** searches for an $r$-partition by backtracking. The octahedron is $K_{2,2,2}=K^3_2$; the 5-cycle and the Petersen graph need three classes.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §1.6'], tags: ['bipartite', 'colouring'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.6, p. 17'], tags: ['bipartite', 'colouring'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const PRE = { k33: () => named('kmn', 3, 3), oct: () => named('octahedron'), c5: () => named('cycle', 5), pet: () => named('petersen') };
         const pre = v.select('', [{ value: 'k33', label: '$K_{3,3}$' }, { value: 'oct', label: '$K_{2,2,2}$' }, { value: 'c5', label: '$C^5$' }, { value: 'pet', label: 'Petersen' }], 'pet', { onChange: () => load() });

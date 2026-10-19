@@ -40,7 +40,7 @@ export default {
 By linearity CNOT acts on superpositions: $(\alpha|0\rangle+\beta|1\rangle)|0\rangle\mapsto\alpha|00\rangle+\beta|11\rangle$, which is entangled whenever $\alpha\beta\neq0$.`,
       idea: String.raw`A gate is fixed by what it does to the four basis states (qinfo-1.2), and CNOT permutes them: $|10\rangle\leftrightarrow|11\rangle$ and the others stay. A control that is not in a basis state cannot be "read": linearity sends each branch through its own action, so the control and target become correlated in a coherent way, which is entanglement (qm-14.1). The product form survives only if the target is an eigenvector of the controlled operation, $X|\pm\rangle=\pm|\pm\rangle$; then the sign lands on the control as a phase (**phase kickback**).`,
       caption: String.raw`Choose the **target** state and tilt the **control** with the sliders (or use the buttons). Bars show the input and output amplitudes (colour = phase); the matrix on the left highlights the columns the input uses. Notice that a $|0\rangle$ or $|1\rangle$ target with a superposed control gives entropy 1 bit, while a $|+\rangle$ target leaves the pair unentangled and a $|-\rangle$ target kicks a phase back onto the control.`,
-      deps: ['qm-14.1', 'qinfo-1.2'],
+      deps: ['qm-14.1', 'qinfo-1.2', 'ladr-9.71'],
       refs: ['Nielsen–Chuang §1.3.2', 'Nielsen–Chuang §4.3'],
       tags: ['two-qubit gates', 'entanglement'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Controlled_NOT_gate' },
@@ -85,7 +85,7 @@ $$\mathrm{CNOT}\,(H\otimes I)\,|a,b\rangle=|\beta_{ab}\rangle=\tfrac1{\sqrt2}\bi
 so $|00\rangle,|01\rangle,|10\rangle,|11\rangle$ go to $|\Phi^+\rangle,|\Psi^+\rangle,|\Phi^-\rangle,|\Psi^-\rangle$. These four **Bell states** form an orthonormal basis of two qubits, each maximally entangled. Since the circuit is unitary, its inverse $(H\otimes I)\,\mathrm{CNOT}$ followed by a measurement in the computational basis is a **Bell measurement**: it returns the labels $ab$ of the Bell state, and identifies an unknown member of the basis with certainty.`,
       idea: String.raw`CNOT and $H$ are unitary (qinfo-2.1, qinfo-1.3), so applying the circuit to the four orthonormal basis states yields four orthonormal states, and applying its inverse returns each to its label. A measurement in the computational basis after the inverse circuit is therefore a projective measurement onto the images of the basis states, namely the Bell basis. The Bell states are all maximally entangled, which is why no product-basis measurement (and no local measurement) can tell $\Phi^+$ from $\Phi^-$.`,
       caption: String.raw`Top: pick the input $|ab\rangle$ and step the forward circuit with the slider to see the Bell state appear. Bottom: the *unknown* Bell state is sent through the backward circuit and measured; the green bars are theory, the gold bars the tally of your trials. Switch the measurement to *computational basis only* and watch $\Phi^\pm$ and $\Psi^\pm$ become indistinguishable. The noise slider mixes in the maximally mixed state with weight $p$; the success rate is then $1-\tfrac34p$.`,
-      deps: ['qinfo-2.1', 'qinfo-1.3'],
+      deps: ['qinfo-2.1', 'qinfo-1.3', 'ladr-9.80'],
       refs: ['Nielsen–Chuang §1.3.6'],
       tags: ['Bell states', 'measurement'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bell_state' },
@@ -130,7 +130,7 @@ $$|\Psi\rangle_{AR}=\sum_k\sqrt{\lambda_k}\,|k\rangle_A|k\rangle_R$$
 has $\operatorname{tr}_R|\Psi\rangle\langle\Psi|=\rho_A$. Two purifications $|\Psi\rangle,|\Psi'\rangle$ of the same $\rho_A$ on $A\otimes R$ are related by a unitary on $R$: $|\Psi'\rangle=(I\otimes U_R)|\Psi\rangle$.`,
       idea: String.raw`Diagonalise $\rho_A$ (ladr-7.39) and read the eigenvalues as squared Schmidt coefficients: tracing out $R$ kills the cross terms because the $|k\rangle_R$ are orthonormal, leaving $\sum_k\lambda_k|k\rangle\langle k|$. Conversely any purification has a Schmidt decomposition whose $A$-side is forced to be the eigenbasis of $\rho_A$ and whose Schmidt weights are the eigenvalues; the $R$-side bases then differ only by a unitary on $R$ (qm-14.4). Mixedness is thus entanglement with something unobserved.`,
       caption: String.raw`**Drag the point inside the Bloch ball** (left) to choose the mixed state $\rho_A$. Its canonical purification is a two-qubit state (bars). Rotate the partner $R$ with the three Euler-angle sliders: the middle ball (the partner's own reduced state, computed from the two-qubit state) swings around, but the left ball does not move. Push the point to the surface and the purification factorises.`,
-      deps: ['qm-14.4', 'ladr-7.39'],
+      deps: ['qm-14.4', 'ladr-7.39', 'ladr-7.31'],
       refs: ['Nielsen–Chuang §2.5'],
       tags: ['purification', 'mixed states', 'Schmidt decomposition'],
       credit: String.raw`Schrödinger, 1936, and Hughston, Jozsa and Wootters, 1993 (Phys. Lett. A 183, 14), who proved the unitary freedom`,
@@ -178,7 +178,7 @@ $$F=\langle\psi|\rho'|\psi\rangle=\tfrac56\approx0.833,$$
 independent of $|\psi\rangle$. No cloner treating all inputs alike (covariant under unitaries) can achieve a larger $F$ for both copies.`,
       idea: String.raw`A quantum cloner is a physically allowed (completely positive, trace preserving) map, and an unknown state means it must work for every input. Symmetrising the output over the two copies and requiring unitary covariance leaves a one-parameter family of maps, and positivity bounds the shrinking factor by $\tfrac23$; this is the Bužek–Hillery construction, whose optimality Gisin–Massar and Werner proved. The same limit follows from no-signalling-style arguments: a cloner with $F>\tfrac56$ could be used to distinguish non-orthogonal states better than the Helstrom bound of qinfo-1.5.`,
       caption: String.raw`**Drag the input point** on the Bloch sphere. The orange arrow is copy 1, the purple ring marks copy 2: they coincide, shorter by the factor $\tfrac23$ (or $\tfrac13$ for *measure and prepare*). On the right, fidelity versus the input's polar angle for each cloner; *Resample* draws random inputs and computes their fidelities from the actual map: the cloner's dots all sit on one horizontal line, the trivial *copy-one-discard-other* strategy trades $F_1=1$ for $F_2=\tfrac12$.`,
-      deps: ['qm-14.14'],
+      deps: ['qm-14.14', 'ladr-6.55'],
       refs: ['Nielsen–Chuang §12.1'],
       tags: ['cloning', 'no-cloning', 'fidelity'],
       scope: String.raw`The map above is the optimal *universal* (input-independent) symmetric cloner for qubits. Cloners tuned to a known set of states, such as the two bases of BB84, can do better.`,
@@ -230,7 +230,7 @@ independent of $|\psi\rangle$. No cloner treating all inputs alike (covariant un
 Example: for $\rho=p|\Phi^+\rangle\langle\Phi^+|+(1-p)\,I/4$ the smallest eigenvalue of $\rho^{T_B}$ is $(1-3p)/4$, so the state is entangled exactly when $p>\tfrac13$.`,
       idea: String.raw`Transposition is positive but not completely positive (qm-14.3). It maps every product state $\sigma\otimes\tau$ to another product state $\sigma\otimes\tau^{T}$, so a convex mixture of products stays a valid state, hence $\ge0$. An entangled state can be turned by this map into an operator with a negative eigenvalue, e.g. $|\Phi^+\rangle\langle\Phi^+|$ becomes half the SWAP operator, whose spectrum is $+\tfrac12,+\tfrac12,+\tfrac12,-\tfrac12$ (qinfo-2.2). The converse in low dimensions is the theorem of the Horodeckis; in $3\times3$ there are PPT entangled ("bound entangled") states.`,
       caption: String.raw`Slide the mixing weight $p$ for three families. Left: the smallest eigenvalue of $\rho^{T_B}$ against $p$; the shaded region is where it is negative. Middle: all four eigenvalues. Right: the matrix $\rho^{T_B}$ itself (blue positive, red negative). For the white-noise family the threshold is $p=\tfrac13$; the other two families are entangled except at one point (or never separable).`,
-      deps: ['qm-14.3', 'qinfo-2.2'],
+      deps: ['qm-14.3', 'qinfo-2.2', 'ladr-7.38'],
       refs: ['Nielsen–Chuang §2.4'],
       tags: ['separability', 'partial transpose', 'Werner state'],
       scope: String.raw`Necessary for separability in every dimension; sufficient only for $2\times2$ and $2\times3$.`,
@@ -344,7 +344,7 @@ $$P(a_0{=}1,b_0{=}1)=0,\qquad P(a_1{=}1,b_0{=}0)=0,\qquad P(a_0{=}0,b_1{=}1)=0 .
 In any local hidden-variable model these force $P(a_1{=}1,b_1{=}1)=0$ as well. But there are pure two-qubit states and measurement settings obeying the three conditions for which $P(a_1{=}1,b_1{=}1)>0$; the largest possible value is $\tfrac{5\sqrt5-11}{2}\approx0.0902$, reached by a non-maximally entangled state. Maximally entangled states never show the effect.`,
       idea: String.raw`Suppose a local model assigns every run values for all four observables. If $a_1=b_1=1$ then the second condition forces $b_0=1$ and the third forces $a_0=1$, contradicting the first. So the event can never occur, a logical contradiction with no inequality or averaging needed (unlike Bell's, qm-14.7 and qm-14.2). In quantum mechanics each zero is an orthogonality $\langle a|\langle b|\Psi\rangle=0$; given $|\Psi\rangle$ and Alice's first axis, the other three axes are determined, and the remaining probability is generically non-zero.`,
       caption: String.raw`Choose the state's Schmidt angle $\varepsilon$ (entanglement) and Alice's first axis $\varphi$; the other three axes are solved so that the three conditions hold exactly (left panel: real axes drawn as arrows). The bars show the four joint probabilities: three zeros and one positive. *Optimise* finds the best $\varphi$. The right-hand curve shows the best achievable probability for each $\varepsilon$: zero for product states and for $\varepsilon=\pi/4$ (maximal entanglement), peaking at about $9.02\%$.`,
-      deps: ['qm-14.7', 'qm-14.2'],
+      deps: ['qm-14.7', 'qm-14.2', 'ladr-9.80'],
       refs: ['Nielsen–Chuang §2.6'],
       tags: ['nonlocality', 'Bell theorem', 'entanglement'],
       scope: String.raw`Pure two-qubit states $\cos\varepsilon|00\rangle+\sin\varepsilon|11\rangle$ (any pure two-qubit state is equivalent to this by local unitaries) with real projective measurements.`,
@@ -400,9 +400,9 @@ In any local hidden-variable model these force $P(a_1{=}1,b_1{=}1)=0$ as well. B
       statement: String.raw`Let $\rho_{ABC}$ be a pure state of three qubits. Write $\tau_{AB}=C(\rho_{AB})^2$ and $\tau_{AC}=C(\rho_{AC})^2$ for the squared **concurrences** (Wootters) of the two-qubit marginals, and $\tau_{A(BC)}=4\det\rho_A$ for the entanglement of $A$ with the pair $BC$. Then
 $$\tau_{AB}+\tau_{AC}\;\le\;\tau_{A(BC)}\;\le\;1 .$$
 Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B$, the less it can be with $C$. Equality holds on the $W$ class (for the $W$ state $\tfrac49+\tfrac49=\tfrac89=\tau_{A(BC)}$) and fails strictly for GHZ, where $0<1$.`,
-      idea: String.raw`The squared concurrence of a two-qubit state is a convex-roof quantity built from the singular values of $\sigma_y\otimes\sigma_y\rho^*\sigma_y\otimes\sigma_y$ (qm-14.5), and for pure $A(BC)$ it equals $4\det\rho_A$. Coffman, Kundu and Wootters showed by direct inequality that the pairwise terms cannot exceed it. The remainder $\tau_{A(BC)}-\tau_{AB}-\tau_{AC}$ is the **3-tangle**, a genuinely three-party entanglement; it vanishes on the $W$ class and equals 1 on GHZ. The Bell-type monogamy of correlations (qm-14.9) is the quantitative shadow of this statement.`,
+      idea: String.raw`For a two-qubit state define $\widetilde\rho=(\sigma_y\otimes\sigma_y)\rho^*(\sigma_y\otimes\sigma_y)$ and the positive operator $R=\sqrt{\sqrt\rho\,\widetilde\rho\,\sqrt\rho}$. If $\lambda_1\ge\lambda_2\ge\lambda_3\ge\lambda_4$ are the eigenvalues of $R$, Wootters' concurrence is $C(\rho)=\max(0,\lambda_1-\lambda_2-\lambda_3-\lambda_4)$ (qm-14.5). For a pure three-qubit state the pair marginals have rank at most two, so $\tau_{AB}=\operatorname{tr}(\rho_{AB}\widetilde\rho_{AB})-2\lambda^{AB}_1\lambda^{AB}_2\le\operatorname{tr}(\rho_{AB}\widetilde\rho_{AB})$, and similarly for $AC$. Coffman, Kundu and Wootters show that these two traces add to $4\det\rho_A$, proving the bound. The pure $A\!:\!BC$ partition has Schmidt rank at most two, giving its total tangle $4\det\rho_A$. The remainder $\tau_{A(BC)}-\tau_{AB}-\tau_{AC}$ is the **3-tangle**, a genuinely three-party entanglement; it vanishes on the $W$ class and equals 1 on GHZ.`,
       caption: String.raw`Each dot is a three-qubit pure state. Left: $\tau_{AB}+\tau_{AC}$ against $\tau_{A(BC)}$: every dot lies below the diagonal; *W class* states $a|100\rangle+b|010\rangle+c|001\rangle$ sit exactly on it. Right: the pair $(\tau_{AB},\tau_{AC})$ (their sum never exceeds $1$). The gold dot walks the path $\cos\vartheta\,|\mathrm{GHZ}\rangle+\sin\vartheta\,|W\rangle$ with the slider; Bell pairs between $A$ and $B$ would sit at $(1,0)$ but then $\tau_{AC}=0$.`,
-      deps: ['qm-14.5', 'qm-14.9'],
+      deps: ['qm-14.5'],
       refs: ['Nielsen–Chuang §12.5'],
       tags: ['monogamy', 'concurrence', 'tangle'],
       scope: String.raw`Three qubits in a pure state; the generalisation to $n$ qubits is the CKW inequality, proved for qubits by Osborne and Verstraete (2006).`,
@@ -413,7 +413,7 @@ Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B
         const T2 = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, equal: true, height: 330, weight: 1, xlabel: '$\\tau_{AB}$', ylabel: '$\\tau_{AC}$', title: 'pairwise entanglement of $A$' });
         const kind = v.select('states', [{ value: 'haar', label: 'Haar random' }, { value: 'w', label: 'W class' }, { value: 'both', label: 'both' }], 'both');
         const nS = v.slider('number of states', 20, 500, 250, { int: true });
-        const th = v.slider('GHZ → W path $\\vartheta$', 0, Math.PI / 2, 0.9, { step: 0.01 });
+        const th = v.slider('GHZ → W path $\\vartheta$ (degrees)', 0, 90, 51, { int: true });
         let seed = 1; v.button('Resample', () => { seed++; });
         const taus = (psi) => {
           const rho = outerV(psi), rA = ptrace(rho, 3, [0]), rB = ptrace(rho, 3, [0, 1]), rC = ptrace(rho, 3, [0, 2]);
@@ -435,7 +435,7 @@ Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B
         };
         const ptsPath = [...Array(61).keys()].map((k) => { const t = (k * Math.PI) / 120; return { t, ...taus(path(t)) }; });
         v.render(() => {
-          const pts = sample(), cu = taus(path(th.value));
+          const pts = sample(), cu = taus(path(th.value * Math.PI / 180));
           let worst = -1, sat = 0; for (const p of pts) { worst = Math.max(worst, p.ab + p.ac - p.a); if (Math.abs(p.ab + p.ac - p.a) < 1e-6) sat++; }
           stats = { n: pts.length, worst, sat, cu };
           T1.line(0, 0, 1, 1, { color: 'green', width: 1.6, dash: true }); T1.text('equality line', 0.02, 0.82, { size: 11, color: 'green', align: 'left', plate: true });
@@ -451,7 +451,7 @@ Entanglement cannot be freely shared: the more strongly $A$ is entangled with $B
           T2.dot(0, 0, { color: 'muted', r: 4, hollow: true, label: 'GHZ', labelPos: 'ne' });
         });
         v.legend([['accent', 'Haar random'], ['orange', 'W class'], ['gold', 'GHZ → W path']]);
-        v.readout(() => `${stats.n} states: smallest gap $\\tau_{A(BC)}-\\tau_{AB}-\\tau_{AC}=${v.sci(Math.max(-stats.worst, 1e-16), 2)}$ (never negative beyond rounding: the bound holds), ${stats.sat} on the equality line\ngold state: $\\tau_{AB}=${fix(v, stats.cu.ab)},\\ \\tau_{AC}=${fix(v, stats.cu.ac)},\\ \\tau_{A(BC)}=${fix(v, stats.cu.a)}$, 3-tangle $=${fix(v, stats.cu.a - stats.cu.ab - stats.cu.ac)}$`);
+        v.readout(() => `${stats.n} states: smallest gap $\\tau_{A(BC)}-\\tau_{AB}-\\tau_{AC}=${v.sci(-stats.worst, 2)}$ (sampled states), ${stats.sat} within $10^{-6}$ of equality\ngold state: $\\tau_{AB}=${fix(v, stats.cu.ab)},\\ \\tau_{AC}=${fix(v, stats.cu.ac)},\\ \\tau_{A(BC)}=${fix(v, stats.cu.a)}$, 3-tangle $=${fix(v, stats.cu.a - stats.cu.ab - stats.cu.ac)}$`);
       },
     },
   ],

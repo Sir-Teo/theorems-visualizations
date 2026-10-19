@@ -142,7 +142,7 @@ The **diameter** is $\max_{u,v} d(u,v)$ and the **average path length** is the m
 In a random graph where each pair is joined independently with probability $p$, degrees are binomial, close to Poisson with mean $\langle k\rangle$ and variance $\approx\langle k\rangle$: a narrow peak with a thin tail. Many real networks instead have much larger variance and a **long tail**: a few hubs with degree far above the mean.`,
       idea: String.raw`The distribution is a one-number-per-node summary that ignores who is tied to whom, yet it controls much of what follows (how quickly things spread, how fragile the network is to losing hubs, the friendship paradox). Plotting on log axes turns a power-law-like tail into a roughly straight line and a Poisson tail into a sharp drop.`,
       caption: String.raw`Choose a network and compare its degree histogram with the Poisson distribution of the same mean (orange). Switch on the log–log view to see the tail as the complementary cumulative distribution.`,
-      deps: ['soc-2.1'],
+      deps: ['soc-2.1', 'prob-3.6.1'],
       refs: ['Newman ch. 10'],
       tags: ['degree', 'distribution'],
       viz(v) {
@@ -189,7 +189,7 @@ with equality only if every degree is the same. So "your friends have more frien
       scope: String.raw`The identity is exact for any finite graph with at least one edge. What the paradox says about the typical person (as opposed to the average over edge ends) depends on the degree distribution: the share of people with fewer friends than their friends' average is usually well above one half in skewed networks, but is not guaranteed to exceed it.`,
       idea: String.raw`A person with $k$ friends appears as someone's friend exactly $k$ times, so sampling a friend means sampling people with probability proportional to their degree. Weighting by degree raises the mean from $\sum_k k p_k$ to $\sum_k k\cdot kp_k/\langle k\rangle$, and the excess is the variance divided by the mean. Popular people are over-represented among everyone's friends.`,
       caption: String.raw`Each dot is a person: their own degree against the mean degree of their friends. Dots above the diagonal (green) are people whose friends are more popular than they are. Try the regular ring, where every degree is equal and the paradox vanishes.`,
-      deps: ['soc-2.3'],
+      deps: ['soc-2.3', 'prob-1.6.9a'],
       refs: ['Newman ch. 12'],
       tags: ['paradox', 'degree'],
       credit: 'Feld, 1991 ("Why your friends have more friends than you do")',

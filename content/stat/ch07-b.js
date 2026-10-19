@@ -7,6 +7,10 @@ import {
   TC, PC, orderOf, procs, falseFirst, genZ, pZ, runScreens, summary, quant,
 } from './ch07.shared.js';
 
+// Primary source review: BH1995 §§2–4, AppendixA and p295 original values;
+// Hemerik & Goeman2018 §§2–3 establish permutation validity. Historical Pitman original remains inaccessible.
+export const BH1995_P_VALUES = Object.freeze([0.0001, 0.0004, 0.0019, 0.0095, 0.0201, 0.0278, 0.0298, 0.0344, 0.0459, 0.3240, 0.4262, 0.5719, 0.6528, 0.7590, 1.0000]);
+
 export default {
   collection: 'stat',
   chapter: 7,
@@ -320,14 +324,16 @@ with equality when the null p-values are exactly uniform. The bound holds whatev
       name: 'Permutation test',
       statement: String.raw`Two groups of sizes $n_1$ and $n_2$ are compared by a statistic $T$ such as the difference of means, and the null hypothesis says the group labels carry no information: under $H_0$ the $N=n_1+n_2$ observations are exchangeable between the groups. The **permutation test** computes $T$ for every one of the $\binom{N}{n_1}$ ways of reassigning the labels and reports
 $$p=\frac{\#\{\text{relabellings with }|T^*|\ge|T_{\rm obs}|\}}{\binom{N}{n_1}}.$$
-Because the observed labelling is one of the equally likely relabellings under $H_0$, this p-value satisfies $P_{H_0}(p\le\alpha)\le\alpha$ **exactly**, for every sample size, with no assumption about the shape of the data distribution, only exchangeability. When the full enumeration is too large, $B$ random relabellings give the Monte Carlo p-value $(1+\#\{|T^*|\ge|T_{\rm obs}|\})/(B+1)$, which is still exactly valid.`,
-      idea: String.raw`The null model is the experiment itself: if the treatment did nothing, each unit would have produced the same value under either label, so the label assignment is the only randomness (stat-7.1 supplies the tail-area definition of the p-value). The reference distribution is built from the data rather than taken from a table, so heavy tails, skewness and outliers cannot invalidate it, although they may cost power. For normal data the permutation distribution of the $t$ statistic is close to the $t$ distribution, which is why the classical test works.`,
-      caption: String.raw`Two groups of 8 (top two rows: A in blue, B in orange); drag the orange handle to slide group B and change the observed difference. Each shuffle reassigns the 16 values at random (the lower two rows show the latest one) and adds its difference of means to the gold histogram; the blue outline is the exact distribution over all 12,870 relabellings. The red tails beyond $\pm|D_{\rm obs}|$ give the p-value. Pick **skewed** or **outlier** data: the permutation p-value stays exact while Welch's $t$ p-value drifts away from it.`,
+Because the observed labelling is one of the equally likely relabellings under $H_0$, this p-value satisfies $P_{H_0}(p\le\alpha)\le\alpha$ **exactly**, for every sample size, with no assumption about the shape of the data distribution, only exchangeability. When the full enumeration is too large, $B$ independent uniform relabellings sampled with replacement from all assignments give the Monte Carlo p-value $(1+\#\{|T^*|\ge|T_{\rm obs}|\})/(B+1)$, which is also finite-sample valid: its null rejection probability is at most the chosen level, with possible conservatism from discreteness or ties.`,
+      idea: String.raw`The null model is the experiment itself: if the treatment did nothing, each unit would have produced the same value under either label, so the label assignment is the only randomness (stat-7.1 supplies the tail-area definition of the p-value). The reference distribution is built from the data rather than taken from a table, so heavy tails, skewness and outliers cannot invalidate it, although they may cost power. Exchangeability is stronger than equality of means: groups with the same mean and different distributions do not satisfy this null. Hemerik and Goeman (2018, §§2–3) prove the complete-enumeration and properly sampled random-permutation guarantees.`,
+      caption: String.raw`Two groups of 8 (top two rows: A in blue, B in orange); drag the orange handle to slide group B and change the observed difference. Each shuffle reassigns the 16 values at random (the lower two rows show the latest one) and adds its difference of means to the gold histogram; the blue outline is the exact distribution over all 12,870 relabellings. The red tails beyond $\pm|D_{\rm obs}|$ give the p-value. Pick **skewed** or **outlier** data: the permutation p-value stays exact while Welch’s approximate $t$ reference p-value can differ; a difference for one dataset does not by itself measure either test’s long-run error rate.`,
       deps: ['stat-7.1'],
       refs: ['Wasserman §10.5'],
       tags: ['permutation test', 'exact test', 'nonparametric'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Permutation_test' },
       credit: 'R. A. Fisher, 1930s; E. J. G. Pitman, 1937',
+      // Mathematical guarantees checked in complete Hemerik & Goeman2018§§2–3.
+      // Historical Pitman1937 original remains inaccessible: JSTOR2984124 PDF502, OUP PDF403.
       verify: true,
       viz(v) {
         const popS = v.select('data', [{ value: 'norm', label: 'normal' }, { value: 'skew', label: 'skewed (lognormal)' }, { value: 'out', label: 'one outlier in A' }], 'skew', { onChange: () => resetPos() });
@@ -394,7 +400,7 @@ Because the observed labelling is one of the equally likely relabellings under $
         v.readout(() => {
           if (!st) return '';
           const { D, pEx, cntEx, nTot, nB, cB, pMC, pT } = st;
-          return String.raw`observed $\bar A-\bar B=${v.fix(D, 3)}$ · **exact permutation p** $=${commas(cntEx)}/${commas(nTot)}=${v.fix(pEx, 4)}$` + (nB ? String.raw` · ${commas(nB)} random shuffles: ${commas(cB)} as extreme, $p=(1+${cB})/(1+${commas(nB)})=${v.fix(pMC, 4)}$ (error $\pm$ ${v.fix(2 * mcse(pEx, nB), 4)})` : ' · no random shuffles yet') + String.raw` · Welch $t$-test $p=${v.fix(pT, 4)}$` + (Math.abs(pT - pEx) > 0.02 ? ' (assumes normality: differs from the exact value)' : '');
+          return String.raw`observed $\bar A-\bar B=${v.fix(D, 3)}$ · **exact permutation p** $=${commas(cntEx)}/${commas(nTot)}=${v.fix(pEx, 4)}$` + (nB ? String.raw` · ${commas(nB)} random shuffles: ${commas(cB)} as extreme, $p=(1+${cB})/(1+${commas(nB)})=${v.fix(pMC, 4)}$ (error $\pm$ ${v.fix(2 * mcse(pEx, nB), 4)})` : ' · no random shuffles yet') + String.raw` · Welch $t$-test $p=${v.fix(pT, 4)}$` + (Math.abs(pT - pEx) > 0.02 ? ' (approximate reference differs from the permutation reference)' : '');
         });
       },
     },
@@ -406,16 +412,15 @@ Because the observed labelling is one of the equally likely relabellings under $
       paper: { authors: 'Yoav Benjamini and Yosef Hochberg', year: 1995, title: 'Controlling the False Discovery Rate: A Practical and Powerful Approach to Multiple Testing', venue: 'Journal of the Royal Statistical Society B 57 (1): 289–300', doi: '10.1111/j.2517-6161.1995.tb02031.x' },
       introduces: ['stat-7.10', 'stat-7.11'],
       credit: 'Yoav Benjamini & Yosef Hochberg, 1995',
-      verify: true,
-      statement: String.raw`Benjamini and Hochberg argued that when many hypotheses are tested, controlling the chance of any false rejection (the family-wise error rate, stat-7.7) is often too demanding, costing power that the scientist would rather spend on discoveries. They proposed to control instead the expected proportion of false discoveries among the rejected hypotheses, the **false discovery rate** $\mathrm{FDR}=E[V/\max(R,1)]$ (stat-7.10), and a simple step-up procedure that does it: sort the $m$ p-values, find the largest $k$ with $p_{(k)}\le kq/m$, and reject the $k$ smallest. For independent test statistics the FDR of this procedure is $\frac{m_0}{m}q\le q$ (stat-7.11); when every null is true it coincides with FWER control; and with many false nulls it rejects more than Bonferroni-type procedures. They illustrated the idea on fifteen p-values from a study of treatments after myocardial infarction.`,
+      statement: String.raw`Benjamini and Hochberg argued that when many hypotheses are tested, controlling the chance of any false rejection (the family-wise error rate, stat-7.7) is often too demanding, costing power that the scientist would rather spend on discoveries. They proposed to control instead the expected proportion of false discoveries among the rejected hypotheses, the **false discovery rate** $\mathrm{FDR}=E[V/\max(R,1)]$ (stat-7.10), and a simple step-up procedure that does it: sort the $m$ p-values, find the largest $k$ with $p_{(k)}\le kq/m$, and reject the $k$ smallest. For independent tests with valid null p-values its FDR is at most $\frac{m_0}{m}q\le q$; equality holds when the independent true-null p-values are continuous Uniform$(0,1)$ (stat-7.11); when every null is true it coincides with FWER control; and with many false nulls it rejects more than Bonferroni-type procedures. They illustrated the idea on fifteen p-values from a study of treatments after myocardial infarction.`,
       idea: String.raw`Before 1995 the multiple-comparison literature (Bonferroni, stat-7.8; Holm, stat-7.9) aimed at FWER control, which becomes very conservative in screens of hundreds or thousands of hypotheses, and practitioners often simply did not correct. The paper changed the error criterion to the one that matches the use of a list of discoveries (the share that will turn out to be false), showed it can be controlled by a procedure no harder than sorting, and reported that the gain in power over FWER methods grows with the number of true effects. The idea became standard in genomics and imaging, where $m$ is in the thousands.`,
-      caption: String.raw`The fifteen p-values of the paper's example, sorted and plotted on a log scale against the BH line $iq/m$ (green), Holm's staircase (orange) and Bonferroni's constant $q/m$ (dashed); drag $q$. At $q=0.05$ BH rejects four hypotheses, Holm and Bonferroni three. (The values are as reproduced in a 2015 arXiv paper on the BH procedure; the original article is a scan, so they are flagged for checking against it.) Right: a simulation of fifteen hypotheses with $m_1$ real effects: FWER and FDR of the four procedures over 3,000 screens at level $q$, to see what the extra rejection costs.`,
+      caption: String.raw`The fifteen p-values of the paper's example, sorted and plotted on a log scale against the BH line $iq/m$ (green), Holm's staircase (orange) and Bonferroni's constant $q/m$ (dashed); drag $q$. At $q=0.05$ BH rejects four hypotheses, Holm and Bonferroni three. The values were checked directly against the original article, §3.2 p. 295. The simulation is computed for this page, rather than reproducing the paper’s simulation design. Right: a simulation of fifteen hypotheses with $m_1$ real effects: FWER and FDR of the four procedures over 3,000 screens at level $q$, to see what the extra rejection costs.`,
       deps: ['stat-7.7', 'stat-7.8', 'stat-7.9'],
       refs: [],
       tags: ['false discovery rate', 'history', 'multiple testing'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/False_discovery_rate', doi: 'https://doi.org/10.1111/j.2517-6161.1995.tb02031.x' },
       viz(v) {
-        const P = [0.0001, 0.0004, 0.0019, 0.0095, 0.0201, 0.0278, 0.0298, 0.0344, 0.0459, 0.3240, 0.4262, 0.5719, 0.6528, 0.7590, 1.0000];
+        const P = BH1995_P_VALUES;
         const m = 15, REP = 3000;
         const qS = v.slider('level $q$', 0.01, 0.3, 0.05, { step: 0.005 });
         const m1S = v.slider('real effects in the simulation $m_1$', 0, 15, 4, { int: true });

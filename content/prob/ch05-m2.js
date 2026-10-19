@@ -80,17 +80,17 @@ export default {
       num: '5.4.10',
       kind: 'Theorem',
       name: 'Chung–Fuchs integral criterion',
-      statement: String.raw`Let $\varphi$ be the characteristic function of the step distribution of a random walk $S_n$ in $\R^d$ and $\delta>0$. If
-$$\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-\varphi(y)}\,dy=\infty,$$
-then $S_n$ is recurrent. (With the regularised integral of 5.4.11 the criterion is an equivalence.)`,
-      idea: String.raw`The integrand $\operatorname{Re}\frac1{1-r\varphi}$ is nonnegative and tends to $\operatorname{Re}\frac1{1-\varphi}$ as $r\uparrow1$ wherever $\varphi\ne1$. Fatou's lemma gives $\int\operatorname{Re}\frac1{1-\varphi}\le\liminf_{r\uparrow1}\int\operatorname{Re}\frac1{1-r\varphi}$, so divergence of the first integral forces the supremum in 5.4.11 to be infinite, and 5.4.11 gives recurrence.`,
+      statement: String.raw`Let $\varphi$ be the characteristic function of the increments of a random walk $S_n$ in $\R^d$, and let $\delta>0$. Then $S_n$ is recurrent if and only if
+$$\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-\varphi(y)}\,dy=\infty.$$`,
+      idea: String.raw`The nonnegative regularized integrands $\operatorname{Re}(1-r\varphi)^{-1}$ converge pointwise wherever $\varphi\ne1$. Fatou's lemma and Theorem 5.4.11 prove that divergence of the displayed integral implies recurrence. The converse is a deeper result of Ornstein and Stone (independently, 1969); Durrett states this full equivalence but proves only the regularized criterion 5.4.11.`,
       caption: String.raw`Pick a lattice walk. Top left: the integrand $\operatorname{Re}\frac1{1-\varphi(y)}$ along a coordinate axis, log–log. Top right: the truncated integral $I(\eta)=\int_{\eta<|y|<1}\operatorname{Re}\frac1{1-\varphi}$ against $\eta$: it blows up as $\eta\downarrow0$ exactly for the symmetric walks with $d\le2$. Bottom: the simulated mean number of returns, which grows (or stalls) accordingly.`,
       deps: ['prob-5.4.7', 'prob-3.3.11'],
       see: ['prob-5.4.11'],
       tags: ['random walk', 'characteristic functions'],
-      credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
-      scope: String.raw`The statement given is the Fatou half; whether finiteness of the plain integral characterises transience in full generality is not claimed here. The truncated integrals are computed over a ball of radius $1$ rather than the cube, with polar quadrature; the integrand is evaluated for the lattice walks listed.`,
+      credit: 'Chung–Fuchs, 1951 (regularized criterion); Ornstein and Stone, 1969 (unregularized equivalence)',
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.4.10, pp. 293–294; attribution to Ornstein and Stone (1969)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      scope: String.raw`The picture integrates over the unit ball with polar quadrature for the listed lattice walks. On this ball their only singularity is at $0$, and inner and outer cubes give the same divergence test. Finite truncations illustrate the criterion; they do not establish divergence numerically.`,
       viz(v) {
         const wS = v.select('walk', LATTICE_OPTS, 'srw2');
         let seed = 1; v.button('Resample', () => { seed++; });
@@ -114,7 +114,7 @@ then $S_n$ is recurrent. (With the regularised integral of 5.4.11 the criterion 
           const at = (e) => sh.tail[sh.rad.findIndex((x) => x >= e)];
           st = { a: at(1e-2), b: at(1e-4), ret: cache.ev[3000] };
         });
-        v.readout(() => st && `$I(10^{-2})=${fr(st.a, 1)}$, $I(10^{-4})=${fr(st.b, 1)}$ (ratio ${fr(st.b / st.a, 2)}). ${st.b / st.a > 1.4 ? 'The integral keeps growing as $\\eta\\downarrow0$: it diverges, so the walk is recurrent.' : 'The integral has settled: finite, and the walk is transient.'}\nSimulated mean returns by $n=3000$: ${fr(st.ret, 2)}.`);
+        v.readout(() => st && `$I(10^{-2})=${fr(st.a, 1)}$, $I(10^{-4})=${fr(st.b, 1)}$ (ratio ${fr(st.b / st.a, 2)}). ${['srw1', 'srw2'].includes(wS.value) ? 'This symmetric walk is recurrent; the integral diverges by the criterion.' : 'This walk is transient; its integral is finite. Finite cutoff values alone do not prove convergence.'}\nSimulated mean returns by $n=3000$: ${fr(st.ret, 2)}.`);
       },
     },
     // ======================================================================== 5.4.11
@@ -130,15 +130,16 @@ $$\sup_{0<r<1}\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-r\varphi(y)}\,d
       see: ['prob-5.4.10'],
       tags: ['random walk', 'characteristic functions'],
       credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
-      scope: String.raw`Integrals are over the unit ball (equivalent to a cube of any fixed size, since the integrand is positive and bounded away from the origin), evaluated by polar quadrature for the lattice walks listed.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.4.11, proof and Lemmas 5.4.12–5.4.13, pp. 294–296'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      scope: String.raw`The picture integrates over the unit ball with polar quadrature for the listed lattice walks. This ball has no singularities away from $0$ for these examples, and comparison with inner and outer cubes gives the same divergence test.`,
       viz(v) {
         const wS = v.select('walk', LATTICE_OPTS, 'srw2');
         const sS = v.slider('$s=1-r$', 1e-5, 0.5, 0.01, { log: true, sig: 2 });
         const SV = Array.from({ length: 22 }, (_, i) => 10 ** (-5 + (i * Math.log10(0.5 / 1e-5)) / 21));
         const A = v.stage({ x: [1e-5, 0.5], y: [1, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$s=1-r$', ylabel: '$J(r)$', title: '$\\int_{|y|<1}\\operatorname{Re}\\,1/(1-r\\varphi)$' });
         const B = v.stage({ x: [1e-3, 1], y: [0.1, 1e7], xlog: true, ylog: true, axes: 'box', gutter: true, height: 320, xlabel: '$|y|$', title: 'integrand along an axis' });
-        let curves = null;
+        let curves = null, stats = null;
         v.render(() => {
           if (!curves) { curves = {}; for (const k of LKEYS) curves[k] = SV.map((s) => [s, shellFor(k, 1 - s).total]); }
           const k = wS.value, L = LATTICE[k], s = sS.value;
@@ -153,10 +154,10 @@ $$\sup_{0<r<1}\int_{(-\delta,\delta)^d}\operatorname{Re}\frac1{1-r\varphi(y)}\,d
           for (let i = 0; i <= 120; i++) { const y = 10 ** (-3 + (3 * i) / 120); p1.push([y, reInv(L.w, 1 - s, y)]); p0.push([y, reInv(L.w, 1, y)]); }
           B.path(p0, { color: 'faint', width: 1.4, dash: [5, 4] });
           B.path(p1, { color: LCOL[k], width: 2 });
-          v.J = { Js, J10: shellFor(k, 1 - Math.min(0.5, 10 * s)).total };
+          stats = { Js, J10: shellFor(k, 1 - Math.min(0.5, 10 * s)).total };
         });
         v.legend(LKEYS.map((k) => [LCOL[k], LATTICE[k].label]));
-        v.readout(() => v.J && `$J(1-s)=${fr(v.J.Js, 2)}$ at $s=${sS.value.toPrecision(2)}$, and $${fr(v.J.J10, 2)}$ at $10s$. ${v.J.Js / v.J.J10 > 1.5 ? 'It rises a lot every time $s$ shrinks tenfold: the supremum is infinite (recurrent).' : 'It barely changes: it stays bounded as $r\\uparrow1$ (transient).'}`);
+        v.readout(() => stats && `$J(1-s)=${fr(stats.Js, 2)}$ at $s=${sS.value.toPrecision(2)}$, and $${fr(stats.J10, 2)}$ at $10s$. ${['srw1', 'srw2'].includes(wS.value) ? 'This symmetric walk is recurrent: the supremum is infinite.' : 'This walk is transient: the supremum is finite. Growth between two finite cutoffs does not imply divergence.'}`);
       },
     },
     // ======================================================================== 5.4.12

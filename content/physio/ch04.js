@@ -1,3 +1,4 @@
+import { poiseuille } from './vessel-flow.shared.js';
 // Human Physiology — Chapter 4: Circulation: pressure, flow and resistance (part a: 4.1–4.5)
 import { clamp, PA_PER_MMHG, RHO_BLOOD, MU_BLOOD } from './ch04.shared.js';
 
@@ -22,7 +23,7 @@ For the whole systemic circulation $\Delta P\approx \text{MAP}-\text{RAP}$ and $
       idea: String.raw`It is the circuit law with pressure in the role of voltage and volume flow in the role of current: the pressure drops along a chain of vessels add up to the total drop, and the same flow passes through each member of a chain (conservation of volume for incompressible blood). The empirical content is that, for a given bed, $\Delta P/Q$ is roughly constant over the working range; where it is not (collapsing veins, vessel distension, non-Newtonian blood) the "resistance" is just a name for the ratio at that operating point. Poiseuille's law (physio-4.2) says what the resistance of a single tube is made of.`,
       caption: String.raw`A chain of four resistances stands for the systemic circulation (large arteries, arterioles, capillaries, veins; the split is a textbook-style illustration). The pressure profile is drawn node by node, each step of height $Q R_i$. Drag the **arteriolar resistance** up: with the heart as a **pressure source** the flow falls and nearly all the drop moves into the arterioles; switch the source to a **flow source** (a pump that delivers a fixed output) and the same change instead raises the arterial pressure, which is how hypertension looks in the model. The readout checks that the four drops add to the total.`,
       scope: String.raw`Mean (time-averaged) pressures and flows only; pulsatility and wave effects are left to the Windkessel and wave items below. The regional split of resistance is illustrative (arterioles carry the largest share in standard textbooks), not a measured dataset.`,
-      deps: [],
+      deps: ['circ-1.4'],
       see: ['circ-2.3', 'circ-2.4', 'physio-4.2'],
       refs: ['Guyton–Hall', 'Keener–Sneyd ch. 11'],
       tags: ['resistance', 'haemodynamics'],
@@ -74,7 +75,7 @@ For the whole systemic circulation $\Delta P\approx \text{MAP}-\text{RAP}$ and $
 $$Q=\frac{\pi r^4\,\Delta P}{8\mu L},$$
 and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is half the centre-line velocity, and the shear stress at the wall is $\tau_w=\Delta P\,r/(2L)=4\mu Q/(\pi r^3)$.`,
       idea: String.raw`Balance forces on a cylinder of fluid of radius $\rho$: the pressure force $\pi\rho^2\Delta P$ is carried by viscous shear on its surface, $-\mu u'(\rho)\,2\pi\rho L$. That gives $u'=-\Delta P\rho/(2\mu L)$, and the no-slip condition $u(r)=0$ fixes the parabola. Integrating $u$ over the cross-section, $\int_0^r u\,2\pi\rho\,d\rho$, gives the fourth power: one factor $r^2$ is the area and the other is the square of the distance over which the profile stretches. This is the Hagen–Poiseuille law of the fluid-dynamics collection (fluid-6.8), used here with blood parameters.`,
-      caption: String.raw`Drag the sliders for radius, length, viscosity and driving pressure. The **left** panel shows the tube with the parabolic profile at three stations; the **right** panel plots $u(\rho)$ and marks the mean velocity (always half the peak). The readout computes the flow twice, from the closed formula and by numerically integrating the profile over the cross-section, and they agree. Whole-blood viscosity is about 3.5 mPa·s (plasma alone is about 1.2).`,
+      caption: String.raw`Drag the sliders for radius, length, viscosity and driving pressure. The **left** panel shows the tube with the parabolic profile at three stations; the **right** panel plots $u(\rho)$ and marks the mean velocity (always half the peak). The readout computes the flow twice, from the closed formula and by numerically integrating the profile over the cross-section, and they agree. The 3.5 mPa·s blood and 1.2 mPa·s plasma values are illustrative fluid references whose exact physiological conditions still need a source; viscosity varies with temperature, haematocrit and shear. Extreme settings can leave the long, laminar-flow regime.`,
       scope: String.raw`Holds for steady, fully developed laminar flow in a long rigid straight tube of constant circular cross-section with a Newtonian fluid and no slip. Real arteries are elastic and pulsatile (physio-4.15), and blood is non-Newtonian in small vessels (physio-4.11).`,
       deps: ['physio-4.1', 'fluid-6.8'],
       see: ['physio-4.3'],
@@ -93,10 +94,10 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
         let o = null;
         v.render(() => {
           const r = sr.value * 1e-3, L = sL.value * 1e-2, mu = sm.value * 1e-3, dP = sP.value * PA_PER_MMHG;
-          const u = (rho) => (dP / (4 * mu * L)) * (r * r - rho * rho);
-          const Qf = (Math.PI * r ** 4 * dP) / (8 * mu * L);
+          const model = poiseuille(r, L, mu, dP), u = model.velocity;
+          const Qf = model.flow;
           const Qn = v.M.integrate((rho) => u(rho) * 2 * Math.PI * rho, 0, r, 200);
-          o = { Qf, Qn, umax: u(0), tau: (dP * r) / (2 * L), Rr: dP / Qf };
+          o = { Qf, Qn, umax: u(0), tau: (dP * r) / (2 * L), Rr: dP / Qf, reynolds: model.reynolds, aspect: model.aspect };
           const ru = sr.value;
           s.rect(0, -ru - 0.12, 10, ru + 0.12, { fill: 'red', fillAlpha: 0.08, color: 'red', width: 3, radius: 0 });
           s.rect(0, -ru, 10, ru, { fill: 'panel', fillAlpha: 1, stroke: false });
@@ -116,7 +117,7 @@ and the resistance is $R=\Delta P/Q = 8\mu L/(\pi r^4)$. The mean velocity is ha
           p.text('mean = ½ peak', -3.0, o.umax * 50, { size: 11, color: 'orange', align: 'left', baseline: 'bottom', dy: -3 });
           p.dot(0, o.umax * 100, { r: 5, color: 'accent' });
         });
-        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_{\\max}=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L`);
+        v.readout(() => `$Q=\\pi r^4\\Delta P/(8\\mu L)=${v.fix(o.Qf * 1e6, 3)}$ mL/s;  numerical $\\int u\\,dA=${v.fix(o.Qn * 1e6, 3)}$ mL/s\n$u_{\\max}=${v.fix(o.umax * 100, 1)}$ cm/s,  $\\bar u=${v.fix(o.umax * 50, 1)}$ cm/s,  wall shear $\\tau_w=${v.fix(o.tau, 2)}$ Pa,  $R=${v.fix(sP.value / (o.Qf * 6e4), 2)}$ mmHg·min/L · $\\mathrm{Re}=${v.fix(o.reynolds, 0)}$, $L/(2r)=${v.fix(o.aspect, 1)}$${o.reynolds>2000||o.aspect<10?' — these controls exceed the long, laminar-tube regime; values illustrate the formula':''}`);
       },
     },
     // ------------------------------------------------------------------ 4.3

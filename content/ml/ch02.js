@@ -35,11 +35,10 @@ $$L_{\mathcal D,f}(h)=\mathbb P_{x\sim\mathcal D}\big[h(x)\neq f(x)\big]=\mathca
 The learner can see only the sample, never $L_{\mathcal D,f}$.`,
       idea: String.raw`This is the common language of everything that follows: the quality of a rule is measured by the probability mass on which it is wrong, so it depends on where the instances tend to fall (the distribution $\mathcal D$) as much as on the shape of the rule. Two rules that differ on a region of tiny mass are almost the same rule. The sample $S$ is the only window on $\mathcal D$ and $f$, which is why all later results (ml-2.3, ml-4.x) are statements about how well the average over a sample, the empirical risk, tracks this probability.`,
       caption: String.raw`The papayas live in the colour–softness square; the orange tint is the density of $\mathcal D$ (drag the orange handle for its centre, the slider for its spread; at the maximum it is uniform). The purple dashed rectangle is the hidden rule $f$ (tasty inside). Drag the two blue corners to sketch your own rule $h$: the **red** region, where $h$ and $f$ disagree, has area (weighted by $\mathcal D$) equal to the true error. Move $\mathcal D$ and the same rule becomes better or worse. On the right: the empirical error of your rule on 300 other samples of $m$ papayas scatters around the true error (green), more tightly as $m$ grows.`,
-      deps: [],
-      refs: ['UML §2.1'],
+      deps: ["prob-1.1.1a","alg-1.5a"],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.1, pp.33–35"],
       tags: ['learning framework', 'true error'],
       scope: String.raw`Illustrative setting: $\mathcal D$ is a product of truncated normals on the unit square and $f$ the indicator of a rectangle; the framework itself allows any $\mathcal D$ and $f$.`,
-      verify: true,
       viz(v) {
         const s = square(v, { height: 400, title: 'papayas: colour × softness' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 400, xlabel: 'empirical error $L_S(h)$', ylabel: 'number of samples', title: 'the sample sees only an estimate', yticks: [] });
@@ -86,11 +85,10 @@ $$L_S(h)=\frac{|\{i\in[m]:h(x_i)\neq y_i\}|}{m}.$$
 The **ERM** learning paradigm outputs a predictor with the smallest empirical risk. Given a class $\mathcal H$ of candidate predictors, $\mathrm{ERM}_{\mathcal H}(S)\in\operatorname*{argmin}_{h\in\mathcal H}L_S(h)$; a minimizer need not be unique, and any one of them may be returned.`,
       idea: String.raw`ERM replaces the unreachable true error $L_{\mathcal D,f}$ (ml-2.1a) by the quantity the learner can compute, the average over the sample, and hopes that a rule that fits the sample fits the world. Whether that hope is justified depends entirely on which predictors the minimization ranges over (ml-2.1c, ml-2.1d). Computationally ERM is a search problem: for axis-aligned rectangles it can be solved exactly by trying every pair of vertical sides and sweeping a maximum-gain interval along the other axis, which is what the button below runs.`,
       caption: String.raw`Drag the blue corners to sketch a rectangle: the ringed points are its mistakes and the counter shows the training error live. Press **ERM** and the rectangle snaps to one with the fewest mistakes (found exactly, over all rectangles). Add label noise and no rectangle is perfect. On the right, 1500 random rectangles are scored on the same sample: ERM sits at the far left tail of the histogram.`,
-      deps: ['ml-2.1a'],
+      deps: ["ml-2.1a","opt-1.1"],
       see: ['deep-1.7'],
-      refs: ['UML §2.2'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.2, p.35"],
       tags: ['empirical risk', 'ERM'],
-      verify: true,
       viz(v) {
         const s = square(v, { height: 380, title: 'sketch a rectangle' });
         const sH = v.stage({ x: [0, 30], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'training mistakes of a rectangle', ylabel: 'rectangles', yticks: [], title: '1500 random rectangles on this sample' });
@@ -133,12 +131,11 @@ $$h_S(x)=\begin{cases}y_i&\text{if }x=x_i\text{ for some }i\in[m],\\ 0&\text{oth
 has $L_S(h_S)=0$, so it is an ERM output. But if $\mathcal D$ is the uniform distribution on the unit square and $f$ labels $1$ exactly the points of a region of $\mathcal D$-mass $\tfrac12$, then $h_S$ errs on every positive point except the finitely many remembered ones, so $L_{\mathcal D,f}(h_S)=\tfrac12$ for every sample size $m$, however large. A predictor that fits the training data perfectly yet does no better than a coin is said to **overfit**.`,
       idea: String.raw`Zero training error says only that $h_S$ agrees with $f$ on $m$ points, a set of $\mathcal D$-measure $0$; it says nothing about the rest of the square, because nothing links the predictor's values at different points. The learner needs a reason to extend the labels of seen points to nearby unseen ones, and such a reason can only come from restricting the predictors it may output (ml-2.1d). The picture contrasts the memorizer, whose true error is the flat line at $\mathcal D(f=1)$, with ERM over a small class of rectangles, whose true error falls as data arrive.`,
       caption: String.raw`The purple rectangle is the hidden rule (drag its corners to change the mass of the positive region). The memorizer is "tasty" only at the green dots; the red area, where it is wrong, is the whole tasty region. **Click** the square to add papayas yourself, or use the slider: training error stays $0$ and the true error does not move. On the right, true error against sample size (log axis, 12 seeded runs averaged): the memorizer is flat, the tightest rectangle falls like $1/m$.`,
-      deps: ['ml-2.1b'],
+      deps: ["ml-2.1b","rca-2.20"],
       see: ['stat-14.9'],
-      refs: ['UML §2.2.1'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.2.1, p.36"],
       tags: ['overfitting', 'memorization'],
       scope: String.raw`Needs a continuous domain (or at least one where most instances are never seen again); on a small finite domain a memorizer eventually sees everything.`,
-      verify: true,
       viz(v) {
         const s = square(v, { height: 380, title: 'the memorizer $h_S$' });
         const sC = v.stage({ x: [1, 400], xlog: true, y: [0, 0.8], axes: 'box', gutter: true, height: 380, xlabel: 'sample size $m$', ylabel: 'true error', title: 'true error against sample size' });
@@ -193,11 +190,10 @@ has $L_S(h_S)=0$, so it is an ERM output. But if $\mathcal D$ is the uniform dis
 $$\mathrm{ERM}_{\mathcal H}(S)\in\operatorname*{argmin}_{h\in\mathcal H}L_S(h)$$
 restricts the empirical risk minimization to it. The choice of $\mathcal H$ is a commitment based on prior knowledge about the problem, called an **inductive bias**. A class that is too large (the class of all functions allows the memorizer of ml-2.1c) invites overfitting; a class that is too small may not contain any good predictor.`,
       idea: String.raw`Restricting the search space is what lets the sample speak about unseen points: two rectangles that agree on the sample are forced to agree on much of the square, whereas two arbitrary functions are not. Axis-aligned rectangles, discs and "finite sets" are three classes of very different richness. The finite sets are exactly the memorizers, and their true error stays at $\mathcal D(f=1)$; the others generalize as long as the labelling rule is reasonably described by them, and a class that does not contain the rule keeps an error that no amount of data removes (compare ml-2.1).`,
-      caption: String.raw`Pick a class $\mathcal H$ and a hidden rule, and the app runs exact ERM over $\mathcal H$ on a seeded sample (the blue outline; ringed points are its mistakes). On the right the true error of $\mathrm{ERM}_{\mathcal H}$ is plotted against $m$ (10 runs averaged) for all three classes, the chosen one in bold. Finite sets never improve; rectangles learn a rectangle quickly, and discs against a rectangle (or the other way round) stall at a positive error.`,
+      caption: String.raw`Pick a class $\mathcal H$ and a hidden rule, and the app runs ERM on a seeded sample (the disc class restricts centers to a17×17grid, while optimizing the radius over all sample breakpoints) (the blue outline; ringed points are its mistakes). On the right the true error of $\mathrm{ERM}_{\mathcal H}$ is plotted against $m$ (10 runs averaged) for all three classes, the chosen one in bold. Finite sets never improve; rectangles learn a rectangle quickly, and discs against a rectangle (or the other way round) stall at a positive error.`,
       deps: ['ml-2.1b'],
-      refs: ['UML §2.3'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.3, pp.36–37"],
       tags: ['hypothesis class', 'inductive bias'],
-      verify: true,
       viz(v) {
         const s = square(v, { height: 380, title: 'ERM over the chosen class' });
         const sC = v.stage({ x: [4, 64], xlog: true, y: [0, 0.5], axes: 'box', gutter: true, height: 380, xlabel: 'sample size $m$', ylabel: 'true error', title: 'true error of $\\mathrm{ERM}_{\\mathcal H}$' });
@@ -280,13 +276,12 @@ restricts the empirical risk minimization to it. The choice of $\mathcal H$ is a
       kind: 'Definition',
       name: 'The i.i.d. assumption; accuracy ε and confidence δ',
       statement: String.raw`The training instances are assumed to be **independent and identically distributed**: $S\sim\mathcal D^m$ means that each $x_i$ is drawn from $\mathcal D$ independently of the others, and the test instance comes from the same $\mathcal D$. Because $S$ is random, so is the output $h_S$ and its true error $L_{\mathcal D,f}(h_S)$, and one cannot demand that this error be small for every sample. One asks for **accuracy** $\varepsilon\in(0,1)$ and **confidence** $\delta\in(0,1)$: the error $L_{\mathcal D,f}(h_S)\le\varepsilon$ should hold with probability at least $1-\delta$ over the draw of $S$. A sample for which it fails is called **non-representative** ("misleading"); the learner is *probably* ($1-\delta$) *approximately* ($\varepsilon$) correct.`,
-      idea: String.raw`Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to $\varepsilon$), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case no learner can do well: that chance is $\delta$. Independence of the examples and equality of the distributions is what makes the sample tell the truth about $\mathcal D$: break it, and the histogram of errors shifts, as the drift switch shows.`,
-      caption: String.raw`Left: one sample, the tightest box around its tasty papayas (blue; the ERM for rectangles in the realizable case) and the hidden rule (purple). Right: the true errors of the boxes learned from 2000 independent samples of size $m$; everything to the right of the $\varepsilon$ line (red) is a misleading sample, and its fraction is the observed $\delta$. Grow $m$ and the histogram collapses towards $0$. Switch on **drift** (training papayas come from a different part of the square than the test papayas) and independence from the test distribution is lost: the histogram moves and $\delta$ explodes.`,
-      deps: ['ml-2.1a'],
-      refs: ['UML §2.3.1'],
+      idea: String.raw`Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to $\varepsilon$), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case the sample alone cannot guarantee success: the allowed failure probability is$\delta$. Independence of the examples and equality of the distributions is what makes the sample tell the truth about $\mathcal D$: break it, and the histogram of errors shifts, as the drift switch shows.`,
+      caption: String.raw`Left: one sample, the tightest box around its tasty papayas (blue; the ERM for rectangles in the realizable case) and the hidden rule (purple). Right: the true errors of the boxes learned from 2000 independent samples of size $m$; everything to the right of the $\varepsilon$ line (red) is a misleading sample, and its fraction is the observed $\delta$. Grow $m$ and the histogram collapses towards $0$. Switch on **drift** (training papayas come from a different part of the square than the test papayas) and equality of the training and test distributions is lost: the histogram moves and $\delta$ explodes.`,
+      deps: ["ml-2.1a","prob-2.2.3a"],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §2.3.1, pp.37–39"],
       tags: ['PAC', 'confidence', 'i.i.d.'],
       scope: String.raw`The reference bound $4(1-\varepsilon/4)^m$ for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same $\mathcal D$.`,
-      verify: true,
       viz(v) {
         const s = square(v, { height: 380, title: 'one training sample and its tightest box' });
         const sH = v.stage({ x: [0, 0.3], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'true error of the learned box', ylabel: 'training sets (of 2000)', yticks: [], title: 'errors over many training sets' });
@@ -326,7 +321,7 @@ $$\mathcal D\Big(\bigcup_{i}A_i\Big)\le\sum_i\mathcal D(A_i),$$
 with equality when the $A_i$ are pairwise disjoint (up to null sets).`,
       idea: String.raw`Adding the masses of the events counts every outcome once for each event containing it, while the union counts it once; so the sum exceeds the union by exactly the mass of the multiply covered region, weighted by how many times it is over-counted: $\sum_i\mathcal D(A_i)-\mathcal D(\bigcup A_i)=\mathbb E\,(N-1)^+$ where $N$ is the number of events that occur. Used in ml-2.3 to bound the chance that *some* bad hypothesis looks good by the sum of the chances for each one, with no assumption about how the failures overlap. (Boole's inequality; for the union of two events it follows from inclusion–exclusion.)`,
       caption: String.raw`The unit square carries uniform probability mass 1. Drag the discs (events $A_i$) and change their number and size. Cells covered once are blue, cells covered several times are red and hatched. The bars on the right compare $\sum_i\mathcal D(A_i)$ (stacked) with $\mathcal D(\bigcup A_i)$; the hatched top is the slack, the over-counting. Pull the discs apart until nothing overlaps: the bound becomes an equality. The readout also shows the Bonferroni lower bound $\sum_i\mathcal D(A_i)-\sum_{i<j}\mathcal D(A_i\cap A_j)$.`,
-      deps: [],
+      deps: ["prob-1.6.1"],
       see: ['prob-1.1.1'],
       refs: ['UML §2.3.1'],
       credit: 'George Boole, 1854 (Boole\'s inequality)',
@@ -381,7 +376,7 @@ $$m\;\ge\;\frac{\log(|\mathcal H|/\delta)}{\varepsilon}.$$
 Then for every labelling function $f$ and distribution $\mathcal D$ for which the realizability assumption holds (ml-2.1), with probability at least $1-\delta$ over the choice of an i.i.d. sample $S$ of size $m$ labelled by $f$, **every** ERM hypothesis $h_S$ satisfies $L_{\mathcal D,f}(h_S)\le\varepsilon$.`,
       idea: String.raw`Let $\mathcal H_B=\{h\in\mathcal H:L_{\mathcal D,f}(h)>\varepsilon\}$ be the bad hypotheses. By realizability an ERM output has training error $0$, so it is bad only if the sample is *misleading*: some $h\in\mathcal H_B$ has $L_S(h)=0$. A fixed bad $h$ survives one independent example with probability at most $1-\varepsilon$, hence all $m$ with probability at most $(1-\varepsilon)^m\le e^{-\varepsilon m}$. The union bound (ml-2.2) over the events "$h$ survives" for $h\in\mathcal H_B$ gives $\mathcal D^m(\text{misleading})\le|\mathcal H_B|e^{-\varepsilon m}\le|\mathcal H|e^{-\varepsilon m}$, which is at most $\delta$ exactly when $m\ge\log(|\mathcal H|/\delta)/\varepsilon$.`,
       caption: String.raw`$\mathcal H$ is the set of rectangles whose sides lie on a $k\times k$ grid (drag the green target to a grid rectangle; $|\mathcal H|=\binom{k+1}{2}^2$). The blue curve is the simulated fraction of misleading samples (some rectangle with error $>\varepsilon$ agrees with all $m$ examples; 200 samples), against the union bound $|\mathcal H|e^{-\varepsilon m}$ (orange) and the sharper $|\mathcal H_B|(1-\varepsilon)^m$ (thin ink line). The green line marks $m=\log(|\mathcal H|/\delta)/\varepsilon$, where the bound meets the confidence level $\delta$. On the left, the red rectangle is the worst hypothesis still consistent with the first $m$ examples of one sample: it disappears as $m$ grows.`,
-      deps: ['ml-2.1', 'ml-2.1e', 'ml-2.2'],
+      deps: ["ml-2.1","ml-2.1e","ml-2.2","prob-2.1.13"],
       refs: ['UML §2.3.1'],
       tags: ['PAC', 'finite classes', 'sample complexity'],
       scope: String.raw`Finite $\mathcal H$ and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes $|\mathcal H|$ by one.`,

@@ -1,5 +1,5 @@
 // Atmosphere & Ocean Dynamics — Chapter 4: Ekman layers (items 4.5–4.7; 4.1–4.4 are in ch04.js)
-import { clamp, TAU, RAD, RHO_W, fOf, betaOf, ekmanSolve, ekmanSpiral } from './ch04.shared.js';
+import { clamp, TAU, RAD, RHO_W, fOf, betaOf, ekmanSolve, ekmanSpiral, spinDownTime } from './ch04.shared.js';
 
 const cabs = (re, im) => Math.hypot(re, im);
 
@@ -10,15 +10,15 @@ export default {
     // ------------------------------------------------------------------ 4.5
     {
       num: '4.5', kind: 'Phenomenon', name: 'Spin-down of a rotating fluid',
-      statement: String.raw`Stir a fluid that fills a container rotating at angular velocity $\Omega$, so that it moves relative to the container with small angular velocity $\omega_0\ll\Omega$ (small Rossby number). The relative motion does not decay by viscous diffusion across the container, which would take $R^2/\nu$; it decays exponentially on the much shorter **Ekman spin-down time**
+      statement: String.raw`Stir a fluid that fills a container rotating at angular velocity $\Omega$, so that it moves relative to the container with small angular velocity $\omega_0\ll\Omega$ (small Rossby number). The relative motion does not decay chiefly by bulk viscous diffusion, whose radial time scale is $R^2/\nu$; it decays exponentially on the much shorter **Ekman spin-down time**
 $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\Omega H^{2}},$$
-(up to a factor of order one depending on how many walls are rigid: here $\tau_E=H/(2\sqrt{\nu\Omega})$ for two rigid lids), because the thin Ekman layers on the lids act as pumps. Since $E\ll1$ the spin-down takes a few to a few tens of rotation periods, and the secondary circulation carries particles on the floor (tea leaves) in towards the axis.`,
+(up to a factor of order one depending on how many walls are rigid: here $\tau_E=H/(2\sqrt{\nu\Omega})$ for two rigid lids), because the thin Ekman layers on the lids act as pumps. The number of rotation periods depends on $E$ and on the rigid boundaries, and the secondary circulation carries particles on the floor (tea leaves) in towards the axis.`,
       idea: String.raw`In the interior the flow is geostrophic and, by the Taylor–Proudman theorem (2.7), does not vary along the axis, so it cannot slow down by itself. Only the thin Ekman layers on the lids can exert friction. The interior swirl $V=\omega r$ drives a cross-flow in each layer toward lower pressure with transport $V\delta_E/2$, $\delta_E=\sqrt{2\nu/f}$, $f=2\Omega$; its convergence is the pumping velocity $w_E=\delta_E\zeta/2$ of 4.3. Squeezing or stretching the interior columns changes their relative vorticity at the rate $f\,\partial_zw$, giving $\dot\zeta=-(2w_E/H)\,f=-\zeta/\tau_E$. The fluid spins down not by diffusion of momentum but by being circulated through the boundary layer.`,
-      caption: String.raw`Press play and watch the **top view** of a rotating tank, drawn in the frame turning with it: gold dots are tea leaves lying on the floor, grey dots are tracers in the interior. The interior swirl decays; the leaves also drift inward (a leaf in the floor layer feels at most 0.32 of the interior speed toward the axis) and gather in the middle. The **side view** shows the Ekman circulation (inflow along the floor, upflow in the interior, outflow along the lid) with arrows that fade as the swirl dies. The right plot compares $e^{-t/\tau_E}$ with the diffusive decay on the scale $R^2/\nu$. Change the viscosity, depth, rotation rate, lids and initial Rossby number $\epsilon=\omega_0/\Omega$. Linear theory: valid for $\epsilon\ll1$ (the picture is not a Navier–Stokes simulation).`,
-      deps: ['geo-4.3', 'geo-2.7'],
-      refs: ['Vallis'],
+      caption: String.raw`Press play and watch the **top view** of a rotating tank, drawn in the frame turning with it: gold dots are near-bottom particles representing tea leaves, grey dots are tracers in the interior. The interior swirl decays; the leaves also drift inward (a leaf in the floor layer feels at most 0.32 of the interior speed toward the axis) and gather in the middle. The **side view** shows the Ekman circulation (inflow along each rigid horizontal boundary, outward return flow in the interior; with two rigid lids the vertical flows meet at mid-depth) with arrows that fade as the swirl dies. The right plot compares $e^{-t/\tau_E}$ with the diffusive decay on the scale $R^2/\nu$. Change the viscosity, depth, rotation rate, lids and initial Rossby number $\epsilon=\omega_0/\Omega$. Linear theory: valid for $\epsilon\ll1$ (the picture is not a Navier–Stokes simulation).`,
+      deps: ['geo-4.3', 'geo-2.7', 'ode-1.4', 'fluid-3.3'],
+      refs: ['Greenspan & Howard (1963), §3, p. 387 (separation 2L), p. 392 eq. (3.21); §4, pp. 392–394'],
       tags: ['spin-down', 'Ekman layer', 'rotating tank'],
-      scope: String.raw`Small Rossby number, $E\ll1$, a container with rigid lids (or a lid and a free surface), a cylinder of radius $R\gg\delta_E$ and a homogeneous fluid. The time scale quoted here is the linear one; Greenspan & Howard (1963) give the full theory including the side-wall layer and the nonlinear spin-up.`,
+      scope: String.raw`Small Rossby number, $E\ll1$, a container with rigid lids (or a lid and a free surface), a cylinder of radius $R\gg\delta_E$ and a homogeneous fluid. The time scale quoted here is the linear one; Greenspan & Howard (1963) analyse linear spin-up, boundary layers and residual inertial oscillations. The plotted particle contraction is an illustration of near-boundary transport, not a sediment or particle-force model.`,
       credit: 'H. P. Greenspan & L. N. Howard, 1963 (J. Fluid Mech. 17: 385–404)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Tea_leaf_paradox' },
       viz(v) {
@@ -38,7 +38,7 @@ $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\
         let st = {};
         v.animate((t) => {
           const H = Hc.value / 100, W = Om.value;
-          const tE = lid.value === 2 ? H / (2 * Math.sqrt(nu.value * W)) : H / Math.sqrt(nu.value * W), tD = R * R / nu.value;
+          const tE = spinDownTime(H, nu.value, W, +lid.value), tD = R * R / nu.value;
           const tp = t * tE / 3, dec = Math.exp(-tp / tE), Theta = eps.value * W * tE * (1 - dec); // angle turned relative to the container
           const contr = Math.exp(-0.3224 * Theta);
           sT.circle(0, 0, R * 100, { color: 'ink', width: 2, fill: 'blue', fillAlpha: 0.05 });
@@ -50,14 +50,18 @@ $$\tau_E\sim\frac{H}{\sqrt{\nu\Omega}}=\Omega^{-1}E^{-1/2},\qquad E=\frac{\nu}{\
           sS.rect(0, 0, R * 100, Hcm, { color: 'ink', width: 2, fill: 'blue', fillAlpha: 0.06 });
           sS.rect(0, -0.9, R * 100, 0, { fill: 'muted', fillAlpha: 0.5, stroke: false });
           if (lid.value === 2) sS.rect(0, Hcm, R * 100, Hcm + 0.9, { fill: 'muted', fillAlpha: 0.5, stroke: false });
-          const k = dec * (0.35 + 0.65 * eps.value / 0.5), len = 3.2 * k + 0.2;
+          const k = dec * (0.35 + 0.65 * eps.value / 0.5), len = 3.2 * k;
           for (const r of [3, 5, 7, 9]) {
             sS.arrow(r + len / 2, 0.6, r - len / 2, 0.6, { color: 'ink', width: 2, head: 5 });
-            if (lid.value === 2) sS.arrow(r - len / 2, Hcm - 0.6, r + len / 2, Hcm - 0.6, { color: 'ink', width: 2, head: 5 });
+            if (lid.value === 2) sS.arrow(r + len / 2, Hcm - 0.6, r - len / 2, Hcm - 0.6, { color: 'ink', width: 2, head: 5 });
           }
-          for (const r of [1.5, 4, 6.5, 9]) sS.arrow(r, Hcm * 0.3, r, Hcm * 0.3 + (Hcm * 0.4) * (0.2 + 0.8 * k), { color: 'accent', width: 2, head: 5 });
+          for (const r of [1.5, 4, 6.5, 9]) {
+            sS.arrow(r, Hcm * 0.2, r, Hcm * (0.2 + 0.25 * k), { color: 'accent', width: 2, head: 5 });
+            if (+lid.value === 2) sS.arrow(r, Hcm * 0.8, r, Hcm * (0.8 - 0.25 * k), { color: 'accent', width: 2, head: 5 });
+          }
+          for (const r of [3, 6]) sS.arrow(r - len / 2, Hcm * (+lid.value === 2 ? 0.5 : 0.85), r + len / 2, Hcm * (+lid.value === 2 ? 0.5 : 0.85), { color: 'accent', width: 2, head: 5 });
           sS.text('floor layer: inflow', 5.5, -0.9, { size: 11, color: 'muted', align: 'center', dy: 12 });
-          sS.text('interior: upflow', 5.5, Hcm * 0.5, { size: 11, color: 'accent', align: 'center', dx: 0, dy: 8 });
+          sS.text(+lid.value === 2 ? 'interior: outward return' : 'interior: upward return', 5.5, Hcm * 0.5, { size: 11, color: 'accent', align: 'center', dx: 0, dy: 8 });
           // decay plot
           const Tmax = 6 * tE;
           sD.setView([0, Tmax], [1e-3, 1.2]);
@@ -141,18 +145,17 @@ largest at the equator, positive for $|y|<r/\beta\,(\text{width}\sim 2^{\circ}\t
     // ------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Paper', name: 'On the influence of the earth’s rotation on ocean-currents',
-      paper: { authors: 'V. Walfrid Ekman', year: 1905, title: 'On the influence of the earth’s rotation on ocean-currents', venue: 'Arkiv för Matematik, Astronomi och Fysik 2 (11): 1–52', url: 'http://empslocal.ex.ac.uk/people/staff/gv219/classics.d/Ekman05.pdf' },
+      paper: { authors: 'V. Walfrid Ekman', year: 1905, title: 'On the influence of the earth’s rotation on ocean-currents', venue: 'Arkiv för Matematik, Astronomi och Fysik 2 (11): 1–52', url: 'https://empslocal.ex.ac.uk/people/staff/gv219/classics.d/Ekman05.pdf' },
       introduces: ['geo-4.1', 'geo-4.2'],
       credit: 'V. W. Ekman, 1905',
       statement: String.raw`Ekman asked why drifting sea ice and surface water do not move along the wind but to the right of it (in the northern hemisphere), as Fridtjof Nansen had noticed on the *Fram* expedition. He showed, for a steady wind over a deep ocean of uniform turbulent (eddy) viscosity on a rotating Earth, that the current at the surface runs $45^\circ$ to the right of the wind, that it turns clockwise (viewed from above) and weakens with depth in a spiral, that it points against the surface current at the depth $D=\pi\sqrt{2A/|f|}$ where it is only about 4% as large, and that the **net transport** of the whole wind-driven layer is perpendicular to the wind (to the right, $\tau/\rho f$ per unit width) — independent of the value of the viscosity.`,
-      idea: String.raw`Nansen had observed that the drift of the ice on the *Fram* in the Arctic was systematically deflected to the right of the wind (by 20°–40° according to secondary accounts), and, according to the usual telling, asked Vilhelm Bjerknes to give the problem to a student; the student was Ekman. Before the paper, rotation was known to deflect moving water (Coriolis, 1835) but the effect of turbulent friction had not been put into the balance: Ekman added a stress proportional to the vertical shear to the equations of motion and solved the resulting linear equation. The paper introduced what we now call the **Ekman spiral** (4.1), the **Ekman depth**, and the transport result that became **Ekman transport** (4.2), which underlies pumping (4.3), coastal and equatorial upwelling (4.4, 4.6) and the Sverdrup theory of the gyres. Observed surface deflections are often smaller than 45°, which was early understood to come from the variation of the eddy viscosity with depth and from the finite depth of the water (the case shown here); Ekman himself discussed the dependence on the depth of the sea (this extension is the standard one for rigid-bottom water; I could not read the scanned 1905 original to confirm how far it goes).`,
-      caption: String.raw`A reconstruction of Ekman's central result, computed here by solving his equation numerically (not read off the paper's figures). **Left:** a plan view for the layer: the wind (gold), the surface current (blue) and the whole spiral (the curve), with the **transport** (green) at $90^\circ$; the grey wedge marks the $20^\circ$–$40^\circ$ deflection Nansen is said to have seen for the ice (secondary source; unverified). **Right:** the deflection of the surface current from the wind against the ratio of the water depth to the Ekman depth, for a rigid, no-slip bottom. In deep water it tends to Ekman's $45^\circ$; in shallow water ($h\ll D$) it drops toward $0^\circ$ while the transport shrinks. Drag the depth slider to change the case; $A$ and the latitude only set the size of $D$.`,
-      deps: ['geo-2.1', 'fluid-6.4', 'geo-4.1', 'geo-4.2'],
-      refs: [],
+      idea: String.raw`Ekman's introduction (p. 2) explicitly reports Nansen's 20°–40° ice-drift deflection to the right of the wind and says that Ekman investigated the problem on Nansen's suggestion. The deep-water solution (pp. 7–10) balances turbulent stress against Coriolis acceleration: the velocity rotates while decaying exponentially, and its depth integral follows directly from the surface stress when bottom stress is negligible. The same paper treats finite uniform depth with a rigid no-slip bottom (pp. 12–14, eqs. (8)–(10)); the shallow-water limit aligns the surface current more closely with the wind.`,
+      caption: String.raw`A reconstruction of Ekman's central result, computed here by solving his equation numerically (not read off the paper's figures). **Left:** a plan view for the layer: the wind (gold), the surface current (blue) and the whole spiral (the curve), with the **transport** (green), approaching $90^\circ$ only in the deep-water limit; the grey wedge marks the $20^\circ$–$40^\circ$ deflection Ekman reports for Nansen’s ice-drift observations (p. 2). **Right:** the deflection of the surface current from the wind against the ratio of the water depth to the Ekman depth, for a rigid, no-slip bottom. In deep water it tends to Ekman's $45^\circ$; in shallow water ($h\ll D$) it drops toward $0^\circ$ while the transport shrinks. Drag the depth slider to change the case; $A$ and the latitude only set the size of $D$.`,
+      deps: ['geo-2.1', 'fluid-6.4', 'geo-4.1', 'geo-4.2', 'ode-3.6'],
+      refs: ['Ekman (1905), p. 2; §I pp. 7–10, eqs. (5)–(6); pp. 12–14, eqs. (8)–(10)'],
       tags: ['Ekman', 'history', 'spiral'],
-      scope: String.raw`The paper's result holds for constant $A$, steady wind, constant $f$, deep water. The observed surface angle scatters widely around the classical $45^\circ$ (secondary sources give anything from about $5^\circ$ to $80^\circ$), which is why the spiral is rarely seen in clean form; the transport result is far more robust than the spiral.`,
+      scope: String.raw`Steady flow, constant eddy viscosity, constant nonzero Coriolis parameter and uniform depth. The depth slider uses a rigid no-slip bottom exactly as in Ekman's finite-depth extension. Bottom stress alters the depth-integrated balance in shallow water, so its transport need not be perpendicular to the wind or equal to the deep-water value. This is a reconstruction of the stated equations, not an ocean-data fit.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ekman_spiral' },
-      verify: true,
       viz(v) {
         const A = v.slider('eddy viscosity $A$ (m²/s)', 0.02, 0.4, 0.1, { step: 0.005 });
         const lat = v.slider('latitude (°)', 20, 80, 70, { step: 1 });
@@ -193,7 +196,7 @@ largest at the equator, positive for $|y|<r/\beta\,(\text{width}\sim 2^{\circ}\t
           sC.text('Nansen: 20–40° (ice)', 2.0, 30, { size: 11, color: 'muted', align: 'center' });
           st = { D, h, ang, mag, tang, d };
         });
-        v.readout(() => `Ekman depth $D=\\pi\\sqrt{2A/|f|}=${v.fix(st.D, 0)}$ m; water depth $h=${v.fix(st.h, 0)}$ m. Surface current **${v.fix(st.ang, 1)}°** right of the wind (paper: 45° in deep water); transport at ${v.fix(st.tang, 1)}° with magnitude ${v.fix(st.mag, 3)}$\\,\\tau/\\rho f$ (paper: 90°, 1.000 for $h\\gtrsim D$).\nToday's picture: observed surface deflections scatter around and mostly below 45° (reported typical values about 5°–20°, range 10°–80° in reviews: secondary sources, unverified), while the transport law holds far better.`);
+        v.readout(() => `Ekman depth $D=\\pi\\sqrt{2A/|f|}=${v.fix(st.D, 0)}$ m; water depth $h=${v.fix(st.h, 0)}$ m. Surface current **${v.fix(st.ang, 1)}°** right of the wind (paper: 45° in deep water); transport at ${v.fix(st.tang, 1)}° with magnitude ${v.fix(st.mag, 3)}$\\,\\tau/\\rho f$ (paper: 90°, 1.000 for $h\\gg D$).\nThe finite-depth model includes bottom stress: its transport need not equal the deep-water limit. The shaded ice-drift band is Ekman’s report of Nansen’s observation, not a modern statistical range.`);
       },
     },
   ],

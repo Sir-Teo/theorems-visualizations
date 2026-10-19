@@ -21,10 +21,9 @@ export default {
       idea: String.raw`The matrix of $g$ in the basis of group elements permutes the basis ($x\mapsto gx$), so its trace counts fixed points; but $gx=x$ forces $g=e$. By 3.6 the multiplicity of $W_i$ is $\langle\chi_{\mathrm{reg}},\chi_i\rangle=\frac1{|G|}\,|G|\,\overline{\chi_i(e)}=\dim W_i$. Counting dimensions on both sides gives $\sum d_i^2=|G|$.`,
       caption: String.raw`For the chosen group the left panel stacks, for each irreducible $W_i$, a block $m_i$ wide and $d_i=\dim W_i$ tall (its $m_i$ copies of a $d_i$-dimensional space); the total area is $\dim\mathbb C[G]=|G|$. In "regular" mode the characters of the action $x\mapsto gx$ are counted fixed point by fixed point and the blocks come out as $d_i\times d_i$ squares. Switch to the action by conjugation $x\mapsto gxg^{-1}$ (also a permutation representation of degree $|G|$, with $\chi(g)=|C_G(g)|$): the total area is still $|G|$, but the blocks are no longer squares.`,
       deps: ['rep-3.6', 'rep-1.2'],
-      refs: ['Serre §2.4'],
+      refs: ['Serre §2.4', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['regular representation', 'sum of squares'],
-      credit: 'Frobenius, 1897; Burnside, 1898 (independently)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'A4', 'D5', 'S4'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3');
@@ -177,13 +176,12 @@ where $C_G(g)$ is the centraliser of $g$. In words, the columns of the character
       statement: String.raw`Let $V$ be a complex representation of a finite group $G$ and $\chi_i$ an irreducible character of degree $d_i$. The operator
 $$P_i=\frac{d_i}{|G|}\sum_{g\in G}\overline{\chi_i(g)}\,\rho(g)$$
 is the projection of $V$ onto its $\chi_i$-isotypic component $V_i$ (the sum of all subrepresentations isomorphic to the $i$-th irreducible), along the sum of the other isotypic components. The $P_i$ commute with $G$, $P_iP_j=\delta_{ij}P_i$ and $\sum_iP_i=\mathrm{id}$, so $V=\bigoplus_iV_i$.`,
-      idea: String.raw`$P_i$ commutes with every $\rho(h)$ because $\overline{\chi_i}$ is a class function (3.2), so on each irreducible constituent it is a scalar by Schur’s lemma. That scalar is $\frac{d_i}{|G|}\sum_g\overline{\chi_i(g)}\chi_j(g)/d_j\cdot d_j/d_j=\delta_{ij}$ by orthogonality (3.5), so $P_i$ is $1$ on constituents of type $i$ and $0$ on the others. $\sum_iP_i=\mathrm{id}$ follows from column orthogonality (3.11) applied to the identity column: $\sum_id_i\chi_i(g)=|G|\delta_{g,e}$.`,
+      idea: String.raw`$P_i$ commutes with every $\rho(h)$ because $\overline{\chi_i}$ is a class function (3.2), so on each irreducible constituent it is a scalar by Schur’s lemma. That scalar is $\frac{d_i}{d_j}\langle\chi_j,\chi_i\rangle=\delta_{ij}$ by orthogonality (3.5), so $P_i$ is $1$ on constituents of type $i$ and $0$ on the others. $\sum_iP_i=\mathrm{id}$ follows from column orthogonality (3.11) applied to the identity column: $\sum_id_i\chi_i(g)=|G|\delta_{g,e}$.`,
       caption: String.raw`$D_6$ acts on the six vertices of a hexagon, and so on functions on them by $(g\cdot f)(x)=f(g^{-1}x)$. Drag the blue handles to choose $f$. The panels show the projections $P_if$ onto the isotypic components, as discs on the hexagon (blue positive, red negative, area proportional to the value); only the types that occur are drawn at full strength. They sum to $f$. The readout verifies that each $P_i$ is idempotent and that the pieces are mutually orthogonal.`,
       deps: ['rep-3.10', 'rep-2.8'],
-      refs: ['Serre §2.6', 'Fulton–Harris §2.4'],
+      refs: ['Serre §2.6', 'Fulton–Harris §2.4', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['isotypic component', 'projection'],
-      credit: 'Frobenius, 1897 (the projection formula appears in the course of the decomposition of the regular representation)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const T = tableOf('D6'), G = T.G, hex = polygon(6);
         const A = v.stage({ x: [-0.5, 6.5], y: [-4.2, 4.2], axes: 'box', gutter: true, height: 300, weight: 0.9, title: 'a function $f$ on the vertices', xlabel: 'vertex' });
@@ -242,10 +240,9 @@ So the matrix entries of the irreducibles, taken one per isomorphism class, are 
       idea: String.raw`For any matrix $X$ the average $\frac1{|G|}\sum_g\rho(g)X\rho'(g)^{-1}$ intertwines $\rho'$ and $\rho$, so by Schur’s lemma (2.5, 2.7) it is $0$ when $\rho\not\cong\rho'$ and $\frac{\operatorname{tr}X}d\,I$ when $\rho=\rho'$. Take $X=E_{jl}$ and read the $(i,k)$ entry; unitarity gives $\rho'(g)^{-1}=\overline{\rho'(g)}^{\mathsf T}$. Taking the diagonal entries and summing gives 3.5. Unitarity (2.1) is essential: in a non-unitary basis the formula fails.`,
       caption: String.raw`The table is the Gram matrix of all matrix coefficients of the irreducible representations of the chosen group ($|G|$ functions in all): the entries $\rho_{ij}$ of the two-dimensional irreducible, written $V_{ij}$, and the one-dimensional characters. Green cells agree with the theorem: $1$ on the diagonal for the one-dimensional ones, $\tfrac12$ for the entries of a 2-dimensional unitary one, and $0$ elsewhere. Click a cell to see the two functions on the group. Now drag the shear slider, which rewrites the 2-dimensional representation in a non-orthonormal basis: the representation is still irreducible, but the orthogonality fails.`,
       deps: ['rep-3.5'],
-      refs: ['Serre §2.2'],
+      refs: ['Serre §2.2', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['matrix coefficients', 'Schur orthogonality'],
-      credit: 'Schur, 1905',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4'];
         let sel = [0, 1];
@@ -367,11 +364,10 @@ the average number of fixed points. In terms of the permutation representation $
       idea: String.raw`The invariant vectors of $\mathbb C[X]$ are the functions constant on orbits, so they have dimension $|X/G|$; this is also the multiplicity of the trivial representation, which 3.6 computes as $\frac1{|G|}\sum_g\chi_{\mathrm{perm}}(g)$. Combinatorially, count the pairs $(g,x)$ with $gx=x$ in two ways, using that the stabiliser of $x$ has $|G|/|Gx|$ elements, so each orbit contributes $|G|$.`,
       caption: String.raw`Colour the beads of a necklace (rotations only, or rotations and reflections) or the six faces of a cube (rotations) with $k$ colours. The bars give, for every symmetry $g$, the number of colourings it fixes, found by testing every colouring. Their average (dashed line) is the Burnside count. A brute-force grouping of all $k^n$ colourings into orbits gives the same number; for necklaces one representative of each orbit is drawn on the right.`,
       deps: ['rep-3.6', 'rep-1.2'],
-      refs: ['Serre §2.3'],
+      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       see: ['comb-10.3'],
       tags: ['orbit counting', 'combinatorics'],
-      credit: 'Cauchy, 1845; Frobenius, 1887; Burnside, 1897 (the lemma is not Burnside’s own)',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const cube = cubeData(), faceP = cube.G.perms.map((_, g) => actOn(cube, cube.rot[g], cube.sets.faces.pts));
         const mode = v.select('what to colour', [{ value: 'neck', label: 'necklace (rotations)' }, { value: 'brace', label: 'bracelet (rotations, reflections)' }, { value: 'cube', label: 'cube faces (rotations)' }], 'neck');
@@ -443,17 +439,16 @@ the average number of fixed points. In terms of the permutation representation $
       num: '3.16',
       kind: 'Paper',
       name: 'Über Gruppencharaktere',
-      statement: String.raw`Dedekind’s question was to factor the **group determinant** $\Theta_G(x)=\det\big(x_{gh^{-1}}\big)_{g,h\in G}$, a polynomial of degree $|G|$ in one variable $x_g$ per group element. For an abelian group he had shown that it is a product of linear forms $\sum_gx_g\chi(g)$ over the characters $\chi$ of $G$. Frobenius showed in the general case (in this paper and its companion of the same year on the prime factors of the group determinant) that $\Theta_G$ is a product of irreducible polynomials $\Phi_i$ of degree $d_i$, each occurring $d_i$ times, and that the coefficients of the linear terms of the $\Phi_i$ (at $x=\delta_e$) are numbers $\chi_i(g)$, the **characters**; the orthogonality relations and the other results of this chapter belong to the same circle of 1896–97 work. In modern terms $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ for the $i$-th irreducible representation $\rho_i$ and $\chi_i(g)=\operatorname{tr}\rho_i(g)=\partial\Phi_i/\partial x_g\big|_{x=\delta_e}$.`,
-      idea: String.raw`Before 1896 the characters of a non-abelian group were not known to exist. Frobenius took Dedekind’s group determinant as the starting point (their correspondence began in April 1896), found its irreducible factors, and defined the characters from them, without matrices; the representations $\rho_i$ followed in 1897 (after Molin’s work, which Frobenius learned of that year). The paper introduces the characters (3.1), their orthogonality (3.5) and the character table (3.14), and the equality of the number of irreducibles with the number of conjugacy classes (3.10).`,
+      statement: String.raw`Frobenius’s **Über Gruppencharaktere** develops characters of arbitrary finite groups from equations for conjugacy-class multiplication, proves their orthogonality and shows that their number equals the number of conjugacy classes. Its companion paper later in 1896 solves Dedekind’s group-determinant problem: $\Theta_G(x)=\det(x_{gh^{-1}})_{g,h\in G}$ factors into irreducible polynomials $\Phi_i$ of degree $d_i$, each occurring with multiplicity $d_i$. Normalize $\Phi_i(\delta_e)=1$. The companion obtains the character from its coefficients, equivalently $\chi_i(g)=\partial\Phi_i/\partial x_g\big|_{x=\delta_e}$, with $\chi_i(e)=d_i$. In modern representation language, $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ and $\chi_i(g)=\operatorname{tr}\rho_i(g)$ for the irreducible representations $\rho_i$.`,
+      idea: String.raw`Dedekind sent Frobenius his determinant question in April 1896. The character paper constructs class functions using the commuting class-multiplication equations, giving a nonsingular character table and the orthogonality relations; this is not a construction through matrices of irreducible representations. The companion defines a character from each normalized determinant factor, recovers all factor coefficients using power sums and Newton identities, and proves the difficult equality between a factor’s degree and its multiplicity. The display uses modern representation matrices to reconstruct the factorization numerically and differentiates the factors at $\delta_e$ to recover the character values.`,
       caption: String.raw`Pick a group and a random point $x$ (a number $x_g$ for each element). The left panel shows the $|G|\times|G|$ matrix $(x_{gh^{-1}})$, coloured by value (for the largest group the elements are numbered in the order of the group); the table on the right lists the factors $\Phi_i(x)=\det\sum_gx_g\rho_i(g)$ built from the irreducible representations (written with matrices known today: this reconstruction is not Frobenius’s own computation) and the product $\prod\Phi_i^{d_i}$, compared with $\det(x_{gh^{-1}})$ computed directly. The class columns of the table are obtained by differentiating each $\Phi_i$ numerically at $x=\delta_e$ in the direction of $g$: the numbers are the character table.`,
       deps: ['nt-11.1', 'ladr-9.43'],
-      refs: ['Frobenius 1896'],
-      paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://archive.org/details/sitzungsberichte1896deutsch' },
+      refs: ['Frobenius, Über Gruppencharaktere (1896), §§1–6, pp985–1006, https://doi.org/10.3931/e-rara-18877', 'Frobenius, Über die Primfactoren der Gruppendeterminante (1896), §§1–9, pp1343–1372, https://doi.org/10.3931/e-rara-18882', 'Etingof et al., Introduction to Representation Theory, §§4.10–4.11 (modern representation formulation)'],
+      paper: { authors: 'G. Frobenius', year: 1896, title: 'Über Gruppencharaktere', venue: 'Sitzungsberichte der Königlich Preußischen Akademie der Wissenschaften zu Berlin 1896: 985–1021', url: 'https://doi.org/10.3931/e-rara-18877' },
       introduces: ['rep-3.1', 'rep-3.5', 'rep-3.14'],
       tags: ['group determinant', 'Frobenius', 'history'],
-      credit: 'Frobenius, 1896 (after a question of Dedekind, letters from April 1896)',
-      scope: String.raw`Complex groups, finite. The factorisation of $\Theta_G$ into $\prod\Phi_i^{d_i}$ is stated in modern form; which of its parts is in this particular paper and which in Frobenius’s companion paper on the prime factors of the group determinant (same year) was not checked against the originals.`,
-      verify: true,
+      credit: 'Frobenius, 1896 (after a question communicated by Dedekind in April)',
+      scope: String.raw`Finite groups over $\mathbb C$. The class-equation construction and orthogonality were checked in the character paper; the irreducible-factor coefficient formulation and degree–multiplicity proof were checked in its companion. The determinant factors computed from representation matrices are a modern reconstruction, not Frobenius’s original algorithm.`,
       viz(v) {
         const KEYS = ['Z4', 'S3', 'D4', 'Q8', 'A4'];
         let seed = 5;

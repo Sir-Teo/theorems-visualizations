@@ -762,6 +762,10 @@ Rock bodies in contact can be ordered directly; the order of bodies that never t
             edgeColor: (e) => e.color,
             dim: [],
           });
+          if (q && !placed.length) {
+            G2.text('Place the oldest unit in the outcrop.', 5, 2.3, { align: 'center', size: 14, color: 'muted' });
+            G2.text('Placed units and their contacts appear here.', 5, 1.6, { align: 'center', size: 12, color: 'muted' });
+          }
           st = { a, q };
         });
         v.legend([['accent', 'superposition: lies on'], ['red', 'cross-cutting: cuts']]);

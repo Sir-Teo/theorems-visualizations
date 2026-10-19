@@ -1,5 +1,6 @@
 // Rudin, Real and Complex Analysis — Chapter 5, part 5: an abstract approach to the Poisson integral (5.23–5.25).
-// The exact split of this section into numbered items is uncertain; every item here carries `verify: true`.
+// Section numbers checked against the third edition, pp. 108–112.
+import { polynomialMaximum } from './polynomial-maximum.shared.js';
 
 // Poisson kernel P_r(t) and the density of the representing measure of z = re^{iθ} at e^{it}
 const poissonAt = (z, t) => { const r2 = z[0] * z[0] + z[1] * z[1]; return (1 - r2) / (1 - 2 * (z[0] * Math.cos(t) + z[1] * Math.sin(t)) + r2); };
@@ -12,9 +13,9 @@ export default {
   collection: 'rca',
   chapter: 5,
   items: [
-    // ------------------------------------------------------------------ 5.23
+    // ------------------------------------------------------------------ 5.22
     {
-      num: '5.23',
+      num: '5.22',
       kind: 'Theorem',
       name: 'Representing measures from the maximum modulus property',
       statement: String.raw`Let $K$ be a compact Hausdorff space, $H$ a subspace of $C(K)$ containing the constant function $1$, and $B$ a closed subset of $K$ such that
@@ -25,7 +26,7 @@ $$f(z)=\int_B f\,d\mu_z\qquad(f\in H).$$`,
       caption: String.raw`A finite instance: $K$ is a quadrilateral, $H$ the complex affine functions $a+bx+cy$ (whose modulus is maximised at a vertex), and $B$ the four vertices, so $C(B)=\C^4$. Every extension of $f\mapsto f(z)$ is a weight vector $w$ with $\sum w_i=1$ and $\sum w_iv_i=z$ — a complex one-parameter family $w_0+\tau k$. Move $\operatorname{Re}\tau$, $\operatorname{Im}\tau$ and drag $z$. Right: the values $\Lambda f$ for all $0\le f\le1$ (gold), and the discs from the proof, which all pass through $0$ and $1$. Exactly when $\norm\Lambda=\sum\abs{w_i}=1$ the weights are positive and the gold set sits inside $[0,1]$.`,
       deps: ['rca-5.16', 'rca-2.14', 'rca-5.2'],
       see: ['rca-6.19'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 5.22, pp. 108–110'],
       tags: ['Hahn–Banach', 'representing measure', 'positivity'],
       viz(v) {
         const M = v.M;
@@ -46,7 +47,7 @@ $$f(z)=\int_B f\,d\mu_z\qquad(f\in H).$$`,
           const w0 = M.solve([[V[0][0], V[1][0], V[2][0]], [V[0][1], V[1][1], V[2][1]], [1, 1, 1]], [z[0], z[1], 1]).concat([0]);
           let lo = -Infinity, hi = Infinity;
           for (let i = 0; i < 4; i++) { if (k[i] > 1e-12) lo = Math.max(lo, -w0[i] / k[i]); else if (k[i] < -1e-12) hi = Math.min(hi, -w0[i] / k[i]); }
-          const span = Math.max(hi - lo, 0.05);
+          const span = Math.max(hi - lo, 0);
           const tau = [lo + sS.value * span, uS.value * span];
           const w = w0.map((x, i) => [x + tau[0] * k[i], tau[1] * k[i]]);
           const tv = w.reduce((s, c) => s + cabs(c), 0);
@@ -86,6 +87,7 @@ $$f(z)=\int_B f\,d\mu_z\qquad(f\in H).$$`,
         });
       },
     },
+    polynomialMaximum,
     // ------------------------------------------------------------------ 5.24
     {
       num: '5.24',
@@ -93,12 +95,12 @@ $$f(z)=\int_B f\,d\mu_z\qquad(f\in H).$$`,
       name: 'Representing measures for the disc are unique',
       statement: String.raw`Let $\bar U$ be the closed unit disc and $T$ its boundary. For every $z\in U$ there is exactly one positive Borel measure $\mu_z$ on $T$ with
 $$P(z)=\int_T P\,d\mu_z$$
-for every polynomial $P$; its Fourier coefficients are $\hat\mu_z(-n)=z^n$ and $\hat\mu_z(n)=\bar z^{\,n}$ for $n\ge0$. The same formula then holds for every uniform limit of polynomials on $\bar U$.`,
-      idea: String.raw`Existence is 5.23 with $K=\bar U$, $B=T$ and $H$ the polynomials, which satisfy the maximum modulus property $\norm{P}_{\bar U}=\norm{P}_T$. Taking $P(\zeta)=\zeta^n$ gives $\int e^{int}d\mu_z=z^n$, and because $\mu_z$ is real, conjugation gives $\int e^{-int}d\mu_z=\bar z^{\,n}$. So every Fourier coefficient of $\mu_z$ is forced; since trigonometric polynomials are dense in $C(T)$ (4.25), $\mu_z$ is determined.`,
+for every polynomial $P$; its Fourier coefficients are $\hat\mu_z(-n)=z^n$ and $\hat\mu_z(n)=\bar z^{\,n}$ for $n\ge0$. The same formula holds for every uniform limit of polynomials on $\bar U$. More generally it holds simultaneously for every member of a linear subspace $A\subset C(\bar U)$ that contains all polynomials and satisfies $\|f\|_{\bar U}=\|f\|_T$ for every $f\in A$.`,
+      idea: String.raw`Existence is 5.22 with $K=\bar U$, $B=T$ and $H$ the polynomials, which satisfy the maximum modulus property $\norm{P}_{\bar U}=\norm{P}_T$. Taking $P(\zeta)=\zeta^n$ gives $\int e^{int}d\mu_z=z^n$, and because $\mu_z$ is real, conjugation gives $\int e^{-int}d\mu_z=\bar z^{\,n}$. So every Fourier coefficient of $\mu_z$ is forced; since trigonometric polynomials are dense in $C(T)$ (4.25), $\mu_z$ is determined.`,
       caption: String.raw`Drag $z$ inside the disc. Left: the density of $\mu_z$ on the circle, drawn as a radial profile (scaled); it piles up near $z/|z|$ as $|z|\to1$ and is uniform at $z=0$. Right: the real parts of $\hat\mu_z(n)$, computed by quadrature from that density (bars), against the values forced by the argument (dots): $z^{|n|}$ for $n<0$ — read off from $P(\zeta)=\zeta^{|n|}$ — and $\bar z^{\,n}$ for $n>0$, forced by positivity.`,
-      deps: ['rca-5.23', 'rca-4.25'],
+      deps: ['rca-5.22', 'rca-5.23', 'rca-4.25'],
       see: ['rca-11.5'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 5.24, pp. 110–111'],
       tags: ['Poisson integral', 'representing measure', 'Fourier coefficients'],
       viz(v) {
         const M = v.M;
@@ -149,14 +151,14 @@ for every polynomial $P$; its Fourier coefficients are $\hat\mu_z(-n)=z^n$ and $
       num: '5.25',
       kind: 'Theorem',
       name: 'The Poisson integral formula',
-      statement: String.raw`For $0\le r<1$ and real $t$ let $P_r(t)=\sum_{n=-\infty}^{\infty}r^{\abs n}e^{int}=\dfrac{1-r^2}{1-2r\cos t+r^2}$. If $f$ is continuous on $\bar U$ and is a uniform limit of polynomials there (in particular if $f$ is a polynomial), then
+      statement: String.raw`Let $A$ be a complex vector subspace of $C(\bar U)$ that contains all polynomials and satisfies $\|f\|_{\bar U}=\|f\|_T$ for every $f\in A$. For $0\le r<1$ and real $t$ let $P_r(t)=\sum_{n=-\infty}^{\infty}r^{\abs n}e^{int}=\dfrac{1-r^2}{1-2r\cos t+r^2}$. Then every $f\in A$ satisfies
 $$f(re^{i\theta})=\frac1{2\pi}\int_{-\pi}^{\pi}P_r(\theta-t)\,f(e^{it})\,dt\qquad(0\le r<1).$$
 Moreover $P_r>0$, $\frac1{2\pi}\int P_r=1$, and $P_r(t)\to0$ uniformly on $\delta\le\abs t\le\pi$ as $r\to1$.`,
-      idea: String.raw`The measure $\frac1{2\pi}P_r(\theta-t)\,dt$ is positive and has Fourier coefficients $r^{\abs n}e^{-in\theta}$ — exactly the coefficients forced on $\mu_z$ in 5.24 for $z=re^{i\theta}$. By uniqueness it *is* $\mu_z$, and the representation $f(z)=\int f\,d\mu_z$ passes to uniform limits of polynomials. The closed form comes from summing two geometric series.`,
+      idea: String.raw`Section 5.22 gives one positive representing measure for evaluation at $z$ on all of $A$. The measure $\frac1{2\pi}P_r(\theta-t)\,dt$ has the Fourier coefficients $r^{\abs n}e^{-in\theta}$ forced on that measure in 5.24. Trigonometric polynomials are dense in $C(T)$, so the measures coincide and the representation holds for every $f\in A$. The displayed polynomials and exponential are examples; polynomial approximation is not an additional hypothesis on each $f$. The closed form of the kernel comes from two geometric series.`,
       caption: String.raw`Drag $z=re^{i\theta}$ in the disc (left, a phase portrait of $f$). Right: the kernel $P_r(\theta-t)$ as a function of $t$, together with the boundary values $\operatorname{Re}f(e^{it})$ and $\operatorname{Im}f(e^{it})$. Averaging the boundary values against the kernel reproduces $f(z)$ to quadrature precision. Push $z$ toward the circle: the kernel becomes a tall narrow spike of area $2\pi$ — an approximate identity — and $f(z)$ approaches the boundary value $f(e^{i\theta})$.`,
       deps: ['rca-5.24'],
       see: ['rca-11.5'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 5.25, p. 112; Section 5.24, p. 111'],
       tags: ['Poisson integral', 'approximate identity'],
       viz(v) {
         const M = v.M;

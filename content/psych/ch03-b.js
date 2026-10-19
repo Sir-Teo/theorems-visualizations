@@ -1,4 +1,5 @@
 // Psychology & Perception — Chapter 3: Scaling sensation (items 3.6–3.10; 3.1–3.5 are in ch03.js)
+import { relativeToneGains } from './verification-models.js';
 import { Phi, zq, logTicks, sig } from './ch03.shared.js';
 
 export default {
@@ -128,17 +129,16 @@ In **Case V**, the processes have equal spread and are uncorrelated, so $z_{ij}=
       name: 'Luce’s choice axiom (Bradley–Terry–Luce)',
       statement: String.raw`**Luce's choice axiom** says that the odds of choosing $i$ over $j$ do not depend on what other options are available: if $P(i\mid S)$ is the probability of choosing $i$ from the set $S$, then for $i,j\in S\subseteq T$,
 $$\frac{P(i\mid S)}{P(j\mid S)}=\frac{P(i\mid T)}{P(j\mid T)} .$$
-When no option is chosen with probability 0 or 1, this is equivalent to the existence of positive **strengths** $v_i$ with
+When every pairwise choice probability is strictly between0and1, this is equivalent to the existence of positive **strengths** $v_i$ with
 $$P(i\mid S)=\frac{v_i}{\sum_{k\in S}v_k}.$$
 For two options this is the **Bradley–Terry–Luce** model of paired comparison, $P(i\succ j)=v_i/(v_i+v_j)$. It implies independence from irrelevant alternatives: adding an option removes probability from every other option *in proportion to its strength*. Real choices break this when options are similar.`,
-      idea: String.raw`Each option is assigned a single number and choosing is a lottery weighted by those numbers, so removing or adding an option can only renormalise. That is what makes the model easy to fit (strengths are estimated from pairwise counts, as in rating players of a game) and it is the same shape as Thurstone's Case V (3.7) with a logistic instead of a normal curve for the pairwise probabilities. Debreu's red-bus/blue-bus example (1960) shows what it cannot do: if a car and a red bus are chosen equally often, adding a blue bus that is just a recolouring of the red bus should leave the car at one half, but the axiom takes a third away from each of the three.`,
+      idea: String.raw`Each option is assigned a single number and choosing is a lottery weighted by those numbers, so removing or adding an option can only renormalise. That is what makes the model easy to fit (strengths are estimated from pairwise counts, as in rating players of a game) and it is the same shape as Thurstone's Case V (3.7) with a logistic instead of a normal curve for the pairwise probabilities. The bus-color variant discussed in Luce’s own2008 exposition shows a possible violation of IIA: if a car and a red bus are chosen equally often, adding a blue bus that is just a recolouring of the red bus should leave the car at one half, but the axiom assigns one third to each option. This bus variant should not be attributed literally to Debreu’s different1960 example.`,
       caption: String.raw`Drag the **bar tops** to set the strengths $v_A,\dots,v_D$, and use the switches to decide which options are on offer. The right panel shows the choice probabilities; the small rings mark each option's probability when only $A$ and $B$ were offered. Under **Luce's axiom** the ratio $P(A)/P(B)$ stays equal to $v_A/v_B$ whatever else is offered. Switch on *C is a near-copy of B* (a blue bus next to a red one, $v_C$ locked to $v_B$) and change the model to **copies count once**: a simple model of our own where near-identical options form a group whose strength is that of its strongest member; now adding $C$ leaves $A$'s probability where it was and splits $B$'s between the two copies, so the ratio $P(A)/P(B)$ changes. Illustrative models, not experimental data.`,
       deps: ['psych-3.7'],
       refs: ['Gescheider ch. 9'],
       tags: ['choice axiom', 'Bradley–Terry', 'IIA'],
-      credit: 'R. D. Luce, Individual Choice Behavior (1959); R. A. Bradley & M. E. Terry, Biometrika 39 (1952); E. Zermelo (1928/29) for the pairwise model; G. Debreu’s review of Luce (1960) for the red-bus/blue-bus objection',
-      scope: String.raw`An exact statement about choice probabilities when the axiom holds; it fails for sets containing similar or dominated options (similarity, decoy and compromise effects), so it is a good model of choice among dissimilar options and a poor one otherwise.`,
-      verify: true,
+      credit: 'R. Duncan Luce,1959; complete author exposition, “Luce’s choice axiom”, Scholarpedia3(12):8077(2008), equations4 and7',
+      scope: String.raw`An exact statement about choice probabilities when the axiom holds; similarity, decoy and compromise effects can violate it. Whether it fits a particular set of options is an empirical question, not guaranteed by dissimilarity alone.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Independence_of_irrelevant_alternatives' },
       viz(v) {
         const M = v.M, NAME = 'ABCD', COL = ['accent', 'orange', 'green', 'purple'], V0 = [4, 3, 3, 1];
@@ -186,8 +186,8 @@ For two options this is the **Bradley–Terry–Luce** model of paired compariso
       statement: String.raw`The **sone** is the unit of perceived loudness, defined so that a 1 kHz tone at a loudness level of 40 phon (40 dB SPL for that tone) has loudness 1 sone. Above about 40 phon, loudness $N$ in sones doubles with every 10 dB increase in level $L$:
 $$N=2^{(L-40)/10}\quad(L\gtrsim40),$$
 equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a factor $10$ in intensity and $10^{0.301}=2$), or about $p^{0.6}$ in sound pressure. A tone that is $\Delta$ dB louder than another therefore sounds $2^{\Delta/10}$ times as loud. Below 40 phon loudness falls off faster than this rule says.`,
-      idea: String.raw`The sone scale is Stevens' power law (3.2) for loudness, with an exponent near $0.3$ for intensity (about $0.6$–$0.67$ for pressure in Stevens' table) found by magnitude estimation (3.1) and by fractionation (“set a tone half as loud as this one”). The level in decibels is itself a log of intensity, so a power law in intensity is a straight line in dB on a log-loudness axis: the “10 dB per doubling” is just $\log_{10}2/0.3$. The exponent in dB terms is $3.01/m$ for an intensity exponent $m$. Equal-loudness contours (music-1.9) say how level and frequency map to phons; the sone then maps phons to a ratio scale.`,
-      caption: String.raw`**Left:** loudness in sones (log axis) against the level of a 1 kHz tone; drag the **gold** handle for the level $L$ of the first tone. The **dashed** continuation is the doubling rule extended below 40 phon, where it is not valid; the solid curve there is a published approximation (not checked against the ISO standard). **Right:** the loudness ratio produced by $\Delta$ dB of extra level, for the intensity exponent $m$ you choose. Use *Hear L, then L+Δ* to judge for yourself whether $10$ dB sounds twice as loud (your device volume sets the absolute level; the difference is exact). Estimates of how many dB make a doubling vary between studies and listeners.`,
+      idea: String.raw`The sone scale is Stevens' power law (3.2) for loudness, with an exponent near $0.3$ for intensity (about $0.6$–$0.67$ for pressure in Stevens' table) found by magnitude estimation (3.1) and by fractionation (“set a tone half as loud as this one”). The level in decibels is itself a log of intensity, so a power law in intensity is a straight line in dB on a log-loudness axis: the “10 dB per doubling” is just $10\log_{10}2/0.3$. The exponent in dB terms is $3.01/m$ for an intensity exponent $m$. Equal-loudness contours (music-1.9) say how level and frequency map to phons; the sone then maps phons to a ratio scale.`,
+      caption: String.raw`**Left:** loudness in sones (log axis) against the level of a 1 kHz tone; drag the **gold** handle for the level $L$ of the first tone. The **dashed** continuation is the doubling rule extended below 40 phon, where it is not valid; the solid curve there is an illustrative steeper extension, unverified against the ISO loudness standard. **Right:** the loudness ratio produced by $\Delta$ dB of extra level, for the intensity exponent $m$ you choose. Use *Hear L, then L+Δ* to judge for yourself whether $10$ dB sounds twice as loud (your device volume sets the absolute level; the electronic amplitude ratio is set by the level-difference slider; your playback system is not calibrated to the displayed absolute SPL). Estimates of how many dB make a doubling vary between studies and listeners.`,
       deps: ['psych-3.2', 'music-1.9'],
       refs: ['Goldstein ch. 11'],
       tags: ['loudness', 'sone', 'psychoacoustics'],
@@ -199,21 +199,23 @@ equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a f
         const M = v.M;
         const dl = v.slider('extra level $\\Delta$ (dB)', 1, 30, 10, { step: 0.5, fmt: (x) => x.toFixed(1) + ' dB' });
         const mSl = v.slider('intensity exponent $m$', 0.2, 0.5, 0.301, { step: 0.001 });
-        const exact = v.toggle('apply the below-40 phon approximation', true);
+        const exact = v.toggle('apply the illustrative below-40 phon extension', true);
         const N = (L, m, below) => (L >= 40 ? Math.pow(10, (m * (L - 40)) / 10) : below ? Math.max(1e-3, Math.pow(L / 40, 2.86) - 0.005) : Math.pow(10, (m * (L - 40)) / 10));
         const s1 = v.stage({ x: [10, 100], y: [-2.3, 2.2], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 290, xlabel: 'level of a 1 kHz tone $L$ (dB SPL = phon)', ylabel: 'loudness (sones)', yticks: logTicks(-2.3, 2.2, { mult: [1] }), title: 'loudness against level' });
         const s2 = v.stage({ x: [0, 30], y: [0, 9], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 250, xlabel: 'level difference $\\Delta$ (dB)', ylabel: 'loudness ratio', title: 'how many times as loud?' });
-        const hL = s1.handle(50, 0, { color: 'gold', r: 8, constrain: (x) => [M.clamp(x, 12, 99), 0] });
-        v.soundButton('Hear $L$, then $L+\\Delta$', (snd) => { const g0 = 0.04, g1 = Math.min(0.9, g0 * Math.pow(10, dl.value / 20)); snd.tone(1000, { duration: 1, gain: g0 }); snd.tone(1000, { duration: 1, gain: g1, delay: 1.5 }); });
+        const hL = s1.handle(50, 0, { color: 'gold', r: 8, constrain: (x) => [M.clamp(x, 12, 100-dl.value), 0] });
+        v.soundButton('Hear two tones $\\Delta$ dB apart', (snd) => { const [g0,g1]=relativeToneGains(dl.value); snd.tone(1000, { duration: 1, gain: g0 }); snd.tone(1000, { duration: 1, gain: g1, delay: 1.5 }); });
         v.legend([['accent', 'sones'], ['muted', 'doubling rule extended', { dash: true }], ['gold', 'chosen levels', { dot: true }]]);
         let st = null;
         v.render(() => {
-          const m = mSl.value, D = dl.value, L = hL.x, b = exact.value, f = (x) => Math.log10(N(x, m, b));
+          const m = mSl.value, D = dl.value, L = Math.min(hL.x,100-D), b = exact.value, f = (x) => Math.log10(N(x, m, b));
+          s1.setView([10,100],[-2.3,Math.max(2.2,f(100)+.2)]);
+          s2.setView([0,30],[0,Math.max(9,Math.pow(10,m*3)*1.12)]);
           s1.fn(f, { domain: [10, 100], color: 'accent', width: 3, n: 220 });
           s1.fn((x) => Math.log10(N(x, m, false)), { domain: [10, 40], color: 'muted', width: 1.6, n: 40, dash: [5, 4] });
           s1.line(40, -2.3, 40, 0, { color: 'faint', dash: [2, 3] }); s1.text('1 sone at 40 phon', 39, -2.0, { align: 'right', size: 11, color: 'muted' });
           hL.set(L, f(L));
-          const L2 = Math.min(100, L + D);
+          const L2 = L + D;
           s1.line(L, -2.3, L, f(L), { color: 'gold', dash: [3, 3] }); s1.line(L2, -2.3, L2, f(L2), { color: 'gold', dash: [3, 3] });
           s1.dot(L, f(L), { r: 5.5, color: 'gold' }); s1.dot(L2, f(L2), { r: 5.5, color: 'gold' });
           s1.text(sig(N(L, m, b)) + ' sone', L, f(L), { dx: -10, dy: -10, align: 'right', size: 11.5, weight: 700, color: 'ink' });
@@ -233,12 +235,12 @@ equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a f
       num: '3.10',
       kind: 'Method',
       name: 'Multidimensional scaling of similarity',
-      statement: String.raw`**Multidimensional scaling (MDS)** takes judged dissimilarities $\delta_{ij}$ between $m$ stimuli and finds points $y_1,\dots,y_m$ in a low-dimensional space whose distances $d_{ij}=\lVert y_i-y_j\rVert$ reproduce them. In **classical (Torgerson) MDS**, with squared dissimilarities $\Delta^{(2)}=[\delta_{ij}^2]$ and the centring matrix $J=I-\frac1m\mathbf 1\mathbf 1^{\!\top}$, the matrix $B=-\tfrac12J\Delta^{(2)}J$ is symmetric; if the $\delta_{ij}$ are exact Euclidean distances between points, then $B=YY^{\!\top}$ and the coordinates are the top eigenvectors of $B$, scaled by the square roots of their eigenvalues. The fit is measured by the **stress**
-$$\sigma_1=\Big(\sum_{i<j}(\delta_{ij}-d_{ij})^2\Big/\sum_{i<j}\delta_{ij}^2\Big)^{1/2},$$
-and a plot of the stress against the number of dimensions shows how many dimensions the judgments need. The solution is determined only up to rotation, reflection and shift.`,
-      idea: String.raw`Squared distances determine inner products once the origin is moved to the centroid ($B$ is that double-centred matrix), so a spectral decomposition recovers the configuration whenever one exists; noise in the judgments puts small eigenvalues on the “spurious” directions and the stress shows how much is lost by keeping the first few. The method grew out of Thurstone-style scaling (3.7), which turns choices into one-dimensional scale values; MDS turns *dissimilarity ratings* into a configuration in several dimensions, and the picture can reveal structure (a circle, clusters) that no single rating scale shows. Torgerson's 1952 paper gave the classical solution; later nonmetric versions (Shepard, Kruskal) use only the rank order of the dissimilarities.`,
+      statement: String.raw`**Multidimensional scaling (MDS)** takes judged dissimilarities $\delta_{ij}$ between $m$ stimuli and finds points $y_1,\dots,y_m$ in a low-dimensional space whose distances $d_{ij}=\lVert y_i-y_j\rVert$ reproduce them. In **classical (Torgerson) MDS**, with squared dissimilarities $\Delta^{(2)}=[\delta_{ij}^2]$ and the centring matrix $J=I-\frac1m\mathbf 1\mathbf 1^{\!\top}$, the matrix $B=-\tfrac12J\Delta^{(2)}J$ is symmetric; if the $\delta_{ij}$ are exact Euclidean distances between points, then $B=YY^{\!\top}$ and the coordinates are the top eigenvectors of $B$, scaled by the square roots of their eigenvalues. This page measures fit by a **normalized distance error**
+$$s=\Big(\sum_{i<j}(\delta_{ij}-d_{ij})^2\Big/\sum_{i<j}\delta_{ij}^2\Big)^{1/2},$$
+and plotting this error against dimension shows what is lost by keeping fewer dimensions. This normalization uses squared judged dissimilarities; it is not Kruskal’s nonmetric Stress1, whose denominator uses fitted distances. The solution is determined only up to rotation, reflection and shift.`,
+      idea: String.raw`Squared distances determine inner products once the origin is moved to the centroid ($B$ is that double-centred matrix), so the real spectral theorem (ladr-7.29) supplies an orthonormal eigenbasis and a spectral decomposition recovers the configuration whenever one exists; noise in the judgments puts small eigenvalues on the “spurious” directions and the stress shows how much is lost by keeping the first few. The method grew out of Thurstone-style scaling (3.7), which turns choices into one-dimensional scale values; MDS turns *dissimilarity ratings* into a configuration in several dimensions, and the picture can reveal structure (a circle, clusters) that no single rating scale shows. Torgerson's 1952 paper gave the classical solution; later nonmetric versions (Shepard, Kruskal) use only the rank order of the dissimilarities.`,
       caption: String.raw`**Left:** the *true* configuration of 12 stimuli, a hidden psychological space; drag the points to reshape it or choose a preset (a hue circle, a line, clusters). A simulated judge rates every pair's dissimilarity as the true distance times random noise (slider). **Middle:** the configuration recovered by classical MDS from those ratings alone, rotated and scaled to sit on the truth (thin lines show the errors). **Right:** stress against dimension: it drops to near zero at the true dimension (2 for a circle or clusters, 1 for a line) when the noise is small (classical MDS minimises a different criterion, the strain of $B$, so stress can wobble as dimensions are added). Simulated judgments. For real colour data, Ekman's 1954 similarity ratings of 14 spectral colours are often cited as an example in which MDS arranges the colours around a circle.`,
-      deps: ['psych-3.7'],
+      deps: ['psych-3.7', 'ladr-7.29'],
       refs: ['Gescheider ch. 10'],
       tags: ['multidimensional scaling', 'similarity', 'stress'],
       credit: 'W. S. Torgerson, “Multidimensional scaling: I. Theory and method”, Psychometrika 17 (1952): 401–419; J. B. Kruskal (1964) for stress and nonmetric MDS',
@@ -269,7 +271,7 @@ and a plot of the stress against the number of dimensions shows how many dimensi
           const B = D2.map((r, i) => r.map((x, j) => -0.5 * (x - rm[i] - rm[j] + gm)));
           const E = M.eigSym(B), lam = E.values;
           const coord = (k) => E.vecs.slice(0, k).map((ev, a) => ev.map((x) => x * Math.sqrt(Math.max(lam[a], 0)))); // k lists of m
-          const stress = (k) => { const C = coord(k); let num = 0, den = 0; for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { let d2 = 0; for (let a = 0; a < k; a++) d2 += (C[a][i] - C[a][j]) ** 2; num += (Dm[i][j] - Math.sqrt(d2)) ** 2; den += Dm[i][j] ** 2; } return Math.sqrt(num / den); };
+          const stress = (k) => { const C = coord(k); let num = 0, den = 0; for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { let d2 = 0; for (let a = 0; a < k; a++) d2 += (C[a][i] - C[a][j]) ** 2; num += (Dm[i][j] - Math.sqrt(d2)) ** 2; den += Dm[i][j] ** 2; } return den>0 ? Math.sqrt(num / den) : 0; };
           const sts = [1, 2, 3, 4].map(stress);
           // align 2-D solution to truth: reflect?, rotate, scale
           const C2 = coord(2), Y = M.range(NP).map((i) => [C2[0][i], C2[1][i]]), cx = M.mean(X.map((p) => p[0])), cy = M.mean(X.map((p) => p[1])), Xc = X.map((p) => [p[0] - cx, p[1] - cy]);
@@ -288,7 +290,7 @@ and a plot of the stress against the number of dimensions shows how many dimensi
           sb.setView([0.4, 4.6], [0, Math.max(0.2, Math.max(...sts) * 1.18)]);
           st = { sts, err: best.err, rad, lam: lam.slice(0, 4) };
         });
-        v.readout(() => st ? `Stress for 1, 2, 3, 4 dimensions: ${st.sts.map((s) => v.fix(s, 3)).join(', ')} · root-mean-square position error of the 2-D map after alignment: ${v.fix(st.err, 3)} (${v.fix((100 * st.err) / st.rad, 0)}% of the configuration's radius) · leading eigenvalues of $B$: ${st.lam.map((l) => v.fix(l, 2)).join(', ')} · with no noise and a planar truth the stress at 2 dimensions is 0` : '');
+        v.readout(() => st ? `Stress for 1, 2, 3, 4 dimensions: ${st.sts.map((s) => v.fix(s, 3)).join(', ')} · root-mean-square position error of the 2-D map after alignment: ${v.fix(st.err, 3)} (${v.fix(st.rad>0?(100*st.err)/st.rad:0,0)}% of the configuration's radius) · leading eigenvalues of $B$: ${st.lam.map((l) => v.fix(l, 2)).join(', ')} · with no noise and a planar truth the stress at 2 dimensions is 0` : '');
       },
     },
   ],

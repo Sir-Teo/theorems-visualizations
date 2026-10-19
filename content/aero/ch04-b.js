@@ -1,14 +1,9 @@
 // Aerospace Engineering — Chapter 4 (part b): items 4.5-4.8. Sources and caveats: see the header of ch04.js and ch04.shared.js.
-//   4.5 Oblique shock theta-beta-M relation, Prandtl-Meyer function (gamma = 1.4): standard, recomputed (jump relations cross-checked in the readout against the normal-shock formulas of the normal Mach component).
-//       History: T. Meyer's 1908 Goettingen dissertation (supervised by Prandtl; Prandtl had shown schlieren images of the flow in 1907) -- from Wikipedia's Prandtl-Meyer expansion fan article (secondary), verify: true.
-//   4.6 Ackeret's linear theory: J. Ackeret, 1925, Zeitschrift fuer Flugtechnik und Motorluftschiffahrt 16, 72-74 (title "Luftkraefte auf Fluegel, die mit groesserer als Schallgeschwindigkeit bewegt werden"): from the
-//       Wikipedia article on Ackeret; the claim that this is the thin-airfoil paper is supported by a National Academy memorial tribute (secondary). Exact comparison: shock-expansion theory (ch04.shared.js), checked
-//       against Ackeret's flat-plate result 4 alpha^2/beta at small angles.
-//   4.7 Sutton-Graves: K. Sutton and R. A. Graves Jr., NASA TR R-376 (Nov 1971), title/scope checked (NTRS); the constant k = 1.7415e-4 (SI) was recalled, a secondary source quotes the rounded 1.75e-4 for Earth air:
-//       verify: true. Fay-Riddell: J. Aerospace Sci. 25(2), 73-85 (1958), DOI 10.2514/8.7517 (checked, Crossref). Material limits from the Space Shuttle thermal protection system (NASA pages and Wikipedia):
-//       aluminium structure kept below 350 F (450 K), black HRSI tiles about 2300 F (1530 K), reinforced carbon-carbon about 3000 F (1920 K); the titanium value (about 870 K) is an approximate engineering figure, not checked.
-//   4.8 Whitcomb, NACA RM L52H08 (1952): record checked on NTRS (title, author, ID 19930087283, publication date 1952-09-03 as listed there); "also NACA Report 1273 (1956)" is the syllabus's wording and could not be confirmed.
-//       Collier Trophy for the discovery and experimental verification of the area rule, 1955 (NASA/AFHF pages, secondary); the area rule stayed classified until 1955 (same sources).
+// Reviewed 2026-10-18: full NASA/NACA sources and numerical checks are recorded in docs/verification/aero-ch04.md.
+//   4.5 NASA Glenn's complete oblique-shock and Prandtl-Meyer technical descriptions; history narrowed to Ackeret TM317 p2's primary citation of Meyer1908.
+//   4.6 Ackeret's full NACA TM317 translation pp1–8, original venue/date footnote p1, linear pressure/lift/drag pp5–7; Chapman NACA TR1063 p6.
+//   4.7 Sutton–Graves TRR376 pp1–2,12–17; NASA TFAWS2012 Lecture1 pp15–18,28–29 provides SI coefficient, catalytic assumption and wall-temperature balance.
+//   4.8 Whitcomb's full RML52H08 pp1–12, including limitations and indentation experiments, replaces the secondary summary. Numerical curves are not the paper's data.
 
 import {
   clamp, DEG, atmo, G, GM1, cpCrit, thetaOf, thetaMax, shockAngles, obliqueJump, nuPM, NU_MAX, machFromNu, isenP,
@@ -31,7 +26,7 @@ export default {
 
 (a) **Compression corner** (turn $\theta$ into the flow): an attached **oblique shock** at angle $\beta$ to the upstream flow, related to the turn by
 $$\tan\theta=\frac{2\cot\beta\,(M_1^2\sin^2\beta-1)}{M_1^2(\gamma+\cos2\beta)+2}.$$
-For $\theta$ below a maximum $\theta_{\max}(M_1)$ there are two solutions, **weak** (the one seen in practice; $M_2>1$ nearly always) and **strong**; above $\theta_{\max}$ the shock detaches. Across it the normal Mach number $M_{n1}=M_1\sin\beta$ obeys the normal-shock relations, e.g. $p_2/p_1=1+\tfrac{2\gamma}{\gamma+1}(M_{n1}^2-1)$, and the stagnation pressure drops.
+For $\theta$ below a maximum $\theta_{\max}(M_1)$ there are two solutions, **weak** (usually selected in unconfined wedge flow; it can also become subsonic near the attachment limit) and **strong**; above $\theta_{\max}$ the shock detaches. Across it the normal Mach number $M_{n1}=M_1\sin\beta$ obeys the normal-shock relations, e.g. $p_2/p_1=1+\tfrac{2\gamma}{\gamma+1}(M_{n1}^2-1)$, and the stagnation pressure drops.
 
 (b) **Expansion corner** (turn $|\theta|$ away from the flow): a centred fan of Mach waves, through which the flow is isentropic and $\nu(M_2)=\nu(M_1)+|\theta|$ with the Prandtl–Meyer function
 $$\nu(M)=\sqrt{\tfrac{\gamma+1}{\gamma-1}}\arctan\sqrt{\tfrac{\gamma-1}{\gamma+1}(M^2-1)}-\arctan\sqrt{M^2-1},$$
@@ -39,11 +34,10 @@ whose maximum is $\approx130.5^\circ$ for $\gamma=1.4$ (beyond it the flow would
       idea: String.raw`A disturbance in supersonic flow cannot travel upstream, so it is confined to Mach waves of angle $\mu=\arcsin(1/M)$ (9.13); a finite turn is the sum of many small ones. Compressive small turns steepen into a shock (9.14): across a shock only the component normal to it is decelerated, and the tangential component is unchanged, which with the Rankine–Hugoniot conditions gives the $\theta$–$\beta$–$M$ relation. For an expansion each infinitesimal turn $\mathrm d\theta$ is a Mach wave across which $\mathrm d\theta=\sqrt{M^2-1}\,\mathrm dV/V$; integrating gives $\nu(M)$. Expansion is reversible; compression of the same size loses stagnation pressure, by an amount that grows as $\theta^3$.`,
       caption: String.raw`Drag the Mach number and the corner angle (positive = compression, negative = expansion). Left: the flow over the corner, with streamlines bending through the shock (red) or fan (blue). Right: for a compression, the $\theta$–$\beta$ curve of this Mach number (with faint curves for other Mach numbers): the horizontal line at your turn crosses it at the weak and strong shock angles; slide past the top of the curve and the shock detaches. For an expansion, the Prandtl–Meyer function with $M_1$ and $M_2$ marked.`,
       deps: ['fluid-9.14', 'fluid-9.13', 'aero-1.6'],
-      refs: ['Anderson ch. 4'],
+      refs: ['NASA Glenn, Oblique Shock Waves and Prandtl–Meyer Angle, complete governing relations', 'Ackeret, NACA TM317, p. 2, Prandtl/Meyer source citation'],
       tags: ['shock waves', 'supersonic', 'gas dynamics'],
       scope: String.raw`Steady, two-dimensional, inviscid supersonic flow of a calorically perfect gas ($\gamma=1.4$) past a sharp corner or wedge, with the shock attached. Real flows add boundary layers and shock–boundary-layer interaction; at hypersonic speed the perfect-gas relations become inaccurate (4.7).`,
-      credit: 'T. Meyer, doctoral thesis, Göttingen, 1908 (supervised by L. Prandtl)',
-      verify: true,
+      credit: 'Prandtl and Meyer; Meyer’s 1908 report No. 62 is cited by Ackeret (NACA TM317, p. 2)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Prandtl%E2%80%93Meyer_expansion_fan', wikipedia2: 'https://en.wikipedia.org/wiki/Oblique_shock' },
       viz(v) {
         const Ms = v.slider('Mach number $M_1$', 1.1, 6, 2.5, { step: 0.05 });
@@ -123,9 +117,9 @@ whose maximum is $\approx130.5^\circ$ for $\gamma=1.4$ (beyond it the flow would
           if (res.kind === 'detached') return `Turn $${fx(t / DEG, 1)}^\\circ$ exceeds the maximum $\\theta_{\\max}=${fx(res.tm.theta / DEG, 2)}^\\circ$ for $M_1=${fx(M1, 2)}$ (reached at $\\beta=${fx(res.tm.beta / DEG, 1)}^\\circ$): there is no attached oblique shock; a curved bow shock stands ahead of the corner.`;
           if (res.kind === 'shock') {
             const { beta, j, sa } = res, mn = M1 * Math.sin(beta);
-            const nuM = machFromNu(nuPM(M1) - t);
+            const remainingNu = nuPM(M1) - t, nuM = remainingNu >= 0 ? machFromNu(remainingNu) : null;
             return `$\\beta=${fx(beta / DEG, 2)}^\\circ$ (weak ${fx(sa.weak / DEG, 2)}°, strong ${fx(sa.strong / DEG, 2)}°); $M_{n1}=M_1\\sin\\beta=${fx(mn, 3)}$; downstream $M_2=${fx(j.M2, 3)}$; $p_2/p_1=${fx(j.p, 3)}$ (normal-shock formula on $M_{n1}$: $${fx(1 + 2 * G / (G + 1) * (mn * mn - 1), 3)}$), $\\rho_2/\\rho_1=${fx(j.rho, 3)}$, $T_2/T_1=${fx(j.T, 3)}$, $p_{02}/p_{01}=${fx(j.p0, 4)}$.\n`
-              + `Check: the turn recomputed from $\\beta$ is $${fx(thetaOf(beta, M1) / DEG, 3)}^\\circ$. An isentropic compression through the same turn would give $p_2/p_1=${fx(isenP(M1, nuM), 3)}$ — the difference is the entropy generated by the shock.`;
+              + `Check: the turn recomputed from $\\beta$ is $${fx(thetaOf(beta, M1) / DEG, 3)}^\\circ$. ${nuM === null ? 'That turn exceeds the available Prandtl–Meyer angle for a continuously supersonic isentropic compression.' : 'An isentropic compression through the same turn would give $p_2/p_1=' + fx(isenP(M1, nuM), 3) + '$; the pressure difference reflects the shock entropy production.'}`;
           }
           if (res.kind === 'fan') return res.vac ? `The turn would need $\\nu=${fx(res.nu2 / DEG, 1)}^\\circ$, more than the maximum $\\nu_{\\max}=${fx(NU_MAX / DEG, 1)}^\\circ$: the flow separates from the wall and a vacuum forms.`
             : `$\\nu(M_1)=${fx(res.nu1 / DEG, 2)}^\\circ$, turn $${fx(-t / DEG, 1)}^\\circ$ → $\\nu(M_2)=${fx(res.nu2 / DEG, 2)}^\\circ$, $M_2=${fx(res.M2, 3)}$. The fan opens from the Mach angle $\\mu_1=${fx(Math.asin(1 / M1) / DEG, 1)}^\\circ$ to $\\mu_2-|\\theta|=${fx((Math.asin(1 / res.M2) + t) / DEG, 1)}^\\circ$; isentropic: $p_2/p_1=${fx(isenP(M1, res.M2), 4)}$, $T_2/T_1=${fx((1 + 0.2 * M1 * M1) / (1 + 0.2 * res.M2 * res.M2), 4)}$.`;
@@ -145,14 +139,13 @@ $$c_l=\frac{4\alpha}{\sqrt{M_\infty^2-1}},\qquad c_d=\frac{4(\alpha^2+\varepsilo
 The centre of pressure of the flat plate is at mid-chord.
 Lift and wave drag are non-zero even in inviscid flow, and thickness adds wave drag $4\varepsilon^2/\beta$ but no lift.`,
       idea: String.raw`The linearised potential equation $(M_\infty^2-1)\phi_{xx}-\phi_{yy}=0$ is the wave equation: disturbances travel unchanged along the Mach lines $x\mp\beta y=\text{const}$, $\beta=\sqrt{M_\infty^2-1}$. Above the airfoil only the downstream-running family exists, so $\phi=f(x-\beta y)$, and the flow-tangency condition $\phi_y=V_\infty\theta$ gives $u'/V_\infty=-\theta/\beta$ and hence $C_p=-2u'/V_\infty=2\theta/\beta$. The same expression is the first term in the oblique-shock relation (4.5) and in the Prandtl–Meyer expansion for small $\theta$, so the exact shock–expansion method reduces to Ackeret's result at small angles.`,
-      caption: String.raw`Left: the airfoil at incidence with the waves it sends out (red compression, blue expansion). Top right: the pressure coefficient on its four faces from Ackeret's formula (hollow) and from exact shock–expansion theory (solid). Bottom: lift and drag against angle of attack, linear theory (dashed) and exact (solid). Raise the angle of attack or lower the Mach number and Ackeret's curves drift away from the exact ones; at large $\alpha$ the shock detaches, and as $M_\infty\to1$ linear theory breaks down.`,
-      deps: ['aero-4.5'],
-      refs: ['Anderson ch. 5'],
+      caption: String.raw`Left: the airfoil at incidence with the waves it sends out (red compression, blue expansion). Top right: the pressure coefficient on its four faces from Ackeret's formula (hollow) and from shock–expansion theory (solid). Bottom: lift and drag against angle of attack, linear theory (dashed) and exact (solid). Raise the angle of attack or lower the Mach number and Ackeret's curves drift away from the exact ones; at large $\alpha$ the shock detaches, and as $M_\infty\to1$ linear theory breaks down.`,
+      deps: ['aero-4.5', 'pde-2.1'],
+      refs: ['Ackeret, NACA TM317 (1925), printed pp. 1–8; linearization and force integrals pp. 5–7', 'Chapman, NACA TR1063 (1952), p. 6, pressure relation preceding Eq. (17)'],
       tags: ['supersonic', 'wave drag', 'linear theory'],
-      scope: String.raw`Small angles and thin sections, $M_\infty$ well above 1 (roughly $1.2\lesssim M_\infty\lesssim4$); inviscid flow over a flat plate or double-wedge section. The 'exact' comparison is the shock–expansion method: each face is treated as an independent corner, so wave reflections off the opposite shocks are neglected.`,
-      credit: 'J. Ackeret, 1925 (Zeitschrift für Flugtechnik und Motorluftschiffahrt 16, 72–74; year and venue from Wikipedia, a National Academy tribute confirms the 1925 thin-airfoil result)',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Jakob_Ackeret' },
+      scope: String.raw`Small angles and thin sections, $M_\infty$ well above 1 (roughly $1.2\lesssim M_\infty\lesssim4$); inviscid flow over a flat plate or double-wedge section. The comparison is the shock–expansion method: each face is treated as an independent corner, so wave reflections off the opposite shocks are neglected.`,
+      credit: 'J. Ackeret, 1925; original Zeitschrift für Flugtechnik und Motorluftschiffahrt, February 14, pp. 72–74, as credited in NACA TM317',
+      links: { source: 'https://ntrs.nasa.gov/citations/19930087085', wikipedia: 'https://en.wikipedia.org/wiki/Jakob_Ackeret' },
       viz(v) {
         const Ms = v.slider('Mach number $M_\\infty$', 1.15, 5, 2, { step: 0.05 });
         const al = v.slider('angle of attack $\\alpha$ (°)', -10, 10, 3, { step: 0.1 });
@@ -192,11 +185,11 @@ Lift and wave drag are non-zero even in inviscid flow, and thickness adds wave d
           if (ex) { C.dot(al.value, ex.cl, { r: 6, color: 'gold' }); D.dot(al.value, ex.cd, { r: 6, color: 'gold' }); }
           info = { M, a, e, b, ack, ex };
         });
-        v.legend([['orange', 'Ackeret (linear)', { dash: true }], ['accent', 'shock–expansion (exact)']]);
+        v.legend([['orange', 'Ackeret (linear)', { dash: true }], ['accent', 'shock–expansion (inviscid)']]);
         v.readout(() => {
           const { M, b, ack, ex } = info;
           let s = `$\\beta=\\sqrt{M_\\infty^2-1}=${fx(b, 3)}$. Ackeret: $c_l=${fx(ack.cl, 4)}$, $c_d=${fx(ack.cd, 4)}$, $C_p$ on the faces $${fx(ack.up1, 3)},\\ ${fx(ack.up2, 3)},\\ ${fx(ack.lo1, 3)},\\ ${fx(ack.lo2, 3)}$.\n`;
-          s += ex ? `Shock–expansion: $c_l=${fx(ex.cl, 4)}$ (Ackeret differs by $${fx(100 * (ack.cl - ex.cl) / (Math.abs(ex.cl) || 1), 1)}\\%$), $c_d=${fx(ex.cd, 4)}$ ($${fx(100 * (ack.cd - ex.cd) / ex.cd, 1)}\\%$); faces $${fx(ex.up1, 3)},\\ ${fx(ex.up2, 3)},\\ ${fx(ex.lo1, 3)},\\ ${fx(ex.lo2, 3)}$.` : 'At this angle a shock detaches (a face turns the flow by more than $\\theta_{\\max}$): the shock–expansion solution does not exist and the linear theory is meaningless.';
+          s += ex ? `Shock–expansion: $c_l=${fx(ex.cl, 4)}$ (Ackeret differs by $${fx(100 * (ack.cl - ex.cl) / (Math.abs(ex.cl) || 1), 1)}\\%$), $c_d=${fx(ex.cd, 4)}$ (${ex.cd === 0 ? 'zero drag in both models' : '$' + fx(100 * (ack.cd - ex.cd) / Math.abs(ex.cd), 1) + '\\%$'}); faces $${fx(ex.up1, 3)},\\ ${fx(ex.up2, 3)},\\ ${fx(ex.lo1, 3)},\\ ${fx(ex.lo2, 3)}$.` : 'An attached, fully supersonic sequence of corner waves is unavailable at this setting (a leading shock detaches or its downstream flow is subsonic before the rear expansion). This comparison cannot validate the linear result here.';
           return s;
         });
       },
@@ -208,18 +201,17 @@ Lift and wave drag are non-zero even in inviscid flow, and thickness adds wave d
       name: 'Hypersonic aerodynamic heating',
       statement: String.raw`A body moving at hypersonic speed converts the flow's kinetic energy into heat in the boundary layer and at the stagnation point. For a perfect gas the stagnation temperature is
 $$T_0=T_\infty\Big(1+\tfrac{\gamma-1}{2}M_\infty^2\Big),$$
-which reaches thousands of kelvin well below orbital speed, far beyond the limits of aluminium and titanium structures. The convective heat flux at the stagnation point of a blunt nose of radius $R_n$ scales as
+which reaches thousands of kelvin well below orbital speed, far above ambient temperature. The convective heat flux at the stagnation point of a blunt nose of radius $R_n$ scales as
 $$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
-(the Sutton–Graves form, with $k\approx1.7\times10^{-4}$ in SI units for Earth air), so it grows as the cube of speed, falls with nose radius, and is why re-entry vehicles are blunt. A surface radiating to space reaches an equilibrium wall temperature $T_w=(\dot q_s/\varepsilon\sigma)^{1/4}$. At these speeds the gas dissociates and ionises, so the perfect-gas $T_0$ is an overestimate.`,
-      idea: String.raw`A decelerated fluid element has to put its kinetic energy $V^2/2$ somewhere; adiabatically the enthalpy rises by that amount, $c_pT_0=c_pT+V^2/2$, which gives the formula for $T_0$ (and the $M^2$ growth). Close to the wall the gas cannot be brought to rest without conducting heat into the surface, with a flux proportional to the thickness of the thin layer and the velocity gradient there; the boundary-layer theory of the stagnation point (Fay–Riddell, 1958) yields a flux proportional to $\sqrt{\rho_e\mu_e\,\mathrm du_e/\mathrm dx}\,(h_0-h_w)$ and, for a sphere, to $\sqrt{\rho/R_n}\,V^3$. Above about Mach 5 the energy goes partly into dissociating $\mathrm O_2$ and $\mathrm N_2$ rather than into temperature, which is why the real temperature behind a strong shock is far lower than $T_0$ of the perfect gas.`,
-      caption: String.raw`Left: perfect-gas stagnation temperature against Mach number at the chosen altitude (the temperature there comes from the standard atmosphere of chapter 1), with the approximate temperature limits of structural materials and thermal-protection systems as horizontal lines; the grey region marks speeds where the perfect-gas model is unreliable. Right: radiative-equilibrium wall temperature at the stagnation point of a nose of the chosen radius, from the Sutton–Graves heat flux (dashed where it is used below the speeds it was fitted to). Increase the nose radius and watch the wall temperature fall; fly higher and it falls again as the air thins.`,
-      deps: ['aero-4.5', 'aero-1.6'],
-      refs: ['Anderson ch. 10'],
+(the Sutton–Graves form, with $k\approx1.7\times10^{-4}$ in SI units for Earth air), so it grows as the cube of speed, falls with nose radius, and is why re-entry vehicles are blunt. Using this cold-wall flux without a hot-wall correction gives the radiative balance estimate $T_w=(\dot q_s/\varepsilon\sigma)^{1/4}$. At these speeds the gas dissociates and ionises, so the perfect-gas $T_0$ is an overestimate.`,
+      idea: String.raw`A decelerated fluid element has to put its kinetic energy $V^2/2$ somewhere; adiabatically the enthalpy rises by that amount, $c_pT_0=c_pT+V^2/2$, which gives the formula for $T_0$ (and the $M^2$ growth). Close to the wall the gas cannot be brought to rest without conducting heat into the surface, with a flux set by the thermal gradient across the boundary layer; the boundary-layer theory of the stagnation point (Fay–Riddell, 1958) yields a flux proportional to $\sqrt{\rho_e\mu_e\,\mathrm du_e/\mathrm dx}\,(h_0-h_w)$ and, for a sphere, to $\sqrt{\rho/R_n}\,V^3$. Above about Mach 5 the energy goes partly into dissociating $\mathrm O_2$ and $\mathrm N_2$ rather than into temperature, which is why the real temperature behind a strong shock is far lower than $T_0$ of the perfect gas.`,
+      caption: String.raw`Left: perfect-gas stagnation temperature against Mach number at the chosen altitude (the temperature there comes from the standard atmosphere of chapter 1), with three historical Shuttle temperature references as horizontal lines; the grey region marks speeds where the perfect-gas model is unreliable. Right: cold-wall-flux estimate of radiative-equilibrium wall temperature at the stagnation point of a nose of the chosen radius, from the Sutton–Graves heat flux (dashed where it is used below the speeds it was fitted to). Increase the nose radius and watch the wall temperature fall; fly higher and it falls again as the air thins.`,
+      deps: ['aero-4.5', 'aero-1.6', 'thermo-9.6', 'thermo-1.14'],
+      refs: ['Sutton and Graves, NASA TR R-376 (1971), pp. 1–2 and 12–17', 'NASA TFAWS 2012, Aerothermodynamics Course, Lecture 1, pp. 15–18 and 28–29', 'NASA Kennedy, Orbiter Thermal Protection System, p. 1; Rummler, Recent Advances in Carbon-Carbon Materials Systems, p. 295'],
       tags: ['hypersonic', 'heating', 're-entry'],
-      scope: String.raw`The stagnation temperature is the adiabatic value for a perfect gas (valid up to about Mach 4–5); the Sutton–Graves formula was fitted to equilibrium-gas results for entry flight (enthalpies from about 2.3 to 116 MJ/kg), for a cold wall and a sphere-like nose, laminar flow, and is accurate to a few tens of percent; the equilibrium wall temperature assumes all heat is radiated away (no conduction, no catalysis). Material limits are approximate engineering figures, not design allowables.`,
-      credit: 'K. Sutton and R. A. Graves Jr., NASA TR R-376, 1971; J. A. Fay and F. R. Riddell, J. Aerospace Sci. 25 (1958) 73–85',
-      verify: true,
-      links: { doi: 'https://doi.org/10.2514/8.7517', wikipedia: 'https://en.wikipedia.org/wiki/Atmospheric_entry' },
+      scope: String.raw`Perfect-gas stagnation temperature is a low-temperature comparison; dissociation and ionization invalidate constant specific heats. The simplified Sutton–Graves estimate is for laminar stagnation-point convection at a blunt effective radius, a fully catalytic wall, Earth air, and a cold-wall enthalpy approximation. The original report studied equilibrium gases at 2.3–116.2 MJ/kg and wall temperatures 300 and 1111 K; these bounds do not certify this simplified constant-k model. Radiative balance omits hot-wall correction, conduction, ablation and incident shock-layer radiation. The three Shuttle reference temperatures describe different structural/insulation roles, not a material-selection rule or design allowables.`,
+      credit: 'K. Sutton and R. A. Graves Jr., NASA TR R-376, 1971; simplified SI form: NASA TFAWS 2012 Lecture 1, p. 17',
+      links: { source: 'https://ntrs.nasa.gov/citations/19720003329', course: 'https://tfaws.nasa.gov/TFAWS12/Proceedings/Aerothermodynamics%20Course.pdf' },
       viz(v) {
         const hS = v.slider('altitude (km)', 20, 90, 50, { step: 1 });
         const rS = v.slider('nose radius $R_n$ (m)', 0.01, 3, 0.3, { step: 0.01, log: true });
@@ -227,7 +219,7 @@ $$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
         const kS = v.slider('constant $k$ (×10⁻⁴, SI)', 1.5, 2.0, 1.74, { step: 0.01 });
         const A = v.stage({ x: [1, 12], y: [0, 6000], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: '$T_0$ (K)', title: 'perfect-gas stagnation temperature' });
         const B = v.stage({ x: [1, 25], y: [0, 3500], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'Mach number $M_\\infty$', ylabel: '$T_w$ (K)', title: 'radiative-equilibrium wall temperature' });
-        const LIM = [['aluminium structure', 450, 'blue'], ['titanium alloy', 870, 'green'], ['silica tile (HRSI)', 1530, 'orange'], ['reinforced carbon–carbon', 1920, 'red']];
+        const LIM = [['Shuttle aluminium skin reference', 450, 'blue'], ['Shuttle HRSI surface reference', 1530, 'orange'], ['Shuttle RCC surface reference', 1920, 'red']];
         let info = {}; const Mh = { M: 6 };
         const hd = A.handle(6, 1000, { color: 'gold', r: 8, constrain: (x) => [clamp(x, 1, 12), 0] }); hd.onDrag = () => { Mh.M = hd.x; };
         v.render(() => {
@@ -240,19 +232,19 @@ $$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
           const M0 = clamp(Mh.M, 1, 12); hd.set(M0, T * (1 + 0.2 * M0 * M0)); hd.y = T * (1 + 0.2 * M0 * M0);
           const q = (M) => k * Math.sqrt(rho / Rn) * (M * a) ** 3, Tw = (M) => Math.pow(q(M) / (eps * SIGMA_SB), 0.25);
           const Vfit = Math.sqrt(2 * 2.3e6) / a;
-          B.setView([1, 25], [0, 3500]);
+          B.setView([1, 25], [0, Math.max(3500, 1.12 * Tw(M0))]);
           for (const [nm, T0, c] of LIM) B.hline(T0, { color: c, dash: true, width: 1.4 });
           B.fn(Tw, { color: 'accent', width: 2.8, domain: [Math.max(1, Vfit), 25] });
           if (Vfit > 1) B.fn(Tw, { color: 'accent', width: 1.6, dash: true, domain: [1, Vfit] });
-          B.dot(clamp(M0 * 1, 1, 25), Math.min(3400, Tw(M0)), { r: 6, color: 'gold' }); B.vline(M0, { color: 'gold', dash: true, width: 1 });
+          B.dot(clamp(M0 * 1, 1, 25), Tw(M0), { r: 6, color: 'gold' }); B.vline(M0, { color: 'gold', dash: true, width: 1 });
           info = { T, a, rho, Rn, M0, T0: T * (1 + 0.2 * M0 * M0), q: q(M0), Tw: Tw(M0), V: M0 * a, h0: (M0 * a) ** 2 / 2, Vfit };
         });
-        v.legend([['accent', 'model'], ['blue', 'aluminium'], ['green', 'titanium'], ['orange', 'tile'], ['red', 'RCC']]);
+        v.legend([['accent', 'model'], ['blue', 'aluminium'], ['orange', 'tile'], ['red', 'RCC']]);
         v.readout(() => {
           const { T, a, rho, M0, T0, q, Tw, V, h0, Vfit } = info;
           const ok = LIM.filter(([, lim]) => Tw <= lim).map(([n]) => n);
           return `At ${hS.value} km: $T_\\infty=${fx(T, 1)}$ K, $a=${fx(a, 0)}$ m/s, $\\rho=${fx(rho * 1e3, 3)}\\times10^{-3}$ kg/m³. At $M_\\infty=${fx(M0, 2)}$ ($V=${fx(V / 1000, 2)}$ km/s, $h_0=V^2/2=${fx(h0 / 1e6, 2)}$ MJ/kg): perfect-gas $T_0=${fx(T0, 0)}$ K; stagnation-point flux $\\dot q_s=${fx(q / 1e6, 3)}$ MW/m² (Sutton–Graves, $k=${fx(kS.value, 2)}\\times10^{-4}$); radiative-equilibrium wall temperature $T_w=${fx(Tw, 0)}$ K.\n`
-            + `Materials whose limit is above this wall temperature: ${ok.length ? ok.join(', ') : 'none (too hot for every listed material)'}. The formula was fitted for $h_0\\ge2.3$ MJ/kg ($M_\\infty\\ge${fx(Vfit, 1)}$ here); below that the dashed part is an extrapolation.`;
+            + `Historical reference temperatures above this estimate: ${ok.length ? ok.join(', ') : 'none'}. The original equilibrium-gas study began at $h_0\\ge2.3$ MJ/kg ($M_\\infty\\ge${fx(Vfit, 1)}$ here); below that the dashed part is an extrapolation. These reference lines do not determine material suitability; the cold-wall flux omits the reduction of convection at a hot wall.`;
         });
       },
     },
@@ -263,18 +255,17 @@ $$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
       name: 'Drag-Rise Characteristics of Wing-Body Combinations',
       paper: {
         authors: 'Richard T. Whitcomb', year: 1952, title: 'A Study of the Zero-Lift Drag-Rise Characteristics of Wing-Body Combinations Near the Speed of Sound',
-        venue: 'NACA Research Memorandum RM L52H08 (also NACA Report 1273, 1956)', url: 'https://ntrs.nasa.gov/citations/19930087283',
+        venue: 'NACA Research Memorandum RM L52H08 (September 3, 1952)', url: 'https://ntrs.nasa.gov/citations/19930087283',
       },
       introduces: ['aero-4.4'],
-      statement: String.raw`Whitcomb's wind-tunnel study of wing–body combinations at Mach numbers close to 1 led to what became the **area rule**: the zero-lift transonic drag rise of a wing–body combination is nearly that of a body of revolution with the same longitudinal distribution of cross-sectional area (area measured in planes normal to the stream, including the wing). Smoothing that distribution, for example by narrowing the fuselage where the wing is attached, lowers the drag rise; the principle was stated, tested and then used to redesign existing aircraft. (This summary follows the usual modern account of the paper; its details, such as the particular models and the quoted drag figures, were not re-checked against the report itself.)`,
-      idea: String.raw`Before the paper, transonic drag was treated component by component and wing and fuselage designs were optimised separately, so adding a thin swept wing to a streamlined body produced an unexplained and large drag rise near Mach 1. Slender-body theory (4.4, von Kármán's integral) had shown that for a slender body the wave drag at Mach 1 depends on the area distribution alone; Whitcomb's wind-tunnel results at Langley showed that this equivalence also holds for wings that are far from slender, so the whole aircraft can be treated as a body of revolution to be shaped. The result became the design rule behind the 'coke-bottle' fuselages of 1950s supersonic fighters, and it introduced the idea of area ruling (4.4).`,
+      statement: String.raw`Whitcomb compared four thin, low-aspect-ratio wing–body configurations with bodies of revolution having the same axial area distribution, in the Langley 8-foot transonic tunnel at Mach0.85–1.10. Near Mach1, their zero-lift drag-rise increments and extensive shock patterns were approximately alike. Indenting the fuselage to compensate for the wing's cross-sectional area greatly reduced, or nearly eliminated, the wing's additional drag rise. This experimental **area rule** is approximate: agreement worsens as wing thickness, aspect ratio, taper or supersonic Mach number increase.`,
+      idea: String.raw`A wing and fuselage interact through their pressure field, so their combined drag rise need not be the sum of isolated-component values. Whitcomb's equal-area comparisons supplied an empirical way to account for that interference. The report's swept-wing example had a drag rise near0.012 on a curved body against0.004 on a cylindrical body (p.9); the report also explains the finite measurement accuracy and less exact agreement for this thicker swept wing. The numerical illustration below uses slender-body theory to demonstrate smoothing; it does not recreate the tunnel measurements.`,
       caption: String.raw`A **reconstruction in a model**, not Whitcomb's data. Left: the area distribution of a wing–body combination for the straight fuselage ($k=0$), for your indentation $k$, and for the equivalent body of revolution (dotted: it has the same $S(x)$ as your setting by definition). Right: a model drag-rise curve $\Delta C_D(M)$ whose height at $M=1$ comes from the slender-body wave drag of each area distribution and whose onset Mach number follows Korn's relation for the chosen wing thickness; the shape of the rise below $M=1$ is a smooth fit, not data. Slide $k$ to indent the fuselage and the drag peak falls toward that of the smooth Sears–Haack body.`,
       deps: ['aero-4.2'],
-      refs: [],
+      refs: ['Whitcomb, NACA RM L52H08 (1952), full experiment/discussion pp. 1–12', 'Sheppard, ARC R&M3077 (1957), §2.3.1, p. 5'],
       tags: ['area rule', 'transonic', 'history'],
       scope: String.raw`Slender wing–body combinations at zero lift near $M=1$. The wave-drag magnitudes come from the slender-body formula applied to an idealised area distribution (a Sears-Haack-like fuselage plus a $\sin^2$ wing hump, reference area $0.12\,l^2$); the curve between $M\approx0.85$ and $1$ is an interpolation, and no value in this picture is from the paper.`,
-      credit: 'R. T. Whitcomb, NACA Langley, 1952 (NACA RM L52H08; Collier Trophy 1955 for the area rule)',
-      verify: true,
+      credit: 'R. T. Whitcomb, NACA Langley, September 3, 1952 (NACA RM L52H08)',
       links: { ntrs: 'https://ntrs.nasa.gov/citations/19930087283', wikipedia: 'https://en.wikipedia.org/wiki/Richard_T._Whitcomb' },
       viz(v) {
         const kS = v.slider('indentation $k$', 0, 1, 0.6, { step: 0.01 });
@@ -304,7 +295,7 @@ $$\dot q_s=k\sqrt{\rho_\infty/R_n}\;V_\infty^3 ,$$
         v.legend([['red', 'wing + straight fuselage'], ['accent', 'your indentation'], ['green', 'equivalent body of revolution (same $S(x)$)'], ['muted', 'body alone / fully ruled']]);
         v.readout(() => {
           const { cw0, cwk, cw1, M0, mdd } = info;
-          return `Model drag rise at $M=1$ (slender-body wave drag over $S_{ref}=0.12\\,l^2$): straight fuselage $${fx(cw0, 4)}$, your setting $${fx(cwk, 4)}$ (equivalent body of revolution: the same, by the equivalence the paper asserts), fully area-ruled $${fx(cw1, 4)}$ — the Sears–Haack body for this volume.\nThe indentation removes $${fx(100 * (1 - cwk / cw0), 1)}\\%$ of the model's drag rise. Onset of the rise (Korn, $\\kappa=0.87$, $C_L=0$): $M_{dd}=${fx(mdd, 3)}$, curve starts at $${fx(M0, 3)}$. The paper's own figures are not reproduced here.`;
+          return `Model drag rise at $M=1$ (slender-body wave drag over $S_{ref}=0.12\\,l^2$): straight fuselage $${fx(cw0, 4)}$, your setting $${fx(cwk, 4)}$ (equivalent body of revolution: the same, by the equivalence the paper asserts), fully area-ruled $${fx(cw1, 4)}$ — the Sears–Haack body at the smaller, fully-indented volume. Indentation removes volume in this illustration.\nThe indentation removes $${fx(100 * (1 - cwk / cw0), 1)}\\%$ of the model's drag rise. Onset of the rise (Korn, $\\kappa=0.87$, $C_L=0$): $M_{dd}=${fx(mdd, 3)}$, curve starts at $${fx(M0, 3)}$. The paper's own figures are not reproduced here.`;
         });
       },
     },

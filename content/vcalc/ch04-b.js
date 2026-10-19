@@ -116,9 +116,7 @@ Equivalently, $\iint_{\R^2}e^{-(x^2+y^2)}\,dA=\pi$. Writing $I=\int_{-\infty}^\i
       idea: String.raw`The one-variable integral has no elementary antiderivative, but its square is a two-variable integral of the rotation-invariant function $e^{-r^2}$, which polar coordinates (4.7) make elementary because the Jacobian $r$ supplies exactly the factor needed: $\int_0^R e^{-r^2}r\,dr=\tfrac12(1-e^{-R^2})$. Improper integrals are handled by exhaustion: the integrand is positive, so the integral over the square $[-R,R]^2$ (a product, equal to $(\int_{-R}^Re^{-x^2}dx)^2$ by 4.2) is squeezed between the integrals over the discs of radius $R$ and $\sqrt2R$ (which contain/are contained in it), and both disc integrals tend to $\pi$.`,
       caption: String.raw`Drag $R$. Left: the surface $e^{-(x^2+y^2)}$ as a colour map, with the disc of radius $R$ (blue) and the square of half-side $R$ (orange). Right: the two integrals as functions of $R$. The square's value (orange) always lies between the disc of radius $R$ (blue) and the disc of radius $\sqrt2R$ (blue, dashed); both discs climb to $\pi$, so the square does as well, and $\sqrt{\text{square}}=\int_{-R}^Re^{-x^2}dx\to\sqrt\pi$. All values are computed by numerical integration (Simpson), not from the closed forms.`,
       deps: ['vcalc-4.7', 'vcalc-4.2'],
-      refs: ['Marsden–Tromba §6.4'],
-      credit: 'The value $\\sqrt\\pi$ goes back to Laplace and de Moivre’s era (18th century); the squaring-and-polar-coordinates evaluation is usually attributed to Poisson',
-      verify: true,
+      refs: ['Conrad, The Gaussian Integral, §1 p.1 and Appendix pp.14–15'],
       tags: ['Gaussian', 'polar coordinates', 'improper integral'],
       viz(v) {
         const R = v.slider('radius $R$', 0.1, 3.2, 1.0, { step: 0.01 });
@@ -236,15 +234,13 @@ Properties: the total torque of gravity about the centre of mass is zero (the la
       num: '4.10',
       kind: 'Theorem',
       name: 'Pappus’s centroid theorems',
-      statement: String.raw`Let $D$ be a bounded plane region with area $A$ and centroid at distance $d$ from a line $\ell$ in its plane that does not cut the interior of $D$. Then the solid obtained by revolving $D$ once about $\ell$ has volume
+      statement: String.raw`Let $D$ be a bounded plane region of positive area lying on one side of $\ell$, with area $A$ and centroid at distance $d$ from the line $\ell$ in its plane. Then the solid obtained by revolving $D$ once about $\ell$ has volume
 $$V=2\pi d\,A.$$
-Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc length) at distance $d$ from $\ell$ lies on one side of $\ell$, the surface of revolution it sweeps has area $S=2\pi d\,L$. The hypothesis that $\ell$ does not cut the region (resp. curve) cannot be dropped.`,
+Likewise, if a simple piecewise $C^1$ plane curve $\gamma$ of positive length $L$ and centroid (of its arc length) at distance $d$ from $\ell$ lies on one side of $\ell$, the surface of revolution it sweeps has area $S=2\pi d\,L$. The hypothesis that $\ell$ does not cut the region (resp. curve) cannot be dropped.`,
       idea: String.raw`Place $\ell$ as the line $x=a$ and use shells: a thin vertical strip of $D$ at distance $r=|x-a|$ sweeps a cylindrical shell of volume $2\pi r\,dA$, so $V=2\pi\iint_D|x-a|\,dA$. When $D$ lies on one side of $\ell$, $|x-a|=\pm(x-a)$ and the integral is $\pm2\pi\iint(x-a)\,dA=2\pi A(\bar x-a)$, by the definition of the centroid (4.9); that is $2\pi dA$. The curve version is the same computation with $\int\ldots\,ds$ in place of $\iint\ldots\,dA$. If $D$ straddles $\ell$ the two halves overlap after revolving and the signed integral no longer counts the volume of the solid.`,
-      caption: String.raw`Drag the five corners of the pentagon (keep it a simple polygon) and move the axis with the slider. Left: the region, its centroid (green), the axis, and the distance $d$. Right: the solid of revolution (drag to rotate). The readout compares $2\pi dA$ with an independent number: for volume, a sum of annulus areas over horizontal slices of the actual solid; for surface, a line integral $\int 2\pi|x-a|\,ds$ over the boundary. They agree to about $0.5\%$ for any shape when the axis stays on one side, and disagree as soon as the axis cuts the region.`,
+      caption: String.raw`Drag the five corners of the pentagon (keep it a simple polygon) and move the axis with the slider. Left: the region, its centroid (green), the axis, and the distance $d$. Right: the solid of revolution (drag to rotate). The readout compares $2\pi dA$ with an independent number: for volume, a sum of annulus areas over horizontal slices of the actual solid; for surface, a line integral $\int 2\pi|x-a|\,ds$ over the boundary. For the displayed regular examples the numerical values should be close when the axis stays on one side; slice resolution and degeneracies limit accuracy. When the axis cuts the region the theorem gives no agreement guarantee, since rotated portions can overlap.`,
       deps: ['vcalc-4.9'],
-      refs: ['Marsden–Tromba ch. 6'],
-      credit: 'Pappus of Alexandria (about 4th century AD); rediscovered by P. Guldin, Centrobaryca, 1640',
-      verify: true,
+      refs: ['Rudin PMA Theorem10.9; centroid definition and cylindrical change-of-variables derivation given here'],
       tags: ['centroid', 'solids of revolution', 'history'],
       viz(v) {
         const mode = v.select('theorem', [{ value: 'vol', label: 'volume of the solid' }, { value: 'surf', label: 'area of the surface' }], 'vol');
@@ -325,20 +321,19 @@ Likewise, if a plane curve $\gamma$ of length $L$ and centroid (of its arc lengt
       credit: 'H. Lebesgue, 1902 (doctoral thesis, published in Annali di Matematica Pura ed Applicata (3) 7, pp. 231–359)',
       statement: String.raw`In this long memoir Lebesgue builds a theory of measure for sets of real numbers (and of $\R^n$) and, from it, a new integral. Instead of cutting the *domain* into small intervals as Riemann did, he cuts the *range* of a bounded function $f$ into bands $y_k\le f<y_{k+1}$ and adds $\sum_k y_k\,m(E_k)$, where $E_k=f^{-1}[y_k,y_{k+1})$ and $m$ is the measure. In modern terms the results include:
 
-(a) every bounded measurable function is integrable in this sense, the integral agrees with Riemann's whenever the latter exists, and it is defined for functions such as the indicator of the rationals, which is $0$ almost everywhere, so that its integral is $0$ (while Riemann's upper and lower sums stay $1$ and $0$);
+(a) on a finite interval, every bounded measurable function is integrable in this sense, the integral agrees with Riemann's whenever the latter exists, and it is defined for functions such as the indicator of the rationals, which is $0$ almost everywhere, so that its integral is $0$ (while Riemann's upper and lower sums stay $1$ and $0$);
 
-(b) if bounded measurable functions $f_n\to f$ pointwise with $|f_n|\le K$ on a set of finite measure, then $\int f_n\to\int f$ (the bounded convergence theorem);
+(b) if bounded measurable functions $f_n\to f$ pointwise with $|f_n|\le K$ on a finite interval, then $\int f_n\to\int f$ (the bounded convergence theorem);
 
-(c) a bounded function is Riemann integrable exactly when its set of discontinuities has measure zero.
+(c) changing a bounded continuous function on a dense set of measure zero produces further summable functions that need not be Riemann integrable (§23).
 
 The memoir's later sections treat length of curves and area of surfaces by a similar limiting process.`,
-      idea: String.raw`Before 1902 the Riemann integral was well suited to continuous and piecewise continuous functions, but limits of integrable functions could fail to be integrable, so $\lim\int f_n=\int\lim f_n$ was hard to justify. Lebesgue's observation was that the sum $\sum y_k\,m(E_k)$ only requires the sets $E_k$ to have a size, so a theory of measure (countably additive, with measure zero sets negligible) gives an integral that is stable under pointwise limits. The memoir introduces measurable sets and the Lebesgue integral for bounded functions (pma-11.21, rca-2.21) and the bounded convergence theorem (pma-11.32a); the part on length and area, relating them to limits of polygons and polyhedra, belongs to the same programme and treats Plateau-type problems.`,
-      caption: String.raw`**Slicing.** Choose a function. Vertical slicing (Riemann) draws $m$ strips with sup/inf rectangles; horizontal slicing (Lebesgue) draws $m$ bands of the range and colours the points of the graph by band, with $m(E_k)$ read off from the sampling. The right panel shows how fast the upper-minus-lower gap closes against $m$: Lebesgue's gap is at most (range)$/m$ however wild $f$ is, Riemann's closes slowly for the oscillating $\sin(1/x)$. For the **rationals** the Riemann gap stays $1$ for every $m$ (exact: every interval contains rationals and irrationals) and the Lebesgue sums converge to $0$; only a model picture is possible, so the dots are the rationals $p/q$ with $q\le m$. In the **sequence** mode $f_n(x)=x^n$ on $[0,1]$: $f_n\to0$ except at $x=1$ and $0\le f_n\le1$, and $\int f_n=1/(n+1)\to0$. Functions are sampled at $20\,000$ points, so sums are accurate to about $10^{-3}$. This is an illustration of the memoir's ideas, not a reproduction of a figure from it (it has none of this kind).`,
+      idea: String.raw`Before 1902 the Riemann integral was well suited to continuous and piecewise continuous functions, but limits of integrable functions could fail to be integrable, so $\lim\int f_n=\int\lim f_n$ was hard to justify. Lebesgue's observation was that the sum $\sum y_k\,m(E_k)$ only requires the sets $E_k$ to have a size, so a theory of measure (countably additive, with measure zero sets negligible) gives an integral that is stable under uniformly bounded pointwise limits on a finite interval. The memoir introduces measurable sets and the Lebesgue integral for bounded functions (pma-11.21, rca-2.21) and the bounded convergence theorem (pma-11.32a); the part on length and area, relating them to limits of polygons and polyhedra, belongs to the same programme and treats Plateau-type problems.`,
+      caption: String.raw`**Slicing.** Choose a function. Vertical slicing (Riemann) draws $m$ strips with sampled maximum/minimum rectangles; horizontal slicing (Lebesgue) draws $m$ bands of the range and colours the points of the graph by band, with $m(E_k)$ read off from the sampling. The right panel shows how fast the upper-minus-lower gap closes against $m$: Lebesgue's gap is at most (range)$/m$ however wild $f$ is, Riemann's closes slowly for the oscillating $\sin(1/x)$. For the **rationals** the Riemann gap stays $1$ for every $m$ (exact: every interval contains rationals and irrationals) and the Lebesgue sums converge to $0$; only a model picture is possible, so the dots are the rationals $p/q$ with $q\le m$. In the **sequence** mode $f_n(x)=x^n$ on $[0,1]$: $f_n\to0$ except at $x=1$ and $0\le f_n\le1$, and $\int f_n=1/(n+1)\to0$. Functions are sampled at $20\,000$ points; these are empirical measures and extrema, with no rigorous $10^{-3}$ accuracy guarantee for oscillatory functions. This is an illustration of the memoir's ideas, not a reproduction of a figure from it.`,
       deps: ['pma-6.1', 'vcalc-4.1'],
       see: ['pma-11.21', 'rca-2.21'],
-      refs: [],
+      refs: ['Lebesgue, Intégrale, Longueur, Aire (1902), thesis pp.1–5, §§1–11 pp.5–15, §§15–25 pp.18–30'],
       links: { doi: 'https://doi.org/10.1007/BF02420592', wikipedia: 'https://en.wikipedia.org/wiki/Lebesgue_integration' },
-      verify: true,
       tags: ['Lebesgue integral', 'measure', 'history'],
       viz(v) {
         const NS = 20000;
@@ -436,7 +431,7 @@ The memoir's later sections treat length of curves and area of surfaces by a sim
         v.legend([['orange', 'Riemann: upper − lower (domain strips)'], ['blue', 'Lebesgue: upper − lower (range bands)']]);
         v.readout(() => (info.seq
           ? `$n=${info.n}$: $\\int_0^1 x^n\\,dx=${tf(info.val, 4)}$, and $x^n\\to0$ for every $x<1$ with $|x^n|\\le1$.`
-          : `$m=${info.m}$ ; Riemann: $${tf(info.Rm.lo, 4)}\\le\\int f\\le${tf(info.Rm.up, 4)}$ (gap $${tf(info.Rm.up - info.Rm.lo, 4)}$) ; Lebesgue: $${tf(info.Lb.lo, 4)}\\le\\int f\\le${tf(info.Lb.up, 4)}$ (gap $\\le \\text{range}/m=${tf(info.range / info.m, 4)}$) ; $\\int f\\approx${tf(info.I, 4)}$`));
+          : `$m=${info.m}$ ; ${info.isRat ? 'exact Riemann lower/upper sums' : 'sampled domain lower/upper sums'}: $${tf(info.Rm.lo, 4)}$, $${tf(info.Rm.up, 4)}$ (gap $${tf(info.Rm.up - info.Rm.lo, 4)}$) ; ${info.isRat ? 'Lebesgue lower/upper sums' : 'empirical range lower/upper sums'}: $${tf(info.Lb.lo, 4)}$, $${tf(info.Lb.up, 4)}$ (gap $\\le \\text{range}/m=${tf(info.range / info.m, 4)}$) ; $\\int f\\approx${tf(info.I, 4)}$`));
       },
     },
   ],

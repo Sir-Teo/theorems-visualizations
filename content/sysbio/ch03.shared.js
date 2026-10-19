@@ -2,10 +2,10 @@
 export * from './ch01.shared.js';
 import { hillAct, hillRep } from './ch01.shared.js';
 
-/** The eight FFL types: signs of the edges X→Y, Y→Z, X→Z. Coherent when s_XZ = s_XY · s_YZ. */
+/** Mangan–Alon (2003) Tables 1–2, checked against original diagrams: signs X→Y, Y→Z, X→Z. Coherent when s_XZ = s_XY · s_YZ. */
 export const FFL_TYPES = [
-  { id: 'C1', s: [1, 1, 1] }, { id: 'C2', s: [-1, -1, 1] }, { id: 'C3', s: [1, -1, -1] }, { id: 'C4', s: [-1, 1, -1] },
-  { id: 'I1', s: [1, -1, 1] }, { id: 'I2', s: [-1, 1, 1] }, { id: 'I3', s: [1, 1, -1] }, { id: 'I4', s: [-1, -1, -1] },
+  { id: 'C1', s: [1, 1, 1] }, { id: 'C2', s: [-1, 1, -1] }, { id: 'C3', s: [1, -1, -1] }, { id: 'C4', s: [-1, -1, 1] },
+  { id: 'I1', s: [1, -1, 1] }, { id: 'I2', s: [-1, -1, -1] }, { id: 'I3', s: [1, 1, -1] }, { id: 'I4', s: [-1, 1, 1] },
 ];
 export const fflType = (sxy, syz, sxz) => {
   const k = FFL_TYPES.find((t) => t.s[0] === sxy && t.s[1] === syz && t.s[2] === sxz);
@@ -39,11 +39,11 @@ export function fflSim(p, Xof, T, dt = 0.005) {
   return { t, X, Y, Z };
 }
 /** First time after t0 at which series s crosses `level` (either direction), linear interpolation; NaN if never. */
-export function crossAfter(t, s, level, t0 = 0) {
+export function crossAfter(t, s, level, t0 = 0, direction = 0) {
   for (let i = 1; i < t.length; i++) {
     if (t[i] < t0) continue;
     const a = s[i - 1] - level, b = s[i] - level;
-    if (a * b <= 0 && a !== b) return t[i - 1] + (a / (a - b)) * (t[i] - t[i - 1]);
+    if (a * b <= 0 && a !== b && (!direction || direction * (b - a) > 0)) return t[i - 1] + (a / (a - b)) * (t[i] - t[i - 1]);
   }
   return NaN;
 }
@@ -59,4 +59,18 @@ export function edge(s, x1, y1, x2, y2, sign, opts = {}) {
   // T-bar perpendicular, length in data units (stage assumed ~equal aspect)
   const px = -dy / L, py = dx / L, b = opts.bar ?? 0.09;
   s.line(x2 + px * b, y2 + py * b, x2 - px * b, y2 - py * b, { color: col, width: w + 1 });
+}
+
+/** Illustrative single-input or multi-output OR temporal program; forward Euler at fixed dt. */
+export function temporalProgram({Kx, Ky = null, ax, ay = 0, az = 1, duration, maximum = 1, T = 24, dt = .01}) {
+  const t = [], X = [], Y = [], Z = Kx.map(() => []), z = Kx.map(() => 0);
+  let x = 0, y = 0;
+  for (let i = 0; i <= Math.round(T / dt); i++) {
+    const tt = i * dt; t.push(tt); X.push(x); Y.push(y); z.forEach((q, j) => Z[j].push(q));
+    const input = tt >= 1 && tt < 1 + duration ? maximum : 0;
+    const nx = x + dt * ax * (input - x), ny = y + dt * ay * ax * (hillAct(x, .6, 4) - y);
+    z.forEach((q,j) => {const fx = hillAct(Ky ? x : nx, Kx[j], Ky ? 6 : 4), fy = Ky ? hillAct(y, Ky[j], 6) : 0; z[j] += dt * az * (fx + fy - fx * fy - q);});
+    x = nx; y = ny;
+  }
+  return {t, X, Y, Z};
 }

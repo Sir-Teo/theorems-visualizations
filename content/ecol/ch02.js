@@ -17,7 +17,7 @@ export default {
       scope: String.raw`Needs a **closed** population (no births, deaths, immigration or emigration between visits), marks that are neither lost nor overlooked, and equal catchability of every animal on both visits. Each failure biases $\hat N$ in a predictable direction.`,
       idea: String.raw`Given $M$ marked animals among $N$, the number of marked animals in a random sample of size $n$ is hypergeometric with mean $nM/N$. Solving $m = nM/N$ for $N$ gives the estimator. Because $N$ enters through $1/m$, the estimator is a ratio of a noisy count: it is biased upward for small $m$, and its spread shrinks only as the expected recapture count $nM/N$ grows — which is why the product $Mn$ must be several times $N$.`,
       caption: String.raw`The pond (left) shows one experiment: marked fish are orange, recaptures green, unmarked fish in the second catch are ringed. The histogram (right) repeats the whole experiment 300 times with fresh samples. Drag $M$ and $n$ to tighten the spread, then switch **assumption broken** on: tags that fall off, trap-happy or trap-shy marked fish, or fish that differ in catchability all shift the whole histogram off the true $N$ (green line), in a direction you can predict.`,
-      deps: [],
+      deps: ['stat-3.4'],
       refs: ['Begon ch. 4'],
       tags: ['sampling', 'abundance', 'estimation'],
       viz(v) {
@@ -129,7 +129,7 @@ export default {
       scope: String.raw`The three types are idealized poles of a continuum; real species mix them (birds are close to type II only after the first year; humans have a type III kink at birth). Curves are compared on a relative age axis, so only their shape, not their time scale, is being classified.`,
       idea: String.raw`Survivorship and mortality are two descriptions of one thing: $l_x=\exp\!\big(-\int_0^x h(a)\,da\big)$, so the slope of $\ln l_x$ is minus the hazard. A flat hazard gives a straight line, a rising hazard bends it down, a falling hazard bends it up toward a plateau. The sliders use a Weibull hazard $h\propto x^{c-1}$ to move continuously through all three types: $c>1$, $c=1$, $c<1$.`,
       caption: String.raw`Drag the age probe (gold) along the curve or change the shape $c$; the buttons pick stylized examples. Left: survivors $l_x$, on a log axis (where type II is a straight line) or a linear one — flip the toggle. Right: the hazard, which is what really differs: rising for $c>1$, constant at $c=1$, falling for $c<1$. The three faint curves are the examples; all curves are drawn on a relative age axis (1 = maximum lifespan, where 0.1 % survive).`,
-      deps: ['mathbio-4.1'],
+      deps: ['mathbio-4.1', 'demo-2.6'],
       refs: ['Begon ch. 4'],
       tags: ['life tables', 'mortality', 'demography'],
       viz(v) {
@@ -320,7 +320,7 @@ export default {
       scope: String.raw`Illustrative functional forms: $S(c)=s_0e^{-c/c_0}$ and $P(c)=\max(0,\,0.7-\gamma c)$. Real birds show smaller clutches than the most productive one in some populations and not in others; food conditions, nest predation, and parental quality all vary and are ignored here.`,
       idea: String.raw`Differentiating $W(c)$ gives the optimum where the marginal gain in chicks, $\frac{d}{dc}[cS(c)]$, equals the marginal loss in future reproduction, $-V\,P'(c)$. With no cost of reproduction the second term vanishes and the optimum is the clutch that maximizes $cS(c)$, which for $S=s_0e^{-c/c_0}$ is $c_0$. A positive cost makes the left side balance at a smaller $c$.`,
       caption: String.raw`Left: young fledged $cS(c)$ (blue), parental future value $P(c)V$ (orange) and their sum (green), with their maxima marked at the best whole clutch. Raise the cost per egg $\gamma$ or the future value $V$ and the green optimum slides below the blue peak. Right: 400 simulated nests, each laying near the optimum and rearing a binomial number of chicks; points are the observed mean fledged per clutch size ($\pm$ one standard error) and faint bars are how many nests laid each size. Press **New nests** to resample.`,
-      deps: ['pma-5.8'],
+      deps: ['pma-5.8', 'prob-1.6.1a'],
       refs: ['Begon ch. 4'],
       tags: ['life history', 'optimization', 'trade-offs'],
       viz(v) {

@@ -83,7 +83,7 @@ export default {
       idea: String.raw`The $d+2$ vectors $(p_i,1)\in\R^{d+1}$ must be linearly dependent: $\sum\lambda_ip_i=0$ and $\sum\lambda_i=0$ with $\lambda\neq0$ (a null vector of a $(d+1)\times(d+2)$ matrix). Put $I=\{\lambda_i>0\}$, $J=\{\lambda_i<0\}$ and $\Lambda=\sum_{i\in I}\lambda_i=\sum_{j\in J}|\lambda_j|>0$. Then $\sum_{I}\frac{\lambda_i}{\Lambda}p_i=\sum_J\frac{|\lambda_j|}{\Lambda}p_j$ is a convex combination on both sides, hence a point of both hulls (convex combinations are the hull, 2.1). With only $d+1$ affinely independent points no non-trivial dependence exists.`,
       caption: String.raw`Drag the points. The blue and red groups come from the signs of the affine dependence $\lambda$; their hulls (point, segment or triangle) always share the gold Radon point. Four points in convex position pair up as two crossing diagonals; if one point is inside the triangle of the other three it forms a group alone. With 5 or 6 points the dependence is one of several, so one of many partitions is shown. With 3 points there is nothing to find.`,
       credit: 'J. Radon, 1921',
-      deps: ['cg-2.1'], refs: ['de Berg ch. 11'], tags: ['convexity', 'radon'],
+      deps: ['cg-2.1', 'ladr-2.22'], refs: ['de Berg ch. 11'], tags: ['convexity', 'radon'],
       viz(v) {
         const s = gstage(v, { height: 360 });
         const M = v.M;

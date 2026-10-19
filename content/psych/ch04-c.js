@@ -1,4 +1,5 @@
 // Psychology & Perception — Chapter 4: Early vision (items 4.11–4.14)
+import { anchoredReflectances, cornsweetCusp } from './verification-models.js';
 import { grey, clamp01, logistic, smooth01, logTicks, BLIND } from './ch04.shared.js';
 
 export default {
@@ -39,8 +40,7 @@ export default {
             const x = (i + 0.5) * dx;
             if (on && Math.abs(x - c) <= h) return L0;
             if (prof.value === 'step') return x < XE ? L0 + a : L0 - a;
-            const d = Math.abs(x - XE), e = Math.exp(-d / w);
-            return x < XE ? L0 + a * e : L0 - a * e;
+            return cornsweetCusp(x,a,w,XE,L0);
           });
           // edge integration: keep only gradients steeper than the cutoff (luminance units per unit x)
           const P = new Array(N); P[0] = L[0];
@@ -48,7 +48,8 @@ export default {
           const i1 = Math.round(1 / dx), i2 = N - 1 - i1;
           const shift = L0 - (P[i1] + P[i2]) / 2;
           const Pn = P.map((p) => p + shift);
-          pl.rect(c - h, 0.3, c + h, 0.7, { fill: 'gold', fillAlpha: on ? 0.18 : 0.04, stroke: false });
+          pl.setView([0,10],[Math.min(.3,...L,...Pn)-.02,Math.max(.7,...L,...Pn)+.02]);
+          pl.rect(c - h, Math.min(.3,...L,...Pn)-.02, c + h, Math.max(.7,...L,...Pn)+.02, { fill: 'gold', fillAlpha: on ? 0.18 : 0.04, stroke: false });
           pl.path(L.map((l, i) => [(i + 0.5) * dx, l]), { color: 'ink', width: 3 });
           pl.path(Pn.map((p, i) => [(i + 0.5) * dx, p]), { color: 'green', width: 2.6 });
           pl.hline(L0, { color: 'faint', dash: [4, 3] });
@@ -66,15 +67,14 @@ export default {
       kind: 'Phenomenon',
       name: 'Lightness constancy and the anchoring problem',
       statement: String.raw`A surface's luminance is the product of its reflectance and the illumination, $L=\rho\,E$, yet we see lightness that tracks the reflectance: a sheet of white paper looks white in dim and in bright light, and coal looks black even in sunshine, although coal in the sun can send more light to the eye than white paper in the shade. This is **lightness constancy**. Since the luminance ratio between two surfaces under the same light equals their reflectance ratio, ratios can be recovered, but to say what grey a surface *is* you need an **anchor**: a rule for which luminance counts as white. Gilchrist's anchoring theory proposes that the highest luminance in a framework of common illumination looks white, and that the visual system mixes local and global frameworks.`,
-      idea: String.raw`Ratios of luminances within one illumination are preserved by the edge computation of 4.7–4.11 and equal ratios of reflectance. The remaining unknown is one scale factor per framework; "highest luminance = white" fixes it, so $\hat\rho_i=0.9\,L_i/L_{\max}$ (taking a white surface to reflect about 90%). With several illumination fields, the anchor may be the framework's maximum, the global maximum, or a mixture with weight $w$; the mixture explains the partial failures of constancy, such as a spotlit black paper looking lighter than it should when the global anchor dominates. The lightness model below is the simplest member of this family; it is not the full theory.`,
-      caption: String.raw`A row of 14 grey papers (reflectances 3% to 90%, a range of 30 : 1). Drag the **gold** handle to move a spotlight over six of them and change its strength $S$. **Top row:** the physical luminances of the papers (what reaches the eye). **Middle row:** the model's perceived lightness. **Right:** perceived against true reflectance on log axes: perfect constancy lies on the diagonal. With *local anchoring* near 1 the spotlit papers keep their lightness; at 0 the visual system reports luminance relative to the brightest paper in the whole scene, and the papers in the spot are pushed toward white. The framework weights are a toy version of Gilchrist's proposal and the numbers are not experimental data.`,
+      idea: String.raw`Ratios of luminances within one illumination are preserved by the edge computation of 4.7–4.11 and equal ratios of reflectance. The remaining unknown is one scale factor per framework; "highest luminance = white" fixes it, so $\hat\rho_i=0.9\,L_i/L_{\max}$ (taking a white surface to reflect about 90%). With several illumination fields, the anchor may be the framework's maximum, the global maximum, or a weighted average of the **separately computed reflectances**, $0.9L_i\{w/L_{\max,\rm local}+(1-w)/L_{\max,\rm global}\}$; the mixture explains the partial failures of constancy, such as a spotlit black paper looking lighter than it should when the global anchor dominates. The lightness model below is the simplest member of this family; it is not the full theory.`,
+      caption: String.raw`A row of 14 grey papers (reflectances 3% to 90%, a range of 30 : 1). Drag the **gold** handle to move a spotlight over six of them and change its strength $S$. **Top row:** the physical luminances of the papers (what reaches the eye). **Middle row:** the model's perceived lightness. **Right:** perceived against true reflectance on log axes: perfect constancy lies on the diagonal. With *local anchoring* near1, illumination changes cancel within each framework; absolute reflectance is recovered when that framework includes a90% white reference; at 0 the visual system reports luminance relative to the brightest paper in the whole scene, and the papers in the spot are pushed toward white. The framework weights are a toy version of Gilchrist's proposal and the numbers are not experimental data.`,
       deps: ['art-6.12', 'psych-4.10'],
       refs: ['Goldstein ch. 9'],
       tags: ['lightness constancy', 'anchoring', 'illumination'],
-      credit: 'Gilchrist, Kossyfidis, Bonato, Agostini, Cataliotti, Li, Spehar, Annan & Economou, 1999, “An anchoring theory of lightness perception”, Psychol. Rev. 106 (volume and pages unconfirmed)',
+      credit: 'Gilchrist, Kossyfidis, Bonato, Agostini, Cataliotti, Li, Spehar, Annan & Economou, 1999, “An anchoring theory of lightness perception”, Psychol. Rev.106(4):795–834, §5.4 equation3',
       scope: String.raw`Constancy is good but not perfect and depends on the clarity of the illumination boundary, the number of surfaces and the size of the fields; the highest-luminance rule is the first approximation of anchoring theory (Gilchrist's later rules add a bias toward area and a gradual local–global weighting).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lightness_(color)' },
-      verify: true,
       viz(v) {
         const S = v.slider('spotlight strength $S$', 1, 30, 10, { log: true });
         const wl = v.slider('local anchoring weight', 0, 1, 0.9, { step: 0.01 });
@@ -89,7 +89,8 @@ export default {
           const Lm = R.map((r, i) => r * (lit[i] ? s : 1));
           const gmax = Math.max(...Lm), lmax = (f) => Math.max(...Lm.filter((_, i) => lit[i] === f));
           const lmaxIn = lmax(true), lmaxOut = lmax(false);
-          const P = Lm.map((l, i) => Math.min(1, 0.9 * l / (wl.value * (lit[i] ? lmaxIn : lmaxOut) + (1 - wl.value) * gmax)));
+          const P=anchoredReflectances(Lm,lit,wl.value);
+          const lower=Math.min(-1.8,...P.map(x=>Math.log10(x)))-.1;sp.setView([lower,.05],[lower,.05]);
           sc.rect(c - K / 2, 4.3, c + K / 2, 5.3, { fill: 'gold', fillAlpha: 0.22, stroke: false });
           sc.text('spotlight', c, 4.8, { align: 'center', size: 11.5, color: 'gold', weight: 600 });
           R.forEach((r, i) => {
@@ -100,7 +101,7 @@ export default {
           sc.text('luminance reaching the eye', 0.1, 4.05, { align: 'left', size: 11.5, color: 'muted', dy: 0, dx: 0 });
           sc.text('perceived lightness (model)', 0.1, 2.15, { align: 'left', size: 11.5, color: 'muted' });
           sp.line(-1.8, -1.8, 0.05, 0.05, { color: 'muted', dash: [5, 4] });
-          R.forEach((r, i) => sp.dot(Math.log10(r), Math.log10(Math.max(P[i], 0.02)), { r: 5.5, color: lit[i] ? 'orange' : 'blue' }));
+          R.forEach((r, i) => sp.dot(Math.log10(r), Math.log10(P[i]), { r: 5.5, color: lit[i] ? 'orange' : 'blue' }));
           const dev = R.map((r, i) => Math.abs(Math.log10(P[i] / r)));
           info = { rangeL: Math.max(...Lm) / Math.min(...Lm), rangeP: Math.max(...P) / Math.min(...P), dev: dev.reduce((a, b) => a + b, 0) / NP, inMax: lmaxIn / lmaxOut, worst: Math.max(...dev) };
         });
@@ -113,15 +114,14 @@ export default {
       kind: 'Phenomenon',
       name: 'The blind spot and perceptual filling-in',
       statement: String.raw`Each eye has a region, the **optic disc**, where the optic nerve leaves the retina and there are no photoreceptors. It lies about $15^\circ$ toward the nose from the fovea, so in the visual field it is about $12$–$15^\circ$ to the temporal side of fixation, roughly $5^\circ$ wide and $7^\circ$ high. A small object falling entirely inside it cannot be seen, yet we do not see a hole: the region is **filled in** with the surrounding colour, texture or line, so that a line crossing it looks continuous. Seeing with the hole filled is done by the brain, not by the eye.`,
-      idea: String.raw`The retinal image has no information at the disc, and the other eye usually covers it. The visual system infers the content of a missing area from its surroundings (a continuation of edges, textures and colour, as for natural images), so what is "seen" there is a guess based on the neighbouring surface. Because filling-in uses the surround, objects larger than the disc are only partly erased and a small object lying across the disc's edge appears as a crescent. Mariotte first described the blind spot in 1668.`,
+      idea: String.raw`The retinal image has no information at the disc, and the other eye usually covers it. The visual system infers the content of a missing area from its surroundings (a continuation of edges, textures and colour, as for natural images), so what is "seen" there is a guess based on the neighbouring surface. Because filling-in uses the surround, objects larger than the disc are only partly erased and a small object lying across the disc's edge appears as a crescent. Ramachandran and Gregory (1991) also demonstrated filling-in at the natural blind spot, while most of their experiments used artificial scotomas with intact photoreceptors.`,
       caption: String.raw`**Top:** the visual field of your right eye (cover the left, fix your gaze on the red cross) with the blind spot outlined. Drag the **gold** dot into the outlined ellipse and change its size, or switch the eye. **Bottom:** what the model says you perceive: the region of the blind spot is filled with the surround's pattern, and the dot (if any of it is visible) is cut off at the edge of the hole. To try it for real, put the page at arm's length, cover the left eye, look at the cross and slide your head closer or farther until the dot vanishes. The size and position of the ellipse are typical textbook values and vary between people; you can calibrate them from the point where the dot vanishes.`,
       deps: ['psych-4.1'],
       refs: ['Goldstein ch. 2'],
       tags: ['blind spot', 'filling-in', 'optic disc'],
-      credit: 'Edme Mariotte, 1668 (blind spot); Ramachandran & Gregory, 1991, Nature 350: 699–702 (filling-in of artificial scotomas)',
+      credit: 'Ramachandran & Gregory,1991, Nature350:699–702 (complete author reprint); approximate blind-spot geometry',
       scope: String.raw`The size and position vary between people and with the measurement method (horizontal diameter estimates range from about 3° to 7°); the pattern completion depends on the pattern: smooth lines and textures fill well, while complex or large patterns may not.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Blind_spot_(vision)' },
-      verify: true,
       viz(v) {
         const eye = v.select('Eye', [{ value: 'R', label: 'right eye' }, { value: 'L', label: 'left eye' }], 'R');
         const pat = v.select('Surround', [{ value: 'plain', label: 'plain' }, { value: 'stripes', label: 'stripes' }, { value: 'line', label: 'line' }, { value: 'color', label: 'colour' }], 'stripes');

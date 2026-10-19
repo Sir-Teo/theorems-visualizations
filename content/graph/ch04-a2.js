@@ -176,7 +176,7 @@ export default {
       statement: String.raw`In a 3-connected plane graph, the face boundaries are precisely the non-separating induced cycles.`,
       idea: String.raw`A non-separating induced cycle $C$ has all of $G-C$ on one side (Jordan), so the other side is a face. Conversely a face boundary is a cycle by Proposition 4.2.6. It has no chord: a chord and a path between the two components of $C$ minus the chord's ends (which exists by 3-connectedness) would both run through the other face of $C$ without meeting, contradicting Lemma 4.1.2 (ii). It does not separate: two vertices outside are joined by three independent paths (Menger), and by Lemma 4.1.2 (i) only two of them can touch the face, so the third avoids $C$.`,
       caption: String.raw`Pick a graph and step through all its induced cycles with the slider. Each is classified as separating or not and checked against the face boundaries computed from the drawing. For the 3-connected graphs the two families coincide; for the last example (2-connected only) the outer boundary is a cycle with a chord, and the match fails.`,
-      deps: ['graph-4.2.6', 'graph-3.3.6', 'graph-4.1.2'], refs: ['Diestel §4.2'], tags: ['3-connected', 'induced cycles', 'faces'],
+      deps: ['graph-4.2.1a', 'graph-4.2.6', 'graph-3.3.6', 'graph-4.1.2'], refs: ['Diestel §4.2'], tags: ['3-connected', 'induced cycles', 'faces'],
       viz(v) {
         const wheel = () => { const P = { h: [5, 3.2] }, E = []; for (let i = 0; i < 6; i++) { const a = Math.PI / 2 - (Math.PI * i) / 3; P['pqrstu'[i]] = [5 + 2.7 * Math.cos(a), 3.2 + 2.7 * Math.sin(a)]; E.push('h' + 'pqrstu'[i], 'pqrstu'[i] + 'pqrstu'[(i + 1) % 6]); } return planeSpec(P, E.join(' ')); };
         const PRE = {
@@ -214,11 +214,12 @@ export default {
       },
     },
     {
-      num: '4.2.7a', kind: 'Definition', name: 'Maximally plane graphs and plane triangulations', verify: true,
+      num: '4.2.7a', kind: 'Definition', name: 'Maximally plane graphs and plane triangulations',
       statement: String.raw`A plane graph $G$ is **maximally plane** (or maximal) if no new edge can be added to it, on the same vertex set, so that the result is still a plane graph. A plane graph is a **plane triangulation** if every face, the outer face included, is bounded by a triangle.`,
-      idea: String.raw`"Maximal" is about the drawing: edges may be drawn as arbitrary polygonal arcs, so an edge can be added whenever two non-adjacent vertices lie on a common face, even if the straight segment between them would leave the face. A triangulation has nothing to add, since any two vertices on a common face are already adjacent. Proposition 4.2.8 shows the converse.`,
+      idea: String.raw`"Maximal" is about the drawing: edges may be drawn as arbitrary polygonal arcs, so an edge can be added whenever two non-adjacent vertices lie on a common face, even if the straight segment between them would leave the face. A triangulation has nothing to add, since any two vertices on a common face are already adjacent. Proposition 4.2.8 shows the converse for graphs of order at least three.`,
       caption: String.raw`Choose a plane graph and press **add an edge**: the app finds two non-adjacent vertices on a common face and draws a new arc through that face (bending if the straight segment is blocked). Face lengths are printed inside the faces: triangles are green, longer faces orange. Keep adding until every face is a triangle, and no more edge fits.`,
-      deps: ['graph-4.2.1a'], refs: ['Diestel §4.2'], tags: ['maximal plane graph', 'triangulation'],
+      deps: ['graph-4.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §4.2, pp. 99–100; Proposition 4.2.8'], tags: ['maximal plane graph', 'triangulation'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf' },
       viz(v) {
         let name = 'ring6', pg = PGS.ring6(), last = -1;
         const sel = v.select('', [{ value: 'ring6', label: 'hexagon' }, { value: 'cube', label: 'cube' }, { value: 'fan', label: 'pentagon' }, { value: 'path7', label: 'path' }, { value: 'nested', label: 'triangle around square' }], 'ring6', { onChange: () => { name = sel.value; pg = PGS[name](); last = -1; } });
@@ -243,7 +244,7 @@ export default {
       statement: String.raw`A plane graph with at least three vertices is maximally plane if and only if it is a plane triangulation.`,
       idea: String.raw`If all faces are triangles, a new edge would run through a face and join two vertices of its boundary; these are already adjacent, so nothing can be added. Conversely, let $G$ be maximal and $f$ a face with boundary $H$. Any two vertices of $H$ could be joined through $f$, so they are adjacent in $G$ and $G[H]$ is complete, $K^n$. $H$ contains a cycle (else $f$ would be the whole plane by Proposition 4.2.4). If $n\ge4$, take a 4-cycle $v_1v_2v_3v_4$ in it: through $f$ the vertices $v_1,v_3$ and $v_2,v_4$ are linkable, which Lemma 4.1.2 (ii) forbids for the two disjoint diagonals. So $n\le3$ and $H=K^3$.`,
       caption: String.raw`Click two vertices. If they lie on a common face and are not adjacent, a new edge is drawn through that face. If not, the straight attempt is shown dashed and red with the edges it is forced to cross. **find a chord** points at a face of length $\ge4$ and the pair that can be joined there. A triangulation (try the octahedron) accepts no edge at all.`,
-      deps: ['graph-4.2.7a', 'graph-4.1.2', 'graph-4.2.4'], refs: ['Diestel §4.2'], tags: ['maximal plane graph', 'triangulation'],
+      deps: ['graph-4.2.1a', 'graph-4.2.7a', 'graph-4.1.2', 'graph-4.2.4'], refs: ['Diestel §4.2'], tags: ['maximal plane graph', 'triangulation'],
       viz(v) {
         let name = 'octa', pg = PGS.octa(), tip = null, flash = null, msg = '';
         const sel = v.select('', [{ value: 'octa', label: 'octahedron' }, { value: 'cube', label: 'cube' }, { value: 'ring6', label: 'hexagon' }, { value: 'fan', label: 'pentagon' }], 'octa', { onChange: () => { name = sel.value; pg = PGS[name](); tip = flash = null; msg = ''; } });
@@ -279,8 +280,8 @@ export default {
       statement: String.raw`Let $G$ be a connected plane graph with $n$ vertices, $m$ edges and $\ell$ faces. Then $$n-m+\ell=2.$$`,
       idea: String.raw`Induct on $m$. For $m=n-1$ the graph is a tree, which has $\ell=1$ face (Proposition 4.2.4), and $n-(n-1)+1=2$. Otherwise some edge $e$ lies on a cycle; by Lemma 4.2.2 it borders exactly two faces $f_1,f_2$. In $G-e$ these two merge into one face and all other faces stay faces, so $G-e$ has one edge and one face fewer, and $n-m+\ell$ does not change.`,
       caption: String.raw`Edit a connected plane graph or pick one. The counters $n,m,\ell$ always give $2$. The gold edge, with its two faces tinted blue and orange, is the next one the proof deletes; **delete it** and watch $m$ and $\ell$ fall together until a tree is left. Disconnect the graph and the sum becomes $1+c$.`,
-      deps: ['graph-1.5.1', 'graph-1.5.2', 'graph-4.2.4', 'graph-4.2.2'], refs: ['Diestel §4.2'], see: ['top-10.9', 'top-11.17'], tags: ['Euler formula', 'faces'],
-      credit: 'Euler, 1750 (letter to Goldbach; papers 1752–53, printed 1758), for polyhedra', verify: true, links: { wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
+      deps: ['graph-1.5.1', 'graph-1.5.2', 'graph-4.2.4', 'graph-4.2.2'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 4.2.9 and proof, p. 101'], see: ['top-10.9', 'top-11.17'], tags: ['Euler formula', 'faces'],
+      credit: 'Euler, 1752 (as credited in Diestel)',  links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch4.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Planar_graph' },
       viz(v) {
         const PRE = { cube: () => pgSpec(PGS.cube()), octa: () => pgSpec(PGS.octa()), house: () => planeSpec({ a: [2, 1], b: [7, 1], c: [7, 4], d: [4.5, 5.4], e: [2, 4], f: [4.5, 3.0] }, 'ab bc cd de ea af bf cf df') };
         const sel = v.select('', [{ value: 'house', label: 'house' }, { value: 'cube', label: 'cube' }, { value: 'octa', label: 'octahedron' }], 'house', { onChange: () => { loadG(G, PRE[sel.value]()); guard.reset(); log.length = 0; } });

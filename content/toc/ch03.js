@@ -265,7 +265,7 @@ export default {
       statement: String.raw`For every $k\ge1$ the language $L_k=\{w\in\{0,1\}^*:\text{the }k\text{-th symbol from the right end of }w\text{ is }1\}$ is accepted by an NFA with $k+1$ states, but every DFA for $L_k$ has at least $2^k$ states. Hence the $2^{|Q|}$ bound of the subset construction (3.3) is essentially attained: determinization can cost an exponential number of states. (The mirror language "the $k$-th symbol from the *left* is 1" needs only $k+2$ states, even as a DFA.)`,
       idea: String.raw`The NFA keeps one token on the start state and guesses, on each 1, that this is the $k$-th symbol from the end; $k-1$ further states count down to the end of the input. A DFA must remember the last $k$ symbols: if two different strings $x\ne y$ of length $k$ led to the same state, take the first position where they differ, say $x_i=1$, $y_i=0$; appending $0^{i-1}$ moves that position to the $k$-th place from the end, so $x0^{i-1}\in L_k$ but $y0^{i-1}\notin L_k$, a contradiction. So the $2^k$ strings of length $k$ reach pairwise different states.`,
       caption: String.raw`Left: the $(k+1)$-state NFA for $L_k$. Middle: its subset automaton, whose states are labelled by the **last $k$ symbols read** — a shift register, one state per bit pattern. Right: sizes on a **log axis** for $k=1,\dots,10$, all computed by running the subset construction and Moore's partition refinement on the actual machines: the NFA grows by one state per step, the DFA doubles. Switch to **from the left** and the blow-up disappears.`,
-      deps: ['toc-3.3'],
+      deps: ["toc-3.3","comb-1.2"],
       refs: ['Sipser §1.2'],
       credit: 'Meyer & Fischer, 1971; Moore, 1971 (tightness of the 2^n bound)',
       scope: String.raw`Meyer and Fischer (1971) and Moore (1971) are the standard references for the exponential gap between NFAs and DFAs; Moore's paper concerns exactly the number of states in the subset construction. That the family drawn here (the $k$-th symbol from the end) is the one used in those papers has not been checked.`,
@@ -485,10 +485,9 @@ export default {
       idea: String.raw`A path through a removed state $q$ enters $q$, loops there any number of times, and leaves; the formula writes exactly that as a single arrow, so the set of strings labelling paths from $I$ to $F$ never changes during a removal (an induction on the number of removed states). The expression can nevertheless grow exponentially in the number of states, because each removal can multiply the lengths of many labels, and a bad order makes this worse.`,
       caption: String.raw`**Click a state** to rip it out (or use the buttons for left-to-right and fewest-edges-first orders, undo and reset): new arrows appear with the labels $R_{pq}R_{qq}^*R_{qt}$. When every state is gone, the label of $I\to F$ is the answer and is checked against the NFA on all strings up to length 7. The bars show the **final size of the expression for every possible elimination order** (sorted); the gold bar is the order you chose, so you can see how much the order matters.`,
       deps: ['toc-3.1', 'toc-3.6'],
-      refs: ['Sipser §1.3'],
-      credit: 'McNaughton & Yamada, 1960; Brzozowski & McCluskey, 1963',
-      scope: String.raw`McNaughton and Yamada (1960) give a construction of regular expressions from state graphs; the "rip out one state at a time" formulation drawn here is the one in current textbooks, and its attribution to the signal-flow-graph method of Brzozowski and McCluskey (IEEE Trans. Electronic Computers EC-12, 1963) is not verified here.`,
-      verify: true,
+      refs: ['Sipser, second edition, §1.3, Lemma 1.60 and Claim 1.65, pp. 69–74'], sourceUrl: 'https://fuuu.be/polytech/INFOF408/Introduction-To-The-Theory-Of-Computation-Michael-Sipser.pdf',
+      credit: 'Textbook construction and full invariant proof: M. Sipser, Introduction to the Theory of Computation, second edition, Lemma 1.60 and Claim 1.65',
+      scope: String.raw`The state-removal invariant and formula are checked against the full GNFA construction and proof in Sipser, second edition, §1.3, Lemma 1.60 and Claim 1.65, pp. 69–74. The same construction applies directly to NFAs, treating absent arrows as $\varnothing$ and parallel arrows as union. Historical priority among graph-to-expression constructions is not asserted.`,
       tags: ['regular expressions', 'construction'],
       viz(v) {
         const PS = { endsAB: () => NFAS.endsAB(), aaOrBb: () => NFAS.aaOrBb(), secondA: () => NFAS.secondA(), evenA: () => asNFA(PRESETS.evenA()) };

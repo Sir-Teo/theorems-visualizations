@@ -121,11 +121,12 @@ export default {
   items: [
     // ================================================================== 2.3 The Erdős–Pósa theorem
     {
-      num: '2.3.1a', kind: 'Definition', name: 'The Erdős–Pósa property', verify: true,
+      num: '2.3.1a', kind: 'Definition', name: 'The Erdős–Pósa property',
       statement: String.raw`A class $\mathcal H$ of graphs has the **Erdős–Pósa property** if there is a function $f\colon\mathbb N\to\mathbb N$ such that for every $k$ and every graph $G$, either $G$ contains $k$ disjoint subgraphs each isomorphic to a graph in $\mathcal H$, or there is a set $U\subseteq V(G)$ of at most $f(k)$ vertices such that $G-U$ has no subgraph in $\mathcal H$. In other words, the minimum size of a *cover* (a vertex set meeting every $\mathcal H$-subgraph) is bounded by a function of the maximum size of a *packing* (disjoint $\mathcal H$-subgraphs), independently of $G$.`,
       idea: String.raw`A cover always needs at least as many vertices as there are disjoint $\mathcal H$-subgraphs, one in each: $\tau\ge\nu$. The property asks for a converse up to a function. König's theorem is the perfect case for $\mathcal H=\{K^2\}$ in bipartite graphs ($f(k)=k-1$). For cycles the answer is yes (Theorem 2.3.2, with $f(k)$ of order $k\log k$), for odd cycles it is no — there are graphs with no two disjoint odd cycles that need arbitrarily many vertices to meet all of them.`,
       caption: String.raw`For the graph on the left, a maximum family of disjoint cycles (coloured) and a minimum set of vertices meeting all cycles (red) are computed by brute force; the slider asks the property's question for your $k$. On the right, each dot is a graph with its packing number $\nu$ and covering number $\tau$; the yellow dot is yours. Graphs left of the line $\nu=k$ have no $k$ disjoint cycles, and the theorem bounds their $\tau$ by $f(k)$. Edit the graph (${EDIT}; up to 14 vertices).`,
-      deps: ['graph-1.3.1a'], refs: ['Diestel §2.3'], tags: ['packing', 'covering', 'Erdős–Pósa'],
+      deps: ['graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.3, pp. 47–48'], tags: ['packing', 'covering', 'Erdős–Pósa'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const kS = v.slider('$k$', 1, 4, 2, { int: true });
         const s = gstage(v, { height: 320, title: '$G$: a cycle packing and a cycle cover' });
@@ -411,11 +412,12 @@ export default {
       },
     },
     {
-      num: '2.4.3a', kind: 'Definition', name: 'Arboricity', verify: true,
-      statement: String.raw`The **arboricity** of a multigraph $G$ is the least number of trees (equivalently, of forests) whose union contains every edge of $G$. By the tree-covering theorem (2.4.3) it equals $\max_U\bigl\lceil\|G[U]\|/(|U|-1)\bigr\rceil$, the maximum taken over all $U\subseteq V(G)$ with $|U|\ge2$.`,
+      num: '2.4.3a', kind: 'Definition', name: 'Arboricity',
+      statement: String.raw`The **arboricity** of a loopless multigraph $G$ is the least number of trees (allowed to use additional edges, as in the book), equivalently forests in $G$, whose union contains every edge of $G$. By the tree-covering theorem (2.4.3) it equals $\max_U\bigl\lceil\|G[U]\|/(|U|-1)\bigr\rceil$, the maximum taken over all $U\subseteq V(G)$ with $|U|\ge2$.`,
       idea: String.raw`Arboricity measures the densest spot of a graph: a subgraph with $\varepsilon(H)=\|H\|/|H|$ large forces many forests, and conversely, by Nash-Williams, local sparseness everywhere allows few. Planar graphs have arboricity at most 3 (they have fewer than $3|U|-3$ edges on any $U$), complete graphs $K^n$ have arboricity $\lceil n/2\rceil$.`,
       caption: String.raw`Click an edge to cycle its colour (1–4, then none). A colour class containing a cycle is flagged in red. Try to colour every edge with as few colours as possible; the lower bound from the densest vertex set (shaded with **show densest set**) tells you when to stop, and **Optimal** fills in an optimal colouring from the exchange-chain algorithm.`,
-      deps: ['graph-1.5.1a'], see: ['graph-2.4.3'], refs: ['Diestel §2.4'], tags: ['arboricity', 'forests'],
+      deps: ['graph-1.5.1a'], see: ['graph-2.4.3'], refs: ['Diestel, Graph Theory, 6th ed., §2.4, p. 51; Theorem 2.4.3'], tags: ['arboricity', 'forests'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const PRE = { k6: () => named('complete', 6), oct: () => named('octahedron'), pet: () => named('petersen'), grid: () => { const g = v.graphs('grid', 3, 4); return { nodes: g.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: g.edges.map((e) => [e.from, e.to]), layout: 'fit' }; } };
         const pre = v.select('', [{ value: 'k6', label: '$K^6$' }, { value: 'oct', label: 'octahedron' }, { value: 'pet', label: 'Petersen' }, { value: 'grid', label: '3×4 grid' }], 'oct', { onChange: () => load() });
@@ -429,7 +431,7 @@ export default {
           for (const e of G.edges) for (let c = 0; c < 2; c++) { const a = find(uf[c], K(e.from)), b = find(uf[c], K(e.to)); if (a !== b) { uf[c].set(a, b); col.set(e, c + 1); break; } } }
         load();
         G.onClick = ({ edge }) => { if (edge) col.set(edge, ((col.get(edge) || 0) + 1) % 5); return true; };
-        v.button('Optimal', () => { const I = info(G); col = new Map(); G.edges.forEach((e) => { const x = I.H.eix.get(e); for (let j = 0; j < I.a; j++) if (I.R.T[j][x]) { col.set(e, j + 1); break; } }); });
+        v.button('Optimal', () => { const I = info(G), H = ix(G); col = new Map(); G.edges.forEach((e) => { const x = H.eix.get(e); for (let j = 0; j < I.a; j++) if (I.R.T[j][x]) { col.set(e, j + 1); break; } }); });
         v.button('Clear', () => { col = new Map(); });
         const cyclic = () => { // edges lying on a monochromatic cycle
           const bad = new Set();
@@ -553,11 +555,12 @@ export default {
     },
     // ================================================================== 2.5 Path covers
     {
-      num: '2.5.1a', kind: 'Definition', name: 'Path covers of directed graphs', verify: true,
+      num: '2.5.1a', kind: 'Definition', name: 'Path covers of directed graphs',
       statement: String.raw`A **directed path** is a directed graph $P\ne\emptyset$ with distinct vertices $x_0,\dots,x_k$ and edges $e_0,\dots,e_{k-1}$ such that $e_i$ is directed from $x_i$ to $x_{i+1}$; $x_k$ is its **last vertex**, and for a set $\mathcal P$ of paths, $\mathrm{ter}(\mathcal P)$ is the set of their last vertices. A **path cover** of a directed graph $G$ is a set of disjoint (directed) paths in $G$ which together contain all the vertices of $G$.`,
       idea: String.raw`The trivial paths $\{v\}$ always form a path cover, so the interesting question is how *few* paths suffice. Choosing arcs for the paths amounts to choosing a set of arcs with every vertex having in- and out-degree at most 1 and no directed cycle; each chosen arc saves one path, so the number of paths is $|G|$ minus the number of arcs used. For a bipartite graph oriented from $A$ to $B$, minimum path covers correspond to maximum matchings.`,
-      caption: String.raw`Click arcs to add them to the paths (coloured) or remove them; an arc that would give a vertex two successors or two predecessors, or close a cycle, is refused. Uncovered vertices form trivial paths. Last vertices are ringed. **Minimum** shows a path cover with the fewest paths, found by exhaustive search.`,
-      deps: ['graph-1.10.1a', 'graph-1.3.1a'], refs: ['Diestel §2.5'], tags: ['path covers', 'digraphs'],
+      caption: String.raw`Click arcs to add them to the paths (coloured) or remove them; an arc that would give a vertex two successors or two predecessors, or close a cycle, is refused. Uncovered vertices form trivial paths. Last vertices are ringed. **Minimum** shows a path cover with the fewest paths found by a capped exhaustive search; the readout says when the optimum is unproved.`,
+      deps: ['graph-1.10.1a', 'graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.5, pp. 54–55'], tags: ['path covers', 'digraphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const s = gstage(v, { height: 320 });
         const G = v.graph(s, { ...DIG(), r: 13 });
@@ -587,7 +590,7 @@ export default {
         v.readout(() => {
           const n = G.nodes.length, P = opt(G), paths = n - A.size, sc = succ();
           const ter = G.nodes.filter((x) => !sc.has(K(x.id))).map((x) => G.lab(x.id));
-          return `${paths} paths ($= |G| - ${A.size}$ arcs used) · $\\mathrm{ter}(\\mathcal P) = \\{${ter.join(', ')}\\}$ · minimum number of paths: ${P.minPaths}${paths === P.minPaths ? ' — **minimum** ✓' : ''}`;
+          return `${paths} paths ($= |G| - ${A.size}$ arcs used) · $\\mathrm{ter}(\\mathcal P) = \\{${ter.join(', ')}\\}$ · ${P.exact ? 'minimum number of paths' : 'best number found (search capped; optimum unproved)'}: ${P.minPaths}${paths === P.minPaths && P.exact ? ' — **minimum** ✓' : ''}`;
         });
       },
     },

@@ -63,7 +63,7 @@ $$(x,\,0^m,\,0^k)\;\longmapsto\;(x,\,f(x),\,g(x)),$$
 where $g(x)$ is "garbage" left on the $k$ work bits. Copying $f(x)$ onto fresh bits and then running the circuit backwards (**compute–copy–uncompute**) returns $g(x)$ to $0$: $(x,0^m,0^k,0^m)\mapsto(x,0^m,0^k,f(x))$. A circuit of size $s$ becomes one of size $2s+m$, so reversibility costs only a constant factor.`,
       idea: String.raw`A gate that is a bijection on bit strings can be undone, so no information is erased. The Toffoli gate is a controlled-controlled-NOT: when both controls are 1 it flips the target, which is exactly an AND added into the target, and AND plus constants gives NAND, which is universal for classical logic (circ-4.9). The garbage $g(x)$ is the only obstacle to zero net erasure, and Bennett's trick removes it: after the answer is copied (CNOT is reversible, and the copy is the only thing that must survive), the first half is inverted gate by gate. By Landauer's principle (thermo-5.17) erasing one bit costs at least $k_BT\ln 2$; the clean circuit erases none, so that bound does not force any dissipation.`,
       caption: String.raw`Choose a function and toggle **uncompute garbage**. The top panel is the circuit (controls are dots, the target $\oplus$); the slider steps it for the chosen **input**, showing each wire's bit. The table lists the final wire values for every input: green columns hold $f$, orange columns are garbage that would have to be erased, and grey columns are ancillas returned to $0$. In the *AND of three* circuit, uncomputing frees the work wire $g$.`,
-      deps: ['qinfo-3.1', 'circ-4.9', 'thermo-5.17'],
+      deps: ['qinfo-3.1', 'circ-4.9', 'thermo-5.17', 'alg-5.1a'],
       refs: ['Nielsen–Chuang §3.2.5', 'Nielsen–Chuang §1.4.1'],
       tags: ['reversible computing', 'Toffoli gate', 'Landauer'],
       scope: String.raw`Ideal gates. The identity of "no erasure" is logical: real reversible hardware still dissipates through finite speed and imperfect gates, and the uncomputation doubles the gate count.`,
@@ -141,19 +141,18 @@ where $g(x)$ is "garbage" left on the $k$ work bits. Copying $f(x)$ onto fresh b
       kind: 'Theorem',
       name: 'CNOT and single-qubit gates are universal',
       statement: String.raw`Every unitary $U$ on $n$ qubits is an exact product of CNOT gates and single-qubit gates. Concretely:
-(a) $U$ is a product of at most $\binom{2^n}{2}$ **two-level unitaries**, each acting non-trivially on only two computational basis states;
+(a) $U$ is a product of at most $\binom{2^n}{2}$ elimination **two-level unitaries**, followed by a diagonal phase matrix, each acting non-trivially on only two computational basis states;
 (b) every two-level unitary is a product of $O(n)$ multiply-controlled single-qubit gates and bit flips (a Gray-code path joins the two basis states);
 (c) every controlled single-qubit gate, and the multiply-controlled ones with ancillas or $O(n^2)$ gates without, is a product of CNOTs and single-qubit gates.
-Hence $O(n^24^n)$ gates always suffice; for two qubits, three CNOTs and single-qubit gates suffice.`,
+This direct Gray-code construction uses $O(n^34^n)$ gates; for two qubits, three CNOTs and single-qubit gates suffice.`,
       idea: String.raw`(a) is Gaussian elimination with unitary steps: a rotation in the plane of two coordinates (a Givens rotation) zeroes one subdiagonal entry of the matrix without disturbing zeros already created, and since the result is unitary and upper triangular it is diagonal; the diagonal phases are themselves two-level. (b) A two-level gate on $|x\rangle,|y\rangle$ is moved to a pair of basis states differing in one bit by a chain of controlled flips along a Gray code, applied, then undone. (c) Any single-qubit unitary is $e^{i\alpha}AXBXC$ with $ABC=I$ (qinfo-1.4), which makes a controlled version out of two CNOTs. The count shows universality is cheap to prove but exponentially expensive to use: most unitaries really do need exponentially many gates by counting dimensions.`,
       caption: String.raw`Pick a $4\times4$ unitary (random, or a preset) and step through the elimination. Each step is a two-level unitary $G_k$ on neighbouring basis states chosen to zero the highlighted entry (brightness is $|U_{ij}|$); at the end only the diagonal phases remain. The table lists every step with the number of CNOTs it costs by the textbook construction (2 when the two states differ in one bit, 4 when they differ in two). The readout checks that $G_1^\dagger\cdots G_m^\dagger D$ reproduces $U$.`,
       deps: ['qinfo-1.4', 'qinfo-2.1', 'ladr-7.58'],
-      refs: ['Nielsen–Chuang §4.5.1', 'Nielsen–Chuang §4.5.2'],
+      refs: ['Barenco etal,quant-ph/9503016 §§4–5,7–8; Vatan–Williams quant-ph/0308006 §V Theorem5'],
       tags: ['universality', 'decomposition', 'CNOT'],
-      scope: String.raw`Exact universality; the construction gives $O(4^n n^2)$ gates, and a counting argument shows $\Omega(4^n/n)$ are sometimes necessary. Approximate universality with a finite gate set is a separate matter (qinfo-4.4, 4.5). The bound "three CNOTs for two qubits" is the optimal-synthesis result of Vatan–Williams and Shende–Bullock–Markov (2004).`,
-      credit: 'D. P. DiVincenzo, Phys. Rev. A 51, 1015 (1995) (two-bit gates are universal); A. Barenco et al., Phys. Rev. A 52, 3457 (1995) (elementary gates; CNOT plus one-qubit gates); D. Deutsch, A. Barenco and A. Ekert, Proc. R. Soc. A 449, 669 (1995)',
+      scope: String.raw`Exact universality; the construction gives $O(4^n n^3)$ gates, and a counting argument shows $\Omega(4^n/n)$ are sometimes necessary. Approximate universality with a finite gate set is a separate matter (qinfo-4.4, 4.5). The bound "three CNOTs for two qubits" is the optimal-synthesis result of Vatan–Williams and Shende–Bullock–Markov (2004).`,
+      credit: 'Barenco etal, elementary quantum gates; Vatan–Williams, three-CNOT two-qubit synthesis',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_logic_gate#Universal_quantum_gates' },
-      verify: true,
       viz(v) {
         const Ts = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1, title: 'the matrix after the chosen step ($|U_{ij}|$)' });
         const Gs = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1.15, title: 'the two-level gates and their cost' });
@@ -200,7 +199,7 @@ Hence $O(n^24^n)$ gates always suffice; for two qubits, three CNOTs and single-q
           });
           cur = { k, m, tot, err: cache.err, all: cache.gl.reduce((s, g) => s + g.cost, 0), n: cache.gl.length, diag: k === m };
         });
-        v.readout(() => `after ${cur.k} of ${cur.m} elimination steps; ${cur.n} two-level gates in all (at most $\\binom{4}{2}=6$) costing ${cur.all} CNOTs by this textbook construction (a 2-qubit unitary needs at most 3 with optimal synthesis)\nreconstruction error $\\max|G_1^\\dagger\\cdots G_m^\\dagger D-U|=${v.sci(Math.max(cur.err, 1e-16), 2)}$${cur.diag ? ' — only the diagonal phases $D$ remain' : ''}`);
+        v.readout(() => `after ${cur.k} of ${cur.m} elimination steps; ${cur.n} two-level gates in all (at most $\\binom{4}{2}=6$) costing at most ${cur.all} CNOTs for these elimination gates (diagonal phases excluded) (a 2-qubit unitary needs at most 3 with optimal synthesis)\nreconstruction error $\\max|G_1^\\dagger\\cdots G_m^\\dagger D-U|=${v.sci(cur.err, 2)}$${cur.diag ? ' — only the diagonal phases $D$ remain' : ''}`);
       },
     },
 
@@ -213,14 +212,13 @@ Hence $O(n^24^n)$ gates always suffice; for two qubits, three CNOTs and single-q
 $$\mathcal C_n=\{U:\ UPU^\dagger\in\mathcal P_n\ \text{for all }P\in\mathcal P_n\}.$$
 It is generated by $H$, the phase gate $S=\mathrm{diag}(1,i)$ and CNOT; modulo global phase $|\mathcal C_1|=24$ and $|\mathcal C_2|=11\,520$. Conjugation by a Clifford gate permutes the Pauli strings (with signs), and is determined by its action on the $2n$ generators $X_j,Z_j$. The gate $T=\mathrm{diag}(1,e^{i\pi/4})$ is **not** Clifford: $TXT^\dagger=(X+Y)/\sqrt2$.`,
       idea: String.raw`Because $U(PQ)U^\dagger=(UPU^\dagger)(UQU^\dagger)$, a unitary that sends the generators $X_j,Z_j$ to Pauli strings sends every Pauli string to one, so it suffices to track $2n$ images. That makes a Clifford gate a small symplectic matrix over $\mathbb F_2$ (plus signs) instead of a $2^n\times2^n$ unitary, which is what the Gottesman–Knill theorem exploits (qinfo-4.6). Checking H, S and CNOT by hand shows they are Clifford; closure under products then gives the whole group. The Pauli matrices themselves (qm-7.7) generate the group that Cliffords normalize.`,
-      caption: String.raw`Build a **gate word** from the buttons (acts left to right in time). The grid shows what conjugation $P\mapsto UPU^\dagger$ does to each of the 15 non-trivial two-qubit Pauli strings, computed from the actual $4\times4$ matrices. Green cells are Pauli strings with a sign; red cells are sums of several strings, which happens as soon as a $T$ is in the word. Count how many of the 15 stay Paulis.`,
+      caption: String.raw`Build a **gate word** from the buttons (acts left to right in time). The grid shows what conjugation $P\mapsto UPU^\dagger$ does to each of the 15 non-trivial two-qubit Pauli strings, computed from the actual $4\times4$ matrices. Green cells are Pauli strings with a sign; red cells are sums of several strings, which can happen after a $T$; cancellations such as $T^2=S$ can restore a Clifford word. Count how many of the 15 stay Paulis.`,
       deps: ['qm-7.7', 'qinfo-2.1'],
-      refs: ['Nielsen–Chuang §10.5.2'],
+      refs: ['Gottesman quant-ph/9807006 §3; Dehaene–DeMoor quant-ph/0304125 §II; Aaronson–Gottesman quant-ph/0406196 §§II–III'],
       tags: ['Clifford group', 'Pauli group', 'stabilizer'],
       scope: String.raw`Qubits ($d=2$); the sign bookkeeping differs for odd prime dimension. Group orders are modulo global phase.`,
-      credit: 'D. Gottesman, Phys. Rev. A 54, 1862 (1996) (stabilizer codes and the normalizer of the Pauli group); the name “Clifford group” follows its use in A. R. Calderbank, E. M. Rains, P. W. Shor and N. J. A. Sloane, IEEE Trans. Inf. Theory 44, 1369 (1998)',
+      credit: 'Clifford normalizer and stabilizer representation (Gottesman)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Clifford_gates' },
-      verify: true,
       viz(v) {
         const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, full: true, title: 'conjugation $P\\mapsto UPU^\\dagger$ of the 15 non-trivial Pauli strings' });
         let word = ['H0', 'CX01'];
@@ -258,12 +256,11 @@ It is generated by $H$, the phase gate $S=\mathrm{diag}(1,i)$ and CNOT; modulo g
       idea: String.raw`$HTH$ and $T$ are rotations by $\pi/4$ about two different axes (the $x$ and $z$ axes of the Bloch sphere), and the product $THTH$ is a rotation through an angle that is an *irrational* multiple of $\pi$ about a third axis. Powers of an irrational rotation are dense in the circle of rotations about that axis, and conjugating by the other rotations moves the axis around; a short argument with these dense subgroups then fills all of $SO(3)$. By contrast the Clifford group is finite (24 elements, qinfo-4.3), so it can never be dense: this is why a non-Clifford gate such as $T$ is the missing ingredient. Density says nothing about *speed*, which is the subject of qinfo-4.5.`,
       caption: String.raw`Each dot is a Bloch-sphere state $W|0\rangle$ reached by a word of at most $L$ letters (map: azimuth against $\cos\theta$, which is area-preserving, so an even scatter means an even cover of the sphere); the newest layer is gold. Drag the **target** and watch the best error shrink as $L$ grows, against the random-cover heuristic $2/\sqrt N$. Switch the generators to $\{H,S\}$: only 6 states ever appear.`,
       deps: ['qinfo-4.2', 'qinfo-4.3'],
-      refs: ['Nielsen–Chuang §4.5.3'],
+      refs: ['Boykin etal,quant-ph/9906054 §§2–3 and AppendixB'],
       tags: ['universality', 'T gate', 'density'],
       scope: String.raw`Single-qubit statement (the multi-qubit one follows from qinfo-4.2). Distances are measured between Bloch vectors; the count of states is capped at 60 000 for speed.`,
-      credit: 'P. O. Boykin, T. Mor, M. Pulver, V. Roychowdhury and F. Vatan, “On universal and fault-tolerant quantum computing”, FOCS 1999, 486–494 (the {H,T} basis); earlier universality results: Barenco et al., Phys. Rev. A 52, 3457 (1995)',
+      credit: 'Boykin, Mor, Pulver, Roychowdhury and Vatan, universal H/T basis',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quantum_logic_gate#Universal_quantum_gates' },
-      verify: true,
       viz(v) {
         const M = v.stage({ x: [-Math.PI, Math.PI], y: [-1, 1], axes: 'box', gutter: true, height: 330, weight: 1.2, xlabel: 'azimuth $\\varphi$', ylabel: '$\\cos\\theta$', title: 'states $W|0\\rangle$ on the sphere (equal-area map)' });
         const E = v.stage({ x: [0, 30], y: [1e-3, 3], ylog: true, axes: 'box', gutter: true, height: 330, weight: 1, xlabel: 'word length $L$', ylabel: 'best error', title: 'error of the best word' });

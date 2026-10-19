@@ -287,7 +287,7 @@ and more generally $y_1^{\alpha_1}\cdots y_n^{\alpha_n}\le\alpha_1y_1+\cdots+\al
       caption: String.raw`Drag the tops of the bars. The blue line is the geometric mean $G$, the green line the arithmetic mean $A$; the shaded gap never closes unless all bars are equal (press *equalize*). On the right the same numbers sit on the graph of $e^x$ at $x_i=\log y_i$: the centre of mass of the points is $(\log G, A)$, directly above $(\log G, G)$ — Jensen for $e^x$.`,
       deps: ['rca-3.3'],
       tags: ['inequalities', 'convexity'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 3.3, pp. 62–63, equations (4)–(8)'],
       viz(v) {
         const M = v.M;
         const N = v.slider('$n$', 2, 6, 4, { int: true });
@@ -340,7 +340,7 @@ are called a pair of **conjugate exponents**; this forces $1<p<\infty$ and $1<q<
       caption: String.raw`Drag $p$ along the hyperbola $(p-1)(q-1)=1$ (left); the right panel shows the same pair as the point $(1/p,1/q)$ on the segment $x+y=1$. The dot at $(2,2)$ is the Hilbert-space case $p=q=2$; pushing $p$ toward $1$ sends $q$ off to $\infty$, which is the convention behind the pair $(1,\infty)$.`,
       deps: [],
       tags: ['Lp spaces'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 3.4, p. 63'],
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [0, 7.2], y: [0, 7.2], equal: true, height: 340, xlabel: 'p', ylabel: 'q', weight: 1.25, title: 'pairs $(p,q)$ on $(p-1)(q-1)=1$' });
@@ -386,7 +386,7 @@ are called a pair of **conjugate exponents**; this forces $1<p<\infty$ and $1<q<
       num: '3.5',
       kind: 'Theorem',
       name: 'Hölder and Minkowski inequalities',
-      credit: 'Hölder & Minkowski, 1889',
+      credit: 'Hölder, 1889; Minkowski, 1896',
       statement: String.raw`Let $p$ and $q$ be conjugate exponents with $1<p<\infty$, let $\mu$ be a measure on $X$, and let $f,g$ be measurable functions on $X$ with values in $[0,\infty]$. Then
 (a) (Hölder) $\displaystyle\int_X fg\,d\mu\le\Big(\int_X f^p\,d\mu\Big)^{1/p}\Big(\int_X g^q\,d\mu\Big)^{1/q}$;
 (b) (Minkowski) $\displaystyle\Big(\int_X (f+g)^p\,d\mu\Big)^{1/p}\le\Big(\int_X f^p\,d\mu\Big)^{1/p}+\Big(\int_X g^p\,d\mu\Big)^{1/p}$.
@@ -396,7 +396,7 @@ For $p=q=2$, (a) is the Schwarz inequality.`,
       deps: ['rca-3.4', 'rca-3.1'],
       see: ['pma-1.35'],
       tags: ['inequalities', 'Lp spaces'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 3.5 and proof, pp. 63–65'],
       viz(v) {
         const M = v.M;
         const mode = v.select('', [{ value: 'h', label: '(a) Hölder' }, { value: 'm', label: '(b) Minkowski' }], 'h');

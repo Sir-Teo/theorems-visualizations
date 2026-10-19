@@ -1,0 +1,2068 @@
+{
+  "schemaVersion": 1,
+  "meaning": "Unresolved source, attribution, numbering or hypothesis checks; browser passes do not establish source verification.",
+  "writtenItems": 6771,
+  "remaining": 243,
+  "originalAnalysis": 0,
+  "byCollection": {
+    "aero": 1,
+    "algo": 3,
+    "arch": 10,
+    "art": 1,
+    "bighist": 7,
+    "cg": 2,
+    "circ": 7,
+    "cm": 14,
+    "cplx": 3,
+    "crypto": 3,
+    "demo": 1,
+    "dist": 3,
+    "ecol": 7,
+    "energy": 5,
+    "epi": 1,
+    "fin": 2,
+    "game": 4,
+    "geo": 1,
+    "geol": 19,
+    "imaging": 10,
+    "info": 3,
+    "kin": 10,
+    "ling": 3,
+    "macro": 2,
+    "mat": 6,
+    "mathbio": 5,
+    "micro": 4,
+    "music": 22,
+    "neuro": 1,
+    "nla": 1,
+    "pchem": 5,
+    "pde": 1,
+    "pharm": 6,
+    "physio": 15,
+    "polsci": 1,
+    "popgen": 2,
+    "psych": 8,
+    "qchem": 2,
+    "qm": 1,
+    "rel": 1,
+    "robot": 1,
+    "sig": 2,
+    "soc": 3,
+    "stat": 2,
+    "stoch": 3,
+    "sysbio": 1,
+    "tech": 21,
+    "toc": 7
+  },
+  "queue": [
+    {
+      "id": "aero-4.1",
+      "file": "content/aero/ch04.js",
+      "name": "Prandtl–Glauert compressibility correction",
+      "refs": [
+        "Glauert1928, full pp.113–119, §3/Eq.(16); public IA volume in.ernet.dli.2015.240251",
+        "Spreiter–Alksne, NACA TN3970, pp.16–18, Eqs.(32)–(36); exact Laitone comparison still unreviewed"
+      ]
+    },
+    {
+      "id": "algo-11.12",
+      "file": "content/algo/ch11-b.js",
+      "name": "König’s theorem: matchings and vertex covers",
+      "refs": [
+        "Erickson Ch. 11"
+      ]
+    },
+    {
+      "id": "algo-11.22",
+      "file": "content/algo/ch11-d.js",
+      "name": "Simplex can take exponentially many pivots (Klee–Minty)",
+      "refs": [
+        "Erickson notes: Linear Programming Algorithms"
+      ]
+    },
+    {
+      "id": "algo-11.23",
+      "file": "content/algo/ch11-d.js",
+      "name": "Linear programs are solvable in polynomial time (statement)",
+      "refs": [
+        "CLRS 4e §29.1"
+      ]
+    },
+    {
+      "id": "arch-3.10",
+      "file": "content/arch/ch03-b.js",
+      "name": "Flying buttresses and pinnacles",
+      "refs": [
+        "Heyman"
+      ]
+    },
+    {
+      "id": "arch-3.12",
+      "file": "content/arch/ch03-b.js",
+      "name": "Medieval rules of proportion for buttresses",
+      "refs": [
+        "Heyman"
+      ]
+    },
+    {
+      "id": "arch-3.13",
+      "file": "content/arch/ch03-b.js",
+      "name": "A Description of Helioscopes, and Some Other Instruments",
+      "refs": []
+    },
+    {
+      "id": "arch-3.14",
+      "file": "content/arch/ch03-b.js",
+      "name": "The Stone Skeleton",
+      "refs": [
+        "Heyman (1966), The stone skeleton, pp. 252–259 (assumptions, limit principles and arches), pp. 260–278 (buttresses and vaults); doi:10.1016/0020-7683(66)90018-7"
+      ]
+    },
+    {
+      "id": "arch-3.7",
+      "file": "content/arch/ch03.js",
+      "name": "Minimum thickness of a semicircular arch",
+      "refs": [
+        "Nikolić (2016), Graphical Simulation of Minimum Thickness of Clamped Pointed Arch, pp. 199–210, Table 2, zero-eccentricity row; doi:10.14415/konferencijaGFS2016.019",
+        "Heyman"
+      ]
+    },
+    {
+      "id": "arch-4.1",
+      "file": "content/arch/ch04.js",
+      "name": "Barrel and groin vaults",
+      "refs": [
+        "Heyman (1966), The stone skeleton, pp. 269–276 (vault geometry, half-bay weight and limitations of membrane/sliced models); doi:10.1016/0020-7683(66)90018-7"
+      ]
+    },
+    {
+      "id": "arch-4.2",
+      "file": "content/arch/ch04.js",
+      "name": "Rib vaults and the Gothic skeleton",
+      "refs": [
+        "Heyman (1966), The stone skeleton, pp. 269–276 (rib-vault statics and sliced safe solutions); doi:10.1016/0020-7683(66)90018-7"
+      ]
+    },
+    {
+      "id": "arch-4.7",
+      "file": "content/arch/ch04-b.js",
+      "name": "The Pantheon: step rings, coffers and graded concrete",
+      "refs": [
+        "Italian Ministry of Culture, Pantheon: Historical background, https://direzionemuseiroma.cultura.gov.it/en/pantheon/historical-background/ (dimensions and Hadrianic reconstruction)",
+        "Salvadori (thickness/aggregate survey remains to be checked)"
+      ]
+    },
+    {
+      "id": "arch-4.8",
+      "file": "content/arch/ch04-b.js",
+      "name": "Brunelleschi’s dome in Florence",
+      "refs": [
+        "Opera di Santa Maria del Fiore, official Dome page (interior diameter, double shell, ribs, herringbone)",
+        "Opera Magazine, On 30 August 1436 the work on Brunelleschi’s Dome was completed (archival construction dates)",
+        "Salvadori"
+      ]
+    },
+    {
+      "id": "arch-4.9",
+      "file": "content/arch/ch04-b.js",
+      "name": "Pendentives: a dome on a square",
+      "refs": [
+        "Salvadori"
+      ]
+    },
+    {
+      "id": "art-4.16",
+      "file": "content/art/ch04-b.js",
+      "name": "The C.I.E. Colorimetric Standards and Their Use",
+      "refs": []
+    },
+    {
+      "id": "bighist-3.1",
+      "file": "content/bighist/ch03.js",
+      "name": "The Miller–Urey experiment",
+      "refs": [
+        "Miller1953 Science117 pp528–529, full original apparatus and chromatogram discussion; Schlesinger–Miller1983 endpoint yields still require full-source check; Johnson et al.2008 Science322 p404 and supporting analytical methods (full original NASA archive)"
+      ]
+    },
+    {
+      "id": "bighist-3.7",
+      "file": "content/bighist/ch03-b.js",
+      "name": "The Cambrian explosion",
+      "refs": [
+        "Marshall (2006), complete review, pp355–370: https://cs.brynmawr.edu/Courses/cs361/spring2008/Readings/Marshall2006.pdf",
+        "ICS chart v2026/06: https://stratigraphy.org/ICSchart/ChronostratChart2026-06.pdf",
+        "Matthews et al. (2020), sections5–8, Drook and Mistaken Point horizons: https://api.repository.cam.ac.uk/server/api/core/bitstreams/7ec82bc9-e734-4e84-93ca-1e44355235f0/content",
+        "Yang et al. (2018), complete accepted manuscript, Results and Discussion: https://nora.nerc.ac.uk/id/eprint/521412/1/2018-JGS-Chuan%20Yang%20et%20al.pdf",
+        "Paterson et al. (2019), full article: https://pmc.ncbi.nlm.nih.gov/articles/PMC6410820/",
+        "Royal Ontario Museum, Burgess Shale dating explanation: https://burgess-shale.rom.on.ca/science/the-burgess-shale/geological-background/how-old-is-the-burgess-shale/"
+      ]
+    },
+    {
+      "id": "bighist-4.1",
+      "file": "content/bighist/ch04.js",
+      "name": "Hominin evolution: bipedalism and brain growth",
+      "refs": [
+        "Aiello & Wheeler1995, Current Anthropology36:199–221, full main article pp199–211, especially Eq3 and Tables1–2; full original https://gwern.net/doc/algernon/1995-aiello.pdf"
+      ]
+    },
+    {
+      "id": "bighist-4.2",
+      "file": "content/bighist/ch04.js",
+      "name": "Glacial cycles and Milankovitch forcing",
+      "refs": [
+        "Hays, Imbrie & Shackleton1976, Science194:1121–1132, full main text/methods and Figs4–9: https://www.whoi.edu/cms/files/hays76sci_268464.pdf; Imbrie & Imbrie1980, Science207:943–953, model Eqs1–2/Fig4 and tuning pp948–950: https://www.whoi.edu/cms/files/imbrie80sci_268884.pdf"
+      ]
+    },
+    {
+      "id": "bighist-4.3",
+      "file": "content/bighist/ch04.js",
+      "name": "Out of Africa",
+      "refs": [
+        "Vidal et al.2022, Nature601:579–583, complete original main text and dating Methods, Fig1 stratigraphy/Fig2 age: https://www.nature.com/articles/s41586-021-04275-8.pdf; remaining ten site dates and genetic-expansion assertions still require full primary readings"
+      ]
+    },
+    {
+      "id": "bighist-4.6",
+      "file": "content/bighist/ch04-b.js",
+      "name": "The Toba bottleneck (contested)",
+      "refs": [
+        "Christian"
+      ]
+    },
+    {
+      "id": "bighist-4.8",
+      "file": "content/bighist/ch04-b.js",
+      "name": "Megafaunal extinctions: overkill or climate?",
+      "refs": [
+        "Christian"
+      ]
+    },
+    {
+      "id": "cg-3.3",
+      "file": "content/cg/ch03.js",
+      "name": "Doubly connected edge lists",
+      "refs": [
+        "de Berg §2.2"
+      ]
+    },
+    {
+      "id": "cg-4.7",
+      "file": "content/cg/ch04-b.js",
+      "name": "Arrangements of lines and the zone theorem",
+      "refs": [
+        "de Berg §8.3"
+      ]
+    },
+    {
+      "id": "circ-3.5",
+      "file": "content/circ/ch03.js",
+      "name": "Maximum power transfer",
+      "refs": [
+        "Horowitz–Hill §1.2",
+        "Agarwal–Lang §3.6"
+      ]
+    },
+    {
+      "id": "circ-4.10",
+      "file": "content/circ/ch04-b.js",
+      "name": "MOSFET saturation model",
+      "refs": [
+        "Agarwal–Lang §7.4"
+      ]
+    },
+    {
+      "id": "circ-4.13",
+      "file": "content/circ/ch04-b.js",
+      "name": "Static memory: the cross-coupled latch",
+      "refs": [
+        "Agarwal–Lang §10.7"
+      ]
+    },
+    {
+      "id": "circ-4.14",
+      "file": "content/circ/ch04-c.js",
+      "name": "The Transistor, A Semi-Conductor Triode",
+      "refs": []
+    },
+    {
+      "id": "circ-4.17",
+      "file": "content/circ/ch04-c.js",
+      "name": "Nanowatt Logic Using Field-Effect MOS Triodes",
+      "refs": []
+    },
+    {
+      "id": "circ-4.5",
+      "file": "content/circ/ch04.js",
+      "name": "Rectifiers: half-wave, full-wave and bridge",
+      "refs": [
+        "Horowitz–Hill §1.6",
+        "Agarwal–Lang §16.5"
+      ]
+    },
+    {
+      "id": "circ-4.9",
+      "file": "content/circ/ch04-b.js",
+      "name": "Universality of NAND gates",
+      "refs": [
+        "Agarwal–Lang §5.3"
+      ]
+    },
+    {
+      "id": "cm-3.11",
+      "file": "content/cm/ch03-b.js",
+      "name": "Lindemann melting criterion",
+      "refs": [
+        "Ashcroft–Mermin ch. 21"
+      ]
+    },
+    {
+      "id": "cm-3.14",
+      "file": "content/cm/ch03-b.js",
+      "name": "Polarons",
+      "refs": [
+        "Kittel ch. 14"
+      ]
+    },
+    {
+      "id": "cm-3.16",
+      "file": "content/cm/ch03-b.js",
+      "name": "Dislocations and the weakness of real crystals",
+      "refs": [
+        "Kittel ch. 21",
+        "Ashcroft–Mermin ch. 30"
+      ]
+    },
+    {
+      "id": "cm-3.2",
+      "file": "content/cm/ch03.js",
+      "name": "Van der Waals solids: the Lennard-Jones crystal",
+      "refs": [
+        "Ashcroft–Mermin ch. 20",
+        "Kittel ch. 3"
+      ]
+    },
+    {
+      "id": "cm-3.6",
+      "file": "content/cm/ch03.js",
+      "name": "Speed of sound from the acoustic branch",
+      "refs": [
+        "Ashcroft–Mermin ch. 22",
+        "Kittel ch. 4"
+      ]
+    },
+    {
+      "id": "cm-4.1",
+      "file": "content/cm/ch04.js",
+      "name": "Direct and indirect band gaps",
+      "refs": [
+        "Ashcroft–Mermin ch. 28",
+        "Kittel ch. 8"
+      ]
+    },
+    {
+      "id": "cm-4.10",
+      "file": "content/cm/ch04-b.js",
+      "name": "Field-effect transistor (MOSFET)",
+      "refs": [
+        "Ashcroft–Mermin ch. 29",
+        "Kittel ch. 17"
+      ]
+    },
+    {
+      "id": "cm-4.11",
+      "file": "content/cm/ch04-b.js",
+      "name": "Quantum wells and heterostructures",
+      "refs": [
+        "Kittel ch. 18",
+        "Kittel ch. 17"
+      ]
+    },
+    {
+      "id": "cm-4.12",
+      "file": "content/cm/ch04-b.js",
+      "name": "Excitons",
+      "refs": [
+        "Ashcroft–Mermin ch. 30, pp. 627–629",
+        "Kazimierczuk et al., Nature 514 (2014), pp. 343–347 and Supplementary Information"
+      ]
+    },
+    {
+      "id": "cm-4.2",
+      "file": "content/cm/ch04.js",
+      "name": "Intrinsic carrier density",
+      "refs": [
+        "Ashcroft–Mermin ch. 28",
+        "Kittel ch. 8"
+      ]
+    },
+    {
+      "id": "cm-4.4",
+      "file": "content/cm/ch04.js",
+      "name": "Donors and acceptors as hydrogenic impurities",
+      "refs": [
+        "Ashcroft–Mermin ch. 28",
+        "Kittel ch. 8"
+      ]
+    },
+    {
+      "id": "cm-4.5",
+      "file": "content/cm/ch04.js",
+      "name": "Chemical potential versus doping and temperature",
+      "refs": [
+        "Ashcroft–Mermin ch. 28",
+        "Kittel ch. 8"
+      ]
+    },
+    {
+      "id": "cm-4.8",
+      "file": "content/cm/ch04-b.js",
+      "name": "Shockley diode equation",
+      "refs": [
+        "Ashcroft–Mermin ch. 29",
+        "Kittel ch. 8"
+      ]
+    },
+    {
+      "id": "cm-4.9",
+      "file": "content/cm/ch04-b.js",
+      "name": "Light-emitting diodes",
+      "refs": [
+        "Kittel ch. 17",
+        "Ashcroft–Mermin ch. 29"
+      ]
+    },
+    {
+      "id": "cplx-2.12",
+      "file": "content/cplx/ch02-b.js",
+      "name": "Mahaney’s theorem: no sparse NP-complete sets unless P = NP",
+      "refs": [
+        "Arora–Barak ch. 2"
+      ]
+    },
+    {
+      "id": "cplx-4.13",
+      "file": "content/cplx/ch04-b.js",
+      "name": "NC¹ ⊆ L ⊆ NL ⊆ NC²",
+      "refs": [
+        "Arora–Barak ch. 6"
+      ]
+    },
+    {
+      "id": "cplx-4.3",
+      "file": "content/cplx/ch04.js",
+      "name": "Every function has circuits of size O(2ⁿ/n) (Lupanov)",
+      "refs": [
+        "Arora–Barak ch. 6"
+      ]
+    },
+    {
+      "id": "crypto-4.10",
+      "file": "content/crypto/ch04-c.js",
+      "name": "CBC and counter modes",
+      "refs": [
+        "NIST SP 800-38A (2001), §6.2 pp. 10–11, §6.5 pp. 15–16, Appendices B–D pp. 18–21",
+        "Diffie–Hellman (1979), Proc. IEEE 67, §IV-C p. 416, Fig. 15",
+        "US4074066A, description/Figs. 4–6 and claims: changing-key block chaining, not the fixed-key CBC equation displayed here"
+      ]
+    },
+    {
+      "id": "crypto-4.2",
+      "file": "content/crypto/ch04.js",
+      "name": "RC4 and ChaCha20",
+      "refs": [
+        "Katz–Lindell §7.1.4",
+        "Katz–Lindell §7.1.5"
+      ]
+    },
+    {
+      "id": "crypto-4.8",
+      "file": "content/crypto/ch04-b.js",
+      "name": "Differential and linear cryptanalysis",
+      "refs": [
+        "Katz–Lindell §7.2",
+        "Boneh–Shoup ch. 4"
+      ]
+    },
+    {
+      "id": "demo-4.8",
+      "file": "content/demo/ch04-b.js",
+      "name": "Natural versus controlled fertility (Coale–Trussell)",
+      "refs": [
+        "PHG ch. 9"
+      ]
+    },
+    {
+      "id": "dist-4.13",
+      "file": "content/dist/ch04-d.js",
+      "name": "Solution of a Problem in Concurrent Programming Control",
+      "refs": []
+    },
+    {
+      "id": "dist-4.6",
+      "file": "content/dist/ch04-b.js",
+      "name": "No symmetric deterministic dining philosophers",
+      "refs": [
+        "Lynch §11.2"
+      ]
+    },
+    {
+      "id": "dist-4.7",
+      "file": "content/dist/ch04-b.js",
+      "name": "Randomized dining philosophers (Lehmann–Rabin)",
+      "refs": [
+        "Lynch §11.4"
+      ]
+    },
+    {
+      "id": "ecol-4.10",
+      "file": "content/ecol/ch04-b.js",
+      "name": "Lottery model and the storage effect",
+      "refs": [
+        "Begon ch. 19"
+      ]
+    },
+    {
+      "id": "ecol-4.11",
+      "file": "content/ecol/ch04-b.js",
+      "name": "Janzen–Connell hypothesis",
+      "refs": [
+        "Begon ch. 19"
+      ]
+    },
+    {
+      "id": "ecol-4.12",
+      "file": "content/ecol/ch04-b.js",
+      "name": "Competition–colonization trade-off",
+      "refs": [
+        "Tilman (1994), Ecology 75, pp. 5–7, eqs. (3)–(4), and discussion of Nee–May habitat destruction; doi:10.2307/1939377",
+        "Begon ch. 19"
+      ]
+    },
+    {
+      "id": "ecol-4.2",
+      "file": "content/ecol/ch04.js",
+      "name": "Gause’s Paramecium experiments",
+      "refs": [
+        "Gause (1934), The Struggle for Existence, Chapter V, §§II–III (aurelia/caudatum methods, logistic approximations and changing competition coefficients)",
+        "Begon ch. 8 (secondary reference for the caudatum/bursaria example)"
+      ]
+    },
+    {
+      "id": "ecol-4.4",
+      "file": "content/ecol/ch04.js",
+      "name": "Two-resource coexistence: isoclines and consumption vectors",
+      "refs": [
+        "Begon ch. 8"
+      ]
+    },
+    {
+      "id": "ecol-4.7",
+      "file": "content/ecol/ch04-b.js",
+      "name": "Limiting similarity",
+      "refs": [
+        "MacArthur and Levins (1967), The limiting similarity, convergence, and divergence of coexisting species, American Naturalist 101:377–385; fixed-K comparison pp. 380–382; public text https://www.scribd.com/document/595324270/2-Macarthur-Levins-1967-The-limiting-similarity-convergence",
+        "May and MacArthur (1972), Niche Overlap as a Function of Environmental Variability, PNAS 69(5):1109–1113; doi:10.1073/pnas.69.5.1109",
+        "Begon ch. 19"
+      ]
+    },
+    {
+      "id": "ecol-4.8",
+      "file": "content/ecol/ch04-b.js",
+      "name": "Character displacement",
+      "refs": [
+        "Begon ch. 8"
+      ]
+    },
+    {
+      "id": "energy-3.10",
+      "file": "content/energy/ch03-b.js",
+      "name": "Fusion and the Lawson criterion",
+      "refs": [
+        "Tester ch. 9"
+      ]
+    },
+    {
+      "id": "energy-3.4",
+      "file": "content/energy/ch03.js",
+      "name": "Energy density: fuels versus batteries",
+      "refs": [
+        "MacKay ch. 26"
+      ]
+    },
+    {
+      "id": "energy-3.6",
+      "file": "content/energy/ch03-b.js",
+      "name": "Chain reaction and the multiplication factor",
+      "refs": [
+        "Tester ch. 9"
+      ]
+    },
+    {
+      "id": "energy-3.9",
+      "file": "content/energy/ch03-b.js",
+      "name": "Decay heat after shutdown",
+      "refs": [
+        "Tester ch. 9"
+      ]
+    },
+    {
+      "id": "energy-4.6",
+      "file": "content/energy/ch04-b.js",
+      "name": "Multijunction cells",
+      "refs": [
+        "Henry (1980), J. Appl. Phys. 51: 4494–4500, DOI 10.1063/1.328272 (full model comparison pending)",
+        "De Vos (1980), J. Phys. D 13: 839–846, DOI 10.1088/0022-3727/13/5/018 (full text pending)",
+        "Markvart (2022), §6, Eqs. (12)–(13), generalized emission"
+      ]
+    },
+    {
+      "id": "epi-3.13",
+      "file": "content/epi/ch03-b.js",
+      "name": "A Method of Estimating Comparative Rates from Clinical Data",
+      "refs": []
+    },
+    {
+      "id": "fin-5.15",
+      "file": "content/fin/ch05-c.js",
+      "name": "Do Stock Prices Move Too Much?",
+      "refs": []
+    },
+    {
+      "id": "fin-5.4",
+      "file": "content/fin/ch05.js",
+      "name": "Prices react to news within minutes",
+      "refs": [
+        "BKM ch. 11"
+      ]
+    },
+    {
+      "id": "game-3.6",
+      "file": "content/game/ch03-b.js",
+      "name": "Fictitious play in zero-sum games (Robinson)",
+      "refs": [
+        "MSZ §5.2",
+        "Robinson (1951), Ann. Math. 54:296–301, Theorem and Lemmas 1–4; https://ranger.uta.edu/~weems/NOTES6319/PAPERSONE/robinson.pdf",
+        "Shapiro (1958), Comm. Pure Appl. Math. 11:587–593, DOI 10.1002/cpa.3160110408 (full rate proof unverified)"
+      ]
+    },
+    {
+      "id": "game-4.11",
+      "file": "content/game/ch04-c.js",
+      "name": "Strategy stealing: the first player wins Hex and Chomp",
+      "refs": [
+        "MSZ §3.4"
+      ]
+    },
+    {
+      "id": "game-4.13",
+      "file": "content/game/ch04-c.js",
+      "name": "High-dimensional tic-tac-toe: the first player wins",
+      "refs": [
+        "MSZ §3.4"
+      ]
+    },
+    {
+      "id": "game-4.8",
+      "file": "content/game/ch04-b.js",
+      "name": "Chain-store paradox",
+      "refs": [
+        "Osborne §7.2"
+      ]
+    },
+    {
+      "id": "geo-3.9",
+      "file": "content/geo/ch03-b.js",
+      "name": "Tropical cyclones",
+      "refs": [
+        "Holland (1980), Mon. Weather Rev. 108, 1212–1218",
+        "Bister & Emanuel (1998), §3.1 eq. (21), p. 235"
+      ]
+    },
+    {
+      "id": "geol-3.1",
+      "file": "content/geol/ch03.js",
+      "name": "Continental drift (Wegener)",
+      "refs": [
+        "Bullard, Everett & Smith (1965), The fit of the continents around the Atlantic, §2–4 and Table 1 fit 2; doi:10.1098/rsta.1965.0020"
+      ]
+    },
+    {
+      "id": "geol-3.10",
+      "file": "content/geol/ch03-b.js",
+      "name": "Subduction zones and Wadati–Benioff zones",
+      "refs": [
+        "Stein–Wysession ch. 5",
+        "Turcotte–Schubert ch. 1"
+      ]
+    },
+    {
+      "id": "geol-3.11",
+      "file": "content/geol/ch03-c.js",
+      "name": "Paleomagnetism and apparent polar wander",
+      "refs": [
+        "Turcotte–Schubert ch. 1"
+      ]
+    },
+    {
+      "id": "geol-3.12",
+      "file": "content/geol/ch03-c.js",
+      "name": "The Wilson cycle",
+      "refs": [
+        "Press–Siever"
+      ]
+    },
+    {
+      "id": "geol-3.13",
+      "file": "content/geol/ch03-c.js",
+      "name": "Die Entstehung der Kontinente",
+      "refs": []
+    },
+    {
+      "id": "geol-3.14",
+      "file": "content/geol/ch03-c.js",
+      "name": "Magnetic Anomalies Over Oceanic Ridges",
+      "refs": [
+        "Vine & Matthews (1963), Nature 199, 947–949, especially Fig. 4 and p. 949; doi:10.1038/199947a0"
+      ]
+    },
+    {
+      "id": "geol-3.15",
+      "file": "content/geol/ch03-c.js",
+      "name": "The North Pacific: an Example of Tectonics on a Sphere",
+      "refs": []
+    },
+    {
+      "id": "geol-3.2",
+      "file": "content/geol/ch03.js",
+      "name": "Seafloor spreading and magnetic stripes",
+      "refs": [
+        "Cande & Kent (1995), revised geomagnetic polarity timescale; WHOI Marine Magnetic Research CK95.M interval table; doi:10.1029/94JB03098",
+        "Vine & Matthews (1963), Nature 199, 947–949; doi:10.1038/199947a0"
+      ]
+    },
+    {
+      "id": "geol-3.5",
+      "file": "content/geol/ch03.js",
+      "name": "Relative plate velocity v = ω × r",
+      "refs": [
+        "Morgan (1968), Rises, trenches, great faults, and crustal blocks, pp. 1959–1966, Figs. 2–8; doi:10.1029/JB073i006p01959"
+      ]
+    },
+    {
+      "id": "geol-3.6",
+      "file": "content/geol/ch03-b.js",
+      "name": "Transform faults lie on small circles about the Euler pole",
+      "refs": [
+        "Morgan (1968), Rises, trenches, great faults, and crustal blocks, pp. 1959–1966, Figs. 2–8; doi:10.1029/JB073i006p01959"
+      ]
+    },
+    {
+      "id": "geol-3.9",
+      "file": "content/geol/ch03-b.js",
+      "name": "Hotspot tracks and absolute plate motion",
+      "refs": [
+        "Turcotte–Schubert ch. 1"
+      ]
+    },
+    {
+      "id": "geol-4.10",
+      "file": "content/geol/ch04-b.js",
+      "name": "Decompression melting",
+      "refs": [
+        "Turcotte–Schubert ch. 4"
+      ]
+    },
+    {
+      "id": "geol-4.2",
+      "file": "content/geol/ch04.js",
+      "name": "Radiogenic heating and the continental geotherm",
+      "refs": [
+        "Turcotte–Schubert ch. 4"
+      ]
+    },
+    {
+      "id": "geol-4.4",
+      "file": "content/geol/ch04.js",
+      "name": "Ocean depth grows as √age",
+      "refs": [
+        "Turcotte–Schubert ch. 4"
+      ]
+    },
+    {
+      "id": "geol-4.5",
+      "file": "content/geol/ch04.js",
+      "name": "Oceanic heat flow falls as 1/√age",
+      "refs": [
+        "Turcotte–Schubert ch. 4"
+      ]
+    },
+    {
+      "id": "geol-4.6",
+      "file": "content/geol/ch04-b.js",
+      "name": "The plate model",
+      "refs": [
+        "Turcotte–Schubert ch. 4"
+      ]
+    },
+    {
+      "id": "geol-4.7",
+      "file": "content/geol/ch04-b.js",
+      "name": "Mantle convection and the Rayleigh number",
+      "refs": [
+        "Turcotte–Schubert ch. 6"
+      ]
+    },
+    {
+      "id": "geol-4.8",
+      "file": "content/geol/ch04-b.js",
+      "name": "Boundary-layer scaling: Nu ∝ Ra^(1/3)",
+      "refs": [
+        "Turcotte–Schubert ch. 6"
+      ]
+    },
+    {
+      "id": "geol-4.9",
+      "file": "content/geol/ch04-b.js",
+      "name": "Mantle plumes",
+      "refs": [
+        "Turcotte–Schubert ch. 6"
+      ]
+    },
+    {
+      "id": "imaging-3.11",
+      "file": "content/imaging/ch03-c.js",
+      "name": "Algebraic reconstruction technique (Kaczmarz)",
+      "refs": [
+        "Kak–Slaney §7.1, pp. 277–281, Eqs. (4), (12)",
+        "Kak–Slaney §7.2"
+      ]
+    },
+    {
+      "id": "imaging-3.12",
+      "file": "content/imaging/ch03-c.js",
+      "name": "SIRT and SART",
+      "refs": [
+        "Kak–Slaney §7.3",
+        "Kak–Slaney §7.4"
+      ]
+    },
+    {
+      "id": "imaging-3.16",
+      "file": "content/imaging/ch03-d.js",
+      "name": "Fourier diffraction theorem",
+      "refs": [
+        "Kak–Slaney §§6.2–6.3, pp. 211–223, especially Eqs. (85)–(86), (104)"
+      ]
+    },
+    {
+      "id": "imaging-3.17",
+      "file": "content/imaging/ch03-d.js",
+      "name": "Representation of a Function by Its Line Integrals",
+      "refs": []
+    },
+    {
+      "id": "imaging-3.18",
+      "file": "content/imaging/ch03-d.js",
+      "name": "Computerized Transverse Axial Scanning (Tomography): Part 1",
+      "refs": []
+    },
+    {
+      "id": "imaging-3.5",
+      "file": "content/imaging/ch03.js",
+      "name": "Uniqueness of Radon inversion",
+      "refs": [
+        "Kak–Slaney §3.2"
+      ]
+    },
+    {
+      "id": "imaging-3.7",
+      "file": "content/imaging/ch03-b.js",
+      "name": "Filtered back-projection",
+      "refs": [
+        "Kak–Slaney §3.3",
+        "Prince–Links ch. 6"
+      ]
+    },
+    {
+      "id": "imaging-4.10",
+      "file": "content/imaging/ch04-c.js",
+      "name": "Tracer kinetics and the Patlak plot",
+      "refs": [
+        "Prince–Links ch. 9"
+      ]
+    },
+    {
+      "id": "imaging-4.4",
+      "file": "content/imaging/ch04.js",
+      "name": "Collimator resolution–sensitivity trade-off",
+      "refs": [
+        "Prince–Links ch. 8"
+      ]
+    },
+    {
+      "id": "imaging-4.5",
+      "file": "content/imaging/ch04-b.js",
+      "name": "SPECT",
+      "refs": [
+        "Prince–Links ch. 9",
+        "Kak–Slaney §4.2"
+      ]
+    },
+    {
+      "id": "info-3.10",
+      "file": "content/info/ch03-b.js",
+      "name": "Chernoff–Stein lemma",
+      "refs": [
+        "Cover–Thomas 2nd ed. §11.8 pp. 380–384, Theorem 11.8.3; §11.9 pp. 384–386 (Bayesian-error exponent)"
+      ]
+    },
+    {
+      "id": "info-4.11",
+      "file": "content/info/ch04-b.js",
+      "name": "Shannon–Fano–Elias coding",
+      "refs": [
+        "Cover–Thomas 2nd ed. §5.9 pp. 127–130, Eqs. (5.73)–(5.76); historical notes p. 158 (Gilbert–Moore construction)"
+      ]
+    },
+    {
+      "id": "info-4.16",
+      "file": "content/info/ch04-c.js",
+      "name": "Kolmogorov complexity and entropy",
+      "refs": [
+        "Cover–Thomas 2nd ed. §14.3 pp. 473–475, Lemma 14.3.1, Theorem 14.3.1 and Eqs. (14.26)–(14.35)"
+      ]
+    },
+    {
+      "id": "kin-2.12",
+      "file": "content/kin/ch02-b.js",
+      "name": "Reaktionsgeschwindigkeit bei der Inversion von Rohrzucker",
+      "refs": []
+    },
+    {
+      "id": "kin-3.12",
+      "file": "content/kin/ch03-b.js",
+      "name": "The Activated Complex in Chemical Reactions",
+      "refs": []
+    },
+    {
+      "id": "kin-3.5",
+      "file": "content/kin/ch03.js",
+      "name": "Tunnelling corrections to rates",
+      "refs": [
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "kin-3.8",
+      "file": "content/kin/ch03-b.js",
+      "name": "Hammett equation",
+      "refs": [
+        "Houston"
+      ]
+    },
+    {
+      "id": "kin-3.9",
+      "file": "content/kin/ch03-b.js",
+      "name": "Curtin–Hammett principle",
+      "refs": [
+        "Houston"
+      ]
+    },
+    {
+      "id": "kin-4.10",
+      "file": "content/kin/ch04-c.js",
+      "name": "Chain reactions: H₂ + Br₂",
+      "refs": [
+        "Houston",
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "kin-4.11",
+      "file": "content/kin/ch04-c.js",
+      "name": "Branching chains and explosion limits",
+      "refs": [
+        "Houston",
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "kin-4.3",
+      "file": "content/kin/ch04.js",
+      "name": "Steady-state approximation",
+      "refs": [
+        "Houston",
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "kin-4.7",
+      "file": "content/kin/ch04-b.js",
+      "name": "Lindemann–Hinshelwood mechanism",
+      "refs": [
+        "Houston",
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "kin-4.8",
+      "file": "content/kin/ch04-b.js",
+      "name": "Fall-off curves",
+      "refs": [
+        "Steinfeld et al."
+      ]
+    },
+    {
+      "id": "ling-3.10",
+      "file": "content/ling/ch03-b.js",
+      "name": "Irregular forms and blocking",
+      "refs": [
+        "Fromkin et al. ch. 2"
+      ]
+    },
+    {
+      "id": "ling-3.6",
+      "file": "content/ling/ch03-b.js",
+      "name": "Morphological typology",
+      "refs": [
+        "Fromkin et al. ch. 2"
+      ]
+    },
+    {
+      "id": "ling-3.8",
+      "file": "content/ling/ch03-b.js",
+      "name": "Roots and templates: nonconcatenative morphology",
+      "refs": [
+        "Fromkin et al. ch. 2"
+      ]
+    },
+    {
+      "id": "macro-4.1",
+      "file": "content/macro/ch04.js",
+      "name": "Ramsey–Cass–Koopmans optimal growth",
+      "refs": [
+        "Romer ch. 2"
+      ]
+    },
+    {
+      "id": "macro-4.3",
+      "file": "content/macro/ch04.js",
+      "name": "The AK model",
+      "refs": [
+        "Romer ch. 3"
+      ]
+    },
+    {
+      "id": "mat-3.11",
+      "file": "content/mat/ch03-c.js",
+      "name": "Deformation twinning",
+      "refs": [
+        "Callister §7.7"
+      ]
+    },
+    {
+      "id": "mat-3.13",
+      "file": "content/mat/ch03-c.js",
+      "name": "The mechanism of plastic deformation of crystals",
+      "refs": []
+    },
+    {
+      "id": "mat-4.11",
+      "file": "content/mat/ch04-c.js",
+      "name": "Hardness testing and Tabor’s relation",
+      "refs": [
+        "Callister §6.10"
+      ]
+    },
+    {
+      "id": "mat-4.7",
+      "file": "content/mat/ch04-b.js",
+      "name": "Inverse Hall–Petch in nanocrystals",
+      "refs": [
+        "Roylance, Dislocation Basis of Yield and Creep, pp10–11 Eq7"
+      ]
+    },
+    {
+      "id": "mat-4.8",
+      "file": "content/mat/ch04-b.js",
+      "name": "Solid-solution strengthening",
+      "refs": [
+        "Callister §7.9"
+      ]
+    },
+    {
+      "id": "mat-4.9",
+      "file": "content/mat/ch04-c.js",
+      "name": "Precipitation hardening and Orowan bypass",
+      "refs": [
+        "Callister §11.10",
+        "Porter–Easterling ch. 5"
+      ]
+    },
+    {
+      "id": "mathbio-3.12",
+      "file": "content/mathbio/ch03-b.js",
+      "name": "Hopf bifurcation: birth of a limit cycle",
+      "refs": [
+        "Edelstein-Keshet ch. 8"
+      ]
+    },
+    {
+      "id": "mathbio-3.14",
+      "file": "content/mathbio/ch03-c.js",
+      "name": "Kolmogorov’s theorem for predator–prey systems",
+      "refs": [
+        "Murray I ch. 3"
+      ]
+    },
+    {
+      "id": "mathbio-3.7",
+      "file": "content/mathbio/ch03-b.js",
+      "name": "Structural instability of the Lotka–Volterra centre",
+      "refs": [
+        "Murray I ch. 3"
+      ]
+    },
+    {
+      "id": "mathbio-4.12",
+      "file": "content/mathbio/ch04-b.js",
+      "name": "Population momentum",
+      "refs": [
+        "Edelstein-Keshet ch. 1"
+      ]
+    },
+    {
+      "id": "mathbio-4.14",
+      "file": "content/mathbio/ch04-b.js",
+      "name": "McKendrick–von Foerster equation",
+      "refs": [
+        "Murray I ch. 1"
+      ]
+    },
+    {
+      "id": "micro-10.12",
+      "file": "content/micro/ch10-b.js",
+      "name": "Stability of Cournot adjustment",
+      "refs": [
+        "Varian Ch. 28"
+      ]
+    },
+    {
+      "id": "micro-10.13",
+      "file": "content/micro/ch10-c.js",
+      "name": "Stackelberg leadership",
+      "refs": [
+        "Varian Ch. 28"
+      ]
+    },
+    {
+      "id": "micro-10.20",
+      "file": "content/micro/ch10-d.js",
+      "name": "Price leadership by a dominant firm",
+      "refs": [
+        "Varian Ch. 28"
+      ]
+    },
+    {
+      "id": "micro-10.9",
+      "file": "content/micro/ch10-b.js",
+      "name": "Monopolistic competition",
+      "refs": [
+        "Mankiw Ch. 16",
+        "Varian Ch. 26"
+      ]
+    },
+    {
+      "id": "music-7.1",
+      "file": "content/music/ch07.js",
+      "name": "Pythagorean tuning",
+      "refs": [
+        "Benson §5.2 pp. 154–155 (full author-hosted text)"
+      ]
+    },
+    {
+      "id": "music-7.10",
+      "file": "content/music/ch07-b.js",
+      "name": "Continued fractions give best approximations",
+      "refs": [
+        "Benson §6.2 pp. 204–209"
+      ]
+    },
+    {
+      "id": "music-7.12",
+      "file": "content/music/ch07-b.js",
+      "name": "19- and 31-tone equal temperament",
+      "refs": [
+        "Benson §§6.4–6.5 pp. 217–221"
+      ]
+    },
+    {
+      "id": "music-7.13",
+      "file": "content/music/ch07-c.js",
+      "name": "53-tone equal temperament",
+      "refs": [
+        "Benson §6.3 pp. 213–217"
+      ]
+    },
+    {
+      "id": "music-7.15",
+      "file": "content/music/ch07-c.js",
+      "name": "Unison vectors and periodicity blocks (Fokker)",
+      "refs": [
+        "Benson §6.8 pp. 227–232"
+      ]
+    },
+    {
+      "id": "music-7.17",
+      "file": "content/music/ch07-c.js",
+      "name": "The Bohlen–Pierce scale",
+      "refs": [
+        "Benson §6.7 pp. 224–227 (full just-ratio and equal-scale tables)"
+      ]
+    },
+    {
+      "id": "music-7.2",
+      "file": "content/music/ch07.js",
+      "name": "Fifths and octaves never meet",
+      "refs": [
+        "Benson §6.2 pp. 204–209 (irrationality and convergents)"
+      ]
+    },
+    {
+      "id": "music-7.5",
+      "file": "content/music/ch07.js",
+      "name": "Just intonation",
+      "refs": [
+        "Benson §5.5 pp. 159–160"
+      ]
+    },
+    {
+      "id": "music-7.7",
+      "file": "content/music/ch07-b.js",
+      "name": "Quarter-comma meantone",
+      "refs": [
+        "Benson §5.12 pp. 176–180; §5.14 pp. 190–191 (eleventh-comma approximation)"
+      ]
+    },
+    {
+      "id": "music-7.8",
+      "file": "content/music/ch07-b.js",
+      "name": "Well temperaments",
+      "refs": [
+        "Benson §5.13 pp. 181–187 (recipes; historical originals remain unchecked)"
+      ]
+    },
+    {
+      "id": "music-7.9",
+      "file": "content/music/ch07-b.js",
+      "name": "Twelve-tone equal temperament",
+      "refs": [
+        "Benson §5.14 pp. 190–193"
+      ]
+    },
+    {
+      "id": "music-8.10",
+      "file": "content/music/ch08-b.js",
+      "name": "Counting set classes (Burnside)",
+      "refs": [
+        "Benson §§9.13–9.14 pp. 330–334 (complete proof and orbit tables)"
+      ]
+    },
+    {
+      "id": "music-8.11",
+      "file": "content/music/ch08-b.js",
+      "name": "The interval vector",
+      "refs": [
+        "Benson §9.14 p. 334 (pair-count definition)"
+      ]
+    },
+    {
+      "id": "music-8.12",
+      "file": "content/music/ch08-b.js",
+      "name": "The hexachord theorem",
+      "refs": [
+        "Benson §9.14 p. 334 (complement vectors)"
+      ]
+    },
+    {
+      "id": "music-8.13",
+      "file": "content/music/ch08-b.js",
+      "name": "Z-related sets",
+      "refs": [
+        "Benson §9.14 p. 334 (equal-vector inequivalent sets)"
+      ]
+    },
+    {
+      "id": "music-8.14",
+      "file": "content/music/ch08-b.js",
+      "name": "The Fourier transform of a pitch-class set",
+      "refs": [
+        "Tymoczko, A Geometry of Music"
+      ]
+    },
+    {
+      "id": "music-8.15",
+      "file": "content/music/ch08-c.js",
+      "name": "Interval content from Fourier magnitudes",
+      "refs": [
+        "Tymoczko, A Geometry of Music"
+      ]
+    },
+    {
+      "id": "music-8.16",
+      "file": "content/music/ch08-c.js",
+      "name": "Twelve-tone rows and the row matrix",
+      "refs": [
+        "Benson §9.8 pp. 322–324; §9.13 pp. 330–332"
+      ]
+    },
+    {
+      "id": "music-8.21",
+      "file": "content/music/ch08-c.js",
+      "name": "Change ringing and permutations",
+      "refs": [
+        "Benson §9.4 pp. 314–316",
+        "Tintinnalogia, 1671 edition, title page and sections Of the Changes / Plain Changes on four Bells (Project Gutenberg18567)"
+      ]
+    },
+    {
+      "id": "music-8.5",
+      "file": "content/music/ch08.js",
+      "name": "Myhill’s property: two sizes per generic interval",
+      "refs": [
+        "Tymoczko ch. 4"
+      ]
+    },
+    {
+      "id": "music-8.6",
+      "file": "content/music/ch08.js",
+      "name": "Well-formed scales and the three-gap theorem",
+      "refs": [
+        "Tymoczko ch. 4"
+      ]
+    },
+    {
+      "id": "music-8.9",
+      "file": "content/music/ch08-b.js",
+      "name": "Set classes and prime form",
+      "refs": [
+        "Benson §9.14 pp. 332–335 (first-last-second lexicographic convention)"
+      ]
+    },
+    {
+      "id": "neuro-4.8",
+      "file": "content/neuro/ch04-c.js",
+      "name": "Myelination and saltatory conduction",
+      "refs": [
+        "Gerstner §3.3"
+      ]
+    },
+    {
+      "id": "nla-3.15",
+      "file": "content/nla/ch03-b.js",
+      "name": "Numerical inverting of matrices of high order",
+      "refs": []
+    },
+    {
+      "id": "pchem-3.13",
+      "file": "content/pchem/ch03-b.js",
+      "name": "Gibbs–Helmholtz equation",
+      "refs": [
+        "Atkins 3E",
+        "M–S ch. 22"
+      ]
+    },
+    {
+      "id": "pchem-3.8",
+      "file": "content/pchem/ch03.js",
+      "name": "Third law and residual entropy",
+      "refs": [
+        "Atkins Focus 3",
+        "M–S ch. 21"
+      ]
+    },
+    {
+      "id": "pchem-3.9",
+      "file": "content/pchem/ch03-b.js",
+      "name": "Absolute entropies from heat capacities",
+      "refs": [
+        "Atkins Focus 3",
+        "M–S ch. 21"
+      ]
+    },
+    {
+      "id": "pchem-4.1",
+      "file": "content/pchem/ch04.js",
+      "name": "Phase diagram of a pure substance",
+      "refs": [
+        "Atkins 4A",
+        "M–S ch. 23"
+      ]
+    },
+    {
+      "id": "pchem-4.3",
+      "file": "content/pchem/ch04.js",
+      "name": "Clapeyron equation",
+      "refs": [
+        "Atkins 4B",
+        "M–S ch. 23"
+      ]
+    },
+    {
+      "id": "pde-3.12",
+      "file": "content/pde/ch03-c.js",
+      "name": "Tychonoff’s example: non-uniqueness without growth bounds",
+      "refs": [
+        "Evans (1st ed.), §2.3.3, Theorem 7 and following remark, pp. 58–59; construction and Gevrey estimate derived here"
+      ]
+    },
+    {
+      "id": "pharm-3.12",
+      "file": "content/pharm/ch03-b.js",
+      "name": "Context-Sensitive Half-Time in Multicompartment Models",
+      "refs": []
+    },
+    {
+      "id": "pharm-3.4",
+      "file": "content/pharm/ch03.js",
+      "name": "Thiopental redistribution: waking before elimination",
+      "refs": [
+        "Goodman–Gilman ch. 2"
+      ]
+    },
+    {
+      "id": "pharm-3.6",
+      "file": "content/pharm/ch03.js",
+      "name": "Well-stirred liver model and hepatic extraction",
+      "refs": [
+        "Benet (2010), Clearance concepts: a downdate and an update, pp. 529–534, Eqs. 1–6; https://europepmc.org/articles/PMC3005114?pdf=render",
+        "Original parallel-tube/historical sources still require verification"
+      ]
+    },
+    {
+      "id": "pharm-3.9",
+      "file": "content/pharm/ch03-b.js",
+      "name": "Physiologically based pharmacokinetic (PBPK) models",
+      "refs": [
+        "Rowland–Tozer"
+      ]
+    },
+    {
+      "id": "pharm-4.6",
+      "file": "content/pharm/ch04.js",
+      "name": "Dose adjustment in renal impairment",
+      "refs": [
+        "Cockcroft & Gault (1976), Prediction of creatinine clearance from serum creatinine, Nephron 16:31–41, complete original; https://www.drugtnt.com/ref/RenalDosing/Cockcroft_1976.pdf",
+        "Giusti & Hayton (1973), Dosage regimen adjustments in renal impairment, Drug Intell Clin Pharm 7:382–387, doi:10.1177/106002807300700902 (full paper still inaccessible)"
+      ]
+    },
+    {
+      "id": "pharm-4.9",
+      "file": "content/pharm/ch04.js",
+      "name": "Intermittent infusion and aminoglycoside dosing",
+      "refs": [
+        "Rowland–Tozer"
+      ]
+    },
+    {
+      "id": "physio-2.7",
+      "file": "content/physio/ch02-b.js",
+      "name": "Twitch summation and tetanus",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-3.1",
+      "file": "content/physio/ch03.js",
+      "name": "The cardiac cycle and the Wiggers diagram",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-3.8",
+      "file": "content/physio/ch03-b.js",
+      "name": "Law of Laplace for the ventricular wall",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-3.9",
+      "file": "content/physio/ch03-b.js",
+      "name": "The ECG as a rotating cardiac dipole (Einthoven’s triangle)",
+      "refs": [
+        "Einthoven, Nobel Lecture (11 December 1925), pp. 102–105: limb-lead identity and resultant potentials; clinical axis limits and early dates require separate sources"
+      ]
+    },
+    {
+      "id": "physio-4.10",
+      "file": "content/physio/ch04-b.js",
+      "name": "Continuity: blood slows in the capillaries",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.13",
+      "file": "content/physio/ch04-c.js",
+      "name": "Oedema from unbalanced Starling forces",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.14",
+      "file": "content/physio/ch04-c.js",
+      "name": "Reynolds number, turbulence and bruits",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.16",
+      "file": "content/physio/ch04-d.js",
+      "name": "Myogenic autoregulation of blood flow",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.17",
+      "file": "content/physio/ch04-d.js",
+      "name": "Guyton’s venous return and the cardiac-output equilibrium",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.18",
+      "file": "content/physio/ch04-d.js",
+      "name": "Bernoulli and the pressure drop across a stenosis",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.2",
+      "file": "content/physio/ch04.js",
+      "name": "Poiseuille’s law in blood vessels",
+      "refs": [
+        "Keener–Sneyd ch. 11"
+      ]
+    },
+    {
+      "id": "physio-4.20",
+      "file": "content/physio/ch04-d.js",
+      "name": "Absorption of Fluids from the Connective Tissue Spaces",
+      "refs": [
+        "Starling (1896), complete original offprint pp. 312–326, including tables pp. 316/319, diagrams pp. 319/321 and conclusions pp. 325–326; https://wellcomecollection.org/works/rf97rsqu/items",
+        "Landis–Pappenheimer (1963) polynomial and skeletal-muscle filtration coefficient remain unverified"
+      ]
+    },
+    {
+      "id": "physio-4.6",
+      "file": "content/physio/ch04-b.js",
+      "name": "Compliance and vascular distensibility",
+      "refs": [
+        "Guyton–Hall"
+      ]
+    },
+    {
+      "id": "physio-4.7",
+      "file": "content/physio/ch04-b.js",
+      "name": "Two-element Windkessel model",
+      "refs": [
+        "Keener–Sneyd ch. 11"
+      ]
+    },
+    {
+      "id": "physio-4.9",
+      "file": "content/physio/ch04-b.js",
+      "name": "Pulse-wave velocity and wave reflection",
+      "refs": [
+        "Keener–Sneyd ch. 11"
+      ]
+    },
+    {
+      "id": "polsci-5.5",
+      "file": "content/polsci/ch05.js",
+      "name": "Correlated voters break the jury theorem",
+      "refs": [
+        "Shepsle: group decisions",
+        "Ladha (1992), American Journal of Political Science 36: 617–634"
+      ]
+    },
+    {
+      "id": "popgen-4.13",
+      "file": "content/popgen/ch04-c.js",
+      "name": "Industrial melanism in the peppered moth",
+      "refs": [
+        "Gillespie",
+        "Cook & Saccheri 2013, Heredity 110: 207–212",
+        "Cook, Mani & Varley 1986, Science 231: 611–613",
+        "van’t Hof et al. 2016, Nature 534:102–105, full accepted manuscript pp. 1–7, Fig. 1; https://livrepository.liverpool.ac.uk/3002967/1/saccheri_carbonaria_whole_paper_with_figs.pdf"
+      ]
+    },
+    {
+      "id": "popgen-4.14",
+      "file": "content/popgen/ch04-c.js",
+      "name": "Rapid evolution of drug and pesticide resistance",
+      "refs": [
+        "Bürger 2020 §§3.2 and 4.2, pp. 14–15 and 36–37",
+        "Luria–Delbrück 1943, Genetics 28:491–511, experimental pp. 501–510"
+      ]
+    },
+    {
+      "id": "psych-3.10",
+      "file": "content/psych/ch03-b.js",
+      "name": "Multidimensional scaling of similarity",
+      "refs": [
+        "Gescheider ch. 10"
+      ]
+    },
+    {
+      "id": "psych-3.9",
+      "file": "content/psych/ch03-b.js",
+      "name": "Loudness in sones: doubling per 10 dB",
+      "refs": [
+        "Goldstein ch. 11"
+      ]
+    },
+    {
+      "id": "psych-4.10",
+      "file": "content/psych/ch04-b.js",
+      "name": "White’s illusion: contrast against lateral inhibition",
+      "refs": [
+        "Goldstein ch. 9"
+      ]
+    },
+    {
+      "id": "psych-4.11",
+      "file": "content/psych/ch04-c.js",
+      "name": "Craik–O’Brien–Cornsweet illusion",
+      "refs": [
+        "Goldstein ch. 3"
+      ]
+    },
+    {
+      "id": "psych-4.14",
+      "file": "content/psych/ch04-c.js",
+      "name": "Troxler fading",
+      "refs": [
+        "Goldstein ch. 3"
+      ]
+    },
+    {
+      "id": "psych-4.5",
+      "file": "content/psych/ch04.js",
+      "name": "Ricco’s and Bloch’s laws of summation",
+      "refs": [
+        "Goldstein ch. 3"
+      ]
+    },
+    {
+      "id": "psych-4.6",
+      "file": "content/psych/ch04-b.js",
+      "name": "Centre–surround receptive fields",
+      "refs": [
+        "Goldstein ch. 3",
+        "Kuffler (1953), J. Neurophysiol. 16:37–68, §§4–5 pp. 46–54 and Discussion pp. 61–65; https://debbie.mdag.org/ee585/Supplementary/Kuffler53.pdf"
+      ]
+    },
+    {
+      "id": "psych-4.9",
+      "file": "content/psych/ch04-b.js",
+      "name": "The Hermann grid and its wavy-line refutation",
+      "refs": [
+        "Goldstein ch. 3"
+      ]
+    },
+    {
+      "id": "qchem-3.13",
+      "file": "content/qchem/ch03-b.js",
+      "name": "Properties and atomic weights of the elements",
+      "refs": []
+    },
+    {
+      "id": "qchem-3.8",
+      "file": "content/qchem/ch03-b.js",
+      "name": "Hund’s rules",
+      "refs": [
+        "NIST Basic Atomic Spectroscopic Data, complete C I/O I energy-level tables; microscopic Hund-rule source remains open"
+      ]
+    },
+    {
+      "id": "qm-7.9",
+      "file": "content/qm/ch07-b.js",
+      "name": "Neutron interferometry and 4π symmetry",
+      "refs": [
+        "Fitzpatrick §10.5–10.6 (spin evolution); Werner etal1975 full experiment still to verify"
+      ]
+    },
+    {
+      "id": "rel-1.3",
+      "file": "content/rel/ch01.js",
+      "name": "Invariance of the speed of light",
+      "refs": [
+        "Einstein1905,complete introduction and §§1–2; deSitter/Brecher/Alväger original experimental checks still pending"
+      ]
+    },
+    {
+      "id": "robot-3.7",
+      "file": "content/robot/ch03.js",
+      "name": "A Kinematic Notation for Lower-Pair Mechanisms",
+      "refs": []
+    },
+    {
+      "id": "sig-4.13",
+      "file": "content/sig/ch04-d.js",
+      "name": "Continuous signals with divergent Fourier series",
+      "refs": [
+        "Oppenheim–Willsky §3.4"
+      ]
+    },
+    {
+      "id": "sig-4.6",
+      "file": "content/sig/ch04-b.js",
+      "name": "Parseval’s relation for periodic signals",
+      "refs": [
+        "Oppenheim–Willsky §3.5"
+      ]
+    },
+    {
+      "id": "soc-3.7",
+      "file": "content/soc/ch03.js",
+      "name": "Power from position in exchange networks",
+      "refs": [
+        "E&K §12.2",
+        "E&K §12.3"
+      ]
+    },
+    {
+      "id": "soc-4.13",
+      "file": "content/soc/ch04-c.js",
+      "name": "Gibrat’s proportional growth and city-size laws",
+      "refs": [
+        "Newman ch. 10"
+      ]
+    },
+    {
+      "id": "soc-4.15",
+      "file": "content/soc/ch04-c.js",
+      "name": "The long tail",
+      "refs": [
+        "E&K §18.5"
+      ]
+    },
+    {
+      "id": "stat-7.13",
+      "file": "content/stat/ch07-b.js",
+      "name": "Permutation test",
+      "refs": [
+        "Wasserman §10.5"
+      ]
+    },
+    {
+      "id": "stat-8.13",
+      "file": "content/stat/ch08-b.js",
+      "name": "Relevant subsets: intervals known to be right",
+      "refs": [
+        "Casella–Berger §9"
+      ]
+    },
+    {
+      "id": "stoch-3.12",
+      "file": "content/stoch/ch03-b.js",
+      "name": "On the probability of the extinction of families",
+      "refs": [
+        "Watson & Galton (1875), On the Probability of the Extinction of Families, pp. 138–144; doi:10.2307/2841222"
+      ]
+    },
+    {
+      "id": "stoch-3.13",
+      "file": "content/stoch/ch03-b.js",
+      "name": "Über eine Aufgabe … betreffend die Irrfahrt im Straßennetz",
+      "refs": [
+        "Pólya (1921), Mathematische Annalen 84, pp. 149–160, §§2–5; doi:10.1007/BF01458701",
+        "MathWorld, Pólya’s Random Walk Constants and Watson’s Triple Integrals (secondary numerical reference)"
+      ]
+    },
+    {
+      "id": "stoch-4.14",
+      "file": "content/stoch/ch04-b.js",
+      "name": "Markov chain tree theorem",
+      "refs": [
+        "Anantharam & Tsoucas (1988), A Proof of the Markov Chain Tree Theorem, UMD TR 88-97, pp. 2–4 (irreducible theorem and proof)",
+        "Norris §1.7"
+      ]
+    },
+    {
+      "id": "sysbio-4.6",
+      "file": "content/sysbio/ch04-b.js",
+      "name": "Lambda phage lysis–lysogeny decision",
+      "refs": [
+        "Zeng et al. 2010, Cell 141:682–691, Figs. 1–5, Results and Discussion"
+      ]
+    },
+    {
+      "id": "tech-4.1",
+      "file": "content/tech/ch04.js",
+      "name": "The true arch in Roman engineering",
+      "refs": [
+        "Mokyr ch. 2",
+        "Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249",
+        "Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia \"Arch\""
+      ]
+    },
+    {
+      "id": "tech-4.10",
+      "file": "content/tech/ch04-b.js",
+      "name": "The canal pound lock",
+      "refs": [
+        "Mokyr ch. 3",
+        "Needham, Science and Civilisation in China 4.3 (as cited by Wikipedia “Lock (water navigation)”)"
+      ]
+    },
+    {
+      "id": "tech-4.11",
+      "file": "content/tech/ch04-b.js",
+      "name": "Sternpost rudder and lateen sail",
+      "refs": [
+        "Mokyr ch. 3",
+        "Needham, Science and Civilisation in China 4.3, Johnstone & McGrail (1988), as cited by Wikipedia “Rudder”",
+        "Whitewright (2009–2012), Casson (1995), as cited by Wikipedia “Lateen”"
+      ]
+    },
+    {
+      "id": "tech-4.2",
+      "file": "content/tech/ch04.js",
+      "name": "Roman concrete (pozzolana)",
+      "refs": [
+        "Mokyr ch. 2",
+        "Vitruvius, De architectura 2.6 and 5.12 (proportions as quoted by Wikipedia \"Roman concrete\")",
+        "Jackson et al. 2013, Am. Mineral. 98:1669 (doi 10.2138/am.2013.4484)",
+        "Seymour et al. 2023, Sci. Adv. 9:eadd1602 (doi 10.1126/sciadv.add1602)"
+      ]
+    },
+    {
+      "id": "tech-4.3",
+      "file": "content/tech/ch04.js",
+      "name": "Aqueducts and the inverted siphon",
+      "refs": [
+        "Mokyr ch. 2",
+        "Vitruvius, De architectura 8.6 (fall of the channel; the venter)",
+        "Frontinus, De aquaeductu (97 CE)",
+        "Wikipedia \"Pont du Gard\" (34 cm/km, 17 m)",
+        "Wikipedia \"Lead\" (tensile strength 12–17 MPa)"
+      ]
+    },
+    {
+      "id": "tech-4.4",
+      "file": "content/tech/ch04.js",
+      "name": "The water wheel",
+      "refs": [
+        "Usher, “Water wheels and windmills”",
+        "Mokyr ch. 3",
+        "Lewis, Millstone and Hammer (1997), as cited by Wikipedia “Watermill”"
+      ]
+    },
+    {
+      "id": "tech-4.6",
+      "file": "content/tech/ch04.js",
+      "name": "The windmill",
+      "refs": [
+        "Usher, “Water wheels and windmills”",
+        "Mokyr ch. 3",
+        "Wikipedia “Windmill” (Persian panemone, Weedley 1185) and “Betz’s law” (Lanchester 1915, Betz 1919, Zhukovsky 1920)"
+      ]
+    },
+    {
+      "id": "tech-4.7",
+      "file": "content/tech/ch04-b.js",
+      "name": "The cam and the trip hammer",
+      "refs": [
+        "Mokyr ch. 3",
+        "Needham, Science and Civilisation in China 4.2 and Lewis (1997), as cited by Wikipedia “Trip hammer”"
+      ]
+    },
+    {
+      "id": "tech-4.8",
+      "file": "content/tech/ch04-b.js",
+      "name": "The heavy plough and the horse collar",
+      "refs": [
+        "Mokyr ch. 3",
+        "White, Medieval Technology and Social Change (Oxford: Clarendon, 1962)",
+        "Spruytte, Early Harness Systems (London: Allen, 1983)",
+        "Weller, Roman Traction Systems (online), and Needham (1986) as cited by Wikipedia “Horse collar”"
+      ]
+    },
+    {
+      "id": "tech-4.9",
+      "file": "content/tech/ch04-b.js",
+      "name": "The stirrup",
+      "refs": [
+        "Mokyr ch. 3",
+        "White, Medieval Technology and Social Change (1962)",
+        "Bachrach 1970 and Bullough 1970, as cited by Wikipedia “Stirrup”"
+      ]
+    },
+    {
+      "id": "tech-5.1",
+      "file": "content/tech/ch05.js",
+      "name": "The water clock (clepsydra)",
+      "refs": [
+        "Usher, “Water clocks and mechanical clocks”",
+        "Cardwell"
+      ]
+    },
+    {
+      "id": "tech-5.10",
+      "file": "content/tech/ch05-b.js",
+      "name": "Harrison’s marine chronometer",
+      "refs": [
+        "Mokyr ch. 4",
+        "Cardwell",
+        "Sobel, Longitude (1995)"
+      ]
+    },
+    {
+      "id": "tech-5.11",
+      "file": "content/tech/ch05-b.js",
+      "name": "The octant and sextant",
+      "refs": [
+        "Mokyr ch. 4",
+        "Hadley, John (MacTutor / Oxford DNB)"
+      ]
+    },
+    {
+      "id": "tech-5.2",
+      "file": "content/tech/ch05.js",
+      "name": "The astrolabe",
+      "refs": [
+        "Mokyr ch. 3",
+        "Evans, The History and Practice of Ancient Astronomy",
+        "Savage-Smith, Islamicate Celestial Globes (as cited by Wikipedia “Astrolabe”)"
+      ]
+    },
+    {
+      "id": "tech-5.3",
+      "file": "content/tech/ch05.js",
+      "name": "The magnetic compass",
+      "refs": [
+        "Mokyr ch. 3",
+        "Needham, Science and Civilisation in China 4.1, as cited by Wikipedia “Compass”"
+      ]
+    },
+    {
+      "id": "tech-5.4",
+      "file": "content/tech/ch05.js",
+      "name": "Mechanical clock with verge-and-foliot escapement",
+      "refs": [
+        "Usher, “Water clocks and mechanical clocks”",
+        "Cardwell"
+      ]
+    },
+    {
+      "id": "tech-5.5",
+      "file": "content/tech/ch05.js",
+      "name": "The mainspring and fusee",
+      "refs": [
+        "Usher, “The development of clocks and watches”",
+        "Cardwell"
+      ]
+    },
+    {
+      "id": "tech-5.6",
+      "file": "content/tech/ch05.js",
+      "name": "The pendulum clock (Huygens)",
+      "refs": [
+        "Usher, “The development of clocks and watches”",
+        "Mokyr ch. 4",
+        "Huygens, Horologium Oscillatorium (1673)"
+      ]
+    },
+    {
+      "id": "tech-5.7",
+      "file": "content/tech/ch05-b.js",
+      "name": "The anchor escapement",
+      "refs": [
+        "Usher, “The development of clocks and watches”",
+        "Lloyd, “The anchor escapement: William Clement or Robert Hooke?” (1952), as cited by the British Museum catalogue"
+      ]
+    },
+    {
+      "id": "tech-5.8",
+      "file": "content/tech/ch05-b.js",
+      "name": "The balance spring",
+      "refs": [
+        "Usher, “The development of clocks and watches”",
+        "Cardwell"
+      ]
+    },
+    {
+      "id": "tech-5.9",
+      "file": "content/tech/ch05-b.js",
+      "name": "The longitude problem",
+      "refs": [
+        "Mokyr ch. 4",
+        "Sobel, Longitude (1995)"
+      ]
+    },
+    {
+      "id": "toc-3.10",
+      "file": "content/toc/ch03-b.js",
+      "name": "Arden’s lemma",
+      "refs": [
+        "Sipser §1.3"
+      ]
+    },
+    {
+      "id": "toc-3.15",
+      "file": "content/toc/ch03-b.js",
+      "name": "Representation of Events in Nerve Nets and Finite Automata",
+      "refs": []
+    },
+    {
+      "id": "toc-4.12",
+      "file": "content/toc/ch04-c.js",
+      "name": "Büchi automata and ω-regular languages",
+      "refs": [
+        "Sipser §1.2"
+      ]
+    },
+    {
+      "id": "toc-4.4",
+      "file": "content/toc/ch04.js",
+      "name": "Myhill–Nerode equivalence",
+      "refs": [
+        "Sipser §1.4"
+      ]
+    },
+    {
+      "id": "toc-4.5",
+      "file": "content/toc/ch04.js",
+      "name": "Myhill–Nerode theorem",
+      "refs": [
+        "Sipser §1.4"
+      ]
+    },
+    {
+      "id": "toc-4.6",
+      "file": "content/toc/ch04-b.js",
+      "name": "Uniqueness of the minimal DFA",
+      "refs": [
+        "Sipser §1.4"
+      ]
+    },
+    {
+      "id": "toc-4.8",
+      "file": "content/toc/ch04-b.js",
+      "name": "Brzozowski’s double-reversal minimization",
+      "refs": [
+        "Sipser §1.4"
+      ]
+    }
+  ]
+}

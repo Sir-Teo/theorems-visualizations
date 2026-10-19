@@ -106,20 +106,21 @@ export function sphereMid(R, phi1, m) { return Array.from({ length: m + 1 }, (_,
  * Load model for a groin (cross) vault of semicircular profile (radius R, bay 2R x 2R), shell thickness t, unit weight
  * gamma, and the barrel vault of the same radius and thickness. Idealisation: each web is cut into slices that lean on
  * the groin, so the whole weight of the web reaches the groin ribs, which carry it to the four corner piers.
- * Everything is computed by numerical integration of the surface weight along the groin (not from a closed form).
+ * Groin vertical loads are integrated from the upper-envelope surface. Their horizontal web reactions are omitted; the diagonal thrust is only the corresponding vertical-load arch surrogate.
  */
 export function crossVault(R, t, gamma, n = 400) {
-  // load per unit plan length s along one diagonal (s = x = y from the centre): two webs meet there,
-  // each slice (x from s to R) of the web weighs gamma t R acos(s/R) per unit width
-  const q = (s) => 2 * gamma * t * R * Math.acos(Math.min(1, Math.abs(s) / R));
+  // Vertical-load surrogate: each web strip spans between x=-s and x=s.
+  // Its arc length is 2R asin(s/R); each end receives half, and two webs meet at a groin.
+  // Horizontal web-arch reactions are omitted, so this is not a full vault equilibrium solution.
+  const q = (s) => 2 * gamma * t * R * Math.asin(Math.min(1, Math.abs(s) / R));
   let Wd = 0, M0 = 0;
-  for (let i = 0; i < n; i++) { const s = (R * (i + 0.5)) / n; Wd += 2 * q(s) * (R / n); M0 += q(s) * Math.SQRT2 * s * (R / n); }
+  for (let i = 0; i < n; i++) { const s = (R * (i + 0.5)) / n; Wd += 2 * q(s) * (R / n); M0 += q(s) * Math.SQRT2 * (R - s) * (R / n); }
   const Wgroin = 2 * Wd; // two diagonals
   // diagonal arch: semi-ellipse of half-span sqrt2 R and rise R; thrust through the crown at the arch axis (H = M0 / rise)
   const Hd = M0 / R;
   // barrel of the same radius over the same square (length 2R)
-  let m0 = 0; for (let i = 0; i < n; i++) { const x = (R * (i + 0.5)) / n; m0 += gamma * t * R / Math.sqrt(R * R - x * x) * x * (R / n); }
-  const Hb = m0 / R, Wb = gamma * t * Math.PI * R * 2 * R;
+  // Crown moment about the springing: integral of (R-x) times the surface load, not x.
+  const Hb = gamma * t * R * (Math.PI / 2 - 1), Wb = gamma * t * Math.PI * R * 2 * R;
   return { Wgroin, Wbarrel: Wb, pier: Wgroin / 4, Hd, Hbarrel: Hb, Hbarrel_bay: Hb * 2 * R, q };
 }
 

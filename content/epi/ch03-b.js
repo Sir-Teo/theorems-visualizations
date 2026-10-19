@@ -1,3 +1,4 @@
+import { caseControlCells, recoverCaseControlRisks, rareBaselineLimit, caseControlOdds } from './verification.shared.js';
 // Epidemiology & Evidence — Chapter 3: Measures of association and effect (items 3.9–3.13; 3.1–3.7 are in ch03.js)
 import { int, pc, pcs, sig3, odds, oneIn, RATIO_TICKS, riskDot, table22, cells22 } from './ch03.shared.js';
 
@@ -16,7 +17,7 @@ $$\mathrm{IRR} = \frac{d_1/T_1}{d_0/T_0},$$
 the ratio of the two incidence rates. If the hazards (instantaneous event rates) in the two groups are $h_1(t) = \theta\,h_0(t)$ at every time $t$, then $\theta$ is the **hazard ratio**; for a constant hazard (exponential survival) the true rates are $\lambda_1 = \theta\lambda_0$ and the rate ratio estimates $\theta$ with $\ln\widehat{\mathrm{IRR}}$ having approximate variance $1/d_1 + 1/d_0$. The rate ratio uses each person's own time at risk, so it remains valid when follow-up differs between people or groups; the risk ratio $(d_1/n_1)/(d_0/n_0)$ does not. If the hazard ratio changes over time, a single rate ratio is only an average of it.`,
       idea: String.raw`Risk (1.1) is a proportion of people over a fixed period; if people are observed for different lengths of time, the proportion who have had the event is not comparable. A rate divides events by the time actually observed, so it adjusts for unequal follow-up; a constant hazard $\lambda$ makes the expected number of events proportional to person-time, $E[d] = \lambda\,E[T]$, whatever the censoring, which is why the ratio of rates targets $\lambda_1/\lambda_0$. In survival analysis (the last chapter of this collection) the same idea, applied to a hazard that varies with time and covariates, gives the Cox model, whose coefficients are log hazard ratios.`,
       caption: String.raw`Each row is a person followed from time 0: the line ends at the event (×) or at the end of that person's follow-up (|). Exposed people (red) have the hazard ratio set below and are followed for less time than the unexposed (blue) — drag the follow-up sliders. The bars compare the naive risk ratio (events ÷ people), the rate ratio (events ÷ person-years) and the true hazard ratio; hollow marks are their large-sample expectations. Shorten the exposed follow-up and the risk ratio drifts towards 1 while the rate ratio stays on target. A simulation with a constant hazard in each group.`,
-      deps: ['epi-1.2'],
+      deps: ['epi-1.2', 'demo-2.5'],
       refs: ['Rothman ch. 4'],
       tags: ['rate ratio', 'hazard ratio', 'person-time'],
       scope: String.raw`The rate ratio estimates the hazard ratio when hazards are constant in each group, or when the hazard ratio is constant in time and the rates are summarized with a common time scale; with time-varying hazard ratios the rate ratio depends on the follow-up used.`,
@@ -76,7 +77,7 @@ $$\mathrm{PAF} = \frac{R - R_0}{R} = \frac{p_e(\mathrm{RR}-1)}{1 + p_e(\mathrm{R
 where $R = p_eR_1 + (1-p_e)R_0$ is the overall risk. Both are meaningful as "preventable fractions" only if the association is causal and unconfounded, and removing the exposure changes nothing else. Several exposures' PAFs may add up to more than 100% because the same case can be attributable to more than one cause.`,
       idea: String.raw`Count the cases: of the $p_eR_1$ exposed cases (per person in the population), the excess over $p_eR_0$ is the part due to exposure; divide by all cases $R$, and with $R_1 = \mathrm{RR}\,R_0$ the baseline cancels, leaving a formula in $p_e$ and $\mathrm{RR}$ alone. A strong risk factor that is rare, and a weak one that is very common, can have the same PAF; and the PAF can be much larger than the exposed group's excess risk suggests when the exposure is widespread. Levin (1953) introduced the quantity in his study of smoking and lung cancer, and it remains the standard way to turn a risk ratio and a prevalence into a public-health impact.`,
       caption: String.raw`The population is 1 000 people; the exposed are on the left. Red dots are cases that would not have occurred without the exposure, blue ones are cases that would have happened anyway. **Drag the dot** along a PAF curve to set the prevalence of exposure, and use the sliders for the risk ratio and the baseline risk: the PAF depends on the first two only (the baseline risk changes the counts, not the fraction). Numbers are illustrative.`,
-      deps: ['epi-3.2'],
+      deps: ['epi-3.2', 'causal-1.9'],
       refs: ['Rothman ch. 4', 'Gordis ch. 12'],
       tags: ['attributable fraction', 'PAF', 'public health impact'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Attributable_fraction_for_the_population' },
@@ -119,7 +120,7 @@ $$R_{11} - R_{10} - R_{01} + R_{00} \neq 0 \qquad\Big(\text{equivalently } \math
 The two statements are different: if both $A$ and $B$ raise the risk ($R_{10}, R_{01} > R_{00}$) and the joint effect is exactly multiplicative, then $\mathrm{RERI} = (\mathrm{RR}_{10}-1)(\mathrm{RR}_{01}-1) > 0$, so there is interaction on the additive scale (a "super-additive" joint effect) and none on the ratio scale. Whether "interaction" is present therefore depends on the scale, and there is no scale on which the question is the right one in general; additive-scale interaction is the one that bears on public-health decisions (where treatment helps most in absolute terms).`,
       idea: String.raw`With risk ratios of 2 and 3 for $A$ and $B$, independent multiplicative action gives a joint risk ratio of 6; but "no interaction" in the additive sense would mean $1 + (2-1) + (3-1) = 4$. The two models of "independence" disagree except in the trivial cases, so the same data can be summarised as consistent with no interaction on one scale and showing strong interaction on the other. Rothman (1976) argued that for judging whether causes act together the departure from additivity of risks is the relevant one (it corresponds to the exposures contributing to the same cases) — a view that remains debated. The absolute-scale contrast also decides which subgroup gains most from an intervention, which is what 3.4 is about.`,
       caption: String.raw`Bars are the four risks. Set the baseline risk and the two risk ratios; hollow marks on the right bar show what the joint risk would be if effects simply *added* (gold) or *multiplied* (green). The slider scales the joint effect relative to multiplicative: at 1 the data are exactly multiplicative, with no interaction on the ratio scale and a clearly positive interaction contrast on the additive one. Press *make it additive* for the reverse. The table reads the same four risks on three scales. Illustrative numbers.`,
-      deps: ['epi-3.2', 'epi-3.3'],
+      deps: ['epi-3.2', 'epi-3.3', 'causal-1.10'],
       refs: ['Rothman ch. 5'],
       tags: ['interaction', 'effect modification', 'scale'],
       scope: String.raw`Two binary exposures that each raise risk; absolute risks must stay below 1, so the joint risk is capped at 99% in the picture.`,
@@ -212,17 +213,18 @@ The two statements are different: if both $A$ and $B$ raise the risk ($R_{10}, R
       verify: true,
       statement: String.raw`Cornfield addressed a problem of clinical (hospital) data: patients with a disease are sampled, and so are patients without it, and one asks how much more often the disease occurs in people with a given characteristic (smoking, say). The data give $P(E\mid D)$ and $P(E\mid \bar D)$ — exposure among cases and non-cases — not the rates $P(D\mid E)$ the question needs. He showed that the rates, and so the relative risk, can be recovered from these two proportions together with the overall frequency $P$ of the disease in the population, by Bayes' theorem, and that when the disease is rare the relative risk is approximately the cross-product ratio $ad/(bc)$ of the case–control table, which does not depend on the sampling fractions. Applied to studies of smoking and cancers of the lung, breast and cervix, the method gave comparative rates from clinical series (3.7, 3.6). (Summary from the bibliographic record and secondary accounts; the paper itself could not be read in full here, so details of its tables and wording are not reproduced.)`,
       idea: String.raw`Before this paper, case–control comparisons (hospital patients with and without a disease) were widely thought unable to say anything about risk, because their proportions are fixed by the sampler. Cornfield's step is to notice that the exposure proportions among cases and non-cases, combined with how common the disease is, determine the risks by Bayes' theorem — and that for rare diseases the dependence on how common the disease is nearly disappears, leaving the odds ratio (3.6). That is the rare-disease approximation (3.7), and it is what made the case–control design (Doll and Hill's smoking study, 1950, appeared the year before) a quantitative tool. It is often cited as the first demonstration that the relative risk can be estimated from case–control data.`,
-      caption: String.raw`A **model of the argument, not a reconstruction of the paper's tables** (its original data are not reproduced here). Set a true relative risk and the share exposed; the left table is the whole population (per 100 000), the right table a case–control sample of 100 cases and 100 non-cases. **Drag the dot** along the odds-ratio curve to change how common the disease is: when it is rare, OR = RR; when it is common they part company. The readout recovers the risks from the sample alone, using the disease frequency, as Cornfield proposed. Press *Draw a sample* to see sampling noise.`,
+      caption: String.raw`A **model of the argument, not a reconstruction of the paper's tables** (its original data are not reproduced here). Set a requested relative risk and the share exposed (the exposed risk is capped at 98%); the left table is the whole population (per 100 000), the right table a case–control sample of 100 cases and 100 non-cases. **Drag the dot** along the odds-ratio curve to change how common the disease is: when it is rare in both exposure groups, OR approximates RR; when it is common they part company. The readout recovers the risks from the sample alone, using the disease frequency, as Cornfield proposed. Press *Draw a sample* to see sampling noise.`,
       deps: ['epi-3.6', 'epi-3.2'],
       refs: [],
       tags: ['case-control', 'relative risk', 'history'],
       links: { doi: 'https://doi.org/10.1093/jnci/11.6.1269' },
       viz(v) {
         const M = v.M, NC = 100;
+        const ratioText = x => x === null || Number.isNaN(x) ? 'undefined (zero cells)' : x === Infinity ? 'unbounded (zero cell)' : v.fix(x, 2);
         const sP = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, weight: 1, minWidth: 270, title: 'the population (per 100 000 people)' });
         const sS = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 270, weight: 1, minWidth: 270, title: 'a case–control sample (100 + 100)' });
         const sK = v.stage({ x: [5e-4, 0.4], y: [0.5, 12], xlog: true, ylog: true, axes: 'box', gutter: true, height: 270, full: true, xticks: [[0.001, '0.1%'], [0.01, '1%'], [0.1, '10%']], yticks: [[0.5, '1/2'], [1, '1'], [2, '2'], [4, '4'], [8, '8']], xlabel: 'baseline risk R₀ (how common the disease is)', ylabel: 'ratio', title: 'the odds ratio matches the relative risk only for a rare disease' });
-        const rrS = v.slider('true relative risk', 1.5, 10, 4, { log: true, sig: 2 });
+        const rrS = v.slider('requested risk ratio (exposed risk capped at 98%)', 1.5, 10, 4, { log: true, sig: 2 });
         const peS = v.slider('share of the population exposed', 0.05, 0.9, 0.3, { step: 0.01, fmt: (x) => pcs(x) });
         let seed = 3, noisy = false;
         v.button('Draw a sample', () => { seed++; noisy = true; });
@@ -240,24 +242,26 @@ The two statements are different: if both $A$ and $B$ raise the risk ($R_{10}, R
           // sample
           let x1 = NC * pi1, x0 = NC * pi0;
           if (noisy) { const r = v.rng(seed); x1 = 0; x0 = 0; for (let k = 0; k < NC; k++) { if (r() < pi1) x1++; if (r() < pi0) x0++; } }
-          const S = cells22(x1, NC - x1, x0, NC - x0), r2 = (x) => (noisy ? String(Math.round(x)) : v.fix(x, 1));
+          const S = caseControlCells(x1, x0, NC, NC), r2 = (x) => (noisy ? String(Math.round(x)) : v.fix(x, 1));
           Ts.draw({ rowLabels: ['exposed', 'unexposed', 'total'], value: (i, j) => (j === 2 || i === 2 ? int(S[i][j]) : r2(S[i][j])), fill: (i, j) => (i < 2 && j < 2 ? [j ? 'blue' : 'red', i ? 0.1 : 0.3] : i === 2 || j === 2 ? ['gray', 0.08] : null), weight: (i, j) => (i === 2 || j === 2 ? 500 : 700) });
           sP.text(`risk ratio ${v.fix(RR, 2)} · odds ratio ${v.fix(OR, 2)}`, 0.5, 0.12, { align: 'center', color: 'ink', size: 13, weight: 600 });
-          sS.text(`odds ratio ad ÷ bc = ${v.fix((x1 * (NC - x0)) / ((NC - x1) * x0 || 1e-9), 2)}`, 0.5, 0.2, { align: 'center', color: 'green', size: 13, weight: 700 });
+          sS.text(`odds ratio ad ÷ bc = ${ratioText(caseControlOdds(x1, x0, NC, NC))}`, 0.5, 0.2, { align: 'center', color: 'green', size: 13, weight: 700 });
           sS.text('the sample fixes 100 cases and 100 controls: no risks here', 0.5, 0.1, { align: 'center', color: 'muted', size: 11.5 });
-          const cc = (x1 * (NC - x0)) / ((NC - x1) * x0 || 1e-9);
+          const cc = caseControlOdds(x1, x0, NC, NC);
           // Cornfield's recovery: P(E|D), P(E|not D) and the disease frequency P give the rates
-          const p1h = x1 / NC, p0h = x0 / NC, peh = P * p1h + (1 - P) * p0h, R1h = (P * p1h) / peh, R0h = (P * (1 - p1h)) / (1 - peh);
-          sK.rect(5e-4, 0.5, 0.05, 12, { fill: 'green', fillAlpha: 0.06, stroke: false });
+          const recovered = recoverCaseControlRisks(x1 / NC, x0 / NC, P), R1h = recovered.exposed, R0h = recovered.unexposed;
+          const maxOR = orOf(Math.min(.4, .98 / rr0), rr0)[1];
+          sK.setView([5e-4, 0.4], [0.5, 1.25 * maxOR]);
+          sK.rect(5e-4, 0.5, rareBaselineLimit(rr0), 1.25 * maxOR, { fill: 'green', fillAlpha: 0.06, stroke: false });
           sK.fn((x) => orOf(x, rr0)[1], { domain: [5e-4, 0.4], color: 'green', width: 2.6 });
           sK.fn((x) => orOf(x, rr0)[0], { domain: [5e-4, 0.4], color: 'ink', width: 2, dash: [6, 4] });
           sK.text('relative risk', 0.0007, rr0, { align: 'left', dy: -9, color: 'ink', size: 12, weight: 700 });
           sK.text('odds ratio', 0.3, orOf(0.3, rr0)[1], { align: 'right', dx: -6, dy: -9, color: 'green', size: 12, weight: 700 });
-          sK.text('rare disease (< 5%)', 0.0007, 0.62, { align: 'left', color: 'green', size: 11 });
+          sK.text('OR within 10% of RR', 0.0007, 0.62, { align: 'left', color: 'green', size: 11 });
           H.set(r0, OR);
           st = { P, RR, OR, cc, R1h, R0h, r1, r0, noisy };
         });
-        v.readout(() => st && `disease frequency in the population $P = ${v.fix(100 * st.P, 2)}\\%$ (true risks ${pcs(st.r1)} and ${pcs(st.r0)}, **RR = ${v.fix(st.RR, 2)}**) · case–control odds ratio${st.noisy ? ' in this sample' : ''} **${v.fix(st.cc, 2)}**${st.noisy ? '' : ` = population OR ${v.fix(st.OR, 2)}`}, ${Math.abs(st.OR / st.RR - 1) < 0.1 ? 'within 10% of RR' : `${v.fix(100 * (st.OR / st.RR - 1), 0)}% above RR`} · risks recovered from the sample with $P$ (Cornfield's step): ${pcs(st.R1h)} and ${pcs(st.R0h)}, ratio **${v.fix(st.R1h / st.R0h, 2)}**`);
+        v.readout(() => st && `disease frequency in the population $P = ${v.fix(100 * st.P, 2)}\\%$ (true risks ${pcs(st.r1)} and ${pcs(st.r0)}, **RR = ${v.fix(st.RR, 2)}**) · case–control odds ratio${st.noisy ? ' in this sample' : ''} **${ratioText(st.cc)}**${st.noisy ? '' : ` = population OR ${v.fix(st.OR, 2)}`}, ${Math.abs(st.OR / st.RR - 1) < 0.1 ? 'within 10% of RR' : `${v.fix(100 * (st.OR / st.RR - 1), 0)}% above RR`} · risks recovered from the sample with $P$ (Cornfield's step): ${st.R1h === null ? 'undefined' : pcs(st.R1h)} and ${st.R0h === null ? 'undefined' : pcs(st.R0h)}, ratio **${ratioText(st.R1h === null || st.R0h === null ? null : st.R1h / st.R0h)}**`);
       },
     },
   ],

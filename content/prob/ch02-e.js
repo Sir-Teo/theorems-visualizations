@@ -90,7 +90,8 @@ export default {
       num: '2.6.1a',
       kind: 'Definition',
       name: 'Renewal process',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.6, pp. 91–93 (renewal times, counting convention and renewal measure)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $\xi_1,\xi_2,\dots$ be i.i.d. with $0<\xi_i<\infty$ (the **interarrival times**), $T_0=0$ and $T_n=\xi_1+\dots+\xi_n$ (the **renewal times**). The **renewal process** is the counting function
 $$N_t=\sup\{n:T_n\le t\},\qquad t\ge0,$$
 the number of renewals in $(0,t]$. Its mean $U(t)=EN_t$ (or $\sum_{n\ge1}P(T_n\le t)$) is the **renewal function**. The age $t-T_{N_t}$ and residual life $T_{N_t+1}-t$ describe the interval that covers $t$.`,
@@ -99,6 +100,7 @@ the number of renewals in $(0,t]$. Its mean $U(t)=EN_t$ (or $\sum_{n\ge1}P(T_n\l
       deps: ['prob-2.2.3a'],
       see: ['stoch-11.1'],
       tags: ['renewal'],
+      scope: String.raw`This page counts completed renewals, so $N_0=0$ and $U$ excludes time $0$. Durrett's §2.6 convention uses the first renewal strictly after $t$, which is one larger; its renewal measure includes the atom at $0$. Here that measure is denoted $U_0=\delta_0+U$.`,
       viz(v) {
         const kS = v.slider('gamma shape $k$', 0.3, 20, 2, { log: true, sig: 2 });
         let seed = 1; v.button('Resample', () => { seed++; });
@@ -282,7 +284,8 @@ $$\frac{EN_t}{t}\to\frac1\mu\quad\text{as }t\to\infty.$$`,
       num: '2.6.3a',
       kind: 'Definition',
       name: 'Arithmetic and nonarithmetic distributions',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.6, p. 93 (arithmetic and nonarithmetic distributions)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A distribution on $(0,\infty)$ is **arithmetic** if it is concentrated on a lattice $\{\delta,2\delta,3\delta,\dots\}$ for some $\delta>0$; the largest such $\delta$ is the **span**. Otherwise it is **nonarithmetic**. A discrete law can be nonarithmetic, e.g. one with atoms at $1$ and $\sqrt2$.`,
       idea: String.raw`For an arithmetic law with span $\delta$ every renewal time lies on $\delta\mathbb Z$, so the renewal measure of a short window keeps oscillating: it is large when the window catches a lattice point and $0$ otherwise. Nonarithmetic laws spread their renewal times so that, far out, every window of length $h$ receives about $h/\mu$ renewals (Blackwell, 2.6.4).`,
       caption: String.raw`Top: the exact renewal measure $U=\sum_{n\ge1}P(T_n\in\cdot)$ on $[0,25]$: atoms as stems (lattice law on $\{1,2\}$, or the law on $\{1,\sqrt2\}$), or the renewal density (uniform law). Drag the window $[t,t+h]$. Bottom: $U([t,t+h])$ as the window slides, against $h/\mu$ (dashed). The lattice law oscillates forever, between $0$ and $2/3$ when $h<1$; the $\{1,\sqrt2\}$ law, discrete but nonarithmetic, slowly flattens out, and the uniform law does so fast.`,
@@ -385,7 +388,8 @@ If it is arithmetic with span $\delta$, then $U(\{n\delta\})\to\delta/\mu$ as $n
       num: '2.6.4a',
       kind: 'Definition',
       name: 'Renewal equation',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.6, pp. 96–99 (renewal equation, examples and Theorem 2.6.9)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $F$ be the interarrival distribution and $h$ a given function on $[0,\infty)$. The **renewal equation** for an unknown $H$ is
 $$H(t)=h(t)+\int_0^tH(t-s)\,dF(s),\qquad t\ge0,$$
 written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, where $U_0=\delta_0+U$ includes the renewal at time $0$.`,
@@ -461,15 +465,15 @@ written $H=h+H*F$. Its candidate solution is $H=h*U_0=\sum_{n\ge0}h*F^{*n}$, whe
     },
     {
       num: '2.6.11',
-      kind: 'Theorem',
+      kind: 'Model',
       name: 'Cramér’s estimate of ruin',
-      credit: 'Lundberg, 1903; Cramér, 1930',
-      verify: true,
-      statement: String.raw`An insurer starts with capital $x\ge0$, collects premiums at rate $c$, and pays claims $Y_1,Y_2,\dots$ (i.i.d., positive, mean $\nu$) at the jumps of a Poisson process of rate $\lambda$, with $c>\lambda\nu$. Let $\psi(x)$ be the probability that the surplus $x+ct-\sum_{i\le N(t)}Y_i$ ever becomes negative. If there is $\gamma>0$ with
-$$\lambda\big(Ee^{\gamma Y}-1\big)=c\gamma$$
-(and $E\,Ye^{\gamma Y}<\infty$), then $e^{\gamma x}\psi(x)\to C=\dfrac{c-\lambda\nu}{\lambda E(Ye^{\gamma Y})-c}\in(0,\infty)$ as $x\to\infty$: ruin is exponentially unlikely in the initial capital. For exponential claims $\psi(x)=\frac{\lambda\nu}{c}e^{-(1/\nu-\lambda/c)x}$ exactly.`,
-      idea: String.raw`Conditioning on what happens at the first claim (or at the first time the surplus drops below its starting level) shows that $\psi$ satisfies a **defective** renewal equation $\psi=h+\psi*G$ with $G(\infty)=\lambda\nu/c<1$. Multiplying by $e^{\gamma x}$, where $\gamma$ is chosen to make $e^{\gamma y}dG(y)$ a proper probability distribution (this is the equation for $\gamma$), turns it into a genuine renewal equation, and the key renewal theorem (2.6.12, with uniqueness from 2.6.9) gives the limit $C$.`,
-      caption: String.raw`Left: 25 seeded surplus paths from capital $x=5$ (red when ruined). Right (log scale): the estimated ruin probability $\psi(x)$ from 6000 seeded paths (gold, with $\pm2$ s.e. bars) against the Cramér–Lundberg line $Ce^{-\gamma x}$ (green). Slide the premium $c$ down to $\lambda\nu$ and $\gamma\to0$: ruin becomes certain. For exponential claims the line is exact; for gamma claims it is the asymptote.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Example 2.6.11, pp. 100–101 (defective renewal equation); Theorem 2.6.12, pp. 101–103 (derived light-tail extension)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      statement: String.raw`An insurer receives premiums at rate $c$ and pays i.i.d. positive claims with distribution $G$ and mean $\nu$ at Poisson rate $\lambda$. Put $\rho=\lambda\nu/c<1$ and let $R(x)$ be its probability of never going bankrupt from capital $x$. Durrett's Example 2.6.11 gives the defective renewal equation
+$$R(x)=1-\rho+\int_0^xR(x-y)\frac{\lambda}{c}(1-G(y))\,dy.$$
+Equivalently, $R=(1-\rho)\sum_{n\ge0}F^{*n}$, where $F$ has density $\lambda(1-G(y))/c$ and total mass $\rho$. In the picture, the further light-tail calculation $\psi(x)=1-R(x)\sim Ce^{-\gamma x}$ is also shown, where $\lambda(Ee^{\gamma Y}-1)=c\gamma$ and $C=(c-\lambda\nu)/(\lambda E(Ye^{\gamma Y})-c)$, assuming a positive root and finite $E(Ye^{\gamma Y})$.`,
+      idea: String.raw`Condition on the first claim, then integrate by parts to obtain Durrett's defective renewal equation. Its solution and the boundary condition $R(x)\to1$ force $R(0)=1-\rho$. For the additional asymptotic calculation, set $f(y)=\lambda(1-G(y))/c$ and $h(x)=\int_x^\infty f(y)\,dy$. The ruin probability solves $\psi=h+\psi*F$. Exponential tilting makes $f_\gamma(y)=e^{\gamma y}f(y)$ a probability density. Integration gives $\int e^{\gamma x}h(x)dx=(1-\rho)/\gamma$ and $\int y f_\gamma(y)dy=(\lambda E(Ye^{\gamma Y})-c)/(c\gamma)$. Their ratio is $C$, by the key renewal theorem. This derivation is an extension of the numbered example, not a theorem stated there.`,
+      caption: String.raw`Left: 25 seeded surplus paths from capital $x=5$ (red when ruined). Right (log scale): finite-path estimates of $\psi(x)$ from 6000 seeded paths (gold, at most 4000 claims per path; the $\pm2$ s.e. bars show sampling error only) against the Cramér–Lundberg line $Ce^{-\gamma x}$ (green). Slide the premium $c$ down to $\lambda\nu$ and $\gamma\to0$: ruin becomes certain. For exponential claims the line is exact; for gamma claims it is the asymptote. Truncating paths can underestimate eventual ruin, especially near the critical premium.`,
       deps: ['prob-2.6.9', 'prob-2.6.12'],
       see: ['stoch-9.12'],
       tags: ['renewal', 'insurance'],
@@ -623,7 +627,8 @@ Example: the residual life $R_t=T_{N_t+1}-t$ satisfies $P(R_t>x)\to\frac1\mu\int
       num: '2.7.1a',
       kind: 'Definition',
       name: 'Moment-generating function',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §2.7, pp. 105–108 (moment-generating function, Lemma 2.7.2 and exponential tilts)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`The **moment-generating function** of a random variable $X$ is $\varphi(\theta)=Ee^{\theta X}$, defined in $(0,\infty]$ for every real $\theta$; put $\theta_+=\sup\{\theta:\varphi(\theta)<\infty\}$ and $\kappa(\theta)=\log\varphi(\theta)$. Where $\varphi$ is finite near $\theta$, it is smooth with $\varphi^{(k)}(\theta)=E\big(X^ke^{\theta X}\big)$; in particular $\varphi'(0)=EX$, and $\kappa$ is convex, with $\kappa'(\theta)$ and $\kappa''(\theta)$ the mean and variance of the tilted law $e^{\theta x}dF(x)/\varphi(\theta)$.`,
       idea: String.raw`Differentiation under the expectation is justified by dominated convergence on any interval strictly inside where $\varphi$ is finite. Convexity of $\kappa$ is Hölder's inequality: $Ee^{(\lambda\theta_1+(1-\lambda)\theta_2)X}\le\big(Ee^{\theta_1X}\big)^\lambda\big(Ee^{\theta_2X}\big)^{1-\lambda}$. The finiteness of $\varphi$ to the right of $0$ measures how light the right tail is.`,
       caption: String.raw`Choose a law. Left: $\varphi(\theta)$ where it is finite, with the tangent at $0$ of slope $EX$ (orange); the exponential law blows up at $\theta_+=1$, while the "perverted exponential" (density $\propto x^{-3}e^{-x}$ on $[1,\infty)$) stops at $\theta_+=1$ with a finite value. Right: $\kappa=\log\varphi$, visibly convex; drag the gold point to read its slope $\kappa'(\theta)$, the mean of the law tilted by $e^{\theta x}$.`,
@@ -763,12 +768,12 @@ and if $a>\mu$ then $a\theta-\kappa(\theta)>0$ for all small $\theta>0$. Hence $
       num: '2.7.7',
       kind: 'Theorem',
       name: 'Cramér’s theorem (large deviations)',
-      credit: 'Cramér, 1938; Chernoff, 1952',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 2.7.7 and proof with Lemma 2.7.8, pp. 108–109'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $X_1,X_2,\dots$ be i.i.d. with mean $\mu$, $\varphi(\theta)=Ee^{\theta X_1}<\infty$ for some $\theta>0$, and $\kappa=\log\varphi$. Let $a>\mu$ and suppose there is $\theta_a$ with $0<\theta_a<\theta_+$ and $\kappa'(\theta_a)=a$ (the law tilted by $e^{\theta_a x}$ has mean $a$). Then
 $$\lim_{n\to\infty}\frac1n\log P(S_n\ge na)=-\big(a\theta_a-\kappa(\theta_a)\big)=-I(a),$$
 where $I(a)=\sup_\theta\big(a\theta-\kappa(\theta)\big)$ is the **rate function** (the Legendre transform of $\kappa$).`,
-      idea: String.raw`The limit exists by superadditivity (Lemma 2.7.1). The upper bound $P(S_n\ge na)\le e^{-nI(a)}$ is Chernoff's (Lemma 2.7.2), optimized at $\theta_a$. For the lower bound, change measure to the tilted law (Lemma 2.7.8): under it $S_n/n\to a$, so the event $\{na\le S_n\le n(a+\eps)\}$ has tilted probability bounded below (central limit theorem or the weak law), and undoing the tilt costs a factor about $e^{-n(\theta_a(a+\eps)-\kappa(\theta_a))}$. Let $\eps\to0$.`,
+      idea: String.raw`Superadditivity gives existence of the logarithmic limit, and the exponential Markov inequality gives the upper bound. For a lower bound, tilt at $\lambda>\theta_a$ sufficiently close to $\theta_a$, and choose $\nu>\kappa'(\lambda)>a$. The weak law under the tilted law gives $P_\lambda(na<S_n\le n\nu)\to1$. Undoing the tilt on this interval yields $P(S_n\ge na)\ge e^{n\kappa(\lambda)-\lambda n\nu}P_\lambda(na<S_n\le n\nu)$. Let $\lambda\downarrow\theta_a$ and $\nu\downarrow a$.`,
       caption: String.raw`Left (log scale): $P(S_n\ge na)$ against $n$, computed exactly (blue), estimated from 20000 seeded samples where it is large enough (gold, $\pm2$ s.e.), and Cramér's $e^{-nI(a)}$ (dashed): the slopes agree, the gap being a slowly varying factor of order $1/\sqrt n$. Right: the rate function $I$ (green) and the finite-$n$ exponents $-\frac1n\log P(S_n\ge nx)$ for $n=10,40,160$, descending onto it.`,
       deps: ['prob-2.7.1', 'prob-2.7.2', 'prob-1.6.4', 'prob-2.7.8'],
       see: ['algo-12.18'],
@@ -869,7 +874,8 @@ The tilted law has mean $\kappa'(\lambda)$, so choosing $\lambda=\theta_a$ moves
       num: '2.7.9',
       kind: 'Theorem',
       name: 'Large deviations for bounded support',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 2.7.9 and edge discussion, p. 110'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Suppose $X_1$ is bounded above, with $x_0=\sup\{x:P(X_1>x)>0\}<\infty$ (so $\varphi(\theta)<\infty$ for all $\theta>0$). Then for every $a\in(\mu,x_0)$ the equation $\kappa'(\theta)=a$ has a solution and Cramér's limit $\frac1n\log P(S_n\ge na)\to-I(a)$ holds. At the edge, $P(S_n\ge nx_0)=P(X_1=x_0)^n$, so the rate is $I(x_0)=-\log P(X_1=x_0)$ (infinite if there is no atom), and $P(S_n\ge na)=0$ for $a>x_0$.`,
       idea: String.raw`For bounded $X$, $\kappa'(\theta)$, the mean of the tilted law, increases continuously from $\mu$ to $x_0$ as $\theta$ runs over $(0,\infty)$, because tilting by $e^{\theta x}$ with $\theta\to\infty$ pushes all the mass towards $x_0$. So every $a<x_0$ is reached and Theorem 2.7.7 applies. The edge is a direct computation: $S_n\ge nx_0$ forces every $X_i=x_0$.`,
       caption: String.raw`Three laws on $[0,1]$: uniform (no atom at $x_0=1$), the uniform law on $\{0,\frac14,\dots,1\}$ (atom $\frac15$ at $1$) and a fair coin (atom $\frac12$). Left: their rate functions on $[\mu,1]$; the uniform one blows up at $1$, the others end at $\log5$ and $\log2$ (dots). Right: the exact exponents $-\frac1n\log P(S_n\ge na)$ (Irwin–Hall formula in exact integer arithmetic for the uniform law) against $n$, approaching $I(a)$ (dashed) for the level $a$ you set; at $a=1$ the discrete laws sit exactly on their limit for every $n$.`,
@@ -916,11 +922,12 @@ The tilted law has mean $\kappa'(\lambda)$, so choosing $\lambda=\theta_a$ moves
       num: '2.7.10',
       kind: 'Theorem',
       name: 'Linear rate function beyond the critical point',
-      verify: true,
-      statement: String.raw`Suppose $x_0=\infty$, $\theta_+<\infty$, $\varphi(\theta_+)<\infty$, and $a_0=\kappa'(\theta_+)=\varphi'(\theta_+)/\varphi(\theta_+)<\infty$ (the left derivative). Then for $a>a_0$
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 2.7.10 and proof, pp. 110–111; Example 2.7.6, p. 108'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      statement: String.raw`Suppose $x_0=\infty$, $\theta_+<\infty$, $\varphi(\theta_+)<\infty$, and $a_0=\kappa'(\theta_+)=\varphi'(\theta_+)/\varphi(\theta_+)<\infty$ (the left derivative). Then for $a\ge a_0$
 $$\frac1n\log P(S_n\ge na)\to-\big(a\theta_+-\kappa(\theta_+)\big),$$
 so the rate function becomes a straight line of slope $\theta_+$ beyond $a_0$. Example: the "perverted exponential" with density $Cx^{-3}e^{-x}$ on $[1,\infty)$, where $\theta_+=1$ and $a_0=2$.`,
-      idea: String.raw`The upper bound is Chernoff's with $\theta=\theta_+$. For the lower bound, no tilt has mean $a$, so instead tilt by $\theta_+$ (mean $a_0$) and let **one** summand make up the difference: $S_{n-1}\approx(n-1)a_0$ costs about $e^{-(n-1)(a_0\theta_+-\kappa(\theta_+))}$, and a single $X_n\ge n(a-a_0)$ costs only $e^{-n\theta_+(a-a_0)}$ up to polynomial factors, because the tail $x^{-3}e^{-x}$ is barely heavier than $e^{-x}$. Superadditivity (Lemma 2.7.1) turns this into the limit.`,
+      idea: String.raw`Tilt at the boundary $\theta_+$, whose tilted mean is $a_0$. The first $n-1$ summands stay near $na_0$ by the weak law, while one summand supplies the remaining excess. The boundary tilted law has no positive exponential moment, so suitable tail intervals have logarithmic probability divided by $n$ approaching $0$ along a subsequence; otherwise the moment-generating function would extend past $\theta_+$. Undoing the tilt gives the lower bound along that subsequence, and superadditivity upgrades it to the full limit. Chernoff's bound at $\theta_+$ gives the reverse inequality. The example's polynomial tail after tilting makes this mechanism explicit.`,
       caption: String.raw`The perverted exponential. Left: its rate function, the Legendre curve up to $a_0=2$ and the straight tangent line beyond it (green), with importance-sampling estimates of $-\frac1n\log P(S_n\ge na)$ for $n=20$ (orange) and $n=60$ (purple) descending towards it (the excess is a polynomial correction, of order $(\log n)/n$). Right: for $n=20$, the share of the largest summand in $S_n$ among samples conditioned on $S_n\ge na$ (6000 importance-weighted samples, tilted by $\min(\theta_a,1)$). Below $a_0$ the excess is spread over all summands; above $a_0$ a single big jump carries it.`,
       deps: ['prob-2.7.7', 'prob-2.7.1'],
       tags: ['large deviations'],

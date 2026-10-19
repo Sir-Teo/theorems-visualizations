@@ -6,9 +6,9 @@
 //  - Ω = 7.2921e-5 s⁻¹ (one turn per sidereal day, 86 164 s), mean Earth radius 6.371e6 m: standard values (as in chapter 2).
 //  - Holland (1980) parametric hurricane profile p(r) = p_c + (p_n − p_c) exp(−A/r^B), A = R_m^B:
 //    G. J. Holland, Mon. Wea. Rev. 108 (8), 1212–1218, doi:10.1175/1520-0493(1980)108<1212:AAMOTW>2.0.CO;2 (bibliographic data confirmed online).
-//  - Maximum potential intensity V² = (C_k/C_d)(T_s − T_o)/T_o (k₀* − k): Emanuel (1986), J. Atmos. Sci. 43 (6), 585–605
-//    (existence and the dependence on C_k/C_d and on the thermodynamic efficiency confirmed online; the formula is written here from the standard
-//    textbook form and the numbers produced by the picture are those of this simplified model, not of Emanuel's PCMIN code).
+//  - Dissipative-heating potential intensity: Bister & Emanuel (1998), Meteorol. Atmos. Phys. 65:233–240,
+//    §3.1 eq. (21), p. 235. The denominator To replaces the earlier Ts when dissipation heats the atmosphere.
+//    The complete author PDF was read; this fixed-outflow-temperature evaluation is not PCMIN.
 //  - Saffir–Simpson thresholds: NOAA National Hurricane Center (category 1: 64–82 kt … category 5: ≥ 137 kt), converted to m/s.
 export * from './ch01.shared.js';
 import { clamp, esat, Lv, EPS } from './ch01.shared.js';
@@ -105,13 +105,13 @@ export function cubicRoots(a, b) {
 // 3.9: tropical cyclone: Holland profile, gradient wind, potential intensity.
 export const RHO_TC = 1.15;
 /** saturation specific humidity at T (K), p (Pa) */
-const qsat = (T, p) => { const e = esat(T); return EPS * e / (p - e); };
+const qsat = (T, p) => { const e = esat(T); return EPS * e / (p - (1 - EPS) * e); };
 /** Simplified Emanuel potential intensity (m/s): V² = (Ck/Cd) (Ts − To)/To (k0* − k).
  *  k = cp T + Lv q for near-surface air at SST−1 K, relative humidity 80%, p = 1010 hPa; k0* the saturated enthalpy at the SST. */
 export function potentialIntensity(sstC, To = 203, CkCd = 1, rh = 0.8) {
   const Ts = sstC + 273.15, p = 101000, Ta = Ts - 1, cp = 1005;
   const k0 = cp * Ts + Lv(Ts) * qsat(Ts, p);
-  const q = rh * qsat(Ta, p), k = cp * Ta + Lv(Ta) * q;
+  const ea = rh * esat(Ta), q = EPS * ea / (p - (1 - EPS) * ea), k = cp * Ta + Lv(Ta) * q;
   const dk = Math.max(0, k0 - k), eff = (Ts - To) / To;
   return { V: Math.sqrt(Math.max(0, CkCd * eff * dk)), dk, eff, k0, k };
 }
@@ -124,13 +124,25 @@ export function hollandV(r, pc, pn, Rm, B, f, rho = RHO_TC) {
   const G = dpdr / rho, D = f * f * r * r / 4 + r * G;
   return -Math.abs(f) * r / 2 + Math.sqrt(Math.max(D, 0)); // f > 0 for the northern hemisphere; speed is the magnitude
 }
-/** central pressure deficit (Pa) such that the gradient-wind maximum of the Holland profile equals Vmax */
+/** Continuous maximum of this radial wind profile; the radius parameter is not the exact peak when f!=0. */
+export function hollandMaximum(pc, pn, Rm, B, f) {
+  let lo = .03 * Rm, hi = 4 * Rm;
+  const ratio = (Math.sqrt(5) - 1) / 2;
+  let x = hi - ratio * (hi - lo), y = lo + ratio * (hi - lo);
+  let vx = hollandV(x, pc, pn, Rm, B, f), vy = hollandV(y, pc, pn, Rm, B, f);
+  for (let k = 0; k < 70; k++) {
+    if (vx > vy) { hi = y; y = x; vy = vx; x = hi - ratio * (hi - lo); vx = hollandV(x, pc, pn, Rm, B, f); }
+    else { lo = x; x = y; vx = vy; y = lo + ratio * (hi - lo); vy = hollandV(y, pc, pn, Rm, B, f); }
+  }
+  const radius = (lo + hi) / 2;
+  return { radius, speed: hollandV(radius, pc, pn, Rm, B, f) };
+}
+/** Central pressure deficit (Pa) matching the actual continuous gradient-wind peak. */
 export function deficitForVmax(Vmax, Rm, B, f) {
   let lo = 0, hi = 8e4;
   for (let i = 0; i < 50; i++) {
-    const mid = (lo + hi) / 2;
-    let m = 0; for (let k = 1; k <= 80; k++) m = Math.max(m, hollandV(Rm * (0.3 + 0.03 * k), 1e5 - mid, 1e5, Rm, B, f));
-    (m < Vmax ? lo = mid : hi = mid);
+    const mid = (lo + hi) / 2, peak = hollandMaximum(1e5 - mid, 1e5, Rm, B, f).speed;
+    (peak < Vmax ? lo = mid : hi = mid);
   }
   return (lo + hi) / 2;
 }

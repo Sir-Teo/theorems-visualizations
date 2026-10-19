@@ -8,6 +8,17 @@
 // Real data: Shiller's annual series (ch05.shared.js), the daily and monthly market and industry returns (French library). Models and reconstructions are labelled as such.
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, pricePath, rng, mean, sdev, IND_NAMES } from './ch05.shared.js';
 
+/** Modern notation for Bachelier's undiscounted Gaussian expected call payoff. */
+export function bachelierCall(spot, strike, sigma, time) {
+  const sd = sigma * Math.sqrt(time);
+  if (sd === 0) return Math.max(spot - strike, 0);
+  const d = (spot - strike) / sd;
+  return (spot - strike) * normCdf(d) + sd * normPdf(d);
+}
+
+/** Ex-dividend price before `periods` remaining deterministic dividends, zero terminal redemption. */
+export const finiteDividendValue = (dividend, rate, periods) => periods <= 0 ? 0 : dividend * -Math.expm1(-periods * Math.log1p(rate)) / rate;
+
 export default {
   collection: 'fin',
   chapter: 5,
@@ -17,21 +28,20 @@ export default {
       num: '5.11',
       kind: 'Theorem',
       name: 'Rational bubbles and the transversality condition',
-      statement: String.raw`Let a stock pay dividends $d_t$ and let the required return be $r$, so that the price satisfies the **pricing equation**
+      statement: String.raw`Let $r>0$, suppose discounted future dividends have finite expected absolute sum and all conditional expectations exist, and let a stock pay dividends $d_t$. Its price satisfies the constant-required-return **pricing equation**
 $$p_t=\frac{\mathrm E_t[\,p_{t+1}+d_{t+1}\,]}{1+r}.$$
 Every solution has the form $p_t=f_t+B_t$, where $f_t=\sum_{k\ge1}\mathrm E_t[d_{t+k}]/(1+r)^k$ is the **fundamental value** and the **bubble** $B_t$ is any process with
 $$\mathrm E_t[B_{t+1}]=(1+r)\,B_t .$$
-The fundamental solution $B\equiv 0$ is the only one if and only if the **transversality condition** $\lim_{T\to\infty}(1+r)^{-T}\,\mathrm E_t[p_{t+T}]=0$ holds. A bubble grows on average at the discount rate, so it satisfies the pricing equation exactly; but it is **ruled out** if the asset has a finite horizon (the price at the terminal date must equal the terminal payoff, so by backward induction $B\equiv0$), if a negative bubble would push the price below zero, and a positive bubble that must burst with a given probability each period has to grow faster, at rate $(1+r)/\pi$ while it survives (Blanchard's bursting bubble). Rational bubbles are therefore possible only for infinitely-lived assets, with unlimited growth of the price relative to dividends.
+The fundamental solution $B\equiv 0$ is the only one if and only if the **transversality condition** $\lim_{T\to\infty}(1+r)^{-T}\,\mathrm E_t[p_{t+T}]=0$ holds. A bubble grows on average at the discount rate, so it satisfies the pricing equation exactly; but it is **ruled out** if the asset has a finite horizon (the price at the terminal date must equal the terminal payoff, so by backward induction $B\equiv0$), if a negative bubble would push the price below zero, and a positive bubble that must burst with a given probability each period has to grow faster, at rate $(1+r)/\pi$ while it survives (Blanchard's bursting bubble). A nonzero bubble cannot satisfy a fixed finite terminal payoff; positive bursting bubbles instead have potentially unbounded surviving paths.
 
 Scope: a theorem about the *set of solutions* of a linear expectational difference equation, not a claim that bubbles occur.`,
       idea: String.raw`Substituting $p_t=f_t+B_t$ in the pricing equation and using that $f$ already solves it leaves $B_t=\mathrm E_t[B_{t+1}]/(1+r)$, so $B$ grows on average at the discount rate; iterating the pricing equation forward $T$ times gives $p_t=f_t^{(T)}+\mathrm E_t[p_{t+T}]/(1+r)^T$, and the last term is the bubble's discounted contribution, which vanishes exactly under the transversality condition. A bubble that is known to end at $T$ cannot start, because everyone would sell the day before it ends and so on backwards; and a positive bubble can only be rational if buyers expect to be able to resell at an ever-higher price, which is possible only if the asset never ends. Blanchard avoids the "never bursts" implausibility with a stochastic bubble: with probability $\pi$ it survives and grows at $(1+r)/\pi$, with probability $1-\pi$ it collapses to 0, which still gives expected growth $1+r$.`,
-      caption: String.raw`A stock pays a constant dividend $d=5$, so the fundamental value is $5/r$ (green). Choose the regime. **Infinite horizon, bubble certain**: add a bubble $B_0$ growing at the discount rate; the price is above the fundamental and satisfies the pricing equation. **Bursting bubble**: it survives each period with probability $\pi$ and grows at $(1+r)/\pi$, then collapses (new history for another path). **Finite horizon**: the price must equal the fundamental value at $T$, the would-be bubble (dashed) contradicts it and cannot start. The readout checks the pricing equation by simulation: the mean one-period gross return of $B_0$ simulated 20,000 times equals $1+r$ in every regime.`,
-      deps: ['fin-1.11', 'fin-5.10'],
+      caption: String.raw`A stock pays a constant dividend $d=5$, so its infinite-horizon fundamental value is $5/r$ (green). Choose the regime. **Infinite horizon, bubble certain**: add a bubble $B_0$ growing at the discount rate; the price is above the fundamental and satisfies the pricing equation. **Bursting bubble**: it survives each period with probability $\pi$ and grows at $(1+r)/\pi$, then collapses (new history for another path). **Finite horizon**: after the last dividend at $T$ the asset has zero redemption value. Its fundamental price is the discounted sum of remaining dividends, reaching zero at $T$; the would-be bubble (dashed) contradicts that terminal condition and cannot start. The readout checks the pricing equation by simulation: the mean one-period gross asset return simulated 20,000 times estimates the analytic expectation $1+r$; Monte Carlo sampling error remains.`,
+      deps: ['fin-1.11', 'fin-5.10', 'prob-4.1.13'],
       refs: ['Luenberger: General Principles'],
       tags: ['rational bubbles', 'transversality', 'present value'],
-      credit: 'Blanchard, 1979; Blanchard & Watson, 1982; Tirole, 1982, 1985',
-      scope: String.raw`Applies to a single asset with a constant required return $r$ and an infinite horizon; heterogeneous or overlapping-generation economies (Tirole 1985) can allow bubbles on assets such as money or land.`,
-      verify: true,
+      credit: 'Blanchard & Watson, 1982, pp. 296–300',
+      scope: String.raw`Applies to a single asset with a constant required return $r$ and an infinite horizon; additional equilibrium or terminal restrictions may eliminate the bubble solutions.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rational_bubble' },
       viz(v) {
         const reg = v.select('regime', [{ value: 'cert', label: 'infinite horizon' }, { value: 'burst', label: 'bursting bubble' }, { value: 'fin', label: 'finite horizon' }], 'cert');
@@ -44,23 +54,23 @@ Scope: a theorem about the *set of solutions* of a linear expectational differen
         const S = v.stage({ x: [0, N], y: [0, 400], axes: 'box', gutter: true, height: 340, weight: 1.3, minWidth: 320, xlabel: 'period t', ylabel: 'price', title: 'price = fundamental + bubble' });
         let st = {};
         v.render(() => {
-          const r = rr.value, f = 5 / r, R = rng(seed * 523 + 1);
+          const r = rr.value, f = 5 / r, terminal = Th.value, fundamentalAt = (t) => finiteDividendValue(5, r, terminal - t), R = rng(seed * 523 + 1);
           const pts = []; let B = B0.value, alive = true, crashAt = -1; const path = [];
           for (let t = 0; t <= N; t++) {
-            path.push(f + (reg.value === 'fin' ? 0 : B));
+            path.push(reg.value === 'fin' ? fundamentalAt(t) : f + B);
             if (reg.value === 'cert') B *= 1 + r;
             else if (reg.value === 'burst') { if (alive) { if (R() < pi.value) B *= (1 + r) / pi.value; else { B = 0; alive = false; crashAt = t + 1; } } }
           }
-          const cand = []; for (let t = 0; t <= N; t++) cand.push(f + B0.value * Math.pow(1 + r, t));
+          const cand = []; for (let t = 0; t <= N; t++) cand.push((reg.value === 'fin' ? fundamentalAt(t) : f) + B0.value * Math.pow(1 + r, t));
           const top = Math.max(...path, reg.value === 'fin' ? cand[Math.min(N, Th.value)] : 0, f) * 1.12;
           S.setView([0, N], [0, top]);
-          S.hline(f, { color: 'green', dash: true, width: 2 }); S.text(`fundamental value 5/r = ${f.toFixed(0)}`, N, f, { dx: -4, dy: 14, align: 'right', size: 11.5, color: 'green', weight: 700 });
+          if (reg.value !== 'fin') { S.hline(f, { color: 'green', dash: true, width: 2 }); S.text(`perpetuity value 5/r = ${f.toFixed(0)}`, N, f, { dx: -4, dy: 14, align: 'right', size: 11.5, color: 'green', weight: 700 }); }
           if (reg.value === 'fin') {
             const T = Th.value; S.vline(T, { color: 'red', dash: true });
             S.path(cand.slice(0, T + 1).map((y, t) => [t, y]), { color: 'red', width: 2, dash: true });
-            S.path(path.map((y, t) => [t, y]), { color: 'accent', width: 2.6 });
+            S.path(path.slice(0, T + 1).map((y, t) => [t, y]), { color: 'green', width: 2.6 });
             S.dot(T, cand[T], { r: 6, color: 'red', hollow: true }); S.text('a bubble would have to be here at T…', T, cand[T], { dx: -8, dy: -6, align: 'right', size: 11, color: 'red' });
-            S.dot(T, f, { r: 6, color: 'accent' }); S.text('…but the price must equal the fundamental value', T, f, { dx: 8, dy: -10, align: T > 30 ? 'right' : 'left', size: 11, color: 'accent', weight: 700 });
+            S.dot(T, 0, { r: 6, color: 'accent' }); S.text('…but the terminal price must be zero', T, 0, { dx: 8, dy: -10, align: T > 30 ? 'right' : 'left', size: 11, color: 'accent', weight: 700 });
           } else {
             S.path(path.map((y, t) => [t, y]), { color: 'accent', width: 2.6 });
             if (crashAt >= 0 && crashAt <= N) { S.dot(crashAt, f, { r: 6, color: 'red' }); S.text('bubble bursts', crashAt, path[crashAt - 1], { dx: 8, dy: 10, size: 11.5, color: 'red', weight: 700, align: 'left' }); }
@@ -70,11 +80,11 @@ Scope: a theorem about the *set of solutions* of a linear expectational differen
           for (let i = 0; i < M; i++) {
             let Bn;
             if (reg.value === 'cert') Bn = B0.value * (1 + r); else if (reg.value === 'burst') Bn = R2() < pi.value ? B0.value * (1 + r) / pi.value : 0; else Bn = 0;
-            const p0 = f + (reg.value === 'fin' ? 0 : B0.value); sum += (f + Bn + 5) / p0;
+            const p0 = reg.value === 'fin' ? fundamentalAt(0) : f + B0.value, p1 = reg.value === 'fin' ? fundamentalAt(1) : f + Bn; sum += (p1 + 5) / p0;
           }
-          st = { f, ret: sum / M, r, crashAt, Bn: B, exp: reg.value === 'burst' ? 1 / (1 - pi.value) : null };
+          st = { f: reg.value === 'fin' ? fundamentalAt(0) : f, ret: sum / M, r, crashAt, Bn: B, exp: reg.value === 'burst' ? 1 / (1 - pi.value) : null };
         });
-        v.readout(() => `Fundamental value ${v.fix(st.f, 1)}. Mean one-period gross return of a share (dividend + resale) over 20,000 draws: **${v.fix(st.ret, 4)}**, required $1+r=${v.fix(1 + st.r, 4)}$ ✓ — the pricing equation holds for every bubble process with $\\mathrm E_t B_{t+1}=(1+r)B_t$.\n${reg.value === 'cert' ? 'Bubble certain: after 50 periods it is ' + v.fix(B0.value * Math.pow(1 + st.r, 50), 0) + ' (transversality violated: $(1+r)^{-T}p_T\\not\\to 0$).' : reg.value === 'burst' ? `The bubble survives each period with probability ${pct(pi.value, 0)} (expected life ${v.fix(st.exp, 1)} periods) and then grows ${pct((1 + st.r) / pi.value - 1, 1)} per period instead of ${pct(st.r, 1)}; ${st.crashAt >= 0 && st.crashAt <= 50 ? 'on this history it burst in period ' + st.crashAt + '.' : 'on this history it survived all 50 periods.'}` : 'Finite horizon: backward induction gives $B_T=0$, so $B_{T-1}=0$, …, $B_0=0$; the price is the fundamental value.'}`);
+        v.readout(() => `Fundamental value ${v.fix(st.f, 1)}. Mean one-period gross return of a share (dividend + resale) over 20,000 draws: **${v.fix(st.ret, 4)}**, analytic expected gross return $1+r=${v.fix(1 + st.r, 4)}$ — the pricing equation holds for every bubble process with $\\mathrm E_t B_{t+1}=(1+r)B_t$.\n${reg.value === 'cert' ? 'Bubble certain: after 50 periods it is ' + v.fix(B0.value * Math.pow(1 + st.r, 50), 0) + ' (transversality violated: $(1+r)^{-T}p_T\\not\\to 0$).' : reg.value === 'burst' ? `The bubble survives each period with probability ${pct(pi.value, 0)} (expected life ${v.fix(st.exp, 1)} periods) and then grows ${pct((1 + st.r) / pi.value - 1, 1)} per period instead of ${pct(st.r, 1)}; ${st.crashAt >= 0 && st.crashAt <= 50 ? 'on this history it burst in period ' + st.crashAt + '.' : 'on this history it survived all 50 periods.'}` : 'Finite horizon: backward induction gives $B_T=0$, so $B_{T-1}=0$, …, $B_0=0$; the price is the fundamental value.'}`);
       },
     },
     // ------------------------------------------------------------------ 5.12
@@ -82,17 +92,16 @@ Scope: a theorem about the *set of solutions* of a linear expectational differen
       num: '5.12',
       kind: 'Phenomenon',
       name: 'Bubbles in the laboratory (Smith–Suchanek–Williams)',
-      statement: String.raw`In the **Smith–Suchanek–Williams** experiments, a small group of traders (university students, often about a dozen) trade a single asset in a computerised double auction over a fixed number of periods (15 in the standard design). At the end of each period every share pays a dividend drawn from a known distribution (in the standard design, $0, 8, 28$ or $60$ cents with equal probability, expected dividend 24 cents), and the share is worthless after the last period. So the **fundamental value** is known and **declines in a staircase**: with $n$ periods left it is $n\times$ (expected dividend), i.e. 3.60 dollars at the start and 0.24 at the last period. Instead of following that staircase, prices typically start below it, rise above it, form a **bubble** of many times the fundamental value and **crash** near the end. With **experienced** subjects (who have taken part in earlier sessions with the same market) the bubbles shrink or disappear.
+      statement: String.raw`In the **Smith–Suchanek–Williams** experiments, groups of nine or twelve traders trade a single asset in a computerised double auction over a fixed number of periods (15 in all but one of their reported sessions). At the end of each period every share pays a dividend drawn from a known distribution (in their design 4, $0, 8, 28$ or $60$ cents with equal probability, expected dividend 24 cents), and the share is worthless after the last period. So the **fundamental value** is known and **declines in a staircase**: with $n$ periods left it is $n\times$ (expected dividend), i.e. 3.60 dollars at the start and 0.24 at the last period. Instead of following that staircase, prices typically start below it, rise above it, form a **bubble** of many times the fundamental value and **crash** near the end. Experience reduced the likelihood of a bubble, although nine of the fourteen bubble sessions included experienced subjects.
 
-Scope: the distinctive outcome of the original experiments (14 of 22 sessions with bubbles and crashes); results depend on design details (cash endowments, dividend structure, trading rules), and later studies find that bubbles are reduced by common knowledge of rationality and by experience. The dividend distribution above is from memory of the standard design and is flagged for checking.`,
-      idea: String.raw`Because the dividend process is public and the fundamental value is a simple staircase, a trader who trusts that others will trade rationally should sell above the staircase; the collapse of the bubble requires everyone to carry out backward induction to the end. Subjects instead extrapolate recent price changes (the paper's "endogenous expectations": prices rise because traders expect them to rise) and uncertainty about *others'* rationality makes it optimal to ride the trend (limits to arbitrage, fin-5.7). Experience shifts weight from trend-following to the fundamental value, and with cash-rich traders (high liquidity) bubbles grow larger.`,
+Scope: the distinctive outcome of the original experiments (14 of 22 sessions with bubbles and crashes); 22 sessions exclude interventions and disruptions from the 27 reported experiments; designs 1–2 included a terminal buyout, unlike the zero-redemption design 4 shown here (Table I, p. 1126).`,
+      idea: String.raw`Because the dividend process is public and the fundamental value is a simple staircase, a trader who trusts that others will trade rationally should sell above the staircase; the collapse of the bubble requires everyone to carry out backward induction to the end. Subjects instead extrapolate recent price changes (the paper's "endogenous expectations": prices rise because traders expect them to rise) and the authors interpret uncertainty about others’ expectations as important. Experience reduced forecast dispersion and deviations from dividend value (§6). In the teaching model, experience presets raise the pull toward fundamentals; these coefficients are not estimates from the experiments.`,
       caption: String.raw`A reduced-form **model** of mean market price per period, not the original data: each period the price moves by a **trend-following** share $\beta$ of its last change and by a share $\kappa$ of the gap to the fundamental value (the green staircase), plus noise; the pull to fundamentals strengthens as the end nears. Choose a preset (inexperienced, once experienced, twice experienced) or the sliders, and press **Resample** for new sessions (thin lines are other sessions with the same parameters). **Right**: the three presets side by side. The readout gives the average relative deviation (RD) and relative absolute deviation (RAD) of price from fundamental value. (Simulation; original data not reproduced.)`,
       deps: ['fin-5.10'],
       refs: ['BKM ch. 12'],
       tags: ['experimental economics', 'bubbles', 'backward induction'],
       credit: 'Smith, Suchanek & Williams, 1988',
       scope: String.raw`Describes the laboratory asset market with a known declining fundamental value; it does not show that field markets behave the same way.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Vernon_L._Smith' },
       viz(v) {
         const T = 15, div = 0.24;
@@ -104,7 +113,7 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
         const noise = v.slider('noise (cents)', 0, 40, 12, { step: 1 });
         let seed = 21; v.button('Resample', () => { seed++; });
         const A = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1.3, minWidth: 300, xlabel: 'trading period', ylabel: 'price ($ per share)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'one parameter set, several sessions (model)' });
-        const B = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'trading period', ylabel: 'mean price ($)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'experience shrinks the bubble' });
+        const B = v.stage({ x: [0, 16], y: [0, 6], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 260, xlabel: 'trading period', ylabel: 'mean price ($)', xticks: [1, 3, 5, 7, 9, 11, 13, 15], title: 'three experience presets (model)' });
         const sim = (b, k, nz, sd) => {
           const R = rng(sd), p = []; let p1 = 1.9, p2 = 1.6;
           for (let t = 1; t <= T; t++) {
@@ -118,14 +127,17 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
         v.legend([['green', 'fundamental value'], ['red', 'inexperienced'], ['orange', 'once experienced'], ['teal', 'twice experienced']]);
         let m = {};
         v.render(() => {
+          const sessions = Array.from({ length: 5 }, (_, j) => sim(beta.value, kap.value, noise.value, seed * 100 + j));
+          const averages = PRE.map(P => { const avg = new Array(T).fill(0); for (let z = 0; z < 40; z++) sim(P[0], P[1], noise.value, 5000 + z).forEach((y, t) => { avg[t] += y / 40; }); return avg; });
+          A.setView([0, 16], [0, Math.max(6, ...sessions.flat()) * 1.05]); B.setView([0, 16], [0, Math.max(6, ...averages.flat()) * 1.05]);
           const stairs = []; for (let t = 1; t <= T; t++) { stairs.push([t - 0.5, FV(t)], [t + 0.5, FV(t)]); }
           A.path(stairs, { color: 'green', width: 2.6 }); A.text('fundamental value', 1.2, 3.85, { size: 11.5, color: 'green', weight: 700 });
-          for (let s = 1; s <= 4; s++) A.path(sim(beta.value, kap.value, noise.value, seed * 100 + s).map((y, t) => [t + 1, y]), { color: 'accent', width: 1.2, alpha: 0.45 });
-          const main = sim(beta.value, kap.value, noise.value, seed * 100);
+          for (let s = 1; s <= 4; s++) A.path(sessions[s].map((y, t) => [t + 1, y]), { color: 'accent', width: 1.2, alpha: 0.45 });
+          const main = sessions[0];
           A.path(main.map((y, t) => [t + 1, y]), { color: 'accent', width: 2.8 }); A.dots(main.map((y, t) => [t + 1, y]), { r: 3.4, color: 'accent' });
           B.path(stairs, { color: 'green', width: 2.2 });
           const cols = ['red', 'orange', 'teal'], names = ['inexperienced', 'once experienced', 'twice experienced'];
-          PRE.forEach((P, k) => { const avg = new Array(T).fill(0); for (let s = 0; s < 40; s++) sim(P[0], P[1], noise.value, 5000 + s).forEach((y, t) => { avg[t] += y / 40; }); B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 });  });
+          averages.forEach((avg, k) => { B.path(avg.map((y, t) => [t + 1, y]), { color: cols[k], width: 2.4 });  });
           const mm = meas(main); let pk = 0, pf = 0; main.forEach((y, t) => { if (y > pk) { pk = y; pf = FV(t + 1); } }); m = { ...mm, pk, pf };
         });
         v.readout(() => `Session shown in bold: mean relative deviation from fundamental value **RD = ${sg(m.rd, 2)}**, relative absolute deviation **RAD = ${v.fix(m.rad, 2)}** (both divided by the mean fundamental value 1.92 dollars); peak price \\$${v.fix(m.pk, 2)} against a fundamental value of \\$${v.fix(m.pf, 2)} in that period. A market that follows the staircase would have RD = RAD = 0.\nModel parameters, not estimates: the presets are chosen to mimic the qualitative pattern (bubble, then smaller bubbles with experience), not fitted to the 1988 data.`);
@@ -138,18 +150,17 @@ Scope: the distinctive outcome of the original experiments (14 of 22 sessions wi
       name: 'Théorie de la spéculation',
       paper: { authors: 'L. Bachelier', year: 1900, title: 'Théorie de la spéculation', venue: 'Annales scientifiques de l’École Normale Supérieure, 3e série, 17: 21–86', doi: '10.24033/asens.476' },
       introduces: ['fin-5.2'],
-      statement: String.raw`Bachelier's doctoral thesis (defended in Paris on 29 March 1900 before Henri Poincaré) treats the fluctuations of prices on the Paris Bourse as the result of many small, independent, fair steps: the expected profit of a speculator is zero, and the price at a later time is the sum of many independent changes. He deduces that the probability that the price $x$ (relative to its current value) is found at time $t$ is Gaussian with variance **proportional to $t$**, so the spread of prices grows like $\sqrt t$; that the probability "radiates" as heat does (the density satisfies the heat equation); and that the probability that the price has reached a level $a$ at some time before $t$ is **twice** the probability that it is above $a$ at time $t$ (the reflection principle). He uses the law to price options (forward contracts and "primes"): the value of an option is the expected payoff against the Gaussian,
+      statement: String.raw`Bachelier's 1900 paper, based on his doctoral thesis, treats the fluctuations of prices on the Paris Bourse as the result of many small, independent, fair steps: the expected profit of a speculator is zero, and the price at a later time is the sum of many independent changes. He deduces that the probability that the price $x$ (relative to its current value) is found at time $t$ is Gaussian with variance **proportional to $t$**, so the spread of prices grows like $\sqrt t$; that the probability "radiates" as heat does (the density satisfies the heat equation); and that the probability that the price has reached a level $a$ at some time before $t$, for an upper level $a>0$ above the initial price, is **twice** the probability that it is above $a$ at time $t$ (the reflection principle). He uses the law to price options (forward contracts and "primes"): the value of an option is the expected payoff against the Gaussian,
 $$C=\int (x-K)^+\,p(x,T)\,dx=(S-K)\,\Phi(d)+\sigma\sqrt T\,\varphi(d),\qquad d=\frac{S-K}{\sigma\sqrt T}.$$
 
 Scope: arithmetic Brownian motion without drift or interest, prices that can go negative; the framework of fin-5.2.`,
-      idea: String.raw`Before 1900 the study of markets was descriptive; Bachelier gave speculation a mathematical theory five years before Einstein's and Smoluchowski's work on Brownian motion, using the central limit theorem and the diffusion (heat) equation (pde-1.x) to describe the probabilities of price changes, and reasoning that a fair market has no predictable gains. His work was largely ignored for decades (it was brought back to economists' attention by Savage and Samuelson in the 1950s and 1960s, and is now seen as the origin of mathematical finance); the later Black–Scholes model (fin-9.3) differs mainly by using geometric Brownian motion and discounting. The thesis introduced the random-walk model of prices (fin-5.2), option valuation by expected payoff, and the connection between probability and the heat equation that underlies fin-9.2.`,
+      idea: String.raw`Bachelier first adjusts quoted prices for coupons and carrying costs, working with equivalent “true prices” (pp. 23–26). His zero-expected-profit principle applies to relative changes around those adjusted prices (pp. 33–35), rather than saying every raw security price has zero expected growth. Gaussian convolution gives a variance proportional to time (pp. 35–39); the diffusion argument leads to Fourier's heat equation (pp. 46–48). The prime-pricing equations integrate gains and losses under this law (pp. 49–51), and the barrier-hitting identity appears on p. 75. The call formula shown here is a modern notation for that Gaussian expected-payoff valuation. Its arithmetic increments can make absolute prices negative; Bachelier explicitly treated that extension as a negligible-tail approximation on p. 35.`,
       caption: String.raw`**Left**: 60 simulated price paths (a fair game with daily standard deviation $\sigma$) from today's price 100 with Bachelier's $\pm\sigma\sqrt t$ envelope; move the **time** slider and watch the histogram of prices across paths at that date fill out the Gaussian curve with variance $\sigma^2t$. **Right**: the call payoff and the Gaussian density of the final price; the option's value is the shaded area under payoff × density. Move the **strike** $K$: the closed form, the numerical integral and the average over 4000 simulated paths agree. The readout also checks his reflection principle. (Simulation of Bachelier's model with illustrative parameters; the thesis's own tables are not reproduced.)`,
-      deps: ['prob-3.4.1', 'fin-5.2'],
+      deps: ['prob-3.4.1', 'fin-5.2', 'stoch-13.7'],
       refs: [],
       tags: ['Brownian motion', 'option pricing', 'heat equation'],
       credit: 'Louis Bachelier, 1900',
       scope: String.raw`Bachelier's model has arithmetic increments and no discounting; for realistic option prices use the Black–Scholes model (fin-9.3).`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Louis_Bachelier', doi: 'https://doi.org/10.24033/asens.476' },
       viz(v) {
         const sig = v.slider('daily standard deviation $\\sigma$', 0.2, 2, 1, { step: 0.05 });
@@ -165,28 +176,31 @@ Scope: arithmetic Brownian motion without drift or interest, prices that can go 
           const R = rng(seed * 733 + 5), s = sig.value;
           const key2 = seed + '|' + s;
           if (key !== key2) { ends = []; for (let i = 0; i < NP; i++) { const p = new Float64Array(TT + 1); p[0] = 100; for (let t = 1; t <= TT; t++) p[t] = p[t - 1] + s * R.normal(); ends.push(p); } key = key2; }
-          const t0 = tt.value;
+          const t0 = tt.value, ylo = 100 - 4 * s * Math.sqrt(TT), yhi = 100 + 4 * s * Math.sqrt(TT);
+          A.setView([0, 70], [ylo, yhi]);
           A.fn((t) => 100 + s * Math.sqrt(t), { domain: [0, 60], color: 'green', width: 2 }); A.fn((t) => 100 - s * Math.sqrt(t), { domain: [0, 60], color: 'green', width: 2 });
           A.fn((t) => 100 + 2 * s * Math.sqrt(t), { domain: [0, 60], color: 'green', width: 1, dash: true }); A.fn((t) => 100 - 2 * s * Math.sqrt(t), { domain: [0, 60], color: 'green', width: 1, dash: true });
           for (let i = 0; i < 60; i++) A.path(Array.from(ends[i], (y, t) => [t, y]), { color: 'accent', width: 1, alpha: 0.35 });
           A.vline(t0, { color: 'gold', width: 2 }); A.text('±σ√t', 58, 100 + s * Math.sqrt(58), { dx: -2, dy: -8, align: 'right', size: 11.5, color: 'green', weight: 700 });
           // histogram at time t0 along the vertical line (drawn as horizontal bars to the right)
-          const nb = 30, lo = 75, hi = 125, w = (hi - lo) / nb, cnt = new Array(nb).fill(0); for (let i = 0; i < NP; i++) { const b = Math.floor((ends[i][t0] - lo) / w); if (b >= 0 && b < nb) cnt[b]++; }
+          const nb = 30, lo = ylo, hi = yhi, w = (hi - lo) / nb, cnt = new Array(nb).fill(0); for (let i = 0; i < NP; i++) { const b = Math.floor((ends[i][t0] - lo) / w); if (b >= 0 && b < nb) cnt[b]++; }
           const sc = 14 / Math.max(...cnt) / 1; cnt.forEach((c, b) => { if (c) A.rect(t0, lo + b * w, t0 + c * sc / 1.0 * (60 / 60) * 0.6, lo + (b + 1) * w, { fill: 'gold', fillAlpha: 0.35, color: 'gold', width: 0.5 }); });
-          A.fn((y) => t0 + 14 * 0.6 * normPdf(y, 100, s * Math.sqrt(t0)) / normPdf(100, 100, s * Math.sqrt(t0)), { domain: [75, 125], color: 'red', width: 2 });
+          A.path(Array.from({ length: 201 }, (_, i) => { const y = ylo + (yhi - ylo) * i / 200; return [t0 + 8.4 * Math.exp(-0.5 * ((y - 100) / (s * Math.sqrt(t0))) ** 2), y]; }), { color: 'red', width: 2 });
           // option panel at horizon T = t0
           const sd = s * Math.sqrt(t0), S0 = 100, k = K.value, d = (S0 - k) / sd;
-          const closed = (S0 - k) * Phi(d) + sd * phi(d);
+          const closed = bachelierCall(S0, k, s, t0);
           const num = v.M.integrate((x) => Math.max(x - k, 0) * normPdf(x, S0, sd), S0 - 8 * sd, S0 + 8 * sd, 800);
           let mc = 0, hit = 0, above = 0; for (let i = 0; i < NP; i++) { mc += Math.max(ends[i][t0] - k, 0); let mx = -1e9; for (let t = 0; t <= t0; t++) if (ends[i][t] > mx) mx = ends[i][t]; if (mx >= k) hit++; if (ends[i][t0] >= k) above++; } mc /= NP;
-          B.setView([80, 125], [0, Math.max(0.12, 1.15 * normPdf(0, 0, sd), 0)]);
-          B.fn((x) => normPdf(x, S0, sd), { domain: [80, 125], color: 'red', width: 2.2, n: 300 });
-          B.fn((x) => normPdf(x, S0, sd) * Math.max(x - k, 0), { domain: [k, 125], color: 'accent', fill: true, fillAlpha: 0.3, width: 1.5, n: 200 });
+          const blo = Math.min(85, k - 2, S0 - 4 * sd), bhi = Math.max(115, k + 2, S0 + 4 * sd);
+          const peak = Math.max(normPdf(S0, S0, sd), ...Array.from({ length: 301 }, (_, i) => { const x = blo + (bhi - blo) * i / 300; return normPdf(x, S0, sd) * Math.max(x - k, 0); }));
+          B.setView([blo, bhi], [0, peak * 1.15]);
+          B.fn((x) => normPdf(x, S0, sd), { domain: [blo, bhi], color: 'red', width: 2.2, n: 300 });
+          B.fn((x) => normPdf(x, S0, sd) * Math.max(x - k, 0), { domain: [k, bhi], color: 'accent', fill: true, fillAlpha: 0.3, width: 1.5, n: 200 });
           B.vline(k, { color: 'orange', width: 2 }); B.vline(S0, { color: 'faint', dash: true });
-          B.text('density of the price at t', 82, 0.012, { align: 'left', size: 11, color: 'red', weight: 700 });
+          B.text('density of the price at t', blo + .02 * (bhi - blo), .02 * peak, { align: 'left', size: 11, color: 'red', weight: 700 });
           st = { closed, num, mc, hit: hit / NP, above: above / NP, sd, k };
         });
-        v.readout(() => `At $t=${tt.value}$: spread of the price $\\sigma\\sqrt t=${v.fix(st.sd, 2)}$ (Gaussian, variance $\\sigma^2 t$). Call with strike ${v.fix(st.k, 1)} expiring then: closed form **${v.fix(st.closed, 3)}**, numerical integral ${v.fix(st.num, 3)}, mean of 4000 simulated payoffs ${v.fix(st.mc, 3)}.\nReflection principle: P(price reached ${v.fix(st.k, 1)} by day ${tt.value}) = ${pct(st.hit, 1)} in simulation, and 2 × P(price above it at the end) = ${pct(2 * st.above, 1)} for $K\\ge100$ (the simulation checks the path only once a day, so it misses some excursions and sits a little below). At the money, $C=0.399\\,\\sigma\\sqrt T$.`);
+        v.readout(() => `At $t=${tt.value}$: spread of the price $\\sigma\\sqrt t=${v.fix(st.sd, 2)}$ (Gaussian, variance $\\sigma^2 t$). Call with strike ${v.fix(st.k, 1)} expiring then: closed form **${v.fix(st.closed, 3)}**, numerical integral ${v.fix(st.num, 3)}, mean of 4000 simulated payoffs ${v.fix(st.mc, 3)}.\nReflection principle: P(price reached ${v.fix(st.k, 1)} by day ${tt.value}) = ${pct(st.hit, 1)} in the daily sampled simulation; ${st.k >= 100 ? `2 × P(price above it at the end) = ${pct(2 * st.above, 1)} for this upper barrier` : 'the level is at or below the initial price, so it is already reached (probability 1); the upper-barrier formula does not apply'} (the simulation checks the path only once a day, so it misses some excursions and sits a little below). At the money, $C=0.399\\,\\sigma\\sqrt T$.`);
       },
     },
     // ------------------------------------------------------------------ 5.14
@@ -196,17 +210,16 @@ Scope: arithmetic Brownian motion without drift or interest, prices that can go 
       name: 'Efficient Capital Markets',
       paper: { authors: 'Eugene F. Fama', year: 1970, title: 'Efficient Capital Markets: A Review of Theory and Empirical Work', venue: 'Journal of Finance 25 (2): 383–417', doi: '10.1111/j.1540-6261.1970.tb00518.x' },
       introduces: ['fin-5.1'],
-      statement: String.raw`Fama's review organises the evidence on stock-price behaviour around one idea: a market is **efficient** if prices "fully reflect" available information. Formalised as a **fair game**, $\mathrm E[r_{j,t+1}\mid\Phi_t]=\mathrm E[r_{j,t+1}\mid\text{price model}]$, the hypothesis is tested through the return surprises. He distinguishes three levels by the information set $\Phi_t$: **weak** (past prices), **semi-strong** (all public information) and **strong** (all information, including private). Reviewing the literature to 1970 he finds the evidence strong for the weak and semi-strong forms (serial correlations of returns are close to zero; prices adjust quickly to announcements such as splits and earnings), with the strong form contradicted only for a few groups with monopolistic access to information. He stresses the **joint-hypothesis problem**: every test of efficiency is also a test of the model of expected returns used to define "normal" returns.
+      statement: String.raw`Fama's review organises the evidence on stock-price behaviour around one idea: a market is **efficient** if prices "fully reflect" available information. Formalised as a **fair game**, $\mathrm E[r_{j,t+1}\mid\Phi_t]=m_{j,t}$, where $m_{j,t}$ is supplied by a specified equilibrium expected-return model, the hypothesis is tested through the return surprises. He distinguishes three levels by the information set $\Phi_t$: **weak** (past prices), **semi-strong** (all public information) and **strong** (all information, including private). Reviewing the literature to 1970 he finds the evidence strong for the weak and semi-strong forms (serial correlations of returns are close to zero; prices adjust quickly to announcements such as splits and earnings), with the strong form contradicted only for a few groups with monopolistic access to information. He stresses the **joint-hypothesis problem**: every test of efficiency is also a test of the model of expected returns used to define "normal" returns.
 
 Scope: evidence available to 1970 on U.S. stocks.`,
-      idea: String.raw`Earlier work (Kendall, Osborne, Fama 1965) had found that stock prices behave like random walks, and Samuelson (1965) had proved that properly anticipated prices fluctuate randomly; Fama's contribution was to replace "random walk" by the broader fair-game formulation, which allows expected returns to differ across stocks and over time, and to organise the empirical work by information set, so that each study became a test of one level. The paper made "efficient market" the common language of financial economics and set the research agenda: event studies for the semi-strong form (fin-5.4), fund-performance studies for the strong form (fin-5.5), and the joint-hypothesis problem, which is why the debate is hard to settle (the 2013 Nobel prize for Fama, Shiller and Hansen reflected both sides). Later evidence of predictability (momentum, value, excess volatility, fin-5.6) is read either as inefficiency or as evidence of time-varying required returns.`,
+      idea: String.raw`Earlier work (Kendall, Osborne, Fama 1965) had found that stock prices behave like random walks, and Samuelson (1965) had proved that properly anticipated prices fluctuate randomly; Fama's contribution was to replace "random walk" by the broader fair-game formulation, which allows expected returns to differ across stocks and over time, and to organise the empirical work by information set, so that each study became a test of one level. The review connects each information set to a class of tests: event studies for the semi-strong form (fin-5.4), fund-performance studies for the strong form (fin-5.5), and the joint-hypothesis problem, which is why the debate is hard to settle. Later evidence of predictability (momentum, value, excess volatility, fin-5.6) is read either as inefficiency or as evidence of time-varying required returns.`,
       caption: String.raw`Four tabs. **Weak form**: the lag-$k$ autocorrelation of monthly returns of ten U.S. industry portfolios, 1963–2026 (real data; Fama's own tests used daily returns of the 30 Dow stocks, 1957–62, whose numbers are not reproduced), with the 95% band for no correlation. **Semi-strong**: a stylised version of the stock-split event study (Fama, Fisher, Jensen and Roll, 1969): prices rise before the split, then stay flat on average, because dividend increases keep some stocks up and cuts drop others. **Strong**: the distribution of simulated fund alphas (t-statistics) with and without a share of really skilled managers. **Joint hypothesis**: a trading rule that profits from a predictable component until traders arbitrage the predictability away. (Real data in the first tab only; the others are models.)`,
       deps: ['fin-5.13', 'fin-5.2'],
       refs: [],
       tags: ['efficient markets', 'fair game', 'joint hypothesis'],
       credit: 'Eugene F. Fama, 1970',
       scope: String.raw`A literature review; the empirical findings are those of the studies to 1970, and the later literature (fin-5.6, fin-4.10) has qualified them.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Efficient-market_hypothesis', doi: 'https://doi.org/10.1111/j.1540-6261.1970.tb00518.x' },
       viz(v) {
         const d = data(), n = d.n;
@@ -278,8 +291,8 @@ Scope: evidence available to 1970 on U.S. stocks.`,
 
 Scope: the original series, discount rate and terminal-value choices are Shiller's; the panel here uses his later, extended online data, so the numbers differ from the paper.`,
       idea: String.raw`The test is a variance decomposition of a forecast and its target (fin-5.6). Smooth dividends make $p^*$ smooth because $p^*$ is a long discounted average of them; if the price fluctuates far more, it must respond to something other than expected dividends. The paper opened the "excess volatility" literature and, with Shiller's later work, fed the case for behavioural explanations (fads, over-reaction); the critics' point, that the sample variances of persistent series are biased and the bound requires stationary series, led to improved tests that still rejected in many specifications, and to the view that time-varying discount rates also matter (Campbell and Shiller's present-value decompositions). The paper figures in Shiller's 2013 Nobel citation.`,
-      caption: String.raw`**Left**: Shiller's Figure 1 reconstructed from his online annual data: the real S&P price (detrended, blue) and the ex-post rational price (green); choose the **sample** (1871–1979 as in the paper, or to 2022), the **discount rate** and the **terminal value** and compare the standard deviations. **Right**: the critics' point. We simulate a *perfectly rational* market with the same size of dividends, where $p_t$ is exactly the expected present value of dividends with persistence $\rho$, and apply Shiller's procedure to 109 years of simulated data; the histogram shows the ratio $\sigma(p)/\sigma(p^*)$ over 400 simulations, with the real data's ratio as the gold line. For persistence near 0.95 the bound already fails in a large share of rational markets, but the real ratio is far out in the tail. (Real data: Shiller's later series; simulation: a model.)`,
-      deps: ['fin-1.11', 'fin-5.14', 'fin-5.6'],
+      caption: String.raw`**Left**: Shiller's Figure 1 reconstructed from his online annual data: the real S&P price (detrended, blue) and the ex-post rational price (green); choose the **sample** (1871–1979 as in the paper, or to 2022), the **discount rate** and the **terminal value** and compare the standard deviations. **Right**: the critics' point. We simulate a *perfectly rational* market with the same size of dividends, where $p_t$ is exactly the expected present value of dividends with persistence $\rho$, and apply Shiller's procedure to 109 years of simulated data; the histogram shows the ratio $\sigma(p)/\sigma(p^*)$ over 400 simulations, with the real data's ratio as the gold line. The readout reports the frequency of sample violations and the tail share for the selected parameters. Here $d_t$ is the cash flow known at date $t$ and paid one period later, so the AR(1) price is $\mu/r+(d_t-\mu)/(1+r-\rho)$. Gaussian cash flows can be negative: this is a statistical contract example, not a limited-liability stock. (Real data: Shiller's later series; simulation: a model.)`,
+      deps: ['fin-1.11', 'fin-5.14', 'fin-5.6', 'prob-4.1.15'],
       refs: [],
       tags: ['variance bounds', 'excess volatility', 'present value'],
       credit: 'Robert J. Shiller, 1981',
@@ -309,14 +322,14 @@ Scope: the original series, discount rate and terminal-value choices are Shiller
             const p = dd.map((q) => mu / r.value + (q - mu) / (1 + r.value - rho.value)), pstar = exPost(dd, r.value, meanOf(p));
             const q = sdOf(p) / sdOf(pstar); rs.push(q); if (q > 1) bad++;
           }
-          const xm = Math.max(3, ratio + 0.4), nb = 40, w = xm / nb, cnt = new Array(nb).fill(0); for (const q of rs) { const k = Math.min(nb - 1, Math.floor(q / w)); cnt[k]++; }
+          const xm = Math.max(3, ratio + 0.4, ...rs.map(q => q * 1.05)), nb = 40, w = xm / nb, cnt = new Array(nb).fill(0); for (const q of rs) { const k = Math.min(nb - 1, Math.floor(q / w)); cnt[k]++; }
           B.setView([0, xm], [0, Math.max(0.2, Math.max(...cnt) / M * 1.15)]);
           cnt.forEach((c, k) => B.rect(k * w + 0.01, 0, (k + 1) * w - 0.01, c / M, { fill: k * w >= 1 ? 'red' : 'accent', fillAlpha: 0.45, color: k * w >= 1 ? 'red' : 'accent', width: 0.6 }));
           B.vline(1, { color: 'ink', dash: true }); B.text('bound violated →', 1.05, 0.33, { size: 11, color: 'red', weight: 700 });
           B.vline(ratio, { color: 'gold', width: 3 }); B.text('real data', ratio, 0.3, { dx: -6, size: 11.5, color: 'gold', align: 'right', weight: 700 });
           st = { sp, sps, ratio, bad: bad / M, mrs: meanOf(rs), tail: rs.filter((q) => q >= ratio).length / M };
         });
-        v.readout(() => `Real data (${smp.value === 109 ? '1871–1979' : '1871–2022'}, $r=${pct(r.value, 2)}$): $\\sigma(p)=${v.fix(st.sp, 1)}$, $\\sigma(p^*)=${v.fix(st.sps, 1)}$, ratio **${v.fix(st.ratio, 2)}**; Shiller's bound needs a ratio of at most 1.\nPerfectly rational market with dividend persistence ${v.fix(rho.value, 2)}: the bound appears violated in **${pct(st.bad, 0)}** of 400 simulated samples (average ratio ${v.fix(st.mrs, 2)}); a ratio as large as the real one occurred in **${pct(st.tail, 1)}** of them. The real dividends' own persistence (lag-1 autocorrelation about 0.9) makes the bound less reliable than it looks, but does not by itself account for a ratio this large.`);
+        v.readout(() => `Real data (${smp.value === 109 ? '1871–1979' : '1871–2022'}, $r=${pct(r.value, 2)}$): $\\sigma(p)=${v.fix(st.sp, 1)}$, $\\sigma(p^*)=${v.fix(st.sps, 1)}$, ratio **${v.fix(st.ratio, 2)}**; Shiller's bound needs a ratio of at most 1.\nPerfectly rational market with dividend persistence ${v.fix(rho.value, 2)}: the bound appears violated in **${pct(st.bad, 0)}** of 400 simulated samples (average ratio ${v.fix(st.mrs, 2)}); a ratio as large as the real one occurred in **${pct(st.tail, 1)}** of them. The real dividends' own persistence (lag-1 autocorrelation about 0.9) makes the bound less reliable than it looks, and this particular simulation is an illustration rather than a formal test of the historical market.`);
       },
     },
   ],

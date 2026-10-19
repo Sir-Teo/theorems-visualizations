@@ -66,12 +66,13 @@ function interfaceViz(v, refract) {
       if (refract) {
         const rt = (n1 / n2) * d * s1;
         const T2 = hit(XS, rt, xt, -1);
-        if (T2) {
+        if (Math.abs(rt - d) < 1e-12 * d) { thT = 90; S.line(xt, 0, xt, -3.6, {color:'green',width:3.2}); }
+        else if (T2) {
           S.line(xt, 0, T2[0], T2[1], { color: 'green', width: 3.2 });
           thT = deg(Math.atan2(-T2[1], xt - T2[0]));
           S.dot(T2[0], T2[1], { r: 3, color: 'green' });
         }
-        ratio = rt / d;
+        ratio = rt / r0;
       }
     }
     rd = { n1, n2, th1: aS.value, thR, thT, ratio, d };
@@ -83,7 +84,7 @@ function interfaceViz(v, refract) {
     if (!rd) return '';
     if (!refract) return rd.thR == null ? 'the wave has only just touched the mirror' : `incident angle (from the normal) $\\theta_1=${v.fix(rd.th1, 1)}^\\circ$ · reflected front built from the wavelets leaves at $\\theta_r=${v.fix(rd.thR, 2)}^\\circ$`;
     if (rd.d <= 0.15) return 'the wave has only just touched the interface';
-    if (rd.thT == null) return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 3)}>n_2$: the wavelets in medium 2 are too small for the points reached to share a tangent line, so no refracted wave exists (total internal reflection, 4.9)`;
+    if (rd.thT == null) return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 3)}>n_2$: the wavelets in medium2 outgrow the interface sweep, so there is no propagating refracted front (total internal reflection, 4.9)`;
     return `$n_1\\sin\\theta_1=${v.fix(rd.n1 * Math.sin(rad(rd.th1)), 4)}$ · refracted front measured from the wavelets: $\\theta_2=${v.fix(rd.thT, 2)}^\\circ$, so $n_2\\sin\\theta_2=${v.fix(rd.n2 * Math.sin(rad(rd.thT)), 4)}$ · wavelet radius in 2 over radius in 1 $=n_1/n_2=${v.fix(rd.ratio, 3)}$`;
   });
 }
@@ -298,10 +299,9 @@ Both angles are measured from the normal. The result holds for any wavelength an
       idea: String.raw`With Huygens' principle (4.4): the plane front reaches the mirror point by point, and the wavelet from the first point has spread by $vt$ when the last point is just reached. Since the wavelets stay in the same medium they share one speed, so the common tangent through the contact point and the first wavelet is the mirror image of the incident front: two right triangles with equal hypotenuse and a common side are congruent, giving $\theta_r=\theta_i$. The same law follows from Fermat's principle (5.2) as the path of least length.`,
       caption: String.raw`The blue front sweeps along the mirror; each point of the mirror struck so far (gold) has emitted a wavelet. The green line is the common tangent of the wavelets, the reflected front. Change $\theta_1$ and the reflected front tilts the same way: the readout measures its angle from the geometry of the wavelets and compares it with the incident angle. Pause the animation to inspect any instant.`,
       deps: ['waves-4.4'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §§33–2–33–4, phase matching and Eq.(33.42)'],
       tags: ['reflection', 'Huygens'],
-      credit: 'known to Euclid and Hero of Alexandria (antiquity)',
-      verify: true,
+      credit: 'Specular reflection from phase matching: Feynman Lectures II, §33–4',
       scope: String.raw`Specular reflection from a surface smooth on the scale of the wavelength; a rough surface scatters diffusely (each patch still reflects specularly). Valid in any isotropic medium.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Specular_reflection' },
       viz(v) { interfaceViz(v, false); },
@@ -313,15 +313,14 @@ Both angles are measured from the normal. The result holds for any wavelength an
       name: 'Snell’s law of refraction',
       statement: String.raw`A ray passing from a transparent medium of index $n_1$ into one of index $n_2$ stays in the plane of incidence, and its angles to the normal obey
 $$n_1\sin\theta_1=n_2\sin\theta_2 .$$
-It bends toward the normal on entering the optically denser medium ($n_2>n_1$) and away from it on leaving. If $n_1\sin\theta_1>n_2$ there is no refracted ray (total internal reflection, 4.9). The law also gives the frequency-independent statement that $k_x=\omega n\sin\theta/c$ is the same on both sides, i.e. the phase along the interface is continuous.`,
+It bends toward the normal on entering the optically denser medium ($n_2>n_1$) and away from it on leaving. If $n_1\sin\theta_1>n_2$ there is no refracted ray (total internal reflection, 4.9). At each frequency the law also gives the phase-matching statement that $k_x=\omega n\sin\theta/c$ is the same on both sides, i.e. the phase along the interface is continuous.`,
       idea: String.raw`With Huygens’ principle (4.4): the front sweeps along the interface at speed $v_1/\sin\theta_1$. In the same time the wavelet from the first contact point spreads only to $v_2t$ in medium 2, so the common tangent through the moving contact point makes $\sin\theta_2=v_2t/d$ with the interface, and $\sin\theta_1=v_1t/d$; dividing, $\sin\theta_1/\sin\theta_2=v_1/v_2=n_2/n_1$. Fermat (5.2) gives it as the path of least time, and the phase-matching view is the boundary condition behind the Fresnel equations (4.7).`,
-      caption: String.raw`Set the two indices and the angle $\theta_1$. The blue front arrives along the interface; green wavelets live in the second medium, smaller where light is slower. Their common tangent (solid green) is the refracted front; the readout measures its angle from the construction and shows that $n_1\sin\theta_1$ and $n_2\sin\theta_2$ agree. Make $n_1>n_2$ and raise $\theta_1$: the wavelets become too small to share a tangent and the refracted wave disappears.`,
+      caption: String.raw`Set the two indices and the angle $\theta_1$. The blue front arrives along the interface; green wavelets live in the second medium, smaller where light is slower. Their common tangent (solid green) is the refracted front; the readout measures its angle from the construction and shows that $n_1\sin\theta_1$ and $n_2\sin\theta_2$ agree. Make $n_1>n_2$ and raise $\theta_1$: the wavelets become too large to share the required tangent and the refracted wave disappears.`,
       deps: ['waves-4.4', 'waves-4.3'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §§33–2–33–4, Eqs.(33.38)–(33.47)'],
       tags: ['refraction', 'Snell'],
-      credit: 'Ibn Sahl, c. 984; Harriot, c. 1602; Snell, c. 1621; Descartes, 1637',
-      verify: true,
-      scope: String.raw`Isotropic media with a plane boundary; for birefringent crystals (9.9) the second ray does not obey it. The sine form holds for phase velocities, so with dispersion each colour refracts differently (4.12). Priority is disputed: the dates are those of the earliest known statements and are not exact.`,
+      credit: 'Snell refraction law from phase matching: Feynman Lectures II, §33–4',
+      scope: String.raw`Isotropic media with a plane boundary; for birefringent crystals (9.9) the second ray does not obey it. The sine form holds for phase velocities, so with dispersion each colour refracts differently (4.12). The indices and angles here describe phase matching in positive-index dielectrics.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Snell%27s_law' },
       viz(v) { interfaceViz(v, true); },
     },
@@ -333,14 +332,13 @@ It bends toward the normal on entering the optically denser medium ($n_2>n_1$) a
       statement: String.raw`For a monochromatic plane wave incident at angle $\theta_1$ from a non-magnetic medium of index $n_1$ on a flat interface with $n_2$ (with $\theta_2$ given by Snell’s law), the reflected and transmitted amplitudes are, for polarization perpendicular (s) and parallel (p) to the plane of incidence,
 $$r_s=\frac{n_1\cos\theta_1-n_2\cos\theta_2}{n_1\cos\theta_1+n_2\cos\theta_2},\quad t_s=\frac{2n_1\cos\theta_1}{n_1\cos\theta_1+n_2\cos\theta_2},$$
 $$r_p=\frac{n_2\cos\theta_1-n_1\cos\theta_2}{n_2\cos\theta_1+n_1\cos\theta_2},\quad t_p=\frac{2n_1\cos\theta_1}{n_2\cos\theta_1+n_1\cos\theta_2}.$$
-The reflectance $R=|r|^2$ and transmittance $T=\dfrac{n_2\cos\theta_2}{n_1\cos\theta_1}|t|^2$ satisfy $R+T=1$ for each polarization. At normal incidence both give $R=\left(\dfrac{n_1-n_2}{n_1+n_2}\right)^2$ (about 4% for air to glass).`,
-      idea: String.raw`Maxwell's boundary conditions (em-10.7) require the tangential components of $\mathbf E$ and $\mathbf H$ to be continuous across the interface; with the phases already matched by Snell’s law (4.6), each polarization gives two linear equations for $r$ and $t$, solved by the formulas above. $R+T=1$ is conservation of the normal energy flux (4.2 and em-11.5), and the factor in $T$ accounts for the change of beam width and wave speed. Fresnel obtained the sine and tangent laws in 1823 from his elastic-solid theory; the electromagnetic derivation came later.`,
+The reflectance $R=|r|^2$ and normal power transmittance $T=\dfrac{n_2\operatorname{Re}(\cos\theta_2)}{n_1\cos\theta_1}|t|^2$ satisfy $R+T=1$ for each polarization. At normal incidence both give $R=\left(\dfrac{n_1-n_2}{n_1+n_2}\right)^2$ (about 4% for air to glass).`,
+      idea: String.raw`Maxwell's boundary conditions (em-10.7) require the tangential components of $\mathbf E$ and $\mathbf H$ to be continuous across the interface; with the phases already matched by Snell’s law (4.6), each polarization gives two linear equations for $r$ and $t$, solved by the formulas above. $R+T=1$ is conservation of the normal energy flux (4.2 and em-11.5), and the factor in $T$ accounts for the change of beam width and wave speed. The formulas use local s/p polarization axes; in particular the opposite signs of $r_s$ and $r_p$ at normal incidence do not indicate different physical phase shifts.`,
       caption: String.raw`Left: $R$ (solid) and $T$ (dashed) against angle of incidence for s (blue) and p (purple) polarization. Set $n_1$ and $n_2$ with the sliders, drag the angle, and read off $R+T$ (always 1). Right: the three rays with line weight showing their power for the chosen polarization. Try $n_1>n_2$: at the critical angle $R\to1$ (4.9). The p curve touches zero at Brewster’s angle (4.8).`,
       deps: ['em-10.7', 'em-11.9', 'waves-4.6'],
-      refs: ['Hecht ch. 4'],
+      refs: ['Feynman Lectures II, complete §§33–3–33–4, Eqs.(33.25)–(33.57); local p-axis sign convention stated'],
       tags: ['Fresnel', 'reflectance'],
-      credit: 'Fresnel, 1823 (memoir read 7 January 1823; published 1831)',
-      verify: true,
+      credit: 'Fresnel amplitudes from Maxwell boundary conditions: Feynman Lectures II, §33–4',
       scope: String.raw`Plane wave, flat interface between two lossless, non-magnetic, isotropic media. Metals and absorbing media need a complex index; thin films add multiple reflections (6.5). Sign conventions for $r_p$ vary between textbooks (this page follows Hecht).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Fresnel_equations' },
       viz(v) {

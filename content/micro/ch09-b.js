@@ -24,7 +24,7 @@ export default {
     // ------------------------------------------------------------------ 9.7
     {
       num: '9.7', kind: 'Theorem', name: 'Existence of exchange equilibrium',
-      statement: String.raw`Consider an exchange economy in which every consumer has continuous, strictly convex and strongly monotone preferences and the total endowment of each good is positive. Then aggregate excess demand $z(p)$ is a continuous function on strictly positive prices, homogeneous of degree zero, satisfying Walras' law (9.6), and it explodes when a price tends to zero. Under these conditions there is a price vector $p^* \gg 0$ with
+      statement: String.raw`Consider an exchange economy in which every consumer has continuous, strictly convex and strongly monotone preferences and each consumer has a strictly positive endowment of every good. Then aggregate excess demand $z(p)$ is a continuous function on strictly positive prices, homogeneous of degree zero, satisfying Walras' law (9.6), and satisfies the boundary excess-demand condition as normalized prices approach the simplex boundary. Under these conditions there is a price vector $p^* \gg 0$ with
 $$z(p^*) = 0,$$
 a Walrasian equilibrium (9.5). With two goods this is the statement that the single continuous function $z_1(p_1/p_2)$, positive for small relative prices and negative for large ones, has a zero.`,
       idea: String.raw`With two goods, Walras' law makes market 2 redundant and homogeneity reduces everything to the relative price $p = p_1/p_2$. As $p \to 0$ good 1 is almost free and everybody wants more, so $z_1 > 0$; as $p \to \infty$ the traders can afford little of it and sell what they have, so $z_1 < 0$; and $z_1$ is continuous because strictly convex preferences give each consumer a unique, continuously varying best bundle. The intermediate value theorem (Rudin 4.23) then yields a zero. With $n$ goods the same argument runs through Brouwer's fixed-point theorem applied to a price-adjustment map of the simplex (9.21). Convexity is not a technicality: when it fails, demand jumps and $z_1$ can leap over zero.`,
@@ -33,7 +33,6 @@ a Walrasian equilibrium (9.5). With two goods this is the statement that the sin
       see: ['micro-9.21', 'micro-2.5'],
       refs: ['Varian Ch. 32'], tags: ['general equilibrium', 'existence'],
       credit: 'Wald (1936), Arrow & Debreu, 1954 and McKenzie, 1954 (general proofs)',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Arrow%E2%80%93Debreu_model' },
       viz(v) {
         const kind = v.select('$B$’s preferences', [{ value: 'cd', label: 'convex (Cobb–Douglas)' }, { value: 'sq', label: 'non-convex' }], 'cd');

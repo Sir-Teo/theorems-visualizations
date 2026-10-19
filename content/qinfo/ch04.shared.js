@@ -22,7 +22,7 @@ export function qapply(q, p) { const r = qmul(qmul(q, [0, p[0], p[1], p[2]]), qc
 /** Angle and axis of q (angle in [0, π] after fixing the sign so that w ≥ 0). */
 export function qangleAxis(q) {
   const s = q[0] < 0 ? -1 : 1, w = Math.min(1, s * q[0]), v = [s * q[1], s * q[2], s * q[3]], sn = Math.hypot(...v);
-  return { angle: 2 * Math.atan2(sn, w), axis: sn > 1e-12 ? v.map((x) => x / sn) : [0, 0, 1] };
+  return { angle: 2 * Math.atan2(sn, w), axis: sn > 0 ? v.map((x) => x / sn) : [0, 0, 1] };
 }
 /** The gates H, T, T† (and S) as rotations of the Bloch sphere. */
 export const QG = {
@@ -62,12 +62,12 @@ export function nearestInNet(net, q) { let best = null, bd = 9; for (const e of 
 /** Balanced group commutator: unit quaternions V, W with V W V† W† = D (Dawson–Nielsen). */
 export function groupCommutator(D) {
   const { angle: phi, axis } = qangleAxis(D);
-  const k = Math.sin(phi / 2) ** 2, u = (1 - Math.sqrt(Math.max(0, 1 - k))) / 2, a = Math.sqrt(u), th = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
+  const k = Math.sin(phi / 2) ** 2, u = k / (2 * (1 + Math.sqrt(Math.max(0, 1 - k)))), a = Math.sqrt(u), th = 2 * Math.asin(Math.min(1, Math.sqrt(a)));
   const V = qrot([1, 0, 0], th), W = qrot([0, 1, 0], th), C = qmul(qmul(V, W), qmul(qconj(V), qconj(W)));
   const ax = qangleAxis(C).axis, dot = ax[0] * axis[0] + ax[1] * axis[1] + ax[2] * axis[2];
   const cr = [ax[1] * axis[2] - ax[2] * axis[1], ax[2] * axis[0] - ax[0] * axis[2], ax[0] * axis[1] - ax[1] * axis[0]];
   let S;
-  if (Math.hypot(...cr) < 1e-9) S = dot > 0 ? [1, 0, 0, 0] : qrot([1, 0, 0].map((_, i) => (Math.abs(ax[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0])[i]), Math.PI);
+  if (Math.hypot(...cr) < 1e-14) S = dot > 0 ? [1, 0, 0, 0] : qrot(Math.abs(ax[0]) < .9 ? [0,-ax[2],ax[1]] : [-ax[2],0,ax[0]],Math.PI);
   else S = qrot(cr, Math.acos(Math.max(-1, Math.min(1, dot))));
   return { V: qmul(qmul(S, V), qconj(S)), W: qmul(qmul(S, W), qconj(S)), theta: th, phi };
 }

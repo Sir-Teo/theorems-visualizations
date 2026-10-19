@@ -1,0 +1,57 @@
+# Finance source verification — 2026-10-18
+
+Reviewed all **12 initially flagged finance cards**. **Ten flags closed**; two retain specific primary-source/data access blockers. The calculations, historical attribution, source/model distinction, captions, readouts and native controls were reviewed together. Source snippets and abstracts were not used to close flags.
+
+| Card | Disposition | Primary evidence and changes |
+| --- | --- | --- |
+| 4.7 Fama–French | Closed | 1993 original, pp. 3–12, §5 pp. 34–43/Table 9 and §7 pp. 54–55; official French factor and portfolio extraction below. Characteristics associated with factor returns are distinguished from characteristics themselves being traded factors. Added the OLS prerequisite actually used. |
+| 4.11 Equity premium | Closed | Mehra–Prescott 1985, Table I p. 147, model/calibration pp. 148–156; Mehra 2003 pp. 10–13, eqs. 12–16; Benartzi–Thaler 1995 pp. 79–85. Fixed arithmetic premium treated as a log gap, required joint normality, clipped fitted risk-aversion values, and the false attribution of this lognormal teaching calibration to the original two-state model. Stylized loss-aversion integration explicitly omits the original cumulative probability weights and historical bootstrap. |
+| 5.1 EMH | Closed | Fama 1970 pp. 383–388 and 411–416; official daily returns audit. A specified equilibrium return benchmark is required: subtracting the true conditional expectation is always a fair game and cannot itself test efficiency. Predictable required returns are allowed. Removed unverified causal attribution of daily autocorrelation and categorical profit claims. |
+| 5.4 Minutes/news | **Flag retained** | Patell–Wolfson final publisher PDF returned HTTP 403; Stanford's full working-paper landing page was obtained but contains no downloadable original. The 5–10 minute claim remains unverified against the full article; abstracts are insufficient. Existing stylized event study is labeled a model. |
+| 5.5 Active funds | Closed | Complete Sharpe 1991 author text; Carhart 1997 pp. 57–59, empirical persistence discussion pp. 73–79 and conclusion pp. 79–81; Fama–French 2010 pp. 1915–1917, 1930, 1940–1942 and Appendix A; original SPIVA U.S. Year-End 2024 Report 1a p. 10. Corrected Sharpe's identity to the dollar-weighted total of all active investors in the same universe, not an equal-weighted selected fund sample. Horizon slope depends on mean net alpha. SPIVA anchors now exactly 65.24% and 89.50%. Scatter no longer clamps outliers to its frame. |
+| 5.7 Limits to arbitrage | Closed | Shleifer–Vishny 1997 pp. 35–46; De Long et al. 1990 pp. 703–706; Froot–Dabora 1999 §2.1 pp. 192–193. Exact OU transition replaces Euler drift; convergence is not guaranteed at the last simulated date. Fixed margin configurations that could not open yet created capital, and credited maintenance equity instead of actual sampled gap losses. Negative equity and mean equity are displayed without clamping. |
+| 5.10 Historical bubbles | Closed | Complete Garber1989 §§IV–VII pp541–558 and Temin–Voth2004 §I pp1655–1658/Table1 previously reviewed; French industry cells audited. New [complete Kirman1988 primary working paper, On Ants and Markets, EUI88/351](https://cadmus.eui.eu/bitstreams/895f210b-2f8c-59c0-b7b6-2980b5636cb3/download) read through pp1–18, including Eq1 p4, Figs1–4 pp7–8/13/15 and market interpretation pp11–17. Credit now names the actual1988 working paper; the1993 final paper is not certified. The copying transition matches Eq1, while the exponential price rule is explicitly our own illustration. Historical dots remain approximate, not extracted daily observations. See [bounded follow-up](economics-social-acquisition-followup.md). |
+| 5.11 Rational bubbles | Closed | Complete Blanchard–Watson 1982 chapter obtained; pp. 296–300 eqs. 11.1–11.5 and terminal/equilibrium restrictions read. Added summability/integrability and positive-rate hypotheses. Fixed finite-horizon perpetuity value to actual remaining-dividend annuity with zero terminal redemption. Monte Carlo estimate distinguished from analytic expectation; removed universal price/dividend-ratio claim and unreviewed extra original attributions. |
+| 5.12 Laboratory bubbles | Closed | Complete Smith–Suchanek–Williams 1988 paper obtained; §§3–4 pp. 1123–1132, Table I p. 1126 (landscape page separately rotated/OCR-checked), and §6 pp. 1148–1150 read. Dividend support 0,8,28,60 cents, equal probabilities and 24-cent mean belong to design 4; designs 1–2 have buyouts, one session has 30 periods. Fourteen of 22 unaffected sessions, not all 27, have bubbles; nine of the fourteen include experienced traders. Removed unsupported later-study/liquidity claims. Presets are explicitly unestimated. Plot includes extreme-parameter paths. |
+| 5.13 Bachelier | Closed | Complete Numdam 1900 original; pp. 23–26 adjusted prices, 33–39 fairness/Gaussian convolution/scaling, 46–48 diffusion, 49–51 primes, 55–57 options and p. 75 reflection read. Removed unverified history; reflection statement requires upper barrier above initial price. Fixed Gaussian plotted outside time-axis bounds, adaptive option payoff axes and already-hit barrier readout. |
+| 5.14 Fama paper | Closed | Fama original as above plus official industry audit. Formal fair-game benchmark corrected; review's information-set organization grounded in original text, unsupported retrospective priority/Nobel narrative removed. |
+| 5.15 Shiller paper | **Flag retained** | Complete February 1980 NBER w456 obtained; theory pp. 5–7 (including dividend timing), empirical §VI pp. 19–22/Table I and terminal-value discussion read. This is not falsely certified as the final 1981 AER text. Final Yale PDF returned 503; official extended `ie_data.xls` returned 503, leaving **456 annual P/D/CPI cells (1871–2022)** unvalidated against their claimed original. Critics' Chicago PDFs returned 403 and Marsh–Merton JSTOR returned proxy 502. Corrected universal tail claims to selected-parameter frequencies; Gaussian contract/timing assumptions explicit; histogram no longer compresses upper-tail observations into its last bin. |
+
+## Complete primary files used
+
+- [Fama–French 1993](https://www.bauer.uh.edu/rsusmel/phd/Fama-French_JFE93.pdf).
+- [Mehra–Prescott 1985](https://www.academicwebpages.com/preview/mehra/pdf/The%20Equity%20Premium%20A%20Puzzle.pdf), [Mehra 2003, NBER **w9512**](https://www.nber.org/system/files/working_papers/w9512/w9512.pdf), [Benartzi–Thaler 1995](https://www.anderson.ucla.edu/documents/areas/fac/accounting/myopic_loss_aversion.pdf). The former header's w9525 citation was wrong.
+- [Fama 1970](https://www.e-m-h.org/Fama70.pdf), [Sharpe 1991 author text](https://web.stanford.edu/~wfsharpe/art/active/active.htm), [Carhart 1997](https://r.jordan.im/download/investing/carhart1997.pdf), [Fama–French 2010](https://r.jordan.im/download/investing/fama2010.pdf), [SPIVA official 2024 report](https://www.spglobal.com/spdji/en/documents/spiva/spiva-us-year-end-2024.pdf).
+- [Shleifer–Vishny 1997](https://web.stanford.edu/~piazzesi/Reading/ShleiferVishny1997.pdf), [De Long et al. 1990](https://ms.mcmaster.ca/~grasselli/DeLongShleiferSummersWaldmann90.pdf), [Froot–Dabora 1999](https://www.andreisimonov.com/NES/BF/Froot%2C%20Kenneth%20and%20Emil%20Dabora%2C%201999%2C%20How%20are%20Stock%20Prices%20Affected%20by%20Location%20of%20Trade.pdf).
+- [Garber 1989](https://ms.mcmaster.ca/~grasselli/Garber89.pdf), [Temin–Voth 2004](https://crei.cat/wp-content/uploads/users/working-papers/voth_ridingsouthsea.pdf), [Blanchard–Watson 1982 chapter](https://www.princeton.edu/~mwatson/papers/Blanchard_Watson_Bubbles.pdf).
+- [Smith–Suchanek–Williams complete author-hosted scan](https://www.researchgate.net/profile/Arlington-Williams/publication/4815051_Bubbles_Crashes_and_Endogenous_Expectations_in_Experimental_Spot_Asset_Markets/links/0c96051f87fd79ab90000000/Bubbles-Crashes-and-Endogenous-Expectations-in-Experimental-Spot-Asset-Markets.pdf), [Bachelier Numdam original](https://www.numdam.org/article/ASENS_1900_3_17__21_0.pdf), [Shiller **1980 working paper**](https://www.nber.org/system/files/working_papers/w0456/w0456.pdf).
+
+## Official French dataset audit
+
+Downloaded the official CRSP **202608 vintage** archives on 2026-10-18:
+[monthly factors](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_CSV.zip),
+[25 portfolios](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/25_Portfolios_5x5_CSV.zip),
+[daily factors](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/F-F_Research_Data_Factors_daily_CSV.zip),
+[10 industries](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/ftp/10_Industry_Portfolios_CSV.zip).
+All headers match the embedded vintage; monthly window July 1963–August 2026 (758 rows), daily July 1, 1963–August 31, 2026 (15,897 rows).
+
+- 3,032 monthly market-excess/SMB/HML/RF cells match exactly.
+- 18,950 size/book-to-market value-weighted monthly cells match at the declared embedded precision.
+- 15,897 daily market total returns match market-excess plus RF exactly.
+- 7,580 value-weighted industry monthly cells match at embedded precision.
+
+Total: **45,459 checked cells, zero discrepancies**. Portfolio source percentages have four decimals; the embedding quantizes with JavaScript `Math.round(percent*100)/10000`. A banker's-rounding comparison is inappropriate at ties. No dataset values were changed. Beta-sorted, momentum and prior-return data outside these reviewed cards are not covered by this audit.
+
+SHA256 archives: factors `593f4fbef03181bc0b22ff6292f217689dd1fb79355049ca905d95b262040a66`; portfolios `e02edcd282d8993cf3133e71181665f888ecb57c202a99a9cbd6cdf7fc6b8429`; daily `2f29e22546069914890a712680a6f81f3680ebc3543b52864484d209ca13a7db`; industries `ebd937a4b995d821867aeb956a96f09a666386f38fa82516b7d1767ee4a49ae5`.
+
+## Derivational cross-field prerequisites
+
+Syllabi synchronized for added dependencies: 4.7 uses `stat-12.2` OLS; 5.1 uses `stat-2.1` conditioning; 5.5 uses `prob-3.3.13` addition of independent Gaussian skill/noise; 5.13 uses `stoch-13.7` reflection; 5.15 uses `prob-4.1.15` conditional expectation as an orthogonal projection, the actual variance-bound argument. These are used in equations/proofs rather than added to meet a count.
+
+## Validation
+
+`node tests/verification-fin.mjs`: **7/7 passed**, including independent factor-regression recovery, NumPy least-squares real-data alpha snapshots, Gaussian quadrature for Bachelier calls, exact OU mean/variance, infeasible and gap-loss margin accounting, arithmetic-to-log premium conversion and independent finite-annuity discount sums/recursion.
+
+`node scripts/check.mjs fin/4 fin/5 --static --fail-on-warnings`: **27 cards, zero errors/warnings**.
+
+`node tests/verification-fin-browser.mjs` uses a single Chromium worker and pinned local KaTeX 0.16.11, actual slider min/max inputs, visible enabled button clicks and checkbox labels in both themes. The initial 24-group run passed 22; two failures were harness indices shifting as buttons hid. Stable element handles fixed the harness, and the focused six-group run passed. After further content changes, 4.11/5.5/5.10/5.11/5.12/5.15 were rerun in both themes (**12/12 passed**). Specific assertions cover infeasible margin configurations retaining equity 1.00 and already-reached upper barriers. Screenshots and JSON evidence are in `/tmp/atlas-fin-shots/` and `/tmp/atlas-fin-browser*.json`.

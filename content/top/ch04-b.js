@@ -216,15 +216,14 @@ export default {
       num: '4.11',
       kind: 'Theorem',
       name: 'Extreme value theorem',
-      statement: String.raw`If $X$ is compact and $f\colon X\to\R$ is continuous, then $f$ attains a maximum and a minimum: there are $p,q\in X$ with $f(q)\le f(x)\le f(p)$ for all $x\in X$. More generally a continuous real function on a compact space is bounded.`,
+      statement: String.raw`If $X$ is nonempty and compact and $f\colon X\to\R$ is continuous, then $f$ attains a maximum and a minimum: there are $p,q\in X$ with $f(q)\le f(x)\le f(p)$ for all $x\in X$. More generally a continuous real function on a compact space is bounded.`,
       idea: String.raw`The image $f(X)$ is compact (4.4), so a compact subset of $\R$: it is closed and bounded (Heine–Borel in $\R$, via 4.10 and 4.2). A nonempty closed bounded set of reals contains its supremum and its infimum, and those are the values $f(p)$ and $f(q)$. Without compactness the image can be a non-closed set like $[0,1)$ and the supremum is a value that is approached, not attained.`,
-      caption: String.raw`The function $f$ is shown as a heat map on a disc. Drag the probe, and see the maximum (red dot) and the minimum (blue dot) found by exhaustive search. Turn on “open disc”: the boundary circle is removed, the samples stay inside, and for the tilted plane $f=x+0.6y$ the best sample creeps toward the boundary point but, however fine the grid, remains below the supremum. Slide the grid density to watch the gap close without ever vanishing.`,
-      credit: String.raw`Bolzano and Weierstrass, nineteenth century (for continuous functions on closed intervals)`,
+      caption: String.raw`The function $f$ is shown as a heat map on a disc. Drag the probe, and see the maximum (red dot) and the minimum (blue dot) estimated by a finite polar-grid search. Turn on “open disc”: the boundary circle is removed, the samples stay inside, and for the tilted plane $f=x+0.6y$ the best sample creeps toward the boundary point but, however fine the grid, remains below the supremum. Slide the grid density to watch the gap close without ever vanishing.`,
+      credit: String.raw`General topology`,
       deps: ['top-4.4', 'top-4.10'],
       see: ['pma-4.16'],
       refs: ['Munkres §27'],
       tags: ['compactness', 'optimization'],
-      verify: true,
       viz(v) {
         const fs = v.select('function $f$', [{ value: 'wave', label: '$\\sin 2.5x+\\cos 2y+0.4xy$' }, { value: 'plane', label: '$x+0.6\\,y$' }], 'wave');
         const reg = v.select('region', [{ value: 'closed', label: 'closed disc' }, { value: 'open', label: 'open disc' }], 'closed');
@@ -260,7 +259,8 @@ export default {
           const { r, probe, closed, tb } = info;
           const base = `probe: $f=${v.fix(probe, 3)}$ · best sample: max $${v.fix(r.best[0], 4)}$ at $(${v.fix(r.best[1], 2)},${v.fix(r.best[2], 2)})$, min $${v.fix(r.low[0], 4)}$`;
           if (closed) return `${base}. The closed disc is compact: both extremes are attained (the search converges to them as $N$ grows).`;
-          return `${base}. Supremum over the closed disc $\\approx${v.fix(tb, 4)}$; on the open disc the best sample is **${v.fix(tb - r.best[0], 4)} below** it — the gap shrinks with $N$ but never closes, because the sup is attained only on the boundary circle that has been removed.`;
+          if (fs.value !== 'plane') return `${base}. The wave can attain its maximum inside the open disc; removing the boundary does not force non-attainment. The reference closed-disc maximum is a finite-grid estimate $\\approx${v.fix(tb, 4)}$.`;
+          return `${base}. The tilted plane has exact supremum $\\sqrt{1.36}=${v.fix(Math.sqrt(1.36), 4)}$, reached on the closed-disc boundary only. Every open-disc sample lies strictly below it; the displayed finite-grid estimate approaches it as $N$ grows.`;
         });
       },
     },
@@ -270,20 +270,19 @@ export default {
       kind: 'Lemma',
       name: 'Lebesgue number lemma',
       statement: String.raw`Let $(X,d)$ be a compact metric space and $\mathcal U$ an open cover of $X$. Then there is $\delta>0$ (a **Lebesgue number** of the cover) such that every subset of $X$ of diameter less than $\delta$ lies in some member of $\mathcal U$. In particular every open ball $B(x,\delta/2)$ lies in a single member of $\mathcal U$.`,
-      idea: String.raw`For $x\in X$ let $L(x)=\sup_{U\in\mathcal U}\operatorname{dist}(x,X\setminus U)$, the size of the largest ball around $x$ that fits in a member of the cover. It is positive (each $x$ is in some open $U$) and continuous (it is 1-Lipschitz in $x$), so on the compact $X$ it attains a positive minimum $\delta$ (4.11). This $\delta$ works for every point at once. On a non-compact space the infimum of $L$ can be $0$, and no uniform $\delta$ exists.`,
-      caption: String.raw`The cover consists of open discs: seven big ones for the compact disc, rings of ever smaller ones shrinking toward the centre for the punctured disc. The heat map is $L(x)$, the radius of the biggest ball at $x$ that fits inside one disc of the cover; its minimum is the Lebesgue number (marked). Drag the gold ball: when its radius is at most $L(x)$ it lies inside the disc it is shaded in. For the punctured disc the cover has infinitely many rings; the right panel shows $m(r)=\min_{|x|\ge r}L(x)$, which sinks to $0$ as $r\to0$. For the compact disc $m(r)$ stays positive all the way in.`,
-      credit: String.raw`Lebesgue, early 1900s`,
+      idea: String.raw`If $X=\varnothing$ or $X\in\mathcal U$, the conclusion is immediate. Otherwise, for $x\in X$ let $L(x)=\sup_{U\in\mathcal U}\min\{1,\operatorname{dist}(x,X\setminus U)\}$, a capped radius of balls that fit in cover members. It is positive (each $x$ is in some open $U$) and continuous (it is 1-Lipschitz in $x$), so on the compact $X$ it attains a positive minimum $\delta$ (4.11). This $\delta$ works for every point at once. On a non-compact space the infimum of $L$ can be $0$, and no uniform $\delta$ exists.`,
+      caption: String.raw`The cover consists of open discs: seven big ones for the compact disc, rings of ever smaller ones shrinking toward the centre for the punctured disc. The heat map is $L(x)$, the radius of the biggest ball at $x$ that fits inside one disc of the cover; the marked minimum is estimated on a finite radial/angular grid. The existence of a positive Lebesgue number follows from the proof; the sampled value is not a certified lower bound. Drag the gold ball: when its radius is at most $L(x)$ it lies inside the disc it is shaded in. For the punctured disc the cover has infinitely many rings; the right panel samples $m(r)=\min_{|x|\ge r}L(x)$, which sinks to $0$ as $r\to0$. For the compact disc $m(r)$ stays positive all the way in.`,
+      credit: String.raw`General topology`,
       deps: ['top-4.1', 'top-1.5'],
       refs: ['Munkres §27'],
       tags: ['compactness', 'metric spaces'],
-      verify: true,
       viz(v) {
         const sp = v.select('space', [{ value: 'c', label: 'closed disc (compact)' }, { value: 'p', label: 'punctured disc (not compact)' }], 'c');
         const J = v.slider('rings of the cover', 2, 9, 5, { int: true });
         const scale = v.slider('size of the 7 discs (compact cover)', 0.95, 1.4, 1, { step: 0.01 });
         const rho = v.slider('radius of the ball', 0.005, 0.5, 0.1, { step: 0.005 });
         const s = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 370, title: 'the cover and $L(x)$' });
-        const G = v.stage({ x: [0.002, 1], y: [0, 0.35], xlog: true, axes: 'box', gutter: true, height: 370, title: '$m(r)=\\min_{|x|\\ge r}L(x)$', xlabel: '$r$', ylabel: '$m$' });
+        const G = v.stage({ x: [0.002, 1], y: [0, 0.35], xlog: true, axes: 'box', gutter: true, height: 370, title: 'sampled $m(r)=\\min_{|x|\\ge r}L(x)$', xlabel: '$r$', ylabel: '$m$' });
         const hb = s.handle(0.55, 0.3, { color: 'gold', r: 7, constrain: (x, y) => { const r = Math.hypot(x, y); return r > 1 ? [x / r, y / r] : [x, y]; } });
         const build = (compact, j) => {
           const D = [];
@@ -326,7 +325,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { compact, lmin, Lx, fits, n } = info;
-          const tail = compact ? `The cover has ${n} discs. $\\delta=\\min L=${v.fix(lmin, 4)}>0$ (compact): every ball of radius $\\le\\delta$ fits inside a disc of the cover.` : `Over the part $|x|\\ge2^{-(J+1)}$ covered so far the minimum is ${v.fix(lmin, 4)}, and it halves with each new ring: the infimum over the punctured disc is **0**, so no Lebesgue number exists.`;
+          const tail = compact ? `The cover has ${n} discs. Sampled minimum $L\\approx${v.fix(lmin, 4)}$; this grid estimate is not a certified Lebesgue number. Compactness guarantees a positive one.` : `Over the part $|x|\\ge2^{-(J+1)}$ covered so far the sampled minimum is ${v.fix(lmin, 4)}. The infinite cover has discs shrinking toward the missing centre: the infimum over the punctured disc is **0**, so no Lebesgue number exists.`;
           return `Ball at the probe: $L(x)=${v.fix(Lx, 4)}$; radius $${v.fix(rho.value, 3)}$ **${fits ? 'fits inside one disc' : 'does not fit in any single disc'}**. ${tail}`;
         });
       },

@@ -1,0 +1,1558 @@
+{
+  "schemaVersion": 1,
+  "meaning": "Structural evidence only; runtime, full-source, screenshot and human checks have separate evidence.",
+  "writtenItems": 6771,
+  "plannedItems": 6890,
+  "visualizations": 6688,
+  "gates": {
+    "zeroStaticErrors": true,
+    "zeroUnknownWrittenDependencies": true,
+    "allNonDefinitionItemsHaveViz": true,
+    "allBridgeTargetsExist": true,
+    "crossFieldMinimum25": false
+  },
+  "crossFieldDefinition": "Distinct directed prerequisite edges whose source and target collection belong to different fields. Gate uses written sources and written targets; broader scopes and cross-collection counts are reported separately, without counting see-links.",
+  "staticErrors": [],
+  "staticWarnings": [],
+  "unknownDependencies": [],
+  "missingViz": [],
+  "crossField": [
+    {
+      "collection": "stat",
+      "field": "stats",
+      "writtenItems": 130,
+      "betweenFields": {
+        "writtenToWritten": 45,
+        "writtenToAll": 45,
+        "allToAll": 67
+      },
+      "betweenCollections": {
+        "writtenToWritten": 45,
+        "writtenToAll": 45,
+        "allToAll": 67
+      }
+    },
+    {
+      "collection": "ml",
+      "field": "stats",
+      "writtenItems": 25,
+      "betweenFields": {
+        "writtenToWritten": 21,
+        "writtenToAll": 21,
+        "allToAll": 26
+      },
+      "betweenCollections": {
+        "writtenToWritten": 21,
+        "writtenToAll": 21,
+        "allToAll": 37
+      }
+    },
+    {
+      "collection": "deep",
+      "field": "stats",
+      "writtenItems": 54,
+      "betweenFields": {
+        "writtenToWritten": 29,
+        "writtenToAll": 37,
+        "allToAll": 59
+      },
+      "betweenCollections": {
+        "writtenToWritten": 31,
+        "writtenToAll": 40,
+        "allToAll": 70
+      }
+    },
+    {
+      "collection": "causal",
+      "field": "stats",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 26
+      },
+      "betweenCollections": {
+        "writtenToWritten": 33,
+        "writtenToAll": 36,
+        "allToAll": 53
+      }
+    },
+    {
+      "collection": "algo",
+      "field": "cs",
+      "writtenItems": 197,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 27,
+        "allToAll": 32
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 29,
+        "allToAll": 38
+      }
+    },
+    {
+      "collection": "toc",
+      "field": "cs",
+      "writtenItems": 51,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 29,
+        "allToAll": 37
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 30,
+        "allToAll": 42
+      }
+    },
+    {
+      "collection": "cplx",
+      "field": "cs",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 28,
+        "writtenToAll": 30,
+        "allToAll": 37
+      },
+      "betweenCollections": {
+        "writtenToWritten": 32,
+        "writtenToAll": 75,
+        "allToAll": 123
+      }
+    },
+    {
+      "collection": "info",
+      "field": "cs",
+      "writtenItems": 57,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 28
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 29,
+        "allToAll": 34
+      }
+    },
+    {
+      "collection": "crypto",
+      "field": "cs",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 47
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 29,
+        "allToAll": 67
+      }
+    },
+    {
+      "collection": "dist",
+      "field": "cs",
+      "writtenItems": 47,
+      "betweenFields": {
+        "writtenToWritten": 17,
+        "writtenToAll": 18,
+        "allToAll": 22
+      },
+      "betweenCollections": {
+        "writtenToWritten": 19,
+        "writtenToAll": 20,
+        "allToAll": 29
+      }
+    },
+    {
+      "collection": "pl",
+      "field": "cs",
+      "writtenItems": 46,
+      "betweenFields": {
+        "writtenToWritten": 8,
+        "writtenToAll": 8,
+        "allToAll": 12
+      },
+      "betweenCollections": {
+        "writtenToWritten": 8,
+        "writtenToAll": 13,
+        "allToAll": 21
+      }
+    },
+    {
+      "collection": "cg",
+      "field": "cs",
+      "writtenItems": 38,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 28,
+        "allToAll": 44
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 33,
+        "allToAll": 51
+      }
+    },
+    {
+      "collection": "mech",
+      "field": "physics",
+      "writtenItems": 223,
+      "betweenFields": {
+        "writtenToWritten": 50,
+        "writtenToAll": 54,
+        "allToAll": 54
+      },
+      "betweenCollections": {
+        "writtenToWritten": 51,
+        "writtenToAll": 55,
+        "allToAll": 55
+      }
+    },
+    {
+      "collection": "em",
+      "field": "physics",
+      "writtenItems": 70,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 36,
+        "allToAll": 52
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 40,
+        "allToAll": 84
+      }
+    },
+    {
+      "collection": "waves",
+      "field": "physics",
+      "writtenItems": 54,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 33,
+        "allToAll": 40
+      },
+      "betweenCollections": {
+        "writtenToWritten": 34,
+        "writtenToAll": 53,
+        "allToAll": 66
+      }
+    },
+    {
+      "collection": "thermo",
+      "field": "physics",
+      "writtenItems": 112,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 27,
+        "allToAll": 38
+      },
+      "betweenCollections": {
+        "writtenToWritten": 39,
+        "writtenToAll": 47,
+        "allToAll": 85
+      }
+    },
+    {
+      "collection": "qm",
+      "field": "physics",
+      "writtenItems": 116,
+      "betweenFields": {
+        "writtenToWritten": 28,
+        "writtenToAll": 31,
+        "allToAll": 46
+      },
+      "betweenCollections": {
+        "writtenToWritten": 57,
+        "writtenToAll": 83,
+        "allToAll": 123
+      }
+    },
+    {
+      "collection": "cm",
+      "field": "physics",
+      "writtenItems": 52,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 35,
+        "allToAll": 35
+      },
+      "betweenCollections": {
+        "writtenToWritten": 36,
+        "writtenToAll": 74,
+        "allToAll": 91
+      }
+    },
+    {
+      "collection": "qinfo",
+      "field": "physics",
+      "writtenItems": 32,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 42
+      },
+      "betweenCollections": {
+        "writtenToWritten": 36,
+        "writtenToAll": 50,
+        "allToAll": 90
+      }
+    },
+    {
+      "collection": "rel",
+      "field": "physics",
+      "writtenItems": 57,
+      "betweenFields": {
+        "writtenToWritten": 14,
+        "writtenToAll": 15,
+        "allToAll": 37
+      },
+      "betweenCollections": {
+        "writtenToWritten": 23,
+        "writtenToAll": 32,
+        "allToAll": 83
+      }
+    },
+    {
+      "collection": "astro",
+      "field": "physics",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 16,
+        "writtenToAll": 18,
+        "allToAll": 18
+      },
+      "betweenCollections": {
+        "writtenToWritten": 45,
+        "writtenToAll": 57,
+        "allToAll": 102
+      }
+    },
+    {
+      "collection": "fluid",
+      "field": "physics",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 28,
+        "allToAll": 36
+      },
+      "betweenCollections": {
+        "writtenToWritten": 35,
+        "writtenToAll": 38,
+        "allToAll": 52
+      }
+    },
+    {
+      "collection": "pchem",
+      "field": "chem",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 26,
+        "allToAll": 51
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 26,
+        "allToAll": 60
+      }
+    },
+    {
+      "collection": "kin",
+      "field": "chem",
+      "writtenItems": 49,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 27,
+        "allToAll": 40
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 38,
+        "allToAll": 62
+      }
+    },
+    {
+      "collection": "qchem",
+      "field": "chem",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 39,
+        "allToAll": 55
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 39,
+        "allToAll": 55
+      }
+    },
+    {
+      "collection": "xtal",
+      "field": "chem",
+      "writtenItems": 34,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 28,
+        "allToAll": 44
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 29,
+        "allToAll": 48
+      }
+    },
+    {
+      "collection": "mat",
+      "field": "chem",
+      "writtenItems": 42,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 27,
+        "allToAll": 46
+      },
+      "betweenCollections": {
+        "writtenToWritten": 39,
+        "writtenToAll": 46,
+        "allToAll": 95
+      }
+    },
+    {
+      "collection": "geol",
+      "field": "earth",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 36,
+        "allToAll": 63
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 37,
+        "allToAll": 66
+      }
+    },
+    {
+      "collection": "geo",
+      "field": "earth",
+      "writtenItems": 34,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 30,
+        "allToAll": 46
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 32,
+        "allToAll": 48
+      }
+    },
+    {
+      "collection": "climate",
+      "field": "earth",
+      "writtenItems": 51,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 40,
+        "allToAll": 58
+      },
+      "betweenCollections": {
+        "writtenToWritten": 33,
+        "writtenToAll": 48,
+        "allToAll": 79
+      }
+    },
+    {
+      "collection": "geog",
+      "field": "earth",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 33,
+        "allToAll": 36
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 33,
+        "allToAll": 36
+      }
+    },
+    {
+      "collection": "popgen",
+      "field": "bio",
+      "writtenItems": 62,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 27,
+        "allToAll": 36
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 31,
+        "allToAll": 45
+      }
+    },
+    {
+      "collection": "mathbio",
+      "field": "bio",
+      "writtenItems": 71,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 42,
+        "allToAll": 76
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 42,
+        "allToAll": 76
+      }
+    },
+    {
+      "collection": "ecol",
+      "field": "bio",
+      "writtenItems": 49,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 30
+      },
+      "betweenCollections": {
+        "writtenToWritten": 38,
+        "writtenToAll": 41,
+        "allToAll": 65
+      }
+    },
+    {
+      "collection": "neuro",
+      "field": "bio",
+      "writtenItems": 36,
+      "betweenFields": {
+        "writtenToWritten": 19,
+        "writtenToAll": 23,
+        "allToAll": 35
+      },
+      "betweenCollections": {
+        "writtenToWritten": 20,
+        "writtenToAll": 26,
+        "allToAll": 42
+      }
+    },
+    {
+      "collection": "bioinf",
+      "field": "bio",
+      "writtenItems": 47,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 29,
+        "allToAll": 45
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 29,
+        "allToAll": 48
+      }
+    },
+    {
+      "collection": "sysbio",
+      "field": "bio",
+      "writtenItems": 37,
+      "betweenFields": {
+        "writtenToWritten": 11,
+        "writtenToAll": 11,
+        "allToAll": 15
+      },
+      "betweenCollections": {
+        "writtenToWritten": 14,
+        "writtenToAll": 21,
+        "allToAll": 45
+      }
+    },
+    {
+      "collection": "physio",
+      "field": "med",
+      "writtenItems": 55,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 35,
+        "allToAll": 53
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 35,
+        "allToAll": 53
+      }
+    },
+    {
+      "collection": "pharm",
+      "field": "med",
+      "writtenItems": 41,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 26,
+        "allToAll": 42
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 32,
+        "allToAll": 48
+      }
+    },
+    {
+      "collection": "epi",
+      "field": "med",
+      "writtenItems": 47,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 26,
+        "allToAll": 44
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 26,
+        "allToAll": 44
+      }
+    },
+    {
+      "collection": "imaging",
+      "field": "med",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 32,
+        "allToAll": 46
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 35,
+        "allToAll": 52
+      }
+    },
+    {
+      "collection": "sig",
+      "field": "eng",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 28,
+        "writtenToAll": 29,
+        "allToAll": 56
+      },
+      "betweenCollections": {
+        "writtenToWritten": 29,
+        "writtenToAll": 31,
+        "allToAll": 62
+      }
+    },
+    {
+      "collection": "ctrl",
+      "field": "eng",
+      "writtenItems": 50,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 34,
+        "allToAll": 49
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 52,
+        "allToAll": 74
+      }
+    },
+    {
+      "collection": "circ",
+      "field": "eng",
+      "writtenItems": 56,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 39,
+        "allToAll": 57
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 39,
+        "allToAll": 58
+      }
+    },
+    {
+      "collection": "energy",
+      "field": "eng",
+      "writtenItems": 45,
+      "betweenFields": {
+        "writtenToWritten": 28,
+        "writtenToAll": 34,
+        "allToAll": 52
+      },
+      "betweenCollections": {
+        "writtenToWritten": 30,
+        "writtenToAll": 37,
+        "allToAll": 71
+      }
+    },
+    {
+      "collection": "solid",
+      "field": "eng",
+      "writtenItems": 47,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 28,
+        "allToAll": 47
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 28,
+        "allToAll": 47
+      }
+    },
+    {
+      "collection": "robot",
+      "field": "eng",
+      "writtenItems": 30,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 40
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 25,
+        "allToAll": 47
+      }
+    },
+    {
+      "collection": "aero",
+      "field": "eng",
+      "writtenItems": 29,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 42,
+        "allToAll": 72
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 42,
+        "allToAll": 81
+      }
+    },
+    {
+      "collection": "micro",
+      "field": "econ",
+      "writtenItems": 154,
+      "betweenFields": {
+        "writtenToWritten": 39,
+        "writtenToAll": 41,
+        "allToAll": 44
+      },
+      "betweenCollections": {
+        "writtenToWritten": 41,
+        "writtenToAll": 43,
+        "allToAll": 46
+      }
+    },
+    {
+      "collection": "macro",
+      "field": "econ",
+      "writtenItems": 48,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 31,
+        "allToAll": 34
+      },
+      "betweenCollections": {
+        "writtenToWritten": 32,
+        "writtenToAll": 40,
+        "allToAll": 52
+      }
+    },
+    {
+      "collection": "fin",
+      "field": "econ",
+      "writtenItems": 68,
+      "betweenFields": {
+        "writtenToWritten": 33,
+        "writtenToAll": 40,
+        "allToAll": 51
+      },
+      "betweenCollections": {
+        "writtenToWritten": 38,
+        "writtenToAll": 47,
+        "allToAll": 60
+      }
+    },
+    {
+      "collection": "game",
+      "field": "econ",
+      "writtenItems": 45,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 31,
+        "allToAll": 43
+      },
+      "betweenCollections": {
+        "writtenToWritten": 28,
+        "writtenToAll": 34,
+        "allToAll": 54
+      }
+    },
+    {
+      "collection": "behav",
+      "field": "econ",
+      "writtenItems": 67,
+      "betweenFields": {
+        "writtenToWritten": 23,
+        "writtenToAll": 27,
+        "allToAll": 29
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 37,
+        "allToAll": 44
+      }
+    },
+    {
+      "collection": "psych",
+      "field": "social",
+      "writtenItems": 54,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 29,
+        "allToAll": 51
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 29,
+        "allToAll": 51
+      }
+    },
+    {
+      "collection": "soc",
+      "field": "social",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 25,
+        "writtenToAll": 30,
+        "allToAll": 53
+      },
+      "betweenCollections": {
+        "writtenToWritten": 25,
+        "writtenToAll": 30,
+        "allToAll": 54
+      }
+    },
+    {
+      "collection": "polsci",
+      "field": "social",
+      "writtenItems": 62,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 28,
+        "allToAll": 36
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 28,
+        "allToAll": 36
+      }
+    },
+    {
+      "collection": "demo",
+      "field": "social",
+      "writtenItems": 50,
+      "betweenFields": {
+        "writtenToWritten": 24,
+        "writtenToAll": 26,
+        "allToAll": 37
+      },
+      "betweenCollections": {
+        "writtenToWritten": 24,
+        "writtenToAll": 26,
+        "allToAll": 37
+      }
+    },
+    {
+      "collection": "music",
+      "field": "arts",
+      "writtenItems": 121,
+      "betweenFields": {
+        "writtenToWritten": 32,
+        "writtenToAll": 34,
+        "allToAll": 53
+      },
+      "betweenCollections": {
+        "writtenToWritten": 32,
+        "writtenToAll": 34,
+        "allToAll": 53
+      }
+    },
+    {
+      "collection": "art",
+      "field": "arts",
+      "writtenItems": 55,
+      "betweenFields": {
+        "writtenToWritten": 20,
+        "writtenToAll": 25,
+        "allToAll": 41
+      },
+      "betweenCollections": {
+        "writtenToWritten": 20,
+        "writtenToAll": 25,
+        "allToAll": 41
+      }
+    },
+    {
+      "collection": "arch",
+      "field": "arts",
+      "writtenItems": 40,
+      "betweenFields": {
+        "writtenToWritten": 24,
+        "writtenToAll": 26,
+        "allToAll": 41
+      },
+      "betweenCollections": {
+        "writtenToWritten": 24,
+        "writtenToAll": 26,
+        "allToAll": 45
+      }
+    },
+    {
+      "collection": "ling",
+      "field": "humanities",
+      "writtenItems": 52,
+      "betweenFields": {
+        "writtenToWritten": 20,
+        "writtenToAll": 22,
+        "allToAll": 35
+      },
+      "betweenCollections": {
+        "writtenToWritten": 20,
+        "writtenToAll": 22,
+        "allToAll": 36
+      }
+    },
+    {
+      "collection": "phil",
+      "field": "humanities",
+      "writtenItems": 34,
+      "betweenFields": {
+        "writtenToWritten": 27,
+        "writtenToAll": 30,
+        "allToAll": 50
+      },
+      "betweenCollections": {
+        "writtenToWritten": 27,
+        "writtenToAll": 30,
+        "allToAll": 50
+      }
+    },
+    {
+      "collection": "tech",
+      "field": "humanities",
+      "writtenItems": 53,
+      "betweenFields": {
+        "writtenToWritten": 33,
+        "writtenToAll": 44,
+        "allToAll": 89
+      },
+      "betweenCollections": {
+        "writtenToWritten": 33,
+        "writtenToAll": 46,
+        "allToAll": 93
+      }
+    },
+    {
+      "collection": "bighist",
+      "field": "humanities",
+      "writtenItems": 32,
+      "betweenFields": {
+        "writtenToWritten": 26,
+        "writtenToAll": 32,
+        "allToAll": 55
+      },
+      "betweenCollections": {
+        "writtenToWritten": 26,
+        "writtenToAll": 32,
+        "allToAll": 62
+      }
+    }
+  ],
+  "crossFieldShortfalls": [
+    "ml",
+    "dist",
+    "pl",
+    "rel",
+    "astro",
+    "neuro",
+    "sysbio",
+    "behav",
+    "demo",
+    "art",
+    "arch",
+    "ling"
+  ],
+  "bridges": [
+    {
+      "slug": "action",
+      "steps": [
+        {
+          "id": "mech-5.2",
+          "name": "Fermat’s principle and Snell’s law",
+          "written": true
+        },
+        {
+          "id": "mech-5.7",
+          "name": "Brachistochrone: the cycloid",
+          "written": true
+        },
+        {
+          "id": "mech-5.4",
+          "name": "Euler–Lagrange equation",
+          "written": true
+        },
+        {
+          "id": "mech-6.5",
+          "name": "Hamilton’s principle of stationary action",
+          "written": true
+        },
+        {
+          "id": "mech-7.3",
+          "name": "Noether’s theorem",
+          "written": true
+        },
+        {
+          "id": "mech-12.6",
+          "name": "Maupertuis’ principle and the Jacobi metric",
+          "written": true
+        },
+        {
+          "id": "dg-9.7",
+          "name": "Shortest paths are geodesics",
+          "written": false
+        },
+        {
+          "id": "rel-7.7",
+          "name": "Timelike geodesics extremize proper time",
+          "written": false
+        },
+        {
+          "id": "rel-8.6",
+          "name": "Einstein–Hilbert action",
+          "written": false
+        },
+        {
+          "id": "waves-5.2",
+          "name": "Fermat’s principle from stationary phase",
+          "written": false
+        },
+        {
+          "id": "qm-6.4",
+          "name": "Feynman path integral",
+          "written": true
+        }
+      ]
+    },
+    {
+      "slug": "contagion",
+      "steps": [
+        {
+          "id": "soc-5.8",
+          "name": "Branching processes and the epidemic threshold",
+          "written": false
+        },
+        {
+          "id": "mathbio-7.2",
+          "name": "Basic reproduction number R₀",
+          "written": false
+        },
+        {
+          "id": "mathbio-7.3",
+          "name": "Epidemic threshold theorem",
+          "written": false
+        },
+        {
+          "id": "mathbio-7.6",
+          "name": "Epidemic overshoot",
+          "written": false
+        },
+        {
+          "id": "stoch-10.11",
+          "name": "Stochastic SIR epidemic and the threshold R₀",
+          "written": false
+        },
+        {
+          "id": "mathbio-7.12",
+          "name": "Seasonal forcing and recurrent measles epidemics",
+          "written": false
+        },
+        {
+          "id": "soc-4.2",
+          "name": "The giant component appears at mean degree one",
+          "written": true
+        },
+        {
+          "id": "soc-5.9",
+          "name": "SIR epidemics on networks",
+          "written": false
+        },
+        {
+          "id": "soc-1.8",
+          "name": "Granovetter’s threshold model of collective behaviour",
+          "written": true
+        },
+        {
+          "id": "soc-1.9",
+          "name": "Fragile cascades: one changed threshold stops the riot",
+          "written": true
+        },
+        {
+          "id": "soc-5.3",
+          "name": "Simple versus complex contagion (Centola)",
+          "written": false
+        },
+        {
+          "id": "soc-5.4",
+          "name": "Information cascades",
+          "written": false
+        }
+      ]
+    },
+    {
+      "slug": "diffusion",
+      "steps": [
+        {
+          "id": "thermo-7.8",
+          "name": "Brownian motion",
+          "written": false
+        },
+        {
+          "id": "thermo-7.9",
+          "name": "Random walks and diffusion",
+          "written": false
+        },
+        {
+          "id": "thermo-7.10",
+          "name": "Einstein relation",
+          "written": false
+        },
+        {
+          "id": "thermo-7.6",
+          "name": "Fick’s law of diffusion",
+          "written": false
+        },
+        {
+          "id": "pde-1.4",
+          "name": "Diffusion and the heat equation",
+          "written": true
+        },
+        {
+          "id": "pde-3.4",
+          "name": "Solution of the heat equation on the line by convolution",
+          "written": true
+        },
+        {
+          "id": "stoch-13.2",
+          "name": "Donsker: random walks converge to Brownian motion",
+          "written": false
+        },
+        {
+          "id": "stoch-13.5",
+          "name": "Brownian paths are nowhere differentiable",
+          "written": false
+        },
+        {
+          "id": "stoch-13.16",
+          "name": "Brownian motion solves the Dirichlet problem",
+          "written": false
+        },
+        {
+          "id": "mathbio-8.4",
+          "name": "Diffusion time grows as length squared",
+          "written": false
+        },
+        {
+          "id": "pde-9.8",
+          "name": "Travelling waves and Fisher–KPP fronts",
+          "written": false
+        },
+        {
+          "id": "stoch-13.14",
+          "name": "Geometric Brownian motion",
+          "written": false
+        },
+        {
+          "id": "fin-9.3",
+          "name": "The Black–Scholes formula",
+          "written": false
+        },
+        {
+          "id": "deep-10.10",
+          "name": "Diffusion models",
+          "written": false
+        }
+      ]
+    },
+    {
+      "slug": "entropy",
+      "steps": [
+        {
+          "id": "thermo-2.1",
+          "name": "Second law: Kelvin–Planck and Clausius statements",
+          "written": true
+        },
+        {
+          "id": "thermo-2.9",
+          "name": "Entropy as a state function",
+          "written": true
+        },
+        {
+          "id": "thermo-5.6",
+          "name": "Boltzmann entropy",
+          "written": true
+        },
+        {
+          "id": "thermo-5.7",
+          "name": "The second law as overwhelming probability",
+          "written": true
+        },
+        {
+          "id": "thermo-6.6",
+          "name": "Gibbs entropy",
+          "written": true
+        },
+        {
+          "id": "info-1.2",
+          "name": "Shannon entropy",
+          "written": true
+        },
+        {
+          "id": "info-4.6",
+          "name": "Block coding approaches the entropy",
+          "written": true
+        },
+        {
+          "id": "thermo-5.16",
+          "name": "Maxwell’s demon",
+          "written": true
+        },
+        {
+          "id": "thermo-5.17",
+          "name": "Landauer’s principle",
+          "written": true
+        },
+        {
+          "id": "thermo-6.7",
+          "name": "Maximum entropy principle",
+          "written": true
+        },
+        {
+          "id": "info-2.1",
+          "name": "Relative entropy (Kullback–Leibler divergence)",
+          "written": true
+        },
+        {
+          "id": "info-3.14",
+          "name": "Second law: divergence to equilibrium decreases",
+          "written": true
+        },
+        {
+          "id": "deep-1.9",
+          "name": "Softmax and cross-entropy loss",
+          "written": true
+        },
+        {
+          "id": "qm-14.5",
+          "name": "Von Neumann and entanglement entropy",
+          "written": false
+        },
+        {
+          "id": "rel-10.16",
+          "name": "Bekenstein–Hawking entropy",
+          "written": false
+        }
+      ]
+    },
+    {
+      "slug": "fixed-points",
+      "steps": [
+        {
+          "id": "top-3.17",
+          "name": "Every self-map of an interval has a fixed point",
+          "written": true
+        },
+        {
+          "id": "pma-9.23",
+          "name": "Contraction principle (Banach fixed point theorem)",
+          "written": true
+        },
+        {
+          "id": "ode-2.4",
+          "name": "Picard–Lindelöf theorem",
+          "written": true
+        },
+        {
+          "id": "num-2.4",
+          "name": "Newton’s method",
+          "written": true
+        },
+        {
+          "id": "top-13.11",
+          "name": "Brouwer fixed point theorem in all dimensions",
+          "written": false
+        },
+        {
+          "id": "top-9.9",
+          "name": "Sperner’s lemma",
+          "written": false
+        },
+        {
+          "id": "game-2.3",
+          "name": "Nash’s existence theorem",
+          "written": true
+        },
+        {
+          "id": "micro-9.7",
+          "name": "Existence of exchange equilibrium",
+          "written": true
+        },
+        {
+          "id": "stoch-4.6",
+          "name": "Perron–Frobenius theorem",
+          "written": true
+        },
+        {
+          "id": "stoch-4.15",
+          "name": "PageRank",
+          "written": true
+        },
+        {
+          "id": "stoch-3.10",
+          "name": "Extinction probability is the least fixed point of the offspring PGF",
+          "written": true
+        },
+        {
+          "id": "logic-7.5",
+          "name": "Diagonal (fixed-point) lemma",
+          "written": false
+        },
+        {
+          "id": "toc-11.2",
+          "name": "Kleene’s recursion theorem",
+          "written": false
+        },
+        {
+          "id": "pl-2.9",
+          "name": "Fixed-point combinators and recursion",
+          "written": true
+        },
+        {
+          "id": "cg-11.3",
+          "name": "The rendering equation",
+          "written": false
+        }
+      ]
+    },
+    {
+      "slug": "fourier",
+      "steps": [
+        {
+          "id": "pma-8.10",
+          "name": "Orthonormal systems and Fourier coefficients",
+          "written": true
+        },
+        {
+          "id": "pma-8.11",
+          "name": "Partial Fourier sums are the best mean-square approximations",
+          "written": true
+        },
+        {
+          "id": "pma-8.16",
+          "name": "Parseval's theorem",
+          "written": true
+        },
+        {
+          "id": "rca-9.1",
+          "name": "Fourier transform of an L¹ function",
+          "written": true
+        },
+        {
+          "id": "rca-9.13",
+          "name": "The Plancherel theorem",
+          "written": true
+        },
+        {
+          "id": "mech-4.12",
+          "name": "Fourier analysis of periodic driving",
+          "written": true
+        },
+        {
+          "id": "music-2.6",
+          "name": "The harmonic series",
+          "written": true
+        },
+        {
+          "id": "music-4.2",
+          "name": "Fourier series of a periodic tone",
+          "written": true
+        },
+        {
+          "id": "music-4.4",
+          "name": "Parseval: a tone’s energy is the sum over harmonics",
+          "written": true
+        },
+        {
+          "id": "sig-7.3",
+          "name": "Nyquist–Shannon sampling theorem",
+          "written": false
+        },
+        {
+          "id": "algo-4.11",
+          "name": "Fast Fourier transform (Cooley–Tukey)",
+          "written": true
+        },
+        {
+          "id": "algo-4.15",
+          "name": "Integer multiplication via the FFT",
+          "written": true
+        }
+      ]
+    },
+    {
+      "slug": "spectral",
+      "steps": [
+        {
+          "id": "ladr-5.5",
+          "name": "Eigenvalue",
+          "written": true
+        },
+        {
+          "id": "ladr-7.12",
+          "name": "Eigenvalues of self-adjoint operators are real",
+          "written": true
+        },
+        {
+          "id": "ladr-7.29",
+          "name": "Real spectral theorem",
+          "written": true
+        },
+        {
+          "id": "ladr-7.96",
+          "name": "Ellipsoid with principal axes",
+          "written": true
+        },
+        {
+          "id": "ladr-7.70",
+          "name": "Singular value decomposition",
+          "written": true
+        },
+        {
+          "id": "fa-12.23",
+          "name": "The spectral theorem for normal operators",
+          "written": true
+        },
+        {
+          "id": "mech-10.8",
+          "name": "Principal axes of inertia",
+          "written": true
+        },
+        {
+          "id": "mech-11.4",
+          "name": "Normal modes: the generalized eigenvalue problem",
+          "written": true
+        },
+        {
+          "id": "music-2.3",
+          "name": "Standing waves and normal modes",
+          "written": true
+        }
+      ]
+    },
+    {
+      "slug": "symmetry",
+      "steps": [
+        {
+          "id": "art-9.1",
+          "name": "Isometries of the plane",
+          "written": false
+        },
+        {
+          "id": "art-9.3",
+          "name": "The symmetry group of a pattern",
+          "written": false
+        },
+        {
+          "id": "art-9.6",
+          "name": "The seven frieze groups",
+          "written": false
+        },
+        {
+          "id": "art-9.9",
+          "name": "The seventeen wallpaper groups",
+          "written": false
+        },
+        {
+          "id": "xtal-3.2",
+          "name": "The fourteen Bravais lattices",
+          "written": true
+        },
+        {
+          "id": "xtal-3.7",
+          "name": "The 230 space groups",
+          "written": true
+        },
+        {
+          "id": "comb-10.4",
+          "name": "Counting necklaces",
+          "written": false
+        },
+        {
+          "id": "music-8.1",
+          "name": "Pitch classes and ℤ/12",
+          "written": true
+        },
+        {
+          "id": "rep-1.1",
+          "name": "Linear representations",
+          "written": true
+        },
+        {
+          "id": "rep-3.5",
+          "name": "Orthogonality of irreducible characters",
+          "written": true
+        },
+        {
+          "id": "qchem-8.9",
+          "name": "Counting normal modes by symmetry",
+          "written": false
+        },
+        {
+          "id": "qchem-8.10",
+          "name": "IR and Raman activity selection rules",
+          "written": false
+        },
+        {
+          "id": "mech-7.3",
+          "name": "Noether’s theorem",
+          "written": true
+        },
+        {
+          "id": "mech-7.5",
+          "name": "Isotropy of space: conservation of angular momentum",
+          "written": true
+        },
+        {
+          "id": "qm-7.6",
+          "name": "Angular momentum generates rotations",
+          "written": true
+        },
+        {
+          "id": "rep-8.10",
+          "name": "Irreducibles of SO(3) and spherical harmonics",
+          "written": false
+        }
+      ]
+    }
+  ],
+  "invalidBridgeSteps": []
+}

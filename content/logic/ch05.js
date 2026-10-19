@@ -136,11 +136,10 @@ export default {
       idea: String.raw`Expand the language by constants $c_\alpha$ ($\alpha<\kappa$) and by a constant for each element of $A$, and add the elementary diagram of $\mathfrak{A}$ together with the sentences $c_\alpha\ne c_\beta$ for $\alpha\ne\beta$. Any finite subset mentions only finitely many of the new constants, and these can be interpreted in $\mathfrak{A}$ as distinct elements because $A$ is infinite. So the compactness theorem (logic-4.7) gives a model; it has at least $\kappa$ elements and contains a copy of $\mathfrak{A}$ elementarily. The downward theorem (logic-5.1) then cuts it down to exactly $\kappa$ elements while keeping $\mathfrak{A}$.`,
       caption: String.raw`The row on top holds the new constants $c_0,c_1,\dots$ (the pairwise-distinct requirement is the only thing added). Pick a batch of the first $b$ constants and a structure $\mathfrak{A}$ (finite of a chosen size, or infinite): the lines show an injective interpretation, and a red mark appears the moment the pigeonhole principle fails. With $\mathfrak{A}$ finite the batches stop being satisfiable once $b>|A|$; with $\mathfrak{A}$ infinite every batch works, which is exactly what compactness needs.`,
       deps: ['logic-4.7', 'logic-3.10', 'logic-5.1'],
-      refs: ['Enderton §2.6'],
+      refs: ['Enderton §2.6', 'Open Logic Project, §§22.7, 23.9, 32.8; Weiss–D’Mello, Fundamentals of Model Theory, chs.2–3'],
       tags: ['Löwenheim–Skolem', 'compactness'],
-      credit: 'Tarski, Mal’cev and Vaught, 1930s–1957',
+      credit: 'First-order logic',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/L%C3%B6wenheim%E2%80%93Skolem_theorem' },
-      verify: true,
       viz(v) {
         const kap = v.select('new constants κ', [{ value: '4', label: '4' }, { value: '8', label: '8' }, { value: 'w', label: '$\\aleph_0$' }, { value: 'w1', label: '$\\aleph_1$' }], 'w');
         const bS = v.slider('batch size $b$', 1, 8, 5, { int: true });
@@ -248,13 +247,11 @@ export default {
       kind: 'Definition',
       name: 'Categoricity in a cardinal',
       statement: String.raw`A theory $T$ is **$\kappa$-categorical** if it has a model of cardinality $\kappa$ and any two models of $T$ of cardinality $\kappa$ are isomorphic. By the Löwenheim–Skolem theorems (logic-5.1, logic-5.2) a theory in a countable language with an infinite model has models of every infinite size, so categoricity is a statement about whether size alone determines the structure.`,
-      idea: String.raw`A first-order theory cannot pin down a structure up to isomorphism (logic-5.2: it has models of all infinite sizes), but it can pin it down *among structures of a given size*. Typical proofs identify a complete invariant: the dimension of a vector space, the transcendence degree of a field, the number of classes and their sizes. Size $\kappa$ then fixes the invariant (large invariants dominate the cardinality) or leaves it free (at $\aleph_0$ the invariant can be any finite number or $\aleph_0$).`,
-      caption: String.raw`Each row is a theory, each column a size ($\aleph_1$ and $\aleph_2$ stand for the uncountable sizes). Green cells are categorical. **Click any cell** to see why the models are unique or to see two models of that size that are not isomorphic. The patterns to notice: some theories are categorical only at $\aleph_0$, some only above, some in every infinite size, some nowhere.`,
+      idea: String.raw`A first-order theory with an infinite model cannot pin down that structure up to isomorphism (logic-5.2: it has models of all infinite sizes), but it can pin it down *among structures of a given size*. Typical proofs identify a complete invariant: the dimension of a vector space, the transcendence degree of a field, the number of classes and their sizes. Size $\kappa$ then fixes the invariant (large invariants dominate the cardinality) or leaves it free (at $\aleph_0$ the invariant can be any finite number or $\aleph_0$).`,
+      caption: String.raw`Each row is a theory, each column a size ($\aleph_1$ and $\aleph_2$ stand for the uncountable sizes). Green cells are categorical. **Click a cell** to read an invariant or a non-isomorphism argument. For real closed fields, the uncountable cells use fields of the selected size with cofinalities $\omega$ and $\omega_1$, so they cannot be isomorphic. A $\ge2$ entry is a lower bound, not an exact model count. The patterns to notice: some theories are categorical only at $\aleph_0$, some only above, some in every infinite size, some nowhere.`,
       deps: ['logic-5.2', 'logic-3.7', 'logic-3.13'],
-      refs: ['Enderton §2.6'],
+      refs: ['Weiss–D’Mello, Fundamentals of Model Theory, Definition24 pp20–21, Lemma7 pp21–22, Lemmas12–13 pp41–43; explicit DLO, equivalence, random-graph and cardinal-uniform real-closed-field constructions in verification report'],
       tags: ['categoricity', 'cardinality'],
-      credit: 'Veblen, 1904 (the term “categorical”)',
-      verify: true,
       viz(v) {
         const s = v.stage({ x: [0, 100], y: [0, 100], axes: false, full: true, height: 390 });
         let sel = { r: 1, c: 1 };
@@ -277,7 +274,7 @@ export default {
               s.text(txt, q.x, y, { size: 13, baseline: 'middle', weight: 700, color: cat ? 'green' : 'red', align: 'center' });
             });
           });
-          s.text('click a cell · ✓ = categorical · otherwise the number of non-isomorphic models of that size', 3, 1.5, { size: 10.5, color: 'muted', align: 'left' });
+          s.text('click a cell · ✓ = categorical · otherwise a count or lower bound for isomorphism types', 3, 1.5, { size: 10.5, color: 'muted', align: 'left' });
         });
         v.readout(() => {
           const T = THEORIES[sel.r], q = COLS[sel.c], cat = q.unc ? T.cu : T.c0;

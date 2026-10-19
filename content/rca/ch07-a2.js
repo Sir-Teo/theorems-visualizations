@@ -309,7 +309,7 @@ and the intervals $[x,x+h]$ shrink to $x$ nicely (with $\alpha=\tfrac12$); the s
       num: '7.12',
       kind: 'Definition',
       name: 'Metric density of a measurable set',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 7.12, p. 141'],
       statement: String.raw`Let $E\subset\R^k$ be Lebesgue measurable. The **metric density** of $E$ at a point $x\in\R^k$ is
 $$\lim_{r\to0}\frac{m(E\cap B(x,r))}{m(B(x,r))},$$
 whenever this limit exists. Applying 7.8 (or 7.10) to $f=\chi_E$ shows that the metric density of $E$ equals $1$ at almost every point of $E$ and $0$ at almost every point of the complement of $E$. In particular, for no $\eps>0$ is there a measurable $E\subset\R$ with $\eps<m(E\cap I)/m(I)<1-\eps$ for every segment $I$.`,
@@ -355,18 +355,16 @@ whenever this limit exists. Applying 7.8 (or 7.10) to $f=\chi_E$ shows that the 
         v.readout(() => `$r=${v.fmt(st.r, 3)}$: $\\;m(E\\cap B(x,r))/m(B(x,r))=${v.fix(st.d, 4)}$; at $r=10^{-4}$ it is $${v.fix(st.lim, 4)}$` + (st.vi >= 0 ? ' (a vertex of $E$).' : Math.abs(st.lim - Math.round(st.lim)) < 1e-3 ? (Math.round(st.lim) === 1 ? ' — $x$ is a density point of $E$.' : ' — $E$ has density $0$ at $x$.') : ' — $x$ lies on the boundary of $E$.'));
       },
     },
-    // ------------------------------------------------------------------ 7.13
+    // ------------------------------------------------------------------ 7.1 (restored source number)
     {
-      num: '7.13',
+      num: '7.1',
       kind: 'Theorem',
       name: 'Derivative of a distribution function via segments',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 7.1, pp. 135–136'],
       statement: String.raw`Let $\mu$ be a complex Borel measure on $\R$ and $F(x)=\mu((-\infty,x])$. For $x\in\R$ and $A\in\C$ the following are equivalent:
 (a) $F$ is differentiable at $x$ and $F'(x)=A$;
 (b) for every $\eps>0$ there is $\delta>0$ such that $\bigl|\mu(I)/m(I)-A\bigr|<\eps$ for every open segment $I$ that contains $x$ and has length $m(I)<\delta$.`,
-      idea: String.raw`For $I=(x-s,x+t)$ with $s,t>0$ one has, as long as $\mu$ has no atom at the endpoints,
-$$\frac{\mu(I)}{m(I)}=\frac{s}{s+t}\cdot\frac{F(x)-F(x-s)}{s}+\frac{t}{s+t}\cdot\frac{F(x+t)-F(x)}{t},$$
-a convex combination of a left and a right difference quotient, so (a) gives (b). Conversely, letting one endpoint approach $x$ in (b) recovers each one-sided quotient (using continuity of $\mu$ on decreasing sets, 1.19), and an atom at $x$ would make $\mu(I)/m(I)$ unbounded. The *symmetric* quotients $s=t$ alone are not enough: they define $D\mu$, which may exist where $F'$ does not.`,
+      idea: String.raw`For $a<x<b$, $\mu((a,b))=F(b-)-F(a)$. If $F'(x)=A$, then $F$ is continuous at $x$ and both endpoint increments equal $A$ times their distances to $x$, with errors $o(b-x)$ and $o(x-a)$. The estimate for $F(b-)$ follows by taking a left limit in the derivative estimate. Dividing by $b-a$ proves (b), including intervals with atoms at their endpoints. Conversely, (b) excludes an atom at $x$ (otherwise arbitrarily short intervals have unbounded quotients); let one endpoint tend to $x$ to recover each one-sided difference quotient, using continuity of the measure on monotone sets. Symmetric quotients alone are insufficient: they can converge where $F'$ does not.`,
       caption: String.raw`$\mu=f\,dm+c\,\delta_q$ where $f$ has a jump at $a$. Drag $x$ along the graph of $F$ (it snaps to $a$ and $q$) and shrink $\delta$. The square shows every segment $I=(x-s,x+t)$ with $0<s,t<\delta$, coloured by $\mu(I)/m(I)-A$: green where it is within $\eps$ of $A$, blue below, red above. At an ordinary point the whole square turns green as $\delta\to0$. At $a$ the diagonal $s=t$ stays green (the symmetric derivative exists) but the corners never do — $F$ has a corner. At $q$ everything blows up.`,
       deps: ['rca-1.19', 'rca-7.2'],
       tags: ['distribution function', 'derivative of a measure'],

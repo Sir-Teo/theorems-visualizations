@@ -29,7 +29,7 @@ export default {
 The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a monoclinic crystal may have $\beta=90^\circ$ by accident without becoming orthorhombic. The *lattice* of a crystal has its own, possibly higher, symmetry (its holohedry); there are seven lattice systems, which differ from the crystal systems only in that the trigonal and hexagonal crystal systems share the hexagonal lattice, and a rhombohedral lattice system carries the trigonal crystals with a rhombohedral lattice.`,
       idea: String.raw`A symmetry operation maps the lattice onto itself, so in the basis $\mathbf a_1,\mathbf a_2,\mathbf a_3$ it is an integer matrix $M$ with $M^{\mathsf T}GM=G$, where $G_{ij}=\mathbf a_i\cdot\mathbf a_j$ is the Gram matrix of the cell. Demanding a 2-fold axis along $\mathbf b$ puts $\mathbf b\cdot\mathbf a=\mathbf b\cdot\mathbf c=0$ (this is the crystallographic restriction theorem 2.2 in disguise: only 2-, 3-, 4- and 6-fold axes keep $M$ integral), and similarly for the other systems. Run backwards, counting the integer matrices with $M^{\mathsf T}GM=G$ for a given cell returns the order of the lattice's point group, which names its system: 2, 4, 8, 16, 12, 24, 48.`,
       caption: String.raw`Choose a starting point or drag the six cell parameters. With *snap* on, nearly special values (equal edges, $90^\circ$, $120^\circ$, equal angles) are made exact. The cell is drawn with the rotation axes that the **lattice** really has, found by an exhaustive search for integer matrices $M$ with $M^{\mathsf T}GM=G$ (2-fold orange, 3-fold green, 4-fold purple, 6-fold pink). The table lights the system with that symmetry order. Try $a=b$ with an oblique $\gamma$: the cell looks special, yet the search reveals an orthorhombic lattice in disguise (a centred one), because the system is a statement about symmetry.`,
-      deps: ['xtal-1.2', 'xtal-2.2'],
+      deps: ['xtal-1.2', 'xtal-2.2', 'ladr-9.7'],
       refs: ['Hammond ch. 3'],
       tags: ['crystal systems', 'cell metric', 'symmetry'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Crystal_system' },
@@ -206,7 +206,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
       statement: String.raw`A **primitive cell** contains exactly one lattice point and has the smallest possible volume, $V_P$; a **conventional cell** is chosen to show the symmetry of the lattice (right angles, equal edges, a hexagonal prism), even if this requires extra lattice points at the face or body centres, so that it holds $k=2,3$ or $4$ points and has volume $kV_P$. For the cubic lattices: $P$ has $k=1$; $I$ has $k=2$ and a primitive rhombohedral cell with $a_P=\tfrac{\sqrt3}{2}a$ and $\alpha_P\approx109.47^\circ$; $F$ has $k=4$ and a primitive rhombohedral cell with $a_P=a/\sqrt2$ and $\alpha_P=60^\circ$. A primitive cell is far from unique (any basis related to another by an integer matrix of determinant $\pm1$ will do) but its volume is not: it is the volume per lattice point. Conventional cells are used in tables and descriptions of structures, primitive cells in band-structure calculations.`,
       idea: String.raw`The lattice is the same set of points whichever cell is drawn. Changing from basis $\mathbf a_i$ to $\mathbf a'_i=\sum_jM_{ij}\mathbf a_j$ multiplies the cell volume by $|\det M|$, so a cell with a smaller volume that still tiles space must have $\det M=\pm1$ relative to a primitive cell, and any larger cell has $|\det M|=k$ points. In the conventional cube of fcc, the face centres are lattice points: $k=4$ ($\tfrac18\cdot8+\tfrac12\cdot6$). The three vectors $\tfrac a2(0,1,1)$, $\tfrac a2(1,0,1)$, $\tfrac a2(1,1,0)$ from a corner to the three neighbouring face centres generate every point and have $60^\circ$ between them; the cell they span looks only rhombohedral (order 12 of its own shape), although the lattice has the full cubic symmetry (order 48).`,
       caption: String.raw`Pick a lattice ($F$, $I$, or a $C$-centred orthorhombic one) and one of three cells: the conventional cell, the standard primitive cell, or a skewed primitive cell that is just as good as a tiling. The lattice points that fall inside the (half-open) cell are counted and shown in gold; the volume is the triple product of the edge vectors. The last line compares the symmetry of the **cell as a shape** (signed permutations of its edges that preserve all lengths and angles) with the symmetry of the **lattice** (integer matrices preserving the metric): the primitive cell of fcc hides 36 of the 48 operations.`,
-      deps: ['xtal-3.2'],
+      deps: ['xtal-3.2', 'ladr-9.49'],
       refs: ['Hammond ch. 3'],
       tags: ['primitive cell', 'conventional cell', 'centring'],
       viz(v) {
@@ -278,7 +278,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
       statement: String.raw`A **crystallographic point group** is a finite group of orthogonal $3\times3$ matrices (rotations, reflections, the inversion and their products) that maps some lattice onto itself. There are exactly **32** of them up to a change of axes: 2 triclinic, 3 monoclinic, 3 orthorhombic, 7 tetragonal, 5 trigonal, 7 hexagonal and 5 cubic. All rotation axes are 1-, 2-, 3-, 4- or 6-fold (by the crystallographic restriction), and every crystallographic point group is a subgroup of the point group of some lattice, i.e. of one of the seven holohedries; since each of these is contained in the cubic group $m\bar3m$ (order 48) or the hexagonal group $6/mmm$ (order 24), the 32 groups are found among the subgroups of those two. Eleven of the 32 contain the inversion (the centrosymmetric or Laue-type groups), eleven contain only rotations (the chiral groups).`,
       idea: String.raw`The restriction theorem (2.2) leaves rotations of order 1, 2, 3, 4, 6. A point group is generated by a few such rotations, mirrors and the inversion, and the possible combinations are limited because two rotation axes generate further ones (the product of two 2-fold rotations about axes at angle $\theta$ is a rotation by $2\theta$), so only the polyhedral and dihedral patterns survive. Instead of arguing case by case one can simply list all subgroups of the two big groups $m\bar3m$ and $6/mmm$ and sort them by their type: the program does exactly this and finds 32 types. Gadolin (1860s), using the stereographic projection, and, earlier but largely unnoticed, Hessel (1830) derived the list geometrically.`,
       caption: String.raw`Click a group on the board (rows are the crystal systems): the **stereogram** shows the great circles of its mirror planes, the symbols of its rotation axes (lens $=2$, triangle $=3$, square $=4$, hexagon $=6$; hollow for rotoinversion axes) and the orbit of a general pole, which you can drag: dots are poles on the upper hemisphere, circles on the lower one, and the number of images equals the order of the group. *Search all subgroups* lists every subgroup of the cubic group $m\bar3m$ and the hexagonal group $6/mmm$ and counts the different types. Switch on *forbidden axis* to try a rotation through $360^\circ/n$ with $n=5,7,8,\dots$: the pattern looks fine on the sphere but the trace $1+2\cos(2\pi/n)$ is not an integer.`,
-      deps: ['xtal-3.1', 'qchem-8.2'],
+      deps: ['xtal-3.1', 'qchem-8.2', 'alg-3.23a'],
       refs: ['Hammond ch. 4', 'Giacovazzo ch. 1'],
       credit: 'J. F. C. Hessel, 1830 (largely unnoticed); A. V. Gadolin, 1860s (independently, by stereographic projection)',
       tags: ['point groups', 'stereogram', 'symmetry'],
@@ -401,7 +401,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
       statement: String.raw`The **Hermann–Mauguin (international) symbol** of a point group lists symmetry elements along up to three prescribed directions of the crystal system, in a fixed order: for each direction, the highest-order rotation axis $n$ (or rotoinversion axis $\bar n$) along it and, if present, the mirror plane perpendicular to it, written $n/m$ (or just $m$ when no axis is present). The directions are: orthorhombic $\mathbf a,\mathbf b,\mathbf c$; tetragonal $\mathbf c$, $\langle100\rangle$, $\langle110\rangle$; trigonal $\mathbf c$, $\langle100\rangle$; hexagonal $\mathbf c$, $\langle100\rangle$, $\langle210\rangle$; cubic $\langle100\rangle$, $\langle111\rangle$, $\langle110\rangle$; monoclinic: the unique axis; triclinic: none. In the short symbol, $2/m$ is shortened to $m$ when other positions follow, and trailing positions without symmetry are dropped. Example: $4/m\;2/m\;2/m$ is written $4/mmm$, and $4/m\;\bar3\;2/m$ is written $m\bar3m$. The older **Schoenflies** symbols ($C_{4h}$, $D_{4h}$, $O_h$, …) name the same groups by their structure instead of their directions.`,
       idea: String.raw`The notation is a recipe for reading a group off its elements, and the recipe can be run mechanically: for each prescribed direction find the highest proper rotation about it and the improper operations that reverse it (a mirror perpendicular to the direction is $-C_2$, a rotoinversion $\bar n$ is $-C_n$). Because the symmetry elements of a group in one crystal system lie along very few distinct directions, three positions are enough, and the mirror–axis pairing $n/m$ is what makes the symbol short. Hermann (1928) and Mauguin (1931) introduced the symbol, replacing the Schoenflies notation (1891), which describes the group but not the orientation of its elements relative to the lattice; it became the standard of the International Tables in 1935.`,
       caption: String.raw`Click any of the 32 groups (or type a symbol, such as *4/mmm* or *-43m*). The 3D model shows the group's symmetry elements along the three symbol positions in three colours — axes as lines, mirrors as discs perpendicular to the direction — and the symbol below is **derived from the group's matrices**, one position at a time, with the family of directions each position stands for. Use *highlight* to look at one position only; the readout shows the derivation and checks it against the symbol of the group.`,
-      deps: ['xtal-3.4'],
+      deps: ['xtal-3.4', 'alg-4.4a'],
       refs: ['Hammond ch. 4'],
       credit: 'C. Hermann, 1928; C.-V. Mauguin, 1931 (adopted for the International Tables, 1935); A. Schoenflies, 1891',
       tags: ['Hermann–Mauguin', 'point groups', 'notation'],
@@ -532,6 +532,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
           const gl = mode.value === 'glide';
           sIdx.el.hidden = gl; gSel.el.hidden = !gl; hid(B, gl); hid(Cp, gl);
           if (!gl) {
+            A.setView([-2, 2], [-1.9, 1.9]);
             const [n, m] = SCREWS[Math.round(sIdx.value)], K = kS.value, pn = SCREWS.find(([a, b]) => a === n && b === (n - m) % n) ? [n, n - m] : [n, m];
             const partner = m === n / 2 ? [n, m] : pn;
             scA.begin(); drawScrew(scA, n, m, K, 'accent'); scA.flush();
@@ -552,13 +553,21 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
             const L0 = imgsScrew(n, m, n)[n], Lrt = [L0[0] - p0[0], L0[1] - p0[1], L0[2]];
             info = { n, m, partner, tr: Lrt, same: set(mirrored) === set(S2), glide: false };
           } else {
-            const g = gSel.value, t = GV[g], K = Math.min(kS.value, 6);
+            const g = gSel.value, t = GV[g], K = kS.value;
             // plane y = 0; atom at (0.15, 0.3, 0.1); operation (x, y, z) -> (x + t_x, -y, z + t_z); the plane has normal y
             const q0 = [0.15, 0.3, 0.1], pts = [q0];
             for (let k = 0; k < K; k++) { const p = pts[k]; pts.push([p[0] + t[0], -p[1], p[2] + t[2]]); }
             const w = (p) => [1.2 * (p[0] - 0.5), 1.2 * p[1] * 1.8, 1.2 * (p[2] - 0.5)];
             scA.begin();
-            const pl = [[-0.55, 0, -0.1], [2.1, 0, -0.1], [2.1, 0, 1.1], [-0.55, 0, 1.1]].map(w);
+            const plane = [[-0.55, 0, -0.1], [2.1, 0, -0.1], [2.1, 0, 1.1], [-0.55, 0, 1.1]], pl = plane.map(w);
+            // Fit the actual orbit and reference geometry in the current rotated
+            // view. Translation accumulates for every requested application.
+            const cells = [0, 1, 2].flatMap((x) => [-0.5, 0.5].flatMap((y) => [0, 1].map((z) => [x, y, z])));
+            const projected = [...pts, ...plane, ...cells].map((p) => scA.P(w(p)));
+            const xs = projected.map((p) => p[0]), ys = projected.map((p) => p[1]);
+            const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+            const px = 0.12 * (x1 - x0) + 0.12, py = 0.12 * (y1 - y0) + 0.12;
+            A.setView([x0 - px, x1 + px], [y0 - py, y1 + py]);
             scA.poly(pl, { fill: 'accent', fillAlpha: 0.1, color: 'accent', width: 1.4 });
             for (const x0 of [0, 1]) drawCell(scA, [[1.2, 0, 0], [0, 1.2 * 1.8, 0], [0, 0, 1.2]], [1.2 * (x0 - 0.5), -0.5 * 1.2 * 1.8, -0.6], { color: 'faint', width: 1, alpha: 0.8 });
             pts.forEach((p, k) => {
@@ -578,7 +587,7 @@ The conditions on $a,b,c,\alpha,\beta,\gamma$ are necessary, not sufficient: a m
             return `**${nm(n, m)}**: rotation by $360^\\circ/${n}$ with translation $\\tfrac{${m}}{${n}}\\mathbf c$. After $n=${n}$ applications the atom has moved by $(${v.fix(tr[0], 2)},${v.fix(tr[1], 2)},${v.fix(tr[2], 2)})$ = $${m}\\mathbf c$, a lattice translation ✓. Handedness from $m/n=${v.fix(r, 3)}$: ${hand}.\nMirror image of the $${n}$ points of ${nm(n, m)} (in one cell) equals the point set of ${nm(partner[0], partner[1])}: ${same ? 'yes ✓' : 'no ✗'}.`;
           }
           const { g, t, twice, lat, K } = info;
-          return `**${g === 'm' ? 'mirror' : g + '-glide'}**: reflection in the plane $y=0$ followed by the translation $(${v.fix(t[0], 2)},0,${v.fix(t[2], 2)})$ in the plane. After ${K} application${K === 1 ? '' : 's'} the atom is at height $y=\\pm0.3$ again alternately, having slid ${v.fix(K * Math.hypot(t[0], t[2]), 2)} cell units. Twice the operation is the translation $(${v.fix(twice[0], 2)},0,${v.fix(twice[2], 2)})$: ${lat ? 'a lattice translation ✓ (primitive lattice allowed)' : 'not a lattice translation of a primitive lattice ✗ — it exists only if $(\\tfrac12,0,\\tfrac12)$ is a centring translation (I or F lattices), as for the diamond glide'}.`;
+          return `**${g === 'm' ? 'mirror' : g + '-glide'}**: reflection in the plane $y=0$ followed by the translation $(${v.fix(t[0], 2)},0,${v.fix(t[2], 2)})$ in the plane. After ${K} application${K === 1 ? '' : 's'} the atom is at height $y=${v.fix(K % 2 ? -0.3 : 0.3, 2)}$ (alternating between $\\pm0.3$), having slid ${v.fix(K * Math.hypot(t[0], t[2]), 2)} cell units. Twice the operation is the translation $(${v.fix(twice[0], 2)},0,${v.fix(twice[2], 2)})$: ${lat ? 'a lattice translation ✓ (primitive lattice allowed)' : 'not a lattice translation of a primitive lattice ✗ — it exists only if $(\\tfrac12,0,\\tfrac12)$ is a centring translation (I or F lattices), as for the diamond glide'}.`;
         });
       },
     },

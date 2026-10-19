@@ -1,0 +1,447 @@
+static check: 585 item(s)
+  0 error(s), 0 warning(s)
+resuming: 143 unchanged passing items; changed collections and failures will run again
+✓ logic-5.9    Tarski: real closed fields eliminate quantifiers
+✓ logic-5.10   Non-standard models of arithmetic
+✓ logic-5.11   Ultraproducts and Łoś’s theorem
+✓ logic-5.8    Quantifier elimination for the successor function
+✓ logic-5.12   Hyperreals and infinitesimals
+✓ logic-5.14   Morley’s categoricity theorem
+✓ logic-5.13   Transfer principle and infinitesimal calculus
+✓ logic-5.1    Downward Löwenheim–Skolem theorem
+✓ logic-5.3    Skolem’s paradox
+✓ logic-5.4    Categoricity in a cardinal
+✓ logic-5.5    Cantor’s back-and-forth theorem
+✓ logic-5.6    Łoś–Vaught test
+✓ logic-5.7    Quantifier elimination
+✓ opt-1.6      Least squares as an optimization problem
+✓ opt-1.7      Linear programming
+✓ opt-1.8      Nonconvex landscapes trap local search
+✓ opt-1.9      Lagrange multipliers for equality constraints
+✓ opt-1.10     Ill-conditioned Hessians and narrow valleys
+✓ logic-5.2    Upward Löwenheim–Skolem theorem
+✓ opt-1.1      Optimization problems: objective, constraints, optimal value
+✓ opt-1.3      Local and global minimizers
+✓ opt-1.4      First-order necessary condition: ∇f = 0
+✓ opt-1.5      Second-order optimality conditions
+✓ opt-2.8      Supporting hyperplane theorem
+✓ opt-2.9      Dual cones
+✓ opt-2.10     Carathéodory’s theorem
+✓ opt-2.11     Projection onto a closed convex set
+✓ opt-2.12     Linear functionals are maximized at extreme points
+✓ opt-2.13     Helly’s theorem
+✓ opt-2.1      Affine sets, convex sets and convex hulls
+✓ opt-1.2      Existence of minimizers: compactness and coercivity
+✓ opt-2.2      Cones and convex cones
+✓ opt-2.4      The positive semidefinite cone
+✓ opt-2.5      Operations that preserve convexity
+✓ opt-2.6      Proper cones and generalized inequalities
+✓ opt-2.7      Separating hyperplane theorem
+✓ opt-3.8      Fenchel’s inequality and the biconjugate
+✓ opt-3.9      Quasiconvex functions
+✓ opt-3.10     Log-concave functions
+✓ opt-2.3      Halfspaces, balls, ellipsoids and polyhedra
+✓ opt-3.11     Local minima of convex functions are global
+✓ opt-3.13     Subgradients and the subdifferential
+✓ opt-3.1      Convex functions and epigraphs
+✓ opt-3.2      First-order condition: tangents underestimate
+✓ opt-3.12     Strong convexity and Lipschitz gradients
+✓ opt-3.3      Second-order condition: positive semidefinite Hessian
+✓ opt-3.5      Sublevel sets of convex functions are convex
+✓ opt-3.6      Operations that preserve convex functions
+✓ opt-3.7      The conjugate function
+✓ opt-4.8      Markowitz portfolio optimization
+✓ opt-4.9      Second-order cone programs
+✓ opt-4.10     Robust linear programming
+✓ opt-4.11     Geometric programs
+✓ opt-3.4      Jensen’s inequality
+✓ opt-4.12     Semidefinite programs
+✓ opt-4.14     Disciplined convex programming and modelling languages
+✓ opt-4.1      Convex optimization problems in standard form
+✓ opt-4.2      Optimality condition for convex problems
+✓ opt-4.13     Pareto optimality and scalarization
+✓ opt-4.3      Equivalent reformulations: epigraph form and slack variables
+✓ opt-4.5      The diet problem
+✓ opt-4.6      Chebyshev centre of a polyhedron
+✓ opt-4.7      Quadratic programs
+✓ causal-1.7   Exchangeability
+✓ causal-1.8   Positivity
+✓ causal-1.9   Identification by exchangeability, positivity, consistency
+✓ causal-1.10  Effect modification
+✓ causal-1.11  Noncollapsibility of the odds ratio
+✓ causal-1.12  Estimating causal effects of treatments
+✓ causal-1.1   Potential outcomes
+✓ causal-1.2   The fundamental problem of causal inference
+✓ causal-1.3   Average causal effect (ATE and ATT)
+✓ causal-1.4   Effect measures: risk difference, ratio, odds ratio
+✓ causal-1.5   Consistency and no interference (SUTVA)
+✓ causal-1.6   Association versus causation
+✓ causal-2.7   Inverse probability weighting
+✓ causal-2.8   Standardization and IP weighting agree
+✓ causal-2.9   Regression adjustment in randomized experiments
+✓ causal-2.10  Noncompliance: intention-to-treat and per-protocol
+✓ causal-2.11  Probability theory applied to agricultural experiments
+✓ causal-2.12  The design of experiments
+✓ causal-2.1   Randomization
+✓ causal-2.2   Difference in means is unbiased under randomization
+✓ causal-2.3   Neyman’s conservative variance estimator
+✓ causal-2.4   Fisher’s randomization test
+✓ causal-2.5   Conditional randomization and blocking
+✓ causal-2.6   Standardization
+✓ causal-3.7   Faithfulness (stability)
+✓ causal-3.8   Markov equivalence (Verma–Pearl)
+✓ opt-4.4      Linear programs
+✓ causal-3.9   Explaining away
+✓ causal-3.11  Structural classification of bias
+✓ causal-3.10  Berkson’s paradox
+✓ causal-3.1   Causal directed acyclic graph
+✓ causal-3.3   Structural causal model
+✓ causal-3.4   Chains, forks and colliders
+✓ causal-3.5   d-separation
+✓ causal-3.6   d-separation implies conditional independence
+✓ causal-4.8   Front-door criterion
+✓ causal-3.2   Markov factorization of a causal DAG
+✓ causal-4.9   Rules of the do-calculus
+✓ causal-4.11  Single-world intervention graphs
+✓ causal-4.12  Lord’s paradox
+✓ causal-4.13  Causal diagrams for empirical research
+✓ causal-4.10  Completeness of do-calculus; non-identifiable effects
+✓ causal-4.1   Intervention and the do-operator
+✓ causal-4.3   Back-door criterion
+✓ causal-4.4   Simpson’s paradox
+✓ causal-4.5   M-bias: adjusting for a pre-treatment collider
+✓ causal-4.6   Bad controls: mediators and descendants
+✓ causal-4.7   Z-bias: adjusting for a cause of treatment only
+✓ cplx-1.8     Ladner’s theorem
+✓ cplx-1.9     Candidates for NP-intermediate: factoring and graph isomorph
+✓ cplx-1.10    Oracle machines and relativized classes
+✓ cplx-1.11    Baker–Gill–Solovay: relativization barrier
+✓ cplx-1.12    A provably intractable natural problem
+✓ causal-4.2   Truncated factorization (g-formula)
+✓ cplx-1.13    On the Computational Complexity of Algorithms
+✓ cplx-1.2     Time hierarchy theorem
+✓ cplx-1.3     Space hierarchy theorem
+✓ cplx-1.4     P ≠ EXPTIME and L ≠ PSPACE
+✓ cplx-1.5     Nondeterministic time hierarchy theorem
+✓ cplx-1.6     Linear speedup theorem
+✓ cplx-1.7     Hopcroft–Paul–Valiant: time t fits in space t/log t
+✓ cplx-2.8     SET-COVER and HITTING-SET are NP-complete
+✓ cplx-1.1     Time- and space-constructible functions
+✓ cplx-2.9     Planar 3-colouring is NP-complete
+✓ cplx-2.11    Schaefer’s dichotomy theorem
+✓ cplx-2.12    Mahaney’s theorem: no sparse NP-complete sets unless P = NP
+✓ cplx-2.13    Berman–Hartmanis isomorphism conjecture
+✓ cplx-2.14    Reducibility Among Combinatorial Problems
+✓ cplx-2.1     3-dimensional matching is NP-complete
+✓ cplx-2.10    Hard puzzles: Sudoku, Minesweeper and friends
+✓ cplx-2.2     Exact cover and tiling puzzles are NP-complete
+✓ cplx-2.4     Weak versus strong NP-hardness
+✓ cplx-2.6     Integer linear programming is NP-complete
+✓ cplx-2.3     PARTITION and KNAPSACK are NP-complete
+✓ cplx-2.7     MAX-CUT is NP-complete
+✓ cplx-3.8     Alternating Turing machines
+✓ cplx-3.9     Alternating polynomial time equals PSPACE
+✓ cplx-3.10    Alternating logarithmic space equals P
+✓ cplx-3.11    PH ⊆ PSPACE
+✓ cplx-3.12    Time–space lower bounds for SAT
+✓ cplx-3.1     TAUTOLOGY is coNP-complete
+✓ cplx-3.7     Σₖ-SAT is complete for level k
+✓ cplx-3.2     Pratt certificates: PRIMES is in NP ∩ coNP
+✓ cplx-3.4     Σ₂ and Π₂: two quantifiers
+✓ cplx-3.5     The polynomial hierarchy
+✓ cplx-3.6     If Σₖ = Πₖ the hierarchy collapses to level k
+✓ cplx-4.8     Karp–Lipton theorem
+✓ cplx-4.9     Meyer’s theorem: EXP ⊆ P/poly implies EXP = Σ₂
+✓ cplx-4.10    NC and AC: shallow circuits
+✓ cplx-3.3     Factoring lies in NP ∩ coNP
+✓ cplx-4.11    Parallel prefix: addition in logarithmic depth
+✓ cplx-4.13    NC¹ ⊆ L ⊆ NL ⊆ NC²
+✓ cplx-4.12    Circuit value problem is P-complete
+✓ cplx-4.14    A Symbolic Analysis of Relay and Switching Circuits
+✓ cplx-4.2     Most functions need circuits of size about 2ⁿ/n (Shannon)
+✓ cplx-4.3     Every function has circuits of size O(2ⁿ/n) (Lupanov)
+✓ cplx-4.4     P/poly and advice
+✓ cplx-4.5     P ⊆ P/poly
+✓ cplx-4.6     P/poly contains undecidable languages
+✓ cplx-4.1     Boolean circuits and circuit size
+✓ cplx-4.7     CIRCUIT-SAT is NP-complete
+✓ cplx-13.9    A Fast Quantum Mechanical Algorithm for Database Search
+✓ pl-1.7       Termination of evaluation
+✓ pl-1.9       Small-step and big-step semantics agree
+✓ pl-1.10      Operational, denotational and axiomatic semantics
+✓ pl-1.11      A small imperative language
+✓ pl-1.1       Abstract syntax trees
+✓ pl-1.2       Structural induction on terms
+✓ pl-1.8       Big-step (natural) semantics
+✓ pl-1.3       Inference rules and derivation trees
+✓ pl-1.5       Determinacy of one-step evaluation
+✓ pl-1.4       Small-step operational semantics
+✓ pl-1.6       Values, normal forms and stuck terms
+✓ pl-2.8       Divergence: the term Ω
+✓ pl-2.9       Fixed-point combinators and recursion
+✓ pl-2.10      The λ-calculus is Turing complete
+✓ pl-2.11      de Bruijn indices
+✓ pl-2.12      η-conversion and extensionality
+✓ pl-2.1       λ-terms
+✓ pl-2.2       Free and bound variables; α-equivalence
+✓ pl-2.3       Capture-avoiding substitution
+✓ pl-2.7       Church numerals and arithmetic
+✓ pl-2.4       β-reduction
+✓ pl-2.6       Church booleans and pairs
+✓ pl-3.6       Standardization: normal order finds normal forms
+✓ pl-3.7       Equality and normalization of λ-terms are undecidable
+✓ pl-2.5       Evaluation strategies
+✓ pl-3.8       Combinatory logic: S and K
+✓ pl-3.10      Curry’s paradox
+✓ pl-3.1       Confluence and the diamond property
+✓ pl-3.2       Newman’s lemma
+✓ pl-3.3       Parallel reduction and complete development
+✓ pl-3.4       Church–Rosser theorem
+✓ pl-3.5       Normal forms are unique
+✓ pl-4.6       Type systems are conservative
+✓ pl-4.7       Simply typed λ-calculus
+✓ pl-4.8       Uniqueness of types and type checking
+✓ pl-4.9       Substitution lemma
+✓ pl-4.10      Safety of the simply typed λ-calculus
+✓ pl-4.11      Strong normalization by reducibility
+✓ pl-4.12      Erasure: types have no run-time content
+✓ pl-4.13      Self-application is untypable
+✓ pl-4.1       The typing relation
+✓ pl-4.2       Inversion and canonical forms
+✓ pl-4.3       Progress
+✓ pl-4.4       Preservation
+✓ pl-4.5       Type safety: well-typed programs do not get stuck
+✓ pchem-1.11   Compression factor Z
+✓ pchem-1.12   Virial equation and the Boyle temperature
+✓ pchem-1.13   Van der Waals equation
+✓ pchem-1.15   The critical point
+✓ pchem-1.16   Law of corresponding states
+✓ pchem-1.17   Traité élémentaire de chimie
+✓ pchem-1.18   Masses relatives des molécules élémentaires des corps
+✓ pchem-1.1    Boyle’s law
+✓ pchem-1.2    Charles’s and Gay-Lussac’s laws
+✓ pchem-1.3    Avogadro’s principle
+✓ pchem-1.4    Perfect gas equation pV = nRT
+✓ pchem-1.6    Kinetic model of gases: pressure from collisions
+✓ pchem-1.9    Collision frequency and mean free path
+✓ pchem-1.10   Barometric formula
+✓ pchem-2.6    Equipartition and gas heat capacities
+✓ pchem-2.7    Reversible adiabatic expansion: pVᵞ = const
+✓ pchem-2.8    Calorimetry
+✓ pchem-2.9    Hess’s law
+✓ pchem-2.10   Standard enthalpies of formation
+✓ pchem-2.11   Kirchhoff’s law
+✓ pchem-2.12   Born–Haber cycle and bond enthalpies
+✓ pchem-2.13   Joule–Thomson effect and inversion temperature
+✓ pchem-2.14   Adiabatic flame temperature
+✓ pchem-2.1    First law of thermodynamics
+✓ pchem-2.2    Expansion work: reversible and irreversible
+✓ pchem-2.3    State functions and exact differentials
+✓ pchem-2.5    Heat capacities and Cp − Cv
+✓ pchem-3.9    Absolute entropies from heat capacities
+✓ pchem-3.10   Helmholtz and Gibbs energies
+✓ pchem-3.11   Maximum non-expansion work equals −ΔG
+✓ pchem-3.12   Fundamental equation and Maxwell relations
+✓ pchem-3.13   Gibbs–Helmholtz equation
+✓ pchem-3.14   Pressure dependence of G and fugacity
+✓ pchem-3.15   Thermodynamic equation of state and internal pressure
+✓ pchem-3.1    Second law of thermodynamics
+✓ pchem-3.2    Thermodynamic entropy dS = đq_rev/T
+✓ pchem-3.3    Carnot cycle and its efficiency
+✓ pchem-3.4    Clausius inequality
+✓ pchem-3.5    Entropy of expansion, heating and mixing
+✓ pchem-3.6    Trouton’s rule
+✓ pchem-3.7    Boltzmann’s entropy formula S = k ln W
+✓ pchem-3.8    Third law and residual entropy
+✓ pchem-4.7    Supercritical fluids and continuity of states
+✓ pchem-4.9    Surface tension
+✓ pchem-4.11   Young–Laplace pressure
+✓ pchem-4.12   Kelvin equation
+✓ pchem-4.13   Capillary rise
+✓ pchem-4.1    Phase diagram of a pure substance
+✓ pchem-4.2    Phase stability: lowest chemical potential wins
+✓ pchem-4.3    Clapeyron equation
+✓ pchem-4.4    Clausius–Clapeyron equation
+✓ pchem-4.5    Triple point
+✓ pchem-4.6    Water’s negative melting slope and the ice-skating myth
+✓ kin-1.7      Isolation and pseudo-first-order conditions
+✓ kin-1.8      Method of initial rates and log–log analysis
+✓ kin-1.9      Opposed reactions: relaxation to equilibrium
+✓ kin-1.10     Relaxation methods: temperature jump
+✓ kin-1.11     Flash photolysis and stopped flow
+✓ kin-1.12     Detailed balance (microscopic reversibility)
+✓ kin-1.1      Rate of reaction
+✓ kin-1.2      Rate law, rate constant and reaction order
+✓ kin-1.3      Elementary reactions and molecularity
+✓ kin-1.4      Zero-order kinetics
+✓ kin-1.5      First-order kinetics and half-life
+✓ kin-1.6      Second-order kinetics
+✓ kin-2.7      Reaction coordinate and saddle point
+✓ kin-2.8      Polanyi’s rules
+✓ kin-2.9      Crossed molecular beams
+✓ kin-2.10     Negative activation energies
+✓ kin-2.11     Non-Arrhenius behaviour and curved Arrhenius plots
+✓ kin-2.12     Reaktionsgeschwindigkeit bei der Inversion von Rohrzucker
+✓ kin-2.1      Arrhenius equation
+✓ kin-2.2      The “doubling every 10 °C” rule of thumb
+✓ kin-2.3      Hard-sphere collision theory
+✓ kin-2.4      Steric factor
+✓ kin-2.5      Reaction cross-section and excitation function
+✓ kin-2.6      Potential energy surfaces
+✓ kin-3.7      Bell–Evans–Polanyi principle
+✓ pl-3.9       Bracket abstraction: from λ-terms to SKI
+✓ kin-3.8      Hammett equation
+✓ kin-3.10     Kinetic versus thermodynamic control
+✓ kin-3.11     Kramers theory of barrier crossing
+✓ kin-3.9      Curtin–Hammett principle
+✓ kin-3.12     The Activated Complex in Chemical Reactions
+✓ kin-3.2      Eyring equation
+✓ kin-3.1      Activated complex in quasi-equilibrium
+✓ kin-3.3      Enthalpy and entropy of activation
+✓ kin-3.5      Tunnelling corrections to rates
+✓ kin-3.6      Hammond postulate
+✓ kin-4.6      Parallel reactions and branching ratios
+✓ kin-4.7      Lindemann–Hinshelwood mechanism
+✓ kin-4.8      Fall-off curves
+✓ kin-4.9      RRK and RRKM theory
+✓ kin-4.10     Chain reactions: H₂ + Br₂
+✓ kin-4.11     Branching chains and explosion limits
+✓ kin-4.12     Thermal explosion (Semenov theory)
+✓ kin-4.13     Polymerization kinetics: chain growth and step growth
+✓ kin-4.1      Consecutive reactions A → B → C
+✓ kin-4.2      Rate-determining step
+✓ kin-4.3      Steady-state approximation
+✓ kin-4.4      Pre-equilibrium approximation
+✓ kin-4.5      When the steady-state approximation fails
+✓ kin-3.4      Kinetic isotope effect
+✓ xtal-1.7     Interstitial sites: octahedral and tetrahedral holes
+✓ xtal-1.9     Common structure types
+✓ xtal-1.10    Pauling’s rules for ionic crystals
+✓ xtal-1.11    Wigner–Seitz cell
+✓ xtal-1.1     Lattice, basis and crystal structure
+✓ xtal-1.2     Unit cell and lattice parameters
+✓ xtal-1.3     Steno’s law of constant interfacial angles
+✓ xtal-1.4     Haüy’s law of rational indices
+✓ xtal-1.5     Close packing: fcc versus hcp
+✓ xtal-1.6     Coordination number and packing fraction
+✓ xtal-2.2     Crystallographic restriction theorem
+✓ xtal-2.3     The five plane lattices
+✓ xtal-2.4     The ten plane point groups
+✓ xtal-2.5     Glide reflections
+✓ xtal-3.7     The 230 space groups
+✓ xtal-3.8     Wyckoff positions and site symmetry
+✓ xtal-1.8     Density from the unit cell
+✓ xtal-3.9     Stereographic projection
+✓ xtal-3.11    Tensor properties of crystals
+✓ xtal-3.12    Piezoelectricity requires a lack of inversion symmetry
+✓ xtal-3.1     The seven crystal systems
+✓ xtal-3.10    Neumann’s principle
+✓ xtal-3.2     The fourteen Bravais lattices
+✓ xtal-3.4     The thirty-two crystallographic point groups
+✓ xtal-3.5     Hermann–Mauguin notation
+✓ xtal-3.6     Screw axes and glide planes
+✓ xtal-4.5     Weiss zone law
+✓ xtal-4.6     Families of planes and multiplicity
+✓ xtal-4.7     Angles between planes and directions
+✓ xtal-4.1     Direction indices [uvw]
+✓ xtal-4.2     Miller indices (hkl)
+✓ xtal-3.3     Primitive versus conventional cells
+✓ xtal-4.3     Miller–Bravais indices for hexagonal crystals
+✓ mat-1.1      Bond-energy curves and bonding types
+✓ mat-1.2      Elastic modulus from bond stiffness
+✓ mat-1.3      Thermal expansion from anharmonicity
+✓ mat-1.4      Polymorphism and allotropy of iron
+✓ mat-1.5      Anisotropy of single crystals
+✓ mat-1.6      Linear and planar atomic densities
+✓ mat-1.7      Material property charts (Ashby)
+✓ xtal-4.4     Interplanar spacing formulas
+✓ mat-2.1      Equilibrium vacancy concentration
+✓ mat-2.3      Hume-Rothery rules for solid solutions
+✓ mat-2.4      Interstitial solid solutions: carbon in iron
+✓ mat-2.5      Vacancy and interstitial diffusion mechanisms
+✓ mat-2.6      Fick’s laws in solids: erfc profiles and carburizing
+✓ mat-2.7      Arrhenius temperature dependence of diffusivity
+✓ mat-2.8      Diffusion length √(Dt) and heat-treatment scaling
+✓ mat-2.9      Kirkendall effect
+✓ mat-2.10     Short-circuit diffusion along grain boundaries and surfaces
+✓ mat-2.2      Frenkel and Schottky defects
+✓ mat-2.11     Dopant diffusion in silicon
+✓ mat-3.8      Taylor hardening: σ ∝ √ρ
+✓ mat-3.7      Frank–Read source
+✓ mat-3.9      Von Mises criterion: five independent slip systems
+✓ mat-3.11     Deformation twinning
+✓ mat-3.12     Partial dislocations and stacking faults
+✓ mat-3.13     The mechanism of plastic deformation of crystals
+✓ mat-3.1      Theoretical shear strength versus real strength
+✓ mat-3.10     Low-angle grain boundaries as dislocation arrays
+✓ mat-3.2      Edge and screw dislocations
+✓ mat-3.4      Slip systems
+✓ mat-3.3      Burgers vector and the Burgers circuit
+✓ mat-3.5      Schmid’s law and critical resolved shear stress
+✓ mat-4.5      Hollomon’s strain-hardening law
+✓ mat-3.6      Dislocation strain energy ∝ Gb²
+✓ mat-4.6      Hall–Petch relation
+✓ mat-4.8      Solid-solution strengthening
+✓ mat-4.9      Precipitation hardening and Orowan bypass
+✓ mat-4.10     Recovery, recrystallization and grain growth
+✓ mat-4.11     Hardness testing and Tabor’s relation
+✓ mat-4.1      Engineering and true stress–strain curves
+✓ mat-4.2      Hooke’s law and Poisson’s ratio
+✓ mat-4.3      Yield strength and the 0.2 % offset
+✓ mat-4.4      Considère criterion for necking
+✓ mat-4.7      Inverse Hall–Petch in nanocrystals
+✓ sig-1.7      Discrete unit impulse and unit step
+✓ sig-1.9      Sifting property of the impulse
+✓ sig-1.10     The derivative of the step is the delta
+✓ sig-1.11     Energy and power signals
+✓ sig-1.12     Signals as vectors: inner product, norm and orthogonality
+✓ sig-1.1      Continuous-time and discrete-time signals
+✓ sig-1.2      Time shift, reversal and scaling
+✓ sig-1.3      Even and odd parts of a signal
+✓ sig-1.4      Periodic signals and the fundamental period
+✓ sig-1.5      Complex exponentials and sinusoids
+✓ sig-1.6      Discrete-time frequencies wrap around every 2π
+✓ sig-2.7      Block diagrams: series, parallel and feedback
+✓ sig-2.8      Counterexamples among the system properties
+✓ sig-2.9      The RC circuit as a first-order system
+✓ sig-2.10     Difference equations: moving average and accumulator
+✓ sig-1.8      The Dirac delta as a limit of narrowing pulses
+✓ sig-2.11     Incremental linearity: zero-input plus zero-state response
+✓ sig-2.2      Linearity
+✓ sig-2.3      Time invariance
+✓ sig-2.4      Causality
+✓ sig-2.5      Memory and invertibility
+✓ sig-2.6      BIBO stability
+✓ sig-3.9      Complex exponentials are eigenfunctions of LTI systems
+✓ sig-3.10     System function and frequency response
+✓ sig-3.11     Linear constant-coefficient differential equations
+✓ sig-3.12     FIR and IIR systems
+✓ sig-3.13     Inverse systems and deconvolution
+✓ sig-3.14     Correlation as convolution with a time-reversed signal
+✓ sig-3.15     Reverberation as convolution with a room response
+✓ sig-3.1      The convolution sum
+✓ sig-3.2      The convolution integral
+✓ sig-3.3      Impulse response
+✓ sig-2.1      Systems as maps between signals
+✓ sig-3.4      Convolution is commutative, associative and distributive
+✓ sig-3.6      BIBO stability iff ∫|h| is finite
+✓ sig-3.7      Step response
+✓ sig-3.8      Cascades convolve, parallels add
+✓ sig-4.5      Mean-square convergence and best approximation
+✓ sig-4.6      Parseval’s relation for periodic signals
+✓ sig-4.7      Properties: shift, reversal, scaling and differentiation
+✓ sig-4.8      Smoothness and spectral decay
+✓ sig-4.9      Periodic convolution and products of coefficients
+✓ sig-4.10     LTI response to periodic inputs
+✓ sig-4.11     Discrete-time Fourier series
+✓ sig-4.12     Spectra of square, triangle and sawtooth waves
+✓ sig-4.13     Continuous signals with divergent Fourier series
+✓ sig-4.14     Fejér summation removes Gibbs ringing
+✓ sig-4.1      Fourier series of a periodic signal
+✓ sig-3.5      Causality and memory from the impulse response
+✓ sig-4.2      Coefficients by orthogonality
+✓ sig-4.4      Gibbs phenomenon
+✓ sig-7.19     Communication in the Presence of Noise
+✓ sig-4.3      Dirichlet conditions and pointwise convergence
+
+browser check: 585 run, 0 failed, 0 with TeX/blank warnings, 0 with quality warnings

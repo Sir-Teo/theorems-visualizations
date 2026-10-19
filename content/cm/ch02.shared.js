@@ -60,7 +60,27 @@ export function bgJ5(x) {
 /** Phonon resistivity of the Bloch–Grüneisen form, normalised to its value at T = Θ (so ρ_ph(Θ) = 1). */
 export const bgRho = (T, theta) => { const x = theta / Math.max(T, 1e-6); return (Math.pow(T / theta, 5) * bgJ5(x)) / bgJ5(1); };
 
-/** Table lookups (A&M Table 2.1, free-electron densities in 10²² cm⁻³; Li…Al valence-electron densities). */
+/** Ashcroft–Mermin Table 1.4, p. 15: n0/n = -1/(R_H*n*e*c),
+ * moderate/high-field, low-temperature limiting values, NOT room-temperature data. */
+export const HALL_AM_1_4 = Object.freeze({ Li: .8, Na: 1.2, K: 1.1, Rb: 1, Cs: .9, Cu: 1.5, Ag: 1.3, Au: 1.5, Be: -.2, Mg: -.4, In: -.3, Al: -.3 });
+/** Selected entries from Ashcroft–Mermin Table 1.6, p. 21, at 273 K;
+ * units 10^-8 W ohm K^-2. Tungsten is absent from that table. */
+export const LORENZ_AM_1_6 = Object.freeze({ Li: 2.22, Na: 2.12, K: 2.23, Cu: 2.20, Ag: 2.31, Au: 2.32, Zn: 2.28, Cd: 2.49, Al: 2.14, Pb: 2.64, Sn: 2.48 });
+
+/** Open-circuit electronic heat/charge ratio for the displayed positive transport
+ * weight max(0,1+alpha*x), x=(E-mu)/(kBT). Includes the thermoelectric subtraction. */
+export function lorenzMomentModel(alpha) {
+  const N = 800, dx = 60 / N; let k0 = 0, k1 = 0, k2 = 0, c0 = 0, c2 = 0;
+  for (let i = 0; i <= N; i++) {
+    const x = -30 + i * dx, f = 1 / (4 * Math.cosh(x / 2) ** 2), w = f * Math.max(0, 1 + alpha * x) * dx;
+    k0 += w; k1 += w * x; k2 += w * x * x; c0 += f * dx; c2 += f * x * x * dx;
+  }
+  return { ratio: (k2 * k0 - k1 * k1) / (k0 * k0) / (Math.PI ** 2 / 3), area: c2 / c0 };
+}
+/** Original paper, p. 497; resistances in ohms, reported uncertainties as printed. */
+export const QHE_1980 = Object.freeze({ R4: 6453.17, errorR4: .02, inverseAlpha: 137.0353, errorInverseAlpha: .0004, initialMeanR4: 6453.22, initialErrorR4: .10 });
+
+/** Table lookups (A&M Table 1.1, free-electron densities in 10²² cm⁻³; Li…Al valence-electron densities). */
 export const NDENS = { Li: 4.70, Na: 2.65, K: 1.40, Rb: 1.15, Cs: 0.91, Cu: 8.47, Ag: 5.86, Au: 5.90, Be: 24.7, Mg: 8.61, Zn: 13.2, Cd: 9.27, Al: 18.1, In: 11.5 };
 
 /** Tridiagonal solve (a sub, b diag, c super, d rhs). */

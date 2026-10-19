@@ -1,5 +1,5 @@
 // Abstract Algebra (Judson) — Chapter 7, part 2: the matrix (Hill) cipher, one-way functions, RSA and signatures (7.4–7.5a).
-import { ABC, m26, gcdN, invMod, mapText, lettersOnly, powmod, euclidRows, smSteps, SMALL_PRIMES } from './ch07.shared.js';
+import { ABC, m26, gcdN, invMod, mapText, lettersOnly, powmod, euclidRows, smSteps, SMALL_PRIMES, hillPair } from './ch07.shared.js';
 
 const WORDS = ['THE', 'AND', 'FOR', 'NOT', 'YES', 'BUY', 'PAY', 'SAY', 'ONE', 'TWO', 'SIX', 'TEN', 'CAT', 'DOG', 'SUN', 'MAN', 'BOY', 'DAY', 'WAY', 'NEW', 'OLD', 'BIG', 'RED', 'GET', 'HAS', 'HER', 'HIS', 'HOW', 'ITS', 'MAY', 'OUR', 'OUT', 'SEE', 'USE', 'WHO', 'ALL', 'ANY', 'CAN', 'HAD', 'NOW', 'TOO', 'WAR', 'SEA', 'AIR', 'ASK', 'END', 'EYE', 'FAR', 'FEW', 'GOD', 'KEY', 'LAW', 'LET', 'LOW', 'MAP', 'OIL', 'PUT', 'RUN', 'SET', 'TOP', 'WIN', 'YET'];
 const wordNum = (w) => 676 * ABC.indexOf(w[0]) + 26 * ABC.indexOf(w[1]) + ABC.indexOf(w[2]);
@@ -24,18 +24,19 @@ export default {
       num: '7.4',
       kind: 'Concept',
       name: 'Polyalphabetic cipher by a 2 × 2 matrix',
-      statement: String.raw`Group the plaintext into pairs of letters, regard each pair as a column vector $\mathbf p=(p_1,p_2)^{\!\top}\in\mathbb Z_{26}^2$, and encrypt with an integer key matrix $A$: $\mathbf c=A\mathbf p \pmod{26}$. Decryption is possible exactly when $A$ is invertible mod $26$, i.e. $\gcd(\det A,26)=1$, and then $\mathbf p=A^{-1}\mathbf c$ with $A^{-1}=(\det A)^{-1}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$ computed mod $26$. Because the cipher letters depend on both letters of a pair, the same plaintext letter is encrypted differently in different places, so single-letter frequency counting no longer applies directly.`,
-      idea: String.raw`The pair map $\mathbf p\mapsto A\mathbf p$ is a homomorphism of the group $\mathbb Z_{26}^2$ (matrices over $\mathbb Z_{26}$, as in 3.14). It is a bijection iff it has an inverse matrix, and the adjugate formula for the inverse works over $\mathbb Z_{26}$ as soon as $\det A$ is a unit (7.3). If $\det A$ shares a factor with $26$, the images of the 676 pairs overlap and some ciphertext pairs are never produced.`,
-      caption: String.raw`Edit the entries of $A$. Left: the 676 plaintext pairs, coloured by the first letter of their ciphertext pair; the gold point is the chosen pair of your message. Right: the ciphertext plane — a cell is blue if exactly one pair lands on it, red if several do, empty if none. With $\gcd(\det A,26)=1$ every cell is blue; set $\det A$ even and holes and collisions appear.`,
+      statement: String.raw`Group the plaintext into pairs of letters, regard each pair as a column vector $\mathbf p=(p_1,p_2)^{\!\top}\in\mathbb Z_{26}^2$, and encrypt with an integer key matrix $A$ and offset $\mathbf b$: $\mathbf c=A\mathbf p+\mathbf b \pmod{26}$. Decryption is possible exactly when $A$ is invertible mod $26$, i.e. $\gcd(\det A,26)=1$, and then $\mathbf p=A^{-1}(\mathbf c-\mathbf b)$ with $A^{-1}=(\det A)^{-1}\begin{pmatrix}d&-b\\-c&a\end{pmatrix}$ computed mod $26$. Judson’s Example7.4 uses $A=\begin{pmatrix}3&5\\1&2\end{pmatrix}$ and $\mathbf b=(2,2)^\top$, sending HELP to RRGR. A letter’s ciphertext can depend on its partner; pair-frequency attacks remain possible.`,
+      idea: String.raw`The linear part $\mathbf p\mapsto A\mathbf p$ is a homomorphism of the group $\mathbb Z_{26}^2$ (matrices over $\mathbb Z_{26}$, as in 3.14). Adding a fixed offset preserves bijectivity. The linear part is a bijection iff it has an inverse matrix, and the adjugate formula for the inverse works over $\mathbb Z_{26}$ as soon as $\det A$ is a unit (7.3). If $\det A$ shares a factor with $26$, the images of the 676 pairs overlap and some ciphertext pairs are never produced.`,
+      caption: String.raw`Edit $A$ and the offset. The source-example button restores Judson’s HELP → RRGR computation. Left: the 676 plaintext pairs, coloured by the first letter of their ciphertext pair; the gold point is the chosen pair of your message. Right: the ciphertext plane — a cell is blue if exactly one pair lands on it, red if several do, empty if none. With $\gcd(\det A,26)=1$ every cell is blue; set $\det A$ even and holes and collisions appear.`,
       deps: ['alg-7.3', 'alg-3.14'],
       refs: ['Judson §7.1'],
       tags: ['cryptography', 'matrices'],
-      credit: 'Lester S. Hill, “Cryptography in an Algebraic Alphabet”, Amer. Math. Monthly 36 (1929), 306–312 (the Hill cipher)',
-      verify: true,
+      credit: 'Lester S. Hill',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hill_cipher' },
       viz(v) {
-        const A = [v.slider('$a$', 0, 25, 3, { int: true }), v.slider('$b$', 0, 25, 3, { int: true }), v.slider('$c$', 0, 25, 2, { int: true }), v.slider('$d$', 0, 25, 5, { int: true })];
+        const A = [v.slider('$a$', 0, 25, 3, { int: true }), v.slider('$b$', 0, 25, 5, { int: true }), v.slider('$c$', 0, 25, 1, { int: true }), v.slider('$d$', 0, 25, 2, { int: true })];
+        const offset = [v.slider('offset first coordinate', 0, 25, 2, {int:true}), v.slider('offset second coordinate', 0, 25, 2, {int:true})];
         const msg = v.input('Message', 'HELP ME NOW', { width: 220 });
+        v.button('Judson HELP example', () => { [3,5,1,2].forEach((x,i)=>A[i].set(x)); offset.forEach(x=>x.set(2)); msg.set('HELP'); });
         const pick = v.slider('Pair #', 1, 6, 1, { int: true });
         const L = v.stage({ x: [0, 26], y: [0, 26], axes: 'box', gutter: true, height: 300, xlabel: 'first letter', ylabel: 'second letter', title: 'plaintext pairs', xticks: [[0.5, 'A'], [6.5, 'G'], [12.5, 'M'], [18.5, 'S'], [25.5, 'Z']], yticks: [[0.5, 'A'], [6.5, 'G'], [12.5, 'M'], [18.5, 'S'], [25.5, 'Z']] });
         const R = v.stage({ x: [0, 26], y: [0, 26], axes: 'box', gutter: true, height: 300, xlabel: 'first cipher letter', ylabel: 'second', title: 'ciphertext pairs: how many plaintext pairs land here', xticks: [[0.5, 'A'], [6.5, 'G'], [12.5, 'M'], [18.5, 'S'], [25.5, 'Z']], yticks: [[0.5, 'A'], [6.5, 'G'], [12.5, 'M'], [18.5, 'S'], [25.5, 'Z']] });
@@ -43,33 +44,33 @@ export default {
         v.render(() => {
           const [a, b, c, d] = A.map((x) => x.value);
           const det = m26(a * d - b * c), unit = gcdN(det, 26) === 1;
-          const img = (p1, p2) => [m26(a * p1 + b * p2), m26(c * p1 + d * p2)];
+          const off=offset.map(x=>x.value), img = (p1,p2) => hillPair([a,b,c,d],off,[p1,p2]);
           const cnt = Array.from({ length: 26 }, () => Array(26).fill(0));
           for (let i = 0; i < 26; i++) for (let j = 0; j < 26; j++) { const [u, w] = img(i, j); cnt[u][w]++; }
           const letters = lettersOnly(msg.value).slice(0, 24);
           const padded = letters.length % 2 ? letters + 'X' : letters;
           const pairs = []; for (let i = 0; i + 1 < padded.length; i += 2) pairs.push([ABC.indexOf(padded[i]), ABC.indexOf(padded[i + 1])]);
           const sel = Math.min(pairs.length, pick.value) - 1;
-          const key = `${a},${b},${c},${d}`;
+          const key = `${a},${b},${c},${d},${off}`;
           L.raster((x, y) => { const i = Math.floor(x), j = Math.floor(y); if (i < 0 || j < 0 || i > 25 || j > 25) return null; return v.ramp(img(i, j)[0] / 25, 'accent'); }, { res: 3, key: 'L' + key });
           R.raster((x, y) => { const i = Math.floor(x), j = Math.floor(y); if (i < 0 || j < 0 || i > 25 || j > 25) return null; const n = cnt[i][j]; return n === 0 ? null : n === 1 ? v.rgb('blue').slice(0, 3) : v.rgb('red').slice(0, 3); }, { res: 3, key: 'R' + key });
           L.axes(); R.axes();
           pairs.forEach((p, i) => { L.dot(p[0] + 0.5, p[1] + 0.5, { r: i === sel ? 6 : 3.5, color: i === sel ? 'gold' : 'ink' }); const q = img(...p); R.dot(q[0] + 0.5, q[1] + 0.5, { r: i === sel ? 6 : 3.5, color: i === sel ? 'gold' : 'ink' }); });
           const image = cnt.flat().filter((n) => n > 0).length;
-          info = { a, b, c, d, det, unit, pairs, padded, image, sel };
+          info = { a, b, c, d, det, unit, pairs, padded, image, sel, off };
         });
         v.readout(() => {
-          const { a, b, c, d, det, unit, pairs, padded, image, sel } = info;
-          const encPairs = pairs.map((p) => { const q = [m26(a * p[0] + b * p[1]), m26(c * p[0] + d * p[1])]; return ABC[q[0]] + ABC[q[1]]; });
+          const { a, b, c, d, det, unit, pairs, padded, image, sel, off } = info;
+          const encPairs = pairs.map((p) => { const q = hillPair([a,b,c,d],off,p); return ABC[q[0]] + ABC[q[1]]; });
           const cipher = encPairs.join('');
           let line = String.raw`$\det A=${a * d - b * c}\equiv ${det}\pmod{26}$, $\gcd(${det},26)=${gcdN(det, 26)}$ — ${unit ? '**invertible**' : '**not invertible**: only ' + image + ' of 676 ciphertext pairs occur'}.`;
           if (unit) {
             const di = invMod(det, 26), ia = m26(di * d), ib = m26(-di * b), ic = m26(-di * c), id = m26(di * a);
-            const back = encPairs.map((e) => { const x = ABC.indexOf(e[0]), y = ABC.indexOf(e[1]); return ABC[m26(ia * x + ib * y)] + ABC[m26(ic * x + id * y)]; }).join('');
-            line += '\n' + String.raw`$A^{-1}=${di}\begin{pmatrix}${d}&${m26(-b)}\\${m26(-c)}&${a}\end{pmatrix}\equiv\begin{pmatrix}${ia}&${ib}\\${ic}&${id}\end{pmatrix}$; applying it to the ciphertext returns **${back}** ${back === padded ? '(= the padded plaintext ✓)' : '(≠ plaintext)'}.`;
+            const back = encPairs.map((e) => { const x = m26(ABC.indexOf(e[0])-off[0]), y = m26(ABC.indexOf(e[1])-off[1]); return ABC[m26(ia * x + ib * y)] + ABC[m26(ic * x + id * y)]; }).join('');
+            line += '\n' + String.raw`$A^{-1}=${di}\begin{pmatrix}${d}&${m26(-b)}\\${m26(-c)}&${a}\end{pmatrix}\equiv\begin{pmatrix}${ia}&${ib}\\${ic}&${id}\end{pmatrix}$; subtracting the offset and applying this inverse returns **${back}** ${back === padded ? '(= the padded plaintext ✓)' : '(≠ plaintext)'}.`;
           }
           const repeated = padded.length >= 2 && new Set(padded).size < padded.length;
-          return line + '\n' + `**${padded.match(/../g)?.join(' ') ?? ''}** → **${encPairs.join(' ')}**` + (repeated ? ' — repeated letters get different ciphertext letters when their partners differ.' : '');
+          return line + '\n' + `**${padded.match(/../g)?.join(' ') ?? ''}** → **${encPairs.join(' ')}**` + (repeated ? ' — a partner can change the ciphertext of a repeated letter.' : '');
         });
       },
     },
@@ -78,7 +79,7 @@ export default {
       num: '7.4a',
       kind: 'Concept',
       name: 'Public-key cryptography and one-way functions',
-      statement: String.raw`A public-key system rests on a **one-way function**: a map $f$ that anyone can evaluate quickly but whose inverse cannot be computed in practice without extra secret information (a *trapdoor*). The standard example is $x\mapsto x^{E}\bmod n$ with $n=pq$ a product of two large primes: evaluation takes about $\log_2E$ multiplications mod $n$, whereas inverting it with no knowledge of the factors of $n$ is believed to be as hard as factoring $n$. That a function is one-way has not been *proved*; it is a belief backed by the failure of the best known algorithms.`,
+      statement: String.raw`A public-key system rests on a **one-way function**: a map $f$ that anyone can evaluate quickly but whose inverse cannot be computed in practice without extra secret information (a *trapdoor*). The standard example is $x\mapsto x^{E}\bmod n$ with $n=pq$ a product of two large primes: evaluation takes about $\log_2E$ multiplications mod $n$, whereas factoring $n$ reveals the inverse exponent; whether arbitrary RSA inversion is equivalent to factoring is not known. That a function is one-way has not been *proved*; it is a belief backed by the failure of the best known algorithms.`,
       idea: String.raw`Square-and-multiply (4.28) makes evaluation cost grow like a power of the number of digits $d$ (about $17d^2$ digit operations for $E=65537$). Undoing it by trying all messages costs about $n/2$ evaluations, and finding a factor of $n$ by trial division costs about $\sqrt n$ steps — both grow exponentially in $d$. Cleverer factoring algorithms exist and are far faster than trial division, but still outgrow evaluation fast enough that a few hundred digits are out of reach.`,
       caption: String.raw`The slider sets the number of digits of $n=pq$ (two primes of about equal size). Blue: the work to evaluate $x^{65537}\bmod n$ (counted from a real BigInt run). Orange: trial division for the smaller prime factor (measured by actually running it up to 14 digits, extrapolated beyond). Red: brute force over all $x$. The time estimate assumes $10^9$ digit-operations per second — an assumption, not a benchmark.`,
       deps: ['alg-7.1a'],
@@ -124,15 +125,14 @@ export default {
       num: '7.5',
       kind: 'Algorithm',
       name: 'RSA cryptosystem',
-      statement: String.raw`Choose distinct primes $p,q$; put $n=pq$ and $\varphi(n)=(p-1)(q-1)$; choose $E$ with $\gcd(E,\varphi(n))=1$ and find $D$ with $ED\equiv1\pmod{\varphi(n)}$ by the Euclidean algorithm. Publish $(n,E)$ and keep $D$ secret. A message $x\in\{0,\dots,n-1\}$ is encrypted as $y=x^{E}\bmod n$ and decrypted as $y^{D}\bmod n=x$. Correctness is Euler’s theorem: $x^{ED}=x^{1+k\varphi(n)}\equiv x\pmod n$ (for $x$ coprime to $n$, and in fact for every $x$ when $n$ is a product of distinct primes).`,
-      idea: String.raw`Since $ED=1+k\varphi(n)$, Euler’s theorem (6.18) gives $x^{ED}\equiv x$ whenever $\gcd(x,n)=1$; for the few $x$ divisible by $p$ or $q$ the same congruence holds modulo each prime separately by Fermat (6.19) and combines by the Chinese remainder theorem. $D$ is found by the extended Euclidean algorithm (2.10), and $x^E$ is computed by repeated squaring (4.28). The security rests on the difficulty of recovering $\varphi(n)$, equivalently the factors of $n$, from $n$ alone.`,
+      statement: String.raw`Choose distinct primes $p,q$; put $n=pq$ and $\varphi(n)=(p-1)(q-1)$; choose a positive integer $E$ with $\gcd(E,\varphi(n))=1$ and find $D$ with $ED\equiv1\pmod{\varphi(n)}$ by the Euclidean algorithm. Publish $(n,E)$ and keep $D$ secret. A message $x\in\{0,\dots,n-1\}$ is encrypted as $y=x^{E}\bmod n$ and decrypted as $y^{D}\bmod n=x$. Correctness is Euler’s theorem: $x^{ED}=x^{1+k\varphi(n)}\equiv x\pmod n$ (for $x$ coprime to $n$, and in fact for every $x$ when $n$ is a product of distinct primes).`,
+      idea: String.raw`Since $ED=1+k\varphi(n)$, Euler’s theorem (6.18) gives $x^{ED}\equiv x$ whenever $\gcd(x,n)=1$; for the few $x$ divisible by $p$ or $q$ the same congruence holds modulo each prime separately by Fermat (6.19) and combines by the Chinese remainder theorem. $D$ is found by the extended Euclidean algorithm (2.10), and $x^E$ is computed by repeated squaring (4.28). Knowing the factors reveals $\varphi(n)$ and $D$, so factoring is a sufficient attack. A general equivalence between RSA inversion and factoring is not known.`,
       caption: String.raw`Pick primes $p,q$ and an exponent $E$. Left: the encryption map $x\mapsto x^E\bmod n$ for all $x$ — a scrambled permutation. Right: encrypt then decrypt every $x$; correct points sit on the diagonal, failures are red. Break it: choose $E$ sharing a factor with $\varphi(n)$ (no $D$ exists, and the left map stops being one-to-one) or set $q=p$ (the formula $(p-1)(q-1)$ is then the wrong $\varphi$).`,
       deps: ['alg-7.4a', 'alg-6.18', 'alg-2.10', 'alg-4.28'],
       see: ['crypto-9.6'],
       refs: ['Judson §7.2'],
       tags: ['cryptography', 'RSA'],
-      credit: 'Rivest, Shamir & Adleman, Commun. ACM 21(2) (1978), 120–126; the same scheme was found earlier, in secret, by Clifford Cocks at GCHQ (1973) and became public decades later',
-      verify: true,
+      credit: 'Rivest, Shamir & Adleman',
       scope: String.raw`Textbook RSA with tiny primes, for understanding only; real use needs primes of hundreds of digits and randomized padding.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/RSA_cryptosystem' },
       viz(v) {

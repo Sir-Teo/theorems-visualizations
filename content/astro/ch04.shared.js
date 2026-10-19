@@ -45,7 +45,7 @@ const bandFlux = (b, T) => { let s = 0; for (let nm = 300; nm <= 800; nm += 2) s
 /** Toy colour index -2.5 log10(F_B/F_V) + zero point. The zero point is set so that the Sun (5772 K) has B-V = 0.65. */
 const BV_ZERO = (() => 0.65 + 2.5 * Math.log10(bandFlux('B', T_SUN) / bandFlux('V', T_SUN)))();
 export const bvToy = (T) => -2.5 * Math.log10(bandFlux('B', T) / bandFlux('V', T)) + BV_ZERO;
-/** Ballesteros (2012) blackbody B-V -> T formula (from memory: verify). */
+/** Ballesteros (2012), eq.(14), arXiv:1201.1809v2 p.4; full relevant derivation inspected. */
 export const tBallesteros = (bv) => 4600 * (1 / (0.92 * bv + 1.7) + 1 / (0.92 * bv + 0.62));
 
 // ── hydrogen level populations and ionization ────────────────────────────────
@@ -69,13 +69,18 @@ export const CLASSES = [
   { c: 'F', lo: 6000, hi: 7500 }, { c: 'G', lo: 5200, hi: 6000 }, { c: 'K', lo: 3700, hi: 5200 }, { c: 'M', lo: 2400, hi: 3700 },
 ];
 
-// ── mass–luminosity: piecewise power-law fit to main-sequence stars (masses and luminosities in solar units) ──
-// L = 0.23 M^2.3 (M < 0.43), M^4 (0.43..2), 1.4 M^3.5 (2..55), 32000 M (M > 55)   [Salaris & Cassisi 2005 / Duric 2004]
-export function lumOfMass(M) {
-  if (M < 0.43) return 0.23 * Math.pow(M, 2.3);
-  if (M < 2) return Math.pow(M, 4);
-  if (M < 55) return 1.4 * Math.pow(M, 3.5);
-  return 32000 * M;
-}
-/** Local logarithmic slope d log L / d log M of lumOfMass. */
-export const mlSlope = (M) => (M < 0.43 ? 2.3 : M < 2 ? 4 : M < 55 ? 3.5 : 1);
+// ── Empirical main-sequence mass–luminosity fit: Eker et al.(2018), §3.1, Table4 p.18.
+// log10(L/Lsun)=a log10(M/Msun)+b. Independent fitted branches are not forced continuous.
+export const MLR = [
+  [.179,.45,2.028,-.976], [.45,.72,4.572,-.102], [.72,1.05,5.743,-.007],
+  [1.05,2.4,4.329,.010], [2.4,7,3.967,.093], [7,31,2.865,1.105],
+];
+const mlBranch = M => M>=.179 && M<=31 ? MLR.find(r=>M<=r[1]) : null;
+export function lumOfMass(M) { const row=mlBranch(M); return row ? 10**(row[2]*Math.log10(M)+row[3]) : NaN; }
+/** Local logarithmic slope inside a fitted mass branch, undefined outside the calibrated range. */
+export const mlSlope = M => mlBranch(M)?.[2] ?? NaN;
+
+/** Homogeneous LTE slab formal solution: Tatum ch5 eq5.7.2 plus attenuated background. */
+export const slabIntensity = (background,source,tau) => background*Math.exp(-tau)+source*(-Math.expm1(-tau));
+/** Neutral/excited absorber population proxy, not an equivalent-width calculation. */
+export const balmerAbsorber = (T,Pe) => popFrac(2,T,10)/(1+sahaRatio(T,Pe));

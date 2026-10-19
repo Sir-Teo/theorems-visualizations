@@ -31,7 +31,7 @@ export default {
       idea: String.raw`Write KCL as $\mathbf A\mathbf i = 0$ with $\mathbf A$ the $n\times b$ incidence matrix: each column has one $+1$ and one $-1$, so the rows sum to zero and $\operatorname{rank}\mathbf A\le n-1$; a spanning tree supplies $n-1$ columns that are independent, so the rank is $n-1$. KVL says the branch voltages $\mathbf v = \mathbf A^{\!\top}\mathbf e$ come from node potentials, equivalently $\mathbf B\mathbf v = 0$ for the fundamental-loop matrix $\mathbf B$, which has one row per non-tree branch and a $1$ in its own column, so $\operatorname{rank}\mathbf B = b-n+1$. The two row spaces are orthogonal complements: $\mathbf A\mathbf B^{\!\top} = 0$ and $(n-1)+(b-n+1)=b$ (this is the cycle space and cut space of the graph, 1.10).`,
       caption: String.raw`Choose a network and draw a random spanning tree (green, thick). Each remaining branch (dashed) closes exactly one fundamental loop with the tree: slide through them. The rank of $\mathbf A$ and of $\mathbf B$ are computed numerically, and $\mathbf A\mathbf B^{\!\top}$ is exactly zero. Switch to the disconnected network (two triangles): the tree becomes a forest and the counts are $n-c$ and $b-n+c$, so the hypothesis "connected" matters.`,
       scope: String.raw`Any graph with $b$ branches counted as edges (parallel branches and self-loops allowed); connectedness is needed for the counts $n-1$ and $b-n+1$.`,
-      deps: ['circ-2.1', 'circ-2.2'],
+      deps: ['circ-2.1', 'circ-2.2', 'ladr-3.21'],
       refs: ['Agarwal–Lang §2.7', 'Agarwal–Lang §3.2'],
       tags: ['graph', 'spanning tree'],
       viz(v) {
@@ -103,7 +103,7 @@ export default {
       statement: String.raw`For a resistor network with $n$ nodes, let $g_{jk} = 1/R_{jk}$ be the conductance of the branch between nodes $j$ and $k$ (zero if there is none; parallel resistors add). The **conductance matrix** (weighted graph Laplacian) is the symmetric $n\times n$ matrix $\mathbf L$ with $L_{jk} = -g_{jk}$ for $j\ne k$ and $L_{jj} = \sum_{k} g_{jk}$, the total conductance at node $j$. Equivalently $\mathbf L = \mathbf A\,\mathrm{diag}(g)\,\mathbf A^{\!\top}$ with $\mathbf A$ the incidence matrix. Every row sums to zero, and for node voltages $\mathbf v$ the vector $\mathbf L\mathbf v$ lists the net current leaving each node through the resistors. Deleting the row and column of the ground node gives the matrix $\mathbf G$ of node-voltage analysis (2.5).`,
       idea: String.raw`Ohm's law (1.4) gives the current $g_{jk}(v_j - v_k)$ from $j$ to $k$ through each branch, and summing these over the neighbours of $j$ is exactly KCL (2.1) written out: $\sum_k g_{jk}(v_j - v_k) = (\mathbf L\mathbf v)_j$. A constant vector of node voltages produces no currents, so $\mathbf L\mathbf 1 = \mathbf 0$ and every row sums to zero. The quadratic form $\mathbf v^{\!\top}\mathbf L\mathbf v = \sum_{\text{branches}} g\,(v_j - v_k)^2$ is the total power dissipated.`,
       caption: String.raw`Click a branch to select it and change its conductance: the matrix on the right is rebuilt (diagonal entries blue = total conductance at that node, off-diagonals orange = $-g$), and the last column shows that every row sums to zero. The matrix assembled by the rule agrees with $\mathbf A\,\mathrm{diag}(g)\,\mathbf A^{\!\top}$ computed separately. Switch on "ground node A" to delete its row and column: what remains is the matrix $\mathbf G$ that node-voltage analysis solves.`,
-      deps: ['circ-2.5'],
+      deps: ['circ-2.5', 'ladr-7.9'],
       refs: ['Agarwal–Lang §3.3'],
       tags: ['laplacian', 'matrix'],
       viz(v) {
@@ -165,7 +165,7 @@ export default {
       idea: String.raw`For any node potentials $\mathbf v$, the quadratic form $\mathbf v^{\!\top}\mathbf L\mathbf v = \sum g_{jk}(v_j - v_k)^2$ is a sum of nonnegative terms (2.8), and it vanishes only when $v_j = v_k$ across every branch, i.e. when $\mathbf v$ is constant on each connected component. Fixing the ground node at $0$ forces that constant to be $0$ on its component; if the network is connected, the only vector with zero power is $\mathbf v = 0$, so $\mathbf G$ is positive definite and invertible. Physically: a passive network that is not driven dissipates nothing only if nothing moves.`,
       caption: String.raw`Click a node to ground it; shift-click a node to inject 1 A there. The bars are the eigenvalues of the reduced matrix $\mathbf G$ (all strictly positive: green) and the colours on the nodes are the unique solution. Click a branch to select it and use the slider or the "cut" button: cut a bridge of the network so that a piece floats and an eigenvalue drops to 0 (the solution is no longer unique); or push one conductance negative (an active element) and watch the smallest eigenvalue cross zero.`,
       scope: String.raw`Positive resistances (a passive network) and a ground connected to every node through the network. Negative resistances, i.e. active elements, can make $\mathbf G$ singular or indefinite.`,
-      deps: ['circ-2.8'],
+      deps: ['circ-2.8', 'ladr-7.62'],
       refs: ['Agarwal–Lang §3.3'],
       tags: ['uniqueness', 'positive definite'],
       viz(v) {

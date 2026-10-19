@@ -114,15 +114,14 @@ export default {
       num: '4.5',
       kind: 'Law',
       name: 'Hollomon’s strain-hardening law',
-      statement: String.raw`In the uniform part of a tensile test, the true stress of many metals follows a power law in the true **plastic** strain, $$\sigma=K\,\varepsilon_p^{\,n},$$ with the **strength coefficient** $K$ (the stress at $\varepsilon_p=1$) and the **strain-hardening exponent** $n$, typically $0.1$ to $0.5$ for metals. On log–log axes the data fall on a straight line of slope $n$. Combined with the Considère criterion (4.4) the law predicts where the bar necks: the true plastic strain at the force maximum equals $n$, and the tensile strength is $K\,n^n e^{-n}$ (per unit starting area).`,
-      idea: String.raw`Taking logarithms, $\ln\sigma=\ln K+n\ln\varepsilon_p$ is the equation of a line, so $n$ and $K$ come from a least-squares fit of $\ln\sigma$ against $\ln\varepsilon_p$ over the uniform range, from just beyond yield to just before necking. The necking prediction follows from 4.4: $d\sigma/d\varepsilon=nK\varepsilon^{n-1}=K\varepsilon^n$ at $\varepsilon=n$. The law is empirical (it has no yield stress, and fails at very small strains where the elastic part matters), so the fitted $n$ depends a little on the window: that sensitivity is exactly what the sliders show.`,
+      statement: String.raw`In the uniform part of a tensile test, the true stress of many metals follows a power law in the true **plastic** strain, $$\sigma=K\,\varepsilon_p^{\,n},$$ with the **strength coefficient** $K$ (the stress at $\varepsilon_p=1$) and the **strain-hardening exponent** $n$, typically $0.1$ to $0.5$ for metals. On log–log axes the data fall on a straight line of slope $n$. Combined with the Considère criterion (4.4) the law predicts where the bar necks: neglecting elastic strain and assuming constant volume, the true plastic strain at the force maximum equals $n$, and the tensile strength is $K\,n^n e^{-n}$ (per unit starting area).`,
+      idea: String.raw`Taking logarithms, $\ln\sigma=\ln K+n\ln\varepsilon_p$ is the equation of a line, so $n$ and $K$ come from a least-squares fit of $\ln\sigma$ against $\ln\varepsilon_p$ over the uniform range, from just beyond yield to just before necking. Neglecting the elastic strain, the necking prediction follows from 4.4: $d\sigma/d\varepsilon=nK\varepsilon^{n-1}=K\varepsilon^n$ at $\varepsilon=n$. The law is empirical (it has no yield stress, and fails at very small strains where the elastic part matters), so the fitted $n$ depends a little on the window: that sensitivity is exactly what the sliders show.`,
       caption: String.raw`Dots are simulated measurements (the model of 4.1 plus a few per cent of seeded noise, converted to plastic strain by removing $\sigma/E$). Move the two window sliders to choose which points enter the log–log fit (the line); the right panel replots the same law on linear axes together with $d\sigma/d\varepsilon$, and marks the strain at which they cross. Change the material or the noise, and press *resample*.`,
-      deps: ['mat-4.4'],
-      refs: ['Callister §6.7'],
+      deps: ['mat-4.4', 'opt-1.6'],
+      refs: ['Roylance, Stress–Strain Curves, pp6–8 Eq8; Cambridge DoITPoMS, Tensile Testing—Necking and Failure'],
       tags: ['strain hardening', 'power law', 'tensile test'],
       credit: 'J. H. Hollomon, 1945 (Tensile deformation, Trans. AIME 162)',
       scope: String.raw`The uniform deformation of a metal that follows a power law, at moderate temperature and strain rate. The "measurements" are generated from the elastic–Hollomon model of 4.1 with preset parameters (rounded orders of magnitude) and are not experimental data; the power law is a fit, not a derivation, and different windows give different $n$.`,
-      verify: true,
       viz(v) {
         const matS = v.select('material', TENSILE_PRESETS.map((p) => ({ value: p.id, label: p.label })), 'steel');
         const lo = v.slider('fit from plastic strain', 0.002, 0.05, 0.004, { log: true, decimals: 4 });
@@ -174,7 +173,7 @@ export default {
           if (!info) return '';
           if (!info.fit) return 'Fewer than three points in the window: widen it.';
           const { fit, n, K, epu, count } = info;
-          return `Fit of ${count} points: $n=${v.fix(n, 3)}\\pm${v.fix(fit.seSlope, 3)}$, $K=${v.fix(K, 0)}$ MPa, $R^2=${v.fix(fit.r2, 4)}$.  Hollomon's prediction for necking: $\\varepsilon_p=n=${v.fix(n, 3)}$ (tensile strength $Kn^ne^{-n}=${v.fix(K * Math.pow(n, n) * Math.exp(-n), 0)}$ MPa).\nIn the model that generated the data, the force maximum is at plastic strain $${v.fix(epu, 3)}$ (its parameter is $n=${v.fix(info.model.n, 2)}$): the fit ${Math.abs(n - epu) < 0.03 ? 'agrees with it' : 'is off by ' + v.fix(Math.abs(n - epu), 3) + ', because the window excludes the range that matters or the data are not a pure power law'}.`;
+          return `Fit of ${count} points: $n=${v.fix(n, 3)}\\pm${v.fix(fit.seSlope, 3)}$, $K=${v.fix(K, 0)}$ MPa, $R^2=${v.fix(fit.r2, 4)}$.  Hollomon's prediction neglecting elasticity: $\\varepsilon_p=n=${v.fix(n, 3)}$ (tensile strength $Kn^ne^{-n}=${v.fix(K * Math.pow(n, n) * Math.exp(-n), 0)}$ MPa).\nIn the model that generated the data, the force maximum is at plastic strain $${v.fix(epu, 3)}$ (its parameter is $n=${v.fix(info.model.n, 2)}$): the fit ${Math.abs(n - epu) < 0.03 ? 'agrees with it' : 'is off by ' + v.fix(Math.abs(n - epu), 3) + ', because the window excludes the range that matters or the data are not a pure power law'}.`;
         });
       },
     },
@@ -183,21 +182,20 @@ export default {
       num: '4.6',
       kind: 'Law',
       name: 'Hall–Petch relation',
-      statement: String.raw`The yield strength of a polycrystalline metal rises as its grains are refined, $$\sigma_y=\sigma_0+\frac{k_y}{\sqrt d},$$ where $d$ is the mean grain diameter, $\sigma_0$ the friction stress that a single crystal would resist with, and $k_y$ the Hall–Petch slope (a few tenths of $\mathrm{MPa\,m^{1/2}}$ for common metals; it measures how hard it is to transmit slip across a grain boundary). Plotted against $d^{-1/2}$ the data fall on a straight line. The relation holds for grains from about a hundred nanometres up to the millimetre scale; below that it fails (4.7).`,
+      statement: String.raw`The yield strength of a polycrystalline metal rises as its grains are refined, $$\sigma_y=\sigma_0+\frac{k_y}{\sqrt d},$$ where $d$ is the mean grain diameter, $\sigma_0$ the friction stress that a single crystal would resist with, and $k_y$ the Hall–Petch slope (a few tenths of $\mathrm{MPa\,m^{1/2}}$ for common metals; it measures how hard it is to transmit slip across a grain boundary). Plotted against $d^{-1/2}$ the data fall on a straight line. This is an empirical fit over a material-dependent grain-size range; extrapolation to nanocrystals can fail (4.7).`,
       idea: String.raw`Dislocations piling up against a grain boundary in a slip plane of length about $d/2$ act together: a pile-up of $n$ dislocations concentrates the applied shear stress $\tau$ to $n\tau$ at its head, and the pile-up holds $n\approx\pi(1-\nu)\tau d/(2Gb)$ dislocations. The neighbour grain starts to slip when the concentrated stress reaches a critical value $\tau_c$, so $\tau\propto d^{-1/2}$: the larger the grain, the more dislocations pile up, the more stress they concentrate (Eshelby–Frank–Nabarro pile-up, and the Burgers vector's role through $Gb$ in 3.6). Smaller grains hold shorter pile-ups and need more applied stress.`,
       caption: String.raw`Drag the grain size (or the handle on the line). Left: one grain of width $d$ with its pile-up of edge dislocations (found by solving the force balance of all of them, not drawn by hand), all pressed against the boundary on the right; the readout gives how many fit. Right: the Hall–Petch line against $d^{-1/2}$ with the current grain size marked. Switch metal, and note how few dislocations a pile-up can hold in a submicron grain.`,
       deps: ['mat-3.10', 'mat-4.3'],
-      refs: ['Callister §7.8'],
+      refs: ['Roylance, Dislocation Basis of Yield and Creep, pp10–11 Eq7'],
       tags: ['grain size', 'strengthening', 'pile-up'],
       credit: 'E. O. Hall, 1951; N. J. Petch, 1953',
-      scope: String.raw`Polycrystals with grain size from about $0.1\,\mu$m to millimetres, at temperatures where grain boundaries do not slide. The constants $\sigma_0$ and $k_y$ of the four metals are rounded typical values, strongly dependent on purity, temperature and interstitials; the pile-up uses a Taylor factor 3.06 to turn the tensile excess $\sigma_y-\sigma_0$ into shear stress, a single slip band of length $d/2$ and the leading edge dislocation locked at the boundary.`,
-      verify: true,
+      scope: String.raw`A material-dependent range of polycrystalline grain sizes at temperatures where grain-boundary sliding is negligible. The constants $\sigma_0$ and $k_y$ of the four metals are rounded typical values, strongly dependent on purity, temperature and interstitials; the pile-up uses a Taylor factor 3.06 to turn the tensile excess $\sigma_y-\sigma_0$ into shear stress, a single slip band of length $d/2$ and the leading edge dislocation locked at the boundary.`,
       viz(v) {
         const matS = v.select('metal', HP.map((p) => ({ value: p.id, label: p.label })), 'cu');
         const dS = v.slider('grain size $d$ ($\\mu$m)', 0.05, 100, 10, { log: true, decimals: 2 });
         const A = v.stage({ x: [-0.62, 0.62], y: [-0.62, 0.62], equal: true, axes: false, height: 320, weight: 1.1, title: 'one grain, in units of $d$' });
         const B = v.stage({ x: [0, 4.2], y: [0, 400], axes: 'box', gutter: true, height: 320, weight: 1, xlabel: '$d^{-1/2}$  ($\\mu$m$^{-1/2}$)', ylabel: 'yield strength (MPa)', title: 'Hall–Petch plot' });
-        const hB = B.handle(0.5, 100, { color: 'accent', r: 8, constrain: (x) => { const t = clamp(x, 0.1, 4.2); return [t, hpYield(HP.find((p) => p.id === matS.value), 1 / (t * t))]; } });
+        const hB = B.handle(0.5, 100, { color: 'accent', r: 8, constrain: (x) => { const t = clamp(x, 0.1, Math.sqrt(20)); return [t, hpYield(HP.find((p) => p.id === matS.value), 1 / (t * t))]; } });
         hB.onDrag = () => dS.set(clamp(1 / (hB.x * hB.x), 0.05, 100));
         let info = null;
         v.render(() => {
@@ -221,8 +219,8 @@ export default {
           A.text('grain boundary', 0.5, -R / 2 - 0.06, { color: 'red', size: 11.5, align: 'right' });
           // plot
           const xm = 1 / Math.sqrt(d);
-          B.setView([0, 4.2], [0, hpYield(m, 1 / (4.2 * 4.2)) * 1.08]);
-          B.fn((x) => m.s0 + 1000 * m.k * x, { domain: [0, 4.2], color: 'ink', width: 2.5 });
+          const xmax=Math.max(4.2,xm*1.08); B.setView([0, xmax], [0, hpYield(m, 1 / (xmax * xmax)) * 1.08]);
+          B.fn((x) => m.s0 + 1000 * m.k * x, { domain: [0, xmax], color: 'ink', width: 2.5 });
           B.hline(m.s0, { color: 'faint', dash: true }); B.text('$\\sigma_0$', 3.9, m.s0 + 14, { color: 'muted', size: 12, align: 'right' });
           hB.set(xm, sy);
           B.vline(xm, { color: 'accent', alpha: 0.4, dash: true });
@@ -244,7 +242,7 @@ export default {
       idea: String.raw`Two deformation mechanisms act in parallel and the softer one wins. The dislocation mechanism's resistance is the Hall–Petch stress (4.6), which keeps rising as $d^{-1/2}$ only while a pile-up can form: the number of dislocations it holds, $n\propto\sqrt d$ (4.6), falls below one at a grain size of order 100 nm for copper, and Hall–Petch strengthening gradually weakens before that. The boundary mechanism's resistance, a thermally assisted sliding, drops with falling grain size as $d^m$. Where the two curves cross the strength peaks: the model reproduces the shape of the molecular-dynamics maximum at $10$–$15$ nm found by Schiøtz and Jacobsen, but the position of the crossing is an adjustable input here, not a prediction.`,
       caption: String.raw`Left: strength against grain size on a log axis: the Hall–Petch line (blue), the boundary-sliding branch (red) with its exponent $m$ and the crossover size $d_c$ you choose, and the actual strength, the lower of the two (black). Drag the handle along the curve. Middle: the number of dislocations a pile-up can hold, with the line $n=1$. Right: a polycrystal of this grain size in a 60 nm window; the dark boundary layer (1 nm) takes up more and more of the material.`,
       deps: ['mat-4.6'],
-      refs: ['Callister §7.8'],
+      refs: ['Roylance, Dislocation Basis of Yield and Creep, pp10–11 Eq7'],
       tags: ['nanocrystals', 'grain boundaries', 'strength'],
       credit: 'A. H. Chokshi, A. Rosen, J. Karch and H. Gleiter, 1989 (first report of softening); J. Schiøtz and K. W. Jacobsen, 2003 (molecular-dynamics maximum at 10–15 nm in Cu)',
       scope: String.raw`A schematic two-mechanism model, not a prediction: the crossover size $d_c$ and sliding exponent $m$ are free parameters (the default $d_c=15$ nm is chosen to match the simulated maximum in copper; experiments give a range, depend on sample preparation and are debated). The Hall–Petch constants are the rounded values of 4.6.`,
@@ -319,7 +317,7 @@ export default {
       num: '4.8',
       kind: 'Model',
       name: 'Solid-solution strengthening',
-      statement: String.raw`Foreign atoms dissolved in a metal distort the lattice (size misfit) and change its stiffness; each acts as a weak obstacle of peak force $f_m$ on a dislocation line of tension $T\approx Gb^2/2$. The line bows between the obstacles it meets and the stress to push it through is, for obstacles that are strong compared with $T$ (Friedel statistics), $$\tau_c\approx\frac{f_m^{3/2}}{b\sqrt{2T}}\;c^{1/2}$$ with $c$ the fraction of lattice sites occupied by solute. Since $f_m$ grows with the misfit $\varepsilon$ ($f_m\propto Gb^2\varepsilon$), the strengthening $\Delta\tau_c\propto G\,\varepsilon^{3/2}c^{1/2}$ (Fleischer); for weaker obstacles theory (Labusch) gives a steeper concentration dependence, $c^{2/3}$. The strengthening is largest for big misfit, which is why the Hume-Rothery size rule (2.3) matters.`,
+      statement: String.raw`Foreign atoms dissolved in a metal distort the lattice (size misfit) and change its stiffness; each acts as a weak obstacle of peak force $f_m$ on a dislocation line of tension $T\approx Gb^2/2$. The line bows between the obstacles it meets and the stress to push it through is, in the isolated-obstacle Friedel approximation, $$\tau_c\approx\frac{f_m^{3/2}}{b^2\sqrt{2T}}\;c^{1/2}$$ with $c$ the fraction of lattice sites occupied by solute. Since $f_m$ grows with the misfit $\varepsilon$ ($f_m\propto Gb^2\varepsilon$), the strengthening $\Delta\tau_c\propto G\,\varepsilon^{3/2}c^{1/2}$ (Fleischer); for weaker obstacles theory (Labusch) gives a steeper concentration dependence, $c^{2/3}$. The strengthening is largest for big misfit, which is why the Hume-Rothery size rule (2.3) matters.`,
       idea: String.raw`A straight line meets obstacles at random; it cannot avoid them and costs line-tension energy to bend. At stress $\tau$ the line bows into arcs of radius $T/(\tau b)$ between pinning points; the obstacles' mean spacing along the line is then $L\approx f_m/(\tau b)$ (force balance at a pin) and on the other hand $L^2\,n\approx 1$ for the line to sweep up one obstacle per segment ($n$ the areal density, $c/b^2$). Eliminating $L$ gives $\tau_c\propto f_m^{3/2}n^{1/2}/\sqrt T$. The simulation below does not use this argument: it integrates the line under applied stress among random obstacles (a Gaussian pinning force $f_m$ of range $b$) and records the stress at which it breaks free.`,
       caption: String.raw`Left: a dislocation line (blue) advancing upward through random solute atoms (dots) on its slip plane; drag *applied stress* from zero to the critical value (in units of the Friedel estimate $\tau_F$): the line bows against the pinning points, then at $\tau_c$ the first segment runs away and the whole line follows. Right: the critical stress found this way for five concentrations (each a fresh run on the same random field) compared with the Friedel formula and the $c^{1/2}$ and $c^{2/3}$ guide lines. Increase $f_m$ (bigger misfit) or concentration.`,
       deps: ['mat-2.3', 'mat-3.6'],
@@ -404,3 +402,5 @@ export default {
     },
   ],
 };
+
+export { makeField, relaxLine, rampLine, fftInPlace, pileUp, hpYield };

@@ -1,15 +1,9 @@
-// Networks & Collective Behavior — Chapter 4, part c: heavy tails in the wild (items 4.12–4.16)
-//
-// Sources checked (Oct 2026): Salganik, Dodds & Watts, Science 311: 854–856 (2006), doi 10.1126/science.1121066 — 14,341
-// participants, 48 songs, eight "social influence" worlds plus an independent condition, inequality by the Gini coefficient and
-// unpredictability u_i = average difference in market share of song i between pairs of worlds (text of the paper and its SOM);
-// Gabaix, QJE 114 (3): 739–767 (1999) — Zipf's law for cities from proportional (Gibrat) growth with a lower reflecting barrier;
-// US populations are the 2020 census counts of the 30 largest cities as listed on Wikipedia (List of United States cities by
-// population, Oct 2026); Brynjolfsson, Hu & Smith, Management Science 49 (11): 1580–1596 (2003) — niche books about 39% of
-// Amazon's 2000 sales on their extrapolated fit (as reported in their 2010 follow-up; not checked in the 2003 paper itself);
-// Broder et al. (WWW9, 2000), AltaVista crawl of May 1999: 203,549,046 nodes: SCC 56,463,993; IN 43,343,168; OUT 43,166,185;
-// TENDRILS 43,797,944; DISCONNECTED 16,777,756 (text of the paper at archives.iw3c2.org/www9/w9cdrom/160/160.html).
-// Simulations (market, city growth, configuration model, directed random graph) are models and are labelled as such.
+// Networks & Collective Behavior — Chapter 4c.
+// Relevant full originals reviewed: Salganik et al.2006 main text and SOM experimental design/metrics;
+// Gabaix1999 §§II–III.1, Proposition1; Brynjolfsson et al.2003 Eq13/Tables3–4;
+// Newman et al.2001 §II and directed model; Broder et al.2000 §3 counts/definitions.
+// Remaining flags:4.13 Louisville2020 source conflict;4.15 inaccessible Elberse2008 original.
+// Census cells and attempted-source evidence: docs/verification/soc-census-evidence.json and soc-source-review.md.
 import {
   rng32, mkGraph, components, giantTheory, gaussDraw, degreeSequence, configModel, digraphGnp, bowTie, lsq,
 } from './ch04.shared.js';
@@ -25,16 +19,16 @@ export default {
       num: '4.12',
       kind: 'Phenomenon',
       name: 'Unpredictable success in cultural markets (MusicLab)',
-      statement: String.raw`In the MusicLab experiment, 14,341 participants at a music website were offered 48 unknown songs and could listen and download. They were split into an **independent** condition, in which they saw only song names, and eight parallel **social-influence worlds**, in which they also saw how many times each song had been downloaded so far in their own world. Everything else was identical.
+      statement: String.raw`In the MusicLab experiment, 14,341 participants at a music website were offered 48 unknown songs and could listen and download. They were split into an **independent** condition, in which they saw only song names, and eight parallel **social-influence worlds**, in which they also saw how many times each song had been downloaded so far in their own world. The paper reports two experiments: the first used randomly ordered song grids; the second made social influence more prominent with a popularity-sorted list in the social worlds.
 
 (a) **Inequality**: the distribution of downloads was more unequal (higher Gini coefficient) in every social-influence world than in the independent condition, and more so when the download counts were displayed more prominently.
 
-(b) **Unpredictability**: the same songs, with the same pool of people, finished with very different market shares and ranks in different worlds; the average difference in a song's share between two worlds was larger with social influence.
+(b) **Unpredictability**: the same songs, offered to separately randomised groups from the same participant pool, finished with very different market shares and ranks in different worlds; the average difference in a song's share between two worlds was larger with social influence.
 
 (c) **Quality matters, only partly**: the best songs rarely did poorly and the worst rarely did well, but any other result was possible for songs in between.
 
 Success in such markets is therefore partly a property of the history: a cumulative advantage that early random luck can tip either way.`,
-      idea: String.raw`If each listener chooses with a probability that grows with a song's current popularity, early downloads are self-reinforcing: a song that gets a few extra early downloads in one world looks more attractive to the next listeners, which is exactly preferential attachment (4.9) on a market of 48 items. The eight worlds are eight independent runs of the same random process with the same ingredients, so differences between worlds are pure *path dependence*. This is why prediction from quality alone fails even with perfect knowledge of the songs, and why hits cannot be reliably identified in advance.`,
+      idea: String.raw`If each listener chooses with a probability that grows with a song's current popularity, early downloads are self-reinforcing: a song that gets a few extra early downloads in one world looks more attractive to the next listeners, a cumulative-advantage mechanism related to preferential attachment (4.9). Here the catalogue stays fixed at 48 songs; the growing-network model adds vertices. The eight worlds are eight independent runs of the same random process with the same ingredients, so differences between worlds reflect random choices amplified by feedback. In this experiment, quality alone did not determine the final ranking.`,
       caption: String.raw`A simple model, not the experimental data: each song has a fixed quality; a listener picks song $i$ with probability proportional to $(0.25+q_i)\,(1+d_i)^{\beta}$, where $d_i$ is the song's current download count in that world and $\beta$ is the strength of social influence. **Left**: market share against quality in 8 social worlds (dots); **right**: the same with $\beta=0$ in 8 independent groups of equal size. Drag $\beta$: the independent cloud hugs the dashed expectation, the social one scatters and becomes more unequal.`,
       scope: String.raw`The experiment's results are as reported in the paper (the 2006 *Science* report and its supporting online material). The simulation is a stylised stand-in with one download per listener and a power-law feedback of strength $\beta$; it is not fitted to the experimental data, so its numbers should not be compared with the paper's Gini coefficients.`,
       deps: ['soc-4.9'],
@@ -42,14 +36,13 @@ Success in such markets is therefore partly a property of the history: a cumulat
       tags: ['cumulative advantage', 'cultural markets', 'experiment'],
       credit: 'Salganik, Dodds & Watts, 2006',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Experimental_Study_of_Inequality_and_Unpredictability_in_an_Artificial_Cultural_Market', doi: 'https://doi.org/10.1126/science.1121066' },
-      verify: true,
       viz(v) {
         const NS = 48, a = Array.from({ length: NS }, (_, i) => 0.25 + (i + 0.5) / NS), q = a.map((x) => x - 0.25), asum = a.reduce((x, y) => x + y, 0);
         const bS = v.slider('social influence $\\beta$', 0, 2, 0.8, { step: 0.05 });
         const nS = v.slider('listeners per world', 200, 4000, 1750, { step: 50, int: true });
         let seed = 1; v.button('New worlds', () => { seed++; });
-        const L = v.stage({ x: [0.1, 0.9], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'with social influence (8 worlds)', minWidth: 280, weight: 1 });
-        const Rr = v.stage({ x: [0.1, 0.9], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'independent choices (8 groups)', minWidth: 280, weight: 1 });
+        const L = v.stage({ x: [0, 1], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'with social influence (8 worlds)', minWidth: 280, weight: 1 });
+        const Rr = v.stage({ x: [0, 1], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'independent choices (8 groups)', minWidth: 280, weight: 1 });
         const W = 8;
         const run = (beta, n, sd) => {
           const R = rng32(sd * 977 + 13), out = [];
@@ -72,7 +65,7 @@ Success in such markets is therefore partly a property of the history: a cumulat
           const beta = bS.value, n = nS.value, soc = sim(beta, n), ind = sim(0, n);
           const mx = Math.max(0.05, ...soc.flat(), ...ind.flat()) * 1.1;
           for (const [S, wl] of [[L, soc], [Rr, ind]]) {
-            S.setView([0.1, 0.9], [0, mx]);
+            S.setView([0, 1], [0, mx]);
             S.path(q.map((x, i) => [x, a[i] / asum]).map(([x, y]) => [x + 0.25 - 0.25, y]), { color: 'ink', width: 1.6, dash: [6, 4] });
           }
           const COL = ['accent', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
@@ -96,18 +89,18 @@ The best song's rank across the 8 social worlds: ${Math.min(...st.rb)} to ${Math
       num: '4.13',
       kind: 'Phenomenon',
       name: 'Gibrat’s proportional growth and city-size laws',
-      statement: String.raw`**Gibrat's law of proportional effect**: if the growth rate of each entity (firm, city) is independent of its size, then $\ln(\text{size})$ performs a random walk and the distribution of sizes becomes **lognormal**, with a spread that grows with time and no stationary limit.
+      statement: String.raw`**Gibrat's law of proportional effect**: under independent identically distributed log-growth increments with finite variance, $\ln(\text{size})$ performs a random walk and the distribution of sizes becomes **lognormal**, with a spread that grows with time and no stationary limit.
 
 **Zipf's law for cities**: ranked by population, the $r$th largest city has size roughly $S_r\approx S_1/r$: the rank–size plot is a line of slope $-1$ on log–log axes, equivalently the tail $P(S>s)\propto s^{-\zeta}$ with $\zeta\approx1$.
 
-**Gabaix (1999)** showed that the two are linked: if cities grow proportionally *and* have a **lower reflecting barrier** (very small cities cannot shrink without bound), the stationary size distribution is a power law with $\zeta=1$ when cities' mean relative growth is the same (zero in relative terms). Zipf's law is thus a property of the *process* (random multiplicative growth with a floor), not of any particular city.`,
+**Gabaix (1999)** showed that the two are linked: if cities grow proportionally *and* have a **lower reflecting barrier** (very small cities cannot shrink without bound), the stationary size distribution is a power law. In the normalised, finite-mean model of Proposition 1, $\zeta=1/(1-S_{\min}/\bar S)$ approaches 1 as the relative floor becomes negligible; setting the interior arithmetic drift to zero gives the limiting exponent 1 and an infinite-mean idealisation. Zipf's law is thus a property of the *process* (random multiplicative growth with a floor), not of any particular city.`,
       idea: String.raw`Write $x=\ln S$. Proportional growth gives a random walk with variance $\sigma^2$ per step and drift $\mu-\sigma^2/2$ for mean relative growth $\mu$. A walk with negative drift confined above a barrier settles to an exponential law $P(x>y)\propto e^{-\zeta y}$ with $\zeta=2\,|\text{drift}|/\sigma^2$; in the variable $S=e^x$ this is the power law $P(S>s)\propto s^{-\zeta}$. If the mean *relative* growth of every city is zero (they all grow with the economy), the drift is $-\sigma^2/2$, so $\zeta=1$. Without the barrier the walk spreads without limit, giving the lognormal. The Pareto/Zipf form is the same one that preferential attachment (4.9) produces by another route.`,
       caption: String.raw`**Left**: a model: 2000 cities of equal size grow by random factors for $T$ steps (each step multiplies by $e^{\sigma z-\sigma^2/2}$, mean 1); with the barrier on, none may fall below its starting size. The rank–size curve straightens towards slope $-1$ (dashed line, drawn through the 10th city); with the barrier off it keeps bending (lognormal). **Right**: the 30 largest US cities (2020 census): size against rank on the same axes.`,
-      scope: String.raw`Real city-size distributions fit Zipf's law only approximately (the exponent depends on how a "city" is defined and on the country; the largest cities are often off the line) and the barrier is a modelling assumption that critics find artificial (cities can disappear, and the mean growth need not be equal across sizes). The simulation is a model; the US figures are census counts for the 30 largest cities by the 2025 estimate.`,
-      deps: ['soc-4.7', 'geog-9.9'],
+      scope: String.raw`Gabaix fits metropolitan agglomerations, whereas this display uses municipal boundaries. Real city-size distributions fit Zipf's law only approximately (the exponent depends on how a "city" is defined and on the country; the largest cities are often off the line) and the barrier is a modelling assumption; cities can disappear and mean growth need not be equal across sizes. The simulation is a model; 29 displayed population cells match official 2020 Census QuickFacts rows. Louisville’s historical 633,045 balance count conflicts with the current official 2020 field (386,884); that boundary/data discrepancy remains unresolved. These are 2020 counts, not 2025 estimates.`,
+      deps: ['soc-4.7', 'geog-9.9', 'prob-3.4.1'],
       refs: ['Newman ch. 10'],
       tags: ['Zipf', 'city sizes', 'proportional growth'],
-      credit: 'Gibrat, 1931; Zipf, 1949; Gabaix, 1999',
+      credit: 'Gabaix, 1999, pp. 739–750 (mechanism and qualifications)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Zipf%27s_law#City_sizes', doi: 'https://doi.org/10.1162/003355399556133' },
       verify: true,
       viz(v) {
@@ -147,7 +140,7 @@ US cities: fitted slope for the top 30 is **${v.fix(st.us, 2)}**; New York ÷ 10
       num: '4.14',
       kind: 'Model',
       name: 'The configuration model',
-      statement: String.raw`Given a degree sequence $(k_1,\dots,k_n)$ with even sum, the **configuration model** gives vertex $i$ a number $k_i$ of half-edges ("stubs") and pairs all stubs uniformly at random; it is a uniformly random multigraph with that degree sequence (conditioning on "simple" gives a uniform simple graph). It keeps the degrees and randomises everything else, so it is the null model for "what follows from the degrees alone?".
+      statement: String.raw`Given a degree sequence $(k_1,\dots,k_n)$ with even sum, the **configuration model** gives vertex $i$ a number $k_i$ of half-edges ("stubs") and pairs all stubs uniformly at random; the pairing is uniform, but distinct multigraphs need not be equally probable. Conditioning on a simple graph does give a uniform simple graph with that degree sequence. It keeps the degrees and randomises everything else, so it is the null model for "what follows from the degrees alone?".
 
 With degree distribution $p_k$ and mean $\langle k\rangle$:
 
@@ -155,16 +148,15 @@ With degree distribution $p_k$ and mean $\langle k\rangle$:
 
 (b) Since friends have degree $\langle k^2\rangle/\langle k\rangle$ on average, which exceeds $\langle k\rangle$ whenever the degrees vary (Cauchy–Schwarz), this explains the **friendship paradox** (soc-2.4) in closed form.
 
-(c) **Molloy–Reed criterion**: a giant component exists iff $\langle k^2\rangle-2\langle k\rangle>0$, i.e. when the mean excess degree exceeds 1 (the analogue of $c>1$ in 4.2); its size follows from $u=\sum_k q_k u^{k}$ and $S=1-\sum_kp_ku^k$.`,
-      idea: String.raw`Pick an edge at random and then an end of it: you land on a vertex of degree $k$ with probability proportional to $k\,p_k$, because a vertex with $k$ stubs has $k$ chances of being chosen. That single observation, normalised, is $q_k$. Exploring a component then behaves like a branching process whose offspring distribution is $q_k$ (not $p_k$) after the first step, so the process survives exactly when its mean $\langle k^2\rangle/\langle k\rangle-1$ exceeds one, and the extinction probability $u$ is the fixed point of its generating function $G_1(u)=\sum_k q_ku^k$. For Poisson degrees $q=p$ and the criterion is $c>1$ (4.2); for heavy-tailed $p_k$, $\langle k^2\rangle$ is huge and a giant component exists however sparse the network.`,
+(c) **Molloy–Reed criterion**: away from the singular critical cases described below, a giant component exists iff $\langle k^2\rangle-2\langle k\rangle>0$, i.e. when the mean excess degree exceeds 1 (the analogue of $c>1$ in 4.2); its size follows from $u=\sum_k q_k u^{k}$ and $S=1-\sum_kp_ku^k$.`,
+      idea: String.raw`Pick an edge at random and then an end of it: you land on a vertex of degree $k$ with probability proportional to $k\,p_k$, because a vertex with $k$ stubs has $k$ chances of being chosen. That single observation, normalised, is $q_k$. Exploring a component then behaves like a branching process whose offspring distribution is $q_k$ (not $p_k$) after the first step, so the process survives exactly when its mean $\langle k^2\rangle/\langle k\rangle-1$ exceeds one, and the extinction probability $u$ is the fixed point of its generating function $G_1(u)=\sum_k q_ku^k$. For Poisson degrees $q=p$ and the criterion is $c>1$ (4.2); for heavy-tailed $p_k$, $\langle k^2\rangle$ is huge and the branching factor can be large even when the mean degree is modest; the giant criterion still has to be checked.`,
       caption: String.raw`A model: 3000 vertices with a degree sequence from the chosen family, wired by random stub matching (loops and repeated pairs dropped). **Left**: the degree distribution $p_k$ (bars) and the excess-degree distribution measured at random edge ends (dots) against $(k+1)p_{k+1}/\langle k\rangle$ (line). **Right**: mean degree of a vertex's neighbours against its own degree: flat at $\langle k^2\rangle/\langle k\rangle$, above the diagonal for most vertices (the friendship paradox). Compare the giant component with the prediction.`,
-      scope: String.raw`Exact for the multigraph model as $n\to\infty$ with bounded moments; with $n=3000$, loops and multiple edges are dropped, which matters for the high-degree tail of the power-law family (capped at degree 800). The power-law family has exponent about 2.5 (its mean degree follows the slider only roughly, because of the heavy tail).`,
-      deps: ['soc-4.1', 'soc-2.4'],
+      scope: String.raw`The branching formulas describe the large-$n$ configuration model under the usual moment and nondegeneracy assumptions, away from criticality. Degree-two-only graphs are a singular critical case (random cycles), so the strict supercritical criterion does not describe their largest cycle. With $n=3000$, loops and multiple edges are dropped, which matters for the high-degree tail of the power-law family (capped at degree 800). The power-law family has exponent about 2.5 (its mean degree follows the slider only roughly, because of the heavy tail).`,
+      deps: ['soc-4.1', 'soc-2.4', 'stoch-3.9', 'ladr-6.14'],
       refs: ['Newman ch. 12'],
       tags: ['configuration model', 'degree', 'friendship paradox'],
-      credit: 'Bender & Canfield, 1978; Bollobás, 1980; Molloy & Reed, 1995; Newman, Strogatz & Watts, 2001',
+      credit: 'Newman, Strogatz & Watts, 2001, §II (branching formulas)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Configuration_model' },
-      verify: true,
       viz(v) {
         const fam = v.select('degree distribution', [{ value: 'poisson', label: 'Poisson' }, { value: 'geometric', label: 'geometric' }, { value: 'power', label: 'power law' }, { value: 'bimodal', label: 'leaves and hubs' }, { value: 'regular', label: 'regular' }], 'geometric');
         const cS = v.slider('mean degree (about)', 1, 8, 3, { step: 0.25 });
@@ -271,16 +263,15 @@ Reported: niche books ≈ 39% of Amazon's 2000 sales (extrapolated power-law fit
 (d) **tendrils** (43.8 million, 21.5%): pages attached only to IN or OUT, including "tubes" that link IN directly to OUT;
 (e) **disconnected** pieces (16.8 million, 8.2%).
 
-The proportions of the regions are properties of the crawl and its date (later studies, with other crawls, find the same shape with different proportions).`,
-      idea: String.raw`In a directed random graph with mean out-degree $c>1$, a vertex reaches a giant set with probability $S$ (the branching-process survival probability of 4.2, $S=1-e^{-cS}$) and is reached from a giant set with the same probability. The core is the intersection, of relative size $S^2$; IN and OUT are the vertices that only reach, or are only reached by, the giant set (each $S(1-S)$); the rest, $(1-S)^2$, are the tendrils, tubes and disconnected parts. The Web's four big regions of similar size are what a not-too-sparse directed graph with heavy-tailed degrees tends to produce; a bow-tie shape does *not* mean the Web is a random graph.`,
+The proportions of the regions are properties of this crawl and its date; they are not universal constants.`,
+      idea: String.raw`In a directed Erdős–Rényi graph with independent Poisson-limit in- and out-degrees of mean $c>1$, a vertex reaches a giant set with probability $S$ (the branching-process survival probability of 4.2, $S=1-e^{-cS}$) and is reached from a giant set with the same probability. The core is the intersection, of relative size $S^2$; IN and OUT are the vertices that only reach, or are only reached by, the giant set (each $S(1-S)$); the rest, $(1-S)^2$, are the tendrils, tubes and disconnected parts. The crawl’s observed proportions do not follow from these Poisson formulas, and a bow-tie shape does not establish that the Web is a random graph.`,
       caption: String.raw`A model, not a crawl: 400 pages with random directed links, mean out-degree $c$. The page classes (core, IN, OUT, tendrils and tubes, disconnected) are computed by actual reachability searches and laid out as a bow-tie. **Right**: the shares of the six classes in this graph against the shares in the 1999 AltaVista crawl and the large-$n$ prediction for directed random graphs ($S^2$ for the core, $S(1-S)$ for IN and OUT). Drag $c$ across 1 to see the core appear.`,
       scope: String.raw`The percentages for AltaVista are the figures in the original paper (May 1999 crawl, 203,549,046 pages; the paper lists tendrils as one class, here labelled as such, and calls the tubes a sub-class). The simulated graph is a plain directed Erdős–Rényi graph with only 400 vertices, so its classes fluctuate from draw to draw and the tubes are rare.`,
-      deps: ['soc-2.2'],
+      deps: ['soc-2.2', 'algo-8.7', 'stoch-3.9'],
       refs: ['E&K §13.4'],
       tags: ['web', 'directed graphs', 'connectivity'],
       credit: 'Broder, Kumar, Maghoul, Raghavan, Rajagopalan, Stata, Tomkins & Wiener, 2000',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bow-tie_structure' },
-      verify: true,
       viz(v) {
         const cS = v.slider('mean out-degree $c$', 0.3, 4, 1.6, { step: 0.05 });
         let seed = 4; v.button('New graph', () => { seed++; });

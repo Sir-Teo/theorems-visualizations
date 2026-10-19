@@ -1,0 +1,110 @@
+{
+  "catalogue": "CDS J/MNRAS/427/343, McDonald et al.2012 Table2",
+  "url": "https://cdsarc.cds.unistra.fr/ftp/J/MNRAS/427/343/table2.dat.gz",
+  "sha256": "3e1c0760751027fd964b894b85b3586ce50f01b187bc85b327f630c01c0edb8d",
+  "record_count": 107619,
+  "selected_giants": [
+    {
+      "HIP": 765,
+      "distance": 44.21,
+      "eDist": 0.02,
+      "T": 4918,
+      "L": 60.63,
+      "nIR": 6.0,
+      "EIR": 0.94,
+      "R": 10.725545267100957,
+      "raw": "   765|002.35224983|-45.74698832|     44.21 |   0.02| 4918|          60.63|420.  |21300| 0.000|1.101|0.000|0.894|1.032|0.000|0.000|0.000|0.000|0.000|0.000|0.000|0.000| 1.042|1.042|0.000| 1.123| 0.000| 0.000| 0.000| 1.036|  0.713|  0.000|   0.685|   0.000|  0.000|6.   |  0.940|1.412e-03| 4.2"
+    },
+    {
+      "HIP": 24372,
+      "distance": 150.6,
+      "eDist": 0.02,
+      "T": 4433,
+      "L": 423.64,
+      "nIR": 4.0,
+      "EIR": 1.014,
+      "R": 34.89439411695559,
+      "raw": " 24372|078.43927831|-67.18534974|    150.60 |   0.02| 4433|         423.64|420.  |25000| 0.000|1.158|0.000|0.806|0.965|0.000|0.000|0.000|0.000|0.986|1.000|1.082|0.000| 0.000|0.000|0.000| 0.000| 0.892| 0.000| 1.287| 0.000|  0.000|  0.760|   0.000|   0.000|  1.118|4.   |  1.014|1.804e-03|12."
+    },
+    {
+      "HIP": 63355,
+      "distance": 99.4,
+      "eDist": 0.03,
+      "T": 3881,
+      "L": 353.27,
+      "nIR": 4.0,
+      "EIR": 0.99,
+      "R": 41.57370581180632,
+      "raw": " 63355|194.73110802|+17.40936045|     99.40 |   0.03| 3881|         353.27|420.  |25000| 0.000|1.197|0.000|0.815|1.003|0.000|0.000|0.000|0.000|1.078|0.999|0.952|0.000| 0.000|0.000|0.000| 0.000| 0.892| 0.000| 1.228| 0.000|  0.000|  0.780|   0.000|   0.000|  1.060|4.   |  0.990|2.082e-03|12."
+    }
+  ],
+  "selection": "3800<T<5100K,20<L<1500Lsun,0<d<200pc,0<eDist<=.05,nIR>=3,.9<EIR<1.1,at least5 retained short-wave flux ratios and all0.8\u20131.2; then three explicitly chosen examples, not a random or complete sample. Fixed byte columns and full ReadMe inspected; zero-valued flux ratios mean missing data, not zero measured flux.",
+  "binary_components": {
+    "source": "Eker et al.2018 Table1, complete rows1\u201310 inspected",
+    "inputs": "source radius R/Rsun and effective temperature K; luminosity derived with nominal5772K",
+    "rows": [
+      [
+        "V421 Peg A",
+        1.584,
+        7250
+      ],
+      [
+        "V421 Peg B",
+        1.356,
+        6980
+      ],
+      [
+        "DV Psc A",
+        0.685,
+        4450
+      ],
+      [
+        "DV Psc B",
+        0.514,
+        3614
+      ],
+      [
+        "MU Cas A",
+        4.192,
+        14750
+      ],
+      [
+        "MU Cas B",
+        3.671,
+        15100
+      ],
+      [
+        "GSC4019-3345 A",
+        1.76,
+        8600
+      ]
+    ]
+  },
+  "white_dwarfs": {
+    "source": "Bond, Bergeron & Bedard2017 arXiv1709.00478 \u00a74,\u00a76.3,Table1 (full relevant sections/complete table inspected)",
+    "rows": [
+      [
+        "Procyon B",
+        7740,
+        0.01232
+      ],
+      [
+        "Sirius B",
+        25369,
+        0.008098
+      ],
+      [
+        "40 Eridani B",
+        17200,
+        0.01308
+      ]
+    ],
+    "columns": [
+      "name",
+      "Teff_K",
+      "R_Rsun"
+    ],
+    "luminosity": "derived with nominal5772K;40EriB agrees with directly reported0.01349\u00b1.00054Lsun"
+  },
+  "illustrative": "example supergiant3500K,1e5Lsun is chosen, not measured"
+}

@@ -1,5 +1,5 @@
 // Condensed Matter Physics — Chapter 4: Semiconductors and devices (items 4.7–4.12; 4.1–4.6 in ch04.js)
-import { PI, KB, Q, EPS0, MAT, eg, niB, pnEquilibrium, mosModel, wellLevels, wellPsi } from './ch04.shared.js';
+import { PI, KB, Q, EPS0, MAT, eg, niB, pnEquilibrium, mosModel, wellLevels, wellPsi, excitonLineStrength, excitonRadius } from './ch04.shared.js';
 
 const dens = (M) => (x) => { const k = Math.floor(Math.log10(x) + 1e-9), m = x / 10 ** k; return (Math.abs(m - 1) < 0.01 ? '' : m.toFixed(1) + '×') + M.pow10Text(k); };
 const MOB = { Si: [1350, 480], Ge: [3900, 1900], GaAs: [8500, 400] }; // lightly doped electron/hole mobilities at 300 K, cm²/Vs (textbook values, quoted from memory)
@@ -36,7 +36,7 @@ so the layer extends mostly into the lightly doped side.`,
       idea: String.raw`In equilibrium the drift current driven by the built-in field cancels the diffusion current of each carrier species, which is the Einstein relation (cm-4.6) applied across the junction; equivalently the chemical potential is constant, so the band edges must shift by the difference of the two bulk chemical potentials, $V_{bi}$. Charge neutrality demands equal total ionic charge on the two sides, $N_ax_p=N_dx_n$. Integrating Gauss's law (vcalc-9.4, Poisson's equation) once across a uniformly charged slab gives the triangular field; integrating again gives the parabolic band bending whose total height must be $V_{bi}$, which fixes $W$.`,
       caption: String.raw`The equation $\psi''=(2\sinh\psi-C(x)/n_i)/\lambda^2$ for the potential is solved **numerically** on a grid (Newton's method), with exact Boltzmann carriers and no assumption of an abrupt depletion edge. **Left:** band diagram with $E_c$, $E_i$, $E_v$ and the flat Fermi level. **Right:** the net charge density $\rho/e=p-n+N_d-N_a$ (blue positive, red negative) and the field $E(x)$ (orange), each scaled to its own peak. Dashed: the depletion approximation. Move the doping sliders: the layer spreads into the lighter side, $V_{bi}$ rises only logarithmically, and with doping near $10^{18}$ cm$^{-3}$ the bands bend by most of the gap.`,
       scope: String.raw`Abrupt step junction, equilibrium (no applied bias), Boltzmann statistics (valid for doping below $\sim10^{18}$–$10^{19}$ cm$^{-3}$; heavier doping degenerates), complete ionization, $T=300$ K, one-dimensional geometry. The depletion approximation is accurate to about the Debye length of the more lightly doped side.`,
-      deps: ['cm-4.6', 'vcalc-9.4'],
+      deps: ['cm-4.6', 'vcalc-9.4', 'pde-1.5'],
       refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 8'],
       tags: ['p-n junction', 'depletion', 'built-in potential'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/P%E2%80%93n_junction' },
@@ -94,7 +94,7 @@ so the layer extends mostly into the lightly doped side.`,
 $$J=J_0\left(e^{eV/k_BT}-1\right),\qquad J_0=en_i^2\left(\frac{D_p}{L_pN_d}+\frac{D_n}{L_nN_a}\right),\quad L=\sqrt{D\tau}.$$
 It rises exponentially (a factor $10$ for every $k_BT\ln10/e\approx60$ mV at 300 K) in forward bias and saturates at $-J_0$ in reverse. The reverse saturation current $J_0\propto n_i^2$ grows rapidly with temperature, like $e^{-E_g/k_BT}$. Real diodes also show a recombination current of the depletion region $\propto e^{eV/2k_BT}$ at low bias, and are limited by series resistance at high bias.`,
       idea: String.raw`The bias does not change the built-in field's job in the neutral regions but lowers the barrier to $V_{bi}-V$, so the product of the densities at the edges of the depletion region becomes $np=n_i^2e^{eV/k_BT}$ (the quasi-Fermi levels split by $eV$ and stay flat across the thin depletion layer, cm-4.3). The minority carriers injected into the neutral regions, $\Delta n_p=n_{p0}(e^{eV/k_BT}-1)$, diffuse and recombine over their diffusion length $L$ (Fick's law with Einstein's $D=\mu k_BT/e$, cm-4.6), and the current at the depletion edge is $eD\,\Delta n_p/L$. Adding electrons and holes gives the formula. Carriers generated in the depletion layer and lost to recombination there add the $e^{eV/2k_BT}$ term.`,
-      caption: String.raw`Drag the **bias** handle on the current–voltage plot (log scale, $|J|$ against $V$; reverse currents are dashed). **Left:** the band diagram of the junction under that bias, to scale in the depletion region: the barrier shrinks by $V$, the quasi-Fermi levels $F_n$, $F_p$ split by $eV$ over the depletion layer and merge again over a diffusion length (drawn compressed, not to scale). Choose the **model**: ideal Shockley gives a straight line of slope $60$ mV per decade; adding depletion-layer recombination bends the low-bias part to $120$ mV per decade; adding series resistance flattens the top. The readout gives the local ideality factor $n=(dV/d\ln J)/V_T$.`,
+      caption: String.raw`Drag the **bias** handle on the current–voltage plot (log scale, $|J|$ against $V$; reverse currents are dashed). **Left:** the band diagram of the junction under that bias, to scale in the depletion region: the barrier shrinks by $V$, the quasi-Fermi levels $F_n$, $F_p$ split by $eV$ over the depletion layer and merge again over a diffusion length (drawn compressed, not to scale). Choose the **model**: ideal Shockley approaches a straight line of slope $60$ mV per decade when $J\gg J_0$; adding depletion-layer recombination bends the low-bias part to $120$ mV per decade; adding series resistance flattens the top. The readout gives the local ideality factor $n=(dV/d\ln J)/V_T$.`,
       scope: String.raw`Abrupt junction, low-level injection, narrow-base-free "long diode" ($L$ much shorter than the contact distance), uniform lifetime $\tau$ and constant mobilities $\mu_n,\mu_p$ (lightly-doped textbook values: Si $1350/480$, Ge $3900/1900$, GaAs $8500/400$ cm$^2$/Vs, from memory); recombination current in the Sah–Noyce–Shockley form $\tfrac{en_iW}{2\tau}(e^{eV/2k_BT}-1)$ with $W(V)$ from the depletion approximation. Breakdown, high-level injection and tunnelling are not modelled.`,
       deps: ['cm-4.7'],
       refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 8'],
@@ -239,7 +239,7 @@ where $A$ is the rate of non-radiative (defect) recombination, $B$ the radiative
 $$V_T=V_{fb}+2\varphi_F+\frac{\sqrt{4\varepsilon eN_a\varphi_F}}{C_{ox}},\qquad C_{ox}=\varepsilon_{ox}/t_{ox}.$$
 Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac WL\bigl[(V_g-V_T)V_d-\tfrac12V_d^2\bigr]$ (linear regime) and saturates at $\tfrac12\mu C_{ox}\tfrac WL(V_g-V_T)^2$ for $V_d>V_g-V_T$; below $V_T$ it falls exponentially, one decade per $\sim60$–$100$ mV.`,
       idea: String.raw`The gate and the semiconductor form a capacitor in series with the semiconductor's own space-charge layer, so the gate voltage divides as $V_g-V_{fb}=\psi_s+|Q_s|/C_{ox}$, where the charge $Q_s(\psi_s)$ follows from integrating Poisson's equation (vcalc-9.4) through the bent bands with Boltzmann carriers (cm-4.3). Once $\psi_s$ reaches $2\varphi_F$ the electron density at the surface grows as $e^{\psi_s/k_BT}$, so any additional gate voltage goes almost entirely into more channel charge $Q_{inv}$ instead of more band bending: $\psi_s$ pins near $2\varphi_F$. Source-to-drain, the channel charge is a resistor controlled by $V_g$; as $V_d$ approaches $V_g-V_T$ the charge at the drain end vanishes (pinch-off) and the current saturates.`,
-      caption: String.raw`Drag the **gate voltage**. **Left:** the band diagram of the gate/oxide/silicon stack at the true surface potential (from the exact Poisson solution): the Fermi level of the metal moves down by $eV_g$, the silicon bands bend down, the pale shading marks where the electrons outnumber the holes ($n>p$, the surface is inverted) and the dark sliver at the surface is the channel proper, where $n$ exceeds even the bulk hole density $N_a$. Choose the **right-hand panel**: the transfer curve $I_d(V_g)$ on a log scale (exponential subthreshold turn-on, then square-law-like growth), the output family $I_d(V_d)$ (linear region and saturation), or the surface potential $\psi_s(V_g)$, which stops rising near $2\varphi_F$. Vary the doping and the oxide thickness: thinner oxide and lighter doping lower $V_T$ and sharpen the turn-on.`,
+      caption: String.raw`Drag the **gate voltage**. **Left:** the band diagram of the gate/oxide/silicon stack at the true surface potential (from a numerical Poisson–Boltzmann solution): the Fermi level of the metal moves down by $eV_g$, the silicon bands bend up in accumulation and down in depletion and inversion, the pale shading marks where the electrons outnumber the holes ($n>p$, the surface is inverted) and the dark sliver at the surface is the channel proper, where $n$ exceeds even the bulk hole density $N_a$. Choose the **right-hand panel**: the transfer curve $I_d(V_g)$ on a log scale (exponential subthreshold turn-on, then square-law-like growth), the output family $I_d(V_d)$ (linear region and saturation), or the surface potential $\psi_s(V_g)$, which stops rising near $2\varphi_F$. Vary the doping and the oxide thickness: thinner oxide and lighter doping lower $V_T$ and sharpen the turn-on.`,
       scope: String.raw`Ideal $n$-channel device on $p$-type Si at 300 K: no interface charge, equal work functions ($V_{fb}=0$), uniform doping, one-dimensional (long-channel, no short-channel effects, velocity saturation or tunnelling through thin oxide), constant inversion-layer mobility $400$ cm$^2$/Vs and $W/L=10$. The current is a numerical charge-sheet integral (Brews), including weak inversion; the textbook threshold formula marks where $\psi_s=2\varphi_F$.`,
       deps: ['cm-4.7', 'cm-4.3'],
       refs: ['Ashcroft–Mermin ch. 29', 'Kittel ch. 17'],
@@ -261,17 +261,17 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
           const k = `${Nas.value}|${tox.value}`;
           if (k !== key) { key = k; mos = mosModel(Nas.value, tox.value); cache = {}; }
           const Vg = Vgs.value, Vd = Vds.value, Eg = 1.12;
-          const psis = Math.max(-0.3, mos.psiOf(Vg)), prof = mos.profile(Math.max(psis, 0.0));
+          const psis = mos.psiOf(Vg), prof = mos.profile(psis);
           const phiF = mos.phiF, Ecinf = Eg / 2 + phiF, tx = tox.value;
           const zEnd = prof[prof.length - 1][0], zmax = Math.max(40, Math.min(zEnd * 1.15, mos.Wm * 1e7 * 1.5));
           const Ec = (psi) => Ecinf - psi;
-          const ymin = Math.min(-Vg, Ecinf - Eg, Ec(Math.max(psis, 0)) - Eg) - 0.25, ymax = Ecinf + 0.45;
+          const ymin = Math.min(-Vg, Ecinf - Eg, Ec(psis) - Eg) - 0.25, ymax = Math.max(Ecinf, Ec(psis)) + 0.45;
           sB.setView([-(tx + 14), zmax], [ymin, ymax]);
           // metal, oxide
           sB.rect(-(tx + 12), ymin, -tx, ymax, { fill: 'muted', fillAlpha: 0.12, stroke: false }); sB.rect(-tx, ymin, 0, ymax, { fill: 'orange', fillAlpha: 0.1, stroke: false });
           sB.text('gate', -(tx + 6), ymax - 0.1, { size: 10, color: 'muted', align: 'center', baseline: 'top' }); sB.text('oxide', -tx / 2, ymax - 0.32, { size: 10, color: 'orange', align: 'center', baseline: 'top' });
           sB.line(-(tx + 12), -Vg, -tx, -Vg, { color: 'ink', width: 2.2 });
-          const Vox = Vg - psis, Ec0 = Ec(Math.max(psis, 0));
+          const Vox = Vg - psis, Ec0 = Ec(psis);
           sB.line(-tx, Ec0 - Vox, 0, Ec0, { color: 'accent', width: 1.4, dash: [4, 4], alpha: 0.7 }); sB.line(-tx, Ec0 - Vox - Eg, 0, Ec0 - Eg, { color: 'green', width: 1.4, dash: [4, 4], alpha: 0.7 });
           // silicon bands
           const zs = prof.map((p) => p[0]), ps = prof.map((p) => p[1]);
@@ -282,7 +282,7 @@ Above $V_T$ the drain current of a long channel is $I_d\approx\mu C_{ox}\tfrac W
           if (zEnd > 0.5) sB.line(zEnd, ymin, zEnd, ymax, { color: 'faint', width: 1, dash: [3, 4] });
           sB.path(path((p) => Ec(p)), { color: 'accent', width: 2.8 }); sB.path(path((p) => Ec(p) - Eg), { color: 'green', width: 2.8 }); sB.path(path((p) => Ec(p) - Eg / 2), { color: 'muted', width: 1.2, dash: [4, 4] });
           sB.hline(0, { color: 'ink', width: 1.6, alpha: 0.8 }); sB.text('$E_F$', zmax * 0.94, 0.12, { size: 11, color: 'ink' }); sB.text(`$-eV_g$`, -(tx + 6), -Vg + 0.08, { size: 10, color: 'ink', align: 'center' });
-          sB.text(psis < phiF ? 'depletion' : psis < 2 * phiF - 0.03 ? 'weak inversion' : 'strong inversion', zmax * 0.5, ymax - 0.12, { size: 12, color: 'blue', align: 'center', baseline: 'top' });
+          sB.text(psis < 0 ? 'accumulation' : psis < phiF ? 'depletion' : psis < 2 * phiF - 0.03 ? 'weak inversion' : 'strong inversion', zmax * 0.5, ymax - 0.12, { size: 12, color: 'blue', align: 'center', baseline: 'top' });
           // right panel
           const VT = mos.VT;
           if (view.value === 'transfer') {
@@ -392,11 +392,11 @@ which moves to higher energy (to the blue) as $L$ shrinks, tunable by the width.
       statement: String.raw`An electron in the conduction band and a hole in the valence band attract each other through the screened Coulomb potential and can form a bound pair, an **exciton**. In the Wannier–Mott limit (weak binding, orbit large compared with the lattice constant) it is a hydrogen atom with the reduced mass $\mu=m_e^*m_h^*/(m_e^*+m_h^*)$ and dielectric constant $\varepsilon$:
 $$E_n=E_g-\frac{\mathrm{Ry}^*}{n^2},\qquad \mathrm{Ry}^*=\frac{\mu}{m_0}\frac{13.6\ \text{eV}}{\varepsilon^2},\qquad a_B^*=\varepsilon\frac{m_0}{\mu}a_0 .$$
 These discrete lines lie just below the gap in the absorption spectrum; their strengths fall as $n^{-3}$, and they pass into the continuum above $E_g$ (Elliott). Real series show a **quantum defect**, $n\to n-\delta_l$, from the non-Coulombic short-range potential.`,
-      idea: String.raw`The pair's relative motion in a crystal is the hydrogen problem (qm-8.12) in the effective-mass approximation (as for donors, cm-4.4, but with the hole mass in place of the infinite ionic mass, so $\mu$ appears), while the centre of mass moves freely. A photon creates an exciton at zero relative separation, so the line strength is proportional to $|\psi_n(0)|^2\propto n^{-3}$; the spacing between neighbouring lines is $\approx2\mathrm{Ry}^*/n^3$, also $\propto n^{-3}$, which makes the continuum limit smooth and means that lines merge when the spacing falls below the line width. In ordinary semiconductors $\mathrm{Ry}^*\sim$ a few meV, so only $n=1,2,3$ are seen; in cuprous oxide $\mathrm{Ry}^*\approx92$ meV and a very clean crystal shows lines up to $n=25$, with orbits larger than a micron.`,
-      caption: String.raw`Choose the crystal and the **resolution** (linewidth $\Gamma$). **Left:** absorption below the gap against the binding energy $E_b=E_g-E$ on a logarithmic axis, so the series appears as peaks that bunch up towards the gap (the dashed line at $1$ is the smooth continuum that the lines approach). Sharpen the resolution to see more lines; the peaks of order $n$ merge once $2\mathrm{Ry}^*/n^3<\Gamma$. The buttons set the two resolutions of the Cu$_2$O experiment (a 5 neV laser and a 10 $\mu$eV white-light spectrometer). **Right:** the size of the orbit, $\langle r\rangle\approx\tfrac12[3n^2-l(l+1)]\,a_B^*$, against $n$ (drag the handle) compared with the lattice constant and the wavelength of light.`,
-      scope: String.raw`Wannier–Mott excitons with isotropic hydrogenic Coulomb binding (no exchange splitting, no polaritons, no phonon broadening beyond the chosen $\Gamma$). Cu$_2$O yellow $P$ series: $E_g=2.17208$ eV, $\mathrm{Ry}^*=92$ meV, $\delta_P=0.23$ (fit parameters of Kazimierczuk et al. 2014, sample at 1.2 K; the plotted lines are the fit formula, not raw spectra); the Cu$_2$O static dielectric constant $\varepsilon\approx7.5$ used for the orbit size is quoted from memory. GaAs: $\mathrm{Ry}^*=4.2$ meV (the value quoted in the same paper); $\varepsilon=12.9$.`,
+      idea: String.raw`The pair's relative motion in a crystal is the hydrogen problem (qm-8.12) in the effective-mass approximation (as for donors, cm-4.4, but with the hole mass in place of the infinite ionic mass, so $\mu$ appears), while the centre of mass moves freely. For dipole-allowed band transitions the envelope is an $S$ state and its line strength is proportional to $|\psi_n(0)|^2\propto n^{-3}$. The Cu$_2$O yellow bands have the same parity: $S$ envelopes are dipole forbidden, while $P$ envelopes are allowed and have strength $\propto(n^2-1)/n^5$, asymptotically $n^{-3}$; the spacing between neighbouring lines is $\approx2\mathrm{Ry}^*/n^3$, also $\propto n^{-3}$, which makes the continuum limit smooth and means that lines merge when the spacing falls below the line width. The 2014 paper quotes $\mathrm{Ry}^*=4.2$ meV for GaAs, with $n=3$ the highest state reported there; in cuprous oxide $\mathrm{Ry}^*\approx92$ meV and a very clean crystal shows lines up to $n=25$, with orbits larger than a micron.`,
+      caption: String.raw`Choose the crystal and the **resolution** (linewidth $\Gamma$). The Lorentzian envelopes and spacing criterion illustrate resolution; the paper's laser bandwidth is not the exciton linewidth. **Left:** absorption below the gap against the binding energy $E_b=E_g-E$ on a logarithmic axis, so the series appears as peaks that bunch up towards the gap (the dashed line at $1$ is the smooth continuum that the lines approach). Sharpen the resolution to see more lines; the peaks of order $n$ merge once $2\mathrm{Ry}^*/n^3<\Gamma$. The buttons set the two resolutions of the Cu$_2$O experiment (a 5 neV laser and a 10 $\mu$eV white-light spectrometer). **Right:** the size of the orbit, $\langle r\rangle\approx\tfrac12[3n^2-l(l+1)]\,a_B^*$, against $n$ (drag the handle) compared with the lattice constant and the wavelength of light.`,
+      scope: String.raw`Wannier–Mott excitons with isotropic hydrogenic Coulomb binding (no exchange splitting, no polaritons, no phonon broadening beyond the chosen $\Gamma$). Cu$_2$O yellow $P$ series: $E_g=2.17208$ eV, $\mathrm{Ry}^*=92$ meV, $\delta_P=0.23$ (fit parameters of Kazimierczuk et al. 2014, sample at 1.2 K; the plotted lines are the fit formula, not raw spectra); the orbit comparison uses the same paper's $a_B=1.11$ nm, and its supplementary calculation uses $\varepsilon=7.5$. GaAs: $\mathrm{Ry}^*=4.2$ meV (the value quoted in the same paper); $\varepsilon=12.9$.`,
       deps: ['cm-4.4', 'qm-8.12'],
-      refs: ['Kittel ch. 15'],
+      refs: ['Ashcroft–Mermin ch. 30, pp. 627–629', 'Kazimierczuk et al., Nature 514 (2014), pp. 343–347 and Supplementary Information'],
       tags: ['exciton', 'rydberg', 'absorption'],
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Exciton', doi: 'https://doi.org/10.1038/nature13832' },
@@ -407,12 +407,12 @@ These discrete lines lie just below the gap in the absorption spectrum; their st
         const nS = v.slider('principal quantum number $n$', 1, 30, 10, { int: true });
         const b1 = v.button('laser, 5 neV', () => G.set(0.005)), b2 = v.button('white light, 10 µeV', () => G.set(10));
         void b1; void b2;
-        const MATS = { cu2o: { Ry: 92, Eg: 2.17208, delta: 0.23, n0: 2, l: 1, eps: 7.5, a: 0.427, label: 'Cu$_2$O' }, gaas: { Ry: 4.2, Eg: 1.5192, delta: 0, n0: 1, l: 0, eps: 12.9, a: 0.565, label: 'GaAs' } };
+        const MATS = { cu2o: { Ry: 92, Eg: 2.17208, delta: 0.23, n0: 2, l: 1, eps: 7.5, aB: 1.11, a: 0.427, label: 'Cu$_2$O' }, gaas: { Ry: 4.2, Eg: 1.5192, delta: 0, n0: 1, l: 0, eps: 12.9, aB: (13.606 * .052918) / (12.9 * .0042), a: 0.565, label: 'GaAs' } };
         const sA = v.stage({ x: [0.05, 120], y: [0.1, 2e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'binding energy $E_g-E$ (meV)', ylabel: 'absorption / continuum edge', title: 'absorption lines below the gap', weight: 1.2 });
         const sB = v.stage({ x: [0.8, 32], y: [0.1, 5000], xlog: true, ylog: true, axes: 'box', gutter: true, height: 380, xlabel: 'principal quantum number $n$', ylabel: 'orbit size $\\langle r\\rangle$ (nm)', title: 'how big is the exciton?', weight: 0.8 });
-        const rOf = (n) => { const Mt = MATS[mat.value], d = qd.value ? Mt.delta : 0, aB = (13.606 * 0.052918 * 1) / (Mt.eps * Mt.Ry / 1000); const ne = Math.max(0.3, n - d); return 0.5 * (3 * ne * ne - Mt.l * (Mt.l + 1)) * aB; };
+        const rOf = (n) => { const Mt = MATS[mat.value]; return excitonRadius(Math.max(Mt.n0, n), Mt.l, Mt.aB); };
         let last = mat.value;
-        const hN = sB.handle(10, 100, { color: 'gold', r: 7, constrain: (x) => { const n = Math.max(1, Math.min(30, Math.round(x))); return [n, rOf(n)]; } });
+        const hN = sB.handle(10, 100, { color: 'gold', r: 7, constrain: (x) => { const n = Math.max(MATS[mat.value].n0, Math.min(30, Math.round(x))); return [n, rOf(n)]; } });
         hN.onDrag = () => nS.set(Math.round(hN.x));
         v.legend([['accent', 'absorption'], ['muted', 'continuum level 1', { dash: true }], ['gold', 'chosen $n$']]);
         let info = {};
@@ -420,7 +420,7 @@ These discrete lines lie just below the gap in the absorption spectrum; their st
           if (mat.value !== last) { last = mat.value; G.set(mat.value === 'cu2o' ? 3 : 100); nS.set(mat.value === 'cu2o' ? 10 : 2); }
           const Mt = MATS[mat.value], d = qd.value && mat.value === 'cu2o' ? Mt.delta : 0, Gm = G.value / 1000, Ry = Mt.Ry;
           sA.setView([Ry / 1600 * 0.7, Ry * 1.4], [0.1, 2e4]);
-          const lines = []; for (let n = Mt.n0; n <= 120; n++) { const ne = n - d; lines.push({ n, Eb: Ry / (ne * ne), f: (2 * Ry) / (ne * ne * ne) }); }
+          const lines = []; for (let n = Mt.n0; n <= 120; n++) { const ne = n - d; lines.push({ n, Eb: Ry / (ne * ne), f: 2 * Ry * excitonLineStrength(n, Mt.l) }); }
           const NS = 900, lo = Math.log(Ry / 1600 * 0.7), hi = Math.log(Ry * 1.4), pts = [];
           for (let i = 0; i <= NS; i++) { const Eb = Math.exp(lo + ((hi - lo) * i) / NS); let a = 0; for (const q of lines) { const dE = Eb - q.Eb; if (Math.abs(dE) < 40 * Gm + 3 * q.Eb / q.n) a += q.f * (Gm / 2 / Math.PI) / (dE * dE + (Gm / 2) ** 2); } pts.push([Eb, Math.max(a, 1e-3)]); }
           sA.hline(1, { color: 'muted', width: 1.4, dash: [5, 4] });
@@ -429,20 +429,21 @@ These discrete lines lie just below the gap in the absorption spectrum; their st
           lines.filter((q) => q.n <= 10 || q.n % 5 === 0).slice(0, 14).forEach((q) => { if (q.Eb > Ry / 1600 * 0.8) sA.text(`${q.n}`, q.Eb, 1.4e4, { size: 10, color: 'muted', align: 'center' }); });
           sA.text('$n$ =', Ry * 1.25, 1.4e4, { size: 10, color: 'muted', align: 'center' });
           // orbit-size panel
-          sB.path(Array.from({ length: 30 }, (_, i) => [i + 1, rOf(i + 1)]), { color: 'accent', width: 2.6 });
+          sB.path(Array.from({ length: 31 - Mt.n0 }, (_, i) => [i + Mt.n0, rOf(i + Mt.n0)]), { color: 'accent', width: 2.6 });
           sB.hline(Mt.a, { color: 'green', width: 1.4, dash: [5, 4] }); sB.text('lattice constant', 1, Mt.a * 1.25, { size: 10, color: 'green' });
-          sB.hline(570, { color: 'orange', width: 1.4, dash: [5, 4] }); sB.text('wavelength of yellow light', 1, 570 * 1.25, { size: 10, color: 'orange' });
-          const n = nS.value; hN.set(n, rOf(n)); sB.vline(n, { color: 'faint', width: 1 });
+          sB.hline(1239.84 / Mt.Eg, { color: 'orange', width: 1.4, dash: [5, 4] }); sB.text('band-edge photon wavelength', 1, (1239.84 / Mt.Eg) * 1.25, { size: 10, color: 'orange' });
+          if (nS.value < Mt.n0) nS.set(Mt.n0);
+          const n = Math.max(Mt.n0, nS.value); hN.set(n, rOf(n)); sB.vline(n, { color: 'faint', width: 1 });
           // resolved lines: spacing between n and n+1 exceeds 2Γ
           let nmax = Mt.n0; for (const q of lines) { const nx = lines.find((z) => z.n === q.n + 1); if (nx && q.Eb - nx.Eb > 2 * Gm) nmax = q.n + 1; else if (nx) break; }
           info = { Mt, n, r: rOf(n), nmax, Gm, d, ne: n - d };
         });
         v.readout(() => {
           const I = info; if (!I.Mt) return '';
-          const Mt = I.Mt, aB = (13.606 * 0.052918) / (Mt.eps * Mt.Ry / 1000), En = Mt.Eg - Mt.Ry / 1000 / (I.ne * I.ne);
+          const Mt = I.Mt, aB = Mt.aB, En = Mt.Eg - Mt.Ry / 1000 / (I.ne * I.ne);
           const text = `$\\mathrm{Ry}^*=${v.fix(Mt.Ry, 1)}$ meV, $a_B^*=${v.fix(aB, 1)}$ nm · line $n=${I.n}$ at $E=${v.fix(En, mat.value === 'cu2o' ? 5 : 4)}$ eV, ${v.fix(1000 * Mt.Ry / 1000 / (I.ne * I.ne), I.ne > 5 ? 3 : 1)} meV below the gap · $\\langle r\\rangle=${I.r < 1000 ? v.fix(I.r, 1) + '$ nm' : v.fix(I.r / 1000, 2) + '$ µm'} (${v.fix(I.r / Mt.a, 0)} lattice constants)`;
           const res = `at $\\Gamma=${v.fix(1000 * I.Gm, I.Gm < 0.01 ? 3 : 1)}$ µeV the lines are resolved up to about $n=${I.nmax}$ (spacing $>2\\Gamma$)`;
-          const paper = mat.value === 'cu2o' ? ' · measured (Kazimierczuk et al. 2014, 1.2 K): lines to $n=25$ with a 5 neV laser, to $n=17$ with a 10 µeV white-light resolution; their widths fall as $n^{-3}$ down to a few µeV' : ' · measured in GaAs: only $n=1,2,3$ (the paper quotes $\\mathrm{Ry}^*=4.2$ meV)';
+          const paper = mat.value === 'cu2o' ? ' · measured (Kazimierczuk et al. 2014, 1.2 K): lines to $n=25$ with a 5 neV laser, to $n=17$ with a 10 µeV white-light resolution; linewidths follow $n^{-3}$ below about $n=10$; at larger $n$ inhomogeneous broadening matters, with a 3 µeV width at $n=24$' : ' · the 2014 paper reports $n=3$ as the highest observed GaAs state and quotes $\\mathrm{Ry}^*=4.2$ meV';
           return `${text}\n${res}${paper}`;
         });
       },

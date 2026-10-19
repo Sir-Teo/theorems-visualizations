@@ -151,7 +151,7 @@ Equivalently, $\frac1{2\pi}\int\log|f(re^{i\theta})|\,d\theta=\log|f(0)|+\sum_{|
       num: '15.19',
       kind: 'Theorem',
       name: 'Circle means of $\\log|f|$ for $f\\in H^\\infty$',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 15.19 and proof, pp. 308–309'],
       statement: String.raw`Let $f\in H^\infty$, $f\not\equiv0$, with radial limits $f^*$ (11.32), and put
 $$\mu_r(f)=\frac1{2\pi}\int_{-\pi}^{\pi}\log|f(re^{i\theta})|\,d\theta\ (0<r<1),\qquad \mu^*(f)=\frac1{2\pi}\int_{-\pi}^{\pi}\log|f^*(e^{i\theta})|\,d\theta .$$
 Then $\mu_r(f)\le\mu_s(f)$ for $0<r<s<1$, $\ \mu_r(f)\to\log|f(0)|$ as $r\to0$, and $\mu_r(f)\le\mu^*(f)$. In particular $\log|f^*|\in L^1(T)$ and $f^*\ne0$ a.e. on $T$.`,
@@ -229,7 +229,7 @@ Then $B\in H^\infty$ (indeed $|B|<1$ in $U$), and the zeros of $B$ are exactly t
       idea: String.raw`The $n$-th factor differs from $1$ by $\frac{\alpha_n+|\alpha_n|z}{(1-\bar\alpha_nz)\alpha_n}(1-|\alpha_n|)$, which for $|z|\le r<1$ is at most $\frac{1+r}{1-r}(1-|\alpha_n|)$. So the Blaschke condition is exactly what Theorem 15.6 needs: the product converges locally uniformly, $B\in H(U)$, and multiplicities add. Each factor is a disc automorphism (rotated so that it is positive at $0$), so $|B|<1$.`,
       caption: String.raw`Zeros $\alpha_n=(1-\frac{1}{2n^s})e^{in\phi}$ spiral out to the circle; $\sum(1-|\alpha_n|)<\infty$ exactly when $s>1$. Left: phase portrait of the partial product $B_N$ in $U$. Right, against $\log_{10}N$: $\log_{10}|B_N(0)|=\sum_{n\le N}\log_{10}|\alpha_n|$ (blue) and $\log_{10}|B_N(z_0)|$ at the draggable point $z_0$ (gold). For $s>1$ both settle at a nonzero limit; for $s\le1$ they sink without bound — the partial products tend to $0$ locally uniformly (compare 15.23).`,
       deps: ['rca-15.6', 'rca-15.5', 'rca-12.4'],
-      see: ['rca-15.23', 'rca-15.24', 'rca-17.10'],
+      see: ['rca-15.23', 'rca-15.24', 'rca-17.9'],
       tags: ['Blaschke products', 'H-infinity', 'zeros'],
       viz(v) {
         const sS = v.slider('exponent $s$', 0.6, 2.5, 1.4, { step: 0.01 });
@@ -288,7 +288,7 @@ Then $B\in H^\infty$ (indeed $|B|<1$ in $U$), and the zeros of $B$ are exactly t
       num: '15.22',
       kind: 'Definition',
       name: 'The Nevanlinna class $N$',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 15.22, pp. 310–311'],
       statement: String.raw`For real $t$ put $\log^+t=\max(\log t,0)$ (with $\log^+0=0$). The **Nevanlinna class** $N$ consists of all $f\in H(U)$ for which
 $$\sup_{0<r<1}\frac1{2\pi}\int_{-\pi}^{\pi}\log^+\big|f(re^{i\theta})\big|\,d\theta<\infty .$$
 Clearly $H^\infty\subset N$ (and $H^p\subset N$ for every $p>0$).`,

@@ -76,7 +76,7 @@ export default {
   items: [
     {
       num: '3.9', kind: 'Method', name: 'Absolute entropies from heat capacities',
-      statement: String.raw`With the third law fixing $S(0)=0$ for a perfect crystal, the entropy of a substance at temperature $T$ is obtained from calorimetry alone:
+      statement: String.raw`With the third law fixing $S(0)=0$ for a perfect crystal, the entropy of a substance at temperature $T$ can be reconstructed from heat-capacity integrals, equilibrium latent heats and low-temperature extrapolation:
 $$S(T) = \int_0^{T_m}\frac{C_p^{\text{solid}}}{T}\mathrm{d}T + \frac{\Delta_{\text{fus}}H}{T_m} + \int_{T_m}^{T_b}\frac{C_p^{\text{liq}}}{T}\mathrm{d}T + \frac{\Delta_{\text{vap}}H}{T_b} + \int_{T_b}^{T}\frac{C_p^{\text{gas}}}{T}\mathrm{d}T,$$
 with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the lowest measured temperature. Each phase transition at equilibrium adds $\Delta_{\text{trs}}H/T_{\text{trs}}$ (pchem-3.6), and each integral is the area under $C_p/T$, equivalently the area under $C_p$ plotted against $\ln T$.`,
       idea: String.raw`Entropy is a state function (pchem-3.2), so any reversible path from 0 K will do, and heating at constant pressure supplies $\mathrm{d}q_{\text{rev}} = C_p\,\mathrm{d}T$ (pchem-2.5). The third law (pchem-3.8) removes the integration constant; the Debye extrapolation covers the range where calorimeters cannot reach, and is accurate because lattice vibrations are phonons of low frequency there. Substances with frozen-in disorder come out lower than the statistical value by the residual entropy.`,
@@ -85,7 +85,7 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
       refs: ['Atkins Focus 3', 'M–S ch. 21'],
       tags: ['absolute entropy', 'Debye law', 'calorimetry'],
       credit: 'Nernst, 1906–12 (heat theorem); Debye, 1912 ($T^3$ law)',
-      scope: String.raw`This is a **model reconstruction**, not Clusius's original data: the solid is a Debye solid (default $\theta_D = 92$ K, a typical low-temperature value I did not verify against a primary source) with $C_p\approx C_V$, so it omits the anharmonic $C_p - C_V$ excess near melting, which is why the sum falls several J/(K mol) short until the "extra solid $C_p$" slider is raised; the gas is treated as ideal ($C_p = \tfrac52R$) with a $R\ln(1.01325)$ correction from 1 atm to 1 bar. Melting and boiling points and $S^\circ=154.846$ J/(K mol) are NIST values; latent heats (1182 and 6437 J/mol) are converted from Air Liquide's per-kilogram values and the liquid $C_p$ (44.6) from a liquid-argon review, so they carry ~1 % uncertainty.`,
+      scope: String.raw`This is a **model reconstruction**, not Clusius's original data: the solid is a Debye solid (default $\theta_D = 92$ K, a typical low-temperature value I did not verify against a primary source) with $C_p\approx C_V$, so it omits the anharmonic $C_p - C_V$ excess near melting, which is why the sum falls several J/(K mol) short until the "extra solid $C_p$" slider is raised; the gas is treated as ideal ($C_p = \tfrac52R$) with a $R\ln(1.01325)$ correction from 1 atm to 1 bar. Melting and boiling points and $S^\circ=154.846$ J/(K mol) are NIST values; latent heats (1182 and 6437 J/mol) are converted from Air Liquide's per-kilogram values and the liquid $C_p$ (44.6) from a liquid-argon review, their uncertainty has not been established by this review.`,
       verify: true,
       viz(v) {
         const th = v.slider('Debye temperature $\\theta_D$', 60, 130, 92, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
@@ -131,7 +131,7 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
         v.legend([['blue', 'solid (Debye model)', { area: true }], ['orange', 'liquid', { area: true }], ['teal', 'gas', { area: true }]]);
         v.readout(() => {
           const p = argonParts(th.value, ex.value, te.value);
-          return `up to ${v.fix(te.value, 0)} K: solid $${v.fix(p.sol, 2)}$ + fusion $${v.fix(p.fus, 2)}$ + liquid $${v.fix(p.liq, 2)}$ + vaporization $${v.fix(p.vap, 2)}$ + gas $${v.fix(p.gas, 2)}$ = $${v.fix(p.total, 2)}$ J/(K mol)\n${te.value > 298 ? `tabulated $S^\\circ(298.15\\ \\mathrm{K})=154.85$: the model is ${v.fix(AR.S298 - p.total, 2)} J/(K mol) ${p.total < AR.S298 ? 'short' : 'over'} (unmodelled solid $C_p-C_V$, gas imperfection)` : 'raise the upper temperature to 298 K to compare with the tabulated value'}`;
+          return `up to ${v.fix(te.value, 0)} K: solid $${v.fix(p.sol, 2)}$ + fusion $${v.fix(p.fus, 2)}$ + liquid $${v.fix(p.liq, 2)}$ + vaporization $${v.fix(p.vap, 2)}$ + gas $${v.fix(p.gas, 2)}$ = $${v.fix(p.total, 2)}$ J/(K mol)\n${te.value > 298 ? `tabulated $S^\\circ(298.15\\ \\mathrm{K})=154.85$: the model is ${v.fix(Math.abs(AR.S298 - p.total), 2)} J/(K mol) ${p.total < AR.S298 ? 'short' : 'over'} (model assumptions and rounded input data)` : 'raise the upper temperature to 298 K to compare with the tabulated value'}`;
         });
       },
     },
@@ -141,11 +141,10 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
       idea: String.raw`Constant $T$ puts the surroundings in a huge thermal bath, so heat leaves the system reversibly for them: $q_{\text{surr}} = -q_{\text{sys}}$, which equals $-\Delta U$ at constant volume and $-\Delta H$ at constant pressure (pchem-2.3, pchem-2.5). Then the second law (pchem-3.4) $\Delta S+\Delta S_{\text{surr}}\ge0$ becomes a statement about the system alone, after multiplying by $-T$. The two functions are Legendre transforms of $U$ and $H$ with respect to $S$ (mech-12.1 states the transform), which is why $T$ is their natural variable.`,
       caption: String.raw`Choose a constraint and a process (the default is melting of ice: $\Delta H=+6.01$ kJ/mol and $\Delta S\approx +22$ J/(K mol)). The left curve is the total entropy change as a function of temperature; it is zero at $T^* = \Delta H/\Delta S$, and above it the endothermic process is driven by the system's own entropy. The bars on the right split $\Delta S_{\text{total}}$ into system and surroundings, and show that $-\Delta G/T$ (or $-\Delta A/T$) equals their sum.`,
       deps: ['pchem-3.4', 'mech-12.1', 'thermo-3.9'],
-      refs: ['Atkins 3D', 'M–S ch. 22'],
+      refs: ["Tong §4.4, Eqs. (4.19)–(4.22)"],
       tags: ['Gibbs energy', 'Helmholtz energy', 'spontaneity'],
-      credit: 'Helmholtz, 1882; Gibbs, 1876–78',
-      scope: String.raw`Closed systems with only expansion work, in contact with a bath at the temperature of the system. The model takes $\Delta H$ and $\Delta S$ independent of $T$ (their change with $T$ is a heat-capacity effect, pchem-2.11), and $\Delta U=\Delta H-\Delta n_{\text{gas}}RT$ for ideal gases. The ice-melting default uses the 273.15 K values; the dates are the commonly quoted ones, checked against secondary sources only.`,
-      verify: true,
+      credit: 'Helmholtz and Gibbs energies',
+      scope: String.raw`Closed systems with only expansion work, in contact with a bath at the temperature of the system. The model takes $\Delta H$ and $\Delta S$ independent of $T$ (their change with $T$ is a heat-capacity effect, pchem-2.11), and $\Delta U=\Delta H-\Delta n_{\text{gas}}RT$ for ideal gases. The ice-melting default uses rounded transition parameters near 273.15 K.`,
       viz(v) {
         const cons = v.select('constraint', [{ value: 'p', label: 'constant $T, p$ → $G$' }, { value: 'V', label: 'constant $T, V$ → $A$' }], 'p');
         const dH = v.slider('$\\Delta H$', -80, 80, 6.01, { step: 0.01, fmt: (x) => `${x.toFixed(2)} kJ/mol` });
@@ -190,14 +189,13 @@ with the lowest part extrapolated by the Debye law $C_p\approx aT^3$ below the l
     {
       num: '3.11', kind: 'Theorem', name: 'Maximum non-expansion work equals −ΔG',
       statement: String.raw`At constant temperature and pressure, the maximum non-expansion work (electrical, for example) that a system can deliver is $w_{\text{e,max}} = -\Delta G$, attained only in a reversible process; any real process delivers $w_e \le -\Delta G$, and the shortfall, $-\Delta G - w_e$, is dissipated as extra heat. For a cell that transfers $n$ moles of electrons per mole of reaction at reversible voltage $E$ this is $\Delta G = -nFE$.`,
-      idea: String.raw`Combining the first law at constant $p$ ($\Delta H = q + w_e$ with $q$ the heat absorbed by the system) with the second law ($q\le T\Delta S$, pchem-3.4) gives $w_e \ge \Delta H - T\Delta S = \Delta G$ for the work done on the system; equality for reversible heat exchange. A fuel cell run slowly converts the free-energy part of the reaction enthalpy to work, and the rest, $-T\Delta S$, must leave as heat; run faster, overpotentials turn more of the free energy into heat and the voltage sags below its reversible value.`,
+      idea: String.raw`Combining the first law at constant $p$ ($\Delta H = q-w_e$ for work $w_e$ delivered by the system) with the second law ($q\le T\Delta S$, pchem-3.4) gives $w_e\le T\Delta S-\Delta H=-\Delta G$ for the work delivered; equality for reversible heat exchange. A fuel cell run slowly converts the free-energy part of the reaction enthalpy to work, and the rest, $-T\Delta S$, must leave as heat; run faster, overpotentials turn more of the free energy into heat and the voltage sags below its reversible value.`,
       caption: String.raw`A hydrogen–oxygen fuel cell, $\mathrm{H_2}+\tfrac12\mathrm{O_2}\to\mathrm{H_2O(l)}$. Drag the current density along the polarization curve (illustrative model, not a measured curve). The stacked bar splits the reaction enthalpy, 285.8 kJ per mole of $\mathrm{H_2}$, into electrical work, the unavoidable reversible heat $-T\Delta S$ and the dissipated extra heat. At vanishing current the work reaches $-\Delta G$.`,
       deps: ['pchem-3.10'],
-      refs: ['Atkins 3D', 'M–S ch. 22'],
+      refs: ["DOE Fuel Cell Handbook (7th ed.), §2.1 and §2.3, Eqs. (2-1)–(2-2), (2-14)–(2-19)"],
       tags: ['Gibbs energy', 'maximum work', 'fuel cell'],
-      credit: 'Grove, 1839 (first gas voltaic battery); Helmholtz, 1882',
-      scope: String.raw`Constant $T$ and $p$, reaction to liquid water at 298.15 K with $\Delta_rH^\circ=-285.83$ kJ/mol and $\Delta_rG^\circ=-237.13$ kJ/mol ($E^\circ=1.229$ V; thermoneutral voltage $-\Delta H/2F=1.481$ V). The polarization curve $V=E^\circ - b\ln(1+j/j_0) - r j$ with $b=0.05$ V, $j_0=0.01$ A cm⁻², and a slider resistance $r$ is an illustrative model, not data for any real cell. The 1839 date for Grove's gas battery is the one most commonly quoted; some sources give the early 1840s.`,
-      verify: true,
+      credit: 'Gibbs maximum-work bound',
+      scope: String.raw`Constant $T$ and $p$, reaction to liquid water at 298.15 K with $\Delta_rH^\circ=-285.83$ kJ/mol and $\Delta_rG^\circ=-237.13$ kJ/mol ($E^\circ=1.229$ V; thermoneutral voltage $-\Delta H/2F=1.481$ V). The polarization curve $V=E^\circ - b\ln(1+j/j_0) - r j$ with $b=0.05$ V, $j_0=0.01$ A cm⁻², and a slider resistance $r$ is an illustrative model, not data for any real cell.`,
       viz(v) {
         const Fc = 96485.33212, dG = -237130, dH = -285830, E0 = -dG / (2 * Fc), Eth = -dH / (2 * Fc);
         const rr = v.slider('cell resistance $r$', 0, 0.6, 0.2, { step: 0.01, fmt: (x) => `${x.toFixed(2)} Ω cm²` });
@@ -231,11 +229,10 @@ $$\Big(\tfrac{\partial T}{\partial V}\Big)_S = -\Big(\tfrac{\partial p}{\partial
       idea: String.raw`Write $\mathrm{d}U = T\,\mathrm{d}S - p\,\mathrm{d}V$ (pchem-3.2 for the heat term, pchem-2.1 for the work term). Each potential is a function of a natural pair of variables, with $T,p,V,S$ as its first partial derivatives; since mixed second partials of a smooth function commute (pma-9.41), differentiating each first derivative with respect to the other variable gives the relations. The point of the right-hand sides is that they are measurable ($p,V,T$ from an equation of state) while the left-hand sides involve $S$.`,
       caption: String.raw`Pick a potential in the square (rows: $S$ or $T$; columns: $V$ or $p$) to see its relation, and drag the state point on the $(T,V)$ plane of a van der Waals gas. The two bars give the two sides of the relation, each computed by finite differences of the van der Waals pressure and entropy through the Jacobian ratio $(\partial f/\partial g)_h$; they agree to rounding error. Switching to the ideal gas changes the numbers but not the agreement.`,
       deps: ['pchem-3.10', 'pma-9.41', 'thermo-3.12'],
-      refs: ['Atkins 3E', 'M–S ch. 22'],
+      refs: ["Tong §4.4.2, Eqs. (4.23)–(4.26)"],
       tags: ['Maxwell relations', 'fundamental equation', 'state functions'],
-      credit: 'Maxwell, Theory of Heat (1871)',
-      scope: String.raw`Closed system, one component, expansion work only. The numerical test uses a van der Waals gas with constants computed from critical constants and a temperature-independent $C_V$; the relations hold for every equation of state, so the test checks the arithmetic, not the physics. The year of Maxwell's *Theory of Heat* is quoted as 1871 or 1872 depending on the source (first edition 1871 in most).`,
-      verify: true,
+      credit: 'Maxwell relations',
+      scope: String.raw`Closed system, one component, expansion work only. The numerical test uses a van der Waals gas with constants computed from critical constants and a temperature-independent $C_V$; the relations hold for every equation of state, so the test checks the arithmetic, not the physics.`,
       viz(v) {
         const gas = v.select('gas', [{ value: 'CO2', label: '$\\mathrm{CO_2}$' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'Ar', label: 'Ar' }, { value: 'ideal', label: 'ideal' }], 'CO2');
         const pot = v.select('potential', [{ value: 'U', label: '$U(S,V)$' }, { value: 'H', label: '$H(S,p)$' }, { value: 'A', label: '$A(T,V)$' }, { value: 'G', label: '$G(T,p)$' }], 'A');
@@ -388,11 +385,10 @@ It vanishes for a perfect gas and equals $a/V_m^2$ for a van der Waals gas. Cons
       idea: String.raw`Start from $\mathrm{d}U = T\,\mathrm{d}S - p\,\mathrm{d}V$ (pchem-3.12), divide by $\mathrm{d}V$ at constant $T$ and replace $(\partial S/\partial V)_T$ by the Maxwell relation $(\partial p/\partial T)_V$. The result converts an unmeasurable derivative into one from the equation of state, and it proves for the perfect gas $p = nRT/V$ that $U$ is independent of volume, which Joule's experiments could only bound. For the van der Waals gas the attractive term makes $\pi_T=a/V_m^2>0$: pulling the molecules apart costs energy, taken from kinetic energy.`,
       caption: String.raw`Left: $\pi_T$ computed from the van der Waals pressure by a numerical derivative (solid) against $a/V_m^2$ (dashed); the perfect gas gives zero. Right: a gas expands freely from a small chamber into a larger one when you press play. Its temperature falls for the real gas and stays constant for the perfect gas; the particles are illustrative, while the temperature change is computed from the formula above.`,
       deps: ['pchem-3.12'],
-      refs: ['Atkins 2D', 'M–S ch. 22'],
+      refs: ["Tong §4.4.2; direct fundamental-equation derivation"],
       tags: ['internal pressure', 'equation of state', 'Joule expansion'],
-      credit: 'Joule, 1840s (free-expansion experiments)',
+      credit: 'Thermodynamic internal-pressure identity',
       scope: String.raw`Closed systems of one component; the temperature change uses $C_V$ constant and the van der Waals equation, with constants computed from critical constants (CO₂, N₂, Ar) and $C_V$ at 298 K from the chapter-2 $C_p$ table (Ar: $\tfrac32R$). The expansion is adiabatic into vacuum, and the animation shows the final temperature approached smoothly, not the transient.`,
-      verify: true,
       viz(v) {
         const gas = v.select('gas', [{ value: 'CO2', label: '$\\mathrm{CO_2}$' }, { value: 'N2', label: '$\\mathrm{N_2}$' }, { value: 'Ar', label: 'Ar' }], 'CO2');
         const T1 = v.slider('initial temperature $T_1$', 200, 500, 300, { step: 1, fmt: (x) => `${x.toFixed(0)} K` });
@@ -419,7 +415,7 @@ It vanishes for a perfect gas and equals $a/V_m^2$ for a van der Waals gas. Cons
           sa.vline(V1.value, { color: 'gold', dash: true }); sa.dot(V1.value, g.a / V1.value ** 2, { r: 6, color: 'gold' });
           // box
           sb.rect(0, 0, 1, 1, { color: 'ink', width: 2 }); sb.rect(1, 0, 2.2, 1, { color: 'ink', width: 2, fill: 'accent', fillAlpha: 0.04 });
-          const Tcur = T1.value + (real ? dT(g, cv, V1.value, fac.value) * xi : 0);
+          const Tcur = T1.value + (real ? dT(g, cv, V1.value, 1 + (fac.value - 1) * xi) : 0);
           const speed = Math.sqrt(Tcur / 300);
           pts.forEach(([a, b, ph], i) => { const spread = 1 + 1.2 * xi * (i % 2 ? 1 : 0.55 + 0.45 * ((i * 7) % 5) / 4), x = (a * spread) % (1 + xi * 1.2); const wob = 0.02 * speed * Math.sin(t * 6 * speed + ph); sb.dot(Math.min(2.15, 0.04 + x * 0.96) + wob, 0.04 + 0.92 * b + wob, { r: 4, color: real ? 'blue' : 'teal' }); });
           sb.line(1, 0, 1, 1, { color: 'red', width: 3, alpha: 1 - xi });

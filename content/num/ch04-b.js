@@ -18,15 +18,13 @@ export default {
       num: '4.6',
       kind: 'Theorem',
       name: 'Existence and uniqueness of best approximation',
-      statement: String.raw`Let $f\in C[a,b]$ and let $V$ be a finite-dimensional subspace of $C[a,b]$. Then there is at least one $p^*\in V$ minimizing $\|f-p\|_\infty$ (**existence**; true in any normed space for finite-dimensional $V$). If moreover $V$ is a **Haar space** — every nonzero element has at most $\dim V-1$ zeros, as for polynomials of degree $\le n$ — the minimizer is **unique**. For a non-Haar space (such as span$\{1,x^2\}$ on $[-1,1]$) uniqueness can fail: the set of best approximations may be a whole segment.`,
-      idea: String.raw`Existence: $p\mapsto\|f-p\|$ is continuous and tends to $\infty$ as $\|p\|\to\infty$, so it attains its minimum on a closed ball of the finite-dimensional $V$, which is compact (extreme value theorem, pma-4.16). The set of minimizers is convex because the norm is. Uniqueness needs the Haar condition: if two minimizers differed, their average would also be one, and the error would have to equal $\pm E$ at too many points for a nonzero element of $V$ with too many zeros to exist.`,
+      statement: String.raw`Let $f$ be real-valued and continuous on $[a,b]$ and let $V$ be a finite-dimensional subspace of $C[a,b]$. Then there is at least one $p^*\in V$ minimizing $\|f-p\|_\infty$ (**existence**; true in any normed space for finite-dimensional $V$). For $V=\mathcal P_n$, the real polynomials of degree $\le n$, the minimizer is **unique** by equioscillation (4.7). Polynomial spaces have the **Haar property**: each nonzero element has at most $\dim V-1$ zeros. For a non-Haar space (such as span$\{1,x^2\}$ on $[-1,1]$) uniqueness can fail: the set of best approximations may be a whole segment.`,
+      idea: String.raw`Existence: $p\mapsto\|f-p\|$ is continuous and tends to $\infty$ as $\|p\|\to\infty$, so it attains its minimum on a closed ball of the finite-dimensional $V$, which is compact (extreme value theorem, pma-4.16). The set of minimizers is convex because the norm is. For polynomial uniqueness: if two minimizers differed, their average would also be one, and the error would have to equal $\pm E$ at too many points for a nonzero element of $V$ with too many zeros to exist.`,
       caption: String.raw`Right: the map $(\text{coefficients})\mapsto\|f-p\|_\infty$ for the degree-1 approximation $p=\alpha+\beta x$ (or for the non-Haar family $\alpha+\beta x^2$), as a colour map; drag the gold point to choose $p$, shown on the left with its error band. For $e^x$ and lines the bowl has one lowest point. Choose $f=x$ with the family $\alpha+\beta x^2$ and the bottom of the bowl becomes a flat green valley — a whole segment of best approximations.`,
       deps: ['num-4.1', 'pma-4.16'],
-      refs: ['Trefethen ATAP ch. 10', 'Süli–Mayers ch. 8'],
-      credit: 'Chebyshev, 1850s (existence); Haar, 1918 (uniqueness criterion)',
+      refs: ['Trefethen ATAP Theorem10.1, complete existence/equioscillation/uniqueness proofs in chap10.m'],
       scope: String.raw`Sup norm on a compact interval; the Haar condition is what makes uniqueness hold for algebraic polynomials.`,
       tags: ['best approximation', 'uniqueness'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Haar_space' },
       viz(v) {
         const space = v.select('family', [{ value: 'lin', label: '$\\alpha+\\beta x$ (Haar)' }, { value: 'sq', label: '$\\alpha+\\beta x^2$ (not Haar)' }], 'lin');
@@ -64,7 +62,7 @@ export default {
           L.fn((x) => g.ba + g.bb * basis(sp, x), { color: 'green', width: 1.6, dash: true });
           info = { E, g, sp, fk };
         });
-        v.readout(() => `your $p$: $\\|f-p\\|_\\infty=${v.fix(info.E, 4)}$; smallest value on the map $E^*=${v.fix(info.g.emin, 4)}$ at $(\\beta,\\alpha)\\approx(${v.fix(info.g.bb, 3)},${v.fix(info.g.ba, 3)})$\n` + (info.g.ext > 0.6 ? `the set of near-minimizers (green outline) stretches over a distance $\\approx${v.fix(info.g.ext, 2)}$: the best approximation is **not unique** here` : 'the near-minimizers form a tiny blob: a unique best approximation'));
+        v.readout(() => `your $p$: $\\|f-p\\|_\\infty=${v.fix(info.E, 4)}$; smallest value on the map $E^*=${v.fix(info.g.emin, 4)}$ at $(\\beta,\\alpha)\\approx(${v.fix(info.g.bb, 3)},${v.fix(info.g.ba, 3)})$\n` + (info.g.ext > 0.6 ? `the set of near-minimizers (green outline) stretches over a distance $\\approx${v.fix(info.g.ext, 2)}$: a broad sampled valley is visible; this alone does not prove nonuniqueness` : 'the sampled near-minimizers form a small region; this alone does not prove uniqueness'));
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -72,14 +70,12 @@ export default {
       num: '4.7',
       kind: 'Theorem',
       name: 'Chebyshev equioscillation theorem',
-      statement: String.raw`Let $f\in C[a,b]$ and $n\ge0$. A polynomial $p$ of degree $\le n$ is the best sup-norm approximation of $f$ if and only if the error $f-p$ attains its maximum modulus $\|f-p\|_\infty$ with alternating signs at $n+2$ points $x_0<\dots<x_{n+1}$ of $[a,b]$: $(f-p)(x_j)=\pm(-1)^j\|f-p\|_\infty$. In particular the best approximation is unique, and its error has at least $n+2$ extrema of equal height.`,
+      statement: String.raw`Let $f$ be real-valued and continuous on $[a,b]$ and $n\ge0$. A polynomial $p$ of degree $\le n$ is the best sup-norm approximation of $f$ if and only if the error $f-p$ attains its maximum modulus $\|f-p\|_\infty$ with alternating signs at $n+2$ points $x_0<\dots<x_{n+1}$ of $[a,b]$: $(f-p)(x_j)=\pm(-1)^j\|f-p\|_\infty$. In particular the best approximation is unique, and its error has at least $n+2$ extrema of equal height.`,
       idea: String.raw`If $p$ has fewer than $n+2$ alternation points, a small polynomial of degree $\le n$ can be built with the sign pattern of the error at the (at most $n+1$) sign changes — it has a zero between consecutive alternation points, so its degree allows it — and subtracting a multiple of it from $p$ lowers the maximal error everywhere it is attained. Conversely if $n+2$ alternation points exist, a better $q$ would make $p-q$ (degree $\le n$) change sign $n+1$ times, which is too many roots (the de la Vallée-Poussin argument). This is the Haar-space characterization at work (4.6).`,
-      caption: String.raw`The $n+1$ gold handles set the values of a degree-$n$ polynomial (it interpolates them at Chebyshev points); the bottom panel shows the error $f-p$, with the points where it reaches its maximum height marked. The approximation is certified **best** when at least $n+2$ marked points alternate in sign. Press *snap to best* to jump to the Remez solution and see the error level out at $\pm E^*$; no choice of handles ever gets below it.`,
+      caption: String.raw`The $n+1$ gold handles set the values of a degree-$n$ polynomial (it interpolates them at Chebyshev points); the bottom panel shows the error $f-p$, with the points where it reaches its maximum height marked. The numerical alternation check reports a near-best candidate when at least $n+2$ marked points alternate in sign. Press *snap to best* to jump to the Remez solution and see the error level out at $\pm E^*$; The theorem concerns exact extrema; this display locates them on a finite grid with a tolerance.`,
       deps: ['num-4.6'],
-      refs: ['Trefethen ATAP ch. 10', 'Süli–Mayers ch. 8'],
-      credit: 'Chebyshev, 1850s; proofs by Kirchberger, 1902, and Borel, 1905',
+      refs: ['Trefethen ATAP Theorem10.1 and its complete proof, chap10.m'],
       tags: ['best approximation', 'equioscillation'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Equioscillation_theorem' },
       viz(v) {
         const fsel = v.select('$f$', [{ value: 'exp', label: '$e^x$' }, { value: 'cos', label: '$\\cos3x$' }, { value: 'runge', label: '$\\frac1{1+25x^2}$' }], 'exp');
@@ -115,7 +111,7 @@ export default {
           alt.forEach((c) => B.dot(c[0], c[1], { color: 'green', r: 5 }));
           info = { mx, Es, k: alt.length, n };
         });
-        v.readout(() => `$\\|f-p\\|_\\infty=${v.sci(info.mx, 3)}$ versus the best possible $E^*=${v.sci(info.Es, 3)}$; alternating extremal points found: **${info.k}** (need $n+2=${info.n + 2}$)\n` + (info.k >= info.n + 2 ? '**certified: this $p$ is the best approximation**' : 'not yet equioscillating: a better polynomial exists'));
+        v.readout(() => `$\\|f-p\\|_\\infty=${v.sci(info.mx, 3)}$ versus the numerical Remez estimate $E^*=${v.sci(info.Es, 3)}$; alternating extremal points found: **${info.k}** (need $n+2=${info.n + 2}$)\n` + (info.k >= info.n + 2 ? '**near-best candidate on the sampled grid**' : 'the sampled extrema do not yet establish equioscillation'));
       },
     },
     // ------------------------------------------------------------------ 4.8
@@ -167,13 +163,11 @@ export default {
       name: 'Chebyshev interpolants are near-best',
       statement: String.raw`Let $p_n$ be the interpolant of $f\in C[-1,1]$ at the $n+1$ Chebyshev points and $p_n^*$ its best sup-norm approximation of degree $\le n$. Then
 $$\|f-p_n\|_\infty\le(1+\Lambda_n)\|f-p_n^*\|_\infty,\qquad \Lambda_n\le\tfrac2\pi\log(n+1)+1,$$
-where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the interpolant is within a factor of about $3$–$4$ of the best possible for every $n$ one will ever use, although computing it takes $O(n\log n)$ operations instead of an iteration.`,
+where $\Lambda_n$ is the Lebesgue constant of the nodes. Thus the bound grows only logarithmically: it is $2+\tfrac2\pi\log(n+1)$, less than $10$ even at $n=10^5$, although computing it takes $O(n\log n)$ operations instead of an iteration.`,
       idea: String.raw`Interpolation is a linear projection $f\mapsto p_n$ that reproduces polynomials of degree $\le n$ and has norm $\Lambda_n$ (the Lebesgue constant, 3.10–3.11). For the best approximation $p^*$, $f-p_n=(f-p^*)-(p_n-p^*)=(f-p^*)-\mathcal I(f-p^*)$, and the triangle inequality gives the factor $1+\Lambda_n$. The logarithmic growth of $\Lambda_n$ for Chebyshev points is what makes the bound modest.`,
-      caption: String.raw`Left: for the chosen function, sup errors of the best approximation (Remez, green) and of the Chebyshev interpolant (blue) against $n$ — the curves are hard to tell apart on a log scale. Right: the ratio interpolant/best for five functions and every even $n$, always below the black curve $1+\Lambda_n$ (computed exactly, not from the bound) and mostly below $2$.`,
+      caption: String.raw`Left: for the chosen function, sup errors of the best approximation (Remez, green) and of the Chebyshev interpolant (blue) against $n$ — the curves are hard to tell apart on a log scale. Right: the ratio interpolant/best for five functions and every even $n$, always below the black curve $1+\Lambda_n$ (estimated by numerical maximization) and mostly below $2$.`,
       deps: ['num-4.7', 'num-3.11'],
-      refs: ['Trefethen ATAP ch. 16'],
-      credit: 'Lebesgue’s inequality (Lebesgue, 1910) applied to Chebyshev points',
-      verify: true,
+      refs: ['Trefethen ATAP Theorems15.1–15.2 and16.1, projection-error proof in chap15.m and chap16.m'],
       tags: ['best approximation', 'interpolation', 'lebesgue'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lebesgue%27s_lemma' },
       viz(v) {

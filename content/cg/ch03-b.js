@@ -41,7 +41,7 @@ export default {
       idea: String.raw`Triangulate the polygon (3.5) — its dual graph is a tree. Then the vertices can be coloured with three colours so that every triangle gets all three: colour one triangle, and walk over the tree, where each new triangle shares an edge with an old one and its one new vertex takes the third colour. Every triangle has a vertex of each colour, and a guard at a vertex sees its whole triangle (a triangle is convex), so any one colour class guards the polygon. The three classes partition the $n$ vertices, so the smallest has at most $\lfloor n/3\rfloor$ of them. For tightness, each tooth of a comb has a tip that is seen only from within a narrow cone below it; the cones of different teeth are disjoint, so each tooth needs its own guard.`,
       caption: String.raw`A random gallery (drag its vertices, or choose **comb**). Its triangulation is faint, vertices carry the three colours of the proper 3-colouring, and the guards are the vertices of the class you select, each with its **visibility region** shaded; any red dots mark a point nobody sees (there are none, for every class). **Smallest** picks the class with fewest vertices. In **comb** mode switch on *tip cones*: the red regions are exactly the places that see the tip of each tooth; they never overlap, so $k$ guards are necessary and $\lfloor n/3\rfloor=k$ suffice. Break the hypothesis by dragging an edge across another: then the polygon is not simple and nothing is claimed.`,
       credit: 'V. Chvátal, 1975 (problem posed by V. Klee, 1973); the 3-colouring proof is S. Fisk, 1978',
-      deps: ['cg-3.5'], refs: ['de Berg §3.1'], tags: ['visibility', 'polygon'],
+      deps: ['cg-3.5', 'graph-5.1.1a', 'comb-1.2'], refs: ['de Berg §3.1'], tags: ['visibility', 'polygon'],
       viz(v) {
         const s = gstage(v, { height: 400, minWidth: 360 });
         const kind = v.select('gallery', [{ value: 'rand', label: 'random' }, { value: 'comb', label: 'comb' }], 'rand', { onChange: () => load() });
@@ -234,7 +234,7 @@ export default {
       caption: String.raw`Drag the obstacles' handles and $s$, $t$; grey lines are the visibility edges. Step through Dijkstra's algorithm: gold is the node being settled, orange the edges being relaxed, blue the nodes already settled with their distances; at the end the shortest path is green. The **robot radius** slider grows every obstacle by a disc of that radius (a regular 12-gon around it), so the picture is exactly the point-robot case of 3.8. The readout compares the result with an independent check on a grid.`,
       scope: String.raw`Discs are approximated by circumscribed 12-gons. The grid check is a 16-neighbour search on a $0.125$ grid whose cells are blocked when their centre lies in an obstacle, so it only approximates the true length (differences of about one cell are expected) and may fail to pass narrow gaps.`,
       credit: 'T. Lozano-Pérez & M. A. Wesley, 1979 (visibility graph for motion planning among polyhedral obstacles)',
-      deps: ['cg-3.8', 'algo-9.8'], refs: ['de Berg §15.1', 'de Berg §15.2'], tags: ['shortest path', 'motion planning'],
+      deps: ['cg-3.8', 'algo-9.8', 'pma-1.37'], refs: ['de Berg §15.1', 'de Berg §15.2'], tags: ['shortest path', 'motion planning'],
       viz(v) {
         const s = gstage(v, { height: 400, minWidth: 360 });
         const rad = v.slider('robot radius', 0, 0.8, 0, { step: 0.02, onChange: () => S && S.reset(undefined, { at: 'end' }) });

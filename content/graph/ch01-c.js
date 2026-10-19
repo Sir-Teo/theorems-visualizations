@@ -32,11 +32,12 @@ export default {
   items: [
     // ================================================================== 1.7 Contraction and minors
     {
-      num: '1.7.1a', kind: 'Definition', name: 'Contraction and minors', verify: true,
+      num: '1.7.1a', kind: 'Definition', name: 'Contraction and minors',
       statement: String.raw`A graph $G$ is an **$IX$** (an inflated $X$) if $V(G)$ has a partition $\{V_x: x\in V(X)\}$ into connected sets, the **branch sets**, such that distinct $x,y$ are adjacent in $X$ if and only if $G$ has a $V_x$–$V_y$ edge; then $X$ arises from $G$ by **contracting** the subgraphs $G[V_x]$. If a graph $Y$ contains an $IX$ as a subgraph, $X$ is a **minor** of $Y$, written $X\preccurlyeq Y$, and the $IX$ is a **model** of $X$ in $Y$. Contracting a single edge $e=xy$ gives $G/e$: $x$ and $y$ are replaced by one new vertex $v_e$ adjacent to all their other neighbours.`,
       idea: String.raw`Equivalently, $X\preccurlyeq Y$ if there is a map from a subset of $V(Y)$ onto $V(X)$ whose fibres are connected and such that every edge of $X$ is realised by an edge between the corresponding fibres. Branch sets may be single vertices, so every subgraph is a minor. Contraction can only lower the number of vertices and edges, but it can create dense minors from sparse graphs: the cubic Petersen graph has $K^5$ as a minor.`,
       caption: String.raw`Right: the current minor $X$. Click an edge of $X$ to contract it (animated); Alt-click a vertex to delete it. Left: the original Petersen graph $G$ with the branch set of every vertex of $X$ as a coloured blob. **Contract the spokes** produces the famous $K^5$ minor.`,
-      deps: ['graph-1.1.1c', 'graph-1.4.1a'], refs: ['Diestel §1.7'], tags: ['minors'],
+      deps: ['graph-1.1.1c', 'graph-1.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.7, pp. 19–20'], tags: ['minors'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const L = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.3], axes: false, equal: true, height: 300, title: '$G$ with the branch sets' });
         const R = v.stage({ x: [-1.3, 1.3], y: [-1.25, 1.3], axes: false, equal: true, height: 300, title: 'the minor $X$' });
@@ -76,11 +77,12 @@ export default {
       },
     },
     {
-      num: '1.7.1b', kind: 'Definition', name: 'Subdivisions and topological minors', verify: true,
+      num: '1.7.1b', kind: 'Definition', name: 'Subdivisions and topological minors',
       statement: String.raw`A **subdivision** of a graph $X$ is obtained by replacing some or all edges of $X$ by new paths between their ends, so that no such path has an inner vertex in $V(X)$ or on another new path; such a graph is called a **$TX$**. The original vertices are its **branch vertices**, the new ones its **subdividing vertices**. If a graph $Y$ contains a $TX$ as a subgraph, then $X$ is a **topological minor** of $Y$.`,
       idea: String.raw`Subdividing vertices have degree $2$ while branch vertices keep their degree from $X$, so $X$ is recovered from a $TX$ by suppressing the subdividing vertices. Topologically a $TX$ is the same space as $X$ — which is why Kuratowski's theorem (Chapter 4) can say "no $TK^5$ and no $TK_{3,3}$".`,
       caption: String.raw`Click an edge of the left graph to subdivide it; click a small (subdividing) vertex to suppress it again. Branch vertices are large, subdividing vertices small, and the subdivided paths dotted. The right panel suppresses all subdividing vertices and always gives back $X$.`,
-      deps: ['graph-1.1.1c', 'graph-1.3.1a'], refs: ['Diestel §1.7'], tags: ['minors', 'subdivisions'],
+      deps: ['graph-1.1.1c', 'graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.7, pp. 18–19'], tags: ['minors', 'subdivisions'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const which = v.select('$X$ =', [{ value: 'k4', label: '$K^4$' }, { value: 'k33', label: '$K_{3,3}$' }], 'k4', { onChange: () => load() });
         const L = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.3], axes: false, equal: true, height: 300, title: 'a $TX$' });
@@ -267,11 +269,12 @@ export default {
     },
     // ================================================================== 1.8 Euler tours
     {
-      num: '1.8.1a', kind: 'Definition', name: 'Euler tours and Eulerian graphs', verify: true,
+      num: '1.8.1a', kind: 'Definition', name: 'Euler tours and Eulerian graphs',
       statement: String.raw`A closed walk in a graph is an **Euler tour** if it traverses every edge of the graph exactly once. A graph is **Eulerian** if it admits an Euler tour.`,
       idea: String.raw`The notion goes back to Euler's 1736 analysis of the seven bridges of Königsberg: a round trip crossing every bridge once is an Euler tour of the corresponding multigraph. Each pass of a tour through a vertex uses two of its edges, which is the source of the parity condition in Euler's theorem (1.8.1).`,
       caption: String.raw`Click an edge to start, then keep clicking unused edges at the current vertex (gold). Used edges are numbered and grey out. The tour is accepted when every edge has been used once and you are back at the start; **Undo** steps back. The octahedron is Eulerian; the house has two odd vertices, so every attempt fails.`,
-      deps: ['graph-1.4.1a', 'graph-1.2.1a'], refs: ['Diestel §1.8'], tags: ['Euler tours'],
+      deps: ['graph-1.4.1a', 'graph-1.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.8, pp. 21–22'], tags: ['Euler tours'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const PRE = { oct: () => named('octahedron'), house: () => ({ ...fixed({ a: [0, 0], b: [2, 0], c: [2, 2], d: [0, 2], e: [1, 3.3] }, 'ab bc cd da ce de ac'), layout: 'fit' }), k5: () => named('complete', 5) };
         const pre = v.select('', [{ value: 'oct', label: 'octahedron' }, { value: 'house', label: 'house' }, { value: 'k5', label: '$K^5$' }], 'oct', { onChange: () => load() });
@@ -354,11 +357,12 @@ export default {
     },
     // ================================================================== 1.9 Some linear algebra
     {
-      num: '1.9.1a', kind: 'Definition', name: 'Edge space and cycle space over 𝔽₂', verify: true,
+      num: '1.9.1a', kind: 'Definition', name: 'Edge space and cycle space over 𝔽₂',
       statement: String.raw`For a graph $G=(V,E)$ with $E=\{e_1,\dots,e_m\}$, the **edge space** $\mathcal E(G)$ is the vector space of all functions $E\to\mathbb F_2$; identifying a function with the set of edges it maps to $1$, its elements are the subsets of $E$, vector addition is symmetric difference $F+F'=F\triangle F'$, the zero is $\emptyset$, and $\dim\mathcal E(G)=m$. (The vertex space $\mathcal V(G)$ is defined likewise, of dimension $n$.) The bilinear form $\langle F,F'\rangle=\sum_e F(e)F'(e)\in\mathbb F_2$ is $0$ exactly when $F,F'$ share an even number of edges. The **cycle space** $\mathcal C(G)$ is the subspace spanned by the edge sets of the cycles of $G$; its dimension is the **cyclomatic number**.`,
       idea: String.raw`Over $\mathbb F_2$ every vector is its own negative, so adding an edge set twice cancels it: the sum of two cycles is their symmetric difference, which in general is not a cycle but a union of edge-disjoint cycles. Note that $\langle F,F\rangle$ can be $0$ for $F\ne\emptyset$ — the form is not positive definite, yet orthogonal complements still satisfy $\dim\mathcal F+\dim\mathcal F^\perp=m$.`,
       caption: String.raw`Choose which register to edit and click edges: $F$ is blue, $F'$ orange (edges in both are purple). The right panel shows the sum $F+F'$ in green; red vertices have odd degree in it. A set lies in the cycle space exactly when no vertex is red (1.9.1).`,
-      deps: ['graph-1.3.1a'], see: ['ladr-1.33'], refs: ['Diestel §1.9'], tags: ['linear algebra', 'cycle space'],
+      deps: ['graph-1.3.1a'], see: ['ladr-1.33'], refs: ['Diestel, Graph Theory, 6th ed., §1.9, pp. 23–24'], tags: ['linear algebra', 'cycle space'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const reg = v.select('click edits', [{ value: 'F', label: '$F$' }, { value: 'G', label: "$F'$" }], 'F');
         const A = gstage(v, { height: 280, title: "$F$ and $F'$" }), B = gstage(v, { height: 280, title: "$F + F' = F\\,\\triangle\\, F'$" });
@@ -412,11 +416,12 @@ export default {
       },
     },
     {
-      num: '1.9.1b', kind: 'Definition', name: 'Cuts, bonds and the cut space', verify: true,
+      num: '1.9.1b', kind: 'Definition', name: 'Cuts, bonds and the cut space',
       statement: String.raw`A set $F$ of edges is a **cut** in $G$ if there is a partition $\{V_1,V_2\}$ of $V$ (into non-empty classes) with $F=E(V_1,V_2)$, the set of edges with one end in each class; the edges of $F$ **cross** the partition, and if $G$ is connected the partition is determined by $F$ and its classes are the **sides** of the cut. A minimal non-empty cut is a **bond**. Cuts of the form $E(v)$ are **atomic**. The cuts, together with $\emptyset$, form the **cut space** $\mathcal B(G)$ (1.9.2).`,
       idea: String.raw`In a connected graph a cut is a bond exactly when both sides induce connected subgraphs: if a side fell into pieces, the edges leaving one piece would form a smaller non-empty cut. Bonds play for the cut space the role that cycles play for the cycle space — they are its minimal non-empty elements.`,
       caption: String.raw`Click vertices to move them between the sides $V_1$ (blue) and $V_2$ (orange). The crossing edges, the cut $E(V_1,V_2)$, are red. The badge says whether it is a bond: it is exactly when both sides stay connected.`,
-      deps: ['graph-1.9.1a', 'graph-1.4.1a'], refs: ['Diestel §1.9'], tags: ['linear algebra', 'cuts'],
+      deps: ['graph-1.9.1a', 'graph-1.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.9, pp. 24–25'], tags: ['linear algebra', 'cuts'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 330 });
         const G = v.graph(s, { ...LA(), r: 13 });
@@ -570,11 +575,12 @@ export default {
       },
     },
     {
-      num: '1.9.5a', kind: 'Definition', name: 'Incidence and adjacency matrices', verify: true,
+      num: '1.9.5a', kind: 'Definition', name: 'Incidence and adjacency matrices',
       statement: String.raw`Let $V=\{v_1,\dots,v_n\}$ and $E=\{e_1,\dots,e_m\}$. The **incidence matrix** $B=(b_{ij})_{n\times m}$ of $G$ has $b_{ij}=1$ if $v_i\in e_j$ and $b_{ij}=0$ otherwise; over $\mathbb F_2$ it defines linear maps $B\colon\mathcal E(G)\to\mathcal V(G)$ and $B^\top\colon\mathcal V(G)\to\mathcal E(G)$. The **adjacency matrix** $A=(a_{ij})_{n\times n}$ has $a_{ij}=1$ if $v_iv_j\in E$ and $a_{ij}=0$ otherwise.`,
       idea: String.raw`Every column of $B$ has exactly two $1$s (an edge has two ends) and row $i$ has $d(v_i)$ of them; $A$ is symmetric with zero diagonal and row sums equal to the degrees. Over $\mathbb F_2$, $B$ sends an edge set to the vertices of odd degree in it, $B^\top$ sends a vertex set $U$ to the cut $E(U,V\setminus U)$, and $A$ sends $U$ to the vertices with an odd number of neighbours in $U$.`,
       caption: String.raw`Click a vertex or an edge of the graph (or a row or column label of a matrix) to highlight its row in $B$ and $A$ or its column in $B$. Edit the graph (${EDIT}; up to 7 vertices) and both matrices are rewritten.`,
-      deps: ['graph-1.9.1a'], refs: ['Diestel §1.9'], tags: ['linear algebra', 'matrices'],
+      deps: ['graph-1.9.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.9, pp. 26–27'], tags: ['linear algebra', 'matrices'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const s = gstage(v, { height: 260, y: [0, 5.2] });
         const ta = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 260, title: 'adjacency matrix $A$' });
@@ -666,11 +672,12 @@ export default {
     },
     // ================================================================== 1.10 Other notions of graphs
     {
-      num: '1.10.1a', kind: 'Definition', name: 'Multigraphs and directed graphs', verify: true,
+      num: '1.10.1a', kind: 'Definition', name: 'Multigraphs and directed graphs',
       statement: String.raw`A **directed graph** (digraph) is a pair $(V,E)$ of disjoint sets with two maps $\mathrm{init}\colon E\to V$ and $\mathrm{ter}\colon E\to V$ assigning to each edge $e$ an initial and a terminal vertex; $e$ is directed from $\mathrm{init}(e)$ to $\mathrm{ter}(e)$, and it is a **loop** if $\mathrm{init}(e)=\mathrm{ter}(e)$. Several edges may join the same two vertices (**multiple edges**). A **multigraph** is a pair $(V,E)$ with a map assigning to every edge one or two vertices, its ends: a digraph with the directions forgotten. A graph is a multigraph without loops and multiple edges; an **orientation** of a graph directs each of its edges.`,
       idea: String.raw`In a multigraph a loop contributes $2$ to the degree of its vertex, so $\sum_v d(v)=2|E|$ still holds and the handshake lemma survives. Contraction is simpler in multigraphs: contracting $e=xy$ deletes only $e$, so edges parallel to $e$ become loops and edges $xv$, $yv$ become parallel — exactly the picture of the Königsberg bridges.`,
       caption: String.raw`Switch between a graph, a multigraph and a directed graph on the same four vertices; the table lists every edge with its ends (or its $\mathrm{init}$ and $\mathrm{ter}$). In the multigraph, click an edge to contract it: parallel edges turn into loops. In the digraph, click an arc to reverse it.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §1.10'], tags: ['multigraphs', 'digraphs'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §1.10, pp. 27–29'], tags: ['multigraphs', 'digraphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch1.pdf' },
       viz(v) {
         const mode = v.select('', [{ value: 'g', label: 'graph' }, { value: 'm', label: 'multigraph' }, { value: 'd', label: 'directed graph' }], 'm', { onChange: () => load() });
         const s = gstage(v, { height: 300 });

@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "id": "ecol-4.7",
+  "disposition": "retained",
+  "reviewState": "reviewed",
+  "report": "docs/verification/ecol-4-7-source-followup.md",
+  "missingEvidence": "Complete MacArthur–Levins1967 public body and figure captions pp377–385 have now been read, supporting overlap/invasion and unequal fixed-K comparisons. Remaining: intact original1967 equation/figure scans (public text has damaged equations and no usable diagrams), and complete May–MacArthur1972 PNAS69(5):1109–1113 body/methods/figures. The finite random-but-fixed K experiment is not their temporal environmental-variability model; metadata/abstracts are not full-source verification.",
+  "sources": [
+    {
+      "citation": "MacArthur and Levins1967, American Naturalist101:377–385",
+      "url": "https://www.scribd.com/document/595324270/2-Macarthur-Levins-1967-The-limiting-similarity-convergence",
+      "read": "Complete publicly exposed nine-page body, including all five figure captions, summary and bibliography. No authentication/download bypass. No explicit public PDF link or usable original figure assets were exposed in this page.",
+      "supports": [
+        "pp379–380 heuristic overlap integral and dependence on utilization-curve shape",
+        "pp380–382 two/three-species invasion comparisons and unequal fixed carrying capacities",
+        "pp382–385 distinction between demographic and evolutionary limits"
+      ],
+      "limitation": "Damaged equation extraction and absent original diagrams prevent claiming a complete visual/equation inspection."
+    },
+    {
+      "citation": "May and MacArthur1972, PNAS69(5):1109–1113, DOI10.1073/pnas.69.5.1109",
+      "url": "https://www.pnas.org/doi/10.1073/pnas.69.5.1109",
+      "read": "Metadata/abstract only; full body and figures remain unread.",
+      "routes": [
+        {
+          "url": "https://www.pnas.org/doi/10.1073/pnas.69.5.1109",
+          "result": "Cloudflare challenge"
+        },
+        {
+          "url": "https://www.pnas.org/content/pnas/69/5/1109.full.pdf",
+          "result": "Cloudflare HTML instead of PDF"
+        },
+        {
+          "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&id=426641&rettype=full&retmode=xml",
+          "result": "Bibliographic/abstract XML only; explicit publisher notice that full text is not downloadable in XML. No full XML was pursued."
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC426641/pdf/pnas00131-0047.pdf",
+          "result": "Followed the explicit self-uri PDF link from metadata; received Preparing-to-download challenge HTML, not PDF. No challenge bypass attempted."
+        }
+      ],
+      "abstractLimit": "The abstract identifies deterministic-versus-stochastic environmental conditions but cannot substitute for a full methods/figures reading."
+    }
+  ],
+  "contentChanges": [
+    "content/ecol/ch04-b.js:ecol-4.7 scope/ref only",
+    "content/ecol/syllabus.js:ecol-4.7 reference mirror"
+  ],
+  "verificationFlagChanged": false,
+  "numericalOrInteractionCodeChanged": false,
+  "evidenceFiles": [
+    {
+      "path": "/tmp/ecol-macarthur-levins1967-scribd.html",
+      "bytes": 1344927,
+      "sha256": "a01ffaa04346ddfda05e9aefeefb2b3f5ac4201c914bc0bce37efa21a28c64f6"
+    },
+    {
+      "path": "/tmp/ecol-primary/macarthur-levins1967-public-body.txt",
+      "bytes": 19803,
+      "sha256": "38e9dec4314f0137e42a298f6be963f14b93f0ebea3292ec1e24701a66b3c157"
+    },
+    {
+      "path": "/tmp/ecol-primary/may-macarthur1972-ncbi.xml",
+      "bytes": 5784,
+      "sha256": "2d81a20cd67db6018c568d9ebe6c40dee2ab981915329a442e347ff82cc0a09a"
+    }
+  ],
+  "validation": {
+    "visualizationFunctionSha256Before": "15ec6a6cb96b82a3435f9bcc617e318c9408707a647519c236e336142ff6bccb",
+    "staticCommand": "node scripts/check.mjs ecol-4.7 --static",
+    "browser": "No new browser or OCR processes. Existing both-theme control evidence applies to unchanged visualization. Root receives ECOL fingerprint notification.",
+    "visualizationFunctionSha256After": "15ec6a6cb96b82a3435f9bcc617e318c9408707a647519c236e336142ff6bccb",
+    "staticResult": {
+      "items": 1,
+      "errors": 0,
+      "warnings": 0
+    },
+    "referenceMirror": "passed"
+  }
+}

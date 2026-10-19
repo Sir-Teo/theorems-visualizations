@@ -1,0 +1,948 @@
+{
+  "schemaVersion": 1,
+  "reviewer": "review_geology",
+  "reviewDate": "2026-10-18",
+  "auditedReport": "docs/verification/cross-field-macro.json",
+  "scope": [
+    "macro",
+    "fin",
+    "game",
+    "behav",
+    "psych",
+    "soc",
+    "polsci",
+    "demo",
+    "art",
+    "ling",
+    "phil"
+  ],
+  "method": "Independent reading of the actual source statement/derivation and exact written target for 47 selected pairs across all 11 collections; names alone were not accepted. All current120 batch edges also receive endpoint/field/anchor/syllabus metadata checks. No new source closure or quota additions.",
+  "summary": {
+    "deeplyReviewedPairs": 47,
+    "collections": 11,
+    "supportedDirectPairs": 46,
+    "resolvedContextOnlyPair": 1,
+    "unresolvedBlockingFindings": 0,
+    "sampleByCollection": {
+      "macro": 4,
+      "fin": 5,
+      "game": 5,
+      "behav": 5,
+      "psych": 3,
+      "soc": 3,
+      "polsci": 4,
+      "demo": 5,
+      "art": 5,
+      "ling": 4,
+      "phil": 4
+    },
+    "currentBatchAdditions": 120,
+    "knownSeparateGaussianFollowup": "behav-3.12→stat-1.19 is inspected but excluded from the 120 prerequisite-only batch, as requested."
+  },
+  "pairs": [
+    {
+      "source": "macro-2.4",
+      "target": "pma-9.23",
+      "verdict": "valid",
+      "sourceFile": "content/macro/ch02.js",
+      "targetFile": "content/pma/ch09-a4.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": " the dynamics, write the one-line recursion as an affine map $u\\mapsto(1-s-f)u+s$ with slope $\\lvert 1-s-f\\rvert<1$; it is a contraction (its iterates are partial sums of a geometric series, pma-3.26), so iterates converge to its unique fixed point at the geometric rate $(1-s-f)^t$. Because the monthly job-finding rate in th",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "If $X$ is a complete metric space and $\\varphi$ is a contraction of $X$ into $X$, then there is one and only one $x\\in X$ with $\\varphi(x)=x$."
+      },
+      "independentAssessment": "The stated 0<s+f<2 gives |1-s-f|<1. The employment-transition map preserves the closed interval of feasible unemployment rates, which is complete; contraction therefore supplies the unique fixed point and convergence used in this derivation.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "macro-3.10",
+      "target": "ladr-6.55",
+      "verdict": "valid",
+      "sourceFile": "content/macro/ch03-b.js",
+      "targetFile": "content/ladr/ch06-c.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "er samples at about 2% a year. Here the same regression is run on Penn World Table data from 1960 to 2019, with the controls partialled out by the Frisch–Waugh theorem.",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Suppose $U$ is a finite-dimensional subspace of $V$. The **orthogonal projection** of $V$ onto $U$ is the operator $P_U\\in\\mathcal L(V)$ defined as follows: for $v\\in V$, write $v=u+w$ with $u\\in U$ and $w\\in U^\\perp$, and set $$P_Uv=u.$$"
+      },
+      "independentAssessment": "Frisch-Waugh partialling out removes the orthogonal projection onto the finite control-column space. The projection target supplies the actual residualization operation, beyond a generic reference to regression.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "macro-4.1",
+      "target": "ode-3.8",
+      "verdict": "valid",
+      "sourceFile": "content/macro/ch04.js",
+      "targetFile": "content/ode/ch03-b.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "ocus is vertical at $k^*$; along $\\dot k = 0$ consumption equals net output, a hump. Linearising at their intersection gives one stable and one unstable eigenvalue (a saddle), so convergence needs the jump variable $c$ to land on the stable arm. The two-period Euler equation of the Fisher problem reappears here in continuous time, and the capital dyna",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $A$ be a real $2\\times2$ matrix with trace $\\tau$ and determinant $\\Delta$; its eigenvalues are $\\lambda_\\pm=\\tfrac12\\big(\\tau\\pm\\sqrt{\\tau^2-4\\Delta}\\big)$. The phase portrait of $\\dot x=Ax$ is, up to a linear change of coordinates, determined by $(\\tau,\\Delta)$ and (on the parabola) the diagonalizability of $A$:\n- $\\Delta<0$: a **saddle** (real eigenvalues of opposite signs);\n- $\\Delta>0$, $\\tau^2>4\\Delta$: a **node**, stable if $\\tau<0$, unstable if $\\tau>0$;\n- $\\Delta>0$, $\\tau^2<4\\Delta$: a **spiral**, stable if $\\tau<0$, unstable if $\\tau>0$; if $\\tau=0$ a **centre** (closed ellipses);\n- $\\tau^2=4\\Delta>0$: a **degenerate node** (one eigendirection) or a **star** ($A=\\lambda I$);\n- $\\Delta=0$: a line of equilibria (or all of the plane, if $A=0$)."
+      },
+      "independentAssessment": "The source explicitly classifies the two real, opposite-sign eigenvalues of its interior Ramsey linearization as a saddle. That is exactly the target's Delta<0 planar classification; the target is not presented as the nonlinear stable-manifold theorem.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "macro-3.9",
+      "target": "pma-9.15",
+      "verdict": "valid",
+      "sourceFile": "content/macro/ch03-b.js",
+      "targetFile": "content/pma/ch09-a3.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "t the elasticity of output with respect to capital is capital's income share $\\alpha$ and with respect to labour $1-\\alpha$. Differentiating logarithms in time gives the exact decomposition $$\\frac{\\dot Y}{Y} = \\alpha\\,\\frac{\\dot K}{K} + (1-\\alpha)\\,\\frac{\\dot L}{L} + \\frac{\\dot A}{A},$$ and the **Solow residual** $\\dot A/A$ ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $E\\subset\\R^n$ be open, let $f$ map $E$ into $\\R^m$ and be differentiable at $x_0$, and let $g$ map an open set containing $f(E)$ into $\\R^k$ and be differentiable at $f(x_0)$. Then $F(x)=g(f(x))$ is differentiable at $x_0$, and\n$$F'(x_0)=g'(f(x_0))\\,f'(x_0).$$\nThe right side is a product (composition) of linear transformations."
+      },
+      "independentAssessment": "For differentiable positive K(t), L(t), A(t), composition of production with their time paths gives the displayed log-growth chain rule. Its remote marginal-product ancestor uses the same theorem for a different derivative, rather than supplying this growth-accounting calculation.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "fin-2.5",
+      "target": "rca-3.3",
+      "verdict": "valid",
+      "sourceFile": "content/fin/ch02.js",
+      "targetFile": "content/rca/ch03.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "LL)\\ge0$. A barbell's convexity exceeds the single date $H$ because $\\sum w_iT_i(T_i+1)\\ge H(H+1)$ whenever $\\sum w_iT_i=H$ (Jensen). The method only controls parallel shifts: a twist changes rates at $T_1$ and $T_2$ differently from the rate at $H$, so the first-order term no longer vanishes and the surplus can be nega",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $\\mu$ be a positive measure on a $\\sigma$-algebra in a set $\\Omega$ with $\\mu(\\Omega)=1$. Suppose $f\\in L^1(\\mu)$ is real with $a<f(x)<b$ for every $x\\in\\Omega$ (where $-\\infty\\le a<b\\le\\infty$), and $\\varphi$ is convex on $(a,b)$. Then\n$$\\varphi\\Big(\\int_\\Omega f\\,d\\mu\\Big)\\;\\le\\;\\int_\\Omega(\\varphi\\circ f)\\,d\\mu .$$\nHere $\\varphi\\circ f$ need not be in $L^1(\\mu)$; its integral always exists in the extended sense, possibly equal to $+\\infty$."
+      },
+      "independentAssessment": "With nonnegative present-value weights summing to one and weighted maturity H, Jensen for phi(T)=T(T+1) yields the displayed convexity comparison. The excess is also Var(T), so this is the convex inequality actually used, not only a shared theorem name.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "fin-4.5",
+      "target": "ladr-3.21",
+      "verdict": "valid",
+      "sourceFile": "content/fin/ch04.js",
+      "targetFile": "content/ladr/ch03.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "ance matrix of $n$ assets estimated from $T$ monthly observations has $n(n+1)/2$ entries each with sampling error, and it is singular if $T\\le n$; an optimiser (fin-3.7, fin-3.13) loves to exploit those errors. Forcing the structure $\\beta\\beta^{\\!\\top}\\sigma_M^2+\\operatorname{diag}(\\sigma_\\varepsilon^2)$ throws away real",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Suppose $V$ is finite-dimensional and $T\\in\\mathcal L(V,W)$. Then $\\operatorname{range}T$ is finite-dimensional and\n$$\\dim V=\\dim\\operatorname{null}T+\\dim\\operatorname{range}T.$$"
+      },
+      "independentAssessment": "A centered T-by-n observation matrix has row rank at most T-1; hence its n-by-n sample covariance is singular when T<=n. Finite-dimensional rank-nullity supplies the dimension obstruction asserted by the source.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "fin-5.6",
+      "target": "prob-4.1.15",
+      "verdict": "valid",
+      "sourceFile": "content/fin/ch05-b.js",
+      "targetFile": "content/prob/ch04-a1.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": " a variance decomposition: a forecast cannot be more variable than the quantity it forecasts, because forecast and error are orthogonal. $p^*$ is smooth because dividends are smooth and a discounted sum of many of them averages out their fluctuations; the price is not. The calculation needs a terminal value for $p^*$ at the",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "If $EX^2<\\infty$, then $E(X\\mid\\mathcal F)$ is the $\\mathcal F$-measurable $Y$ that minimizes the mean square error $E(X-Y)^2$ over $L^2(\\mathcal F)$. Equivalently, it is the orthogonal projection of $X$ onto the closed subspace $L^2(\\mathcal F)\\subset L^2(\\mathcal F_0)$, and for every $Y\\in L^2(\\mathcal F)$\n$$E(X-Y)^2=E\\big(X-E(X\\mid\\mathcal F)\\big)^2+E\\big(E(X\\mid\\mathcal F)-Y\\big)^2 .$$"
+      },
+      "independentAssessment": "The price is a conditional forecast of the ex-post discounted-dividend value. Under the finite-second-moment variance calculation, forecast/error orthogonality is exactly the L2 projection decomposition at the target.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "fin-3.14",
+      "target": "prob-2.7.1a",
+      "verdict": "valid",
+      "sourceFile": "content/fin/ch03-b.js",
+      "targetFile": "content/prob/ch02-e.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "istributed; Chamberlain, 1983), because the distribution of every portfolio is then determined by its mean and variance. For exponential (CARA) utility $u(x)=-e^{-ax}$ and a normal return $X\\sim N(\\mu,\\sigma^2)$, $$\\mathbb E\\,u(X)=-\\exp\\!\\bigl(-a(\\mu-\\tfrac a2\\sigma^2)\\bigr),\\qquad \\text{certainty equivalent } \\mu-\\tfrac a2\\",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "The **moment-generating function** of a random variable $X$ is $\\varphi(\\theta)=Ee^{\\theta X}$, defined in $(0,\\infty]$ for every real $\\theta$; put $\\theta_+=\\sup\\{\\theta:\\varphi(\\theta)<\\infty\\}$ and $\\kappa(\\theta)=\\log\\varphi(\\theta)$. Where $\\varphi$ is finite near $\\theta$, it is smooth with $\\varphi^{(k)}(\\theta)=E\\big(X^ke^{\\theta X}\\big)$; in particular $\\varphi'(0)=EX$, and $\\kappa$ is convex, with $\\kappa'(\\theta)$ and $\\kappa''(\\theta)$ the mean and variance of the tilted law $e^{\\theta x}dF(x)/\\varphi(\\theta)$."
+      },
+      "independentAssessment": "The CARA expectation evaluates E exp(-aX). Substituting the normal exponential moment yields exp(-a mu+a^2 sigma^2/2), hence the displayed certainty equivalent; the MGF is a genuine distinct calculation alongside the normal-portfolio assumption.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "fin-5.11",
+      "target": "prob-4.1.13",
+      "verdict": "valid",
+      "sourceFile": "content/fin/ch05-c.js",
+      "targetFile": "content/prob/ch04-a.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": " and using that $f$ already solves it leaves $B_t=\\mathrm E_t[B_{t+1}]/(1+r)$, so $B$ grows on average at the discount rate; iterating the pricing equation forward $T$ times gives $p_t=f_t^{(T)}+\\mathrm E_t[p_{t+T}]/(1+r)^T$, and the last term is the bubble's discounted contribution, which vanishes exactly under the tra",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "If $\\mathcal F_1\\subset\\mathcal F_2$, then\n\n(i) $E\\big(E(X\\mid\\mathcal F_1)\\mid\\mathcal F_2\\big)=E(X\\mid\\mathcal F_1)$;\n\n(ii) $E\\big(E(X\\mid\\mathcal F_2)\\mid\\mathcal F_1\\big)=E(X\\mid\\mathcal F_1)$.\n\nThe smaller σ-field always wins. In particular $E(E(X\\mid\\mathcal F))=EX$."
+      },
+      "independentAssessment": "Nested information sets in forward pricing require E_t E_(t+1) X=E_t X. The smaller-sigma-field tower statement is precisely the iteration step, not a generic conditional-expectation definition.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "game-2.5",
+      "target": "graph-1.2.1",
+      "verdict": "valid",
+      "sourceFile": "content/game/ch02.js",
+      "targetFile": "content/graph/ch01.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "$P$ (or $Q$) that releases it — and then repeatedly pivot in the *other* polytope on the label that was just duplicated. The path of vertex pairs cannot revisit a pair and must end at a completely labelled pair other than $(0,0)$: **an equilibrium is found**. This gives a constructive proof that equilibria exist and t",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "In every graph the number of vertices of odd degree is even."
+      },
+      "independentAssessment": "Nondegeneracy makes the almost-completely-labelled pivot graph finite with degree-two interior vertices and degree-one endpoints. The endpoint parity argument uses the handshake lemma; the source also supplies the path/component reasoning needed for termination.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "game-3.7",
+      "target": "stat-1.16",
+      "verdict": "valid",
+      "sourceFile": "content/game/ch03-b.js",
+      "targetFile": "content/stat/ch01-b.js",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "sourceClaimAnchor": "n\\sum_i e^{\\eta G_t(i)}$ with $G_t(i)$ the cumulative gain. Each round raises it by at most $\\eta\\,x_t\\!\\cdot g_t+\\eta^2/8$ (Hoeffding's lemma), while at the end $\\Phi_T\\ge\\eta\\max_iG_T(i)$ and at the start $\\Phi_0=\\ln m$; rearranging yields the regret bound. For the game, regret against the best fixed row says: the row pl",
+      "targetAnchor": {
+        "field": "idea",
+        "quote": "Apply Markov's inequality (prob-1.6.4) to $e^{\\lambda(\\bar X-\\mu)}$ and optimize over $\\lambda$ (the Chernoff method). Independence factorizes the moment generating function, and Hoeffding's lemma bounds each factor: a centred variable confined to $[a,b]$ has $E e^{\\lambda X}\\le e^{\\lambda^2(b-a)^2/8}$, proved from the convexity of $x\\mapsto e^{\\lambda x}$ (Jensen-type chord bound, rca-3.3). Boundedness replaces knowledge of the distribution; independence is what makes the exponent grow like $n$."
+      },
+      "independentAssessment": "The required result is Hoeffding's exponential-moment lemma, not merely the tail inequality in the target title. The actual target idea explicitly states the centered bounded-variable MGF bound with constant 1/8, matching the potential increment used in the source.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "game-2.4",
+      "target": "opt-2.12",
+      "verdict": "valid",
+      "sourceFile": "content/game/ch02.js",
+      "targetFile": "content/opt/ch02-b.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "Let $K\\subset\\R^d$ be nonempty, compact and convex, and let $\\Phi$ assign to every $x\\in K$ a **nonempty convex** subset $\\Phi(x)\\subseteq K$, in such a way that the graph $\\{(x,y):y\\in\\Phi(x)\\}$ is **closed**. Then $\\Phi$ has a fixed point",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $C\\subseteq\\R^n$ be nonempty, convex and compact and let $c\\in\\R^n$. Then $\\max_{x\\in C}c^\\top x$ is attained, and the set of maximizers is a nonempty compact convex face of $C$ that contains an extreme point of $C$; so the maximum is attained at an extreme point. If $C=\\operatorname{conv}\\{v_1,\\dots,v_m\\}$ is a polytope, then $\\max_Cc^\\top x=\\max_ic^\\top v_i$, and if several vertices are optimal, every point of their convex hull is optimal too. The same holds for a polyhedron without lines whenever the maximum is finite (it is attained at a vertex); without compactness the supremum may be $+\\infty$ or not attained."
+      },
+      "independentAssessment": "The target explicitly states that linear maximizers on a compact convex set form a nonempty compact convex face. These are the best-response values needed for the finite-game Kakutani example; it is not being substituted for the correspondence fixed-point theorem itself.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "game-3.5",
+      "target": "opt-3.6",
+      "verdict": "valid",
+      "sourceFile": "content/game/ch03.js",
+      "targetFile": "content/opt/ch03.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "in $p$. Against a column player who chooses the worst column, her guarantee is the **lower envelope** $g(p)=\\min_jL_j(p)$, a concave piecewise-linear function. The **value** is $v=\\max_{p\\in[0,1]}g(p)$ (game-3.3) and the maximiser $p^*$ is an optimal strategy. At $p^*$ either the maximum is at an end point of $[0,1]$ or ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $f,f_1,f_2,\\dots$ be convex. Then the following are convex: (a) nonnegative combinations $\\alpha_1f_1+\\alpha_2f_2$ with $\\alpha_i\\ge0$; (b) the pointwise maximum $\\max(f_1,f_2)$ and more generally the pointwise supremum $\\sup_{a\\in\\mathcal A}f_a$ of any family (finite where it is finite); (c) the composition with an affine map, $x\\mapsto f(Ax+b)$; (d) the composition $g\\circ f$ with $g$ convex and nondecreasing and $f$ convex (scalar $f$). In general $-f$, differences $f_1-f_2$, minima $\\min(f_1,f_2)$ and compositions with a decreasing or non-monotone $g$ need not be convex."
+      },
+      "independentAssessment": "The guarantee is min_j L_j=-max_j(-L_j). Negated affine functions remain affine, so the target's convex maximum rule gives concavity of the lower envelope. This is a correct sign conversion, despite the target warning that arbitrary minima need not be convex.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "game-3.3",
+      "target": "fa-3.4",
+      "verdict": "valid-existing-link",
+      "sourceFile": "content/game/ch03.js",
+      "targetFile": "content/fa/ch03.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "The proof used here is geometric. If $\\min_y\\max_x\\,x^{\\mathsf T}Ay=w$, the convex set $H=\\{Ay:y\\in\\Delta_n\\}\\subset\\mathbb R^m$ of payoff vectors the column player can force never meets the open orthant $\\{z:z_i<w\\ \\forall i\\}$, because every point of $H$ has a coordinate $\\ge w$. Two disjoint convex sets, one of them open, can be separated by a hyperplane (the Hahn–Banach separation theorem, fa-3.4): there is a vector $x\\ne0$ with $x^{\\mathsf T}z\\ge x^{\\mathsf T}z'$ for $z\\in H$ and $z'$ in th",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $A$ and $B$ be disjoint, nonempty, convex subsets of a topological vector space $X$.\n(a) If $A$ is open, there exist $\\Lambda\\in X^*$ and $\\gamma\\in\\R$ with $\\Re\\Lambda x<\\gamma\\le\\Re\\Lambda y$ for all $x\\in A$, $y\\in B$.\n(b) If $A$ is compact, $B$ is closed, and $X$ is locally convex, there exist $\\Lambda\\in X^*$ and $\\gamma_1<\\gamma_2$ with $\\Re\\Lambda x<\\gamma_1<\\gamma_2<\\Re\\Lambda y$ for all $x\\in A$, $y\\in B$."
+      },
+      "independentAssessment": "The attainable payoff set is convex and disjoint from the open lower orthant. Part (a) of the actual Hahn-Banach target separates exactly those sets; the sign and normalization of the separator give a mixed strategy. FA5.11 instead concerns common fixed points of an equicontinuous affine group and is not the game correspondence theorem.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": false
+    },
+    {
+      "source": "behav-1.9",
+      "target": "pma-6.22",
+      "verdict": "valid-with-scope-note",
+      "sourceFile": "content/behav/ch01-b.js",
+      "targetFile": "content/pma/ch06-a4.js",
+      "sourceField": "econ",
+      "targetField": "math",
+      "sourceClaimAnchor": "he CDFs of a pair related only by second-order dominance cross, and those of an unranked pair have integrals that cross too. Integrating by parts, $E\\,u(A)-E\\,u(B)=\\int_a^b u'(x)\\,[F_B(x)-F_A(x)]\\,dx$, which is non-negative for all increasing $u$ exactly when $F_B-F_A\\ge0$ everywhere (test with step utilities). Integrating once more,",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Suppose $F$ and $G$ are differentiable on $[a,b]$, $F'=f\\in\\mathscr R$ and $G'=g\\in\\mathscr R$. Then\n$$\\int_a^b F(x)\\,g(x)\\,dx=F(b)G(b)-F(a)G(a)-\\int_a^b f(x)\\,G(x)\\,dx .$$"
+      },
+      "independentAssessment": "The displayed smooth-utility/smooth-distribution integration-by-parts step matches the target. The target's differentiability hypotheses do not alone prove the extension to arbitrary CDFs or step utilities. The owner qualified the ledger's role accordingly; the direct calculus prerequisite remains valid for that smooth step.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "behav-3.1",
+      "target": "stat-2.1",
+      "verdict": "valid",
+      "sourceFile": "content/behav/ch03.js",
+      "targetFile": "content/stat/ch02.js",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "sourceClaimAnchor": ": accept the first offer above the reservation value $r^*$ solving $c=E[(X-r^*)^+]$. A satisficer with aspiration $a$ earns $E[X\\mid X\\ge a]-c/(1-F(a))$, which is maximized at $a=r^*$ but is flat near it, so a roughly chosen aspiration loses little while needing no knowledge of $F$. The optimal stopping rule needs the de",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $(X,Y)$ have a joint density $f(x,y)$ with respect to a product measure, and let $f_X(x)=\\int f(x,y)\\,dy$ be the marginal density of $X$ (Fubini). Where $f_X(x)>0$, the **conditional density** of $Y$ given $X=x$ is\n$$f(y\\mid x)=\\frac{f(x,y)}{f_X(x)},$$\na probability density in $y$ for each fixed $x$, with $P(Y\\in B\\mid X)=\\int_B f(y\\mid X)\\,dy$. Without densities, $P(Y\\in B\\mid X)$ is defined as the conditional expectation $E[\\mathbf 1_B(Y)\\mid X]$: the function $\\varphi(X)$, unique up to $P$-null sets, with $P(Y\\in B,\\,X\\in A)=\\int_A\\varphi\\,dP_X$ for every $A$, which exists by the Radon–Nikodym theorem; on $\\R^k$ these can be chosen to form a regular conditional distribution.\n\n$X$ and $Y$ are **conditionally independent given $Z$**, written $X\\perp Y\\mid Z$, if $P(X\\in A,\\,Y\\in B\\mid Z)=P(X\\in A\\mid Z)\\,P(Y\\in B\\mid Z)$ almost surely for all $A,B$; with densities, $f(x,y\\mid z)=f(x\\mid z)f(y\\mid z)$, or equivalently $f(y\\mid x,z)=f(y\\mid z)$: once $Z$ is known, $X$ carries no further information about $Y$. Neither independence nor conditional independence implies the other."
+      },
+      "independentAssessment": "Accepting only X>=a replaces the offer law by its truncated conditional law. The accepted-payoff expectation and acceptance probability require this actual conditioning operation; the source assumes a positive probability of acceptance.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "behav-5.10",
+      "target": "causal-3.4",
+      "verdict": "valid",
+      "sourceFile": "content/behav/ch05-b.js",
+      "targetFile": "content/causal/ch03.js",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "sourceClaimAnchor": "**0.24** with age-15 achievement, **0.28** at first grade, roughly half the original size, which fell to about **0.05** once family background, early cognitive ability and the home environment were controlled. Most of the association came from waiting at least 20 seconds. Children who can wait differ from those who cannot in many ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For an **isolated three-node DAG** Markov to its distribution, a **chain** $A\\to B\\to C$ (or its reverse) and a **fork** $A\\leftarrow B\\to C$ imply independence of $A,C$ **given $B$**, while they may be dependent marginally. A **collider** $A\\to B\\leftarrow C$ implies marginal independence; conditioning on $B$ or a descendant can create dependence. An open path permits dependence rather than forcing it for every parameter choice. In a larger DAG other paths must also be checked by d-separation (3.5)."
+      },
+      "independentAssessment": "Family resources and early ability are described as common causes of both waiting and later achievement. The target fork explains why marginal association can shrink after controlling for these causes; the source does not infer independence or complete causal identification merely from adjustment.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "behav-3.18",
+      "target": "stat-3.2",
+      "verdict": "resolved-moved-to-see",
+      "sourceFile": "content/behav/ch03-b.js",
+      "targetFile": "content/stat/ch03.js",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "sourceClaimAnchor": "A heuristic trades bias for variance. Regression estimates one weight per cue and, from a small training sample, those weights are noisy, so its out-of-sample accuracy falls well below its in-sample fit. Take-the-best estimates only an ordering of the cues, which is learned reliably from few examples; in environments where each cue outweighs all lower cues combined, the ordering is all that matters. This is the ecological-rationality answer to the biases programme: a shortcut is not an error if ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For any estimator $\\hat\\theta$ of a real parameter $\\theta$ with $E_\\theta\\hat\\theta^2<\\infty$,\n$$\\operatorname{MSE}_\\theta(\\hat\\theta)=E_\\theta(\\hat\\theta-\\theta)^2=\\big(E_\\theta\\hat\\theta-\\theta\\big)^2+\\operatorname{Var}_\\theta\\hat\\theta=\\operatorname{bias}^2+\\text{variance}$$\n(for a vector parameter, with $\\|\\cdot\\|^2$ and the trace of the covariance matrix). In particular the MSE of an unbiased estimator is its variance, and a biased estimator beats an unbiased one whenever it saves more variance than it adds squared bias.\n\nExamples. For i.i.d. data with mean $\\mu$ and variance $\\sigma^2$, $c\\bar X$ has $\\operatorname{MSE}=(1-c)^2\\mu^2+c^2\\sigma^2/n$, smallest at $c^*=\\mu^2/(\\mu^2+\\sigma^2/n)<1$. For estimating $\\sigma^2$ by $cS^2$, $\\operatorname{MSE}=(1-c)^2\\sigma^4+c^2\\operatorname{Var}S^2$ with $\\operatorname{Var}S^2=\\sigma^4\\big(\\tfrac2{n-1}+\\tfrac{\\kappa}{n}\\big)$ ($\\kappa$ the excess kurtosis); for normal data the best multiple divides $\\sum(X_i-\\bar X)^2$ by $n+1$, not by $n-1$ (unbiased) or $n$ (maximum likelihood)."
+      },
+      "independentAssessment": "The source reports pairwise classification accuracy and a qualitative bias/variance interpretation. The target is an exact squared-error parameter-estimation identity, which is not a derivation of that classification risk. Owner removed the direct dependency, retained contextual see-also, mirrored the syllabus and reduced the audited count.",
+      "currentRelation": "see",
+      "countedInPrerequisiteBatch": false
+    },
+    {
+      "source": "behav-3.12",
+      "target": "stat-1.19",
+      "verdict": "valid-known-followup",
+      "sourceFile": "content/behav/ch03-b.js",
+      "targetFile": "content/stat/ch01-b.js",
+      "sourceField": "econ",
+      "targetField": "stats",
+      "sourceClaimAnchor": "In this simulation, a season's standardized performance is $X_j=S+L_j$, with mutually independent, mean-zero **normal** skill $S$ of variance $1-\\ell$ and luck $L_1,L_2$ of variance $\\ell$. Skill persists and luck is redrawn, so both scores have variance one and their covariance is $1-\\ell$. The Gaussian conditional-mean formula gives $E[X_2\\mid X_1=x]=(1-\\ell)x$. Thus the conditional expected average of athletes selected on their season-1 scores is $(1-\\ell)$ times their season-1 average; a fin",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "A random vector $X\\in\\R^d$ is **multivariate normal**, $X\\sim N_d(\\mu,\\Sigma)$, if $a^{\\mathsf T}X$ is normal for every $a\\in\\R^d$; then $EX=\\mu$, $\\operatorname{Cov}X=\\Sigma$, and for positive definite $\\Sigma$ the density is\n$$\\varphi_{\\mu,\\Sigma}(x)=(2\\pi)^{-d/2}(\\det\\Sigma)^{-1/2}\\exp\\!\\big(-\\tfrac12(x-\\mu)^{\\mathsf T}\\Sigma^{-1}(x-\\mu)\\big),$$\nconstant on the ellipsoids $(x-\\mu)^{\\mathsf T}\\Sigma^{-1}(x-\\mu)=r^2$. Partition $X=(X_1,X_2)$ with blocks $\\Sigma_{11},\\Sigma_{12},\\Sigma_{22}$. Then the marginal is $X_2\\sim N(\\mu_2,\\Sigma_{22})$, and the conditional law is\n$$X_2\\mid X_1=a\\ \\sim\\ N\\big(\\mu_2+\\Sigma_{21}\\Sigma_{11}^{-1}(a-\\mu_1),\\ \\ \\Sigma_{22}-\\Sigma_{21}\\Sigma_{11}^{-1}\\Sigma_{12}\\big):$$\nthe conditional mean is linear in $a$ (the regression line) and the conditional covariance does not depend on $a$. In two dimensions: $E[X_2\\mid X_1=a]=\\mu_2+\\rho\\frac{\\sigma_2}{\\sigma_1}(a-\\mu_1)$ and $\\operatorname{Var}(X_2\\mid X_1=a)=\\sigma_2^2(1-\\rho^2)$."
+      },
+      "independentAssessment": "The already-authorized follow-up now explicitly stipulates independent normal skill and luck, yielding jointly normal unit-variance scores with covariance 1-luckVariance. The target's Gaussian conditional mean then gives E[X2|X1=x]=(1-luckVariance)x; arbitrary correlation alone is explicitly distinguished from this theorem.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": false
+    },
+    {
+      "source": "psych-2.13",
+      "target": "ladr-6.14",
+      "verdict": "valid",
+      "sourceFile": "content/psych/ch02-b.js",
+      "targetFile": "content/ladr/ch06.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": " s\\rVert}{\\sigma}=\\frac{\\sqrt{\\sum_i s_i^2}}{\\sigma}.$$ A matcher using another template $t$ reaches only $d'_{\\text{ideal}}\\cos\\theta$, where $\\theta$ is the angle between $t$ and $s$ as vectors of pixel values. Human efficiencies for simple patterns in visual noise are well below one but can reach about 50% (Burgess, Wag",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For all $u, v$ in an inner product space,\n$$|\\langle u, v\\rangle| \\le \\|u\\|\\,\\|v\\|,$$\nwith equality if and only if one of $u, v$ is a scalar multiple of the other. For example (6.16), $(x_1y_1 + \\cdots + x_ny_n)^2 \\le (x_1^2 + \\cdots + x_n^2)(y_1^2 + \\cdots + y_n^2)$ for real numbers, and $\\big|\\int_{-1}^1 fg\\big|^2 \\le \\int_{-1}^1 f^2 \\int_{-1}^1 g^2$ for continuous real $f, g$."
+      },
+      "independentAssessment": "For iid equal-variance pixel noise, template SNR is (t dot s)/(sigma ||t||)=||s|| cos(theta)/sigma. Cauchy-Schwarz and its equality condition identify the matched template and exactly justify the source's efficiency factor.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "psych-2.5",
+      "target": "ladr-3.63",
+      "verdict": "valid",
+      "sourceFile": "content/psych/ch02.js",
+      "targetFile": "content/ladr/ch03-b.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "nges with the criterion. $z$ is strictly increasing, so $(F,H)\\mapsto(z(F),z(H))$ is a bijection onto $\\mathbb R^2$, and the linear map $(z_F,z_H)\\mapsto\\big(z_H-z_F,\\,-\\tfrac12(z_H+z_F)\\big)$ is invertible. A payoff that makes false alarms expensive moves the criterion to the right: both rates fall, along the curve of cons",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "A linear map $T \\in \\mathcal L(V, W)$ is invertible if and only if it is injective and surjective."
+      },
+      "independentAssessment": "After applying the strictly increasing normal quantile, the displayed map has matrix [[-1,1],[-1/2,-1/2]] with nonzero determinant. Linear bijectivity therefore identifies d-prime and criterion uniquely; this is an actual linear map, not an affine translation.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "psych-4.8",
+      "target": "pma-5.15",
+      "verdict": "valid",
+      "sourceFile": "content/psych/ch04-b.js",
+      "targetFile": "content/pma/ch05-a2.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "eading order, like a second derivative: $w*L\\approx\\tfrac{1}{2}(\\sigma_c^2-k\\sigma_s^2)L''$ for slowly varying $L$ (from the Taylor expansion of $L(x-y)$ in the convolution integral, the convolution of rca-8.13), and a piecewise-linear $L$ has $L''$ concentrated at the knees, with positive sign at the one and negative at the othe",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $f$ be a real function on $[a,b]$ and $n$ a positive integer such that $f^{(n-1)}$ is continuous on $[a,b]$ and $f^{(n)}(t)$ exists for every $t\\in(a,b)$. Let $\\alpha\\ne\\beta$ be points of $[a,b]$ and put\n$$P(t)=\\sum_{k=0}^{n-1}\\frac{f^{(k)}(\\alpha)}{k!}\\,(t-\\alpha)^k .$$\nThen there is a point $x$ strictly between $\\alpha$ and $\\beta$ with\n$$f(\\beta)=P(\\beta)+\\frac{f^{(n)}(x)}{n!}\\,(\\beta-\\alpha)^n .$$\nFor $n=1$ this is the mean value theorem."
+      },
+      "independentAssessment": "A balanced even kernel cancels the constant and first-derivative terms, leaving its second moment times L''/2. The source explicitly limits Taylor's argument to smooth slowly varying luminance and uses exact convolution at sharp knees, respecting the target's smoothness requirement.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "soc-3.4",
+      "target": "stoch-4.7",
+      "verdict": "valid",
+      "sourceFile": "content/soc/ch03.js",
+      "targetFile": "content/stoch/ch04.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "\\to \\mathbf 1 s^{\\!\\top}$ where $s$ is the unique probability vector with $s^{\\!\\top}T = s^{\\!\\top}$, and everyone's opinion converges to the same **consensus** $\\sum_i s_i\\,p_i(0)$. The weight $s_i$ is person $i$'s **influence**. When trust is symmetric and each person splits their attention equally, $s_i$ is proportiona",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $P$ be an irreducible and aperiodic transition matrix on a finite state space with stationary distribution $\\pi$. Then there are constants $\\alpha\\in(0,1)$ and $C>0$ such that\n$$\\max_{x}\\ \\big\\|P^{t}(x,\\cdot)-\\pi\\big\\|_{\\mathrm{TV}}\\le C\\alpha^{t}\\qquad(t\\ge0).$$\nIn particular $\\Pr_\\lambda(X_t=y)\\to\\pi(y)$ for every initial law $\\lambda$ and every $y$. (For countable state spaces an irreducible aperiodic chain with an invariant distribution still satisfies $\\Pr(X_t=y)\\to\\pi(y)$, but no rate is guaranteed.)"
+      },
+      "independentAssessment": "The trust matrix is finite, row stochastic, strongly connected and aperiodic. These match the target hypotheses, so convergence of each row of T^t gives the stated rank-one limit and common weighted opinion; existence of a stationary vector alone would not suffice.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "soc-3.5",
+      "target": "prob-1.6.4",
+      "verdict": "valid",
+      "sourceFile": "content/soc/ch03.js",
+      "targetFile": "content/prob/ch01-d.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "0,1]$). Since $\\sum_i s_i^2\\le \\max_i s_i\\cdot\\sum_i s_i=\\max_i s_i$, the variance vanishes when the largest influence does (Chebyshev gives convergence in probability), and since $\\sum_i s_i^2\\ge(\\max_i s_i)^2$ it stays bounded away from 0 when the largest influence does not. A prominent person or group who keep a fixed s",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $\\varphi:\\R\\to\\R$ with $\\varphi\\ge0$, let $A\\in\\mathcal R$, and put $i_A=\\inf\\{\\varphi(y):y\\in A\\}$. Then\n$$i_A\\,P(X\\in A)\\ \\le\\ E(\\varphi(X);X\\in A)\\ \\le\\ E\\varphi(X),$$\nwhere $E(Z;B)=\\int_BZ\\,dP$. With $\\varphi(x)=|x|$ or $x^2$ and $A=\\{|x|\\ge a\\}$ this gives $P(|X|\\ge a)\\le E|X|/a$ (often called Markov's inequality) and $a^2P(|X|\\ge a)\\le EX^2$ (often called Chebyshev's inequality)."
+      },
+      "independentAssessment": "The centered consensus error has variance tending to zero when max influence tends to zero. Applying Chebyshev to that centered error gives convergence in probability. The converse uses the separately stated bounded beliefs and variance lower bound, not the one-way inequality alone.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "soc-2.4",
+      "target": "prob-1.6.9a",
+      "verdict": "valid",
+      "sourceFile": "content/soc/ch02.js",
+      "targetFile": "content/prob/ch01-d.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "ree. Weighting by degree raises the mean from $\\sum_k k p_k$ to $\\sum_k k\\cdot kp_k/\\langle k\\rangle$, and the excess is the variance divided by the mean. Popular people are over-represented among everyone's friends.",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For a positive integer $k$, $EX^k$ is the **$k$th moment** of $X$; the first moment $EX$ is the mean $\\mu$. If $EX^2<\\infty$, the **variance** is\n$$\\operatorname{var}(X)=E(X-\\mu)^2=EX^2-\\mu^2,$$\nso $\\operatorname{var}(X)\\le EX^2$, and $\\operatorname{var}(aX+b)=a^2\\operatorname{var}(X)$. By the change of variables formula all of these are integrals against the law of $X$: $EX^k=\\int x^k\\,\\mu(dx)$. If $E|X|^k<\\infty$ then $E|X|^j<\\infty$ for $0<j<k$ (Exercise 1.6.11)."
+      },
+      "independentAssessment": "Degree-biased sampling changes the mean to E[K^2]/E[K]. The variance identity then gives the exact excess Var(K)/E[K], with a positive mean degree and finite moments; this is the target identity itself.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "polsci-3.12",
+      "target": "logic-2.4",
+      "verdict": "valid",
+      "sourceFile": "content/polsci/ch03-b.js",
+      "targetFile": "content/logic/ch02.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "h accepts or rejects every proposition on an agenda containing $p$, $q$, $p \\wedge q$ and their negations, with complete and consistent individual judgments. An **aggregation function** turns every such profile into collective judgments. List and Pettit proved that no aggregation function satisfies all of (a) **universal do",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "A truth assignment $v$ **satisfies** $\\varphi$ if $\\bar v(\\varphi)=T$. A set $\\Sigma$ of formulas **tautologically implies** $\\tau$, written $\\Sigma \\vDash \\tau$, if every truth assignment (for the letters involved) that satisfies every member of $\\Sigma$ also satisfies $\\tau$. In particular:\n- $\\tau$ is a **tautology** ($\\vDash\\tau$) if every assignment satisfies it;\n- $\\varphi$ is **satisfiable** if some assignment satisfies it, and **unsatisfiable** otherwise;\n- $\\Sigma \\vDash \\tau$ if and only if $\\Sigma \\cup \\{\\neg\\tau\\}$ is unsatisfiable.\n\nFor finite $\\Sigma$ all of these can be decided with a truth table. An assignment that satisfies $\\Sigma$ but not $\\tau$ is a **countermodel**."
+      },
+      "independentAssessment": "The conjunction agenda requires one valuation satisfying all accepted propositions and their negations consistently. The target's satisfiability/consequence definitions supply that consistency criterion, rather than a different social-choice theorem with a similar name.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "polsci-5.4",
+      "target": "prob-2.2.6",
+      "verdict": "valid",
+      "sourceFile": "content/polsci/ch05.js",
+      "targetFile": "content/prob/ch02-b.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": ", so the jury is wrong only when this falls to at most $n/2$, which is a deviation of $n(p-\\tfrac12)$ below the mean. By the law of large numbers (or sharply by Hoeffding's inequality) such deviations have vanishing probability. Monotonicity comes from comparing a jury of $n$ with one of $n+2$: the extra two voters change the outcome",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $S_n$ be any random variables with $\\mu_n=ES_n$ and $\\sigma_n^2=\\operatorname{var}(S_n)$ finite. If $b_n>0$ and $\\sigma_n^2/b_n^2\\to0$, then\n$$\\frac{S_n-\\mu_n}{b_n}\\to0\\quad\\text{in probability}.$$\nNo independence is assumed. A typical use is a row sum $S_n=X_{n,1}+\\dots+X_{n,n}$ of a triangular array."
+      },
+      "independentAssessment": "Independent correctness indicators give ES_n=np and Var(S_n)=np(1-p), so with b_n=n the variance ratio vanishes. For p>1/2, incorrect majority requires a fixed-size deviation of S_n/n from p. The target supplies this qualitative LLN proof; the existing Hoeffding link gives the separately named sharper finite-n bound.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "polsci-5.5",
+      "target": "stat-2.1",
+      "verdict": "valid",
+      "sourceFile": "content/polsci/ch05.js",
+      "targetFile": "content/stat/ch02.js",
+      "sourceField": "social",
+      "targetField": "stats",
+      "sourceClaimAnchor": "\\to\\infty$ it tends to $1$ if $\\rho<1-\\frac1{2p}$, to $p$ if $\\rho>1-\\frac1{2p}$, and to $(1+p)/2$ exactly at the threshold. Conditional on whether the leader is right, the voters are independent, so the jury theorem applies in each case with the competence of that case. When the leader is right a voter is right with probabilit",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $(X,Y)$ have a joint density $f(x,y)$ with respect to a product measure, and let $f_X(x)=\\int f(x,y)\\,dy$ be the marginal density of $X$ (Fubini). Where $f_X(x)>0$, the **conditional density** of $Y$ given $X=x$ is\n$$f(y\\mid x)=\\frac{f(x,y)}{f_X(x)},$$\na probability density in $y$ for each fixed $x$, with $P(Y\\in B\\mid X)=\\int_B f(y\\mid X)\\,dy$. Without densities, $P(Y\\in B\\mid X)$ is defined as the conditional expectation $E[\\mathbf 1_B(Y)\\mid X]$: the function $\\varphi(X)$, unique up to $P$-null sets, with $P(Y\\in B,\\,X\\in A)=\\int_A\\varphi\\,dP_X$ for every $A$, which exists by the Radon–Nikodym theorem; on $\\R^k$ these can be chosen to form a regular conditional distribution.\n\n$X$ and $Y$ are **conditionally independent given $Z$**, written $X\\perp Y\\mid Z$, if $P(X\\in A,\\,Y\\in B\\mid Z)=P(X\\in A\\mid Z)\\,P(Y\\in B\\mid Z)$ almost surely for all $A,B$; with densities, $f(x,y\\mid z)=f(x\\mid z)f(y\\mid z)$, or equivalently $f(y\\mid x,z)=f(y\\mid z)$: once $Z$ is known, $X$ carries no further information about $Y$. Neither independence nor conditional independence implies the other."
+      },
+      "independentAssessment": "Conditional on leader correctness, each voter's independent copy/own-signal choices have the appropriate conditional success probability. Averaging the two conditional majority laws gives the mixture; unconditional voter independence is not incorrectly assumed.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "polsci-4.5",
+      "target": "opt-2.3",
+      "verdict": "valid",
+      "sourceFile": "content/polsci/ch04.js",
+      "targetFile": "content/opt/ch02.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": " every direction and $y \\ne x^*$, the voters who prefer $y$ to $x^*$ are those strictly nearer to $y$, which lie in the open half-plane beyond the perpendicular bisector of $x^*$ and $y$. That half-plane is contained in an open half-plane bounded by the parallel line through $x^*$, which holds at most $(n-1)/2$ ideal points",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "The basic convex sets of $\\R^n$ are\n(a) a **hyperplane** $\\{x:a^\\top x=b\\}$ and the **halfspace** $\\{x:a^\\top x\\le b\\}$, $a\\ne0$;\n(b) a **Euclidean ball** $B(x_c,r)=\\{x:\\norm{x-x_c}_2\\le r\\}$ — indeed every norm ball $\\{x:\\norm{x-x_c}\\le r\\}$;\n(c) an **ellipsoid** $\\{x:(x-x_c)^\\top P^{-1}(x-x_c)\\le1\\}$ with $P\\in\\mathbb S^n_{++}$ (symmetric positive definite), whose semi-axes are $\\sqrt{\\lambda_i(P)}$ along the eigenvectors of $P$;\n(d) a **polyhedron** $\\{x:Ax\\preceq b,\\ Cx=d\\}$, a finite intersection of halfspaces and hyperplanes, and a **polytope** if it is bounded.\nAll of them are convex."
+      },
+      "independentAssessment": "Squaring equal-distance inequalities cancels the common quadratic term, leaving an affine halfspace bounded by the perpendicular bisector. The target supplies that halfspace geometry used in the majority-count proof.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "demo-3.6",
+      "target": "ladr-7.70",
+      "verdict": "valid",
+      "sourceFile": "content/demo/ch03.js",
+      "targetFile": "content/ladr/ch07-c.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": " **mortality index** for the year and $b_x$ how strongly each age responds to it. The parameters are the leading term of the singular value decomposition of the matrix of centred log rates. To forecast, $k_t$ is modelled as a random walk with drift, $k_{t+1}=k_t+\\delta+\\eta_t$, and projected rates $\\hat m_{x,t}=\\exp(a_x+b_x\\hat k_t)$ give fo",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Suppose $T \\in \\mathcal L(V, W)$ and the positive singular values of $T$ are $s_1, \\dots, s_m$. Then there exist orthonormal lists $e_1, \\dots, e_m$ in $V$ and $f_1, \\dots, f_m$ in $W$ such that\n$$Tv = s_1\\langle v, e_1\\rangle f_1 + \\cdots + s_m\\langle v, e_m\\rangle f_m$$\nfor every $v \\in V$."
+      },
+      "independentAssessment": "The centered log-mortality matrix is decomposed into singular vectors and values; its first term constructs b_x k_t. This dependency concerns the factorization operation, distinct from the best-approximation guarantee.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "demo-3.6",
+      "target": "nla-1.8",
+      "verdict": "valid",
+      "sourceFile": "content/demo/ch03.js",
+      "targetFile": "content/nla/ch01-b.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "izes most of the variation in the matrix of log rates; the rank-one approximation of the singular value decomposition is the best least-squares fit with that structure. The index falls almost on a line, so a random walk with the estimated drift is the simplest forecast, and the rates are pushed through the life table of 2.3 to give",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $A\\in\\mathbb R^{m\\times n}$ have the SVD $A=\\sum_i\\sigma_iu_iv_i^{\\top}$ and for $0\\le k<\\min(m,n)$ let $A_k=\\sum_{i\\le k}\\sigma_iu_iv_i^{\\top}$. Then $\\operatorname{rank}A_k=\\min(k,\\operatorname{rank}A)\\le k$: for $k>0$, equality holds exactly when $\\sigma_k>0$, while $A_0=0$ has rank zero. Over all matrices $B$ of rank at most $k$,\n$$\\min_{\\operatorname{rank}B\\le k}\\|A-B\\|_2=\\|A-A_k\\|_2=\\sigma_{k+1},\\qquad \\min_{\\operatorname{rank}B\\le k}\\|A-B\\|_F=\\|A-A_k\\|_F=\\Big(\\sum_{i>k}\\sigma_i^2\\Big)^{1/2}.$$\nThe same $A_k$ is optimal for every unitarily invariant norm (Mirsky)."
+      },
+      "independentAssessment": "The Lee-Carter residual objective is a sum of squared matrix entries, the Frobenius norm. The target explicitly gives Frobenius Eckart-Young optimality, whereas the nearby LADR low-rank theorem states an operator-norm result. The mortality rank-one use is valid; an auxiliary generic rank-equality wording issue in the target was separately notified to root.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "demo-1.6",
+      "target": "ladr-3.21",
+      "verdict": "valid",
+      "sourceFile": "content/demo/ch01-b.js",
+      "targetFile": "content/ladr/ch03.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "ndent — the cohort column equals the period column minus the age column — so the least-squares problem has a one-dimensional null space spanned by the tilt $(+\\theta, -\\theta, +\\theta)$ (ladr 3.11; the extreme case of multicollinearity, stat 12.12). Moving along the null space changes the parameters without changing any fit",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Suppose $V$ is finite-dimensional and $T\\in\\mathcal L(V,W)$. Then $\\operatorname{range}T$ is finite-dimensional and\n$$\\dim V=\\dim\\operatorname{null}T+\\dim\\operatorname{range}T.$$"
+      },
+      "independentAssessment": "The linear-trend design has c=p-a and hence the explicit nonzero tilt direction (+theta,-theta,+theta) in its kernel. Rank-nullity identifies the corresponding loss of parameter identifiability; this is a finite-dimensional design, unlike the metamerism function space.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "demo-2.11",
+      "target": "prob-2.1.1a",
+      "verdict": "valid",
+      "sourceFile": "content/demo/ch02-b.js",
+      "targetFile": "content/prob/ch02.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "Suppose causes act independently, so that removing cause $c$ leaves the other cause-specific hazards unchanged. Then the survival function of the *associated single-decrement table* is $$\\ell^{(-c)}(x) = \\exp\\!\\Big(-\\int_0",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Two events $A,B$ are **independent** if $P(A\\cap B)=P(A)P(B)$. Two random variables $X,Y$ are independent if\n$$P(X\\in C,\\ Y\\in D)=P(X\\in C)\\,P(Y\\in D)\\quad\\text{for all Borel sets } C,D,$$\nthat is, every event fixed by $X$ is independent of every event fixed by $Y$. Two σ-fields $\\mathcal F,\\mathcal G$ are independent if every $A\\in\\mathcal F$ is independent of every $B\\in\\mathcal G$.\n\nFor several objects the order is reversed, starting from σ-fields. $\\mathcal F_1,\\dots,\\mathcal F_n$ are independent if $P(A_1\\cap\\dots\\cap A_n)=\\prod_iP(A_i)$ whenever $A_i\\in\\mathcal F_i$. Random variables $X_1,\\dots,X_n$ are independent if $P(X_1\\in B_1,\\dots,X_n\\in B_n)=\\prod_iP(X_i\\in B_i)$ for all Borel $B_i$. Events $A_1,\\dots,A_n$ are independent if $P(\\bigcap_{i\\in I}A_i)=\\prod_{i\\in I}P(A_i)$ for **every** $I\\subset\\{1,\\dots,n\\}$. An infinite family is independent when each of its finite subfamilies is."
+      },
+      "independentAssessment": "Under the explicitly stipulated independent latent failure mechanisms, survival factors into products and cumulative hazards add. The source explicitly warns that this independence is not testable from cause-specific hazards, so the prerequisite is an assumption of the calculation rather than an empirical conclusion.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "demo-4.10",
+      "target": "prob-1.6.9a",
+      "verdict": "valid",
+      "sourceFile": "content/demo/ch04-b.js",
+      "targetFile": "content/prob/ch01-d.js",
+      "sourceField": "social",
+      "targetField": "math",
+      "sourceClaimAnchor": "ut a child chosen at random comes from a family whose size has the length-biased distribution $q_k = k\\,p_k/\\mu$, with mean $E[K^2]/\\mu = \\mu + \\sigma^2/\\mu$ (Preston, 1976). For $\\sigma^2 > 0$ this exceeds $\\mu$; for a Poisson number of births it is $\\mu+1$. So the typical child has more siblings (counting itself) than",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For a positive integer $k$, $EX^k$ is the **$k$th moment** of $X$; the first moment $EX$ is the mean $\\mu$. If $EX^2<\\infty$, the **variance** is\n$$\\operatorname{var}(X)=E(X-\\mu)^2=EX^2-\\mu^2,$$\nso $\\operatorname{var}(X)\\le EX^2$, and $\\operatorname{var}(aX+b)=a^2\\operatorname{var}(X)$. By the change of variables formula all of these are integrals against the law of $X$: $EX^k=\\int x^k\\,\\mu(dx)$. If $E|X|^k<\\infty$ then $E|X|^j<\\infty$ for $0<j<k$ (Exercise 1.6.11)."
+      },
+      "independentAssessment": "The general length-biased family mean is E[K^2]/mu=mu+Var(K)/mu. This use needs the variance identity for arbitrary family-size laws; it is not supplied merely by the additional Poisson special-case result.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "art-4.3",
+      "target": "ladr-3.15",
+      "verdict": "valid",
+      "sourceFile": "content/art/ch04.js",
+      "targetFile": "content/ladr/ch03.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "sourceClaimAnchor": " illuminant $I_a$, it does not follow that the same holds for another illuminant $I_b$. The difference $R_1-R_2$ lies in the kernel of the map spectrum $\\to$ colour for $I_a$, but that kernel changes with the illuminant. The map from reflectance spectra to colour is a linear map to $\\mathbb R^3$ (art-4.2), whose kernel ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $T\\in\\mathcal L(V,W)$. Then $T$ is injective if and only if $\\operatorname{null}T=\\{0\\}$."
+      },
+      "independentAssessment": "Equal cone responses mean T(R1-R2)=0; injectivity is exactly equivalent to a trivial kernel for any vector-space domain. The selected target permits the infinite-dimensional spectral domain and does not misuse finite-domain rank-nullity to prove metamerism.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "art-4.7",
+      "target": "opt-2.1",
+      "verdict": "valid",
+      "sourceFile": "content/art/ch04.js",
+      "targetFile": "content/opt/ch02.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "sourceClaimAnchor": "positive combination of monochromatic lights, so its chromaticity is an average of locus points and cannot leave the locus’s convex hull. The projection divides by a positive sum, so scaling a light does not move its point (proportionality, art-4.4): the diagram is the plane of colours with brightness divided out, and the th",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "A set $C\\subseteq\\R^n$ is **affine** if the whole line through any two of its points lies in it, $\\theta x+(1-\\theta)y\\in C$ for all $x,y\\in C$ and all $\\theta\\in\\R$; it is **convex** if only the segment is required, $\\theta x+(1-\\theta)y\\in C$ for $x,y\\in C$ and $0\\le\\theta\\le1$. A **convex combination** of $x_1,\\dots,x_k$ is $\\sum_i\\theta_ix_i$ with $\\theta_i\\ge0$ and $\\sum_i\\theta_i=1$ (an **affine combination** drops the sign condition). The **convex hull** $\\operatorname{conv}S$ is the set of all convex combinations of points of $S$ and the **affine hull** $\\operatorname{aff}S$ the set of all affine combinations. They are the smallest convex, respectively affine, sets containing $S$. Affine sets are the translates of linear subspaces; every affine set is convex, but not conversely."
+      },
+      "independentAssessment": "Nonnegative spectral intensities, after division by positive total tristimulus weight, produce convex-combination chromaticity coefficients. The convex-hull definition is exactly the geometric containment argument, with zero-intensity spectra excluded from normalization.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "art-3.3",
+      "target": "mech-2.3",
+      "verdict": "valid",
+      "sourceFile": "content/art/ch03.js",
+      "targetFile": "content/mech/ch02.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "sourceClaimAnchor": "igo, violet, with the purples closing the gap between violet and red). To find the colour of a mixture of lights, put at the centre of gravity of each colour’s arc a weight equal to the amount of that colour in the mixture, and find the centre of gravity $Z$ of all the weights. The direction of $Z$ from the centre $O$ gives the **",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "The **centre of mass** of particles of masses $m_1,\\dots,m_N$ at positions $\\mathbf r_1,\\dots,\\mathbf r_N$ is the mass-weighted average\n$$\\mathbf R = \\frac1M\\sum_{i=1}^N m_i\\mathbf r_i,\\qquad M = \\sum_i m_i .$$\nFor a continuous body with mass density $\\rho$ occupying a region $V$ (a volume, or an area for a lamina) it is $\\mathbf R = \\frac1M\\int_V \\rho(\\mathbf r)\\,\\mathbf r\\,dV$ with $M = \\int_V\\rho\\,dV$. It does not depend on the choice of origin, and it need not lie inside the body."
+      },
+      "independentAssessment": "Newton's stated historical mixture construction places masses at colour-arc centres and takes their weighted barycentre. The target centre-of-mass formula is precisely that operation; it does not certify the construction as a modern perceptually uniform colour law.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "art-1.10",
+      "target": "ladr-3.1",
+      "verdict": "valid",
+      "sourceFile": "content/art/ch01-b.js",
+      "targetFile": "content/ladr/ch03.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "sourceClaimAnchor": "ts a different scene: standing nearer than $d$ compresses its depth, standing farther stretches it, and standing to one side shears it so that lines running straight back still point at the viewer. Each picture point fixes only a direction from the eye. A viewer at $V$, eye at the horizon’s height, who assumes that eve",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $V$ and $W$ be vector spaces over $\\mathbf F$. A **linear map** from $V$ to $W$ is a function $T\\colon V\\to W$ that is\n(a) *additive*: $T(u+v)=Tu+Tv$ for all $u,v\\in V$;\n(b) *homogeneous*: $T(\\lambda v)=\\lambda(Tv)$ for all $\\lambda\\in\\mathbf F$ and $v\\in V$.\n\nThe set of all linear maps from $V$ to $W$ is written $\\mathcal L(V,W)$, and $\\mathcal L(V)=\\mathcal L(V,V)$. For linear maps one usually writes $Tv$ instead of $T(v)$."
+      },
+      "independentAssessment": "Under the stated same-eye-height floor reconstruction, (X,Y) maps to (X-v_x Y/d, v_d Y/d). This fixes the origin and is additive and homogeneous, so a linear shear/scale target is correct rather than an unsupported claim about arbitrary projective transformations.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "art-3.4",
+      "target": "pma-5.8",
+      "verdict": "valid",
+      "sourceFile": "content/art/ch03.js",
+      "targetFile": "content/pma/ch05.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "sourceClaimAnchor": "ell’s law (mech-5.2) turns the family of parallel rays into a map $b\\mapsto\\psi$; light is concentrated where that map has a stationary point, since $\\psi$ changes least there. That is a fold caustic of the ray bundle, and it is why a rainbow is a thin ring and not a disc. Descartes found the 42° ring by tracing rays through a la",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $f$ be defined on $[a,b]$. If $f$ has a local maximum at a point $x\\in(a,b)$ and $f'(x)$ exists, then $f'(x)=0$. The same conclusion holds at a local minimum."
+      },
+      "independentAssessment": "The rainbow calculation extremizes the outgoing-angle map with respect to impact parameter. This is a distinct stationary-angle step after Snell refraction, not a repetition of the immediate Fermat target's different stationary-travel-time derivation.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "ling-1.1",
+      "target": "sig-3.10",
+      "verdict": "valid",
+      "sourceFile": "content/ling/ch01.js",
+      "targetFile": "content/sig/ch03-b.js",
+      "sourceField": "humanities",
+      "targetField": "eng",
+      "sourceClaimAnchor": "rs linearly, convolution in time becomes multiplication in frequency, so each harmonic of the source is simply scaled by the gain of the filter at its frequency. A periodic source has a line spectrum (its Fourier series), so voiced speech is a picket fence of harmonics whose heights trace the filter's resonance curve,",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For an LTI system with impulse response $h$ the **system function** is $H(s)=\\int h(t)e^{-st}\\,dt$ (the Laplace transform of $h$, on the values of $s$ where the integral converges absolutely) and, on the imaginary axis, the **frequency response** $H(j\\omega)=\\int h(t)e^{-j\\omega t}\\,dt$. A stable system answers the sinusoid $\\cos(\\omega t)$ with $|H(j\\omega)|\\cos(\\omega t+\\angle H(j\\omega))$: amplitude scaled by the **magnitude response**, phase shifted by the **phase response**. For a real $h$, $H(-j\\omega)=\\overline{H(j\\omega)}$."
+      },
+      "independentAssessment": "The source explicitly assumes linear source/filter composition: each harmonic is multiplied by the vocal-tract response at that frequency. The target supplies the LTI sinusoidal amplitude/phase response actually used, under the stated model rather than a claim that all speech production is globally linear.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "ling-4.8",
+      "target": "info-2.7",
+      "verdict": "valid",
+      "sourceFile": "content/ling/ch04-b.js",
+      "targetFile": "content/info/ch02.js",
+      "sourceField": "humanities",
+      "targetField": "cs",
+      "sourceClaimAnchor": " q_i,$$ where the lower bound requires an ideal guesser ranking the true conditional probabilities. True conditional entropy cannot increase with more context, but finite-sample estimates of these bounds can fluctuate. With long context he found about 0.6 to 1.3 bits per letter, so English is more than 70% redundant compared wit",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For discrete random variables $X,Y$,\n$$H(X\\mid Y)\\ \\le\\ H(X),$$\nwith equality if and only if $X$ and $Y$ are independent. The inequality holds *on average*: for a particular value $y$, the conditional entropy $H(X\\mid Y=y)$ can exceed $H(X)$. Observing a surprising $y$ may leave us more uncertain than before, but the average over $y$ cannot."
+      },
+      "independentAssessment": "Adding context conditions the next-symbol law further; applying the target inequality within each previous-context law and averaging gives nonincreasing conditional entropy. The source correctly separates this population statement from fluctuating finite-sample estimates.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "ling-4.6",
+      "target": "ode-1.4",
+      "verdict": "valid",
+      "sourceFile": "content/ling/ch04-b.js",
+      "targetFile": "content/ode/ch01.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "sourceClaimAnchor": "ws word length rising far less than in proportion to syllable count. Altmann derives the functional family from the proposed relative rate $y\\prime/y=b/x-c$ and explicitly allows nonmonotone cases. A constant total budget gives only the special case $y\\propto1/x$, not the whole family; the cause of the empirical association is",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $a, b$ be continuous on an interval $I\\ni t_0$. The linear equation $\\dot x + a(t)\\,x = b(t)$ has, for each $x_0$, exactly one solution on all of $I$ with $x(t_0) = x_0$, namely\n$$x(t) = e^{-A(t)}\\Big(x_0 + \\int_{t_0}^{t} e^{A(s)}\\,b(s)\\,ds\\Big),\\qquad A(t) = \\int_{t_0}^{t} a(s)\\,ds.$$\nIt is the sum of the solution $x_0e^{-A(t)}$ of the homogeneous equation and the particular solution $x_p$ with $x_p(t_0) = 0$. The difference of any two solutions solves the homogeneous equation, so if $a(t)\\ge\\alpha>0$ all solutions approach one another like $e^{-\\alpha (t-t_0)}$."
+      },
+      "independentAssessment": "For positive size x, the rate coefficient c-b/x is continuous on every positive interval. The homogeneous integrating-factor solution is A x^b exp(-cx), exactly the Altmann family; the target does not require extension through x=0.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "ling-2.13",
+      "target": "comb-1.5",
+      "verdict": "valid",
+      "sourceFile": "content/ling/ch02-c.js",
+      "targetFile": "content/comb/ch01.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "sourceClaimAnchor": " and the candidates and constraints are shared. The set of attested systems is the factorial typology: the winners over all $k!$ rankings.",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "A **$k$-permutation** of an $n$-element set is a sequence of $k$ distinct elements of it — equivalently an injective map $\\{1,\\dots,k\\}\\to[n]$. Their number is the **falling factorial**\n$$n^{\\underline k} = n(n-1)\\cdots(n-k+1) = \\frac{n!}{(n-k)!}\\qquad (0\\le k\\le n),$$\nwith $n^{\\underline 0} = 1$ and $n^{\\underline k} = 0$ for $k>n$. The case $k=n$ counts the $n!$ **permutations** (orderings) of the set."
+      },
+      "independentAssessment": "A strict ranking of k distinct constraints is one of k! permutations. The source calls the typology the set of resulting winners over rankings, so it does not equate k! rankings with k! distinct grammars.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "phil-1.2",
+      "target": "logic-3.4",
+      "verdict": "valid",
+      "sourceFile": "content/phil/ch01.js",
+      "targetFile": "content/logic/ch03.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "sourceClaimAnchor": "ry choice that satisfies the premises satisfies the conclusion (validity as in 1.1), and when one does not, it is a concrete counter-model, a population of individuals that makes the premises true and the conclusion false. Existential import adds “there are $X$” to every universal premise. That removes the counter-models in wh",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $\\mathfrak A$ be a structure and $s$ an assignment of elements of $|\\mathfrak A|$ to the variables. Extend $s$ to terms by $\\bar s(x) = s(x)$, $\\bar s(c) = c^{\\mathfrak A}$ and $\\bar s(f(t_1,\\dots,t_n)) = f^{\\mathfrak A}(\\bar s(t_1),\\dots,\\bar s(t_n))$. Then **$\\mathfrak A$ satisfies $\\varphi$ with $s$**, written $\\mathfrak A \\models \\varphi[s]$, is defined by recursion on $\\varphi$:\n- $\\mathfrak A \\models (t_1 = t_2)[s]$ iff $\\bar s(t_1) = \\bar s(t_2)$, and $\\mathfrak A \\models R(t_1,\\dots,t_n)[s]$ iff $(\\bar s(t_1),\\dots,\\bar s(t_n)) \\in R^{\\mathfrak A}$;\n- $\\neg$ and the binary connectives follow their truth tables;\n- $\\mathfrak A \\models \\forall x\\,\\varphi[s]$ iff $\\mathfrak A \\models \\varphi[s(x|a)]$ for **every** $a \\in |\\mathfrak A|$, and $\\mathfrak A \\models \\exists x\\,\\varphi[s]$ iff this holds for **some** $a$.\n\nHere $s(x|a)$ agrees with $s$ except that it sends $x$ to $a$. Whether $\\mathfrak A\\models\\varphi[s]$ depends only on $s$ restricted to the free variables of $\\varphi$; for a sentence we write $\\mathfrak A \\models \\sigma$."
+      },
+      "independentAssessment": "Categorical premises quantify over elements of set-valued predicate interpretations. The target satisfaction clauses for forall/exists are the semantics tested by the Venn countermodels; the source separately states how existential import changes admissible models.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "phil-4.5",
+      "target": "logic-4.2",
+      "verdict": "valid",
+      "sourceFile": "content/phil/ch04.js",
+      "targetFile": "content/logic/ch04.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "sourceClaimAnchor": "eedom to use an assumption twice (**contraction**): assume $C$; then what $C$ says holds, so $C\\to F$; by modus ponens, $F$. Discharging the assumption gives $C\\to F$, which is $C$; applying modus ponens to $C$ and $C\\to F$ gives $F$. Since $F$ was arbitrary, the theory proves everything. No negation appears anywhere in the ",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "For any set $\\Gamma$ of formulas and formulas $\\varphi,\\psi$:\n$$\\Gamma \\cup \\{\\varphi\\} \\vdash \\psi \\quad\\Longleftrightarrow\\quad \\Gamma \\vdash \\varphi \\to \\psi .$$\nIn words, to prove an implication it is enough to assume its antecedent and derive its consequent. In the calculus of logic-4.1 there is no restriction on free variables of $\\varphi$, because the only rule is modus ponens and the logical axioms are closed under generalization."
+      },
+      "independentAssessment": "The Curry derivation assumes C, derives F and discharges that assumption to C->F. This is precisely conditional proof/deduction. Its other direct modus-ponens step has a separate role even though the deduction theorem's proof has an MP ancestor.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "phil-4.8",
+      "target": "stat-2.1",
+      "verdict": "valid",
+      "sourceFile": "content/phil/ch04-b.js",
+      "targetFile": "content/stat/ch02.js",
+      "sourceField": "humanities",
+      "targetField": "stats",
+      "sourceClaimAnchor": "teacher picks the exam day at random, the students’ credence on each morning that the exam is today (given none yet) is the *hazard rate* $h_d=p_d/\\sum_{j\\ge d}p_j$. The last day with $p_d>0$ always has $h=1$: a strictly positive probability of an exam on the last possible day makes that exam a non-surprise. So no distributi",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Let $(X,Y)$ have a joint density $f(x,y)$ with respect to a product measure, and let $f_X(x)=\\int f(x,y)\\,dy$ be the marginal density of $X$ (Fubini). Where $f_X(x)>0$, the **conditional density** of $Y$ given $X=x$ is\n$$f(y\\mid x)=\\frac{f(x,y)}{f_X(x)},$$\na probability density in $y$ for each fixed $x$, with $P(Y\\in B\\mid X)=\\int_B f(y\\mid X)\\,dy$. Without densities, $P(Y\\in B\\mid X)$ is defined as the conditional expectation $E[\\mathbf 1_B(Y)\\mid X]$: the function $\\varphi(X)$, unique up to $P$-null sets, with $P(Y\\in B,\\,X\\in A)=\\int_A\\varphi\\,dP_X$ for every $A$, which exists by the Radon–Nikodym theorem; on $\\R^k$ these can be chosen to form a regular conditional distribution.\n\n$X$ and $Y$ are **conditionally independent given $Z$**, written $X\\perp Y\\mid Z$, if $P(X\\in A,\\,Y\\in B\\mid Z)=P(X\\in A\\mid Z)\\,P(Y\\in B\\mid Z)$ almost surely for all $A,B$; with densities, $f(x,y\\mid z)=f(x\\mid z)f(y\\mid z)$, or equivalently $f(y\\mid x,z)=f(y\\mid z)$: once $Z$ is known, $X$ carries no further information about $Y$. Neither independence nor conditional independence implies the other."
+      },
+      "independentAssessment": "The discrete day hazard divides p_d by the remaining tail probability because no earlier exam is the conditioning event. The target's general conditional-law definition covers discrete variables; the conclusion about the last supported day is not a continuous-density assumption.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    },
+    {
+      "source": "phil-1.5",
+      "target": "prob-2.1.1a",
+      "verdict": "valid",
+      "sourceFile": "content/phil/ch01.js",
+      "targetFile": "content/prob/ch02.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "sourceClaimAnchor": "ctions and rebuttals form chains, and an answered objection loses most of its force. The numbers depend on the model chosen. Independence, noisy-OR combination and multiplicative defeat are simplifications, and the quantitative theory of argument strength (Bayesian, abstract argumentation semantics, and others) is an open res",
+      "targetAnchor": {
+        "field": "statement",
+        "quote": "Two events $A,B$ are **independent** if $P(A\\cap B)=P(A)P(B)$. Two random variables $X,Y$ are independent if\n$$P(X\\in C,\\ Y\\in D)=P(X\\in C)\\,P(Y\\in D)\\quad\\text{for all Borel sets } C,D,$$\nthat is, every event fixed by $X$ is independent of every event fixed by $Y$. Two σ-fields $\\mathcal F,\\mathcal G$ are independent if every $A\\in\\mathcal F$ is independent of every $B\\in\\mathcal G$.\n\nFor several objects the order is reversed, starting from σ-fields. $\\mathcal F_1,\\dots,\\mathcal F_n$ are independent if $P(A_1\\cap\\dots\\cap A_n)=\\prod_iP(A_i)$ whenever $A_i\\in\\mathcal F_i$. Random variables $X_1,\\dots,X_n$ are independent if $P(X_1\\in B_1,\\dots,X_n\\in B_n)=\\prod_iP(X_i\\in B_i)$ for all Borel $B_i$. Events $A_1,\\dots,A_n$ are independent if $P(\\bigcap_{i\\in I}A_i)=\\prod_{i\\in I}P(A_i)$ for **every** $I\\subset\\{1,\\dots,n\\}$. An infinite family is independent when each of its finite subfamilies is."
+      },
+      "independentAssessment": "The quantitative noisy-OR support product explicitly assumes independence. The source labels the argument-strength rule a simplified model, so the target supplies its product-probability premise rather than claiming real arguments are empirically independent.",
+      "currentRelation": "deps",
+      "countedInPrerequisiteBatch": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "classification-MSE",
+      "source": "behav-3.18",
+      "target": "stat-3.2",
+      "outcome": "resolved",
+      "finding": "Qualitative classification accuracy does not directly invoke squared-error bias/variance decomposition for a parameter estimator.",
+      "resolution": "Owner moved the dependency to see and mirrored the syllabus; the batch now has120 additions, with no quota replacement."
+    },
+    {
+      "id": "smooth-IBP",
+      "source": "behav-1.9",
+      "target": "pma-6.22",
+      "outcome": "scope-qualified",
+      "finding": "Ordinary integration by parts justifies the smooth dominance derivation; arbitrary-CDF or step-utility extensions require further arguments.",
+      "resolution": "Owner narrowed the reason in the ledger; direct prerequisite retained for the smooth step."
+    },
+    {
+      "id": "rank-deficient-SVD",
+      "source": "demo-3.6",
+      "target": "nla-1.8",
+      "outcome": "resolved-auxiliary-target-text",
+      "finding": "The target formerly claimed rank(A_k)=k even if retained singular values vanish.",
+      "resolution": "Root corrected rank(A_k)=min(k,rank A)≤k, with equality condition; the Frobenius optimality prerequisite itself remains valid."
+    }
+  ],
+  "sameNameAndExactTargetChecks": [
+    "Hoeffding MGF lemma is explicitly in stat-1.16 idea, though its title names the tail inequality.",
+    "game-3.3 uses actual Hahn–Banach separation fa-3.4; fa-5.11 is an affine-group fixed-point theorem, not the set-valued Nash fixed-point theorem.",
+    "game-2.4 uses the nonempty convex argmax face in opt-2.12, without claiming that theorem proves the whole Nash fixed point.",
+    "demo-3.6 uses both SVD construction and Frobenius Eckart–Young optimality.",
+    "art-4.3 uses null-space/injectivity equivalence valid for infinite-dimensional spectral input; it does not apply finite-dimensional rank-nullity to that whole space."
+  ],
+  "shortTransitiveRoutes": [
+    {
+      "path": [
+        "macro-3.9",
+        "macro-2.1",
+        "micro-7.5",
+        "pma-9.15"
+      ],
+      "reasonForDirectStep": "The source differentiates production along time paths; the old route supplies static marginal products."
+    },
+    {
+      "path": [
+        "demo-3.6",
+        "nla-1.8",
+        "nla-1.7",
+        "ladr-7.70"
+      ],
+      "reasonForDirectStep": "The SVD constructs factors; Eckart–Young separately establishes rank-one Frobenius optimality."
+    },
+    {
+      "path": [
+        "demo-4.10",
+        "prob-1.6.13",
+        "prob-1.6.9a"
+      ],
+      "reasonForDirectStep": "The general length-biased moment identity is used directly; Poisson is only one family-size model."
+    },
+    {
+      "path": [
+        "phil-4.5",
+        "logic-4.2",
+        "logic-4.1"
+      ],
+      "reasonForDirectStep": "Modus ponens and conditional-proof discharge are different explicit steps."
+    },
+    {
+      "path": [
+        "art-3.4",
+        "mech-5.2",
+        "pma-5.8"
+      ],
+      "reasonForDirectStep": "The outgoing rainbow-angle extremum is distinct from the Snell travel-time stationarity argument."
+    }
+  ],
+  "validation": {
+    "liveWrittenGraphCycleErrors": 0,
+    "noHeavyBrowserForMetadataAudit": true,
+    "sourceFlagClosures": 0,
+    "allCurrentBatchMetadata": {
+      "additionsValidated": 120,
+      "allWritten": true,
+      "differentFields": true,
+      "unique": true,
+      "exactAnchors": true,
+      "fullSyllabusArraysMatch": true,
+      "liveDistinctPairsByCollection": {
+        "macro": 25,
+        "fin": 33,
+        "game": 27,
+        "behav": 23,
+        "psych": 25,
+        "soc": 25,
+        "polsci": 26,
+        "demo": 24,
+        "art": 20,
+        "ling": 20,
+        "phil": 27
+      }
+    },
+    "anchorNormalization": "Whitespace collapsed across statement/idea boundaries for the owner ledger; target and source bodies were read directly for the 47 semantic samples.",
+    "validationCommand": "Live loadAll/validate plus independent imported syllabus comparison with alias resolution; scoped script/check checks are recorded separately."
+  }
+}

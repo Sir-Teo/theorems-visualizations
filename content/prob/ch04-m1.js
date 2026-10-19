@@ -100,7 +100,8 @@ where $M_n$ is a martingale and $A_n$ is **predictable** ($A_n\in\mathcal F_{n-1
       deps: ['prob-4.2.1a', 'prob-4.2.7a'],
       tags: ['martingales'],
       credit: 'J. L. Doob',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.2 and proof, p. 225'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const G = {
           abs: { f: (s) => Math.abs(s), name: '|s|' }, sq: { f: (s) => s * s, name: 's^2' }, pos: { f: (s) => Math.max(s, 0), name: 's^+' }, neg: { f: (s) => -Math.abs(s), name: '-|s|' },
@@ -168,7 +169,8 @@ For independent events $P(B_n\mid\mathcal F_{n-1})=P(B_n)$ and this is the pair 
       deps: ['prob-4.3.1', 'prob-4.3.2'],
       tags: ['borel-cantelli', 'martingales'],
       credit: 'Paul Lévy',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.4 and proof, pp. 225–226'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const rule = v.select('rule', [{ value: 'one', label: '$1/(n+1)$' }, { value: 'two', label: '$1/(n+1)^2$' }, { value: 'env', label: 'environment' }, { value: 'clump', label: 'clumping' }], 'env');
         let seed = 1; v.button('Next path', () => { seed++; });
@@ -224,9 +226,9 @@ For $b=r=1$ the limit is uniform.`,
       deps: ['prob-4.2.12'],
       see: ['stoch-12.10', 'stat-10.4'],
       tags: ['martingales', 'urns'],
-      credit: 'F. Eggenberger & G. Pólya, 1923 (the urn scheme)',
-      scope: String.raw`One extra ball per draw. Other reinforcement sizes (adding $c$ balls) give a Beta$(b/c,r/c)$ limit; schemes that add the opposite colour behave differently. Bibliographic details of the 1923 paper are as cited in the literature and not checked against the journal.`,
-      verify: true,
+      scope: String.raw`The picture adds one ball of the sampled colour per draw. Adding $c>0$ balls instead gives a Beta$(b/c,r/c)$ limit, as derived in Durrett §4.3.2.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.3.2, pp. 226–227 (Polya urn and general Beta limit)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const bS = v.slider('black $b$', 1, 10, 2, { int: true });
         const rS = v.slider('red $r$', 1, 10, 3, { int: true });
@@ -447,9 +449,9 @@ $Z_n$ is the number of individuals in generation $n$ when every individual indep
       deps: ['prob-2.2.3a'],
       see: ['stoch-3.9', 'soc-5.8'],
       tags: ['branching'],
-      credit: 'F. Galton & H. W. Watson, 1873–75 (Bienaymé earlier)',
-      scope: String.raw`The extinction question was posed by Galton in 1873 and treated by Watson in a paper of 1874–75; I-J. Bienaymé is credited in the literature with an earlier solution (1845), which I could not locate in the original. The dates here are as cited by secondary sources.`,
-      verify: true,
+      scope: String.raw`Individuals reproduce independently with the same nonnegative integer-valued offspring law. The illustration starts with one ancestor and truncates drawing when its tree reaches 700 individuals.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.3.4, pp. 229–230 (branching-process definition)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const law = v.select('offspring law', LAW_OPTS, 'poisson');
         const mS = v.slider('mean $m$', 0.2, 2, 1.6, { step: 0.05 });

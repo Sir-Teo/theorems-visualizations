@@ -313,13 +313,12 @@ If $\norm{\Lambda}<\infty$, $\Lambda$ is a **bounded linear transformation**; th
       num: '5.7',
       kind: 'Definition',
       name: 'Nowhere dense sets, category, dense Gδ',
-      credit: 'Baire, 1899',
-      statement: String.raw`Let $X$ be a metric space. A set $E\subset X$ is **nowhere dense** if its closure contains no nonempty open set. A countable union of nowhere dense sets is **of the first category** in $X$; every other subset is **of the second category**. A **$G_\delta$** is a countable intersection of open sets. In this language Baire's theorem says: in a complete metric space the complement of a set of the first category is dense, a countable intersection of dense $G_\delta$'s is again a dense $G_\delta$, and the space itself is of the second category.`,
+      statement: String.raw`Let $X$ be a metric space. A set $E\subset X$ is **nowhere dense** if its closure contains no nonempty open set. A countable union of nowhere dense sets is **of the first category** in $X$; every other subset is **of the second category**. A **$G_\delta$** is a countable intersection of open sets. In this language Baire's theorem says: in a complete metric space the complement of a set of the first category is dense, a countable intersection of dense $G_\delta$'s is again a dense $G_\delta$, and, if $X$ is nonempty, the space itself is of the second category.`,
       idea: String.raw`$E$ is nowhere dense exactly when $X\setminus\bar E$ is a dense open set, so complements of first-category sets contain countable intersections of dense open sets — the sets Baire's theorem controls. Category and measure are independent notions of size: a dense $G_\delta$ can have measure zero.`,
-      caption: String.raw`On $[0,1]$, $V_n$ is a union of open intervals centred at the rationals $q_k$ (radius $\eps_n/k^{1.2}$; each pixel column is shaded by the fraction of it the set covers). Each $V_n$ is open and dense, yet its total length is tiny; the bottom row shows $V_1\cap\dots\cap V_N$. The limit $G=\bigcap V_n$ is a dense $G_\delta$ of measure $0$ — topologically large, metrically negligible. Drag the window to zoom.`,
+      caption: String.raw`On $[0,1]$, $V_n$ is a union of open intervals centred at the rationals $q_k$ (radius $\eps_n/k^{1.2}$; each pixel column is shaded by the fraction of it the set covers). Each infinite union $V_n$ is open and dense, yet its total length is tiny; the display uses only rationals with denominator at most 70 and therefore does not itself depict a dense set. The bottom row shows $V_1\cap\dots\cap V_N$. The limit $G=\bigcap V_n$ is a dense $G_\delta$ of measure $0$ — topologically large, metrically negligible. Drag the window to zoom.`,
       deps: ['rca-5.6'],
       see: ['fa-2.1', 'fa-2.2'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 5.7 and preceding corollary, p. 98'],
       tags: ['Baire category', 'G-delta'],
       viz(v) {
         // rationals in [0,1] ordered by denominator

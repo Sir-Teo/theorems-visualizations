@@ -55,10 +55,13 @@ function logTicks(y0, y1, fmt) {
 /** Counterclockwise arc length from angle a to angle b, in (0, 2π]. */
 const ccw = (a, b) => { let L = b - a; while (L <= 0) L += TAU; while (L > TAU) L -= TAU; return L; };
 
+import { boundaryNonvanishing } from './hardy-restorations.shared.js';
+
 export default {
   collection: 'rca',
   chapter: 17,
   items: [
+    boundaryNonvanishing,
     // ------------------------------------------------------------------ factorization theorems
     {
       num: '17.14',
@@ -72,7 +75,7 @@ $$Q(z)=c\,\exp\Big\{\frac1{2\pi}\int_{-\pi}^{\pi}\frac{e^{it}+z}{e^{it}-z}\,\log
 is called an **outer function**.`,
       idea: String.raw`The two classes play the roles of "phase" and "modulus". An inner function has boundary values of modulus $1$, so all of its smallness lives *inside* the disc (zeros, or the singular decay of $e^{-\frac{1+z}{1-z}}$); its means $\int\log|M(re^{i\theta})|\,d\theta$ are negative and increase with $r$. An outer function is built from a prescribed modulus: $\log|Q|$ is the Poisson integral of $\log\varphi$, so $Q$ has no zeros, $|Q^*|=\varphi$ a.e. (17.16), and $\log|Q(0)|=\frac1{2\pi}\int\log\varphi$ — the mean of $\log|Q|$ is the same on every circle. Theorem 17.17 shows that every $f\in H^p$ is a product of the two.`,
       caption: String.raw`Choose a function and move $r$ toward $1$. Middle: $|F(re^{i\theta})|$ (blue) approaches its boundary modulus (black): the constant $1$ for the inner functions, $\varphi$ for the outer one. Right: the mean of $\log|F|$ over $|z|=r$. For an outer function it is *constant*; for the inner ones it is negative and increases toward $0$; for the product $S\cdot Q$ (neither inner nor outer) it stays strictly below $\frac1{2\pi}\int\log|F^*|$.`,
-      deps: ['rca-17.7', 'rca-17.9'],
+      deps: ['rca-17.7', 'rca-17.19b'],
       tags: ['inner functions', 'outer functions'],
       viz(v) {
         const ZB = [[0.55, 0.35], [-0.4, 0.6], [-0.2, -0.7]];
@@ -195,9 +198,9 @@ Then $M$ is an inner function, and every inner function has this form.`,
 (a) $\log|Q|=P[\log\varphi]$, the Poisson integral of $\log\varphi$;
 (b) $\lim_{r\to1}|Q(re^{i\theta})|=\varphi(e^{i\theta})$ for almost every $\theta$;
 (c) $Q\in H^p$ if and only if $\varphi\in L^p(\T)$ $(0<p\le\infty)$, and in that case $\|Q\|_p=\|\varphi\|_p$.`,
-      idea: String.raw`(a) is the real part of the Herglotz integral: $\Re\frac{e^{it}+z}{e^{it}-z}$ is the Poisson kernel. (b) follows because Poisson integrals of $L^1$ functions converge to them a.e. (chapter 11). For (c): if $\varphi\in L^p$, Jensen's inequality (3.3) for the probability measure $P_r(\theta-t)\,dt/2\pi$ gives $|Q(re^{i\theta})|^p=\exp\{P[p\log\varphi]\}\le P[\varphi^p](re^{i\theta})$, and integrating over $\theta$ yields $M_p(Q;r)\le\|\varphi\|_p$. Conversely, if $Q\in H^p$ then $\|\varphi\|_p=\|Q^*\|_p\le\|Q\|_p$ by Fatou's lemma (17.9).`,
+      idea: String.raw`(a) is the real part of the Herglotz integral: $\Re\frac{e^{it}+z}{e^{it}-z}$ is the Poisson kernel. (b) follows because Poisson integrals of $L^1$ functions converge to them a.e. (chapter 11). For (c): if $\varphi\in L^p$, Jensen's inequality (3.3) for the probability measure $P_r(\theta-t)\,dt/2\pi$ gives $|Q(re^{i\theta})|^p=\exp\{P[p\log\varphi]\}\le P[\varphi^p](re^{i\theta})$, and integrating over $\theta$ yields $M_p(Q;r)\le\|\varphi\|_p$. Conversely, if $Q\in H^p$ then $\|\varphi\|_p=\|Q^*\|_p\le\|Q\|_p$ by Fatou's lemma (17.19b).`,
       caption: String.raw`$\varphi=e^{c}$ on the arc between the two red handles, $1$ elsewhere, times $|1-e^{i\theta}|^{-a}$; the outer function is then $Q=(1-z)^{-a}\exp\{c\,H_{\text{arc}}\}$, evaluated in closed form. Top right: $\log\varphi$ (black) and $\log|Q(re^{i\theta})|=P[\log\varphi]$ (blue) — a smoothed copy that sharpens as $r\to1$. Bottom: $M_p(Q;r)$ climbs to $\|\varphi\|_p$ exactly when $\varphi\in L^p$, i.e. when $ap<1$; otherwise both are infinite.`,
-      deps: ['rca-17.14', 'rca-3.3', 'rca-11.24', 'rca-17.9'],
+      deps: ['rca-17.14', 'rca-3.3', 'rca-11.24', 'rca-17.19b'],
       tags: ['outer functions', 'Poisson integral'],
       viz(v) {
         const cS = v.slider('level $c=\\log\\varphi$ on the arc', -2.5, 2, 1.2, { step: 0.05 });
@@ -261,9 +264,9 @@ Then $M$ is an inner function, and every inner function has this form.`,
 (d) $\log|f(0)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\log|f^*(e^{it})|\,dt$.
 
 By 17.15, $M_f=c\,B\,S_\mu$, so $f=c\cdot B\cdot S_\mu\cdot Q_f$: Blaschke product × singular inner function × outer function.`,
-      idea: String.raw`(a) is part of 17.9, and (b) is 17.16(c) since $|f^*|\in L^p$. For (c), divide out the zeros: $f=Bg$ with $g$ zero-free in $H^p$ (17.10). Then $\log|g|$ is harmonic and dominated by the Poisson integral of $\log|g^*|=\log|f^*|$ (apply 17.6–17.11 to $g^{p/2}$ and Jensen's inequality), so $g/Q_f$ is zero-free with modulus $\le1$ and boundary modulus $1$ a.e.: it is a singular inner function. (d) is the statement $|M_f(0)|\le1$, with equality iff $f$ is outer up to a unimodular constant.`,
+      idea: String.raw`(a) is part of 17.19b, and (b) is 17.16(c) since $|f^*|\in L^p$. For (c), divide out the zeros: $f=Bg$ with $g$ zero-free in $H^p$ (17.9). Then $\log|g|$ is harmonic and dominated by the Poisson integral of $\log|g^*|=\log|f^*|$ (apply 17.6–17.11 to $g^{p/2}$ and Jensen's inequality), so $g/Q_f$ is zero-free with modulus $\le1$ and boundary modulus $1$ a.e.: it is a singular inner function. (d) is the statement $|M_f(0)|\le1$, with equality iff $f$ is outer up to a unimodular constant.`,
       caption: String.raw`$f=B\cdot S_\mu\cdot Q$ with two draggable zeros, one atom $\zeta$ of mass $m$ on the circle, and the outer factor $Q=(1-z)^{-1/4}(1+z/2)$. The four phase portraits are $f$ and its three factors. The bar below is the bookkeeping of (d): starting from $\frac1{2\pi}\int\log|f^*|=\log|Q(0)|$, the Blaschke factor costs $\sum\log\frac1{|\alpha_k|}$ and the singular factor costs $\mu(\T)=m$; what remains is exactly $\log|f(0)|$.`,
-      deps: ['rca-17.15', 'rca-17.16', 'rca-17.10', 'rca-17.9', 'rca-17.11'],
+      deps: ['rca-17.15', 'rca-17.16', 'rca-17.9', 'rca-17.19b', 'rca-17.11'],
       see: ['rca-17.21'],
       tags: ['factorization', 'inner functions', 'outer functions'],
       viz(v) {
@@ -317,10 +320,10 @@ By 17.15, $M_f=c\,B\,S_\mu$, so $f=c\cdot B\cdot S_\mu\cdot Q_f$: Blaschke produ
       },
     },
     {
-      num: '17.18',
+      num: '17.18a',
       kind: 'Theorem',
       name: 'Hᵖ functions with Lˢ boundary values lie in Hˢ',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Consequence of the factorization17.17 and outer-function norm result17.16(c), pp.343–345 (editorial consequence)'],
       statement: String.raw`Suppose $0<p<s\le\infty$, $f\in H^p$, and $f^*\in L^s(\T)$. Then $f\in H^s$.`,
       idea: String.raw`Factor $f=M_fQ_f$ (17.17). The outer factor is built from $|f^*|$, which lies in $L^s$, so $Q_f\in H^s$ by 17.16(c); and $|M_f|\le1$. Hence $M_s(f;r)\le M_s(Q_f;r)\le\|f^*\|_s$. The hypothesis $f\in H^p$ cannot be weakened to $f\in N$: dividing by a singular inner function does not change $|f^*|$ but can destroy every $H^p$ bound.`,
       caption: String.raw`Both functions below have the same boundary modulus $|f^*|=|Q^*|=|1-e^{i\theta}|^{-a}$, where $Q=(1-z)^{-a}$ and $S=e^{-m\frac{1+z}{1-z}}$. When $as<1$ the boundary function is in $L^s$, and $f=Q\,S\in H^{p}$ indeed has bounded $M_s$ (green) — but $f=Q/S$, which lies in $N$ and in no $H^p$, explodes (red): the radial profile shows the hidden spike at $\theta=0$ that vanishes on the circle itself.`,

@@ -18,7 +18,7 @@ $$ct'=\gamma\,(ct-\beta x),\qquad x'=\gamma\,(x-\beta ct),\qquad y'=y,\quad z'=z
 and the inverse transformation is the same with $v\to-v$. For $|v|\ll c$ it reduces to the Galilean map $x'=x-vt$, $t'=t$. It holds for $|v|<c$; there is no frame moving at $c$.`,
       idea: String.raw`Light rays $x=\pm ct$ must stay light rays in every frame (rel-1.3), so the new axes are mirror images of each other in the light line: both tilt toward it by the same angle. Inside the plane of $t$ and $x$, the only linear maps that keep $c^2t^2-x^2$ fixed (rel-1.7) are $\bigl(\begin{smallmatrix}\cosh\varphi&-\sinh\varphi\\-\sinh\varphi&\cosh\varphi\end{smallmatrix}\bigr)$, and the origin of $S'$, which sits at $x=vt$ in $S$, fixes $\tanh\varphi=v/c$. The relativity principle (rel-1.2) says the inverse is the boost with $-v$, which rules out any extra overall scale factor.`,
       caption: String.raw`**Drag $E$** and the **velocity slider.** The grey axes are frame $S$; the orange lines $x'=\text{const}$ (worldlines of the points of $S'$) and blue lines $ct'=\text{const}$ (its instants) are the grid of frame $S'$. The grid scissors toward the gold light lines but never crosses them. Read $E$'s coordinates in both frames, and notice that $c^2t^2-x^2$ is the same. Switch to the Galilean map and the grid shears instead, the light line is no longer a light line in $S'$, and the interval is not preserved.`,
-      deps: ['rel-1.7', 'rel-1.2'],
+      deps: ['rel-1.7', 'rel-1.2', 'ladr-3.31'],
       refs: ['Taylor–Wheeler ch. L', 'Schutz §1.9'],
       tags: ['lorentz transformation', 'boost', 'spacetime diagram'],
       scope: String.raw`Inertial frames in flat spacetime, standard configuration (a pure boost, axes parallel, origins coincident).`,

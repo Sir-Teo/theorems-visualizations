@@ -67,12 +67,12 @@ export default {
       num: '3.1',
       kind: 'Definition',
       name: 'Dual space',
-      statement: String.raw`The **dual space** $X^*$ of a topological vector space $X$ is the vector space of all *continuous* linear functionals $\Lambda$ on $X$, with pointwise operations. A linear functional is continuous exactly when it is bounded on some neighbourhood of $0$. $X^*$ can be trivial (for $L^p$ with $0<p<1$ it is $\{0\}$); the Hahn–Banach theorems of this chapter show that it is large whenever $X$ is locally convex.`,
+      statement: String.raw`The **dual space** $X^*$ of a topological vector space $X$ is the vector space of all *continuous* linear functionals $\Lambda$ on $X$, with pointwise operations. A linear functional is continuous exactly when it is bounded on some neighbourhood of $0$. $X^*$ can be trivial (for $L^p([0,1])$ with Lebesgue measure and $0<p<1$ it is $\{0\}$); the Hahn–Banach theorems of this chapter show that it is large whenever $X$ is locally convex.`,
       idea: String.raw`Duality studies a space through the scalar "measurements" it admits. Each $\Lambda\in X^*$ has closed level sets $\{\Lambda=c\}$, a family of parallel hyperplanes; in a normed space its size is $\|\Lambda\|=\sup\{|\Lambda x|:\|x\|\le1\}$, the level at which these hyperplanes first touch the unit ball.`,
       caption: String.raw`$X=\R^2$ with the $\ell^p$ norm. Drag $\Lambda$ in the right panel, where $X^*\cong\R^2$ carries the dual $\ell^q$ norm ($1/p+1/q=1$). On the left its level lines are parallel; the two that touch the unit ball are $\Lambda=\pm\|\Lambda\|$, and the readout checks $\sup_{\|x\|_p\le 1}|\Lambda x| = \|\Lambda\|_q$.`,
       deps: [],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §3.1, pp. 56–57'],
       tags: ['duality', 'linear functionals'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const pS = v.select('norm on $X$', [

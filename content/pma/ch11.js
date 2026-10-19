@@ -433,7 +433,7 @@ the infimum over all countable covers $E\subset\bigcup_n A_n$ of $E$ by **open**
       caption: String.raw`Cover a set by countably many open boxes and add up their areas. For the blob, the boxes are the dyadic squares of level $n$ that meet it, slightly enlarged to be open (factor $1.02^2$); the sums (bottom) decrease toward its area. A segment is covered by boxes of total area $\to0$. For the rational points, the $k$-th one gets a box of area $\eps2^{-k}$, so $\mu^*\le\eps$ for every $\eps$.`,
       deps: ['pma-11.5', 'pma-1.8'],
       see: ['rca-2.20'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Definition 11.7, p. 304'],
       tags: ['measure', 'outer measure'],
       viz(v) {
         const M = v.M;

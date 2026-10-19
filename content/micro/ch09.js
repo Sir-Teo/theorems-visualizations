@@ -183,15 +183,14 @@ and the contract curve is a curve running from $O_A$ to $O_B$. With less well-be
     // ------------------------------------------------------------------ 9.4
     {
       num: '9.4', kind: 'Definition', name: 'Core of an exchange economy',
-      statement: String.raw`Given an endowment $\omega$, a coalition $S$ of consumers **blocks** an allocation $x$ if the members can reallocate their own endowments among themselves, $\sum_{i \in S} z^i = \sum_{i \in S} \omega^i$, so that everybody in $S$ weakly and someone strictly prefers $z^i$ to $x^i$. The **core** is the set of feasible allocations that no coalition blocks. In a two-trader economy the coalitions are $\{A\}$, $\{B\}$ and $\{A, B\}$, so the core is the part of the contract curve that both traders weakly prefer to the endowment:
+      statement: String.raw`Given an endowment $\omega$, using the weak-blocking convention, a coalition $S$ of consumers **blocks** an allocation $x$ if the members can reallocate their own endowments among themselves, $\sum_{i \in S} z^i = \sum_{i \in S} \omega^i$, so that everybody in $S$ weakly and someone strictly prefers $z^i$ to $x^i$. The **core** is the set of feasible allocations that no coalition blocks. In a two-trader economy the coalitions are $\{A\}$, $\{B\}$ and $\{A, B\}$, so the core is the part of the contract curve that both traders weakly prefer to the endowment:
 $$\text{Core} = \{x \text{ Pareto efficient} : u_A(x^A) \ge u_A(\omega^A),\ u_B(x^B) \ge u_B(\omega^B)\}.$$
 Every core allocation is Pareto efficient (the grand coalition cannot block) and individually rational (neither trader blocks alone).`,
       idea: String.raw`Blocking by a single consumer means refusing to trade: someone who can stay at the endowment will not accept a worse bundle, so the core lies in the lens of 9.1. Blocking by the grand coalition means finding a Pareto improvement, so the core lies on the contract curve of 9.3. The core is the overlap of the two sets, a segment of the curve, and it says how far a bargain can be pushed without relying on any price: it is a prediction about outcomes of free recontracting, Edgeworth's original idea, long before there was a theory of equilibrium prices. Where the endowment sits determines where the segment sits.`,
       caption: String.raw`**Drag the endowment $\omega$** (gold): the green stretch of the purple contract curve inside the lens is the core and it slides with $\omega$. **Drag the black test allocation** to see why an allocation is not in the core: below the lens one trader would rather stay at $\omega$ (blocked alone); off the contract curve, the pair itself can do better (blocked by both).`,
       deps: ['micro-9.3'],
       refs: ['Varian Ch. 32'], tags: ['exchange'],
-      credit: 'F. Y. Edgeworth, 1881 (recontracting); the name "core": D. B. Gillies and L. S. Shapley',
-      verify: true,
+      credit: 'F. Y. Edgeworth, Mathematical Psychics, 1881, pp. 17–29 (recontracting precursor; modern core definition)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Core_(game_theory)' },
       viz(v) {
         const aS = v.slider('$A$: weight on good 1', 0.15, 0.85, 0.65, { step: 0.01 });
@@ -277,15 +276,14 @@ Every core allocation is Pareto efficient (the grand coalition cannot block) and
     // ------------------------------------------------------------------ 9.6
     {
       num: '9.6', kind: 'Proposition', name: 'Walras’ law',
-      statement: String.raw`Suppose every consumer spends his or her whole income, $p \cdot x^i(p) = p \cdot \omega^i$ (this holds if preferences are locally non-satiated). Then for **every** price vector $p$, not only equilibrium ones, the value of aggregate excess demand is zero:
+      statement: String.raw`Suppose every consumer spends his or her whole income, $p \cdot x^i(p) = p \cdot \omega^i$ (this holds if preferences are locally non-satiated). Then for **every strictly positive** price vector $p$, not only equilibrium ones, the value of aggregate excess demand is zero:
 $$p \cdot z(p) = \sum_k p_k\, z_k(p) = 0 .$$
-Consequently, if all markets but one clear at $p$, the last one clears too; with $n$ goods only $n-1$ markets (and $n-1$ relative prices) are independent. In the two-good box, $p_1 z_1 + p_2 z_2 = 0$, so the excess demands always have opposite signs unless both vanish.`,
+Consequently, if all markets but one clear at $p$, the last one clears too provided its price is positive; with $n$ goods only $n-1$ markets (and $n-1$ relative prices) are independent. In the two-good box, $p_1 z_1 + p_2 z_2 = 0$, so the excess demands always have opposite signs unless both vanish.`,
       idea: String.raw`Add up the budget identities. Consumer $i$'s excess demand costs $p \cdot (x^i - \omega^i) = 0$ because the budget is exhausted, and the value of the sum is the sum of the values, so $p \cdot z = \sum_i p\cdot(x^i - \omega^i) = 0$. It is an accounting identity, not an equilibrium condition: it holds out of equilibrium too, and what the market does with the pieces (one good's surplus is another good's shortage) is the whole content. The proof uses non-satiation only to ensure that each budget is spent; a trader with a bliss point who stops buying leaves some income unspent and the identity becomes $p\cdot z \le 0$.`,
       caption: String.raw`Left: the excess demands $z_1(p)$ and $z_2(p)$ as functions of the relative price $p = p_1/p_2$ (log axis), with the value $p\,z_1 + z_2$ in green; the gold line marks the chosen price. Right: the bars $p\,z_1$ and $z_2$ are mirror images, and their sum is zero at **every** $p$. Where one curve crosses zero, so does the other. Make trader $A$ **satiated** (a bliss point) and the bars stop cancelling at every price where $A$ can afford the bliss bundle and leaves income unspent.`,
       deps: ['micro-9.5'],
       refs: ['Varian Ch. 32'], tags: ['general equilibrium'],
-      credit: 'Léon Walras, 1874 (the name "Walras’ law" is later: Oskar Lange, 1942)',
-      verify: true,
+      credit: 'Léon Walras, 1874, lesson 17 §§89–93 (budget/exchange identities; modern terminology)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Walras%27s_law' },
       viz(v) {
         const pS = v.slider('relative price $p_1/p_2$', 0.1, 10, 1.4, { log: true, sig: 3 });

@@ -271,7 +271,7 @@ $$\|f+g\|_p\le\|f\|_p+\|g\|_p .$$`,
       caption: String.raw`The orange $g$ equals the blue $f$ except on three spikes of width $w$. As $w\to0$ the distance $\|f-g\|_p$ tends to $0$, and at $w=0$ — where $g$ differs from $f$ only at three points — it *is* $0$, even in $L^\infty$: $f$ and $g$ are the same element of $L^p$. Note that $\sup|f-g|$ does not see this.`,
       deps: ['rca-3.9', 'rca-3.6', 'rca-3.7'],
       tags: ['Lp spaces', 'metric spaces'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Remarks 3.10, pp. 66–67'],
       viz(v) {
         const M = v.M;
         const Wd = v.slider('spike width $w$', 0, 0.08, 0.04, { step: 0.001, decimals: 3 });

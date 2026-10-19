@@ -1,0 +1,521 @@
+{
+  "source": "https://www.gutenberg.org/cache/epub/1404/pg1404.txt",
+  "sha256": "0b92fadc9d7afd767eefd27805a20e44417ff26d1fb2f964229f39dcc7b2a65d",
+  "boundary": "After To the People of the State of New York: (period for15) through final PUBLIUS;37 has no signature. Notes following signatures excluded. Same public tokenize convention independently applied.",
+  "papers": 85,
+  "runningWords": 188133,
+  "countsChecked": 1445,
+  "mismatches": 0,
+  "rows": [
+    {
+      "n": 1,
+      "N": 1588,
+      "expectedN": 1588,
+      "bad": []
+    },
+    {
+      "n": 2,
+      "N": 1665,
+      "expectedN": 1665,
+      "bad": []
+    },
+    {
+      "n": 3,
+      "N": 1439,
+      "expectedN": 1439,
+      "bad": []
+    },
+    {
+      "n": 4,
+      "N": 1635,
+      "expectedN": 1635,
+      "bad": []
+    },
+    {
+      "n": 5,
+      "N": 1337,
+      "expectedN": 1337,
+      "bad": []
+    },
+    {
+      "n": 6,
+      "N": 2134,
+      "expectedN": 2134,
+      "bad": []
+    },
+    {
+      "n": 7,
+      "N": 2255,
+      "expectedN": 2255,
+      "bad": []
+    },
+    {
+      "n": 8,
+      "N": 1987,
+      "expectedN": 1987,
+      "bad": []
+    },
+    {
+      "n": 9,
+      "N": 1976,
+      "expectedN": 1976,
+      "bad": []
+    },
+    {
+      "n": 10,
+      "N": 2999,
+      "expectedN": 2999,
+      "bad": []
+    },
+    {
+      "n": 11,
+      "N": 2494,
+      "expectedN": 2494,
+      "bad": []
+    },
+    {
+      "n": 12,
+      "N": 2148,
+      "expectedN": 2148,
+      "bad": []
+    },
+    {
+      "n": 13,
+      "N": 960,
+      "expectedN": 960,
+      "bad": []
+    },
+    {
+      "n": 14,
+      "N": 2150,
+      "expectedN": 2150,
+      "bad": []
+    },
+    {
+      "n": 15,
+      "N": 3078,
+      "expectedN": 3078,
+      "bad": []
+    },
+    {
+      "n": 16,
+      "N": 2037,
+      "expectedN": 2037,
+      "bad": []
+    },
+    {
+      "n": 17,
+      "N": 1564,
+      "expectedN": 1564,
+      "bad": []
+    },
+    {
+      "n": 18,
+      "N": 2087,
+      "expectedN": 2087,
+      "bad": []
+    },
+    {
+      "n": 19,
+      "N": 2021,
+      "expectedN": 2021,
+      "bad": []
+    },
+    {
+      "n": 20,
+      "N": 1518,
+      "expectedN": 1518,
+      "bad": []
+    },
+    {
+      "n": 21,
+      "N": 1993,
+      "expectedN": 1993,
+      "bad": []
+    },
+    {
+      "n": 22,
+      "N": 3477,
+      "expectedN": 3477,
+      "bad": []
+    },
+    {
+      "n": 23,
+      "N": 1797,
+      "expectedN": 1797,
+      "bad": []
+    },
+    {
+      "n": 24,
+      "N": 1820,
+      "expectedN": 1820,
+      "bad": []
+    },
+    {
+      "n": 25,
+      "N": 1982,
+      "expectedN": 1982,
+      "bad": []
+    },
+    {
+      "n": 26,
+      "N": 2375,
+      "expectedN": 2375,
+      "bad": []
+    },
+    {
+      "n": 27,
+      "N": 1418,
+      "expectedN": 1418,
+      "bad": []
+    },
+    {
+      "n": 28,
+      "N": 1590,
+      "expectedN": 1590,
+      "bad": []
+    },
+    {
+      "n": 29,
+      "N": 2239,
+      "expectedN": 2239,
+      "bad": []
+    },
+    {
+      "n": 30,
+      "N": 1964,
+      "expectedN": 1964,
+      "bad": []
+    },
+    {
+      "n": 31,
+      "N": 1730,
+      "expectedN": 1730,
+      "bad": []
+    },
+    {
+      "n": 32,
+      "N": 1483,
+      "expectedN": 1483,
+      "bad": []
+    },
+    {
+      "n": 33,
+      "N": 1684,
+      "expectedN": 1684,
+      "bad": []
+    },
+    {
+      "n": 34,
+      "N": 2210,
+      "expectedN": 2210,
+      "bad": []
+    },
+    {
+      "n": 35,
+      "N": 2251,
+      "expectedN": 2251,
+      "bad": []
+    },
+    {
+      "n": 36,
+      "N": 2948,
+      "expectedN": 2948,
+      "bad": []
+    },
+    {
+      "n": 37,
+      "N": 2709,
+      "expectedN": 2709,
+      "bad": []
+    },
+    {
+      "n": 38,
+      "N": 3319,
+      "expectedN": 3319,
+      "bad": []
+    },
+    {
+      "n": 39,
+      "N": 2606,
+      "expectedN": 2606,
+      "bad": []
+    },
+    {
+      "n": 40,
+      "N": 3014,
+      "expectedN": 3014,
+      "bad": []
+    },
+    {
+      "n": 41,
+      "N": 3542,
+      "expectedN": 3542,
+      "bad": []
+    },
+    {
+      "n": 42,
+      "N": 2774,
+      "expectedN": 2774,
+      "bad": []
+    },
+    {
+      "n": 43,
+      "N": 3426,
+      "expectedN": 3426,
+      "bad": []
+    },
+    {
+      "n": 44,
+      "N": 2896,
+      "expectedN": 2896,
+      "bad": []
+    },
+    {
+      "n": 45,
+      "N": 2116,
+      "expectedN": 2116,
+      "bad": []
+    },
+    {
+      "n": 46,
+      "N": 2614,
+      "expectedN": 2614,
+      "bad": []
+    },
+    {
+      "n": 47,
+      "N": 2739,
+      "expectedN": 2739,
+      "bad": []
+    },
+    {
+      "n": 48,
+      "N": 1860,
+      "expectedN": 1860,
+      "bad": []
+    },
+    {
+      "n": 49,
+      "N": 1646,
+      "expectedN": 1646,
+      "bad": []
+    },
+    {
+      "n": 50,
+      "N": 1101,
+      "expectedN": 1101,
+      "bad": []
+    },
+    {
+      "n": 51,
+      "N": 1914,
+      "expectedN": 1914,
+      "bad": []
+    },
+    {
+      "n": 52,
+      "N": 1844,
+      "expectedN": 1844,
+      "bad": []
+    },
+    {
+      "n": 53,
+      "N": 2164,
+      "expectedN": 2164,
+      "bad": []
+    },
+    {
+      "n": 54,
+      "N": 1996,
+      "expectedN": 1996,
+      "bad": []
+    },
+    {
+      "n": 55,
+      "N": 2043,
+      "expectedN": 2043,
+      "bad": []
+    },
+    {
+      "n": 56,
+      "N": 1637,
+      "expectedN": 1637,
+      "bad": []
+    },
+    {
+      "n": 57,
+      "N": 2206,
+      "expectedN": 2206,
+      "bad": []
+    },
+    {
+      "n": 58,
+      "N": 2080,
+      "expectedN": 2080,
+      "bad": []
+    },
+    {
+      "n": 59,
+      "N": 1899,
+      "expectedN": 1899,
+      "bad": []
+    },
+    {
+      "n": 60,
+      "N": 2239,
+      "expectedN": 2239,
+      "bad": []
+    },
+    {
+      "n": 61,
+      "N": 1516,
+      "expectedN": 1516,
+      "bad": []
+    },
+    {
+      "n": 62,
+      "N": 2387,
+      "expectedN": 2387,
+      "bad": []
+    },
+    {
+      "n": 63,
+      "N": 3039,
+      "expectedN": 3039,
+      "bad": []
+    },
+    {
+      "n": 64,
+      "N": 2305,
+      "expectedN": 2305,
+      "bad": []
+    },
+    {
+      "n": 65,
+      "N": 2016,
+      "expectedN": 2016,
+      "bad": []
+    },
+    {
+      "n": 66,
+      "N": 2221,
+      "expectedN": 2221,
+      "bad": []
+    },
+    {
+      "n": 67,
+      "N": 1637,
+      "expectedN": 1637,
+      "bad": []
+    },
+    {
+      "n": 68,
+      "N": 1505,
+      "expectedN": 1505,
+      "bad": []
+    },
+    {
+      "n": 69,
+      "N": 2748,
+      "expectedN": 2748,
+      "bad": []
+    },
+    {
+      "n": 70,
+      "N": 3296,
+      "expectedN": 3296,
+      "bad": []
+    },
+    {
+      "n": 71,
+      "N": 1706,
+      "expectedN": 1706,
+      "bad": []
+    },
+    {
+      "n": 72,
+      "N": 2039,
+      "expectedN": 2039,
+      "bad": []
+    },
+    {
+      "n": 73,
+      "N": 2346,
+      "expectedN": 2346,
+      "bad": []
+    },
+    {
+      "n": 74,
+      "N": 1000,
+      "expectedN": 1000,
+      "bad": []
+    },
+    {
+      "n": 75,
+      "N": 1942,
+      "expectedN": 1942,
+      "bad": []
+    },
+    {
+      "n": 76,
+      "N": 1931,
+      "expectedN": 1931,
+      "bad": []
+    },
+    {
+      "n": 77,
+      "N": 1976,
+      "expectedN": 1976,
+      "bad": []
+    },
+    {
+      "n": 78,
+      "N": 3016,
+      "expectedN": 3016,
+      "bad": []
+    },
+    {
+      "n": 79,
+      "N": 1020,
+      "expectedN": 1020,
+      "bad": []
+    },
+    {
+      "n": 80,
+      "N": 2450,
+      "expectedN": 2450,
+      "bad": []
+    },
+    {
+      "n": 81,
+      "N": 3790,
+      "expectedN": 3790,
+      "bad": []
+    },
+    {
+      "n": 82,
+      "N": 1533,
+      "expectedN": 1533,
+      "bad": []
+    },
+    {
+      "n": 83,
+      "N": 5716,
+      "expectedN": 5716,
+      "bad": []
+    },
+    {
+      "n": 84,
+      "N": 3921,
+      "expectedN": 3921,
+      "bad": []
+    },
+    {
+      "n": 85,
+      "N": 2660,
+      "expectedN": 2660,
+      "bad": []
+    }
+  ]
+}

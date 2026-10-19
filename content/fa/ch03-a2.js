@@ -24,12 +24,13 @@ export default {
       name: 'Topologies induced by families of functions',
       statement: String.raw`Let $X$ be a set and $\mathscr F$ a nonempty family of maps $f:X\to Y_f$ into topological spaces $Y_f$. The **$\mathscr F$-topology** on $X$ is the weakest topology in which every $f\in\mathscr F$ is continuous; its basic open sets are the finite intersections $f_1^{-1}(V_1)\cap\dots\cap f_n^{-1}(V_n)$ with $V_i$ open in $Y_{f_i}$.
 (a) If every $Y_f$ is Hausdorff and $\mathscr F$ separates points of $X$, the $\mathscr F$-topology is Hausdorff.
-(b) If, in addition, $X$ is compact in some topology $\tau_1$ in which every $f\in\mathscr F$ is continuous, then $\tau_1$ coincides with the $\mathscr F$-topology.`,
-      idea: String.raw`For (a), if $f(p)\ne f(q)$, disjoint neighbourhoods of $f(p)$ and $f(q)$ in $Y_f$ pull back to disjoint open sets. For (b), the $\mathscr F$-topology $\tau$ is contained in $\tau_1$ by minimality, so the identity $(X,\tau_1)\to(X,\tau)$ is a continuous bijection from a compact space onto a Hausdorff space, hence a homeomorphism. This is how weak and weak$^*$ topologies are built, and (b) is what makes them computable on compact sets (3.16).`,
+(b) If, in addition, $X$ is compact in some topology $\tau_1$ in which every $f\in\mathscr F$ is continuous, then $\tau_1$ coincides with the $\mathscr F$-topology.
+(c) If a sequence of continuous real-valued functions separates points of a compact space, that space is metrizable.`,
+      idea: String.raw`For (a), if $f(p)\ne f(q)$, disjoint neighbourhoods of $f(p)$ and $f(q)$ in $Y_f$ pull back to disjoint open sets. For (b), the $\mathscr F$-topology $\tau$ is contained in $\tau_1$ by minimality, so the identity $(X,\tau_1)\to(X,\tau)$ is a continuous bijection from a compact space onto a Hausdorff space, hence a homeomorphism. For (c), replace each separating function by its bounded transform $g_n=f_n/(1+|f_n|)$ and use $d(p,q)=\sum_{n\ge1}2^{-n}|g_n(p)-g_n(q)|$; continuity and (b) identify its metric topology. This is how weak and weak$^*$ topologies are built, and (b) is what makes them computable on compact sets (3.16).`,
       caption: String.raw`$X=\R^2$ with a family $\mathscr F$ of real functions. The shaded sets are basic neighbourhoods $\bigcap_{f\in\mathscr F}\{x:|f(x)-f(p)|<\eps\}$ of $p$ (blue) and $q$ (red); dashed curves are the level sets through $p$ and $q$. With one coordinate the neighbourhoods are strips, with the norm $|x|$ they are annuli. Press the button to put $q$ on the fibre of $p$: if $\mathscr F$ does not separate them, no $\eps$ makes the neighbourhoods disjoint.`,
       deps: [],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §3.8, pp. 62–63'],
       tags: ['weak topologies', 'Hausdorff'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const lin = (th) => { const c = Math.cos(th), s = Math.sin(th); return { f: (p) => c * p[0] + s * p[1], c, s }; };
@@ -302,14 +303,14 @@ export default {
     {
       num: '3.13',
       kind: 'Theorem',
-      name: 'Weak limits are norm limits of convex combinations',
-      credit: 'Mazur, 1933',
+      name: 'Weak limits are limits of convex combinations',
+      credit: 'Mazur, 1933 (normed-space antecedent)',
       statement: String.raw`Let $X$ be a metrizable locally convex space and let $\{x_n\}$ converge weakly to $x\in X$. Then there is a sequence $\{y_i\}$ in $X$ such that each $y_i$ is a convex combination of finitely many $x_n$, and $y_i\to x$ in the original topology of $X$.`,
       idea: String.raw`Let $H$ be the convex hull of $\{x_n\}$ (or of a tail $\{x_n:n\ge i\}$). Since $x$ is a weak limit of points of $H$, it lies in the weak closure of $H$, which by 3.12 equals the original closure. Metrizability turns "in the closure" into "limit of a sequence": pick $y_i$ in the hull of $\{x_n:n\ge i\}$ within distance $1/i$ of $x$.`,
       caption: String.raw`$X=\ell^2$ (bars show coordinates $1$–$60$). The sequence $x_n$ (gold) converges weakly but not in norm: $\|x_n-x\|$ stays at $1$ (red). Its tail averages $y_N=\frac1N(x_N+\dots+x_{2N-1})$ (green bars) are convex combinations that **do** converge in norm, like $N^{-1/2}$ (green curve).`,
       deps: ['fa-3.12'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §3.13 p.67 (metrizable locally convex version)', 'Mazur, Über konvexe Mengen in linearen normierten Räumen, Studia Mathematica4(1933), pp.70–84; §2 Satz3 and consequence11 pp.80–81 (normed-space version), https://matwbn.icm.edu.pl/ksiazki/sm/sm4/sm4113.pdf'],
       tags: ['weak topologies', 'convexity', 'Mazur'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const D = 60;

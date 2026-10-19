@@ -1,0 +1,9 @@
+# GEOL 1.4 quiz graph empty state
+
+Fixed the final mode4 blank warning in the second canvas. Turning the quiz on correctly hides all unplaced answer nodes, but the graph originally gave no explanation before the first placement. It now shows two instruction lines until a unit is placed. The original graph renderer then displays revealed nodes and contacts normally; reset restores the instruction, and switching quiz off restores the full answer graph.
+
+This is a source-local change in `content/geol/ch01.js`. No canvas is hidden, no checker/error is suppressed, and no mathematical model, graph analysis, source claim or verification flag changed. Shared runtime/checker files are untouched.
+
+The original blank was reproduced through the actual native quiz toggle (`canvas1`, after the three nondefault lithology buttons). The focused native test passes in both light and dark themes: 16 captured states with no blank canvases, runtime errors or TeX errors. It uses the original canvas inspector and actual pinned KaTeX, with buttons/toggle and an actual mouse click on the oldest exposed basement unit. The first placement reveals its node, reset restores the instruction, and quiz-off restores the complete graph. Empty and first-placement screenshots in both themes were visually inspected; text is readable and all unplaced answers remain hidden.
+
+Validation: `node tests/verification-geol-14-quiz-browser.mjs`; `node scripts/check.mjs geol-1.4 --static` (one item, zero errors/warnings); `git diff --check` passes. The original sweep hash prefix was `4787e12a`; the current full collection hash and exact evidence paths are recorded in [the machine report](geol-1-4-quiz-mode.json). Native evidence is `/tmp/geol-14-quiz.json`, with screenshots in `/tmp/geol-14-quiz-shots/`. No full collection run was launched. Edits are frozen for the root reviewer's final collection refresh.

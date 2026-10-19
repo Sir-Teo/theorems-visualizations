@@ -24,7 +24,8 @@ Equivalently: reading the index from $-\infty$ up to $0$ it is an ordinary marti
       caption: String.raw`Left: running means $S_n/n$ of five seeded samples, drawn against *time* $-n$ (so time flows left to right: the sample size shrinks as we go forward and the martingale ends at $X_{-1}=\xi_1$). Right: for the chosen $n$, a scatter of $(X_{-n-1},X_{-n})=(S_{n+1}/(n+1),\,S_n/n)$ over 1500 samples, with the average of $X_{-n}$ in each of 14 bins of $X_{-n-1}$ (orange): the bin averages fall on the diagonal, which is the defining identity $E(X_{-n}|X_{-n-1})=X_{-n-1}$. Change the law of $\xi$ and the identity persists.`,
       deps: ['prob-4.2.1a'],
       tags: ['martingales'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.7, pp. 249–250 (backwards martingales and sample averages)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       scope: String.raw`Durrett's convention indexes by $n\le0$ with $X_{-n}$ adapted to $\mathcal F_{-n}$; some texts instead write $Y_n=X_{-n}$ and call it a reverse martingale with respect to a decreasing filtration. Only the direction of time differs.`,
       viz(v) {
         const kind = v.select('law of $\\xi$', KIND_OPTS, 'norm');
@@ -232,8 +233,9 @@ $$P(X_1\in A_1,\dots,X_k\in A_k\mid\mathcal E)=\prod_{j=1}^k\mu(A_j)\quad\text{a
 In words, every infinite exchangeable sequence is a mixture of i.i.d. sequences.`,
       idea: String.raw`By the U-statistic lemma (4.7.7), $A_n(\varphi)\to E(\varphi(X_1,..,X_k)|\mathcal E)$ and the limit factors over coordinates. Taking $\varphi_j=\mathbf 1_{A_j}$ identifies $\mu(A)=\lim\frac1n\sum_i\mathbf 1(X_i\in A)$, the limiting empirical measure, which is $\mathcal E$-measurable, and shows that the conditional law of $(X_1,\dots,X_k)$ is the product. The measurability of $\mu$ and the extension from half-lines to all Borel sets use the $\pi$–$\lambda$ theorem and, on $\R$, a countable generating class.`,
       caption: String.raw`The Pólya urn is the standard exchangeable sequence that is *not* i.i.d. Left: the exact probability of each of the 16 colour patterns of the first four draws, computed from the urn rule; patterns with the same number of reds (bars of one colour) have exactly equal probability, which is exchangeability. Right: the histogram of the limiting red fraction $\theta$ (from 3000 simulated urns of 600 draws) against its Beta$(a,b)$ law. Drag the gold window along $\theta$: among urns with $\theta$ in the window, the first two draws behave like i.i.d. Bernoulli($\theta$), as the readout compares ($P(RR)$ vs $\theta^2$, $P(RB)$ vs $\theta(1-\theta)$), while over all urns they are positively correlated.`,
-      credit: 'B. de Finetti (0-1 sequences, around 1930); Hewitt & Savage, 1955 (general case)',
-      verify: true,
+      credit: 'de Finetti (exchangeable sequences); Hewitt and Savage, 1956 (nice-space mixture terminology in Durrett)',
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.7.9 and proof, pp. 253–254 (including nice-space qualification)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.7.7', 'prob-4.7.3', 'prob-2.5.3a'],
       see: ['stat-10.12', 'prob-4.3.4a'],
       tags: ['exchangeability'],
@@ -286,8 +288,8 @@ $$P(X_1=x_1,\dots,X_k=x_k)=\int_0^1\theta^{s}(1-\theta)^{k-s}\,\nu(d\theta).$$
 Here $\nu$ is the law of $\theta=\lim_n S_n/n$.`,
       idea: String.raw`This is de Finetti (4.7.9) for the two-point space: the conditional law of each $X_i$ given $\mathcal E$ is Bernoulli$(\theta)$ with $\theta=\lim S_n/n$ (the strong law applied conditionally, or 4.7.2). Integrating the conditional product formula over $\theta$ gives the displayed mixture; taking $x=(1,\dots,1)$ gives $P(X_1=\dots=X_k=1)=E\theta^k$, so $\nu$ is determined by its moments and hence by the law of the sequence.`,
       caption: String.raw`Choose the mixing law $\nu$ (the bias of the hidden coin). Left: histogram of the running frequency $S_n/n$ over 2500 simulated sequences, for the $n$ you choose, against the exact mixing law $\nu$ (red; atoms drawn as stems). As $n$ grows the histogram recovers $\nu$. Right: $P(X_1=\dots=X_k=1)$ for $k=1,\dots,8$, simulated (accent bars) against the exact moment $E\theta^k$ (dots): the finite-dimensional laws are the moments of $\nu$.`,
-      credit: 'B. de Finetti, around 1930',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.7.10 and discussion, pp. 254–255'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       deps: ['prob-4.7.9'],
       tags: ['exchangeability'],
       viz(v) {

@@ -1,0 +1,5406 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "task": "MASTER_PLAN.md §7.3 cross-field prerequisites audit",
+  "scope": [
+    "algo",
+    "info",
+    "dist",
+    "cg",
+    "ctrl",
+    "circ",
+    "robot",
+    "imaging"
+  ],
+  "criterion": "Distinct directed written-item -> written-item dependency edges whose collection fields differ. Aliases, planned targets and see-links do not count.",
+  "method": "Read the existing statement/idea (and dynamic scope where relevant), then read the written target statement. Add only a result or definition actually used in that mathematical/physical argument. No new claims, source-flag closures, visualization, runtime, build, status, or gate edits.",
+  "summary": {
+    "addedEdges": 108,
+    "changedWrittenItems": 99,
+    "changedFiles": 63,
+    "collectionsMeeting25": 7,
+    "collectionsBelow25": 1,
+    "sourceFlagsClosed": 0
+  },
+  "collections": {
+    "algo": {
+      "field": "cs",
+      "writtenItemsReviewed": 197,
+      "before": 16,
+      "added": 9,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "algo-1.10",
+          "pma-3.16"
+        ],
+        [
+          "algo-1.11",
+          "pma-3.20"
+        ],
+        [
+          "algo-1.11",
+          "pma-5.13"
+        ],
+        [
+          "algo-1.12",
+          "pma-3.26"
+        ],
+        [
+          "algo-1.13",
+          "pma-6.12"
+        ],
+        [
+          "algo-1.15",
+          "pma-8.22"
+        ],
+        [
+          "algo-2.9",
+          "pma-4.23"
+        ],
+        [
+          "algo-2.9",
+          "pma-6.1"
+        ],
+        [
+          "algo-4.12",
+          "pma-8.10"
+        ],
+        [
+          "algo-4.5",
+          "ladr-9.67"
+        ],
+        [
+          "algo-4.7",
+          "pma-3.48"
+        ],
+        [
+          "algo-4.8",
+          "pma-8.7"
+        ],
+        [
+          "algo-5.14",
+          "pma-3.26"
+        ],
+        [
+          "algo-5.20",
+          "pma-3.26"
+        ],
+        [
+          "algo-8.11",
+          "pma-1.5"
+        ],
+        [
+          "algo-11.16",
+          "fa-3.24"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "algo-1.10",
+          "pma-3.16"
+        ],
+        [
+          "algo-1.11",
+          "pma-3.20"
+        ],
+        [
+          "algo-1.11",
+          "pma-5.13"
+        ],
+        [
+          "algo-1.12",
+          "pma-3.26"
+        ],
+        [
+          "algo-1.13",
+          "pma-6.12"
+        ],
+        [
+          "algo-1.15",
+          "pma-8.22"
+        ],
+        [
+          "algo-2.9",
+          "pma-4.23"
+        ],
+        [
+          "algo-2.9",
+          "pma-6.1"
+        ],
+        [
+          "algo-2.11",
+          "pma-3.20"
+        ],
+        [
+          "algo-3.12",
+          "comb-1.5"
+        ],
+        [
+          "algo-3.3",
+          "prob-1.6.1"
+        ],
+        [
+          "algo-4.12",
+          "pma-8.10"
+        ],
+        [
+          "algo-4.2",
+          "ladr-3.46"
+        ],
+        [
+          "algo-4.5",
+          "ladr-9.67"
+        ],
+        [
+          "algo-4.7",
+          "pma-3.48"
+        ],
+        [
+          "algo-4.8",
+          "pma-8.7"
+        ],
+        [
+          "algo-5.14",
+          "pma-3.26"
+        ],
+        [
+          "algo-5.18",
+          "prob-1.6.4"
+        ],
+        [
+          "algo-5.20",
+          "pma-3.26"
+        ],
+        [
+          "algo-7.16",
+          "comb-1.7"
+        ],
+        [
+          "algo-8.11",
+          "pma-1.5"
+        ],
+        [
+          "algo-8.20",
+          "graph-1.8.1"
+        ],
+        [
+          "algo-10.18",
+          "graph-1.5.2"
+        ],
+        [
+          "algo-11.16",
+          "fa-3.24"
+        ],
+        [
+          "algo-11.24",
+          "ladr-9.43"
+        ]
+      ]
+    },
+    "info": {
+      "field": "cs",
+      "writtenItemsReviewed": 57,
+      "before": 9,
+      "added": 16,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "info-1.1",
+          "prob-1.1.1a"
+        ],
+        [
+          "info-1.1",
+          "prob-2.1.1a"
+        ],
+        [
+          "info-1.2",
+          "prob-1.6.1a"
+        ],
+        [
+          "info-1.4",
+          "rca-3.3"
+        ],
+        [
+          "info-2.2",
+          "rca-3.3"
+        ],
+        [
+          "info-2.3",
+          "rca-3.1"
+        ],
+        [
+          "info-3.12",
+          "stoch-4.1"
+        ],
+        [
+          "info-3.7",
+          "pma-8.22"
+        ],
+        [
+          "info-5.18",
+          "stoch-1.1"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "info-1.7",
+          "prob-1.6.1"
+        ],
+        [
+          "info-1.9",
+          "pma-1.20"
+        ],
+        [
+          "info-1.10",
+          "pma-5.13"
+        ],
+        [
+          "info-1.1",
+          "prob-1.1.1a"
+        ],
+        [
+          "info-1.1",
+          "prob-2.1.1a"
+        ],
+        [
+          "info-1.2",
+          "prob-1.6.1a"
+        ],
+        [
+          "info-1.2",
+          "prob-2.4.1"
+        ],
+        [
+          "info-1.3",
+          "pma-5.15"
+        ],
+        [
+          "info-1.4",
+          "rca-3.3"
+        ],
+        [
+          "info-2.13",
+          "pma-5.11"
+        ],
+        [
+          "info-2.2",
+          "rca-3.3"
+        ],
+        [
+          "info-2.3",
+          "rca-3.1"
+        ],
+        [
+          "info-3.10",
+          "stat-6.4"
+        ],
+        [
+          "info-3.11",
+          "pma-3.14"
+        ],
+        [
+          "info-3.12",
+          "stoch-4.1"
+        ],
+        [
+          "info-3.13",
+          "graph-1.2.1a"
+        ],
+        [
+          "info-3.1",
+          "prob-2.2.3"
+        ],
+        [
+          "info-3.6",
+          "comb-1.11"
+        ],
+        [
+          "info-3.6",
+          "comb-1.12"
+        ],
+        [
+          "info-3.7",
+          "pma-8.22"
+        ],
+        [
+          "info-4.14",
+          "pma-3.26"
+        ],
+        [
+          "info-4.16",
+          "prob-1.6.2"
+        ],
+        [
+          "info-4.2",
+          "comb-1.2"
+        ],
+        [
+          "info-4.4",
+          "pma-3.20"
+        ],
+        [
+          "info-5.18",
+          "stoch-1.1"
+        ]
+      ]
+    },
+    "dist": {
+      "field": "cs",
+      "writtenItemsReviewed": 47,
+      "before": 1,
+      "added": 16,
+      "after": 17,
+      "minimum": 25,
+      "shortfall": 8,
+      "initialEdges": [
+        [
+          "dist-3.12",
+          "rel-1.8"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "dist-1.6",
+          "alg-2.1"
+        ],
+        [
+          "dist-1.10",
+          "alg-3.4"
+        ],
+        [
+          "dist-1.1",
+          "graph-1.10.1a"
+        ],
+        [
+          "dist-2.7",
+          "prob-2.1.1a"
+        ],
+        [
+          "dist-2.7",
+          "stoch-2.5"
+        ],
+        [
+          "dist-2.8",
+          "prob-1.6.1"
+        ],
+        [
+          "dist-2.9",
+          "graph-5.1.1a"
+        ],
+        [
+          "dist-2.1",
+          "graph-1.5.1"
+        ],
+        [
+          "dist-2.1",
+          "graph-1.5.2"
+        ],
+        [
+          "dist-2.3",
+          "comb-2.1"
+        ],
+        [
+          "dist-2.4",
+          "prob-1.6.1"
+        ],
+        [
+          "dist-3.12",
+          "rel-1.8"
+        ],
+        [
+          "dist-3.2",
+          "pma-1.5"
+        ],
+        [
+          "dist-4.7",
+          "prob-2.1.1a"
+        ],
+        [
+          "dist-4.10",
+          "comb-1.2"
+        ],
+        [
+          "dist-4.11",
+          "comb-1.2"
+        ],
+        [
+          "dist-4.4",
+          "comb-1.2"
+        ]
+      ]
+    },
+    "cg": {
+      "field": "cs",
+      "writtenItemsReviewed": 38,
+      "before": 5,
+      "added": 20,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "cg-1.2",
+          "rca-2.23"
+        ],
+        [
+          "cg-1.2",
+          "ladr-9.43"
+        ],
+        [
+          "cg-2.1",
+          "pma-2.17"
+        ],
+        [
+          "cg-2.1",
+          "fa-3.19"
+        ],
+        [
+          "cg-4.2",
+          "fa-3.24"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "cg-1.1",
+          "opt-2.1"
+        ],
+        [
+          "cg-1.2",
+          "rca-2.23"
+        ],
+        [
+          "cg-1.2",
+          "ladr-9.43"
+        ],
+        [
+          "cg-1.4",
+          "pma-10.45"
+        ],
+        [
+          "cg-1.5",
+          "graph-4.1.1"
+        ],
+        [
+          "cg-1.6",
+          "ladr-2.28"
+        ],
+        [
+          "cg-2.9",
+          "pma-3.26"
+        ],
+        [
+          "cg-2.10",
+          "prob-2.1.1a"
+        ],
+        [
+          "cg-2.10",
+          "prob-1.6.1"
+        ],
+        [
+          "cg-2.11",
+          "graph-4.2.10"
+        ],
+        [
+          "cg-2.11",
+          "prob-1.6.1"
+        ],
+        [
+          "cg-2.12",
+          "graph-4.2.9"
+        ],
+        [
+          "cg-2.12",
+          "graph-1.2.1a"
+        ],
+        [
+          "cg-2.1",
+          "pma-2.17"
+        ],
+        [
+          "cg-2.1",
+          "fa-3.19"
+        ],
+        [
+          "cg-2.3",
+          "ladr-2.22"
+        ],
+        [
+          "cg-3.6",
+          "graph-5.1.1a"
+        ],
+        [
+          "cg-3.6",
+          "comb-1.2"
+        ],
+        [
+          "cg-3.9",
+          "pma-1.37"
+        ],
+        [
+          "cg-3.3",
+          "graph-4.2.9"
+        ],
+        [
+          "cg-3.5",
+          "graph-1.5.1a"
+        ],
+        [
+          "cg-4.7",
+          "comb-1.6"
+        ],
+        [
+          "cg-4.1",
+          "opt-2.3"
+        ],
+        [
+          "cg-4.2",
+          "fa-3.24"
+        ],
+        [
+          "cg-4.4",
+          "prob-1.6.1"
+        ]
+      ]
+    },
+    "ctrl": {
+      "field": "eng",
+      "writtenItemsReviewed": 50,
+      "before": 13,
+      "added": 12,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "ctrl-1.12",
+          "ode-1.7"
+        ],
+        [
+          "ctrl-2.1",
+          "mech-1.9"
+        ],
+        [
+          "ctrl-2.1",
+          "ode-1.1"
+        ],
+        [
+          "ctrl-2.2",
+          "pma-9.17"
+        ],
+        [
+          "ctrl-2.3",
+          "mech-6.10"
+        ],
+        [
+          "ctrl-3.10",
+          "ode-3.8"
+        ],
+        [
+          "ctrl-3.11",
+          "mech-4.19"
+        ],
+        [
+          "ctrl-3.1",
+          "mech-3.12"
+        ],
+        [
+          "ctrl-3.2",
+          "ladr-8.46"
+        ],
+        [
+          "ctrl-3.2",
+          "ode-3.3"
+        ],
+        [
+          "ctrl-3.3",
+          "ladr-5.5"
+        ],
+        [
+          "ctrl-3.3",
+          "ode-3.9"
+        ],
+        [
+          "ctrl-3.7",
+          "ladr-7.62"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "ctrl-1.9",
+          "ode-3.9"
+        ],
+        [
+          "ctrl-1.11",
+          "mech-1.6"
+        ],
+        [
+          "ctrl-1.12",
+          "ode-1.7"
+        ],
+        [
+          "ctrl-1.13",
+          "ladr-9.46"
+        ],
+        [
+          "ctrl-1.13",
+          "comb-2.1"
+        ],
+        [
+          "ctrl-1.2",
+          "mech-9.6"
+        ],
+        [
+          "ctrl-2.9",
+          "ode-3.12"
+        ],
+        [
+          "ctrl-2.10",
+          "pma-5.15"
+        ],
+        [
+          "ctrl-2.13",
+          "ladr-7.68"
+        ],
+        [
+          "ctrl-2.1",
+          "mech-1.9"
+        ],
+        [
+          "ctrl-2.1",
+          "ode-1.1"
+        ],
+        [
+          "ctrl-2.2",
+          "pma-9.17"
+        ],
+        [
+          "ctrl-2.3",
+          "mech-6.10"
+        ],
+        [
+          "ctrl-2.5",
+          "mech-4.7"
+        ],
+        [
+          "ctrl-2.6",
+          "mech-6.3"
+        ],
+        [
+          "ctrl-2.7",
+          "ladr-9.51"
+        ],
+        [
+          "ctrl-3.10",
+          "ode-3.8"
+        ],
+        [
+          "ctrl-3.11",
+          "mech-4.19"
+        ],
+        [
+          "ctrl-3.1",
+          "mech-3.12"
+        ],
+        [
+          "ctrl-3.2",
+          "ladr-8.46"
+        ],
+        [
+          "ctrl-3.2",
+          "ode-3.3"
+        ],
+        [
+          "ctrl-3.3",
+          "ladr-5.5"
+        ],
+        [
+          "ctrl-3.3",
+          "ode-3.9"
+        ],
+        [
+          "ctrl-3.7",
+          "ladr-7.62"
+        ],
+        [
+          "ctrl-12.13",
+          "prob-4.1.15"
+        ]
+      ]
+    },
+    "circ": {
+      "field": "eng",
+      "writtenItemsReviewed": 56,
+      "before": 8,
+      "added": 17,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "circ-1.1",
+          "em-1.2"
+        ],
+        [
+          "circ-1.1",
+          "em-2.3"
+        ],
+        [
+          "circ-1.3",
+          "em-1.2"
+        ],
+        [
+          "circ-2.5",
+          "pma-9.36"
+        ],
+        [
+          "circ-4.15",
+          "cm-4.7"
+        ],
+        [
+          "circ-4.17",
+          "cm-4.10"
+        ],
+        [
+          "circ-4.1",
+          "cm-4.7"
+        ],
+        [
+          "circ-4.4",
+          "pma-5.15"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "circ-1.10",
+          "graph-1.9.5"
+        ],
+        [
+          "circ-1.1",
+          "em-1.2"
+        ],
+        [
+          "circ-1.1",
+          "em-2.3"
+        ],
+        [
+          "circ-1.3",
+          "em-1.2"
+        ],
+        [
+          "circ-2.7",
+          "ladr-3.21"
+        ],
+        [
+          "circ-2.8",
+          "ladr-7.9"
+        ],
+        [
+          "circ-2.9",
+          "ladr-7.62"
+        ],
+        [
+          "circ-2.12",
+          "ladr-9.43"
+        ],
+        [
+          "circ-2.13",
+          "opt-3.6"
+        ],
+        [
+          "circ-2.14",
+          "stoch-2.2"
+        ],
+        [
+          "circ-2.5",
+          "pma-9.36"
+        ],
+        [
+          "circ-3.9",
+          "ladr-3.43"
+        ],
+        [
+          "circ-3.11",
+          "graph-4.6.1a"
+        ],
+        [
+          "circ-3.6",
+          "ladr-7.6"
+        ],
+        [
+          "circ-3.7",
+          "ladr-7.5"
+        ],
+        [
+          "circ-4.7",
+          "cm-4.10"
+        ],
+        [
+          "circ-4.9",
+          "logic-2.5"
+        ],
+        [
+          "circ-4.11",
+          "cm-4.6"
+        ],
+        [
+          "circ-4.13",
+          "ode-3.9"
+        ],
+        [
+          "circ-4.15",
+          "cm-4.7"
+        ],
+        [
+          "circ-4.17",
+          "cm-4.10"
+        ],
+        [
+          "circ-4.1",
+          "cm-4.7"
+        ],
+        [
+          "circ-4.2",
+          "pma-4.23"
+        ],
+        [
+          "circ-4.2",
+          "num-2.4"
+        ],
+        [
+          "circ-4.4",
+          "pma-5.15"
+        ]
+      ]
+    },
+    "robot": {
+      "field": "eng",
+      "writtenItemsReviewed": 30,
+      "before": 15,
+      "added": 10,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "robot-1.1",
+          "mech-6.1"
+        ],
+        [
+          "robot-1.3",
+          "mech-6.1"
+        ],
+        [
+          "robot-1.4",
+          "mech-6.3"
+        ],
+        [
+          "robot-2.10",
+          "mech-2.8"
+        ],
+        [
+          "robot-2.1",
+          "ladr-7.44"
+        ],
+        [
+          "robot-2.1",
+          "mech-10.1"
+        ],
+        [
+          "robot-2.2",
+          "mech-9.4"
+        ],
+        [
+          "robot-2.3",
+          "mech-10.1"
+        ],
+        [
+          "robot-2.4",
+          "mech-10.15"
+        ],
+        [
+          "robot-3.1",
+          "mech-10.19"
+        ],
+        [
+          "robot-4.5",
+          "ladr-7.70"
+        ],
+        [
+          "robot-4.8",
+          "ladr-3.21"
+        ],
+        [
+          "robot-4.1",
+          "pma-9.17"
+        ],
+        [
+          "robot-4.2",
+          "mech-6.4"
+        ],
+        [
+          "robot-4.3",
+          "ladr-3.21"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "robot-1.1",
+          "mech-6.1"
+        ],
+        [
+          "robot-1.2",
+          "ladr-3.21"
+        ],
+        [
+          "robot-1.3",
+          "mech-6.1"
+        ],
+        [
+          "robot-1.3",
+          "top-2.14"
+        ],
+        [
+          "robot-1.4",
+          "mech-6.3"
+        ],
+        [
+          "robot-2.6",
+          "ladr-3.43"
+        ],
+        [
+          "robot-2.10",
+          "mech-2.8"
+        ],
+        [
+          "robot-2.10",
+          "ladr-3.132"
+        ],
+        [
+          "robot-2.1",
+          "ladr-7.44"
+        ],
+        [
+          "robot-2.1",
+          "mech-10.1"
+        ],
+        [
+          "robot-2.2",
+          "mech-9.4"
+        ],
+        [
+          "robot-2.3",
+          "mech-10.1"
+        ],
+        [
+          "robot-2.3",
+          "ladr-8.46"
+        ],
+        [
+          "robot-2.4",
+          "mech-10.15"
+        ],
+        [
+          "robot-2.5",
+          "mech-10.20"
+        ],
+        [
+          "robot-3.5",
+          "num-2.13"
+        ],
+        [
+          "robot-3.6",
+          "pma-9.28"
+        ],
+        [
+          "robot-3.1",
+          "mech-10.19"
+        ],
+        [
+          "robot-4.5",
+          "ladr-7.70"
+        ],
+        [
+          "robot-4.6",
+          "pma-1.35"
+        ],
+        [
+          "robot-4.7",
+          "ladr-7.111"
+        ],
+        [
+          "robot-4.8",
+          "ladr-3.21"
+        ],
+        [
+          "robot-4.1",
+          "pma-9.17"
+        ],
+        [
+          "robot-4.2",
+          "mech-6.4"
+        ],
+        [
+          "robot-4.3",
+          "ladr-3.21"
+        ]
+      ]
+    },
+    "imaging": {
+      "field": "med",
+      "writtenItemsReviewed": 48,
+      "before": 17,
+      "added": 8,
+      "after": 25,
+      "minimum": 25,
+      "shortfall": 0,
+      "initialEdges": [
+        [
+          "imaging-1.7",
+          "prob-1.6.13"
+        ],
+        [
+          "imaging-1.7",
+          "prob-3.6.1"
+        ],
+        [
+          "imaging-1.10",
+          "stat-6.5"
+        ],
+        [
+          "imaging-1.1",
+          "sig-3.2"
+        ],
+        [
+          "imaging-1.2",
+          "rca-8.14"
+        ],
+        [
+          "imaging-1.3",
+          "rca-9.1"
+        ],
+        [
+          "imaging-2.6",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.10",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.11",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.1",
+          "qm-1.2"
+        ],
+        [
+          "imaging-2.3",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.4",
+          "qm-1.2"
+        ],
+        [
+          "imaging-3.7",
+          "pma-10.9"
+        ],
+        [
+          "imaging-3.4",
+          "rca-9.1"
+        ],
+        [
+          "imaging-3.5",
+          "rca-9.12"
+        ],
+        [
+          "imaging-3.5",
+          "pma-10.9"
+        ],
+        [
+          "imaging-4.7",
+          "waves-4.15"
+        ]
+      ],
+      "finalEdges": [
+        [
+          "imaging-1.6",
+          "prob-2.2.1"
+        ],
+        [
+          "imaging-1.7",
+          "prob-1.6.13"
+        ],
+        [
+          "imaging-1.7",
+          "prob-3.6.1"
+        ],
+        [
+          "imaging-1.10",
+          "stat-6.5"
+        ],
+        [
+          "imaging-1.1",
+          "sig-3.2"
+        ],
+        [
+          "imaging-1.2",
+          "rca-8.14"
+        ],
+        [
+          "imaging-1.3",
+          "rca-9.1"
+        ],
+        [
+          "imaging-1.4",
+          "fa-7.1"
+        ],
+        [
+          "imaging-2.6",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.9",
+          "ladr-9.50"
+        ],
+        [
+          "imaging-2.10",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.11",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.1",
+          "qm-1.2"
+        ],
+        [
+          "imaging-2.3",
+          "waves-4.15"
+        ],
+        [
+          "imaging-2.4",
+          "qm-1.2"
+        ],
+        [
+          "imaging-3.6",
+          "fa-6.33"
+        ],
+        [
+          "imaging-3.7",
+          "pma-10.9"
+        ],
+        [
+          "imaging-3.11",
+          "ladr-6.13"
+        ],
+        [
+          "imaging-3.12",
+          "opt-1.6"
+        ],
+        [
+          "imaging-3.4",
+          "rca-9.1"
+        ],
+        [
+          "imaging-3.5",
+          "rca-9.12"
+        ],
+        [
+          "imaging-3.5",
+          "pma-10.9"
+        ],
+        [
+          "imaging-4.6",
+          "rel-4.15"
+        ],
+        [
+          "imaging-4.7",
+          "waves-4.15"
+        ],
+        [
+          "imaging-4.8",
+          "stat-3.12"
+        ]
+      ]
+    }
+  },
+  "additions": [
+    {
+      "from": "algo-2.11",
+      "to": "pma-3.20",
+      "anchor": "idea: dominant root wins because (r2/r1)^n tends to zero",
+      "reason": "Geometric-sequence limit supplies the stated dominant-root asymptotic.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch02-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch03-a3.js",
+      "targetName": "Some special sequences"
+    },
+    {
+      "from": "algo-3.3",
+      "to": "prob-1.6.1",
+      "anchor": "statement: E[sum indicators] = sum probabilities without independence",
+      "reason": "Linearity of expectation is the mathematical result used by the indicator method.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch03.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "from": "algo-3.12",
+      "to": "comb-1.5",
+      "anchor": "idea: different input orders require n! decision-tree leaves",
+      "reason": "The permutation count supplies the leaf lower bound.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch03-b.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Permutations and falling factorials"
+    },
+    {
+      "from": "algo-4.2",
+      "to": "ladr-3.46",
+      "anchor": "statement/idea: seven block products cancel to the four blocks of AB",
+      "reason": "Row-by-column matrix multiplication identifies the target block identities.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch04.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03-b.js",
+      "targetName": "Entry of matrix product equals row times column"
+    },
+    {
+      "from": "algo-5.18",
+      "to": "prob-1.6.4",
+      "anchor": "idea: Markov's inequality converts expected collisions and table size into success probability above one half",
+      "reason": "The probability bound establishes constant expected construction retries.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch05-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Chebyshev’s (Markov’s) inequality"
+    },
+    {
+      "from": "algo-7.16",
+      "to": "comb-1.7",
+      "anchor": "statement: (n-1) 2^(n-2) subset/end-city table entries",
+      "reason": "For each endpoint, the binomial sum counts all subsets of the other n-2 cities.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch07-b.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Binomial theorem"
+    },
+    {
+      "from": "algo-8.20",
+      "to": "graph-1.8.1",
+      "anchor": "statement/idea: an Euler tour exists exactly when all degrees are even",
+      "reason": "Euler's graph criterion is the structural premise of Hierholzer's splicing algorithm.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch08-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-c.js",
+      "targetName": "Euler’s theorem: Eulerian iff every degree is even"
+    },
+    {
+      "from": "algo-10.18",
+      "to": "graph-1.5.2",
+      "anchor": "statement: deleting k-1 MST edges leaves k nonempty components",
+      "reason": "The tree edge-count characterization applied to components gives the cluster count.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch10-c.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-b.js",
+      "targetName": "Connected with n vertices: a tree iff n − 1 edges"
+    },
+    {
+      "from": "algo-11.24",
+      "to": "ladr-9.43",
+      "anchor": "statement: every square submatrix determinant is 0 or plus/minus 1; idea: Cramer's determinant ratios",
+      "reason": "The determinant definition is required to formulate total unimodularity and the integer-coordinate argument.",
+      "fromCollection": "algo",
+      "fromField": "cs",
+      "fromFile": "content/algo/ch11-d.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch09-d.js",
+      "targetName": "Determinant of a matrix"
+    },
+    {
+      "from": "info-1.2",
+      "to": "prob-2.4.1",
+      "anchor": "statement: iid sample average surprisal converges almost surely to entropy",
+      "reason": "The strong law supplies the asserted almost-sure convergence when entropy is finite.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch01.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02-c.js",
+      "targetName": "Strong law of large numbers (Etemadi)"
+    },
+    {
+      "from": "info-1.3",
+      "to": "pma-5.15",
+      "anchor": "statement/idea: h(p) is approximately 1-2(p-1/2)^2/ln 2 near its maximum",
+      "reason": "Taylor expansion gives the local quadratic entropy profile.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch01.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch05-a2.js",
+      "targetName": "Taylor's theorem"
+    },
+    {
+      "from": "info-1.7",
+      "to": "prob-1.6.1",
+      "anchor": "idea: take expectations of log 1/p(x,y) = log 1/p(x) + log 1/p(y|x)",
+      "reason": "Linearity converts the pointwise log factorization into the entropy chain rule.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch01-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "from": "info-1.9",
+      "to": "pma-1.20",
+      "anchor": "idea: grouping proves the formula for rational probabilities; continuity extends it to all real probabilities",
+      "reason": "Density of rational probability vectors supplies the extension step.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch01-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch01-a2.js",
+      "targetName": "Archimedean property; density of ℚ"
+    },
+    {
+      "from": "info-1.10",
+      "to": "pma-5.13",
+      "anchor": "idea: l'Hopital's rule at alpha=1 recovers Shannon entropy",
+      "reason": "The derivative-ratio limit evaluates the indeterminate Renyi expression.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch01-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch05-a2.js",
+      "targetName": "L'Hospital's rule"
+    },
+    {
+      "from": "info-3.1",
+      "to": "prob-2.2.3",
+      "anchor": "idea: finite-alphabet iid surprisals have finite variance; weak law and Chebyshev bound",
+      "reason": "The L2 weak law gives exactly the probability convergence and displayed rate.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02-b.js",
+      "targetName": "L² weak law of large numbers"
+    },
+    {
+      "from": "info-3.6",
+      "to": "comb-1.11",
+      "anchor": "statement: number of types is binomial(n+alphabetSize-1, alphabetSize-1)",
+      "reason": "Stars and bars counts the nonnegative symbol-count vectors summing to n.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01-b.js",
+      "targetName": "Multisets: stars and bars"
+    },
+    {
+      "from": "info-3.6",
+      "to": "comb-1.12",
+      "anchor": "statement: the type-class size is the multinomial coefficient of the symbol counts",
+      "reason": "The multinomial word count supplies the exact size of each class.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01-b.js",
+      "targetName": "Multinomial theorem"
+    },
+    {
+      "from": "info-3.10",
+      "to": "stat-6.4",
+      "anchor": "idea: optimal regions are Neyman-Pearson likelihood-ratio tests",
+      "reason": "The simple-hypothesis optimal testing theorem identifies the finite-block optimum used in the explanation.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03-b.js",
+      "toCollection": "stat",
+      "toField": "stats",
+      "toFile": "content/stat/ch06.js",
+      "targetName": "Neyman–Pearson lemma"
+    },
+    {
+      "from": "info-3.11",
+      "to": "pma-3.14",
+      "anchor": "statement/idea: stationary conditional entropies are non-increasing and therefore converge",
+      "reason": "Nonnegativity and bounded monotone convergence establish existence of the conditional entropy-rate limit.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch03-a2.js",
+      "targetName": "Monotone sequences converge iff bounded"
+    },
+    {
+      "from": "info-3.13",
+      "to": "graph-1.2.1a",
+      "anchor": "statement: random-walk stationary distribution is d_i/(2m)",
+      "reason": "The degree-sum identity (average degree equals 2m/N) normalizes the claimed probability law.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch03-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01.js",
+      "targetName": "Degree; minimum, maximum and average degree"
+    },
+    {
+      "from": "info-4.2",
+      "to": "comb-1.2",
+      "anchor": "statement: finitely many suffix sets imply an empty or repeated state and termination",
+      "reason": "Pigeonhole on the finite collection of possible suffix sets supplies the stopping argument.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch04.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Pigeonhole principle"
+    },
+    {
+      "from": "info-4.4",
+      "to": "pma-3.20",
+      "anchor": "idea: S^k <= k*lmax; take kth roots and let k tend to infinity",
+      "reason": "The limits k^(1/k) and lmax^(1/k) tending to one yield McMillan's bound.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch04.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch03-a3.js",
+      "targetName": "Some special sequences"
+    },
+    {
+      "from": "info-4.14",
+      "to": "pma-3.26",
+      "anchor": "idea: sum_L 2^L 2^(-2L-1) = 1",
+      "reason": "The geometric series evaluates the infinite gamma-code Kraft sum.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch04-c.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch03-a4.js",
+      "targetName": "Geometric series"
+    },
+    {
+      "from": "info-4.16",
+      "to": "prob-1.6.2",
+      "anchor": "idea: concavity gives E H(empirical p) <= H(p)",
+      "reason": "Jensen's inequality is the averaging step in the upper bound on expected prefix complexity.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch04-c.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Jensen’s inequality for expectations"
+    },
+    {
+      "to": "opt-2.1",
+      "anchor": "statement: affine combinations have weights summing to one and are independent of origin",
+      "reason": "The affine-combination definition supplies the coordinate-free operation under discussion.",
+      "from": "cg-1.1",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch01.js",
+      "toCollection": "opt",
+      "toField": "math",
+      "toFile": "content/opt/ch02.js",
+      "targetName": "Affine sets, convex sets and convex hulls"
+    },
+    {
+      "to": "pma-10.45",
+      "anchor": "idea: the shoelace formula is Green's theorem, one half of the boundary integral x dy - y dx",
+      "reason": "Green's area formula is explicitly invoked to identify the polygon sum with enclosed area.",
+      "from": "cg-1.4",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch01.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch10-b3.js",
+      "targetName": "Green's theorem"
+    },
+    {
+      "to": "graph-4.1.1",
+      "anchor": "idea: for simple polygons the inside/outside crossing rule is the polygonal Jordan theorem",
+      "reason": "Polygonal separation justifies the agreement of crossing and winding rules for a simple polygon.",
+      "from": "cg-1.5",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch01.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch04-a.js",
+      "targetName": "Jordan curve theorem for polygons"
+    },
+    {
+      "to": "ladr-2.28",
+      "anchor": "statement: every point has unique barycentric coordinates for affinely independent A,B,C",
+      "reason": "Unique basis representation after subtracting A establishes uniqueness of the affine coordinates.",
+      "from": "cg-1.6",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch01.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch02.js",
+      "targetName": "Criterion for basis"
+    },
+    {
+      "to": "ladr-2.22",
+      "anchor": "idea: d+2 lifted vectors (p_i,1) in R^(d+1) must be linearly dependent",
+      "reason": "The independent-list dimension bound supplies the nonzero null vector defining the Radon partition.",
+      "from": "cg-2.3",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch02.js",
+      "targetName": "Independent list no longer than spanning list"
+    },
+    {
+      "to": "pma-3.26",
+      "anchor": "idea: round costs n*2^t form a geometric sum dominated by the last round",
+      "reason": "The geometric-series bound gives the total O(n log h) cost across guesses.",
+      "from": "cg-2.9",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch03-a4.js",
+      "targetName": "Geometric series"
+    },
+    {
+      "to": "prob-2.1.1a",
+      "anchor": "statement/idea: n independent uniform samples and the probability of an empty cap",
+      "reason": "Independence supplies the empty-cap probability underlying the random-hull model.",
+      "from": "cg-2.10",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02.js",
+      "targetName": "Independence of events, variables and σ-fields"
+    },
+    {
+      "to": "prob-1.6.1",
+      "anchor": "idea: integrate the probability that a boundary point is a hull vertex",
+      "reason": "Linearity averages the vertex-indicator count to obtain expected hull size.",
+      "from": "cg-2.10",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "to": "graph-4.2.10",
+      "anchor": "idea: backward analysis bounds new facets using average facet degree below six",
+      "reason": "The planar edge bound applied to the polyhedral graph/dual supplies the constant expected local complexity.",
+      "from": "cg-2.11",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch04-a2.js",
+      "targetName": "A plane graph has at most 3n − 6 edges"
+    },
+    {
+      "to": "prob-1.6.1",
+      "anchor": "idea: each pending point is re-examined O(1) times in expectation per level, summed over levels",
+      "reason": "Linearity turns local expected conflict-list work into the total expected running time.",
+      "from": "cg-2.11",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "to": "graph-4.2.9",
+      "anchor": "statement/idea: V-E+F=2 for a convex polyhedral sphere",
+      "reason": "Euler's plane-graph formula supplies the face/edge complexity calculation.",
+      "from": "cg-2.12",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch04-a2.js",
+      "targetName": "Euler’s formula n − m + ℓ = 2"
+    },
+    {
+      "to": "graph-1.2.1a",
+      "anchor": "idea: each vertex has at least three edges and every edge has two ends, hence 2E >= 3V",
+      "reason": "The degree-sum identity gives the complementary lower edge bound.",
+      "from": "cg-2.12",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch02-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01.js",
+      "targetName": "Degree; minimum, maximum and average degree"
+    },
+    {
+      "to": "graph-4.2.9",
+      "anchor": "statement: a connected DCEL plane graph has V-E+F=2 including the outer face",
+      "reason": "Euler's formula is an explicit structural invariant of the represented subdivision.",
+      "from": "cg-3.3",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch03.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch04-a2.js",
+      "targetName": "Euler’s formula n − m + ℓ = 2"
+    },
+    {
+      "to": "graph-1.5.1a",
+      "anchor": "idea: the triangulation dual is a tree; its two leaves give two ears",
+      "reason": "The two-leaves property supplies the non-overlapping ears in the proof.",
+      "from": "cg-3.5",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch03.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-b.js",
+      "targetName": "Trees, forests and leaves"
+    },
+    {
+      "to": "graph-5.1.1a",
+      "anchor": "idea: three-colour the triangulation so each triangle has all three colours",
+      "reason": "Proper vertex-colouring and its independent colour classes formulate the guard selection argument.",
+      "from": "cg-3.6",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch03-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch05-a.js",
+      "targetName": "Vertex colourings and chromatic number"
+    },
+    {
+      "to": "comb-1.2",
+      "anchor": "idea: the smallest of three colour classes has at most floor(n/3) vertices",
+      "reason": "The pigeonhole bound gives the quantitative guard count.",
+      "from": "cg-3.6",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch03-b.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Pigeonhole principle"
+    },
+    {
+      "to": "pma-1.37",
+      "anchor": "idea: a path bending in free space can be shortened by cutting its corner",
+      "reason": "The Euclidean triangle inequality is the geometric step forcing shortest-path bends onto obstacle vertices.",
+      "from": "cg-3.9",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch03-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch01-a4.js",
+      "targetName": "Properties of the Euclidean norm",
+      "existingTransitivePath": [
+        "cg-3.9",
+        "cg-3.8",
+        "cg-2.1",
+        "pma-2.17",
+        "pma-1.37"
+      ],
+      "directReapplication": "The corner-cutting proof explicitly requires the Euclidean triangle inequality; its old route through convex-hull definitions never states this shortest-path step."
+    },
+    {
+      "to": "opt-2.3",
+      "anchor": "statement: intersection of half-planes a_i dot x <= c_i is a convex polygonal region",
+      "reason": "Halfspace/polyhedron definitions identify the exact feasible-set object being computed.",
+      "from": "cg-4.1",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch04.js",
+      "toCollection": "opt",
+      "toField": "math",
+      "toFile": "content/opt/ch02.js",
+      "targetName": "Halfspaces, balls, ellipsoids and polyhedra"
+    },
+    {
+      "to": "prob-1.6.1",
+      "anchor": "statement: expected rebuild count is sum 2/i and expected work is sum (2/i)*O(i)",
+      "reason": "Linearity combines the backward-analysis event indicators and their costs.",
+      "from": "cg-4.4",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch04.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "to": "comb-1.6",
+      "anchor": "statement: an arrangement of m lines in general position has binomial(m,2) vertices",
+      "reason": "The pair count gives the exact number of distinct line intersections.",
+      "from": "cg-4.7",
+      "fromCollection": "cg",
+      "fromField": "cs",
+      "fromFile": "content/cg/ch04-b.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Binomial coefficients"
+    },
+    {
+      "to": "mech-9.6",
+      "anchor": "idea: gravity balances centrifugal force to give cos(phi)=g/(l*omega^2)",
+      "reason": "The rotating-frame centrifugal force supplies the governor speed-to-height relation.",
+      "from": "ctrl-1.2",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch01.js",
+      "toCollection": "mech",
+      "toField": "physics",
+      "toFile": "content/mech/ch09.js",
+      "targetName": "Newton’s second law in a rotating frame"
+    },
+    {
+      "to": "ode-3.9",
+      "anchor": "statement: complex closed-loop poles cross into the right half-plane and give growing oscillations",
+      "reason": "The eigenvalue stability criterion translates root location into instability.",
+      "from": "ctrl-1.9",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch01-b.js",
+      "toCollection": "ode",
+      "toField": "math",
+      "toFile": "content/ode/ch03-b.js",
+      "targetName": "Stability of linear systems by eigenvalues"
+    },
+    {
+      "to": "mech-1.6",
+      "anchor": "idea: Newton's law m*v_dot=Fmax*u-kd*v^2-m*g*sin(theta) is linearized",
+      "reason": "Newton's second law supplies the physical cruise-control plant equation.",
+      "from": "ctrl-1.11",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch01-b.js",
+      "toCollection": "mech",
+      "toField": "physics",
+      "toFile": "content/mech/ch01.js",
+      "targetName": "Newton’s second law"
+    },
+    {
+      "to": "ladr-9.46",
+      "anchor": "idea: expand det(I-G) as a signed sum over permutations",
+      "reason": "The permutation formula for determinants supplies the loop-product expansion.",
+      "from": "ctrl-1.13",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch01-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch09-d.js",
+      "targetName": "Formula for determinant of a matrix"
+    },
+    {
+      "to": "comb-2.1",
+      "anchor": "idea: each determinant permutation splits into disjoint cycles, identified with non-touching graph loops",
+      "reason": "Permutation cycle decomposition gives the combinatorial structure in Mason's formula.",
+      "from": "ctrl-1.13",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch01-b.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch02.js",
+      "targetName": "Cycle decomposition of a permutation"
+    },
+    {
+      "to": "mech-4.7",
+      "anchor": "statement/idea: damped mass-spring equation and its stored energy/dissipation correspond to a series RLC equation",
+      "reason": "The damped harmonic oscillator supplies the mechanical side of the electromechanical analogy.",
+      "from": "ctrl-2.5",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02.js",
+      "toCollection": "mech",
+      "toField": "physics",
+      "toFile": "content/mech/ch04.js",
+      "targetName": "Damped harmonic oscillator"
+    },
+    {
+      "to": "mech-6.3",
+      "anchor": "idea: rolling without slipping constrains wheel velocities to their own directions",
+      "reason": "The nonholonomic rolling constraint supplies the bicycle kinematics.",
+      "from": "ctrl-2.6",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02.js",
+      "toCollection": "mech",
+      "toField": "physics",
+      "toFile": "content/mech/ch06.js",
+      "targetName": "Nonholonomic constraints"
+    },
+    {
+      "to": "ladr-9.51",
+      "anchor": "idea: roots of det(sI-A) are the eigenvalues of A",
+      "reason": "The determinant-eigenvalue equivalence identifies the possible transfer-function poles.",
+      "from": "ctrl-2.7",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch09-e.js",
+      "targetName": "Eigenvalues and determinants"
+    },
+    {
+      "to": "ode-3.12",
+      "anchor": "idea: exact variation-of-constants formula between sampling instants",
+      "reason": "Duhamel's formula yields Phi=e^(AT) and the held-input integral Gamma.",
+      "from": "ctrl-2.9",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02-b.js",
+      "toCollection": "ode",
+      "toField": "math",
+      "toFile": "content/ode/ch03-b.js",
+      "targetName": "Variation of constants (Duhamel’s formula)"
+    },
+    {
+      "to": "pma-5.15",
+      "anchor": "statement: the Pade rational approximant matches the delay Taylor series through degree 2n",
+      "reason": "Taylor expansion is the local matching condition defining the approximation.",
+      "from": "ctrl-2.10",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch05-a2.js",
+      "targetName": "Taylor's theorem"
+    },
+    {
+      "to": "ladr-7.68",
+      "anchor": "idea: a transmission zero is a rank loss where the smallest singular value vanishes",
+      "reason": "The rank/injectivity characterization by positive singular values supports the matrix-zero interpretation.",
+      "from": "ctrl-2.13",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07-c.js",
+      "targetName": "Role of positive singular values"
+    },
+    {
+      "to": "prob-4.1.15",
+      "anchor": "idea: minimum-mean-square estimation is orthogonal projection in a Hilbert space of random variables",
+      "reason": "Conditional expectation as L2 projection supplies the filtering optimality argument.",
+      "from": "ctrl-12.13",
+      "fromCollection": "ctrl",
+      "fromField": "eng",
+      "fromFile": "content/ctrl/ch12-papers.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch04-a1.js",
+      "targetName": "Conditional expectation as an L² projection"
+    },
+    {
+      "to": "ladr-3.21",
+      "anchor": "idea: honest mobility is n-rank of the constraint Jacobian",
+      "reason": "Rank-nullity gives the dimension of admissible instantaneous motions.",
+      "from": "robot-1.2",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch01.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03.js",
+      "targetName": "Fundamental theorem of linear maps"
+    },
+    {
+      "to": "top-2.14",
+      "anchor": "idea: identify opposite edges of the two-joint angle square to obtain a torus",
+      "reason": "The square-quotient construction supplies the stated configuration-space topology.",
+      "from": "robot-1.3",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch01.js",
+      "toCollection": "top",
+      "toField": "math",
+      "toFile": "content/top/ch02-b.js",
+      "targetName": "Gluing a square: torus, Möbius band, Klein bottle, ℝP²"
+    },
+    {
+      "to": "ladr-8.46",
+      "anchor": "idea: split the matrix exponential power series using [omega]^3=-[omega]",
+      "reason": "The operator-exponential definition supplies the Rodrigues-series derivation.",
+      "from": "robot-2.3",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch02.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch08-c.js",
+      "targetName": "Jordan form"
+    },
+    {
+      "to": "mech-10.20",
+      "anchor": "statement: unit quaternions compose rotations and q,-q represent the same rotation",
+      "reason": "The quaternion rotation/double-cover result supplies the rotation representation.",
+      "from": "robot-2.5",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch02.js",
+      "toCollection": "mech",
+      "toField": "physics",
+      "toFile": "content/mech/ch10-c.js",
+      "targetName": "Unit quaternions double-cover the rotations"
+    },
+    {
+      "to": "ladr-3.43",
+      "anchor": "idea: appending a homogeneous 1 makes affine composition into matrix multiplication",
+      "reason": "The matrix-of-composition identity supplies frame chaining.",
+      "from": "robot-2.6",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03-b.js",
+      "targetName": "Matrix of product of linear maps"
+    },
+    {
+      "to": "ladr-3.132",
+      "anchor": "idea: wrench frame conversion is the transpose of twist conversion, by duality",
+      "reason": "The matrix of the dual map being the transpose supplies the force transformation rule.",
+      "from": "robot-2.10",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03-d.js",
+      "targetName": "Matrix of T′ is the transpose of the matrix of T"
+    },
+    {
+      "to": "num-2.13",
+      "anchor": "idea: controllers track a platform pose incrementally with Newton's method on the loop equations",
+      "reason": "Newton's method for systems supplies the explicitly discussed forward-kinematics solve.",
+      "from": "robot-3.5",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch03-b.js",
+      "toCollection": "num",
+      "toField": "math",
+      "toFile": "content/num/ch02-b.js",
+      "targetName": "Newton’s method for systems"
+    },
+    {
+      "to": "pma-9.28",
+      "anchor": "idea: the implicit function theorem fails when the output constraint Jacobian loses rank",
+      "reason": "The implicit function theorem supplies local determination of output from joint coordinates away from singularities.",
+      "from": "robot-3.6",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch03-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch09-b1.js",
+      "targetName": "Implicit function theorem",
+      "existingTransitivePath": [
+        "robot-3.6",
+        "robot-1.2",
+        "robot-1.1",
+        "mech-6.1",
+        "pma-9.28"
+      ],
+      "directReapplication": "The idea expressly names the implicit function theorem to determine output from joint coordinates; this is a fresh local-solution application beyond the earlier mobility count."
+    },
+    {
+      "to": "pma-1.35",
+      "anchor": "idea: Cauchy-Schwarz for JJ^T bounds the motion/force gain product in a general direction",
+      "reason": "The inner-product inequality supplies the stated off-axis duality bound.",
+      "from": "robot-4.6",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch04-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch01-a4.js",
+      "targetName": "Schwarz inequality",
+      "existingTransitivePath": [
+        "robot-4.6",
+        "robot-4.5",
+        "robot-4.1",
+        "pma-9.17",
+        "pma-9.9",
+        "pma-1.35"
+      ],
+      "directReapplication": "The idea expressly applies Cauchy-Schwarz to the two reciprocal quadratic forms; the old route reaches it through the unrelated Jacobian chain-rule proof."
+    },
+    {
+      "to": "ladr-7.111",
+      "anchor": "statement: product of singular values is proportional to manipulability ellipsoid volume",
+      "reason": "The singular-value volume formula supplies Yoshikawa's geometric measure.",
+      "from": "robot-4.7",
+      "fromCollection": "robot",
+      "fromField": "eng",
+      "fromFile": "content/robot/ch04-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07-d.js",
+      "targetName": "Volume changes by the product of the singular values"
+    },
+    {
+      "to": "fa-7.1",
+      "anchor": "statement: the optical transfer function is the two-dimensional Fourier transform of the integrable PSF",
+      "reason": "The multivariable L1 Fourier-transform definition supplies H for the PSF itself; a whole-plane sinusoidal input need not be L1. Imaging uses cycles per length rather than Rudin's angular-frequency/unitary normalization, with the displayed 2pi kernel accounting for the convention.",
+      "from": "imaging-1.4",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch01.js",
+      "toCollection": "fa",
+      "toField": "math",
+      "toFile": "content/fa/ch07.js",
+      "targetName": "The Fourier transform on $L^1(\\R^n)$"
+    },
+    {
+      "to": "prob-2.2.1",
+      "anchor": "idea: averaging n independent pixels/frames divides the noise standard deviation by sqrt(n)",
+      "reason": "Additivity of uncorrelated variances supplies the noise-averaging law.",
+      "from": "imaging-1.6",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch01-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02-b.js",
+      "targetName": "Variance of a sum of uncorrelated variables"
+    },
+    {
+      "to": "ladr-9.50",
+      "anchor": "statement/idea: two material thicknesses are recovered by an invertible 2x2 matrix whose determinant vanishes for coincident energies",
+      "reason": "The determinant-invertibility criterion supplies the basis-decomposition uniqueness condition.",
+      "from": "imaging-2.9",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch09-e.js",
+      "targetName": "Invertible ⟺ nonzero determinant"
+    },
+    {
+      "to": "fa-6.33",
+      "anchor": "idea: shift-invariant linear point-source blur implies b=f*(1/r)",
+      "reason": "The translation-invariant-operator representation supplies the convolution step from point response to general object.",
+      "from": "imaging-3.6",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch03-b.js",
+      "toCollection": "fa",
+      "toField": "math",
+      "toFile": "content/fa/ch06-a5.js",
+      "targetName": "Translation-invariant operators are convolutions"
+    },
+    {
+      "to": "ladr-6.13",
+      "anchor": "statement: Kaczmarz correction is the residual divided by squared row norm, times the row normal",
+      "reason": "Orthogonal decomposition supplies the hyperplane projection formula and its distance decrease.",
+      "from": "imaging-3.11",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch03-c.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch06.js",
+      "targetName": "An orthogonal decomposition"
+    },
+    {
+      "to": "opt-1.6",
+      "anchor": "statement/idea: SIRT is a diagonally scaled gradient iteration on weighted least-squares normal equations",
+      "reason": "The least-squares objective and normal equations supply the reconstruction target.",
+      "from": "imaging-3.12",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch03-c.js",
+      "toCollection": "opt",
+      "toField": "math",
+      "toFile": "content/opt/ch01-b.js",
+      "targetName": "Least squares as an optimization problem"
+    },
+    {
+      "to": "rel-4.15",
+      "anchor": "statement/idea: a stopped positron-electron pair produces two back-to-back 511 keV photons",
+      "reason": "Four-momentum conservation in annihilation supplies the PET coincidence geometry and energy.",
+      "from": "imaging-4.6",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch04-b.js",
+      "toCollection": "rel",
+      "toField": "physics",
+      "toFile": "content/rel/ch04-c.js",
+      "targetName": "Pair creation and annihilation"
+    },
+    {
+      "to": "stat-3.12",
+      "anchor": "statement/idea: the Poisson EM update never decreases the likelihood; subsets lose that guarantee",
+      "reason": "The EM likelihood-monotonicity theorem supplies the exact full-data iteration guarantee.",
+      "from": "imaging-4.8",
+      "fromCollection": "imaging",
+      "fromField": "med",
+      "fromFile": "content/imaging/ch04-c.js",
+      "toCollection": "stat",
+      "toField": "stats",
+      "toFile": "content/stat/ch03-b.js",
+      "targetName": "EM never decreases the likelihood"
+    },
+    {
+      "from": "circ-1.10",
+      "to": "graph-1.9.5",
+      "anchor": "statement/idea: a spanning tree leaves b-n+1 chords, each producing an independent fundamental loop",
+      "reason": "The fundamental-cycle basis gives the graph-theoretic loop count.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch01-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-c.js",
+      "targetName": "Fundamental cycles and cuts form bases; dim C = m − n + 1"
+    },
+    {
+      "from": "circ-2.7",
+      "to": "ladr-3.21",
+      "anchor": "idea: KCL incidence rank n-1 and complementary loop-space dimension b-n+1",
+      "reason": "Rank-nullity supplies the dimension count separating currents, potentials, and independent equations.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03.js",
+      "targetName": "Fundamental theorem of linear maps"
+    },
+    {
+      "from": "circ-2.8",
+      "to": "ladr-7.9",
+      "anchor": "statement/idea: L=A diag(g) A^T and v^T L v is the sum of conductance-weighted squared voltage drops",
+      "reason": "The matrix-adjoint correspondence identifies the transpose factor with the adjoint and gives the Gram quadratic-form identity.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07.js",
+      "targetName": "Matrix of T* is the conjugate transpose of ℳ(T)"
+    },
+    {
+      "from": "circ-2.9",
+      "to": "ladr-7.62",
+      "anchor": "statement/idea: the grounded conductance matrix is positive definite, hence invertible",
+      "reason": "The positive-definite matrix characterization supplies the unique solvability conclusion.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07-c.js",
+      "targetName": "Positive definite matrix"
+    },
+    {
+      "from": "circ-2.12",
+      "to": "ladr-9.43",
+      "anchor": "statement/idea: tau=det(G), and tree-column minors have determinant zero or plus/minus one",
+      "reason": "The matrix determinant definition is required to formulate the tree-count/minor identities; it does not substitute for the absent full Cauchy-Binet item.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-c.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch09-d.js",
+      "targetName": "Determinant of a matrix"
+    },
+    {
+      "from": "circ-2.13",
+      "to": "opt-3.6",
+      "anchor": "statement/idea: effective resistance is a concave function of one resistance and is the minimum of flow energies affine in that resistance",
+      "reason": "The sign-reversed pointwise-supremum rule proves concavity of the infimum of affine flow-energy functions.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-c.js",
+      "toCollection": "opt",
+      "toField": "math",
+      "toFile": "content/opt/ch03.js",
+      "targetName": "Operations that preserve convex functions"
+    },
+    {
+      "from": "circ-2.14",
+      "to": "stoch-2.2",
+      "anchor": "idea: hitting probabilities obey the same first-step weighted-average equations as node voltages",
+      "reason": "The first-step hitting-probability equations supply the stochastic side of the identification.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch02-c.js",
+      "toCollection": "stoch",
+      "toField": "math",
+      "toFile": "content/stoch/ch02.js",
+      "targetName": "Hitting probabilities are the minimal solution of the first-step equations"
+    },
+    {
+      "from": "circ-3.6",
+      "to": "ladr-7.6",
+      "anchor": "idea: voltage row space and current null space are orthogonal complements",
+      "reason": "The adjoint range/null-space orthogonality is the linear-algebra step in Tellegen's power identity.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch03.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07.js",
+      "targetName": "Null space and range of T*"
+    },
+    {
+      "from": "circ-3.7",
+      "to": "ladr-7.5",
+      "anchor": "idea: the inverse of the symmetric conductance matrix is symmetric",
+      "reason": "The inverse-adjoint identity supplies the transfer-resistance symmetry.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch03.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch07.js",
+      "targetName": "Properties of the adjoint"
+    },
+    {
+      "from": "circ-3.9",
+      "to": "ladr-3.43",
+      "anchor": "statement: cascading two-port networks multiplies their ABCD matrices",
+      "reason": "The matrix-of-composition identity supplies the cascade rule.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch03-b.js",
+      "toCollection": "ladr",
+      "toField": "math",
+      "toFile": "content/ladr/ch03-b.js",
+      "targetName": "Matrix of product of linear maps"
+    },
+    {
+      "from": "circ-3.11",
+      "to": "graph-4.6.1a",
+      "anchor": "statement/idea: place one dual vertex per face and one crossing dual edge per original branch",
+      "reason": "The plane-dual construction supplies the network correspondence.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch03-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch04-z2.js",
+      "targetName": "Plane duals"
+    },
+    {
+      "from": "circ-4.2",
+      "to": "pma-4.23",
+      "anchor": "statement/idea: continuous strictly increasing load-line difference changes sign and has exactly one zero",
+      "reason": "The intermediate value theorem supplies existence of the operating point.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch04-a3.js",
+      "targetName": "Intermediate value theorem"
+    },
+    {
+      "from": "circ-4.2",
+      "to": "num-2.4",
+      "anchor": "idea: Newton replaces the diode by its tangent conductance/current-source model to find the operating point",
+      "reason": "Newton's tangent-zero iteration supplies the explicitly described nonlinear circuit solve.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04.js",
+      "toCollection": "num",
+      "toField": "math",
+      "toFile": "content/num/ch02.js",
+      "targetName": "Newton’s method"
+    },
+    {
+      "from": "circ-4.7",
+      "to": "cm-4.10",
+      "anchor": "idea: the insulated gate attracts a surface electron channel only beyond threshold",
+      "reason": "The MOS depletion/inversion mechanism supplies the physical basis of the voltage-controlled switch model.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04-b.js",
+      "toCollection": "cm",
+      "toField": "physics",
+      "toFile": "content/cm/ch04-b.js",
+      "targetName": "Field-effect transistor (MOSFET)"
+    },
+    {
+      "from": "circ-4.9",
+      "to": "logic-2.5",
+      "anchor": "idea: express an arbitrary truth table as an OR of ANDs of literals, then implement those with NAND",
+      "reason": "Disjunctive normal form supplies the functional-completeness construction.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04-b.js",
+      "toCollection": "logic",
+      "toField": "math",
+      "toFile": "content/logic/ch02.js",
+      "targetName": "Disjunctive and conjunctive normal forms"
+    },
+    {
+      "from": "circ-4.11",
+      "to": "cm-4.6",
+      "anchor": "idea: emitter-injected electrons diffuse through the thin base and are swept into the collector by its field",
+      "reason": "Drift and diffusion supply the transport mechanism underlying the bipolar current-gain model.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04-b.js",
+      "toCollection": "cm",
+      "toField": "physics",
+      "toFile": "content/cm/ch04.js",
+      "targetName": "Drift, diffusion and the Einstein relation",
+      "existingTransitivePath": [
+        "circ-4.11",
+        "circ-4.1",
+        "cm-4.7",
+        "cm-4.6"
+      ],
+      "directReapplication": "The active transistor explanation directly invokes minority-carrier diffusion across the base and field-driven collection; the old route uses transport for a single equilibrium p-n junction."
+    },
+    {
+      "from": "circ-4.13",
+      "to": "ode-3.9",
+      "anchor": "statement/idea: outer equilibria are stable, the symmetric equilibrium is a saddle when g>1",
+      "reason": "The eigenvalue stability criterion supplies the local dynamic interpretation of the loop-slope condition.",
+      "fromCollection": "circ",
+      "fromField": "eng",
+      "fromFile": "content/circ/ch04-b.js",
+      "toCollection": "ode",
+      "toField": "math",
+      "toFile": "content/ode/ch03-b.js",
+      "targetName": "Stability of linear systems by eigenvalues"
+    },
+    {
+      "from": "dist-1.1",
+      "to": "graph-1.10.1a",
+      "anchor": "statement: directed communication channels run along edges of a network graph",
+      "reason": "The directed-graph definition supplies the communication topology of the message-passing model.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch01.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-c.js",
+      "targetName": "Multigraphs and directed graphs"
+    },
+    {
+      "from": "dist-1.6",
+      "to": "alg-2.1",
+      "anchor": "idea: induction on execution length from initial membership and transition closure",
+      "reason": "Mathematical induction supplies the entire invariant-assertion proof rule.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch01-b.js",
+      "toCollection": "alg",
+      "toField": "math",
+      "toFile": "content/alg/ch02.js",
+      "targetName": "First principle of mathematical induction"
+    },
+    {
+      "from": "dist-1.10",
+      "to": "alg-3.4",
+      "anchor": "statement: sliding sequence-number windows use arithmetic modulo n",
+      "reason": "Modular arithmetic supplies wrapping byte positions and acknowledgements in the protocol.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch01-b.js",
+      "toCollection": "alg",
+      "toField": "math",
+      "toFile": "content/alg/ch03.js",
+      "targetName": "Arithmetic in ℤₙ"
+    },
+    {
+      "from": "dist-2.1",
+      "to": "graph-1.5.1",
+      "anchor": "idea: every process is reached and parent time decreases, hence connected acyclic pointers form a spanning tree",
+      "reason": "The tree characterization supplies the parent-structure correctness conclusion.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-b.js",
+      "targetName": "Equivalent characterisations of trees"
+    },
+    {
+      "from": "dist-2.1",
+      "to": "graph-1.5.2",
+      "anchor": "statement/idea: save one flood message on each of the n-1 parent-tree edges",
+      "reason": "The tree edge count supplies the exact flood/convergecast message count.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch01-b.js",
+      "targetName": "Connected with n vertices: a tree iff n − 1 edges"
+    },
+    {
+      "from": "dist-2.3",
+      "to": "comb-2.1",
+      "anchor": "statement: rotation-invariant leader outputs occur in permutation orbits of size at least p",
+      "reason": "Permutation cycle decomposition supplies the orbit structure of ring rotations.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch02.js",
+      "targetName": "Cycle decomposition of a permutation"
+    },
+    {
+      "from": "dist-2.7",
+      "to": "prob-2.1.1a",
+      "anchor": "statement: each candidate draws an independent uniform random number every round",
+      "reason": "Independence supplies the positive probability of symmetry-breaking outcomes.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02.js",
+      "targetName": "Independence of events, variables and σ-fields"
+    },
+    {
+      "from": "dist-2.7",
+      "to": "stoch-2.5",
+      "anchor": "idea: candidate count is a finite Markov chain absorbed at one with probability one",
+      "reason": "The absorbing-chain theorem supplies almost-sure termination and finite mean rounds once every transient state reaches the absorbing state.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02-b.js",
+      "toCollection": "stoch",
+      "toField": "math",
+      "toFile": "content/stoch/ch02.js",
+      "targetName": "Absorbing chains and the fundamental matrix"
+    },
+    {
+      "from": "dist-2.8",
+      "to": "prob-1.6.1",
+      "anchor": "idea: a constant fraction of active edges disappears in expectation per round",
+      "reason": "Linearity combines edge-removal indicators in the expected progress argument.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    },
+    {
+      "from": "dist-2.9",
+      "to": "graph-5.1.1a",
+      "anchor": "statement/idea: neighbouring colours stay different under the bit-position recolouring",
+      "reason": "The proper vertex-colouring definition supplies the invariant and the algorithm's output specification.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02-b.js",
+      "toCollection": "graph",
+      "toField": "math",
+      "toFile": "content/graph/ch05-a.js",
+      "targetName": "Vertex colourings and chromatic number"
+    },
+    {
+      "from": "dist-3.2",
+      "to": "pma-1.5",
+      "anchor": "statement: lexicographic timestamp/process pairs define a total order extending causality",
+      "reason": "The strict-order definition distinguishes the claimed total order from the happened-before partial order.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch03.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch01.js",
+      "targetName": "Order on a set"
+    },
+    {
+      "from": "dist-4.4",
+      "to": "comb-1.2",
+      "anchor": "idea: finitely many (k-1)-register covering sets force repetition of a covering set",
+      "reason": "The pigeonhole principle supplies the repeat used to restore the covering invariant.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch04.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Pigeonhole principle"
+    },
+    {
+      "from": "dist-4.7",
+      "to": "prob-2.1.1a",
+      "anchor": "statement/idea: fresh fair coin outcomes have a positive lower-bound probability of the progress pattern",
+      "reason": "Independence of fresh random choices supplies the pattern probabilities; this does not close the retained original-proof gap.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch04-b.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch02.js",
+      "targetName": "Independence of events, variables and σ-fields"
+    },
+    {
+      "from": "dist-4.10",
+      "to": "comb-1.2",
+      "anchor": "idea: each of the other n-1 processes can foil a collect at most twice",
+      "reason": "The pigeonhole count bounds collects before a twice-moving writer or an unchanged collect is found.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch04-c.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Pigeonhole principle"
+    },
+    {
+      "from": "dist-4.11",
+      "to": "comb-1.2",
+      "anchor": "idea: any two strict majorities of n processes intersect",
+      "reason": "The pigeonhole intersection bound supplies the read/write quorum overlap.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch04-c.js",
+      "toCollection": "comb",
+      "toField": "math",
+      "toFile": "content/comb/ch01.js",
+      "targetName": "Pigeonhole principle"
+    },
+    {
+      "from": "info-2.13",
+      "to": "pma-5.11",
+      "anchor": "idea: the derivative of binary divergence minus 2(a-b)^2 changes sign at b=a, hence its minimum is zero",
+      "reason": "The derivative-sign monotonicity theorem supplies the binary Pinsker minimum argument.",
+      "fromCollection": "info",
+      "fromField": "cs",
+      "fromFile": "content/info/ch02-b.js",
+      "toCollection": "pma",
+      "toField": "math",
+      "toFile": "content/pma/ch05-a2.js",
+      "targetName": "The sign of the derivative decides monotonicity"
+    },
+    {
+      "from": "dist-2.4",
+      "to": "prob-1.6.1",
+      "anchor": "statement/idea: total message count is the sum of identifier travel distances, with mean n H_n over random arrangements",
+      "reason": "Linearity averages the travel-distance contributions to obtain the stated mean message count.",
+      "fromCollection": "dist",
+      "fromField": "cs",
+      "fromFile": "content/dist/ch02.js",
+      "toCollection": "prob",
+      "toField": "math",
+      "toFile": "content/prob/ch01-d.js",
+      "targetName": "Linearity and monotonicity of expectation"
+    }
+  ],
+  "shortfalls": [
+    {
+      "collection": "dist",
+      "reviewComplete": true,
+      "writtenItemsReviewed": 47,
+      "after": 17,
+      "required": 25,
+      "shortfall": 8,
+      "reason": "The remaining existing arguments primarily use same-field CS prerequisites. No additional cross-field links were inserted to meet the numerical target.",
+      "declined": [
+        {
+          "items": [
+            "dist-2.2",
+            "dist-2.10"
+          ],
+          "reason": "Shortest-path and minimum-spanning-tree correctness is already supplied by algo results in the same CS field."
+        },
+        {
+          "items": [
+            "dist-2.11",
+            "dist-2.12"
+          ],
+          "reason": "Tree edge count and parent/convergecast facts are already supplied by the substantive dist-2.1 prerequisite; repeating its mathematical foundations here would be purely transitive padding."
+        },
+        {
+          "items": [
+            "dist-3.1",
+            "dist-3.4",
+            "dist-3.5",
+            "dist-3.7"
+          ],
+          "reason": "These use partial orders, componentwise order, downsets and linear extensions/lattices. The written graph items about special posets (e.g. Schnyder/Dilworth) do not supply the general results used here. No unrelated stronger theorem was added."
+        },
+        {
+          "items": [
+            "dist-3.9",
+            "dist-3.10",
+            "dist-3.11"
+          ],
+          "reason": "Clock uncertainty uses elementary interval arithmetic and its own indistinguishability proof; adding broad analysis foundations would not identify a load-bearing external prerequisite."
+        },
+        {
+          "items": [
+            "dist-1.4",
+            "dist-4.1",
+            "dist-4.2",
+            "dist-4.3",
+            "dist-4.5",
+            "dist-4.8",
+            "dist-4.9",
+            "dist-4.12",
+            "dist-4.13"
+          ],
+          "reason": "The definitions and correctness arguments concern shared memory, mutual exclusion, consistency and failure indistinguishability, rather than a separate written non-CS theorem."
+        }
+      ]
+    }
+  ],
+  "syllabusSynchronizations": [
+    {
+      "id": "info-1.2",
+      "chapterBefore": [
+        "info-1.1",
+        "prob-1.6.1a"
+      ],
+      "syllabusBefore": [
+        "info-1.1"
+      ],
+      "after": [
+        "info-1.1",
+        "prob-1.6.1a",
+        "prob-2.4.1"
+      ]
+    },
+    {
+      "id": "cg-4.1",
+      "chapterBefore": [
+        "cg-2.1",
+        "cg-2.4"
+      ],
+      "syllabusBefore": [
+        "cg-2.1"
+      ],
+      "after": [
+        "cg-2.1",
+        "cg-2.4",
+        "opt-2.3"
+      ]
+    },
+    {
+      "id": "ctrl-2.13",
+      "chapterBefore": [
+        "ctrl-2.7",
+        "sig-9.7"
+      ],
+      "syllabusBefore": [
+        "ctrl-2.7"
+      ],
+      "after": [
+        "ctrl-2.7",
+        "sig-9.7",
+        "ladr-7.68"
+      ]
+    },
+    {
+      "id": "robot-3.6",
+      "chapterBefore": [
+        "robot-3.5",
+        "robot-1.2"
+      ],
+      "syllabusBefore": [
+        "robot-3.5"
+      ],
+      "after": [
+        "robot-3.5",
+        "robot-1.2",
+        "pma-9.28"
+      ]
+    },
+    {
+      "id": "imaging-4.6",
+      "chapterBefore": [
+        "kin-9.7",
+        "imaging-3.3"
+      ],
+      "syllabusBefore": [
+        "imaging-4.1"
+      ],
+      "after": [
+        "kin-9.7",
+        "imaging-3.3",
+        "rel-4.15"
+      ]
+    },
+    {
+      "id": "circ-3.7",
+      "chapterBefore": [
+        "circ-3.6",
+        "circ-2.8"
+      ],
+      "syllabusBefore": [
+        "circ-3.6"
+      ],
+      "after": [
+        "circ-3.6",
+        "circ-2.8",
+        "ladr-7.5"
+      ]
+    },
+    {
+      "id": "circ-4.7",
+      "chapterBefore": [
+        "circ-4.6",
+        "circ-4.3"
+      ],
+      "syllabusBefore": [
+        "circ-4.6"
+      ],
+      "after": [
+        "circ-4.6",
+        "circ-4.3",
+        "cm-4.10"
+      ]
+    },
+    {
+      "id": "info-2.13",
+      "chapterBefore": [
+        "info-2.2",
+        "info-2.10"
+      ],
+      "syllabusBefore": [
+        "info-2.2"
+      ],
+      "after": [
+        "info-2.2",
+        "info-2.10",
+        "pma-5.11"
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "algo-2.11",
+      "before": [
+        {
+          "file": "content/algo/ch02-b.js",
+          "deps": [
+            "algo-2.4",
+            "algo-2.5"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-2.4",
+            "algo-2.5"
+          ]
+        }
+      ],
+      "after": [
+        "algo-2.4",
+        "algo-2.5",
+        "pma-3.20"
+      ]
+    },
+    {
+      "id": "algo-3.3",
+      "before": [
+        {
+          "file": "content/algo/ch03.js",
+          "deps": [
+            "algo-1.3"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-1.3"
+          ]
+        }
+      ],
+      "after": [
+        "algo-1.3",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "algo-3.12",
+      "before": [
+        {
+          "file": "content/algo/ch03-b.js",
+          "deps": [
+            "algo-3.1",
+            "algo-1.15"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-3.1",
+            "algo-1.15"
+          ]
+        }
+      ],
+      "after": [
+        "algo-3.1",
+        "algo-1.15",
+        "comb-1.5"
+      ]
+    },
+    {
+      "id": "algo-4.2",
+      "before": [
+        {
+          "file": "content/algo/ch04.js",
+          "deps": [
+            "algo-2.7"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-2.7"
+          ]
+        }
+      ],
+      "after": [
+        "algo-2.7",
+        "ladr-3.46"
+      ]
+    },
+    {
+      "id": "algo-5.18",
+      "before": [
+        {
+          "file": "content/algo/ch05-b.js",
+          "deps": [
+            "algo-5.16",
+            "algo-5.17"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-5.16",
+            "algo-5.17"
+          ]
+        }
+      ],
+      "after": [
+        "algo-5.16",
+        "algo-5.17",
+        "prob-1.6.4"
+      ]
+    },
+    {
+      "id": "algo-7.16",
+      "before": [
+        {
+          "file": "content/algo/ch07-b.js",
+          "deps": [
+            "algo-7.2"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-7.2"
+          ]
+        }
+      ],
+      "after": [
+        "algo-7.2",
+        "comb-1.7"
+      ]
+    },
+    {
+      "id": "algo-8.20",
+      "before": [
+        {
+          "file": "content/algo/ch08-b.js",
+          "deps": [
+            "algo-8.1",
+            "algo-8.7"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-8.1",
+            "algo-8.7"
+          ]
+        }
+      ],
+      "after": [
+        "algo-8.1",
+        "algo-8.7",
+        "graph-1.8.1"
+      ]
+    },
+    {
+      "id": "algo-10.18",
+      "before": [
+        {
+          "file": "content/algo/ch10-c.js",
+          "deps": [
+            "algo-10.15"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-10.15"
+          ]
+        }
+      ],
+      "after": [
+        "algo-10.15",
+        "graph-1.5.2"
+      ]
+    },
+    {
+      "id": "algo-11.24",
+      "before": [
+        {
+          "file": "content/algo/ch11-d.js",
+          "deps": [
+            "algo-11.16",
+            "algo-11.10"
+          ]
+        },
+        {
+          "file": "content/algo/syllabus.js",
+          "deps": [
+            "algo-11.16",
+            "algo-11.10"
+          ]
+        }
+      ],
+      "after": [
+        "algo-11.16",
+        "algo-11.10",
+        "ladr-9.43"
+      ]
+    },
+    {
+      "id": "info-1.2",
+      "before": [
+        {
+          "file": "content/info/ch01.js",
+          "deps": [
+            "info-1.1",
+            "prob-1.6.1a"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.1"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.1",
+        "prob-1.6.1a",
+        "prob-2.4.1"
+      ]
+    },
+    {
+      "id": "info-1.3",
+      "before": [
+        {
+          "file": "content/info/ch01.js",
+          "deps": [
+            "info-1.2"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.2",
+        "pma-5.15"
+      ]
+    },
+    {
+      "id": "info-1.7",
+      "before": [
+        {
+          "file": "content/info/ch01-b.js",
+          "deps": [
+            "info-1.6"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.6"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.6",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "info-1.9",
+      "before": [
+        {
+          "file": "content/info/ch01-b.js",
+          "deps": [
+            "info-1.8"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.8"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.8",
+        "pma-1.20"
+      ]
+    },
+    {
+      "id": "info-1.10",
+      "before": [
+        {
+          "file": "content/info/ch01-b.js",
+          "deps": [
+            "info-1.2"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.2",
+        "pma-5.13"
+      ]
+    },
+    {
+      "id": "info-3.1",
+      "before": [
+        {
+          "file": "content/info/ch03.js",
+          "deps": [
+            "info-1.2"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.2",
+        "prob-2.2.3"
+      ]
+    },
+    {
+      "id": "info-3.6",
+      "before": [
+        {
+          "file": "content/info/ch03.js",
+          "deps": [
+            "info-1.2"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.2",
+        "comb-1.11",
+        "comb-1.12"
+      ]
+    },
+    {
+      "id": "info-3.10",
+      "before": [
+        {
+          "file": "content/info/ch03-b.js",
+          "deps": [
+            "info-3.8"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-3.8"
+          ]
+        }
+      ],
+      "after": [
+        "info-3.8",
+        "stat-6.4"
+      ]
+    },
+    {
+      "id": "info-3.11",
+      "before": [
+        {
+          "file": "content/info/ch03-b.js",
+          "deps": [
+            "info-1.7"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-1.7"
+          ]
+        }
+      ],
+      "after": [
+        "info-1.7",
+        "pma-3.14"
+      ]
+    },
+    {
+      "id": "info-3.13",
+      "before": [
+        {
+          "file": "content/info/ch03-b.js",
+          "deps": [
+            "info-3.12"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-3.12"
+          ]
+        }
+      ],
+      "after": [
+        "info-3.12",
+        "graph-1.2.1a"
+      ]
+    },
+    {
+      "id": "info-4.2",
+      "before": [
+        {
+          "file": "content/info/ch04.js",
+          "deps": [
+            "info-4.1"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-4.1"
+          ]
+        }
+      ],
+      "after": [
+        "info-4.1",
+        "comb-1.2"
+      ]
+    },
+    {
+      "id": "info-4.4",
+      "before": [
+        {
+          "file": "content/info/ch04.js",
+          "deps": [
+            "info-4.3",
+            "info-4.2"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-4.3",
+            "info-4.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-4.3",
+        "info-4.2",
+        "pma-3.20"
+      ]
+    },
+    {
+      "id": "info-4.14",
+      "before": [
+        {
+          "file": "content/info/ch04-c.js",
+          "deps": [
+            "info-4.3"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-4.3"
+          ]
+        }
+      ],
+      "after": [
+        "info-4.3",
+        "pma-3.26"
+      ]
+    },
+    {
+      "id": "info-4.16",
+      "before": [
+        {
+          "file": "content/info/ch04-c.js",
+          "deps": [
+            "toc-11.11",
+            "info-3.1"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "toc-11.11",
+            "info-3.1"
+          ]
+        }
+      ],
+      "after": [
+        "toc-11.11",
+        "info-3.1",
+        "prob-1.6.2"
+      ]
+    },
+    {
+      "id": "cg-1.1",
+      "before": [
+        {
+          "file": "content/cg/ch01.js",
+          "deps": []
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": []
+        }
+      ],
+      "after": [
+        "opt-2.1"
+      ]
+    },
+    {
+      "id": "cg-1.4",
+      "before": [
+        {
+          "file": "content/cg/ch01.js",
+          "deps": [
+            "cg-1.2"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "cg-1.2",
+        "pma-10.45"
+      ]
+    },
+    {
+      "id": "cg-1.5",
+      "before": [
+        {
+          "file": "content/cg/ch01.js",
+          "deps": [
+            "cg-1.3",
+            "top-10.1"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-1.3",
+            "top-10.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-1.3",
+        "top-10.1",
+        "graph-4.1.1"
+      ]
+    },
+    {
+      "id": "cg-1.6",
+      "before": [
+        {
+          "file": "content/cg/ch01.js",
+          "deps": [
+            "cg-1.1"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-1.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-1.1",
+        "ladr-2.28"
+      ]
+    },
+    {
+      "id": "cg-2.3",
+      "before": [
+        {
+          "file": "content/cg/ch02.js",
+          "deps": [
+            "cg-2.1"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.1",
+        "ladr-2.22"
+      ]
+    },
+    {
+      "id": "cg-2.9",
+      "before": [
+        {
+          "file": "content/cg/ch02-b.js",
+          "deps": [
+            "cg-2.5",
+            "cg-2.6"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.5",
+            "cg-2.6"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.5",
+        "cg-2.6",
+        "pma-3.26"
+      ]
+    },
+    {
+      "id": "cg-2.10",
+      "before": [
+        {
+          "file": "content/cg/ch02-b.js",
+          "deps": [
+            "cg-2.1"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.1",
+        "prob-2.1.1a",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "cg-2.11",
+      "before": [
+        {
+          "file": "content/cg/ch02-b.js",
+          "deps": [
+            "cg-2.6"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.6"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.6",
+        "graph-4.2.10",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "cg-2.12",
+      "before": [
+        {
+          "file": "content/cg/ch02-b.js",
+          "deps": [
+            "cg-2.11",
+            "top-10.9"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.11",
+            "top-10.9"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.11",
+        "top-10.9",
+        "graph-4.2.9",
+        "graph-1.2.1a"
+      ]
+    },
+    {
+      "id": "cg-3.3",
+      "before": [
+        {
+          "file": "content/cg/ch03.js",
+          "deps": []
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": []
+        }
+      ],
+      "after": [
+        "graph-4.2.9"
+      ]
+    },
+    {
+      "id": "cg-3.5",
+      "before": [
+        {
+          "file": "content/cg/ch03.js",
+          "deps": [
+            "cg-1.2",
+            "top-10.1"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-1.2",
+            "top-10.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-1.2",
+        "top-10.1",
+        "graph-1.5.1a"
+      ]
+    },
+    {
+      "id": "cg-3.6",
+      "before": [
+        {
+          "file": "content/cg/ch03-b.js",
+          "deps": [
+            "cg-3.5"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-3.5"
+          ]
+        }
+      ],
+      "after": [
+        "cg-3.5",
+        "graph-5.1.1a",
+        "comb-1.2"
+      ]
+    },
+    {
+      "id": "cg-3.9",
+      "before": [
+        {
+          "file": "content/cg/ch03-b.js",
+          "deps": [
+            "cg-3.8",
+            "algo-9.8"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-3.8",
+            "algo-9.8"
+          ]
+        }
+      ],
+      "after": [
+        "cg-3.8",
+        "algo-9.8",
+        "pma-1.37"
+      ]
+    },
+    {
+      "id": "cg-4.1",
+      "before": [
+        {
+          "file": "content/cg/ch04.js",
+          "deps": [
+            "cg-2.1",
+            "cg-2.4"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-2.1"
+          ]
+        }
+      ],
+      "after": [
+        "cg-2.1",
+        "cg-2.4",
+        "opt-2.3"
+      ]
+    },
+    {
+      "id": "cg-4.4",
+      "before": [
+        {
+          "file": "content/cg/ch04.js",
+          "deps": [
+            "cg-4.3"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-4.3"
+          ]
+        }
+      ],
+      "after": [
+        "cg-4.3",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "cg-4.7",
+      "before": [
+        {
+          "file": "content/cg/ch04-b.js",
+          "deps": [
+            "cg-4.6"
+          ]
+        },
+        {
+          "file": "content/cg/syllabus.js",
+          "deps": [
+            "cg-4.6"
+          ]
+        }
+      ],
+      "after": [
+        "cg-4.6",
+        "comb-1.6"
+      ]
+    },
+    {
+      "id": "ctrl-1.2",
+      "before": [
+        {
+          "file": "content/ctrl/ch01.js",
+          "deps": [
+            "ctrl-1.1"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-1.1"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-1.1",
+        "mech-9.6"
+      ]
+    },
+    {
+      "id": "ctrl-1.9",
+      "before": [
+        {
+          "file": "content/ctrl/ch01-b.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-1.4",
+        "ode-3.9"
+      ]
+    },
+    {
+      "id": "ctrl-1.11",
+      "before": [
+        {
+          "file": "content/ctrl/ch01-b.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-1.4",
+        "mech-1.6"
+      ]
+    },
+    {
+      "id": "ctrl-1.13",
+      "before": [
+        {
+          "file": "content/ctrl/ch01-b.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-1.4"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-1.4",
+        "ladr-9.46",
+        "comb-2.1"
+      ]
+    },
+    {
+      "id": "ctrl-2.5",
+      "before": [
+        {
+          "file": "content/ctrl/ch02.js",
+          "deps": [
+            "ctrl-2.1",
+            "circ-6.6"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-2.1",
+            "circ-6.6"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-2.1",
+        "circ-6.6",
+        "mech-4.7"
+      ]
+    },
+    {
+      "id": "ctrl-2.6",
+      "before": [
+        {
+          "file": "content/ctrl/ch02.js",
+          "deps": [
+            "ctrl-2.1"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-2.1"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-2.1",
+        "mech-6.3"
+      ]
+    },
+    {
+      "id": "ctrl-2.7",
+      "before": [
+        {
+          "file": "content/ctrl/ch02.js",
+          "deps": [
+            "ctrl-2.1",
+            "sig-9.6"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-2.1",
+            "sig-9.6"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-2.1",
+        "sig-9.6",
+        "ladr-9.51"
+      ]
+    },
+    {
+      "id": "ctrl-2.9",
+      "before": [
+        {
+          "file": "content/ctrl/ch02-b.js",
+          "deps": [
+            "ctrl-2.1",
+            "sig-7.8"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-2.1",
+            "sig-7.8"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-2.1",
+        "sig-7.8",
+        "ode-3.12"
+      ]
+    },
+    {
+      "id": "ctrl-2.10",
+      "before": [
+        {
+          "file": "content/ctrl/ch02-b.js",
+          "deps": [
+            "sig-5.3",
+            "ctrl-2.7"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "sig-5.3",
+            "ctrl-2.7"
+          ]
+        }
+      ],
+      "after": [
+        "sig-5.3",
+        "ctrl-2.7",
+        "pma-5.15"
+      ]
+    },
+    {
+      "id": "ctrl-2.13",
+      "before": [
+        {
+          "file": "content/ctrl/ch02-b.js",
+          "deps": [
+            "ctrl-2.7",
+            "sig-9.7"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-2.7"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-2.7",
+        "sig-9.7",
+        "ladr-7.68"
+      ]
+    },
+    {
+      "id": "ctrl-12.13",
+      "before": [
+        {
+          "file": "content/ctrl/ch12-papers.js",
+          "deps": [
+            "ctrl-12.1",
+            "ctrl-2.1",
+            "sig-13.7",
+            "stat-12.3"
+          ]
+        },
+        {
+          "file": "content/ctrl/syllabus.js",
+          "deps": [
+            "ctrl-12.1",
+            "ctrl-2.1",
+            "sig-13.7",
+            "stat-12.3"
+          ]
+        }
+      ],
+      "after": [
+        "ctrl-12.1",
+        "ctrl-2.1",
+        "sig-13.7",
+        "stat-12.3",
+        "prob-4.1.15"
+      ]
+    },
+    {
+      "id": "robot-1.2",
+      "before": [
+        {
+          "file": "content/robot/ch01.js",
+          "deps": [
+            "robot-1.1"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-1.1"
+          ]
+        }
+      ],
+      "after": [
+        "robot-1.1",
+        "ladr-3.21"
+      ]
+    },
+    {
+      "id": "robot-1.3",
+      "before": [
+        {
+          "file": "content/robot/ch01.js",
+          "deps": [
+            "robot-1.1",
+            "mech-6.1"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-1.1",
+            "mech-6.1"
+          ]
+        }
+      ],
+      "after": [
+        "robot-1.1",
+        "mech-6.1",
+        "top-2.14"
+      ]
+    },
+    {
+      "id": "robot-2.3",
+      "before": [
+        {
+          "file": "content/robot/ch02.js",
+          "deps": [
+            "robot-2.2",
+            "mech-10.1"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-2.2",
+            "mech-10.1"
+          ]
+        }
+      ],
+      "after": [
+        "robot-2.2",
+        "mech-10.1",
+        "ladr-8.46"
+      ]
+    },
+    {
+      "id": "robot-2.5",
+      "before": [
+        {
+          "file": "content/robot/ch02.js",
+          "deps": [
+            "robot-2.3"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-2.3"
+          ]
+        }
+      ],
+      "after": [
+        "robot-2.3",
+        "mech-10.20"
+      ]
+    },
+    {
+      "id": "robot-2.6",
+      "before": [
+        {
+          "file": "content/robot/ch02-b.js",
+          "deps": [
+            "robot-2.1"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-2.1"
+          ]
+        }
+      ],
+      "after": [
+        "robot-2.1",
+        "ladr-3.43"
+      ]
+    },
+    {
+      "id": "robot-2.10",
+      "before": [
+        {
+          "file": "content/robot/ch02-b.js",
+          "deps": [
+            "robot-2.7",
+            "mech-2.8"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-2.7",
+            "mech-2.8"
+          ]
+        }
+      ],
+      "after": [
+        "robot-2.7",
+        "mech-2.8",
+        "ladr-3.132"
+      ]
+    },
+    {
+      "id": "robot-3.5",
+      "before": [
+        {
+          "file": "content/robot/ch03-b.js",
+          "deps": [
+            "robot-1.2",
+            "robot-2.6"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-1.2",
+            "robot-2.6"
+          ]
+        }
+      ],
+      "after": [
+        "robot-1.2",
+        "robot-2.6",
+        "num-2.13"
+      ]
+    },
+    {
+      "id": "robot-3.6",
+      "before": [
+        {
+          "file": "content/robot/ch03-b.js",
+          "deps": [
+            "robot-3.5",
+            "robot-1.2"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-3.5"
+          ]
+        }
+      ],
+      "after": [
+        "robot-3.5",
+        "robot-1.2",
+        "pma-9.28"
+      ]
+    },
+    {
+      "id": "robot-4.6",
+      "before": [
+        {
+          "file": "content/robot/ch04-b.js",
+          "deps": [
+            "robot-4.5",
+            "robot-4.2"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-4.5",
+            "robot-4.2"
+          ]
+        }
+      ],
+      "after": [
+        "robot-4.5",
+        "robot-4.2",
+        "pma-1.35"
+      ]
+    },
+    {
+      "id": "robot-4.7",
+      "before": [
+        {
+          "file": "content/robot/ch04-b.js",
+          "deps": [
+            "robot-4.5"
+          ]
+        },
+        {
+          "file": "content/robot/syllabus.js",
+          "deps": [
+            "robot-4.5"
+          ]
+        }
+      ],
+      "after": [
+        "robot-4.5",
+        "ladr-7.111"
+      ]
+    },
+    {
+      "id": "imaging-1.4",
+      "before": [
+        {
+          "file": "content/imaging/ch01.js",
+          "deps": [
+            "imaging-1.2",
+            "imaging-1.3"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-1.2",
+            "imaging-1.3"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-1.2",
+        "imaging-1.3",
+        "fa-7.1"
+      ]
+    },
+    {
+      "id": "imaging-1.6",
+      "before": [
+        {
+          "file": "content/imaging/ch01-b.js",
+          "deps": []
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": []
+        }
+      ],
+      "after": [
+        "prob-2.2.1"
+      ]
+    },
+    {
+      "id": "imaging-2.9",
+      "before": [
+        {
+          "file": "content/imaging/ch02-b.js",
+          "deps": [
+            "imaging-2.4"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-2.4"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-2.4",
+        "ladr-9.50"
+      ]
+    },
+    {
+      "id": "imaging-3.6",
+      "before": [
+        {
+          "file": "content/imaging/ch03-b.js",
+          "deps": [
+            "imaging-3.3"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-3.3"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-3.3",
+        "fa-6.33"
+      ]
+    },
+    {
+      "id": "imaging-3.11",
+      "before": [
+        {
+          "file": "content/imaging/ch03-c.js",
+          "deps": [
+            "imaging-3.1"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-3.1"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-3.1",
+        "ladr-6.13"
+      ]
+    },
+    {
+      "id": "imaging-3.12",
+      "before": [
+        {
+          "file": "content/imaging/ch03-c.js",
+          "deps": [
+            "imaging-3.11"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-3.11"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-3.11",
+        "opt-1.6"
+      ]
+    },
+    {
+      "id": "imaging-4.6",
+      "before": [
+        {
+          "file": "content/imaging/ch04-b.js",
+          "deps": [
+            "kin-9.7",
+            "imaging-3.3"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-4.1"
+          ]
+        }
+      ],
+      "after": [
+        "kin-9.7",
+        "imaging-3.3",
+        "rel-4.15"
+      ]
+    },
+    {
+      "id": "imaging-4.8",
+      "before": [
+        {
+          "file": "content/imaging/ch04-c.js",
+          "deps": [
+            "imaging-1.7",
+            "imaging-3.11"
+          ]
+        },
+        {
+          "file": "content/imaging/syllabus.js",
+          "deps": [
+            "imaging-1.7",
+            "imaging-3.11"
+          ]
+        }
+      ],
+      "after": [
+        "imaging-1.7",
+        "imaging-3.11",
+        "stat-3.12"
+      ]
+    },
+    {
+      "id": "circ-1.10",
+      "before": [
+        {
+          "file": "content/circ/ch01-b.js",
+          "deps": [
+            "circ-1.3"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-1.3"
+          ]
+        }
+      ],
+      "after": [
+        "circ-1.3",
+        "graph-1.9.5"
+      ]
+    },
+    {
+      "id": "circ-2.7",
+      "before": [
+        {
+          "file": "content/circ/ch02-b.js",
+          "deps": [
+            "circ-2.1",
+            "circ-2.2"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.1",
+            "circ-2.2"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.1",
+        "circ-2.2",
+        "ladr-3.21"
+      ]
+    },
+    {
+      "id": "circ-2.8",
+      "before": [
+        {
+          "file": "content/circ/ch02-b.js",
+          "deps": [
+            "circ-2.5"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.5"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.5",
+        "ladr-7.9"
+      ]
+    },
+    {
+      "id": "circ-2.9",
+      "before": [
+        {
+          "file": "content/circ/ch02-b.js",
+          "deps": [
+            "circ-2.8"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.8"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.8",
+        "ladr-7.62"
+      ]
+    },
+    {
+      "id": "circ-2.12",
+      "before": [
+        {
+          "file": "content/circ/ch02-c.js",
+          "deps": [
+            "circ-2.8",
+            "circ-2.7"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.8",
+            "circ-2.7"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.8",
+        "circ-2.7",
+        "ladr-9.43"
+      ]
+    },
+    {
+      "id": "circ-2.13",
+      "before": [
+        {
+          "file": "content/circ/ch02-c.js",
+          "deps": [
+            "circ-2.12"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.12"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.12",
+        "opt-3.6"
+      ]
+    },
+    {
+      "id": "circ-2.14",
+      "before": [
+        {
+          "file": "content/circ/ch02-c.js",
+          "deps": [
+            "circ-2.5",
+            "circ-2.8",
+            "em-6.15"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.5",
+            "circ-2.8",
+            "em-6.15"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.5",
+        "circ-2.8",
+        "em-6.15",
+        "stoch-2.2"
+      ]
+    },
+    {
+      "id": "circ-3.6",
+      "before": [
+        {
+          "file": "content/circ/ch03.js",
+          "deps": [
+            "circ-2.1",
+            "circ-2.2",
+            "circ-2.7"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.1",
+            "circ-2.2",
+            "circ-2.7"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.1",
+        "circ-2.2",
+        "circ-2.7",
+        "ladr-7.6"
+      ]
+    },
+    {
+      "id": "circ-3.7",
+      "before": [
+        {
+          "file": "content/circ/ch03.js",
+          "deps": [
+            "circ-3.6",
+            "circ-2.8"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-3.6"
+          ]
+        }
+      ],
+      "after": [
+        "circ-3.6",
+        "circ-2.8",
+        "ladr-7.5"
+      ]
+    },
+    {
+      "id": "circ-3.9",
+      "before": [
+        {
+          "file": "content/circ/ch03-b.js",
+          "deps": [
+            "circ-3.2",
+            "circ-3.8"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-3.2",
+            "circ-3.8"
+          ]
+        }
+      ],
+      "after": [
+        "circ-3.2",
+        "circ-3.8",
+        "ladr-3.43"
+      ]
+    },
+    {
+      "id": "circ-3.11",
+      "before": [
+        {
+          "file": "content/circ/ch03-b.js",
+          "deps": [
+            "circ-2.6",
+            "circ-2.5"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-2.6",
+            "circ-2.5"
+          ]
+        }
+      ],
+      "after": [
+        "circ-2.6",
+        "circ-2.5",
+        "graph-4.6.1a"
+      ]
+    },
+    {
+      "id": "circ-4.2",
+      "before": [
+        {
+          "file": "content/circ/ch04.js",
+          "deps": [
+            "circ-4.1",
+            "circ-3.2"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-4.1",
+            "circ-3.2"
+          ]
+        }
+      ],
+      "after": [
+        "circ-4.1",
+        "circ-3.2",
+        "pma-4.23",
+        "num-2.4"
+      ]
+    },
+    {
+      "id": "circ-4.7",
+      "before": [
+        {
+          "file": "content/circ/ch04-b.js",
+          "deps": [
+            "circ-4.6",
+            "circ-4.3"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-4.6"
+          ]
+        }
+      ],
+      "after": [
+        "circ-4.6",
+        "circ-4.3",
+        "cm-4.10"
+      ]
+    },
+    {
+      "id": "circ-4.9",
+      "before": [
+        {
+          "file": "content/circ/ch04-b.js",
+          "deps": [
+            "circ-4.8"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-4.8"
+          ]
+        }
+      ],
+      "after": [
+        "circ-4.8",
+        "logic-2.5"
+      ]
+    },
+    {
+      "id": "circ-4.11",
+      "before": [
+        {
+          "file": "content/circ/ch04-b.js",
+          "deps": [
+            "circ-4.1"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-4.1"
+          ]
+        }
+      ],
+      "after": [
+        "circ-4.1",
+        "cm-4.6"
+      ]
+    },
+    {
+      "id": "circ-4.13",
+      "before": [
+        {
+          "file": "content/circ/ch04-b.js",
+          "deps": [
+            "circ-4.8",
+            "circ-4.6"
+          ]
+        },
+        {
+          "file": "content/circ/syllabus.js",
+          "deps": [
+            "circ-4.8",
+            "circ-4.6"
+          ]
+        }
+      ],
+      "after": [
+        "circ-4.8",
+        "circ-4.6",
+        "ode-3.9"
+      ]
+    },
+    {
+      "id": "dist-1.1",
+      "before": [
+        {
+          "file": "content/dist/ch01.js",
+          "deps": []
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": []
+        }
+      ],
+      "after": [
+        "graph-1.10.1a"
+      ]
+    },
+    {
+      "id": "dist-1.6",
+      "before": [
+        {
+          "file": "content/dist/ch01-b.js",
+          "deps": [
+            "dist-1.5"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-1.5"
+          ]
+        }
+      ],
+      "after": [
+        "dist-1.5",
+        "alg-2.1"
+      ]
+    },
+    {
+      "id": "dist-1.10",
+      "before": [
+        {
+          "file": "content/dist/ch01-b.js",
+          "deps": [
+            "tech-12.5",
+            "dist-1.1",
+            "dist-1.9"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "tech-12.5",
+            "dist-1.1",
+            "dist-1.9"
+          ]
+        }
+      ],
+      "after": [
+        "tech-12.5",
+        "dist-1.1",
+        "dist-1.9",
+        "alg-3.4"
+      ]
+    },
+    {
+      "id": "dist-2.1",
+      "before": [
+        {
+          "file": "content/dist/ch02.js",
+          "deps": [
+            "dist-1.1"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-1.1"
+          ]
+        }
+      ],
+      "after": [
+        "dist-1.1",
+        "graph-1.5.1",
+        "graph-1.5.2"
+      ]
+    },
+    {
+      "id": "dist-2.3",
+      "before": [
+        {
+          "file": "content/dist/ch02.js",
+          "deps": [
+            "dist-1.7"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-1.7"
+          ]
+        }
+      ],
+      "after": [
+        "dist-1.7",
+        "comb-2.1"
+      ]
+    },
+    {
+      "id": "dist-2.7",
+      "before": [
+        {
+          "file": "content/dist/ch02-b.js",
+          "deps": [
+            "dist-2.3"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-2.3"
+          ]
+        }
+      ],
+      "after": [
+        "dist-2.3",
+        "prob-2.1.1a",
+        "stoch-2.5"
+      ]
+    },
+    {
+      "id": "dist-2.8",
+      "before": [
+        {
+          "file": "content/dist/ch02-b.js",
+          "deps": [
+            "dist-1.2"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "dist-1.2",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "id": "dist-2.9",
+      "before": [
+        {
+          "file": "content/dist/ch02-b.js",
+          "deps": [
+            "dist-1.2"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-1.2"
+          ]
+        }
+      ],
+      "after": [
+        "dist-1.2",
+        "graph-5.1.1a"
+      ]
+    },
+    {
+      "id": "dist-3.2",
+      "before": [
+        {
+          "file": "content/dist/ch03.js",
+          "deps": [
+            "dist-3.1"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-3.1"
+          ]
+        }
+      ],
+      "after": [
+        "dist-3.1",
+        "pma-1.5"
+      ]
+    },
+    {
+      "id": "dist-4.4",
+      "before": [
+        {
+          "file": "content/dist/ch04.js",
+          "deps": [
+            "dist-4.1",
+            "dist-1.7"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-4.1",
+            "dist-1.7"
+          ]
+        }
+      ],
+      "after": [
+        "dist-4.1",
+        "dist-1.7",
+        "comb-1.2"
+      ]
+    },
+    {
+      "id": "dist-4.7",
+      "before": [
+        {
+          "file": "content/dist/ch04-b.js",
+          "deps": [
+            "dist-4.6"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-4.6"
+          ]
+        }
+      ],
+      "after": [
+        "dist-4.6",
+        "prob-2.1.1a"
+      ]
+    },
+    {
+      "id": "dist-4.10",
+      "before": [
+        {
+          "file": "content/dist/ch04-c.js",
+          "deps": [
+            "dist-4.8"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-4.8"
+          ]
+        }
+      ],
+      "after": [
+        "dist-4.8",
+        "comb-1.2"
+      ]
+    },
+    {
+      "id": "dist-4.11",
+      "before": [
+        {
+          "file": "content/dist/ch04-c.js",
+          "deps": [
+            "dist-4.8",
+            "dist-1.3"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-4.8",
+            "dist-1.3"
+          ]
+        }
+      ],
+      "after": [
+        "dist-4.8",
+        "dist-1.3",
+        "comb-1.2"
+      ]
+    },
+    {
+      "id": "info-2.13",
+      "before": [
+        {
+          "file": "content/info/ch02-b.js",
+          "deps": [
+            "info-2.2",
+            "info-2.10"
+          ]
+        },
+        {
+          "file": "content/info/syllabus.js",
+          "deps": [
+            "info-2.2"
+          ]
+        }
+      ],
+      "after": [
+        "info-2.2",
+        "info-2.10",
+        "pma-5.11"
+      ]
+    },
+    {
+      "id": "dist-2.4",
+      "before": [
+        {
+          "file": "content/dist/ch02.js",
+          "deps": [
+            "dist-2.3"
+          ]
+        },
+        {
+          "file": "content/dist/syllabus.js",
+          "deps": [
+            "dist-2.3"
+          ]
+        }
+      ],
+      "after": [
+        "dist-2.3",
+        "prob-1.6.1"
+      ]
+    }
+  ],
+  "changedFiles": [
+    {
+      "file": "content/algo/ch02-b.js",
+      "beforeSha256": "87e6418f86edb902bb391061f76cd49b847323fe2b6dd5945fef55fb1779ea09",
+      "afterSha256": "8e918f9fde5103d4c9e83feb1fc8ca81f02e1a58eea5ca3efb36551e6011d1cd"
+    },
+    {
+      "file": "content/algo/syllabus.js",
+      "beforeSha256": "48356716ceccb698b9144272a5f02237a426407a91eb2e3b81851ae8235d2190",
+      "afterSha256": "fc2a78b1da1a86e88c917128a4c5742275f42e817c0cc87b80eff049abf82829"
+    },
+    {
+      "file": "content/algo/ch03.js",
+      "beforeSha256": "ec9f04202b4d635c68a7cab3f020b955353d65624e8f794116f8d124ab12e4db",
+      "afterSha256": "fa76918f9044e7d8532dad4d2ec7b7e1416978bba39af8cbc78c1b790b9c14dd"
+    },
+    {
+      "file": "content/algo/ch03-b.js",
+      "beforeSha256": "054b8acbea4ef695269ee91a87d834229e22dd1c556bc743ead3eee6e25c66ea",
+      "afterSha256": "b2963da89315232e87843f6db887bade654a44b53b20758f9963d5d2711f93c4"
+    },
+    {
+      "file": "content/algo/ch04.js",
+      "beforeSha256": "a5afb1bf982c48f0a0bd6d4191e744cc57c0e152cfba513a35d607475b84d8fe",
+      "afterSha256": "1617b5d3bc6c3e349b8f6ea24685a1a225914421f92853d620ed5b73886c4eb6"
+    },
+    {
+      "file": "content/algo/ch05-b.js",
+      "beforeSha256": "d556d731ae5c09f04dd05c83aec5b259a86db06d0d5fe75943145e3769ddaaa7",
+      "afterSha256": "d5e633a7ef30d864a58167ed5fc0ff6a6cee86a12b6a0ff2d62f1375cb6aed20"
+    },
+    {
+      "file": "content/algo/ch07-b.js",
+      "beforeSha256": "42b4678ad0a493ad4c218f85dd3f25f510ef8f0197d7eec0feefa52cfa585fc7",
+      "afterSha256": "23db997868a09312df123ddea365ff9ac22cc197ffa5321f08b38497fa3e7ab7"
+    },
+    {
+      "file": "content/algo/ch08-b.js",
+      "beforeSha256": "8634c67eb961aa9dffb75324d4202ca2f2d579bf34c5b97e00c223a7ed213109",
+      "afterSha256": "aa307f1b8f2970e1bfd1ea23c86a000c693e96057528966d044dadf166691561"
+    },
+    {
+      "file": "content/algo/ch10-c.js",
+      "beforeSha256": "b0fede836dc0dceba376d931b552c3f383247f398c24066592a84637888dc2da",
+      "afterSha256": "83c912448ca13a3a024904c6f825e0e3b709a7db38257fbeddbd5aa186f8d9d7"
+    },
+    {
+      "file": "content/algo/ch11-d.js",
+      "beforeSha256": "34c801948d70c0dcd44ae66ae278eaf4442dea53094b87799e760e70ef30d8b0",
+      "afterSha256": "f382d469573368a4d4cb0c9fd8f0fdc34fbcc802d5e16112d7434efd222c32a2"
+    },
+    {
+      "file": "content/info/ch01.js",
+      "beforeSha256": "ed03788f9a886216d0471f5a35029597451e1f87ed6d403938dcab02957b3933",
+      "afterSha256": "be5be0be4ef1954b33a670c20121402efbac42b71ad78357269faefbeecfac5b"
+    },
+    {
+      "file": "content/info/syllabus.js",
+      "beforeSha256": "b87796a79329b8c899fece1c7099b3e42b8177a3a270c8f3029085fadfd1ed3c",
+      "afterSha256": "d1c018b6f7c08e579dec684eb9d80c2d3b807d4e3d5a8ab104c55dfc422bd2b6"
+    },
+    {
+      "file": "content/info/ch01-b.js",
+      "beforeSha256": "edc9cb4870764c79b78e6cdaaafdfcff868076e92717540ae712748aca23f1df",
+      "afterSha256": "6b4eefda5092461cee3f914c069082bf6998462198d2ecb9426b6536892af619"
+    },
+    {
+      "file": "content/info/ch03.js",
+      "beforeSha256": "21d3cd5d87466f0880e62ff171be96db65e71198aa02cd90fc60ba94f8bb2e06",
+      "afterSha256": "f62a8987efb8f25f24f053a8585b8ba5fb8a157bf737995da64ab7afaf6e8940"
+    },
+    {
+      "file": "content/info/ch03-b.js",
+      "beforeSha256": "9a77dbb7cc1c5264893bb5b7febdce3c689447740040cba99ba1b083420e1dd4",
+      "afterSha256": "a7d5c0acd7ce41877b947ee1e3fbf4846d0f7aa23354a982741f5f379096597d"
+    },
+    {
+      "file": "content/info/ch04.js",
+      "beforeSha256": "0f1adf41dea3d704dc747f012bdc60478ec3f5e26cc9881ce700ff845f19f964",
+      "afterSha256": "19f54642ed256918cfc705da92e976f00f1237fc553ce6d1f6f1b8ff88d792a0"
+    },
+    {
+      "file": "content/info/ch04-c.js",
+      "beforeSha256": "4f719ec51b937c4bd13b3640f23d4176604f5d4e45b6b8180834f5b1d8913c97",
+      "afterSha256": "36cf1f12e2d5bb173753d8bd1172ce62e58e74b5ac465dc004ce89bf4f9fac70"
+    },
+    {
+      "file": "content/cg/ch01.js",
+      "beforeSha256": "1cc9af95845bc4abdb4440a64fd20fc263b546b7df2fc52cece869911ad5a576",
+      "afterSha256": "c46598c9d32656c275aed1068ffda6e53dbc2b55ba5076b279ebcbc2d7ce831e"
+    },
+    {
+      "file": "content/cg/syllabus.js",
+      "beforeSha256": "fee95b23dd5e9cf14590def5f4cdc1b608ee24229ee444ba88caac1d0e2e7260",
+      "afterSha256": "842bd6fb1444dc6f589f138f9c69027eb89bc71b4257e1520888998977e3d7e2"
+    },
+    {
+      "file": "content/cg/ch02.js",
+      "beforeSha256": "e998f0ae9a10e47175b4bc6171053df553353399eda6a88d14db29f06c180420",
+      "afterSha256": "7f0f2b84adbf0efea846681b2c59184af23f51c2dba08e884f011d3f9752989e"
+    },
+    {
+      "file": "content/cg/ch02-b.js",
+      "beforeSha256": "ecda2f187a7c44ca75e962ff57f8c801fc3580247372a863e228a94fa58687ad",
+      "afterSha256": "8899eeea82d2448c4293fca8b508d5b7cf3076fa7e1c324b6ae11d98a944ac55"
+    },
+    {
+      "file": "content/cg/ch03.js",
+      "beforeSha256": "3ec6c01dd166e9928934f5f004a176140f19701257ad273fb6446b9a7ee08734",
+      "afterSha256": "7a943d78424da704a2bcc2164607888542461f7f8b81c7f517403595797e58ae"
+    },
+    {
+      "file": "content/cg/ch03-b.js",
+      "beforeSha256": "c7bcf35676f60accaa3f13c2845997d047514fba60b03d52e6316d7de35c3660",
+      "afterSha256": "8d8f32a8eb949a123ef96dfcb554464220bee9e6146a55608aa1380bd907018c"
+    },
+    {
+      "file": "content/cg/ch04.js",
+      "beforeSha256": "cd53efd57a9b21fff658a8b07b7865adebc4d9547222e2c28d927ec3f503ddf9",
+      "afterSha256": "66af2e37007316a8a34a8da755343e2fa8e56c3c7fdab92d8e023164f50cb23d"
+    },
+    {
+      "file": "content/cg/ch04-b.js",
+      "beforeSha256": "a03146c01b2b3491c2708b3ee6d3a7915d402926848c06da5699ef3c72b5b71d",
+      "afterSha256": "7c39978ff7fba4b778774799d2d3ad3b8d261794b4d959c006ffa438b6f8b083"
+    },
+    {
+      "file": "content/ctrl/ch01.js",
+      "beforeSha256": "afeaf663d4bd1e619fbfba459bea4ac91d493f3e607dcae8e12cdacf37c99198",
+      "afterSha256": "97cd1ae5943fb5ad50795ed74b00f6c13b55f4319fe7f11866203e437b1fc931"
+    },
+    {
+      "file": "content/ctrl/syllabus.js",
+      "beforeSha256": "37193c5000b0c671803ee64e2985fd7ac60b10cf999d96ff8f3d57ab99f2ff85",
+      "afterSha256": "b962020175e3560da1d5683ee5b4457e8ebee3a350533f17c031b139945ed904"
+    },
+    {
+      "file": "content/ctrl/ch01-b.js",
+      "beforeSha256": "1f315ad77cd1e97eaf9732d47c2555469c5bbbeea522d2a02f2834508d02ffe1",
+      "afterSha256": "671ff15e9f42e49705a5acda800d2a880c66f7b6dee80d06c910b8450482e380"
+    },
+    {
+      "file": "content/ctrl/ch02.js",
+      "beforeSha256": "27a453096b705836d22a6b061f8b5ce9d5f7b0e18e63259c5fba5b28eb539840",
+      "afterSha256": "31abc4b61ff692c295a6219c04c43d64b90ce9455c577b5ce7a9748244bba539"
+    },
+    {
+      "file": "content/ctrl/ch02-b.js",
+      "beforeSha256": "18762a176c57ed1ccae872360d326e76f87083848690f32c092b59d0d23c2c19",
+      "afterSha256": "efd566444fe5c524a93b669359a149b1d38daa204b0aa9d6c31773fad497b422"
+    },
+    {
+      "file": "content/ctrl/ch12-papers.js",
+      "beforeSha256": "b141ae792b4491380c527dc18b33bea0c741cb4dbd04f19ecd680b4c3844e5e6",
+      "afterSha256": "8e6ee7ce93bb22173e5631c2b7b2f3b19f90b2c24849a352088b0dd4de01313f"
+    },
+    {
+      "file": "content/robot/ch01.js",
+      "beforeSha256": "d0efeffac107a3ebcdc96e1a348204f06ad1364903e478c636c93ad73c5b6011",
+      "afterSha256": "0c1bb9e30e6863ac442e705d4e38b801952810ab8aa4b4635d240ae71d79f04a"
+    },
+    {
+      "file": "content/robot/syllabus.js",
+      "beforeSha256": "cbfa7b1549714229b4adc1763e1998721d705ea5f720364a5016d63748b547b4",
+      "afterSha256": "f32125324c6dd995f34e99a7cc0d23a4f1b8b1bb416cc4425810ae6283226155"
+    },
+    {
+      "file": "content/robot/ch02.js",
+      "beforeSha256": "76d0d73aab7d665fcea18c455c381ad936bacca3ea7401b99431bfa2f6824d18",
+      "afterSha256": "0d25257b587393811d031f519fcb0237b8b9cbff9b47267aabd83b61786d4d37"
+    },
+    {
+      "file": "content/robot/ch02-b.js",
+      "beforeSha256": "43e29e3789bf283812ffdcaedd91ec5ed3d0faa30b9d2a02b49d339ed4a7d490",
+      "afterSha256": "5cf1fc241b8ffa23b3a71b031cb57d9d79514dc0666756149e01111cedbd8a86"
+    },
+    {
+      "file": "content/robot/ch03-b.js",
+      "beforeSha256": "0afb2423ec7a9df8659628eabed1559d4480ebcad2bc3de6f2cf067827daf8ef",
+      "afterSha256": "79daa6b5c38b3a624cb4930946c87410fc0a23d8416aef875990c4d9221d086e"
+    },
+    {
+      "file": "content/robot/ch04-b.js",
+      "beforeSha256": "84288bf8cfc59153de72b6bcb5ea804986bd069091f4730fc02d6811f2ccbdba",
+      "afterSha256": "765a2138cc70239dcb20f7b477002963900b22ca9b72c4ebfba844132a39f611"
+    },
+    {
+      "file": "content/imaging/ch01.js",
+      "beforeSha256": "ac5a4df618eadfe4235ed50b6a14e8f916d95e4bf3981c0f9e507c51cb14ffb5",
+      "afterSha256": "d04046efe0fb96ea3ca9256673ac6592de3d5d5015b3d6eee77d2d653cd6e3a1"
+    },
+    {
+      "file": "content/imaging/syllabus.js",
+      "beforeSha256": "c5eeb3fb01c546cab9901976b90f9b24860d59ab4eacbcffa72d1226e2861e8f",
+      "afterSha256": "d5f1cfbbc067585696388b27f18f94f5d7c73fc7af9503dd09a489beb6a2208d"
+    },
+    {
+      "file": "content/imaging/ch01-b.js",
+      "beforeSha256": "c15783244eba109db7452124cc951c25a212b27a78ebb98c890f1c656d0ebe26",
+      "afterSha256": "d9fe2b61eb46a73248e21affa48f96497d36187e7d82c49e1d1a4f92493fe68e"
+    },
+    {
+      "file": "content/imaging/ch02-b.js",
+      "beforeSha256": "eaf1f70d8ebc4291ea8dcd6efbb2c668283131675273452889b113a80f8ea756",
+      "afterSha256": "2115ff7368cdb860e376fbf27871ef4427866dfaffd06931a6c884f31cf408f2"
+    },
+    {
+      "file": "content/imaging/ch03-b.js",
+      "beforeSha256": "29f20053a59cde01d30d0cd4612987fb85f34b3b841f6235b50b3d1369390b85",
+      "afterSha256": "34f21d0b5b8361affa98140604db17d582cf5bf8eb4e739bd44851de34108fa5"
+    },
+    {
+      "file": "content/imaging/ch03-c.js",
+      "beforeSha256": "4d7e98aada7efd77dde68a605f7447ca4455e554a22f168ddbe4b3bd0b298874",
+      "afterSha256": "be33ac7aac6c515205b39bd4efd4fd00453d5284043485ff73920468fd516c96"
+    },
+    {
+      "file": "content/imaging/ch04-b.js",
+      "beforeSha256": "704921dae30d6f2fab7d9f201e92a00ec020ad54deab3fbd56f9ae3beafc6d8e",
+      "afterSha256": "7c3ce7d3413b057d250cc33fbc4e288031452d753b8856cd91c4e2eac5ad9834"
+    },
+    {
+      "file": "content/imaging/ch04-c.js",
+      "beforeSha256": "31ae8748b7ef430d10e57197040b52cee7334ad1f56240255eb7ea8e4a787065",
+      "afterSha256": "949a19fa1017a3e2d4caf4bd7901d7f1ac033b51e7ab93dde6939af43ced5397"
+    },
+    {
+      "file": "content/circ/ch01-b.js",
+      "beforeSha256": "80accd3f2181f3ae12bd948094a00e1857d0c5d9d37941ec2e389cf16cc45ae4",
+      "afterSha256": "f0094ba63570dc7d0e44a65083c0b6a148597a671ba7e6fa8c40823d8be7abc4"
+    },
+    {
+      "file": "content/circ/syllabus.js",
+      "beforeSha256": "353a4c248bb94eb00b390726b4f774575de2e4866362b751e365eefb64b51afd",
+      "afterSha256": "22e3a52bead97b85635fd6429f74807bedbccf06ad7510b40e88bcf099c41f66"
+    },
+    {
+      "file": "content/circ/ch02-b.js",
+      "beforeSha256": "986e05c86010647489d4ac00de381abb574345e7696f5832ab79c20830776768",
+      "afterSha256": "fb1de0d58b53b8477fea7024a93b52ac838417ad70ea751161390b05ac4eb0bf"
+    },
+    {
+      "file": "content/circ/ch02-c.js",
+      "beforeSha256": "180b0432f4d74cb993c1a64d251233eaf011267aa473c1b8b1812850b049b14d",
+      "afterSha256": "52be8346f3ec5ed880b1a8b18dd9c21f596a7ca104a4c43b317410cdd928860a"
+    },
+    {
+      "file": "content/circ/ch03.js",
+      "beforeSha256": "d6824d8acb55e6a99b88e926269487401e0d68e60e7da356146c7c83cbbb737b",
+      "afterSha256": "2ca9d0378441d84fe8f597747ef3000e7604b4d816026afc1461d5904af6b911"
+    },
+    {
+      "file": "content/circ/ch03-b.js",
+      "beforeSha256": "a7bb3500971ce54ea4a16fc008dce1f84d25b363bcd36732f7aaf16245ac4f79",
+      "afterSha256": "7c0c29342496d08de903e2a22f9601f39bc64d2e5971cd2d7051ec10026bee7c"
+    },
+    {
+      "file": "content/circ/ch04.js",
+      "beforeSha256": "941dcf89466dec7aa97f177de8b98ad884bd1da14afea6ee652f3a6e53b8f429",
+      "afterSha256": "98f8795eaea43fdae3fb2368768a27b1ebbe8a7078ea6d66d2cad1e035dba8fe"
+    },
+    {
+      "file": "content/circ/ch04-b.js",
+      "beforeSha256": "d83216d186157696d86c0a03616706520df2cc1fcb2b3ce3951fd4ebec0cb301",
+      "afterSha256": "3859d9902969f508828916985693407333b377042e496aed58e59ed0833f1936"
+    },
+    {
+      "file": "content/dist/ch01.js",
+      "beforeSha256": "b44ce19a733ca3aedfa05cdc91725c29568f7ae82d53febff4a2d4e016c8bf98",
+      "afterSha256": "b63b2bbd94a55157347b44dd95ab545ee2c583e4a87262d792dc73ce647c546f"
+    },
+    {
+      "file": "content/dist/syllabus.js",
+      "beforeSha256": "48e4e9f3559576763cd950f1244814bfd1c00e3a384ae1b3817d2ba9ae14b16e",
+      "afterSha256": "56d84db4236a533e45ffeeb18878210e5b2555f65ef18dc550bf379ec336d418"
+    },
+    {
+      "file": "content/dist/ch01-b.js",
+      "beforeSha256": "ea214da044805c2a94c38089d732321bd2bf0d6eb0dc95871608470fad7e983b",
+      "afterSha256": "3d668ad19da49338cb8a0f2f5d27631bd658add5c071417b97e4d124d9467ddd"
+    },
+    {
+      "file": "content/dist/ch02.js",
+      "beforeSha256": "aff41602d637f35520b151429a1246604b44e2158835fbb357ff3354199332ad",
+      "afterSha256": "8f05a7a0480c34cd2c64d08544e07256ba51431f050d8d1329e46eee91500893"
+    },
+    {
+      "file": "content/dist/ch02-b.js",
+      "beforeSha256": "06018c7395ef0ceb799aebd80ba77efe4d2a0d0f9b091121d1f046f20e307427",
+      "afterSha256": "30963bb956ea47fa488351ba85743cc4891b38abc43dafedb4d038aba5b184e3"
+    },
+    {
+      "file": "content/dist/ch03.js",
+      "beforeSha256": "cc045b1d23bfb1d26e4b25f7422e976d98152021eee6c10f190283ac56c43498",
+      "afterSha256": "7a8ada247176a33c9fd7ac8c05acf84ce15ad1140edf73fb834ac5a71a6d8e22"
+    },
+    {
+      "file": "content/dist/ch04.js",
+      "beforeSha256": "e8633add6bda7b3b04ce9c4d03876708cd75a43446097ad4108601f58a67550e",
+      "afterSha256": "b738c1fd14685e8e7640ca75cf42dd189e76daf5372c91f229ac3f9c9c5fc33a"
+    },
+    {
+      "file": "content/dist/ch04-b.js",
+      "beforeSha256": "de7859cd14ff66774aee7c6b2c22b805bb7dbfa8c00a8e33a20301af3cbd9cda",
+      "afterSha256": "5e33cc7f489416fde80f74f8095e96a1ac53c592ad8b504c75a3cd0ae4b3a1c8"
+    },
+    {
+      "file": "content/dist/ch04-c.js",
+      "beforeSha256": "3d28de573966fe4a9e3cee891e6f3f5211a4ede3a960fa9643a9a1471b24d42f",
+      "afterSha256": "2493614b64af1bbece578ddbeba8b7cd038387cd53e78524bf2a0b5a4e96212e"
+    },
+    {
+      "file": "content/info/ch02-b.js",
+      "beforeSha256": "46025872bdeb71f02122f2ea0111b01060db36ea89cb668636742e9fe0cf374c",
+      "afterSha256": "3fd4b0bebc14c5dae56b310b9c545107b1428f665cf016d49858a7cbe0e983b0"
+    }
+  ],
+  "validation": {
+    "scopedStaticCommand": "node scripts/check.mjs algo info dist cg ctrl circ robot imaging --static --fail-on-warnings",
+    "writtenVisualizations": 523,
+    "errors": 0,
+    "warnings": 0,
+    "newTargetsAllWritten": true,
+    "newTargetsAllDifferentField": true,
+    "allAdditionsPresent": true,
+    "modifiedItemsSyllabusExactMirror": true,
+    "globalWrittenAndPlannedDependencyCycles": 0,
+    "dependencyOnlyFileDiff": true,
+    "metadataProof": "At completion of the dependency-only batch (including the FA7.1 peer target correction), normalizing deps arrays makes all 63 file snapshots byte-identical. Separately recorded source corrections following peer review are outside that metadata-only comparison.",
+    "browserRuns": 0,
+    "informationalPlannedEdgesPreserved": 56
+  },
+  "peerReviewFollowup": {
+    "reviewer": "review_energy",
+    "report": "docs/verification/cross-field-peer-review-energy.json",
+    "metadataCorrection": {
+      "from": "imaging-1.4",
+      "oldTarget": "fa-7.2",
+      "target": "fa-7.1",
+      "reason": "The whole-plane sinusoidal test signal is not L1, whereas the PSF is; the Fourier transform of the PSF itself defines the OTF."
+    },
+    "separateSourceCorrections": [
+      "dist-2.7 unique-maximum example: one K and all other draws lower",
+      "robot-3.6: singular Jacobian removes IFT smooth-inverse guarantee, not necessarily uniqueness",
+      "imaging-4.8: Poisson EM initialization/support/zero-bin and convergence follow-up active"
+    ]
+  }
+}

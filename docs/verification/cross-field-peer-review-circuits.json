@@ -1,0 +1,1082 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "reviewer": "review_circuits",
+  "reviewedArtifact": "docs/verification/cross-field-energy.json",
+  "scope": [
+    "waves",
+    "thermo",
+    "cm",
+    "qinfo",
+    "rel",
+    "fluid",
+    "xtal",
+    "mat",
+    "energy",
+    "solid",
+    "aero"
+  ],
+  "method": "Independent reading of actual current source statement, idea and scope and actual target statement, rather than accepting the original ledger labels. Deliberately sampled assumptions, narrower-domain theorems, same-name results, and potential transitive/analogy padding. No heavy browser work.",
+  "summary": {
+    "pairsReviewed": 41,
+    "collectionsReviewed": 11,
+    "acceptedOrQualified": 35,
+    "agreedMetadataRefinements": 6,
+    "byCollection": {
+      "waves": {
+        "pairsReviewed": 4,
+        "accepted": 4,
+        "metadataRefinements": 0
+      },
+      "thermo": {
+        "pairsReviewed": 3,
+        "accepted": 3,
+        "metadataRefinements": 0
+      },
+      "cm": {
+        "pairsReviewed": 4,
+        "accepted": 3,
+        "metadataRefinements": 1
+      },
+      "qinfo": {
+        "pairsReviewed": 4,
+        "accepted": 4,
+        "metadataRefinements": 0
+      },
+      "rel": {
+        "pairsReviewed": 3,
+        "accepted": 3,
+        "metadataRefinements": 0
+      },
+      "fluid": {
+        "pairsReviewed": 3,
+        "accepted": 2,
+        "metadataRefinements": 1
+      },
+      "xtal": {
+        "pairsReviewed": 5,
+        "accepted": 5,
+        "metadataRefinements": 0
+      },
+      "mat": {
+        "pairsReviewed": 4,
+        "accepted": 3,
+        "metadataRefinements": 1
+      },
+      "energy": {
+        "pairsReviewed": 3,
+        "accepted": 3,
+        "metadataRefinements": 0
+      },
+      "solid": {
+        "pairsReviewed": 5,
+        "accepted": 2,
+        "metadataRefinements": 3
+      },
+      "aero": {
+        "pairsReviewed": 3,
+        "accepted": 3,
+        "metadataRefinements": 0
+      }
+    }
+  },
+  "reviews": [
+    {
+      "source": "waves-1.6",
+      "target": "pde-2.5",
+      "collection": "waves",
+      "sourceFile": "content/waves/ch01.js",
+      "targetFile": "content/pde/ch02-b.js",
+      "sourceName": "Superposition of linear waves",
+      "targetName": "Uniqueness by the energy method",
+      "status": "accepted",
+      "assessment": "The uniqueness step is explicitly named. The target covers classical string solutions with common homogeneous ends, or decaying whole-line data. This is a supporting uniqueness result for that example; linear superposition itself follows algebraically and does not need uniqueness.",
+      "sourceRead": {
+        "statement": "If $u_1$ and $u_2$ solve a **linear** homogeneous wave equation, such as $u_{tt}=c^2u_{xx}$, then so does every combination $a u_1+b u_2$. Physically: two waves that meet simply add, pass through each other, and emerge exactly as they would have been without the encounter. A solution for compound initial data is the sum of the solutions for the parts.\n\nThe principle holds exactly only for linear media. For a medium whose restoring force is nonlinear, e.g. a string whose stiffness grows with stretch, $u_{tt}=\\partial_x\\big[(c^2+\\beta u_x^2)\\,u_x\\big]$, the sum of two solutions is not a solution. Colliding waves then interact: they distort each other and generate new frequencies. Real strings, air and light are linear to excellent accuracy at small amplitudes.",
+        "idea": "The wave operator $L u=u_{tt}-c^2u_{xx}$ is linear: $L(au_1+bu_2)=aLu_1+bLu_2$, and initial data add in the same way, so by uniqueness (pde-2.5) the solution for $u_1(0)+u_2(0)$ is $u_1+u_2$. D'Alembert's formula (1.3) makes this concrete: the right-moving parts add, the left-moving parts add, and each moves at $c$ regardless of the other. With a term like $\\beta u_x^2u_x$ the operator is no longer linear: the cross terms $3\\beta(u_{1x}^2u_{2x}+u_{1x}u_{2x}^2)$ appear only where both waves are present, and they are the interaction.",
+        "scope": "Exact for linear wave equations. For real media it holds while the amplitude is small enough that the restoring force is proportional to the displacement (small slopes for strings, small pressure changes for sound, moderate fields for light in matter)."
+      },
+      "targetRead": {
+        "statement": "Let $\\ell>0$. The initial–boundary value problem $u_{tt}=c^2u_{xx}$ on $(0,\\ell)\\times(0,T)$, $u(0,t)=u(\\ell,t)=0$, $u(x,0)=\\varphi(x)$, $u_t(x,0)=\\psi(x)$ has at most one $C^2$ solution (the same holds on $\\R$ for solutions with decaying data, and with Neumann ends). More precisely, the energy of the difference $D=u_1-u_2$ of two solutions is constant, $E_D(t)=E_D(0)$, so two solutions with the same data coincide."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "u_2)=aLu_1+bLu_2$, and initial data add in the same way, so by uniqueness (pde-2.5) the solution for $u_1(0)+u_2(0)$ is $u_1+u_2$. D'Alembert's formula (1.3) makes this concrete: the right-moving parts add, the left-moving parts add, and each moves at $c$ regardl"
+      }
+    },
+    {
+      "source": "waves-2.1",
+      "target": "pde-4.2",
+      "collection": "waves",
+      "sourceFile": "content/waves/ch02.js",
+      "targetFile": "content/pde/ch04.js",
+      "sourceName": "Standing waves on a fixed string",
+      "targetName": "Normal modes of a vibrating string",
+      "status": "accepted",
+      "assessment": "The target supplies precisely the fixed-end sine eigenmodes and permitted frequencies that the physical standing-wave statement uses. This is an exact specialization to one normal mode, despite the overlapping names; it is not an analogy to unrelated oscillations.",
+      "sourceRead": {
+        "statement": "Two harmonic waves of equal amplitude $A$ and wavelength $\\lambda$ running in opposite directions add up to\n$$A\\sin(kx-\\omega t)+A\\sin(kx+\\omega t)=2A\\sin(kx)\\cos(\\omega t),\\qquad \\omega=ck,$$\na **standing wave**: every point of the string oscillates in time as $\\cos\\omega t$, with an amplitude $2A\\,|\\sin kx|$ that depends on position. The points where $\\sin kx=0$ never move (**nodes**), half a wavelength apart. If the string is also held fixed at $x=0$ and $x=L$, the pattern must vanish at both ends, which allows only\n$$kL=n\\pi\\quad\\Longleftrightarrow\\quad \\lambda_n=\\frac{2L}{n},\\qquad f_n=\\frac{n\\,c}{2L},\\qquad n=1,2,3,\\dots$$\nAny other wavelength can exist on an infinitely long string but not between two fixed ends.",
+        "idea": "Superposition (1.6) lets the right-moving and left-moving waves of d'Alembert's solution (1.3) coexist, and a sum of $\\sin(kx-\\omega t)$ and $\\sin(kx+\\omega t)$ factorises by the product-to-sum identity into a function of $x$ times a function of $t$. A fixed end forces the displacement to be zero at every instant, which is possible for the standing pattern only if a node falls exactly on it; with both ends fixed the node spacing $\\lambda/2$ has to fit a whole number of times into $L$. Physically, the wave reflects off each fixed end with inverted sign, and the reflected waves only reinforce each other when a round trip $2L$ is a whole number of wavelengths.",
+        "scope": "Ideal non-dispersive string with fixed ends and small slopes; real strings have stiffness and damping, which shift the frequencies slightly and make the nodes imperfect."
+      },
+      "targetRead": {
+        "statement": "An ideal, uniform string obeying the linear wave equation, of length $\\ell$ fixed at both ends and released from rest in the shape $\\varphi$ moves as $u(x,t)=\\sum_{n\\ge1}b_n\\sin(n\\pi x/\\ell)\\cos(n\\pi ct/\\ell)$ with $b_n=\\frac2\\ell\\int_0^\\ell\\varphi(x)\\sin(n\\pi x/\\ell)\\,dx$. It is a superposition of *normal modes*: standing waves with nodes at $x=j\\ell/n$ vibrating at the frequencies $f_n=nc/(2\\ell)$, integer multiples of the fundamental. For a string plucked into a triangle with peak height $h$ at $x=p\\ell$, $b_n=\\dfrac{2h}{n^2\\pi^2p(1-p)}\\sin(n\\pi p)$. The $n$-th harmonic is absent when $np$ is an integer, and an ideal displacement pickup placed at a node of the $n$-th mode does not register it. Smooth compatible initial data give a classical solution; the triangular pluck gives an energy solution, with kinks propagating along characteristics."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": " can exist on an infinitely long string but not between two fixed ends.\nSuperposition (1.6) lets the right-moving and left-moving waves of d'Alembert's solution (1.3) coexist, and a sum of $\\sin(kx-\\omega t)$ and $\\sin(kx+\\omega t)$ factorises by the product-t"
+      }
+    },
+    {
+      "source": "waves-2.2",
+      "target": "ode-4.13",
+      "collection": "waves",
+      "sourceFile": "content/waves/ch02.js",
+      "targetFile": "content/ode/ch04-c.js",
+      "sourceName": "Normal modes, nodes and antinodes",
+      "targetName": "Oscillation theorem: the n-th eigenfunction has n − 1 zeros",
+      "status": "accepted",
+      "assessment": "The fixed uniform string is a regular Dirichlet Sturm-Liouville problem after rescaling its interval. The target directly supplies n-1 interior zeros. Its extra shooting-count statement is not needed.",
+      "sourceRead": {
+        "statement": "A **normal mode** of a vibrating system is a motion in which every point oscillates at the same single frequency with a fixed relative amplitude and phase, so that the shape keeps its form and only its size changes:\n$$u(x,t)=\\varphi(x)\\,\\cos(\\omega t+\\delta).$$\nFor the fixed string of length $L$ the mode shapes are $\\varphi_n(x)=\\sin(n\\pi x/L)$ with $\\omega_n=n\\pi c/L$. A point where $\\varphi=0$ is a **node** (it never moves); a point where $|\\varphi|$ is largest is an **antinode**. Mode $n$ has $n-1$ nodes strictly inside the string and $n$ antinodes. A general motion is not a normal mode; it is a combination of several, each with its own frequency.",
+        "idea": "Substituting $u=\\varphi(x)T(t)$ into the wave equation separates it into $T''/T=c^2\\varphi''/\\varphi=-\\omega^2$: the shape obeys $\\varphi''=-(\\omega/c)^2\\varphi$ and the boundary conditions $\\varphi(0)=\\varphi(L)=0$ pick out the sines. Mechanically it is the continuum version of the normal modes of coupled oscillators (mech-11.4): the configuration in which every degree of freedom moves in step. A combination of modes with different frequencies has no fixed shape because its components drift out of phase.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "For a regular Sturm–Liouville problem with Dirichlet conditions, let $u(\\cdot;\\lambda)$ be the solution with $u(0)=0,\\ pu'(0)=1$. The number of zeros of $u(\\cdot;\\lambda)$ in the open interval $(0,1)$ equals the number of eigenvalues smaller than $\\lambda$. In particular the $n$-th eigenfunction (ordered by $\\lambda_1<\\lambda_2<\\cdots$) has exactly $n-1$ zeros in $(0,1)$, and the eigenvalues can be located by counting zeros while $\\lambda$ increases. For other separated boundary conditions the eigenfunction still has $n-1$ interior zeros, but counting eigenvalues from a general shooting solution requires the boundary Prüfer phase."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "\\varphi|$ is largest is an **antinode**. Mode $n$ has $n-1$ nodes strictly inside the string and $n$ antinodes. A general motion is not a normal mode; it is a combination of several, each with its own frequency.\nSubstituting $u=\\varphi(x)T(t)$ into the wave equati"
+      }
+    },
+    {
+      "source": "waves-3.14",
+      "target": "rca-10.15",
+      "collection": "waves",
+      "sourceFile": "content/waves/ch03-b.js",
+      "targetFile": "content/rca/ch10.js",
+      "sourceName": "Kramers–Kronig relations",
+      "targetName": "Cauchy's formula in a convex set",
+      "status": "accepted",
+      "assessment": "The derivation expressly invokes a Cauchy contour formula. One applies the target on finite contours lying in the analytic upper half-plane and takes the indented-boundary/large-radius limit using the source response assumptions. The target is a constituent contour step, not by itself the boundary-limit or decay theorem.",
+      "sourceRead": {
+        "statement": "Let $\\chi(\\omega)$ be the linear response function of a medium (for example the susceptibility, with refractive index $n^2=1+\\chi$) whose time response $\\chi(t)$ is **causal** ($\\chi(t)=0$ for $t<0$) and decays so that $\\chi(\\omega)\\to0$ as $|\\omega|\\to\\infty$. Then $\\chi(\\omega)$ is analytic in the upper half of the complex $\\omega$-plane, and its real and imaginary parts on the real axis are Hilbert transforms of each other:\n$$\\mathrm{Re}\\,\\chi(\\omega)=\\frac1\\pi\\,\\mathrm P\\!\\!\\int_{-\\infty}^{\\infty}\\frac{\\mathrm{Im}\\,\\chi(\\omega')}{\\omega'-\\omega}\\,d\\omega'=\\frac2\\pi\\,\\mathrm P\\!\\!\\int_0^\\infty\\frac{\\omega'\\,\\mathrm{Im}\\,\\chi(\\omega')}{\\omega'^2-\\omega^2}\\,d\\omega',$$\nand the matching formula expresses $\\mathrm{Im}\\,\\chi$ through $\\mathrm{Re}\\,\\chi$ (P is the Cauchy principal value; the second form uses $\\mathrm{Re}\\,\\chi$ even and $\\mathrm{Im}\\,\\chi$ odd in $\\omega$, which holds because $\\chi(t)$ is real). So the **dispersion** of a medium (how $n$ varies with frequency) is determined by its **absorption** at all frequencies, and vice versa.",
+        "idea": "Causality means the Fourier integral $\\chi(\\omega)=\\int_0^\\infty\\chi(t)e^{i\\omega t}dt$ converges and stays bounded for $\\mathrm{Im}\\,\\omega\\ge0$, so $\\chi$ is analytic there (rca-19.2 and sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\\chi(\\omega)=\\frac{1}{i\\pi}\\mathrm P\\!\\int\\frac{\\chi(\\omega')}{\\omega'-\\omega}d\\omega'$; taking real and imaginary parts gives the relations. The Lorentz oscillator (em-11.12) is a causal model, so its real and imaginary parts are such a pair, and the relations tell us that any line of absorption must come with a characteristic wiggle of $n$ around it (anomalous dispersion, 3.9).",
+        "scope": "Requires a causal, linear, time-invariant response with $\\chi\\to0$ at high frequency (subtractions are needed otherwise); the picture uses sums of Lorentz lines and a pure time advance as the acausal counter-example."
+      },
+      "targetRead": {
+        "statement": "Let $\\gamma$ be a closed path in a convex open set $\\Omega$ and let $f\\in H(\\Omega)$. If $z\\in\\Omega$ does not lie on $\\gamma^*$, then\n$$f(z)\\,\\Ind_\\gamma(z)=\\frac{1}{2\\pi i}\\int_\\gamma \\frac{f(\\xi)}{\\xi-z}\\,d\\xi .$$"
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "d sig-6.4 describe the Paley–Wiener condition behind this). Cauchy's integral formula on a large half-circle closed in the upper half-plane, with the pole on the real axis indented, gives $\\chi(\\omega)=\\frac{1}{i\\pi}\\mathrm P\\!\\int\\frac{\\chi(\\omega')}{\\omega'-\\omega}d\\omega'"
+      }
+    },
+    {
+      "source": "thermo-3.7",
+      "target": "opt-3.7",
+      "collection": "thermo",
+      "sourceFile": "content/thermo/ch03.js",
+      "targetFile": "content/opt/ch03.js",
+      "sourceName": "Legendre transforms and thermodynamic potentials",
+      "targetName": "The conjugate function",
+      "status": "accepted",
+      "assessment": "The sign conventions are compatible: F(T)=-U*(T). The target idea explicitly identifies -f* as the supporting-line intercept. Convex U and the source stationary minimizer are the conditions needed for this thermodynamic conjugate construction.",
+      "sourceRead": {
+        "statement": "Let $U(S)$ be a convex function (other variables held fixed) with slope $T = U'(S)$. Its **Legendre transform** is\n$$F(T) = \\min_S\\,\\big[U(S) - TS\\big] = U(S^*) - TS^*,\\qquad U'(S^*) = T,$$\nthe intercept on the $U$ axis of the tangent line of slope $T$. Then $F'(T) = -S^*$, $F$ is concave, and transforming back, $U(S) = \\max_T\\,[F(T) + TS]$, recovers $U$: the transform loses no information. Applied to the energy form $U(S, V, N)$ this produces the **thermodynamic potentials**\n$$F = U - TS,\\quad H = U + PV,\\quad G = U - TS + PV,$$\nwith $dF = -S\\,dT - P\\,dV + \\mu\\,dN$, $dH = T\\,dS + V\\,dP + \\mu\\,dN$, $dG = -S\\,dT + V\\,dP + \\mu\\,dN$, each a complete fundamental relation in its natural variables. If $U$ is not convex, the double transform returns its convex hull instead.",
+        "idea": "A convex curve is the envelope of its tangent lines, and a line is fixed by its slope and intercept, so the family \"intercept as a function of slope\" describes the curve as completely as \"height as a function of position\" does. Differentiating $F = U(S^*) - TS^*$ and using $U'(S^*) = T$ kills the $dS^*$ term, leaving $dF = -S^*\\,dT$; this is why the transformed variable's conjugate appears as the new slope. The same construction is Hamilton's passage from Lagrangian to Hamiltonian (mech 12.1). When $U$ has a non-convex stretch, tangents of one slope touch it twice, the minimum jumps between them, $F$ develops a corner, and the back-transform bridges the stretch with a straight segment — the signature of a first-order phase transition (3.15, 4.1).",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "For $f:\\R^n\\to\\R\\cup\\{+\\infty\\}$, the **conjugate** (Legendre–Fenchel transform) is\n$$f^*(y)=\\sup_{x}\\big(y^{\\mathsf T}x-f(x)\\big),$$\nwith values in $\\R\\cup\\{+\\infty\\}$, defined on the set of slopes $y$ for which the supremum is finite. The function $f^*$ is **always convex and lower semicontinuous**, whether or not $f$ is, since it is a pointwise supremum of the affine functions $y\\mapsto x^{\\mathsf T}y-f(x)$. Examples: $f=\\tfrac12x^2\\Rightarrow f^*=\\tfrac12y^2$; $f=e^x\\Rightarrow f^*(y)=y\\ln y-y$ for $y>0$, $f^*(0)=0$ and $+\\infty$ for $y<0$; $f=|x|\\Rightarrow f^*=0$ on $[-1,1]$ and $+\\infty$ outside; $f=\\tfrac14x^4\\Rightarrow f^*=\\tfrac34|y|^{4/3}$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "form returns its convex hull instead.\nA convex curve is the envelope of its tangent lines, and a line is fixed by its slope and intercept, so the family \"intercept as a function of slope\" describes the curve as completely as \"height as a function of position\" does. Differe"
+      }
+    },
+    {
+      "source": "thermo-3.15",
+      "target": "opt-3.3",
+      "collection": "thermo",
+      "sourceFile": "content/thermo/ch03-b.js",
+      "targetFile": "content/opt/ch03.js",
+      "sourceName": "Stability and concavity of entropy",
+      "targetName": "Second-order condition: positive semidefinite Hessian",
+      "status": "accepted",
+      "assessment": "This source claims concavity over a domain, not just positivity at a single equilibrium. Apply the target Hessian criterion to -S on the convex thermodynamic domain; the negative-semidefinite entropy Hessian is the sign-reversed condition.",
+      "sourceRead": {
+        "statement": "An equilibrium state of a simple system is stable against internal redistribution only if the fundamental relation is **concave**: for all splits of the system into two parts with $(U \\pm \\Delta U, V \\pm \\Delta V)$ per half,\n$$S(U + \\Delta U, V + \\Delta V) + S(U - \\Delta U, V - \\Delta V) \\le 2S(U, V).$$\nLocally: $\\partial^2 S/\\partial U^2 \\le 0$, $\\partial^2S/\\partial V^2 \\le 0$ and $S_{UU}S_{VV} - S_{UV}^2 \\ge 0$, equivalently $C_V \\ge 0$ and $\\kappa_T \\ge 0$. In the transformed potentials: $F$ is convex in $V$ and concave in $T$; $G$ is concave in both $T$ and $P$. Where a model's relation violates concavity, the system splits into two phases, and the true equilibrium relation is the **concave hull** (for $S$) or **convex hull** (for $F$) — straight segments joining coexisting phases.",
+        "idea": "If the chord between $(U - \\Delta U)$ and $(U + \\Delta U)$ passed above $S(U)$, transferring $\\Delta U$ from one half to the other would raise the total entropy, and by the maximum principle (3.4, 2.10) the uniform state would not be equilibrium. Concavity of a smooth function (rca 3.1 on convex functions) is equivalent to the second-derivative conditions; translated through $T$ and $P$ they read $C_V > 0$ and $\\kappa_T > 0$. The Legendre transform (3.7) turns concavity of $S$ (convexity of $U$) into the stated properties of $F$ and $G$. The hull construction is the same as Maxwell's equal-area rule for the van der Waals loop (4.3).",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "Let $f$ be twice continuously differentiable on an open convex set $C\\subseteq\\R^n$. Then $f$ is convex on $C$ if and only if $\\nabla^2f(x)\\succeq0$ for every $x\\in C$, i.e. every eigenvalue of the Hessian is nonnegative. If $\\nabla^2f(x)\\succ0$ for all $x\\in C$, then $f$ is strictly convex (the converse fails: $x^4$ is strictly convex with $f''(0)=0$). For a function of one variable the condition is $f''\\ge0$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "function (rca 3.1 on convex functions) is equivalent to the second-derivative conditions; translated through $T$ and $P$ they read $C_V > 0$ and $\\kappa_T > 0$. The Legendre transform (3.7) turns concavity of $S$ (convexity of $U$) into the stated properties of $F$ and $G$. The"
+      }
+    },
+    {
+      "source": "thermo-6.8",
+      "target": "prob-2.1.11",
+      "collection": "thermo",
+      "sourceFile": "content/thermo/ch06.js",
+      "targetFile": "content/prob/ch02.js",
+      "sourceName": "Independent subsystems: partition functions multiply",
+      "targetName": "Independence means the joint law is a product measure",
+      "status": "accepted",
+      "assessment": "After the noninteracting canonical weight factors, the joint law is a product law. The converse direction of the target identifies statistical independence. This is exactly the probability step used, beyond multiplication of partition sums.",
+      "sourceRead": {
+        "statement": "If a system consists of two parts that do not interact, so that every composite state $(a,b)$ has energy $E_a+E_b$, then\n$$Z_{AB}=Z_AZ_B,\\qquad F_{AB}=F_A+F_B,\\qquad P(a,b)=P_A(a)P_B(b).$$\nEquivalently $\\ln Z$, $U$, $S$, $C$ are additive. If the parts interact, $E_{ab}=E_a+E_b+W_{ab}$, the factorization fails.",
+        "idea": "The exponential turns a sum of energies into a product of Boltzmann factors, $e^{-\\beta(E_a+E_b)}=e^{-\\beta E_a}e^{-\\beta E_b}$, and a double sum of a product of factors is a product of sums. The probabilities factor too, so independent parts are statistically independent. Any coupling $W_{ab}$ spoils the factorization by the extra factor $e^{-\\beta W_{ab}}$. For $N$ identical independent parts this gives $Z=Z_1^N$ (and $Z_1^N/N!$ for indistinguishable ones, 6.16).",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "If $X_1,\\dots,X_n$ are independent and $X_i$ has distribution $\\mu_i$, then the random vector $(X_1,\\dots,X_n)$ has distribution $\\mu_1\\times\\dots\\times\\mu_n$. Conversely, a vector whose law is a product measure has independent coordinates."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "ouble sum of a product of factors is a product of sums. The probabilities factor too, so independent parts are statistically independent. Any coupling $W_{ab}$ spoils the factorization by the extra factor $e^{-\\beta W_{ab}}$. For $N$ identical independent parts this giv"
+      }
+    },
+    {
+      "source": "cm-1.3",
+      "target": "ladr-7.31",
+      "collection": "cm",
+      "sourceFile": "content/cm/ch01.js",
+      "targetFile": "content/ladr/ch07-b.js",
+      "sourceName": "Nearly-free electron model",
+      "targetName": "Complex spectral theorem",
+      "status": "accepted",
+      "assessment": "The two-wave Hamiltonian for a real periodic potential is Hermitian, hence normal. The complex spectral theorem supplies an orthonormal eigenbasis for the diagonalization explicitly described in the source. It is not applied to a non-Hermitian dynamical matrix.",
+      "sourceRead": {
+        "statement": "Let free electrons of energy $\\varepsilon^0_{\\mathbf k}=\\hbar^2k^2/2m$ feel a weak periodic potential $V(\\mathbf r)=\\sum_{\\mathbf G}U_{\\mathbf G}e^{i\\mathbf G\\cdot\\mathbf r}$ with $|U_{\\mathbf G}|$ small compared with the spacing of the free levels. Away from Bragg planes the energies are shifted only at second order, so the bands stay close to the free parabola folded into the first zone. Near a Bragg plane $\\mathbf k\\approx\\mathbf G/2$ the two plane waves $\\mathbf k$ and $\\mathbf k-\\mathbf G$ are almost degenerate and mix:\n$$E_\\pm=\\tfrac12\\big(\\varepsilon^0_{\\mathbf k}+\\varepsilon^0_{\\mathbf k-\\mathbf G}\\big)\\pm\\sqrt{\\Big(\\tfrac12\\big(\\varepsilon^0_{\\mathbf k}-\\varepsilon^0_{\\mathbf k-\\mathbf G}\\big)\\Big)^2+|U_{\\mathbf G}|^2},$$\nso a **gap** $E_g=2|U_{\\mathbf G}|$ opens exactly on the plane, and each Fourier component of the potential opens the gap at its own plane.",
+        "idea": "Write $\\psi_{\\mathbf k}=\\sum_{\\mathbf G}c_{\\mathbf G}\\,e^{i(\\mathbf k+\\mathbf G)\\cdot\\mathbf r}$ (Bloch’s theorem, qm-9.7). Schrödinger’s equation becomes a matrix problem $(\\varepsilon^0_{\\mathbf k+\\mathbf G}-E)c_{\\mathbf G}+\\sum_{\\mathbf G'}U_{\\mathbf G-\\mathbf G'}c_{\\mathbf G'}=0$. If only one $c$ is large, second-order perturbation theory moves the level by $\\sim|U|^2/\\Delta\\varepsilon$; if two free energies lie within $|U|$ of one another, degenerate perturbation theory diagonalises the $2\\times2$ block, giving the square root above. Planes are the Bragg planes of the reciprocal lattice (xtal-5.5).",
+        "scope": "Weak potential: $|U_{\\mathbf G}|\\ll\\varepsilon^0_{\\mathbf G/2}$. Good for the sp metals (Na, Mg, Al) and the valence bands of some semiconductors; fails for tightly bound d and f electrons."
+      },
+      "targetRead": {
+        "statement": "Suppose $\\mathbf F = \\mathbf C$ and $T \\in \\mathcal L(V)$. Then the following are equivalent:\n(a) $T$ is normal;\n(b) $T$ has a diagonal matrix with respect to some orthonormal basis of $V$;\n(c) $V$ has an orthonormal basis consisting of eigenvectors of $T$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "within $|U|$ of one another, degenerate perturbation theory diagonalises the $2\\times2$ block, giving the square root above. Planes are the Bragg planes of the reciprocal lattice (xtal-5.5)."
+      }
+    },
+    {
+      "source": "cm-2.8",
+      "target": "pde-1.5",
+      "collection": "cm",
+      "sourceFile": "content/cm/ch02-b.js",
+      "targetFile": "content/pde/ch01.js",
+      "sourceName": "Thomas–Fermi screening",
+      "targetName": "Laplace’s and Poisson’s equations as steady states",
+      "status": "accepted",
+      "assessment": "The target explicitly states the electrostatic Poisson equation as well as its heat-equilibrium example. The source uses that equation to insert induced charge, not the bounded-plate transient-decay conclusion. The source separately supplies the screened radial solution.",
+      "sourceRead": {
+        "statement": "In a degenerate electron gas of density of states $g(E_F)$ (per volume, both spins), a weak external charge density $\\rho_{\\rm ext}$ induces a screening cloud so that the total potential obeys $\\nabla^2\\phi=k_{TF}^2\\phi$ away from the source, with\n$$k_{TF}^2=\\frac{e^2}{\\varepsilon_0}\\,g(E_F)=\\frac{e^2}{\\varepsilon_0}\\frac{3n}{2E_F}.$$\nFor a point charge $Q$ the potential is the **screened Coulomb (Yukawa)** potential $\\phi(r)=\\dfrac{Q}{4\\pi\\varepsilon_0 r}e^{-k_{TF}r}$, with the induced charge exactly cancelling $Q$. In metals $\\lambda_{TF}=1/k_{TF}\\approx0.5\\ \\text{Å}$, comparable to the interatomic spacing, so long-range Coulomb forces between electrons are cut off.",
+        "idea": "If the potential $\\phi(\\mathbf r)$ varies slowly on the scale of the Fermi wavelength, the electrons are locally a free gas in equilibrium at the global chemical potential $\\mu$, so the local kinetic energy available is $\\mu+e\\phi(\\mathbf r)$ and the local density is $n(\\mu+e\\phi)$ (cm-1.1 gives $n(E_F)$ and $g(E_F)$). To first order the induced density is $\\delta n\\approx g(E_F)\\,e\\phi$ (thermo-8.4 for the filling, cm-1.1 for $g(E_F)$). Substituting in Poisson’s equation gives the Helmholtz-type equation $\\nabla^2\\phi=k_{TF}^2\\phi$, whose spherically symmetric solution decaying at infinity is the Yukawa form (vcalc-9.4 supplies the divergence theorem that fixes the prefactor).",
+        "scope": "$q\\ll1$ (potential energy $\\ll E_F$) for the linear formula; slowly varying potentials on the scale of $1/k_F$ — the cloud is fuzzy at short range and shows Friedel oscillations at $2k_F$, which Thomas–Fermi ignores; zero temperature; static charges only."
+      },
+      "targetRead": {
+        "statement": "Let a plate occupy a region $\\Omega\\subset\\mathbb R^2$ with temperature $u(x,y,t)$ obeying $u_t=k\\,\\Delta u+f$, where $f$ is a heat source per unit heat capacity. If the boundary temperature and the source do not depend on time and the solution settles, the limit $u_\\infty(x,y)$ has $u_t=0$, i.e. it solves **Poisson's equation** $-\\Delta u=f/k$ (and **Laplace's equation** $\\Delta u=0$ when $f=0$), with the prescribed boundary values. The equation is the same in electrostatics ($-\\Delta\\varphi=\\rho/\\varepsilon_0$) and for the equilibrium height of a stretched membrane."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "-8.4 for the filling, cm-1.1 for $g(E_F)$). Substituting in Poisson’s equation gives the Helmholtz-type equation $\\nabla^2\\phi=k_{TF}^2\\phi$, whose spherically symmetric solution decaying at infinity is the Yukawa form (vcalc-9.4 supplies the divergence the"
+      }
+    },
+    {
+      "source": "cm-3.16",
+      "target": "mat-3.2",
+      "collection": "cm",
+      "sourceFile": "content/cm/ch03-b.js",
+      "targetFile": "content/mat/ch03.js",
+      "sourceName": "Dislocations and the weakness of real crystals",
+      "targetName": "Edge and screw dislocations",
+      "status": "accepted",
+      "assessment": "The source invokes the Volterra dislocation elastic field and Burgers-vector geometry; the target supplies those defects and their continuum displacement interpretation. The two collections belong to physics and chemistry, respectively, so this is a genuine different-field constituent concept despite their shared subject.",
+      "sourceRead": {
+        "statement": "Shearing a perfect crystal by sliding one whole plane over another requires a stress of the order of the ideal shear strength $\\tau_{\\rm ideal}\\approx G/2\\pi$ ($G$ the shear modulus), thousands of megapascals for a metal; some prepared metal crystals deform at stresses thousands of times smaller. Plastic flow is carried by **line defects**. An **edge dislocation**, an extra half-plane of atoms ending in the crystal with Burgers vector $\\mathbf b$ perpendicular to the line, moves under shear by a one-row-at-a-time rearrangement of bonds, which needs only the **Peierls–Nabarro stress** $\\tau_P\\sim\\dfrac{2G}{1-\\nu}\\,e^{-2\\pi W/b}$, with width $W$ of the core, exponentially small for wide cores.",
+        "idea": "Slip of a whole plane breaks every bond across the plane at once, so the restoring stress follows $\\tau=\\frac{G}{2\\pi}\\sin(2\\pi s/b)$ (the sinusoidal estimate, with $s$ the slip) and its peak is the ideal strength. A dislocation concentrates the misfit in one place: the lattice around it carries the Volterra elastic field, so moving the core by one lattice spacing shifts atoms by only a fraction of $b$ and breaks bonds only near the core, and the energy barrier per step (the Peierls barrier) is exponentially small if the core is wide. Dislocations are produced in the crystal when it forms or deforms, and their motion, multiplication and tangling underlie ductility and work hardening.",
+        "scope": "Isotropic linear elasticity; the displacement field is the continuum solution, accurate away from the core and not relaxed near it. The Peierls–Nabarro prefactor and the definition of the width $W$ differ between authors by a factor of two in the exponent; the point is its exponential sensitivity. The yield-stress range $0.5$–$10$ MPa for metal crystals is as given on Wikipedia's dislocation page (secondary), not specific to any metal."
+      },
+      "targetRead": {
+        "statement": "A **dislocation** is a line defect that bounds a region of a crystal that has slipped by a lattice vector $\\mathbf b$ from a region that has not. If $\\mathbf b$ is perpendicular to the dislocation line, it is an **edge** dislocation: the lattice looks like an extra half-plane of atoms ending at the line, with compressed lattice on its side and stretched lattice on the other. If $\\mathbf b$ is parallel to the line it is a **screw** dislocation: the lattice planes perpendicular to the line are joined into a single helical ramp, so that circling the line once climbs one plane. In general a dislocation line is curved and has mixed character; $\\mathbf b$ stays the same all along it."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "ler. Plastic flow is carried by **line defects**. An **edge dislocation**, an extra half-plane of atoms ending in the crystal with Burgers vector $\\mathbf b$ perpendicular to the line, moves under shear by a one-row-at-a-time rearrangement of bonds, which needs"
+      }
+    },
+    {
+      "source": "cm-3.13",
+      "target": "opt-3.3",
+      "collection": "cm",
+      "sourceFile": "content/cm/ch03-b.js",
+      "targetFile": "content/opt/ch03.js",
+      "sourceName": "Ferroelectrics and the soft mode",
+      "targetName": "Second-order condition: positive semidefinite Hessian",
+      "status": "refine_target",
+      "assessment": "A Landau polynomial can be globally nonconvex while the chosen phase is a stable local minimum. The global convexity criterion is stronger than the local curvature test actually used. The owner independently identified this issue.",
+      "sourceRead": {
+        "statement": "In a **displacive ferroelectric** the paraelectric phase becomes unstable because one zone-centre transverse optical mode softens: $\\omega_{TO}^2\\propto T-T_0$ as $T\\to T_0$ from above (Cochran's law). By the Lyddane–Sachs–Teller relation, with $\\omega_{LO}$ and $\\varepsilon_\\infty$ nearly temperature independent, the static dielectric constant then obeys the **Curie–Weiss law** $\\varepsilon(0)\\propto1/(T-T_0)$, diverging as the mode frequency goes to zero. Below the transition the frozen-in displacement is a spontaneous polarization $P_s(T)$, described by a Landau free energy $F=\\tfrac12a(T-T_0)P^2+\\tfrac14bP^4+\\tfrac16cP^6$: for $b>0$ a continuous transition at $T_c=T_0$, for $b<0$ a first-order one with a jump of $P_s$ at $T_c=T_0+3b^2/16ac$.",
+        "idea": "The restoring force on the polar displacement is the second derivative of the Landau free energy, $\\omega_{TO}^2\\propto\\partial^2F/\\partial P^2=a(T-T_0)+3bP^2+5cP^4$, which is the inverse susceptibility $1/\\chi$. The soft mode is therefore the thermodynamic susceptibility seen as a phonon (the two measurements of $\\varepsilon(0)$: dielectric and via LST from $\\omega_{TO}$ agree), and the transition is the condition that the lattice forces and long-range dipole fields cancel. Below $T_c$ the mode hardens again, at twice the rate in the continuous case, because the curvature at a minimum of $F$ is $2a(T_c-T)$ there.",
+        "scope": "Mean-field Landau theory in dimensionless units ($a=c=1$): hysteresis, domains, fluctuation corrections and the order–disorder type of ferroelectric (where no phonon softens fully) are not modelled. Soft-mode ferroelectrics include titanates such as SrTiO$_3$ (incipient) and BaTiO$_3$ (first-order); the model here is generic, not a fit to a material."
+      },
+      "targetRead": {
+        "statement": "Let $f$ be twice continuously differentiable on an open convex set $C\\subseteq\\R^n$. Then $f$ is convex on $C$ if and only if $\\nabla^2f(x)\\succeq0$ for every $x\\in C$, i.e. every eigenvalue of the Hessian is nonnegative. If $\\nabla^2f(x)\\succ0$ for all $x\\in C$, then $f$ is strictly convex (the converse fails: $x^4$ is strictly convex with $f''(0)=0$). For a function of one variable the condition is $f''\\ge0$."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner replaces opt-3.3 with opt-1.5 (local second-order optimality), mirroring syllabus and energy ledger."
+    },
+    {
+      "source": "qinfo-2.3",
+      "target": "ladr-7.31",
+      "collection": "qinfo",
+      "sourceFile": "content/qinfo/ch02.js",
+      "targetFile": "content/ladr/ch07-b.js",
+      "sourceName": "Purification",
+      "targetName": "Complex spectral theorem",
+      "status": "accepted",
+      "assessment": "Purification starts from the spectral decomposition of a positive self-adjoint density operator. The target applies because that operator is normal and gives the orthonormal eigenvectors used in the constructed purification. No SVD assumption is silently substituted.",
+      "sourceRead": {
+        "statement": "Let $\\rho_A$ be any density operator on a finite-dimensional system $A$ with spectral decomposition $\\rho_A=\\sum_k\\lambda_k|k\\rangle\\langle k|$. Then for a system $R$ of dimension at least $\\operatorname{rank}\\rho_A$ and any orthonormal vectors $|k\\rangle_R$, the pure state\n$$|\\Psi\\rangle_{AR}=\\sum_k\\sqrt{\\lambda_k}\\,|k\\rangle_A|k\\rangle_R$$\nhas $\\operatorname{tr}_R|\\Psi\\rangle\\langle\\Psi|=\\rho_A$. Two purifications $|\\Psi\\rangle,|\\Psi'\\rangle$ of the same $\\rho_A$ on $A\\otimes R$ are related by a unitary on $R$: $|\\Psi'\\rangle=(I\\otimes U_R)|\\Psi\\rangle$.",
+        "idea": "Diagonalise $\\rho_A$ (ladr-7.39) and read the eigenvalues as squared Schmidt coefficients: tracing out $R$ kills the cross terms because the $|k\\rangle_R$ are orthonormal, leaving $\\sum_k\\lambda_k|k\\rangle\\langle k|$. Conversely any purification has a Schmidt decomposition whose $A$-side is forced to be the eigenbasis of $\\rho_A$ and whose Schmidt weights are the eigenvalues; the $R$-side bases then differ only by a unitary on $R$ (qm-14.4). Mixedness is thus entanglement with something unobserved.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "Suppose $\\mathbf F = \\mathbf C$ and $T \\in \\mathcal L(V)$. Then the following are equivalent:\n(a) $T$ is normal;\n(b) $T$ has a diagonal matrix with respect to some orthonormal basis of $V$;\n(c) $V$ has an orthonormal basis consisting of eigenvectors of $T$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "unitary on $R$: $|\\Psi'\\rangle=(I\\otimes U_R)|\\Psi\\rangle$.\nDiagonalise $\\rho_A$ (ladr-7.39) and read the eigenvalues as squared Schmidt coefficients: tracing out $R$ kills the cross terms because the $|k\\rangle_R$ are orthonormal, leaving $\\sum_k\\lambda_k|k"
+      }
+    },
+    {
+      "source": "qinfo-2.4",
+      "target": "ladr-6.55",
+      "collection": "qinfo",
+      "sourceFile": "content/qinfo/ch02.js",
+      "targetFile": "content/ladr/ch06-c.js",
+      "sourceName": "Optimal approximate cloning",
+      "targetName": "Orthogonal projection P_U",
+      "status": "accepted",
+      "assessment": "The actual cloning channel contains the orthogonal projector P_sym onto the finite-dimensional symmetric subspace. The target defines exactly that projection. It is only a definition prerequisite, not a proof of cloning optimality or complete positivity.",
+      "sourceRead": {
+        "statement": "No device copies an unknown qubit state exactly (qm-14.14), but one can copy it approximately. The **universal symmetric $1\\to2$ qubit cloner** is the linear completely positive map\n$$\\rho\\;\\longmapsto\\;\\tfrac23\\,P_{\\rm sym}(\\rho\\otimes I)P_{\\rm sym}$$\n($P_{\\rm sym}$ the projector onto the symmetric subspace of two qubits). Each of its two output copies is $\\rho'=\\tfrac23\\rho+\\tfrac13\\,\\tfrac I2$, i.e. the Bloch vector is shrunk by $\\tfrac23$ without changing its direction, so for every pure input the fidelity of each copy is\n$$F=\\langle\\psi|\\rho'|\\psi\\rangle=\\tfrac56\\approx0.833,$$\nindependent of $|\\psi\\rangle$. No cloner treating all inputs alike (covariant under unitaries) can achieve a larger $F$ for both copies.",
+        "idea": "A quantum cloner is a physically allowed (completely positive, trace preserving) map, and an unknown state means it must work for every input. Symmetrising the output over the two copies and requiring unitary covariance leaves a one-parameter family of maps, and positivity bounds the shrinking factor by $\\tfrac23$; this is the Bužek–Hillery construction, whose optimality Gisin–Massar and Werner proved. The same limit follows from no-signalling-style arguments: a cloner with $F>\\tfrac56$ could be used to distinguish non-orthogonal states better than the Helstrom bound of qinfo-1.5.",
+        "scope": "The map above is the optimal *universal* (input-independent) symmetric cloner for qubits. Cloners tuned to a known set of states, such as the two bases of BB84, can do better."
+      },
+      "targetRead": {
+        "statement": "Suppose $U$ is a finite-dimensional subspace of $V$. The **orthogonal projection** of $V$ onto $U$ is the operator $P_U\\in\\mathcal L(V)$ defined as follows: for $v\\in V$, write $v=u+w$ with $u\\in U$ and $w\\in U^\\perp$, and set $$P_Uv=u.$$"
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": ",P_{\\rm sym}(\\rho\\otimes I)P_{\\rm sym}$$\n($P_{\\rm sym}$ the projector onto the symmetric subspace of two qubits). Each of its two output copies is $\\rho'=\\tfrac23\\rho+\\tfrac13\\,\\tfrac I2$, i.e. the Bloch vector is shrunk by $\\tfrac23$ without changing its d"
+      }
+    },
+    {
+      "source": "qinfo-3.4",
+      "target": "prob-2.1.5",
+      "collection": "qinfo",
+      "sourceFile": "content/qinfo/ch03.js",
+      "targetFile": "content/prob/ch02.js",
+      "sourceName": "Wiesner’s quantum money",
+      "targetName": "Classes containing Ω: independence is a product rule",
+      "status": "accepted",
+      "assessment": "The target really is the finite product rule for independent event classes containing Omega, not a pi-lambda extension theorem. With each class {pass_i,Omega}, it justifies multiplying the independent per-qubit verification probabilities stated in the source.",
+      "sourceRead": {
+        "statement": "A bank issues a note with a serial number and $n$ qubits, the $i$-th prepared in one of $|0\\rangle,|1\\rangle,|+\\rangle,|-\\rangle$, chosen at random: a secret basis bit $b_i$ ($+$ or $\\times$) and a secret value bit $s_i$. The bank stores $(b_i,s_i)_i$ against the serial number. To **verify** a note it measures qubit $i$ in basis $b_i$ and accepts if all results equal $s_i$: a genuine note is always accepted.\n\nA forger who does not know the bases and uses *measure and resend* (measure each qubit in a guessed basis, prepare a state from the outcome) passes the test on a single forged note with probability $(3/4)^n$ per note; to turn one note into **two** accepted notes this attack succeeds with probability $(5/8)^n$, and no strategy whatever achieves more than $(3/4)^n$ for two notes. Either way the success probability falls exponentially in $n$.",
+        "idea": "If the guessed basis is right (probability $\\tfrac12$) the forger learns $s_i$ and the copy is perfect; if it is wrong, the outcome is a fair coin in the wrong basis and the bank's measurement in the true basis again gives a fair coin, so the qubit passes with probability $\\tfrac12$. Averaging, $\\tfrac12\\cdot1+\\tfrac12\\cdot\\tfrac12=\\tfrac34$ per qubit. For two copies the wrong-basis case must pass twice, $\\tfrac14$, giving $\\tfrac12+\\tfrac18=\\tfrac58$. Qubits are independent, so the probabilities multiply. The root cause is the no-cloning theorem (qm-14.14): the four states are not orthogonal (qinfo-1.5), so no measurement identifies them, and measuring disturbs them.",
+        "scope": "Wiesner's original scheme is *private-key* money: only the bank can verify, by looking up the secret bases in its database, and the bank's accept/reject answers must not leak (a forger who can query the bank repeatedly can learn the bases). The numbers assume noiseless qubits and a forger holding one note."
+      },
+      "targetRead": {
+        "statement": "Collections of events $\\mathcal A_1,\\dots,\\mathcal A_n\\subset\\mathcal F$ are **independent** if $P(\\bigcap_{i\\in I}A_i)=\\prod_{i\\in I}P(A_i)$ whenever $I\\subset\\{1,\\dots,n\\}$ and $A_i\\in\\mathcal A_i$. Adding $\\Omega$ to each collection does not change this property. When every $\\mathcal A_i$ contains $\\Omega$, independence is equivalent to the single condition\n$$P(A_1\\cap\\dots\\cap A_n)=\\prod_{i=1}^nP(A_i)\\qquad\\text{whenever } A_i\\in\\mathcal A_i,$$\nsince a subfamily $I$ is obtained by taking $A_i=\\Omega$ for $i\\notin I$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "$\\tfrac14$, giving $\\tfrac12+\\tfrac18=\\tfrac58$. Qubits are independent, so the probabilities multiply. The root cause is the no-cloning theorem (qm-14.14): the four states are not orthogonal (qinfo-1.5), so no measurement identifies them, and measuring disturb"
+      }
+    },
+    {
+      "source": "qinfo-3.5",
+      "target": "prob-2.1.5",
+      "collection": "qinfo",
+      "sourceFile": "content/qinfo/ch03.js",
+      "targetFile": "content/prob/ch02.js",
+      "sourceName": "BB84 quantum key distribution",
+      "targetName": "Classes containing Ω: independence is a product rule",
+      "status": "accepted_with_model_qualification",
+      "assessment": "The same finite product rule gives the k-bit non-detection probability when interceptions and outcomes are independent across qubits. A fixed-cardinality intercepted subset sampled without replacement would not give that simple product. The peer review asked the owner to make the independent Bernoulli interpretation explicit; no target change is needed.",
+      "sourceRead": {
+        "statement": "Alice sends Bob $N$ qubits; qubit $i$ is $|0\\rangle,|1\\rangle$ or $|+\\rangle,|-\\rangle$ according to a random value bit $a_i$ and a random basis bit (rectilinear $+$ or diagonal $\\times$). Bob measures each in an independently random basis. Over a public authenticated channel they announce the *bases* (not the values) and keep the positions where the bases agree, about $N/2$ of them (the **sifted key**); for those, in the absence of noise and eavesdropping, Bob's bit equals Alice's. They then publicly compare a random sample of $k$ sifted bits.\n\nAn eavesdropper who intercepts a fraction $q$ of the qubits, measures each in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$, so a sample of $k$ bits reveals her with probability $1-(1-q/4)^k$.",
+        "idea": "The four states form two bases that are *mutually unbiased*: a state of one basis measured in the other gives a fair coin (qinfo-1.5, qm-5.7). Eve does not know the basis, guesses it right half the time (no disturbance) and wrong half the time, in which case the resent state is random in the true basis and Bob, if he uses the true basis, errs half the time. So she disturbs a sifted bit with probability $\\tfrac12\\cdot\\tfrac12=\\tfrac14$. She cannot do better by copying, since that would violate no-cloning (qm-14.14); any information she gains costs a disturbance, which the comparison detects.",
+        "scope": "Ideal single-qubit source, lossless channel, perfect detectors, intercept–resend attack only; real systems add error correction, privacy amplification and decoy states, and the secret key is shorter than the sifted key."
+      },
+      "targetRead": {
+        "statement": "Collections of events $\\mathcal A_1,\\dots,\\mathcal A_n\\subset\\mathcal F$ are **independent** if $P(\\bigcap_{i\\in I}A_i)=\\prod_{i\\in I}P(A_i)$ whenever $I\\subset\\{1,\\dots,n\\}$ and $A_i\\in\\mathcal A_i$. Adding $\\Omega$ to each collection does not change this property. When every $\\mathcal A_i$ contains $\\Omega$, independence is equivalent to the single condition\n$$P(A_1\\cap\\dots\\cap A_n)=\\prod_{i=1}^nP(A_i)\\qquad\\text{whenever } A_i\\in\\mathcal A_i,$$\nsince a subfamily $I$ is obtained by taking $A_i=\\Omega$ for $i\\notin I$."
+      },
+      "auditEvidence": {
+        "field": "statement",
+        "quote": "An eavesdropper who independently intercepts each qubit with probability $q$, measures it in a random basis and resends the result, causes an error in a sifted bit with probability $q/4$. Under this independent attack model, comparing $k$ distinct sifted bits reveals her with probability $1-(1-q/4)^k$."
+      }
+    },
+    {
+      "source": "rel-2.13",
+      "target": "alg-3.30",
+      "collection": "rel",
+      "sourceFile": "content/rel/ch02-b.js",
+      "targetFile": "content/alg/ch03-c.js",
+      "sourceName": "Lorentz and Poincaré groups",
+      "targetName": "Subgroup test",
+      "status": "accepted",
+      "assessment": "The local idea explicitly checks closure under multiplication and inverse for metric-preserving invertible matrices; identity is immediate. These are exactly the subgroup-test hypotheses inside GL(4,R).",
+      "sourceRead": {
+        "statement": "The **Lorentz group** $O(1,3)$ is the set of real $4\\times4$ matrices $\\Lambda$ with $\\Lambda^{\\mathsf T}\\eta\\Lambda=\\eta$, $\\eta=\\operatorname{diag}(1,-1,-1,-1)$, i.e. the linear maps that preserve the interval. They have $\\det\\Lambda=\\pm1$ and $\\Lambda^0{}_0\\ge1$ or $\\le-1$; the connected component of the identity, the **proper orthochronous** group $SO^+(1,3)$, is generated by the three rotations and the three boosts, and every element is a rotation times a boost. The **Poincaré group** adds translations: $x\\mapsto\\Lambda x+a$ with $a\\in\\R^4$, the full group of symmetries of Minkowski spacetime that preserve the interval of every pair of events.",
+        "idea": "Preserving the quadratic form $t^2-\\mathbf x^2$ means $\\Lambda^{\\mathsf T}\\eta\\Lambda=\\eta$, the matrix equation which in a boost along $x$ reduces to $\\cosh^2\\varphi-\\sinh^2\\varphi=1$ (2.3). Counting the free parameters in a solution gives six: three rotation angles and three boost rapidities. The set is closed under multiplication and inverse (so it is a group), but it is not abelian: boosts in different directions do not commute and their composition contains a rotation (2.14). Translations commute with each other and combine with $\\Lambda$ into the ten-parameter Poincaré group.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "A subset $H$ of a group $G$ is a subgroup if and only if\n(1) the identity $e$ of $G$ is in $H$;\n(2) $h_1,h_2\\in H$ implies $h_1h_2\\in H$;\n(3) $h\\in H$ implies $h^{-1}\\in H$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "oost rapidities. The set is closed under multiplication and inverse (so it is a group), but it is not abelian: boosts in different directions do not commute and their composition contains a rotation (2.14). Translations commute with each other and combine w"
+      }
+    },
+    {
+      "source": "rel-2.14",
+      "target": "ladr-7.93",
+      "collection": "rel",
+      "sourceFile": "content/rel/ch02-b.js",
+      "targetFile": "content/ladr/ch07-d.js",
+      "sourceName": "Thomas–Wigner rotation",
+      "targetName": "Polar decomposition",
+      "status": "accepted",
+      "assessment": "A product of subluminal boosts is a real invertible matrix. Euclidean polar decomposition gives its rotation/positive factors; the left form in the source follows by applying the target to T* and taking the adjoint. The additional Lorentz constraint identifies the positive factor as a boost, rather than identifying every positive matrix with a boost.",
+      "sourceRead": {
+        "statement": "Two boosts in different directions do not compose to a pure boost. If frame $S'$ moves with velocity $\\mathbf w_1$ relative to $S$ and $S''$ moves with velocity $\\mathbf w_2$ relative to $S'$ (axes of each frame carried without rotation), then $S''$ moves relative to $S$ with some velocity $\\mathbf u$, and its axes are rotated, relative to those obtained from $S$ by the single pure boost $\\mathbf u$, through the **Wigner rotation angle** $\\epsilon$. In terms of the angle $\\alpha$ between $\\mathbf w_1$ and $\\mathbf w_2$,\n$$\\tan\\frac\\epsilon2=\\frac{\\sin\\alpha}{k+\\cos\\alpha},\\qquad k=\\sqrt{\\frac{(\\gamma_1+1)(\\gamma_2+1)}{(\\gamma_1-1)(\\gamma_2-1)}}.$$\nFor perpendicular boosts $\\cos\\epsilon=\\dfrac{(1+\\gamma_1+\\gamma_2+\\gamma_1\\gamma_2)^2}{(1+\\gamma_1)(1+\\gamma_2)(1+\\gamma_1\\gamma_2)}-1$. It vanishes for collinear boosts and for small speeds; a gyroscope taken around a closed loop in velocity space is turned by an angle proportional to the enclosed hyperbolic area (the origin of Thomas precession).",
+        "idea": "Boosts along one axis form a one-parameter subgroup, but boosts along different axes generate rotations: the commutator of two boosts in the Lie algebra of the Lorentz group (2.13) is a rotation generator. Hence $B(\\mathbf w_1)B(\\mathbf w_2)=B(\\mathbf u)R$ with $R$ a rotation — the polar decomposition of the product. The velocity space of all boosts is a hyperbolic geometry, so a loop of boosts leaves the transported frame rotated by its area defect, just as parallel transport around a loop on a sphere rotates a vector.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "Suppose $T \\in \\mathcal L(V)$. Then there exists a unitary operator $S \\in \\mathcal L(V)$ such that\n$$T = S\\sqrt{T^*T}.$$"
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "w_1)B(\\mathbf w_2)=B(\\mathbf u)R$ with $R$ a rotation — the polar decomposition of the product. The velocity space of all boosts is a hyperbolic geometry, so a loop of boosts leaves the transported frame rotated by its area defect, just as parallel transport around a l"
+      }
+    },
+    {
+      "source": "rel-4.14",
+      "target": "ode-3.6",
+      "collection": "rel",
+      "sourceFile": "content/rel/ch04-c.js",
+      "targetFile": "content/ode/ch03.js",
+      "sourceName": "Relativistic cyclotron motion",
+      "targetName": "Complex eigenvalues give rotation and spirals",
+      "status": "accepted",
+      "assessment": "Constant gamma in the uniform magnetic field gives a constant 2x2 skew generator on the perpendicular velocity plane. This is the target alpha=0 rotation case, with a genuine circle because the generator is skew rather than a general similar elliptic system.",
+      "sourceRead": {
+        "statement": "A particle of charge $q$ and momentum $p$ perpendicular to a uniform magnetic field $B$ moves on a circle of radius $r=p/qB$ with angular frequency\n$$\\omega=\\frac{qB}{\\gamma m},$$\nand the magnetic force does no work, so $\\gamma$ is constant on the circle. As the particle gains energy the radius grows with $p$ and the revolution frequency **falls** as $1/\\gamma$. A cyclotron whose accelerating voltage alternates at the fixed frequency $qB/m$ therefore loses synchronism as $\\gamma$ rises: the particle arrives at each gap later and later, and when its phase lag passes $90^\\circ$ it is decelerated instead. The cure is to lower the drive frequency as $1/\\gamma$ (synchrocyclotron) or to raise $B$ with radius (isochronous cyclotron, synchrotron).",
+        "idea": "With the force $q\\mathbf v\\times\\mathbf B$ always perpendicular to $\\mathbf v$, $\\gamma$ is constant and the relativistic second law (rel-4.13) reads $\\gamma m\\,\\dot{\\mathbf v}=q\\mathbf v\\times\\mathbf B$: circular motion at the Larmor frequency reduced by $\\gamma$. The Newtonian cyclotron (mech-1.18) has $\\omega=qB/m$, independent of energy, which is what makes a fixed-frequency machine possible; the factor $\\gamma$ spoils it. Each half-turn the phase against the drive slips by $\\pi(\\gamma-1)$.",
+        "scope": "Idealized: a point-like gap crossed with energy gain $eV\\cos\\psi$, no vertical focusing or phase-stability dynamics, and a simple model of the frequency drive; the numbers are illustrative."
+      },
+      "targetRead": {
+        "statement": "Let $A$ be a real $2\\times2$ matrix with eigenvalues $\\alpha\\pm i\\beta$, $\\beta>0$. Then there is a real invertible $P$ with $P^{-1}AP=\\begin{pmatrix}\\alpha&-\\beta\\\\\\beta&\\alpha\\end{pmatrix}$ (its columns are the real and imaginary parts of a complex eigenvector), and\n$$e^{tA}=e^{\\alpha t}\\,P\\begin{pmatrix}\\cos\\beta t&-\\sin\\beta t\\\\\\sin\\beta t&\\cos\\beta t\\end{pmatrix}P^{-1}.$$\nEvery non-zero solution therefore turns around the origin with angular speed $\\beta$ in the coordinates given by $P$, with period $2\\pi/\\beta$, while its radius is multiplied by $e^{\\alpha t}$: it spirals outward if $\\alpha>0$, inward if $\\alpha<0$, and runs on a closed ellipse if $\\alpha=0$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "$p$ and the revolution frequency **falls** as $1/\\gamma$. A cyclotron whose accelerating voltage alternates at the fixed frequency $qB/m$ therefore loses synchronism as $\\gamma$ rises: the particle arrives at each gap later and later, and when its phase lag p"
+      }
+    },
+    {
+      "source": "fluid-1.2",
+      "target": "ode-2.4",
+      "collection": "fluid",
+      "sourceFile": "content/fluid/ch01.js",
+      "targetFile": "content/ode/ch02.js",
+      "sourceName": "Eulerian and Lagrangian descriptions",
+      "targetName": "Picard–Lindelöf theorem",
+      "status": "refine_target",
+      "assessment": "The source defines particle paths by X_t=u(X,t), but does not assume a spatially Lipschitz velocity or assert the local unique solution theorem. The ODE/IVP definition is the direct formulation prerequisite; a Lipschitz existence theorem would add unsupported hypotheses.",
+      "sourceRead": {
+        "statement": "A flow can be described in two ways. In the **Eulerian** description the unknowns are fields at fixed points of space, $\\mathbf u(\\mathbf x,t)$. In the **Lagrangian** description one follows labelled fluid particles, $\\mathbf x=\\mathbf X(\\mathbf a,t)$ with $\\mathbf X(\\mathbf a,0)=\\mathbf a$, so that $\\partial_t\\mathbf X=\\mathbf u(\\mathbf X,t)$. The velocity seen by a particle is the Eulerian velocity evaluated along its path, $\\mathbf u(\\mathbf X(\\mathbf a,t),t)$, which in general is not the Eulerian record at the point where the particle started.",
+        "idea": "The two records coincide only if the particle never meets a different velocity than the fixed sensor does: the flow must be steady (so that time does not change the field) and uniform (so that moving does not either). Otherwise the particle record mixes the time dependence of the field with the spatial variation it sweeps through, and that mixture is what the material derivative (1.3) packages. Given $\\mathbf u$ the Lagrangian description follows by solving an ODE; given $\\mathbf X$ the Eulerian one follows by differentiating.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "Let $f$ be continuous on the box $R=\\{|t-t_0|\\le a,\\ |x-x_0|\\le b\\}\\subset\\R\\times\\R^n$ and Lipschitz in $x$ on $R$ with constant $L$. Put $M=\\max_R|f|$ and $\\delta=\\min(a,b/M)$. Then the initial value problem $\\dot x=f(t,x)$, $x(t_0)=x_0$ has exactly one solution on $[t_0-\\delta,t_0+\\delta]$. Equivalently, the Picard map $P\\varphi=x_0+\\int_{t_0}^tf(s,\\varphi(s))\\,ds$ is a contraction on the complete metric space $C([t_0-\\delta,t_0+\\delta])$ with the weighted norm $\\|u\\|_w=\\sup_t e^{-2L|t-t_0|}|u(t)|$, with contraction factor $\\tfrac12$."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner replaces ode-2.4 with ode-1.1, mirroring syllabus and energy ledger."
+    },
+    {
+      "source": "fluid-2.6",
+      "target": "vcalc-4.9",
+      "collection": "fluid",
+      "sourceFile": "content/fluid/ch02.js",
+      "targetFile": "content/vcalc/ch04-b.js",
+      "sourceName": "Stability of floating bodies: the metacentre",
+      "targetName": "Mass, centre of mass and moments of inertia",
+      "status": "accepted",
+      "assessment": "The displaced wedge first moment and waterplane second moment are exactly weighted coordinate integrals. Taking density one makes the target mass moment an area moment, so the metacentric ratio I/V is dimensionally and semantically appropriate.",
+      "sourceRead": {
+        "statement": "A body floating in equilibrium is stable against small rotations exactly when its metacentre $M$ lies above its centre of mass $G$, i.e. the metacentric height $\\overline{GM}=\\overline{BM}-\\overline{BG}$ is positive. Here $B$ is the centre of buoyancy and $\\overline{BM}=I/V$, where $I$ is the second moment of the waterplane area about its axis of tilt and $V$ the displaced volume. After a small tilt $\\varphi$ the weight at $G$ and the buoyancy at $B$ form a couple with arm $\\overline{GZ}\\approx\\overline{GM}\\sin\\varphi$, which restores the body if $\\overline{GM}>0$ and overturns it if $\\overline{GM}<0$.",
+        "idea": "When the body tilts, the immersed wedge on one side is exchanged for the emerged wedge on the other, and the centre of buoyancy $B$ moves sideways by $\\overline{BM}\\,\\varphi$ with $\\overline{BM}=I/V$ (the first moment of the exchanged wedges). The vertical through the new $B$ meets the body’s axis in $M$, to first order independent of $\\varphi$. Torque balance about $G$ (the rotation analysis of 2.5, with equilibrium stability read off from the sign of the restoring torque) then gives a restoring couple $W\\,\\overline{GM}\\,\\varphi$.",
+        "scope": "Two-dimensional rectangular section of density below that of the fluid, static heel angles; the rolling animation uses damped rigid rotation with no added mass or wave forces."
+      },
+      "targetRead": {
+        "statement": "A lamina occupying a region $D\\subset\\R^2$ with continuous mass density $\\rho(x,y)\\ge0$ has\n- **mass** $M=\\iint_D\\rho\\,dA$;\n- **centre of mass** $(\\bar x,\\bar y)=\\frac1M\\bigl(\\iint_D x\\rho\\,dA,\\ \\iint_D y\\rho\\,dA\\bigr)$;\n- **moment of inertia** about the axis $\\ell$: $I_\\ell=\\iint_D \\operatorname{dist}(p,\\ell)^2\\,\\rho\\,dA$ (for a line through a point $q$ with direction $(\\cos\\alpha,\\sin\\alpha)$ this is $\\iint[(x-q_x)\\sin\\alpha-(y-q_y)\\cos\\alpha]^2\\rho\\,dA$).\n\nProperties: the total torque of gravity about the centre of mass is zero (the lamina balances on a pin there), and for parallel axes $I_\\ell=I_{\\ell,\\mathrm{cm}}+M\\,d^2$ where $d$ is the distance between the axis $\\ell$ and the parallel axis through the centre of mass (the **parallel-axis theorem**). The same definitions hold in $\\R^3$ with $\\iiint$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "s by $\\overline{BM}\\,\\varphi$ with $\\overline{BM}=I/V$ (the first moment of the exchanged wedges). The vertical through the new $B$ meets the body’s axis in $M$, to first order independent of $\\varphi$. Torque balance about $G$ (the rotation analysis of 2.5, wit"
+      }
+    },
+    {
+      "source": "fluid-3.5",
+      "target": "pde-1.5",
+      "collection": "fluid",
+      "sourceFile": "content/fluid/ch03.js",
+      "targetFile": "content/pde/ch01.js",
+      "sourceName": "Biot–Savart law for vorticity",
+      "targetName": "Laplace’s and Poisson’s equations as steady states",
+      "status": "accepted",
+      "assessment": "The source derives -Delta A=omega componentwise. The target supplies the Poisson-equation definition, which is a direct formulation ingredient. It does not supply the unbounded-space Newtonian Green function, and the ledger must not treat it as that stronger inversion theorem.",
+      "sourceRead": {
+        "statement": "In an incompressible fluid that is at rest at infinity and has no interior boundaries, the velocity is fixed by the vorticity distribution:\n$$\\mathbf u(\\mathbf x)=\\frac1{4\\pi}\\int\\frac{\\boldsymbol\\omega(\\mathbf x')\\times(\\mathbf x-\\mathbf x')}{|\\mathbf x-\\mathbf x'|^3}\\,dV'.$$\nFor a thin vortex filament $C$ of circulation $\\Gamma$ this becomes $\\mathbf u(\\mathbf x)=\\dfrac{\\Gamma}{4\\pi}\\oint_C\\dfrac{d\\mathbf l'\\times(\\mathbf x-\\mathbf x')}{|\\mathbf x-\\mathbf x'|^3}$. It is the same formula that gives the magnetic field of a current, with $\\boldsymbol\\omega$ playing the role of the current density and $\\mathbf u$ that of $\\mathbf B$; a straight infinite filament gives a swirl of speed $\\Gamma/(2\\pi r)$, and a circular ring of radius $R$ gives $\\Gamma R^2/\\big(2(R^2+z^2)^{3/2}\\big)$ along its axis.",
+        "idea": "Incompressibility lets one write $\\mathbf u=\\nabla\\times\\mathbf A$ with $\\nabla\\cdot\\mathbf A=0$, and then $\\boldsymbol\\omega=\\nabla\\times\\nabla\\times\\mathbf A=-\\nabla^2\\mathbf A$. Each component of $\\mathbf A$ solves a Poisson equation whose solution is the convolution of $\\boldsymbol\\omega$ with the free-space Green's function $1/(4\\pi|\\mathbf x|)$ (Laplace's equation, 4.2, is the homogeneous case). Taking the curl of the result differentiates $1/|\\mathbf x-\\mathbf x'|$ and produces the cross-product kernel. So the velocity at a point is a weighted sum over all the vorticity in the flow, falling off as the inverse square of distance.",
+        "scope": "Unbounded incompressible flow with vorticity of finite extent. Near a real filament of finite core size the formula diverges logarithmically, so the picture stays outside a distance of a few core radii; inside walls the velocity also needs an irrotational correction."
+      },
+      "targetRead": {
+        "statement": "Let a plate occupy a region $\\Omega\\subset\\mathbb R^2$ with temperature $u(x,y,t)$ obeying $u_t=k\\,\\Delta u+f$, where $f$ is a heat source per unit heat capacity. If the boundary temperature and the source do not depend on time and the solution settles, the limit $u_\\infty(x,y)$ has $u_t=0$, i.e. it solves **Poisson's equation** $-\\Delta u=f/k$ (and **Laplace's equation** $\\Delta u=0$ when $f=0$), with the prescribed boundary values. The equation is the same in electrostatics ($-\\Delta\\varphi=\\rho/\\varepsilon_0$) and for the equilibrium height of a stretched membrane."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "-\\nabla^2\\mathbf A$. Each component of $\\mathbf A$ solves a Poisson equation whose solution is the convolution of $\\boldsymbol\\omega$ with the free-space Green's function $1/(4\\pi|\\mathbf x|)$ (Laplace's equation, 4.2, is the homogeneous case). Taking the curl of th"
+      }
+    },
+    {
+      "source": "xtal-1.1",
+      "target": "ladr-2.26",
+      "collection": "xtal",
+      "sourceFile": "content/xtal/ch01.js",
+      "targetFile": "content/ladr/ch02.js",
+      "sourceName": "Lattice, basis and crystal structure",
+      "targetName": "Basis",
+      "status": "accepted",
+      "assessment": "The target is used for the independent real coordinate vectors generating the lattice, not for the atom motif also called a crystallographic basis. The owner reason explicitly distinguishes these two meanings; no same-word equivocation remains.",
+      "sourceRead": {
+        "statement": "A **lattice** is the set of all points $n_1\\mathbf a_1+n_2\\mathbf a_2+n_3\\mathbf a_3$ with integer $n_i$, for three independent vectors $\\mathbf a_i$ (two in the plane). A **basis** (motif) is a finite group of atoms with fixed positions relative to a lattice point. A **crystal structure** is the lattice with a copy of the basis attached to every lattice point: lattice $+$ basis $=$ structure. The lattice records only the translational symmetry; the basis says what is repeated. Different bases on the same lattice give different structures with the same translations.",
+        "idea": "If $\\mathbf t$ is a lattice vector, shifting the whole pattern by $\\mathbf t$ lands every atom on an atom of the same kind, so $\\mathbf t$ is a symmetry. Conversely any translation that maps the structure to itself must carry the origin atom to some atom of that kind, and the set of all such translations is closed under addition, hence a lattice. The choice of basis vectors is not unique (the same lattice has infinitely many bases) and an atom need not sit on a lattice point; what is fixed is the lattice itself. If the basis happens to repeat inside the cell — two identical atoms offset by half a cell vector — the true lattice is finer than the one first drawn.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "A *basis* of $V$ is a list of vectors in $V$ that is linearly independent and spans $V$.\n\nFor example, $e_1,\\dots,e_n$ is a basis of $\\mathbf F^n$, called the *standard basis*; $(1,2),(3,5)$ is another basis of $\\mathbf F^2$; and $1,z,\\dots,z^m$ is a basis of $\\mathcal P_m(\\mathbf F)$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "_2\\mathbf a_2+n_3\\mathbf a_3$ with integer $n_i$, for three independent vectors $\\mathbf a_i$ (two in the plane). A **basis** (motif) is a finite group of atoms with fixed positions relative to a lattice point. A **crystal structure** is the lattice with a copy of the "
+      }
+    },
+    {
+      "source": "xtal-3.8",
+      "target": "top-2.21",
+      "collection": "xtal",
+      "sourceFile": "content/xtal/ch03-b.js",
+      "targetFile": "content/top/ch02-c.js",
+      "sourceName": "Wyckoff positions and site symmetry",
+      "targetName": "Group actions and orbit spaces",
+      "status": "accepted",
+      "assessment": "Space-group operations act on positions, and modding out lattice translations gives the finite action on positions in one cell. The target defines actions and orbits needed by the statement. It does not itself prove the separate orbit-stabilizer numerical formula.",
+      "sourceRead": {
+        "statement": "Let $G$ be a space group. The **site symmetry group** of a point $\\mathbf x$ is the subgroup of operations of $G$ that fix $\\mathbf x$ (up to lattice translations). A point is in **general position** if its site symmetry is the identity alone; otherwise it is in a **special position**, and its images under $G$ coincide in groups, so the orbit has fewer points. The **multiplicity** of a position is the number of distinct points of its orbit in one cell, $|G/\\text{lattice}|\\,/\\,|\\text{site symmetry}|$. The special positions of a space group fall into finitely many families, the **Wyckoff positions**, labelled by multiplicity and a letter in alphabetical order from the highest-symmetry position (a) to the general position (the last letter), e.g. $4c$ with site symmetry $.m.$ in $Pnma$. A position may be a fixed point, a line or a plane, with one, two or three free coordinates; atoms of a crystal structure sit on whole orbits, so the atom count of a cell is a sum of multiplicities.",
+        "idea": "The images of a point $\\mathbf x$ under $G$ form an orbit, and orbit–stabiliser theory says that the orbit size is the group order divided by the order of the stabiliser, which here is the site symmetry. Only points on symmetry elements have a non-trivial stabiliser: a mirror plane fixes the points on it (site symmetry $m$, multiplicity half the general one), an axis fixes the points on it (site symmetry the cyclic group of the axis), an inversion centre fixes itself. Crossing several elements gives bigger stabilisers and smaller orbits. Wyckoff (1922) tabulated the special positions of all 230 groups; modern tables (International Tables A) list them with their coordinates and site symmetries.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "A (continuous) **action** of a topological group $G$ on a space $X$ is a continuous map $G\\times X\\to X$, $(g,x)\\mapsto g\\cdot x$, with $e\\cdot x=x$ and $g\\cdot(h\\cdot x)=(gh)\\cdot x$. The **orbit space** $X/G$ is the quotient of $X$ by $x\\sim g\\cdot x$. For example $\\R^2/\\Z^2\\cong T^2$ (translations), $\\R/\\Z\\cong S^1$, $\\R^2/\\Z\\cong S^1\\times\\R$, $S^n/\\{\\pm1\\}=\\R P^n$, and $\\R^2/(\\Z/n)$ (rotations by $2\\pi/n$) is a cone, homeomorphic to $\\R^2$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "tion**, and its images under $G$ coincide in groups, so the orbit has fewer points. The **multiplicity** of a position is the number of distinct points of its orbit in one cell, $|G/\\text{lattice}|\\,/\\,|\\text{site symmetry}|$. The special positions of a s"
+      }
+    },
+    {
+      "source": "xtal-3.9",
+      "target": "geog-5.2",
+      "collection": "xtal",
+      "sourceFile": "content/xtal/ch03-b.js",
+      "targetFile": "content/geog/ch05.js",
+      "sourceName": "Stereographic projection",
+      "targetName": "Stereographic projection: conformal, circles to circles",
+      "status": "accepted",
+      "assessment": "The target proves conformality and circle/line preservation for stereographic projection onto a tangent plane. The crystallographic equatorial-plane convention differs by uniform scaling and choice of pole, preserving exactly those properties. The target is a geometric construction applied to crystal-direction diagrams, not merely an analogy with maps.",
+      "sourceRead": {
+        "statement": "The **stereographic projection** maps a direction $(x,y,z)$ on the unit sphere with $z\\ge0$ to the point $(X,Y)=\\bigl(\\tfrac{x}{1+z},\\tfrac{y}{1+z}\\bigr)$ of the equatorial plane, by projecting from the south pole; directions with $z<0$ are plotted at $\\bigl(\\tfrac{x}{1-z},\\tfrac{y}{1-z}\\bigr)$ as open circles. It has three properties that make it the standard picture of crystal symmetry: it **preserves angles** between curves on the sphere; it maps every **circle on the sphere to a circle** (or a line) in the plane, so the plane (zone) through two face normals appears as an arc; and the projection of the **poles** (normals) of the faces of a crystal is a pattern with the symmetry of its point group. The projection does not preserve areas. To measure the angle between two poles one turns a tracing of the stereogram about its centre until both lie on one meridian of the **Wulff net** (the projection of a grid of meridians and parallels whose polar axis lies in the plane) and counts the degrees along that meridian.",
+        "idea": "With centre the south pole $S$ and radius $\\sqrt2$, inversion maps the sphere onto the equatorial plane in exactly this way ($|SP|\\,|SP'|=2$), and inversions are conformal and send circles to circles. So the images of the great circles through two poles $P,Q$ are the circles through $P'$, $Q'$ and the antipodal pair on the primitive circle, and the angle between two such circles at $P'$ equals the dihedral angle between the planes. The net works because a meridian of a sphere whose polar axis lies in the projection plane is a great circle and the latitudes along it are the angles measured on that great circle; rotating the sheet only turns the sphere about the viewing axis, which changes no angle. For crystals, the poles of the planes $(hkl)$ are the directions of $h\\mathbf a^*+k\\mathbf b^*+l\\mathbf c^*$, so the angles of the pattern depend on the cell (for example $c/a$) only through the reciprocal lattice.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "The **stereographic projection** projects the sphere of radius $R$ from the point $N$ antipodal to the map centre $P_0$ onto the plane tangent at $P_0$. A point at angular distance $c$ from $P_0$ goes to\n$$r = 2R\\tan\\frac c2,\\qquad \\text{azimuth preserved},$$\nand the scale is the same in every direction, $h = k = \\sec^2\\frac c2$. Hence the projection is **conformal**, and:\n\n(a) every circle on the sphere (a small circle of any radius, not only a parallel) maps to a **circle** in the plane, or to a **straight line** when the circle passes through $N$;\n\n(b) its inverse sends the plane to the sphere minus $N$ bijectively, so the sphere with $N$ added is the plane with a point at infinity — the Riemann sphere (rca-13.1). In general, the image of a spherical circle's centre is not the centre of its planar image."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "e in exactly this way ($|SP|\\,|SP'|=2$), and inversions are conformal and send circles to circles. So the images of the great circles through two poles $P,Q$ are the circles through $P'$, $Q'$ and the antipodal pair on the primitive circle, and the angle betw"
+      }
+    },
+    {
+      "source": "xtal-3.10",
+      "target": "rep-3.3",
+      "collection": "xtal",
+      "sourceFile": "content/xtal/ch03-b.js",
+      "targetFile": "content/rep/ch03.js",
+      "sourceName": "Neumann’s principle",
+      "targetName": "Characters of sums, tensors, duals and squares",
+      "status": "accepted",
+      "assessment": "The invariant symmetric rank-two tensor representation has character one half of (tr R)^2+tr(R^2), exactly the target symmetric-square character formula. Real orthogonal crystal matrices may be complexified without changing this invariant dimension.",
+      "sourceRead": {
+        "statement": "**Neumann's principle.** The symmetry group of any macroscopic physical property of a crystal contains the point group of the crystal: if $R$ is an operation of the crystal's point group, then the property is unchanged when the crystal is transformed by $R$. For a property described by a symmetric polar second-rank tensor $K$ (electrical or thermal conductivity, permittivity, thermal expansion, …) this means $K=RKR^{\\mathsf T}$ for every matrix $R$ of the point group, which restricts the number of independent components: **1** for the cubic groups (the property is isotropic), **2** for tetragonal, trigonal and hexagonal crystals (uniaxial: $K_{\\parallel}\\neq K_\\perp$), **3** for orthorhombic, **4** for monoclinic and **6** for triclinic crystals. The principle limits the symmetry of a property from below: the property may be *more* symmetric than the crystal (every polar second-rank tensor property is centrosymmetric, whatever the crystal), never less. It applies to properties of the crystal as a continuum, not to the positions of its atoms, and not to a crystal under a field that breaks its symmetry.",
+        "idea": "A symmetry operation $R$ of the crystal maps the crystal onto itself, so a measurement made on the transformed crystal gives the same result as on the original; but the transformed crystal gives the transformed tensor, $RKR^{\\mathsf T}$, so these two must be equal. Averaging over the group, $\\bar K=\\tfrac1{|G|}\\sum_{R}RKR^{\\mathsf T}$, produces a tensor that obeys the condition (the group property makes it invariant) and equals $K$ exactly when $K$ obeyed it already; hence the invariant tensors form the image of the averaging operator, whose dimension is $\\tfrac1{|G|}\\sum_R\\tfrac12(\\operatorname{tr}^2R+\\operatorname{tr}R^2)$ (the average of a character). The group average is a projection onto the invariant tensor subspace.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "For representations $V,W$ of $G$ with characters $\\chi_V,\\chi_W$ and $g\\in G$:\n- $\\chi_{V\\oplus W}(g)=\\chi_V(g)+\\chi_W(g)$;\n- $\\chi_{V\\otimes W}(g)=\\chi_V(g)\\,\\chi_W(g)$;\n- $\\chi_{V^*}(g)=\\overline{\\chi_V(g)}$;\n- $\\chi_{\\mathrm{Sym}^2V}(g)=\\tfrac12\\big(\\chi_V(g)^2+\\chi_V(g^2)\\big)$ and $\\chi_{\\Lambda^2V}(g)=\\tfrac12\\big(\\chi_V(g)^2-\\chi_V(g^2)\\big)$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "peratorname{tr}^2R+\\operatorname{tr}R^2)$ (the average of a character). The group average is a projection onto the invariant tensor subspace."
+      }
+    },
+    {
+      "source": "xtal-3.10",
+      "target": "rep-3.6",
+      "collection": "xtal",
+      "sourceFile": "content/xtal/ch03-b.js",
+      "targetFile": "content/rep/ch03.js",
+      "sourceName": "Neumann’s principle",
+      "targetName": "Multiplicities from inner products",
+      "status": "accepted",
+      "assessment": "The group-average character equals multiplicity of the trivial representation, exactly the source invariant-tensor dimension formula. The finite crystal point group satisfies the target finite-group hypothesis.",
+      "sourceRead": {
+        "statement": "**Neumann's principle.** The symmetry group of any macroscopic physical property of a crystal contains the point group of the crystal: if $R$ is an operation of the crystal's point group, then the property is unchanged when the crystal is transformed by $R$. For a property described by a symmetric polar second-rank tensor $K$ (electrical or thermal conductivity, permittivity, thermal expansion, …) this means $K=RKR^{\\mathsf T}$ for every matrix $R$ of the point group, which restricts the number of independent components: **1** for the cubic groups (the property is isotropic), **2** for tetragonal, trigonal and hexagonal crystals (uniaxial: $K_{\\parallel}\\neq K_\\perp$), **3** for orthorhombic, **4** for monoclinic and **6** for triclinic crystals. The principle limits the symmetry of a property from below: the property may be *more* symmetric than the crystal (every polar second-rank tensor property is centrosymmetric, whatever the crystal), never less. It applies to properties of the crystal as a continuum, not to the positions of its atoms, and not to a crystal under a field that breaks its symmetry.",
+        "idea": "A symmetry operation $R$ of the crystal maps the crystal onto itself, so a measurement made on the transformed crystal gives the same result as on the original; but the transformed crystal gives the transformed tensor, $RKR^{\\mathsf T}$, so these two must be equal. Averaging over the group, $\\bar K=\\tfrac1{|G|}\\sum_{R}RKR^{\\mathsf T}$, produces a tensor that obeys the condition (the group property makes it invariant) and equals $K$ exactly when $K$ obeyed it already; hence the invariant tensors form the image of the averaging operator, whose dimension is $\\tfrac1{|G|}\\sum_R\\tfrac12(\\operatorname{tr}^2R+\\operatorname{tr}R^2)$ (the average of a character). The group average is a projection onto the invariant tensor subspace.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "Let $V$ be a complex representation of a finite group $G$ with character $\\chi$, and let $W_1,\\dots,W_r$ be the irreducible representations with characters $\\chi_1,\\dots,\\chi_r$. Then $V\\cong\\bigoplus_i W_i^{\\,m_i}$ with $m_i=\\langle\\chi,\\chi_i\\rangle$, so $\\chi=\\sum_i\\langle\\chi,\\chi_i\\rangle\\chi_i$. In particular the multiplicity of the trivial representation is $\\frac1{|G|}\\sum_g\\chi(g)$, and a permutation representation has $\\chi(g)=\\#\\{\\text{points fixed by }g\\}$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "_R\\tfrac12(\\operatorname{tr}^2R+\\operatorname{tr}R^2)$ (the average of a character). The group average is a projection onto the invariant tensor subspace."
+      }
+    },
+    {
+      "source": "mat-1.5",
+      "target": "ladr-9.88",
+      "collection": "mat",
+      "sourceFile": "content/mat/ch01.js",
+      "targetFile": "content/ladr/ch09-h.js",
+      "sourceName": "Anisotropy of single crystals",
+      "targetName": "Tensor product V₁ ⊗ ⋯ ⊗ V_m",
+      "status": "accepted",
+      "assessment": "The directional compliance uses a fourth-rank tensor contracted with four copies of the direction vector. The target supplies the multilinear tensor-product definition and coordinate products. This is a formulation prerequisite, not the anisotropic elasticity law itself.",
+      "sourceRead": {
+        "statement": "The stiffness of a single crystal depends on direction because the density and strength of bonds do. For a cubic crystal with stiffnesses $C_{11},C_{12},C_{44}$ (compliances $S_{ij}$), the Young's modulus along a direction with unit vector $\\mathbf n=(n_1,n_2,n_3)$ is\n$$\\frac1{E(\\mathbf n)}=S_{11}-2\\Big(S_{11}-S_{12}-\\tfrac12S_{44}\\Big)\\big(n_1^2n_2^2+n_2^2n_3^2+n_3^2n_1^2\\big).$$\nIt is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equals $1$. Otherwise the extremes are along $\\langle100\\rangle$ and $\\langle111\\rangle$: copper ($A\\approx3.2$) is three times stiffer along the body diagonal than along the cube edge, tungsten ($A\\approx1$) is nearly isotropic. A polycrystal with randomly oriented grains averages these values between the Voigt (equal strain) and Reuss (equal stress) bounds.",
+        "idea": "Each direction in the crystal presents a different arrangement of bonds to the load: along $\\langle111\\rangle$ in fcc copper the dense close-packed atom rows carry the stress, along $\\langle100\\rangle$ the load must bend the bonds sideways. The formula follows from rotating the fourth-rank compliance tensor, which for cubic symmetry depends on the single combination $n_1^2n_2^2+\\dots$. Averaging over all orientations gives the isotropic polycrystal modulus quoted in handbooks, and it lies between the extremes along the axes, as the Voigt and Reuss averages show.",
+        "scope": "Cubic crystals at room temperature, small strain. Single-crystal stiffnesses: Cu, Al, Fe, Ni from a published table of cubic materials, W from ultrasonic interferometry, Nb from the literature; the polycrystal moduli are handbook values."
+      },
+      "targetRead": {
+        "statement": "Suppose $V_1, \\dots, V_m$ are finite-dimensional ($m \\ge 2$).\n- The **tensor product** $V_1 \\otimes \\cdots \\otimes V_m$ is the space $\\mathcal B(V_1', \\dots, V_m')$ of $m$-linear functionals on $V_1' \\times \\cdots \\times V_m'$.\n- For $v_1 \\in V_1, \\dots, v_m \\in V_m$, the element $v_1 \\otimes \\cdots \\otimes v_m$ of $V_1 \\otimes \\cdots \\otimes V_m$ is defined by\n$$(v_1 \\otimes \\cdots \\otimes v_m)(\\varphi_1, \\dots, \\varphi_m) = \\varphi_1(v_1) \\cdots \\varphi_m(v_m) \\qquad \\text{for } (\\varphi_1, \\dots, \\varphi_m) \\in V_1' \\times \\cdots \\times V_m'.$$"
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "d the bonds sideways. The formula follows from rotating the fourth-rank compliance tensor, which for cubic symmetry depends on the single combination $n_1^2n_2^2+\\dots$. Averaging over all orientations gives the isotropic polycrystal modulus quoted in handbooks"
+      }
+    },
+    {
+      "source": "mat-3.2",
+      "target": "solid-2.9",
+      "collection": "mat",
+      "sourceFile": "content/mat/ch03.js",
+      "targetFile": "content/solid/ch02-b.js",
+      "sourceName": "Edge and screw dislocations",
+      "targetName": "Plane stress and plane strain",
+      "status": "accepted",
+      "assessment": "The source explicitly identifies the edge-dislocation displacement with the plane-strain solution of isotropic elasticity away from the core. The target defines that reduction and its out-of-plane stress; it is a genuine mechanical constituent of the crystal-defect field.",
+      "sourceRead": {
+        "statement": "A **dislocation** is a line defect that bounds a region of a crystal that has slipped by a lattice vector $\\mathbf b$ from a region that has not. If $\\mathbf b$ is perpendicular to the dislocation line, it is an **edge** dislocation: the lattice looks like an extra half-plane of atoms ending at the line, with compressed lattice on its side and stretched lattice on the other. If $\\mathbf b$ is parallel to the line it is a **screw** dislocation: the lattice planes perpendicular to the line are joined into a single helical ramp, so that circling the line once climbs one plane. In general a dislocation line is curved and has mixed character; $\\mathbf b$ stays the same all along it.",
+        "idea": "Cut the crystal along a half-plane ending on the line, displace the two faces relative to each other by a lattice vector, and glue them back: the atoms far from the line again sit on perfect lattice sites, and only a thin tube around the line is distorted. This is Volterra's construction, and its elastic field follows from the displacement $u\\propto\\theta$ (screw) or from the plane-strain solution (edge). Here the displacement field of the isotropic-elasticity solution is applied to a square array of atoms (so the lattice, the extra half-plane and the strain colours are a real calculation, not a sketch). Because $\\mathbf b$ is a lattice vector, the stored distortion costs only elastic energy (3.6).",
+        "scope": "Displacements use isotropic linear elasticity (Poisson ratio adjustable), valid away from the core; the core itself is only drawn schematically (a real core relaxes with the atomic potential)."
+      },
+      "targetRead": {
+        "statement": "Two reductions of the three-dimensional equations to the $xy$-plane. **Plane stress**: $\\sigma_z=\\tau_{xz}=\\tau_{yz}=0$ (a thin plate loaded in its own plane); then $\\varepsilon_z=-\\frac{\\nu}{E}(\\sigma_x+\\sigma_y)\\neq0$ and\n$$\\varepsilon_x=\\frac{\\sigma_x-\\nu\\sigma_y}{E},\\quad \\varepsilon_y=\\frac{\\sigma_y-\\nu\\sigma_x}{E}.$$\n**Plane strain**: $\\varepsilon_z=\\gamma_{xz}=\\gamma_{yz}=0$ (a long body with fixed ends or constant cross-section loaded across it); then $\\sigma_z=\\nu(\\sigma_x+\\sigma_y)\\ne0$ and\n$$\\varepsilon_x=\\frac{1-\\nu^2}{E}\\Big(\\sigma_x-\\frac{\\nu}{1-\\nu}\\sigma_y\\Big),\\quad \\varepsilon_y=\\frac{1-\\nu^2}{E}\\Big(\\sigma_y-\\frac{\\nu}{1-\\nu}\\sigma_x\\Big).$$\nPlane strain is plane stress with $E\\to E/(1-\\nu^2)$ and $\\nu\\to\\nu/(1-\\nu)$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "hbf b$ is perpendicular to the dislocation line, it is an **edge** dislocation: the lattice looks like an extra half-plane of atoms ending at the line, with compressed lattice on its side and stretched lattice on the other. If $\\mathbf b$ is parallel to "
+      }
+    },
+    {
+      "source": "mat-3.6",
+      "target": "solid-1.14",
+      "collection": "mat",
+      "sourceFile": "content/mat/ch03.js",
+      "targetFile": "content/solid/ch01-b.js",
+      "sourceName": "Dislocation strain energy ∝ Gb²",
+      "targetName": "Strain energy of a bar",
+      "status": "remove_narrow_target",
+      "assessment": "The target gives an axial bar with u=sigma^2/(2E). The source needs shear and multiaxial plane-strain energy around a dislocation, including the edge factor 1/(1-nu). The uniaxial formula is an analogy and cannot supply that constitutive energy density. Cylindrical integration remains a valid separate prerequisite.",
+      "sourceRead": {
+        "statement": "In isotropic linear elasticity the strain energy stored per unit length of a straight dislocation, between the core radius $r_0$ and an outer radius $R$, is $$W=\\frac{Gb^2}{4\\pi(1-\\nu)}\\ln\\frac{R}{r_0}\\ \\ (\\text{edge}),\\qquad W=\\frac{Gb^2}{4\\pi}\\ln\\frac{R}{r_0}\\ \\ (\\text{screw}).$$ It grows only logarithmically with the size of the region but quadratically with $|\\mathbf b|$, so $W\\approx\\tfrac12Gb^2$ to $Gb^2$ is the usual rule of thumb. Consequently a dislocation line behaves as if it had a **line tension** $T\\approx\\tfrac12Gb^2$, and a dislocation of Burgers vector $\\mathbf b_1$ lowers its energy by splitting into $\\mathbf b_2+\\mathbf b_3=\\mathbf b_1$ whenever $b_2^2+b_3^2<b_1^2$ (Frank's rule).",
+        "idea": "Around the line the strain falls like $b/(2\\pi r)$ so the energy density $\\tfrac12 G\\epsilon^2$ falls like $b^2/r^2$; integrating over rings of area $2\\pi r\\,dr$ gives $\\int dr/r=\\ln(R/r_0)$ and the prefactor $Gb^2$. The edge line's extra $1/(1-\\nu)$ comes from its additional normal-stress components. Since $b$ is fixed by the lattice, the shortest lattice vectors give the cheapest dislocations (3.4), and a line segment lowers its energy by shortening, which is the origin of its line tension and of the bowing in 3.7.",
+        "scope": "Isotropic elasticity, a straight infinite line; the logarithm needs a core cutoff $r_0\\approx b$ to $4b$ (the core's non-linear energy is not included) and an outer cutoff $R$ set by the spacing of other dislocations or the crystal size. The default $G=45$ GPa for copper agrees with a handbook value near 44.7 GPa; $b=a/\\sqrt2$ with $a=0.3615$ nm."
+      },
+      "targetRead": {
+        "statement": "The work done by an axial force $P$ that is applied slowly while the bar elongates by $\\delta$ is stored as **strain energy**\n$$U = \\int_0^{\\delta} P\\,\\mathrm{d}\\delta' ,$$\nthe area under the force–elongation curve. For a linearly elastic bar ($P = k\\delta$, $k = EA/L$) this is\n$$U = \\tfrac12 P\\delta = \\frac{P^2L}{2EA} = \\tfrac12 k\\delta^2 = \\frac{\\sigma^2}{2E}\\,AL ,$$\nso the energy per unit volume is $u = \\sigma^2/2E = \\tfrac12\\sigma\\varepsilon$. In an elastic bar all of it is recovered on unloading (the bar springs back); the value at the yield stress, $\\sigma_y^2/2E$, is the **modulus of resilience**. If the material has yielded, only the elastic part $\\sigma^2/2E$ is recovered along the unloading line, and the rest of the area is dissipated as heat."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner removes solid-1.14 from chapter, syllabus and ledger; no replacement inserted to retain quota."
+    },
+    {
+      "source": "mat-4.5",
+      "target": "opt-1.6",
+      "collection": "mat",
+      "sourceFile": "content/mat/ch04-b.js",
+      "targetFile": "content/opt/ch01-b.js",
+      "sourceName": "Hollomon’s strain-hardening law",
+      "targetName": "Least squares as an optimization problem",
+      "status": "accepted",
+      "assessment": "The source explicitly fits ln(sigma)=ln(K)+n ln(epsilon_p) by least squares. The target line-fit special case supplies precisely the fitted intercept and slope, rather than a calculation incidental to drawing the visualization.",
+      "sourceRead": {
+        "statement": "In the uniform part of a tensile test, the true stress of many metals follows a power law in the true **plastic** strain, $$\\sigma=K\\,\\varepsilon_p^{\\,n},$$ with the **strength coefficient** $K$ (the stress at $\\varepsilon_p=1$) and the **strain-hardening exponent** $n$, typically $0.1$ to $0.5$ for metals. On log–log axes the data fall on a straight line of slope $n$. Combined with the Considère criterion (4.4) the law predicts where the bar necks: neglecting elastic strain and assuming constant volume, the true plastic strain at the force maximum equals $n$, and the tensile strength is $K\\,n^n e^{-n}$ (per unit starting area).",
+        "idea": "Taking logarithms, $\\ln\\sigma=\\ln K+n\\ln\\varepsilon_p$ is the equation of a line, so $n$ and $K$ come from a least-squares fit of $\\ln\\sigma$ against $\\ln\\varepsilon_p$ over the uniform range, from just beyond yield to just before necking. Neglecting the elastic strain, the necking prediction follows from 4.4: $d\\sigma/d\\varepsilon=nK\\varepsilon^{n-1}=K\\varepsilon^n$ at $\\varepsilon=n$. The law is empirical (it has no yield stress, and fails at very small strains where the elastic part matters), so the fitted $n$ depends a little on the window: that sensitivity is exactly what the sliders show.",
+        "scope": "The uniform deformation of a metal that follows a power law, at moderate temperature and strain rate. The \"measurements\" are generated from the elastic–Hollomon model of 4.1 with preset parameters (rounded orders of magnitude) and are not experimental data; the power law is a fit, not a derivation, and different windows give different $n$."
+      },
+      "targetRead": {
+        "statement": "Given a matrix $A\\in\\R^{m\\times n}$ and data $b\\in\\R^m$, the **least-squares problem** is\n$$\\text{minimize } f(x)=\\norm{Ax-b}_2^2=\\sum_{i=1}^m (a_i^{\\mathsf T}x-b_i)^2 ,$$\nan unconstrained problem with a convex quadratic objective. Its minimizers are exactly the solutions of the **normal equations** $A^{\\mathsf T}Ax=A^{\\mathsf T}b$, equivalently $\\nabla f(x)=2A^{\\mathsf T}(Ax-b)=0$: the residual $Ax-b$ is orthogonal to every column of $A$. If $A$ has full column rank the minimizer $x^\\star=(A^{\\mathsf T}A)^{-1}A^{\\mathsf T}b$ is unique. Fitting a line $y\\approx a+bx$ to points $(x_i,y_i)$ is the case $x=(a,b)$ with rows $(1,x_i)$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "on_p$ is the equation of a line, so $n$ and $K$ come from a least-squares fit of $\\ln\\sigma$ against $\\ln\\varepsilon_p$ over the uniform range, from just beyond yield to just before necking. Neglecting the elastic strain, the necking prediction follows fr"
+      }
+    },
+    {
+      "source": "energy-1.6",
+      "target": "fin-1.5",
+      "collection": "energy",
+      "sourceFile": "content/energy/ch01.js",
+      "targetFile": "content/fin/ch01.js",
+      "sourceName": "Levelised cost of energy and discounting",
+      "targetName": "Present value and discount factors",
+      "status": "accepted",
+      "assessment": "The LCOE derivation equates the present value of revenue and cost streams using annual end-of-year factors (1+r)^(-t). The target has the same compounding convention and linear sum of discounted cash flows.",
+      "sourceRead": {
+        "statement": "The **levelised cost of energy** (LCOE) of a plant is the constant price per unit of energy at which its discounted revenues exactly equal its discounted costs over its life, so that the investor earns the discount rate $r$ and no more. With construction cost $C$ (per kW) at time 0, annual operating costs $O_t$ (fixed and variable O&M, fuel) and annual energy $E_t$ for $t = 1,\\dots,N$,\n$$\\text{LCOE} = \\frac{C + \\sum_{t=1}^{N} O_t/(1+r)^t}{\\sum_{t=1}^{N} E_t/(1+r)^t}.$$\nFor constant costs and output this reduces to the annuity form\n$$\\text{LCOE} = \\frac{\\text{CRF}\\cdot C + \\text{FOM}}{8.76\\,\\text{CF}} + \\text{VOM} + h\\,p_{\\text{fuel}}, \\qquad \\text{CRF} = \\frac{r(1+r)^N}{(1+r)^N - 1},$$\nwith fixed O&M in \\$/kW-yr, capacity factor CF, variable O&M in \\$/MWh, heat rate $h$ and fuel price $p_{\\text{fuel}}$. Capital-heavy technologies (solar, wind, nuclear) are the ones whose LCOE is most sensitive to the discount rate; fuel-burning plants are sensitive to the fuel price instead.",
+        "idea": "A kilowatt-hour sold in year 30 is worth less to an investor than one sold in year 1, so both costs and energy are weighted by $(1+r)^{-t}$; setting discounted revenue equal to discounted cost and solving for the price gives the formula. The capital recovery factor CRF is the share of the construction cost that has to be repaid every year, and it rises with $r$: for a 30-year plant it is 3.3% at $r=0$, 8.1% at $r=7\\%$ and 10.1% at $r=9\\%$. A plant that is mostly capital (nuclear: about 80% of its cost) therefore becomes much more expensive when money is expensive, while a gas plant (mostly fuel) barely notices. LCOE is a convenient single number but hides *when* energy is produced: a kWh at 3 a.m. and one at the evening peak are valued the same.",
+        "scope": "This is a plant-level, constant-dollar LCOE with end-of-year cash flows and no taxes, subsidies, inflation, degradation or system integration costs. Capital costs are EIA/Sargent & Lundy overnight estimates for 2023 US dollars, with the interest during construction added from the construction-time slider; the gas and nuclear fuel prices ($3.5 and $0.5 per MMBtu) and the construction times are illustrative round numbers, and offshore wind's 40% capacity factor is illustrative. Real projects differ widely by site and country."
+      },
+      "targetRead": {
+        "statement": "With an interest rate $r$ per year (compounded annually), the **discount factor** for a date $t$ years away is $d(t)=(1+r)^{-t}$: the amount that, invested today, grows to $\\$1$ at time $t$. The **present value** of a cash flow $c$ at time $t$ is $c\\,d(t)$, and the present value of a stream of cash flows $c_{t_1},\\dots,c_{t_n}$ (positive for money received, negative for money paid) is\n$$PV=\\sum_{k} c_{t_k}\\,(1+r)^{-t_k}.$$\nPresent value is linear: the value of a sum of streams is the sum of their values. With continuous compounding $d(t)=e^{-rt}$, and with a term structure of rates each date has its own factor."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "plant is the constant price per unit of energy at which its discounted revenues exactly equal its discounted costs over its life, so that the investor earns the discount rate $r$ and no more. With construction cost $C$ (per kW) at time 0, annual operating costs $O_t$ "
+      }
+    },
+    {
+      "source": "energy-3.3",
+      "target": "thermo-4.12",
+      "collection": "energy",
+      "sourceFile": "content/energy/ch03.js",
+      "targetFile": "content/thermo/ch04-b.js",
+      "sourceName": "Carbon capture and its energy penalty",
+      "targetName": "Chemical potential in mixtures and entropy of mixing",
+      "status": "accepted",
+      "assessment": "The capture-work objective is the change in ideal-gas Gibbs mixing energy between feed and residual/pure streams. The source uses the target ideal-mixture entropy explicitly; physical regeneration heat is separately labelled irreversible and is not equated with reversible work.",
+      "sourceRead": {
+        "statement": "Capturing CO$_2$ from flue gas costs energy for two reasons. First, **thermodynamics**: separating a fraction $r$ of the CO$_2$ present at mole fraction $y$ into a pure stream is an unmixing process whose minimum work, per mole of flue gas at temperature $T$, is\n$$W_{\\min} = RT\\Bigl[(1-ry)\\,h(y') - h(y)\\Bigr],\\quad h(z)=z\\ln z+(1-z)\\ln(1-z),\\quad y'=\\frac{y(1-r)}{1-ry},$$\nwhich for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger the more dilute the stream. Second, **practice**: a representative 30 wt% MEA design uses 3.6 GJ of regeneration heat per tonne captured (the DOE Case 12 comparison reported by RTI in 2022), and the CO$_2$ must then be compressed for transport. Both are paid for by electricity the plant can no longer sell, so the net efficiency falls by several percentage points.",
+        "idea": "The minimum work is the Gibbs free energy of unmixing (the entropy of mixing of ideal gases) — an application of the exergy idea of 2.9: concentrating a dilute component costs work proportional to $RT\\ln(1/y)$. A real solvent plant uses heat, not work, at a temperature near 120 °C, so each gigajoule of steam diverted from the turbine costs only about 0.2 GJ of electricity, but 3.6 GJ of steam per tonne is still more than twenty times the thermodynamic minimum in heat terms, and about five times in electricity terms: the process is far from reversible, and that gap is where research on better solvents works.",
+        "scope": "A schematic coal plant with 90 % post-combustion capture on an amine solvent. The minimum work uses ideal gases at $T = 40^{\\circ}$C and is exact for that assumption; the regeneration duty (3.6 GJ/t is one documented reference design, not a universal MEA range), the steam worth, the compressor efficiency and the 40 % plant efficiency are illustrative round numbers. Published net penalties vary with solvent, integration and plant, so treat the result as an order of magnitude, not a forecast."
+      },
+      "targetRead": {
+        "statement": "In a mixture the **chemical potential** of species $i$ is $\\mu_i = (\\partial G/\\partial N_i)_{T, P, N_{j \\ne i}}$, and $G = \\sum_i N_i\\mu_i$. In an ideal mixture (ideal gases, or ideal solutions) each species behaves as if alone at its mole fraction $x_i = N_i/N$:\n$$\\mu_i(T, P, x_i) = \\mu_i^\\circ(T, P) + kT\\ln x_i,$$\nlower than for the pure substance because $\\ln x_i < 0$. Mixing pure ideal components at fixed $T$ and $P$ therefore changes the entropy and Gibbs energy by\n$$\\Delta S_{\\text{mix}} = -Nk\\sum_i x_i\\ln x_i > 0,\\qquad \\Delta G_{\\text{mix}} = NkT\\sum_i x_i\\ln x_i < 0,$$\nwith no heat and no volume change; for two species the entropy peaks at $Nk\\ln 2$ for $x = 1/2$."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "\nThe minimum work is the Gibbs free energy of unmixing (the entropy of mixing of ideal gases) — an application of the exergy idea of 2.9: concentrating a dilute component costs work proportional to $RT\\ln(1/y)$. A real solvent plant uses heat, not work, at a temperat"
+      }
+    },
+    {
+      "source": "energy-3.8",
+      "target": "ode-3.3",
+      "collection": "energy",
+      "sourceFile": "content/energy/ch03-b.js",
+      "targetFile": "content/ode/ch03.js",
+      "sourceName": "Point reactor kinetics",
+      "targetName": "e^{tA} is the flow of ẋ = Ax",
+      "status": "accepted",
+      "assessment": "The seven-variable point-kinetics system has constant A for each fixed-reactivity segment, so exact propagation by exp(A dt) is the target theorem. Energy-feedback reactivity is not globally constant; the source only calls the piecewise-constant step exact, so the edge does not assert exact propagation of arbitrary nonlinear feedback.",
+      "sourceRead": {
+        "statement": "For a reactor treated as a single point, the neutron population $n(t)$ (relative power) and the concentrations $c_i(t)$ of the six delayed-neutron precursor groups obey\n$$\\frac{dn}{dt} = \\frac{\\rho(t)-\\beta}{\\Lambda}\\,n + \\sum_{i=1}^{6}\\lambda_i c_i,\\qquad \\frac{dc_i}{dt} = \\frac{\\beta_i}{\\Lambda}\\,n - \\lambda_i c_i,$$\nwith $\\beta=\\sum\\beta_i$. For constant $\\rho$ this is a linear system $\\dot y = A y$ with 7 eigenvalues, and the largest, $\\omega$, is the root of the inhour equation $\\rho = \\Lambda\\omega + \\sum_i \\beta_i\\omega/(\\omega+\\lambda_i)$. For a step below prompt critical, a sufficiently separated prompt transient approaches the approximate factor $\\beta/(\\beta-\\rho)$ before delayed evolution dominates; power is continuous in these ODEs. The stable period is $1/\\omega$; for $\\rho>\\beta$ there is no prompt jump to speak of, and the period is of order $\\Lambda/(\\rho-\\beta)$.",
+        "idea": "Neutron balance: of the $k$ neutrons per generation, a fraction $\\beta_i$ is held back in precursor group $i$ and released at rate $\\lambda_i$; the rest return within a time $\\Lambda$. Because the prompt time is so short, the power adjusts almost instantaneously to the \"quasi-static\" level $n\\approx \\beta/(\\beta-\\rho)$ (the prompt jump) while the precursors slowly catch up. The system is stiff (rates from $0.01$ to $10^{4}$ per second), so we propagate it with the exact matrix exponential $y(t+\\Delta t)=e^{A\\Delta t}y(t)$, which is exact for a piecewise-constant reactivity.",
+        "scope": "Zero-dimensional kinetics with six delayed groups and constant $\\Lambda=10^{-4}$ s (adjustable). The feedback option subtracts $\\alpha E$ from the reactivity, with $E$ the energy released since the start in full-power seconds and $\\alpha$ an illustrative coefficient; real feedback involves fuel and coolant temperatures with their own delays. Not valid when the core changes shape or the power gets so high that materials change state."
+      },
+      "targetRead": {
+        "statement": "For a constant matrix $A$ the unique solution of $\\dot x=Ax$, $x(0)=x_0$ is $x(t)=e^{tA}x_0$, defined for all $t\\in\\R$. Consequently the flow $\\Phi_t=e^{tA}$ is a group of invertible linear maps ($\\Phi_{s+t}=\\Phi_s\\Phi_t$, $\\Phi_0=I$) and\n$$\\frac{d}{dt}e^{tA}=Ae^{tA}=e^{tA}A,\\qquad \\det e^{tA}=e^{t\\operatorname{tr}A}.$$\nThe columns of $e^{tA}$ are the solutions starting at the standard basis vectors, so $e^{tA}$ is a fundamental matrix with value $I$ at $t=0$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": " to $10^{4}$ per second), so we propagate it with the exact matrix exponential $y(t+\\Delta t)=e^{A\\Delta t}y(t)$, which is exact for a piecewise-constant reactivity."
+      }
+    },
+    {
+      "source": "solid-1.10",
+      "target": "mech-6.2",
+      "collection": "solid",
+      "sourceFile": "content/solid/ch01-b.js",
+      "targetFile": "content/mech/ch06.js",
+      "sourceName": "Statically indeterminate bars: compatibility",
+      "targetName": "Holonomic constraints and generalized coordinates",
+      "status": "accepted",
+      "assessment": "Rigid-plate equality of member elongations is a position-only holonomic constraint, so the target definition supplies the compatibility relation. No manifold dimension or nonlinear constraint-independence theorem is used to compute the bar loads.",
+      "sourceRead": {
+        "statement": "A bar structure is **statically indeterminate** when equilibrium alone has fewer equations than unknown forces. Such a problem is solved in three steps:\n- **equilibrium**, e.g. for a load $P$ shared between two members, $F_1 + F_2 = P$;\n- **compatibility**: the members must deform in a geometrically consistent way, e.g. two parallel rods joined to a rigid plate stretch equally, $\\delta_1 = \\delta_2$;\n- **force–displacement laws**, $\\delta_i = F_if_i$ with flexibility $f_i = L_i/E_iA_i$ (1.9).\nSubstituting the third into the second gives one more equation and\n$$F_1 = P\\,\\frac{f_2}{f_1+f_2} = P\\,\\frac{k_1}{k_1+k_2},\\qquad F_2 = P\\,\\frac{k_2}{k_1+k_2},\\qquad k_i = \\frac{E_iA_i}{L_i}:$$\nthe load divides in proportion to the stiffnesses. The same recipe solves a bar fixed at both ends and loaded at an intermediate point: $R_A + R_B = P$ and zero total elongation $R_A f_1 = R_B f_2$.",
+        "idea": "Statics gives one line of admissible force pairs $(F_1, F_2)$; geometry gives another line (compatibility), and the real structure sits where the two cross. The stiffer member carries more of the load because it resists the common displacement more strongly. Note that the answer depends on $E$ and $A$, unlike in a determinate structure, where the member forces depend on geometry alone; this is why a redundant member makes the stress state depend on the materials, and why temperature changes or misfits (1.11) can stress an indeterminate structure with no load at all.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "A **holonomic constraint** is a relation $f(\\mathbf r_1,\\dots,\\mathbf r_N,t) = 0$ among the positions (and possibly the time) alone. Suppose $k$ such constraints have linearly independent gradients at every point of their common zero set. Then the zero set is a smooth manifold of dimension $n = 3N-k$, and near each of its points it can be described by $n$ independent **generalized coordinates** $q_1,\\dots,q_n$,\n$$\\mathbf r_i = \\mathbf r_i(q_1,\\dots,q_n,t),\\qquad i = 1,\\dots,N,$$\na smooth one-to-one parametrisation (a chart) whose Jacobian has rank $n$. Any $n$ such functions will do — angles, arc lengths, distances — and two charts are related by a smooth invertible change of variables. Where the gradients become dependent (for one constraint: where $\\nabla f = 0$) the conclusion can fail."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "a load $P$ shared between two members, $F_1 + F_2 = P$;\n- **compatibility**: the members must deform in a geometrically consistent way, e.g. two parallel rods joined to a rigid plate stretch equally, $\\delta_1 = \\delta_2$;\n- **force–displacement laws**, $\\delta_i"
+      }
+    },
+    {
+      "source": "solid-2.6",
+      "target": "pma-10.39",
+      "collection": "solid",
+      "sourceFile": "content/solid/ch02.js",
+      "targetFile": "content/pma/ch10-b2.js",
+      "sourceName": "Saint-Venant compatibility conditions",
+      "targetName": "Poincaré lemma: closed forms are exact in convex sets",
+      "status": "refine_target",
+      "assessment": "The source asserts global displacement reconstruction on a simply connected region. The target only states closed forms exact on a convex region. Local convex patches alone do not state the required global path independence; a matching written curl-free/gradient converse exists.",
+      "sourceRead": {
+        "statement": "Let $\\varepsilon_{ij}(\\mathbf x)$ be a $C^2$ symmetric tensor field on a simply connected region. There is a displacement field $\\mathbf u$ with $\\varepsilon_{ij}=\\tfrac12(u_{i,j}+u_{j,i})$ **if and only if** the compatibility conditions hold,\n$$\\varepsilon_{ij,kl}+\\varepsilon_{kl,ij}-\\varepsilon_{ik,jl}-\\varepsilon_{jl,ik}=0 .$$\nIn the plane they reduce to one equation,\n$$\\frac{\\partial^2\\varepsilon_{xx}}{\\partial y^2}+\\frac{\\partial^2\\varepsilon_{yy}}{\\partial x^2}=\\frac{\\partial^2\\gamma_{xy}}{\\partial x\\,\\partial y}.$$\n(In a region with holes the conditions are necessary but not sufficient: the displacement may fail to be single-valued.)",
+        "idea": "Necessity is differentiation: write the strains as derivatives of $u,v$ and the mixed partials cancel. For sufficiency, build $\\mathbf u$ by integrating the gradient along a path from a base point. The strains give the symmetric part of $\\nabla\\mathbf u$, and the rotation $\\omega$ is determined, up to a constant, by $\\omega_{,x}=\\varepsilon_{xy,x}-\\varepsilon_{xx,y}$ and $\\omega_{,y}=\\varepsilon_{yy,x}-\\varepsilon_{xy,y}$; these can be integrated exactly when the cross-derivatives agree, which is the compatibility equation. Then the result does not depend on the path (an application of the Poincaré lemma, pma-10 style), and $\\mathbf u$ exists.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "**Poincaré's lemma.** On a convex open set $E\\subset\\R^n$, every closed form of positive degree is exact: if $\\omega$ is a $k$-form of class $\\mathscr{C}'$ on $E$ with $k\\ge1$ and $d\\omega=0$, then $\\omega=d\\lambda$ for a suitable $(k-1)$-form $\\lambda$ on $E$."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner replaces pma-10.39 with vcalc-3.8, mirroring syllabus and ledger."
+    },
+    {
+      "source": "solid-2.10",
+      "target": "mat-4.2",
+      "collection": "solid",
+      "sourceFile": "content/solid/ch02-b.js",
+      "targetFile": "content/mat/ch04.js",
+      "sourceName": "Auxetic materials: negative Poisson’s ratio",
+      "targetName": "Hooke’s law and Poisson’s ratio",
+      "status": "accepted",
+      "assessment": "Both endpoints explicitly discuss the rigid-rib re-entrant mechanism and derive the same directional Poisson ratio. The source distinguishes its anisotropic hinge model from the isotropic -1<nu<1/2 bound, avoiding an otherwise invalid transfer of the isotropic hypothesis.",
+      "sourceRead": {
+        "statement": "The thermodynamic limits $-1<\\nu<\\tfrac12$ of an isotropic solid (2.8) include **negative** values. A material with $\\nu<0$ is *auxetic*: it gets fatter, not thinner, when stretched. Auxetic behaviour is a property of structure rather than of the base material: it occurs in re-entrant (bow-tie) honeycombs, foams with collapsed cells, certain crystals and rotating-square or chiral lattices. For a honeycomb of rigid ribs hinged at the nodes (ribs of length $L$ inclined at angle $\\theta$, vertical ribs of length $H$) the small-strain Poisson ratio is\n$$\\nu=-\\frac{\\varepsilon_y}{\\varepsilon_x}=\\frac{\\cos^2\\theta}{\\big(H/L+\\sin\\theta\\big)\\sin\\theta},$$\npositive for $\\theta>0$ (regular cells) and negative for $\\theta<0$ (re-entrant cells).",
+        "idea": "Stretching such a lattice makes the angle $\\theta$ change, since the ribs themselves are stiff: the cell width is $2L\\cos\\theta$ and its height $H+L\\sin\\theta$ per row. In a regular hexagon, stretching in $x$ flattens the ribs (smaller $\\theta$): the height $H+L\\sin\\theta$ drops, so the lattice narrows, $\\nu>0$. In a re-entrant cell, $\\theta<0$ and $\\sin\\theta<0$; flattening the ribs ($\\theta\\to0^-$) makes $H+L\\sin\\theta$ grow, so the height increases while the width does too, giving $\\nu<0$. The hinge model is strongly anisotropic, so its values need not respect the isotropic bound $-1<\\nu<\\tfrac12$ of 2.8; real foams reach about $-0.7$ or less negative.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "For small strains an isotropic solid responds linearly: a uniaxial stress $\\sigma$ produces the axial strain $\\varepsilon=\\sigma/E$ (Hooke's law, with Young's modulus $E$) and a lateral strain of opposite sign, $$\\varepsilon_{\\rm lat}=-\\nu\\,\\varepsilon,$$ where $\\nu$ is **Poisson's ratio**. Stability of an isotropic elastic solid requires $-1<\\nu<\\tfrac12$. Most metals have $\\nu\\approx0.3$, rubber is nearly incompressible ($\\nu\\to\\tfrac12$, volume change $\\Delta V/V=(1-2\\nu)\\varepsilon\\to0$), cork is close to $0$, and **auxetic** materials with $\\nu<0$ get fatter when stretched."
+      },
+      "auditEvidence": {
+        "field": "statement+idea",
+        "quote": "8) include **negative** values. A material with $\\nu<0$ is *auxetic*: it gets fatter, not thinner, when stretched. Auxetic behaviour is a property of structure rather than of the base material: it occurs in re-entrant (bow-tie) honeycombs, foams with collap"
+      }
+    },
+    {
+      "source": "solid-3.9",
+      "target": "ode-4.3",
+      "collection": "solid",
+      "sourceFile": "content/solid/ch03.js",
+      "targetFile": "content/ode/ch04.js",
+      "sourceName": "Thick-walled cylinders: Lamé’s solution",
+      "targetName": "Frobenius method",
+      "status": "remove_narrow_target",
+      "assessment": "The axisymmetric Airy compatibility equation is fourth order: Delta^2 phi=phi^(4)+2phi^(3)/r-phi^(2)/r^2+phi^(1)/r^3=0. Its Euler indicial polynomial is s^2(s-2)^2, giving 1, ln r, r^2, r^2 ln r. The target only states a second-order Frobenius theorem, and the source does not perform a reduction into its hypotheses.",
+      "sourceRead": {
+        "statement": "Let a long circular cylinder with inner radius $r_i$ and outer radius $r_o$ carry uniform internal pressure $p_i$ and external pressure $p_o$, and let it deform axisymmetrically with uniform axial strain (including plane stress or plane strain as special cases for the in-plane solution). Then the radial and hoop stresses at radius $r$ are\n$$\\sigma_r=A-\\frac{B}{r^2},\\qquad \\sigma_\\theta=A+\\frac{B}{r^2},\\qquad A=\\frac{p_ir_i^2-p_or_o^2}{r_o^2-r_i^2},\\quad B=\\frac{r_i^2r_o^2(p_i-p_o)}{r_o^2-r_i^2},$$\nwith compressive radial stress equal to the applied pressure on each surface, $\\sigma_r(r_i)=-p_i$, $\\sigma_r(r_o)=-p_o$. With a closed end the axial stress is uniform, $\\sigma_z=p_ir_i^2/(r_o^2-r_i^2)$ (for $p_o=0$). For internal pressure alone the hoop stress is largest at the bore, $\\sigma_\\theta(r_i)=p_i\\,\\dfrac{r_o^2+r_i^2}{r_o^2-r_i^2}$.",
+        "idea": "In axisymmetry the equilibrium equation of 2.4 reduces to $d\\sigma_r/dr+(\\sigma_r-\\sigma_\\theta)/r=0$. Writing $\\sigma_r$ and $\\sigma_\\theta$ through the Airy function $\\phi(r)$ (2.12), $\\sigma_r=\\phi'/r$, $\\sigma_\\theta=\\phi''$, and demanding compatibility gives an Euler equation whose bounded solutions are $\\phi=\\tfrac A2r^2-B\\ln r$ (plus a term in $r^2\\ln r$ that is excluded when the displacement must be single-valued). The two constants $A,B$ come from the pressures at the two surfaces. The sum $\\sigma_r+\\sigma_\\theta=2A$ is uniform across the wall, and as $r_o/r_i\\to1$ the solution tends to the thin-wall result of 3.8.",
+        "scope": "Linear elasticity, uniform pressures, long cylinder far from the ends, isotropic homogeneous material; the axial stress given is for a closed end, away from the end caps."
+      },
+      "targetRead": {
+        "statement": "At a regular singular point $t=0$ of $t^2u''+tP(t)u'+Q(t)u=0$ let $r_1,r_2$ be the indicial roots, $\\operatorname{Re}r_1\\ge\\operatorname{Re}r_2$, and let the series for $P,Q$ converge for $|t|<\\rho$. Then\n(a) for $r_1$ there is a solution $u_1=t^{r_1}\\sum_{k\\ge0}c_kt^k$, $c_0=1$, the series converging for $|t|<\\rho$; its coefficients solve $F(r_1+k)c_k=-\\sum_{j=1}^kc_{k-j}\\big(p_j(r_1+k-j)+q_j\\big)$ with $F(s)=s(s-1)+p_0s+q_0$;\n(b) if $r_1-r_2$ is not an integer, the same recursion with $r_2$ gives a second independent solution;\n(c) if $r_1=r_2$ or $r_1-r_2$ is a positive integer, the second solution is $u_2=\\kappa\\,u_1\\ln t+t^{r_2}\\sum d_kt^k$ with $\\kappa\\ne0$ forced by the recursion in the repeated case and possibly $\\kappa=0$ otherwise."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner removes ode-4.3 from chapter, syllabus and ledger; no unsupported generalized Frobenius target inserted."
+    },
+    {
+      "source": "solid-2.12",
+      "target": "pma-10.39",
+      "collection": "solid",
+      "sourceFile": "content/solid/ch02-b.js",
+      "targetFile": "content/pma/ch10-b2.js",
+      "sourceName": "Airy stress function",
+      "targetName": "Poincaré lemma: closed forms are exact in convex sets",
+      "status": "refine_target",
+      "assessment": "The Airy construction integrates closed one-forms globally on a simply connected plane region, whereas the cited target states convex domains. The actual path-independence step is covered by vcalc-3.8 (plane fields embedded in R3), without restricting the physical domain to convexity.",
+      "sourceRead": {
+        "statement": "In plane stress or plane strain with no body force (or a conservative one, which can be absorbed), every stress field of the form\n$$\\sigma_{xx}=\\frac{\\partial^2\\phi}{\\partial y^2},\\qquad \\sigma_{yy}=\\frac{\\partial^2\\phi}{\\partial x^2},\\qquad \\sigma_{xy}=-\\frac{\\partial^2\\phi}{\\partial x\\,\\partial y}$$\nsatisfies the equilibrium equations (2.4) identically. Such a stress field is also compatible (2.6), so that it comes from a displacement field in a simply connected region, if and only if $\\phi$ is **biharmonic**:\n$$\\nabla^4\\phi=\\frac{\\partial^4\\phi}{\\partial x^4}+2\\frac{\\partial^4\\phi}{\\partial x^2\\partial y^2}+\\frac{\\partial^4\\phi}{\\partial y^4}=0 .$$\nElasticity problems then reduce to finding a biharmonic $\\phi$ whose derivatives match the tractions on the boundary (a polynomial gives the stress field of a rectangle loaded on its edges).",
+        "idea": "Equilibrium $\\partial_x\\sigma_{xx}+\\partial_y\\sigma_{xy}=0$ and $\\partial_x\\sigma_{xy}+\\partial_y\\sigma_{yy}=0$ say that certain 1-forms are closed, hence exact on a simply connected region, and the potentials can be combined into one scalar $\\phi$ (Airy 1862). Substituting into the compatibility equation of 2.6, written with Hooke's law (2.9) for the strains, gives $\\nabla^4\\phi=0$. Polynomials of degree $\\le3$ are automatically biharmonic; degree 4 needs one relation among the coefficients; the quartic $x^4$ alone fails it.",
+        "scope": null
+      },
+      "targetRead": {
+        "statement": "**Poincaré's lemma.** On a convex open set $E\\subset\\R^n$, every closed form of positive degree is exact: if $\\omega$ is a $k$-form of class $\\mathscr{C}'$ on $E$ with $k\\ge1$ and $d\\omega=0$, then $\\omega=d\\lambda$ for a suitable $(k-1)$-form $\\lambda$ on $E$."
+      },
+      "auditEvidence": null,
+      "agreedOwnerAction": "Owner replaces pma-10.39 with vcalc-3.8, mirroring syllabus and ledger."
+    },
+    {
+      "source": "aero-2.4",
+      "target": "vcalc-4.9",
+      "collection": "aero",
+      "sourceFile": "content/aero/ch02.js",
+      "targetFile": "content/vcalc/ch04-b.js",
+      "sourceName": "Centre of pressure and aerodynamic centre",
+      "targetName": "Mass, centre of mass and moments of inertia",
+      "status": "accepted",
+      "assessment": "The alpha-dependent flat-plate loading has a centroid at c/4, so its first moment about c/4 vanishes. The target weighted first-moment/centroid identities supply that step. The signed load is a scalar multiple of a nonnegative shape for each nonzero alpha, so no positive-density hypothesis is being applied to an arbitrary sign-changing camber distribution.",
+      "sourceRead": {
+        "statement": "The **centre of pressure** is the point of the chord about which the aerodynamic moment is zero; the whole force can be applied there. With $c_{m,c/4}$ the pitching-moment coefficient (nose up positive) about the quarter-chord point, it lies at\n$$\\frac{x_{cp}}{c} = \\frac14 - \\frac{c_{m,c/4}}{c_l},$$\nand moves along the chord as the angle of attack changes, running off to infinity as $c_l \\to 0$. The **aerodynamic centre** is the point about which the moment coefficient does not change with $\\alpha$ (below stall). For thin airfoils in subsonic flow it is at $x/c \\approx 1/4$, so that $c_{m,ac}$ is a constant of the section, and moments about any other point $x_0$ are $c_{m,x_0} = c_{m,ac} - (x_0/c - \\tfrac14)\\,c_l$.",
+        "idea": "Moving the reference point by a distance $\\Delta x$ changes the moment by $-N\\,\\Delta x$, with $N\\approx L$ the normal force. Since in thin-airfoil theory the lift acts at $c/4$ for the $\\alpha$-dependent part of the loading (the vortex sheet of a flat plate at angle of attack has its centroid at $c/4$) and the camber part of the loading is independent of $\\alpha$, the moment about $c/4$ is independent of $\\alpha$: $c_{m,c/4}=\\pi(A_2-A_1)/4$ depends only on the camber line. The centre of pressure is then forced to move as the lift changes.",
+        "scope": "Inviscid, attached, subsonic flow over a thin section. The aerodynamic centre moves aft toward $x/c\\approx 1/2$ in supersonic flow (chapter 4), and in the stalled regime no point has constant moment."
+      },
+      "targetRead": {
+        "statement": "A lamina occupying a region $D\\subset\\R^2$ with continuous mass density $\\rho(x,y)\\ge0$ has\n- **mass** $M=\\iint_D\\rho\\,dA$;\n- **centre of mass** $(\\bar x,\\bar y)=\\frac1M\\bigl(\\iint_D x\\rho\\,dA,\\ \\iint_D y\\rho\\,dA\\bigr)$;\n- **moment of inertia** about the axis $\\ell$: $I_\\ell=\\iint_D \\operatorname{dist}(p,\\ell)^2\\,\\rho\\,dA$ (for a line through a point $q$ with direction $(\\cos\\alpha,\\sin\\alpha)$ this is $\\iint[(x-q_x)\\sin\\alpha-(y-q_y)\\cos\\alpha]^2\\rho\\,dA$).\n\nProperties: the total torque of gravity about the centre of mass is zero (the lamina balances on a pin there), and for parallel axes $I_\\ell=I_{\\ell,\\mathrm{cm}}+M\\,d^2$ where $d$ is the distance between the axis $\\ell$ and the parallel axis through the centre of mass (the **parallel-axis theorem**). The same definitions hold in $\\R^3$ with $\\iiint$."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "the vortex sheet of a flat plate at angle of attack has its centroid at $c/4$) and the camber part of the loading is independent of $\\alpha$, the moment about $c/4$ is independent of $\\alpha$: $c_{m,c/4}=\\pi(A_2-A_1)/4$ depends only on the camber line. The c"
+      }
+    },
+    {
+      "source": "aero-4.1",
+      "target": "pde-1.10",
+      "collection": "aero",
+      "sourceFile": "content/aero/ch04.js",
+      "targetFile": "content/pde/ch01-b.js",
+      "sourceName": "Prandtl–Glauert compressibility correction",
+      "targetName": "Reduction to canonical form",
+      "status": "accepted",
+      "assessment": "For M<1 the principal matrix diag(1-M^2,1) is definite. The source explicitly rescales coordinates to Laplace form, which is the elliptic case of the target canonical reduction. Sonic and transonic limits are excluded by the source scope.",
+      "sourceRead": {
+        "statement": "For a thin airfoil at a small angle of attack in subsonic flow at free-stream Mach number $M_\\infty<1$, linearised potential-flow theory gives the pressure coefficient and the lift and moment coefficients in terms of their incompressible values (subscript 0):\n$$C_p=\\frac{C_{p,0}}{\\sqrt{1-M_\\infty^2}},\\qquad c_l=\\frac{c_{l,0}}{\\sqrt{1-M_\\infty^2}},\\qquad c_{l,\\alpha}=\\frac{2\\pi}{\\sqrt{1-M_\\infty^2}}.$$\nThe factor $1/\\beta$, $\\beta=\\sqrt{1-M_\\infty^2}$, grows without bound as $M_\\infty\\to1$, which is where the linearisation fails: the rule is useful up to about $M_\\infty\\approx0.7$ for thin sections and is not valid in transonic flow.",
+        "idea": "The linearised potential equation for a small disturbance, $(1-M_\\infty^2)\\phi_{xx}+\\phi_{yy}=0$, becomes Laplace's equation (the incompressible case) after stretching the $y$ coordinate by $\\beta$. The disturbance velocity potential of the compressible flow past the original airfoil equals that of an incompressible flow past an airfoil whose thickness and incidence are reduced by the same factor, so the pressure coefficient, which is proportional to the streamwise perturbation $u'/V_\\infty=\\phi_x/V_\\infty$, is $1/\\beta$ times the incompressible value for the same shape. It builds on the speed of sound (1.6) and on the incompressible lift curve (2.2).",
+        "scope": "Small disturbances (thin section, small incidence), subsonic and not near sonic: roughly $M_\\infty\\lesssim0.7$ and never close to $1$. The incompressible $C_{p,0}$ here is a full panel-method solution for a symmetric NACA 00xx section, so the 'thin' hypothesis is only approximate for the thicker sections; the Kármán–Tsien and Laitone curves are comparison models, and no experimental data are plotted."
+      },
+      "targetRead": {
+        "statement": "Let $a\\,u_{xx}+2b\\,u_{xy}+c\\,u_{yy}+\\dots=0$ have constant coefficients. There is an invertible linear change of variables $(\\xi,\\eta)^T=P\\,(x,y)^T$, with $P$ built from the eigen-decomposition $A=Q\\Lambda Q^T$ of $A=\\begin{pmatrix}a&b\\\\b&c\\end{pmatrix}$, such that, with $u(x,y)=w(\\xi,\\eta)$, the principal part becomes\n- $w_{\\xi\\xi}+w_{\\eta\\eta}$ if $A$ is definite (elliptic),\n- $w_{\\xi\\xi}-w_{\\eta\\eta}$ (equivalently $w_{\\xi\\eta}$ after a further rotation) if $A$ is indefinite (hyperbolic),\n- $w_{\\xi\\xi}$ if $A$ is semidefinite of rank one (parabolic),\nup to an overall sign. In general (variable coefficients) the reduction is possible near a point by integrating the characteristic equation."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": " becomes Laplace's equation (the incompressible case) after stretching the $y$ coordinate by $\\beta$. The disturbance velocity potential of the compressible flow past the original airfoil equals that of an incompressible flow past an airfoil whose thickness an"
+      }
+    },
+    {
+      "source": "aero-4.4",
+      "target": "pma-8.10",
+      "collection": "aero",
+      "sourceFile": "content/aero/ch04.js",
+      "targetFile": "content/pma/ch08-a2.js",
+      "sourceName": "The area rule",
+      "targetName": "Orthonormal systems and Fourier coefficients",
+      "status": "accepted",
+      "assessment": "The source explicitly expands the area slope in sine modes and writes drag in terms of their coefficients. The target defines orthogonality/Fourier coefficients needed by that expression. It does not by itself prove the aerodynamic weighted drag identity or a convergence theorem.",
+      "sourceRead": {
+        "statement": "At transonic and low supersonic speeds the wave drag of a slender aircraft depends mainly on how its **cross-sectional area $S(x)$** is distributed along its length, and hardly on the detailed shape. A wing–body combination has nearly the same zero-lift wave drag as the body of revolution that has the same $S(x)$. To keep the drag low, make the area distribution smooth, like that of the Sears–Haack body, which has the least wave drag for a given length $l$ and volume $V$:\n$$\\frac{D_w}{q}=\\frac{128\\,V^2}{\\pi\\,l^4}.$$\nSince the wing adds area, the fuselage must be narrowed ('indented') where the wing is, so that the total area has no bump.",
+        "idea": "In slender-body theory the far field of the body is that of a line source distribution with strength $S'(x)$, and the wave drag is a quadratic form in $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S'(x(\\theta))=\\sum a_n\\sin n\\theta$, $x=\\tfrac l2(1-\\cos\\theta)$, as $D_w/q=\\tfrac\\pi4\\sum n a_n^2$. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into the higher harmonics of the area slope, whose squared coefficients are weighted by $n$; removing the bump by pinching the fuselage cancels those harmonics. At Mach 1 the planes of constant $x$ are the planes that matter, which is why the rule is stated for transonic speeds.",
+        "scope": "Slender bodies at zero lift in transonic and low supersonic flow (the slender-body limit). The wing's cross-sectional-area hump is a smooth $\\sin^2$ model and the aircraft is a schematic, not a particular design. Indentation removes volume; each drag ratio uses the minimum at its own current volume, and the wing-position range keeps the remaining fuselage area nonnegative; drag is slender-body wave drag only (no friction, no separation, no lift-dependent drag). For a finite Mach number above 1 the relevant cuts are slanted at the Mach angle, which is not modelled."
+      },
+      "targetRead": {
+        "statement": "A sequence $\\{\\phi_n\\}$ of complex functions on $[a,b]$ is an **orthogonal system** if $\\int_a^b\\phi_n\\overline{\\phi_m}\\,dx=0$ whenever $n\\ne m$, and **orthonormal** if in addition $\\int_a^b|\\phi_n|^2dx=1$ for all $n$. For example, $\\{(2\\pi)^{-1/2}e^{inx}\\}$ is orthonormal on $[-\\pi,\\pi]$. If $\\{\\phi_n\\}$ is orthonormal and\n$$c_n=\\int_a^b f(t)\\overline{\\phi_n(t)}\\,dt,$$\nthen $c_n$ is the $n$-th **Fourier coefficient** of $f$ relative to $\\{\\phi_n\\}$, and one writes $f(x)\\sim\\sum c_n\\phi_n(x)$, the **Fourier series** of $f$ (with no claim of convergence)."
+      },
+      "auditEvidence": {
+        "field": "idea",
+        "quote": "n $S''(x)$ (von Kármán's integral), which can be written in Fourier form with $S'(x(\\theta))=\\sum a_n\\sin n\\theta$, $x=\\tfrac l2(1-\\cos\\theta)$, as $D_w/q=\\tfrac\\pi4\\sum n a_n^2$. A sudden bump in $S$ (a wing sitting on a straight fuselage) puts energy into"
+      }
+    }
+  ],
+  "ownerCoordination": "Owner confirmed all six refinements applied, chapter/syllabus mirrors checked,172 final additions,557 scoped static cases with0errors/warnings and0globalcycles. BB84 Bernoulli-interception wording was clarified to match the unchanged eve=r()<q computation.",
+  "excludedActiveFollowups": [
+    "waves-3.10 and cm-3.3 general-vs-Hermitian dynamical eigenproblem targets were already corrected by owner/root; not duplicated.",
+    "qinfo-2.8 concurrence formula and endpoint native verification were completed separately by owner; not duplicated."
+  ],
+  "additionalModelQualification": {
+    "source": "qinfo-3.5",
+    "issue": "Detection product formula assumes independent Bernoulli interception across qubits; fixed-cardinality interception/sampling without replacement has dependent sample events. Owner confirmed eve=r()<q and clarified statement/caption/control label to independent per-qubit interception with probability q; computation unchanged.",
+    "resolution": "Owner explicitly changed statement/caption/control label to independent per-qubit interception with probability q; no computation change."
+  },
+  "validation": {
+    "allReviewedPairsWereInSubmittedLedger": true,
+    "allElevenCollectionsSampled": true,
+    "browserRuns": 0,
+    "contentEditsByPeer": 0,
+    "ownerFixesPendingFinalConfirmation": false,
+    "ownerConfirmedFinalAdditions": 172,
+    "ownerConfirmedScopedItems": 557,
+    "ownerConfirmedStaticErrors": 0,
+    "ownerConfirmedStaticWarnings": 0,
+    "ownerConfirmedGlobalCycles": 0,
+    "independentPostFixEndpointCheck": [
+      {
+        "source": "fluid-1.2",
+        "removed": "ode-2.4",
+        "replacement": "ode-1.1",
+        "oldRemoved": true,
+        "newPresent": true
+      },
+      {
+        "source": "solid-2.6",
+        "removed": "pma-10.39",
+        "replacement": "vcalc-3.8",
+        "oldRemoved": true,
+        "newPresent": true
+      },
+      {
+        "source": "solid-2.12",
+        "removed": "pma-10.39",
+        "replacement": "vcalc-3.8",
+        "oldRemoved": true,
+        "newPresent": true
+      },
+      {
+        "source": "cm-3.13",
+        "removed": "opt-3.3",
+        "replacement": "opt-1.5",
+        "oldRemoved": true,
+        "newPresent": true
+      },
+      {
+        "source": "mat-3.6",
+        "removed": "solid-1.14",
+        "replacement": null,
+        "oldRemoved": true,
+        "newPresent": true
+      },
+      {
+        "source": "solid-3.9",
+        "removed": "ode-4.3",
+        "replacement": null,
+        "oldRemoved": true,
+        "newPresent": true
+      }
+    ]
+  }
+}

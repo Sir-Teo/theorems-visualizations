@@ -1,5 +1,5 @@
 // Systems Biology — Chapter 3 (part b): I1-FFL acceleration, rare FFL types, temporal programs (SIM, multi-output FFL), dense overlapping regulons
-import { FFL_TYPES, fflSim, crossAfter, edge, hillAct, hillRep, reg, logic, isCoherent, fflType } from './ch03.shared.js';
+import { FFL_TYPES, fflSim, crossAfter, edge, hillAct, hillRep, reg, logic, isCoherent, fflType, temporalProgram } from './ch03.shared.js';
 
 const sgn = (s) => (s > 0 ? '+' : '−');
 function traces(S, r, o = {}) {
@@ -71,15 +71,14 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
       num: '3.7',
       kind: 'Concept',
       name: 'Why some FFL types are rare',
-      statement: String.raw`Of the eight FFL types (3.1), two, the coherent C1 and the incoherent I1, are the commonest in the *E. coli* and yeast transcription networks, and the other six are much rarer. Mangan and Alon asked whether the rare types are rare because they are less useful, and found that some of them have **reduced functionality**: they respond to only one of their two inputs. To test this, treat the two regulatory inputs of $Z$ as two signals: $s_x$ (the activity of $X$) and $s_y$ (the activity of $Y$ relative to its expression, which itself depends on $s_x$). A type is functionally weak in this sense if $Z$ barely changes when one of the two signals is varied.`,
+      statement: String.raw`Of the eight FFL types (3.1), two, the coherent C1 and the incoherent I1, are the commonest in the *E. coli* and yeast transcription networks, and the other six are much rarer. Mangan and Alon asked whether the rare types are rare because they are less useful, and proposed **reduced functionality** as one partial explanation. In their strong-regulation, no-basal-expression AND models, types 3–4 of both classes respond at steady state to at most one input; this is a conditional model result, not a general property of rare wiring. To test this, treat the two regulatory inputs of $Z$ as two signals: $s_x$ (the activity of $X$) and $s_y$ (the activity of $Y$ relative to its expression, which itself depends on $s_x$). A type is functionally weak in this sense if $Z$ barely changes when one of the two signals is varied.`,
       idea: String.raw`For every type the steady-state output $Z(s_x,s_y)$ is computed from the Hill terms of 1.3 combined by the logic of 1.4, with $Y$ expressed as the Hill function of $s_x$ along the $X\to Y$ edge. The mean absolute slope of $Z$ in each direction measures how much each signal is heard. The step response of the selected type (bottom) shows what its dynamics add. The picture is a sensitivity screen in one model, with one threshold and one cooperativity; it cannot by itself prove why evolution favoured C1 and I1.`,
       caption: String.raw`Each tile is the steady-state output $Z$ (stronger colour is higher) over the two signals $s_x$ (horizontal) and $s_y$ (vertical), with the mean slopes $\langle|\partial Z/\partial s_x|\rangle$ and $\langle|\partial Z/\partial s_y|\rangle$ below it. Switch the logic between AND, OR and SUM and note how the pattern of tiles changes, then click a tile to see its time response (below). Look for types in which one slope is much smaller than the other.`,
       deps: ['sysbio-3.1'],
-      refs: ['Alon: The Feed Forward Loop'],
+      refs: ['Mangan & Alon (2003), Tables 1–3 and functional-domain/results/discussion sections, pp. 11981–11985'],
       tags: ['feed-forward loop', 'motifs'],
       credit: 'S. Mangan & U. Alon, 2003 (PNAS 100: 11980–11985)',
-      verify: true,
-      scope: String.raw`This is my own sensitivity computation (Hill $n=2$, all thresholds $0.5$, $Y$ maximal expression 1), not a reproduction of the paper's analysis. From the paper I rely only on its abstract: some FFL types are much more frequent than others and the rare ones can have reduced functionality. Whether the weak inputs I find in the tiles correspond to the paper's explanation should be checked against the paper itself.`,
+      scope: String.raw`This finite-Hill sensitivity screen ($n=2$, all thresholds $0.5$, maximal $Y=1$) is illustrative. Mangan & Alon (2003), Tables 1–3 and pp. 11982–11985, analyze saturating binary signals in a functional parameter domain: AND types 1–2 hear both inputs, while types 3–4 hear at most one at steady state; the analogous OR distinction is reversed. Their OR promoter model includes competitive binding; ours uses $a+b-ab$, and SUM is an extra comparison. Intermediate signals and thresholds can change the measured slopes, and no tile proves an evolutionary explanation.`,
       viz(v) {
         const LG = v.select('logic at Z', ['AND', 'OR', 'SUM'], 'AND');
         const A = v.stage({ x: [0, 4], y: [0, 2.35], axes: false, height: 340, full: true, title: 'steady-state Z over the two signals: s_x (right) and s_y (up)' });
@@ -126,15 +125,14 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
       num: '3.8',
       kind: 'Concept',
       name: 'Single-input modules and last-in-first-out programs',
-      statement: String.raw`A **single-input module** (SIM) is a set of genes controlled by one transcription factor $X$ and by nothing else in the module. If gene $i$ has an activation threshold $K_i$ for $X$ and $K_1<K_2<\dots<K_m$, then when the level of $X$ rises slowly the genes switch on in the order $1,2,\dots,m$, and when it falls slowly they switch off in the reverse order $m,\dots,1$: a **last-in-first-out** (LIFO) program. If $X$ changes fast compared with the lifetime of the gene products, the thresholds no longer order the genes and they follow $X$ together.`,
-      idea: String.raw`Each gene responds to $X$ through its own Hill input function (1.3), whose half-point is $K_i$. As $X(t)$ climbs, it crosses the thresholds one after another, lowest first; as it falls it crosses them again in the reverse sequence, so ordering in time is nothing but ordering by threshold. Placing the first enzyme of a pathway at the lowest threshold makes the pathway's enzymes appear in the order of the reaction chain, just in time; the order of shutdown, last-in-first-out, comes from the same monotone input signal. The product dynamics of 1.5 add a lag $\ln 2/\alpha_Z$ after each crossing, which blurs the order if $X$ moves too quickly.`,
-      caption: String.raw`Top: the regulator $X(t)$, switched on at $t=1$ and off after the chosen duration, with the thresholds $K_1\dots K_4$ of the four genes. Bottom: the gene products (green), each with a dot where it crosses 0.5 on the way up and a red dot on the way down; the readout lists the order of switching on and off. Increase the speed $\alpha_X$ of the regulator until the order is lost, or reduce the spacing between thresholds.`,
+      statement: String.raw`A **single-input module** (SIM) is a set of genes controlled by one transcription factor $X$ and by nothing else in the module. If gene $i$ has an activation threshold $K_i$ for $X$ and $K_1<K_2<\dots<K_m$, then when the level of $X$ rises slowly the genes switch on in the order $1,2,\dots,m$, and when it falls slowly they switch off in the reverse order $m,\dots,1$: a **last-in-first-out** (LIFO) program. Fast changes compress the threshold-crossing delays; in the instantaneous-step limit the genes can switch together. With identical output kinetics and ordered activation functions, their concentration curves remain ordered at every time, so speed alone cannot reverse the order. An insufficiently long or strong signal can leave some genes below the switching level.`,
+      idea: String.raw`Each gene responds to $X$ through its own Hill input function (1.3), whose half-point is $K_i$. As $X(t)$ climbs, it crosses the thresholds one after another, lowest first; as it falls it crosses them again in the reverse sequence, so ordering in time is nothing but ordering by threshold. Placing the first enzyme of a pathway at the lowest threshold makes the pathway's enzymes appear in the order of the reaction chain, just in time; the order of shutdown, last-in-first-out, comes from the same monotone input signal. For ideal sharp input functions, each crossing is followed by the step-response half-rise lag $\ln 2/\alpha_Z$. Finite Hill functions and an unsaturated input change that lag; rapid regulator changes compress the observable time separations.`,
+      caption: String.raw`Top: the regulator $X(t)$, switched on at $t=1$ and off after the chosen duration, with the thresholds $K_1\dots K_4$ of the four genes. Bottom: the gene products (green), each with a dot where it crosses 0.5 on the way up and a red dot on the way down; the readout lists the order of switching on and off. Increase the speed $\alpha_X$ of the regulator to compress the delays, or reduce the spacing between thresholds. Some slow or short signals never activate all four genes.`,
       deps: ['sysbio-1.4'],
-      refs: ['Alon: Temporal Programs and the Global Structure of Transcription Networks'],
+      refs: ['Zaslaver et al. (2004), Nature Genetics 36:486–491, Figs. 3–6 and Box 1'],
       tags: ['single-input module', 'temporal programs'],
       credit: 'S. Shen-Orr, R. Milo, S. Mangan & U. Alon, 2002 (SIM motif; Nature Genetics 31: 64–68); A. Zaslaver et al., 2004 (activation order along amino-acid pathways; Nature Genetics 36: 486–491)',
-      verify: true,
-      scope: String.raw`The activation order along the pathway, with genes nearer the start of a pathway activated first, was measured in *E. coli* amino-acid biosynthesis (Zaslaver et al.); the reversed shut-down order is the model's prediction for an ideal SIM driven by a monotone signal, which I have not checked against data. Arginine genes are not named here; the four genes E1–E4 are a generic pathway. Real SIMs have gene-specific rates and leaks.`,
+      scope: String.raw`Zaslaver et al. (2004), Figs. 3–5, measured normalized GFP/Lux reporter responses after amino-acid deprivation: argA→argCBH→argD→argE, serA→serC→serB and metA→metB→metC followed enzyme order within unbranched pathways, but not across converging branches. Their Box 1 models a repressor activated by pathway product, with unequal synthesis strengths; it does not test reversed shutdown order. The four anonymous genes here instead have identical removal/synthesis rates and chosen activation thresholds, no feedback or leak; LIFO is a conditional mathematical prediction of this panel, not measured shutdown data or a fit to that paper.`,
       viz(v) {
         const R = v.slider('threshold spacing  K_(i+1)/K_i', 1.1, 2.6, 1.8, { step: 0.05 });
         const AX = v.slider(String.raw`speed of $X$: $\alpha_X/\alpha_Z$`, 0.1, 20, 0.4, { log: true, sig: 2 });
@@ -146,15 +144,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
         let txt = '';
         v.render(() => {
           const r = R.value, ax = AX.value, d = DUR.value, K = [0.12, 0, 0, 0].map((_, i) => 0.12 * Math.pow(r, i));
-          const dt = 0.01, N = Math.round(T / dt);
-          const t = [], X = [], Z = K.map(() => []);
-          let x = 0; const z = K.map(() => 0);
-          for (let i = 0; i <= N; i++) {
-            const tt = i * dt; t.push(tt); X.push(x); K.forEach((k, j) => Z[j].push(z[j]));
-            const inp = tt >= 1 && tt < 1 + d ? XM : 0;
-            x += dt * ax * (inp - x);
-            K.forEach((k, j) => { z[j] += dt * (hillAct(x, k, 4) - z[j]); });
-          }
+          const {t, X, Z} = temporalProgram({Kx: K, ax, duration: d, maximum: XM, T});
           S1.path(t.map((tt, i) => [tt, X[i]]), { color: 'accent', width: 3.5 });
           const cols = ['teal', 'blue', 'purple', 'pink'];
           K.forEach((k, j) => { S1.hline(k, { color: cols[j], dash: true, width: 1.5 }); S1.text(`K${j + 1}`, T - 0.2 - (j % 2) * 1.6, k, { color: cols[j], align: 'right', dy: -8, size: 11 }); });
@@ -163,7 +153,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
             const base = rowY[j];
             S2.path(t.map((tt, i) => [tt, base + 0.95 * Z[j][i]]), { color: cols[j], width: 3 });
             S2.hline(base + 0.475, { color: 'faint', dash: true, width: 0.7 });
-            const a = crossAfter(t, Z[j], 0.5, 0), b = crossAfter(t, Z[j], 0.5, 1 + d);
+            const a = crossAfter(t, Z[j], 0.5, 0), b = crossAfter(t, Z[j], 0.5, 1 + d, -1);
             if (Number.isFinite(a)) { S2.dot(a, base + 0.475, { r: 5, color: 'green' }); }
             if (Number.isFinite(b)) { S2.dot(b, base + 0.475, { r: 5, color: 'red' }); }
             on.push([`E${j + 1}`, a]); off.push([`E${j + 1}`, b]);
@@ -171,7 +161,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
           const ord = (arr) => arr.filter((q) => Number.isFinite(q[1])).sort((u, w) => u[1] - w[1]).map((q) => q[0]).join(' → ') || '(none)';
           const o1 = ord(on), o2 = ord(off);
           const lifo = on.every((q) => Number.isFinite(q[1])) && off.every((q) => Number.isFinite(q[1])) && o2 === o1.split(' → ').reverse().join(' → ');
-          txt = `Switch-on order: ${o1}. Switch-off order: ${o2}. ${lifo ? '**Last in, first out.**' : 'Not a strict LIFO order here (' + (on.some((q) => !Number.isFinite(q[1])) ? 'a gene never turns on' : 'the thresholds are crossed too fast for the products') + ').'}`;
+          txt = `Switch-on order: ${o1}. Switch-off order: ${o2}. ${lifo ? '**Last in, first out.**' : 'Not a strict LIFO order here (' + (on.some((q) => !Number.isFinite(q[1])) ? 'a gene never turns on' : 'a crossing lies outside the displayed interval or is unresolved at this time step') + ').'}`;
         });
         v.legend([['accent', 'regulator X'], ['teal', 'E1 (first enzyme, lowest K)'], ['pink', 'E4 (last enzyme, highest K)'], ['green', 'switch on', { dot: true }], ['red', 'switch off', { dot: true }]]);
         v.readout(() => txt);
@@ -184,13 +174,12 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
       name: 'Multi-output FFL and first-in-first-out order',
       statement: String.raw`In a **multi-output FFL** the regulators $X$ and $Y$ ($X\to Y$) both regulate a set of target genes $Z_1,\dots,Z_m$. With OR-type input functions, $Z_i$ is on when $X>K_{x,i}$ or $Y>K_{y,i}$. Choose $K_{x,1}<\dots<K_{x,m}$, so that a rising $X$ switches the genes on in the order $1,\dots,m$, and $K_{y,1}>\dots>K_{y,m}$. When $X$ is withdrawn the slowly decaying $Y$ falls through its thresholds from the highest to the lowest, which switches the genes **off** in the order $1,\dots,m$ as well: a **first-in-first-out** (FIFO) program. With the opposite arrangement of the $Y$ thresholds the same loop gives LIFO.`,
       idea: String.raw`Switching on is controlled by the faster regulator $X$ and switching off by the slower regulator $Y$, whose decay is the production–degradation relaxation of 1.5. A gene stays on as long as at least one of its keys is on, so the shut-down time is set by the longest-lasting key, here $Y$ falling below $K_{y,i}$. Giving each gene its own threshold for each key lets the designer choose the on-order and the off-order independently, as the single-input module of 3.8 cannot. The coherent FFL with OR-like logic of 3.3 is the one-output ancestor of this scheme.`,
-      caption: String.raw`Top: $X$ (grey), $Y$ (blue) with the thresholds $K_{x,i}$ (green, dashed) and $K_{y,i}$ (blue, dashed). Bottom: the three gene products with dots at their half-maximal ON (green) and OFF (red) times; the readout lists the orders. Choose the threshold design, then slow $Y$ down or speed it up: when $Y$ is faster than $X$ the on-order wins in both directions and the program turns LIFO.`,
+      caption: String.raw`Top: $X$ (grey), $Y$ (blue) with the thresholds $K_{x,i}$ (green, dashed) and $K_{y,i}$ (blue, dashed). Bottom: the three gene products with dots at their half-maximal ON (green) and OFF (red) times; the readout lists the orders. Choose the threshold design, then slow $Y$ down or speed it up: the specified threshold arrangement predicts the intended order only when $X$ controls activation and $Y$ controls deactivation. Finite-Hill overlap and incomplete activation can produce another order; the readout measures this simulation.`,
       deps: ['sysbio-3.2', 'sysbio-3.8'],
-      refs: ['Alon: Temporal Programs and the Global Structure of Transcription Networks'],
+      refs: ['Kalir, Mangan & Alon (2005), Molecular Systems Biology 1:2005.0006, pp. 1–4 and Appendix p. 6'],
       tags: ['feed-forward loop', 'temporal programs'],
       credit: 'S. Kalir et al., 2001 (ordering of flagella genes by expression kinetics; Science 292: 2080–2083); S. Kalir, S. Mangan & U. Alon, 2005 (FFL with SUM input function prolongs flagella expression; Mol. Syst. Biol. 1: 2005.0006)',
-      verify: true,
-      scope: String.raw`An idealised model with OR logic, three target genes and made-up thresholds: it demonstrates how a multi-output FFL can produce a FIFO program, not the measured flagella circuit. In the real flagella system the master regulator is FlhDC and the sigma factor FliA is the intermediate, but the actual input functions are described in the papers as additive (SUM) rather than OR and I have not reproduced their numbers.`,
+      scope: String.raw`An idealised model with OR logic, three target genes and made-up thresholds: it demonstrates how a multi-output FFL can produce a FIFO program, not the measured flagella circuit. In the real flagella system the master regulator is FlhDC and the sigma factor FliA is the intermediate, Kalir, Mangan & Alon (2005), Figs. 1–3, measured a SUM-FFL with FlhDC→FliA, positive FliA autoregulation and the FlgM basal-body checkpoint; removing fliA reduced prolonged expression. Under the induced protocol, shutdown was delayed about 60–80 min compared with the fliA deletion strain. Their experiment tests this one-output delay, not the three-gene FIFO threshold design here; the OR function is a Boolean approximation to SUM, and its Hill extension is chosen independently.`,
       viz(v) {
         const DES = v.select('Y thresholds', [{ value: 'fifo', label: 'reversed (FIFO design)' }, { value: 'lifo', label: 'same order (LIFO design)' }], 'fifo');
         const AY = v.slider(String.raw`speed of $Y$: $\alpha_Y/\alpha_X$`, 0.1, 5, 0.3, { log: true, sig: 2 });
@@ -202,15 +191,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
         v.render(() => {
           const ay = AY.value, d = DUR.value;
           const Kx = [0.15, 0.4, 0.7], Ky = DES.value === 'fifo' ? [0.7, 0.4, 0.15] : [0.15, 0.4, 0.7];
-          const dt = 0.01, N = Math.round(T / dt), t = [], X = [], Y = [], Z = [[], [], []];
-          let x = 0, y = 0; const z = [0, 0, 0];
-          for (let i = 0; i <= N; i++) {
-            const tt = i * dt; t.push(tt); X.push(x); Y.push(y); z.forEach((q, j) => Z[j].push(q));
-            const inp = tt >= 1 && tt < 1 + d ? 1 : 0;
-            const nx = x + dt * AX * (inp - x), ny = y + dt * ay * AX * (hillAct(x, 0.6, 4) - y);
-            z.forEach((q, j) => { const fx = hillAct(x, Kx[j], 6), fy = hillAct(y, Ky[j], 6); z[j] += dt * AZ * (fx + fy - fx * fy - q); });
-            x = nx; y = ny;
-          }
+          const {t, X, Y, Z} = temporalProgram({Kx, Ky, ax: AX, ay, az: AZ, duration: d, T});
           S1.path(t.map((tt, i) => [tt, X[i]]), { color: 'muted', width: 2.5, dash: true });
           S1.path(t.map((tt, i) => [tt, Y[i]]), { color: 'blue', width: 3.5 });
           Kx.forEach((k, j) => { S1.hline(k, { color: 'green', dash: true, width: 1 }); S1.text(`Kx${j + 1}`, 0.2, k, { color: 'green', size: 10.5, dy: -7, align: 'left' }); });
@@ -220,7 +201,7 @@ so the response is faster by the factor $\ln2\big/\bigl[-\ln(1-\delta/2)\bigr]\a
           Z.forEach((zz, j) => {
             S2.path(t.map((tt, i) => [tt, base[j] + 0.95 * zz[i]]), { color: cols[j], width: 3 });
             S2.hline(base[j] + 0.475, { color: 'faint', dash: true, width: 0.7 });
-            const a = crossAfter(t, zz, 0.5, 0), b = crossAfter(t, zz, 0.5, 1 + d);
+            const a = crossAfter(t, zz, 0.5, 0), b = crossAfter(t, zz, 0.5, 1 + d, -1);
             if (Number.isFinite(a)) S2.dot(a, base[j] + 0.475, { r: 5, color: 'green' });
             if (Number.isFinite(b)) S2.dot(b, base[j] + 0.475, { r: 5, color: 'red' });
             on.push([`Z${j + 1}`, a]); off.push([`Z${j + 1}`, b]);

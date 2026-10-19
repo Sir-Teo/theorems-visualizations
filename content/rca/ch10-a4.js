@@ -29,7 +29,7 @@ export default {
       num: '10.19',
       kind: 'Definition',
       name: 'Isolated singularities; removable singularities',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 10.19, p. 210'],
       statement: String.raw`If $a\in\Omega$ and $f\in H(\Omega\setminus\{a\})$, then $f$ is said to have an **isolated singularity** at $a$. If $f$ can be defined at $a$ so that the extended function is holomorphic in $\Omega$, the singularity is called **removable**. (Here $D'(a;r)=\{z:0<|z-a|<r\}$ denotes the punctured disc.)`,
       idea: String.raw`The definition only asks about the behaviour of $f$ in punctured discs $D'(a;r)$; whether the singularity is removable is a question about the possibility of extending $f$ holomorphically across one point. Theorems 10.20 and 10.21 show that the answer is decided entirely by how $|f|$ behaves near $a$: bounded (removable), tending to $\infty$ like a power (pole), or neither (essential).`,
       deps: ['rca-10.2'],
@@ -166,7 +166,7 @@ export default {
       num: '10.22',
       kind: 'Theorem',
       name: 'Mean square of a power series on a circle',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 10.22 and proof, pp. 211–212'],
       statement: String.raw`If $f(z)=\sum_{n\ge0}c_n(z-a)^n$ for $z\in D(a;R)$ and $0<r<R$, then
 $$\sum_{n=0}^\infty|c_n|^2r^{2n}=\frac1{2\pi}\int_{-\pi}^{\pi}\bigl|f(a+re^{i\theta})\bigr|^2\,d\theta .$$`,
       idea: String.raw`On the circle, $f(a+re^{i\theta})=\sum c_nr^ne^{in\theta}$ converges uniformly in $\theta$, so $|f|^2$ is the uniformly convergent double series $\sum_{n,k}c_n\bar c_kr^{n+k}e^{i(n-k)\theta}$. Integrating term by term, $\frac1{2\pi}\int e^{i(n-k)\theta}d\theta$ is $1$ for $n=k$ and $0$ otherwise. It is Parseval's identity for the Fourier coefficients $c_nr^n$ of $\theta\mapsto f(a+re^{i\theta})$ (compare 4.26). An immediate consequence is the coefficient bound $|c_n|\,r^n\le\max_\theta|f(a+re^{i\theta})|$, and the identity drives the proofs of 10.23 and 10.24.`,

@@ -14,15 +14,15 @@ export default {
       kind: 'Theorem',
       name: 'Analytic coefficients give analytic solutions',
       statement: String.raw`Let $a_0,a_1,g$ be analytic in the disc $|z-z_0|<R$ (that is, given there by convergent power series). Then the equation $u''+a_1(z)u'+a_0(z)u=g(z)$ with initial data $u(z_0)=\xi_0$, $u'(z_0)=\xi_1$ has a unique solution, it is analytic in the *whole* disc $|z-z_0|<R$, and its Taylor coefficients are found by substituting $u=\sum_k c_k(z-z_0)^k$ and comparing coefficients, which gives each $c_{k+2}$ from the earlier ones. The same holds for systems and for equations of any order.`,
-      idea: String.raw`Substitution turns the equation into a recursion for $c_k$; the work is to show the resulting series converges on the full disc and not just near $z_0$. One compares with a *majorant* problem whose coefficients dominate those of the given one and whose series solution is explicit and positive, and applies Picard iteration in the space of power series (a contraction, as in 2.4). The disc can be no larger than the distance to the nearest singularity of the coefficients in the complex plane, even if everything is perfectly smooth on the real line.`,
+      idea: String.raw`Substitution turns the equation into a recursion for $c_k$; the work is to show the resulting series converges on the full disc and not just near $z_0$. One compares with a *majorant* problem whose coefficients dominate those of the given one and whose series solution is explicit and positive, and applies Picard iteration in the space of power series (a contraction, as in 2.4). The nearest complex singularity of a coefficient limits the disc guaranteed by this theorem, even when every coefficient is smooth on the real line. A particular solution may extend farther if it does not inherit that singularity.`,
       caption: String.raw`The equation is $(c^2+x^2)u''+c^2u=0$, whose coefficient has poles at $z=\pm ic$ (the two red points on the left). Drag the pole up and down and the centre $x_0$ left and right: the green disc, centred at $x_0$, reaches exactly to the nearest pole. On the right the Taylor polynomial of degree $N$ (blue) follows the true solution (black, integrated numerically) inside the disc and explodes just outside it, however many terms you add.`,
       deps: ['ode-2.4', 'rca-10.16'],
-      refs: ['Teschl §4.1'],
+      refs: ['Teschl §4.1 pp. 111–114, Theorem 4.1 (local existence); §4.3 p. 130, Theorem 4.7 (global linear continuation)'],
       tags: ['power series', 'analyticity', 'radius of convergence'],
       scope: String.raw`Holds for linear equations with coefficients analytic in a disc; the radius of convergence of the solution is at least the radius of the disc, and equal to it in the typical case where the singularity of the coefficients is genuinely felt by the solution.`,
-      credit: 'A.-L. Cauchy (method of majorants, 1830s–40s)',
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Power_series_solution_of_differential_equations' },
-      verify: true,
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       viz(v) {
         const sc = v.stage({ x: [-3.6, 3.6], y: [-2.7, 2.7], equal: true, axes: true, height: 320, xlabel: 'Re z', ylabel: 'Im z', title: 'complex plane: poles of the coefficient', weight: 0.9, minWidth: 250 });
         const sr = v.stage({ x: [-3.6, 3.6], y: [-3.2, 3.2], axes: 'box', gutter: true, height: 320, xlabel: 'x', ylabel: 'u', title: 'real line: solution and Taylor polynomial', weight: 1.2, minWidth: 280 });
@@ -56,7 +56,7 @@ export default {
         v.readout(() => {
           if (!info) return '';
           const { R, c, x0, N, ein, eout, nin, nout, rootTest, ratio } = info;
-          return `Nearest pole is at distance $\\sqrt{x_0^2+c^2}=${v.fix(R, 3)}$ from the centre $x_0=${v.fix(x0, 2)}$.\nCoefficient test on the first 120 Taylor coefficients: $|c_{120}|^{-1/120}=${v.fix(rootTest, 3)}$ and $\\sqrt{|c_{118}/c_{120}|}=${v.fix(ratio, 3)}$ (both tend to the radius of convergence).\nDegree $N=${N}$: largest error ${nin ? 'at distance $<0.8R$ is $' + v.sci(ein, 2) + '$' : 'inside the disc: n/a'}${nout ? '; at distance $>1.15R$ it is $' + v.sci(eout, 2) + '$ (and grows with $N$)' : ''}.`;
+          return `Nearest pole is at distance $\\sqrt{x_0^2+c^2}=${v.fix(R, 3)}$ from the centre $x_0=${v.fix(x0, 2)}$.\nCoefficient test on the first 120 Taylor coefficients: $|c_{120}|^{-1/120}=${v.fix(rootTest, 3)}$ and $\\sqrt{|c_{118}/c_{120}|}=${v.fix(ratio, 3)}$ (finite-degree estimates; the ratio can oscillate). The exact Cauchy–Hadamard formula uses $\\limsup_n |c_n|^{1/n}$.\nDegree $N=${N}$: largest error ${nin ? 'at distance $<0.8R$ is $' + v.sci(ein, 2) + '$' : 'inside the disc: n/a'}${nout ? '; at distance $>1.15R$ it is $' + v.sci(eout, 2) + '$ (and grows with $N$)' : ''}.`;
         });
       },
     },

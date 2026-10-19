@@ -18,24 +18,23 @@ export default {
       num: '4.1',
       kind: 'Definition',
       name: 'Parallax and the parsec',
-      statement: String.raw`As the Earth circles the Sun, a nearby star appears to trace a small ellipse against the far more distant background, with semi-major axis $p$ (the **annual parallax**). For a baseline of $1$ AU and a star at distance $d \gg 1$ AU, $\tan p = 1\,\text{AU}/d$, so $p \approx 1\,\text{AU}/d$ in radians. The **parsec** is defined as the distance at which $p = 1''$: $1\ \text{pc} = (648000/\pi)\ \text{AU} \approx 3.0857\times10^{16}$ m $\approx 3.26$ light-years. Then, with $p$ in arcseconds and $d$ in parsecs,
+      statement: String.raw`As the Earth circles the Sun, a nearby star appears to trace a small ellipse against the far more distant background, with semi-major axis $p$ (the **annual parallax**). For a baseline of $1$ AU and a star at distance $d \gg 1$ AU, $\tan p = 1\,\text{AU}/d$, so $p \approx 1\,\text{AU}/d$ in radians. The exact **parsec** adopts the small-angle convention corresponding to $p = 1''$: $1\ \text{pc} = (648000/\pi)\ \text{AU} \approx 3.0857\times10^{16}$ m $\approx 3.26$ light-years. Then, with $p$ in arcseconds and $d$ in parsecs,
 $$d = \frac{1}{p}.$$
 The ellipse is flattened by the factor $\sin\beta$ for a star at ecliptic latitude $\beta$ (a circle at the pole, a line in the ecliptic).`,
-      idea: String.raw`It is nothing but the triangle Sun–Earth–star with a right angle at the Sun when the Earth is a quarter of a year from alignment: the side opposite the small angle $p$ is $1$ AU, the long side is $d$. Defining the parsec through this triangle makes the formula $d=1/p$ free of constants. Measuring $p$ means measuring a displacement, so the useful range is set by the astrometric precision $\sigma_p$: a parallax is trustworthy only when $\sigma_p/p$ is small, so a $10\%$ distance needs $p\ge 10\sigma_p$, i.e. $d \le 100\ \text{pc}/\sigma_p[\text{mas}]$.`,
-      caption: String.raw`Slide the **distance** and the **time of year**: left, the Earth moves around the Sun (schematic, not to scale) and the line of sight to the star swings; right, the star's path against the background field, which is rescaled to fit (see the width in the corner). The red circle is the **measurement error** of the chosen instrument; push the star far enough away and its ellipse sinks into the circle: the parallax is lost. Change the ecliptic latitude to flatten the ellipse.`,
-      scope: String.raw`Annual parallax only (the heliocentric triangle, $d\gg1$ AU). The measurable range depends on the instrument: ground-based $\sim$ 10 mas, Hipparcos $\sim$ 1 mas, Gaia $\sim$ 0.02–0.03 mas for bright stars (stated precisions, rounded).`,
-      credit: 'Bessel, 1838 (first successful parallax, 61 Cygni); the name “parsec” is credited to H. H. Turner, 1913',
+      idea: String.raw`It is nothing but the triangle Sun–Earth–star with a right angle at the Sun when the Earth is a quarter of a year from alignment: the side opposite the small angle $p$ is $1$ AU, the long side is $d$. The IAU definition adopts the small-angle form exactly for the parsec, making the astronomical relation $d=1/p$ free of constants in this approximation. Measuring $p$ means measuring a displacement, so the useful range is set by the astrometric precision $\sigma_p$: a parallax is trustworthy only when $\sigma_p/p$ is small, so a $10\%$ distance needs $p\ge 10\sigma_p$, i.e. $d \le 100\ \text{pc}/\sigma_p[\text{mas}]$.`,
+      caption: String.raw`Slide the **distance** and the **time of year**: left, the Earth moves around the Sun (schematic, not to scale) and the line of sight to the star swings; right, the star's path against the background field, which is rescaled to fit (see the width in the corner). The red circle is the **measurement error** for the chosen illustrative precision; push the star far enough away and its ellipse sinks into the circle: the parallax is lost. Change the ecliptic latitude to flatten the ellipse.`,
+      scope: String.raw`Circular Earth orbit and annual parallax only, $d\gg1$ AU; ellipse shape and reciprocal distance use the first-order small-angle approximation. The precision presets are chosen examples, not performance promises for named instruments. Fractional distance error $\sigma_p/p$ is a local approximation valid for small relative parallax error; weak parallaxes require a statistical distance inference.`,
+      credit: 'exact parsec convention: IAU 2015 Resolution B2, note 4',
       deps: [],
-      refs: ['Carroll–Ostlie §3.1'],
+      refs: ['IAU 2015 Resolution B2, p. 4 note 4 (arXiv:1510.06262v2)'],
       tags: ['distance', 'parallax', 'astrometry'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Parsec' },
       viz(v) {
         const dS = v.slider('distance $d$ (pc)', 1.3, 3000, 8, { log: true, sig: 2, fmt: (x) => v.fmt(x, 3) });
         const day = v.slider('time of year (days)', 0, 365, 70, { step: 1 });
         const beta = v.slider('ecliptic latitude $\\beta$ (°)', 0, 90, 55, { step: 1 });
-        const TEL = { ground: { s: 10, name: 'ground-based' }, hip: { s: 1, name: 'Hipparcos-class' }, gaia: { s: 0.03, name: 'Gaia-class' } };
-        const tel = v.select('instrument', [{ value: 'ground', label: 'ground ~10 mas' }, { value: 'hip', label: 'Hipparcos ~1 mas' }, { value: 'gaia', label: 'Gaia ~0.03 mas' }], 'hip');
+        const TEL = { ground: { s: 10, name: '10 mas example' }, hip: { s: 1, name: '1 mas example' }, gaia: { s: 0.03, name: '0.03 mas example' } };
+        const tel = v.select('illustrative parallax precision', [{ value: 'ground', label: '10 mas' }, { value: 'hip', label: '1 mas' }, { value: 'gaia', label: '0.03 mas' }], 'hip');
         const orb = v.stage({ x: [-1.8, 1.8], y: [-1.5, 3.7], equal: true, axes: false, height: 330, weight: 0.9, title: 'seen from above the ecliptic (schematic)' });
         const sky = v.stage({ x: [-1, 1], y: [-1, 1], equal: true, axes: false, height: 330, weight: 1, title: 'the star against distant background stars' });
         const r = v.rng(4);
@@ -66,7 +65,7 @@ The ellipse is flattened by the factor $\sin\beta$ for a star at ecliptic latitu
           sky.corner('red: measurement error', 'br', { color: 'red' });
           stat = { p, sg, snr: p / sg };
         });
-        v.readout(() => `$p = 1/d = ${v.fix(stat.p * 1000, stat.p < 0.01 ? 2 : 1)}$ mas  ·  error $\\sigma_p = ${TEL[tel.value].s}$ mas  ·  $p/\\sigma_p = ${v.fmt(stat.snr, 3)}$\n${stat.snr > 10 ? 'a good distance (better than 10 %)' : stat.snr > 3 ? 'a rough distance (' + v.fix(100 / stat.snr, 0) + ' % error)' : 'not measurable: the ellipse is inside the error circle'}  ·  largest distance with 10 % error: ${v.fmt(100 / TEL[tel.value].s, 3)} pc`);
+        v.readout(() => `$p = 1/d = ${v.fix(stat.p * 1000, stat.p < 0.01 ? 2 : 1)}$ mas  ·  error $\\sigma_p = ${TEL[tel.value].s}$ mas  ·  $p/\\sigma_p = ${v.fmt(stat.snr, 3)}$\n${stat.snr > 10 ? 'a good distance (better than 10 %)' : stat.snr > 3 ? 'a rough distance (' + v.fix(100 / stat.snr, 0) + ' % error)' : 'weak parallax: below the illustrative 3σ guide'}  ·  largest distance with 10 % error: ${v.fmt(100 / TEL[tel.value].s, 3)} pc`);
       },
     },
 
@@ -82,7 +81,7 @@ Hence a measured flux together with a known distance gives the luminosity, $L = 
       caption: String.raw`Drag the **detector** along the beam (left). The beam has a square cross section of side $r$ at distance $r$, so the unit tile always catches the same rays but a share $1/r^2$ of them. Right: the beam seen head on, with 500 photons placed at random; those inside the tile are gold. Below, the flux at that distance for the Sun, and the luminosity recovered from it: always $3.83\times10^{26}$ W.`,
       scope: String.raw`Isotropic emission into transparent space. Interstellar dust dims distant stars (extinction), and a non-spherical or beamed source needs an angle-dependent flux.`,
       deps: ['astro-4.1'],
-      refs: ['Carroll–Ostlie §3.2'],
+      refs: ['IAU 2015 Resolution B2, pp. 2–4, eqs. (2), (4)', 'Bright Star Catalogue 5th revised edition, V/50, HR7001 and2491'],
       tags: ['flux', 'luminosity', 'distance'],
       viz(v) {
         const side = v.stage({ x: [-0.2, 3.6], y: [-2.1, 2.1], axes: false, height: 320, weight: 1.15, title: 'side view of the beam (distance in AU, the source is the Sun)' });
@@ -129,17 +128,16 @@ $$m_1 - m_2 = -2.5\log_{10}\frac{F_1}{F_2}\qquad\Longleftrightarrow\qquad \frac{
 Larger $m$ means a fainter star. The **absolute magnitude** $M$ is the apparent magnitude the star would have at $10$ pc. Because $F\propto d^{-2}$ (4.2),
 $$m - M = 5\log_{10}\frac{d}{10\ \text{pc}},$$
 the **distance modulus**, which gives the distance of any star of known $M$ from its apparent magnitude.`,
-      idea: String.raw`The eye's response is roughly logarithmic, which is how the ancient six-class scale of brightness worked; Pogson (1856) fixed it by making five steps exactly a factor $100$ so that the old scale is reproduced. Moving the star from $d$ to $10$ pc multiplies the flux by $(d/10\,\text{pc})^2$; taking $-2.5\log_{10}$ of the inverse-square law of 4.2 turns that factor into $5\log_{10}(d/10\ \text{pc})$ magnitudes.`,
-      caption: String.raw`Left: apparent magnitude against distance for the chosen absolute magnitude; the line crosses $m=M$ at $10$ pc, always rises with slope $5$ per decade of distance, and the horizontal lines are the naked-eye and a deep-telescope limit (the **handle** slides along the distance axis). Right: drag the two magnitudes $m_1,m_2$ on the flux ruler; five magnitudes always give a factor 100.`,
-      scope: String.raw`Ignores interstellar extinction, which adds a term $A$ to the modulus ($m-M=5\log_{10}(d/10\,\text{pc})+A$), and the dependence of magnitude on the filter (bolometric versus band magnitudes, 4.6). The absolute magnitudes in the menu are rounded and quoted from memory.`,
-      credit: 'Pogson, 1856 (the factor-100 scale)',
+      idea: String.raw`A logarithmic magnitude difference measures a flux ratio: the coefficient −2.5 makes five steps exactly a factor100. Moving the star from $d$ to $10$ pc multiplies the flux by $(d/10\,\text{pc})^2$; taking $-2.5\log_{10}$ of the inverse-square law of 4.2 turns that factor into $5\log_{10}(d/10\ \text{pc})$ magnitudes.`,
+      caption: String.raw`Left: apparent magnitude against distance for the chosen absolute magnitude; the line crosses $m=M$ at $10$ pc, always rises with slope $5$ per decade of distance, and the horizontal lines are illustrative detection guides at magnitudes 6 and 30 (the **handle** slides along the distance axis). Right: drag the two magnitudes $m_1,m_2$ on the flux ruler; five magnitudes always give a factor 100.`,
+      scope: String.raw`Ignores interstellar extinction, which adds a term $A$ to the modulus ($m-M=5\log_{10}(d/10\,\text{pc})+A$), and the dependence of magnitude on the filter (bolometric versus band magnitudes, 4.6). The solar example is nominal bolometric magnitude 4.74 from IAU Resolution B2. Vega and Sirius examples use historical V-band magnitudes and parallaxes from BSC5 (1991), HR 7001/2491, with $M_V=V+5\log_{10}(p[\mathrm{arcsec}])+5$; these illustrate the calculation rather than updated distance estimates. The faint/bright examples and detection guides are chosen values. Compare fluxes in one consistent band (or bolometrically).`,
+      credit: 'magnitude convention: IAU 2015 Resolution B2; V-band examples: BSC5 (1991)',
       deps: ['astro-4.2'],
-      refs: ['Carroll–Ostlie §3.2'],
+      refs: ['IAU 2015 Resolution B2, pp. 2–4, eqs. (2), (4)', 'Bright Star Catalogue 5th revised edition, V/50, HR7001 and2491'],
       tags: ['magnitude', 'distance modulus', 'photometry'],
-      verify: true,
       viz(v) {
-        const PRE = { sun: ['Sun (V ≈ 4.83)', 4.83], vega: ['Vega (≈ 0.6)', 0.6], sir: ['Sirius A (≈ 1.4)', 1.43], prox: ['Proxima Cen (≈ 15.5)', 15.5], sg: ['blue supergiant (≈ −7)', -7] };
-        const Mabs = v.slider('absolute magnitude $M$', -9, 17, 4.83, { step: 0.01, fmt: (x) => v.fix(x, 2) });
+        const PRE = { sun: ['Sun (bolometric 4.74)', 4.74], vega: ['Vega (BSC5 V ≈ 0.48)', .48], sir: ['Sirius A (BSC5 V ≈ 1.41)', 1.41], prox: ['faint example M = 15.5', 15.5], sg: ['bright example M = −7', -7] };
+        const Mabs = v.slider('absolute magnitude $M$', -9, 17, 4.74, { step: 0.01, fmt: (x) => v.fix(x, 2) });
         const pre = v.select('example', Object.entries(PRE).map(([k, a]) => ({ value: k, label: a[0] })), 'sun', { onChange: (k) => Mabs.set(PRE[k][1]) });
         const A = v.stage({ x: [1, 1e5], y: [-40, 14], xlog: true, axes: 'box', gutter: true, height: 330, weight: 1.05, xlabel: 'distance (pc)', ylabel: 'apparent magnitude m (brighter ↑)', title: 'm = M + 5 log₁₀(d/10 pc)',
           yticks: [-10, 0, 10, 20, 30].map((m) => [-m, String(m)]) });
@@ -153,8 +151,8 @@ the **distance modulus**, which gives the distance of any star of known $M$ from
           hd.set(hd.x, -(M + 5 * Math.log10(hd.x / 10)));
           A.fn((d) => -(M + 5 * Math.log10(d / 10)), { color: 'accent', width: 2.2 });
           A.vline(10, { color: 'faint', width: 1, dash: [3, 4] });
-          A.hline(-6, { color: 'green', width: 1.2, dash: [5, 4] }); A.text('naked eye ≈ 6', 1e5, -6, { size: 10.5, color: 'green', dy: -9, align: 'right' });
-          A.hline(-30, { color: 'red', width: 1.2, dash: [5, 4] }); A.text('deep telescope ≈ 30', 1e5, -30, { size: 10.5, color: 'red', dy: -9, align: 'right' });
+          A.hline(-6, { color: 'green', width: 1.2, dash: [5, 4] }); A.text('illustrative guide: m=6', 1e5, -6, { size: 10.5, color: 'green', dy: -9, align: 'right' });
+          A.hline(-30, { color: 'red', width: 1.2, dash: [5, 4] }); A.text('illustrative guide: m=30', 1e5, -30, { size: 10.5, color: 'red', dy: -9, align: 'right' });
           A.text('10 pc', 10, -37, { size: 10.5, color: 'muted', dx: 4, align: 'left' });
           d0 = hd.x;
           B.fn((m) => Math.pow(10, -0.4 * m), { color: 'ink', width: 1.8 });
@@ -163,7 +161,7 @@ the **distance modulus**, which gives the distance of any star of known $M$ from
         });
         v.readout(() => {
           const M = Mabs.value, m = M + 5 * Math.log10(d0 / 10), dm = m2.x - m1.x;
-          return `$d = ${v.fmt(d0, 3)}$ pc  →  $m = M + 5\\log_{10}(d/10) = ${v.fix(m, 2)}$ (${m <= 6 ? 'visible to the naked eye' : m <= 30 ? 'needs a telescope' : 'beyond the telescope limit'})\n$m_2 - m_1 = ${v.fix(dm, 2)}$  →  $F_1/F_2 = 100^{(m_2-m_1)/5} = ${v.fmt(Math.pow(100, dm / 5), 4)}$`;
+          return `$d = ${v.fmt(d0, 3)}$ pc  →  $m = M + 5\\log_{10}(d/10) = ${v.fix(m, 2)}$ (${m <= 6 ? 'brighter than the m=6 guide' : m <= 30 ? 'between the m=6 and30 guides' : 'fainter than the m=30 guide'})\n$m_2 - m_1 = ${v.fix(dm, 2)}$  →  $F_1/F_2 = 100^{(m_2-m_1)/5} = ${v.fmt(Math.pow(100, dm / 5), 4)}$`;
         });
       },
     },
@@ -267,15 +265,14 @@ with $T_\odot = 5772$ K. In a plot of $\log L$ against $\log T_{\rm eff}$ the st
       num: '4.6',
       kind: 'Definition',
       name: 'Colour index',
-      statement: String.raw`A **colour index** is the difference of a star's magnitudes in two wavelength bands, for instance $B-V = m_B - m_V$ (blue minus visual filter of the Johnson–Morgan system). Since a magnitude difference is a flux ratio (4.3), $B-V = -2.5\log_{10}(F_B/F_V) + \text{const}$, the constant being fixed by convention (a star of spectral type A0 has all indices $\approx 0$). For blackbody-like stars the ratio $F_B/F_V$ depends only on temperature, and it increases with $T$, so $B-V$ **decreases monotonically with temperature**: about $-0.3$ for the hottest stars, $+0.65$ for the Sun, $+1.5$ or more for cool red stars. A two-filter measurement therefore gives a temperature, with no spectrum and no distance needed (the distance divides out of the flux ratio).`,
+      statement: String.raw`A **colour index** is the difference of a star's magnitudes in two wavelength bands, for instance $B-V = m_B - m_V$ (blue minus visual filter of the Johnson–Morgan system). Since a magnitude difference is a flux ratio (4.3), $B-V = -2.5\log_{10}(F_B/F_V) + \text{const}$, the constant being fixed by convention (the zero points belong to the chosen photometric system). For blackbody-like stars the ratio $F_B/F_V$ depends only on temperature, and it increases with $T$, so $B-V$ **decreases monotonically with temperature**: about $-0.3$ for the hottest stars, $+0.65$ for the Sun, $+1.5$ or more for cool red stars. A two-filter measurement therefore gives a temperature, with no spectrum and no distance needed (the distance divides out of the flux ratio).`,
       idea: String.raw`The two filters sample a Planck spectrum at two wavelengths. For $T$ so high that both bands lie on the Rayleigh–Jeans side the ratio is a constant; as $T$ drops, the peak of the Planck curve (Wien's law) moves from the blue towards the red, and light in $B$ falls faster than in $V$. The map $T\mapsto F_B/F_V$ is monotone, so it can be inverted. Interstellar dust reddens a star and is the main source of ambiguity, which is why observers use at least two colours.`,
       caption: String.raw`Drag the **temperature**: left, a blackbody spectrum with two filter curves (here Gaussian toys, not the tabulated Johnson curves; shaded: the part of the spectrum each filter lets through). Right: $B-V$ against $T$ from this model (calibrated so that $5772$ K gives $0.65$) and the blackbody-derived formula of Ballesteros (2012) for comparison; dots mark stars whose $B-V$ is read off, placed at the temperature the model colour implies.`,
-      scope: String.raw`Model calibrated to a single point (the Sun), so absolute values of $B-V$ for hot and cool stars are only indicative: real stars have line blanketing, and the real filters are not Gaussians. The star list uses rounded catalogue colours quoted from memory.`,
-      credit: 'Johnson & Morgan, 1953 (UBV system)',
-      deps: ['astro-4.4', 'astro-4.3'],
-      refs: ['Carroll–Ostlie §3.6'],
+      scope: String.raw`Model calibrated to a single point (the Sun), so absolute values of $B-V$ for hot and cool stars are only indicative: real stars have line blanketing, and the real filters are not Gaussians. The five named comparison colours are BSC5 (1991) UBV values (HR 1713,2491,2943,5340,2061); Betelgeuse is variable. The solar 0.65 point is the chosen calibration, not a measurement made by this model. At high temperature the colour approaches its Rayleigh–Jeans limit, so temperature inference becomes poorly conditioned.`,
+      credit: 'Ballesteros (2012), eq. (14); named-star colours: BSC5 (1991)',
+      deps: ['astro-4.4', 'astro-4.3', 'pma-6.1'],
+      refs: ['Ballesteros (2012), arXiv:1201.1809v2, pp. 3–4, eq. (14)', 'Bright Star Catalogue 5th revised edition, V/50, UBV colour field'],
       tags: ['colour', 'photometry', 'temperature'],
-      verify: true,
       viz(v) {
         const T = v.slider('temperature $T$ (K)', 2500, 30000, 5772, { log: true, sig: 3, fmt: (x) => v.fix(x, 0) });
         const sp = v.stage({ x: [250, 900], y: [0, 2.6], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'wavelength (nm)', ylabel: 'relative flux per unit wavelength', title: 'a blackbody seen through B and V filters' });
@@ -284,12 +281,13 @@ with $T_\odot = 5772$ K. In a plot of $\log L$ against $\log T_{\rm eff}$ the st
         const invToy = (bv) => v.M.bisect((t) => bvToy(t) - bv, 2000, 60000, 0.5);
         v.render(() => {
           const t = T.value, ref = planckL(550e-9, t);
+          let ymax=2.6;for(let nm=250;nm<=900;nm+=3)ymax=Math.max(ymax,1.12*planckL(nm*1e-9,t)/ref);sp.setView([250,900],[0,ymax]);
           sp.fn((nm) => bandT('B', nm), { color: 'blue', width: 1, dash: [4, 4], alpha: 0.7 });
           sp.fn((nm) => bandT('V', nm), { color: 'green', width: 1, dash: [4, 4], alpha: 0.7 });
           sp.fn((nm) => (planckL(nm * 1e-9, t) / ref) * bandT('B', nm), { fill: true, color: 'blue', fillAlpha: 0.3, width: 1.4, n: 400 });
           sp.fn((nm) => (planckL(nm * 1e-9, t) / ref) * bandT('V', nm), { fill: true, color: 'green', fillAlpha: 0.3, width: 1.4, n: 400 });
           sp.fn((nm) => planckL(nm * 1e-9, t) / ref, { color: 'ink', width: 2.2, n: 400 });
-          sp.text('B', BAND.B.c, 2.4, { color: 'blue', size: 13, align: 'center' }); sp.text('V', BAND.V.c + 60, 2.4, { color: 'green', size: 13, align: 'center' });
+          sp.text('B', BAND.B.c, ymax*.92, { color: 'blue', size: 13, align: 'center' }); sp.text('V', BAND.V.c + 60, ymax*.92, { color: 'green', size: 13, align: 'center' });
           cv.fn(bvToy, { color: 'accent', width: 2.4 });
           const pts = []; for (let bv = -0.35; bv <= 2.1; bv += 0.02) pts.push([tBallesteros(bv), bv]);
           cv.path(pts, { color: 'orange', width: 1.6, dash: [6, 4] });

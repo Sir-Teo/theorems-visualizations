@@ -50,6 +50,16 @@ export function randomDeep({ N = 200, L = 50, act = 'tanh', cw = 1, bs = 0, seed
   return { std, grad: g.map(rms), kept, h0: Array.from(h[0]) };
 }
 
+/** Exact positive-homogeneity scaling for the same zero-bias ReLU weight draw.
+ * base uses variance baseC/N; this changes every weight by sqrt(cw/baseC).
+ * Forward depth l scales by s^l and backward depth l by s^(L-l).
+ */
+export function scaleReluRun(base, cw, baseC = 2) {
+  if (!(cw > 0 && baseC > 0)) throw new RangeError('ReLU weight variances must be positive');
+  const scale = Math.sqrt(cw / baseC), L = base.std.length - 1;
+  return { std: base.std.map((x, l) => x * scale ** l), grad: base.grad.map((x, l) => x * scale ** (L - l)) };
+}
+
 // ---------------------------------------------------------------- Gauss–Hermite quadrature and mean-field maps
 // Nodes/weights for ∫ e^{-x²} f(x) dx, computed once by Newton's method on the Hermite polynomial.
 function hermite(n) {

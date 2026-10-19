@@ -1,0 +1,9 @@
+# REP 3.3 complex-cell layout follow-up
+
+The cyclic-group character values overflowed adjacent columns because table-kit TeX labels do not automatically fit their cell widths. Mixed complex entries now put the real term above the signed imaginary term, preserving the same two-decimal formatting. Z/5 cell text uses size 12 to leave vertical clearance; S3 retains its previous formatting. The caption explains the two-line notation. No arithmetic, dependencies, source flags, or shared runtime changed.
+
+Validation passed: REP's 48-item static check has 0 errors and 0 warnings, the existing pure-math numerical suite passes, and 172 native states pass with actual local KaTeX 0.16.11 (86 per theme). Native coverage includes every A/B pair for direct sum and tensor product in both groups; every A for the dual and both squares; and both settings of the square-correction toggle. The 860px cases also measure every body TeX rectangle against actual row/column spacing and require at least 4px total clearance in both dimensions. Both themes additionally capture the largest cyclic tensor at 1080px. Readouts continue to report agreement with the correction enabled and disagreement when it is deliberately omitted.
+
+Inspected PNGs include the largest cyclic sum and tensor at 860px, the 1080px tensor, a dark exterior-square counterexample, and the unchanged dark S3 table. Entries are readable and separated. Raw results and PNGs are in `/tmp/rep-character-layout/`; the adjacent JSON records exact source hashes, counts, and inspected image paths. Reproduce with `node tests/verification-rep-character-layout-browser.mjs`.
+
+The first native attempt correctly rejected an overly tall stacked layout, prompting the Z/5 font-size adjustment. The final 172-state run passed without runtime, TeX, blank-canvas, geometric-fit, or readout failures. Final source is frozen for the root's collection and conditional-evidence refreshes.

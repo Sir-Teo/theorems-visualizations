@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 8 (part 2): elliptic operators
 //
-// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
+// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
 
 const PRESETS = {
   lap: { label: 'Laplace $\\xi_1^2+\\xi_2^2$', a: 1, b: 0, c: 1 },
@@ -8,6 +8,23 @@ const PRESETS = {
   wave: { label: 'wave $\\xi_1^2-\\xi_2^2$', a: 1, b: 0, c: -1 },
   heat: { label: 'degenerate $\\xi_1^2$', a: 1, b: 0, c: 0 },
 };
+
+/** Exact real quadratic principal-symbol minimum and a rigorous exterior radius. */
+export function quadraticExterior(a,b,c,b1=0,b2=0,b0=0){
+ const d=Math.hypot(a-c,2*b),lo=(a+c-d)/2,hi=(a+c+d)/2;
+ const m=lo>0?lo:hi<0?-hi:0;
+ const B=Math.hypot(b1,b2),C=Math.abs(b0),R=m>0?(B+Math.sqrt(B*B+2*m*C))/m:null;
+ return {m,R};
+}
+
+/** Real characteristic lines, including tangent zeros of a degenerate quadratic. */
+export function quadraticZeroDirections(a,b,c){
+ const mu=(a+c)/2,d=Math.hypot((a-c)/2,b),phase=Math.atan2(b,(a-c)/2);
+ if(d<1e-14)return Math.abs(mu)<1e-14?[0,Math.PI/4,Math.PI/2,3*Math.PI/4]:[];
+ if(Math.abs(mu)>d+1e-12)return[];
+ const alpha=Math.acos(Math.max(-1,Math.min(1,-mu/d))),mod=x=>((x%Math.PI)+Math.PI)%Math.PI;
+ const x=mod((phase+alpha)/2),y=mod((phase-alpha)/2);return Math.abs(x-y)<1e-10?[x]:[x,y];
+}
 
 export default {
   collection: 'fa',
@@ -17,14 +34,13 @@ export default {
       num: '8.7',
       kind: 'Definition',
       name: 'Elliptic operators',
-      statement: String.raw`Let $\Omega\subset\R^n$ be open, $N$ a positive integer, and $f_\alpha\in C^\infty(\Omega)$ for $|\alpha|\le N$, with some $f_\alpha$, $|\alpha|=N$, not identically $0$. These define the linear differential operator $L=\sum_{|\alpha|\le N}f_\alpha D^\alpha$ of order $N$, whose **characteristic polynomial** (principal symbol) is
+      statement: String.raw`Let $\Omega\subset\R^n$ be open, $N$ a positive integer, and $f_\alpha\in C^\infty(\Omega)$ for $|\alpha|\le N$, with some $f_\alpha$, $|\alpha|=N$, not identically $0$. These define the linear differential operator $L=\sum_{|\alpha|\le N}f_\alpha D_\alpha$ of order $N$, whose **characteristic polynomial** (principal symbol) is
 $$p(x,y)=\sum_{|\alpha|=N}f_\alpha(x)\,y^\alpha\qquad(x\in\Omega,\ y\in\R^n).$$
 $L$ is **elliptic** if $p(x,y)\ne0$ for every $x\in\Omega$ and every $y\ne0$. For constant coefficients, $L=P(D)$ and $p=P_N$, the principal part of $P$.`,
       idea: String.raw`Ellipticity is a condition on the highest-order terms only, pointwise in $x$. For constant coefficients, since $P_N$ is homogeneous of degree $N$, it says $|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$. The Laplacian ($P_2=-|\xi|^2$) is elliptic; the wave operator ($\xi_1^2-\xi_2^2$) and the heat operator (principal part $\xi_1^2$ in the variables $(x,t)$) are not — their principal symbols vanish along "characteristic" directions.`,
-      caption: String.raw`Constant-coefficient second-order operators in the plane: $P_2(\xi)=a\xi_1^2+2b\xi_1\xi_2+c\xi_2^2$ (choose a preset or tune $a,b,c$). Left: $P_2$ coloured by sign and size over the $\xi$-plane, with its zero set in red — the characteristic directions. Right: $P_2$ on the unit circle. The operator is elliptic exactly when the curve never touches $0$, i.e. when $ac-b^2>0$.`,
+      caption: String.raw`Real constant-coefficient second-order symbols in the plane: $P_2(\xi)=a\xi_1^2+2b\xi_1\xi_2+c\xi_2^2$ (choose a preset or tune $a,b,c$). Left: $P_2$ coloured by sign and size over the $\xi$-plane, with its zero set in red — the characteristic directions. Right: $P_2$ on the unit circle. The operator is elliptic exactly when the curve never touches $0$, i.e. when $ac-b^2>0$.`,
       deps: ['fa-8.1'],
       tags: ['differential equations', 'elliptic operators'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const pre = v.select('preset', Object.entries(PRESETS).map(([value, o]) => ({ value, label: o.label })), 'ell', { onChange: (k) => { aS.set(PRESETS[k].a); bS.set(PRESETS[k].b); cS.set(PRESETS[k].c); } });
@@ -40,14 +56,13 @@ $L$ is **elliptic** if $p(x,y)\ne0$ for every $x\in\Omega$ and every $y\ne0$. Fo
           const P = (x, y) => a * x * x + 2 * b * x * y + c * y * y;
           L.raster((x, y) => { const p = P(x, y) / (x * x + y * y + 1e-9), t = Math.min(1, Math.abs(p) / 2.5); const col = p > 0 ? v.rgb('blue') : v.rgb('orange'); return [col[0], col[1], col[2], 40 + 170 * t]; }, { key: `${a},${b},${c}`, res: 3 });
           // zero directions: a cos² + 2b cos sin + c sin² = 0
-          const zs = [];
-          for (let i = 0; i < 720; i++) { const t0 = Math.PI * i / 720, t1 = Math.PI * (i + 1) / 720, p0 = P(Math.cos(t0), Math.sin(t0)), p1 = P(Math.cos(t1), Math.sin(t1)); if (p0 === 0 || p0 * p1 < 0) zs.push(t0 + (t1 - t0) * (p0 / (p0 - p1 || 1))); }
+          const zs=quadraticZeroDirections(a,b,c);
           for (const t of zs) L.line(-3 * Math.cos(t), -3 * Math.sin(t), 3 * Math.cos(t), 3 * Math.sin(t), { color: 'red', width: 2.6 });
           L.circle(0, 0, 1, { color: 'ink', width: 1.2, dash: [4, 4] });
           R.hline(0, { color: 'red', width: 1, dash: [3, 3] });
           R.fn((t) => P(Math.cos(t), Math.sin(t)), { color: zs.length ? 'red' : 'green', width: 2.6 });
           for (const t of zs) { R.dot(t, 0, { color: 'red', r: 4.5 }); R.dot(t - Math.PI, 0, { color: 'red', r: 4.5 }); }
-          let mn = Infinity; for (let i = 0; i < 720; i++) { const t = M.TAU * i / 720; mn = Math.min(mn, Math.abs(P(Math.cos(t), Math.sin(t)))); }
+          const mn=quadraticExterior(a,b,c).m;
           st = { disc: a * c - b * b, mn, ell: a * c - b * b > 1e-9 };
         });
         v.readout(() => `$ac-b^2 = ${v.fix(st.disc, 3)}$, $\\;\\min_{|\\omega|=1}|P_2(\\omega)| = ${v.fix(st.mn, 3)}$: ` + (st.ell ? '**elliptic**, $|P_2(\\xi)|\\ge' + v.fix(st.mn, 3) + '\\,|\\xi|^2$.' : 'not elliptic — $P_2$ vanishes on the red lines.'));
@@ -61,10 +76,9 @@ $L$ is **elliptic** if $p(x,y)\ne0$ for every $x\in\Omega$ and every $y\ne0$. Fo
 $$|P(\xi)|\ge c\,|\xi|^N\qquad(\xi\in\R^n,\ |\xi|\ge R).$$
 In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O(|\xi|^{-N})$ there.`,
       idea: String.raw`$|P_N(\xi)|\ge m|\xi|^N$ with $m=\min_{|\omega|=1}|P_N(\omega)|>0$, while the lower-order part satisfies $|P(\xi)-P_N(\xi)|\le C(1+|\xi|)^{N-1}$. For $|\xi|$ large the latter is at most $\frac m2|\xi|^N$, so $c=\frac m2$ works. Rudin uses this inequality in the proof of 8.12 rather than stating it separately. Without ellipticity $m=0$ and the lower-order terms decide: zeros of $P$ may run off to infinity along characteristic directions.`,
-      caption: String.raw`The full symbol $P(\xi)=P_2(\xi)+\beta_1\xi_1+\beta_2\xi_2+\beta_0$ (real coefficients, so its zero set is a conic, drawn in red). Left: for an elliptic $P_2$ the zeros stay inside a disc (dashed: the radius $R$ beyond which $|P|\ge\frac m2|\xi|^2$); for the wave or degenerate symbols they escape to infinity. Right: $\min_{|\xi|=\rho}|P(\xi)|/\rho^2$ against $\rho$ (log scale) — it tends to $m>0$ (green dashed) exactly in the elliptic case.`,
+      caption: String.raw`The full symbol $P(\xi)=P_2(\xi)+\beta_1\xi_1+\beta_2\xi_2+\beta_0$ (real coefficients, so its zero set is a conic, drawn in red). Left: for an elliptic $P_2$ the zeros stay inside a disc (dashed: the radius $R$ beyond which $|P|\ge\frac m2|\xi|^2$); for the wave or degenerate symbols they escape to infinity. Right: angular samples of $\min_{|\xi|=\rho}|P(\xi)|/\rho^2$ against $\rho$ (log scale) — it tends to $m>0$ (green dashed) exactly in the elliptic case.`,
       deps: ['fa-8.7'],
       tags: ['elliptic operators', 'symbols'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const pre = v.select('$P_2$', Object.entries(PRESETS).map(([value, o]) => ({ value, label: o.label })), 'ell');
@@ -88,22 +102,20 @@ In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O
             if (p00 * p01 < 0) segs.push([x, y + h * p00 / (p00 - p01)]);
           }
           L.dots(segs, { color: 'red', r: 1.6 });
-          let m = Infinity; for (let i = 0; i < 360; i++) { const t = M.TAU * i / 360; m = Math.min(m, Math.abs(P2(Math.cos(t), Math.sin(t)))); }
+          const {m,R:Rr}=quadraticExterior(pr.a,pr.b,pr.c,b1,b2,b0);
           const ls = M.linspace(-1, 2.5, 141), ratio = ls.map((l) => { const rho = 10 ** l; let mn = Infinity; for (let i = 0; i < 360; i++) { const t = M.TAU * i / 360; mn = Math.min(mn, Math.abs(P(rho * Math.cos(t), rho * Math.sin(t)))); } return mn / (rho * rho); });
-          let Rr = null;
-          if (m > 1e-9) { for (let i = ls.length - 1; i >= 0; i--) if (ratio[i] < m / 2) { Rr = 10 ** ls[Math.min(ls.length - 1, i + 1)]; break; } if (Rr === null) Rr = 10 ** ls[0]; }
           if (Rr !== null && Rr < 8.5) L.circle(0, 0, Rr, { color: 'muted', width: 1.6, dash: [6, 4] });
           R.setView(null, [-0.1, Math.max(1.2, m * 1.6, Math.max(...ratio.slice(40)) * 1.1)]);
           if (m > 1e-9) { R.hline(m, { color: 'green', width: 1.8, dash: [6, 4] }); R.hline(m / 2, { color: 'green', width: 1, dash: [2, 3], alpha: 0.7 }); }
           R.path(ls.map((l, i) => [l, ratio[i]]), { color: 'ink', width: 2.4 });
-          if (Rr !== null) R.vline(Math.log10(Rr), { color: 'muted', width: 1.2, dash: [4, 4] });
+          if (Rr > 0) R.vline(Math.log10(Rr), { color: 'muted', width: 1.2, dash: [4, 4] });
           const farZero = segs.some(([x, y]) => Math.hypot(x, y) > 5.5);
           st = { m, Rr, farZero, last: ratio[ratio.length - 1] };
         });
         v.readout(() => {
           const s = st;
-          if (s.m > 1e-9) return `$m = ${v.fix(s.m, 3)}>0$: elliptic. $|P(\\xi)|\\ge\\frac m2|\\xi|^2$ for $|\\xi|\\ge R\\approx${v.fix(s.Rr, 2)}$; all zeros lie inside that disc.`;
-          return `$m = 0$: not elliptic. $\\min_{|\\xi|=\\rho}|P|/\\rho^2\\to${v.fix(s.last, 3)}$` + (s.farZero ? ', and the zero set runs off to infinity.' : '.');
+          if (s.m > 1e-9) return `$m = ${v.fix(s.m, 3)}>0$: elliptic. $|P(\\xi)|\\ge\\frac m2|\\xi|^2$ for $|\\xi|\\ge R\\approx${v.fix(s.Rr, 2)}$; all zeros lie inside that disc by the analytic bound $m\\rho^2-|\\beta|\\rho-|\\beta_0|$.`;
+          return `$m = 0$: not elliptic. sampled ratio at the right endpoint $${v.fix(s.last, 3)}$` + (s.farZero ? ', and zeros reach the edge of this finite plot.' : '.');
         });
       },
     },
@@ -111,12 +123,11 @@ In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O
       num: '8.12',
       kind: 'Theorem',
       name: 'Elliptic regularity',
-      statement: String.raw`Suppose $L$ is an elliptic operator of order $N$ in $\Omega$, with $C^\infty$ coefficients (8.7), $u\in\mathscr D'(\Omega)$, and $Lu$ is locally $H^s$ in $\Omega$ for some real $s$. Then $u$ is locally $H^{s+N}$. In particular, if $Lu\in C^\infty(\Omega)$, then $u\in C^\infty(\Omega)$: there is a $C^\infty$ function in $\Omega$ that equals $u$ as a distribution.`,
-      idea: String.raw`The question is local (8.11), so fix $\psi\in\mathscr D(\Omega)$ and consider $\psi u$, which has compact support. For constant coefficients, by 8.7a $1/P$ is smooth and $O(|\xi|^{-N})$ off a compact set, so there is a **parametrix**: a distribution $E$, smooth away from $0$, with $P(D)E=\delta+\omega$, $\omega\in C^\infty$. Then $\psi u=E*P(D)(\psi u)-\omega*(\psi u)$; the second term is smooth, and $P(D)(\psi u)=\psi P(D)u+(\text{terms supported where }\nabla\psi\ne0)$. Near any point where $\psi=1$, the first term is smooth because $E$ is smooth off the origin. Equivalently, in Sobolev language, $P(D)u\in H^s_{loc}$ implies $u\in H^{s+N}_{loc}$, and Sobolev's lemma 7.25 converts this into smoothness.`,
-      caption: String.raw`Left: an elliptic case. $u$ is harmonic in the disc ($\Delta u=0\in C^\infty$), with boundary values a square wave on the circle that jumps $2k$ times. However rough the boundary data, $u$ is smooth — even real-analytic — inside: the readout shows $\sup|\nabla u|$ on the disc of radius $0.9$. Right: the wave operator $\partial_t^2-\partial_x^2$ is not elliptic, and $u(x,t)=H(x-t-x_0)$ solves $u_{tt}-u_{xx}=0$ while jumping along a characteristic line; switch to the heat operator to see a non-elliptic operator that nonetheless smooths for $t>0$ (hypoellipticity is weaker than ellipticity).`,
+      statement: String.raw`Suppose $\Omega\subset\mathbb R^n$ is open and $L=\sum_{|\alpha|\le N}f_\alpha D_\alpha$ is elliptic of order $N\ge1$, with smooth coefficients, and every coefficient of order exactly $N$ is constant. If $Lu=v$ in $\mathscr D'(\Omega)$ and $v$ is locally $H^s$, then $u$ is locally $H^{s+N}$. Consequently smooth $v$ implies smooth $u$. Rudin notes after the theorem that the constant-principal-coefficient assumption can be dropped, but proves the stated version.`,
+      idea: String.raw`First a compact cutoff of $u$ lies in some $H^t$ by 8.9(a). For nested cutoffs $\psi=1$ near $\operatorname{supp}\varphi$, assume $\psi u\in H^t$ with $t\le s+N-1$. The commutator $[L,\varphi]$ has order at most $N-1$, so $L(\varphi u)\in H^{t-N+1}$. The constant elliptic principal symbol has a Fourier multiplier inverse of order $-N$ after adding a bounded order-zero multiplier; all lower-order terms have order at most $N-1$. Applying this inverse gives $\varphi u\in H^{t+1}$. Iteration over nested balls reaches $H^{s+N}$. Repeating for every $s$ and using Sobolev's lemma gives the smooth corollary.`,
+      caption: String.raw`Left: an elliptic case. $u$ is harmonic in the disc ($\Delta u=0\in C^\infty$), with boundary values a square wave on the circle that jumps $2k$ times. However rough the boundary data, $u$ is smooth — even real-analytic — inside: the readout shows a sampled maximum of $|\nabla u|$ on the disc of radius $0.9$. Right: the wave operator $\partial_t^2-\partial_x^2$ is not elliptic, and $u(x,t)=H(x-t-x_0)$ solves $u_{tt}-u_{xx}=0$ while jumping along a characteristic line; switch to the heat operator to see a non-elliptic operator that nonetheless smooths for $t>0$ (hypoellipticity is weaker than ellipticity).`,
       deps: ['fa-8.7', 'fa-8.7a', 'fa-8.9', 'fa-8.11', 'fa-7.25'],
       tags: ['elliptic operators', 'regularity'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const kS = v.slider('jumps of the boundary data: $2k$, $k=$', 1, 6, 2, { int: true });
@@ -144,21 +155,20 @@ In particular $P$ has no zeros outside a compact set, and $1/P$ is smooth and $O
           else R.dot(x0, 0, { color: 'red', r: 5 });
           st = { g, k, wave };
         });
-        v.readout(() => `Elliptic: $\\sup_{|x|\\le0.9}|\\nabla u| = ${v.fix(st.g, 3)}$ — finite, though the boundary data have $${2 * st.k}$ jumps (the bound grows only as the disc approaches the boundary). ` + (st.wave ? 'Wave: $P(D)u=0$ is smooth, yet $u$ is discontinuous along the red characteristic — no regularity without ellipticity.' : 'Heat: also $P(D)u=0$, and $u$ is smooth for $t>0$; the only singularity is the initial point (red). The heat operator is hypoelliptic but not elliptic.'));
+        v.readout(() => `Elliptic sampled maximum on $|x|=0.9$: $|\\nabla u| = ${v.fix(st.g, 3)}$ — finite, though the boundary data have $${2 * st.k}$ jumps (the bound grows only as the disc approaches the boundary). ` + (st.wave ? 'Wave: $P(D)u=0$ is smooth, yet $u$ is discontinuous along the red characteristic — no regularity without ellipticity.' : 'Heat: also $P(D)u=0$, and $u$ is smooth for $t>0$; the only singularity is the initial point (red). The heat operator is hypoelliptic but not elliptic.'));
       },
     },
     {
       num: '8.12a',
       kind: 'Corollary',
       name: "Weyl's lemma: harmonic distributions are smooth",
-      credit: 'Weyl, 1940',
+      credit: 'Weyl',
       statement: String.raw`If $u\in\mathscr D'(\Omega)$ and $\Delta u=0$ in $\Omega$, then $u$ is (equal to) a $C^\infty$ — indeed real-analytic — harmonic function in $\Omega$.`,
       idea: String.raw`The Laplacian is elliptic, so 8.12 applies. A direct argument: for a radial mollifier $h_\varepsilon$, harmonic functions satisfy $u*h_\varepsilon=u$ (mean value property). For a harmonic distribution, $u*h_\varepsilon$ is a smooth harmonic function and $(u*h_\varepsilon)*h_\delta=(u*h_\delta)*h_\varepsilon$; letting $\delta\to0$ gives $u*h_\varepsilon=u$ near each point, so $u$ is smooth.`,
       caption: String.raw`The mechanism behind Weyl's lemma: averaging over discs. For a function $u$ on the plane (left) we compute $u*h_\varepsilon-u$ (right, log scale) with a radial mollifier of radius $\varepsilon$. For harmonic $u$ it vanishes to rounding error everywhere — except within $\varepsilon$ of the singularity of $\log|z-a|$, where $\Delta u=2\pi\delta_a\ne0$. For a non-harmonic $u$ such as $|z|^2$ or $x|y|$ the defect is of size $\varepsilon^2\Delta u$, concentrated where $\Delta u\ne0$.`,
       deps: ['fa-8.12', 'fa-6.32'],
       see: ['rca-11.13'],
       tags: ['harmonic functions', 'regularity', "Weyl's lemma"],
-      verify: true,
       viz(v) {
         const M = v.M;
         const U = {

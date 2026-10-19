@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-19",
+  "scope": [
+    "algo-8.1",
+    "algo-8.10"
+  ],
+  "trigger": "Final full-mode sweep reported algo8.1 mode2/canvas0 and algo8.10 mode1/canvas0 blank in both themes.",
+  "rootCause": "The two direction toggles called Graph.set with only directed. Its documented replacement semantics rebuild missing nodes/edges as empty arrays, so the graph is deleted; changing the direction back does not recover it.",
+  "repair": "Pass the existing G.nodes and G.edges together with the new directed value. Graph.set increments its version so adjacency indexes rebuild under the new direction. Current node positions and user-created/deleted edges are retained; algo8.10 resets/recomputes its DFS trace after the graph update.",
+  "changedSource": "content/algo/ch08.js",
+  "sourceSha256": "c84998fc6a19fb59f843de2955168502c70b31c802690758069c0dcff4c4d6b1",
+  "sharedRuntimeChanges": false,
+  "sourceQueueDelta": 0,
+  "validation": {
+    "staticCommand": "node scripts/check.mjs algo-8.1 algo-8.10 --static --fail-on-warnings",
+    "items": 2,
+    "errors": 0,
+    "warnings": 0,
+    "nativeCommand": "node tests/verification-algo-graph-modes-browser.mjs",
+    "browserWorkers": 1,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "renderer": "KaTeX0.16.11",
+    "states": 26,
+    "blankCanvases": 0,
+    "modeToggleClicks": 16,
+    "segmentedChoiceClicks": 6,
+    "nativeNodeDrags": 4,
+    "nativeEdgeEditClicks": 8,
+    "runtimeErrors": 0,
+    "texErrors": 0,
+    "pixelRoundTripAssertions": 4,
+    "mathematicalChecks": [
+      "algo8.1 keeps10vertices/11edges and each directed degree sum11, with asymmetric a→e reachability; native insertion gives12edges and preserves them across mode changes.",
+      "algo8.10 retains14edges; undirected DFS has7tree+7back,0forward+0cross and14/14 timestamp agreement. Native removal yields13edges with13/13 agreement across modes."
+    ],
+    "pixelChecks": "A native drag changes canvas pixels. After native edge edit, direction toggle+restore yields exactly the same canvas PNG dataURL as before the round-trip, for both items and themes.",
+    "screenshotsInspected": 26,
+    "inspection": "All26after screenshots inspected via four item/theme contact sheets; individual light8.1 directed and dark8.10 undirected originals also inspected. Graph nodes/edges remain visible, direction/classification encoding changes, and the edited geometry persists.",
+    "screenshotDirectory": "/tmp/algo-graph-modes-after",
+    "baselineDirectory": "/tmp/algo-graph-modes-before",
+    "diffCheck": "passed"
+  },
+  "before": [
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "default",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "edit",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "alternate",
+      "blank": [
+        0
+      ],
+      "readout": "Add a vertex to start."
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "default",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "alternate",
+      "blank": [
+        0
+      ],
+      "readout": "tree 0 · back 0 · forward 0 · cross 0 · interval test (from d, f only) agrees on 0 of 0 edges ✓ · undirected: forward + cross = 0 ✓"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "default",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "edit",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "alternate",
+      "blank": [
+        0
+      ],
+      "readout": "Add a vertex to start."
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "default",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "alternate",
+      "blank": [
+        0
+      ],
+      "readout": "tree 0 · back 0 · forward 0 · cross 0 · interval test (from d, f only) agrees on 0 of 0 edges ✓ · undirected: forward + cross = 0 ✓"
+    }
+  ],
+  "after": [
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "default",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "edit",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "alternate",
+      "blank": [],
+      "readout": "∑deg+=11, ∑deg−=11, m=11 ✓ · e is reachable from a: a→b→d→e (3 edges) · a is not reachable from e — not symmetric · 7 of 10 vertices reachable from a"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "restored",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "edited",
+      "blank": [],
+      "readout": "n=10, m=12, ∑deg=24=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "edited-alternate",
+      "blank": [],
+      "readout": "∑deg+=12, ∑deg−=12, m=12 ✓ · e is reachable from a: a→b→d→e (3 edges) · a is not reachable from e — not symmetric · 7 of 10 vertices reachable from a"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "light",
+      "label": "edited-restored",
+      "blank": [],
+      "readout": "n=10, m=12, ∑deg=24=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "default",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "alternate",
+      "blank": [],
+      "readout": "tree 7 · back 7 · forward 0 · cross 0 · interval test (from d, f only) agrees on 14 of 14 edges ✓ · undirected: forward + cross = 0 ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "restored",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "edited",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 4 · interval test (from d, f only) agrees on 13 of 13 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "edited-alternate",
+      "blank": [],
+      "readout": "tree 7 · back 6 · forward 0 · cross 0 · interval test (from d, f only) agrees on 13 of 13 edges ✓ · undirected: forward + cross = 0 ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "light",
+      "label": "edited-restored",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 4 · interval test (from d, f only) agrees on 13 of 13 edges ✓"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "default",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "edit",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "alternate",
+      "blank": [],
+      "readout": "∑deg+=11, ∑deg−=11, m=11 ✓ · e is reachable from a: a→b→d→e (3 edges) · a is not reachable from e — not symmetric · 7 of 10 vertices reachable from a"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "restored",
+      "blank": [],
+      "readout": "n=10, m=11, ∑deg=22=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "edited",
+      "blank": [],
+      "readout": "n=10, m=12, ∑deg=24=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "edited-alternate",
+      "blank": [],
+      "readout": "∑deg+=12, ∑deg−=12, m=12 ✓ · e is reachable from a: a→b→d→e (3 edges) · a is not reachable from e — not symmetric · 7 of 10 vertices reachable from a"
+    },
+    {
+      "id": "algo-8.1",
+      "theme": "dark",
+      "label": "edited-restored",
+      "blank": [],
+      "readout": "n=10, m=12, ∑deg=24=2m ✓ · 2 connected components · a to e: path a–b–d–e of length 3 (fewest edges)"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "default",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "alternate",
+      "blank": [],
+      "readout": "tree 7 · back 7 · forward 0 · cross 0 · interval test (from d, f only) agrees on 14 of 14 edges ✓ · undirected: forward + cross = 0 ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "restored",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 5 · interval test (from d, f only) agrees on 14 of 14 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "edited",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 4 · interval test (from d, f only) agrees on 13 of 13 edges ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "edited-alternate",
+      "blank": [],
+      "readout": "tree 7 · back 6 · forward 0 · cross 0 · interval test (from d, f only) agrees on 13 of 13 edges ✓ · undirected: forward + cross = 0 ✓"
+    },
+    {
+      "id": "algo-8.10",
+      "theme": "dark",
+      "label": "edited-restored",
+      "blank": [],
+      "readout": "tree 6 · back 1 · forward 2 · cross 4 · interval test (from d, f only) agrees on 13 of 13 edges ✓"
+    }
+  ],
+  "testFile": {
+    "file": "tests/verification-algo-graph-modes-browser.mjs",
+    "sha256": "ef2a58dabc3c885c9621ca273d84769686f4b5d86cb405acd6bf86159ce5e84a"
+  },
+  "status": "Fixed and source frozen; root will refresh affected whole-collection evidence."
+}

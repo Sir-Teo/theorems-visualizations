@@ -25,9 +25,9 @@ export default {
       credit: 'Hermann Weyl, 1913 (first abstract definition for surfaces); Hassler Whitney, 1936 (general atlas definition)',
       tags: ['chart', 'atlas', 'transition map'],
       viz(v) {
-        const atlas = v.select('atlas', [{ value: 'ang', label: 'two angle charts' }, { value: 'graph', label: 'four graph charts' }], 'ang');
+        const atlas = v.select('atlas', [{ value: 'ang', label: 'two angle charts' }, { value: 'graph', label: 'four graph charts' }], 'ang', { onChange: () => syncLabels() });
         const cut = v.slider('cut $c$ of chart $B$', 0.5, 5.8, PI, { step: 0.01 });
-        const pair = v.select('transition', [{ value: '0', label: 'top → right' }, { value: '1', label: 'top → left' }, { value: '2', label: 'top → bottom' }, { value: '3', label: 'right → top' }], '0');
+        const pair = v.select('transition', [{ value: '0', label: 'top → right' }, { value: '1', label: 'top → left' }, { value: '2', label: 'top → bottom' }, { value: '3', label: 'right → top' }], '0', { onChange: () => syncLabels() });
         const L = v.stage({ x: [-1.9, 1.9], y: [-1.7, 1.7], equal: true, axes: false, height: 380, title: 'the circle and its chart domains' });
         const R = v.stage({ x: [0, TAU], y: [-TAU, TAU], axes: 'box', gutter: true, height: 380, xlabel: 'coordinate in chart 1', ylabel: 'coordinate in chart 2', title: 'transition map', weight: 1.1 });
         const P = L.handle(Math.cos(1.0), Math.sin(1.0), { color: 'gold', label: 'p', constrain: (x, y) => { const r = Math.hypot(x, y) || 1; return [x / r, y / r]; } });
@@ -45,6 +45,12 @@ export default {
           const [i, j] = [[0, 1], [0, 2], [0, 3], [1, 0]][+pair.value];
           return { cs: GR.map((g) => ({ ...g, lo: -1, hi: 1 })), i, j };
         };
+        // Axis labels must be set before the stage paints its axes, including on restoration.
+        const syncLabels = () => {
+          const { cs, i, j } = setup(), ci = cs[i], cj = cs[j];
+          R.setLabels(`${ci.nm} (chart ${ci.name})`, `${cj.nm} (chart ${cj.name})`);
+        };
+        syncLabels();
         const N = 720, pieceCol = ['green', 'orange', 'purple', 'pink'];
         let info = null;
         v.render(() => {
@@ -81,7 +87,6 @@ export default {
           const pad = atlas.value === 'ang' ? 0.25 : 0.12;
           R.setView([ci.lo - pad, ci.hi + pad], [cj.lo - pad, cj.hi + pad]);
           if (atlas.value === 'ang') R.setTicks([[0, '0'], [PI, 'π'], [TAU, '2π']], [[-PI, '−π'], [0, '0'], [PI, 'π'], [TAU, '2π']].filter(([y]) => y >= cj.lo - 0.01 && y <= cj.hi + 0.01)); else R.setTicks(null, null);
-          R.setLabels(`${ci.nm} (chart ${ci.name})`, `${cj.nm} (chart ${cj.name})`);
           if (atlas.value === 'ang') R.line(0, 0, TAU, TAU, { color: 'faint', width: 1, dash: [4, 4] });
           // the moving point
           const tp = Math.atan2(P.y, P.x), inO = ov(tp);

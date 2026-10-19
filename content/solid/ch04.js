@@ -26,7 +26,7 @@ $$\tau_{\max}=\frac{\sigma_1-\sigma_3}{2}=\frac Y2 .$$
 Safe states satisfy $\sigma_1-\sigma_3<Y$. In the plane of the two non-zero principal stresses of a plane-stress state ($\sigma_3=0$) the yield locus is a **hexagon** with corners $(Y,0),(Y,Y),(0,Y),(-Y,0),(-Y,-Y),(0,-Y)$. The criterion does not depend on the mean stress: adding the same hydrostatic stress to all three principal stresses changes nothing.`,
       idea: String.raw`Plastic flow in metals is slip on crystal planes, driven by shear, so the largest shear stress is a natural measure of how close a state is to yielding. The state's largest Mohr circle (3.5) has radius $(\sigma_1-\sigma_3)/2$, and in a tension test the radius is $Y/2$; the criterion demands the same radius. The hexagon appears because $\sigma_1-\sigma_3$ must be computed from the largest and smallest of $\sigma_1,\sigma_2,0$, and which pair that is changes from sector to sector of the plane.`,
       caption: String.raw`Drag the gold point in the $(\sigma_1,\sigma_2)$ plane (the stress component $\sigma_3$ can be set with the slider; $\sigma_3=0$ is plane stress). The shaded region is safe; the black curve is the Tresca locus. On the right the three Mohr circles of the same state: the large one is the circle that decides, and it turns red when it touches the lines $\tau=\pm Y/2$. Move along the diagonal $\sigma_1=\sigma_2$ in the first quadrant: the locus is at $\sigma=Y$, whereas along $\sigma_1=-\sigma_2$ (pure shear) it is reached at $\tau=Y/2$.`,
-      deps: ['solid-3.5'],
+      deps: ['solid-3.5', 'mat-3.5'],
       refs: ['Gere–Goodno §7.6'],
       tags: ['yield', 'failure'],
       scope: String.raw`For ductile metals, quasi-static loading, no strong dependence on mean stress. Moderately conservative: it never predicts a higher strength than the von Mises criterion (4.2).`,
@@ -117,11 +117,10 @@ The crack then opens perpendicular to the direction of $\sigma_1$. For a shaft u
       idea: String.raw`In a brittle solid there is no yielding to relieve the stress at flaws, so the weakest flaw that is pulled open widest fails first: the plane of greatest normal tension, which is the principal plane of $\sigma_1$ (3.2). The shear stress matters only through its contribution to $\sigma_1$. This is what Rankine proposed for brittle failure; it works well for tension-dominated states in cast iron and glass and poorly in compression.`,
       caption: String.raw`Choose the mix angle $\beta$ between pure tension ($0^\circ$) and pure torsion ($90^\circ$) and raise the combined stress level $S$ ($\sigma=S\cos\beta$, $\tau=S\sin\beta$). Left: the bar with the plane on which it will crack; it turns solid red once $\sigma_1$ reaches $\sigma_{ut}$. Middle: Mohr's circle; the bar breaks when the circle touches the vertical line $\sigma=\sigma_{ut}$. Right: the level $S_f$ that breaks the bar for every mix, and where yours sits on it.`,
       deps: ['solid-3.2', 'solid-1.7'],
-      refs: ['Gere–Goodno §7.3'],
+      refs: ['INLIsopod TensileStressUpdate theory; MITNoteL.4 principal-stress equations'],
       tags: ['failure', 'brittle', 'principal stress'],
-      credit: 'W. J. M. Rankine, 1850s',
-      verify: true,
-      scope: String.raw`Brittle materials under tension-dominated states. Unreliable when two principal stresses are compressive, where friction between crack faces and the very different compressive strength matter (see Mohr–Coulomb, 4.4). The value $\sigma_{ut}=207$ MPa is the ASTM A48 class 30 grey-iron minimum, used as a round illustrative number.`,
+      credit: 'Rankine maximum tensile-stress model',
+      scope: String.raw`Brittle materials under tension-dominated states. Unreliable when two principal stresses are compressive, where friction between crack faces and the very different compressive strength matter (see Mohr–Coulomb, 4.4). The tensile strength207MPa is an illustrative model input, not a verified ASTM material specification.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Maximum_normal_stress_theory' },
       viz(v) {
         const sut = 207;
@@ -135,6 +134,7 @@ The crack then opens perpendicular to the direction of $\sigma_1$. For a shaft u
         v.legend([['accent', 'Mohr circle'], ['red', 'σ = σut'], ['orange', 'S_f(β)']]);
         v.render(() => {
           const { sg, ta, p } = st(), fail = p.s1 >= sut - 1e-9, th = p.thp;
+          A.setView([-4.5,4.5],[-2.1,2.1]);B.setView([Math.min(-120,1.15*p.s2),Math.max(280,1.15*p.s1)],[-Math.max(170,1.15*p.R),Math.max(170,1.15*p.R)]);
           // bar
           A.rect(-3, -0.75, 3, 0.75, { color: 'ink', width: 2, fill: 'accent', fillAlpha: fail ? 0.04 : 0.12 });
           const u = [Math.cos(th), Math.sin(th)], cr = [-u[1], u[0]]; // crack direction ⟂ σ1
@@ -175,13 +175,12 @@ $$\tau=c+\sigma\tan\varphi,$$
 where $\sigma$ is the normal compression on the plane, $c$ the cohesion and $\varphi$ the angle of internal friction. In terms of the principal stresses (compression positive, $\sigma_1\ge\sigma_3$) this is
 $$\frac{\sigma_1-\sigma_3}{2}=\frac{\sigma_1+\sigma_3}{2}\sin\varphi+c\cos\varphi\quad\Longleftrightarrow\quad\sigma_1=\sigma_3\,\frac{1+\sin\varphi}{1-\sin\varphi}+\frac{2c\cos\varphi}{1-\sin\varphi},$$
 the largest Mohr circle at failure is tangent to the line, and the failure plane makes the angle $45^\circ+\varphi/2$ with the plane of the major principal stress. For $\varphi=0$ it reduces to Tresca's criterion with $c=Y/2$.`,
-      idea: String.raw`A plane with normal at angle $\theta$ to the $\sigma_1$ direction carries $(\sigma,\tau)$ on Mohr's circle (3.3). Failure first occurs on the plane whose point first touches the line $\tau=c+\sigma\tan\varphi$, i.e. where the circle is tangent to it. The distance from the circle's centre $(\sigma_1+\sigma_3)/2$ to the line is $c\cos\varphi+\tfrac{\sigma_1+\sigma_3}2\sin\varphi$; setting it equal to the radius gives the formula above. The tangent point sits at $2\theta=90^\circ+\varphi$ round the circle, hence the plane angle $45^\circ+\varphi/2$. The friction law is Coulomb's; Mohr's contribution was to draw it on the stress circles.`,
+      idea: String.raw`A plane with normal at angle $\theta$ to the $\sigma_1$ direction carries $(\sigma,\tau)$ on Mohr's circle (3.3). Failure first occurs on the plane whose point first touches the line $\tau=c+\sigma\tan\varphi$, i.e. where the circle is tangent to it. The distance from the circle's centre $(\sigma_1+\sigma_3)/2$ to the line is $c\cos\varphi+\tfrac{\sigma_1+\sigma_3}2\sin\varphi$; setting it equal to the radius gives the formula above. The tangent point sits at $2\theta=90^\circ+\varphi$ round the circle, hence the plane angle $45^\circ+\varphi/2$. For $c=0$ the plane law is the continuum analogue of the Coulomb contact threshold (mech-1.15), with friction coefficient $\tan\varphi$; Mohr's contribution was to draw it on the stress circles.`,
       caption: String.raw`Each circle is a triaxial test run to failure at a different confining pressure $\sigma_3$ (compression to the right). Their common tangent is the envelope $\tau=c+\sigma\tan\varphi$: change $\varphi$ and $c$ and the failure stress $\sigma_1$ of every test moves with it. The tangency residual in the readout is computed independently from the circle and the line and stays at zero. Right: the specimen of the last test with its failure plane at $45^\circ+\varphi/2$ from the horizontal. Set $\varphi=0$ for a metal-like Tresca limit.`,
-      deps: ['solid-3.3'],
-      refs: ['Timoshenko–Goodier ch. 7'],
+      deps: ['solid-3.3','mech-1.15'],
+      refs: ['Abaqus Material Reference, Mohr-Coulomb plasticity, full yield-surface derivation'],
       tags: ['failure', 'soil mechanics', 'friction'],
-      credit: 'C. A. Coulomb, 1776; O. Mohr, c. 1900',
-      verify: true,
+      credit: 'Mohr–Coulomb frictional failure model',
       scope: String.raw`Granular and brittle-frictional materials in compression (soils, rocks, concrete, powders); the intermediate principal stress $\sigma_2$ is ignored; ignores tensile cut-off and dilatancy. Soil parameters here ($c$ in kPa, $\varphi$ in degrees) are illustrative.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mohr%E2%80%93Coulomb_theory' },
       viz(v) {
@@ -196,7 +195,7 @@ the largest Mohr circle at failure is tangent to the line, and the failure plane
         v.render(() => {
           const ph = rad(phi.value), c = cc.value;
           const x0 = -c / Math.tan(ph || 1e-9); // envelope hits σ axis here
-          const xe = 960;
+          const last=fail(s3s[nt.value-1]),radius=(last-s3s[nt.value-1])/2;const xe=Math.max(960,last*1.12);A.setView([-120,xe],[-Math.max(420,radius*1.12),Math.max(420,radius*1.12)]);
           A.line(Math.max(x0, -120), c + Math.max(x0, -120) * Math.tan(ph), xe, c + xe * Math.tan(ph), { color: 'red', width: 2.4 });
           A.line(Math.max(x0, -120), -(c + Math.max(x0, -120) * Math.tan(ph)), xe, -(c + xe * Math.tan(ph)), { color: 'red', width: 1.2, alpha: 0.5 });
           for (let i = 0; i < nt.value; i++) {

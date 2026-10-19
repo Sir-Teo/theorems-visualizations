@@ -76,11 +76,10 @@ with $\mathbf p=-i\hbar\nabla$; the products are unambiguous because the factors
 $$[L_x,L_y]=i\hbar L_z,\quad [L_y,L_z]=i\hbar L_x,\quad [L_z,L_x]=i\hbar L_y,$$
 that is $[L_i,L_j]=i\hbar\,\varepsilon_{ijk}L_k$. Consequently no two components can be sharply defined simultaneously (unless both vanish), but $L^2=L_x^2+L_y^2+L_z^2$ commutes with every component: $[L^2,L_i]=0$. The same relations are taken as the definition of *any* angular momentum $\mathbf J$ (including spin), whether or not it is of the form $\mathbf r\times\mathbf p$.`,
       idea: String.raw`Expanding $[L_x,L_y]=[yp_z-zp_y,\;zp_x-xp_z]$ with the canonical relation $[x_i,p_j]=i\hbar\delta_{ij}$ (qm-5.9), only the two cross terms where a position meets its own momentum survive, and they combine to $i\hbar(xp_y-yp_x)$. Geometrically the same identity says rotations about different axes do not commute: the group commutator of two small rotations is a rotation about the third axis by the product of the angles, and $L_i/\hbar$ is the generator of rotations about axis $i$.`,
-      caption: String.raw`**Set two small angles $a$ (about $x$) and $b$ (about $y$).** The frame $(\mathbf e_1,\mathbf e_2,\mathbf e_3)$ is rotated *x-then-y* (orange) and *y-then-x* (blue) from the faint original. The two end frames differ by a rotation about $z$: its angle, extracted from the actual matrices, approaches the product $ab$ as the angles shrink — the geometric image of $[L_x,L_y]=i\hbar L_z$. Drag the picture to rotate the view. The readout also checks the operator identity for the $3\times3$ matrices of $l=1$.`,
+      caption: String.raw`**Set two small angles $a$ (about $x$) and $b$ (about $y$).** The frame $(\mathbf e_1,\mathbf e_2,\mathbf e_3)$ is rotated *x-then-y* (orange) and *y-then-x* (blue) from the faint original. The relative rotation has an axis approaching $-z$ for this ordering as both angles shrink; its positive angle, extracted from the actual matrices, approaches the product $ab$ — the geometric image of $[L_x,L_y]=i\hbar L_z$. Drag the picture to rotate the view. The readout also checks the operator identity for the $3\times3$ matrices of $l=1$.`,
       deps: ['qm-7.1'],
-      refs: ['Griffiths §4.3', 'Sakurai ch. 3'],
-      credit: 'Born, Heisenberg & Jordan, 1926',
-      verify: true,
+      refs: ['Fitzpatrick,QuantumMechanics §8.2 Eqs8.5–8.12'],
+      credit: 'Angular-momentum operator algebra',
       tags: ['angular momentum', 'commutator', 'rotations'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Angular_momentum_operator#Commutation_relations' },
       viz(v) {
@@ -205,21 +204,20 @@ $$J_\pm|j,m\rangle=\hbar\sqrt{j(j+1)-m(m\pm1)}\;|j,m\pm1\rangle .$$`,
 $$L^2Y_l^m=\hbar^2l(l+1)Y_l^m,\qquad L_zY_l^m=m\hbar\,Y_l^m,$$
 given for $l=0,1,2,\dots$ and $m=-l,\dots,l$ by $Y_l^m(\theta,\phi)=\sqrt{\tfrac{2l+1}{4\pi}\tfrac{(l-m)!}{(l+m)!}}\,P_l^m(\cos\theta)\,e^{im\phi}$ with the Condon–Shortley phase convention. They are orthonormal, $\int Y_{l'}^{m'*}Y_l^m\,d\Omega=\delta_{ll'}\delta_{mm'}$, and complete on $L^2(S^2)$. The function $P_l^m(\cos\theta)$ has $l-|m|$ zeros in $0<\theta<\pi$.`,
       idea: String.raw`Because $L_z=-i\partial_\phi$, the $\phi$-dependence is $e^{im\phi}$ (qm-7.4); the $\theta$-dependence solves the associated Legendre equation, which is the angular part of Laplace's equation (em-4.6, pde-7.2) and has regular solutions on $[0,\pi]$ only for integer $l\ge|m|$. Eigenfunctions of the Hermitian operator $L^2$ with different $l$, or of $L_z$ with different $m$, are orthogonal automatically. Real combinations $\sqrt2\operatorname{Re}Y_l^m$, $\sqrt2\operatorname{Im}Y_l^m$ are the familiar $p_x,d_{xy},\dots$ shapes.`,
-      caption: String.raw`**Pick $(l,m)$ and a display mode.** *Complex*: colour is the phase $m\phi$ (so it winds $m$ times around the $z$-axis), brightness is $|Y|$; *real*: the $\cos m\phi$ or $\sin m\phi$ combination, red positive, blue negative, with $l-|m|$ nodal latitudes and $|m|$ nodal meridians. The middle panel is the polar plot of $|Y_l^m|$ in the $xz$-plane. The bar chart on the right is the overlap $|\langle Y_{l'}^{m'}|Y_l^m\rangle|$ with every $(l',m')$ up to $l'=3$, computed by quadrature on the sphere: a single bar of height $1$ at your choice.`,
+      caption: String.raw`**Pick $(l,m)$ and a display mode.** *Complex*: colour is the phase $m\phi$ (so it winds $m$ times around the $z$-axis), brightness is $|Y|$; *real*: the $\cos m\phi$ or $\sin m\phi$ combination, red positive, blue negative, with $l-|m|$ nodal latitudes and $|m|$ nodal meridians. The middle panel is the polar plot of $|Y_l^m|$ in the $xz$-plane. The bar chart on the right is the overlap $|\langle Y_{l'}^{m'}|Y_l^m\rangle|$ with every $(l',m')$ up to $l'=4$, computed by quadrature on the sphere: top labels mark $l\prime$: a single bar of height $1$ in complex mode; a real mode with $m\ne0$ has two bars of height $1/\sqrt2$ at $\pm|m|$.`,
       deps: ['qm-7.4', 'em-4.6', 'pde-7.2'],
-      refs: ['Griffiths §4.3', 'Griffiths §4.1'],
-      credit: 'Laplace, 1780s; Legendre',
-      verify: true,
+      refs: ['NIST DLMF14.30.1,6–8; Fitzpatrick §8.7'],
+      credit: 'Spherical-harmonic eigenfunctions',
       tags: ['spherical harmonics', 'orthonormality'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Spherical_harmonics' },
       viz(v) {
         const SP = sphereStage(v, 'the function on the sphere');
         const PL = v.stage({ x: [-1.3, 1.3], y: [-1.3, 1.3], equal: true, axes: true, height: 300, title: '$|Y|$ in the $xz$-plane' });
-        const GR = v.stage({ x: [-0.6, 16.6], y: [0, 1.25], axes: 'box', gutter: true, height: 300, xlabel: "index of $(l',m')$", weight: 1.3, title: "overlaps $|\\langle Y_{l'}^{m'}|Y_l^m\\rangle|$" });
+        const GR = v.stage({ x: [-0.6, 25.6], y: [0, 1.25], axes: 'box', gutter: true, height: 300, xlabel: "index of $(l',m')$", weight: 1.3, title: "overlaps $|\\langle Y_{l'}^{m'}|Y_l^m\\rangle|$" });
         const l = v.slider('$l$', 0, 4, 3, { int: true }), m = v.slider('$m$', -4, 4, 1, { int: true });
         const mode = v.select('display', [{ value: 'c', label: 'complex' }, { value: 'r', label: 'real combination' }], 'c');
         const yaw = 0.6, tilt = 0.35;
-        const idxList = []; for (let L = 0; L <= 3; L++) for (let M = -L; M <= L; M++) idxList.push([L, M]);
+        const idxList = []; for (let L = 0; L <= 4; L++) for (let M = -L; M <= L; M++) idxList.push([L, M]);
         let st = null;
         v.render(() => {
           const L = l.value, M = Math.max(-L, Math.min(L, m.value)); m.set(M);
@@ -230,19 +228,20 @@ given for $l=0,1,2,\dots$ and $m=-l,\dots,l$ by $Y_l^m(\theta,\phi)=\sqrt{\tfrac
           const pts = [], pts2 = [];
           for (let k = 0; k <= 200; k++) { const th = (TAU * k) / 200 - Math.PI; const ph = th < 0 ? Math.PI : 0, t = Math.abs(th); const val = real ? Math.abs(realY(L, M, t, ph === 0 ? 0 : Math.PI)) : Math.hypot(...ylm(L, M, t, ph)); const r = val / (mx || 1) * 1.15; pts.push([r * Math.sin(th), r * Math.cos(th)]); }
           PL.circle(0, 0, 1.15, { color: 'faint', width: 1, dash: [3, 4] });
+          if(real && M<0)PL.corner('this sine mode vanishes in the xz section','bl',{color:'muted',size:11});
           PL.path(pts, { color: 'accent', width: 2.2, fill: 'accent', fillAlpha: 0.12, close: true });
           // overlaps
           const f = real ? null : (t, p) => ylm(L, M, t, p);
           const bars = idxList.map(([L2, M2]) => { const g = (t, p) => ylm(L2, M2, t, p), z = sphereIP(real ? (t, p) => [realY(L, M, t, p), 0] : f, g, 40, 72); return Math.hypot(z[0], z[1]); });
           GR.bars(bars, { x0: 0, dx: 1, color: (val, i) => (idxList[i][0] === L && idxList[i][1] === M && !real ? 'green' : 'accent') });
-          idxList.forEach(([L2, M2], i) => { if (M2 === 0) GR.text(`l′=${L2}`, i - 0.4, 1.17, { size: 11, align: 'left', color: 'muted' }); });
+          idxList.forEach(([L2, M2], i) => { if (M2 === 0) GR.text(`${L2}`, i - 0.4, 1.17, { size: 11, align: 'left', color: 'muted' }); });
           // nodal latitudes: sign changes of P_l^|m| on (−1, 1)
           let nodes = 0, prev = legendreP(L, Math.abs(M), -0.99999);
           for (let k = 1; k <= 2000; k++) { const x = -1 + (2 * k) / 2000, q = legendreP(L, Math.abs(M), Math.min(0.99999, x)); if (q * prev < 0) nodes++; if (q !== 0) prev = q; }
           const self = sphereIP((t, p) => ylm(L, M, t, p), (t, p) => ylm(L, M, t, p), 64, 96);
-          st = { L, M, nodes, norm: self[0], sumOther: bars.reduce((s, b, i) => s + (idxList[i][0] === L && idxList[i][1] === M ? 0 : b), 0) };
+          st = { L, M, nodes, norm: self[0], sumOther: bars.reduce((s,b,i)=>s+(idxList[i][0]===L&&(real?Math.abs(idxList[i][1])===Math.abs(M):idxList[i][1]===M)?0:b),0) };
         });
-        v.readout(() => `$Y_{${st.L}}^{${st.M}}$: $\\int|Y|^2d\\Omega = ${v.fix(st.norm, 5)}$; sum of overlaps with all *other* $Y_{l'}^{m'}$ ($l'\\le3$) $=${v.sci(st.sumOther, 1)}$; nodal latitudes $=${st.nodes}$ $(=l-|m|)$, nodal meridians $=${Math.abs(st.M)}$ (real mode).`);
+        v.readout(() => `$Y_{${st.L}}^{${st.M}}$: $\\int|Y|^2d\\Omega = ${v.fix(st.norm, 5)}$; sum of overlaps with all *other* $Y_{l'}^{m'}$ ($l'\\le4$, excluding the real mode's two components) $=${v.sci(st.sumOther, 1)}$; nodal latitudes $=${st.nodes}$ $(=l-|m|)$, nodal meridians $=${Math.abs(st.M)}$ (real mode).`);
       },
     },
     // ------------------------------------------------------------------ 7.6

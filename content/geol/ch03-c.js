@@ -16,9 +16,10 @@
 //        Carlsberg Ridge (50 × 40 nautical miles centred on 5°25′ N, 61°45′ E); Fig. 4 models with blocks of effective
 //        susceptibility 0.0027 (0.0053 under the median valley in profiles 2 and 3), T = 0.376 Oe, I = −6°, profile bearing 044° for the
 //        Carlsberg profile, T = 0.48 Oe, I = 65°, bearing 120° (Mid-Atlantic), T = 0.5 Oe, I = 60°, bearing 073° (Pacific); present
-//        declination 356° for Carlsberg. The paper gives no spreading rate or polarity time scale. The block depth and
-//        thickness are not stated (the paper says the thickness is uncertain by a factor of two), so they are sliders here; the
+//        declination 356° for Carlsberg. The paper gives no spreading rate or polarity time scale. The exact block top geometry is not tabulated, and magnetic thickness is uncertain by a factor of two; the
 //        declination for the other two profiles is not in the figure caption and is taken as 0°.
+// Verification 2026-10-18: the complete 3-page scan was read. Page 949 DOES specify lower magnetic boundaries of 11 km beneath
+// ridges and 20 km beneath deep ocean; Fig. 4 uses 0.0053 (not 2×0.0027) beneath the median valley. Geometry below is illustrative.
 //   3.15 McKenzie & Parker (1967) Nature 216: 1276–1280 (Crossref-checked). The paper's slip vectors were not read; the "observed"
 //        slip azimuths here are SYNTHETIC: predicted by the MORVEL (DeMets et al. 2010) North America–Pacific pole as quoted in a
 //        course table (48.9° N, 71.7° W, 0.75°/Myr, North America relative to Pacific; not checked against the paper), plus 7° noise.
@@ -35,7 +36,7 @@ export default {
       kind: 'Method',
       name: 'Paleomagnetism and apparent polar wander',
       statement: String.raw`Rocks record the direction of the field at their formation. If the field averaged over some thousands of years is that of a geocentric axial dipole, the inclination $I$ of the remanent magnetization gives the latitude of the rock when it formed, $\tan I=2\tan\lambda$, and its declination points to the geographic pole. The pole computed from a rock of age $t$ is its **paleopole**; a continent's paleopoles of successive ages trace an **apparent polar wander (APW) path**. Because the pole did not move relative to the Earth's spin axis (to first order), the paths of different continents should coincide, and where they do not, the continents moved relative to each other: rotating one continent about the right Euler pole (geol-3.4) makes their paths merge.`,
-      idea: String.raw`A dipole field has a latitude-dependent dip (em-7.17): vertical at the poles, horizontal at the equator, with $\tan I = 2\tan\lambda$. A single measurement therefore gives the distance to the pole, the declination the direction, so the pole's position in the continent's coordinates. If the continent moves, its coordinates turn under a fixed pole: the *apparent* motion of the pole is the inverse of the continent's motion. Two continents with the same history would show the same path; the angle between their paths at a given age is the rotation separating them.`,
+      idea: String.raw`A dipole field has a latitude-dependent dip (em-7.17): vertical at the poles, horizontal at the equator, with $\tan I = 2\tan\lambda$. A single measurement therefore gives the distance to the pole, the declination the direction, so the pole's position in the continent's coordinates. If the continent moves, its coordinates turn under a fixed pole: the *apparent* motion of the pole is the inverse of the continent's motion. Two continents with the same history would show the same path; a single paleopole pair does not determine a unique Euler rotation; restoring several coeval poles and geological constraints tests the relative motion.`,
       caption: String.raw`The globe shows the north pole region with Eurasia, Greenland and North America at their present positions; the two curves are the model paleopaths of the pole (0–200 Ma) in North American (blue) and Eurasian (orange) coordinates. Drag "restore the Atlantic" to rotate North America (and each of its poles by the opening angle of its own age) about the opening pole: at 100% the two paths merge. Choose an age to read the paleolatitude of a site and its inclination on the dipole curve below (the paths are a model, not data).`,
       deps: ['geol-3.4', 'em-7.17'],
       refs: ['Turcotte–Schubert ch. 1'],
@@ -246,25 +247,25 @@ export default {
         doi: '10.1038/199947a0',
       },
       introduces: ['geol-3.2'],
-      statement: String.raw`Vine and Matthews proposed that the linear magnetic anomalies over mid-ocean ridges are produced by sea-floor spreading together with reversals of the Earth's field: new crust is magnetized in the field of its time, and symmetric stripes of alternately normal and reversed blocks, a few tens of kilometres wide, spread from the ridge axis. Computing the field of blocks about $20$ km wide, alternately magnetized, with a more strongly magnetized block under the median valley, they reproduced the form of the anomaly profiles over the Carlsberg Ridge (Indian Ocean), the Mid-Atlantic Ridge and the Pacific "grain" better than uniformly magnetized crust could, and predicted that about half of the oceanic crust is reversely magnetized.`,
-      idea: String.raw`In 1962 H.M.S. Owen surveyed the crest of the Carlsberg Ridge; uniformly normal crust (the usual model, using the bathymetry) gave computed profiles that "bear little resemblance" to the observed ones, and the authors found that part of the crust seemed to be reversed. Combining Hess's picture of ocean-floor spreading (convection brings new crust up at the ridge), the evidence for periodic reversals of the field (geol-10.4) and thermoremanent magnetization (geol-10.3), they showed that alternating blocks reproduce the amplitude and shape of the anomalies. They gave **no spreading rate and no time scale**: calibrating the stripes to the reversal time scale (and so the spreading rate) came afterwards, with Vine & Wilson (1965) and others. The same idea was reached independently by L. Morley (1963, published 1964).`,
-      caption: String.raw`This reconstructs the paper's Fig. 4 model (not its observed data: the original profiles are not reproduced here): blocks of effective susceptibility $0.0027$ e.m.u. (twice that under the median valley), $T$, $I$ and profile bearing as in the figure caption for each of the three profiles. Choose the profile, the block width and the depth and thickness of the layer (the paper says the thickness is uncertain to a factor two, so these are yours). Switch off reversals to get the uniform-normal model: with no reversed blocks there is no pattern of stripes. The readout converts block width to time at an assumed half-spreading rate.`,
+      statement: String.raw`Vine and Matthews proposed that the linear magnetic anomalies over mid-ocean ridges are produced by sea-floor spreading together with reversals of the Earth's field: new crust is magnetized in the field of its time, and symmetric stripes of alternately normal and reversed blocks, a few tens of kilometres wide, spread from the ridge axis. Computing the field of blocks about $20$ km wide, alternately magnetized, with a more strongly magnetized block under the median valley, they illustrated the essential anomaly shapes over the Carlsberg Ridge (Indian Ocean), the Mid-Atlantic Ridge and the Pacific "grain"; Fig. 4 was not a detailed fit to the observed profiles, and predicted that about half of the oceanic crust is reversely magnetized.`,
+      idea: String.raw`In 1962 H.M.S. Owen surveyed the crest of the Carlsberg Ridge; uniformly normal crust (the usual model, using the bathymetry) gave computed profiles that "bear little resemblance" to the observed ones, and the authors found that part of the crust seemed to be reversed. Combining contemporary ocean-floor spreading models (convection brings new crust up at the ridge), the evidence for periodic reversals of the field (geol-10.4) and thermoremanent magnetization (geol-10.3), they showed that alternating blocks reproduce the amplitude and shape of the anomalies. They gave **no spreading rate and no time scale**: calibrating the stripes to the reversal time scale (and so the spreading rate) came afterwards, with Vine & Wilson (1965) and others. The same idea was reached independently by L. Morley (1963, published 1964).`,
+      caption: String.raw`This is an illustrative block model using the paper's Fig. 4 field intensities, inclinations and track bearings, with effective susceptibilities $0.0027$ c.g.s. and $0.0053$ beneath the ridge median valley. It does not reproduce the observed data or the exact block geometry. The default lower magnetic boundary follows p. 949: 11 km at ridges and 20 km in the deep Pacific; vary its thickness around that choice. Declination is $356^\circ$ at Carlsberg and assumed $0^\circ$ for the other profiles. Without reversals, the finite layer edges and central susceptibility contrast still produce anomalies. The readout converts block width to time at an assumed half-spreading rate.`,
       deps: ['geol-10.3', 'geol-10.4', 'geol-3.13'],
-      refs: [],
+      refs: ['Vine & Matthews (1963), Nature 199, 947–949, especially Fig. 4 and p. 949; doi:10.1038/199947a0'],
       tags: ['vine-matthews', 'anomalies', 'history'],
       credit: 'F. J. Vine & D. H. Matthews, 1963',
       links: { doi: 'https://doi.org/10.1038/199947a0' },
       verify: true,
       viz(v) {
         const PRE = {
-          carl: { name: 'Carlsberg Ridge (Fig. 4, no. 3)', F: 37600, incl: -6, dAng: 356 - 44, ratio: 2 },
-          atl: { name: 'Mid-Atlantic Ridge (no. 2)', F: 48000, incl: 65, dAng: 0 - 120, ratio: 2 },
-          pac: { name: 'Pacific grain (no. 1)', F: 50000, incl: 60, dAng: 0 - 73, ratio: 1 },
+          carl: { name: 'Carlsberg Ridge (Fig. 4, no. 3)', F: 37600, incl: -6, dAng: 356 - 44, ratio: 53 / 27, base: 11 },
+          atl: { name: 'Mid-Atlantic Ridge (no. 2)', F: 48000, incl: 65, dAng: 0 - 120, ratio: 53 / 27, base: 11 },
+          pac: { name: 'Pacific grain (no. 1)', F: 50000, incl: 60, dAng: 0 - 73, ratio: 1, base: 20 },
         };
         const pr = v.select('profile', Object.entries(PRE).map(([k, p]) => ({ value: k, label: p.name })), 'carl');
         const bw = v.slider('block width (km)', 5, 40, 20, { step: 1 });
         const zt = v.slider('depth to the top of the blocks (km)', 1, 6, 2, { step: 0.1 });
-        const th = v.slider('thickness of the blocks (km)', 0.5, 4, 2, { step: 0.1 });
+        const th = v.slider('magnetic thickness / default thickness', 0.5, 2, 1, { step: 0.05 });
         const ku = v.slider('half-spreading rate for the readout (mm/yr)', 5, 40, 15, { step: 1 });
         const rev = v.toggle('reversals (alternating blocks)', true);
         const strip = v.stage({ x: [-100, 100], y: [0, 1], axes: false, height: 110, full: true });
@@ -280,14 +281,14 @@ export default {
             strip.rect(c - w / 2, 0.1, c + w / 2, 0.9, { fill: pol > 0 ? 'ink' : 'faint', fillAlpha: pol > 0 ? (central ? 0.9 : 0.6) : 0.25, color: 'muted', width: 0.6 });
           }
                     const xs = Array.from({ length: 201 }, (_, i) => -100 + i);
-          const ys = anomalyProfile(xs, blocks, { zTop: zt.value, thick: th.value, F: P.F, incl: P.incl, dAng: P.dAng });
+          const ys = anomalyProfile(xs, blocks, { zTop: zt.value, thick: (P.base - zt.value) * th.value, F: P.F, incl: P.incl, dAng: P.dAng });
           const mx = Math.max(...ys.map(Math.abs)); const yl = Math.max(100, Math.ceil(mx / 100) * 100);
           prof.setView([-100, 100], [-yl, yl]);
           prof.hline(0, { color: 'grid' }); prof.path(xs.map((x, i) => [x, ys[i]]), { color: rev.value ? 'accent' : 'red', width: 2.2 });
-          info = { mx, w, P, ptp: Math.max(...ys) - Math.min(...ys) };
+          info = { mx, w, P, base: zt.value + (P.base - zt.value) * th.value, ptp: Math.max(...ys) - Math.min(...ys) };
         });
         v.legend([['ink', 'normal blocks (central block = median valley)'], ['faint', 'reversed blocks'], ['accent', 'computed anomaly (alternating blocks)'], ['red', 'computed anomaly (uniform normal crust)']]);
-        v.readout(() => `${info.P.name}: $T=${v.fix(info.P.F / 1e5, 3)}$ oersted, $I=${info.P.incl}^\\circ$ · peak anomaly **${v.fix(info.mx, 0)} γ**, peak-to-peak ${v.fix(info.ptp, 0)} γ · a ${info.w} km block is $${info.w}/${ku.value}=${v.fix(info.w / ku.value, 2)}$ Myr of crust at ${ku.value} mm/yr per side (the Brunhes chron is 0.78 Myr, which at ${ku.value} mm/yr gives a ${v.fix(2 * 0.78 * ku.value, 0)} km central block) — a calibration the 1963 paper did not make.`);
+        v.readout(() => `${info.P.name}: $T=${v.fix(info.P.F / 1e5, 3)}$ oersted, model magnetic base ${v.fix(info.base, 1)} km, $I=${info.P.incl}^\\circ$ · peak anomaly **${v.fix(info.mx, 0)} γ**, peak-to-peak ${v.fix(info.ptp, 0)} γ · a ${info.w} km block is $${info.w}/${ku.value}=${v.fix(info.w / ku.value, 2)}$ Myr of crust at ${ku.value} mm/yr per side (the Brunhes chron is 0.78 Myr, which at ${ku.value} mm/yr gives a ${v.fix(2 * 0.78 * ku.value, 0)} km central block) — a calibration the 1963 paper did not make.`);
       },
     },
     // ───────────────────────────────────────── 3.15
@@ -304,16 +305,16 @@ export default {
       },
       introduces: ['geol-3.4'],
       statement: String.raw`McKenzie and Parker showed that the surface of the Earth could be treated as a mosaic of rigid "paving stones" that move without internal deformation, and that on a sphere the motion of each is a rotation about an Euler pole (geol-3.4). Applying this to the Pacific, they showed that the directions of slip in earthquakes along its northern boundary, from California through Alaska to the Aleutians, are consistent with a single rotation, and that if the map is redrawn in a Mercator projection with the pole as the pole of the projection, the slip vectors on the boundary become parallel and the small circles about the pole become straight horizontal lines.`,
-      idea: String.raw`In 1967 the faults were known (strike-slip on the San Andreas and Queen Charlotte faults, thrusting at the Aleutian trench) and earthquake fault-plane solutions gave slip directions. Rigid motion on a sphere means that the slip vector at each point is tangent to a small circle about one pole, so a single pole must fit all the slip directions along the boundary. A Mercator projection whose "equator" is the great circle $90^\circ$ from the pole turns every small circle about the pole into a straight line parallel to the equator, so the test is simply whether the slip vectors are horizontal. This clean statement of rigid-plate kinematics, written within a year of Wilson's transform faults, is the precursor of Morgan's (1968) and Le Pichon's (1968) global plate models.`,
+      idea: String.raw`In 1967 the faults were known (strike-slip on the San Andreas and Queen Charlotte faults, thrusting at the Aleutian trench) and earthquake fault-plane solutions gave slip directions. Rigid motion on a sphere means that the slip vector at each point is tangent to a small circle about one pole, so a single pole must fit all the slip directions along the boundary. A Mercator projection whose "equator" is the great circle $90^\circ$ from the pole turns every small circle about the pole into a straight line parallel to the equator, so the test is simply whether the slip vectors are horizontal. This clean statement of rigid-plate kinematics, written after Wilson's 1965 transform-fault paper, is the precursor of Morgan's (1968) and Le Pichon's (1968) global plate models.`,
       caption: String.raw`Gold arrows are the slip directions at ten places along the Pacific–North America boundary (synthetic: predicted by a hidden pole plus $7^\circ$ of noise, since the paper's own fault-plane solutions are not reproduced here); purple arrows are the directions predicted by your pole $E$. Drag $E$ on the globe: in the lower map (a Mercator projection about $E$) your predictions are exactly horizontal, and the observed vectors become parallel to them only when $E$ is right. "Best fit" finds the least-squares pole.`,
-      deps: ['geol-3.3', 'geol-3.2', 'geol-3.14'],
+      deps: ['geol-3.3', 'geol-3.2', 'geol-3.14', 'mech-10.1'],
       refs: [],
       tags: ['mckenzie-parker', 'pacific', 'euler-pole', 'history'],
       credit: 'D. P. McKenzie & R. L. Parker, 1967',
       links: { doi: 'https://doi.org/10.1038/2161276a0' },
       verify: true,
       viz(v) {
-        const HID = [-71.7, 48.9], OM = -0.75; // Pacific relative to North America: clockwise about the NA-relative-to-Pacific pole
+        const HID = [-71.7, 48.9], OM = -0.75; // Illustrative hidden rotation; not a verified MORVEL estimate
         const sites = [['Southern California', [-116.5, 33.4]], ['Parkfield', [-120.4, 35.9]], ['Cape Mendocino', [-124.2, 40.4]], ['Queen Charlotte', [-132.5, 53]], ['Fairweather', [-137.5, 58.5]], ['Kodiak', [-152, 57]], ['Shumagin', [-160, 54.2]], ['Unalaska', [-166, 53]], ['Andreanof', [-175, 51.5]], ['Rat Islands', [178, 51.5]]];
         const rng = v.rng(21), pts = sites.map((q) => q[1]);
         const obs = pts.map((p) => mod360(velAt(p, HID, OM).az + 7 * rng.normal()));
@@ -359,7 +360,7 @@ export default {
           info = { rms: Math.sqrt(sq / pts.length), res, pole };
         });
         v.legend([['gold', 'observed (synthetic) slip direction'], ['purple', 'direction predicted by $E$'], ['muted', 'coastlines']]);
-        v.readout(() => `rms slip-direction misfit **${v.fix(info.rms, 1)}°** for $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$ · least-squares pole $(${v.fix(best.pole[1], 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(best.pole[0]), 1)}^\\circ\\mathrm{${best.pole[0] < 0 ? 'W' : 'E'}})$ with rms ${v.fix(best.rms, 1)}° (noise 7°; the hidden MORVEL pole is $48.9^\\circ$N, $71.7^\\circ$W) · the McKenzie–Parker pole itself is not quoted here.`);
+        v.readout(() => `rms slip-direction misfit **${v.fix(info.rms, 1)}°** for $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$ · least-squares pole $(${v.fix(best.pole[1], 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(best.pole[0]), 1)}^\\circ\\mathrm{${best.pole[0] < 0 ? 'W' : 'E'}})$ with rms ${v.fix(best.rms, 1)}° (noise 7°; the illustrative hidden pole is $48.9^\\circ$N, $71.7^\\circ$W) · the McKenzie–Parker pole itself is not quoted here.`);
       },
     },
   ],

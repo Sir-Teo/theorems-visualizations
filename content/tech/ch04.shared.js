@@ -2,6 +2,7 @@
 // Re-exports the chapter 3 helpers (dated-evidence strip, year formatting, lumps), and adds the physical models
 // of this chapter: the water-wheel power models, the flat-plate sail/blade-element model and the arch thrust line.
 export * from './ch03.shared.js';
+import { lpMin } from '../arch/ch03.shared.js';
 
 export const RHO = 1000; // kg/m³ (water)
 export const G = 9.81;   // m/s²
@@ -104,7 +105,7 @@ export function thrustAt(A, H, yc) {
   return out;
 }
 /** Scan the (H, yc) plane and return {ok, Hmin, Hmax, lines: {min: {H, yc}, max: {H, yc}}, grid}: feasible when every joint's thrust point lies inside [Ri, Re]. */
-export function archFeasible(A, nH = 70, nY = 40) {
+function archFeasibleScan(A, nH = 70, nY = 40) {
   const { Ri, Re } = A;
   let Hmin = Infinity, Hmax = -Infinity, minP = null, maxP = null, count = 0, best = null;
   const Hlo = 0.05, Hhi = 3;
@@ -124,4 +125,33 @@ export function archFeasible(A, nH = 70, nY = 40) {
     }
   }
   return { ok: count > 0, Hmin, Hmax, min: minP, max: maxP, count, best };
+}
+
+/** Solve the joint inequalities in (H, Q=H*yc), rather than sampling a grid.
+ * Each joint bounds Q between two affine functions of H. Every lower bound
+ * and upper bound becomes a linear constraint; the architecture chapter’s
+ * existing LP solver finds the minimum and maximum admissible H.
+ * Geometry uses the intrados radius; published t/R often uses the mean radius.
+ */
+export function archFeasible(A, nH = 70, nY = 40) {
+  const { Ri, Re, N, dth, Wk, xk, Wtot } = A;
+  const lower = [{ a: Ri, b: 0 }], upper = [{ a: Re, b: 0 }];
+  let V = 0, M = 0;
+  for (let k = 1; k <= N; k++) {
+    V += Wk[k - 1]; M += Wk[k - 1] * xk[k - 1];
+    const c = Math.cos(k * dth), s = Math.sin(k * dth);
+    lower.push({ a: Ri * c, b: (Ri * V * s - M) / Wtot });
+    upper.push({ a: Re * c, b: (Re * V * s - M) / Wtot });
+  }
+  const rows = [[-1, 0]], bounds = [0];
+  for (const l of lower) { rows.push([l.a, -1]); bounds.push(-l.b); }
+  for (const u of upper) { rows.push([-u.a, 1]); bounds.push(u.b); }
+  const lo = lpMin([1, 0], rows, bounds), hi = lpMin([-1, 0], rows, bounds);
+  if (!lo || !hi || !(lo.x[0] > 0) || !(hi.x[0] > 0)) {
+    // A sampled out-of-ring line is only an illustration when no line fits.
+    return { ...archFeasibleScan(A, nH, nY), ok: false, min: null, max: null };
+  }
+  const at = result => ({ H: result.x[0], yc: result.x[1] / result.x[0] });
+  const min = at(lo), max = at(hi);
+  return { ok: true, Hmin: min.H, Hmax: max.H, min, max, best: { ...min, viol: 0 } };
 }

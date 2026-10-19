@@ -39,25 +39,24 @@ export default {
       num: '6.1',
       kind: 'Model',
       name: 'Sinusoidal projection',
-      credit: 'Jean Cossin, 1570 (early use); later called Sanson–Flamsteed',
+      credit: 'spherical formulation: Snyder (1987), §30',
       statement: String.raw`The **sinusoidal projection** of the sphere of radius $R$ with central meridian $\lambda_0$ is
 $$x = R\,(\lambda-\lambda_0)\cos\varphi,\qquad y = R\,\varphi .$$
-Parallels are straight horizontal lines at their true spacing and true length $2\pi R\cos\varphi$; the central meridian is a straight line of true length, and every other meridian is a sine curve $x = R(\lambda-\lambda_0)\cos(y/R)$. The scale along the parallels is $k=1$ and along the meridians $h=\sqrt{1+(\lambda-\lambda_0)^2\sin^2\varphi}$; the Jacobian determinant is $hk\cos\theta'=1$, so the map is **equal-area** everywhere. It is neither conformal nor equidistant: away from the central meridian and the equator the meridians and parallels meet at oblique angles and shapes are sheared, worst at the far corners.`,
+Parallels are straight horizontal lines at their true spacing and true length $2\pi R\cos\varphi$; the central meridian is a straight line of true length, and every other meridian is a sine curve $x = R(\lambda-\lambda_0)\cos(y/R)$. The scale along the parallels is $k=1$ and along the meridians $h=\sqrt{1+(\lambda-\lambda_0)^2\sin^2\varphi}$; the Jacobian determinant is $hk\sin\theta'=1$, so the map is **equal-area** everywhere. It is neither conformal nor equidistant: away from the central meridian and the equator the meridians and parallels meet at oblique angles and shapes are sheared, worst at the far corners.`,
       idea: String.raw`A band of the sphere between latitudes $\varphi$ and $\varphi+d\varphi$ has width $2\pi R\cos\varphi$ and height $R\,d\varphi$. Laying every parallel at its true length $2\pi R\cos\varphi$ and keeping the true spacing $R\,d\varphi$ makes the map band the same area as the spherical band, and equal-area (geog-3.6) follows band by band, in fact cell by cell because each parallel is stretched uniformly. The price is paid in shape: the meridian direction $(-\lambda\sin\varphi, 1)$ leans more and more as $\lambda\sin\varphi$ grows, so the indicatrix of unit area becomes a long thin ellipse far from the centre.`,
       caption: String.raw`Drag the red probe over the map: its parallel (true length) and meridian are highlighted, and the readout gives the scale factors, the area factor (always 1) and the angular distortion. The right panel plots the angular distortion $\omega$ against distance from the central meridian for several latitudes. Switch to the equirectangular map to see the same ellipses lose their equal areas, and slide the central meridian to move the shear away from the continents you care about.`,
-      deps: ['geog-3.6'],
+      deps: ['geog-3.6', 'pma-10.9'],
       see: ['geog-4.5', 'geog-4.1'],
-      refs: ['Snyder §30'],
+      refs: ['Snyder (1987), §30, pp. 243–248, eqs. (30-1)–(30-5)'],
       tags: ['map projections', 'equal-area', 'pseudocylindrical'],
-      scope: String.raw`Spherical formulas on the unit-radius globe; the early-use attribution (Cossin 1570) and the later names are from secondary sources and were not checked in the primary maps.`,
-      verify: true,
+      scope: String.raw`Spherical formulas on the unit-radius globe. The readout compares a discretized polygon area with the exact spherical area; small whole-map discrepancies are numerical quadrature error.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sinusoidal_projection' },
       viz(v) {
         const kind = v.select('map', [{ value: 'sinu', label: 'sinusoidal' }, { value: 'equirect', label: 'equirectangular (contrast)' }], 'sinu');
         const lon0 = v.slider('central meridian (°)', -180, 180, 0, { step: 5 });
         const ind = v.toggle('indicatrices', true);
         const s = v.stage({ height: 400, equal: true, axes: false, weight: 1.6, x: [-3.4, 3.4], y: [-1.75, 1.75] });
-        const s2 = v.stage({ x: [0, 180], y: [0, 100], axes: 'box', gutter: true, height: 400, weight: 0.9, xlabel: 'longitude from the central meridian (°)', ylabel: 'angular distortion ω (°)', xticks: [0, 30, 60, 90, 120, 150, 180] });
+        const s2 = v.stage({ x: [0, 180], y: [0, 120], axes: 'box', gutter: true, height: 400, weight: 0.9, xlabel: 'longitude from the central meridian (°)', ylabel: 'angular distortion ω (°)', xticks: [0, 30, 60, 90, 120, 150, 180] });
         const clampProbe = (x, y) => {
           const f = Math.max(-1.45, Math.min(1.45, y)), e = kind.value === 'sinu' ? PI * Math.cos(f) : PI;
           return [Math.max(-e + 0.02, Math.min(e - 0.02, x)), f];
@@ -95,18 +94,17 @@ Parallels are straight horizontal lines at their true spacing and true length $2
       num: '6.2',
       kind: 'Model',
       name: 'Mollweide projection',
-      credit: 'K. B. Mollweide, 1805',
+      credit: 'Mollweide projection; spherical equations: Snyder (1987), §31',
       statement: String.raw`The **Mollweide projection** maps the sphere of radius $R$ to an ellipse of axes $4\sqrt2R$ by $2\sqrt2R$ (ratio 2:1) by
 $$x=\frac{2\sqrt2}{\pi}R(\lambda-\lambda_0)\cos\theta,\qquad y=\sqrt2\,R\sin\theta,\qquad 2\theta+\sin2\theta=\pi\sin\varphi .$$
 The auxiliary angle $\theta\in[-\pi/2,\pi/2]$ has no closed form in $\varphi$, but the equation has a unique root, found quickly by Newton's method. Parallels are straight, parallel lines (unequally spaced), the central meridian is straight and the others are half-ellipses; the map is **equal-area**, not conformal, with the least shape distortion at the two points $\varphi=\pm40^\circ44'$ on the central meridian.`,
-      idea: String.raw`Require parallels to be straight lines with $x=c\,\lambda\cos\theta$ and $y=\sqrt2R\sin\theta$ inside an ellipse; the area of the strip between two parallels must equal the sphere's, $2\pi R^2\,d(\sin\varphi)$. That gives $d(2\theta+\sin2\theta)=\pi\,d(\sin\varphi)$ and, with $\theta=0$ at $\varphi=0$, the stated equation (geog-3.6). Writing $t=2\theta$, solve $g(t)=t+\sin t-\pi\sin\varphi=0$: $g'(t)=1+\cos t>0$ except at $t=\pm\pi$ (the poles), so $g$ is monotone and Newton iteration $t\mapsto t-g/g'$ converges, as in Kepler's equation (mech-8.9) whose form it shares.`,
-      caption: String.raw`Drag the probe up and down the map: the lower panel shows $g(t)=t+\sin t-\pi\sin\varphi$ and the Newton iterates sliding down tangent lines to its root, which is $2\theta$. Change the starting guess to see Newton converge in a handful of steps from $t_0=2\varphi$ and crawl from a bad start near the flat spot $t=\pm\pi$, and overlay the sinusoidal outline to compare the two equal-area maps.`,
-      deps: ['geog-3.6', 'mech-8.9'],
+      idea: String.raw`Require parallels to be straight lines with $x=c\,\lambda\cos\theta$ and $y=\sqrt2R\sin\theta$ inside an ellipse; the area of the strip between two parallels must equal the sphere's, $2\pi R^2\,d(\sin\varphi)$. That gives $d(2\theta+\sin2\theta)=\pi\,d(\sin\varphi)$ and, with $\theta=0$ at $\varphi=0$, the stated equation (geog-3.6). Writing $t=2\theta$, solve $g(t)=t+\sin t-\pi\sin\varphi=0$: $g'(t)=1+\cos t>0$ except at $t=\pm\pi$ (the poles), so $g$ has a unique root on the physical interval. Newton iteration $t\mapsto t-g/g'$ converges rapidly from a suitable starting value; monotonicity alone does not guarantee convergence from an arbitrary guess. The form resembles Kepler's equation (mech-8.9).`,
+      caption: String.raw`Drag the probe up and down the map: the lower panel shows $g(t)=t+\sin t-\pi\sin\varphi$ and the Newton iterates sliding down tangent lines to its root, which is $2\theta$. Change the starting guess to see Newton converge in a handful of steps from $t_0=2\varphi$ and possibly diverge from a bad start near the flat spot $t=\pm\pi$, and overlay the sinusoidal outline to compare the two equal-area maps.`,
+      deps: ['geog-3.6', 'num-2.4'],
       see: ['geog-6.1'],
-      refs: ['Snyder §31'],
+      refs: ['Snyder (1987), §31, pp. 249–252, eqs. (31-1)–(31-8)'],
       tags: ['map projections', 'equal-area', 'Newton iteration'],
-      scope: String.raw`Spherical formulas. The 1805 attribution is from secondary sources (Wikipedia and mathematical-software documentation) and not from Mollweide's original paper.`,
-      verify: true,
+      scope: String.raw`Spherical formulas. The mapping solves the auxiliary-angle equation with a safeguarded solver. The separate Newton demonstration is unsafeguarded and can diverge from a poor starting value, even though the root in the physical interval is unique.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Mollweide_projection' },
       viz(v) {
         const start = v.select('Newton start', [{ value: 'twophi', label: 't₀ = 2φ' }, { value: 'zero', label: 't₀ = 0' }, { value: 'edge', label: 't₀ ≈ ±π' }], 'twophi');
@@ -157,20 +155,19 @@ The auxiliary angle $\theta\in[-\pi/2,\pi/2]$ has no closed form in $\varphi$, b
       num: '6.3',
       kind: 'Model',
       name: 'Compromise projections: Robinson and Winkel tripel',
-      credit: 'Van der Grinten, 1898 (patent 1904); Winkel, 1921; Robinson, 1963',
+      credit: 'formulations: Snyder (1987), §29; PROJ 9.5.1, robin.cpp and aitoff.cpp',
       statement: String.raw`A **compromise projection** is neither conformal nor equal-area; it is chosen to keep both kinds of error moderate over the whole world.
-- **Robinson** (1963, for Rand McNally): not given by formulas but by a table of the length $X(\varphi)$ of each parallel (relative to the equator) and its distance $Y(\varphi)$ from the equator at 5° steps, interpolated: $x=0.8487\,R\,X(\varphi)\,(\lambda-\lambda_0)$, $y=1.3523\,R\,Y(\varphi)$. The poles are lines of length 0.5322 of the equator.
-- **Winkel tripel** (1921): the average of the equirectangular and Aitoff maps, $x=\tfrac12\bigl(\lambda\cos\varphi_1+\frac{2\cos\varphi\sin(\lambda/2)}{\operatorname{sinc}\alpha}\bigr)$, $y=\tfrac12\bigl(\varphi+\frac{\sin\varphi}{\operatorname{sinc}\alpha}\bigr)$, $\cos\alpha=\cos\varphi\cos\frac\lambda2$, $\varphi_1=\arccos(2/\pi)$.
+- **Robinson**: not given by formulas but by a table of the length $X(\varphi)$ of each parallel (relative to the equator) and its distance $Y(\varphi)$ from the equator at 5° steps, interpolated: $x=0.8487\,R\,X(\varphi)\,(\lambda-\lambda_0)$, $y=1.3523\,R\,Y(\varphi)$. The poles are lines of length 0.5322 of the equator.
+- **Winkel tripel**: the average of the equirectangular and Aitoff maps, $x=\tfrac12\bigl(\lambda\cos\varphi_1+\frac{2\cos\varphi\sin(\lambda/2)}{\operatorname{sinc}\alpha}\bigr)$, $y=\tfrac12\bigl(\varphi+\frac{\sin\varphi}{\operatorname{sinc}\alpha}\bigr)$, $\cos\alpha=\cos\varphi\cos\frac\lambda2$, $\varphi_1=\arccos(2/\pi)$.
 - **Van der Grinten**: a circular map, with parallels and meridians drawn as circular arcs.
-Each has Tissot indicatrices of modest eccentricity and area distortion everywhere, in contrast to the zero area error and large shear of the sinusoidal map.`,
-      idea: String.raw`Equal-area maps (geog-3.6) must shear shapes, conformal maps (geog-3.5) must inflate areas, and no map manages both (geog-3.7). Compromise projections therefore sit between the two: averaging the equirectangular map, with its true meridian scale, and the Aitoff map, which is the azimuthal equidistant map squeezed to half its width, gives Winkel's tripel (three kinds of error compromised: area, direction, distance); Robinson drew his shape by eye and tabulated it. Pseudocylindrical edges cut the poles into lines, which is where their shape errors concentrate (geog-4.1, geog-6.1).`,
-      caption: String.raw`Choose a projection and read its indicatrices: ellipses neither all round nor all of equal area, but none extreme. The bar charts compute, over an equal-area sample of about 1,800 points on the sphere, the mean angular distortion $\omega$ and the rms area error of each map, with the sinusoidal and equirectangular maps for reference. Winkel tripel and Robinson are middling on both; the sinusoidal wins on area and loses on shape.`,
-      deps: ['geog-4.1', 'geog-6.1'],
+These projections distribute shape and area distortion differently. No uniform small-error guarantee holds: Van der Grinten strongly inflates high-latitude areas, and a point pole expanded into a line is singular.`,
+      idea: String.raw`Equal-area maps (geog-3.6) must shear shapes, conformal maps (geog-3.5) must inflate areas, and no map manages both (geog-3.7). Compromise projections therefore sit between the two: averaging the equirectangular map, with its true meridian scale, and the Aitoff map gives Winkel's tripel. Aitoff first halves longitude before applying an equatorial azimuthal equidistant projection, then doubles the horizontal coordinate. Robinson uses tabulated parallel lengths and heights. Pseudocylindrical edges cut the poles into lines, which is where their shape errors concentrate (geog-4.1, geog-6.1).`,
+      caption: String.raw`Choose a projection and read its indicatrices: ellipses that reveal both shape and area distortion. The bar charts compute, over an equal-area sample of 2,312 points on the sphere, the mean angular distortion $\omega$ and the rms logarithmic area scatter of each map, with the sinusoidal and equirectangular maps for reference. Winkel tripel and Robinson are middling on both; the sinusoidal wins on area and loses on shape.`,
+      deps: ['geog-4.1', 'geog-6.1', 'num-5.2'],
       see: ['geog-3.7', 'geog-6.4'],
-      refs: ['Snyder §29', 'Haggett'],
+      refs: ['Snyder (1987), §29, pp. 239–242', 'PROJ 9.5.1 source, robin.cpp (tables and forward equation), aitoff.cpp (Winkel forward equation)'],
       tags: ['map projections', 'compromise'],
-      scope: String.raw`Robinson's map here is reconstructed from the 5° table (as tabulated on Wikipedia and in the globe kit of this atlas) with a cubic spline; Robinson's own interpolation differs slightly. Dates are from secondary sources and were not checked in the originals; the error bars are this atlas's own computation.`,
-      verify: true,
+      scope: String.raw`Spherical formulas. Robinson's node values and scale constants agree with PROJ 9.5.1's primary implementation; this reconstruction uses its own natural cubic spline between nodes, so intermediate values differ slightly from PROJ's interval polynomials. Displayed errors are this atlas's calculations on an equal-area sample, not published empirical error bars. The area statistic is the rms logarithmic area-factor scatter after removing a common scale.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Robinson_projection' },
       viz(v) {
         const kind = v.select('map', [{ value: 'robinson', label: 'Robinson' }, { value: 'winkel', label: 'Winkel tripel' }, { value: 'vdg', label: 'Van der Grinten' }], 'robinson');
@@ -179,7 +176,7 @@ Each has Tissot indicatrices of modest eccentricity and area distortion everywhe
         const s = v.stage({ height: 360, equal: true, axes: false, full: true, x: [-3.4, 3.4], y: [-1.8, 1.8] });
         const ORDER = ['equirect', 'sinu', 'robinson', 'winkel', 'vdg'], TICK = [[1, 'plate'], [2, 'sinus'], [3, 'Robin'], [4, 'Winkel'], [5, 'vdG']];
         const sA = v.stage({ x: [0.4, 5.6], y: [0, 40], axes: 'box', gutter: true, height: 260, weight: 1, ylabel: 'mean ω (°)', xticks: TICK, title: 'shape' });
-        const sB = v.stage({ x: [0.4, 5.6], y: [0, 40], axes: 'box', gutter: true, height: 260, weight: 1, ylabel: 'area error (%)', xticks: TICK, title: 'area' });
+        const sB = v.stage({ x: [0.4, 5.6], y: [0, 40], axes: 'box', gutter: true, height: 260, weight: 1, ylabel: 'log area scatter × 100', xticks: TICK, title: 'area' });
         const E = {}; for (const k of ORDER) E[k] = mapErrors(PROJ[k].fwd);
         let info = null;
         v.render(() => {
@@ -194,8 +191,8 @@ Each has Tissot indicatrices of modest eccentricity and area distortion everywhe
         });
         v.readout(() => {
           const e = info, k = kind.value;
-          const note = { robinson: 'Poles are lines 0.5322 as long as the equator; parallels are straight, meridians curve.', winkel: 'Poles are lines about 0.5 as long as the equator; parallels bow slightly; the standard compromise of National Geographic since 1998.', vdg: 'The whole world sits in a circle; poles are points, high latitudes are badly exaggerated in area.' }[k];
-          return `${PROJ[k].label}: mean angular distortion **${e.shape.toFixed(1)}°**, rms area error **${(e.area * 100).toFixed(0)} %** (log-area scatter), rms distance error ${(e.dist * 100).toFixed(0)} % over random pairs. ${note}`;
+          const note = { robinson: 'Poles are lines 0.5322 as long as the equator; parallels are straight, meridians curve.', winkel: 'The pole line is 2/(π+2) ≈ 0.389 as long as the equator; parallels bow slightly.', vdg: 'The whole world sits in a circle; poles are points, high latitudes are badly exaggerated in area.' }[k];
+          return `${PROJ[k].label}: mean angular distortion **${e.shape.toFixed(1)}°**, rms log-area scatter **${(e.area * 100).toFixed(0)} × 10⁻²**, rms log-distance scatter ${(e.dist * 100).toFixed(0)} × 10⁻² over random pairs. ${note}`;
         });
       },
     },

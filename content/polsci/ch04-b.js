@@ -1,6 +1,8 @@
 // Political Science & Social Choice — Chapter 4 (part b): items 4.8-4.13
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, PhiInv, median, mean, pct, dist2, votesFor, mixGrid, binX, gridMedian, gridMean, LINE, cdfOf, votes2, tallyBins } from './ch04.shared.js';
 
+import { isStrictSinglePeaked } from './verification-models.js';
+
 const LET = 'ABCDEFGHIJ';
 const pointSeg = (a, b) => [a, b];
 /** Winset sample: fraction of an m x m grid over [-L, L]^2 satisfying pred(x, y). */
@@ -291,14 +293,13 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
       introduces: ['polsci-4.1', 'polsci-4.2'],
       statement: String.raw`Black asks when the decision of a committee by majority vote is determinate, and answers by restricting the preferences of its members. Suppose the options can be arranged on a line and every member's preference is single-peaked, drawn as a curve over the options with one maximum. Then, with an odd number of members, the option at the **median of the members' peaks** beats every other option in a vote between two, so the committee's pairwise decisions form a consistent ordering with that option on top (polsci-4.2). When some member's curve has two peaks, the majority relation can cycle, and the committee has no determinate decision (polsci-2.1).`,
       idea: String.raw`The context is the question of whether voting among several options yields a decision at all, which the cyclic majorities of Condorcet's paradox (polsci-2.1) put in doubt. Black's paper (1948), which predates Arrow's impossibility theorem (1950), identified a condition on the *domain* of preferences, single-peakedness (polsci-4.1), that removes the difficulty, and the median voter theorem (polsci-4.2) as its consequence. It changed the question from "is majority rule well-defined?" to "which restrictions on preferences make it so?", and the one-dimensional case it solved is the basis of the spatial theory of parties and elections in the rest of this chapter.`,
-      caption: String.raw`Five committee members rank seven options $A$–$G$, drawn as curves over the options. Pick a member (buttons) and **drag the dots on her curve** to reshape her preferences; the other members' curves are faint. At the start everyone is single-peaked: the table on the right (row $a$, column $b$: votes for $a$ minus votes for $b$) shows the option at the median peak (marked $m$) beating all others. Bend one member's curve to two peaks (the **bend** button does it for member 3) and a cycle appears. The curves are my own reconstruction of the kind of picture Black used; the paper's own figures were not available to me.`,
+      caption: String.raw`Five committee members rank seven options $A$–$G$, drawn as curves over the options. Pick a member (buttons) and **drag the dots on her curve** to reshape her preferences; the other members' curves are faint. At the start everyone is single-peaked: the table on the right (row $a$, column $b$: votes for $a$ minus votes for $b$) shows the option at the median peak (marked $m$) beating all others. Bend one member's curve to two peaks (the **bend** button does it for member 3) and a cycle appears. The editable curves are our own reconstruction; the complete original’s single-peaked and cyclic examples are in §II/Figs2–5 and §III/Figs7–8.`,
       deps: ['polsci-2.1'],
       see: ['polsci-4.1', 'polsci-4.2', 'polsci-3.14'],
       refs: [],
       tags: ['paper', 'single-peaked', 'median voter'],
       credit: 'Duncan Black, 1948',
-      scope: String.raw`Odd number of members, strict preferences on a finite set of options ordered on a line. This page re-derives the theorem on an editable committee; it does not reproduce a table or figure from the paper.`,
-      verify: true,
+      scope: String.raw`Odd committee size; each eligible curve has a unique peak and is strictly increasing/decreasing on its two sides. Equal values on opposite sides are allowed. Flat segments or multiple peaks are reported outside this strict-curve version. This page re-derives the theorem on an editable committee; it does not reproduce a table or figure from the paper.`,
       links: { doi: 'https://doi.org/10.1086/256633' },
       viz(v) {
         const NO = 7, NM = 5;
@@ -316,8 +317,7 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
         v.button('reset', () => { U = BASE(); syncHandles(); });
         let info = null;
         v.render(() => {
-          const modes = (u) => { let c = 0; for (let k = 0; k < NO; k++) { const l = k === 0 ? -1 : u[k - 1], r = k === NO - 1 ? -1 : u[k + 1]; if (u[k] > l && u[k] > r) c++; } return c; };
-          const peaks = U.map((u) => u.indexOf(Math.max(...u))), uni = U.map((u) => modes(u) === 1);
+          const peaks = U.map((u) => u.indexOf(Math.max(...u))), uni = U.map(isStrictSinglePeaked);
           range(NM).forEach((i) => {
             const act = i === mem.value;
             C.path(U[i].map((y, k) => [k, y]), { color: CC[i], width: act ? 3 : 1.6, alpha: act ? 1 : 0.4 });
@@ -343,8 +343,8 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
         v.legend([['green', 'row of the option at the median peak'], ['accent', 'a majority prefers the row option', { area: true }]]);
         v.readout(() => {
           const { uni, mp, cw, cyc, allUni } = info;
-          const head = allUni ? `All five curves have one peak. Black’s claim: option **${LET[mp]}**, at the median of the peaks, beats every other option. Computed: ${cw.length ? `Condorcet winner **${cw.map((a) => LET[a]).join(', ')}**${cw[0] === mp ? ' — agreement' : ' — DISAGREEMENT'}` : 'no Condorcet winner — DISAGREEMENT'}.`
-            : `Member${uni.filter((u) => !u).length > 1 ? 's' : ''} ${uni.map((u, i) => (u ? null : i + 1)).filter(Boolean).join(', ')} ${uni.filter((u) => !u).length > 1 ? 'have' : 'has'} more than one peak, so the theorem does not apply. ${cyc ? `The majority relation cycles: ${cyc.map((a) => LET[a]).join(' ≻ ')} ≻ ${LET[cyc[0]]}.` : cw.length ? `A Condorcet winner still exists (${cw.map((a) => LET[a]).join(', ')}): single-peakedness is sufficient, not necessary.` : 'There is no Condorcet winner.'}`;
+          const head = allUni ? `All five curves satisfy strict single-peakedness. Black’s claim: option **${LET[mp]}**, at the median of the peaks, beats every other option. Computed: ${cw.length ? `Condorcet winner **${cw.map((a) => LET[a]).join(', ')}**${cw[0] === mp ? ' — agreement' : ' — DISAGREEMENT'}` : 'no Condorcet winner — DISAGREEMENT'}.`
+            : `Member${uni.filter((u) => !u).length > 1 ? 's' : ''} ${uni.map((u, i) => (u ? null : i + 1)).filter(Boolean).join(', ')} ${uni.filter((u) => !u).length > 1 ? 'fail' : 'fails'} strict single-peakedness, so the theorem does not apply. ${cyc ? `The majority relation cycles: ${cyc.map((a) => LET[a]).join(' ≻ ')} ≻ ${LET[cyc[0]]}.` : cw.length ? `A Condorcet winner still exists (${cw.map((a) => LET[a]).join(', ')}): single-peakedness is sufficient, not necessary.` : 'There is no Condorcet winner.'}`;
           return head;
         });
       },
@@ -357,16 +357,15 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
       name: 'An Economic Theory of Political Action in a Democracy',
       paper: { authors: 'Anthony Downs', year: 1957, title: 'An Economic Theory of Political Action in a Democracy', venue: 'Journal of Political Economy 65 (2): 135–150', doi: '10.1086/257897' },
       introduces: ['polsci-4.3'],
-      statement: String.raw`Downs treats political parties as vote-maximizing firms and voters as rational consumers of policy located on a left–right scale. In the model that bears his name, with voters distributed along the scale and each voting for the nearest party, two parties competing for votes move toward each other, and when the distribution of voters is single-peaked they converge on the position of the median voter. Downs also points out the limits of this result: when the electorate is bimodal, or when voters too far from both parties abstain, the parties can remain apart, and with three or more parties their positions need not settle. (This statement follows the standard account of the Downsian model; I could not check the article's own wording, so the paper-specific claims should be read with that caveat.)`,
-      idea: String.raw`The paper builds on Hotelling's analysis of two sellers on a line (1929; micro-10.17, geog-9.3) and carries it from market to polity, with parties in place of firms and a vote in place of a sale, and with Black's one-dimensional analysis of committees (polsci-4.12) as the formal backbone: the median voter's position is the equilibrium. It introduced the idea that the *shape* of the distribution of voters, not only its centre, decides how parties behave, and that rationality may lead voters to stay home (polsci-5.1). The convergence prediction, polsci-4.3, has been criticized and refined ever since (polsci-4.4).`,
-      caption: String.raw`**Top:** voters along the left–right scale. Choose one of four distributions (single-peaked and symmetric, skewed, two-humped, and two-humped with abstention by voters more than $d$ from every party), then drag parties $A$ and $B$ (and add $C$) to see their vote shares. **Bottom:** the game itself. Each point of the plane is a pair of positions $(x_A, x_B)$, coloured by $A$'s margin over $B$; the blue and orange curves are each party's best response to the other, and **green dots** are the pure equilibria, where the curves cross. Drag the gold point in the plane or the parties above; they are the same pair. With a single-peaked electorate the only equilibrium is at the median; with the two-humped electorate and abstention the equilibria move apart.`,
+      statement: String.raw`Downs models office-seeking parties that formulate policies to gain votes, and uses Hotelling’s spatial analogy to explain convergence and differentiation. His1957 article’s §VI imposes ideological continuity: parties cannot leap across one another, and extremists may abstain as their party moves inward. Its single-mode example converges toward the centre; its polarized example can diverge because of lost extremist support. Its multiparty example can settle at separate modes under the nonleaping restriction. In the simpler modern two-party model with compulsory turnout and unrestricted positions, both parties at a median are an equilibrium for any voter distribution, including a bimodal one.`,
+      idea: String.raw`The paper builds on Hotelling's analysis of two sellers on a line (1929; micro-10.17, geog-9.3) and carries it from market to polity, with parties in place of firms and a vote in place of a sale, and the nearest-party median logic connects it to single-peaked voting (polsci-4.12). The article’s own account adds imperfect information, ideological continuity and abstention, so its conclusions are broader and more qualified than an unrestricted median-location game. It introduced the idea that the *shape* of the distribution of voters, not only its centre, decides how parties behave, and that rationality may lead voters to stay home (polsci-5.1). The convergence prediction, polsci-4.3, has been criticized and refined ever since (polsci-4.4).`,
+      caption: String.raw`**Top:** voters along the left–right scale. Choose one of four distributions (single-peaked and symmetric, skewed, two-humped, and two-humped with abstention by voters more than $d$ from every party), then drag parties $A$ and $B$ (and add $C$) to see their vote shares. **Bottom:** the game itself. Each point of the plane is a pair of positions $(x_A, x_B)$, coloured by $A$'s margin over $B$; the blue and orange curves are each party's best response to the other, and **green dots** are the pure equilibria, where the curves cross. Drag the gold point in the plane or the parties above; they are the same pair. With full turnout, median convergence remains possible even for a two-humped distribution. Alienation can produce separated or absent pure grid equilibria. These are numerical results of the displayed model, not exact reproductions of Downs’s figures.`,
       deps: ['polsci-4.12', 'micro-10.17'],
       see: ['polsci-4.3', 'polsci-4.4'],
       refs: [],
       tags: ['paper', 'party competition', 'median voter'],
       credit: 'Anthony Downs, 1957',
-      scope: String.raw`Standard Hotelling–Downs model: one dimension, full information, parties maximizing votes and free to move anywhere. The four distributions are my reconstruction of the cases usually discussed, not figures taken from the paper; equilibria are found on a grid of positions with spacing $0.1$.`,
-      verify: true,
+      scope: String.raw`The demo is a modern one-dimensional nearest-party, vote-share game with full information and unrestricted crossing of party positions. Unlike the original article, its parties may leap over each other and it models alienation by a fixed distance cutoff. The four distributions are my reconstruction of the cases usually discussed, not figures taken from the paper; equilibria are found on a grid of positions with spacing $0.1$.`,
       links: { doi: 'https://doi.org/10.1086/257897' },
       viz(v) {
         const N = 201, Y0 = -0.1, GS = 0.1;

@@ -31,9 +31,16 @@ export function lagr(xs, w, j, x) {
 }
 /** Lebesgue function sum_j |l_j(x)|. */
 export function lebFn(xs, w, x) {
-  let den = 0, num = 0;
-  for (let j = 0; j < xs.length; j++) { const d = x - xs[j]; if (d === 0) return 1; const t = w[j] / d; den += t; num += Math.abs(t); }
-  return num / Math.abs(den);
+  // First barycentric form avoids subtracting enormous terms in the denominator
+  // when equispaced interpolation is ill-conditioned (already severe at n=60).
+  // The weights may have any common scale; recover it from the first node.
+  let product = 1, scale = w[0], sum = 0;
+  for (let j = 0; j < xs.length; j++) {
+    const d = x - xs[j]; if (d === 0) return 1;
+    product *= 2 * d; sum += Math.abs(w[j] / d);
+    if (j) scale *= 2 * (xs[0] - xs[j]);
+  }
+  return Math.abs(product / (2 * scale)) * sum;
 }
 /** Lebesgue constant on [xs[0], xs[n]] with the maximiser (max per subinterval, refined by ternary search). */
 export function lebMax(xs, w = baryW(xs)) {

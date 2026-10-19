@@ -64,12 +64,13 @@ function buildWord(root, p) {
 
 // ---------- 3.9 ----------
 const REDUP = {
-  id: { name: 'Indonesian: full reduplication', rule: 'full', stems: [['buku', 'book', 'buku-buku', 'books (plural or variety)'], ['anak', 'child', 'anak-anak', 'children'], ['rumah', 'house', 'rumah-rumah', 'houses'], ['mata', 'eye', 'mata-mata', 'spy (meaning shifts)'], ['jalan', 'road, walk', 'jalan-jalan', 'to stroll']], sure: 'Plural/variety use of buku-buku and anak-anak and mata-mata “spy” were checked against teaching sources; rumah-rumah and jalan-jalan are from memory.' },
-  tl: { name: 'Tagalog: partial reduplication', rule: 'CV', stems: [['sulat', 'write', 'susulat', 'will write'], ['kain', 'eat', 'kakain', 'will eat'], ['basa', 'read', 'babasa', 'will read'], ['bili', 'buy', 'bibili', 'will buy'], ['inom', 'drink', 'iinom', 'will drink']], sure: 'sulat, kain, basa and inom are confirmed from teaching sources (the contemplative aspect); bili is from memory.' },
+  id: { name: 'Tagalog: full root reduplication', rule: 'full', stems: [['isip', 'think', 'mag-isip-isip', 'to think about seriously']], sure: 'Rubino, WALS chapter27 §1: mag-isip → mag-isip-isip. The fixed verbal prefix mag- is retained; the root isip is copied.' },
+  tl: { name: 'Pangasinan: partial reduplication', rule: 'CV', stems: [['too', 'man', 'totoo', 'people', 'CV'], ['baley', 'town', 'balbaley', 'towns', 'CVC'], ['manok', 'chicken', 'manomanok', 'chickens', 'CVCV']], sure: 'Rubino, WALS chapter27 §1, example1, reproducing his2001 Pangasinan dictionary p.540. Accent marks are omitted here; copy sizes vary by construction.' },
   free: { name: 'Free play', rule: 'CV', stems: [['tapa', '', '', '']], sure: '' },
 };
 const cvOf = (stem, rule) => {
   if (rule === 'full') return stem;
+  if (rule === 'CVCV') return stem.slice(0, 4);
   const m = stem.match(rule === 'CVC' ? /^[^aeiou]*[aeiou][^aeiou]?/ : /^[^aeiou]*[aeiou]/);
   return m ? m[0] : stem;
 };
@@ -256,18 +257,17 @@ export default {
       kind: 'Concept',
       name: 'Reduplication',
       credit: 'Typological counts: Rubino, WALS chapter 27',
-      statement: String.raw`**Reduplication** builds a word or form by copying part or all of the base. In **full** reduplication the whole stem is repeated (Indonesian *buku* “book” → *buku-buku* “books”); in **partial** reduplication only a piece is copied, such as the first consonant and vowel (Tagalog *sulat* “write” → *susulat* “will write”). The copy is a morpheme without fixed sounds: it takes its form from the base. Meanings include plurality, repetition, intensity, diminution and, in Tagalog, aspect. In the WALS sample of 368 languages (Rubino), 278 have both productive full and partial reduplication, 35 only full reduplication, and 55 no productive reduplication.`,
+      statement: String.raw`**Reduplication** builds a word or form by copying part or all of the base. In **full** reduplication the whole stem is repeated (Tagalog root *isip* in *mag-isip* “think” → *mag-isip-isip* “think about seriously”); in **partial** reduplication only a piece is copied, such as the first consonant and vowel (Pangasinan *toó* “man” → *totóo* “people”). The copy is a morpheme without fixed sounds: it takes its form from the base. Meanings include plurality, repetition, intensity, diminution and, in Tagalog, aspect. In the WALS sample of 368 languages (Rubino), 278 have both productive full and partial reduplication, 35 only full reduplication, and 55 no productive reduplication.`,
       idea: String.raw`Reduplication is a morphological operation on the base's sounds, so it needs a stem and a rule of copying such as "copy the initial CV and prefix it". Its form can be stated as a template, as in 3.8, with the base supplying the segments. The meanings are often iconic (more form for more meaning: many, repeated, intense) and the same device appears in unrelated families, which is why it is one of the most widespread morphological processes.`,
-      caption: String.raw`Choose a language and a stem: the copied part is shown in orange with an arrow from the stem, and the result appears with its meaning. In *free play* type any stem and choose the rule (full, first CV, first CVC) to see how the same stem looks under each pattern. The bars give the typological counts of the WALS chapter. Examples: Indonesian *buku-buku*, *anak-anak* and *mata-mata* “spy” and the Tagalog forms *susulat*, *kakain*, *babasa*, *iinom* were checked against teaching sources; *rumah-rumah*, *jalan-jalan* and *bibili* are from memory. The copying here is orthographic, a simplification of the sound-level rule.`,
+      caption: String.raw`Choose a language and a stem: the copied part is orange with an arrow from the root, and the attested result appears with its meaning. Tagalog’s fixed prefix mag- is retained outside the copied root. Pangasinan illustrates CV, CVC and CVCV copies. All lexical forms and glosses are from Rubino’s complete WALS chapter27, §1; Pangasinan accent marks are omitted in the interactive spelling. Free play applies abstract orthographic rules to any input and does not assert that its results are words. The bars give the chapter’s complete368-language counts.`,
       deps: ['ling-3.1'],
       refs: ['Fromkin et al. ch. 2'],
       tags: ['reduplication', 'typology'],
-      verify: true,
-      scope: String.raw`Orthographic copying, not phonological: Tagalog vowel-initial roots copy the glottal stop plus vowel, and many languages restrict the copy by syllable weight. Indonesian reduplication is not always plural (*anak-anak* can also be an age group, *mata-mata* is “spy”).`,
+      scope: String.raw`The source distinguishes full root, stem and word reduplication; these are different domains. The demo copies orthographic roots and omits phonological detail. Meanings depend on the language and construction; more form need not mean plurality or intensity.`,
       viz(v) {
         const lang = v.select('Language', Object.entries(REDUP).map(([k, L]) => ({ value: k, label: L.name })), 'id');
-        const stemTl = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'sulat');
-        const stemId = v.select('Stem', REDUP.id.stems.map((x) => ({ value: x[0], label: x[0] })), 'buku');
+        const stemTl = v.select('Stem', REDUP.tl.stems.map((x) => ({ value: x[0], label: x[0] })), 'too');
+        const stemId = v.select('Stem', REDUP.id.stems.map((x) => ({ value: x[0], label: x[0] })), 'isip');
         const inp = v.input('stem', 'tapa', { width: 130 });
         const ruleSel = v.select('Rule', [{ value: 'full', label: 'full' }, { value: 'CV', label: 'first CV' }, { value: 'CVC', label: 'first CVC' }], 'CV');
         const s = v.stage({ x: [0, 12], y: [0, 6], axes: false, height: 300, weight: 1.4, minWidth: 340, title: 'copy' });
@@ -280,9 +280,9 @@ export default {
           let stem, rule, gloss = '', meaning = '', cat = null;
           if (lang.value === 'free') { stem = inp.value.toLowerCase().replace(/[^a-z]/g, '') || 'tapa'; rule = ruleSel.value; }
           else {
-            const row = L.stems.find((x) => x[0] === stemSel.value) || L.stems[0]; stem = row[0]; rule = L.rule; gloss = row[1]; meaning = row[3]; cat = row;
+            const row = L.stems.find((x) => x[0] === stemSel.value) || L.stems[0]; stem = row[0]; rule = row[4] || L.rule; gloss = row[1]; meaning = row[3]; cat = row;
           }
-          const copy = cvOf(stem, rule), out = rule === 'full' ? `${stem}-${copy}` : `${copy}${stem}`;
+          const copy = cvOf(stem, rule), out = cat ? cat[2] : rule === 'full' ? `${stem}-${copy}` : `${copy}${stem}`;
           const wd = (t) => Math.max(1.3, 0.55 * t.length + 0.5);
           const xS = 6.4 - wd(stem) / 2 - (rule === 'full' ? 0 : 0), yT = 4.7, yO = 2.2;
           s.rect(xS, yT - 0.5, xS + wd(stem), yT + 0.5, { fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 2, radius: 8 });
@@ -302,7 +302,7 @@ export default {
           [[278, 'accent'], [35, 'orange'], [55, 'muted']].forEach(([n, c], i) => { const x = 0.7 + i * 1.3; sb.rect(x - 0.45, 0, x + 0.45, n, { fill: c, fillAlpha: 0.35, color: c, width: 1.8 }); sb.text(String(n), x, n + 12, { size: 12.5, color: 'ink', align: 'center' }); });
           cur = { stem, copy, out, rule, meaning, cat, L };
         });
-        v.readout(() => `**${cur.stem}** → **${cur.out}**: the ${cur.rule === 'full' ? 'whole stem' : cur.rule === 'CV' ? 'first consonant + vowel' : 'first consonant + vowel + consonant'} (**${cur.copy}**) is copied${cur.meaning ? `; the form means “${cur.meaning}”` : ''}.${cur.L.sure ? `\n${cur.L.sure}` : ''}`);
+        v.readout(() => `**${cur.stem}** → **${cur.out}**: the ${cur.rule === 'full' ? 'whole stem' : cur.rule === 'CV' ? 'first consonant + vowel' : cur.rule === 'CVCV' ? 'first CVCV' : 'first consonant + vowel + consonant'} (**${cur.copy}**) is copied${cur.meaning ? `; the form means “${cur.meaning}”` : ''}.${cur.L.sure ? `\n${cur.L.sure}` : ''}`);
       },
     },
     {

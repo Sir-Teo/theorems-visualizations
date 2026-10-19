@@ -10,6 +10,8 @@
 //        6977–6989) — all Crossref-checked; D ≈ 7.5 km (eastern US) and ≈ 10 km (west of the Great Plains) are quoted from a USGS report
 //        (Roy et al. 1968, Birch et al. 1968). The "province" points in the plot are SYNTHETIC (generated with q* = 30 mW/m², D = 10 km,
 //        ±4 mW/m² noise): they are a model, not the measurements. k = 2.5 W/m/K is a round value.
+// Verification 2026-10-18: 4.1 checked against full Pollack et al. (1993), pp. 267–273 and 276–278;
+// 4.3 checked against Parsons & Sclater (1977), §2 and Appendix 1, with independent diffusion checks.
 //   4.3  Half-space solution is exact mathematics; Tm = 1300 °C, κ = 1 mm²/s are the usual round textbook values. McKenzie (1967, JGR 72:
 //        6261–6273) is the Crossref-checked credit for the cooling-lithosphere heat-flow model; Davis & Lister (1974) and Parsons & Sclater
 //        (1977) are the oceanic-depth applications (not separately checked).
@@ -23,7 +25,7 @@
 //        (3.1×10⁸ km² of oceanic crust, oldest crust 180 Myr, hence 3.4 km²/yr of new crust). Hydrothermal share of oceanic heat loss:
 //        Stein & Stein (1994, JGR 99: 3081–3095, Crossref-checked) — the size of the effect is not quoted here.
 
-import { MYR, KAPPA, halfSpaceQ, halfSpaceSubs } from './ch04.shared.js';
+import { MYR, KAPPA, halfSpaceQ, halfSpaceSubs, ridgeHeatIntegrand } from './ch04.shared.js';
 
 const T0C = 10; // mean surface temperature used in the continental pictures (°C)
 
@@ -31,7 +33,7 @@ export default {
   collection: 'geol',
   chapter: 4,
   title: 'Heat flow, the cooling lithosphere and mantle convection',
-  summary: String.raw`The Earth loses about 46 terawatts through its surface. On the continents radiogenic heat shapes the geotherm; in the oceans, the lithosphere is a thermal boundary layer that thickens as it cools, so ocean depth grows as the square root of age and heat flow falls as its inverse. Underneath, the mantle convects at a Rayleigh number in the millions, with plumes rising from the deep and melting by decompression feeding volcanoes.`,
+  summary: String.raw`A global heat-flow compilation by Pollack and colleagues (1993) estimated 44.2 terawatts leaving the Earth’s surface. On the continents radiogenic heat shapes the geotherm; in the oceans, the lithosphere is a thermal boundary layer that thickens as it cools, so ocean depth grows as the square root of age and heat flow falls as its inverse. Underneath, the mantle convects at a Rayleigh number in the millions, with plumes rising from the deep and melting by decompression feeding volcanoes.`,
   items: [
     // ───────────────────────────────────────── 4.1
     {
@@ -41,13 +43,12 @@ export default {
       statement: String.raw`Heat conducted through a solid flows down the temperature gradient and is proportional to it: $\mathbf q=-k\nabla T$, with $k$ the thermal conductivity (W m$^{-1}$ K$^{-1}$). In steady state, with no heat sources, in a column varying only with depth $z$, the flux $q$ is the same at every depth, so $dT/dz=q/k(z)$: the temperature rises linearly in each layer, steeply in poor conductors and gently in good ones. Measuring $dT/dz$ in a borehole and $k$ on the core gives the surface heat flow $q=k\,dT/dz$.`,
       idea: String.raw`Fourier's law is an empirical constitutive relation, true when the temperature varies slowly compared with the mean free path of the heat carriers (phonons, here). Combined with energy conservation, $\nabla\cdot\mathbf q=0$ in steady state without sources, it forces $q$ to be constant down a one-dimensional column, so a change of rock type changes the gradient but never the flux. This is why geothermal gradients (typically 20–30 K/km) are quoted together with the conductivity, and why heat flow, not gradient, is the quantity that is mapped over the globe.`,
       caption: String.raw`Drag the **probe** up and down the borehole (left panel) and change the surface heat flow $q$. The middle panel shows the gradient $dT/dz$ in each layer, the right panel the flux $k\,dT/dz$: the gradient jumps at each contact while the flux stays a single value. Switch to the uniform column and the temperature becomes one straight line. The layer conductivities are typical round values, not a real well.`,
-      deps: ['thermo-7.3'],
-      refs: ['Turcotte–Schubert ch. 4'],
+      deps: ['thermo-7.3', 'pde-1.5'],
+      refs: ['Pollack, Hurter & Johnson (1993), Heat flow from the Earth’s interior, pp. 267–273 and 276–278; doi:10.1029/93RG01249'],
       tags: ['heat flow', 'conduction', 'geotherm'],
-      credit: 'Joseph Fourier, 1822 (Théorie analytique de la chaleur; memoirs 1807–1811)',
-      scope: String.raw`Holds for conduction in a stationary solid, steady state and no internal sources or advection (fluid flow in the rock, which is common in the top kilometres, breaks it). Global means: about 65 mW/m² on continents, 101 mW/m² in oceans (Pollack et al. 1993), roughly 44–47 TW in total.`,
+      credit: 'Joseph Fourier, 1822 (Théorie analytique de la chaleur)',
+      scope: String.raw`Holds for conduction in a stationary solid, steady state and no internal sources or advection (fluid flow in the rock, which is common in the top kilometres, breaks it). Global means: about 65 mW/m² on continents, 101 mW/m² in oceans (Pollack et al. 1993), 44.2 TW in total in that study (a historical estimate, including a hydrothermal correction).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Thermal_conduction#Fourier\'s_law' },
-      verify: true,
       viz(v) {
         const LAY = [
           { name: 'shale', k: 1.8, h: 0.7, col: 'orange' },
@@ -68,6 +69,7 @@ export default {
         const probe = S1.handle(10, -1.6, { color: 'gold', constrain: 'y', label: 'probe', labelPos: 'ne' });
         let info = {};
         v.render(() => {
+          S2.setView([0, Math.max(40, ...layers().map(l => 1.1 * q.value / l.k))], [-ZMAX, 0]);
           let a = 0;
           for (const S of [S1, S2, S3]) {
             a = 0;
@@ -103,7 +105,7 @@ $$q_0=q_m+A_0\,h,\qquad T(z)=T_0+\frac{q_0 z}{k}-\frac{A_0z^2}{2k}\quad(z\le h),
 and the same $q_0=q_m+hA_0$ holds when $A$ decays exponentially, $A=A_0e^{-z/h}$. Within a heat-flow province the surface heat flow is therefore a straight line in the surface heat production $A_0$, with slope $h$ and intercept $q_m$.`,
       idea: String.raw`Integrate the heat equation once from depth up to the surface: the flux leaving the top is the flux entering from below plus all the heat generated in between (conservation of energy, with Fourier's law from 4.1). With a layer of production $A_0$ and thickness $h$ this is $q_0=q_m+A_0h$. Birch, Roy and others found that heat flow and surface radioactivity of plutons in a province do lie on a line, which says that the crust's enrichment is arranged in a layer of characteristic thickness $h$ about 8–10 km. The decay constants and half-lives behind $A$ are those of 2.1: the same atoms that date rocks warm them.`,
       caption: String.raw`The right panel shows a **synthetic** province (14 points, generated with a hidden line and noise): fit it with $q_m$ and $h$, or press *Best fit*. The gold handle on the model line sets $A_0$, which controls the geotherm on the left (dashed: the geotherm that would hold if $q_0$ were carried by conduction alone, with no heat production). Make $A_0\,h$ large and the Moho temperature runs away: the crust cannot be uniformly enriched to the base.`,
-      deps: ['geol-4.1', 'geol-2.1'],
+      deps: ['geol-4.1', 'geol-2.1', 'pde-1.5'],
       refs: ['Turcotte–Schubert ch. 4'],
       tags: ['heat production', 'geotherm', 'continents'],
       credit: 'Birch, Roy & Decker; Roy, Blackwell & Birch; Lachenbruch (1968)',
@@ -166,12 +168,11 @@ Isotherms deepen as $\sqrt{\kappa t}$; the thermal lithosphere (the depth of, sa
       idea: String.raw`Horizontal conduction is negligible compared with horizontal advection by the moving plate, so each column cools independently as a one-dimensional diffusion problem: $\partial_tT=\kappa\,\partial_z^2T$ with the initial and boundary conditions above. The problem has no length scale of its own, so the solution is a function of the similarity variable $\eta=z/2\sqrt{\kappa t}$ alone, and is the half-line diffusion solution (pde-3.8, 4.1's conduction law). With $\kappa\approx10^{-6}$ m²/s, $z_L\approx116$ km at 80 Myr.`,
       caption: String.raw`The heat map is the temperature in a cross-section of the sea floor; the horizontal axis is age (equivalently, distance from the ridge at the chosen spreading rate). Drag the **age probe**; the green curve is the $0.9\,T_m$ isotherm. In *collapse* mode the profiles at four ages fall on one curve against $z/2\sqrt{\kappa t}$.`,
       deps: ['geol-4.1', 'pde-3.8'],
-      refs: ['Turcotte–Schubert ch. 4'],
+      refs: ['Parsons & Sclater (1977), An analysis of the variation of ocean floor bathymetry and heat flow with age, §2 and Appendix 1; doi:10.1029/JB082i005p00803'],
       tags: ['lithosphere', 'cooling', 'erf'],
       credit: 'McKenzie, 1967 (cooling-lithosphere heat-flow model); Parsons & Sclater, 1977',
       scope: String.raw`Holds for sea floor younger than about 70–80 Myr, before the basal heat supply of the asthenosphere stops the thickening (the plate model, 4.6); also ignores shear heating, hydrothermal cooling and the heat of the crust.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Seafloor_spreading' },
-      verify: true,
       viz(v) {
         const Tm = v.slider('mantle temperature $T_m$ (°C)', 1200, 1450, 1300, { step: 5 });
         const rate = v.slider('half-spreading rate (mm/yr)', 5, 60, 30, { step: 1 });
@@ -190,17 +191,17 @@ Isotherms deepen as $\sqrt{\kappa t}$; the thermal lithosphere (the depth of, sa
           A.curve((x) => [x, -2.32 * Math.sqrt(KAPPA * x * MYR) / 1000], 0.2, 100, { n: 160, color: 'green', width: 2.4 });
           A.vline(t, { color: 'gold', dash: true });
           if (view.value === 'prof') {
-            B.setView([0, 1400], [-150, 0]); B.setLabels('temperature (°C)', 'depth (km)'); B.setTicks(null, yt);
+            B.setView([0, Math.max(1400, tm + 50)], [-150, 0]); B.setLabels('temperature (°C)', 'depth (km)'); B.setTicks(null, yt);
             B.curve((z) => [T(z, t), -z], 0, 150, { n: 200, color: 'accent', width: 2.4 });
             const g = tm / Math.sqrt(Math.PI * KAPPA * t * MYR) * 1000; // °C/km at the surface
             B.line(0, 0, tm, -tm / g, { color: 'orange', dash: true, width: 1.5 });
             B.hline(-2.32 * Math.sqrt(KAPPA * t * MYR) / 1000, { color: 'green', dash: true });
             B.vline(tm, { color: 'muted', dash: true });
           } else {
-            B.setView([0, 3], [-1, 0]); B.setLabels('depth $z/(2\\sqrt{\\kappa t})$', '$(T-T_0)/(T_m-T_0)$'); B.setTicks(null, null);
+            B.setView([0, 3], [0, 1]); B.setLabels('depth $z/(2\\sqrt{\\kappa t})$', '$(T-T_0)/(T_m-T_0)$'); B.setTicks(null, null);
             const cols = ['blue', 'teal', 'orange', 'purple'], ages = [5, 20, 50, 100];
-            B.curve((e) => [e, -v.M.erf(e)], 0, 3, { color: 'ink', width: 3, alpha: 0.35 });
-            ages.forEach((a, i) => B.curve((e) => [e, -T(2 * e * Math.sqrt(KAPPA * a * MYR) / 1000, a) / tm], 0, 3, { color: cols[i], width: 1.6, dash: [4, 3] }));
+            B.curve((e) => [e, v.M.erf(e)], 0, 3, { color: 'ink', width: 3, alpha: 0.35 });
+            ages.forEach((a, i) => B.curve((e) => [e, T(2 * e * Math.sqrt(KAPPA * a * MYR) / 1000, a) / tm], 0, 3, { color: cols[i], width: 1.6, dash: [4, 3] }));
           }
           const zL = (2.32 * Math.sqrt(KAPPA * t * MYR)) / 1000;
           info = { t, zL, dist: (rate.value * t), q: halfSpaceQ(t, { Tm: tm, T0: 0, k: 3.138 }) * 1000 };
@@ -237,11 +238,17 @@ with $\alpha$ the thermal expansion coefficient and $\rho_m$, $\rho_w$ the mantl
         const S = v.stage({ x: [0, 180], y: [-6.6, -2.2], axes: 'box', gutter: true, xlabel: 'age (Myr)', ylabel: 'depth (km)', yticks: yt, height: 340, weight: 1.4, minWidth: 300 });
         const D = v.stage({ x: [0, 140], y: [-150, 0], axes: 'box', gutter: true, xlabel: 'density excess $\\rho-\\rho_m$ (kg/m³)', ylabel: 'depth (km)', yticks: [[0, '0'], [-50, '50'], [-100, '100'], [-150, '150']], height: 340, weight: 0.8, minWidth: 220 });
         const probe = S.handle(40, -4, { color: 'gold', label: 'age', labelPos: 'ne', constrain: 'x' });
-        let info = {};
+        let info = {}, previousSquareRoot = false;
         v.render(() => {
           const al = alpha.value * 1e-5, dT = Tm.value, sq = ax.value === 'sqrt';
+          if (sq !== previousSquareRoot) {
+            const age = previousSquareRoot ? probe.x * probe.x : probe.x;
+            probe.set(sq ? Math.sqrt(age) : age, probe.y);
+            previousSquareRoot = sq;
+          }
           const X = (t) => (sq ? Math.sqrt(t) : t);
-          S.setView(sq ? [0, 13.5] : [0, 180], [-6.6, -2.2]);
+          const deepestModel = -(2500 + halfSpaceSubs(180, { Tm: dT, T0: 0, alpha: al })) / 1000;
+          S.setView(sq ? [0, 13.5] : [0, 180], [Math.min(-6.6, deepestModel - 0.2), -2.2]);
           S.setLabels(sq ? '$\\sqrt{\\text{age}}$  (Myr$^{1/2}$)' : 'age (Myr)', 'depth (km)');
           S.setTicks(sq ? [[0, '0'], [Math.sqrt(10), '10'], [Math.sqrt(40), '40'], [Math.sqrt(90), '90'], [Math.sqrt(160), '160']] : null, yt);
           const ts = Array.from({ length: 181 }, (_, i) => i);
@@ -253,15 +260,17 @@ with $\alpha$ the thermal expansion coefficient and $\rho_m$, $\rho_w$ the mantl
           probe.set(X(tp), mod(tp));
           // density excess panel
           const rhoM = 3300, rhoW = 1000;
+          D.setView([0, Math.max(140, 1.1 * rhoM * al * dT)], [-150, 0]);
           const dr = (z) => rhoM * al * dT * (1 - v.M.erf(z * 1000 / (2 * Math.sqrt(KAPPA * tp * MYR))));
           D.curve((z) => [dr(z), -z], 0, 150, { n: 200, color: 'accent', width: 2.2 });
           D.path([[0, 0], ...Array.from({ length: 151 }, (_, z) => [dr(z), -z]), [0, -150]], { close: true, fill: 'accent', fillAlpha: 0.2, color: 'accent', width: 0.5 });
-          const I = v.M.integrate((z) => dr(z * 1000 / 1000), 0, 150, 300) * 1000; // kg/m² (z in km → m)
+          const maxDepth = 8 * Math.sqrt(KAPPA * tp * MYR) / 1000; // integrate the density tail too, even below the plotted window
+          const I = v.M.integrate(dr, 0, maxDepth, 600) * 1000; // kg/m² (z in km → m)
           const w = I / (rhoM - rhoW);
           info = { t: tp, w, wf: halfSpaceSubs(tp, { Tm: dT, T0: 0, alpha: al }), ps: 350 * Math.sqrt(tp) };
         });
         v.legend([['gold', 'half-space model'], ['orange', 'Parsons & Sclater (1977) fit'], ['teal', 'Stein & Stein (1992) GDH1 fit', { dash: true }]]);
-        v.readout(() => `At ${v.fix(info.t, 0)} Myr: numerical $\\int(\\rho-\\rho_m)dz/(\\rho_m-\\rho_w)=${v.fix(info.w, 0)}$ m, closed form $=${v.fix(info.wf, 0)}$ m, empirical $350\\sqrt t=${v.fix(info.ps, 0)}$ m (all below the 2500 m ridge crest). For $t>80$ Myr the half-space curve keeps falling but the sea floor does not.`);
+        v.readout(() => `At ${v.fix(info.t, 0)} Myr: numerical $\\int(\\rho-\\rho_m)dz/(\\rho_m-\\rho_w)=${v.fix(info.w, 0)}$ m, closed form $=${v.fix(info.wf, 0)}$ m, young-crust fit $350\\sqrt t=${v.fix(info.ps, 0)}$ m${info.t > 70 ? ' (extrapolated beyond its 0–70 Myr range)' : ''} (below the 2500 m ridge crest). For $t>80$ Myr the half-space curve keeps falling but the sea floor does not.`);
       },
     },
 
@@ -311,8 +320,8 @@ so heat flow decreases as $t^{-1/2}$, from several hundred mW/m² at the ridge t
           G.fn((t) => dens(t) * fc(t), { domain: [0.5, 180], color: 'red', width: 2.2, fill: true, base: 0 });
           G.vline(tp, { color: 'gold', dash: true });
           // substitute t = u² to remove the integrable 1/√t singularity at the ridge
-          const tot = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
-          const cond = v.M.integrate((u) => (u < 1e-6 ? 0 : (qth(u * u) * fc(u * u) / 1000) * C * (1 - (u * u) / TM) * 2 * u), 0, Math.sqrt(TM), 400) / 1e12;
+          const tot = v.M.integrate((u) => ridgeHeatIntegrand(u, { area: AREA, maxAge: TM, Tm: dT.value, k: kk.value }), 0, Math.sqrt(TM), 400) / 1e12;
+          const cond = v.M.integrate((u) => ridgeHeatIntegrand(u, { area: AREA, maxAge: TM, Tm: dT.value, k: kk.value }) * fc(u * u), 0, Math.sqrt(TM), 400) / 1e12;
           info = { tp, q: qth(tp), qo: qth(tp) * fc(tp), tot, cond };
         });
         v.legend([['accent', 'conductive law $t^{-1/2}$'], ['orange', 'P&S fit 473/√t (quoted)', { dash: true }], ['teal', 'Stein & Stein fit (quoted)', { dash: true }], ['red', 'model of observed (hydrothermal deficit)']]);

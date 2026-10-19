@@ -17,15 +17,21 @@ The series converges for $x>0$ and reproduces $V_0$ at $x=0$ in the mean (and po
       idea: String.raw`Separating variables turns Laplace's equation (em-2.8) into two ordinary differential equations (a harmonic-oscillator pair). The conditions on the sides force $Y=\sin(n\pi y/a)$ and the decay at infinity picks $X=e^{-n\pi x/a}$. These products are a basis (Fourier sine series, pma-8.10, pma-8.14): the end condition fixes the coefficients. The sum is the unique solution (em-3.5). The exponentials damp the $n$-th term by $e^{-n\pi x/a}$, so high harmonics (and any roughness in $V_0$) die out within a distance $\sim a/n\pi$ of the end; yet at $x=0$ a jump in $V_0$ gives a Gibbs overshoot of about $9\%$ of the jump of the odd extension.`,
       caption: String.raw`A slot of width $a$ with the left end held at the profile $V_0(y)$ you select. Add terms one at a time ($N$): the heat map and contours show the partial sum. At the cut $x=x_c$ (slider, right panel) the partial sum (blue) converges almost at once for $x_c>0$; at $x_c=0$ the *square* profile has Gibbs ringing that never goes away: the first overshoot stays near $1.18\,V_0$. Bars show the coefficients $b_n$ used.`,
       scope: String.raw`Slot of width $a=4$ cm with the end at fixed potential and the far end at infinity. With the end plate in contact with the grounded sides, the corners are at the boundary of the discontinuous data, where the potential is itself discontinuous: the series is an honest solution everywhere except at those two points.`,
-      credit: 'J. Fourier, 1822 (series); Bernoulli, 1750s',
-      verify: true,
+      credit: 'Fourier sine expansion: MIT Electromagnetic Fields and Energy, §5.5',
       deps: ['em-2.8', 'em-3.5', 'pma-8.10', 'pma-8.14', 'pde-5.6'],
-      refs: ['Griffiths §3.3'],
+      refs: ['MIT Electromagnetic Fields and Energy, complete §§5.4–5.5, Eqs.(5.5.3)–(5.5.9), semi-infinite limit'],
       tags: ['separation of variables', 'fourier'],
       viz(v) {
         const a = 4, NMAX = 80;
         const prof = { sq: (y) => 1, tri: (y) => 1 - Math.abs((2 * y) / a - 1), half: (y) => (y < a / 2 ? 1 : 0), two: (y) => (y < a / 3 || y > (2 * a) / 3 ? 0 : 1) };
-        const B = {}; for (const k of Object.keys(prof)) B[k] = Array.from({ length: NMAX + 1 }, (_, n) => (n === 0 ? 0 : (2 / a) * v.M.integrate((y) => prof[k](y) * Math.sin((n * Math.PI * y) / a), 0, a, 1600)));
+        // Exact integrals avoid quadrature bias at discontinuous profile endpoints.
+        const B = {}; for (const k of Object.keys(prof)) B[k] = Array.from({ length: NMAX + 1 }, (_, n) => {
+          if (!n) return 0; const t = n * Math.PI;
+          if (k === 'sq') return 2 * (1 - Math.cos(t)) / t;
+          if (k === 'half') return 2 * (1 - Math.cos(t / 2)) / t;
+          if (k === 'two') return 2 * (Math.cos(t / 3) - Math.cos(2 * t / 3)) / t;
+          return 8 * Math.sin(t / 2) / (t * t);
+        });
         const s = v.stage({ x: [0, 2 * a], y: [0, a], equal: true, height: 270, axes: false, weight: 1.5, title: 'partial sum $V_N(x,y)$' });
         const sC = v.stage({ x: [0, a], y: [-0.2, 1.4], height: 270, axes: 'box', gutter: true, weight: 0.9, minWidth: 240, xlabel: '$y$ (cm)', ylabel: '$V/V_0$', title: 'profile at the cut' });
         const sB = v.stage({ x: [0, 40], y: [-1.2, 1.4], height: 200, axes: 'box', gutter: true, full: true, xlabel: 'harmonic $n$', ylabel: '$b_n/V_0$', title: 'coefficients (blue = included)' });
@@ -55,20 +61,28 @@ The series converges for $x>0$ and reproduces $V_0$ at $x=0$ in the mean (and po
       name: 'Separation of variables in spherical coordinates',
       statement: String.raw`For a problem with azimuthal symmetry, the general solution of $\nabla^2V=0$ is
 $$V(r,\theta)=\sum_{\ell=0}^{\infty}\Bigl(A_\ell r^\ell+\frac{B_\ell}{r^{\ell+1}}\Bigr)P_\ell(\cos\theta).$$
-If the potential on the sphere $r=R$ is $V_0(\theta)$, the field inside is $\sum_\ell A_\ell\,(r/R)^\ell P_\ell(\cos\theta)$ and outside $\sum_\ell A_\ell\,(R/r)^{\ell+1}P_\ell(\cos\theta)$, with
+If the potential on the sphere $r=R$ is $V_0(\theta)$, the potential inside is $\sum_\ell A_\ell\,(r/R)^\ell P_\ell(\cos\theta)$ and the potential outside is $\sum_\ell A_\ell\,(R/r)^{\ell+1}P_\ell(\cos\theta)$, with
 $$A_\ell=\frac{2\ell+1}{2}\int_0^\pi V_0(\theta)\,P_\ell(\cos\theta)\sin\theta\,d\theta.$$`,
       idea: String.raw`With $V=R(r)\Theta(\theta)$, the angular equation is Legendre's equation (finite at both poles only for integer $\ell$, giving $P_\ell(\cos\theta)$) and the radial one is $r^2R''+2rR'=\ell(\ell+1)R$ with solutions $r^\ell$, $r^{-\ell-1}$ (em-2.8; ode-4.5). Regularity at the origin and decay at infinity pick one of them in each region, continuity of $V$ at $r=R$ fixes the match, and the orthogonality $\int P_\ell P_{\ell'}\,d\cos\theta=\tfrac{2}{2\ell+1}\delta_{\ell\ell'}$ gives $A_\ell$. By uniqueness (em-3.5) this is the solution. The $\ell=0$ term $A_0$ is the average of $V_0$ over the sphere, and equals the potential at the centre.`,
-      caption: String.raw`Choose the potential on a sphere of radius $R=2$ as a function of the polar angle and add Legendre terms one by one ($L$ is the highest $\ell$ used). The left panel is the meridian plane with the partial-sum potential inside and outside; the right panel compares the boundary values of the sum with the target, and the bars show the coefficients $A_\ell$. The smooth profile is exact after two terms; the jump at the equator is never captured exactly: the mismatch shrinks only like $1/\sqrt L$ in the mean square.`,
-      scope: String.raw`Azimuthally symmetric data on a sphere in empty space, no charge in the shell $r=R$ (use em-3.16 for a conducting sphere in an applied field). The coefficients are computed numerically (Simpson rule, 4000 points).`,
-      credit: 'Legendre, 1782 (polynomials); Laplace, 1780s',
-      verify: true,
+      caption: String.raw`Choose the potential on a sphere of radius $R=2$ as a function of the polar angle and add Legendre terms one by one ($L$ is the highest $\ell$ used). The left panel is the meridian plane with the partial-sum potential inside and outside; the right panel compares the boundary values of the sum with the target, and the bars show the coefficients $A_\ell$. The smooth $P_2$ profile is exact once $L\ge2$; the jump at the equator is never captured exactly: the mismatch shrinks only like $L^{-1/2}$ in root-mean-square norm (mean-square error of order $L^{-1}$).`,
+      scope: String.raw`Prescribed azimuthally symmetric potential on a spherical interface in empty space, regular at the origin and vanishing at infinity. Nonconstant boundary data require a surface charge or separately biased electrodes; this is not one equipotential conducting shell. Coefficients of the piecewise constant profiles are evaluated from exact Legendre antiderivatives; the smooth profile is exactly P2. Use em-3.16 for a conducting sphere in an applied field.`,
+      credit: 'Axisymmetric spherical Dirichlet expansion: Fitzpatrick, Classical Electromagnetism, §§3.4–3.8',
       deps: ['em-2.8', 'em-3.5', 'ode-4.5'],
-      refs: ['Griffiths §3.3'],
+      refs: ['Fitzpatrick, Classical Electromagnetism (2014), pp. 51–58, §§3.4–3.8, radial solutions and axisymmetric boundary coefficients'],
       tags: ['legendre', 'separation of variables'],
       viz(v) {
         const R = 2, LM = 30;
         const pats = { hemi: (x) => (x >= 0 ? 1 : -1), cap: (x) => (x >= 0.5 ? 1 : 0), p2: (x) => (3 * x * x - 1) / 2, stripe: (x) => (Math.abs(x) < 0.3 ? 1 : 0) };
-        const A = {}; for (const k of Object.keys(pats)) { A[k] = []; for (let l = 0; l <= LM; l++) A[k].push(((2 * l + 1) / 2) * v.M.integrate((x) => pats[k](x) * legendre(l, x)[l], -1, 1, 4000)); }
+        const intervals = { hemi: [[-1,0,-1],[0,1,1]], cap: [[.5,1,1]], stripe: [[-.3,.3,1]] };
+        const A = {};
+        for (const k of Object.keys(pats)) A[k] = Array.from({length: LM + 1}, (_, l) => {
+          if (k === 'p2') return l === 2 ? 1 : 0;
+          return intervals[k].reduce((sum, [lo,hi,value]) => {
+            if (l === 0) return sum + value * (hi - lo) / 2;
+            const pl = legendre(l + 1, lo), ph = legendre(l + 1, hi);
+            return sum + value / 2 * (ph[l + 1] - ph[l - 1] - pl[l + 1] + pl[l - 1]);
+          }, 0);
+        });
         const s = v.stage({ x: [-5, 5], y: [-3.6, 3.6], equal: true, height: 320, axes: false, weight: 1.3, title: 'meridian plane' });
         const sT = v.stage({ x: [0, 180], y: [-1.6, 1.6], height: 320, axes: 'box', gutter: true, weight: 0.9, minWidth: 240, xlabel: 'polar angle $\\theta$ (degrees)', ylabel: '$V/V_0$ on the sphere', title: 'boundary values' });
         const sB = v.stage({ x: [-0.5, LM + 0.5], y: [-1, 1], height: 200, axes: 'box', gutter: true, full: true, xlabel: 'degree $\\ell$', ylabel: '$A_\\ell/V_0$', title: 'coefficients' });
@@ -151,16 +165,15 @@ and induced surface charge $\sigma(\theta)=3\varepsilon_0E_0\cos\theta$. The dis
       num: '3.17',
       kind: 'Method',
       name: 'Complex potential in two dimensions',
-      statement: String.raw`For a two-dimensional field (independent of $z$), let $w(\zeta)=u(x,y)+i\,v(x,y)$ be an analytic function of $\zeta=x+iy$. Then $u$ and $v$ are both harmonic, and the curves $u=\text{const}$ and $v=\text{const}$ cross at right angles. Taking $V=u$ as the potential, the field lines are the curves $v=\text{const}$, and
+      statement: String.raw`For a two-dimensional field (independent of $z$), let $w(\zeta)=u(x,y)+i\,v(x,y)$ be an analytic function of $\zeta=x+iy$. Then $u$ and $v$ are both harmonic. At regular points where $w'\ne0$, the curves $u=\text{const}$ and $v=\text{const}$ cross at right angles. Taking $V=u$ as the potential, the field lines are the curves $v=\text{const}$, and
 $$E_x-iE_y=-\frac{dw}{d\zeta}.$$
 Every analytic function is therefore a solution of some electrostatic problem; conductors lie along equipotential curves of $u$.`,
-      idea: String.raw`Analyticity means the Cauchy–Riemann equations, $u_x=v_y$ and $u_y=-v_x$ (rca-11.10). Then $\nabla u\cdot\nabla v=u_xv_x+u_yv_y=-u_xu_y+u_yu_x=0$, so the level curves of $u$ and $v$ are orthogonal, and differentiating once more gives $u_{xx}+u_{yy}=0$ (em-2.8, vcalc-7.10). $|\nabla u|=|\nabla v|=|w'|$, and $E=-\nabla u$ is read from $w'$. A function that is not analytic fails: its level curves are not orthogonal, and its real part is generally not harmonic.`,
-      caption: String.raw`Choose a function $w(\zeta)$. Equipotentials ($u=$ const) are orange, field lines ($v=$ const) blue; the green dot is a probe you can drag, and the readout gives the angle between the two level curves there, which is $90^\circ$ at every point of an analytic function. The last choice, a made-up non-analytic pair, breaks Cauchy–Riemann: the curves cross at the wrong angle and the Laplacian of $u$ is not zero.`,
+      idea: String.raw`Analyticity means the Cauchy–Riemann equations, $u_x=v_y$ and $u_y=-v_x$ (rca-11.10). Then $\nabla u\cdot\nabla v=u_xv_x+u_yv_y=-u_xu_y+u_yu_x=0$, so the level curves of $u$ and $v$ are orthogonal, and differentiating once more gives $u_{xx}+u_{yy}=0$ (em-2.8, vcalc-7.10). $|\nabla u|=|\nabla v|=|w'|$, and $E=-\nabla u$ is read from $w'$. A nonanalytic choice need not provide a harmonic potential or conjugate field lines; the deliberately nonanalytic example here breaks both properties.`,
+      caption: String.raw`Choose a function $w(\zeta)$. Equipotentials ($u=$ const) are orange, field lines ($v=$ const) blue; the green dot is a probe you can drag, and the readout gives the angle between the two level curves there, which is $90^\circ$ wherever an analytic function has nonzero derivative. At a critical point the gradients vanish and their angle is undefined. The last choice, a made-up non-analytic pair, breaks Cauchy–Riemann: the curves cross at the wrong angle and the Laplacian of $u$ is not zero.`,
       scope: String.raw`Two-dimensional fields only, away from singularities of $w$; branch cuts (for $\sqrt\zeta$ and $\ln\zeta$) are conductors or are drawn through, and contours of the multivalued part $v$ may show a spurious line along the cut. The $v$ of $\ln\zeta$ is the angle, so its field lines are rays from a line charge.`,
-      credit: 'Rankine / Maxwell, 1860s–1873',
-      verify: true,
+      credit: 'Complex-potential construction: Feynman Lectures II, §7–2, Eqs. (7.3)–(7.15)',
       deps: ['em-2.8', 'rca-11.10', 'vcalc-7.10'],
-      refs: ['Feynman II ch. 7'],
+      refs: ['Feynman Lectures II, complete §7–2, Eqs. (7.3)–(7.15); conducting-cylinder example by direct boundary substitution'],
       tags: ['complex potential', 'harmonic'],
       viz(v) {
         const cx = (re, im) => [re, im], mul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]], inv = (a) => { const d = a[0] * a[0] + a[1] * a[1] || 1e-12; return [a[0] / d, -a[1] / d]; };
@@ -169,12 +182,12 @@ Every analytic function is therefore a solution of some electrostatic problem; c
           z3: { w: (z) => mul(z, mul(z, z)), t: '$\\zeta^3$: a $60^\\circ$ corner', du: 4, dv: 4 },
           inv: { w: (z) => inv(z), t: '$1/\\zeta$: a line dipole', du: 0.25, dv: 0.25 },
           ln: { w: (z) => [Math.log(Math.hypot(z[0], z[1]) || 1e-9), Math.atan2(z[1], z[0])], t: '$\\ln\\zeta$: a line charge', du: 0.3, dv: Math.PI / 8, voff: Math.PI / 16 },
-          jou: { w: (z) => { const i = inv(z); return [z[0] + i[0], z[1] + i[1]]; }, t: '$\\zeta+1/\\zeta$: a cylinder in a uniform field', du: 0.6, dv: 0.5 },
+          jou: { w: (z) => { const i = inv(z); return [z[0] - i[0], z[1] - i[1]]; }, t: '$\\zeta-1/\\zeta$: a conducting cylinder in a uniform field', du: 0.6, dv: 0.5 },
           sqrt: { w: (z) => { const r = Math.sqrt(Math.hypot(z[0], z[1])), t = Math.atan2(z[1], z[0]) / 2; return [r * Math.cos(t), r * Math.sin(t)]; }, t: '$\\sqrt\\zeta$: the edge of a half-plane conductor', du: 0.25, dv: 0.25 },
           sin: { w: (z) => [Math.sin(z[0]) * Math.cosh(z[1]), Math.cos(z[0]) * Math.sinh(z[1])], t: '$\\sin\\zeta$: periodic strips', du: 0.25, dv: 0.5 },
           bad: { w: (z) => [z[0] * z[0] - 0.5 * z[1] * z[1], 2 * z[0] * z[1]], t: 'NOT analytic: $u=x^2-y^2/2,\\ v=2xy$', du: 1.5, dv: 2 },
         };
-        const names = [['z2', '$\\zeta^2$'], ['z3', '$\\zeta^3$'], ['inv', '$1/\\zeta$'], ['ln', '$\\ln\\zeta$'], ['jou', '$\\zeta+1/\\zeta$'], ['sqrt', '$\\sqrt\\zeta$'], ['sin', '$\\sin\\zeta$'], ['bad', 'not analytic']].map(([value, label]) => ({ value, label }));
+        const names = [['z2', '$\\zeta^2$'], ['z3', '$\\zeta^3$'], ['inv', '$1/\\zeta$'], ['ln', '$\\ln\\zeta$'], ['jou', '$\\zeta-1/\\zeta$'], ['sqrt', '$\\sqrt\\zeta$'], ['sin', '$\\sin\\zeta$'], ['bad', 'not analytic']].map(([value, label]) => ({ value, label }));
         const s = v.stage({ x: [-3, 3], y: [-2.4, 2.4], equal: true, height: 400, axes: true, weight: 1, title: 'equipotentials and field lines' });
         const fs = v.select('$w(\\zeta)$', names, 'z2');
         const h = s.handle(1.2, 0.8, { color: 'green', r: 8 });
@@ -184,14 +197,15 @@ Every analytic function is therefore a solution of some electrostatic problem; c
           const uL = []; for (let k = -9; k <= 9; k++) uL.push(k * f.du); const vL = []; for (let k = -9; k <= 9; k++) vL.push(k * f.dv + (f.voff || 0));
           s.contour(clip(U), uL.filter((x) => Math.abs(x) < 80), { color: 'orange', width: 1.5, alpha: 0.85, res: 220 });
           s.contour(clip(Vv), vL.filter((x) => Math.abs(x) < 80), { color: 'accent', width: 1.5, alpha: 0.85, res: 220 });
+          if (Math.hypot(h.x,h.y) < .12 && ['inv','ln','jou','sqrt'].includes(fs.value)) { info = {masked:true}; return; }
           const d = 1e-4, gu = [(U(h.x + d, h.y) - U(h.x - d, h.y)) / (2 * d), (U(h.x, h.y + d) - U(h.x, h.y - d)) / (2 * d)], gv = [(Vv(h.x + d, h.y) - Vv(h.x - d, h.y)) / (2 * d), (Vv(h.x, h.y + d) - Vv(h.x, h.y - d)) / (2 * d)];
-          const mu = Math.hypot(...gu), mv = Math.hypot(...gv), ang = (Math.acos((gu[0] * gv[0] + gu[1] * gv[1]) / (mu * mv)) * 180) / Math.PI;
-          s.arrow(h.x, h.y, h.x + (gu[0] / mu) * 0.7, h.y + (gu[1] / mu) * 0.7, { color: 'orange', width: 2.6, head: 8 }); s.arrow(h.x, h.y, h.x + (gv[0] / mv) * 0.7, h.y + (gv[1] / mv) * 0.7, { color: 'accent', width: 2.6, head: 8 });
+          const mu = Math.hypot(...gu), mv = Math.hypot(...gv), ang = mu * mv > 1e-18 ? (Math.acos(Math.max(-1, Math.min(1, (gu[0] * gv[0] + gu[1] * gv[1]) / (mu * mv)))) * 180) / Math.PI : null;
+          if (mu > 1e-12) s.arrow(h.x, h.y, h.x + (gu[0] / mu) * 0.7, h.y + (gu[1] / mu) * 0.7, { color: 'orange', width: 2.6, head: 8 }); if (mv > 1e-12) s.arrow(h.x, h.y, h.x + (gv[0] / mv) * 0.7, h.y + (gv[1] / mv) * 0.7, { color: 'accent', width: 2.6, head: 8 });
           const lap = (U(h.x + 1e-2, h.y) + U(h.x - 1e-2, h.y) + U(h.x, h.y + 1e-2) + U(h.x, h.y - 1e-2) - 4 * U(h.x, h.y)) / 1e-4;
           info = { ang, cr1: gu[0] - gv[1], cr2: gu[1] + gv[0], lap, t: f.t, mu, mv };
         });
         v.legend([['orange', 'equipotentials $u=$ const'], ['accent', 'field lines $v=$ const']]);
-        v.readout(() => `${info.t}.\nAt the probe: angle between $\\nabla u$ and $\\nabla v$ is $${v.fix(info.ang, 2)}^\\circ$; Cauchy–Riemann residuals $u_x-v_y=${v.fix(info.cr1, 4)}$, $u_y+v_x=${v.fix(info.cr2, 4)}$; $\\nabla^2u=${v.fix(info.lap, 3)}$; $|\\nabla u|=${v.fix(info.mu, 3)}$, $|\\nabla v|=${v.fix(info.mv, 3)}$.`);
+        v.readout(() => info.masked ? 'Probe is inside the masked singular neighbourhood; move it away from the origin.' : `${info.t}.\nAt the probe: angle between $\\nabla u$ and $\\nabla v$ is ${info.ang === null ? 'undefined (vanishing gradient)' : '$' + v.fix(info.ang, 2) + '^\\circ$'}; Cauchy–Riemann residuals $u_x-v_y=${v.fix(info.cr1, 4)}$, $u_y+v_x=${v.fix(info.cr2, 4)}$; $\\nabla^2u=${v.fix(info.lap, 3)}$; $|\\nabla u|=${v.fix(info.mu, 3)}$, $|\\nabla v|=${v.fix(info.mv, 3)}$.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 3.18
@@ -203,12 +217,11 @@ Every analytic function is therefore a solution of some electrostatic problem; c
 $$\zeta=\frac d\pi\bigl(w+1+e^{w}\bigr)$$
 maps the strip $|\operatorname{Im}w|<\pi$, where $V=V_0\operatorname{Im}w/\pi$ is the uniform field between two plates, onto the whole plane with two semi-infinite plates $y=\pm d$, $x<0$: the potential is the fringing field at their ends.`,
       idea: String.raw`Because $f$ is analytic (rca-14.2), the Laplacian transforms as $\nabla_\zeta^2V=|f'|^{-2}\nabla_w^2V$ (rca-11.10 and em-3.17), so harmonic stays harmonic and boundary values carry over; uniqueness (em-3.5) says that is the solution. For the plate-edge map, the edges of the strip, $\operatorname{Im}w=\pm\pi$, give $e^w=-e^u$ and so $\operatorname{Im}\zeta=\pm d$ with $\operatorname{Re}\zeta=\frac d\pi(u+1-e^u)\le0$: the plates, traversed out and back. The field strength is $|E|=\frac{V_0}{d}\,|1+e^w|^{-1}$, equal to the uniform value $V_0/d$ deep between the plates and singular only at the plate tips $w=\pm i\pi$.`,
-      caption: String.raw`Left: the strip in the $w$-plane with the potential lines (horizontal) and field lines (vertical) of a uniform field. Right: their images under $\zeta=\frac d\pi(w+1+e^w)$ with $d=\pi$: the equipotentials bunch round the plate edges and bulge outwards, the field lines fan out. Drag the point in either picture: the other follows (the right-hand point is inverted by Newton's method), carrying its equipotential with it.`,
-      scope: String.raw`Two-dimensional, perfectly conducting plates of zero thickness at potentials $\pm V_0$, half-infinite; this is Maxwell's classical solution (*Treatise* Art. 189) for the end effect of a plate pair. The picture is the field in the exterior and in the gap.`,
-      credit: 'J. C. Maxwell, 1873 (Treatise)',
-      verify: true,
+      caption: String.raw`Left: the strip in the $w$-plane with the potential lines (horizontal) and field lines (vertical) of a uniform field. Right: their images under $\zeta=\frac d\pi(w+1+e^w)$ with $d=\pi$: the equipotentials bunch round the plate edges and bulge outwards, the field lines fan out. Drag the point in either picture: the other follows (the right-hand point is inverted by Newton's method), carrying its equipotential with it. Right-hand dragging uses a bounded numerical inverse; targets beyond the displayed strip window are projected back to its mapped point.`,
+      scope: String.raw`Two-dimensional, perfectly conducting plates of zero thickness at potentials $\pm V_0$, half-infinite; the exact plate-edge map is given in C. Pope’s Electromagnetic Theory I, Homework4 comments, question3. The picture is the field in the exterior and in the gap.`,
+      credit: 'Plate-edge map: C. Pope, Electromagnetic Theory I, Homework4 comments, question3',
       deps: ['em-3.17', 'rca-14.2'],
-      refs: ['Feynman II ch. 7'],
+      refs: ['C. Pope, TAMU Electromagnetic Theory I, Homework4 comments, complete question3, pp.2–4, Eqs.(1)–(4)', 'Feynman Lectures II, complete §7–2, harmonic complex potentials'],
       tags: ['conformal map', 'fringing field'],
       viz(v) {
         const P = Math.PI;
@@ -220,17 +233,30 @@ maps the strip $|\operatorname{Im}w|<\pi$, where $V=V_0\operatorname{Im}w/\pi$ i
         let busy = false;
         const sync = () => { const z = f(hw.x, hw.y); hz.set(z[0], z[1]); };
         const inv = (zx, zy) => {
-          let u = hw.x, vv = hw.y;
-          for (let it = 0; it < 60; it++) {
-            const z = f(u, vv), rx = z[0] - zx, ry = z[1] - zy, a = 1 + Math.exp(u) * Math.cos(vv), b = Math.exp(u) * Math.sin(vv), d = a * a + b * b;
-            if (d < 1e-12) break;
-            const du = (rx * a + ry * b) / d, dv = (ry * a - rx * b) / d; u -= du; vv -= dv; vv = Math.max(-P + 0.02, Math.min(P - 0.02, vv)); u = Math.max(-6, Math.min(3.2, u));
-            if (Math.hypot(du, dv) < 1e-10) break;
+          const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+          let best = [hw.x, hw.y], error = Infinity;
+          const seeds = [[hw.x, hw.y], [-1, clamp(zy, -2.8, 2.8)], [1, Math.atan2(zy, zx)], [0, 2.8], [0, -2.8], [-3, 2.8], [-3, -2.8], [2, 0]];
+          for (const seed of seeds) {
+            let [u, vv] = seed;
+            for (let it = 0; it < 80; it++) {
+              const z = f(u, vv), rx = z[0] - zx, ry = z[1] - zy, err = Math.hypot(rx, ry);
+              if (err < error) { error = err; best = [u, vv]; }
+              if (err < 1e-10) return best;
+              const a = 1 + Math.exp(u) * Math.cos(vv), b = Math.exp(u) * Math.sin(vv), d = a * a + b * b;
+              if (d < 1e-16) break;
+              const du = (rx * a + ry * b) / d, dv = (ry * a - rx * b) / d;
+              let accepted = false;
+              for (let t = 1; t > 1e-8; t *= 0.5) {
+                const nu = clamp(u - t * du, -4.4, 2.4), nv = clamp(vv - t * dv, -P + 0.04, P - 0.04), nz = f(nu, nv);
+                if (Math.hypot(nz[0] - zx, nz[1] - zy) < err) { u = nu; vv = nv; accepted = true; break; }
+              }
+              if (!accepted) break;
+            }
           }
-          return [u, vv];
+          return best;
         };
         hw.onDrag = () => { if (busy) return; busy = true; sync(); busy = false; };
-        hz.onDrag = () => { if (busy) return; busy = true; const w = inv(hz.x, hz.y); hw.set(w[0], w[1]); busy = false; };
+        hz.onDrag = () => { if (busy) return; busy = true; const w = inv(hz.x, hz.y); hw.set(w[0], w[1]); sync(); busy = false; };
         let init = false, info = {};
         v.render(() => {
           if (!init) { init = true; sync(); }
@@ -259,14 +285,13 @@ maps the strip $|\operatorname{Im}w|<\pi$, where $V=V_0\operatorname{Im}w/\pi$ i
       num: '3.19',
       kind: 'Method',
       name: 'Relaxation method for Laplace’s equation',
-      statement: String.raw`On a square grid of spacing $h$, replace $\nabla^2V=0$ by the five-point rule $V_{i,j}=\tfrac14(V_{i\pm1,j}+V_{i,j\pm1})$. Starting from any guess and repeatedly replacing each free value by the average of its neighbours (**Jacobi**, or **Gauss–Seidel** using updated values at once), with boundary values held fixed, converges to the discrete solution. **Over-relaxation** (SOR) with $V\leftarrow V+\omega(\bar V-V)$ converges for $0<\omega<2$, fastest near $\omega_{opt}=2/(1+\sin\pi/n)$ on an $n\times n$ grid, and diverges for $\omega\ge2$.`,
-      idea: String.raw`The fixed point of the averaging rule is the discrete mean-value property (em-2.15), the grid version of Laplace's equation. The error satisfies the same rule with zero boundary data, so it is damped by a factor equal to the spectral radius $\rho$ of the iteration: $\rho_J=\cos(\pi/n)$ for Jacobi, $\rho_J^2$ for Gauss–Seidel, and $\omega_{opt}-1$ for optimal SOR (Young, Frankel). On a fine grid $\rho_J\approx1-\pi^2/2n^2$ so plain relaxation needs $O(n^2)$ sweeps; SOR needs $O(n)$. The maximum principle (em-3.5) keeps the iterates between the boundary extremes while the residual falls.`,
-      caption: String.raw`A $33\times33$ box with a different potential on each wall. The left panel is the SOR iterate after the number of sweeps you choose; the right panel is the residual (largest change a sweep would make) on a log scale for **Jacobi**, **Gauss–Seidel** and **SOR with your $\omega$**. Drag $\omega$ from 1 towards 2: the line steepens up to the optimum $\omega_{opt}$ and then gets worse; past $2$ the residual explodes. Dashed lines are the theoretical rates.`,
-      scope: String.raw`Grid $n=33$ points per side (32 cells), Dirichlet data. Convergence rates quoted are the exact spectral radii for the model Poisson problem on a square, and the measured per-sweep factor in the readout is taken from the first 90 sweeps after sweep 30 in which the residual is still above $10^{-10}$ (a run that is already below that shows a dash). The residual of SOR at the optimum oscillates, so its average rate is $\omega_{opt}-1$ only roughly.`,
-      credit: 'Southwell (relaxation, 1930s–40s); Young & Frankel (SOR, 1950)',
-      verify: true,
+      statement: String.raw`On a square grid of spacing $h$, replace $\nabla^2V=0$ by the five-point rule $V_{i,j}=\tfrac14(V_{i\pm1,j}+V_{i,j\pm1})$. Starting from any guess and repeatedly replacing each free value by the average of its neighbours (**Jacobi**, or **Gauss–Seidel** using updated values at once), with boundary values held fixed, converges to the discrete solution. **Over-relaxation** (SOR) with $V\leftarrow V+\omega(\bar V-V)$ converges for $0<\omega<2$, fastest near $\omega_{opt}=2/(1+\sin\pi/n)$ on a square grid with $n$ cells per side. For $\omega\ge2$ convergence for arbitrary initial errors is lost.`,
+      idea: String.raw`The fixed point of the averaging rule is the discrete mean-value property (em-2.15), the grid version of Laplace's equation. The error satisfies the same rule with zero boundary data, so it is damped by a factor equal to the spectral radius $\rho$ of the iteration: $\rho_J=\cos(\pi/n)$ for Jacobi, $\rho_J^2$ for Gauss–Seidel, and $\omega_{opt}-1$ for optimal SOR (Young, Frankel). On a fine grid $\rho_J\approx1-\pi^2/2n^2$ so plain relaxation needs $O(n^2)$ sweeps; SOR needs $O(n)$. The discrete solution obeys a maximum principle. Updates with $0<\omega\le1$ preserve the range of the initial and boundary values; over-relaxed iterates can overshoot that range even when they converge.`,
+      caption: String.raw`A $33\times33$ box with a different potential on each wall. The left panel is the SOR iterate after the number of sweeps you choose; the right panel is the averaging defect $\max|\bar V-V|$ (the five-point algebraic residual divided by $4/h^2$) on a log scale for **Jacobi**, **Gauss–Seidel** and **SOR with your $\omega$**. Drag $\omega$ from 1 towards 2: the line steepens up to the optimum $\omega_{opt}$ and then gets worse; past $2$ the residual explodes. Dashed lines are the theoretical rates.`,
+      scope: String.raw`Grid $n=32$ cells per side (33 points), Dirichlet data. Convergence rates quoted are the exact spectral radii for the model Poisson problem on a square, and the measured per-sweep factor in the readout is taken from the first 90 sweeps after sweep 30 in which the residual is still above $10^{-10}$ (a run that is already below that shows a dash). The residual of SOR at the optimum oscillates, so its average rate is $\omega_{opt}-1$ only roughly.`,
+      credit: 'SOR analysis: Netlib Templates §2.2.3; Darian, arXiv:2501.09995, §§2.1 and3.1',
       deps: ['em-2.15', 'em-3.5'],
-      refs: ['Griffiths §3.1'],
+      refs: ['Netlib Templates, complete SOR method and parameter sections', 'Darian, arXiv:2501.09995v1, complete §§2.1 and3.1, Eqs.(3),(8),(20)–(23)'],
       tags: ['relaxation', 'numerical'],
       viz(v) {
         const N = 33, SW = 300;

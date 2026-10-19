@@ -1,0 +1,1003 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-19",
+  "status": "fixed-focused-verified-source-frozen",
+  "agentReview": true,
+  "script": "tests/verification-conditional-energy-fixes-browser.mjs",
+  "states": 50,
+  "workers": 1,
+  "localRenderer": "KaTeX0.16.11",
+  "manualInspection": "Agent visually inspected all50 updated PNGs in10contact sheets, both themes. No remaining defect observed in scoped states.",
+  "annotationChecks": {
+    "cases": 34,
+    "minimumCenterSeparationPx": 38.37560396039606,
+    "minimumDistanceFromEitherLevelLinePx": 10.0
+  },
+  "validation": [
+    "Final scoped static3items0errors0warnings",
+    "Existing tests/verification-pchem.test.mjs passed",
+    "Native focused50states passed; no blank canvases/runtime/TeX/nonfinite readouts"
+  ],
+  "results": [
+    {
+      "id": "cplx-2.6",
+      "theme": "light",
+      "file": "content/cplx/ch02.js",
+      "sourceFileHash": "7c67864f556b6a8f6761f75409fa3dd2c2883eb0aa24c89185f3333ad79aeada",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 integer feasible points: 1 \u00b7 LP optimum: (0.50, 0.50) \u00b7 best integer point: (1, 1) \u00b7 LP value \u22120.707\u22120.707\u22120.707 vs integer value \u22121.414\u22121.414\u22121.414",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-light-00.png",
+          "sha256": "7b61ed5bee22a1d04f7f1a18d07c79d369363cd2900ae5756113fe9a419f1a24"
+        },
+        {
+          "label": "cube clause-cut context",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "4 clauses active \u00b7 0/1 points surviving (= satisfying assignments): 4 of 8 \u00b7 the centre (12,12,12)(\\tfrac12,\\tfrac12,\\tfrac12)(21\u200b,21\u200b,21\u200b) gives every clause the value 32\u22651\\tfrac32\\ge123\u200b\u22651, so the LP relaxation is feasible (and so is the formula).",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-light-01.png",
+          "sha256": "05ac839cb0ca7e21c6e125726f9f724151c0fc471792bd6d275a2a5e477de6b8"
+        },
+        {
+          "label": "cube clause change",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 0/1 points surviving (= satisfying assignments): 5 of 8 \u00b7 the centre (12,12,12)(\\tfrac12,\\tfrac12,\\tfrac12)(21\u200b,21\u200b,21\u200b) gives every clause the value 32\u22651\\tfrac32\\ge123\u200b\u22651, so the LP relaxation is feasible (and so is the formula).",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-light-02.png",
+          "sha256": "ab0dbfea435c9cad50aea12374e0fd807d2a9d9580dd79d16f48e2016f07dfea"
+        },
+        {
+          "label": "plane restored",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 integer feasible points: 1 \u00b7 LP optimum: (0.50, 0.50) \u00b7 best integer point: (1, 1) \u00b7 LP value \u22120.707\u22120.707\u22120.707 vs integer value \u22121.414\u22121.414\u22121.414",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-light-03.png",
+          "sha256": "7b61ed5bee22a1d04f7f1a18d07c79d369363cd2900ae5756113fe9a419f1a24"
+        }
+      ]
+    },
+    {
+      "id": "logic-5.13",
+      "theme": "light",
+      "file": "content/logic/ch05-b.js",
+      "sourceFileHash": "3604dd960f2b6856c48db0dabe7258ca3a87855d37b4cc291de322d0ee270984",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+3.0000\u03b5+3.0000\u03b52+1.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+3.0000\\varepsilon+3.0000\\varepsilon^2+1.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+3.0000\u03b5+3.0000\u03b52+1.0000\u03b53+\u22ef, so the quotient is 3.0000+3.0000\u03b5+1.0000\u03b52+0.0000\u03b53+\u22ef3.0000+3.0000\\varepsilon+1.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots3.0000+3.0000\u03b5+1.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=3.0000\\operatorname{st}=\\mathbf{3.0000}st=3.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 3.0000 and 3.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 0.0960.0960.096 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-light-00.png",
+          "sha256": "70a2f8b883e0f9f2ea3f804a9bad782b49522813814593263ced342cdc126be7"
+        },
+        {
+          "label": "absolute value: positive infinitesimal",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+1.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef, so the quotient is 1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef1.0000+0.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=1.0000\\operatorname{st}=\\mathbf{1.0000}st=1.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 1.0000 and 1.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 2.6\u00d710\u2212132.6\\times10^{-13}2.6\u00d710\u221213 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-light-01.png",
+          "sha256": "d43a31227767e50d8992bbc1ec6b3c9dc1c5ccb4a25edbda82b39a4fa4514dea"
+        },
+        {
+          "label": "absolute value: negative infinitesimal",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+1.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef, so the quotient is 1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef1.0000+0.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=1.0000\\operatorname{st}=\\mathbf{1.0000}st=1.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 1.0000 and 1.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 2.6\u00d710\u2212132.6\\times10^{-13}2.6\u00d710\u221213 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-light-02.png",
+          "sha256": "e2571aca3f8ee4554bec0ab7ed17f52aa79b51da8885a768b5b646edbf1f9255"
+        }
+      ]
+    },
+    {
+      "id": "pchem-2.12",
+      "theme": "light",
+      "file": "content/pchem/ch02-c.js",
+      "sourceFileHash": "7f5da21cc6dbffc0fa6df7cb826a67b2dfd37237f0466fd958523e8f9508c24e",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u2212300\u2212300\u2212300 kJ/mol: 75.875.875.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212487.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-00.png",
+          "sha256": "0ef6054508ff5c6b4de28daa17f7935f2932df052d85d1037bcb1d7435ea5dd1"
+        },
+        {
+          "label": "Born-Haber NaCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u2212300\u2212300\u2212300 kJ/mol: 75.875.875.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212487.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-01.png",
+          "sha256": "0ef6054508ff5c6b4de28daa17f7935f2932df052d85d1037bcb1d7435ea5dd1",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 239.90136555749692,
+              "center": 251.90136555749692,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 331.4026979277494,
+              "center": 321.4026979277494,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "NaCl: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124124.2\u22124124.2\u22124124.2 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing 3713.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-02.png",
+          "sha256": "29485a3946c3bc2febda701280d845925212541cf4ac369df23137d4638c8b92",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 113.65417917249403,
+              "center": 153.75033392523218,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 135.75033392523218,
+              "center": 95.65417917249403,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "NaCl: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 375.8375.8375.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212787.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-03.png",
+          "sha256": "0f4bec456f5fdbb420de91b907a933f1b6c36d892383d2c5f5c5ac879add942a",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 239.90136555749692,
+              "center": 251.90136555749692,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 331.4026979277494,
+              "center": 321.4026979277494,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber KCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 280.5280.5280.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing \u2212717.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-04.png",
+          "sha256": "331b7110c4ddfc28b732c58bb1309f5c3cf489b761890df8046906f2a953fd2e",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 227.826808687232,
+              "center": 239.826808687232,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 331.07967907041086,
+              "center": 321.07967907041086,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "KCl: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124219.5\u22124219.5\u22124219.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing 3783.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-05.png",
+          "sha256": "a430867c26a73230a5163e45f0da1064edb3d5e415bf5df0c4a47c7fdc901c17",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 108.53253610321042,
+              "center": 149.991058660842,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 131.991058660842,
+              "center": 90.53253610321042,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "KCl: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 280.5280.5280.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing \u2212717.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-06.png",
+          "sha256": "270f81677f8402b60df75d99fdd99958a906561f2f27c637e7df3ee677b560d3",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 227.826808687232,
+              "center": 239.826808687232,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 331.07967907041086,
+              "center": 321.07967907041086,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber LiF",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 431.0431.0431.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing \u22121047.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-07.png",
+          "sha256": "cceb7d2bb9728eadf1c613e4bc4a0f8693bb2ca7b7a88e95f3520c8b43848399",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 218.2357239512855,
+              "center": 230.2357239512855,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 332.26657645466844,
+              "center": 322.26657645466844,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "LiF: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124069.0\u22124069.0\u22124069.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing 3453.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-08.png",
+          "sha256": "0c6c955e160885015f64402d9916bd25e87e65ebddb924eda3cbd140f94c973e",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 115.67325295120253,
+              "center": 166.92115396755253,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 148.92115396755253,
+              "center": 97.67325295120253,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "LiF: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 431.0431.0431.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing \u22121047.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-09.png",
+          "sha256": "7d861a9757a4896bf1a2745799250b3f47bc82d397cf47532057aca01e4db813",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 218.2357239512855,
+              "center": 230.2357239512855,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 332.26657645466844,
+              "center": 322.26657645466844,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber MgO",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-10.png",
+          "sha256": "5fab7347871e0a1e7b8d5634bace6dda75a2c5e2c4fe8f01fd5057baf4079d4d",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "MgO: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22121258.3\u22121258.3\u22121258.3 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing 656.7).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-11.png",
+          "sha256": "68a937c8273f775cfcab862163e584df49443157b4777d0a58ad2278865b8468",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 262.3877157360406,
+              "center": 315.201116751269,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 297.201116751269,
+              "center": 244.3877157360406,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "MgO: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-12.png",
+          "sha256": "88aab0e3613876755ccc79c15695aeb836e3681dba86faa43a468eb3511881ad",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber zero revealed steps",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Reveal all six steps to compare the total with the measured formation enthalpy.Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-13.png",
+          "sha256": "89cbbaefab32a87c996306a1ef3aff6980e2bd757c641526283ebcd1947aeb14",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: burn methane (gas-phase water)",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 2640 kJ/mol; bonds formed: 3450 kJ/mol. Estimated \u0394rH\u2248\u2212810\\Delta_rH \\approx \u2212810\u0394r\u200bH\u2248\u2212810 kJ/mol against the exact \u2212802.4\u2212802.4\u2212802.4 (error \u22128 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-14.png",
+          "sha256": "35cafd1bdd1e4303ed066603db7d50188351838d5ae70c3f6bd15f6fcf432cba",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 273.8514851485148,
+              "center": 285.8514851485148,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u2212802.4",
+              "anchor": 334.2270891089109,
+              "center": 324.2270891089109,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: H\u2082 + Cl\u2082 \u2192 2 HCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 678 kJ/mol; bonds formed: 862 kJ/mol. Estimated \u0394rH\u2248\u2212184\\Delta_rH \\approx \u2212184\u0394r\u200bH\u2248\u2212184 kJ/mol against the exact \u2212184.6\u2212184.6\u2212184.6 (error 1 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-15.png",
+          "sha256": "02cc6449852d064ffee47a9c9492c178d8ee48af11260f78ac218703f3ce9d8b",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 276.41319749518794,
+              "center": 347.85802509890755,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u2212184.6",
+              "anchor": 329.85802509890755,
+              "center": 258.41319749518794,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: N\u2082 + 3 H\u2082 \u2192 2 NH\u2083",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 2253 kJ/mol; bonds formed: 2346 kJ/mol. Estimated \u0394rH\u2248\u221293\\Delta_rH \\approx \u221293\u0394r\u200bH\u2248\u221293 kJ/mol against the exact \u221292.2\u221292.2\u221292.2 (error \u22121 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-16.png",
+          "sha256": "c739be5a4d6b3bd6fe55b8f4cfdba2d4b13373ad2c5448011b4fab771ebf7b89",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 323.77291144125024,
+              "center": 351.914798379317,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u221292.2",
+              "anchor": 333.914798379317,
+              "center": 305.77291144125024,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber restored",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-light-17.png",
+          "sha256": "5fab7347871e0a1e7b8d5634bace6dda75a2c5e2c4fe8f01fd5057baf4079d4d",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cplx-2.6",
+      "theme": "dark",
+      "file": "content/cplx/ch02.js",
+      "sourceFileHash": "7c67864f556b6a8f6761f75409fa3dd2c2883eb0aa24c89185f3333ad79aeada",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 integer feasible points: 1 \u00b7 LP optimum: (0.50, 0.50) \u00b7 best integer point: (1, 1) \u00b7 LP value \u22120.707\u22120.707\u22120.707 vs integer value \u22121.414\u22121.414\u22121.414",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-dark-00.png",
+          "sha256": "c5b277fc9e33ed2509f0218beb1dbf4fb43b5cc8e995f17de32d63f20f2db4e3"
+        },
+        {
+          "label": "cube clause-cut context",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "4 clauses active \u00b7 0/1 points surviving (= satisfying assignments): 4 of 8 \u00b7 the centre (12,12,12)(\\tfrac12,\\tfrac12,\\tfrac12)(21\u200b,21\u200b,21\u200b) gives every clause the value 32\u22651\\tfrac32\\ge123\u200b\u22651, so the LP relaxation is feasible (and so is the formula).",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-dark-01.png",
+          "sha256": "944f14ff3ca3c4fbe75e2d8556b6406b5fd289748b1bfc17ebdf33636ea42a19"
+        },
+        {
+          "label": "cube clause change",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 0/1 points surviving (= satisfying assignments): 5 of 8 \u00b7 the centre (12,12,12)(\\tfrac12,\\tfrac12,\\tfrac12)(21\u200b,21\u200b,21\u200b) gives every clause the value 32\u22651\\tfrac32\\ge123\u200b\u22651, so the LP relaxation is feasible (and so is the formula).",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-dark-02.png",
+          "sha256": "dff45d1f65a16b03949d2714013879959cef0748573dfe75526aa8b1ce4f63f3"
+        },
+        {
+          "label": "plane restored",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "3 clauses active \u00b7 integer feasible points: 1 \u00b7 LP optimum: (0.50, 0.50) \u00b7 best integer point: (1, 1) \u00b7 LP value \u22120.707\u22120.707\u22120.707 vs integer value \u22121.414\u22121.414\u22121.414",
+          "screenshot": "/tmp/conditional-energy-fixes/cplx-2.6-dark-03.png",
+          "sha256": "c5b277fc9e33ed2509f0218beb1dbf4fb43b5cc8e995f17de32d63f20f2db4e3"
+        }
+      ]
+    },
+    {
+      "id": "logic-5.13",
+      "theme": "dark",
+      "file": "content/logic/ch05-b.js",
+      "sourceFileHash": "3604dd960f2b6856c48db0dabe7258ca3a87855d37b4cc291de322d0ee270984",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+3.0000\u03b5+3.0000\u03b52+1.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+3.0000\\varepsilon+3.0000\\varepsilon^2+1.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+3.0000\u03b5+3.0000\u03b52+1.0000\u03b53+\u22ef, so the quotient is 3.0000+3.0000\u03b5+1.0000\u03b52+0.0000\u03b53+\u22ef3.0000+3.0000\\varepsilon+1.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots3.0000+3.0000\u03b5+1.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=3.0000\\operatorname{st}=\\mathbf{3.0000}st=3.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 3.0000 and 3.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 0.0960.0960.096 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-dark-00.png",
+          "sha256": "68ba20bb1d8a55e30c855221c76feefa155783176a4e57b63224a86e651a1ec8"
+        },
+        {
+          "label": "absolute value: positive infinitesimal",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+1.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef, so the quotient is 1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef1.0000+0.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=1.0000\\operatorname{st}=\\mathbf{1.0000}st=1.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 1.0000 and 1.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 2.6\u00d710\u2212132.6\\times10^{-13}2.6\u00d710\u221213 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-dark-01.png",
+          "sha256": "dee4fb28597fbc23d54fe18c33f9ab24ad9d357e485b1cbc909c4520ba0e5776"
+        },
+        {
+          "label": "absolute value: negative infinitesimal",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "f(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22eff(a+\\varepsilon)=1.0000+1.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdotsf(a+\u03b5)=1.0000+1.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef, so the quotient is 1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef1.0000+0.0000\\varepsilon+0.0000\\varepsilon^2+0.0000\\varepsilon^3+\\cdots1.0000+0.0000\u03b5+0.0000\u03b52+0.0000\u03b53+\u22ef and st\u2061=1.0000\\operatorname{st}=\\mathbf{1.0000}st=1.0000 at a=1.000a=1.000a=1.000.Numeric one-sided slopes: 1.0000 and 1.0000 \u2014 they agree with the standard part (the usual derivative). For \u2223h\u2223\u22640.032|h|\\le 0.032\u2223h\u2223\u22640.032 the quotient is within 2.6\u00d710\u2212132.6\\times10^{-13}2.6\u00d710\u221213 of the standard part (\u03b5\\varepsilon\u03b5\u2013\u03b4\\delta\u03b4).",
+          "screenshot": "/tmp/conditional-energy-fixes/logic-5.13-dark-02.png",
+          "sha256": "8abfbdd0256c738f273652b826133087034b2df4a06a9ce6df227056484eeb56"
+        }
+      ]
+    },
+    {
+      "id": "pchem-2.12",
+      "theme": "dark",
+      "file": "content/pchem/ch02-c.js",
+      "sourceFileHash": "7f5da21cc6dbffc0fa6df7cb826a67b2dfd37237f0466fd958523e8f9508c24e",
+      "renderer": "KaTeX 0.16.11",
+      "states": [
+        {
+          "label": "default",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u2212300\u2212300\u2212300 kJ/mol: 75.875.875.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212487.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-00.png",
+          "sha256": "162fe45e5d2725cbc76d30449298b6f75a4b168d93428a5588ec40e46d7ce64c"
+        },
+        {
+          "label": "Born-Haber NaCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u2212300\u2212300\u2212300 kJ/mol: 75.875.875.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212487.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-01.png",
+          "sha256": "162fe45e5d2725cbc76d30449298b6f75a4b168d93428a5588ec40e46d7ce64c",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 239.90136555749692,
+              "center": 251.90136555749692,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 331.4026979277494,
+              "center": 321.4026979277494,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "NaCl: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124124.2\u22124124.2\u22124124.2 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing 3713.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-02.png",
+          "sha256": "cf4e493ddab1b80d0dd3d17cebc7948cf4682ecdcae8388b42640fdd7a5ea8db",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 113.65417917249403,
+              "center": 153.75033392523218,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 135.75033392523218,
+              "center": 95.65417917249403,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "NaCl: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 375.8375.8375.8 kJ/mol against measured \u2212411.1\u2212411.1\u2212411.1 (missing \u2212787.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212787.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212787.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212753-753\u2212753 kJ/mol (\u22124.3% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-03.png",
+          "sha256": "8e4b6ec769f49a960ee99104437d351d097def91835982a9673704d21bbb6b5d",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 239.90136555749692,
+              "center": 251.90136555749692,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212411.1",
+              "anchor": 331.4026979277494,
+              "center": 321.4026979277494,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber KCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 280.5280.5280.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing \u2212717.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-04.png",
+          "sha256": "182fb9df994677246a422d2b80ef1703bd48d47fc80006ddd2300605f36e2c3e",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 227.826808687232,
+              "center": 239.826808687232,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 331.07967907041086,
+              "center": 321.07967907041086,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "KCl: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124219.5\u22124219.5\u22124219.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing 3783.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-05.png",
+          "sha256": "678911f24b6f47de6f8d7d0ab585dd56320e0c05224532fbf00139510a443227",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 108.53253610321042,
+              "center": 149.991058660842,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 131.991058660842,
+              "center": 90.53253610321042,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "KCl: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 280.5280.5280.5 kJ/mol against measured \u2212436.5\u2212436.5\u2212436.5 (missing \u2212717.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u2212717.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u2212717.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u2212687-687\u2212687 kJ/mol (\u22124.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-06.png",
+          "sha256": "7728549dde57b7dd35b2d23f83bacebff5923caa233f9989336768c3c2745637",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 227.826808687232,
+              "center": 239.826808687232,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212436.5",
+              "anchor": 331.07967907041086,
+              "center": 321.07967907041086,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber LiF",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 431.0431.0431.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing \u22121047.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-07.png",
+          "sha256": "32ca08ca5637f29645cbdb225d0c093954c2139d6f4544b9a3fceaae3ac564a2",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 218.2357239512855,
+              "center": 230.2357239512855,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 332.26657645466844,
+              "center": 322.26657645466844,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "LiF: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22124069.0\u22124069.0\u22124069.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing 3453.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-08.png",
+          "sha256": "43f1d9c5b72e85bf76db4708b735468a7405f942082df8ca0afc4ed805829e25",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 115.67325295120253,
+              "center": 166.92115396755253,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 148.92115396755253,
+              "center": 97.67325295120253,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "LiF: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 431.0431.0431.0 kJ/mol against measured \u2212616.0\u2212616.0\u2212616.0 (missing \u22121047.0).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22121047.0\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22121047.0 kJ/mol. Born\u2013Land\u00e9 estimate: \u22121007-1007\u22121007 kJ/mol (\u22123.9% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-09.png",
+          "sha256": "993414f9b6faaabd2971eb1cb1b8a19b9fdb1487d1b8a3d124a6e04d6ea6ee67",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 218.2357239512855,
+              "center": 230.2357239512855,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212616.0",
+              "anchor": 332.26657645466844,
+              "center": 322.26657645466844,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber MgO",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-10.png",
+          "sha256": "f19ed8dfa9f7f68e2d529ff15744401b3d420a26825805cc2b1a2a8fc6025121",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "MgO: lattice minimum",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy \u22124500\u22124500\u22124500 kJ/mol: \u22121258.3\u22121258.3\u22121258.3 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing 656.7).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-11.png",
+          "sha256": "0f34e9239fa5454b90d4a94f21bc610d8f7a4b011792d17a8326ccae78996786",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 262.3877157360406,
+              "center": 315.201116751269,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 297.201116751269,
+              "center": 244.3877157360406,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "MgO: lattice zero",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-12.png",
+          "sha256": "a8e5a79114219e2fe0ffbbe9d43993510417a3a83d23f637bd35ac0515a4d645",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber zero revealed steps",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Reveal all six steps to compare the total with the measured formation enthalpy.Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-13.png",
+          "sha256": "20493fecd32c44d8d3a5877fe5ea3251d988e46373bc661318fa8450a27496f2",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: burn methane (gas-phase water)",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 2640 kJ/mol; bonds formed: 3450 kJ/mol. Estimated \u0394rH\u2248\u2212810\\Delta_rH \\approx \u2212810\u0394r\u200bH\u2248\u2212810 kJ/mol against the exact \u2212802.4\u2212802.4\u2212802.4 (error \u22128 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-14.png",
+          "sha256": "6b4a061adf420c94d474db8148196b5ca9d801a3bed703a05284e78fd8c8b427",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 273.8514851485148,
+              "center": 285.8514851485148,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u2212802.4",
+              "anchor": 334.2270891089109,
+              "center": 324.2270891089109,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: H\u2082 + Cl\u2082 \u2192 2 HCl",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 678 kJ/mol; bonds formed: 862 kJ/mol. Estimated \u0394rH\u2248\u2212184\\Delta_rH \\approx \u2212184\u0394r\u200bH\u2248\u2212184 kJ/mol against the exact \u2212184.6\u2212184.6\u2212184.6 (error 1 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-15.png",
+          "sha256": "724f4bcb8c0bb7b8dd86e0e8b0634457acb62b7642687b9c21e535a66b24a5cb",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 276.41319749518794,
+              "center": 347.85802509890755,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u2212184.6",
+              "anchor": 329.85802509890755,
+              "center": 258.41319749518794,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "bond enthalpies: N\u2082 + 3 H\u2082 \u2192 2 NH\u2083",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Bonds broken: 2253 kJ/mol; bonds formed: 2346 kJ/mol. Estimated \u0394rH\u2248\u221293\\Delta_rH \\approx \u221293\u0394r\u200bH\u2248\u221293 kJ/mol against the exact \u221292.2\u221292.2\u221292.2 (error \u22121 kJ/mol).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-16.png",
+          "sha256": "453e416f9d650b95ea923003e2f6ba652de794d165077bb04920055abbd75db2",
+          "annotationGeometry": [
+            {
+              "text": "reactants (isolated molecules)",
+              "anchor": 323.77291144125024,
+              "center": 351.914798379317,
+              "height": 400
+            },
+            {
+              "text": "exact $\\Delta_rH$ from tables = \u221292.2",
+              "anchor": 333.914798379317,
+              "center": 305.77291144125024,
+              "height": 400
+            }
+          ]
+        },
+        {
+          "label": "Born-Haber restored",
+          "blank": [],
+          "errors": [],
+          "tex": [],
+          "text": "Sum of the steps with lattice enthalpy 000 kJ/mol: 3241.73241.73241.7 kJ/mol against measured \u2212601.6\u2212601.6\u2212601.6 (missing \u22123843.3).Solving the cycle: \u0394lattH=\u0394fH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3\\Delta_{\\text{latt}}H = \\Delta_fH - (\\text{sum of the gas-phase steps}) = \u22123843.3\u0394latt\u200bH=\u0394f\u200bH\u2212(sum\u00a0of\u00a0the\u00a0gas-phase\u00a0steps)=\u22123843.3 kJ/mol. Born\u2013Land\u00e9 estimate: \u22123964-3964\u22123964 kJ/mol (3.1% off).",
+          "screenshot": "/tmp/conditional-energy-fixes/pchem-2.12-dark-17.png",
+          "sha256": "f19ed8dfa9f7f68e2d529ff15744401b3d420a26825805cc2b1a2a8fc6025121",
+          "annotationGeometry": [
+            {
+              "text": "elements in their standard states",
+              "anchor": 294.2862355600648,
+              "center": 352.97757248891975,
+              "height": 400
+            },
+            {
+              "text": "measured $\\Delta_fH$ = \u2212601.6",
+              "anchor": 334.97757248891975,
+              "center": 276.2862355600648,
+              "height": 400
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

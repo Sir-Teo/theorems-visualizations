@@ -4,7 +4,7 @@
 // property measured by simulation, Hoeffding's inequality, and finite classes. Helpers: ch04.shared.js (which re-exports
 // those of chapters 1–3).
 import {
-  clamp, rand, memo, mean, commas, bins, etaT, trueRisks, drawT, empRisks, argmin, supGap, drawCurves, q2, geo, quantileSorted,
+  clamp, rand, memo, mean, commas, bins, etaT, trueRisks, drawT, empRisks, argmin, supGap, drawCurves, q2, geo, quantileSorted, quantizeUnit,
 } from './ch04.shared.js';
 
 const K0 = 101;
@@ -26,7 +26,7 @@ $$\forall h\in\mathcal H:\qquad |L_S(h)-L_{\mathcal D}(h)|\le\varepsilon .$$
 The requirement is simultaneous, over the whole class, and holds for one fixed sample.`,
       idea: String.raw`For a single fixed $h$ the law of large numbers already says $L_S(h)\approx L_{\mathcal D}(h)$. The trouble with ERM is that it looks at the *minimum* of $L_S$ over a class, and the hypothesis at which the minimum occurs is chosen *after* seeing $S$, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve $h\mapsto L_S(h)$ lies in an $\varepsilon$-tube around the true curve, no choice of $h$ made from $S$ can be fooled by more than $\varepsilon$. Whether samples are representative with high probability is the subject of ml-4.3.`,
       caption: String.raw`Instances are uniform on $[0,1]$, labels are random (the curve $\eta$ falls from $1$ to $0$, softened by the noise level), and the class is 101 thresholds $h_t=\mathbf 1[x\le t]$. The black curve is the true risk $L_{\mathcal D}(h_t)$, the blue one the empirical risk of a sample of size $m$, and the orange tube has half-width $\varepsilon$. Red dots mark thresholds where the sample *misleads* by more than $\varepsilon$. Drag $m$ up and the blue curve settles into the tube; press Resample for a new draw. The last line of the readout repeats the experiment 200 times.`,
-      deps: ['ml-3.4'],
+      deps: ["ml-3.4","prob-2.2.14"],
       refs: ['UML §4.1'],
       tags: ['representative sample', 'uniform convergence'],
       scope: String.raw`Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of $\eta$.`,
@@ -114,7 +114,7 @@ $$\mathbb P_{S\sim\mathcal D^m}\Big[\sup_{h\in\mathcal H}|L_S(h)-L_{\mathcal D}(
 The smallest such function is the sample complexity of uniform convergence.`,
       idea: String.raw`The property is a uniform law of large numbers: the empirical process $h\mapsto L_S(h)$ converges to $h\mapsto L_{\mathcal D}(h)$ in sup-norm, at a rate that depends only on $(\varepsilon,\delta)$ and on the class, not on $\mathcal D$. It is stronger than convergence at each single $h$, and it is exactly what the proof of ml-4.2 needs. Vapnik and Chervonenkis studied it for classes of events and found its combinatorial characterization (the growth function and VC dimension, ml-6.x); here only the definition and the finite case (ml-4.6) are needed.`,
       caption: String.raw`The thresholds world again. For 16 sample sizes from 5 to 3000, 150 samples are drawn and the worst gap $\sup_t|L_S-L_{\mathcal D}|$ is recorded. **Left:** its median (dashed), its $(1-\delta)$-quantile (blue), the Hoeffding-plus-union-bound curve $\sqrt{\ln(2|\mathcal H|/\delta)/2m}$ of ml-4.6 (orange), and the target $\varepsilon$ (ink). **Right:** the fraction of samples that are *not* $\varepsilon$-representative, which must drop under $\delta$; the first size where it does is the empirical $m^{\mathrm{UC}}(\varepsilon,\delta)$ (green line), and the orange line is the guaranteed size. Change the class size from 11 to 1001 thresholds: the guarantee moves with $\ln|\mathcal H|$ while the observed curves hardly move.`,
-      deps: ['ml-4.1'],
+      deps: ["ml-4.1","pma-7.9"],
       see: ['stat-1.5', 'prob-2.4.9'],
       refs: ['UML §4.1'],
       credit: 'V. N. Vapnik & A. Ya. Chervonenkis, "On the uniform convergence of relative frequencies of events to their probabilities", Theory of Probability & Its Applications 16(2), 1971, 264–280',
@@ -220,7 +220,7 @@ and the ERM$_{\mathcal H}$ rule is a successful agnostic PAC learner for $\mathc
 $$\mathbb P\Big[\Big|\frac1m\sum_{i=1}^m\theta_i-\mu\Big|>\varepsilon\Big]\;\le\;2\exp\!\Big(-\frac{2m\varepsilon^2}{(b-a)^2}\Big).$$`,
       idea: String.raw`Bound the moment generating function of a bounded, centred variable: for $\mathbb E\theta=0$ and $\theta\in[a,b]$ one has $\mathbb E e^{s\theta}\le e^{s^2(b-a)^2/8}$ (Hoeffding's lemma, by convexity of $e^{s\theta}$ on the interval). Independence multiplies the $m$ factors, and Markov's inequality applied to $e^{s\sum\theta_i}$ with the best $s$ gives a one-sided tail $e^{-2m\varepsilon^2/(b-a)^2}$; the two sides add up to the factor $2$. The bound depends on the range $b-a$ only, never on the variance, which is why it is loose for rare events (compare ml-33.6).`,
       caption: String.raw`Draw $m$ bounded variables and average them; repeat 4000 times. **Left:** the histogram of the average concentrates around $\mu$ (the shaded strip is $\mu\pm\varepsilon$). **Right:** the observed frequency of $|\text{mean}-\mu|>\varepsilon$ for every $\varepsilon$ (green) under Hoeffding's bound (blue), on a logarithmic axis; the gold marker is the current $\varepsilon$. The bound never crosses below the data, but it is far from tight when the variance is small relative to the range: try a rare event (Bernoulli with small $p$), or stretch the range to $[0,4]$, which weakens the bound while the data only scale.`,
-      deps: [],
+      deps: ["prob-2.7.1a","prob-1.6.4","prob-2.1.13"],
       see: ['ml-33.6', 'stat-1.16', 'stoch-12.12'],
       refs: ['UML §4.2'],
       credit: 'Wassily Hoeffding, "Probability inequalities for sums of bounded random variables", Journal of the American Statistical Association 58(301), 1963, 13–30',
@@ -364,12 +364,11 @@ For a loss with values in $[0,1]$, ml-4.6 then guarantees that ERM over the disc
 $$m_{\mathcal H}(\varepsilon,\delta)\;\le\;\Big\lceil\frac{2\,(bd\ln2+\ln(2/\delta))}{\varepsilon^2}\Big\rceil ,$$
 linear in the number $bd$ of bits needed to write down a hypothesis.`,
       idea: String.raw`ml-4.6 charges $\ln|\mathcal H|$ for a finite class, and a hypothesis that takes $bd$ bits to specify can be one of at most $2^{bd}$ objects. So $\ln|\mathcal H|\le bd\ln 2$, and the bound is linear in the description length. The argument is crude (it ignores that nearby parameter vectors give nearly the same predictions, and the bound is typically far from tight), but it shows that a finite-precision implementation of *any* parametric class with a bounded loss is learnable from a number of examples that scales with the number of parameters. The sharper way to measure the size of an infinite class, without referring to the arithmetic, is the VC dimension of ml-6.x.`,
-      caption: String.raw`Left: two of the $d$ parameters live in $[0,1)$; with $b$ bits each only the $2^b\times2^b$ grid points can be stored (drawn for $b\le6$; finer grids are too dense to draw). Drag $\theta$ to see the rounding to the nearest representable point and the rounding error, at most $2^{-b-1}$ per coordinate. Right: the sample-size bound against the number of parameters $d$, one line per precision $b$ (grey: 8, 16, 32, 64 bits; blue: your $b$). Doubling the precision doubles the slope; doubling $d$ doubles the number of examples.`,
-      deps: ['ml-4.6'],
-      refs: ['UML §4.2', 'UML Remark 4.1'],
+      caption: String.raw`Left: two of the $d$ parameters live in $[0,1)$; with $b$ bits each only the $2^b\times2^b$ grid points can be stored (drawn for$b\le6$; finer grids are omitted). Drag $\theta$ to see the rounding to one of$2^b$ equally spaced cell midpoints and the rounding error, at most $2^{-b-1}$ per coordinate. Right: the sample-size bound against the number of parameters $d$, one line per precision $b$ (grey: 8, 16, 32, 64 bits; blue: your $b$). Above52bits, the display omits the rounding-error measurement because binary64 cannot distinguish all cell midpoints. Doubling the precision doubles the slope; doubling $d$ doubles the number of examples.`,
+      deps: ["ml-4.6","comb-1.1"],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Corollary4.6 and Remark4.1, author PDF pp.57–58"],
       tags: ['finite precision', 'sample complexity'],
-      scope: String.raw`Worst-case bound for a loss in $[0,1]$, assuming the parameters are written with $b$ bits and the learner searches among those representable hypotheses. Distinct parameter vectors may give the same predictor, so $2^{bd}$ is an upper bound on $|\mathcal H|$; the sample size is generally very pessimistic.`,
-      verify: true,
+      scope: String.raw`Worst-case bound for a loss in $[0,1]$, assuming the parameters are written with $b$ bits and the learner searches among those representable hypotheses. Distinct parameter vectors may give the same predictor, so $2^{bd}$ is an upper bound on $|\mathcal H|$; The guarantee compares with the best hypothesis in the finite class; it does not control approximation error relative to the original infinite class. The sample size is generally very pessimistic.`,
       viz(v) {
         const sA = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: 'box', gutter: true, height: 380, xlabel: 'parameter $\\theta_1\\in[0,1)$', ylabel: 'parameter $\\theta_2$', title: 'representable parameters' });
         const sB = v.stage({ x: [0, 100], y: [0, 1], axes: 'box', gutter: true, height: 380, xlabel: 'number of parameters $d$', ylabel: 'examples sufficient (thousands)', title: 'the guarantee grows linearly in $bd$' });
@@ -377,14 +376,14 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
         const dS = v.slider('parameters $d$', 1, 100, 10, { int: true });
         const eS = v.slider('$\\varepsilon$', 0.02, 0.3, 0.1, { step: 0.005 });
         const dl = v.slider('$\\delta$', 0.01, 0.5, 0.05, { step: 0.01 });
-        const th = sA.handle(0.37, 0.62, { color: 'accent', label: '$\\theta$' });
+        const th = sA.handle(0.37, 0.62, { color: 'accent', label: '$\\theta$', constrain:(x,y)=>[clamp(x,0,1),clamp(y,0,1)] });
         const mB = (bits, d, eps, del) => (2 * (bits * d * LN2 + Math.log(2 / del))) / (eps * eps);
         const mK = (bits, d, eps, del) => mB(bits, d, eps, del) / 1000;
         let info = null;
         v.render(() => {
           const b = bS.value, d = dS.value, eps = eS.value, del = dl.value, n = Math.pow(2, b), bd = Math.min(b, 6), nd = Math.pow(2, bd);
-          for (let i = 0; i < nd; i++) for (let j = 0; j < nd; j++) sA.dot(i / nd, j / nd, { color: 'muted', r: nd > 32 ? 1.6 : 2.6 });
-          const rnd = (x) => clamp(Math.round(x * n), 0, n - 1) / n;
+          if(b<=6) for (let i = 0; i < nd; i++) for (let j = 0; j < nd; j++) sA.dot((i+.5)/nd, (j+.5)/nd, { color: 'muted', r: nd > 32 ? 1.6 : 2.6 });
+          const rnd = (x) => b<=52?quantizeUnit(x,b):x;
           const rx = rnd(th.x), ry = rnd(th.y);
           sA.segment([th.x, th.y], [rx, ry], { color: 'orange', width: 2 });
           sA.dot(rx, ry, { color: 'green', r: 5 });
@@ -395,7 +394,7 @@ linear in the number $bd$ of bits needed to write down a hypothesis.`,
           sB.dot(d, mK(b, d, eps, del), { color: 'gold', r: 7 });
           info = { b, d, m: Math.ceil(mB(b, d, eps, del)), err: Math.max(Math.abs(th.x - rx), Math.abs(th.y - ry)), half: 1 / (2 * n), lnH: b * d * LN2, big: Math.ceil(mB(32, 1e6, eps, del)) };
         });
-        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. Rounding error of $\theta$ (largest coordinate): $${v.sci(info.err, 2)}$, at most $2^{-b-1}=${v.sci(info.half, 2)}$. For comparison, a model of $10^6$ float32 weights would need at most $${v.sci(info.big, 2)}$ examples by this bound at the same $\varepsilon,\delta$.`);
+        v.readout(() => info && String.raw`$|\mathcal H|\le2^{${info.b * info.d}}$, i.e. $\ln|\mathcal H|\le${q2(info.lnH, 1)}$; sufficient sample size $\lceil2(bd\ln2+\ln(2/\delta))/\varepsilon^2\rceil=${commas(info.m)}$. ${info.b<=52?String.raw`Measured midpoint-rounding error: $${v.sci(info.err,2)}\le2^{-b-1}=${v.sci(info.half,2)}$.`:'Midpoint-rounding error is not measured above52bits.'} For comparison, a model of $10^6$ float32 weights would need at most $${v.sci(info.big, 2)}$ examples by this bound at the same $\varepsilon,\delta$.`);
       },
     },
   ],

@@ -115,14 +115,14 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
       kind: 'Theorem',
       name: 'Pólya’s recurrence theorem',
       statement: String.raw`Simple symmetric random walk on $\Z^d$ is recurrent for $d=1$ and $d=2$ and transient for $d\ge3$.`,
-      idea: String.raw`By 5.4.3, recurrence is equivalent to $\sum_nP(S_n=0)=\infty$. The walk can return only at even times, and a local limit theorem (3.1.2 for $d=1$; the same computation in higher dimensions) gives $P(S_{2n}=0)\sim2\,(d/4\pi n)^{d/2}$, of order $n^{-d/2}$. This series diverges exactly when $d/2\le1$.`,
+      idea: String.raw`By 5.4.3, recurrence is equivalent to $\sum_nP(S_n=0)=\infty$. The walk can return only at even times, and a local limit theorem (3.1.3 for $d=1$; the same computation in higher dimensions) gives $P(S_{2n}=0)\sim2\,(d/4\pi n)^{d/2}$, of order $n^{-d/2}$. This series diverges exactly when $d/2\le1$.`,
       caption: String.raw`Left: one seeded walk of $N$ steps (for $d=1$ the graph of $S_n$, otherwise the projection to the $xy$-plane); gold dots mark returns to the origin. Right: $P(S_{2n}=0)$ against $n$ on log–log axes with Pólya's asymptote $2(d/4\pi n)^{d/2}$ dashed, whose slope $-d/2$ decides whether the series diverges.`,
       deps: ['prob-5.4.3', 'prob-3.1.2'],
       see: ['stoch-3.5', 'stoch-8.6', 'stoch-8.7'],
       tags: ['random walk', 'recurrence'],
       credit: 'G. Pólya, 1921',
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Random_walk' },
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.4.4 and proof, pp. 289–290'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const dS = v.select('dimension', [{ value: '1', label: '$d=1$' }, { value: '2', label: '$d=2$' }, { value: '3', label: '$d=3$' }], '2');
         const nS = v.slider('steps $N$', 1000, 200000, 20000, { log: true, int: true, sig: 2 });
@@ -170,12 +170,13 @@ Otherwise $\rho<1$ and the expected number of returns is $\rho/(1-\rho)<\infty$;
       kind: 'Lemma',
       name: 'Σ P(‖Sₙ‖ < ε) decides recurrence near 0',
       statement: String.raw`Let $S_n$ be a random walk in $\R^d$, $\|\cdot\|$ the sup norm, and $\eps>0$. (a) If $\sum_nP(\|S_n\|<\eps)<\infty$, then $P(\|S_n\|<\eps\text{ i.o.})=0$. (b) If $\sum_nP(\|S_n\|<\eps)=\infty$, then $P(\|S_n\|<2\eps\text{ i.o.})=1$.`,
-      idea: String.raw`Part (a) is the first Borel–Cantelli lemma (2.3.1). For (b), let $N$ count visits to the $\eps$-ball and look at the first time $T$ the walk enters it: the strong Markov property restarts the walk at $S_T$, and later visits to the $\eps$-ball are visits to the $2\eps$-ball of the restarted walk. So the expected number of visits to the $2\eps$-ball after reaching $\eps$ is at least the full sum; if it is infinite, then an infinite number of visits to the $2\eps$-ball cannot be avoided.`,
+      idea: String.raw`Part (a) is Borel–Cantelli I. For (b), let $\rho_{2\eps,k}$ be the probability that $\|S_n\|\ge2\eps$ for every $n\ge k$. The events that the walk is within $\eps$ at time $m$ but never within $\eps$ again after $m+k$ can each occur for at most $k$ values of $m$. Independence of future increments and the triangle inequality therefore give $k\ge\rho_{2\eps,k}\sum_mP(\|S_m\|<\eps)$. Divergence forces every $\rho_{2\eps,k}=0$, which says that the walk enters the $2\eps$-ball infinitely often.`,
       caption: String.raw`Planar Gaussian steps (zero mean, or with a drift $(0.04,0)$). Left: one path in the window $[-10,10]^2$ with the $\eps$-square (green) and $2\eps$-square (orange); gold dots are visits to the $\eps$-square. Right: the partial sums $\sum_{m\le n}\hat P(\|S_m\|<\eps)$ (blue) and for $2\eps$ (orange), estimated from 300 seeded walks: unbounded without drift, levelling off with drift.`,
       deps: ['prob-2.3.1'],
       tags: ['random walk', 'recurrence'],
-      verify: true,
-      scope: String.raw`The lemma is for walks started at $0$ with i.i.d. steps; the sup norm is used so that the balls are squares. Constants (the factor $2$ in (b)) follow the textbook form as best I recall and are flagged for verification.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.4.5 and proof, p. 291'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      scope: String.raw`The walk starts at $0$ and has i.i.d. increments. The proof works for any norm; the picture uses the sup norm, whose balls are squares.`,
       viz(v) {
         const mode = v.select('walk', [{ value: 'zero', label: 'no drift' }, { value: 'drift', label: 'drift' }], 'zero');
         const eS = v.slider('$\\varepsilon$', 0.5, 3, 1.5, { step: 0.05 });
@@ -309,7 +310,8 @@ $$\sum_{n\ge0}P(\|S_n\|<m\eps)\ \le\ (2m)^d\sum_{n\ge0}P(\|S_n\|<\eps).$$`,
       deps: ['prob-5.4.6', 'prob-5.4.7', 'prob-2.2.1a'],
       tags: ['random walk', 'recurrence'],
       credit: 'K. L. Chung & W. H. J. Fuchs, 1951',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.4.8 and proof, pp. 292–293'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       scope: String.raw`The theorem is a sufficient condition (one-dimensional): the converse fails, since the Cauchy walk is recurrent although $S_n/n$ does not tend to $0$. Counts of returns here use the window $|S_n|<1$ for $20\,000$ steps.`,
       viz(v) {
         const lS = v.select('step law', [

@@ -137,7 +137,7 @@ is the *principal part* of $f$ at $a$. The coefficient $c_1$ is the *residue* of
       idea: String.raw`Poles are the tame isolated singularities: near $a$, $f$ is a finite sum of negative powers plus a holomorphic function. The residue is the one coefficient that survives integration around $a$: $(z-a)^{-k}$ has a primitive for $k\ge2$ (10.12), while $\frac{1}{2\pi i}\int\frac{dz}{z-a}$ over a small positively oriented circle is $1$. Hence $\Res(f;a)=\frac1{2\pi i}\int_{|z-a|=r}f(z)\,dz$ for every small $r$ — which is how the residues in this picture are computed.`,
       caption: String.raw`Drag the handle: it snaps to the nearest pole. Right: the Laurent coefficients $|c_k|$ about that pole, computed as contour integrals over the circle drawn on the left — the negative-index ones (orange) form the principal part, the green one is the residue, and they stop at the order $m$. Choose "$f-Q$" to subtract the principal part: the colour wheel at the pole disappears (a removable singularity). The poles of $\tan(1/z)$ accumulate at $0$, so it is meromorphic in $\C\setminus\{0\}$ but not in $\C$.`,
       deps: ['rca-10.21'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Definition 10.41, p. 224'],
       tags: ['poles', 'residues', 'meromorphic'],
       viz(v) {
         const M = v.M, { Cx, PI } = M;

@@ -160,7 +160,7 @@ An undirected graph is **connected** if every two vertices are joined by a path.
       tags: ['graphs'],
       viz(v) {
         const mode = v.select('click to', [{ value: 'pick', label: 'pick endpoints' }, { value: 'edit', label: 'edit the graph' }], 'pick');
-        const dir = v.toggle('directed', false, { onChange: (x) => G.set({ directed: x }) });
+        const dir = v.toggle('directed', false, { onChange: (x) => G.set({ nodes: G.nodes, edges: G.edges, directed: x }) });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 350 });
         const G = v.graph(s, { layout: 'none', editable: { addNode: true, addEdge: true, deleteNode: true, deleteEdge: true }, nodes: nodesAt(P81), edges: E81.map(([a, b]) => [a, b]) });
         let pick = ['a', 'e'];
@@ -720,7 +720,7 @@ When the edge is first examined, the colour of $v$ tells the type: white means t
       refs: ['CLRS 4e §20.3'],
       tags: ['graphs', 'dfs'],
       viz(v) {
-        const und = v.toggle('undirected', false, { onChange: (x) => { G.set({ directed: !x }); S.reset({ at: 'end' }); } });
+        const und = v.toggle('undirected', false, { onChange: (x) => { G.set({ nodes: G.nodes, edges: G.edges, directed: !x }); S.reset({ at: 'end' }); } });
         const s = v.stage({ x: [0, 10], y: [0, 6], axes: false, equal: true, height: 300 });
         const sa = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 230, full: true });
         const G = v.graph(s, { directed: true, layout: 'none', editable: { addEdge: true, deleteEdge: true }, nodes: nodesAt(P810, { e: { notePos: 's' }, f: { notePos: 's' }, g: { notePos: 's' }, h: { notePos: 's' } }), edges: E810.map(([a, b]) => [a, b]) });

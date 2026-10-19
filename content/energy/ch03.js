@@ -2,13 +2,12 @@
 //
 // SOURCES AND PROVENANCE (checked October 2026 unless marked "from memory")
 //   3.1 Heats of formation (kJ/mol): CO2(g) −393.51 (CODATA, NIST WebBook), H2O(g) −241.826 (CODATA, NIST WebBook), CH4(g) −74.6 (Manion 2002, NIST WebBook),
-//     n-octane(l) −250.2 (mean of the two NIST-listed values −250.3 and −250.0), C3H8(g) −104.7 (from memory; it reproduces the 50.33 MJ/kg HHV tabulated by Wikipedia).
+//     n-octane(l) −250.2 (mean of the two NIST-listed values −250.3 and −250.0), C3H8(g) −104.7 (Pittam & Pilcher 1972, NIST WebBook gas-phase table, reviewed 2026-10-18).
 //     H2O(l) −285.83 = H2O(g) − 44.0 kJ/mol (enthalpy of vaporisation at 298 K; NIST Antoine data give ≈44 kJ/mol). Tabulated check values (Wikipedia "Heat of
-//     combustion"): H2 141.79 / 119.96, CH4 55.52 / 50.00, C3H8 50.33 / 46.35 MJ/kg. Coal and wood rows use HHV 32.5 (anthracite) and 21.7 (moisture- and ash-free wood)
-//     from the same table; their hydrogen contents (3 % and 6 %) are TYPICAL round numbers from memory, not measurements of a particular sample.
+//     combustion"): H2 141.79 / 119.96, CH4 55.52 / 50.00, C3H8 50.33 / 46.35 MJ/kg. Coal and wood HHV 32.5 and 21.7 and elemental fractions are illustrative comparison parameters, not a sampled dataset.
 //   3.2 IPCC 2006 Guidelines default CO2 emission factors (kg/GJ, net calorific basis): natural gas 56.1, motor gasoline 69.3, gas/diesel oil 74.1, residual fuel oil 77.4,
 //     other bituminous coal 94.6 (confirmed from a reproduction of the default table; the crude-oil value was not confirmed and is left out).
-//   3.3 Regeneration duty of a 30 wt% MEA solvent: published values lie between about 3.0 and 4.2 GJ/t CO2 (3.6 is the usual benchmark); the 3.6 default is that benchmark.
+//   3.3 Regeneration duty of a 30 wt% MEA solvent: default 3.6 GJ/t CO2 is the DOE Case 12 comparison in Lail/RTI (2022), NETL review presentation, slide 6; it is not a universal range.
 //     The plant efficiency 40 %, the steam-to-electricity worth 0.22 and the compressor efficiency 0.75 are ILLUSTRATIVE round numbers; the flue-gas CO2 fractions
 //     (coal ≈ 13 %, gas turbine ≈ 4 %) are typical values from memory. The thermodynamic minimum work is computed, not looked up.
 //   3.4 Energy densities as tabulated in Wikipedia "Energy density" (petrol 46.4 MJ/kg, 34.2 MJ/L; diesel 45.6 and 38.6; hydrogen LHV 119.93 MJ/kg, 8.49 MJ/L liquid and
@@ -35,20 +34,19 @@ export default {
 $$\mathrm{HHV} = \mathrm{LHV} + L_v\, m_w,\qquad L_v \approx 2.44\ \mathrm{MJ/kg}\ (25^{\circ}\mathrm C),$$
 and for a fuel with hydrogen mass fraction $h$ (dry, ash-free), $m_w \approx 8.94\,h$ plus any moisture the fuel carries.`,
       idea: String.raw`Combustion is a chemical reaction, so the heat released is the difference of the enthalpies of formation of products and reactants (Hess's law, from the standard enthalpies of formation): $\Delta_cH = \sum \Delta_fH(\text{products}) - \sum\Delta_fH(\text{reactants})$. Whether the water is liquid or vapour changes its formation enthalpy by the enthalpy of vaporisation, $44$ kJ/mol, so the two heating values differ by exactly the latent heat of the water formed. Hydrogen-rich fuels (hydrogen, methane) therefore have a large gap between HHV and LHV, carbon has none, and wet wood loses extra heat just boiling its own moisture.`,
-      caption: String.raw`The bars are computed from formation enthalpies (the first four fuels) or taken from tabulated HHV (coal, wood), and the orange part of each bar is the latent heat of its water. Choose a fuel to see the mass balance of the burner, flip the toggle to count the latent heat or not, and slide the wood moisture: at 50 % moisture a kilogram of wood delivers less than half of its dry value.`,
+      caption: String.raw`The bars are computed from formation enthalpies (the first four fuels) or chosen as illustrative HHV values (coal, wood), and the orange part of each bar is the latent heat of its water. Choose a fuel to see the mass balance of the burner, flip the toggle to count the latent heat or not, and slide the wood moisture: at 50 % moisture a kilogram of wood delivers less than half of its dry value.`,
       deps: ['pchem-2.10'],
-      refs: ['Tester ch. 8'],
+      refs: ['NIST Chemistry WebBook SRD 69, gas/condensed formation enthalpies: CO2, H2O, CH4, C3H8 and liquid n-octane'],
       tags: ['heating value', 'combustion'],
-      scope: String.raw`Complete combustion at 25 °C and 1 atm. Pure-compound values are computed from NIST/CODATA formation enthalpies and reproduce the tabulated 141.79/119.96 (H$_2$), 55.52/50.00 (CH$_4$) and 50.33/46.35 MJ/kg (C$_3$H$_8$). The hydrogen content of the coal and wood rows (3 % and 6 %) is a typical round number, so their LHV is indicative only.`,
-      verify: true,
+      scope: String.raw`Complete combustion at 25 °C and 1 atm. Pure-compound values are computed from NIST/CODATA formation enthalpies and give about 141.79/119.97 (H$_2$) and 55.51/50.03 MJ/kg (CH$_4$), with the rounded inputs used here. Coal and wood HHV and elemental compositions are illustrative comparison parameters, not measured specimens; their LHV is indicative only.`,
       viz(v) {
         const fuels = [
           { key: 'H2', label: 'hydrogen H₂', M: 2.01588, nC: 0, nW: 1, dHf: 0 },
           { key: 'CH4', label: 'methane CH₄', M: 16.043, nC: 1, nW: 2, dHf: -74.6 },
           { key: 'C3H8', label: 'propane C₃H₈', M: 44.097, nC: 3, nW: 4, dHf: -104.7 },
           { key: 'C8H18', label: 'octane C₈H₁₈ (petrol)', M: 114.23, nC: 8, nW: 9, dHf: -250.2 },
-          { key: 'coal', label: 'anthracite (3 % H)', hhv: 32.5, h: 0.03, c: 0.9 },
-          { key: 'wood', label: 'wood (6 % H, wet)', hhv: 21.7, h: 0.06, c: 0.5 },
+          { key: 'coal', label: 'coal model (3 % H)', hhv: 32.5, h: 0.03, c: 0.9 },
+          { key: 'wood', label: 'wood model (6 % H, wet)', hhv: 21.7, h: 0.06, c: 0.5 },
         ];
         const s = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, full: true, minWidth: 340 });
         const sM = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 200, full: true, minWidth: 340 });
@@ -95,6 +93,7 @@ and for a fuel with hydrogen mass fraction $h$ (dry, ash-free), $m_w \approx 8.9
           const f = fuels.find((q) => q.key === sel.value), r = calc(f), c = sM.ctx, W = sM.width, H = sM.height;
           const o2 = f.M ? (f.nC + f.nW / 2) * 32 / f.M : (r.co2 * 32 / 44.01 + (r.mw - (f.key === 'wood' ? moist.value : 0)) * 16 / 18.015 - (f.key === 'wood' ? 0.4 * (1 - moist.value) : 0.02));
           const items = [['1 kg fuel', 1, 'gold'], ['+ O₂', Math.max(o2, 0), 'muted'], ['→ CO₂', r.co2, 'purple'], ['+ H₂O', r.mw, 'accent']];
+          if (!f.M) items.push(['+ ash/residue', Math.max(0, 1 + o2 - r.co2 - r.mw), 'faint']);
           const k = (W - 40) / Math.max(1 + Math.max(o2, 0), r.co2 + r.mw, 1.5) / 1.0;
           const row = (labs, y0) => { let x = 20; labs.forEach(([lab, m, col]) => { const w = Math.max(m * k, 2); c.fillStyle = v.color(col, 0.5); c.fillRect(x, y0, w, 34); c.strokeStyle = v.color(col); c.strokeRect(x, y0, w, 34); sM.textPx(`${lab}  ${f2(v, m)} kg`, x + w / 2, y0 + 17, { size: 11.5, weight: 600, color: 'ink', align: 'center', halo: false }); x += w + 2; }); };
           sM.textPx('mass balance of the burner (per kg of fuel; oxygen from the air)', 20, 14, { size: 12, weight: 650, color: 'muted', align: 'left' });
@@ -166,14 +165,13 @@ so each carbon atom gives exactly one CO$_2$ molecule, $44.01/12.011 = 3.664$ kg
       num: '3.3', kind: 'Model', name: 'Carbon capture and its energy penalty',
       statement: String.raw`Capturing CO$_2$ from flue gas costs energy for two reasons. First, **thermodynamics**: separating a fraction $r$ of the CO$_2$ present at mole fraction $y$ into a pure stream is an unmixing process whose minimum work, per mole of flue gas at temperature $T$, is
 $$W_{\min} = RT\Bigl[(1-ry)\,h(y') - h(y)\Bigr],\quad h(z)=z\ln z+(1-z)\ln(1-z),\quad y'=\frac{y(1-r)}{1-ry},$$
-which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger the more dilute the stream. Second, **practice**: a solvent plant needs about 3–4 GJ of low-pressure steam per tonne captured to regenerate the solvent, and the CO$_2$ must then be compressed for transport. Both are paid for by electricity the plant can no longer sell, so the net efficiency falls by several percentage points.`,
+which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger the more dilute the stream. Second, **practice**: a representative 30 wt% MEA design uses 3.6 GJ of regeneration heat per tonne captured (the DOE Case 12 comparison reported by RTI in 2022), and the CO$_2$ must then be compressed for transport. Both are paid for by electricity the plant can no longer sell, so the net efficiency falls by several percentage points.`,
       idea: String.raw`The minimum work is the Gibbs free energy of unmixing (the entropy of mixing of ideal gases) — an application of the exergy idea of 2.9: concentrating a dilute component costs work proportional to $RT\ln(1/y)$. A real solvent plant uses heat, not work, at a temperature near 120 °C, so each gigajoule of steam diverted from the turbine costs only about 0.2 GJ of electricity, but 3.6 GJ of steam per tonne is still more than twenty times the thermodynamic minimum in heat terms, and about five times in electricity terms: the process is far from reversible, and that gap is where research on better solvents works.`,
       caption: String.raw`The top bar compares the plant without and with capture per unit of fuel; the dark sliver inside the red steam slice is the thermodynamic minimum. Slide the solvent's regeneration duty and the steam-to-electricity worth to see the penalty move. The right panel shows the minimum work against the CO$_2$ fraction of the gas: a gas turbine's flue gas is more dilute than coal's, and air is far more dilute still.`,
-      deps: ['energy-3.2', 'energy-2.9'],
-      refs: ['Tester ch. 8'],
+      deps: ['energy-3.2', 'energy-2.9', 'thermo-4.12'],
+      refs: ['Lail/RTI (2022), NETL Carbon Management Project Review, slides 4 and 6: 30 wt% MEA reference regeneration duties'],
       tags: ['carbon capture', 'exergy', 'second law'],
-      scope: String.raw`A schematic coal plant with 90 % post-combustion capture on an amine solvent. The minimum work uses ideal gases at $T = 40^{\circ}$C and is exact for that assumption; the regeneration duty (3.0–4.2 GJ/t is the published range for monoethanolamine, 3.6 the usual benchmark), the steam worth, the compressor efficiency and the 40 % plant efficiency are illustrative round numbers. Published net penalties vary with solvent, integration and plant, so treat the result as an order of magnitude, not a forecast.`,
-      verify: true,
+      scope: String.raw`A schematic coal plant with 90 % post-combustion capture on an amine solvent. The minimum work uses ideal gases at $T = 40^{\circ}$C and is exact for that assumption; the regeneration duty (3.6 GJ/t is one documented reference design, not a universal MEA range), the steam worth, the compressor efficiency and the 40 % plant efficiency are illustrative round numbers. Published net penalties vary with solvent, integration and plant, so treat the result as an order of magnitude, not a forecast.`,
       viz(v) {
         const R = 8.314, T = 313.15, MC = 44.01;
         // J per mol of flue gas, divided by (r y) mol of CO2 and 44.01 g/mol gives J/g = MJ/t; /1000 → GJ/t
@@ -213,14 +211,14 @@ which for coal flue gas is around 0.15–0.2 GJ per tonne of CO$_2$, and larger 
         v.legend([['green', 'net electricity', { area: true }], ['orange', 'compression', { area: true }], ['red', 'regeneration steam (as electricity)', { area: true }], ['ink', 'thermodynamic minimum', { area: true }]]);
         v.readout(() => {
           const m = model();
-          return `Minimum separation work at $y=${f2(v, y.value)}$, $r=${f2(v, r.value)}$: **${f2(v, m.wmGJ)} GJ/t** CO$_2$ (computed from the entropy of mixing). The solvent plant spends $${f2(v, q.value)}\\times${f2(v, kap.value)} = ${f2(v, q.value * kap.value)}$ GJ of electricity-equivalent per tonne, so its second-law efficiency is about ${f1(v, 100 * m.wmGJ / (q.value * kap.value + m.comp))} % (counting compression).\nPer MWh: ${f2(v, m.cap)} t CO$_2$ captured costs ${f2(v, m.tot)} GJ of electricity: net efficiency falls by ${f1(v, 100 * m.pen)} points, and the plant burns ${f1(v, 100 * m.fuelUp)} % more fuel per MWh delivered.`;
+          return `Minimum separation work at $y=${f2(v, y.value)}$, $r=${f2(v, r.value)}$: **${f2(v, m.wmGJ)} GJ/t** CO$_2$ (computed from the entropy of mixing). The solvent plant spends $${f2(v, q.value)}\\times${f2(v, kap.value)} = ${f2(v, q.value * kap.value)}$ GJ of electricity-equivalent per tonne, and the minimum separation-plus-isothermal-compression work divided by the total electricity penalty is ${f1(v, 100 * (m.wmGJ + m.comp * ec.value) / (q.value * kap.value + m.comp))} % (a work-efficiency proxy).\nPer MWh: ${f2(v, m.cap)} t CO$_2$ captured costs ${f2(v, m.tot)} GJ of electricity: net efficiency falls by ${f1(v, 100 * m.pen)} points, and the plant burns ${f1(v, 100 * m.fuelUp)} % more fuel per MWh delivered.`;
         });
       },
     },
     // ───────────────────────────────────────────────────────────────────────────── 3.4
     {
       num: '3.4', kind: 'Concept', name: 'Energy density: fuels versus batteries',
-      statement: String.raw`Two numbers decide whether an energy store suits a vehicle: the **specific energy** (megajoules per kilogram) and the **energy density** (megajoules per litre). Liquid hydrocarbons store about 46 MJ/kg and 34–39 MJ/L; hydrogen has the highest mass density of any chemical fuel (120 MJ/kg, lower heating value) but low volume density even when liquefied or compressed to several hundred bar; lithium-ion cells store a few tenths of a MJ/kg and 1–3 MJ/L; lead-acid batteries less. Nuclear fuel is a different order of magnitude, millions of megajoules per kilogram, because the energy per event is megaelectronvolts rather than electronvolts.`,
+      statement: String.raw`Two numbers decide whether an energy store suits a vehicle: the **specific energy** (megajoules per kilogram) and the **energy density** (megajoules per litre). Liquid hydrocarbons store about 46 MJ/kg and 34–39 MJ/L; hydrogen has high specific energy among common chemical fuels (120 MJ/kg, lower heating value) but low volume density even when liquefied or compressed to several hundred bar; lithium-ion cells store a few tenths of a MJ/kg and 1–3 MJ/L; lead-acid batteries less. Nuclear fuel is a different order of magnitude, millions of megajoules per kilogram, because the energy per event is megaelectronvolts rather than electronvolts.`,
       idea: String.raw`Chemical energy is of order an electronvolt per atom rearranged; with atoms weighing 1–200 u that fixes the scale at tens of MJ/kg. A fuel gets the oxygen free from the air, while a battery must carry both its reactants and the structure that holds them, which costs it a factor of 50–100 in specific energy. Nuclear reactions (3.5) release about 200 MeV per fission, a factor of $10^{7}$ more per atom than combustion. Energy density is not the whole story, since an electric drivetrain wastes much less of the stored energy than a combustion engine, narrowing the gap in useful distance.`,
       caption: String.raw`Left: every store on log axes of MJ/kg against MJ/L; diagonal lines are constant density in kg per litre. Right: the same stored energy as a fuel tank, a battery pack, hydrogen and uranium, with areas proportional to volume. Move the energy slider, and switch on the drivetrain-efficiency toggle to compare *useful* energy instead.`,
       deps: ['energy-3.1'],

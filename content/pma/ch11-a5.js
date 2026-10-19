@@ -156,7 +156,7 @@ $$\lim_{N\to\infty}\|f-s_N\|=0,\qquad\sum_{n=-\infty}^{\infty}|c_n|^2=\frac1{2\p
       caption: String.raw`Two functions in $\mathscr L^2$ that are not Riemann integrable: $|x|^{-1/3}$ (unbounded) and the indicator of a fat Cantor set (discontinuous on a set of positive measure). Top: $f$, its partial sum $s_N$ and the proof's continuous approximant $g$ (dashed). Bottom: the mean-square error $\big(\frac1{2\pi}\int|f-s_N|^2\big)^{1/2}$ (blue) under the proof's bound $2\|f-g\|+\|g-s_N(g)\|$ (orange), both computed from Fourier coefficients. Improve $g$ and the floor $2\|f-g\|$ of the bound (dashed) drops: for every $\eps$ the error is eventually below $3\eps$.`,
       deps: ['pma-11.38', 'pma-8.16', 'pma-8.12', 'pma-11.39', 'pma-11.36'],
       see: ['rca-4.26'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorem 11.40, p. 328'],
       tags: ['L2', 'Fourier series', 'Parseval'],
       viz(v) {
         const M = v.M;
@@ -247,7 +247,7 @@ $$\lim_{N\to\infty}\|f-s_N\|=0,\qquad\sum_{n=-\infty}^{\infty}|c_n|^2=\frac1{2\p
       caption: String.raw`$\tilde f=f+2K_N$ changes $f(x)=x$ on a set $N$, shown at stage $k$ of its construction. Bars: the differences $|c_n(\tilde f)-c_n(f)|=|c_n(2K_{N_k})|$ for $|n|\le20$, and the readout their total energy. For the middle-thirds Cantor set (measure $0$) everything tends to $0$: the limit has the same Fourier series as $f$. For the fat Cantor set the differences persist, as Parseval demands, since $m(N)>0$.`,
       deps: ['pma-11.40'],
       see: ['rca-4.24'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Corollary to Theorem 11.40, p. 328'],
       tags: ['L2', 'Fourier series', 'uniqueness'],
       viz(v) {
         const M = v.M;

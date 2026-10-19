@@ -20,14 +20,13 @@ export default {
 $$hu+kv+lw=0 .$$
 Consequently two non-parallel planes $(h_1k_1l_1)$ and $(h_2k_2l_2)$ determine the zone axis they share,
 $$[uvw]=[\,k_1l_2-l_1k_2,\ \ l_1h_2-h_1l_2,\ \ h_1k_2-k_1h_2\,]/\gcd,$$
-and every plane of that zone is an integer combination $m(h_1k_1l_1)+n(h_2k_2l_2)$ of the two. Dually, two directions $[u_1v_1w_1],[u_2v_2w_2]$ lie in the one plane $(hkl)$ whose indices are their cross product. The law holds in every cell, not only orthogonal ones.`,
-      idea: String.raw`The plane $(hkl)$ is a level set of $hx+ky+lz$ in cell coordinates, so a lattice direction with components $(u,v,w)$ runs along it (does not leave the level set) if and only if the linear function does not change along $(u,v,w)$, i.e. $hu+kv+lw=0$. The set of planes $(hkl)$ satisfying this is the set of integer vectors $\mathbf h$ in the plane $\perp[uvw]$ of reciprocal space; that plane is spanned by any two non-parallel members, and the cross product is the normal to both. The cell metric never enters because the pairing between plane indices and direction indices is the natural pairing of a covector with a vector. Zones are the classical structuring device of crystal faces (Weiss, 1804, per the IUCr dictionary).`,
+and their real span contains all zone normals. Integer combinations generate zone members, but need not generate every primitive integer triple (for example $(110),(1\bar10)$ do not integrally generate $(100)$). Dually, two directions $[u_1v_1w_1],[u_2v_2w_2]$ lie in the one plane $(hkl)$ whose indices are their cross product. The law holds in every cell, not only orthogonal ones.`,
+      idea: String.raw`The plane $(hkl)$ is a level set of $hx+ky+lz$ in cell coordinates, so a lattice direction with components $(u,v,w)$ runs along it (does not leave the level set) if and only if the linear function does not change along $(u,v,w)$, i.e. $hu+kv+lw=0$. The set of planes $(hkl)$ satisfying this is the set of integer vectors $\mathbf h$ in the plane $\perp[uvw]$ of reciprocal space; that plane is spanned by any two non-parallel members, and the cross product is the normal to both. The cell metric never enters because the pairing between plane indices and direction indices is the natural pairing of a covector with a vector. Zones organize crystal faces by their shared lattice directions.`,
       caption: String.raw`The dots are the points $(hkl)$ of the plane-normal lattice (the reciprocal lattice, met formally in Chapter 5). Drag the blue and orange handles (or use the sliders) to choose two planes: the green line is their zone axis, and every plane satisfying $hu+kv+lw=0$ turns gold; they all lie in the gold sheet perpendicular to the axis. Change the cell to see that the sheet and the integer test agree even for oblique cells.`,
-      deps: ['xtal-4.1', 'xtal-4.2'],
-      refs: ['Hammond ch. 5'],
+      deps: ['xtal-4.1', 'xtal-4.2', 'vcalc-1.3', 'ladr-3.110'],
+      refs: ['IUCr OnlineDictionary, complete Zone-axis definition and determinant formulation'],
       tags: ['zone axis', 'Miller indices', 'cross product'],
       credit: 'C. S. Weiss, zone law, 1804 (date as stated by the IUCr Online Dictionary)',
-      verify: true,
       scope: String.raw`Valid for lattice planes and lattice directions in any lattice; $[uvw]$ is a direction of the direct lattice and $(hkl)$ a plane family of the same lattice.`,
       links: { iucr: 'https://dictionary.iucr.org/Zone_axis', wikipedia: 'https://en.wikipedia.org/wiki/Zone_axis' },
       viz(v) {

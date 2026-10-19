@@ -1,0 +1,3439 @@
+{
+  "schemaVersion": 1,
+  "scope": [
+    "geol",
+    "kin",
+    "mathbio",
+    "ecol",
+    "physio",
+    "pharm",
+    "epi",
+    "arch",
+    "bighist"
+  ],
+  "meaning": "Distinct directed prerequisites from written items to written items in a different registry FIELD, counted once per source-target pair. Only existing statement/derivation steps justify additions. The prerequisite-only batch preserved source verification flags and prose; separately authorized known mathematical corrections are recorded in peer-corrections.md. Planned targets, see-links and runtime implementation details do not count.",
+  "summary": {
+    "geol": {
+      "before": 10,
+      "added": 15,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0
+    },
+    "kin": {
+      "before": 9,
+      "added": 17,
+      "after": 26,
+      "required": 25,
+      "shortfall": 0
+    },
+    "mathbio": {
+      "before": 17,
+      "added": 9,
+      "after": 26,
+      "required": 25,
+      "shortfall": 0
+    },
+    "ecol": {
+      "before": 3,
+      "added": 22,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0
+    },
+    "physio": {
+      "before": 10,
+      "added": 15,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0
+    },
+    "pharm": {
+      "before": 7,
+      "added": 18,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0
+    },
+    "epi": {
+      "before": 10,
+      "added": 15,
+      "after": 25,
+      "required": 25,
+      "shortfall": 0
+    },
+    "arch": {
+      "before": 7,
+      "added": 17,
+      "after": 24,
+      "required": 25,
+      "shortfall": 1
+    },
+    "bighist": {
+      "before": 14,
+      "added": 12,
+      "after": 26,
+      "required": 25,
+      "shortfall": 0
+    }
+  },
+  "additions": [
+    {
+      "source": "arch-1.1",
+      "target": "fluid-2.9",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Bernoulli’s theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "(a flat roof carries about $0.7$ of the ground snow load);\n- **wind** $W$, a pressure $q = \\tfrac12\\rho V^2 \\approx 0.613\\,V^2$ Pa that pushes on the windward wall, sucks on the leeward wall and lifts the roof.\n\nThe loads are not expected to peak together, so codes combine them with **l"
+      },
+      "reason": "The wind-load pressure scale is the flow kinetic head one-half rho V-squared."
+    },
+    {
+      "source": "arch-1.2",
+      "target": "mech-1.6",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Newton’s second law",
+      "anchor": {
+        "field": "idea",
+        "quote": "For a particle, $\\sum\\mathbf F = 0$ is Newton's first and second laws. For an extended body the internal forces cancel in pairs by the third law (mech-1.7) and their torques cancel too (mech-2.8), so only external forces and moments remain. Moving t"
+      },
+      "reason": "The derivation of translational equilibrium uses Newton's second law with zero acceleration; the separate existing torque prerequisite handles moments."
+    },
+    {
+      "source": "arch-1.3",
+      "target": "ladr-3.21",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Fundamental theorem of linear maps",
+      "anchor": {
+        "field": "statement",
+        "quote": "nd with $A$ the $3\\times r$ matrix that maps reactions to net force and moment:\n- if $\\operatorname{rank} A < 3$, some load cannot be balanced and the body is a **mechanism** (this happens when $r < 3$, and also when the reactions are all parallel or all pass through one point);\n- if"
+      },
+      "reason": "Support determinacy and redundant reaction dimension follow from the equilibrium map's rank and null space."
+    },
+    {
+      "source": "arch-1.3",
+      "target": "mech-1.14",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Normal force and tension as constraint forces",
+      "anchor": {
+        "field": "statement",
+        "quote": " a structure and replaces each support by the reactions it can supply: a **roller** gives one force normal to its surface, a **pin** a force in any direction (two components), and a **fixed** support two force components and a moment. With $r$ unknown reaction components and the three equilibrium equ"
+      },
+      "reason": "The support free-body model uses the direction restriction on an ideal roller's normal reaction."
+    },
+    {
+      "source": "arch-1.6",
+      "target": "solid-1.4",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "eng",
+      "targetName": "Hooke’s law: σ = Eε",
+      "anchor": {
+        "field": "idea",
+        "quote": "face must supply a moment $M$ with no net axial force. If plane sections stay plane (solid-6.3) the strain, and so the stress, varies linearly from one face to the other, and the couple of the two stress wedges equals $M$. Compare a rope with sag $f$ and a beam of depth $d$ carrying th"
+      },
+      "reason": "The linear bending stress distribution uses Hooke's relation between linearly varying strain and stress."
+    },
+    {
+      "source": "arch-1.7",
+      "target": "mat-1.7",
+      "file": "content/arch/ch01.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "chem",
+      "targetName": "Material property charts (Ashby)",
+      "anchor": {
+        "field": "statement",
+        "quote": "sion.\n\nPlotted on log–log axes of strength (or stiffness) against density, materials form families (Ashby charts). Lines of constant $\\sigma/\\rho$ compare them per unit weight: the **breaking length** $\\sigma/(\\rho g)$ is how tall a column, or how long a hanging cable, could be before failin"
+      },
+      "reason": "The strength-density comparison uses Ashby property charts and constant specific-property selection lines."
+    },
+    {
+      "source": "arch-2.3",
+      "target": "pma-5.15",
+      "file": "content/arch/ch02.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Taylor's theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "$L$ and sag $d$ the two curves are not equal, but they agree to first order in the sag ratio $d/L$: expanding $\\cosh$ gives\n$$a\\cosh\\frac{x}{a} - a = \\frac{x^2}{2a} + \\frac{x^4}{24a^3} + \\dots,$$\nso the difference, relative to the sag, grows like $(d/L)^2$. At the sag ratios of suspension"
+      },
+      "reason": "The shallow-sag agreement of catenary and parabola follows by a Taylor expansion of cosh."
+    },
+    {
+      "source": "arch-2.4",
+      "target": "solid-1.8",
+      "file": "content/arch/ch02.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "eng",
+      "targetName": "Allowable stress and the factor of safety",
+      "anchor": {
+        "field": "statement",
+        "quote": "ich a cable of given material can carry nothing else: the stress from self-weight alone reaches the working stress when $L \\approx 8(d/L)\\,\\sigma/\\gamma$."
+      },
+      "reason": "The self-weight span limit is defined by reaching the material's allowed working stress."
+    },
+    {
+      "source": "arch-2.6",
+      "target": "mech-4.7",
+      "file": "content/arch/ch02.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Damped harmonic oscillator",
+      "anchor": {
+        "field": "idea",
+        "quote": "0.2 Hz torsional mode that drew energy from the wind (single-degree-of-freedom torsional flutter, a negative aerodynamic damping), not from a gust frequency matching it (Billah & Scanlan 1991; see arch-7.9)."
+      },
+      "reason": "The Tacoma explanation distinguishes self-excited negative damping from forced resonance."
+    },
+    {
+      "source": "arch-2.6",
+      "target": "solid-1.4",
+      "file": "content/arch/ch02.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "eng",
+      "targetName": "Hooke’s law: σ = Eε",
+      "anchor": {
+        "field": "idea",
+        "quote": "H}$ compared with the span. The compatibility condition $hL_e/E_cA_c = (8d/L^2)\\int_0^L v\\,dx$ (the cable stretches by the extra sag) closes the system. The deflection theory was correct for vertical loads. Tacoma Narrows did not fall because of it: in a 42 mph wind its thin, shallow deck twist"
+      },
+      "reason": "Bridge compatibility couples cable stress and elastic elongation through E times area."
+    },
+    {
+      "source": "arch-3.4",
+      "target": "mech-1.15",
+      "file": "content/arch/ch03.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Coulomb friction: static and kinetic",
+      "anchor": {
+        "field": "idea",
+        "quote": "/3\\sigma$ from the edge. No sliding lets the force cross a joint at any angle to its normal; with a friction coefficient $\\mu$ the angle must stay below $\\arctan\\mu$. All three are linear inequalities on the thrust line, so each relaxation shrinks the set of admissible lines and can only lower the c"
+      },
+      "reason": "The relaxed no-sliding assumption bounds joint force angle by the Coulomb friction cone."
+    },
+    {
+      "source": "arch-3.5",
+      "target": "opt-4.4",
+      "file": "content/arch/ch03.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Linear programs",
+      "anchor": {
+        "field": "idea",
+        "quote": "inear inequality, so the admissible lines are a polytope whose extreme thrusts are found by a small linear program. Poleni's argument for the dome of St Peter's, and Hooke's inversion (arch-3.1), both use the idea in this form."
+      },
+      "reason": "The safe-thrust set is explicitly a polytope of linear inequalities optimized over reaction parameters."
+    },
+    {
+      "source": "arch-3.6",
+      "target": "mech-6.4",
+      "file": "content/arch/ch03.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "D’Alembert’s principle of virtual work",
+      "anchor": {
+        "field": "idea",
+        "quote": "e numerically. Equilibrium says the loads can be carried while a thrust line fits; the principle of virtual work says they cannot be carried by this mechanism once the loads do positive work along it; the safe theorem (arch-3.5) and its upper-bound counterpart (solid-4.10) coincide for the a"
+      },
+      "reason": "The collapse mechanism is certified by positive load work along an admissible virtual displacement."
+    },
+    {
+      "source": "arch-4.11",
+      "target": "pde-1.5",
+      "file": "content/arch/ch04-b.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Laplace’s and Poisson’s equations as steady states",
+      "anchor": {
+        "field": "idea",
+        "quote": "ixing the plan and the horizontal forces first removes the coupling: vertical equilibrium is then a discrete Poisson equation (arch-4.3 solves the same kind of equation in the continuum) and has one solution. The designer's freedom is the force diagram, i.e. the distribution of horizontal thrust"
+      },
+      "reason": "The height solve is explicitly identified as a discrete Poisson equation with support heights prescribed."
+    },
+    {
+      "source": "arch-4.3",
+      "target": "vcalc-1.6",
+      "file": "content/arch/ch04.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Cylindrical and spherical coordinates",
+      "anchor": {
+        "field": "idea",
+        "quote": " Its weight must be balanced by the vertical components of $N_\\varphi$ around the circle of radius $a\\sin\\varphi$, which fixes $N_\\varphi$ (this is the equilibrium of arch-1.2 applied to a cap). The weight of a small element has a component normal to the surface that $N_\\varphi$ and $"
+      },
+      "reason": "The spherical cap equilibrium uses the parallel-circle radius a sin(phi) at the specified polar angle."
+    },
+    {
+      "source": "arch-4.8",
+      "target": "mech-1.15",
+      "file": "content/arch/ch04-b.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "physics",
+      "targetName": "Coulomb friction: static and kinetic",
+      "anchor": {
+        "field": "idea",
+        "quote": "chain. The courses can be laid without centering as long as the bed joints are not steeper than the friction of the mortar allows; above that height the courses are held by their interlocking bond and by closing each ring (a closed ring is an arch in its own plane). The numbers below are"
+      },
+      "reason": "Uncentered construction depends on the friction limit of inclined brick bed joints."
+    },
+    {
+      "source": "arch-4.9",
+      "target": "vcalc-1.5",
+      "file": "content/arch/ch04-b.js",
+      "syllabus": "content/arch/syllabus.js",
+      "sourceField": "arts",
+      "targetField": "math",
+      "targetName": "Lines and planes in space",
+      "anchor": {
+        "field": "idea",
+        "quote": "re $x^2+y^2+z^2=2a^2$ has horizontal radius $\\sqrt{2a^2-z^2}$, which equals $a$ at $z=a$, where the vertical planes $x=\\pm a$ and $y=\\pm a$ are tangent to it; below that level the sphere is cut by those planes in the arches $z=\\sqrt{a^2-y^2}$. The load path is the one of arch-4.1: a dome's weig"
+      },
+      "reason": "The pendentive construction intersects the sphere with the explicitly specified coordinate planes x=±a and y=±a."
+    },
+    {
+      "source": "bighist-1.3",
+      "target": "geol-2.3",
+      "file": "content/bighist/ch01.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "The isochron method (Rb–Sr)",
+      "anchor": {
+        "field": "statement",
+        "quote": " = \\frac{1}{\\lambda}\\ln\\Bigl(1 + \\frac{D}{P}\\Bigr).$$\nIf some daughter was present initially, the **isochron** method recovers it: for minerals that formed together with the same daughter isotope ratio but different parent contents, $(D/S)_{\\text{now}} = (D/S)_0 + (P/S)_{\\text{now}}(e^{\\"
+      },
+      "reason": "The dating account invokes a fitted isochron to recover an initially present daughter component."
+    },
+    {
+      "source": "bighist-2.5",
+      "target": "mech-3.2",
+      "file": "content/bighist/ch02.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "physics",
+      "targetName": "Work–energy theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "th a body roughly the size of Mars (often called Theia) struck the proto-Earth a glancing blow. The collision melted and partly vaporised both mantles, threw a disk of mostly mantle material into orbit, and the Moon accreted from that disk, within about 60 million years of the first solid"
+      },
+      "reason": "The giant impact supplies the kinetic energy that melts and vaporizes mantle material.",
+      "previousIndirectPath": [
+        "bighist-2.5",
+        "bighist-2.4",
+        "astro-7.4",
+        "astro-7.2",
+        "astro-7.1",
+        "fluid-9.11",
+        "thermo-1.17",
+        "thermo-1.16",
+        "thermo-1.11",
+        "mech-3.6",
+        "mech-3.2"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "bighist-2.7",
+      "target": "geol-3.12",
+      "file": "content/bighist/ch02.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "The Wilson cycle",
+      "anchor": {
+        "field": "statement",
+        "quote": "ut an **Euler pole**. Over hundreds of millions of years the motions assemble the continents into **supercontinents** and break them apart again: Nuna (by about 1750 Ma), Rodinia (about 1000 Ma, broken up in stages to about 520 Ma) and Pangaea (by about 300 Ma, breaking up since about 180 Ma, w"
+      },
+      "reason": "The supercontinent history presupposes the opening and closing stages of ocean basins."
+    },
+    {
+      "source": "bighist-2.7",
+      "target": "geol-3.4",
+      "file": "content/bighist/ch02.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "Every plate motion is a rotation about an Euler pole",
+      "anchor": {
+        "field": "statement",
+        "quote": "iding past each other at transform faults. On a sphere each plate's motion is a rotation about an **Euler pole**. Over hundreds of millions of years the motions assemble the continents into **supercontinents** and break them apart again: Nuna (by about 1750 Ma), Rodinia (about 1000 Ma, bro"
+      },
+      "reason": "The account explicitly models each plate as a rigid rotation on a sphere."
+    },
+    {
+      "source": "bighist-3.6",
+      "target": "geol-3.11",
+      "file": "content/bighist/ch03-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "Paleomagnetism and apparent polar wander",
+      "anchor": {
+        "field": "statement",
+        "quote": "s earlier in the Palaeoproterozoic. The evidence is glacial deposits (diamictites, dropstones) that palaeomagnetism places at low latitude, capped by carbonate rocks that suggest a hot, CO$_2$-rich aftermath, and banded iron formations returning in the middle of the ice ages. A variant, the “sl"
+      },
+      "reason": "Snowball evidence uses remanent magnetic inclination to place glacial sediments at low palaeolatitudes."
+    },
+    {
+      "source": "bighist-3.8",
+      "target": "mathbio-1.6",
+      "file": "content/bighist/ch03-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "bio",
+      "targetName": "Logistic solution: sigmoid approach to carrying capacity",
+      "anchor": {
+        "field": "idea",
+        "quote": "If a clade of $N$ taxa grows logistically, $\\dot N = rN(1-N/K)$, and a catastrophe removes a fraction $f$ of it, write $n_0=N_0/K$ for the pre-event fraction of capacity. For $f>0.1$, the time to regain $90\\%$ of that old"
+      },
+      "reason": "The recovery-time formula is derived by inverting the explicit logistic population solution after an extinction pulse."
+    },
+    {
+      "source": "bighist-3.9",
+      "target": "geol-2.7",
+      "file": "content/bighist/ch03-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "K–Ar and ⁴⁰Ar/³⁹Ar dating",
+      "anchor": {
+        "field": "statement",
+        "quote": " Chicxulub, Mexico, making an impact structure roughly $180$–$200$ km across. Renne and colleagues' 2013 dating found impact tektites and a boundary-proxy ash indistinguishable: their relative age difference was $5\\pm27$ thousand years at $68\\%$ confidence. This is a dating uncertainty, not"
+      },
+      "reason": "The impact/boundary chronology comparison rests on the argon geochronology used for the dated tektites and ash."
+    },
+    {
+      "source": "bighist-3.9",
+      "target": "mech-3.1",
+      "file": "content/bighist/ch03-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "physics",
+      "targetName": "Work and kinetic energy",
+      "anchor": {
+        "field": "idea",
+        "quote": "An impactor of diameter $L$, density $\\rho$ and speed $v$ carries $E=\\tfrac12\\cdot\\tfrac{\\pi}{6}\\rho L^3v^2$: a $10$ km body at $20$ km/s and $2700$ kg/m³ has about $3\\times10^{23}$ J, roughly $10^8$ megatons of TNT. Collins, Melosh and Marcus (2005) give c"
+      },
+      "reason": "The impact calculation uses one-half mass times speed squared after computing the spherical asteroid mass."
+    },
+    {
+      "source": "bighist-4.2",
+      "target": "sig-4.1",
+      "file": "content/bighist/ch04.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "eng",
+      "targetName": "Fourier series of a periodic signal",
+      "anchor": {
+        "field": "statement",
+        "quote": " glacial and interglacial climates. The record in deep-sea sediment and ice shows these swings have spectral peaks at periods close to those of the Earth's orbit: about $41\\,000$ years (the tilt, or *obliquity*, of the axis between about $22.1^\\circ$ and $24.5^\\circ$), about $19\\,000$–$23\\,000"
+      },
+      "reason": "Milankovitch periods are identified through harmonic components of the sediment and ice records."
+    },
+    {
+      "source": "bighist-4.3",
+      "target": "geol-2.11",
+      "file": "content/bighist/ch04.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "earth",
+      "targetName": "Numerical calibration of the geologic time scale",
+      "anchor": {
+        "field": "statement",
+        "quote": "dest fossils at about $315\\,000$ years ago (Jebel Irhoud, Morocco) and Omo I fossils older than the overlying ash dated $233\\pm22$ka (2σ) at Omo Kibish, Ethiopia. The latter is a minimum-age constraint, not a direct fossil age. Populations reached the Levant at least $180\\,000$ years ago (Mis"
+      },
+      "reason": "The Omo age is a stratigraphic minimum inferred from an overlying dated ash rather than a direct fossil date."
+    },
+    {
+      "source": "bighist-4.5",
+      "target": "prob-3.7.2a",
+      "file": "content/bighist/ch04-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetName": "Poisson process",
+      "anchor": {
+        "field": "idea",
+        "quote": "patchwork cut at an average rate of one crossover per Morgan. After $T$ generations the cuts form a Poisson process of rate $T$ per Morgan, and the two ancestries alternate along the chromosome as a two-state Markov chain whose leaving rates are $T(1-f)$ (out of an archaic segment) and "
+      },
+      "reason": "The single-pulse ancestry-tract model treats recombination breakpoints as a Poisson process along genetic distance."
+    },
+    {
+      "source": "bighist-4.5",
+      "target": "prob-3.7.4",
+      "file": "content/bighist/ch04-b.js",
+      "syllabus": "content/bighist/syllabus.js",
+      "sourceField": "humanities",
+      "targetField": "math",
+      "targetName": "Colouring a Poisson process: independent Poisson processes",
+      "anchor": {
+        "field": "idea",
+        "quote": " Poisson process of rate $T$ per Morgan, and the two ancestries alternate along the chromosome as a two-state Markov chain whose leaving rates are $T(1-f)$ (out of an archaic segment) and $Tf$ (out of a human one). The mean archaic length is the reciprocal of the first rate. Reading that backwards, th"
+      },
+      "reason": "Independent thinning of rate-T crossover cuts by the probability of leaving the present ancestry gives the displayed rates T(1-f) and Tf; this is a continuous-distance construction.",
+      "scopeQualification": "The Poisson thinning supplies ancestry-specific leaving rates. A discrete two-state transition matrix does not supply exponential holding lengths."
+    },
+    {
+      "source": "ecol-1.10",
+      "target": "thermo-1.11",
+      "file": "content/ecol/ch01-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "physics",
+      "targetName": "First law of thermodynamics",
+      "anchor": {
+        "field": "idea",
+        "quote": "nd a body surface of about $0.11\\,M^{0.65}$ m² (Stahl 1967), the ratio grows only as $M^{0.1}$: the lower critical temperature — the air temperature below which an animal must raise its metabolism to stay warm, $T_{lc} = T_b - B/(hA)$ — falls with size, but slowly, and insulation $h$ matters much more. Th"
+      },
+      "reason": "The lower critical temperature is obtained by balancing metabolic heat production against heat loss at fixed body temperature."
+    },
+    {
+      "source": "ecol-1.4",
+      "target": "opt-1.6",
+      "file": "content/ecol/ch01.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "statement",
+        "quote": "ly than mass, so per gram it declines; $b < 0$ means it falls with size. Exponents are estimated by least-squares regression of $\\log Y$ on $\\log M$, across species whose masses span many orders of magnitude."
+      },
+      "reason": "The allometric exponent is estimated as the slope of a linear fit on logarithmic axes."
+    },
+    {
+      "source": "ecol-1.6",
+      "target": "physio-4.5",
+      "file": "content/ecol/ch01.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "med",
+      "targetName": "Murray’s law of optimal branching",
+      "anchor": {
+        "field": "idea",
+        "quote": "body mass across mammals (Stahl 1967 found $65.6\\,M^{1.02}$ mL), so $B\\propto M^{3/4}$. If $q = 1$ (Murray's law, or no space-filling with $\\gamma = 1$) every level holds the same volume, $V_b\\propto N_c\\,N$, and the exponent tends to 1."
+      },
+      "reason": "The scaling derivation explicitly compares the WBE branching ratios with the Murray optimal-branching case."
+    },
+    {
+      "source": "ecol-1.6",
+      "target": "pma-3.26",
+      "file": "content/ecol/ch01.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Geometric series",
+      "anchor": {
+        "field": "idea",
+        "quote": "one vessel by $(\\beta^2\\gamma)^{-1}$, so the volume carried by a whole level changes by the factor $q^{-1}$ with $q = n\\beta^2\\gamma$. For the WBE ratios $q = n^{-1/3} < 1$, the big vessels dominate and $V_b \\approx \\text{const}\\cdot N_c\\,n^{N/3} = \\text{const}\\cdot N_c^{4/3}$: blood v"
+      },
+      "reason": "The network blood-volume derivation sums level volumes forming a geometric series."
+    },
+    {
+      "source": "ecol-2.1",
+      "target": "stat-3.4",
+      "file": "content/ecol/ch02.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "stats",
+      "targetName": "Method of moments",
+      "anchor": {
+        "field": "idea",
+        "quote": "imals among $N$, the number of marked animals in a random sample of size $n$ is hypergeometric with mean $nM/N$. Solving $m = nM/N$ for $N$ gives the estimator. Because $N$ enters through $1/m$, the estimator is a ratio of a noisy count: it is biased upward for small $m$, and its spr"
+      },
+      "reason": "The capture-recapture estimator solves the observed recapture count equal to its model expectation."
+    },
+    {
+      "source": "ecol-2.10",
+      "target": "prob-1.6.13",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Poisson distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "\\,m^b$, so that $\\log s^2=\\log a + b\\log m$ is a straight line. For randomly scattered individuals (Poisson) $a=b=1$ and the variance equals the mean; for aggregated (clumped) populations $b>1$, with ecological populations typically having $1<b<2$ or somewhat above; $b<1$ signals a more"
+      },
+      "reason": "The random-scattering benchmark uses equality of the Poisson mean and variance."
+    },
+    {
+      "source": "ecol-2.10",
+      "target": "stat-1.15",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "stats",
+      "targetName": "Delta method",
+      "anchor": {
+        "field": "idea",
+        "quote": ", and the law suggests a first-order delta-method variance stabilization at positive means: choose $g'(x)=x^{-b/2}$, giving $g(x)=x^{1-b/2}/(1-b/2)$ for $b\\ne2$ and $g(x)=\\ln x$ for $b=2$. Then $\\operatorname{Var}(g(X))\\approx g'(m)^2 a m^b=a$ when fluctuations are sufficiently small for linearization. This is an approximation, not an exa"
+      },
+      "reason": "First-order delta approximation at positive operating means; b=2 uses log x, and zero counts require separate treatment.",
+      "scopeQualification": "First-order delta approximation at positive operating means; b=2 uses log x, and zero counts require separate treatment."
+    },
+    {
+      "source": "ecol-2.10",
+      "target": "stat-1.3",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "stats",
+      "targetName": "Moments of the sample mean; unbiasedness of S²",
+      "anchor": {
+        "field": "statement",
+        "quote": "oss a set of samples of the abundance of one species — different sites, dates or sample sizes — the sample variance $s^2$ is a power function of the sample mean $m$: $s^2 = a\\,m^b$, so that $\\log s^2=\\log a + b\\log m$ is a straight line. For randomly scattered individuals (Poisson) $a=b=1$ and "
+      },
+      "reason": "Taylor's law relates estimated sample variance and mean across abundance samples."
+    },
+    {
+      "source": "ecol-2.11",
+      "target": "prob-1.6.2",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Jensen’s inequality for expectations",
+      "anchor": {
+        "field": "idea",
+        "quote": "n by a small factor, and a logarithm punishes small factors heavily: $\\ln\\lambda$ is concave, so by Jensen's inequality $E\\ln\\lambda\\le\\ln E\\lambda$, with the gap growing with the variance of $\\lambda$. Dormancy cuts that variance: seeds that stay in the soil are protected from the bad"
+      },
+      "reason": "The gap between arithmetic and geometric population growth is explicitly justified by Jensen's inequality."
+    },
+    {
+      "source": "ecol-2.12",
+      "target": "stoch-2.4",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Gambler’s ruin",
+      "anchor": {
+        "field": "idea",
+        "quote": "with probability $b/(b+d)$ and a death otherwise, so the size performs a biased random walk. By the gambler's-ruin argument, starting from one individual the probability $q$ of ever hitting zero solves $q=\\tfrac{d}{b+d}+\\tfrac{b}{b+d}q^2$, whose smaller root is $d/b$. The $N_0$ founders' linea"
+      },
+      "reason": "The continuous birth-death extinction probability is computed through its embedded biased jump walk."
+    },
+    {
+      "source": "ecol-2.13",
+      "target": "stat-1.4",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "stats",
+      "targetName": "Empirical distribution function",
+      "anchor": {
+        "field": "statement",
+        "quote": "s of individuals (demographic stochasticity) and an upper limit set by the habitat, and reports the fraction of runs in which the population falls below a **quasi-extinction threshold** within a time horizon: the extinction-risk curve $P(\\tau\\le t)$. Comparing the curves with and without a manag"
+      },
+      "reason": "The estimated extinction-risk curve is the empirical CDF of simulated threshold hitting times."
+    },
+    {
+      "source": "ecol-2.2",
+      "target": "demo-2.6",
+      "file": "content/ecol/ch02.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "social",
+      "targetName": "Survival is the exponential of minus the cumulative hazard",
+      "anchor": {
+        "field": "statement",
+        "quote": "age $x$, against age, usually with $l_x$ on a logarithmic axis. If the age-specific mortality rate (hazard) is constant, $\\ln l_x$ falls on a straight line (**type II**). If mortality is low early and rises steeply late, the curve is convex (**type I**, as in humans in rich countries a"
+      },
+      "reason": "The three survivorship shapes are explained by how age-specific mortality accumulates into survival."
+    },
+    {
+      "source": "ecol-2.5",
+      "target": "prob-1.6.1a",
+      "file": "content/ecol/ch02.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Expected value",
+      "anchor": {
+        "field": "statement",
+        "quote": " survives with probability $S(c)$ that falls as the brood grows (parents cannot feed them all), the expected number of young fledged, $cS(c)$, rises and then falls with $c$ and peaks at an intermediate clutch size — Lack's prediction for the commonest clutch. If laying more eggs also lowers the"
+      },
+      "reason": "Clutch optimization maximizes expected surviving offspring cS(c), with future reproduction added."
+    },
+    {
+      "source": "ecol-2.9",
+      "target": "opt-1.6",
+      "file": "content/ecol/ch02-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "statement",
+        "quote": "r to year, the one that causes most of the variation in total mortality: the stage with the largest regression slope $b_i=\\mathrm{Cov}(k_i,K)/\\mathrm{Var}(K)$. The slopes of all stages add up to exactly 1."
+      },
+      "reason": "The key factor is identified by its least-squares slope against total log mortality."
+    },
+    {
+      "source": "ecol-3.2",
+      "target": "ode-1.8",
+      "file": "content/ecol/ch03.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Linear stability analysis in one dimension",
+      "anchor": {
+        "field": "idea",
+        "quote": "Write $\\dot p=p\\,(c(1-p)-e)$. At $p=0$ the linearization is $\\dot p\\approx (c-e)p$, which grows if $c>e$ and decays if $c<e$. For $c>e$ the bracket is positive for $p<1-e/c$ and negative above it, so $p$ is pushed toward $1-e/c$ from bo"
+      },
+      "reason": "The persistence threshold is decided by the sign of the growth derivative at zero occupancy."
+    },
+    {
+      "source": "ecol-3.5",
+      "target": "ode-1.7",
+      "file": "content/ecol/ch03.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Phase line, fixed points and stability",
+      "anchor": {
+        "field": "statement",
+        "quote": "extinction rate $e(p)=e\\,e^{-kp}$ the equation $$\\dot p=p\\,\\bigl[c(1-p)-e\\,e^{-kp}\\bigr]$$ can have two stable states (extinction and a high-occupancy state) separated by an unstable threshold: a metapopulation that would be lost from low occupancy can persist if it starts, or is pushed, above th"
+      },
+      "reason": "The rescue-effect threshold is a one-dimensional phase-line bistability claim."
+    },
+    {
+      "source": "ecol-3.6",
+      "target": "ode-1.4",
+      "file": "content/ecol/ch03.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Linear equations and integrating factors",
+      "anchor": {
+        "field": "statement",
+        "quote": "e source population emigrating to the sink, $$\\dot N_1=rN_1\\Bigl(1-\\frac{N_1}{K}\\Bigr)-mN_1,\\qquad \\dot N_2=-dN_2+mN_1 .$$ If $r>m$ the source persists at $N_1^*=K(1-m/r)$ and the sink is held at $N_2^*=mN_1^*/d$, which can exceed $N_1^*$. Cut the link ($m=0$) and the sink decays as $e^"
+      },
+      "reason": "The sink population solves a forced linear equation driven by dispersal from the source."
+    },
+    {
+      "source": "ecol-3.7",
+      "target": "stoch-1.4",
+      "file": "content/ecol/ch03.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "The two-state chain",
+      "anchor": {
+        "field": "statement",
+        "quote": "tic metapopulation model: each patch $i$ has an area $A_i$ and a position, and in each year it is a two-state Markov chain (empty or occupied). An occupied patch goes extinct with probability $E_i=\\min\\{1,(A_0/A_i)^x\\}$, so small patches are risky. An empty patch is colonized with probability $C_i=S_i"
+      },
+      "reason": "Each patch is modeled with occupied/empty transition probabilities and an occupancy equilibrium."
+    },
+    {
+      "source": "ecol-3.9",
+      "target": "game-1.3",
+      "file": "content/ecol/ch03.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "econ",
+      "targetName": "Nash equilibrium",
+      "anchor": {
+        "field": "statement",
+        "quote": "every forager knows the intakes (**ideal**) and may settle in either patch without cost (**free**), nobody can do better by moving at equilibrium: intakes are equal, $r_1/n_1=r_2/n_2$, so the numbers match the inputs, $n_1/n_2=r_1/r_2$ (**input matching**)."
+      },
+      "reason": "The ideal-free allocation is exactly a no-profitable-unilateral-deviation equilibrium."
+    },
+    {
+      "source": "ecol-4.10",
+      "target": "pma-5.15",
+      "file": "content/ecol/ch04-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Taylor's theorem",
+      "anchor": {
+        "field": "idea",
+        "quote": "pped, so the growth rate averaged over fluctuations is raised by roughly $\\delta(1-\\delta)\\,\\mathrm{Var}(\\ln B_i-\\ln B_j)/2$ for either species, on top of the first-order term $\\delta(\\mu_i-\\mu_j)$ in the difference of mean log recruitment. Coexistence needs this storage term to exc"
+      },
+      "reason": "The storage-effect invasion advantage is a second-order expansion in fluctuating log recruitment.",
+      "previousIndirectPath": [
+        "ecol-4.10",
+        "ecol-4.9",
+        "mathbio-3.16",
+        "mathbio-3.15",
+        "mathbio-3.1",
+        "mathbio-1.5",
+        "pma-5.15"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "ecol-4.7",
+      "target": "ladr-7.62",
+      "file": "content/ecol/ch04-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Positive definite matrix",
+      "anchor": {
+        "field": "idea",
+        "quote": " to be positive. For the equal-norm, linearly independent utilization curves in this model, the overlap matrix is a common positive scalar times their Gram matrix and is symmetric positive definite. Thus a feasible positive equilibrium is locally asymptotically stable: its Jacobian $-D\\alpha$, with $D_{ii}=r_iN_i^*/K_i>0$, is similar to t"
+      },
+      "reason": "Strict PD applies to the equal-norm linearly independent translates in the implemented presets. A general Gram matrix is only PSD and unequal row normalization need not be symmetric.",
+      "scopeQualification": "Strict PD applies to the equal-norm linearly independent translates in the implemented presets. A general Gram matrix is only PSD and unequal row normalization need not be symmetric."
+    },
+    {
+      "source": "ecol-4.7",
+      "target": "nla-3.2",
+      "file": "content/ecol/ch04-b.js",
+      "syllabus": "content/ecol/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Condition number of a matrix κ(A) = σ₁/σₙ",
+      "anchor": {
+        "field": "idea",
+        "quote": "what fails when the species are packed is **feasibility**. As the spacing shrinks, $\\alpha$ becomes nearly singular, $\\alpha^{-1}$ amplifies tiny differences in $K_i$, and some $N_i^*$ turn negative. With realistic fitness noise there is thus a threshold spacing, of the order of the curve width"
+      },
+      "reason": "Limiting similarity loses feasibility because the ill-conditioned overlap matrix amplifies small fitness differences."
+    },
+    {
+      "source": "epi-1.5",
+      "target": "prob-1.2.4",
+      "file": "content/epi/ch01.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Exponential distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "hort with no competing risks and no losses, suppose every disease-free person falls ill at the same constant rate $\\lambda$. Then the risk over a period of length $t$ is\n$$R(t) = 1 - e^{-\\lambda t}.$$\nFor small $\\lambda t$ this is $R(t) \\approx \\lambda t$ (\"risk ≈ rate × time\"), with relative"
+      },
+      "reason": "Constant individual disease hazard gives an exponential waiting time and its cumulative risk."
+    },
+    {
+      "source": "epi-1.9",
+      "target": "demo-2.4",
+      "file": "content/epi/ch01.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "social",
+      "targetName": "Life expectancy is the area under the survival curve",
+      "anchor": {
+        "field": "statement",
+        "quote": "ife expectancy** at age $x$ is\n$$e_x = \\frac{T_x}{l_x} = \\frac{1}{l_x}\\int_x^\\infty l(a)\\,da,$$\nthe area under the survivorship curve beyond $x$, per survivor. $e_0$ equals the mean age at death in the synthetic cohort. It summarizes current mortality; it is not a forecast for anyone born "
+      },
+      "reason": "Life expectancy is the area under the survival curve per current survivor."
+    },
+    {
+      "source": "epi-2.1",
+      "target": "stat-2.1",
+      "file": "content/epi/ch02.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Conditional distributions and conditional independence",
+      "anchor": {
+        "field": "statement",
+        "quote": "P), false negatives (FN), false positives (FP) and true negatives (TN). Then\n$$\\text{sensitivity} = P(+\\mid D) = \\frac{\\text{TP}}{\\text{TP} + \\text{FN}}, \\qquad \\text{specificity} = P(-\\mid \\bar D) = \\frac{\\text{TN}}{\\text{TN} + \\text{FP}}.$$\nSensitivity is the share of the diseased whom t"
+      },
+      "reason": "Sensitivity and specificity condition the test outcome on disease status."
+    },
+    {
+      "source": "epi-2.11",
+      "target": "prob-1.6.9a",
+      "file": "content/epi/ch02-b.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Moments and variance",
+      "anchor": {
+        "field": "statement",
+        "quote": "y have density\n$$\\frac{s\\,f(s)}{E[S]}, \\qquad \\text{with mean } \\frac{E[S^2]}{E[S]} = E[S] + \\frac{\\operatorname{Var} S}{E[S]} \\;\\ge\\; E[S].$$\nSince slow-growing tumours generally have a better prognosis, screen-detected cases look more benign than cases found by symptoms — and fast-growing tumou"
+      },
+      "reason": "The length-biased mean is expressed using the underlying first and second moments and variance."
+    },
+    {
+      "source": "epi-2.4",
+      "target": "stat-2.11",
+      "file": "content/epi/ch02.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Likelihood function",
+      "anchor": {
+        "field": "statement",
+        "quote": "The **likelihood ratio** of a test result $r$ is how much more probable that result is in the diseased than in the healthy,\n$$\\text{LR}(r) = \\frac{P(r\\mid D)}{P(r\\mid \\bar D)}; \\qquad \\text{LR}^+ "
+      },
+      "reason": "Diagnostic odds are updated by a likelihood ratio for the observed test result."
+    },
+    {
+      "source": "epi-2.7",
+      "target": "psych-2.12",
+      "file": "content/epi/ch02.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "social",
+      "targetName": "Optimal criterion from payoffs and base rates",
+      "anchor": {
+        "field": "idea",
+        "quote": "re $c$ itself (2.4), The unrestricted Bayes rule calls a result positive when its likelihood ratio exceeds $m^*$, equivalently when its post-test odds exceed $C_{\\text{FP}}/C_{\\text{FN}}$ — the ideal-observer criterion (psych 2.12). This equals a single upper score cutoff when the likelihood ratio is monotone increasing (giving a concave "
+      },
+      "reason": "Unrestricted likelihood-ratio decision regions coincide with a single upper score cutoff when the LR is monotone increasing. The PSA preset compares finite-grid upper cuts and is not an unrestricted-region optimization.",
+      "scopeQualification": "Unrestricted likelihood-ratio decision regions coincide with a single upper score cutoff when the LR is monotone increasing. The PSA preset compares finite-grid upper cuts and is not an unrestricted-region optimization."
+    },
+    {
+      "source": "epi-2.9",
+      "target": "prob-2.1.1a",
+      "file": "content/epi/ch02-b.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Independence of events, variables and σ-fields",
+      "anchor": {
+        "field": "statement",
+        "quote": "fy alike. Part of it would happen by chance: if the raters call \"positive\" at rates $r_A$ and $r_B$ independently of the subject, they agree with probability $p_e = r_A r_B + (1-r_A)(1-r_B)$ (in general $p_e = \\sum_k r_{A,k}\\,r_{B,k}$ over categories). **Cohen's kappa** is the agreement beyon"
+      },
+      "reason": "Kappa's chance-agreement baseline is a product of independent rater marginals."
+    },
+    {
+      "source": "epi-3.10",
+      "target": "causal-1.9",
+      "file": "content/epi/ch03-b.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Identification by exchangeability, positivity, consistency",
+      "anchor": {
+        "field": "statement",
+        "quote": "R_0$ is the overall risk. Both are meaningful as \"preventable fractions\" only if the association is causal and unconfounded, and removing the exposure changes nothing else. Several exposures' PAFs may add up to more than 100% because the same case can be attributable to more than one cause."
+      },
+      "reason": "Interpreting the attributable fraction as preventable requires identifying the counterfactual risk without exposure."
+    },
+    {
+      "source": "epi-3.11",
+      "target": "causal-1.10",
+      "file": "content/epi/ch03-b.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Effect modification",
+      "anchor": {
+        "field": "statement",
+        "quote": "risk ratios $\\mathrm{RR}_{ij} = R_{ij}/R_{00}$. The effect of $A$ **differs across levels of $B$** (effect modification, interaction) on the ratio scale when\n$$\\mathrm{RR}_{11} \\neq \\mathrm{RR}_{10}\\,\\mathrm{RR}_{01},$$\nand on the additive scale when the interaction contrast is nonzero:\n$$R_{11} - "
+      },
+      "reason": "The additive and multiplicative interaction criteria are instances of scale-dependent effect modification."
+    },
+    {
+      "source": "epi-3.9",
+      "target": "demo-2.5",
+      "file": "content/epi/ch03-b.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "social",
+      "targetName": "Force of mortality (hazard) μ(x)",
+      "anchor": {
+        "field": "statement",
+        "quote": " ratio) is\n$$\\mathrm{IRR} = \\frac{d_1/T_1}{d_0/T_0},$$\nthe ratio of the two incidence rates. If the hazards (instantaneous event rates) in the two groups are $h_1(t) = \\theta\\,h_0(t)$ at every time $t$, then $\\theta$ is the **hazard ratio**; for a constant hazard (exponential survival) "
+      },
+      "reason": "The hazard ratio is defined using instantaneous event rates rather than cumulative risks."
+    },
+    {
+      "source": "epi-4.13",
+      "target": "causal-2.1",
+      "file": "content/epi/ch04.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Randomization",
+      "anchor": {
+        "field": "idea",
+        "quote": "of 4.6 in its most clinical form, and Simpson's paradox (causal-4.4) is the pattern in the numbers. Randomization (causal-2.1) is the cure because it cuts the arrow from severity to treatment; observational studies of treatments therefore have to measure the reasons for prescribing, and the a"
+      },
+      "reason": "The explanation explicitly uses randomization to remove severity's influence on treatment allocation."
+    },
+    {
+      "source": "epi-4.13",
+      "target": "causal-4.4",
+      "file": "content/epi/ch04.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Simpson’s paradox",
+      "anchor": {
+        "field": "idea",
+        "quote": "ty is a common cause of treatment and outcome, the confounder of 4.6 in its most clinical form, and Simpson's paradox (causal-4.4) is the pattern in the numbers. Randomization (causal-2.1) is the cure because it cuts the arrow from severity to treatment; observational studies of treatments theref"
+      },
+      "reason": "Indication creates a reversal between marginal and severity-stratified treatment effects."
+    },
+    {
+      "source": "epi-4.6",
+      "target": "causal-2.6",
+      "file": "content/epi/ch04.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Standardization",
+      "anchor": {
+        "field": "statement",
+        "quote": "$\\mathrm{RR}_{\\text{crude}}=\\frac{P(D\\mid E=1)}{P(D\\mid E=0)}\\ne \\mathrm{RR}_{\\text{causal}}=\\frac{\\sum_c P(c)\\,P(D\\mid E=1,c)}{\\sum_c P(c)\\,P(D\\mid E=0,c)} .$$\nNot every variable associated with $E$ and $D$ should be adjusted for: a **mediator** on the path from $E$ to $D$ should not"
+      },
+      "reason": "Confounder adjustment in the displayed causal risk ratio standardizes stratum-specific risks to common population weights."
+    },
+    {
+      "source": "epi-4.6",
+      "target": "causal-4.6",
+      "file": "content/epi/ch04.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Bad controls: mediators and descendants",
+      "anchor": {
+        "field": "statement",
+        "quote": "(c)\\,P(D\\mid E=0,c)} .$$\nNot every variable associated with $E$ and $D$ should be adjusted for: a **mediator** on the path from $E$ to $D$ should not be (adjusting removes part of the effect one wants), and a **collider**, an effect of both, must not be (adjusting creates an association "
+      },
+      "reason": "The adjustment warning distinguishes confounders from mediators and colliders whose control changes or biases the total effect."
+    },
+    {
+      "source": "epi-9.11",
+      "target": "stat-3.5",
+      "file": "content/epi/ch09-papers.js",
+      "syllabus": "content/epi/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Maximum likelihood estimation",
+      "anchor": {
+        "field": "statement",
+        "quote": "* over time. The regression coefficients can be estimated without specifying $\\lambda_0$ at all, by maximising the product over failure times of the conditional probability that the individual who failed was the one who did, given the risk set:\n$$L(\\beta) = \\prod_{\\text{failures } i} \\frac"
+      },
+      "reason": "Cox's regression coefficients are estimated by maximizing the stated partial likelihood."
+    },
+    {
+      "source": "geol-2.1",
+      "target": "prob-1.2.4",
+      "file": "content/geol/ch02.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Exponential distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "Each unstable nucleus of a given isotope has the same constant probability $\\lambda\\,dt$ of decaying in any short interval $dt$, whatever its age, temperature, pressure or chemical state. Hence a population of $N$ identical nuclei obeys $dN/dt=-\\lambda N"
+      },
+      "reason": "A constant per-nucleus decay hazard is the memoryless exponential lifetime model."
+    },
+    {
+      "source": "geol-2.10",
+      "target": "ode-1.4",
+      "file": "content/geol/ch02-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Linear equations and integrating factors",
+      "anchor": {
+        "field": "idea",
+        "quote": "te $P$; decay and erosion (which removes atoms from the surface) remove them in proportion to $N$: $dN/dt=P-(\\lambda+\\rho\\varepsilon/\\Lambda)N$. This is the decay-chain balance (geol-2.4) with the source constant, so $N$ rises exponentially to the balance point $P/b$. A measured $N$ l"
+      },
+      "reason": "Production plus proportional loss is a forced first-order linear equation.",
+      "previousIndirectPath": [
+        "geol-2.10",
+        "geol-2.1",
+        "kin-9.7",
+        "kin-1.5",
+        "ode-1.5",
+        "ode-1.4"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "geol-2.2",
+      "target": "num-1.11",
+      "file": "content/geol/ch02.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Condition number of evaluating a function",
+      "anchor": {
+        "field": "statement",
+        "quote": "$ of its total $\\lambda$, the factor $\\lambda/\\lambda_e$ multiplies $D^*/P$ inside the logarithm. A relative error $\\sigma_R$ of the measured ratio gives $\\delta t=\\sigma_R R/[\\lambda(1+R)]$ with $R=D^*/P$."
+      },
+      "reason": "The displayed age-error formula is first-order sensitivity of the logarithmic inverse age map."
+    },
+    {
+      "source": "geol-2.3",
+      "target": "opt-1.6",
+      "file": "content/geol/ch02.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "idea",
+        "quote": " by the same factor $e^{\\lambda t}-1$ times its own Rb/Sr, so the line rotates about its intercept. Linear regression (stat-12.2) fits slope and intercept, and a rock whose points do not fall on a line (excess scatter, a mineral off the line) announces that the closed-system assumption failed."
+      },
+      "reason": "The isochron slope and intercept are obtained by fitting a straight line to isotope-ratio data."
+    },
+    {
+      "source": "geol-2.6",
+      "target": "prob-1.2.5",
+      "file": "content/geol/ch02.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Standard normal distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "diocarbon age $r(c)$ that a sample of that age would show, and a measurement $r\\pm\\sigma$ becomes a probability distribution $p(c)\\propto\\exp[-(r(c)-r)^2/2\\sigma^2]$, often several separate calendar ranges."
+      },
+      "reason": "Calendar calibration explicitly uses a Gaussian measurement-error density."
+    },
+    {
+      "source": "geol-2.6",
+      "target": "stat-2.11",
+      "file": "content/geol/ch02.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "stats",
+      "targetName": "Likelihood function",
+      "anchor": {
+        "field": "statement",
+        "quote": "a sample of that age would show, and a measurement $r\\pm\\sigma$ becomes a probability distribution $p(c)\\propto\\exp[-(r(c)-r)^2/2\\sigma^2]$, often several separate calendar ranges."
+      },
+      "reason": "The inverse calibration curve is weighted by the likelihood of the measured radiocarbon age at each calendar age."
+    },
+    {
+      "source": "geol-3.1",
+      "target": "mech-10.1",
+      "file": "content/geol/ch03.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "physics",
+      "targetName": "Euler’s rotation theorem",
+      "anchor": {
+        "field": "idea",
+        "quote": "ss the join would both have to be accidents. A rigid rotation of one continent about a single axis (Euler's theorem, mech-10.1) is the minimal motion that could close the gap, so one rotation should bring *all* the matching pairs together at once, and the pairs become a quantitative check. What"
+      },
+      "reason": "Rigid continental fitting is expressly described as one rotation about an axis."
+    },
+    {
+      "source": "geol-3.10",
+      "target": "pde-1.4",
+      "file": "content/geol/ch03-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Diffusion and the heat equation",
+      "anchor": {
+        "field": "idea",
+        "quote": "A slab is a cold sheet that heats by conduction (geol-4.3) as it sinks, over a thermal time that scales with its thickness squared; the faster it descends and the older (thicker, colder) it starts, the farther it penetrates before it warms to the mantle temperature. Brit"
+      },
+      "reason": "The slab depth argument uses conduction over a thickness-squared diffusion time.",
+      "previousIndirectPath": [
+        "geol-3.10",
+        "geol-3.3",
+        "geol-3.2",
+        "mat-9.12",
+        "qchem-3.8",
+        "qchem-3.7",
+        "qchem-2.8",
+        "qchem-2.3",
+        "qm-7.5",
+        "pde-7.2",
+        "pde-5.1",
+        "pde-1.5",
+        "pde-1.4"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "geol-3.15",
+      "target": "mech-10.1",
+      "file": "content/geol/ch03-c.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "physics",
+      "targetName": "Euler’s rotation theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "paving stones\" that move without internal deformation, and that on a sphere the motion of each is a rotation about an Euler pole (geol-3.4). Applying this to the Pacific, they showed that the directions of slip in earthquakes along its northern boundary, from California through Alaska to the Aleutians, are "
+      },
+      "reason": "The historical Pacific slip model applies the rigid rotation theorem on a sphere."
+    },
+    {
+      "source": "geol-4.1",
+      "target": "pde-1.5",
+      "file": "content/geol/ch04.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Laplace’s and Poisson’s equations as steady states",
+      "anchor": {
+        "field": "idea",
+        "quote": "f the heat carriers (phonons, here). Combined with energy conservation, $\\nabla\\cdot\\mathbf q=0$ in steady state without sources, it forces $q$ to be constant down a one-dimensional column, so a change of rock type changes the gradient but never the flux. This is why geothermal gradients (typically 20–30 K/"
+      },
+      "reason": "Fourier flux plus conservation gives the one-dimensional source-free Laplace equation."
+    },
+    {
+      "source": "geol-4.10",
+      "target": "thermo-1.16",
+      "file": "content/geol/ch04-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "physics",
+      "targetName": "Isothermal and adiabatic processes",
+      "anchor": {
+        "field": "statement",
+        "quote": "Solid mantle that rises nearly adiabatically cools only slowly (about 10–15 K per GPa), while the solidus temperature falls much faster with decreasing pressure (about 100–130 K/GPa near the surface). A parcel with potential"
+      },
+      "reason": "Supports the no-heat definition of an adiabatic parcel path only. The target ideal-gas PV^gamma law does not supply the solid-mantle equation of state, quoted numerical gradient or melt-fraction calibration.",
+      "previousIndirectPath": [
+        "geol-4.10",
+        "pchem-4.3",
+        "pchem-4.2",
+        "pchem-3.10",
+        "pchem-3.4",
+        "pchem-3.3",
+        "thermo-2.7",
+        "thermo-2.4",
+        "thermo-1.16"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step.",
+      "scopeQualification": "Supports the no-heat definition of an adiabatic parcel path only. The target ideal-gas PV^gamma law does not supply the solid-mantle equation of state, quoted numerical gradient or melt-fraction calibration."
+    },
+    {
+      "source": "geol-4.10",
+      "target": "thermo-4.5",
+      "file": "content/geol/ch04-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "physics",
+      "targetName": "Latent heat",
+      "anchor": {
+        "field": "idea",
+        "quote": "plane the adiabat (nearly vertical) crosses the sloping solidus at $P_0$; above it, melting absorbs latent heat, so the temperature falls below the solid adiabat, while the temperature excess over the solidus is converted into melt in proportion to $(T_{\\rm liq}-T_{\\rm sol})$ per unit melt "
+      },
+      "reason": "The melt-fraction balance explicitly spends thermal excess on latent heat."
+    },
+    {
+      "source": "geol-4.2",
+      "target": "pde-1.5",
+      "file": "content/geol/ch04.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Laplace’s and Poisson’s equations as steady states",
+      "anchor": {
+        "field": "statement",
+        "quote": " decay produces heat at a rate $A$ (W/m$^3$), largest in the upper crust. In steady conduction, $k\\,d^2T/dz^2=-A(z)$. If the heat production is a uniform layer of thickness $h$ and rate $A_0$ above a base flux $q_m$ (the \"reduced\" heat flow from below), then\n$$q_0=q_m+A_0\\,h,\\qquad T(z)=T"
+      },
+      "reason": "The radiogenic geotherm solves a Poisson equation with volumetric heat production."
+    },
+    {
+      "source": "geol-4.6",
+      "target": "pde-4.11",
+      "file": "content/geol/ch04-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "math",
+      "targetName": "Heat in a finite rod: modes decay at rates n²",
+      "anchor": {
+        "field": "statement",
+        "quote": "iform $T_m$ at the ridge, the solution is\n$$T=T_0+(T_m-T_0)\\Big[\\frac za+\\sum_{n\\ge1}\\frac{2}{n\\pi}\\sin\\frac{n\\pi z}{a}\\,e^{-n^2\\pi^2\\kappa t/a^2}\\Big].$$\nYoung plates behave like the half-space of 4.3 (depth $\\propto\\sqrt t$, $q\\propto1/\\sqrt t$); old plates approach the linear ste"
+      },
+      "reason": "The finite-thickness plate geotherm is an explicit sine-mode heat solution with n-squared decay rates."
+    },
+    {
+      "source": "geol-4.7",
+      "target": "fluid-2.5",
+      "file": "content/geol/ch04-b.js",
+      "syllabus": "content/geol/syllabus.js",
+      "sourceField": "earth",
+      "targetField": "physics",
+      "targetName": "Archimedes’ principle",
+      "anchor": {
+        "field": "idea",
+        "quote": "Ra compares the time heat takes to diffuse across the layer ($h^2/\\kappa$) with the time a buoyant blob takes to rise ($\\eta/\\rho g\\alpha\\Delta T h$): a warm blob that rises faster than it cools drives a flow. Linear stability of the conductive state (the Rayleigh–Bénard problem, fl"
+      },
+      "reason": "The rise-time comparison uses the Archimedean buoyant force from the thermal density deficit; it does not substitute atmospheric parcel stability for the Rayleigh threshold."
+    },
+    {
+      "source": "kin-1.10",
+      "target": "ode-1.8",
+      "file": "content/kin/ch01-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Linear stability analysis in one dimension",
+      "anchor": {
+        "field": "idea",
+        "quote": "Linearising the rate equations about the new equilibrium (1.9) leaves $x'=-x/\\tau$ for the small deviation $x$, with $1/\\tau$ the sum of rate constants weighted by the concentrations. Because"
+      },
+      "reason": "Small temperature-jump relaxation follows the linearization around the new equilibrium."
+    },
+    {
+      "source": "kin-1.12",
+      "target": "stoch-4.10",
+      "file": "content/kin/ch01-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Kolmogorov’s cycle criterion",
+      "anchor": {
+        "field": "statement",
+        "quote": "tate). For rate constants $k_{ij}$ among the species of a reaction network this requires, for every closed cycle, the **Wegscheider condition**\n$$\\prod_{\\text{around the cycle}}k_{i\\to j}=\\prod_{\\text{around the cycle}}k_{j\\to i},$$\nequivalently that $\\ln(K)$ is path-independent: the equilib"
+      },
+      "reason": "The Wegscheider product condition is the cycle criterion for reversibility."
+    },
+    {
+      "source": "kin-1.8",
+      "target": "opt-1.6",
+      "file": "content/kin/ch01-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "idea",
+        "quote": "anging concentrations, at the price of measuring a slope from a small, noisy signal: the order is a regression slope and has a standard error."
+      },
+      "reason": "Initial reaction orders are estimated by linear regression of log initial rates."
+    },
+    {
+      "source": "kin-2.3",
+      "target": "mech-8.2",
+      "file": "content/kin/ch02.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Two-body problem: reduced mass",
+      "anchor": {
+        "field": "statement",
+        "quote": "olecular rate constant is\n$$k(T)\\;=\\;\\pi d^2\\sqrt{\\frac{8k_BT}{\\pi\\mu}}\\;N_A\\,e^{-E_0/k_BT},\\qquad \\mu=\\frac{m_Am_B}{m_A+m_B}.$$\nThe prefactor is the collision frequency per unit concentration, $\\sigma\\langle v_{\\rm rel}\\rangle$ with $\\sigma=\\pi d^2$; the exponential is the fraction"
+      },
+      "reason": "The collision threshold and relative-speed law use the two-body reduced mass."
+    },
+    {
+      "source": "kin-2.3",
+      "target": "prob-1.2.4",
+      "file": "content/kin/ch02.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Exponential distribution",
+      "anchor": {
+        "field": "idea",
+        "quote": "mponent along the line of centres, and the weight makes the distribution of $E_n=\\tfrac12\\mu u_n^2$ exactly exponential, so $P(E_n\\ge E_0)=e^{-E_0/k_BT}$ in any number of dimensions. The model's flaw is that it ignores orientation and internal energy, which is why it overestimates $k$ for complex m"
+      },
+      "reason": "Flux weighting gives an exponential distribution of line-of-centres collision energy and therefore an exponential threshold tail."
+    },
+    {
+      "source": "kin-2.6",
+      "target": "mech-3.4",
+      "file": "content/kin/ch02.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Force is the negative gradient of the potential",
+      "anchor": {
+        "field": "statement",
+        "quote": "he energy of a reacting system is a function $V(\\mathbf R)$ of the nuclear coordinates alone, its **potential energy surface**, and the nuclei move on it as a classical (or quantum) particle. For the atom-transfer reaction $\\mathrm A+\\mathrm{BC}\\to\\mathrm{AB}+\\mathrm C$ restricted to a line, $V$ depends"
+      },
+      "reason": "Classical nuclear motion on the potential surface uses force as its negative gradient."
+    },
+    {
+      "source": "kin-3.1",
+      "target": "thermo-6.1",
+      "file": "content/kin/ch03.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Boltzmann distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "ated as if reactants and activated complexes were in equilibrium: the density at the surface is the Boltzmann density, with the reactant temperature, for the forward-moving half of the velocity distribution. The rate per reactant is then the one-way equilibrium flux through the surface,\n$$k_{\\rm "
+      },
+      "reason": "The activated-complex population is explicitly an equilibrium Boltzmann density."
+    },
+    {
+      "source": "kin-3.11",
+      "target": "mech-4.7",
+      "file": "content/kin/ch03-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Damped harmonic oscillator",
+      "anchor": {
+        "field": "statement",
+        "quote": "$ in a potential well $V(x)$ with a barrier of height $E_b\\gg k_BT$, coupled to a thermal bath by a friction $\\gamma$ (Langevin equation $m\\ddot x=-V'-m\\gamma\\dot x+\\xi$). Kramers (1940) found the escape rate in two limits. For moderate and strong friction (spatial diffusion),\n$$k\\;=\\;\\f"
+      },
+      "reason": "Supports linear viscous drag and the local inertial well dynamics only. The stochastic bath, escape-rate prefactors and Kramers turnover law require the separately flagged primary-source evidence.",
+      "previousIndirectPath": [
+        "kin-3.11",
+        "kin-3.1",
+        "kin-2.7",
+        "kin-2.6",
+        "qchem-5.2",
+        "qm-12.5",
+        "qm-11.7",
+        "qm-11.1",
+        "qm-3.2",
+        "qm-3.1",
+        "qm-2.4",
+        "qm-1.9",
+        "qm-1.3",
+        "qm-1.2",
+        "qm-1.1",
+        "waves-2.8",
+        "pde-7.10",
+        "pde-7.8",
+        "pde-7.6",
+        "ode-4.14",
+        "ode-4.9",
+        "ode-4.8",
+        "ode-4.7",
+        "ode-4.6",
+        "mech-4.7"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step.",
+      "scopeQualification": "Supports linear viscous drag and the local inertial well dynamics only. The stochastic bath, escape-rate prefactors and Kramers turnover law require the separately flagged primary-source evidence."
+    },
+    {
+      "source": "kin-3.2",
+      "target": "thermo-6.5",
+      "file": "content/kin/ch03.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Free energy from the partition function",
+      "anchor": {
+        "field": "statement",
+        "quote": "^{-1}}$ at $298\\ \\mathrm K$ is the frequency at which a complex in equilibrium crosses; in terms of free energies, $k=\\kappa\\,(k_BT/h)\\,e^{-\\Delta G^\\ddagger/RT}$ (for a bimolecular step $K^\\ddagger$ carries the standard-state concentration)."
+      },
+      "reason": "The free-energy form follows by converting the partition-function ratio into a free-energy difference."
+    },
+    {
+      "source": "kin-3.3",
+      "target": "thermo-3.9",
+      "file": "content/kin/ch03.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Gibbs free energy",
+      "anchor": {
+        "field": "statement",
+        "quote": "Writing the Eyring equation with the free energy of activation $\\Delta G^\\ddagger=-RT\\ln K^\\ddagger_c$ (standard state $1\\ \\mathrm M$) and splitting it as $\\Delta G^\\ddagger=\\Delta H^\\ddagger-T\\Delta S^\\ddagger$ defines the **enthalpy of activation** $"
+      },
+      "reason": "The enthalpy/entropy split uses the Gibbs free-energy identity G=H-TS.",
+      "previousIndirectPath": [
+        "kin-3.3",
+        "kin-3.2",
+        "kin-3.1",
+        "pchem-7.3",
+        "pchem-7.2",
+        "pchem-7.1",
+        "pchem-5.2",
+        "pchem-5.1",
+        "pchem-3.10",
+        "thermo-3.9"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "kin-4.11",
+      "target": "ode-1.4",
+      "file": "content/kin/ch04-c.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Linear equations and integrating factors",
+      "anchor": {
+        "field": "statement",
+        "quote": "In a chain with **branching**, one radical produces more than one radical. For the radical balance $dn/dt=\\nu+(\\varphi-g)\\,n$, with initiation rate $\\nu$, branching rate constant $\\varphi$ and termination rate constant $g$, the radical number is\n$$n(t)=\\frac{\\nu}{\\varphi-g}\\Bigl(e^{(\\"
+      },
+      "reason": "Initiation plus linear branching/termination is an explicitly forced linear rate equation.",
+      "previousIndirectPath": [
+        "kin-4.11",
+        "kin-4.10",
+        "kin-4.3",
+        "kin-4.1",
+        "kin-1.5",
+        "ode-1.5",
+        "ode-1.4"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "kin-4.12",
+      "target": "thermo-1.13",
+      "file": "content/kin/ch04-c.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Heat capacities",
+      "anchor": {
+        "field": "statement",
+        "quote": " (the reactant burn-out is neglected) and loses it to the wall at the rate $Q_-(T)=h\\,(T-T_0)$, so $C\\,dT/dt=Q_+-Q_-$. For low $T_0$ the curves cross twice: a stable steady state (slow reaction) and an unstable one. As $T_0$ rises the two merge in a tangency, at the **critical wall tempe"
+      },
+      "reason": "Heat capacity converts net heat production into the rate of temperature rise.",
+      "previousIndirectPath": [
+        "kin-4.12",
+        "kin-2.1",
+        "pchem-9.1",
+        "thermo-6.1",
+        "thermo-5.8",
+        "thermo-3.2",
+        "thermo-3.1",
+        "thermo-2.9",
+        "thermo-2.8",
+        "thermo-2.5",
+        "thermo-2.4",
+        "thermo-1.16",
+        "thermo-1.13"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "kin-4.13",
+      "target": "pma-3.26",
+      "file": "content/kin/ch04-c.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Geometric series",
+      "anchor": {
+        "field": "statement",
+        "quote": "chains appear only at very high conversion ($p=0.99$ gives $\\overline X_n=100$). The most probable (Flory) distribution has weight fractions $w_n=n(1-p)^2p^{\\,n-1}$ and $\\overline X_w/\\overline X_n=1+p\\to2$. **Chain growth** (radical addition) makes each chain by initiation, rapid pro"
+      },
+      "reason": "The Flory chain-length distribution and its moments use sums of geometric powers.",
+      "previousIndirectPath": [
+        "kin-4.13",
+        "kin-4.3",
+        "kin-4.1",
+        "kin-1.5",
+        "pma-8.6",
+        "pma-3.30",
+        "pma-3.26"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "kin-4.2",
+      "target": "prob-1.2.4",
+      "file": "content/kin/ch04.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Exponential distribution",
+      "anchor": {
+        "field": "idea",
+        "quote": "he sequence is a chain of linear first-order steps, so the time to complete is a sum of independent exponential waiting times (4.1). The mean is $\\sum1/k_i$, dominated by the largest term, the slowest step. Fast steps after the bottleneck are drained as soon as material arrives, so their intermediates ne"
+      },
+      "reason": "The mean completion time is a sum of exponential stage lifetimes."
+    },
+    {
+      "source": "kin-4.5",
+      "target": "ode-3.9",
+      "file": "content/kin/ch04.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Stability of linear systems by eigenvalues",
+      "anchor": {
+        "field": "idea",
+        "quote": "ces it by $I=\\frac{k_1}{k_2}A$, a different line unless $k_1\\ll k_2$. What matters is therefore the ratio of the two eigenvalues, the separation of time scales (as in singular perturbation theory with small parameter $\\varepsilon$), and the initial condition's distance from the slow manifold; \"short-lived\" "
+      },
+      "reason": "Validity of the steady-state reduction is assessed by the stable eigenvalues and their time-scale separation."
+    },
+    {
+      "source": "kin-4.6",
+      "target": "prob-1.2.4",
+      "file": "content/kin/ch04-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "math",
+      "targetName": "Exponential distribution",
+      "anchor": {
+        "field": "idea",
+        "quote": "cule independently decays with the exponential waiting time of rate $k_{\\rm tot}$ (a competition of independent exponential clocks), and the winning clock is channel $i$ with probability $k_i/k_{\\rm tot}$, independently of *when* it rings. That is why the ratio of products does not drift. Linearity of the rat"
+      },
+      "reason": "The channel fractions are derived by competition of exponential molecular lifetimes."
+    },
+    {
+      "source": "kin-4.9",
+      "target": "qm-4.1",
+      "file": "content/kin/ch04-b.js",
+      "syllabus": "content/kin/syllabus.js",
+      "sourceField": "chem",
+      "targetField": "physics",
+      "targetName": "Quantum harmonic oscillator",
+      "anchor": {
+        "field": "statement",
+        "quote": "e probability that this happens. **RRKM** theory (Marcus 1952) replaces the classical estimate by a quantum count of states,\n$$k(E)=\\frac{N^\\ddagger(E-E_0)}{h\\,\\rho(E)},$$\nwith $\\rho(E)$ the density of vibrational states of the molecule and $N^\\ddagger(E-E_0)$ the number of states of the transition sta"
+      },
+      "reason": "RRKM enumerates quantized oscillator modes to obtain vibrational state densities."
+    },
+    {
+      "source": "mathbio-2.12",
+      "target": "ladr-9.65",
+      "file": "content/mathbio/ch02-b.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Characteristic polynomial, trace, and determinant",
+      "anchor": {
+        "field": "idea",
+        "quote": "The eigenvalues are the roots of $p(z)=z^2-Tz+D$ with $p(1)=1-T+D$ and $p(-1)=1+T+D$. For a complex pair $|z|^2=D$, so they are inside the circle iff $D<1$. For real roots, both lie in $(-1,1)$ iff $p(\\pm1)>0$ an"
+      },
+      "reason": "The Jury triangle is derived from the trace/determinant coefficients of the characteristic polynomial."
+    },
+    {
+      "source": "mathbio-3.21",
+      "target": "ctrl-3.3",
+      "file": "content/mathbio/ch03-d.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "eng",
+      "targetName": "Linear stability iff all eigenvalues have negative real part",
+      "anchor": {
+        "field": "statement",
+        "quote": "mmunity matrix** $M=\\operatorname{diag}(\\mathbf x^*)\\,A$, and the equilibrium is locally stable iff every eigenvalue of $M$ has negative real part. May (1972) considered random $A$: diagonal entries $-1$ (self-regulation), each off-diagonal entry non-zero with probability $C$ (connectance) and t"
+      },
+      "reason": "The general n-species community matrix uses the full linear-system eigenvalue stability criterion."
+    },
+    {
+      "source": "mathbio-3.4",
+      "target": "mech-12.3",
+      "file": "content/mathbio/ch03.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "physics",
+      "targetName": "Hamilton’s equations",
+      "anchor": {
+        "field": "idea",
+        "quote": "lpha\\ln y\\bigr]=0$. With canonical coordinates $q=\\ln y$, $p=\\ln x$, the system has Hamiltonian $H(q,p)=\\delta e^p-\\gamma p+\\beta e^q-\\alpha q=V$, since $\\dot q=\\partial H/\\partial p$ and $\\dot p=-\\partial H/\\partial q$. Symplectic Euler preserves the symplectic area in these log coordinates, not $V$ exactly: at sufficiently small step it"
+      },
+      "reason": "Canonical q=ln y,p=ln x give the exact Hamiltonian flow. Symplectic time stepping preserves symplectic area but not the original nonlinear Hamiltonian exactly.",
+      "scopeQualification": "Canonical q=ln y,p=ln x give the exact Hamiltonian flow. Symplectic time stepping preserves symplectic area but not the original nonlinear Hamiltonian exactly."
+    },
+    {
+      "source": "mathbio-4.1",
+      "target": "stat-2.1",
+      "file": "content/mathbio/ch04.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "stats",
+      "targetName": "Conditional distributions and conditional independence",
+      "anchor": {
+        "field": "statement",
+        "quote": "y that a newborn is alive in class $x$, so $\\ell_1=1$ and $\\ell_{x+1}=s_x\\ell_x$ where $s_x$ is the probability of surviving from class $x$ to $x+1$. The **fecundity** $m_x$ is the mean number of daughters produced, over one time unit, by a female in class $x$. The pair $(\\ell_x,m_x)$ is the **life tabl"
+      },
+      "reason": "Successive survivorship values multiply conditional one-class survival probabilities."
+    },
+    {
+      "source": "mathbio-4.10",
+      "target": "pma-9.15",
+      "file": "content/mathbio/ch04-b.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Chain rule",
+      "anchor": {
+        "field": "idea",
+        "quote": "Differentiate $A\\mathbf u=\\lambda\\mathbf u$ and multiply by $\\mathbf v^{\\mathsf T}$: the term with $\\mathrm d\\mathbf u$ cancels because $\\mathbf v^{\\mathsf T}A=\\lambda\\mathbf v^{\\mathsf T}$, le"
+      },
+      "reason": "The sensitivity proof differentiates the parameter-dependent eigenvector equation."
+    },
+    {
+      "source": "mathbio-4.13",
+      "target": "prob-2.6.12",
+      "file": "content/mathbio/ch04-b.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Key renewal theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "rns the long run: if the tilted kernel $k_r(a)=e^{-ra}\\varphi(a)$ is non-lattice with $0<\\mu_r=\\int_0^\\infty a k_r(a)\\,da<\\infty$, and the tilted forcing $g(t)=e^{-rt}G(t)$ is directly Riemann integrable, then $B(t)e^{-rt}\\to\\dfrac{\\int_0^\\infty G(s)e^{-rs}\\,ds}{\\int_0^\\infty a\\,e^{-ra}\\varphi(a)\\,da}$."
+      },
+      "reason": "The key renewal limit requires a non-lattice tilted kernel with finite positive mean and directly Riemann-integrable exponentially tilted forcing.",
+      "scopeQualification": "The key renewal limit requires a non-lattice tilted kernel with finite positive mean and directly Riemann-integrable exponentially tilted forcing."
+    },
+    {
+      "source": "mathbio-4.14",
+      "target": "pde-1.2",
+      "file": "content/mathbio/ch04-b.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Transport equation and its solution",
+      "anchor": {
+        "field": "statement",
+        "quote": "al a}=-\\mu(a)\\,n,\\qquad n(0,t)=\\int_0^\\infty\\beta(a)\\,n(a,t)\\,da,\\qquad n(a,0)=n_0(a).$$\nAlong each characteristic $a=t+\\text{const}$ the density simply decays: for $a>t$, $n(a,t)=n_0(a-t)\\,\\ell(a)/\\ell(a-t)$, and for $a<t$, $n(a,t)=B(t-a)\\ell(a)$ with $B(t)=n(0,t)$ the birth rate, where $\\ell"
+      },
+      "reason": "Age advances at unit speed, so the population PDE is solved along transport characteristics."
+    },
+    {
+      "source": "mathbio-4.5",
+      "target": "prob-1.6.1a",
+      "file": "content/mathbio/ch04.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Expected value",
+      "anchor": {
+        "field": "statement",
+        "quote": "ers of a newborn over her lifetime,\n$$R_0=\\sum_{x}\\ell_x m_x ,$$\nand the **generation time** is the mean age of mothers at the birth of their daughters,\n$$T=\\frac{\\sum_x x\\,\\ell_x m_x}{\\sum_x \\ell_x m_x}.$$\n(In the convention of 4.2 the age $x$ of class $x$ is the number of census steps "
+      },
+      "reason": "Generation time is the expected value of the normalized reproduction-age distribution."
+    },
+    {
+      "source": "mathbio-4.8",
+      "target": "prob-2.7.1a",
+      "file": "content/mathbio/ch04-b.js",
+      "syllabus": "content/mathbio/syllabus.js",
+      "sourceField": "bio",
+      "targetField": "math",
+      "targetName": "Moment-generating function",
+      "anchor": {
+        "field": "idea",
+        "quote": "ere $p_x=\\ell_xm_x/R_0$ is the distribution of the age of a mother at a birth. The left side is the moment generating function of that distribution at $-r$, equal to $\\exp(-rT+\\tfrac12r^2\\sigma^2-\\cdots)$ by the cumulant expansion. Taking logs gives the series; keeping the first term gives $r\\approx\\ln R_"
+      },
+      "reason": "The generation-time correction is derived from the age-at-reproduction moment generating function."
+    },
+    {
+      "source": "pharm-1.7",
+      "target": "kin-1.9",
+      "file": "content/pharm/ch01.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "chem",
+      "targetName": "Opposed reactions: relaxation to equilibrium",
+      "anchor": {
+        "field": "statement",
+        "quote": "ion $P_T$ and dissociation constant $K_d$, the bound concentration is $B = P_T\\,C_u/(K_d + C_u)$ (a Langmuir isotherm), where $C_u$ is the **unbound** concentration. Far below saturation the unbound fraction $f_u = C_u/(C_u + B) \\approx 1/(1+P_T/K_d)$ is a constant. Only unbound drug cro"
+      },
+      "reason": "Protein occupancy is the equilibrium of bound and unbound states, with forward rate proportional to free drug and reverse dissociation."
+    },
+    {
+      "source": "pharm-1.8",
+      "target": "kin-1.9",
+      "file": "content/pharm/ch01.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "chem",
+      "targetName": "Opposed reactions: relaxation to equilibrium",
+      "anchor": {
+        "field": "idea",
+        "quote": "is conserved, so the totals simply redistribute to satisfy $f_1C_1=f_2C_2$, and the relaxation is a single exponential at rate $k(f_1+f_2)$. The ratio does not depend on the permeability, only on pH and $\\mathrm{p}K_a$, which is why alkalinizing the urine speeds the excretion of a weak acid such a"
+      },
+      "reason": "Neutral-form exchange has effective forward/backward rates kf1 and kf2, yielding the stated equilibrium ratio and summed relaxation rate."
+    },
+    {
+      "source": "pharm-2.3",
+      "target": "opt-1.6",
+      "file": "content/pharm/ch02.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "idea",
+        "quote": "Taking logarithms turns the exponential $C_0e^{-kt}$ into the line $\\ln C_0-kt$ (2.1), so least squares applies. In ordinary regression the slope's standard error is $\\sigma/\\sqrt{\\sum(t_i-\\bar t)^2}$, which is why samples far apart in time carry most of the information and why drop"
+      },
+      "reason": "The elimination constant is obtained from a least-squares semilog slope."
+    },
+    {
+      "source": "pharm-2.3",
+      "target": "stat-1.10",
+      "file": "content/pharm/ch02.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "stats",
+      "targetName": "Student’s t distribution",
+      "anchor": {
+        "field": "statement",
+        "quote": "lope has standard error $s_b$ from the regression, and a $95\\,\\%$ confidence interval is $\\hat k\\pm t_{n-2,0.975}\\,s_b$. The interval is narrow when the samples cover a long stretch of time (a large spread of the $t_i$) and when assay noise is small."
+      },
+      "reason": "The finite-sample rate interval explicitly uses a Student t quantile with n-2 degrees of freedom."
+    },
+    {
+      "source": "pharm-2.4",
+      "target": "ode-1.4",
+      "file": "content/pharm/ch02.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Linear equations and integrating factors",
+      "anchor": {
+        "field": "statement",
+        "quote": "=R/\\mathrm{CL}$, where the input rate equals the elimination rate $\\mathrm{CL}\\cdot C_{ss}$. If the infusion stops at time $T$, the concentration then falls as $C(T)\\,e^{-k(t-T)}$; after a long infusion the decline is the mirror image of the rise."
+      },
+      "reason": "Constant-rate infusion is a linear clearance equation driven by a constant source.",
+      "previousIndirectPath": [
+        "pharm-2.4",
+        "pharm-2.2",
+        "pharm-2.1",
+        "kin-1.5",
+        "ode-1.5",
+        "ode-1.4"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "pharm-2.7",
+      "target": "kin-4.1",
+      "file": "content/pharm/ch02-b.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "chem",
+      "targetName": "Consecutive reactions A → B → C",
+      "anchor": {
+        "field": "idea",
+        "quote": "Two first-order stages in series. The gut amount is the exponential $F D e^{-k_at}$ (2.1 with $k_a$ in place of $k$) and it is the input to the one-compartment body of 2.1. Solving $A'+kA=k_aFDe^{-k_at}"
+      },
+      "reason": "Oral absorption and elimination form the same consecutive first-order Bateman chain."
+    },
+    {
+      "source": "pharm-2.8",
+      "target": "pma-5.8",
+      "file": "content/pharm/ch02-b.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Interior extrema have zero derivative",
+      "anchor": {
+        "field": "idea",
+        "quote": "Setting $C'(t)=0$ in the difference of exponentials gives $ke^{-kt}=k_ae^{-k_at}$, i.e. $e^{(k_a-k)t}=k_a/k$, hence $t_{max}$; substituting it back gives $C_{max}$. The area is the integral of $C$"
+      },
+      "reason": "Peak time follows by setting the derivative of the concentration-time curve to zero.",
+      "previousIndirectPath": [
+        "pharm-2.8",
+        "pharm-1.6",
+        "pharm-1.5",
+        "pma-6.21",
+        "pma-5.10",
+        "pma-5.9",
+        "pma-5.8"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "pharm-3.1",
+      "target": "ode-3.5",
+      "file": "content/pharm/ch03.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Eigenvector solutions and the diagonalizable case",
+      "anchor": {
+        "field": "idea",
+        "quote": "uations are a $2\\times2$ linear ODE (kin-1.5 for one compartment, here for a vector), solved by the eigenvalues and eigenvectors of its matrix. Written for concentrations the exchange is reversible, so after the scaling $x_i=\\sqrt{V_i}\\,C_i$ the matrix becomes **symmetric**; the real spectral theorem (ladr-"
+      },
+      "reason": "The two-compartment decay is constructed from exponential-in-time eigenvector solutions of the rate matrix."
+    },
+    {
+      "source": "pharm-3.10",
+      "target": "prob-1.6.1a",
+      "file": "content/pharm/ch03-b.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Expected value",
+      "anchor": {
+        "field": "statement",
+        "quote": "^\\infty tC\\,dt$ (trapezoids plus the tail $C_{last}t_{last}/\\lambda_z+C_{last}/\\lambda_z^2$), the **mean residence time** $\\mathrm{MRT}=\\mathrm{AUMC}/\\mathrm{AUC}$, clearance $\\mathrm{CL}=D/\\mathrm{AUC}$ and the steady-state volume $V_{ss}=\\mathrm{CL}\\cdot\\mathrm{MRT}=D\\,\\mathrm{AUMC}/\\mathrm{AUC}^"
+      },
+      "reason": "MRT is defined as the normalized first time moment of the disposition curve."
+    },
+    {
+      "source": "pharm-3.2",
+      "target": "opt-1.6",
+      "file": "content/pharm/ch03.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "statement",
+        "quote": "ta t}$, estimate the parameters in stages. (1) On the semilog plot the late samples lie on the slow line: regress $\\ln C$ on $t$ over them to get $\\hat\\beta$ and $\\hat B$. (2) Subtract the extrapolated slow line from the early samples; the residuals $r_i=C_i-\\hat B e^{-\\hat\\beta t_i}"
+      },
+      "reason": "Curve stripping estimates the slow exponential from a fitted terminal semilog line."
+    },
+    {
+      "source": "pharm-3.6",
+      "target": "fluid-1.8",
+      "file": "content/pharm/ch03.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Reynolds transport theorem",
+      "anchor": {
+        "field": "statement",
+        "quote": "rinsic clearance $\\mathrm{CL}_{int}$ (the clearance the enzymes would show without any flow limit). Mass balance gives the hepatic clearance $\\mathrm{CL}_H=\\dfrac{Q\\,f_u\\mathrm{CL}_{int}}{Q+f_u\\mathrm{CL}_{int}}$ and extraction ratio $E=\\mathrm{CL}_H/Q=\\dfrac{f_u\\mathrm{CL}_{int}}{Q+f_u\\math"
+      },
+      "reason": "The well-stirred hepatic clearance follows from inflow, outflow and enzymatic removal in an organ control volume."
+    },
+    {
+      "source": "pharm-3.8",
+      "target": "kin-4.6",
+      "file": "content/pharm/ch03-b.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "chem",
+      "targetName": "Parallel reactions and branching ratios",
+      "anchor": {
+        "field": "statement",
+        "quote": "If a drug is eliminated by several independent first-order pathways that act in parallel on the same blood, say renal, hepatic and other, each removes drug at a rate proportional to the concentration, $\\mathrm{CL}_iC$. Then the total clearance is"
+      },
+      "reason": "Parallel first-order elimination pathways have summed rates and fixed dose fractions, exactly the branching-ratio law."
+    },
+    {
+      "source": "pharm-3.9",
+      "target": "fluid-1.8",
+      "file": "content/pharm/ch03-b.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Reynolds transport theorem",
+      "anchor": {
+        "field": "idea",
+        "quote": "Mass balance on each organ (inflow minus outflow of drug) is the same bookkeeping as in 3.1, but the exchange rates are physiological: flow over capacity, $Q_t/(V_tK_{p,t})$. Write $z_t=C_t/K_{p,t}$ for the venous concentration and $W=\\mathrm{diag}(V_b,\\,V_tK_{p,t})$ for the capacities: the system is $W\\dot z=Gz$ with a **symmetric** conductance matrix $G$ (flows off the diagonal, minus flow and elimination on it), so the real spectral theorem gives real, negative decay rates. A lipophilic drug (large $K_p$ in fat) has huge fat capacity and low fat flow, hence a slow terminal phase, while well"
+      },
+      "reason": "The PBPK organ equations apply inflow minus outflow of drug in tissue control volumes; the blood pool sums the returned organ mass fluxes."
+    },
+    {
+      "source": "pharm-4.1",
+      "target": "sig-2.2",
+      "file": "content/pharm/ch04.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Linearity",
+      "anchor": {
+        "field": "statement",
+        "quote": "If absorption and elimination are first-order (the system is linear and time-invariant), the concentration after repeated doses $D$ given at times $0,\\tau,2\\tau,\\dots$ is the sum of the single-dose curves, each shifted to its dose time: $C(t)=\\sum"
+      },
+      "reason": "Repeated-dose concentrations use superposition of individual dose responses."
+    },
+    {
+      "source": "pharm-4.1",
+      "target": "sig-2.3",
+      "file": "content/pharm/ch04.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Time invariance",
+      "anchor": {
+        "field": "statement",
+        "quote": "If absorption and elimination are first-order (the system is linear and time-invariant), the concentration after repeated doses $D$ given at times $0,\\tau,2\\tau,\\dots$ is the sum of the single-dose curves, each shifted to its dose time: $C(t)=\\sum_{n\\ge 0,\\; n\\tau\\l"
+      },
+      "reason": "The same single-dose response is shifted to each dose time without changing its shape."
+    },
+    {
+      "source": "pharm-4.10",
+      "target": "opt-1.6",
+      "file": "content/pharm/ch04.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Least squares as an optimization problem",
+      "anchor": {
+        "field": "idea",
+        "quote": "rtional to those processes inherits the exponent about $3/4$; volumes follow organ and body size. A linear fit of $\\log Y$ on $\\log W$ (a power law, ecol-1.4) turns the extrapolation into a straight line. It works best for drugs cleared by blood flow and organ size, and badly when a specie"
+      },
+      "reason": "Cross-species clearance extrapolation fits a line in logarithmic mass-response coordinates."
+    },
+    {
+      "source": "pharm-4.7",
+      "target": "prob-2.4.1",
+      "file": "content/pharm/ch04.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Strong law of large numbers (Etemadi)",
+      "anchor": {
+        "field": "statement",
+        "quote": "ken at random with probability $a$ (adherence), the realised dosing rate is $a\\cdot D/\\tau$ and the long-run mean concentration is $a\\bar C_{ss}$, but the concentration fluctuates widely. A drug with $t_{1/2}\\ll\\tau$ falls to ineffective levels after a single missed dose; a drug with $t_{1/2}"
+      },
+      "reason": "The random-adherence model identifies the long-run realized fraction of doses with its Bernoulli probability."
+    },
+    {
+      "source": "pharm-4.8",
+      "target": "ode-3.12",
+      "file": "content/pharm/ch04.js",
+      "syllabus": "content/pharm/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Variation of constants (Duhamel’s formula)",
+      "anchor": {
+        "field": "idea",
+        "quote": "he mean. What changes is how that area is spread in time: a zero-order input with duration $T$ is a rectangle of rate $D/T$, whose response $\\tfrac{D}{TkV}(1-e^{-kt})$ rises smoothly, and consecutive rectangles abut to a constant rate. Note that “zero-order” here describes the **input**; "
+      },
+      "reason": "Sustained zero-order delivery is the response of the linear elimination equation to a rectangular input."
+    },
+    {
+      "source": "physio-1.1",
+      "target": "ctrl-1.1",
+      "file": "content/physio/ch01.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Open-loop versus closed-loop control",
+      "anchor": {
+        "field": "statement",
+        "quote": "activity keep disturbing them. This constancy is called **homeostasis**. It is produced mainly by **negative-feedback loops** with four parts:\n\n- a **sensor** that measures the regulated variable $x$;\n- a **controller** that compares it with a set point $x_0$;\n- **effectors** that act in proportion to "
+      },
+      "reason": "Homeostasis is explicitly organized as a closed-loop negative-feedback mechanism."
+    },
+    {
+      "source": "physio-1.6",
+      "target": "kin-1.3",
+      "file": "content/physio/ch01.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "chem",
+      "targetName": "Elementary reactions and molecularity",
+      "anchor": {
+        "field": "idea",
+        "quote": "Model the carrier as a four-state cycle: empty outward-facing ⇄ loaded outward-facing ⇄ loaded inward-facing ⇄ empty inward-facing ⇄ empty outward-facing. With nothing inside, the steady-state flux of this Markov chain "
+      },
+      "reason": "The carrier cycle uses concentration-proportional elementary association and unimolecular conformation/release rates to construct its state transitions."
+    },
+    {
+      "source": "physio-1.6",
+      "target": "stoch-4.1",
+      "file": "content/physio/ch01.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Stationary distribution",
+      "anchor": {
+        "field": "idea",
+        "quote": "acing ⇄ loaded inward-facing ⇄ empty inward-facing ⇄ empty outward-facing. With nothing inside, the steady-state flux of this Markov chain has exactly the Michaelis–Menten form (mathbio-5.3). At low $c$ the carriers wait for substrate, so the flux is proportional to $c$. At high $c$ every carrier is loaded as soon as"
+      },
+      "reason": "The four-state carrier model finds equilibrium occupancy by balancing probability inflow and outflow at every state."
+    },
+    {
+      "source": "physio-1.8",
+      "target": "em-2.3",
+      "file": "content/physio/ch01-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Electric potential",
+      "anchor": {
+        "field": "idea",
+        "quote": "Equilibrium means equal electrochemical potential on both sides: $RT\\ln c_{\\text{in}} + zF\\phi_{\\text{in}} = RT\\ln c_{\\text{out}} + zF\\phi_{\\text{out}}$, which rearranges to Nernst's formula. Equivalently, by the Boltzmann distri"
+      },
+      "reason": "The Nernst derivation balances chemical free energy with charge times electrical potential difference."
+    },
+    {
+      "source": "physio-2.1",
+      "target": "neuro-2.3",
+      "file": "content/physio/ch02.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "bio",
+      "targetName": "Hodgkin–Huxley equations",
+      "anchor": {
+        "field": "idea",
+        "quote": "s inactivate (the $h$ gate closes) and potassium channels open (the $n$ gate). The picture below is Hodgkin and Huxley's quantitative description (physio-2.11 gives its experimental root), integrated here by RK4: each conductance is a product of voltage- and time-dependent gating variab"
+      },
+      "reason": "The spike mechanism is realized by Hodgkin-Huxley conductance and gating equations."
+    },
+    {
+      "source": "physio-2.5",
+      "target": "mech-3.1",
+      "file": "content/physio/ch02.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Work and kinetic energy",
+      "anchor": {
+        "field": "idea",
+        "quote": " rearrangement of that. The shape means a muscle is a poor machine at both extremes: it produces no power when loaded to the maximum and none when unloaded. Cross-bridge kinetics (2.6) reproduces the shape, so $a$ and $b$ are traced back to the rates of attachment and detachment. The "
+      },
+      "reason": "The muscle operating point maximizes mechanical power, force times shortening velocity.",
+      "previousIndirectPath": [
+        "physio-2.5",
+        "physio-2.4",
+        "physio-2.3",
+        "physio-2.1",
+        "physio-1.9",
+        "physio-1.8",
+        "thermo-6.1",
+        "thermo-5.5",
+        "mech-12.13",
+        "mech-12.3",
+        "mech-6.6",
+        "mech-6.5",
+        "mech-3.3",
+        "mech-3.1"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "physio-2.6",
+      "target": "mech-4.1",
+      "file": "content/physio/ch02.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Hooke’s law",
+      "anchor": {
+        "field": "statement",
+        "quote": " backwards are detached quickly). The force is $F = \\int x\\,n(x)\\,dx$ (each attached head acts as a linear spring). In the steady state the equation is an ordinary differential equation in $x$, and solving it for each sliding speed $w$ gives a force–velocity curve that falls from the isometri"
+      },
+      "reason": "The force integral assumes attached cross-bridges exert Hookean spring force proportional to displacement."
+    },
+    {
+      "source": "physio-2.6",
+      "target": "pde-1.2",
+      "file": "content/physio/ch02.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Transport equation and its solution",
+      "anchor": {
+        "field": "statement",
+        "quote": "g(x)$, and the filaments slide at speed $w$ so that every head's $x$ changes at that rate:\n$$\\frac{\\partial n}{\\partial t} - w\\frac{\\partial n}{\\partial x} = f(x)\\,(1-n) - g(x)\\,n.$$\nHuxley's rates are $f = f_1 x$ for $0 < x \\le 1$ and zero elsewhere, $g = g_1 x$ for $x > 0$ and a large c"
+      },
+      "reason": "Cross-bridge attachment is transported through displacement space by filament sliding."
+    },
+    {
+      "source": "physio-3.7",
+      "target": "thermo-1.9",
+      "file": "content/physio/ch03-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "physics",
+      "targetName": "Work done on a gas",
+      "anchor": {
+        "field": "statement",
+        "quote": "The work done by the ventricle on the blood in one beat, the **stroke work**, is the area enclosed by its pressure–volume loop: $SW = -\\oint P\\,dV$ for the counter-clockwise loop with ventricular volume on the horizontal axis. It is the work done during ejection, $-\\int_{\\rm ejection} P\\,dV>0$ over the decreasing-volume segment, minus the"
+      },
+      "reason": "Stroke work is the closed pressure-volume work integral.",
+      "previousIndirectPath": [
+        "physio-3.7",
+        "physio-3.2",
+        "physio-3.1",
+        "physio-2.9",
+        "physio-2.1",
+        "physio-1.9",
+        "physio-1.8",
+        "thermo-6.1",
+        "thermo-5.8",
+        "thermo-3.2",
+        "thermo-3.1",
+        "thermo-2.9",
+        "thermo-2.8",
+        "thermo-2.5",
+        "thermo-2.1",
+        "thermo-1.11",
+        "thermo-1.9"
+      ],
+      "directLinkReason": "This target is used in the quoted step itself; the existing indirect route passes through other topics and is not the direct prerequisite supplying this step."
+    },
+    {
+      "source": "physio-4.1",
+      "target": "circ-1.4",
+      "file": "content/physio/ch04.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Ohm’s law",
+      "anchor": {
+        "field": "idea",
+        "quote": "It is the circuit law with pressure in the role of voltage and volume flow in the role of current: the pressure drops along a chain of vessels add up to the total drop, and the same flow passes through"
+      },
+      "reason": "The circulation resistance model is the explicit pressure-flow counterpart of Ohm's relation."
+    },
+    {
+      "source": "physio-4.15",
+      "target": "ode-4.4",
+      "file": "content/physio/ch04-c.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Bessel functions",
+      "anchor": {
+        "field": "statement",
+        "quote": "lution for the velocity is\n$$u(r,t)=\\operatorname{Re}\\!\\Bigl\\{\\tfrac{-iG}{\\rho\\omega}\\Bigl[1-\\tfrac{J_0(\\alpha i^{3/2}r/R)}{J_0(\\alpha i^{3/2})}\\Bigr]e^{i\\omega t}\\Bigr\\}\\quad\\text{for } -\\partial_z p=G\\cos\\omega t.$$\nFor the illustrative preset radii and common frequency/fluid prop"
+      },
+      "reason": "The exact pulsatile pipe-flow profile is expressed with the cylindrical Bessel function J0."
+    },
+    {
+      "source": "physio-4.7",
+      "target": "ode-1.4",
+      "file": "content/physio/ch04-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "Linear equations and integrating factors",
+      "anchor": {
+        "field": "statement",
+        "quote": "ral resistance $R$. With inflow $Q(t)$ from the heart and venous pressure taken as zero,\n$$C\\,\\frac{dP}{dt}=Q(t)-\\frac{P}{R}.$$\nDuring diastole $Q=0$ and the pressure decays exponentially, $P(t)=P_{es}\\,e^{-(t-t_{es})/RC}$, with time constant $\\tau=RC$ (typically about 1–2 s); aver"
+      },
+      "reason": "The Windkessel pressure balance is a first-order linear equation forced by ventricular inflow."
+    },
+    {
+      "source": "physio-4.8",
+      "target": "circ-2.3",
+      "file": "content/physio/ch04-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Series resistors and the voltage divider",
+      "anchor": {
+        "field": "statement",
+        "quote": "Adding a **characteristic impedance** $Z_c$ in series between the heart and the two-element chamber gives the three-element Windkessel: the pressure at the aortic root is\n$$P(t)=P_w(t)+Z_c\\,Q(t),\\qquad C\\,\\dot P_w=Q-\\frac{P_w-P_v}{R}"
+      },
+      "reason": "The three-element Windkessel adds characteristic resistance in series with the compliance/terminal-resistance compartment."
+    },
+    {
+      "source": "physio-4.9",
+      "target": "pde-1.3",
+      "file": "content/physio/ch04-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "math",
+      "targetName": "The vibrating string and the wave equation",
+      "anchor": {
+        "field": "statement",
+        "quote": "A pressure pulse in an elastic artery travels as a wave at the **Moens–Korteweg speed** $c=\\sqrt{Eh/(\\rho d)}$, where $E$ is the wall's elastic modulus, $h$ its thickness, $d$ the lumen diameter and $\\rho$ the blood density; stiffer ar"
+      },
+      "reason": "Arterial pressure travels and reflects as a finite-speed wave."
+    },
+    {
+      "source": "physio-4.9",
+      "target": "solid-1.4",
+      "file": "content/physio/ch04-b.js",
+      "syllabus": "content/physio/syllabus.js",
+      "sourceField": "med",
+      "targetField": "eng",
+      "targetName": "Hooke’s law: σ = Eε",
+      "anchor": {
+        "field": "statement",
+        "quote": "y travels as a wave at the **Moens–Korteweg speed** $c=\\sqrt{Eh/(\\rho d)}$, where $E$ is the wall's elastic modulus, $h$ its thickness, $d$ the lumen diameter and $\\rho$ the blood density; stiffer arteries carry the pulse faster (about 4–5 m/s in a young adult's aorta, 8 m/s or more in an old o"
+      },
+      "reason": "The Moens-Korteweg wave speed depends on the arterial wall's elastic stress-strain modulus."
+    }
+  ],
+  "rejectedCandidates": [
+    {
+      "source": "geol-2.8",
+      "target": "kin-2.1",
+      "reason": "The existing direct diffusivity prerequisite mat-2.7 already supplies this same Arrhenius law."
+    },
+    {
+      "source": "geol-3.13",
+      "target": "fluid-2.5",
+      "reason": "Existing geol-5.2 already identifies this exact isostatic buoyancy step; avoid duplicating its foundation."
+    },
+    {
+      "source": "kin-1.12",
+      "target": "stoch-4.9",
+      "reason": "The added cycle-criterion prerequisite stoch-4.10 already includes detailed balance."
+    },
+    {
+      "source": "kin-3.2",
+      "target": "thermo-6.2",
+      "reason": "The added thermo-6.5 free-energy/partition-function conversion already supplies the partition-function foundation."
+    },
+    {
+      "source": "kin-3.5",
+      "target": "qm-3.15",
+      "reason": "Existing qchem-1.11 already supplies this quantum barrier-transmission prerequisite."
+    },
+    {
+      "source": "ecol-4.6",
+      "target": "mech-13.4",
+      "reason": "The text claims chaotic coexistence but does not derive or state a Lyapunov-exponent diagnostic; do not add an unused diagnostic."
+    },
+    {
+      "source": "physio-1.2",
+      "target": "ctrl-1.6",
+      "reason": "Existing ctrl-1.8 already directly covers the same feedback-sensitivity denominator."
+    },
+    {
+      "source": "physio-4.6",
+      "target": "solid-1.4",
+      "reason": "The compliance account allows nonlinear/collapsible walls and does not derive its curve from the linear Hooke law."
+    },
+    {
+      "source": "physio-4.16",
+      "target": "ctrl-4.1",
+      "reason": "A transient curve alone does not use the engineering step-response specification formulas."
+    },
+    {
+      "source": "pharm-3.12",
+      "target": "ode-3.2",
+      "reason": "The historical-paper text does not derive a matrix-exponential formula; avoid linking only the numerical implementation."
+    },
+    {
+      "source": "epi-2.8",
+      "target": "stat-2.1",
+      "reason": "The diagnostic-probability prerequisite is already supplied through epi-2.2 and the new direct epi-2.1 link."
+    },
+    {
+      "source": "epi-7.10",
+      "target": "stat-6.3",
+      "reason": "The existing power/sample-size prerequisite chain already supplies this same statistical-power concept."
+    },
+    {
+      "source": "arch-4.3",
+      "target": "fluid-2.7",
+      "reason": "The balloon comparison is an analogy; isotropic surface tension is not the actual anisotropic shell-equilibrium derivation."
+    },
+    {
+      "source": "bighist-2.4",
+      "target": "mech-2.10",
+      "reason": "Existing astro-7.4 already directly covers angular-momentum conservation for the protoplanetary disk."
+    },
+    {
+      "source": "bighist-2.6",
+      "target": "mech-2.12",
+      "reason": "Existing astro-3.3 already directly covers the same spin-orbit angular-momentum transfer."
+    },
+    {
+      "source": "bighist-2.6",
+      "target": "mech-9.3",
+      "reason": "Existing astro-3.3 already directly covers the same tidal-friction mechanism."
+    },
+    {
+      "source": "bighist-3.7",
+      "target": "popgen-3.9",
+      "reason": "The history prerequisite chain already supplies molecular-clock dating; this item does not add a new clock calculation."
+    },
+    {
+      "source": "bighist-4.7",
+      "target": "stat-1.12",
+      "reason": "Existing bioinf-3.5 already supplies the exact maximum-of-Gumbel calculation; generic order statistics would duplicate its foundation."
+    },
+    {
+      "source": "pharm-3.9",
+      "target": "ode-3.1",
+      "reason": "After the more specific eigenmode link on pharm-3.1, generic linear-system theory is already supplied by that direct prerequisite; replaced with the explicit organ control-volume balance."
+    },
+    {
+      "source": "physio-1.6",
+      "target": "kin-4.3",
+      "reason": "Steady-state carrier occupancy is not by itself a fast-intermediate approximation; replaced the SSA link with the actual elementary-rate input."
+    },
+    {
+      "source": "ecol-4.7",
+      "target": "ladr-7.38",
+      "reason": "The strict positive-definite condition is more precise here than general nonnegative positive-operator characterizations."
+    },
+    {
+      "source": "geol-4.7",
+      "target": "fluid-2.4",
+      "reason": "Atmospheric stratification without viscous/thermal diffusion is not the finite-Rayleigh onset criterion; replaced with the buoyancy force actually used."
+    },
+    {
+      "source": "arch-1.7",
+      "target": "solid-4.3",
+      "reason": "Independent peer review found that the source uses uniaxial material strengths, not the target Rankine maximum-principal-stress criterion. Moved to contextual see-also; no direct prerequisite counted."
+    },
+    {
+      "source": "geol-3.7",
+      "target": "mech-1.8",
+      "reason": "Independent peer review found that rotating-plate point-velocity subtraction at one instant does not use constant Galilean boosts between inertial frames. Existing geol-3.5 already supplies the needed rotation kinematics; removed without replacement."
+    }
+  ],
+  "syllabusMirrors": [
+    {
+      "id": "geol-2.1",
+      "added": [
+        "prob-1.2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-2.2",
+      "added": [
+        "num-1.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-2.3",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-2.6",
+      "added": [
+        "prob-1.2.5",
+        "stat-2.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-2.10",
+      "added": [
+        "ode-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-3.1",
+      "added": [
+        "mech-10.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-3.10",
+      "added": [
+        "pde-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-3.15",
+      "added": [
+        "mech-10.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-4.1",
+      "added": [
+        "pde-1.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-4.2",
+      "added": [
+        "pde-1.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-4.6",
+      "added": [
+        "pde-4.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-4.7",
+      "added": [
+        "fluid-2.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "geol-4.10",
+      "added": [
+        "thermo-1.16",
+        "thermo-4.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-1.8",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-1.10",
+      "added": [
+        "ode-1.8"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-1.12",
+      "added": [
+        "stoch-4.10"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-2.3",
+      "added": [
+        "mech-8.2",
+        "prob-1.2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-2.6",
+      "added": [
+        "mech-3.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-3.1",
+      "added": [
+        "thermo-6.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-3.2",
+      "added": [
+        "thermo-6.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-3.3",
+      "added": [
+        "thermo-3.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-3.11",
+      "added": [
+        "mech-4.7"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.2",
+      "added": [
+        "prob-1.2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.5",
+      "added": [
+        "ode-3.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.6",
+      "added": [
+        "prob-1.2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.11",
+      "added": [
+        "ode-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.12",
+      "added": [
+        "thermo-1.13"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.13",
+      "added": [
+        "pma-3.26"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-2.12",
+      "added": [
+        "ladr-9.65"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-3.4",
+      "added": [
+        "mech-12.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-3.21",
+      "added": [
+        "ctrl-3.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.8",
+      "added": [
+        "prob-2.7.1a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.10",
+      "added": [
+        "pma-9.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.13",
+      "added": [
+        "prob-2.6.12"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.14",
+      "added": [
+        "pde-1.2"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.1",
+      "added": [
+        "stat-2.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "mathbio-4.5",
+      "added": [
+        "prob-1.6.1a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-1.4",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-1.6",
+      "added": [
+        "pma-3.26",
+        "physio-4.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.1",
+      "added": [
+        "stat-3.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.2",
+      "added": [
+        "demo-2.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.5",
+      "added": [
+        "prob-1.6.1a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.9",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.10",
+      "added": [
+        "prob-1.6.13",
+        "stat-1.3",
+        "stat-1.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.11",
+      "added": [
+        "prob-1.6.2"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.12",
+      "added": [
+        "stoch-2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-2.13",
+      "added": [
+        "stat-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-3.2",
+      "added": [
+        "ode-1.8"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-3.5",
+      "added": [
+        "ode-1.7"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-3.6",
+      "added": [
+        "ode-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-3.7",
+      "added": [
+        "stoch-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-3.9",
+      "added": [
+        "game-1.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-4.7",
+      "added": [
+        "ladr-7.62",
+        "nla-3.2"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-4.10",
+      "added": [
+        "pma-5.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-1.1",
+      "added": [
+        "ctrl-1.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-1.6",
+      "added": [
+        "kin-1.3",
+        "stoch-4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-1.8",
+      "added": [
+        "em-2.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-2.1",
+      "added": [
+        "neuro-2.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-2.5",
+      "added": [
+        "mech-3.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-2.6",
+      "added": [
+        "pde-1.2",
+        "mech-4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-3.7",
+      "added": [
+        "thermo-1.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-4.1",
+      "added": [
+        "circ-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-4.7",
+      "added": [
+        "ode-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-4.8",
+      "added": [
+        "circ-2.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-4.9",
+      "added": [
+        "pde-1.3",
+        "solid-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "physio-4.15",
+      "added": [
+        "ode-4.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-1.7",
+      "added": [
+        "kin-1.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-2.3",
+      "added": [
+        "opt-1.6",
+        "stat-1.10"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-2.4",
+      "added": [
+        "ode-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-2.7",
+      "added": [
+        "kin-4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-2.8",
+      "added": [
+        "pma-5.8"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.2",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.6",
+      "added": [
+        "pharm-1.7",
+        "fluid-1.8"
+      ],
+      "removed": [
+        "physio-6.10"
+      ],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.9",
+      "added": [
+        "fluid-1.8"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.10",
+      "added": [
+        "pharm-1.5",
+        "prob-1.6.1a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-4.1",
+      "added": [
+        "sig-2.2",
+        "sig-2.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-4.8",
+      "added": [
+        "ode-3.12"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-4.10",
+      "added": [
+        "opt-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-1.5",
+      "added": [
+        "pma-8.6",
+        "prob-1.2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-1.9",
+      "added": [
+        "demo-2.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-2.1",
+      "added": [
+        "stat-2.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-2.4",
+      "added": [
+        "stat-2.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-2.9",
+      "added": [
+        "prob-2.1.1a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-2.11",
+      "added": [
+        "prob-1.6.9a"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-3.9",
+      "added": [
+        "demo-2.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-3.10",
+      "added": [
+        "causal-1.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-3.11",
+      "added": [
+        "causal-1.10"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-4.6",
+      "added": [
+        "causal-1.1",
+        "causal-2.6",
+        "causal-4.6"
+      ],
+      "removed": [
+        "epi-4.1"
+      ],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-4.13",
+      "added": [
+        "causal-4.4",
+        "causal-2.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-9.11",
+      "added": [
+        "stat-3.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-1.1",
+      "added": [
+        "fluid-2.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-1.3",
+      "added": [
+        "ladr-3.21",
+        "mech-1.14"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-1.6",
+      "added": [
+        "solid-1.1",
+        "solid-1.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-1.7",
+      "added": [
+        "mat-1.7"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-2.3",
+      "added": [
+        "pma-5.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-2.4",
+      "added": [
+        "solid-1.8"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-2.6",
+      "added": [
+        "solid-1.4",
+        "mech-4.7"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-3.4",
+      "added": [
+        "mech-1.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-3.5",
+      "added": [
+        "opt-4.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-3.6",
+      "added": [
+        "mech-6.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-4.8",
+      "added": [
+        "mech-1.15"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-4.11",
+      "added": [
+        "pde-1.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-1.3",
+      "added": [
+        "geol-2.1",
+        "geol-2.3"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-2.5",
+      "added": [
+        "mech-3.2"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-2.7",
+      "added": [
+        "geol-3.12",
+        "geol-3.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-3.6",
+      "added": [
+        "geol-3.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-3.9",
+      "added": [
+        "geol-2.7",
+        "mech-3.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-4.2",
+      "added": [
+        "sig-4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-4.5",
+      "added": [
+        "prob-3.7.2a",
+        "prob-3.7.4"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "kin-4.9",
+      "added": [
+        "qm-4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-4.3",
+      "added": [
+        "geol-2.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "ecol-1.10",
+      "added": [
+        "thermo-1.11"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-1.8",
+      "added": [
+        "kin-1.9"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.1",
+      "added": [
+        "ode-3.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-4.7",
+      "added": [
+        "prob-2.4.1"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "epi-2.7",
+      "added": [
+        "psych-2.12"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "bighist-3.8",
+      "added": [
+        "mathbio-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "pharm-3.8",
+      "added": [
+        "kin-4.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-4.3",
+      "added": [
+        "vcalc-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-4.9",
+      "added": [
+        "vcalc-1.5"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    },
+    {
+      "id": "arch-1.2",
+      "added": [
+        "mech-1.6"
+      ],
+      "removed": [],
+      "matchesWritten": true
+    }
+  ],
+  "validation": {
+    "writtenTargets": true,
+    "differentFields": true,
+    "uniqueNewEdges": true,
+    "existingClaimAnchorsMatchLive": true,
+    "allTouchedSyllabusDependenciesMatchWritten": true,
+    "sourceStatementsIdeasNamesUnchanged": "True for the prerequisite-only batch; subsequent separately authorized peer corrections to six cards are documented in peer-corrections.md.",
+    "sourceVerificationFlagsUnchanged": true,
+    "liveGraphCycleCheck": "passed across all written and planned items",
+    "globalStaticErrors": 0,
+    "scopedStatic": {
+      "command": "node scripts/check.mjs geol kin mathbio ecol physio pharm epi arch bighist --static",
+      "writtenItems": 432,
+      "errors": 0,
+      "warnings": 0
+    },
+    "browser": "No browser needed for dependency metadata. Separate focused model corrections have their own native-control browser evidence in peer-corrections.md.",
+    "onlyDependencyAndContextualSeeArraysChanged": "True for the prerequisite-only batch; subsequent separately authorized text/sign/plot corrections are documented in peer-corrections.md.",
+    "finalLiveReconciliation": {
+      "additionsValidated": 140,
+      "allWritten": true,
+      "differentFields": true,
+      "unique": true,
+      "exactAnchors": true,
+      "fullSyllabusArraysMatch": true,
+      "liveDistinctPairsByCollection": {
+        "geol": 25,
+        "kin": 26,
+        "mathbio": 26,
+        "ecol": 25,
+        "physio": 25,
+        "pharm": 25,
+        "epi": 25,
+        "arch": 24,
+        "bighist": 26
+      }
+    },
+    "finalFlagsUnchanged": true
+  },
+  "shortfalls": [
+    {
+      "collection": "arch",
+      "missing": 1
+    }
+  ],
+  "peerReviewRefinements": [
+    {
+      "source": "arch-1.7",
+      "target": "solid-4.3",
+      "reviewer": "review_macro",
+      "resolution": "moved-to-see",
+      "sourceProseUnchanged": true
+    },
+    {
+      "source": "geol-3.7",
+      "target": "mech-1.8",
+      "reviewer": "review_macro",
+      "resolution": "removed-without-replacement",
+      "sourceProseUnchanged": true
+    },
+    {
+      "source": "bighist-4.5",
+      "target": "stoch-1.4",
+      "replacement": "prob-3.7.4",
+      "reviewer": "review_macro",
+      "resolution": "replaced-discrete-chain-with-Poisson-thinning",
+      "sourceProseUnchanged": true
+    }
+  ],
+  "subsequentSourceFollowup": {
+    "id": "physio-3.11",
+    "report": "docs/verification/geology-bounded-source-followup.md",
+    "meaning": "A later separately authorized complete-primary reading closes this source flag after the dependency-audit snapshot. No dependency counts or anchors changed."
+  }
+}

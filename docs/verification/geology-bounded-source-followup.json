@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "scope": "One bounded acquisition pass on exactly three retained IDs; no broad semantic audit or new prerequisites.",
+  "summary": {
+    "attempted": 3,
+    "closed": 1,
+    "retained": 2,
+    "genuinelyUnreviewed": 0
+  },
+  "items": [
+    {
+      "id": "physio-3.11",
+      "outcome": "closed",
+      "newRoutes": [
+        "https://archive.org/advancedsearch.php?q=title%3A%22journal+of+physiology%22+AND+year%3A1914&output=json&rows=25",
+        "https://archive.org/metadata/sim_journal-of-physiology_the-journal-of-physiology_1914_48",
+        "https://archive.org/download/sim_journal-of-physiology_the-journal-of-physiology_1914_48/sim_journal-of-physiology_the-journal-of-physiology_1914_48_djvu.txt",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC1420422/"
+      ],
+      "sourceRead": "Complete Patterson–Starling1914 original, Journal of Physiology48:357–379, DOI10.1113/jphysiol.1914.sp001669, via publicly downloadable original-volume OCR with original BookReader scans. NCBI ESearch/ESummary independently matched PMC1420422/PMID16993262; its page returned CAPTCHA and was not bypassed. The successful IA1914 issue is distinct from the inaccessible1955 issue used in an earlier review.",
+      "visualChecks": {
+        "363": "Fig1 apparatus, timed graduated collection, circuit/venous clip/pneumatic arterial resistance",
+        "366": "TableI continued, low/high inflow, pulse/output-per-beat fields and explicit clip protocol",
+        "367": "Fig2, all nine pressure/output curves; output axis per10seconds, not a modern cardiac-output calibration",
+        "373": "TableIII, right/left atrial pressure divergence and failure conditions",
+        "376": "TableIV, maximum output and adrenaline conditions, plus warning that preparation does not establish normal resting output",
+        "378": "Conclusions1–8",
+        "379": "Conclusions8–12 and bibliography"
+      },
+      "claimAlignment": [
+        {
+          "claim": "Output is measured directly, not inferred from the plotted model.",
+          "pages": "363–365",
+          "evidence": "T-piece diverts arterial blood into a graduated vessel; filling time measured with a stop-watch."
+        },
+        {
+          "claim": "Venous and arterial load controls are different.",
+          "pages": "364–366",
+          "evidence": "Early experiments changed reservoir height; later ones opened the venous clip at reservoir height around35cm. Arterial resistance was a thin rubber tube controlled by external air pressure."
+        },
+        {
+          "claim": "Within working limits output follows inflow and per-beat output depends on filling.",
+          "pages": "365–368,378–379",
+          "evidence": "Steady circulation must return the entering blood; the authors explicitly connect per-beat output with diastolic filling, then describe maximal distension and failure."
+        },
+        {
+          "claim": "Raised afterload does not mean the same experiment as fixed venous pressure.",
+          "pages": "357–358,368,378",
+          "evidence": "At given inflow the arterial resistance changes required venous pressure and residual volume. The plotted modern model holds filling pressure independently."
+        },
+        {
+          "claim": "Isolation does not eliminate circulating hormones or reproduce intact-animal pressure conditions.",
+          "pages": "361–363,375–378",
+          "evidence": "Intrathoracic pressure differences and clinical extrapolation limitations are explicit; TablesIV/V include adrenaline."
+        }
+      ],
+      "missingEvidence": null,
+      "contentChanges": [
+        "content/physio/ch03-b.js:physio-3.11 statement/idea/caption/scope/refs and verify flag",
+        "content/physio/syllabus.js:physio-3.11 source reference and model description"
+      ],
+      "computationsOrInteractionsChanged": false
+    },
+    {
+      "id": "arch-3.14",
+      "outcome": "retained",
+      "newRoutes": [
+        "https://api.openalex.org/works/https://doi.org/10.1016/0020-7683(66)90018-7",
+        "https://api.repository.cam.ac.uk/server/api/discover/search/objects?query=%22the%20stone%20skeleton%22&size=20"
+      ],
+      "result": "OpenAlex lists only the publisher, without an open manuscript location. The ordinary Cambridge Apollo phrase search returned19 records; inspection of their titles/metadata found later citing works and unrelated results, not the1966 original. No full original scan was acquired or newly read. These index results do not establish that no public copy exists.",
+      "missingEvidence": "Original figure/equation scan inspection and the precise earlier Couplet attribution. The accessible full prose supports the assumptions and theorem but does not resolve those remaining parts."
+    },
+    {
+      "id": "geol-3.12",
+      "outcome": "retained",
+      "newRoutes": [
+        "https://www.geologie.ens.fr/50years_plate_tectonics/",
+        "https://api.openalex.org/works/https://doi.org/10.1038/211676a0",
+        "https://biblio.vub.ac.be/vubir/ts-must-read-paper--wilson-1966-did-the-atlantic-close-and-then-reopen(bf4962f2-7e31-41cc-8cab-fd6ec0f9a3f7).html"
+      ],
+      "result": "The ENS archive index returned an upstream certificate/TLS failure. OpenAlex gave a new VUB repository record; the public landing page redirected to a library-search interface with no paper attachment. No readable Wilson1966 primary body was acquired; no closure inferred from DOI/index metadata.",
+      "missingEvidence": "Complete Wilson 1966 paper and geological basis for the stage examples; DOI metadata alone is insufficient."
+    }
+  ],
+  "evidenceFiles": [
+    {
+      "path": "/tmp/physio-primary/patterson1914-library-volume.txt",
+      "bytes": 1303658,
+      "sha256": "f9b23610a123cce0d1324595601af1c0cef4cca2d82986fb33ce61df51ca2b1e"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-library-paper.txt",
+      "bytes": 57443,
+      "sha256": "a6f9f5658c9f15345095d6b8b68b1b1f9d1127a4a65de284524b21873e58432f"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-library-scandata.xml",
+      "bytes": 206672,
+      "sha256": "fec0b7fe947d6ba5e9fdd3c5ee0b7af7924bc4158d9074c754e45d63499a3083"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p363.jpg",
+      "bytes": 929595,
+      "sha256": "15cd5694578557ebf0b45c41ec4f6c32ecb887183256147dc07d369eb5c6f67d"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p366.jpg",
+      "bytes": 913205,
+      "sha256": "c200b0d44d13c9734090a814325e58b23e590172054c3e9a35431a8d3240a004"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p367.jpg",
+      "bytes": 947989,
+      "sha256": "963450524dbaff8d5a1d22d7d0141998992e37b26c1d69d078eaf5050fb15433"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p373.jpg",
+      "bytes": 990986,
+      "sha256": "842cbf8dc224a20ecd9ca580aaff04419dc34eb5a816ad88ec1eee9e465a4bec"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p376.jpg",
+      "bytes": 938326,
+      "sha256": "77c0966ce81fd016ffbadc455b42ca8a6676317bb95648ccdd06c446bf3987cf"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p378.jpg",
+      "bytes": 946676,
+      "sha256": "78e6d46c9bb9baa1ac22c7043027d75dc085eaf57c634a8695e7c4fbbb663ee3"
+    },
+    {
+      "path": "/tmp/physio-primary/patterson1914-p379.jpg",
+      "bytes": 930816,
+      "sha256": "61477b48aed2e5ae1c7db80d8364886b422971303c3a51e3289cb44bc378fcca"
+    }
+  ],
+  "validation": {
+    "static": "node scripts/check.mjs physio-3.11 --static",
+    "browser": "No new browser/OCR processes; numerical/interaction code unchanged. The existing both-theme physio3.11 native-control evidence remains applicable to the unchanged visualization; root full sweeps receive the new PHYSIO fingerprint.",
+    "sharedOutputsTouched": false,
+    "contentFrozen": true,
+    "staticResult": {
+      "items": 1,
+      "errors": 0,
+      "warnings": 0
+    },
+    "sourceAndSyllabusReferenceAlignment": "passed",
+    "visualizationFunctionSha256": "f96d2aef5edffd87ab821294976dd59d29ff42134a8f37a9fb136f378eaad45d"
+  }
+}

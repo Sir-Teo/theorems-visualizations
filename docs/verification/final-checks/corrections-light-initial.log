@@ -1,0 +1,215 @@
+static check: 585 item(s)
+  0 error(s), 0 warning(s)
+✓ rep-1.6      Irreducible representations
+✓ rep-1.7      Direct sums
+✓ rep-1.8      Tensor products, duals and Hom
+✓ rep-1.9      Symmetric and alternating squares
+✓ rep-1.10     Dihedral groups acting on functions on a polygon
+✓ rep-1.1      Linear representations
+✓ rep-1.2      Permutation and regular representations
+✓ rep-1.3      One-dimensional representations of cyclic groups
+✓ rep-1.4      Intertwiners and isomorphic representations
+✓ rep-1.5      Subrepresentations and invariant subspaces
+✓ rep-2.1      Averaging gives an invariant inner product
+✓ rep-2.2      Maschke’s theorem
+✓ rep-2.3      Maschke fails in characteristic p
+✓ rep-2.4      Maschke fails for infinite groups
+✓ rep-2.5      Schur’s lemma
+✓ rep-2.6      Irreducible representations of abelian groups are one-dimens
+✓ rep-2.7      The isotypic decomposition is unique
+✓ rep-2.8      Averaging projects onto the invariants
+✓ rep-2.9      Irreducible over ℝ, reducible over ℂ
+✓ rep-2.10     Every representation of a finite group is unitary in some ba
+✓ rep-3.9      Decomposition of the regular representation
+✓ rep-3.10     Number of irreducibles equals number of conjugacy classes
+✓ rep-3.11     Column orthogonality
+✓ rep-3.12     Projection onto isotypic components
+✓ rep-3.13     Orthogonality of matrix coefficients
+✓ rep-3.14     Character tables
+✓ rep-3.15     Burnside’s lemma: counting orbits
+✓ rep-3.16     Über Gruppencharaktere
+✓ rep-3.1      Character of a representation
+✓ rep-3.2      Characters are class functions
+✓ rep-3.3      Characters of sums, tensors, duals and squares
+✓ rep-3.4      Inner product of class functions
+✓ rep-3.5      Orthogonality of irreducible characters
+✓ rep-3.6      Multiplicities from inner products
+✓ rep-3.7      A representation is determined by its character
+✓ rep-3.8      Irreducibility criterion ⟨χ, χ⟩ = 1
+✓ rep-4.7      A₅ and the icosahedron
+✓ rep-4.8      Exterior powers of the standard representation of Sₙ
+✓ rep-4.9      Real, complex and quaternionic representations
+✓ rep-4.10     Frobenius–Schur indicator
+✓ rep-4.11     Counting molecular vibrations by symmetry
+✓ rep-4.12     Selection rules
+✓ rep-4.1      Characters of finite abelian groups
+✓ rep-4.2      The character table of S₃
+✓ rep-4.3      Dihedral groups
+✓ rep-4.4      D₄ and Q₈ share a character table
+✓ rep-4.5      A₄ and the tetrahedron
+✓ rep-4.6      S₄ and the rotations of the cube
+✓ mfd-1.7      Open subsets and GL(n, ℝ)
+✓ mfd-1.8      Manifolds with boundary
+✓ mfd-1.9      Smooth bump functions
+✓ mfd-1.10     Smooth partitions of unity
+✓ mfd-1.11     Every closed set is the zero set of a smooth function
+✓ mfd-1.1      Charts, atlases and transition maps
+✓ mfd-1.2      Smooth structures and smooth manifolds
+✓ mfd-1.3      Spheres as smooth manifolds
+✓ mfd-1.4      Projective spaces as smooth manifolds
+✓ mfd-1.5      Grassmannians
+✓ mfd-1.6      Product manifolds and the n-torus
+✓ mfd-2.7      The tangent bundle
+✓ mfd-2.8      Inverse function theorem for manifolds
+✓ mfd-2.9      Local diffeomorphisms and smooth covering maps
+✓ mfd-2.10     Vector bundles and sections
+✓ mfd-2.11     Parallelizable manifolds; TS² is not trivial
+✓ mfd-2.1      Smooth maps and diffeomorphisms
+✓ mfd-2.2      Tangent vectors as derivations
+✓ mfd-2.3      Tangent vectors as velocities of curves
+✓ mfd-2.4      Differential of a smooth map
+✓ mfd-2.5      Chain rule for differentials
+✓ mfd-2.6      Coordinate vectors and change of coordinates
+✓ mfd-3.8      Sard’s theorem
+✓ mfd-3.9      Whitney embedding theorem
+✓ mfd-3.10     Whitney approximation theorem
+✓ mfd-3.11     Transversality
+✓ mfd-3.12     Transversality is generic
+✓ mfd-3.13     Mod 2 degree
+✓ mfd-3.14     Morse functions and the Morse lemma
+✓ mfd-3.1      Constant rank theorem
+✓ mfd-3.2      Immersions and embeddings
+✓ mfd-3.3      Submersions
+✓ mfd-3.4      Embedded submanifolds and slice charts
+✓ mfd-3.5      Regular level sets are submanifolds
+✓ mfd-3.6      O(n) and SL(n) as submanifolds
+✓ mfd-3.7      Immersed submanifolds and the dense winding of the torus
+✓ mfd-4.7      The bracket measures non-commuting flows
+✓ mfd-4.8      Lie derivative
+✓ mfd-4.9      The Lie derivative of a vector field is the bracket
+✓ mfd-4.10     Commuting flows and coordinate frames
+✓ mfd-4.11     Distributions and involutivity
+✓ mfd-4.12     Frobenius theorem
+✓ mfd-4.1      Vector fields
+✓ mfd-4.2      Integral curves
+✓ mfd-4.3      Fundamental theorem on flows
+✓ mfd-4.4      Compactly supported vector fields are complete
+✓ mfd-4.6      Lie bracket
+✓ logic-1.6    Russell’s paradox
+✓ logic-1.7    The liar paradox
+✓ logic-1.8    Berry’s paradox
+✓ logic-1.9    Grelling–Nelson paradox (heterological words)
+✓ logic-1.10   Richard’s paradox
+✓ logic-1.11   Ueber eine Eigenschaft des Inbegriffs … algebraischen Zahlen
+✓ logic-1.1    Hilbert’s hotel
+✓ logic-1.2    Cantor’s theorem: no set maps onto its power set
+✓ logic-1.3    Schröder–Bernstein theorem
+✓ logic-1.4    The continuum: |ℝ| = |P(ℕ)| = |ℝ²|
+✓ logic-1.5    Transcendental numbers exist (Cantor)
+✓ logic-2.7    Post’s functional completeness criterion
+✓ logic-2.8    Boolean algebras and switching circuits
+✓ logic-2.9    Tautologies are decidable; the cost of truth tables
+✓ logic-2.10   König’s lemma
+✓ logic-2.11   Compactness theorem for propositional logic
+✓ logic-2.12   De Bruijn–Erdős: colouring infinite graphs
+✓ logic-2.1    Propositional formulas and unique readability
+✓ logic-2.2    Induction and recursion on formulas
+✓ logic-2.3    Truth assignments and truth tables
+✓ logic-2.4    Tautology, satisfiability and logical consequence
+✓ logic-2.5    Disjunctive and conjunctive normal forms
+✓ logic-2.6    Functional completeness; NAND suffices
+✓ logic-3.8    Isomorphic structures satisfy the same sentences
+✓ logic-3.9    Automorphisms preserve definable sets
+✓ logic-3.10   Substructures and elementary substructures
+✓ logic-3.11   Tarski–Vaught criterion
+✓ logic-3.12   Prenex normal form
+✓ logic-3.13   Theories, axioms and their models
+✓ logic-3.1    First-order languages: terms and formulas
+✓ logic-3.2    Free and bound variables; sentences
+✓ logic-3.3    Structures for a language
+✓ logic-3.4    Tarski’s definition of satisfaction
+✓ logic-3.5    Logical implication and validity
+✓ logic-3.6    Definable sets and relations
+✓ logic-3.7    Isomorphism and elementary equivalence
+✓ logic-4.7    Compactness theorem
+✓ logic-4.8    The validities are effectively enumerable
+✓ logic-4.9    Finiteness is not first-order expressible
+✓ logic-4.10   Connectedness is not first-order axiomatizable
+✓ logic-4.11   Second-order logic: categorical but not complete
+✓ logic-4.12   Vollständigkeit der Axiome des logischen Funktionenkalküls
+✓ logic-4.1    A deductive calculus: axioms and modus ponens
+✓ logic-4.2    Deduction theorem
+✓ logic-4.3    Generalization theorem
+✓ logic-4.4    Soundness theorem
+✓ logic-4.5    Henkin’s lemma: complete theories with witnesses
+✓ logic-4.6    Gödel’s completeness theorem
+✗ logic-5.8    Quantifier elimination for the successor function
+    error: locator.screenshot: Target page, context or browser has been closed | Call log: | [2m  - taking element screenshot[22m
+✗ logic-5.9    Tarski: real closed fields eliminate quantifiers
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.10   Non-standard models of arithmetic
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.11   Ultraproducts and Łoś’s theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.12   Hyperreals and infinitesimals
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.13   Transfer principle and infinitesimal calculus
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.14   Morley’s categoricity theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.1    Downward Löwenheim–Skolem theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.2    Upward Löwenheim–Skolem theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.3    Skolem’s paradox
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.4    Categoricity in a cardinal
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.5    Cantor’s back-and-forth theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.6    Łoś–Vaught test
+    error: page.goto: Target page, context or browser has been closed
+✗ logic-5.7    Quantifier elimination
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.6      Least squares as an optimization problem
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.7      Linear programming
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.8      Nonconvex landscapes trap local search
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.9      Lagrange multipliers for equality constraints
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.10     Ill-conditioned Hessians and narrow valleys
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.1      Optimization problems: objective, constraints, optimal value
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.2      Existence of minimizers: compactness and coercivity
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.3      Local and global minimizers
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.4      First-order necessary condition: ∇f = 0
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-1.5      Second-order optimality conditions
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.8      Supporting hyperplane theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.9      Dual cones
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.10     Carathéodory’s theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.11     Projection onto a closed convex set
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.12     Linear functionals are maximized at extreme points
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.13     Helly’s theorem
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.1      Affine sets, convex sets and convex hulls
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.2      Cones and convex cones
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.3      Halfspaces, balls, ellipsoids and polyhedra
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.4      The positive semidefinite cone
+    error: page.goto: Target page, context or browser has been closed
+✗ opt-2.5      Operations that preserve convexity
+    error: page.goto: Target page, context or browser has been closed

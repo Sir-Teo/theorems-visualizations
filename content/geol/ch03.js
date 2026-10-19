@@ -1,12 +1,12 @@
 // Geology & Geophysics — Chapter 3: Plate tectonics on a sphere (part a: 3.1–3.5)
 //
 // Sources checked / provenance (Oct 2026):
-//   3.1  Bullard, Everett & Smith (1965) fit of South America to Africa: Euler pole 42.9° N, 30.1° W, rotation 57.1°, rms misfit
-//        ≈ 130 km on the 500-fathom contour (values read from the Virtual Explorer reproduction of their Table 1; the paper itself
-//        was not opened). Only coastlines (Natural Earth 110 m) are available here, so the fit is looser than theirs. The fossil
+//   3.1  Bullard, Everett & Smith (1965), full original read 2026-10-18: Table 1 fit 2 gives Euler pole 42.9° N, 30.1° W,
+//        rotation 57.1°, rms misfit 90 km on the 500-fathom contour (including Niger Delta and Walvis Ridge). The 130-km
+//        value belongs to joining the North and South Atlantic blocks, not this South America–Africa fit. Only coastlines (Natural Earth 110 m) are available here, so the fit is looser than theirs. The fossil
 //        and fold-belt localities are approximate points, placed from memory to illustrate the matches Wegener cited.
-//   3.2  Polarity time scale: rounded from Cande & Kent (1995) / GPTS 2012–2020 (Wikipedia list of geomagnetic reversals, checked
-//        to ±0.06 Myr). Credit: Vine & Matthews 1963 (Nature 199: 947–949, Crossref-checked); Morley & Larochelle 1964 independently.
+//   3.2  Polarity time scale: Cande & Kent (1995) historical calibration; all normal intervals through 5.9 Ma
+//        checked against the complete WHOI CK95.M table on 2026-10-18 (including Reunion 2.14–2.15 Ma). Credit: Vine & Matthews 1963 (Nature 199: 947–949, Crossref-checked); Morley & Larochelle 1964 independently.
 //   3.3  geometry only; thresholds (20° obliquity) are a convention of this page.
 //   3.4  Euler's theorem is mathematics; all numbers are computed.
 //   3.5  the ridge polyline is a schematic of the South Atlantic and equatorial Mid-Atlantic Ridge placed from memory (transform
@@ -38,8 +38,8 @@ export default {
       statement: String.raw`The continents were once joined in a single land mass and have since moved apart horizontally, over distances of thousands of kilometres. The evidence offered for it is geometrical and geological: the facing coasts of the Atlantic fit like torn pieces of paper, and when they are closed, rock belts, fold belts, glacial deposits and fossil land animals and plants that make no sense on opposite sides of an ocean line up across the join. In the form proposed by Wegener (1912), the mechanism was left unspecified — and his own was inadequate — so the hypothesis described *that* the continents moved, not *how*.`,
       idea: String.raw`The argument is a test by coincidence: if the continents never moved, the fit of coastlines and the matching of unrelated features across the join would both have to be accidents. A rigid rotation of one continent about a single axis (Euler's theorem, mech-10.1) is the minimal motion that could close the gap, so one rotation should bring *all* the matching pairs together at once, and the pairs become a quantitative check. What the hypothesis lacked was a mechanism and a way to measure: it needed the sea-floor evidence of the 1950s–60s, and a fit of the continental *shelf edge* instead of the shoreline, to be accepted.`,
       caption: String.raw`Slide the Atlantic closed: South America rotates about the purple Euler pole $E$ (start at the pole of Bullard, Everett & Smith, 1965). The three coloured pairs are matching features on the two sides (Paraná and Etendeka flood basalts, the Ventana and Cape fold belts, the Mesosaurus-bearing shales; localities approximate): they approach each other together as one rotation closes the gap. Drag $E$ away from the published pole and watch the coastlines overlap and the pairs part again; the globe also rotates when you drag the sea.`,
-      deps: [],
-      refs: ['Turcotte–Schubert ch. 1', 'Press–Siever'],
+      deps: ['mech-10.1'],
+      refs: ['Bullard, Everett & Smith (1965), The fit of the continents around the Atlantic, §2–4 and Table 1 fit 2; doi:10.1098/rsta.1965.0020'],
       tags: ['drift', 'wegener', 'fit'],
       credit: 'Alfred Wegener, 1912 (lecture 6 January 1912, Frankfurt)',
       scope: String.raw`A kinematic hypothesis about relative position only. It says nothing about forces, and a closure by coastlines alone (as here) is only an approximation to the closure of the continental shelf edges.`,
@@ -80,7 +80,7 @@ export default {
           let ov = 0; for (const q of samples) { const r = rotApply(M, [q[0], q[1]]); if (inRing(r[0], r[1], AF[0])) ov += q[2]; }
           const dists = pairs.map((p) => (angDist(rotApply(M, p.a), p.b) * D * R_EARTH));
           const m = dists.reduce((a, x) => a + x, 0) / dists.length;
-          return `separations of the three pairs (open ocean at 0%: about 5 000–6 500 km): ${dists.map((d) => Math.round(d).toLocaleString('en-US').replace(/,/g, ' ')).join(' · ')} km (mean **${v.fix(m, 0)} km**) · coastline overlap: **${v.fix((100 * ov) / wsum, 1)}%** of South America · pole $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$. Bullard et al. closed the 500-fathom contours with rms misfit about 130 km (their pole: $42.9^\\circ$N, $30.1^\\circ$W, $57.1^\\circ$).`;
+          return `separations of the three pairs (open ocean at 0%: about 5 000–6 500 km): ${dists.map((d) => Math.round(d).toLocaleString('en-US').replace(/,/g, ' ')).join(' · ')} km (mean **${v.fix(m, 0)} km**) · coastline overlap: **${v.fix((100 * ov) / wsum, 1)}%** of South America · pole $E=(${v.fix(E.lat, 1)}^\\circ\\mathrm{N},\\,${v.fix(Math.abs(E.lon), 1)}^\\circ\\mathrm{${E.lon < 0 ? 'W' : 'E'}})$. Bullard et al. closed the 500-fathom contours with rms misfit 90 km in Table 1 fit 2 (including the Niger Delta and Walvis Ridge; pole: $42.9^\\circ$N, $30.1^\\circ$W, $57.1^\\circ$).`;
         });
       },
     },
@@ -89,11 +89,11 @@ export default {
       num: '3.2',
       kind: 'Phenomenon',
       name: 'Seafloor spreading and magnetic stripes',
-      statement: String.raw`Oceanic crust is created at the mid-ocean ridges and carried symmetrically away on both sides. As basalt cools through the Curie temperature it records the direction of the geomagnetic field, which reverses at irregular intervals; so the crust is a tape recording of the reversal history. Measured along a track across a ridge, the total magnetic field shows long linear *stripes* — positive anomalies over normally magnetized crust, negative over reversely magnetized crust — that mirror each other about the ridge axis and whose widths are the polarity-interval durations multiplied by the half-spreading rate: $w = u\,\Delta t$.`,
+      statement: String.raw`Oceanic crust is created at the mid-ocean ridges and carried symmetrically away on both sides. As basalt cools through the Curie temperature it records the direction of the geomagnetic field, which reverses at irregular intervals; so the crust is a tape recording of the reversal history. Measured along a track across a ridge, the total magnetic field shows long linear *stripes* — opposite anomaly contributions from normal and reversed magnetization (their sign and shape depend on field inclination and track direction) — that mirror each other about the ridge axis and whose widths are the polarity-interval durations multiplied by the half-spreading rate: $w = u\,\Delta t$.`,
       idea: String.raw`The sea floor is built by a conveyor: at distance $x$ from the axis the rock is $x/u$ old, and it carries the polarity the field had when it cooled (thermoremanent magnetization, mat-9.12). The anomaly is the magnetic field of that stripe pattern minus the ambient field, so it is large where the field of a stripe is not cancelled by its neighbours — and it fades when the stripes are narrower than the depth to the magnetic layer, because the field of a thin body spreads out (upward continuation). That is why fast-spreading ridges show clean stripes in the shortest chrons while slow ones blur them, and why the same time scale fits every ocean.`,
-      caption: String.raw`Set the half-spreading rate: the upper strip shows the crust, coloured by polarity and labelled with the main chrons; below is the computed total-field anomaly along a ship track (a block model: each stripe a layer of effective susceptibility $\pm0.004$, 2 km thick). Slow the ridge or deepen the layer and the short events (Jaramillo, Olduvai) wash out; switch off reversals and the pattern disappears; tilt the field toward the equator to see how the stripe amplitudes change.`,
+      caption: String.raw`Set the half-spreading rate: the upper strip shows the crust, coloured by polarity and labelled with the main chrons; below is the computed total-field anomaly along a ship track (a block model: each stripe a layer of signed effective susceptibility $\pm0.004$ in c.g.s. units, 2 km thick). Slow the ridge or deepen the layer and the short events (Jaramillo, Olduvai) wash out; switch off reversals and the internal stripe pattern disappears (the finite model still has edge anomalies); tilt the field toward the equator to see how the stripe amplitudes change.`,
       deps: ['geol-3.1', 'mat-9.12'],
-      refs: ['Turcotte–Schubert ch. 1', 'Stein–Wysession ch. 5'],
+      refs: ['Cande & Kent (1995), revised geomagnetic polarity timescale; WHOI Marine Magnetic Research CK95.M interval table; doi:10.1029/94JB03098', 'Vine & Matthews (1963), Nature 199, 947–949; doi:10.1038/199947a0'],
       tags: ['spreading', 'magnetism', 'reversals'],
       credit: 'F. J. Vine & D. H. Matthews, 1963 (and L. W. Morley, independently, 1963–64)',
       scope: String.raw`Needs a field that reverses and a ridge that spreads in a steady, symmetric way. Anomalies are modelled here as 2-D infinitely long stripes, ignoring seafloor topography, the thinner magnetic layers of slow ridges, and the non-vertical boundaries of real polarity transitions (smoothed with the "boundary width" slider).`,
@@ -121,7 +121,7 @@ export default {
             for (const sg of [-1, 1]) blocks.push({ x0: Math.min(sg * ev[i] * u, sg * ev[i + 1] * u), x1: Math.max(sg * ev[i] * u, sg * ev[i + 1] * u), s: pol * k });
             for (const sg of [-1, 1]) strip.rect(Math.min(sg * ev[i] * u, sg * ev[i + 1] * u), 0.05, Math.max(sg * ev[i] * u, sg * ev[i + 1] * u), 0.78, { fill: pol > 0 ? 'ink' : 'faint', fillAlpha: pol > 0 ? 0.75 : 0.25, color: 'muted', width: 0.5 });
           }
-          for (const [nm, a, b] of [['Brunhes', 0, 0.78], ['Matuyama', 0.78, 2.58], ['Gauss', 2.58, 3.58], ['Gilbert', 3.58, T]]) for (const sg of [-1, 1]) strip.text(nm, sg * ((a + b) / 2) * u, 0.92, { size: 10.5, color: 'muted', align: 'center' });
+          for (const [nm, a, b] of [['Brunhes', 0, 0.78], ['Matuyama', 0.78, 2.581], ['Gauss', 2.581, 3.58], ['Gilbert', 3.58, T]]) for (const sg of [-1, 1]) strip.text(nm, sg * ((a + b) / 2) * u, 0.92, { size: 10.5, color: 'muted', align: 'center' });
           strip.vline(0, { color: 'orange', width: 1.5 });
           const n = 260, xs = Array.from({ length: n }, (_, i) => -X + (2 * X * i) / (n - 1));
           let ys = anomalyProfile(xs, blocks, { zTop: depth.value, thick: 2, F: 50000, incl: incl.value, dAng: 0 });
@@ -138,7 +138,7 @@ export default {
           prof.setView([-X, X], [-Math.max(300, Math.ceil(mx / 100) * 100), Math.max(300, Math.ceil(mx / 100) * 100)]);
         });
         v.legend([['ink', 'normal polarity'], ['faint', 'reversed polarity'], ['orange', 'ridge axis'], ['accent', 'computed anomaly']]);
-        v.readout(() => `Brunhes (normal) central stripe: $2\\times0.78\\,\\mathrm{Myr}\\times u=${v.fix(info.bru, 1)}$ km wide; the Jaramillo event (0.08 Myr) is only ${v.fix(info.jar, 1)} km per side, against a layer ${v.fix(depth.value, 1)} km deep · peak anomaly **${v.fix(info.mx, 0)} nT**. Time scale: rounded Cande–Kent values to 5.9 Ma.`);
+        v.readout(() => `Brunhes (normal) central stripe: $2\\times0.78\\,\\mathrm{Myr}\\times u=${v.fix(info.bru, 1)}$ km wide; the Jaramillo event (0.08 Myr) is only ${v.fix(info.jar, 1)} km per side, against a layer ${v.fix(depth.value, 1)} km deep · peak anomaly **${v.fix(info.mx, 0)} nT**. Time scale: historical Cande–Kent (1995) values to 5.9 Ma; includes the 2.14–2.15 Ma Reunion interval.`);
       },
     },
     // ───────────────────────────────────────── 3.3
@@ -260,11 +260,11 @@ export default {
       num: '3.5',
       kind: 'Proposition',
       name: 'Relative plate velocity v = ω × r',
-      statement: String.raw`If plate B turns relative to plate A with angular velocity $\boldsymbol\omega$ (axis through the Euler pole, rate $\omega$ in degrees per million years), the relative velocity at the point with position vector $\mathbf r$ is $\mathbf v=\boldsymbol\omega\times\mathbf r$. Its direction is along the small circle about the pole through the point, and its speed is $v=\omega R\sin\Delta$, where $R$ is the Earth's radius and $\Delta$ the angular distance from the pole: it is zero at the pole and its antipode and largest, $\omega R$, on the great circle $90^\circ$ from the pole. One degree per million years is $111.2$ mm/yr.`,
+      statement: String.raw`If plate B turns relative to plate A with angular velocity $\boldsymbol\omega$ (axis through the Euler pole, displayed rate in degrees per million years, converted to radians per unit time in the vector formula), the relative velocity at the point with position vector $\mathbf r$ is $\mathbf v=\boldsymbol\omega\times\mathbf r$. Its direction is along the small circle about the pole through the point, and its speed is $v=\omega R\sin\Delta$, where $R$ is the Earth's radius and $\Delta$ the angular distance from the pole: it is zero at the pole and its antipode and largest, $\omega R$, on the great circle $90^\circ$ from the pole. At $R=6371$ km, a rate of one degree per million years gives a maximum speed of $111.2$ mm/yr; convert degrees to radians before multiplying by $R$.`,
       idea: String.raw`This is the velocity of a point of a rigid body rotating about a fixed axis (mech-9.4): $|\boldsymbol\omega\times\mathbf r|=\omega\,|\mathbf r|\sin\Delta$ because the cross product measures the component of $\mathbf r$ perpendicular to the axis, which is the radius of the small circle $R\sin\Delta$. So spreading rates along a ridge are not constant: they grow with distance from the pole. Measuring how the spreading rate varies along a ridge locates the pole.`,
       caption: String.raw`Drag the Euler pole $E$ and change the rate. Along the schematic South Atlantic ridge, gold arrows show the opening velocity (each plate moves half), and the lower graph plots speed against angular distance from the pole: the dots lie on the curve $\omega R\sin\Delta$. The readout computes $|\boldsymbol\omega\times\mathbf r|$ directly from vectors and compares it with the formula. Place $E$ on the ridge itself to make the speed vanish there.`,
       deps: ['geol-3.4', 'mech-9.4'],
-      refs: ['Stein–Wysession ch. 5'],
+      refs: ['Morgan (1968), Rises, trenches, great faults, and crustal blocks, pp. 1959–1966, Figs. 2–8; doi:10.1029/JB073i006p01959'],
       tags: ['velocity', 'cross-product', 'spreading'],
       credit: 'Morgan 1968; Le Pichon 1968 (plate velocities from Euler vectors)',
       scope: String.raw`Rigid plates on a spherical Earth. The ridge is a schematic polyline (offsets at fracture zones omitted); the rate $\omega$ is a free slider, not the measured opening rate.`,

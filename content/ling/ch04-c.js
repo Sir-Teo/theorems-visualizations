@@ -1,5 +1,5 @@
 // Linguistics & Language — Chapter 4, part c: items 4.11–4.14
-import { corpus, TEXT_OPTS, TEXT_LABELS, MINE_DEFAULT, FED, FED_WORDS, logRanks, fitLogLog, toSyms, letterModel, guessDistribution, shannonBounds, TEXTS, TEST_TEXT } from './ch04.shared.js';
+import { corpus, TEXT_OPTS, TEXT_LABELS, MINE_DEFAULT, FED, FED_WORDS, logRanks, fitLogLog, toSyms, letterModel, idealGuessProfile, shannonBounds, TEXTS, TEST_TEXT } from './ch04.shared.js';
 
 // ---- 4.12: Poisson naive-Bayes on the Federalist counts (rates per word from the known Hamilton and Madison papers)
 const KNOWN = FED.filter((p) => p.a === 'H' || p.a === 'M'), DISP = FED.filter((p) => p.a === '?');
@@ -87,16 +87,15 @@ is much more uniform: the pooled mean was about 39 bits per second (standard dev
       kind: 'Method',
       name: 'Stylometry and authorship attribution',
       credit: 'Frederick Mosteller & David L. Wallace, 1963 (J. Amer. Statist. Assoc. 58, 275–309) and 1964 (Inference and Disputed Authorship: The Federalist)',
-      statement: String.raw`Authors leave a statistical fingerprint in their use of **function words** (*by*, *to*, *upon*, *while*), which are used almost unconsciously and independently of topic. To attribute a disputed text, estimate each candidate's rate for a set of marker words from texts of known authorship and compare the likelihood of the disputed text's counts under the two models; with Poisson counts the log-likelihood ratio is
+      statement: String.raw`Authors leave a statistical fingerprint in their use of **function words** (*by*, *to*, *upon*, *while*), whose rates can be less sensitive to topic than content words, though topic and genre still matter. To attribute a disputed text, estimate each candidate's rate for a set of marker words from texts of known authorship and compare the likelihood of the disputed text's counts under the two models; with Poisson counts the log-likelihood ratio is
 $$\Lambda=\sum_w\Bigl[c_w\ln\frac{\rho_w^{M}}{\rho_w^{H}}-N\,(\rho^M_w-\rho^H_w)\Bigr],$$
-$c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the candidates' rates; $\Lambda>0$ favours the second author. Applied to the twelve disputed *Federalist* papers (Nos. 49–58, 62, 63), Mosteller and Wallace found overwhelming evidence for Madison over Hamilton.`,
-      idea: String.raw`Hamilton wrote *upon* about three times in a thousand words and Madison almost never; Madison wrote *by* and *whilst* more, Hamilton *would*, *on* less. No single word decides, but a sum of many small log-likelihood ratios does. Mosteller and Wallace used Bayesian (negative-binomial) counts that allow for extra variability between papers; the plain Poisson model used here is cruder and overconfident, so large values of $\Lambda$ should be read as direction rather than as exact odds. The method assumes writers of comparable genre and period and a closed list of candidates.`,
+$c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the candidates' rates; $\Lambda>0$ favours the second author. Applied to the twelve disputed *Federalist* papers (Nos. 49–58, 62, 63), Mosteller and Wallace favoured Madison over Hamilton for all twelve; their weakest case, No.55, had adjusted odds of80:1 and was explicitly treated with caution.`,
+      idea: String.raw`Hamilton wrote *upon* about three times in a thousand words and Madison almost never; Madison wrote *by* and *whilst* more, Hamilton used *would* more and *on* less. No single word decides, but a sum of many small log-likelihood ratios does. Mosteller and Wallace used Bayesian (negative-binomial) counts that allow for extra variability between papers; the plain Poisson model used here is cruder and overconfident, so large values of $\Lambda$ should be read as direction rather than as exact odds. The method assumes writers of comparable genre and period and a closed list of candidates.`,
       caption: String.raw`Left: each paper as a point by the rates of two marker words (Hamilton blue, Madison orange, disputed red; joint and Jay papers faint). Choose the two words. Right: $\Lambda$ for each disputed paper from the words you select; positive means Madison. The readout reports the leave-one-out accuracy on the 65 papers of known authorship (Hamilton 51, Madison 14).`,
       scope: String.raw`Counts were computed here from the Project Gutenberg text of *The Federalist* (all 85 papers, about 188 000 words after removing headings), not taken from Mosteller and Wallace's own tables, and the authorship labels follow the usual attribution. The Poisson model is a simplification of their method.`,
-      deps: ['ling-4.1'],
+      deps: ['ling-4.1', 'prob-1.6.13', 'stat-2.11'],
       refs: ['Jurafsky & Martin ch. 4'],
       tags: ['function words', 'authorship'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/The_Federalist_Papers#Authorship' },
       viz(v) {
         const OPT = ['upon', 'by', 'to', 'on', 'would', 'there', 'also'].map((w) => ({ value: w, label: w }));
@@ -135,14 +134,13 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
       },
       introduces: ['ling-4.1', 'ling-4.5'],
       credit: 'George Kingsley Zipf, 1935',
-      statement: String.raw`Zipf counted the words of real texts and argued that language shows a **dynamic equilibrium** between two pressures: a speaker's wish to say everything with as few distinct words as possible and the listener's wish for each word to mean one thing. Two regularities followed. If words are ranked by frequency, then rank times frequency is roughly constant, $r\cdot f(r)\approx C$ (the rank–frequency law); and the more frequent a word, the shorter it tends to be (the law of abbreviation). Both he attributed to a general *principle of least effort*.`,
-      idea: String.raw`Before the book, word statistics had been tabulated for shorthand and for education (counts by Käding, Estoup and others) but not treated as a law of behaviour. Zipf placed the tables in the setting of biology and psychology, found the hyperbola in several languages and in non-linguistic data, and gave it a mechanism, effort minimisation, that is still invoked. Later work (Mandelbrot, 1953) modified the formula to $f=C/(r+b)^{s}$, and showed in turn that random typing gives similar curves (4.2), so the law is informative about shape, not necessarily about mechanism. The book introduced the law of word frequencies (4.1) and the law of abbreviation (4.5).`,
-      caption: String.raw`Zipf's own diagnostic: left, the product $r\cdot f(r)$ against rank for the chosen text (his law predicts a horizontal line). Switch on Mandelbrot's correction to see the fit improve at the top ranks. Right: mean length of the words that occur exactly $n$ times, which falls as $n$ grows. The texts are public-domain novels, not Zipf's data (his main sample was *Ulysses*); the book's own tables are not reproduced.`,
+      statement: String.raw`Zipf assembled word statistics across languages and argued for regularities connecting word form and use. Ranked word counts are approximately harmonic, $r\cdot f(r)\approx C$, and frequent words tend to be shorter (the law of abbreviation). His 1935 account links shortening to economy of time and effort and places frequency distributions within a broader proposed equilibrium of linguistic behaviour. These were empirical tendencies and proposed explanations, not deductions proving a unique mechanism.`,
+      idea: String.raw`Chapter II distinguishes fully inflected word tokens from dictionary lexical units, compares length with frequency in Chinese, Latin and newspaper English, then examines both frequency-of-frequency distributions and ranked counts. Its English rank plot uses Eldridge’s newspaper sample; the data are not a Ulysses count. Zipf explicitly treats the length–frequency relationship as not necessarily inversely proportional and allows departures from the harmonic rank curve. The broader speaker–listener least-effort theory is associated with his later 1949 work and should not be projected unchanged onto this book. Similar rank curves can arise from different mechanisms (4.2).`,
+      caption: String.raw`Zipf's own diagnostic: left, the product $r\cdot f(r)$ against rank for the chosen text (his law predicts a horizontal line). Switch on Mandelbrot's correction to see the fit improve at the top ranks. Right: mean length of the words that occur exactly $n$ times, which falls as $n$ grows. The texts are public-domain novels, not Zipf's data (his 1935 rank plots include Eldridge's newspaper English and Plautine Latin); the book's own tables are not reproduced.`,
       scope: String.raw`The product is only approximately constant: it rises over the first few ranks, is flat through the middle, and falls where the tail’s ties begin. Fits depend on the range used.`,
       deps: [],
       refs: [],
       tags: ['principle of least effort', 'word frequency'],
-      verify: true,
       links: { archive: 'https://archive.org/details/psychobiologyofl0000zipf' },
       viz(v) {
         const pk = picker(v);
@@ -187,21 +185,21 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
       },
       introduces: ['ling-4.8', 'info-11.9'],
       credit: 'Claude E. Shannon, 1951',
-      statement: String.raw`Shannon showed how to estimate the entropy of English from human prediction. His series of $N$-gram entropies for a 27-symbol alphabet fell from $F_0=4.76$ bits (all symbols equally likely) through $F_1=4.03$ (letter frequencies), $F_2=3.32$ (digrams) to $F_3=3.1$, and from guessing experiments he derived upper and lower bounds on the entropy per letter that shrink as the number of preceding letters increases, reaching about $1.3$ and $0.6$ bits at 100 letters. English text is therefore more than 70% redundant. The paper also gives the bounds themselves: $\sum_i i(q_i-q_{i+1})\log_2 i\le H\le-\sum_i q_i\log_2q_i$ for the distribution $q_i$ of guess numbers.`,
+      statement: String.raw`Shannon showed how to estimate the entropy of English from human prediction. His series of $N$-gram entropies for a 27-symbol alphabet fell from $F_0=4.76$ bits (all symbols equally likely) through $F_1=4.03$ (letter frequencies), $F_2=3.32$ (digrams) to $F_3=3.1$, and from guessing experiments he estimated decreasing uncertainty with more context, though individual estimates fluctuate. His final table column, $N=100$ (99 preceding letters under the table convention), reports about $1.3$ and $0.6$ bits, suggesting more than 70% redundancy. The paper also gives the bounds themselves: $\sum_i i(q_i-q_{i+1})\log_2 i\le H\le-\sum_i q_i\log_2q_i$ for an ideal predictor’s guess-number distribution $q_i$, with $H$ here the finite-context conditional entropy. The upper bound also permits a nonideal predictor; applying the lower bound to human guesses requires an additional near-ideal ranking assumption.`,
       idea: String.raw`Previously one could compute $F_N$ only from tables of $N$-gram frequencies, which stop being measurable beyond a few letters. Shannon's insight was that a human who has read English knows far longer-range structure, and that a guessing procedure turns this implicit knowledge into data: the number of guesses needed per letter is a reduced text that is a lossless re-encoding, so its entropy bounds the entropy of the text. The paper thereby introduced the idea of measuring the predictability of language as the guesser's uncertainty, the ancestor of the cross-entropy and perplexity used to score language models (4.9). The bounds were derived for an ideal predictor and applied to a single subject's data, so are estimates.`,
-      caption: String.raw`Left: Shannon's published bounds on entropy per letter (27 symbols) against the number $N$ of letters of context (his table, N = 1…15 and 100), with his $F_N$ values as open circles. Right: his decomposition on our letter model: the distribution of guess numbers $q_i$ is a stack of flat rectangles, each of width $i$ and height $q_i-q_{i+1}$, and each contributes entropy $\log_2 i$; slide the model's context to see the bounds close in.`,
-      scope: String.raw`The bound values come from the paper's table, read from a scanned copy, and several entries of the interior columns could not be cross-checked against a second source (the endpoints, 0.6 and 1.3 bits at 100 letters, agree with the usual citations). Later estimates are higher: Cover and King (1978) used a gambling version of the game and reported about 1.3 bits per letter. The machine in the right panel is an $n$-gram letter model with at most three letters of context, trained on two novels.`,
-      deps: ['info-1.2', 'ling-4.9'],
+      caption: String.raw`Left: Shannon's published bounds on entropy per letter (27 symbols) against $N$, one plus the number of preceding letters (his table, N = 1…15 and 100), with his $F_N$ values as open circles. Right: his decomposition for an ideal predictor of our explicit empirical letter source: the distribution of guess numbers $q_i$ is a stack of flat rectangles, each of width $i$ and height $q_i-q_{i+1}$, and each contributes entropy $\log_2 i$; slide the model's context to see the bounds close in.`,
+      scope: String.raw`All 32 upper/lower table values were checked against the complete original, §6, p. 64. Shannon cautions about sampling error and the human lower-bound assumption. The right panel computes exact empirical conditional entropy from the training counts and ideal probability-ranked guesses. Those bounds describe this finite empirical source, not English or its entropy rate.`,
+      deps: ['info-1.2', 'ling-4.9', 'info-1.7'],
       refs: [],
       tags: ['entropy of English', 'redundancy'],
-      verify: true,
       links: { doi: 'https://doi.org/10.1002/j.1538-7305.1951.tb01366.x' },
       viz(v) {
         const kS = v.slider('letters of context $k$', 0, 3, 3, { int: true });
         const s1 = v.stage({ x: [0, 18], y: [0, 5], axes: 'box', gutter: true, xlabel: 'letters of context + 1 (N)', ylabel: 'bits per letter', height: 360, title: 'Shannon’s bounds (27 symbols)', xticks: [...Array(15).keys()].map((i) => [i + 1, String(i + 1)]).concat([[17, '100']]) });
         const s2 = v.stage({ x: [0, 14], y: [0, 0.6], axes: 'box', gutter: true, xlabel: 'guess number i', ylabel: 'q_i, split into rectangles', height: 360, title: 'Decomposition of the guess distribution' });
         let info = {};
-        const memo = {}; const q = (k) => memo[k] || (memo[k] = guessDistribution(letterModel(toSyms(TEXTS.alice + ' ' + TEXTS.pride), 3), toSyms(TEST_TEXT), k));
+        const model = letterModel(toSyms(TEXTS.alice + ' ' + TEXTS.pride), 3);
+        const memo = {}; const profile = (k) => memo[k] || (memo[k] = idealGuessProfile(model, k));
         v.render(() => {
           const X = (n) => (n === 100 ? 17 : n);
           const up = SH_NS.map((n, i) => [X(n), SH_UP[i]]), lo = SH_NS.map((n, i) => [X(n), SH_LO[i]]);
@@ -213,7 +211,7 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
           s1.hline(4.75, { color: 'muted', dash: true }); s1.text('log₂ 27 = 4.75', 17.6, 4.78, { size: 11, color: 'muted', align: 'right', baseline: 'bottom' });
           s1.text('upper bound', 9, 2.55, { size: 12, color: 'red', align: 'left' }); s1.text('lower bound', 9, 0.55, { size: 12, color: 'green', align: 'left' });
           // decomposition on our model
-          const k = kS.value, Q = q(k), b = shannonBounds(Q), n = 13;
+          const k = kS.value, P = profile(k), Q = P.q, b = shannonBounds(Q), n = 27;
           s2.setView([0, n + 1], [0, Math.max(0.2, Q[0] * 1.15)]);
           for (let j = 0; j < n; j++) {
             let y0 = 0;
@@ -221,10 +219,10 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
             s2.text(String(j + 1), j + 1, 0, { size: 10, color: 'muted', align: 'center', baseline: 'top', dy: 14 });
           }
           s2.text('colour = i (large i = darker)', n + 0.7, Q[0] * 1.08, { size: 11, color: 'muted', align: 'right' });
-          info = { b, k, Q };
+          info = { b, k, Q, entropy: P.entropy };
         });
         v.legend([['red', 'Shannon: upper bound'], ['green', 'Shannon: lower bound'], ['gold', 'F_N (N-gram entropy)', { dot: true }]]);
-        v.readout(() => `Shannon’s table at 100 letters of context: 0.6 ≤ H ≤ 1.3 bits per letter (the interior values come from a scan; see scope). Cover and King’s 1978 gambling estimate was about 1.3.\nOur letter model with ${info.k} letter${info.k === 1 ? '' : 's'} of context: first-guess hits ${v.fix(100 * info.Q[0], 0)}%, ${v.fix(info.b.lower, 2)} ≤ H ≤ ${v.fix(info.b.upper, 2)} bits per letter: the same two formulas applied to its guesses on a held-out passage.`);
+        v.readout(() => `Shannon’s final table column (N = 100, i.e. 99 preceding letters): reported estimates 0.6–1.3 bits per letter. The human lower value assumes near-ideal probability ranking and has sampling uncertainty.\nEmpirical letter source with ${info.k} letter${info.k === 1 ? '' : 's'} of context and an ideal predictor: ${v.fix(info.b.lower, 2)} ≤ exact conditional entropy ${v.fix(info.entropy, 2)} ≤ ${v.fix(info.b.upper, 2)} bits per letter. These rigorous model bounds do not estimate the entropy of English.`);
       },
     },
   ],

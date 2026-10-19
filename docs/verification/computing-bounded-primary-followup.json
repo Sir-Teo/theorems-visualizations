@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "scope": "One bounded acquisition pass on exactly three retained originals; no broad re-audit.",
+  "sources": [
+    {
+      "id": "algo-11.25",
+      "status": "verified",
+      "title": "Ford and Fulkerson, Maximal Flow Through a Network (1956)",
+      "url": "https://www.cs.yale.edu/homes/lans/readings/routing/ford-max_flow-1956.pdf",
+      "local": "/tmp/computing-sources/ford56-yale.pdf",
+      "sha256": "ad378e3c07842a685e94f4cd4c2a18ae2fabe4d39a65338afd896fb069b394a1",
+      "complete": "Six scanned original pages399–404, including all3sections, proofs, both figures, footnotes and references. Read complete serialOCR, visually inspected all6pages. OMP_THREAD_LIMIT=1.",
+      "anchors": [
+        {
+          "pages": "399–402",
+          "claim": "Finite undirected network with positive capacities; flow defined as nonnegative simple-chain collection. Introduction explicitly calls general proof nonconstructive. Theorem1 proves maximal flow=minimal disconnecting-set capacity. Compact chain-flow polytope gives existence; averaging maximalflows gives Lemma1; orientation/cancellation and leftarcs give Lemmas2–3 and exact cut equality."
+        },
+        {
+          "pages": "402–404",
+          "claim": "Corollary: adding/subtracting equal capacity on an arcset meeting every cut once shifts networkcapacity equally. §2 requires source–sink planarity; Theorem2 supplies a topmost/bottommost chain meeting every cut once. Saturate chain, subtract bottleneck, delete saturatedarcs, repeat. Atleastoneedge deleted per step gives finite termination. Fig1 shows failure for paired multicommodity demands; Fig2 shows the special chain property fails without terminal planarity."
+        },
+        {
+          "pages": "404",
+          "claim": "§3 constructs shortest-path/mincut duality for source–sink-planar networks. No general directed residual-labeling algorithm or integral-capacity corollary is stated here."
+        }
+      ],
+      "repair": "Corrected source summary from general residual labeling/integrality/irrational-capacity discussion to actual nonconstructive general theorem and finite planar algorithm. Existing directed residual-labeling visualization explicitly described as a modern comparison. Removed unsupported optional independent-same-year priority aside; no new source claim inferred. Statement/idea/caption/bibliography and syllabus description changed; visualization computation/controls untouched."
+    },
+    {
+      "id": "cg-3.5",
+      "status": "verified",
+      "title": "G. H. Meisters, Polygons Have Ears (1975)",
+      "url": "https://digitalcommons.unl.edu/cgi/viewcontent.cgi?article=1053&context=mathfacpub",
+      "landingPage": "https://digitalcommons.unl.edu/mathfacpub/54/",
+      "local": "/tmp/computing-sources/meisters-unl.pdf",
+      "sha256": "b9788b26afe74602c948c47a0bb99d68fc63d4c4b1c30938c7c6db48e5816168",
+      "complete": "All4original pages648–651, proofCases1/2a/2b, Figures1–4, triangulation consequences and references read. Allpages/figures visually inspected.",
+      "anchors": [
+        {
+          "pages": "648–650",
+          "claim": "Jordanpolygon, open diagonal insidepolygon, disjoint earinteriors; all nontriangles have two nonoverlapping ears. Induct via removableconvexear, or select nearest parallel line through vertex in closed cornertriangle (including on opposite chord); split on VZ, select ears away from common endpoints. Figure1 illustrates split;2–4 show manyears, exactlytwoears and starshapedexample."
+        },
+        {
+          "pages": "650–651",
+          "claim": "Repeated ear removal triangulates with no new vertices; conversely triangle boundary-edge counts yield t2=t0+2≥2. Angle sum yields n−2triangles; Euler gives n−3noncrossingdiagonals. These match the existing theorem/demo scope."
+        }
+      ],
+      "repair": "Added exact primary reference in chapter/syllabus, removed verify flag and optional unsupported Dehn-priority parenthesis. No claim about Dehn priority is now made; no proof/computation/interaction changed."
+    },
+    {
+      "id": "robot-3.7",
+      "status": "reviewed_blocked",
+      "title": "Denavit and Hartenberg1955 original, new public faculty leads",
+      "attempts": [
+        {
+          "url": "https://medesign.seas.upenn.edu/uploads/Courses/520-11A-T04.pdf",
+          "local": "/tmp/computing-sources/denavit-upenn.pdf",
+          "sha256": "a13c7a6b85a9768888d588b51648d3e048d76fb3e0b70fe2129ee86b6880f7d8",
+          "result": "Complete8page modern ForwardKinematics course slides, robot specification and modern DH conventions; cites1955 but is not the original."
+        },
+        {
+          "url": "https://www2.seas.gwu.edu/~kaufman1/Spatial%20Kinematics/Hartenberg-Denavit.pdf",
+          "local": "/tmp/computing-sources/denavit-gwu.pdf",
+          "sha256": "0d1f5f3aa6947c07ba97b97e84dc8aea422a879753e95a9debfce9951df025cb",
+          "result": "45page RogerE.Kaufman/GWU Hartenberg–Denavit Method lecture notes, copyright2002, not the1955 original. Firstpage/title/copyright and subject matter inspected to identify source; not represented as full1955source review."
+        }
+      ],
+      "remainingGap": "Complete1955 Journal of AppliedMechanics22(2),215–221 original, its exact general lower-pair construction, frame placement, notation and historical claims still not obtained. New modern slides do not replace original comparison. Existing flag retained; content unchanged."
+    }
+  ],
+  "disposition": {
+    "closed": [
+      "algo-11.25",
+      "cg-3.5"
+    ],
+    "retained": [
+      "robot-3.7"
+    ],
+    "queueDelta": -2,
+    "ownedRetainedBefore": 104,
+    "ownedRetainedAfter": 102,
+    "genuinelyUnreviewed": []
+  },
+  "validation": {
+    "staticCommand": "node scripts/check.mjs algo-11.25 cg-3.5 --static --fail-on-warnings",
+    "items": 2,
+    "errors": 0,
+    "warnings": 0,
+    "diffCheck": "passed",
+    "browser": "No new heavy browser run during final sweeps. This source pass changed explanatory prose/bibliography and verify metadata only; original numerical code, controls and interaction handlers stayed frozen. Existing mathematical/native evidence remains applicable to those unchanged implementations."
+  },
+  "changedContentFiles": [
+    "content/algo/ch11-d.js",
+    "content/algo/syllabus.js",
+    "content/cg/ch03.js",
+    "content/cg/syllabus.js"
+  ],
+  "finalFingerprints": [
+    {
+      "file": "content/algo/ch11-d.js",
+      "sha256": "a8ef8477270eb87f1517aa9291c1e57f5ab93cea247606227580cd7ef1ec0183"
+    },
+    {
+      "file": "content/algo/syllabus.js",
+      "sha256": "25f99bee43076d22b6bf28a1fbdc1eddabac21751c9e48827b1af04fb6ef2e18"
+    },
+    {
+      "file": "content/cg/ch03.js",
+      "sha256": "2178db29d059bd814c34a602f8a1e34d1416bb54ffa1a4e703bf7fec7a23ed55"
+    },
+    {
+      "file": "content/cg/syllabus.js",
+      "sha256": "5ef9e24c36b801227750e8a9ecbf78d5765defe82f03f75ea8bc78bde0af3a2c"
+    }
+  ]
+}

@@ -12,15 +12,14 @@ export default {
       num: '4.7',
       kind: 'Model',
       name: 'MOSFET as a switch',
-      statement: String.raw`An n-channel enhancement MOSFET has three terminals, gate, drain and source; no DC current enters the gate. In the *switch model*, if the gate–source voltage is below the threshold, $v_{GS}<V_T$, the drain–source path is an open circuit ($i_D=0$). If $v_{GS}>V_T$ the path is a resistor $R_{\mathrm{on}}\approx 1/\bigl(k(v_{GS}-V_T)\bigr)$ (for small $v_{DS}$), where $k$ is a device constant. Used as a pull-down to ground below a resistor $R$ from the supply $V_{DD}$, the output is $V_{DD}$ when the switch is open and $V_{DD}R_{\mathrm{on}}/(R_{\mathrm{on}}+R)\approx 0$ when it is closed: an inverter whose input is the gate voltage.`,
+      statement: String.raw`An n-channel enhancement MOSFET is used here with its body tied to its source, leaving three external terminals: gate, drain and source. The ideal insulated gate draws no DC current. In the *switch model*, if the gate–source voltage is below the threshold, $v_{GS}<V_T$, the drain–source path is an open circuit ($i_D=0$). If $v_{GS}>V_T$ the path is a resistor $R_{\mathrm{on}}\approx 1/\bigl(k(v_{GS}-V_T)\bigr)$ (for small $v_{DS}$), where $k$ is a device constant. Used as a pull-down to ground below a resistor $R$ from the supply $V_{DD}$, the output is $V_{DD}$ when the switch is open and $V_{DD}R_{\mathrm{on}}/(R_{\mathrm{on}}+R)\approx 0$ when it is closed: an inverter whose input is the gate voltage.`,
       idea: String.raw`The gate is insulated from the channel by an oxide, so it controls the channel with an electric field and draws no current: the input is a pure voltage. The field attracts electrons to the surface only once $v_{GS}$ exceeds $V_T$, and the more it exceeds it the lower the channel resistance. The switch model is the piecewise-linear idea of 4.3 applied to this device, and it is what the digital abstraction (4.6) needs: two clean states controlled by a voltage. The more accurate square-law model (4.10) shows where the switch model errs, namely when $v_{DS}$ is not small.`,
       caption: String.raw`A MOSFET pull-down below a resistor. Drag the gate voltage across the threshold ($V_T = 1$ V): on the left, the $v_{DS}$–$i_D$ plane with the load line; the switch model is a line through the origin of slope $1/R_{\mathrm{on}}$ (or the axis, when open), the dashed curve is the square-law transistor of 4.10 at the same $v_{GS}$. On the right the output voltage against the gate voltage for both models; the two agree in the "off" and in the "on" state and differ near the threshold, where the transistor is not a good switch.`,
       scope: String.raw`Quasi-static; $R_{\mathrm{on}}$ from the small-$v_{DS}$ slope of the square-law model (4.10). Real devices also have gate capacitance, body effect and subthreshold leakage.`,
-      credit: 'D. Kahng and M. Atalla, Bell Labs, 1959–60 (silicon MOSFET); J. E. Lilienfeld patented the field-effect principle in 1925–30',
-      verify: true,
-      deps: ['circ-4.6', 'circ-4.3'],
+      credit: 'D. Kahng, US3102230A (filed 31 May 1960, citing M. M. Atalla’s 8 March 1960 application); J. E. Lilienfeld, US1745175A (Canadian filing 22 October 1925, granted 28 January 1930)',
+      deps: ['circ-4.6', 'circ-4.3', 'cm-4.10'],
       see: ['cm-4.10'],
-      refs: ['Agarwal–Lang §6.3'],
+      refs: ['Agarwal–Lang (2005), §§6.3, 6.6–6.8, pp. 288–290, 300–307; Kahng US3102230A, description of Figs. 1A–2; Lilienfeld US1745175A, specification and claims 1–4'],
       tags: ['mosfet', 'switch'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/MOSFET' },
       viz(v) {
@@ -67,7 +66,7 @@ export default {
       credit: 'F. Wanlass (patent filed 1963, US 3,356,858) and C.-T. Sah, 1963 (see 4.17)',
       deps: ['circ-4.7'],
       see: ['circ-4.17'],
-      refs: ['Agarwal–Lang §11.5'],
+      refs: ['Wanlass, US3356858A, Fig. 5 and description of inverter circuit 50; Agarwal–Lang (2005), §11.5, pp. 611–615'],
       tags: ['cmos', 'inverter', 'power'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/CMOS' },
       viz(v) {
@@ -107,12 +106,12 @@ export default {
       num: '4.9',
       kind: 'Theorem',
       name: 'Universality of NAND gates',
-      statement: String.raw`Every Boolean function of finitely many variables can be computed by a combinational circuit built only from two-input NAND gates, $\mathrm{NAND}(a,b)=\lnot(a\wedge b)$ (and signal fan-out). In particular, $\lnot a = \mathrm{NAND}(a,a)$, $a\wedge b = \lnot\,\mathrm{NAND}(a,b)$, $a\vee b=\mathrm{NAND}(\lnot a,\lnot b)$, and $a\oplus b=\mathrm{NAND}\bigl(\mathrm{NAND}(a,m),\mathrm{NAND}(b,m)\bigr)$ with $m=\mathrm{NAND}(a,b)$. The same holds for NOR.`,
+      statement: String.raw`Every Boolean function of a positive finite number of variables can be computed by a combinational circuit built only from two-input NAND gates, $\mathrm{NAND}(a,b)=\lnot(a\wedge b)$ (and signal fan-out). In particular, $\lnot a = \mathrm{NAND}(a,a)$, $a\wedge b = \lnot\,\mathrm{NAND}(a,b)$, $a\vee b=\mathrm{NAND}(\lnot a,\lnot b)$, and $a\oplus b=\mathrm{NAND}\bigl(\mathrm{NAND}(a,m),\mathrm{NAND}(b,m)\bigr)$ with $m=\mathrm{NAND}(a,b)$. The same holds for NOR.`,
       idea: String.raw`NOT, AND and OR together generate every Boolean function (write the truth table as an OR of ANDs of literals, the disjunctive normal form). Each of the three is built from NANDs as shown, so the family $\{\mathrm{NAND}\}$ suffices. This is what makes the CMOS NAND gate (4.8) the standard cell of digital design: one gate type, repeated, is enough, and the physical layer of the digital abstraction only has to provide one regenerating gate.`,
       caption: String.raw`Choose a target function; the network of NAND gates that computes it is drawn, with live signal values (green wires carry 1, grey wires 0). Flip inputs $A$ and $B$ and watch the values flow. The table checks the output against the target for every input row. "Break a gate" sticks the first gate's output at 1: the table then shows which rows fail, since a construction is only correct if every gate is.`,
       credit: 'H. M. Sheffer, 1913 (a single binary connective suffices for Boolean algebra); C. S. Peirce found it earlier (unpublished)',
       verify: true,
-      deps: ['circ-4.8'],
+      deps: ['circ-4.8', 'logic-2.5'],
       refs: ['Agarwal–Lang §5.3'],
       tags: ['nand', 'boolean', 'universality'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/NAND_logic' },
@@ -187,11 +186,11 @@ export default {
       num: '4.10',
       kind: 'Model',
       name: 'MOSFET saturation model',
-      statement: String.raw`In the square-law model of an n-channel MOSFET with threshold $V_T$ and constant $k$, the drain current is $i_D=0$ for $v_{GS}\le V_T$; in the *triode* region $0<v_{DS}<v_{GS}-V_T$ it is $i_D=k\bigl[(v_{GS}-V_T)v_{DS}-\tfrac12 v_{DS}^2\bigr]$; and in *saturation*, $v_{DS}\ge v_{GS}-V_T$, it is $i_D=\tfrac12 k\,(v_{GS}-V_T)^2\,(1+\lambda v_{DS})$, independent of $v_{DS}$ to first order. The boundary between the two regions is the parabola $i_D=\tfrac12 k v_{DS}^2$. For small $v_{DS}$ the device behaves as a voltage-controlled resistor, in saturation as a voltage-controlled current source with transconductance $g_m=k(v_{GS}-V_T)$.`,
+      statement: String.raw`In the square-law model of an n-channel MOSFET with threshold $V_T$ and constant $k$, the drain current is $i_D=0$ for $v_{GS}\le V_T$; in the *triode* region $0<v_{DS}<v_{GS}-V_T$ it is $i_D=k\bigl[(v_{GS}-V_T)v_{DS}-\tfrac12 v_{DS}^2\bigr](1+\lambda v_{DS})$; and in *saturation*, $v_{DS}\ge v_{GS}-V_T$, it is $i_D=\tfrac12 k\,(v_{GS}-V_T)^2\,(1+\lambda v_{DS})$, independent of $v_{DS}$ when $\lambda=0$. The boundary between the two regions is $i_D=\tfrac12 k v_{DS}^2(1+\lambda v_{DS})$, a parabola when $\lambda=0$. For small $v_{DS}$ the device behaves as a voltage-controlled resistor, in saturation as a voltage-controlled current source with transconductance $g_m=k(v_{GS}-V_T)(1+\lambda v_{DS})$.`,
       idea: String.raw`The charge in the channel is proportional to $v_{GS}-V_T$ minus the local channel voltage $v(x)$; the current is that charge times the drift velocity, constant along the channel, so integrating over the length gives the quadratic of the triode region. When $v_{DS}$ reaches the overdrive the channel is pinched off at the drain end and further increase of $v_{DS}$ drops across the depleted region instead, so the current stops growing: the saturation current. The factor $1+\lambda v_{DS}$ is an empirical correction for the shortening of the channel.`,
-      caption: String.raw`The output characteristics: one curve per gate voltage (the selected one is thick), the triode region (above the parabola) shaded orange and the saturation region (below it and to its right) green, separated by the parabola $i_D=\tfrac12 kv_{DS}^2$. Drag the gold point along the selected curve past the knee: the curve turns from a rising arc into a nearly flat line. On the right is the transfer characteristic at the point's $v_{DS}$; in saturation $\sqrt{i_D}$ is a straight line in $v_{GS}$ that meets the axis at $V_T$. Raise $\lambda$ to tilt the saturation curves.`,
-      scope: String.raw`Long-channel, strong inversion; below threshold the real current is not zero (subthreshold conduction is exponential) and short-channel devices saturate by velocity limitation, giving a nearly linear rather than quadratic law.`,
-      credit: 'C.-T. Sah, 1964 (Proc. IEEE 52); H. Shichman and D. Hodges, 1968 (model used in SPICE)',
+      caption: String.raw`The output characteristics: one curve per gate voltage (the selected one is thick), the triode region (above the parabola) shaded orange and the saturation region (below it and to its right) green, separated by $i_D=\tfrac12 kv_{DS}^2(1+\lambda v_{DS})$. Drag the gold point along the selected curve past the knee: the curve turns from a rising arc into a nearly flat line. On the right is the transfer characteristic at the point's $v_{DS}$; in saturation $\sqrt{i_D}$ is a straight line in $v_{GS}$ that meets the axis at $V_T$. Raise $\lambda$ to tilt the saturation curves.`,
+      scope: String.raw`Long-channel, strong inversion; the empirical factor $1+\lambda v_{DS}$ is applied to both branches here to maintain continuity at the knee. Below threshold the real current is not zero (subthreshold conduction is exponential) and short-channel devices saturate by velocity limitation, giving a nearly linear rather than quadratic law.`,
+      credit: 'C.-T. Sah (MOSFET characteristic theory); H. Shichman and D. A. Hodges, 1968 (switching-circuit model)',
       verify: true,
       deps: ['circ-4.7'],
       see: ['cm-4.10'],
@@ -208,14 +207,18 @@ export default {
         let info = null;
         v.render(() => {
           const L = lam.value, vg = Vg.value;
-          s.between((x) => ((k / 2) * x * x) * 1e3, () => 17, 0, 4.12, { fill: 'orange', fillAlpha: 0.1 });
-          s.between((x) => 0, (x) => ((k / 2) * x * x) * 1e3, 0, 4.12, { fill: 'green', fillAlpha: 0.07 });
-          s.rect(4.12, 0, 6, 17, { fill: 'green', fillAlpha: 0.07, stroke: false });
-          s.fn((x) => (k / 2) * x * x * 1e3, { domain: [0, 4.12], color: 'muted', width: 1.4, dash: true });
+          const boundary = (x) => (k / 2) * x * x * (1 + L * x) * 1e3;
+          const edgeDS = bisectDec(x => 17 - boundary(x), 0, 6);
+          s.between((x) => boundary(x), () => 17, 0, edgeDS, { fill: 'orange', fillAlpha: 0.1 });
+          s.between((x) => 0, (x) => boundary(x), 0, edgeDS, { fill: 'green', fillAlpha: 0.07 });
+          s.rect(edgeDS, 0, 6, 17, { fill: 'green', fillAlpha: 0.07, stroke: false });
+          s.fn((x) => boundary(x), { domain: [0, edgeDS], color: 'muted', width: 1.4, dash: true });
           for (let g = 1.5; g <= 5.001; g += 0.5) s.fn((x) => mos(g, x, Vt, k, L) * 1e3, { domain: [0, 6], color: 'accent', width: 1.2, alpha: 0.55, n: 200 });
           s.fn((x) => mos(vg, x, Vt, k, L) * 1e3, { domain: [0, 6], color: 'accent', width: 3, n: 300 });
           h.set(clamp(h.x, 0.02, 6), 0);
           const vds = clamp(h.x, 0.02, 6); h.set(vds, mos(vg, vds, Vt, k, L) * 1e3);
+          const maxI = mos(5, vds, Vt, k, L) * 1e3;
+          st.setView([0, 5], [0, Math.max(maxI, Math.sqrt(maxI), 1) * 1.12]);
           s.tex('\\text{triode}', 0.9, 11.5, { color: 'orange', size: 14 });
           s.tex('\\text{saturation}', 5.0, 16, { color: 'green', size: 14 });
           s.tex(`v_{GS}=${v.fix(vg, 2)}`, 5.9, mos(vg, 5.9, Vt, k, L) * 1e3 + 0.7, { color: 'accent', size: 12, align: 'right' });
@@ -227,9 +230,9 @@ export default {
           st.vline(Vt, { color: 'faint', dash: true });
           st.tex('V_T', Vt, 0.25, { dx: 10, color: 'muted' });
           const reg = mosRegion(vg, vds, Vt), id = mos(vg, vds, Vt, k, L), vov = vg - Vt;
-          info = { reg, id, vds, gm: reg === 'saturation' ? k * vov * (1 + L * vds) : k * vds, vov, ro: L > 0 && reg === 'saturation' ? 1 / (L * 0.5 * k * vov * vov) : Infinity };
+          info = { reg, id, vds, gm: reg === 'saturation' ? k * vov * (1 + L * vds) : k * vds * (1 + L * vds), vov, ro: L > 0 && reg === 'saturation' ? 1 / (L * 0.5 * k * vov * vov) : Infinity };
         });
-        v.legend([['accent', '$i_D(v_{DS})$ per $v_{GS}$'], ['muted', '$i_D = \\tfrac12 k v_{DS}^2$', { dash: true }], ['purple', '$\\sqrt{i_D}$']]);
+        v.legend([['accent', '$i_D(v_{DS})$ per $v_{GS}$'], ['muted', '$i_D = \\tfrac12 k v_{DS}^2(1+\\lambda v_{DS})$', { dash: true }], ['purple', '$\\sqrt{i_D}$']]);
         v.readout(() => info && `$v_{GS}-V_T = ${v.fix(info.vov, 2)}$ V, $v_{DS} = ${v.fix(info.vds, 2)}$ V → ${info.reg}; $i_D = ${v.fix(info.id * 1e3, 3)}$ mA, $g_m = ${v.fix(info.gm * 1e3, 2)}$ mS${isFinite(info.ro) ? `, $r_o = ${v.fix(info.ro / 1e3, 1)}$ kΩ` : ''}.`);
       },
     },
@@ -238,14 +241,14 @@ export default {
       num: '4.11',
       kind: 'Model',
       name: 'Bipolar transistor: current gain β',
-      statement: String.raw`In the active region of an npn bipolar transistor the collector current is proportional to the base current, $i_C=\beta\,i_B$, with a current gain $\beta$ of order $50$–$300$ that varies slowly with the other quantities; the emitter current is $i_E=(\beta+1)i_B$. The collector current depends on the base–emitter voltage exponentially, $i_C = I_s e^{v_{BE}/V_T}$, as in the diode (4.1). The relation $i_C=\beta i_B$ fails in *saturation*, when $v_{CE}$ is below about $0.2$ V because the collector junction is also forward biased: there $i_C$ is limited by the external circuit, $i_C<\beta i_B$. In the active region $i_C$ increases slightly with $v_{CE}$ (the Early effect, $1+v_{CE}/V_A$).`,
-      idea: String.raw`The emitter, a heavily doped n region, injects many electrons into the thin p base across a forward-biased junction; the base is so thin that almost all of them diffuse across to the collector and are swept in by the reverse-biased collector junction, and only a small fraction recombine in the base. Those recombinations are the base current, so $\beta$ is the ratio of the transit probability to the recombination probability, a large number (see 4.15 for Shockley's analysis). The emitter junction is a diode, which is why the collector current is exponential in $v_{BE}$.`,
+      statement: String.raw`In the active region of an npn bipolar transistor the collector current is proportional to the base current, $i_C=\beta\,i_B$, in the constant-$\beta$ approximation, where $\beta$ is a device- and bias-dependent current gain; the emitter current is $i_E=(\beta+1)i_B$. The collector current depends on the base–emitter voltage exponentially, $i_C = I_s e^{v_{BE}/V_T}$, as in the diode (4.1). The relation $i_C=\beta i_B$ fails in *saturation*, when $v_{CE}$ is below about $0.2$ V because the collector junction is also forward biased: there $i_C$ is limited by the external circuit, $i_C<\beta i_B$. In the active region $i_C$ increases slightly with $v_{CE}$ (the Early effect, $1+v_{CE}/V_A$).`,
+      idea: String.raw`The emitter, a heavily doped n region, injects many electrons into the thin p base across a forward-biased junction; the base is so thin that almost all of them diffuse across to the collector and are swept in by the reverse-biased collector junction, and only a small fraction recombine in the base. Base current supplies these recombination losses and the holes injected from base to emitter. With high emitter injection efficiency and little recombination, the collector-to-base current ratio $\beta$ is large (see 4.15 for Shockley's analysis). The emitter junction is a diode, which is why the collector current is exponential in $v_{BE}$.`,
       caption: String.raw`Left: the collector characteristics (one curve per base current), the load line of the supply $V_{CC}$ and collector resistor $R_C$, and the operating point where the thick curve for the chosen $i_B$ meets the load line. Right: collector current against base current at the same supply and load: it follows the line $i_C=\beta i_B$ and flattens at $V_{CC}/R_C$ once the transistor saturates. Raise the base current past that point and the readout warns: the collector current no longer tracks $\beta i_B$.`,
       scope: String.raw`Simple large-signal model with constant $\beta$, a saturation knee near $0.12$ V and Early voltage $80$ V, all illustrative; real $\beta$ depends on current and temperature.`,
-      credit: 'W. Shockley, 1949 (junction transistor theory); the transistor itself by Bardeen, Brattain and Shockley, 1947–48',
-      deps: ['circ-4.1'],
+      credit: 'W. Shockley, 1949 (junction-transistor theory; see 4.15)',
+      deps: ['circ-4.1', 'cm-4.6'],
       see: ['circ-4.15'],
-      refs: ['Horowitz–Hill §2.1'],
+      refs: ['Shockley (1949), §§4.3 and 6, Eqs. (4.13), (6.1)–(6.4), pp. 460–461, 472–474; saturation knee and Early correction are illustrative extensions'],
       tags: ['bjt', 'current gain', 'transistor'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Bipolar_junction_transistor' },
       viz(v) {
@@ -260,6 +263,8 @@ export default {
         const op = (ibm, b, R) => { const vce = bisectDec((x) => (Vcc - x) / R - ic(ibm * 1e-6, x, b), 0, Vcc); return { vce, i: (Vcc - vce) / R }; };
         v.render(() => {
           const b = beta.value, R = Rc.value, ib = Ib.value, imax = (Vcc / R) * 1e3;
+          s.setView([0, 10.4], [0, Math.max(12, imax * 1.15)]);
+          st.setView([0, 120], [0, Math.max(12, imax * 1.15)]);
           s.line(0, imax, Vcc, 0, { color: 'ink', width: 2 });
           s.clip(() => {
             for (let k = 20; k <= 120; k += 20) s.fn((x) => ic(k * 1e-6, x, b) * 1e3, { domain: [0, 10.4], color: 'accent', width: 1.2, alpha: 0.5, n: 160 });
@@ -285,11 +290,11 @@ export default {
       kind: 'Model',
       name: 'Common-source amplifier and voltage gain',
       statement: String.raw`An n-channel MOSFET with its source grounded, drain resistor $R_D$ to the supply $V_{DD}$ and gate bias $V_{GS}$ forms the common-source amplifier. If the bias keeps the transistor in saturation, a small signal $\delta v_{in}$ at the gate produces at the drain $\delta v_{out}=-g_m\,(R_D\parallel r_o)\,\delta v_{in}$, with $g_m=k(V_{GS}-V_T)(1+\lambda V_{DS})$ and $r_o\approx 1/(\lambda I_D)$: an inverted copy, larger by the voltage gain $A_v=-g_m(R_D\parallel r_o)$. Large signals are clipped when the transistor enters cutoff ($v_{GS}<V_T$, output at $V_{DD}$) or the triode region ($v_{DS}<v_{GS}-V_T$, gain collapses).`,
-      idea: String.raw`In saturation the device is a voltage-controlled current source $i_D=g_m v_{gs}$ (4.10), the load resistor turns the current into a voltage, and the sign comes from Kirchhoff's voltage law at the drain: more current means more drop across $R_D$, so less output voltage. The gain is the slope of the transfer curve $v_{out}(v_{GS})$ at the bias point, i.e. small-signal analysis (4.4) of the whole amplifier. The bias puts the operating point in the middle of the saturation region so the swing is symmetric.`,
+      idea: String.raw`In saturation the device is a voltage-controlled current source $i_D=g_m v_{gs}$ (4.10), the load resistor turns the current into a voltage, and the sign comes from Kirchhoff's voltage law at the drain: more current means more drop across $R_D$, so less output voltage. The gain is the slope of the transfer curve $v_{out}(v_{GS})$ at the bias point, i.e. small-signal analysis (4.4) of the whole amplifier. The bias can be chosen to leave room on both sides before cutoff or triode operation; finite signals can still distort within saturation because the transfer curve is nonlinear.`,
       caption: String.raw`Left: the transfer curve $v_{out}$ against $v_{GS}$ (cutoff, saturation and triode regions marked) with the bias point $Q$, the tangent of slope $A_v$ and the input swing. Right: the input signal (grey) and the true output deviation (blue), computed point by point from the transistor model, against the small-signal prediction $A_v\,\delta v_{in}$ (green dashed). For small amplitude the two coincide: an inverted, amplified copy. Move the bias toward the threshold or the triode region, or raise the amplitude, and the output visibly clips.`,
       scope: String.raw`Square-law transistor ($V_T=1$ V, $k=2$ mA/V$^2$, $\lambda=0.02$ V$^{-1}$, $R_D = 2$ kΩ by default); no capacitances, so valid at low frequencies only.`,
       deps: ['circ-4.10', 'circ-4.4'],
-      refs: ['Agarwal–Lang §7.5', 'Agarwal–Lang §8.2'],
+      refs: ['Agarwal–Lang (2005), §§7.5–7.6, §8.2.2, pp. 418–425; finite output resistance is an empirical model extension'],
       tags: ['amplifier', 'gain', 'common source'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Common_source' },
       viz(v) {
@@ -342,13 +347,13 @@ export default {
       num: '4.13',
       kind: 'Invention',
       name: 'Static memory: the cross-coupled latch',
-      statement: String.raw`Two inverters, each with transfer curve $f$ ($f$ decreasing, with $|f'|>1$ somewhere), connected in a ring ($v_2=f(v_1)$, $v_1=f(v_2)$) have, if the gain is large enough, exactly three equilibria: two stable ones near $(V_{OH},V_{OL})$ and $(V_{OL},V_{OH})$ and a third, unstable one at the metastable point $v_1=v_2$. Equilibria satisfy $v_1=f(f(v_1))$; one is stable when $|f'(v_1)f'(v_2)|<1$. The circuit therefore stores one bit: it stays in whichever stable state it is put in, and a pulse that pushes the state across the middle flips it. If the loop gain at the midpoint is $\le1$ there is only one equilibrium and nothing is stored.`,
+      statement: String.raw`For the symmetric model $f(v)=\tfrac{V_{DD}}2[1-\tanh(g(2v/V_{DD}-1))]$, two cross-coupled inverters ($v_2=f(v_1)$, $v_1=f(v_2)$) have exactly three equilibria when $g>1$: two stable ones near $(V_{OH},V_{OL})$ and $(V_{OL},V_{OH})$ and a third, unstable one at the metastable point $v_1=v_2$. Equilibria satisfy $v_1=f(f(v_1))$; one is stable when $|f'(v_1)f'(v_2)|<1$. The circuit therefore stores one bit: it stays in whichever stable state it is put in, and a pulse that pushes the state across the middle flips it. For $g\le1$ there is only the symmetric equilibrium and no bistable memory; at $g=1$ the equilibrium attracts nonlinearly although linearization is inconclusive.`,
       idea: String.raw`Each inverter restores logic levels (4.6), so a signal travelling around the ring through two inverters returns as a regenerated copy of itself: this positive feedback is what lets the state hold itself indefinitely, drawing only leakage current in CMOS (4.8). Graphically, the curve $v_2=f(v_1)$ and its mirror image $v_1=f(v_2)$ cross three times when the slope at the centre exceeds $1$ in magnitude, and the two outer crossings sit on the flat parts of both curves, where the loop gain is below 1 and the state is stable. The middle crossing is a saddle: the system is balanced there like a pencil on its tip, the metastable state.`,
       caption: String.raw`Phase plane of the latch: the two curves are the transfer curve of inverter 1 (blue) and of inverter 2 (orange), the flow arrows show where the state is pushed (each node charges toward its inverter's output with time constant $\tau$). Drag the gold state anywhere: the trajectory runs to one of the two green stable points, depending on which side of the diagonal it started; start exactly on the diagonal and it creeps toward the saddle. Lower the gain below $1$ and the two stable points merge into one: the memory disappears. The right plot shows the two node voltages over time.`,
       scope: String.raw`Ring of two identical memoryless inverters with first-order (RC) dynamics, $\tau\,\dot v_1 = f(v_2)-v_1$, $\tau\,\dot v_2 = f(v_1)-v_2$; real latches add set/reset inputs, and metastability lasts longer when the start is closer to the diagonal.`,
       credit: 'W. H. Eccles and F. W. Jordan (vacuum-tube trigger relay), 1918–19',
       verify: true,
-      deps: ['circ-4.8', 'circ-4.6'],
+      deps: ['circ-4.8', 'circ-4.6', 'ode-3.9'],
       refs: ['Agarwal–Lang §10.7'],
       tags: ['memory', 'latch', 'bistability'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Flip-flop_(electronics)' },
@@ -356,10 +361,10 @@ export default {
         const Vdd = 5;
         const s = v.stage({ x: [0, Vdd], y: [0, Vdd], equal: true, axes: 'box', gutter: true, height: 360, weight: 1, xlabel: '$v_1$ (V)', ylabel: '$v_2$ (V)', title: 'phase plane' });
         const st = v.stage({ x: [0, 8], y: [0, Vdd], axes: 'box', gutter: true, height: 360, weight: 0.9, xlabel: 'time ($\\tau$)', ylabel: 'voltage (V)', title: 'the two node voltages' });
-        const gain = v.slider('loop gain $|f\'|$ at midpoint', 0.5, 6, 3, { log: true, sig: 2, fmt: (x) => v.fix(x, 2) });
+        const gain = v.slider('each inverter gain $|f\'|$ at midpoint', 0.5, 6, 3, { log: true, sig: 2, fmt: (x) => v.fix(x, 2) });
         const h = s.handle(2.7, 2.2, { color: 'gold', r: 8, label: 'state', labelPos: 'ne', constrain: { x: [0.02, Vdd - 0.02], y: [0.02, Vdd - 0.02] } });
-        v.button('Start near middle, above diagonal', () => h.set(2.55, 2.45));
-        v.button('Start near middle, below diagonal', () => h.set(2.45, 2.55));
+        v.button('Start near middle, above diagonal', () => h.set(2.45, 2.55));
+        v.button('Start near middle, below diagonal', () => h.set(2.55, 2.45));
         let info = null;
         v.render(() => {
           const g = gain.value, f = (x) => (Vdd / 2) * (1 - Math.tanh(g * ((2 * x) / Vdd - 1))), df = (x) => -g / Math.cosh(g * ((2 * x) / Vdd - 1)) ** 2;
@@ -373,10 +378,11 @@ export default {
           let prev = h2(0);
           for (let i = 1; i <= M; i++) {
             const x1 = (Vdd * i) / M, cur = h2(x1);
-            if (prev === 0 || prev * cur < 0) { const x0 = (Vdd * (i - 1)) / M, r = bisectDec((x) => (prev > 0 ? h2(x) : -h2(x)), x0, x1, 50); eq.push(r); }
+            if (prev === 0) eq.push((Vdd * (i - 1)) / M);
+            else if (prev * cur < 0) { const x0 = (Vdd * (i - 1)) / M, r = bisectDec((x) => (prev > 0 ? h2(x) : -h2(x)), x0, x1, 50); eq.push(r); }
             prev = cur;
           }
-          const eqs = eq.map((x) => ({ x, y: f(x), stable: Math.abs(df(x) * df(f(x))) < 1 }));
+          const eqs = eq.map((x) => ({ x, y: f(x), stable: g <= 1 || Math.abs(df(x) * df(f(x))) < 1 }));
           eqs.forEach((e) => s.dot(e.x, e.y, { r: 7, color: e.stable ? 'green' : 'red', hollow: !e.stable }));
           // trajectory by RK4, tau = 1
           const F = (x, y) => [f(y) - x, f(x) - y], dt = 0.02, T = 8;

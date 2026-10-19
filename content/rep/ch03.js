@@ -156,7 +156,7 @@ export default {
 - $\chi_{V^*}(g)=\overline{\chi_V(g)}$;
 - $\chi_{\mathrm{Sym}^2V}(g)=\tfrac12\big(\chi_V(g)^2+\chi_V(g^2)\big)$ and $\chi_{\Lambda^2V}(g)=\tfrac12\big(\chi_V(g)^2-\chi_V(g^2)\big)$.`,
       idea: String.raw`Traces of block-diagonal matrices add, and $\operatorname{tr}(A\otimes B)=\operatorname{tr}A\operatorname{tr}B$ (the Kronecker product has diagonal blocks $a_{ii}B$). The dual has matrices $\rho(g^{-1})^{\mathsf T}$, whose trace is $\chi(g^{-1})=\overline{\chi(g)}$ by 3.2. The symmetric and alternating squares are the $\pm1$ eigenspaces of the swap $S$ on $V\otimes V$, with projections $\tfrac12(1\pm S)$; and $\operatorname{tr}\big(S\,(A\otimes A)\big)=\operatorname{tr}(A^2)$, which gives the correction term $\chi(g^2)$.`,
-      caption: String.raw`Pick a group, representations $A$ and $B$ and an operation. Each row of the table is a conjugacy class; the "direct" column is computed from the actual matrices (block sum, Kronecker product, inverse transpose, trace of $\tfrac12(1\pm S)(A\otimes A)$), the "formula" column from the character values alone. Bars are the real parts of the direct values and the rings the formula values. Switch off the $\chi(g^2)$ correction and the symmetric and alternating squares fail to match.`,
+      caption: String.raw`Pick a group, representations $A$ and $B$ and an operation. Each row of the table is a conjugacy class; the "direct" column is computed from the actual matrices (block sum, Kronecker product, inverse transpose, trace of $\tfrac12(1\pm S)(A\otimes A)$), the "formula" column from the character values alone. Mixed complex entries wrap onto two lines: real part, then signed imaginary part. Bars are the real parts of the direct values and the rings the formula values. Switch off the $\chi(g^2)$ correction and the symmetric and alternating squares fail to match.`,
       deps: ['rep-3.1', 'rep-1.8', 'rep-1.9'],
       refs: ['Serre §2.1'],
       tags: ['character', 'tensor product', 'dual'],
@@ -189,6 +189,11 @@ export default {
         const S = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 300, weight: 1.35 });
         const Bs = v.stage({ x: [-0.6, 3], y: [-4, 10], axes: 'box', gutter: true, height: 300, weight: 1, title: 'real part, direct (bar) and formula (ring)', xlabel: 'class' });
         const T = v.table(S, { rows: 4, cols: 6, square: false, maxCell: 70, cellAspect: 1.55, size: 13.5, labelSize: 12.5, margin: 6 });
+        // TeX table cells are not width-fitted by the kit. Wrap the two terms of
+        // non-real cyclic characters, keeping the same two-decimal values.
+        const cell = (z) => gsel.value === 'Z5' && Math.abs(z[0]) >= 1e-9 && Math.abs(z[1]) >= 1e-9
+          ? `$\\begin{gathered}${nm(z[0], 2)}\\\\[-2pt]${z[1] > 0 ? '+' : ''}${ctex([0, z[1]])}\\end{gathered}$`
+          : `$${ctex(z)}$`;
         const calc = () => {
           const G = (gsel.value === 'S3' ? T3 : T5).G, L = REPS[gsel.value];
           const A = L[(gsel.value === 'S3' ? aS3 : aZ5).value], B = L[(gsel.value === 'S3' ? bS3 : bZ5).value], o = op.value;
@@ -216,8 +221,8 @@ export default {
           const ok = (r) => cabs(csub(r.direct, r.form)) < 1e-9;
           T.draw({
             rows: rows.length, cols: 6, colLabels: ['class', '$\\chi_A$', bin ? '$\\chi_B$' : '', 'direct', 'formula', ''], rowLabels: (i) => `${rows[i].c.size}×`,
-            value: (i, j) => { const r = rows[i]; return [`$${G.L[r.c.rep]}$`, `$${ctex(r.a)}$`, bin ? `$${ctex(r.b)}$` : '', `$${ctex(r.direct)}$`, `$${ctex(r.form)}$`, ok(r) ? '✓' : '✗'][j]; },
-            fill: (i, j) => (j >= 3 ? [ok(rows[i]) ? 'green' : 'red', j === 5 ? 0.35 : 0.14] : null), size: 13.5,
+            value: (i, j) => { const r = rows[i]; return [`$${G.L[r.c.rep]}$`, cell(r.a), bin ? cell(r.b) : '', cell(r.direct), cell(r.form), ok(r) ? '✓' : '✗'][j]; },
+            fill: (i, j) => (j >= 3 ? [ok(rows[i]) ? 'green' : 'red', j === 5 ? 0.35 : 0.14] : null), size: gsel.value === 'Z5' ? 12 : 13.5,
           });
           const vals = rows.map((r) => r.direct[0]), forms = rows.map((r) => r.form[0]);
           const hi = Math.max(2, ...vals, ...forms) + 1, lo = Math.min(-1, ...vals, ...forms) - 1;
@@ -245,10 +250,9 @@ The space of class functions has dimension equal to the number of conjugacy clas
       idea: String.raw`The formula is an average over the group, the same operation as in 2.1; grouping the terms by conjugacy class collects $|C|$ equal terms for each class, so a class function is a vector indexed by the classes and the inner product is an ordinary dot product with weights $|C|/|G|$ (which add to $1$). Positivity: $\langle\varphi,\varphi\rangle=\frac1{|G|}\sum|\varphi(g)|^2>0$ unless $\varphi=0$.`,
       caption: String.raw`The blue and orange handles set two real class functions $\varphi$ and $\psi$ on the classes of the chosen group. The right panel draws their product as rectangles whose width is the class weight $|C|/|G|$ and whose height is $\varphi(C)\psi(C)$: the signed area (green minus red) is $\langle\varphi,\psi\rangle$. The readout shows the class sum and, as a check, the element-by-element sum. "Next character" loads a row of the character table into $\varphi$ or $\psi$ (see 3.5).`,
       deps: ['rep-3.2'],
-      refs: ['Serre §2.3'],
+      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['inner product', 'class function'],
-      credit: 'Frobenius, 1896–97 (the averaging formula); the formulation as an inner product is due to Schur and later authors',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'S4', 'D5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3', { onChange: () => load(0, 0), });
@@ -306,10 +310,9 @@ The irreducible characters form an orthonormal family in the space of class func
       idea: String.raw`For any matrices $X$ the average $T=\frac1{|G|}\sum_g\rho_j(g)\,X\,\rho_i(g)^{-1}$ is an intertwiner, so by Schur's lemma (2.5, 2.7, 2.8) it is $0$ if $\rho_i\not\cong\rho_j$ and a scalar $\frac{\operatorname{tr}X}{\dim}\,I$ if they are equal. Reading off the entries gives the orthogonality of matrix coefficients (3.13); summing the diagonal entries gives the orthogonality of characters.`,
       caption: String.raw`The table is the Gram matrix $\langle\chi_i,\chi_j\rangle$ of the rows of the character table of the chosen group, computed with the class sizes as weights. Every diagonal entry is $1$ and every other entry $0$. Click a cell: the left panel draws the product $\chi_i\overline{\chi_j}$ as weighted rectangles, whose signed area is the entry. Then break the theorem: weight all classes equally, or drop the complex conjugate (visible on $A_4$, whose table is complex).`,
       deps: ['rep-3.4', 'rep-2.5'],
-      refs: ['Serre §2.3', 'Fulton–Harris §2.2'],
+      refs: ['Serre §2.3', 'Fulton–Harris §2.2', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['orthogonality', 'character table'],
-      credit: 'Frobenius, 1896–97; the proof by Schur’s lemma is Schur’s, 1905',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const KEYS = ['S3', 'D4', 'Q8', 'A4', 'S4', 'S5'];
         const gsel = v.select('group', KEYS.map((k) => ({ value: k, label: `$${tableOf(k).G.tex}$` })), 'S3', { onChange: () => { sel = [0, 1]; } });
@@ -359,10 +362,9 @@ The irreducible characters form an orthonormal family in the space of class func
       idea: String.raw`By Maschke (2.2) $V$ is a direct sum of irreducibles, so $\chi=\sum m_i\chi_i$ by 3.3. Take the inner product with $\chi_j$ and use 3.5: only the term $i=j$ survives and gives $m_j$. For a permutation representation on a finite set $X$ the matrix of $g$ is a permutation matrix, whose diagonal entries are $1$ exactly at the fixed points.`,
       caption: String.raw`The rotation group of the cube is $S_4$ (it permutes the four body diagonals). Choose a set of geometric objects the cube rotations move: diagonals, faces, vertices, edges or the three face axes. Choose a class of rotation ($e$; $(1\,2)$, a half-turn about an edge axis; $(1\,2)(3\,4)$, a half-turn about a face axis; $(1\,2\,3)$, a third-turn about a body diagonal; $(1\,2\,3\,4)$, a quarter-turn about a face axis): the 3D picture shows which objects stay fixed (green) and which move (red), and the character of that class is their count. The bars on the right are the multiplicities $\langle\chi,\chi_i\rangle$ of the five irreducibles of $S_4$, computed by the weighted dot product; they are whole numbers, and the readout rebuilds $\chi$ from them.`,
       deps: ['rep-3.5'],
-      refs: ['Serre §2.3'],
+      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['multiplicity', 'permutation representation'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const T = tableOf('S4'), cube = cubeData(), G = T.G;
         const pairsOfEdges = cube.sets.edges.pts.filter((p, i, a) => a.findIndex((q) => cube.same(q, p.map((t) => -t))) >= i); // 6 axes through opposite edge midpoints
@@ -426,10 +428,9 @@ The irreducible characters form an orthonormal family in the space of class func
       idea: String.raw`If $V\cong W$ the traces agree (3.1). Conversely, equal characters give equal multiplicities $\langle\chi_V,\chi_i\rangle=\langle\chi_W,\chi_i\rangle$ by 3.6, and by Maschke (2.2) a representation is determined up to isomorphism by those multiplicities. The isomorphism can be produced explicitly: for a generic matrix $X$, the average $T=\frac1{|G|}\sum_g\sigma(g)X\rho(g)^{-1}$ is an intertwiner, and is invertible exactly when $\rho\cong\sigma$ (2.5).`,
       caption: String.raw`Left: the standard representation $\rho$ of $S_3$ moving the letter F. Right: another candidate $\sigma$ chosen from the menu. The characters of the two are printed class by class. If they agree, the averaged matrix $T$ (computed from a random $X$) is invertible and intertwines: the image $T\rho(g)F$ of the moved letter coincides with $\sigma(g)$ applied to $TF$ (green outline on the right). If they differ, the average is $0$ and nothing can be matched. Drag the shear slider to disguise $\sigma$ further; the character does not change.`,
       deps: ['rep-3.6'],
-      refs: ['Serre §2.3'],
+      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['character', 'isomorphism'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const T3 = tableOf('S3'), G = T3.G, rho = G.mat;
         const tsel = v.select('candidate $\\sigma$', [{ value: 'skew', label: 'standard, skewed basis' }, { value: 'rot', label: 'standard, rotated & scaled basis' }, { value: 'ge', label: '$\\mathbf 1\\oplus\\varepsilon$' }, { value: 'gg', label: '$\\mathbf 1\\oplus\\mathbf 1$' }], 'skew');
@@ -479,14 +480,13 @@ The irreducible characters form an orthonormal family in the space of class func
       num: '3.8',
       kind: 'Theorem',
       name: 'Irreducibility criterion ⟨χ, χ⟩ = 1',
-      statement: String.raw`If $V\cong\bigoplus_iW_i^{\,m_i}$ has character $\chi$, then $\langle\chi,\chi\rangle=\sum_i m_i^2$. Consequently $\langle\chi,\chi\rangle$ is a positive integer, and $V$ is irreducible if and only if $\langle\chi,\chi\rangle=1$. More generally $\langle\chi,\chi\rangle=\dim\operatorname{End}_G(V)$.`,
+      statement: String.raw`If $V\cong\bigoplus_iW_i^{\,m_i}$ has character $\chi$, then $\langle\chi,\chi\rangle=\sum_i m_i^2$. Consequently $\langle\chi,\chi\rangle$ is a nonnegative integer (positive when $V\ne0$), and $V$ is irreducible if and only if $\langle\chi,\chi\rangle=1$. More generally $\langle\chi,\chi\rangle=\dim\operatorname{End}_G(V)$.`,
       idea: String.raw`Write $\chi=\sum m_i\chi_i$ (3.6) and expand the inner product with the orthonormality 3.5: $\langle\chi,\chi\rangle=\sum_{i,j}m_im_j\langle\chi_i,\chi_j\rangle=\sum m_i^2$. A sum of squares of non-negative integers equals $1$ only if exactly one $m_i$ is $1$ and the rest vanish, which is irreducibility. The number $\sum m_i^2$ is also $\dim\operatorname{End}_G(V)$ by Schur’s lemma (2.5).`,
       caption: String.raw`The five irreducibles of $S_4$ are the sliders: choose how many copies of each to put into a representation. The coloured squares have side $m_i$, so their total area is $\langle\chi,\chi\rangle=\sum m_i^2$; the readout computes the same number directly from the character values with the class weights. Only a single unit square certifies irreducibility. The menu loads representations built from earlier items (permutation, tensor and regular representations); their multiplicities are then found by 3.6.`,
       deps: ['rep-3.6'],
-      refs: ['Serre §2.3'],
+      refs: ['Serre §2.3', 'Etingof et al., Introduction to Representation Theory, §§4.1–4.7, 5.1'],
       tags: ['irreducibility', 'character'],
-      credit: 'Frobenius, 1896–97',
-      verify: true,
+      credit: 'Finite-group representation theory',
       viz(v) {
         const T = tableOf('S4'), G = T.G, n = T.rows.length;
         const sl = T.rows.map((r, i) => v.slider(`multiplicity of $${r.tex}$`, 0, 4, i === 3 ? 1 : 0, { int: true }));

@@ -5,13 +5,13 @@ const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
 
 // ---------------------------------------------------------------- 4.1 helpers
-/** Smallest ring thickness (fraction of intrados radius) that still holds a thrust line, by bisection on the feasibility scan. */
+/** Smallest ring thickness (fraction of intrados radius) that still holds a thrust line, by bisection on the joint inequalities. */
 function minThickness(alpha) {
   let lo = 0.004, hi = 0.6;
-  if (!archFeasible(archGeometry(hi, alpha, 24), 100, 70).ok) return NaN;
-  for (let i = 0; i < 11; i++) {
+  if (!archFeasible(archGeometry(hi, alpha, 96), 100, 70).ok) return NaN;
+  for (let i = 0; i < 24; i++) {
     const mid = (lo + hi) / 2;
-    if (archFeasible(archGeometry(mid, alpha, 24), 100, 70).ok) hi = mid; else lo = mid;
+    if (archFeasible(archGeometry(mid, alpha, 96), 100, 70).ok) hi = mid; else lo = mid;
   }
   return hi;
 }
@@ -40,7 +40,7 @@ export default {
       name: 'The true arch in Roman engineering',
       credit: 'No single inventor. Arched openings are older than Rome (Near East and Egypt); Roman builders made the semicircular arch the basis of bridges, aqueducts and vaults',
       verify: true,
-      statement: String.raw`A **true arch** is a curved span of wedge-shaped blocks (**voussoirs**) that press on one another, so that the load travels along the curve in compression and nothing is asked to resist bending or tension. The weight of the stones pushes outward at the feet (the **thrust**), which the piers or abutments must resist. A **corbelled** opening is different: each course projects a little beyond the one below, and every block is a cantilever held down by the weight above and behind it.
+      statement: String.raw`A **true arch** is a curved span of wedge-shaped blocks (**voussoirs**) that press on one another, so that the load travels along the curve in compression and the joints need no tensile strength. The weight of the stones pushes outward at the feet (the **thrust**), which the piers or abutments must resist. A **corbelled** opening is different: each course projects a little beyond the one below, and every block is a cantilever held down by the weight above and behind it.
 
 The arch was not a Roman invention. Arched openings in brick and stone are found in the Near East and Egypt well before Rome (the earliest dates quoted vary between sources, from the fourth millennium BCE for debated Mesopotamian finds to about 2000 BCE for firmly dated examples), and the Etruscans passed arch building to Rome. What Roman builders did was use the semicircular arch as a system: bridges, aqueducts (4.3), amphitheatres and vaults, built in cut stone and then in concrete (4.2).
 
@@ -48,7 +48,7 @@ Scope of the picture: it takes stone with no tensile strength, effectively unlim
       idea: String.raw`If the stones are free to carry only compression, the arch stands if and only if some line of thrust, the curve along which the force passes from joint to joint, lies inside the ring everywhere (Heyman's safe theorem, arch-3.5). Cutting a symmetric arch at the crown leaves one unknown horizontal thrust $H$ and the height $y_c$ where it crosses the crown joint; statics then gives the thrust line through every other joint from the weights of the voussoirs (arch-3.2). Hooke's remark that "as hangs the flexible line, so but inverted will stand the rigid arch" is the same statement: a chain hangs in a pure tension curve, and its mirror image is a pure compression curve.
 
 A free-standing stack of blocks has no such freedom. A block can overhang its support by at most half its own length, and a stack of $n$ equal blocks can reach out by $\tfrac12(1+\tfrac12+\dots+\tfrac1n)$ lengths in all, which grows like $\tfrac12\ln n$. To close a gap of $S$ block lengths the two sides need about $e^{S-\gamma}$ courses, so reach is paid for with height, exponentially. Real corbel vaults load the courses from behind with masonry and do far better, but the geometry of the cantilever is why a corbel opens in height and an arch in width.`,
-      caption: String.raw`Left: a voussoir arch of the chosen span and shape under its own weight. The ring is shaded; the **orange** and **purple** dashed curves are the thrust lines of smallest and largest horizontal thrust that stay inside the ring, and any line in between would do as well. Thin the ring with the **thickness** slider: for a semicircle the two lines merge and then no line fits (the readout then says there is no admissible thrust line, and the red thrust line leaves the masonry at the hinge points). Right: a corbel of the same span, built from free-standing courses of unit blocks. Raise the **courses** until the two sides meet; the readout says how many the span needs.`,
+      caption: String.raw`Left: a voussoir arch of the chosen span and shape under its own weight. The ring is shaded; the **orange** and **purple** dashed curves are the thrust lines of smallest and largest horizontal thrust that stay inside the ring, and the green curve is another admissible thrust line. Thin the ring with the **thickness** slider: for a semicircle the two lines merge and then no line fits (the readout then says there is no admissible thrust line, and the red thrust line leaves the masonry at the hinge points). Right: a corbel of the same span, built from free-standing courses of unit blocks. Raise the **courses** until the two sides meet; the readout says how many the span needs.`,
       deps: ['arch-3.2', 'arch-3.5'],
       see: ['arch-3.13', 'arch-3.7', 'tech-4.3'],
       refs: ['Mokyr ch. 2', 'Heyman, The Stone Skeleton (1966), Int. J. Solids Struct. 2:249', 'Woodman & Bloom (eds), Arch (2003), as cited by Wikipedia "Arch"'],
@@ -59,11 +59,11 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
         const B = v.stage({ x: [-4, 4], y: [-1, 6], equal: true, axes: false, height: 330, weight: 1, minWidth: 300, title: 'corbel of free-standing courses' });
         const shape = v.select('shape', [{ value: 'semi', label: 'semicircle' }, { value: 'seg', label: 'segmental (60°)' }], 'semi');
         const span = v.slider('span $S$ (block lengths)', 1, 6, 3, { step: 0.1 });
-        const thick = v.slider('ring thickness $t/R$', 0.03, 0.3, 0.16, { step: 0.005 });
+        const thick = v.slider('ring thickness $t/R_i$ (intrados)', 0.03, 0.3, 0.16, { step: 0.005 });
         const nC = v.slider('corbel courses $n$', 1, 40, 6, { int: true });
         const tMinCache = {};
         let cacheKey = '', geo = null, feas = null;
-        const NJ = 24;
+        const NJ = 96;
         v.render(() => {
           const alpha = (shape.value === 'semi' ? 90 : 60) * D2R, S = span.value, t = thick.value;
           const key = `${shape.value}|${t.toFixed(4)}`;
@@ -96,7 +96,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
           if (feas.ok) {
             draw(feas.max.H, feas.max.yc, 'purple', [5, 3], 1.8);
             draw(feas.min.H, feas.min.yc, 'orange', [5, 3], 1.8);
-            const Hm = Math.sqrt(feas.min.H * feas.max.H), ym = (feas.min.yc + feas.max.yc) / 2;
+            const Hm = (feas.min.H + feas.max.H) / 2, ym = (feas.min.H * feas.min.yc + feas.max.H * feas.max.yc) / (feas.min.H + feas.max.H);
             draw(feas.min.H === feas.max.H ? feas.min.H : Hm, feas.min.H === feas.max.H ? feas.min.yc : ym, 'green', null, 2.6);
           } else if (feas.best) {
             draw(feas.best.H, feas.best.yc, 'red', null, 2.4);
@@ -124,7 +124,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
         v.readout(() => {
           const tmin = tMinCache[shape.value], t = thick.value;
           const hmin = feas && feas.ok ? `thrust between **${v.fix(feas.min.H, 2)}** and **${v.fix(feas.max.H, 2)}** of a half-arch's weight` : '**no admissible thrust line**';
-          return `${shape.value === 'semi' ? 'semicircle' : 'segmental arch'}, ring $t/R = ${v.fix(t, 3)}$: ${hmin}; the thinnest ring that stands is $t/R \\approx ${v.fix(tmin, 3)}$ (scan resolution about $\\pm0.005$)\nCorbel with $n=${nC.value}$ courses reaches $H_n=${v.fix(B._Hn, 2)}$ block lengths; spanning $S=${v.fix(span.value, 1)}$ needs $n \\ge ${B._need}$ courses`;
+          return `${shape.value === 'semi' ? 'semicircle' : 'segmental arch'}, ring $t/R_i = ${v.fix(t, 3)}$: ${hmin}; the minimum for this 192-block model is $t/R_i \\approx ${v.fix(tmin, 4)}$, or $t/R_{\\mathrm{mean}} \\approx ${v.fix(tmin / (1 + tmin / 2), 4)}$; $R_{\\mathrm{mean}}=R_i+t/2$\nCorbel with $n=${nC.value}$ courses reaches $H_n=${v.fix(B._Hn, 2)}$ block lengths; spanning $S=${v.fix(span.value, 1)}$ needs $n \\ge ${B._need}$ courses`;
         });
       },
     },
@@ -208,7 +208,7 @@ Ash with reactive silica and alumina does a different reaction. In water it diss
       verify: true,
       statement: String.raw`An **aqueduct** carries water from a spring to a city by gravity alone, in a channel with a small, steady downward slope. The terrain between the two is never so obliging, so the channel is dug into hills (tunnels and cuttings) and carried over valleys on **arcades**, tall rows of arches (4.1). Where the valley is too deep for an arcade, builders could use an **inverted siphon**: the channel empties into a header tank, water runs down into a pipe along the slope, across the valley floor (the *venter* in Vitruvius's account), and up the far side to an outlet tank. The outlet must be lower than the inlet; water in a pipe cannot rise above its source.
 
-Documented figures, for orientation: the Nîmes aqueduct that crosses the Pont du Gard falls about 17 m in roughly 50 km (an average of 34 cm per km, 1 in 3000), and only a few centimetres across the bridge itself. Vitruvius (8.6) prescribes a fall of at least half a foot in a hundred feet (1 in 200) for the channel, a much steeper figure than the best-built lines actually used. Frontinus, the water commissioner of Rome from 97 CE, wrote a report on nine aqueducts of the city. The Hellenistic line to Pergamon (the Madradağ line, built in the Attalid period) crossed valleys under pressure; sources differ on whether its pressure sections were lead or terracotta, and the literature says that the route is not known exactly enough to fix the pressure.
+Documented figures, for orientation: the Nîmes aqueduct that crosses the Pont du Gard falls about 17 m in roughly 50 km (an average of 34 cm per km, 1 in 3000), and only a few centimetres across the bridge itself. Vitruvius (8.6.1) gives a minimum channel fall whose translations differ: Gwilt (1826) says half a foot per hundred feet (1 in 200), while Morgan (1914) says a quarter inch per hundred feet (1 in 4800). The Latin reads *sicilico*; the larger gradient should not be presented as an undisputed reading. Frontinus, the water commissioner of Rome from 97 CE, wrote a report on nine aqueducts of the city. The Hellenistic line to Pergamon (the Madradağ line, built in the Attalid period) crossed valleys under pressure; sources differ on whether its pressure sections were lead or terracotta, and the literature says that the route is not known exactly enough to fix the pressure.
 
 The picture is a **model**: the terrain is made up, and the friction loss uses a smooth-pipe friction factor.`,
       idea: String.raw`In an open channel the water surface follows the channel: it can only flow if the channel keeps falling, and too steep a fall wears out the lining while too shallow a fall leaves no flow. Over 30 km, a gradient $g$ costs $30g$ metres of height, which must not exceed the height difference between spring and city.
@@ -389,26 +389,25 @@ An overshot wheel uses the weight of the water instead. It has no such limit, it
       kind: 'Event',
       name: 'Smeaton’s water-wheel experiments',
       credit: 'John Smeaton, experiments begun 1752, reported to the Royal Society 1759',
-      verify: true,
-      statement: String.raw`In the 1750s the English engineer **John Smeaton** built a working model of a water wheel, with a cistern at a controlled head, a sluice, and a cord that lifted a weight, and measured how much work it did for a given quantity of water. He ran 27 sets of experiments on **undershot** wheels (his Table I) and 16 on **overshot** wheels (Table II), recording for each the power of the water (weight of water used times the height it fell) and the effect (weight raised times the height). He published the results in 1759. The result that mattered: **at the same quantity of water and the same fall, an overshot wheel does about twice the work of an undershot wheel**, and, for each wheel, the maximum effect comes with the wheel turning slowly (for his undershot wheel about two-fifths of the speed of the water). At the time it was widely believed that undershot wheels were the more powerful; Smeaton's measurements are the source of the engineering rule that water's weight, not its impulse, should be used where there is a fall.
+      statement: String.raw`In the 1750s the English engineer **John Smeaton** built a working model of a water wheel, with a cistern at a controlled head, a sluice, and a cord that lifted a weight, and measured how much work it did for a given quantity of water. He ran 27 sets of experiments on **undershot** wheels (his Table I) and 16 on **overshot** wheels (Table II), recording for each the power of the water and the effect. For undershot wheels his power uses the **virtual head** inferred from the incoming velocity; for overshot wheels Table II gives both the whole descent and wheel-diameter bases. His effect multiplies the rise by the lifted weight **plus a correction for apparatus friction** (pp. 106–109): it is not simply net useful output. He published the results in 1759. The result that mattered: **at the same quantity of water and the same fall, an overshot wheel does about twice the work of an undershot wheel**, and, for each wheel, the maximum effect comes with the wheel turning slowly (for his undershot wheel about two-fifths of the speed of the water). These are measured comparisons for his apparatus, not universal efficiencies for every wheel geometry.
 
-How the numbers below were obtained: the two tables were read from an OCR transcription of the 1759 paper (Philosophical Transactions 51, in an online archive), not from page images. The ratio of effect to power was recomputed from the printed Power and Effect columns and agrees with his printed ratios to about 0.05 in 41 of the 43 rows; in rows 10 and 20 of Table I the printed ratio differs by about 0.1, which may be an OCR error or a misprint. The figures called "Smeaton's" are therefore marked unverified against the original pages.`,
-      idea: String.raw`The experiment is a clean application of conservation of energy (mech-3.6): what the water gives up in falling is $W_\mathrm{water}\,h$, the useful part is the weight raised times its rise, and the ratio of the two is an efficiency that Smeaton could measure for every setting of the sluice and the load. The load was increased until the product of load and turns of the wheel (the effect) was greatest, as that is the working point of a mill.
+The replay was checked against the original printed Tables I (p. 115) and II (p. 129). Power and Effect are transcribed as printed and their ratio is recomputed. Some printed entries are internally inconsistent: Table II row 2 gives power 1520 although 27 × 56⅔ = 1530, while Table I rows 10 and 20 have printed ratios inconsistent with their Power and Effect columns. Those are source-table inconsistencies, not corrected measurements. Fractions in Table II and its row 2 effect (1060) have been checked directly on the page images.`,
+      idea: String.raw`The experiment is a clean application of conservation of energy (mech-3.6): what the water gives up in falling is $W_\mathrm{water}\,h$, the lifted weight times its rise measures net work, and Smeaton additionally estimates apparatus friction before reporting his Effect/Power ratio. The replay uses that historical friction-corrected ratio. The load was increased until the product of load and turns of the wheel (the effect) was greatest, as that is the working point of a mill.
 
-The replay shows what a theory of impulse alone would not: for an impulse wheel an ideal argument predicts that the best rim speed is half the water's speed and the best load half of the load that just stops the wheel, and an efficiency of at most one half. Smeaton measured about a third, a best speed of two-fifths and a best load three-quarters of the stopping load (his "4 : 3"), and so showed that the ideal picture overstates how the wheel behaves, while the weight of water in the buckets of the overshot wheel gives more than twice as much.`,
-      caption: String.raw`Left: every experiment of Smeaton's Tables I (27 undershot sets, blue) and II (16 overshot sets, green) as the share of the water's power that was delivered as work; click a point to read its row. Choose whether the overshot share is of the power of the **whole descent** or of the **wheel's own diameter**. The two horizontal lines are the means. Right: the modelled share against load for the same two wheel types (the models of 4.4 at a head of 0.8 m, about his 27–35 inches), with his measured ranges as bands and his measured load ratio for the undershot wheel as a vertical line: the model's best load for an impulse wheel is 0.5 of the stopping load, his was about 0.75.`,
+The replay shows what a theory of impulse alone would not: for an impulse wheel an ideal argument predicts that the best rim speed is half the water's speed and the best load half of the load that just stops the wheel, and an efficiency of at most one half. Smeaton measured about a third, a best speed of two-fifths and a best load three-quarters of the stopping load (his "4 : 3"), and so showed that the ideal picture overstates how the wheel behaves, while his overshot measurements give roughly twice the friction-corrected share.`,
+      caption: String.raw`Left: every experiment of Smeaton's Tables I (27 undershot sets, blue) and II (16 overshot sets, green) as Smeaton's friction-corrected Effect/Power share; click a point to read its row. Choose whether the overshot share is of the power of the **whole descent** or of the **wheel's own diameter**. The two horizontal lines are the means. Right: the modelled share against load for the same two wheel types (the models of 4.4 at an illustrative head of 0.8 m; his 27–35 inches were overshot whole descents), with his measured ranges as bands and his measured load ratio for the undershot wheel as a vertical line: the model's best load for an impulse wheel is 0.5 of the stopping load, his was about 0.75.`,
       deps: ['tech-4.4', 'mech-3.6'],
       see: ['tech-4.12'],
-      refs: ['Mokyr ch. 5', 'Smeaton 1759, Phil. Trans. 51:100–174 (doi 10.1098/rstl.1759.0019), Tables I and II (OCR transcription at jimclifford.ca)', 'Smeaton 1776, Phil. Trans. 66 (one-half versus one-third of the water’s speed)'],
+      refs: ['Smeaton 1759, Phil. Trans. 51:100–174, doi 10.1098/rstl.1759.0019: apparatus pp. 101–114, Table I p. 115, observations pp. 122–123; overshot pp. 124–138, Table II p. 129'],
       tags: ['industrial', '1759', 'experiment'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/John_Smeaton' },
+      links: { source: 'https://archive.org/download/philtrans04492943/04492943.pdf', wikipedia: 'https://en.wikipedia.org/wiki/John_Smeaton' },
       viz(v) {
         const A = v.stage({ x: [0, 28], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1.15, minWidth: 340, xlabel: 'experiment number', ylabel: 'effect ÷ power', title: 'Smeaton’s Tables I and II' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 320, xlabel: 'load ÷ load that stops the wheel', ylabel: 'effect ÷ power', title: 'modelled wheels at a head of 0.8 m' });
         // [power, effect]  — Table I (undershot), Smeaton 1759, as transcribed
         const T1 = [[4358, 1411], [3970, 1266], [3329, 1044], [2890, 901.4], [2439, 735.7], [1970, 561.8], [1524, 442.5], [1173, 328], [733, 213.7], [404.7, 117], [4890, 1505], [4009, 1223], [2993, 975], [2659, 774], [1872, 549], [1280, 390], [712, 212], [3748, 1210], [2887, 878], [1734, 541], [1064, 317], [3338, 1006], [2257, 686], [1231, 385], [2588, 783], [1544, 450], [1811, 534]];
         // [descent in, water lb/min, turns/min, weight lb, power whole descent, power of wheel, effect] — Table II (overshot)
-        const T2 = [[27, 30, 19, 6.5, 810, 720, 556], [27, 56, 16.5, 14.5, 1530, 1360, 1050], [27, 56, 20.5, 12.5, 1530, 1360, 1167], [27, 63, 20.5, 13.5, 1710, 1524, 1245], [27, 76, 21.5, 15.5, 2070, 1840, 1500], [28.5, 73.5, 18.5, 17.5, 2090, 1764, 1476], [28.5, 96.5, 20.5, 20.5, 2755, 2320, 1868], [30, 90, 20, 19.5, 2700, 2160, 1755], [30, 96.5, 20.5, 20.5, 2900, 2320, 1914], [30, 113.5, 21, 23.5, 3400, 2720, 2221], [33, 56.5, 20.5, 13.5, 1870, 1360, 1230], [33, 106.5, 22.5, 21.5, 3520, 2560, 2153], [33, 146.5, 23, 27.5, 4840, 3520, 2846], [35, 65, 19.5, 16.5, 2275, 1560, 1466], [35, 120, 21.5, 25.5, 4200, 2880, 2467], [35, 163.5, 25, 26.5, 5728, 3924, 2981]];
+        const T2 = [[27, 30, 19, 6.5, 810, 720, 556], [27, 56 + 2 / 3, 16.25, 14.5, 1520, 1360, 1060], [27, 56 + 2 / 3, 20.75, 12.5, 1530, 1360, 1167], [27, 63 + 1 / 3, 20.5, 13.5, 1710, 1524, 1245], [27, 76 + 2 / 3, 21.5, 15.5, 2070, 1840, 1500], [28.5, 73 + 1 / 3, 18.75, 17.5, 2090, 1764, 1476], [28.5, 96 + 2 / 3, 20.25, 20.5, 2755, 2320, 1868], [30, 90, 20, 19.5, 2700, 2160, 1755], [30, 96 + 2 / 3, 20.75, 20.5, 2900, 2320, 1914], [30, 113 + 1 / 3, 21, 23.5, 3400, 2720, 2221], [33, 56 + 2 / 3, 20.25, 13.5, 1870, 1360, 1230], [33, 106 + 2 / 3, 22.75, 21.5, 3520, 2560, 2153], [33, 146 + 2 / 3, 23, 27.5, 4840, 3520, 2846], [35, 65, 19.75, 16.5, 2275, 1560, 1466], [35, 120, 21.5, 25.5, 4200, 2880, 2467], [35, 163.5, 25, 26.5, 5728, 3924, 2981]];
         const r1 = T1.map(([p, e]) => e / p), mean = (a) => a.reduce((x, y) => x + y, 0) / a.length;
         const basis = v.select('overshot share of', [{ value: 'whole', label: 'whole descent' }, { value: 'wheel', label: 'wheel’s own fall' }], 'whole');
         let sel = null;
@@ -456,7 +455,7 @@ The replay shows what a theory of impulse alone would not: for an impulse wheel 
         v.readout(() => {
           const o = r2();
           const pu = peak(cu), po = peak(co);
-          const row = sel ? (sel.kind === 'u' ? `Table I no. ${sel.i + 1}: power ${T1[sel.i][0]}, effect ${T1[sel.i][1]}, effect ÷ power = ${v.fix(r1[sel.i], 3)}` : (() => { const r = T2[sel.i]; return `Table II no. ${sel.i + 1}: descent ${r[0]} in, water ${r[1]} lb/min, ${r[2]} turns/min, raised ${r[3]} lb; power ${r[4]} (wheel's own: ${r[5]}), effect ${r[6]}, share ${v.fix(o[sel.i], 3)}`; })()) : 'click a point to read its row';
+          const row = sel ? (sel.kind === 'u' ? `Table I no. ${sel.i + 1}: power ${T1[sel.i][0]}, effect ${T1[sel.i][1]}, effect ÷ power = ${v.fix(r1[sel.i], 3)}` : (() => { const r = T2[sel.i]; return `Table II no. ${sel.i + 1}: descent ${r[0]} in, water ${v.fix(r[1], 3)} lb/min, ${v.fix(r[2], 2)} turns/min, raised ${v.fix(r[3], 2)} lb; power ${r[4]} (wheel's own: ${r[5]}), effect ${r[6]}, share ${v.fix(o[sel.i], 3)}`; })()) : 'click a point to read its row';
           return `mean share: undershot **${v.fix(mean(r1), 3)}** (range ${v.fix(Math.min(...r1), 2)}–${v.fix(Math.max(...r1), 2)}), overshot **${v.fix(mean(o), 3)}** (range ${v.fix(Math.min(...o), 2)}–${v.fix(Math.max(...o), 2)}) → ratio **${v.fix(mean(o) / mean(r1), 2)}**, Smeaton's "about double"\nmodel: undershot best at load ${v.fix(pu[0], 2)} of the stopping load (${v.fix(100 * pu[1], 0)}%) and rim speed ${v.fix(pu[2] / vj, 2)} of the jet's (Smeaton: ¾ and 0.4); overshot best share ${v.fix(100 * po[1], 0)}%\n${row}`;
         });
       },

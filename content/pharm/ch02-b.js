@@ -71,7 +71,7 @@ export default {
       caption: String.raw`Left: the gut empties into the body (animated; box fill is amount, dots flow in proportion to the absorption rate). Right: the concentration curve (solid blue) is the difference of the two dashed exponentials: orange is $Pe^{-kt}$, purple $Pe^{-k_at}$, with $P=\frac{FDk_a}{V(k_a-k)}$. Drag $k_a$ and watch the peak move and the curve change shape; set $k_a$ close to $k$ and the two exponentials nearly cancel (the formula switches to the limit $t\,e^{-kt}$). The curve is also integrated numerically (RK4 on the two ODEs); the readout gives the largest discrepancy.`,
       scope: String.raw`First-order absorption from a single site with no lag time, one-compartment disposition, constant $F$. Real absorption often has a delay, a dissolution-limited or saturable step, or several phases.`,
       credit: 'Harry Bateman, 1910 (decay chains; applied to drug absorption from the 1930s)',
-      deps: ['pharm-2.1'],
+      deps: ['pharm-2.1', 'kin-4.1'],
       refs: ['Rowland–Tozer'],
       tags: ['absorption', 'oral'],
       viz(v) {
@@ -137,7 +137,7 @@ export default {
       idea: String.raw`Setting $C'(t)=0$ in the difference of exponentials gives $ke^{-kt}=k_ae^{-k_at}$, i.e. $e^{(k_a-k)t}=k_a/k$, hence $t_{max}$; substituting it back gives $C_{max}$. The area is the integral of $C$: $\int_0^\infty e^{-kt}-e^{-k_at}\,dt=1/k-1/k_a$, so $\mathrm{AUC}=\dfrac{FDk_a}{V(k_a-k)}\cdot\dfrac{k_a-k}{k k_a}=\dfrac{FD}{Vk}=\dfrac{FD}{\mathrm{CL}}$ (compare 1.5 and the bioavailability definition 1.6): absorption speed redistributes the same exposure in time.`,
       caption: String.raw`Drag the **absorption rate** slider: the blue curve is the current one, the grey dashed curves the same dose absorbed three times slower and three times faster. All three enclose the same area (shaded, computed by the trapezoidal rule). The right panels follow $t_{max}$ and $C_{max}$ as functions of $k_a$ on a log axis, with the limits as $k_a\to\infty$ (dashed) and the current value in gold. The readout compares the formulas with the maximum found by scanning the curve.`,
       scope: String.raw`For the one-compartment model with first-order absorption and no lag time. Real peaks also depend on gastric emptying, food and formulation, and tiny differences in $C_{max}$ can matter for narrow-window drugs.`,
-      deps: ['pharm-2.7', 'pharm-1.6'],
+      deps: ['pharm-2.7', 'pharm-1.6', 'pma-5.8'],
       refs: ['Rowland–Tozer'],
       tags: ['Cmax', 'tmax', 'AUC'],
       viz(v) {

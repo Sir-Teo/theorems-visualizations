@@ -1,6 +1,15 @@
 // Microeconomics — Chapter 10: Market power: monopoly and oligopoly (items 10.1–10.6; 10.7–10.12 in ch10-b.js, 10.13–10.17 in ch10-c.js, 10.18–10.22 in ch10-d.js)
 import { clamp, GUIDE, fx, bisect, argmax, slopeLine, plateText, lin, iso, mstage, tag, integ, grid } from './ch10.shared.js';
 
+/** Closed-form welfare benchmarks for the two teaching demand families. */
+export function monopolyWelfare(kind, cost, elasticity = 2) {
+  const linear = kind === 'lin', A = linear ? 12 : 8;
+  const Qc = linear ? A - cost : (A / cost) ** elasticity;
+  const Qm = linear ? (A - cost) / 2 : (A * (1 - 1 / elasticity) / cost) ** elasticity;
+  const surplus = q => linear ? A * q - q * q / 2 - cost * q : A * q ** (1 - 1 / elasticity) / (1 - 1 / elasticity) - cost * q;
+  return { Qc, Qm, surplus, dwl: surplus(Qc) - surplus(Qm) };
+}
+
 export default {
   collection: 'micro',
   chapter: 10,
@@ -150,13 +159,12 @@ Since $MC > 0$ forces $L < 1$, the monopolist always operates where demand is **
       num: '10.4', kind: 'Concept', name: 'Deadweight loss of monopoly',
       statement: String.raw`A monopolist produces $Q^m$ where $MR = MC$, which is less than the output $Q^c$ at which price equals marginal cost. Relative to the competitive outcome, buyers pay more on the $Q^m$ units sold, a **transfer** from consumers to the firm, and the $Q^c - Q^m$ units that are not produced would have been worth more to buyers than they cost. The **deadweight loss** is the surplus on those units,
 $$DWL = \int_{Q^m}^{Q^c} \bigl(P(Q) - MC(Q)\bigr)\,dQ \;>\; 0 ,$$
-a loss to society that nobody gains. With constant marginal cost the transfer is the rectangle $Q^m (P^m - MC)$.`,
+a loss of total surplus that nobody gains in this partial-equilibrium model with no external effects or income effects. With constant marginal cost the transfer is the rectangle $Q^m (P^m - MC)$.`,
       idea: String.raw`Total surplus, consumer surplus plus profit, is $\int_0^Q (P - MC)\,dQ$ when $Q$ units are made (3.6). It is maximal at $Q^c$, where the integrand changes sign. The monopolist stops at $Q^m < Q^c$ because it sets $MR$, not $P$, equal to $MC$; on each unit between the two, $P > MC$, so each missed unit costs the amount $P - MC$. The price gap on the units still sold only moves surplus from one side to the other. Compare deadweight loss in a taxed market (3.9): there too the loss is the surplus on trades that do not take place.`,
       caption: String.raw`The blue demand curve, the orange marginal cost and the purple $MR$ curve give the monopoly point (green) and the competitive point (gold). **Slide the marginal cost** and, for the constant-elasticity family, the elasticity. Red triangle: the deadweight loss; green rectangle: the surplus handed from consumers to the firm. Right: total surplus as a function of output; it peaks at $Q^c$ and the vertical gap to the monopoly output is the deadweight loss (the numbers are integrals computed from the curves).`,
-      deps: ['micro-10.2', 'micro-3.9'],
+      deps: ['micro-10.2', 'micro-3.9', 'pma-6.21'],
       refs: ['Mankiw Ch. 15', 'Varian Ch. 25'], tags: ['monopoly', 'welfare'],
-      credit: 'A. C. Harberger, Monopoly and Resource Allocation, American Economic Review (Papers and Proceedings) 44 (2): 77–87, 1954 (first large empirical estimate)',
-      verify: true,
+      credit: 'A. C. Harberger, Monopoly and Resource Allocation, American Economic Review (Papers and Proceedings) 44 (2): 77–87, 1954 (empirical welfare-cost study; Fig. 1 p. 78)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Deadweight_loss' },
       viz(v) {
         const kind = v.select('demand', [{ value: 'lin', label: 'linear' }, { value: 'iso', label: 'constant elasticity' }], 'lin');
@@ -170,10 +178,10 @@ a loss to society that nobody gains. With constant marginal cost the transfer is
           const lin_ = kind.value === 'lin';
           eS.el.hidden = lin_;
           const D = lin_ ? lin(12, 1) : iso(8, eS.value), c = cS.value;
-          const Qm = bisect((x) => D.MR(x) - c, 0.001, 400, 70), Qc = bisect((x) => D.P(x) - c, 0.001, 400, 70);
-          const xm = lin_ ? 12 : Math.min(60, Qc * 1.15), ym = lin_ ? 12 : Math.min(30, D.P(Qm) * 1.5);
+          const exact = monopolyWelfare(kind.value, c, eS.value), { Qm, Qc } = exact;
+          const xm = lin_ ? 12 : Qc * 1.15, ym = lin_ ? 12 : Math.max(8, D.P(Qm) * 1.5);
           s.setView([0, xm], [0, ym]);
-          const pm = D.P(Qm), dwl = integ((x) => D.P(x) - c, Qm, Qc), tr = Qm * (pm - c), q0 = lin_ ? 0 : (8 / ym) ** eS.value;
+          const pm = D.P(Qm), dwl = exact.dwl, tr = Qm * (pm - c), q0 = lin_ ? 0 : (8 / ym) ** eS.value;
           s.rect(0, c, Qm, pm, { fill: 'green', fillAlpha: 0.3, color: 'green', width: 1.2 });
           s.between(D.P, () => c, Qm, Qc, { fill: 'red', fillAlpha: 0.4 });
           s.clip(() => {
@@ -183,7 +191,7 @@ a loss to society that nobody gains. With constant marginal cost the transfer is
           });
           s.dot(Qm, pm, { r: 7, color: 'green' }); s.dot(Qm, c, { r: 4, color: 'orange' }); s.dot(Qc, c, { r: 7, color: 'gold' });
           s.tex('Q^m', Qm, 0, { dy: -14, color: 'green' }); s.tex('Q^c', Qc, 0, { dy: -14, color: 'ink' });
-          const Wf = (q) => integ((x) => D.P(x) - c, lin_ ? 0 : Math.max(q0, 0.02), q, 60);
+          const Wf = exact.surplus;
           const Wc = Wf(Qc);
           W.setView([0, xm], [0, Wc * 1.2]);
           W.fn(Wf, { domain: [Math.max(q0, 0.05) + 0.01, xm], color: 'ink', width: 2.4 });
@@ -199,12 +207,11 @@ a loss to society that nobody gains. With constant marginal cost the transfer is
     {
       num: '10.5', kind: 'Concept', name: 'First-degree price discrimination',
       statement: String.raw`A seller who knows each buyer's reservation price and can prevent resale practises **first-degree** (perfect) price discrimination: each unit is sold to the buyer who values it most at exactly that buyer's reservation price, as long as it exceeds marginal cost. Output is then the competitive one, $Q^c$ with $P(Q^c) = MC$, so there is **no deadweight loss**; but all the surplus, $\int_0^{Q^c}(P - MC)\,dQ$, goes to the seller and consumer surplus is zero. A single-price monopolist, by contrast, earns less and leaves a deadweight loss (10.4).`,
-      idea: String.raw`Under a single price, every unit sold at $P^m$ earns the same marginal revenue $P^m - $ (price cut on the others), so the firm stops short. A discriminating seller does not have to cut the price on the earlier units: the price cut applies only to the new buyer, so $MR$ equals the new buyer's price and the demand curve becomes the marginal revenue curve. Setting $MR = MC$ then gives $P = MC$, the efficient output (10.2, 3.6). Efficiency survives, distribution changes completely: what the monopolist captures is the whole consumer surplus.`,
+      idea: String.raw`Under a single price, every unit sold at $P^m$ earns marginal revenue equal to its sale price less the revenue lost by cutting the price on earlier units, so the firm stops short. A discriminating seller does not have to cut the price on the earlier units: the price cut applies only to the new buyer, so $MR$ equals the new buyer's price and the demand curve becomes the marginal revenue curve. Setting $MR = MC$ then gives $P = MC$, the efficient output (10.2, 3.6). Efficiency survives, distribution changes completely: what the monopolist captures is the whole consumer surplus.`,
       caption: String.raw`Each bar is one buyer's reservation price (a staircase approximating the demand curve; more buyers with the slider makes it smoother). **Drag the single price** $p$: buyers whose bar reaches above the line buy. Uniform price: profit (green), unserved buyers whose value exceeds cost (red, the deadweight loss), consumer surplus (blue). **Switch to perfect discrimination**: everyone with value above cost buys at his or her own value, all the bar above the cost line is profit and the red and blue vanish.`,
       deps: ['micro-10.2', 'micro-3.6'],
       refs: ['Varian Ch. 26'], tags: ['price discrimination'],
       credit: 'A. C. Pigou, The Economics of Welfare, 1920 (the classification into first, second and third degree)',
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Price_discrimination' },
       viz(v) {
         const mode = v.select('pricing', [{ value: 'uni', label: 'one price' }, { value: 'pd', label: 'perfect discrimination' }], 'uni');

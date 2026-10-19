@@ -277,7 +277,7 @@ where the constant $E$ (the **modulus of elasticity** or Young's modulus, in GPa
       caption: String.raw`A virtual strain-gauge test. Drag the gold handle to load the specimen; each recorded point is stress against strain, and the line is fitted through the first few low-load readings (the calibration). Its slope is **E**, compared with the handbook value. The lower panel plots the deviation from that line: where it exceeds 0.5 % the proportional limit is passed. Steel and aluminium are straight to a surprisingly high stress; copper leaves the line almost at once; rubber never follows Hooke's law much beyond its first few per cent.`,
       scope: String.raw`Small strains, isotropic material, slow loading, constant temperature; rubber-like materials are linear only below a few per cent strain.`,
       credit: 'Robert Hooke, 1678 (anagram 1676)',
-      deps: ['solid-1.3', 'mech-4.1'],
+      deps: ['solid-1.3', 'mech-4.1', 'pma-5.15', 'mat-1.2'],
       refs: ['Gere–Goodno §1.7'],
       tags: ['hooke', 'elasticity'],
       viz(v) {

@@ -3,16 +3,16 @@ import { clamp, ode, logspace, nz } from './ch04.shared.js';
 
 // ---------------------------------------------------------------- unimolecular helpers
 /** slow eigenvalue (s^-1) of A + M <-> A* + M, A* -> P at bath pressure p (atm); k-1 = 1e10 per atm per s, k2 = pHalf*1e10, k1 = kinf/pHalf */
-function lamLH(kinf, pHalf, p) {
+export function lamLH(kinf, pHalf, p) {
   const km = 1e10, k2 = pHalf * km, k1 = kinf / pHalf;
   const a = k1 * p, b = km * p + k2, tr = a + b, det = a * k2;
   return 2 * det / (tr + Math.sqrt(Math.max(0, tr * tr - 4 * det)));
 }
-const lindemann = (kinf, pHalf, p) => kinf * p / (p + pHalf);
+export const lindemann = (kinf, pHalf, p) => kinf * p / (p + pHalf);
 
 /** strong-collision RRK fall-off k/kinf against log10(Pr), Pr = k0/kinf. s oscillators, x0 = E0/kT */
 const rrkCache = new Map();
-function rrkFalloff(s, x0) {
+export function rrkFalloff(s, x0) {
   const key = s + '|' + x0;
   if (rrkCache.has(key)) return rrkCache.get(key);
   const n = 1500, xmax = x0 + 12 * Math.sqrt(x0) + 4 * s + 40, h = (xmax - x0) / n;
@@ -30,7 +30,7 @@ function rrkFalloff(s, x0) {
   rrkCache.set(key, res); return res;
 }
 /** Troe form: k/kinf = Pr/(1+Pr) * F, with broadening factor F from F_cent (Gilbert, Luther & Troe 1983) */
-function troe(logPr, Fc) {
+export function troe(logPr, Fc) {
   const Pr = Math.pow(10, logPr), lf = Math.log10(Fc);
   const c = -0.4 - 0.67 * lf, n = 0.75 - 1.27 * lf, d = 0.14, q = (logPr + c) / (n - d * (logPr + c));
   return Pr / (1 + Pr) * Math.pow(10, lf / (1 + q * q));
@@ -76,7 +76,7 @@ $$[\mathrm A]=[\mathrm A]_0e^{-k_{\rm tot}t},\quad k_{\rm tot}=\sum_ik_i,\qquad 
 All products appear with the same time constant $1/k_{\rm tot}$ (the *observed* rate constant is the sum, not any one $k_i$), and their ratio is fixed at all times, $[\mathrm P_i]/[\mathrm P_j]=k_i/k_j$. The fraction of molecules that choose channel $i$ is the **branching ratio** $\Phi_i=k_i/k_{\rm tot}$; for $N$ molecules the number taking it is binomial with mean $N\Phi_i$ and relative scatter $\sqrt{(1-\Phi_i)/(N\Phi_i)}$.`,
       idea: String.raw`Each molecule independently decays with the exponential waiting time of rate $k_{\rm tot}$ (a competition of independent exponential clocks), and the winning clock is channel $i$ with probability $k_i/k_{\rm tot}$, independently of *when* it rings. That is why the ratio of products does not drift. Linearity of the rate equations (1.5) gives the same result as a one-line integration. Because ratios of products are fixed by rate constants, product ratios measure $k_i/k_j$ even when the absolute rates are hard to get, and they change with temperature through the differing activation energies (2.1).`,
       caption: String.raw`Left: three channels (set $k_3=0$ to switch the third off) with the products' fixed ratio shown as the final bar heights; the thin vertical line is the lifetime $1/k_{\rm tot}$. Right: a single molecule-by-molecule experiment on $N$ molecules; press **Resample** to draw new fates. The bars are the observed fractions and the black ticks the expected branching ratios, with a one-standard-deviation whisker. Few molecules give scatter; many molecules reproduce $k_i/k_{\rm tot}$.`,
-      deps: ['kin-1.5'],
+      deps: ['kin-1.5', 'prob-1.2.4'],
       refs: ['Houston'],
       tags: ['parallel reactions', 'selectivity'],
       scope: String.raw`Independent, irreversible first-order (or pseudo-first-order) channels from one reactant; if the products can interconvert, the ratio drifts toward thermodynamic control.`,
@@ -119,15 +119,15 @@ All products appear with the same time constant $1/k_{\rm tot}$ (the *observed* 
 $$\mathrm A+\mathrm M\underset{k_{-1}}{\overset{k_1}{\rightleftharpoons}}\mathrm A^*+\mathrm M,\qquad \mathrm A^*\xrightarrow{k_2}\mathrm P.$$
 With the steady-state approximation for $\mathrm A^*$ (4.3),
 $$k_{\rm uni}=\frac{k_1k_2[\mathrm M]}{k_{-1}[\mathrm M]+k_2}\;\longrightarrow\;\begin{cases}k_1[\mathrm M]&[\mathrm M]\to0\ \text{(second order overall)}\\[2pt] k_\infty=k_1k_2/k_{-1}&[\mathrm M]\to\infty\ \text{(first order)}\end{cases}$$
-so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line with intercept $1/k_\infty$. The crossover pressure is $[\mathrm M]_{1/2}=k_2/k_{-1}$. The mechanism explains the change of order with pressure but, with a single rate constant $k_2$, predicts a crossover at pressures far higher than observed (4.8, 4.9).`,
+so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line with intercept $1/k_\infty$. The crossover pressure is $[\mathrm M]_{1/2}=k_2/k_{-1}$. The mechanism explains the change of order with pressure but, with a single rate constant $k_2$, can miss the shape and position of experimental fall-off (4.8, 4.9).`,
       idea: String.raw`At low pressure every activated molecule reacts before it can be deactivated, so activation by collision is the bottleneck and the rate is $k_1[\mathrm M][\mathrm A]$; at high pressure A and A* stay in equilibrium (the pre-equilibrium limit, 4.4) with $[\mathrm A^*]=K[\mathrm A]$ and the unimolecular step controls the rate. The steady-state formula interpolates between the two with a single Lorentzian-like crossover. Lindemann (1922) proposed the scheme, extending Christiansen's earlier version; Hinshelwood (1926) showed that the internal degrees of freedom must be included to match the crossover pressures.`,
-      caption: String.raw`The effective rate constant against bath-gas pressure over eight decades. Orange: the Lindemann expression. Blue: the exact slow rate constant of the three-species kinetics at constant M (the two coincide because $k_1\ll k_{-1}$). Dots: synthetic "measurements" scattered 5 % about the model with a seeded generator (not real data). Choose the second view to see the Lindemann plot $1/k$ against $1/p$, which is straight with intercept $1/k_\infty$. Parameters: $k_{-1}=10^{10}\,\mathrm{atm^{-1}s^{-1}}$, $k_\infty$ and the half-pressure are yours.`,
+      caption: String.raw`The effective rate constant against bath-gas pressure over eight decades. Orange: the Lindemann expression. Blue: the exact slow rate constant of the three-species kinetics at constant M (the two are close because $k_1\ll k_{-1}$). Dots: synthetic "measurements" scattered 5 % about the model with a seeded generator (not real data). Choose the second view to see the Lindemann plot $1/k$ against $1/p$, which is straight with intercept $1/k_\infty$. Parameters: $k_{-1}=10^{10}\,\mathrm{atm^{-1}s^{-1}}$, $k_\infty$ and the half-pressure are yours.`,
       deps: ['kin-4.3'],
       refs: ['Houston', 'Steinfeld et al.'],
       tags: ['unimolecular reactions', 'pressure dependence'],
       credit: 'Lindemann, 1922; Hinshelwood, 1926 (Proc. R. Soc. A 113, 230)',
       verify: true,
-      scope: String.raw`Strong-collision model in which every collision with M deactivates A*, and a single energy-independent $k_2$; real molecules have $k_2=k(E)$ (4.9).`,
+      scope: String.raw`Strong-collision model in which every collision with M deactivates A*, and a single energy-independent $k_2$; real molecules have $k_2=k(E)$ (4.9). The parameter called kinfinity is the steady-state-approximation limit; the exact total-unreacted-pool slow rate approaches kinfinity/(1+k1/k−1), differing by at most0.1% over these controls.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lindemann_mechanism' },
       viz(v) {
         const kinf = v.slider('$k_\\infty$ (s$^{-1}$)', 1e-4, 1e3, 1, { log: true, sig: 2 });
@@ -141,7 +141,7 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
           const ki = kinf.value, p1 = ph.value;
           const lp = (i) => -6 + 8 * i / 29;
           if (view.value === 'loglog') {
-            s.setView([-6, 2], [Math.log10(ki) - 5, Math.log10(ki) + 1.2]);
+            s.setView([-6, 2], [Math.log10(lamLH(ki,p1,1e-6))-.3, Math.log10(ki) + 1.2]);
             s.setLabels('log₁₀ p / atm', 'log₁₀ k / s⁻¹');
             s.path(Array.from({ length: 161 }, (_, i) => { const l = -6 + i * 0.05; return [l, Math.log10(lamLH(ki, p1, Math.pow(10, l)))]; }), { color: 'accent', width: 2.6 });
             s.path(Array.from({ length: 161 }, (_, i) => { const l = -6 + i * 0.05; return [l, Math.log10(lindemann(ki, p1, Math.pow(10, l)))]; }), { color: 'orange', width: 2, dash: true });
@@ -168,11 +168,11 @@ so a plot of $1/k_{\rm uni}$ against $1/[\mathrm M]$ should be a straight line w
     // ------------------------------------------------------------------ 4.8
     {
       num: '4.8', kind: 'Phenomenon', name: 'Fall-off curves',
-      statement: String.raw`The rate constant of a unimolecular reaction (or of the association reaction in the reverse direction) varies between a low-pressure limit $k_0[\mathrm M]$ and a high-pressure limit $k_\infty$. In reduced form, with $P_r=k_0[\mathrm M]/k_\infty$, the Lindemann mechanism gives $k/k_\infty=P_r/(1+P_r)$, but measured and computed fall-off curves are **broader**: they rise more slowly and lie below the Lindemann curve, most at the centre $P_r\approx1$, where $k/k_\infty=F_{\rm cent}\cdot\tfrac12$ with a *broadening factor* $F_{\rm cent}<1$ (typically 0.3 to 0.9 for polyatomic molecules). Combustion and atmospheric databases use the Troe parametrization
+      statement: String.raw`The rate constant of a unimolecular reaction (or of the association reaction in the reverse direction) varies between a low-pressure limit $k_0[\mathrm M]$ and a high-pressure limit $k_\infty$. In reduced form, with $P_r=k_0[\mathrm M]/k_\infty$, the Lindemann mechanism gives $k/k_\infty=P_r/(1+P_r)$, but measured and computed fall-off curves are **broader**: they rise more slowly and lie below the Lindemann curve, most at the centre $P_r\approx1$, with $k/k_\infty\approx F_{\rm cent}\cdot\tfrac12$ near the centre and a *broadening factor* $F_{\rm cent}<1$ (typically 0.3 to 0.9 for polyatomic molecules). Combustion and atmospheric databases use the Troe parametrization
 $$\frac{k}{k_\infty}=\frac{P_r}{1+P_r}\,F,\qquad \log F=\frac{\log F_{\rm cent}}{1+\bigl[(\log P_r+c)/(n-d(\log P_r+c))\bigr]^2},$$
 with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
       idea: String.raw`The Lindemann scheme gives every energized molecule the same decay rate. In reality $k(E)$ grows with energy (4.9), so the molecules that are activated at low pressure sit at a distribution of energies and a spread of lifetimes, and the crossover from collision control to unimolecular control happens at different pressures for different energies: the single sharp step is smeared over more decades of pressure. The picture here uses the Rice–Ramsperger–Kassel $k(E)$ with $s$ oscillators and strong collisions; real systems are broadened further by incomplete (weak) collisional energy transfer.`,
-      caption: String.raw`Reduced fall-off curves $k/k_\infty$ against $\log P_r$: Lindemann (orange), the strong-collision RRK curve for $s$ oscillators and $E_0/k_BT=x_0$ (blue; a model, not data), and the Troe form (green dashed) with your $F_{\rm cent}$. Press **Match centre** to set $F_{\rm cent}$ to the RRK value at $P_r=1$ and see how well the three-parameter fit follows the whole curve. Fewer oscillators give narrower, more Lindemann-like curves; more oscillators broaden them. The classic experimental example is the isomerization of cyclopropane to propene (Chambers and Kistiakowsky 1934; later fall-off work by Schlag and Rabinovitch 1960) is the textbook case of a fall-off broader than Lindemann's; no measured data are plotted here and the parameters of the model are not fitted to it.`,
+      caption: String.raw`Reduced fall-off curves $k/k_\infty$ against $\log P_r$: Lindemann (orange), the strong-collision RRK curve for $s$ oscillators and $E_0/k_BT=x_0$ (blue; a model, not data), and the Troe form (green dashed) with your $F_{\rm cent}$. Press **Match centre** to choose $F_{\rm cent}$ so the actual Troe curve matches the RRK value at $P_r=1$, within the slider range. See how well this one-parameter Troe family follows the whole curve. The shifted Troe formula need not give F(Pr=1)=Fcent exactly; the button matches its actual centre value. Fewer oscillators give narrower, more Lindemann-like curves; more oscillators broaden them. A classic reported example is the isomerization of cyclopropane to propene (Chambers and Kistiakowsky1934; later fall-off work by Schlag and Rabinovitch1960); its exact original datasets remain unverified here; no measured data are plotted here and the parameters of the model are not fitted to it.`,
       deps: ['kin-4.7'],
       refs: ['Steinfeld et al.'],
       tags: ['fall-off', 'unimolecular reactions'],
@@ -186,7 +186,7 @@ with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
         const fc = v.slider('Troe $F_{\\rm cent}$', 0.05, 1, 0.5, { step: 0.01 });
         const st = v.stage({ x: [-4, 4], y: [0, 1.05], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ P_r', ylabel: 'k / k∞', title: 'reduced fall-off curve', weight: 1.3 });
         const dv = v.stage({ x: [-4, 4], y: [-1.2, 0.1], axes: 'box', gutter: true, height: 340, xlabel: 'log₁₀ P_r', ylabel: 'log₁₀ (k / k_L)', title: 'broadening relative to Lindemann', weight: 1 });
-        v.button('Match centre', () => { const c = rrkFalloff(sS.value, x0S.value).curve.find((q) => Math.abs(q[0]) < 1e-6); fc.set(clamp(2 * c[1], 0.1, 1)); });
+        v.button('Match centre', () => { const target=rrkFalloff(sS.value,x0S.value).curve.find(q=>Math.abs(q[0])<1e-6)[1];let lo=.05,hi=1;for(let i=0;i<50;i++){const mid=(lo+hi)/2;if(troe(0,mid)<target)lo=mid;else hi=mid;}fc.set((lo+hi)/2); });
         let info = {};
         v.render(() => {
           const { curve } = rrkFalloff(sS.value, x0S.value), F = fc.value;
@@ -204,7 +204,7 @@ with $c=-0.4-0.67\log F_{\rm cent}$, $n=0.75-1.27\log F_{\rm cent}$, $d=0.14$.`,
           info = { Fc: 2 * c0, rms: Math.sqrt(rms / cnt) };
         });
         v.legend([['orange', 'Lindemann'], ['accent', 'RRK, strong collisions'], ['green', 'Troe form', { dash: true }]]);
-        v.readout(() => `RRK centre broadening $F_{\\rm cent}=2\\,k/k_\\infty|_{P_r=1}=${v.fix(info.Fc, 3)}$ (Lindemann: 1). Your Troe curve has $F_{\\rm cent}=${v.fix(fc.value, 2)}$; rms difference $\\log_{10}$ over $|\\log P_r|\\le3$: $${v.fix(info.rms, 3)}$.`);
+        v.readout(() => `RRK actual centre broadening $F(1)=2\\,k/k_\\infty|_{P_r=1}=${v.fix(info.Fc, 3)}$ (Lindemann: 1). Your Troe parameter is $F_{\\rm cent}=${v.fix(fc.value, 2)}$ (actual centre factor ${v.fix(2*troe(0,fc.value),3)}); rms difference $\\log_{10}$ over $|\\log P_r|\\le3$: $${v.fix(info.rms, 3)}$.`);
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -217,7 +217,7 @@ $$k(E)=\frac{N^\ddagger(E-E_0)}{h\,\rho(E)},$$
 with $\rho(E)$ the density of vibrational states of the molecule and $N^\ddagger(E-E_0)$ the number of states of the transition state with excess energy up to $E-E_0$ (transition-state theory, 3.2, applied microcanonically). Both give $k(E)$ rising steeply above threshold and, at fixed $E$, falling as the energy is shared among more oscillators.`,
       idea: String.raw`Lindemann's picture (4.7) needs the lifetime of A* as a function of its energy. If energy flows freely among the modes, every arrangement of the quanta is equally likely, and the molecule reacts when the quanta happen to pile up in the reaction coordinate: the fraction of arrangements in which a given mode holds more than $E_0$ out of $E$ is $(1-E_0/E)^{s-1}$ for classical oscillators. Counting states exactly with the Beyer–Swinehart algorithm gives RRKM, with no adjustable $A$: the pre-exponential factor comes from the ratio of the transition state's states to the molecule's, which is the microcanonical form of the Eyring equation. Averaging $k(E)$ over the thermal distribution of activated molecules gives the fall-off curves of 4.8.`,
       caption: String.raw`Left: $k(E)$ against $E/E_0$ on a log axis, RRK (orange; $A$ is matched to RRKM at $E=2E_0$) and RRKM (blue, Beyer–Swinehart state counts with the density of states smoothed over ±160 cm$^{-1}$, for a model molecule of $s$ harmonic oscillators with frequencies 3000, 2900, 1500, … cm$^{-1}$; not a real molecule), with a dot at your $E$. Right: 3000 random ways to share the energy $E$ among the $s$ oscillators (uniform on the simplex): the histogram of the energy in one chosen mode against $(s-1)/E\,(1-\varepsilon/E)^{s-2}$, with the part above $E_0$ shaded: its area is the RRK probability. Loosen the transition state (tightness below 1) to raise the RRKM rate.`,
-      deps: ['kin-4.7', 'kin-3.2'],
+      deps: ['kin-4.7', 'kin-3.2', 'qm-4.1'],
       refs: ['Steinfeld et al.'],
       tags: ['unimolecular reactions', 'statistical theory'],
       credit: 'Rice & Ramsperger, 1927; Kassel, 1928; Marcus, J. Chem. Phys. 20, 359 (1952)',

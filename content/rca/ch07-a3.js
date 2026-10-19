@@ -42,10 +42,13 @@ function intSing(g, a, b, c, n = 160) {
 /** Level-n intervals of the middle-thirds construction. */
 function cantorLevel(n) { let I = [[0, 1]]; for (let k = 0; k < n; k++) I = I.flatMap(([a, b]) => { const d = (b - a) / 3; return [[a, a + d], [b - d, b]]; }); return I; }
 
+import { singularDerivative } from './singular-derivative.shared.js';
+
 export default {
   collection: 'rca',
   chapter: 7,
   items: [
+    singularDerivative,
     // ------------------------------------------------------------------ 7.14
     {
       num: '7.14',
@@ -115,12 +118,10 @@ In particular, $\mu\perp m$ if and only if $D\mu=0$ a.e. $[m]$.`,
       num: '7.15',
       kind: 'Theorem',
       name: 'Singular measures have infinite derivative μ-a.e.',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 7.15 and proof, pp. 143–144'],
       statement: String.raw`If $\mu$ is a positive (finite) Borel measure on $\R^k$ and $\mu\perp m$, then
 $$(D\mu)(x)=\lim_{r\to0}\frac{\mu(B(x,r))}{m(B(x,r))}=\infty\qquad\text{for }\mu\text{-almost every }x .$$`,
-      idea: String.raw`Let $\mu$ be concentrated on a Borel set $S$ with $m(S)=0$, and fix $N$. Consider the set $E$ of points $x\in S$ where $Q_r\mu(x)<N$ for arbitrarily small $r$. Given an open $V\supset S$ with $m(V)$ tiny, every $x$ in a compact $K\subset E$ is the centre of a ball $B(x,r)\subset V$ with $\mu(B(x,r))<N\,m(B(x,r))$. Apply the covering lemma 7.3 to the concentric balls of radius $r/3$ (finitely many cover $K$): it leaves disjoint balls $B(x_i,r_i/3)\subset V$ whose triples $B(x_i,r_i)$ still cover $K$, so
-$$\mu(K)\le\sum_i\mu(B(x_i,r_i))<N\sum_i m(B(x_i,r_i))=3^kN\sum_i m(B(x_i,r_i/3))\le3^kN\,m(V),$$
-which can be made arbitrarily small. Hence $\mu(E)=0$, i.e. $\liminf_{r\to0}Q_r\mu\ge N$ $\mu$-a.e., for every $N$.`,
+      idea: String.raw`Let $\mu$ be concentrated on a Borel null set $S$, and fix $N$. Choose open $V_j\supset S$ with $m(V_j)<1/j$. Around every point of $S$ having arbitrarily small balls $B_x\subset V_j$ with $\mu(B_x)<N m(B_x)$, take the concentric ball $P_x$ with one third the radius; let $W_{j,N}=\bigcup_x P_x$. For compact $K\subset W_{j,N}$, a finite cover by these $P_x$ and the covering lemma 7.3 give disjoint $P_i$ whose triples $B_i$ cover $K$. Hence $\mu(K)\le\sum_i\mu(B_i)<3^kN\sum_i m(P_i)\le3^kN/j$. Regularity gives the same bound for $\mu(W_{j,N})$. The measurable set $\bigcap_j W_{j,N}$ is null for $\mu$ and contains all points with such small quotients. Taking the union over $N$ proves $Q_r\mu\to\infty$ $\mu$-a.e.`,
       caption: String.raw`Two singular measures on $[0,1]$: the Cantor measure, and the Bernoulli measure $\mu_p$ that gives each binary digit the value $1$ with probability $p$ (for $p\ne\frac12$ it is singular although its distribution function is strictly increasing). Gold curves: $Q_r\mu(x)$ against $r$, log–log, at twelve points $x$ drawn at random *from $\mu$*; they climb to $\infty$ roughly like $r^{d-1}$, $d$ the dimension of $\mu$. The blue curve is at your draggable point — a typical point for $m$ — and sinks to $0$, as 7.14 predicts. At $p=\frac12$, $\mu_p=m$ and everything flattens to $1$.`,
       deps: ['rca-7.3', 'rca-7.2', 'rca-2.18'],
       tags: ['singular measures', 'derivative of a measure'],

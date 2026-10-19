@@ -101,15 +101,14 @@ export default {
       num: '4.3',
       kind: 'Definition',
       name: 'Gross and net reproduction rates',
-      statement: String.raw`Count only daughters. The **gross reproduction rate** is $\mathrm{GRR} = \sum_a 5\,f_a/(1+\mathrm{SRB})$, with SRB the sex ratio at birth in boys per girl: the daughters a woman would bear if none of the women died before the end of childbearing. The **net reproduction rate** is $\mathrm{NRR} = \sum_a f_a\,\bigl(L_a/\ell_0\bigr)/(1+\mathrm{SRB})$, where $L_a/\ell_0$ is the number of years a newborn girl is expected to live in age group $a$ according to the life table: the daughters a woman would bear who are themselves expected to reach the ages at which they will have children of their own. Always $\mathrm{NRR} \le \mathrm{GRR}$, and $\mathrm{NRR}$ is the factor by which a generation replaces itself, which makes it the one-sex stable-population form of $R_0$ of Chapter 6.`,
+      statement: String.raw`Count only daughters. The **gross reproduction rate** is $\mathrm{GRR} = \sum_a 5\,f_a/(1+\mathrm{SRB})$, with SRB the sex ratio at birth in boys per girl: the daughters a woman would bear if none of the women died before the end of childbearing. The **net reproduction rate** is $\mathrm{NRR} = \sum_a f_a\,\bigl(L_a/\ell_0\bigr)/(1+\mathrm{SRB})$, where $L_a/\ell_0$ is the number of years a newborn girl is expected to live in age group $a$ according to the life table: the expected number of daughters born to a newborn girl over her lifetime under the specified fertility and mortality schedules. The survival factor belongs to the mother reaching each childbearing age; it is not a second survival test imposed on each daughter. Always $\mathrm{NRR} \le \mathrm{GRR}$, and $\mathrm{NRR}$ is the factor by which a generation replaces itself, which makes it the one-sex stable-population form of $R_0$ of Chapter 6.`,
       idea: String.raw`The net maternity function $\varphi(a) = f(a)\,\ell(a)/(1+\mathrm{SRB})$ multiplies fertility at age $a$ by the chance $\ell(a)$ that a girl survives to be there and by the share of births that are girls; its integral is the expected number of daughters of a newborn girl, which is the basic reproduction number $R_0$ of mathematical biology (mathbio 4.5) applied to women. Survival uses the life-table columns of 2.3. Mortality below the childbearing ages cuts the net below the gross, with a gap that is tiny in Japan today and over 30 per cent in Nigeria in 1990.`,
       caption: String.raw`Blue: daughters per woman at each age if no one died (area = GRR). Green: the same after multiplying by the survival of girls to that age (area = NRR); the red slice between them is the loss to mortality. Pick a country and a year; use the mortality slider to scale the death hazard of the girls (1 = actual, 0 = no mortality, 2 = twice the hazard) and watch NRR fall below 1 while GRR does not change. The right panel shows the survival curve behind it.`,
       deps: ['demo-4.2', 'demo-2.3', 'mathbio-4.5'],
       refs: ['PHG ch. 5'],
       tags: ['reproduction', 'net maternity'],
-      credit: 'R. Böckh (gross rate, 1880s) and R. R. Kuczynski (net rate, 1920s–30s)',
-      verify: true,
-      scope: String.raw`Period measures built from UN WPP 2024 schedules and female life tables (tables exist for 1950, 1970, 1990, 2010 and 2023 in our data); the sex ratio at birth is the UN estimate for the year. The mortality slider is a hypothetical rescaling, $\ell^k$ for hazard $k$ times the actual.`,
+      credit: 'UN Demographic Yearbook technical notes, Table4 (definitions and computation)',
+      scope: String.raw`Period measures built from UN WPP 2024 schedules and female life tables (tables exist for 1950, 1970, 1990, 2010 and 2023 in our data); the sex ratio at birth is the UN estimate for the year. Replacement interpretations assume the period schedules persist and exclude migration. The mortality slider approximately rescales grouped survival, $\ell^k$ for hazard $k$ times the actual.`,
       links: { data: 'https://population.un.org/wpp/' },
       viz(v) {
         const co = v.select('country', cOpts(), 'NGA');
@@ -139,7 +138,7 @@ export default {
           const GRR = 5 * sum(gross), NRR = 5 * sum(net);
           R = { GRR, NRR, srb, pub: indAt(c, 'nrr', y), pubTfr: indAt(c, 'tfr', y), y, c, l30: Math.pow(sv.l30, kk) };
         });
-        v.legend([['accent', 'GRR: daughters, no deaths'], ['green', 'NRR: daughters who survive'], ['red', 'lost to mortality']]);
+        v.legend([['accent', 'GRR: daughters, no deaths'], ['green', 'NRR: daughters allowing for maternal survival'], ['red', 'lost to mortality']]);
         v.readout(() => `${CNAME[R.c]} ${R.y}, SRB ${v.fix(R.srb * 100, 1)} boys per 100 girls: **GRR = ${v.fix(R.GRR, 2)}**, **NRR = ${v.fix(R.NRR, 2)}**, survival of a girl to 30: ${v.fix(R.l30 * 100, 1)}%.\n${k.value === 1 ? `UN published NRR ${v.fix(R.pub, 2)} (our sum uses the abridged life table).` : 'Hypothetical mortality: the UN figure applies only at 1×.'} The population ${R.NRR > 1 ? 'more than replaces itself' : R.NRR < 1 ? 'falls short of replacement' : 'just replaces itself'} each generation.`);
       },
     },

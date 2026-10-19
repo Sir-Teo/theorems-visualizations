@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 6 (part 5): convolutions
 //
-// Numbering note: recalled, not checked against the book; uncertain items carry `verify: true`.
+// Numbering and scope reviewed against the full second-edition source; see docs/verification/fa-source-review.md.
 
 const PSI_P = (() => {
   const add = (a, b) => Array.from({ length: Math.max(a.length, b.length) }, (_, i) => (a[i] || 0) + (b[i] || 0));
@@ -67,7 +67,6 @@ Thus $u*\varphi$ is a complex function on $\R^n$: at $x$, the distribution $u$ i
       deps: ['fa-6.7'],
       see: ['rca-8.13'],
       tags: ['distributions', 'convolution'],
-      verify: true,
     },
     {
       num: '6.30',
@@ -82,7 +81,6 @@ Thus $u*\varphi$ is a complex function on $\R^n$: at $x$, the distribution $u$ i
       deps: ['fa-6.29', 'fa-6.5', 'fa-6.12'],
       see: ['rca-8.14'],
       tags: ['distributions', 'convolution', 'smoothing'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const U = { H: '$H$', dp: "$\\delta'$", pv: '$\\mathrm{p.v.}\\frac1x$', sing: '$|x|^{-1/2}$', comb: '$\\sum_{|k|\\le3}\\delta_k$' };
@@ -137,13 +135,12 @@ Thus $u*\varphi$ is a complex function on $\R^n$: at $x$, the distribution $u$ i
       num: '6.31',
       kind: 'Definition',
       name: 'Approximate identities (mollifiers)',
-      credit: 'Friedrichs, 1944',
-      statement: String.raw`Fix $h\in\mathscr D(\R^n)$ with $h\ge0$, $\int h\,dm_n=1$ and support in the closed unit ball, and put $h_j(x)=j^nh(jx)$ for $j=1,2,3,\dots$. The sequence $\{h_j\}$ is an **approximate identity**: each $h_j$ has integral $1$ and support in the ball of radius $1/j$.`,
+      credit: 'Friedrichs',
+      statement: String.raw`Fix $h\in\mathscr D(\mathbb R^n)$ with $h\ge0$ and $\int h\,dx=1$. The sequence $h_j(x)=j^nh(jx)$, $j=1,2,\ldots$, is called an **approximate identity**. Each member has integral one and their supports shrink to the origin. In the diagram $h$ is supported in the unit ball, so $h_j$ is supported in the ball of radius $1/j$.`,
       idea: String.raw`Convolving with $h_j$ averages over smaller and smaller balls. Because $h_j$ is smooth, $u*h_j$ is a $C^\infty$ function for every distribution $u$ (6.30), so $\{h_j\}$ is the standard tool for smoothing distributions — see 6.32.`,
       deps: ['fa-6.29'],
       see: ['rca-9.7'],
       tags: ['distributions', 'mollifiers'],
-      verify: true,
     },
     {
       num: '6.32',
@@ -153,12 +150,11 @@ Thus $u*\varphi$ is a complex function on $\R^n$: at $x$, the distribution $u$ i
 (a) $\varphi*h_j\to\varphi$ in $\mathscr D(\R^n)$ for every $\varphi\in\mathscr D(\R^n)$;
 (b) $u*h_j\to u$ in $\mathscr D'(\R^n)$ for every $u\in\mathscr D'(\R^n)$.
 In particular $C^\infty(\R^n)$ — indeed $\mathscr D(\R^n)$ — is dense in $\mathscr D'(\R^n)$ for its weak* topology.`,
-      idea: String.raw`(a) All supports lie in $\operatorname{supp}\varphi+\bar B(0,1)$, and $D^\alpha(\varphi*h_j)-D^\alpha\varphi=(D^\alpha\varphi)*h_j-D^\alpha\varphi$ is bounded by the oscillation of $D^\alpha\varphi$ over balls of radius $1/j$, which tends to $0$ by uniform continuity. (b) By 6.30, $(u*h_j)(\varphi)=u(\varphi*\check h_j)$ after a reflection, and $\varphi*\check h_j\to\varphi$ in $\mathscr D$ by (a); continuity of $u$ finishes.`,
+      idea: String.raw`(a) If the support of $h$ lies in a ball of radius $R$, all convolution supports lie in $\operatorname{supp}\varphi+\overline B(0,R)$. Each derivative difference is bounded by the oscillation of $D^\alpha\varphi$ over distances at most $R/j$, which tends to zero uniformly. (b) By 6.30, $(u*h_j)(\varphi)=u(\varphi*\check h_j)$; the reflected kernels are again an approximate identity. Part (a) and continuity of $u$ finish.`,
       caption: String.raw`Left: the distribution $u$ (faint purple) and its regularisation $u*h_j$ (green), a smooth function, for the chosen $j$ — a smoothed step, a smoothed corner, or a spike of height $j\,h(0)$. Right (log–log against $j$): how fast things converge — the error $|(u*h_j)(\varphi)-u(\varphi)|$ for the test function shown (green), and, for (a), the sup norms $\|D^k(\varphi*h_j-\varphi)\|_\infty$, $k=0,1,2$ (blue, teal, purple), all decaying like $j^{-2}$ because $h$ is even.`,
       deps: ['fa-6.31', 'fa-6.30', 'fa-6.5', 'fa-6.17'],
       see: ['rca-9.10'],
       tags: ['distributions', 'mollifiers', 'density'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const U = { H: { label: '$H$' }, abs: { label: '$|x|$' }, delta: { label: '$\\delta$' } };
@@ -232,7 +228,6 @@ In particular $C^\infty(\R^n)$ — indeed $\mathscr D(\R^n)$ — is dense in $\m
       caption: String.raw`Pick an operator $L$ on test functions. Top: $\varphi$ and its translate $\tau_a\varphi$ (slide $a$). Middle: $L(\tau_a\varphi)$ (green) against $\tau_a(L\varphi)$ (orange, dashed) — they coincide exactly for the translation-invariant operators, and visibly differ for multiplication by $x$ or for "evaluate at $0$". Bottom: $L h_j$ for a narrow bump $h_j$, i.e. $u*h_j$ — the kernel $u$ seen through a small window: a box, a dipole-like $\delta'-\frac12\delta''$, a spike at $1$.`,
       deps: ['fa-6.30', 'fa-6.32', 'fa-2.15'],
       tags: ['distributions', 'convolution', 'translation invariance'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const r = 1.1, ph = (k, x) => phiD(k, x, 0, r);
@@ -286,16 +281,22 @@ In particular $C^\infty(\R^n)$ — indeed $\mathscr D(\R^n)$ — is dense in $\m
       },
     },
     {
-      num: '6.34',
+      num: '6.34', kind: 'Definition', name: 'Convolution of a compactly supported distribution with a smooth function',
+      statement: String.raw`If $u\in\mathscr D'(\mathbb R^n)$ has compact support, its continuous extension to $C^\infty$ from 6.24 permits the definition
+$$(u*\varphi)(x)=u(\tau_x\check\varphi),\qquad \varphi\in C^\infty(\mathbb R^n).$$
+No compact-support condition is imposed on the smooth function.`,
+      idea: String.raw`The reflection and translation formula is unchanged from 6.29; it is now meaningful because a compactly supported distribution acts on every smooth function. Its smoothness and support rules are proved in 6.35.`,
+      deps: ['fa-6.24', 'fa-6.29'],
+    },
+    {
+      num: '6.35',
       kind: 'Theorem',
       name: 'Compactly supported u: u∗φ for φ ∈ C^∞, and supports add',
-      statement: String.raw`Suppose $u\in\mathscr D'(\R^n)$ has compact support (so $u$ acts on $C^\infty(\R^n)$, 6.24), and $\varphi\in C^\infty(\R^n)$. Then $(u*\varphi)(x)=u(\tau_x\check\varphi)$ defines a function $u*\varphi\in C^\infty(\R^n)$ satisfying the rules (a), (b) of 6.30. If moreover $\varphi\in\mathscr D(\R^n)$, then $u*\varphi\in\mathscr D(\R^n)$ and
-$$\operatorname{supp}(u*\varphi)\subset\operatorname{supp}u+\operatorname{supp}\varphi.$$`,
-      idea: String.raw`Smoothness is proved as in 6.30, now using the continuity of $u$ on $C^\infty$. For the support: if $(u*\varphi)(x)\ne0$, then $y\mapsto\varphi(x-y)$ must meet $\operatorname{supp}u$ (6.23(a)), i.e. $x-y\in\operatorname{supp}\varphi$ for some $y\in\operatorname{supp}u$, so $x\in\operatorname{supp}u+\operatorname{supp}\varphi$.`,
+      statement: String.raw`Let $u\in\mathscr D'(\mathbb R^n)$ have compact support and let $\varphi\in C^\infty(\mathbb R^n)$. Then (a) $\tau_x(u*\varphi)=(\tau_xu)*\varphi=u*(\tau_x\varphi)$; (b) $u*\varphi\in C^\infty$ and $D^\alpha(u*\varphi)=(D^\alpha u)*\varphi=u*(D^\alpha\varphi)$. For $\psi\in\mathscr D$, (c) $u*\psi\in\mathscr D$ with support contained in $\operatorname{supp}u+\operatorname{supp}\psi$; and (d) $u*(\varphi*\psi)=(u*\varphi)*\psi=(u*\psi)*\varphi$.`,
+      idea: String.raw`Translations and difference quotients work as in 6.30, using continuity on $C^\infty$. If $K$ and $H$ are the supports of $u$ and $\psi$, the test $y\mapsto\psi(x-y)$ vanishes near $K$ whenever $x\notin K+H$, giving (c). For associativity at zero, choose a bounded neighborhood $W$ of $K$ and replace $\varphi$ by a compactly supported $\varphi_0$ agreeing with it on $W+H$. All three expressions are unchanged, and 6.30(c) makes them equal. Translating proves equality everywhere.`,
       caption: String.raw`$u$ has compact support (red): either a dipole and a point mass, or a box and a point mass. With a test function $\varphi$ (drag $c$, set the width), the convolution (purple) vanishes outside the Minkowski sum $\operatorname{supp}u+\operatorname{supp}\varphi$ (green bands) — the readout compares the predicted and the observed support. Switch $\varphi$ to a smooth function without compact support: $u*\varphi$ is still defined and smooth.`,
-      deps: ['fa-6.24', 'fa-6.30', 'fa-6.23'],
+      deps: ['fa-6.24', 'fa-6.30', 'fa-6.34'],
       tags: ['distributions', 'convolution', 'support'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const uS = v.select('$u=$', [{ value: 'pts', label: "$\\delta'_{-1.2}+0.8\\,\\delta_{0.6}$" }, { value: 'box', label: '$1_{[-1.5,-0.5]}+0.6\\,\\delta_1$' }], 'pts');
@@ -341,97 +342,27 @@ $$\operatorname{supp}(u*\varphi)\subset\operatorname{supp}u+\operatorname{supp}\
       },
     },
     {
-      num: '6.35',
+      num: '6.36',
       kind: 'Definition',
       name: 'Convolution of two distributions',
       statement: String.raw`If $u,v\in\mathscr D'(\R^n)$ and at least one of them has compact support, the map $\varphi\mapsto u*(v*\varphi)$ is a continuous linear map of $\mathscr D(\R^n)$ into $C^\infty(\R^n)$ commuting with translations. By 6.33 there is a unique distribution $u*v$ with
 $$(u*v)*\varphi=u*(v*\varphi)\qquad(\varphi\in\mathscr D(\R^n)).$$
 This is the **convolution** of $u$ and $v$.`,
-      idea: String.raw`If $v$ has compact support, $v*\varphi\in\mathscr D$ (6.34), so $u*(v*\varphi)$ makes sense; if $u$ has compact support, $v*\varphi\in C^\infty$ and $u$ acts on it. Translation invariance is inherited from 6.30(a), and 6.33 does the rest. For locally integrable functions it agrees with the classical convolution, and $\delta$ is the unit: $\delta*u=u$.`,
-      deps: ['fa-6.33', 'fa-6.34'],
+      idea: String.raw`If $v$ has compact support, $v*\varphi\in\mathscr D$ (6.35), so $u*(v*\varphi)$ makes sense; if $u$ has compact support, $v*\varphi\in C^\infty$ and $u$ acts on it. Translation invariance is inherited from 6.30(a), and 6.33 does the rest. For locally integrable functions it agrees with the classical convolution, and $\delta$ is the unit: $\delta*u=u$.`,
+      deps: ['fa-6.33', 'fa-6.35'],
       tags: ['distributions', 'convolution'],
-      verify: true,
-    },
-    {
-      num: '6.36',
-      kind: 'Theorem',
-      name: 'Convolution of distributions: commutative, supports add',
-      statement: String.raw`Let $u,v,w\in\mathscr D'(\R^n)$.
-(a) If at least one of $u,v$ has compact support, then $u*v=v*u$.
-(b) If $S_u$ and $S_v$ are the supports and one of them is compact, then $S_{u*v}\subset S_u+S_v$.
-(c) If at least two of $u,v,w$ have compact support, then $(u*v)*w=u*(v*w)$.`,
-      idea: String.raw`For (a) test both sides against $\varphi*\psi$ with $\varphi,\psi\in\mathscr D$ and use the commutativity of ordinary convolution together with 6.30(c); the functions $\varphi*\psi$ suffice by 6.32. (b) follows from 6.34 applied to $v*\varphi$ with $\varphi$ supported in a small ball, letting the ball shrink. (c) is checked on test functions in the same way.`,
-      caption: String.raw`$u=1_{[a,a+1]}+0.6\,\delta_b$ (drag $a$ and $b$) and $v$ either a tent or $\delta'$. Bottom: $u*v$ — a smooth-cornered function, or for $v=\delta'$ the distribution $u'=\delta_a-\delta_{a+1}+0.6\,\delta'_b$ — inside the predicted support $S_u+S_v$ (green). The readout verifies commutativity numerically, $u*(v*\varphi)=v*(u*\varphi)$ for a test function $\varphi$, at many points.`,
-      deps: ['fa-6.35', 'fa-6.34', 'fa-6.32'],
-      tags: ['distributions', 'convolution', 'support'],
-      verify: true,
-      viz(v) {
-        const M = v.M;
-        const vS = v.select('$v=$', [{ value: 'tent', label: 'tent on $[-0.6,0.6]$' }, { value: 'dp', label: "$\\delta'$" }], 'tent');
-        const top = v.stage({ x: [-4, 4], y: [-1.1, 1.8], height: 200, full: true, axes: true, title: '$u=1_{[a,a+1]}+0.6\\,\\delta_b$ (purple) and $v$ (orange)' });
-        const bot = v.stage({ x: [-4, 4], y: [-1.6, 1.6], height: 220, full: true, axes: true, title: '$u*v$ and $S_u+S_v$' });
-        const ha = top.handle(-2.2, 0, { color: 'purple', label: 'a', labelPos: 's', constrain: (x) => [M.clamp(x, -3.5, 1.5), 0] });
-        const hb = top.handle(1.8, 0, { color: 'purple', label: 'b', labelPos: 's', constrain: (x) => [M.clamp(x, -3, 3.4), 0] });
-        const W = 0.6, T = (x) => Math.max(0, 1 - Math.abs(x) / W);
-        const Tint = (x) => { const t = M.clamp(x, -W, W); return t <= 0 ? (t + W) ** 2 / (2 * W) : W / 2 + t - t * t / (2 * W); };   // ∫_{−W}^{x} T
-        let st = {};
-        v.legend([['purple', '$u$'], ['orange', '$v$'], ['teal', '$u*v$'], ['green', '$S_u+S_v$', { area: true }]]);
-        v.render(() => {
-          const a = ha.x, b = hb.x, key = vS.value;
-          top.rect(a, 0, a + 1, 1, { fill: 'purple', fillAlpha: 0.18, color: 'purple', width: 2 });
-          deltaArrow(top, b, 0.6, 1.5, 'purple', '0.6\\,\\delta_b');
-          if (key === 'tent') top.fn((x) => T(x), { color: 'orange', width: 2.4, fill: 'orange', fillAlpha: 0.12 });
-          else dipole(top, 0, 1, 0.9, 'orange', "\\delta'");
-          // u*v and the predicted support
-          const Sv = key === 'tent' ? [-W, W] : [0, 0];
-          const pred = merge([[a + Sv[0], a + 1 + Sv[1]], [b + Sv[0], b + Sv[1]]]);
-          for (const [lo, hi] of pred) bot.vband(lo, hi, { color: 'green', alpha: 0.15, edges: true });
-          if (key === 'tent') {
-            const uv = (x) => Tint(x - a) - Tint(x - a - 1) + 0.6 * T(x - b);
-            bot.fn(uv, { color: 'teal', width: 2.6, n: 900 });
-          } else {
-            deltaArrow(bot, a, 1, 1, 'teal', '\\delta_a'); deltaArrow(bot, a + 1, -1, 1, 'teal', '-\\delta_{a+1}');
-            dipole(bot, b, 0.6, 1.4, 'teal', "0.6\\,\\delta'_b");
-          }
-          // commutativity check: u*(v*φ) vs v*(u*φ) on a grid
-          const r = 0.5, ph = (x) => phiD(0, x, 0, r), ph1 = (x) => phiD(1, x, 0, r);
-          const uOn = (g, G, x) => G(x - a) - G(x - a - 1) + 0.6 * g(x - b);   // (u*g)(x) for g with antiderivative G
-          const phInt = (x) => simpson(ph, -r, M.clamp(x, -r, r), 80);
-          let err = 0;
-          for (let i = 0; i <= 40; i++) {
-            const x = -4 + 8 * i / 40;
-            let A, B;
-            if (key === 'tent') {
-              const vphi = (y) => simpson((s) => T(s) * ph(y - s), -W, W, 60);           // v*φ
-              const vphiInt = (y) => simpson((s) => T(s) * phInt(y - s), -W, W, 60);
-              A = uOn(vphi, vphiInt, x);                                                  // u*(v*φ)
-              B = simpson((s) => T(s) * uOn(ph, phInt, x - s), -W, W, 60);               // v*(u*φ)
-            } else {
-              A = uOn(ph1, ph, x);                                                        // u*(φ')
-              const h = 1e-4; B = (uOn(ph, phInt, x + h) - uOn(ph, phInt, x - h)) / (2 * h);   // (u*φ)'
-            }
-            err = Math.max(err, Math.abs(A - B));
-          }
-          st = { pred, err, key };
-        });
-        v.readout(() => {
-          const s = st;
-          return `$S_u+S_v = ${s.pred.map(([lo, hi]) => (Math.abs(hi - lo) < 1e-9 ? `\\{${v.fix(lo, 2)}\\}` : `[${v.fix(lo, 2)},${v.fix(hi, 2)}]`)).join('\\cup')}$. Commutativity: $\\max_x|u*(v*\\varphi)(x)-v*(u*\\varphi)(x)| = ${v.sci(s.err + 1e-300, 1)}$ over $41$ points.`;
-        });
-      },
     },
     {
       num: '6.37',
       kind: 'Theorem',
-      name: 'Derivatives of a convolution fall on either factor',
-      statement: String.raw`If $u,v\in\mathscr D'(\R^n)$ and one of them has compact support, then for every multi-index $\alpha$
+      name: 'Commutativity, support, associativity and differentiation of convolution',
+      statement: String.raw`For $u,v,w\in\mathscr D'(\mathbb R^n)$: (a) $u*v=v*u$ if one factor has compact support. (b) Under that hypothesis, $\operatorname{supp}(u*v)\subset\operatorname{supp}u+\operatorname{supp}v$. (c) If at least two of the three supports are compact, $(u*v)*w=u*(v*w)$. (d) $D^\alpha u=(D^\alpha\delta)*u$, in particular $\delta*u=u$. (e) If one of $u,v$ has compact support, then
 $$D^\alpha(u*v)=(D^\alpha u)*v=u*(D^\alpha v).$$
-In particular $D^\alpha u=(D^\alpha\delta)*u$: every linear differential operator with constant coefficients is convolution with a distribution supported at the origin.`,
-      idea: String.raw`Test on $\varphi\in\mathscr D$: $(D^\alpha(u*v))*\varphi=(u*v)*D^\alpha\varphi=u*(v*D^\alpha\varphi)=u*((D^\alpha v)*\varphi)=(u*D^\alpha v)*\varphi$, using 6.30(b) twice and the definition 6.35; symmetry (6.36(a)) gives the other form.`,
+The compact-support hypotheses in associativity cannot in general be omitted.`,
+      idea: String.raw`Regularize using test functions $\varphi,\psi$. Definition 6.36 and the ordinary commutative convolution identity make $(u*v)*(\varphi*\psi)=(v*u)*(\varphi*\psi)$; uniqueness in 6.33 gives (a). The cutoff support argument of 6.35 gives (b). For (c), test both sides after convolution with $\varphi$: when $w$ is compactly supported $w*\varphi$ is a test function, and the defining identity gives equality; commutativity treats the case where $w$ is the only noncompact factor. Since $\delta*\varphi=\varphi$, (d) follows from differentiation in 6.30; associativity with the compactly supported $D^\alpha\delta$ gives (e).`,
       caption: String.raw`$u$ is the Heaviside function or $|x|$ (no compact support); $v$ is a box or a tent, shifted by $s$. Bottom: $u*v$ (teal) and three independent computations of its derivative — numerical differentiation of $u*v$ (thick grey), $(Du)*v$ with $DH=\delta$ or $D|x|=\operatorname{sgn}$ (blue dashed), and $u*(Dv)$ with $D1_{[0,1]}=\delta_0-\delta_1$ or the two-step derivative of the tent (red dotted). They coincide.`,
-      deps: ['fa-6.35', 'fa-6.36', 'fa-6.30'],
+      deps: ['fa-6.36', 'fa-6.35', 'fa-6.30', 'fa-6.33'],
       tags: ['distributions', 'convolution', 'derivatives'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const uS = v.select('$u=$', [{ value: 'H', label: '$H$' }, { value: 'abs', label: '$\\tfrac12|x|$' }], 'H');

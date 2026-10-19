@@ -19,8 +19,7 @@ export default {
       num: '5.1',
       kind: 'Model',
       name: 'Gnomonic projection: great circles become straight lines',
-      credit: 'Speculatively attributed to Thales (6th century BC), for star maps and sundials',
-      verify: true,
+      credit: 'spherical formulation: Snyder (1987), §22',
       statement: String.raw`The **gnomonic projection** projects the sphere of radius $R$ from its centre $O$ onto the plane tangent at the map centre $P_0$. A point at angular distance $c$ from $P_0$ lands at distance and in the direction
 $$r = R\tan c,\qquad \text{azimuth preserved},\qquad \cos c = \sin\varphi_0\sin\varphi + \cos\varphi_0\cos\varphi\cos(\lambda-\lambda_0).$$
 It shows only points with $c < 90^\circ$ (a hemisphere would need an infinite plane). **Every great circle is mapped to a straight line, and every straight line on the map is the image of a great circle arc**, so the shortest route between two points is the ruler line joining them. The scale is $h = \sec^2 c$ along the radius and $k = \sec c$ across it, so the area factor is $\sec^3 c$: the map is neither conformal nor equal-area, and shapes blow up away from the centre.`,
@@ -28,7 +27,7 @@ It shows only points with $c < 90^\circ$ (a hemisphere would need an infinite pl
       caption: String.raw`Drag the two airports (or choose a route) on the globe or on the map, and drag the map to move its centre. The orange band is the ruler line between the images of $A$ and $B$; the green great-circle arc lies on top of it. Switch on the rhumb line (red) and it curves away from the ruler. Meridians are straight too, the parallels are conic sections, and the red indicatrices swell with distance from the centre; points more than $70^\circ$ away are off the map.`,
       deps: ['geog-1.3', 'geog-3.1'],
       see: ['geog-2.2', 'geog-2.6'],
-      refs: ['Snyder §22'],
+      refs: ['Snyder (1987), §22, pp. 164–168, eqs. (22-1)–(22-5)'],
       tags: ['map projections', 'azimuthal', 'navigation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gnomonic_projection' },
       viz(v) {
@@ -72,7 +71,7 @@ It shows only points with $c < 90^\circ$ (a hemisphere would need an infinite pl
           const ruler = dist(I.pa, I.pb) * R_MEAN;
           let t = `Great circle $A\\to B$: **${comma(I.km)} km**. Sample 160 points along it: the largest distance of any image point from the ruler line is **${I.gc.toExponential(1)}** of a radius, i.e. zero to machine precision — the great circle *is* the straight line.`;
           if (rh.value) t += ` The rhumb line (${comma(I.rhKm)} km) strays from the ruler by **${comma(I.rh * R_MEAN)} km**.`;
-          t += ` But distance is not kept: the ruler line measures ${comma(ruler)} km at the nominal scale. At $A$ ($c = ${I.cA.toFixed(1)}^\\circ$) the radial scale is $h = ${I.dA.h.toFixed(2)}$ ($\\sec^2 c = ${secd(I.cA) ** 2 > 1e3 ? '∞' : (secd(I.cA) ** 2).toFixed(2)}$) and the cross scale $k = ${I.dA.k.toFixed(2)}$; at $B$ ($c = ${I.cB.toFixed(1)}^\\circ$) $h = ${I.dB.h.toFixed(2)}$, $k = ${I.dB.k.toFixed(2)}$.`;
+          t += ` But distance is not kept: the ruler line measures ${comma(ruler)} km at the nominal scale. At $A$ ($c = ${I.cA.toFixed(1)}^\\circ$) the radial scale is $h = ${I.dA.a.toFixed(2)}$ ($\\sec^2 c = ${secd(I.cA) ** 2 > 1e3 ? '∞' : (secd(I.cA) ** 2).toFixed(2)}$) and the cross scale $k = ${I.dA.b.toFixed(2)}$; at $B$ ($c = ${I.cB.toFixed(1)}^\\circ$) $h = ${I.dB.a.toFixed(2)}$, $k = ${I.dB.b.toFixed(2)}$.`;
           return t;
         });
       },
@@ -82,20 +81,19 @@ It shows only points with $c < 90^\circ$ (a hemisphere would need an infinite pl
       num: '5.2',
       kind: 'Theorem',
       name: 'Stereographic projection: conformal, circles to circles',
-      credit: 'Origin ancient and uncertain (Hipparchus is often named); called "stereographic" by F. d’Aguilon, 1613',
-      verify: true,
+      credit: 'spherical formulation: Snyder (1987), §21',
       statement: String.raw`The **stereographic projection** projects the sphere of radius $R$ from the point $N$ antipodal to the map centre $P_0$ onto the plane tangent at $P_0$. A point at angular distance $c$ from $P_0$ goes to
 $$r = 2R\tan\frac c2,\qquad \text{azimuth preserved},$$
 and the scale is the same in every direction, $h = k = \sec^2\frac c2$. Hence the projection is **conformal**, and:
 
 (a) every circle on the sphere (a small circle of any radius, not only a parallel) maps to a **circle** in the plane, or to a **straight line** when the circle passes through $N$;
 
-(b) its inverse sends the plane to the sphere minus $N$ bijectively, so the sphere with $N$ added is the plane with a point at infinity — the Riemann sphere (rca-13.1). The map centre itself is not the image of the centre of a circle: the image circle's centre is displaced towards the outside.`,
+(b) its inverse sends the plane to the sphere minus $N$ bijectively, so the sphere with $N$ added is the plane with a point at infinity — the Riemann sphere (rca-13.1). In general, the image of a spherical circle's centre is not the centre of its planar image.`,
       idea: String.raw`Projecting from $N$ onto the tangent plane at distance $2R$ is the restriction to the sphere of the **inversion** in the sphere of radius $2R$ about $N$ (a point $Q$ with $|NQ| = 2R\cos\alpha$ is sent to the point on the same ray at distance $2R/\cos\alpha$, which lies on the tangent plane). Inversions are conformal and map circles and spheres to circles and spheres, with circles through the centre of inversion going to lines; this is (a) and the conformality of geog-3.5 at once. By symmetry the image of a circle about a point $C$ is symmetric about the radial line through the map centre and $C$, so its diameter is the segment between the images of the nearest and farthest points of the circle on that line — a prediction the picture checks against a numerical fit.`,
       caption: String.raw`Drag $C$ and set the angular radius $\rho$ of the circle on the globe. On the map, the blue image is traced point by point; the dashed black circle is predicted from the images of the two extreme points on the radial line. They coincide. Press the button to make the circle pass through $N$, the antipode of the map centre (the cross): its image straightens into a line. The red indicatrices stay round but grow as $\sec^2\frac c2$ (right), and the circle's image is not centred at the image of $C$.`,
       deps: ['geog-3.5', 'rca-13.1'],
       see: ['geog-3.7'],
-      refs: ['Snyder §21'],
+      refs: ['Snyder (1987), §21, pp. 154–158, eqs. (21-1)–(21-4)'],
       tags: ['map projections', 'conformal maps', 'azimuthal'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Stereographic_projection' },
       viz(v) {
@@ -130,10 +128,10 @@ and the scale is the same in every direction, $h = k = \sec^2\frac c2$. Hence th
           // trace the image and fit a circle
           const ring = v.geo('smallCircle', c, rr, 240), img = ring.map((p) => G2.project(p[0], p[1])).filter(Boolean);
           const cA = v.geo('centralAngle', ctr, c), th = v.geo('bearing', ctr, c) * D2R, c1 = cA - rr, c2 = cA + rr;
-          const line = c2 >= 179.5, f = fit(img);
+          const line = Math.abs(c2 - 180) < 1e-7, f = line ? null : fit(img);
           let pred = null;
           if (!line) {
-            const r1 = 2 * Math.tan((c1 * D2R) / 2), r2 = 2 * Math.tan((c2 * D2R) / 2), mr = (r1 + r2) / 2, R = (r2 - r1) / 2, d = [Math.sin(th), Math.cos(th)];
+            const r1 = 2 * Math.tan((c1 * D2R) / 2), r2 = 2 * Math.tan((c2 * D2R) / 2), mr = (r1 + r2) / 2, R = Math.abs(r2 - r1) / 2, d = [Math.sin(th), Math.cos(th)];
             pred = { x: mr * d[0], y: mr * d[1], R };
             const pts = []; for (let i = 0; i <= 120; i++) { const t = (2 * PI * i) / 120; pts.push([pred.x + R * Math.cos(t), pred.y + R * Math.sin(t)]); }
             sB.path(pts, { color: 'ink', width: 1.4, dash: [5, 4] });
@@ -144,18 +142,20 @@ and the scale is the same in every direction, $h = k = \sec^2\frac c2$. Hence th
           sA.corner('the globe', 'tl', { color: 'muted', weight: 600 });
           sB.corner('stereographic map', 'tl', { color: 'muted', weight: 600, plate: true });
           // scale plot
-          sC.fn((x) => secd(x / 2) ** 2, { domain: [0, 150], color: 'red', width: 2.6 });
-          sC.vband(Math.max(0, c1), Math.min(150, c2), { color: 'accent', alpha: 0.12 });
+          const maxC = Math.min(179.9, Math.max(150, cA + 1));
+          sC.setView([0, maxC], [0, Math.max(16, 1.08 * secd(maxC / 2) ** 2)]);
+          sC.fn((x) => secd(x / 2) ** 2, { domain: [0, maxC], color: 'red', width: 2.6 });
+          sC.vband(Math.abs(c1), Math.min(maxC, 180 - Math.abs(180 - c2)), { color: 'accent', alpha: 0.12 });
           sC.vline(cA, { color: 'accent', dash: [4, 4], width: 1.2 });
-          sC.dot(Math.min(cA, 150), secd(Math.min(cA, 150) / 2) ** 2, { r: 5, color: 'accent' });
+          sC.dot(Math.min(cA, maxC), secd(Math.min(cA, maxC) / 2) ** 2, { r: 5, color: 'accent' });
           v.legend([['accent', 'circle on the globe and its image'], ['ink', 'predicted from the two extreme points', { dash: true }], ['red', 'indicatrix / scale $k = \\sec^2(c/2)$'], ['accent', 'range of $c$ along the circle', { area: true }]]);
           void tis;
         });
         v.readout(() => {
           const I = info; if (!I) return '';
           let t = `The circle on the globe has radius $\\rho = ${rho.value}^\\circ$ about $C$, which is $c = ${I.cA.toFixed(1)}^\\circ$ from the map centre. `;
-          if (I.line) t += `It reaches the antipode $N$ ($c_2 = ${I.c2.toFixed(1)}^\\circ \\ge 180^\\circ$), so its image is a **straight line**: the traced points fit a circle of radius ${I.f ? v.fix(I.f.R, 0) : '∞'} map units, i.e. no curvature to ${I.f ? (I.f.res).toExponential(1) : '—'}.`;
-          else if (I.f) t += `The ${I.n} visible image points fit a circle of radius **${I.f.R.toFixed(4)}**, largest residual **${I.f.res.toExponential(1)}**; the circle predicted from the images of the two extreme points ($c_1 = ${I.c1.toFixed(1)}^\\circ$, $c_2 = ${I.c2.toFixed(1)}^\\circ$ on the radial line) has radius **${I.pred.R.toFixed(4)}** — a circle to rounding error. Its centre ${Math.hypot(I.f.cx - (I.imgC ? I.imgC[0] : 0), I.f.cy - (I.imgC ? I.imgC[1] : 0)).toFixed(3)} units from the image of $C$.`;
+          if (I.line) t += `It passes through the antipode $N$ ($c_2 = 180^\\circ$), so its image is a **straight line**; the projection point itself has no finite image.`;
+          else if (I.f) t += `The ${I.n} visible image points fit a circle of radius **${I.f.R.toFixed(4)}**, largest residual **${I.f.res.toExponential(1)}**; the circle predicted from the images of the two extreme points ($c_1 = ${I.c1.toFixed(1)}^\\circ$, $c_2 = ${I.c2.toFixed(1)}^\\circ$ as oriented angles on the radial great circle) has radius **${I.pred.R.toFixed(4)}** — a circle to rounding error. Its centre ${Math.hypot(I.f.cx - (I.imgC ? I.imgC[0] : 0), I.f.cy - (I.imgC ? I.imgC[1] : 0)).toFixed(3)} units from the image of $C$.`;
           else t += 'Too little of the circle is on the map to fit it; drag the map or $C$.';
           if (I.kC) t += ` At $C$ the indicatrix has semi-axes $a = ${I.kC.toFixed(3)}$, $b = ${I.bC.toFixed(3)}$ (equal: conformal), and $\\sec^2(c/2) = ${(secd(I.cA / 2) ** 2).toFixed(3)}$.`;
           return t;
@@ -167,16 +167,15 @@ and the scale is the same in every direction, $h = k = \sec^2\frac c2$. Hence th
       num: '5.3',
       kind: 'Model',
       name: 'Orthographic projection',
-      credit: 'Used by Hipparchus (2nd century BC) for star positions; the name was popularised by F. d’Aguilon, 1613',
-      verify: true,
+      credit: 'spherical formulation: Snyder (1987), §20',
       statement: String.raw`The **orthographic projection** projects the sphere of radius $R$ along parallel rays perpendicular to the plane tangent at the map centre $P_0$ — the view of the globe from infinitely far away. A point at angular distance $c$ from $P_0$ (with $c \le 90^\circ$) goes to
 $$x = R\cos\varphi\sin(\lambda-\lambda_0),\qquad y = R\big(\cos\varphi_0\sin\varphi - \sin\varphi_0\cos\varphi\cos(\lambda-\lambda_0)\big),\qquad r = R\sin c .$$
-Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k = 1$ across it, so the area factor is $\cos c$: the map is neither conformal nor equal-area, and the Tissot indicatrices flatten into thin ellipses, with their short axis radial, as $c \to 90^\circ$, where the limb of the globe is compressed to nothing.`,
-      idea: String.raw`Dropping a point of the sphere straight down onto a plane through the centre keeps its height above the axis through $P_0$ unchanged, so the distance from the map centre is $R\sin c$ and the direction is kept. Moving along a meridian by $dc$ moves the image by $R\cos c\,dc$, giving $h = \cos c$, while a circle of radius $R\sin c$ around the centre keeps its length, $k = 1$. The projection is the limit of the general perspective projection (geog-5.6) with the viewpoint at infinity, and its indicatrix (geog-3.4) is the thinnest of all the azimuthal maps at the limb. It looks like a photograph of a planet because it is one, to good approximation.`,
+Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k = 1$ across it, so the area factor is $\cos c$: the map is neither conformal nor equal-area, and the Tissot indicatrices flatten into thin ellipses, with their short axis radial, as $c \to 90^\circ$, where radial scale vanishes while tangential scale remains 1.`,
+      idea: String.raw`Dropping a point along the viewing direction onto a plane perpendicular to the axis through $P_0$ keeps its transverse coordinates unchanged, so the distance from the map centre is $R\sin c$ and the direction is kept. Moving along a meridian by $dc$ moves the image by $R\cos c\,dc$, giving $h = \cos c$, while a circle of radius $R\sin c$ around the centre keeps its length, $k = 1$. The projection is the limit of the general perspective projection (geog-5.6) with the viewpoint at infinity, and its indicatrix (geog-3.4) has zero radial semi-axis at the limb. It looks like a photograph of a planet because it is one, to good approximation.`,
       caption: String.raw`Left: a section through the sphere, seen from above. Equal $10^\circ$ arcs (alternating colours) drop vertically onto the line below; their shadows shrink from full size at the centre to nothing at the rim. Drag $P$ on the globe: the highlighted $10^\circ$ arc at its angular distance $c$ and its shadow follow. The red indicatrices flatten toward the limb, and the plot compares the radial scale $\cos c$ with the cross scale 1.`,
-      deps: ['geog-3.1'],
+      deps: ['geog-3.1', 'ladr-6.55'],
       see: ['geog-5.6'],
-      refs: ['Snyder §20'],
+      refs: ['Snyder (1987), §20, pp. 145–150, eqs. (20-1)–(20-5)'],
       tags: ['map projections', 'azimuthal'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Orthographic_map_projection' },
       viz(v) {
@@ -184,7 +183,7 @@ Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k 
         const sB = v.stage({ height: 330, weight: 1.0 });
         const sC = v.stage({ x: [0, 90], y: [0, 1.15], axes: 'box', gutter: true, height: 330, weight: 0.8, xlabel: 'angular distance c (°)', ylabel: 'scale factor', xticks: [0, 15, 30, 45, 60, 75, 90] });
         const G = v.globe(sB, { projection: 'orthographic', center: [10, 25], graticule: 15 });
-        const P = G.handle(52, 38, { label: 'P', color: 'accent' });
+        const P = G.handle(52, 38, { label: 'P', labelPos: 'nw', color: 'accent' });
         const Yb = -1.3;
         v.render(() => {
           const c = Math.min(90, v.geo('centralAngle', G.center, [P.lon, P.lat])), cr = c * D2R;
@@ -207,7 +206,7 @@ Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k 
           for (const t of [a, b]) sA.line(Math.sin(t), Math.cos(t), Math.sin(t), Yb - 0.09, { color: 'red', width: 1.1, dash: [4, 3] });
           sA.dot(Math.sin(cr), Math.cos(cr), { r: 5, color: 'accent' });
           sA.dot(0, 1, { r: 3, color: 'ink' }); sA.text('map centre', 0, 1.14, { size: 11, color: 'muted' });
-          sA.text(`c = ${c.toFixed(0)}°`, Math.sin(cr) + 0.07, Math.cos(cr) + 0.07, { size: 12, color: 'accent', weight: 700, align: 'left', plate: true });
+          sA.text(`c = ${c.toFixed(0)}°`, Math.sin(cr) - 0.06, Math.cos(cr) + 0.07, { size: 12, color: 'accent', weight: 700, align: 'right', plate: true });
           sA.text('parallel rays', 0, -1.52, { size: 11.5, color: 'muted', plate: true });
           for (const x of [-0.9, 0.9]) sA.arrow(x, 1.25, x, 0.55, { color: 'muted', width: 1, head: 5 });
           sA.corner('section through the axis', 'tl', { color: 'muted', weight: 600 });
@@ -225,8 +224,8 @@ Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k 
         v.readout(() => {
           const c = Math.min(90, v.geo('centralAngle', G.center, [P.lon, P.lat])), cr = c * D2R, d = G.distortion([P.lon, P.lat]);
           const share = (x) => (x * 100).toFixed(0);
-          const w = Math.sin(Math.min(PI / 2, cr + 5 * D2R)) - Math.sin(Math.max(0, cr - 5 * D2R));
-          let t = `At $P$, $c = ${c.toFixed(1)}^\\circ$: $r = \\sin c = ${Math.sin(cr).toFixed(3)}$. The $10^\\circ$ arc around it (true length 0.1745) has a shadow of ${w.toFixed(3)} — a ratio of ${(w / (10 * D2R)).toFixed(3)} against $\\cos c = ${Math.cos(cr).toFixed(3)}$.`;
+          const a = Math.max(0, cr - 5 * D2R), b = Math.min(PI / 2, cr + 5 * D2R), w = Math.sin(b) - Math.sin(a);
+          let t = `At $P$, $c = ${c.toFixed(1)}^\\circ$: $r = \\sin c = ${Math.sin(cr).toFixed(3)}$. The highlighted arc (clipped at centre or limb, true length ${(b-a).toFixed(4)}) has a shadow of ${w.toFixed(3)} — a ratio of ${(w / (b-a)).toFixed(3)} against $\\cos c = ${Math.cos(cr).toFixed(3)}$.`;
           if (d) t += ` The indicatrix measured numerically from the Jacobian has semi-axes ${d.a.toFixed(3)} and ${d.b.toFixed(3)}: one is $k = 1$, the other $h = \\cos c$, and the area factor is ${d.area.toFixed(3)}.`;
           t += ` Out to $c = ${c.toFixed(0)}^\\circ$ the map disc has used ${share(Math.sin(cr) ** 2)}% of its area, while the cap holds ${share((1 - Math.cos(cr)))}% of the visible hemisphere: the outer rings are crowded.`;
           return t;
@@ -238,19 +237,18 @@ Only one hemisphere is shown. The scale is $h = \cos c$ along the radius and $k 
       num: '5.4',
       kind: 'Model',
       name: 'Azimuthal equidistant projection',
-      credit: 'In use by Spanish and Portuguese mapmakers before G. Postel’s map of 1581 (the "Postel projection"); earliest known description by al-Biruni (11th century)',
-      verify: true,
+      credit: 'spherical formulation: Snyder (1987), §25',
       statement: String.raw`The **azimuthal equidistant projection** centred at $P_0$ puts each point at its true distance and true direction from $P_0$:
 $$r = R\,c,\qquad x = r\sin\theta,\ y = r\cos\theta\quad(\theta = \text{initial bearing from }P_0),$$
 where $c$ is the central angle (geog-1.4) and $\theta$ the initial bearing of the great circle from $P_0$. Hence **distances and directions measured from the centre are exact**, and every great circle through $P_0$ is a straight line. The scale is $h = 1$ along the radius and $k = c/\sin c$ across it, so the map is neither conformal nor equal-area; the whole sphere fits in a disc of radius $\pi R$, whose boundary circle is the single point antipodal to $P_0$, stretched by the factor $k \to \infty$.`,
-      idea: String.raw`Choosing $r = Rc$ makes the radial scale $dr/(R\,dc) = 1$ by construction, and keeping the azimuth makes meridians-through-the-centre straight. A circle of radius $Rc$ about $P_0$ on the sphere has circumference $2\pi R\sin c$ but is drawn with length $2\pi Rc$, so $k = c/\sin c \ge 1$, growing without bound at the antipode. The indicatrix (geog-3.4) is therefore an ellipse stretched across the radius. Used with $P_0$ at a pole it makes the familiar polar map with parallels as concentric circles, the map of the emblem of the United Nations.`,
-      caption: String.raw`Choose the centre (or drag the map to recentre it). The rings are 2,500 km apart: every point on a ring is the same great-circle distance from the centre. Drag $Q$ anywhere; the ruler line from the centre to $Q$ is the great circle, and its length and angle on the map equal the true distance and bearing. With the pole as centre, the dashed circle at $60^\circ$S marks the extent of the map in the UN emblem. The plot shows the cross-scale $k = c/\sin c$ exploding at the outer circle.`,
+      idea: String.raw`Choosing $r = Rc$ makes the radial scale $dr/(R\,dc) = 1$ by construction, and keeping the azimuth makes meridians-through-the-centre straight. A circle of radius $Rc$ about $P_0$ on the sphere has circumference $2\pi R\sin c$ but is drawn with length $2\pi Rc$, so $k = c/\sin c \ge 1$, growing without bound at the antipode. The indicatrix (geog-3.4) is therefore an ellipse stretched across the radius. Used with $P_0$ at a pole it makes the familiar polar map with parallels as concentric, equally spaced parallels.`,
+      caption: String.raw`Choose the centre (or drag the map to recentre it). The rings are 2,500 km apart: every point on a ring is the same great-circle distance from the centre. Drag $Q$ anywhere; the ruler line from the centre to $Q$ is the great circle, and its length and angle on the map equal the true distance and bearing. With the pole as centre, the dashed circle marks the $60^\circ$S reference parallel. The plot shows the cross-scale $k = c/\sin c$ exploding at the outer circle.`,
       deps: ['geog-1.4', 'geog-3.1'],
       see: ['geog-5.5'],
-      refs: ['Snyder §25'],
+      refs: ['Snyder (1987), §25, pp. 191–195, eqs. (25-1)–(25-2)'],
       tags: ['map projections', 'azimuthal', 'distance'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Azimuthal_equidistant_projection' },
-      scope: String.raw`The emblem detail follows the United Nations' own description (a polar azimuthal equidistant map reaching $60^\circ$ south); sources disagree on the extent of the earlier 1945 design, and no attribution of the design is made here.`,
+      scope: String.raw`A spherical Earth. True distance and bearing apply from the chosen centre; distances between general pairs are distorted. The antipode is a singular boundary circle, not a point with a unique bearing.`,
       viz(v) {
         const CITY = { london: [-0.13, 51.51], tokyo: [139.69, 35.69], sydney: [151.21, -33.87], mecca: [39.83, 21.42], pole: [0, 89.99], quito: [-78.5, -0.18] };
         const sel = v.select('centre', [{ value: 'london', label: 'London' }, { value: 'tokyo', label: 'Tokyo' }, { value: 'sydney', label: 'Sydney' }, { value: 'mecca', label: 'Mecca' }, { value: 'quito', label: 'Quito' }, { value: 'pole', label: 'North Pole' }], 'london', { onChange: (k) => G.set({ center: CITY[k] }) });

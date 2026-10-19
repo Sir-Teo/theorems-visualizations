@@ -96,6 +96,9 @@ export const meanOf = (p) => p.reduce((s, x, k) => s + k * x, 0);
 export const pgf = (p, s) => { let r = 0; for (let k = p.length - 1; k >= 0; k--) r = r * s + p[k]; return r; };
 /** Smallest fixed point of the pgf in [0,1] (monotone iteration from 0). */
 export function extinction(p) {
+  // With no chance of zero offspring, the process never reaches extinction,
+  // including the critical deterministic one-child law f(s)=s.
+  if (p[0] === 0) return 0;
   if (meanOf(p) <= 1 + 1e-12) return 1;
   let s = 0;
   for (let i = 0; i < 400000; i++) { const t = pgf(p, s); if (Math.abs(t - s) < 1e-15) { s = t; break; } s = t; }

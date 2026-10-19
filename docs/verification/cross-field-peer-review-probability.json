@@ -1,0 +1,1427 @@
+{
+  "scope": "Independent peer review of review_climate cross-field dependency additions; no primary-source flags closed and no browser launched.",
+  "originalLedgerEdges": 95,
+  "finalLedgerEdges": 96,
+  "semanticSamples": 28,
+  "collectionsSampled": [
+    "astro",
+    "geo",
+    "climate",
+    "geog",
+    "popgen",
+    "neuro",
+    "bioinf",
+    "sysbio"
+  ],
+  "structuralChecks": {
+    "allWrittenDifferentFields": true,
+    "allSyllabusMirrors": true,
+    "allLedgerCountsMatch": true,
+    "globalNodes": 13661,
+    "globalCycles": 0,
+    "edges": [
+      {
+        "source": "astro-2.7",
+        "target": "ode-3.5",
+        "sourceField": "physics",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-3.10",
+        "target": "ode-1.3",
+        "sourceField": "physics",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-4.12",
+        "target": "nla-2.8",
+        "sourceField": "physics",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-10.19",
+        "target": "nla-2.8",
+        "sourceField": "physics",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-10.21",
+        "target": "stat-2.11",
+        "sourceField": "physics",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-10.18",
+        "target": "ode-1.3",
+        "sourceField": "physics",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-1.1",
+        "target": "thermo-1.4",
+        "sourceField": "earth",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-1.1",
+        "target": "ode-1.3",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-1.9",
+        "target": "vcalc-2.11",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-2.2",
+        "target": "ode-3.6",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-2.4",
+        "target": "vcalc-3.11",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-2.4",
+        "target": "pma-5.15",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-2.7",
+        "target": "vcalc-3.8",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-4.1",
+        "target": "ode-3.13",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-1.2",
+        "target": "vcalc-1.6",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-1.7",
+        "target": "vcalc-2.8",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-1.10",
+        "target": "nla-2.9",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-1.4",
+        "target": "num-1.4",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-2.1",
+        "target": "ode-1.3",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-2.3",
+        "target": "prob-2.2.1",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-2.3",
+        "target": "pma-6.24",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-3.4",
+        "target": "vcalc-4.5",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-3.6",
+        "target": "vcalc-4.6",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-5.6",
+        "target": "vcalc-1.5",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-5.8",
+        "target": "ode-1.3",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-2.6",
+        "target": "ode-1.4",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-3.9",
+        "target": "stat-2.11",
+        "sourceField": "earth",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-4.4",
+        "target": "ode-1.8",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-7.15",
+        "target": "thermo-4.15",
+        "sourceField": "earth",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-1.2",
+        "target": "comb-1.12",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-1.9",
+        "target": "stoch-1.4",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-1.10",
+        "target": "pma-1.35",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-1.10",
+        "target": "prob-1.6.9a",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-1.14",
+        "target": "pma-5.15",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-2.1",
+        "target": "stoch-1.1",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-2.5",
+        "target": "stoch-1.10",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.1",
+        "target": "stoch-1.4",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.5",
+        "target": "comb-1.15",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.5",
+        "target": "stat-2.3",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.6",
+        "target": "prob-3.7.2a",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.7",
+        "target": "comb-1.19",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-3.13",
+        "target": "prob-1.6.13",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "popgen-4.10",
+        "target": "vcalc-2.7",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.1",
+        "target": "circ-2.1",
+        "sourceField": "bio",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.3",
+        "target": "circ-1.4",
+        "sourceField": "bio",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.6",
+        "target": "prob-2.2.1",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.7",
+        "target": "prob-2.1.1a",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-3.2",
+        "target": "ode-3.8",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-3.7",
+        "target": "ode-1.14",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-4.3",
+        "target": "ode-4.6",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-4.4",
+        "target": "pde-3.4",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-4.7",
+        "target": "vcalc-2.6",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-1.4",
+        "target": "comb-1.6",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-1.9",
+        "target": "algo-10.1",
+        "sourceField": "bio",
+        "targetField": "cs",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-1.10",
+        "target": "prob-2.1.2",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-1.12",
+        "target": "stat-3.12",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-1.6",
+        "target": "stat-2.11",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-2.1",
+        "target": "algo-8.1",
+        "sourceField": "bio",
+        "targetField": "cs",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-2.4",
+        "target": "stoch-1.2",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-3.4",
+        "target": "prob-1.6.13",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.1",
+        "target": "stat-3.5",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.7",
+        "target": "stat-2.1",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.12",
+        "target": "num-1.10",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-1.1",
+        "target": "algo-8.1",
+        "sourceField": "bio",
+        "targetField": "cs",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-1.4",
+        "target": "prob-2.1.1a",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-1.5",
+        "target": "prob-1.6.13",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-2.1",
+        "target": "ode-1.7",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-2.4",
+        "target": "ode-2.13",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-2.5",
+        "target": "ode-1.8",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-4.1",
+        "target": "ode-3.8",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-4.8",
+        "target": "thermo-4.15",
+        "sourceField": "bio",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-3.8",
+        "target": "rca-17.4",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geog-3.8",
+        "target": "rca-13.11",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.2",
+        "target": "stat-6.4",
+        "sourceField": "bio",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.2",
+        "target": "info-2.1",
+        "sourceField": "bio",
+        "targetField": "cs",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "astro-10.22",
+        "target": "stat-2.11",
+        "sourceField": "physics",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-3.4",
+        "target": "prob-2.7.1a",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "bioinf-4.4",
+        "target": "algo-7.2",
+        "sourceField": "bio",
+        "targetField": "cs",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-1.7",
+        "target": "mech-3.2",
+        "sourceField": "earth",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-4.5",
+        "target": "fluid-3.3",
+        "sourceField": "earth",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-4.3",
+        "target": "vcalc-3.10",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-1.7",
+        "target": "rca-3.3",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-1.9",
+        "target": "sig-3.10",
+        "sourceField": "earth",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-2.11",
+        "target": "thermo-1.11",
+        "sourceField": "earth",
+        "targetField": "physics",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-4.6",
+        "target": "pma-6.19",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-3.9",
+        "target": "stat-2.1",
+        "sourceField": "earth",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-4.8",
+        "target": "pma-9.11",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-1.6",
+        "target": "ode-1.7",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-8.13",
+        "target": "rca-9.1",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.6",
+        "target": "kin-1.9",
+        "sourceField": "bio",
+        "targetField": "chem",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.1",
+        "target": "sig-2.9",
+        "sourceField": "bio",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-4.6",
+        "target": "circ-2.8",
+        "sourceField": "bio",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "neuro-1.4",
+        "target": "circ-3.12",
+        "sourceField": "bio",
+        "targetField": "eng",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "sysbio-1.5",
+        "target": "ode-1.4",
+        "sourceField": "bio",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "geo-1.4",
+        "target": "ode-3.13",
+        "sourceField": "earth",
+        "targetField": "math",
+        "written": true,
+        "syllabusMirrored": true
+      },
+      {
+        "source": "climate-4.6",
+        "target": "stat-2.1",
+        "sourceField": "earth",
+        "targetField": "stats",
+        "written": true,
+        "syllabusMirrored": true
+      }
+    ]
+  },
+  "sampleOutcomes": [
+    {
+      "source": "astro-2.7",
+      "target": "ode-3.5",
+      "status": "accepted",
+      "reason": "The displayed secular equations combine as z_dot=iAz; diagonalizing A gives the stated sinusoidal normal modes. The target solves diagonalizable constant-coefficient systems by their eigenvectors.",
+      "sourceFile": "content/astro/ch02-b.js",
+      "targetFile": "content/ode/ch03.js",
+      "targetStatement": "If $Av=\\lambda v$ with $v\\ne0$ then $x(t)=e^{\\lambda t}v$ solves $\\dot x=Ax$. If $A$ has $n$ linearly independent eigenvectors $v_1,\\dots,v_n$ with eigenvalues $\\lambda_1,\\dots,\\lambda_n$ (that is, $A$ is diagonalizable, $A=V\\Lambda V^{-1}$ with $V=(v_1\\cdots v_n)$), then every solution is\n$$x(t)=\\sum_{j=1}^{n}c_je^{\\lambda_jt}v_j,\\qquad c=V^{-1}x(0),$$\nand $e^{tA}=Ve^{t\\Lambda}V^{-1}$. In the coordinates $c$ the system decouples into $n$ scalar equations $\\dot c_j=\\lambda_jc_j$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "astro-10.19",
+      "target": "nla-2.8",
+      "status": "accepted",
+      "reason": "The source jointly fits solar-motion coefficients and the distance slope from 24 observations, an overdetermined linear least-squares problem, exactly the target formulation.",
+      "sourceFile": "content/astro/ch10-papers.js",
+      "targetFile": "content/nla/ch02-b.js",
+      "targetStatement": "Given $A\\in\\mathbb R^{m\\times n}$ with $m>n$ and $b\\in\\mathbb R^m$ (an overdetermined system $Ax=b$ with, in general, no solution), the **linear least squares problem** is to find $x\\in\\mathbb R^n$ minimising the residual norm $\\|b-Ax\\|_2$. If $A$ has full column rank the minimiser $\\hat x$ is unique. Geometrically $A\\hat x$ is the point of $\\operatorname{range}A$ closest to $b$, namely the orthogonal projection $Pb$ of $b$ onto $\\operatorname{range}A$, and the residual $r=b-A\\hat x$ is perpendicular to $\\operatorname{range}A$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "astro-10.22",
+      "target": "stat-2.11",
+      "status": "accepted",
+      "reason": "The source explicitly constructs a joint likelihood band over cosmological parameters; the target defines likelihood as a function of model parameters with the data held fixed, including relative likelihood regions.",
+      "sourceFile": "content/astro/ch10-papers.js",
+      "targetFile": "content/stat/ch02-b.js",
+      "targetStatement": "Given observed data $x$ and a model $\\{f(\\cdot\\mid\\theta):\\theta\\in\\Theta\\}$, the **likelihood function** is\n$$L(\\theta;x)=f(x\\mid\\theta),$$\nregarded as a function of $\\theta$ with $x$ held fixed; for an i.i.d. sample $L(\\theta)=\\prod_{i=1}^nf(x_i\\mid\\theta)$, and $\\ell(\\theta)=\\log L(\\theta)=\\sum_i\\log f(x_i\\mid\\theta)$ is the **log-likelihood**. Only ratios $L(\\theta_1)/L(\\theta_2)$ carry meaning, so $L$ is defined up to a positive factor depending on $x$ alone; the **relative likelihood** is $R(\\theta)=L(\\theta)/\\sup_{\\theta'}L(\\theta')$, and $\\{\\theta:R(\\theta)\\ge c\\}$ is a likelihood interval.\n\n$L$ is not a probability density on $\\Theta$: its integral need not be 1, or even finite, and under a reparametrisation $\\psi=\\varphi(\\theta)$ it simply relabels, $L^*(\\psi)=L(\\varphi^{-1}(\\psi))$, with no Jacobian. So maxima and likelihood intervals map across ($\\hat\\psi=\\varphi(\\hat\\theta)$) while areas do not.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geo-1.9",
+      "target": "vcalc-2.11",
+      "status": "accepted",
+      "reason": "The source uses both a locally linear density equation and second-derivative curvature for cabbeling. The target Taylor formula supplies both the linear term and the quadratic curvature; its C2 hypothesis holds for the displayed smooth empirical formula. The ledger should not justify this only as a second-order theorem needed for first-order differentiation.",
+      "sourceFile": "content/geo/ch01-b.js",
+      "targetFile": "content/vcalc/ch02-b.js",
+      "targetStatement": "Let $f$ be $C^2$ near $\\mathbf a$. Then\n$$f(\\mathbf a+\\mathbf h)=f(\\mathbf a)+\\nabla f(\\mathbf a)\\cdot\\mathbf h+\\tfrac12\\,\\mathbf h^{\\mathsf T}H_f(\\mathbf a)\\,\\mathbf h+R(\\mathbf h),\\qquad \\frac{R(\\mathbf h)}{|\\mathbf h|^2}\\to0,$$\nwhere $H_f=(\\partial_i\\partial_jf)$ is the Hessian matrix. If $f$ is $C^3$, then $|R(\\mathbf h)|\\le C|\\mathbf h|^3$ near $\\mathbf a$. The tangent plane alone leaves an error of order $|\\mathbf h|^2$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geo-4.1",
+      "target": "ode-3.13",
+      "status": "accepted",
+      "reason": "A psi_zz=i f psi is a constant-coefficient second-order equation. The target characteristic-root basis directly yields the decaying complex exponent; the ocean boundary conditions choose its coefficient.",
+      "sourceFile": "content/geo/ch04.js",
+      "targetFile": "content/ode/ch03-b.js",
+      "targetStatement": "Consider $y^{(n)}+a_{n-1}y^{(n-1)}+\\dots+a_1y'+a_0y=0$ with constant coefficients and characteristic polynomial $p(\\lambda)=\\lambda^n+a_{n-1}\\lambda^{n-1}+\\dots+a_0$. It is equivalent to the first-order system $\\dot x=Cx$ for $x=(y,y',\\dots,y^{(n-1)})$ with the companion matrix $C$, whose characteristic polynomial is $p$. If $p=\\prod_k(\\lambda-\\lambda_k)^{m_k}$, then the $n$ functions\n$$t^{j}e^{\\lambda_kt}\\quad(0\\le j<m_k)$$\nform a basis of the (complex) solutions; for a real equation a complex pair $\\alpha\\pm i\\beta$ of multiplicity $m$ contributes the real functions $t^je^{\\alpha t}\\cos\\beta t$ and $t^je^{\\alpha t}\\sin\\beta t$, $j<m$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geo-1.7",
+      "target": "mech-3.2",
+      "status": "accepted",
+      "reason": "The source explicitly converts the height integral of buoyancy acceleration into kinetic energy per unit mass, giving w_max=sqrt(2 CAPE). This is the target work–energy balance with drag and entrainment omitted, as the source states.",
+      "sourceFile": "content/geo/ch01-b.js",
+      "targetFile": "content/mech/ch03.js",
+      "targetStatement": "Let a particle of mass $m$ move under a net force $\\mathbf F_{\\text{net}} = \\mathbf F_1 + \\dots + \\mathbf F_k$ (each force may depend on position, velocity and time). Then along the actual motion from time $t_1$ to $t_2$,\n$$T(t_2) - T(t_1) = \\sum_{j=1}^k \\int_{t_1}^{t_2}\\mathbf F_j\\cdot\\mathbf v\\,dt = W_{\\text{net}} :$$\nthe change in kinetic energy equals the total work done by all the forces. Constraint forces perpendicular to the velocity (a normal force on a frictionless surface, the magnetic force) do no work.",
+      "alternativePathWithoutDirectEdge": [
+        "geo-1.7",
+        "geo-1.6",
+        "geo-1.2",
+        "pchem-2.7",
+        "pchem-2.5",
+        "pchem-2.1",
+        "mech-3.6",
+        "mech-3.2"
+      ]
+    },
+    {
+      "source": "climate-4.6",
+      "target": "pma-6.19",
+      "status": "accepted",
+      "reason": "On every finite interval within f<1, the inverse f=1−D/s is strictly increasing and smooth. Substitution gives df/ds=D/s². The target supports that Jacobian step; it does not by itself supply the separate division by P(f<1).",
+      "sourceFile": "content/climate/ch04-b.js",
+      "targetFile": "content/pma/ch06-a3.js",
+      "targetStatement": "Let $\\varphi$ be a strictly increasing continuous function mapping an interval $[A,B]$ onto $[a,b]$. Let $\\alpha$ be monotonically increasing on $[a,b]$ and $f\\in\\mathscr R(\\alpha)$ on $[a,b]$. Define $\\beta(y)=\\alpha(\\varphi(y))$ and $g(y)=f(\\varphi(y))$ for $A\\le y\\le B$. Then $g\\in\\mathscr R(\\beta)$ and\n$$\\int_A^B g\\,d\\beta=\\int_a^b f\\,d\\alpha .$$",
+      "alternativePathWithoutDirectEdge": [
+        "climate-4.6",
+        "climate-4.1",
+        "climate-3.4",
+        "climate-1.6",
+        "climate-1.5",
+        "energy-4.1",
+        "qm-1.1",
+        "waves-2.8",
+        "vcalc-4.7",
+        "vcalc-4.6",
+        "pma-10.9",
+        "pma-6.19"
+      ]
+    },
+    {
+      "source": "climate-3.9",
+      "target": "stat-2.1",
+      "status": "accepted",
+      "reason": "The source multiplies evidence likelihoods conditional on a fixed feedback parameter and distinguishes shared error. The target conditional-independence density factorization is the exact rule used.",
+      "sourceFile": "content/climate/ch03-b.js",
+      "targetFile": "content/stat/ch02.js",
+      "targetStatement": "Let $(X,Y)$ have a joint density $f(x,y)$ with respect to a product measure, and let $f_X(x)=\\int f(x,y)\\,dy$ be the marginal density of $X$ (Fubini). Where $f_X(x)>0$, the **conditional density** of $Y$ given $X=x$ is\n$$f(y\\mid x)=\\frac{f(x,y)}{f_X(x)},$$\na probability density in $y$ for each fixed $x$, with $P(Y\\in B\\mid X)=\\int_B f(y\\mid X)\\,dy$. Without densities, $P(Y\\in B\\mid X)$ is defined as the conditional expectation $E[\\mathbf 1_B(Y)\\mid X]$: the function $\\varphi(X)$, unique up to $P$-null sets, with $P(Y\\in B,\\,X\\in A)=\\int_A\\varphi\\,dP_X$ for every $A$, which exists by the Radon–Nikodym theorem; on $\\R^k$ these can be chosen to form a regular conditional distribution.\n\n$X$ and $Y$ are **conditionally independent given $Z$**, written $X\\perp Y\\mid Z$, if $P(X\\in A,\\,Y\\in B\\mid Z)=P(X\\in A\\mid Z)\\,P(Y\\in B\\mid Z)$ almost surely for all $A,B$; with densities, $f(x,y\\mid z)=f(x\\mid z)f(y\\mid z)$, or equivalently $f(y\\mid x,z)=f(y\\mid z)$: once $Z$ is known, $X$ carries no further information about $Y$. Neither independence nor conditional independence implies the other.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "climate-4.8",
+      "target": "pma-9.11",
+      "status": "accepted",
+      "reason": "The source sums all kernel-times-state-perturbation terms as a first-order approximation of total flux. The target differentiability definition supplies the total linear derivative; partial-derivative notation alone would not supply this approximation.",
+      "sourceFile": "content/climate/ch04-b.js",
+      "targetFile": "content/pma/ch09-a2.js",
+      "targetStatement": "Let $E\\subset\\R^n$ be open, $f$ a map of $E$ into $\\R^m$, and $x\\in E$. If there is a linear transformation $A\\in L(\\R^n,\\R^m)$ such that\n$$\\lim_{h\\to0}\\frac{|f(x+h)-f(x)-Ah|}{|h|}=0,$$\nthen $f$ is *differentiable at* $x$ and we write $f'(x)=A$. If $f$ is differentiable at every point of $E$, then $f$ is *differentiable in* $E$, and $f'$ is a map of $E$ into $L(\\R^n,\\R^m)$.",
+      "alternativePathWithoutDirectEdge": [
+        "climate-4.8",
+        "climate-2.6",
+        "climate-1.4",
+        "climate-1.1",
+        "thermo-9.4",
+        "thermo-9.2",
+        "waves-2.8",
+        "vcalc-4.7",
+        "vcalc-4.6",
+        "vcalc-4.5",
+        "pma-9.38",
+        "pma-9.11"
+      ]
+    },
+    {
+      "source": "climate-8.13",
+      "target": "sig-4.1",
+      "status": "replaced_after_peer_review",
+      "reason": "The source teaches spectral peaks of finite, nonperiodic core records. The target assumes an exactly periodic signal with a fundamental period. Recommending a Fourier-transform prerequisite avoids importing that assumption; the original-periodic-series edge should be replaced rather than counted as an exact spectral-estimation match.",
+      "sourceFile": "content/climate/ch08-papers.js",
+      "targetFile": "content/sig/ch04.js",
+      "targetStatement": "Let $x$ be periodic with fundamental period $T$ (sig-1.4) and put $\\omega_0=2\\pi/T$. Its **Fourier series** is the sum of harmonics\n$$x(t)\\sim\\sum_{k=-\\infty}^{\\infty}c_k\\,e^{jk\\omega_0 t},\\qquad c_k=\\frac1T\\int_T x(t)\\,e^{-jk\\omega_0 t}\\,dt .$$\nThe term with index $k$ is the $k$-th harmonic, with frequency $k\\omega_0$; $c_0$ is the mean of $x$. For a real signal $c_{-k}=\\overline{c_k}$, so the pair $\\pm k$ combines into one real cosine, $x(t)\\sim c_0+\\sum_{k\\ge1}2|c_k|\\cos(k\\omega_0t+\\arg c_k)$. The symbol $\\sim$ says only that the series is attached to $x$; in what sense it represents $x$ is the subject of the rest of the chapter.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geog-1.10",
+      "target": "nla-2.9",
+      "status": "accepted",
+      "reason": "The GPS source uses (H^T H)^−1 H^T times the pseudorange residual. The target normal-equation theorem gives this expression under full column rank, the nondegenerate-satellite-geometry condition underlying the calculation.",
+      "sourceFile": "content/geog/ch01-b.js",
+      "targetFile": "content/nla/ch02-b.js",
+      "targetStatement": "Let $A\\in\\mathbb R^{m\\times n}$ and $b\\in\\mathbb R^m$. A vector $\\hat x$ minimises $\\|b-Ax\\|_2$ if and only if the residual is orthogonal to the range of $A$, i.e. if and only if\n$$A^{\\top}A\\,\\hat x=A^{\\top}b .$$\nThese *normal equations* always have a solution; it is unique exactly when $A$ has full column rank, in which case $A^{\\top}A$ is symmetric positive definite and $\\hat x=(A^{\\top}A)^{-1}A^{\\top}b$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geog-1.4",
+      "target": "num-1.4",
+      "status": "accepted",
+      "reason": "The source rewrites 1−cos(sigma) into sin²(sigma/2) to avoid loss from nearly equal values. The target explains precisely this cancellation and the same half-angle remedy.",
+      "sourceFile": "content/geog/ch01.js",
+      "targetFile": "content/num/ch01.js",
+      "targetStatement": "Subtracting two nearly equal floating-point numbers is *exact* (Sterbenz: if $y/2\\le x\\le2y$ then $x-y$ is representable), but it exposes the rounding errors already present in $x$ and $y$: if $\\hat x=x(1+\\delta_1)$ and $\\hat y=y(1+\\delta_2)$, then\n$$\\frac{(\\hat x-\\hat y)-(x-y)}{x-y}\\ \\text{can be as large as}\\ \\frac{|x|+|y|}{|x-y|}\\,u .$$\nLeading digits cancel and the result keeps only the noisy trailing digits. For $f(x)=(1-\\cos x)/x^2\\to\\tfrac12$ the computed value is wrong in all digits once $x\\lesssim10^{-8}$; rewriting $1-\\cos x=2\\sin^2(x/2)$ removes the subtraction and the error stays near $u$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geog-3.8",
+      "target": "rca-17.4",
+      "status": "accepted",
+      "reason": "The source writes log scale as a continuous subharmonic term plus a harmonic correction and uses a boundary maximum principle. The target harmonic-majorant comparison is exactly the required boundary-to-interior implication on compact subregions. This does not independently close the flagged global mapping claim.",
+      "sourceFile": "content/geog/ch03.js",
+      "targetFile": "content/rca/ch17.js",
+      "targetStatement": "Suppose $u$ is a continuous subharmonic function in $\\Omega$, $K$ is a compact subset of $\\Omega$, and $h$ is a continuous real function on $K$ which is harmonic in the interior of $K$. If $u(z)\\le h(z)$ at every boundary point $z$ of $K$, then $u(z)\\le h(z)$ for every $z\\in K$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "geog-3.8",
+      "target": "rca-13.11",
+      "status": "accepted",
+      "reason": "The source reconstructs a holomorphic map from a harmonic log-scale correction on a simply connected region. Clause(g) supplies global primitives: integrate u_x−iu_y to obtain a harmonic conjugate, then integrate exp(g) for the desired nonzero derivative. This supports existence of the analytic primitive, not a separate univalence theorem.",
+      "sourceFile": "content/geog/ch03.js",
+      "targetFile": "content/rca/ch13-a3.js",
+      "targetStatement": "For a region $\\Omega$ in the plane (open and connected) the following are equivalent:\n(a) $\\Omega$ is homeomorphic to the open unit disc $U$.\n(b) $\\Omega$ is simply connected.\n(c) $\\Ind_\\gamma(\\alpha)=0$ for every closed path $\\gamma$ in $\\Omega$ and every $\\alpha\\in S^2\\setminus\\Omega$.\n(d) $S^2\\setminus\\Omega$ is connected.\n(e) Every $f\\in H(\\Omega)$ is a limit of polynomials, uniformly on compact subsets of $\\Omega$.\n(f) $\\int_\\gamma f(z)\\,dz=0$ for every $f\\in H(\\Omega)$ and every closed path $\\gamma$ in $\\Omega$.\n(g) Every $f\\in H(\\Omega)$ has a primitive: $F'=f$ for some $F\\in H(\\Omega)$.\n(h) If $f\\in H(\\Omega)$ and $1/f\\in H(\\Omega)$, then $f=e^g$ for some $g\\in H(\\Omega)$.\n(i) If $f\\in H(\\Omega)$ and $1/f\\in H(\\Omega)$, then $f=\\varphi^2$ for some $\\varphi\\in H(\\Omega)$.",
+      "alternativePathWithoutDirectEdge": [
+        "geog-3.8",
+        "rca-17.4",
+        "rca-17.1",
+        "rca-15.18",
+        "rca-13.11"
+      ]
+    },
+    {
+      "source": "popgen-1.10",
+      "target": "pma-1.35",
+      "status": "accepted",
+      "reason": "Use Schwarz with vectors p=(p_i) and ones:1=(sum p_i)²≤k sum p_i². Thus H≤1−1/k, with equality at uniform allele frequencies, exactly the stated maximum.",
+      "sourceFile": "content/popgen/ch01-b.js",
+      "targetFile": "content/pma/ch01-a4.js",
+      "targetStatement": "If $a_1,\\dots,a_n$ and $b_1,\\dots,b_n$ are complex numbers, then\n$$\\Big|\\sum_{j=1}^n a_j\\bar b_j\\Big|^2\\le\\sum_{j=1}^n|a_j|^2\\,\\sum_{j=1}^n|b_j|^2 .$$",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "popgen-3.5",
+      "target": "stat-2.3",
+      "status": "accepted",
+      "reason": "In the Ewens mass function, all parameter dependence is theta^K/theta^(n); the rest depends only on the observed configuration. The target factorization theorem therefore makes K sufficient.",
+      "sourceFile": "content/popgen/ch03.js",
+      "targetFile": "content/stat/ch02.js",
+      "targetStatement": "Let $\\{f(x\\mid\\theta):\\theta\\in\\Theta\\}$ be densities of the data $X$ with respect to a common σ-finite measure (for example counting measure, or Lebesgue measure). A statistic $T$ is sufficient for $\\theta$ if and only if there are non-negative functions $g$ and $h$ with\n$$f(x\\mid\\theta)=g\\big(T(x),\\theta\\big)\\,h(x)\\qquad\\text{for all }x\\text{ and }\\theta$$\n(almost everywhere, in the continuous case). The factor $g$ may depend on $\\theta$ but sees the data only through $T(x)$; the factor $h$ may depend on the data in any way but not on $\\theta$.\n\nExamples: Poisson, $\\prod_i e^{-\\lambda}\\lambda^{x_i}/x_i!=\\big[e^{-n\\lambda}\\lambda^{\\sum x_i}\\big]\\cdot\\big[1/\\prod x_i!\\big]$, so $\\sum X_i$ is sufficient; uniform on $\\{0,\\dots,\\theta\\}$ or $(0,\\theta)$, $f=\\big[(\\text{const})^{-n}\\mathbf 1\\{\\max x_i\\le\\theta\\}\\big]\\cdot\\mathbf 1\\{\\min x_i\\ge0\\}$, so $\\max X_i$ is sufficient; $N(\\mu,\\sigma^2)$, where $(\\sum X_i,\\sum X_i^2)$ is.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "popgen-3.6",
+      "target": "prob-3.7.2a",
+      "status": "accepted",
+      "reason": "The actual mutation model samples independent Poisson((theta/2)*branch_length) counts on each genealogical branch and conditional uniform event times (ch03.js around line 336). This is a Poisson-arrival construction. Constant mean rate alone would not imply independent Poisson increments; the dependency is accepted for the model actually used, not for that invalid inference.",
+      "sourceFile": "content/popgen/ch03.js",
+      "targetFile": "content/prob/ch03-d.js",
+      "targetStatement": "A family $(N_t)_{t\\ge0}$ is a **Poisson process with rate $\\lambda$** if\n(i) for $0=t_0<t_1<\\dots<t_n$ the increments $N(t_k)-N(t_{k-1})$, $1\\le k\\le n$, are independent, and\n(ii) $N(t)-N(s)$ is Poisson$(\\lambda(t-s))$ for $s<t$.\n**Construction:** with $\\xi_1,\\xi_2,\\dots$ i.i.d. exponential$(\\lambda)$ and $T_0=0$, $T_n=\\xi_1+\\dots+\\xi_n$, the counting process $N_t=\\sup\\{n:T_n\\le t\\}$ is a Poisson process; $T_n$ is the $n$-th arrival time.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "neuro-3.7",
+      "target": "ode-1.14",
+      "status": "accepted",
+      "reason": "For V_dot=V²+I with I>0, the reciprocal integral to infinity is finite, producing the explicit tangent blow-up and firing interval. The target gives this finite-time reciprocal-integral criterion.",
+      "sourceFile": "content/neuro/ch03-b.js",
+      "targetFile": "content/ode/ch01-b.js",
+      "targetStatement": "A solution of a perfectly smooth equation can cease to exist in finite time by escaping to infinity. For $\\dot x = f(x)$ with $f>0$ on $[x_0,\\infty)$, the solution from $x(0) = x_0$ reaches the level $X$ at time $t(X) = \\int_{x_0}^{X} d\\xi/f(\\xi)$, so it blows up exactly when\n$$T = \\int_{x_0}^{\\infty}\\frac{d\\xi}{f(\\xi)} < \\infty,$$\nand then $x(t)\\to\\infty$ as $t\\uparrow T$. For $f(x) = x^p$ with $p>1$ this gives $T = x_0^{1-p}/(p-1)$, which shrinks as $x_0$ grows; for $p\\le1$ the solution exists for all time. Superlinear growth is necessary but not sufficient: $f(x) = (1+x)\\ln(1+x)$ has $\\int^\\infty d\\xi/f = \\infty$ (Osgood's criterion), so its solutions grow doubly exponentially but never blow up.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "neuro-4.6",
+      "target": "circ-2.8",
+      "status": "accepted",
+      "reason": "The compartment axial-current term sum_j g_ij(V_j−V_i) is minus the conductance Laplacian acting on voltages. The target defines exactly that weighted network current operator.",
+      "sourceFile": "content/neuro/ch04-b.js",
+      "targetFile": "content/circ/ch02-b.js",
+      "targetStatement": "For a resistor network with $n$ nodes, let $g_{jk} = 1/R_{jk}$ be the conductance of the branch between nodes $j$ and $k$ (zero if there is none; parallel resistors add). The **conductance matrix** (weighted graph Laplacian) is the symmetric $n\\times n$ matrix $\\mathbf L$ with $L_{jk} = -g_{jk}$ for $j\\ne k$ and $L_{jj} = \\sum_{k} g_{jk}$, the total conductance at node $j$. Equivalently $\\mathbf L = \\mathbf A\\,\\mathrm{diag}(g)\\,\\mathbf A^{\\!\\top}$ with $\\mathbf A$ the incidence matrix. Every row sums to zero, and for node voltages $\\mathbf v$ the vector $\\mathbf L\\mathbf v$ lists the net current leaving each node through the resistors. Deleting the row and column of the ground node gives the matrix $\\mathbf G$ of node-voltage analysis (2.5).",
+      "alternativePathWithoutDirectEdge": [
+        "neuro-4.6",
+        "neuro-4.1",
+        "neuro-1.2",
+        "neuro-1.1",
+        "sig-2.9",
+        "sig-2.2",
+        "circ-3.1",
+        "circ-2.9",
+        "circ-2.8"
+      ]
+    },
+    {
+      "source": "neuro-1.4",
+      "target": "circ-3.12",
+      "status": "accepted",
+      "reason": "The source steady voltage is(sum g_i E_i+I)/sum g_i. Millman gives exactly this parallel-source formula including the current-source numerator term and explains the added-conductance shunt.",
+      "sourceFile": "content/neuro/ch01.js",
+      "targetFile": "content/circ/ch03-b.js",
+      "targetStatement": "Let $n$ branches, each a voltage source $V_k$ in series with a resistance $R_k$ (conductance $G_k = 1/R_k$), be joined between a common node $X$ and a common reference node. Then the voltage of $X$ relative to the reference is $$V_X = \\frac{\\sum_k G_k V_k}{\\sum_k G_k},$$ a conductance-weighted average of the source voltages. A branch with a current source $I_k$ toward $X$ adds $I_k$ to the numerator and nothing to the denominator; a branch with no source is $V_k = 0$ and only adds its conductance to the denominator. The theorem is also called the parallel-generator theorem.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "bioinf-3.4",
+      "target": "prob-2.7.1a",
+      "status": "accepted",
+      "reason": "The score-root equation is E exp(lambda X)=1 for the pair-score variable. The target defines the mgf, its derivative at0 and tilted-law interpretation used in the source explanation.",
+      "sourceFile": "content/bioinf/ch03.js",
+      "targetFile": "content/prob/ch02-e.js",
+      "targetStatement": "The **moment-generating function** of a random variable $X$ is $\\varphi(\\theta)=Ee^{\\theta X}$, defined in $(0,\\infty]$ for every real $\\theta$; put $\\theta_+=\\sup\\{\\theta:\\varphi(\\theta)<\\infty\\}$ and $\\kappa(\\theta)=\\log\\varphi(\\theta)$. Where $\\varphi$ is finite near $\\theta$, it is smooth with $\\varphi^{(k)}(\\theta)=E\\big(X^ke^{\\theta X}\\big)$; in particular $\\varphi'(0)=EX$, and $\\kappa$ is convex, with $\\kappa'(\\theta)$ and $\\kappa''(\\theta)$ the mean and variance of the tilted law $e^{\\theta x}dF(x)/\\varphi(\\theta)$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "bioinf-4.2",
+      "target": "stat-6.4",
+      "status": "accepted",
+      "reason": "The source explicitly invokes Neyman–Pearson for a simple-versus-simple likelihood-ratio discriminator. The target supplies the exact most-powerful likelihood-ratio test, with boundary randomization when needed.",
+      "sourceFile": "content/bioinf/ch04.js",
+      "targetFile": "content/stat/ch06.js",
+      "targetStatement": "Test a simple null $H_0:\\theta=\\theta_0$ against a simple alternative $H_1:\\theta=\\theta_1$, where the data $X$ have density (or mass function) $f_0$ or $f_1$. For $k\\ge0$ let $R_k=\\{x: f_1(x)>k\\,f_0(x)\\}$ be the **likelihood-ratio region**, and suppose its size is $\\alpha=P_0(X\\in R_k)$ (randomize on the boundary $\\{f_1=kf_0\\}$ if needed to reach exactly $\\alpha$). Then\n\n(a) **(sufficiency)** $R_k$ is a **most powerful** level-$\\alpha$ test: every region $R$ with $P_0(X\\in R)\\le\\alpha$ has $P_1(X\\in R)\\le P_1(X\\in R_k)$;\n\n(b) **(necessity)** every most powerful level-$\\alpha$ test agrees with a likelihood-ratio test except on $\\{f_1=kf_0\\}$ and a null set, and has size exactly $\\alpha$ unless it has power 1.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "bioinf-4.4",
+      "target": "algo-7.2",
+      "status": "accepted",
+      "reason": "The best prefix per hidden end state is an optimal-substructure recurrence evaluated by increasing time with traceback. The target dynamic-programming DAG and cost rule directly give K T cells at K work each.",
+      "sourceFile": "content/bioinf/ch04.js",
+      "targetFile": "content/algo/ch07.js",
+      "targetStatement": "**Dynamic programming** solves a problem by\n(a) choosing a family of **subproblems**, indexed by a few parameters, that includes the original problem;\n(b) writing a **recurrence** expressing each subproblem's answer through the answers of strictly *smaller* subproblems, with base cases;\n(c) evaluating the recurrence **bottom-up**, filling a table in an order in which every entry is computed after all the entries it reads.\n\nThe subproblems and the “reads” relation form a directed acyclic graph, the **subproblem DAG**; a valid evaluation order is exactly a topological order of it. If there are $S$ subproblems and each is evaluated in time $t$ from its inputs, the algorithm runs in time $O(S\\,t)$ and space $O(S)$ (often less, when only a few earlier rows must be kept). Memoized recursion (7.1) computes the same table top-down, discovering a valid order on its own.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "sysbio-2.4",
+      "target": "ode-2.13",
+      "status": "accepted",
+      "reason": "At matched equilibrium, positive-feedback net production is smaller than the simple model at every intermediate concentration. The simple trajectory is a supersolution to the feedback equation; the target scalar comparison theorem orders the rise curves.",
+      "sourceFile": "content/sysbio/ch02.js",
+      "targetFile": "content/ode/ch02-b.js",
+      "targetStatement": "Let $f(t,x)$ be continuous and locally Lipschitz in $x$ on an open set in $\\R^2$, and let $x$ solve $\\dot x=f(t,x)$ on $[t_0,t_1]$. Suppose $\\alpha,\\beta$ are $C^1$ with\n$$\\dot\\alpha\\le f(t,\\alpha),\\qquad \\dot\\beta\\ge f(t,\\beta)\\qquad\\text{on }[t_0,t_1]$$\n(a *sub-solution* and a *super-solution*) and $\\alpha(t_0)\\le x(t_0)\\le\\beta(t_0)$. Then $\\alpha(t)\\le x(t)\\le\\beta(t)$ on $[t_0,t_1]$. The solution is trapped in the corridor between them.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "sysbio-4.8",
+      "target": "thermo-4.15",
+      "status": "accepted_with_scope_qualification",
+      "reason": "The target starts with the general equilibrium condition sum nu_i mu_i=0 from Gibbs minimization, which is a genuine equilibrium prerequisite. Its explicit ideal-gas mass-action quotient must not be read as the aqueous concentration Kd formula. Accepted with that scope explicitly qualified in the ledger.",
+      "sourceFile": "content/sysbio/ch04-b.js",
+      "targetFile": "content/thermo/ch04-b.js",
+      "targetStatement": "For a reaction $\\sum_i \\nu_i A_i = 0$ (stoichiometric coefficients $\\nu_i$, negative for reactants) in a mixture at fixed $T$ and $P$, the composition changes along the extent of reaction $\\xi$ ($dN_i = \\nu_i\\,d\\xi$) until $G(\\xi)$ is minimal, i.e. until $\\sum_i \\nu_i\\mu_i = 0$. For ideal gases ($\\mu_i = \\mu_i^\\circ + RT\\ln(x_iP/P^\\circ)$) this is the **law of mass action**\n$$\\prod_i \\left(\\frac{x_iP}{P^\\circ}\\right)^{\\nu_i} = K(T) = e^{-\\Delta G^\\circ/RT},\\qquad \\Delta G^\\circ = \\sum_i \\nu_i\\mu_i^\\circ = \\Delta H^\\circ - T\\Delta S^\\circ.$$\nThe temperature dependence follows the **van 't Hoff equation** $d\\ln K/d(1/T) = -\\Delta H^\\circ/R$. Disturbing an equilibrium (adding a species, changing $P$ or $T$) makes the reaction quotient $Q \\ne K$, and the system relaxes in the direction that reduces $|\\ln(Q/K)|$ — the content of Le Chatelier's principle.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "sysbio-1.5",
+      "target": "prob-1.6.13",
+      "status": "accepted",
+      "reason": "The source explicitly names a Poisson stationary count with equal mean and variance beta/alpha. The target defines that law and proves its mean/variance identity; this is a model-level definition, not an integration routine.",
+      "sourceFile": "content/sysbio/ch01.js",
+      "targetFile": "content/prob/ch01-d.js",
+      "targetStatement": "$X$ has the **Poisson distribution** with parameter $\\lambda>0$ if\n$$P(X=k)=e^{-\\lambda}\\frac{\\lambda^k}{k!},\\qquad k=0,1,2,\\dots$$\nIts factorial moments are $E\\big(X(X-1)\\cdots(X-k+1)\\big)=\\lambda^k$; in particular $EX=\\lambda$ and $\\operatorname{var}(X)=\\lambda$.",
+      "alternativePathWithoutDirectEdge": null
+    },
+    {
+      "source": "climate-8.13",
+      "target": "rca-9.1",
+      "status": "accepted_after_peer_correction",
+      "reason": "Replacement confirmed in content, syllabus and ledger. The target Fourier-transform definition applies to integrable finite-window records/covariances without exact periodicity. This does not identify or reproduce the historical estimator.",
+      "sourceFile": "content/climate/ch08-papers.js",
+      "targetFile": "content/rca/ch09.js",
+      "targetStatement": "In this chapter $m$ is Lebesgue measure on $\\R$ divided by $\\sqrt{2\\pi}$: $\\int f\\,dm=\\frac{1}{\\sqrt{2\\pi}}\\int_{-\\infty}^{\\infty}f(x)\\,dx$. Accordingly $L^p$ means $L^p(m)$, with $\\norm{f}_p=\\big(\\int|f|^p\\,dm\\big)^{1/p}$, and the convolution of $f,g\\in L^1$ is $(f*g)(x)=\\int f(x-y)g(y)\\,dm(y)$.\n\nThe **Fourier transform** of $f\\in L^1$ is the function on $\\R$\n$$\\hat f(t)=\\int_{-\\infty}^{\\infty}f(x)\\,e^{-ixt}\\,dm(x)\\qquad(t\\in\\R).$$\nThe factor $1/\\sqrt{2\\pi}$ is built into $m$ so that the inversion and Plancherel formulas later in the chapter are perfectly symmetric.",
+      "alternativePathWithoutDirectEdge": [
+        "climate-8.13",
+        "climate-8.4",
+        "pchem-9.14",
+        "qm-4.4",
+        "qm-2.11",
+        "waves-2.10",
+        "waves-2.9",
+        "rca-9.1"
+      ]
+    },
+    {
+      "source": "climate-4.6",
+      "target": "stat-2.1",
+      "status": "accepted_new_direct_prerequisite",
+      "reason": "Let B=1(F<1). With counting measure for B and Lebesgue measure for S, the target conditional-density rule gives p(S=s|B=1)=p(S=s,B=1)/Z. Since Fbar<1 and sigma>0, Z>0. The conditional CDF is P(F≤1−D/s)/Z, giving the displayed median equation. No alternate prerequisite path supplies this conditioning rule.",
+      "sourceFile": "content/climate/ch04-b.js",
+      "targetFile": "content/stat/ch02.js",
+      "targetStatement": "Let $(X,Y)$ have a joint density $f(x,y)$ with respect to a product measure, and let $f_X(x)=\\int f(x,y)\\,dy$ be the marginal density of $X$ (Fubini). Where $f_X(x)>0$, the **conditional density** of $Y$ given $X=x$ is\n$$f(y\\mid x)=\\frac{f(x,y)}{f_X(x)},$$\na probability density in $y$ for each fixed $x$, with $P(Y\\in B\\mid X)=\\int_B f(y\\mid X)\\,dy$. Without densities, $P(Y\\in B\\mid X)$ is defined as the conditional expectation $E[\\mathbf 1_B(Y)\\mid X]$: the function $\\varphi(X)$, unique up to $P$-null sets, with $P(Y\\in B,\\,X\\in A)=\\int_A\\varphi\\,dP_X$ for every $A$, which exists by the Radon–Nikodym theorem; on $\\R^k$ these can be chosen to form a regular conditional distribution.\n\n$X$ and $Y$ are **conditionally independent given $Z$**, written $X\\perp Y\\mid Z$, if $P(X\\in A,\\,Y\\in B\\mid Z)=P(X\\in A\\mid Z)\\,P(Y\\in B\\mid Z)$ almost surely for all $A,B$; with densities, $f(x,y\\mid z)=f(x\\mid z)f(y\\mid z)$, or equivalently $f(y\\mid x,z)=f(y\\mid z)$: once $Z$ is known, $X$ carries no further information about $Y$. Neither independence nor conditional independence implies the other.",
+      "alternativePathWithoutDirectEdge": null
+    }
+  ],
+  "alternativePaths": [
+    {
+      "source": "climate-2.6",
+      "target": "ode-1.4",
+      "path": [
+        "climate-2.6",
+        "climate-2.5",
+        "waves-4.15",
+        "ode-1.5",
+        "ode-1.4"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "Beer–Lambert ancestry supplies homogeneous attenuation; this source directly solves an inhomogeneous transfer equation with an emitting source term."
+    },
+    {
+      "source": "neuro-1.1",
+      "target": "circ-2.1",
+      "path": [
+        "neuro-1.1",
+        "sig-2.9",
+        "sig-2.2",
+        "circ-3.1",
+        "circ-2.5",
+        "circ-2.1"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The source explicitly derives its membrane balance by current conservation; the RC-system target separately supplies the time response and time constant."
+    },
+    {
+      "source": "neuro-1.7",
+      "target": "prob-2.1.1a",
+      "path": [
+        "neuro-1.7",
+        "neuro-1.6",
+        "prob-2.2.1",
+        "prob-2.1.13",
+        "prob-2.1.10",
+        "prob-2.1.9",
+        "prob-2.1.7",
+        "prob-2.1.5",
+        "prob-2.1.1a"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "Multiplying simultaneous gate-open probabilities is a distinct local independence use from the channel-count variance calculation inherited through1.6."
+    },
+    {
+      "source": "geog-3.8",
+      "target": "rca-13.11",
+      "path": [
+        "geog-3.8",
+        "rca-17.4",
+        "rca-17.1",
+        "rca-15.18",
+        "rca-13.11"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The global primitive is used to construct the mapping from its harmonic log scale, not merely inherited through a subharmonic-majorant theorem."
+    },
+    {
+      "source": "geo-1.7",
+      "target": "mech-3.2",
+      "path": [
+        "geo-1.7",
+        "geo-1.6",
+        "geo-1.2",
+        "pchem-2.7",
+        "pchem-2.5",
+        "pchem-2.1",
+        "mech-3.6",
+        "mech-3.2"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The source directly converts the buoyancy work integral into upward kinetic energy; the long thermodynamic ascent ancestry supplies a separate parcel-temperature calculation."
+    },
+    {
+      "source": "geo-4.5",
+      "target": "fluid-3.3",
+      "path": [
+        "geo-4.5",
+        "geo-2.7",
+        "fluid-3.11",
+        "fluid-3.3"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The displayed relative-vorticity tendency f*partial_z(w) is an explicit vortex-stretching use, beyond the inherited Taylor–Proudman conclusion."
+    },
+    {
+      "source": "climate-1.7",
+      "target": "rca-3.3",
+      "path": [
+        "climate-1.7",
+        "climate-1.6",
+        "climate-1.2",
+        "climate-1.1",
+        "thermo-9.4",
+        "qm-4.12",
+        "qm-4.3",
+        "qm-4.2",
+        "qm-2.11",
+        "qm-2.10",
+        "rca-9.11",
+        "rca-9.10",
+        "rca-3.3"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "Jensen directly compares mean temperature and mean fourth-power temperature. The alternative spectral/radiative ancestry concerns different integrals."
+    },
+    {
+      "source": "climate-2.11",
+      "target": "thermo-1.11",
+      "path": [
+        "climate-2.11",
+        "climate-2.6",
+        "climate-1.4",
+        "thermo-9.1",
+        "thermo-2.1",
+        "thermo-1.11"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The local convection adjustment conserves the energy/enthalpy of mixed layers, separate from the radiative-transfer calculation in its ancestry."
+    },
+    {
+      "source": "climate-4.6",
+      "target": "pma-6.19",
+      "path": [
+        "climate-4.6",
+        "climate-4.1",
+        "climate-3.4",
+        "climate-1.6",
+        "climate-1.5",
+        "energy-4.1",
+        "qm-1.1",
+        "waves-2.8",
+        "vcalc-4.7",
+        "vcalc-4.6",
+        "pma-10.9",
+        "pma-6.19"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The source explicitly changes feedback uncertainty into a sensitivity density with its own D/s² Jacobian, separate from inherited radiation/blackbody substitutions."
+    },
+    {
+      "source": "climate-4.8",
+      "target": "pma-9.11",
+      "path": [
+        "climate-4.8",
+        "climate-2.6",
+        "climate-1.4",
+        "climate-1.1",
+        "thermo-9.4",
+        "thermo-9.2",
+        "waves-2.8",
+        "vcalc-4.7",
+        "vcalc-4.6",
+        "vcalc-4.5",
+        "pma-9.38",
+        "pma-9.11"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The local kernel sum uses a total first-order linear approximation in the complete state vector; the older radiation ancestry invokes derivatives for a different role."
+    },
+    {
+      "source": "climate-8.13",
+      "target": "rca-9.1",
+      "path": [
+        "climate-8.13",
+        "climate-8.4",
+        "pchem-9.14",
+        "qm-4.4",
+        "qm-2.11",
+        "waves-2.10",
+        "waves-2.9",
+        "rca-9.1"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "Frequency decomposition is used for the proxy-core spectrum, separate from quantum/optical Fourier transforms inherited through insolation physics."
+    },
+    {
+      "source": "neuro-4.6",
+      "target": "circ-2.8",
+      "path": [
+        "neuro-4.6",
+        "neuro-4.1",
+        "neuro-1.2",
+        "neuro-1.1",
+        "sig-2.9",
+        "sig-2.2",
+        "circ-3.1",
+        "circ-2.9",
+        "circ-2.8"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The local axial-current coupling is constructed as a graph conductance Laplacian; the inherited membrane circuit treats a single passive patch."
+    },
+    {
+      "source": "sysbio-1.5",
+      "target": "ode-1.4",
+      "path": [
+        "sysbio-1.5",
+        "sysbio-1.2",
+        "mathbio-5.8",
+        "kin-6.7",
+        "kin-6.2",
+        "kin-4.3",
+        "kin-4.1",
+        "kin-1.5",
+        "ode-1.5",
+        "ode-1.4"
+      ],
+      "outcome": "accepted_direct_local_use",
+      "reason": "The production–degradation solution directly solves its own inhomogeneous linear ODE; the ancestry through input/binding kinetics supplies a different reaction model."
+    }
+  ],
+  "transitivityPolicy": "An alternate path is reported, not mechanically rejected. A directly invoked local calculation remains a prerequisite when a long ancestor path supplies an unrelated role. The sample checks local proof/definition use; purely inherited or contrast-only material does not count.",
+  "corrections": [
+    {
+      "source": "climate-8.13",
+      "removedTarget": "sig-4.1",
+      "replacementTarget": "rca-9.1",
+      "status": "applied_by_owner",
+      "reason": "Finite-record spectral analysis does not assume a fundamental period; use a Fourier transform of an integrable finite window."
+    },
+    {
+      "source": "climate-4.6",
+      "addedTarget": "stat-2.1",
+      "status": "applied_by_owner",
+      "reason": "Conditional positive-branch density and quantiles explicitly divide by the probability of F<1, a separate operation from changing variables."
+    }
+  ],
+  "preexistingSyllabusMismatchesReconciled": [
+    "astro-4.12",
+    "geo-4.1",
+    "climate-1.9",
+    "geog-1.10",
+    "popgen-1.10",
+    "popgen-1.14",
+    "popgen-2.1",
+    "popgen-3.5",
+    "neuro-1.7"
+  ],
+  "qualifications": [
+    {
+      "source": "geo-1.9",
+      "target": "vcalc-2.11",
+      "note": "Second-order Taylor is supported by the source curvature/cabbeling discussion as well as its first-order EOS approximation."
+    },
+    {
+      "source": "sysbio-4.8",
+      "target": "thermo-4.15",
+      "note": "The general Gibbs-equilibrium criterion is used. The target ideal-gas quotient is not the aqueous concentration formula."
+    },
+    {
+      "source": "popgen-3.6",
+      "target": "prob-3.7.2a",
+      "note": "Poisson arrivals are the model implemented by branch counts and conditional uniform times, not a conclusion from mean rate alone."
+    }
+  ],
+  "currentCounts": [
+    {
+      "collection": "astro",
+      "qualifyingEdges": 16
+    },
+    {
+      "collection": "geo",
+      "qualifyingEdges": 25
+    },
+    {
+      "collection": "climate",
+      "qualifyingEdges": 25
+    },
+    {
+      "collection": "geog",
+      "qualifyingEdges": 25
+    },
+    {
+      "collection": "popgen",
+      "qualifyingEdges": 25
+    },
+    {
+      "collection": "neuro",
+      "qualifyingEdges": 19
+    },
+    {
+      "collection": "bioinf",
+      "qualifyingEdges": 25
+    },
+    {
+      "collection": "sysbio",
+      "qualifyingEdges": 11
+    }
+  ],
+  "metadataEditsMadeByPeer": "None in Climate-owned content; recommendations were coordinated and implemented by its owner. Separate reciprocal peer correction moved my CPLX four-color comparison dependency to see."
+}

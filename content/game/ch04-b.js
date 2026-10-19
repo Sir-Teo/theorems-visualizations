@@ -31,23 +31,25 @@ function centipedePlay(n, a, b) {
 }
 const centiPay = (m) => (m % 2 === 1 ? [cBig(m), cSmall(m)] : [cSmall(m), cBig(m)]);
 
+export const continuousThresholdAcceptance = (x, mu, sigma, erf) => 0.5 * (1 + erf((x - mu) / (sigma * Math.SQRT2)));
+
 // ---------------------------------------------------------------- chain store (reputation) helpers
 const EQ = 1e-9;
 /** Entrant enters with probability e; the weak monopolist fights an entrant with probability s. k = towns left, p = belief "tough". */
-function chainStrat(k, p) {
+export function chainStrat(k, p) {
   const thr = 2 ** -k;
   if (p > thr * (1 + EQ)) { if (k === 1) return { e: 0, s: 0 }; const q = Math.min(1, p * 2 ** (k - 1)); return { e: 0, s: (q - p) / (1 - p) }; }
   if (p < thr * (1 - EQ)) { const q = Math.min(1, p * 2 ** (k - 1)); return { e: 1, s: (q - p) / (1 - p) }; }
   return { e: 1 / 3, s: (0.5 - p) / (1 - p) };
 }
-function chainValue(k, p) {
+export function chainValue(k, p) {
   if (k === 0) return 0;
   const { e, s } = chainStrat(k, p), q = p + (1 - p) * s;
   const out = 5 + chainValue(k - 1, p), acc = 2 + 2 * (k - 1), fight = q > 0 ? chainValue(k - 1, p / q) : 0;
   return (1 - e) * out + e * (s * fight + (1 - s) * acc);
 }
 /** For a weak monopolist: probability that town t (1..K) is entered, in equilibrium, plus expected payoff. */
-function chainEntry(K, p0) {
+export function chainEntry(K, p0) {
   const ent = new Array(K + 1).fill(0), fightP = new Array(K + 1).fill(0);
   const go = (k, p, mass) => {
     if (k === 0 || mass < 1e-15) return;
@@ -72,14 +74,13 @@ export default {
       name: 'Centipede game',
       statement: String.raw`Two players move in turn, starting with player 1. At each of $n$ nodes the mover can **take**, ending the game with the larger pile for herself and the smaller for her partner, or **pass**, which doubles both piles and hands the move over. If every node is passed the game ends with the piles after the last doubling. At every node, taking gives the mover more than she would get if the partner took at the next node, so backward induction (game-4.2) says: the first player takes at once, and the pair ends with a tiny payoff, although they would both be far better off if the game went to the end.`,
       idea: String.raw`At the last node taking beats passing; knowing this, the player before her also takes, since passing would only give her the smaller pile; and so on to the root. Every step is a correct application of the rule, yet the result is that two people who could split a large pot settle for crumbs. The conclusion rests on common knowledge that everyone reasons all the way down; if a player thinks the other might pass, passing becomes attractive. In laboratory versions people commonly pass for several rounds, which is why the game is called a paradox.`,
-      caption: String.raw`A centipede with $n$ nodes (blue = player 1, orange = player 2; the pair below a node is what the game gives if the mover takes there). The right grid assumes **level-$k$ reasoners**: level 0 always passes, level $k$ best-responds to a level $k-1$ opponent. Each cell shows where the game stops when player 1 has the row level and player 2 the column level. Drag the sliders or click the grid; a player 1 who reasons deeply (bottom rows) ends the game at node 1, while shallow reasoners let it run on. This is a model of reasoning, not experimental data.`,
+      caption: String.raw`A centipede with $n$ nodes (blue = player 1, orange = player 2; the pair below a node is what the game gives if the mover takes there). The right grid assumes **level-$k$ reasoners**: level 0 always passes, level $k$ best-responds to a level $k-1$ opponent. Each cell shows where the game stops when player 1 has the row level and player 2 the column level. Drag the sliders or click the grid; when both reasoning levels are sufficiently high the game ends at node 1, while other level pairs can let it run on. This is a model of reasoning, not experimental data.`,
       credit: 'Rosenthal, 1981 (laboratory version: McKelvey & Palfrey, 1992)',
       scope: String.raw`Payoffs here: taking at node $m$ gives the mover $4\cdot 2^{m-1}$ and the other player $2^{m-1}$ (arbitrary units), in the pattern of the McKelvey–Palfrey design.`,
       deps: ['game-4.2'],
       refs: ['MSZ §7.2'],
       tags: ['paradox', 'backward induction', 'common knowledge'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Centipede_game' },
-      verify: true,
       viz(v) {
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.35, title: 'the centipede' });
         const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.8, equal: true, title: 'where play stops, by reasoning level' });
@@ -133,15 +134,14 @@ export default {
       num: '4.7',
       kind: 'Model',
       name: 'Ultimatum game',
-      statement: String.raw`A proposer divides a pie of size $10$ and offers the responder an integer share $x\in\{0,\dots,10\}$; the responder accepts (payoffs $10-x$ and $x$) or rejects (both get $0$). If the responder simply maximises her own money and accepts any $x\ge 0$, backward induction (game-4.2) gives the subgame perfect equilibrium $x=0$ (with the tie broken in favour of accepting; offering the smallest positive amount is the other equilibrium if she rejects $0$): the proposer takes everything. More generally if the responder accepts exactly the offers at least $m$, the best offer is $m$, and if responders differ the proposer picks the offer maximising $(10-x)\,F(x)$, where $F(x)$ is the fraction who would accept $x$.`,
+      statement: String.raw`A proposer divides a pie of size $10$ and offers the responder an integer share $x\in\{0,\dots,10\}$; the responder accepts (payoffs $10-x$ and $x$) or rejects (both get $0$). If the responder simply maximises her own money and accepts any $x\ge 0$, backward induction (game-4.2) gives the subgame perfect equilibrium $x=0$ (with the tie broken in favour of accepting; offering the smallest positive amount is the other pure equilibrium if she rejects $0$): the proposer takes everything. More generally if the responder accepts exactly the offers at least $m$, the best offer is $m$, and if responders differ the proposer picks the offer maximising $(10-x)\,F(x)$, where $F(x)$ is the fraction who would accept $x$.`,
       idea: String.raw`The responder’s decision is the last move, so it is solved first: accept if and only if her payoff from accepting beats $0$, with her own notion of payoff. The proposer then faces a fixed acceptance rule and just maximises. Everything depends on the responder’s utility. If it is pure money, almost nothing is offered; if she dislikes getting less than the proposer (inequity aversion, as in Fehr and Schmidt’s model), the threshold rises toward an even split, and a proposer who is only selfish is then forced to offer a lot. The theory predicts nothing without a model of preferences.`,
-      caption: String.raw`Left: the proposer’s expected payoff for each offer. Right: the probability that an offer is accepted. Choose how responders decide: money-maximising, a fixed threshold, a population with scattered thresholds (normal with mean $\mu$ and spread $\sigma$), or inequity-averse responders with envy weight $\alpha$ (accept $x$ iff $x-\alpha\max(10-2x,0)\ge 0$). The gold bar is the best offer. The thresholds are model inputs, not data.`,
+      caption: String.raw`Left: the proposer’s expected payoff for each offer. Right: the probability that an offer is accepted. Choose how responders decide: money-maximising, a fixed threshold, a population with scattered thresholds (normal with mean $\mu$ and spread $\sigma$), or inequity-averse responders with envy weight $\alpha$ and advantageous-inequality weight $\beta=0$ (accept $x$ iff $x-\alpha\max(10-2x,0)\ge 0$). The gold bar is the best offer. The thresholds are model inputs, not data.`,
       credit: 'Güth, Schmittberger & Schwarze, 1982 (experiment); Fehr & Schmidt, 1999 (inequity aversion)',
       deps: ['game-4.4'],
       refs: ['Osborne §6.1'],
       tags: ['bargaining', 'fairness', 'subgame perfection'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ultimatum_game' },
-      verify: true,
       viz(v) {
         const L = v.stage({ x: [-0.6, 10.6], y: [0, 10.5], axes: 'box', gutter: true, height: 320, xlabel: 'offer $x$ to the responder', ylabel: 'proposer’s expected payoff', xticks: idx(11), title: 'what each offer is worth to the proposer' });
         const R = v.stage({ x: [-0.6, 10.6], y: [0, 1.05], axes: 'box', gutter: true, height: 320, weight: 0.8, xlabel: 'offer $x$', ylabel: 'probability of acceptance', xticks: idx(11), title: 'acceptance rule' });
@@ -155,7 +155,7 @@ export default {
           switch (mode.value) {
             case 'spe': return 1;
             case 'thr': return x >= mu.value - 1e-9 ? 1 : 0;
-            case 'pop': return 0.5 * (1 + v.M.erf((x + 0.5 - mu.value) / (sg.value * Math.SQRT2)));   // threshold ~ N(mu, sigma), accepts x if threshold <= x + 1/2
+            case 'pop': return continuousThresholdAcceptance(x, mu.value, sg.value, v.M.erf);   // continuous threshold ~ N(mu, sigma), accepts x if threshold <= x
             default: return x - al.value * Math.max(10 - 2 * x, 0) >= -1e-9 ? 1 : 0;
           }
         };
@@ -173,7 +173,7 @@ export default {
         v.readout(() => {
           const { E, best, bx } = info;
           const bests = idx(11).filter((x) => Math.abs(E[x] - best) < 1e-9);
-          return `best offer: $x=${bests.join(' \\text{ or } ')}$; the proposer expects ${v.fix(best, 2)} and the responder ${v.fix(bests[0] * info.F[bests[0]], 2)}\nmoney-maximising responders (the subgame perfect prediction) get $0$ and the proposer keeps the whole pie, $10$`;
+          return `best offer: $x=${bests.join(' \\text{ or } ')}$; the proposer expects ${v.fix(best, 2)} and the responder ${v.fix(bests[0] * info.F[bests[0]], 2)}\nwith the displayed accept-at-zero tie rule, money-maximising responders get $0$ and the proposer keeps $10$`;
         });
       },
     },
@@ -230,11 +230,10 @@ export default {
       idea: String.raw`Information sets are the tree’s way of saying “I cannot tell these histories apart”. They destroy backward induction in the form of game-4.2, since a mover at a set cannot condition on the node. A behaviour strategy needs one probability per action per information set, far fewer numbers than a mixed strategy over exponentially many pure strategies; Kuhn’s theorem (game-4.10) says that under perfect recall nothing is lost by using them. Every simultaneous game is an imperfect-information game: the second mover’s two nodes form one information set.`,
       caption: String.raw`Pick a game and set the behaviour strategies with the sliders (each is the probability of the first listed action at the information set of that letter). Dashed bars join nodes of one information set. Edge labels show the probabilities you chose, grey numbers under the leaves the probability of reaching them. In the poker game, the button “equilibrium” sets the strategies that make both players indifferent; try deviating from them and watch the value move.`,
       credit: 'Kuhn, 1950–53',
-      deps: ['game-4.1', 'game-2.1'],
+      deps: ['game-4.1', 'game-2.1', 'prob-2.1.1a'],
       refs: ['MSZ §6.1', 'Osborne §10.1'],
       tags: ['information set', 'behaviour strategy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Information_set_(game_theory)' },
-      verify: true,
       viz(v) {
         const MK = {
           mp: () => dec(1, [['Heads', dec(2, [['Heads', leaf(1, -1)], ['Tails', leaf(-1, 1)]], 'B')], ['Tails', dec(2, [['Heads', leaf(-1, 1)], ['Tails', leaf(1, -1)]], 'B')]], 'A'),
@@ -273,15 +272,14 @@ export default {
       kind: 'Theorem',
       name: 'Kuhn’s theorem: behaviour and mixed strategies under perfect recall',
       statement: String.raw`In a finite extensive game in which a player has **perfect recall**, every mixed strategy of that player is **outcome-equivalent** to a behaviour strategy: whatever the others do, both induce the same probability distribution over leaves. Conversely every behaviour strategy is equivalent to a mixed one. Hence in games of perfect recall one may restrict to behaviour strategies without changing the set of achievable outcome distributions or the equilibria payoffs. Without perfect recall this fails.`,
-      idea: String.raw`Given a mixed strategy $\mu$, define the behaviour probability of action $a$ at an information set $I$ as the probability, under $\mu$, of choosing $a$ conditional on the player’s own earlier choices on the way to $I$ (the same for every node of $I$, by perfect recall). Because the player’s own choices on the path to a leaf are independent coordinates of a pure strategy, the probability of a leaf under $\mu$ factorises into these conditional probabilities times the others’ moves and nature’s, which is exactly the behaviour-strategy probability. With imperfect recall, as for the absent-minded driver, one information set contains two nodes on the same path and the factorisation breaks.`,
-      caption: String.raw`Left, “perfect recall”: player 1 mixes over her 16 pure strategies with random weights (re-roll with the button, or change how concentrated they are). Kuhn’s formula turns the mixture into probabilities on player 1’s edges (shown: the probability of the first action, $a$ or $U$, at each of her information sets, and of the second one on the other edge). The bars compare the leaf distribution of the original mixture with the distribution of the behaviour strategy, and they agree to machine precision. Right, “absent-minded driver”: exit at the first or second junction without remembering which. Mixed strategies give at most payoff $1$, behaviour strategies reach $4/3$ at $p=2/3$.`,
-      credit: 'Kuhn, 1953 (absent-minded driver: Piccione & Rubinstein, 1997)',
+      idea: String.raw`Given a mixed strategy $\mu$, define the behaviour probability of action $a$ at an information set $I$ as the probability, under $\mu$, of choosing $a$ conditional on the player’s own earlier choices on the way to $I$ (the same for every node of $I$, by perfect recall). The chain rule for conditional probabilities factorises the probability of a player’s own action sequence under $\mu$; multiplying by the others’ moves and nature’s gives exactly the behaviour-strategy leaf probability. The coordinates of a mixed strategy can be correlated: independence of the original choices is not assumed. With imperfect recall, as for the absent-minded driver, one information set contains two nodes on the same path and the factorisation breaks.`,
+      caption: String.raw`Choose “perfect recall”: player 1 mixes over her 16 pure strategies with random weights (re-roll with the button, or change how concentrated they are). Kuhn’s formula turns the mixture into probabilities on player 1’s edges (shown: the probability of the first action, $a$ or $U$, at each of her information sets, and of the second one on the other edge). The bars compare the leaf distribution of the original mixture with the distribution of the behaviour strategy, and they agree to machine precision. Choose “absent-minded driver”: exit at the first or second junction without remembering which. Mixed strategies give at most payoff $1$, behaviour strategies reach $4/3$ at $p=2/3$.`,
+      credit: 'Kuhn, 1950–53; Aumann, 1964 (proof); absent-minded driver: Piccione & Rubinstein, 1997',
       scope: String.raw`Finite games with perfect recall; the theorem concerns one player’s strategies at a time and holds for any behaviour of the others.`,
-      deps: ['game-4.9'],
+      deps: ['game-4.9', 'stat-2.1'],
       refs: ['MSZ §6.2'],
       tags: ['perfect recall', 'behaviour strategy'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perfect_recall_(game_theory)' },
-      verify: true,
       viz(v) {
         const mkPR = () => dec(1, [
           ['U', dec(2, [['l', dec(1, [['a', leaf(3, -3)], ['b', leaf(0, 0)]], 'B')], ['r', dec(1, [['a', leaf(1, -1)], ['b', leaf(4, -4)]], 'C')]], 'X')],
@@ -305,6 +303,7 @@ export default {
         v.render(() => {
           const vw = treeView(P); T.setView(vw.x, vw.y);
           if (mode === 'pr') {
+            B.setTitle('outcome distributions');
             const others = { X: [q2.value, 1 - q2.value], Y: [q3.value, 1 - q3.value] };
             const beh = kuhnBehaviour(P, 1, S, mu), bAll = { ...others, ...beh };
             const mixOut = mixedOutcome(P, 1, S, mu, others), behOut = P.leaves.map((l) => playBeh(P, bAll).leafP.get(l) || 0);
@@ -317,6 +316,7 @@ export default {
             B.setTicks(P.leaves.map((l, j) => [j + 1, `${l.u[0]}`]), null); B.setLabels('leaf (payoff to player 1)', 'probability');
             info = { diff: Math.max(...mixOut.map((x, j) => Math.abs(x - behOut[j]))), support: mu.filter((x) => x > 0.01).length, u: playBeh(P, bAll).u[0] };
           } else {
+            B.setTitle('expected payoff');
             const p = pd.value, beh = { D: [1 - p, p] }, r = playBeh(P, beh);
             drawTree(T, P, { edgeLabel: (e) => `${e.a} ${v.fix(beh.D[e.a === 'exit' ? 0 : 1], 2)}`, nodeTag: (n) => (n.p ? 'driver · D' : null), size: 12 });
             B.setView([0, 1], [0, 1.6]); B.setTicks(null, null); B.setLabels('probability $p$ of continuing', 'expected payoff');

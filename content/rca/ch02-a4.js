@@ -111,7 +111,7 @@ export default {
       num: '2.20',
       kind: 'Theorem',
       name: 'Existence and properties of Lebesgue measure',
-      credit: 'Lebesgue, 1902',
+      credit: 'Lebesgue, 1901–1902',
       statement: String.raw`There is a positive complete measure $m$ on a $\sigma$-algebra $\mathfrak M$ in $\R^k$ such that:
 (a) $m(W)=\operatorname{vol}(W)$ for every $k$-cell $W$;
 (b) $\mathfrak M$ contains all Borel sets: in fact $E\in\mathfrak M$ exactly when there are an $F_\sigma$ set $A$ and a $G_\delta$ set $B$ with $A\subset E\subset B$ and $m(B-A)=0$; and $m$ is regular;
@@ -175,7 +175,7 @@ export default {
       caption: String.raw`The Cantor set at stage $n$: $2^n$ closed intervals of total length $(2/3)^n$, which tends to $0$. The gold points form an arbitrary subset of $C$ (resample it). By completeness every such subset is Lebesgue measurable with measure $0$, no matter how wild it is.`,
       deps: ['rca-2.20', 'rca-1.36'],
       tags: ['Lebesgue measure', 'completeness', 'Cantor set'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 2.20 and Remarks 2.21, pp. 52–53'],
       viz(v) {
         const M = v.M;
         const lev = v.slider('stage $n$', 0, 9, 4, { int: true });
@@ -290,7 +290,7 @@ $$m(T(E))=|\det T|\,m(E).$$`,
       deps: ['rca-2.20'],
       see: ['pma-10.9', 'rca-7.26'],
       tags: ['Lebesgue measure', 'determinant'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 2.23, pp. 54–55'],
       viz(v) {
         const M = v.M;
         const shape = v.select('$E$', [{ value: 'blob', label: 'blob' }, { value: 'disc', label: 'disc' }, { value: 'L', label: 'L-shape' }], 'blob');

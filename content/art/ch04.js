@@ -24,18 +24,17 @@ export default {
       num: '4.1',
       kind: 'Concept',
       name: 'Cone fundamentals: L, M and S',
-      credit: 'Stockman & Sharpe, 2000 (standard fundamentals); here the Hunt–Pointer–Estévez matrix applied to the CIE 1931 fit',
+      credit: 'Stockman & Sharpe 2000, §§1.1–1.2 and Appendix A (measured fundamentals and linear color matching); Wyman et al. 2013 Eq. 4 (XYZ approximation); fixed approximate LMS transform shown here',
       statement: String.raw`Under daylight the retina has three kinds of cone, with long-, medium- and short-wavelength sensitivity curves $\bar l(\lambda),\bar m(\lambda),\bar s(\lambda)$ (the cone fundamentals). A light with spectrum $S(\lambda)$ excites them by
 $$q_L=\int S\,\bar l\,d\lambda,\qquad q_M=\int S\,\bar m\,d\lambda,\qquad q_S=\int S\,\bar s\,d\lambda ,$$
-and these three numbers are everything the cones report about the light. The $L$ and $M$ curves overlap heavily; the $S$ curve peaks far to the blue and is much less sensitive.`,
+and these three numbers are everything the cones report about the light. The $L$ and $M$ curves overlap heavily; the $S$ curve peaks far to the blue. Absolute relative gains depend on the normalization: the plotted curves each peak at 1.`,
       idea: String.raw`Each cone pigment absorbs photons with a wavelength-dependent probability and then outputs a single number, the rate of absorptions, whatever the wavelength that caused it (the principle of univariance). So a cone cannot tell a dim light at its best wavelength from a bright light at a worse one, and a spectrum is reduced to three integrals against fixed curves (the dot product of $S$ with each fundamental). Everything in the rest of the chapter is linear algebra on those three numbers.`,
       caption: String.raw`The coloured curves are the three cone fundamentals (peak-normalised); the gold curve is the light. Choose the light and drag its centre and bandwidth. The shaded area is the product $S\cdot\bar c$ of the light with the cone you select, whose integral is the response in the bar chart (relative to an equal-energy light, which reads 1, 1, 1). Notice that a very narrow band excites the $L$ and $M$ cones in a ratio that depends only on its wavelength, which is how the brain can read hue from a ratio.`,
-      deps: ['art-3.2'],
+      deps: ['art-3.2', 'ladr-3.1'],
       refs: ['Fairchild ch. 1'],
       tags: ['cones', 'vision', 'spectrum'],
-      scope: String.raw`These are not the measured Stockman–Sharpe fundamentals: they are the CIE 1931 colour-matching functions (the analytic fit of Wyman, Sloan & Shirley) mapped to cone space by the Hunt–Pointer–Estévez matrix, which is a common textbook approximation. Its $S$ curve is too broad and the $L$ curve peaks at a different wavelength from the modern fundamentals. Values hold for the 2° foveal field in photopic light.`,
+      scope: String.raw`These are not the measured Stockman–Sharpe fundamentals: they are the CIE 1931 colour-matching functions (the analytic fit of Wyman, Sloan & Shirley) mapped to cone space by the Hunt–Pointer–Estévez matrix, which is a common textbook approximation. Its $S$ curve is too broad and the $L$ curve peaks at a different wavelength from the modern fundamentals. This is an illustrative linear transform for photopic 2° color matching, not a measurement of cone sensitivities. Tiny negative short-wave lobes of the approximation are numerical artifacts; physical spectral sensitivity is nonnegative.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/LMS_color_space' },
-      verify: true,
       viz(v) {
         const src = v.select('light', [{ value: 'bump', label: 'broad band' }, { value: 'mono', label: 'narrow band' }, { value: 'eq', label: 'equal energy' }, { value: 'tung', label: 'incandescent' }], 'bump');
         const lam = v.slider('centre wavelength (nm)', 400, 700, 540, { step: 1 });
@@ -75,12 +74,11 @@ and these three numbers are everything the cones report about the light. The $L$
       num: '4.2',
       kind: 'Principle',
       name: 'Trichromacy (Young–Helmholtz)',
-      credit: 'Thomas Young, 1802 (hypothesis); developed by Helmholtz and Maxwell in the 1850s',
-      verify: true,
-      statement: String.raw`For a normal observer at photopic levels, any light can be matched in colour by a mixture of three fixed lights (primaries) in suitable amounts, provided that an amount may be negative, meaning that the primary is added to the light being matched. Three primaries suffice, and two never do: the set of colours is three-dimensional, and the primaries must be linearly independent (none matched by a mixture of the other two).`,
-      idea: String.raw`Because the eye keeps only the three cone responses (art-4.1), two lights match exactly when their $(L,M,S)$ triples agree. A mixture of primaries has response $a_1\mathbf p_1+a_2\mathbf p_2+a_3\mathbf p_3$ where $\mathbf p_i$ is the cone-response triple of primary $i$, so matching a test with response $\mathbf t$ is the linear system $P\mathbf a=\mathbf t$. It has a unique solution for independent primaries; with only two primaries the system has more equations than unknowns and fails except on a plane of tests.`,
-      caption: String.raw`A split field: the test light on the left (a narrow band of the chosen wavelength, with optional white added) and the primaries 700, 546.1 and 435.8 nm on the right. Adjust the three amounts until the halves agree, or press Match. With three primaries you can always get zero residual (sometimes with a negative amount: the field then shows the primary moved to the left, onto the test); reduce the number of primaries to two or one and a good match is no longer possible.`,
-      deps: ['art-4.1'],
+      credit: 'J. Clerk Maxwell, 1860, On the Theory of Compound Colours, §§III–IV; modern cone/CMF relation: Stockman & Sharpe 2000, §1.2',
+      statement: String.raw`For a normal observer at photopic levels, any light can be matched in colour by a mixture of three fixed lights (primaries) in suitable amounts, provided that an amount may be negative, meaning that the primary is added to the light being matched. Three independent primaries suffice for the full space; two span only a plane and cannot match arbitrary tests: the set of colours is three-dimensional, and the primaries must be linearly independent (none matched by a mixture of the other two).`,
+      idea: String.raw`Because the eye keeps only the three cone responses (art-4.1), two lights match exactly when their $(L,M,S)$ triples agree. A mixture of primaries has response $a_1\mathbf p_1+a_2\mathbf p_2+a_3\mathbf p_3$ where $\mathbf p_i$ is the cone-response triple of primary $i$, so matching a test with response $\mathbf t$ is the linear system $P\mathbf a=\mathbf t$. Invertibility (ladr-3.63) gives a unique solution for independent primaries; with only two primaries the system has more equations than unknowns and fails except on a plane of tests.`,
+      caption: String.raw`A split field: the test light on the left (a narrow band of the chosen wavelength, with optional white added) and the primaries 700, 546.1 and 435.8 nm on the right. Adjust the three amounts until the halves agree, or press Match. With three primaries you can always get zero residual (sometimes with a negative amount: the field then shows the primary moved to the left, onto the test); reduce the number of primaries to two or one and a generic target no longer has an exact match (targets within the reduced span can still match).`,
+      deps: ['art-4.1', 'ladr-3.63'],
       refs: ['Fairchild ch. 1'],
       tags: ['trichromacy', 'colour matching'],
       scope: String.raw`Holds for a normal trichromat in a small foveal field at fixed adaptation. The matches are computed from the CIE 1931 fit, not measured. The shown colours are mapped to sRGB, which cannot display saturated lights; they are desaturated for display, but the residual is computed on the true values.`,
@@ -122,7 +120,7 @@ and these three numbers are everything the cones report about the light. The $L$
           info = { rel: d / tn, neg: am.slice(0, n).some((s) => s.value < -1e-6) };
         });
         v.legend([['green', 'green primary'], ['red', 'red primary'], ['accent', 'blue primary']]);
-        v.readout(() => `residual cone-response difference between the halves: ${v.fix(100 * info.rel, 2)}% of the test response${info.rel < 0.005 ? ' (a match)' : nP.value < 3 ? ' (with fewer than three primaries no setting removes it)' : ''}${info.neg ? '\na negative amount means that primary is added to the test half' : ''}`);
+        v.readout(() => `residual cone-response difference between the halves: ${v.fix(100 * info.rel, 2)}% of the test response${info.rel < 0.005 ? ' (a match)' : nP.value < 3 ? ' (try Match for the best fit in the chosen primary span)' : ''}${info.neg ? '\na negative amount means that primary is added to the test half' : ''}`);
       },
     },
     // ------------------------------------------------------------------ 4.3
@@ -135,7 +133,7 @@ $$\int I_a R_1\,\bar c_k\,d\lambda=\int I_a R_2\,\bar c_k\,d\lambda\quad(k=1,2,3
 for illuminant $I_a$, it does not follow that the same holds for another illuminant $I_b$. The difference $R_1-R_2$ lies in the kernel of the map spectrum $\to$ colour for $I_a$, but that kernel changes with the illuminant.`,
       idea: String.raw`The map from reflectance spectra to colour is a linear map to $\mathbb R^3$ (art-4.2), whose kernel is huge (infinite-dimensional), so there are always many metamers. The kernel depends on the weights $I(\lambda)\bar c_k(\lambda)$, so it moves when the illuminant does. In the demonstration the second spectrum is the first plus an oscillation that has zero integral against the three weights of daylight; under another lamp the weights are different and the oscillation no longer cancels.`,
       caption: String.raw`Two paint samples that match under daylight (the oscillation is built to be invisible to the daylight weights). Change the lamp and watch the swatches separate; the number is the distance in the $u'v'$ chromaticity plane. Increase the mismatch strength to enlarge the spectral difference. The three-band fluorescent lamp and the sodium-like peaks show how strongly the result depends on where the lamp has energy. “Eye adapts” rescales each lamp’s white to daylight white.`,
-      deps: ['art-4.2'],
+      deps: ['art-4.2', 'ladr-3.15'],
       refs: ['Fairchild ch. 3'],
       tags: ['metamerism', 'spectrum'],
       scope: String.raw`The daylight is a $6504$ K black body (a crude stand-in for the CIE D65 spectrum), the other lamps are models (incandescent: $2856$ K black body; LED and fluorescent: generic shapes). The reflectances are smooth invented curves. The standard observer is the CIE 1931 fit; individual observers differ and see observer metamerism too.`,
@@ -182,12 +180,12 @@ for illuminant $I_a$, it does not follow that the same holds for another illumin
       num: '4.4',
       kind: 'Law',
       name: 'Grassmann’s laws of colour mixture',
-      credit: 'Hermann Grassmann, 1853',
+      credit: 'Hermann Grassmann 1853, complete 1854 English translation pp254–264; modern linear formulation derived from matching/cone responses',
       statement: String.raw`Write $A\sim B$ when two lights look identical in a matching field, and $A\oplus C$ for the light made by superposing $A$ and $C$. At fixed adaptation and moderate intensities, matching is compatible with mixing and scaling:
 (a) **proportionality:** if $A\sim B$ then $kA\sim kB$ for every $k>0$;
 (b) **additivity:** if $A\sim B$ then $A\oplus C\sim B\oplus C$ for every light $C$;
 (c) matching is symmetric and transitive, so it is an equivalence relation.
-Hence colours form a three-dimensional convex cone: a match is an equality of three linear functionals of the spectrum.`,
+Together with normal trichromacy, these properties represent colors as a three-dimensional convex cone: a match is an equality of three linear functionals of the spectrum.`,
       idea: String.raw`Absorbed photons add, so the cone responses $L,M,S$ of a superposition are the sums of the responses (art-4.1), and a match is equality of the triples. Proportionality and additivity then say that $(L,M,S)$ is linear in the light, which is true up to the nonlinearities of later vision (adaptation, saturation at high intensity). That linearity is what allows colour-matching functions (art-4.5) to be tabulated once and for all.`,
       caption: String.raw`Two lights match: the left is a smooth spectrum, the right a different spectrum built to give the same $XYZ$. Choose an operation to apply: add the same light $C$ (a narrow band you can tune) to both halves, scale both, or the “unfair” variants that add or scale on one side only. The difference in $XYZ$ stays zero for the legal operations and becomes visible for the unfair ones.`,
       deps: ['art-4.2', 'art-3.5'],
@@ -195,7 +193,6 @@ Hence colours form a three-dimensional convex cone: a match is an equality of th
       tags: ['Grassmann', 'linearity', 'colour mixing'],
       scope: String.raw`Valid for lights in a small foveal field at constant adaptation; it fails at very high intensities (bleaching), for large or long-lasting fields, and wherever the eye’s state changes between the two fields. The numerical check uses the CIE 1931 fit; the spectra are models.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Grassmann%27s_laws_(color_science)' },
-      verify: true,
       viz(v) {
         const n = metamerNull(() => 1, v.M.nullspace);
         const cen = v.slider('left light: bump centre (nm)', 450, 650, 560, { step: 1 });
@@ -232,13 +229,12 @@ Hence colours form a three-dimensional convex cone: a match is an equality of th
       kind: 'Method',
       name: 'Colour-matching functions',
       credit: 'Experiments of W. D. Wright (1928) and J. Guild (1932); CIE RGB primaries 700, 546.1 and 435.8 nm',
-      verify: true,
       statement: String.raw`Fix three primary lights. For each wavelength $\lambda$ let $\bar r(\lambda),\bar g(\lambda),\bar b(\lambda)$ be the amounts of the primaries that match a unit of monochromatic light at $\lambda$ (negative amounts are added to the test). By Grassmann’s laws (art-4.4), the match of any light $S(\lambda)$ then needs the amounts
 $$R=\int S\,\bar r\,d\lambda,\quad G=\int S\,\bar g\,d\lambda,\quad B=\int S\,\bar b\,d\lambda ,$$
 so three functions of $\lambda$ describe every colour match. The functions depend on the chosen primaries by a $3\times3$ linear change.`,
-      idea: String.raw`A general light is a superposition of monochromatic lights, so by additivity and proportionality its match is the same superposition of the monochromatic matches; the integrals follow. The negative lobe of $\bar r$ between about 440 and 550 nm is not strange physics: no real mixture of a single red, green and blue primary reaches the saturation of a spectral blue-green, so the red primary must be added to the test field to desaturate it.`,
+      idea: String.raw`A general light is a superposition of monochromatic lights, so by additivity and proportionality its match is the same superposition of the monochromatic matches; the integrals follow; a change of primary basis is the matrix change described by ladr-3.84. The negative lobe of $\bar r$ between about 440 and 550 nm is not strange physics: no real mixture of a single red, green and blue primary reaches the saturation of a spectral blue-green, so the red primary must be added to the test field to desaturate it.`,
       caption: String.raw`Slide the test wavelength. The right panel shows the amounts of the three primaries; a bar below zero means that primary goes to the test side. In the field, the test is shown alone, with the negative primary added, and as the positive mixture, the last two being the same colour. Change the primaries to see that the curves change but remain related by a linear map; for primaries bunched together the negative lobes become enormous.`,
-      deps: ['art-4.4'],
+      deps: ['art-4.4', 'ladr-3.84'],
       refs: ['Fairchild ch. 3'],
       tags: ['colour matching', 'CIE'],
       scope: String.raw`The curves here are not the Wright and Guild measurements: they are the CIE 1931 analytic fit (art-4.6) converted to the chosen primaries by the exact linear change. The unit of each primary is scaled so that the equal-energy stimulus needs equal amounts of all three, the CIE RGB convention. Standard 2° observer.`,
@@ -329,7 +325,7 @@ $$x=\frac{X}{X+Y+Z},\qquad y=\frac{Y}{X+Y+Z},\qquad z=1-x-y ,$$
 which forget the overall intensity and keep the colour quality. The monochromatic lights trace the horseshoe-shaped **spectral locus**; the straight **line of purples** joins its two ends; every real light has its chromaticity inside the region they enclose. The point $(x,y)=(\tfrac13,\tfrac13)$ is the equal-energy white.`,
       idea: String.raw`Because $(X,Y,Z)$ is positive and linear in the spectrum (art-4.6), a spectrum is a positive combination of monochromatic lights, so its chromaticity is an average of locus points and cannot leave the locus’s convex hull. The projection divides by a positive sum, so scaling a light does not move its point (proportionality, art-4.4): the diagram is the plane of colours with brightness divided out, and the third coordinate $Y$ (luminance) is the one dropped.`,
       caption: String.raw`Build a spectrum from one or two bands, drag the sliders, and watch its point move inside the horseshoe. A single narrow band sits on the locus; widening it or adding a second band pulls the point inward toward white, and two bands far apart land on the purple side. The brightness slider changes $Y$ but not the point. The dashed ray is the line from white through the point to the locus, whose wavelength is the dominant wavelength.`,
-      deps: ['art-4.6'],
+      deps: ['art-4.6', 'opt-2.1'],
       refs: ['Fairchild ch. 3'],
       tags: ['chromaticity', 'CIE 1931'],
       scope: String.raw`Standard 2° observer, analytic fit of the matching functions; the locus is drawn from 420 to 700 nm. Colours inside the diagram are shown as they would appear after mapping into sRGB, so the saturated ones are only approximate.`,

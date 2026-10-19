@@ -180,11 +180,12 @@ export default {
   items: [
     // ================================================================== 2.1 Matching in bipartite graphs
     {
-      num: '2.1.1a', kind: 'Definition', name: 'Matchings and k-factors', verify: true,
+      num: '2.1.1a', kind: 'Definition', name: 'Matchings and k-factors',
       statement: String.raw`A **matching** in a graph $G=(V,E)$ is a set $M\subseteq E$ of independent edges (no two share an end). $M$ is a matching **of** $U\subseteq V$ if every vertex of $U$ lies on an edge of $M$; these vertices are **matched**, the others **unmatched**. A $k$-regular spanning subgraph of $G$ is a **$k$-factor**. So a subgraph $H\subseteq G$ is a **1-factor** exactly when $E(H)$ is a matching of all of $V$ (a *perfect matching*), and a 2-factor is a spanning union of disjoint cycles.`,
       idea: String.raw`A matching pairs off some vertices along edges; it can match at most $\lfloor |G|/2\rfloor$ vertex pairs, so a 1-factor needs $|G|$ even. A 1-factor is a matching that cannot be enlarged for the trivial reason that nothing is left unmatched, while a merely *maximal* matching may be far from maximum — which is why the chapter needs augmenting paths. A 2-factor is the next case: every vertex gets exactly two edges, so the factor falls apart into disjoint cycles covering $V$.`,
       caption: String.raw`Click edges to build a matching: an edge sharing an end with one already chosen is refused (it flashes red). Matched vertices fill in; the readout compares $|M|$ with the maximum. Switch to **2-factor** and pick edges so that every vertex gets degree exactly 2. The bow-tie has neither a 1-factor (odd order) nor a 2-factor (its centre has degree 4). Edit the graph: ${EDIT} (clicks on edges select them).`,
-      deps: ['graph-1.1.1c', 'graph-1.2.1a'], refs: ['Diestel §2.1'], tags: ['matching', 'factors'],
+      deps: ['graph-1.1.1c', 'graph-1.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., Chapter 2 introduction, p. 37'], tags: ['matching', 'factors'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const PRE = { cube: () => named('cube'), pet: () => named('petersen'), bow: () => ({ nodes: [{ id: 0, x: 0, y: 0 }, { id: 1, x: -1.2, y: 0.7 }, { id: 2, x: -1.2, y: -0.7 }, { id: 3, x: 1.2, y: 0.7 }, { id: 4, x: 1.2, y: -0.7 }], edges: [[0, 1], [0, 2], [1, 2], [0, 3], [0, 4], [3, 4]], layout: 'fit' }) };
         const pre = v.select('', [{ value: 'cube', label: 'cube' }, { value: 'pet', label: 'Petersen' }, { value: 'bow', label: 'bow-tie' }], 'cube', { onChange: () => load() });
@@ -238,11 +239,12 @@ export default {
       },
     },
     {
-      num: '2.1.1b', kind: 'Definition', name: 'Alternating and augmenting paths', verify: true,
+      num: '2.1.1b', kind: 'Definition', name: 'Alternating and augmenting paths',
       statement: String.raw`Let $G$ be bipartite with bipartition $\{A,B\}$ and $M$ a matching in $G$. A path that starts at an unmatched vertex of $A$ and then uses edges from $E\setminus M$ and from $M$ alternately is an **alternating path** with respect to $M$ (the trivial path is allowed). An alternating path that ends at an unmatched vertex of $B$ is an **augmenting path**: the symmetric difference $M\,\triangle\,E(P)$ is again a matching, with one edge more than $M$, matching both ends of $P$ in addition.`,
       idea: String.raw`Along an augmenting path the non-matching edges outnumber the matching edges by one, and at every inner vertex one $M$-edge is swapped for one non-$M$-edge, so $M\triangle E(P)$ is a matching with $|M|+1$ edges. Conversely, a matching that is not maximum always admits an augmenting path (Berge; Exercise 1), so repeated augmentation finds maximum matchings. In a general graph the same definitions make sense, but a breadth-first search for alternating paths can be misled by an odd cycle (a *blossom*) — Edmonds' algorithm shrinks such cycles and keeps searching.`,
       caption: String.raw`Bold blue edges form $M$. Step through the search from the free root: outer vertices are blue, inner ones orange, and the alternating tree is green. When a free vertex is reached, the augmenting path lights up and **Augment** flips it. Click an edge to put it in or out of $M$, click a free vertex to make it the root; shift-drag between vertices adds an edge, Alt-click deletes. On the blossom graph, switch **shrink blossoms** off: the bipartite-style search ignores the odd cycle and misses the augmenting path $r\,s\,a\,b\,c\,d\,e\,f$.`,
-      deps: ['graph-2.1.1a', 'graph-1.3.1a'], refs: ['Diestel §2.1'], tags: ['matching', 'augmenting paths', 'blossoms'],
+      deps: ['graph-2.1.1a', 'graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.1, p. 38; Exercise 1, p. 57'], tags: ['matching', 'augmenting paths', 'blossoms'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const PRE = {
           bip: { ...fixed({ a: [2.2, 5.6], b: [2.2, 4.0], c: [2.2, 2.4], d: [2.2, 0.8], w: [7.8, 5.6], x: [7.8, 4.0], y: [7.8, 2.4], z: [7.8, 0.8] }, 'bw aw ax cx cy dy dz'), M: ['aw', 'cx'], root: 'b' },
@@ -323,11 +325,12 @@ export default {
       },
     },
     {
-      num: '2.1.1c', kind: 'Definition', name: 'Vertex cover', verify: true,
+      num: '2.1.1c', kind: 'Definition', name: 'Vertex cover',
       statement: String.raw`A set $U\subseteq V$ is a (**vertex**) **cover** of the edges of $G=(V,E)$ if every edge of $G$ has at least one end in $U$.`,
       idea: String.raw`A cover and a matching are dual objects: each edge of a matching $M$ needs its own vertex of $U$, since the edges of $M$ are disjoint. So every cover has at least $|M|$ vertices, for every matching $M$: $\max|M|\le\min|U|$. König's theorem (2.1.1) says that for bipartite graphs the two numbers are equal; in a triangle they are not ($\nu=1$, $\tau=2$).`,
       caption: String.raw`Click vertices to put them into $U$ (filled purple). Edges with an end in $U$ turn green, uncovered edges stay red; once nothing is red, $U$ is a cover. **Minimum** finds a smallest cover by brute force; dashed blue edges are a maximum matching, and each of its edges visibly needs its own cover vertex. Compare the bipartite grid (where $\tau=\nu$) with the Petersen graph ($\tau=6>5=\nu$). Click empty space to add a vertex, shift-drag between vertices to add an edge, Alt-click to delete.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §2.1'], tags: ['vertex cover', 'duality'],
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.1, p. 39'], tags: ['vertex cover', 'duality'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const grid = () => { const g = v.graphs('grid', 3, 4); return { nodes: g.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: g.edges.map((e) => [e.from, e.to]), layout: 'fit' }; };
         const PRE = { grid, pet: () => named('petersen'), k4: () => named('complete', 5) };
@@ -492,11 +495,12 @@ export default {
       },
     },
     {
-      num: '2.1.3a', kind: 'Definition', name: 'Stable matchings', verify: true,
+      num: '2.1.3a', kind: 'Definition', name: 'Stable matchings',
       statement: String.raw`A family $(\le_v)_{v\in V}$ of linear orders, $\le_v$ on the set $E(v)$ of edges at $v$, is a set of **preferences** for $G$ ($e<_v f$: $v$ prefers $f$ to $e$). A matching $M$ in $G$ is **stable** if for every edge $e\in E\setminus M$ there is an edge $f\in M$ sharing a vertex $v$ with $e$ such that $e<_v f$. Equivalently, there is no **blocking** edge $e=ab\notin M$ whose two ends each are unmatched or prefer $e$ to their own matching edge.`,
       idea: String.raw`A blocking edge is an incentive to deviate: $a$ and $b$ would both rather be matched to each other, so they could drop their current partners and take $e$. Stability is a local, "no two vertices conspire" condition, quite different from maximality: a stable matching need not be maximum, and a maximum matching need not be stable.`,
       caption: String.raw`Each vertex lists its neighbours, favourite first (green = current partner, red = a blocking partner). Click edges to build a matching; edges already at a vertex are dropped automatically. Blocking edges are drawn in red. **Next stable** steps through the stable matchings, found by brute force over all matchings of $G$; **New preferences** reshuffles the lists.`,
-      deps: ['graph-2.1.1a'], see: ['game-7.3'], refs: ['Diestel §2.1'], tags: ['matching', 'stable marriage'],
+      deps: ['graph-2.1.1a'], see: ['game-7.3'], refs: ['Diestel, Graph Theory, 6th ed., §2.1, pp. 41–42'], tags: ['matching', 'stable marriage'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         let seed = 3, pref = {}, M = new Set(), stable = [], si = -1;
         const s = gstage(v, { height: 330 });
@@ -640,11 +644,12 @@ export default {
     },
     // ================================================================== 2.2 Matching in general graphs
     {
-      num: '2.2.1a', kind: 'Definition', name: 'Tutte’s condition and odd components', verify: true,
+      num: '2.2.1a', kind: 'Definition', name: 'Tutte’s condition and odd components',
       statement: String.raw`For a graph $G$ let $\mathcal C_G$ be the set of its components and $q(G)$ the number of its **odd components**, those of odd order. $G$ satisfies **Tutte's condition** if $q(G-S)\le|S|$ for every $S\subseteq V(G)$. A set $S$ with $q(G-S)>|S|$ is called **bad**.`,
       idea: String.raw`If $G$ has a 1-factor, every odd component $C$ of $G-S$ must send a factor edge to $S$ — its vertices cannot all be paired up inside $C$ — and distinct odd components use distinct vertices of $S$. So a 1-factor forces Tutte's condition; a bad set is a short certificate that no 1-factor exists. Taking $S=\emptyset$ already says that every component of $G$ must be even.`,
       caption: String.raw`Click vertices to put them into $S$ (gold). The components of $G-S$ are shaded: odd ones red, even ones blue, each labelled with its order. The readout compares $q(G-S)$ with $|S|$. With $S=\{s\}$ the default graph leaves three odd components behind one vertex, so it cannot have a 1-factor. Edit the graph: click empty space to add a vertex, shift-drag to add an edge, Alt-click to delete.`,
-      deps: ['graph-1.4.1a', 'graph-2.1.1a'], refs: ['Diestel §2.2'], tags: ['matching', 'Tutte'],
+      deps: ['graph-1.4.1a', 'graph-2.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.2, pp. 43–44'], tags: ['matching', 'Tutte'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const PRE = { bad: () => ({ g: TUTTE_BAD(), S: ['s'] }), pet: () => ({ g: named('petersen'), S: [0, 7, 8] }), grid: () => { const g = v.graphs('grid', 3, 4); return { g: { nodes: g.nodes.map((n) => ({ id: n.id, x: n.x, y: n.y })), edges: g.edges.map((e) => [e.from, e.to]), layout: 'fit' }, S: [5] }; } };
         const pre = v.select('', [{ value: 'bad', label: 'three odd pieces' }, { value: 'pet', label: 'Petersen' }, { value: 'grid', label: '3×4 grid' }], 'bad', { onChange: () => load() });
@@ -745,11 +750,12 @@ export default {
       },
     },
     {
-      num: '2.2.2a', kind: 'Definition', name: 'Factor-critical graphs and matchable sets', verify: true,
+      num: '2.2.2a', kind: 'Definition', name: 'Factor-critical graphs and matchable sets',
       statement: String.raw`A non-empty graph $G$ is **factor-critical** if $G$ has no 1-factor but $G-v$ has a 1-factor for every vertex $v$. A set $S\subseteq V(G)$ is **matchable** to $\mathcal C_{G-S}$ if the bipartite graph $G_S$ — obtained from $G$ by contracting every component of $G-S$ to a single vertex and deleting the edges inside $S$, so that $s\in S$ is joined to a component $C$ when $s$ has a neighbour in $C$ — contains a matching of $S$.`,
       idea: String.raw`A factor-critical graph has odd order (its vertex-deleted subgraphs have 1-factors), and it is "as close as possible" to having a 1-factor: whichever vertex is left out, the rest pairs up. Odd cycles, complete graphs of odd order and the Petersen graph minus a vertex are examples; Edmonds' blossoms are factor-critical too. Matchability says that the vertices of $S$ can be sent to distinct components of $G-S$ — the configuration that the Gallai–Edmonds theorem (2.2.3) produces.`,
       caption: String.raw`**Factor-critical**: click a vertex to delete it; a 1-factor of the rest appears (green), or the vertex it fails for is reported. The table records the test for every vertex. The path $P^5$ fails. **Matchable**: click vertices to form $S$; the right panel shows $G_S$ with a maximum matching of $S$, and orange rings mark a Hall violator when $S$ is not matchable.`,
-      deps: ['graph-2.2.1a'], refs: ['Diestel §2.2'], tags: ['matching', 'factor-critical'],
+      deps: ['graph-2.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §2.2, p. 45'], tags: ['matching', 'factor-critical'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch2.pdf' },
       viz(v) {
         const petv = () => { const P = named('petersen'); return { nodes: P.nodes.filter((n) => n.id !== 0), edges: P.edges.filter(([a, b]) => a !== 0 && b !== 0), layout: 'fit' }; };
         const bow = () => ({ nodes: [{ id: 0, x: 0, y: 0 }, { id: 1, x: -1.2, y: 0.7 }, { id: 2, x: -1.2, y: -0.7 }, { id: 3, x: 1.2, y: 0.7 }, { id: 4, x: 1.2, y: -0.7 }], edges: [[0, 1], [0, 2], [1, 2], [0, 3], [0, 4], [3, 4]], layout: 'fit' });

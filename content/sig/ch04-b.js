@@ -192,9 +192,9 @@ For a real signal this is $c_0^2+2\sum_{k\ge1}|c_k|^2$: the average power is the
 - If $x\in C^\infty$, then $c_k=O(|k|^{-p})$ for every $p$.
 - If $x$ extends analytically to the strip $|\Im t|<\sigma$, then $|c_k|\le C_\varepsilon e^{-(\sigma-\varepsilon)|k|}$ for every $\varepsilon>0$ (geometric decay).
 Conversely, fast decay of the $c_k$ forces smoothness. Consequently the error of the partial sum $S_N$ decays like $N^{-m-1/2}$ in the mean square for a signal of smoothness $m$.`,
-      idea: String.raw`Differentiate $m$ times under the series: by sig-4.7 the coefficients of $x^{(m)}$ are $(jk)^mc_k$. Since $x^{(m)}$ is at least integrable, its coefficients tend to zero (the Riemann–Lebesgue lemma on the circle, rca-5.12), and when it is piecewise continuous with bounded variation, integration by parts once more gives $O(1/|k|)$ for them. Hence $c_k=o(|k|^{-m})$, and in fact $O(|k|^{-m-1})$. For analytic signals shift the integration contour in $c_k=\frac1{2\pi}\int x(t)e^{-jkt}dt$ to $\Im t=\mp\sigma'$ and gain a factor $e^{-\sigma'|k|}$.`,
+      idea: String.raw`Differentiate $m$ times under the series: by sig-4.7 the coefficients of $x^{(m)}$ are $(jk)^mc_k$. Since $x^{(m)}$ is at least integrable, its coefficients tend to zero (the Riemann–Lebesgue lemma on the circle, rca-5.14), and when it is piecewise continuous with bounded variation, integration by parts once more gives $O(1/|k|)$ for them. Hence $c_k=o(|k|^{-m})$, and in fact $O(|k|^{-m-1})$. For analytic signals shift the integration contour in $c_k=\frac1{2\pi}\int x(t)e^{-jkt}dt$ to $\Im t=\mp\sigma'$ and gain a factor $e^{-\sigma'|k|}$.`,
       caption: String.raw`Five signals, each rescaled to unit power: coefficients $\propto k^{-n}$ for $n=1,2,3,4$ (jump, corner, and two smoother ones) and an analytic one with $c_k=r^{|k|}$. The left panel is the coefficient size on log–log axes (straight lines of slope $-n$; the analytic one bends down), the middle panel the mean-square error of the partial sums against $N$, the right panel the waveforms themselves, visibly smoother as $n$ grows. Switch curves on and off, and move $r$ toward 1 to make the analytic signal sharper.`,
-      deps: ['sig-4.7', 'rca-5.12'],
+      deps: ['sig-4.7', 'rca-5.14'],
       refs: ['Oppenheim–Willsky §3.5'],
       tags: ['smoothness', 'decay'],
       viz(v) {

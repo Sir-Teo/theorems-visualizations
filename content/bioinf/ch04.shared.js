@@ -11,8 +11,8 @@ export const log2 = (x) => Math.log(x) / Math.LN2;
 
 // ───────────────────────────────────────────────────────────── CpG island chains
 // Transition probabilities of the "+" (CpG island) and "-" (non-island) first-order chains as printed in
-// Durbin, Eddy, Krogh & Mitchison, Biological Sequence Analysis (1998), p. 50 (checked against lecture notes that reproduce the table;
-// the book's table itself was not opened). Rows are the previous nucleotide, columns the next, order A C G T.
+// Durbin, Eddy, Krogh & Mitchison, Biological Sequence Analysis (1998), p. 50 (original book page checked).
+// The printed + C row sums to 1.001 from rounding, so normalise each row. Rows are the previous nucleotide, columns the next, order A C G T.
 export const CPG_PLUS = rowNorm([[0.180, 0.274, 0.426, 0.120], [0.171, 0.368, 0.274, 0.188], [0.161, 0.339, 0.375, 0.125], [0.079, 0.355, 0.384, 0.182]]);
 export const CPG_MINUS = rowNorm([[0.300, 0.205, 0.285, 0.210], [0.322, 0.298, 0.078, 0.302], [0.248, 0.246, 0.298, 0.208], [0.177, 0.239, 0.292, 0.292]]);
 export const BETA = CPG_PLUS.map((r, i) => r.map((p, j) => log2(p / CPG_MINUS[i][j])));

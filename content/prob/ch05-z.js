@@ -62,7 +62,8 @@ where $1/\infty:=0$. So if $y$ is positive recurrent the long-run fraction of ti
       caption: String.raw`A directed ring $0\to1\to\dots\to L-1\to0$ with an optional chord from $M-1$ back to $0$ (a second cycle of length $M$) and an optional self-loop at $0$. The bar chart lists every $n\le40$ at which a closed path of length $n$ from $0$ exists. Move $M$ or add the loop and watch the gcd collapse to $1$.`,
       deps: [markovDef],
       see: ['stoch-1.6'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.6, p. 312 (definition before Example 5.6.3)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['periodicity'],
       scope: String.raw`Durrett defines the period through $\{n\ge1: p^n(x,x)>0\}$; the page uses the same gcd definition, with $p^n$ replaced by its support (existence of a path).`,
       viz(v) {
@@ -152,10 +153,10 @@ where $1/\infty:=0$. So if $y$ is positive recurrent the long-run fraction of ti
 $$p^n(x,y)\to\pi(y)\quad(n\to\infty),$$
 and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are independent copies of the chain run until they first meet at $T$ and move together afterwards, with $X_0=x$ and $Y_0\sim\pi$, then $\|p^n(x,\cdot)-\pi\|_{TV}\le P(T>n)$.`,
       idea: String.raw`The product chain on pairs has the stationary distribution $\pi\times\pi$ so it is recurrent (5.5.10); aperiodicity of $p$ (via 5.6.5) makes the product chain irreducible, so the two copies meet almost surely. After the meeting time the copy started at $x$ has the same law as the one started at $\pi$, which is stationary at every time. Hence $|P(X_n\in B)-\pi(B)|\le P(T>n)\to0$.`,
-      credit: 'Doeblin, 1938 (coupling method)',
       links: { thesis: 'https://numdam.org/item/THESE_1938__204__1_0/' },
-      verify: true,
-      caption: String.raw`Left: the exact total variation distance from $\pi$ (green) and the simulated coupling tail $P(T>n)$ (orange, 1500 runs) for the chain started at state $0$; the orange curve always lies above the green one. Right: one coupled pair, with the meeting time marked. Switch to the periodic chain: the independent copies may sit in different classes forever, $P(T>n)$ stalls at about $\tfrac12$, and the distance does not tend to $0$.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.6.6 and coupling proof, pp. 313–315'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`Left: the exact total variation distance from $\pi$ (green) and the simulated coupling tail $P(T>n)$ (orange, 1500 runs) for the chain started at state $0$; the true coupling tail bounds the green curve; the sampled orange curve has Monte Carlo error. Right: one coupled pair, with the meeting time marked. Switch to the periodic chain: the independent copies may sit in different classes forever, $P(T>n)$ stalls at about $\tfrac12$, and the distance does not tend to $0$.`,
       deps: ['prob-5.6.5', 'prob-5.5.10', 'prob-5.3.1'],
       see: ['stoch-4.7', 'stoch-5.7'],
       tags: ['convergence', 'coupling'],
@@ -199,7 +200,7 @@ and, in fact, $\sum_y|p^n(x,y)-\pi(y)|\to0$. More precisely, if $(X_n,Y_n)$ are 
           else R.text('no meeting yet', 1, 5.1, { color: 'red', size: 12 });
         });
         v.legend([['green', '$\\|p^n(0,\\cdot)-\\pi\\|_{TV}$'], ['orange', '$P(T>n)$ (simulated)'], ['accent', '$X_n$ from $0$'], ['orange', '$Y_n$ from $\\pi$', { dash: true }]]);
-        v.readout(() => { const c = build(mode.value), n = nS.value; return `At $n=${n}$: distance $${fx(c.tv[n], 4)}$ $\\le$ $P(T>n)\\approx${fx(c.tail[n], 4)}$.${mode.value === 'per' ? ' The chain has period 2: the distance does not tend to 0.' : ''}`; });
+        v.readout(() => { const c = build(mode.value), n = nS.value; return `At $n=${n}$: exact distance $${fx(c.tv[n], 4)}$; sampled $P(T>n)\\approx${fx(c.tail[n], 4)}\\pm${fx(2*Math.sqrt(c.tail[n]*(1-c.tail[n])/1500),4)}$ (two standard errors). The theoretical bound uses the true tail.${mode.value === 'per' ? ' The chain has period 2: the distance does not tend to 0.' : ''}`; });
       },
     },
     {
@@ -288,13 +289,17 @@ while $p^n(x,y)=0$ whenever $n\not\equiv r\pmod d$. In particular $p^n(x,y)$ has
       num: '5.7.3',
       kind: 'Theorem',
       name: 'Tail σ-field of a periodic recurrent chain',
-      statement: String.raw`Let $p$ be an irreducible recurrent chain of period $d$ with cyclic classes $C_0,\dots,C_{d-1}$. The tail $\sigma$-field $\mathcal T=\bigcap_n\sigma(X_n,X_{n+1},\dots)$ is generated (up to null sets) by the $d$ events $A_r=\{X_n\in C_{(r+n)\bmod d}\text{ for all }n\}$, which are disjoint and exhaust the space. In particular $\mathcal T$ is trivial if and only if the chain is aperiodic.`,
-      idea: String.raw`The class index $\kappa_n$ of $X_n$ minus $n$ (mod $d$) is constant along the path and tells where the chain started in the cyclic order; being determined by the whole future from time $n$ on, it is tail-measurable. Conversely, in the coupling picture of 5.6.6 applied to $p^d$ on one class, two copies in the same class couple, so nothing else survives in the tail.`,
+      statement: String.raw`Let $p$ be an irreducible recurrent chain of period $d$ with cyclic classes $C_0,\dots,C_{d-1}$. Up to null sets under any initial distribution, the tail $\sigma$-field is
+$$\mathcal T=\sigma\big(\{X_0\in C_r\}:0\le r<d\big).$$
+Thus every tail event is a union of starting-class events. If the initial distribution is concentrated on one cyclic class, the tail field is trivial, even when $d>1$; aperiodicity guarantees triviality for every initial distribution.`,
+      idea: String.raw`With a fixed initial state, successive return excursions are i.i.d.; a tail event is invariant under finitely many permutations of these excursions, so Hewitt–Savage makes its probability $0$ or $1$. Within a cyclic class, reachability at compatible times makes that value identical for every starting state. Under a general initial distribution only the starting cyclic class can remain as tail information. Conversely that class can be recovered from arbitrarily late observations, so its events belong to the tail field. This argument uses recurrence and does not require positive recurrence.`,
       caption: String.raw`Thirty paths from random starting states, each plotted as the *tail label* $\kappa_n-n \bmod d$ against $n$ (slightly separated vertically). Every path is a flat line: the label is fixed from the start and can be read off at any later time. Right: the frequency of each label against the starting-class frequency. Switch on the shortcut edge and the structure breaks: the labels wander and the tail is trivial.`,
       deps: ['prob-5.7.1', 'prob-2.5.1a'],
+      credit: 'Orey; proof of Blackwell and Freedman, 1964 (as credited by Durrett)',
       tags: ['tail sigma-field', 'periodicity'],
-      verify: true,
-      scope: String.raw`The statement is written for recurrent chains in the form recalled from the textbook's treatment of the tail $\sigma$-field; the exact hypotheses (recurrence versus positive recurrence) should be checked against the source.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.7.3 and proof, pp. 318–319'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      scope: String.raw`Recurrence suffices. Tail triviality for a periodic chain depends on its initial distribution: only classes given positive initial mass contribute tail atoms.`,
       viz(v) {
         const dS = v.select('period $d$', [2, 3, 4].map((d) => ({ value: d, label: String(d) })), 3);
         const brk = v.toggle('add a shortcut edge', false);

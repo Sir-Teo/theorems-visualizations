@@ -7,15 +7,9 @@
 //   The abstract (via IDEAS/RePEc) states the house-money and break-even effects. Later work (Peng, Miao & Xiao 2013, Judgment and
 //   Decision Making 8: 150–160, "Why are gainers more risk seeking") reports that some framings do not produce a house-money effect;
 //   only the title and a search snippet were read.
-// - Samuelson 1963 (Scientia 98: 108–113): the colleague who would not take a single 50-50 bet to lose \$100 or win \$200 but
-//   would take 100 of them, as described in secondary sources; the calculations below are done for this page.
-// - Redelmeier & Tversky 1992 (Psychological Science 3: 191–193): the claim that people reject a single gamble and accept
-//   its repetition is stated from the abstract snippet only; no figures are used.
-// - Read, Loewenstein & Rabin 1999 (J. Risk and Uncertainty 19: 171–197, "Choice bracketing"); Kahneman & Lovallo 1993
-//   (Management Science 39: 17–31): citations from memory, not opened (verify: true).
-// - Thaler 1985 (Marketing Science 4(3): 199–214): the beer on the beach with median willingness to pay \$2.65 (resort
-//   hotel) and \$1.50 (small run-down grocery store), from secondary summaries; the decomposition below is a model
-//   calibrated to those two medians, not an estimate.
+// - Samuelson1963 complete original reprint, §§1–7; Read, Loewenstein & Rabin1999 complete PDF,
+//   relevant risk-aggregation discussion pp179–181; Thaler1985 complete PDF, §§3.1–3.2 pp205–207.
+//   Original beer medians2.65/1.50 verified; model weights are illustrative. See docs/verification/behav-source-review.md.
 import { clamp, num, pct, usdC, usdR, vPT, wilson, errBar, bundle, bundleValue, bundleLossProb } from './ch04.shared.js';
 
 export default {
@@ -84,15 +78,14 @@ export default {
     // ------------------------------------------------------------------ 4.6
     {
       num: '4.6', kind: 'Phenomenon', name: 'Narrow bracketing',
-      statement: String.raw`**Narrow bracketing** is evaluating each decision on its own rather than as part of the portfolio of decisions it belongs to. Samuelson (1963) reported a colleague who refused a single 50-50 bet to win \$200 or lose \$100, though the bet has positive expected value, but said he would take 100 such bets. The 100 bets together have expected gain \$5,000 and, because $\Pr(\text{total}<0)=\Pr(\text{wins}\le 33)$, a loss probability below 0.1%; an agent who accepts the bundle but declines each piece evaluates the pieces in isolation. With the prospect-theory value function, a loss-averse person applies it to each bet and rejects every one, but applying it to the total accepts the bundle once $n$ reaches a small threshold.`,
-      scope: String.raw`Applies when decisions are made one by one, and when they could be combined but the decision maker does not. The bundle-versus-piece contrast is robust in surveys (Redelmeier and Tversky, 1992; Kahneman and Lovallo, 1993; Read, Loewenstein and Rabin, 1999); the exact threshold $n^*$ here depends on assumed parameters $\alpha$ and $\lambda$.`,
-      idea: String.raw`Aggregation reduces risk: the total of $n$ independent bets has mean $50n$ in hundreds and standard deviation growing only like $\sqrt n$, so the chance of a net loss collapses (a law-of-large-numbers effect). A loss-averse value function (behav-2.2) penalizes the possibility of loss at the level of the evaluated prospect; evaluated alone, one bet has a 50% chance of a loss and is rejected, while the bundle has a negligible one. Myopic loss aversion (behav-2.12) is the same mechanism applied to the frequency of evaluating returns.`,
-      caption: String.raw`Slide the **number of bets $n$** (each wins \$200 or loses \$100 with probability 1/2). Left: the distribution of the total, losses in red. Middle: the value of the prospect for the narrow evaluator, who values each bet alone ($n\,V_1$, falling), and for the broad one who values the total ($V_n$, rising). Right: the chance of ending in loss. The value function uses $\alpha$ and $\lambda$ from the sliders (defaults are the median Tversky–Kahneman estimates, an assumption).`,
-      deps: ['behav-4.1', 'behav-2.12'], refs: ['Kahneman ch. 31'], tags: ['bracketing', 'loss aversion', 'portfolio'],
+      statement: String.raw`**Narrow bracketing** is evaluating each decision on its own rather than as part of the portfolio of decisions it belongs to. Samuelson (1963) reported a colleague who refused a single 50-50 bet to win \$200 or lose \$100, though the bet has positive expected value, but said he would take 100 such bets. The 100 bets together have expected gain \$5,000 and, because $\Pr(\text{total}<0)=\Pr(\text{wins}\le 33)$, a loss probability below 0.1%; this motivates comparing separate and joint evaluation. Refusal at one wealth level alone does not prove an expected-utility inconsistency: Samuelson’s theorem assumes refusal at every attainable wealth. With the prospect-theory value function, a sufficiently loss-averse person may reject each separate bet while accepting some bundles; the sign depends on the selected parameters and need not change monotonically with $n$.`,
+      scope: String.raw`Applies when decisions are made one by one, and when they could be combined but the decision maker does not. Read, Loewenstein and Rabin (1999, pp. 179–181) discuss risk aggregation and give a worked loss-aversion example. The first accepted bundle here depends on assumed parameters $\alpha$ and $\lambda$.`,
+      idea: String.raw`Aggregation reduces risk: the total of $n$ independent bets has mean $50n$ dollars and standard deviation growing only like $\sqrt n$, so the chance of a net loss tends to zero by the variance-bound weak law (prob-2.2.6). A loss-averse value function (behav-2.2) penalizes the possibility of loss at the level of the evaluated prospect; evaluated alone, one bet has a 50% chance of a loss and may be rejected, while a large bundle has a small loss probability. Myopic loss aversion (behav-2.12) is the same mechanism applied to the frequency of evaluating returns.`,
+      caption: String.raw`Slide the **number of bets $n$** (each wins \$200 or loses \$100 with probability 1/2). Left: the distribution of the total, losses in red. Middle: the value of the prospect for the narrow evaluator, who values each bet alone ($n\,V_1$), and for the broad one who values the total ($V_n$). Right: the chance of ending in loss. The value function uses $\alpha$ and $\lambda$ from the sliders (defaults are the median Tversky–Kahneman estimates, an assumption).`,
+      deps: ['behav-4.1', 'behav-2.12', 'prob-2.2.6'], refs: ['Kahneman ch. 31'], tags: ['bracketing', 'loss aversion', 'portfolio'],
       see: ['behav-1.8', 'behav-3.9'],
-      credit: 'Samuelson, 1963; Redelmeier & Tversky, 1992; Read, Loewenstein & Rabin, 1999',
+      credit: 'Samuelson, 1963; Read, Loewenstein & Rabin, 1999',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Choice_bracketing' },
-      verify: true,
       viz(v) {
         const W = 200, L = 100;
         const nS = v.slider('number of bets $n$', 1, 100, 1, { step: 1, int: true });
@@ -127,7 +120,7 @@ export default {
           // value curves
           const nar = [], bro = [];
           for (let k = 1; k <= 100; k++) { nar.push([k, k * Vn[1]]); bro.push([k, Vn[k]]); }
-          const top = Math.max(60, ...bro.map((p) => p[1])) * 1.1, bot = Math.min(-60, ...nar.map((p) => p[1])) * 1.1;
+          const top = Math.max(60, ...bro.map(p => p[1]), ...nar.map(p => p[1])) * 1.1, bot = Math.min(-60, ...nar.map(p => p[1]), ...bro.map(p => p[1])) * 1.1;
           B.setView([1, 100], [bot, top]);
           B.hline(0, { color: 'ink', width: 1.2 });
           B.path(nar, { color: 'purple', width: 2.4 }); B.path(bro, { color: 'blue', width: 2.4 });
@@ -140,21 +133,20 @@ export default {
         v.readout(() => {
           const n = nS.value, { Vn, Ls, nstar } = calc();
           const totalMean = (0.5 * W - 0.5 * L) * n, sd = Math.sqrt(n) * (W + L) / 2;
-          return `$n=${n}$: expected total ${usdR(totalMean)}, standard deviation ${usdR(sd)}, chance of a net loss **${(100 * Ls[n]).toFixed(Ls[n] < 0.01 ? 3 : 1)}%**. The narrow evaluator's value ${v.fix(n * Vn[1], 1)} ${Vn[1] < 0 ? '(rejects every bet)' : ''}; the broad evaluator's value ${v.fix(Vn[n], 1)} (${Vn[n] > 0 ? 'accepts' : 'rejects'}). ${nstar ? 'The bundle is accepted from $n^*=' + nstar + '$ bets on.' : 'No bundle of up to 100 is accepted with these parameters.'}`;
+          return `$n=${n}$: expected total ${usdR(totalMean)}, standard deviation ${usdR(sd)}, chance of a net loss **${(100 * Ls[n]).toFixed(Ls[n] < 0.01 ? 3 : 1)}%**. The narrow evaluator's value ${v.fix(n * Vn[1], 1)} ${Vn[1] < 0 ? '(rejects every bet)' : ''}; the broad evaluator's value ${v.fix(Vn[n], 1)} (${Vn[n] > 0 ? 'accepts' : 'rejects'}). ${nstar ? 'The first accepted bundle has $n^*=' + nstar + '$ bets; later acceptance need not be monotone.' : 'No bundle of up to 100 is accepted with these parameters.'}`;
         });
       },
     },
     // ------------------------------------------------------------------ 4.7
     {
       num: '4.7', kind: 'Concept', name: 'Transaction utility and reference prices',
-      statement: String.raw`Thaler (1985) splits the value of a purchase into two parts. **Acquisition utility** is the value $V$ of the good minus what is paid, $V-p$: the only part in standard theory. **Transaction utility** is the pleasure or pain of the deal itself, the gap between the **reference price** $r$ (what the buyer thinks the good should cost in that setting) and the price paid, $\omega(r-p)$, with $\omega(z)=z$ for $z\ge0$ (a bargain) and $\omega(z)=\lambda z$ for $z<0$ (a rip-off, felt more strongly). The buyer buys iff $V-p+\omega(r-p)\ge0$. Two identical goods sold in settings with different reference prices therefore command different prices: in Thaler's beer-on-the-beach question, the median willingness to pay was \$2.65 if the beer came from a fancy resort hotel and \$1.50 if it came from a small run-down grocery store.`,
+      statement: String.raw`Thaler (1985) splits the value of a purchase into two parts. **Acquisition utility** is the value $V$ of the good minus what is paid, $V-p$: the only part in standard theory. **Transaction utility** is the pleasure or pain of the deal itself, the gap between the **reference price** $r$ (what the buyer thinks the good should cost in that setting) and the price paid, $w\,\omega(r-p)$, with $\omega(z)=z$ for $z\ge0$ (a bargain) and $\omega(z)=\lambda z$ for $z<0$ (a rip-off, felt more strongly). The buyer buys iff $V-p+w\,\omega(r-p)\ge0$. Two identical goods sold in settings with different reference prices therefore command different prices: in Thaler's beer-on-the-beach question, the median willingness to pay was \$2.65 if the beer came from a fancy resort hotel and \$1.50 if it came from a small run-down grocery store.`,
       scope: String.raw`The decomposition is a model (Thaler's own formulation is more general). The medians come from a questionnaire given to executive-programme participants; the reference prices below are fitted to them with an assumed $V$.`,
-      idea: String.raw`Standard theory says the price you are willing to pay is the value of the good to you, whatever the seller; the same \$2 should buy the same beer anywhere. Reference-dependent evaluation (behav-2.1) instead measures the price against an expectation set by the setting, so overpaying relative to the reference is a loss and underpaying a gain. The model also explains why people drive across town to save \$5 on a cheap item and not an expensive one, and why a "list price" that is later cut feels like a bargain (behav-4.1).`,
+      idea: String.raw`Standard theory says the price you are willing to pay is the value of the good to you, whatever the seller; the same \$2 should buy the same beer anywhere. Reference-dependent evaluation (behav-2.1) instead measures the price against an expectation set by the setting, so overpaying relative to the reference is a loss and underpaying a gain. An inflated reference price can therefore make a given selling price feel like a bargain (behav-4.1).`,
       caption: String.raw`Left: total utility of buying the beer at each price, in a hotel (reference price $r_h$) and in a grocery ($r_g$); the dots mark the maximum price each buyer would pay, which with the defaults reproduces the two reported medians. Drag the **price** handle to see the split into acquisition and transaction utility on the right. Set the weight $w$ on transaction utility to 0 and the two buyers become identical, the standard-theory case.`,
       deps: ['behav-4.1', 'behav-2.1'], refs: ['W&K ch. 6'], tags: ['transaction utility', 'reference price', 'mental accounting'],
       see: ['behav-4.3'],
       credit: 'Richard Thaler, 1985',
-      verify: true,
       links: { doi: 'https://doi.org/10.1287/mksc.4.3.199' },
       viz(v) {
         const Vs = v.slider('value of the beer $V$ (\\$)', 0.5, 4, 1.5, { step: 0.05 });
@@ -171,6 +163,9 @@ export default {
         const wtp = (r) => v.M.bisect((p) => U(p, r), 0, 12, 1e-6);
         let st = {};
         v.render(() => {
+          const refs = [rh.value, rg.value], extremes = refs.flatMap(r => [U(0,r), U(6,r)]);
+          A.setView([0,6], [Math.min(-4, ...extremes)*1.1, Math.max(6, ...extremes)*1.1]);
+          const parts=refs.flatMap(r=>[Vs.value-price.x,w.value*om(r-price.x),U(price.x,r)]), blo=Math.min(-5,...parts)*1.15,bhi=Math.max(3,...parts)*1.15; B.setView([0,4],[blo,bhi]);
           A.hline(0, { color: 'ink', width: 1 });
           A.fn((p) => Vs.value - p, { color: 'muted', width: 1.4, dash: [5, 4] });
           A.fn((p) => U(p, rh.value), { color: 'blue', width: 2.4, domain: [0, 6] });
@@ -189,7 +184,7 @@ export default {
             B.line(x - 0.7, acq + tr, x + 0.7, acq + tr, { color: 'ink', width: 2.4 });
             B.text('acq.', x - 0.37, 0, { dy: acq >= 0 ? -12 : 14, align: 'center', size: 10.5, color: 'muted', weight: 700 });
             B.text('trans.', x + 0.37, 0, { dy: tr >= 0 ? -12 : 14, align: 'center', size: 10.5, color: col, weight: 700 });
-            B.text(`${nm}: total ${(acq + tr >= 0 ? '+' : '−')}$${Math.abs(acq + tr).toFixed(2)}`, x, -4.6, { align: 'center', size: 11.5, weight: 800, color: acq + tr >= 0 ? 'green' : 'red' });
+            B.text(`${nm}: total ${(acq + tr >= 0 ? '+' : '−')}$${Math.abs(acq + tr).toFixed(2)}`, x, blo+(bhi-blo)*.04, { align: 'center', size: 11.5, weight: 800, color: acq + tr >= 0 ? 'green' : 'red' });
           });
           B.hline(0, { color: 'ink', width: 1 });
           st = { wh, wg, p };

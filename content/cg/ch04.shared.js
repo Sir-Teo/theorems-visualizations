@@ -83,16 +83,22 @@ export function seidel(cons, order, c, B = 8) {
 export const circ2 = (p, q) => ({ x: (p[0] + q[0]) / 2, y: (p[1] + q[1]) / 2, r: Math.hypot(p[0] - q[0], p[1] - q[1]) / 2 });
 export function circ3(p, q, s) {
   const ax = p[0], ay = p[1], bx = q[0] - ax, by = q[1] - ay, cx = s[0] - ax, cy = s[1] - ay, d = 2 * (bx * cy - by * cx);
-  if (Math.abs(d) < 1e-12) {
+  if (Math.abs(d) <= 32 * Number.EPSILON * Math.hypot(bx, by) * Math.hypot(cx, cy)) {
     const cs = [circ2(p, q), circ2(p, s), circ2(q, s)];
     return cs.reduce((m, c) => (c.r > m.r ? c : m));
   }
   const ux = (cy * (bx * bx + by * by) - by * (cx * cx + cy * cy)) / d, uy = (bx * (cx * cx + cy * cy) - cx * (bx * bx + by * by)) / d;
   return { x: ax + ux, y: ay + uy, r: Math.hypot(ux, uy) };
 }
-const inDisc = (D, p) => Math.hypot(p[0] - D.x, p[1] - D.y) <= D.r + 1e-9;
+const inDisc = (D, p) => Math.hypot(p[0] - D.x, p[1] - D.y) <= D.r
+  + 32 * Number.EPSILON * Math.max(Math.abs(D.x), Math.abs(D.y), Math.abs(p[0]), Math.abs(p[1]), D.r, Number.MIN_VALUE);
 /** Process P in the given order. Returns frames (one per point from the third on) and the totals of containment tests. */
 export function welzlRun(P) {
+  if (!P.length) return { frames: [], tests: 0, rebuilds: 0, D: null };
+  if (P.length === 1) {
+    const D = { x: P[0][0], y: P[0][1], r: 0 };
+    return { frames: [{ i: 0, D: { ...D }, bnd: [0], reb: false, tests: 0, total: 0, rebuilds: 0 }], tests: 0, rebuilds: 0, D };
+  }
   let tests = 0;
   const T = (D, p) => { tests++; return inDisc(D, p); };
   let D = circ2(P[0], P[1]), bnd = [0, 1];

@@ -16,6 +16,13 @@ function bar(s, lo, hi, y, truth, o = {}) {
 const logit = (p) => Math.log(p / (1 - p));
 const expit = (t) => 1 / (1 + Math.exp(-t));
 
+// Integrals under the exact range density2(1-d), not midpoint quadrature.
+export function relevantSubsetCoverage(d) {
+  const pa = (1-d)**2;
+  const below = d <= .5 ? d*d : .5-(1-d)**2;
+  return {hi:(.5-below)/pa,lo:below/(1-pa),pa};
+}
+
 export default {
   collection: 'stat',
   chapter: 8,
@@ -263,12 +270,14 @@ is an exact prediction interval, compared with the confidence interval $\bar X\p
       statement: String.raw`Let $X_1,X_2$ be i.i.d. $\mathrm{Uniform}(\theta-\tfrac12,\theta+\tfrac12)$ and $C=[\min X_i,\max X_i]$. Then $P_\theta(\theta\in C)=\tfrac12$ for every $\theta$, so $C$ is a 50% confidence interval. But the sample range $D=\max X_i-\min X_i$ is ancillary (its law does not involve $\theta$, stat-2.12), and conditionally on $D$ the coverage is
 $$P_\theta(\theta\in C\mid D)=\begin{cases}D/(1-D)&D<\tfrac12,\\ 1&D\ge\tfrac12.\end{cases}$$
 A pair of draws more than $\tfrac12$ apart *certainly* brackets $\theta$, while two draws very close together bracket it with probability near $0$. The **relevant subset** $\{D\ge\tfrac12\}$ (probability $\tfrac14$) has conditional coverage $1$, far from the nominal $\tfrac12$. The frequentist guarantee holds on average over the ancillary and is silent about what holds for the data in hand.`,
-      idea: String.raw`Averaging $\min(1,D/(1-D))$ against the density $2(1-d)$ of $D$ gives $\int_0^{1/2}2d\,dd+\int_{1/2}^12(1-d)\,dd=\tfrac14+\tfrac14=\tfrac12$: the 50% is a mixture of 100% and much less. Given $D$, the midpoint of the two draws is uniform on a window of length $1-D$ around $\theta$, and the interval of half-width $D/2$ around it contains $\theta$ with probability $D/(1-D)$. The conditionality principle (stat-2.12) says that inference should be conditional on an ancillary statistic such as $D$; the confidence coefficient does not respect it, which is why practitioners sometimes prefer conditional intervals or likelihood-based ones.`,
+      idea: String.raw`Averaging $\min(1,D/(1-D))$ against the density $2(1-d)$ of $D$ gives $\int_0^{1/2}2d\,dd+\int_{1/2}^12(1-d)\,dd=\tfrac14+\tfrac14=\tfrac12$: the 50% is a mixture of 100% and much less. Given $D$, the midpoint of the two draws is uniform on a window of length $1-D$ around $\theta$, and the interval of half-width $D/2$ around it contains $\theta$ with probability $D/(1-D)$. Conditioning on this ancillary statistic (stat-2.12) reveals information that the unconditional confidence coefficient alone does not supply. This example motivates studying conditional coverage; it does not make conditioning on every possible ancillary a universally coherent rule.`,
       caption: String.raw`Left: 60 pairs of draws (each bar is one interval $[\min,\max]$; true $\theta=0$), sorted by their distance $D$: the long ones at the top all cover (green), the short ones at the bottom mostly miss (red). Right: the coverage as a function of $D$: exact curve (purple) and the simulated share in each bin of 20,000 repeated pairs (gold). The dashed line at 0.5 is the confidence coefficient; the slider moves a cut $d_0$ and the readout gives the coverage of the subsets $D<d_0$ and $D\ge d_0$, exactly and by simulation.`,
       deps: ['stat-8.1', 'stat-2.12'],
       refs: ['Casella–Berger §9'],
       tags: ['relevant subset', 'ancillary', 'conditionality'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Ancillary_statistic' },
+      // Source blocker: Welch1939 original (DOI10.1214/aoms/1177732246) returned an access iframe;
+      // JSTOR PDF2235987 returned502. Buehler1959§2.2 and the probability calculation were checked.
       verify: true,
       viz(v) {
         const dS = v.slider('cut $d_0$ on the distance $D$', 0.02, 0.95, 0.5, { step: 0.01 });
@@ -282,10 +291,6 @@ A pair of draws more than $\tfrac12$ apart *certainly* brackets $\theta$, while 
         const sR = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 380, weight: 1, minWidth: 260, xlabel: 'distance $D$ between the two draws', ylabel: 'coverage given $D$', title: 'coverage conditional on $D$' });
         const leg = legender(v);
         const ex = (D) => (D >= 0.5 ? 1 : D / (1 - D));
-        const exTail = (d0) => { // exact P(cover | D >= d0) and P(cover | D < d0)
-          let a = 0, b = 0, M = 4000; for (let i = 0; i < M; i++) { const D = (i + 0.5) / M, w = 2 * (1 - D) / M, c = ex(D); if (D >= d0) a += c * w; else b += c * w; }
-          const pa = (1 - d0) ** 2; return { hi: a / pa, lo: b / (1 - pa), pa };
-        };
         let st = null;
         v.render(() => {
           sync();
@@ -303,14 +308,14 @@ A pair of draws more than $\tfrac12$ apart *certainly* brackets $\theta$, while 
           sR.hline(0.5, { color: 'muted', width: 1.4, dash: [5, 4] });
           sR.vline(d0, { color: CC.miss, width: 1.6 });
           leg([[CC.exact, 'exact $P(\\theta\\in C\\mid D)$'], [CC.sim, 'simulated share per bin', { area: true }], ['muted', 'confidence coefficient ½', { dash: true }], [CC.miss, 'cut $d_0$']]);
-          let h1 = 0, n1 = 0, h0 = 0, n0 = 0; const kcut = Math.floor(d0 * NB); for (let j = 0; j < NB; j++) { if (j >= kcut) { h1 += cov[j]; n1 += cnt[j]; } else { h0 += cov[j]; n0 += cnt[j]; } }
+          let h1 = 0, n1 = 0, h0 = 0, n0 = 0; const kcut = Math.round(d0 * NB); for (let j = 0; j < NB; j++) { if (j >= kcut) { h1 += cov[j]; n1 += cnt[j]; } else { h0 += cov[j]; n0 += cnt[j]; } }
           let tc = 0; for (let j = 0; j < NB; j++) tc += cov[j];
-          st = { d0, hit, T: exTail(Math.round(d0 * NB) / NB), sim1: n1 ? h1 / n1 : NaN, sim0: n0 ? h0 / n0 : NaN, tot: tc / N };
+          st = { d0, hit, T: relevantSubsetCoverage(d0), sim1: n1 ? h1 / n1 : NaN, sim0: n0 ? h0 / n0 : NaN, tot: tc / N };
         });
         v.readout(() => {
           if (!st) return '';
           const { d0, hit, T, sim1, sim0, tot } = st;
-          return `This batch of 60: ${hit} intervals cover $\\theta$. Over ${commas(N)} simulated pairs the overall coverage is **${v.fix(tot, 3)}** (exact 0.5).\nPairs with $D\\ge${v.fix(d0, 2)}$ (probability ${v.fix(T.pa, 3)}): exact coverage **${v.fix(T.hi, 3)}**, simulated ${v.fix(sim1, 3)}. Pairs with $D<${v.fix(d0, 2)}$: exact **${v.fix(T.lo, 3)}**, simulated ${v.fix(sim0, 3)}. The two average to ½ although neither is close to it.`;
+          return `This batch of 60: ${hit} intervals cover $\\theta$. Over ${commas(N)} simulated pairs the overall coverage is **${v.fix(tot, 3)}** (exact 0.5).\nPairs with $D\\ge${v.fix(d0, 2)}$ (probability ${v.fix(T.pa, 3)}): exact coverage **${v.fix(T.hi, 3)}**, simulated ${v.fix(sim1, 3)}. Pairs with $D<${v.fix(d0, 2)}$: exact **${v.fix(T.lo, 3)}**, simulated ${v.fix(sim0, 3)}. Their probability-weighted average is ½; their conditional coverage can differ substantially.`;
         });
       },
     },
@@ -386,14 +391,13 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
       paper: { authors: 'J. Neyman', year: 1937, title: 'Outline of a Theory of Statistical Estimation Based on the Classical Theory of Probability', venue: 'Philosophical Transactions of the Royal Society of London A 236 (767): 333–380', doi: '10.1098/rsta.1937.0005' },
       introduces: ['stat-8.1', 'stat-8.4'],
       credit: 'J. Neyman, 1937',
-      statement: String.raw`Neyman's 1937 memoir lays out a theory of interval estimation that needs no prior distribution for the parameter: from the sampling law of the data alone one constructs, for every value $\theta$, a region $A(\theta)$ of sample values with probability at least $\alpha$ (the **confidence coefficient**) under $\theta$, and these regions form a **confidence belt** in the plane of (parameter, observation). An observation $x$ cuts the belt along a horizontal line, and the set of $\theta$ whose region contains $x$ is the confidence interval; whatever the true $\theta$ is, the interval contains it with probability $\alpha$ in repeated sampling, a statement about the procedure and not about any single interval. The memoir also treats the choice of belts that give the shortest intervals, and argues that this is a coherent frequency alternative to inverse probability for estimation. (This page reconstructs the *construction* on a binomial and a normal model; the paper's own examples and tables are not reproduced.)`,
-      idea: String.raw`Before 1937, estimation by "probable error" and Fisher's fiducial argument rested on assigning a probability distribution to the parameter, either by Bayes' postulate or by fiducial reasoning. Neyman, building on the test theory he developed with E. S. Pearson (stat-6.4), showed that the same estimation problem can be solved purely within classical probability by using the inversion of a family of tests (8.4): the guarantee is a coverage probability (8.1) fixed before the data, true for all values of the unknown parameter. His construction, the confidence belt, is the picture still used in textbooks, and the term "confidence interval" and the associated vocabulary come from this work.`,
-      caption: String.raw`Neyman's belt on a model you choose. For each $\theta$ the vertical segment between the lower and upper curves is the region $A(\theta)$ of values $x$ with probability at least the confidence coefficient (binomial: exact equal-tailed regions, so the belt is a staircase; normal: $\theta\pm1.96\,\sigma/\sqrt n=\theta\pm0.196$ at $n=100$ and 95%). The horizontal line is your observation $x$ (slider); the green bar where it lies inside the belt is the confidence interval. Right: 100 repeated samples at the true $\theta$ you set (the handle on the left) and their intervals. About 95 cover: coverage describes the procedure, not any one interval. The picture reconstructs the construction; the numbers are computed here, not taken from the paper.`,
+      statement: String.raw`Neyman's 1937 memoir lays out a theory of interval estimation that needs no prior distribution for the parameter: from the sampling law of the data alone one constructs, for every value $\theta$, a region $A(\theta)$ of sample values with probability at least $\alpha$ (the **confidence coefficient**) under $\theta$, and these regions form a **confidence belt** in the plane of (parameter, observation). An observation $x$ cuts the belt along a horizontal line, and the set of $\theta$ whose region contains $x$ is the confidence interval; whatever the true $\theta$ is, the interval contains it with probability at least $\alpha$ in repeated sampling (equality for an exact-size continuous belt), a statement about the procedure and not about any single interval. The memoir also treats the choice of belts that give the shortest intervals, and argues that this is a coherent frequency alternative to inverse probability for estimation. (This page reconstructs the *construction* on a binomial and a normal model; the paper's own examples and tables are not reproduced.)`,
+      idea: String.raw`Neyman distinguishes confidence statements about a sampling procedure from assigning a probability distribution to a fixed unknown parameter. Building on test theory with E. S. Pearson (stat-6.4), the memoir formalizes inversion of a family of tests (stat-8.4): the coverage guarantee (stat-8.1) is fixed before the data and holds at every parameter value. The paper explicitly cites earlier work, including Neyman’s 1934 treatment; 1937 is the full memoir rather than the first appearance of every idea or term. Its “shortest systems” criterion minimizes probabilities of covering false parameter values, and such uniformly optimal systems need not exist (§III).`,
+      caption: String.raw`Neyman's belt on a model you choose. For each $\theta$ the vertical segment between the lower and upper curves is the region $A(\theta)$ of values $x$ with probability at least the confidence coefficient (binomial: exact equal-tailed regions, so the belt is a staircase; normal: $\theta\pm1.96\,\sigma/\sqrt n=\theta\pm0.196$ at $n=100$ and 95%). The horizontal line is your observation $x$ (slider); the green bar where it lies inside the belt is the confidence interval. Right: 100 repeated samples at the true $\theta$ you set (the handle on the left) and their intervals. The expected covering count is at least the selected confidence coefficient times 100 (equal to it in the continuous normal model); a finite batch fluctuates. The picture reconstructs the construction; normal intervals may extend beyond the displayed parameter window [0,1]. The numbers are computed here, not taken from the paper.`,
       deps: ['stat-8.2', 'stat-6.4'],
       refs: [],
       tags: ['confidence belt', 'history', 'interval estimation'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Confidence_interval#History' },
-      verify: true,
       viz(v) {
         const mS = v.select('model', [{ value: 'bin', label: 'binomial, $n=20$' }, { value: 'norm', label: 'normal mean, $\\sigma=1$, $n=100$' }], 'bin');
         const lvS = v.slider('confidence coefficient', 0.8, 0.99, 0.95, { step: 0.01 });
@@ -410,7 +414,7 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
           const a = 1 - lv, z = zOf(lv);
           if (m === 'bin') {
             const I = binIntervals('cp', NB, lv);
-            const tab = []; for (let i = 0; i <= 1000; i++) { const th = Math.min(1 - 1e-9, Math.max(1e-9, i / 1000)); let lo = NB, hi = 0; for (let k = 0; k <= NB; k++) { let L = 0, U = 0; for (let j = 0; j <= k; j++) L += dbinom(j, NB, th); for (let j = k; j <= NB; j++) U += dbinom(j, NB, th); if (L > a / 2 && U > a / 2) { lo = Math.min(lo, k); hi = Math.max(hi, k); } } tab.push([lo - 0.5, hi + 0.5]); }
+            const tab = []; for (let i = 0; i <= 1000; i++) { const th = Math.min(1 - 1e-9, Math.max(1e-9, i / 1000)); let lo = NB, hi = 0; for (let k = 0; k <= NB; k++) { let L = 0, U = 0; for (let j = 0; j <= k; j++) L += dbinom(j, NB, th); for (let j = k; j <= NB; j++) U += dbinom(j, NB, th); if (L >= a / 2 && U >= a / 2) { lo = Math.min(lo, k); hi = Math.max(hi, k); } } tab.push([lo - 0.5, hi + 0.5]); }
             return { belt: (th) => tab[Math.round(clamp(th, 0, 1) * 1000)], ci: (x) => I[x], draw: (r, th) => { let k = 0; for (let i = 0; i < NB; i++) if (r() < th) k++; return k; }, obs: (x) => x, sd: 0 };
           }
           return { belt: (th) => [20 * (th - z * sg), 20 * (th + z * sg)], ci: (x) => [x / 20 - z * sg, x / 20 + z * sg], draw: (r, th) => Math.round(20 * (th + sg * r.normal()) * 1000) / 1000, obs: (x) => x, sd: sg };
@@ -438,7 +442,7 @@ has coverage exactly $1-\alpha$ for every $\rho$. It is the set where a quadrati
         v.readout(() => {
           if (!st) return '';
           const { m, x, ci, th, hit, lv, bl, bh } = st, f = (a) => v.fix(a, 3);
-          return `${m === 'bin' ? `$x=${x}$ of 20` : `sample mean $\\bar x=${v.fix(x / 20, 2)}$`}: confidence interval **[${f(Math.max(0, ci[0]))}, ${f(Math.min(1, ci[1]))}]** at coefficient ${v.fix(lv, 2)}. At the true $\\theta=${f(th)}$ the belt accepts ${m === 'bin' ? `counts $${v.fix(bl + 0.5, 0)},\\dots,${v.fix(bh - 0.5, 0)}$` : `sample means in $[${v.fix(bl / 20, 3)},\\,${v.fix(bh / 20, 3)}]$`}.\nIn this set of 100 repeated samples **${hit}** intervals cover $\\theta$ (expected about ${Math.round(100 * lv)}).`;
+          return `${m === 'bin' ? `$x=${x}$ of 20` : `sample mean $\\bar x=${v.fix(x / 20, 2)}$`}: confidence interval **[${f(ci[0])}, ${f(ci[1])}]** at coefficient ${v.fix(lv, 2)}. At the true $\\theta=${f(th)}$ the belt accepts ${m === 'bin' ? `counts $${v.fix(bl + 0.5, 0)},\\dots,${v.fix(bh - 0.5, 0)}$` : `sample means in $[${v.fix(bl / 20, 3)},\\,${v.fix(bh / 20, 3)}]$`}.\nIn this set of 100 repeated samples **${hit}** intervals cover $\\theta$ (expected ${m === 'bin' ? 'at least ' : 'about '}${Math.round(100 * lv)}).`;
         });
       },
     },

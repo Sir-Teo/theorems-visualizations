@@ -62,12 +62,11 @@ with $Q$, $\mathbf p$, $\Theta$ the monopole, dipole and quadrupole moments abou
 $$\int\rho\,\varphi\,d\tau=\mathbf p\cdot\nabla\varphi(0),\qquad \int\rho\,\varphi\,d\tau=\tfrac12\sum_{jk}Q_{jk}\,\partial_j\partial_k\varphi(0).$$
 The limit of the pair $\pm p/\varepsilon$ at $\pm\varepsilon/2$, as $\varepsilon\to0$ at fixed $p$, is the dipole; the limit of $(+1,-2,+1)\,q/\varepsilon^2$ at $-\varepsilon,0,\varepsilon$ is the quadrupole $q\,\delta''$.`,
       idea: String.raw`A point charge at $\mathbf a$ is $q\,\delta^3(\mathbf r-\mathbf a)$ (em-1.19), and acting on a test function it evaluates $q\varphi(\mathbf a)$. Taylor-expanding $\varphi(\mathbf a)$ about $0$ makes the same cluster act as $\sum_n\frac1{n!}\,M^{(n)}\cdot\partial^n\varphi(0)$, where $M^{(n)}=\sum q_i\mathbf r_i^{\otimes n}$ is the $n$-th moment tensor; this is the action of a sum of derivatives of $\delta$ with the moments as coefficients (compare the structure theorem for distributions supported at a point, fa-6.25: every such distribution is a finite combination of derivatives of $\delta$). A symmetric difference quotient converges to the derivative with an error of order $\varepsilon^2$.`,
-      caption: String.raw`The curve is a smooth test function $\varphi$ (choose one); drag the gold handle along it to place the point multipole at $x_0$. Set the order to **dipole** or **quadrupole**. The orange chord joins the two (or three) sampled values at spacing $\varepsilon$ and the green line is the tangent (parabola) at $x_0$; as $\varepsilon$ shrinks the pair's action $\langle\rho_\varepsilon,\varphi\rangle$ in the right plot converges to $\varphi'(x_0)$ (or $\varphi''(x_0)$) at a rate $\varepsilon^2$. The stems on the left show the charges, whose heights grow like $1/\varepsilon$ ($1/\varepsilon^2$) as they squeeze together at fixed moment.`,
+      caption: String.raw`The curve is a smooth test function $\varphi$ (choose one); drag the gold handle along it to place the point multipole at $x_0$. Set the order to **dipole** or **quadrupole**. The orange chord joins the two (or three) sampled values at spacing $\varepsilon$ and the green line is the tangent (parabola) at $x_0$; as $\varepsilon$ shrinks the pair's action $\langle\rho_\varepsilon,\varphi\rangle$ in the right plot converges to $\varphi'(x_0)$ (or $\varphi''(x_0)$) with error $O(\varepsilon^2)$; cancellations can make a selected derivative exact. The stems on the left show the charges, whose strengths grow like $1/\varepsilon$ ($1/\varepsilon^2$) at fixed moment; drawn stem heights are capped for legibility.`,
       scope: String.raw`One space dimension (the pair of charges on a line), $p=1$ nC·cm, to keep the picture honest: the sign convention is the usual one for distributions, $\langle\delta',\varphi\rangle=-\varphi'(0)$. In three dimensions the same holds for each component of $\nabla$; convergence needs the test function smooth near the point.`,
-      credit: 'L. Schwartz, theory of distributions, 1945–1950',
-      verify: true,
+      credit: 'Distributional dipole construction: MIT18.303 Lecture20 (2014), §3.1; quadrupole by the second symmetric difference',
       deps: ['em-4.1', 'em-1.19', 'fa-6.25'],
-      refs: ['Griffiths §3.4'],
+      refs: ['MIT18.303 Lecture20 (2014), complete §3.1, pp. 2–3; test-function derivative definition and dipole limit'],
       tags: ['delta', 'distributions'],
       viz(v) {
         const fs = {
@@ -109,7 +108,7 @@ The limit of the pair $\pm p/\varepsilon$ at $\pm\varepsilon/2$, as $\varepsilon
           info = { a: act(e), lim, o, e, a2: act(e / 2) };
         });
         v.legend([['ink', '$\\varphi$'], ['orange', 'chord through the sampled values'], ['green', 'tangent / osculating parabola'], ['accent', 'action of the pair']]);
-        v.readout(() => `${info.o === 1 ? '$\\langle\\rho_\\varepsilon,\\varphi\\rangle=\\bigl[\\varphi(x_0+\\varepsilon/2)-\\varphi(x_0-\\varepsilon/2)\\bigr]/\\varepsilon$' : '$\\langle\\rho_\\varepsilon,\\varphi\\rangle=\\bigl[\\varphi(x_0-\\varepsilon)-2\\varphi(x_0)+\\varphi(x_0+\\varepsilon)\\bigr]/\\varepsilon^2$'} $=${v.fix(info.a, 4)}$ at $\\varepsilon=${v.fmt(info.e, 3)}$; the derivative is $${v.fix(info.lim, 4)}$. Error $${v.sci(Math.abs(info.a - info.lim) + 1e-15, 2)}$; halving $\\varepsilon$ leaves $${v.sci(Math.abs(info.a2 - info.lim) + 1e-15, 2)}$ (about a quarter).`);
+        v.readout(() => `${info.o === 1 ? '$\\langle\\rho_\\varepsilon,\\varphi\\rangle=\\bigl[\\varphi(x_0+\\varepsilon/2)-\\varphi(x_0-\\varepsilon/2)\\bigr]/\\varepsilon$' : '$\\langle\\rho_\\varepsilon,\\varphi\\rangle=\\bigl[\\varphi(x_0-\\varepsilon)-2\\varphi(x_0)+\\varphi(x_0+\\varepsilon)\\bigr]/\\varepsilon^2$'} $=${v.fix(info.a, 4)}$ at $\\varepsilon=${v.fmt(info.e, 3)}$; the derivative is $${v.fix(info.lim, 4)}$. Error $${v.sci(Math.abs(info.a - info.lim), 2)}$; halving $\\varepsilon$ leaves $${v.sci(Math.abs(info.a2 - info.lim), 2)}$ (the generic second-order error shrinks by about a quarter; an exact polynomial case need not).`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.9
@@ -156,16 +155,15 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
       num: '4.10',
       kind: 'Phenomenon',
       name: 'Polar molecules: the water dipole',
-      statement: String.raw`A molecule whose positive and negative charge are not centred at the same point has a permanent dipole moment $\mathbf p=\sum q_i\mathbf r_i$ (it is origin-independent because the molecule is neutral). Water, bent with an H–O–H angle of about $104.5^\circ$, has a gas-phase dipole moment of $1.855\ \mathrm D\ (\approx6.18\times10^{-30}\ \mathrm{C\,m})$ pointing along the bisector from the oxygen toward the hydrogens. Carbon dioxide has polar C=O bonds but is linear, so the bond dipoles cancel and $\mathbf p=0$.`,
-      idea: String.raw`Model each O–H bond as a dipole of strength $\delta\,e\,L$ pointing from the oxygen to the hydrogen (partial charge $+\delta e$ on each H, $-2\delta e$ on the O). The two bond dipoles are added as vectors (em-4.2): their components perpendicular to the bisector cancel and the components along it add, giving $p=2\delta eL\cos(\theta/2)$, which depends only on the bend angle. At $180^\circ$ the cosine is zero, which is why a linear symmetric molecule such as CO$_2$ is non-polar. The dipole is what makes water a good solvent and a strong absorber of microwaves (em-4.7 is the energy $-\mathbf p\cdot\mathbf E$ of such a molecule in a field).`,
-      caption: String.raw`A three-point-charge model of the molecule (oxygen blue-ish, hydrogens red-ish; lengths in ångström). Slide the **bend angle**: the green dipole arrow shrinks as the angle opens toward $180^\circ$ and vanishes there. Switch the molecule to CO$_2$, which starts straight (no dipole) and becomes polar as you bend it. **Fit $\delta$** sets the partial charge of the model so that the water-model dipole at $104.5^\circ$ equals the measured $1.8546$ D. The right plot is $|\mathbf p|$ against the angle, and the map is the electrostatic potential of the model charges.`,
-      scope: String.raw`This is a point-charge model with the charges on the nuclei: the partial charge $\delta$ is a fitted parameter, not a quantum-mechanical atomic charge, and the real dipole also comes from the electron density of the lone pairs. The CO$_2$ charges ($-\delta$ on each O and $+2\delta$ on C, same $\delta$ slider) are purely illustrative. Gas-phase values; liquid water has a higher effective dipole.`,
-      credit: 'Debye, 1912 (molecular dipole moments)',
-      verify: true,
+      statement: String.raw`A molecule whose positive and negative charge are not centred at the same point has a permanent dipole moment $\mathbf p=\sum q_i\mathbf r_i$ (it is origin-independent because the molecule is neutral). Water, bent with an H–O–H angle of about $104.5^\circ$, has a vibrational-ground-state gas-phase dipole moment of $1.855\ \mathrm D\ (\approx6.18\times10^{-30}\ \mathrm{C\,m})$ pointing along the bisector from the oxygen toward the hydrogens. Carbon dioxide has polar C=O bonds but is linear, so the bond dipoles cancel and $\mathbf p=0$.`,
+      idea: String.raw`Model each O–H bond as a dipole of strength $\delta\,e\,L$ pointing from the oxygen to the hydrogen (partial charge $+\delta e$ on each H, $-2\delta e$ on the O). The two bond dipoles are added as vectors (em-4.2): their components perpendicular to the bisector cancel and the components along it add, giving $p=2\delta eL\cos(\theta/2)$, which depends only on the bend angle. At $180^\circ$ the cosine is zero, which is why a linear symmetric molecule such as CO$_2$ is non-polar. The permanent dipole couples to an external electric field through the energy $-\mathbf p\cdot\mathbf E$ (em-4.7).`,
+      caption: String.raw`A three-point-charge model of the molecule (oxygen blue-ish, hydrogens red-ish; lengths in ångström). Slide the **bend angle**: the green dipole arrow shrinks as the angle opens toward $180^\circ$ and vanishes there. Switch the molecule to CO$_2$, which starts straight (no dipole) and becomes polar as you bend it. **Fit $\delta$** sets the partial charge of the model so that the water-model dipole at $104.5^\circ$ equals the measured $1.855$ D. The right plot is $|\mathbf p|$ against the angle, and the map is the electrostatic potential of the model charges.`,
+      scope: String.raw`This is a point-charge model with the charges on the nuclei: the partial charge $\delta$ is a fitted parameter, not a quantum-mechanical atomic charge, and the real dipole also comes from the electron density of the lone pairs. The CO$_2$ charges ($-\delta$ on each O and $+2\delta$ on C, same $\delta$ slider) are purely illustrative. The fit uses the rounded gas-phase ground-state value 1.855 D tabulated by NIST; its equilibrium-geometry value 1.857 D is a different convention. The point charges are fitted to a dipole and do not reproduce the full molecular field.`,
+      credit: 'Measured molecular inputs: NIST CCCBDB experimental water table; Shostak, Ebenstein and Muenter (1991) dipole data as compiled there',
       deps: ['em-4.2'],
-      refs: ['Purcell ch. 10'],
+      refs: ['NIST CCCBDB water, complete experimental geometry and vibrational-state dipole tables; geometry0.958Å,104.4776°, ground-state dipole1.855D', 'Feynman Lectures II, §§6–3 and6–5, molecular dipoles'],
       tags: ['dipole', 'molecules'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Properties_of_water' },
+      links: { source: 'https://cccbdb.nist.gov/exp2x.asp?casno=7732185&charge=0' },
       viz(v) {
         const KE = 14.3996, D = 0.208194; // V·Å/e; 1 debye in e·Å
         const sL = v.stage({ x: [-3.2, 3.2], y: [-2.1, 2.6], equal: true, height: 340, axes: false, weight: 1.1, minWidth: 270, title: 'molecule, dipole and potential' });
@@ -173,12 +171,12 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
         const mol = v.select('molecule', [{ value: 'w', label: 'H₂O' }, { value: 'c', label: 'CO₂' }], 'w', { onChange: () => ang.set(mol.value === 'w' ? 104.5 : 180) });
         const ang = v.slider('bend angle', 60, 180, 104.5, { step: 0.5, fmt: (x) => `${x}°` });
         const del = v.slider('partial charge $\\delta$', 0, 0.8, 0.33, { step: 0.01, fmt: (x) => `${x.toFixed(2)} e` });
-        v.button('fit δ to 1.8546 D (water)', () => del.set(Math.round((1.8546 * D) / (2 * 0.958 * Math.cos((104.5 * Math.PI) / 360)) * 1000) / 1000));
+        v.button('fit δ to 1.855 D (water)', () => del.set((1.855 * D) / (2 * 0.958 * Math.cos((104.5 * Math.PI) / 360))));
         let info = {};
         v.render(() => {
           const w = mol.value === 'w', L = w ? 0.958 : 1.16, th = (ang.value * Math.PI) / 360, d = del.value;
           const at = [{ x: 0, y: 0, q: w ? -2 * d : 2 * d, n: w ? 'O' : 'C', r: w ? 15 : 12 }, { x: -L * Math.sin(th), y: L * Math.cos(th), q: w ? d : -d, n: w ? 'H' : 'O', r: w ? 9 : 15 }, { x: L * Math.sin(th), y: L * Math.cos(th), q: w ? d : -d, n: w ? 'H' : 'O', r: w ? 9 : 15 }];
-          const V = (x, y) => { let t = 0; for (const a of at) t += a.q / Math.hypot(x - a.x, y - a.y); return KE * t; };
+          const V = (x, y) => { let t = 0; for (const a of at) if (a.q) t += a.q / Math.hypot(x - a.x, y - a.y); return KE * t; };
           const p = [0, 0]; for (const a of at) { p[0] += a.q * a.x; p[1] += a.q * a.y; }
           const pm = Math.hypot(...p) / D, key = 'm' + mol.value + ang.value + d;
           heatPot(sL, (x, y) => V(x, y), 12, key, { res: 3, alpha: 0.75 });
@@ -188,8 +186,8 @@ and the field falls off as $r^{-4}$. The potential vanishes on the cones $\cos^2
           if (pm > 0.03) { const len = Math.min(2, 0.6 * pm), ux = p[0] / (pm * D), uy = p[1] / (pm * D); sL.arrow(0, 0 - 0.0, ux * len, uy * len, { color: 'green', width: 3.6, head: 12 }); sL.tex('\\mathbf p', ux * len + 0.3, uy * len + 0.1, { color: 'green', size: 15 }); }
           sL.text(`${ang.value}°`, 0, -0.5, { align: 'center', size: 11, color: 'muted' });
           sP.fn((a) => (2 * d * L * Math.cos((a * Math.PI) / 360)) / D, { domain: [60, 180], n: 120, color: 'accent', width: 2.4 });
-          sP.hline(1.8546, { color: 'orange', dash: true, width: 1.6 }); sP.vline(104.5, { color: 'orange', dash: true, alpha: 0.6 });
-          sP.text('measured H₂O: 1.8546 D at 104.5°', 112, 2.1, { size: 11, color: 'orange' });
+          sP.hline(1.855, { color: 'orange', dash: true, width: 1.6 }); sP.vline(104.5, { color: 'orange', dash: true, alpha: 0.6 });
+          sP.text('measured H₂O: 1.855 D at 104.5°', 112, 2.1, { size: 11, color: 'orange' });
           sP.dot(ang.value, pm, { r: 6, color: 'green' });
           info = { pm, w, p, ang: ang.value, L };
         });

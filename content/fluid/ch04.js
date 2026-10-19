@@ -165,15 +165,14 @@ and the flow is determined by $\phi$ alone. At a fixed impermeable wall the boun
       name: 'Unsteady Bernoulli equation',
       statement: String.raw`For irrotational flow of an inviscid fluid of constant density $\rho$ in a conservative gravitational field, with $\mathbf u=\nabla\phi$, Euler's equation integrates everywhere in the fluid (not just along a streamline) to
 $$\frac{\partial\phi}{\partial t}+\frac{|\nabla\phi|^2}{2}+\frac{p}{\rho}+gz=F(t),$$
-with $F(t)$ a function of time only, which can be absorbed into $\phi$. In steady flow this reduces to Bernoulli's theorem (2.9) with the same constant everywhere. For the unsteady flow of a column of fluid through a tube of cross-section $A(s)$, with volume flux $Q(t)$, the term $\partial\phi/\partial t$ integrated along the tube between two points is $\dot Q\int ds/A$.`,
+with $F(t)$ a function of time only, which can be absorbed into $\phi$. In steady flow this reduces to Bernoulli's theorem (2.9) with the same constant everywhere. For the unsteady flow of a column of fluid through a tube of cross-section $A(s)$, with volume flux $Q(t)$, the difference of $\partial\phi/\partial t$ between the tube endpoints is $\dot Q\int ds/A$.`,
       idea: String.raw`Write $(\mathbf u\cdot\nabla)\mathbf u=\nabla\tfrac12|\mathbf u|^2-\mathbf u\times\boldsymbol\omega$; irrotationality removes the last term, so Euler's equation (2.8) becomes $\nabla\big(\partial_t\phi+\tfrac12|\nabla\phi|^2+p/\rho+gz\big)=\mathbf 0$. A function with zero gradient is constant in space; the constant may still depend on time. Applied between two free surfaces at atmospheric pressure, the equation is an equation of motion for the whole column.`,
-      credit: 'Daniel Bernoulli, Hydrodynamica, 1738 (steady form); Euler and Lagrange, 18th century (potential form)',
-      verify: true,
+      credit: 'Unsteady potential-flow Bernoulli equation: Fitzpatrick, §4.13',
       caption: String.raw`A U-tube holds liquid of total length $L$ (including the bottom link). Displace one level and release: the unsteady Bernoulli equation between the two free surfaces, $I\dot Q+\tfrac12 Q^2(1/A_2^2-1/A_1^2)+g(h_2-h_1)=0$ with $I=\int ds/A$, is integrated numerically (RK4). With equal arms the nonlinear terms cancel and the motion is exactly harmonic at $\omega=\sqrt{2g/L}$, whatever the amplitude: the dashed orange prediction lies on the simulated level. Make the right arm wider or narrower than the left and the $Q^2$ term acts: the oscillation is no longer sinusoidal, and the small-amplitude frequency becomes $\omega^2=g(1/A_1+1/A_2)/I$.`,
-      deps: ['fluid-4.1', 'fluid-2.9'],
-      refs: ['Kundu §4.9', 'Acheson ch. 1'],
+      deps: ['fluid-4.1', 'fluid-2.9', 'mech-4.2'],
+      refs: ['Fitzpatrick Fluid Mechanics, complete §4.13 Irrotational Flow, Eqs.(4.82)–(4.97); opposite velocity-potential sign convention'],
       tags: ['Bernoulli', 'unsteady', 'manometer'],
-      scope: String.raw`Irrotational, inviscid flow with uniform density; a slowly varying tube (flow nearly uniform across each section). Friction damps real U-tube oscillations; it is left out here.`,
+      scope: String.raw`Irrotational, inviscid flow with uniform density; a slowly varying tube (flow nearly uniform across each section). The bottom link has length0.5m and the left-arm area; the rest heights are $(L-0.5)/2$. The requested amplitude is limited to90% of the shorter arm’s available displacement, with the actual value shown below, so both liquid levels stay positive. Friction is omitted.`,
       viz(v) {
         const L = v.slider('liquid length $L$ (m)', 0.8, 3.2, 1.6, { step: 0.05, onChange: () => S.reset() });
         const amp = v.slider('initial displacement (m)', 0.05, 0.5, 0.3, { step: 0.01, onChange: () => S.reset() });
@@ -181,10 +180,9 @@ with $F(t)$ a function of time only, which can be absorbed into $\phi$. In stead
         const s = v.stage({ x: [-2.6, 2.6], y: [-0.35, 1.9], equal: true, axes: false, height: 330, weight: 1, title: 'the U-tube' });
         const h = v.stage({ x: [0, 4], y: [-0.5, 0.5], axes: 'box', gutter: true, height: 330, weight: 1.1, xlabel: 'time $t$ (s)', ylabel: 'left level above rest (m)', title: 'level of the left arm' });
         const LB = 0.5;
-        const heq = () => (L.value - LB) / (1 + 1 / ratio.value) / 1; // h1 = h2 = heq: I = heq(1+1/a) + LB = L
         const S = v.sim(() => {
-          const a = ratio.value, he = (L.value - LB) / (1 + 1 / a);
-          return { h1: he + amp.value, Q: 0, t: 0, hist: [[0, amp.value]], he, cross: [], last: amp.value };
+          const a = ratio.value, he = (L.value - LB) / 2, A = Math.min(amp.value, 0.9 * he * Math.min(1, a));
+          return { h1: he + A, Q: 0, t: 0, hist: [[0, A]], he, A, cross: [], last: A };
         }, (st, dt) => {
           const a = ratio.value, F = (h1, Q) => { const h2 = ((1 + a) * st.he - h1) / a, I = h1 + LB + h2 / a; return [-Q, (-(G0 * (h2 - h1)) - 0.5 * Q * Q * (1 / (a * a) - 1)) / I]; };
           const k1 = F(st.h1, st.Q), k2 = F(st.h1 + dt / 2 * k1[0], st.Q + dt / 2 * k1[1]), k3 = F(st.h1 + dt / 2 * k2[0], st.Q + dt / 2 * k2[1]), k4 = F(st.h1 + dt * k3[0], st.Q + dt * k3[1]);
@@ -195,7 +193,8 @@ with $F(t)$ a function of time only, which can be absorbed into $\phi$. In stead
         let info = {};
         v.animate((t) => {
           const st = S.advance(t), a = ratio.value, he = st.he, h2 = ((1 + a) * he - st.h1) / a;
-          const x1 = -1.1, x2 = 1.1, w1 = 0.5, w2 = 0.5 * a, top = 1.75;
+          const x1 = -1.1, x2 = 1.1, w1 = 0.5, w2 = 0.5 * a, top = Math.max(1.75, he + 2 * st.A + 0.15);
+          s.setView([-2.6, 2.6], [-0.35, top + 0.15]);
           const draw = (x, w, hl) => {
             s.rect(x - w / 2, 0, x + w / 2, hl, { fill: 'accent', fillAlpha: 0.55, color: 'accent', width: 1 });
             s.line(x - w / 2, 0, x - w / 2, top, { color: 'ink', width: 2.4 }); s.line(x + w / 2, 0, x + w / 2, top, { color: 'ink', width: 2.4 });
@@ -206,17 +205,17 @@ with $F(t)$ a function of time only, which can be absorbed into $\phi$. In stead
           s.hline(he, { color: 'muted', dash: true, alpha: 0.7 });
           s.text('rest level', -2.5, he + 0.07, { color: 'muted', align: 'left' });
           s.arrow(x1 - 0.7, st.h1, x1 - 0.7, he, { color: 'gold', width: 2 });
-          const wnat = Math.sqrt((G0 * (1 + 1 / a)) / (he * (1 + 1 / a) + LB * 1 + 0 * he)), w0 = Math.sqrt((2 * G0) / L.value);
+          const w0 = Math.sqrt((2 * G0) / L.value);
           const wl = Math.sqrt((G0 * (1 + 1 / a)) / (he + LB + he / a));
-          h.setView([0, 4], [-1.15 * amp.value, 1.15 * amp.value]);
+          h.setView([0, 4], [-1.15 * st.A, 1.15 * st.A]);
           h.hline(0, { color: 'muted', alpha: 0.6 });
-          h.fn((x) => amp.value * Math.cos(wl * x), { color: 'orange', width: 2, dash: true });
+          h.fn((x) => st.A * Math.cos(wl * x), { color: 'orange', width: 2, dash: true });
           h.path(st.hist, { color: 'accent', width: 2.6 });
           const T = st.cross.length >= 2 ? 2 * (st.cross[1] - st.cross[0]) : null;
-          info = { w0, wl, T, Tp: TAU / wl, a, wnat };
+          info = { w0, wl, T, Tp: TAU / wl, a, A: st.A };
         }, { period: 4, still: 3.6 });
         v.legend([['accent', 'simulated level (unsteady Bernoulli)'], ['orange', '$x_0\\cos\\omega t$, $\\omega^2=g(1/A_1+1/A_2)/I$', { dash: true }]]);
-        v.readout(() => `${info.a === 1 ? `equal arms: predicted period $2\\pi\\sqrt{L/2g}=${v.fix(TAU / info.w0, 3)}$ s` : `unequal arms: small-amplitude period $2\\pi/\\omega=${v.fix(info.Tp, 3)}$ s`}${info.T !== null ? `, measured $${v.fix(info.T, 3)}$ s` : ''}${info.a === 1 ? ' — independent of the amplitude: the $\\tfrac12u^2$ terms at the two surfaces cancel' : ' — the $Q^2$ term makes the motion anharmonic'}`);
+        v.readout(() => `Actual initial displacement $${v.fix(info.A, 3)}$ m${info.A < amp.value ? ' (limited to keep both arms filled)' : ''}. ${info.a === 1 ? `equal arms: predicted period $2\\pi\\sqrt{L/2g}=${v.fix(TAU / info.w0, 3)}$ s` : `unequal arms: small-amplitude period $2\\pi/\\omega=${v.fix(info.Tp, 3)}$ s`}${info.T !== null ? `, measured $${v.fix(info.T, 3)}$ s` : ''}${info.a === 1 ? ' — independent of the amplitude: the $\\tfrac12u^2$ terms at the two surfaces cancel' : ' — the $Q^2$ term makes the motion anharmonic'}`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.4

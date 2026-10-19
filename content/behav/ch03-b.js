@@ -25,6 +25,14 @@ import { clamp, inside, num, pct, card, binomPmf, reservation, satisficeValue, s
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
 
+/** Shared normal skill plus independent normal luck in each season; both scores have variance one. */
+export function gaussianRegressionLeague(luckShare, count, rng) {
+  return Array.from({ length: count }, () => {
+    const skill = rng.normal() * Math.sqrt(1 - luckShare);
+    return [skill + rng.normal() * Math.sqrt(luckShare), skill + rng.normal() * Math.sqrt(luckShare)];
+  });
+}
+
 /** Proportion of hits immediately after k consecutive hits within one sequence (null if undefined). */
 function propAfter(seq, k) {
   let a = 0, b = 0;
@@ -132,10 +140,10 @@ export default {
     // ------------------------------------------------------------------ 3.12
     {
       num: '3.12', kind: 'Phenomenon', name: 'Regression to the mean mistaken for causation',
-      statement: String.raw`When an outcome depends partly on luck, units selected for extreme results in one period will on average be less extreme in the next, even if nothing changes: **regression to the mean**. With standardized scores and a correlation $\rho$ between periods, the expected second score of a unit that scored $x$ is $\rho x$. People rarely expect this and invent causes for it: flight instructors concluded that praise after a good landing makes cadets worse and harsh criticism after a bad one makes them better (Kahneman's experience in the Israeli air force); athletes on a magazine cover "suffer a jinx"; a treatment given to the sickest patients "works" because they would have improved anyway. The drop is larger the larger the share of luck in the outcome.`,
-      idea: String.raw`Write a season's performance as skill plus luck, independent, with luck accounting for a fraction $\ell$ of the variance. The best performers of season 1 are disproportionately those whose luck was good; their skill persists but their luck is redrawn, so their expected season-2 score is $(1-\ell)$ times their season-1 score (stat-12.9): the regression slope equals the correlation. Nothing about feedback, pressure or jinxes is needed. Kahneman's lesson: the instructors were "rewarded" for punishment and "punished" for reward by chance alone. The proper control is a comparison group selected the same way but not treated.`,
-      caption: String.raw`Answer the instructors' question first. Then set the share of luck in performance. Each dot is one of 400 simulated athletes: season 1 across, season 2 up. The top performers of season 1 (gold) are selected for the "cover"; their season-2 average falls back by the amount the regression line (slope = $1-\ell$, purple) predicts, although every athlete's skill is unchanged. Set luck to 0 and the jinx disappears; set it high and the cover stars collapse to the average.`,
-      deps: ['stat-12.9'], refs: ['Kahneman ch. 17'], tags: ['regression to the mean', 'causation', 'luck'],
+      statement: String.raw`Selecting unusually high or low outcomes partly produced by transient luck can create **regression to the mean** on a later measurement, even if nothing changes. In the **jointly normal model shown here**, standardized scores with correlation $\rho$ satisfy $E[X_2\mid X_1=x]=\rho x$ (stat-1.19). Correlation alone does not imply this conditional-mean formula for arbitrary score distributions; it specifies the best linear predictor. People can mistake the return toward the mean for a causal effect: flight instructors concluded that praise after a good landing makes cadets worse and harsh criticism after a bad one makes them better (Kahneman's experience in the Israeli air force); athletes on a magazine cover "suffer a jinx"; a treatment given to the sickest patients appears to work even without an effect.`,
+      idea: String.raw`In this simulation, a season's standardized performance is $X_j=S+L_j$, with mutually independent, mean-zero **normal** skill $S$ of variance $1-\ell$ and luck $L_1,L_2$ of variance $\ell$. Skill persists and luck is redrawn, so both scores have variance one and their covariance is $1-\ell$. The Gaussian conditional-mean formula gives $E[X_2\mid X_1=x]=(1-\ell)x$. Thus the conditional expected average of athletes selected on their season-1 scores is $(1-\ell)$ times their season-1 average; a finite league's realized season-2 average fluctuates around that prediction. Uncorrelated residuals alone would establish only a linear prediction, not the exact conditional mean. No feedback, pressure or change in skill is built into this model. A comparison group selected the same way but not treated is needed to assess an actual treatment effect.`,
+      caption: String.raw`Answer the instructors' question first. Each dot is one of 400 athletes with normal skill and independent normal luck: season 1 across, season 2 up. The top performers of season 1 (gold) are selected for the "cover". Purple shows their conditional expected season-2 average; red shows the finite sample's realized average. Every athlete's skill is unchanged. Set luck to 0 and both scores coincide; at luck 1 the conditional prediction is the population mean, while a new league's observed mean can fall on either side of it.`,
+      deps: ['stat-12.9', 'stat-1.19'], refs: ['Kahneman ch. 17'], tags: ['regression to the mean', 'causation', 'luck'],
       credit: 'Galton, 1886; Kahneman, 1970s (flight instructors)',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Regression_toward_the_mean' },
       viz(v) {
@@ -152,8 +160,7 @@ export default {
         v.render(() => {
           C.text('What should the instructors conclude?', 50, 16, { align: 'center', size: 12.5, weight: 600 });
           R.forEach((r, i) => card(C, r, { lines: [LAB[i]], chosen: ans === i, dim: ans != null && ans !== i }));
-          const l = lS.value, r = v.rng(seed), N = 400, pts = [];
-          for (let i = 0; i < N; i++) { const sk = r.normal() * Math.sqrt(1 - l); pts.push([sk + r.normal() * Math.sqrt(l), sk + r.normal() * Math.sqrt(l)]); }
+          const l = lS.value, pts = gaussianRegressionLeague(l, 400, v.rng(seed));
           const idx = pts.map((_, i) => i).sort((a, b) => pts[b][0] - pts[a][0]).slice(0, kS.value), top = new Set(idx);
           S.dots(pts.filter((_, i) => !top.has(i)).map((p) => p.map((z) => clamp(z, -3.45, 3.45))), { r: 2.6, color: 'muted', alpha: 0.6 });
           S.line(-3.5, -3.5, 3.5, 3.5, { color: 'faint', width: 1, dash: [4, 4] });
@@ -162,14 +169,22 @@ export default {
           const m1 = idx.reduce((s, i) => s + pts[i][0], 0) / idx.length, m2 = idx.reduce((s, i) => s + pts[i][1], 0) / idx.length;
           S.dot(m1, m2, { r: 7, color: 'red' }); S.arrow(m1, m1, m1, m2 + (m1 > m2 ? 0.12 : -0.12), { color: 'red', width: 2, head: 9 });
           S.text('slope 1 − ℓ', -3.3, -3.3 * (1 - l), { dx: 4, dy: -12, align: 'left', size: 11, weight: 700, color: 'purple' });
-          hbars(B, [{ label: 'season 1', value: m1, color: 'gold', note: v.fix(m1, 2) }, { label: 'season 2', value: Math.max(0, m2), color: 'red', note: v.fix(m2, 2) }, { label: 'predicted (1 − ℓ)×', value: (1 - l) * m1, color: 'purple', note: v.fix((1 - l) * m1, 2) }],
-            { x0: 0.36, x1: 0.82, yTop: 2.7, rowH: 0.8, max: Math.max(3, m1 * 1.05), size: 11.5 });
+          const bars = [['season 1', m1, 'gold'], ['season 2', m2, 'red'], ['conditional mean', (1 - l) * m1, 'purple']];
+          const xmin = Math.min(-0.25, m2 * 1.15), xmax = Math.max(3, m1 * 1.15);
+          const barX = x => 0.45 + 0.4 * (x - xmin) / (xmax - xmin), zero = barX(0);
+          B.line(zero, 0.2, zero, 2.7, { color: 'muted', width: 1 });
+          bars.forEach(([label, value, color], i) => {
+            const y = 2.3 - 0.8 * i, end = barX(value);
+            B.text(label, 0.43, y, { align: 'right', size: 11.5 });
+            B.rect(Math.min(zero, end), y - 0.23, Math.max(zero, end), y + 0.23, { fill: color, fillAlpha: 0.75, stroke: false });
+            B.text(v.fix(value, 2), 0.88, y, { align: 'left', size: 11.5, weight: 700, color });
+          });
           st = { m1, m2, l };
         });
         v.readout(() => {
           const { m1, m2, l } = st; if (m1 == null) return '';
           const you = ans == null ? 'Answer the instructors’ question first. ' : ans === 1 ? 'Right: chance alone produces the pattern. ' : 'That is the instructors’ mistake: chance alone produces the pattern. ';
-          return you + `With ℓ = ${v.fix(l, 2)} the top ${kS.value} averaged **${v.fix(m1, 2)}** in season 1 and **${v.fix(m2, 2)}** in season 2 (prediction $(1-\\ell)\\times${v.fix(m1, 2)} = ${v.fix((1 - l) * m1, 2)}$): a drop of ${v.fix(m1 - m2, 2)} standard deviations with no change in anyone's skill.`;
+          return you + `In this normal skill-plus-luck model, ℓ = ${v.fix(l, 2)}: the top ${kS.value} averaged **${v.fix(m1, 2)}** in season 1 and **${v.fix(m2, 2)}** in season 2. Their conditional expected season-2 average is $(1-\\ell)\\times${v.fix(m1, 2)} = ${v.fix((1 - l) * m1, 2)}$; the observed change is ${v.fix(m2 - m1, 2)} standard deviations, with no change in anyone's skill.`;
         });
       },
     },
@@ -441,7 +456,7 @@ export default {
       idea: String.raw`A heuristic trades bias for variance. Regression estimates one weight per cue and, from a small training sample, those weights are noisy, so its out-of-sample accuracy falls well below its in-sample fit. Take-the-best estimates only an ordering of the cues, which is learned reliably from few examples; in environments where each cue outweighs all lower cues combined, the ordering is all that matters. This is the ecological-rationality answer to the biases programme: a shortcut is not an error if it is matched to the environment (behav-3.1).`,
       caption: String.raw`Top: two cities of a simulated 83-city world whose nine cues are generated to mimic Gigerenzer and Goldstein's Table 1 (the validities actually realized are computed and shown in the header). Click the city you think is larger; take-the-best's search is highlighted: it checks the cues from left to right and stops at the first column where the cities differ. Bottom: accuracy on held-out pairs as the training set grows, averaged over 12 random splits, for take-the-best, tallying and multiple regression; the dotted line is regression's fit to its own training data.`,
       deps: ['behav-3.1'], refs: ['W&K ch. 4'], tags: ['heuristics', 'ecological rationality', 'prediction'],
-      see: ['behav-3.19'],
+      see: ['behav-3.19', 'stat-3.2'],
       credit: 'Gigerenzer & Goldstein, 1996',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Take-the-best_heuristic' },
       viz(v) {

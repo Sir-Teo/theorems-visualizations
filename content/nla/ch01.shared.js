@@ -46,7 +46,7 @@ export const maxAbs = (A) => Math.max(0, ...A.flat().map(Math.abs));
 /** Induced norms of a matrix: 1 (max column sum), ∞ (max row sum). */
 export const norm1 = (A) => Math.max(...A[0].map((_, j) => A.reduce((s, r) => s + Math.abs(r[j]), 0)));
 export const normInf = (A) => Math.max(...A.map((r) => r.reduce((s, x) => s + Math.abs(x), 0)));
-/** A rank-k matrix from the first k triplets of a thin SVD {U, S, V}. */
+/** A matrix of rank at most k from the first k triplets of a thin SVD {U, S, V}. */
 export function truncate(svd, k) {
   const m = svd.U.length, n = svd.V.length;
   const B = Array.from({ length: m }, () => new Array(n).fill(0));

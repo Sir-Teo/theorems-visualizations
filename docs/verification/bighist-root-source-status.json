@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "meaning": "Substantive source dispositions for the root's five Big History reviews. Reviewed-blocked remains an open source flag. Numerical and browser evidence do not substitute for missing originals.",
+  "items": [
+    {
+      "id": "bighist-3.8",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/bighist-root-source-review.md"
+    },
+    {
+      "id": "bighist-3.9",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/bighist-root-source-review.md",
+      "additionalReport": "docs/verification/bighist-impact-primary-sources.md"
+    },
+    {
+      "id": "bighist-3.10",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/bighist-root-source-review.md"
+    },
+    {
+      "id": "bighist-4.4",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/bighist-root-source-review.md"
+    },
+    {
+      "id": "bighist-4.7",
+      "status": "closed",
+      "missingEvidence": [],
+      "report": "docs/verification/bighist-root-source-review.md"
+    }
+  ],
+  "numericalEvidence": "tests/verification-bighist-source.test.mjs",
+  "nativeBrowserEvidence": "tests/verification-bighist-source-browser.mjs"
+}

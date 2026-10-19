@@ -1,15 +1,7 @@
 // Computational Neuroscience — Chapter 3 (part b): 3.6 Morris–Lecar, 3.7 quadratic integrate-and-fire and theta neuron,
 // 3.8 bursting by fast–slow dissection, 3.9 Izhikevich's simple model.
 //
-// Facts used and how they were checked (Oct 2026):
-// - Crossref-checked: Morris & Lecar 1981, Biophys. J. 35: 193–213 (10.1016/S0006-3495(81)84782-0); Ermentrout & Kopell 1986, SIAM J. Appl.
-//   Math. 46: 233–253 (10.1137/0146017); Rinzel 1987, in Mathematical Topics in Population Biology, Morphogenesis and Neurosciences
-//   (Lecture Notes in Biomathematics), pp. 267–281 (10.1007/978-3-642-93360-8_26); Izhikevich 2003, IEEE Trans. Neural Netw. 14: 1569–1572
-//   (10.1109/TNN.2003.820440).
-// - Izhikevich parameter sets: regular spiking (0.02, 0.2, −65, 8), intrinsically bursting (0.02, 0.2, −55, 4), chattering (0.02, 0.2, −50, 2)
-//   and fast spiking (0.1, 0.2, −65, 2) were confirmed in a published parameter table that quotes the 2003 paper; low-threshold spiking
-//   (0.02, 0.25, −65, 2) was not independently confirmed (verify). The step currents are this page's choice.
-// - The bursting model (Morris–Lecar with a slow calcium-like variable) is built and tuned on this page: its parameters are not from a paper.
+// Full source audits and numerical evidence: docs/verification/neuro-source-review.md.
 import { ION_COL, trace, rk4, ML_SETS, mlF, mlWinf, mlWnull, mlEquilibria, mlCurve, mlOrbit, BURST, burstOrbit, burstFastEq, burstFastCycle, IZH, izhRun } from './ch03.shared.js';
 
 function eqDot(s, x, y, type, label) {
@@ -33,14 +25,13 @@ $$C\dot V = I - g_L(V-E_L) - g_{Ca}\,m_\infty(V)\,(V-E_{Ca}) - g_K\,w\,(V-E_K),\
 with $m_\infty=\tfrac12[1+\tanh((V-V_1)/V_2)]$, $w_\infty=\tfrac12[1+\tanh((V-V_3)/V_4)]$ and $\tau_w=1/\cosh((V-V_3)/2V_4)$. Two of the parameters, $V_3,V_4$ (the position and steepness of the potassium activation) and $\phi$, control how excitability is lost at the onset of firing: with one textbook choice the resting state vanishes in a saddle-node on an invariant circle (firing starts at zero frequency, type I), with another it loses stability through a Hopf bifurcation (firing starts at a non-zero frequency, type II). The same two-variable model therefore shows both classes.`,
       idea: String.raw`The model came from experiments on the barnacle giant muscle fibre, whose spikes are carried by calcium rather than sodium; the fast calcium conductance plays the role of sodium activation in the reduced Hodgkin–Huxley model (neuro-3.1), so that the phase plane has the same structure as FitzHugh–Nagumo's (neuro-3.2), with a sigmoidal rather than cubic $V$-nullcline. Moving the potassium activation curve to the right and speeding it up changes how the $w$-nullcline cuts the $V$-nullcline: it crosses the middle branch near its knee so that the equilibrium disappears by merging with a saddle (neuro-3.5), or it crosses the middle branch where the equilibrium turns into an unstable focus (neuro-3.4).`,
       caption: String.raw`Choose a parameter set and drag the current. Left: the phase plane with the two nullclines, the equilibria and the orbit that starts near rest. Middle: $V(t)$ for a current step switched on at 50 ms. Right: the $f$–$I$ curves of both sets computed by simulation (dots), with yours marked. Switch the set: with the saddle-node set firing starts near 40 µA/cm² at low rates; with the Hopf set it starts near 90 µA/cm² at about 10 Hz, after a small bistable window where rest and firing coexist.`,
-      scope: String.raw`Space-clamped barnacle-muscle-like membrane (voltage in mV, time in ms, current in µA/cm²). The two parameter sets are standard textbook choices quoted from memory, not the values fitted in the 1981 paper, and the rate curves are produced by the model, not measured.`,
+      scope: String.raw`Space-clamped barnacle-muscle-like membrane (voltage in mV, time in ms, current in µA/cm²). The two explicit illustrative sets share $C=20$, $g_K=8$, $g_L=2$, $V_{Ca}=120$, $V_K=-84$, $V_L=-60$, $V_1=-1.2$, $V_2=18$. The Hopf example uses $(g_{Ca},\phi,V_3,V_4)=(4.4,0.04,2,30)$; the SNIC example uses $(4,0.067,12,17.4)$. These choices are not attributed to the original 1981 fitted table. Gerstner §4.2 equations (4.6)–(4.10) supply the reduced model and §4.4 explains parameter-dependent onset; rate curves and thresholds here are computed from these stated choices, not measured.`,
       deps: ['neuro-3.1'],
       see: ['neuro-3.4', 'neuro-3.5', 'neuro-2.8'],
-      refs: ['Gerstner §4.4'],
+      refs: ['Gerstner et al. (2014), complete §§4.2 and 4.4, equations (4.6)–(4.10), Fig. 4.13 and onset discussion'],
       tags: ['calcium', 'type I and II'],
       credit: 'C. Morris and H. Lecar, 1981 (Biophys. J. 35: 193–213)',
       links: { doi: 'https://doi.org/10.1016/S0006-3495(81)84782-0' },
-      verify: true,
       viz(v) {
         const sel = v.select('parameter set', [{ value: 'snic', label: 'saddle-node set' }, { value: 'hopf', label: 'Hopf set' }], 'snic', { onChange: () => Isl.set(sel.value === 'snic' ? 45 : 100) });
         const Isl = v.slider('current $I$', 0, 112, 45, { step: 0.5, fmt: (x) => `${x} µA/cm²` });
@@ -90,7 +81,7 @@ where a spike is the passage through $\theta=\pi$. For $I<0$ there are two equil
       idea: String.raw`The equation $\dot V=V^2+I$ is the saddle-node normal form (neuro-3.5), and the whole firing curve $f=\sqrt I/\pi$ comes from integrating $\mathrm d V/(V^2+I)$ from $-\infty$ to $\infty$. Compactifying the real line to a circle by $V=\tan(\theta/2)$ (a stereographic-type change of variable) removes the singularity: the point at infinity is $\theta=\pi$, and $\dot\theta$ is a smooth function of $\theta$ that vanishes at two points when $I<0$ and nowhere when $I>0$. Ermentrout and Kopell used this form to analyse bursting and synchrony; its single-variable phase equation is also the standard phase model of a type I neuron's response to input.`,
       caption: String.raw`Choose $I$ and a starting voltage and let the clock run. Left: the voltage $V(t)$ with its cutoff and reset; the dotted line is the true solution that blows up. Middle: the same state as an angle $\theta$ on a circle (spike at the left point); for $I<0$ a stable (green) and unstable (red) equilibrium appear. Right: the parabola $\dot V=V^2+I$ with the state sliding on it. The readout compares the simulated interspike interval with $\pi/\sqrt I$ and with the exact finite-cutoff formula.`,
       scope: String.raw`A canonical model near a saddle-node on an invariant circle: it captures the generic type I onset, the spike latency and the $\sqrt I$ rate law, but not spike shape or adaptation. In dimensionless units (time is measured so that the coefficients are 1); the cutoff values $V_p$ are numerical devices.`,
-      deps: ['neuro-3.5'],
+      deps: ['neuro-3.5', 'ode-1.14'],
       see: ['neuro-5.3', 'neuro-3.9'],
       refs: ['Gerstner §5.3'],
       tags: ['normal form', 'type I'],
@@ -164,17 +155,16 @@ where a spike is the passage through $\theta=\pi$. For $I<0$ there are two equil
       num: '3.8',
       kind: 'Phenomenon',
       name: 'Bursting by fast–slow dissection',
-      statement: String.raw`Bursting is a rhythm in which clusters of spikes alternate with silent periods. It arises when a fast subsystem that can both rest and spike (here a membrane model $\dot x=F(x,z)$) is modulated by a slow variable $z$ with $\dot z=\epsilon\,g(x,z)$, $0<\epsilon\ll1$. **Dissection** treats $z$ as a frozen parameter: the bifurcation diagram of the fast subsystem against $z$ shows a branch of resting states and a branch of spiking cycles. If the slow variable rises while the neuron spikes and falls while it rests, the full trajectory follows the spiking branch until it ends and the resting branch until it ends, and then switches to the other: spikes in clusters, with burst duration set by $\epsilon$. In the model of this page (Morris–Lecar with a slow Ca$^{2+}$-activated K$^+$ current) the rest branch ends at a fold of equilibria and the spiking branch ends where the cycle's period grows without bound (square-wave bursting in Rinzel's classification).`,
-      idea: String.raw`Each spike lets in calcium, so the slow variable $z$ builds up (it integrates the calcium current, with leakage), and the K$^+$ current it activates grows until it can no longer sustain the spiking cycle. The neuron then falls to the resting branch of the fast subsystem, where there is no calcium entry and $z$ decays until the resting state disappears at a saddle-node (neuro-3.5); the neuron jumps back to the spiking cycle. The number of spikes per burst is the ratio of the time spent on the spiking branch to the interspike interval, and it increases as $\epsilon$ decreases. The model is built on the Morris–Lecar equations (neuro-3.6); the specific slow current and constants are choices made for this page that produce clear bursts.`,
+      statement: String.raw`Bursting is a rhythm in which clusters of spikes alternate with silent periods. It arises when a fast subsystem that can both rest and spike (here a membrane model $\dot x=F(x,z)$) is modulated by a slow variable $z$ with $\dot z=\epsilon\,g(x,z)$, $0<\epsilon\ll1$. **Dissection** treats $z$ as a frozen parameter: the bifurcation diagram of the fast subsystem against $z$ shows a branch of resting states and a branch of spiking cycles. If the slow variable rises while the neuron spikes and falls while it rests, away from transitions the full trajectory approximately tracks a spiking or resting attractor, and then switches to the other: spikes in clusters, with burst duration set by $\epsilon$. The model below adds a slow Ca$^{2+}$-activated K$^+$ current to Morris–Lecar. Its finite frozen-parameter simulations illustrate this mechanism; they do not establish a homoclinic termination or a formal square-wave classification.`,
+      idea: String.raw`Each spike lets in calcium, so the slow variable $z$ builds up (it integrates the calcium current, with leakage), and the K$^+$ current it activates grows until it can no longer sustain the spiking cycle. The neuron then falls to the resting branch of the fast subsystem, where calcium entry is smaller and, when removal dominates, $z$ decays until the resting state disappears at a saddle-node (neuro-3.5); the neuron jumps back to the spiking cycle. The number of spikes per burst is the ratio of the time spent on the spiking branch to the interspike interval, and it typically increases as $\epsilon$ decreases within the bursting regime; changing parameters can instead produce tonic firing or rest. The model is built on the Morris–Lecar equations (neuro-3.6); the specific slow current and constants are choices made for this page that produce clear bursts.`,
       caption: String.raw`Left: the voltage and the slow variable $z$ over eight seconds (gold dot: the current time). Right: the bifurcation diagram of the fast subsystem with $z$ frozen: the lower and upper stable (green) and unstable (red, hollow) equilibria and the extremes of the spiking cycle (blue); the full trajectory $(z(t),V(t))$ is overlaid and moves around this diagram like a hysteresis loop. Slow down $z$ (smaller $\epsilon$) to get longer bursts and more spikes in each; change $I$ and the bursts lengthen, shorten or turn into tonic firing or rest.`,
-      scope: String.raw`A mathematical model: the slow current and constants are tuned, not fitted to a recorded cell, and the dissection is accurate to the extent that $\epsilon$ is small (here the slow variable moves by about 0.4 in one burst while the spikes last a few tens of ms each). The quoted cycle extremes are found by simulating the frozen fast subsystem from a single starting point for 900 ms, so very slow cycles near the end of the branch may be missed.`,
+      scope: String.raw`A mathematical model: the slow current and constants are tuned, not fitted to a recorded cell, and the dissection is accurate to the extent that $\epsilon$ is small (here the slow variable moves by about 0.4 in one burst while the spikes last a few tens of ms each). The quoted cycle extremes are found by simulating the frozen fast subsystem from a single starting point for 1500 ms, so very slow cycles near the end of the branch may be missed.`,
       deps: ['neuro-3.6'],
       see: ['neuro-3.5', 'neuro-3.9'],
-      refs: ['Dayan–Abbott ch. 6'],
+      refs: ['Rinzel 1987, ICM 1986 proceedings vol. 2, §§1–2 pp. 1578–1585; §3 pp. 1585–1586'],
       tags: ['bursting', 'fast–slow'],
-      credit: 'Classification of bursting mechanisms: J. Rinzel, 1987 (Lecture Notes in Biomathematics, pp. 267–281)',
-      links: { doi: 'https://doi.org/10.1007/978-3-642-93360-8_26' },
-      verify: true,
+      credit: 'J. Rinzel, 1987, A Formal Classification of Bursting Mechanisms in Excitable Systems, ICM 1986 proceedings vol. 2, pp. 1578–1593',
+      links: { source: 'https://www.mathunion.org/fileadmin/ICM/Proceedings/ICM1986.2/ICM1986.2.ocr.pdf' },
       viz(v) {
         const eps = v.slider('slow rate $\\epsilon$', 0.0003, 0.003, 0.001, { log: true, sig: 2, fmt: (x) => x.toFixed(4) });
         const Isl = v.slider('current $I$', 44, 60, 50, { step: 0.5, fmt: (x) => `${x} µA/cm²` });
@@ -192,14 +182,19 @@ where a spike is the passage through $\theta=\pi$. For $I<0$ there are two equil
           const bursts = []; let cur = []; for (const t of sp) { if (cur.length && t - cur[cur.length - 1] > 250) { bursts.push(cur); cur = []; } cur.push(t); } if (cur.length) bursts.push(cur);
           D = { p, rec, sp, bursts }; return D;
         };
-        const fast = () => {
-          const k = `${Isl.value}`; if (k === fk) return FD; fk = k;
+        const fast = (R) => {
+          const zmin = Math.max(0,Math.min(0.3,0.9*Math.min(...R.rec.map(y=>y[2])))), zmax = Math.max(1.2,1.1*Math.max(...R.rec.map(y=>y[2])));
+          const k = `${Isl.value}|${zmin}|${zmax}`; if (k === fk) return FD; fk = k;
           const p = { ...BURST, I: Isl.value }, eq = [], cyc = [];
-          for (let z = 0.3; z <= 1.2001; z += 0.02) { for (const e of burstFastEq(p, z, p.I)) eq.push([z, e.V, e.stable]); const c = burstFastCycle(p, z, p.I, { T: 1500 }); if (c) cyc.push([z, c.lo, c.hi]); }
-          return (FD = { eq, cyc });
+          for (let j=0;j<=60;j++) {const z=zmin+(zmax-zmin)*j/60; for (const e of burstFastEq(p, z, p.I)) eq.push([z, e.V, e.stable]); const c = burstFastCycle(p, z, p.I, { T: 1500 }); if (c) cyc.push([z, c.lo, c.hi]); }
+          return (FD = { eq, cyc, zmin, zmax });
         };
         v.animate((tsec) => {
-          const R = get(), Fd = fast(), t = (tsec % 8) * 1000, n = Math.min(R.rec.length - 1, Math.round(t / 2));
+          const R = get(), Fd = fast(R), t = (tsec % 8) * 1000, n = Math.min(R.rec.length - 1, Math.round(t / 2));
+          const zlo=Math.min(...R.rec.map(y=>y[2])),zhi=Math.max(...R.rec.map(y=>y[2])),zpad=Math.max(.03,.1*(zhi-zlo));
+          sZ.setView(null,[Math.max(0,zlo-zpad),zhi+zpad]);
+          const volts=[...R.rec.map(y=>y[0]),...Fd.eq.map(q=>q[1]),...Fd.cyc.flatMap(q=>[q[1],q[2]])];
+          sB.setView([Fd.zmin,Fd.zmax],[Math.min(...volts)-5,Math.max(...volts)+5]);
           sA.path(R.rec.map((y, i) => [i * 2, y[0]]), { color: 'accent', width: 1.2, alpha: 0.35 });
           sA.path(R.rec.slice(0, n + 1).map((y, i) => [i * 2, y[0]]), { color: 'accent', width: 2 });
           sA.dot(n * 2, R.rec[n][0], { r: 5, color: 'gold' });
@@ -217,7 +212,7 @@ where a spike is the passage through $\theta=\pi$. For $I<0$ there are two equil
           const r = v._r; if (!r) return '';
           const { R, n } = r, b = R.bursts.filter((x, i) => i > 0 && i < R.bursts.length - 1), per = R.bursts.length > 2 ? (R.bursts[R.bursts.length - 1][0] - R.bursts[0][0]) / (R.bursts.length - 1) : NaN;
           const spb = b.length ? b.reduce((a, x) => a + x.length, 0) / b.length : R.sp.length;
-          return String.raw`now: $z=${v.fix(R.rec[n][2], 3)}$, $V=${v.fix(R.rec[n][0], 0)}$ mV · over 8 s: ${R.sp.length} spikes in ${R.bursts.length} bursts, about ${v.fix(spb, 1)} spikes per burst` + (isFinite(per) ? String.raw`, burst period $${v.fix(per, 0)}$ ms` : '') + String.raw` · $z$ ranges over $[${v.fix(Math.min(...R.rec.map((y) => y[2])), 2)},\,${v.fix(Math.max(...R.rec.map((y) => y[2])), 2)}]$`;
+          return String.raw`now: $z=${v.fix(R.rec[n][2], 3)}$, $V=${v.fix(R.rec[n][0], 0)}$ mV · over 8 s: ${R.sp.length} spikes; ${R.sp.length===0 ? 'no firing in this window' : R.bursts.length===1 ? 'one continuous spike cluster (no >250 ms silent gap identified)' : `${R.bursts.length} clusters separated by >250 ms gaps, about ${v.fix(spb,1)} spikes per complete cluster`}` + (isFinite(per) ? String.raw`, burst period $${v.fix(per, 0)}$ ms` : '') + String.raw` · $z$ ranges over $[${v.fix(Math.min(...R.rec.map((y) => y[2])), 2)},\,${v.fix(Math.max(...R.rec.map((y) => y[2])), 2)}]$`;
         });
       },
     },
@@ -230,16 +225,15 @@ where a spike is the passage through $\theta=\pi$. For $I<0$ there are two equil
       statement: String.raw`Izhikevich's simple model has two variables, a membrane potential $v$ (mV) and a recovery variable $u$, and an after-spike reset:
 $$\dot v = 0.04\,v^2 + 5\,v + 140 - u + I,\qquad \dot u = a\,(b\,v - u),\qquad \text{if } v\ge 30\text{ mV: } v\leftarrow c,\ u\leftarrow u+d.$$
 The four parameters $a,b,c,d$ select the firing pattern. Choosing them as $(a,b,c,d)=(0.02,0.2,-65,8)$ gives regular spiking with spike-frequency adaptation, $(0.02,0.2,-55,4)$ intrinsically bursting, $(0.02,0.2,-50,2)$ chattering (fast repetitive bursts), $(0.1,0.2,-65,2)$ fast spiking without adaptation, and $(0.02,0.25,-65,2)$ low-threshold spiking. The first equation is the quadratic integrate-and-fire neuron (neuro-3.7), with the cubic of the previous models replaced by a parabola; $u$ plays the role of a slow adaptation current.`,
-      idea: String.raw`The quadratic term gives the spike its upstroke (a finite-time blow-up cut off at 30 mV, neuro-3.7), the reset mimics the downstroke, and $u$ both subtracts from the drive and is incremented at each spike by $d$, which accumulates and slows the firing (adaptation). The ratio $c$ of the reset voltage to threshold and the size of $d$ decide whether the after-spike state is far from threshold (regular spiking) or close to it (a burst of spikes before $u$ has grown enough to stop it). The parameters were chosen by fitting the qualitative patterns of cortical neuron types, not derived from channels. The model is therefore efficient to simulate (two multiplications and a few additions per step) but has no ionic meaning.`,
-      caption: String.raw`Pick a cell type to load its $(a,b,c,d)$ (you can adjust them afterwards) and set the step current, which switches on at 20 ms. Top left: $v(t)$; bottom left: the recovery variable $u(t)$. Right: the $(v,u)$ plane with the two nullclines (the parabola $u=0.04v^2+5v+140+I$ in orange and the line $u=bv$ in purple); the orbit is cut at each spike and restarts at $(c,u+d)$ (gold dots, one per spike), so the stack of gold dots up the reset line shows $u$ climbing by $d$ each time. Lower $d$ and raise $c$ to turn regular spiking into bursting.`,
-      scope: String.raw`Phenomenological model in the units of the 2003 paper (time in ms, voltage in mV, no capacitance given). It reproduces the named firing patterns for the listed parameters at suitable currents (here 10 for all five), not the spike shape, the mechanism or neuronal variability, and it is integrated here with a 0.25 ms step.`,
+      idea: String.raw`The quadratic term gives the spike its upstroke (a finite-time blow-up cut off at 30 mV, neuro-3.7), the reset mimics the downstroke, and $u$ both subtracts from the drive and is incremented at each spike by $d$, which accumulates and slows the firing (adaptation). The reset voltage $c$ and the increment $d$ decide whether the after-spike state is far from threshold (regular spiking) or close to it (a burst of spikes before $u$ has grown enough to stop it). The parameters were chosen by fitting the qualitative patterns of cortical neuron types, not derived from channels. The model resolves qualitative recovery and adaptation without separate ionic conductances.`,
+      caption: String.raw`Pick a cell type to load its $(a,b,c,d)$ (you can adjust them afterwards) and set the step current, which switches on at 20 ms. Top left: $v(t)$; bottom left: the recovery variable $u(t)$. Right: the $(v,u)$ plane with the two nullclines (the parabola $u=0.04v^2+5v+140+I$ in orange and the line $u=bv$ in purple); the orbit is cut at each spike and restarts at $(c,u+d)$ (gold dots, one per spike), each dot is the actual post-reset state. The jump in $u$ is $d$ relative to that spike’s pre-reset value; recovery between spikes means successive gold dots need not differ by $d$. Lower $d$ and raise $c$ to turn regular spiking into bursting.`,
+      scope: String.raw`Phenomenological model in the units of the 2003 paper (time in ms, voltage in mV, no capacitance given). It reproduces the named firing patterns for the listed parameters at suitable currents (here 10 for all five), not the spike shape, the mechanism or neuronal variability, and it is integrated here with the paper’s split voltage/recovery update at0.025 ms resolution. The variables and parameters are formally dimensionless, scaled so voltage resembles mV and time resembles ms; I is a model input, not a calibrated pA current. The reset is sampled on this time grid, so spike times have numerical error.`,
       deps: ['neuro-3.7'],
       see: ['neuro-3.8', 'neuro-3.2'],
-      refs: ['Gerstner §6.2'],
+      refs: ['Izhikevich2003, IEEE Transactions on Neural Networks14,1569–1572, eqs.(1)–(3), complete§§II–IV and Fig.2 parameter diagram'],
       tags: ['phenomenological model', 'firing patterns'],
       credit: 'E. M. Izhikevich, 2003 (IEEE Trans. Neural Netw. 14: 1569–1572)',
       links: { doi: 'https://doi.org/10.1109/TNN.2003.820440' },
-      verify: true,
       viz(v) {
         const names = ['RS', 'IB', 'CH', 'FS', 'LTS'];
         const load = () => { const q = IZH[type.value]; a.set(q.a); b.set(q.b); c.set(q.c); d.set(q.d); };
@@ -249,31 +243,33 @@ The four parameters $a,b,c,d$ select the firing pattern. Choosing them as $(a,b,
         const b = v.slider('$b$', 0.15, 0.3, 0.2, { step: 0.005 });
         const c = v.slider('$c$ (mV)', -70, -45, -65, { step: 1 });
         const d = v.slider('$d$', 0, 10, 8, { step: 0.1 });
+        v.button('Restore selected preset',load);
         const sA = v.stage({ x: [0, 400], y: [-80, 40], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'v (mV)', height: 230, weight: 1.3, minWidth: 340 });
         const sU = v.stage({ x: [0, 400], y: [-18, 12], axes: 'box', gutter: true, xlabel: 't (ms)', ylabel: 'u', height: 150, weight: 1.3, minWidth: 340 });
         const sP = v.stage({ x: [-80, 40], y: [-20, 10], axes: 'box', gutter: true, xlabel: 'v (mV)', ylabel: 'u', height: 400, weight: 1, minWidth: 300 });
         v.render(() => {
           const p = { a: a.value, b: b.value, c: c.value, d: d.value }, I = Ia.value;
-          const o = izhRun(p, (t) => (t >= 20 ? I : 0), 400, { dt: 0.25 });
+          const o = izhRun(p, (t) => (t >= 20 ? I : 0), 400, { dt: 0.025 });
+          const lo=Math.min(...o.u),hi=Math.max(...o.u,...o.resets.map(r=>r.u)),pad=Math.max(2,.08*(hi-lo));sU.setView(null,[lo-pad,hi+pad]);const phaseHi=Math.max(hi+pad,I-16.25+5);sP.setView(null,[lo-pad,phaseHi]);
           sA.rect(20, -80, 400, -76, { fill: 'gold', fillAlpha: 0.5, stroke: false });
           trace(sA, o.t, o.v, { color: 'accent', width: 1.8 });
           trace(sU, o.t, o.u, { color: 'purple', width: 2 });
           sP.fn((x) => 0.04 * x * x + 5 * x + 140 + I, { color: 'orange', width: 2.2, domain: [-80, 40] });
           sP.fn((x) => p.b * x, { color: 'purple', width: 2.2 });
-          const orb = []; const jumps = [];
-          for (let i = 0; i < o.v.length; i++) { if (i && o.v[i - 1] >= 30 && o.v[i] < 30) { orb.push(null); jumps.push([p.c, o.u[i]]); } orb.push([o.v[i], o.u[i]]); }
+          const orb = [], jumps=o.resets.map(r=>[r.v,r.u]);let event=0;
+          for(let i=0;i<o.v.length;i++){orb.push([o.v[i],o.u[i]]);if(o.v[i]===30){const r=o.resets[event++];orb.push(null);orb.push([r.v,r.u]);}}
           sP.path(orb, { color: 'accent', width: 1.4, alpha: 0.75 });
           sP.dots(jumps, { r: 2.5, color: 'gold' });
-          sP.dot(p.c, p.b * p.c, { r: 4, color: 'faint' });
+          sP.vline(p.c,{color:'gold',dash:[3,4],width:1});
           sP.vline(30, { color: 'faint', dash: [3, 4], width: 1 });
-          sP.text('reset (c, u + d)', p.c, p.b * p.c, { size: 10.5, color: 'muted', dy: 14, align: 'left' });
+          sP.text('reset voltage c', p.c, phaseHi-.06*(phaseHi-lo+pad), { size: 10.5, color: 'muted', dy: 14, align: 'left' });
           v._r = { o, p };
         });
         v.legend([['accent', '$v$'], ['purple', '$u$'], ['orange', '$\\dot v=0$'], ['purple', '$\\dot u=0$']]);
         v.readout(() => {
           const r = v._r; if (!r) return '';
-          const sp = r.o.spikes, isis = sp.slice(1).map((t, i) => t - sp[i]);
-          return String.raw`${IZH[type.value].name}${(r.p.a === IZH[type.value].a && r.p.b === IZH[type.value].b && r.p.c === IZH[type.value].c && r.p.d === IZH[type.value].d) ? '' : ' (parameters edited)'} · ${sp.length} spikes in 380 ms` + (isis.length ? String.raw` · first interval $${v.fix(isis[0], 1)}$ ms, shortest $${v.fix(Math.min(...isis), 1)}$ ms, last $${v.fix(isis[isis.length - 1], 1)}$ ms` : '');
+          const sp = r.o.spikes.filter(t=>t>=20), isis = sp.slice(1).map((t, i) => t - sp[i]);
+          return String.raw`${IZH[type.value].name}${(r.p.a === IZH[type.value].a && r.p.b === IZH[type.value].b && r.p.c === IZH[type.value].c && r.p.d === IZH[type.value].d) ? '' : ' (parameters edited)'} · ${sp.length} spikes during20–400 ms` + (isis.length ? String.raw` · first interval $${v.fix(isis[0], 1)}$ ms, shortest $${v.fix(Math.min(...isis), 1)}$ ms, last $${v.fix(isis[isis.length - 1], 1)}$ ms` : '');
         });
       },
     },

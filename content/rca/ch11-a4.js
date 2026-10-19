@@ -52,8 +52,8 @@ export default {
       num: '11.29',
       kind: 'Theorem',
       name: 'Bounded sequences of functionals have weak* convergent subsequences',
-      verify: true,
-      statement: String.raw`Let $X$ be a separable normed linear space and $\{\Lambda_n\}$ a sequence of linear functionals on $X$ with $\sup_n\|\Lambda_n\|=M<\infty$. Then some subsequence $\{\Lambda_{n_i}\}$ converges pointwise on $X$: the limit $\Lambda x=\lim_{i\to\infty}\Lambda_{n_i}x$ exists for every $x\in X$, and $\Lambda$ is a linear functional with $\|\Lambda\|\le M$.`,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.29 and proof, pp. 246–247'],
+      statement: String.raw`Let $X$ be a separable Banach space and $\{\Lambda_n\}$ a sequence of linear functionals on $X$ with $\sup_n\|\Lambda_n\|=M<\infty$. Then some subsequence $\{\Lambda_{n_i}\}$ converges pointwise on $X$: the limit $\Lambda x=\lim_{i\to\infty}\Lambda_{n_i}x$ exists for every $x\in X$, and $\Lambda$ is a linear functional with $\|\Lambda\|\le M$.`,
       idea: String.raw`Take a countable dense set $\{x_1,x_2,\dots\}$. The numbers $\Lambda_nx_1$ are bounded by $M\|x_1\|$, so (Bolzano–Weierstrass) some infinite $S_1\subset\N$ makes them converge; inside $S_1$ choose $S_2$ along which $\Lambda_nx_2$ converges, and so on. The **diagonal** sequence — the $i$-th element of $S_i$ — is eventually inside every $S_k$, so it makes $\Lambda_nx_k$ converge for all $k$. The uniform bound $M$ and density give convergence at every $x$ by an $\eps/3$ argument, and linearity and $\|\Lambda\|\le M$ pass to the limit. This is the compactness behind 11.30 (applied to $X=C(T)$, whose dual is the space of measures, 6.19).`,
       caption: String.raw`$X=C(T)$ and $\Lambda_n f=f(e^{in})$, point evaluations of norm $1$ wandering densely around $T$ (faint). Stage $k$ of the diagonal process keeps only the indices for which $\Lambda_n$ of the next test function ($\cos t,\sin t,\dots,\sin3t$, then round again with finer intervals) lies in a halved interval, so the gold arc containing the survivors shrinks; $n_k$ is the next surviving index. Right: $\Lambda_{n_k}g$ for three $g$ — two from the dense set and a bump that is not — settle down, while the original sequence $\Lambda_kg$ (faint) never does. The limit is $\Lambda=\delta_\zeta$.`,
       deps: ['rca-5.2', 'rca-6.19'],
@@ -132,7 +132,7 @@ export default {
       num: '11.30',
       kind: 'Theorem',
       name: 'Harmonic functions with bounded Lᵖ means are Poisson integrals',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.30 and complete proof, pp. 247–248'],
       statement: String.raw`Let $u$ be harmonic in $U$, write $u_r(e^{i\theta})=u(re^{i\theta})$, and let $1\le p\le\infty$.
 (a) If $\sup_{0<r<1}\|u_r\|_1<\infty$, then $u=P[d\mu]$ for a unique complex Borel measure $\mu$ on $T$.
 (b) If $1<p\le\infty$ and $\sup_{0<r<1}\|u_r\|_p<\infty$, then $u=P[f]$ for a unique $f\in L^p(T)$.
@@ -217,13 +217,13 @@ Conversely, every $P[d\mu]$ satisfies $\|u_r\|_1\le\|\mu\|$, and every $P[f]$ wi
       kind: 'Theorem',
       name: 'Bounded holomorphic functions have radial limits a.e.',
       credit: 'Fatou, 1906',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem 11.32 and complete proof, p. 249'],
       statement: String.raw`Let $f$ be a bounded holomorphic function in $U$ ($f\in H^\infty$). Then the radial limit
 $$f^*(e^{i\theta})=\lim_{r\to1}f(re^{i\theta})$$
-exists at almost every point of $T$ (indeed $f$ has nontangential limits a.e.), $f^*\in L^\infty(T)$ with $\|f^*\|_\infty=\sup_U|f|$, and $f=P[f^*]$: $f$ is the Poisson integral of its boundary function.`,
-      idea: String.raw`Apply 11.30(b) with $p=\infty$ to the bounded harmonic functions $\operatorname{Re}f$ and $\operatorname{Im}f$: $f=P[g]$ for some $g\in L^\infty(T)$, and $\|g\|_\infty\le\sup|f|$. By 11.22 (or 11.24), $P[g]$ has nontangential limit $g$ at almost every point, so $f^*$ exists a.e. and equals $g$. Finally $|f|=|P[f^*]|\le\|f^*\|_\infty$ gives the equality of norms. The limit may fail along tangential curves: for the singular inner function $S(z)=\exp\big(-\frac{1+z}{1-z}\big)$, $|S|$ is constant on each horocycle at $1$, while the radial limit there is $0$.`,
+exists at almost every point of $T$ (indeed $f$ has nontangential limits a.e.), $f^*\in L^\infty(T)$ with $\|f^*\|_\infty=\sup_U|f|$, and $f=P[f^*]$: $f$ is the Poisson integral of its boundary function. If $f^*=0$ almost everywhere on a nonempty open arc of $T$, then $f\equiv0$ in $U$.`,
+      idea: String.raw`Apply 11.30(b) with $p=\infty$ to the bounded harmonic functions $\operatorname{Re}f$ and $\operatorname{Im}f$: $f=P[g]$ for some $g\in L^\infty(T)$, and $\|g\|_\infty\le\sup|f|$. By 11.23 (or 11.24), $P[g]$ has nontangential limit $g$ at almost every point, so $f^*$ exists a.e. and equals $g$. Finally $|f|=|P[f^*]|\le\|f^*\|_\infty$ gives the equality of norms. For the uniqueness clause, rotate the zero arc finitely many times to cover $T$ and form the corresponding finite product of rotated copies of $f$. That product has boundary values zero a.e., hence is identically zero by the norm equality. If $f$ were nonzero, its zero set and those of the finitely many rotated factors would be countable, contradicting that the product vanishes everywhere. The limit may fail along tangential curves: for the singular inner function $S(z)=\exp\big(-\frac{1+z}{1-z}\big)$, $|S|$ is constant on each horocycle at $1$, while the radial limit there is $0$.`,
       caption: String.raw`Phase portrait of $f$ in $U$. Drag $\zeta$ on $T$: on the right the radial path $r\mapsto f(r\zeta)$ (gold) runs inside the closed unit disc to the boundary value $f^*(\zeta)$ (green), which lies on $|w|=1$ for the inner functions $S$ and $B$ (a Blaschke product whose zeros pile up at $e^{2i}$). For $S$ at $\zeta=1$ the radial limit is $0$, but along the red horocycle $|S|\equiv e^{-1}$. Drag $z$: the readout recomputes $f(z)$ from the boundary values alone, as $P[f^*](z)$.`,
-      deps: ['rca-11.30', 'rca-11.22', 'rca-11.9'],
+      deps: ['rca-11.30', 'rca-11.23', 'rca-11.9'],
       see: ['rca-10.24'],
       tags: ['H∞', 'boundary values', 'Fatou'],
       viz(v) {

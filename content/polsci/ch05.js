@@ -26,9 +26,8 @@ In a large electorate $p$ is tiny: for $n$ voters who are split evenly, the prob
       see: ['polsci-5.2', 'polsci-5.3', 'polsci-5.7'],
       refs: ['Shepsle: voting and turnout', 'Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326'],
       tags: ['turnout', 'pivotal voter'],
-      credit: 'Anthony Downs, 1957',
-      scope: String.raw`The decisive probability is that of an exact tie among $n$ voters who vote independently, with the same chance $q$ for each of two candidates. Real elections are decided through many districts and recounts, and a voter does not know $q$ precisely (polsci-5.3), but even Gelman, Silver and Edlin's estimate for an average U.S. voter in the 2008 presidential election, about 1 chance in 60 million of being decisive, leaves $pB$ very small. The stake and cost values are illustrative and not data.`,
-      verify: true,
+      credit: 'Anthony Downs, 1957 (instrumental reasoning); binomial reconstruction here',
+      scope: String.raw`The tie-as-pivotal convention used here treats breaking an exact tie as decisive; with a fair tie lottery the gain from that event is B/2, so the constant factor changes. The decisive probability plotted is that of an exact tie among $n$ voters who vote independently, with the same chance $q$ for each of two candidates. Real elections are decided through many districts and recounts, and a voter does not know $q$ precisely (polsci-5.3), and Gelman, Silver and Edlin’s model-based pre-election estimate for an average U.S. voter in the 2008 presidential election, about 1 chance in 60 million of being decisive, makes private instrumental benefits small for the fixed illustrative B. Their paper also notes that an altruistic stake covering many people can rationalize voting; tiny p alone does not settle turnout. The stake and cost values are illustrative and not data.`,
       links: { doi: 'https://doi.org/10.1086/257897' },
       viz(v) {
         const s = v.stage({ x: [100, 1e9], y: [1e-6, 1e5], xlog: true, ylog: true, axes: 'box', gutter: true, height: 360, full: true, xlabel: 'number of voters $n$', ylabel: 'expected benefit $pB$ (dollars)' });
@@ -131,7 +130,7 @@ $$P_n(q)=\binom{n}{n/2}\,\bigl(q(1-q)\bigr)^{n/2}.$$
 (c) If $q$ is itself uncertain with a density $f$ that is continuous at $\tfrac12$, then the probability of a tie, averaged over $q$, is asymptotically $f(\tfrac12)/n$; for the uniform density it equals exactly $1/(n+1)$.`,
       idea: String.raw`Stirling's formula (pma-8.22) turns $\binom{n}{n/2}\approx 2^n\sqrt{2/(\pi n)}$ into (a), and the bound in (b) is the same estimate multiplied by $(4q(1-q))^{n/2}<1$. Part (c) is an integral of the binomial probability: the tie probability as a function of $q$ is a spike of height $\sqrt{2/\pi n}$ and width of order $1/\sqrt n$ around $\tfrac12$, whose area is exactly $1/(n+1)$, so a prior that is spread out over the width of the spike gives $f(\tfrac12)/n$. The size of $p$ in the calculus of voting therefore depends on what the voter knows: certainty about a lean makes it vanish, honest uncertainty makes it merely small.`,
       caption: String.raw`Left: the exact distribution of the number of votes for $A$ among $n$ voters; the green bar is the tie. Right (both axes logarithmic): the tie probability against $n$. Blue is the exact value for the lean you set, the dashed line is $\sqrt{2/\pi n}$ for a dead heat, orange is the tie probability when the lean itself is uncertain with the standard deviation $\sigma$ you choose (a normal approximation, which falls like $1/n$ instead of exponentially).`,
-      deps: ['polsci-5.1', 'pma-8.22'],
+      deps: ['polsci-5.1', 'pma-8.22', 'comb-1.6'],
       see: ['polsci-5.2', 'polsci-7.6'],
       refs: ['Shepsle: voting and turnout', 'Good and Mayer (1975), Behavioral Science 20: 25–33', 'Gelman, Silver and Edlin (2012), Economic Inquiry 50: 321–326'],
       tags: ['pivotal voter', 'binomial'],
@@ -173,13 +172,12 @@ $$P_n(q)=\binom{n}{n/2}\,\bigl(q(1-q)\bigr)^{n/2}.$$
 (c) if $p=\tfrac12$, $P_n=\tfrac12$ for every $n$.`,
       idea: String.raw`The number of correct votes is $\mathrm{Bin}(n,p)$ with mean $np$, so the jury is wrong only when this falls to at most $n/2$, which is a deviation of $n(p-\tfrac12)$ below the mean. By the law of large numbers (or sharply by Hoeffding's inequality) such deviations have vanishing probability. Monotonicity comes from comparing a jury of $n$ with one of $n+2$: the extra two voters change the outcome only when the first $n$ are one vote from a tie, and then it is more likely they push the majority toward the correct side. The result rests on the computation of probabilities for the binomial distribution (polsci-5.3) and is the formal core of the wisdom-of-crowds argument for majority rule.`,
       caption: String.raw`Left: the probability that the majority is right as the jury grows, for the competence $p$ you set (blue) with Hoeffding's lower bound (dashed), and the same curve for $1-p$ (red): a jury of the worse-than-chance is certain to be wrong. Right: the distribution of the number of correct votes for the jury size $n$ you choose; the bars to the right of the dashed line, in green, are the cases where the majority is right.`,
-      deps: ['polsci-5.3'],
+      deps: ['polsci-5.3', 'stat-1.16', 'prob-2.2.6'],
       see: ['polsci-5.5', 'polsci-5.8', 'polsci-5.10'],
       refs: ['Shepsle: group decisions', 'Easley and Kleinberg, Networks, Crowds, and Markets, ch. 23'],
       tags: ['jury theorem', 'majority rule'],
       credit: 'Marquis de Condorcet, 1785',
-      scope: String.raw`Holds for independent voters of equal competence $p$ choosing between two alternatives, with sincere voting (polsci-5.6 relaxes the last assumption and polsci-5.5 the independence). With different competences, the same conclusion holds if the average competence stays above $\tfrac12$ and the voters are independent, as shown by later authors; I do not reproduce that here.`,
-      verify: true,
+      scope: String.raw`Holds for independent voters of equal competence $p$ choosing between two alternatives, with sincere voting (polsci-5.6 relaxes the last assumption and polsci-5.5 the independence). With different competences, the same conclusion holds if average competence remains bounded above $\tfrac12$ by a fixed positive margin and the voters are independent, as shown by later authors; I do not reproduce that here.`,
       links: {},
       viz(v) {
         const A = v.stage({ x: [0, 301], y: [0, 1.02], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'jury size $n$', ylabel: 'probability majority is right', title: 'the majority is right' });
@@ -218,10 +216,10 @@ $$P_n(q)=\binom{n}{n/2}\,\bigl(q(1-q)\bigr)^{n/2}.$$
       name: 'Correlated voters break the jury theorem',
       statement: String.raw`Keep the setting of Condorcet's jury theorem (polsci-5.4) but let the votes be dependent in the following way. There is one opinion leader who is right with probability $p>\tfrac12$. Each voter, independently of the others, *follows the leader* with probability $\rho$ and otherwise votes independently, right with probability $p$. Every voter is still right with probability $p$ overall. Then the probability that the majority of $n$ voters is right is
 $$P_n=p\,\Pr\bigl[\mathrm{Bin}(n,\rho+(1-\rho)p)>\tfrac n2\bigr]+(1-p)\,\Pr\bigl[\mathrm{Bin}(n,(1-\rho)p)>\tfrac n2\bigr],$$
-and as $n\to\infty$ it tends to $1$ if $\rho<1-\frac1{2p}$ but to $p$ (not $1$) if $\rho>1-\frac1{2p}$.`,
+and as $n\to\infty$ it tends to $1$ if $\rho<1-\frac1{2p}$, to $p$ if $\rho>1-\frac1{2p}$, and to $(1+p)/2$ exactly at the threshold.`,
       idea: String.raw`Conditional on whether the leader is right, the voters are independent, so the jury theorem applies in each case with the competence of that case. When the leader is right a voter is right with probability $\rho+(1-\rho)p>\tfrac12$ and the majority is right in the limit. When the leader is wrong a voter is right only with probability $(1-\rho)p$, which is below $\tfrac12$ exactly when $\rho>1-\frac1{2p}$, and then the majority is wrong in the limit. With enough shared influence the large group is no better than the leader. This is the dependent version of the theorem: independence is not a technicality but the engine of the result.`,
       caption: String.raw`Left: the probability that the majority is right against the jury size, for the strength of following $\rho$ you set (blue) and for independent voters (dashed grey). The dotted red line is the limit. Right: the probability that the majority is right as a function of $\rho$, for the jury size you choose (blue) and in the limit of an infinite jury (red step). The step sits at $\rho^*=1-1/(2p)$.`,
-      deps: ['polsci-5.4'],
+      deps: ['polsci-5.4', 'stat-2.1'],
       see: ['polsci-5.8', 'soc-7.3'],
       refs: ['Shepsle: group decisions', 'Ladha (1992), American Journal of Political Science 36: 617–634'],
       tags: ['jury theorem', 'correlation'],
@@ -244,19 +242,19 @@ and as $n\to\infty$ it tends to $1$ if $\rho<1-\frac1{2p}$ but to $p$ (not $1$) 
         let info = {};
         v.render(() => {
           const p = pS.value, r = rS.value, n = nS.value % 2 ? nS.value : nS.value + 1, rs = 1 - 1 / (2 * p);
-          const lim = r < rs ? 1 : p;
+          const lim = Math.abs(r-rs)<1e-12 ? (1+p)/2 : r < rs ? 1 : p;
           A.path(curve(p, 0), { color: 'muted', width: 1.6, dash: true });
           A.path(curve(p, r), { color: 'accent', width: 2.4 });
           A.hline(lim, { color: 'red', width: 1.6, dash: [2, 4] });
           A.vline(n, { color: 'gold', width: 1.6, dash: true });
           Bp.path(range(81).map((i) => [i / 80, Pn(n, p, i / 80)]), { color: 'accent', width: 2.4 });
           Bp.line(0, 1, rs, 1, { color: 'red', width: 2.2 }); Bp.line(rs, p, 1, p, { color: 'red', width: 2.2 });
-          Bp.vline(rs, { color: 'red', alpha: 0.4, dash: true });
+          Bp.dot(rs,(1+p)/2,{color:'red',r:5}); Bp.vline(rs, { color: 'red', alpha: 0.4, dash: true });
           Bp.vline(r, { color: 'gold', width: 1.6, dash: true });
           info = { p, r, rs, n, P: Pn(n, p, r), lim };
         });
         v.legend([['accent', 'following $\\rho$'], ['muted', 'independent ($\\rho=0$)', { dash: true }], ['red', 'limit $n\\to\\infty$']]);
-        v.readout(() => `$\\rho^*=1-1/(2p)=${v.fix(info.rs, 3)}$. With $\\rho=${v.fix(info.r, 2)}$ the majority of $n=${info.n}$ is right with probability **${v.fix(info.P, 4)}**; as $n\\to\\infty$ this ${info.r < info.rs ? 'tends to **1**' : `tends to **${v.fix(info.p, 3)}**, the leader's accuracy`}.`);
+        v.readout(() => `$\\rho^*=1-1/(2p)=${v.fix(info.rs, 3)}$. With $\\rho=${v.fix(info.r, 2)}$ the majority of $n=${info.n}$ is right with probability **${v.fix(info.P, 4)}**; as $n\\to\\infty$ this ${Math.abs(info.r-info.rs)<1e-12 ? `tends to **${v.fix(info.lim,3)}** at the threshold` : info.r < info.rs ? 'tends to **1**' : `tends to **${v.fix(info.p, 3)}**, the leader's accuracy`}.`);
       },
     },
   ],

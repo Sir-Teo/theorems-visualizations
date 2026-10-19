@@ -71,11 +71,10 @@ export default {
       idea: String.raw`In (a) the unit middle edge is crossed forwards by one path and "un-crossed" by the next, so each pair of paths adds just two units although two huge edges stay unsaturated. Choosing shortest paths instead needs only two augmentations (11.9). In (b) the bottlenecks form the geometric sequence $r,r^2,r^3,\dots$ with $r^2=1-r$ (so $r^{k}=r^{k+1}+r^{k+2}$): the residual capacities of the three special edges just cycle through $r^k,r^{k+1},0$, forever leaving a path, but the total pushed is the finite sum $1+2\sum_{k\ge1}r^k$.`,
       caption: String.raw`**Unit middle edge:** slide $C$ and step through; the adversarial rule alternates the two paths of bottleneck 1, so the number of augmentations is $2C$, while **shortest** finishes in two. **Irrational capacities:** the adversarial rule repeats a cycle of paths whose bottlenecks shrink like powers of $r$; after 30 augmentations the flow value (gold) is still short of the limit (red line), which itself is far below the true maximum (green). The run is cut off at 30 augmentations.`,
       deps: ['algo-11.5'],
-      refs: ['Erickson Ch. 10'],
+      refs: ['Erickson §10.4, pp. 333–336'], sourceUrl: 'https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf',
       tags: ['flow', 'counterexample'],
-      credit: 'Ford & Fulkerson, Flows in Networks, 1962 (non-termination example); U. Zwick, 1995 (the smallest such networks)',
+      credit: 'Examples and proof: Erickson, Algorithms, §10.4, pp. 333–336; no priority claim is made here',
       links: { doi: 'https://doi.org/10.1016/0304-3975(95)00022-O' },
-      verify: true,
       viz(v) {
         const s = netStage(v, { height: 300, weight: 1.3 });
         const chart = v.stage({ x: [0, 31], y: [0, 10], axes: 'box', gutter: true, height: 300, xlabel: 'augmentation', ylabel: 'flow value', weight: 1 });
@@ -140,11 +139,10 @@ export default {
       idea: String.raw`(i) A push only creates backward edges that run from a vertex at distance $d+1$ to one at distance $d$ (it lies on a shortest path), and such edges can never shorten a distance; so no distance decreases. (ii) When $(u,v)$ is critical it disappears from $G_f$ and has $\delta(v)=\delta(u)+1$. To become critical again it must first reappear, which requires a push along $(v,u)$ when $\delta(u)=\delta(v)+1$; by monotonicity $\delta(u)$ has then grown by at least $2$. Distances are below $|V|$, so each edge is critical $O(|V|)$ times; every augmentation makes some edge critical, which counts $O(|V||E|)$ augmentations. Each costs one BFS, $O(|E|)$.`,
       caption: String.raw`Step through the augmentations (a random network is a click away). The right panel plots, for every vertex, its distance from $s$ in the residual graph at each augmentation: every curve only goes up, never down. Critical edges (those that fill up) are red on the network, and the readout keeps the largest tally of times any one edge was critical, to compare with the $|V|/2$ bound.`,
       deps: ['algo-11.5', 'algo-8.5'],
-      refs: ['CLRS 4e §24.2', 'KT §7.3'],
+      refs: ['Erickson §10.6, Lemmas 10.2–10.3, pp. 341–342'], sourceUrl: 'https://jeffe.cs.illinois.edu/teaching/algorithms/book/Algorithms-JeffE.pdf',
       tags: ['flow'],
-      credit: 'J. Edmonds & R. M. Karp, 1972 (independently E. A. Dinic, 1970)',
+      credit: 'Algorithm and complete distance/bottleneck proof: Erickson, Algorithms, §10.6, pp. 341–342',
       links: { doi: 'https://doi.org/10.1145/321694.321699' },
-      verify: true,
       viz(v) {
         const s = netStage(v, { height: 300, weight: 1.3 });
         const ch = v.stage({ x: [0, 8], y: [0, 7], axes: 'box', gutter: true, height: 300, xlabel: 'augmentation $k$', ylabel: 'distance from $s$ in $G_f$', weight: 1 });

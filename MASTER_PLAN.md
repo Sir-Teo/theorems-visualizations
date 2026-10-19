@@ -1,6 +1,6 @@
 # Master plan: from *Rudin, visualized* to an atlas of human knowledge
 
-> **Status:** in progress (Phase 0 done, Phase 1 under way) · **Scope:** the whole project ·
+> **Status:** waves 3–4 verification blocked on recorded gates; wave 5 has not started · **Scope:** the whole project ·
 > AUTHORING.md stays the rulebook for writing items and gets field-specific extensions (§7).
 >
 > **Revision 2.** The scope widened from STEM theorems to *the breadth of human knowledge*:
@@ -44,7 +44,9 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 | Wave 4 (next chapter of each collection) | **COMPLETE (first pass):** the next unwritten chapter of every collection is written (6,684 items in 450 chapters; build, static check and 272-route smoke test clean). Same verification rule as wave 3; any item with an unconfirmed credit or constant should carry `verify: true`, but a few chapters (climate 4, macro 4, circ 4, energy 4) left some unflagged and need a flagging pass. About 6,890 planned items remain in later chapters (wave 5 = next unwritten chapter of each of the 80 collections). **Open follow-ups:** fact-check pass over all `verify: true` items (waves 3 and 4); manual tests of audio buttons (sig 3.15, sig 4.12, music 7, music 8, physio 4.14, pde 4.2, ling) and of drag/click interactions; syllabus fixes (ecol 4.6 and 4.7 pictures; geo 4.5 spin-down factor; aero Ackeret reference; imaging `stoch-9.3` dep; ling 4 shared file is 590 KB of embedded texts — consider trimming); items cited as unverified in several chapters (e.g. climate 4, macro 4, circ 4 credits). |
 | Papers | 450 landmark papers across all 13 fields in the syllabi, every citation checked (Crossref, archive.org, PubMed…), each linked to the ideas it introduced; `#/papers` with live filter, era grouping and timeline; "First published in" on idea pages; 72 papers written as interactive items so far (reproducing the original numbers), more as their chapters land |
 | Search | one index over written and planned ideas, papers (title, authors, year), fields, collections, chapters, bridges; operators (kind:, field:, col:, year:, by:, is:), facets, typo tolerance; results on the map and timeline |
-| 7 · Connective tissue | 7 bridges (Fourier, spectral theorem, entropy, least action, random walk, contagion, symmetry); home-page chord diagram of cross-field dependencies |
+| 7 · Connective tissue | 8 bridges (Fourier, spectral theorem, fixed points, entropy, least action, random walk, contagion, symmetry); home-page chord diagram of cross-field dependencies |
+
+**Verification checkpoint (2026-10-19, cloud checkout `8e9e930`):** the authorized source, numerical, dependency and browser review passes are recorded in [the verification checkpoint](docs/verification/waves-3-4.md) and [final gate report](docs/verification/final-wave-gates.json). Current light/dark captures cover 6688 visualizations per theme and the 106-item conditional-control inventory; final strict build, regressions, native audio instrumentation and measured map movement pass. The goal remains **blocked**: 243 source flags retain precise original-evidence gaps, 12 written non-math collections fall below 25 cross-field prerequisites, actual human review is 0/339 pages, and subjective audio listening remains pending. The 768 reviewed cross-field additions are integrated; no weak links were invented to meet a quota. The original analysis flags are resolved. Wave 5 has not started. The original open-follow-up lists above describe the starting state; the checkpoint records subsequent closures and limits.
 
 ### Where we started
 

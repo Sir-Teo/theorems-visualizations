@@ -64,7 +64,7 @@ export default {
       scope: String.raw`A statement about the deterministic equation (infinitely many patches). A real metapopulation has finitely many patches, so even for $e<c$ chance can remove the last occupied patch; the smaller the network, the more the sharp threshold is blurred.`,
       idea: String.raw`Write $\dot p=p\,(c(1-p)-e)$. At $p=0$ the linearization is $\dot p\approx (c-e)p$, which grows if $c>e$ and decays if $c<e$. For $c>e$ the bracket is positive for $p<1-e/c$ and negative above it, so $p$ is pushed toward $1-e/c$ from both sides; for $c\le e$ it is negative for all $p>0$. Equivalently $1/p$ satisfies a linear equation (this is the logistic equation of mathbio-1.4), which gives the solution explicitly.`,
       caption: String.raw`Drag the gold handle along the horizontal axis to set $e/c$ (with $c=1$). The curve is the theorem, $\max(0,1-e/c)$; the dots are averages over 10 simulated metapopulations of $N$ patches each, started at half occupancy and run to $t=40$. Right: the 12 runs at the chosen $e/c$, with the deterministic solution (orange). With many patches the dots hug the line and fall to zero at $e/c=1$; shrink $N$ and the runs scatter, extinctions appear below the threshold, and the corner of the curve is rounded off.`,
-      deps: ['ecol-3.1'],
+      deps: ['ecol-3.1', 'ode-1.8'],
       refs: ['Begon ch. 6'],
       tags: ['persistence', 'threshold', 'metapopulation'],
       viz(v) {
@@ -212,7 +212,7 @@ export default {
       scope: String.raw`Brown and Kodric-Brown introduced the rescue effect for islands in the MacArthur–Wilson framework, as lower extinction on islands that receive more immigrants. The particular exponential form $e\,e^{-kp}$ and the global dispersal used here are an illustrative choice; the qualitative bistability needs only that extinction falls fast enough with occupancy.`,
       idea: String.raw`Without rescue ($k=0$) the model is Levins' (3.1) and has a single globally attracting equilibrium for $c>e$. Rescue makes per-patch extinction depend on $p$, turning $\dot p/p=c(1-p)-e\,e^{-kp}$ into a function that can start negative at $p=0$ (if $c<e$) and become positive at larger $p$. Its two zeros are the unstable threshold and the high stable state; the sign of the bracket tells which way each starting point flows.`,
       caption: String.raw`Left: the same grid as in 3.1; pale gold flashes mark patches where an extinction was just cancelled by immigration. Right: the net growth rate $\dot p$ against $p$; green dots are stable equilibria, the red ring the unstable threshold. Set the rescue strength $k$ to zero and the threshold disappears (extinction is the only stable state when $c<e$). With $k$ large, start below the threshold and the metapopulation dies; start above it and it recovers.`,
-      deps: ['ecol-3.1'],
+      deps: ['ecol-3.1', 'ode-1.7'],
       refs: ['Begon ch. 6'],
       tags: ['rescue effect', 'bistability', 'immigration'],
       viz(v) {
@@ -263,7 +263,7 @@ export default {
       scope: String.raw`A deterministic two-patch caricature: logistic growth in the source, density-independent net loss in the sink, a constant emigration fraction, no return migration and no behavioural habitat choice. Pulliam (1988) built a more general model with several habitats and density-dependent regulation; the point shown here, that a count of individuals in a habitat does not show that the habitat is self-sustaining, is the central one.`,
       idea: String.raw`The sink equation is linear: the sink loses individuals at rate $d$ per capita and gains $mN_1$ from the source, so it settles where gain equals loss, $N_2^*=mN_1/d$. The source equation is logistic (mathbio-1.2 and 1.4 show the exponential and logistic pieces) with emigration acting as an extra death rate $m$, which lowers its growth rate to $r-m$ and its equilibrium to $K(1-m/r)$. When $m\ge r$ the source itself becomes a sink and everything is lost.`,
       caption: String.raw`Left: circle area is population size; the arrow is the flow of emigrants. Right: both populations over time, with their equilibria (dashed). The corridor is cut at $t=35$ (toggle it off to keep it open): the sink collapses at rate $d$ while the source, relieved of emigration, climbs to $K$. Raise $m$ or lower $d$ and the sink holds more animals than the source that feeds it; push $m$ past $r$ and the source is drained as well.`,
-      deps: ['mathbio-1.2'],
+      deps: ['mathbio-1.2', 'ode-1.4'],
       refs: ['Begon ch. 6'],
       tags: ['source-sink', 'dispersal', 'habitat quality'],
       viz(v) {
@@ -321,7 +321,7 @@ export default {
       scope: String.raw`Versions differ in whether a rescue effect is included and in how area enters colonization (here $A_j$ to the first power). The picture below is a synthetic landscape with illustrative parameters; Hanski fitted the parameters of such a model to patch-occupancy surveys of the Glanville fritillary butterfly on the Åland islands, and no survey data are reproduced here. Here $J_i$ is evaluated with the neighbours' occupancies set to their long-run simulated frequencies, which is how the model is used with survey data (observed occupancy pattern in, predicted incidence out); the stochastic chain itself also feeds back on those occupancies, so agreement is approximate.`,
       idea: String.raw`Treating each patch as a Markov chain with transition probabilities $C_i$ (empty to occupied) and $E_i(1-C_i)$ (occupied to empty) gives a stationary occupancy $J_i$ that depends on the neighbours' occupancy through $S_i$. Feeding the pattern of occupancy into $S_i$ predicts each patch's incidence. This is the patch-by-patch version of the Levins model (3.1): the same balance of colonization and extinction, now with extinction set by area and colonization by distance-weighted neighbours.`,
       caption: String.raw`Left: a random landscape of 45 patches (area $\propto$ circle area), animated year by year; filled = occupied. **Click a patch** to remove it from the landscape. Right: each patch's predicted incidence $J_i$ against the fraction of years it was occupied in a 2 500-year simulation of the chain; points near the diagonal mean the formula predicts the simulation. Small, isolated patches have low incidence; remove a hub and its neighbours' incidence drops.`,
-      deps: ['ecol-3.1'],
+      deps: ['ecol-3.1', 'stoch-1.4'],
       refs: ['Begon ch. 6'],
       tags: ['metapopulation', 'patch occupancy', 'spatial model'],
       viz(v) {
@@ -470,7 +470,7 @@ export default {
       scope: String.raw`Holds for equal competitors with full information and no travel or interference costs. Unequal competitors, interference, or imperfect information give "undermatching": too many animals in poor patches. The sliders let you degrade the information.`,
       idea: String.raw`If intake in patch 1 exceeded that in patch 2, any forager in patch 2 would gain by moving, which raises $n_1$ and lowers $r_1/n_1$ until the gain vanishes; the same argument runs the other way. The only state with no profitable move is equal intake. Because intake falls with density, moves are self-correcting and the distribution settles at $n_i=N\,r_i/(r_1+r_2)$.`,
       caption: String.raw`Foragers (dots) reconsider their patch at random times and move if the other patch would pay more after they join it. Drag the food-share and population sliders: the distribution tracks the input ratio and the two intakes equalize (bottom right). Now raise **random moves**: with poor information the fraction in patch 1 sits closer to one half than the inputs warrant, which is undermatching.`,
-      deps: [],
+      deps: ['game-1.3'],
       refs: ['Begon ch. 6'],
       tags: ['habitat choice', 'foraging', 'game theory'],
       viz(v) {

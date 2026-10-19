@@ -256,7 +256,7 @@ $$N(t)=\frac{P}{\lambda+\rho\varepsilon/\Lambda}\Bigl[1-e^{-(\lambda+\rho\vareps
 With no erosion $t=-\ln(1-N\lambda/P)/\lambda$; the concentration saturates at $P/(\lambda+\rho\varepsilon/\Lambda)$, so a measured $N$ gives an *exposure age* only below saturation, and, for old surfaces, the erosion rate.`,
       idea: String.raw`Production adds atoms at a constant rate $P$; decay and erosion (which removes atoms from the surface) remove them in proportion to $N$: $dN/dt=P-(\lambda+\rho\varepsilon/\Lambda)N$. This is the decay-chain balance (geol-2.4) with the source constant, so $N$ rises exponentially to the balance point $P/b$. A measured $N$ lies on this curve at one $t$ for each assumed $\varepsilon$: the age is a *minimum* (zero erosion) or is traded against erosion, and above $P/\lambda$ no age exists.`,
       caption: String.raw`Left: concentration against exposure time for no erosion (dashed) and the chosen erosion rate; drag the horizontal handle to set the measured concentration. Right: the exposure age consistent with that concentration at each erosion rate; it diverges at the maximum erosion rate that can reach it (steady state).`,
-      deps: ['geol-2.1'],
+      deps: ['geol-2.1', 'ode-1.4'],
       refs: ['Press–Siever'],
       tags: ['cosmogenic nuclides', '10Be', 'erosion'],
       scope: String.raw`Valid for a surface of uniform composition with constant production and steady erosion; inherited nuclides from earlier exposure, burial and shielding by snow or soil bias the age.`,

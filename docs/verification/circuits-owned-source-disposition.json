@@ -1,0 +1,1050 @@
+{
+  "date": "2026-10-18",
+  "scope": "All source-flag batches owned by review_circuits; FA1–4 final historical follow-ups were completed by root.",
+  "statusDefinition": "reviewed_blocked means the content and mathematical/model scope were reviewed and source access was assessed, but the named original/claim is still not fully verified. It does not mean primary-source verification passed.",
+  "initialSourceFlags": 203,
+  "retainedCount": 102,
+  "genuinelyUnreviewed": [],
+  "collections": {
+    "circ": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "circ-3.5",
+        "circ-4.5",
+        "circ-4.9",
+        "circ-4.10",
+        "circ-4.13",
+        "circ-4.14",
+        "circ-4.17"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "cm": {
+      "chapters": [
+        2,
+        3,
+        4
+      ],
+      "retained": [
+        "cm-3.2",
+        "cm-3.6",
+        "cm-3.11",
+        "cm-3.14",
+        "cm-3.16",
+        "cm-4.1",
+        "cm-4.2",
+        "cm-4.4",
+        "cm-4.5",
+        "cm-4.8",
+        "cm-4.9",
+        "cm-4.10",
+        "cm-4.11",
+        "cm-4.12"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "fa": {
+      "chapters": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "retained": [],
+      "genuinelyUnreviewed": []
+    },
+    "imaging": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "imaging-3.5",
+        "imaging-3.7",
+        "imaging-3.11",
+        "imaging-3.12",
+        "imaging-3.16",
+        "imaging-3.17",
+        "imaging-3.18",
+        "imaging-4.4",
+        "imaging-4.5",
+        "imaging-4.10"
+      ],
+      "genuinelyUnreviewed": [],
+      "additionalReviewed": [
+        "imaging-4.8"
+      ]
+    },
+    "music": {
+      "chapters": [
+        7,
+        8
+      ],
+      "retained": [
+        "music-7.1",
+        "music-7.2",
+        "music-7.5",
+        "music-7.7",
+        "music-7.8",
+        "music-7.9",
+        "music-7.10",
+        "music-7.12",
+        "music-7.13",
+        "music-7.15",
+        "music-7.17",
+        "music-8.5",
+        "music-8.6",
+        "music-8.9",
+        "music-8.10",
+        "music-8.11",
+        "music-8.12",
+        "music-8.13",
+        "music-8.14",
+        "music-8.15",
+        "music-8.16",
+        "music-8.21"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "ode": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [],
+      "genuinelyUnreviewed": []
+    },
+    "sig": {
+      "chapters": [
+        4
+      ],
+      "retained": [
+        "sig-4.6",
+        "sig-4.13"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "ctrl": {
+      "chapters": [
+        4
+      ],
+      "retained": [],
+      "genuinelyUnreviewed": []
+    },
+    "info": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "info-3.10",
+        "info-4.11",
+        "info-4.16"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "tech": {
+      "chapters": [
+        4,
+        5
+      ],
+      "retained": [
+        "tech-4.1",
+        "tech-4.2",
+        "tech-4.3",
+        "tech-4.4",
+        "tech-4.6",
+        "tech-4.7",
+        "tech-4.8",
+        "tech-4.9",
+        "tech-4.10",
+        "tech-4.11",
+        "tech-5.1",
+        "tech-5.2",
+        "tech-5.3",
+        "tech-5.4",
+        "tech-5.5",
+        "tech-5.6",
+        "tech-5.7",
+        "tech-5.8",
+        "tech-5.9",
+        "tech-5.10",
+        "tech-5.11"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "algo": {
+      "chapters": [
+        10,
+        11
+      ],
+      "retained": [
+        "algo-11.12",
+        "algo-11.22",
+        "algo-11.23"
+      ],
+      "genuinelyUnreviewed": [],
+      "additionalReviewedClosed": [
+        "algo-11.25"
+      ]
+    },
+    "toc": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "toc-3.10",
+        "toc-3.15",
+        "toc-4.4",
+        "toc-4.5",
+        "toc-4.6",
+        "toc-4.8",
+        "toc-4.12"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "crypto": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "crypto-4.2",
+        "crypto-4.8",
+        "crypto-4.10"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "pl": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [],
+      "genuinelyUnreviewed": []
+    },
+    "cplx": {
+      "chapters": [
+        2,
+        4
+      ],
+      "retained": [
+        "cplx-2.12",
+        "cplx-4.3",
+        "cplx-4.13"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "dist": {
+      "chapters": [
+        4
+      ],
+      "retained": [
+        "dist-4.6",
+        "dist-4.7",
+        "dist-4.13"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "robot": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "robot-3.7"
+      ],
+      "genuinelyUnreviewed": []
+    },
+    "cg": {
+      "chapters": [
+        3,
+        4
+      ],
+      "retained": [
+        "cg-3.3",
+        "cg-4.7"
+      ],
+      "genuinelyUnreviewed": [],
+      "additionalReviewedClosed": [
+        "cg-3.5"
+      ]
+    },
+    "pde": {
+      "chapters": [
+        3,
+        4
+      ],
+      "reviewed": [
+        "pde-3.11",
+        "pde-3.12",
+        "pde-4.1",
+        "pde-4.2",
+        "pde-4.3",
+        "pde-4.5",
+        "pde-4.6",
+        "pde-4.7",
+        "pde-4.12"
+      ],
+      "closed": [
+        "pde-3.11",
+        "pde-4.1",
+        "pde-4.2",
+        "pde-4.3",
+        "pde-4.5",
+        "pde-4.6",
+        "pde-4.7",
+        "pde-4.12"
+      ],
+      "retained": [
+        "pde-3.12"
+      ],
+      "genuinelyUnreviewed": [],
+      "additionalUnflaggedReviewed": [
+        "pde-4.9",
+        "pde-3.14"
+      ]
+    }
+  },
+  "retained": [
+    {
+      "id": "circ-3.5",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch03.js",
+      "missingFullSourceOrClaim": "Full Jacobi original for c1840 maximum-power/efficiency attribution; mathematical terminal-equivalent scope corrected.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.9",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Sheffer1913 original and Peirce unpublished priority source.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.10",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Sah and Shichman–Hodges model comparison, especially the exact empirical channel-length convention.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.13",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Eccles–Jordan1918/1919 trigger-relay original; tanh latch is explicitly a modern model.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.14",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04-c.js",
+      "missingFullSourceOrClaim": "Full Bardeen–Brattain1948 letter; modern illustrative collector law does not reproduce its original device data.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.17",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04-c.js",
+      "missingFullSourceOrClaim": "Full Wanlass–Sah1963 ISSCC paper; full Wanlass CMOS patent was read but cannot certify the separate conference paper.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "circ-4.5",
+      "status": "reviewed_blocked",
+      "file": "content/circ/ch04.js",
+      "missingFullSourceOrClaim": "Full Pollak/Graetz bridge originals; complete Fleming patent was read but does not establish bridge history.",
+      "report": "docs/verification/circ-ch04.md"
+    },
+    {
+      "id": "cm-3.11",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch03-b.js",
+      "missingFullSourceOrClaim": "Lindemann1910 original and nine-element mixed-source preset table remain unverified. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-3.14",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch03-b.js",
+      "missingFullSourceOrClaim": "Full Feynman1955 functional, higher-order coefficients, strong-coupling effective mass, material α presets and historical originals remain unchecked. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-3.16",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch03-b.js",
+      "missingFullSourceOrClaim": "1934 originals, Peierls–Nabarro convention and unspecific0.5–10MPa yield range not independently sourced. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-3.2",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch03.js",
+      "missingFullSourceOrClaim": "Original1924 priority and precise hcp/fcc energy difference not checked in their originals. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-3.6",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch03.js",
+      "missingFullSourceOrClaim": "Specified alloy/metal velocity, density/spacing presets and bulk-versus-rod conventions lack inspected originals. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.8",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04-b.js",
+      "missingFullSourceOrClaim": "Sah–Noyce–Shockley original, mobility presets and exact recombination approximation not checked. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.9",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04-b.js",
+      "missingFullSourceOrClaim": "Historical LED originals, silicon radiative coefficient, nominal alloy gaps remain unverified. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.10",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04-b.js",
+      "missingFullSourceOrClaim": "Brews original charge-sheet comparison, device-history originals and inherited material presets remain. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.11",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04-b.js",
+      "missingFullSourceOrClaim": "BenDaniel–Duke, Esaki–Tsu and Dingle originals, numerical offset claims and alloy presets not available as inspected originals.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.12",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04-b.js",
+      "missingFullSourceOrClaim": "Earlier Frenkel/Wannier/Gross/Elliott originals and all GaAs/lattice presets not independently inspected. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.1",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04.js",
+      "missingFullSourceOrClaim": "Material valley/gap/phonon presets and detailed edge law need original optical/band references. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.2",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04.js",
+      "missingFullSourceOrClaim": "Varshni parameter and effective-mass preset accuracy still lacks inspected original tables. Removed shared helper's unsupported “few percent” assurance. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.4",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04.js",
+      "missingFullSourceOrClaim": "Kohn–Luttinger original, GaAs donor and other geometric/material presets not fully checked. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "cm-4.5",
+      "status": "reviewed_blocked",
+      "file": "content/cm/ch04.js",
+      "missingFullSourceOrClaim": "Inherited Varshni/mass/GaAs donor presets remain source gaps. Flag retained.",
+      "report": "docs/verification/cm-source-review.md"
+    },
+    {
+      "id": "imaging-3.7",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-b.js",
+      "missingFullSourceOrClaim": "Retained. Full Kak–Slaney ramp normalization checked and uniform-disc reconstruction independently tested. Ramachandran–Lakshminarayanan 1971 and Shepp–Logan 1974 originals not read. Correct 1971 PMCID is PMC 389392; EuropePMC PDF 403/fullTextXML 500 and NCBI returned an HTML checkpoint rather than a PDF.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.11",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-c.js",
+      "missingFullSourceOrClaim": "Retained. Full projection proof and convergence hypotheses checked in Kak–Slaney; inconsistent equations need not have a common solution, and cyclic iterates can approach a row-dependent cycle. Removed an unconditional optimal-early-stop claim. Original Kaczmarz 1937 and Gordon–Bender–Herman 1970 not obtained.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.12",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-c.js",
+      "missingFullSourceOrClaim": "Retained. Checked normalized nonnegative-matrix SIRT and full SART author account. Qualifies convergence/early stopping and explicitly distinguishes this pixel-matrix block algorithm from original SART's bilinear/Hamming reconstruction. Gilbert 1972/original Andersen–Kak 1984 papers not read directly.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.16",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-d.js",
+      "missingFullSourceOrClaim": "Retained. Checked complete Born/Rytov/Fourier-diffraction derivation. Clarifies Rytov linearization uses u 0 log(u/u 0), with phase-gradient rather than total-phase restriction. Wolf 1969 and Mueller–Kaveh–Wade 1979 originals not read.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.17",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-d.js",
+      "missingFullSourceOrClaim": "Retained. Cormack's firsthand Nobel history supports the independent development and experiment. Removed unsupported universal ignorance/chronology claims. Exact 1963 publication model/data placement still needs the original; the numerical phantom remains explicitly a model rather than digitized historical data.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.18",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03-d.js",
+      "missingFullSourceOrClaim": "Retained. Narrowed the unverified first-patient chronology. The 1973 original is still needed for exact 80×80 and 160×180 scanner counts; Nobel source is not used to certify those numbers.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-3.5",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch03.js",
+      "missingFullSourceOrClaim": "Retained. Corrected false compact-support limited-angle nonuniqueness: continuous noiseless data over any open angular interval determine a compactly supported object by analytic continuation, with severe instability. Ordinary inversion formula now has sufficient regularity. Exact Radon 1917 original and the limited-angle continuation source remain unverified.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-4.5",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch04-b.js",
+      "missingFullSourceOrClaim": "Retained. Chang 1978 original attenuation-correction method not read; model scope remains explicit.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-4.10",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch04-c.js",
+      "missingFullSourceOrClaim": "Retained. Correct exact irreversible identity: with a=k 2+k 3, C 1+C 2=Ki∫Cp+(k 2/a)C 1; intercept includes this transient term plus model vascular contribution. Avoids integrating late equilibrium back to zero. Reversible-trap bias qualified. Actual curve scale now set before drawing and includes noisy high-rate frames. Original Patlak 1983 returned 403; Phelps 1979 clinical rate table remains explicitly unverified.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "imaging-4.4",
+      "status": "reviewed_blocked",
+      "file": "content/imaging/ch04.js",
+      "missingFullSourceOrClaim": "Retained. Fixed g∝Rc² claim: it requires fixed open-area ratio; fixed septal thickness gives local log slope 2–4. The actual computed doubling factor replaces an unconditional fourfold claim. K≈.24, effective-length and penetration approximations still need the exact collimator source and diameter convention; presets remain illustrative.",
+      "report": "docs/verification/imaging-source-review.md"
+    },
+    {
+      "id": "music-7.7",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-b.js",
+      "missingFullSourceOrClaim": "Corrected false exact alpha=1/11 claim everywhere, including actual preset and readout: exact alpha=(pure-fifth−700)/syntonic-comma≈0.090903680. Approximation is explicitly distinguished. Aron 1523/Zarlino 1571 first-description claims remain unchecked.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.8",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-b.js",
+      "missingFullSourceOrClaim": "Corrected major-third error sign: syntonic comma minus the sum of four narrowings. Full Benson recipes corroborate the modeled recipes but do not directly establish original Werckmeister/Kirnberger/Vallotti dates or historical recipe variants; flag retained.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.9",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-b.js",
+      "missingFullSourceOrClaim": "Exact equal-step ratios and errors checked; cross-reference no longer asserts exact eleventh-comma equality. ZhuZaiyu/Stevin priority/publication originals remain unread.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.10",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-b.js",
+      "missingFullSourceOrClaim": "Full convergent discussion plus independent arithmetic reasoning; second-kind best approximation distinguished from first-kind. Huygens/Lagrange attribution still open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.12",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-b.js",
+      "missingFullSourceOrClaim": "19/31 tables and meantone comparison checked in full Benson passages. Salinas/Woolhouse/Rossi/Huygens/Fokker exact dates/priority remain open; textbook history is not direct verification.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.13",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-c.js",
+      "missingFullSourceOrClaim": "Removed false uniform 1.5 cent guarantee for every five-limit interval. The displayed eleven ratios have maxerror 1.5445 cents; error for 3^a 5^b is a e 3+b e 5 and can grow (27/25≈2.61 cents under this mapping). Removed register-independent <1 Hz beat claim. JingFang/Mercator/Bosanquet original sources remain open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.15",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-c.js",
+      "missingFullSourceOrClaim": "Distinguishes finite quotient classes from a continuous torus and from a faithfully embedded octave tuning; arbitrary quotients need not be cyclic. A kernel basis, not any independent pair, is needed to get exactlynclasses. Actual panel rejects dependent vectors rather than claiming 0 notes. All preset determinants/unique pitches independently tested. Original Fokker 1969 three-prime paper not read; the 5-limit panel is explicitly distinct.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.17",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07-c.js",
+      "missingFullSourceOrClaim": "Full Benson just/equal tables confirm the entire ratio list. Clarifies model versus perception, and distinguishes ideal odd-harmonic pipes from real clarinets. Bohlen 1972/1978, vanProoijen 1978 and Pierce/Mathews/Roberts 1984 priority originals remain open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.1",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07.js",
+      "missingFullSourceOrClaim": "Corrected five-note pentatonic=four consecutive fifths, seven-note diatonic=six fifths. Full Benson tuning table checked. Ancient Philolaus/Plato/Pythagoras priority originals remain unread.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.2",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07.js",
+      "missingFullSourceOrClaim": "Uses exact 1200 k log 2(3/2), not a finite rounded decimal, in distinctness claim. Clarifies density uses integer multiples of arbitrarily small rotations. Irrationality proof checked against full Benson§6.2. Euclid/Boethius/Kronecker 1884 historical sources remain unchecked.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-7.5",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch07.js",
+      "missingFullSourceOrClaim": "Full just-scale table and I/IV/V ratios checked. Ptolemy/Zarlino originals and exact priority chronology still open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.9",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "All 4096 canonical representatives checked against independent full-orbit first-last-second search, matching full Benson convention. Exact original Forte 1964/1973/Rahn 1980 numbering/conventions remain unverified.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.10",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "Full Burnside proof/tables plus independent cycle-polynomial counts confirm 352/224 and every cardinality count. Original Burnside 1897/Cauchy/Frobenius/Reiner 1985 historical attributions not directly checked.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.11",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "Full Benson pair-count definition and exhaustive vector invariance checked. Claim about Forte 1964 establishing the invariant still needs the original.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.12",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "Exhaustive complement shifts checked for every cardinality; corrected reference to equal Fourier magnitudes to distinguish k=0. Babbitt/Lewin 1959–60/Kassler/etc. priority and exact papers remain open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.13",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "Enumerated 23 pairs with stated 1/3/15/3/1 cardinality distribution, all hexachord pairs complementary up toT/I. Full Benson counterexample checked. Forte/Hanson naming/priority originals not read.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.14",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-b.js",
+      "missingFullSourceOrClaim": "DFT rotation/conjugation and finite 12-tone maximum claims mathematically checked; original Lewin/Quinn/Amiot chronology and full general maximally-even theorem remain open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.15",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-c.js",
+      "missingFullSourceOrClaim": "Corrects false equal-vector claim for **all** complements: k≠0 magnitudes always agree, k=0 only for hexachords. Same-vector/full-magnitude equivalence now explicitly assumes equal cardinality (empty/singleton edge). Exhaustive inverse-DFT/complement checks. Lewin/Quinn/Amiot original attributions remain open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.16",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-c.js",
+      "missingFullSourceOrClaim": "Tone-row operations checked against full Benson and permutation model; Berg row and Schoenberg/Hauer chronology still require original score/treatises.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.21",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08-c.js",
+      "missingFullSourceOrClaim": "Original 1671 text supports adjacent/hunt/24-row constructions; actual four/five/six-bell presets independently checked. Exact 1668 first-print/1677 chronology still open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.5",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08.js",
+      "missingFullSourceOrClaim": "Removed false converse identifying every Myhill set with a maximally even set: chromatic{0,1,2,3,4}has two sizes for each generic interval without maximal evenness. Displayed sufficient theorem/proof checked; original Clough–Myerson 1985 not read.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "music-8.6",
+      "status": "reviewed_blocked",
+      "file": "content/music/ch08.js",
+      "missingFullSourceOrClaim": "Actual rational-generator panel removes repeated pitch classes before counting positive gaps;700 cents with 24 notes has 12 distinct equally spaced pitches, not a spurious zero gap. Original three-gap proofs and Carey–Clampitt 1989 still open.",
+      "report": "docs/verification/music-source-review.md"
+    },
+    {
+      "id": "sig-4.6",
+      "status": "reviewed_blocked",
+      "file": "content/sig/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Parseval1799 and Plancherel originals for the precise historical statements.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "sig-4.13",
+      "status": "reviewed_blocked",
+      "file": "content/sig/ch04-d.js",
+      "missingFullSourceOrClaim": "Full du Bois-Reymond1873 and Fejér1910 originals for history/construction attribution; corrected6.10 bound is mathematically checked.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "info-3.10",
+      "status": "reviewed_blocked",
+      "file": "content/info/ch03-b.js",
+      "missingFullSourceOrClaim": "Exact first Stein source and related original Chernoff paper. Full Cover–Thomas theorem/proof checked; boundary randomization and error-exponent scope repaired.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "info-4.11",
+      "status": "reviewed_blocked",
+      "file": "content/info/ch04-b.js",
+      "missingFullSourceOrClaim": "Original unpublished Elias/Abramson1963/Gilbert–Moore attribution and exact priority. Full textbook cumulative-probability construction checked.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "info-4.16",
+      "status": "reviewed_blocked",
+      "file": "content/info/ch04-c.js",
+      "missingFullSourceOrClaim": "Full Solomonoff/Kolmogorov/Chaitin original papers and plain-versus-prefix distinctions. Full textbook entropy argument checked and prefix/auxiliary convention repaired.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.7",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Water-driven pestles and hammers are reported from Han China (first century CE or earlier, interpretations differ); mechanised forge hammers are recorded in Europe from the 12th century. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.8",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Early medieval northern Europe (heavy plough); horse collar: earliest secure depiction in China, 5th century CE (Dunhuang), and in Europe c. 800–1000. Both the dates and the size of their effects are disputed. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.9",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: China, 3rd–4th century CE (a single mounting stirrup in a Jin tomb figurine of 302 CE; paired riding stirrups from the 320s–415 CE); spread west through Central Asia from the 6th century. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.10",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Qiao Weiyue, China, 984 CE (Song dynasty, near Huai’an); in Europe, pound locks in the Low Countries and Italy in the 14th–15th centuries. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.11",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Sternpost rudder: a Han pottery boat model (1st century CE) from Guangzhou, and European depictions c. 1180; lateen sail: Mediterranean, 2nd century CE iconography, excavated rigs from about 400 CE. Transmission between regions is argued, not settled. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.1",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: No single inventor. Arched openings are older than Rome (Near East and Egypt); Roman builders made the semicircular arch the basis of bridges, aqueducts and vaults. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.2",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Roman builders in central Italy, 2nd century BCE onward; described by Vitruvius, c. 25 BCE. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.3",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Roman aqueducts from the late 4th century BCE; pressure pipes (inverted siphons) already in Hellenistic Pergamon, 2nd century BCE. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.4",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Hellenistic Greek world. Earliest textual evidence: Philo of Byzantium, 3rd century BCE; first technical description: Vitruvius, c. 25 BCE. Whether the horizontal or the vertical wheel came first is disputed. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-4.6",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch04.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Panemone (vertical-axis) windmills reported from Persia, dated between the 7th and 10th centuries by different authors; horizontal-axis post mills in north-west Europe from the 1180s (earliest certain English reference 1185, Weedley, Yorkshire). Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.7",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Disputed: William Clement (London, turret clock for King's College, Cambridge, 1671) is the traditional attribution; Joseph Knibb supplied an anchor-escapement turret clock for Wadham College, Oxford in 1670; Robert Hooke's claim rests on a statement of William Derham (1696) and has no documentary support. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.8",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Christiaan Huygens (spiral spring watch, announced in the Journal des Sçavans, February 1675) and Robert Hooke (claimed since 1658–1660s; a spring-regulated watch was shown in 1675); Isaac Thuret made watches for Huygens; the priority dispute was not settled in England. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.9",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Posed by the voyages of the 15th–17th centuries; the Longitude Act of 1714 (Queen Anne) offered up to £20,000 for a method accurate to half a degree at the end of a voyage to the West Indies (lesser prizes for 1° and 2/3°); the clock approach was proposed by Gemma Frisius in 1530, the lunar-distance method by others. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.10",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: John Harrison, H1 (1735), H2, H3, then the watch-form H4 (completed 1759); H4 was tested on a voyage to Jamaica (1761–62) and to Barbados (1764) and its timekeeping met the terms of the Longitude Act; the Board of Longitude paid Harrison in stages (the full award was long delayed). Reported performance: about 5 seconds slow after 81 days to Jamaica (figure disputed, see the text). Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.11",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05-b.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: John Hadley (octant, 1731) and, independently, Thomas Godfrey of Philadelphia (about 1730–31); Isaac Newton described a similar instrument to Halley earlier, but his description was published only after Halley's death in 1742; the sextant (a 60° arc) followed in the 1750s. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.1",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Oldest surviving example: the alabaster outflow clepsydra from Karnak, in the reign of Amenhotep III (14th century BCE); a tomb inscription of the official Amenemhet (16th century BCE) is the oldest record of one; Ctesibius of Alexandria (3rd century BCE) is credited with the constant-head overflow. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.2",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Origin disputed: stereographic projection is attributed to Hipparchus (2nd century BCE) and treated by Ptolemy (Planisphaerium); the oldest surviving treatise is by John Philoponus (about 550 CE), the first astrolabes in the Islamic world are credited to al-Fazari (8th century), and the earliest surviving instrument is dated 927–928 CE. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.3",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Shen Kuo, Dream Pool Essays (1088): magnetised needle and magnetic declination; Zhu Yu, Pingzhou Ketan (written about 1111–1117): use at sea; Alexander Neckam in Europe (about 1187–1190). Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.4",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Anonymous, probably in northern Italy or England, late 13th century: the earliest tower clocks are recorded from about 1283–1300 (Dunstable, Westminster, Canterbury) and the first clear drawing of an escapement is in the Dondi manuscript (1364); the Salisbury Cathedral clock (about 1386) is an early surviving example whose original escapement is uncertain. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.5",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: The spring-driven clock appears in the early 15th century; the oldest surviving fusee clock is a table clock made for Philip the Good of Burgundy, dated by its decoration to about 1430–1435 (a fusee also appears in a crossbow in a manuscript of 1405 and in drawings of Brunelleschi and Leonardo); the common attribution of the fusee to Jacob Zech of Prague (about 1525) is wrong. Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "tech-5.6",
+      "status": "reviewed_blocked",
+      "file": "content/tech/ch05.js",
+      "missingFullSourceOrClaim": "Full original/archaeological evidence for the following retained claim: Christiaan Huygens, 1656 (model made in the last days of December 1656), built by Salomon Coster in The Hague; patent granted by the States General on 16 June 1657; Horologium (1658); the cycloidal cheeks and the theory in Horologium Oscillatorium (1673). Broad chronology, priority and any historical measured performance remain unverified; see the report for already-read partial sources.",
+      "report": "docs/verification/engineering-source-review.md"
+    },
+    {
+      "id": "algo-11.12",
+      "status": "reviewed_blocked",
+      "file": "content/algo/ch11-b.js",
+      "missingFullSourceOrClaim": "Full König1931/Egerváry1931 originals supporting the attribution and independence claim. Flow/matching mathematics checked, including all512 bipartite3×3 graphs; no original-paper closure inferred.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "algo-11.22",
+      "status": "reviewed_blocked",
+      "file": "content/algo/ch11-d.js",
+      "missingFullSourceOrClaim": "Full Klee–Minty1972 original, including its exact deformed-cube coefficients and pivot rule. Displayed family independently tested through n6; original source not obtained.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "algo-11.23",
+      "status": "reviewed_blocked",
+      "file": "content/algo/ch11-d.js",
+      "missingFullSourceOrClaim": "Complete rational-input bit-complexity argument and original Khachiyan1979/Karmarkar1984 claims. Full Boyd barrier-gap derivation and complete Stanford ellipsoid lecture were read; these do not establish the full exact-bit theorem or original publication priority.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-3.10",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch03-b.js",
+      "missingFullSourceOrClaim": "Full Arden delayed-logic/finite-state-machines original and precise1960/1961 locator; mathematical epsilon case repaired and independently checked.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-3.15",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch03-b.js",
+      "missingFullSourceOrClaim": "Full1956 Automata Studies chapter. Complete1951 RAND RM704 available and relevant sections checked, but exact1956 chapter/version comparison remains open.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-4.6",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch04-b.js",
+      "missingFullSourceOrClaim": "Full original Myhill/Nerode minimal-automaton characterization supporting attribution; quotient/isomorphism proof reviewed.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-4.8",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Brzozowski1962/1963 original and exact source version. Partial-DFA/empty-subset convention corrected; existing-state-ID collision fixed and exhaustive short-word regression passed.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-4.12",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch04-c.js",
+      "missingFullSourceOrClaim": "Full Büchi1960/1962 original for historical claim and finite-union UV^omega characterization. Vardi–Wolper full author preprint supports acceptance definition; eventual-cycle overstatement repaired.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-4.4",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch04.js",
+      "missingFullSourceOrClaim": "Full Myhill1957 report and Nerode1958 original, including precise attribution. AMS original PDF requests returned403; suffix/right-congruence mathematics checked.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "toc-4.5",
+      "status": "reviewed_blocked",
+      "file": "content/toc/ch04.js",
+      "missingFullSourceOrClaim": "Full Myhill1957/Nerode1958 originals, not secondary bibliographies. Canonical quotient proof reviewed; original source remains unavailable in this review.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "crypto-4.8",
+      "status": "reviewed_blocked",
+      "file": "content/crypto/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Biham–Shamir, Matsui, and Coppersmith originals for DES data complexities/history, plus full PRESENT source for its table. Full Heys tutorial available: Table1 and complete piling-up independence argument checked. Removed universal-small-cell and unconditional round-independence errors.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "crypto-4.10",
+      "status": "reviewed_blocked",
+      "file": "content/crypto/ch04-c.js",
+      "missingFullSourceOrClaim": "An original source matching fixed-key CBC and its earliest attribution. Full US4074066A description/claim1 was read but it changes the key each block, so it does not match the displayed fixed-key formula. Complete NIST38A mode/IV/counter provisions and Diffie–Hellman1979 counter construction were read.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "crypto-4.2",
+      "status": "reviewed_blocked",
+      "file": "content/crypto/ch04.js",
+      "missingFullSourceOrClaim": "Full Mantin–Shamir2001 original for RC4 bias and exact key-schedule assumptions, and Bernstein2008 original for historical variant/date claims. Complete RFC8439 relevant sections and published quarter-round/block vectors checked; initial-PRGA bias condition corrected.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "cplx-2.12",
+      "status": "reviewed_blocked",
+      "file": "content/cplx/ch02-b.js",
+      "missingFullSourceOrClaim": "Full Mahaney general sparse-set proof and original Berman/Ogiwara–Watanabe claims. Current tally demonstration is explicitly narrower; non-sparse does not mean exponentially dense at every length.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "cplx-4.13",
+      "status": "reviewed_blocked",
+      "file": "content/cplx/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Borodin1977 and relevant Savitch1970 originals supporting exact uniform inclusions/attribution. NC1 path-workspace explanation repaired and Boolean squaring reviewed, but no original-source closure inferred.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "cplx-4.3",
+      "status": "reviewed_blocked",
+      "file": "content/cplx/ch04.js",
+      "missingFullSourceOrClaim": "Full Lupanov1958 original for leading (1+o(1)) constant and exact gate-basis convention, plus Shannon–Muller attribution. Implemented O(2^n/n) block method independently tested for all3-variable functions and larger random tables; not a source proof of the optimal leading constant.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "dist-4.6",
+      "status": "reviewed_blocked",
+      "file": "content/dist/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Lehmann–Rabin1981 original and precise primitive/scheduler model for deterministic symmetric impossibility. HUJI returned an access-error HTML page and alternate PDF attempts failed. Atomic multi-fork operations explicitly excluded.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "dist-4.7",
+      "status": "reviewed_blocked",
+      "file": "content/dist/ch04-b.js",
+      "missingFullSourceOrClaim": "Full Lehmann–Rabin1981 original progress proof and its fairness/atomicity model. False individual lockout-freedom claim removed with an actual-engine fair-schedule starvation counterexample. Positive-probability system-progress proof still awaits original comparison.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "dist-4.13",
+      "status": "reviewed_blocked",
+      "file": "content/dist/ch04-d.js",
+      "missingFullSourceOrClaim": "Exact one-page Dijkstra1965 CACM note and its code. Full author EWD123 is available but contains a related integer b/c/turn0 construction rather than the exact claimed note; it cannot certify this memory transcription.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "robot-3.7",
+      "status": "reviewed_blocked",
+      "file": "content/robot/ch03.js",
+      "missingFullSourceOrClaim": "Full Denavit–Hartenberg1955 original. Modern R/P-chain transforms and convention scope reviewed; broad multi-DoF/lower-pair claim narrowed. Full original-paper comparison remains open. Bounded new public Penn/GWU leads both resolved to modern lecture slides rather than the1955 original; no source closure inferred.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "cg-3.3",
+      "status": "reviewed_blocked",
+      "file": "content/cg/ch03.js",
+      "missingFullSourceOrClaim": "Full de Berg§2.2 source passage and original DCEL attribution. Connected-graph scope repaired; general faces with holes need multiple boundary-component pointers. Complete de Berg/Mount source was not obtained.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "cg-4.7",
+      "status": "reviewed_blocked",
+      "file": "content/cg/ch04-b.js",
+      "missingFullSourceOrClaim": "Full zone-theorem original(s), correct constant/edge-count convention and charging proof. Unverified best9.5m claim and unsupported five-new-edges induction removed. Explicitly separates tested arrangement counts from an uninspected linear-bound proof.",
+      "report": "docs/verification/computing-source-review.md"
+    },
+    {
+      "id": "pde-3.12",
+      "status": "reviewed_blocked",
+      "file": "content/pde/ch03-c.js",
+      "missingFullSourceOrClaim": "Full Tychonoff1935 original Mat.Sb.42 pp199–216, historical attribution and precise original growth classes. Full Evans1st§2.3.3 pp57–59 read, but it refers to John for the construction. Uniform-strip growth error and invalid numerical rounding/tail certificate repaired; Gevrey construction derived independently. Official MathNet issue attempt returned403.",
+      "report": "docs/verification/pde-source-review.md"
+    }
+  ],
+  "additionalSourceFlags": [],
+  "additionalReviewedClosed": [
+    {
+      "id": "imaging-4.8",
+      "status": "closed",
+      "report": "docs/verification/imaging-mlem-followup.md",
+      "evidence": "Full Shepp–Vardi1982 original and complete Hudson–Larkin1994 primary manuscript; exact OSEM update, start/sensitivity conditions, noisy-data limits and conditional exact-data appendix read."
+    },
+    {
+      "id": "algo-11.25",
+      "status": "closed",
+      "report": "docs/verification/computing-bounded-primary-followup.md",
+      "evidence": "Complete original399–404 read from Yale faculty reading archive; nonconstructive undirected theorem, source–sink-planar algorithm and duality corrected; modern residual demonstration explicitly separated."
+    },
+    {
+      "id": "cg-3.5",
+      "status": "closed",
+      "report": "docs/verification/computing-bounded-primary-followup.md",
+      "evidence": "Complete original648–651 read from official UNL institutional archive, including proof/figures/applications. Removed optional unsupported Dehn-priority aside rather than certifying it."
+    }
+  ]
+}

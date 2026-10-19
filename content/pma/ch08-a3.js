@@ -188,13 +188,13 @@ In particular $c_n\to0$.`,
       credit: 'Dirichlet, 1829',
       statement: String.raw`For $f$ of period $2\pi$, Riemann-integrable on $[-\pi,\pi]$, let $c_n=\frac1{2\pi}\int_{-\pi}^{\pi}f(t)e^{-int}\,dt$ and let $s_N(f;x)=\sum_{n=-N}^{N}c_ne^{inx}$ be the $N$-th partial sum of its Fourier series. The **Dirichlet kernel** is
 $$D_N(x)=\sum_{n=-N}^{N}e^{inx}=\frac{\sin\bigl(N+\frac12\bigr)x}{\sin(x/2)},$$
-and substituting the formula for $c_n$ gives
+where the quotient has its continuous value $2N+1$ at $x\in2\pi\mathbb Z$. Substituting the formula for $c_n$ gives
 $$s_N(f;x)=\frac1{2\pi}\int_{-\pi}^{\pi}f(x-t)\,D_N(t)\,dt .$$
 Moreover $\frac1{2\pi}\int_{-\pi}^{\pi}D_N=1$, and Bessel's inequality takes the form $\frac1{2\pi}\int_{-\pi}^{\pi}|s_N(f)|^2=\sum_{|n|\le N}|c_n|^2\le\frac1{2\pi}\int_{-\pi}^{\pi}|f|^2$.`,
       idea: String.raw`Multiply $D_N$ by $e^{ix/2}-e^{-ix/2}=2i\sin(x/2)$: the sum telescopes to $e^{i(N+\frac12)x}-e^{-i(N+\frac12)x}$, giving the closed form. The integral formula is just $\sum_n c_ne^{inx}$ with $c_n$ written out, followed by the change of variable $t\mapsto x-t$ (allowed by periodicity).`,
       caption: String.raw`Left: $D_N$ in closed form (blue) and as the geometric sum $\sum_{|n|\le N}e^{inx}$ (gold dots) — they agree; the faint curves are the envelope $\pm1/|\sin(x/2)|$, and the area under $D_N/2\pi$ is always $1$. Right: $s_N(f;x)$ computed from the coefficients (gold) and from the convolution with $D_N$ (green dots).`,
       deps: ['pma-8.9', 'pma-8.10'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 8.13, pp. 188–189'],
       tags: ['Fourier series', 'Dirichlet kernel'],
       viz(v) {
         const M = v.M;

@@ -7,15 +7,13 @@ const S3 = Math.sqrt(3), S6 = Math.sqrt(6);
 // ── fcc seen along [1-10]: columns of the (111) layers ─────────────────────────────────────────────────────────────────
 // lattice points (u, v, w)/2 with u+v+w even, projected on x = [11-2]/√6 and y = [111]/√3 (units of the cube edge a).
 const LAYERS = (() => {
-  const seen = new Map();
-  for (let u = -16; u <= 16; u++) for (let v = -16; v <= 16; v++) for (let w = -16; w <= 16; w++) {
-    if ((u + v + w) % 2) continue;
-    const x = (u + v - 2 * w) / (2 * S6), m = (u + v + w) / 2;
-    if (Math.abs(m) > 11 || Math.abs(x) > 9) continue;
-    const k = `${m},${Math.round(x * 1000)}`;
-    if (!seen.has(k)) seen.set(k, { m, x });
+  // Infinite projected rows: u+v+w=2m implies x=(2m-3w)/(2sqrt6).
+  // Generate the visible x interval without imposing a finite parent-crystal edge.
+  const points=[];
+  for(let m=-24;m<=24;m++)for(let w=-60;w<=60;w++){
+    const x=(2*m-3*w)/(2*S6);if(Math.abs(x)<=9)points.push({m,x});
   }
-  return [...seen.values()];
+  return points;
 })();
 const D111 = 1 / S3, PER = S6 / 4, PFULL = S6 / 2; // layer spacing; repeat of the projected rows; true in-layer repeat along [11-2], in units of a
 
@@ -28,7 +26,7 @@ export default {
       num: '3.11',
       kind: 'Phenomenon',
       name: 'Deformation twinning',
-      statement: String.raw`In **deformation twinning** a region of crystal changes to the mirror image of the parent lattice across a **twin plane** by a homogeneous shear: every atomic plane parallel to the twin plane moves by a fixed fraction of the interatomic spacing, in proportion to its distance from the twin plane, so the **twinning shear** $s$ is a fixed number set by the structure. For fcc $\{111\}\langle11\bar2\rangle$ and bcc $\{112\}\langle11\bar1\rangle$ it is $s=1/\sqrt2\approx0.71$; for hcp $\{10\bar12\}\langle\bar1011\rangle$ it depends on the axial ratio $\gamma=c/a$ as $s=\dfrac{|\gamma^2-3|}{\gamma\sqrt3}$ (zero at $\gamma=\sqrt3$). Twinning needs no dislocation source and no long-range motion, so it competes with slip at low temperature, high strain rate, and in crystals (hcp, bcc) that have too few slip systems (3.9).`,
+      statement: String.raw`In **deformation twinning** a region of crystal changes to the mirror image of the parent lattice across a **twin plane** by a homogeneous shear: every atomic plane parallel to the twin plane moves by a fixed fraction of the interatomic spacing, in proportion to its distance from the twin plane, so the **twinning shear** $s$ is a fixed number set by the structure. For fcc $\{111\}\langle11\bar2\rangle$ and bcc $\{112\}\langle11\bar1\rangle$ it is $s=1/\sqrt2\approx0.71$; for hcp $\{10\bar12\}\langle\bar1011\rangle$ it depends on the axial ratio $\gamma=c/a$ as $s=\dfrac{|\gamma^2-3|}{\gamma\sqrt3}$ (zero at $\gamma=\sqrt3$). Twinning is a coordinated shear, often mediated by twinning dislocations and atomic shuffles. It can compete with ordinary slip at low temperature or high strain rate and when the available easy slip systems cannot accommodate the imposed shape change (3.9).`,
       idea: String.raw`A mirror image of a lattice is again a lattice, so there is a shear that carries the parent lattice onto its reflection across a lattice plane; for fcc, successive close-packed layers have an in-plane offset of $P/3$ ($P$ the repeat), and the mirror lattice needs each layer above the twin plane to be shifted by that same $P/3$ more than the one below, a shear $(P/3)/d=1/\sqrt2$ where $d$ is the layer spacing. Because the shear is the same for every plane, it can be nucleated at a boundary and spread at high speed, whereas slip is a one-plane-at-a-time process. The program below builds the fcc lattice from its geometry, applies the shear, and counts how many sheared atoms land exactly on mirror-image sites.`,
       caption: String.raw`Raise the shear fraction $f$ from 0 to 1: the planes inside the twin (orange) glide by amounts proportional to their height above the lower twin plane, and the matrix above is carried along rigidly. At $f=1$ the twin atoms coincide with the mirror image of the parent lattice (hollow circles; the readout counts them). Change the twin thickness and position. The right panel shows the twinning shear: $0.71$ for fcc and bcc, and for hcp as a function of $c/a$ (move the slider; the markers are approximate $c/a$ values of some metals).`,
       deps: ['mat-3.4', 'xtal-9.4'],
@@ -54,7 +52,7 @@ export default {
           const x0 = byLayer.get(m0).reduce((a, b) => (Math.abs(b) < Math.abs(a) ? b : a)), x1 = byLayer.get(m0 + 1).reduce((a, b) => (Math.abs(b - x0) < Math.abs(a - x0) ? b : a));
           const dm = wrap(x1 - x0); let delta = dm; for (const c of [dm - PER, dm, dm + PER]) if (Math.abs(Math.abs(c) - PFULL / 3) < Math.abs(Math.abs(delta) - PFULL / 3)) delta = c; // the twinning shift is P/3 = a/√6 (equal to the projected offset up to a projected repeat)
           const sTw = delta / D111;
-          const y0 = m0 * D111;
+          const y0 = m0 * D111; A.setView([-6.2,6.2],[Math.min(-4.4,y0-.8),Math.max(4.4,m1*D111+.8)]);
           let onMirror = 0, tot = 0;
           if (mir.value) for (const a of LAYERS) { if (a.m < m0 && a.m >= 2 * m0 - m1 && Math.abs(a.x) <= 6.2) A.dot(a.x, (2 * m0 - a.m) * D111, { r: 9, color: 'ink', hollow: true, width: 1.2, alpha: 0.7 }); }
           for (const a of LAYERS) {
@@ -89,14 +87,13 @@ export default {
       num: '3.12',
       kind: 'Concept',
       name: 'Partial dislocations and stacking faults',
-      statement: String.raw`In an fcc crystal the perfect dislocation of Burgers vector $\tfrac a2\langle110\rangle$ in a $\{111\}$ plane lowers its energy by splitting into two **Shockley partial dislocations**, $\tfrac a2[\bar101]\to\tfrac a6[\bar211]+\tfrac a6[\bar1\bar12]$, because $b_1^2+b_2^2=\tfrac13a^2<\tfrac12a^2=b^2$ (Frank's rule, 3.6). Between the two partials the layers above the slip plane are displaced by one partial only, so the stacking sequence $ABCABC$ is locally changed to $ABCBCA$: an **intrinsic stacking fault** with energy $\gamma_{\rm SF}$ per unit area, two layers of which are hcp-like. The partials repel each other with the elastic force $F=\dfrac{Gb_p^2}{2\pi d}\Big[\dfrac{\cos^2 30^\circ}{1-\nu}-\sin^230^\circ\Big]$ (pure edge character; $b_p=a/\sqrt6$) and the fault pulls them together with $\gamma_{\rm SF}$ per length, so the equilibrium width is $$d=\frac{Gb_p^2}{8\pi\gamma_{\rm SF}}\frac{2+\nu}{1-\nu}\ \ (\text{edge}),\qquad d=\frac{Gb_p^2}{8\pi\gamma_{\rm SF}}\frac{2-3\nu}{1-\nu}\ \ (\text{screw}).$$`,
-      idea: String.raw`Frank's rule says the split is downhill in elastic energy; the two partials are $60^\circ$ apart in direction and so repel by an interaction that falls as $1/d$ (the parallel-line interaction of 3.6), while the fault between them costs energy proportional to its width. The balance $F(d)=\gamma_{\rm SF}$ fixes $d$: low-fault-energy metals (silver, gold, brass) have wide stacking faults, high-energy ones (aluminium) have partials so close that they re-combine. Wide faults make cross-slip and climb difficult (the partials must first recombine), which governs work-hardening rate and the ductility of fcc alloys. The stacking letters in the picture are computed from the actual displacements, not typed in.`,
+      statement: String.raw`In an fcc crystal the perfect dislocation of Burgers vector $\tfrac a2\langle110\rangle$ in a $\{111\}$ plane can lower its far-field elastic energy by splitting into two **Shockley partial dislocations**, $\tfrac a2[\bar101]\to\tfrac a6[\bar211]+\tfrac a6[\bar1\bar12]$, because $b_1^2+b_2^2=\tfrac13a^2<\tfrac12a^2=b^2$ (Frank's rule, 3.6). Between the two partials the layers above the slip plane are displaced by one partial only, so the stacking sequence $ABCABC$ is locally changed to $ABCBCA$: an **intrinsic stacking fault** with energy $\gamma_{\rm SF}$ per unit area, two layers of which are hcp-like. The partials repel each other with the elastic force $F=\dfrac{Gb_p^2}{2\pi d}\Big[\dfrac{\cos^2 30^\circ}{1-\nu}-\sin^230^\circ\Big]$ (pure edge character; $b_p=a/\sqrt6$) and the fault pulls them together with $\gamma_{\rm SF}$ per length, so the equilibrium width is $$d=\frac{Gb_p^2}{8\pi\gamma_{\rm SF}}\frac{2+\nu}{1-\nu}\ \ (\text{edge}),\qquad d=\frac{Gb_p^2}{8\pi\gamma_{\rm SF}}\frac{2-3\nu}{1-\nu}\ \ (\text{screw}).$$`,
+      idea: String.raw`Frank's rule says the split is downhill in elastic energy; the two partials are $60^\circ$ apart in direction and so repel by an interaction that falls as $1/d$ (the parallel-line interaction of 3.6), while the fault between them costs energy proportional to its width. The balance $F(d)=\gamma_{\rm SF}$ fixes $d$: low-fault-energy metals (silver, gold, brass) have wide stacking faults, high-energy ones (aluminium) have partials so close that they re-combine. Wide faults hinder cross-slip, which requires local constriction of the dissociated screw segment, which governs work-hardening rate and the ductility of fcc alloys. The stacking letters in the picture are computed from the actual displacements, not typed in.`,
       caption: String.raw`Drag the orange handle to set the separation of the two partials (or press *equilibrium*): the layers above the slip plane are shifted by one partial in between, and the letters below give the stacking sequence in the three regions; layers whose neighbours above and below have the same letter are hcp-like (orange). The right panel balances the repulsion $F(d)\propto1/d$ against $\gamma_{\rm SF}$; they cross at the equilibrium width. Use the sliders for $\gamma_{\rm SF}$, $G$, $a$ and the character of the dislocation.`,
       deps: ['mat-3.6', 'xtal-1.5'],
-      refs: ['Callister §4.6'],
+      refs: ['Rafaja etal2020, §11.2.1 Eq11.1–11.2; Lu etal, arXiv:cond-mat/9903440, §5.3 Eq8 and §5.2 limitations'],
       tags: ['partial dislocation', 'stacking fault', 'fcc'],
-      scope: String.raw`Isotropic elasticity, straight parallel partials in an infinite crystal, constant $\gamma_{\rm SF}$. Reported stacking-fault energies of the same metal vary widely between sources (for example roughly 35 to 80 mJ/m² for copper, 16 to 25 for silver, 32 to 75 for gold, above about 125 for aluminium), so the slider is deliberately free; the defaults ($G=45$ GPa, $a=0.3615$ nm, $\nu=0.34$, $\gamma_{\rm SF}=45$ mJ/m²) are copper-like and illustrative.`,
-      verify: true,
+      scope: String.raw`Isotropic elasticity, straight parallel partials in an infinite crystal, constant $\gamma_{\rm SF}$. The Burgers-vector inequality alone does not guarantee a resolved split: fault energy and the full core energy matter. The continuum width estimate fails when the separation approaches the core width. The stacking-fault energy is a free illustrative input, not a table of measured values; the defaults ($G=45$ GPa, $a=0.3615$ nm, $\nu=0.34$, $\gamma_{\rm SF}=45$ mJ/m²) are copper-like and illustrative.`,
       viz(v) {
         const NU = 0.34;
         const gS = v.slider('stacking-fault energy $\\gamma_{\\rm SF}$ (mJ/m²)', 8, 250, 45, { log: true, sig: 2 });
@@ -106,28 +103,29 @@ export default {
         const dEq = () => { const G = GS.value * 1e9, bp = (aS.value * 1e-9) / S6, fac = kind.value === 'edge' ? (2 + NU) / (1 - NU) : (2 - 3 * NU) / (1 - NU); return ((G * bp * bp) / (8 * Math.PI * gS.value * 1e-3)) * fac * 1e9; }; // nm
         const Pn = () => (aS.value * S6) / 2; // nm per layer repeat
         let sep = 7; // in units of the repeat
-        v.button('equilibrium', () => { sep = dEq() / Pn(); });
+        v.button('equilibrium', () => { sep = dEq() / Pn(); hd.set(Math.max(0.005, sep / 2), 8.6); });
         const A = v.stage({ x: [-14, 14], y: [-1.6, 10.4], equal: true, axes: false, height: 380, weight: 1.4, title: 'stacking of the (111) layers across the two partials' });
         const B = v.stage({ x: [0.3, 40], y: [0, 2.6], xlog: true, axes: 'box', gutter: true, height: 380, weight: 0.9, minWidth: 270, xlabel: 'separation of the partials  $d$ (nm)', ylabel: 'force per length (× $\\gamma_{\\rm SF}$)', title: 'repulsion against fault tension' });
-        const hd = A.handle(3.5, 8.6, { color: 'orange', r: 9, constrain: (x) => [clamp(x, 0.5, 13), 8.6] });
+        const hd = A.handle(3.5, 8.6, { color: 'orange', r: 9, constrain: (x) => [clamp(x, 0.005, 100), 8.6] });
         const Fc = () => { const G = GS.value * 1e9, bp = (aS.value * 1e-9) / S6, c = kind.value === 'edge' ? (2 + NU) / (8 * Math.PI * (1 - NU)) : (2 - 3 * NU) / (8 * Math.PI * (1 - NU)); return (G * bp * bp * c); }; // J/m  : F(d) = Fc/d
         let info = null;
         v.render(() => {
-          sep = clamp(hd.x * 2, 1, 26); hd.set(sep / 2, 8.6);
+          sep = clamp(hd.x * 2, 0.01, 200); hd.set(sep / 2, 8.6);
+          const span = Math.max(14, sep / 2 + 8); A.setView([-span, span], [-1.6, 10.4]);
           const xa = -sep / 2, xb = sep / 2, zeta = 0.8, delta = 1 / 3, dy = 1.1, y0 = 1.8;
           const shiftAt = (x) => (delta * (Math.atan((x - xa) / zeta) - Math.atan((x - xb) / zeta))) / Math.PI;
           const idx = (n, sh) => (((Math.round((n * delta + sh) / delta)) % 3) + 3) % 3;
           const sequences = (x) => { const sh = shiftAt(x), L = []; for (let n = 0; n < 6; n++) L.push('ABC'[idx(n, n >= 3 ? sh : 0)]); return L; };
           for (let n = 0; n < 6; n++) {
             const y = y0 + n * dy;
-            for (let k = -16; k <= 16; k++) {
+            for (let k = -Math.ceil(span)-2; k <= Math.ceil(span)+2; k++) {
               const xx = k + ((n * delta) % 1), sh = n >= 3 ? shiftAt(xx) : 0, c = ['accent', 'green', 'red'][idx(n, sh)];
               A.dot(xx + sh, y, { r: 4.6, color: c, fill: c, alpha: 0.9 });
             }
           }
           A.line(-14, y0 + 2.5 * dy, 14, y0 + 2.5 * dy, { color: 'orange', dash: [5, 4], alpha: 0.8 }); A.text('slip plane', -13.8, y0 + 2.5 * dy + 0.45, { color: 'orange', size: 11, align: 'left' });
           A.vline(xa, { color: 'muted', dash: [3, 4], alpha: 0.8 }); A.vline(xb, { color: 'muted', dash: [3, 4], alpha: 0.8 });
-          A.text('trailing partial', xa, 0.4, { size: 11, color: 'muted' }); A.text('leading partial', xb, 0.4, { size: 11, color: 'muted' });
+          A.text('trailing partial', xa, 0.4, { size: 11, color: 'muted' }); A.text('leading partial', xb, 0.4, { size: 11, color: 'muted', align:'right' });
           A.arrow(xa, 8.2, xb, 8.2, { color: 'orange', both: true, head: 7, width: 2 }); A.text(`d = ${v.fix(sep * Pn(), 1)} nm`, 0, 7.75, { color: 'orange', size: 12 });
           const regions = [[-sep / 2 - 4, 'perfect (slipped by $b$)'], [0, 'stacking fault'], [sep / 2 + 4, 'perfect (unslipped)']];
           const seqs = regions.map(([x]) => sequences(x));
@@ -137,10 +135,11 @@ export default {
           hcp.forEach((n) => A.rect(-sep / 2 + 0.3, y0 + n * dy - 0.5, sep / 2 - 0.3, y0 + n * dy + 0.5, { fill: 'orange', fillAlpha: 0.22, stroke: false }));
           // force balance
           const Fn = Fc(), g = gS.value * 1e-3;
-          B.fn((d) => (Fn / (d * 1e-9)) / g, { color: 'accent', width: 2.5, domain: [0.3, 40] });
+          const xmax = Math.max(40, dEq() * 1.5, sep * Pn() * 1.5); const xmin=Math.min(.3,dEq()*.5,sep*Pn()*.5); B.setView([xmin, xmax], [0, 2.6]);
+          B.fn((d) => (Fn / (d * 1e-9)) / g, { color: 'accent', width: 2.5, domain: [xmin, xmax] });
           B.hline(1, { color: 'orange', width: 2.5 });
           const de = dEq(); B.vline(de, { color: 'green', dash: [4, 4] }); B.dot(de, 1, { r: 6, color: 'green', fill: 'green' });
-          B.text('equilibrium', de * 1.1, 0.12, { color: 'green', size: 11, align: 'left' });
+          B.text('equilibrium', xmax*.9, 0.12, { color: 'green', size: 11, align: 'right' });
           const dn = sep * Pn(); B.dot(dn, (Fn / (dn * 1e-9)) / g, { r: 7, color: 'orange', hollow: true, width: 2 });
           B.text('elastic repulsion $\\propto 1/d$', 0.5, 2.3, { color: 'accent', size: 11.5, align: 'left' }); B.text('fault tension $\\gamma_{\\rm SF}$', 0.5, 0.82, { color: 'orange', size: 11.5, align: 'left' });
           info = { de, dn, dsep: sep, seqs, ratio: (Fn / (dn * 1e-9)) / g, hcp };
@@ -155,14 +154,14 @@ export default {
       name: 'The mechanism of plastic deformation of crystals',
       statement: String.raw`In 1934 G. I. Taylor proposed, in the first of two papers in the *Proceedings of the Royal Society*, that crystals slip not by sliding whole planes over one another but by the motion of line defects, to which he gave the name **dislocations**: slip spreads over limited areas of a plane and is bounded by a dislocation, which can move under a small applied stress; the work-hardening of metals is then the result of dislocations obstructing one another. The same idea was put forward independently in 1934 by Orowan and by Polanyi. It resolved the gap between the stress for rigid slip ($\sim G/10$, 3.1) and the measured yield stress of metal crystals.`,
       idea: String.raw`Before 1934 the strength of crystals was a puzzle: Frenkel's calculation (1926) of the shear stress needed to slip one plane over another gave values hundreds to thousands of times larger than measured, and lattice models offered no way for slip to start gradually. Taylor argued, with a lattice model of atoms interacting through a plausible force law, that a row of atoms inserted into one half of the crystal is a stable defect whose motion needs only a small stress, because only atoms near the core need rearrange (3.2), and that such defects interacting at long range could explain strain hardening ($\sigma\propto\sqrt\rho$, 3.8). Part II of the paper compares the theory with observations on single crystals. The paper's own numbers and figures are not reproduced here; the picture is a modern one-dimensional model of the same argument.`,
-      caption: String.raw`A chain of atoms (blue) sits on a periodic substrate (the next plane); the chain has one atom more than the substrate has wells, which is the one-dimensional picture of an inserted half-plane: a **kink** (dislocation). The plane stiffness $K$ sets the kink's width. Push on every atom with a force $f$ (as a fraction of the rigid-slip force $f_{\rm rigid}=\pi V_0/b$, the largest force the substrate resists): the kink holds until $f$ reaches its depinning value, shown in the readout and the right panel, far below $f_{\rm rigid}$ for a wide kink. *Compute curve* sweeps $K$ and plots the threshold against the kink width.`,
+      caption: String.raw`A chain of atoms (blue) sits on a periodic substrate (the next plane); the chain has one atom more than the substrate has wells, which is the one-dimensional picture of an inserted half-plane: a **kink** (dislocation). The plane stiffness $K$ sets the kink's width. Push on every atom with a force $f$ (as a fraction of the rigid-slip force $f_{\rm rigid}=\pi V_0/b$, the largest force the substrate resists): the kink holds until $f$ reaches its depinning value, shown in the readout and the right panel, with a reduction that depends on the kink width. *Compute curve* sweeps $K$ and plots the threshold against the kink width.`,
       deps: ['mat-3.1', 'mat-3.4'],
       refs: [],
       tags: ['dislocation', 'Frenkel–Kontorova', 'history'],
       paper: { authors: 'G. I. Taylor', year: 1934, title: 'The Mechanism of Plastic Deformation of Crystals. Part I.—Theoretical', venue: 'Proceedings of the Royal Society of London A 145 (855): 362–387', doi: '10.1098/rspa.1934.0106' },
       introduces: ['mat-3.2', 'mat-3.8'],
       credit: 'G. I. Taylor, 1934; independently E. Orowan and M. Polanyi, 1934',
-      scope: String.raw`This is a reconstruction in the Frenkel–Kontorova model (harmonic chain on a sinusoidal substrate), which dates from 1938 and is not Taylor's own interatomic-force model or data; I could not read the original text, so the description of the paper's content comes from secondary sources and is hedged accordingly. The kink threshold is found numerically (relaxation and bisection); the model shows the qualitative claim only, that a dislocation moves at a force exponentially smaller than the rigid-slip value, not Taylor's numbers.`,
+      scope: String.raw`This is a reconstruction in the Frenkel–Kontorova model (harmonic chain on a sinusoidal substrate), which dates from 1938 and is not Taylor's own interatomic-force model or data; I could not read the original text, so the description of the paper's content comes from secondary sources and is hedged accordingly. The reported threshold is an operational finite-chain criterion: residual force above10⁻⁷ after8000iterations or a maximum atomic displacement above0.4b, located by bisection. Failure to converge alone is not proof of unbounded motion; the model shows the qualitative claim only, that increasing the kink width can reduce the force needed to move it, not Taylor's numbers.`,
       verify: true,
       viz(v) {
         const NA = 40, V0 = 1;
@@ -221,7 +220,7 @@ export default {
         v.readout(() => {
           if (!cache || !cache.state) return '';
           const st = cache.state;
-          return `Kink width $w=${v.fix(cache.w, 2)}\\,b$ at $K=${v.fix(Ks.value, 2)}$: the kink starts to move at $f=${v.sci(cache.th.f / Math.PI, 2)}\\,f_{\\rm rigid}$, i.e. rigid slip needs ${v.fmt(Math.PI / cache.th.f, 3)} times more force per atom. At the applied $f=${v.fix(fS.value, 3)}\\,f_{\\rm rigid}$ the kink ${st.moved ? '**runs away** (above its threshold)' : 'stays pinned'}.` + (cache.slope ? `\nSweep: $\\ln(f_{\\rm kink}/f_{\\rm rigid})$ falls by $${v.fix(-cache.slope, 2)}$ per unit of kink width ($b$), so a wider kink (stiffer planes) is exponentially easier to move: the Peierls–Nabarro trend.` : '');
+          return `Kink width $w=${v.fix(cache.w, 2)}\\,b$ at $K=${v.fix(Ks.value, 2)}$: the kink crosses the model movement criterion at $f=${v.sci(cache.th.f / Math.PI, 2)}\\,f_{\\rm rigid}$, i.e. rigid slip needs ${v.fmt(Math.PI / cache.th.f, 3)} times more force per atom. At the applied $f=${v.fix(fS.value, 3)}\\,f_{\\rm rigid}$ the kink ${st.moved ? 'crosses the finite-chain movement criterion' : 'stays pinned'}.` + (cache.slope ? `\nSweep: $\\ln(f_{\\rm kink}/f_{\\rm rigid})$ falls by $${v.fix(-cache.slope, 2)}$ per unit of kink width ($b$), so a wider kink (stiffer planes) is exponentially easier to move: the Peierls–Nabarro trend.` : '');
         });
       },
     },

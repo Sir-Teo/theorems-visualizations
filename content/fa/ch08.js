@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 8: Applications to Differential Equations
 //
-// Numbering checked against Google Books snippet view of the 2nd edition (1991); items still carry `verify: true`.
+// Full second-edition source review is recorded in docs/verification/fa-source-review.md.
 // In the visualisations, derivatives are written with d/dx; Rudin's D = −i d/dx appears only in 8.5.
 
 const PSI_P = (() => {
@@ -57,10 +57,9 @@ export default {
       statement: String.raw`For a polynomial $P(\xi)=\sum_{|\alpha|\le N}c_\alpha\xi^\alpha$ in $n$ variables with complex coefficients, $P(D)=\sum c_\alpha D^\alpha$ (with $D_k=-i\,\partial/\partial x_k$) is a **linear differential operator with constant coefficients**, of order $N$ if some $c_\alpha\ne0$ with $|\alpha|=N$. A distribution $E\in\mathscr D'(\R^n)$ is a **fundamental solution** of $P(D)$ if
 $$P(D)E=\delta .$$`,
       idea: String.raw`Under the Fourier transform $P(D)$ becomes multiplication by $P$, so a fundamental solution is "$\hat E=1/P$" — meaningful as it stands only when $P$ has no real zeros. Classical examples: $H$ for $d/dx$; $\frac1{2\pi}\log|x|$ for the Laplacian in $\R^2$; $-\frac{1}{4\pi|x|}$ for the Laplacian in $\R^3$; the heat kernel $H(t)\,(4\pi t)^{-1/2}e^{-x^2/4t}$ for $\partial_t-\partial_x^2$.`,
-      caption: String.raw`$E=\frac1{2\pi}\log|x|$ in the plane, coloured, with its gradient field. That $\Delta E=\delta$ means: the flux of $\nabla E$ out of any closed curve is $1$ if the curve surrounds the origin and $0$ otherwise (Gauss). Drag the circle and change its radius: the readout integrates the flux numerically. It also checks the definition directly, $E(\Delta\varphi)=\varphi(0)$, for a radial bump $\varphi$ centred at the circle's centre.`,
+      caption: String.raw`Using ordinary $dx$ to represent function distributions, $E=\frac1{2\pi}\log|x|$ in the plane (its density relative to Rudin’s $dm_2$ is $\log|x|$), coloured, with its gradient field. That $\Delta E=\delta$ means: the flux of $\nabla E$ out of any closed curve is $1$ if the curve surrounds the origin and $0$ otherwise (Gauss). Drag the circle and change its radius: the readout integrates the flux numerically. It also checks the definition directly, $E(\Delta\varphi)=\varphi(0)$, for a radial bump $\varphi$ centred at the circle's centre.`,
       deps: ['fa-6.12', 'fa-6.7'],
       tags: ['differential equations', 'fundamental solutions'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const rS = v.slider('radius of the circle (and of $\\varphi$)', 0.2, 1.6, 0.9, { step: 0.01 });
@@ -105,7 +104,6 @@ Every other solution of $P(D)u=w$ differs from $E*w$ by a solution of the homoge
       caption: String.raw`$P(D)=D^2+m^2=-\frac{d^2}{dx^2}+m^2$ on $\R$, with fundamental solution $E(x)=\frac{e^{-m|x|}}{2m}$ (faint, in the inset scale). Drag the three source bumps (orange) — their heights and positions — to build $w$; the solution $u=E*w$ (purple) is computed by quadrature. Then $-u''+m^2u$ is recomputed by finite differences (green, dashed) and lands on $w$.`,
       deps: ['fa-8.1', 'fa-6.37'],
       tags: ['differential equations', 'fundamental solutions', 'convolution'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const mS = v.slider('mass $m$', 0.2, 3, 1, { step: 0.01 });
@@ -148,7 +146,6 @@ $$|a\,F(0)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\big|F(e^{i\theta})\,Q(e^{i\theta})\b
       caption: String.raw`The one-variable step. $P(z)=a\prod_k(z-z_k)$: drag the three roots (red inside the disc, blue outside) and set $a$; $f(z)=e^{bz}$. Hollow dots are the reflected roots $1/\bar z_k$ used in the proof. Right: $|f(e^{i\theta})P(e^{i\theta})|$ around the circle, its mean (purple), and the lower bounds $|f(0)Q(0)|$ (green) and $|af(0)|$ (orange). The order mean $\ge|f(0)Q(0)|\ge|af(0)|$ never breaks, however you move the roots.`,
       deps: ['rca-15.18', 'rca-17.5'],
       tags: ['polynomials', 'subharmonic functions'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const aS = v.slider('leading coefficient $a$', 0.3, 2, 1, { step: 0.01 });
@@ -185,13 +182,14 @@ $$|a\,F(0)|\le\frac1{2\pi}\int_{-\pi}^{\pi}\big|F(e^{i\theta})\,Q(e^{i\theta})\b
       num: '8.5',
       kind: 'Theorem',
       name: 'Malgrange–Ehrenpreis theorem',
-      credit: 'Malgrange & Ehrenpreis, 1954',
-      statement: String.raw`Every linear differential operator $P(D)\ne0$ with constant coefficients on $\R^n$ has a fundamental solution $E\in\mathscr D'(\R^n)$. Consequently $P(D)u=w$ has a solution $u\in\mathscr D'(\R^n)$ for every $w\in\mathscr D'(\R^n)$ with compact support.`,
-      idea: String.raw`Formally $E(\varphi)=\int\hat\varphi(-\xi)/P(\xi)\,dm_n(\xi)$, which fails where $P$ vanishes. After a rotation, $P$ has a nonzero leading term in $\xi_n$; for each $\xi'=(\xi_1,\dots,\xi_{n-1})$ integrate in $\xi_n$ not along $\R$ but along a horizontal line $\operatorname{Im}\zeta=s(\xi')\in\{0,\pm1,\dots,\pm N\}$ that stays at distance $\ge1$-ish from the zeros of $P(\xi',\cdot)$ — $\hat\varphi$ is entire (Paley–Wiener), so Cauchy's theorem allows the shift. Lemma 8.3 bounds $|\hat\varphi/P|$ there by averages of $|\hat\varphi|$, which yields continuity of $E$, and $P(D)E=\delta$ because the shifted integrals of $\hat\varphi(-\zeta)$ give back $\varphi(0)$.`,
-      caption: String.raw`The one-variable mechanism. $P(\zeta)=(\zeta-z_1)(\zeta-z_2)$ — drag its roots anywhere in $\C$, even onto the real axis. Choose the line $\operatorname{Im}\zeta=s$ (drag the handle on the left edge) on which $E_s(x)=\frac1{2\pi}\int_{\operatorname{Im}\zeta=s}\frac{e^{ix\zeta}}{P(\zeta)}d\zeta$ is computed; residues give it in closed form. Right: $E_s$ (real part solid, imaginary part dashed). Every admissible line gives a fundamental solution — the readout checks $E_s\big(P(-D)\varphi\big)=\varphi(0)$ for a test function $\varphi$ — and lines on different sides of a root differ by a solution of $P(D)u=0$.`,
+      credit: 'Malgrange & Ehrenpreis',
+      statement: String.raw`If $P$ is a nonzero polynomial of exact degree $N$ in $n$ variables and $r>0$, there exists a fundamental solution $E\in\mathscr D'(\mathbb R^n)$ of $P(D)$ such that
+$$|E(\psi)|\le Ar^{-N}\int_{T^n}\!d\sigma_n(w)\int_{\mathbb R^n}|\widehat\psi(t+rw)|\,dm_n(t)\qquad(\psi\in\mathscr D),$$
+where $A$ is the constant in 8.3 and $\widehat\psi$ denotes its entire extension. In particular every nonzero constant-coefficient operator has a fundamental solution; convolution then solves compactly supported right-hand sides.`,
+      idea: String.raw`Let $q_r(\psi)$ be the double integral in the estimate. Uniform control of all derivatives of $e_{-rw}\psi$ on a common compact support, followed by Plancherel and Cauchy–Schwarz, shows $q_r(\psi_j)\to0$ whenever $\psi_j\to0$ in $\mathscr D$. On the range of the injective map $P(D)$, define $P(D)\varphi\mapsto\varphi(0)$. Lemma 8.3 and Fourier inversion bound this functional by $Ar^{-N}q_r$. Hahn–Banach extends it to a continuous distribution $u$. Reflecting $u$ gives $E$, and $E(P(-D)\varphi)=\varphi(0)$ proves $P(D)E=\delta$. The picture uses an alternative explicit one-variable contour construction to illustrate the existence and nonuniqueness.`,
+      caption: String.raw`The one-variable mechanism, with $E_s(x)$ represented as a density against ordinary $dx$. $P(\zeta)=(\zeta-z_1)(\zeta-z_2)$ — drag its roots anywhere in $\C$, even onto the real axis. Choose the line $\operatorname{Im}\zeta=s$ (drag the handle on the left edge) on which $E_s(x)=\frac1{2\pi}\int_{\operatorname{Im}\zeta=s}\frac{e^{ix\zeta}}{P(\zeta)}d\zeta$ is computed; residues give it in closed form. Right: $E_s$ (real part solid, imaginary part dashed). Every admissible line gives a fundamental solution — the readout checks $E_s\big(P(-D)\varphi\big)=\varphi(0)$ for a test function $\varphi$ — and lines on different sides of a root differ by a solution of $P(D)u=0$.`,
       deps: ['fa-8.3', 'fa-7.22', 'fa-8.1', 'fa-7.15'],
       tags: ['differential equations', 'fundamental solutions', 'Malgrange–Ehrenpreis'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const Z = v.stage({ x: [-3, 3], y: [-2.6, 2.6], equal: true, height: 330, axes: true, title: '$\\zeta$-plane: zeros of $P$ and the line $\\operatorname{Im}\\zeta=s$' });

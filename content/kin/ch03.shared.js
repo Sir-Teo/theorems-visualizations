@@ -6,6 +6,7 @@ export * from './ch02.shared.js';
 export const KB = 1.380649e-23, HP = 6.62607015e-34, NA = 6.02214076e23;     // SI (exact since 2019)
 export const RJ = 8.314462618;                                               // J/(mol K)
 export const kTh = (T) => KB * T / HP;                                       // k_B T / h, s^-1
+export const CM = HP * 2.99792458e10 * NA / 1000; // kJ/mol per reciprocal centimetre
 export const HC_K = 1.438776877;                                             // hc/k_B, cm K
 /** Eyring rate constant (s^-1) from activation enthalpy (kJ/mol) and entropy (J/mol/K), transmission kappa */
 export const eyring = (T, dH, dS, kappa = 1) => kappa * kTh(T) * Math.exp(dS / RJ - dH * 1000 / (RJ * T));

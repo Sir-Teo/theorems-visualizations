@@ -1,3 +1,4 @@
+import { pinnaclePier } from './assessment.shared.js';
 // Architecture & Structural Form — Chapter 3: Arches and the line of thrust (items 3.8–3.14; 3.1–3.7 are in ch03.js)
 //
 // Sources checked (Oct 2026): see the header of ch03.js for Heyman (1966, 1969), the minimum-thickness literature, Hooke's anagram
@@ -169,27 +170,21 @@ export default {
       kind: 'Concept',
       name: 'Flying buttresses and pinnacles',
       statement: String.raw`In a Gothic church the thrust of the nave vault is carried over the aisle roof by a **flying buttress** to a slender outer pier. The thrust arrives near the top of the pier; its line, leaving the flyer at the flyer's slope, drifts outward as it descends and, if the pier is slender, leaves the masonry before it reaches the ground. A **pinnacle**, a heavy stone spire on the pier top, adds vertical load on the axis of the pier: the line of thrust steepens toward the vertical and comes back inside. A pinnacle is therefore a stabilising load as well as an ornament, and there is a minimum weight below which the pier is unsafe; adding more than the minimum helps only until the line is well inside.`,
-      idea: String.raw`Below the flyer the pier is a buttress as in arch-3.9, with the extra loads at the top: the flyer delivers a horizontal force $H$ and a vertical one $V_B = H\tan\theta$ (the flyer is a strut along the thrust line) at the pier's inner face, and the pinnacle and the pier top add $P + W_{\text{top}}$ on the axis. Moments about the point where the line crosses depth $d$ below the flyer give $X(d) = \bigl(V_B x_i + (P + W_{\text{top}} + \gamma w d)\,x_c + H d\bigr)/\bigl(V_B + P + W_{\text{top}} + \gamma w d\bigr)$. Raising $P$ pulls $X$ toward the axis $x_c$ at every depth, so the smallest pinnacle load that keeps the line inside is found where the line first touches the outer face, which the plot gives for any thrust. Hooke's inversion (arch-3.1) and the safe theorem (arch-3.5) justify drawing just one line that fits.`,
+      idea: String.raw`Below the flyer the pier is a buttress as in arch-3.9, with the extra loads at the top: the flyer delivers a horizontal force $H$ and a vertical one $V_B = H\tan\theta + 26\,\mathrm{kN/m}$ (the flyer is a strut along the thrust line) at the pier's inner face, and the pinnacle and the pier top add $P + W_{\text{top}}$ on the axis. Moments about the point where the line crosses depth $d$ below the flyer give $X(d) = \bigl(V_B x_i + (P + W_{\text{top}} + \gamma w d)\,x_c + H d\bigr)/\bigl(V_B + P + W_{\text{top}} + \gamma w d\bigr)$. Raising $P$ pulls $X$ toward the axis $x_c$ at every depth, so the smallest pinnacle load that keeps the line inside is found where the line first touches the outer face, which the plot gives for any thrust. Hooke's inversion (arch-3.1) and the safe theorem (arch-3.5) justify drawing just one line that fits.`,
       caption: String.raw`A schematic section: nave wall on the left, a flyer carrying the vault's thrust $H$ to a pier. Raise the thrust (a heavier vault or a wind load), thin the pier, and add pinnacle weight: the red line from the flyer through the pier steepens and re-enters the pier. The plot shows the minimum pinnacle weight needed for each thrust, for this pier; the disc is the current state. All dimensions and loads are illustrative, not those of a real church.`,
       deps: ['arch-3.9'],
       see: ['arch-3.5', 'arch-4.2'],
       refs: ['Heyman'],
       credit: 'Heyman, 1966–67 (structural role of flying buttresses; secondary sources)',
-      scope: String.raw`Schematic plane section, unit weight 22 kN/m³, flyer idealised as a straight strut along the line of thrust, per metre of nave length; ignores the weight of the aisle roof and wind pressure on the pier itself. Not the section of any real church.`,
+      scope: String.raw`Schematic plane section, unit weight 22 kN/m³, flyer idealised as a straight strut plus an illustrative 26-kN/m vertical dead load applied to the pier at the flyer level, per metre of nave length; ignores the weight of the aisle roof and wind pressure on the pier itself. Not the section of any real church.`,
       verify: true,
       tags: ['gothic', 'pinnacle', 'flying buttress'],
       viz(v) {
         const yA = 13, yB = 10.2, yTop = 14, L = 3.6, xi = L, tanT = (yA - yB) / L;
-        const Hs = v.slider('vault thrust H (kN/m)', 10, 120, 60, { step: 1 }), wS = v.slider('pier width w (m)', 0.8, 3, 1.5, { step: 0.05 }), Ps = v.slider('pinnacle weight P (kN/m)', 0, 500, 260, { step: 5 });
+        const Hs = v.slider('vault thrust H (kN/m)', 10, 120, 60, { step: 1 }), wS = v.slider('pier width w (m)', 0.8, 3, 1.5, { step: 0.05 }), Ps = v.slider('pinnacle weight P (kN/m)', 0, 3000, 260, { step: 5 });
         const A = v.stage({ x: [-2, 9], y: [-0.8, 19.6], equal: true, axes: false, height: 420, weight: 1.15, title: 'a section: nave, flying buttress and pier' });
         const B = v.stage({ x: [0, 120], y: [0, 500], axes: 'box', gutter: true, height: 420, weight: 1, minWidth: 250, xlabel: 'vault thrust H (kN/m)', ylabel: 'pinnacle weight needed (kN/m)', title: 'how heavy must the pinnacle be?' });
-        const model = (H, w, P) => {
-          const xc = xi + w / 2, xo = xi + w, Wtop = GAM * w * (yTop - yB), VB = H * tanT + 26;
-          const X = (d) => (VB * xi + (P + Wtop + GAM * w * d) * xc + H * d) / (VB + P + Wtop + GAM * w * d);
-          let need = 0; for (let k = 0; k <= 60; k++) { const d = (yB * k) / 60, c = (VB * xi + (Wtop + GAM * w * d) * xc + H * d - xo * (VB + Wtop + GAM * w * d)) / (w / 2); need = Math.max(need, c); }
-          let worst = Infinity; for (let k = 0; k <= 60; k++) worst = Math.min(worst, xo - X((yB * k) / 60));
-          return { xc, xo, Wtop, VB, X, need, worst };
-        };
+        const model = pinnaclePier;
         let M = null;
         v.render(() => {
           const H = Hs.value, w = wS.value, P = Ps.value, m = model(H, w, P), ok = m.worst >= -1e-9;
@@ -208,8 +203,8 @@ export default {
           A.dot(m.X(yB), 0, { r: 5.5, color: ok ? 'green' : 'red' });
           A.corner(ok ? 'the line stays inside the pier' : 'the line leaves the pier: it overturns outward', 'tl', { color: ok ? 'muted' : 'red' });
           // plot
-          const Hg = Array.from({ length: 49 }, (_, i) => 5 + i * 2.5), cur = Hg.map((h) => [h, Math.max(0, model(h, w, 0).need)]);
-          B.setView([0, 120], [0, 520]);
+          const Hg = Array.from({ length: 49 }, (_, i) => i * 2.5), cur = Hg.map((h) => [h, Math.max(0, model(h, w, 0).need)]);
+          B.setView([0, 120], [0, Math.max(520, 1.1 * P, ...cur.map(p => 1.1 * p[1]))]);
           B.path(cur, { color: 'accent', width: 2.4 }); B.dot(H, P, { r: 6, color: ok ? 'green' : 'red' });
           B.text('safe: line inside the pier', 6, 480, { size: 12, color: 'green', align: 'left' }); B.text('overturns', 70, 20, { size: 12, color: 'red', align: 'left' });
           M = { m, ok, H, w, P };
@@ -402,12 +397,12 @@ export default {
       paper: { authors: 'Jacques Heyman', year: 1966, title: 'The stone skeleton', venue: 'International Journal of Solids and Structures 2 (2): 249–279', doi: '10.1016/0020-7683(66)90018-7' },
       introduces: ['arch-3.4', 'arch-3.5'],
       statement: String.raw`Heyman's paper argues that the safety of a masonry structure is a question of geometry and equilibrium, not of stress. If masonry has no tensile strength, has compressive strength that is never approached, and does not slide (arch-3.4), a structure of it is a rigid-plastic body to which the theorems of plastic theory apply: a thrust line inside the masonry, in equilibrium with the loads, proves the structure safe (arch-3.5), and collapse comes by the formation of hinges (arch-3.6). He works the idea out for the arch and for the Gothic cathedral, where the flying buttress and the quadripartite vault are treated in some detail, with a brief look at domes. The practical consequence is that safety is measured by proportions, not by stress: an arch and a copy of it ten times larger are equally safe in this sense, while their stresses differ tenfold.`,
-      idea: String.raw`Earlier writers, from Couplet (1730), had used thrust lines and hinge mechanisms, and the same three conditions were the working hypotheses for calculating masonry arches throughout the nineteenth century; the dominant tool, however, was the search for the one true state of stress, which depends on small support movements nobody can know. Heyman recognised that, with the three conditions made explicit, the masonry structure falls within limit analysis, so that one admissible state suffices (the safe theorem), and the true state, with its cracks and settlements, need not be found. The paper introduces the three assumptions (arch-3.4) and the safe theorem (arch-3.5) as the working basis of the theory, and applies them to arches, vaults and buttresses; later work (arch-3.7, arch-3.8) turned them into numbers such as the minimum thickness and the effect of settlement.`,
+      idea: String.raw`Earlier writers, from Couplet (1730), had used thrust lines and hinge mechanisms, and the same three conditions were the working hypotheses for calculating masonry arches throughout the nineteenth century; the dominant tool, however, was the search for the one true state of stress, which depends on small support movements nobody can know. Heyman explicitly credits Kooharian’s earlier limit-analysis result (1953) and develops its consequences for the Gothic structural system: one admissible state suffices for the safe theorem, so the true state, with its cracks and settlements, need not be found. The paper makes the three assumptions (arch-3.4) and the safe theorem (arch-3.5) its working basis, and applies them to arches, vaults and buttresses; later work (arch-3.7, arch-3.8) turned them into numbers such as the minimum thickness and the effect of settlement.`,
       caption: String.raw`The paper's own figures and numbers are not reproduced (I did not have the full text): what is recreated is its argument. The map on the right shows, for a semicircular arch with a point load at the chosen position, which combinations of ring thickness and load stand (green) and which do not (red); drag the disc. The arch on the left shows the thrust line that fits, or, when none does, the line at the instant of collapse with its hinges. The readout gives the two safety measures that follow: the geometric factor $t/t_{\min}$ and the load factor, and the stress, which grows with the span.`,
       deps: ['arch-3.2', 'solid-4.10'],
-      refs: [],
+      refs: ['Heyman (1966), The stone skeleton, pp. 252–259 (assumptions, limit principles and arches), pp. 260–278 (buttresses and vaults); doi:10.1016/0020-7683(66)90018-7'],
       credit: 'J. Heyman, 1966',
-      scope: String.raw`Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m³ and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The attribution of the individual results to this paper rather than to the later arch literature is as stated in secondary sources (the paper itself was not read).`,
+      scope: String.raw`Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m³ and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The complete original-paper text was read in a third-party OCR transcription, including its material assumptions, limit-design principles and arch/vault/buttress sections. The scan’s figures and several OCR-damaged equations still need inspection before full source closure; the picture uses its own explicitly reconstructed data.`,
       verify: true,
       tags: ['heyman', 'limit analysis', 'history'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Line_of_thrust' },

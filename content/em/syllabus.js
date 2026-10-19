@@ -128,7 +128,7 @@ export default {
           pic: 'Free charges inside an odd-shaped conductor are simulated drifting under the field until they settle on the surface; the interior field decays to zero and the boundary becomes an equipotential.' },
         { num: '3.2', kind: 'Theorem', name: 'Field at a conductor’s surface is σ/ε₀', deps: ['em-3.1', 'em-2.13'], refs: ['Griffiths §2.5'],
           pic: 'Probe just outside a charged conductor of irregular shape: the field is normal to the surface and its strength tracks the surface-charge density coloured along the boundary.' },
-        { num: '3.3', kind: 'Theorem', name: 'Electrostatic pressure on a conductor', deps: ['em-3.2', 'em-2.11'], refs: ['Griffiths §2.5', 'Purcell ch. 3'],
+        { num: '3.3', kind: 'Theorem', name: 'Electrostatic pressure on a conductor', deps: ['em-3.2', 'em-2.11', 'fluid-2.7'], refs: ['Griffiths §2.5', 'Purcell ch. 3'],
           pic: 'Charge a conducting soap bubble: the outward pressure σ²/2ε₀ is drawn as arrows, and the bubble’s radius re-balances against surface tension as charge is added, until it bursts.' },
         { num: '3.4', kind: 'Phenomenon', name: 'Charge crowds at sharp points', deps: ['em-3.1', 'em-2.6'], refs: ['Purcell ch. 3', 'Feynman II ch. 6'],
           pic: 'Two conducting spheres joined by a wire share one potential: shrink one and its surface field grows like 1/R, until it passes the breakdown field of air and a corona glow appears.' },

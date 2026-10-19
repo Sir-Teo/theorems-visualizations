@@ -19,7 +19,7 @@ More generally $a(\mathbf x)\,dx_{i_1}\wedge\cdots\wedge dx_{i_k}=0$ whenever tw
       idea: String.raw`In $\int_\Phi a\,dx_{i_1}\wedge\cdots\wedge dx_{i_k}$ the indices only choose the rows of the Jacobian matrix $\partial(x_{i_1},\dots,x_{i_k})/\partial(u_1,\dots,u_k)$. Swapping two indices swaps two rows (9.34), so the integrand changes sign for every $\Phi$; if two indices are equal the matrix has two equal rows and determinant $0$. With $k>n$ some index must repeat.`,
       caption: String.raw`Left: an affine $2$-surface $\Phi(\mathbf u)=\mathbf p+u_1\mathbf a+u_2\mathbf b$ in $\R^2$ ($D=[0,1]^2$); drag $\mathbf p$ and the tips of $\mathbf a,\mathbf b$. Right: the "shadow" $\mathbf u\mapsto(\phi_i(\mathbf u),\phi_j(\mathbf u))$ that $dx_i\wedge dx_j$ actually measures; its signed area is $\int_\Phi dx_i\wedge dx_j$ (blue: positively oriented, red: reversed). $dy\wedge dx$ mirrors the shadow and flips the sign; $dx\wedge dx$ flattens it onto the diagonal, area $0$; the last option shows $dx\wedge dy+dy\wedge dx=0$.`,
       deps: ['pma-10.11', 'pma-9.34'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 10.13, p. 256'],
       tags: ['differential forms', 'determinants'],
       viz(v) {
         const M = v.M;
@@ -233,7 +233,7 @@ where $\alpha$ is the number of pairs $(i,j)\in I\times J$ with $i>j$. This prod
       idea: String.raw`Sort the concatenated list by moving each $dx_j$ leftwards past the $dx_i$ that are larger than it; every move is an adjacent interchange, which costs a factor $-1$ (10.13), and there are exactly $\alpha$ of them. Associativity holds because both sides reduce to the same sorted list, and the inversions of $(I,J,K)$ are counted the same way whichever pair is merged first.`,
       caption: String.raw`Click the numbers in the top strip to put an index in $I$ (blue), in $J$ (orange), in both (red), or in neither. The middle row is $dx_I\wedge dx_J$ as written; each string carries a differential to its place in the sorted product $dx_{[I,J]}$. Every crossing of a blue and an orange string is one adjacent interchange, so the number of crossings is $\alpha$ and the sign is $(-1)^\alpha$. A shared index forces a repeated differential and the product vanishes.`,
       deps: ['pma-10.13', 'pma-10.14'],
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Section 10.16, pp. 258–259'],
       tags: ['differential forms', 'exterior product'],
       viz(v) {
         const n = 7;

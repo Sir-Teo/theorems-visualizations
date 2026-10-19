@@ -1,3 +1,4 @@
+import { teachingAgeGrid, ageMass } from './age-pde.shared.js';
 // Mathematical Biology — Chapter 4 (part b): items 4.8–4.14
 import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elRoot, r0T, project, fisherV, turtleMatrix, TURTLE_STAGES } from './ch04.shared.js';
 
@@ -18,7 +19,7 @@ The approximation $r\approx\ln R_0/T$ is accurate when reproduction is concentra
       idea: String.raw`Divide Euler–Lotka by $R_0$: $\sum_x p_x e^{-rx}=1/R_0$ where $p_x=\ell_xm_x/R_0$ is the distribution of the age of a mother at a birth. The left side is the moment generating function of that distribution at $-r$, equal to $\exp(-rT+\tfrac12r^2\sigma^2-\cdots)$ by the cumulant expansion. Taking logs gives the series; keeping the first term gives $r\approx\ln R_0/T$, and the next term is the variance correction.`,
       scope: String.raw`Valid as an expansion for small $r\sigma^2/T$. It breaks down for fast-growing populations with spread-out reproduction, and for strongly declining ones when $r\sigma^2/T$ is not small.`,
       caption: String.raw`Each blue dot is a randomly generated life table (12 age classes, seeded, so the picture is reproducible; "Resample" draws a new set). Horizontal: the quick estimate $\ln R_0/T$. Vertical: the exact $r$ from Euler–Lotka. The diagonal is perfect agreement. Widen the reproductive window with the slider and the cloud fans out; switching on the variance correction (orange) pulls it back onto the diagonal. These tables are random model inputs, not data.`,
-      deps: ['mathbio-4.6'],
+      deps: ['mathbio-4.6', 'prob-2.7.1a'],
       tags: ['growth rate', 'approximation'],
       refs: ['Edelstein-Keshet ch. 1'],
       viz(v) {
@@ -101,19 +102,19 @@ the present value of the offspring still to come, discounted at the population g
       num: '4.10',
       kind: 'Concept',
       name: 'Sensitivity and elasticity of λ',
-      credit: 'Caswell 1978 (sensitivity); de Kroon et al. 1986 (elasticity)',
+      credit: 'Caswell, 1978 (population application of eigenvalue sensitivity); de Kroon et al., 1986 (elasticity); Crouse, Crowder & Caswell, 1987 (loggerhead model)',
       statement: String.raw`Let $A$ be a primitive nonnegative matrix with dominant eigenvalue $\lambda$, right eigenvector $\mathbf u$ and left eigenvector $\mathbf v$. The **sensitivity** of $\lambda$ to the entry $a_{ij}$ is
 $$\frac{\partial\lambda}{\partial a_{ij}}=\frac{v_i\,u_j}{\mathbf v\cdot\mathbf u},$$
 and the **elasticity** (proportional sensitivity) is
 $$e_{ij}=\frac{a_{ij}}{\lambda}\frac{\partial\lambda}{\partial a_{ij}}=\frac{\partial\ln\lambda}{\partial\ln a_{ij}},\qquad e_{ij}\ge0,\quad\sum_{i,j}e_{ij}=1 .$$
 So a 1% proportional change in $a_{ij}$ changes $\lambda$ by about $e_{ij}$ percent, and the elasticities partition the whole of the growth-rate response among the matrix entries.`,
       idea: String.raw`Differentiate $A\mathbf u=\lambda\mathbf u$ and multiply by $\mathbf v^{\mathsf T}$: the term with $\mathrm d\mathbf u$ cancels because $\mathbf v^{\mathsf T}A=\lambda\mathbf v^{\mathsf T}$, leaving $\mathrm d\lambda\,(\mathbf v\cdot\mathbf u)=\mathbf v^{\mathsf T}(\mathrm dA)\mathbf u$. Taking $\mathrm dA=\mathrm da_{ij}E_{ij}$ gives the sensitivity. Euler's theorem for the degree-one homogeneous function $\lambda(sA)=s\lambda(A)$ gives $\sum a_{ij}\partial\lambda/\partial a_{ij}=\lambda$, which is why the elasticities sum to one. The left eigenvector (reproductive value, 4.9) and right eigenvector (stable distribution) thus decide where management has leverage.`,
-      scope: String.raw`First-order, local statement: it is exact only as the change tends to zero; a 20% change in survival can make the linear prediction visibly wrong. Entries that are structurally zero have no sensitivity of interest. Biologically coupled entries (survival that appears in several positions) change together, as in the right panel. The matrix is the seven-stage loggerhead model of Crouse, Crowder & Caswell (Ecology 68, 1987), entered from a secondary transcription (H. Stevens, Introduction to Ecology) that quotes $\lambda=0.945$, which the code reproduces; it has not been checked against the paper's own table.`,
-      caption: String.raw`The matrix is the seven-stage loggerhead sea-turtle model of Crouse, Crowder and Caswell (1987), with entries copied from a secondary transcription, so treat the numbers as the published model's, not as new data (the dominant eigenvalue reproduces the value $0.945$ quoted there). Left: the elasticity $e_{ij}$ of each nonzero entry (row = destination stage, column = source stage). Right: the percentage change in $\lambda$ when one thing is raised by the chosen percentage — all fecundities, or the survival (stasis and growth together, capped at 1) of one stage. Raising fecundity barely moves $\lambda$ (it moves it exactly as much as hatchling survival, since both enter the same loop), while a few percent more survival of any later stage moves it several times more: why such analyses argued for protecting later stages rather than nests.`,
-      deps: ['mathbio-4.9'],
+      scope: String.raw`First-order, local statement: it is exact only as the change tends to zero; a 20% change in survival can make the linear prediction visibly wrong. A fixed structural zero is excluded from the allowed perturbations, but adding a new transition can have nonzero sensitivity even though its elasticity at a zero entry is zero. Biologically coupled entries (survival that appears in several positions) change together, as in the right panel. The matrix is the seven-stage loggerhead model of Crouse, Crowder & Caswell (Ecology 68, 1987), checked entry by entry against original Table 4, p. 1416; the original gives $\lambda=0.9450$. Its demographic inputs are a preliminary historical model based on Frazer’s life table, not current population measurements. Here the survival control multiplies P and G together at fixed conditional stage advance; the original also examined changes in annual survival while recomputing P,G from stage duration, which is a different perturbation.`,
+      caption: String.raw`The matrix is the seven-stage loggerhead sea-turtle model of Crouse, Crowder and Caswell (1987), with entries checked against the original Table 4 (the dominant eigenvalue is $0.94503$, rounding to its $0.9450$). Left: the elasticity $e_{ij}$ of each nonzero entry (row = destination stage, column = source stage). Right: the percentage change in $\lambda$ when one thing is raised by the chosen percentage — all fecundities, or the survival (stasis and growth together, capped at 1) of one stage. Raising fecundity barely moves $\lambda$ (it moves it exactly as much as hatchling survival, since both enter the same loop), while small survival gains in juvenile/subadult stages 2–4 or mature breeders 7 have larger effects. Novice and first-year remigrant stages 5–6 do not share that ranking. This illustrates the original paper’s qualified argument for protecting juvenile stages, not an assertion that every later stage is more responsive.`,
+      deps: ['mathbio-4.9', 'pma-9.15'],
       tags: ['elasticity', 'sensitivity'],
-      refs: ['Edelstein-Keshet ch. 1'],
-      verify: true,
+      refs: ['Crouse, Crowder & Caswell (1987), Ecology 68:1412–1423, Table 4, pp. 1416–1419; Caswell (2019), Sensitivity Analysis, complete §3.3, pp. 36–39'],
+      links: { doi: 'https://doi.org/10.2307/1939225' },
       viz(v) {
         const pct = v.slider('proportional increase (%)', 1, 30, 10, { int: true });
         const NAMES = ['fecundities', ...TURTLE_STAGES.map((n, i) => 'surv. ' + (i + 1))];
@@ -201,10 +202,10 @@ where $P_j$ is the probability of staying in stage $j$, $G_j$ of moving on to st
       name: 'Population momentum',
       credit: 'N. Keyfitz, 1971',
       statement: String.raw`Let a population have stable age distribution $\mathbf u_0$ and be growing ($\lambda_0>1$). If fertility drops at once to replacement level, so that the new Leslie matrix $L_1$ has $R_0=1$ (hence $\lambda_1=1$) and left eigenvector $\mathbf v_1$, the population does not stop growing: it converges to the size
-$$N_\infty=\frac{\mathbf v_1\cdot\mathbf n(0)}{\mathbf v_1\cdot\mathbf u_1}\ \ (\text{with }\mathbf u_1\text{ normalised to total }1),\qquad \text{momentum}\ M=\frac{N_\infty}{N(0)}>1 .$$
-Momentum is the factor by which a growing population keeps growing after fertility is brought to replacement, solely because the age structure is young.`,
+$$N_\infty=\frac{\mathbf v_1\cdot\mathbf n(0)}{\mathbf v_1\cdot\mathbf u_1}\ \ (\text{with }\mathbf u_1\text{ normalised to total }1),\qquad \text{momentum}\ M=\frac{N_\infty}{N(0)} .$$
+Momentum measures the eventual size change caused by the inherited age structure. For the fixed-survival, proportional fertility reduction illustrated here, $M>1$ for the growing initial schedules, while the no-change endpoint has $M=1$; the projection formula alone does not imply $M>1$ for every arbitrary replacement schedule.`,
       idea: String.raw`A young population has many individuals in or approaching the reproductive classes, who keep having children at replacement fertility, each cohort being larger than the one it replaces. In the new, stationary matrix $L_1$ the limit of $L_1^t\mathbf n(0)$ is the projection of $\mathbf n(0)$ on the dominant mode (4.4), with coefficient given by the reproductive values $\mathbf v_1$ (4.9); a young population has more weight on high-value classes than the stationary distribution does, so the limit exceeds $N(0)$. The size of $M$ grows with the initial growth rate and with how concentrated reproduction is.`,
-      scope: String.raw`Female-only, closed population, fixed survival and a stylised fertility schedule in 10 age classes (illustrative, not a country's data). Fertility is cut instantly to exactly replacement, which no real population does; real momentum is estimated with age-specific schedules and mortality change.`,
+      scope: String.raw`Female-only, closed population, fixed survival and a stylised fertility schedule in 10 age classes (illustrative, not a country's data). The initial R0=1 endpoint represents no change. Other settings divide every fecundity by the same initial R0, with survival fixed. Fertility is cut instantly to exactly replacement, which is an idealized intervention; real momentum is estimated with age-specific schedules and mortality change.`,
       caption: String.raw`The population starts in its stable age distribution at the chosen initial $R_0$; at $t=0$ every fecundity is divided by $R_0$ so that $R_0=1$. Left: total size relative to its initial value (blue); dashed grey: what would have happened without the change. The horizontal line is the predicted momentum $M$ from the reproductive-value formula. Right: the age structure at the chosen time $t$ (blue) against the initial one (orange).`,
       deps: ['mathbio-4.4'],
       tags: ['momentum', 'demography'],
@@ -225,6 +226,7 @@ Momentum is the factor by which a growing population keeps growing after fertili
           const N1 = tr1.map(sumv), N0 = tr0.map(sumv);
           A.setView([0, 60], [0, Math.max(2.2, Mom * 1.35)]);
           A.path(N0.map((q, t) => [t, q]), { color: 'muted', dash: true, width: 1.5 });
+          if (N0.at(-1) > Math.max(2.2, Mom * 1.35)) A.text('unchanged-fertility curve continues above plot', 59, Math.max(2.2, Mom * 1.35) * .94, { color: 'muted', size: 10, align: 'right' });
           A.path(N1.map((q, t) => [t, q]), { color: 'accent', width: 2.2 });
           A.hline(Mom, { color: 'green', dash: true, width: 1.5 });
           A.hline(1, { color: 'faint', alpha: 0.6 });
@@ -246,11 +248,11 @@ Momentum is the factor by which a growing population keeps growing after fertili
       credit: 'Lotka, 1907–1939 (building on Sharpe & Lotka 1911)',
       statement: String.raw`In continuous age, let $B(t)$ be the birth rate of females, $\ell(a)$ the survivorship to age $a$ and $m(a)$ the maternity function, and put $\varphi(a)=\ell(a)m(a)$. Births at time $t$ come from those born earlier and still reproducing, plus a forcing term $G(t)$ for the part of reproduction that comes from the initial population:
 $$B(t)=G(t)+\int_0^{t}B(t-a)\,\varphi(a)\,da .$$
-The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a)\,da=1$ (the continuous Euler–Lotka equation, 4.6) governs the long run: if $\varphi$ is not supported on a lattice, $B(t)e^{-rt}\to\dfrac{\int_0^\infty G(s)e^{-rs}\,ds}{\int_0^\infty a\,e^{-ra}\varphi(a)\,da}$.`,
-      idea: String.raw`Multiplying by $e^{-rt}$ turns the equation into a renewal equation for $b(t)=B(t)e^{-rt}$ whose kernel $e^{-ra}\varphi(a)$ is a probability density, because $r$ solves the characteristic equation. The renewal theorem (fa-9.13; Blackwell's version is stoch-11.3) says that such a process settles to the constant $\int g/\text{mean}$. The other (complex) roots of the characteristic equation give damped oscillations in $b(t)$: these are the "echoes" of the initial birth pulse, which persist longer when reproduction is concentrated at one age.`,
-      scope: String.raw`Density-independent, one sex, time-invariant rates. The convergence needs an aperiodic (non-lattice) kernel, as in the Gamma-shaped maternity function used below; it takes the form of a pure undamped oscillation if all reproduction happens at exactly one age.`,
+The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a)\,da=1$ (the continuous Euler–Lotka equation, 4.6) governs the long run: if the tilted kernel $k_r(a)=e^{-ra}\varphi(a)$ is non-lattice with $0<\mu_r=\int_0^\infty a k_r(a)\,da<\infty$, and the tilted forcing $g(t)=e^{-rt}G(t)$ is directly Riemann integrable, then $B(t)e^{-rt}\to\dfrac{\int_0^\infty G(s)e^{-rs}\,ds}{\int_0^\infty a\,e^{-ra}\varphi(a)\,da}$.`,
+      idea: String.raw`Multiplying by $e^{-rt}$ turns the equation into a renewal equation for $b(t)=B(t)e^{-rt}$ whose kernel $e^{-ra}\varphi(a)$ is a probability density, because $r$ solves the characteristic equation. The key renewal theorem (with the related Blackwell limit in stoch-11.3) says that such a process settles to the constant $\int g/\text{mean}$. The other (complex) roots of the characteristic equation give damped oscillations in $b(t)$: these are the "echoes" of the initial birth pulse, which persist longer when reproduction is concentrated at one age.`,
+      scope: String.raw`Density-independent, one sex, time-invariant rates. The stated limit requires the finite positive mean and directly Riemann-integrable forcing above, in addition to a non-lattice tilted kernel. The continuous Gamma kernel and Gaussian founder pulse below satisfy these hypotheses. The numerical time grid is a discrete approximation; concentrated reproduction can leave long oscillatory transients, and a lattice reproduction law need not converge to one constant.`,
       caption: String.raw`The maternity function $\varphi(a)=R_0\times\mathrm{Gamma}(\text{shape }k,\text{ mean }5)$ density (an illustrative choice) is integrated against the births, with a single pulse of founders at $t\approx0.5$ as forcing. Left: $B(t)$. Right: $B(t)e^{-rt}$, which converges to the constant predicted by the formula (green). A large shape $k$ (reproduction concentrated at age 5) gives long-lasting echoes of the founding pulse; a small $k$ damps them in a generation or two.`,
-      deps: ['mathbio-4.6', 'fa-9.13', 'stoch-11.3'],
+      deps: ['mathbio-4.6', 'stoch-11.3', 'prob-2.6.12'],
       tags: ['renewal equation', 'Lotka'],
       refs: ['Murray I ch. 1'],
       viz(v) {
@@ -299,10 +301,10 @@ The real root $r$ of the characteristic equation $\int_0^\infty e^{-ra}\varphi(a
       statement: String.raw`Let $n(a,t)$ be the density of individuals of age $a$ at time $t$, with age-specific mortality $\mu(a)$ and fertility $\beta(a)$. Then
 $$\frac{\partial n}{\partial t}+\frac{\partial n}{\partial a}=-\mu(a)\,n,\qquad n(0,t)=\int_0^\infty\beta(a)\,n(a,t)\,da,\qquad n(a,0)=n_0(a).$$
 Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t$, $n(a,t)=n_0(a-t)\,\ell(a)/\ell(a-t)$, and for $a<t$, $n(a,t)=B(t-a)\ell(a)$ with $B(t)=n(0,t)$ the birth rate, where $\ell(a)=e^{-\int_0^a\mu}$. Substituting the second form into the boundary condition gives Lotka's renewal equation (4.13), and solutions grow like $e^{rt}$ with the age profile tending to $e^{-ra}\ell(a)$, where $r$ solves $\int\beta(a)\ell(a)e^{-ra}da=1$.`,
-      idea: String.raw`The left side is the derivative of $n$ along the characteristic lines of slope one, because everyone ages at unit speed; the right side is pure death. The only coupling between ages is the boundary condition at $a=0$, which feeds newborns from all fertile ages. Solving along characteristics reduces the PDE to the renewal equation for $B(t)$, so everything proved about the latter (4.13) transfers, and the continuous analogue of the stable age distribution appears.`,
-      scope: String.raw`Linear, density-independent, one sex, with $\mu,\beta$ independent of time. The version with $\mu$ or $\beta$ depending on total population (Gurtin–MacCamy) is nonlinear and has equilibria and bifurcations.`,
-      caption: String.raw`Numerical solution on a grid (upwind along characteristics, step 0.1) with mortality $\mu(a)=0.05+0.0005a^3$ and a bump of fertility around age 5 (made-up shapes). Left: the age profile at the current time (blue) against the stable profile $e^{-ra}\ell(a)$ (green, same total). Right: the whole solution as a heat map over age (horizontal) and time (vertical), scaled by $e^{-rt}$ so that long-run behaviour is a time-independent pattern; the grey lines are characteristics and the gold line the current time. Choose the initial age profile and fertility level.`,
-      deps: ['mathbio-4.13'],
+      idea: String.raw`The initial profile need not satisfy the newborn boundary at the single corner $(a,t)=(0,0)$, so the characteristic solution is understood piecewise there. The left side is the derivative of $n$ along the characteristic lines of slope one, because everyone ages at unit speed; the right side is pure death. The only coupling between ages is the boundary condition at $a=0$, which feeds newborns from all fertile ages. Solving along characteristics reduces the PDE to the renewal equation for $B(t)$, so everything proved about the latter (4.13) transfers, and the continuous analogue of the stable age distribution appears.`,
+      scope: String.raw`Linear, density-independent, one sex, with nonnegative, time-independent mortality/fertility and an integrable nonnegative initial density. Long-run convergence additionally needs a finite-mean non-lattice reproduction kernel and suitable integrability of the initial-population forcing, as in the renewal theorem; the characteristic formula alone does not imply convergence for every possible fertility function. The visualization truncates age at 12 (individuals pass out of the grid) and uses a smooth illustrative fertility bump. The version with $\mu$ or $\beta$ depending on total population (Gurtin–MacCamy) is nonlinear and has equilibria and bifurcations.`,
+      caption: String.raw`Numerical solution on a grid (characteristic shift, step 0.1, midpoint mortality and a trapezoidal newborn boundary) with mortality $\mu(a)=0.05+0.0005a^3$ and a bump of fertility around age 5 (made-up shapes). Left: the age profile at the current time (blue) against the stable profile $e^{-ra}\ell(a)$ (green, same total). Right: the whole solution as a heat map over age (horizontal) and time (vertical), scaled by $e^{-rt}$ so that long-run behaviour is a time-independent pattern; the grey lines are characteristics and the gold line the current time. Choose the initial age profile and fertility level.`,
+      deps: ['mathbio-4.13', 'pde-1.2'],
       tags: ['age structure', 'PDE'],
       refs: ['Murray I ch. 1'],
       verify: true,
@@ -316,29 +318,13 @@ Along each characteristic $a=t+\text{const}$ the density simply decays: for $a>t
         let cache = { key: '' };
         function solve() {
           const key = init.value + '|' + bsl.value; if (cache.key === key) return cache;
-          const ell = [1]; for (let i = 1; i <= NA; i++) ell.push(ell[i - 1] * Math.exp(-h * mu((i - 0.5) * h)));
-          const f = (r) => { let s = 0; for (let i = 0; i <= NA; i++) s += (i === 0 || i === NA ? 0.5 : 1) * h * beta(i * h, bsl.value) * ell[i] * Math.exp(-r * i * h); return s - 1; };
-          let lo = -1, hi = 1; for (let it = 0; it < 80; it++) { const mid = 0.5 * (lo + hi); if (f(mid) > 0) lo = mid; else hi = mid; }
-          const r = 0.5 * (lo + hi);
-          const n0 = Array.from({ length: NA + 1 }, (_, i) => { const a = i * h; return init.value === 'young' ? Math.exp(-((a - 2) ** 2) / 1.2) : init.value === 'old' ? Math.exp(-((a - 8) ** 2) / 1.2) : 1; });
-          const m0 = sumv(n0) * h; for (let i = 0; i <= NA; i++) n0[i] /= m0;
-          const snaps = [n0]; let cur = n0, Bs = [];
-          for (let k = 0; k < NT; k++) {
-            const nx = new Array(NA + 1).fill(0);
-            for (let i = 0; i < NA; i++) nx[i + 1] = cur[i] * Math.exp(-h * mu((i + 0.5) * h));
-            let b = 0; for (let i = 1; i <= NA; i++) b += h * beta(i * h, bsl.value) * nx[i]; nx[0] = b;
-            snaps.push(nx); cur = nx;
-          }
-          Bs = snaps.map((s) => s[0]);
-          const stable = ell.map((q, i) => q * Math.exp(-r * i * h)); const ms = sumv(stable) * h; for (let i = 0; i <= NA; i++) stable[i] /= ms;
-          let mxs = 0; for (let k = 0; k <= NT; k += 5) for (let i = 0; i <= NA; i += 3) mxs = Math.max(mxs, snaps[k][i] * Math.exp(-r * k * h));
-          cache = { key, snaps, r, stable, Bs, mxs };
+          cache = { key, ...teachingAgeGrid(init.value, bsl.value, h, NA, NT) };
           return cache;
         }
         let st = null;
         v.animate((t) => {
           const S = solve(), k = Math.min(NT, Math.round(t / h)), cur = S.snaps[k];
-          const tot = sumv(cur) * h;
+          const tot = ageMass(cur, h);
           const mx = Math.max(...S.snaps[0], ...cur, ...S.stable.map((q) => q * tot)) * 1.15;
           P.setView([0, 12], [0, mx]);
           P.path(Array.from({ length: NA + 1 }, (_, i) => [i * h, cur[i]]), { color: 'accent', width: 2.2 });

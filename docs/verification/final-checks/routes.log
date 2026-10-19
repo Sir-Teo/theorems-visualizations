@@ -1,0 +1,274 @@
+✓ #/                           Ideas, Visualized — the ideas of human knowledge, illustrated
+✓ #/map                        Map · Ideas, Visualized
+✓ #/timeline                   Timeline · Ideas, Visualized
+✓ #/bridges                    Bridges · Ideas, Visualized
+✓ #/bridge/action              Least action: nature’s shortest paths · Ideas, Visualized
+✓ #/bridge/contagion           How things spread: epidemics, rumours and riots · Ideas, Visualized
+✓ #/status                     Status · Ideas, Visualized
+✓ #/about                      About · Ideas, Visualized
+✓ #/audit                      Numbering audit · Ideas, Visualized
+✓ #/f/math                     Mathematics · Ideas, Visualized
+✓ #/f/stats                    Statistics & Data Science · Ideas, Visualized
+✓ #/f/cs                       Computer Science · Ideas, Visualized
+✓ #/f/humanities               Humanities · Ideas, Visualized
+✓ #/c/pma                      Principles of Mathematical Analysis · Ideas, Visualized
+✓ #/c/rca                      Real and Complex Analysis · Ideas, Visualized
+✓ #/c/fa                       Functional Analysis · Ideas, Visualized
+✓ #/c/ode                      Ordinary Differential Equations & Dynamical Systems · Ideas, Visualized
+✓ #/c/pde                      Partial Differential Equations · Ideas, Visualized
+✓ #/c/vcalc                    Vector Calculus · Ideas, Visualized
+✓ #/c/ladr                     Linear Algebra Done Right · Ideas, Visualized
+✓ #/c/alg                      Abstract Algebra · Ideas, Visualized
+✓ #/c/rep                      Representation Theory · Ideas, Visualized
+✓ #/c/top                      Topology · Ideas, Visualized
+✓ #/c/dg                       Differential Geometry of Curves & Surfaces · Ideas, Visualized
+✓ #/c/mfd                      Manifolds & Riemannian Geometry · Ideas, Visualized
+✓ #/c/prob                     Probability: Theory and Examples · Ideas, Visualized
+✓ #/c/stoch                    Stochastic Processes · Ideas, Visualized
+✓ #/c/graph                    Graph Theory · Ideas, Visualized
+✓ #/c/comb                     Combinatorics · Ideas, Visualized
+✓ #/c/nt                       Number Theory · Ideas, Visualized
+✓ #/c/logic                    Logic & Foundations · Ideas, Visualized
+✓ #/c/num                      Numerical Analysis · Ideas, Visualized
+✓ #/c/nla                      Numerical Linear Algebra · Ideas, Visualized
+✓ #/c/opt                      Optimization · Ideas, Visualized
+✓ #/c/stat                     Statistical Inference · Ideas, Visualized
+✓ #/c/ml                       Understanding Machine Learning · Ideas, Visualized
+✓ #/c/deep                     Deep Learning Theory · Ideas, Visualized
+✓ #/c/causal                   Causal Inference · Ideas, Visualized
+✓ #/c/algo                     Algorithms · Ideas, Visualized
+✓ #/c/toc                      Theory of Computation · Ideas, Visualized
+✓ #/c/cplx                     Computational Complexity · Ideas, Visualized
+✓ #/c/info                     Information & Coding Theory · Ideas, Visualized
+✓ #/c/crypto                   Cryptography · Ideas, Visualized
+✓ #/c/dist                     Distributed Computing · Ideas, Visualized
+✓ #/c/pl                       Programming Languages & Types · Ideas, Visualized
+✓ #/c/cg                       Computational Geometry & Graphics · Ideas, Visualized
+✓ #/c/mech                     Classical Mechanics · Ideas, Visualized
+✓ #/c/em                       Electromagnetism · Ideas, Visualized
+✓ #/c/waves                    Waves & Optics · Ideas, Visualized
+✓ #/c/thermo                   Thermodynamics & Statistical Mechanics · Ideas, Visualized
+✓ #/c/qm                       Quantum Mechanics · Ideas, Visualized
+✓ #/c/cm                       Condensed Matter Physics · Ideas, Visualized
+✓ #/c/qinfo                    Quantum Information & Computation · Ideas, Visualized
+✓ #/c/rel                      Special & General Relativity · Ideas, Visualized
+✓ #/c/astro                    Astrophysics & Celestial Mechanics · Ideas, Visualized
+✓ #/c/fluid                    Fluid Dynamics · Ideas, Visualized
+✓ #/c/pchem                    Physical Chemistry: Thermodynamics & Equilibrium · Ideas, Visualized
+✓ #/c/kin                      Chemical Kinetics · Ideas, Visualized
+✓ #/c/qchem                    Quantum Chemistry & Spectroscopy · Ideas, Visualized
+✓ #/c/xtal                     Crystallography · Ideas, Visualized
+✓ #/c/mat                      Materials Science · Ideas, Visualized
+✓ #/c/geol                     Geology & Geophysics · Ideas, Visualized
+✓ #/c/geo                      Atmosphere & Ocean Dynamics · Ideas, Visualized
+✓ #/c/climate                  Climate Science · Ideas, Visualized
+✓ #/c/geog                     Geography & Cartography · Ideas, Visualized
+✓ #/c/popgen                   Population Genetics & Evolution · Ideas, Visualized
+✓ #/c/mathbio                  Mathematical Biology · Ideas, Visualized
+✓ #/c/ecol                     Ecology · Ideas, Visualized
+✓ #/c/neuro                    Computational Neuroscience · Ideas, Visualized
+✓ #/c/bioinf                   Bioinformatics Algorithms · Ideas, Visualized
+✓ #/c/sysbio                   Systems Biology · Ideas, Visualized
+✓ #/c/physio                   Human Physiology · Ideas, Visualized
+✓ #/c/pharm                    Pharmacology · Ideas, Visualized
+✓ #/c/epi                      Epidemiology & Evidence · Ideas, Visualized
+✓ #/c/imaging                  Medical Imaging · Ideas, Visualized
+✓ #/c/sig                      Signals & Systems · Ideas, Visualized
+✓ #/c/ctrl                     Control Theory · Ideas, Visualized
+✓ #/c/circ                     Circuits · Ideas, Visualized
+✓ #/c/energy                   Energy Systems · Ideas, Visualized
+✓ #/c/solid                    Solid Mechanics & Structures · Ideas, Visualized
+✓ #/c/robot                    Robotics · Ideas, Visualized
+✓ #/c/aero                     Aerospace Engineering · Ideas, Visualized
+✓ #/c/micro                    Microeconomics · Ideas, Visualized
+✓ #/c/macro                    Macroeconomics · Ideas, Visualized
+✓ #/c/fin                      Finance · Ideas, Visualized
+✓ #/c/game                     Game Theory & Social Choice · Ideas, Visualized
+✓ #/c/behav                    Behavioral Economics & Decisions · Ideas, Visualized
+✓ #/c/psych                    Psychology & Perception · Ideas, Visualized
+✓ #/c/soc                      Networks & Collective Behavior · Ideas, Visualized
+✓ #/c/polsci                   Political Science & Social Choice · Ideas, Visualized
+✓ #/c/demo                     Demography · Ideas, Visualized
+✓ #/c/music                    Music Theory & Acoustics · Ideas, Visualized
+✓ #/c/art                      Visual Art & Color · Ideas, Visualized
+✓ #/c/arch                     Architecture & Structural Form · Ideas, Visualized
+✓ #/c/ling                     Linguistics · Ideas, Visualized
+✓ #/c/phil                     Philosophy & Reasoning · Ideas, Visualized
+✓ #/c/tech                     History of Technology · Ideas, Visualized
+✓ #/c/bighist                  Big History & Quantitative History · Ideas, Visualized
+✓ #/c/pma/1                    PMA Chapter 1: The Real and Complex Number Systems · Ideas, Visualized
+✓ #/c/rca/0                    RCA Prologue: Prologue: The Exponential Function · Ideas, Visualized
+✓ #/c/fa/1                     FA Chapter 1: Topological Vector Spaces · Ideas, Visualized
+✓ #/c/ode/1                    ODE Chapter 1: First-order equations and flows on the line · Ideas, Visualized
+✓ #/c/pde/1                    PDE Chapter 1: Where PDEs come from · Ideas, Visualized
+✓ #/c/vcalc/1                  VC Chapter 1: Vectors, curves and the geometry of space · Ideas, Visualized
+✓ #/c/ladr/1                   LADR Chapter 1: Vector Spaces · Ideas, Visualized
+✓ #/c/alg/1                    ALG Chapter 1: Preliminaries · Ideas, Visualized
+✓ #/c/rep/1                    REP Chapter 1: Representations · Ideas, Visualized
+✓ #/c/top/1                    TOP Chapter 1: Topological spaces · Ideas, Visualized
+✓ #/c/dg/1                     DG Chapter 1: Plane curves · Ideas, Visualized
+✓ #/c/mfd/1                    MFD Chapter 1: Smooth manifolds · Ideas, Visualized
+✓ #/c/prob/1                   PTE Chapter 1: Measure Theory · Ideas, Visualized
+✓ #/c/stoch/1                  STOCH Chapter 1: Markov chains: definitions and examples · Ideas, Visualized
+✓ #/c/graph/1                  GT Chapter 1: The Basics · Ideas, Visualized
+✓ #/c/comb/1                   COMB Chapter 1: Basic counting · Ideas, Visualized
+✓ #/c/nt/1                     NT Chapter 1: Divisibility and primes · Ideas, Visualized
+✓ #/c/logic/1                  LOGIC Chapter 1: Infinity and the paradoxes · Ideas, Visualized
+✓ #/c/num/1                    NUM Chapter 1: Floating point and the anatomy of error · Ideas, Visualized
+✓ #/c/nla/1                    NLA Chapter 1: Matrices, norms and the SVD · Ideas, Visualized
+✓ #/c/opt/1                    OPT Chapter 1: Optimization problems and optimality · Ideas, Visualized
+✓ #/c/stat/1                   STAT Chapter 1: Statistical models and sampling distributions · Ideas, Visualized
+✓ #/c/ml/1                     UML Chapter 1: Introduction · Ideas, Visualized
+✓ #/c/deep/1                   DL Chapter 1: Neural networks as functions · Ideas, Visualized
+✓ #/c/causal/1                 CAUSAL Chapter 1: Potential outcomes and causal effects · Ideas, Visualized
+✓ #/c/algo/1                   ALGO Chapter 1: Correctness, cost and growth · Ideas, Visualized
+✓ #/c/toc/1                    TOC Chapter 1: Strings, languages and counting · Ideas, Visualized
+✓ #/c/cplx/1                   CC Chapter 1: Diagonalization and its limits · Ideas, Visualized
+✓ #/c/info/1                   INFO Chapter 1: Entropy · Ideas, Visualized
+✓ #/c/crypto/1                 CRYPTO Chapter 1: Classical ciphers and their cryptanalysis · Ideas, Visualized
+✓ #/c/dist/1                   DIST Chapter 1: Models of distributed systems · Ideas, Visualized
+✓ #/c/pl/1                     PL Chapter 1: Syntax, induction and operational semantics · Ideas, Visualized
+✓ #/c/cg/1                     CG Chapter 1: Geometric primitives and robustness · Ideas, Visualized
+✓ #/c/mech/1                   MECH Chapter 1: Kinematics and Newton’s laws · Ideas, Visualized
+✓ #/c/em/1                     EM Chapter 1: Charges, forces and Gauss’s law · Ideas, Visualized
+✓ #/c/waves/1                  WAVES Chapter 1: The wave equation · Ideas, Visualized
+✓ #/c/thermo/1                 THERMO Chapter 1: Temperature, heat and the first law · Ideas, Visualized
+✓ #/c/qm/1                     QM Chapter 1: The quantum revolution · Ideas, Visualized
+✓ #/c/cm/1                     CMP Chapter 1: Electrons in a periodic potential · Ideas, Visualized
+✓ #/c/qinfo/1                  QINFO Chapter 1: Qubits, gates and measurement · Ideas, Visualized
+✓ #/c/rel/1                    REL Chapter 1: Spacetime and the two postulates · Ideas, Visualized
+✓ #/c/astro/1                  ASTRO Chapter 1: Orbits, binaries and exoplanets · Ideas, Visualized
+✓ #/c/fluid/1                  FLUID Chapter 1: Kinematics and conservation of mass · Ideas, Visualized
+✓ #/c/pchem/1                  PCHEM Chapter 1: Gases: perfect and real · Ideas, Visualized
+✓ #/c/kin/1                    KIN Chapter 1: Rates and rate laws · Ideas, Visualized
+✓ #/c/qchem/1                  QCHEM Chapter 1: Quantum models a chemist lives by · Ideas, Visualized
+✓ #/c/xtal/1                   XTAL Chapter 1: Crystals, lattices and structures · Ideas, Visualized
+✓ #/c/mat/1                    MAT Chapter 1: Bonding, structure and properties · Ideas, Visualized
+✓ #/c/geol/1                   GEOL Chapter 1: Rocks, strata and geologic time · Ideas, Visualized
+✓ #/c/geo/1                    GEO Chapter 1: Vertical structure: hydrostatics, lapse rates and stability · Ideas, Visualized
+✓ #/c/climate/1                CLIM Chapter 1: Radiation and the planetary energy balance · Ideas, Visualized
+✓ #/c/geog/1                   GEOG Chapter 1: The shape of the Earth and its coordinates · Ideas, Visualized
+✓ #/c/popgen/1                 POPGEN Chapter 1: Genetic variation and Hardy–Weinberg · Ideas, Visualized
+✓ #/c/mathbio/1                MBIO Chapter 1: Growth of a single population · Ideas, Visualized
+✓ #/c/ecol/1                   ECOL Chapter 1: Organisms, energy and scaling · Ideas, Visualized
+✓ #/c/neuro/1                  NEURO Chapter 1: The neuron as an electrical circuit · Ideas, Visualized
+✓ #/c/bioinf/1                 BIOINF Chapter 1: Sequences, k-mers and motifs · Ideas, Visualized
+✓ #/c/sysbio/1                 SYSBIO Chapter 1: Transcription networks: basic concepts · Ideas, Visualized
+✓ #/c/physio/1                 PHYSIO Chapter 1: Homeostasis and membrane transport · Ideas, Visualized
+✓ #/c/pharm/1                  PHARM Chapter 1: Drug disposition: the basic quantities · Ideas, Visualized
+✓ #/c/epi/1                    EPI Chapter 1: Measuring disease in populations · Ideas, Visualized
+✓ #/c/imaging/1                IMG Chapter 1: Imaging systems and image quality · Ideas, Visualized
+✓ #/c/sig/1                    SIG Chapter 1: Signals · Ideas, Visualized
+✓ #/c/ctrl/1                   CTRL Chapter 1: Feedback principles · Ideas, Visualized
+✓ #/c/circ/1                   CIRC Chapter 1: The circuit abstraction · Ideas, Visualized
+✓ #/c/energy/1                 ENERGY Chapter 1: Energy, power and scale · Ideas, Visualized
+✓ #/c/solid/1                  SOLID Chapter 1: Stress, strain and axial loading · Ideas, Visualized
+✓ #/c/robot/1                  ROBOT Chapter 1: Configuration space · Ideas, Visualized
+✓ #/c/aero/1                   AERO Chapter 1: The atmosphere and aerodynamic forces · Ideas, Visualized
+✓ #/c/micro/1                  MICRO Chapter 1: Scarcity, opportunity cost and the gains from trade · Ideas, Visualized
+✓ #/c/macro/1                  MACRO Chapter 1: Measuring the macroeconomy · Ideas, Visualized
+✓ #/c/fin/1                    FIN Chapter 1: The time value of money · Ideas, Visualized
+✓ #/c/game/1                   GAME Chapter 1: Strategic games and Nash equilibrium · Ideas, Visualized
+✓ #/c/behav/1                  BEHAV Chapter 1: Expected utility and its paradoxes · Ideas, Visualized
+✓ #/c/psych/1                  PSYCH Chapter 1: Thresholds and the psychophysical methods · Ideas, Visualized
+✓ #/c/soc/1                    SOC Chapter 1: Micromotives and macrobehavior · Ideas, Visualized
+✓ #/c/polsci/1                 POL Chapter 1: Voting methods · Ideas, Visualized
+✓ #/c/demo/1                   DEMO Chapter 1: Counting people: rates, growth and the Lexis diagram · Ideas, Visualized
+✓ #/c/music/1                  MUSIC Chapter 1: Sound as a wave · Ideas, Visualized
+✓ #/c/art/1                    ART Chapter 1: Linear perspective · Ideas, Visualized
+✓ #/c/arch/1                   ARCH Chapter 1: Loads, equilibrium and graphic statics · Ideas, Visualized
+✓ #/c/ling/1                   LING Chapter 1: Phonetics: the sounds of speech · Ideas, Visualized
+✓ #/c/phil/1                   PHIL Chapter 1: Arguments and reasoning · Ideas, Visualized
+✓ #/c/tech/1                   TECH Chapter 1: Prehistoric foundations · Ideas, Visualized
+✓ #/c/bighist/1                BIGHIST Chapter 1: Deep time and how we measure it · Ideas, Visualized
+✓ #/t/pma-1.5                  PMA Definition 1.5: Order on a set · Ideas, Visualized
+✓ #/t/rca-0.1                  RCA Theorem (Prologue 1): The exponential series and the addition formula · Ideas, Visualized
+✓ #/t/fa-1.2                   FA Definition 1.2: Normed spaces and Banach spaces · Ideas, Visualized
+✓ #/t/ode-1.1                  ODE Definition 1.1: Ordinary differential equations and initial value problems · Ideas, Visualized
+✓ #/t/pde-1.1                  PDE Definition 1.1: PDEs: order, linearity and superposition · Ideas, Visualized
+✓ #/t/vcalc-1.1                VC Definition 1.1: Vectors in ℝ³ and their algebra · Ideas, Visualized
+✓ #/t/ladr-1.1                 LADR Definition 1.1: Complex numbers · Ideas, Visualized
+✓ #/t/alg-1.1a                 ALG Definition 1.1a: Sets and set operations · Ideas, Visualized
+✓ #/t/rep-1.1                  REP Definition 1.1: Linear representations · Ideas, Visualized
+✓ #/t/top-1.1                  TOP Definition 1.1: Topological space · Ideas, Visualized
+✓ #/t/dg-1.1                   DG Definition 1.1: Parametrized and regular curves · Ideas, Visualized
+✓ #/t/mfd-1.1                  MFD Definition 1.1: Charts, atlases and transition maps · Ideas, Visualized
+✓ #/t/prob-1.1.1               PTE Theorem 1.1.1: Monotonicity, subadditivity and continuity of measures · Ideas, Visualized
+✓ #/t/stoch-1.1                STOCH Definition 1.1: Markov chain and transition matrix · Ideas, Visualized
+✓ #/t/graph-1.1.1a             GT Definition 1.1.1a: Graph: vertices and edges · Ideas, Visualized
+✓ #/t/comb-1.1                 COMB Definition 1.1: Sum and product rules · Ideas, Visualized
+✓ #/t/nt-1.1                   NT Definition 1.1: Divisibility and the division algorithm · Ideas, Visualized
+✓ #/t/logic-1.1                LOGIC Paradox 1.1: Hilbert’s hotel · Ideas, Visualized
+✓ #/t/num-1.1                  NUM Invention 1.1: The IEEE 754 floating-point standard · Ideas, Visualized
+✓ #/t/nla-1.1                  NLA Definition 1.1: Matrix–vector products as combinations of columns · Ideas, Visualized
+✓ #/t/opt-1.1                  OPT Definition 1.1: Optimization problems: objective, constraints, optimal value · Ideas, Visualized
+✓ #/t/stat-1.1                 STAT Definition 1.1: Statistical model: parametric and nonparametric · Ideas, Visualized
+✓ #/t/ml-1.1a                  UML Concept 1.1a: Inductive bias: bait shyness versus pigeon superstition · Ideas, Visualized
+✓ #/t/deep-1.1                 DL Model 1.1: Artificial neuron · Ideas, Visualized
+✓ #/t/causal-1.1               CAUSAL Definition 1.1: Potential outcomes · Ideas, Visualized
+✓ #/t/algo-1.1                 ALGO Definition 1.1: Problem, instance and algorithm · Ideas, Visualized
+✓ #/t/toc-1.1                  TOC Definition 1.1: Alphabets, strings and languages · Ideas, Visualized
+✓ #/t/cplx-1.1                 CC Definition 1.1: Time- and space-constructible functions · Ideas, Visualized
+✓ #/t/info-1.1                 INFO Definition 1.1: Surprisal (self-information) · Ideas, Visualized
+✓ #/t/crypto-1.1               CRYPTO Definition 1.1: Private-key encryption schemes · Ideas, Visualized
+✓ #/t/dist-1.1                 DIST Definition 1.1: Message-passing systems · Ideas, Visualized
+✓ #/t/pl-1.1                   PL Definition 1.1: Abstract syntax trees · Ideas, Visualized
+✓ #/t/cg-1.1                   CG Definition 1.1: Points, vectors and affine combinations · Ideas, Visualized
+✓ #/t/mech-1.1                 MECH Definition 1.1: Position, velocity and acceleration · Ideas, Visualized
+✓ #/t/em-1.1                   EM Phenomenon 1.1: Electric charge: two signs, quantized · Ideas, Visualized
+✓ #/t/waves-1.1                WAVES Model 1.1: Continuum limit of a chain: the wave equation · Ideas, Visualized
+✓ #/t/thermo-1.1               THERMO Definition 1.1: Thermodynamic systems, states and equilibrium · Ideas, Visualized
+✓ #/t/qm-1.1                   QM Hypothesis 1.1: Planck’s quantum of action · Ideas, Visualized
+✓ #/t/cm-1.1                   CMP Model 1.1: Sommerfeld model: the Fermi sphere of a metal · Ideas, Visualized
+✓ #/t/qinfo-1.1                QINFO Definition 1.1: Qubit and the computational basis · Ideas, Visualized
+✓ #/t/rel-1.1                  REL Definition 1.1: Events, worldlines and spacetime diagrams · Ideas, Visualized
+✓ #/t/astro-1.1                ASTRO Definition 1.1: Orbital elements · Ideas, Visualized
+✓ #/t/fluid-1.1                FLUID Concept 1.1: Continuum hypothesis · Ideas, Visualized
+✓ #/t/pchem-1.1                PCHEM Law 1.1: Boyle’s law · Ideas, Visualized
+✓ #/t/kin-1.1                  KIN Definition 1.1: Rate of reaction · Ideas, Visualized
+✓ #/t/qchem-1.1                QCHEM Postulate 1.1: Time-independent Schrödinger equation · Ideas, Visualized
+✓ #/t/xtal-1.1                 XTAL Definition 1.1: Lattice, basis and crystal structure · Ideas, Visualized
+✓ #/t/mat-1.1                  MAT Concept 1.1: Bond-energy curves and bonding types · Ideas, Visualized
+✓ #/t/geol-1.1                 GEOL Concept 1.1: Silicate minerals and their structures · Ideas, Visualized
+✓ #/t/geo-1.1                  GEO Law 1.1: Hydrostatic balance and scale height · Ideas, Visualized
+✓ #/t/climate-1.1              CLIM Law 1.1: Planck’s law and blackbody spectra · Ideas, Visualized
+✓ #/t/geog-1.1                 GEOG Method 1.1: Eratosthenes measures the Earth · Ideas, Visualized
+✓ #/t/popgen-1.1               POPGEN Definition 1.1: Genes, alleles, genotypes and allele frequencies · Ideas, Visualized
+✓ #/t/mathbio-1.1              MBIO Definition 1.1: Per-capita growth rate and the population balance law · Ideas, Visualized
+✓ #/t/ecol-1.1                 ECOL Concept 1.1: The niche as an n-dimensional hypervolume (Hutchinson) · Ideas, Visualized
+✓ #/t/neuro-1.1                NEURO Concept 1.1: The membrane as an RC circuit · Ideas, Visualized
+✓ #/t/bioinf-1.1               BIOINF Concept 1.1: DNA strings, reverse complements and k-mers · Ideas, Visualized
+✓ #/t/sysbio-1.1               SYSBIO Concept 1.1: Transcription networks as directed graphs · Ideas, Visualized
+✓ #/t/physio-1.1               PHYSIO Principle 1.1: Homeostasis and negative feedback · Ideas, Visualized
+✓ #/t/pharm-1.1                PHARM Concept 1.1: ADME: absorption, distribution, metabolism, excretion · Ideas, Visualized
+✓ #/t/epi-1.1                  EPI Definition 1.1: Incidence proportion (risk) · Ideas, Visualized
+✓ #/t/imaging-1.1              IMG Concept 1.1: Linear shift-invariant imaging systems · Ideas, Visualized
+✓ #/t/sig-1.1                  SIG Definition 1.1: Continuous-time and discrete-time signals · Ideas, Visualized
+✓ #/t/ctrl-1.1                 CTRL Concept 1.1: Open-loop versus closed-loop control · Ideas, Visualized
+✓ #/t/circ-1.1                 CIRC Definition 1.1: Charge, current and voltage · Ideas, Visualized
+✓ #/t/energy-1.1               ENERGY Definition 1.1: Energy and power units across scales · Ideas, Visualized
+✓ #/t/solid-1.1                SOLID Definition 1.1: Normal stress · Ideas, Visualized
+✓ #/t/robot-1.1                ROBOT Definition 1.1: Degrees of freedom of a rigid body · Ideas, Visualized
+✓ #/t/aero-1.1                 AERO Model 1.1: The International Standard Atmosphere · Ideas, Visualized
+✓ #/t/micro-1.1                MICRO Concept 1.1: Scarcity and choice · Ideas, Visualized
+✓ #/t/macro-1.1                MACRO Definition 1.1: GDP: the value of final output · Ideas, Visualized
+✓ #/t/fin-1.1                  FIN Concept 1.1: Simple and compound interest · Ideas, Visualized
+✓ #/t/game-1.1                 GAME Definition 1.1: Strategic-form game · Ideas, Visualized
+✓ #/t/behav-1.1                BEHAV Paradox 1.1: The St Petersburg paradox · Ideas, Visualized
+✓ #/t/psych-1.1                PSYCH Definition 1.1: Absolute threshold · Ideas, Visualized
+✓ #/t/soc-1.1                  SOC Concept 1.1: Emergence: aggregate patterns from individual rules · Ideas, Visualized
+✓ #/t/polsci-1.1               POL Definition 1.1: Preference profiles and social choice functions · Ideas, Visualized
+✓ #/t/demo-1.1                 DEMO Theorem 1.1: The demographic balancing equation · Ideas, Visualized
+✓ #/t/music-1.1                MUSIC Concept 1.1: Sound as a pressure wave · Ideas, Visualized
+✓ #/t/art-1.1                  ART Concept 1.1: The picture plane and the visual pyramid · Ideas, Visualized
+✓ #/t/arch-1.1                 ARCH Concept 1.1: Loads: dead, live, snow and wind · Ideas, Visualized
+✓ #/t/ling-1.1                 LING Model 1.1: Speech production as source and filter · Ideas, Visualized
+✓ #/t/phil-1.1                 PHIL Definition 1.1: Validity and soundness · Ideas, Visualized
+✓ #/t/tech-1.1                 TECH Invention 1.1: Oldowan stone tools: conchoidal fracture · Ideas, Visualized
+✓ #/t/bighist-1.1              BIGHIST Concept 1.1: Deep time on a logarithmic axis · Ideas, Visualized
+✓ #/t/ode-5.1                  ODE 5.1: Flows and the group property (planned) · Ideas, Visualized
+✓ #/path/fa-12.23              Path to The spectral theorem for normal operators · Ideas, Visualized
+✓ #/book/pma/4                 PMA Chapter 4: Continuity · Ideas, Visualized
+✓ #/nope                       Not found · Ideas, Visualized
+
+272 routes, 0 with errors

@@ -1,18 +1,19 @@
 // Probability: Theory and Examples (Durrett) — Chapter 5, part Z2: Harris chains on a general state space (§5.8)
-import { PHI, gcd, phi, fx, minor, harrisStep, stationaryVar, gridAR, splitGrid, vecP, vecM, matVecR, matMulS, cdfSample, tvNormal, stationary } from './ch05-z.shared.js';
+import { PHI, gcd, phi, fx, minor, harrisStep, stationaryVar, gridAR, bookSplitGrid as splitGrid, vecP, vecM, matVecR, matMulS, cdfSample, tvNormal, stationary } from './ch05-z.shared.js';
 
 const markovDef = 'prob-5.1.1a';
-const SPLIT_CREDIT = 'Harris, 1956 (Harris chains); splitting: Nummelin and Athreya–Ney, 1978';
+const SPLIT_CREDIT = 'Harris, 1956; Durrett follows Athreya and Ney, 1978';
 const bars = (S, vals, x0, w, opts) => vals.forEach((h, i) => S.rect(x0 + i * w, 0, x0 + (i + 1) * w, h, opts));
 
 /** Regeneration cycles of the AR(1) chain: occupation counts of the states X_0..X_{T-1} of each cycle (X_0 ~ nu). */
 function cycles(mn, N, rng, nb, lo, hi, cap = 600000) {
-  const counts = new Float64Array(nb), w = (hi - lo) / nb; let x = mn.sample(rng), c = 0, steps = 0, T = 0;
+  const counts = new Float64Array(nb), pending = new Float64Array(nb), w = (hi - lo) / nb; let x = mn.sample(rng), c = 0, steps = 0, T = 0, completeSteps = 0;
   while (c < N && steps < cap) {
-    const b = Math.floor((x - lo) / w); if (b >= 0 && b < nb) counts[b]++; T++;
-    const [y, reg] = harrisStep(x, mn, rng); steps++; x = y; if (reg) c++;
+    const b = Math.floor((x - lo) / w); if (b >= 0 && b < nb) pending[b]++; T++;
+    const [y, reg] = harrisStep(x, mn, rng); steps++; x = y;
+    if (reg) { c++; completeSteps += T; T = 0; pending.forEach((n,i) => counts[i] += n); pending.fill(0); }
   }
-  return { counts, N: c, meanT: T / Math.max(1, c), steps };
+  return { counts, N: c, meanT: completeSteps / Math.max(1, c), steps: completeSteps, attemptedSteps: steps };
 }
 const dens = (counts, N, w) => Array.from(counts, (c) => c / (N * w));
 
@@ -24,17 +25,18 @@ export default {
       num: '5.8.1a',
       kind: 'Definition',
       name: 'Harris chain',
-      statement: String.raw`A Markov chain $X_n$ on a measurable space $(S,\mathcal S)$ is a **Harris chain** if there are sets $A,B\in\mathcal S$ and a measure $\rho$ with $\rho(B)>0$ such that
-(i) $P_z(\tau_A<\infty)>0$ for every $z\in S$, where $\tau_A=\inf\{n\ge0: X_n\in A\}$, and
-(ii) $p(x,C)\ge\rho(C)$ for all $x\in A$ and all measurable $C\subset B$.
-The condition (ii) is a *minorization*: from every point of $A$ the next step contains a common piece $\rho$ that does not depend on the point.`,
-      idea: String.raw`On a countable space any single state $A=B=\{a\}$ works, with $\rho=p(a,\cdot)$. In general (ii) lets one flip a coin with probability $\varepsilon=\rho(B)$ at each visit to $A$ and, on heads, draw the next state from the fixed law $\nu=\rho/\varepsilon$ — whatever the current point of $A$ was. These coin flips produce *regeneration times* at which the future is independent of the past; the splitting of 5.8.4 makes this exact.`,
-      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ with $\xi\sim N(0,1)$ and $A=B=[-c,c]$. Left: a path; gold dots mark steps where the minorization coin came up heads and the state was redrawn from $\nu$. Right: the transition densities $p(x,\cdot)$ from $x=-c,0,c$ (blue) all lie above the green shape $\varepsilon\nu$, the largest common minorant. Widen $c$ and $\varepsilon$ shrinks; make $a$ small and it grows.`,
+      statement: String.raw`A Markov chain on $(S,\mathcal S)$ is a **Harris chain** in Durrett's sense if there are measurable sets $A,B$, a probability measure $\nu$ concentrated on $B$, and $\eps>0$ such that
+(i) $P_z(\tau_A<\infty)>0$ for every $z\in S$, where $\tau_A=\inf\{n\ge0:X_n\in A\}$;
+(ii) $p(x,C)\ge\eps\nu(C)$ for $x\in A$ and every measurable $C$.
+Durrett writes (ii) with a density $q(x,y)\ge\eps$ relative to a probability measure on $B$; the uniform lower bound gives this equivalent minorization. Access with positive probability does not require almost-sure access from every state.`,
+      idea: String.raw`On a countable space, suppose every state can reach $a$ with positive probability. Take $A=\{a\}$ and $B=\{b\}$ for any $b$ with $p(a,b)>0$, and minorize by $p(a,b)\delta_b$. There is no reason to require $a=b$. In general the common part $\eps\nu$ can be sampled after an independent coin toss whenever the chain is in $A$. These successful tosses create an atom in the split chain and hence regeneration times.`,
+      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ with $\xi\sim N(0,1)$ and $A=[-c,c]$, $B=\R$. Left: a path; gold dots mark steps where the minorization coin came up heads and the state was redrawn from $\nu$. Right: the transition densities $p(x,\cdot)$ from $x=-c,0,c$ (blue) all lie above the green shape $\varepsilon\nu$, the largest common minorant. Widen $c$ and $\varepsilon$ shrinks; make $a$ small and it grows.`,
       deps: [markovDef],
-      credit: 'T. E. Harris, 1956; the A, B, ρ formulation is the textbook’s',
-      verify: true,
+      credit: 'T. E. Harris, 1956; minorization formulation follows Durrett §5.8',
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.8, pp. 322–323 (Harris definition, Examples 5.8.1–5.8.3 and history)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['general state space'],
-      scope: String.raw`The page uses $A=B$ and an explicit $\rho=\varepsilon\nu$ on all of $\mathbb R$ for the AR(1) kernel; the textbook’s definition allows $A\ne B$ and a $\rho$ living on a part of the space.`,
+      scope: String.raw`The illustration uses $A=[-c,c]$, $B=\R$, and the common minorant $\eps\nu(y)=\inf_{x\in A}p(x,y)$ for the Gaussian AR(1) kernel. The sampled minorant is tabulated numerically on $[-14,14]$.`,
       viz(v) {
         const st = {};
         const aS = v.slider('$a$', 0.2, 0.95, 0.7, { step: 0.05 });
@@ -61,141 +63,117 @@ The condition (ii) is a *minorization*: from every point of $A$ the next step co
       num: '5.8.4',
       kind: 'Lemma',
       name: 'Splitting identities for the auxiliary kernel',
-      statement: String.raw`Let $X_n$ be a Harris chain with $A=B$ and $p(x,\cdot)\ge\varepsilon\nu$ for $x\in A$. On $\bar S=S\cup\{\alpha\}$ define the kernel $v$ from $S$ to $\bar S$ by $v(x,\cdot)=\delta_x$ for $x\notin A$ and $v(x,\cdot)=(1-\varepsilon)\delta_x+\varepsilon\delta_\alpha$ for $x\in A$, and the kernel $\bar p$ from $\bar S$ to $S$ by $\bar p(\alpha,\cdot)=\nu$, $\bar p(x,\cdot)=p(x,\cdot)$ for $x\notin A$, and $\bar p(x,\cdot)=\frac{p(x,\cdot)-\varepsilon\nu}{1-\varepsilon}$ for $x\in A$. Then each $\bar p(x,\cdot)$ is a probability measure and
-$$v\,\bar p=p .$$`,
-      idea: String.raw`For $x\notin A$ both sides are $p(x,\cdot)$. For $x\in A$, $v\bar p(x,\cdot)=(1-\varepsilon)\bar p(x,\cdot)+\varepsilon\bar p(\alpha,\cdot)=\big(p(x,\cdot)-\varepsilon\nu\big)+\varepsilon\nu$. Positivity of $\bar p(x,\cdot)$ is exactly the minorization $p(x,\cdot)\ge\varepsilon\nu$. So a $p$-step is the same as first deciding whether to jump to the pseudo-state $\alpha$, and then drawing from $\nu$ (if at $\alpha$) or from the remainder kernel.`,
+      statement: String.raw`Suppose $p(x,\cdot)\ge\eps\nu$ for $x\in A$, where $\nu$ is a probability measure and $0<\eps\le1$. On $\bar S=S\cup\{\alpha\}$ define $\bar p(x,C)=p(x,C)-\eps\nu(C)$ and $\bar p(x,\{\alpha\})=\eps$ for $x\in A$; outside $A$ use $p$ with no mass at $\alpha$. Set $\bar p(\alpha,\cdot)=\int\nu(dx)\bar p(x,\cdot)$. Let $v$ leave each $x\in S$ fixed and replace $\alpha$ by a draw from $\nu$. Then
+$$v\bar p=\bar p,\qquad\bar p v=p,$$
+where the second identity is on $S$ (or on $\bar S$ after extending $p(\alpha,\cdot)=\nu p$).`,
+      idea: String.raw`The atom represents a state whose original-space law is $\nu$. Expanding it first and then taking a split step has the same law as a split step directly, by the definition of $\bar p(\alpha,\cdot)$; this gives $v\bar p=\bar p$. A split step followed by expansion returns its removed mass $\eps\nu$ to the original space, giving $\bar pv=p$. The residual is not divided by $1-\eps$: the missing mass is already assigned to $\alpha$.`,
       credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`The AR(1) chain $X'=aX+\xi$ discretised to $41$ cells on $[-5,5]$. The heat maps show $p$ ($41\times41$), $v$ ($41\times42$, last column $=\alpha$) and $\bar p$ ($42\times41$, last row $=\alpha$ equal to $\nu$). The rows between the orange lines are those of $A$: there $v$ puts mass $\varepsilon$ on the $\alpha$-column and $\bar p$ has the $\varepsilon\nu$ removed. The readout multiplies $v\bar p$ and compares it with $p$.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.8.4, pp. 323–324 (split-kernel construction and both identities)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`The Gaussian AR(1) kernel on 41 cells, with tail probabilities folded into the end cells. The extra row and column represent $\alpha$. The heat maps show the extended $p$, the expansion $v$, and Durrett's split kernel $\bar p$. The readout checks both identities of Lemma 5.8.4 and the stochastic row sums.`,
       deps: ['prob-5.8.1a'],
       tags: ['general state space'],
       viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
-        const cS = v.slider('$c$', 0.25, 2.5, 1, { step: 0.05 });
-        const K = 41;
-        const mk = (M, rows, cols, name, extra) => v.stage({ x: [0, cols], y: [0, rows], height: 250, axes: false, aspect: rows / cols, minWidth: 240, title: name, ...(extra || {}) });
-        const Sp = mk(null, K, K, '$p$'), Sv = mk(null, K, K + 1, '$v$'), Sb = mk(null, K + 1, K, String.raw`$\bar p$`);
-        let key = '', G = null;
-        const get = () => { const k = aS.value + '|' + cS.value; if (k !== key) { key = k; const g = gridAR(aS.value, K, 5), sp = splitGrid(g, cS.value); G = { g, sp }; } return G; };
-        const heatOf = (S, M, rows, cols, mx, k) => {
-          S.heat((x, y) => { const i = Math.floor(rows - y), j = Math.floor(x); return M[i] && M[i][j] !== undefined ? Math.sqrt(M[i][j] / mx) : NaN; }, { range: [0, 1], cmap: 'theme', color: 'accent', rect: [0, 0, cols, rows], res: 3, key: k });
-        };
+        const a = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
+        const c = v.slider('$c$', 0.25, 2.5, 1, { step: 0.05 });
+        const K = 41, N = K + 1;
+        const panels = ['$p$ (extended)', '$v$', String.raw`$\bar p$`].map(title => v.stage({ x: [0,N], y: [0,N], height: 280, axes: false, title, minWidth: 250 }));
+        let result;
         v.render(() => {
-          const { g, sp } = get(), k = key;
-          const mx = Math.max(...g.P.flat());
-          heatOf(Sp, g.P, K, K, mx, 'p' + k); heatOf(Sv, sp.V, K, K + 1, 1, 'v' + k); heatOf(Sb, sp.Pb, K + 1, K, Math.max(...sp.Pb.flat()), 'b' + k);
-          const rowsA = sp.inA.map((b, i) => (b ? i : -1)).filter((i) => i >= 0);
-          if (rowsA.length) { const top = K - rowsA[0], bot = K - rowsA[rowsA.length - 1] - 1; [Sp, Sv].forEach((S, q) => { S.hline(top, { color: 'orange', width: 1.4 }); S.hline(bot, { color: 'orange', width: 1.4 }); }); Sb.hline(K + 1 - rowsA[0], { color: 'orange', width: 1.4 }); Sb.hline(K + 1 - rowsA[rowsA.length - 1] - 1, { color: 'orange', width: 1.4 }); }
-          Sv.vline(K, { color: 'green', width: 1.4 }); Sb.hline(1, { color: 'green', width: 1.4 });
+          const sp = splitGrid(gridAR(a.value, K, 5), c.value), matrices = [sp.P, sp.V, sp.Pb];
+          matrices.forEach((M, k) => {
+            const mx = Math.max(...M.flat());
+            panels[k].heat((x,y) => Math.sqrt((M[Math.min(N-1,Math.floor(N-y))]?.[Math.floor(x)] || 0)/mx), { range: [0,1], cmap: 'theme', color: 'accent', res: 3, rect: [0,0,N,N], key: `${a.value}|${c.value}` });
+            panels[k].hline(1, { color: 'orange' }); panels[k].vline(K, { color: 'orange' });
+          });
+          const error = (A,B) => Math.max(...A.flatMap((row,i) => row.map((x,j) => Math.abs(x-B[i][j]))));
+          result = { e1: error(matMulS(sp.V,sp.Pb),sp.Pb), e2: error(matMulS(sp.Pb,sp.V),sp.P), rows: Math.max(...sp.Pb.map(row => Math.abs(row.reduce((s,x)=>s+x,0)-1))), eps: sp.eps };
         });
-        v.readout(() => {
-          const { g, sp } = get(), VP = matMulS(sp.V, sp.Pb); let err = 0, neg = 0, rowErr = 0;
-          VP.forEach((row, i) => row.forEach((x, j) => { err = Math.max(err, Math.abs(x - g.P[i][j])); }));
-          sp.Pb.forEach((row) => { rowErr = Math.max(rowErr, Math.abs(row.reduce((a, b) => a + b, 0) - 1)); row.forEach((x) => { if (x < -1e-15) neg++; }); });
-          return `$\\varepsilon=${fx(sp.eps, 4)}$. Largest entry of $|v\\bar p-p|$: ${err.toExponential(1)}; the rows of $\\bar p$ sum to $1$ within ${rowErr.toExponential(1)}, and ${neg} entries are negative.`;
-        });
+        v.readout(() => result && String.raw`$\varepsilon=${fx(result.eps,3)}$; max errors: $v\bar p=\bar p$: ${result.e1.toExponential(1)}, $\bar pv=p$: ${result.e2.toExponential(1)}; stochastic-row error ${result.rows.toExponential(1)}.`);
       },
     },
     {
       num: '5.8.5',
       kind: 'Lemma',
       name: 'The split chain is a Markov chain',
-      statement: String.raw`Let $\bar X_0,\bar X_1,\bar X_2,\dots$ alternate between $S$ and $\bar S$: $\bar X_{2n}\in S$, $\bar X_{2n+1}\sim v(\bar X_{2n},\cdot)$ and $\bar X_{2n+2}\sim\bar p(\bar X_{2n+1},\cdot)$, each time using only the current state. This is a (time-inhomogeneous, alternating) Markov chain, and $\bar X_{2n}$ has the same law as the original chain $X_n$. The odd-time states $Z_n=\bar X_{2n+1}$ form a Markov chain on $\bar S$ with kernel $\bar p v$; whenever $Z_n=\alpha$ the next original state is drawn from $\nu$, whatever happened before.`,
-      idea: String.raw`The construction is by definition Markov, and $v\bar p=p$ (5.8.4) shows that the even-time marginals are the original chain: two steps of the alternating chain are one step of $p$. The regeneration property is read off the kernel $\bar p(\alpha,\cdot)=\nu$, which does not depend on how the chain reached $\alpha$.`,
+      statement: String.raw`Let $Y_n$ be an alternating Markov chain on $\bar S$ whose transition at even times is $v$ and at odd times is $\bar p$, as defined in 5.8.4. Then $\bar X_n=Y_{2n}$ is a homogeneous Markov chain with kernel $\bar p$, and $X_n=Y_{2n+1}$ is a homogeneous Markov chain on $S$ with kernel $p$.`,
+      idea: String.raw`Looking at every second state multiplies two consecutive kernels. The even-time chain has kernel $v\bar p=\bar p$; the odd-time chain has kernel $\bar pv=p$. At $\alpha$ the next split step has the fixed law $\nu\bar p$, independent of how the chain arrived there. This is the regeneration property illustrated below.`,
       credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`Simulate the odd-time chain $Z_n$ (kernel $\bar pv$, on the 41-cell discretisation) and look at the step *after* each visit to $\alpha$, split by the previous state of $Z$: negative cell (blue), positive cell (orange) or $\alpha$ itself (purple). All three conditional histograms trace the same law, $\nu v$ (green), though the pasts differ.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.8.5, p. 324'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`Simulate Durrett's split kernel on 41 cells plus $\alpha$. Condition the state after a visit to $\alpha$ on three different preceding histories. Each conditional histogram approaches the same fixed row $\bar p(\alpha,\cdot)=\nu\bar p$. The readout includes the mass at $\alpha$, which is not plotted on the real axis.`,
       deps: ['prob-5.8.4'],
       tags: ['general state space'],
       viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
-        const cS = v.slider('$c$', 0.5, 2.5, 1.5, { step: 0.05 });
-        const nS = v.slider('steps', 2000, 80000, 30000, { log: true, int: true });
-        let seed = 1; v.button('New run', () => { seed++; });
-        const K = 41;
-        const S = v.stage({ x: [-5, 5], y: [0, 0.6], height: 340, axes: 'box', gutter: true, xlabel: String.raw`cell $x$ of $Z_{n+1}$ (probability per unit length)`, title: String.raw`law of $Z_{n+1}$ given $Z_n=\alpha$` });
-        let key = '', R = null;
-        const get = () => {
-          const k = aS.value + '|' + cS.value + '|' + nS.value + '|' + seed; if (k === key) return R; key = k;
-          const g = gridAR(aS.value, K, 5), sp = splitGrid(g, cS.value), r = v.rng(seed * 29 + 1);
-          const Kb = matMulS(sp.Pb, sp.V), cnt = [0, 1, 2].map(() => new Float64Array(K + 1)), tot = [0, 0, 0]; let z = 0, vis = 0, prevz = -1;
-          for (let n = 0; n < nS.value; n++) {
-            const nz = cdfSample(Kb[z], r);
-            if (z === K) { vis++; if (prevz >= 0) { const grp = prevz === K ? 2 : g.xs[prevz] < 0 ? 0 : 1; cnt[grp][nz]++; tot[grp]++; } }
-            prevz = z; z = nz;
-          }
-          const tau = vecM(sp.nu, sp.V);
-          R = { g, sp, cnt, tot, tau, vis }; return R;
-        };
-        v.render(() => {
-          const { g, sp, cnt, tot, tau } = get(); const h = g.h;
-          const cols = ['accent', 'orange', 'purple'];
-          cnt.forEach((c, q) => { if (tot[q] > 0) S.path(Array.from({ length: K }, (_, i) => [g.xs[i], c[i] / tot[q] / h]), { color: cols[q], width: 1.8, alpha: 0.9 }); });
-          S.path(Array.from({ length: K }, (_, i) => [g.xs[i], tau[i] / h]), { color: 'green', width: 3, alpha: 0.7, dash: [8, 5] });
+        const a = v.slider('$a$', 0.2, 0.9, 0.6, { step: 0.05 });
+        const c = v.slider('$c$', 0.5, 2.5, 1.5, { step: 0.05 });
+        const n = v.slider('steps', 2000, 80000, 30000, { log: true, int: true });
+        let seed=1; v.button('New run',()=>seed++);
+        const K=41, S=v.stage({ x:[-5,5], y:[0,.6], height:340, axes:'box', gutter:true, xlabel:'cell $x$', title:String.raw`law after a visit to $\alpha$` });
+        let result;
+        v.render(()=>{
+          const g=gridAR(a.value,K,5), sp=splitGrid(g,c.value), r=v.rng(seed*29+1), counts=Array.from({length:3},()=>new Float64Array(K+1)), totals=[0,0,0];
+          let z=0, previous=-1;
+          for(let t=0;t<n.value;t++) { const next=cdfSample(sp.Pb[z],r); if(z===K && previous>=0) { const group=previous===K?2:g.xs[previous]<0?0:1; counts[group][next]++; totals[group]++; } previous=z; z=next; }
+          const exact=sp.Pb[K], colors=['accent','orange','purple'];
+          const ymax=Math.max(.6,...exact.slice(0,K).map(p=>p/g.h),...counts.flatMap((row,q)=>Array.from(row.slice(0,K),p=>p/Math.max(1,totals[q])/g.h)))*1.1; S.setView(null,[0,ymax]);
+          counts.forEach((row,q)=>{ if(totals[q]) S.path(g.xs.map((x,i)=>[x,row[i]/totals[q]/g.h]),{color:colors[q],width:1.7}); });
+          S.path(g.xs.map((x,i)=>[x,exact[i]/g.h]),{color:'green',width:2.6,dash:true});
+          result={totals, atom:exact[K], tv:counts.map((row,q)=>totals[q]?row.reduce((s,p,i)=>s+Math.abs(p/totals[q]-exact[i]),0)/2:null)};
         });
-        v.legend([['accent', 'previous $Z$ in a negative cell'], ['orange', 'previous $Z$ in a positive cell'], ['purple', 'previous $Z=\\alpha$'], ['green', '$\\nu v$ (S-part)', { dash: true }]]);
-        v.readout(() => { const { sp, cnt, tot, tau, vis } = get(); const tv = (q) => (tot[q] ? 0.5 * Array.from({ length: K }, (_, i) => Math.abs(cnt[q][i] / tot[q] - tau[i])).reduce((a, b) => a + b, 0) : NaN); return `${vis} visits to $\\alpha$ ($\\varepsilon=${fx(sp.eps, 3)}$); sample sizes ${tot.join(' / ')}. TV distance of each conditional law from $\\nu v$: ${[0, 1, 2].map((q) => fx(tv(q), 3)).join(', ')}.`; });
+        v.legend([['accent','previous cell negative'],['orange','previous cell nonnegative'],['purple',String.raw`previous state $\alpha$`],['green','exact atom row',{dash:true}]]);
+        v.readout(()=>result && `Sample sizes ${result.totals.join(' / ')}; full-state TV errors ${result.tv.map(x=>x===null?'no observations':fx(x,3)).join(' / ')}; exact mass at the atom ${fx(result.atom,3)}.`);
       },
     },
     {
       num: '5.8.6',
       kind: 'Lemma',
       name: 'Expectations transfer to the split chain',
-      statement: String.raw`With $\bar X$ the alternating split chain of 5.8.5 started at $\bar X_0=x\in S$ and a bounded function $f$ on $S$,
-$$E_x f(X_n)=E_x f(\bar X_{2n}),\qquad E_x f(X_{n+1})=E_x\,\bar f(\bar X_{2n+1}),$$
-where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alpha)=\int f\,d\nu$. So the original chain's expectations can be computed on the split chain, where $\alpha$ is an atom.`,
-      idea: String.raw`Since $v\bar p=p$ (5.8.4), a double step of the alternating chain has kernel $p$, so $\bar X_{2n}$ has the law of $X_n$ by induction. For the odd times, one more $\bar p$-step from $\bar X_{2n+1}$ lands on $\bar X_{2n+2}\overset{d}{=}X_{n+1}$; averaging $f$ over that step gives $\bar pf$.`,
+      statement: String.raw`For a probability measure $\mu$ on $S$ and a bounded measurable function $f:S\to\R$, extend $f$ to $\bar S$ by $\bar f=vf$: $\bar f(x)=f(x)$ on $S$ and $\bar f(\alpha)=\int f\,d\nu$. With original and split chains both started from $\mu$,
+$$E_\mu f(X_n)=E_\mu\bar f(\bar X_n).$$`,
+      idea: String.raw`In the alternating construction, $X_n$ is obtained from $\bar X_n$ by one expansion step $v$. Conditional expectation therefore replaces $f(X_n)$ by $(vf)(\bar X_n)$. Equivalently, $\mu\bar p^n v=\mu p^n$ on the original space. The extension agrees with $f$ at every original state; only the atom is averaged.`,
       credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`Choose a test function and a starting cell. Curves: $E f(X_n)$ computed exactly for the original discretised chain (blue) and from the alternating chain (green dashes) — they coincide. Dots: simulation of the alternating chain (3000 runs) at even times $2n$ (gold) and the odd-time quantity $E\bar f(\bar X_{2n+1})$ (purple, plotted at $n+1$), both landing on the blue curve up to sampling noise.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.8.6 and proof, p. 324'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`Pick a bounded function on the finite cell model and a starting cell. The exact original expectation (blue) and split-chain expectation of $\bar f=vf$ (green dashes) coincide at the same time $n$. Gold dots estimate the latter with 3000 split-chain simulations.`,
       deps: ['prob-5.8.5'],
       tags: ['general state space'],
       viz(v) {
-        const fS = v.select('$f$', [{ value: 'x', label: '$x$' }, { value: 'x2', label: '$x^2$' }, { value: 'ind', label: '$1_{x>1}$' }, { value: 'cos', label: '$\\cos 2x$' }], 'x2');
-        const x0S = v.slider('start $x_0$', -4.5, 4.5, 3, { step: 0.25 });
-        const aS = v.slider('$a$', 0.3, 0.9, 0.7, { step: 0.05 });
-        let seed = 1; v.button('Resimulate', () => { seed++; });
-        const K = 41, NN = 14;
-        const S = v.stage({ x: [0, NN], y: [-1, 1], height: 340, axes: 'box', gutter: true, xlabel: '$n$', title: String.raw`$E_x f(X_n)$` });
-        const F = { x: (x) => x, x2: (x) => x * x, ind: (x) => (x > 1 ? 1 : 0), cos: (x) => Math.cos(2 * x) };
-        let key = '', R = null;
-        const get = () => {
-          const k = fS.value + '|' + x0S.value + '|' + aS.value + '|' + seed; if (k === key) return R; key = k;
-          const g = gridAR(aS.value, K, 5), sp = splitGrid(g, 1), f = g.xs.map(F[fS.value]), fb = matVecR(sp.Pb, f), r = v.rng(seed * 37 + 5);
-          let i0 = 0; g.xs.forEach((x, i) => { if (Math.abs(x - x0S.value) < Math.abs(g.xs[i0] - x0S.value)) i0 = i; });
-          const Kb = matMulS(sp.Pb, sp.V); let mu = new Array(K).fill(0); mu[i0] = 1; let mz = vecM(mu, sp.V);
-          const ex = [], sp2 = [], odd = [];
-          for (let n = 0; n <= NN; n++) { ex.push(mu.reduce((s, m, i) => s + m * f[i], 0)); mu = vecP(mu, g.P); }
-          mu = new Array(K).fill(0); mu[i0] = 1; let ev = mu.slice(), zs = vecM(ev, sp.V);
-          for (let n = 0; n <= NN; n++) { sp2.push(ev.reduce((s, m, i) => s + m * f[i], 0)); odd.push(zs.reduce((s, m, i) => s + m * fb[i], 0)); ev = vecM(zs, sp.Pb); zs = vecM(ev, sp.V); }
-          const RUNS = 3000, mcE = new Float64Array(NN + 1), mcO = new Float64Array(NN + 1);
-          for (let k = 0; k < RUNS; k++) { let x = i0; for (let n = 0; n <= NN; n++) { mcE[n] += f[x]; const z = cdfSample(sp.V[x], r); mcO[n] += fb[z]; x = cdfSample(sp.Pb[z], r); } }
-          R = { ex, sp2, odd, mcE: Array.from(mcE, (s) => s / RUNS), mcO: Array.from(mcO, (s) => s / RUNS), i0, g }; return R;
-        };
-        v.render(() => {
-          const { ex, sp2, odd, mcE, mcO } = get(); const all = [...ex, ...mcE, ...mcO], lo = Math.min(...all), hi = Math.max(...all), pad = 0.15 * (hi - lo || 1);
-          S.setView([0, NN], [lo - pad, hi + pad]);
-          S.path(ex.map((y, n) => [n, y]), { color: 'accent', width: 3 });
-          S.path(sp2.map((y, n) => [n, y]), { color: 'green', width: 2, dash: [8, 5] });
-          mcE.forEach((y, n) => S.dot(n, y, { color: 'gold', r: 4 }));
-          mcO.forEach((y, n) => n < NN && S.dot(n + 1, y, { color: 'purple', r: 3, hollow: true }));
+        const fS=v.select('$f$',[{value:'x',label:'$x$'},{value:'x2',label:'$x^2$'},{value:'ind',label:'$1_{x>1}$'},{value:'cos',label:String.raw`$\cos 2x$`}],'x2');
+        const x0=v.slider('start $x_0$',-4.5,4.5,3,{step:.25}), a=v.slider('$a$',.3,.9,.7,{step:.05});
+        let seed=1; v.button('Resimulate',()=>seed++);
+        const K=41, N=14, S=v.stage({x:[0,N],y:[0,10],height:340,axes:'box',gutter:true,xlabel:'$n$',title:String.raw`$E f(X_n)=E\bar f(\bar X_n)$`});
+        let result;
+        v.render(()=>{
+          const g=gridAR(a.value,K,5),sp=splitGrid(g,1), functions={x:x=>x,x2:x=>x*x,ind:x=>+(x>1),cos:x=>Math.cos(2*x)},f=[...g.xs.map(functions[fS.value]),0], fb=matVecR(sp.V,f),r=v.rng(seed*37+5);
+          let i0=0;g.xs.forEach((x,i)=>{if(Math.abs(x-x0.value)<Math.abs(g.xs[i0]-x0.value))i0=i;});
+          let mu=new Array(K+1).fill(0),mb=new Array(K+1).fill(0);mu[i0]=mb[i0]=1;
+          const ex=[],split=[],mc=new Float64Array(N+1);
+          for(let n=0;n<=N;n++){ex.push(mu.reduce((s,p,i)=>s+p*f[i],0));split.push(mb.reduce((s,p,i)=>s+p*fb[i],0));mu=vecM(mu,sp.P);mb=vecM(mb,sp.Pb);}
+          for(let k=0;k<3000;k++){let z=i0;for(let n=0;n<=N;n++){mc[n]+=fb[z]/3000;z=cdfSample(sp.Pb[z],r);}}
+          const all=[...ex,...split,...mc],lo=Math.min(...all),hi=Math.max(...all),pad=.12*(hi-lo||1);S.setView(null,[lo-pad,hi+pad]);
+          S.path(ex.map((y,n)=>[n,y]),{color:'accent',width:3});S.path(split.map((y,n)=>[n,y]),{color:'green',width:2,dash:true});mc.forEach((y,n)=>S.dot(n,y,{color:'gold',r:4}));
+          result={exact:Math.max(...ex.map((x,n)=>Math.abs(x-split[n]))),sample:Math.max(...ex.map((x,n)=>Math.abs(x-mc[n]))),alpha:fb[K]};
         });
-        v.legend([['accent', 'original chain (exact)'], ['green', 'alternating chain (exact)', { dash: true }], ['gold', 'simulated $f(\\bar X_{2n})$'], ['purple', 'simulated $\\bar f(\\bar X_{2n+1})$ vs $E f(X_{n+1})$']]);
-        v.readout(() => { const { ex, sp2, odd, mcE } = get(); let e1 = 0, e2 = 0, e3 = 0; ex.forEach((y, n) => { e1 = Math.max(e1, Math.abs(y - sp2[n])); e3 = Math.max(e3, Math.abs(y - mcE[n])); if (n < NN) e2 = Math.max(e2, Math.abs(ex[n + 1] - odd[n])); }); return `Exact original vs exact alternating: max difference ${e1.toExponential(1)}; odd-time identity (against $Ef(X_{n+1})$): ${e2.toExponential(1)}; simulation vs exact: ${fx(e3, 3)}.`; });
+        v.legend([['accent','original expectation'],['green','split expectation',{dash:true}],['gold','3000 split simulations',{dot:true}]]);
+        v.readout(()=>result && String.raw`Maximum exact expectation error ${result.exact.toExponential(1)}; maximum sampling error ${fx(result.sample,3)}; $\bar f(\alpha)=\int f\,d\nu=${fx(result.alpha,3)}$.`);
       },
     },
     {
       num: '5.8.8',
       kind: 'Theorem',
       name: 'Recurrence of Harris chains',
-      statement: String.raw`Let $X_n$ be a Harris chain with $A,B,\rho$ as in 5.8.1a. If $P_z(X_n\in A\text{ i.o.})=1$ for every $z$ (equivalently, the atom $\alpha$ of the split chain is recurrent), then the chain is **Harris recurrent**: for every measurable $C$ with $\rho(C)>0$, $P_z(X_n\in C\text{ i.o.})=1$ for all $z\in S$.`,
-      idea: String.raw`Each visit to $A$ triggers, independently, a regeneration with probability $\varepsilon$ (a visit of the split chain to $\alpha$). If $A$ is visited i.o., infinitely many of these independent coin flips succeed (Borel–Cantelli II), so $\alpha$ is visited i.o. After each visit the next state is drawn from $\nu$, and $\nu$ charges the sets $C$ in question, so by the strong Markov property (5.2.5) the independent excursions from $\alpha$ hit $C$ infinitely often.`,
+      statement: String.raw`Write $R=\inf\{n\ge1:\bar X_n=\alpha\}$ and call the Harris chain recurrent if $P_\alpha(R<\infty)=1$. Define the measure
+$$\lambda(C)=\sum_{n=1}^\infty2^{-n}\bar p^n(\alpha,C).$$
+In the recurrent case, $\lambda(C)>0$ implies $P_\alpha(\bar X_n\in C\text{ i.o.})=1$. Also $P_x(R<\infty)=1$ for $\lambda$-almost every $x$. Almost-sure access from every starting state is not asserted.`,
+      idea: String.raw`The atom's successive excursions are independent. Any set accessible from $\alpha$ with positive probability is therefore visited in infinitely many excursions. For the second assertion, a positive chance to move from $\alpha$ into states with a positive escape probability would contradict recurrence of $\alpha$. This establishes almost-everywhere access; Durrett's Example 5.8.7 shows why exceptional initial states cannot be discarded.`,
       credit: SPLIT_CREDIT,
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.8.8, Example 5.8.7 and remark, p. 325'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       caption: String.raw`A long run of $X_{n+1}=aX_n+\xi$ with $A=[-1,1]$ and $\lambda=$ Lebesgue measure; gold ticks are visits to $\alpha$ (regenerations). Right: running counts of regenerations (gold) and of visits to $C=[1,1.5]$ (accent). For $a<1$ both grow linearly; at $a=1$ (recurrent, but only like a Gaussian random walk) they grow like $\sqrt n$; for $a=1.15$ the chain is transient, the counts stop and the path escapes.`,
       deps: ['prob-5.8.5', 'prob-5.2.5'],
       tags: ['general state space', 'recurrence'],
-      scope: String.raw`The statement is a faithful paraphrase only for the typical situation $B\subset A$ and $\nu\ll\lambda$; the exact formulation of 'Harris recurrent' in the source should be checked.`,
+      scope: String.raw`The Gaussian AR(1) examples have almost-sure access from every point for $|a|\le1$, a stronger property than the theorem requires. Here $C=[1,1.5]$ is accessible from the regeneration law. Finite trajectories illustrate growth of visit counts without proving recurrence.`,
       viz(v) {
         const st = {};
         const aS = v.select('$a$', [0.5, 0.9, 1, 1.15].map((a) => ({ value: a, label: String(a) })), 0.9);
@@ -229,12 +207,15 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
       num: '5.8.9',
       kind: 'Theorem',
       name: 'Recurrent Harris chains have σ-finite stationary measures',
-      statement: String.raw`If $X_n$ is a recurrent Harris chain, then $\mu(C)=E_\alpha\sum_{n=0}^{T_\alpha-1}\mathbf 1_{(\bar X_n\in C)}$ (occupation measure of one excursion of the split chain from $\alpha$, projected to $S$) defines a stationary $\sigma$-finite measure for $p$: $\int\mu(dx)p(x,C)=\mu(C)$. It is finite exactly when $E_\alpha T_\alpha<\infty$.`,
-      idea: String.raw`This is the cycle trick of 5.5.7 applied to the atom $\alpha$ of the split chain: the expected number of visits to a state between two visits to $\alpha$ is a stationary measure for the split chain. Projecting to $S$ gives a measure for the original chain, using the correspondence between stationary measures established in 5.8.10.`,
+      statement: String.raw`For a recurrent Harris chain, define the split-chain excursion measure
+$$\bar\mu(C)=E_\alpha\sum_{n=0}^{R-1}\mathbf1_{\{\bar X_n\in C\}},\qquad R=\inf\{n\ge1:\bar X_n=\alpha\}.$$
+It is a $\sigma$-finite stationary measure for $\bar p$ and is absolutely continuous with respect to $\lambda$ of 5.8.8. The expanded measure $\mu=\bar\mu v$ is stationary for $p$. Both have total mass $E_\alpha R$, finite exactly when this mean return time is finite.`,
+      idea: String.raw`The cycle trick counts visits before the first return to the atom. Advancing the excursion by one step replaces its initial visit to $\alpha$ by its final return, leaving the expected occupation measure unchanged. The sets where a return to $\alpha$ has probability at least $\delta$ within a fixed number of steps cover almost all excursion mass and have finite occupation mass, proving $\sigma$-finiteness. Finally $\bar\mu vp=\bar\mu\bar pv=\bar\mu v$. Expanding the atom is essential: simply dropping its mass does not preserve stationarity.`,
       caption: String.raw`For $X_{n+1}=aX_n+\xi$ with $A=[-c,c]$ and its regeneration law $\nu$, histogram the states $X_0,\dots,X_{T-1}$ visited during each cycle between regenerations, and divide by the number of cycles. After normalising, the histogram (accent) matches the exact stationary normal density $N(0,1/(1-a^2))$ (green). The un-normalised total mass per cycle is $E\,T$ (the mean cycle length).`,
       deps: ['prob-5.5.7', 'prob-5.8.4'],
       credit: SPLIT_CREDIT,
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.8.9 and proof, p. 326'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       tags: ['general state space', 'stationary measures'],
       viz(v) {
         const st = {};
@@ -245,8 +226,8 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
         const S = v.stage({ x: [-5, 5], y: [0, 0.8], height: 340, axes: 'box', gutter: true, xlabel: '$x$', title: 'occupation density of the cycles' });
         const NB = 50;
         v.render(() => {
-          const a = aS.value, mn = minor(a, -cS.value, cS.value), res = cycles(mn, nS.value, v.rng(seed * 43 + 1), NB, -5, 5), w = 10 / NB, tot = res.counts.reduce((s, c) => s + c, 0);
-          const d = Array.from(res.counts, (c) => c / (tot * w));
+          const a = aS.value, mn = minor(a, -cS.value, cS.value), res = cycles(mn, nS.value, v.rng(seed * 43 + 1), NB, -5, 5), w = 10 / NB;
+          const d = Array.from(res.counts, (c) => c / (Math.max(1,res.steps) * w));
           bars(S, d, -5, w, { fill: 'accent', fillAlpha: 0.3, color: 'accent' });
           const s2 = stationaryVar(a);
           S.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
@@ -254,49 +235,49 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
           st.out = { ET: res.meanT, N: res.N, eps: mn.eps, tv: tvv / 2, steps: res.steps };
         });
         v.legend([['accent', 'excursion occupation (normalised)'], ['green', 'exact $N(0,1/(1-a^2))$']]);
-        v.readout(() => { const o = st.out || {}; return `$\\varepsilon=${fx(o.eps || 0, 3)}$; ${o.N} cycles, ${o.steps} steps; mean cycle length $E\\,T\\approx${fx(o.ET || 0, 2)}$ (total mass of $\\mu$). TV distance of the normalised histogram from the normal: ${fx(o.tv || 0, 3)}.`; });
+        v.readout(() => { const o = st.out || {}; return `$\\varepsilon=${fx(o.eps || 0, 3)}$; ${o.N} cycles, ${o.steps} steps; mean cycle length $E\\,T\\approx${fx(o.ET || 0, 2)}$ (total mass of $\\mu$). Half the binwise L1 error on the plotted window: ${fx(o.tv || 0, 3)}.`; });
       },
     },
     {
       num: '5.8.10',
       kind: 'Lemma',
       name: 'Stationary measures of chain and split chain correspond',
-      statement: String.raw`If $\mu$ is a stationary measure for $p$ (a measure on $S$ with $\mu p=\mu$), then $\bar\mu=\mu v$ on $\bar S$ is stationary for the split chain's odd-time kernel $\bar p v$, i.e. $\bar\mu\,\bar pv=\bar\mu$. Conversely, if $\bar\mu$ is stationary for $\bar pv$ then $\mu=\bar\mu\bar p$ is stationary for $p$.`,
-      idea: String.raw`Both directions use only $v\bar p=p$ (5.8.4). If $\mu p=\mu$ then $(\mu v)(\bar pv)=\mu(v\bar p)v=\mu pv=\mu v$. Conversely $(\bar\mu\bar p)p=\bar\mu(\bar pv)\bar p=\bar\mu\bar p$. The same associativity move transports stationarity in both directions.`,
+      statement: String.raw`If $\eta$ is a $\sigma$-finite stationary measure for $p$, then $\eta(A)<\infty$. The measure $\bar\eta=\eta\bar p$ on $\bar S$ is stationary for $\bar p$, with
+$$\bar\eta(\alpha)=\eps\eta(A)<\infty,\qquad\bar\eta v=\eta.$$
+Here $\bar p$ and $v$ are Durrett's split and expansion kernels from 5.8.4.`,
+      idea: String.raw`If $\eta(A)$ were infinite, minorization and stationarity would give infinite $\eta$-mass to every set charged by $\nu$, contradicting a countable cover by sets of finite $\eta$-mass. Thus the removed mass $\eps\eta(A)$ is finite and $\bar\eta=\eta\bar p$ is well-defined. The identities of 5.8.4 give $\bar\eta v=\eta p=\eta$ and $\bar\eta\bar p=\bar\eta v\bar p=\eta\bar p=\bar\eta$.`,
       credit: SPLIT_CREDIT,
-      verify: true,
-      caption: String.raw`On the 41-cell discretisation of the AR(1) chain: the stationary vector $\pi$ (grey outline), its image $\bar\pi=\pi v$ (blue; the mass on $A$ is multiplied by $1-\varepsilon$) and the extra atom $\alpha$ with mass $\varepsilon\pi(A)$ (orange bar at the right end). The readout shows how close $\bar\pi\bar pv-\bar\pi$ and $\bar\pi\bar p-\pi$ are to zero.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.8.10 and proof, p. 326'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`On the 41-cell Gaussian AR(1) model, the stationary vector $\pi$ (grey) is transformed into $\bar\pi=\pi\bar p$ (blue on $S$, orange at $\alpha$). The removed original-space mass is $\eps\pi(A)\nu$. The readout checks split-chain stationarity and recovery of $\pi$ by expansion.`,
       deps: ['prob-5.8.4'],
       tags: ['general state space', 'stationary measures'],
       viz(v) {
-        const aS = v.slider('$a$', 0.2, 0.9, 0.7, { step: 0.05 });
-        const cS = v.slider('$c$', 0.25, 2.5, 1, { step: 0.05 });
-        const S = v.stage({ x: [-5.5, 7], y: [0, 0.3], height: 340, axes: 'box', gutter: true, xlabel: 'cell $x$; the bar at $x=6$ is $\\alpha$', title: String.raw`$\pi$ and $\bar\pi=\pi v$` });
-        v.render(() => {
-          const g = gridAR(aS.value, 41, 5), sp = splitGrid(g, cS.value), pi = stationary(g.P, 6000), pb = vecM(pi, sp.V), w = g.h * 0.9;
-          pi.forEach((p, i) => S.rect(g.xs[i] - g.h / 2, 0, g.xs[i] + g.h / 2, p, { color: 'ink', fill: false, width: 1, alpha: 0.7 }));
-          pb.slice(0, 41).forEach((p, i) => S.rect(g.xs[i] - w / 2, 0, g.xs[i] + w / 2, p, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 1 }));
-          S.rect(5.75, 0, 6.25, pb[41], { fill: 'orange', fillAlpha: 0.6, color: 'orange' });
-          const orange = sp.inA.map((b, i) => (b ? g.xs[i] : null)).filter((x) => x !== null);
-          if (orange.length) S.hband(0, 0.004, { color: 'orange', alpha: 0.4 });
+        const a=v.slider('$a$',.2,.9,.7,{step:.05}),c=v.slider('$c$',.25,2.5,1,{step:.05});
+        const K=41,S=v.stage({x:[-5.5,7],y:[0,.3],height:340,axes:'box',gutter:true,xlabel:String.raw`cell $x$; extra bar at $6$ is $\alpha$`,title:String.raw`$\pi$ and $\bar\pi=\pi\bar p$`});
+        let result;
+        v.render(()=>{
+          const g=gridAR(a.value,K,5),sp=splitGrid(g,c.value),pi=[...stationary(g.P,6000),0],pb=vecM(pi,sp.Pb),back=vecM(pb,sp.V),next=vecM(pb,sp.Pb),massA=pi.reduce((s,p,i)=>s+(sp.inA[i]?p:0),0);
+          S.setView(null,[0,1.12*Math.max(...pi,...pb)]);
+          g.xs.forEach((x,i)=>{S.rect(x-g.h/2,0,x+g.h/2,pi[i],{color:'ink',fill:false,width:1});S.rect(x-.4*g.h,0,x+.4*g.h,pb[i],{color:'accent',fill:'accent',fillAlpha:.5});});
+          S.rect(5.75,0,6.25,pb[K],{color:'orange',fill:'orange',fillAlpha:.6});
+          result={e1:Math.max(...pb.map((p,i)=>Math.abs(p-next[i]))),e2:Math.max(...pi.map((p,i)=>Math.abs(p-back[i]))),atom:pb[K],pred:sp.eps*massA};
         });
-        v.legend([['ink', '$\\pi$'], ['accent', '$\\bar\\pi=\\pi v$ on $S$'], ['orange', '$\\bar\\pi(\\alpha)=\\varepsilon\\pi(A)$']]);
-        v.readout(() => {
-          const g = gridAR(aS.value, 41, 5), sp = splitGrid(g, cS.value), pi = stationary(g.P, 6000), pb = vecM(pi, sp.V);
-          const K2 = matMulS(sp.Pb, sp.V), pb2 = vecM(pb, K2), back = vecM(pb, sp.Pb);
-          const e1 = Math.max(...pb.map((x, i) => Math.abs(x - pb2[i]))), e2 = Math.max(...pi.map((x, i) => Math.abs(x - back[i])));
-          return `$\\varepsilon=${fx(sp.eps, 3)}$. $\\max|\\bar\\pi\\,\\bar pv-\\bar\\pi|=${e1.toExponential(1)}$, $\\max|\\bar\\pi\\bar p-\\pi|=${e2.toExponential(1)}$ (the power iteration for $\\pi$ is itself accurate only to about 1e-8).`;
-        });
+        v.legend([['ink',String.raw`$\pi$`],['accent',String.raw`$\bar\pi$ on $S$`],['orange',String.raw`$\bar\pi(\alpha)$`]]);
+        v.readout(()=>result && String.raw`$\bar\pi(\alpha)=${fx(result.atom,4)}=\varepsilon\pi(A)=${fx(result.pred,4)}$. Split stationarity error ${result.e1.toExponential(1)}; expansion error ${result.e2.toExponential(1)}.`);
       },
     },
     {
       num: '5.8.11',
       kind: 'Theorem',
       name: 'Recurrent Harris chains: stationary measure is unique',
-      statement: String.raw`A recurrent Harris chain has, up to a constant multiple, only one $\sigma$-finite stationary measure. Consequently, the measures $\mu_A$ built from different regeneration pairs $(A,\nu)$ differ only by a constant factor, and the normalised ones coincide.`,
+      statement: String.raw`For a recurrent Harris chain, every $\sigma$-finite stationary measure $\eta$ is a constant multiple of the measure $\mu$ constructed in 5.8.9; specifically,
+$$\eta=\bar\eta(\alpha)\mu,\qquad\bar\eta=\eta\bar p.$$
+Consequently different regeneration constructions give proportional measures. If their total mass is finite, their normalizations give the same stationary probability measure.`,
       idea: String.raw`Transfer to the split chain (5.8.10): a stationary measure of the original chain gives a stationary measure of the split chain, which is a recurrent chain with an atom $\alpha$ for which uniqueness holds (5.5.9). Hence $\mu$ is a multiple of the occupation measure $\mu_A$ of 5.8.9, and the multiple cancels on normalising, for whichever regeneration set was used.`,
-      credit: 'Harris, 1956; uniqueness proof via the splitting of Nummelin and Athreya–Ney, 1978',
-      verify: true,
+      credit: 'Harris, 1956; splitting approach of Athreya and Ney, 1978',
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.8.11 and proof, p. 326'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       caption: String.raw`Two regeneration sets for the same chain $X'=aX+\xi$: $A_1=[-c_1,c_1]$ and $A_2=[m-c_2,m+c_2]$. Left: the raw excursion occupation measures $\mu_{A_1}$ (blue) and $\mu_{A_2}$ (orange), whose total masses are the mean cycle lengths and so differ. Right: after dividing by total mass both histograms land on the one stationary normal density (green).`,
       deps: ['prob-5.8.9', 'prob-5.8.10', 'prob-5.5.9'],
       tags: ['general state space', 'stationary measures'],
@@ -318,7 +299,7 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
           const mx = Math.max(...d1, ...d2) * 1.1;
           L.setView([-5, 6], [0, mx]);
           bars(L, d1, -5, w, { fill: 'accent', fillAlpha: 0.3, color: 'accent' }); bars(L, d2, -5, w, { fill: 'orange', fillAlpha: 0.3, color: 'orange' });
-          const n1 = d1.reduce((s, x) => s + x * w, 0), n2 = d2.reduce((s, x) => s + x * w, 0);
+          const n1 = r1.meanT, n2 = r2.meanT;
           bars(R, d1.map((x) => x / n1), -5, w, { fill: 'accent', fillAlpha: 0.25, color: 'accent' }); bars(R, d2.map((x) => x / n2), -5, w, { fill: 'orange', fillAlpha: 0.25, color: 'orange' });
           R.fn((x) => phi(x / Math.sqrt(s2)) / Math.sqrt(s2), { color: 'green', width: 2.6 });
           st.out = { n1, n2, e1: m1.eps, e2: m2.eps };
@@ -331,12 +312,14 @@ where $\bar f(y)=\sum_z\bar p(y,z)f(z)=(\bar pf)(y)$, in particular $\bar f(\alp
       num: '5.8.12',
       kind: 'Theorem',
       name: 'Convergence theorem for Harris chains',
-      statement: String.raw`Let $X_n$ be a recurrent Harris chain with a stationary probability measure $\pi$ that is aperiodic (in the sense that the split chain's atom $\alpha$ has $\gcd\{n:\bar p^n(\alpha,\alpha)>0\}=1$). Then for every initial state $x$ ,
-$$\|p^n(x,\cdot)-\pi\|_{TV}\to0 .$$`,
-      idea: String.raw`Pass to the split chain, which has the atom $\alpha$ and the stationary law $\bar\pi$ (5.8.10, 5.8.11), and apply the coupling convergence theorem 5.6.6 there; expectations transfer back to the original chain by 5.8.6. Recurrence (5.8.8) supplies the needed returns to $\alpha$.`,
-      credit: 'coupling idea of Doeblin; Harris chains: Harris, 1956; splitting: Nummelin and Athreya–Ney, 1978',
-      verify: true,
-      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ started at $x_0$ far from the centre. Left: a histogram of $X_n$ over 4000 simulated chains at the chosen $n$, the exact law $N(a^nx_0,(1-a^{2n})/(1-a^2))$ (blue) and the stationary law $N(0,1/(1-a^2))$ (green). Right: the exact total variation distance against $n$ on a log scale — geometric decay for $|a|<1$; set $a=1$ and nothing converges.`,
+      statement: String.raw`Let the Harris chain be recurrent and aperiodic, meaning that the return times to its split-chain atom $\alpha$ have greatest common divisor $1$, and suppose it has a stationary probability measure $\pi$. For every starting state $x$ satisfying $P_x(R<\infty)=1$,
+$$\|p^n(x,\cdot)-\pi\|_{TV}\longrightarrow0.$$
+The access hypothesis holds for $\pi$-almost every $x$; the theorem does not assert it for every state of a general Harris chain.`,
+      idea: String.raw`Expansion transfers expectations from the split chain to the original one. Positive recurrence gives finite mean regeneration cycles, and aperiodicity permits two independent copies, one started at $x$ and the other stationary, to reach $\alpha$ simultaneously almost surely. Coupling them thereafter bounds total variation by the probability that this meeting has not occurred. The initial-access hypothesis ensures the first chain reaches the regenerating class at all.`,
+      credit: 'Harris, 1956; splitting approach of Athreya and Ney, 1978',
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.8.12, note and proof, p. 327'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      caption: String.raw`The chain $X_{n+1}=aX_n+\xi$ started at $x_0$ far from the centre. Left: a histogram of $X_n$ over 4000 simulated chains at the chosen $n$, the exact law $N(a^nx_0,(1-a^{2n})/(1-a^2))$ (blue) and the stationary law $N(0,1/(1-a^2))$ (green). Right: the exact total variation distance against $n$ on a log scale — geometric decay for the available $0<a<1$. The plotted positive distances are clipped below at $10^{-4}$.`,
       deps: ['prob-5.8.8', 'prob-5.8.6', 'prob-5.8.11', 'prob-5.6.6'],
       tags: ['general state space', 'convergence'],
       viz(v) {
@@ -377,8 +360,9 @@ $$P(X-Y>t)=P(X-Y>0)\,e^{-\lambda t},\qquad P(X-Y>0)=E\,e^{-\lambda Y}.$$
 That is, conditionally on $X>Y$ the excess $X-Y$ is again exponential with rate $\lambda$.`,
       idea: String.raw`Condition on $Y=y\ge0$ and use the memoryless property of $X$: $P(X>y+t)=e^{-\lambda y}e^{-\lambda t}$. Integrating over the law of $Y$ gives $P(X-Y>t)=E e^{-\lambda Y}\,e^{-\lambda t}$. If $Y$ may be negative the identity fails for small $t$, because $P(X>y+t)=1$ when $y+t<0$.`,
       see: ['stoch-11.12'],
-      verify: true,
-      scope: String.raw`The syllabus entry has no hypothesis on $Y$; the statement here requires $Y\ge0$ (or at least that the identity is only asserted for $t$ beyond the smallest negative value of $Y$) — please compare with the source before relying on the general version.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Lemma 5.8.13 and proof, p. 327'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      scope: String.raw`Both variables are nonnegative and independent, exactly as in Durrett's Lemma 5.8.13. The final menu option deliberately violates nonnegativity of $Y$.`,
       tags: ['queues', 'distributions'],
       caption: String.raw`$X\sim\mathrm{Exp}(\lambda)$ and an independent $Y$ chosen from the menu. The accent curve is the empirical conditional tail $P(X-Y>t\mid X-Y>0)$ from 40000 samples on a log scale; the green line is $e^{-\lambda t}$. For $Y\ge0$ they coincide; the last menu entry lets $Y$ be negative (uniform on $[-1,2]$) and the curve bends for $t<1$.`,
       deps: ['prob-2.1.12'],

@@ -54,10 +54,15 @@ function spreadLabels(S, labels, { x, gap = 15, align = 'right', dx = -3, size =
   for (const l of it) S.texPx(l.tex, S.X(x), l.py, { color: l.color, size, align, dx });
 }
 
+import { hardyNorms, hardyH2Factor, hardyCoefficients } from './hardy-restorations.shared.js';
+
 export default {
   collection: 'rca',
   chapter: 17,
   items: [
+    hardyNorms,
+    hardyH2Factor,
+    hardyCoefficients,
     // ------------------------------------------------------------------ the spaces H^p and N
     {
       num: '17.7',
@@ -160,10 +165,10 @@ Because $M_p(f;r)$ increases with $p$ and $\log^+x\le\frac1s x^s$ for $x>0$, one
       },
     },
     {
-      num: '17.8',
+      num: '17.19a',
       kind: 'Theorem',
       name: 'N consists of quotients of bounded functions',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section17.19, pp.345–346 (quotient characterization, split editorial entry)'],
       statement: String.raw`A function $f\in H(U)$ belongs to $N$ if and only if $f=g/h$ for some $g,h\in H^\infty$ such that $h$ has no zero in $U$. In fact, if $f\in N$ one can choose $g$ and $h$ with $\|g\|_\infty\le1$ and $\|h\|_\infty\le1$.`,
       idea: String.raw`If $f=g/h$ with $|g|,|h|\le1$, then $\log^+|f|\le-\log|h|$, a positive harmonic function whose circle means all equal $-\log|h(0)|$; so $f\in N$. Conversely, the zeros of $f\in N$ satisfy the Blaschke condition (15.23); dividing out the Blaschke product $B$ (15.21) leaves a zero-free $f/B\in N$, so $u=\log|f/B|$ is harmonic with bounded $L^1$-means and therefore $u=P[\mu]$ for a real measure $\mu$ (11.30). Splitting $\mu=\mu^+-\mu^-$ and exponentiating the Herglotz integrals $H[\mu^\pm](z)=\int\frac{e^{it}+z}{e^{it}-z}\,d\mu^\pm(t)$ gives
 $$f=c\,\frac{B\,e^{-H[\mu^-]}}{e^{-H[\mu^+]}},$$
@@ -220,16 +225,16 @@ and both $e^{-H[\mu^\pm]}$ have modulus $e^{-P[\mu^\pm]}\le1$.`,
       },
     },
     {
-      num: '17.9',
+      num: '17.19b',
       kind: 'Theorem',
       name: 'Functions in N have radial limits a.e.',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section17.19, p.346 (boundary conclusions, split editorial entry)'],
       statement: String.raw`Suppose $f\in N$ and $f\not\equiv0$. Then the radial limit
 $$f^*(e^{i\theta})=\lim_{r\to1}f(re^{i\theta})$$
 exists and is finite for almost every $\theta$, and $\log|f^*|\in L^1(\T)$; in particular $f^*\ne0$ a.e. If moreover $f\in H^p$ for some $0<p\le\infty$, then $f^*\in L^p(\T)$ and $\|f^*\|_p\le\|f\|_p$.`,
-      idea: String.raw`Write $f=g/h$ as in 17.8. Bounded holomorphic functions have radial limits a.e. (Fatou's theorem, 11.32), and $h^*\ne0$ a.e.: by subharmonicity $\int\log|h(re^{i\theta})|\,d\theta\ge2\pi\log|h(0)|>-\infty$, and Fatou's lemma (1.28) carries this to $\int\log|h^*|>-\infty$. Hence $f^*=g^*/h^*$ exists a.e. The same use of Fatou's lemma bounds $\int\log^+|f^*|$ by $\sup_r\int\log^+|f_r|$ and, together with Jensen's inequality $\int\log|f_r|\ge2\pi\log|f(0)|$ (after dividing out a zero at $0$), bounds $\int\log^-|f^*|$. For $f\in H^p$, Fatou's lemma applied to $|f_r|^p$ gives $\|f^*\|_p\le\|f\|_p$.`,
+      idea: String.raw`Write $f=g/h$ as in 17.19a. Bounded holomorphic functions have radial limits a.e. (Fatou's theorem, 11.32), and $h^*\ne0$ a.e.: by subharmonicity $\int\log|h(re^{i\theta})|\,d\theta\ge2\pi\log|h(0)|>-\infty$, and Fatou's lemma (1.28) carries this to $\int\log|h^*|>-\infty$. Hence $f^*=g^*/h^*$ exists a.e. The same use of Fatou's lemma bounds $\int\log^+|f^*|$ by $\sup_r\int\log^+|f_r|$ and, together with Jensen's inequality $\int\log|f_r|\ge2\pi\log|f(0)|$ (after dividing out a zero at $0$), bounds $\int\log^-|f^*|$. For $f\in H^p$, Fatou's lemma applied to $|f_r|^p$ gives $\|f^*\|_p\le\|f\|_p$.`,
       caption: String.raw`Drag the endpoint $e^{i\theta}$ on the circle. The middle panel traces $\rho\mapsto f(\rho e^{i\theta})$ as $\rho$ runs from $0$ to $1$; it settles on the boundary value $f^*(e^{i\theta})$ (green). The bottom panel is $\log|f^*|$ over the whole circle — integrable, even where it has singularities. For $e^{\frac{1+z}{1-z}}$ (in $N$, in no $H^p$) and the singular inner function the limits are unimodular, except at the single point $1$; the infinite Blaschke product has $|B^*|=1$ a.e. although its zeros accumulate at every boundary point.`,
-      deps: ['rca-17.8', 'rca-11.32', 'rca-1.28', 'rca-17.6'],
+      deps: ['rca-17.19a', 'rca-11.32', 'rca-1.28', 'rca-17.6'],
       tags: ['radial limits', 'Nevanlinna class'],
       viz(v) {
         const GA = Math.PI * (3 - Math.sqrt(5));
@@ -298,10 +303,10 @@ exists and is finite for almost every $\theta$, and $\log|f^*|\in L^1(\T)$; in p
       },
     },
     {
-      num: '17.10',
+      num: '17.9',
       kind: 'Theorem',
       name: 'Dividing out the zeros: f = Bg with ‖g‖ₚ = ‖f‖ₚ',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem17.9 and complete proof, pp.338–339'],
       statement: String.raw`Suppose $0<p\le\infty$, $f\in H^p$, $f\not\equiv0$, and $B$ is the Blaschke product formed with the zeros of $f$. Then $g=f/B$ has no zero in $U$, $g\in H^p$, and $\|g\|_p=\|f\|_p$.`,
       idea: String.raw`The zeros of $f\in H^p\subset N$ satisfy the Blaschke condition (15.23), so $B$ exists (15.21) and $g=f/B$ is holomorphic and zero-free. Let $B_n$ be the partial products. Each $B_n$ is continuous on $\overline U$ with $|B_n|=1$ on $\T$, so for fixed $n$, $|f/B_n|$ is close to $|f|$ on circles near $\T$; with 17.6 this gives $\|f/B_n\|_p\le\|f\|_p$. Letting $n\to\infty$ ($B_n\to B$ uniformly on compact sets) yields $\|g\|_p\le\|f\|_p$, and $|B|\le1$ gives the reverse inequality.`,
       caption: String.raw`$f=B\,g$ where $g(z)=(1-z)^{-0.3}e^{0.8z^2}$ has no zeros and $B$ has the two draggable zeros $\alpha_1,\alpha_2$. The phase portraits show $f$ (colour wheels around the zeros) and $g=f/B$ (none). Since $|B|<1$ in $U$, $M_p(g;r)$ (green) lies above $M_p(f;r)$ (blue) — but $|B|\to1$ at the circle, and both means climb to the same limit $\|f\|_p=\|g\|_p$. Push a zero toward the circle and watch how late the two curves merge.`,
@@ -349,14 +354,14 @@ exists and is finite for almost every $\theta$, and $\log|f^*|\in L^1(\T)$; in p
     {
       num: '17.11',
       kind: 'Theorem',
-      name: 'Hᵖ functions converge to their boundary values in Lᵖ',
-      verify: true,
-      statement: String.raw`Suppose $0<p<\infty$ and $f\in H^p$. Then $f^*\in L^p(\T)$,
+      name: 'Hᵖ boundary limits, maximal functions and Lᵖ convergence',
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Theorem17.11 and complete proof, pp.340–341'],
+      statement: String.raw`Suppose $0<p<\infty$ and $f\in H^p$. Its nontangential boundary limit $f^*$ exists a.e.; for every $0<\alpha<1$, the nontangential maximal function $N_\alpha f$ belongs to $L^p(\T)$. Moreover,
 $$\lim_{r\to1}\frac1{2\pi}\int_{-\pi}^{\pi}|f(re^{i\theta})-f^*(e^{i\theta})|^p\,d\theta=0,$$
 and $\|f^*\|_p=\|f\|_p$.`,
-      idea: String.raw`For $p=2$ everything is Parseval: if $h=\sum c_nz^n\in H^2$, then $M_2(h;r)^2=\sum|c_n|^2r^{2n}$, so $\sum|c_n|^2=\|h\|_2^2<\infty$; the Riesz–Fischer theorem (4.26) produces $\varphi\in L^2(\T)$ with coefficients $c_n$ ($n\ge0$) and $0$ ($n<0$); $h=P[\varphi]$, so $h^*=\varphi$ a.e., and $\|h_r-h^*\|_2^2=\sum|c_n|^2(1-r^n)^2\to0$. For general $p$, divide out the zeros (17.10): $f=Bg$ with $g$ zero-free, so $h=g^{p/2}\in H^2$ and $|g_r|^p=|h_r|^2\to|h^*|^2$ in $L^1$. Together with a.e. convergence and $|B_r|\le1$, $|B^*|=1$, this upgrades to $\int|f_r-f^*|^p\to0$.`,
+      idea: String.raw`For $p>1$, represent $f$ as a Poisson integral of an $L^p$ function and apply the maximal theorem11.25 and a.e. nontangential convergence. For $0<p\le1$, Theorem17.10 gives $f=Bh^{2/p}$ with $h\in H^2$ and $|B|\le1$. Hence $N_\alpha f\le(N_\alpha h)^{2/p}\in L^p$; both $B$ and $h$ have a.e. nontangential limits, so $f$ does too. The maximal bound dominates $|f_r-f^*|^p$, giving convergence by dominated convergence. For $p\ge1$ the triangle inequality then identifies the norms; for $p<1$, use $\big||a|^p-|b|^p\big|\le|a-b|^p$.`,
       caption: String.raw`Choose $f$, the exponent $p$ and how close $r$ is to $1$. Top: $\Re f(re^{i\theta})$ (blue) against the boundary function $\Re f^*(e^{i\theta})$ (black). Bottom: the $L^p$-distance $\|f_r-f^*\|_p$ (orange) falls to $0$ while $M_p(f;r)$ (blue) climbs to $\|f^*\|_p$ (green). The lacunary series $\sum_k2^{-k/2}z^{2^k}$ (13 terms) has a rough, Weierstrass-like boundary function; at $p=2$ the readout checks the Parseval formula $\|f_r-f^*\|_2^2=\sum|c_n|^2(1-r^n)^2$.`,
-      deps: ['rca-17.10', 'rca-17.9', 'rca-4.26', 'rca-11.30'],
+      deps: ['rca-17.10', 'rca-11.25', 'rca-11.30'],
       tags: ['Hardy spaces', 'boundary values'],
       viz(v) {
         const NL = 13, NG = 8192;
@@ -432,10 +437,10 @@ and $\|f^*\|_p=\|f\|_p$.`,
       },
     },
     {
-      num: '17.12',
+      num: '17.11a',
       kind: 'Theorem',
       name: 'H¹ functions are Cauchy and Poisson integrals of f*',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Final assertion and equations(5)–(6) of Theorem17.11, pp.340–341'],
       statement: String.raw`Suppose $1\le p\le\infty$ and $f\in H^p$. Then $f$ is both the Poisson integral and the Cauchy integral of its boundary function: for every $z\in U$,
 $$f(z)=\frac1{2\pi}\int_{-\pi}^{\pi}\frac{1-|z|^2}{|e^{it}-z|^2}f^*(e^{it})\,dt=\frac1{2\pi}\int_{-\pi}^{\pi}\frac{f^*(e^{it})}{1-ze^{-it}}\,dt .$$
 Equivalently, $\hat f^*(n)=0$ for every $n<0$, and $\hat f^*(n)$ is the $n$-th Taylor coefficient of $f$ for $n\ge0$. Thus $f\mapsto f^*$ identifies $H^p$ isometrically with the closed subspace of $L^p(\T)$ consisting of the functions whose negative Fourier coefficients vanish.`,
@@ -510,9 +515,9 @@ Equivalently, $\hat f^*(n)=0$ for every $n<0$, and $\hat f^*(n)$ is the $n$-th T
       statement: String.raw`Let $\mu$ be a complex Borel measure on $\T$ whose Fourier coefficients
 $$\hat\mu(n)=\int_{-\pi}^{\pi}e^{-int}\,d\mu(t)$$
 vanish for all negative integers $n$. Then $\mu$ is absolutely continuous with respect to Lebesgue measure $m$ on $\T$.`,
-      idea: String.raw`Expand the Poisson integral $f=P[d\mu]$ in the Fourier modes $r^{|n|}e^{in\theta}$: because $\hat\mu(n)=0$ for $n<0$, only the powers $z^n$, $n\ge0$, survive, so $f$ is holomorphic, and $\int|f_r|\,dm\le\|\mu\|$, so $f\in H^1$. By 17.11, $f_r\to f^*$ in $L^1(\T)$; on the other hand $f_r\,dm\to\mu$ weak* (the Poisson integrals of a measure converge to it, chapter 11). The two limits coincide: $d\mu=f^*\,dm$. Since $\log|f^*|\in L^1$ (17.9), $f^*\ne0$ a.e. when $\mu\ne0$, so $\mu$ and $m$ are even mutually absolutely continuous.`,
+      idea: String.raw`Expand the Poisson integral $f=P[d\mu]$ in the Fourier modes $r^{|n|}e^{in\theta}$: because $\hat\mu(n)=0$ for $n<0$, only the powers $z^n$, $n\ge0$, survive, so $f$ is holomorphic, and $\int|f_r|\,dm\le\|\mu\|$, so $f\in H^1$. By 17.11, $f_r\to f^*$ in $L^1(\T)$; on the other hand $f_r\,dm\to\mu$ weak* (the Poisson integrals of a measure converge to it, chapter 11). The two limits coincide: $d\mu=f^*\,dm$. Since $\log|f^*|\in L^1$ (17.19), $f^*\ne0$ a.e. when $\mu\ne0$, so $\mu$ and $m$ are even mutually absolutely continuous.`,
       caption: String.raw`**Analytic measure**: $d\mu=f^*dm$ with $f=(1-z)^{-0.8}\in H^1$; its density (teal ribbon around the circle) is so concentrated at $1$ that it looks like a point mass, the negative coefficients are $0$ — and indeed the mass of small arcs around $1$ tends to $0$ (bottom). **Point mass**: $\mu_N=\delta_1+g_N\,dm$ where $g_N=-\sum_{k=1}^Ne^{-ikt}$ cancels the first $N$ negative coefficients of $\delta_1$. Raise $N$: the bars at $-N\le n<0$ vanish, but the total mass $\|\mu_N\|$ grows like $\log N$, so no measure with $\hat\mu(n)=0$ for all $n<0$ can contain the atom.`,
-      deps: ['rca-17.12', 'rca-17.11', 'rca-17.9', 'rca-6.19'],
+      deps: ['rca-17.12', 'rca-17.11', 'rca-17.19b', 'rca-6.19'],
       tags: ['measures', 'Fourier coefficients', 'absolute continuity'],
       viz(v) {
         const mode = v.select('$\\mu$', [{ value: 'an', label: 'analytic: $f^*dm$, $f=(1-z)^{-0.8}$' }, { value: 'pt', label: 'point mass $+$ cancellation' }], 'an');

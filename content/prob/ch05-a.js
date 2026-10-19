@@ -1,5 +1,5 @@
 // Probability: Theory and Examples (Durrett) — Chapter 5, part A1: §5.1 Examples and §5.2 Construction, Markov properties
-import { clampN, cornerIn, fr, binomPmf, samplePoisson, sampleLaplace, sampleT3, logInts, ringPos, drawChain, drawMatrix, runChain, stepper, drawFrom, normRows, matPowSm, matMulSm, rhoTo, CLS_COL } from './ch05-a.shared.js';
+import { clampN, cornerIn, fr, binomPmf, samplePoisson, sampleLaplace, sampleT3, logInts, ringPos, drawChain, drawMatrix, runChain, stepper, drawFrom, normRows, matPowSm, matMulSm, rhoTo, CLS_COL, serviceEntryQueueStep, serviceEntryQueueMean } from './ch05-a.shared.js';
 
 const P3 = [[0.5, 0.3, 0.2], [0.2, 0.5, 0.3], [0.3, 0.2, 0.5]];
 const P4 = normRows([[5, 3, 2, 0], [2, 4, 2, 2], [1, 2, 5, 2], [0, 3, 3, 4]]);
@@ -16,7 +16,8 @@ export default {
       num: '5.1.1a',
       kind: 'Definition',
       name: 'Markov chain and transition probability',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §5.1, p. 269; §5.2, p. 273 (general-space definition)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A **transition probability** on a measurable space $(S,\mathscr S)$ is a function $p(x,A)$ such that $p(x,\cdot)$ is a probability measure for each $x$ and $x\mapsto p(x,A)$ is measurable for each $A$. A sequence $X_0,X_1,\dots$ of $S$-valued random variables is a **Markov chain** with transition probability $p$ when
 $$P(X_{n+1}\in B\mid\mathscr F_n)=p(X_n,B)\qquad(B\in\mathscr S),$$
 where $\mathscr F_n=\sigma(X_0,\dots,X_n)$: given the whole past, the next state is drawn from $p(X_n,\cdot)$ and only the present state matters. For a countable $S$ this is the matrix $p(x,y)$ with nonnegative entries and every row summing to $1$, and $P(X_{n+1}=y\mid X_n=x,\ \text{past})=p(x,y)$.`,
@@ -24,7 +25,6 @@ where $\mathscr F_n=\sigma(X_0,\dots,X_n)$: given the whole past, the next state
       caption: String.raw`Pick a row and drag its four weights; the edge widths of the diagram are the normalised entries $p(i,j)$. A seeded chain hops along the edges. The gold dots in the right panel are the empirical frequencies of the move $i\to j$ among the first $N$ visits to $i$, the blue bars are the row of the matrix. Increase $N$ and watch the dots settle on the bars; with a small $N$ the row can look quite different.`,
       deps: ['prob-4.1.1a'],
       see: ['stoch-1.1'],
-      credit: 'A. A. Markov, 1906 (dependent trials; the term "chain" came later)',
       tags: ['markov chains', 'foundations'],
       viz(v) {
         const n = 4, pos = ringPos(n, 1.0);
@@ -64,7 +64,8 @@ where $\mathscr F_n=\sigma(X_0,\dots,X_n)$: given the whole past, the next state
       num: '5.1.3',
       kind: 'Model',
       name: 'Ehrenfest chain',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Example 5.1.3, p. 270; Example 5.5.3, pp. 300–301'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Distribute $r$ balls between two urns. At each step pick one of the $r$ balls uniformly at random and move it to the other urn. Let $X_n$ be the number of balls in the left urn. Then $(X_n)$ is a Markov chain on $\{0,\dots,r\}$ with
 $$p(k,k-1)=\frac kr,\qquad p(k,k+1)=1-\frac kr,$$
 and its stationary distribution is Binomial$(r,\tfrac12)$: in the long run each ball is in either urn with probability $\tfrac12$ independently. Moreover $E(X_n-\tfrac r2)=(1-\tfrac2r)^n(X_0-\tfrac r2)$.`,
@@ -72,10 +73,8 @@ and its stationary distribution is Binomial$(r,\tfrac12)$: in the long run each 
       caption: String.raw`Left: one seeded trajectory, started with every ball in the left urn (or balanced), against the exact mean path $r/2+(1-2/r)^n(X_0-r/2)$ in green. Right: the histogram of $X_n$ over $60\,000$ steps after a burn-in against the Binomial$(r,\tfrac12)$ masses (gold). Raise $r$: the fluctuations shrink relative to $r$ but the relaxation slows down.`,
       deps: ['prob-5.1.1a'],
       see: ['stoch-1.11', 'thermo-5.15'],
-      credit: 'P. and T. Ehrenfest, 1907',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ehrenfest_model' },
       tags: ['markov chains', 'models'],
-      scope: String.raw`The chain is the standard discrete-time Ehrenfest urn model; the original 1907 paper presented it as a toy model for the approach to equilibrium in Boltzmann's $H$-theorem.`,
+      scope: String.raw`This is the discrete-time Ehrenfest urn model. It has period $2$: the binomial law is stationary, while the law at a fixed time need not converge to it. The histogram here is a time average.`,
       viz(v) {
         const r = v.slider('balls $r$', 2, 60, 20, { int: true });
         const start = v.select('start', [{ value: 'all', label: 'all in the left urn' }, { value: 'half', label: 'balanced' }], 'all');
@@ -114,7 +113,8 @@ and its stationary distribution is Binomial$(r,\tfrac12)$: in the long run each 
       num: '5.1.4',
       kind: 'Model',
       name: 'Wright–Fisher model',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Example 5.1.4, pp. 270–271; Exercise 5.2.9, p. 280'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A population of $N$ gene copies carries two alleles. In each generation the $N$ copies are chosen independently, with replacement, from the previous generation, so that if $X_n$ is the number of copies of allele $A$ then, given $X_n=k$,
 $$X_{n+1}\sim\text{Binomial}\Big(N,\frac kN\Big).$$
 This is a Markov chain on $\{0,\dots,N\}$ in which $0$ and $N$ are absorbing, $X_n/N$ is a martingale, and so
@@ -123,7 +123,6 @@ $$P(\text{fixation at }N\mid X_0=k)=\frac kN,\qquad P(\text{fixation at }0\mid X
       caption: String.raw`Twelve seeded frequency paths $X_n/N$ (orange) start from the same count. The right panel compares, over 300 independent populations, the fraction fixing at $N$ with the starting frequency $k/N$ (gold). Raise $N$ and drift slows (fixation takes longer); move $k$ and the fixation probability follows it.`,
       deps: ['prob-5.1.1a'],
       see: ['popgen-2.1'],
-      credit: 'R. A. Fisher, 1922; S. Wright, 1931 (the model bearing both names is the shared formal framework)',
       tags: ['markov chains', 'genetics'],
       scope: String.raw`Neutral alleles, constant population size, non-overlapping generations, no mutation or selection.`,
       viz(v) {
@@ -163,34 +162,34 @@ $$P(\text{fixation at }N\mid X_0=k)=\frac kN,\qquad P(\text{fixation at }0\mid X
       num: '5.1.5',
       kind: 'Model',
       name: 'M/G/1 queue (embedded chain)',
-      verify: true,
-      statement: String.raw`Customers arrive at a single server in a Poisson process of rate $\lambda$, and service times are i.i.d. with mean $1/\mu$ and a general law. Let $X_n$ be the number of customers left behind by the $n$th departure and $A_{n+1}$ the number of arrivals during the $(n+1)$st service; the $A$'s are i.i.d. with $E A=\rho=\lambda/\mu$. Then
-$$X_{n+1}=(X_n-1)^++A_{n+1}$$
-is a Markov chain. It is recurrent when $\rho\le1$ (positive recurrent when $\rho<1$) and transient when $\rho>1$. For $\rho<1$ its stationary mean is $\rho+\rho^2(1+c^2)/(2(1-\rho))$, where $c^2$ is the squared coefficient of variation of the service time (Pollaczek–Khinchine).`,
-      idea: String.raw`Watching the system only at departure instants makes it Markov because the Poisson arrivals forget their past: the number of arrivals during the next service is independent of everything before. When $\rho<1$ the chain moves down by one while an arrival count averages less than one per service; when $\rho>1$ it has a positive drift $\rho-1$ upward and escapes (strong law). The Pollaczek–Khinchine mean is quoted here from queueing theory, not derived in this chapter.`,
-      caption: String.raw`Choose the load $\rho$ and the service law (deterministic, or exponential service for which $A$ is geometric). Left: the queue left behind at departures. Right: its running time average (gold) against the Pollaczek–Khinchine mean (green). Push $\rho$ past $1$ and the path escapes to infinity; at $\rho$ just below $1$ the averages converge very slowly.`,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Example 5.1.5 and equation (5.1.1), pp. 271–272; stationary mean from first and second moment drift'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
+      statement: String.raw`Customers arrive as a Poisson process of rate $\lambda$, independently of i.i.d. service times with mean $1/\mu$. Let $X_n$ count customers waiting when customer $n$ enters service, excluding that customer, and let $A_{n+1}$ count arrivals during that service. Then the $A$'s are i.i.d., $EA=\rho=\lambda/\mu$, and
+$$X_{n+1}=(X_n+A_{n+1}-1)^+.$$
+This is Durrett's embedded M/G/1 chain. For the deterministic and exponential service laws pictured, it is positive recurrent when $\rho<1$, null recurrent at $\rho=1$, and transient when $\rho>1$. When $\rho<1$, its stationary mean is $\rho^2(1+c^2)/(2(1-\rho))$, where $c^2$ is the squared coefficient of variation of service time.`,
+      idea: String.raw`Poisson increments during successive independent service times produce independent arrival counts. If $X_n+A_{n+1}=0$, the server waits for the next arrival and that customer immediately starts service, leaving no one waiting; otherwise one customer leaves the waiting line for service. For the stationary mean, $EA^2=\rho+\rho^2(1+c^2)$. The first-moment drift gives $P(X=0)P(A=0)=1-\rho$; inserting this in the second-moment drift gives $2(1-\rho)EX=EA^2-EA=\rho^2(1+c^2)$. The mean formula assumes a finite service-time second moment.`,
+      caption: String.raw`Choose the load $\rho$ and service law. Left: the number waiting at successive service entries, excluding the person entering service. Right: its running average (gold) against the stationary mean (green). Move $\rho$ above $1$ to see growth; close to $1$ from below, convergence is slow. Empty-queue frequency is compared with $(1-\rho)/P(A=0)$ for this embedding.`,
       deps: ['prob-5.1.1a'],
       see: ['stoch-11.11'],
-      credit: 'D. G. Kendall, 1953 (embedded Markov chain method)',
       tags: ['markov chains', 'queues'],
       viz(v) {
         const rho = v.slider('load $\\rho=\\lambda/\\mu$', 0.2, 1.3, 0.8, { step: 0.01 });
         const kind = v.select('service time', [{ value: 'det', label: 'deterministic ($c^2=0$)' }, { value: 'exp', label: 'exponential ($c^2=1$)' }], 'det');
         let seed = 1; v.button('Resample', () => { seed++; });
         const NN = 20000, T = 400;
-        const A = v.stage({ x: [0, T], y: [0, 10], axes: 'box', gutter: true, height: 320, xlabel: 'departure number $n$', title: 'customers left behind $X_n$' });
+        const A = v.stage({ x: [0, T], y: [0, 10], axes: 'box', gutter: true, height: 320, xlabel: 'service entry $n$', title: 'customers waiting $X_n$' });
         const B = v.stage({ x: [10, NN], xlog: true, y: [0, 10], axes: 'box', gutter: true, height: 320, xlabel: '$n$ (log scale)', title: 'time average of $X_1,\\dots,X_n$', minWidth: 280 });
         let key = '', S = null;
         const sim = (rh, kd, sd) => {
           const k = `${rh}|${kd}|${sd}`; if (k === key) return S; key = k;
           const rg = v.rng(sd * 1013 + 5), th = rh / (1 + rh), out = new Float64Array(NN + 1); let x = 0;
-          for (let i = 1; i <= NN; i++) { const a = kd === 'det' ? samplePoisson(rg, rh) : Math.floor(Math.log(1 - rg()) / Math.log(th)); x = Math.max(x - 1, 0) + a; out[i] = x; }
+          for (let i = 1; i <= NN; i++) { const a = kd === 'det' ? samplePoisson(rg, rh) : Math.floor(Math.log(1 - rg()) / Math.log(th)); x = serviceEntryQueueStep(x, a); out[i] = x; }
           return (S = out);
         };
         let info = '';
         v.render(() => {
           const rh = rho.value, kd = kind.value, X = sim(rh, kd, seed), c2 = kd === 'det' ? 0 : 1;
-          const pk = rh < 1 ? rh + (rh * rh * (1 + c2)) / (2 * (1 - rh)) : Infinity;
+          const pk = serviceEntryQueueMean(rh, c2);
           let mxT = 6; for (let i = 0; i <= T; i++) mxT = Math.max(mxT, X[i]);
           A.setView([0, T], [0, mxT * 1.08]);
           A.path(Array.from({ length: T + 1 }, (_, i) => [i, X[i]]), { color: 'accent', width: 1.3 });
@@ -200,7 +199,7 @@ is a Markov chain. It is recurrent when $\rho\le1$ (positive recurrent when $\rh
           B.setView([10, NN], [0, Math.max(top, 2)]);
           B.path(avg, { color: 'gold', width: 2 });
           if (isFinite(pk)) B.hline(pk, { color: 'green', width: 2, dash: true });
-          info = rh < 1 ? `$\\rho=${fr(rh, 2)}<1$: positive recurrent. Pollaczek–Khinchine mean $${fr(pk, 3)}$; time average after $${NN}$ departures $${fr(s / NN, 3)}$. Fraction of departures leaving an empty system: $${fr(X.reduce((q, x) => q + (x === 0 ? 1 : 0), 0) / NN, 3)}$ (equals $1-\\rho=${fr(1 - rh, 3)}$ in the long run).` : `$\\rho=${fr(rh, 2)}\\ge1$: no stationary law; $X_n$ is ${rh > 1 ? 'transient, growing like $(\\rho-1)n$' : 'null recurrent'}. Value after $${NN}$ departures: ${X[NN]}.`;
+          info = rh < 1 ? `$\\rho=${fr(rh, 2)}<1$: positive recurrent. Pollaczek–Khinchine mean $${fr(pk, 3)}$; time average after $${NN}$ service entries $${fr(s / NN, 3)}$. Fraction of service entries with no one waiting: $${fr(X.slice(1).reduce((q, x) => q + (x === 0 ? 1 : 0), 0) / NN, 3)}$ (predicted $(1-\\rho)/P(A=0)=${fr((1-rh)/(kd === 'det' ? Math.exp(-rh) : 1/(1+rh)), 3)}$).` : `$\\rho=${fr(rh, 2)}\\ge1$: no stationary law; $X_n$ is ${rh > 1 ? 'transient, growing like $(\\rho-1)n$' : 'null recurrent'}. Value after $${NN}$ service entries: ${X[NN]}.`;
         });
         v.readout(() => info);
       },
@@ -252,7 +251,8 @@ where $X_n(\omega)=\omega_n$. Under $P_\mu$ the coordinate process is a Markov c
       num: '5.2.2',
       kind: 'Theorem',
       name: 'Monotone class theorem',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.2.2 and proof, p. 275'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $\mathscr A$ be a $\pi$-system containing $\Omega$ and let $\mathscr H$ be a vector space of bounded real functions on $\Omega$ such that
 
 (i) $1_A\in\mathscr H$ for every $A\in\mathscr A$;
@@ -264,11 +264,10 @@ Then $\mathscr H$ contains every bounded $\sigma(\mathscr A)$-measurable functio
       caption: String.raw`Take $\Omega=[0,1)$ and the $\pi$-system $\mathscr A=\{[0,a)\}$. Pick a bounded target $f$ and raise the level $n$: the orange step function $f_n$ (the infimum of $f$ on each dyadic cell) is a linear combination of the indicators $1_{[0,k/2^n)}$ (a coefficient count is shown), and $f_n\uparrow f$ - which is exactly how closure under (i), linearity and (ii) reaches $f$. Switch to the second family, $\{[0,0.6),[0.3,0.9)\}$ and its span, which is *not* a $\pi$-system: the target $1_{[0.3,0.6)}$ is $\sigma(\mathscr A)$-measurable but the nearest function in $\mathscr H$ stays at a positive distance.`,
       deps: ['prob-2.1.6'],
       see: ['rca-8.3'],
-      credit: 'monotone class arguments go back to Halmos and Dynkin (mid-20th century)',
       tags: ['measure', 'sigma-fields'],
       viz(v) {
         const fam = v.select('generating family', [{ value: 'pi', label: '$\\{[0,a)\\}$, a $\\pi$-system' }, { value: 'no', label: '$\\{[0,.6),[.3,.9)\\}$, not a $\\pi$-system' }], 'pi');
-        const tg = v.select('target $f$', [{ value: 'sqrt', label: '$\\sqrt x$' }, { value: 'sin', label: '$(1+\\sin 2\\pi x)/2$' }, { value: 'ind', label: '$1_{[0.37,0.81)}$' }], 'sqrt');
+        const tg = v.select('target $f$', [{ value: 'sqrt', label: '$\\sqrt x$' }, { value: 'sin', label: '$(1+\\sin 2\\pi x)/2$' }], 'sqrt');
         const nS = v.slider('level $n$', 0, 7, 2, { int: true });
         const F = { sqrt: (x) => Math.sqrt(x), sin: (x) => (1 + Math.sin(2 * Math.PI * x)) / 2, ind: (x) => (x >= 0.37 && x < 0.81 ? 1 : 0) };
         const s = v.stage({ x: [0, 1], y: [-0.1, 1.15], axes: 'box', gutter: true, height: 340, xlabel: '$\\omega\\in[0,1)$', title: '$f$ and its approximation from $\\mathscr H$' });
@@ -278,7 +277,10 @@ Then $\mathscr H$ contains every bounded $\sigma(\mathscr A)$-measurable functio
           const isPi = fam.value === 'pi'; tg.el.hidden = !isPi; nS.el.hidden = !isPi;
           if (isPi) {
             const f = F[tg.value], n = nS.value, m = 2 ** n, vals = [];
-            for (let c = 0; c < m; c++) { let lo = Infinity; for (let i = 0; i <= 64; i++) lo = Math.min(lo, f((c + Math.min(i / 64, 0.99999)) / m)); vals.push(lo); }
+            for (let c = 0; c < m; c++) {
+              const left = c / m, right = (c + 1) / m;
+              vals.push(tg.value === 'sqrt' ? f(left) : left <= 0.75 && right >= 0.75 ? 0 : Math.min(f(left), f(right)));
+            }
             const coef = vals.map((g, k) => g - (vals[k + 1] ?? 0)), nz = coef.filter((c) => Math.abs(c) > 1e-12).length;
             for (let c = 0; c < m; c++) s.rect(c / m, 0, (c + 1) / m, vals[c], { fill: 'orange', fillAlpha: 0.3, color: 'orange', width: 1 });
             s.fn(f, { color: 'ink', width: 2.2, n: 500 });
@@ -460,12 +462,13 @@ Hence the number of visits $N(y)$ to $y$ after time $0$ satisfies $P_x(N(y)\ge k
       num: '5.2.7',
       kind: 'Theorem',
       name: 'Reflection principle for symmetric random walks',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 5.2.7 and proof, pp. 278–279'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $S_n=\xi_1+\dots+\xi_n$ where the $\xi_i$ are i.i.d. with a symmetric law. Then for every $a>0$,
 $$P\Big(\max_{m\le n}S_m\ge a\Big)\le 2\,P(S_n\ge a).$$
 When the walk cannot jump over $a$ (for instance, simple random walk and integer $a$) this is an identity in the form $P(\max_{m\le n}S_m\ge a)=P(S_n\ge a)+P(S_n>a)$.`,
       idea: String.raw`Let $\tau=\min\{m:S_m\ge a\}$. By the strong Markov property (5.2.5), after $\tau$ the walk $S_{\tau+k}-S_\tau$ is a fresh walk, and by symmetry it is as likely to end up above $S_\tau$ as below: $P(S_n\ge a\mid\tau\le n)\ge\tfrac12$. Reflecting the path after $\tau$ turns the walk that ended below $a$ into one that ends above it, which is the picture. Hence $P(S_n\ge a)\ge\tfrac12P(\tau\le n)$.`,
-      caption: String.raw`Choose a symmetric step law (all scaled to variance 1), the horizon $n$ and the level $a=c\sqrt n$. Left: seeded walks; the first one that reaches the level is drawn thick, with its reflected twin (red, dashed) from the first hit onward. Right: from $12\,000$ walks, the three numbers $P(\max\ge a)$, $2P(S_n\ge a)$ and $P(S_n\ge a)$. The first never exceeds the second, and the identity-case ratio $P(\max\ge a)/P(S_n\ge a)$ is $2$ only up to the overshoot of $a$.`,
+      caption: String.raw`Choose a symmetric step law (all scaled to variance 1), the horizon $n$ and the level $a=c\sqrt n$. Left: seeded walks; the first one that reaches the level is drawn thick, with its reflected twin (red, dashed) from the first hit onward. Right: from $12\,000$ walks, the three numbers $P(\max\ge a)$, $2P(S_n\ge a)$ and $P(S_n\ge a)$. The true first probability never exceeds the second; sampled values have Monte Carlo error. The identity-case ratio $P(\max\ge a)/P(S_n\ge a)$ is $2$ only up to the overshoot of $a$.`,
       deps: ['prob-5.2.5'],
       credit: 'reflection argument for walks and Brownian motion: D. Mirimanoff and Aebly, 1923 (André\'s 1887 ballot argument is often credited)',
       tags: ['random walk', 'maximal inequalities'],

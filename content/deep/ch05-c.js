@@ -1,3 +1,4 @@
+import {makeScaleInvariantLogistic} from './normalization-source.shared.js';
 // Deep Learning Theory — Chapter 5: Depth, initialization and normalization (items 5.10–5.13; 5.1–5.5 in ch05.js, 5.6–5.9 in ch05-b.js)
 //
 // 5.10 and 5.12 run exact gradient descent on small explicit models (a batch-normalized linear unit; a scalar linear RNN whose loss has a
@@ -18,17 +19,16 @@ export default {
       num: '5.10',
       kind: 'Concept',
       name: 'Scale invariance and the effective learning rate',
-      statement: String.raw`Suppose the loss is **scale invariant** in a weight vector $w\ne0$: $\ell(cw)=\ell(w)$ for all $c>0$ (this holds for the incoming weights of a unit followed by batch normalization). Then differentiating $c\mapsto\ell(cw)$ at $c=1$ gives $\langle\nabla\ell(w),w\rangle=0$, and $\nabla\ell(cw)=\tfrac1c\nabla\ell(w)$. Consequently, for gradient descent $w_{t+1}=w_t-\eta\nabla\ell(w_t)$,
+      statement: String.raw`Suppose the loss is **scale invariant** in a weight vector $w\ne0$: $\ell(cw)=\ell(w)$ for all $c>0$ (for ideal batch normalization with zero additive variance constant and nonzero batch variance; a fixed nonzero variance constant breaks exact invariance). Then differentiating $c\mapsto\ell(cw)$ at $c=1$ gives $\langle\nabla\ell(w),w\rangle=0$, and $\nabla\ell(cw)=\tfrac1c\nabla\ell(w)$. Consequently, for gradient descent $w_{t+1}=w_t-\eta\nabla\ell(w_t)$,
 $$\|w_{t+1}\|^2=\|w_t\|^2+\eta^2\|\nabla\ell(w_t)\|^2\ \ge\ \|w_t\|^2,$$
-the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ is governed by the **effective learning rate** $\eta_{\rm eff}=\eta/\|w\|^2$ (the gradient on the unit sphere is $\|w\|$ times the gradient at $w$, and a step of length $\eta\|\nabla\ell\|$ turns the direction by an angle of order $\eta\|\nabla\ell\|/\|w\|$). With weight decay $\lambda$, $w_{t+1}=(1-\eta\lambda)w_t-\eta\nabla\ell(w_t)$, the norm settles where growth from the gradient balances shrinkage from the decay, $\|w\|^4\approx\eta\|\tilde g\|^2/(2\lambda)$ with $\tilde g$ the gradient on the unit sphere, and the effective learning rate stays at a steady level.`,
-      idea: String.raw`Euler's theorem for homogeneous functions of degree 0 gives the orthogonality of gradient and weights, and Pythagoras then gives the norm identity: each step moves along a tangent direction, so it can only lengthen the radius. As the radius grows, the same absolute step is a smaller angle, so the learning rate decays automatically ("auto rate-tuning", Arora, Li and Lyu 2019); weight decay, which looked like a regularizer for a function it cannot change, instead controls the equilibrium effective rate, which is why batch-normalized networks are sensitive to it (van Laarhoven 2017; Hoffer et al. 2018). In a network the per-unit norms are tied by scale symmetries of the other layers as well.`,
+the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ is governed by the **effective learning rate** $\eta_{\rm eff}=\eta/\|w\|^2$ (the gradient on the unit sphere is $\|w\|$ times the gradient at $w$, and a step of length $\eta\|\nabla\ell\|$ turns the direction by an angle of order $\eta\|\nabla\ell\|/\|w\|$). With weight decay $\lambda$, $w_{t+1}=(1-\eta\lambda)w_t-\eta\nabla\ell(w_t)$, a heuristic stationary balance, when $0<\eta\lambda<2$ and directional-gradient statistics stabilize, gives $\|w\|^4\approx\eta\|\tilde g\|^2/(2\lambda)$ with $\tilde g$ the gradient on the unit sphere. This small-step balance need not describe convergence of every run.`,
+      idea: String.raw`Euler's theorem for homogeneous functions of degree 0 gives the orthogonality of gradient and weights, and Pythagoras then gives the norm identity: each step moves along a tangent direction, so it can only lengthen the radius. Arora, Li and Lyu analyze this automatic change of effective rate. With decay, the exact squared-norm update is $(1-\eta\lambda)^2\|w\|^2+\eta^2\|g\|^2$; replacing the directional-gradient magnitude by a stationary value and taking $\eta\lambda\ll1$ gives the displayed heuristic balance. A learned normalization scale does not itself destroy invariance with respect to the incoming weights.`,
       caption: String.raw`A single logistic unit on 40 two-dimensional points (two overlapping classes, centred), trained by gradient descent from $w_0$ (gold). With **BN** the unit's output is standardized over the data before the loss, so the loss (heat map) depends only on the direction of $w$: it is constant along rays. Top left: the path in weight space. Top right: $\|w\|^2$ with the identity $\|w_0\|^2+\eta^2\sum\|g\|^2$ (dashed), which holds exactly when weight decay is off. Bottom: the effective learning rate $\eta/\|w\|^2$ and the loss. Turn on weight decay to see the norm stop growing; switch to the plain unit and the gradient is no longer orthogonal to $w$ (loss falls partly by growing the norm).`,
       deps: ['deep-5.9'],
-      refs: ['Prince §11.4'],
+      refs: ['Arora, Li and Lyu, arXiv 1812.03981v1, Definition 2.1, Lemmas 2.2 / 2.4 with complete proofs, pp. 3–6; zero-variance-constant caveat p. 3; decay balance is derived here as a heuristic'],
       tags: ['scale invariance', 'weight decay', 'learning rate'],
-      credit: 'Salimans & Kingma, 2016 (weight normalization); van Laarhoven, 2017; Arora, Li & Lyu, 2019',
-      scope: String.raw`Exact for scale-invariant losses (batch or weight normalization without the learned scale, evaluated on the full training set); with minibatch noise or a learned scale $\gamma$ the identity picks up additional terms. The equilibrium norm formula is a heuristic.`,
-      verify: true,
+      credit: 'Arora, Li & Lyu, 2018 preprint (auto rate tuning)',
+      scope: String.raw`Exact for a differentiable scale-invariant loss at a nonzero weight vector. The per-step identity also holds for stochastic gradients when each sampled loss is scale invariant. It does not require fixing every other parameter across training steps. This display uses zero-epsilon batch normalization, with the zero-variance point excluded. The decay-balance formula is a heuristic.`,
       links: { arxiv: 'https://arxiv.org/abs/1812.03981' },
       viz(v) {
         const unitS = v.select('unit', [{ value: 'bn', label: 'batch-normalized' }, { value: 'plain', label: 'plain linear' }], 'bn');
@@ -38,24 +38,7 @@ the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ i
         const T = 400, R = 3.2, GAM = 3;
         const rr = rand(hashStr('scaleinv')), X = [], Y = [];
         for (let i = 0; i < 40; i++) { const c = i % 2 ? 1 : -1; X.push([c * 0.9 + rr.normal() * 1.1, c * 0.5 + rr.normal() * 1.1]); Y.push(c); }
-        const mx = X.reduce((a, p) => a + p[0], 0) / X.length, my = X.reduce((a, p) => a + p[1], 0) / X.length;
-        const Xc = X.map((p) => [p[0] - mx, p[1] - my]);
-        const S = [[0, 0], [0, 0]]; for (const p of Xc) { S[0][0] += p[0] * p[0] / 40; S[0][1] += p[0] * p[1] / 40; S[1][1] += p[1] * p[1] / 40; } S[1][0] = S[0][1];
-        const sf = (z) => (z > 30 ? z : z < -30 ? Math.exp(z) : Math.log1p(Math.exp(z))), sg = (z) => 1 / (1 + Math.exp(-z));
-        function lossGrad(w, bn) {
-          let L = 0, g = [0, 0];
-          if (bn) {
-            const Sw = [S[0][0] * w[0] + S[0][1] * w[1], S[1][0] * w[0] + S[1][1] * w[1]], s2 = w[0] * Sw[0] + w[1] * Sw[1] + 1e-12, s = Math.sqrt(s2);
-            for (let i = 0; i < 40; i++) {
-              const p = Xc[i], a = p[0] * w[0] + p[1] * w[1], z = GAM * a / s; L += sf(-Y[i] * z) / 40;
-              const d = -Y[i] * sg(-Y[i] * z) / 40;
-              g[0] += d * GAM * (p[0] / s - a * Sw[0] / (s2 * s)); g[1] += d * GAM * (p[1] / s - a * Sw[1] / (s2 * s));
-            }
-          } else {
-            for (let i = 0; i < 40; i++) { const p = Xc[i], z = p[0] * w[0] + p[1] * w[1]; L += sf(-Y[i] * z) / 40; const d = -Y[i] * sg(-Y[i] * z) / 40; g[0] += d * p[0]; g[1] += d * p[1]; }
-          }
-          return { L, g };
-        }
+        const lossGrad = makeScaleInvariantLogistic(X,Y,GAM);
         const sP = v.stage({ x: [-R, R], y: [-R, R], equal: true, height: 290, axes: 'box', gutter: true, xlabel: '$w_1$', ylabel: '$w_2$', weight: 1, minWidth: 380, title: 'weight plane: loss and path' });
         const sN = v.stage({ x: [0, T], y: [0, 4], height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\|w\\|^2$', weight: 1, minWidth: 380, title: 'squared weight norm' });
         const sE = v.stage({ x: [0, T], y: [1e-3, 10], ylog: true, height: 290, axes: 'box', gutter: true, xlabel: 'step', ylabel: '$\\eta/\\|w\\|^2$', weight: 1, minWidth: 380, title: 'effective learning rate' });
@@ -76,7 +59,7 @@ the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ i
           sP.heat((x, y) => lossGrad([x, y], bn).L, { range: [0.3, 0.9], cmap: 'theme', res: 4, key: 'ld' + unitS.value });
           sP.clip(() => { sP.path(path, { color: 'accent', width: 1.8 }); });
           sP.dot(path[path.length - 1][0], path[path.length - 1][1], { r: 4, color: 'green' });
-          const ymax = Math.max(1, ...nrm.slice(0, T + 1)) * 1.1; sN.setView([0, T], [0, Math.min(ymax, 1e3)]);
+          const ymax = Math.max(1, ...nrm.slice(0, T + 1)) * 1.1; sN.setView([0, T], [0, ymax]);
           sN.path(nrm.map((y, t) => [t, y]), { color: 'accent', width: 2.2 });
           if (l === 0 && bn) sN.path(pred.map((y, t) => [t, y]), { color: 'muted', dash: true, width: 1.5 });
           sE.path(eff.map((y, t) => [t, y]), { color: 'orange', width: 2.2 });
@@ -97,7 +80,7 @@ the weight norm never decreases, and the movement of the *direction* $w/\|w\|$ i
 $$\mu=\frac1d\sum_jx_j,\quad\sigma^2=\frac1d\sum_j(x_j-\mu)^2,\qquad y_j=\gamma_j\,\frac{x_j-\mu}{\sqrt{\sigma^2+\epsilon}}+\beta_j,$$
 with learned gain $\gamma$ and bias $\beta$. The statistics are taken over the **features of a single example**, not over the batch as in batch normalization (5.9). Hence (i) the output for an example does not depend on the other examples in its batch, and train and test computations are identical; (ii) it works for a batch of one; (iii) $y$ is unchanged if $x$ is replaced by $ax+b\mathbf 1$ for any $a>0$ and any $b$: the layer is invariant to rescaling and re-centering of its input (and of its weight matrix).`,
       idea: String.raw`Batch statistics are a poor fit for recurrent and attention models, where sequence lengths vary, batches can be small and statistics at each time step would have to be kept separately; moving the averaging axis from examples to features removes the dependence on the batch while still fixing the scale and offset of each layer's input. The invariance is immediate from the formula: shifting by $b\mathbf1$ moves $\mu$ by $b$ and leaves $x-\mu$ unchanged, and multiplying by $a>0$ multiplies the numerator and $\sigma$ by $a$ (up to the $\epsilon$). Ba, Kiros and Hinton (2016) introduced it for recurrent networks; it is the normalization of the transformer block (9.9).`,
-      caption: String.raw`A batch of $B$ examples (rows) with $d=8$ features (columns). Left: the input $X$. Middle: batch normalization standardizes each **column** over the batch. Right: layer normalization standardizes each **row**. Rescale or shift example 1 (gold outline) with the sliders, or draw new other examples: the layer-normalized rows of the other examples never change, and example 1's own LN row is unchanged by any scale $a>0$ or shift $b$, while the batch-normalized output of every example moves. With $B=1$ the batch-norm panel is all zeros.`,
+      caption: String.raw`A batch of $B$ examples (rows) with $d=8$ features (columns). Left: the input $X$. Middle: batch normalization standardizes each **column** over the batch. Right: layer normalization standardizes each **row**. Rescale or shift example 1 (gold outline) with the sliders, or draw new other examples: the layer-normalized rows of the other examples never change, and example 1's own LN row is invariant to a shift $b$ and approximately invariant to a scale $a>0$ (the stabilizing epsilon breaks exact scale invariance), while the batch-normalized output of every example moves. With $B=1$ the batch-norm panel is all zeros.`,
       deps: ['deep-5.9'],
       refs: ['Prince §12.4'],
       tags: ['normalization', 'transformers', 'invariance'],

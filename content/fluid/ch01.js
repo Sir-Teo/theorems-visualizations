@@ -127,7 +127,7 @@ export default {
       statement: String.raw`A flow can be described in two ways. In the **Eulerian** description the unknowns are fields at fixed points of space, $\mathbf u(\mathbf x,t)$. In the **Lagrangian** description one follows labelled fluid particles, $\mathbf x=\mathbf X(\mathbf a,t)$ with $\mathbf X(\mathbf a,0)=\mathbf a$, so that $\partial_t\mathbf X=\mathbf u(\mathbf X,t)$. The velocity seen by a particle is the Eulerian velocity evaluated along its path, $\mathbf u(\mathbf X(\mathbf a,t),t)$, which in general is not the Eulerian record at the point where the particle started.`,
       idea: String.raw`The two records coincide only if the particle never meets a different velocity than the fixed sensor does: the flow must be steady (so that time does not change the field) and uniform (so that moving does not either). Otherwise the particle record mixes the time dependence of the field with the spatial variation it sweeps through, and that mixture is what the material derivative (1.3) packages. Given $\mathbf u$ the Lagrangian description follows by solving an ODE; given $\mathbf X$ the Eulerian one follows by differentiating.`,
       caption: String.raw`A travelling wave $u=U+A\sin(kx-\omega t)$ rides on a mean stream. A fixed sensor (blue) and a particle released at the same spot (orange) record the velocity they feel. Drag the release point; set $A=0$ (uniform) or $\omega=0$ with $A=0$ and the traces merge; with $A>0$ even a steady wave ($\omega=0$) makes them differ, because the particle moves.`,
-      deps: ['fluid-1.1'],
+      deps: ['fluid-1.1', 'ode-1.1'],
       refs: ['Kundu §3.2'],
       tags: ['kinematics', 'Euler', 'Lagrange'],
       viz(v) {
@@ -572,7 +572,7 @@ The same holds for any region whose boundary moves with velocity $\mathbf w$ whe
       statement: String.raw`The **vorticity** of a flow is the curl of its velocity, $\boldsymbol\omega=\nabla\times\mathbf u$; in a plane flow it is the scalar $\omega=\partial_xv-\partial_yu$ (pointing out of the plane). It is twice the angular velocity with which a small fluid element rotates as a whole, as measured by the average rotation of the fluid on a small circle about it. A flow with $\boldsymbol\omega=\mathbf 0$ is **irrotational**. Fluid can move in circles round a point with no vorticity away from it.`,
       idea: String.raw`Write $\mathbf u(\mathbf x_0+\mathbf r)\approx\mathbf u_0+A\mathbf r$ with $A=\nabla\mathbf u$. The antisymmetric part of $A$ is a rigid rotation at rate $\tfrac12\boldsymbol\omega$ (1.10); the circulation around a small circle of radius $\rho$ is $\pi\rho^2\,\omega$ (curl as circulation density, vcalc-3.7), and the mean angular velocity of the ring is circulation$/(2\pi\rho^2)=\tfrac12\omega$. A shear is full of vorticity although its streamlines are straight; the potential vortex $u_\theta\propto1/r$ has none although they are circles.`,
       caption: String.raw`Three paddle wheels in a chosen flow; each spins at the average angular velocity of the fluid on a ring around it (computed numerically). In shear and solid rotation they spin at $\omega/2$; in the potential vortex they do not spin although the fluid circles the centre; in the Rankine vortex they spin inside the core only. Drag the wheels around. Colour: vorticity.`,
-      deps: ['fluid-1.3', 'pma-10.42', 'vcalc-3.5'],
+      deps: ['fluid-1.3', 'pma-10.42', 'vcalc-3.5', 'vcalc-3.7'],
       refs: ['Kundu §3.4', 'Acheson ch. 1'],
       tags: ['vorticity', 'rotation'],
       viz(v) {

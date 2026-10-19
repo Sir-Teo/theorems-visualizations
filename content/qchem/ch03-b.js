@@ -19,10 +19,10 @@ export default {
 (3) for the levels $J$ of that term, the lowest $J=|L-S|$ lies lowest if the open subshell is less than half full, the highest $J=L+S$ if it is more than half full.
 In particular, electrons in degenerate orbitals occupy different orbitals with parallel spins before they pair up (chemists' "Hund's rule").`,
       scope: String.raw`Reliable for the ground term of a ground configuration of light atoms and for the lowest term of a given excited configuration, not for ordering the higher terms. The textbook reason for rule 1 (parallel spins stay apart, so the repulsion is smaller; 3.6) is not the whole story: more careful calculations are reported to attribute much of the effect to the weaker shielding of singly occupied orbitals (this explanation is taken from a secondary source, so this item is flagged for checking).`,
-      idea: String.raw`Rule 1 follows the exchange picture of 3.6: electrons with parallel spins are kept apart by antisymmetry, lowering their mutual repulsion, so the highest-spin term wins. Rule 2: electrons that orbit in the same sense meet less often. Rule 3 comes from the sign of the spin–orbit coupling constant, which changes sign at half filling because a nearly full subshell behaves like holes. The same rule decides the high-spin or low-spin ground states of $d^n$ ions when the crystal-field splitting is compared with the pairing cost, as the left panel lets you test.`,
+      idea: String.raw`Exchange in a fixed-orbital model (3.6) can favor parallel spins, but it is not a complete derivation of the empirical rules after orbital relaxation. Rule2 is an empirical term-ordering rule, not a classical claim about electrons meeting on orbits. Rule 3 comes from the sign of the spin–orbit coupling constant, which changes sign at half filling because a nearly full subshell behaves like holes. The same rule decides the high-spin or low-spin ground states of $d^n$ ions when the crystal-field splitting is compared with the pairing cost, as the left panel lets you test.`,
       caption: String.raw`Left: five $d$ orbitals split by a crystal field $\Delta$ (three low, two high). Choose the number of electrons and the model parameters (pairing cost $P$, exchange gain $K$ per parallel pair, splitting $\Delta$); the diagram shows the arrangement of lowest model energy, and you can **click an orbital** to cycle its occupation (empty, $\uparrow$, $\downarrow$, both) and compare. For $d^4$–$d^7$ the lowest arrangement flips from high spin to low spin as $\Delta$ grows. Right: the measured $2p^2$ (carbon) and $2p^4$ (oxygen) levels from NIST obey rules 1–3.`,
       deps: ['qchem-3.7', 'qchem-3.6'],
-      refs: ['McQuarrie ch. 9'],
+      refs: ['NIST Basic Atomic Spectroscopic Data, complete C I/O I energy-level tables; microscopic Hund-rule source remains open'],
       tags: ['Hund rules', 'high spin', 'term ordering'],
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Hund%27s_rules' },
@@ -41,7 +41,7 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
         const best = () => { const n = nS.value; let bE = 1e9, bA = null; for (let i = 0; i < 1024; i++) { const a = [i & 3, (i >> 2) & 3, (i >> 4) & 3, (i >> 6) & 3, (i >> 8) & 3]; const cnt = a.reduce((s, c) => s + (c & 1) + ((c >> 1) & 1), 0); if (cnt !== n) continue; const e = energy(a); if (e < bE - 1e-12) { bE = e; bA = a; } } return bA; };
         let arr = best();
         sD.onClick((x, y) => { let o = -1, bd = 0.7; XS.forEach((xx, i) => { if (Math.abs(x - xx - 0.45) < bd) { bd = Math.abs(x - xx - 0.45); o = i; } }); if (o >= 0) { arr = arr.slice(); arr[o] = (arr[o] + 1) % 4; } });
-        const NIST = { C: { name: 'C I', terms: [['³P', 0, 'accent'], ['¹D', 10192.657, 'orange'], ['¹S', 21648.030, 'purple']], J: [[0, 0], [1, 16.4167], [2, 43.4135]], half: 'less than half full: lowest J = 0 lowest' },
+        const NIST = { C: { name: 'C I', terms: [['³P', 0, 'accent'], ['¹D', 10192.66, 'orange'], ['¹S', 21648.02, 'purple']], J: [[0, 0], [1, 16.4167], [2, 43.4135]], half: 'less than half full: lowest J = 0 lowest' },
           O: { name: 'O I', terms: [['³P', 0, 'accent'], ['¹D', 15867.862, 'orange'], ['¹S', 33792.583, 'purple']], J: [[2, 0], [1, 158.265], [0, 226.977]], half: 'more than half full: highest J = 2 lowest' } };
         let st = null;
         v.render(() => {
@@ -70,7 +70,7 @@ In particular, electrons in degenerate orbitals occupy different orbitals with p
           sN.text('levels of ³P (rule 3):', 0.3, ymax * 0.26, { size: 11, color: 'muted' });
         });
         v.legend([['accent', 'occupied orbital (click to change)']]);
-        v.readout(() => { if (!st) return ''; const d = NIST[el.value]; return `$d^{${st.n}}$: your arrangement has model energy ${v.fix(st.E, 2)} eV, total spin $S=${v.fix(st.S, 1)}$; lowest arrangement ${v.fix(st.Eb, 2)} eV with $S=${v.fix(st.Sb, 1)}$ ${st.same ? '— you have the ground arrangement' : `— yours is ${v.fix(st.E - st.Eb, 2)} eV higher`}.\nmeasured ${d.name}: $^3P$ (rule 1: triplet lowest) < $^1D$ < $^1S$ (rule 2: larger $L$ lower, $^1D$ before $^1S$); $^3P$ ${d.half} (rule 3). Energies from NIST ASD, 1 eV = ${v.fix(CM_EV, 0)} cm⁻¹.`; });
+        v.readout(() => { if (!st) return ''; const d = NIST[el.value]; return `$d^{${st.n}}$: your arrangement has model energy ${v.fix(st.E, 2)} eV, spin-projection magnitude $|M_S|=${v.fix(st.S, 1)}$; lowest arrangement ${v.fix(st.Eb, 2)} eV with $|M_S|=${v.fix(st.Sb, 1)}$ ${st.same ? '— you have the ground arrangement' : `— yours is ${v.fix(st.E - st.Eb, 2)} eV higher`}.\nmeasured ${d.name}: $^3P$ (rule 1: triplet lowest) < $^1D$ < $^1S$ (rule 2: larger $L$ lower, $^1D$ before $^1S$); $^3P$ ${d.half} (rule 3). Energies from NIST Basic Atomic Spectroscopic Data, 1 eV = ${v.fix(CM_EV, 0)} cm⁻¹.`; });
       },
     },
     // ------------------------------------------------------------------ 3.9

@@ -24,7 +24,7 @@ This item implements four simpler measures in the same spirit: with $J$ the Jaco
       caption: String.raw`Move the four weight sliders to say what you care about (area, shape, distance, cuts) and watch the ranking bars reorder; each measure is divided by the equirectangular map's value so that weights are comparable. The lower map shows where one map's error sits on the globe, in longitude–latitude coordinates: pick the map and the quantity (shape or area). The readout names the winner.`,
       deps: ['geog-3.4', 'geog-6.3'],
       see: ['geog-3.7', 'geog-6.5'],
-      refs: ['Snyder §6'],
+      refs: ['Snyder (1987), §30, pp. 243–248; §31, pp. 249–252', 'PROJ 9.5.1 source, igh.cpp (zone boundaries, centres and join offset)'],
       tags: ['map projections', 'distortion', 'error measures'],
       scope: String.raw`The paper's citation was checked against Crossref (doi 10.3138/carto.42.4.297); the Winkel-tripel result was checked in the authors' arXiv abstract and in a later paper by the same group. The four measures computed here are this atlas's reconstruction (no flexion or skewness, own normalisation) and their numbers are not the published scores.`,
       links: { doi: 'https://doi.org/10.3138/carto.42.4.297', arxiv: 'https://arxiv.org/abs/astro-ph/0608501' },
@@ -93,19 +93,18 @@ This item implements four simpler measures in the same spirit: with $J$ the Jaco
       num: '6.5',
       kind: 'Method',
       name: 'Interrupted and polyhedral maps',
-      credit: 'J. P. Goode, 1923; R. B. Fuller, 1943 (Dymaxion)',
+      credit: 'Goode construction: Snyder (1987), §30; PROJ 9.5.1 igh.cpp; icosahedral net: this atlas',
       statement: String.raw`Cutting the sphere before flattening it lowers distortion, because only the pieces, not the whole, must be developed onto the plane.
-- An **interrupted** map splits the world into lobes, each drawn with its own central meridian. In the **Goode homolosine** (1923) each lobe uses the sinusoidal projection between latitudes $\pm\varphi_0$, $\varphi_0\approx40^\circ44'$, and the Mollweide projection poleward, joined where their parallels have equal length; both are equal-area, so the whole is, and in an ocean-interrupted layout the cuts run mostly through oceans.
-- A **polyhedral** map projects the globe onto the faces of an inscribed solid and unfolds them. Fuller's Dymaxion map uses an icosahedron; the version here applies the plain central (gnomonic) projection to each of its 20 triangles and unfolds them in a strip.
+- An **interrupted** map splits the world into lobes, each drawn with its own central meridian. In the **Goode homolosine** each lobe uses the sinusoidal projection between latitudes $\pm\varphi_0$, $\varphi_0\approx40^\circ44'$, and the Mollweide projection poleward, joined where their parallels have equal length; both are equal-area, so the whole is, and the share of the chosen cuts crossing land is measured below.
+- A **polyhedral** map projects the globe onto the faces of an inscribed solid and unfolds them. The version here applies the plain central (gnomonic) projection to each of its 20 triangles and unfolds them in a strip.
 The price is the cuts: the interrupted maps tear the globe along meridians and the icosahedral net along 11 edges, of total length $11\arctan 2\approx3.9\pi$ on the unit sphere.`,
-      idea: String.raw`A lobe is a smaller region of the sphere, so its distortion obeys the same growth law as in geog-6.1: the sinusoidal shear grows with distance from the lobe's own central meridian, and lobes of 60° to 150° width keep it small. A face of the icosahedron spans only about 63°, and the gnomonic map of a small cap (geog-5.1) is nearly isometric, which is why the net's shape error is only a few degrees. Both constructions get their accuracy by paying in the Goldberg–Gott boundary-cut term (geog-6.4), as the scatter plot shows.`,
+      idea: String.raw`A lobe is a smaller region of the sphere, so its distortion obeys the same growth law as in geog-6.1: the sinusoidal shear grows with distance from the lobe's own central meridian, and lobes of 60° to 150° width keep it small. A face of the icosahedron spans only about 63°, and the gnomonic map of a small cap (geog-5.1) is nearly isometric, which is why each face has bounded distortion, measured by the scatter plot. The net keeps a spanning tree of 19 face adjacencies between its 20 faces (graph-1.5.2); of the 30 original edges, 11 are therefore cut. Both constructions get their accuracy by paying in the Goldberg–Gott boundary-cut term (geog-6.4), as the scatter plot shows.`,
       caption: String.raw`Switch among the interrupted Goode homolosine, the uninterrupted one, an interrupted sinusoidal with the same lobes, and the icosahedral net. Red marks where the globe was cut. The ellipses are Tissot indicatrices: their shape tells the shear, their size the area error. The scatter plot puts each map at (length of cuts, mean angular distortion): more cuts, less shear. The readout also measures what share of each cut runs over land.`,
-      deps: ['geog-6.1', 'geog-5.1'],
+      deps: ['geog-6.1', 'geog-5.1', 'graph-1.5.2'],
       see: ['geog-6.4', 'geog-6.3'],
-      refs: ['Snyder §6'],
+      refs: ['Snyder (1987), §30, pp. 243–248; §31, pp. 249–252', 'PROJ 9.5.1 source, igh.cpp (zone boundaries, centres and join offset)'],
       tags: ['map projections', 'interrupted', 'polyhedral'],
-      scope: String.raw`The Goode lobe boundaries used here (north: −180, −40, 180; south: −180, −100, −20, 80, 180, with central meridians −100, 30 and −160, −60, 20, 140) are a standard ocean-interrupted layout recalled from software documentation and were not checked against Goode's atlas. The icosahedral net is plain gnomonic on each face and is **not** Fuller's own Dymaxion mapping, which is not gnomonic and uses different face geometry. Dates (Goode 1923; Dymaxion 1943 in Life magazine, icosahedral version 1954) are from Wikipedia.`,
-      verify: true,
+      scope: String.raw`The interrupted Goode lobe bounds and central meridians match the continental layout in PROJ 9.5.1 igh.cpp: north −180,−40,180 with centres −100,30; south −180,−100,−20,80,180 with centres −160,−60,20,140. The latitude join and vertical shift are solved for continuity. The icosahedral construction is this atlas's plain gnomonic net, rather than a reconstruction of Fuller's Dymaxion mapping. Statistics describe the implemented maps and chosen cut layout, not all interrupted or polyhedral projections.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Goode_homolosine_projection', dymaxion: 'https://en.wikipedia.org/wiki/Dymaxion_map' },
       viz(v) {
         const I = icosa(), mask = landMask(v);
@@ -179,7 +178,7 @@ The price is the cuts: the interrupted maps tear the globe along meridians and t
         });
         v.readout(() => {
           const I2 = info; if (!I2) return '';
-          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, area error ${(I2.e.area * 100).toFixed(0)} %${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, distance error ${(I2.e.dist * 100).toFixed(0)} % over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. ${I2.M.lobes || I2.M.base || I2.k === 'goode' ? `Goode's join latitude between sinusoidal and Mollweide: ${(GOODE_PHI0 * R2D).toFixed(2)}°.` : ''}`;
+          return `${I2.M.label}: mean angular distortion **${I2.e.shape.toFixed(1)}°**, log-area scatter ${(I2.e.area * 100).toFixed(0)} × 10⁻²${I2.M.eq ? ' (equal-area up to numerical error)' : ''}, log-distance scatter ${(I2.e.dist * 100).toFixed(0)} × 10⁻² over random pairs (pairs split by a cut count against it). Cuts of total length **${I2.c.len.toFixed(2)}$\\pi$**, of which **${(I2.c.land * 100).toFixed(0)} %** runs over land. ${I2.M.lobes || I2.M.base || I2.k === 'goode' ? `Goode's join latitude between sinusoidal and Mollweide: ${(GOODE_PHI0 * R2D).toFixed(2)}°.` : ''}`;
         });
       },
     },
@@ -198,7 +197,7 @@ For conformal maps the quality of a choice is the spread $k_{\max}/k_{\min}$ of 
       caption: String.raw`Drag the two corner handles on the world map (or pick a preset such as the contiguous US, Chile, Indonesia or Greenland) to define a region. The bars give the scale spread $k_{\max}/k_{\min}-1$ of four conformal candidates (stereographic, Lambert conformal conic with best parallels, transverse Mercator, Mercator); the smallest bar is highlighted and its map of the region is drawn, with small circles that show scale. Choose another candidate to see how the same region distorts.`,
       deps: ['geog-5.8', 'geog-4.7', 'geog-5.5'],
       see: ['geog-3.8'],
-      refs: ['Snyder §6'],
+      refs: ['Snyder (1987), §30, pp. 243–248; §31, pp. 249–252', 'PROJ 9.5.1 source, igh.cpp (zone boundaries, centres and join offset)'],
       tags: ['map projections', 'choosing', 'regions'],
       scope: String.raw`Only conformal candidates are compared, by the spread of point scale over a 13 by 13 grid of the region on the sphere (not the ellipsoid); the rule of thumb printed in the readout (aspect ratio of the region) is the classical guideline, the winner is computed. Regions are boxes in longitude and latitude, not true outlines, so the preset names are rough extents.`,
       viz(v) {

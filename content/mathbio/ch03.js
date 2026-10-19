@@ -146,16 +146,16 @@ where prey grow exponentially at rate $\alpha$ when alone, predation removes pre
       statement: String.raw`For the Lotka–Volterra system (3.3), the function
 $$V(x,y)=\delta x-\gamma\ln x+\beta y-\alpha\ln y$$
 is constant along every solution in the open quadrant $x,y>0$. $V$ is strictly convex with a unique minimum at the equilibrium $(\gamma/\delta,\alpha/\beta)$ and $V\to\infty$ at the boundary and at infinity, so each level set $\{V=c\}$ above the minimum is a closed curve around the equilibrium and, since there is no other equilibrium on it, each orbit is periodic.`,
-      idea: String.raw`Divide the equations by $x$ and $y$: $\dot x/x=\alpha-\beta y$ and $\dot y/y=\delta x-\gamma$. Multiplying the first by $(\delta x-\gamma)$ and the second by $(\alpha-\beta y)$ and subtracting kills the right-hand side, and the left-hand side is $\frac{d}{dt}\bigl[\delta x-\gamma\ln x+\beta y-\alpha\ln y\bigr]=0$. In the variables $u=\ln x$, $w=\ln y$ the system is Hamiltonian with $V$ as Hamiltonian, which is why a symplectic integrator preserves it but Euler's method does not.`,
+      idea: String.raw`Divide the equations by $x$ and $y$: $\dot x/x=\alpha-\beta y$ and $\dot y/y=\delta x-\gamma$. Multiplying the first by $(\delta x-\gamma)$ and the second by $(\alpha-\beta y)$ and subtracting kills the right-hand side, and the left-hand side is $\frac{d}{dt}\bigl[\delta x-\gamma\ln x+\beta y-\alpha\ln y\bigr]=0$. With canonical coordinates $q=\ln y$, $p=\ln x$, the system has Hamiltonian $H(q,p)=\delta e^p-\gamma p+\beta e^q-\alpha q=V$, since $\dot q=\partial H/\partial p$ and $\dot p=-\partial H/\partial q$. Symplectic Euler preserves the symplectic area in these log coordinates, not $V$ exactly: at sufficiently small step its energy error typically oscillates, while explicit Euler can drift outward.`,
       scope: String.raw`Exact for the pure Lotka–Volterra system only. Any term that is not of this special form (prey crowding, saturation, delays) destroys $V$ and the closed orbits (3.7).`,
-      caption: String.raw`Units: $\beta=\delta=1$. Grey contours are level sets of $V$; drag the gold start point and choose how to integrate. *Exact* and *symplectic Euler in $(\ln x,\ln y)$* stay on the contour (the right-hand plot of $V-V_0$ stays flat), while explicit *Euler* spirals outward and *RK4* with a large step drifts. Reduce the step to see the drift shrink but never vanish.`,
-      deps: ['mathbio-3.3'],
+      caption: String.raw`Units: $\beta=\delta=1$. Grey contours are level sets of $V$; drag the gold start point and choose how to integrate. The small-step RK4 reference closely follows a contour. *Symplectic Euler in $(\ln x,\ln y)$* generally crosses the exact contour and shows oscillating energy error; it does not conserve $V$ exactly. Explicit *Euler* can spiral outward, while *RK4* also has discretization error. Reduce the step to compare the errors.`,
+      deps: ['mathbio-3.3', 'mech-12.3'],
       tags: ['conserved quantity', 'Hamiltonian'],
       refs: ['Murray I ch. 3'],
       viz(v) {
         const al = v.slider('$\\alpha$', 0.5, 1.5, 1, { step: 0.01 });
         const ga = v.slider('$\\gamma$', 0.5, 1.5, 1, { step: 0.01 });
-        const meth = v.select('integrator', [{ value: 'exact', label: 'exact (tiny RK4)' }, { value: 'sym', label: 'symplectic Euler' }, { value: 'rk4', label: 'RK4' }, { value: 'euler', label: 'Euler' }], 'euler');
+        const meth = v.select('integrator', [{ value: 'exact', label: 'reference (tiny RK4)' }, { value: 'sym', label: 'symplectic Euler' }, { value: 'rk4', label: 'RK4' }, { value: 'euler', label: 'Euler' }], 'euler');
         const hs = v.slider('time step $h$', 0.01, 0.25, 0.08, { step: 0.005 });
         const TT = 60;
         const A = v.stage({ x: [0, 4], y: [0, 4], height: 360, axes: 'box', gutter: true, weight: 1.1, minWidth: 280, xlabel: 'prey x', ylabel: 'predators y', title: 'orbit and level sets of V' });
@@ -184,13 +184,12 @@ is constant along every solution in the open quadrant $x,y>0$. $V$ is strictly c
           A.clip(() => A.contour((x, y) => (x > 0 && y > 0 ? lvV(a, g, x, y) : 99), [0.05, 0.15, 0.3, 0.5, 0.8, 1.2, 1.7, 2.3, 3, 4].map((d) => vmin + d), { color: 'grid', width: 1.2, res: 140 }));
           A.path(pts, { color: 'accent', width: 2.2 });
           A.dot(g, a, { r: 5, color: 'green' });
-          const last = dV.length ? Math.abs(dV[dV.length - 1][1]) : 0;
-          const top = Math.max(0.05, Math.min(2, last * 1.3, 2));
-          B.setView([0, TT], [-0.3 * top, top * 1.1]);
+          const errors = dV.map(p => p[1]);
+          B.setView([0, TT], [Math.min(-0.01, ...errors) * 1.15, Math.max(0.01, ...errors) * 1.15]);
           B.hline(0, { color: 'green', dash: true });
           B.path(dV, { color: 'accent', width: 2 });
         });
-        v.readout(() => { run(); const d = dV.length ? dV[dV.length - 1] : [0, 0]; return `$V_0=${v.fix(V0, 4)}$, and at $t=${v.fix(d[0], 1)}$: $V-V_0=${d[1] > 100 ? '>100' : v.fix(d[1], 5)}$ (${meth.value === 'exact' ? 'drift ≈ 10⁻⁸ or less' : meth.value === 'sym' ? 'bounded wobble, no secular drift' : 'numerical drift'})`; });
+        v.readout(() => { run(); const d = dV.length ? dV[dV.length - 1] : [0, 0]; return `$V_0=${v.fix(V0, 4)}$, and at $t=${v.fix(d[0], 1)}$: $V-V_0=${d[1] > 100 ? '>100' : v.fix(d[1], 5)}$ (${meth.value === 'exact' ? 'small-step RK4 reference; finite discretization error' : meth.value === 'sym' ? 'symplectic step; energy is not exactly conserved' : 'numerical drift'})`; });
       },
     },
     // ───────────────────────────────────────────────────────────── 3.5
@@ -247,14 +246,13 @@ $$\frac1T\int_0^T x\,dt=\frac\gamma\delta,\qquad \frac1T\int_0^T y\,dt=\frac\alp
       name: 'Volterra’s principle',
       credit: 'Volterra, 1926 (prompted by D’Ancona’s Adriatic fish-market statistics)',
       statement: String.raw`Suppose a Lotka–Volterra community is harvested indiscriminately, each species being removed at a rate proportional to its density with the same effort $E$: $\dot x=(\alpha-E)x-\beta xy$, $\dot y=\delta xy-(\gamma+E)y$. Then the cycle averages become $\bar x=(\gamma+E)/\delta$ and $\bar y=(\alpha-E)/\beta$ (for $E<\alpha$). Moderate fishing therefore **raises** the average prey population and **lowers** the average predator population; relaxing it does the opposite, so the predators' share rises when fishing is reduced.`,
-      idea: String.raw`Harvesting simply replaces $\alpha$ by $\alpha-E$ and $\gamma$ by $\gamma+E$, and by the averages theorem (3.5) the mean prey is the new $(\gamma+E)/\delta$ and the mean predators the new $(\alpha-E)/\beta$. Fishing hurts the species that is growing on its own, the prey, only through the extra mortality, but it hurts the predators more because their own growth depends on the (now scarcer) prey. The prediction explained why the sharp drop in fishing during the First World War was followed, in D’Ancona’s Adriatic catches, by an increase in the proportion of predatory fish.`,
-      scope: String.raw`A statement about the Lotka–Volterra model; it is a prediction, not a theorem about real fisheries. Whether it matches the Adriatic data (an increase in the predator share during the war years) is a historical claim based on D’Ancona’s catch statistics, which are not reproduced here: the curves below are model output.`,
-      caption: String.raw`Effort is high, then **paused** (middle third), then resumed. The top plot is model output with $\beta=\delta=1$, $\alpha=1$, $\gamma=0.6$: when fishing relaxes the predators rise and the prey fall. The lower left shows the predators' share $y/(x+y)$ of the stock, and the right panel compares the cycle averages measured numerically (dots) with $\gamma+E$ and $\alpha-E$ (lines).`,
+      idea: String.raw`Harvesting simply replaces $\alpha$ by $\alpha-E$ and $\gamma$ by $\gamma+E$, and by the averages theorem (3.5) the mean prey is the new $(\gamma+E)/\delta$ and the mean predators the new $(\alpha-E)/\beta$. At coexistence, predator growth must offset its additional mortality, so the average prey density required to sustain predators rises. Meanwhile the reduced net prey growth supports fewer predators. Volterra’s original 1926 note, p. 559, reports D’Ancona’s increase of selachians in Adriatic catches during the war, when fishing nearly ceased, relative to the preceding and following periods.`,
+      scope: String.raw`For positive initial populations, positive constant coefficients, and $0\le E<\alpha$, these are exact full-cycle averages (or equilibrium values). The fisheries attribution is checked against Volterra’s own 1926 report; D’Ancona’s underlying catch tables have not been independently audited. Stock density and fish-market catch composition are different quantities; the curves are a mathematical illustration, not a fit to those observations.`,
+      caption: String.raw`Effort is high, then **paused** (middle third), then resumed. The top plot is model output with $\beta=\delta=1$, $\alpha=1$, $\gamma=0.6$: the pause changes the reference cycle averages in favour of predators; the finite-time trajectories also oscillate. The lower left shows the predators' share $y/(x+y)$ of the stock, and the right panel compares the cycle averages measured numerically (dots) with $\gamma+E$ and $\alpha-E$ (lines).`,
       deps: ['mathbio-3.5'],
       tags: ['harvesting', 'Volterra'],
-      refs: ['Murray I ch. 3'],
+      refs: ['Volterra (1926), Nature 118:558–560, Laws II–III and p. 559 fisheries discussion', 'Murray I ch. 3'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Umberto_D%27Ancona' },
-      verify: true,
       viz(v) {
         const Eh = v.slider('fishing effort $E$', 0.1, 0.6, 0.5, { step: 0.01 });
         const El = v.slider('effort during the pause', 0, 0.3, 0.02, { step: 0.01 });

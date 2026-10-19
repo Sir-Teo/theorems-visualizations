@@ -214,7 +214,7 @@ export default {
       caption: String.raw`Each simulated pair of random protein sequences (Robinson frequencies) is scanned for locally maximal segments; the dots are the average number of segments with score at least $S$ and the solid line is the prediction $Kmne^{-\lambda S}$ with the NCBI constants. The right panel is $\sum q_aq_be^{\lambda s_{ab}}-1$ as a function of $\lambda$: the root is the value where the curve returns to zero. Switch the matrix, or shift every score by a constant, and watch $\lambda$ move. Shift by $+1$ to make the expected score positive: the root disappears and the simulation no longer follows any exponential law. Shorter sequences fall below the line (edge effects).`,
       scope: String.raw`Needs integer scores (a lattice, handled by the same formula with the given $\lambda$), negative mean score and at least one positive score. For *gapped* alignment there is no proof of this law, only extensive empirical evidence; $\lambda$ and $K$ for gapped scoring are fitted by simulation (item 3.6). The constants $K$ quoted are the NCBI BLAST values; $K$ is not computed here, only compared with the simulated value.`,
       credit: 'Karlin & Altschul, 1990',
-      deps: ['bioinf-3.1', 'bioinf-3.3'],
+      deps: ['bioinf-3.1', 'bioinf-3.3', 'prob-1.6.13', 'prob-2.7.1a'],
       refs: ['Durbin ch. 2'],
       tags: ['Karlin–Altschul', 'extreme values', 'Poisson'],
       links: { doi: 'https://doi.org/10.1073/pnas.87.6.2264' },

@@ -95,11 +95,11 @@ export default {
       num: '1.8',
       kind: 'Theorem',
       name: 'Eckart–Young: best low-rank approximation',
-      statement: String.raw`Let $A\in\mathbb R^{m\times n}$ have the SVD $A=\sum_i\sigma_iu_iv_i^{\top}$ and for $0\le k<\min(m,n)$ let $A_k=\sum_{i\le k}\sigma_iu_iv_i^{\top}$. Then $\operatorname{rank}A_k=k$ and, over all matrices $B$ of rank at most $k$,
+      statement: String.raw`Let $A\in\mathbb R^{m\times n}$ have the SVD $A=\sum_i\sigma_iu_iv_i^{\top}$ and for $0\le k<\min(m,n)$ let $A_k=\sum_{i\le k}\sigma_iu_iv_i^{\top}$. Then $\operatorname{rank}A_k=\min(k,\operatorname{rank}A)\le k$: for $k>0$, equality holds exactly when $\sigma_k>0$, while $A_0=0$ has rank zero. Over all matrices $B$ of rank at most $k$,
 $$\min_{\operatorname{rank}B\le k}\|A-B\|_2=\|A-A_k\|_2=\sigma_{k+1},\qquad \min_{\operatorname{rank}B\le k}\|A-B\|_F=\|A-A_k\|_F=\Big(\sum_{i>k}\sigma_i^2\Big)^{1/2}.$$
 The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
-      idea: String.raw`The error $A-A_k=\sum_{i>k}\sigma_iu_iv_i^{\top}$ has singular values $\sigma_{k+1},\sigma_{k+2},\dots$, so its norms are as claimed (1.7). For the lower bound in the 2-norm, a rank-$\le k$ matrix $B$ has a null space of dimension $\ge n-k$, which must meet the $(k+1)$-dimensional space $\operatorname{span}(v_1,\dots,v_{k+1})$ in a unit vector $w$; then $\|A-B\|_2\ge\|(A-B)w\|=\|Aw\|\ge\sigma_{k+1}$ since $A$ stretches that span by at least $\sigma_{k+1}$. The Frobenius case follows from Weyl's inequalities for singular values, $\sigma_{k+i}(A)\le\sigma_i(A-B)$ when $\operatorname{rank}B\le k$.`,
-      caption: String.raw`A random $6\times6$ matrix with the singular values in the left panel (log scale; the first $k$ are kept, blue). Move $k$ and pick the norm. Each count in the right panel is one of $400$ random rank-$k$ competitors $B$, made by perturbing the optimal factors by an amount $\varepsilon$ (or by projecting $A$ onto a perturbed $k$-frame); the green line is the Eckart–Young value. No competitor ever lands left of it, and at $\varepsilon=0$ the competitor is $A_k$ and sits exactly on it.`,
+      idea: String.raw`The nonzero retained singular values, not the number of retained terms, determine the rank of $A_k$. The error $A-A_k=\sum_{i>k}\sigma_iu_iv_i^{\top}$ has singular values $\sigma_{k+1},\sigma_{k+2},\dots$, so its norms are as claimed (1.7). For the lower bound in the 2-norm, a rank-$\le k$ matrix $B$ has a null space of dimension $\ge n-k$, which must meet the $(k+1)$-dimensional space $\operatorname{span}(v_1,\dots,v_{k+1})$ in a unit vector $w$; then $\|A-B\|_2\ge\|(A-B)w\|=\|Aw\|\ge\sigma_{k+1}$ since $A$ stretches that span by at least $\sigma_{k+1}$. The Frobenius case follows from Weyl's inequalities for singular values, $\sigma_{k+i}(A)\le\sigma_i(A-B)$ when $\operatorname{rank}B\le k$.`,
+      caption: String.raw`A random $6\times6$ matrix with six positive singular values in the left panel (log scale; the first $k$ are kept, blue), so this displayed $A_k$ does have rank $k$. In general its rank is only at most $k$. Move $k$ and pick the norm. Each count in the right panel is one of $400$ random competitors $B$ of rank at most $k$, made by perturbing the optimal factors by an amount $\varepsilon$ (or by projecting $A$ onto a perturbed $k$-frame); the green line is the Eckart–Young value. No competitor ever lands left of it, and at $\varepsilon=0$ the competitor is $A_k$ and sits exactly on it.`,
       deps: ['nla-1.7', 'ladr-7.92'],
       tags: ['svd', 'low rank', 'approximation'],
       credit: 'Schmidt, 1907; Eckart & Young, 1936; Mirsky, 1960',
@@ -108,7 +108,7 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
       viz(v) {
         const M = v.M, n = 6, SIG = [3, 1.6, 0.9, 0.45, 0.2, 0.08], NC = 400;
         const Sg = v.stage({ x: [0.4, 6.6], y: [0.04, 6], ylog: true, axes: 'box', gutter: true, height: 340, minWidth: 280, xlabel: 'i', ylabel: 'σᵢ', title: 'singular values of $A$' });
-        const Hs = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'error of the competitor', ylabel: 'number of competitors', title: 'errors of 400 rank-$k$ competitors' });
+        const Hs = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, minWidth: 320, xlabel: 'error of the competitor', ylabel: 'number of competitors', title: 'errors of 400 competitors (rank ≤ k)' });
         const K = v.slider('$k$', 1, 5, 2, { int: true });
         const nrm = v.select('norm', [{ value: '2', label: '$\\|\\cdot\\|_2$' }, { value: 'F', label: '$\\|\\cdot\\|_F$' }], '2');
         const fam = v.select('competitors', [{ value: 'fac', label: 'perturbed factors' }, { value: 'proj', label: 'projections $QQ^{\\top}A$' }], 'fac');
@@ -163,14 +163,14 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
           const Ak = truncate({ U, S: SIG, V }, k), eAk = normOf(msub(A, Ak));
           Hs.dot(bound, 0, { color: 'green', r: 5 });
           const below = errs.filter((e) => e < bound - 1e-12).length;
-          st = { k, bound, eAk, mn: Math.min(...errs), below, med: M.median(errs), eps };
+          st = { k, retainedRank: M.rank(Ak), bound, eAk, mn: Math.min(...errs), below, med: M.median(errs), eps };
         });
         v.legend([['blue', 'kept $\\sigma_i$'], ['orange', 'discarded'], ['green', 'optimal error'], ['accent', 'competitors', { area: true }]]);
         v.readout(() => {
           if (!st) return '';
-          const { k, bound, eAk, mn, below, med } = st;
+          const { k, retainedRank, bound, eAk, mn, below, med } = st;
           const nm2 = nrm.value === '2';
-          return `${nm2 ? `$\\sigma_{${k + 1}}$` : `$\\big(\\sum_{i>${k}}\\sigma_i^2\\big)^{1/2}$`} $= ${nm(bound, 5)}$ and the computed $\\|A-A_${k}\\| = ${nm(eAk, 5)}$.\nOf $${NC}$ rank-$${k}$ competitors: smallest error $${nm(mn, 5)}$, median $${nm(med, 3)}$, number beating $A_${k}$: **${below}**.`;
+          return `$${k}$ terms retained; computed $\\operatorname{rank} A_${k}=${retainedRank}\\le ${k}$.\n${nm2 ? `$\\sigma_{${k + 1}}$` : `$\\big(\\sum_{i>${k}}\\sigma_i^2\\big)^{1/2}$`} $= ${nm(bound, 5)}$ and the computed $\\|A-A_${k}\\| = ${nm(eAk, 5)}$.\nOf $${NC}$ competitors with rank at most $${k}$: smallest error $${nm(mn, 5)}$, median $${nm(med, 3)}$, number beating $A_${k}$: **${below}**.`;
         });
       },
     },
@@ -179,9 +179,9 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
       num: '1.9',
       kind: 'Method',
       name: 'Image compression by truncated SVD',
-      statement: String.raw`A greyscale image is an $m\times n$ matrix $A$ of pixel values. Keep the first $k$ singular triplets, $A_k=\sum_{i\le k}\sigma_iu_iv_i^{\top}$, and store only the $k(m+n+1)$ numbers $\sigma_i$, $u_i$, $v_i$ instead of $mn$. By Eckart–Young (1.8) this is the best rank-$k$ image in the 2- and Frobenius norms: the error is $\|A-A_k\|_2/\|A\|_2=\sigma_{k+1}/\sigma_1$ and $\|A-A_k\|_F/\|A\|_F=\big(\sum_{i>k}\sigma_i^2\big/\sum_i\sigma_i^2\big)^{1/2}$. Compression pays only while $k<mn/(m+n+1)$, and it works well exactly when the singular values decay quickly.`,
-      idea: String.raw`Each term $\sigma_iu_iv_i^{\top}$ is a rank-one "layer": an outer product of a column profile and a row profile. Images with large smooth or repeated structure (sky, walls, edges aligned with the axes) are dominated by a few layers, so the $\sigma_i$ fall off fast; diagonal edges, fine texture and noise spread their energy over many layers. Eckart–Young says the greedy choice — the top $k$ layers — is optimal, and the singular values give the error before reconstructing anything.`,
-      caption: String.raw`Pick one of three $64\times64$ greyscale images, all generated in code (a scene with sun, hills, house and tree; diagonal stripes with a ring; pure noise), and slide $k$. Left to right: the original, the rank-$k$ image, and the error (amplified $\times4$). The lower plots show the singular value decay and the relative errors against $k$ on a log axis, and the storage cost against $k$ — the scene is recognizable at a few layers, the stripes need more, and noise barely compresses at all beyond its mean (a flat spectrum after $\sigma_1$).`,
+      statement: String.raw`A greyscale image is an $m\times n$ matrix $A$ of pixel values. Keep the first $k$ singular triplets, $A_k=\sum_{i\le k}\sigma_iu_iv_i^{\top}$, and store only the $k(m+n+1)$ numbers $\sigma_i$, $u_i$, $v_i$ instead of $mn$. By Eckart–Young (1.8) this is the best image among matrices of rank at most $k$ in the 2- and Frobenius norms: the error is $\|A-A_k\|_2/\|A\|_2=\sigma_{k+1}/\sigma_1$ and $\|A-A_k\|_F/\|A\|_F=\big(\sum_{i>k}\sigma_i^2\big/\sum_i\sigma_i^2\big)^{1/2}$. Compression pays only while $k<mn/(m+n+1)$, and it works well exactly when the singular values decay quickly.`,
+      idea: String.raw`Each nonzero term $\sigma_iu_iv_i^{\top}$ is a rank-one "layer": an outer product of a column profile and a row profile. Images with large smooth or repeated structure (sky, walls, edges aligned with the axes) are dominated by a few layers, so the $\sigma_i$ fall off fast; diagonal edges, fine texture and noise spread their energy over many layers. Eckart–Young says the greedy choice — the top $k$ layers — is optimal, and the singular values give the error before reconstructing anything.`,
+      caption: String.raw`Pick one of three $64\times64$ greyscale images, all generated in code (a scene with sun, hills, house and tree; diagonal stripes with a ring; pure noise), and slide $k$. Left to right: the original, the image from the first $k$ singular triplets (rank at most $k$), and the error (amplified $\times4$). The lower plots show the singular value decay and the relative errors against $k$ on a log axis, and the storage cost against $k$ — the scene is recognizable at a few layers, the stripes need more, and noise barely compresses at all beyond its mean (a flat spectrum after $\sigma_1$).`,
       deps: ['nla-1.8'],
       tags: ['svd', 'compression', 'images'],
       credit: 'Andrews & Patterson, 1976 (digital image processing by SVD)',
@@ -189,9 +189,9 @@ The same $A_k$ is optimal for every unitarily invariant norm (Mirsky).`,
       viz(v) {
         const M = v.M, N = IMG_N;
         const mk = (title) => v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 250, minWidth: 190, title });
-        const O = mk('original'), R = mk('rank-$k$ image'), E = mk('error $\\times4$');
-        const Pl = v.stage({ x: [0, N], y: [1e-5, 2], ylog: true, axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'rank k', ylabel: 'relative error', title: 'error against rank' });
-        const St = v.stage({ x: [0, N], y: [0, 1.8], axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'rank k', ylabel: 'storage / (m·n)', title: 'storage against rank' });
+        const O = mk('original'), R = mk('first $k$ SVD terms'), E = mk('error $\\times4$');
+        const Pl = v.stage({ x: [0, N], y: [1e-5, 2], ylog: true, axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'terms k', ylabel: 'relative error', title: 'error against truncation' });
+        const St = v.stage({ x: [0, N], y: [0, 1.8], axes: 'box', gutter: true, height: 300, minWidth: 300, xlabel: 'terms k', ylabel: 'storage / (m·n)', title: 'storage against truncation' });
         const which = v.select('image', [{ value: 'scene', label: 'scene' }, { value: 'stripes', label: 'diagonal stripes' }, { value: 'noise', label: 'noise' }], 'scene');
         const K = v.slider('$k$', 0, N, 8, { int: true });
         const cache = {};

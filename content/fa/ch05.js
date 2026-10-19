@@ -1,3 +1,4 @@
+import { sourceDiagrams } from './ch05-source.shared.js';
 // Rudin, Functional Analysis — Chapter 5: Some Applications
 
 // ---------------------------------------------------------------- shared helpers (batch 1)
@@ -109,12 +110,11 @@ export default {
       num: '5.1',
       kind: 'Theorem',
       name: 'Weakly continuous linear maps between F-spaces are continuous',
-      statement: String.raw`Let $X$ and $Y$ be $F$-spaces and let $\Lambda:X\to Y$ be linear. Suppose $\Gamma$ is a collection of continuous linear functionals on $Y$ that separates the points of $Y$, and that $\gamma\circ\Lambda$ is continuous on $X$ for every $\gamma\in\Gamma$. Then $\Lambda$ is continuous.`,
+      statement: String.raw`Let X and Y be F-spaces, with $Y^*$ separating points. If $T:X\to Y$ is linear and $x_n\to0$ implies $\lambda(Tx_n)\to0$ for every $\lambda\in Y^*$, then T is continuous. Since F-spaces are metrizable, this is equivalent to continuity of each scalar map $\lambda T$. The same closed-graph argument works if one tests only a separating subcollection of $Y^*$.`,
       idea: String.raw`By the closed graph theorem (2.15) it is enough to show that the graph of $\Lambda$ is closed. If $x_n\to x$ in $X$ and $\Lambda x_n\to y$ in $Y$, then for each $\gamma\in\Gamma$ both $\gamma(\Lambda x_n)\to\gamma(y)$ (continuity of $\gamma$) and $\gamma(\Lambda x_n)\to\gamma(\Lambda x)$ (continuity of $\gamma\Lambda$). Hence $\gamma(y)=\gamma(\Lambda x)$ for all $\gamma$, and since $\Gamma$ separates points, $y=\Lambda x$. Completeness of $X$ and $Y$ is what makes the closed graph theorem available.`,
       caption: String.raw`$X=Y=\ell^2$, $\Gamma$ = the coordinate functionals $e_i^*$, and $\Lambda$ an infinite matrix, so $e_i^*\circ\Lambda$ is the row $i$ (continuous iff the row lies in $\ell^2$). Every row is in $\ell^2$ for all three matrices. For the Hilbert and Cesàro matrices $\Lambda$ maps all of $\ell^2$ into $\ell^2$, and the theorem forces boundedness: the norms of the $N\times N$ sections stay below $\pi$ and $2$. The diagonal matrix $\mathrm{diag}(i)$ is coordinatewise continuous too, but it does not map $\ell^2$ into $\ell^2$ (it sends $x=(1/i)$ to $(1,1,1,\dots)$), so the theorem does not apply and the section norms blow up.`,
       deps: ['fa-2.15'],
       tags: ['closed graph theorem', 'F-spaces'],
-      verify: true,
       viz(v) {
         const H = (n) => { let s = 0; for (let k = 1; k <= n; k++) s += 1 / k; return s; };
         const MATS = {
@@ -183,7 +183,6 @@ export default {
       caption: String.raw`$S_n=\spn\{\varphi_1,\dots,\varphi_n\}$ for an orthonormal family on $[0,1]$. Drag $x_0$ along the lower curve $k(x)=\sum_k\varphi_k(x)^2$ (its average is exactly $n$). The upper panel shows the test function $f=\sum_k\varphi_k(x_0)\varphi_k\in S_n$: $f(x_0)=k(x_0)$ while $\|f\|_2=\sqrt{k(x_0)}$. So the constant $M$ in $\|f\|_\infty\le M\|f\|_p$ must grow with $n$ — no infinite-dimensional $S$ can have one.`,
       deps: ['fa-5.1', 'fa-2.15', 'rca-3.12'],
       tags: ['closed graph theorem', 'Lp spaces'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const leg = (k, x) => { let a = 1, b = x; if (k === 0) return 1; for (let j = 1; j < k; j++) { const c = ((2 * j + 1) * x * b - j * a) / (j + 1); a = b; b = c; } return b; };
@@ -243,14 +242,13 @@ export default {
       num: '5.3',
       kind: 'Theorem',
       name: 'L^∞ cannot be replaced by L^q: lacunary subspaces',
-      statement: String.raw`The conclusion of 5.2 fails if $L^\infty$ is replaced by $L^q$ with $q<\infty$. For instance, let $n_1<n_2<\cdots$ be positive integers with $n_{k+1}\ge 2n_k$, and let $S$ be the closed subspace of $L^2(\T)$ spanned by the functions $e^{in_k\theta}$. Then $S$ is infinite-dimensional, $S\subset L^4(\T)$, and
-$$\|f\|_4\le 2^{1/4}\,\|f\|_2\qquad(f\in S),$$
-so $S$ is also a closed subspace of $L^4$ on which the two norms are equivalent.`,
-      idea: String.raw`For a finite sum $f=\sum c_ke^{in_k\theta}$, $\|f\|_4^4=\|f^2\|_2^2$, and $f^2=\sum_{j,k}c_jc_ke^{i(n_j+n_k)\theta}$. Lacunarity makes each frequency $n_j+n_k$ ($j\le k$) arise from only one pair, so Parseval gives $\|f\|_4^4=\sum|c_k|^4+4\sum_{j<k}|c_j|^2|c_k|^2\le2\|f\|_2^4$. The inequality passes to $L^2$-limits, so the $L^2$-closure of these sums lies in $L^4$. Rudin's point is that 5.2 needs the full strength of $L^\infty$: with more work (Riesz products, Khintchine) lacunary spans sit inside every $L^q$, $q<\infty$.`,
-      caption: String.raw`Choose the frequencies and coefficients and add terms. Top: $|f(\theta)|$ with its $L^2$, $L^4$ and sup norms. Bottom: the ratios $\|f\|_4/\|f\|_2$ (exact, from the frequency pairs) and $\|f\|_\infty/\|f\|_2$ as the number of terms grows. For $n_k=2^{k-1}$ the $L^4$ ratio never crosses $2^{1/4}$ while the sup ratio grows like $\sqrt N$: $S\subset L^4$ but $S\not\subset L^\infty$. For consecutive frequencies the $L^4$ ratio grows too.`,
+      statement: String.raw`Let $E\subset\mathbb Z$ be infinite with at most one representation of any integer as an unordered sum of two members of $E$. Let $P_E$ be the trigonometric polynomials supported on $E$, and let $S_E$ be their closure in $L^1(\mathbb T)$ with normalized arc measure. Then $S_E$ is a closed subspace of $L^4(\mathbb T)$. On $P_E$, and hence on $S_E$,
+$$\|f\|_4\le2^{1/4}\|f\|_2,\qquad\|f\|_2\le\sqrt2\|f\|_1.$$
+For instance $E=\{1,2,4,8,\ldots\}$ satisfies the sum condition.`,
+      idea: String.raw`Parseval applied to $f^2$ and the unique-sum property gives $\|f\|_4^4\le2\|f\|_2^4$. Hölder gives $\|f\|_2^2\le\|f\|_1^{2/3}\|f\|_4^{4/3}$, hence $\|f\|_2\le\sqrt2\|f\|_1$. Consequently every $L^1$-Cauchy sequence in $P_E$ is $L^4$-Cauchy, so its $L^1$ limit lies in $L^4$. Conversely $L^4$ convergence implies $L^1$ convergence, making $S_E$ closed in $L^4$. This infinite-dimensional example shows why 5.2 needs the full $L^\infty$ hypothesis.`,
+      caption: String.raw`Choose the frequencies and coefficients and add terms. Top: $|f(\theta)|$ with its $L^2$, $L^4$ and sampled sup norms (a lower bound on the actual sup norm). Bottom: the ratios $\|f\|_4/\|f\|_2$ (exact, from the frequency pairs) and $\|f\|_\infty/\|f\|_2$ as the number of terms grows. For $n_k=2^{k-1}$ the $L^4$ ratio never crosses $2^{1/4}$ while the sup ratio grows like $\sqrt N$: $S\subset L^4$ but $S\not\subset L^\infty$. For consecutive frequencies the $L^4$ ratio grows too.`,
       deps: ['fa-5.2', 'rca-4.26'],
       tags: ['Lp spaces', 'lacunary series'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const SETS = { pow: { label: '$n_k=2^{k-1}$', n: (k) => 2 ** (k - 1) }, sq: { label: '$n_k=k^2$', n: (k) => k * k }, lin: { label: '$n_k=k$', n: (k) => k } };
@@ -307,30 +305,28 @@ so $S$ is also a closed subspace of $L^4$ on which the two norms are equivalent.
         });
         v.readout(() => {
           const { R, N } = st; const ok = R.coll === 0;
-          return `$N=${N}$: $\\|f\\|_2=${v.fix(R.n2, 3)}$, $\\|f\\|_4=${v.fix(R.n4, 3)}$ (ratio $${v.fix(R.n4 / R.n2, 3)}${ok ? '\\le 2^{1/4}=1.189' : ''}$), $\\|f\\|_\\infty=${v.fix(R.ninf, 3)}$ (ratio $${v.fix(R.ninf / R.n2, 3)}$). ` + (ok ? 'No sum $n_j+n_k$ arises from two different pairs, so $\\|f\\|_4^4\\le2\\|f\\|_2^4$: the $L^4$ and $L^2$ norms are equivalent, while the sup norm is not.' : `${R.coll} sum${R.coll === 1 ? '' : 's'} $n_j+n_k$ arise from two different pairs; such collisions are what let $\\|f\\|_4/\\|f\\|_2$ grow when the frequencies are not lacunary.`);
+          return `$N=${N}$: $\\|f\\|_2=${v.fix(R.n2, 3)}$, $\\|f\\|_4=${v.fix(R.n4, 3)}$ (ratio $${v.fix(R.n4 / R.n2, 3)}${ok ? '\\le 2^{1/4}=1.189' : ''}$), sampled sup $${v.fix(R.ninf, 3)}$ (ratio $${v.fix(R.ninf / R.n2, 3)}$). ` + (ok ? 'No sum $n_j+n_k$ arises from two different pairs, so $\\|f\\|_4^4\\le2\\|f\\|_2^4$: the $L^4$ and $L^2$ norms are equivalent, while the sup norm is not.' : `${R.coll} sum${R.coll === 1 ? '' : 's'} $n_j+n_k$ arise from two different pairs; such collisions are what let $\\|f\\|_4/\\|f\\|_2$ grow when the frequencies are not lacunary.`);
         });
       },
     },
     // ------------------------------------------------------------------ the range of a vector-valued measure
     {
-      num: '5.4',
-      kind: 'Definition',
-      name: 'Vector-valued measures and atoms',
-      statement: String.raw`Let $\mathscr M$ be a $\sigma$-algebra in a set $\Omega$. A (finite) **$\R^n$-valued measure** on $\mathscr M$ is a map $\mu=(\mu_1,\dots,\mu_n):\mathscr M\to\R^n$ whose components $\mu_i$ are real (signed, finite) measures; its **range** is $\mu(\mathscr M)=\{\mu(E):E\in\mathscr M\}$. A positive measure $\lambda$ has an **atom** $E$ if $\lambda(E)>0$ and every measurable $F\subset E$ has $\lambda(F)=0$ or $\lambda(F)=\lambda(E)$; $\mu$ is **non-atomic** when $\lambda=|\mu_1|+\cdots+|\mu_n|$ has no atoms.`,
-      idea: String.raw`Atoms are exactly what can stop the range from being convex: a single point mass $\delta_{t_0}$ takes only the values $0$ and $1$. Writing $d\mu_i=f_i\,d\lambda$ (Radon–Nikodym) turns $\mu$ into the linear map $g\mapsto\int g f\,d\lambda$ applied to characteristic functions, which is how Lyapunov's theorem (5.5) is attacked.`,
-      deps: ['rca-6.1'],
-      tags: ['vector measures'],
-      verify: true,
+      num: '5.4', kind: 'Theorem', name: 'Bounded functions with prescribed lacunary Fourier data',
+      statement: String.raw`Let $E\subset\mathbb Z$ be infinite and suppose that every integer has at most one representation as an unordered sum of two members of $E$, with repetitions allowed. If $\sum_{n\in E}|a(n)|^2=A^2<\infty$, there is $g\in L^\infty(\mathbb T)$ with $\widehat g(n)=a(n)$ for $n\in E$ and $\|g\|_\infty\le\sqrt2 A$.`,
+      idea: String.raw`For every polynomial supported on $E$, Theorem 5.3 gives $\|f\|_2\le\sqrt2\|f\|_1$. Thus prescribing the pairing $f\mapsto\sum_{n\in E}\widehat f(n)a(n)$ defines an $L^1$-bounded functional of norm at most $\sqrt2 A$ on these polynomials. Hahn–Banach extends it to $L^1$, and $L^1$ duality represents it by a bounded function. Testing characters (with the reflection convention in the source pairing) gives the required Fourier coefficients.`,
+      caption: String.raw`For finitely many frequencies $1,2,4,\ldots$, attempt to match the data by a complex step function on 256 arcs. Alternating projections enforce the Fourier data and the source's essential-sup bound. The bars compare target and candidate coefficient magnitudes; the readout computes coefficient errors by exact integration of each arc, rather than a point-sample DFT. A finite numerical attempt illustrates, and does not prove, the infinite existence result.`,
+      deps: ['fa-5.3', 'fa-3.3', 'rca-6.16'],
+      viz: sourceDiagrams['5.4'],
     },
     {
       num: '5.5',
       kind: 'Theorem',
       name: "Lyapunov's convexity theorem",
-      credit: 'Lyapunov, 1940',
+      credit: 'Lyapunov',
       statement: String.raw`If $\mu=(\mu_1,\dots,\mu_n)$ is a non-atomic $\R^n$-valued measure on a $\sigma$-algebra $\mathscr M$, then its range $\mu(\mathscr M)$ is a compact convex subset of $\R^n$.`,
       idea: String.raw`Let $\lambda=\sum|\mu_i|$ and $d\mu_i=f_i\,d\lambda$. The set $K=\{g\in L^\infty(\lambda):0\le g\le1\}$ is weak$^*$-compact and convex (3.15), and $Tg=(\int gf_1\,d\lambda,\dots,\int gf_n\,d\lambda)$ is weak$^*$-continuous, so $T(K)$ is compact, convex and contains the range. For $y\in T(K)$ the fibre $K_y=K\cap T^{-1}(y)$ has an extreme point $g$ (Krein–Milman, 3.23). If $g$ were not a characteristic function, some set $E$ of positive measure has $\eps\le g\le1-\eps$ on it; as $\lambda$ has no atoms, $L^\infty(E)$ is infinite-dimensional, so it contains $h\ne0$ with $|h|\le\eps$ and $Th=0$, and $g=\frac12[(g+h)+(g-h)]$ contradicts extremality. So $g=\chi_A$ and $y=\mu(A)$.`,
       caption: String.raw`$\mu=(\mu_1,\mu_2)$ on $[0,1]$ with densities $(f_1,f_2)$ (right). Left, blue: the range of $\mu$. Collapsing each of $N$ cells to a point mass gives an *atomic* measure whose range is only the $2^N$ gold points; their hull is the orange zonotope, which fills in the blue set as $N$ grows. Drag $y$: the right panel shows a set $E$ with $\mu(E)=y$, found by Rudin's extreme-point argument (move along null combinations until at most two cells are fractional, subdivide, repeat). Switch on the atom to see the range become a non-convex union of two copies.`,
-      deps: ['fa-5.4', 'fa-3.15', 'fa-3.23', 'rca-6.16', 'rca-6.10'],
+      deps: ['fa-3.15', 'fa-3.23', 'rca-6.16', 'rca-6.10'],
       tags: ['vector measures', 'Krein–Milman', 'convexity'],
       viz(v) {
         const M = v.M;

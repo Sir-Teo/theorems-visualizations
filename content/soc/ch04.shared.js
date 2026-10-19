@@ -66,7 +66,13 @@ export function growthCurve(n, M, seed) {
 }
 function secondLargest(cnt, b1) { let b2 = 0; for (const [s, c] of cnt) { if (s === b1) { if (c > 1) b2 = Math.max(b2, s); } else if (s > b2) b2 = s; } return b2; }
 /** Solution S > 0 of S = 1 − exp(−c S) (0 when c ≤ 1). */
-export function giantTheory(c) { if (c <= 1) return 0; let S = 1 - 1 / c; for (let i = 0; i < 400; i++) S = 1 - Math.exp(-c * S); return S; }
+export function giantTheory(c) {
+  if(c<=1)return 0;
+  let lo=1-1/c,hi=1;
+  for(let i=0;i<80;i++){const mid=(lo+hi)/2;if(-Math.expm1(-c*mid)-mid>0)lo=mid;else hi=mid;}
+  return (lo+hi)/2;
+}
+
 /** BFS distance histogram from `ns` random sources; counts[d] = number of ordered pairs at distance d. */
 export function distHist(g, ns, R) {
   const n = g.n, counts = [], dist = new Int32Array(n), q = new Int32Array(n);
@@ -80,28 +86,40 @@ export function distHist(g, ns, R) {
   return { counts, mean: pairs ? tot / pairs : NaN, pairs };
 }
 /** Fronczak–Fronczak–Hołyst (2004) mean distance of G(N, c/N): (ln N − γ)/ln c + 1/2. */
+/** Occupancy approximation, retaining enough hops for all supported populations/degrees. */
+export function occupancyDistances(N,c) {
+  const last=Math.ceil(Math.log(N)/Math.log(c))+4;
+  const reach=d=>d===0?1/N:-Math.expm1(-Math.pow(c,d)/N);
+  const probabilities=Array.from({length:last},(_,i)=>reach(i+1)-reach(i));
+  return {last,probabilities,mean:probabilities.reduce((sum,p,i)=>sum+(i+1)*p,0)};
+}
 export const meanDistER = (N, c) => (Math.log(N) - 0.5772156649) / Math.log(c) + 0.5;
 
 // ---------- small-world (Watts–Strogatz) with a coupled family in p ----------
-/** Ring lattice (n vertices, k nearest neighbours) with per-edge uniforms u and targets t, so graphs for different p nest. */
+/** Ring lattice (n vertices, k nearest neighbours) with per-edge uniforms u and targets t, so different p values reuse the same proposed choices (rewired graphs need not nest). */
 export function wsSkeleton(n, k, seed) {
   const R = rng32(seed), lat = [], u = [], t = [];
   for (let j = 1; j <= k / 2; j++) for (let i = 0; i < n; i++) { lat.push([i, (i + j) % n]); u.push(R()); t.push(Math.floor(R() * n)); }
-  return { n, k, lat, u, t };
+  return { n, k, lat, u, t, seed };
 }
 /** mode 'rewire' (Watts–Strogatz): edge e whose u < p moves its far end to t. mode 'add' (Newman–Watts): the lattice is
  *  kept and a shortcut (i, t) is added. Returns {g, moved: [[a,b]] the rewired / added edges}. */
 export function wsBuild(sk, p, mode) {
-  const { n, lat, u, t } = sk, key = (a, b) => (a < b ? a * n + b : b * n + a), has = new Set(lat.map(([a, b]) => key(a, b))), E = [], moved = [];
-  for (let e = 0; e < lat.length; e++) {
-    const [a, b] = lat[e];
-    if (u[e] < p && t[e] !== a && !has.has(key(a, t[e]))) {
-      has.add(key(a, t[e])); moved.push([a, t[e]]);
-      if (mode === 'add') E.push([a, b]); else has.delete(key(a, b));
-    } else E.push([a, b]);
+  const { n, lat, u, t } = sk, key = (a, b) => a < b ? a*n+b : b*n+a;
+  const has=new Set(lat.map(([a,b])=>key(a,b))),E=[],moved=[];
+  for(let e=0;e<lat.length;e++){
+    const [a,b]=lat[e];
+    if(u[e]>=p){E.push([a,b]);continue;}
+    if(mode!=='add')has.delete(key(a,b));
+    const valid=[];for(let j=0;j<n;j++)if(j!==a&&!has.has(key(a,j)))valid.push(j);
+    if(!valid.length){E.push([a,b]);has.add(key(a,b));continue;}
+    let target=t[e];
+    if(!valid.includes(target)){const R=rng32((sk.seed||0)^Math.imul(e+1,0x9e3779b1));target=valid[Math.floor(R()*valid.length)];}
+    has.add(key(a,target));moved.push([a,target]);if(mode==='add')E.push([a,b]);
   }
-  return { g: mkGraph(n, E.concat(moved)), moved, E };
+  return {g:mkGraph(n,E.concat(moved)),moved,E};
 }
+
 /** Characteristic path length (mean over connected ordered pairs) and mean local clustering of a graph. */
 export function pathAndClustering(g) {
   const n = g.n, dist = new Int32Array(n), q = new Int32Array(n); let tot = 0, pairs = 0;
@@ -286,7 +304,7 @@ export function rateEq(m, a, kmax) {
   return P;
 }
 /** Discrete tail exponent estimate γ̂ = 1 + n / Σ ln(k/(kmin − 1/2)) (Clauset–Shalizi–Newman eq. 3.7). */
-export function hillDisc(deg, kmin) { let n = 0, s = 0; for (const k of deg) if (k >= kmin) { n++; s += Math.log(k / (kmin - 0.5)); } return { gamma: 1 + n / s, n }; }
+export function hillDisc(deg, kmin) { let n = 0, s = 0; for (const k of deg) if (k >= kmin) { n++; s += Math.log(k / (kmin - 0.5)); } return { gamma: n ? 1 + n / s : null, n }; }
 /** Log-binned density from an integer sample: points [k_geometric_mean, P] with bins growing by `ratio`. */
 export function logBin(deg, kmin, ratio = 1.5) {
   const cnt = new Map(); let N = 0; for (const k of deg) { if (k >= kmin) { cnt.set(k, (cnt.get(k) || 0) + 1); } N++; }
@@ -347,10 +365,18 @@ function reach(adj, s, n) { const seen = new Uint8Array(n); seen[s] = 1; const q
  *  largest weakly connected component). `tube` marks vertices reachable from IN and reaching OUT without touching the core. */
 export function bowTie(G) {
   const { n, out, inn } = G;
-  // largest SCC: the SCC of the vertex with the biggest forward ∩ backward reach among a sample
-  let best = new Uint8Array(n), bsz = 0;
-  const cand = [...Array(n).keys()].sort((a, b) => out[b].length + inn[b].length - out[a].length - inn[a].length).slice(0, 6);
-  for (const s of cand) { const f = reach(out, s, n), b = reach(inn, s, n), scc = new Uint8Array(n); let c = 0; for (let i = 0; i < n; i++) if (f[i] && b[i]) { scc[i] = 1; c++; } if (c > bsz) { bsz = c; best = scc; } }
+  // Exact Kosaraju decomposition; a high-degree sample can miss the largest SCC.
+  const seen=new Uint8Array(n),order=[];
+  for(let start=0;start<n;start++)if(!seen[start]){
+    const stack=[[start,0]];seen[start]=1;
+    while(stack.length){const top=stack[stack.length-1],v=top[0];if(top[1]<out[v].length){const w=out[v][top[1]++];if(!seen[w]){seen[w]=1;stack.push([w,0]);}}else{order.push(v);stack.pop();}}
+  }
+  const assigned=new Uint8Array(n);let best=new Uint8Array(n),bsz=0;
+  for(let index=order.length-1;index>=0;index--){const start=order[index];if(assigned[start])continue;
+    const component=[],stack=[start];assigned[start]=1;
+    while(stack.length){const v=stack.pop();component.push(v);for(const w of inn[v])if(!assigned[w]){assigned[w]=1;stack.push(w);}}
+    if(component.length>bsz){bsz=component.length;best=new Uint8Array(n);component.forEach(v=>best[v]=1);}
+  }
   const type = new Array(n).fill('disc');
   if (bsz <= 1) return { type, counts: { scc: 0, in: 0, out: 0, tendril: 0, tube: 0, disc: n } };
   const src = best.indexOf(1), F = reach(out, src, n), B = reach(inn, src, n);

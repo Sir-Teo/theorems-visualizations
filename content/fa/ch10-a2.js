@@ -1,6 +1,7 @@
+import { boundaryInverse } from './ch10-source.shared.js';
 // Rudin, Functional Analysis — Chapter 10 (part 2): basic properties of spectra
 //
-// Numbering note: recalled, not checked against the book; uncertain items carry `verify: true`.
+// Source: full Rudin second-edition sections and proofs reviewed; see verification ledger.
 
 // ---------------------------------------------------------------- complex matrices: entries [re, im], rows of entries
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
@@ -59,10 +60,9 @@ $$\sigma(x)=\{\lambda\in\C:\ \lambda e-x\ \text{is not invertible}\},$$
 and the **spectral radius** of $x$ is $\rho(x)=\sup\{|\lambda|:\lambda\in\sigma(x)\}$. On the complement of $\sigma(x)$, the **resolvent** $\lambda\mapsto(\lambda e-x)^{-1}$ is defined.`,
       idea: String.raw`In $M_n(\C)$ the spectrum is the set of eigenvalues; in $C(K)$ it is the range of the function; in $\ell^1(\Z)$ it is the image of the unit circle under the Fourier series. By 10.7, $\lambda e-x$ is invertible when $|\lambda|>\norm x$, so $\sigma(x)$ lies in the closed disc of radius $\norm x$ and $\rho(x)\le\norm x$ — with strict inequality possible.`,
       caption: String.raw`A $2\times2$ complex matrix $x=\begin{pmatrix}a&b\\c&d\end{pmatrix}$: drag $a$ and $d$, set $b$ and $c$. The colour is $\log_{10}\norm{(\lambda e-x)^{-1}}$ over the $\lambda$-plane: it blows up exactly at the spectrum (red), the eigenvalues. Dashed circles: radius $\rho(x)$ (green) and $\norm x$ (orange). Increase $b$ with $c=0$: the matrix becomes far from normal, $\norm x$ grows while $\rho(x)$ does not, and the resolvent becomes large on a whole region around the spectrum.`,
-      deps: ['fa-10.4', 'fa-10.7'],
-      see: ['rca-18.2'],
+      deps: ['fa-10.5', 'fa-10.7'],
+      see: ['rca-18.1'],
       tags: ['Banach algebras', 'spectrum'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const bS = v.slider('$b$', -3, 3, 1.6, { step: 0.01 });
@@ -86,18 +86,63 @@ and the **spectral radius** of $x$ is $\rho(x)=\sup\{|\lambda|:\lambda\in\sigma(
       },
     },
     {
-      num: '10.12',
+      num: '10.11',
       kind: 'Theorem',
-      name: 'G(A) is open and inversion is differentiable',
+      name: 'Quadratic remainder for inversion',
       statement: String.raw`Let $A$ be a Banach algebra. If $x\in G(A)$ and $h\in A$ with $\norm h<\frac1{2}\norm{x^{-1}}^{-1}$, then $x+h\in G(A)$ and
 $$\norm{(x+h)^{-1}-x^{-1}+x^{-1}hx^{-1}}\le2\norm{x^{-1}}^3\norm h^2 .$$
 Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ onto itself, differentiable with derivative $h\mapsto-x^{-1}hx^{-1}$.`,
       idea: String.raw`Write $x+h=x(e+x^{-1}h)$ and apply the Neumann series 10.7 to $y=-x^{-1}h$, which has $\norm y\le\norm{x^{-1}}\norm h<\frac12$: $(x+h)^{-1}=\sum_n(-x^{-1}h)^nx^{-1}$. The terms with $n\ge2$ add up to at most $\norm{x^{-1}}^3\norm h^2/(1-\frac12)$. Inversion is its own inverse, so it is a homeomorphism.`,
       caption: String.raw`A plane slice $x+s\,h_1+t\,h_2$ through $M_2(\R)\subset M_2(\C)$, with $h_1=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$, $h_2=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ (so $\norm{sh_1+th_2}=\sqrt{s^2+t^2}$). The colour is $\log_{10}\norm{(x+h)^{-1}}$; red curve: the non-invertible matrices. The green disc of radius $1/\norm{x^{-1}}$ never meets it (G is open), and on the inner disc of half that radius the theorem's estimate holds. Drag $x+h$ (purple): the readout compares the second-order error with $2\norm{x^{-1}}^3\norm h^2$.`,
-      deps: ['fa-10.7', 'fa-10.4'],
+      deps: ['fa-10.7', 'fa-10.5'],
       see: ['pma-9.8'],
       tags: ['Banach algebras', 'invertibility'],
-      verify: true,
+      viz(v) {
+        const M = v.M;
+        const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 400, axes: true, xlabel: 's', ylabel: 't', title: '$\\log_{10}\\|(x+sh_1+th_2)^{-1}\\|$ on the slice' });
+        const hx = S.handle(0, 0, { color: 'ink', r: 6, label: 'x' });
+        const hh = S.handle(0.16, 0.1, { color: 'purple', label: 'x+h' });
+        const X0 = [[0.6, 0.5], [-0.3, 0.4]];
+        const mat = (s, t) => [[X0[0][0] + s, X0[0][1] + t], [X0[1][0] + t, X0[1][1] - s]];
+        const inv2 = (A) => { const d = A[0][0] * A[1][1] - A[0][1] * A[1][0]; return [[A[1][1] / d, -A[0][1] / d], [-A[1][0] / d, A[0][0] / d]]; };
+        const n2 = (A) => M.svd2(A)[0];
+        let st = {};
+        v.legend([['red', 'non-invertible: $\\det=0$'], ['green', 'ball of radius $1/\\|x^{-1}\\|$ (in $G$)', { area: true }], ['purple', '$x+h$']]);
+        v.render(() => {
+          S.heat((s, t) => { const A = mat(s, t), d = A[0][0] * A[1][1] - A[0][1] * A[1][0]; return Math.log10(n2(inv2(A))); }, { range: [-0.6, 2], cmap: 'viridis', res: 2, key: 'slice' });
+          S.axes();
+          // det = 0 curve: (a+s)(d−s) − (b+t)(c+t) = 0
+          const pts = [];
+          for (let i = 0; i <= 600; i++) { const s = -2 + 4 * i / 600; const a = X0[0][0] + s, d = X0[1][1] - s, b = X0[0][1], c = X0[1][0]; const disc = (b + c) ** 2 - 4 * (b * c - a * d); if (disc >= 0) { const r = Math.sqrt(disc); pts.push([s, (-(b + c) + r) / 2], [s, (-(b + c) - r) / 2]); } }
+          S.dots(pts, { color: 'red', r: 1.6 });
+          const x = mat(hx.x, hx.y), xi = inv2(x), nxi = n2(xi), R = 1 / nxi;
+          S.circle(hx.x, hx.y, R, { color: 'green', width: 2, fill: 'green', fillAlpha: 0.12 });
+          S.circle(hx.x, hx.y, R / 2, { color: 'green', width: 1.4, dash: [5, 4] });
+          const hs = hh.x - hx.x, ht = hh.y - hx.y, nh = Math.hypot(hs, ht);
+          S.line(hx.x, hx.y, hh.x, hh.y, { color: 'purple', width: 1.6, dash: [4, 3] });
+          const xh = mat(hh.x, hh.y), dxh = xh[0][0] * xh[1][1] - xh[0][1] * xh[1][0];
+          let err = NaN;
+          if (Math.abs(dxh) > 1e-12) { const H = [[hs, ht], [ht, -hs]], lin = M.matMul(M.matMul(xi, H), xi), E = inv2(xh).map((row, i) => row.map((a, j) => a - xi[i][j] + lin[i][j])); err = n2(E); }
+          st = { R, nh, err, bound: 2 * nxi ** 3 * nh * nh, inside: nh < R / 2, sing: Math.abs(dxh) <= 1e-12 };
+        });
+        v.readout(() => {
+          const s = st;
+          const head = `$\\|x^{-1}\\|^{-1} = ${v.fix(s.R, 3)}$, $\\;\\|h\\| = ${v.fix(s.nh, 3)}$. `;
+          if (s.sing) return head + '$x+h$ is singular.';
+          return head + `Error $\\|(x+h)^{-1}-x^{-1}+x^{-1}hx^{-1}\\| = ${v.fix(s.err, 4)}$` + (s.inside ? ` $\\le 2\\|x^{-1}\\|^3\\|h\\|^2 = ${v.fix(s.bound, 4)}$.` : ` (bound $${v.fix(s.bound, 4)}$; outside the inner disc it is not guaranteed).`);
+        });
+      },
+    },
+    {
+      num: '10.12',
+      kind: 'Theorem',
+      name: 'Invertibles are open and inversion is a homeomorphism',
+      statement: String.raw`In a Banach algebra $A$, the invertible group $G(A)$ is open, and inversion $x\mapsto x^{-1}$ is a homeomorphism from $G(A)$ onto itself.`,
+      idea: String.raw`The quadratic estimate10.11 gives a neighborhood of each invertible element in which inversion is continuous. Inversion is its own inverse, so this continuous bijection has a continuous inverse as well.`,
+      caption: String.raw`A plane slice $x+s\,h_1+t\,h_2$ through $M_2(\R)\subset M_2(\C)$, with $h_1=\begin{pmatrix}1&0\\0&-1\end{pmatrix}$, $h_2=\begin{pmatrix}0&1\\1&0\end{pmatrix}$ (so $\norm{sh_1+th_2}=\sqrt{s^2+t^2}$). The colour is $\log_{10}\norm{(x+h)^{-1}}$; red curve: the non-invertible matrices. The green disc of radius $1/\norm{x^{-1}}$ never meets it (G is open), and on the inner disc of half that radius the theorem's estimate holds. Drag $x+h$ (purple): the readout compares the second-order error with $2\norm{x^{-1}}^3\norm h^2$.`,
+      deps: ['fa-10.11'],
+      see: ['pma-9.8'],
+      tags: ['Banach algebras', 'invertibility'],
       viz(v) {
         const M = v.M;
         const S = v.stage({ x: [-2, 2], y: [-2, 2], equal: true, height: 400, axes: true, xlabel: 's', ylabel: 't', title: '$\\log_{10}\\|(x+sh_1+th_2)^{-1}\\|$ on the slice' });
@@ -138,16 +183,14 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       num: '10.13',
       kind: 'Theorem',
       name: 'The spectrum is compact and nonempty; spectral radius formula',
-      credit: 'Gelfand, 1941',
       statement: String.raw`If $A$ is a Banach algebra and $x\in A$, then
 (a) $\sigma(x)$ is compact and nonempty, and
 (b) $\displaystyle\rho(x)=\lim_{n\to\infty}\norm{x^n}^{1/n}=\inf_{n\ge1}\norm{x^n}^{1/n}$.`,
-      idea: String.raw`(a) $\sigma(x)$ is closed (G is open, 10.12) and bounded by $\norm x$. If it were empty, then for every $\Lambda\in A^*$ the function $f(\lambda)=\Lambda((\lambda e-x)^{-1})$ would be entire and tend to $0$ at $\infty$, hence vanish by Liouville; Hahn–Banach would force $(\lambda e-x)^{-1}=0$, absurd. (b) If $\lambda^n\in\sigma(x^n)$ then $\lambda\in\sigma(x)$ via the factorisation $\lambda^ne-x^n=(\lambda e-x)p(x)$, so $\rho(x)\le\inf\norm{x^n}^{1/n}$. Conversely, $f(\lambda)=\sum\Lambda(x^n)\lambda^{-n-1}$ converges for $|\lambda|>\rho(x)$; uniform boundedness turns this into $\limsup\norm{x^n}^{1/n}\le\rho(x)$.`,
-      caption: String.raw`$x$ is an upper-triangular $3\times3$ matrix: its eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) and a nilpotent part scaled by $k$. Left: $\log_{10}\norm{(\lambda e-x)^{-1}}$ with the spectrum (red) and the circles $\rho(x)$ (green) and $\norm x$ (orange). Right: $\norm{x^n}^{1/n}$ against $n$. It starts at $\norm x$, may first rise and then slowly decreases to $\rho(x)$ — never below. With a large $k$ the convergence is slow: $\norm{x^n}$ can grow for a long time before the geometric decay wins.`,
-      deps: ['fa-10.12', 'fa-10.10', 'rca-10.23', 'fa-3.4a', 'fa-2.5'],
-      see: ['rca-18.5'],
+      idea: String.raw`The resolvent is holomorphic off the spectrum and expands in a Neumann series outside $\norm x$. Its large-circle Cauchy integrals give $x^n$; an empty spectrum would make the $n=0$ integral zero, contradicting $e\ne0$. Deforming to any circle of radius $r>\rho(x)$ gives $\norm{x^n}\le r^{n+1}\max_{|\lambda|=r}\norm{(\lambda e-x)^{-1}}$. Conversely, commuting factorization shows $\lambda\in\sigma(x)\Rightarrow\lambda^n\in\sigma(x^n)$, hence $\rho(x)\le\norm{x^n}^{1/n}$.`,
+      caption: String.raw`$x$ is an upper-triangular $3\times3$ matrix: its eigenvalues $\lambda_1,\lambda_2,\lambda_3$ (drag them) and a nilpotent part scaled by $k$. Left: $\log_{10}\norm{(\lambda e-x)^{-1}}$ with the spectrum (red) and the circles $\rho(x)$ (green) and $\norm x$ (orange). Right: $\norm{x^n}^{1/n}$ against $n$. It starts at $\norm x$, need not vary monotonically, and converges to $\rho(x)$ — never below. With a large $k$ the convergence is slow: $\norm{x^n}$ can grow for a long time before the geometric decay wins.`,
+      deps: ['fa-10.12', 'fa-10.10', 'fa-3.31'],
+      see: ['rca-18.9'],
       tags: ['Banach algebras', 'spectrum', 'spectral radius'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const kS = v.slider('nilpotent part $k$', 0, 6, 2.5, { step: 0.05 });
@@ -180,14 +223,12 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       num: '10.14',
       kind: 'Theorem',
       name: 'Gelfand–Mazur theorem',
-      credit: 'Gelfand & Mazur, 1938',
       statement: String.raw`If $A$ is a Banach algebra in which every nonzero element is invertible (a division algebra), then $A$ is isometrically isomorphic to $\C$: every $x\in A$ equals $\lambda e$ for some $\lambda\in\C$.`,
       idea: String.raw`By 10.13, $\sigma(x)\ne\varnothing$; pick $\lambda\in\sigma(x)$. Then $\lambda e-x$ is not invertible, so in a division algebra it is $0$. Complex scalars are essential — Liouville's theorem is what makes the spectrum nonempty — and indeed the quaternions are a real Banach division algebra different from $\R$ and $\C$.`,
-      caption: String.raw`The scalar function $f(\lambda)=\operatorname{tr}\,(\lambda e-x)^{-1}$ (phase portrait) for an element $x$ of three algebras (drag the diagonal entries $a$, $b$). Its poles are exactly $\sigma(x)$, and $\lambda f(\lambda)\to\dim A$ at infinity — so the poles cannot all disappear (Liouville). In $\C$ there is one pole $a$ and $ae-x=0$. In $\C^2$ (diagonal matrices) and in $M_2(\C)$, at each pole $\lambda$ the element $\lambda e-x$ is non-invertible **but not zero** (rank $1$): these are not division algebras.`,
+      caption: String.raw`The scalar function $f(\lambda)=\operatorname{tr}\,(\lambda e-x)^{-1}$ (phase portrait) for an element $x$ of three algebras (drag the diagonal entries $a$, $b$). Its poles are exactly $\sigma(x)$, and $\lambda f(\lambda)\to n$ at infinity — where $n$ is the matrix size, so the poles cannot all disappear (Liouville). In $\C$ there is one pole $a$ and $ae-x=0$. In $\C^2$ (diagonal matrices) and in $M_2(\C)$, at each pole $\lambda$ the element $\lambda e-x$ is non-invertible **possibly nonzero** (rank $1$ when the two eigenvalues differ): these are not division algebras.`,
       deps: ['fa-10.13'],
       see: ['rca-18.7'],
       tags: ['Banach algebras', 'division algebras'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const alg = v.select('$A=$', [{ value: 'C', label: '$\\C$' }, { value: 'C2', label: '$\\C^2$ (diagonal)' }, { value: 'M2', label: '$M_2(\\C)$' }], 'M2');
@@ -221,16 +262,15 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       },
     },
     {
-      num: '10.17',
+      num: '10.16',
       kind: 'Lemma',
       name: 'An open subset with no boundary inside W is a union of components',
       statement: String.raw`Suppose $V$ and $W$ are open subsets of some topological space, $V\subset W$, and $W$ contains no boundary point of $V$. Then $V$ is a union of components of $W$.`,
       idea: String.raw`Let $\Omega$ be a component of $W$ that meets $V$. Then $\Omega\cap V$ is open, and it is relatively closed in $\Omega$: a limit point of $V$ inside $\Omega\subset W$ is not a boundary point of $V$ by hypothesis, so it lies in $V$. Connectedness of $\Omega$ gives $\Omega\subset V$.`,
       caption: String.raw`$W$ (light blue) has three components; $V=W\cap\{\text{half-plane}\}$ for a half-plane you rotate and shift. Red: the boundary points of $V$ that lie in $W$ — the part of the edge line inside $W$. When there are none, every component of $W$ is either entirely in $V$ (green outline) or disjoint from it (grey): $V$ is a union of components.`,
       deps: [],
-      see: ['rca-18.8'],
+      see: ['rca-18.10a'],
       tags: ['topology', 'components'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const thS = v.slider('angle of the half-plane', 0, 360, 30, { step: 1 });
@@ -266,28 +306,34 @@ Hence $G(A)$ is an open set, and $x\mapsto x^{-1}$ is a homeomorphism of $G(A)$ 
       },
     },
     {
+      num: '10.17', kind: 'Lemma', name: 'Inverse norms blow up at the boundary',
+      statement: String.raw`If $x_n\in G(A)$ converges to a boundary point $x$ of $G(A)$, then $\norm{x_n^{-1}}\to\infty$.`,
+      idea: String.raw`A bounded subsequence of inverse norms would give $\norm{x_n^{-1}(x_n-x)}<1$ for large $n$. The Neumann theorem would then make $x=x_n[e-x_n^{-1}(x_n-x)]$ invertible, contradicting openness and the boundary hypothesis.`,
+      caption: String.raw`For $x_t=\begin{pmatrix}t&b\\0&1\end{pmatrix}$, reduce positive $t$ toward zero. The limit is singular, while the computed operator norm of the inverse grows without bound. Changing $b$ changes the rate but cannot remove the blowup.`,
+      deps: ['fa-10.7', 'fa-10.12'], tags: ['Banach algebras', 'invertibility'], viz: boundaryInverse,
+    },
+    {
       num: '10.18',
       kind: 'Theorem',
       name: 'Spectrum in a closed subalgebra',
-      statement: String.raw`Suppose $A$ is a Banach algebra, $x\in A$, $\Omega$ is an open set in $\C$, and $\sigma_A(x)\subset\Omega$. Then $\sigma_A(x+y)\subset\Omega$ for all $y$ of sufficiently small norm (upper semicontinuity). Moreover, if $B$ is a closed subalgebra of $A$ containing $e$ and $x\in B$, then
-$$\sigma_A(x)\subset\sigma_B(x)\qquad\text{and}\qquad\partial\sigma_B(x)\subset\sigma_A(x),$$
-so $\sigma_B(x)$ is $\sigma_A(x)$ together with some (possibly none) of the bounded components of $\C\setminus\sigma_A(x)$.`,
-      idea: String.raw`Upper semicontinuity: $\norm{(\lambda e-x)^{-1}}$ is bounded on the closed set $\C\setminus\Omega$ (it tends to $0$ at $\infty$), so $\lambda e-x-y$ stays invertible there for small $\norm y$ (10.12). For the subalgebra: an inverse in $B$ is an inverse in $A$, giving $\sigma_A\subset\sigma_B$. If $\lambda\in\partial\sigma_B(x)$, take $\lambda_n\to\lambda$ outside $\sigma_B$; were $\lambda\notin\sigma_A$, the inverses $(\lambda_ne-x)^{-1}\in B$ would converge in $A$ to $(\lambda e-x)^{-1}$, which would then lie in the closed set $B$. Lemma 10.17 then identifies $\sigma_B$ as a union of components.`,
-      caption: String.raw`$A=\ell^1(\Z)$ (absolutely convergent Fourier series) and $B=\ell^1(\Z_+)$ (power series), $x=c_0\delta_0+c_1\delta_1+c_2\delta_2+c_3\delta_3$. Then $\sigma_A(x)$ is the curve $\hat x(\T)$ and $\sigma_B(x)=\hat x(\overline{U})$ fills in the holes of positive winding number (orange). Drag $\lambda$: the bars on the right are the coefficients of $(\lambda e-x)^{-1}$ computed in $A$ (Laurent coefficients). Outside the filled region they vanish for negative indices — the inverse lies in $B$; inside a hole the inverse exists in $A$ but needs negative indices: $\lambda\in\sigma_B(x)\setminus\sigma_A(x)$.`,
-      deps: ['fa-10.17', 'fa-10.12', 'fa-10.13'],
-      see: ['rca-18.9'],
+      statement: String.raw`Let $B$ be a Banach algebra and let $A\subset B$ be a closed subalgebra containing the same unit.
+(a) $G(A)$ is a union of connected components of $A\cap G(B)$.
+(b) For $x\in A$, $\sigma_A(x)$ consists of $\sigma_B(x)$ and some bounded components of its complement. In particular, $\partial\sigma_A(x)\subset\sigma_B(x)$.`,
+      idea: String.raw`Both invertible sets are open in $A$. A boundary sequence for $G(A)$ has unbounded inverse norms by10.17, so its limit cannot be invertible in $B$. Apply10.16 first to invertible sets and then along $\lambda\mapsto\lambda e-x$ to identify the spectral holes.`,
+      caption: String.raw`$B=\ell^1(\Z)$ (absolutely convergent Fourier series) and $A=\ell^1(\Z_+)$ (power series), $x=c_0\delta_0+c_1\delta_1+c_2\delta_2+c_3\delta_3$. Then $\sigma_B(x)$ is the curve $\hat x(\T)$ and $\sigma_A(x)=\hat x(\overline{U})$ fills in the holes of positive winding number (orange). Drag $\lambda$: the bars on the right are the coefficients of $(\lambda e-x)^{-1}$ computed in $B$ (Laurent coefficients). Outside the filled region they vanish for negative indices — the inverse lies in $A$; inside a hole the inverse exists in $B$ but needs negative indices: $\lambda\in\sigma_A(x)\setminus\sigma_B(x)$.`,
+      deps: ['fa-10.16', 'fa-10.17', 'fa-10.12', 'fa-10.13'],
+      see: ['rca-18.10b'],
       tags: ['Banach algebras', 'spectrum', 'subalgebras'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const c2S = v.slider('$c_2$', -1, 1, 0.55, { step: 0.01 });
         const c3S = v.slider('$c_3$', -1, 1, 0.3, { step: 0.01 });
-        const L = v.stage({ x: [-2.4, 2.4], y: [-2.2, 2.2], equal: true, height: 360, axes: true, title: '$\\sigma_A(x)=\\hat x(\\T)$ and $\\sigma_B(x)=\\hat x(\\overline U)$' });
+        const L = v.stage({ x: [-2.4, 2.4], y: [-2.2, 2.2], equal: true, height: 360, axes: true, title: '$\\sigma_B(x)=\\hat x(\\T)$ and $\\sigma_A(x)=\\hat x(\\overline U)$' });
         const R = v.stage({ x: [-12.5, 12.5], y: [-1, 1], height: 360, axes: 'box', xlabel: 'n', title: 'coefficients of $(\\lambda e-x)^{-1}$ in $\\ell^1(\\Z)$' });
         const hl = L.handle(0.35, 0.15, { color: 'blue', label: 'λ' });
         const N = 256;
         let st = {};
-        v.legend([['blue', '$\\sigma_A$: the curve'], ['orange', 'holes filled in $\\sigma_B$', { area: true }], ['green', 'coefficients $n\\ge0$'], ['red', 'coefficients $n<0$']]);
+        v.legend([['blue', '$\\sigma_B$: the curve'], ['orange', 'holes filled in $\\sigma_A$', { area: true }], ['green', 'coefficients $n\\ge0$'], ['red', 'coefficients $n<0$']]);
         v.render(() => {
           const c = [[0.1, 0], [1, 0], [c2S.value, 0.15], [c3S.value, -0.1]];
           const xh = (z) => { let s = [0, 0], p = [1, 0]; for (const ck of c) { s = cadd(s, cmul(ck, p)); p = cmul(p, z); } return s; };
@@ -304,14 +350,14 @@ so $\sigma_B(x)$ is $\sigma_A(x)$ together with some (possibly none) of the boun
           const mx = Math.max(...coef.map((p) => p[1]), 0.1);
           R.setView(null, [0, onCurve ? 1 : mx * 1.15]);
           if (!onCurve) coef.forEach(([n, a]) => R.rect(n - 0.35, 0, n + 0.35, a, { fill: n < 0 ? 'red' : 'green', fillAlpha: 0.75, stroke: false }));
-          else R.corner('λ ∈ σ_A(x): no inverse at all', 'tl', { color: 'red', weight: 600 });
+          else R.corner('λ ∈ σ_B(x): no inverse at all', 'tl', { color: 'red', weight: 600 });
           const neg = coef.filter(([n]) => n < 0).reduce((s, [, a]) => s + a, 0);
           st = { k, onCurve, neg };
         });
         v.readout(() => {
           const s = st;
-          if (s.onCurve) return '$\\lambda$ is on the curve: $\\lambda\\in\\sigma_A(x)\\subset\\sigma_B(x)$.';
-          return s.k > 0 ? `Winding number $${s.k}$: $\\lambda\\in\\sigma_B(x)\\setminus\\sigma_A(x)$ — the inverse in $A$ has negative-index mass $${v.fix(s.neg, 3)}$, so it is not in $B$.` : `Winding number $0$: $\\lambda\\notin\\sigma_B(x)$ — the inverse is a power series (negative-index mass $${v.sci(s.neg + 1e-17, 1)}$).`;
+          if (s.onCurve) return '$\\lambda$ is on the curve: $\\lambda\\in\\sigma_B(x)\\subset\\sigma_A(x)$.';
+          return s.k > 0 ? `Winding number $${s.k}$: $\\lambda\\in\\sigma_A(x)\\setminus\\sigma_B(x)$ — the inverse in $B$ has sampled negative-index mass $${v.fix(s.neg, 3)}$, so it is not in $A$.` : `Winding number $0$: $\\lambda\\notin\\sigma_A(x)$ — the inverse is a power series (negative-index mass $${v.sci(s.neg + 1e-17, 1)}$).`;
         });
       },
     },

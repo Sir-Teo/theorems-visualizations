@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "meaning": "Six author ledgers reconciled structurally against live written prerequisites, registered fields and syllabus mirrors. Different-field title matches alone do not establish semantic validity; reciprocal peer reports supply that review. Existing alternate graph paths do not invalidate a separately documented direct proof role.",
+  "batches": [
+    {
+      "name": "probability",
+      "file": "docs/verification/cross-field-probability.json",
+      "sha256": "9fca231b096a4734959674f424a49782097ea1c38c17b7687d34ca9ac2203632",
+      "edges": 132
+    },
+    {
+      "name": "climate",
+      "file": "docs/verification/cross-field-climate.json",
+      "sha256": "b6818385ba132d395f5ddbf76e6b1b7a1bfda8ccc6d44949085c8c7075604a47",
+      "edges": 96
+    },
+    {
+      "name": "energy",
+      "file": "docs/verification/cross-field-energy.json",
+      "sha256": "a9a30f2f92dbd242326b13d61d9814475fc7df2ba72621aaefc21b3edafefc6d",
+      "edges": 172
+    },
+    {
+      "name": "circuits",
+      "file": "docs/verification/cross-field-circuits.json",
+      "sha256": "536be050abcbdceed0b8bab1e8845ba5f714c969d2212133cd39bb45688d99ca",
+      "edges": 108
+    },
+    {
+      "name": "geology",
+      "file": "docs/verification/cross-field-geology.json",
+      "sha256": "5e396feeac0321b98bf2a7f5208fd729c7d97af20fe2447032dda679d2bbb152",
+      "edges": 140
+    },
+    {
+      "name": "macro",
+      "file": "docs/verification/cross-field-macro.json",
+      "sha256": "528a946a0036246571350c1c83dbaae052c0f17ce569bc0c51908026f7a12870",
+      "edges": 120
+    }
+  ],
+  "uniqueAddedEdges": 768,
+  "issues": [],
+  "graphNodes": 13661,
+  "cycles": [],
+  "passes": true
+}

@@ -1,3 +1,4 @@
+import { groinHeight } from './assessment.shared.js';
 // Architecture & Structural Form — Chapter 4: Vaults and domes (items 4.1–4.5; 4.6–4.11 are in ch04-b.js)
 //
 // Sources checked (Oct 2026):
@@ -28,14 +29,14 @@ export default {
       num: '4.1',
       kind: 'Concept',
       name: 'Barrel and groin vaults',
-      statement: String.raw`A **barrel vault** is an arch extruded along a line: every slice across it is the same arch, so its weight and its horizontal thrust arrive on the two walls as a *continuous* line load, and the walls may not be opened. A **groin (cross) vault** is the intersection of two barrel vaults of equal height at right angles, keeping only the lower surface where they cross. The four webs meet along two diagonal curves, the groins. Each web is a set of short arches that lean on the groins, so the weight of the vault is gathered into the groins and carried to the four corner piers as *concentrated* forces, each with an outward diagonal thrust. The walls between the piers carry almost nothing from the vault and can be opened up.`,
-      idea: String.raw`Cut a barrel vault into slices and each slice is an arch (arch-3.2) whose reactions go straight to the wall below. In a groin vault a slice of one web stops at the groin, so it cannot reach the wall: it presses on the groin, which is itself an arch whose span is the diagonal of the bay (the funicular argument of arch-1.5 gives its thrust). The load along the groin is largest at the crown and dies out at the springing, because the slices there are short. The thrust of the groin arch sits in the vertical plane of the diagonal, so it leaves the pier at 45° to the walls. The price of freeing the walls is that the piers and the buttressing behind them must be strong and must be exactly where the groins land.`,
+      statement: String.raw`A **barrel vault** is an arch extruded along a line: every slice across it is the same arch, so its weight and its horizontal thrust arrive on the two walls as a *continuous* line load, in this simple load path; an opening requires another member to transfer the load around it. A **groin (cross) vault** is the intersection of two barrel vaults of equal height at right angles, keeping the upper envelope of the two ceiling surfaces where they cross. The four webs meet along two diagonal curves, the groins. Each web is a set of short arches that lean on the groins, so the weight of the vault is gathered into the groins and carried to the four corner piers as *concentrated* forces, each with an outward diagonal thrust. The walls between the piers carry almost nothing from the vault and can be opened up.`,
+      idea: String.raw`Cut a barrel vault into slices and each slice is an arch (arch-3.2) whose reactions go straight to the wall below. In a groin vault a slice of one web stops at the groin, so it cannot reach the wall: it presses on the groin, which is itself an arch whose span is the diagonal of the bay (the funicular argument of arch-1.5 gives its thrust). In the illustrated vertical-load projection, web strips are short near the crown and longer near the springings, so the assigned vertical load grows toward each end of a groin. The thrust of the groin arch sits in the vertical plane of the diagonal, so it leaves the pier at 45° to the walls. The price of freeing the walls is that the piers and the buttressing behind them must be strong and must be exactly where the groins land.`,
       caption: String.raw`Switch between **barrel** and **groin**, and add bays. The plan shows where the vault's weight lands: a band of load along the full length of both walls for the barrel, circles at the four (or $2n+2$) piers for the groin, with the diagonal thrust drawn as arrows. Open up the walls with the slider: for the barrel the load concentrates on what remains of the wall, for the groin nothing changes. The vault is a semicircular one of radius 3 m and thickness 0.3 m, with unit weight 22 kN/m³; the numbers are illustrative.`,
       deps: ['arch-3.2'],
       see: ['arch-4.2'],
       tags: ['vaults', 'load path'],
-      refs: ['Heyman'],
-      scope: String.raw`Idealised statics: each web is cut into slices that lean on the groin, the groin is a semi-elliptical arch with its thrust line through the crown, and the walls carry only the weight of the webs they directly support (neglected). Real vaults lie between this and a full shell analysis (arch-4.11).`,
+      refs: ['Heyman (1966), The stone skeleton, pp. 269–276 (vault geometry, half-bay weight and limitations of membrane/sliced models); doi:10.1016/0020-7683(66)90018-7'],
+      scope: String.raw`Idealised statics: each web is cut into slices that lean on the groin, the groin is a semi-elliptical arch with its thrust line through the crown, and the walls carry only the weight of the webs they directly support (neglected). Horizontal reactions of the web arches and interactions between slices are omitted. The displayed diagonal thrust is a vertical-load surrogate, not a complete statically admissible solution for a real vault (arch-4.11).`,
       credit: 'Roman concrete vaulting (groin vaults widely used in imperial Roman buildings)',
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Groin_vault' },
@@ -51,7 +52,7 @@ export default {
         v.render(() => {
           const n = nb.value, g = kind.value === 'groin', k = 1 / (R * (0.55 + 0.45 * n)) * 1.05, cxm = n * R;
           const P = (x, y, z) => [(x - cxm) * k, y * k, (z - 0.15 * R) * k];
-          const zf = (x, y) => (g ? Math.min(Math.sqrt(Math.max(0, R * R - (x - R) ** 2)), Math.sqrt(Math.max(0, R * R - y * y))) : Math.sqrt(Math.max(0, R * R - y * y)));
+          const zf = (x, y) => (g ? groinHeight(R, x - R, y) : Math.sqrt(Math.max(0, R * R - y * y)));
           const M = 14;
           sc.begin();
           // floor and walls
@@ -107,7 +108,7 @@ export default {
           v.legend(g ? [['accent', 'webs of one family'], ['orange', 'webs of the other'], ['red', 'groins'], ['accent', 'pier load, kN (circles); thrust (arrows)', { dot: true }]] : [['accent', 'wall load, kN/m', { area: true }], ['orange', 'thrust']]);
         });
         v.readout(() => info.g
-          ? `Groin vault, ${info.n} bay(s) of $6\\times6$ m: the vault weighs ${kN(cv.Wgroin)} per bay and all of it reaches the **piers**: ${kN(cv.pier)} per bay-corner (interior piers serve two bays, up to ${kN(info.pierMax)}). Each groin delivers a thrust of ${kN(cv.Hd)} at 45° to the walls. Wall load from the vault: **0 kN/m**, so any opening is free.`
+          ? `Groin vault, ${info.n} bay(s) of $6\\times6$ m: the vault weighs ${kN(cv.Wgroin)} per bay and all of it reaches the **piers**: ${kN(cv.pier)} per bay-corner (interior piers serve two bays, up to ${kN(info.pierMax)}). The vertical-load surrogate gives ${kN(cv.Hd)} of diagonal thrust at 45° to the walls. Wall load from the vault: **0 kN/m**, in this idealized allocation; the plot does not assess an actual opening.`
           : `Barrel vault, ${info.n} bay(s): the vault weighs ${kN(cv.Wbarrel)} per bay and loads each wall with **${f2(info.wallW, 1)} kN/m** over the whole length (more where the wall is opened), with a continuous thrust of ${f2(cv.Hbarrel, 1)} kN/m pushing the walls outward.`);
       },
     },
@@ -117,14 +118,14 @@ export default {
       num: '4.2',
       kind: 'Concept',
       name: 'Rib vaults and the Gothic skeleton',
-      statement: String.raw`A **rib vault** is a groin vault in which the groins, and usually the arches along the edges of the bay, are built as separate stone arches (ribs) first, and the surfaces between them (the webs or severies) are laid afterwards as a thin infill. The webs can then be thin and light, because they only have to span between ribs; the ribs carry the weight and thrust of the whole vault down to the piers as a **skeleton** of arches. Since the loads arrive at the piers only at the rib springings, the walls between piers need not carry the vault, and in Gothic churches the thrust of the nave vault is then taken by flying buttresses (arch-3.10) placed at the pier heads.`,
-      idea: String.raw`The statics is that of arch-4.1: the web is a set of slices leaning on the diagonal ribs, which are arches (arch-3.2) loaded by the web and by their own weight. The rib has to be about as deep as any arch of its span (arch-3.7: roughly a tenth of the radius), and the web adds to that only a moderate amount, so a thin web is cheap: the vault's mass is mostly in the ribs and piers. Because ribs and webs are different structural elements, the ribs can be built first on timber centering and the webs laid on them with little formwork. The skeleton reading of Gothic architecture, in which every stone has a structural job, goes back to nineteenth-century writers such as Viollet-le-Duc; historians now argue about how far medieval builders thought this way, so treat it as a description of the statics, not of intentions.`,
+      statement: String.raw`A **rib vault** is a groin vault in which the groins, and usually the arches along the edges of the bay, are built as separate stone arches (ribs) first, and the surfaces between them (the webs or severies) are laid afterwards as a thin infill. The webs can then be thin and light, because they only have to span between ribs; an idealized **skeleton** load path assigns the web loads to the ribs and then to the piers. Actual load sharing also depends on the web shell and its boundary restraints. Since the loads arrive at the piers only at the rib springings, the walls between piers need not carry the vault, and in Gothic churches the thrust of the nave vault is then taken by flying buttresses (arch-3.10) placed at the pier heads.`,
+      idea: String.raw`The statics is that of arch-4.1: the web is a set of slices leaning on the diagonal ribs, which are arches (arch-3.2) loaded by the web and by their own weight. The rib has to be about as deep as any arch of its span (arch-3.7: roughly a tenth of the radius), and the web adds to that only a moderate amount, but this comparison does not imply that most of a particular vault’s mass lies in its ribs; the reconstruction reports the actual model load split. Because ribs and webs are different structural elements, the ribs can be built first on timber centering and the webs laid on them with little formwork. The skeleton reading of Gothic architecture, in which every stone has a structural job, goes back to nineteenth-century writers such as Viollet-le-Duc; historians now argue about how far medieval builders thought this way, so treat it as a description of the statics, not of intentions.`,
       caption: String.raw`The left panel is one bay with its ribs; switch **webs in place** off to lift the infill and see the skeleton alone. The right panel is the diagonal rib as an arch, loaded by the web slices that lean on it (blue arrows) and by its own weight, with its most central thrust line (green, orange where it leaves the stone). Thicken the web and the rib must become deeper to contain the line; thin the web, or lift it off, and a shallower rib is enough, though never a slim one, since a rib is an arch of 8.5 m span. All sizes are illustrative (bay $6\times6$ m, rib width 0.3 m, unit weight 22 kN/m³).`,
       deps: ['arch-4.1', 'arch-3.10'],
       see: ['arch-3.5', 'arch-3.9'],
       tags: ['gothic', 'ribs'],
-      refs: ['Heyman'],
-      scope: String.raw`The same slice model as arch-4.1: the web leans on the diagonal rib only (the edge ribs and the wall are neglected), the rib is a plane arch with radial joints under vertical loads, no sliding.`,
+      refs: ['Heyman (1966), The stone skeleton, pp. 269–276 (rib-vault statics and sliced safe solutions); doi:10.1016/0020-7683(66)90018-7'],
+      scope: String.raw`The same slice model as arch-4.1: the web leans on the diagonal rib only (the edge ribs and the wall are neglected), the rib is a plane arch with radial joints under vertical loads, no sliding. The web arches’ horizontal forces are omitted, so these rib forces/depths do not certify the equilibrium of the whole vault.`,
       credit: 'rib vaults developed in the late 11th–12th centuries (for example at Durham Cathedral, begun 1093) and spread through Gothic architecture',
       verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Rib_vault' },
@@ -140,7 +141,7 @@ export default {
         const sAt = (k) => -R + (2 * R * k) / Nb;
         const webLoad = (t) => Array.from({ length: Nb }, (_, k) => {
           let P = 0; const m = 10;
-          for (let i = 0; i < m; i++) { const s = sAt(k) + ((sAt(k + 1) - sAt(k)) * (i + 0.5)) / m; P += 2 * GAM * t * R * Math.acos(Math.min(1, Math.abs(s) / R)) * ((sAt(k + 1) - sAt(k)) / m); }
+          for (let i = 0; i < m; i++) { const s = sAt(k) + ((sAt(k + 1) - sAt(k)) * (i + 0.5)) / m; P += 2 * GAM * t * R * Math.asin(Math.min(1, Math.abs(s) / R)) * ((sAt(k + 1) - sAt(k)) / m); }
           return P;
         });
         let M = null;
@@ -162,7 +163,7 @@ export default {
             const G = 12;
             for (let i = 0; i < G; i++) for (let j = 0; j < G; j++) {
               const x0 = (2 * R * i) / G, x1 = x0 + (2 * R) / G, y0 = -R + (2 * R * j) / G, y1 = y0 + (2 * R) / G;
-              const z = (x, y) => Math.min(Math.sqrt(Math.max(0, R * R - (x - R) ** 2)), Math.sqrt(Math.max(0, R * R - y * y)));
+              const z = (x, y) => groinHeight(R, x - R, y);
               const web1 = Math.abs((x0 + x1) / 2 - R) > Math.abs((y0 + y1) / 2);
               sc.poly([P(x0, y0, z(x0, y0)), P(x1, y0, z(x1, y0)), P(x1, y1, z(x1, y1)), P(x0, y1, z(x0, y1))], { fill: web1 ? 'accent' : 'orange', fillAlpha: 0.12 + 0.5 * tw.value * ((i + j) % 2 ? 0.8 : 1), edge: false });
             }
@@ -182,7 +183,7 @@ export default {
           v.legend([['red', 'rib (diagonal)'], ['green', 'thrust line'], ['accent', 'web load on the rib']]);
         });
         v.readout(() => {
-          const m = M, tot = m.Wweb + m.Wrib, st = m.ok ? `the rib **stands**: the line keeps ${f2(m.eps, 3)} m from the nearest edge` : `the rib **cannot contain** any thrust line: it needs depth $\\ge ${f2(m.dmin, 2)}$ m`;
+          const m = M, tot = m.Wweb + m.Wrib, st = m.ok ? `the vertical-load rib model **admits a thrust line**: the line keeps ${f2(m.eps, 3)} m from the nearest edge` : `the vertical-load rib model **does not admit** a thrust line: it needs depth $\\ge ${f2(m.dmin, 2)}$ m`;
           return `Web ${web.value ? `${f2(tw.value, 2)} m thick` : 'lifted off'}: the diagonal rib carries ${kN(m.Wweb)} of web plus its own ${kN(m.Wrib)} (rib = ${f2((100 * m.Wrib) / tot, 0)}% of the load). With depth ${f2(dr.value, 2)} m, ${st}; the smallest sufficient depth is $d_{\\min} = ${f2(m.dmin, 2)}$ m. Springing reaction: $H = ${f2(m.u[0], 1)}$ kN, $V = ${f2(m.u[1], 1)}$ kN.`;
         });
       },
@@ -198,7 +199,7 @@ $$N_\varphi=-\frac{w a}{1+\cos\varphi},\qquad N_\theta=w a\Big(\frac1{1+\cos\var
 (compression negative). For a vertical load $p$ per unit area of *plan* (snow) the forces are $N_\varphi=-pa/2$ and $N_\theta=-\tfrac12 pa\cos2\varphi$. The meridional force is always compressive; the hoop force starts as compression at the crown and, for a deep dome, changes sign lower down.`,
       idea: String.raw`Cut the dome along a parallel circle and keep the cap above the cut. Its weight must be balanced by the vertical components of $N_\varphi$ around the circle of radius $a\sin\varphi$, which fixes $N_\varphi$ (this is the equilibrium of arch-1.2 applied to a cap). The weight of a small element has a component normal to the surface that $N_\varphi$ and $N_\theta$ must balance together, as the tension of a balloon balances pressure, and that equation gives $N_\theta$ once $N_\varphi$ is known. A dome is therefore a statically determinate system of arches (the meridians) held in place by rings (the parallels), which is why one can read off whether it can stand without tension (arch-4.4).`,
       caption: String.raw`Choose a load, set the opening angle of the dome, and drag the gold handle along the section: the plot shows $N_\varphi$ (blue) and $N_\theta$ (red) in units of $wa$ (or $pa$), and the dome is coloured along the meridian, blue where the hoop force is compression and red where it is tension. The dashed curves are the closed-form formulas; the full curves are computed numerically from equilibrium of every cap, so the two agree. With a lantern the crown is open and a ring load is added at its edge.`,
-      deps: ['arch-3.2'],
+      deps: ['arch-3.2', 'vcalc-1.6'],
       see: ['arch-4.4', 'arch-6.1'],
       tags: ['dome', 'shells', 'membrane'],
       refs: ['Heyman'],

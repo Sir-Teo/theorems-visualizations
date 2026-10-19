@@ -147,7 +147,8 @@ It records the total conditional variance of the steps; $E X_n^2=EX_0^2+EA_n$.`,
       caption: String.raw`Choose the step-size rule (the sign of each step is fair, its size $\sigma_n$ is allowed to depend on the past). Left: one path with the band $\pm\sqrt{A_n}$ ($A_n$ being the quantity that sets how far the path typically wanders). Middle: its increasing process $A_n$ (orange staircase; for adaptive sizes it is random but known one step ahead) and the average of $A_n$ over 600 paths (dashed). Right: $X_n^2-A_n$ for the same path, with the average over 600 paths (dashed) which stays on $0$: the compensated square is a martingale. The readout compares $EX_n^2$ with $EA_n$.`,
       deps: ['prob-4.3.2'],
       tags: ['martingales', 'quadratic variation'],
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §4.5, pp. 240–241 (increasing process); Theorem 4.3.2, p. 225'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const sch = v.select('step sizes', SCHED_OPTS, 'adapt');
         const nS = v.slider('$n$', 20, 400, 200, { int: true });

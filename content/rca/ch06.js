@@ -357,7 +357,7 @@ $$\Big|\sum_{k\in S}z_k\Big|\ \ge\ \frac1\pi\sum_{k=1}^N|z_k| .$$`,
       num: '6.5',
       kind: 'Definition',
       name: 'The normed space of complex measures',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 6.5, p. 119'],
       statement: String.raw`If $\mu$ and $\lambda$ are complex measures on the same σ-algebra $\mathfrak M$ and $c\in\C$, then $(\mu+\lambda)(E)=\mu(E)+\lambda(E)$ and $(c\mu)(E)=c\,\mu(E)$ define complex measures. The complex measures on $\mathfrak M$ thus form a vector space, and
 $$\|\mu\|=|\mu|(X)$$
 is a norm on it (finite by 6.4); one has $|\mu+\lambda|\le|\mu|+|\lambda|$ and $|c\mu|=|c|\,|\mu|$.`,
@@ -399,7 +399,7 @@ is a norm on it (finite by 6.4); one has $|\mu+\lambda|\le|\mu|+|\lambda|$ and $
           Bt.vline(b.x, { color: 'muted', width: 1, dash: [3, 3] });
           Bt.dot(b.x, d(b.x), { color: 'accent', r: 5 });
           Bt.dot(b.x, a.x === b.x ? 0 : 2, { color: 'red', r: 5 });
-          st = { same: Math.abs(a.x - b.x) < 1e-12, d: d(b.x), gap: Math.abs(a.x - b.x) };
+          st = { same: a.x === b.x, d: d(b.x), gap: Math.abs(a.x - b.x) };
         });
         v.readout(() => {
           if (!st) return '';
@@ -412,8 +412,7 @@ is a norm on it (finite by 6.4); one has $|\mu+\lambda|\le|\mu|+|\lambda|$ and $
       num: '6.6',
       kind: 'Definition',
       name: 'Positive and negative variations; Jordan decomposition',
-      credit: 'Jordan, 1881',
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 6.6, p. 119'],
       statement: String.raw`Let $\mu$ be a real measure on $\mathfrak M$. Its **positive** and **negative variations** are
 $$\mu^+=\tfrac12\big(|\mu|+\mu\big),\qquad \mu^-=\tfrac12\big(|\mu|-\mu\big).$$
 They are bounded positive measures, and $\mu=\mu^+-\mu^-$, $|\mu|=\mu^++\mu^-$. The representation $\mu=\mu^+-\mu^-$ is the **Jordan decomposition** of $\mu$.`,

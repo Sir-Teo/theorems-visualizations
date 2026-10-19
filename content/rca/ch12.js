@@ -279,7 +279,7 @@ Equality holds for $f=\varphi_{-\beta}\circ(\lambda\varphi_\alpha)$ with $\abs\l
       caption: String.raw`Drag $\alpha$ (left) and the prescribed value $\beta$ (right). The test function is $f=\varphi_{-\beta}\big(\varphi_\alpha\cdot[(1-t)+t\varphi_c]\big)$, so $f(\alpha)=\beta$; $t=0$ is the extremal map. The orange disc $\{\abs{\varphi_\alpha}<s\}$ is mapped into the green disc $\{\abs{\varphi_\beta}<s\}$ — Schwarz's lemma for $g$. As $s\to0$ this inclusion becomes the derivative bound. Push $\beta$ toward the circle and watch the allowed derivative collapse.`,
       deps: ['rca-12.2', 'rca-12.4'],
       tags: ['Schwarz lemma', 'extremal problem', 'unit disc'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 12.5 and complete extremal argument, p. 255'],
       viz(v) {
         const { Cx } = v.M;
         const sS = v.slider(String.raw`radius $s$ of the discs $\{\abs{\varphi_\alpha}<s\}$`, 0.05, 0.9, 0.5, { step: 0.01 });

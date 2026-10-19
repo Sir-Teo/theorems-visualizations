@@ -68,7 +68,7 @@ export default {
       idea: String.raw`Gift wrapping (2.5) costs $O(n)$ per hull vertex, Graham's scan (2.6) $O(n\log n)$ overall; Chan runs Graham on small groups so that Jarvis's per-step cost drops from $n$ to $(n/m)\log m$ — the tangent from the current vertex to a convex polygon is a binary search. With a guess $m<h$ the wrap is cut off after $m$ steps, wasting only $O(n\log m)$. The guesses $2^{2^t}$ make round $t$ cost $O(n2^t)$, a geometric sum dominated by the last round with $2^{2^t}\ge h$, i.e. $2^t<2\log_2h$, giving $O(n\log h)$.`,
       caption: String.raw`Colours are groups with their small hulls. Each wrap step draws the best tangent from the current vertex (gold ring) to every group hull (thin coloured lines), and the winning one in green. A round that does not close within $m$ steps is aborted (red) and $m$ is squared. The log–log panel plots, for this $n$, the modelled cost of Jarvis, Graham and Chan against the hull size $h$ (the gold marker is the current input): Jarvis grows linearly in $h$, Graham ignores $h$, and Chan tracks the lower of the two up to a constant factor — about $n\log h$ — never much worse than either (with these constants it overtakes neither outright at small $n$; the point is the growth rate). The tangents are computed by a linear scan of each group hull, the cost model charges $\lceil\log_2|{\rm hull}|\rceil+1$ per tangent as binary search would.`,
       credit: 'T. M. Chan, 1996',
-      deps: ['cg-2.5', 'cg-2.6'], refs: ['de Berg §1.4'], tags: ['hull', 'output-sensitive', 'algorithm'],
+      deps: ['cg-2.5', 'cg-2.6', 'pma-3.26'], refs: ['de Berg §1.4'], tags: ['hull', 'output-sensitive', 'algorithm'],
       viz(v) {
         const s = v.stage({ x: [-1.3, 1.3], y: [-1.2, 1.2], equal: true, axes: false, height: 400, minWidth: 340 });
         const dist = v.select('points', [{ value: 'few', label: 'few vertices (h = 6)' }, { value: 'disc', label: 'in a disc' }, { value: 'circle', label: 'on a circle' }], 'disc', { onChange: () => regen() });
@@ -145,7 +145,7 @@ export default {
       caption: String.raw`Left: one random sample and its hull (resample, change $n$ or the shape). Right: the average hull size over many trials for $n=8,\dots,1024$ (error bars = standard errors) against a chosen horizontal scale. For the polygons the data fall on a straight line in $\ln n$ with slope near $\tfrac{2r}{3}$ (dashed); for the disc the line is straight in $n^{1/3}$. Switch the scale and watch the other curve bend.`,
       scope: String.raw`For $n$ independent uniform points in a fixed convex body; the constants stated are for polygons ($2r/3$ per $\ln n$); for the disc only the order $n^{1/3}$ is asserted. A heavy-tailed or clustered distribution behaves differently.`,
       credit: 'A. Rényi & R. Sulanke, 1963',
-      deps: ['cg-2.1'], refs: ['de Berg ch. 11'], tags: ['random hull', 'asymptotics'],
+      deps: ['cg-2.1', 'prob-2.1.1a', 'prob-1.6.1'], refs: ['de Berg ch. 11'], tags: ['random hull', 'asymptotics'],
       viz(v) {
         const NS = [8, 16, 32, 64, 128, 256, 512, 1024];
         const shape = v.select('region', [{ value: 'square', label: 'square' }, { value: 'triangle', label: 'triangle' }, { value: 'disc', label: 'disc' }], 'square');
@@ -197,7 +197,7 @@ export default {
       caption: String.raw`Step through the insertions (drag to rotate). Red facets are visible from the new gold point, gold edges are the horizon, green facets are the cone built over it. Points still waiting are hollow; the bar chart gives for each waiting point the number of current facets it sees, i.e. the size of its conflict list. A point inside the hull sees nothing and drops out.`,
       scope: String.raw`General position: no four points coplanar. The $O(n\log n)$ bound is in expectation over the random insertion order, for any input.`,
       credit: 'K. Clarkson & P. Shor, 1989 (with Mulmuley; Boissonnat et al.)',
-      deps: ['cg-2.6'], refs: ['de Berg §11.2', 'de Berg §11.3'], tags: ['3D hull', 'randomized', 'conflict graph'],
+      deps: ['cg-2.6', 'graph-4.2.10', 'prob-1.6.1'], refs: ['de Berg §11.2', 'de Berg §11.3'], tags: ['3D hull', 'randomized', 'conflict graph'],
       viz(v) {
         const dist = v.select('points', [{ value: 'ball', label: 'in a ball' }, { value: 'sphere', label: 'on a sphere' }], 'ball', { onChange: () => regen() });
         const nsl = v.slider('$n$', 8, 30, 16, { int: true, onChange: () => regen() });
@@ -244,7 +244,7 @@ export default {
       caption: String.raw`Pick a family and its size. Left: the polytope (drag to rotate); its counts $V,E,F$ are tallied from its actual faces, never assumed. Right: all convex polytopes live in the wedge $\tfrac32V\le E\le3V-6$ (or $\tfrac12V+2\le F\le2V-4$): random hulls (dots) sit on the upper line, prisms (orange dots) on the lower line, bipyramids on the upper again. The gold marker is the polytope on the left.`,
       scope: String.raw`Convex (more generally sphere-like) polyhedra. For polyhedra with holes (a torus) $V-E+F=0$, and the linear bounds can fail to be tight.`,
       credit: 'L. Euler, 1758',
-      deps: ['cg-2.11', 'top-10.9'], refs: ['de Berg §11.1'], tags: ['Euler formula', 'polytope', '3D'],
+      deps: ['cg-2.11', 'top-10.9', 'graph-4.2.9', 'graph-1.2.1a'], refs: ['de Berg §11.1'], tags: ['Euler formula', 'polytope', '3D'],
       viz(v) {
         const fam = v.select('polytope', [{ value: 'rand', label: 'hull of random points' }, { value: 'prism', label: 'prism' }, { value: 'bip', label: 'bipyramid' }], 'rand', { onChange: () => { dsel.el.hidden = fam.value !== 'rand'; } });
         const dsel = v.select('points', [{ value: 'ball', label: 'ball' }, { value: 'sphere', label: 'sphere' }, { value: 'cube', label: 'cube' }, { value: 'gauss', label: 'Gaussian' }], 'sphere');

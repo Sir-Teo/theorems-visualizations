@@ -1,5 +1,7 @@
 // Ecology — Chapter 4 (part b): limiting similarity to the competition–colonization trade-off
-import { solveDense, jcInit, jcStep, jcRichness, spcol } from './ch04.shared.js';
+import { lotteryInvasionRate, traitCompetitionAbundances, colonizationEquilibrium } from './coexistence.shared.js';
+import { competitionSystem } from './competition-system.shared.js';
+import { jcInit, jcStep, jcRichness, spcol } from './ch04.shared.js';
 
 export default {
   collection: 'ecol',
@@ -12,11 +14,11 @@ export default {
       name: 'Limiting similarity',
       credit: 'R. H. MacArthur & R. Levins, 1967; R. M. May & R. H. MacArthur, 1972',
       statement: String.raw`Species that live on a resource axis (prey size, seed size, perch height…) use it with overlapping utilization curves. In the Lotka–Volterra model the competition coefficient between species $i$ and $j$ is the overlap of their curves relative to a species' overlap with itself, $\alpha_{ij}=\int u_iu_j\big/\int u_i^2$, so it falls with the spacing $d$ between their optima measured in units of the curve width $w$. **Limiting similarity** is the idea that there is a smallest spacing $d/w$ below which the equilibrium coexistence of a packed community is lost: closer-packed species are driven out by small differences in their fitness.`,
-      scope: String.raw`This is about the Lotka–Volterra equilibrium with equal, constant carrying capacities and a regular spacing. The minimum $d/w$ is not a universal constant: it depends on the shape of the utilization curves and on how much the species differ in fitness (the noise slider), a point stressed by May and MacArthur (1972) and by later critics of a fixed limit.`,
-      idea: String.raw`Coexistence of $n$ species needs the equilibrium $N^*=\alpha^{-1}K$ to be positive. Because $\alpha$ is the autocorrelation of the utilization curves it is a positive definite matrix, so the equilibrium is always *stable* when it exists (the minimum eigenvalue below stays positive); what fails when the species are packed is **feasibility**. As the spacing shrinks, $\alpha$ becomes nearly singular, $\alpha^{-1}$ amplifies tiny differences in $K_i$, and some $N_i^*$ turn negative. With realistic fitness noise there is thus a threshold spacing, of the order of the curve width, below which a random community loses species (community matrix: mathbio-3.21).`,
-      caption: String.raw`Top: the resource axis with $n$ equally spaced species whose utilization curves have width $w=1$ (choose the curve shape). Bottom left: equilibrium abundances $N_i^*$ for the carrying capacities $K_i$ (green positive, red negative = that species cannot be in the community). Bottom right: the fraction of 150 random draws of the $K_i$ (log-normal with the chosen noise) in which all $n$ species are feasible, as a function of spacing; the gold line marks your spacing. Squeeze $d/w$ and watch the curve fall from 1 to 0.`,
-      deps: ['mathbio-3.21'],
-      refs: ['Begon ch. 19'],
+      scope: String.raw`This is about the Lotka–Volterra equilibrium with constant carrying capacities (equal when the noise is zero) and regularly spaced, distinct translates of one equal-width utilization curve on the full resource axis. The minimum $d/w$ is not a universal constant: it depends on the shape of the utilization curves and on how much the species differ in fitness (the noise slider), unequal fixed carrying capacities are explicitly analyzed by MacArthur and Levins (1967, pp. 380–382). Here the noise varies fixed $K_i$ between species and samples; carrying capacities do not fluctuate over time. This finite-community experiment does not reproduce the temporal environmental-variability model of May and MacArthur (1972).`,
+      idea: String.raw`Coexistence of $n$ species needs the equilibrium $N^*=\alpha^{-1}K$ to be positive. For the equal-norm, linearly independent utilization curves in this model, the overlap matrix is a common positive scalar times their Gram matrix and is symmetric positive definite. Thus a feasible positive equilibrium is locally asymptotically stable: its Jacobian $-D\alpha$, with $D_{ii}=r_iN_i^*/K_i>0$, is similar to the negative definite matrix $-D^{1/2}\alpha D^{1/2}$. For arbitrary curves a Gram matrix is only positive semidefinite, and row normalization need not preserve symmetry. Here what fails when the species are packed is **feasibility**. As the spacing shrinks, $\alpha$ becomes nearly singular, $\alpha^{-1}$ amplifies tiny differences in $K_i$, and some $N_i^*$ turn negative. With realistic fitness noise there is thus a threshold spacing, of the order of the curve width, below which a random community loses species (community matrix: mathbio-3.21).`,
+      caption: String.raw`Top: the resource axis with $n$ equally spaced species whose utilization curves have width $w=1$ (choose the curve shape). Bottom left: equilibrium abundances $N_i^*$ for the carrying capacities $K_i$ (green positive, red negative = that species cannot be in the community). Bottom right: the fraction of 150 random draws of the $K_i$ (log-normal with the chosen noise) in which all $n$ species are feasible, as a function of spacing; the gold line marks your spacing. Squeeze $d/w$ and watch the feasible fraction change. Gaps indicate numerical uncertainty for a nearly singular overlap matrix; they do not count as species losses.`,
+      deps: ['mathbio-3.21', 'ladr-7.62', 'nla-3.2'],
+      refs: ['MacArthur and Levins (1967), The limiting similarity, convergence, and divergence of coexisting species, American Naturalist 101:377–385; fixed-K comparison pp. 380–382; public text https://www.scribd.com/document/595324270/2-Macarthur-Levins-1967-The-limiting-similarity-convergence', 'May and MacArthur (1972), Niche Overlap as a Function of Environmental Variability, PNAS 69(5):1109–1113; doi:10.1073/pnas.69.5.1109', 'Begon ch. 19'],
       tags: ['niche', 'competition', 'species packing'],
       links: { doi: 'https://doi.org/10.1086/282505' },
       verify: true,
@@ -25,13 +27,13 @@ export default {
         const dS = v.slider('spacing $d/w$', 0.2, 3.5, 1, { step: 0.05 });
         const sS = v.slider('noise in carrying capacities (s.d. of $\\ln K$)', 0, 0.4, 0.1, { step: 0.01 });
         const kern = v.select('utilization curves', [{ value: 'g', label: 'Gaussian' }, { value: 'l', label: 'exponential' }, { value: 'b', label: 'box' }], 'g');
-        const alpha = (k, d) => { d = Math.abs(d); return k === 'g' ? Math.exp(-d * d / 4) : k === 'l' ? (1 + d) * Math.exp(-d) : Math.max(0, 1 - d / 2); };
         const util = (k, x) => (k === 'g' ? Math.exp(-x * x / 2) : k === 'l' ? Math.exp(-Math.abs(x)) : Math.abs(x) <= 1 ? 1 : 0);
         const A = v.stage({ x: [-6, 6], y: [0, 1.25], axes: 'box', gutter: true, height: 230, xlabel: 'position on the resource axis (units of $w$)', title: 'utilization curves', full: true });
         const B = v.stage({ x: [0, 10], y: [-1, 2], axes: 'box', gutter: true, height: 270, xlabel: 'species', ylabel: 'equilibrium $N_i^*$', title: 'equilibrium abundances', weight: 1 });
         const C = v.stage({ x: [0, 3.5], y: [0, 1.05], axes: 'box', gutter: true, height: 270, xlabel: 'spacing $d/w$', ylabel: 'fraction of draws feasible', title: 'chance that all $n$ species coexist', weight: 1 });
         let mcKey = '', mc = [], info = null;
-        const solveFor = (k, n, dw, Kv) => { const M = []; for (let i = 0; i < n; i++) { M.push([]); for (let j = 0; j < n; j++) M[i].push(alpha(k, (i - j) * dw)); } return { M, x: solveDense(M, Kv) }; };
+        const systems = new Map();
+        const systemFor = (k, n, dw) => { const key = [k, n, dw].join('|'); if (!systems.has(key)) systems.set(key, competitionSystem(k, n, dw)); return systems.get(key); };
         v.render(() => {
           const n = nS.value, dw = dS.value, sd = sS.value, k = kern.value;
           const half = Math.max(3, ((n - 1) * dw) / 2 + 2.5);
@@ -45,23 +47,31 @@ export default {
           if (key !== mcKey) {
             mcKey = key; mc = [];
             for (let q = 0; q <= 35; q++) {
-              const d = 0.1 + (3.4 * q) / 35; let ok = 0;
-              for (let t = 0; t < NT; t++) { const { x } = solveFor(k, n, d, z[t].map((e) => Math.exp(sd * e))); if (x && x.every((u) => u > 0)) ok++; }
-              mc.push([d, ok / NT]);
+              const d = 0.1 + (3.4 * q) / 35, system = systemFor(k, n, d); let ok = 0, unresolved = 0;
+              for (let t = 0; t < NT; t++) { const result = system.solve(z[t].map((e) => Math.exp(sd * e))); if (result.status === 'feasible') ok++; if (result.status === 'unresolved') unresolved++; }
+              mc.push([d, unresolved ? NaN : ok / NT]);
             }
           }
           const Kv = z[0].map(() => 1).map((one, i) => Math.exp(sd * z[0][i]));
-          const { M, x: Ns } = solveFor(k, n, dw, Kv);
+          const system = systemFor(k, n, dw), { M } = system, current = system.solve(Kv), Ns = current.x;
           B.setView([0, n + 1], [Math.min(-0.5, ...(Ns || [0]).map((u) => u * 1.1)), Math.max(2, ...(Ns || [0]).map((u) => u * 1.1))]);
+          if (!Ns) B.corner('Numerically unresolved: no species-loss conclusion', 'tr', { color: 'orange', size: 11 });
           if (Ns) B.bars(Ns, { x0: 1, dx: 1, color: (u) => (u > 0 ? 'green' : 'red') });
           B.hline(0, { color: 'ink', width: 1 });
           C.path(mc, { color: 'accent', width: 2.6 });
           C.vline(dw, { color: 'gold', width: 2 });
-          const feas = Ns && Ns.every((u) => u > 0);
+          const feas = current.status === 'feasible';
+          let feasibleDraws = 0, unresolvedDraws = 0;
+          for (const draw of z) { const result = system.solve(draw.map(e => Math.exp(sd * e))); if (result.status === 'feasible') feasibleDraws++; if (result.status === 'unresolved') unresolvedDraws++; }
           const lam = v.M.eigSym(M).values; const lmin = Math.min(...lam);
-          info = { feas, lmin, minN: Ns ? Math.min(...Ns) : NaN, p: (mc.reduce((a, b) => (Math.abs(b[0] - dw) < Math.abs(a[0] - dw) ? b : a))[1]) };
+          info = { feas, lmin, status: current.status, rcond: system.rcond, minN: Ns ? Math.min(...Ns) : NaN, p: feasibleDraws / NT, unresolvedDraws };
         });
-        v.readout(() => info && String.raw`Smallest eigenvalue of $\alpha$: $${v.fix(info.lmin, 4)}$ (${info.lmin > 0 ? 'positive: the equilibrium, if it exists, is stable' : 'not positive'}). For this draw of $K_i$: smallest $N_i^*=${v.fix(info.minN, 3)}$ → **${info.feas ? 'all species coexist' : 'at least one species is lost'}**. Probability of full coexistence at this spacing: $${v.fix(info.p, 2)}$.`);
+        v.readout(() => {
+          if (!info) return '';
+          const conditioning = String.raw`Reciprocal condition estimate $${v.sci(info.rcond, 2)}$; smallest overlap eigenvalue $${v.sci(info.lmin, 2)}$. `;
+          if (info.status === 'unresolved') return conditioning + 'The equilibrium is numerically unresolved (reciprocal-condition cutoff 10⁻¹⁰); this does not establish species loss. Gaps in the probability curve are unresolved, rather than zero coexistence.';
+          return conditioning + String.raw`Smallest $N_i^*=${v.fix(info.minN, 3)}$: **${info.feas ? 'all equilibrium abundances are positive' : 'the full-community equilibrium is infeasible'}**. At your exact spacing, ${150 - info.unresolvedDraws} of 150 draws resolve; ${v.fix(info.p, 2)} of all draws are feasible. An infeasible equilibrium is not itself a simulated extinction trajectory.`;
+        });
       },
     },
     // ───────────────────────────────────────────────────────────── 4.8
@@ -73,7 +83,7 @@ export default {
       statement: String.raw`Two closely related species that overlap in space often differ more in a trait that governs resource use (beak depth, body size) where they live together (**sympatry**) than where each lives alone (**allopatry**). This pattern, character displacement, is explained by natural selection driven by competition: where the species meet, individuals that overlap least with the rival's resource use have the highest fitness, so the two species' trait means are pushed apart until competition and the resource supply balance.`,
       scope: String.raw`The model below shows that competition can produce divergence, not that any given field pattern is caused by it: a pattern of larger differences in sympatry can also result from species sorting (only species that already differ can coexist) or from environmental differences between islands. Such alternatives must be excluded by tests (e.g. Schluter, Price & Grant 1985). In the classic example the ground finches *Geospiza fortis* and *G. fuliginosa* differ little in beak depth on islands where each occurs alone, and more where they occur together; Grant & Grant (2006) reported displacement of *G. fortis* observed on Daphne Major after the arrival of the larger *G. magnirostris*.`,
       idea: String.raw`Let each species' carrying capacity be a Gaussian function of its trait $z$ (resource availability, width $\sigma_K$) and let the competition coefficient fall with the trait distance, $\alpha(d)=e^{-d^2/2\sigma_a^2}$. The mean trait climbs the gradient of per-capita fitness, evaluated at the ecological equilibrium of the Lotka–Volterra competition model (mathbio-3.15): $$\dot z_i\propto \frac{d_i}{\sigma_a^2}\,\alpha(d_i)\frac{N_j^*}{K(z_i)}-\frac{z_i}{\sigma_K^2},\qquad d_i=z_i-z_j .$$ The first term pushes the species away from the rival, the second pulls it back toward the best resources; the balance sets the final separation. (This is the trait-evolution model of Slatkin 1980, simplified.) Species that are too similar to coexist ecologically in the first place are not rescued by evolution when $\alpha$ is large relative to the resource gradient, so divergence needs the right balance.`,
-      caption: String.raw`The two populations start close to the resource optimum (faint dots). Left: the resource curve $K(z)$ and the trait distributions of the two species at the current time. Right: their mean traits through time in **sympatry** (solid) and in **allopatry** (dashed, each species alone). Press play, or change $\sigma_a$ (competition width) and $\sigma_K$ (resource breadth): wide competition kernels give strong displacement, a very narrow resource axis pulls the species together again.`,
+      caption: String.raw`The two populations start close to the resource optimum (faint dots). Left: the resource curve $K(z)$ and the trait distributions of the two species at the current time. Right: their mean traits through time in **sympatry** (solid) and in **allopatry** (dashed, each species alone). Press play, or change $\sigma_a$ (competition width) and $\sigma_K$ (resource breadth): competition narrower than the resource distribution permits divergence; broader competition pulls the symmetric trait means together. The symmetric equal-capacity equilibrium is evaluated without cancellation when the means approach one another.`,
       deps: ['ecol-4.7'],
       refs: ['Begon ch. 8'],
       tags: ['evolution', 'competition', 'trait'],
@@ -90,8 +100,8 @@ export default {
           for (let s = 1; s <= T / dt; s++) {
             let N1 = Kf(z1), N2 = Kf(z2);
             if (sym) {
-              const A = al(z1 - z2), K1 = Kf(z1), K2 = Kf(z2), det = 1 - A * A;
-              N1 = (K1 - A * K2) / det; N2 = (K2 - A * K1) / det;
+              const A = al(z1 - z2), K1 = Kf(z1), K2 = Kf(z2);
+              [N1, N2] = traitCompetitionAbundances(K1, K2, A);
               if (N1 <= 0) { alive[0] = false; out.ex = true; } else if (N2 <= 0) { alive[1] = false; out.ex = true; }
             }
             const g1 = (sym && alive[1] ? ((z1 - z2) / (a * a)) * al(z1 - z2) * N2 / Kf(z1) : 0) - z1 / (k * k);
@@ -185,11 +195,11 @@ export default {
       kind: 'Model',
       name: 'Lottery model and the storage effect',
       credit: 'P. L. Chesson & R. R. Warner, 1981',
-      statement: String.raw`In a lottery model, sites are held by long-lived adults. Each year a fraction $\delta$ of adults die; the vacated sites are taken at random by juveniles, each species’ share being proportional to its number of juveniles. With $p_i$ the fraction of sites held by species $i$ and $B_i(t)$ its year-specific recruitment success, $$p_i(t+1)=(1-\delta)\,p_i+\delta\,\frac{B_i(t)\,p_i}{\sum_j B_j(t)\,p_j}.$$ In a constant environment, species with different mean $B_i$ cannot coexist. If $\ln B_i$ fluctuates from year to year, and good years for one species are not exactly the good years of the other, two species coexist whenever $\delta<1$ (overlapping generations) and the fluctuations are strong enough compared with their difference in mean: the **storage effect**.`,
-      scope: String.raw`Two species, lognormal recruitment, adult death rate $\delta$ the same for both. For non-overlapping generations ($\delta=1$) there is no buffering and the effect vanishes. The condition below uses the second-order expansion of the invasion growth rate; the picture computes the exact expectation numerically.`,
-      idea: String.raw`A species coexists when it can increase from rarity. Rare species $i$ in a sea of $j$ gains $\ln\bigl(1-\delta+\delta B_i/B_j\bigr)$ per year. The adults buffer the population in bad years (the loss is at most $\delta$ of the sites) while the gain in good years is not capped, so the growth rate averaged over fluctuations is raised by roughly $\delta(1-\delta)\,\mathrm{Var}(\ln B_i-\ln B_j)/2$ for either species, on top of the difference in means. Coexistence needs this storage term to exceed the fitness difference (Chesson's stabilizing mechanism of 4.9).`,
-      caption: String.raw`Right: the region of $(\sigma,\delta)$ (strength of fluctuations, adult death rate) where both species have positive invasion growth rates, for the chosen mean difference and correlation of good years; drag the gold point. Left: six simulated histories of species 1's share from a 50:50 start. Set $\sigma=0$ or $\delta=1$ and one species always wins; with fluctuations and $\delta<1$ the shares wander but neither is lost. Increase the correlation of the species' good years and the effect weakens.`,
-      deps: ['ecol-4.9'],
+      statement: String.raw`In a lottery model, sites are held by long-lived adults. Each year a fraction $\delta$ of adults die; the vacated sites are taken at random by juveniles, each species’ share being proportional to its number of juveniles. With $p_i$ the fraction of sites held by species $i$ and $B_i(t)$ its year-specific recruitment success, $$p_i(t+1)=(1-\delta)\,p_i+\delta\,\frac{B_i(t)\,p_i}{\sum_j B_j(t)\,p_j}.$$ In a constant environment, species with different mean $B_i$ cannot coexist. If $\ln B_i$ fluctuates from year to year, and good years for one species are not exactly the good years of the other, two species coexist whenever $0<\delta<1$ (overlapping generations) and the fluctuations are strong enough compared with their difference in mean: the **storage effect**.`,
+      scope: String.raw`Two species, lognormal recruitment, adult death rate $\delta$ the same for both. For non-overlapping generations ($\delta=1$) there is no buffering and the effect vanishes. The condition below uses the second-order expansion of the invasion growth rate; the picture approximates the Gaussian expectation by numerical quadrature over eight standard deviations on either side, treating zero variance and non-overlapping generations analytically.`,
+      idea: String.raw`A species coexists when it can increase from rarity. Rare species $i$ in a sea of $j$ gains $\ln\bigl(1-\delta+\delta B_i/B_j\bigr)$ per year. The adults buffer the population in bad years (the loss is at most $\delta$ of the sites) while the gain in good years is not capped, so the growth rate averaged over fluctuations is raised by roughly $\delta(1-\delta)\,\mathrm{Var}(\ln B_i-\ln B_j)/2$ for either species, on top of the first-order term $\delta(\mu_i-\mu_j)$ in the difference of mean log recruitment. Coexistence needs this storage term to exceed the fitness difference (Chesson's stabilizing mechanism of 4.9).`,
+      caption: String.raw`Right: the region of $(\sigma,\delta)$ (strength of fluctuations, adult death rate) where both species have positive invasion growth rates, for the chosen mean difference and correlation of good years; drag the gold point. Left: six simulated histories of species 1's share from a 50:50 start. With a nonzero mean advantage, set $\sigma=0$ or $\delta=1$ to remove protected coexistence. At equal means the boundary case can be neutral rather than exclusion. With a positive invasion rate for each species, fluctuations buffer persistence; a finite simulation is not a proof of it. Increase the correlation of the species' good years and the effect weakens.`,
+      deps: ['ecol-4.9', 'pma-5.15'],
       refs: ['Begon ch. 19'],
       tags: ['storage effect', 'lottery', 'variability'],
       links: { doi: 'https://doi.org/10.1086/283778', wikipedia: 'https://en.wikipedia.org/wiki/Storage_effect' },
@@ -201,9 +211,7 @@ export default {
         const B = v.stage({ x: [0, 1.5], y: [0.02, 1], axes: 'box', gutter: true, height: 330, xlabel: 'strength of fluctuations $\\sigma$', ylabel: 'adult death rate $\\delta$', title: 'both species can invade', weight: 1 });
         const h = B.handle(0.8, 0.3, { color: 'gold', r: 9, label: '(σ, δ)', constrain: { x: [0, 1.5], y: [0.02, 1] } });
         // invasion growth rate of the rare species whose mean log-ratio is +m: E ln(1 - d + d e^X), X ~ N(m, 2 s^2 (1 - rho))
-        const NZ = 121, zs = Array.from({ length: NZ }, (_, i) => -5 + (10 * i) / (NZ - 1)), wz = zs.map((z) => Math.exp(-z * z / 2));
-        const ws = wz.reduce((a, b) => a + b, 0);
-        const gr = (m, s, d, rho) => { const sd = s * Math.sqrt(2 * (1 - rho)); let t = 0; for (let i = 0; i < NZ; i++) t += wz[i] * Math.log(1 - d + d * Math.exp(m + sd * zs[i])); return t / ws; };
+        const gr = lotteryInvasionRate;
         let info = null;
         v.render(() => {
           const m = dm.value, rho = rc.value, s = h.x, d = h.y;
@@ -223,9 +231,9 @@ export default {
           }
           A.hline(0.5, { color: 'grid' });
           const g1 = gr(m, s, d, rho), g2 = gr(-m, s, d, rho);
-          info = { g1, g2, s, d, ok: g1 > 0 && g2 > 0 };
+          info = { g1, g2, s, d, ok: g1 > 1e-10 && g2 > 1e-10 };
         });
-        v.readout(() => info && String.raw`At $\sigma=${v.fix(info.s, 2)}$, $\delta=${v.fix(info.d, 2)}$: invasion growth rate of species 1 when rare $=${v.fix(info.g1, 4)}$, of species 2 when rare $=${v.fix(info.g2, 4)}$ per year → **${info.ok ? 'both can invade: coexistence' : 'one species excludes the other'}**.`);
+        v.readout(() => info && String.raw`At $\sigma=${v.fix(info.s, 2)}$, $\delta=${v.fix(info.d, 2)}$: invasion growth rate of species 1 when rare $=${v.fix(info.g1, 4)}$, of species 2 when rare $=${v.fix(info.g2, 4)}$ per year → **${info.ok ? 'both can invade: coexistence' : Math.min(Math.abs(info.g1), Math.abs(info.g2)) < 1e-10 ? 'zero invasion rate: neutral or boundary case, not protected coexistence' : 'one species excludes the other'}**.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.11
@@ -290,7 +298,7 @@ export default {
       idea: String.raw`Each species is an instance of the Levins model on the sites its superiors leave open. The inferior competitor survives by colonizing sites faster than the superior competitor can overtake them; the superior competitor is held at $p_1^*$, the amount of habitat it alone can fill. Habitat destruction takes away the sites that the superior competitor must fill (as in 3.3, it persists only while $1-D>m/c_1$), whereas the fast colonizer can live on the sites that are still free: the species that needs the most habitat, and is the best competitor, is lost first.`,
       caption: String.raw`Left: equilibrium occupancy of the superior (blue) and inferior (orange) competitor as a function of habitat destruction $D$; drag the gold point to choose $D$. Right: the time course of $p_1$, $p_2$ from a small start at the chosen $D$. Increase $D$ until the blue curve hits zero: the better competitor is removed while the better colonizer is still there. With $D$ small the inferior competitor can be excluded; raise $c_2$ to widen the range of coexistence.`,
       deps: ['ecol-3.1', 'ecol-4.9'],
-      refs: ['Begon ch. 19'],
+      refs: ['Tilman (1994), Ecology 75, pp. 5–7, eqs. (3)–(4), and discussion of Nee–May habitat destruction; doi:10.2307/1939377', 'Begon ch. 19'],
       tags: ['trade-off', 'metapopulation', 'habitat loss'],
       links: { doi: 'https://doi.org/10.2307/1939377' },
       verify: true,
@@ -301,7 +309,7 @@ export default {
         const A = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'fraction of habitat destroyed $D$', ylabel: 'equilibrium occupied fraction', title: 'what survives destruction', weight: 1 });
         const B = v.stage({ x: [0, 300], y: [0, 1], axes: 'box', gutter: true, height: 330, xlabel: 'time', ylabel: 'occupied fraction', title: 'time course', weight: 1 });
         const h = A.handle(0.4, 0, { color: 'gold', r: 8, label: 'D', constrain: (x) => [Math.min(0.99, Math.max(0, x)), 0] });
-        const eq = (c1, c2, m, D) => { const p1 = Math.max(0, 1 - D - m / c1); const p2 = p1 > 0 ? Math.max(0, m / c1 - (c1 / c2) * (1 - D)) : Math.max(0, 1 - D - m / c2); return [p1, p2]; };
+        const eq = colonizationEquilibrium;
         let info = null;
         v.render(() => {
           const c1 = c1S.value, c2 = c2S.value, m = mS.value, D = h.x;
@@ -312,7 +320,7 @@ export default {
           A.dot(D, e[0], { r: 5, color: 'accent' }); A.dot(D, e[1], { r: 5, color: 'orange' });
           A.vline(1 - m / c1, { color: 'red', width: 1.2, dash: [5, 4] });
           // time course (RK4)
-          let p1 = 0.05, p2 = 0.05; const dt = 0.1, pa = [[0, p1]], pb = [[0, p2]];
+          let p1 = 0.05 * (1 - D), p2 = 0.05 * (1 - D); const dt = 0.1, pa = [[0, p1]], pb = [[0, p2]];
           const f = (a, b) => [c1 * a * (1 - D - a) - m * a, c2 * b * (1 - D - a - b) - m * b - c1 * a * b];
           for (let s = 1; s <= 3000; s++) {
             const k1 = f(p1, p2), k2 = f(p1 + 0.5 * dt * k1[0], p2 + 0.5 * dt * k1[1]), k3 = f(p1 + 0.5 * dt * k2[0], p2 + 0.5 * dt * k2[1]), k4 = f(p1 + dt * k3[0], p2 + dt * k3[1]);
@@ -321,10 +329,10 @@ export default {
           }
           B.path(pa, { color: 'accent', width: 2.6 }); B.path(pb, { color: 'orange', width: 2.6 });
           const lo = Math.max(0, 1 - (c2 * m) / (c1 * c1)), hi = 1 - m / c1;
-          info = { e, D, lo, hi, p1, p2 };
+          info = { e, D, lo, hi, p1, p2, c1, c2 };
         });
         v.legend([['accent', 'superior competitor'], ['orange', 'inferior competitor'], ['red', '$D=1-m/c_1$', { dash: true }]]);
-        v.readout(() => info && String.raw`$D=${v.fix(info.D, 2)}$: equilibrium $p_1^*=${v.fix(info.e[0], 3)}$, $p_2^*=${v.fix(info.e[1], 3)}$ (simulated at $t=300$: $${v.fix(info.p1, 3)}$, $${v.fix(info.p2, 3)}$). Coexistence for ${v.fix(info.lo, 2)} < D < ${v.fix(info.hi, 2)}${info.c2 < 0 ? '' : ''}${info.hi <= info.lo ? ' (empty: needs $c_2>c_1$)' : ''}.`);
+        v.readout(() => info && String.raw`$D=${v.fix(info.D, 2)}$: equilibrium $p_1^*=${v.fix(info.e[0], 3)}$, $p_2^*=${v.fix(info.e[1], 3)}$ (simulated at $t=300$: $${v.fix(info.p1, 3)}$, $${v.fix(info.p2, 3)}$). Coexistence for ${v.fix(info.lo, 2)} < D < ${v.fix(info.hi, 2)}${info.hi <= info.lo ? ' (empty for these rates)' : ''}${info.c2 <= info.c1 ? ' The competition–colonization trade-off is broken: $c_2\\le c_1$.' : ''}.`);
       },
     },
   ],

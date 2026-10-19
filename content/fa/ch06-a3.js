@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 6 (part 3): localization and supports
 //
-// Numbering note: recalled, not checked against the book; uncertain items carry `verify: true`.
+// Numbering and scope reviewed against the full second-edition source; see docs/verification/fa-source-review.md.
 
 // ---------------------------------------------------------------- smooth building blocks
 const PSI_P = (() => {
@@ -65,7 +65,6 @@ export default {
       idea: String.raw`A distribution has no values at points, but it does have a local behaviour: it can be restricted to open subsets. For $\Lambda_f$ with $f\in L^1_{loc}$, "$\Lambda_f=0$ in $\omega$" means $f=0$ a.e. in $\omega$. The next theorems say that this local information is coherent: a distribution is determined by its restrictions to the sets of an open cover, and compatible local pieces can be glued.`,
       deps: ['fa-6.7'],
       tags: ['distributions', 'localization'],
-      verify: true,
     },
     {
       num: '6.20',
@@ -82,7 +81,6 @@ Then $\psi_1+\dots+\psi_m=1-\prod_{i\le m}(1-\varphi_i)$ telescopically, which e
       deps: ['fa-1.46'],
       see: ['rca-2.13', 'pma-10.8'],
       tags: ['partitions of unity', 'smooth functions'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const J = 12, t = M.range(J + 1).map((j) => 3 - 3 * Math.pow(0.55, j));
@@ -151,7 +149,6 @@ Then $\psi_1+\dots+\psi_m=1-\prod_{i\le m}(1-\varphi_i)$ telescopically, which e
       caption: String.raw`$\Omega=(-3,3)$ is covered by $\omega_1=(-3,0.9)$ and $\omega_2=(-0.9,3)$. On $\omega_1$ we are given $\Lambda_1=g+0.8\,\delta_{-1.8}$, on $\omega_2$ the distribution $\Lambda_2=g+0.6\,\delta'_{1.6}$; they agree on the overlap. The glued value $\Lambda_1(\psi_1\varphi)+\Lambda_2(\psi_2\varphi)$ uses a partition $\psi_1+\psi_2=1$ whose crossover $t$ you can slide. Bottom: that value as a function of $t$ — flat, so it does not depend on the partition. Switch on the incompatible data ($\Lambda_2$ gets an extra $\delta_{0.2}$ in the overlap): now the "glued" value moves with $t$, and no global $\Lambda$ exists.`,
       deps: ['fa-6.20', 'fa-6.19', 'fa-6.6'],
       tags: ['distributions', 'localization', 'sheaf property'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const bad = v.toggle('incompatible data (extra $\\delta_{0.2}$ in $\\Lambda_2$)', false);
@@ -212,21 +209,16 @@ Then $\psi_1+\dots+\psi_m=1-\prod_{i\le m}(1-\varphi_i)$ telescopically, which e
       idea: String.raw`By the gluing theorem 6.21 (applied to the zero distributions on the sets $\omega'$), $\Lambda$ vanishes on the union $\omega$ itself, so $\omega$ is the largest open set in which $\Lambda$ vanishes. For $\Lambda_f$ with $f$ continuous, $S_\Lambda$ is the usual support of $f$; $\operatorname{supp}\delta^{(k)}_p=\{p\}$; the support of p.v.$\frac1x$ is all of $\R$.`,
       deps: ['fa-6.21', 'fa-6.19'],
       tags: ['distributions', 'support'],
-      verify: true,
     },
     {
       num: '6.23',
       kind: 'Theorem',
-      name: 'What the support controls',
-      statement: String.raw`Let $\Lambda\in\mathscr D'(\Omega)$ with support $S_\Lambda$.
-(a) If $\varphi\in\mathscr D(\Omega)$ and $\operatorname{supp}\varphi\cap S_\Lambda=\varnothing$, then $\Lambda\varphi=0$.
-(b) If $S_\Lambda=\varnothing$, then $\Lambda=0$.
-(c) If $\psi\in C^\infty(\Omega)$ and $\psi=1$ on some open set containing $S_\Lambda$, then $\psi\Lambda=\Lambda$.`,
-      idea: String.raw`(a) $\Lambda$ vanishes on the open set $\Omega\setminus S_\Lambda$, which contains $\operatorname{supp}\varphi$; (b) is (a) for every $\varphi$. For (c), $(\psi\Lambda-\Lambda)(\varphi)=\Lambda((\psi-1)\varphi)$, and $(\psi-1)\varphi$ vanishes on a neighbourhood of $S_\Lambda$, so its support misses $S_\Lambda$ and (a) applies. A neighbourhood is needed: $\psi$ must be $1$ near $S_\Lambda$, not just on it, because $\Lambda$ may differentiate.`,
+      name: 'A distribution vanishes off its support',
+      statement: String.raw`Let $W$ be the union of all open subsets of $\Omega$ in which $\Lambda\in\mathscr D'(\Omega)$ vanishes. Then $\Lambda$ vanishes in $W$: it annihilates every test function supported in that union. Thus the complement of its support is itself an open set on which the distribution vanishes.`,
+      idea: String.raw`Take a locally finite smooth partition of unity subordinate to the open subsets in the definition of $W$. Every test function $\varphi\in\mathscr D(W)$ is the sum of finitely many products $\psi_i\varphi$, each supported where $\Lambda$ vanishes. Applying $\Lambda$ term by term gives zero. The diagram illustrates this vanishing region and the support properties subsequently stated in 6.24.`,
       caption: String.raw`$\Lambda=g\cdot1_{[-2.2,-1.2]}+0.7\,\delta'_{0.9}+0.5\,\delta_{1.8}$; its support (red) is an interval and two points. Drag $\varphi$: whenever its support misses $S_\Lambda$, $\Lambda\varphi$ is exactly $0$. The orange cutoff $\psi$ equals $1$ on the support enlarged by the margin; the readout compares $\Lambda\varphi$ with $(\psi\Lambda)(\varphi)=\Lambda(\psi\varphi)$. They agree for every positive margin and part ways when the margin turns negative and $\psi$ stops being $1$ near $S_\Lambda$.`,
-      deps: ['fa-6.22', 'fa-6.14'],
+      deps: ['fa-6.22', 'fa-6.20'],
       tags: ['distributions', 'support'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const mS = v.slider('margin of $\\{\\psi=1\\}$ around $S_\\Lambda$', -0.25, 0.6, 0.25, { step: 0.01 });

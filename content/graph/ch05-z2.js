@@ -30,12 +30,12 @@ export default {
   items: [
     // =====================================================================================================  5.5
     {
-      num: '5.5.1a', kind: 'Definition', name: 'Perfect graphs, clique number and independence number', verify: true,
+      num: '5.5.1a', kind: 'Definition', name: 'Perfect graphs, clique number and independence number',
       statement: String.raw`The **clique number** $\omega(G)$ is the largest order of a complete subgraph of $G$, and the **independence number** $\alpha(G)$ the largest order of an independent vertex set; $\alpha(G)=\omega(\overline G)$. Always $\chi(G)\ge\omega(G)$. A graph $G$ is **perfect** if $\chi(H)=\omega(H)$ for every induced subgraph $H$ of $G$.`,
       idea: String.raw`Perfection asks that the obvious lower bound $\omega$ for $\chi$ be exact not just for $G$ but hereditarily; requiring it for all induced subgraphs is what makes the notion robust (a graph like $C_5$ plus a universal vertex has $\chi=\omega+1$ only because of the induced $C_5$). Bipartite graphs, complements of bipartite graphs, chordal graphs (5.5.2) and comparability graphs are perfect; odd cycles of length $\ge5$ and their complements are the smallest imperfect graphs (5.5.3).`,
       caption: String.raw`Click vertices to choose an induced subgraph $H$ (selected vertices are coloured by an optimal colouring of $H$, a largest clique is ringed). The readout gives $\omega(H)$, $\alpha(H)$ and $\chi(H)$. *Smallest bad subgraph* selects a smallest induced subgraph with $\chi>\omega$ if one exists. The check over **all** $2^n-1$ induced subgraphs is done once per graph. Presets cover perfect (house, $C_6$, $K_{3,3}$, bull) and imperfect graphs ($C_5$, $\overline{C_7}$, wheel $W_5$, Petersen).`,
-      deps: ['graph-5.1.1a', 'graph-1.1.1c'], refs: ['Diestel §5.5'], tags: ['perfect graphs', 'clique number'], credit: 'Berge, 1961',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Perfect_graph' },
+      deps: ['graph-5.1.1a', 'graph-1.1.1c'], refs: ['Diestel, Graph Theory, 6th ed., §5.5, pp. 139–140'], tags: ['perfect graphs', 'clique number'], credit: 'Berge, 1961',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Perfect_graph' },
       viz(v) {
         const ex = v.select('graph', presets(['house', 'c6', 'k33', 'bull', 'c5', 'c7c', 'wheel5', 'petersen']), 'c5', { onChange: () => load() });
         const s = gstage(v, { height: 350 });
@@ -57,12 +57,12 @@ export default {
       },
     },
     {
-      num: '5.5.1b', kind: 'Definition', name: 'Chordal graphs', verify: true,
+      num: '5.5.1b', kind: 'Definition', name: 'Chordal graphs',
       statement: String.raw`A graph is **chordal** (or triangulated) if it has no induced cycle of length at least 4: every cycle of length $\ge4$ in it has a chord, an edge joining two non-consecutive vertices of the cycle.`,
       idea: String.raw`An induced cycle of length $\ge4$ is called a hole, so chordal means "no holes". Trees, complete graphs, interval graphs and graphs built from cliques by gluing along cliques (5.5.1) are chordal. Equivalent descriptions, proved in the next results, are a perfect elimination ordering (every vertex is simplicial when its turn comes) and decomposition along clique separators.`,
       caption: String.raw`Edit the graph (${EDIT_UP}). Every induced cycle of length $\ge4$ is a hole; *next hole* cycles through them (the current one in red). If there are none the graph is chordal and the vertices are numbered by the reverse of a maximum-cardinality-search order: each vertex's higher-numbered neighbours then form a clique (shown by the check).`,
-      deps: ['graph-1.3.1a'], refs: ['Diestel §5.5'], tags: ['chordal graphs'], credit: 'Dirac, 1961',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Chordal_graph' },
+      deps: ['graph-1.3.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.5, p. 140'], tags: ['chordal graphs'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Chordal_graph' },
       viz(v) {
         const ex = v.select('graph', presets(['sun3', 'tree', 'house', 'fan', 'c6', 'c5']), 'house', { onChange: () => { loadPre(G, ex.value, [1.4, 0.9, 8.6, 5.5]); hi = 0; } });
         const s = gstage(v, { height: 350 });
@@ -156,12 +156,12 @@ export default {
       },
     },
     {
-      num: '5.5.3', kind: 'Theorem', name: 'Strong perfect graph theorem', verify: true,
+      num: '5.5.3', kind: 'Theorem', name: 'Strong perfect graph theorem',
       statement: String.raw`A graph is perfect if and only if it contains neither an odd hole nor an odd antihole, that is, no induced $C_{2k+1}$ with $k\ge2$ and no induced complement of such a cycle. (Graphs with neither are called **Berge graphs**.)`,
-      idea: String.raw`Odd holes and odd antiholes are not perfect ($\chi=\omega+1$), and perfection is hereditary, so one direction is easy. The converse is hard: Berge conjectured it in 1961; Chudnovsky, Robertson, Seymour and Thomas proved it in a 178-page paper by showing that every Berge graph is either one of a few basic types (bipartite graphs, line graphs of bipartite graphs, their complements, and double split graphs) or has one of a few kinds of decomposition that a minimal counterexample cannot have. The picture only verifies the statement by brute force on small graphs.`,
+      idea: String.raw`Odd holes and odd antiholes are not perfect ($\chi=\omega+1$), and perfection is hereditary, so one direction is easy. The converse is hard: Berge conjectured it (1963 in Diestel); Chudnovsky, Robertson, Seymour and Thomas proved it in a 178-page paper by showing that every Berge graph is either one of a few basic types (bipartite graphs, line graphs of bipartite graphs, their complements, and double split graphs) or has one of a few kinds of decomposition that a minimal counterexample cannot have. The picture only verifies the statement by brute force on small graphs.`,
       caption: String.raw`Edit the graph (${EDIT_UP}). The three columns of the readout are computed independently: odd hole present? odd antihole present? and, by brute force over all induced subgraphs, is $\chi=\omega$ everywhere? An odd hole (blue) or odd antihole (orange) is highlighted if found. *Test 300 random graphs* compares "Berge" with "perfect" on random 8-vertex graphs.`,
-      deps: ['graph-5.5.1a'], refs: ['Diestel §5.5'], tags: ['perfect graphs', 'Berge graphs'], credit: 'Chudnovsky, Robertson, Seymour & Thomas, 2006 (conjectured by Berge, 1961)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Strong_perfect_graph_theorem' },
+      deps: ['graph-5.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.5.3 and discussion, p. 141'], tags: ['perfect graphs', 'Berge graphs'], credit: 'Chudnovsky, Robertson, Seymour & Thomas, 2006 (conjectured by Berge (1963 in Diestel))',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Strong_perfect_graph_theorem' },
       viz(v) {
         const ex = v.select('graph', presets(['c5', 'c7', 'c7c', 'house', 'wheel5', 'c6', 'sun3']), 'c7c', { onChange: () => loadPre(G, ex.value, [1.4, 0.9, 8.6, 5.5]) });
         const s = gstage(v, { height: 350 });
@@ -184,12 +184,12 @@ export default {
       },
     },
     {
-      num: '5.5.4', kind: 'Theorem', name: 'Lovász: the complement of a perfect graph is perfect', verify: true,
-      statement: String.raw`A graph $G$ is perfect if and only if its complement $\overline G$ is perfect. Equivalently: if $\chi(H)=\omega(H)$ for all induced subgraphs $H$ of $G$, then also $\chi(H')=\omega(H')$, that is $\alpha$ equals the minimum number of cliques covering the vertices, for all induced $H'$ of $\overline G$.`,
+      num: '5.5.4', kind: 'Theorem', name: 'Lovász: the complement of a perfect graph is perfect',
+      statement: String.raw`A graph $G$ is perfect if and only if its complement $\overline G$ is perfect. Equivalently, every induced subgraph $H$ of a perfect graph has a cover of its vertex set by $\alpha(H)$ cliques (the colour classes of an optimal colouring of $\overline H$).`,
       idea: String.raw`Proved by Lovász in 1972 (the "perfect graph theorem", conjectured by Berge). One standard route goes through the replication lemma (5.5.5) and the characterization $|H|\le\alpha(H)\omega(H)$ (5.5.6): that condition is symmetric under complementation, since $\alpha(\overline H)=\omega(H)$ and $\omega(\overline H)=\alpha(H)$, and 5.5.6 turns it into perfection.`,
       caption: String.raw`The same selected induced subgraph $H$ is shown in $G$ (left) and $\overline G$ (right). Click vertices on either side to change $H$. The readout gives $\chi$, $\omega$ in both: since $\omega(\overline H)=\alpha(H)$ and $\chi(\overline H)$ is the clique-cover number of $H$, perfection of $\overline G$ says $\alpha=$ clique cover number for all induced $H$. The bars count the induced subgraphs with $\chi>\omega$ in each graph: one is zero exactly when the other is.`,
-      deps: ['graph-5.5.1a'], refs: ['Diestel §5.5'], tags: ['perfect graphs', 'complements'], credit: 'Lovász, 1972',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Perfect_graph_theorem' },
+      deps: ['graph-5.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.5.4 and proofs, pp. 142–145'], tags: ['perfect graphs', 'complements'], credit: 'Lovász, 1972',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Perfect_graph_theorem' },
       viz(v) {
         const ex = v.select('graph', presets(['c5', 'c6', 'house', 'bull', 'wheel5', 'c7c', 'sun3']), 'c5', { onChange: () => load() });
         const sA = gstage(v, { height: 300, title: '$G$' }), sB = gstage(v, { height: 300, title: 'complement $\\overline G$' }), sC = v.stage({ x: [0, 3], y: [0, 40], axes: 'box', gutter: true, height: 150, title: 'induced subgraphs with $\\chi>\\omega$', full: true, ylabel: 'count', xticks: [[0.5, 'G'], [1.5, 'complement of G']] });
@@ -219,11 +219,12 @@ export default {
       },
     },
     {
-      num: '5.5.5', kind: 'Lemma', name: 'Replication lemma', verify: true,
+      num: '5.5.5', kind: 'Lemma', name: 'Replication lemma',
       statement: String.raw`If $G$ is perfect and $v$ is a vertex of $G$, then the graph $G'$ obtained by adding a new vertex $v'$ adjacent to $v$ and to all neighbours of $v$ (replacing $v$ by two adjacent twins) is perfect.`,
       idea: String.raw`Every induced subgraph of $G'$ either lies in $G$ or is a replication of an induced subgraph of $G$, so it suffices to show $\chi(G')=\omega(G')$. If $v$ lies in a maximum clique of $G$, then $\omega(G')=\omega(G)+1$: colour $G$ with $\omega(G)$ colours and give $v'$ a new one. Otherwise $\omega(G')=\omega(G)=k$. Take a $k$-colouring of $G$ and let $S$ be the colour class of $v$; then $T=(S\setminus\{v\})\cup\{v'\}$ is stable in $G'$. Every $k$-clique of $G$ misses $v$ and meets $S$, hence meets $S\setminus\{v\}$, so $G'-T=G-(S\setminus\{v\})$ has clique number at most $k-1$; it is an induced subgraph of the perfect graph $G$, so $k-1$ colours suffice for it, and $T$ is one more colour class.`,
       caption: String.raw`Click a vertex to replace it by two adjacent twins (twins get the same outline colour). The perfection test after every step is by brute force. Start from a perfect graph and replicate as often as you like: the check stays green, and $\omega,\chi$ rise together. Start from $C_5$ and it stays imperfect (nothing to repair); *undo* and *reset* restore earlier graphs. The graph is limited to 11 vertices.`,
-      deps: ['graph-5.5.1a'], refs: ['Diestel §5.5'], tags: ['perfect graphs', 'replication'], credit: 'Lovász, 1972',
+      deps: ['graph-5.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., Lemma 5.5.5 and proof, pp. 142–143'], tags: ['perfect graphs', 'replication'], credit: 'Lovász, 1972',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const ex = v.select('start graph', presets(['p5', 'bull', 'house', 'k33', 'sun3', 'c5']), 'house', { onChange: () => reset() });
         const s = gstage(v, { height: 350 });
@@ -253,11 +254,12 @@ export default {
       },
     },
     {
-      num: '5.5.6', kind: 'Theorem', name: 'Lovász: perfect iff every induced H has order ≤ α(H)·ω(H)', verify: true,
+      num: '5.5.6', kind: 'Theorem', name: 'Lovász: perfect iff every induced H has order ≤ α(H)·ω(H)',
       statement: String.raw`A graph $G$ is perfect if and only if every induced subgraph $H$ of $G$ satisfies $|H|\le\alpha(H)\,\omega(H)$.`,
-      idea: String.raw`If $G$ is perfect then $H$ can be coloured with $\omega(H)$ colours, and each colour class is independent, hence of size at most $\alpha(H)$; so $|H|\le\alpha(H)\omega(H)$. The converse is Lovász's theorem; its proof uses the replication lemma (5.5.5). The condition is symmetric under complementation, because $\alpha(\overline H)=\omega(H)$ and $\omega(\overline H)=\alpha(H)$, which is why this theorem implies the complementation theorem 5.5.4.`,
+      idea: String.raw`If $G$ is perfect, colour each induced $H$ with $\omega(H)$ colours; every class has at most $\alpha(H)$ vertices, giving $|H|\le\alpha(H)\omega(H)$. The book's converse uses induction and a rank argument. In a minimal imperfect graph construct $\alpha\omega+1$ independent sets and the same number of maximum cliques so that their incidence-intersection matrix has zero diagonal and ones elsewhere. This matrix is nonsingular, but factors through an $n$-dimensional vertex space, forcing $n\ge\alpha\omega+1$, contrary to the assumed inequality. Complementation exchanges $\alpha$ and $\omega$, yielding 5.5.4.`,
       caption: String.raw`Every induced subgraph $H$ of the chosen graph is a point $(\alpha(H)\omega(H),\,|H|)$ (disc area = how many $H$ share the point). Points on or below the diagonal satisfy the inequality; points above it, in red, are violations — they appear exactly for imperfect graphs ($C_5$: $5>2\cdot2$). Click vertices to mark one induced subgraph (gold ring) and read its numbers.`,
-      deps: ['graph-5.5.1a'], refs: ['Diestel §5.5'], tags: ['perfect graphs'], credit: 'Lovász, 1972',
+      deps: ['graph-5.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.5.6 and proof, pp. 144–145'], tags: ['perfect graphs'], credit: 'Lovász, 1972',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const ex = v.select('graph', presets(['c5', 'c7', 'c7c', 'house', 'c6', 'wheel5', 'k33', 'petersen']), 'c5', { onChange: () => { loadPre(G, ex.value, [1.4, 0.9, 8.6, 5.5]); S = full(G.nodes.length); } });
         const sA = gstage(v, { height: 320 }), sB = v.stage({ x: [0, 17], y: [0, 11], axes: 'box', gutter: true, height: 320, xlabel: '$\\alpha(H)\\,\\omega(H)$', ylabel: '$|H|$', title: 'all induced subgraphs' });
@@ -282,11 +284,12 @@ export default {
     },
     // =====================================================================================================  5.6
     {
-      num: '5.6.1a', kind: 'Definition', name: 'χ-bounded graph classes', verify: true,
-      statement: String.raw`A class $\mathcal C$ of graphs closed under taking induced subgraphs is **$\chi$-bounded** if there is a function $f\colon\mathbb N\to\mathbb N$ such that $\chi(H)\le f(\omega(H))$ for every graph $H\in\mathcal C$. Perfect graphs are $\chi$-bounded with $f(\omega)=\omega$; the class of all graphs is not, and neither is the class of triangle-free graphs.`,
+      num: '5.6.1a', kind: 'Definition', name: 'χ-bounded graph classes',
+      statement: String.raw`A class $\mathcal C$ closed under induced subgraphs is **$\chi$-bounded** if there is $f\colon\mathbb N\to\mathbb N$ such that $\chi(G)\le f(r)$ whenever $G\in\mathcal C$ and $\omega(G)\le r$. This is equivalent to the existence of a nondecreasing $f$ with $\chi(G)\le f(\omega(G))$. Perfect graphs admit $f(r)=r$; triangle-free graphs admit no such function.`,
       idea: String.raw`The clique number is a lower bound for $\chi$, and $\chi$-boundedness says that it is, up to a function, the only obstruction inside the class. That triangle-free graphs of large chromatic number exist (Mycielski's construction, and Erdős's high-girth graphs, 5.2.5) means that forbidding a single clique is not enough; the questions of this section ask which *induced* subgraphs one has to forbid.`,
       caption: String.raw`Each dot is a random graph from the chosen class, plotted at $(\omega,\chi)$ (exact values). The slider sets a candidate bound $f(\omega)=a\,\omega$; points above it are red. For *interval graphs* $f(\omega)=\omega$ works. For *triangle-free* graphs the hollow dots are Mycielski's graphs $M_k$, with $\omega=2$ and $\chi=k$ (computed for $k\le4$, the theorem for larger $k$), so every cap $f(2)$ is exceeded by some $M_k$. Random samples of fixed size cannot show unboundedness by themselves.`,
-      deps: ['graph-5.5.1a'], refs: ['Diestel §5.6'], tags: ['chi-bounded', 'clique number'], credit: 'Gyárfás, 1987',
+      deps: ['graph-5.5.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.6, p. 146'], tags: ['chi-bounded', 'clique number'], credit: 'Gyárfás, 1975 (introduction of χ-boundedness)',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const cls = v.select('class', [{ value: 'int', label: 'interval graphs' }, { value: 'tf', label: 'triangle-free' }, { value: 'all', label: 'all graphs' }], 'int', { onChange: () => resample() });
         const aS = v.slider('bound $f(\\omega)=a\\,\\omega$, $a=$', 1, 4, 1.5, { step: 0.5 });
@@ -323,12 +326,12 @@ export default {
       },
     },
     {
-      num: '5.6.1', kind: 'Theorem', name: 'Scott–Seymour: graphs with no odd hole are χ-bounded', verify: true,
-      statement: String.raw`The class of graphs with no odd hole (no induced cycle of odd length at least 5) is $\chi$-bounded: there is a function $f$ such that every graph without an odd hole satisfies $\chi(G)\le f(\omega(G))$. (A bound of the form $2^{2^{\omega+2}}$ is quoted in the literature.)`,
-      idea: String.raw`Conjectured by Gyárfás in 1985, proved by Scott and Seymour. By the strong perfect graph theorem the Berge graphs are exactly the perfect ones; allowing odd antiholes without odd holes weakens perfection but, as the theorem says, only up to a function of $\omega$. Odd antiholes do force $\chi>\omega$: $\overline{C_7}$ has $\omega=3$, $\chi=4$ and no odd hole, and substituting such antiholes into each other repeatedly gives graphs without odd holes whose $\chi$ is at least $(7/2)^k$ while $\omega=3^k$.`,
-      caption: String.raw`Random graphs on up to 11 vertices are repaired by deleting vertices of odd holes until none is left; each is plotted at $(\omega,\chi)$ on log axes together with the construction $(3^k,(7/2)^k)$ built from $\overline{C_7}$ (hollow, from the literature, not recomputed) and the quoted upper bound $2^{2^{\omega+2}}$. Real samples hug the diagonal; the gulf to the proved bound is enormous, and finite samples say nothing about the theorem — the picture only shows what graphs without odd holes look like. *Add $\overline{C_7}$* puts the smallest imperfect example in.`,
-      deps: ['graph-5.6.1a', 'graph-5.5.3'], refs: ['Diestel §5.6'], tags: ['chi-bounded', 'odd holes'], credit: 'Scott & Seymour (arXiv 2014); conjectured by Gyárfás, 1985',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Strong_perfect_graph_theorem' },
+      num: '5.6.1', kind: 'Theorem', name: 'Scott–Seymour: graphs with no odd hole are χ-bounded',
+      statement: String.raw`The class of graphs with no odd hole (no induced odd cycle of length at least five) is $\chi$-bounded.`,
+      idea: String.raw`Scott and Seymour proved the statement quoted by Diestel. Unlike Berge graphs, odd-hole-free graphs may contain odd antiholes and need not be perfect: $\overline{C_7}$ has $\omega=3$, $\alpha=2$, $\chi=4$, and no odd hole. Repeated substitution of this graph gives odd-hole-free examples with $7^k$ vertices, independence number $2^k$ and clique number $3^k$; hence their chromatic number is at least $(7/2)^k$. The hollow markers below show this lower bound, not computed chromatic numbers.`,
+      caption: String.raw`Random graphs on at most 11 vertices are repaired by deleting vertices of odd holes; their exact $(\omega,\chi)$ values are shown on log axes. Hollow markers give the lower-bound pairs $(3^k,(7/2)^k)$ from repeated substitution of $\overline{C_7}$; these are not measured graph values. Finite samples illustrate the class but cannot prove $\chi$-boundedness. *Add $\overline{C_7}$* marks the smallest imperfect example.`,
+      deps: ['graph-5.6.1a', 'graph-5.5.3'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.6.1, p. 146'], tags: ['chi-bounded', 'odd holes'], credit: 'Scott & Seymour, 2016',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Strong_perfect_graph_theorem' },
       scope: String.raw`Only holes are excluded here; odd antiholes are allowed (otherwise the graphs would be perfect).`,
       viz(v) {
         const nS = v.slider('vertices before repair', 7, 11, 10, { int: true, onChange: () => resample() });
@@ -344,23 +347,23 @@ export default {
         let info = null;
         v.render(() => {
           s.fn((x) => x, { color: 'muted', dash: true });
-          s.fn((w) => Math.pow(2, Math.pow(2, w + 2)), { color: 'orange', domain: [1, 3.2] });
           for (let k = 0; k <= 4; k++) s.dot(Math.pow(3, k), Math.pow(3.5, k), { r: 5, hollow: true, color: 'teal' });
           let gap = 0; pts.forEach(([w, c], i) => { gap = Math.max(gap, c - w); s.dot(w * (1 + 0.04 * (((i * 0.618) % 1) - 0.5)), c * (1 + 0.04 * (((i * 0.37) % 1) - 0.5)), { r: 3.3, color: 'accent' }); });
           if (extra) s.dot(3, 4, { r: 7, color: 'red' });
           info = { n: pts.length, gap, perfectCount: pts.filter(([w, c]) => w === c).length };
         });
-        v.legend([['accent', 'odd-hole-free sample', { dot: true }], ['muted', '$\\chi=\\omega$', { dash: true }], ['orange', 'quoted bound $2^{2^{\\omega+2}}$'], ['teal', '$(3^k,(7/2)^k)$ construction', { dot: true }]]);
-        v.readout(() => `${info.n} odd-hole-free samples; **${info.perfectCount}** have $\\chi=\\omega$, the largest gap $\\chi-\\omega$ is **${info.gap}**.${extra ? ' Red: $\\overline{C_7}$, $\\omega=3$, $\\chi=4$, no odd hole.' : ''} (Bound at $\\omega=2$: $2^{2^4}=65536$; at $\\omega=3$: $2^{32}$.)`);
+        v.legend([['accent', 'odd-hole-free sample', { dot: true }], ['muted', '$\\chi=\\omega$', { dash: true }], ['teal', '$(3^k,(7/2)^k)$ lower bound', { dot: true }]]);
+        v.readout(() => `${info.n} odd-hole-free samples; **${info.perfectCount}** have $\\chi=\\omega$, the largest gap $\\chi-\\omega$ is **${info.gap}**.${extra ? ' Red: $\\overline{C_7}$, $\\omega=3$, $\\chi=4$, no odd hole.' : ''}`);
       },
     },
     {
-      num: '5.6.2', kind: 'Proposition', name: 'Gyárfás: forbidding an induced path gives χ-boundedness', verify: true,
-      statement: String.raw`For every $k$, the class of graphs with no induced path on $k$ vertices is $\chi$-bounded: there is a function $f_k$ with $\chi(G)\le f_k(\omega(G))$ for all such $G$. (Gyárfás's bound is of the order $(k-1)^{\omega-1}$; Gravier, Hoàng and Maffray improved the base to $k-2$.)`,
-      idea: String.raw`Induction on $\omega$, using the lemma 5.6.3. If $G$ is connected and has no induced $P^k$, every neighbourhood $N(v)$ has clique number $<\omega$, so by induction it needs at most $c=f_k(\omega-1)$ colours: $G$ is "locally $c$-colourable". The lemma then colours $G$ with $(k-2)(c+1)+1$ colours, which yields $f_k(\omega)=(k-2)(f_k(\omega-1)+1)+1$ for connected graphs; components are coloured independently with the same palette.`,
+      num: '5.6.2', kind: 'Proposition', name: 'Gyárfás: forbidding an induced path gives χ-boundedness',
+      statement: String.raw`For every fixed path $P$, the class of graphs with no induced copy of $P$ is $\chi$-bounded. In the diagram $P$ has $k$ vertices, hence length $k-1$ in Diestel's notation.`,
+      idea: String.raw`Induct on the clique number, using 5.6.3. With $k\ge3$ vertices forbidden in an induced path, a connected graph has no induced path of length $k-1$ starting at any vertex. If each neighbourhood needs at most $c=f_k(\omega-1)$ colours, the lemma gives $g(c,k-1)=1+(k-2)(c+1)$. Starting with $f_k(1)=1$, take $f_k(r)=1+(k-2)(f_k(r-1)+1)$; disconnected components share a palette. This is the book's recursion after converting path length to vertex count.`,
       caption: String.raw`A random graph without an induced path on $k$ vertices (repaired by deleting a vertex of each such path). The colouring is produced by the proof: the root (click to change it, ringed) is coloured after its neighbourhood, which is coloured recursively; the rest is split into components, each coloured recursively from a neighbour of the root with a fresh shared palette. Numbers beside the vertices are BFS layers from the root. The readout compares the colours used with $\omega$, with $\chi$ and with the bound of this proof.`,
-      deps: ['graph-5.6.1a'], refs: ['Diestel §5.6'], tags: ['chi-bounded', 'induced paths'], credit: 'Gyárfás, 1987',
-      scope: String.raw`The bound shown is the one that comes out of the recursion as implemented here; the literature bounds $(k-1)^{\omega-1}$ and $(k-2)^{\omega-1}$ are quoted, not reproved.`,
+      deps: ['graph-5.6.1a'], refs: ['Diestel, Graph Theory, 6th ed., Proposition 5.6.2 and Lemma 5.6.3, pp. 146–147'], tags: ['chi-bounded', 'induced paths'], credit: 'Gyárfás, 1975 (introduction of χ-boundedness)',
+      scope: String.raw`The bound shown is the recursion obtained from Lemma 5.6.3, with the path parameter converted from length to number of vertices.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const kS = v.select('forbidden path', [{ value: 4, label: '$P^4$' }, { value: 5, label: '$P^5$' }, { value: 6, label: '$P^6$' }], 5, { onChange: () => resample() });
         const nS = v.slider('vertices before repair', 8, 14, 13, { int: true, onChange: () => resample() });
@@ -390,7 +393,7 @@ export default {
           const w = omegaOf(A2, F), kk = +kS.value; let b = 1; for (let i = 2; i <= w; i++) b = (kk - 2) * (b + 1) + 1;
           info = { n, w, chi: chiOf(A2, F), used, b, kk, ok: edgesOf(A2).every(([a, c]) => col[a] !== col[c]), p5: !inducedPath(A2, F, kk) };
         });
-        v.readout(() => !info ? '' : `$n=${info.n}$, no induced $P^${info.kk}$: **${info.p5 ? '✓' : '✗'}**. $\\omega=${info.w}$, $\\chi=${info.chi}$; the proof's colouring is proper **${info.ok ? '✓' : '✗'}** and uses **${info.used}** colours (bound of the recursion: ${info.b}; quoted bounds $(k-1)^{\\omega-1}=${Math.pow(info.kk - 1, info.w - 1)}$, $(k-2)^{\\omega-1}=${Math.pow(info.kk - 2, info.w - 1)}$).`);
+        v.readout(() => !info ? '' : `$n=${info.n}$, no induced path on $${info.kk}$ vertices: **${info.p5 ? '✓' : '✗'}**. $\\omega=${info.w}$, $\\chi=${info.chi}$; the proof's colouring is proper **${info.ok ? '✓' : '✗'}** and uses **${info.used}** colours (bound of the recursion: ${info.b}).`);
       },
     },
     {
@@ -427,12 +430,13 @@ export default {
       },
     },
     {
-      num: '5.6.3a', kind: 'Hypothesis', name: 'Gyárfás–Sumner conjecture', verify: true,
+      num: '5.6.3a', kind: 'Hypothesis', name: 'Gyárfás–Sumner conjecture',
       statement: String.raw`**Conjecture.** For every tree $T$ the class of graphs with no induced copy of $T$ is $\chi$-bounded: there is a function $f_T$ with $\chi(G)\le f_T(\omega(G))$ for all graphs $G$ without an induced $T$. The same then holds for every forest. The conjecture is open in general; it is known for paths, stars and several further families of trees. Forbidding an induced subgraph that contains a cycle can never give a $\chi$-bounded class.`,
       idea: String.raw`That the condition cannot be weakened to graphs with a cycle follows from Erdős's theorem (5.2.5): there are graphs of arbitrarily large girth and large chromatic number, with $\omega=2$ and no short cycle at all, so for a graph $H$ with a cycle they contain no induced $H$ yet have unbounded $\chi$. Stars are covered by Ramsey's theorem and paths by 5.6.2. Proposed independently by Gyárfás and by Sumner.`,
       caption: String.raw`Choose the forbidden graph $H$ and sample random graphs without an induced $H$ (vertices of found copies are deleted). Each is plotted at $(\omega,\chi)$, with the largest $\chi$ seen for each $\omega$. For $H$ a **tree** the cloud stays low, as the conjecture predicts — which proves nothing, since samples are small. For $H=K_3$ (not a forest) the Mycielski graphs $M_k$ (hollow, $\chi=k$ by theorem for $k\ge5$) climb above any bound at $\omega=2$.`,
-      deps: ['graph-5.6.1a', 'graph-5.6.2'], refs: ['Diestel §5.6'], tags: ['chi-bounded', 'conjecture', 'trees'], credit: 'Gyárfás and Sumner, independently (1970s–80s)',
+      deps: ['graph-5.6.1a', 'graph-5.6.2'], refs: ['Diestel, Graph Theory, 6th ed., §5.6, Gyárfás–Sumner conjecture, p. 147'], tags: ['chi-bounded', 'conjecture', 'trees'], credit: 'Gyárfás, 1975; Sumner, 1981',
       scope: String.raw`Open. The picture uses graphs on at most 12 vertices, so it cannot test an asymptotic statement.`,
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const TREES = {
           p4: { A: masksOf(4, [[0, 1], [1, 2], [2, 3]]), lab: '$P^4$' }, star: { A: masksOf(4, [[0, 1], [0, 2], [0, 3]]), lab: '$K_{1,3}$' },

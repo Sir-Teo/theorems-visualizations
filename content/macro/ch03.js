@@ -333,7 +333,7 @@ which has the same shape as macro-3.6 with $\delta$ replaced by $n+g+\delta$. So
 Scope: exogenous technology; $g$ is not explained.`,
       idea: String.raw`Writing the model in units of effective labour removes the trend: $\hat k$ converges by exactly the argument of macro-3.3, and since $k = A\hat k$ and $y = A\hat y$, per-worker variables grow like $A$. Saving cannot change this long-run growth rate; it only moves the level $\hat k^*$. Uzawa (1961) showed that only labour-augmenting progress is compatible with a constant capital-output ratio in the long run. With a CES technology of elasticity below one, capital-augmenting progress makes capital abundant in effective terms, the labour term becomes the bottleneck and growth peters out.`,
       caption: String.raw`Choose the kind of technical progress and the CES **elasticity of substitution** $\sigma$ ($\sigma=1$ is Cobb–Douglas). **Left:** logs of output and capital per worker; straight lines of slope $g$ mean balanced growth. **Right:** the growth rate of output per worker and the capital–output ratio. Labour-augmenting progress approaches $g$ and a constant $K/Y$ for every $\sigma$; capital-augmenting progress with $\sigma<1$ does not.`,
-      deps: ['macro-3.6'], refs: ['Mankiw ch. 9', 'Romer ch. 1'], tags: ['growth', 'technology'],
+      deps: ['macro-3.6', 'pma-5.3'], refs: ['Mankiw ch. 9', 'Romer ch. 1'], tags: ['growth', 'technology'],
       credit: 'Robert Solow, 1956; Hirofumi Uzawa, 1961',
       scope: String.raw`Closed economy, exogenous technical change; the CES comparison uses a capital weight $0.35$ and is an illustration of Uzawa's theorem, not a calibration.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Solow%E2%80%93Swan_model' },

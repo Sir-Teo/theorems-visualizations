@@ -175,7 +175,9 @@ export function formSpace(M, mats, kind = 'all') {
     if (k === l) row[k * d + l] = kind === 'sym' ? [0, 0] : [2, 0];
     rows.push(row);
   }
-  const ns = M.nullspaceC(rows);
+  // These equations subtract exact unitary identities; roundoff alone must not create rank.
+  const scale = Math.max(1, ...rows.map(r => r.reduce((s,z)=>s+Math.hypot(...z),0)));
+  const ns = M.nullspaceC(rows, 1e-10 * scale);
   return ns.map((v) => Array.from({ length: d }, (_, i) => Array.from({ length: d }, (_, j) => [v.re[i * d + j], v.im[i * d + j]])));
 }
 

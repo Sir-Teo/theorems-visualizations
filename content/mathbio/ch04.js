@@ -1,5 +1,5 @@
 // Mathematical Biology — Chapter 4: Structured populations (items 4.1–4.7; 4.8–4.14 in ch04-b.js)
-import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elSum, elRoot, r0T, project, nnClass } from './ch04.shared.js';
+import { SURV, FEC, survivorship, leslie, sumv, dotv, domEig, elSum, elRoot, r0T, project, normalizedProjection, nnClass } from './ch04.shared.js';
 
 const SURV_OPTS = [{ value: 'I', label: 'Type I (late deaths)' }, { value: 'II', label: 'Type II (constant)' }, { value: 'III', label: 'Type III (early deaths)' }];
 
@@ -23,7 +23,7 @@ export default {
       idea: String.raw`A life table is the age-specific bookkeeping behind every balance law of chapter 1: deaths are encoded in how fast $\ell_x$ falls and births in $m_x$. Survivorship curves are classified as Type I (almost everyone survives until old age), Type II (constant hazard, $\ell_x$ geometric) and Type III (heavy early mortality, as in fish or marine invertebrates). Everything in this chapter is computed from the two columns $\ell_x$ and $m_x$.`,
       scope: String.raw`Female-dominant, single-sex accounting in discrete age classes with a fixed (time-independent) life table. Observed life tables carry sampling error; the cohort below is simulated from a model, not data.`,
       caption: String.raw`A simulated cohort of newborns is followed through the age classes (choose its size, the survivorship type, and how far to follow it). Bars on the left are the observed fraction still alive, the green dots the model $\ell_x$; on the right bars are the observed mean daughters per survivor, dots the model $m_x$. Small cohorts scatter around the curves; resample to see it. The fecundity schedule is a made-up illustration.`,
-      deps: [],
+      deps: ['stat-2.1'],
       tags: ['life table', 'survivorship'],
       refs: ['Edelstein-Keshet ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Life_table' },
@@ -123,10 +123,10 @@ The subdiagonal moves each class up one step (and thins it by $s_x$); the top ro
 (b) If $A$ is moreover **primitive** ($A^k$ has all entries positive for some $k$; equivalently the cycle lengths of the graph have gcd $1$), then every other eigenvalue has modulus strictly smaller than $\rho(A)$.
 (c) If irreducible with period $h>1$, exactly $h$ eigenvalues lie on the circle $|z|=\rho$, equally spaced.
 In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
-      idea: String.raw`For a positive matrix, Perron's argument finds the largest $\lambda$ for which $A\mathbf x\ge\lambda\mathbf x$ has a nonzero nonnegative solution; positivity of $A$ then forces equality and strictness everywhere, and a second eigenvalue of equal modulus would give an eigenvector with cancellations that positivity forbids. Frobenius extended this to nonnegative matrices by perturbation and by looking at the cycle structure of the graph. The formula $\|A^k\|^{1/k}\to\rho$ is the spectral radius formula (rca-18.5); for chains the same theorem is stoch-4.6.`,
+      idea: String.raw`For a positive matrix, Perron's argument finds the largest $\lambda$ for which $A\mathbf x\ge\lambda\mathbf x$ has a nonzero nonnegative solution; positivity of $A$ then forces equality and strictness everywhere, and a second eigenvalue of equal modulus would give an eigenvector with cancellations that positivity forbids. Frobenius extended this to nonnegative matrices by perturbation and by looking at the cycle structure of the graph. The formula $\|A^k\|^{1/k}\to\rho$ is the spectral radius formula (rca-18.9); for chains the same theorem is stoch-4.6.`,
       scope: String.raw`Finite square matrices with real nonnegative entries. A Leslie matrix with all $s_x>0$ is irreducible iff $F_n>0$, and then primitive iff the gcd of the classes $x$ with $F_x>0$ is $1$.`,
       caption: String.raw`The matrix is $\begin{pmatrix}d&a&3\\0.5&0&0\\0&e&0\end{pmatrix}$ (a three-class Leslie-type matrix with an extra self-loop $d$). Left: its eigenvalues in $\mathbb C$ and the circle $|z|=\rho$. Right: $\|A^k\|_F^{1/k}$ against $k$. Set $a=d=0$ and the matrix is a pure 3-cycle: three eigenvalues sit on the circle and no convergence of shape is possible. Set $e=0$ and it becomes reducible.`,
-      deps: ['mathbio-4.2', 'rca-18.5', 'stoch-4.6'],
+      deps: ['mathbio-4.2', 'rca-18.9', 'stoch-4.6'],
       tags: ['Perron–Frobenius', 'spectrum'],
       refs: ['Edelstein-Keshet ch. 1'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Perron%E2%80%93Frobenius_theorem' },
@@ -165,12 +165,12 @@ In every case $\|A^k\|^{1/k}\to\rho(A)$.`,
 $$\frac{\mathbf n(t)}{\lambda_1^{\,t}}\longrightarrow\frac{\mathbf w\cdot\mathbf n(0)}{\mathbf w\cdot\mathbf u}\,\mathbf u,\qquad\text{so}\qquad\frac{\mathbf n(t)}{\sum_x n_x(t)}\to\mathbf u .$$
 The age distribution tends to the **stable age distribution** $\mathbf u$ whatever the initial one, geometrically fast: the error decays like $(|\lambda_2|/\lambda_1)^t$, up to a polynomial factor if $\lambda_2$ is defective.`,
       idea: String.raw`Expand $\mathbf n(0)$ in eigenvectors of $L$ (or in the Jordan basis). By 4.3(b) the dominant mode is simple and every other mode is multiplied at each step by a factor of modulus at most $|\lambda_2|<\lambda_1$ relative to the dominant one, so after dividing by $\lambda_1^t$ only the $\mathbf u$ term survives. The coefficient is the left-eigenvector projection $\mathbf w\cdot\mathbf n(0)/\mathbf w\cdot\mathbf u$, which is where reproductive value (4.9) comes from. Without primitivity (a period $h>1$) the shape keeps rotating around a cycle and the theorem fails.`,
-      scope: String.raw`Fixed rates, primitive $L$ (for a Leslie matrix: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
-      caption: String.raw`Four age classes. Left: the share of class 1 in the population for four very different starting distributions; the green line is $u_1$. Right: the $\ell^1$ distance to $\mathbf u$ on a log axis, with a dashed line of slope $\ln(|\lambda_2|/\lambda_1)$. Vary $F_3$ and $F_4$ to change the gap; set $F_3=0$ and the matrix becomes imprimitive (cycle length 4 only), and the shares never settle.`,
+      scope: String.raw`The 1922 original treats continuous age and discusses limitations when fertility changes with population composition; the displayed result is its modern finite-matrix analogue, not a verbatim theorem from that paper. Fixed rates, primitive $L$ (for a Leslie matrix with every class-to-class survival probability strictly positive: $F_n>0$ and the gcd of the lengths $x$ with $F_x>0$ is $1$). Rate of convergence set by the subdominant eigenvalue; complex $\lambda_2$ gives damped age-structure oscillations.`,
+      caption: String.raw`Four age classes. Left: the share of class 1 in the population for four very different starting distributions; the green line is $u_1$. Right: the $\ell^1$ distance to $\mathbf u$ on a log axis, with a dashed line of slope $\ln(|\lambda_2|/\lambda_1)$. Vary $F_3$ and $F_4$ to change the gap; set $F_3=0$ with $F_4>0$ to get period 4. With $F_4=0$ it is reducible; with both fecundities zero every population dies within four steps, so its normalized age distribution ceases to exist.`,
       deps: ['mathbio-4.3'],
       tags: ['stable age distribution', 'ergodicity'],
-      refs: ['Edelstein-Keshet ch. 1'],
-      verify: true,
+      refs: ['Lotka (1922), PNAS 8:339–345 (continuous-age historical source); modern finite-matrix statement follows from Perron–Frobenius as proved here'],
+      links: { doi: 'https://doi.org/10.1073/pnas.8.11.339' },
       viz(v) {
         const F3 = v.slider('$F_3$', 0, 4, 1.8, { step: 0.05 }), F4 = v.slider('$F_4$', 0, 4, 1.2, { step: 0.05 });
         const s = v.slider('survival $s$', 0.3, 1, 0.8, { step: 0.01 });
@@ -182,19 +182,24 @@ The age distribution tends to the **stable age distribution** $\mathbf u$ whatev
         let info = null;
         v.render(() => {
           const A = leslie([0, 0, F3.value, F4.value], [s.value, s.value, s.value]);
-          const E = domEig(A), ev = v.M.eig(A).values;
-          const ratio = ev.length > 1 ? ev[1].abs() / ev[0].abs() : 0;
-          const runs = starts.map((n0) => project(A, n0, TT).map((q) => q.map((x) => x / sumv(q))));
+          const cls = nnClass(A), fertile = F3.value + F4.value > 0;
+          const E = fertile ? domEig(A) : { lam: 0, u: null }, ev = fertile ? v.M.eig(A).values : [];
+          const ratio = ev.length > 1 && ev[0].abs() > 0 ? ev[1].abs() / ev[0].abs() : null;
+          const runs = starts.map((n0) => normalizedProjection(A, n0, TT));
           runs.forEach((r, k) => {
-            P.path(r.map((q, t) => [t, q[0]]), { color: cols[k], width: 2 });
-            D.path(r.map((q, t) => [t, Math.max(1e-12, sumv(q.map((x, i) => Math.abs(x - E.u[i]))))]), { color: cols[k], width: 2 });
+            P.path(r.map((q, t) => q && [t, q[0]]).filter(Boolean), { color: cols[k], width: 2 });
+            if (E.u) D.path(r.map((q, t) => q && [t, Math.max(1e-12, sumv(q.map((x, i) => Math.abs(x - E.u[i]))))]).filter(Boolean), { color: cols[k], width: 2 });
           });
-          P.hline(E.u[0], { color: 'green', dash: true, width: 1.5 });
+          if (E.u) P.hline(E.u[0], { color: 'green', dash: true, width: 1.5 });
           if (ratio > 0 && ratio < 1) { const d0 = 1.2; D.path(Array.from({ length: TT + 1 }, (_, t) => [t, d0 * Math.pow(ratio, t)]), { color: 'ink', dash: true, alpha: 0.6 }); }
-          info = { ratio, lam: E.lam, u: E.u, d: runs.map((r) => sumv(r[TT].map((x, i) => Math.abs(x - E.u[i])))) };
+          info = { cls, fertile, ratio, lam: E.lam, u: E.u, d: runs.map((r) => E.u && r[TT] ? sumv(r[TT].map((x, i) => Math.abs(x - E.u[i]))) : null) };
         });
         v.legend([['accent', 'start (1,0,0,0)'], ['orange', 'start (0,0,0,1)'], ['purple', 'start (.1,.2,.3,.4)'], ['teal', 'start (.5,0,.5,0)'], ['green', 'u₁', { dash: true }]]);
-        v.readout(() => `$\\lambda_1=${v.fix(info.lam, 4)}$, $|\\lambda_2|/\\lambda_1=${v.fix(info.ratio, 4)}$ → ${info.ratio < 0.999 ? 'primitive: shape converges' : '**no spectral gap** (imprimitive or defective): shape does not settle'}.\nStable distribution $\\mathbf u=(${info.u.map((x) => v.fix(x, 3)).join(',\\ ')})$; distances at $t=${TT}$: ${info.d.map((x) => v.sci(Math.max(x, 1e-16), 2)).map((x) => '$' + x + '$').join(', ')}.`);
+        v.readout(() => {
+          if (!info.fertile) return '**No reproduction**: every population is extinct by t=4; normalized age shares are undefined after extinction.';
+          const classification = info.cls.irreducible ? info.cls.period === 1 ? 'primitive: shape converges' : `imprimitive: period ${info.cls.period}` : 'reducible: the theorem does not apply to all starts';
+          return `$\\lambda_1=${v.fix(info.lam, 4)}$, $|\\lambda_2|/\\lambda_1=${v.fix(info.ratio, 4)}$ → ${classification}.\nPerron age profile $\\mathbf u=(${info.u.map((x) => v.fix(x, 3)).join(',\\ ')})$; distances at $t=${TT}$: ${info.d.map(x => x === null ? 'extinct (share undefined)' : '$' + v.sci(Math.max(x, 1e-16), 2) + '$').join(', ')}.`;
+        });
       },
     },
     // ───────────────────────────────────────────────────────────── 4.5
@@ -210,7 +215,7 @@ $$T=\frac{\sum_x x\,\ell_x m_x}{\sum_x \ell_x m_x}.$$
       idea: String.raw`$R_0$ is the factor by which the population multiplies per generation: each newborn is replaced by $R_0$ newborns on average, whatever the timing. $T$ records the timing. Together they give the quick estimate $r\approx\ln R_0/T$ (4.8), and by 4.7 whether the population grows depends only on whether $R_0>1$.`,
       scope: String.raw`Defined for a fixed life table, females only. There are other definitions of "generation time" (mean age of mothers in the stable population, or the time for the population to multiply by $R_0$); the one above is the cohort mean $T_c$.`,
       caption: String.raw`Drag the orange handles to edit the fecundity $m_x$ (left); the green curve shows $\ell_x$ for the chosen survivorship type. The right panel shows $\ell_x m_x$ as bars; its total is $R_0$ and its centre of mass (gold line) is $T$. Notice that $R_0$ is the area, $T$ the balance point.`,
-      deps: ['mathbio-4.1'],
+      deps: ['mathbio-4.1', 'prob-1.6.1a'],
       tags: ['R0', 'generation time'],
       refs: ['Edelstein-Keshet ch. 1'],
       viz(v) {

@@ -4,7 +4,7 @@
 // What is standard and recomputed here (checked in the readouts): isentropic relations for a perfect gas with gamma = 1.4; the theta-beta-M relation
 // tan(theta) = 2 cot(beta) (M^2 sin^2 beta - 1) / (M^2 (gamma + cos 2 beta) + 2); the Prandtl-Meyer function nu(M); Ackeret's linear theory Cp = 2 theta / sqrt(M^2 - 1);
 // the slender-body (von Karman / Sears-Haack) wave drag of an axisymmetric body, D/q = -(1/2 pi) Int Int S''(x1) S''(x2) ln|x1 - x2| dx1 dx2, written in Fourier form
-// below (coefficient checked against the closed-form Sears-Haack drag 128 V^2 / (pi l^4) by ch04.shared.js sears() and a direct double integral in the test run).
+// below using the sine coefficients of S'(x(theta)), not of S itself. See docs/verification/aero-ch04.md for source passages and independent checks.
 // The Korn relation for the drag-divergence Mach number and Lock's fourth-power wave-drag rise are engineering correlations (Mason, Configuration Aerodynamics; see ch04.js header).
 export * from './ch03.shared.js';
 import { GAMMA } from './ch03.shared.js';
@@ -87,6 +87,7 @@ export const isenP = (M1, M2) => Math.pow((1 + 0.5 * GM1 * M1 * M1) / (1 + 0.5 *
 export function turnFace(M1, p1, turn) {
   if (Math.abs(turn) < 1e-12) return { p: p1, M: M1 };
   if (turn > 0) { const b = shockAngles(turn, M1); if (!b) return null; const j = obliqueJump(M1, b.weak); return { p: p1 * j.p, M: j.M2 }; }
+  if (M1 < 1) return null; // A centred Prandtl–Meyer fan needs supersonic upstream flow.
   const nu2 = nuPM(M1) - turn; if (nu2 >= NU_MAX) return { p: 0, M: Infinity };
   const M2 = machFromNu(nu2); return { p: p1 * isenP(M1, M2), M: M2 };
 }
@@ -99,6 +100,7 @@ export function shockExpansionDiamond(M, alpha, eps) {
   const up1 = turnFace(M, 1, eps - alpha), lo1 = turnFace(M, 1, eps + alpha);
   if (!up1 || !lo1) return null;
   const up2 = turnFace(up1.M, up1.p, -2 * eps), lo2 = turnFace(lo1.M, lo1.p, -2 * eps);
+  if (!up2 || !lo2) return null;
   // face normals: upper front face slope (eps - alpha) relative to the flow: each half-chord 1/2; forces from p dA
   const faces = [
     { p: up1.p, ang: -(alpha - eps) /* surface angle to the flow, positive = nose up */, up: true }, { p: up2.p, ang: -(alpha + eps), up: true },
@@ -124,18 +126,29 @@ export function ackeretDiamond(M, alpha, eps) {
 
 // ── Slender-body wave drag (area rule) ──────────────────────────────────────────────────────────────────────────────────
 /**
- * Wave drag D/q of a slender body of length l with cross-section area S(x) (S(0) = S(l) = 0), via the Fourier series S(theta) = sum A_n sin(n theta), x = (l/2)(1 - cos theta):
- * D/q = (6 pi / l^2) sum n A_n^2 (coefficient fixed by the Sears-Haack body and confirmed against the double integral); returns { dq, A (coefficients), Sfun }. S given as samples S(x) on n+1 equispaced points over [0, l].
+ * Wave drag D/q for a closed slender area S(x), S(0)=S(l)=S'(0)=S'(l)=0.
+ * Fourier sine coefficients A_n belong to S'(x(theta)), x=l(1-cos(theta))/2;
+ * D/q=(pi/4) sum n A_n^2 (Sheppard ARC R&M3077, printed p5).
+ * Returns {dq, A, sum}; nth angular quadrature points and nmax retained modes.
  */
 export function waveDrag(Sfun, l = 1, nth = 400, nmax = 40) {
-  const A = [];
-  for (let n = 1; n <= nmax; n++) {
-    let s = 0;
-    for (let k = 0; k < nth; k++) { const th = (k + 0.5) / nth * Math.PI, x = 0.5 * l * (1 - Math.cos(th)); s += Sfun(x) * Math.sin(n * th); }
-    A.push(2 / nth * s);
+  // a_n are sine coefficients of S'(x(theta)), x=l(1-cos(theta))/2.
+  // Integration by parts avoids numerically differentiating the area:
+  // a_n = -4/(pi*l) integral S(x(theta)) d[sin(n*theta)/sin(theta)]/dtheta dtheta.
+  // Requires closed pointed ends, S(0)=S(l)=0; the drag functional also requires S' zero at both ends.
+  const A = Array(nmax).fill(0);
+  for (let k = 0; k < nth; k++) {
+    const th = (k + 0.5) / nth * Math.PI, c = Math.cos(th), sn = Math.sin(th);
+    const area = Sfun(0.5 * l * (1 - c));
+    let prev = 0, ratio = 1, dprev = 0, deriv = 0;
+    for (let n = 1; n <= nmax; n++) {
+      A[n - 1] += -4 / (l * nth) * area * deriv;
+      const next = 2 * c * ratio - prev, dnext = -2 * sn * ratio + 2 * c * deriv - dprev;
+      prev = ratio; ratio = next; dprev = deriv; deriv = dnext;
+    }
   }
   let sum = 0; A.forEach((a, i) => { sum += (i + 1) * a * a; });
-  return { dq: 6 * Math.PI / (l * l) * sum, A, sum };
+  return { dq: Math.PI / 4 * sum, A, sum };
 }
 /** Closed-form minimum wave drag D/q = 128 V^2 / (pi l^4) of a body of volume V and length l (Sears-Haack), and its area distribution S(x). */
 export function sears(V, l = 1) {
@@ -157,4 +170,4 @@ export function areaCoeffs(Af, Aw, xw, ww) {
   o = { f, w }; _cache.set(key, o); if (_cache.size > 40) _cache.delete(_cache.keys().next().value); return o;
 }
 /** Wave drag D/q (area units) of the body whose area is fusIdeal + (1 - k) wingHump (k = 1: fuselage indented by exactly the wing area). */
-export function dragOfK(co, k) { let s = 0; for (let i = 0; i < co.f.length; i++) { const a = co.f[i] + (1 - k) * co.w[i]; s += (i + 1) * a * a; } return 6 * Math.PI / (LBODY * LBODY) * s; }
+export function dragOfK(co, k) { let s = 0; for (let i = 0; i < co.f.length; i++) { const a = co.f[i] + (1 - k) * co.w[i]; s += (i + 1) * a * a; } return Math.PI / 4 * s; }

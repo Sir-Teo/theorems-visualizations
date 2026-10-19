@@ -281,7 +281,6 @@ export default {
       refs: ['MSZ ch. 3'],
       tags: ['Nim', 'impartial games', 'combinatorial game'],
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Sprague%E2%80%93Grundy_theorem' },
-      verify: true,
       viz(v) {
         const A = v.stage({ x: [0, 1], y: [0, 1], equal: true, axes: false, height: 340, weight: 1.1, title: 'Nim' });
         const Bb = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 0.9, title: 'binary digits and the nim-sum' });
@@ -420,7 +419,7 @@ export default {
         });
         v.readout(() => {
           const { S, N, nl, through } = info, f = ((n + 2) ** d - n ** d) / 2;
-          const verdict = S.res === true ? 'a colouring with no monochromatic line exists, so a drawn full board is possible and this argument does not decide the game' : S.res === false ? 'NO colouring avoids a monochromatic line (exhaustive search): every full board has a winner, so by strategy stealing the first player wins' : 'search budget exhausted: no conclusion (neither a colouring nor a proof that none exists)';
+          const verdict = S.res === true ? 'a two-colouring with no monochromatic line exists, so this argument does not decide the game (the search does not impose alternating-turn colour counts)' : S.res === false ? 'NO colouring avoids a monochromatic line (exhaustive search): every full board has a winner, so by strategy stealing the first player wins' : 'search budget exhausted: no conclusion (neither a colouring nor a proof that none exists)';
           return `$[${n}]^{${d}}$ has ${N} cells and ${nl} lines (formula $\\frac{(n+2)^d-n^d}{2}=${f}$)${through ? `; the selected cell lies on ${through} of them` : ''}\n${verdict} (${S.steps} search steps)`;
         });
       },

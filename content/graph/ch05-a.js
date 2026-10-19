@@ -40,12 +40,12 @@ export default {
   items: [
     // ====================================================================== 5.1 Colouring maps and planar graphs
     {
-      num: '5.1.1a', kind: 'Definition', name: 'Vertex colourings and chromatic number', verify: true,
+      num: '5.1.1a', kind: 'Definition', name: 'Vertex colourings and chromatic number',
       statement: String.raw`A **vertex colouring** of a graph $G=(V,E)$ with colours $\{1,\dots,k\}$ is a map $c\colon V\to\{1,\dots,k\}$ with $c(x)\neq c(y)$ for every edge $xy$ (a *proper* colouring; the colour classes are independent sets). The least $k$ for which such a map exists is the **chromatic number** $\chi(G)$; $G$ is **$k$-colourable** if $\chi(G)\le k$ and **$k$-chromatic** if $\chi(G)=k$.`,
-      idea: String.raw`Colouring is the same as partitioning $V$ into $k$ independent sets, so $\chi(G)=1$ exactly for edgeless graphs, $\chi(G)=2$ exactly for bipartite graphs with an edge, and every clique $K^r\subseteq G$ forces $\chi(G)\ge r$. Computing $\chi$ in general is hard; for the small graphs here the picture is produced by an exact backtracking search.`,
+      idea: String.raw`Colouring is the same as partitioning $V$ into $k$ independent sets, so $\chi(G)=1$ exactly for non-empty edgeless graphs, $\chi(G)=2$ exactly for bipartite graphs with an edge, and every clique $K^r\subseteq G$ forces $\chi(G)\ge r$. Computing $\chi$ in general is hard; for the small graphs here the picture is produced by an exact backtracking search.`,
       caption: String.raw`Click a vertex to cycle through the colours (Shift-click goes backwards); an edge whose ends share a colour turns red. Try to use as few colours as you can, then compare with $\chi(G)$ in the readout. Switch on *edit the graph* to add and delete vertices and edges.`,
-      deps: ['graph-1.1.1a'], refs: ['Diestel §5.1'], see: ['comb-9.9'], tags: ['colouring', 'chromatic number'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Graph_coloring' },
+      deps: ['graph-1.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Chapter 5 introduction, p. 123'], see: ['comb-9.9'], tags: ['colouring', 'chromatic number'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Graph_coloring' },
       viz(v) {
         const s = gstage(v, { height: 340 });
         const G = v.graph(s, { ...PRE5.pet[1](), r: 13, editable: true });
@@ -88,12 +88,12 @@ export default {
       },
     },
     {
-      num: '5.1.1b', kind: 'Definition', name: 'Edge colourings and chromatic index', verify: true,
+      num: '5.1.1b', kind: 'Definition', name: 'Edge colourings and chromatic index',
       statement: String.raw`An **edge colouring** of $G$ with $k$ colours assigns each edge one of $k$ colours so that edges sharing an end get different colours; the colour classes are matchings. The least such $k$ is the **chromatic index** $\chi'(G)$. Always $\chi'(G)\ge\Delta(G)$, since the edges at a vertex of maximum degree need distinct colours.`,
       idea: String.raw`An edge colouring of $G$ is exactly a vertex colouring of its line graph $L(G)$, so $\chi'(G)=\chi(L(G))$. The inequality $\chi'\ge\Delta$ is local; how far above $\Delta$ the chromatic index can go is settled in §5.3 (König for bipartite graphs, Vizing in general).`,
       caption: String.raw`Click an edge to cycle through its colours. Two edges of equal colour at a vertex are drawn red and the vertex is ringed. The readout compares your palette with $\Delta$ and the exact value of $\chi'$.`,
-      deps: ['graph-5.1.1a'], refs: ['Diestel §5.1'], tags: ['edge colouring', 'chromatic index'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Edge_coloring' },
+      deps: ['graph-5.1.1a'], refs: ['Diestel, Graph Theory, 6th ed., Chapter 5 introduction, p. 124'], tags: ['edge colouring', 'chromatic index'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Edge_coloring' },
       viz(v) {
         const P = { k4: ['$K^4$', () => named('complete', 4)], k5: ['$K^5$', () => named('complete', 5)], pet: ['Petersen', () => named('petersen')], k33: ['$K_{3,3}$', () => named('kmn', 3, 3)], cube: ['cube', () => named('cube')], c5: ['$C^5$', () => named('cycle', 5)] };
         const s = gstage(v, { height: 340 });
@@ -144,11 +144,11 @@ export default {
     {
       num: '5.1.1', kind: 'Theorem', name: 'Four colour theorem',
       statement: String.raw`Every planar graph has a proper vertex colouring with at most four colours: $\chi(G)\le 4$ for all planar $G$. Equivalently, the countries of any map in the plane (each connected, meeting along borders of positive length) can be coloured with four colours so that neighbours differ.`,
-      idea: String.raw`Kempe's 1879 attempt reduces the claim to a finite list of configurations, but his handling of the hardest one was flawed. The accepted proofs show that a minimal counterexample must contain one of a list of *reducible* configurations while every plane triangulation contains one of an *unavoidable* set; both lists are checked by computer (Appel and Haken 1976; a smaller, cleaner version by Robertson, Sanders, Seymour and Thomas 1997; a machine-checked formal proof by Gonthier in 2005). The picture below does not prove anything: it colours random plane triangulations, the extremal case, and shows the claim empirically.`,
+      idea: String.raw`Kempe's 1879 attempt reduces the claim to a finite list of configurations, but his handling of the hardest one was flawed. The accepted proofs show that a minimal counterexample must contain one of a list of *reducible* configurations while every plane triangulation contains one of an *unavoidable* set; both lists are checked by computer (Appel and Haken, published 1977; a smaller, cleaner version by Robertson, Sanders, Seymour and Thomas 1997). The picture below does not prove anything: it colours random plane triangulations, the extremal case, and shows the claim empirically.`,
       caption: String.raw`Resample random plane triangulations and change $n$. With four colours the search always succeeds. Switch to three colours to see how often that fails (the red edges show the best attempt), and read the bar chart: over many samples $\chi$ is $3$ or $4$, never $5$.`,
-      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel §5.1'], see: ['graph-5.1.2', 'geog-7.8'], tags: ['colouring', 'planar'],
-      credit: 'Appel & Haken, 1976 (computer-assisted); simplified by Robertson, Sanders, Seymour & Thomas, 1997', verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Four_color_theorem' },
+      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.1.1, p. 124; notes pp. 152–153'], see: ['graph-5.1.2', 'geog-7.8'], tags: ['colouring', 'planar'],
+      credit: 'Appel & Haken, 1977 (publication); Robertson, Sanders, Seymour & Thomas, 1997',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Four_color_theorem' },
       viz(v) {
         const s = gstage(v, { height: 340, title: 'a random plane triangulation' });
         const sb = v.stage({ x: [2, 6], y: [0, 100], axes: 'box', gutter: true, height: 340, xlabel: '$\\chi$ of the sampled triangulation', ylabel: '% of 120 samples', xticks: [3, 4, 5], title: 'how many colours do random triangulations need?' });
@@ -160,9 +160,9 @@ export default {
         const mkTri = (n, sd, light) => (light ? { n, E: randomTriangulation(n, rng32(sd), 60).E } : triangulation(n, sd));
         function refresh() {
           const key = nS.value + ':' + seed; if (cur.key === key) return;
-          const D = mkTri(nS.value, seed), H = ix({ nodes: Array.from({ length: D.n }, (_, i) => ({ id: i })), edges: D.E });
+          const D = mkTri(nS.value, seed);
           loadSpec(G, { nodes: D.pos.map(([x, y], i) => ({ id: i, x, y, label: String(i + 1) })), edges: D.E, layout: 'fit' });
-          const c4 = colourWith(nbrs(H), 4), c3 = colourWith(nbrs(H), 3);
+          const H = ix(G), c4 = colourWith(nbrs(H), 4), c3 = colourWith(nbrs(H), 3);
           cur = { key, H, c3, c4, att: c3.status === 'yes' ? null : bestAttempt(H, 3, seed) };
         }
         function histo() {
@@ -191,13 +191,13 @@ export default {
       },
     },
     {
-      num: '5.1.2', kind: 'Proposition', name: 'Five colour theorem', verify: true,
+      num: '5.1.2', kind: 'Proposition', name: 'Five colour theorem',
       statement: String.raw`Every planar graph is $5$-colourable.`,
       idea: String.raw`Induct on $|G|$. A planar graph has a vertex $v$ of degree at most $5$ (from $m\le 3n-6$); colour $G-v$ by induction. If the neighbours of $v$ use at most four colours, give $v$ a free one. Otherwise $v$ has five neighbours $n_1,\dots,n_5$ in cyclic order with colours $1,\dots,5$. Look at the Kempe chain of colours $1,3$ containing $n_1$. If it misses $n_3$, swap its two colours and colour $v$ with $1$. If it reaches $n_3$, it together with $v$ forms a closed curve that separates $n_2$ from $n_4$, so the $2,4$-chain from $n_2$ cannot reach $n_4$: swap that one instead. Kempe's argument for four colours breaks because a degree-$5$ vertex lets two chains be unlinked only when only two colours are involved.`,
       caption: String.raw`Step through the proof on a random plane triangulation: first vertices of degree $\le5$ are peeled off, then they are re-inserted in reverse order. When all five colours surround a vertex, the Kempe chain (red ring) is swapped. Use *next example with a swap* to find a graph where this happens.`,
-      deps: ['graph-4.2.10', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel §5.1'], tags: ['colouring', 'Kempe chain', 'planar'],
+      deps: ['graph-4.2.10', 'graph-5.1.1a', 'graph-4.1.1'], refs: ['Diestel, Graph Theory, 6th ed., Proposition 5.1.2 and first proof, pp. 124–125'], tags: ['colouring', 'Kempe chain', 'planar'],
       credit: 'Heawood, 1890 (repairing Kempe, 1879)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Five_color_theorem' },
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Five_color_theorem' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const nS = v.slider('vertices $n$', 6, 20, 14, { int: true, onChange: () => rebuild() });
@@ -229,9 +229,9 @@ export default {
       statement: String.raw`Every planar graph without triangles is $3$-colourable.`,
       idea: String.raw`The proof (Grötzsch 1959; Thomassen's later argument is much shorter) strengthens the claim so that it can be proved by induction on plane graphs, controlling the colouring of the outer face. Both hypotheses are needed: a planar graph with triangles may need four colours ($K^4$, odd wheels), and a triangle-free graph that is not planar may need four too (the Grötzsch graph, a Mycielski construction on $C^5$).`,
       caption: String.raw`Pick *random* to sample maximal triangle-free planar graphs and watch a proper 3-colouring appear. The other presets break one hypothesis each: $K^4$ and the wheel are planar but have triangles, the Grötzsch graph is triangle-free but not planar, and both need four colours.`,
-      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel §5.1'], tags: ['colouring', 'planar', 'triangle-free'],
-      credit: 'Grötzsch, 1959', verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Gr%C3%B6tzsch%27s_theorem' },
+      deps: ['graph-5.1.1a', 'graph-4.4.1a'], refs: ['Diestel, Graph Theory, 6th ed., Theorem 5.1.3, p. 126'], tags: ['colouring', 'planar', 'triangle-free'],
+      credit: 'Grötzsch, 1959',
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Gr%C3%B6tzsch%27s_theorem' },
       viz(v) {
         const s = gstage(v, { height: 360 });
         const P = { rnd: ['random', null], k4: ['$K^4$', () => named('complete', 4)], w5: ['odd wheel', () => wheel(5)], gro: ['Grötzsch graph', () => grotzsch()], c5: ['$C^5$', () => named('cycle', 5)] };
@@ -305,11 +305,12 @@ export default {
       },
     },
     {
-      num: '5.2.1a', kind: 'Algorithm', name: 'Greedy colouring and the colouring number', verify: true,
+      num: '5.2.1a', kind: 'Algorithm', name: 'Greedy colouring and the colouring number',
       statement: String.raw`**Greedy colouring.** Given an order $v_1,\dots,v_n$ of the vertices, give $v_i$ the least colour not used by its neighbours among $v_1,\dots,v_{i-1}$. It uses at most $\Delta(G)+1$ colours, and in general at most $1+\max_i d_{<}(v_i)$ colours, where $d_<(v_i)$ counts earlier neighbours. The **colouring number** $\operatorname{col}(G)$ is the least $k$ such that some order has every vertex with fewer than $k$ earlier neighbours.`,
       idea: String.raw`A vertex with $d_<$ earlier neighbours can only be blocked by $d_<$ colours, so colour number $d_<+1$ is always free. The order matters enormously: on a crown graph (bipartite, $\chi=2$) the order $a_1,b_1,a_2,b_2,\dots$ forces $n$ colours, while ordering by repeated deletion of a minimum-degree vertex (smallest-last) achieves $\operatorname{col}(G)$ colours.`,
       caption: String.raw`Choose a graph and an order, then step through the greedy algorithm (the small numbers show the order, the gold ring the vertex being coloured). On the crown graph the label order is a bad one: compare with smallest-last. The readout lists $\chi$, $\operatorname{col}(G)$ and $\Delta+1$.`,
-      deps: ['graph-5.1.1a', 'graph-1.2.1a'], refs: ['Diestel §5.2'], tags: ['greedy', 'colouring number'],
+      deps: ['graph-5.1.1a', 'graph-1.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., §5.2, pp. 126–127'], tags: ['greedy', 'colouring number'],
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const s = gstage(v, { height: 340 });
         const P = { crown: ['crown graph', () => crown(5)], pet: ['Petersen', () => named('petersen')], rnd: ['random', () => gnm(11, 20, rng32(5))], cube: ['cube', () => named('cube')] };
@@ -350,8 +351,9 @@ export default {
       statement: String.raw`For every graph $G$, $\chi(G)\le \operatorname{col}(G)=1+\max_{H\subseteq G}\delta(H)$, the maximum over all subgraphs $H$ of the minimum degree.`,
       idea: String.raw`Delete a vertex of least degree again and again. Let $d$ be the largest degree met at the moment of deletion. Re-inserting the vertices in reverse order, each has at most $d$ earlier neighbours, so greedy colouring uses at most $d+1$ colours; hence $\operatorname{col}(G)\le d+1$. Conversely the remaining graph at the first moment a vertex of degree $d$ is deleted has minimum degree $d$, and in any order the last vertex of a subgraph $H$ has $\delta(H)$ earlier neighbours; so $\operatorname{col}(G)\ge\delta(H)+1$ for every $H$.`,
       caption: String.raw`In *peel* mode delete vertices of least degree one at a time (slider) and watch the bar chart of the degrees at deletion; when the remaining graph is the subgraph $H$ with $\delta(H)=d$ it is ringed in green. In *colour back* mode re-insert in reverse order, colouring greedily: never more than $d+1$ colours.`,
-      deps: ['graph-5.2.1a'], refs: ['Diestel §5.2'], tags: ['degeneracy', 'colouring number'],
-      credit: 'Szekeres & Wilf, 1968', verify: true,
+      deps: ['graph-5.2.1a'], refs: ['Diestel, Graph Theory, 6th ed., Proposition 5.2.2 and preceding proof, p. 127'], tags: ['degeneracy', 'colouring number'],
+
+      links: { source: 'https://www.math.uni-hamburg.de/home/diestel/books/graph.theory/preview/Ch5.pdf' },
       viz(v) {
         const P = {
           rnd: ['random', () => gnm(14, 26, rng32(9))], pet: ['Petersen', () => named('petersen')],

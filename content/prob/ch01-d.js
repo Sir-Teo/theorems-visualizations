@@ -35,7 +35,8 @@ export default {
       num: '1.6.1a',
       kind: 'Definition',
       name: 'Expected value',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.6, pp. 28–29 (extended expectation definition)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`Let $X$ be a random variable on a probability space $(\Omega,\mathcal F,P)$. If $X\ge0$, its **expected value** is $EX=\int X\,dP$, which always makes sense but may be $+\infty$. In general write $x^+=\max\{x,0\}$ and $x^-=\max\{-x,0\}$. Then $EX$ **exists** and equals $EX^+-EX^-$ whenever the subtraction makes sense, that is, when $EX^+<\infty$ or $EX^-<\infty$. $EX$ is also called the **mean** of $X$, often written $\mu$.`,
       idea: String.raw`Expectation is the integral of Section 1.4 with respect to a probability measure, so it inherits every property proved there. For a picture in terms of the distribution function $F$, slice the region under the graph of $X^+$ horizontally (Exercise 1.7.2): $EX^+=\int_0^\infty P(X>x)\,dx$ and $EX^-=\int_{-\infty}^0P(X<x)\,dx$. These are the areas between $F$ and the line $1$ on the right of $0$, and between $F$ and $0$ on the left. $EX$ fails to exist exactly when both areas are infinite.`,
       caption: String.raw`Left: the distribution function $F$. The green area (between $F$ and $1$, right of $0$) is $EX^+$; the red area (between $F$ and $0$, left of $0$) is $EX^-$. Drag the gold handle to shift the law, slide $\sigma$ to spread it, and watch the areas trade off. Right: running averages of seeded samples settle on $EX$ (dashed). For the Pareto law $EX=+\infty$ (it still exists); for the Cauchy law both areas are infinite, so $EX$ does not exist and the averages never settle.`,
@@ -563,7 +564,8 @@ Writing $h$ for $X$ and $P\circ h^{-1}$ for $\mu$: $\int_\Omega f(h(\omega))\,dP
       num: '1.6.9a',
       kind: 'Definition',
       name: 'Moments and variance',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §1.6, pp. 32–33, equations (1.6.2)–(1.6.4); §3.3.5, pp. 140–141 (Heyde lognormal family)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`For a positive integer $k$, $EX^k$ is the **$k$th moment** of $X$; the first moment $EX$ is the mean $\mu$. If $EX^2<\infty$, the **variance** is
 $$\operatorname{var}(X)=E(X-\mu)^2=EX^2-\mu^2,$$
 so $\operatorname{var}(X)\le EX^2$, and $\operatorname{var}(aX+b)=a^2\operatorname{var}(X)$. By the change of variables formula all of these are integrals against the law of $X$: $EX^k=\int x^k\,\mu(dx)$. If $E|X|^k<\infty$ then $E|X|^j<\infty$ for $0<j<k$ (Exercise 1.6.11).`,

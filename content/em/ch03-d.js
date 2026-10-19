@@ -125,12 +125,11 @@ For the disc of radius $R$ in the plane, $G=\frac1{2\pi}\Bigl[\ln\frac{R\,|\math
       name: 'Thomson’s theorem',
       statement: String.raw`Among all ways of distributing a given total charge $Q$ over the surface of an isolated conductor (or a given charge on each of several conductors), the electrostatic field energy $W=\tfrac{\varepsilon_0}{2}\int E^2\,d\tau$ is smallest for the equilibrium distribution, the one for which the conductor is an equipotential.`,
       idea: String.raw`Write any trial distribution as the equilibrium one plus a change $\delta\sigma$ with zero total charge. The energy is a quadratic form in the charges, $W=\tfrac12\int\sigma V\,da$, so $W_{trial}=W_{eq}+\int\delta\sigma\,V_{eq}\,da+W[\delta\sigma]$. Because $V_{eq}$ is constant on the conductor and $\int\delta\sigma=0$, the linear term vanishes, and $W[\delta\sigma]=\tfrac{\varepsilon_0}{2}\int|\mathbf E_{\delta}|^2d\tau>0$ (the field energy of a nonzero charge distribution, em-2.11). So $W_{trial}>W_{eq}$ unless $\delta\sigma=0$, which is also the second uniqueness theorem (em-3.6). Equivalently, charges on a conductor slide until they can lower the energy no more.`,
-      caption: String.raw`An infinitely long conducting cylinder of elliptical cross-section holds charge $\lambda$ per unit length, which is modelled by 48 charged strips round the rim (bars outside the rim: the green ghost is the equilibrium density, red the trial one). The four sliders smear the charge in the shapes $\cos(k\cdot\text{angle round the rim})$; the energy readout, relative to the equilibrium energy, is always positive, and so is the spread of the potential over the surface. Press **slide the charge** to let it flow downhill: it relaxes into the equilibrium, crowding at the ends of the ellipse, and the energy drops to its minimum.`,
-      scope: String.raw`Two-dimensional (log potential), a strip charge model: the energy is $\tfrac12\sum\lambda_i\lambda_jA_{ij}$ with $A_{ij}=-\ln d_{ij}$ and the exact self-term of a uniform strip, $-\ln(\ell/2)+1$. This is the discrete analogue of the theorem and its sign is guaranteed for zero-total perturbations; energies are shown in units of the equilibrium energy, since the zero of a 2D potential is arbitrary (only differences matter).`,
-      credit: 'W. Thomson (Lord Kelvin), 1840s',
-      verify: true,
+      caption: String.raw`An infinitely long conducting cylinder of elliptical cross-section holds charge $\lambda$ per unit length, which is modelled by 48 charged strips round the rim (bars outside the rim: the green ghost is the equilibrium density, red the trial one). The four sliders smear the charge in the shapes $\cos(k\cdot\text{angle round the rim})$; the excess energy readout is nonnegative, and so is the spread of the potential over the surface. Press **slide the charge** to let it flow downhill: it relaxes into the equilibrium, crowding at the ends of the ellipse, and the energy drops to its minimum.`,
+      scope: String.raw`Two-dimensional (log potential), a strip charge model: the energy is $\tfrac12\sum\lambda_i\lambda_jA_{ij}$ with $A_{ij}=-\ln d_{ij}$ and the midpoint potential self-term of a uniform straight strip, $-\ln(\ell/2)+1$. This symmetric midpoint model approximates the continuous boundary integral; its diagonal is not the double-averaged strip energy. Its quadratic form is positive on the zero-total subspace for the displayed aspect-ratio range (independently checked). A net line charge has divergent absolute field energy at infinity, so only finite energy differences are compared, in kernel units $\lambda^2/(2\pi\varepsilon_0)$; no absolute 2D energy minimum is asserted.`,
+      credit: 'Thomson’s minimum-energy theorem; quadratic proof from Feynman II, §8–5',
       deps: ['em-3.6', 'em-2.11'],
-      refs: ['Purcell ch. 3'],
+      refs: ['Feynman Lectures II, complete §8–5, Eqs.(8.27)–(8.35); fixed-charge quadratic expansion given here'],
       tags: ['energy', 'variational'],
       viz(v) {
         const Mn = 48, a = 3;
@@ -173,12 +172,12 @@ For the disc of radius $R$ in the plane, $G=\frac1{2\pi}\Bigl[\ln\frac{R\,|\math
             s.segment([p[0] + u[0] * 0.02, p[1] + u[1] * 0.02], [p[0] + u[0] * L2, p[1] + u[1] * L2], { color: 'red', width: 2.2, alpha: 0.9 });
           });
           const Vi = Av(lam), Vm = Vi.reduce((t, x) => t + x, 0) / Mn, sd = Math.sqrt(Vi.reduce((t, x) => t + (x - Vm) ** 2, 0) / Mn), W = energyFast(lam);
-          sL.setView([0, 1], [0, Math.max(mx / mean, 2) * 1.1]);
+          sL.setView([0, 1], [Math.min(0, ...lam, ...lamEq) / mean * 1.1, Math.max(mx / mean, 2) * 1.1]);
           sL.path(lamEq.map((l, i) => [(i + 0.5) / Mn, l / mean]), { color: 'green', width: 2.2, dash: true }); sL.path(lam.map((l, i) => [(i + 0.5) / Mn, l / mean]), { color: 'red', width: 2.2 }); sL.hline(1, { color: 'faint' });
-          info = { dW: (W - Weq) / Math.abs(Weq), sd: sd / (Math.abs(Vm) + 1e-12), steps, W, Weq, neg: Math.min(...lam) < 0 };
+          info = { dW: W - Weq, sd, steps, W, Weq, neg: Math.min(...lam) < 0 };
         });
         v.legend([['green', 'equilibrium density'], ['red', 'trial density']]);
-        v.readout(() => `Energy above the minimum: $W-W_{eq}=${info.dW < 1e-9 ? v.sci(Math.max(info.dW, 1e-12), 1) : v.fix(info.dW * 100, 3)}${info.dW < 1e-9 ? '' : '\\%'}$ of $|W_{eq}|$ (never negative). Spread of the surface potential, relative: $${v.sci(Math.max(info.sd, 1e-12), 1)}$ — zero exactly at equilibrium.${info.steps ? ` After ${info.steps} sliding steps.` : ''}${info.neg ? ' (The trial density has become negative somewhere: still allowed — only the total charge is fixed.)' : ''}`);
+        v.readout(() => `Excess energy $W-W_{eq}=${v.sci(info.dW, 3)}$ in kernel units $\\lambda^2/(2\\pi\\varepsilon_0)$. Surface-potential RMS spread $${v.sci(info.sd, 3)}$ in units $\\lambda/(2\\pi\\varepsilon_0)$. Both vanish at equilibrium up to numerical roundoff.${info.steps ? ` After ${info.steps} sliding steps.` : ''}${info.neg ? ' (The trial density is negative somewhere: allowed when only total charge is fixed.)' : ''}`);
       },
     },
   ],

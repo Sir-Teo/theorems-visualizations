@@ -26,7 +26,7 @@ export default {
       statement: String.raw`A hypothesis class $\mathcal H$ is **PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and a learning algorithm $A$ with the following property: for every accuracy $\varepsilon\in(0,1)$ and confidence $\delta\in(0,1)$, for **every** distribution $\mathcal D$ over $\mathcal X$ and **every** labelling function $f:\mathcal X\to\{0,1\}$ for which the realizability assumption holds ($f$ agrees with some member of $\mathcal H$ everywhere), running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples labelled by $f$ returns a hypothesis $h$ that, with probability at least $1-\delta$ over the choice of the sample, satisfies $L_{\mathcal D,f}(h)\le\varepsilon$. The smallest such function is the **sample complexity** of $\mathcal H$. The number $m_{\mathcal H}$ may depend on $\varepsilon$, $\delta$ and $\mathcal H$ but not on $\mathcal D$ or $f$.`,
       idea: String.raw`The definition is a guarantee in two parts. Accuracy $\varepsilon$ says how close to perfect the output must be (an approximately correct predictor); confidence $\delta$ says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: $m_{\mathcal H}$ is fixed first and must then work against an adversary who picks the worst $\mathcal D$ and $f$ afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with $m_{\mathcal H}(\varepsilon,\delta)=\lceil\ln(4/\delta)/\ln(1/(1-\varepsilon/4))\rceil\approx4\ln(4/\delta)/\varepsilon$, since the error region is covered by four strips each of mass $\varepsilon/4$ and each is missed by all $m$ examples with probability $(1-\varepsilon/4)^m$.`,
       caption: String.raw`You are the adversary. Drag the orange handle (the centre of $\mathcal D$), the spread slider, and the two green corners (the hidden rectangle $f$, the learner's class being all rectangles). The learner returns the tightest box around the tasty points of a sample of size $m$. The right panel plays 500 independent rounds and histograms the true error of the output; rounds with error above $\varepsilon$ are red. Press the button to set $m=m_{\mathcal H}(\varepsilon,\delta)$: whatever you do to $\mathcal D$ and $f$, the red fraction stays below $\delta$. Then drag $m$ far below that value and watch the guarantee fail, especially for a thin target in a concentrated $\mathcal D$.`,
-      deps: ['ml-2.1', 'ml-2.1e'],
+      deps: ["ml-2.1","ml-2.1e","prob-2.1.13"],
       refs: ['UML §3.1'],
       credit: 'Leslie G. Valiant, "A theory of the learnable", Communications of the ACM 27(11), 1984',
       tags: ['PAC learning', 'sample complexity'],
@@ -147,11 +147,10 @@ $$L_{\mathcal D}(h)=\mathbb P_{(x,y)\sim\mathcal D}[h(x)\neq y]=\mathcal D(\{(x,
 and the **empirical risk** on a sample $S=((x_1,y_1),\dots,(x_m,y_m))\sim\mathcal D^m$ is $L_S(h)=|\{i:h(x_i)\neq y_i\}|/m$. When $y=f(x)$ for a function $f$ this is the true error of ml-2.1a.`,
       idea: String.raw`The realizable model is the special case in which $\mathbb P[y=1\mid x]\in\{0,1\}$. Allowing intermediate values makes the label itself random, which models noisy measurement, missing features or genuine randomness (two fruits with the same colour and softness that taste differently). The risk is still an expectation of the $0$–$1$ error, so $L_S(h)$ is an unbiased average of i.i.d. indicator variables with mean $L_{\mathcal D}(h)$; the definitions of ml-2.1b carry over verbatim, and what changes is that $\inf_hL_{\mathcal D}(h)$ may be strictly positive.`,
       caption: String.raw`The background is the probability $\eta(x)=\mathbb P[y=1\mid x]$ that a papaya is tasty (green: near 1, pink: near 0, faint: undecided). Choose how the noise enters: flipped labels, or a soft boundary whose width grows with the noise. Drag the blue corners to place a rule $h$, and the grey probe to read $\eta$ at a point. The right panel scores $h$ on 300 samples of size $m$: the empirical risks scatter around the true risk (green), and the true risk of *any* rule stays above the floor of the best possible rule (ink; ml-3.2b), although a lucky sample can show an empirical risk below it. Raise the noise: even the perfect rectangle makes mistakes.`,
-      deps: ['ml-2.1a'],
-      refs: ['UML §3.2.1'],
+      deps: ["ml-2.1a","prob-4.1.1a","prob-1.6.1"],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.1, pp.45–46"],
       tags: ['noisy labels', 'true risk', 'empirical risk'],
       scope: String.raw`Illustrative world: $\mathcal D_x$ a product of truncated normals on the unit square and $\eta$ one of the two noise models above; risks are computed exactly on a $60\times60$ grid (cells counted by their centres).`,
-      verify: true,
       viz(v) {
         const s = square(v, { height: 400, title: 'papayas with random labels' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 400, xlabel: 'empirical risk $L_S(h)$', ylabel: 'samples', yticks: [], title: 'the sample sees an estimate' });
@@ -197,12 +196,11 @@ $$f_{\mathcal D}(x)=\begin{cases}1&\text{if }\eta(x)\ge\tfrac12,\\0&\text{otherw
 minimizes the true risk $L_{\mathcal D}$: $L_{\mathcal D}(f_{\mathcal D})\le L_{\mathcal D}(g)$ for every $g$. Its risk is $\mathbb E[\min(\eta(x),1-\eta(x))]$, and for any $g$ the excess is $L_{\mathcal D}(g)-L_{\mathcal D}(f_{\mathcal D})=\mathbb E\big[|2\eta(x)-1|\,\mathbf 1[g(x)\ne f_{\mathcal D}(x)]\big]$.`,
       idea: String.raw`Condition on the instance. Given $x$, predicting $1$ is wrong with probability $1-\eta(x)$ and predicting $0$ is wrong with probability $\eta(x)$, and the choice made at one point does not influence the error at another. So the risk $\int(\text{conditional error at }x)\,d\mathcal D_x$ is minimized by choosing at every $x$ the smaller conditional error, and choosing the other label at $x$ costs exactly $|2\eta(x)-1|$ extra. No learner can beat $f_{\mathcal D}$, which depends on the unknown $\mathcal D$; it is the target the learner of ml-3.3 approximates within its class.`,
       caption: String.raw`Top: drag the seven blue handles to shape $\eta(x)=\mathbb P[y=1\mid x]$ ($x$ uniform on $[0,1]$). The coloured strip under the curve is the Bayes rule (green: predict 1, where $\eta\ge\frac12$); the lower strip is your rule, built by **clicking** the 60 cells of the axis to flip its prediction there. Bottom: the pointwise error of your rule (red) against the Bayes rule's $\min(\eta,1-\eta)$ (ink). The red area between them is the excess risk, and it is non-negative whatever you click; it is exactly the integral of $|2\eta-1|$ over the cells where you disagree with Bayes.`,
-      deps: ['ml-3.2a'],
+      deps: ["ml-3.2a","prob-4.1.13","prob-1.6.1"],
       see: ['stat-11.2'],
-      refs: ['UML §3.2.1'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.1 Bayes predictor, p.46; excess-risk identity derived by conditioning"],
       tags: ['Bayes optimal', 'regression function'],
       scope: String.raw`Binary labels and the $0$–$1$ loss; your rule is piecewise constant on 60 cells, while the Bayes rule is drawn pointwise, so a threshold crossing inside a cell leaves a sliver of excess.`,
-      verify: true,
       viz(v) {
         const sA = v.stage({ x: [0, 1], y: [0, 1.05], axes: 'box', gutter: true, height: 300, xlabel: 'instance $x$', ylabel: '$\\eta(x)=\\mathbb P[y=1\\mid x]$', title: 'the conditional law and the two rules' });
         const sB = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 300, xlabel: 'instance $x$', ylabel: 'conditional error', title: 'pointwise error of your rule' });
@@ -248,16 +246,14 @@ minimizes the true risk $L_{\mathcal D}$: $L_{\mathcal D}(f_{\mathcal D})\le L_{
       kind: 'Definition',
       name: 'Agnostic PAC learnability',
       statement: String.raw`A hypothesis class $\mathcal H$ is **agnostic PAC learnable** if there are a function $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for every $\varepsilon,\delta\in(0,1)$ and **every** distribution $\mathcal D$ over $\mathcal X\times\mathcal Y$, running $A$ on $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples from $\mathcal D$ returns $h$ that with probability at least $1-\delta$ satisfies
-$$L_{\mathcal D}(h)\;\le\;\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon.$$
+$$L_{\mathcal D}(h)\;\le\;\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon.$$
 No realizability is assumed: the learner is only asked to be nearly as good as the best member of the class, however good or bad that is. If $\mathcal D$ is realizable by $\mathcal H$, the minimum is $0$ and the definition reduces to ml-3.1.`,
       idea: String.raw`When labels are noisy or the truth lies outside $\mathcal H$, no learner can promise a small absolute error; the achievable promise is a **relative** one, an excess risk over the benchmark $\min_{\mathcal H}L_{\mathcal D}$. ERM is the natural candidate: if empirical risks of all hypotheses in the class are close to their true risks, the empirical minimizer is within twice that distance of the true minimizer (ml-4.2). The excess risk is always non-negative for an output in $\mathcal H$, so the whole histogram below sits to the right of zero.`,
       caption: String.raw`The class is all rectangles whose sides lie on a $6\times6$ grid (442 hypotheses, with the empty rule), learned by exact ERM. Choose where the truth lives: a rectangle of the class, a disc or an L-shape (outside the class), and how noisy the labels are. The left square shows one sample, the ERM output (blue) and the best rectangle of the class (green, computed from the exact risks). The right panel plays 400 rounds and histograms the **excess risk** $L_{\mathcal D}(h_S)-\min_{\mathcal H}L_{\mathcal D}$; rounds above $\varepsilon$ are red, and the readout compares their fraction with $\delta$. Even when no rectangle is good (the L-shape), the excess is small: that is what agnostic learning promises.`,
       deps: ['ml-3.1', 'ml-3.2a'],
-      refs: ['UML §3.2.1'],
-      credit: 'David Haussler, "Decision theoretic generalizations of the PAC model for neural net and other learning applications", Information and Computation 100(1), 1992 (generalizing Valiant, 1984)',
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Definition3.3, pp.46–47; minimum interpreted as infimum when unattained, per §1.6,p.29"],
       tags: ['agnostic PAC', 'excess risk'],
       scope: String.raw`Finite grid class and the $0$–$1$ loss. The sample size at which the uniform-convergence bound $2\ln(2|\mathcal H|/\delta)/\varepsilon^2$ guarantees the property (derived from Hoeffding's inequality and the union bound; see ml-4.6) is printed for comparison; the simulation needs far fewer examples. The 400-round fraction carries sampling noise.`,
-      verify: true,
       viz(v) {
         const K = 6;
         const s = square(v, { height: 380, title: 'one sample and its ERM output' });
@@ -303,9 +299,8 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
       caption: String.raw`Left: for a true value $y$ (drag the orange handle) the loss of a prediction $\hat y$ (drag the blue handle): the $0$–$1$ loss is the step (zero only at $\hat y=y$), the squared loss the parabola. Right: an empirical risk. In *regression* the loss of each point is the squared length of its vertical gap to your line (drag the two handles; "fit" jumps to the least-squares line, the minimizer of $L_S$). In *classification* the line is thresholded at $\frac12$ and the loss is the number of ringed mistakes divided by $m$. Resample to see the risk fluctuate.`,
       deps: ['ml-3.2a'],
       see: ['stat-11.1'],
-      refs: ['UML §3.2.2'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), §3.2.2 equations(3.2)–(3.4), pp.47–49"],
       tags: ['loss functions', 'squared loss', '0-1 loss'],
-      verify: true,
       viz(v) {
         const sL = v.stage({ x: [-0.4, 1.4], y: [0, 1.3], axes: 'box', gutter: true, height: 330, xlabel: 'prediction $\\hat y$', ylabel: 'loss $\\ell(\\hat y,y)$', title: 'two losses for one truth $y$' });
         const sD = v.stage({ x: [0, 1], y: [-0.25, 1.25], axes: 'box', gutter: true, height: 330, xlabel: 'instance $x$', ylabel: 'label $y$', title: 'empirical risk of a line' });
@@ -358,15 +353,14 @@ No realizability is assumed: the learner is only asked to be nearly as good as t
       num: '3.4',
       kind: 'Definition',
       name: 'Agnostic PAC learnability for general loss functions',
-      statement: String.raw`Let $\mathcal H$ be a hypothesis class, $Z$ an arbitrary domain of examples (for supervised learning $Z=\mathcal X\times\mathcal Y$; for unsupervised tasks just instances), and $\ell:\mathcal H\times Z\to\mathbb R_+$ a loss function. The risk is $L_{\mathcal D}(h)=\mathbb E_{z\sim\mathcal D}\,\ell(h,z)$ for a distribution $\mathcal D$ over $Z$. The class $\mathcal H$ is **agnostic PAC learnable with respect to $(Z,\ell)$** if there are $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for all $\varepsilon,\delta\in(0,1)$ and every distribution $\mathcal D$ over $Z$, a sample of $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples makes $A$ return $h$ with
-$$\mathbb P\Big[L_{\mathcal D}(h)\le\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\Big]\ge1-\delta.$$`,
+      statement: String.raw`Let $\mathcal H$ be a hypothesis class, $Z$ an arbitrary domain of examples (for supervised learning $Z=\mathcal X\times\mathcal Y$; for unsupervised tasks just instances), and $\ell:\mathcal H\times Z\to\mathbb R_+$ a loss function. The risk is $L_{\mathcal D}(h)=\mathbb E_{z\sim\mathcal D}\,\ell(h,z)$ for a distribution $\mathcal D$ over $Z$. The class $\mathcal H$ is **agnostic PAC learnable with respect to $(Z,\ell)$** if there are $m_{\mathcal H}:(0,1)^2\to\mathbb N$ and an algorithm $A$ such that for all $\varepsilon,\delta\in(0,1)$ and every distribution $\mathcal D$ over $Z$, a sample of $m\ge m_{\mathcal H}(\varepsilon,\delta)$ i.i.d. examples makes$A$ return$h\in\mathcal H$ with
+$$\mathbb P\Big[L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\Big]\ge1-\delta.$$`,
       idea: String.raw`Nothing in ml-3.3 used that the loss is $0$–$1$ or that examples are labelled: the definition quantifies a risk, a benchmark and an excess. Replacing $\ell$ gives regression with the squared loss (ml-3.3a), and taking $Z=\mathcal X$ with $\ell(h,x)$ the squared distance from $x$ to the nearest of $k$ centres gives a clustering objective, the $k$-means cost. Whether such classes are learnable now depends on the loss: for finite classes and bounded losses it follows from Hoeffding's inequality (chapter 4), and the three experiments below only illustrate it. With an unbounded loss, as for squared loss on unbounded $\mathcal H$, learnability can fail, which is why the picture bounds the hypotheses.`,
       caption: String.raw`The same $(\varepsilon,\delta)$ game as before, now with three different risks; switch the task and only the risk (and the picture) changes. **$0$–$1$ loss:** thresholds on a grid, labels flipped with probability $\nu$. **Squared loss:** lines $x\mapsto wx$ with $|w|\le1$ fitted by least squares, targets $y=\mathrm{clip}(0.15+0.7x+\text{noise})$ so the truth is not in the class. **$k$-means loss:** two centres on a grid, $x$ from a two-bump mixture, loss = squared distance to the nearer centre. Left: one sample, ERM output (blue) and the best hypothesis of the class (green). Right: 400 rounds of the excess risk; rounds above $\varepsilon$ are red.`,
       deps: ['ml-3.3', 'ml-3.3a'],
-      refs: ['UML §3.2.2'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Definition3.4 and Remark3.1, p.49; minimum interpreted as infimum when unattained, per §1.6,p.29"],
       tags: ['general loss', 'agnostic PAC', 'regression', 'k-means'],
       scope: String.raw`Three small concrete classes with bounded losses; this is an experiment, not a proof of learnability. Risks are computed exactly (thresholds) or by numerical integration (squared and $k$-means losses).`,
-      verify: true,
       viz(v) {
         const s = v.stage({ x: [0, 1], y: [-0.1, 1.1], axes: 'box', gutter: true, height: 360, xlabel: 'instance $x$', title: 'one sample' });
         const sH = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 360, xlabel: 'excess risk $L_{\\mathcal D}(h_S)-\\min_{\\mathcal H}L_{\\mathcal D}$', ylabel: 'rounds', yticks: [], title: '400 rounds' });
@@ -449,15 +443,14 @@ $$\mathbb P\Big[L_{\mathcal D}(h)\le\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\va
       kind: 'Definition',
       name: 'Proper versus representation-independent learning',
       statement: String.raw`In the definitions of PAC learnability the learner may be restricted in what it outputs. A learner is **proper** if its output $h$ always belongs to the class $\mathcal H$ it competes against, as ERM$_{\mathcal H}$ does. A learner is **representation independent** (also called *improper*) if it may output any predictor $h:\mathcal X\to\mathcal Y$ at all, while its guarantee is still measured against the best member of $\mathcal H$:
-$$L_{\mathcal D}(h)\le\min_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\quad\text{with probability}\ge1-\delta.$$
-A class that is learnable by an improper learner need not be learnable properly with the same efficiency; the two notions coincide for statistical (sample-size) questions about ERM.`,
-      idea: String.raw`The class $\mathcal H$ is only the **yardstick**: it fixes the benchmark $\min_{\mathcal H}L_{\mathcal D}$, not the shape of the answer. An improper learner is therefore allowed to be richer than the class, and when the truth lies outside $\mathcal H$ it can even land below the benchmark; what it may not do is be worse than the benchmark by more than $\varepsilon$. Choosing the output freely matters for computation, since a hard proper-learning problem may become easy once the learner is allowed to answer with a more convenient representation, and for statistics, since the richer answer must be paid for in samples, as the left tail of the curves below shows.`,
+$$L_{\mathcal D}(h)\le\inf_{h'\in\mathcal H}L_{\mathcal D}(h')+\varepsilon\quad\text{with probability}\ge1-\delta.$$
+A class that is learnable by an improper learner need not be learnable properly with the same computational efficiency. For binary classification under the usual measurability assumptions, finite VC dimension permits proper ERM learning, although allowing improper outputs can change computational cost and optimal sample bounds.`,
+      idea: String.raw`The class $\mathcal H$ is only the **yardstick**: it fixes the benchmark $\min_{\mathcal H}L_{\mathcal D}$, not the shape of the answer. An improper learner is therefore allowed to be richer than the class, and when the truth lies outside $\mathcal H$ it can even land below the benchmark; what it may not do is be worse than the benchmark by more than $\varepsilon$. Choosing the output freely matters for computation, since a hard proper-learning problem may become easy once the learner is allowed to answer with a more convenient representation, and for this particular finite-sample comparison, where the cell-majority rule needs more observations per cell. Improperness by itself does not imply a universal statistical penalty.`,
       caption: String.raw`The yardstick class is the rectangles on a $10\times10$ grid; the truth is chosen below, with label noise. The **proper** learner (blue) returns the ERM rectangle. The **improper** learner (orange cells) returns a rule outside the class: in each of the 100 cells it predicts the majority label of the sample. Left: one sample of size $m$ with both outputs. Right: the excess over the benchmark $\min_{\mathcal H}L_{\mathcal D}$ (zero line) averaged over 30 samples, as the sample size grows. A truth that is a rectangle makes the benchmark unbeatable and the improper learner pays for its richness; an L-shape lets it dip below zero, i.e. do better than every rectangle.`,
       deps: ['ml-3.4'],
-      refs: ['UML §3.2.2', 'UML Remark 3.2'],
+      refs: ["Shalev-Shwartz and Ben-David, Understanding Machine Learning (2014), Remark3.2, p.49; statistical comparison limited here to binary classification"],
       tags: ['proper learning', 'improper learning'],
       scope: String.raw`Illustrative: the improper rule is a cell-wise majority vote on the $10\times10$ grid (a union of cells); averages over 30 seeded samples per $m$ are noisy by about $\pm0.005$.`,
-      verify: true,
       viz(v) {
         const K = 10;
         const s = square(v, { height: 380, title: 'one sample, two learners' });

@@ -26,3 +26,6 @@ export function powmod(b, e, m) { let r = 1 % m, x = b % m; while (e > 0) { if (
 // the multiplications square-and-multiply performs for exponent e
 export const smSteps = (e) => { const bits = e.toString(2); return { bits, squarings: bits.length - 1, multiplies: bits.split('').filter((c) => c === '1').length - 1 }; };
 export const SMALL_PRIMES = [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67];
+
+/** Judson2023 Example7.4: affine matrix cipher, with a column offset. */
+export const hillPair = ([a,b,c,d], [u,w], [x,y]) => [m26(a*x+b*y+u), m26(c*x+d*y+w)];

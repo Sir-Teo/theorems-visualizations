@@ -83,7 +83,7 @@ $$\omega=\frac{qB}{\gamma m},$$
 and the magnetic force does no work, so $\gamma$ is constant on the circle. As the particle gains energy the radius grows with $p$ and the revolution frequency **falls** as $1/\gamma$. A cyclotron whose accelerating voltage alternates at the fixed frequency $qB/m$ therefore loses synchronism as $\gamma$ rises: the particle arrives at each gap later and later, and when its phase lag passes $90^\circ$ it is decelerated instead. The cure is to lower the drive frequency as $1/\gamma$ (synchrocyclotron) or to raise $B$ with radius (isochronous cyclotron, synchrotron).`,
       idea: String.raw`With the force $q\mathbf v\times\mathbf B$ always perpendicular to $\mathbf v$, $\gamma$ is constant and the relativistic second law (rel-4.13) reads $\gamma m\,\dot{\mathbf v}=q\mathbf v\times\mathbf B$: circular motion at the Larmor frequency reduced by $\gamma$. The Newtonian cyclotron (mech-1.18) has $\omega=qB/m$, independent of energy, which is what makes a fixed-frequency machine possible; the factor $\gamma$ spoils it. Each half-turn the phase against the drive slips by $\pi(\gamma-1)$.`,
       caption: String.raw`A proton in a 1.5 T field crosses a gap voltage $V$ twice per turn, beginning at the peak of the drive. **Choose the gap voltage** and switch between a **fixed** drive frequency and an ideally **tracking** one. Left: the orbit spirals out (radius in cm); with fixed frequency it turns round and spirals back in after the phase slips by $90^\circ$. Right: the kinetic energy against the number of gap crossings: linear for the tracking machine, while the fixed one peaks (at about 10 MeV for 200 kV) and then falls back.`,
-      deps: ['rel-4.13', 'mech-1.18'],
+      deps: ['rel-4.13', 'mech-1.18', 'ode-3.6'],
       refs: ['Taylor–Wheeler ch. 8'],
       tags: ['cyclotron', 'accelerator', 'magnetic field'],
       scope: String.raw`Idealized: a point-like gap crossed with energy gain $eV\cos\psi$, no vertical focusing or phase-stability dynamics, and a simple model of the frequency drive; the numbers are illustrative.`,
@@ -203,14 +203,13 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
       name: 'Ist die Trägheit eines Körpers vom Energieinhalt abhängig?',
       paper: { authors: 'A. Einstein', year: 1905, title: 'Ist die Trägheit eines Körpers von seinem Energieinhalt abhängig?', venue: 'Annalen der Physik 323 (13): 639–641', doi: '10.1002/andp.19053231314' },
       introduces: ['rel-4.4'],
-      verify: true,
       statement: String.raw`In three pages Einstein considers a body at rest that emits two plane light waves of equal energy $L/2$ in opposite directions, and describes the same event from a frame in which the body moves at speed $v$. Using the transformation of the energy of light between the frames (the Doppler factor $\gamma(1\mp\beta\cos\varphi)$ of rel-2.9) and conservation of energy, he finds that the body's kinetic energy in the moving frame has decreased by $L\big(1/\sqrt{1-\beta^2}-1\big)\approx\tfrac12(L/c^2)v^2$, as if its mass had decreased by $L/c^2$. His conclusion: *the mass of a body is a measure of its energy content*; if the energy changes by $L$, the mass changes by $L/c^2$ (he adds that radioactive bodies, such as radium salts, may offer a test).`,
-      idea: String.raw`Before 1905 mass and energy were separate conserved quantities, and electromagnetic energy was known to carry momentum and to exert pressure (em-11.5). Einstein had just derived the Lorentz transformation and the Doppler formula from the postulates (rel-1.14); here he applies them to a radiating body. The argument needs only the way energy of light transforms and the fact that the body's kinetic energy is $\tfrac12 mv^2$ at low speed. This is the first derivation of the mass–energy relation (rel-4.4); later derivations (rel-4.3) use four-momentum. The paper does not write $E=mc^2$ in this form: it states $\Delta m=L/V^2$ with $V$ the speed of light.`,
-      caption: String.raw`Left: the radiating body in its rest frame, two equal pulses at angle $\varphi$ to the $x$-axis. Middle: the same event in the frame where the body moves at $\beta$: the pulses have unequal Doppler-shifted energies (arrow lengths) and aberrated directions. **Set $\beta$, $\varphi$ and the emitted energy $L$** (relative to the body's rest energy $Mc^2$). The ledger on the right is in units of $L$: the pulses carry $\gamma L$ away. If the body's rest mass is **assumed unchanged** (toggle) the books do not balance; with a mass drop $L/c^2$ they do. The bottom panel shows how small $L/Mc^2$ is for chemical, fission and fusion reactions. (The paper has no figure; this is a modern reconstruction of its thought experiment.)`,
+      idea: String.raw`Electromagnetic radiation carries momentum and exerts pressure (em-11.5). Einstein had just derived the Lorentz transformation and the Doppler formula from the postulates (rel-1.14); here he applies them to a radiating body. The argument needs only the way energy of light transforms and the fact that the body's kinetic energy is $\tfrac12 mv^2$ at low speed. The argument establishes an emitted-energy/mass-change relation (rel-4.4); the four-momentum treatment (rel-4.3) gives another formulation. The paper does not write $E=mc^2$ in this form: it states $\Delta m=L/V^2$ with $V$ the speed of light.`,
+      caption: String.raw`Left: the radiating body in its rest frame, two equal pulses at angle $\varphi$ to the $x$-axis. Middle: the same event in the frame where the body moves at $\beta$: the pulses have unequal Doppler-shifted energies (arrow lengths) and aberrated directions. **Set $\beta$, $\varphi$ and the emitted energy $L$** (relative to the body's rest energy $Mc^2$). The ledger on the right is a modern consistency check using $E=\gamma Mc^2$, in units of $L$: the pulses carry $\gamma L$ away; it is not an independent reconstruction of the original low-speed proof. If the body's rest mass is **assumed unchanged** (toggle) the books do not balance; with a mass drop $L/c^2$ they do. The bottom panel compares chosen dimensionless fractions of rest energy; its markers are illustrative. (The paper has no figure; this is a modern reconstruction of its thought experiment.)`,
       deps: ['rel-2.1', 'rel-2.9', 'em-11.5', 'rel-1.14'],
-      refs: [],
+      refs: ['Einstein1905,complete3-page paper,Perrett–Jeffery translation'],
       tags: ['mass–energy', 'Einstein', 'thought experiment'],
-      credit: 'Einstein, Annalen der Physik, September 1905',
+      credit: 'Einstein, Annalen der Physik, 1905',
       links: { doi: 'https://doi.org/10.1002/andp.19053231314', wikipedia: 'https://en.wikipedia.org/wiki/Mass%E2%80%93energy_equivalence' },
       viz(v) {
         const bS = v.slider('speed of the moving frame $\\beta$', 0, 0.95, 0.6, { step: 0.01 });
@@ -222,7 +221,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
         const Cl = v.stage({ x: [0, 5], y: [0, 3], axes: 'box', gutter: true, height: 300, minWidth: 260, weight: 1, xticks: [[0.8, 'pulses'], [2.2, 'body'], [3.6, 'difference']], ylabel: 'energy in units of $L$', title: 'energy ledger (moving frame)' });
         const D = v.stage({ x: [1e-12, 10], y: [0, 1], axes: 'box', gutter: true, height: 220, minWidth: 300, xlog: true, full: true, xlabel: 'fraction of rest energy released $L/Mc^2$', title: 'how big is the effect?' });
         let st = {};
-        const reacts = [['TNT', 4.184e6 / 8.9876e16], ['gasoline', 46e6 / 8.9876e16], ['U-235 fission', 200 / (235.0439 * U)], ['D–T fusion', 17.59 / (5.0301 * U)], ['4H→He', 26.73 / (4.0313 * U)], ['e⁺e⁻ annihilation', 1]];
+        const reacts = [['one part in 10¹⁰',1e-10],['one part in 10⁶',1e-6],['0.1%',.001],['1%',.01],['100%',1]];
         v.render(() => {
           const b = bS.value, ph = (fS.value * Math.PI) / 180, g = gam(b), L = LS.value;
           const c = Math.cos(ph), s = Math.sin(ph);
@@ -233,7 +232,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
           // moving frame: energies and directions
           const E1 = 0.5 * g * (1 + b * c), E2 = 0.5 * g * (1 - b * c);
           const dir = (cs, sn) => { const px = g * (cs + b), py = sn; const n = Math.hypot(px, py); return [px / n, py / n]; };
-          const d1 = dir(c, s), d2 = dir(-c, -s);
+          const d1 = dir(c,s),d2=dir(-c,-s),extent=Math.max(2.2,(.35+1.3*Math.max(E1,E2))*1.15); Bm.setView([-extent,extent],[-extent,extent]);
           Bm.circle(0, 0, 0.35, { fill: 'accent', fillAlpha: 0.4, color: 'accent' }); Bm.arrow(-1.9, -1.7, -1.9 + 0.8 * b + 0.15, -1.7, { color: 'accent', width: 2 }); Bm.text(`$v=${v.fix(b, 2)}c$`, -1.9, -1.45, { color: 'accent', align: 'left' });
           Bm.arrow(0.35 * d1[0], 0.35 * d1[1], 0.35 * d1[0] + 1.3 * E1 * d1[0], 0.35 * d1[1] + 1.3 * E1 * d1[1], { color: 'gold', width: 3 });
           Bm.arrow(0.35 * d2[0], 0.35 * d2[1], 0.35 * d2[0] + 1.3 * E2 * d2[0], 0.35 * d2[1] + 1.3 * E2 * d2[1], { color: 'gold', width: 3 });
@@ -254,7 +253,7 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
         v.readout(() => {
           const { b, g, E1, E2, carried, lost, diff, L, ke, ein } = st; if (g === undefined) return '';
           return String.raw`Pulse energies in the moving frame: $${v.fix(E1, 3)}L$ and $${v.fix(E2, 3)}L$ (sum $\gamma L=${v.fix(carried, 3)}L$). The body's kinetic energy falls by $(\gamma-1)\Delta m c^2=${v.fix(ke, 4)}\,\Delta mc^2$ versus Einstein's low-speed form $\tfrac12\beta^2\Delta mc^2=${v.fix(ein, 4)}\,\Delta mc^2$.` + '\n' +
-            (un.value ? String.raw`With the rest mass unchanged the body loses nothing, yet the pulses carry $${v.fix(carried, 3)}L$: energy is **not** conserved by $${v.fix(diff, 3)}L$. So $\Delta m=L/c^2$ is forced.` : String.raw`With $\Delta m=L/c^2$ the body loses $\gamma L$ of energy, exactly what the pulses carry: balanced. Here $L/Mc^2=${v.sci(L, 2)}$.`);
+            (un.value ? String.raw`With the rest mass unchanged the body loses nothing, yet the pulses carry $${v.fix(carried, 3)}L$: energy is **not** conserved by $${v.fix(diff, 3)}L$. This violates the modern ledger assumption unless the rest mass changes.` : String.raw`With $\Delta m=L/c^2$ the body loses $\gamma L$ of energy, exactly what the pulses carry: balanced. Here $L/Mc^2=${v.sci(L, 2)}$.`);
         });
       },
     },
@@ -265,22 +264,21 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
       name: 'Quantum Theory of the Scattering of X-rays by Light Elements',
       paper: { authors: 'Arthur H. Compton', year: 1923, title: 'A Quantum Theory of the Scattering of X-rays by Light Elements', venue: 'Physical Review 21 (5): 483–502', doi: '10.1103/PhysRev.21.483' },
       introduces: ['rel-4.9'],
-      verify: true,
-      statement: String.raw`Compton reports that X-rays scattered by light elements (graphite, in the experiments with molybdenum $K\alpha$ radiation) come out with two components: one of the original wavelength and one of **longer** wavelength, whose shift grows with the scattering angle but not with the incident wavelength or the target. He explains this by treating each quantum as a particle of energy $h\nu$ and momentum $h/\lambda$ that collides with a single, nearly free electron, and derives $\lambda'-\lambda=(2h/mc)\sin^2(\theta/2)$ (his coefficient $2h/mc=0.0484$ Å) from conservation of energy and momentum. The unshifted line comes from collisions in which the whole atom recoils.`,
-      idea: String.raw`Classical scattering (Thomson) predicted an unchanged wavelength, and the wave theory of light had no way to account for a shift independent of wavelength. The photon of Einstein (qm-1.15) had been confirmed only by the photoelectric effect; Compton made it carry momentum, treating the collision with relativistic mechanics (rel-4.3, rel-4.6) like billiard balls. The agreement of the shift with $h/mc$, measured with an X-ray spectrometer, was taken as decisive evidence that light has particle properties (the 1927 Nobel Prize in Physics). It also introduced the quantity now called the Compton wavelength (rel-4.9).`,
-      caption: String.raw`**Choose the scattering angle** (or the paper's three typical angles: 45°, 90°, 135°). The left panel is a *schematic reconstruction* of the spectrum of Mo $K\alpha$ X-rays scattered by graphite: the unmodified line at $\lambda_0$ and the modified line at $\lambda_0+\Delta\lambda$; the positions come from the formula, the line widths and heights are assumed (they are not Compton's data). The right panel shows the recoil-electron energy your photon–electron collision predicts. Toggle **classical scattering** to remove the modified line, as Thomson theory demands.`,
+      statement: String.raw`Compton compares incident molybdenum $K\alpha$ radiation of wavelength $0.708$ Å with the spectrum scattered at $90^\circ$ by graphite, measuring a shift about $0.022$ Å against his prediction $0.024$ Å. His model predicts a longer wavelength with a shift depending on angle, but not on incident wavelength or target for an initially stationary, effectively free electron. He explains this by treating each quantum as a particle of energy $h\nu$ and momentum $h/\lambda$ that collides with a single, nearly free electron, and derives $\lambda'-\lambda=(2h/mc)\sin^2(\theta/2)$ (his coefficient $2h/mc=0.0484$ Å) from conservation of energy and momentum. The paper notes that the model neglects electron binding and leaves coherent/bound-electron scattering unresolved.`,
+      idea: String.raw`Classical Thomson scattering predicts an unchanged wavelength for a stationary scatterer. The calculation combines light-quantum energy and momentum (qm-1.15) with relativistic collision mechanics (rel-4.3,rel-4.6). The agreement of the shift with $h/mc$, measured with an X-ray spectrometer, supports the light-quantum collision model. It also introduced the quantity now called the Compton wavelength (rel-4.9).`,
+      caption: String.raw`**Choose the scattering angle** (45°,90°,135° also appear in the paper's separate gamma-ray comparison). The left panel is a *modern schematic*, not a reproduction of the paper's graphite spectrum, for Mo $K\alpha$ X-rays scattered by graphite: the unmodified line at $\lambda_0$ and the modified line at $\lambda_0+\Delta\lambda$; the positions come from the formula, the line widths and heights are assumed (they are not Compton's data). The right panel shows the recoil-electron energy your photon–electron collision predicts. Toggle **classical scattering** to remove the modified line, as Thomson theory demands.`,
       deps: ['qm-1.3', 'rel-4.3', 'rel-4.6', 'qm-1.15'],
-      refs: [],
+      refs: ['Compton1923,full primary paper,pp486–487,493–495,502; NIST CODATA2022 electron wavelength'],
       tags: ['Compton', 'photon', 'X-rays'],
-      credit: 'A. H. Compton, 1923 (Nobel Prize 1927)',
+      credit: 'A. H. Compton, 1923',
       links: { doi: 'https://doi.org/10.1103/PhysRev.21.483', wikipedia: 'https://en.wikipedia.org/wiki/Compton_scattering' },
       viz(v) {
-        const lamC = 2.42631023867, lam0 = 71.073; // pm; Mo Kα (weighted)
+        const lamC = 2.42631023538,lam0=70.8; // pm; CODATA2022 and the paper's incident Mo Kα wavelength
         const thS = v.slider('scattering angle $\\theta$ (degrees)', 0, 180, 90, { step: 1 });
         for (const a of [45, 90, 135]) v.button(a + '°', () => thS.set(a));
         const cl = v.toggle('classical (Thomson) scattering', false);
         const A = v.stage({ x: [66, 80], y: [0, 1.25], axes: 'box', gutter: true, height: 360, minWidth: 300, xlabel: 'wavelength (pm)', ylabel: 'scattered intensity (arbitrary)', title: 'Mo $K\\alpha$ off graphite: the two lines (schematic)' });
-        const B = v.stage({ x: [0, 180], y: [0, 2.2], axes: 'box', gutter: true, height: 360, minWidth: 300, weight: 1, xlabel: 'scattering angle $\\theta$ (degrees)', ylabel: 'recoil electron energy (keV)', title: 'what the collision predicts' });
+        const B = v.stage({ x: [0, 180], y: [0, 2.2], axes: 'box', gutter: true, height: 360, minWidth: 300, weight: 1, xlabel: 'scattering angle $\\theta$ (degrees)', ylabel: 'recoil electron energy (keV)', title: 'quantum recoil reference' });
         const gauss = (x, mu, s) => Math.exp(-0.5 * ((x - mu) / s) ** 2);
         let st = {};
         v.render(() => {
@@ -292,14 +290,14 @@ and the magnetic force does no work, so $\gamma$ is constant on the circle. As t
           if (!cl.value) { A.dot(lm, 0.8, { r: 4, color: 'orange', label: 'modified', labelPos: 'e' }); A.measure(lam0, 1.12, lm, 1.12, `Δλ = ${v.fix(d, 2)} pm`); }
           const E0 = 1239.84198 / lam0, T = (a) => { const l = lam0 + lamC * (1 - Math.cos(a)); return E0 - 1239.84198 / l; };
           B.fn((a) => T(a * Math.PI / 180), { color: 'green', width: 2.6 });
-          B.dot(thS.value, T(th), { r: 6, color: 'orange' }); B.hline(E0, { color: 'faint', width: 1 });
-          st = { th, d, lm, E0, T: T(th), rel: d / lam0 };
+          B.dot(thS.value,cl.value?0:T(th),{r:6,color:cl.value?'red':'orange'}); if(cl.value)B.hline(0,{color:'red',width:2});
+          st = { th,d,lm,E0,T:T(th),rel:d/lam0,classical:cl.value };
         });
         v.legend([['accent', 'unmodified line'], ['orange', 'modified line'], ['green', 'recoil electron energy']]);
         v.readout(() => {
-          const { th, d, lm, E0, T, rel } = st; if (lm === undefined) return '';
-          return String.raw`$\theta=${v.fix(th * 180 / Math.PI, 0)}^\circ$: modified line at $${v.fix(lm, 3)}$ pm ($\lambda_0=${v.fix(lam0, 3)}$ pm, ${v.fix(E0, 2)} keV), shift $\Delta\lambda=${v.fix(d, 3)}$ pm $=${v.fix(d * 10, 4)}$ Å, i.e. ${v.fix(100 * rel, 2)}% of $\lambda_0$; the electron gets ${v.fix(T * 1000, 0)} eV.` + '\n' +
-            String.raw`The paper's coefficient $2h/mc=0.0484$ Å against today's $2\lambda_C=${v.fix(2 * lamC / 100, 5)}$ Å (CODATA 2018): they agree to 0.3%.`;
+          const {th,d,lm,E0,T,rel,classical}=st; if (lm === undefined) return '';
+          return (classical?'Classical spectrum selected: unmodified line and zero recoil in this idealization. Quantum reference: ':'')+String.raw`$\theta=${v.fix(th * 180 / Math.PI, 0)}^\circ$: modified line at $${v.fix(lm, 3)}$ pm ($\lambda_0=${v.fix(lam0, 3)}$ pm, ${v.fix(E0, 2)} keV), shift $\Delta\lambda=${v.fix(d, 3)}$ pm $=${v.fix(d/100,4)}$ Å, i.e. ${v.fix(100 * rel, 2)}% of $\lambda_0$; the electron gets ${v.fix(T * 1000, 0)} eV.` + '\n' +
+            String.raw`The paper's coefficient $2h/mc=0.0484$ Å against today's $2\lambda_C=${v.fix(2 * lamC / 100, 5)}$ Å (CODATA2022): they agree to 0.3%.`;
         });
       },
     },

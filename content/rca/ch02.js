@@ -95,7 +95,7 @@ A map $\Lambda$ from a vector space $V$ into a vector space $V_1$ is *linear* if
       deps: ['rca-2.1', 'rca-1.32'],
       see: ['rca-2.14'],
       tags: ['linear functional', 'integration'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 2.2, p. 34'],
       viz(v) {
         const M = v.M;
         const atoms = [[0.3, 0.22], [0.78, 0.14]];

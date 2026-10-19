@@ -25,7 +25,7 @@ $$\delta = \int_0^L \frac{N(x)}{E(x)A(x)}\,\mathrm{d}x,$$
 which for a stepped bar with constant pieces reduces to the sum $\delta = \sum_i N_iL_i/(E_iA_i)$. For a bar tapering linearly between diameters $d_1$ and $d_2$ under a constant force $P$, $\delta = 4PL/(\pi E d_1 d_2)$. $EA/L$ is the axial stiffness: the force needed per unit elongation.`,
       idea: String.raw`Hooke's law (1.4) gives the strain at each section, $\varepsilon = \sigma/E = N/(EA)$; the elongation is the integral of the strain over the length (1.2). Where $N$, $A$ and $E$ are constant the integral is a product; where they jump, it splits into pieces, and where the area varies smoothly it is evaluated exactly. The force in each piece comes from equilibrium of a free body cut there: the axial force is the sum of all the loads on the far side.`,
       caption: String.raw`Drag the three orange handles (sideways, above the bar) to apply loads at the joints $B$, $C$, $D$ — negative means pushing — and change the diameters. The force $N$ in each segment follows from equilibrium; the strain bars are $N/EA$, and their **area is the elongation** (the area under each step is that segment's elongation). Make the middle segment aluminium, or switch to a **tapered** bar: the integral is evaluated numerically and compared with the closed form. The deformation is magnified (printed on the drawing).`,
-      deps: ['solid-1.4'],
+      deps: ['solid-1.4', 'pma-6.21'],
       refs: ['Gere–Goodno §2.2', 'Gere–Goodno §2.3'],
       tags: ['elongation', 'axial'],
       viz(v) {
@@ -113,7 +113,7 @@ $$F_1 = P\,\frac{f_2}{f_1+f_2} = P\,\frac{k_1}{k_1+k_2},\qquad F_2 = P\,\frac{k_
 the load divides in proportion to the stiffnesses. The same recipe solves a bar fixed at both ends and loaded at an intermediate point: $R_A + R_B = P$ and zero total elongation $R_A f_1 = R_B f_2$.`,
       idea: String.raw`Statics gives one line of admissible force pairs $(F_1, F_2)$; geometry gives another line (compatibility), and the real structure sits where the two cross. The stiffer member carries more of the load because it resists the common displacement more strongly. Note that the answer depends on $E$ and $A$, unlike in a determinate structure, where the member forces depend on geometry alone; this is why a redundant member makes the stress state depend on the materials, and why temperature changes or misfits (1.11) can stress an indeterminate structure with no load at all.`,
       caption: String.raw`Left: the structure with the force split you choose; right: the force plane $(F_1, F_2)$. The red line is equilibrium; drag the gold point along it: wherever you put it equilibrium holds but the rods stretch unequally (the red gap) — except at the blue compatibility line. Press **solve** to jump to the intersection. Change the load, the area ratio (a wider aluminium rod takes more) or the structure (two parallel rods or a bar fixed at both ends, loaded at an adjustable point).`,
-      deps: ['solid-1.9'],
+      deps: ['solid-1.9', 'mech-6.2'],
       see: ['arch-1.3', 'solid-7.5'],
       refs: ['Gere–Goodno §2.4'],
       tags: ['indeterminate', 'compatibility'],
@@ -202,7 +202,7 @@ $$\sigma = -E\,\alpha\,\Delta T$$
       idea: String.raw`This is the first example of **eigenstrain**: the temperature change creates a stress-free strain $\alpha\Delta T$, and stress is produced only by the part of the total strain that the constraints and compatibility refuse to allow (1.10 with the force found from $\delta_{\text{elastic}} + \delta_T = 0$). Because $\delta_T$ and the elastic shortening $\sigma L/E$ are both proportional to $L$, the length cancels. The numbers are large: for steel $E\alpha = 2.5$ MPa per kelvin, so 100 K gives 250 MPa, most of the yield stress. Buckling is the escape route of long slender members, and the reason railway track is held by ballast and pre-stressed, and why bridges have expansion joints.`,
       caption: String.raw`Warm the bar between two rigid walls with the **ΔT** slider and compare materials. The dashed ghost is where free expansion would take it (exaggerated ×30); the walls hold it back and the compressive stress appears. The right panel plots $\sigma$ against $\Delta T$ for the four materials: straight lines of slope $E\alpha$ whatever the length. Lengthen the bar: nothing changes in the stress, but the **Euler cap** (dashed) drops, and once the line reaches it the bar bows sideways. Open a **gap** to delay the onset. The section's radius of gyration is taken as 26 mm (illustrative, rail-like).`,
       scope: String.raw`Uniform temperature change, perfectly rigid supports, linear elastic material, a straight bar with pinned-pinned buckling; real track also relies on ballast restraint.`,
-      deps: ['solid-1.10'],
+      deps: ['solid-1.10', 'mat-1.3'],
       refs: ['Gere–Goodno §2.5'],
       tags: ['thermal', 'buckling'],
       viz(v) {
@@ -401,7 +401,7 @@ $$U = \tfrac12 P\delta = \frac{P^2L}{2EA} = \tfrac12 k\delta^2 = \frac{\sigma^2}
 so the energy per unit volume is $u = \sigma^2/2E = \tfrac12\sigma\varepsilon$. In an elastic bar all of it is recovered on unloading (the bar springs back); the value at the yield stress, $\sigma_y^2/2E$, is the **modulus of resilience**. If the material has yielded, only the elastic part $\sigma^2/2E$ is recovered along the unloading line, and the rest of the area is dissipated as heat.`,
       idea: String.raw`Slow loading means the load is always in equilibrium with the elastic force, so the work done on the bar is exactly the area under $P(\delta)$, which for Hooke's law (1.4, 1.9) is the triangle $\tfrac12P\delta$. The factor $\tfrac12$ is crucial: the force grows from zero to $P$, so the average force is only $P/2$. Dividing by the volume gives the energy density $\sigma^2/2E$, a property of the stress state rather than of the bar. Beyond yield the work is no longer a function of the final state alone: the loading path matters (1.3, 4.5).`,
       caption: String.raw`Load a steel bar slowly (the loop repeats): the bar lengthens, the point travels up the force–elongation line and the shaded area grows as $\tfrac12P\delta$ (green: recoverable). At the end the load is taken off and the bar springs back along the same line, releasing the energy. Set the peak stress above the **yield point** with the slider: the loading follows the real stress–strain curve (S355 model), unloading runs parallel to the elastic line, and the orange area is energy that never comes back; the bar is left stretched (permanent set). Strains are magnified in the picture; the numbers are real.`,
-      deps: ['solid-1.9'],
+      deps: ['solid-1.9', 'mech-3.1'],
       refs: ['Gere–Goodno §2.7'],
       tags: ['energy', 'elasticity'],
       viz(v) {
@@ -470,7 +470,7 @@ $$\frac{\delta_{\max}}{\delta_{\text{st}}} = \frac{\sigma_{\max}}{\sigma_{\text{
 which is 2 for $h = 0$ and grows like $\sqrt{2h/\delta_{\text{st}}}$ for large drops. Damping, the mass of the rod and local plastic deformation make the real peak lower; the formula is a conservative bound.`,
       idea: String.raw`With no damping the loaded rod is a mass on a spring: it oscillates about the static position, so a release from zero stretch swings as far above it as it started below it, $\delta_{\text{st}} \pm \delta_{\text{st}}$ (1.9, 1.14). With a drop, the weight arrives with kinetic energy $Wh$ that the spring's strain energy $\tfrac12k\delta^2$ must absorb; solving the quadratic gives the factor. A stiffer or longer rod has a large $\delta_{\text{st}}$ for the same weight, so the factor falls: long, flexible members absorb impact better, which is why bolts are made long and why bungee cords can be slowed gently.`,
       caption: String.raw`A 500 kg collar is dropped from a height $h$ onto the flange at the end of a steel rod (20 mm diameter, 2 m long). The motion is simulated step by step (slow motion), the rod stretch is magnified in the drawing, and the stress in the rod is plotted against time: it swings between the extremes about the static level $\sigma_{\text{st}}$ (dashed). With $h = 0$ the peak is exactly twice the static stress; raise $h$ and the factor climbs, past the yield stress of the steel (red line). The right panel is the formula; the dot is the peak found by the simulation. Give the rod some damping and the peak after the first swing decays.`,
-      deps: ['solid-1.14'],
+      deps: ['solid-1.14', 'mech-3.6'],
       refs: ['Gere–Goodno §2.8'],
       tags: ['impact', 'dynamics'],
       viz(v) {

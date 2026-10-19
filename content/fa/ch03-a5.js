@@ -1,4 +1,4 @@
-// Rudin, Functional Analysis — Chapter 3 (part 5): vector-valued integration and holomorphic functions, 3.26–3.31
+// Rudin, Functional Analysis — Chapter 3 (part 5): vector-valued integration and holomorphic functions, 3.26–3.32
 
 const d2 = (a, b) => a[0] * b[0] + a[1] * b[1];
 /** Maximum-entropy probability weights on the points Q with barycentre y (Newton's method on the dual). */
@@ -26,16 +26,15 @@ export default {
     {
       num: '3.26',
       kind: 'Definition',
-      name: 'Weak (Pettis) integral of a vector-valued function',
-      credit: 'Pettis, 1938',
+      name: 'Weak integral of a vector-valued function',
       statement: String.raw`Let $\mu$ be a measure on a measure space $Q$, let $X$ be a topological vector space on which $X^*$ separates points, and let $f:Q\to X$ be such that $\Lambda f$ is $\mu$-integrable for every $\Lambda\in X^*$. If there is $y\in X$ with
 $$\Lambda y=\int_Q(\Lambda f)\,d\mu\qquad\text{for every }\Lambda\in X^*,$$
 we write $y=\int_Qf\,d\mu$. Such a $y$ is unique, because $X^*$ separates points.`,
       idea: String.raw`The integral is defined by testing against all continuous functionals rather than by Riemann or Lebesgue sums in $X$. The question is then existence: 3.27 and 3.29 guarantee it when the closed convex hull of the range is compact, e.g. for continuous $f$ into a Fréchet space.`,
       caption: String.raw`$X=C[0,1]$ and $f(t)=$ the bump $s\mapsto e^{-((s-t)/w)^2}$ centred at $t\in Q=[0,1]$. The gold curves are some values $f(t)$ (fainter where $\mu$ has little mass); the blue curve is $y=\int f\,d\mu$, computed as a limit of Riemann sums in the sup norm. The readout tests $y$ against two functionals — the point evaluation $\delta_s$ (drag $s$) and $h\mapsto\int_0^1h(s)\sin(\pi s)\,ds$ — and checks $\Lambda y=\int\Lambda f\,d\mu$, integrating in the other order.`,
       deps: ['fa-3.4a'],
-      tags: ['vector integration', 'Pettis integral'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §3.26, pp. 77–78'],
+      tags: ['vector integration', 'weak integral'],
       viz(v) {
         const M = v.M;
         const MU = {
@@ -189,11 +188,11 @@ $$y=\int_Qx\,d\mu(x).$$`,
       name: 'Vector integrals in Fréchet and Banach spaces',
       statement: String.raw`Let $Q$ be a compact Hausdorff space, $X$ a Fréchet space, $f:Q\to X$ continuous, and $\mu$ a finite positive Borel measure on $Q$. Then $y=\int_Qf\,d\mu$ exists. If $X$ is a Banach space, moreover
 $$\Big\|\int_Qf\,d\mu\Big\|\le\int_Q\|f\|\,d\mu .$$`,
-      idea: String.raw`$f(Q)$ is compact, so by 3.20(c) its closed convex hull is compact in the Fréchet space $X$, and 3.27 (after normalising $\mu$) gives existence. For the estimate, Hahn–Banach provides $\Lambda\in X^*$ with $\|\Lambda\|=1$ and $\Lambda y=\|y\|$; then $\|y\|=\Lambda y=\int\Lambda f\,d\mu\le\int\|f\|\,d\mu$.`,
+      idea: String.raw`$f(Q)$ is compact, so by 3.20(c) its closed convex hull is compact in the Fréchet space $X$, and 3.27 (after normalising $\mu$) gives existence. For the estimate, Hahn–Banach provides $\Lambda\in X^*$ with $\|\Lambda\|\le1$ and $\Lambda y=\|y\|$; then $\|y\|=\Lambda y=\int\Lambda f\,d\mu\le\int\|f\|\,d\mu$.`,
       caption: String.raw`$X=(\R^2,\|\cdot\|_p)$ and $f:[0,1]\to X$ a looping curve (gold) with Lebesgue measure; the winding slider makes it cancel more. Left: $y=\int f$ (blue), the ball of radius $\|y\|$ (blue) with the norming functional's supporting line at $y$, and the ball of radius $\int\|f\|$ (green, dashed), which always contains $y$. Right: the proof — $\Lambda f(t)\le\|f(t)\|$ pointwise, and the areas under the two curves are $\|y\|$ and $\int\|f\|$.`,
       deps: ['fa-3.27', 'fa-3.20', 'fa-3.3'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., §3.29, pp. 81'],
       tags: ['vector integration', 'Banach spaces', 'norm inequality'],
-      verify: true,
       viz(v) {
         const M = v.M;
         const pS = v.select('norm', [{ value: 1, label: '$\\ell^1$' }, { value: 2, label: '$\\ell^2$' }, { value: Infinity, label: '$\\ell^\\infty$' }], 2);
@@ -328,6 +327,41 @@ $$\Big\|\int_Qf\,d\mu\Big\|\le\int_Q\|f\|\,d\mu .$$`,
         });
         v.legend([['ink', '$f(z)\\,\\Ind_\\Gamma(z)$'], ['blue', '$N$-node Cauchy integral', { dash: true }], ['gold', 'nodes on $\\Gamma$', { dot: true }]]);
         v.readout(() => `$\\Ind_\\Gamma(z) = ${st.ind}$; with $N=${st.N}$ nodes, $\\sup_{s\\in[0,1]}\\big|\\tfrac{1}{2\\pi i}\\oint_\\Gamma\\tfrac{f(\\zeta)(s)}{\\zeta-z}d\\zeta - f(z)(s)\\Ind_\\Gamma(z)\\big| \\approx ${v.fmt(Math.max(st.err, 1e-16), 2)}$ — the formula holds in the norm of $X$, not just after applying functionals.`);
+      },
+    },
+    {
+      num: '3.32',
+      kind: 'Theorem',
+      name: 'Vector-valued Liouville theorem',
+      statement: String.raw`Let $X$ be a complex topological vector space whose continuous dual $X^*$ separates points. If $f:\C\to X$ is weakly holomorphic and $f(\C)$ is weakly bounded, then $f$ is constant. Here weak boundedness means $\sup_{z\in\C}|\Lambda f(z)|<\infty$ for each $\Lambda\in X^*$; the bound may depend on $\Lambda$.`,
+      idea: String.raw`For every continuous linear functional $\Lambda$, the scalar function $\Lambda f$ is bounded and entire. Scalar Liouville gives $\Lambda f(z)=\Lambda f(0)$ for every $z$. Separation of points then forces $f(z)=f(0)$. This argument needs neither completeness nor local convexity, and does not use the stronger differentiability conclusion of 3.31.`,
+      caption: String.raw`In $X=\C^2$, compare $f(z)=(1+az,1+az^2)$ with the constant case $a=0$. The selected functional is $\Lambda_\theta(x)=\cos\theta\,x_1+\sin\theta\,x_2$. Left: the image of $|z|=R$ under this scalar probe. Right: the Cauchy coefficient bounds $M_\theta(R)/R$ and $M_\theta(R)/R^2$, where the exact maximum on the circle is $M_\theta(R)=\cos\theta+\sin\theta+a\cos\theta R+a\sin\theta R^2$. Nonzero $a$ forces an unbounded scalar probe; choosing a functional that misses one coefficient does not make all probes bounded.`,
+      deps: ['fa-3.30', 'rca-10.23'],
+      refs: ['Rudin, Functional Analysis, 2nd ed., Theorem 3.32, pp. 84–85 (full statement and proof)'],
+      tags: ['weak holomorphy', 'Liouville', 'separating dual'],
+      scope: String.raw`The bound is over the whole complex plane, not just its real axis or a finite disc. The finite-dimensional polynomial family illustrates why nonconstant entire examples fail this hypothesis; it is not a proof for general spaces.`,
+      viz(v) {
+        const a=v.slider('nonconstant coefficient $a$',0,1,0,{step:.01});
+        const th=v.slider('functional angle $\\theta$ (degrees)',0,90,35,{step:1});
+        const r=v.slider('circle radius $R$',.2,20,2,{log:true});
+        const L=v.stage({x:[-2,5],y:[-3.5,3.5],axes:'box',gutter:true,height:310,xlabel:'Re Λf',ylabel:'Im Λf',title:'one scalar probe of the entire vector function'});
+        const B=v.stage({x:[.2,20],y:[0,10],axes:'box',gutter:true,height:310,xlabel:'R',ylabel:'Cauchy coefficient bound',title:'bounded on every disc versus bounded on all of ℂ'});
+        let result={};
+        v.render(()=>{
+          const t=th.value*Math.PI/180,c=Math.cos(t),s=Math.sin(t),aa=a.value,R=r.value,base=c+s;
+          const max=x=>base+aa*c*x+aa*s*x*x,M=max(R),span=Math.max(.5,M-base);
+          L.setView([base-span*1.15,base+span*1.15],[-span*1.15,span*1.15]);
+          L.path(Array.from({length:257},(_,k)=>{const u=2*Math.PI*k/256;return[base+aa*c*R*Math.cos(u)+aa*s*R*R*Math.cos(2*u),aa*c*R*Math.sin(u)+aa*s*R*R*Math.sin(2*u)]}),{color:'blue',width:2.5});
+          L.dot(base,0,{color:'gold',r:5});
+          const xs=Array.from({length:241},(_,k)=>.2+19.8*k/240);
+          const y1=xs.map(x=>[x,max(x)/x]),y2=xs.map(x=>[x,max(x)/(x*x)]);
+          B.setView(null,[0,Math.max(1,...y1.map(p=>p[1]),...y2.map(p=>p[1]))*1.05]);
+          B.path(y1,{color:'blue',width:2.4});B.path(y2,{color:'green',width:2.4});
+          B.hline(aa*c,{color:'blue',dash:[4,4]});B.hline(aa*s,{color:'green',dash:[4,4]});B.vline(R,{color:'gold',dash:[3,4]});
+          result={M,b1:M/R,b2:M/(R*R),c1:aa*c,c2:aa*s};
+        });
+        v.legend([['blue','$M_\\theta(R)/R$; dashed $|c_1|$'],['green','$M_\\theta(R)/R^2$; dashed $|c_2|$'],['gold','chosen radius']]);
+        v.readout(()=>`$M_\\theta(R)=${v.fix(result.M,3)}$, $|c_1|=${v.fix(result.c1,3)}\\le${v.fix(result.b1,3)}$, $|c_2|=${v.fix(result.c2,3)}\\le${v.fix(result.b2,3)}$. ${a.value===0?'Every scalar probe is bounded; the vector function is constant.':'This entire vector function is nonconstant and its image is not weakly bounded.'}`);
       },
     },
   ],

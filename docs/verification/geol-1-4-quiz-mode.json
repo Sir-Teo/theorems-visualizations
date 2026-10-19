@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "id": "geol-1.4",
+  "issue": "Quiz mode before its first correct placement hid every answer node, leaving the second graph canvas entirely blank.",
+  "originalCollectionHashPrefix": "4787e12a",
+  "currentCollectionHash": "0bec9a84aada6486404fafc4ffa7df7037182e8e8fa612231f12f4117656fa69",
+  "sourceFile": "content/geol/ch01.js",
+  "resolution": "Render an explanatory two-line empty state until a unit is placed. Normal revealed-node/edge drawing then takes over; quiz reset restores the instruction. No canvas or error was suppressed.",
+  "sourceFlagsChanged": false,
+  "mathOrGraphAnalysisChanged": false,
+  "runtimeOrCheckerChanged": false,
+  "validation": {
+    "baseline": {
+      "theme": "light",
+      "mode": "quiz:on",
+      "blankCanvas": [
+        1
+      ],
+      "report": "/tmp/geol-14-quiz-before.json",
+      "reproduced": true
+    },
+    "native": {
+      "command": "node tests/verification-geol-14-quiz-browser.mjs",
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "passed": true,
+      "states": 16,
+      "blankStates": 0,
+      "report": "/tmp/geol-14-quiz.json",
+      "screenshots": "/tmp/geol-14-quiz-shots/",
+      "checks": "Actual native lithology buttons, quiz toggle, oldest-unit mouse click, reset and quiz-off transition; original canvas inspector, runtime/TeX checks and installed pinned KaTeX."
+    },
+    "manualScreenshotsInspected": [
+      "light-quiz-empty.png",
+      "dark-quiz-empty.png",
+      "light-quiz-first-unit.png",
+      "dark-quiz-first-unit.png"
+    ],
+    "static": {
+      "command": "node scripts/check.mjs geol-1.4 --static",
+      "items": 1,
+      "errors": 0,
+      "warnings": 0
+    },
+    "diffCheck": "passed"
+  },
+  "frozen": true
+}

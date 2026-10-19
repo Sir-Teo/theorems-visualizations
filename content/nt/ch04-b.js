@@ -16,10 +16,9 @@ Thus $\left(\frac pq\right)=\left(\frac qp\right)$ unless $p\equiv q\equiv3\pmod
       idea: String.raw`Gauss's lemma (4.4) with $a=q$ gives $\left(\frac qp\right)=(-1)^{S_1}$ where $S_1=\sum_{x=1}^{(p-1)/2}\lfloor qx/p\rfloor$ (Eisenstein's form: for odd $q$ the sign count $\mu$ and $S_1$ have the same parity). Now $S_1$ counts the lattice points $(x,y)$ with $1\le x\le\frac{p-1}2$ lying under the diagonal $y=qx/p$ of the $\frac p2\times\frac q2$ rectangle, and by symmetry $S_2=\sum_{y=1}^{(q-1)/2}\lfloor py/q\rfloor$ counts those above it; no lattice point lies on the diagonal because $p,q$ are coprime. Together they fill the rectangle: $S_1+S_2=\frac{p-1}2\cdot\frac{q-1}2$.`,
       caption: String.raw`The rectangle holds the lattice points $1\le x\le\frac{p-1}2$, $1\le y\le\frac{q-1}2$, split by the diagonal into the $S_1$ blue points below (they give $\left(\frac qp\right)$) and the $S_2$ orange points above (they give $\left(\frac pq\right)$). Change $p$ and $q$: the two counts always add up to the area count $\frac{p-1}2\frac{q-1}2$, so the product of the two signs is its parity. Switch off *primes only* and take composite values: the counts still fill the rectangle, but the symbols computed by brute force no longer obey the law.`,
       deps: ['nt-4.4', 'nt-4.3', 'nt-4.5'],
-      refs: ['Hardy–Wright §6.12', 'Apostol §9.5'],
+      refs: ['Hardy–Wright §6.12', 'Apostol §9.5', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['reciprocity', 'lattice points', 'Eisenstein'],
-      credit: 'Euler and Legendre (conjectured); first complete proof by Gauss, 1796 (published 1801); lattice-point proof by Eisenstein, 1844',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quadratic_reciprocity' },
       viz(v) {
         const P = v.slider('$p$', 3, 61, 11, { int: true });
@@ -108,10 +107,9 @@ Caution: $\left(\frac an\right)=-1$ proves that $a$ is not a square mod $n$, but
       idea: String.raw`Everything follows from the prime case (4.6, 4.3, 4.5) by multiplying over the prime factors. For the law one uses that for odd $a,b$ we have $\frac{ab-1}2\equiv\frac{a-1}2+\frac{b-1}2\pmod 2$, and likewise $\frac{a^2b^2-1}8\equiv\frac{a^2-1}8+\frac{b^2-1}8\pmod 2$, so the sign rules for $-1$, $2$ and reciprocity extend multiplicatively from primes to products. The warning is simple: if $n=pq$ and $a$ is a non-residue modulo both, the two signs $-1$ multiply to $+1$ although $a$ is not a square modulo $p$ (hence not modulo $n$).`,
       caption: String.raw`Choose an odd $n$ (try $15$) and $a$. Left: for every $a$ the bar gives $\left(\frac an\right)$; a gold cap marks the classes that really are squares mod $n$ (found by brute force) — **red hatched bars** are the traps where the symbol is $+1$ but $a$ is not a square. Right: a table of $\left(\frac mn\right)\left(\frac nm\right)$ against the predicted sign $(-1)^{\frac{m-1}2\frac{n-1}2}$ for odd coprime $m,n\le31$; every cell agrees (green), the dark cells are the pairs with both $\equiv3\pmod4$.`,
       deps: ['nt-4.6', 'nt-4.1'],
-      refs: ['Apostol §9.7'],
+      refs: ['Apostol §9.7', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Jacobi symbol', 'reciprocity'],
-      credit: 'Jacobi, 1837',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Jacobi_symbol' },
       viz(v) {
         const N = v.slider('odd $n$', 3, 99, 15, { int: true });

@@ -657,10 +657,11 @@ and in particular $\sup_x|K_1(x)-K_2(x)|\le\frac1{2\pi}\int|\kappa_1(t)-\kappa_2
       num: '3.5.1a',
       kind: 'Definition',
       name: 'Lattice distribution and span',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), §3.5, pp. 161–162 (definition and Theorem 3.5.2)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       statement: String.raw`A random variable $X$ has a **lattice distribution** if there are constants $b$ and $h>0$ with $P(X\in b+h\Z)=1$. The largest such $h$ is the **span**. (By 3.5.2, lattice laws are by convention nondegenerate.) If one can take $b=0$, the law is **arithmetic**, and then its characteristic function is periodic with period $2\pi/h$.`,
       idea: String.raw`If $P(X\in b+h\Z)=1$, then $\varphi(2\pi/h)=e^{2\pi ib/h}\sum P(X=b+hk)e^{2\pi ik}$ has modulus $1$: the characteristic function returns to the unit circle at $t=2\pi/h$. For finitely many atoms $x_1,\dots,x_r$, the law is lattice exactly when all differences $x_j-x_1$ are integer multiples of a common $h$, and the span is their greatest common divisor; one irrational ratio destroys it.`,
-      caption: String.raw`Drag the three atoms (left/right = position on a grid of $0.25$, up/down = weight). Top: the atoms and the lattice $b+h\Z$ with the span $h$ (the gcd of the differences). Bottom: $|\varphi(t)|$ returns to $1$ exactly at the multiples of $2\pi/h$ (dashed). Toggle the irrational shift: the third atom moves by $\sqrt2/10$, the law becomes nonlattice and $|\varphi|$ never quite gets back to $1$.`,
+      caption: String.raw`Drag the three atoms (left/right = position on a grid of $0.25$, up/down = weight). Top: the atoms and the lattice $b+h\Z$ with the span $h$ (the gcd of the differences). Bottom: $|\varphi(t)|$ returns to $1$ exactly at the multiples of $2\pi/h$ (dashed). Toggle the irrational shift: the third atom moves by $\sqrt2/10$, the law becomes nonlattice when the first two atoms are distinct. If those two coincide, only two support points remain and the law is still lattice.`,
       deps: ['prob-1.2.6a', 'prob-3.3.1a'],
       tags: ['local limit', 'distributions'],
       viz(v) {
@@ -675,7 +676,8 @@ and in particular $\sup_x|K_1(x)-K_2(x)|\le\frac1{2\pi}\int|\kappa_1(t)-\kappa_2
           const shift = irr.value ? Math.SQRT2 / 10 : 0;
           const xs = Hs.map((h, i) => h.x + (i === 2 ? shift : 0)), ws0 = Hs.map((h) => h.y), W = ws0.reduce((a, b) => a + b, 0), ws = ws0.map((w) => w / W);
           const ks = Hs.map((h) => Math.round(h.x * 4)); let g = 0; for (let i = 1; i < 3; i++) g = gcd(g, ks[i] - ks[0]);
-          const lattice = !irr.value && g > 0, degenerate = !irr.value && g === 0, h = g / 4;
+          const twoAtoms = irr.value && ks[0] === ks[1];
+          const lattice = twoAtoms || (!irr.value && g > 0), degenerate = !irr.value && g === 0, h = twoAtoms ? Math.abs(xs[2] - xs[0]) : g / 4;
           if (lattice) { for (let k = -40; k <= 40; k++) { const x = xs[0] + k * h; if (x >= -3.2 && x <= 3.2) T.line(x, 0, x, 0.05, { color: 'muted', width: 1.2 }); } }
           T.hline(0, { color: 'muted', width: 1 });
           xs.forEach((x, i) => { T.line(x, 0, x, Hs[i].y, { color: ['accent', 'teal', 'purple'][i], width: 3 }); T.text(`${v.fix(ws[i], 2)}`, x, Hs[i].y, { dy: -14, size: 11, color: 'ink', plate: true }); });

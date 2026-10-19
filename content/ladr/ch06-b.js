@@ -652,7 +652,7 @@ export default {
       idea: String.raw`Take an orthonormal basis $e_1,\dots,e_n$ (it exists by 6.35) and expand $u=\sum\langle u,e_k\rangle e_k$ (6.30). Linearity of $\varphi$ gives $\varphi(u)=\sum\langle u,e_k\rangle\varphi(e_k)=\bigl\langle u,\sum\overline{\varphi(e_k)}e_k\bigr\rangle$, so that sum works as $v$. If $v_1$ and $v_2$ both work, then $\langle u,v_1-v_2\rangle=0$ for every $u$; taking $u=v_1-v_2$ forces $v_1=v_2$. Uniqueness also shows that the formula gives the same $v$ whichever orthonormal basis is used.`,
       caption: String.raw`**$\mathbf R^2$:** the functional $\varphi$ is drawn by its level lines (drag the dot on the line $\varphi=1$). Turn the orthonormal basis with $\theta$: the pieces $\varphi(e_1)e_1$ and $\varphi(e_2)e_2$ change, but their sum $v$ (green) does not — it always points straight across the level lines, with length $1/(\text{spacing})$. Drag $u$ and compare $\varphi(u)$ with $\langle u,v\rangle$. **$\mathcal P_n(\mathbf R)$:** $\varphi(p)=\int_{-1}^1p(t)\cos(\pi t)\,dt$. The function $\cos\pi t$ is not a polynomial, yet a polynomial $q$ (green) represents $\varphi$. Drag the handles of $p$: the two integrands below differ, but their signed areas agree. Raise $n$ and $q$ creeps toward $\cos\pi t$.`,
       deps: ['ladr-6.35', 'ladr-6.30', 'ladr-3.110'],
-      see: ['rca-4.12', 'fa-12.3'],
+      see: ['rca-4.12', 'fa-12.5'],
       credit: 'Frigyes Riesz, 1907',
       tags: ['duality', 'inner products'],
       viz(v) {

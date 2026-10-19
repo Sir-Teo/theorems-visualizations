@@ -15,17 +15,19 @@ export default {
       num: '4.8',
       kind: 'Algorithm',
       name: 'MLEM and OSEM iterative reconstruction',
-      statement: String.raw`Emission counts are Poisson: bin $i$ receives $y_i\sim\mathrm{Poisson}\big((Ax)_i\big)$, where $x_j\ge0$ is the activity in pixel $j$ and $a_{ij}$ is the probability that a decay in $j$ is recorded in bin $i$. The log-likelihood is $\ell(x)=\sum_i\big(y_i\ln(Ax)_i-(Ax)_i\big)+\mathrm{const}$. The **MLEM** iteration
-$$x_j^{(k+1)}=\frac{x_j^{(k)}}{\sum_ia_{ij}}\sum_i a_{ij}\,\frac{y_i}{(Ax^{(k)})_i}$$
-keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood image; after every update $\sum_j\big(\sum_ia_{ij}\big)x_j=\sum_iy_i$ (the counts are conserved). **OSEM** applies the same update using only one subset $S_m$ of the bins (e.g. every $S$-th projection angle) at a time, so one pass over all subsets costs one MLEM iteration but advances about $S$ times as far, at the price of no longer guaranteeing monotone convergence.`,
-      idea: String.raw`The update is a multiplicative gradient step: the ratio $y_i/(Ax)_i$ says how much each bin's prediction is too low or too high, back-projecting the ratio (as in imaging-3.6, now a ratio rather than a sum) tells each pixel how to scale, and normalising by the sensitivity $\sum_ia_{ij}$ makes the step exactly the expectation–maximisation update for Poisson data. Because the ML solution for noisy counts fits the noise (the true image has a *lower* likelihood than the ML image), the iteration is stopped early or smoothed: the error against the truth falls, reaches a minimum and then rises as noise is amplified. Subsets trade the guarantee for speed, with limit cycles at high iteration counts.`,
-      caption: String.raw`Choose the **total counts** (few counts = noisy data) and the number of **subsets** $S$ (1 is MLEM). Slide the **iteration** number: left, the true image; middle, the current estimate. The two curves show how far the log-likelihood is below its best value (log axis; MLEM in blue, OSEM in orange, dashed the value at the true image) and the error against the truth — the likelihood keeps rising while the error has a minimum, after which the picture gets noisier. OSEM reaches a given likelihood in about $1/S$ as many passes.`,
-      deps: ['imaging-1.7', 'imaging-3.11'],
+      statement: String.raw`Let independent emission counts satisfy $y_i\sim\mathrm{Poisson}((Ax)_i)$, with known finite response matrix $A\ge0$ and activities $x_j\ge0$. Exclude unobserved columns, so the sensitivity $s_j=\sum_i a_{ij}>0$, and require every positive-count bin to have model support. The log-likelihood is $\ell(x)=\sum_i[y_i\ln(Ax)_i-(Ax)_i]+\mathrm{const}$, with $0\ln0=0$; a positive count at zero predicted mean has likelihood $-\infty$. Starting with $x_j^{(0)}>0$, **MLEM** uses
+$$x_j^{(k+1)}=\frac{x_j^{(k)}}{s_j}\sum_i a_{ij}\,\frac{y_i}{(Ax^{(k)})_i},$$
+where a zero-count bin contributes zero, including $0/0$. The iterates stay nonnegative, the likelihood is nondecreasing and approaches its global maximum for this finite Poisson model, and after every update $\sum_j s_jx_j=\sum_i y_i$. A unique ML image is not guaranteed: equal predicted counts can come from different images. If the ML image is unique, the iterates converge to it. An initially zero pixel is locked at zero and can prevent reaching the unrestricted maximum.
+
+**OSEM** makes the same update with one view subset and its own sensitivity at a time. Subsets often reduce the initial number of full passes, but neither monotonicity of the full-data likelihood nor convergence to the MLEM solution is guaranteed; a fixed ordered-subset cycle can persist.`,
+      idea: String.raw`The same response weights must be used in the forward projection $Ax$, transpose back-projection $A^{\mathsf T}(y/Ax)$ and sensitivity $A^{\mathsf T}\mathbf1$. Allocating each detected Poisson count to its possible emitting pixels gives the EM update; equivalently, it is $x_j^{+}=x_j+(x_j/s_j)\,\partial_j\ell$. Concavity of $\ell$ and the EM argument supply the likelihood guarantee under the stated start/support conditions. Monotonicity alone is not a general proof of image convergence. The ML fit can follow noise, so a higher likelihood need not mean a smaller image error: early stopping can help, and the error minimum may occur at the end of the displayed interval. Subsets trade the full-data guarantee for faster initial progress.`,
+      caption: String.raw`Choose the **total counts** and the **subsets** ($S=1$ is MLEM), then change the **iteration**. The images compare truth with the current estimate. The curves show likelihood shortfall from the best value seen in the plotted runs (not a certified ML optimum), and error against the truth. MLEM raises likelihood; OSEM can oscillate. Compare where the image error is smallest with where likelihood is largest.`,
+      deps: ['imaging-1.7', 'imaging-3.11', 'stat-3.12'],
       tags: ['MLEM', 'OSEM', 'Poisson'],
-      refs: ['Prince–Links ch. 9'],
+      refs: ['Shepp–Vardi (1982), pp. 114–116, Eqs. (1.3)–(1.4), (2.13)–(2.16), Appendix I pp. 119–120', 'Hudson–Larkin (1994), §II Eqs. (1)–(2), §§IV–VI and Appendix (complete primary manuscript)', 'Prince–Links ch. 9'],
       credit: 'L. A. Shepp & Y. Vardi, 1982 (MLEM for emission tomography); H. M. Hudson & R. S. Larkin, 1994 (OSEM)',
       links: { doi: 'https://doi.org/10.1109/TMI.1982.4307558' },
-      scope: String.raw`A $32\times32$ image, 32 parallel-beam views of 44 bins each (the ray-sum matrix of chapter 3), Poisson counts, no attenuation, scatter, randoms or detector blur; the images are in units of the true activity (background = 1 before scaling). The "error" is the relative root-mean-square difference from the truth over the body. OSEM subsets are every $S$-th view; for large $S$ the ordered-subset iteration does not converge to the ML image.`,
+      scope: String.raw`A $32\times32$ image, 32 parallel views of 44 bins, positive uniform initialization and the same nonnegative ray-length matrix in forward and transpose operations. These are illustrative response weights, not calibrated detection probabilities; normalizing column $j$ by $s_j$ gives a detection-probability matrix for the detected activity $s_jx_j$. Zero-count and empty rays use the stated zero convention. Sampling uses a normal approximation when the expected bin count is at least 40. No attenuation, scatter, randoms or detector blur. Images are in true-activity units (background 1 before scaling); error is relative RMS over the body. Subsets are every $S$-th view.`,
       viz(v) {
         const N = 32, NA = 32, ND = 44, IT = 60;
         const sys = buildSystem(N, NA, ND, 1.42);
@@ -35,10 +37,10 @@ keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood ima
         const nf = noiseField(v.M, rng32(31), sys.rows.length);
         const A = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'True image', minWidth: 200 });
         const B = v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 270, title: 'MLEM / OSEM estimate', minWidth: 200 });
-        const C = v.stage({ x: [0, IT], y: [0.01, 1e5], ylog: true, axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: 'shortfall from best $\\ell$', title: 'Log-likelihood', minWidth: 230 });
+        const C = v.stage({ x: [0, IT], y: [0.01, 1e5], ylog: true, axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: String.raw`shortfall from best shown $\ell$`, title: 'Log-likelihood', minWidth: 230 });
         const D = v.stage({ x: [0, IT], y: [0, 1], axes: 'box', gutter: true, height: 270, xlabel: 'full iterations', ylabel: 'RMS error / mean', title: 'Error against the truth', minWidth: 230 });
         const cnt = v.slider('total counts', 3000, 300000, 30000, { log: true, sig: 2, int: true });
-        const sub = v.select('subsets $S$', [{ value: 2, label: '2' }, { value: 4, label: '4' }, { value: 8, label: '8' }], 4);
+        const sub = v.select('subsets $S$', [{ value: 1, label: '1 (MLEM)' }, { value: 2, label: '2' }, { value: 4, label: '4' }, { value: 8, label: '8' }], 4);
         const it = v.slider('iteration', 0, IT, 10, { step: 1, int: true });
         const cache = new Map();
         const run = (S, y, scale) => {
@@ -74,7 +76,7 @@ keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood ima
           info = { S, k, lAbove: R.S.ll[k] > R.llTrue, emin, eminS, err: R.S.err[k], eM: R.M.err[Math.min(k, IT)], cons: cons / R.y.reduce((s, q) => s + q, 0), dl: R.S.ll[k] - R.llTrue };
         });
         v.legend([['accent', 'MLEM ($S=1$)'], ['orange', 'OSEM with $S$ subsets'], ['ink', 'likelihood of the true image', { dash: true }]]);
-        v.readout(() => `Pass ${info.k}, $S=${info.S}$: error $${fx(info.err, 3)}$ (MLEM at the same pass: $${fx(info.eM, 3)}$). Error is smallest at pass ${info.eminS} for OSEM and at pass ${info.emin} for MLEM — afterwards the likelihood keeps rising (it is already ${info.dl > 0 ? 'above' : 'below'} that of the truth by $${fx(Math.abs(info.dl), 1)}$) but the image gets noisier.\nSensitivity-weighted counts of the estimate over measured counts: $${fx(info.cons, 4)}$ (exactly 1 for MLEM after any update, close to 1 for OSEM).`);
+        v.readout(() => `Pass ${info.k}, $S=${info.S}$: error $${fx(info.err, 3)}$ (MLEM at the same pass: $${fx(info.eM, 3)}$). Within the displayed 0–60 passes, error is smallest at pass ${info.eminS} for the selected method and at pass ${info.emin} for MLEM. The selected likelihood is ${info.dl > 0 ? 'above' : 'below'} that of the truth by $${fx(Math.abs(info.dl), 1)}$; higher likelihood need not mean lower image error.\nSensitivity-weighted counts / measured counts: $${fx(info.cons, 4)}$ (1 after a full-data MLEM update; subsets have no such full-data identity).`);
       },
     },
     // ------------------------------------------------------------------ 4.9
@@ -82,16 +84,15 @@ keeps $x\ge0$, never decreases $\ell$, and converges to a maximum-likelihood ima
       num: '4.9',
       kind: 'Concept',
       name: 'Time-of-flight PET',
-      statement: String.raw`If a PET scanner measures the arrival-time difference $\Delta t=t_1-t_2$ of the two annihilation photons, the annihilation is located along the line of response at a displacement $x=c\,\Delta t/2$ from its midpoint, with an uncertainty
+      statement: String.raw`If a PET scanner measures the arrival-time difference $\Delta t=t_1-t_2$ of the two annihilation photons, the annihilation is located along the line of response at a displacement $x=c\,\Delta t/2$ from its midpoint (positive away from detector 1), with an uncertainty
 $$\Delta x=\frac{c\,\Delta\tau}{2}\quad(\text{FWHM}),$$
 for a coincidence timing resolution $\Delta\tau$ (FWHM). For example $\Delta\tau=500$ ps gives $\Delta x\approx7.5$ cm and $\Delta\tau=100$ ps about 1.5 cm. In reconstruction each event is back-projected not along the whole line but as a Gaussian of width $\Delta x$ centred on the measured position. For an object of diameter $D\gg\Delta x$ this concentrates the information of each event and improves the signal-to-noise ratio of the image, to a good approximation, by the factor $\sqrt{D/\Delta x}$; if $\Delta x\gtrsim D$ nothing is gained.`,
       idea: String.raw`A photon travels $c\approx30$ cm/ns, so a 1 ns difference in arrival shifts the inferred point by 15 cm: the conversion is just kinematics. Without timing, an event adds a uniform count along a chord of length about $D$, and only a fraction $\Delta x/D$ of that chord is where the emitter actually was within the timing blur; the rest is noise for the voxel in question. Using the timing information, the effective number of independent "looks" at a voxel rises by $D/\Delta x$, and a Poisson signal-to-noise ratio goes as the square root of counts (imaging-1.7). The benefit is therefore largest for large patients and fast detectors, and is also what lets TOF scanners hold image quality with lower dose or shorter scans.`,
       caption: String.raw`Drag the **gold annihilation point** in the object, set the **direction** and the **timing resolution**: the Gaussian along the LOR is where the scanner places the event. The two images are simple back-projections of the same $N$ events (a hot lesion in a uniform disc), without timing (left) and with it (right): the blur streaks collapse onto the lesion. The curve shows the approximate gain $\sqrt{D/\Delta x}$ against timing resolution for the chosen $D$.`,
       deps: ['imaging-4.6', 'imaging-1.7'],
       tags: ['PET', 'time of flight'],
-      refs: ['Prince–Links ch. 9'],
-      scope: String.raw`Valid for a source distribution larger than $\Delta x$; the gain formula $\sqrt{D/\Delta x}$ is the standard approximation for a uniform object of diameter $D$ and is quoted from the literature as recalled (not rederived here). The pictures are unfiltered back-projections, not iterative reconstructions, and the contrast numbers shown for them are measured on this one noisy realisation; they illustrate localisation but need not reproduce the formula. Gaussian timing response, no scatter or randoms.`,
-      verify: true,
+      refs: ['Budinger, J. Nucl. Med. 24 (1983), 73–78, Eqs. (1), (6)–(7)', 'Prince–Links ch. 9'],
+      scope: String.raw`Valid for a source distribution larger than $\Delta x$; the gain formula $\sqrt{D/\Delta x}$ is Budinger's approximation for a uniform object of diameter $D$, matched detector efficiency and spatial resolution. Nonuniform tracer distributions and detector differences change the gain; this is a noise approximation, not an improvement of intrinsic spatial resolution. The pictures are unfiltered back-projections, not iterative reconstructions, and the contrast numbers shown for them are measured on this one noisy realisation; they illustrate localisation but need not reproduce the formula. Gaussian timing response, no scatter or randoms.`,
       viz(v) {
         const CC = 29.979, NG = 56, FOV = 25, NMAX = 12000, RING = 40;
         const A = v.stage({ x: [-45, 45], y: [-45, 45], equal: true, axes: false, height: 320, title: 'Annihilation point and its timing blur', minWidth: 260 });
@@ -168,8 +169,8 @@ for a coincidence timing resolution $\Delta\tau$ (FWHM). For example $\Delta\tau
       name: 'Tracer kinetics and the Patlak plot',
       statement: String.raw`In a two-tissue compartment model of FDG, tracer enters tissue from plasma with rate $K_1$, leaves with $k_2$, and is phosphorylated (trapped) with rate $k_3$ and, in general, de-phosphorylated with $k_4$. For an **irreversible** trap ($k_4=0$) the **Patlak transformation**
 $$\frac{C_T(t)}{C_p(t)}=K_i\,\frac{\int_0^tC_p(\tau)\,d\tau}{C_p(t)}+V_0,\qquad K_i=\frac{K_1k_3}{k_2+k_3},$$
-is, once the reversible compartment has equilibrated with plasma ($t\ge t^*$), a straight line in the coordinates $x=\int_0^tC_p/C_p(t)$, $y=C_T/C_p$. Its slope is the **net influx constant** $K_i$ and its intercept the apparent initial distribution volume $V_0$. A straight line is fitted to late frames without solving the model. If $k_4>0$ the line bends downward and the slope under-estimates the influx.`,
-      idea: String.raw`With $k_4=0$ the trapped amount obeys $\dot C_2=k_3C_1$ and $C_1$ is in rapid equilibrium with plasma, $C_1\approx(K_1/(k_2+k_3))\,C_p$ after the initial transient, so $\dot C_2=K_iC_p$ and $C_2(t)=K_i\int_0^tC_p$: dividing by $C_p(t)$ gives the line, and everything reversible adds only a constant $V_0$. The method needs the plasma curve but no model fit, so it can be applied voxel by voxel to dynamic PET images to produce a parametric map of glucose influx. It is a linear fit to noisy points, hence the slope has an error that depends on the frames used and on how far $k_4$ and the noise bend the line.`,
+is, once the reversible compartment has equilibrated with plasma ($t\ge t^*$), a straight line in the coordinates $x=\int_0^tC_p/C_p(t)$, $y=C_T/C_p$. Its slope is the **net influx constant** $K_i$ and its intercept the apparent initial distribution volume $V_0$. A straight line is fitted to late frames without solving the model. If $k_4>0$, reversible trapping can bend the late plot downward and bias the fitted slope below the irreversible-model influx.`,
+      idea: String.raw`With $k_4=0$, zero initial tissue activity and $a=k_2+k_3$, the compartment equations give the exact identity $C_1+C_2=K_i\int_0^t C_p(\tau)\,d\tau+(k_2/a)C_1$. Once $C_1/C_p$ is approximately constant, division by $C_p$ yields the Patlak line; its intercept includes $(k_2/a)C_1/C_p$ and, in this model, a vascular term $V_b$. Keeping this transient term is essential: integrating a late-time equilibrium approximation back to time zero would give the wrong intercept. The method needs the plasma curve but no model fit, so it can be applied voxel by voxel to dynamic PET images to produce a parametric map of glucose influx. It is a linear fit to noisy points, hence the slope has an error that depends on the frames used and on how far $k_4$ and the noise bend the line.`,
       caption: String.raw`Left: the **model plasma input** $C_p$ and the **tissue curve** $C_T$ from the two-tissue model (dots: 24 simulated frames with noise). Right: the Patlak plot of the same frames; the fit uses frames after $t^*$ (green). Move $t^*$ to see the line establish itself. Increase **$k_4$** (reversible trapping) and watch the late points bend over; raise the **noise** and resample. The fitted slope is compared with the true $K_i=K_1k_3/(k_2+k_3)$.`,
       deps: ['pharm-3.1', 'imaging-4.6'],
       tags: ['Patlak', 'compartment model', 'FDG'],
@@ -197,11 +198,13 @@ is, once the reversible compartment has equilibrated with plasma ($t\ge t^*$), a
           const m = model(K1.value, k2.value, k3.value, k4.value), dt = m.dt;
           const cum = new Float64Array(m.n); for (let i = 1; i < m.n; i++) cum[i] = cum[i - 1] + 0.5 * (m.cp[i] + m.cp[i - 1]) * dt;
           const idx = (t) => Math.round(t / dt);
+          const frameY = FR.map((t, q) => Math.max(0, m.ct[idx(t)] * (1 + (nz.value / 100) * zf[q])));
+          A.setView([0, 90], [0, 1.1 * Math.max(...m.cp, ...m.ct, ...frameY)]);
           A.path(Array.from(m.t, (t, i) => [t, m.cp[i]]), { color: 'orange', width: 2.2 });
           A.path(Array.from(m.t, (t, i) => [t, m.ct[i]]), { color: 'accent', width: 2.2 });
           const xs = [], ys = [], fx_ = [], fy = [];
           FR.forEach((t, q) => {
-            const i = idx(t), ctn = Math.max(0, m.ct[i] * (1 + (nz.value / 100) * zf[q])), cp = m.cp[i];
+            const i = idx(t), ctn = frameY[q], cp = m.cp[i];
             A.dot(t, ctn, { r: 3.5, color: 'accent' });
             const X = cum[i] / cp, Y = ctn / cp; xs.push(X); ys.push(Y);
             if (t >= ts.value) { fx_.push(X); fy.push(Y); }

@@ -121,8 +121,22 @@ export function splitGrid(g, c) {
   for (let j = 0; j < K; j++) { let mn = Infinity; for (let i = 0; i < K; i++) if (inA[i]) mn = Math.min(mn, P[i][j]); m[j] = isFinite(mn) ? mn : 0; }
   const eps = m.reduce((a, b) => a + b, 0), nu = m.map((x) => (eps > 0 ? x / eps : 0));
   const V = xs.map((_, i) => { const r = new Array(K + 1).fill(0); if (inA[i]) { r[i] = 1 - eps; r[K] = eps; } else r[i] = 1; return r; });
-  const Pb = Array.from({ length: K + 1 }, (_, i) => (i === K ? nu.slice() : inA[i] ? P[i].map((p, j) => (p - eps * nu[j]) / (1 - eps)) : P[i].slice()));
+  const Pb = Array.from({ length: K + 1 }, (_, i) => (i === K ? nu.slice() : inA[i] ? eps >= 1 - 1e-14 ? nu.slice() : P[i].map((p, j) => (p - eps * nu[j]) / (1 - eps)) : P[i].slice()));
   return { eps, nu, inA, V, Pb };
+}
+/** Durrett §5.8's split kernel Q on S∪{alpha} and expansion V.
+ * Q reroutes the common minorant to alpha; V replaces alpha by nu.
+ * P is extended to the extra starting state by P(alpha,·)=nu P.
+ * Thus VQ=Q and QV=P, exactly as in Lemma 5.8.4.
+ */
+export function bookSplitGrid(g, c) {
+  const { K, P } = g, { eps, nu, inA } = splitGrid(g, c);
+  const V = Array.from({ length: K + 1 }, (_, i) => i === K ? [...nu, 0] : Array.from({ length: K + 1 }, (_, j) => +(i === j)));
+  const Pb = P.map((row, i) => [...row.map((p, j) => inA[i] ? Math.max(0, p - eps * nu[j]) : p), inA[i] ? eps : 0]);
+  Pb.push(Array.from({ length: K + 1 }, (_, j) => nu.reduce((s, p, i) => s + p * Pb[i][j], 0)));
+  const Pe = P.map(row => [...row, 0]);
+  Pe.push([...Array.from({ length: K }, (_, j) => nu.reduce((s, p, i) => s + p * P[i][j], 0)), 0]);
+  return { eps, nu, inA, V, Pb, P: Pe };
 }
 /** Law-level helpers: row vector times matrix for non-square matrices. */
 export const vecM = (mu, M) => { const out = new Array(M[0].length).fill(0); for (let i = 0; i < mu.length; i++) if (mu[i]) for (let j = 0; j < out.length; j++) out[j] += mu[i] * M[i][j]; return out; };

@@ -7,14 +7,15 @@
 //   Kirby & Herrnstein 1995 (Psychological Science 6(2): 83–89), Green, Fristoe & Myerson 1994 (Psychonomic Bulletin & Review 1(3):
 //   383–389), Frederick, Loewenstein & O'Donoghue 2002 (J. Economic Literature 40(2): 351–401). Their content is described
 //   from memory and abstracts, not re-read, except as stated below.
-// - Thaler 1981 numbers: the MIT 14.13 lecture notes (Spring 2004, lecture 16, read in the PDF) give "$15 now ~ $20 in one month" = 345% per
-//   year and "$15 now ~ $100 in ten years" = 19% per year, computed as ln(X/15)/t; course slides found by search give $15 ~ $60
-//   in one year = 139%, $250 ~ $350 = 34%, $3,000 ~ $4,000 = 29%. The original paper was not opened (verify: true on 5.3).
-// - Mazur (1987) is credited with the hyperbola 1/(1 + kD) from memory; the chapter in Commons et al. (eds) was not found in Crossref.
+// - Thaler1981 complete original pp201–207: Table2C uses15→20/50/100 at1month/1year/10years.
+//   Loewenstein & Prelec1992 complete original: §II pp574–577, §III pp578–585, equation15 and its history p580.
+//   Earlier secondary-source annual60 was from Table2A and has been removed from the Table2C series.
 // - Everything labelled "model" (the sliders, the reward pairs in 5.2 and 5.4, the task in 5.6) is an illustration computed for this page.
 import { clamp, num, pct, usdC, usdR, dExp, dHyp, dQH, fx } from './ch05.shared.js';
 
 const GUIDE = { color: 'muted', width: 1, dash: [4, 4] };
+
+export const THALER_DELAY_CHOICES = Object.freeze([[1 / 12, 20], [1, 50], [10, 100]].map(row => Object.freeze(row)));
 
 export default {
   collection: 'behav',
@@ -104,14 +105,13 @@ export default {
     // ------------------------------------------------------------------ 5.3
     {
       num: '5.3', kind: 'Model', name: 'Hyperbolic discounting',
-      statement: String.raw`**Hyperbolic discounting** replaces $\delta^t$ by $D(t)=\dfrac{1}{1+kt}$ (Mazur's form; the generalised version $(1+\alpha t)^{-\gamma/\alpha}$ is due to Loewenstein and Prelec). The per-period discount rate $-D'(t)/D(t)=k/(1+kt)$ is **not constant**: it is $k$ for immediate delays and falls toward zero for distant ones, whereas an exponential has the same rate at every horizon. Experiments that ask for the amount $X$ that makes a person indifferent between \$15 now and \$$X$ after a delay $t$ find implied rates $\ln(X/15)/t$ that fall steeply as $t$ grows (for example about 345% a year for one month against about 19% a year for ten years in Thaler's 1981 questions).`,
-      scope: String.raw`A descriptive curve fitted to choices of animals and people over delays of seconds to years; the implied rates are for hypothetical questions about small sums, and their size is sensitive to the question format. The hyperbola is one of several declining-rate forms.`,
-      idea: String.raw`If the rate of discounting declines with the delay, a given extra wait costs less far in the future than near the present, which is what choice data show (Ainslie 1975 collected the animal evidence; Thaler's questions the human). Mathematically the hyperbola is the discount function you get by averaging exponentials over an unknown rate (a mixture of impatiences) and it has a fatter tail than any single exponential matched to the same one-year value.`,
-      caption: String.raw`Drag the **gold point** (the value of waiting one year) to set $k$ and compare the hyperbola with the exponential that has the **same one-year value**: the hyperbola falls faster at first and slower later. The right panel plots the **average discount rate** $-\ln D(t)/t$ against the delay on log axes: the exponential is a flat line, the hyperbola a falling one. The **dots** are Thaler's implied rates; **Fit k** puts the hyperbola through them in the least-squares sense.`,
-      deps: ['behav-5.1'], refs: ['W&K ch. 8'], tags: ['discounting', 'hyperbolic'],
-      credit: 'George Ainslie, 1975; Mazur, 1987; Thaler, 1981',
+      statement: String.raw`**Hyperbolic discounting** replaces $\delta^t$ by $D(t)=\dfrac{1}{1+kt}$ (the simple hyperbola; Loewenstein and Prelec, 1992, derive the generalised form $(1+\alpha t)^{-\gamma/\alpha}$ and credit Harvey, 1986, with its definition). The per-period discount rate $-D'(t)/D(t)=k/(1+kt)$ is **not constant**: it is $k$ for immediate delays and falls toward zero for distant ones, whereas an exponential has the same rate at every horizon. Experiments that ask for the amount $X$ that makes a person indifferent between \$15 now and \$$X$ after a delay $t$ find implied rates $\ln(X/15)/t$ that fall steeply as $t$ grows (for example about 345% a year for one month against about 19% a year for ten years in Thaler's 1981 questions).`,
+      scope: String.raw`A descriptive declining-rate curve. The displayed original Thaler data concern hypothetical monetary questions over delays of one month to ten years; their size is sensitive to the question format. The hyperbola is one of several declining-rate forms.`,
+      idea: String.raw`If the rate of discounting declines with the delay, a given extra wait costs less far in the future than near the present, as illustrated by Thaler’s hypothetical monetary questions. Mathematically the hyperbola is the discount function you get by averaging exponentials over an exponentially distributed nonnegative rate with mean $k$ (a specific mixture of impatiences) and it has a fatter tail than any single exponential matched to the same one-year value.`,
+      caption: String.raw`Drag the **gold point** (the value of waiting one year) to set $k$ and compare the hyperbola with the exponential that has the **same one-year value**: the hyperbola falls faster at first and slower later. The right panel plots the **average discount rate** $-\ln D(t)/t$ against the delay on log axes: the exponential is a flat line, the hyperbola a falling one. The **dots** are Thaler's implied rates; **Fit k** fits their logarithmic implied rates by least squares (it need not pass through every point).`,
+      deps: ['behav-5.1', 'prob-1.2.4'], refs: ['W&K ch. 8'], tags: ['discounting', 'hyperbolic'],
+      credit: 'Thaler, 1981; Loewenstein & Prelec, 1992',
       links: { doi: 'https://doi.org/10.1016/0165-1765(81)90067-7', wikipedia: 'https://en.wikipedia.org/wiki/Hyperbolic_discounting' },
-      verify: true,
       viz(v) {
         const kS = v.slider('hyperbola parameter $k$ (per year)', 0.2, 20, 4.8, { log: true, sig: 3 });
         const logs = v.toggle('log axes for the delay (left panel)', false);
@@ -124,7 +124,7 @@ export default {
           }
           kS.set(best[1]);
         });
-        const THALER = [[1 / 12, 20, Math.log(20 / 15) * 12], [1, 60, Math.log(60 / 15)], [10, 100, Math.log(100 / 15) / 10]];
+        const THALER = THALER_DELAY_CHOICES.map(([t, amount]) => [t, amount, Math.log(amount / 15) / t]);
         const A = v.stage({ x: [0, 10], y: [0, 1.02], axes: 'box', gutter: true, height: 330, xlabel: 'delay t (years)', ylabel: 'D(t)', title: 'same one-year value, different shapes' });
         const B = v.stage({ x: [0.05, 20], y: [0.05, 8], axes: 'box', gutter: true, xlog: true, ylog: true, height: 330, xlabel: 'delay t (years)', ylabel: 'average rate −ln D(t)/t  (1 = 100% a year)', title: 'implied discount rate falls with delay' });
         const hk = A.handle(1, 0.17, { color: 'gold', r: 8, constrain: (x, y) => [1, clamp(y, 0.03, 0.9)] });

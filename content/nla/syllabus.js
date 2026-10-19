@@ -42,7 +42,7 @@ export default {
         { num: '1.7', kind: 'Theorem', name: 'Norms, rank and subspaces from the SVD', deps: ['nla-1.6'], refs: ['Trefethen–Bau Lec. 5'],
           pic: 'Slide a singular value to zero; the ellipse flattens to a segment, the rank readout drops, and the range and null space are read off as spans of columns of U and V.' },
         { num: '1.8', kind: 'Theorem', name: 'Eckart–Young: best low-rank approximation', deps: ['nla-1.7', 'ladr-7.92'], refs: ['Trefethen–Bau Lec. 5'],
-          pic: 'Truncate the SVD of a matrix after k terms; the 2-norm error equals σ_{k+1} exactly, and random rank-k competitors drawn for comparison always do worse.' },
+          pic: 'Truncate the SVD of a matrix after k terms; the 2-norm error equals σ_{k+1} exactly, and competitors of rank at most k cannot do better (equality is possible).' },
         { num: '1.9', kind: 'Method', name: 'Image compression by truncated SVD', deps: ['nla-1.8'], refs: ['Trefethen–Bau Lec. 5'],
           pic: 'A greyscale image is rebuilt from its first k singular triplets with a slider for k; storage cost, relative error and the singular value decay curve are shown together.' },
         { num: '1.10', kind: 'Method', name: 'Principal component analysis via the SVD', deps: ['nla-1.8'], refs: ['Trefethen–Bau Lec. 5'],

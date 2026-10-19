@@ -1,6 +1,6 @@
 // Rudin, Functional Analysis — Chapter 12 (part 3): resolutions of the identity and the spectral theorem
 //
-// Numbering note: recalled, not checked against the book; items carry `verify: true`.
+// Numbering, statements and proofs checked against Rudin, second edition, pp.306–341.
 
 const cadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
 const cmul = (a, b) => [a[0] * b[0] - a[1] * b[1], a[0] * b[1] + a[1] * b[0]];
@@ -37,12 +37,14 @@ export default {
 (c) $E(\omega'\cap\omega'')=E(\omega')E(\omega'')$;
 (d) if $\omega'\cap\omega''=\varnothing$, then $E(\omega'\cup\omega'')=E(\omega')+E(\omega'')$;
 (e) for all $x,y\in H$, $E_{x,y}(\omega)=(E(\omega)x,y)$ is a complex measure on $\mathfrak M$.
+On a locally compact Hausdorff space with its Borel sets, regularity means that each scalar measure $E_{x,y}$ is regular.
+
 Then the $E(\omega)$ commute, ranges of disjoint sets are orthogonal, $E_{x,x}(\omega)=\norm{E(\omega)x}^2$, and $\omega\mapsto E(\omega)x$ is a countably additive $H$-valued measure.`,
       idea: String.raw`The prototype: $H=L^2(\mu)$, a measurable $\varphi$, and $E(\omega)$ = multiplication by $1_{\varphi^{-1}(\omega)}$. Then (c) is $1_A1_B=1_{A\cap B}$, and $E_{x,y}(\omega)=\int_{\varphi^{-1}(\omega)}x\bar y\,d\mu$ is the image of $x\bar y\,d\mu$ under $\varphi$. The spectral theorem says that every normal operator is, up to unitary equivalence, of this form.`,
       caption: String.raw`$H=L^2[0,1]$ and $\varphi(t)$ the green function; $E(\omega)$ multiplies by the indicator of $\varphi^{-1}(\omega)$. Drag the ends of the Borel set $\omega$ (an interval on the vertical $\lambda$-axis): the set $\varphi^{-1}(\omega)\subset[0,1]$ lights up, and $E(\omega)x$ (purple) is $x$ cut down to it. Right: the measure $E_{x,x}$ — the distribution of $|x|^2\,dt$ pushed forward by $\varphi$ — whose mass on $\omega$ is $\norm{E(\omega)x}^2$.`,
-      deps: ['fa-12.14', 'rca-6.1'],
+      deps: ['fa-12.14','rca-6.1'],
       tags: ['spectral theory', 'projection-valued measures'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.17 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const L = v.stage({ x: [0, 1], y: [-1.3, 1.6], height: 330, weight: 1.4, axes: true, title: '$\\varphi$ (green), $x$ (blue), $E(\\omega)x$ (purple)' });
@@ -83,9 +85,9 @@ $$(\Psi(f)x,y)=\int_\Omega f\,dE_{x,y}\qquad(x,y\in H),$$
 written $\Psi(f)=\int f\,dE$. Moreover $\norm{\Psi(f)x}^2=\int|f|^2\,dE_{x,x}$, and an operator commutes with every $E(\omega)$ iff it commutes with every $\Psi(f)$.`,
       idea: String.raw`Define $\Psi$ on simple functions by $\Psi(\sum\alpha_i1_{\omega_i})=\sum\alpha_iE(\omega_i)$ with disjoint $\omega_i$: it is multiplicative by 12.17(c), and $\norm{\Psi(s)x}^2=\sum|\alpha_i|^2\norm{E(\omega_i)x}^2$ shows $\norm{\Psi(s)}=\norm s_\infty$ (essential sup: sets of $E$-measure zero do not count). Extend by uniform density of simple functions.`,
       caption: String.raw`The same multiplication picture: $T=M_\varphi$ on $L^2[0,1]$ with $\varphi(t)=t^2+0.3t$ strictly increasing, so single points are $E$-null. Shape $f$ on the spectrum $[0,1.3]$ with the handles; a spike at $\lambda_0$ (adjustable) changes $f$ only on a null set. $\Psi(f)=M_{f\circ\varphi}$, and the readout compares $\norm{\Psi(f)}$ with $\sup|f|$ and with the essential sup, and checks $\norm{\Psi(f)x}^2=\int|f|^2dE_{x,x}$ for $x=1$.`,
-      deps: ['fa-12.17', 'fa-11.18'],
+      deps: ['fa-12.17','fa-12.18','fa-12.20'],
       tags: ['spectral theory', 'functional calculus'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.21 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const spS = v.slider('spike height at $\\lambda_0$', 0, 3, 2.2, { step: 0.01 });
@@ -117,14 +119,14 @@ written $\Psi(f)=\int f\,dE$. Moreover $\norm{\Psi(f)x}^2=\int|f|^2\,dE_{x,x}$, 
       num: '12.22',
       kind: 'Theorem',
       name: 'Commutative *-algebras of operators are integrals against one E',
-      statement: String.raw`Let $\mathscr A$ be a closed normal subalgebra of $B(H)$ (commutative and closed under the involution) containing $I$, with maximal ideal space $\Delta$. There is a unique resolution of the identity $E$ on the Borel sets of $\Delta$ such that
+      statement: String.raw`Let $\mathscr A$ be a closed normal subalgebra of $B(H)$ (commutative and closed under the involution) containing $I$, with maximal ideal space $\Delta$. There is a unique regular resolution of the identity $E$ on the Borel sets of $\Delta$ such that
 $$T=\int_\Delta\hat T\,dE\qquad(T\in\mathscr A).$$
 Moreover $E(\omega)\ne0$ for every nonempty open $\omega\subset\Delta$, and an operator commutes with every $T\in\mathscr A$ iff it commutes with every $E(\omega)$.`,
       idea: String.raw`By Gelfand–Naimark (11.18) $T\mapsto\hat T$ is an isometric $*$-isomorphism $\mathscr A\to C(\Delta)$. For fixed $x,y$, $\hat T\mapsto(Tx,y)$ is a bounded functional on $C(\Delta)$, so the Riesz representation theorem gives regular measures $\mu_{x,y}$ with $(Tx,y)=\int\hat T\,d\mu_{x,y}$. For Borel $f$, $(x,y)\mapsto\int f\,d\mu_{x,y}$ is a bounded sesquilinear form, hence (12.8) $(\Phi(f)x,y)$; $E(\omega)=\Phi(1_\omega)$ is the resolution.`,
       caption: String.raw`A two-generator example: commuting self-adjoint $A,B$ on $\R^3$, both diagonal in one orthonormal basis (drag in the 3D panel to rotate it). $\Delta$ is the joint spectrum $\{(a_k,b_k)\}$ (left; set the eigenvalues with the sliders), and $E(\{k\})$ is the projection onto the $k$-th basis vector (arrows). Then $A=\sum a_kE_k$ and $B=\sum b_kE_k$; the readout checks that $A$ and $B$ commute and that the $E_k$ are orthogonal projections summing to $I$.`,
       deps: ['fa-12.21', 'fa-11.18', 'rca-6.19', 'fa-12.8'],
       tags: ['spectral theory', 'commutative algebras of operators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.22 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const aS = [1.2, -0.4, 0.5].map((x, k) => v.slider(`$a_${k + 1}$`, -1.5, 1.5, x, { step: 0.01 }));
@@ -155,15 +157,15 @@ Moreover $E(\omega)\ne0$ for every nonempty open $\omega\subset\Delta$, and an o
       num: '12.23',
       kind: 'Theorem',
       name: 'The spectral theorem for normal operators',
-      statement: String.raw`If $T\in B(H)$ is normal, there is a unique resolution of the identity $E$ on the Borel subsets of $\sigma(T)$ such that
+      statement: String.raw`If $T\in B(H)$ is normal, there is a unique regular resolution of the identity $E$ on the Borel subsets of $\sigma(T)$ such that
 $$T=\int_{\sigma(T)}\lambda\,dE(\lambda).$$
 Furthermore, every $S\in B(H)$ that commutes with $T$ commutes with every $E(\omega)$.`,
-      idea: String.raw`Apply 12.22 to the closed normal algebra generated by $I,T,T^*$, whose maximal ideal space is homeomorphic to $\sigma(T)$ via $h\mapsto h(T)$ (as in 11.9a); then $\hat T$ becomes the identity function $\lambda$. If $ST=TS$, then $ST^*=T^*S$ by Fuglede (12.16), so $S$ commutes with the whole algebra and hence with $E$ by 12.22.`,
+      idea: String.raw`Apply 12.22 to the closed normal algebra generated by $I,T,T^*$, whose maximal ideal space is homeomorphic to $\sigma(T)$ via $h\mapsto h(T)$ (by11.19); then $\hat T$ becomes the identity function $\lambda$. If $ST=TS$, then $ST^*=T^*S$ by Fuglede (12.16), so $S$ commutes with the whole algebra and hence with $E$ by 12.22.`,
       caption: String.raw`A normal $3\times3$ operator $T=\sum\lambda_kP_k$ (drag the eigenvalues). For a unit vector $x$ (set its components in the eigenbasis with the sliders), the spectral measure $E_{x,x}$ puts mass $|\langle x,u_k\rangle|^2$ at $\lambda_k$ (dot areas). Then $(Tx,x)=\int\lambda\,dE_{x,x}$ is the **centre of mass** (purple) — it always lies in the convex hull of $\sigma(T)$, the numerical range of a normal operator — and $\norm{Tx}^2=\int|\lambda|^2dE_{x,x}$.`,
-      deps: ['fa-12.22', 'fa-12.16', 'fa-11.9a'],
+      deps: ['fa-12.22','fa-12.16','fa-11.19'],
       see: ['fa-13.30'],
       tags: ['spectral theorem', 'normal operators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.23 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const alS = v.slider('$x$: angle $\\alpha$', 0, 90, 35, { step: 0.5 });
@@ -189,14 +191,14 @@ Furthermore, every $S\in B(H)$ that commutes with $T$ commutes with every $E(\om
     },
     {
       num: '12.24',
-      kind: 'Theorem',
+      kind: 'Definition',
       name: 'Borel functional calculus for normal operators',
       statement: String.raw`Let $T$ be normal with spectral decomposition $E$, and for bounded Borel functions $f$ on $\sigma(T)$ put $f(T)=\int f\,dE$. Then $f\mapsto f(T)$ is a $*$-homomorphism with $\norm{f(T)}\le\sup|f|$ (equality for continuous $f$), it agrees with the holomorphic calculus of 10.26 when $f$ is holomorphic near $\sigma(T)$, every $f(T)$ is normal, and $f(T)$ commutes with every operator that commutes with $T$. In particular $E(\omega)=1_\omega(T)$.`,
-      idea: String.raw`Everything is inherited from 12.21. Agreement with the holomorphic calculus: both are continuous homomorphisms that send $\lambda\mapsto T$ and $1\mapsto I$, and rational functions with poles off $\sigma(T)$ are dense (Runge).`,
+      idea: String.raw`The algebraic and norm properties come from12.21, while the spectral measure and its commutation property come from12.23. Continuous functions have norm equal to their supremum on the spectrum; arbitrary bounded Borel functions use the essential supremum relative to $E$, so changes on $E$-null sets do not change the operator.`,
       caption: String.raw`Functions of a normal $3\times3$ matrix that are **not** holomorphic — the Borel calculus allows them. Drag the eigenvalues. $f=1_{\{\operatorname{Re}\lambda>c\}}$ (drag the line) gives the spectral projection $E(\{\operatorname{Re}\lambda>c\})$, a projection commuting with $T$ of rank equal to the number of eigenvalues to the right; $f=|\lambda|$ gives $|T|=(T^*T)^{1/2}$; $f=\bar\lambda$ gives $T^*$. The readout checks $f(T)^2=f(T)$, $f(T)T=Tf(T)$, $\norm{f(T)}=\max_{\sigma}|f|$, as appropriate.`,
       deps: ['fa-12.23', 'fa-12.21'],
       tags: ['spectral theorem', 'functional calculus'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.24 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const fS = v.select('$f=$', [{ value: 'ind', label: '$1_{\\{\\operatorname{Re}\\lambda>c\\}}$' }, { value: 'abs', label: '$|\\lambda|$' }, { value: 'conj', label: '$\\bar\\lambda$' }], 'ind');
@@ -225,14 +227,14 @@ Furthermore, every $S\in B(H)$ that commutes with $T$ commutes with every $E(\om
         });
         v.readout(() => {
           const s = st;
-          if (s.key === 'ind') return `$E=1_{\\{\\operatorname{Re}\\lambda>c\\}}(T)$: $\\|E^2-E\\| = ${v.sci(s.idem + 1e-17, 1)}$, $\\;\\|ET-TE\\| = ${v.sci(s.comm + 1e-17, 1)}$, rank $${s.rank}$ — a spectral projection that no holomorphic function of $T$ could produce when eigenvalues lie on both sides.`;
+          if (s.key === 'ind') return `$E=1_{\\{\\operatorname{Re}\\lambda>c\\}}(T)$: $\\|E^2-E\\| = ${v.sci(s.idem + 1e-17, 1)}$, $\\;\\|ET-TE\\| = ${v.sci(s.comm + 1e-17, 1)}$, rank $${s.rank}$ — a spectral projection. On this finite spectrum it can also be obtained by polynomial interpolation; the broader Borel calculus matters for infinite spectra.`;
           if (s.key === 'abs') return `$f(T)=|T|$: $\\;\\|f(T)^2-T^*T\\| = ${v.sci(s.absq + 1e-17, 1)}$, $\\;\\|f(T)T-Tf(T)\\| = ${v.sci(s.comm + 1e-17, 1)}$.`;
           return `$f(\\lambda)=\\bar\\lambda$ gives $f(T)=T^*$: $\\;\\|f(T)-T^*\\| = ${v.sci(s.adj + 1e-17, 1)}$.`;
         });
       },
     },
     {
-      num: '12.26',
+      num: '12.29',
       kind: 'Theorem',
       name: 'Eigenvalues of normal operators are the atoms of E',
       statement: String.raw`Let $T$ be normal with spectral decomposition $E$, and $\lambda\in\C$. Then
@@ -241,18 +243,18 @@ Furthermore, every $S\in B(H)$ that commutes with $T$ commutes with every $E(\om
 (c) every isolated point of $\sigma(T)$ is an eigenvalue;
 (d) if $\sigma(T)$ is countable, $H$ has an orthonormal basis of eigenvectors of $T$.`,
       idea: String.raw`(a) $\norm{(T-\lambda I)x}^2=\int|\mu-\lambda|^2\,dE_{x,x}(\mu)$ vanishes iff $E_{x,x}$ is concentrated at $\lambda$, i.e. $E(\{\lambda\})x=x$. (b) If $E(\omega)=0$ for a disc $\omega$ around $\lambda$, then $f(\mu)=1/(\mu-\lambda)$ is bounded $E$-a.e. and $f(T)$ inverts $T-\lambda I$; conversely 12.22. (c) follows from (b) with $\omega=\{\lambda\}$ open in $\sigma(T)$. (d): the ranges of the $E(\{\lambda\})$ are mutually orthogonal and add up to $E(\sigma(T))=I$.`,
-      caption: String.raw`$T=M_\varphi$ on $L^2[0,1]$, with $\varphi$ (green) flat on a middle interval at height $c$ and increasing elsewhere, with a gap. $\sigma(T)$ is the range of $\varphi$ (blue on the $\lambda$-axis). Drag $\lambda$ along the axis: $E(\{\lambda\})$ multiplies by $1_{\varphi^{-1}(\lambda)}$, which is nonzero only at $\lambda=c$ — the only eigenvalue, with eigenfunctions supported on the flat piece (purple). The rest of the spectrum is continuous: $\lambda$ there is in $\sigma(T)$ but $\mathscr N(T-\lambda I)=\{0\}$. The value $c$ is an isolated point of $\sigma(T)$ when the flat piece sits inside the gap.`,
-      deps: ['fa-12.23', 'fa-12.21'],
+      caption: String.raw`$T=M_\varphi$ on $L^2[0,1]$, with $\varphi$ (green) flat on a middle interval at height $c$ and increasing elsewhere, with a gap. $\sigma(T)$ is the essential range of $\varphi$ (blue on the $\lambda$-axis). Drag $\lambda$ along the axis: $E(\{\lambda\})$ multiplies by $1_{\varphi^{-1}(\lambda)}$, which is nonzero only at $\lambda=c$ — the only eigenvalue, with eigenfunctions supported on the flat piece (purple). The rest of the spectrum is continuous: $\lambda$ there is in $\sigma(T)$ but $\mathscr N(T-\lambda I)=\{0\}$. The value $c$ is an isolated point of $\sigma(T)$ when the flat piece sits inside the gap.`,
+      deps: ['fa-12.28','fa-12.18','fa-12.22'],
       tags: ['spectral theorem', 'eigenvalues'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.29 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const cS = v.slider('height $c$ of the flat piece', 0, 2, 1.1, { step: 0.01 });
         const S = v.stage({ x: [0, 1], y: [-0.2, 2.2], height: 360, weight: 1.6, axes: true, xlabel: 't', title: '$\\varphi$ and $\\varphi^{-1}(\\lambda)$' });
         const A = v.stage({ x: [-0.5, 0.5], y: [-0.2, 2.2], height: 360, minWidth: 140, weight: 0.4, axes: false, ticks: false, title: '$\\sigma(T)$' });
-        const hl = A.handle(0, 0.5, { color: 'red', label: 'λ', labelPos: 'e', constrain: (x, y) => [0, M.clamp(y, -0.15, 2.15)] });
+        const hl = A.handle(0, 0.5, { color: 'red', label: 'λ', labelPos: 'e', constrain: (x,y)=>[0,Math.abs(y-cS.value)<.025?cS.value:M.clamp(y,-.15,2.15)] });
         let st = {};
-        v.legend([['green', '$\\varphi$'], ['blue', '$\\sigma(T)=$ range of $\\varphi$'], ['purple', 'eigenfunction support $\\varphi^{-1}(c)$']]);
+        v.legend([['green', '$\\varphi$'], ['blue', '$\\sigma(T)=$ essential range of $\\varphi$'], ['purple', 'eigenfunction support $\\varphi^{-1}(c)$']]);
         v.render(() => {
           const c = cS.value;
           const phi = (t) => (t < 0.35 ? 0.8 * t / 0.35 : t < 0.6 ? c : 1.35 + 0.8 * (t - 0.6) / 0.4);
@@ -264,35 +266,33 @@ Furthermore, every $S\in B(H)$ that commutes with $T$ commutes with every $E(\om
           A.dot(0, c, { color: 'blue', r: 6 });
           const lam = hl.y;
           S.hline(lam, { color: 'red', width: 1.4, dash: [5, 4] });
-          const onFlat = Math.abs(lam - c) < 0.012;
+          const onFlat = lam === c;
           const inSpec = segs.some(([a, b]) => lam >= a - 1e-9 && lam <= b + 1e-9) || onFlat;
           // the preimage
           const pre = [];
           for (let i = 0; i <= 2000; i++) { const t = i / 2000; if (Math.abs(phi(t) - lam) < 0.004) pre.push(t); }
           if (onFlat) S.line(0.35, 0, 0.6, 0, { color: 'purple', width: 7 });
           else pre.forEach((t) => S.dot(t, 0, { color: 'red', r: 4 }));
-          const isolated = !segs.some(([a, b]) => c >= a - 0.02 && c <= b + 0.02);
+          const isolated = !segs.some(([a, b]) => c >= a && c <= b);
           st = { onFlat, inSpec, isolated, c };
         });
         v.readout(() => {
           const s = st;
-          if (s.onFlat) return `$\\lambda=c$: $\\varphi^{-1}(c)=[0.35,0.6]$ has positive measure, so $E(\\{c\\})\\ne0$ and $c$ is an eigenvalue (eigenfunctions: anything supported there)` + (s.isolated ? ' — and it is an isolated point of $\\sigma(T)$.' : '.');
-          return s.inSpec ? '$\\lambda\\in\\sigma(T)$, but $\\varphi^{-1}(\\lambda)$ is a single point (red), a null set: $E(\\{\\lambda\\})=0$, no eigenvector — continuous spectrum.' : '$\\lambda\\notin\\sigma(T)$: $\\varphi-\\lambda$ is bounded away from $0$, and $T-\\lambda I$ is invertible.';
+          if (s.onFlat) return `$\\lambda=c$: $\\varphi^{-1}(c)$ contains the interval $[0.35,0.6)$ and has positive measure, so $E(\\{c\\})\\ne0$ and $c$ is an eigenvalue (eigenfunctions: anything supported there)` + (s.isolated ? ' — and it is an isolated point of $\\sigma(T)$.' : '.');
+          return s.inSpec ? '$\\lambda\\in\\sigma(T)$, but $\\varphi^{-1}(\\lambda)$ has at most isolated points (red), a null set: $E(\\{\\lambda\\})=0$, no eigenvector — continuous spectrum.' : '$\\lambda\\notin\\sigma(T)$: $\\varphi-\\lambda$ is bounded away from $0$, and $T-\\lambda I$ is invertible.';
         });
       },
     },
     {
       num: '12.30',
       kind: 'Theorem',
-      name: 'Compact normal operators are diagonal',
-      statement: String.raw`If $T\in B(H)$ is compact and normal, then $\sigma(T)\setminus\{0\}$ consists of eigenvalues $\lambda_1,\lambda_2,\dots$ (finitely many, or a sequence tending to $0$), each with a finite-dimensional eigenspace, and
-$$T=\sum_k\lambda_kP_k$$
-with $P_k$ the orthogonal projections onto the eigenspaces, the series converging in operator norm. $H$ has an orthonormal basis of eigenvectors of $T$ (allowing the eigenvalue $0$).`,
-      idea: String.raw`By the Riesz–Schauder theory (4.25) every $\lambda\ne0$ in $\sigma(T)$ is an isolated eigenvalue of finite multiplicity, so $\sigma(T)$ is countable and 12.26(d) applies, with $P_k=E(\{\lambda_k\})$. Norm convergence: $\norm{T-\sum_{k\le n}\lambda_kP_k}=\sup_{k>n}|\lambda_k|\to0$, since the remainder is normal with spectrum $\{\lambda_k:k>n\}\cup\{0\}$ and its norm is its spectral radius (12.13).`,
-      caption: String.raw`A compact normal operator on $\ell^2$: diagonal with eigenvalues $\lambda_k=r^ke^{ik\theta}$ spiralling into $0$ (the only possible accumulation point; $0\in\sigma(T)$ but is not an eigenvalue). Choose $r$, $\theta$ and the truncation $n$. Right: $\norm{T-T_n}=\sup_{k>n}|\lambda_k|$ for the finite-rank truncations $T_n=\sum_{k\le n}\lambda_kP_k$ (log scale) — they converge to $T$ in norm. At $r=1$ the operator is no longer compact (unitary), and the truncations stop converging in norm.`,
-      deps: ['fa-12.26', 'fa-4.25', 'fa-12.13'],
+      name: 'Spectral characterization of compact normal operators',
+      statement: String.raw`A normal $T\in B(H)$ is compact if and only if its spectrum has no accumulation point other than possibly $0$, and every nonzero eigenspace is finite-dimensional. Together with12.29 this gives $T=\sum_k\lambda_kP_k$, a norm-convergent sum of its nonzero eigenvalues times their orthogonal eigenprojections, with $\lambda_k\to0$ if there are infinitely many.`,
+      idea: String.raw`Compactness gives finite-dimensional nonzero eigenspaces and only $0$ as a possible spectral accumulation point by chapter4. Conversely, order the nonzero spectral points by decreasing modulus. Their spectral projections have finite rank. The continuous calculus shows that the difference from the first $n$ spectral terms has norm at most the next eigenvalue modulus, which tends to zero. The norm limit of compact finite-rank operators is compact.`,
+      caption: String.raw`A compact normal operator on $\ell^2$: diagonal with eigenvalues $\lambda_k=r^ke^{ik\theta}$ spiralling into $0$ when $r<1$ ($0\in\sigma(T)$ but is not an eigenvalue). Choose $r$, $\theta$ and the truncation $n$. Right: $\norm{T-T_n}=\sup_{k>n}|\lambda_k|$ for the finite-rank truncations $T_n=\sum_{k\le n}\lambda_kP_k$ (log scale) — they converge to $T$ in norm. At $r=1$ the operator is no longer compact (unitary), and the truncations stop converging in norm.`,
+      deps: ['fa-12.29','fa-4.18','fa-4.25','fa-12.24'],
       tags: ['compact operators', 'spectral theorem', 'normal operators'],
-      verify: true,
+      refs: ['Rudin, Functional Analysis, 2nd ed., §12.30 (full statement and proof inspected)'],
       viz(v) {
         const M = v.M;
         const rS = v.slider('$r$', 0.5, 1, 0.82, { step: 0.005 });
@@ -307,8 +307,9 @@ with $P_k$ the orthogonal projections onto the eigenspaces, the series convergin
           const lam = M.range(120).map((k) => [Math.pow(r, k + 1) * Math.cos((k + 1) * th), Math.pow(r, k + 1) * Math.sin((k + 1) * th)]);
           L.path(lam, { color: 'faint', width: 1 });
           lam.forEach((z, k) => L.dot(z[0], z[1], { color: k < n ? 'blue' : 'muted', r: k < n ? 4 : 2.5 }));
-          L.dot(0, 0, { color: 'red', r: 4, label: '0', labelPos: 'sw' });
-          const tail = (m) => Math.max(...lam.slice(m).map(cabs));
+          if(r<1)L.dot(0, 0, { color: 'red', r: 4, label: '0', labelPos: 'sw' });
+          const tail = m=>r**(m+1);
+          R.setView([0,40],[Math.min(-4,41*Math.log10(r)-.2),.3]);
           const pts = M.range(41).map((m) => [m, Math.log10(tail(m) + 1e-300)]);
           R.setTicks(null, [0, -1, -2, -3, -4].map((k) => [k, k === 0 ? '1' : `10⁻${'¹²³⁴'[-k - 1]}`]));
           R.path(pts, { color: 'blue', width: 2.2 });

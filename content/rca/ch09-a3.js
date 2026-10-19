@@ -25,6 +25,13 @@ export default {
   collection: 'rca',
   chapter: 9,
   items: [
+    {
+      num: '9.16', kind: 'Definition', name: 'Translation-invariant subspaces',
+      statement: String.raw`A subspace $M\subset L^2(\mathbb R)$ is **translation-invariant** if $f\in M$ implies $f_\alpha\in M$ for every real $\alpha$, where $f_\alpha(x)=f(x-\alpha)$. Plancherel turns this condition into invariance of the transformed subspace under multiplication by $e^{-i\alpha t}$.`,
+      idea: String.raw`A spatial shift multiplies the Fourier transform by a phase of modulus one, so it preserves a prescribed spectral zero set. Closing the subspace is essential to the classification in 9.17. Its proof uses an orthogonal projection rather than intersecting uncountably many zero sets, each defined only up to a null set.`,
+      deps: ['rca-9.13', 'rca-9.2'], see: ['rca-9.17'],
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 9.16, pp. 188–189'],
+    },
     // ------------------------------------------------------------------ 9.13
     {
       num: '9.13',
@@ -186,15 +193,15 @@ $$f(x)=\int_{-\infty}^{\infty}\hat f(t)\,e^{ixt}\,dm(t)\qquad\text{for almost ev
     },
     // ------------------------------------------------------------------ 9.16
     {
-      num: '9.16',
+      num: '9.17',
       kind: 'Theorem',
       name: 'Closed translation-invariant subspaces of L²',
       statement: String.raw`For a measurable set $E\subset\R$ let $M_E$ be the set of all $f\in L^2$ whose Plancherel transform vanishes a.e. on $E$. Then $M_E$ is a closed subspace of $L^2$ invariant under all translations $f\mapsto f_\alpha$. Conversely, every closed translation-invariant subspace of $L^2$ equals $M_E$ for some measurable $E$, and $M_E=M_{E'}$ exactly when $E$ and $E'$ differ by a set of measure zero.`,
-      idea: String.raw`Translation by $\alpha$ multiplies $\hat f$ by $e^{-i\alpha t}$ (9.2(b), extended to $L^2$ by continuity), which does not change where $\hat f$ vanishes; closedness follows from 9.13(b). Conversely, if $M$ is closed and invariant, Plancherel turns it into a closed subspace $\hat M$ invariant under multiplication by every $e^{-i\alpha t}$, hence (by linearity, closure and density of trigonometric combinations) under multiplication by bounded functions. The orthogonal projection $P$ onto $\hat M$ (4.11) then commutes with such multiplications, which forces $P$ to be multiplication by an indicator $\chi_{\R\setminus E}$.`,
+      idea: String.raw`Plancherel turns translations into multiplication by $e_\alpha(t)=e^{-i\alpha t}$. Let $P$ be the orthogonal projection onto the transformed subspace. Orthogonality and invariance imply $(f-Pf)\overline{Pg}$ has Fourier transform zero, hence vanishes a.e. by uniqueness. Interchanging $f,g$ gives $f\,Pg=g\,Pf$. Fix a strictly positive $g\in L^2$ and set $\phi=Pg/g$; then $Pf=\phi f$. From $P^2=P$, $\phi^2=\phi$ a.e., so $\phi$ is an indicator and the subspace consists precisely of functions vanishing on $E=\{\phi=0\}$. This avoids an uncountable intersection of pointwise zero sets.`,
       caption: String.raw`First mode: $E=[-b,-a]\cup[a,b]$ — drag $a$ and $b$. $Pf$ (green) is the orthogonal projection of $f(x)=(1+x)e^{-x^2/2}$ onto $M_E$, namely $f-\int_E\hat f(t)e^{ixt}\,dm(t)$. Slide $\alpha$: the gold dots are $|\widehat{(Pf)_\alpha}|^2$ computed by quadrature over $|x|\le100$, and they stay at $0$ on $E$ (the small ripple at the edges of $E$ is truncation: $Pf\notin L^1$ decays like $1/x$). Second mode: the functions supported in $[-2,2]$ form a closed subspace that translates leave; $\hat f$ is entire, so it vanishes on no interval and no set $E$ describes this subspace.`,
       deps: ['rca-9.13', 'rca-9.2', 'rca-4.11'],
       tags: ['L2', 'invariant subspaces', 'Plancherel'],
-      verify: true,
+      refs: ['Rudin, Real and Complex Analysis, 3rd ed., Section 9.16 and Theorem 9.17, pp. 188–190'],
       viz(v) {
         const mode = v.select('', [{ value: 'E', label: '$M_E$: spectral gap on $E$' }, { value: 'supp', label: 'supported in $[-2,2]$ (not invariant)' }], 'E');
         const al = v.slider('translation $\\alpha$', -4, 4, 1.6, { step: 0.05 });

@@ -314,13 +314,12 @@ and more generally $[x^n]H(T(x))=\frac1n[u^{n-1}]\big(H'(u)\varphi(u)^n\big)$ fo
       num: '4.15',
       kind: 'Theorem',
       name: 'Cayley’s formula nⁿ⁻² for labelled trees',
-      credit: 'Cayley, 1889 (earlier: Borchardt, 1860)',
-      verify: true,
-      statement: String.raw`The number of trees on the vertex set $[n]$ is $n^{\,n-2}$ for $n\ge1$. More precisely, the number of them in which vertex $1$ has degree $d$ is $\binom{n-2}{d-1}(n-1)^{\,n-1-d}$, so under the uniform distribution $\deg(1)-1\sim\mathrm{Bin}(n-2,\tfrac1n)$.`,
+      credit: 'Cayley’s formula',
+      statement: String.raw`The number of trees on the vertex set $[n]$ is $n^{\,n-2}$ for $n\ge1$. For $n=1$ the single vertex has degree $0$. For $n\ge2$, the number of them in which vertex $1$ has degree $d$ is $\binom{n-2}{d-1}(n-1)^{\,n-1-d}$, so under the uniform distribution $\deg(1)-1\sim\mathrm{Bin}(n-2,\tfrac1n)$.`,
       idea: String.raw`By the Prüfer bijection (4.14) trees correspond to words in $[n]^{n-2}$, and there are $n^{n-2}$ of those. The degree statement also falls out: $\deg(1)=1+\#\{i:p_i=1\}$, and the number of words with exactly $d-1$ ones is $\binom{n-2}{d-1}(n-1)^{n-1-d}$. A uniform random word gives a uniform random labelled tree, which is how the sampler on the right works.`,
       caption: String.raw`Left: for small $n$ **every** set of $n-1$ edges of $K_n$ is tested (is it acyclic?), the trees are tallied by the degree of vertex 1 (bars), and the formula $\binom{n-2}{d-1}(n-1)^{n-1-d}$ is overlaid (rings). Middle: random Prüfer words → uniform random trees on $n'$ vertices: the empirical law of $\deg(1)-1$ from the sample (bars) against $\mathrm{Bin}(n'-2,1/n')$ (rings). Right: the last sampled tree.`,
       deps: ['comb-4.14'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Cameron, Notes on Counting, Theorem7.1 and Proposition7.2, pp.85–86'],
       tags: ['trees', 'Cayley'],
       viz(v) {
         const nS = v.slider('exact: $n$', 3, 7, 6, { int: true });
@@ -424,13 +423,12 @@ So $a_n$ grows like $\rho^{-n}$ up to subexponential factors: $a_n=\rho^{-n+o(n)
       num: '4.17',
       kind: 'Theorem',
       name: 'Zeckendorf’s theorem',
-      credit: 'Zeckendorf (published 1972; earlier work by Lekkerkerker, 1952)',
-      verify: true,
+      credit: 'Zeckendorf’s representation theorem',
       statement: String.raw`Every positive integer $n$ can be written **uniquely** as a sum of Fibonacci numbers $F_{i_1}+F_{i_2}+\cdots+F_{i_r}$ with $i_1>i_2>\cdots>i_r\ge2$ and $i_j-i_{j+1}\ge2$ (no two consecutive Fibonacci numbers; $F_2=1,F_3=2,F_4=3,F_5=5,\dots$). The representation is produced by the greedy algorithm: repeatedly subtract the largest Fibonacci number not exceeding what is left.`,
-      idea: String.raw`Existence by the greedy step: if $F_k\le n<F_{k+1}$ then $n-F_k<F_{k+1}-F_k=F_{k-1}$, so the remainder is smaller than $F_{k-1}$ and the next chosen index is at most $k-2$ — never consecutive. Uniqueness: a sum of non-consecutive Fibonacci numbers with largest term $F_k$ is at most $F_{k-1}+F_{k-3}+\cdots<F_{k+1}$ (telescoping $F_{j}=F_{j+1}-F_{j-1}$), so the largest term must be the greedy $F_k$ with $F_k\le n<F_{k+1}$; then induct on the remainder.`,
+      idea: String.raw`Existence by the greedy step: if $F_k\le n<F_{k+1}$ then $n-F_k<F_{k+1}-F_k=F_{k-1}$, so the remainder is smaller than $F_{k-1}$ and the next chosen index is at most $k-2$ — never consecutive. Uniqueness: a sum of non-consecutive Fibonacci numbers with largest term $F_k$ is at most $F_k+F_{k-2}+\cdots=F_{k+1}-1<F_{k+1}$ (telescoping $F_{j}=F_{j+1}-F_{j-1}$), so the largest term must be the greedy $F_k$ with $F_k\le n<F_{k+1}$; then induct on the remainder.`,
       caption: String.raw`Move $n$. Top: the greedy algorithm cuts $[0,n]$ into Fibonacci blocks, largest first. Middle: which Fibonacci numbers were used (gold) — never two neighbours. Bottom: for every $m\le 300$, in how many ways $m$ is a sum of **distinct** Fibonacci numbers if neighbours *are* allowed (dots; found by testing all $2^{13}$ subsets): usually many, but **exactly one** of those ways has no neighbours. The readout counts both.`,
       deps: ['comb-4.3'],
-      refs: ['Aigner ch. 3'],
+      refs: ['Knuth, Fibonacci Multiplication (1988), pp.57–58; greedy and uniqueness induction given here'],
       tags: ['Fibonacci', 'number representation'],
       viz(v) {
         const nS = v.slider('$n$', 1, 300, 100, { int: true });

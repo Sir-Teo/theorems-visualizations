@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';import{mkdirSync,writeFileSync}from'node:fs';import{chromium}from'playwright-core';
+import{createServer}from'../scripts/serve.mjs';import{findBrowser,installBrowserAssets}from'../scripts/browser.mjs';
+const server=createServer();await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({executablePath:findBrowser(),headless:true});const results=[],dir='/tmp/geol-14-quiz-shots';mkdirSync(dir,{recursive:true});const baseline=process.env.GEOL_14_BASELINE==='1';
+try{for(const theme of(baseline?['light']:['light','dark'])){const page=await browser.newPage({viewport:{width:1200,height:1500}});await installBrowserAssets(page.context());const errors=[];page.on('pageerror',e=>errors.push(e.message));const states=[];
+const settle=()=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+const inspect=async(name)=>{await settle();const state=await page.evaluate(()=>({blank:window.__inspectCanvases(),readout:document.querySelector('.viz-readout').innerText,graphText:window.__quizDrawText||[]}));const screenshot=`${dir}/${theme}-${name}${baseline?'-before':''}.png`;await page.locator('#shot').screenshot({path:screenshot});states.push({name,...state,screenshot});return state;};
+const clearText=()=>page.evaluate(()=>window.__quizDrawText=[]);
+try{await page.goto(`http://127.0.0.1:${server.address().port}/tools/harness.html?file=content/geol/ch01.js&id=geol-1.4&theme=${theme}&wait=150&still`,{waitUntil:'domcontentloaded',timeout:60000});await page.waitForFunction(()=>window.__done,null,{timeout:60000});assert.deepEqual(await page.evaluate(()=>window.__done.errors),[]);assert.deepEqual((await inspect('default')).blank,[]);
+await page.evaluate(()=>{window.__quizDrawText=[];const c=window.__vizStages[1].ctx,original=c.fillText.bind(c);c.fillText=(text,...args)=>{window.__quizDrawText.push(String(text));return original(text,...args);};});
+// The checker mode4 is quiz after three nondefault lithology options.
+for(const name of['shale','limestone','conglomerate']){await page.getByRole('button',{name,exact:true}).click();assert.deepEqual((await inspect(`layer-${name}`)).blank,[]);}await page.getByRole('button',{name:'sandstone',exact:true}).click();await clearText();await page.locator('.ctl-toggle label').click();let state=await inspect('quiz-empty');assert.match(state.readout,/quiz: 0 of/);
+if(baseline){assert.deepEqual(state.blank,[1]);}else{
+ assert.deepEqual(state.blank,[]);assert.ok(state.graphText.includes('Place the oldest unit in the outcrop.'));
+ const click=async(x,y)=>{const p=await page.evaluate(([x,y])=>{const s=window.__vizStages[0],r=s.canvas.getBoundingClientRect();return[r.left+s.X(x),r.top+s.Y(y)];},[x,y]);await page.mouse.click(...p);await settle();};
+ // Bottom-right exposed basement is oldest; actual mouse click must reveal its node.
+ await clearText();await click(10,.2);state=await inspect('quiz-first-unit');assert.match(state.readout,/quiz: 1 of/);assert.deepEqual(state.blank,[]);assert.ok(!state.graphText.includes('Place the oldest unit in the outcrop.'));
+ await clearText();await page.getByRole('button',{name:'reset',exact:true}).click();state=await inspect('quiz-reset');assert.match(state.readout,/quiz: 0 of/);assert.deepEqual(state.blank,[]);assert.ok(state.graphText.includes('Place the oldest unit in the outcrop.'));
+ await clearText();await page.locator('.ctl-toggle label').click();state=await inspect('history-restored');assert.match(state.readout,/history:/);assert.deepEqual(state.blank,[]);assert.ok(!state.graphText.includes('Place the oldest unit in the outcrop.'));
+}
+assert.deepEqual(errors,[]);assert.deepEqual(await page.evaluate(()=>window.__vizErrors||[]),[]);assert.deepEqual(await page.evaluate(()=>window.__texErrors||[]),[]);assert.ok(await page.evaluate(()=>typeof window.katex?.render==='function'));results.push({theme,status:'passed',states});
+}catch(e){results.push({theme,status:'failed',states,error:String(e.stack||e)});}finally{await page.close();}console.log(results.at(-1).status,theme);}}
+finally{await browser.close();await new Promise(r=>server.close(r));}const report=`/tmp/geol-14-quiz${baseline?'-before':''}.json`;writeFileSync(report,JSON.stringify(results,null,2)+'\n');for(const r of results.filter(r=>r.status==='failed'))console.error(r.error);process.exitCode=results.some(r=>r.status==='failed')?1:0;

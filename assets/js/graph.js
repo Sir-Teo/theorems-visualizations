@@ -1,5 +1,6 @@
 // Dependency-graph views: theorem lineage, chapter graph, chapter flow, and the global map.
 import { resolveColor, withAlpha, inlineHTML, richHTML, escapeHTML } from './viz/core.js';
+import { traceClippedCubic } from './map-path.js';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 const svg = (tag, attrs = {}, parent) => { const el = document.createElementNS(SVGNS, tag); for (const [k, v] of Object.entries(attrs)) if (v != null) el.setAttribute(k, v); if (parent) parent.append(el); return el; };
@@ -333,6 +334,7 @@ export class MapView {
         <span><svg width="22" height="6"><line x1="0" y1="3" x2="22" y2="3" stroke="var(--c-green)" stroke-width="2.5"/></svg>used by (descendants)</span>
         ${G.planned.length ? '<span><svg width="12" height="12"><circle cx="6" cy="6" r="3.5" fill="none" stroke="var(--ink-3)" stroke-dasharray="2 2"/></svg>planned, not yet written</span>' : ''}
         <span>node size ∝ results that depend on it</span>
+        <span>nearby links · details return after panning</span>
       </div>
       <div class="map-help">scroll / pinch to zoom · drag to pan · click a node · double-click to open</div>`;
     this.canvas = host.querySelector('canvas'); this.ctx = this.canvas.getContext('2d');
@@ -366,9 +368,11 @@ export class MapView {
     this.ro.observe(host);
     this.resize(); this.fit(false);
     if (focus && this.byId.has(focus)) this.select(this.byId.get(focus), true);
-    this.onTheme = () => this.draw(); window.addEventListener('themechange', this.onTheme);
+    this.onTheme = () => { this.panCache = null; this.textWidths?.clear(); this.draw(); }; window.addEventListener('themechange', this.onTheme);
+    this.onFonts = () => { this.panCache = null; this.textWidths?.clear(); this.draw(); };
+    document.fonts?.addEventListener('loadingdone', this.onFonts);
   }
-  destroy() { this.dead = true; clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
+  destroy() { this.dead = true; this.panCache = null; clearTimeout(this.detailTimer); document.fonts?.removeEventListener('loadingdone', this.onFonts); clearTimeout(this.queryTimer); this.ro.disconnect(); window.removeEventListener('themechange', this.onTheme); window.removeEventListener('keydown', this._key); cancelAnimationFrame(this.anim); cancelAnimationFrame(this._raf); }
   visible(n) { return this.show.fields.has(this.fieldOf.get(n.it.col)) && (this.show.defs || n.it.kind !== 'Definition') && (this.show.planned || !n.ghost); }
   /** Emphasize a set of ids (null clears); fit = zoom to them. */
   setHighlight(ids, { fit = false, label = '' } = {}) {
@@ -397,11 +401,11 @@ export class MapView {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) animate = false;
     if (!animate) { this.k = k; this.tx = tx; this.ty = ty; this.draw(); return; }
     const s = { k: this.k, tx: this.tx, ty: this.ty }, t0 = performance.now(), D = 600;
-    const step = (now) => { const u = Math.min(1, (now - t0) / D), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; this.k = s.k + (k - s.k) * e; this.tx = s.tx + (tx - s.tx) * e; this.ty = s.ty + (ty - s.ty) * e; this.draw(); if (u < 1) this.anim = requestAnimationFrame(step); };
+    const step = (now) => { const u = Math.min(1, (now - t0) / D), e = u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; this.beginMovement(); this.k = s.k + (k - s.k) * e; this.tx = s.tx + (tx - s.tx) * e; this.ty = s.ty + (ty - s.ty) * e; this.draw(); if (u < 1) this.anim = requestAnimationFrame(step); };
     this.anim = requestAnimationFrame(step);
   }
   zoom(factor) {
-    cancelAnimationFrame(this.anim); this.userMoved = true;
+    cancelAnimationFrame(this.anim); this.userMoved = true; this.beginMovement();
     const k = Math.min(8, Math.max(0.01, this.k * factor)), r = k / this.k;
     this.tx = this.W / 2 - (this.W / 2 - this.tx) * r;
     this.ty = this.H / 2 - (this.H / 2 - this.ty) * r;
@@ -409,6 +413,23 @@ export class MapView {
   }
   focusNode(n) { const k = Math.max(this.k, 1.6); this.flyTo(k, this.W / 2 - n.x * k - (this.side.classList.contains('open') && this.W > 700 ? 180 : 0), this.H / 2 - n.y * k); }
   sx(x) { return x * this.k + this.tx; } sy(y) { return y * this.k + this.ty; }
+  beginMovement() {
+    // Keep every node during movement. Expensive link/text details return once
+    // input settles, so crossing the raster boundary does not stall a drag.
+    this.interacting = true; this.hover = null; this.tip.style.display = 'none';
+    clearTimeout(this.detailTimer);
+    this.detailTimer = setTimeout(() => { if (!this.dead) { this.interacting = false; this.draw(); } }, 160);
+  }
+  panTo(tx, ty) { this.beginMovement(); this.tx = tx; this.ty = ty; this.draw(); }
+  textWidth(text) {
+    this.textWidths ||= new Map();
+    const key = this.ctx.font + '/' + this.ctx.letterSpacing + '\0' + text;
+    if (!this.textWidths.has(key)) {
+      if (this.textWidths.size > 20000) this.textWidths.clear();
+      this.textWidths.set(key, this.ctx.measureText(text).width);
+    }
+    return this.textWidths.get(key);
+  }
   hit(px, py) {
     let best = null, bd = 12;
     for (const n of this.nodes) { if (!this.visible(n)) continue; const d = Math.hypot(this.sx(n.x) - px, this.sy(n.y) - py) - Math.max(2, n.r * Math.min(1.4, this.k)) + (n.ghost ? 3 : 0); if (d < bd) { bd = d; best = n; } }
@@ -446,7 +467,7 @@ export class MapView {
     const cv = this.canvas; const ptrs = new Map(); let drag = null, pinch = null, moved = false;
     const pos = (e) => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('wheel', (e) => {
-      e.preventDefault(); cancelAnimationFrame(this.anim); this.userMoved = true;
+      e.preventDefault(); cancelAnimationFrame(this.anim); this.userMoved = true; this.beginMovement();
       const [px, py] = pos(e); const f = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018));
       const k = Math.min(8, Math.max(0.01, this.k * f)); const r = k / this.k;
       this.tx = px - (px - this.tx) * r; this.ty = py - (py - this.ty) * r; this.k = k; this.draw();
@@ -460,11 +481,12 @@ export class MapView {
       const p = pos(e);
       if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, p);
       if (pinch && ptrs.size === 2) {
+        this.beginMovement();
         const [a, b] = [...ptrs.values()]; const d = Math.hypot(a[0] - b[0], a[1] - b[1]);
         const k = Math.min(8, Math.max(0.01, pinch.k * d / pinch.d)); const r = k / pinch.k;
         this.k = k; this.tx = pinch.c[0] - (pinch.c[0] - pinch.tx) * r; this.ty = pinch.c[1] - (pinch.c[1] - pinch.ty) * r; moved = true; this.draw(); return;
       }
-      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; } this.tx = drag.tx + dx; this.ty = drag.ty + dy; this.draw(); return; }
+      if (drag) { const dx = p[0] - drag.p[0], dy = p[1] - drag.p[1]; if (Math.hypot(dx, dy) > 3) { moved = true; this.userMoved = true; this.panTo(drag.tx + dx, drag.ty + dy); } return; }
       const n = this.hit(p[0], p[1]);
       if (n !== this.hover) { this.hover = n; cv.style.cursor = n ? 'pointer' : 'grab'; this.draw(); }
       this._tip(n, p);
@@ -487,7 +509,7 @@ export class MapView {
       else if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
         cancelAnimationFrame(this.anim); this.userMoved = true;
         this.tx += e.key === 'ArrowLeft' ? 48 : e.key === 'ArrowRight' ? -48 : 0;
-        this.ty += e.key === 'ArrowUp' ? 48 : e.key === 'ArrowDown' ? -48 : 0; this.draw();
+        this.ty += e.key === 'ArrowUp' ? 48 : e.key === 'ArrowDown' ? -48 : 0; this.beginMovement(); this.draw();
       } else return;
       e.preventDefault();
     };
@@ -508,6 +530,29 @@ export class MapView {
     this._raf = requestAnimationFrame(() => { this._raf = 0; this._draw(); });
   }
   _draw() {
+    // Panning translates the same picture. Keep a padded raster until the view
+    // leaves it; picking still uses the actual nodes, and zoom/filter/focus
+    // changes render from the full graph again.
+    if (!this.W || !this.H) { this._paint(); return; }
+    const key = `${this.k}/${this.W}/${this.H}/${this.dpr}/${!!this.interacting}/${this.show.defs}/${this.show.planned}/${this.hover?.it.id || ''}/${this.sel?.it.id || ''}/${[...this.show.fields].sort().join(',')}`;
+    let cache = this.panCache;
+    if (!cache || cache.key !== key || cache.highlight !== this.hl || Math.abs(this.tx-cache.tx) > cache.pad || Math.abs(this.ty-cache.ty) > cache.pad) {
+      const pad = 192, canvas = cache?.canvas || document.createElement('canvas');
+      const width = Math.ceil((this.W + 2*pad)*this.dpr), height = Math.ceil((this.H + 2*pad)*this.dpr);
+      if (canvas.width !== width) canvas.width = width;
+      if (canvas.height !== height) canvas.height = height;
+      const old = { ctx: this.ctx, W: this.W, H: this.H, tx: this.tx, ty: this.ty };
+      try {
+        this.ctx = canvas.getContext('2d'); this.W += 2*pad; this.H += 2*pad; this.tx += pad; this.ty += pad;
+        this._paint();
+      } finally { Object.assign(this, old); }
+      cache = this.panCache = { key, highlight: this.hl, pad, canvas, tx: this.tx, ty: this.ty };
+    }
+    const c = this.ctx;
+    c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
+    c.drawImage(cache.canvas, this.tx-cache.tx-cache.pad, this.ty-cache.ty-cache.pad, this.W+2*cache.pad, this.H+2*cache.pad);
+  }
+  _paint() {
     const c = this.ctx, k = this.k; c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.clearRect(0, 0, this.W, this.H);
     const focus = this.hover || this.sel;
     const fc = focus ? (focus === this.sel ? this.selClosure : this.closure(focus)) : null;
@@ -521,8 +566,8 @@ export class MapView {
       // the title must fit its region: fall back to the short name, then shrink
       let fs = Math.max(13, Math.min(30, 60 * k)), txt = F.title.toUpperCase();
       c.save(); c.letterSpacing = '0.08em'; c.fillStyle = withAlpha('field-' + F.field, 0.95); c.textAlign = 'left'; c.textBaseline = 'bottom';
-      const room = x1 - x0 - 8, fit = () => { c.font = `600 ${fs}px Inter, system-ui, sans-serif`; return c.measureText(txt).width; };
-      if (fit() > room) { txt = (this.G.fieldById?.get(F.field)?.short || F.field).toUpperCase(); if (fit() > room) { fs = Math.max(9, fs * room / c.measureText(txt).width); fit(); } }
+      const room = x1 - x0 - 8, fit = () => { c.font = `600 ${fs}px Inter, system-ui, sans-serif`; return this.textWidth(txt); };
+      if (fit() > room) { txt = (this.G.fieldById?.get(F.field)?.short || F.field).toUpperCase(); if (fit() > room) { fs = Math.max(9, fs * room / this.textWidth(txt)); fit(); } }
       c.fillText(txt, x0 + 4, y0 - 4); c.restore();
     }
     // chapter bands
@@ -536,13 +581,13 @@ export class MapView {
         if (off(x0, y0, x1, y1)) return;
         c.fillStyle = withAlpha(C.id, (i % 2 ? 0.035 : 0.065) * (Ch.count ? 1 : 0.5)); c.beginPath(); c.roundRect(x0, y0, x1 - x0, y1 - y0, 8 * Math.min(1, k)); c.fill();
         const wpx = x1 - x0;
-        if (wpx < 18) return;
+        if (wpx < 18 || this.interacting) return;
         c.fillStyle = withAlpha(C.id, Ch.count ? 0.9 : 0.5); c.textAlign = 'left'; c.textBaseline = 'top';
         const label = wpx > 150 ? `${Ch.n} · ${Ch.title}` : wpx > 60 ? `Ch ${Ch.n}` : `${Ch.n}`;
         c.save(); c.beginPath(); c.rect(x0, y0, wpx, 30); c.clip(); c.fillText(label, x0 + 6, y0 + 7); c.restore();
       });
     }
-    for (const R of k < 0.13 ? [] : this.G.map?.rows || []) {
+    for (const R of k < 0.13 || this.interacting ? [] : this.G.map?.rows || []) {
       if (!this.show.fields.has(this.fieldOf.get(R.col))) continue;
       const fs = Math.max(13, Math.min(28, 26 * k));
       const x = this.sx(R.x), y = this.sy(R.y); if (off(x, y - fs - 8, x + 600, y)) continue;
@@ -555,15 +600,20 @@ export class MapView {
       c.beginPath();
       for (const [a, b] of list) {
         const x1 = this.sx(a.x), y1 = this.sy(a.y), x2 = this.sx(b.x), y2 = this.sy(b.y);
-        if (Math.max(x1, x2) < -50 || Math.min(x1, x2) > this.W + 50 || Math.max(y1, y2) < -50 || Math.min(y1, y2) > this.H + 50) continue;
+        // Unfocused long links between two offscreen nodes obscure the local
+        // graph. Their full ancestry remains available on hover/selection.
+        const nearby = (x,y) => x>=-50 && x<=this.W+50 && y>=-50 && y<=this.H+50;
+        if (!fc && !nearby(x1,y1) && !nearby(x2,y2)) continue;
         const dx = Math.max(20 * k, Math.abs(x2 - x1) * 0.45);
-        c.moveTo(x1, y1); c.bezierCurveTo(x1 + dx, y1, x2 - dx, y2, x2, y2);
+        traceClippedCubic(c, [x1,y1,x1+dx,y1,x2-dx,y2,x2,y2], this.W, this.H);
       }
       c.strokeStyle = style; c.lineWidth = width; c.setLineDash(dash || []); c.stroke(); c.setLineDash([]);
     };
     const far = k < 0.13;
     const vis = far && !fc ? [] : this.edges.filter(([a, b]) => this.visible(a) && this.visible(b));
-    if (far && !fc) {
+    if (this.interacting) {
+      // Links are refined after movement; nodes below remain complete.
+    } else if (far && !fc) {
       // bundled collection-to-collection edges
       for (const e of this.bundles) {
         if (!this.show.fields.has(this.fieldOf.get(e.a)) || !this.show.fields.has(this.fieldOf.get(e.b))) continue;
@@ -589,12 +639,20 @@ export class MapView {
     // nodes
     const rk = Math.max(0.55, Math.min(1.5, k));
     if (far && !fc) {
+      // Nodes are grouped by collection in the catalog. Avoid reparsing the same
+      // canvas colour for every dot in the 13k-node overview.
+      const colors = new Map(); let fill;
       for (const n of this.nodes) {
         if (!this.visible(n)) continue;
         const x = this.sx(n.x), y = this.sy(n.y); if (x < -4 || x > this.W + 4 || y < -4 || y > this.H + 4) continue;
         const on = !this.hl || this.hl.has(n.it.id);
         const r = this.hl && on ? 3.4 : n.ghost ? 1 : Math.max(1.2, Math.min(3, n.r * k * 2.2));
-        c.fillStyle = withAlpha(n.it.col, !on ? 0.06 : n.ghost && !this.hl ? 0.35 : 0.95); c.fillRect(x - r, y - r, 2 * r, 2 * r);
+        const alpha = !on ? 0.06 : n.ghost && !this.hl ? 0.35 : 0.95;
+        const key = `${n.it.col}/${alpha}`;
+        if (!colors.has(key)) colors.set(key, withAlpha(n.it.col, alpha));
+        const color = colors.get(key);
+        if (fill !== color) { c.fillStyle = color; fill = color; }
+        c.fillRect(x - r, y - r, 2 * r, 2 * r);
         if (this.hl && on) { c.lineWidth = 1.2; c.strokeStyle = withAlpha('ink', 0.55); c.strokeRect(x - r - 1.5, y - r - 1.5, 2 * r + 3, 2 * r + 3); }
       }
     } else for (const n of this.nodes) {
@@ -611,6 +669,7 @@ export class MapView {
       if (hit) { c.beginPath(); c.arc(x, y, r + 2.5, 0, Math.PI * 2); c.lineWidth = 1.6; c.strokeStyle = withAlpha('accent', 0.9); c.stroke(); }
       if (n === focus || n === this.sel) { c.beginPath(); c.arc(x, y, r + 4, 0, Math.PI * 2); c.lineWidth = 2; c.strokeStyle = resolveColor('ink'); c.stroke(); }
     }
+    if (this.interacting) return;
     // labels
     const occupied = [];
     const free = (x, y, w, h) => { for (const o of occupied) if (x < o[0] + o[2] && x + w > o[0] && y < o[1] + o[3] && y + h > o[1]) return false; occupied.push([x, y, w, h]); return true; };
@@ -620,7 +679,7 @@ export class MapView {
       const x = this.sx(n.x), y = this.sy(n.y); if (x < -100 || x > this.W || y < 0 || y > this.H) return;
       const txt = `${n.it.num} ${plainName(n.it.name, strong ? 60 : 30)}`;
       c.font = `${strong ? 600 : 500} ${strong ? 12.5 : 11}px Inter, system-ui, sans-serif`;
-      const w = c.measureText(txt).width; const r = Math.max(1.6, n.r * rk) + (this.hl && this.hl.has(n.it.id) ? 4 : 0);
+      const w = this.textWidth(txt); const r = Math.max(1.6, n.r * rk) + (this.hl && this.hl.has(n.it.id) ? 4 : 0);
       if (!strong && !free(x + r + 3, y - 7, w + 4, 14)) return;
       c.lineWidth = 3.5; c.strokeStyle = withAlpha('bg', 0.9); c.strokeText(txt, x + r + 4, y);
       c.fillStyle = resolveColor(strong ? 'ink' : n.ghost ? 'faint' : 'muted'); c.fillText(txt, x + r + 4, y);

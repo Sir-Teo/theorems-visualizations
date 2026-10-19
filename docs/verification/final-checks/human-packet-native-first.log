@@ -1,0 +1,21 @@
+before export {
+  reviewer: '',
+  saved: '',
+  state: 'Notes remain local until you export findings.'
+}
+errors []
+export failure [] Enter the actual human reviewer’s name before exporting.
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+page.waitForEvent: Timeout 30000ms exceeded while waiting for event "download"
+=========================== logs ===========================
+waiting for event "download"
+============================================================
+    at /tmp/check-human-packet.mjs:3:1119 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

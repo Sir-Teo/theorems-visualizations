@@ -138,7 +138,7 @@ export default {
       idea: String.raw`Maxwell's equations give one wave speed (em-11.1), and under the relativity principle that speed cannot depend on the frame; so it also cannot depend on the source's velocity, which is a frame statement. The alternative, an emitter ("ballistic") theory where light inherits the source's velocity, would send light from the approaching part of an orbiting binary faster than from the receding part, so for a distant binary the arrival order of the flashes would be scrambled. De Sitter pointed out in 1913 that such distortions are not seen; Brecher (1977) repeated the test with X-ray binaries, and CERN measured photons from fast $\pi^0$ decays (Alväger et al., 1964).`,
       caption: String.raw`**Left:** a source moving to the right flashes at regular intervals. Under the postulate each ring stays centred on its emission point (the rings are off-centre toward the back); under the emitter theory they all stay centred on the source. **Right:** emission time against arrival time for a binary star seen from afar, with $D$ the light travel time in orbital periods. Raise $D$ under the emitter theory until the curve folds back: the star would be seen in several places at once.`,
       deps: ['em-11.1', 'em-13.2'],
-      refs: ['Taylor–Wheeler ch. 3', 'Schutz §1.1'],
+      refs: ['Einstein1905,complete introduction and §§1–2; deSitter/Brecher/Alväger original experimental checks still pending'],
       tags: ['speed of light', 'postulate'],
       scope: String.raw`Light (and any massless signal) in vacuum, in inertial frames. The binary has an illustrative orbital speed $\beta=10^{-4}$, not a particular star. The astronomical test is complicated by absorption and re-emission in the interstellar medium (the extinction theorem), which is why laboratory and X-ray tests were added.`,
       verify: true,
@@ -166,7 +166,7 @@ export default {
           const cxf = (tt) => (emit ? x0 + b * tt : x0), vf = (cxf(t + 0.01) + t + 0.01 - cxf(t) - t) / 0.01, vb = -(cxf(t + 0.01) - t - 0.01 - cxf(t) + t) / 0.01;
           // arrival-time curve
           const D = Dl.value, amp = D * BORB;
-          const cur = (te) => { const vl = BORB * Math.sin(2 * Math.PI * te); return emit ? te + D / (1 + vl) - D : te; };
+          const cur = (te) => { const vl = BORB * Math.sin(2 * Math.PI * te); const x=-(BORB/(2*Math.PI))*Math.cos(2*Math.PI*te); return emit ? te + (D-x)/(1+vl)-D : te-x; };
           const R = Math.max(1, amp * 1.15);
           B.setView([-R, 2 + R], [0, 2]);
           B.path(Array.from({ length: 401 }, (_, k) => { const te = k / 200; return [cur(te), te]; }), { color: emit ? 'red' : 'accent', width: 2.4 });
@@ -178,7 +178,7 @@ export default {
         v.readout(() => {
           if (st.vf === undefined) return '';
           return String.raw`Lab-frame speed of the front ahead of the source: $${v.fix(st.vf, 2)}\,c$, behind: $${v.fix(st.vb, 2)}\,c$ ` + (st.emit ? '(the source speed is added — no frame-independent $c$).' : '(always $c$, in every direction).') + '\n' +
-            (st.emit ? String.raw`Binary at $D=${v.fix(st.D, 0)}$ periods: the arrival order is ${st.folded ? '**scrambled** (the curve folds; scrambling begins near $D\\approx' + v.fix(st.crit, 0) + '$)' : 'still ordered (it scrambles once $D\\gtrsim' + v.fix(st.crit, 0) + '$)'}. Real binaries at those distances show ordinary orbits.` : 'Light postulate: emission order = arrival order, whatever the distance.');
+            (st.emit ? String.raw`Binary at $D=${v.fix(st.D, 0)}$ periods: the arrival order is ${st.folded ? '**scrambled** (the curve folds; scrambling begins near $D\\approx' + v.fix(st.crit, 0) + '$)' : 'still ordered (it scrambles once $D\\gtrsim' + v.fix(st.crit, 0) + '$)'}. This is an idealized propagation model; actual binary-star tests also require source/medium modelling.` : 'Light postulate: arrival order stays monotone; the tiny orbital light-travel-time modulation is retained.');
         });
       },
     },
@@ -245,15 +245,14 @@ export default {
       num: '1.5',
       kind: 'Definition',
       name: 'Clock synchronization by light signals',
-      credit: 'Poincaré, 1900; Einstein, 1905',
-      statement: String.raw`Two identical clocks at rest at different places in an inertial frame are **synchronized** by light signals as follows. A pulse leaves clock $A$ when it reads $t_e$, is reflected at clock $B$ and returns to $A$ when it reads $t_r$. Clock $B$ is correctly set if its reading at the reflection event equals $t_e+\tfrac12(t_r-t_e)$. Applied from one master clock to a whole lattice of clocks, this defines the time coordinate of the frame. The definition rests on the postulate that light's round trip takes the same time in each direction; in an inertial frame this is a convention that no one-way experiment can contradict.`,
-      idea: String.raw`If the speed of light is $c$ in every direction (rel-1.3), the pulse spends equal times on the way out and back, so the moment of reflection is the midpoint of the round trip, and a clock at distance $d$ must be set to $t_e+d/c$ when the pulse reaches it. Poincaré (1900) had pointed out that Lorentz's "local time" is what clocks synchronized this way read for observers moving with the Earth; Einstein (1905) made the prescription the *definition* of time in a frame. The next item shows that two frames do not agree on it.`,
+      credit: 'Einstein,1905,§1 synchronization convention',
+      statement: String.raw`Two identical clocks at rest at different places in an inertial frame are **synchronized** by light signals as follows. A pulse leaves clock $A$ when it reads $t_e$, is reflected at clock $B$ and returns to $A$ when it reads $t_r$. Clock $B$ is correctly set if its reading at the reflection event equals $t_e+\tfrac12(t_r-t_e)$. Applied from one master clock to a whole lattice of clocks, this defines the time coordinate of the frame. The convention assigns equal one-way travel times to the two directions. A measurement of one-way speed between separated clocks already depends on their synchronization.`,
+      idea: String.raw`If the speed of light is $c$ in every direction (rel-1.3), the pulse spends equal times on the way out and back, so the moment of reflection is the midpoint of the round trip, and a clock at distance $d$ must be set to $t_e+d/c$ when the pulse reaches it. Einstein (1905), §1, uses this equal-time prescription to define time throughout a frame. The next item shows that two frames do not agree on it.`,
       caption: String.raw`**Drag the target clock $P$** anywhere and watch the pulse from the master clock at the centre. The ring is the outgoing pulse; each lattice clock jumps to $t_e+d/c$ as the ring passes and then ticks along; the orange ring is the echo returning from $P$. Compare the set value with half of the measured round trip.`,
       deps: ['rel-1.3'],
-      refs: ['Taylor–Wheeler §2.6', 'Schutz §1.2'],
+      refs: ['Einstein1905,On the Electrodynamics of Moving Bodies,complete §1'],
       tags: ['synchronization', 'radar', 'convention'],
       scope: String.raw`Clocks at rest in one inertial frame, light speed isotropic. Light's one-way speed cannot be measured without already having synchronized clocks, so the isotropy is part of the definition.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Einstein_synchronisation' },
       viz(v) {
         const S = v.stage({ x: [-4.4, 4.4], y: [-4.2, 4.2], equal: true, axes: false, height: 460, full: true, title: 'a lattice of clocks set by a pulse from the master clock (c = 1)' });

@@ -1,0 +1,4 @@
+/** Symmetric perfusion conductance model using tissue/whole-blood partition coefficients. */
+export const PBPK_ORGANS=[['brain',1.4,.7,'brain','purple'],['liver',1.8,1.5,'liver','orange'],['muscle',28,1,'muscle','green'],['fat',14,.3,'fat','gold'],['rest',18,2.5,'rest of body','muted']];
+export const PBPK_PARTITIONS={lip:[3,4,2,25,2],mod:[1,2,1,4,1],hyd:[.15,.8,.4,.2,.6]};
+export function pbpkSystem(kp,cardiacScale=1,unboundCapacity=.5){const W=[5,...PBPK_ORGANS.map((o,i)=>o[1]*kp[i])],Q=PBPK_ORGANS.map(o=>o[2]*cardiacScale),Qt=Q.reduce((a,b)=>a+b,0),G=Array.from({length:6},()=>Array(6).fill(0));G[0][0]=-Qt;for(let i=0;i<5;i++){G[0][i+1]=G[i+1][0]=Q[i];G[i+1][i+1]=-Q[i]-(i===1?unboundCapacity:0);}return{W,Q,Qt,G,M:G.map((r,i)=>r.map((g,j)=>g/Math.sqrt(W[i]*W[j]))),field:z=>z.map((_,i)=>G[i].reduce((s,g,j)=>s+g*z[j],0)/W[i]),elimination:z=>unboundCapacity*z[2]};}

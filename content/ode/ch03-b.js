@@ -223,15 +223,15 @@ Equivalently, the flow multiplies $n$-dimensional volume by $\exp\int\operatorna
       num: '3.12',
       kind: 'Method',
       name: 'Variation of constants (Duhamel’s formula)',
-      statement: String.raw`Let $\Phi(t,s)$ be the principal matrix of $\dot x=A(t)x$ and $g$ continuous. The solution of $\dot x=A(t)x+g(t)$ with $x(t_0)=x_0$ is
+      statement: String.raw`Let $A$ and $g$ be continuous on an interval and let $\Phi(t,s)$ be the principal matrix of $\dot x=A(t)x$. The solution of $\dot x=A(t)x+g(t)$ with $x(t_0)=x_0$ is
 $$x(t)=\Phi(t,t_0)x_0+\int_{t_0}^{t}\Phi(t,s)\,g(s)\,ds .$$
 For constant $A$, $\Phi(t,s)=e^{(t-s)A}$. The integral is a superposition of free evolutions of "impulses" $g(s)\,ds$ delivered at the times $s$; each decays or grows from its arrival time according to the homogeneous system.`,
       idea: String.raw`Look for a solution $x=\Phi(t,t_0)c(t)$ with variable coefficients (the constants "vary"). Then $\dot x=A\Phi c+\Phi\dot c$, so $\Phi\dot c=g$, $\dot c=\Phi(t_0,t)g(t)$, and integrating $c$ gives the formula (with 3.3 for the constant case). Reading it as a Riemann sum, each slice $g(s_j)\Delta s$ is a small kick that evolves freely afterwards by linearity (3.1); the full response is the sum of the evolved kicks.`,
       caption: String.raw`Edit the forcing $f(s)$ for the oscillator $\ddot y+2\zeta\omega_0\dot y+\omega_0^2y=f(t)$ ($\omega_0=1$, starting at rest) by dragging the knots. The right panel cuts $f$ into $N$ slices; each slice launches a decaying wave $f(s_j)\Delta s\,h(t-s_j)$ (faint curves, $h$ the impulse response). Their sum (accent) matches the RK4 solution of the ODE (green, dashed) as $N$ grows. Move $t$ to see which slices have been delivered so far.`,
       deps: ['ode-3.10', 'ode-3.3'],
-      refs: ['Teschl §3.4'],
-      credit: 'Lagrange (variation of parameters, 1766–1810); Duhamel (heat equation, 1830s)',
-      verify: true,
+      refs: ['Teschl §3.4 pp. 83–84, Theorem 3.12, Eqs. (3.92)–(3.97)'],
+      credit: 'Mathematical source: G. Teschl, Ordinary Differential Equations and Dynamical Systems, full author preliminary edition; exact theorem and equation locators are listed in the references',
+      sourceUrl: 'https://www.mat.univie.ac.at/~gerald/ftp/book-ode/ode.pdf',
       tags: ['variation of constants', 'impulse response'],
       viz(v) {
         const zeta = v.slider('damping $\\zeta$', 0.05, 1.2, 0.18, { step: 0.01 });
@@ -265,7 +265,8 @@ For constant $A$, $\Phi(t,s)=e^{(t-s)A}$. The integral is a superposition of fre
           sy.path(rk.map(([t, x]) => [t, x[0]]).filter(([t]) => t <= tn), { color: 'green', width: 2, dash: [6, 4] });
           // error at tn
           let k = 0; while (k < 240 && hs[k] < tn) k++;
-          const ex = rk[Math.min(600, Math.round((tn / T) * 600))][1][0];
+          const ri = Math.min(599, Math.floor((tn / T) * 600)), rw = (tn / T) * 600 - ri;
+          const ex = rk[ri][1][0] * (1 - rw) + rk[ri + 1][1][0] * rw;
           info = { sum: total[Math.min(240, Math.round((tn / T) * 240))], ex, N };
         });
         v.readout(() => {

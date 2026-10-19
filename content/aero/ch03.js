@@ -12,9 +12,9 @@
 //       span efficiency from the Fourier series of the strip loading) was coded for this item and compared with Glauert's solution at zero sweep.
 //   3.5 Section drag data: NACA 0012 at R = 1.8e6 read off the figure of Critzos, Heyson & Boswinkle (NACA TN 3361, 1955) in chapter 1 (ch01.shared.js CRITZOS_18): +-0.03 in c_l and about +-0.001 in c_d.
 //   3.6 Standard parabolic-polar results (CL* = sqrt(CD0/K), (L/D)max = 1/(2 sqrt(K CD0))), re-derived and checked numerically in the readout. Density from the ISA of chapter 1.
-//   3.7 Ground effect: horseshoe-sheet lifting line with opposite-signed image trailing vortices (the usual lifting-line treatment; the bound-vortex image is neglected). The comparison curve
-//       sigma = (1 - 1.32 h/b)/(1.05 + 7.4 h/b), induced drag factor 1 - sigma, is a widely quoted engineering fit; it was recalled from a search summary (not opened in its source) and agrees with the
-//       computed curve to a few percent over 0.1 < h/b < 0.5, which is the only support claimed (verify: true). Wieselsberger and Prandtl as originators of the image treatment: Mantle (Aeronautical Journal 2016) abstract.
+//   3.7 Reviewed2026-10-18 against full Wieselsberger NACA TM77 pp1–5 and rendered Eq4 on p5. His h is image spacing2h here;
+//       fit restricted to physical height h/b in[1/30,1/4]. Rectangular loading is independently recomputed. See docs/verification/aero-ch04.md.
+
 //   3.8 Lissaman & Shollenberger, "Formation flight of birds", Science 168 (3934), 1003-1005 (1970): abstract checked (Caltech record): 25 birds, range increase about 70 percent. Weimerskirch et al.,
 //       Nature 413, 697-698 (2001): heart-rate saving 11-14 percent in great white pelicans (value from a review quoting the paper; checked, one source). Portugal et al., Nature 505, 399-402 (2014): northern bald ibises,
 //       positions match upwash predictions (checked, abstract). The model here (elliptic loading, rolled-up tip vortex pair at +-pi b/8, semi-infinite trailing filaments, no decay or wake roll-up distance) is
@@ -131,8 +131,8 @@ function groundCurve(AR) {
   o = { pts, free }; groundCache.set(AR, o); if (groundCache.size > 6) groundCache.delete(groundCache.keys().next().value);
   return o;
 }
-const sigmaFit = (hb) => (1 - 1.32 * hb) / (1.05 + 7.4 * hb);
-const fitPhi = (hb) => (hb >= 0.7575 ? 1 : 1 - sigmaFit(hb));
+export const sigmaFit = (hb) => (1 - 1.32 * hb) / (1.05 + 7.4 * hb);
+export const fitPhi = (hb) => (hb >= 1 / 30 && hb <= 1 / 4 ? 1 - sigmaFit(hb) : null);
 
 // ═════════════════════════════════════════════════════════════════════ helpers for 3.8
 const SV = Math.PI / 8, CORE = 0.06, NQ = 28;
@@ -183,7 +183,7 @@ $$w(y)=\frac1{4\pi}\,\mathrm{PV}\!\!\int_{-b/2}^{b/2}\frac{\mathrm{d}\Gamma/\mat
 which tilts the local flow down by the **induced angle** $\alpha_i\approx w/V_\infty$ at each station, and an **upwash** outboard of the tips. For elliptic loading $w=\Gamma_0/2b$ is the same everywhere along the span, and the rolled-up pair is $\pi b/4$ apart.`,
       idea: String.raw`Helmholtz's vortex theorems (fluid-3.4) force the vorticity of the bound circulation to turn and trail behind the wing: wherever $\Gamma$ changes along the span a filament of strength $-\mathrm{d}\Gamma/\mathrm{d}y$ leaves the wing. Each filament induces a velocity $\Gamma/2\pi r$ around itself, and the filaments inboard of a station push the air there downwards, outboard of the tips upwards. The mutual induction of the filaments winds the sheet into a spiral, and since the sheet's vertical impulse $\rho\int\Gamma\,\mathrm{d}y$ is conserved, the vortex centroid stays put: the tip vortices of an elliptically loaded wing end up $\pi b/4$ apart, whatever the details of the roll-up. This is the physical origin of induced drag (3.2).`,
       caption: String.raw`The upper picture is the cross-flow plane, seen from behind, in a frame that travels with the air: the sheet leaves the wing (black bar) and the dots are smoke released along it; the clock is the distance downstream in spans. Press play, or drag the time of the animation, and watch the sheet curl up at the tips. Change the aspect ratio or lift coefficient to change the speed of roll-up (the sheet's induced velocities scale as $C_L/AR$), and switch to a rectangular wing to change the loading. The curve on the left is the downwash angle at the wing; drag the gold handle along it and see where the sign changes outside the tips: there the air rises.`,
-      deps: ['fluid-3.4', 'fluid-5.8'],
+      deps: ['fluid-3.4', 'fluid-5.8', 'fluid-3.5'],
       refs: ['Anderson ch. 5'],
       tags: ['vortices', 'downwash', 'lifting line'],
       scope: String.raw`Incompressible flow, a lightly loaded wing (the sheet leaves along the free stream), inviscid point-vortex dynamics with a small core. The roll-up here is a model of the near wake only: real tip vortices have viscous cores, decay, and eventually break down (Crow instability) far downstream; the Reynolds-number dependence of that is not represented.`,
@@ -247,7 +247,7 @@ $$C_{D,i}=\frac{C_L^2}{\pi\,e\,AR},\qquad \alpha_i=\frac{C_{D,i}}{C_L}=\frac{C_L
 where $e\le1$ is the **span efficiency factor** of the planform and loading ($e=1$ for elliptic loading, 3.3). At fixed lift and fixed area, induced drag therefore falls as $1/AR$: a longer, narrower wing wastes less energy in its wake. The same tilt makes the lift-curve slope of a wing smaller than the section value, $a\approx a_0/(1+a_0/\pi e AR)$.`,
       idea: String.raw`The downwash $w$ from 3.1 means the wing sees the free stream rotated by $\alpha_i=w/V_\infty$, and the force perpendicular to this local flow (Kutta–Joukowski) tilts back by the same angle. For elliptic loading $w=\Gamma_0/2b$ and $L=\rho V\Gamma_0\pi b/4$, which together give $C_{D,i}=C_L^2/\pi AR$. Other loadings have the same form with $e<1$ (3.3). The $1/AR$ law follows because, at fixed lift, a wider wing moves the same momentum downwards by accelerating a larger mass of air by a smaller amount, and the kinetic energy left behind per unit time scales as the square of that speed times the mass flow.`,
       caption: String.raw`Choose a planform and drag the gold handle along the curve (or use the slider) to change the aspect ratio at fixed area and fixed $C_L$. The curve on the right is on logarithmic axes: the dashed line is $C_L^2/\pi AR$ ($e=1$), the solid curve is the induced drag of the chosen planform from Glauert's lifting-line solution, whose gap to the dashed line is $1/e$. In the middle, the lift vector tilts back by $\alpha_i$ (drawn six times larger than it is).`,
-      deps: ['aero-3.1', 'fluid-5.8'],
+      deps: ['aero-3.1', 'fluid-5.8', 'fluid-4.11'],
       refs: ['Anderson ch. 5'],
       tags: ['induced drag', 'aspect ratio'],
       scope: String.raw`Unswept wings of moderate to high aspect ratio in incompressible flow below stall, in the lifting-line approximation (section lift slope $2\pi$). The values of $e$ are the lifting-line ones; for low aspect ratios, sweep or strong twist use a lifting surface (3.4). Real aircraft $e$ (often called Oswald's factor) also absorbs drag that varies with $C_L^2$ for other reasons.`,
@@ -311,7 +311,7 @@ $$D_{i,\min}=\frac{L^2}{\tfrac12\rho V^2\,\pi b^2},\qquad C_{D,i}=\frac{C_L^2}{\
 With the Fourier form $\Gamma=2bV\sum_n A_n\sin n\theta$ ($y=-\tfrac b2\cos\theta$) one finds $L\propto A_1$ and $C_{D,i}=\pi AR\sum nA_n^2$, so any other shape has $e=A_1^2/\sum nA_n^2<1$.`,
       idea: String.raw`Write $\Gamma$ as a sine series in $\theta$. The downwash of the term $\sin n\theta$ is $\tfrac{nV A_n\sin n\theta}{\sin\theta}$ (Glauert's integral), and the sines are orthogonal, so the drag integral splits into a sum of non-negative terms $\propto nA_n^2$ — while the lift involves $A_1$ alone (a variational problem with one constraint, which is what a Lagrange multiplier would also give, mech-5.10). Fixing the lift fixes $A_1$, and the drag $\propto A_1^2+3A_3^2+5A_5^2+\dots$ is least when all higher harmonics vanish: $\Gamma\propto\sin\theta$, an ellipse.`,
       caption: String.raw`Draw a loading with the mouse on the upper left panel (the dashed green ellipse carries exactly the same lift), or choose a preset, or add a third harmonic with the slider. The bar chart shows each harmonic's excess drag $nA_n^2/A_1^2$ (they add up to $1/e-1$) and the right-hand panel shows the downwash along the span, which is constant only for the ellipse. The readout checks the Fourier result against a direct sum over a 160-panel vortex sheet.`,
-      deps: ['aero-3.2', 'mech-5.10'],
+      deps: ['aero-3.2', 'mech-5.10', 'pma-8.10'],
       refs: ['Anderson ch. 5'],
       tags: ['induced drag', 'optimisation', 'lifting line'],
       scope: String.raw`Planar (non-lifting-out-of-plane) wings with a flat trailing wake, incompressible flow and a given span; with winglets or non-planar systems the minimum is smaller (a non-planar theorem of Munk's) and the loading is not elliptic. The tips must carry no load ($\Gamma\to0$): a loading that stays finite at the tips has infinite induced drag in this model.`,
@@ -433,7 +433,7 @@ $$C_D=C_{D,0}+K\,C_L^2,\qquad K=\frac{1}{\pi\,e\,AR},$$
 where $C_{D,0}$ is the **parasite drag** (friction and pressure drag at zero lift, 2.7) and $KC_L^2$ is the **lift-dependent** (induced) drag of 3.2. The graph of $C_L$ against $C_D$ is the polar. The ratio $L/D=C_L/C_D$ is the slope of the line from the origin to the point on the polar, so it is greatest where this line is tangent to the curve; for the parabola that point is $C_L^*=\sqrt{C_{D,0}/K}$, with $(L/D)_{\max}=1/(2\sqrt{KC_{D,0}})$.`,
       idea: String.raw`Parasite drag changes little with incidence in the attached-flow range, and induced drag is $C_L^2/\pi eAR$ (3.2), so their sum is a parabola in $C_L$. Maximising $C_L/C_D$ means $\mathrm d(C_D/C_L)/\mathrm dC_L=0$, i.e. $C_D=C_L\,\mathrm dC_D/\mathrm dC_L$ — the tangent condition; for the parabola it reads $C_{D,0}+KC_L^2=2KC_L^2$, so $KC_L^2=C_{D,0}$ at the optimum (3.6).`,
       caption: String.raw`Drag the gold handle up and down the polar: the line from the origin through it has slope $L/D$ (green is the steepest tangent). The shading splits the drag into parasite (orange) and induced (purple). Change aspect ratio, efficiency and parasite drag, or switch to a polar built from measured section drag: the NACA 0012 data of chapter 2 plus induced drag. The dashed parabola is its best fit — the parabola is an excellent model but not exact.`,
-      deps: ['aero-3.2', 'aero-2.7'],
+      deps: ['aero-3.2', 'aero-2.7', 'opt-1.4'],
       refs: ['Anderson ch. 6'],
       tags: ['drag polar', 'performance'],
       scope: String.raw`Subsonic flight below the drag-divergence Mach number, at $C_L$ below stall, for sections whose zero-lift angle is near zero. A cambered wing is better fitted by $C_D=C_{D,0}+K(C_L-C_{L,m})^2$ (see 3.6). In the section-data mode the section drag is read at $c_l=C_L$ (a simplification), the NACA 0012 values are read off a figure (about $\pm0.001$ in $c_d$), and "extra parasite drag" is a free parameter standing for fuselage, tail and interference.`,
@@ -551,13 +551,12 @@ where $D_i=D_p$ (that is, $KC_L^2=C_{D,0}$). There $D_{\min}=2W\sqrt{KC_{D,0}}$ 
 $$\Phi\equiv\frac{C_{D,i}(h/b)}{C_{D,i}(\infty)}=\frac{C_{D,i}\ \text{near ground}}{C_{D,i}\ \text{free air}}<1,$$
 with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the ground falls below about $b/4$.`,
       idea: String.raw`This is the method of images (fluid-4.12) applied to the trailing vortex system of 3.1: a vortex at height $h$ over a rigid plane behaves like the pair formed with an opposite vortex at $-h$, which keeps the vertical velocity zero on the ground. The image trailing vortices, a distance $2h$ below the real ones, induce an upward velocity at the wing that grows as $h$ decreases, so the wing sees less downwash; the lift vector tilts back less, and for the same lift the induced drag falls. In the picture the loading of a rectangular wing is recomputed with the images included.`,
-      caption: String.raw`Drag the wing (gold handle) toward the ground, or use the sliders. The left picture is the front view: the real tip vortices (blue, rotating as shown) and their opposite-signed images (grey) in the mirror image of the picture; the arrows are the cross-flow they induce, which is horizontal on the ground. The middle graph is the induced-drag ratio $\Phi$ against $h/b$ from the lifting-line calculation (blue) and a fit quoted in textbooks (dashed). The right graph shows the downwash angle along the span at the same lift, with and without the ground.`,
+      caption: String.raw`Drag the wing (gold handle) toward the ground, or use the sliders. The left picture is the front view: the real tip vortices (blue, rotating as shown) and their opposite-signed images (grey) in the mirror image of the picture; the arrows are the cross-flow they induce, which is horizontal on the ground. The middle graph is the induced-drag ratio $\Phi$ against $h/b$ from the lifting-line calculation (blue) and Prandtl’s elliptical-loading approximation as printed by Wieselsberger (dashed only over its stated range). The right graph shows the downwash angle along the span at the same lift, with and without the ground.`,
       deps: ['aero-3.1', 'fluid-4.12'],
-      refs: ['Anderson ch. 6'],
+      refs: ['Wieselsberger, Wing Resistance Near the Ground, NACA TM77 (1922 translation of 1921 article), pp. 1–5, Eqs. (1)–(5)'],
       tags: ['ground effect', 'induced drag', 'images'],
-      scope: String.raw`Lifting-line model of a rectangular wing at small angles: only the images of the trailing vortices are included (the image of the bound vortex, and the effect of the ground on the wing's thickness, are neglected), and the wake is flat. The dashed comparison is a published-style engineering fit whose coefficients were recalled, not re-derived; it is meant as a plausibility check only.`,
-      credit: 'Image-vortex treatment of ground effect: Prandtl and Wieselsberger, early 1920s (summary in Mantle, Aeronautical Journal, 2016)',
-      verify: true,
+      scope: String.raw`Lifting-line model of a rectangular wing at small angles: only the images of the trailing vortices are included (the image of the bound vortex, and the effect of the ground on the wing's thickness, are neglected), and the wake is flat. The dashed comparison assumes elliptical loading held fixed and is not the rectangular-wing solution. Its source uses wing-to-image spacing H=2h: sigma=(1−0.66H/b)/(1.05+3.7H/b), valid for 1/15≤H/b≤1/2, hence 1/30≤h/b≤1/4 here.`,
+      credit: 'C. Wieselsberger, 1921; NACA TM77 translation, April1922. Image method and Prandtl approximation are given on pp. 3–5.',
       viz(v) {
         const hS = v.slider('height of the wing over the ground $h/b$', 0.03, 1, 0.15, { step: 0.01, log: true });
         const arS = v.slider('aspect ratio AR (rectangular wing)', 4, 14, 8, { step: 0.5 });
@@ -584,7 +583,7 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
           A.text('image wing, opposite circulation', 0, -h - 0.08, { color: 'muted', size: 10.5, align: 'center' });
           // phi curve
           B.path(gc.pts.map((p) => [p[0], p[1]]), { color: 'accent', width: 2.6 });
-          B.fn((x) => fitPhi(x), { domain: [0.03, 1], color: 'muted', dash: true, width: 1.6, n: 200 });
+          B.fn((x) => fitPhi(x), { domain: [1 / 30, 1 / 4], color: 'muted', dash: true, width: 1.6, n: 200 });
           B.hline(1, { color: 'faint' }); B.vline(h, { color: 'gold', dash: true, width: 1.2 }); B.dot(h, phi, { r: 6, color: 'gold' });
           // downwash at CL = 0.8
           const k = 0.8 / sol.CL, k0 = 0.8 / s0.CL;
@@ -593,8 +592,8 @@ with $\Phi\to1$ for $h\gtrsim b$ and a steep fall as the height $h$ above the gr
           C.path(sol.mid.map((y, i) => [y, sol.w[i] * k / DEG]), { color: 'accent', width: 2.6 });
           st = { h, phi, AR, clr: sol.CL / s0.CL, fit: fitPhi(h) };
         });
-        v.legend([['accent', 'with the ground'], ['muted', 'free air', { dash: true }], ['muted', 'textbook fit, $1-\\sigma$', { dash: true }]]);
-        v.readout(() => `$h/b=${fx(st.h, 2)}$: induced drag at equal lift is $${fx(st.phi, 3)}$ of the free-air value (a reduction of $${fx(100 * (1 - st.phi), 0)}$ %), as if the aspect ratio were $${fx(st.AR / st.phi, 1)}$ instead of $${fx(st.AR, 1)}$. At equal angle of attack the lift is $${fx(st.clr, 3)}\\times$ the free-air value. The quoted fit $1-\\sigma$, $\\sigma=(1-1.32h/b)/(1.05+7.4h/b)$, gives $${fx(st.fit, 3)}$.\nFor $h/b>1$ the effect is under 3 %; at $h/b=0.05$ it is about $0.4$ of the free-air value.`);
+        v.legend([['accent', 'with the ground'], ['muted', 'free air', { dash: true }], ['muted', 'Prandtl fit (published height range), $1-\\sigma$', { dash: true }]]);
+        v.readout(() => `$h/b=${fx(st.h, 2)}$: induced drag at equal lift is $${fx(st.phi, 3)}$ of the free-air value (a reduction of $${fx(100 * (1 - st.phi), 0)}$ %), as if the aspect ratio were $${fx(st.AR / st.phi, 1)}$ instead of $${fx(st.AR, 1)}$. At equal angle of attack the lift is $${fx(st.clr, 3)}\\times$ the free-air value. The quoted fit $1-\\sigma$, $\\sigma=(1-1.32h/b)/(1.05+7.4h/b)$, gives ${st.fit === null ? 'no value outside its published range 1/30≤h/b≤1/4' : '$' + fx(st.fit, 3) + '$'}.\nThe blue curve is this rectangular-wing model; the historical fit holds an elliptical load fixed. Their difference is not an error estimate for a real wing.`);
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.8

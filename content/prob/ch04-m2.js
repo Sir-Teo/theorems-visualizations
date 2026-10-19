@@ -118,13 +118,13 @@ So extinction is certain and its probability tail decays at least geometrically.
       num: '4.3.11',
       kind: 'Theorem',
       name: 'Critical branching processes die out',
-      statement: String.raw`If $\mu=1$ and $P(\xi=1)<1$ (the offspring number is not identically $1$), then $Z_n=0$ for all large $n$ almost surely, although $EZ_n=1$ for every $n$. If the offspring variance $\sigma^2$ is finite, the survival probability decays like $P(Z_n>0)\sim 2/(\sigma^2n)$ (a sharper result, usually credited to Kolmogorov).`,
-      idea: String.raw`For $\mu=1$, $Z_n=Z_n/\mu^n$ is a nonnegative martingale, so it converges a.s. (4.2.12). But $Z_n$ takes integer values, so convergence means $Z_n$ is eventually constant. The offspring law is not degenerate at $1$, so from any $k\ge1$ the chain moves with probability bounded below; hence it cannot stay at $k\ge1$ forever, and the only possible limit is $0$. The mean stays at $1$ because the rare survivors are large: conditioned on survival, $Z_n$ grows linearly in $n$.`,
+      statement: String.raw`If $\mu=1$ and $P(\xi=1)<1$ (the offspring number is not identically $1$), then $Z_n=0$ for all large $n$ almost surely, although $EZ_n=1$ for every $n$. If the offspring variance $\sigma^2$ is finite, the survival probability decays like $P(Z_n>0)\sim 2/(\sigma^2n)$ (the generating-function refinement explained below).`,
+      idea: String.raw`The critical process is a nonnegative martingale, so it converges almost surely. Integer-valued convergence makes it eventually constant, but no positive state can remain unchanged forever when the offspring law is not concentrated at $1$. Thus the eventual value is $0$. For the additional finite-variance asymptotic shown in the picture, let $s_n=P(Z_n>0)$ and $f$ be the offspring generating function. Then $s_{n+1}=1-f(1-s_n)=s_n-\tfrac12\sigma^2s_n^2+o(s_n^2)$. Since $s_n\to0$, $1/s_{n+1}-1/s_n\to\sigma^2/2$, and averaging gives $n s_n\to2/\sigma^2$.`,
       caption: String.raw`Left: 40 seeded families of a critical process (mean offspring $1$). Almost all drop to $0$ (and stay there); a few survive for a long time and wander at larger sizes. Right, on log-log axes: the exact survival probability $s_n=P(Z_n>0)$ (green), the asymptote $2/(\sigma^2n)$ (orange dashed) and Monte Carlo estimates from 20000 families (gold). Choose the law: the variance $\sigma^2$ is $1$ for Poisson and for "0 or 2", and $2$ for the geometric law. The readout shows that $n\,s_n\to2/\sigma^2$ and that survivors average about $\sigma^2n/2$, which is how the mean stays at $1$.`,
       deps: ['prob-4.3.9', 'prob-4.2.12'],
       tags: ['branching'],
-      credit: 'Kolmogorov (survival asymptotics; the date is not confirmed here)',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.3.11 and proof, p. 231; pgf iteration in §4.3.4 (derived finite-variance survival asymptotic)'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const law = v.select('offspring law (mean 1)', LAW_OPTS, 'poisson');
         const nS = v.slider('generation $n$', 1, 100, 40, { int: true });
@@ -356,7 +356,8 @@ For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ t
       see: ['stoch-12.8'],
       tags: ['maximal inequalities', 'martingales'],
       credit: 'J. L. Doob',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.4.2 and proof, p. 235'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const proc = v.select('submartingale', [{ value: 'abs', label: '$|S_n|$' }, { value: 'sq', label: '$S_n^2$' }, { value: 'exp', label: '$e^{0.15S_n}/\\cosh^n0.15$' }], 'abs');
         const nS = v.slider('time $n$', 20, 200, 100, { int: true });
@@ -406,12 +407,13 @@ For a nonnegative submartingale this strengthens Markov's inequality for $X_n$ t
       statement: String.raw`Let $X_m$ be a submartingale and $\bar X_n=\max_{m\le n}X_m^+$. For $1<p<\infty$,
 $$E\bar X_n^{\,p}\le\Big(\frac p{p-1}\Big)^pE(X_n^+)^p .$$
 The constant $(p/(p-1))^p$ tends to $\infty$ as $p\downarrow1$ (and decreases to $e$ as $p\to\infty$).`,
-      idea: String.raw`Write $E\bar X_n^p=\int_0^\infty p\lambda^{p-1}P(\bar X_n\ge\lambda)\,d\lambda$ (the tail formula, 2.2.13) and apply Doob's inequality 4.4.2 in the form $P(\bar X_n\ge\lambda)\le\lambda^{-1}E(X_n^+;\bar X_n\ge\lambda)$. Fubini turns the integral into $\frac p{p-1}E\big(X_n^+\bar X_n^{\,p-1}\big)$, and Hölder's inequality (1.6.3) with exponents $p$ and $q=p/(p-1)$ bounds it by $q\|X_n^+\|_p\|\bar X_n\|_p^{p-1}$. Dividing by $\|\bar X_n\|_p^{p-1}$ (finite for bounded $n$) gives $\|\bar X_n\|_p\le q\|X_n^+\|_p$.`,
-      caption: String.raw`Left, on a log scale and as functions of $p$: $EX_n^p$ (lower, exact), the simulated $E\bar X_n^p$ (middle, 5000 paths) and the bound $(p/(p-1))^pEX_n^p$ (upper). The middle curve always sits between the other two. Right: the constant $(p/(p-1))^p$ (orange) against the observed ratio $E\bar X_n^p/EX_n^p$ (blue). As $p\downarrow1$ the constant blows up but the observed ratio stays moderate: the inequality is far from sharp for this process, though the sharp constant for the class of all submartingales really does diverge as $p\to1$. The exponential martingale has heavy tails in $p$, so large $p$ is at the edge of Monte Carlo accuracy.`,
+      idea: String.raw`Apply the tail-integral formula to $\bar X_n\wedge M$, so every intermediate moment is finite. Doob's inequality and Fubini give $E(\bar X_n\wedge M)^p\le qE[X_n^+(\bar X_n\wedge M)^{p-1}]$, where $q=p/(p-1)$. Hölder bounds the right side by $q\|X_n^+\|_p\|\bar X_n\wedge M\|_p^{p-1}$. If $E(X_n^+)^p=\infty$ the claim is automatic; otherwise divide by the finite truncated norm and then let $M\to\infty$ by monotone convergence. Finite time alone does not ensure finite $p$th moments.`,
+      caption: String.raw`Left, on a log scale and as functions of $p$: $EX_n^p$ (lower, exact), the simulated $E\bar X_n^p$ (middle, 5000 paths) and the bound $(p/(p-1))^pEX_n^p$ (upper). The true expected maximum lies between the other two; the Monte Carlo curve can leave this interval because rare large maxima make its error substantial, especially at large $p$. Right: the constant $(p/(p-1))^p$ (orange) against the observed ratio $E\bar X_n^p/EX_n^p$ (blue). As $p\downarrow1$ the constant blows up but the observed ratio stays moderate: the inequality is far from sharp for this process, though the sharp constant for the class of all submartingales really does diverge as $p\to1$. The exponential martingale has heavy tails in $p$, so large $p$ is at the edge of Monte Carlo accuracy.`,
       deps: ['prob-4.4.2', 'prob-2.2.13', 'prob-1.6.3'],
       tags: ['maximal inequalities', 'lp'],
       credit: 'J. L. Doob',
-      verify: true,
+      refs: ['Durrett, Probability: Theory and Examples, version 5 (11 January 2019), Theorem 4.4.4 and truncated-moment proof, pp. 236–237'],
+      links: { source: 'https://math.duke.edu/~rtd/PTE/PTE5_011119.pdf' },
       viz(v) {
         const proc = v.select('submartingale', [{ value: 'abs', label: '$|S_n|$' }, { value: 'exp', label: '$e^{0.1S_n}/\\cosh^n0.1$' }], 'abs');
         const nS = v.slider('time $n$', 10, 100, 50, { int: true });
@@ -448,7 +450,7 @@ The constant $(p/(p-1))^p$ tends to $\infty$ as $p\downarrow1$ (and decreases to
           st = { p, a, b, c: q(p) ** p * a, k: q(p) ** p };
         });
         v.legend([['green', '$EX_n^p$'], ['accent', '$E\\bar X_n^p$ (simulated)'], ['orange', '$(p/(p-1))^pEX_n^p$']]);
-        v.readout(() => st && `$p=${fr(st.p, 2)}$: $EX_n^p=${sciT(st.a, 3)}$, $E\\bar X_n^p\\approx${sciT(st.b, 3)}$, bound $${sciT(st.c, 3)}$ with constant $(p/(p-1))^p=${fr(st.k, 2)}$. ${st.b <= st.c ? 'The inequality holds.' : 'Monte Carlo error exceeds the margin here.'}`);
+        v.readout(() => st && `$p=${fr(st.p, 2)}$: $EX_n^p=${sciT(st.a, 3)}$, $E\\bar X_n^p\\approx${sciT(st.b, 3)}$, bound $${sciT(st.c, 3)}$ with constant $(p/(p-1))^p=${fr(st.k, 2)}$. ${st.b <= st.c ? 'The sample estimate is below the bound.' : 'Monte Carlo error exceeds the margin here.'}`);
       },
     },
     // ======================================================================== 4.4.6

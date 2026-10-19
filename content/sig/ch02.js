@@ -3,6 +3,7 @@ import {
   TAU, DT, NG, VIEW, I0, I1, tOf, iOf, sample, get, combo, shiftBy, maxDiff, maxAbs, pts, bump, ramp, rand, telegraph,
   SYS, MENU, menu, SHAPES, shapeMenu, picker, sysTex, drawable, bdBlock, num, errTex,
 } from './ch02.shared.js';
+import {recoveryPlot} from './recovery-plot.shared.js';
 
 const SR = 22050;
 /** Short linear fade in and out (in place) so sample buffers start and stop without clicks. */
@@ -387,8 +388,8 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
       kind: 'Definition',
       name: 'Memory and invertibility',
       statement: String.raw`A system is **memoryless** if the output at each time depends only on the input at that same time: $y(t)=f\big(x(t),t\big)$ for some function $f$. Otherwise it has **memory** (a delay, an average, an integrator, a capacitor). A system is **invertible** if distinct inputs always produce distinct outputs; then there is an **inverse system** $S^{-1}$ with $S^{-1}\{S\{x\}\}=x$ for every input. For example $y=2x$ is inverted by $x=y/2$, the accumulator $y(t)=\int_{-\infty}^tx$ by the differentiator $x=y'$, and the delay by the advance. The squarer is not invertible, because $x$ and $-x$ have the same output, and neither is the clipper, which cannot distinguish inputs that differ only beyond its limits.`,
-      idea: String.raw`Both properties are about information. A memoryless time-invariant system applies one function $f$ pointwise, so every point $\big(x(t),y(t)\big)$ lies on the graph of $f$: one input value, one output value. With memory, the same input value can meet different outputs at different times, so the trace of $\big(x(t),y(t)\big)$ crosses some vertical line several times (for a time-varying memoryless system such as the modulator the trace fans out too, because $f$ itself changes with $t$). Invertibility asks the dual question, whether the output can be traced back; for a memoryless system it is the horizontal-line test on $f$, passed by $x^3$ and failed by $x^2$. Systems with memory can be invertible although they smooth heavily: the moving average and the RC filter are undone exactly by recursions that start from rest, and the accumulator by the first difference (sig-1.7, pma-6.20). Invertible is not the same as robustly invertible, though: those inverses amplify noise enormously, which is why deconvolution is delicate (3.13).`,
-      caption: String.raw`Pick a system and draw an input. Top: the input (blue), and either a different input with the same output (red dashed) or the input recovered by the inverse system (green dotted). Bottom left: the output, and the red input's output on top of it. Bottom right: the trace of $\big(x(t),y(t)\big)$; drag the gold point. Its vertical line asks whether one input value meets several output values (memory), its horizontal line whether one output value comes from several input values (no inverse, for memoryless systems). Switch on the noise to see how hard an inverse has to work.`,
+      idea: String.raw`Both properties are about information. A memoryless time-invariant system applies one function $f$ pointwise, so every point $\big(x(t),y(t)\big)$ lies on the graph of $f$: one input value, one output value. With memory, the same input value can meet different outputs at different times, so the trace of $\big(x(t),y(t)\big)$ crosses some vertical line several times (for a time-varying memoryless system such as the modulator the trace fans out too, because $f$ itself changes with $t$). Invertibility asks the dual question, whether the output can be traced back; for a memoryless system it is the horizontal-line test on $f$, passed by $x^3$ and failed by $x^2$. Systems with memory can be invertible although they smooth heavily: the moving average and the RC filter are undone exactly by recursions that start from rest, and the accumulator by the first difference (sig-1.7, pma-6.20). For modulation $y(t)=x(t)\cos2\pi t$, division works away from carrier zeros; continuous inputs determine their values at the isolated zeros by limits. On unrestricted pointwise signals, changing only those values leaves the output unchanged. Invertible is not the same as robustly invertible, though: those inverses amplify noise enormously, which is why deconvolution is delicate (3.13).`,
+      caption: String.raw`Pick a system and draw an input. Top: the input (blue), and either a different input with the same output (red dashed) or the input recovered by the inverse system (green dotted, every sample). Green arrows mark recovered samples beyond the vertical scale; orange ticks mark nonfinite samples, where the curve breaks. Bottom left: the output, and the red input's output on top of it. Bottom right: the trace of $\big(x(t),y(t)\big)$; drag the gold point. Its vertical line asks whether one input value meets several output values (memory), its horizontal line whether one output value comes from several input values (no inverse, for memoryless systems). Switch on the noise to see how hard an inverse has to work.`,
       deps: ['sig-2.1', 'sig-1.7', 'pma-6.20'],
       refs: ['Oppenheim–Willsky §1.6', 'Lathi ch. 1'],
       tags: ['memory', 'invertibility'],
@@ -417,7 +418,17 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           if (sys.id === 'clip') sIn.hband(-1, 1, { color: 'green', alpha: 0.06, edges: true });
           sIn.path(pts(x, -5.2, 5.2), { color: 'accent', width: 2.4 });
           if (x2) sIn.clip(() => sIn.path(pts(x2, -5.2, 5.2), { color: 'red', width: 2, dash: [6, 4] }));
-          if (xr) sIn.clip(() => sIn.path(pts(xr, -5.2, 5.2, 2), { color: 'green', width: 2.6, dash: [2, 4] }));
+          let recovered=null;
+          if (xr) {
+            recovered=recoveryPlot(xr);
+            sIn.clip(() => {
+              sIn.path(recovered.points, { color: 'green', width: 2.6, dash: [2, 4] });
+              for(const p of recovered.above)sIn.arrow(p.t,1.88,p.t,2.06,{color:'green',width:1.7,head:5});
+              for(const p of recovered.below)sIn.arrow(p.t,-1.68,p.t,-1.86,{color:'green',width:1.7,head:5});
+              for(const p of recovered.nonFinite){sIn.line(p.t,1.94,p.t,2.08,{color:'orange',width:2});sIn.line(p.t,-1.74,p.t,-1.88,{color:'orange',width:2});}
+            });
+            if(recovered.above.length+recovered.below.length+recovered.nonFinite.length)sIn.corner(`${recovered.above.length+recovered.below.length} recovered samples off scale; ${recovered.nonFinite.length} nonfinite`,'tl',{color:'green',size:11.5,plate:true});
+          }
           // ---- output
           let ylo = 0, yhi = 0; for (let i = I0; i <= I1; i++) { ylo = Math.min(ylo, y[i]); yhi = Math.max(yhi, y[i]); }
           const yr = [Math.max(-14, Math.min(-0.3, 1.15 * ylo)), Math.min(14, Math.max(0.3, 1.15 * yhi))];
@@ -450,14 +461,14 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           for (const u of vy) sTr.dot(cx, u, { color: 'orange', r: 4 });
           for (const u of hx) sTr.dot(u, cy, { color: 'teal', r: 4 });
           info = {
-            sys, vy, hx, cx, cy, err: xr ? maxDiff(x, xr) : null, sc: maxAbs(x),
+            sys, vy, hx, cx, cy, err: xr ? maxDiff(x, xr) : null, sc: maxAbs(x), recovered,
             dIn: x2 ? maxDiff(x, x2) : null, dOut: y2 ? maxDiff(y, y2, 0, NG) : null,
           };
         });
         v.legend([['accent', 'input $x$'], ['purple', 'output $y$ and the trace'], ['red', "another input $x'$ with the same output", { dash: true }], ['green', 'recovered $S^{-1}\\{y\\}$', { dash: true }], ['orange', 'outputs met at one input value', { dot: true }], ['teal', 'inputs giving one output value', { dot: true }]]);
         v.readout(() => {
           if (!info) return '';
-          const { sys, vy, hx, cx, cy, err, sc, dIn, dOut } = info;
+          const { sys, vy, hx, cx, cy, err, sc, dIn, dOut, recovered } = info;
           const tv = sys.id === 'mod' || sys.id === 'gate';
           const mem = vy.length <= 1
             ? `vertical line $x$ = ${v.fix(cx, 2)}: ${vy.length ? `one output value, ${v.fix(vy[0], 3)}` : 'not met'}`
@@ -466,9 +477,13 @@ $$x(t-\tau)\ \longmapsto\ y(t-\tau)\qquad\text{for every real }\tau$$
           let inv;
           if (dIn != null) inv = `**not invertible**: the red input differs from $x$ by up to ${v.fix(dIn, 2)}, yet the outputs differ by ${dOut === 0 ? '0' : num(dOut)} (${sys.pairTex ? `$${sys.pairTex}$` : ''})`;
           else {
+            const label=sys.id==='mod'?'**invertible on continuous inputs**':'**invertible**';
+            const note=sys.id==='mod'?'divide away from carrier zeros and use limits for a noiseless continuous input':sys.invNote;
             inv = noisy.value
-              ? `**invertible**: $S^{-1}$: $${sys.invTex}$${sys.invNote ? ` (${sys.invNote})` : ''}; with noise of size $10^{-3}$ added to $y$, the recovered input is off by up to ${num(err)}, an amplification of about ${num(err / 1e-3)}×`
-              : `**invertible**: $S^{-1}$: $${sys.invTex}$${sys.invNote ? ` (${sys.invNote})` : ''} recovers $x$ with max error $${errTex(err <= 1e-12 * Math.max(1, sc) ? 0 : err)}$`;
+              ? `${label}: $S^{-1}$: $${sys.invTex}$${note ? ` (${note})` : ''}; with noise of size $10^{-3}$ added to $y$, the recovered input is off by up to ${num(err)}, an amplification of about ${num(err / 1e-3)}×`
+              : `${label}: $S^{-1}$: $${sys.invTex}$${note ? ` (${note})` : ''} recovers $x$ with max error $${errTex(err <= 1e-12 * Math.max(1, sc) ? 0 : err)}$`;
+            if(recovered&&(recovered.above.length+recovered.below.length+recovered.nonFinite.length))inv+=` · all recovered samples are plotted: ${recovered.above.length+recovered.below.length} off scale (green arrows), ${recovered.nonFinite.length} nonfinite (orange ticks)`;
+            if(sys.id==='mod'&&noisy.value)inv+=' · division at carrier zeros is undefined, and nearby division amplifies noise; the huge finite values here depend on floating-point roundoff, not a finite inverse-error bound';
           }
           const hor = !tv && ['gain', 'cube', 'square', 'clip'].includes(sys.id) ? ` · horizontal line $y$ = ${v.fix(cy, 2)}: ${hx.length === 0 ? 'not met' : `${hx.length} input value${hx.length > 1 ? 's' : ''} (${hx.slice(0, 4).map((u) => v.fix(u, 2)).join(', ')}${hx.length > 4 ? ', …' : ''})`}` : '';
           return `$${sys.tex}$ · ${mem}${hor} · ${inv}`;

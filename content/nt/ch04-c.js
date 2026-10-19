@@ -15,14 +15,13 @@ export default {
       name: 'Quadratic Gauss sums',
       statement: String.raw`For an odd prime $p$ and $\zeta=e^{2\pi i/p}$ the *quadratic Gauss sum* is
 $$g_p=\sum_{a=1}^{p-1}\left(\frac ap\right)\zeta^{a}\;=\;\sum_{x=0}^{p-1}\zeta^{x^2}.$$
-(The two expressions agree because $\#\{x:x^2\equiv a\}=1+\left(\frac ap\right)$.) It is a sum of $p-1$ unit vectors with signs $\pm1$ chosen by the Legendre symbol; Gauss proved that its length is exactly $\sqrt p$ — far less than the trivial bound $p-1$ — and that $g_p=\sqrt p$ for $p\equiv1\pmod 4$, $g_p=i\sqrt p$ for $p\equiv3\pmod 4$ (4.12 proves $g_p^2=\left(\frac{-1}p\right)p$).`,
+(The two expressions agree because $\#\{x:x^2\equiv a\}=1+\left(\frac ap\right)$.) It is a sum of $p-1$ unit vectors with signs $\pm1$ chosen by the Legendre symbol; its length is exactly $\sqrt p$ — smaller than the trivial bound $p-1$. Item4.12 proves $g_p^2=\left(\frac{-1}p\right)p$, locating the sum on the real or imaginary axis up to sign; choosing a square-root sign requires a further evaluation.`,
       idea: String.raw`The point of the definition is the cancellation: the plain sum $\sum\zeta^a$ is $-1$ (the roots of unity add to $0$), and weighting by a *character* — a multiplicative sign pattern — still leaves a vector of size only $\sqrt p$. The weights $\left(\frac ap\right)$ are the only non-trivial multiplicative $\pm1$ weights (Euler's criterion, 4.2; cyclic group, 3.2). The $p$-th roots of unity themselves live in the complex plane as the vertices of a regular $p$-gon (algo-4.8); Gauss sums are the bridge between this geometry and quadratic residues.`,
-      caption: String.raw`The chain of arrows adds the terms $\left(\frac ap\right)\zeta^a$ for $a=1,2,\dots$ head to tail (green arrows: residues, red: non-residues pointing the opposite way). Drag *terms added* to watch the walk; the gold vector is the whole sum and the dashed circle has radius $\sqrt p$. Switch *weights* to $+1$ (the walk closes into a $p$-gon and ends at $-1$) or to random signs (the end point is random, typically also of size $\sqrt p$ — but only for the Legendre signs is it exactly $\sqrt p$, every time).`,
+      caption: String.raw`The chain of arrows adds the terms $\left(\frac ap\right)\zeta^a$ for $a=1,2,\dots$ head to tail (green arrows: residues, red: non-residues pointing the opposite way). Drag *terms added* to watch the walk; the gold vector is the whole sum and the dashed circle has radius $\sqrt p$. Switch *weights* to $+1$ (the walk follows a $p$-gon with one edge omitted and ends at $-1$) or to random signs (the end point is random, typically also of size $\sqrt p$ — but only for the Legendre signs is it exactly $\sqrt p$, every time).`,
       deps: ['nt-4.1', 'algo-4.8'],
-      refs: ['Ireland–Rosen ch. 6', 'Apostol §9.9'],
+      refs: ['Ireland–Rosen ch. 6', 'Apostol §9.9', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Gauss sum', 'roots of unity', 'character'],
-      credit: 'Gauss, 1801 (sums of this kind); the sign of the sum determined by Gauss in 1805',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quadratic_Gauss_sum' },
       viz(v) {
         const P = v.slider('prime $p$', 3, 101, 23, { int: true });
@@ -68,10 +67,9 @@ Hence $|g_p|=\sqrt p$, and $g_p=\pm\sqrt p$ if $p\equiv1\pmod4$, $g_p=\pm i\sqrt
       idea: String.raw`Write $g_p^2=\sum_{a,b}\left(\frac{ab}p\right)\zeta^{a+b}$ and substitute $b=at$ for $a\ne0$: $g_p^2=\sum_{t}\left(\frac tp\right)\sum_{a\ne0}\zeta^{a(1+t)}$ using multiplicativity of the symbol (4.2). The inner sum is $p-1$ when $t\equiv-1$ and $-1$ otherwise. So $g_p^2=\left(\frac{-1}p\right)(p-1)-\sum_{t\ne-1}\left(\frac tp\right)=\left(\frac{-1}p\right)(p-1)+\left(\frac{-1}p\right)=\left(\frac{-1}p\right)p$, because $\sum_{t\ne0}\left(\frac tp\right)=0$ (4.1) and the value at $t=-1$ has been split off. The sign of $\left(\frac{-1}p\right)$ is the first supplement (4.3).`,
       caption: String.raw`Left: the complex plane. The dots are $g_n$ (computed numerically by summing the $n$ roots of unity with Jacobi weights) for every odd $n\le 101$; primes sit on the real axis ($\equiv1$) or the imaginary axis ($\equiv3$), exactly at distance $\sqrt n$. Drag the slider to choose $n$ (it becomes the highlighted dot and arrow). Right: $\operatorname{Re}(g_n^2)/n$ for all $n$, with hollow markers at the prediction $\left(\frac{-1}n\right)$ for squarefree $n$ and $0$ otherwise; try $n=9,25,27,45$ where the hypothesis (squarefree) fails.`,
       deps: ['nt-4.11', 'nt-4.3'],
-      refs: ['Ireland–Rosen ch. 6'],
+      refs: ['Ireland–Rosen ch. 6', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Gauss sum', 'character'],
-      credit: 'Gauss, 1801 (the value of $g^2$; its sign settled in 1805)',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Quadratic_Gauss_sum' },
       viz(v) {
         const N = v.slider('odd $n$', 3, 101, 13, { int: true });
@@ -94,7 +92,7 @@ Hence $|g_p|=\sqrt p$, and $g_p=\pm\sqrt p$ if $p\equiv1\pmod4$, $g_p=\pm i\sqrt
         v.legend([['blue', '$p\\equiv1\\ (4)$', { dot: true }], ['orange', '$p\\equiv3\\ (4)$', { dot: true }], ['muted', 'composite', { dot: true }], ['green', 'prediction', { dot: true }]]);
         v.readout(() => {
           const { n, re, im, g2re, g2im, sqf, pred } = info; const f = (z) => v.fix(z, 3);
-          return `$n=${n}$: $g_n=${f(re)}${im < 0 ? '-' : '+'}${f(Math.abs(im))}\\,i$, $g_n^2=${f(g2re)}${g2im < 0 ? '-' : '+'}${f(Math.abs(g2im))}\\,i$; the formula $\\left(\\frac{-1}n\\right)n$ predicts $${pred}$${sqf ? '' : ' (not squarefree: the sum vanishes)'}.`;
+          return `$n=${n}$: $g_n=${f(re)}${im < 0 ? '-' : '+'}${f(Math.abs(im))}\\,i$, $g_n^2=${f(g2re)}${g2im < 0 ? '-' : '+'}${f(Math.abs(g2im))}\\,i$; ${sqf ? `the squarefree formula $\\left(\\frac{-1}n\\right)n$ predicts $${pred}$` : 'the modulus is not squarefree, so the Jacobi-weighted sum vanishes and its square is0'}.`;
         });
       },
     },
@@ -109,10 +107,9 @@ The proof works in the ring $\Z[\zeta_p]$ modulo $q$, comparing two expressions 
       idea: String.raw`Since $q$ is prime, $(x+y)^q\equiv x^q+y^q\pmod q$ (the Frobenius, 2.5), so $g_p^q\equiv\sum_a\left(\frac ap\right)\zeta^{qa}$; substituting $b=qa$ gives $g_p^q\equiv\left(\frac qp\right)g_p\pmod q$. On the other hand $g_p^q=g_p\,(g_p^2)^{(q-1)/2}=g_p\,(p^*)^{(q-1)/2}\equiv\left(\frac{p^*}q\right)g_p$ by 4.12 and Euler's criterion (4.2). Since $g_p$ is a unit mod $q$ ($g_p^2=p^*\not\equiv0$), the two signs agree. Finally $\left(\frac{p^*}q\right)=\left(\frac{-1}q\right)^{(p-1)/2}\left(\frac pq\right)$ turns this into the stated sign rule via 4.3.`,
       caption: String.raw`The elements are polynomials in $\zeta=\zeta_p$ with coefficients mod $q$ (computed in $\mathbb F_q[x]/(1+x+\dots+x^{p-1})$, written in the basis $1,\zeta,\dots,\zeta^{p-2}$). Top panel: the coefficients of $g_p^q$, found by honest repeated multiplication, as bars; the green and red outlines are the coefficients of $+g_p$ and $-g_p$. Exactly one outline is hit by every bar. Bottom: the coefficients of $g_p^2$ — a single non-zero bar at $1$, the integer $p^*\bmod q$ — which is the heart of 4.12. The readout lists the signs.`,
       deps: ['nt-4.12', 'nt-2.5', 'nt-4.2', 'nt-4.3'],
-      refs: ['Apostol §9.11', 'Ireland–Rosen ch. 6'],
+      refs: ['Apostol §9.11', 'Ireland–Rosen ch. 6', 'Stein, Elementary Number Theory, §§4.1–4.4, Exercise4.9; Conrad, Gauss and Jacobi sums, §§2–3'],
       tags: ['Gauss sum', 'Frobenius', 'reciprocity'],
-      credit: 'Gauss, 1811 (fourth proof of reciprocity, by Gauss sums); the Frobenius form of the argument is the modern presentation',
-      verify: true,
+      credit: 'Euler; Gauss; Jacobi',
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Gauss_sum#Properties_of_Gauss_sums_of_Dirichlet_characters' },
       viz(v) {
         const P = v.slider('prime $p$', 3, 31, 7, { int: true });
@@ -195,14 +192,13 @@ solutions $(x,y)\in(\Z/p\Z)^2$. In particular the circle $x^2+y^2=1$ has $p-\lef
       name: 'Disquisitiones arithmeticae',
       paper: { authors: 'Carl Friedrich Gauss', year: 1801, title: 'Disquisitiones arithmeticae', venue: 'Leipzig: Gerhard Fleischer', url: 'https://archive.org/details/disquisitionesa00gaus' },
       introduces: ['nt-2.1', 'nt-3.3', 'nt-3.7', 'nt-4.6'],
-      credit: 'C. F. Gauss, 1801 (written 1798, at age 21)',
-      statement: String.raw`A systematic treatise on number theory in seven sections (366 numbered articles), in Latin. It fixes the notation $a\equiv b\pmod m$ (2.1) and builds the theory of congruences (linear and higher-degree, the Chinese remainder theorem), proves that moduli with primitive roots are exactly $1,2,4,p^k,2p^k$ (3.3), and devotes its fourth section to quadratic congruences: it states the law of quadratic reciprocity and gives the first complete proofs (4.6; Gauss gives a second proof in the same book). It then treats binary quadratic forms (composition, genera) and ends with the theory of the roots of $x^n-1$, showing that the regular 17-gon, and more generally every regular $n$-gon with $n$ a product of a power of $2$ and distinct Fermat primes, is constructible with ruler and compass (3.7).`,
-      idea: String.raw`Before the book number theory was a collection of results of Fermat, Euler, Lagrange and Legendre. Euler and Legendre had stated reciprocity, but Legendre's attempted proof assumed the existence of certain primes; Gauss, who rediscovered the statement by himself in 1795 and proved it in 1796 after a year of work, called it the "fundamental theorem" and the *aureum theorema* — the golden theorem. The book gave the subject its language (congruences, residues, primitive roots), its first proof of reciprocity, and its first great application of algebra to geometry: the 17-gon (announced in 1796, with the full criterion of constructibility in the last section). It also began the theory of binary quadratic forms that Dirichlet and Kummer would develop into algebraic number theory.`,
-      caption: String.raw`**Left, the book's golden theorem.** A grid of odd primes $p$ (horizontal) and $q$ (vertical), each cell coloured by the pair $\left(\left(\frac pq\right),\left(\frac qp\right)\right)$: green for $(+,+)$, blue for $(-,-)$, orange for the mixed pairs. The table is symmetric except exactly on the dark-bordered cells where both primes are $\equiv3\pmod4$: there the two symbols differ. **Right, the last section.** The 17th roots of unity in the order of the powers of $3$; raising the *level* splits the 16 non-trivial roots into periods of $8$, $4$, $2$, $1$ roots, each pair of periods being the roots of a quadratic equation — so everything is reached by square roots, which is what makes the 17-gon constructible. The readout evaluates Gauss's nested radical for $\cos(2\pi/17)$ against the computed cosine.`,
+      credit: 'C. F. Gauss, 1801',
+      statement: String.raw`Gauss’s Latin treatise has seven sections and 366 numbered articles. Its contents move from congruences and residues through quadratic congruences, binary quadratic forms and applications to the division of the circle. The last section reduces cyclotomic constructions to equations of controlled degree. Articles 365–366 give ruler-and-compass constructions when $n$ is a power of $2$ times distinct Fermat primes, including the regular $17$-gon, and state the necessity of that condition. Article 365 explicitly says that the book’s limits prevent inclusion of the necessity proof.`,
+      idea: String.raw`Cyclotomic periods group the nontrivial roots of unity into sums. When the relevant group orders are powers of $2$, successive index-two subdivisions yield quadratic equations, so the periods, and eventually individual roots, are obtained with square roots. This is the constructive direction illustrated here. Gauss also states that higher-degree equations cannot be avoided for other primes, but distinguishes that assertion from a proof by writing that he cannot include the demonstration (§365, pp.663–664).`,
+      caption: String.raw`**Left, the book's golden theorem.** A grid of odd primes $p$ (horizontal) and $q$ (vertical), each cell coloured by the pair $\left(\left(\frac pq\right),\left(\frac qp\right)\right)$: green for $(+,+)$, blue for $(-,-)$, orange for the mixed pairs. The table is symmetric except exactly on the dark-bordered cells where both primes are $\equiv3\pmod4$: there the two symbols differ. **Right, the last section.** The 17th roots of unity in the order of the powers of $3$; raising the *level* splits the 16 non-trivial roots into periods of $8$, $4$, $2$, $1$ roots, each pair of periods being the roots of a quadratic equation — so everything is reached by square roots, which is what makes the 17-gon constructible. The readout evaluates a nested radical for $\cos(2\pi/17)$ against the computed cosine.`,
       deps: ['nt-2.5', 'nt-2.8', 'nt-4.2'],
-      refs: [],
+      refs: ['Gauss, Disquisitiones Arithmeticae (1801), contents; articles365–366, pp.662–665'],
       tags: ['history', 'reciprocity', 'cyclotomy'],
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Disquisitiones_Arithmeticae' },
       viz(v) {
         const T = v.stage({ x: [-0.07, 1.01], y: [-0.07, 1.01], equal: true, axes: false, height: 420, title: '$\\left(\\frac pq\\right),\\ \\left(\\frac qp\\right)$ for odd primes' });
@@ -241,7 +237,7 @@ solutions $(x,y)\in(\Z/p\Z)^2$. In particular the circle $x^2+y^2=1$ has $p-\lef
         v.readout(() => {
           const { vals, m, nest, c17, f, sel: s, a, b } = info;
           const [p, q] = s;
-          return `Cell $(p,q)=(${p},${q})$: $\\left(\\frac pq\\right)=${a}$, $\\left(\\frac qp\\right)=${b}$.\n${m} class${m > 1 ? 'es' : ''} of 16 non-trivial roots (periods ${m === 16 ? 'are the roots themselves; real parts' : 'are real'}): ${vals.map(f).join(', ')}.` + `\nGauss's nested radical gives $\\cos\\frac{2\\pi}{17}=${v.fix(nest, 12)}$; direct: $${v.fix(c17, 12)}$.`;
+          return `Cell $(p,q)=(${p},${q})$: $\\left(\\frac pq\\right)=${a}$, $\\left(\\frac qp\\right)=${b}$.\n${m} class${m > 1 ? 'es' : ''} of 16 non-trivial roots (periods ${m === 16 ? 'are individual roots; real parts shown' : m <= 8 ? 'are real' : 'real parts shown'}): ${vals.map(f).join(', ')}.` + `\nThe displayed nested radical gives $\\cos\\frac{2\\pi}{17}=${v.fix(nest, 12)}$; direct: $${v.fix(c17, 12)}$.`;
         });
       },
     },

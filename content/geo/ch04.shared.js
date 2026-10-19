@@ -75,3 +75,7 @@ export function ekmanSpiral(A, f) {
     },
   };
 }
+/** Linear Ekman decay time: H is the full fluid depth, with one or two rigid lids.
+ * Greenspan & Howard (1963), section 3, use half-depth L=H/2 for two lids.
+ */
+export const spinDownTime = (H, nu, omega, rigidLids = 2) => H / (rigidLids * Math.sqrt(nu * omega));

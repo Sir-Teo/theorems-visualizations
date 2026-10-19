@@ -331,7 +331,7 @@ export default {
           pic: 'Solve H = h + H * F numerically on a grid by iteration and watch the iterates converge to the solution, drawn alongside its convolution form h * U.' },
         { num: '2.6.9', kind: 'Theorem', name: 'Bounded solutions of the renewal equation', deps: ['prob-2.6.4a'], tags: ['renewal'],
           pic: 'Start the iteration H = h + H * F from different bounded guesses: all converge to h * U, while the difference of two solutions decays.' },
-        { num: '2.6.11', kind: 'Theorem', name: 'Cramér’s estimate of ruin', deps: ['prob-2.6.9'], see: ['prob-2.6.12', 'stoch-9.12'], tags: ['renewal', 'insurance'],
+        { num: '2.6.11', kind: 'Model', name: 'Cramér’s estimate of ruin', deps: ['prob-2.6.9'], see: ['prob-2.6.12', 'stoch-9.12'], tags: ['renewal', 'insurance'],
           pic: 'Simulate an insurer’s surplus with Poisson claims; the estimated ruin probability as a function of initial capital falls on the Cramér–Lundberg exponential C e^{−γx}.' },
         { num: '2.6.12', kind: 'Theorem', name: 'Key renewal theorem', deps: ['prob-2.6.9', 'prob-2.6.4'], see: ['fa-9.13'], tags: ['renewal'],
           pic: 'The residual life distribution at a large time t, from seeded renewal runs, approaches (1/µ)∫ₓ^∞ (1 − F), the size-biased stationary law.' },

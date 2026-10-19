@@ -20,19 +20,18 @@ export default {
       num: '5.1',
       kind: 'Hypothesis',
       name: 'The efficient-market hypothesis',
-      statement: String.raw`A market is **efficient with respect to an information set** $\Phi_t$ if prices "fully reflect" $\Phi_t$: no strategy that uses only $\Phi_t$ earns an expected return above what its risk warrants, after costs. Equivalently, the return surprise
-$$Z_{t+1}=r_{t+1}-\mathrm E\big[r_{t+1}\mid\Phi_t\big]$$
-is a **fair game**, $\mathrm E[Z_{t+1}\mid\Phi_t]=0$. Three nested sets give three forms. **Weak:** $\Phi_t$ is the history of past prices and volumes (so technical analysis cannot pay). **Semi-strong:** all public information (filings, news, forecasts). **Strong:** all information, including what insiders know. Each form implies the one before it.
+      statement: String.raw`A market is **efficient with respect to an information set** $\Phi_t$ if prices "fully reflect" $\Phi_t$: no strategy that uses only $\Phi_t$ earns an expected return above what its risk warrants, after costs. Under a specified equilibrium expected-return model $m_t$, the testable restriction is $\mathrm E[r_{t+1}\mid\Phi_t]=m_t$. The model-adjusted surprise
+$$Z_{t+1}=r_{t+1}-m_t$$
+then forms a **fair game**, $\mathrm E[Z_{t+1}\mid\Phi_t]=0$. Subtracting the true conditional mean alone always gives a zero conditional mean and is not an efficiency test. Three nested sets give three forms. **Weak:** $\Phi_t$ is the history of past prices and volumes (so technical analysis cannot pay). **Semi-strong:** all public information (filings, news, forecasts). **Strong:** all information, including what insiders know. Each form implies the one before it.
 
 Scope: the weak-form pictures use a value-weighted index, whose daily returns are not exactly tradable (stale prices). The hypothesis is untestable on its own, because "warrants" needs a model of expected return (the *joint-hypothesis problem*): an apparent profit may mean inefficiency or a wrong model of risk.`,
-      idea: String.raw`If a rule using $\Phi_t$ could earn an expected excess return, traders would pile into it, and their buying and selling would move today's price until the profit vanished; competition among informed traders therefore pushes the price to its information-consistent value (the present value of fin-1.5 computed with *all* $\Phi_t$). The consequence is that price changes follow no pattern that $\Phi_t$ could predict. Testing means choosing $\Phi_t$, a risk model and a rule, and asking whether the rule's profit, net of trading costs, differs from zero; each form is tested by a different kind of evidence (return autocorrelation, event studies, insider and fund performance).`,
-      caption: String.raw`**Left**: the three nested information sets; choose a form. **Weak** (real data): a rule that goes long or short the whole U.S. market according to the sign of yesterday's return, on 15 897 actual trading days 1963–2026. Look at the **sample**: in 1963–1989 the rule earns large paper profits (daily index returns were then positively autocorrelated, largely because many stocks in the index traded infrequently, so the index lagged), in 1990–2026 it loses money, before and after the **trading cost**. **Semi-strong / strong** (model): news about a firm arrives at time 0. Move **your entry time**: after the announcement you only have public information, before it you need inside information (strong form). Raise the **share already in the price** or shorten the **adjustment time** and the profit disappears. (News panel: stylised model, not data.)`,
-      deps: ['fin-1.5'],
+      idea: String.raw`If a rule using $\Phi_t$ could earn an expected excess return, traders would pile into it, and their buying and selling would move today's price until the profit vanished; competition among informed traders therefore pushes the price to its information-consistent value (the present value of fin-1.5 computed with *all* $\Phi_t$). The restriction concerns model-adjusted surprises; raw returns and risk premia can vary predictably with $\Phi_t$. Testing means choosing $\Phi_t$, a risk model and a rule, and asking whether the rule's profit, net of trading costs, differs from zero; each form is tested by a different kind of evidence (return autocorrelation, event studies, insider and fund performance).`,
+      caption: String.raw`**Left**: the three nested information sets; choose a form. **Weak** (real data): a rule that goes long or short the whole U.S. market according to the sign of yesterday's return, on 15 897 actual trading days 1963–2026. Look at the **sample**: in 1963–1989 the rule earns large paper profits (daily index returns were then positively autocorrelated, with nonsynchronous trading a possible source of index autocorrelation, rather than a causal explanation established by this plot), in 1990–2026 it loses money, before and after the **trading cost**. **Semi-strong / strong** (model): news about a firm arrives at time 0. Move **your entry time**: after the announcement you only have public information, before it you need inside information (strong form). Raise the **share already in the price** or shorten the **adjustment time** and the profit disappears. (News panel: stylised model, not data.)`,
+      deps: ['fin-1.5', 'stat-2.1'],
       refs: ['BKM ch. 11'],
       tags: ['market efficiency', 'information', 'fair game'],
       credit: 'Fama, 1970 (building on Samuelson, 1965, and Fama, 1965)',
       scope: String.raw`A hypothesis about prices, not a law: it is stated relative to an information set, a cost structure and a model of risk, and each form can fail separately.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Efficient-market_hypothesis' },
       viz(v) {
         const D = daily(), r = D.r, n = D.n;
@@ -96,7 +95,7 @@ Scope: the weak-form pictures use a value-weighted index, whose daily returns ar
           }
         });
         v.readout(() => (isWeak()
-          ? `Daily rule “long after an up-day, short after a down-day” (market only, cash earns nothing): **${sg(100 * eff.g, 1)}%** a year before costs ($t=${v.fix(eff.tg, 1)}$), **${sg(100 * eff.nt, 1)}%** after ${v.fix(cost.value, 2)} bp per unit traded ($t=${v.fix(eff.tn, 1)}$); buy-and-hold ${sg(100 * eff.bh, 1)}% a year. Daily lag-1 autocorrelation in this sample: ${fx(eff.ac, 3)}. ${eff.ac > 0.1 ? 'Paper profits only: the early autocorrelation is largely an artefact of stale prices in the index, so these trades could not have been executed at the quoted closes.' : 'No profitable weak-form rule here.'}`
+          ? `Daily rule “long after an up-day, short after a down-day” (market only, cash earns nothing): **${sg(100 * eff.g, 1)}%** a year before costs ($t=${v.fix(eff.tg, 1)}$), **${sg(100 * eff.nt, 1)}%** after ${v.fix(cost.value, 2)} bp per unit traded ($t=${v.fix(eff.tn, 1)}$); buy-and-hold ${sg(100 * eff.bh, 1)}% a year. Daily lag-1 autocorrelation in this sample: ${fx(eff.ac, 3)}. Raw paper returns of this rule do not by themselves establish risk-adjusted abnormal profit; nonsynchronous trading may also affect implementability.`
           : `Profit available to someone who buys at ${v.fix(clamp(ent.value, form.value === 'semi' ? 0 : -30, 30), 1)} min: **${pct(prof, 0)}** of the full news effect.\n${form.value === 'semi' ? 'Public information only: efficiency (semi-strong) means this is about 0 for any entry time you can actually achieve, i.e. a very short adjustment time.' : 'With inside information you can buy before the announcement: strong-form efficiency would require the price to have moved already (share in the price near 100%).'}`));
       },
     },
@@ -112,7 +111,7 @@ Consequences: (i) price changes are uncorrelated, $\operatorname{corr}(\Delta P_
 Scope: a model, not a law. Normal increments allow negative prices; modern versions use log prices (geometric Brownian motion, fin-8.7). Real returns have fat tails and clustered volatility (fin-5.8) and are not exactly independent.`,
       idea: String.raw`Bachelier's argument: the price at $t+s$ is the sum of the price at $t$ and many small independent changes made by buyers and sellers who each have no edge over the market, so by the central limit theorem the total change is normal with variance proportional to the time elapsed. Variances of independent increments add, so the standard deviation grows like $\sqrt t$, and the density $p(x,t)$ obeys the heat equation. Samuelson later derived such unpredictability from competition among informed traders (fin-5.1): if the price were predictable, buying or selling on the prediction would remove it.`,
       caption: String.raw`Four price paths, each a window of the chosen **window length**, are shown unlabelled; two are real windows of the daily U.S. market (random, from 1963–2026) and two are random walks with the same mean and volatility. Try to tell them apart, then press **reveal**. The readout gives their lag-1 autocorrelations; with a window this short they cannot separate the two kinds (windows from the 1960s–80s can show a visible positive value, see fin-5.1). **Right**: the standard deviation of the $k$-day return, measured on all 15 897 real days (blue), against the square-root law $\sigma\sqrt k$ (green).`,
-      deps: ['fin-5.1', 'stoch-13.2'],
+      deps: ['fin-5.1', 'stoch-13.2', 'prob-2.2.1', 'prob-3.4.1'],
       refs: ['BKM ch. 11', 'Luenberger: Models of Asset Dynamics'],
       tags: ['random walk', 'Brownian motion', 'weak form'],
       credit: 'Bachelier, 1900; Samuelson, 1965; Fama, 1965',
@@ -260,19 +259,18 @@ Scope: the average over many events; individual announcements can overshoot. Pos
       num: '5.5',
       kind: 'Phenomenon',
       name: 'Active funds versus the index',
-      statement: String.raw`Averaged over active managers, **gross** performance is about that of the market, so after fees the average active fund must underperform the index by roughly its costs, and the share of funds beating the index falls as the horizon lengthens. Writing a fund's true annual alpha as $\alpha_i\sim N(\mu_g-f,\ s_\alpha^2)$ (gross mean $\mu_g$, fee $f$, skill dispersion $s_\alpha$) and its measured alpha over $H$ years as $\hat\alpha_i=\alpha_i+e_i$ with $e_i\sim N(0,\sigma_{te}^2/H)$ (tracking error $\sigma_{te}$), the share of funds that **beat** the index over $H$ years is
+      statement: String.raw`For the **dollar-weighted total of all active investors in the same market**, gross performance equals the market return, so higher costs reduce that aggregate’s net return relative to passive investment (Sharpe’s arithmetic). This identity need not hold for a selected mutual-fund sample or its equal-weighted average. In the model below, the share beating the index falls with the horizon when mean net alpha is negative, rises when it is positive, and stays at one half when it is zero. Writing a fund's true annual alpha as $\alpha_i\sim N(\mu_g-f,\ s_\alpha^2)$ (gross mean $\mu_g$, fee $f$, skill dispersion $s_\alpha$) and its measured alpha over $H$ years as $\hat\alpha_i=\alpha_i+e_i$ with $e_i\sim N(0,\sigma_{te}^2/H)$ (tracking error $\sigma_{te}$), the share of funds that **beat** the index over $H$ years is
 $$\Phi\!\left(\frac{\mu_g-f}{\sqrt{s_\alpha^2+\sigma_{te}^2/H}}\right).$$
 With no skill ($s_\alpha=0$) a fund's rank in one period is unrelated to its rank in the next. Large empirical studies find little persistence and little evidence of skill after costs among U.S. equity funds, apart from a persistent tail of poor performers.
 
-Scope: a statistical model of the claim, not the data. Reference points: S&P's SPIVA scorecard reports 65% of all large-cap U.S. funds underperforming the S&P 500 in calendar 2024 and a majority of funds underperforming over 15 years in every category.`,
-      idea: String.raw`Gross of costs, active management is a zero-sum game: the dollar-weighted return of all active investors equals the market's (Sharpe's arithmetic of active management), so net of fees the average is below the index by the fee. Over a short horizon, luck dominates ($\sigma_{te}/\sqrt H$ is large), so a no-skill fund beats the index about half the time before fees; over long horizons luck averages out and the fee drag decides. Persistence tests ask whether past winners win again; if differences between funds are mostly luck (large $\sigma_{te}$ relative to $s_\alpha$), the answer is no. Fama and French (2010) find that the cross-section of fund returns is consistent with little or no skill net of costs beyond what luck produces; Carhart (1997) found that apparent persistence was mostly explained by momentum and expenses.`,
-      caption: String.raw`**Left**: the model's share of funds that *underperform* against the horizon, with two reference points from the SPIVA scorecard (secondary source for the 15-year value). Set the **fee** to 0 and the **skill** to something positive and watch the curve flip. **Right**: 500 simulated funds, alpha in one five-year period against the next; the correlation shows how little luck predicts. Raise **skill dispersion** until winners repeat. (Simulation of a statistical model.)`,
-      deps: ['fin-5.1', 'fin-4.4'],
+Scope: a statistical model of the claim, not the data. Reference points: S&P's SPIVA scorecard reports 65.24% of all large-cap U.S. funds underperforming the S&P 500 in calendar 2024 and 89.50% over the 15 years ending in 2024 (Report 1a).`,
+      idea: String.raw`Gross of costs, active management is a zero-sum game: the dollar-weighted return of all active investors equals the market's (Sharpe's arithmetic of active management), so higher costs lower that aggregate’s net return. Active mutual funds are only a subset of these investors and can trade against other active investors. Over a short horizon, luck dominates ($\sigma_{te}/\sqrt H$ is large), so a no-skill fund beats the index about half the time before fees; over long horizons measurement noise averages out and the distribution of true net alpha decides. Persistence tests ask whether past winners win again; if differences between funds are mostly luck (large $\sigma_{te}$ relative to $s_\alpha$), the answer is no. Fama and French (2010) find that the cross-section of fund returns is consistent with little or no skill net of costs beyond what luck produces; Carhart (1997) found that apparent persistence was mostly explained by momentum and expenses.`,
+      caption: String.raw`**Left**: the model's share of funds that *underperform* against the horizon, with the 1-year and 15-year All Large-Cap reference points from the original SPIVA U.S. Year-End 2024 scorecard, Report 1a. Raise **gross mean alpha** above the **fee** and the curve slopes the other way. **Right**: 500 simulated funds, alpha in one five-year period against the next; the correlation shows how little luck predicts. Raise **skill dispersion** until winners repeat. (Simulation of a statistical model.)`,
+      deps: ['fin-5.1', 'fin-4.4', 'prob-3.3.13'],
       refs: ['BKM ch. 11'],
       tags: ['mutual funds', 'alpha', 'luck versus skill'],
       credit: 'Sharpe, 1991; Jensen, 1968; Carhart, 1997; Fama & French, 2010',
       scope: String.raw`The model is a stylised description of U.S. large-cap equity funds against a broad benchmark; reference points are reported percentages that include survivorship adjustments and category definitions by S&P.`,
-      verify: true,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Active_management' },
       viz(v) {
         const fee = v.slider('fee $f$ (% a year)', 0, 2, 1, { step: 0.05 });
@@ -289,9 +287,9 @@ Scope: a statistical model of the claim, not the data. Reference points: S&P's S
           const pts = []; for (let H = 0.5; H <= 16; H += 0.25) pts.push([H, under(H)]);
           A.hline(50, { color: 'faint', dash: true });
           A.path(pts, { color: 'accent', width: 2.6 });
-          A.dots([[1, 65], [15, 89.5]], { r: 6, color: 'red', hollow: true });
-          A.text('SPIVA 2024: 65%', 1, 65, { dx: 10, dy: -12, size: 11, color: 'red', align: 'left', weight: 700 });
-          A.text('SPIVA 15 yr: ≈ 89.5%', 15, 89.5, { dx: -10, dy: 14, size: 11, color: 'red', align: 'right', weight: 700 });
+          A.dots([[1, 65.24], [15, 89.5]], { r: 6, color: 'red', hollow: true });
+          A.text('SPIVA 2024: 65.24%', 1, 65.24, { dx: 10, dy: -12, size: 11, color: 'red', align: 'left', weight: 700 });
+          A.text('SPIVA 15 yr: 89.50%', 15, 89.5, { dx: -10, dy: 14, size: 11, color: 'red', align: 'right', weight: 700 });
           A.dot(Hs.value, under(Hs.value), { r: 5.5, color: 'gold' });
           // scatter
           const R = rng(seed * 313), N = 500, H = Hs.value, x = [], y = [];
@@ -300,9 +298,10 @@ Scope: a statistical model of the claim, not the data. Reference points: S&P's S
           cor = sxy / Math.sqrt(sxx * syy);
           const ys = [...y].sort((a, b) => a - b), med = ys[N >> 1], xs = [...x].sort((a, b) => a - b), q3 = xs[Math.floor(0.75 * N)];
           let nt = 0, up = 0; for (let i = 0; i < N; i++) if (x[i] >= q3) { nt++; if (y[i] > med) up++; } top = up / nt;
+          const span = Math.max(8, ...x.map(Math.abs), ...y.map(Math.abs)) * 1.05; B.setView([-span, span], [-span, span]);
           B.hline(0, { color: 'faint' }); B.vline(0, { color: 'faint' });
-          B.dots(x.map((a, i) => [clamp(a, -7.8, 7.8), clamp(y[i], -7.8, 7.8)]), { r: 2.4, color: 'accent', alpha: 0.5 });
-          const sl = sxy / sxx; B.line(-8, my + sl * (-8 - mx), 8, my + sl * (8 - mx), { color: 'orange', width: 2.2 });
+          B.dots(x.map((a, i) => [a, y[i]]), { r: 2.4, color: 'accent', alpha: 0.5 });
+          const sl = sxy / sxx; B.line(-span, my + sl * (-span - mx), span, my + sl * (span - mx), { color: 'orange', width: 2.2 });
         });
         v.readout(() => `Model: **${v.fix(under(1), 0)}%** of funds lag the index over 1 year, **${v.fix(under(5), 0)}%** over 5, **${v.fix(under(15), 0)}%** over 15; no-skill, no-fee funds would sit at 50%.\nScatter (H = ${Hs.value} yr): correlation of period-1 and period-2 alpha **${fx(cor, 2)}**; of the funds in the top quarter in period 1, **${pct(top, 0)}** beat the median in period 2 (50% = pure luck).`);
       },

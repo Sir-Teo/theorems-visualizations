@@ -366,15 +366,13 @@ where $\mathbf F(u,v)=(x,y)$. In $\R^n$ the same holds with volumes. So the Jaco
       num: '4.6',
       kind: 'Theorem',
       name: 'Change of variables formula',
-      statement: String.raw`Let $\mathbf T:D^*\to D$ be a $C^1$ map of a bounded region $D^*\subset\R^2$ (open, with boundary of zero area) onto $D$ that is one-to-one with $\det D\mathbf T\neq0$ (it may fail on a set of zero area, such as the boundary or the origin of polar coordinates). If $f$ is continuous and bounded on $D$, then
+      statement: String.raw`Let $\mathbf T:D^*\to D$ be a one-to-one $C^1$ map of an open set $D^*\subset\R^2$ onto $D$, with $\det D\mathbf T\ne0$ everywhere. If $f$ is continuous with compact support contained in $D$, then
 $$\iint_D f(x,y)\,dx\,dy=\iint_{D^*} f\bigl(\mathbf T(u,v)\bigr)\,\Bigl|\frac{\partial(x,y)}{\partial(u,v)}\Bigr|\,du\,dv.$$
-The same holds in $\R^n$. The absolute value of the Jacobian determinant is essential: omitting it computes the integral of the wrong quantity.`,
-      idea: String.raw`Partition $D^*$ into small rectangles. By 4.5 the image of each is a curved cell whose area is $|J|\,\Delta u\,\Delta v$ up to a relative error that tends to $0$ uniformly. A Riemann sum for $\iint_D f$ built from those image cells is therefore a Riemann sum for the right-hand integrand, and both sides converge. Making this rigorous (pma-10.9, via the local inverse-function and partition-of-unity argument) takes care at the places where the Jacobian vanishes, which is why they must be a set of zero area.`,
-      caption: String.raw`The map is applied to a rectangle in the $(u,v)$ plane (left) giving the curved grid on the right. Raise $n$ to refine the grid. Below, two Riemann sums of $f$ are compared with the true integral of $f$ over the image (dotted): the one weighted by the Jacobian $|J|\,\Delta u\Delta v$ converges to it, the unweighted sum $\sum f\,\Delta u\Delta v$ does not converge to it. Cell shading is proportional to the Jacobian, i.e. to the true area of each image cell. The "true value" is a $400\times400$ weighted sum, accurate to about the digits shown.`,
+The same holds in $\R^n$. Exhaustion extends the identity to nonnegative or absolutely integrable functions; coordinate cuts and boundary sets of measure zero can then be discarded, as for polar coordinates. The absolute value of the Jacobian determinant is essential.`,
+      idea: String.raw`Partition $D^*$ into small rectangles. By 4.5 the image of each is a curved cell whose area is $|J|\,\Delta u\,\Delta v$ up to a relative error that tends to $0$ uniformly. A Riemann sum for $\iint_D f$ built from those image cells is therefore a Riemann sum for the right-hand integrand, and both sides converge. The rigorous compact-support proof (pma-10.9) factors the map locally into primitive coordinate changes and flips, then joins the local formulas with a finite partition of unity. Extension by exhaustion requires integrability; it does not follow merely by allowing the Jacobian to vanish on a null set.`,
+      caption: String.raw`The map is applied to a rectangle in the $(u,v)$ plane (left) giving the curved grid on the right. Raise $n$ to refine the grid. Below, two Riemann sums of $f$ are compared with a reference estimate of the integral over the image (dotted): the one weighted by the Jacobian $|J|\,\Delta u\Delta v$ converges to it, the unweighted sum $\sum f\,\Delta u\Delta v$ does not converge to it. Cell shading is proportional to the Jacobian, i.e. to the true area of each image cell. The reference value is a $400\times400$ Jacobian-weighted sum, a numerical estimate from the same formula rather than an independent exact value.`,
       deps: ['vcalc-4.5', 'pma-10.9'],
-      refs: ['Marsden–Tromba §6.2'],
-      credit: 'Euler, Lagrange and Jacobi (18th–19th century); the Jacobian form is Jacobi’s, 1841',
-      verify: true,
+      refs: ['Rudin, Principles of Mathematical Analysis, 3rd ed., Theorems10.7–10.9, pp.249–253'],
       tags: ['change of variables', 'Jacobian', 'Riemann sums'],
       viz(v) {
         const MAPS = {
