@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 234,
+  "remainingFlags": 232,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -17,7 +17,7 @@
     "mat": 1,
     "geol": 2,
     "mathbio": 1,
-    "pharm": 4,
+    "pharm": 2,
     "imaging": 1,
     "circ": 1,
     "energy": 7,
@@ -182,39 +182,6 @@
       "links": {
         "doi": "https://doi.org/10.1097/00000542-199203000-00003"
       }
-    },
-    {
-      "id": "pharm-4.6",
-      "file": "content/pharm/ch04.js",
-      "name": "Dose adjustment in renal impairment",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Rowland\u2013Tozer"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.1159/000180580"
-      }
-    },
-    {
-      "id": "pharm-4.9",
-      "file": "content/pharm/ch04.js",
-      "name": "Intermittent infusion and aminoglycoside dosing",
-      "field": "med",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Illustrative model: one compartment, 30-min infusions, daily doses 3\u20137 mg/kg, no protein binding. The pharmacodynamic targets (a peak/MIC around 8\u201310 is often cited) and the claim that extended intervals reduce toxicity are summarised from memory and the evidence is debated; not dosing advice."
-        }
-      ],
-      "refs": [
-        "Rowland\u2013Tozer"
-      ],
-      "links": {}
     },
     {
       "id": "imaging-3.18",
@@ -4377,7 +4344,9 @@
       "pharm-3.7",
       "pharm-4.5",
       "energy-3.4",
-      "pharm-3.4"
+      "pharm-3.4",
+      "pharm-4.6",
+      "pharm-4.9"
     ]
   },
   "additionalFollowups": [
@@ -8214,6 +8183,18 @@
       "status": "resolved",
       "report": "docs/verification/pharm-redistribution-followup.md",
       "note": "Complete Mark1957 original dog study, tables and limits read. Removed unsupported human-waking/fitted-parameter claims; corrected full120-minute trace, exact double-bolus jump, cumulative-dose mass accounting and all downward crossings. Root independently reran3matrix-exponential/conservation groups and2native theme groups (all16toggle configurations\u00d7boththresholdends), reviewed helper/rendering code and final two-crossing light screenshot."
+    },
+    {
+      "id": "pharm-4.6",
+      "status": "resolved",
+      "report": "docs/verification/pharm-renal-followup.md",
+      "note": "Original Cockcroft\u2013Gault1976 complete text/scanned equation and limitations read. Removed hidden CrCl/fraction floors, exposed impairment cap and corrected periodic profiles. Root independently reran3math and2native theme groups, reviewed helper/content diff and inspected minimum-clearance dark screenshot."
+    },
+    {
+      "id": "pharm-4.9",
+      "status": "resolved",
+      "report": "docs/verification/pharm-infusion-followup.md",
+      "note": "Complete original Barza1996 meta-analysis scans and limitations read, distinct from underlying-trial reanalysis. Corrected exact periodic peak ratio/MIC durations and startup/AUC distinction. Root independently reran3math and2native theme groups, reviewed analytic helper/content diff and inspected long-half-life q24h dark screenshot."
     }
   ]
 }

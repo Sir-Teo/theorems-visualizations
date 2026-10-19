@@ -1,3 +1,5 @@
+import {renalRegimens,renalVertices} from './source-audit-renal.js';
+import {infusionRegimen,infusionVertices} from './source-audit-infusion.js';
 import { WINDOW_PRESETS, windowProfile, centeredWindowDose } from './source-audit-window.js';
 // Pharmacology — Chapter 4: Dosing regimens
 import { LN2, clamp, memo, DRUGS, BODY, clOf, cSingle, cMulti, cSS, meanOver, extrema, odeDoses, nPrev } from './ch04.shared.js';
@@ -228,46 +230,24 @@ export default {
     },
     // ------------------------------------------------------------------ 4.6
     {
-      num: '4.6',
-      kind: 'Method',
-      name: 'Dose adjustment in renal impairment',
-      statement: String.raw`Estimate creatinine clearance by the Cockcroft–Gault formula, $\mathrm{CrCl}=\dfrac{(140-\text{age})\times\text{weight (kg)}}{72\times S_{cr}\,(\text{mg/dL})}\ (\times 0.85$ for women$)$ mL/min. If a fraction $f_e$ of the drug is normally excreted unchanged and renal drug clearance is taken as proportional to CrCl, then with $K_F=\mathrm{CrCl}/\mathrm{CrCl}_{\text{normal}}$ total clearance falls to the fraction $Q=1-f_e(1-K_F)$ of normal. To keep the same average steady-state concentration (pharm-4.3) either give the dose $Q\cdot D$ at the usual interval, or the usual dose at the interval $\tau/Q$.`,
-      idea: String.raw`The average concentration is dose rate over clearance, so if clearance falls to $Q$ times its normal value the dose rate must fall by the same factor. Only the renal part of clearance (fraction $f_e$) shrinks with kidney function, hence $Q$. Both ways of lowering the rate give the same mean: smaller doses give a smaller swing, a longer interval gives a larger swing (pharm-4.4). The first choice suits drugs with a narrow window, the second those whose effect depends on the peak.`,
-      caption: String.raw`Enter the patient and the drug. Red: the **unadjusted** regimen, whose mean climbs to $1/Q$ times the intended one. Blue: the **dose reduced** to $QD$. Orange: the **interval lengthened** to $\tau/Q$. All three adjusted and unadjusted means are marked, and the readout gives the factor $Q$.`,
-      scope: String.raw`A rough rule. Cockcroft–Gault was derived in men in the 1970s and is only an estimate (extremes of age, body size and muscle mass mislead); the normal value of 120 mL/min used here is an assumption (texts use 100–125); proportionality of renal clearance to CrCl and unchanged non-renal clearance are assumed, and active metabolites are ignored. The drug is a model (V = 40 L, $t_{1/2}$ 6 h normally, IV bolus).`,
-      verify: true,
-      credit: 'Cockcroft & Gault, 1976 (creatinine clearance); Giusti & Hayton, 1973 (dose adjustment method)',
-      links: { doi: 'https://doi.org/10.1159/000180580' },
-      deps: ['physio-7.5', 'pharm-4.3'],
-      refs: ['Rowland–Tozer'],
-      tags: ['renal clearance', 'dose adjustment'],
-      viz(v) {
-        const V = 40, k0 = LN2 / 6, D0 = 200, T0 = 8, CLn = 120;
-        const age = v.slider('age (years)', 20, 90, 70, { int: true });
-        const wt = v.slider('weight (kg)', 40, 120, 70, { int: true });
-        const scr = v.slider('serum creatinine (mg/dL)', 0.5, 6, 2.4, { step: 0.1 });
-        const sex = v.select('sex', [{ value: 'm', label: 'male' }, { value: 'f', label: 'female' }], 'm');
-        const fe = v.slider('fraction excreted unchanged $f_e$', 0, 1, 0.8, { step: 0.05 });
-        const s = v.stage({ x: [0, 96], y: [0, 10], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
-        let info = null;
-        v.render(() => {
-          const crcl = Math.max(5, ((140 - age.value) * wt.value) / (72 * scr.value) * (sex.value === 'f' ? 0.85 : 1));
-          const KF = clamp(crcl / CLn, 0.04, 1.2), Q = 1 - fe.value * (1 - Math.min(KF, 1));
-          const k = k0 * Q, tEnd = 96;
-          const reg = (D, T) => { const ts = []; for (let t = 0; t <= tEnd; t += T) ts.push(t); return (t) => cMulti(t, ts, V, k, Infinity, 0, D); };
-          const fN = reg(D0, T0), fD = reg(D0 * Q, T0), fI = reg(D0, T0 / Q);
-          const fNormal = (() => { const ts = []; for (let t = 0; t <= tEnd; t += T0) ts.push(t); return (t) => cMulti(t, ts, V, k0, Infinity, 0, D0); })();
-          const mean = (D, T) => D / (k * V * T), meanRef = D0 / (k0 * V * T0);
-          s.setView([0, tEnd], [0, Math.max(meanRef * 3.2, mean(D0, T0) * 2.4)]);
-          s.fn(fNormal, { domain: [0, tEnd], color: 'muted', width: 1.3, dash: true, n: 900 });
-          s.fn(fN, { domain: [0, tEnd], color: 'red', width: 2, n: 900 });
-          s.fn(fD, { domain: [0, tEnd], color: 'blue', width: 2.2, n: 900 });
-          s.fn(fI, { domain: [0, tEnd], color: 'orange', width: 2.2, n: 900 });
-          s.hline(meanRef, { color: 'green', dash: true, width: 1.5 });
-          info = { crcl, KF, Q, mean: mean(D0, T0), meanRef, adj: mean(D0 * Q, T0) };
+      num:'4.6',kind:'Model',name:'Renal clearance and model dose-rate adjustment',
+      statement:String.raw`The historical Cockcroft–Gault equation estimates creatinine clearance in mL/min as $\mathrm{CrCl}=(140-\mathrm{age})\,W/(72S_{cr})$, with weight in kg, serum creatinine in mg/dL and a factor 0.85 in the authors' female correction. This is an estimate of creatinine clearance, not an indexed GFR or direct drug-clearance measurement. For a chosen model whose renal fraction is $f_e$, assume $K_F=\min(\mathrm{CrCl}/120,1)$ and total-clearance ratio $Q=(1-f_e)+f_eK_F$. Equal mean steady concentrations then require equal dose-rate/clearance ratios.`,
+      idea:String.raw`If only the renal component scales with the chosen kidney-function fraction, the remaining component contributes $1-f_e$ of reference clearance. Reducing each model dose by $Q$ or lengthening its interval by $1/Q$ both restore the reference mean. They give different peaks and troughs. The cap at $K_F=1$ explicitly confines this example to impairment relative to its chosen reference; the raw estimated creatinine clearance is displayed without an artificial minimum.`,
+      caption:String.raw`Vary the historical equation's inputs and the model renal fraction. Every curve is a **periodic steady state**: dashed grey is the reference, red keeps the usual model regimen, blue reduces its dose and orange lengthens its interval. Mean lines show that both modified regimens restore the reference mean. Dose jumps are drawn exactly, including long intervals that exceed the 96-hour view.`,
+      scope:String.raw`Cockcroft and Gault derived their relation from adult male data; their original discussion addresses steady renal function, muscle mass, body size and creatinine-assay limitations, and proposes a 15% female reduction. The present body-weight control is a mathematical input; it does not choose a clinically appropriate weight. The separate drug model assumes unchanged nonrenal clearance, proportional renal drug clearance, fixed volume 40 L and reference half-life 6 h, dose 200 mg, interval 8 h and CrCl 120 mL/min. These chosen values and the dose-rate comparison do not constitute a patient dosing rule.`,
+      verify: false,credit:'Cockcroft & Gault, 1976 (historical creatinine-clearance equation)',links:{doi:'https://doi.org/10.1159/000180580'},deps:['physio-7.5','pharm-4.3'],refs:['Cockcroft & Gault, Prediction of Creatinine Clearance from Serum Creatinine, Nephron16:31–41 (1976); complete original paper read, especially Methods, equation3 and Discussion pp38–40, 2026-10-19'],tags:['renal clearance','dose adjustment'],
+      viz(v){
+        const age=v.slider('age (years)',20,90,70,{int:true}),wt=v.slider('weight input (kg)',40,120,70,{int:true}),scr=v.slider('serum creatinine (mg/dL)',.5,6,2.4,{step:.1}),sex=v.select('historical equation factor',[{value:'m',label:'male (×1)'},{value:'f',label:'female (×0.85)'}],'m'),fe=v.slider('renal drug-clearance fraction $f_e$',0,1,.8,{step:.05});
+        const s=v.stage({x:[-1.5,97.5],y:[-.5,10],axes:'box',gutter:true,xlabel:'time (h)',ylabel:'periodic C (mg/L)',height:340});let info;
+        v.render(()=>{
+          const p=renalRegimens(age.value,wt.value,scr.value,sex.value==='f',fe.value),regimens=[p.normal,p.unadjusted,p.reduced,p.lengthened],top=Math.max(...regimens.map(r=>r.peak))*1.12,colors=['muted','red','blue','orange'];
+          s.setView([-1.5,97.5],[-top*.03,top]);
+          regimens.forEach((r,i)=>s.path(renalVertices(r),{color:colors[i],width:i?2.2:1.3,dash:i?false:[5,3]}));
+          s.hline(p.unadjusted.mean,{color:'red',dash:true,width:1});s.hline(p.normal.mean,{color:'green',dash:true,width:1.5});
+          info={...p,inputs:[age.value,wt.value,scr.value,sex.value,fe.value]};
         });
-        v.legend([['muted', 'normal kidneys, usual regimen', { dash: true }], ['red', 'impaired, unadjusted'], ['blue', 'dose × Q'], ['orange', 'interval ÷ Q'], ['green', 'intended mean', { dash: true }]]);
-        v.readout(() => `$\\mathrm{CrCl}\\approx${v.fix(info.crcl, 0)}$ mL/min ($K_F=${v.fix(info.KF, 2)}$); $Q=1-f_e(1-K_F)=${v.fix(info.Q, 2)}$. Usual dose ${D0} mg every ${T0} h → give **${v.fix(D0 * info.Q, 0)} mg every ${T0} h** or **${D0} mg every ${v.fix(T0 / info.Q, 1)} h**. Mean without adjustment $=${v.fix(info.mean, 2)}$ mg/L ($${v.fix(info.mean / info.meanRef, 2)}\\times$ intended); adjusted $=${v.fix(info.adj, 2)}$ mg/L.`);
+        v.legend([['muted','reference periodic profile',{dash:true}],['red','same regimen, reduced clearance'],['blue','model dose ×Q'],['orange','model interval ÷Q'],['green','reference/restored mean',{dash:true}]]);
+        v.readout(()=>`Historical CrCl estimate ${v.fix(info.crcl,2)} mL/min; raw ratio ${v.fix(info.rawFraction,3)}, model capped ratio ${v.fix(info.kidneyFraction,3)}; Q=${v.fix(info.Q,4)}. Model comparisons: ${v.fix(info.reduced.dose,2)} mg every 8 h or 200 mg every ${v.fix(info.lengthened.interval,2)} h. Periodic means: unmodified ${v.fix(info.unadjusted.mean,3)}, dose-reduced ${v.fix(info.reduced.mean,3)}, interval-lengthened ${v.fix(info.lengthened.mean,3)} mg/L; reference ${v.fix(info.normal.mean,3)} mg/L.`);
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -355,43 +335,22 @@ export default {
     },
     // ------------------------------------------------------------------ 4.9
     {
-      num: '4.9',
-      kind: 'Method',
-      name: 'Intermittent infusion and aminoglycoside dosing',
-      statement: String.raw`For a drug given as short infusions (duration $T_{inf}$) every $\tau$, the concentration is the superposition of constant-rate rectangles (pharm-4.1). For the same total daily dose, giving it as one large infusion per day rather than three smaller ones raises the peak $C_{\max}$ roughly threefold, leaves the 24-h average (hence the daily AUC) unchanged, and lets the trough fall far lower. For aminoglycosides, whose killing is **concentration-dependent**, higher $C_{\max}/\mathrm{MIC}$ is the aim, and a drug-free trough is thought to limit toxicity; this is the rationale of extended-interval (“once-daily”) dosing.`,
-      idea: String.raw`Because the mean is set by the daily dose and clearance (pharm-4.3), only the shape differs, and the shape is governed by $\tau/t_{1/2}$ (pharm-4.4). Gentamicin's half-life of a few hours with normal kidneys lets one daily dose decay to a negligible trough by the next, while still giving the peak per MIC the antibiotic needs. The benefit is the use of two pharmacodynamic properties, concentration-dependent killing and a post-antibiotic effect that continues suppressing growth after the level falls below the MIC.`,
-      caption: String.raw`Gentamicin-like model drug ($V=0.25$ L/kg, 70 kg). Choose the daily dose, the dosing frequency (same daily total) and the half-life (slower with poor kidney function). The red band marks the concentration below the MIC. Drag the MIC and see the peak/MIC ratio and the hours per day spent below the MIC change, and notice that AUC$_{24}$ is the same for all schedules.`,
-      scope: String.raw`Illustrative model: one compartment, 30-min infusions, daily doses 3–7 mg/kg, no protein binding. The pharmacodynamic targets (a peak/MIC around 8–10 is often cited) and the claim that extended intervals reduce toxicity are summarised from memory and the evidence is debated; not dosing advice.`,
-      verify: true,
-      deps: ['pharm-4.1', 'pharm-2.4'],
-      refs: ['Rowland–Tozer'],
-      tags: ['aminoglycoside', 'infusion'],
-      viz(v) {
-        const Vd = 0.25 * 70, Tinf = 0.5;
-        const daily = v.slider('daily dose (mg/kg/day)', 3, 7, 5, { step: 0.5 });
-        const t12 = v.slider('half-life $t_{1/2}$ (h)', 1.5, 12, 2.5, { step: 0.1 });
-        const mic = v.slider('MIC (mg/L)', 0.25, 8, 1, { log: true, sig: 2 });
-        const freq = v.select('schedule', [{ value: 8, label: 'q8h' }, { value: 12, label: 'q12h' }, { value: 24, label: 'q24h' }], 8);
-        const s = v.stage({ x: [0, 72], y: [0, 40], axes: 'box', gutter: true, xlabel: 'time (h)', ylabel: 'C (mg/L)', height: 340 });
-        let info = null;
-        v.render(() => {
-          const k = LN2 / t12.value, T = freq.value, D = (daily.value * 70 * T) / 24;
-          const ss = (t) => cSS(t, T, D, Vd, k, Infinity, Tinf);
-          const ex = extrema(ss, 0, T, 480);
-          const times = []; for (let t = 0; t < 72; t += T) times.push(t);
-          const f = (t) => cMulti(t, times, Vd, k, Infinity, Tinf, D);
-          const auc = meanOver(ss, 0, T, 480) * T * (24 / T);
-          let below = 0; for (let i = 0; i < 480; i++) if (ss((T * (i + 0.5)) / 480) < mic.value) below++;
-          const hb = (24 * below) / 480 * (T / T);
-          s.setView([0, 72], [0, Math.max(ex.hi * 1.15, 8)]);
-          s.hband(0, mic.value, { color: 'red', alpha: 0.15 });
-          s.hline(mic.value, { color: 'red', width: 1.3, dash: true });
-          s.fn(f, { domain: [0, 72], color: 'accent', width: 2.4, n: 1200 });
-          s.text('MIC', 72, mic.value, { size: 10.5, color: 'red', align: 'right', baseline: 'bottom' });
-          info = { ex, auc, hb, ratio: ex.hi / mic.value, D, T };
+      num:'4.9',kind:'Model',name:'Intermittent infusion and aminoglycoside schedules',
+      statement:String.raw`For linear elimination, equal total daily input gives the same **steady-state** daily AUC, $\mathrm{AUC}_{24}=D_{day}/\mathrm{CL}$, for different infusion intervals. Peak and trough still change. With equal 30-minute infusion durations, the q24h/q8h steady-peak ratio is $3(1-e^{-8k})/(1-e^{-24k})$: it approaches three for rapid elimination but approaches one for slow elimination. Equal steady exposure does not imply equal startup exposure or equal clinical outcomes.`,
+      idea:String.raw`The exact periodic curve follows from accumulation of identical finite infusions. Its peak occurs at infusion end, then declines exponentially until the next infusion. AUC depends on daily input and clearance, while the interval changes accumulation, peak/MIC and time below MIC. These are concentration summaries; this example contains no bacterial killing, post-antibiotic-effect, kidney-toxicity or hearing-loss model.`,
+      caption:String.raw`Compare q8h, q12h and q24h for the same chosen daily input. Solid: exact periodic steady concentration. Faint dashed: accumulation from zero. The shaded region lies below the chosen MIC; the readout gives exact steady peak/trough and duration below MIC. Infusion-end vertices are included explicitly so the drawn peaks match the reported ones.`,
+      scope:String.raw`Chosen gentamicin-like teaching model: one compartment, 17.5 L volume, 30-minute infusions, adjustable first-order half-life and no binding. Barza and colleagues' 1996 original meta-analysis examined 21 randomized trials, mainly without pre-existing renal impairment. Clinical-failure results varied across trials; ototoxicity evidence was underpowered, and the nephrotoxicity estimate depended on pooling method. Those aggregate clinical results do not validate this model's MIC target, doses or individual efficacy/safety; no universal peak/MIC target is asserted.`,
+      verify: false,deps:['pharm-4.1','pharm-2.4'],refs:['Barza, Ioannidis, Cappelleri & Lau, Single or multiple daily doses of aminoglycosides: a meta-analysis, BMJ312:338–345 (1996), Methods, Results/Figures1–2 and Discussion read in original scans 2026-10-19; DOI10.1136/bmj.312.7027.338'],links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC2350289/'},tags:['aminoglycoside','infusion'],
+      viz(v){
+        const daily=v.slider('daily input (mg/kg/day)',3,7,5,{step:.5}),t12=v.slider('model half-life $t_{1/2}$ (h)',1.5,12,2.5,{step:.1}),mic=v.slider('comparison MIC (mg/L)',.25,8,1,{log:true,sig:2}),freq=v.select('schedule',[{value:8,label:'q8h'},{value:12,label:'q12h'},{value:24,label:'q24h'}],8),s=v.stage({x:[-1,73],y:[-.5,40],axes:'box',gutter:true,xlabel:'time (h)',ylabel:'C (mg/L)',height:340});let info;
+        v.render(()=>{
+          const p=infusionRegimen(daily.value,t12.value,mic.value,Number(freq.value)),top=Math.max(p.peak,mic.value)*1.15;
+          s.setView([-1,73],[-top*.03,top]);s.hband(0,mic.value,{color:'red',alpha:.15});s.hline(mic.value,{color:'red',width:1.3,dash:true});
+          s.path(infusionVertices(p,false),{color:'muted',dash:[5,4],width:1.3});s.path(infusionVertices(p),{color:'accent',width:2.4});s.text('comparison MIC',72,mic.value,{size:10.5,color:'red',align:'right',baseline:'bottom'});
+          info={...p,inputs:[daily.value,t12.value,mic.value,Number(freq.value)]};
         });
-        v.legend([['accent', 'concentration'], ['red', 'below MIC', { area: true }]]);
-        v.readout(() => `${v.fix(info.D, 0)} mg every ${info.T} h: steady-state peak $${v.fix(info.ex.hi, 1)}$ mg/L ($C_{\\max}/\\mathrm{MIC}=${v.fix(info.ratio, 1)}$), trough $${v.fix(info.ex.lo, 2)}$ mg/L; time below MIC $\\approx${v.fix(info.hb, 1)}$ h per day; AUC$_{24}=${v.fix(info.auc, 0)}$ mg·h/L (the same for every schedule: $D_{day}/\\mathrm{CL}=${v.fix((daily.value * 70) / (LN2 / t12.value * Vd), 0)}$).`);
+        v.legend([['accent','periodic steady concentration'],['muted','accumulation from zero',{dash:true}],['red','below comparison MIC',{area:true}]]);
+        v.readout(()=>`Model input ${v.fix(info.D,1)} mg every ${info.interval} h: steady peak ${v.fix(info.peak,3)}, trough ${v.fix(info.trough,4)} mg/L; peak/MIC ${v.fix(info.ratio,3)}. Exact steady time below MIC ${v.fix(info.belowHours,3)} h/day; steady AUC24 ${v.fix(info.auc24,3)} mg·h/L = daily input/clearance. This AUC identity describes the periodic state, not the first 24 hours after starting.`);
       },
     },
     // ------------------------------------------------------------------ 4.10
