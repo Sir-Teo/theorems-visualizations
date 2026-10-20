@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 179,
+  "remainingFlags": 178,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "psych": 17,
     "soc": 16,
     "polsci": 11,
-    "demo": 3,
+    "demo": 2,
     "music": 23,
     "art": 11,
     "arch": 11,
@@ -1299,21 +1299,6 @@
         "PHG ch. 5"
       ],
       "links": {}
-    },
-    {
-      "id": "demo-4.3",
-      "file": "content/demo/ch04.js",
-      "name": "Gross and net reproduction rates",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "PHG ch. 5"
-      ],
-      "links": {
-        "data": "https://population.un.org/wpp/"
-      }
     },
     {
       "id": "music-7.7",
@@ -3582,7 +3567,8 @@
       "micro-9.20",
       "fin-5.10",
       "micro-10.22",
-      "fin-5.15"
+      "fin-5.15",
+      "demo-4.3"
     ]
   },
   "additionalFollowups": [
@@ -7791,6 +7777,12 @@
       "status": "resolved",
       "report": "docs/verification/fin-shiller-followup.md",
       "note": "Additional unflagged consistency correction: exact conditional-L\u00b2 variance identity separated from later finite proxy/sample SDs; original timing and distinct trend exponents, explicit continuation sensitivity, actual PV/projection dependencies. Included in six mathematical/eight native groups and original1824-row/456annualscalar data comparison. No original queueclosure credit."
+    },
+    {
+      "id": "demo-4.3",
+      "status": "resolved",
+      "report": "docs/verification/demo-reproduction-followup.md",
+      "note": "Independent officialUN definitions/units and methodologyglossary reading; exact maternal-survival exposure integral and no-mortality/monotonicity proof assessed;4math+4nativegroups and all2800original inputscalars across50country-years pass. Full final mobile/desktop/source-knot/bar screenshots inspected. Shared inputs preserved; reconstructed, official-L and published references are explicitly distinct."
     }
   ]
 }
