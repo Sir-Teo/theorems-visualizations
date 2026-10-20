@@ -72,7 +72,9 @@ so on log–log axes the rank–frequency plot is close to a straight line of sl
       name: 'Random typing produces Zipf’s law (Miller)',
       credit: 'George A. Miller, 1957 (the argument, stated without proof); proved by Wentian Li, 1992; related model by Benoit Mandelbrot, 1953',
       statement: String.raw`Let a “monkey” type independently at each step a space with probability $\sigma$ or one of $M$ letters, each with probability $(1-\sigma)/M$. Cut the stream at spaces into “words”. Then the word of rank $r$ has frequency
-$$f(r)\;\propto\;r^{-\alpha},\qquad \alpha=1-\frac{\ln(1-\sigma)}{\ln M}\;\approx\;1\ (\text{for}\ \sigma\ \text{small}),$$
+$$f(r)\;\propto\;r^{-\alpha},$$
+$$\alpha=1-\frac{\ln(1-\sigma)}{\ln M},$$
+with $\alpha\approx1$ for small $\sigma$,
 up to a staircase: all $M^{\ell}$ words of length $\ell$ have the same probability $\tfrac{\sigma}{1-\sigma}\bigl(\tfrac{1-\sigma}{M}\bigr)^{\ell}$.`,
       idea: String.raw`Shorter words are exponentially more probable, but there are exponentially more long words. A word of length $\ell$ has rank about $M^{\ell}$ and probability about $((1-\sigma)/M)^{\ell}$, so eliminating $\ell$ gives $f\propto r^{-\alpha}$ with the exponent above. The plot is a staircase with a step at each word length, and the steps average out into a line. The lesson is a warning: a straight line on a rank–frequency plot is weak evidence for any particular theory of language, because a process with no meaning at all produces one; what differs is the detail (the real distribution has no exact plateaus and obeys other constraints).
 
