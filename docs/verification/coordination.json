@@ -31,9 +31,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only fixed-capacity MAX-mask chunk protocol",
+      "current": "Isolated fixed-chunk alternate-index prototype; no timing",
       "owns": [
-        "Unique chunk feasibility report; no binding or timing yet"
+        "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -41,9 +41,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent membership peer complete; fixed-chunk report peer pending",
+      "current": "Independent isolated index-prototype review preparation",
       "owns": [
-        "Immutable map protocol peer and explicit independent models"
+        "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -61,9 +61,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "REL genuine prerequisites and bounded dimension/limit/wrap successors",
+      "current": "Independent combined CLIMATE prerequisite/wrap peer",
       "owns": [
-        "REL producer only; GEOG and POPGEN peers complete"
+        "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -71,9 +71,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CLIMATE equivalent statement wraps after prerequisite boundary",
+      "current": "Independent combined REL prerequisite/correction/wrap peer",
       "owns": [
-        "CLIMATE producer and separate exact equivalent wraps"
+        "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -2308,6 +2308,14 @@
       "status": "accepted-read-only-membership-protocol",
       "report": "docs/verification/map-group-protocol-independent-peer.md",
       "scope": "Exact saved-coverage ordered membership, borrowed lifetimes, no-eviction reservation, single-composite fallback and bounded MAX chunk models. Separate fixed-chunk report and actual alternate binding/pixels/resources/performance remain pending."
+    },
+    {
+      "candidate": "48e79c1b0ea81ec21707ed685858e80d86ae6350",
+      "followup": "086fff19ecf21e54cbc3fb3e315c5d996df70b34",
+      "peer": "671fc504d8c577e82f8801dc04651cbd158477df",
+      "status": "accepted-read-only-fixed-chunk-protocol",
+      "report": "docs/verification/map-group-protocol-independent-peer.md",
+      "scope": "Bounded fixed32768 index pair under one MAX mask and one style/tile composite; current-tile replay requires live unchanged original snapshot, expired snapshot requires complete original restart/Canvas. No actual binding/pixel/resource/performance acceptance."
     }
   ]
 }
