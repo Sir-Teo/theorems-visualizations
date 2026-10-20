@@ -236,11 +236,11 @@ For every Boolean f, applying the bit oracle twice restores y because XOR with t
       num: '4.9',
       kind: 'Algorithm',
       name: 'Hamiltonian simulation by Trotterization',
-      statement: String.raw`Let $H=\sum_{j=1}^m H_j$ be a finite-dimensional Hermitian Hamiltonian, $t\ge0$, and integer $r\ge1$; use the operator norm and $\hbar=1$. Then
+      statement: String.raw`Let $H=\sum_{j=1}^m H_j$ be a finite-dimensional Hermitian Hamiltonian, $t\ge0$, and integer $r\ge1$; use the operator norm and $\hbar=1$.
 Write $P_1(\tau)=e^{-iH_1\tau}\cdots e^{-iH_m\tau}$. Then
 $$\begin{gathered}\left\|e^{-iHt}-P_1(t/r)^r\right\|\\\le\frac{t^2}{2r}\sum_{j<k}\|[H_j,H_k]\|.\end{gathered}$$
-For two terms $H=A+B$, the symmetric step $S_2(\tau)=e^{-iA\tau/2}e^{-iB\tau}e^{-iA\tau/2}$ satisfies
-Writing $C_B=\|[B,[B,A]]\|$ and $C_A=\|[A,[A,B]]\|$, this bound is
+For two terms $H=A+B$, define the symmetric step $S_2(\tau)=e^{-iA\tau/2}e^{-iB\tau}e^{-iA\tau/2}$.
+Writing $C_B=\|[B,[B,A]]\|$ and $C_A=\|[A,[A,B]]\|$, the symmetric-step bound is
 $$\begin{gathered}\|S_2(t/r)^r-e^{-iHt}\|\\\le\frac{t^3}{r^2}\left(\frac{C_B}{12}+\frac{C_A}{24}\right).\end{gathered}$$
 These bounds hold for every normalized input state. For a polynomial number of bounded-norm, constant-locality terms whose exponentials are efficiently implementable, they give a polynomial gate cost in $n,t,1/\varepsilon$; locality alone without bounds on coefficients and input description is not enough.`,
       idea: String.raw`Variation of parameters expresses the difference between a two-term product step and exact evolution as a double integral of unitary conjugates of $[A,B]$. Unitary invariance of the norm bounds it by $\tau^2\|[A,B]\|/2$, with no discarded BCH tail. Telescoping $r$ unitary steps gives $r$ times the one-step bound; induction over the terms gives the displayed sum. For the symmetric step the first-order defect cancels and a triple integral gives the two nested-commutator coefficients above. The BCH series explains the local orders heuristically, while the integral argument supplies a global bound.
