@@ -1375,6 +1375,9 @@ class Runtime {
     this.io.observe(host);
     this.onTheme = () => { this.invalidate(); };
     window.addEventListener('themechange', this.onTheme);
+    this.onFonts = () => { if (!this.dead) this.invalidate(); };
+    document.fonts?.ready.then(this.onFonts);
+    document.fonts?.addEventListener('loadingdone', this.onFonts);
     this.onPause = () => { if (this.anim) { this.playing = false; this._syncPlay(); this.invalidate(); } };
     window.addEventListener('vizpause', this.onPause);
     this.api = this.makeApi();
@@ -1431,6 +1434,7 @@ class Runtime {
   destroy() {
     this.dead = true; cancelAnimationFrame(this.raf); cancelAnimationFrame(this._rz); this.ro.disconnect(); this.io.disconnect();
     window.removeEventListener('themechange', this.onTheme); window.removeEventListener('vizpause', this.onPause);
+    document.fonts?.removeEventListener('loadingdone', this.onFonts);
     for (const f of this.cleanups) { try { f(); } catch { /* ignore */ } }
   }
   makeApi() {
