@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 112,
+  "remainingFlags": 109,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -28,7 +28,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 23,
+    "tech": 20,
     "bighist": 18
   },
   "queue": [
@@ -1245,43 +1245,6 @@
       }
     },
     {
-      "id": "tech-4.2",
-      "file": "content/tech/ch04.js",
-      "name": "Roman concrete (pozzolana)",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 2",
-        "Vitruvius, De architectura 2.6 and 5.12 (proportions as quoted by Wikipedia \"Roman concrete\")",
-        "Jackson et al. 2013, Am. Mineral. 98:1669 (doi 10.2138/am.2013.4484)",
-        "Seymour et al. 2023, Sci. Adv. 9:eadd1602 (doi 10.1126/sciadv.add1602)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Roman_concrete"
-      }
-    },
-    {
-      "id": "tech-4.3",
-      "file": "content/tech/ch04.js",
-      "name": "Aqueducts and the inverted siphon",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 2",
-        "Vitruvius, De architectura 8.6 (fall of the channel; the venter)",
-        "Frontinus, De aquaeductu (97 CE)",
-        "Wikipedia \"Pont du Gard\" (34 cm/km, 17 m)",
-        "Wikipedia \"Lead\" (tensile strength 12–17 MPa)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Roman_aqueduct"
-      }
-    },
-    {
       "id": "tech-4.4",
       "file": "content/tech/ch04.js",
       "name": "The water wheel",
@@ -1421,22 +1384,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Octant_(instrument)"
-      }
-    },
-    {
-      "id": "tech-5.1",
-      "file": "content/tech/ch05.js",
-      "name": "The water clock (clepsydra)",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “Water clocks and mechanical clocks”",
-        "Cardwell"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Water_clock"
       }
     },
     {
@@ -2553,7 +2500,10 @@
       "soc-4.7",
       "soc-4.11",
       "music-7.15",
-      "soc-4.12"
+      "soc-4.12",
+      "tech-4.2",
+      "tech-4.3",
+      "tech-5.1"
     ]
   },
   "additionalFollowups": [
@@ -7192,6 +7142,21 @@
       "id": "soc-4.12",
       "status": "resolved",
       "note": "2026-10-20: worker_one exact-commit original report/SOM review, independent Python uint32/integer inverse-CDF/Fraction countercheck, two math groups and fresh narrow light/dark native matrices; soc-musiclab-followup.md."
+    },
+    {
+      "id": "tech-4.2",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact 7aa8cf2 source text and pixels, 3087 extra mathematical cases, six fresh native narrow light/dark groups; tech-water-followup.md."
+    },
+    {
+      "id": "tech-4.3",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact 7aa8cf2 primary variants, hydraulic mathematics and native controls/state/bounds; tech-water-followup.md."
+    },
+    {
+      "id": "tech-5.1",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact 7aa8cf2 clock sources, analytic clock inverse and native input/state/bounds; tech-water-followup.md."
     }
   ]
 }

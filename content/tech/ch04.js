@@ -123,7 +123,7 @@ A free-standing stack of blocks has no such freedom. A block can overhang its su
 
     // ------------------------------------------------------------------ 4.2
     {
-      num:'4.2',kind:'Invention',name:'Roman concrete (pozzolana)',verify:true,
+      num:'4.2',kind:'Invention',name:'Roman concrete (pozzolana)',verify:false,
       statement:String.raw`Roman builders combined lime, volcanic material, water and coarse stone into concrete. Vitruvius II.6 describes material from the Bay of Naples that binds underwater. His proportions must be read in context: **II.5 gives three parts pit sand to one lime**, or two parts river/sea sand to one lime. **V.12 gives two parts volcanic powder to one lime for harbour work**. These are not one universal 3:1 pozzolana recipe.
 
 Jackson and colleagues (2013) examined ancient marine concrete from Baianus Sinus and identified C-A-S-H binder and Al-tobermorite in relict lime clasts. Seymour and colleagues (2023) studied Privernum architectural mortar, proposed quicklime hot mixing as the origin of characteristic lime clasts, and tested crack healing in modern analogues. Their modern samples support a mechanism; they are not measurements of every ancient structure's behavior.`,
@@ -146,7 +146,7 @@ Thus 0≤u≤1: carbonation acts on the remaining unconverted fraction. In the s
     },
     // ------------------------------------------------------------------ 4.3
     {
-      num:'4.3',kind:'Invention',name:'Aqueducts and the inverted siphon',verify:true,
+      num:'4.3',kind:'Invention',name:'Aqueducts and the inverted siphon',verify:false,
       statement:String.raw`A gravity aqueduct can combine open channels, tunnels, arcades and a closed pressure pipe crossing a valley. An **inverted siphon** descends and rises while its outlet reservoir remains below its inlet reservoir; it does not lift water above its energy source. Vitruvius VIII.6 describes channels, lead or earthenware pipes, and the valley's lower run, the venter.
 
 VIII.6.1 differs across the translations consulted: Gwilt 1826 gives half a foot per hundred feet (5 m/km), whereas Morgan 1914 prints a quarter of an inch per hundred feet (about0.208 m/km). Neither rendering establishes a measured universal gradient of Roman aqueducts. The terrain, levels, 30 km route and pipe comparison below are authored; no Nîmes/Pergamon dimensions, uncertain pipe-material attribution or lead-strength measurement is reproduced.`,

@@ -271,6 +271,18 @@
         "soc-musiclab-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "tech-4.2",
+        "tech-4.3",
+        "tech-5.1"
+      ],
+      "peer": "worker_three independently accepted exact 7aa8cf2 source text and pixels, 3087 extra mathematical cases, six fresh native narrow light/dark groups",
+      "reports": [
+        "tech-water-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -283,7 +295,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 112,
+  "currentPendingSourceReviews": 109,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,

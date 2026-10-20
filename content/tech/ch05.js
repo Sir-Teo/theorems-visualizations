@@ -53,7 +53,7 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.1
     {
-      num:'5.1',kind:'Invention',name:'The water clock (clepsydra)',verify:true,
+      num:'5.1',kind:'Invention',name:'The water clock (clepsydra)',verify:false,
       statement:String.raw`A water clock indicates elapsed time through controlled water transfer. The Karnak outflow vessel, JE 37525, is catalogued to Amenhotep III by its present museum. Its interior has twelve monthly columns of hour marks. These seasonal hours should not be confused with twelve equal modern hours.
 
 Vitruvius IX.8 describes Ctesibius' water-clock mechanism, including a regulated opening, a rising float and toothed motion transmission. That text is historical evidence for the mechanism it describes, not a derivation of Torricelli's law or proof that the exact constant-head overflow pictured here was his original invention. The two ideal hydraulic comparisons below are authored.`,
