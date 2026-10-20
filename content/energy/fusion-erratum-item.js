@@ -34,7 +34,13 @@ Lawson's complete 1957 paper treats different, conduction-free scenarios; the di
         v.render(()=>{
           state=fusionBalanceAudit({n:n.value,T:T.value,tau:tau.value});
           const ymin=Math.min(1e19,state.triple/4),ymax=Math.max(1e23,state.triple*4);s.setView([.8,125],[ymin,ymax]);
-          Qs.forEach((Q,i)=>{const pts=Ts.map(t=>[t,fusionThresholdAudit(t,Q)]).filter(p=>Number.isFinite(p[1])&&p[1]>=ymin&&p[1]<=ymax);s.path(pts,{color:cols[i],width:i===3?3:2});});
+          const top=s.Y(ymax),bottom=s.Y(ymin);
+          Qs.forEach((Q,i)=>{const width=i===3?3:2,inset=width/2+.25;
+            // Keep the whole round-capped stroke inside the current plot, including
+            // intermediate native-control states whose endpoints approach an edge.
+            const pts=Ts.map(t=>[t,fusionThresholdAudit(t,Q)]).filter(p=>Number.isFinite(p[1])&&p[1]>0&&s.Y(p[1])>=top+inset&&s.Y(p[1])<=bottom-inset);
+            s.path(pts,{color:cols[i],width});
+          });
           s.dot(T.value,state.triple,{r:7,color:'gold'});
           const powers=[['alpha',state.alpha,'green'],['transport',state.transport,'red'],['brems',state.brems,'purple'],['external',state.external,'gold']],scale=Math.max(...powers.map(p=>p[1]));
           sp.text('power density (MW/m³)',.08,1.12,{size:12,weight:700,color:'ink',align:'left'});
