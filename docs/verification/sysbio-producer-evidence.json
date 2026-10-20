@@ -1,0 +1,31 @@
+{
+  "candidateBaseline": "3b75bdb0f319f6c0e224ef05aeb3b4038625fbea",
+  "correctness": "3969842",
+  "nativeCases": 42,
+  "nativePictures": 168,
+  "actualMainMathContentWidth": 253,
+  "overflows": 0,
+  "responseCases": 8,
+  "responsePictures": 16,
+  "personallyInspected": {
+    "mainProofs": 42,
+    "mainStatementsAndScopes": 42,
+    "responseReadouts": 8,
+    "responsePlots": 8
+  },
+  "math": {
+    "prerequisiteAssertions": 9692,
+    "correctionAssertions": 2466,
+    "existingTests": 30
+  },
+  "hashes": {
+    "native-final-v2/native.json": "e8f7ec34f9100fb25db1a6a6fb70ec8a689ba542e5ae706cb5e4f319854a0639",
+    "response-initial/response.json": "d58e9720c080a1b5eb7574aea6e7f2268bd9a9a50ddc7bddfe546a64c8b5bf46",
+    "final-combined.json": "1a71e9e956753b73fc0711453a54e7e2bc59f2298f44d46952debbdeded33fff",
+    "final-math.json": "e5b51be408878641828323eba92cac4531725ef14094c4b8029aae6d55ac6bf7",
+    "final-corrections-math.json": "c4c554849f0af36594347c952c880a02bd607454905a4329374d67f799f27476",
+    "final-build.log": "5a535bb2ba7a6e8119928a6ab8604167ceb39fbc9b677004df6f24fbb936b0bc",
+    "final-static.log": "ee606c319d51a669c94a77be99255d36335311e5fbcd92df04226e020af5d18e",
+    "final-existing.log": "2e6ef6441c5eeeeb46d8a7cf5c2efe668f96e874e5d77b9bce112c0f24619260"
+  }
+}

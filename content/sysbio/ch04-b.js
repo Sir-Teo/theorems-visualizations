@@ -175,7 +175,9 @@ export default {
       kind: 'Model',
       name: 'Ultrasensitivity by molecular titration',
       statement: String.raw`Suppose an activator $A$ (total concentration $A_T$) is bound one-to-one and very tightly (dissociation constant $K_d\ll I_T$) by an inhibitor $I$ (total $I_T$) into an inactive complex. Mass action gives the free activator
-$$A_{\rm free}=\tfrac12\Bigl[(A_T-I_T-K_d)+\sqrt{(A_T-I_T-K_d)^2+4K_dA_T}\Bigr],$$
+$$\begin{gathered}A_{\rm free}=\\
+ \tfrac12\Bigl[(A_T-I_T-K_d)+\\
+ \sqrt{(A_T-I_T-K_d)^2+4K_dA_T}\Bigr],\end{gathered}$$
 which for $K_d\to0$ becomes **threshold-linear**: $A_{\rm free}=\max(0,\,A_T-I_T)$. A downstream gene that responds to free activator with an ordinary non-cooperative input function $A_{\rm free}/(K+A_{\rm free})$ then responds to $A_T$ much more steeply than a Hill function with $n=1$: the effective Hill coefficient (measured by $\ln 81/\ln({\rm EC}_{90}/{\rm EC}_{10})$) rises well above 1 as $K_d/I_T$ and $K/I_T$ fall.`,
       idea: String.raw`Below the threshold $A_T<I_T$ every activator molecule meets a free inhibitor and is sequestered, so almost nothing is free; once $A_T$ exceeds $I_T$ the inhibitor is used up and each added activator molecule stays free. The kink at $A_T=I_T$ is the sharpest possible response of this kind; weaker binding ($K_d$ comparable to $I_T$) rounds it off. Because the output is a function of $A_{\rm free}$, the response is a sharp rise followed by saturation, which is ultrasensitivity without any cooperativity in binding — the titration route to a switch, as an alternative to the cooperative Hill input functions of 1.3 and 1.10. Together with a positive feedback loop (4.1) it is a way to build the sigmoid nonlinearity that bistability requires.
 

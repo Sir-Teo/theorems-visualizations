@@ -134,7 +134,8 @@ For a fixed free-regulator concentration x, promoter binding reduces to the reve
       kind: 'Model',
       name: 'Hill input function',
       statement: String.raw`When binding is cooperative, the input function of an activator and of a repressor take the **Hill form**
-$$f_{\rm act}(x)=\beta\,\frac{(x/K)^n}{1+(x/K)^n},\qquad f_{\rm rep}(x)=\beta\,\frac{1}{1+(x/K)^n},$$
+$$\begin{gathered}f_{\rm act}(x)=\beta\,\frac{(x/K)^n}{1+(x/K)^n},\\
+ f_{\rm rep}(x)=\beta\,\frac{1}{1+(x/K)^n},\end{gathered}$$
 with maximal rate $\beta$, activation threshold $K$ (the concentration giving half-maximal activity, whatever $n$ is) and Hill coefficient $n\ge 1$. The activity rises from 10% to 90% of $\beta$ as $x$ goes from $x_{10}=K\,9^{-1/n}$ to $x_{90}=K\,9^{1/n}$, an input range of $x_{90}/x_{10} = 81^{1/n}$.`,
       idea: String.raw`If $n$ regulator molecules must bind together (all-or-none cooperativity), mass action gives bound probability $x^n/(K^n+x^n)$. Setting $f=0.1$ or $0.9$ gives $(x/K)^n = 1/9$ or $9$, and dividing yields $81^{1/n}$. Larger $n$ squeezes the transition into a narrower band, so the curve tends to a step function at $x=K$ as $n\to\infty$; $n=1$ needs an 81-fold change of the input. Measured promoters often have effective $n$ between 1 and 4: Setty et al. (2003) fitted $n=2\pm0.4$ for cAMP acting through CRP and $m=4\pm0.6$ for IPTG acting on LacI.
 

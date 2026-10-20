@@ -111,7 +111,8 @@ With positive beta, alpha and K, the continuous production-minus-removal functio
 $$\frac{\ln2\,(n+1)}{-\ln(1-2^{-(n+1)})}\qquad(s\to\infty),$$
 about $4.82$ for $n=1$.`,
       idea: String.raw`Keep both production and removal in the inverse-rate time integral. Put $q=p/(sK)$ and $A=s^n$. The normalized half-rise time is
-$$\alpha T_{1/2}=\int_0^{1/2}\frac{1+Aq^n}{(1-q)+A(1-q^{n+1})}\,dq.$$
+$$\begin{gathered}\alpha T_{1/2}=\\
+ \int_0^{1/2}\frac{1+Aq^n}{(1-q)+A(1-q^{n+1})}\,dq.\end{gathered}$$
 For fixed $0\le q\le1/2$, differentiating this integrand with respect to A has numerator $q^n-1<0$, so the time decreases with repression strength. At A=0 it gives $\ln2$. As A tends to infinity it tends to $q^n/(1-q^{n+1})$, whose integral is $-\ln(1-2^{-(n+1)})/(n+1)$. The denominator stays positive on this compact interval, allowing passage to the limit. Taking $\ln2$ divided by this time gives the stated saturation factor. Dropping removal gives a different approximation and is not the fixed-n strong-repression limit.
 
 On the interval from zero to half the positive steady state, the net production F(p) is continuous and strictly positive. The integral-as-upper-limit theorem (pma 6.20) therefore gives $T(q)=\int_0^q dp/F(p)$ with derivative $T\prime(q)=1/F(q)$. Along a solution, differentiation yields $dT(p(t))/dt=1$, making this integral the actual first-passage time to q. The full net rate, including removal, is required in the denominator; a production-only approximation needs its own error control.`,
@@ -160,7 +161,8 @@ On the interval from zero to half the positive steady state, the net production 
       kind: 'Theorem',
       name: 'Negative autoregulation buffers production-rate variation',
       statement: String.raw`At steady state, define the **logarithmic sensitivity** of the protein level to the production rate, $S=\dfrac{d\ln p_{\rm st}}{d\ln\beta}$. For a simple gene $S=1$. For a gene with Hill-type negative autoregulation, $\beta/(1+(p/K)^n)=\alpha p$, one finds
-$$S=\frac{1}{1+n\,\dfrac{u}{1+u}},\qquad u=(p_{\rm st}/K)^n,$$
+$$\begin{gathered}S=\frac{1}{1+n\,\dfrac{u}{1+u}},\\
+ u=(p_{\rm st}/K)^n,\end{gathered}$$
 which decreases from $1$ (weak repression, $u\to0$) toward $1/(n+1)$ (strong repression, $u\to\infty$). So a given relative fluctuation in $\beta$ produces a relative fluctuation in $p_{\rm st}$ that is smaller by this factor: the steady state is buffered against cell-to-cell variation in production rate, at fixed mean level.`,
       idea: String.raw`Take logarithms of the balance $\beta\,h(p)=\alpha p$ with $h(p)=1/(1+(p/K)^n)$: $\ln\beta+\ln h(p)=\ln\alpha+\ln p$. Differentiating in $\ln\beta$ gives $1+\frac{d\ln h}{d\ln p}S=S$, and $d\ln h/d\ln p=-n u/(1+u)$ is the logarithmic sensitivity of the Hill function (1.3). Solving for $S$ gives the formula. This is exactly the effect of negative feedback on loop gain in control theory (ctrl-1.7): the closed-loop sensitivity is the open-loop sensitivity divided by one plus the loop gain, here $1+nu/(1+u)\to n+1$.
 
