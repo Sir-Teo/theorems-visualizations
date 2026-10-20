@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **33 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 634 edges. Even
+Of 64 non-math collections, **32 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 619 edges. Even
 including planned items and planned prerequisites, **24 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -223,3 +223,8 @@ The [independent KIN peer](kin-crossfield-prerequisite-peer.md) accepts sixteen 
 ## Accepted physiology inputs
 
 The [independent PHYSIO peer](physio-crossfield-prerequisite-peer.md) accepts fifteen actual inputs across fourteen consumers:10/20/38→25/35/53. All55objects/functions/flags/helpers, complete raw syllabus lists, numerical assertions and28changed narrow-theme proofs pass. The1.3row now matches its written first-law reference, without claiming an unwritten proof. Two default-test dependency assertions retain required subsets and all numerical checks. Feedback/diffusion bridge cards remain accurate. Accepted shortfall634,33/64below25published,24whole syllabi below25; no source closure.
+
+
+## Accepted atmosphere/ocean inputs and curl correction
+
+The [combined independent GEO peer](geo-prerequisites-independent-peer.md) accepts fifteen inputs across fifteen consumers, giving10/15/31→25/30/46. All34objects/functions/flags/fullsyllabus lists, independent mathematics and thirty narrow theme outputs pass. Its reviewer also identified an inherited2.7curl sign error; a separately authored negative sign with constant-rotation/divergence hypotheses received exact-diff,906component checks and both-theme native review before combined acceptance. Zero-column conclusion and numerical code are unchanged. Accepted shortfall619,32/64below25published,24whole syllabi below25.

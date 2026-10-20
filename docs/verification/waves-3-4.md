@@ -975,3 +975,6 @@ KIN's sixteen inputs and alias-only3.4metadata correction are [independently acc
 
 
 PHYSIO's fifteen inputs are [independently accepted](physio-crossfield-prerequisite-peer.md): live634shortfall,33/64published collections below25,24whole syllabi below25. Sourcequeue5unchanged. The distinct [complete-raster DOM experiment](map-complete-raster-dom-followup.md) stopped at a direct-paint fidelity failure before timing; productiongraph remains unchanged. Coordinator personally inspected the failing candidate/direct images, confirming transformed chapter-label and stroke sampling differences.
+
+
+GEO's fifteen inputs and separate inheritedcurlsign correction are [independently accepted together](geo-prerequisites-independent-peer.md). Live shortfall619,32/64published collections below25,24whole syllabi below25; sourcequeue5 unchanged. Half of64collections now meet the written prerequisite target.
