@@ -1,0 +1,1688 @@
+{
+  "complete": true,
+  "quietWindowAttested": true,
+  "fixtureHashes": {
+    "data/index.json": "49b65fb05a860fab028600ff07b84a6e6dd7773b959d38aebea72233b54e68f5",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+    "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+    "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+    "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+  },
+  "protocolSHA256": "67b38659c3b98216dd8abef0f61873dfc5e9cfde54541e4b5ae1cc0a8aa8c191",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "launchArgs": [
+    "--use-angle=metal"
+  ],
+  "browser": "155.0.8059.85",
+  "viewport": {
+    "width": 1440,
+    "height": 1000,
+    "dpr": 2
+  },
+  "theme": "light",
+  "frames": 24,
+  "hostBefore": {
+    "date": "2026-10-20T20:25:00.203Z",
+    "cpu": "Apple M1",
+    "logicalCPUs": 8,
+    "freeMemory": 92733440,
+    "top": "Processes: 761 total, 3 running, 1 stuck, 757 sleeping, 6072 threads \n2026/10/20 16:25:00\nLoad Avg: 3.06, 4.99, 5.01 \nCPU usage: 9.15% user, 18.66% sys, 72.18% idle \nSharedLibs: 430M resident, 125M data, 93M linkedit.\nMemRegions: 703175 total, 4754M resident, 95M private, 1200M shared.\nPhysMem: 15G used (3448M wired, 4958M compressor), 91M unused.\nVM: 393T vsize, 57G framework vsize, 201827796(0) swapins, 217387734(0) swapouts.\nNetworks: packets: 472068490/2334G in, 457109848/2328G out.\nDisks: 326864101/9334G read, 156283229/5969G written.\n\n\n",
+    "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+  },
+  "gpuInfo": {
+    "devices": [
+      {
+        "vendorId": 4203,
+        "deviceId": 0,
+        "vendorString": "Google Inc. (Apple)",
+        "deviceString": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Version 27.0 (Build 26A428))",
+        "driverVendor": "Apple",
+        "driverVersion": "27.0"
+      }
+    ],
+    "auxAttributes": {
+      "amdSwitchable": false,
+      "canSupportThreadedTextureMailbox": false,
+      "directRenderingVersion": "",
+      "displayType": "ANGLE_METAL",
+      "glExtensions": "GL_AMD_performance_monitor GL_ANGLE_base_vertex_base_instance_shader_builtin GL_ANGLE_blob_cache GL_ANGLE_client_arrays GL_ANGLE_clip_cull_distance GL_ANGLE_compressed_texture_etc GL_ANGLE_depth_texture GL_ANGLE_framebuffer_blit GL_ANGLE_framebuffer_multisample GL_ANGLE_get_serialized_context_string GL_ANGLE_get_tex_level_parameter GL_ANGLE_instanced_arrays GL_ANGLE_memory_size GL_ANGLE_pack_reverse_row_order GL_ANGLE_polygon_mode GL_ANGLE_program_binary_readiness_query GL_ANGLE_program_cache_control GL_ANGLE_provoking_vertex GL_ANGLE_renderability_validation GL_ANGLE_request_extension GL_ANGLE_rgbx_internal_format GL_ANGLE_robust_client_memory GL_ANGLE_shader_pixel_local_storage GL_ANGLE_shader_pixel_local_storage_coherent GL_ANGLE_stencil_texturing GL_ANGLE_texture_compression_dxt3 GL_ANGLE_texture_compression_dxt5 GL_ANGLE_texture_multisample GL_ANGLE_translated_shader_source GL_APPLE_clip_distance GL_ARM_rgba8 GL_CHROMIUM_bind_generates_resource GL_CHROMIUM_bind_uniform_location GL_CHROMIUM_copy_texture GL_CHROMIUM_lose_context GL_EXT_base_instance GL_EXT_blend_func_extended GL_EXT_blend_minmax GL_EXT_clip_control GL_EXT_color_buffer_float GL_EXT_color_buffer_half_float GL_EXT_compressed_ETC1_RGB8_sub_texture GL_EXT_conservative_depth GL_EXT_debug_label GL_EXT_debug_marker GL_EXT_depth_clamp GL_EXT_discard_framebuffer GL_EXT_disjoint_timer_query GL_EXT_draw_buffers GL_EXT_draw_buffers_indexed GL_EXT_draw_elements_base_vertex GL_EXT_float_blend GL_EXT_frag_depth GL_EXT_instanced_arrays GL_EXT_map_buffer_range GL_EXT_multisampled_render_to_texture GL_EXT_occlusion_query_boolean GL_EXT_polygon_offset_clamp GL_EXT_pvrtc_sRGB GL_EXT_read_format_bgra GL_EXT_render_snorm GL_EXT_robustness GL_EXT_sRGB GL_EXT_shader_texture_lod GL_EXT_texture_compression_bptc GL_EXT_texture_compression_dxt1 GL_EXT_texture_compression_rgtc GL_EXT_texture_compression_s3tc_srgb GL_EXT_texture_filter_anisotropic GL_EXT_texture_format_BGRA8888 GL_EXT_texture_mirror_clamp_to_edge GL_EXT_texture_norm16 GL_EXT_texture_rg GL_EXT_texture_sRGB_R8 GL_EXT_texture_sRGB_RG8 GL_EXT_texture_shadow_lod GL_EXT_texture_storage GL_IMG_texture_compression_pvrtc GL_KHR_debug GL_KHR_parallel_shader_compile GL_KHR_robustness GL_KHR_texture_compression_astc_hdr GL_KHR_texture_compression_astc_ldr GL_KHR_texture_compression_astc_sliced_3d GL_MESA_framebuffer_flip_y GL_NV_fence GL_NV_framebuffer_blit GL_NV_pixel_buffer_object GL_NV_shader_noperspective_interpolation GL_OES_EGL_image GL_OES_EGL_sync GL_OES_compressed_ETC1_RGB8_texture GL_OES_depth24 GL_OES_depth32 GL_OES_depth_texture GL_OES_draw_buffers_indexed GL_OES_draw_elements_base_vertex GL_OES_element_index_uint GL_OES_fbo_render_mipmap GL_OES_get_program_binary GL_OES_mapbuffer GL_OES_packed_depth_stencil GL_OES_required_internalformat GL_OES_rgb8_rgba8 GL_OES_sample_variables GL_OES_shader_multisample_interpolation GL_OES_standard_derivatives GL_OES_surfaceless_context GL_OES_texture_3D GL_OES_texture_float GL_OES_texture_float_linear GL_OES_texture_half_float GL_OES_texture_half_float_linear GL_OES_texture_npot GL_OES_texture_stencil8 GL_OES_vertex_array_object GL_QCOM_render_shared_exponent ",
+      "glImplementationParts": "(gl=egl-angle,angle=metal)",
+      "glRenderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Version 27.0 (Build 26A428))",
+      "glResetNotificationStrategy": 33362,
+      "glVendor": "Google Inc. (Apple)",
+      "glVersion": "OpenGL ES 3.0 (ANGLE 2.1.28854 git hash: cccf60cde32c)",
+      "glWsExtensions": "",
+      "glWsVendor": "",
+      "glWsVersion": "",
+      "inProcessGpu": false,
+      "initializationTime": 0.080451,
+      "isAsan": false,
+      "isClangCoverage": false,
+      "jpegDecodeAcceleratorSupported": false,
+      "maxMsaaSamples": "4",
+      "optimus": false,
+      "passthroughCmdDecoder": true,
+      "pixelShaderVersion": "3.00",
+      "processCrashCount": 0,
+      "sandboxed": false,
+      "skiaBackendType": "GraphiteDawnMetal",
+      "subpixelFontRendering": true,
+      "targetCpuBits": 64,
+      "vertexShaderVersion": "3.00",
+      "visibilityCallbackCallCount": 0
+    },
+    "featureStatus": {
+      "2d_canvas": "enabled",
+      "direct_rendering_display_compositor": "disabled_off_ok",
+      "gpu_compositing": "enabled",
+      "multiple_raster_threads": "enabled_on",
+      "opengl": "enabled_on",
+      "rasterization": "enabled",
+      "raw_draw": "disabled_off_ok",
+      "skia_graphite": "enabled_on",
+      "trees_in_viz": "disabled_off",
+      "video_decode": "enabled",
+      "video_encode": "enabled",
+      "webgl": "enabled",
+      "webgpu": "enabled",
+      "webnn": "disabled_off"
+    },
+    "driverBugWorkarounds": [
+      "disable_2d_canvas_auto_flush",
+      "enable_webgl_timer_query_extensions",
+      "disabled_extension_GL_KHR_blend_equation_advanced",
+      "disabled_extension_GL_KHR_blend_equation_advanced_coherent"
+    ],
+    "videoDecoding": [],
+    "videoEncoding": []
+  },
+  "results": [
+    {
+      "renderer": "original",
+      "mode": "overview-zoom",
+      "nodes": 13574,
+      "edges": 23218,
+      "fields": 13,
+      "planned": true,
+      "definitions": true,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "nodeIDsSHA256": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "endpointPairsSHA256": "2150ac76e4face37bc85b8a81b42266a8f324f32f8c236e42d732fb30b46c10b",
+      "coldDrawMS": 10.200000047683716,
+      "coldThroughMS": 29.09999990463257,
+      "inputFrameMS": [
+        16.90000009536743,
+        16.59999990463257,
+        16.600000143051147,
+        46.299999952316284,
+        0.5,
+        17,
+        3,
+        39.299999952316284,
+        97.10000014305115,
+        11.299999952316284,
+        10.299999952316284,
+        8.799999952316284,
+        16.5,
+        16.600000143051147,
+        16.699999809265137,
+        27.700000047683716,
+        5.6000001430511475,
+        16.699999809265137,
+        32.60000014305115,
+        28.899999856948853,
+        5.300000190734863,
+        24.59999990463257,
+        16.299999952316284,
+        9.100000143051147
+      ],
+      "frameMS": [
+        16.90000009536743,
+        16.59999990463257,
+        16.600000143051147,
+        46.299999952316284,
+        0.5,
+        17,
+        3,
+        39.299999952316284,
+        97.10000014305115,
+        11.299999952316284,
+        10.299999952316284,
+        8.799999952316284,
+        16.5,
+        16.600000143051147,
+        16.699999809265137,
+        27.700000047683716,
+        5.6000001430511475,
+        16.699999809265137,
+        32.60000014305115,
+        28.899999856948853,
+        5.300000190734863,
+        24.59999990463257,
+        16.299999952316284,
+        9.100000143051147,
+        16.299999952316284,
+        16.799999952316284
+      ],
+      "drawMS": [
+        0,
+        0,
+        0,
+        29.59999990463257,
+        0.09999990463256836,
+        13.799999952316284,
+        0,
+        0,
+        0,
+        10.799999952316284,
+        7.800000190734863,
+        0.10000014305114746,
+        0.09999990463256836,
+        0,
+        0,
+        10.900000095367432,
+        0,
+        0,
+        0.09999990463256836,
+        0,
+        0.10000014305114746,
+        8.099999904632568,
+        7.700000047683716,
+        0.10000014305114746,
+        12.399999856948853
+      ],
+      "interactionDrawCount": 24,
+      "settleMS": 166.70000004768372,
+      "operations": [
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        }
+      ],
+      "logicalFinal": {
+        "k": 0.06,
+        "tx": 693.1199999999999,
+        "ty": 307.84000000000003,
+        "zooming": false
+      },
+      "canvas": [
+        2880,
+        1864
+      ],
+      "inputFPS": 47.97121725134962,
+      "fps": 48.74390700290855,
+      "framesOver20MS": 7,
+      "drawStats": {
+        "mean": 4.068000001907349,
+        "p50": 0.09999990463256836,
+        "p95": 13.799999952316284,
+        "max": 29.59999990463257
+      },
+      "renderThroughMS": 700.1000001430511
+    },
+    {
+      "renderer": "original",
+      "mode": "detail-zoom",
+      "nodes": 13574,
+      "edges": 23218,
+      "fields": 13,
+      "planned": true,
+      "definitions": true,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "nodeIDsSHA256": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "endpointPairsSHA256": "2150ac76e4face37bc85b8a81b42266a8f324f32f8c236e42d732fb30b46c10b",
+      "coldDrawMS": 8.700000047683716,
+      "coldThroughMS": 28.5,
+      "inputFrameMS": [
+        16.700000047683716,
+        15.899999856948853,
+        17.40000009536743,
+        67.89999985694885,
+        0.40000009536743164,
+        28.90000009536743,
+        2.799999952316284,
+        28.200000047683716,
+        21.899999856948853,
+        67.29999995231628,
+        19.300000190734863,
+        0.2999999523162842,
+        13,
+        40.09999990463257,
+        52.90000009536743,
+        25.59999990463257,
+        0.40000009536743164,
+        14.5,
+        16.59999990463257,
+        27.5,
+        17.600000143051147,
+        13.699999809265137,
+        17.40000009536743,
+        7.200000047683716
+      ],
+      "frameMS": [
+        16.700000047683716,
+        15.899999856948853,
+        17.40000009536743,
+        67.89999985694885,
+        0.40000009536743164,
+        28.90000009536743,
+        2.799999952316284,
+        28.200000047683716,
+        21.899999856948853,
+        67.29999995231628,
+        19.300000190734863,
+        0.2999999523162842,
+        13,
+        40.09999990463257,
+        52.90000009536743,
+        25.59999990463257,
+        0.40000009536743164,
+        14.5,
+        16.59999990463257,
+        27.5,
+        17.600000143051147,
+        13.699999809265137,
+        17.40000009536743,
+        7.200000047683716,
+        38.700000047683716,
+        18.5
+      ],
+      "drawMS": [
+        0,
+        0,
+        0,
+        51.59999990463257,
+        0.20000004768371582,
+        14.200000047683716,
+        0,
+        0,
+        0,
+        6.599999904632568,
+        8.300000190734863,
+        0,
+        0,
+        0,
+        0,
+        10.299999952316284,
+        0.10000014305114746,
+        0.10000014305114746,
+        0.09999990463256836,
+        0,
+        0,
+        9,
+        9.5,
+        0.10000014305114746,
+        7
+      ],
+      "interactionDrawCount": 24,
+      "settleMS": 141.59999990463257,
+      "operations": [
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": null
+        }
+      ],
+      "logicalFinal": {
+        "k": 0.5,
+        "tx": 496.0000000000001,
+        "ty": -851.9999999999993,
+        "zooming": false
+      },
+      "canvas": [
+        2880,
+        1864
+      ],
+      "inputFPS": 44.98594189315838,
+      "fps": 44.01557473827861,
+      "framesOver20MS": 10,
+      "drawStats": {
+        "mean": 4.684000015258789,
+        "p50": 0.09999990463256836,
+        "p95": 14.200000047683716,
+        "max": 51.59999990463257
+      },
+      "renderThroughMS": 732.2999999523163
+    },
+    {
+      "renderer": "compositor",
+      "mode": "overview-zoom",
+      "nodes": 13574,
+      "edges": 23218,
+      "fields": 13,
+      "planned": true,
+      "definitions": true,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "nodeIDsSHA256": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "endpointPairsSHA256": "2150ac76e4face37bc85b8a81b42266a8f324f32f8c236e42d732fb30b46c10b",
+      "coldDrawMS": 11.100000143051147,
+      "coldThroughMS": 27.700000047683716,
+      "inputFrameMS": [
+        27.600000143051147,
+        13.299999952316284,
+        16.299999952316284,
+        23,
+        15.400000095367432,
+        11.599999904632568,
+        10.299999952316284,
+        23.800000190734863,
+        49.69999980926514,
+        41,
+        14.400000095367432,
+        58.299999952316284,
+        2.799999952316284,
+        15.300000190734863,
+        15.199999809265137,
+        17.90000009536743,
+        15.799999952316284,
+        12.200000047683716,
+        17.09999990463257,
+        16.40000009536743,
+        21.09999990463257,
+        16.5,
+        17.5,
+        16.800000190734863
+      ],
+      "frameMS": [
+        27.600000143051147,
+        13.299999952316284,
+        16.299999952316284,
+        23,
+        15.400000095367432,
+        11.599999904632568,
+        10.299999952316284,
+        23.800000190734863,
+        49.69999980926514,
+        41,
+        14.400000095367432,
+        58.299999952316284,
+        2.799999952316284,
+        15.300000190734863,
+        15.199999809265137,
+        17.90000009536743,
+        15.799999952316284,
+        12.200000047683716,
+        17.09999990463257,
+        16.40000009536743,
+        21.09999990463257,
+        16.5,
+        17.5,
+        16.800000190734863,
+        10.899999856948853,
+        16
+      ],
+      "drawMS": [
+        10.900000095367432,
+        7.200000047683716,
+        7.099999904632568,
+        13.299999952316284,
+        11.100000143051147,
+        7.200000047683716,
+        0.7999999523162842,
+        2.0999999046325684,
+        5.699999809265137,
+        5.3999998569488525,
+        7.299999952316284,
+        6.299999952316284,
+        1.5,
+        6,
+        4.699999809265137,
+        5.799999952316284,
+        5.099999904632568,
+        0.5,
+        0.7999999523162842,
+        0.7000000476837158,
+        6,
+        5.799999952316284,
+        5.8999998569488525,
+        6,
+        10.600000143051147
+      ],
+      "interactionDrawCount": 24,
+      "settleMS": 167.10000014305115,
+      "operations": [
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 1,
+            "hits": 0,
+            "geometryPaints": 1,
+            "underlayPaints": 1,
+            "labelPaints": 1,
+            "transformWrites": 1,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 2,
+            "hits": 0,
+            "geometryPaints": 2,
+            "underlayPaints": 2,
+            "labelPaints": 2,
+            "transformWrites": 2,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 3,
+            "hits": 0,
+            "geometryPaints": 3,
+            "underlayPaints": 3,
+            "labelPaints": 3,
+            "transformWrites": 3,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 4,
+            "hits": 0,
+            "geometryPaints": 4,
+            "underlayPaints": 4,
+            "labelPaints": 4,
+            "transformWrites": 4,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 5,
+            "hits": 0,
+            "geometryPaints": 5,
+            "underlayPaints": 5,
+            "labelPaints": 5,
+            "transformWrites": 5,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 6,
+            "hits": 0,
+            "geometryPaints": 6,
+            "underlayPaints": 6,
+            "labelPaints": 6,
+            "transformWrites": 6,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 6,
+            "hits": 1,
+            "geometryPaints": 6,
+            "underlayPaints": 7,
+            "labelPaints": 7,
+            "transformWrites": 7,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 6,
+            "hits": 2,
+            "geometryPaints": 6,
+            "underlayPaints": 8,
+            "labelPaints": 8,
+            "transformWrites": 8,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 7,
+            "hits": 2,
+            "geometryPaints": 7,
+            "underlayPaints": 9,
+            "labelPaints": 9,
+            "transformWrites": 9,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 8,
+            "hits": 2,
+            "geometryPaints": 8,
+            "underlayPaints": 10,
+            "labelPaints": 10,
+            "transformWrites": 10,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 9,
+            "hits": 2,
+            "geometryPaints": 9,
+            "underlayPaints": 11,
+            "labelPaints": 11,
+            "transformWrites": 11,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 10,
+            "hits": 2,
+            "geometryPaints": 10,
+            "underlayPaints": 12,
+            "labelPaints": 12,
+            "transformWrites": 12,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 10,
+            "hits": 3,
+            "geometryPaints": 10,
+            "underlayPaints": 13,
+            "labelPaints": 13,
+            "transformWrites": 13,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 11,
+            "hits": 3,
+            "geometryPaints": 11,
+            "underlayPaints": 14,
+            "labelPaints": 14,
+            "transformWrites": 14,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 12,
+            "hits": 3,
+            "geometryPaints": 12,
+            "underlayPaints": 15,
+            "labelPaints": 15,
+            "transformWrites": 15,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 13,
+            "hits": 3,
+            "geometryPaints": 13,
+            "underlayPaints": 16,
+            "labelPaints": 16,
+            "transformWrites": 16,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 14,
+            "hits": 3,
+            "geometryPaints": 14,
+            "underlayPaints": 17,
+            "labelPaints": 17,
+            "transformWrites": 17,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 14,
+            "hits": 4,
+            "geometryPaints": 14,
+            "underlayPaints": 18,
+            "labelPaints": 18,
+            "transformWrites": 18,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 14,
+            "hits": 5,
+            "geometryPaints": 14,
+            "underlayPaints": 19,
+            "labelPaints": 19,
+            "transformWrites": 19,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 14,
+            "hits": 6,
+            "geometryPaints": 14,
+            "underlayPaints": 20,
+            "labelPaints": 20,
+            "transformWrites": 20,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 15,
+            "hits": 6,
+            "geometryPaints": 15,
+            "underlayPaints": 21,
+            "labelPaints": 21,
+            "transformWrites": 21,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 16,
+            "hits": 6,
+            "geometryPaints": 16,
+            "underlayPaints": 22,
+            "labelPaints": 22,
+            "transformWrites": 22,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 17,
+            "hits": 6,
+            "geometryPaints": 17,
+            "underlayPaints": 23,
+            "labelPaints": 23,
+            "transformWrites": 23,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 18,
+            "hits": 6,
+            "geometryPaints": 18,
+            "underlayPaints": 24,
+            "labelPaints": 24,
+            "transformWrites": 24,
+            "fullFrameCopies": 0,
+            "fallbacks": 7,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": {
+            "builds": 18,
+            "hits": 6,
+            "geometryPaints": 18,
+            "underlayPaints": 24,
+            "labelPaints": 24,
+            "transformWrites": 24,
+            "fullFrameCopies": 0,
+            "fallbacks": 8,
+            "pixels": 0,
+            "peakPixels": 15790080,
+            "reason": "stationary/focus/highlight"
+          }
+        }
+      ],
+      "logicalFinal": {
+        "k": 0.06,
+        "tx": 693.1199999999999,
+        "ty": 307.84000000000003,
+        "zooming": false
+      },
+      "canvas": [
+        2880,
+        1864
+      ],
+      "inputFPS": 49.049662764448236,
+      "fps": 50.36807438511868,
+      "framesOver20MS": 7,
+      "drawStats": {
+        "mean": 5.751999969482422,
+        "p50": 5.8999998569488525,
+        "p95": 11.100000143051147,
+        "max": 13.299999952316284
+      },
+      "renderThroughMS": 683.3000001907349
+    },
+    {
+      "renderer": "compositor",
+      "mode": "detail-zoom",
+      "nodes": 13574,
+      "edges": 23218,
+      "fields": 13,
+      "planned": true,
+      "definitions": true,
+      "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+      "nodeIDsSHA256": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "endpointPairsSHA256": "2150ac76e4face37bc85b8a81b42266a8f324f32f8c236e42d732fb30b46c10b",
+      "coldDrawMS": 12.700000047683716,
+      "coldThroughMS": 29.299999952316284,
+      "inputFrameMS": [
+        21.5,
+        20.59999990463257,
+        13,
+        43.40000009536743,
+        26.700000047683716,
+        12.899999856948853,
+        38,
+        57.10000014305115,
+        53.799999952316284,
+        55.90000009536743,
+        13.899999856948853,
+        14,
+        31,
+        55.90000009536743,
+        49.59999990463257,
+        46.90000009536743,
+        16,
+        36,
+        53.700000047683716,
+        49.799999952316284,
+        56.39999985694885,
+        16.600000143051147,
+        4.200000047683716,
+        16.09999990463257
+      ],
+      "frameMS": [
+        21.5,
+        20.59999990463257,
+        13,
+        43.40000009536743,
+        26.700000047683716,
+        12.899999856948853,
+        38,
+        57.10000014305115,
+        53.799999952316284,
+        55.90000009536743,
+        13.899999856948853,
+        14,
+        31,
+        55.90000009536743,
+        49.59999990463257,
+        46.90000009536743,
+        16,
+        36,
+        53.700000047683716,
+        49.799999952316284,
+        56.39999985694885,
+        16.600000143051147,
+        4.200000047683716,
+        16.09999990463257,
+        37.200000047683716,
+        55.799999952316284
+      ],
+      "drawMS": [
+        5.200000047683716,
+        8.599999904632568,
+        5.199999809265137,
+        29.09999990463257,
+        6.200000047683716,
+        5.599999904632568,
+        1.0999999046325684,
+        1.1000001430511475,
+        3.9000000953674316,
+        4,
+        4.8999998569488525,
+        4.200000047683716,
+        0.39999985694885254,
+        3.1000001430511475,
+        3,
+        3.799999952316284,
+        3.700000047683716,
+        1,
+        1.1000001430511475,
+        1,
+        3.799999952316284,
+        3.3999998569488525,
+        3.3999998569488525,
+        3.0999999046325684,
+        9
+      ],
+      "interactionDrawCount": 24,
+      "settleMS": 92.20000004768372,
+      "operations": [
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 19,
+            "hits": 6,
+            "geometryPaints": 19,
+            "underlayPaints": 25,
+            "labelPaints": 25,
+            "transformWrites": 25,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 20,
+            "hits": 6,
+            "geometryPaints": 20,
+            "underlayPaints": 26,
+            "labelPaints": 26,
+            "transformWrites": 26,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 21,
+            "hits": 6,
+            "geometryPaints": 21,
+            "underlayPaints": 27,
+            "labelPaints": 27,
+            "transformWrites": 27,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 22,
+            "hits": 6,
+            "geometryPaints": 22,
+            "underlayPaints": 28,
+            "labelPaints": 28,
+            "transformWrites": 28,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 23,
+            "hits": 6,
+            "geometryPaints": 23,
+            "underlayPaints": 29,
+            "labelPaints": 29,
+            "transformWrites": 29,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 24,
+            "hits": 6,
+            "geometryPaints": 24,
+            "underlayPaints": 30,
+            "labelPaints": 30,
+            "transformWrites": 30,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 24,
+            "hits": 7,
+            "geometryPaints": 24,
+            "underlayPaints": 31,
+            "labelPaints": 31,
+            "transformWrites": 31,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 24,
+            "hits": 8,
+            "geometryPaints": 24,
+            "underlayPaints": 32,
+            "labelPaints": 32,
+            "transformWrites": 32,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 25,
+            "hits": 8,
+            "geometryPaints": 25,
+            "underlayPaints": 33,
+            "labelPaints": 33,
+            "transformWrites": 33,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 26,
+            "hits": 8,
+            "geometryPaints": 26,
+            "underlayPaints": 34,
+            "labelPaints": 34,
+            "transformWrites": 34,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 27,
+            "hits": 8,
+            "geometryPaints": 27,
+            "underlayPaints": 35,
+            "labelPaints": 35,
+            "transformWrites": 35,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 28,
+            "hits": 8,
+            "geometryPaints": 28,
+            "underlayPaints": 36,
+            "labelPaints": 36,
+            "transformWrites": 36,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 28,
+            "hits": 9,
+            "geometryPaints": 28,
+            "underlayPaints": 37,
+            "labelPaints": 37,
+            "transformWrites": 37,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 29,
+            "hits": 9,
+            "geometryPaints": 29,
+            "underlayPaints": 38,
+            "labelPaints": 38,
+            "transformWrites": 38,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 30,
+            "hits": 9,
+            "geometryPaints": 30,
+            "underlayPaints": 39,
+            "labelPaints": 39,
+            "transformWrites": 39,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 31,
+            "hits": 9,
+            "geometryPaints": 31,
+            "underlayPaints": 40,
+            "labelPaints": 40,
+            "transformWrites": 40,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 32,
+            "hits": 9,
+            "geometryPaints": 32,
+            "underlayPaints": 41,
+            "labelPaints": 41,
+            "transformWrites": 41,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 32,
+            "hits": 10,
+            "geometryPaints": 32,
+            "underlayPaints": 42,
+            "labelPaints": 42,
+            "transformWrites": 42,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 32,
+            "hits": 11,
+            "geometryPaints": 32,
+            "underlayPaints": 43,
+            "labelPaints": 43,
+            "transformWrites": 43,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 32,
+            "hits": 12,
+            "geometryPaints": 32,
+            "underlayPaints": 44,
+            "labelPaints": 44,
+            "transformWrites": 44,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 33,
+            "hits": 12,
+            "geometryPaints": 33,
+            "underlayPaints": 45,
+            "labelPaints": 45,
+            "transformWrites": 45,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 34,
+            "hits": 12,
+            "geometryPaints": 34,
+            "underlayPaints": 46,
+            "labelPaints": 46,
+            "transformWrites": 46,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 35,
+            "hits": 12,
+            "geometryPaints": 35,
+            "underlayPaints": 47,
+            "labelPaints": 47,
+            "transformWrites": 47,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 0,
+          "compositorPixels": 15790080,
+          "stats": {
+            "builds": 36,
+            "hits": 12,
+            "geometryPaints": 36,
+            "underlayPaints": 48,
+            "labelPaints": 48,
+            "transformWrites": 48,
+            "fullFrameCopies": 0,
+            "fallbacks": 9,
+            "pixels": 15790080,
+            "peakPixels": 15790080,
+            "reason": null
+          }
+        },
+        {
+          "originalPixels": 11274752,
+          "compositorPixels": 0,
+          "stats": {
+            "builds": 36,
+            "hits": 12,
+            "geometryPaints": 36,
+            "underlayPaints": 48,
+            "labelPaints": 48,
+            "transformWrites": 48,
+            "fullFrameCopies": 0,
+            "fallbacks": 10,
+            "pixels": 0,
+            "peakPixels": 15790080,
+            "reason": "stationary/focus/highlight"
+          }
+        }
+      ],
+      "logicalFinal": {
+        "k": 0.5,
+        "tx": 496.0000000000001,
+        "ty": -851.9999999999993,
+        "zooming": false
+      },
+      "canvas": [
+        2880,
+        1864
+      ],
+      "inputFPS": 29.8879202988792,
+      "fps": 29.017857142857146,
+      "framesOver20MS": 18,
+      "drawStats": {
+        "mean": 4.7559999752044675,
+        "p50": 3.799999952316284,
+        "p95": 9,
+        "max": 29.09999990463257
+      },
+      "renderThroughMS": 988.2000000476837
+    }
+  ],
+  "method": "Sequential original/prototype pages, same frozen graph/data bytes, all actual loaded nodes/edges/fields/planned/definitions. Trusted wheel preflight; 24+ RAF wheel inputs crossing LOD tiers; actual full pictures retained. No pixel read during timing. CPU draw submission, input cadence, two drained RAFs and debounce/exact settle latency remain separate. No rounding sub-60fps into a pass.",
+  "hostAfter": {
+    "date": "2026-10-20T20:25:06.417Z",
+    "cpu": "Apple M1",
+    "logicalCPUs": 8,
+    "freeMemory": 682082304,
+    "top": "Processes: 759 total, 6 running, 753 sleeping, 6061 threads \n2026/10/20 16:25:06\nLoad Avg: 3.13, 4.94, 5.00 \nCPU usage: 23.62% user, 20.96% sys, 55.40% idle \nSharedLibs: 398M resident, 120M data, 91M linkedit.\nMemRegions: 705850 total, 2833M resident, 90M private, 1587M shared.\nPhysMem: 15G used (3973M wired, 5899M compressor), 649M unused.\nVM: 392T vsize, 57G framework vsize, 201827868(0) swapins, 217387734(0) swapouts.\nNetworks: packets: 472071756/2334G in, 457115557/2328G out.\nDisks: 326867618/9334G read, 156283870/5969G written.\n\n\n",
+    "power": "Now drawing from 'AC Power'\n -InternalBattery-0 (id=27918435)\t100%; charged; 0:00 remaining present: true\n"
+  }
+}
