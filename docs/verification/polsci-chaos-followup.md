@@ -22,3 +22,9 @@ The repaired theorem states the original total-median hypothesis and agenda qual
 - Byte guards preserve all other ch04 objects and syllabus rows, including the separately reviewed Plott model. No shared helper/runtime, central ledger or tracked generated data change. Newly identified 4.7 issues are reported separately and not certified by these checks.
 
 Subsequent peer state correction: see `polsci-spatial-state-followup.md`. Every ideal/start/target setter rejects raw out-of-bound/off-grid saved values before the runtime can clamp or snap. The exact source/math/native path evidence above is preserved.
+
+## Independent coordinator acceptance, 2026-10-20
+
+Reviewed exact `d79a689` and raw-state followup `a074081` in separate archives. Read the actual original McKelvey1976 pp.472–482, including the no-total-median/full-unbounded-chain conditions and the sincere/perfect-information qualifications; inspected original printed475/478/481 pixels. The new calculation correctly distinguishes its finite shortest paths and graph failure from the unrestricted continuous theorem, handles zero-step targets and coincident-majority counterexamples, and uses exact bounded integer distance comparisons.
+
+Fresh three mathematical groups, static1/0/0 and both320px light/dark full native groups pass (`/tmp/atlas-coordinator/polsci-chaos-peer-{math,static,native}.log`). Personally inspected own generic33×33 and dragged dark output pixels. The first independent raw-state replay exposed silent clamping of [99,99], also affecting4.5; that finding is now closed by the instance-local setter wrapper. Exact `a074081` combined math10/10, static3/0/0 and all six narrow item/theme state groups pass, rejecting74 malformed raw states with notices and exact initial fallback while preserving valid fine/coarse edits (`polsci-spatial-peer-{math,static,state}.log`). Accept within the declared scope.

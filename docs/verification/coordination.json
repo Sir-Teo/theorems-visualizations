@@ -506,6 +506,26 @@
         "docs/verification/music-fourier-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "polsci-4.6",
+        "polsci-4.7"
+      ],
+      "peer": "coordinator independent source/math/native and raw-state review",
+      "reports": [
+        "docs/verification/polsci-chaos-followup.md",
+        "docs/verification/polsci-yolk-followup.md"
+      ],
+      "status": "accepted",
+      "stateFollowups": [
+        "polsci-4.5"
+      ],
+      "commits": [
+        "0ae2f04",
+        "c22c869",
+        "1323d4c"
+      ]
     }
   ],
   "remainingAtStart": {

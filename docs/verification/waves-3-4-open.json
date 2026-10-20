@@ -6809,7 +6809,7 @@
     {
       "id": "polsci-4.5",
       "status": "resolved",
-      "note": "2026-10-20: coordinator independently accepted exact e9de0e4; docs/verification/polsci-plott-followup.md."
+      "note": "2026-10-20: coordinator independently accepted exact e9de0e4; docs/verification/polsci-plott-followup.md. Raw-coordinate state finding independently closed by1323d4c; docs/verification/polsci-spatial-state-followup.md."
     },
     {
       "id": "polsci-4.12",
@@ -6845,6 +6845,16 @@
       "id": "music-8.15",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent exact-commit source/math/audio/native review; docs/verification/music-fourier-followup.md."
+    },
+    {
+      "id": "polsci-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent source/math/native and raw-state review; docs/verification/polsci-chaos-followup.md."
+    },
+    {
+      "id": "polsci-4.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent source/math/native and raw-state review; docs/verification/polsci-yolk-followup.md."
     }
   ]
 }
