@@ -1290,6 +1290,21 @@
         "f15221b317203fb8a401207b106df7e0108ac8a1",
         "4676d49"
       ]
+    },
+    {
+      "ids": [
+        "bighist-4.8"
+      ],
+      "peer": "Coordinator independently read actual retained source bodies/figures, verified complete source hashes, regenerated791Fraction references plus2050independent90digit integrals, and passed both320full native/20actualdrags/65raw/source-readout ownpixels; dependency and portabletest findings corrected separately",
+      "reports": [
+        "docs/verification/bighist-megafauna-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "eece4daede958a226f686ecaff6aef8087756476",
+        "73b30d611685e0643b7ff9e6cc2d49fcd647ffdc",
+        "41662ecc3e6d5e1fc3b166e03c42eeacc75c69c2"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1302,7 +1317,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 10,
+  "currentPendingSourceReviews": 9,
   "latestCheckpoint": {
     "acceptedContentCommit": "e31b9dc",
     "report": "docs/verification/checkpoint-e31b9dc.md",

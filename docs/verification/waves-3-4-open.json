@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 10,
+  "remainingFlags": 9,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 3
+    "bighist": 2
   },
   "queue": [
     {
@@ -166,22 +166,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Toba_catastrophe_theory",
         "doi": "https://doi.org/10.1006/jhev.1998.0219"
-      }
-    },
-    {
-      "id": "bighist-4.8",
-      "file": "content/bighist/ch04-b.js",
-      "name": "Megafaunal extinctions: overkill or climate?",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Quaternary_extinction_event",
-        "doi": "https://doi.org/10.1126/science.1060264"
       }
     }
   ],
@@ -1013,7 +997,8 @@
       "bighist-3.3",
       "bighist-3.4",
       "bighist-4.3",
-      "bighist-4.5"
+      "bighist-4.5",
+      "bighist-4.8"
     ]
   },
   "additionalFollowups": [
@@ -6187,6 +6172,11 @@
       "id": "bighist-4.5",
       "status": "resolved",
       "note": "2026-10-20: Worker two independently read actualGreen/Reich/Fu original bodies and pixels, derived stationary finite-window count law and censored exit likelihood, regenerated70digit200window/6profile positive-quadrature reference, checked256tail-positive summaries and passed fresh320both-theme full256native/7actualdrags/40raw/directDOM/reference-independent rawedit/replay/ownpixels; docs/verification/bighist-admixture-peer.md."
+    },
+    {
+      "id": "bighist-4.8",
+      "status": "resolved",
+      "note": "2026-10-20: Coordinator independently read actual retained source bodies/figures, verified complete source hashes, regenerated791Fraction references plus2050independent90digit integrals, and passed both320full native/20actualdrags/65raw/source-readout ownpixels; dependency and portabletest findings corrected separately; docs/verification/bighist-megafauna-peer.md."
     }
   ]
 }

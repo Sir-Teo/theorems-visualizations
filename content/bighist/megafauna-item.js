@@ -1,6 +1,6 @@
 import{extinctionCases,extinctionDefault,extinctionState,extinctionStats,extinctionX as X,extinctionAge as age}from'./source-audit-megafauna.js';
 export default{
- num:'4.8',kind:'Hypothesis',name:'Megafaunal extinctions: comparing dated windows',verify:true,
+ num:'4.8',kind:'Hypothesis',name:'Megafaunal extinctions: comparing dated windows',verify:false,
  credit:'Regional dating studies and an authored interval comparison',deps:['bighist-4.3'],see:['geol-2.6','bighist-4.7'],tags:['extinction','megafauna','dating'],
  refs:['Roberts et al. 2001, Science 292:1888–1892','Faith & Surovell 2009, PNAS106:20641–20645','Holdaway et al. 2014, Nature Communications 5:5436, pp 2–4/6–7','Clarkson et al. 2017, accepted manuscript main text','Springer et al., USGS 2025–3046, published May 2026'],
  links:{australia:'https://doi.org/10.1126/science.1060264',northamerica:'https://doi.org/10.1073/pnas.0908153106',moa:'https://doi.org/10.1038/ncomms6436',occupation:'https://doi.org/10.1038/nature22968',footprints:'https://doi.org/10.3133/fs20253046'},
