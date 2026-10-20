@@ -24,7 +24,7 @@
       "Accepted prerequisite shortfall 299; 18/64 published collections and 15 whole syllabi below target; 30 further collections meet 25 written inputs. Source queue 5 unchanged.",
       "Latest immutable checkpoint8 on be8d100 passes 2187 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
-      "Private phase/gutter boundary 781d336 follows positive phase witness bc5e18f; independent tiny peer in progress before any full-map run.",
+      "Private tiny atlas gutter candidate independently accepted (52 cases); guarded-original full-map history harness prepared only, awaiting independent protocol review and fresh current-browser original control.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
@@ -43,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent tiny atlas phase/gutter review of bc5e18f \u2192 781d336",
+      "current": "Read-only next-stage full-map protocol and concrete guarded-original harness review after accepted tiny atlas peer",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "XTAL primitive-basis and oriented-normal closing corrections, then independent MAT peer",
+      "current": "MAT independent combined peer and exact units closing review, then SYSBIO producer",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent XTAL combined peer and bounded closing review",
+      "current": "MAT units closing successor frozen; ECOL genuine prerequisite producer from exact accepted root baseline",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -2507,6 +2507,15 @@
       "limitation": "Original compared GPU/reference arrays and diff not saved; actualPNG thirdredraw and directPNG Canvas are not the failedoracle. Dark/lifecycle/faultmatrix unrun; oversizedDPR2unselected0optimizedtiles.64Mlogicalcurrent62471764/peak63895600pass does not acceptpixels/performance/physicalmemory.",
       "peer": "bc0a5ddaadb465fcb428411ad13785f7840d1bf4",
       "followup": "a81c9e7original-onlycontrol +1244b0cindependentpeer reproduceALL4exactframes withoutchunkbinding. SequentialC1/O1conflateddifferenthistories; implementationremainsunaccepted; futureoracle mustmatchcold/warmordinalandtexturehistory."
+    },
+    {
+      "candidate": "781d336d11e136873b173b628d2cd3e7e9c96964",
+      "phaseBoundary": "bc5e18f4d1b6c4799d78f778e7301711e35e78c1",
+      "peer": "9291c8083117622d43a1e7d7235b046fa05af827",
+      "status": "accepted-private-tiny-atlas-correctness-only",
+      "report": "docs/verification/map-atlas-gutter-independent-peer.md",
+      "scope": "52 private cases, exact complete inner GPU bytes and original fresh output, transparent perimeter, stable guarded history, same logical owners/placement/filter/state; independent scaled-title, thick-stroke, cache/oversize/destroy checks. No full-map, context-loss/upload-failure, alternate-binding, production or timing acceptance. Root integrated raw audit and 44 producer models pass; current browser differs from earlier full-map capture.",
+      "rootEvidence": "/tmp/atlas-continuation/atlas-gutter-integrated-peer-recheck.json"
     }
   ],
   "accountingSafeguards": [

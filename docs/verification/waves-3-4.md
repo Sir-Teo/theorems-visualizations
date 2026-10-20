@@ -1053,3 +1053,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### XTAL combined acceptance
 
 [Independent XTAL peer](xtal-independent-peer.md) accepts 24 direct inputs with primitive-basis, noncyclic-stabilizer, fixed-space-dimension and oriented-normal corrections. Full objects/functions/flags/raw lists and fresh narrow-theme fields pass; root integrated preservation/math and source queue rechecks pass. Live prerequisite shortfall 299, 18/64 published and 15 whole syllabi below target; 30 further collections meet target. This follows checkpoint be8d100; source queue five and map/Wave 5 gates remain open.
+
+### Private tiny atlas gutter acceptance
+
+[Independent atlas peer](map-atlas-gutter-independent-peer.md) accepts the bounded private transparent-perimeter correction across 52 cases, including scaled titles and thick strokes. Root integrated raw/extent audits pass; full inner glyph bytes, fresh output, placement/filter/state and logical owner sizes are preserved. This is outside production and checkpoint be8d100. A new original-only history probe is prepared, not executed; full-map fairness/lifecycle/resources/60fps and alternate binding remain open.
