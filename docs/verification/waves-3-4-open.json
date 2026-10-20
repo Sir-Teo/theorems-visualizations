@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 99,
+  "remainingFlags": 96,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 20,
+    "tech": 17,
     "bighist": 18
   },
   "queue": [
@@ -1047,27 +1047,6 @@
       }
     },
     {
-      "id": "tech-4.12",
-      "file": "content/tech/ch04-b.js",
-      "name": "The Natural Powers of Water and Wind to Turn Mills",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "Smeaton's paper, read to the Royal Society in 1759 (he received the Society's Copley Medal for it), reports two series of experiments on working models. In the first he measured water wheels (the results are replayed in 4.5): at the same water and the same fall the overshot wheel does about twice the work of the undershot wheel, and each does best turning slowly. In the second part he tested windmill sails. Because natural wind is too uncertain, he carried the sails round a large circle on an arm, pulling it by hand and regulating the speed with a pendulum, so that the sails met an \"artificial wind\" of known speed (according to the OCR text, sails of 21 inches radius at a centre speed of 6 ft/s). He measured the load the sails could raise and their turns for different angles of weather (the angle between the sail and the plane of rotation), and concluded that sails set at 55° to the axis were not the best for work and that the angle should vary along the sail, larger near the axis than at the tip. For a sail divided in six parts from the axis outward he gave angles of weather of 18°, 19°, 18°, 16°, 12½° and 7° (the OCR layout of the last two is garbled), and he found that concave sails and a wider leading edge did better still.\n\nHe also drew general rules from the windmill tests: the speed of the sails at maximum load is nearly proportional to the wind speed; the load at maximum is nearly, a little less than, proportional to the square of the wind speed; and the work done is nearly, a little less than, proportional to the cube of the wind speed.\n\nWhat the paper changed: it gave a measured, not argued, answer to a question that engineers had been settling by opinion, and its method (vary one parameter on a model, find the maximum, scale up by stated rules) became a template. I read the paper's text only in an OCR transcription, so every figure quoted here is unverified against the printed page."
-        }
-      ],
-      "refs": [
-        "Smeaton 1759, Phil. Trans. 51:100–174, doi 10.1098/rstl.1759.0019 (Crossref record; text read as OCR at jimclifford.ca)",
-        "Smeaton 1776, Phil. Trans. 66"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/John_Smeaton"
-      }
-    },
-    {
       "id": "tech-4.1",
       "file": "content/tech/ch04.js",
       "name": "The true arch in Roman engineering",
@@ -1083,45 +1062,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Arch"
-      }
-    },
-    {
-      "id": "tech-4.4",
-      "file": "content/tech/ch04.js",
-      "name": "The water wheel",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “Water wheels and windmills”",
-        "Mokyr ch. 3",
-        "Lewis, Millstone and Hammer (1997), as cited by Wikipedia “Watermill”"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Watermill"
-      }
-    },
-    {
-      "id": "tech-4.5",
-      "file": "content/tech/ch04.js",
-      "name": "Smeaton’s water-wheel experiments",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "In the 1750s the English engineer **John Smeaton** built a working model of a water wheel, with a cistern at a controlled head, a sluice, and a cord that lifted a weight, and measured how much work it did for a given quantity of water. He ran 27 sets of experiments on **undershot** wheels (his Table I) and 16 on **overshot** wheels (Table II), recording for each the power of the water (weight of water used times the height it fell) and the effect (weight raised times the height). He published the results in 1759. The result that mattered: **at the same quantity of water and the same fall, an overshot wheel does about twice the work of an undershot wheel**, and, for each wheel, the maximum effect comes with the wheel turning slowly (for his undershot wheel about two-fifths of the speed of the water). At the time it was widely believed that undershot wheels were the more powerful; Smeaton's measurements are the source of the engineering rule that water's weight, not its impulse, should be used where there is a fall.\n\nHow the numbers below were obtained: the two tables were read from an OCR transcription of the 1759 paper (Philosophical Transactions 51, in an online archive), not from page images. The ratio of effect to power was recomputed from the printed Power and Effect columns and agrees with his printed ratios to about 0.05 in 41 of the 43 rows; in rows 10 and 20 of Table I the printed ratio differs by about 0.1, which may be an OCR error or a misprint. The figures called \"Smeaton's\" are therefore marked unverified against the original pages."
-        }
-      ],
-      "refs": [
-        "Mokyr ch. 5",
-        "Smeaton 1759, Phil. Trans. 51:100–174 (doi 10.1098/rstl.1759.0019), Tables I and II (OCR transcription at jimclifford.ca)",
-        "Smeaton 1776, Phil. Trans. 66 (one-half versus one-third of the water’s speed)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/John_Smeaton"
       }
     },
     {
@@ -2354,7 +2294,10 @@
       "music-8.10",
       "music-8.11",
       "music-8.12",
-      "music-8.13"
+      "music-8.13",
+      "tech-4.4",
+      "tech-4.5",
+      "tech-4.12"
     ]
   },
   "additionalFollowups": [
@@ -7058,6 +7001,21 @@
       "id": "music-8.13",
       "status": "resolved",
       "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
+    },
+    {
+      "id": "tech-4.4",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared Vitruvius and Smeaton originals/pixels, authored momentum and bucket mathematics, and six fresh narrow native review groups; tech-power-followup.md."
+    },
+    {
+      "id": "tech-4.5",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared every retained original Table I/II column and source head definitions, mathematics and fresh native controls/state/bounds; tech-power-followup.md."
+    },
+    {
+      "id": "tech-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared all19 original sail rows and six footnote stations, apparatus/product definition, arithmetic and fresh native review; tech-power-followup.md."
     }
   ]
 }

@@ -41,3 +41,9 @@ The comparison uses exactly601 speeds0,0.025,…,15m/s. Hollow markers and reado
 - `smeaton-1759.pdf`: SHA256 `32d6c7630ae57504ec3cfb64ffa44c10d2988f14c0c10e23a6f8247e36a1dab9`.
 - `smeaton-1759-rs.pdf`: SHA256 `98c149c0a9fb1af507bb61e2931834e7cfa4ab25ac241b7d566d42fb2ad7f5db`.
 - `vitruvius-1914.pdf`: SHA256 `65cd414198ba06ed0f536f51202d9cf41ff12c4eeeb5d6c3975447d7aa8f24c7`.
+
+## Independent acceptance, 20 October 2026
+
+Coordinator reviewed exact archive8f1496d and independently compared the original Smeaton definitions/measurement method on pp100–101/106–109, overshot specimen and head comparison on pp127–130, mixed-wheel discussion pp137–138, wind apparatus and product reduction pp139–143, sail comparison pp145–151 and qualified scaling maxims pp153–156. Actual source TableI p115, TableII p129, TableIII p144 and six-station footnote p148 pixels were inspected against every retained data column. The1060/4800 readings and genuine printed arithmetic discrepancies agree with the candidate. Morgan p294 river-wheel/geared-mill pixels were also inspected; no ancient-priority claim or idealized coefficient is attributed to those passages.
+
+Fresh mathematical checks7/7, focused static3/0/0 and all six320px light/dark native groups pass from the archived production snapshot. The one-direction normalized impulse is1.5t(1−t), giving the stated3/8 captured peak; bucket energy and phase rules are accurately declared authored assumptions. All source rows, denominator/angle bases, curve samples, real controls/keyboard/clicks, exact replay, malformed recovery and full geometry/text/TeX bounds pass. Personally inspected fresh narrow wheel/curve, denominator/residual, raw/per-area and six-station output pixels. Evidence `/tmp/atlas-coordinator/tech-power-peer-{math,static,native}.log` and `tech-power-peer-images/`. No actionable findings remain in the stated source-replay and authored-model scope; the coordinator may clear all three flags.

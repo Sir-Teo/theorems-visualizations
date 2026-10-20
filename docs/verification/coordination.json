@@ -323,6 +323,18 @@
         "music-setclass-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "tech-4.4",
+        "tech-4.5",
+        "tech-4.12"
+      ],
+      "peer": "coordinator independently compared Vitruvius and Smeaton originals/pixels, authored momentum and bucket mathematics, and six fresh narrow native review groups",
+      "reports": [
+        "tech-power-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -335,7 +347,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 99,
+  "currentPendingSourceReviews": 96,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,

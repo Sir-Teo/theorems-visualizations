@@ -449,7 +449,7 @@ How close to the wind a boat can point depends mostly on how near the boat's axi
 
     // ------------------------------------------------------------------ 4.12
     {
-      num:'4.12',kind:'Paper',name:'The Natural Powers of Water and Wind to Turn Mills',verify:true,
+      num:'4.12',kind:'Paper',name:'The Natural Powers of Water and Wind to Turn Mills',verify:false,
       credit:'John Smeaton, 1759',
       paper:{authors:'John Smeaton',year:1759,title:'An Experimental Enquiry Concerning the Natural Powers of Water and Wind to Turn Mills, and Other Machines, Depending on a Circular Motion',venue:'Philosophical Transactions 51:100–174',doi:'10.1098/rstl.1759.0019'},introduces:['tech-4.5'],
       statement:String.raw`Smeaton's 1759 paper reports water-wheel and windmill-sail experiments on working models, with explicit warnings about scaling to full machines. For wind, he moved the sail axis on a large circular arm against still air, using a hand-pulled cord and pendulum timing. His specimen uses 21-inch-radius sails at a nominal centre speed of 6 ft/s. Table III (p.144) compares 19 sets of sail forms, weather angles and cloth quantities.

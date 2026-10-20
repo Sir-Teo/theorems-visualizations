@@ -172,7 +172,7 @@ Flow demand, bore, parallel pipes and wall ratio change the comparison. Capacity
     },
     // ------------------------------------------------------------------ 4.4
     {
-      num:'4.4',kind:'Invention',name:'The water wheel',verify:true,
+      num:'4.4',kind:'Invention',name:'The water wheel',verify:false,
       credit:'River wheel and geared mill described by Vitruvius X.5; hydraulic comparisons authored here',
       statement:String.raw`A water wheel converts energy transferred by moving or descending water into shaft work. Vitruvius X.5 describes river-driven paddles and a geared water mill. Smeaton's 1759 experiments distinguish water acting by impulse, by its weight in buckets, and mixed arrangements. These passages establish described mechanisms; they do not establish a unique inventor, first date or priority between horizontal and vertical wheels.
 
@@ -195,7 +195,7 @@ Bucket rules use physical radii $0.45H$ (undershot/overshot) or $0.4H$ (breastsh
 
     // ------------------------------------------------------------------ 4.5
     {
-      num:'4.5',kind:'Event',name:'Smeaton’s water-wheel experiments',verify:true,
+      num:'4.5',kind:'Event',name:'Smeaton’s water-wheel experiments',verify:false,
       credit:'John Smeaton, experiments 1752–1753, published 1759',
       statement:String.raw`Smeaton measured model water wheels under controlled water supply and load. His 1759 paper gives 27 undershot sets in Table I (p.115) and 16 overshot sets in Table II (p.129). He explicitly warns that model results require checks at full size. His general comparison is that overshot work was about twice undershot work under like quantity and fall; this is his experimental conclusion, not a universal theorem about all wheels.
 
