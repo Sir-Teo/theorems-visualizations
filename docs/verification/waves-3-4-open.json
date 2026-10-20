@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 162,
+  "remainingFlags": 161,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 12,
-    "psych": 15,
+    "psych": 14,
     "soc": 16,
     "polsci": 11,
     "music": 23,
@@ -403,26 +403,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Zermelo%27s_theorem_(game_theory)"
-      }
-    },
-    {
-      "id": "psych-3.9",
-      "file": "content/psych/ch03-b.js",
-      "name": "Loudness in sones: doubling per 10 dB",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "caption",
-          "text": "**Left:** loudness in sones (log axis) against the level of a 1 kHz tone; drag the **gold** handle for the level $L$ of the first tone. The **dashed** continuation is the doubling rule extended below 40 phon, where it is not valid; the solid curve there is a published approximation (not checked against the ISO standard). **Right:** the loudness ratio produced by $\\Delta$ dB of extra level, for the intensity exponent $m$ you choose. Use *Hear L, then L+\u0394* to judge for yourself whether $10$ dB sounds twice as loud (your device volume sets the absolute level; the difference is exact). Estimates of how many dB make a doubling vary between studies and listeners."
-        }
-      ],
-      "refs": [
-        "Goldstein ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Sone"
       }
     },
     {
@@ -3334,7 +3314,8 @@
       "game-4.2",
       "game-4.4",
       "game-4.5",
-      "phil-3.7"
+      "phil-3.7",
+      "psych-3.9"
     ]
   },
   "additionalFollowups": [
@@ -7645,6 +7626,12 @@
       "status": "resolved",
       "report": "docs/verification/phil-hysteresis-followup.md",
       "note": "Actual Case1995 source equations/context/results and ODE stability prerequisite checked; independent cubic/fold/critical/trapping derivations, four math and four native groups/static checks pass. Authored finite sweeps distinguish static bistability, monostable lag, late and absent category switches; no empirical calibration claim."
+    },
+    {
+      "id": "psych-3.9",
+      "status": "resolved",
+      "report": "docs/verification/psych-loudness-followup.md",
+      "note": "Actual Moore author account, Kryter reference definition and dated NBS RMS/SPL source checked; exact nominal versus rounded exponents, coupled model domain and complete digital ratios verified independently. Three math/four native/static and targeted actual-analyser checks pass; no calibrated SPL or perceived doubling claim."
     }
   ]
 }

@@ -2,6 +2,7 @@
 import { Phi, zq, logTicks, sig } from './ch03.shared.js';
 import { luceState } from './source-audit-luce.js';
 import { mdsSynthetic, mdsView } from './source-audit-mds.js';
+import { loudnessModel, loudnessAudio } from './source-audit-loudness.js';
 
 export default {
   collection: 'psych',
@@ -177,52 +178,37 @@ A similarity label alone does not mathematically contradict IIA. The **authored 
     },
     // ------------------------------------------------------------------ 3.9
     {
-      num: '3.9',
-      kind: 'Law',
-      name: 'Loudness in sones: doubling per 10 dB',
-      statement: String.raw`The **sone** is the unit of perceived loudness, defined so that a 1 kHz tone at a loudness level of 40 phon (40 dB SPL for that tone) has loudness 1 sone. Above about 40 phon, loudness $N$ in sones doubles with every 10 dB increase in level $L$:
-$$N=2^{(L-40)/10}\quad(L\gtrsim40),$$
-equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a factor $10$ in intensity and $10^{0.301}=2$), or about $p^{0.6}$ in sound pressure. A tone that is $\Delta$ dB louder than another therefore sounds $2^{\Delta/10}$ times as loud. Below 40 phon loudness falls off faster than this rule says.`,
-      idea: String.raw`The sone scale is Stevens' power law (3.2) for loudness, with an exponent near $0.3$ for intensity (about $0.6$–$0.67$ for pressure in Stevens' table) found by magnitude estimation (3.1) and by fractionation (“set a tone half as loud as this one”). The level in decibels is itself a log of intensity, so a power law in intensity is a straight line in dB on a log-loudness axis: the “10 dB per doubling” is just $\log_{10}2/0.3$. The exponent in dB terms is $3.01/m$ for an intensity exponent $m$. Equal-loudness contours (music-1.9) say how level and frequency map to phons; the sone then maps phons to a ratio scale.`,
-      caption: String.raw`**Left:** loudness in sones (log axis) against the level of a 1 kHz tone; drag the **gold** handle for the level $L$ of the first tone. The **dashed** continuation is the doubling rule extended below 40 phon, where it is not valid; the solid curve there is a published approximation (not checked against the ISO standard). **Right:** the loudness ratio produced by $\Delta$ dB of extra level, for the intensity exponent $m$ you choose. Use *Hear L, then L+Δ* to judge for yourself whether $10$ dB sounds twice as loud (your device volume sets the absolute level; the difference is exact). Estimates of how many dB make a doubling vary between studies and listeners.`,
-      deps: ['psych-3.2', 'music-1.9'],
-      refs: ['Goldstein ch. 11'],
-      tags: ['loudness', 'sone', 'psychoacoustics'],
-      credit: 'S. S. Stevens, “A scale for the measurement of a psychological magnitude: loudness”, Psychological Review 43 (1936): 405–416 (the sone); Stevens 1956, 1957 (the power-law exponent)',
-      scope: String.raw`For a 1 kHz tone (or loudness level in phons for other tones, via equal-loudness contours) between about 40 and 100 dB; the doubling interval found in experiments depends on the method and listener (about 10 dB is the classical figure, smaller values have also been reported), and below 40 phon the sone scale is steeper; complex sounds need a loudness model.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Sone' },
-      viz(v) {
-        const M = v.M;
-        const dl = v.slider('extra level $\\Delta$ (dB)', 1, 30, 10, { step: 0.5, fmt: (x) => x.toFixed(1) + ' dB' });
-        const mSl = v.slider('intensity exponent $m$', 0.2, 0.5, 0.301, { step: 0.001 });
-        const exact = v.toggle('apply the below-40 phon approximation', true);
-        const N = (L, m, below) => (L >= 40 ? Math.pow(10, (m * (L - 40)) / 10) : below ? Math.max(1e-3, Math.pow(L / 40, 2.86) - 0.005) : Math.pow(10, (m * (L - 40)) / 10));
-        const s1 = v.stage({ x: [10, 100], y: [-2.3, 2.2], axes: 'box', gutter: true, height: 320, weight: 1.1, minWidth: 290, xlabel: 'level of a 1 kHz tone $L$ (dB SPL = phon)', ylabel: 'loudness (sones)', yticks: logTicks(-2.3, 2.2, { mult: [1] }), title: 'loudness against level' });
-        const s2 = v.stage({ x: [0, 30], y: [0, 9], axes: 'box', gutter: true, height: 320, weight: 0.9, minWidth: 250, xlabel: 'level difference $\\Delta$ (dB)', ylabel: 'loudness ratio', title: 'how many times as loud?' });
-        const hL = s1.handle(50, 0, { color: 'gold', r: 8, constrain: (x) => [M.clamp(x, 12, 99), 0] });
-        v.soundButton('Hear $L$, then $L+\\Delta$', (snd) => { const g0 = 0.04, g1 = Math.min(0.9, g0 * Math.pow(10, dl.value / 20)); snd.tone(1000, { duration: 1, gain: g0 }); snd.tone(1000, { duration: 1, gain: g1, delay: 1.5 }); });
-        v.legend([['accent', 'sones'], ['muted', 'doubling rule extended', { dash: true }], ['gold', 'chosen levels', { dot: true }]]);
-        let st = null;
-        v.render(() => {
-          const m = mSl.value, D = dl.value, L = hL.x, b = exact.value, f = (x) => Math.log10(N(x, m, b));
-          s1.fn(f, { domain: [10, 100], color: 'accent', width: 3, n: 220 });
-          s1.fn((x) => Math.log10(N(x, m, false)), { domain: [10, 40], color: 'muted', width: 1.6, n: 40, dash: [5, 4] });
-          s1.line(40, -2.3, 40, 0, { color: 'faint', dash: [2, 3] }); s1.text('1 sone at 40 phon', 39, -2.0, { align: 'right', size: 11, color: 'muted' });
-          hL.set(L, f(L));
-          const L2 = Math.min(100, L + D);
-          s1.line(L, -2.3, L, f(L), { color: 'gold', dash: [3, 3] }); s1.line(L2, -2.3, L2, f(L2), { color: 'gold', dash: [3, 3] });
-          s1.dot(L, f(L), { r: 5.5, color: 'gold' }); s1.dot(L2, f(L2), { r: 5.5, color: 'gold' });
-          s1.text(sig(N(L, m, b)) + ' sone', L, f(L), { dx: -10, dy: -10, align: 'right', size: 11.5, weight: 700, color: 'ink' });
-          s1.text(sig(N(L2, m, b)) + ' sone', L2, f(L2), { dx: -10, dy: -10, align: 'right', size: 11.5, weight: 700, color: 'ink' });
-          s2.fn((x) => Math.pow(10, (m * x) / 10), { domain: [0, 30], color: 'accent', width: 2.8, n: 120 });
-          s2.fn((x) => Math.pow(2, x / 10), { domain: [0, 30], color: 'muted', width: 1.4, dash: [5, 4], n: 60 });
-          s2.line(0, 2, 3.01 / m, 2, { color: 'green', dash: [3, 3] }); s2.line(3.01 / m, 0, 3.01 / m, 2, { color: 'green', dash: [3, 3] });
-          s2.text('doubling at ' + v.fix(3.01 / m, 1) + ' dB', 3.01 / m, 2, { dx: 8, dy: -10, align: 'left', size: 11.5, color: 'green', weight: 700 });
-          s2.dot(D, Math.pow(10, (m * D) / 10), { r: 6, color: 'gold' });
-          st = { m, D, L, L2, ratio: Math.pow(10, (m * D) / 10), r2: N(L2, m, b) / N(L, m, b), N1: N(L, m, b), N2: N(L2, m, b) };
-        });
-        v.readout(() => st ? `$L$ = ${v.fix(st.L, 1)} dB → ${sig(st.N1)} sone; $L+\\Delta$ = ${v.fix(st.L2, 1)} dB → ${sig(st.N2)} sone (ratio ${v.fix(st.r2, 2)}) · rule: $10^{m\\Delta/10}$ = ${v.fix(st.ratio, 2)}, equal to $2^{\\Delta/10}$ = ${v.fix(Math.pow(2, st.D / 10), 2)} when $m=0.301$ · loudness doubles every ${v.fix(3.01 / st.m, 1)} dB for this $m$` : '');
+      num: '3.9',kind:'Model',name:'Loudness in sones: a mid-level approximation',
+      statement:String.raw`**Loudness** in sones and **loudness level** in phons describe perception, while sound pressure level (SPL) describes an RMS pressure relative to $20\,\mu\mathrm{Pa}$. One sone uses a 1-kHz reference tone at 40 dB SPL. A sound's loudness level in phons is the SPL of an equally loud 1-kHz reference; phons and SPL are therefore numerically aligned for that reference tone, not for every sound.
+
+Moore's technical account describes approximate 10-dB doubling over **40–80 dB** for a steady 1-kHz sinusoid in quiet, with binaural, frontal free-field presentation in the normal-hearing reference setting. A simple nominal approximation is
+$$N\approx2^{(L-40)/10}\ \text{sones},\qquad40\le L\le80.$$
+This is a mid-level reference model, not an exact universal perceptual law or the full Cambridge loudness algorithm. Frequency, bandwidth, duration, hearing and presentation conditions matter. We do not extend this approximation below 40 or above 80 here.`,
+      idea:String.raw`The power-law form (psych-3.2) and level conversion (music-1.8) explain the relation. For a progressive plane wave at fixed acoustic impedance, intensity ratios are squared RMS-pressure ratios, so
+$$\begin{gathered}\Delta=10\log_{10}(I_2/I_1)\\=20\log_{10}(p_2/p_1).\end{gathered}$$
+If the selected model is $N\propto I^m$, normalized to 1 sone at the reference level 40, then
+$$\begin{gathered}N_m(L)=10^{m(L-40)/10},\\N_2/N_1=10^{m\Delta/10},\\\Delta_{\rm double}=10\log_{10}2/m.\end{gathered}$$
+Exact 10-dB doubling **within the nominal formula** uses $m=\log_{10}2\approx0.301029996$, with pressure exponent $2m$. The rounded $m=0.3$ instead gives $10^{0.3}\approx1.995262$ per 10 dB and a doubling interval about 10.0343 dB. The custom exponent is an authored exploration, not a fitted observer or a reported range of human exponents. It does not change the acoustic pressure/intensity conversion.`,
+      caption:String.raw`The base level $L$ ranges 40–80 and the **actual difference control is coupled** to $0\le\Delta\le80-L$, keeping both modeled tones inside 40–80. Raising $L$ reduces the displayed difference bound and reduces an excessive current difference to that bound; the slider's value/output and the plotted second level agree. At $L=80$, the difference control is disabled at 0. Drag the gold base-level handle or the right-hand difference handle. Choose the nominal exact-doubling formula, its rounded 0.3 version or the authored custom exponent. The colored curves show the chosen model; grey dashed curves show the nominal reference. Both vertical axes display logarithmic values with ordinary sone/ratio tick labels.
+
+**Play relative 1-kHz pair** uses only the current difference, with two identical finite carriers/envelopes: the second digital peak is 0.02 of full scale and the first is $0.02\,10^{-\Delta/20}$. Playback is uncalibrated and does not represent the plotted absolute SPL. The shared audio limiter and your device may alter output levels; neither a precise acoustic difference nor exact perceived doubling is demonstrated.`,
+      scope:String.raw`The empirical reference is an approximation for specified steady-tone listening conditions, not a rule for arbitrary frequencies, broadband/complex sounds, threshold-level sounds, impaired hearing or headphone transfer responses. Phons are not physical pressure or intensity, and sones are not decibels. The model curves are calculated formulas, not new perceptual measurements or an ISO/Cambridge implementation. The finite audio pair illustrates requested digital amplitude ratios only; no listener calibration or subjective-loudness test is performed.`,
+      deps:['psych-3.2','music-1.8'],see:['music-1.9'],
+      refs:['Brian C. J. Moore (2014), Development and Current Status of the Cambridge Loudness Models, Predictions of the 1997 Model/Figure 6','Karl D. Kryter (1966), Review of Research and Methods for Measuring the Loudness and Noisiness of Complex Sounds, printed pp. 2–5','David S. Pallett and Marilyn A. Cadoff (March 1977), NBSIR 75-938, §2.1.1 pp. 5–6'],
+      tags:['loudness','sone','psychoacoustics'],credit:'Technical references: Kryter (1966); Moore (2014) author account; Pallett and Cadoff (1977)',verify: false,
+      links:{source:'https://pmc.ncbi.nlm.nih.gov/articles/PMC4227665/',reference:'https://ntrs.nasa.gov/api/citations/19660011809/downloads/19660011809.pdf'},
+      viz(v){
+        const L=v.slider('modeled base $L$ (dB SPL)',40,80,50,{int:true}),D=v.slider('permitted difference $\\Delta$ (dB)',0,40,10,{int:true}),custom=v.slider('authored custom intensity exponent $m$',.2,.5,.3,{step:.001,decimals:6}),mode=v.select('power-law formula',[{value:'nominal',label:'nominal 10-dB reference'},{value:'rounded',label:'rounded m=0.3'},{value:'custom',label:'authored custom m'}],'nominal');
+        const sync=()=>{const max=80-L.value;D.input.min='0';D.input.max=String(max);if(D.value>max)D.set(max);D.input.disabled=max===0;custom.input.disabled=mode.value!=='custom';return max;};
+        const A=v.stage({x:[36,84],y:[-.2,2.35],height:340,minWidth:280,axes:'box',gutter:true,xlabel:'modeled 1-kHz level (dB SPL = phon)',ylabel:'model loudness (sones)',yticks:logTicks(-.2,2.35,{mult:[1,2,5]}),title:'mid-level approximation: 40–80 only'}),B=v.stage({x:[-3,43],y:[-.2,2.35],height:340,minWidth:280,axes:'box',gutter:true,xlabel:'permitted level difference (dB)',ylabel:'model loudness ratio',yticks:logTicks(-.2,2.35,{mult:[1,2,5]}),title:'ratio over the current permitted interval'});
+        const hL=A.handle(50,0,{r:8,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,40,80)),0],onDrag:h=>{L.set(h.x);sync();}}),hD=B.handle(10,0,{r:8,color:'gold',constrain:x=>[Math.round(v.M.clamp(x,0,80-L.value)),0],onDrag:h=>D.set(h.x)});
+        v.legend([['accent','chosen power-law formula'],['muted','nominal 10-dB reference',{dash:true}],['gold','first modeled level/difference',{dot:true}],['orange','second modeled level',{dot:true}],['green','model doubling, when permitted',{dot:true}]]);
+        let info,lastAudio=null;
+        v.soundButton('Play relative 1-kHz pair (uncalibrated)',snd=>{const pair=loudnessAudio(D.value);snd.samples(pair.samples,pair.sampleRate,{gain:1,normalize:false});lastAudio={delta:pair.delta,gain1:pair.gain1,gain2:pair.gain2};});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{sync();const state=loudnessModel(L.value,D.value,mode.value,custom.value);A.path(state.levelReference,{color:'muted',width:1.5,dash:[5,4]});A.path(state.levelCurve,{color:'accent',width:2.6});hL.set(state.L,state.logN1);A.dot(state.L2,state.logN2,{r:5,color:'orange'});hD.visible=state.maxDelta>0;hD.set(state.delta,state.logRatio);
+          if(state.maxDelta>0){B.path(state.ratioReference,{color:'muted',width:1.5,dash:[5,4]});B.path(state.ratioCurve,{color:'accent',width:2.6});}else B.dot(0,0,{r:5,color:'gold'});
+          if(state.doubling<=state.maxDelta)B.dot(state.doubling,Math.log10(2),{r:5,color:'green'});info={...state,lastAudio};});
+        v.readout(()=>{if(!info)return'';const p=info;return `Modeled levels ${p.L} and ${p.L2} dB SPL (1-kHz reference phons); permitted Δ 0–${p.maxDelta} dB, actual Δ ${p.delta} dB. Chosen m=${p.m.toFixed(9)}; pressure exponent 2m=${(2*p.m).toFixed(9)}. Model sones ${p.N1.toFixed(6)} → ${p.N2.toFixed(6)}, ratio ${p.ratio.toFixed(6)}; nominal reference ratio ${p.referenceRatio.toFixed(6)}.\nAcoustic conversion at fixed impedance: RMS pressure ratio ${p.pressureRatio.toFixed(6)}, intensity ratio ${p.intensityRatio.toFixed(6)}. Modeled RMS pressures ${p.pressure1.toFixed(6)} and ${p.pressure2.toFixed(6)} Pa re 20 µPa; these are not measured device pressures. This formula doubles every ${p.doubling.toFixed(6)} dB${p.doubling>p.maxDelta?' (beyond the current permitted interval)':''}.\nUncalibrated digital pair uses Δ only, independent of modeled absolute L: first peak ${(0.02*10**(-p.delta/20)).toFixed(8)}, second 0.02000000 of full scale, before the shared limiter/device. ${p.lastAudio?`Last played Δ ${p.lastAudio.delta} dB.`:'No audio has been played.'} No calibrated SPL or perceived-doubling claim.`;});
       },
     },
     // ------------------------------------------------------------------ 3.10
