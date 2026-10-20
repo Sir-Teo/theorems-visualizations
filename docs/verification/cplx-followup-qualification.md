@@ -1,0 +1,5 @@
+# Separate CPLX4.13 logarithm-domain qualification
+
+After prerequisite-only3aa8196b89808d38b4285fc509f07ed21f749e46, qualify one inherited proof phrase: “For N configurations” becomes “For N≥2 configurations” before ceil(log2(N−1)). The new prerequisite paragraph already treats N=1 via the initial identity matrix. This successor makes the old logarithm formula's domain agree explicitly; log2(0) has no real value. No mathematical conclusion, dependency, source/review flag, function/helper, runtime or layout changes.
+
+Exact complete before/after idea and literal substitution are tests/cplx-followup-qualification.json. The final preservation script reconstructs all53complete objects from the accepted root baseline, allowing exactly the original eight additions and this one replacement, while guarding all53functions/flags/helpers,158full rows and all full raw dependency lists. Existing accepted qualification/layout/source-closure boundaries remain exact. Initial28field states passed before this small source successor; fresh4.13-only both-theme253/320 captures will be recorded separately. No whole-visualization certification or source closure claimed.
