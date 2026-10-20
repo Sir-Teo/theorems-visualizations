@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 104,
+  "remainingFlags": 99,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "game": 5,
     "polsci": 9,
-    "music": 13,
+    "music": 8,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -445,87 +445,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale"
-      }
-    },
-    {
-      "id": "music-8.9",
-      "file": "content/music/ch08-b.js",
-      "name": "Set classes and prime form",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Set_theory_(music)",
-        "wikipedia2": "https://en.wikipedia.org/wiki/List_of_set_classes"
-      }
-    },
-    {
-      "id": "music-8.10",
-      "file": "content/music/ch08-b.js",
-      "name": "Counting set classes (Burnside)",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Burnside%27s_lemma"
-      }
-    },
-    {
-      "id": "music-8.11",
-      "file": "content/music/ch08-b.js",
-      "name": "The interval vector",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Interval_vector"
-      }
-    },
-    {
-      "id": "music-8.12",
-      "file": "content/music/ch08-b.js",
-      "name": "The hexachord theorem",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "credit",
-          "text": "Observed by Milton Babbitt and proved by David Lewin (note in the Journal of Music Theory, c. 1959–60); other early proofs by Ralph Fox, Kassler (1961), Regener (1974) and Wilcox (1983). Attribution details taken from secondary sources and not checked against the originals."
-        }
-      ],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Interval_vector#Hexachordal_theorem"
-      }
-    },
-    {
-      "id": "music-8.13",
-      "file": "content/music/ch08-b.js",
-      "name": "Z-related sets",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Z-relation"
       }
     },
     {
@@ -2430,7 +2349,12 @@
       "soc-4.15",
       "soc-4.13",
       "soc-4.14",
-      "soc-3.7"
+      "soc-3.7",
+      "music-8.9",
+      "music-8.10",
+      "music-8.11",
+      "music-8.12",
+      "music-8.13"
     ]
   },
   "additionalFollowups": [
@@ -7109,6 +7033,31 @@
       "id": "soc-3.7",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review; soc-exchange-followup.md."
+    },
+    {
+      "id": "music-8.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
+    },
+    {
+      "id": "music-8.10",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
+    },
+    {
+      "id": "music-8.11",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
+    },
+    {
+      "id": "music-8.12",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
+    },
+    {
+      "id": "music-8.13",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry; music-setclass-followup.md."
     }
   ]
 }

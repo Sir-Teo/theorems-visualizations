@@ -309,6 +309,20 @@
         "soc-exchange-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-8.9",
+        "music-8.10",
+        "music-8.11",
+        "music-8.12",
+        "music-8.13"
+      ],
+      "peer": "worker_three independently accepted exact f5c65dd against Benson text and pixels, exhaustive finite mathematics plus 92840 general-circle cases, ten fresh narrow native groups and actual audio/state/geometry",
+      "reports": [
+        "music-setclass-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -321,7 +335,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 104,
+  "currentPendingSourceReviews": 99,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,

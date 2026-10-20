@@ -14,7 +14,7 @@ The chosen representative is a naming convention; it does not order musical qual
   deps:['music-8.7'],see:['music-8.10','music-8.11'],refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §9.14, pp. 332–334; explicit representative convention'],tags:['set theory','group action'],
   credit:'Technical exposition: Dave Benson, §9.14; exact finite enumeration and synthesis authored here.',
   scope:String.raw`The domain is all 4096 subsets of the twelve equal-tempered pitch classes. The tuple rule is stated explicitly, without claiming agreement with every larger-set Forte/Rahn catalogue convention or authenticating their original publications. Pitch sets discard octave register, ordering and repeated notes; the displayed audio supplies a particular register. `+audio,
-  links:{source},verify:true,viz:setClassViz,
+  links:{source},verify:false,viz:setClassViz,
  },
  {
   num:'8.10',kind:'Theorem',name:'Counting set classes (Burnside)',
@@ -30,7 +30,7 @@ A subset is fixed by a permutation exactly when it is a union of its disjoint cy
   deps:['music-8.9','rep-3.15'],see:['music-8.8'],refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §9.13, Lemma 9.13.1 and proof, pp. 330–331; §9.14 fixed-set/orbit tables, p. 333'],tags:['burnside','counting'],
   credit:'Burnside formula and technical tables: Benson, §§9.13–9.14; direct subset/cycle calculations authored here.',
   scope:String.raw`Exact finite counts for subsets, rather than ordered tone rows. Both groups, all 13 cardinalities and all 4096 subsets are enumerated. The proof concerns the stated action; no original 1897 priority or other historical publication has been authenticated here. A chart is a count visualization, not a perceptual classification.`,
-  links:{source},verify:true,viz:setBurnsideViz,
+  links:{source},verify:false,viz:setBurnsideViz,
  },
  {
   num:'8.11',kind:'Concept',name:'The interval vector',
@@ -42,7 +42,7 @@ The major triad {0,4,7} has vector (0,0,1,1,1,0); the diatonic set {0,2,4,5,7,9,
   deps:['music-8.2','music-8.9'],see:['music-8.12','music-8.13'],refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §9.14, p. 334; examples computed here'],tags:['interval vector','invariance'],
   credit:'Technical interval-vector exposition: Benson, §9.14; examples and synthesis authored here.',
   scope:String.raw`Each unordered pair is counted once, including an antipodal pair in v₆. This differs from an ordered difference/autocorrelation count, in which an antipodal pair occurs twice. No invariant is described as a listener model or as sufficient to identify an orbit. `+audio,
-  links:{source},verify:true,viz:setVectorViz,
+  links:{source},verify:false,viz:setVectorViz,
  },
  {
   num:'8.12',kind:'Theorem',name:'The hexachord theorem',
@@ -54,7 +54,7 @@ On a c-position circle the same argument gives c−2k for shorter intervals belo
   deps:['music-8.11'],see:['music-8.15','music-8.13'],refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §9.14, pp. 334–336; general complement identity derived here'],tags:['interval vector','complement'],
   credit:'Technical complement-vector exposition: Benson, §9.14; inclusion–exclusion proof and finite implementation authored here.',
   scope:String.raw`All 4096 subsets are included. Independent enumeration checks the general identity and all 924 six-note cases. The seed controls a declared deterministic generator, without claiming ideal iid sampling. Original Babbitt/Lewin/Fox priority and dates are outside the present technical claim. `+audio,
-  links:{source},verify:true,viz:setHexViz,
+  links:{source},verify:false,viz:setHexViz,
  },
  {
   num:'8.13',kind:'Concept',name:'Z-related sets',
@@ -66,6 +66,6 @@ For subsets of Z/12 there are 23 unordered Z-related pairs of classes: 1 at size
   deps:['music-8.11','music-8.9'],see:['music-8.12','music-8.15'],refs:['Benson, Music: A Mathematical Offering, Web version 14 Dec 2008, §9.14, pp. 334–336, tetrachord examples and complete hexachord complement list; all-domain pair counts computed here'],tags:['interval vector','counterexample'],
   credit:'Technical Z-relation examples and complementary-class list: Benson, §9.14; complete finite classification authored here.',
   scope:String.raw`The equivalence group includes both transposition and inversion, and both sets have equal size. Other groups or circle sizes can change the classification. The construction supports a finite mathematical distinction, without authenticating original nomenclature/priority or inferring a perceived sound difference.`+audio,
-  links:{source},verify:true,viz:setZViz,
+  links:{source},verify:false,viz:setZViz,
  },
 ];
