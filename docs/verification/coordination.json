@@ -22,7 +22,7 @@
     ],
     "current": [
       "POPGEN, TOC and GEOG accepted; live prerequisite492/24/19",
-      "Immutable full checkpoint6 on a4a5103 running; no timing",
+      "Immutable checkpoint6 on a4a5103 passes2167tests/all6UI and strict/static0/0; no timing",
       "BIGHIST3.5 frozen service restriction persists; no retry or edge acceptance"
     ]
   },
@@ -1365,15 +1365,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "68aa4e24889ec290d8f90206c4441485389f7e26",
-    "acceptedContentCommit": "68aa4e2",
-    "report": "docs/verification/checkpoint-68aa4e2.md",
-    "defaultTests": 2152,
+    "testedContentCommit": "a4a51037f75319499eb8a63f15248baec7150ffe",
+    "acceptedContentCommit": "a4a5103",
+    "report": "docs/verification/checkpoint-a4a5103.md",
+    "defaultTests": 2167,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 109.435032834,
+    "testDurationSeconds": 118.221685042,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1384,13 +1384,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113033,
+    "homeGzipBytes": 113072,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 590,
-    "publishedCollectionsBelowTarget": 30,
+    "publishedCrossFieldShortfall": 492,
+    "publishedCollectionsBelowTarget": 24,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 23,
+    "wholeSyllabusBelowTarget": 19,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1398,15 +1398,15 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint5-build.log",
-      "/tmp/atlas-continuation/checkpoint5-tests.log",
-      "/tmp/atlas-continuation/checkpoint5-static.log",
-      "/tmp/atlas-continuation/checkpoint5-queue.log",
-      "/tmp/atlas-continuation/checkpoint5-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint6-build.log",
+      "/tmp/atlas-continuation/checkpoint6-tests.log",
+      "/tmp/atlas-continuation/checkpoint6-static.log",
+      "/tmp/atlas-continuation/checkpoint6-queue.log",
+      "/tmp/atlas-continuation/checkpoint6-crossfield-accepted.log"
     ],
     "limitations": [
-      "Excludes later acceptance-preserving inventory tool/fixtures, BIOINF and future collection candidates and actual-mesh operation/storage census.",
-      "Frozen BIGHIST3.5source candidate/edge remains unaccepted, flag true; default testing does not replace source peer.",
+      "Excludes later read-only membership/chunk reports and forthcoming CLIMATE/REL/QINFO/CM candidates.",
+      "Frozen BIGHIST3.5 source candidate/edge remains unaccepted, flag true; default testing does not replace source peer.",
       "Rejected isolated map artifacts are not production, and their failed explicit native probes are not claimed to pass."
     ]
   },

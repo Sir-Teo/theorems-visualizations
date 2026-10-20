@@ -997,3 +997,7 @@ Exact [68aa4e2checkpoint](checkpoint-68aa4e2.md) passes2,152default tests, all6U
 ### POPGEN, TOC and GEOG accepted
 
 Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bounded statement qualifications, exact raw rows and actual narrow-theme wraps. Live prerequisite492/24/19; sourcequeue5 unchanged. Twenty-four further collections now meet25written inputs. Full checkpoint follows; Wave5 remains unstarted.
+
+### Integrated checkpoint a4a5103
+
+[Immutable checkpoint](checkpoint-a4a5103.md) passes2,167default tests including all6UI, strict/fullstatic0errors/0warnings, home113,072bytes gzip. Includes all accepted batches through POPGEN/TOC/GEOG and accounting fixtures; prerequisite492/24/19, source5=833+1−829. Subsequent read-only chunk reports and new candidates are outside its scope; map60fps remains open.
