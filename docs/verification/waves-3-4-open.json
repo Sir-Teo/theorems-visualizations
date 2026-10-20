@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 176,
+  "remainingFlags": 174,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -26,7 +26,6 @@
     "psych": 17,
     "soc": 16,
     "polsci": 11,
-    "demo": 2,
     "music": 23,
     "art": 11,
     "arch": 11,
@@ -1233,39 +1232,6 @@
       "refs": [
         "Shepsle: group decisions",
         "Ladha (1992), American Journal of Political Science 36: 617\u2013634"
-      ],
-      "links": {}
-    },
-    {
-      "id": "demo-4.8",
-      "file": "content/demo/ch04-b.js",
-      "name": "Natural versus controlled fertility (Coale\u2013Trussell)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "PHG ch. 9"
-      ],
-      "links": {
-        "doi": "https://doi.org/10.2307/2733910"
-      }
-    },
-    {
-      "id": "demo-4.9",
-      "file": "content/demo/ch04-b.js",
-      "name": "Princeton fertility indices (I_f, I_g, I_m)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "$I_f$ is computed from the UN WPP 2024 estimates of births and women by age (ages 15\u201349); the shares married are an illustrative logistic curve set by you, not census data, so $I_m$ and $I_g$ show how the decomposition works and are not estimates for these countries. The Hutterite rates for 20\u201349 are the standard values and the 15\u201319 value of 0.300 is quoted from memory."
-        }
-      ],
-      "refs": [
-        "PHG ch. 5"
       ],
       "links": {}
     },
@@ -3539,7 +3505,9 @@
       "fin-5.15",
       "demo-4.3",
       "fin-5.4",
-      "fin-5.5"
+      "fin-5.5",
+      "demo-4.8",
+      "demo-4.9"
     ]
   },
   "additionalFollowups": [
@@ -7766,6 +7734,18 @@
       "status": "resolved",
       "report": "docs/verification/fin-events-funds-followup.md",
       "note": "Actual primary source claims checked; independent six-group math and eight-group native checks plus final narrow/desktop image inspection pass; authored CAR/Gaussian models are separated from historical evidence."
+    },
+    {
+      "id": "demo-4.8",
+      "status": "resolved",
+      "report": "docs/verification/demo-fertility-indices-followup.md",
+      "note": "Actual official technical table and original Coale definitions checked; five independent math groups,10360 original scalars,eight native groups and final mobile/extreme images pass; source/model units and assumptions explicit."
+    },
+    {
+      "id": "demo-4.9",
+      "status": "resolved",
+      "report": "docs/verification/demo-fertility-indices-followup.md",
+      "note": "Actual official technical table and original Coale definitions checked; five independent math groups,10360 original scalars,eight native groups and final mobile/extreme images pass; source/model units and assumptions explicit."
     }
   ]
 }

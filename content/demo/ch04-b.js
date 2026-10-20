@@ -1,6 +1,8 @@
 // Demography — Chapter 4: Fertility and reproduction (part b: 4.7–4.12)
 import { clamp, sum, int, CNAME, SEXY, AGE22, NS22, FAGES, FMID, FY0, FY1, asfr, women, indAt, ind, tfrOf, HUT, lxSex, LxSex, SRBNAME, stepPath, cOpts } from './ch04.shared.js';
 
+import { CT_AGES, CT_N, CT_V, maritalSchedule, fitMaritalSchedule, PRINCETON_AGES, PRINCETON_H, currentMarriageShares, princetonIndices } from './source-audit-fertility-indices.js';
+
 const yearTicks = (a = 1950, b = 2020, d = 10) => { const t = []; for (let y = a; y <= b; y += d) t.push([y, String(y)]); return t; };
 /** Share ever married at age a: a logistic in age with mid-point A and ceiling E (an illustrative nuptiality curve, not a fitted model). */
 const married = (a, A, E) => E / (1 + Math.exp(-(a - A) / 2.2));
@@ -68,47 +70,39 @@ export default {
       num: '4.8',
       kind: 'Model',
       name: 'Natural versus controlled fertility (Coale–Trussell)',
-      statement: String.raw`In a population practising no deliberate limitation, marital fertility follows a characteristic age pattern $n(a)$ (**natural fertility**) that falls with age through declining fecundity. Coale and Trussell's model writes observed marital fertility at age $a$ as $r(a) = M\,n(a)\,\exp\bigl(m\,v(a)\bigr)$. The parameter $M$ scales the overall level relative to the standard; $v(a)$ is a standard pattern of departure from natural fertility that becomes more negative with age, because couples who control by **stopping** once they reach a desired family size cut fertility most at older ages; $m$ measures how far the population has gone in that direction ($m = 0$ is natural fertility). Taking logs, $\ln\bigl(r(a)/n(a)\bigr) = \ln M + m\,v(a)$ is a straight line in $v$, so $M$ and $m$ are read off a regression.`,
-      idea: String.raw`Without parity-dependent control, the chance of a birth depends mostly on a woman's age, so schedules from different natural-fertility populations are close to one shape up to a scale factor. Birth control that responds to the number of children already born (stopping) removes births mainly at older ages, where women are further along in their families, and so tilts the schedule; the log ratio to natural fertility declines roughly in a pattern that is the same across populations, which is what the standard $v(a)$ encodes. The point of the model is that a single number, $m$, measures the degree of control from the age pattern alone, using no data on contraception.`,
-      caption: String.raw`Choose a country and year. The model is fitted to the age-specific rates of ages 20–49 (blue bars) by a straight line of $\ln(r/n)$ against $v$ (right panel). The dashed curve is natural fertility at the fitted level, $M\,n(a)$, and the solid curve is the fit with control. Compare China in 1990 (strong stopping, $m$ about 2) with Nigeria in 1990 ($m$ near 0, natural fertility). Switch to **manual** to set $M$ and $m$ yourself and see how stopping bends the older ages down. Because these are rates for all women (not marital rates), a population where many women are unmarried shows a low $M$.`,
+      statement: String.raw`For five-year age groups, the Coale–Trussell model of **marital** fertility is $r_i=M n_i e^{m v_i}$, where $r_i,n_i$ are live births per married woman-year, $M>0$ scales a fixed natural-fertility standard and $v_i\leq0$ is a fixed age pattern of departure. Here natural fertility means the absence of fertility limitation that changes with parity, rather than a universal biological maximum. A positive $m$ makes the relative shortfall increase with age; $m=0$ preserves the standard's shape, while a negative fitted $m$ tilts the opposite way. The transformation $\ln(r_i/n_i)=\ln M+m v_i$ gives a line. UN Manual X recommends fitting it by least squares at ages 20–44, excluding 45–49.`,
+      idea: String.raw`The model summarizes an age pattern through two parameters, conditional on its standard schedules and on rates actually being marital rates. A departure with a different age pattern changes the fitted slope even when the generating $m$ is fixed. The illustration adds an authored quadratic departure, $r_i=M n_i\exp\{m v_i+\delta(v_i/1.414)^2\}$. At $\delta=0$ the line recovers the input parameters exactly; otherwise the residuals and the omitted 45–49 point expose the imperfect fit. An age-pattern fit alone does not establish a causal effect of contraception or stopping.`,
+      caption: String.raw`Set the generating level $M$, tilt $m$ and departure $\delta$ of a hypothetical marital schedule. Left: its six rates, the fitted schedule, and the fitted level times the natural standard. Right: five filled points used in the log fit and the hollow 45–49 point excluded from estimation. The line extends to that excluded age as a prediction.`,
       deps: ['demo-4.1'],
-      refs: ['PHG ch. 9'],
+      refs: ['UN Manual X (1983), chapter I.E.1, pp.23–25, Table3 and equations E.3–E.7'],
       tags: ['natural fertility', 'fertility control'],
-      credit: 'Coale & Trussell, 1974',
-      verify: true,
-      scope: String.raw`The model form $r(a)=M\,n(a)\,e^{m v(a)}$ is the published one. The standard patterns used here are **reconstructions**: $n(a)$ is taken proportional to the Hutterite marital schedule (the 1920s benchmark of Coale's indices, 4.9) and $v(a)$ is a stylised decreasing pattern of about the right size, not the published Coale–Trussell tables. So $M$ and $m$ computed here are illustrative and are not comparable with published estimates. They are fitted to overall age-specific rates (WPP 2024) rather than the marital fertility the model describes.`,
-      links: { doi: 'https://doi.org/10.2307/2733910' },
+      credit: 'Coale–Trussell model; technical exposition in UN Manual X, 1983',
+      verify: false,
+      scope: String.raw`The six $n_i,v_i$ values are transcribed from UN Manual X Table3, not reconstructed from Hutterite rates. The 1974 and 1978 original papers were not available for this review; the stated model, table and recommended fit domain follow the accessible official exposition. Every plotted schedule is authored, with no country data or fitted country estimate of stopping. Five-year rates are annual rates; multiplying their sum by five gives a hypothetical 20–49 total for continuous marital exposure, not an all-women TFR or completed cohort fertility.`,
+      links: { source: 'https://www.un.org/development/desa/pd/sites/www.un.org.development.desa.pd/files/files/documents/2020/Jan/un_1983_manual_x_-_indirect_techniques_for_demographic_estimation.pdf' },
       viz(v) {
-        const co = v.select('country', cOpts(), 'CHN');
-        const yr = v.slider('year', FY0, FY1, 1990, { int: true });
-        const man = v.toggle('manual M and m', false);
-        const Ms = v.slider('M', 0.1, 1.2, 0.7, { step: 0.01 });
-        const ms = v.slider('m (control)', 0, 4, 0.5, { step: 0.02 });
-        const NAT = HUT.slice(2, 8), VST = [0, -0.279, -0.667, -1.042, -1.414, -1.671];
-        const AG6 = FMID.slice(2, 8);
-        const s = v.stage({ x: [10, 55], y: [0, 400], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'births per 1 000 women', height: 360, title: 'Observed rates and the model' });
-        const t = v.stage({ x: [-2, 0.3], y: [-4, 0.5], axes: 'box', gutter: true, xlabel: 'v(a)', ylabel: 'ln( r(a) / n(a) )', height: 360, title: 'The log-linear fit' });
-        let R = null;
+        const M = v.slider('generating level M', .1, 1.2, .7, { step: .01 });
+        const m = v.slider('generating tilt m', 0, 4, .5, { step: .02 });
+        const departure = v.slider('authored departure δ', -.8, .8, 0, { step: .02 });
+        const s = v.stage({ x: [18, 52], y: [-25, 600], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'births / 1 000 married woman-years', height: 360, title: 'Hypothetical marital schedule' });
+        const t = v.stage({ x: [-1.85, .18], y: [-4, 1], axes: 'box', gutter: true, xlabel: 'standard departure v', ylabel: 'ln(r / n)', height: 360, title: 'Log fit: ages 20–44' });
+        let st;
         v.render(() => {
-          const f = asfr(co.value, yr.value);
-          const pts = f.slice(2, 8).map((x, i) => ({ v: VST[i], y: x > 0 ? Math.log(x / NAT[i]) : NaN, a: AG6[i], f: x })).filter((p) => isFinite(p.y));
-          const n = pts.length, mv = sum(pts.map((p) => p.v)) / n, my = sum(pts.map((p) => p.y)) / n;
-          const sxx = sum(pts.map((p) => (p.v - mv) ** 2)), sxy = sum(pts.map((p) => (p.v - mv) * (p.y - my))), syy = sum(pts.map((p) => (p.y - my) ** 2));
-          const mfit = sxx > 0 ? sxy / sxx : 0, lnM = my - mfit * mv, r2 = syy > 0 ? (sxy * sxy) / (sxx * syy) : 1;
-          const M = man.value ? Ms.value : Math.exp(lnM), mm = man.value ? ms.value : mfit;
-          if (!man.value) { Ms.set(clamp(M, 0.1, 1.2)); ms.set(clamp(mm, 0, 4)); }
-          s.setView([10, 55], [0, Math.max(...f.map((x) => x * 1000), M * 550, 100) * 1.15]);
-          FAGES.forEach((a, i) => s.rect(a, 0, a + 5, f[i] * 1000, { fill: 'accent', fillAlpha: 0.25, color: 'accent', width: 1.5 }));
-          s.path(AG6.map((a, i) => [a, M * NAT[i] * 1000]), { color: 'muted', width: 2.2, dash: true });
-          s.path(AG6.map((a, i) => [a, M * NAT[i] * Math.exp(mm * VST[i]) * 1000]), { color: 'green', width: 2.8 });
-          s.dots(AG6.map((a, i) => [a, M * NAT[i] * Math.exp(mm * VST[i]) * 1000]), { r: 4, color: 'green' });
-          t.hline(0, { color: 'muted', alpha: 0.5 });
-          t.line(-1.9, Math.log(M) + mm * -1.9, 0.1, Math.log(M) + mm * 0.1, { color: 'green', width: 2.4 });
-          pts.forEach((p) => t.dot(p.v, p.y, { color: 'accent', r: 5, label: (p.a - 2.5) + '–' + (p.a + 1.5), labelPos: pts.indexOf(p) % 2 ? 's' : 'n' }));
-          R = { M, mm, r2, nat: 5 * M * sum(NAT) , obs: 5 * sum(f.slice(2, 8)), ctl: 5 * sum(AG6.map((a, i) => M * NAT[i] * Math.exp(mm * VST[i]))) };
+          const rates = maritalSchedule(M.value, m.value, departure.value), fit = fitMaritalSchedule(rates);
+          const baseline = CT_N.map(n => fit.M * n), peak = Math.max(...rates, ...fit.fitted, ...baseline) * 1000;
+          s.setView([18, 52], [-peak * .055, peak * 1.18]);
+          CT_AGES.forEach((a, i) => s.rect(a, 0, a + 5, rates[i] * 1000, { fill: 'accent', fillAlpha: .25, color: 'accent', width: 1.5 }));
+          s.path(CT_AGES.map((a, i) => [a + 2.5, baseline[i] * 1000]), { color: 'muted', width: 2, dash: true });
+          s.path(CT_AGES.map((a, i) => [a + 2.5, fit.fitted[i] * 1000]), { color: 'green', width: 2.6 });
+          s.dots(CT_AGES.map((a, i) => [a + 2.5, fit.fitted[i] * 1000]), { r: 3.5, color: 'green' });
+          const line = CT_V.map(x => [x, fit.intercept + fit.m * x]), ys = [...fit.logs, ...line.map(p => p[1])], low = Math.min(...ys), high = Math.max(...ys), span = Math.max(.5, high - low);
+          t.setView([-1.85, .18], [low - .18 * span, high + .18 * span]);
+          t.path(line, { color: 'green', width: 2.4 });
+          CT_V.forEach((x, i) => t.dot(x, fit.logs[i], { r: 4.5, color: 'accent', hollow: i === 5 }));
+          st = { M: M.value, m: m.value, departure: departure.value, rates, fit };
         });
-        v.legend([['accent', 'observed rates', { area: true }], ['muted', 'natural fertility M·n(a)', { dash: true }], ['green', 'with control']]);
-        v.readout(() => `${man.value ? 'Manual' : 'Fitted'}: $M$ = **${v.fix(R.M, 2)}**, $m$ = **${v.fix(R.mm, 2)}**${man.value ? '' : ` ($R^2$ = ${v.fix(R.r2, 2)})`}.\nTFR from ages 20–49: natural $5M\\sum n$ = ${v.fix(R.nat, 2)}; with control = **${v.fix(R.ctl, 2)}**${man.value ? '' : `; observed ${v.fix(R.obs, 2)}`}. The gap is what stopping removes.`);
+        v.legend([['accent', 'authored marital rates', { area: true }], ['muted', 'fitted M × natural standard', { dash: true }], ['green', 'fitted marital schedule']]);
+        v.readout(() => `Generating $M$ = **${v.fix(st.M, 3)}**, $m$ = **${v.fix(st.m, 3)}**, $\\delta$ = **${v.fix(st.departure, 3)}**. Fitted at 20–44: $M$ = **${v.fix(st.fit.M, 4)}**, $m$ = **${v.fix(st.fit.m, 4)}**; log RMSE = ${v.fix(st.fit.rmse, 4)}.\nHypothetical births over ages 20–49 under continuous marital exposure: authored **${v.fix(st.fit.observed20to49, 4)}**, fitted **${v.fix(st.fit.fitted20to49, 4)}**, fitted natural baseline **${v.fix(st.fit.baseline20to49, 4)}**. Excluded 45–49 log residual = **${v.fix(st.fit.residuals[5], 4)}**. These are model comparisons, not births proved to have been prevented.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.9
@@ -116,40 +110,41 @@ export default {
       num: '4.9',
       kind: 'Definition',
       name: 'Princeton fertility indices (I_f, I_g, I_m)',
-      statement: String.raw`The Princeton indices measure fertility against the **Hutterite schedule** of marital fertility $F^H_a$, the highest recorded for a large population (the Hutterites of the 1920s). With $B$ births, $W_a$ women and $M_a$ married women in age group $a$: the **overall index** is $I_f = B\big/\sum_a W_a F^H_a$; the **marital index** is $I_g = B^{\text{marital}}\big/\sum_a M_a F^H_a$; and the **proportion-married index** is $I_m = \sum_a M_a F^H_a\big/\sum_a W_a F^H_a$. If all births are marital, $I_f = I_g\,I_m$; in general $I_f = I_g I_m + I_h(1-I_m)$ with $I_h$ the same ratio for nonmarital births among unmarried women.`,
-      idea: String.raw`By comparing a population's births with what the same women would have under a fixed high schedule, the indices remove the age structure, so they can be compared across times and places. Because $I_f$ is a product of how many women are married (weighted by when marital fertility is highest) and how fertile married women are, taking logs splits a decline in overall fertility into a marriage part and a marital part. In the Princeton European Fertility Project the marital index turned out to be the one that fell as the fertility transition spread across 19th-century European provinces.`,
-      caption: String.raw`Blue bars: observed rates of the chosen country and year. Grey: the Hutterite marital schedule applied to every woman (its total is the denominator of $I_f$). Orange: the same schedule applied only to married women, for a nuptiality curve you set with the age at marriage and the share ever married. The bars on the right are the three indices: $I_f$ comes from the data (births and women of the UN estimates), while $I_m$ and $I_g$ depend on the nuptiality curve you assume; change it and watch $I_m$ and $I_g$ trade off while $I_f$ stays put.`,
+      statement: String.raw`Use the same period and maternal ages 15–49 throughout. Let $W_i$ be all-women exposure, $M_i$ currently-married exposure, $U_i=W_i-M_i$, and $F_i$ the fixed adjusted Hutterite reference rate per woman-year. Put $H=\sum_iF_iW_i$, $H_m=\sum_iF_iM_i$ and $H_u=\sum_iF_iU_i$, with positive denominators. For births $B=B_m+B_u$, define $I_f=B/H$, $I_g=B_m/H_m$, $I_h=B_u/H_u$ and $I_m=H_m/H$. Since $H_m+H_u=H$, the exact identity is $I_f=I_g I_m+I_h(1-I_m)$. If nonmarital births vanish, $I_f=I_g I_m$.`,
+      idea: String.raw`These are indirect standardizations: observed births are compared with expected births under one fixed reference applied to the population's exposures. $I_m$ is a fertility-weighted proportion currently married. The fertility ratios need not lie below one; one is a reference value, not a mathematical or biological ceiling. Because the weights still involve each population's exposure distribution, indices are not generally independent of age composition when relative age-specific fertility profiles differ. The decomposition is accounting, not a causal attribution of fertility differences to marriage.`,
+      caption: String.raw`Choose a WPP country and year. Blue rates and the reconstructed exposure come from that period; grey shows the adjusted Hutterite reference. Orange multiplies the reference by authored proportions currently married. Set their logistic midpoint and ceiling, then allocate a hypothetical share of births to unmarried women. The four bars include both fertility indices, the overall index and the weighted marriage proportion; all remain visible above one.`,
       deps: ['demo-4.1'],
-      refs: ['PHG ch. 5'],
+      refs: ['Coale, Factors associated with the development of low fertility (1967), pp.205–209, especially Tables1–2', 'UN World Population Prospects 2024, fertility by age5: ASFR and births'],
       tags: ['Hutterite', 'fertility indices', 'marriage'],
-      credit: 'Coale and the Princeton European Fertility Project, 1960s–1980s',
-      verify: true,
-      scope: String.raw`$I_f$ is computed from the UN WPP 2024 estimates of births and women by age (ages 15–49); the shares married are an illustrative logistic curve set by you, not census data, so $I_m$ and $I_g$ show how the decomposition works and are not estimates for these countries. The Hutterite rates for 20–49 are the standard values and the 15–19 value of 0.300 is quoted from memory.`,
+      credit: 'Coale, 1967; Princeton European Fertility Project',
+      verify: false,
+      scope: String.raw`The standard is Coale's Table1: 0.300, 0.550, 0.502, 0.447, 0.406, 0.222, 0.061 at ages 15–19 through 45–49. His p.205 explains that 0.300 replaces the unusually high observed teenage Hutterite rate; this is an adjusted reference based on 1921–1930, not seven unmodified observed rates. WPP rates here are rounded to 0.1 births per 1,000 woman-years; exposure is recovered from source births/rates and rounded to 1,000 woman-years, so the displayed birth count and index are approximate. The logistic $p_i=E/[1+\exp(-(a_i+2.5-A)/2.2)]$ is an authored currently-married share, not observed marital status or an ever-married distribution; $A$ is its midpoint, not mean age at first marriage. The birth allocation is hypothetical, so $I_g,I_h,I_m$ are not country estimates. No historical province data are plotted.`,
+      links: { source: 'https://documents.un.org/api/symbol/access?s=E/CONF.41/3&l=en&t=pdf', data: 'https://population.un.org/wpp/downloads' },
       viz(v) {
         const co = v.select('country', cOpts(), 'FRA');
         const yr = v.slider('year', FY0, FY1, 1950, { int: true });
-        const A = v.slider('mean age at marriage', 15, 32, 25, { step: 0.5 });
-        const E = v.slider('share ever married', 0.4, 1, 0.9, { step: 0.01 });
-        const h = v.slider('share of births nonmarital', 0, 0.6, 0, { step: 0.01 });
-        const s = v.stage({ x: [10, 55], y: [0, 600], axes: 'box', gutter: true, xlabel: 'age', ylabel: 'births per 1 000 women', height: 360, title: 'Observed rates against the Hutterite benchmark' });
-        const t = v.stage({ x: [0, 4], y: [0, 1.1], axes: 'box', gutter: true, ylabel: 'index', height: 360, title: 'The indices', xticks: [[0.5, 'I_f'], [1.5, 'I_g'], [2.5, 'I_m'], [3.5, 'I_g · I_m']] });
-        let R = null;
+        const A = v.slider('authored marriage midpoint A (years)', 15, 32, 25, { step: .5 });
+        const E = v.slider('authored current-marriage ceiling E', .4, 1, .9, { step: .01 });
+        const h = v.slider('hypothetical nonmarital birth share', 0, .6, 0, { step: .01 });
+        const s = v.stage({ x: [13, 52], y: [-35, 650], axes: 'box', gutter: true, xlabel: 'maternal age', ylabel: 'births / 1 000 woman-years', height: 360, title: 'Matched ages 15–49' });
+        const t = v.stage({ x: [0, 4], y: [-.1, 1.2], axes: 'box', gutter: true, ylabel: 'dimensionless index', height: 360, title: 'One is a reference, not a cap', xticks: [[.5, 'I_f'], [1.5, 'I_g'], [2.5, 'I_h'], [3.5, 'I_m']] });
+        const steps = values => PRINCETON_AGES.flatMap((a, i) => [[a, values[i] * 1000], [a + 5, values[i] * 1000]]);
+        let st;
         v.render(() => {
-          const c = co.value, y = yr.value, f = asfr(c, y), W = women(c, y);
-          const m = FMID.map((a) => married(a, A.value, E.value));
-          const B = sum(f.map((x, i) => x * W[i])), H = sum(HUT.map((x, i) => x * W[i])), Hm = sum(HUT.map((x, i) => x * W[i] * m[i])), Hu = H - Hm;
-          const If = B / H, Im = Hm / H, Ig = (1 - h.value) * B / Hm, Ih = Hu > 0 ? h.value * B / Hu : 0;
-          s.setView([10, 55], [0, Math.max(...f.map((x) => x * 1000), ...HUT.map((x) => x * 1000)) * 1.1]);
-          FAGES.forEach((a, i) => { s.rect(a, 0, a + 5, f[i] * 1000, { fill: 'accent', fillAlpha: 0.3, color: 'accent', width: 1.5 }); });
-          s.path(stepPath(HUT, 1000), { color: 'muted', width: 2, dash: true });
-          s.path(stepPath(HUT.map((x, i) => x * m[i]), 1000), { color: 'orange', width: 2.6 });
-          const bars = [[If, 'accent'], [Ig, 'green'], [Im, 'orange'], [Ig * Im, 'purple']];
-          bars.forEach(([val, col], i) => { t.rect(i + 0.15, 0, i + 0.85, val, { fill: col, fillAlpha: 0.45, color: col, width: 1.5 }); t.text(v.fix(val, 3), i + 0.5, val + 0.02, { size: 12, color: 'ink', align: 'center', baseline: 'bottom' }); });
-          t.hline(1, { color: 'muted', dash: true, alpha: 0.6 });
-          R = { If, Ig, Im, Ih, B, tfr: tfrOf(f), prod: Ig * Im + Ih * (1 - Im) };
+          const fertility = asfr(co.value, yr.value).slice(1, 8), exposure = women(co.value, yr.value).slice(1, 8), marriage = currentMarriageShares(A.value, E.value);
+          const model = princetonIndices(fertility, exposure, marriage, h.value), peak = Math.max(...fertility, ...PRINCETON_H) * 1000;
+          s.setView([13, 52], [-peak * .055, peak * 1.15]);
+          PRINCETON_AGES.forEach((a, i) => s.rect(a, 0, a + 5, fertility[i] * 1000, { fill: 'accent', fillAlpha: .3, color: 'accent', width: 1.5 }));
+          s.path(steps(PRINCETON_H), { color: 'muted', width: 2, dash: true });
+          s.path(steps(PRINCETON_H.map((x, i) => x * marriage[i])), { color: 'orange', width: 2.6 });
+          const bars = [[model.If, 'accent'], [model.Ig, 'green'], [model.Ih, 'purple'], [model.Im, 'orange']], top = Math.max(1, ...bars.map(b => b[0]));
+          t.setView([0, 4], [-top * .055, top * 1.28]);
+          bars.forEach(([value, color], i) => { t.rect(i + .15, 0, i + .85, value, { fill: color, fillAlpha: .45, color, width: 1.5 }); t.text(v.fix(value, 3), i + .5, value + top * .035, { size: 12, color: 'ink', align: 'center', baseline: 'bottom' }); });
+          t.path([[.08, 1], [3.92, 1]], { color: 'muted', width: 1.2, dash: true });
+          st = { country: co.value, year: yr.value, midpoint: A.value, ceiling: E.value, share: h.value, fertility, exposure, marriage, model };
         });
-        v.legend([['accent', 'observed', { area: true }], ['muted', 'Hutterite, all women', { dash: true }], ['orange', 'Hutterite, married women only']]);
-        v.readout(() => `$I_f$ = **${v.fix(R.If, 3)}** (births ${int(R.B)} thousand; TFR ${v.fix(R.tfr, 2)}).  For the nuptiality curve you set: $I_m$ = **${v.fix(R.Im, 3)}**, $I_g$ = **${v.fix(R.Ig, 3)}**${R.Ig > 1 ? ' (above 1: more births than the Hutterite maximum implies, so this marriage curve is too low for these data)' : ''}.\n$I_g I_m + I_h(1-I_m)$ = ${v.fix(R.prod, 3)} = $I_f$ (nonmarital index $I_h$ = ${v.fix(R.Ih, 3)}).`);
+        v.legend([['accent', 'WPP rates, all women', { area: true }], ['muted', 'adjusted Hutterite reference', { dash: true }], ['orange', 'reference × authored married share']]);
+        v.readout(() => `Ages 15–49, ${st.year}: approximate births **${v.fix(st.model.births, 3)} thousand**; $5\\sum f_i$ = **${v.fix(st.model.partialTFR, 4)}** births per woman. $I_f$ = **${v.fix(st.model.If, 4)}**.\nAuthored marital allocation: $I_g$ = **${v.fix(st.model.Ig, 4)}**, $I_h$ = **${v.fix(st.model.Ih, 4)}**, $I_m$ = **${v.fix(st.model.Im, 4)}**. Contributions: ${v.fix(st.model.maritalComponent, 4)} + ${v.fix(st.model.nonmaritalComponent, 4)} = **${v.fix(st.model.reconstructed, 4)}** = $I_f$. An index above one exceeds the reference under these assumptions; it does not prove a biological impossibility.`);
       },
     },
     // ───────────────────────────────────────────────────────────── 4.10

@@ -1,0 +1,59 @@
+import assert from 'node:assert/strict';
+import { chromium } from 'playwright-core';
+import { createServer } from '../scripts/serve.mjs';
+import { findBrowser } from '../scripts/browser.mjs';
+import { FCTRY,CNAME,asfr,women } from '../content/demo/ch04.shared.js';
+const server = createServer(); await new Promise(r => server.listen(0, r));
+const browser = await chromium.launch({ executablePath: findBrowser(), headless: true }), page = await browser.newPage(), errors = [];
+page.on('pageerror', e => errors.push(e.message));
+await page.route(/\/tools\/harness\.html\?/, async route => {
+  const response = await route.fetch(); let body = await response.text();
+  body = body.replace('stats.stages++;', `stats.stages++;(window.__S||=[]).push(s);const begin=s.begin.bind(s);s.begin=()=>{s.__P=[];s.__D=[];s.__DS=[];s.__RC=[];s.__FT=[];return begin();};for(const[k,list]of[['path','__P'],['dot','__D'],['dots','__DS'],['rect','__RC']]){const f=s[k].bind(s);s[k]=(...a)=>{s[list].push(a);return f(...a);};}const fill=s.ctx.fillText.bind(s.ctx);s.ctx.fillText=(t,x,y,...a)=>{const m=s.ctx.measureText(t);s.__FT.push([String(t),x-m.actualBoundingBoxLeft,y-m.actualBoundingBoxAscent,x+m.actualBoundingBoxRight,y+m.actualBoundingBoxDescent,!!s._clipped]);return fill(t,x,y,...a);};`);
+  body = body.replace('return item.viz(v);', `const ro=v.readout.bind(v);v.readout=f=>ro(()=>{window.__R=f();window.__RV=(window.__C||[]).map(c=>c.value);window.__RS=(window.__SEL||[]).map(c=>c.value);return window.__R;});const slider=v.slider.bind(v);v.slider=(...a)=>{const c=slider(...a);(window.__C||=[]).push(c);return c;};const select=v.select.bind(v);v.select=(...a)=>{const c=select(...a);(window.__SEL||=[]).push(c);return c;};return item.viz(v);`);
+  await route.fulfill({ response, body });
+});
+const near = (a, b, t = 1e-9) => assert.ok(Math.abs(a - b) <= t * Math.max(1, Math.abs(b)), `${a} != ${b}`);
+async function done() { await page.waitForFunction(() => JSON.stringify(window.__RV) === JSON.stringify(window.__C.map(c => c.value)) && JSON.stringify(window.__RS) === JSON.stringify((window.__SEL || []).map(c => c.value))); }
+async function load(id, theme, width) {
+  await page.setViewportSize({ width, height: 1600 });
+  await page.goto(`http://localhost:${server.address().port}/tools/harness.html?file=content/demo/ch04-b.js&id=demo-${id}&theme=${theme}&w=${width - 50}&still=1&wait=150`);
+  await page.waitForFunction(() => window.__done); const d = await page.evaluate(() => window.__done);
+  assert.deepEqual(d.errors, []); assert.deepEqual(d.texErrors, []); assert.deepEqual(d.blank, []); await done();
+}
+async function mode(name) { await page.getByRole('button', { name, exact: true }).click(); await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)))); await done(); }
+async function set(values) {
+  await page.locator('input[type=range]').evaluateAll((es, vals) => es.forEach((e, i) => { e.value = vals[i]; e.dispatchEvent(new Event('input', { bubbles: true })); }), values);
+  await done(); const actual = await page.evaluate(() => window.__C.map(c => c.value)); actual.forEach((x, i) => near(x, values[i]));
+}
+async function snapshot() {
+  const a = await page.evaluate(() => ({ r: window.__R, audit: window.__audit, values: window.__C.map(c => c.value), modes: (window.__SEL || []).map(c => c.value), e: window.__vizErrors || [], tex: document.querySelectorAll('.katex-error').length, overflow: [...document.querySelectorAll('.katex-display')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent), pageOverflow: document.documentElement.scrollWidth > innerWidth + 1,
+    S: window.__S.map(s => ({ visible: s.el.style.display !== 'none', w: s.width, h: s.height, b: s.bounds, paths: s.__P, dots: [...s.__D, ...s.__DS.flatMap(([ps,o])=>ps.map(([x,y])=>[x,y,o]))], rect: s.__RC, text: s.__FT, pb: [s.X(s.bounds.x[0]), s.Y(s.bounds.y[1]), s.X(s.bounds.x[1]), s.Y(s.bounds.y[0])], pp: s.__P.map(([pts,o={}]) => ({r:(o.width??2)/2,pts:pts.map(p => p && [s.X(p[0]), s.Y(p[1])])})), glyph: [...s.__D.map(([x,y,o={}])=>[s.X(x),s.Y(y),(o.r??4)+(o.hollow?(o.width??1.8)/2:o.ring!==false&&(o.r??4)>=3?.75:0)]),...s.__DS.flatMap(([ps,o={}])=>ps.map(([x,y])=>[s.X(x),s.Y(y),o.r??2.5]))], rr:s.__RC.map(([x,y,X,Y,o={}])=>[s.X(x),s.Y(y),s.X(X),s.Y(Y),o.stroke===false?0:(o.width??2)/2]) })) }));
+  assert.deepEqual(a.e, []); assert.deepEqual(a.overflow, []); assert.equal(a.tex, 0); assert.equal(a.pageOverflow, false); assert.doesNotMatch(a.r, /NaN|Infinity|undefined|\\n/);
+  for (const s of a.S.filter(s => s.visible)) {
+    for (const {pts,r} of s.pp) for (const p of pts) if (p) { assert.ok(p.every(Number.isFinite)); assert.ok(p[0]-r >= s.pb[0] - 1e-7 && p[0]+r <= s.pb[2] + 1e-7 && p[1]-r >= s.pb[1] - 1e-7 && p[1]+r <= s.pb[3] + 1e-7, 'complete plotted paths'); }
+    for (const [x, y, X, Y] of s.rect) for (const [u, v] of [[x, y], [X, Y]]) assert.ok(u >= s.b.x[0] - 1e-9 && u <= s.b.x[1] + 1e-9 && v >= s.b.y[0] - 1e-9 && v <= s.b.y[1] + 1e-9, 'complete histogram/model rectangle');
+    for(const[x,y,X,Y,r]of s.rr)assert.ok(Math.min(x,X)-r>=s.pb[0]-1e-7&&Math.max(x,X)+r<=s.pb[2]+1e-7&&Math.min(y,Y)-r>=s.pb[1]-1e-7&&Math.max(y,Y)+r<=s.pb[3]+1e-7,'complete rectangle strokes');
+    for (const [x, y, r] of s.glyph) assert.ok(x - r >= s.pb[0] && x + r <= s.pb[2] && y - r >= s.pb[1] && y + r <= s.pb[3], 'full marker/ring');
+    for (const [t, x, y, X, Y, clipped] of s.text) { assert.ok(x >= -1 && y >= -1 && X <= s.w + 1 && Y <= s.h + 1, `canvas text ${t}`); if (clipped) assert.ok(x - 2 >= s.pb[0] && X + 2 <= s.pb[2] && y - 2 >= s.pb[1] && Y + 2 <= s.pb[3], `text halo ${t}`); }
+  }
+  return a;
+}
+await page.route(/\/content\/demo\/ch04-b\.js$/,async route=>{const response=await route.fetch();const body=(await response.text()).replaceAll('st = {','st = window.__audit = {');await route.fulfill({response,body});});
+const N=[.460,.431,.395,.322,.167,.024],V=[0,-.279,-.667,-1.042,-1.414,-1.671],H=[.300,.550,.502,.447,.406,.222,.061];
+function referenceFit(q){const rates=N.map((n,i)=>q.M*n*Math.exp(q.m*V[i]+q.departure*(V[i]/1.414)**2)),logs=rates.map((r,i)=>Math.log(r/N[i]));let xy=0,xx=0;for(let i=0;i<5;i++)for(let j=0;j<i;j++){xy+=(V[i]-V[j])*(logs[i]-logs[j]);xx+=(V[i]-V[j])**2;}const m=xy/xx,c=logs.slice(0,5).reduce((s,y,i)=>s+y-m*V[i],0)/5,M=Math.exp(c),fitted=N.map((n,i)=>M*n*Math.exp(m*V[i]));return{rates,logs,m,M,c,fitted,rmse:Math.sqrt(logs.slice(0,5).reduce((s,y,i)=>s+(y-c-m*V[i])**2,0)/5)};}
+async function checkFit(){const a=await snapshot(),q=a.audit,r=referenceFit(q),[s,t]=a.S;assert.equal(a.S.length,2);for(const k of['M','m','rmse'])near(q.fit[k],r[k]);assert.equal(s.rect.length,6);assert.equal(s.paths.length,2);assert.equal(s.dots.length,6);assert.equal(t.dots.length,6);assert.equal(t.paths.length,1);for(let i=0;i<6;i++){near(q.rates[i],r.rates[i]);near(s.rect[i][0],20+5*i);near(s.rect[i][2],25+5*i);near(s.rect[i][3],1000*r.rates[i]);near(s.paths[0][0][i][1],1000*r.M*N[i]);near(s.paths[1][0][i][1],1000*r.fitted[i]);near(s.dots[i][1],1000*r.fitted[i]);near(t.dots[i][0],V[i]);near(t.dots[i][1],r.logs[i]);near(t.paths[0][0][i][1],r.c+r.m*V[i]);assert.equal(!!t.dots[i][2].hollow,i===5);}const read=a.r.replaceAll('−','-');for(const x of[r.M,r.m,r.rmse,q.fit.observed20to49,q.fit.fitted20to49,q.fit.baseline20to49,q.fit.residuals[5]])assert.ok(read.includes(x.toFixed(4)),`fit readout ${x}`);assert.match(read,/continuous marital exposure/);assert.match(read,/not births proved/);return{a,q};}
+function referenceIndices(q){const f=asfr(q.country,q.year).slice(1,8),W=women(q.country,q.year).slice(1,8),p=Array.from({length:7},(_,i)=>q.ceiling/(1+Math.exp(-(17.5+5*i-q.midpoint)/2.2)));let B=0,total=0,married=0,unmarried=0;for(let i=0;i<7;i++){B+=f[i]*W[i];total+=H[i]*W[i];married+=H[i]*W[i]*p[i];unmarried+=H[i]*W[i]*(1-p[i]);}return{f,W,p,births:B,If:B/total,Ig:(1-q.share)*B/married,Ih:q.share*B/unmarried,Im:married/total};}
+async function checkIndices(){const a=await snapshot(),q=a.audit,r=referenceIndices(q),[s,t]=a.S;assert.equal(a.S.length,2);for(const k of['births','If','Ig','Ih','Im'])near(q.model[k],r[k]);near(q.model.reconstructed,r.If);assert.equal(s.rect.length,7);assert.equal(s.paths.length,2);assert.equal(t.rect.length,4);assert.equal(t.paths.length,1);for(let i=0;i<7;i++){near(s.rect[i][0],15+5*i);near(s.rect[i][2],20+5*i);near(s.rect[i][3],1000*r.f[i]);near(q.exposure[i],r.W[i]);near(q.marriage[i],r.p[i]);for(let j=0;j<2;j++){const pt=s.paths[0][0][2*i+j],mar=s.paths[1][0][2*i+j];near(pt[0],15+5*i+5*j);near(pt[1],1000*H[i]);near(mar[1],1000*H[i]*r.p[i]);}}['If','Ig','Ih','Im'].forEach((k,i)=>near(t.rect[i][3],r[k]));for(const k of['If','Ig','Ih','Im','partialTFR','maritalComponent','nonmaritalComponent','reconstructed'])assert.ok(a.r.includes(q.model[k].toFixed(4)),`index readout ${k}`);assert.ok(a.r.includes(q.model.births.toFixed(3)));assert.match(a.r,/does not prove a biological impossibility/);assert.equal(a.values[0],q.year);assert.equal(a.modes[0],q.country);return{a,q};}
+async function screenshot(id,name,width,theme){await page.screenshot({path:`/tmp/atlas-demo-fertility-${id}-${name}-${width}-${theme}.png`,fullPage:true});if(width===430)for(let i=0;i<2;i++)await page.locator('.stage').nth(i).screenshot({path:`/tmp/atlas-demo-fertility-${id}-${name}-${width}-${theme}-panel${i}.png`});}
+try{for(const theme of['light','dark'])for(const width of[1450,430]){
+ await load('4.8',theme,width);await checkFit();await screenshot('4.8','default',width,theme);let negative=false;
+ for(const M of[.1,.7,1.2])for(const m of[0,.5,4])for(const d of[-.8,0,.8]){await set([M,m,d]);const r=await checkFit();if(r.q.fit.m<-.1)negative=true;}assert.ok(negative);
+ for(let i=0;i<3;i++){const e=page.locator('input[type=range]').nth(i);await e.press('Home');await done();let r=await checkFit();near(r.a.values[i],[.1,0,-.8][i]);await e.press('End');await done();r=await checkFit();near(r.a.values[i],[1.2,4,.8][i]);await e.press('ArrowLeft');await done();r=await checkFit();near(r.a.values[i],[1.19,3.98,.78][i]);}
+ await set([1.2,0,.8]);await checkFit();await screenshot('4.8','negative-fit',width,theme);await set([.1,4,-.8]);await checkFit();await screenshot('4.8','low-tail',width,theme);
+ console.log(`PASS marital fit ${width} ${theme}:27 parameter corners/interiors, native all3slider endpoints/increments, independent pairwise LS, recommended5points/excluded6th, every bar/curve/dot/ring/readout/text/TeX/page bound`);
+ await load('4.9',theme,width);await checkIndices();await screenshot('4.9','default',width,theme);let above=false;
+ for(const c of FCTRY){await mode(CNAME[c]);for(const y of[1950,2023])for(const A of[15,32])for(const E of[.4,1])for(const h of[0,.6]){await set([y,A,E,h]);const r=await checkIndices();if(r.q.model.Ig>1)above=true;}}assert.ok(above);
+ for(let i=0;i<4;i++){const e=page.locator('input[type=range]').nth(i);await e.press('Home');await done();let r=await checkIndices();near(r.a.values[i],[1950,15,.4,0][i]);await e.press('End');await done();r=await checkIndices();near(r.a.values[i],[2023,32,1,.6][i]);await e.press('ArrowLeft');await done();r=await checkIndices();near(r.a.values[i],[2022,31.5,.99,.59][i]);}
+ await mode(CNAME.NGA);await set([1950,32,.4,0]);const hi=await checkIndices();assert.ok(hi.q.model.Ig>1);await screenshot('4.9','high-index',width,theme);await set([2023,15,1,.6]);await checkIndices();await screenshot('4.9','nonmarital',width,theme);
+ console.log(`PASS Princeton indices ${width} ${theme}:10countries×2years×8marital/allocation corners, native all4slider endpoints/increments, independent expected-birth ratios/full identity, matched7groups and allbars/steps/strokes/text/TeX/page bounds`);
+}assert.deepEqual(errors,[]);}catch(e){console.error(e);await page.screenshot({path:'/tmp/atlas-demo-fertility-failure.png',fullPage:true});throw e;}finally{await browser.close();await new Promise(r=>server.close(r));}
