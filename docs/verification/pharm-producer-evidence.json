@@ -1,0 +1,72 @@
+{
+  "baseline": "5622b5071b4b0b31c854d7b44d77ce456b994d2d",
+  "prerequisiteBoundary": "d02ad69fedb2db4abc9f1e411c6be20df5a5e010",
+  "newEdges": 18,
+  "consumers": 15,
+  "countsBefore": [
+    7,
+    8,
+    24
+  ],
+  "countsAfter": [
+    25,
+    26,
+    42
+  ],
+  "objects": 41,
+  "rawRows": 84,
+  "sourceFlagClosure": false,
+  "mathAssertions": 2061,
+  "defaultMathTests": 32,
+  "nativeCases": 34,
+  "closingCases": 2,
+  "ownMainFieldsInspected": 72,
+  "ownFinalDomainControlPictures": 24,
+  "ownBarTimeControlPictures": 16,
+  "files": [
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-preservation.log",
+      "sha256": "a795bff84019862d479879437091699b295721c6aa8d71961724dc05839e6071"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-math.log",
+      "sha256": "8a18f7a894b43fcaa53b176e294176b1f76fe614597abe6b0a3447c025c39ffd"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-existing-math.log",
+      "sha256": "7a6c4bd621c769ae37011fafc6f2cfe039bb8aa2fa940e02062869dcea98072c"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-build.log",
+      "sha256": "00046abfa124d2519de3e787b2f4a17d7b684de0c0c291c3be83912178ee2612"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-static.log",
+      "sha256": "054b6073cde8175f59ced969a80a2f248a3425ee299013465caa137db4b75719"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/final-native-bounds.log",
+      "sha256": "965c5cd5fada60ea4b2dde97a9957de0b1d076b3f2f6adee081b0ef0d34a550c"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/native-initial/native.json",
+      "sha256": "2c999b790b6b781ad92d5a453f1aa89fe41716a21689654716b9d03ed905daa7"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/mode-closing-native/native.json",
+      "sha256": "93bac52c489e78429b93d6a36a91bc01d4c1ad7d60aa43ce1b77b3922d84b9f7"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/plot-domain-native-final/native.json",
+      "sha256": "ce814358a521d7f0680608180cbde99e34c6af620633ac2a95ba8d9bdba81eff"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/bar-label-native/native.json",
+      "sha256": "4205279198826085b396476e8f4f6a8b03fa436ba9e10e994b2a93f0bf3d929d"
+    },
+    {
+      "path": "/tmp/atlas-pharm-prereqs/accumulation-time-native/native.json",
+      "sha256": "93bff834162faf5595eec1d1ff2db2b62de2a38e9b3672962c0fb2a576c4b875"
+    }
+  ]
+}
