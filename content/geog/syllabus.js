@@ -43,7 +43,7 @@ export default {
           pic: 'Spin a fluid planet faster with a slider: it flattens, and at Earth’s rate the computed flattening (about 1/300) matches the measured difference between equatorial and polar radii.' },
         { num: '1.7', kind: 'Definition', name: 'Geodetic, geocentric and parametric latitude', deps: ['geog-1.6', 'vcalc-2.8'], refs: ['Snyder §3'],
           pic: 'On an exaggerated ellipse, draw the surface normal and the line to the centre from a point: their angles with the equator differ by up to 0.19° on Earth (about 21 km), plotted against latitude.' },
-        { num: '1.8', kind: 'Concept', name: 'The geoid and geodetic datums', deps: ['geog-1.6'], refs: ['Snyder §3'],
+        { num: '1.8', kind: 'Concept', name: 'The geoid and geodetic datums', deps: ['geog-1.6', 'geog-1.7'], refs: ['Snyder §3'],
           pic: 'Exaggerate the geoid’s bumps by 10,000 times over the reference ellipsoid: switching between datums such as NAD27 and WGS84 moves the coordinates of a landmark by tens of metres on the map.' },
         { num: '1.9', kind: 'Invention', name: 'The marine chronometer and the longitude problem', deps: ['geog-1.2', 'prob-2.2.1'], refs: ['Haggett'],
           pic: 'Sail a simulated voyage with a clock of adjustable daily drift: each second of clock error is converted into a longitude error, and Harrison’s H4 is compared with a pendulum clock on a rolling deck.' },
