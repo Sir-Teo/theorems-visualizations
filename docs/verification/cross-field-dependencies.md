@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
 Of 64 non-math collections, **21 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 411 edges. Even
+written ideas in a different field**. Their combined shortfall is 402 edges. Even
 including planned items and planned prerequisites, **18 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -276,3 +276,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## SOLID combined acceptance
 
 [SOLID independent peer](solid-independent-peer-followup.md) accepts eighteen genuine different-field inputs across fourteen consumers,7/8/27→25/26/45. All47functions/flags/helpers/fullrawlists preserved. Ideal-impact scope/stiffness and pureAiry no-body-force qualifications plus nine equivalent statement wraps close findings. Independent3,677mathassertions and28own fresh320cases/112pictures pass. Live411shortfall,21/64below25published,18whole syllabi below25. No sourceclosure; aftercheckpoint69710ca.
+
+## PL bounded acceptance
+
+[PL independent peer](pl-prerequisites-independent-peer.md) accepts nine actual mathematical logic inputs across eight consumers,0/0/4→9/9/13. All46objects/functions/flags/helpers and115syllabusrows/rawlists are preserved apart from declared additions and an existing same-field rowbackfill. Independent2,475fixtures and fresh complete253px/narrowtheme pixels pass. Fixed-syntax adaptation and fixed-background Curry assumptions are explicit. Publishedshortfall16remains. Live402shortfall,21/64below25published,18whole syllabi below25; no sourceclosure. Later thancheckpoint69710ca.

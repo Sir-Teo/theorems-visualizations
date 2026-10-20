@@ -1993,12 +1993,75 @@
       "collection": "pl",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 0,
-      "writtenToKnown": 0,
-      "wholeSyllabus": 4,
-      "publishedShortfall": 25,
+      "writtenToWritten": 9,
+      "writtenToKnown": 9,
+      "wholeSyllabus": 13,
+      "publishedShortfall": 16,
       "unknown": [],
       "edges": [
+        {
+          "item": "pl-1.11",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-1.2",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.2",
+          "prerequisite": "logic-3.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-2.6",
+          "prerequisite": "logic-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-3.10",
+          "prerequisite": "logic-4.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.8",
+          "prerequisite": "logic-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.11",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "pl-4.13",
+          "prerequisite": "logic-2.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "pl-10.1",
           "prerequisite": "pma-1.8",
@@ -17795,7 +17858,8 @@
       "eb35ab8d07c9c2def5436f9fa188aebde0faccc6",
       "0cf13c462023a444e2beadc2178b2ef52125c4e0",
       "cd06f043a644670bfe7bc15559990ac00abf839b",
-      "3d543ac662e32eff55b6f357fbe24dfadae9e100"
+      "3d543ac662e32eff55b6f357fbe24dfadae9e100",
+      "c578ef8229f03739ccfa0dddccb5bda09f9929cd"
     ],
     "excludedUnacceptedEdges": [
       {

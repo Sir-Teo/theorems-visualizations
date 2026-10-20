@@ -32,7 +32,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Rejected chunkprototype acf697e preserved; awaiting independentfailureaudit before furtherassignment",
+      "current": "CG genuine prerequisite production after accepted PL boundary",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -42,7 +42,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only independent failureaudit acf697e; PL preparation paused",
+      "current": "PL peer complete; map original-only control independent review next",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -2260,10 +2260,26 @@
       "sourceClosure": "None; all47functions/flags/helpers/rawlists preserved.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Eighteen genuine different-field math/physics inputs across14consumers. Ideal massless-spring impact scope/stiffness corrected, pureAiry restrictedto no bodyforce, nine equivalentstatementwraps. Independent3677mathassertions and28fresh320both-theme cases/112pictures pass."
+    },
+    {
+      "collection": "pl",
+      "commits": [
+        "c578ef8229f03739ccfa0dddccb5bda09f9929cd",
+        "0e1c0bac7a5053dbfcd76ba6aa7fe4c523dc00e0"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 9,
+      "status": "accepted-bounded-below-target",
+      "producer": "logic_peer",
+      "peer": "deep_peer",
+      "report": "docs/verification/pl-prerequisites-independent-peer.md",
+      "sourceClosure": "None; all46functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nine genuine mathematical logic inputs across8consumers with finite-syntax/fixed-background Curry qualifications. One existingpl2.8rowbackfill noquota. Full115rows and46objects/rawlists,2475independentmathfixtures andfreshcomplete253px/narrowtheme pictures pass;16written shortfall remains."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 411,
+    "publishedShortfall": 402,
     "publishedBelow25": 21,
     "collections": 64,
     "wholeSyllabusBelow25": 18,

@@ -1029,3 +1029,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### SOLID combined acceptance
 
 [Independent SOLID peer](solid-independent-peer-followup.md) accepts18genuineinputs and bounded impact/Airy/narrow-layout corrections; reaches25written. Live411/21/18,27furthercollectionsmeetpublishedtarget/sourcequeue5. Aftercheckpoint69710ca; no mapperformanceacceptance.
+
+### PL bounded acceptance
+
+[Independent PL peer](pl-prerequisites-independent-peer.md) accepts9genuineinputs, leaving16publishedshortfall. Live402/21/18/sourcequeue5. No sourceclosure; later thancheckpoint69710ca.
