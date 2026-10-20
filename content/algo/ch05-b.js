@@ -1,3 +1,5 @@
+import perfectHashingItem from './perfect-hashing-item.js';
+
 // Algorithms — Chapter 5: Search trees and hashing (items 5.11–5.20; 5.1–5.10 in ch05.js)
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
@@ -484,81 +486,7 @@ The family $\mathcal H_{p,m}=\{h_{a,b}\}$ of $p(p-1)$ functions is universal: fo
       },
     },
     // ------------------------------------------------------------------ 5.18
-    {
-      num: '5.18',
-      kind: 'Theorem',
-      name: 'Perfect hashing: O(1) worst-case lookups in O(n) space',
-      statement: String.raw`A static set of $n$ keys can be stored in $O(n)$ space so that every lookup takes $O(1)$ time in the worst case (two hash evaluations and two memory probes). The **two-level scheme** of Fredman, Komlós and Szemerédi hashes the keys into $m=n$ buckets with $h$ from a universal family; bucket $j$, holding $b_j$ keys, gets its own table of $b_j^2$ slots and a function $h_j$ from a universal family with no collision among those keys. With $h$ redrawn until $\sum_j b_j^2<4n$ and each $h_j$ redrawn until collision-free, the expected number of draws is constant at both levels, and the expected construction time is $O(n)$.`,
-      idea: String.raw`Into $b^2$ slots, $b$ keys collide with expected count $\binom b2\frac1{b^2}<\frac12$ by universality (5.16), so by Markov's inequality a random $h_j$ is collision-free with probability more than $\frac12$. For the first level, $\sum_j b_j^2=n+2\cdot\#\{\text{colliding pairs}\}$ has expectation at most $n+n(n-1)/m<2n$ when $m=n$ (5.17), so $\Pr[\sum b_j^2\ge4n]<\frac12$. Each level therefore succeeds after fewer than two draws on average.
-
-Markov's inequality (prob-1.6.4) is the step from small expected counts to a likely usable table. For the nonnegative integer collision count $C$, $\Pr(C\ge1)\le EC<1/2$. For nonnegative first-level space $S=\sum_j b_j^2$, $\Pr(S\ge4n)\le ES/(4n)<1/2$. Independent fresh function choices therefore give geometric retries with success probability greater than one half. Universality gives an upper bound on $ES$, not necessarily the exact value $2n-1$ for every family and key set.`,
-      caption: String.raw`Each row is a first-level bucket with its $b_j$ keys, and to its right the $b_j^2$-slot second-level table with the keys in place; the note gives how many draws of $h_j$ it took to avoid collisions. Click a key to see its lookup: one probe in each level. Redraw the first-level function and watch $\sum b_j^2$ against the histogram of 3000 draws, whose mean sits near $2n-1$.`,
-      deps: ['algo-5.16', 'algo-5.17', 'prob-1.6.4'],
-      refs: ['Erickson notes: Hashing'],
-      credit: 'Fredman, Komlós & Szemerédi, 1984',
-      tags: ['hashing'],
-      viz(v) {
-        const nS = v.slider('keys $n$', 6, 16, 12, { int: true, onChange: () => { newKeys(); build(); } });
-        const p = PRIME; let r = v.rng(8), keys = [], h1 = null, rows = [], tries1 = 0, look = null;
-        function newKeys() { keys = distinct(r, nS.value, 10, 99); look = null; }
-        function build() {
-          const n = keys.length; tries1 = 0;
-          for (;;) { tries1++; const a = 1 + Math.floor(r() * (p - 1)), b = Math.floor(r() * p); h1 = { a, b, f: uh(a, b, p, n) }; const sz = new Array(n).fill(0); keys.forEach((k) => sz[h1.f(k)]++); if (sz.reduce((s2, x) => s2 + x * x, 0) < 4 * n || tries1 > 50) break; }
-          rows = Array.from({ length: n }, () => ({ keys: [] })); keys.forEach((k) => rows[h1.f(k)].keys.push(k));
-          for (const row of rows) {
-            const b2 = row.keys.length ** 2; row.tries = 0; row.fails = 0;
-            if (!b2) continue;
-            for (;;) { row.tries++; const a = 1 + Math.floor(r() * (p - 1)), b = Math.floor(r() * p), f = uh(a, b, p, b2), slots = new Array(b2).fill(null); let ok = true; for (const k of row.keys) { const s2 = f(k); if (slots[s2] != null) ok = false; slots[s2] = k; } if (ok) { row.slots = slots; row.ab = [a, b]; break; } row.fails++; }
-          }
-        }
-        newKeys(); build();
-        v.button('Redraw first level', () => { build(); look = null; });
-        v.button('New keys', () => { newKeys(); build(); });
-        const s = v.stage({ x: [-4, 30], y: [-0.6, 16], axes: false, height: 380, weight: 1.6, minWidth: 360 });
-        const Q = v.stage({ x: [1, 6], y: [0, 0.5], axes: 'box', height: 380, minWidth: 220, title: '$\\sum_j b_j^2 / n$ over 3000 draws of $h$', xlabel: 'space / n' });
-        s.onClick((x, y) => { const n = rows.length, j = Math.round(n - 1 - y); if (j < 0 || j >= n) return; const row = rows[j]; if (!row.slots) return; const w = cellW(); const i = Math.floor(x / w); if (i >= 0 && i < row.slots.length && row.slots[i] != null) look = row.slots[i]; });
-        const cellW = () => { const mx = Math.max(1, ...rows.map((rw) => rw.keys.length ** 2)); return Math.min(1.6, 21 / mx); };
-        const hcache = new Map(); let info = null;
-        v.render(() => {
-          const n = rows.length, w = cellW();
-          s.setView([-4.2, 29.5], [-0.75, n + 0.2]);
-          const lj = look != null ? h1.f(look) : -1;
-          rows.forEach((row, j) => {
-            const y = n - 1 - j, b = row.keys.length, hot = j === lj;
-            s.rect(-3.9, y - 0.36, -2.9, y + 0.36, { fill: hot ? 'gold' : 'panel', fillAlpha: hot ? 0.35 : 1, color: hot ? 'gold' : 'muted', width: hot ? 2.2 : 1.2 });
-            s.text(String(j), -3.4, y, { align: 'center', size: 10.5, color: 'muted', weight: 700 });
-            s.text(`b=${b}`, -2.0, y, { align: 'center', size: 10.5, color: b > 2 ? 'orange' : 'muted', weight: 700 });
-            if (!b) return;
-            s.arrow(-1.2, y, -0.08, y, { color: hot ? 'gold' : 'muted', width: hot ? 2 : 1.1, head: 6 });
-            row.slots.forEach((k, i) => {
-              const x0 = i * w, isL = k != null && k === look;
-              s.rect(x0, y - 0.34, x0 + w, y + 0.34, { fill: isL ? 'gold' : k != null ? 'accent' : 'panel', fillAlpha: isL ? 0.6 : k != null ? 0.18 : 1, color: k != null ? 'accent' : 'faint', width: 1 });
-              if (k != null && w * s.sx > 16) s.text(String(k), x0 + w / 2, y, { align: 'center', size: clamp(w * s.sx * 0.5, 8, 11.5), weight: 700, halo: false });
-            });
-            s.text(`${plural(b * b, 'slot')} · ${plural(row.tries, 'draw')}`, row.slots.length * w + 0.4, y, { size: 10.5, color: row.tries > 1 ? 'orange' : 'muted' });
-          });
-          // histogram of sum b^2 / n for these keys
-          const key = keys.join(',');
-          if (!hcache.has(key)) { const rr = v.rng(77), vals = []; for (let t = 0; t < 3000; t++) { const f = uh(1 + Math.floor(rr() * (p - 1)), Math.floor(rr() * p), p, n), sz = new Array(n).fill(0); keys.forEach((k) => sz[f(k)]++); vals.push(sz.reduce((s2, x) => s2 + x * x, 0) / n); } hcache.set(key, vals); }
-          const vals = hcache.get(key), cnt = new Map(); vals.forEach((x) => { const k = x.toFixed(4); cnt.set(k, (cnt.get(k) || 0) + 1); });
-          let ym = 0; for (const c of cnt.values()) ym = Math.max(ym, c / vals.length);
-          const srt = vals.slice().sort((a, b) => a - b), xmax = Math.max(5.5, srt[Math.floor(0.998 * srt.length)] + 0.4); Q.setView([0.15, xmax], [-0.07 * ym * 1.15, ym * 1.15]);
-          Q.vband(4, xmax, { color: 'red', alpha: 0.06 });
-          for (const [k, c] of cnt) { const x = +k; Q.rect(x - 0.06, 0, x + 0.06, c / vals.length, { fill: x >= 4 ? 'red' : 'accent', fillAlpha: 0.7, stroke: false }); }
-          const mean = vals.reduce((a, b) => a + b, 0) / vals.length;
-          Q.vline(mean, { color: 'accent', width: 2 }); Q.vline((2 * n - 1) / n, { color: 'green', width: 2, dash: [6, 4] }); Q.vline(4, { color: 'red', width: 1.5 });
-          const cur = rows.reduce((a, rw) => a + rw.keys.length ** 2, 0) / n; Q.dot(cur, ym * 1.05, { r: 5, color: 'gold', label: 'now', labelPos: 'e' });
-          Q.text('retry ≥ 4', 4, ym * 1.08, { dx: 4, size: 11, color: 'red', weight: 700 });
-          info = { n, sum: cur * n, mean, frac4: vals.filter((x) => x >= 4).length / vals.length };
-        });
-        v.legend([['accent', 'stored key', { area: true }], ['gold', 'looked up', { area: true }], ['green', '$E\\sum b_j^2/n = (2n-1)/n$', { dash: true }], ['red', 'redraw region $\\ge 4n$']]);
-        v.readout(() => {
-          const { n, sum, mean, frac4 } = info, draws = rows.reduce((a, rw) => a + rw.tries, 0), used = rows.filter((rw) => rw.keys.length).length;
-          const lk = look != null ? `lookup ${look}: $h(${look}) = ${h1.f(look)}$, then slot $h_{${h1.f(look)}}(${look})$ — **2 probes**, whatever the keys · ` : 'click a key to look it up · ';
-          return lk + `space $\\sum b_j^2 = ${sum}$ ${sum < 4 * n ? '$< 4n$ ✓' : '(≥ 4n: redraw)'} with $n = ${n}$ (mean over draws ${v.fix(mean * n, 1)}, theory $2n-1 = ${2 * n - 1}$; $\\Pr[\\ge 4n] = ${v.fix(frac4, 3)} < \\frac12$ ✓) · first level drawn ${plural(tries1, 'time')}, second level ${draws} draws for ${used} tables`;
-        });
-      },
-    },
+    perfectHashingItem,
     // ------------------------------------------------------------------ 5.19
     {
       num: '5.19',
