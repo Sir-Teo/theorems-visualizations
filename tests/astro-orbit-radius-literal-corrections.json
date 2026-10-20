@@ -1,0 +1,18 @@
+{
+  "3.10": {
+    "idea": [
+      [
+        "On a circular orbit the angular momentum is $h = \\sqrt{GMr}$, so $\\dot h = -\\beta (GM)^{3/2}/(c\\,r^{3/2})$ gives",
+        "For constant $\\beta<1$, the circular reference orbit under effective gravity $GM(1-\\beta)$ has specific angular momentum $h = \\sqrt{GM(1-\\beta)r}$. The torque gives $\\dot h = -\\beta GMh/(c\\,r^2)$; differentiating the circular relation with $\\beta$ fixed gives"
+      ]
+    ]
+  },
+  "4.5": {
+    "statement": [
+      [
+        "Stellar radii span about seven orders of magnitude",
+        "Stellar radii span about five orders of magnitude"
+      ]
+    ]
+  }
+}
