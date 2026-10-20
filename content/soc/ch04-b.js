@@ -1,3 +1,4 @@
+import {tailSeedValid,tailModel,SCALE_FREE_CATEGORIES} from './source-audit-tails.js';
 // Networks & Collective Behavior — Chapter 4, part b: power laws and preferential attachment (items 4.7–4.11)
 //
 // Sources checked (Oct 2026): Clauset, Shalizi & Newman, SIAM Review 51 (4): 661–703 (2009), doi 10.1137/070710111 (Crossref);
@@ -22,66 +23,29 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.7
     {
-      num: '4.7',
-      kind: 'Definition',
-      name: 'Power-law (heavy-tailed) distributions',
-      statement: String.raw`A positive random variable $X$ has a **power-law tail** with exponent $\alpha>1$ above $x_{\min}$ if
-$$P(X>x)=\Big(\frac{x}{x_{\min}}\Big)^{-(\alpha-1)},\qquad x\ge x_{\min},$$
-equivalently the density is $p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha}$. Its signatures:
+      num:'4.7',kind:'Definition',name:'Power-law (heavy-tailed) distributions',
+      statement:String.raw`A pure continuous Pareto law with lower cutoff $x_{\min}>0$ and density exponent $\alpha>1$ has
+$$p(x)=\frac{\alpha-1}{x_{\min}}(x/x_{\min})^{-\alpha}$$
+for $x\ge x_{\min}$, with
+$$\Pr(X\ge x)=(x/x_{\min})^{1-\alpha}.$$
+Its survival curve is straight on logarithmic axes with slope $1-\alpha$. The ratio $\Pr(X\ge cx)/\Pr(X\ge x)=c^{1-\alpha}$ is independent of $x\ge x_{\min}$ for $c\ge1$; the cutoff and a finite median still exist.
 
-(a) **Straight line on log–log axes**: $\ln P(X>x)$ is linear in $\ln x$ with slope $-(\alpha-1)$ (the histogram has slope $-\alpha$).
+For $m\ge0$, the moment is finite exactly when $m<\alpha-1$, then
+$$E[X^m]=x_{\min}^m\frac{\alpha-1}{\alpha-1-m}.$$
+The mean is finite for $\alpha>2$; the second moment and variance are finite for $\alpha>3$. Infinite variance does **not** prevent the sample mean of iid draws from converging when $2<\alpha\le3$.`,
+      idea:String.raw`Normalize by integrating $x^{-\alpha}$ from the positive cutoff to infinity. Integrating the tail gives the survival exponent $\alpha-1$; multiplying the density by $x^m$ gives the moment threshold. Solving the survival equation gives inverse sampling $X=x_{\min}(1-U)^{-1/(\alpha-1)}$ for an ideal uniform $U$.
 
-(b) **Scale-free**: $P(X>2x)/P(X>x)=2^{-(\alpha-1)}$ whatever $x$ is: there is no typical size.
-
-(c) **Moments**: $E[X^m]$ is finite only if $m<\alpha-1$. The mean is infinite for $\alpha\le2$, the variance for $\alpha\le3$ (most networks and cities have $2<\alpha<3$, so sample averages converge slowly and are dominated by the few largest values).
-
-(d) **Concentration**: a small number of observations carry a large share of the total (the "80/20" rule is a power law with $\alpha\approx2.16$).`,
-      idea: String.raw`Under an exponential or Gaussian tail the probability of exceeding $x$ falls faster than any power, so a sample is described by its mean and spread. With a power-law tail, $P(X>x)$ falls only polynomially, so an observation a thousand times larger than the median is merely rare, not impossible. The running mean of a sample then keeps jumping each time a new giant arrives, and for $\alpha\le2$ it never settles, because the expectation $\int x\,p(x)\,dx$ diverges. Drawing $X=x_{\min}(1-U)^{-1/(\alpha-1)}$ from a uniform $U$ (inverse-transform sampling) shows the whole family from one random stream.`,
-      caption: String.raw`**Left**: the empirical survival function (CCDF) of $n$ samples on log–log axes, with the exact line (slope $1-\alpha$). **Right**: running means of three independent streams of $10^5$ draws against the sample size: the dashed line is the true mean $\frac{\alpha-1}{\alpha-2}x_{\min}$ (finite only for $\alpha>2$). Slide $\alpha$ below 3 and 2 and watch the average stop converging; the samples are coupled, so the same random numbers are reused as $\alpha$ moves.`,
-      scope: String.raw`Pure power laws are idealisations: real data follow the law only above some $x_{\min}$ and usually with a cutoff. Whether data are power-law at all is a statistical question (4.8, 4.11).`,
-      deps: ['soc-2.3'],
-      refs: ['E&K §18.2', 'Newman ch. 10'],
-      tags: ['power laws', 'heavy tails'],
-      credit: 'Pareto, 1896 (wealth); Zipf, 1949 (words, cities)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Power_law' },
-      verify: true,
-      viz(v) {
-        const aS = v.slider('exponent $\\alpha$', 1.3, 4.5, 2.5, { step: 0.05 });
-        const nS = v.slider('sample size $n$', 100, 100000, 3000, { log: true, sig: 2, int: true });
-        const U = (() => { const R = rng32(17); return Array.from({ length: 100000 }, () => R()); })();
-        const streams = [0, 1, 2].map((i) => { const R = rng32(100 + i); return Array.from({ length: 100000 }, () => R()); });
-        const CC = v.stage({ x: [1, 1e5], y: [1e-5, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'size $x$', ylabel: '$P(X>x)$', title: 'survival function, log–log', minWidth: 300, weight: 1.1 });
-        const RM = v.stage({ x: [1, 1e5], y: [0, 10], xlog: true, axes: 'box', gutter: true, height: 340, xlabel: 'sample size', ylabel: 'running mean', title: 'does the average settle?', minWidth: 300, weight: 1.1 });
-        let sortedCache = { n: 0, u: null };
-        let st = null;
-        v.render(() => {
-          const a = aS.value, n = Math.round(nS.value), e = -1 / (a - 1);
-          if (sortedCache.n !== n) sortedCache = { n, u: U.slice(0, n).sort((p, q) => p - q) };
-          const xs = sortedCache.u.map((u) => Math.pow(1 - u, e)).reverse();   // descending: rank r has P(X ≥ x) = r/n
-          CC.setView([1, Math.max(20, xs[0] * 2)], [0.3 / n, 1.3]);
-          CC.fn((x) => Math.pow(x, 1 - a), { color: 'ink', width: 1.6, dash: [6, 4], domain: [1, Math.max(20, xs[0] * 2)] });
-          const pts = [], step = Math.max(1, Math.floor(n / 250));
-          for (let r = 1; r <= n; r += (r < 30 ? 1 : Math.ceil(r * 0.04))) pts.push([xs[r - 1], r / n]);
-          CC.dots(pts, { r: 2.8, color: 'accent' });
-          const mean = a > 2 ? (a - 1) / (a - 2) : Infinity;
-          const cols = ['accent', 'orange', 'teal'], rm = [];
-          streams.forEach((u, i) => {
-            let s = 0; const line = [];
-            for (let k = 1; k <= 100000; k++) { s += Math.pow(1 - u[k - 1], e); if (k < 20 || k % Math.max(1, Math.floor(k / 40)) === 0 || k === 100000) line.push([k, s / k]); }
-            RM.path(line, { color: cols[i], width: 1.8 }); rm.push(s / 100000);
-          });
-          const ymax = isFinite(mean) ? Math.max(3 * mean, 4) : 40; RM.setView([1, 1e5], [0, Math.min(ymax, 60)]);
-          if (isFinite(mean) && mean < 60) RM.hline(mean, { color: 'ink', width: 1.6, dash: [6, 4] });
-          const tot = xs.reduce((p, q) => p + q, 0), top = xs.slice(0, Math.max(1, Math.round(0.01 * n))).reduce((p, q) => p + q, 0);
-          st = { a, n, mean, rm, top: top / tot, xmax: xs[0], ratio: Math.pow(2, 1 - a) };
-        });
-        v.legend([['accent', 'sample survival function', { dot: true }], ['ink', 'exact $x^{1-\\alpha}$', { dash: true }], ['accent', 'stream 1'], ['orange', 'stream 2'], ['teal', 'stream 3']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { a, n, mean, rm, top, xmax, ratio } = st;
-          return String.raw`$\alpha=${v.fix(a, 2)}$, $n=${n}$ · largest value ${v.fix(xmax, 0)} · $P(X>2x)/P(X>x)=2^{1-\alpha}=${v.fix(ratio, 3)}$ at every $x$ · top 1% of the sample holds **${v.fix(100 * top, 0)}%** of the total
-true mean: ${isFinite(mean) ? String.raw`$\frac{\alpha-1}{\alpha-2}=${v.fix(mean, 2)}$` : '**infinite** ($\\alpha\\le2$)'}; variance: ${a > 3 ? 'finite' : '**infinite** ($\\alpha\\le3$)'} · means after $10^5$ draws: ${rm.map((x) => v.fix(x, 1)).join(', ')}`;
-        });
+For iid draws with $\alpha>2$, the finite-mean strong law (prob-2.4.1) gives convergence of the running mean despite infinite variance when $\alpha\le3$. For $1<\alpha\le2$, nonnegative draws have infinite mean and the infinite-mean strong law (prob-2.4.5) gives divergence to infinity almost surely. Neither result supplies a finite-sample convergence certificate from a few plotted traces.`,
+      caption:String.raw`Here $x_{\min}=1$. Left: every distinct observed value in one finite sample, with its exact empirical share at or above that value, against the ideal survival curve. Right: every running mean in three deterministic pseudorandom streams, with the ideal finite mean dashed when it exists. Both value axes use logarithmic scales and include every displayed sample/trace value. Vary the exponent continuously; the same uniforms are reused at a fixed size and seed. Resample changes the seed.`,
+      scope:String.raw`An explicitly authored finite diagnostic at n=100, 1000 or 10000, using paired 32-bit generator outputs to form 53-bit uniforms and binary64 arithmetic. These finite streams do not have an unbounded continuum of outcomes and are not proofs of iid asymptotic behavior. Real data may have a non-power-law body or an upper cutoff; discrete degrees require a discrete law and normalization. A visually straight finite plot is not a fit verdict. No historical priority, universal empirical exponent range or 80/20 claim is asserted.`,
+      deps:['soc-2.3','prob-2.4.1','prob-2.4.5'],see:['soc-4.8','soc-4.11'],refs:['Clauset, Shalizi & Newman, arXiv:0706.1062v2 (2009), §2, Eqs. 2.1–2.7; moment integral derived here'],tags:['power laws','heavy tails'],credit:'Technical definitions: Clauset, Shalizi & Newman, 2009; finite diagnostics authored here.',links:{source:'https://snap.stanford.edu/class/cs224w-readings/clauset09powerlaw.pdf'},verify:true,
+      viz(v){
+        let seed=17,cache=null,info;v.shareState('Pareto sample seed',{get:()=>seed,validate:tailSeedValid,set:x=>{seed=x;cache=null;}});
+        const alpha=v.slider('density exponent alpha',1.3,4.5,2.5,{step:'any',fmt:x=>x.toPrecision(6)}),size=v.select('draws per stream',[100,1000,10000].map(value=>({value,label:String(value)})),1000);v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[.8,100],y:[.0001,1.4],xlog:true,ylog:true,axes:'box',gutter:true,height:340,minWidth:260,xlabel:'sample value x',ylabel:'share at or above x',title:'complete finite empirical survival'}),B=v.stage({x:[.7,14000],y:[.8,10],xlog:true,ylog:true,axes:'box',gutter:true,height:340,minWidth:260,xlabel:'draw count',ylabel:'running mean',title:'complete running-mean traces'});
+        v.render(()=>{const key=`${alpha.value}|${size.value}|${seed}`;if(!cache||cache.key!==key)cache={key,data:tailModel(alpha.value,size.value,seed)};const a=cache.data;info=a;A.setView([Math.exp(-.08*Math.max(1,Math.log(a.max))),Math.exp(1.08*Math.max(1,Math.log(a.max)))],[.5/a.n,1.4]);A.fn(x=>x**(1-a.alpha),{color:'ink',width:1.5,dash:[5,4],domain:[1,Math.min(a.max,(a.n/.8)**(1/(a.alpha-1)))]});A.dots(a.survival,{r:1.8,ring:false,color:'accent'});B.setView([.7,a.n*1.4],[Math.exp(-.08*Math.max(1,Math.log(a.meanHigh))),Math.exp(1.08*Math.max(1,Math.log(a.meanHigh)))]);a.traces.forEach((t,j)=>B.path(t,{color:['accent','orange','teal'][j],width:1.5}));if(a.mean!==null)B.line(1,a.mean,a.n,a.mean,{color:'ink',width:1.5,dash:[5,4]});});
+        v.legend([['accent','empirical survival / trace 1'],['orange','trace 2'],['teal','trace 3'],['ink','ideal survival / finite mean',{dash:true}]]);
+        v.readout(()=>{const a=info,fmt=x=>`$${v.sci(x,5)}$`;return `Seed ${seed}; alpha=${a.alpha.toPrecision(12)}; ${a.n} draws per stream. Ideal mean ${a.mean===null?'infinite':fmt(a.mean)}; ${a.second===null?'no finite second moment':'finite second moment'}. ${a.variance===null?'No finite variance.':`Variance ${fmt(a.variance)}.`} Median ${fmt(a.median)}. Largest value in the survival sample ${fmt(a.max)}. Final finite trace means ${a.traces.map(t=>fmt(t.at(-1)[1])).join(', ')}. ${a.mean===null?'The ideal iid averages diverge to infinity.':'The ideal iid averages converge to the finite mean, including the infinite-variance regime.'} Finite seeded traces do not certify either asymptotic conclusion.`;});
       },
     },
     // ------------------------------------------------------------------ 4.8
@@ -252,76 +216,26 @@ The coefficient is $2m(m+1)$ for fixed $m$; $2m^2$ is the different continuum ap
     },
     // ------------------------------------------------------------------ 4.11
     {
-      num: '4.11',
-      kind: 'Hypothesis',
-      name: 'Are real networks scale-free? (debated)',
-      statement: String.raw`**Hypothesis.** Most real-world networks — social, biological, technological — have degree distributions that follow a power law $P(k)\sim k^{-\gamma}$ with $2<\gamma<3$ ("scale-free").
+      num:'4.11',kind:'Hypothesis',name:'Are real networks scale-free? (debated)',
+      statement:String.raw`Whether a measured network is “scale free” depends on the distributional claim and the evidence required. A broad or visually straight degree tail does not itself establish a pure power law, and a fitted power law need not be preferred to alternative distributions.
 
-The hypothesis was widely taken for granted after Barabási and Albert (1999) on the strength of straight-looking log–log plots. When Broido and Clauset (2019) tested a large corpus of network data sets (928 data sets, 3,662 graphs from the Index of Complex Networks) with the statistical methods of 4.8, they found that only about **4%** met their strongest criterion for scale-freeness and about **49%** none of their criteria, and that a lognormal fitted at least as well as the power law for 88% of the networks (social networks were at best weakly scale-free). Others (for example Barabási and co-authors) have objected that the criteria are too strict. The hypothesis in its strong form is **contested**; heavy tails are common, strict power laws less so.`,
-      idea: String.raw`A power law is one particular heavy-tailed family, and over the few decades of degree that real networks span it is hard to tell from a lognormal or a power law with exponential cutoff. The test is therefore comparative: fit each family by maximum likelihood to the tail above a data-chosen $k_{\min}$ (4.8) and ask by a likelihood-ratio test which one the data prefer. The answer depends on the strictness of "scale-free" (exponent in $(2,3)$? at least 50 vertices in the tail? the power law not beaten by any rival?) and on whether networks are analysed whole or by projection, which is what the debate is about.`,
-      caption: String.raw`A hands-on version of the test on model networks (the real corpus is not reproduced here): pick a network family and size; the page fits a discrete power law, a lognormal and a geometric tail above the KS-optimal $k_{\min}$ and reports the Vuong test of the power law against each. Bars on the right: the shares reported for the real corpus by Broido and Clauset. The Les Misérables network is a real (tiny) data set. Preferential attachment typically passes with $\gamma$ near 3; Erdős–Rényi and lognormal-degree graphs do not.`,
-      scope: String.raw`This is a simplified version of the published pipeline: no goodness-of-fit bootstrap, discrete-data approximations as in 4.8, one fit per degree sequence rather than per layer or component. The shares quoted are the paper's corpus-wide figures (categories overlap in the paper's nested definitions: "strongest" implies "strong", and so on). The verdict labels below are illustrative.`,
-      deps: ['soc-4.8', 'soc-4.10'],
-      refs: ['Newman ch. 10'],
-      tags: ['power laws', 'scale-free', 'statistics'],
-      credit: 'Broido & Clauset, 2019 (Nature Communications 10: 1017)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Scale-free_network', doi: 'https://doi.org/10.1038/s41467-019-08746-5' },
-      verify: true,
-      viz(v) {
-        const fam = v.select('network', [
-          { value: 'ba', label: 'preferential attachment' }, { value: 'er', label: 'Erdős–Rényi' }, { value: 'pl', label: 'configuration, power-law degrees' },
-          { value: 'ln', label: 'configuration, lognormal degrees' }, { value: 'lm', label: 'Les Misérables (real, 77)' },
-        ], 'ba');
-        const nS = v.slider('vertices $n$', 1000, 20000, 10000, { step: 1000, int: true });
-        const CS = v.stage({ x: [1, 1e3], y: [1e-5, 1], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: '$P(\\mathrm{degree}\\ge k)$', title: 'degrees and fits', minWidth: 300, weight: 1.3 });
-        const BS = v.stage({ x: [0, 7], y: [0, 55], axes: 'box', gutter: true, height: 340, xticks: [[0.5, 'not'], [1.5, 'super'], [2.5, 'weakest'], [3.5, 'weak'], [4.5, 'strong'], [5.5, 'top']], xlabel: 'category (super = super-weak, top = strongest)', ylabel: 'share of networks (%)', title: '928 real data sets', minWidth: 280, weight: 1 });
-        const cache = {};
-        const build = () => {
-          const key = `${fam.value}|${nS.value}`; if (cache[key]) return cache[key];
-          const R = rng32(77), n = nS.value; let deg;
-          if (fam.value === 'ba') deg = baMix(n, 3, 0, R).deg;
-          else if (fam.value === 'er') deg = degOf(gnpSkip(n, 10 / (n - 1), R));
-          else if (fam.value === 'pl') deg = degOf(configModel(degreeSequence('power', n, 2, R), R).g);
-          else if (fam.value === 'ln') { const d = new Int32Array(n); let s = 0; for (let i = 0; i < n; i++) { d[i] = Math.max(1, Math.round(Math.exp(1.0 + 1.0 * Math.sqrt(-2 * Math.log(1 - R())) * Math.cos(2 * Math.PI * R())))); s += d[i]; } if (s % 2) d[0]++; deg = degOf(configModel(d, R).g); }
-          else deg = degOf(lesmis());
-          const A = analyseDegrees(v.M, deg);
-          return (cache[key] = { deg, A });
-        };
-        let st = null;
-        v.render(() => {
-          const { deg, A } = build(); nS.el.hidden = fam.value === 'lm';
-          const n = deg.length, c = new Map(); for (const k of deg) if (k > 0) c.set(k, (c.get(k) || 0) + 1);
-          const ks = [...c.keys()].sort((a, b) => a - b); let acc = n; const pts = ks.map((k) => { const p = [k, acc / n]; acc -= c.get(k); return p; });
-          CS.setView([1, Math.max(20, ks[ks.length - 1] * 1.4)], [Math.min(0.3 / n, 0.01), 1.3]);
-          CS.dots(pts, { r: 3.2, color: 'accent' });
-          if (A) {
-            const { kmin, alpha, alt, tail } = A, m = tail.length, Z = hurwitz(alpha, kmin);
-            const tailShare = m / n, kmx = ks[ks.length - 1];
-            const survPL = (k) => tailShare * hurwitz(alpha, k) / Z;
-            CS.fn((k) => survPL(Math.round(k)), { color: 'green', width: 2.4, domain: [kmin, kmx] });
-            const zq = 1 - normCdf((Math.log(kmin - 0.5) - alt.mu) / alt.sigma);
-            CS.fn((k) => tailShare * (1 - normCdf((Math.log(k - 0.5) - alt.mu) / alt.sigma)) / zq, { color: 'orange', width: 2.4, domain: [kmin, kmx] });
-            CS.vline(kmin, { color: 'muted', width: 1, dash: [4, 4] });
-          }
-          [49, 46, 29, 19, 10, 4].forEach((s, i) => { BS.rect(i + 0.15, 0, i + 0.85, s, { fill: i === 0 ? 'red' : 'accent', fillAlpha: 0.65, stroke: false }); BS.text(`${s}%`, i + 0.5, s, { dy: -10, size: 11.5, weight: 700, color: 'ink' }); });
-          st = { A, n, fam: fam.value };
-        });
-        v.legend([['accent', 'degree survival function', { dot: true }], ['green', 'power law above $k_{\\min}$'], ['orange', 'lognormal above $k_{\\min}$']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { A, n } = st;
-          if (!A) return 'Too few vertices of high degree for a tail fit.';
-          const { kmin, alpha, tail, vsLn, vsEx, D } = A;
-          const word = (t, nm) => (t.p < 0.1 ? (t.R > 0 ? `power law beats ${nm}` : `${nm} beats the power law`) : `no decision against ${nm}`);
-          let verdict;
-          if (tail.length < 50) verdict = 'too few points in the tail to say anything';
-          else if ((vsLn.p < 0.1 && vsLn.R < 0) || (vsEx.p < 0.1 && vsEx.R < 0)) verdict = '**not scale-free**: a rival family fits the tail significantly better';
-          else if (alpha > 2 && alpha < 3) verdict = '**consistent with scale-free**: exponent in (2, 3) and not beaten by the rivals';
-          else verdict = '**power law not rejected, but** the exponent is outside (2, 3)';
-          return String.raw`$n=${n}$ · tail $k\ge${kmin}$ holds ${tail.length} vertices, $\hat\gamma=${v.fix(alpha, 2)}$, KS distance ${v.fix(D, 3)} · vs lognormal: $z=${v.fix(vsLn.z, 2)}$, $p=${v.fix(vsLn.p, 3)}$ (${word(vsLn, 'the lognormal')}) · vs geometric tail: $z=${v.fix(vsEx.z, 2)}$ (${word(vsEx, 'the exponential')})
-Illustrative verdict: ${verdict}`;
-        });
+Broido and Clauset's published 2019 study applies a specified fitting, goodness-of-fit and model-comparison procedure to 928 network data sets. Its final analysis contains 3,662 associated simple graphs after its transformations and exclusions. Reported data-set shares are 49% Not Scale Free, 46% Super-Weak, 29% Weakest, 19% Weak, 10% Strong and 4% Strongest.
+
+These categories **overlap**. Weakest, Weak, Strong and Strongest form a nested chain. Super-Weak overlaps that chain and contains Strong and Strongest; it does not contain every Weak or Weakest case. Not Scale Free is the complement of the union of Super-Weak and Weakest. The six percentages are not parts of one partition.`,
+      idea:String.raw`The published procedure fits each simple graph's upper degree tail above a selected threshold, tests the power-law goodness of fit, and compares fitted alternatives on that same tail. Results are then aggregated across the simple graphs associated with each original network data set. A favorable comparison with alternatives and an adequate absolute fit answer different questions.
+
+Definitions also differ across the literature. Voitalov and colleagues explicitly allow regularly varying tails that deviate from a pure power law, and use consistent tail-index estimators. That broader asymptotic definition and this corpus's pure-tail testing categories should not be treated as identical questions. The percentages shown here belong to Broido and Clauset's published corpus and evaluation scheme.`,
+      caption:String.raw`Select a category to read its published requirements. Gold marks that category; blue also marks categories that its requirements imply. Bars show the six rounded percentages reported for the original data sets, with overlap retained. This widget neither refits a new graph nor runs a goodness-of-fit bootstrap.`,
+      scope:String.raw`Published main-paper criteria and corpus summaries are transcribed, without reproducing raw data, graph transformations, fitting code, supplementary robustness analyses or a new statistical verdict. These 928 data sets are not asserted to be a representative probability sample of all possible networks. The earlier arXiv draft has different corpus counts and shares; it is not the source of these published numbers. The alternative regular-variation viewpoint is taken from Voitalov et al.'s actual abstract and definition, without claiming an independent audit of their full estimators or data.`,
+      deps:['soc-4.7'],see:['soc-4.8','soc-4.10'],refs:['Broido & Clauset, Nature Communications 10:1017 (2019), Results definitions, Fig. 2 and Fig. 4; Methods preprocessing','Voitalov et al., arXiv:1811.02071v2 (2019), abstract and power-law definition'],tags:['power laws','scale-free','statistics'],credit:'Anna D. Broido & Aaron Clauset, 2019; alternative regular-variation definition: Voitalov, van der Hoorn, van der Hofstad & Krioukov, 2019.',links:{source:'https://doi.org/10.1038/s41467-019-08746-5',published:'https://d-nb.info/1181669375/34',alternative:'https://arxiv.org/abs/1811.02071v2'},verify:true,
+      viz(v){
+        const category=v.select('evidence category',SCALE_FREE_CATEGORIES.map(x=>({value:x.id,label:x.name})),'strongest');
+        const A=v.stage({x:[-42,67],y:[-.65,6.65],axes:false,full:true,height:390,minWidth:240,title:'published percentages of data sets; overlapping categories'});
+        v.render(()=>{const selected=SCALE_FREE_CATEGORIES.find(x=>x.id===category.value);A.line(0,-.35,0,5.4,{color:'faint',width:1});A.text('reported share (%)',20,6.05,{align:'center',baseline:'middle',size:11,color:'muted'});SCALE_FREE_CATEGORIES.forEach((x,j)=>{const y=5-j,col=x.id===selected.id?'gold':selected.implies.includes(x.id)?'accent':'muted';A.text(x.name,-2,y,{align:'right',baseline:'middle',size:11,color:col});A.rect(0,y-.23,x.percent,y+.23,{fill:col,fillAlpha:.65,stroke:false});A.text(`${x.percent}%`,x.percent+2,y,{align:'left',baseline:'middle',size:11,color:col,weight:600});});});
+        v.legend([['gold','selected category'],['accent','logically implied category'],['muted','other reported category']]);
+        v.readout(()=>{const x=SCALE_FREE_CATEGORIES.find(x=>x.id===category.value);return `${x.name}: ${x.percent}% reported. ${x.definition} Implied categories: ${x.implies.map(id=>SCALE_FREE_CATEGORIES.find(y=>y.id===id).name).join(', ')}. Percentages are rounded published shares of overlapping sets; adding them does not count distinct networks. No new fit or hypothesis-test result is computed.`;});
       },
     },
+
   ],
 };
