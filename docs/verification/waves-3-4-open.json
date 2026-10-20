@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 143,
+  "remainingFlags": 144,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 7,
-    "psych": 11,
+    "psych": 12,
     "soc": 12,
     "polsci": 9,
     "music": 22,
@@ -2347,6 +2347,23 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Wolf_interval"
       }
+    },
+    {
+      "id": "psych-4.4",
+      "file": "content/psych/ch04.js",
+      "name": "Convergence trades acuity for sensitivity",
+      "field": "social",
+      "category": "historical-credit-empirical-input-or-reference",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "Discrete receptor averaging is compared with a continuous box sinc transfer function; actual empirical source, partial-spot assumptions, sampling phase/aliasing, controls and saved-state/visual agreement need review."
+      ],
+      "refs": [
+        "Goldstein ch. 3"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Retinal_ganglion_cell"
+      }
     }
   ],
   "changesFromBaseline": {
@@ -2356,7 +2373,8 @@
       "art-3.13",
       "art-4.3",
       "psych-4.7",
-      "music-7.4"
+      "music-7.4",
+      "psych-4.4"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -7515,6 +7533,12 @@
       "status": "source-review-pending",
       "report": "docs/verification/music-wolf-fifth-open.md",
       "note": "Root confirmed closure/excess and comma-versus-wolf algebra defects in the actual current item; newly flagged for a complete source/model/audio/native audit."
+    },
+    {
+      "id": "psych-4.4",
+      "status": "source-review-pending",
+      "report": "docs/verification/psych-discrete-pooling-open.md",
+      "note": "Root read actual item and independently summed the discrete receptor aperture; continuous sinc curve disagrees even for a single receptor. Full source/model/native audit remains open."
     }
   ]
 }

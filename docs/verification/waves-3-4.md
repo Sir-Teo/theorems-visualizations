@@ -5,7 +5,7 @@
 
 Status: **in progress**. The concrete fixes and functional interaction checks below are complete. This is not a claim that every flagged statement has been fact-checked.
 
-The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **143 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 696 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
+The inventory covers items in chapter files changed between `d397552` (Wave 2 complete) and `3005c1c` (Wave 4 complete), including repairs to earlier chapters: **2,260 items, initially 833 verification flags**. The current source-review queue contains **144 flags**. The difference from the initial count reflects the review: 5 previously unflagged uncertainties remain newly marked, and 696 original flags were resolved. Additional checks resolved newly added flags; older-chapter follow-ups are recorded separately in the inventory. There are no remaining unflagged explicit uncertainty phrases in this inventory's statement, idea, caption, scope or credit fields. This text scan is a triage aid, not proof that all other claims are correct.
 
 The complete item-level queue, references and source links are in [waves-3-4-open.json](waves-3-4-open.json). Its `source-review-pending` state means a full comparison of statement, hypotheses, attribution, inputs and visualization is still needed. An existing citation or a passing browser test does not establish factual correctness.
 
@@ -50,7 +50,7 @@ The complete item-level queue, references and source links are in [waves-3-4-ope
 
 ## Remaining work before declaring the backlog closed
 
-1. Work through the **143 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
+1. Work through the **144 queued source reviews**, including book numbering/hypotheses and empirical constants; preserve flags until every material claim in an item is supported. Some entries are carried from earlier work in the touched files.
 2. Continue checking historical/experimental quotations. The modern PWT inputs used by MRW and the shared return averages are now checked. Lorenz historical publication metadata, the 1954 solar letter, Hall/Lorenz tables, named penalty-kick sample and teaching-example board have also been checked; their corrections and residual limitations are recorded above.
 3. Complete automated audio/input verification and broader agent visual inspection. Resolve observed errors before starting the next content wave; no human review or subjective listening is required.
 4. The optional reduction of the 578 KiB linguistics corpus remains deferred. Its texts feed training and held-out examples; trimming requires rechecking the language-model demonstrations and is not a factual correction.
@@ -849,3 +849,5 @@ Root accepted the current **game-4.9/4.10** textbook-backed finite exposition af
 Root accepted soc-4.1/4.2 after bounded actual original/author-source reading, five mathematical groups, independent170-digit and49,959prefix-state counterchecks, all12native groups, static2/0/0 and exact frozen-source/neighbor guards. Finite graph laws and growth samples remain separate from the limiting giant theorem, and the critical scale is expressed with adjustable probability bounds. Evidence: `docs/verification/soc-erdos-renyi-followup.md`. The earlier1,604-test checkpoint remains its exact snapshot. **142 source reviews remain**.
 
 Root flagged newly identified music-7.4 closure/ratio defects after reading its actual public model and widget. The separate7.5/7.7 audit preserves this item. See [the bounded open follow-up](music-wolf-fifth-open.md); no full audit acceptance is claimed. **143 source reviews remain**.
+
+Root flagged newly identified psych-4.4 after reading its actual discrete pooling code and independently comparing its aperture with the displayed continuous-box sinc curve. See [the bounded open follow-up](psych-discrete-pooling-open.md). This preserves the separate valid independent-noise pooling motivation; full source/model/native acceptance remains pending. **144 source reviews remain**.

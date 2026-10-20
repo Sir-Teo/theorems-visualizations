@@ -97,6 +97,7 @@ The bars show A and B's normalized weighted products in each condition, starting
       tags: ['convergence', 'acuity', 'sensitivity'],
       scope: String.raw`Holds for independent noise and uniform pooling over the stimulus; shared noise (for example from the photon statistics of the stimulus itself) is not reduced by pooling in the same way.`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Retinal_ganglion_cell' },
+      verify: true,
       viz(v) {
         const mode = v.select('Stimulus', [{ value: 'grat', label: 'grating' }, { value: 'spot', label: 'dim spot' }], 'grat');
         const gs = v.select('Pool size $g$', ['1', '2', '3', '4', '6', '8', '12'], '4');
