@@ -53,7 +53,7 @@ export default {
       title: 'Convex hulls',
       summary: String.raw`The convex hull of a point set is the smallest convex set containing it, and computing it is the first problem of the field. Classical theorems of convex geometry — Carathéodory, Radon, Helly — describe hulls combinatorially. Gift wrapping, Graham’s scan and divide and conquer compute planar hulls, sorting shows that n log n is optimal, and output-sensitive algorithms do better when the hull is small. In three dimensions, randomized incremental construction builds hulls whose complexity Euler’s formula keeps linear.`,
       items: [
-        { num: '2.1', kind: 'Definition', name: 'Convex sets and convex hulls', deps: ['pma-2.17', 'fa-3.19'], refs: ['de Berg §1.1'],
+        { num: '2.1', kind: 'Definition', name: 'Convex sets and convex hulls', deps: ['pma-2.17', 'fa-3.19', 'cg-1.2'], refs: ['de Berg §1.1'],
           pic: 'Scatter points and stretch a rubber band around them; the hull is also shown as the intersection of all half-planes containing the points and as the set of convex combinations.' },
         { num: '2.2', alias: 'opt-2.10', name: 'Carathéodory’s theorem' },
         { num: '2.3', kind: 'Theorem', name: 'Radon’s theorem', deps: ['cg-2.1', 'ladr-3.26'], refs: ['de Berg ch. 11'],
@@ -110,7 +110,7 @@ export default {
       title: 'Linear programming and duality',
       summary: String.raw`Low-dimensional linear programs, such as deciding whether a mould can be removed from a cast, are solved in expected linear time by adding constraints in random order, an analysis that “backwards” reasoning makes simple. Duality exchanges points and lines, turning questions about points into questions about arrangements of lines, whose zone theorem bounds the work of building them; it also links supersampling to discrepancy and explains why some geometric problems inherit the conjectured hardness of 3SUM.`,
       items: [
-        { num: '4.1', kind: 'Algorithm', name: 'Half-plane intersection', deps: ['cg-2.1'], refs: ['de Berg §4.2'],
+        { num: '4.1', kind: 'Algorithm', name: 'Half-plane intersection', deps: ['cg-2.1', 'cg-2.4'], refs: ['de Berg §4.2'],
           pic: 'Add half-planes by dragging lines; their common intersection is maintained as a convex polygon by divide and conquer, and an empty intersection is reported with a witness.' },
         { num: '4.2', kind: 'Theorem', name: 'Linear programs attain their optimum at a vertex', deps: ['cg-4.1', 'fa-3.24', 'algo-11.15', 'ladr-3.21'], refs: ['de Berg §4.3'],
           pic: 'Rotate the objective direction around a feasible polygon; the optimum jumps from vertex to vertex and stays on an edge only when the objective is parallel to it.' },
@@ -126,7 +126,7 @@ export default {
           pic: 'Lines cut the plane into an arrangement; inserting a new line touches only its zone, whose complexity is counted and stays linear for random and adversarial inputs.' },
         { num: '4.8', kind: 'Concept', name: 'Discrepancy and supersampling', deps: ['cg-4.7'], refs: ['de Berg §8.1', 'de Berg §8.4'],
           pic: 'For a set of sample points in a pixel, every half-plane is tested and the worst mismatch between area and point fraction — the discrepancy — is computed via the dual arrangement.' },
-        { num: '4.9', kind: 'Theorem', name: '3SUM-hardness of geometric problems', deps: ['cg-4.6', 'cplx-12.6'], refs: ['de Berg §8.2'],
+        { num: '4.9', kind: 'Theorem', name: '3SUM-hardness of geometric problems', deps: ['cg-4.6', 'cg-1.2', 'cplx-12.6'], refs: ['de Berg §8.2'],
           pic: 'Numbers a, b, c summing to zero map to collinear points on a cubic curve; a fast collinearity test would beat the quadratic 3SUM barrier, shown on the reader’s input.' },
       ],
     },
