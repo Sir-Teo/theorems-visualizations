@@ -44,9 +44,10 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "GEOL3.15peer complete; LING3.6candidate2d6a493 under coordinator peer; producing exclusive BIGHIST3.1–3.5.",
+      "current": "LINGsource queue clear; producing exclusive BIGHIST3.1–3.5 after completing GEOL3.15peer.",
       "completedCollections": [
-        "music"
+        "music",
+        "ling"
       ]
     },
     {
@@ -1056,6 +1057,19 @@
       "commits": [
         "d391e35"
       ]
+    },
+    {
+      "ids": [
+        "ling-3.6"
+      ],
+      "peer": "coordinator independently read WALS/Sapir primary bodies, regenerated source/count reference and checked fresh native/output evidence",
+      "reports": [
+        "docs/verification/ling-typology-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "2d6a493"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1068,7 +1082,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 27,
+  "currentPendingSourceReviews": 26,
   "latestCheckpoint": {
     "acceptedContentCommit": "428f1af",
     "report": "docs/verification/checkpoint-428f1af.md",

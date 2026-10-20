@@ -29,3 +29,5 @@ All six fresh1450/430/320×light/dark native groups PASS, logs `/tmp/atlas-worke
 Personally inspected final own320light Lai/full page, Wari’category/matrix and full survey panels;320dark Nootka/source-unit diagram, Kisi matrix and complete survey page. Source diacritics, five-unit brackets, all category points, zero Vietnamese marker, all7bins, controls/readout and limitations are readable and contained. Output pixels `/tmp/atlas-worker-one/ling-typology/`.
 
 Focused static1/0/0 (`ling-typology-static.log`); isolated full strict scratch build6684written/6890planned/450chapters/85collections,0errors/warnings, home112824bytes gzip (`ling-typology-build.log`, scratch `/tmp/atlas-worker-one/ling-typology-build`). Generated outputs remain outside the worktree. `git diff --check` passes. Source flag stays true until independent source/model/native review.
+
+Independent acceptance: [coordinator peer report](ling-typology-peer.md), exact2d6a493; actual primary bodies, source hashes/independent complete reference and fresh native/output checks pass.

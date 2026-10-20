@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 27,
+  "remainingFlags": 26,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,6 @@
     "energy": 1,
     "robot": 1,
     "arch": 4,
-    "ling": 1,
     "bighist": 14
   },
   "queue": [
@@ -219,24 +218,6 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Pendentive"
       }
-    },
-    {
-      "id": "ling-3.6",
-      "file": "content/ling/ch03-b.js",
-      "name": "Morphological typology",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "caption",
-          "text": "Choose a language (or click a dot on the right) to read the clause morpheme by morpheme: roots blue, affixes teal, with their glosses. The plot gives each clause's morphemes per word and the average number of grammatical features per affix, and shades nothing: the labels mark where the textbook classes sit. The four clauses are rough counterparts of “I can’t hear (very) well” and are **not** word-for-word translations. My own segmentation, checked against reference grammars only for Turkish ability/negation, Mandarin potential complements and the Inuktitut example (Wikipedia's *Inuit grammar*); Latin is from memory, and conventions for counting (is *qīngchu* one morpheme? is *-junga* one or two?) change the numbers a little."
-        }
-      ],
-      "refs": [
-        "Fromkin et al. ch. 2"
-      ],
-      "links": {}
     },
     {
       "id": "bighist-3.6",
@@ -1272,7 +1253,8 @@
       "bighist-4.4",
       "arch-4.6",
       "mat-3.13",
-      "geol-3.15"
+      "geol-3.15",
+      "ling-3.6"
     ]
   },
   "additionalFollowups": [
@@ -6371,6 +6353,11 @@
       "id": "geol-3.15",
       "status": "resolved",
       "note": "2026-10-20: worker one independently read complete original1967, checked spherical Jacobians and fresh native/output evidence; docs/verification/geol-mckenzie-original-peer.md."
+    },
+    {
+      "id": "ling-3.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read WALS/Sapir primary bodies, regenerated source/count reference and checked fresh native/output evidence; docs/verification/ling-typology-peer.md."
     }
   ]
 }

@@ -23,7 +23,7 @@ export function typologyModel(view='words',word='lai',formative='wari'){
  return{view,word,formative,words,formatives,selectedWord:words.find(d=>d.key===word),selectedFormative:formatives.find(d=>d.key===formative),sample,survey,reported:[{label:'Vietnamese',cpw:0},{label:'English',cpw:2},{label:'Koasati',cpw:13}]};
 }
 function fitText(S,text,x,y,left,right,size=12,extra={}){const ctx=S.ctx;ctx.save();ctx.font=`500 ${size}px Inter, system-ui, sans-serif`;const width=ctx.measureText(text).width,available=Math.abs(S.X(right)-S.X(left))-6;ctx.restore();S.text(text,x,y,{size:Math.min(size,size*available/Math.max(1,width)),halo:false,...extra});}
-export default{num:'3.6',kind:'Concept',name:'Morphological typology',verify:true,credit:'Sapir; Bickel and Nichols, source-defined dimensions',
+export default{num:'3.6',kind:'Concept',name:'Morphological typology',verify:false,credit:'Sapir; Bickel and Nichols, source-defined dimensions',
  statement:String.raw`Morphological typology involves several dimensions. Synthesis concerns how elements combine into morphological words. Exponence counts grammatical categories carried by a formative. Phonological fusion concerns how a formative connects to its host: isolating, concatenative or nonlinear. These dimensions do not form a single universal scale. A cumulative formative may be a separate phonological word, as Wari’ na is; a synthetic word may contain two phonological words, as Hakha Lai a-nii làay does.
 
 Sapir distinguished relative degrees of analytic, synthetic and polysynthetic structure while warning that traditional types are not mutually exclusive. Those terms describe structural tendencies, not a hierarchy of peoples or language quality.`,
