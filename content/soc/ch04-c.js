@@ -1,3 +1,4 @@
+import {growthModel,growthSeedValid,GROWTH_TIMES} from './source-audit-growth.js';
 import {catalogueModel,SHELF_PERCENT} from './source-audit-catalogue.js';
 import {webSeedValid,webModel,WEB_REGIONS,WEB_LABELS,WEB_PUBLISHED,WEB_TOTAL} from './source-audit-bowtie.js';
 import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab.js';
@@ -6,9 +7,7 @@ import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab
 // Sources checked (Oct 2026): Salganik, Dodds & Watts, Science 311: 854–856 (2006), doi 10.1126/science.1121066 — 14,341
 // participants, 48 songs, eight "social influence" worlds plus an independent condition, inequality by the Gini coefficient and
 // unpredictability u_i = average difference in market share of song i between pairs of worlds (text of the paper and its SOM);
-// Gabaix, QJE 114 (3): 739–767 (1999) — Zipf's law for cities from proportional (Gibrat) growth with a lower reflecting barrier;
-// US populations are the 2020 census counts of the 30 largest cities as listed on Wikipedia (List of United States cities by
-// population, Oct 2026); Brynjolfsson, Hu & Smith, Management Science 49 (11): 1580–1596 (2003), original §4.2/Table4:
+// Gabaix, QJE114:739–767 (1999), original §§II.1/III.1/III.4: normalized reflected model and distribution versus rank ratios; Brynjolfsson, Hu & Smith, Management Science 49 (11): 1580–1596 (2003), original §4.2/Table4:
 // fitted2001 rank data and2.3-million catalogue imply39.2% of Amazon unit sales beyond rank100,000;
 // Broder et al. (WWW9, 2000), AltaVista crawl of May 1999: 203,549,046 nodes: SCC 56,463,993; IN 43,343,168; OUT 43,166,185;
 // TENDRILS 43,797,944; DISCONNECTED 16,777,756 (text of the paper at archives.iw3c2.org/www9/w9cdrom/160/160.html).
@@ -17,7 +16,7 @@ import {
   rng32, mkGraph, components, giantTheory, gaussDraw, degreeSequence, configModel, digraphGnp, bowTie, lsq,
 } from './ch04.shared.js';
 
-const US = [['New York', 8804190], ['Los Angeles', 3898747], ['Chicago', 2746388], ['Houston', 2304580], ['Phoenix', 1608139], ['Philadelphia', 1603797], ['San Antonio', 1434625], ['San Diego', 1386932], ['Dallas', 1304379], ['Fort Worth', 918915], ['Jacksonville', 949611], ['Austin', 961855], ['San Jose', 1013240], ['Charlotte', 874579], ['Columbus', 905748], ['Indianapolis', 887642], ['San Francisco', 873965], ['Seattle', 737015], ['Denver', 715522], ['Nashville', 689447], ['Oklahoma City', 681054], ['Washington', 689545], ['El Paso', 678815], ['Las Vegas', 641903], ['Boston', 675647], ['Detroit', 639111], ['Louisville', 633045], ['Portland', 652503], ['Memphis', 633104], ['Baltimore', 585708]].sort((a, b) => b[1] - a[1]);
+
 
 export default {
   collection: 'soc',
@@ -47,53 +46,25 @@ The presentation differed between experiments: experiment 1 used a randomly orde
     },
     // ------------------------------------------------------------------ 4.13
     {
-      num: '4.13',
-      kind: 'Phenomenon',
-      name: 'Gibrat’s proportional growth and city-size laws',
-      statement: String.raw`**Gibrat's law of proportional effect**: if the growth rate of each entity (firm, city) is independent of its size, then $\ln(\text{size})$ performs a random walk and the distribution of sizes becomes **lognormal**, with a spread that grows with time and no stationary limit.
+      num:'4.13',kind:'Model',name:'Gibrat’s proportional growth and city-size laws',
+      statement:String.raw`Gibrat-style growth means that the distribution of the multiplicative growth factor does not depend on starting size. For the ideal no-floor model
+$$X_{t+1}=X_t e^{\sigma Z_t-\sigma^2/2},$$
+with independent standard-normal $Z_t$, $X_0=1$ and $\sigma\ge0$, the log size has mean $-t\sigma^2/2$ and variance $t\sigma^2$, while $E[X_t]=1$. For positive $\sigma$ its distribution keeps changing with time; this alone is not a stationary Zipf law.
 
-**Zipf's law for cities**: ranked by population, the $r$th largest city has size roughly $S_r\approx S_1/r$: the rank–size plot is a line of slope $-1$ on log–log axes, equivalently the tail $P(S>s)\propto s^{-\zeta}$ with $\zeta\approx1$.
+Gabaix's 1999 analysis adds lower-size and normalization conditions in a reflected continuous-time model. Its finite-barrier result approaches Zipf tail exponent 1 in a limiting regime. A finite discrete floor and a finite rank plot do not automatically reproduce that theorem or an observed city-size distribution.`,
+      idea:String.raw`Taking logarithms turns the unbounded product into a sum of Gaussian increments, giving the stated ideal mean/variance and the exponential-moment identity. The authored comparison applies the same increments but replaces a proposed log size below zero by zero after **each discrete step**, equivalent to setting a proposed size below one to one.
 
-**Gabaix (1999)** showed that the two are linked: if cities grow proportionally *and* have a **lower reflecting barrier** (very small cities cannot shrink without bound), the stationary size distribution is a power law with $\zeta=1$ when cities' mean relative growth is the same (zero in relative terms). Zipf's law is thus a property of the *process* (random multiplicative growth with a floor), not of any particular city.`,
-      idea: String.raw`Write $x=\ln S$. Proportional growth gives a random walk with variance $\sigma^2$ per step and drift $\mu-\sigma^2/2$ for mean relative growth $\mu$. A walk with negative drift confined above a barrier settles to an exponential law $P(x>y)\propto e^{-\zeta y}$ with $\zeta=2\,|\text{drift}|/\sigma^2$; in the variable $S=e^x$ this is the power law $P(S>s)\propto s^{-\zeta}$. If the mean *relative* growth of every city is zero (they all grow with the economy), the drift is $-\sigma^2/2$, so $\zeta=1$. Without the barrier the walk spreads without limit, giving the lognormal. The Pareto/Zipf form is the same one that preferential attachment (4.9) produces by another route.`,
-      caption: String.raw`**Left**: a model: 2000 cities of equal size grow by random factors for $T$ steps (each step multiplies by $e^{\sigma z-\sigma^2/2}$, mean 1); with the barrier on, none may fall below its starting size. The rank–size curve straightens towards slope $-1$ (dashed line, drawn through the 10th city); with the barrier off it keeps bending (lognormal). **Right**: the 30 largest US cities (2020 census): size against rank on the same axes.`,
-      scope: String.raw`Real city-size distributions fit Zipf's law only approximately (the exponent depends on how a "city" is defined and on the country; the largest cities are often off the line) and the barrier is a modelling assumption that critics find artificial (cities can disappear, and the mean growth need not be equal across sizes). The simulation is a model; the US figures are census counts for the 30 largest cities by the 2025 estimate.`,
-      deps: ['soc-4.7', 'geog-9.9'],
-      refs: ['Newman ch. 10'],
-      tags: ['Zipf', 'city sizes', 'proportional growth'],
-      credit: 'Gibrat, 1931; Zipf, 1949; Gabaix, 1999',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Zipf%27s_law#City_sizes', doi: 'https://doi.org/10.1162/003355399556133' },
-      verify: true,
-      viz(v) {
-        const barrier = v.toggle('reflecting lower barrier', true);
-        const tS = v.slider('time steps $T$', 10, 1500, 800, { log: true, int: true, sig: 2 });
-        const sS = v.slider('volatility $\\sigma$ per step', 0.05, 0.3, 0.12, { step: 0.01 });
-        const N = 2000;
-        const A = v.stage({ x: [1, N], y: [0.5, 1e4], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'rank $r$', ylabel: 'size (in units of the floor)', title: 'model: 2000 cities', minWidth: 300, weight: 1.1 });
-        const B = v.stage({ x: [1, 40], y: [1e5, 2e7], xlog: true, ylog: true, axes: 'box', gutter: true, height: 340, xlabel: 'rank $r$', ylabel: 'population', title: 'the 30 largest US cities, 2020', minWidth: 280, weight: 1 });
-        const cache = {};
-        const run = (T, s, b) => { const k = `${T}|${s}|${b}`; if (cache[k]) return cache[k]; if (Object.keys(cache).length > 30) for (const x in cache) delete cache[x]; const R = rng32(11), x = new Float64Array(N).fill(1); for (let t = 0; t < T; t++) for (let i = 0; i < N; i++) { x[i] *= Math.exp(s * gaussDraw(R) - s * s / 2); if (b && x[i] < 1) x[i] = 1; } return (cache[k] = Float64Array.from(x).sort().reverse()); };
-        const slopeTop = (arr, m) => { const xs = [], ys = []; for (let r = 1; r <= m; r++) { xs.push(Math.log(arr[r - 1])); ys.push(Math.log(r)); } return lsq(xs, ys).slope; };
-        const usSizes = US.map((c) => c[1]);
-        let st = null;
-        v.render(() => {
-          const T = Math.round(tS.value), s = sS.value, b = barrier.value, arr = run(T, s, b);
-          const top = arr[0];
-          A.setView([1, N], [0.5, Math.max(30, top * 2)]);
-          const pts = []; for (let r = 1; r <= N; r += (r < 20 ? 1 : Math.ceil(r * 0.03))) pts.push([r, arr[r - 1]]);
-          A.path(pts, { color: 'accent', width: 2.4 });
-          A.fn((r) => (arr[9] * 10) / r, { color: 'ink', width: 1.5, dash: [6, 4], domain: [1, N] });
-          B.fn((r) => usSizes[0] / r, { color: 'ink', width: 1.5, dash: [6, 4], domain: [1, 40] });
-          B.dots(usSizes.map((p, i) => [i + 1, p]), { r: 4, color: 'accent' });
-          [0, 1, 2, 9].forEach((i) => B.text(US[i][0], i + 1, usSizes[i], { dx: 8, dy: -8, size: 10.5, color: 'muted', align: 'left' }));
-          st = { top, T, b, sl: slopeTop(arr, 200), slAll: slopeTop(arr, 1000), us: lsq(usSizes.map((x) => Math.log(x)), usSizes.map((_, i) => Math.log(i + 1))).slope, med: arr[N >> 1] };
-        });
-        v.legend([['accent', 'sizes by rank'], ['ink', 'Zipf: size ∝ 1/rank', { dash: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          return String.raw`After $T=${st.T}$ steps ${st.b ? 'with' : 'without'} the barrier: fitted slope of log-rank on log-size for the top 200 cities **${v.fix(st.sl, 2)}** (Zipf: −1), top 1000: ${v.fix(st.slAll, 2)} · largest city ${Math.round(st.top).toLocaleString('en-US')}× the floor · median city ${v.fix(st.med, 1)}× the floor
-US cities: fitted slope for the top 30 is **${v.fix(st.us, 2)}**; New York ÷ 10 = ${Math.round(US[0][1] / 10).toLocaleString('en-US')} against the tenth-largest ${US[9][1].toLocaleString('en-US')}`;
-        });
+That projection alters growth near the floor and creates exact ties at one. It is not continuous-time reflected Brownian motion or a normalization by total urban population. Gabaix also distinguishes a distributional Zipf law from deterministic ratios of successive ranked cities; individual rank ratios can fluctuate considerably. The dashed slope guide is therefore a reference, not a fitted law or a convergence verdict.`,
+      caption:String.raw`Every final log size of 1000 synthetic cities appears in the rank plot. Blue is the selected floored or no-floor process; gray is the paired no-floor comparison. The dashed slope−1 guide is anchored at selected rank 500. Right: all time steps of the first three synthetic cities, with dashed paired no-floor traces when the floor is enabled. Change time, shock scale, floor or seed. Axes use log size directly, so small positive sizes are not silently clipped or exponentiated to zero.`,
+      scope:String.raw`A finite authored seeded illustration with Gaussian-shaped Box–Muller draws from finite pseudorandom uniforms. Ideal independent-normal distribution formulas are separate from these finite streams. No census values, empirical city ranking, population conservation, fitted tail exponent, continuous reflection solver or asymptotic convergence certificate is supplied. The one-step floor and initial equal sizes are declared conventions. At zero time or shock scale, all sizes remain one. The source's exact finite-barrier exponent need not equal1; rank-size slope−1 is not a universal finite-sample identity.`,
+      deps:['soc-4.7'],refs:['Gabaix, Quarterly Journal of Economics114:739–767 (1999), §§II.1, III.1/Proposition1 and III.4/Proposition4'],tags:['Zipf','cities','random growth'],credit:'Xavier Gabaix, 1999; paired discrete log-growth illustration authored here.',links:{source:'https://xgabaix.scholars.harvard.edu/sites/g/files/omnuum7761/files/xgabaix/files/zipfs_law.pdf',doi:'https://doi.org/10.1162/003355399556133'},verify:true,
+      viz(v){
+        let seed=19,cache=null,info;v.shareState('city growth seed',{get:()=>seed,validate:growthSeedValid,set:x=>{seed=x;cache=null;}});
+        const time=v.select('discrete steps',GROWTH_TIMES.map(value=>({value,label:String(value)})),100),sigma=v.slider('shock scale sigma',0,.4,.2,{step:'any',fmt:x=>x.toPrecision(6)}),floor=v.toggle('floor proposed size at one',true);v.button('New cities',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-.3,7.2],y:[-10,10],axes:'box',gutter:true,height:340,minWidth:260,title:'all final synthetic log sizes',xlabel:'natural log of rank',ylabel:'natural log of size'}),B=v.stage({x:[-5,105],y:[-10,10],axes:'box',gutter:true,height:340,minWidth:260,title:'first three synthetic city histories',xlabel:'discrete step',ylabel:'natural log of size'});
+        v.render(()=>{const key=`${sigma.value}|${time.value}|${seed}`;if(!cache||cache.key!==key)cache={key,data:growthModel(sigma.value,time.value,seed)};const p=cache.data,sorted=floor.value?p.floorSorted:p.freeSorted,traces=floor.value?p.floorTraces:p.freeTraces,guide=[sorted[499]+Math.log(500),sorted[499]-Math.log(2)],lo=Math.min(...sorted,...p.freeSorted,...guide),hi=Math.max(...sorted,...p.freeSorted,...guide),pad=.08*Math.max(1,hi-lo);A.setView([-.3,Math.log(1000)+.3],[lo-pad,hi+pad]);A.path(p.freeSorted.map((y,i)=>[Math.log(i+1),y]),{color:'muted',width:1.2});A.line(0,guide[0],Math.log(1000),guide[1],{color:'ink',width:1.2,dash:[5,4]});A.dots(sorted.map((y,i)=>[Math.log(i+1),y]),{color:'accent',r:1.6,ring:false});const values=[...traces.flat().map(x=>x[1]),...(floor.value?p.freeTraces.flat().map(x=>x[1]):[])],a=Math.min(...values),b=Math.max(...values),dy=.08*Math.max(1,b-a),T=Math.max(1,p.time);B.setView([-.04*T,1.04*T],[a-dy,b+dy]);const colors=['accent','orange','teal'];if(floor.value)p.freeTraces.forEach((t,j)=>B.path(t,{color:colors[j],width:1.2,dash:[5,4]}));traces.forEach((t,j)=>{B.path(t,{color:colors[j],width:1.8});B.dot(...t.at(-1),{color:colors[j],r:3.2,ring:false});});info=p;});
+        v.legend([['accent','selected ranks / city 1'],['orange','city 2'],['teal','city 3'],['muted','paired no-floor rank curve'],['ink','slope−1 reference',{dash:true}]]);
+        v.readout(()=>{const p=info,selected=floor.value?p.floored:p.free;return `Seed ${seed}; ${p.time} steps, sigma ${p.sigma.toPrecision(12)}; ${floor.value?'discrete floor enabled':'no floor'}. All ${p.n} final values are ranked; three complete histories are displayed. Mean selected log size ${v.fix(selected.reduce((a,b)=>a+b,0)/p.n,6)}; minimum ${v.fix(Math.min(...selected),6)}; maximum ${v.fix(Math.max(...selected),6)}. Paired floor process made ${p.floorEvents} strict below-floor projections. Ideal no-floor normal log mean ${v.fix(p.idealMeanLog,6)} and variance ${v.fix(p.idealVarianceLog,6)}; these are distribution parameters, not exact finite sample moments. No Zipf fit or empirical city prediction is computed.`;});
       },
     },
     // ------------------------------------------------------------------ 4.14

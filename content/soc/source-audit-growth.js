@@ -1,0 +1,7 @@
+// Authored paired discrete log-growth walks; not a reflected-diffusion solver or census data.
+export const growthSeedValid=x=>Number.isInteger(x)&&x>=0&&x<=0xffffffff;
+export function growthRandom(seed){if(!growthSeedValid(seed))throw new RangeError('Unsigned32 seed required');let s=seed>>>0;return()=>{s=(s+0x6d2b79f5)>>>0;let t=s;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
+export const GROWTH_TIMES=Object.freeze([0,10,100,300,1000]);
+export function growthModel(sigma=.2,time=100,seed=19){if(!Number.isFinite(sigma)||sigma<0||sigma>.4||!GROWTH_TIMES.includes(time)||!growthSeedValid(seed))throw new RangeError('Offered finite growth domain required');const n=1000,R=growthRandom(seed),free=Array(n).fill(0),floored=Array(n).fill(0),freeTraces=Array.from({length:3},()=>[[0,0]]),floorTraces=Array.from({length:3},()=>[[0,0]]);let floorEvents=0;
+ for(let t=1;t<=time;t++)for(let i=0;i<n;i++){const u=R()+.5/4294967296,z=Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*R()),d=sigma*z-sigma*sigma/2;free[i]+=d;const proposed=floored[i]+d;if(proposed<0)floorEvents++;floored[i]=Math.max(0,proposed);if(i<3){freeTraces[i].push([t,free[i]]);floorTraces[i].push([t,floored[i]]);}}
+ const freeSorted=free.slice().sort((a,b)=>b-a),floorSorted=floored.slice().sort((a,b)=>b-a);return{n,sigma,time,seed,free,floored,freeSorted,floorSorted,freeTraces,floorTraces,floorEvents,freeMeanLog:free.reduce((a,b)=>a+b,0)/n,floorMeanLog:floored.reduce((a,b)=>a+b,0)/n,idealMeanLog:-sigma*sigma*time/2,idealVarianceLog:sigma*sigma*time};}
