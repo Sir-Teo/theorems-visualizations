@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **46 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 796 edges. Even
+Of 64 non-math collections, **45 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 784 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -162,3 +162,8 @@ Current accepted global shortfall807,47/64collections below25published,28whole s
 ## Thermodynamics reaches the published prerequisite target
 
 Exact `3fea5ed` adds11independently reviewed derivational uses across10written items: FTC, chain rule, interior extrema, variance, independence, Gaussian integral and Stirling expansion. THERMO now has25published/27known/38whole-syllabus edges. Independent peer read all8actual targets, all10consumers and own20fresh narrow theme outputs. No touched consumer is a bridge step; all visualization functions and sourceflags remain unchanged. See [peer](thermo-prerequisites-independent-peer-2026-10-20.md). Current accepted shortfall796,46/64below25published,28whole syllabi below25, frozenBIGHISTedge excluded. The snapshot-only fullobject guard is explicit-only; enduring defaulttests retain the3independent mathematical groups.
+
+
+## Control theory reaches the published prerequisite target
+
+Exact `cdc478c` adds12independently reviewed derivational inputs across11written items, bringing CTRL13→25published,22→34known and37→49whole-syllabus. The quotient/chain/determinant/coordinate/Lyapunov/extremum/Lipschitz arguments personally match actual written targets; full50object/function/flag guards, independent766families/7848cascade timepoints,22fresh narrow outputs and4touched feedback/stability cards pass. See [peer](ctrl-crossfield-prerequisites-peer.md). Current accepted shortfall784,45/64below25published,28whole syllabi below25; frozenBIGHISTedge excluded. No source review closes.

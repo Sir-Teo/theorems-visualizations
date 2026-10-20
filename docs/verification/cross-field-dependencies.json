@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 46,
+  "publishedBelowTarget": 45,
   "wholeSyllabusBelowTarget": 28,
   "entries": [
     {
@@ -9061,15 +9061,57 @@
       "collection": "ctrl",
       "field": "eng",
       "target": 25,
-      "writtenToWritten": 13,
-      "writtenToKnown": 22,
-      "wholeSyllabus": 37,
-      "publishedShortfall": 12,
+      "writtenToWritten": 25,
+      "writtenToKnown": 34,
+      "wholeSyllabus": 49,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
+          "item": "ctrl-1.11",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ctrl-1.12",
           "prerequisite": "ode-1.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-1.12",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-1.13",
+          "prerequisite": "ladr-9.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-1.5",
+          "prerequisite": "ladr-3.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-1.7",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-2.8",
+          "prerequisite": "ladr-3.43",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -9099,6 +9141,13 @@
           "item": "ctrl-2.3",
           "prerequisite": "mech-6.10",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-2.7",
+          "prerequisite": "ladr-9.51",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -9201,6 +9250,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "ctrl-3.5",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ctrl-3.6",
           "prerequisite": "ode-5.9",
           "prerequisiteField": "math",
@@ -9208,8 +9264,36 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "ctrl-3.6",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "ctrl-3.7",
           "prerequisite": "ladr-7.62",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-4.8",
+          "prerequisite": "pma-5.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-4.8",
+          "prerequisite": "pma-6.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ctrl-4.3",
+          "prerequisite": "pma-5.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -15066,7 +15150,8 @@
     "date": "2026-10-20",
     "reviewedCandidates": [
       "e57c6a5758904c1f08f79c437a2be87a69924471",
-      "3fea5ed16b2c7bc2a08bdccb353a4add425fe817"
+      "3fea5ed16b2c7bc2a08bdccb353a4add425fe817",
+      "cdc478caa16e6cfa24c329659e10287973468fd7"
     ],
     "excludedUnacceptedEdges": [
       {
