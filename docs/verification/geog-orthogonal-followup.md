@@ -1,0 +1,5 @@
+# Geography local-isometry convention correction
+
+Successor after df2dfe3 and the separate actual-main 2.3 spacing fix 7c0fe37 changes exactly one phrase in 3.7: a unit-circle indicatrix forces an orthogonal derivative, including a possible reflection, rather than necessarily a rotation. The length-preservation/local-isometry/curvature argument is identical. Reflection diag(1,-1) preserves every vector norm but has determinant -1; it supplies the same explicit counterexample as the 3.5 convention correction.
+
+Exact source guard permits this one phrase and verifies byte identity of every other Geography field/file, hence functions, flags, deps, helpers, syllabus and scopes. Strict build and static48 check: zero errors/warnings. Own fresh actual main #idea at viewport320 light/dark: client288/scroll288, no page/TeX errors. Both complete pixels personally inspected `/tmp/atlas-new-imaging-source/geog-orthogonal-native/{light,dark}.png`; measurements `native.json`. Browser/server closed. No prerequisite credit or source closure.
