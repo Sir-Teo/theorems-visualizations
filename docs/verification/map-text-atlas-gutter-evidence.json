@@ -1,0 +1,2980 @@
+{
+  "phaseBoundary": "bc5e18f4d1b6c4799d78f778e7301711e35e78c1",
+  "files": [
+    {
+      "file": "assets/js/map-scene-text.js",
+      "sha256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed"
+    },
+    {
+      "file": "assets/js/map-scene-painter.js",
+      "sha256": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d"
+    },
+    {
+      "file": "assets/js/map-scene-gl.js",
+      "sha256": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc"
+    },
+    {
+      "file": "scripts/lib/map-text-atlas-probe.mjs",
+      "sha256": "db353a1d411fa31f3e64e69647c11dd2c6fe724fc644a2e11e652ffcb1cc6c7b"
+    },
+    {
+      "file": "scripts/lib/map-text-atlas-gutter-prototype.mjs",
+      "sha256": "f7898bd94a04d68af7be2085428e38f2a4b61fe807e2252ea193c00dda48e124"
+    },
+    {
+      "file": "tests/map-text-atlas-gutter.mjs",
+      "sha256": "3d894032e5a55595c4f651080d1541c8e25fad7956d2a5e26b1caf4512e107fa"
+    },
+    {
+      "file": "tests/map-text-atlas-gutter-model.mjs",
+      "sha256": "c521570c5526f0c4a241b4719c9aab256a27e3f0b75cb7f2d87551e73111a0f6"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-fresh.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.125-repacked.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-fresh.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.125-0.625-repacked.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "573f1dac3de901eb7a42248585b26e7398544adc012d6750551a10f76f8db081"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-fresh.png",
+      "bytes": 3904,
+      "sha256": "19ab86e9e402ff1bea5b69312aba1c8d11e0029b5761934711cc9119162fd27d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "71632b561f874d25a081d043ed1bef58383c7d083da58ac00b694b91180ec340"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.125-repacked.png",
+      "bytes": 3960,
+      "sha256": "58fe31948a4f1bf2013d261ee7ffb75cbea0ef4a0e2e0e2e90178517e39f5ea9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "72f99a3eec2024d350a1c96cd139c1a3fcec7f5dbea9ee152ea7683fa37e0e12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-fresh.png",
+      "bytes": 3897,
+      "sha256": "993326a2a17743d331bcc7e8e2387bdd72bafe4ed4eea3f87f34920493f1915e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "7c0283daefcd77634bac77ea40c72bc5bb53e083d320bb11f3bc67ff0f68c12d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/chapter-0.625-0.625-repacked.png",
+      "bytes": 3948,
+      "sha256": "9730e0419ad71d4668a7685265e22f44d9c3509ed88a72924b8ae676d5350ec1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/phase.json",
+      "bytes": 303001,
+      "sha256": "d3bd149093cd6238c8996fc4bc7a8de49167f924f081de41f24a846e1e60e950"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f779d8c8e8c008dd350d627859a6171ae26e378f7f9ce63ccf47170db7374169"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "62ef749d945774128215638982bd4d09c683813f18dc3069d336406056766e9f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-fresh.png",
+      "bytes": 1596,
+      "sha256": "f107d256934915bd2a452a76c637509a414dd511b08a8a8423998739fb22401a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f779d8c8e8c008dd350d627859a6171ae26e378f7f9ce63ccf47170db7374169"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4242b78ae3a3024608364d8b0ec96f8e457e446c877d5739cd229f900790cb0f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.125-repacked.png",
+      "bytes": 1596,
+      "sha256": "f107d256934915bd2a452a76c637509a414dd511b08a8a8423998739fb22401a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "0e2a1e4798facbb4e602d17d9cb4cebb81364cd50ccc6bfc1dd698919f06b3d4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "62ef749d945774128215638982bd4d09c683813f18dc3069d336406056766e9f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-fresh.png",
+      "bytes": 1599,
+      "sha256": "138c3851abfb08046ec9e3ebf11e25eba07f93fefcad8802e1b1f351407f03dd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "d76d32341bd06e12848f5104f0cac6cf07caf05b3b386e1f6dfc14d586dabffb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4242b78ae3a3024608364d8b0ec96f8e457e446c877d5739cd229f900790cb0f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.125-0.625-repacked.png",
+      "bytes": 1635,
+      "sha256": "66211d5670d22860f5b6181090ffc830a1c5608509c9e790ad4f8dda99d196d7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "9a6e4e17667899db13924e29adddfb0ee37dc149ee57b53f11545063703f4aed"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "62ef749d945774128215638982bd4d09c683813f18dc3069d336406056766e9f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-fresh.png",
+      "bytes": 1605,
+      "sha256": "1f762d5861bb7edb247d650f6bd37b63a6a2791024a8f3f5c6695bed3537bd38"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "eb90c8cb053395908969daca7dac8868c21a16b2c3f73aca36da632a7fa634de"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4242b78ae3a3024608364d8b0ec96f8e457e446c877d5739cd229f900790cb0f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.125-repacked.png",
+      "bytes": 1646,
+      "sha256": "f80f77c5899dc11d322b0cec2b558ab31ee602acfaf5c1a42e8188cd832db304"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "34c002e07cbd3f5ca7205dfaad8b405743fcc40acbe64d603d633edee9fbc64c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "62ef749d945774128215638982bd4d09c683813f18dc3069d336406056766e9f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-fresh.png",
+      "bytes": 1600,
+      "sha256": "5f6dcbe192997a07743747e625e0ffeb47d973a0fe6688a06a6f88583c84ae85"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f9f45267558eae3d1c00621023bf598fe547d4d5df24e989309d74c8cebe71ea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4242b78ae3a3024608364d8b0ec96f8e457e446c877d5739cd229f900790cb0f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase/serif-0.625-0.625-repacked.png",
+      "bytes": 1684,
+      "sha256": "ec528d819fc37bb9e1e0598d1e38e683a7f65d0dda39dba5d07a0e0a42b4816c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b6df6ec1c1de15f23f21f1fcb4212e1c32c71437193d5d6fea48ac2ed7e806c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "425b72c32fec26efd1a9f8f24714fdbf9e0b0719460c87ce27c08ea523007247"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-fresh.png",
+      "bytes": 1456,
+      "sha256": "a5de11691f9d34aa499d8f3e95d454735dc9e3f361fd5618e6536f73b8e6fe9d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b6df6ec1c1de15f23f21f1fcb4212e1c32c71437193d5d6fea48ac2ed7e806c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "a8c3262ea36d32988c43b03570024746c99c516790031d7c2941af7930465bb9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-guarded-repacked.png",
+      "bytes": 1456,
+      "sha256": "a5de11691f9d34aa499d8f3e95d454735dc9e3f361fd5618e6536f73b8e6fe9d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b6df6ec1c1de15f23f21f1fcb4212e1c32c71437193d5d6fea48ac2ed7e806c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "425b72c32fec26efd1a9f8f24714fdbf9e0b0719460c87ce27c08ea523007247"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-fresh.png",
+      "bytes": 1456,
+      "sha256": "a5de11691f9d34aa499d8f3e95d454735dc9e3f361fd5618e6536f73b8e6fe9d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b6df6ec1c1de15f23f21f1fcb4212e1c32c71437193d5d6fea48ac2ed7e806c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "cf099cbe4ef61b5a8a7bcb7186a8e27df6a2d0a16696ee330c721a0e01814015"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-0-original-repacked.png",
+      "bytes": 1456,
+      "sha256": "a5de11691f9d34aa499d8f3e95d454735dc9e3f361fd5618e6536f73b8e6fe9d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f5dcbed40288aecdc36f4e197586f1caa947f4b0cfbada53ac187ba43d0f91b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "425b72c32fec26efd1a9f8f24714fdbf9e0b0719460c87ce27c08ea523007247"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-fresh.png",
+      "bytes": 1460,
+      "sha256": "5ee941384cc5f86c75b2a5885fc9773d4f50d76a00c15e0191c69fc689b93436"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f5dcbed40288aecdc36f4e197586f1caa947f4b0cfbada53ac187ba43d0f91b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "a8c3262ea36d32988c43b03570024746c99c516790031d7c2941af7930465bb9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-guarded-repacked.png",
+      "bytes": 1460,
+      "sha256": "5ee941384cc5f86c75b2a5885fc9773d4f50d76a00c15e0191c69fc689b93436"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "f5dcbed40288aecdc36f4e197586f1caa947f4b0cfbada53ac187ba43d0f91b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "425b72c32fec26efd1a9f8f24714fdbf9e0b0719460c87ce27c08ea523007247"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-fresh.png",
+      "bytes": 1460,
+      "sha256": "5ee941384cc5f86c75b2a5885fc9773d4f50d76a00c15e0191c69fc689b93436"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ea720f5142be7de119a73c384d727298b9d9aceabce432df17b51ab82eceac42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "cf099cbe4ef61b5a8a7bcb7186a8e27df6a2d0a16696ee330c721a0e01814015"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-1-original-repacked.png",
+      "bytes": 1495,
+      "sha256": "34fd4b7c2958d0f76844e5317da3f0aef90a4244ca386fb6aa2369abeeec1f78"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "a9792cc85ad01ce8a3b915d28dab41fab15daeebef8fd1e99b980c5b79588621"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "21541ab879843774cf5d4b66bbba9417f8f1bfd6f1f114acfb165ae10d4c89fd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-fresh.png",
+      "bytes": 1352,
+      "sha256": "af92951acc0e48d3070027f46a00b9e69b0e0cb44a0199a69e21e04542dda58f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "a9792cc85ad01ce8a3b915d28dab41fab15daeebef8fd1e99b980c5b79588621"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "581fb4cfd67914628a09f64b860ff7174e9f29a7cf3a5ecdc0ecb4f9820af606"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-guarded-repacked.png",
+      "bytes": 1352,
+      "sha256": "af92951acc0e48d3070027f46a00b9e69b0e0cb44a0199a69e21e04542dda58f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "a9792cc85ad01ce8a3b915d28dab41fab15daeebef8fd1e99b980c5b79588621"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "21541ab879843774cf5d4b66bbba9417f8f1bfd6f1f114acfb165ae10d4c89fd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-fresh.png",
+      "bytes": 1352,
+      "sha256": "af92951acc0e48d3070027f46a00b9e69b0e0cb44a0199a69e21e04542dda58f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "a9792cc85ad01ce8a3b915d28dab41fab15daeebef8fd1e99b980c5b79588621"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "1c26a2ea6e0e59467685437df9163d401fc41e76615c4b77c4ce7e6adee8234b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-2-original-repacked.png",
+      "bytes": 1352,
+      "sha256": "af92951acc0e48d3070027f46a00b9e69b0e0cb44a0199a69e21e04542dda58f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1e565cafb979a2f7142c1f90a32c814695c8946775019b0f62137bb9189dbcfe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "51dd293519965d5057d16fd510cbf322298a4b592acfec7d0fb402086a51e685"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-fresh.png",
+      "bytes": 1382,
+      "sha256": "19edce9d0dcf3e4862f76316107890c72243552a376e97ac6b3bdb2170ad638a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1e565cafb979a2f7142c1f90a32c814695c8946775019b0f62137bb9189dbcfe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "825862476ce5abaf1ea9fc5cfb5f52a4171819e01ce56f636e6322d29223eac9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-guarded-repacked.png",
+      "bytes": 1382,
+      "sha256": "19edce9d0dcf3e4862f76316107890c72243552a376e97ac6b3bdb2170ad638a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1e565cafb979a2f7142c1f90a32c814695c8946775019b0f62137bb9189dbcfe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "51dd293519965d5057d16fd510cbf322298a4b592acfec7d0fb402086a51e685"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-fresh.png",
+      "bytes": 1382,
+      "sha256": "19edce9d0dcf3e4862f76316107890c72243552a376e97ac6b3bdb2170ad638a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1e565cafb979a2f7142c1f90a32c814695c8946775019b0f62137bb9189dbcfe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "e6f0bcc36cb842fa62b786e86df051bc674dca952cff9bbae0c4bbe8a1dd24ba"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-false-3-original-repacked.png",
+      "bytes": 1382,
+      "sha256": "19edce9d0dcf3e4862f76316107890c72243552a376e97ac6b3bdb2170ad638a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b8e08a4422c31e6df1c81220c3acad95fa75a6fb495e3df06380ed7d3e351a77"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "39c005234483bb766907b9a678658f92841a9114758fa9b5b0ee55777d20d3a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-fresh.png",
+      "bytes": 1460,
+      "sha256": "14785c265ffbbe8cd1f69ba39ddb03bd13dd3c5316196abfd214144f668e8da5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b8e08a4422c31e6df1c81220c3acad95fa75a6fb495e3df06380ed7d3e351a77"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c780e569620b37bedf07a407cce3f4f4d375d26b36efa118f0b0ccd30bf0160c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-guarded-repacked.png",
+      "bytes": 1460,
+      "sha256": "14785c265ffbbe8cd1f69ba39ddb03bd13dd3c5316196abfd214144f668e8da5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b8e08a4422c31e6df1c81220c3acad95fa75a6fb495e3df06380ed7d3e351a77"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "39c005234483bb766907b9a678658f92841a9114758fa9b5b0ee55777d20d3a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-fresh.png",
+      "bytes": 1460,
+      "sha256": "14785c265ffbbe8cd1f69ba39ddb03bd13dd3c5316196abfd214144f668e8da5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "b8e08a4422c31e6df1c81220c3acad95fa75a6fb495e3df06380ed7d3e351a77"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "9d316d62c14b096b121495a5d0673e5a68aa8b6030dd3b7a01bbc362e1ae7f73"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-0-original-repacked.png",
+      "bytes": 1460,
+      "sha256": "14785c265ffbbe8cd1f69ba39ddb03bd13dd3c5316196abfd214144f668e8da5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "59daca9b9ec4c76074b10532c5e0b52072f6a58e9ba99b0e6e0278f70df4f7ed"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "23264135a295c68650003e2b5a83660af5e5146efb91ae35f051e3c2414ef747"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-fresh.png",
+      "bytes": 1471,
+      "sha256": "adcd55288fe5fa7b2d453e49c05807c09695f2d4dde7a5052500d2c70c8a8d15"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "59daca9b9ec4c76074b10532c5e0b52072f6a58e9ba99b0e6e0278f70df4f7ed"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "36070d2d6b17039645658d309d24ea2b542fe6c490c68e2130487e81f718b50d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-guarded-repacked.png",
+      "bytes": 1471,
+      "sha256": "adcd55288fe5fa7b2d453e49c05807c09695f2d4dde7a5052500d2c70c8a8d15"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "59daca9b9ec4c76074b10532c5e0b52072f6a58e9ba99b0e6e0278f70df4f7ed"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "23264135a295c68650003e2b5a83660af5e5146efb91ae35f051e3c2414ef747"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-fresh.png",
+      "bytes": 1471,
+      "sha256": "adcd55288fe5fa7b2d453e49c05807c09695f2d4dde7a5052500d2c70c8a8d15"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "5f5819cd5e86610f45d0d2b698f058256dcecf4be596e7661e13968868b074b0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "80844be4941a5c24ce243a0659be679403e98a1d5ca3ee475b1304067265e7c3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-1-original-repacked.png",
+      "bytes": 1538,
+      "sha256": "91ef2ab7000ad99b21c03cc716850d680207ed9e4dc6cb36caa7b16e3e34f837"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "da28084bd16f7cfb0c03f5e983c2ef45420cf6dc21816bf06ca742c2bdf4f5d7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c2d5ee7430ccf69eacbfac3e50883a4c41cb7e9fb7484b49310b50da710a369b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-fresh.png",
+      "bytes": 1394,
+      "sha256": "04cf0efe8a9489d564bbefa3daaaad0d9a6e5fdf5163d16885e50da9e844c12f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "da28084bd16f7cfb0c03f5e983c2ef45420cf6dc21816bf06ca742c2bdf4f5d7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "e6b96009cdaf96f1e3c1033d4a707c9323bf11f14900288b000a7412b2646bbb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-guarded-repacked.png",
+      "bytes": 1394,
+      "sha256": "04cf0efe8a9489d564bbefa3daaaad0d9a6e5fdf5163d16885e50da9e844c12f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "da28084bd16f7cfb0c03f5e983c2ef45420cf6dc21816bf06ca742c2bdf4f5d7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c2d5ee7430ccf69eacbfac3e50883a4c41cb7e9fb7484b49310b50da710a369b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-fresh.png",
+      "bytes": 1394,
+      "sha256": "04cf0efe8a9489d564bbefa3daaaad0d9a6e5fdf5163d16885e50da9e844c12f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "da28084bd16f7cfb0c03f5e983c2ef45420cf6dc21816bf06ca742c2bdf4f5d7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "fce72b3b76d30ad1b7979a9fa32dfb3e4cd2d1199121291549ccfb41741e7673"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-2-original-repacked.png",
+      "bytes": 1394,
+      "sha256": "04cf0efe8a9489d564bbefa3daaaad0d9a6e5fdf5163d16885e50da9e844c12f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c270e5fd807a73063f0eacd743c87db99d75ce5bb3dfbd2a166f7173bc2dcd99"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4ad5621dd157544575fb0abd8c71085454568e04c9682e8e81e71a81d060f6c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-fresh.png",
+      "bytes": 1404,
+      "sha256": "e8fd5029ca9adcfbf79c236cb60c6fb4c94a44df1bdfc8402a3b5ffda17a58e9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c270e5fd807a73063f0eacd743c87db99d75ce5bb3dfbd2a166f7173bc2dcd99"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "6c499704271d1f5d52cac67bf58f47556df2b35617ddc59911446733ca99411b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-guarded-repacked.png",
+      "bytes": 1404,
+      "sha256": "e8fd5029ca9adcfbf79c236cb60c6fb4c94a44df1bdfc8402a3b5ffda17a58e9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c270e5fd807a73063f0eacd743c87db99d75ce5bb3dfbd2a166f7173bc2dcd99"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4ad5621dd157544575fb0abd8c71085454568e04c9682e8e81e71a81d060f6c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-fresh.png",
+      "bytes": 1404,
+      "sha256": "e8fd5029ca9adcfbf79c236cb60c6fb4c94a44df1bdfc8402a3b5ffda17a58e9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c270e5fd807a73063f0eacd743c87db99d75ce5bb3dfbd2a166f7173bc2dcd99"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "dce790d579de6e45357955095c88df79153cc43fbc338b1be2fd6310fc60363a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-dark-true-3-original-repacked.png",
+      "bytes": 1404,
+      "sha256": "e8fd5029ca9adcfbf79c236cb60c6fb4c94a44df1bdfc8402a3b5ffda17a58e9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "11b2fe87184b58cbca39296c17ed3c3d81ba165764b7c21ae844f54f2d5b65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "bb3a412d8019f22437aebec9d43868815cca5532d733ff57828e77aa2da2f5a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-fresh.png",
+      "bytes": 1457,
+      "sha256": "89d40c8d03804bd1b3fa93cba68ff4aff78ef382a2fa6bc62aa00b8b729c7ffb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "11b2fe87184b58cbca39296c17ed3c3d81ba165764b7c21ae844f54f2d5b65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4accc1f90f5b386b2760b7382e8cc890bf9176d97b708cfc432d83adb01c1caa"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-guarded-repacked.png",
+      "bytes": 1457,
+      "sha256": "89d40c8d03804bd1b3fa93cba68ff4aff78ef382a2fa6bc62aa00b8b729c7ffb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "11b2fe87184b58cbca39296c17ed3c3d81ba165764b7c21ae844f54f2d5b65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "bb3a412d8019f22437aebec9d43868815cca5532d733ff57828e77aa2da2f5a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-fresh.png",
+      "bytes": 1457,
+      "sha256": "89d40c8d03804bd1b3fa93cba68ff4aff78ef382a2fa6bc62aa00b8b729c7ffb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "11b2fe87184b58cbca39296c17ed3c3d81ba165764b7c21ae844f54f2d5b65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "b63f20665c621cbecd6c22fb70265673e8a361dfa2832714431ee6956842c360"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-0-original-repacked.png",
+      "bytes": 1457,
+      "sha256": "89d40c8d03804bd1b3fa93cba68ff4aff78ef382a2fa6bc62aa00b8b729c7ffb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "80eb9b01549fd3d0cb500d3a56e234084af4199dc7d71592bb7cb60d10619320"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "bb3a412d8019f22437aebec9d43868815cca5532d733ff57828e77aa2da2f5a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-fresh.png",
+      "bytes": 1457,
+      "sha256": "5a21d6e214adff45c316619df89433caad3331aee14c5a33bcd69b9250b746b6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "80eb9b01549fd3d0cb500d3a56e234084af4199dc7d71592bb7cb60d10619320"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "4accc1f90f5b386b2760b7382e8cc890bf9176d97b708cfc432d83adb01c1caa"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-guarded-repacked.png",
+      "bytes": 1457,
+      "sha256": "5a21d6e214adff45c316619df89433caad3331aee14c5a33bcd69b9250b746b6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "80eb9b01549fd3d0cb500d3a56e234084af4199dc7d71592bb7cb60d10619320"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "bb3a412d8019f22437aebec9d43868815cca5532d733ff57828e77aa2da2f5a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-fresh.png",
+      "bytes": 1457,
+      "sha256": "5a21d6e214adff45c316619df89433caad3331aee14c5a33bcd69b9250b746b6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "2b019b4a109060fa3359ef4b1b5956729a339ec178261494b44922e86f0ab3b2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "b63f20665c621cbecd6c22fb70265673e8a361dfa2832714431ee6956842c360"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-1-original-repacked.png",
+      "bytes": 1498,
+      "sha256": "effb09213d7565a1ffdfd649dcf323a27dd65fe55b3a23bd05c75a3d669a68da"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "8732be58826a79e9718d5a1189b6de51347aebd9748c9f4e4e0b03be52395a57"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "debd15b2bc6079bd86cac35bcaebf5bac3536aaad40b3e5df72e2151e1ebb31d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-fresh.png",
+      "bytes": 1350,
+      "sha256": "f4d0f4a0ce2b61123e3ceeee6f2fcc5d0d770ca465f931111484de485e008dc6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "8732be58826a79e9718d5a1189b6de51347aebd9748c9f4e4e0b03be52395a57"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "93e1d46e9f6a687356574230e7812044d597538ab43f321fae0af554fc56b04f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-guarded-repacked.png",
+      "bytes": 1350,
+      "sha256": "f4d0f4a0ce2b61123e3ceeee6f2fcc5d0d770ca465f931111484de485e008dc6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "8732be58826a79e9718d5a1189b6de51347aebd9748c9f4e4e0b03be52395a57"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "debd15b2bc6079bd86cac35bcaebf5bac3536aaad40b3e5df72e2151e1ebb31d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-fresh.png",
+      "bytes": 1350,
+      "sha256": "f4d0f4a0ce2b61123e3ceeee6f2fcc5d0d770ca465f931111484de485e008dc6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "8732be58826a79e9718d5a1189b6de51347aebd9748c9f4e4e0b03be52395a57"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "9eced0695f8be4562dcecd24b7a39c9bcbf08d690ca2805dc83f8abf60d6f236"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-2-original-repacked.png",
+      "bytes": 1350,
+      "sha256": "f4d0f4a0ce2b61123e3ceeee6f2fcc5d0d770ca465f931111484de485e008dc6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "469ca012bfd61df850a1bb90864b69d7cc62e7bac1fda00f82b6b6914045a093"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "8bb03a5588bc58cd8344eea2853fd2cf92f874d63b3b3ce4ec8e48828b8ba86b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-fresh.png",
+      "bytes": 1374,
+      "sha256": "9c04eca8e43ddf5ad499c92f97e7b203e80f94a2ac04f30ba29c52b388bf21a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "469ca012bfd61df850a1bb90864b69d7cc62e7bac1fda00f82b6b6914045a093"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "f38d69782120b2c7c7b5554546752e587a2aeecfd347e01f721dc7e7c6383a8a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-guarded-repacked.png",
+      "bytes": 1374,
+      "sha256": "9c04eca8e43ddf5ad499c92f97e7b203e80f94a2ac04f30ba29c52b388bf21a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "469ca012bfd61df850a1bb90864b69d7cc62e7bac1fda00f82b6b6914045a093"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "8bb03a5588bc58cd8344eea2853fd2cf92f874d63b3b3ce4ec8e48828b8ba86b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-fresh.png",
+      "bytes": 1374,
+      "sha256": "9c04eca8e43ddf5ad499c92f97e7b203e80f94a2ac04f30ba29c52b388bf21a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "469ca012bfd61df850a1bb90864b69d7cc62e7bac1fda00f82b6b6914045a093"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "f2157a48adfdd247497830832b062ccc7383cea5690010088e37b05ef4ffa0fc"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-false-3-original-repacked.png",
+      "bytes": 1374,
+      "sha256": "9c04eca8e43ddf5ad499c92f97e7b203e80f94a2ac04f30ba29c52b388bf21a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fbe5cdb2e26d9d00fd6b7f0712a35f68c1805a2d805c1a55ddf4924599054d93"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "9a45f71303c5a2d1485481302b97cc8cb5911d5655970b13b9ba91c2557c6505"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-fresh.png",
+      "bytes": 1471,
+      "sha256": "892a7100c9c9e3ff88a4093fef474ade06c5aec7623a303f1733cff53b601e1c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fbe5cdb2e26d9d00fd6b7f0712a35f68c1805a2d805c1a55ddf4924599054d93"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "fd7d738e34274776091767d587e42af0d76206b44cf6ad9215c35d72ea502e85"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-guarded-repacked.png",
+      "bytes": 1471,
+      "sha256": "892a7100c9c9e3ff88a4093fef474ade06c5aec7623a303f1733cff53b601e1c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fbe5cdb2e26d9d00fd6b7f0712a35f68c1805a2d805c1a55ddf4924599054d93"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "9a45f71303c5a2d1485481302b97cc8cb5911d5655970b13b9ba91c2557c6505"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-fresh.png",
+      "bytes": 1471,
+      "sha256": "892a7100c9c9e3ff88a4093fef474ade06c5aec7623a303f1733cff53b601e1c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fbe5cdb2e26d9d00fd6b7f0712a35f68c1805a2d805c1a55ddf4924599054d93"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "510f52b9697a9929cbf482375deec0de3e57481f3d39b97f86da42bc6ba45c11"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-0-original-repacked.png",
+      "bytes": 1471,
+      "sha256": "892a7100c9c9e3ff88a4093fef474ade06c5aec7623a303f1733cff53b601e1c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fa1a278210558753e2509729e8c411f28d22d432e710ea209bb7ecacc834f838"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "d45e8fd06338bcc2c1bb4cae79fdf227bebed7aefe2c133168431085fa839c96"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-fresh.png",
+      "bytes": 1478,
+      "sha256": "3549de77cc7d320e877348dfe9e7d1461ce0a5edbd55b5eb0c04560624720fd7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fa1a278210558753e2509729e8c411f28d22d432e710ea209bb7ecacc834f838"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "0080f4278d4c36cae85824067c7e7ea87fbdb7055dbea1abbae5ab8d1e91abc0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-guarded-repacked.png",
+      "bytes": 1478,
+      "sha256": "3549de77cc7d320e877348dfe9e7d1461ce0a5edbd55b5eb0c04560624720fd7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "fa1a278210558753e2509729e8c411f28d22d432e710ea209bb7ecacc834f838"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "d45e8fd06338bcc2c1bb4cae79fdf227bebed7aefe2c133168431085fa839c96"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-fresh.png",
+      "bytes": 1478,
+      "sha256": "3549de77cc7d320e877348dfe9e7d1461ce0a5edbd55b5eb0c04560624720fd7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ef6c431994148115e42fd1afd06fbe5f0513a827d9cbebc554144f74ba020280"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "e5ab22491f76cdb1777728f1bd3d1684ebe7da1cd7fc46c619abfba9f50f2453"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-1-original-repacked.png",
+      "bytes": 1543,
+      "sha256": "4024f69aaa3aa74a258cc88e9c3b022fe2b93bd8992f6e7fb75a35e1f72933b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c8e7834ddfd5146b3f44ba5b37993b168f8619ac331b78a756d773083f6b2ccf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "863284d7a2e3c0865de69669c6ca389887274b6e99e6b58c0700314ac58c7afc"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-fresh.png",
+      "bytes": 1397,
+      "sha256": "f6cfe59dd94e22b4e5b527dec0520d7810addd6c0d195bb84adf8a8f33393e4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c8e7834ddfd5146b3f44ba5b37993b168f8619ac331b78a756d773083f6b2ccf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "2b6230a22e3fe3af4f2024b7e679d2a263ca3e5561cf551bbb713578c53607f5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-guarded-repacked.png",
+      "bytes": 1397,
+      "sha256": "f6cfe59dd94e22b4e5b527dec0520d7810addd6c0d195bb84adf8a8f33393e4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c8e7834ddfd5146b3f44ba5b37993b168f8619ac331b78a756d773083f6b2ccf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "863284d7a2e3c0865de69669c6ca389887274b6e99e6b58c0700314ac58c7afc"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-fresh.png",
+      "bytes": 1397,
+      "sha256": "f6cfe59dd94e22b4e5b527dec0520d7810addd6c0d195bb84adf8a8f33393e4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c8e7834ddfd5146b3f44ba5b37993b168f8619ac331b78a756d773083f6b2ccf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "62b3341981228f7342decaa66fc62cf81d072130526da494e82bee20d4879705"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-2-original-repacked.png",
+      "bytes": 1397,
+      "sha256": "f6cfe59dd94e22b4e5b527dec0520d7810addd6c0d195bb84adf8a8f33393e4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1870e4b98b30614a1cf6fbe5420ed0d6d1a57107746a55864c32038a4a1947fb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "0cd7947b61cf5f403a0db2db921669c56de24fc4287f7ec676633da165c84e42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-fresh.png",
+      "bytes": 1419,
+      "sha256": "bc50e6c1aebcfe04d6e3b986b609e60c0298765e6f167bcd04ffe32ac6bb5fb0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1870e4b98b30614a1cf6fbe5420ed0d6d1a57107746a55864c32038a4a1947fb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "573abaa73aa2d3fcf476e99f1ce428096086206c93e7042f82308e06bf2b7b89"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-guarded-repacked.png",
+      "bytes": 1419,
+      "sha256": "bc50e6c1aebcfe04d6e3b986b609e60c0298765e6f167bcd04ffe32ac6bb5fb0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1870e4b98b30614a1cf6fbe5420ed0d6d1a57107746a55864c32038a4a1947fb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "0cd7947b61cf5f403a0db2db921669c56de24fc4287f7ec676633da165c84e42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-fresh.png",
+      "bytes": 1419,
+      "sha256": "bc50e6c1aebcfe04d6e3b986b609e60c0298765e6f167bcd04ffe32ac6bb5fb0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "1870e4b98b30614a1cf6fbe5420ed0d6d1a57107746a55864c32038a4a1947fb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "648f1c6f4bfcc4bd08101148d4d51624e461725322600b0a9089496b4796fa52"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/1-light-true-3-original-repacked.png",
+      "bytes": 1419,
+      "sha256": "bc50e6c1aebcfe04d6e3b986b609e60c0298765e6f167bcd04ffe32ac6bb5fb0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "510a365dbfb4b565e8e628f0c5756c90e5d1c9c1dc9fb30264f06d0ba4bcc011"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b1baef91fbbdec230d33325df0c51b5a6b1c3fcd1005d64ee336bdc341f81ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-fresh.png",
+      "bytes": 3909,
+      "sha256": "c84254c9f54b23b64aa1531e764c14fbc2b4cb9734acb9d4aeeb91febd131cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "510a365dbfb4b565e8e628f0c5756c90e5d1c9c1dc9fb30264f06d0ba4bcc011"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7f78b94622c0ac6c0b7b2bc199f3fb55a37baa8d9dc2c8b9da4b8ceb8bad2a12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-guarded-repacked.png",
+      "bytes": 3909,
+      "sha256": "c84254c9f54b23b64aa1531e764c14fbc2b4cb9734acb9d4aeeb91febd131cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "510a365dbfb4b565e8e628f0c5756c90e5d1c9c1dc9fb30264f06d0ba4bcc011"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b1baef91fbbdec230d33325df0c51b5a6b1c3fcd1005d64ee336bdc341f81ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-fresh.png",
+      "bytes": 3909,
+      "sha256": "c84254c9f54b23b64aa1531e764c14fbc2b4cb9734acb9d4aeeb91febd131cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "510a365dbfb4b565e8e628f0c5756c90e5d1c9c1dc9fb30264f06d0ba4bcc011"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "a8a0812f035baded683297135a0c215076ca910ab54f3b4faf3391bf561c4376"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-0-original-repacked.png",
+      "bytes": 3909,
+      "sha256": "c84254c9f54b23b64aa1531e764c14fbc2b4cb9734acb9d4aeeb91febd131cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ad095f62db40ec30e0df11f215a4e029ac79e856557269fdfa54be25b60130bd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b1baef91fbbdec230d33325df0c51b5a6b1c3fcd1005d64ee336bdc341f81ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-fresh.png",
+      "bytes": 3917,
+      "sha256": "4aa407218e5dccafd1d5fbc5111d2bf0ef76236a054ae6d7e96d18e6534fc160"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ad095f62db40ec30e0df11f215a4e029ac79e856557269fdfa54be25b60130bd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7f78b94622c0ac6c0b7b2bc199f3fb55a37baa8d9dc2c8b9da4b8ceb8bad2a12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-guarded-repacked.png",
+      "bytes": 3917,
+      "sha256": "4aa407218e5dccafd1d5fbc5111d2bf0ef76236a054ae6d7e96d18e6534fc160"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ad095f62db40ec30e0df11f215a4e029ac79e856557269fdfa54be25b60130bd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b1baef91fbbdec230d33325df0c51b5a6b1c3fcd1005d64ee336bdc341f81ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-fresh.png",
+      "bytes": 3917,
+      "sha256": "4aa407218e5dccafd1d5fbc5111d2bf0ef76236a054ae6d7e96d18e6534fc160"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2bc7d5536e15f32c6cdbe350b7c70009627aad7084987bd161f4527949256cb5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "a8a0812f035baded683297135a0c215076ca910ab54f3b4faf3391bf561c4376"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-1-original-repacked.png",
+      "bytes": 3973,
+      "sha256": "1f9603dad86ba1b41fdfcc8c0b73bcdbd1ca5d1b01746677c85e2f56e4547b27"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d81e7259e8186fcec4924509bd645d7eb6c442516c53afd94c385a08b4898070"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "0b8e911ff2d3947a08b2fb1b92ad25b3a8d351e0ed8277331214b1f8a26f1b91"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-fresh.png",
+      "bytes": 3839,
+      "sha256": "4bf592da729dde0a71cc3aea16a6c537f791a3f819f06036f67faf888c1e66ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d81e7259e8186fcec4924509bd645d7eb6c442516c53afd94c385a08b4898070"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d910bbd739bad36b8318c1e562c3e2b8853b46c4aee249329b88c1f15628a459"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-guarded-repacked.png",
+      "bytes": 3839,
+      "sha256": "4bf592da729dde0a71cc3aea16a6c537f791a3f819f06036f67faf888c1e66ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d81e7259e8186fcec4924509bd645d7eb6c442516c53afd94c385a08b4898070"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "0b8e911ff2d3947a08b2fb1b92ad25b3a8d351e0ed8277331214b1f8a26f1b91"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-fresh.png",
+      "bytes": 3839,
+      "sha256": "4bf592da729dde0a71cc3aea16a6c537f791a3f819f06036f67faf888c1e66ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d81e7259e8186fcec4924509bd645d7eb6c442516c53afd94c385a08b4898070"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "6c921addffe259cea0c3e961d9cee8e880c87d72239bcc097e2536b79e2a36e4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-2-original-repacked.png",
+      "bytes": 3839,
+      "sha256": "4bf592da729dde0a71cc3aea16a6c537f791a3f819f06036f67faf888c1e66ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "c2d6d758b1edd66fa452a7542123fc3506fd935aa92d369112487829ccc6705b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "da35c92e9236f9698f488c23ee9fdcdc6c04ca494019c671424037f913767328"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-fresh.png",
+      "bytes": 3815,
+      "sha256": "9649d651b2558e101a96615d1737205dee90320361e62cb7ed6cb0191aa64d41"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "c2d6d758b1edd66fa452a7542123fc3506fd935aa92d369112487829ccc6705b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b6a77e5dc69561990a97432c78a1e68857632f06e22698991a3db2e31654b08b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-guarded-repacked.png",
+      "bytes": 3815,
+      "sha256": "9649d651b2558e101a96615d1737205dee90320361e62cb7ed6cb0191aa64d41"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "c2d6d758b1edd66fa452a7542123fc3506fd935aa92d369112487829ccc6705b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "da35c92e9236f9698f488c23ee9fdcdc6c04ca494019c671424037f913767328"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-fresh.png",
+      "bytes": 3815,
+      "sha256": "9649d651b2558e101a96615d1737205dee90320361e62cb7ed6cb0191aa64d41"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "c2d6d758b1edd66fa452a7542123fc3506fd935aa92d369112487829ccc6705b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "5d7c41d791a940000f1d8e525ff152023994aa28ebba4327bcb75480534aff53"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-false-3-original-repacked.png",
+      "bytes": 3815,
+      "sha256": "9649d651b2558e101a96615d1737205dee90320361e62cb7ed6cb0191aa64d41"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "df6fa0890293ee243ae1b00d9e1c1433b45522673462879a9a67468c2478c7f7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b490dba851a24f5211613ec9bb39f993534519cd61f9b9613c420c2d499e8f76"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-fresh.png",
+      "bytes": 4091,
+      "sha256": "64b8e3d6d99938ed1797299530285289313956800a39ed9dc328e735269935c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "df6fa0890293ee243ae1b00d9e1c1433b45522673462879a9a67468c2478c7f7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8db988dacf5fa6508b1427063a0ed3c5936ade5358c52737432e1ac79bd985b5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-guarded-repacked.png",
+      "bytes": 4091,
+      "sha256": "64b8e3d6d99938ed1797299530285289313956800a39ed9dc328e735269935c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "df6fa0890293ee243ae1b00d9e1c1433b45522673462879a9a67468c2478c7f7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b490dba851a24f5211613ec9bb39f993534519cd61f9b9613c420c2d499e8f76"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-fresh.png",
+      "bytes": 4091,
+      "sha256": "64b8e3d6d99938ed1797299530285289313956800a39ed9dc328e735269935c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "df6fa0890293ee243ae1b00d9e1c1433b45522673462879a9a67468c2478c7f7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "6be2d4790a7eb5407a330ba970ddd51d38cfab668df1c1cd7778c70d821a6d2d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-0-original-repacked.png",
+      "bytes": 4091,
+      "sha256": "64b8e3d6d99938ed1797299530285289313956800a39ed9dc328e735269935c6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "dd657a0edaed2a92fb2557e359f89e87b3d43d741534262a77ed19be34699b29"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b490dba851a24f5211613ec9bb39f993534519cd61f9b9613c420c2d499e8f76"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-fresh.png",
+      "bytes": 4122,
+      "sha256": "3077260067bd9439224026541fae4114ff7242d8ca2e53b1960c6120032e9d66"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "dd657a0edaed2a92fb2557e359f89e87b3d43d741534262a77ed19be34699b29"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8db988dacf5fa6508b1427063a0ed3c5936ade5358c52737432e1ac79bd985b5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-guarded-repacked.png",
+      "bytes": 4122,
+      "sha256": "3077260067bd9439224026541fae4114ff7242d8ca2e53b1960c6120032e9d66"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "dd657a0edaed2a92fb2557e359f89e87b3d43d741534262a77ed19be34699b29"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "b490dba851a24f5211613ec9bb39f993534519cd61f9b9613c420c2d499e8f76"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-fresh.png",
+      "bytes": 4122,
+      "sha256": "3077260067bd9439224026541fae4114ff7242d8ca2e53b1960c6120032e9d66"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "802ae952e7c6f30e4bff5b64e7472b96c9a817592b8637b7e2a3bbccbe33def7"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "6be2d4790a7eb5407a330ba970ddd51d38cfab668df1c1cd7778c70d821a6d2d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-1-original-repacked.png",
+      "bytes": 4191,
+      "sha256": "098aa21a86ca9d563724a8eeba14f35788f9408e44423b47496d18c9e1215615"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ccc6524cc20066bfed1558334be971cea76a8ea45ca9a899cae6b3f8b3440813"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "ed4844ee927709ac86354b0b84ba2b7bb7aff0867ee6cdb2cb81fcc73bc51ac8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-fresh.png",
+      "bytes": 3933,
+      "sha256": "833b5a8fa33a3f8c17069caa499d5a65549c51d2c958ef7316348838cbe7007e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ccc6524cc20066bfed1558334be971cea76a8ea45ca9a899cae6b3f8b3440813"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "fd2f4d1d0ace2f6bc3f237b1bea4f1b6f2965818b26792a992e318d8a288d25c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-guarded-repacked.png",
+      "bytes": 3933,
+      "sha256": "833b5a8fa33a3f8c17069caa499d5a65549c51d2c958ef7316348838cbe7007e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ccc6524cc20066bfed1558334be971cea76a8ea45ca9a899cae6b3f8b3440813"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "ed4844ee927709ac86354b0b84ba2b7bb7aff0867ee6cdb2cb81fcc73bc51ac8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-fresh.png",
+      "bytes": 3933,
+      "sha256": "833b5a8fa33a3f8c17069caa499d5a65549c51d2c958ef7316348838cbe7007e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "ccc6524cc20066bfed1558334be971cea76a8ea45ca9a899cae6b3f8b3440813"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "1f0656b1e5fef60ffd295da35cc97a524d2264d5dae2a6618c8f11d2c1a7e840"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-2-original-repacked.png",
+      "bytes": 3933,
+      "sha256": "833b5a8fa33a3f8c17069caa499d5a65549c51d2c958ef7316348838cbe7007e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "338a16e9f752392c01e6afa867ee22ca00ae6202683f99058adf2595d0acc40b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7ed9ed555a074d9f987f9c0d01db4c6a70ca7697a29bb515d656e6c4b9b1346b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-fresh.png",
+      "bytes": 3950,
+      "sha256": "aa80a9551f07a2a9602a9e2c47f90d4f7688163ca18ab75ae72112562916a06d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "338a16e9f752392c01e6afa867ee22ca00ae6202683f99058adf2595d0acc40b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "ea518f433954736593ec44780f3c81fefe4362426718d50294b9b71a82ad4be1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-guarded-repacked.png",
+      "bytes": 3950,
+      "sha256": "aa80a9551f07a2a9602a9e2c47f90d4f7688163ca18ab75ae72112562916a06d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "338a16e9f752392c01e6afa867ee22ca00ae6202683f99058adf2595d0acc40b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7ed9ed555a074d9f987f9c0d01db4c6a70ca7697a29bb515d656e6c4b9b1346b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-fresh.png",
+      "bytes": 3950,
+      "sha256": "aa80a9551f07a2a9602a9e2c47f90d4f7688163ca18ab75ae72112562916a06d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "338a16e9f752392c01e6afa867ee22ca00ae6202683f99058adf2595d0acc40b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d394b4c23d44451e3ccacc7fb1e004f6df2dbcc4e8f5d288d93ad1a5964365a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-dark-true-3-original-repacked.png",
+      "bytes": 3950,
+      "sha256": "aa80a9551f07a2a9602a9e2c47f90d4f7688163ca18ab75ae72112562916a06d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2732a8ae63a9868e6b59d6ceba6cae1193d2178513864e34843cc025dcac3a59"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "141faf01bfd024686100eebe23d1e1d30ddc890a9b063f53b458936034edae3f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-fresh.png",
+      "bytes": 3907,
+      "sha256": "a36e51a42a4d4e02a1f0261b8beeda34aec72090685a1b8e0457cb1d19634cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2732a8ae63a9868e6b59d6ceba6cae1193d2178513864e34843cc025dcac3a59"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "fd17e25719dce5a5e929961e56ca510e97eac62d6ca412245dbe7a0df751d142"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-guarded-repacked.png",
+      "bytes": 3907,
+      "sha256": "a36e51a42a4d4e02a1f0261b8beeda34aec72090685a1b8e0457cb1d19634cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2732a8ae63a9868e6b59d6ceba6cae1193d2178513864e34843cc025dcac3a59"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "141faf01bfd024686100eebe23d1e1d30ddc890a9b063f53b458936034edae3f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-fresh.png",
+      "bytes": 3907,
+      "sha256": "a36e51a42a4d4e02a1f0261b8beeda34aec72090685a1b8e0457cb1d19634cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2732a8ae63a9868e6b59d6ceba6cae1193d2178513864e34843cc025dcac3a59"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "04e324166987ef5b71c47e5524f2c89085514db0dbb6fb7c8568895a5b3633ef"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-0-original-repacked.png",
+      "bytes": 3907,
+      "sha256": "a36e51a42a4d4e02a1f0261b8beeda34aec72090685a1b8e0457cb1d19634cbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "89722c849191c9b0e636b6fa187733a58e8673b6c59de6ac7c5c835c2ad72ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "141faf01bfd024686100eebe23d1e1d30ddc890a9b063f53b458936034edae3f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-fresh.png",
+      "bytes": 3919,
+      "sha256": "74d8a37f9f5b643b70548e6f67c41b7cdeabd64fa03e8edbf75760d4d0e450d0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "89722c849191c9b0e636b6fa187733a58e8673b6c59de6ac7c5c835c2ad72ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "fd17e25719dce5a5e929961e56ca510e97eac62d6ca412245dbe7a0df751d142"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-guarded-repacked.png",
+      "bytes": 3919,
+      "sha256": "74d8a37f9f5b643b70548e6f67c41b7cdeabd64fa03e8edbf75760d4d0e450d0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "89722c849191c9b0e636b6fa187733a58e8673b6c59de6ac7c5c835c2ad72ec6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "141faf01bfd024686100eebe23d1e1d30ddc890a9b063f53b458936034edae3f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-fresh.png",
+      "bytes": 3919,
+      "sha256": "74d8a37f9f5b643b70548e6f67c41b7cdeabd64fa03e8edbf75760d4d0e450d0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "81633fff4135d960a04ef5f3295b45a7a12fbbe89b0887fe06ff4dd7114b0cb2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "04e324166987ef5b71c47e5524f2c89085514db0dbb6fb7c8568895a5b3633ef"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-1-original-repacked.png",
+      "bytes": 3974,
+      "sha256": "8ad892b3e75ddfddd8c334e98f1337bfcb3e1fe24bac2e58a72a6491d46e38ce"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d402e45c93cc3afd71ffb5cf918fa9433cccd2581b34f09f89b7ef7769b104c3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "cd61d27079d0a497c021f58dbc9444a0a2118d3b7bfecacd240e5c6ae490b67c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-fresh.png",
+      "bytes": 3825,
+      "sha256": "ba54670497bf95356f306d0f304c4be36840f20b8f79f5c05aa1eb85dcaecb89"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d402e45c93cc3afd71ffb5cf918fa9433cccd2581b34f09f89b7ef7769b104c3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "e3e051c4b2d9277f0c322907f53eb5e6abe1d7311176cb0314be9b3200860deb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-guarded-repacked.png",
+      "bytes": 3825,
+      "sha256": "ba54670497bf95356f306d0f304c4be36840f20b8f79f5c05aa1eb85dcaecb89"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d402e45c93cc3afd71ffb5cf918fa9433cccd2581b34f09f89b7ef7769b104c3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "cd61d27079d0a497c021f58dbc9444a0a2118d3b7bfecacd240e5c6ae490b67c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-fresh.png",
+      "bytes": 3825,
+      "sha256": "ba54670497bf95356f306d0f304c4be36840f20b8f79f5c05aa1eb85dcaecb89"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "d402e45c93cc3afd71ffb5cf918fa9433cccd2581b34f09f89b7ef7769b104c3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "4106ef2393eb04c65894af083ac752396f6b60ae1d131a44dde58e95f69b07f9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-2-original-repacked.png",
+      "bytes": 3825,
+      "sha256": "ba54670497bf95356f306d0f304c4be36840f20b8f79f5c05aa1eb85dcaecb89"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "4692a2ad43ccddce8f3e1fe3a45154d1cfe3adf0d114f23f23c5a0b5a483217a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "86e26fe2c3d1d68a9e32c776434b367a5d702b29c535a7382eb9ae93cc7fd7a0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-fresh.png",
+      "bytes": 3811,
+      "sha256": "c8fc1cba220d6e87dd5a00033084d5bc731248b7a5dfc0dfc600942a9db9cf4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "4692a2ad43ccddce8f3e1fe3a45154d1cfe3adf0d114f23f23c5a0b5a483217a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d2c9a7d270f236f9e054aab887dfcfa27d3d38d92d0d8ec16a113399a92f0b65"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-guarded-repacked.png",
+      "bytes": 3811,
+      "sha256": "c8fc1cba220d6e87dd5a00033084d5bc731248b7a5dfc0dfc600942a9db9cf4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "4692a2ad43ccddce8f3e1fe3a45154d1cfe3adf0d114f23f23c5a0b5a483217a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "86e26fe2c3d1d68a9e32c776434b367a5d702b29c535a7382eb9ae93cc7fd7a0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-fresh.png",
+      "bytes": 3811,
+      "sha256": "c8fc1cba220d6e87dd5a00033084d5bc731248b7a5dfc0dfc600942a9db9cf4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "4692a2ad43ccddce8f3e1fe3a45154d1cfe3adf0d114f23f23c5a0b5a483217a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8a143081d2b4b09000623a6abfb065e9ea9098144bd84540ef6c5b3e50cef806"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-false-3-original-repacked.png",
+      "bytes": 3811,
+      "sha256": "c8fc1cba220d6e87dd5a00033084d5bc731248b7a5dfc0dfc600942a9db9cf4b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "86490da9bd2609ae2c80340acd72dfbaa7520fc6e2d3b64086751c2c55f48863"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d6c601b0913f0fe4723ed4e146073ada8ff800700285a320c60ca8aae025b2a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-fresh.png",
+      "bytes": 4070,
+      "sha256": "8a8d4095c9d0723662fbae6ba67aca03043ecd80e9a4962931acaaf5741e52ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "86490da9bd2609ae2c80340acd72dfbaa7520fc6e2d3b64086751c2c55f48863"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7d13d66c6191511cd084ab0635872915752ff1ade4b311a40bf09a7ba3bc06a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-guarded-repacked.png",
+      "bytes": 4070,
+      "sha256": "8a8d4095c9d0723662fbae6ba67aca03043ecd80e9a4962931acaaf5741e52ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "86490da9bd2609ae2c80340acd72dfbaa7520fc6e2d3b64086751c2c55f48863"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d6c601b0913f0fe4723ed4e146073ada8ff800700285a320c60ca8aae025b2a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-fresh.png",
+      "bytes": 4070,
+      "sha256": "8a8d4095c9d0723662fbae6ba67aca03043ecd80e9a4962931acaaf5741e52ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "86490da9bd2609ae2c80340acd72dfbaa7520fc6e2d3b64086751c2c55f48863"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "3eb26447bd9d1cbcfd7c77925cb07cfa53018dfba9342a806b461ac189a5d233"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-0-original-repacked.png",
+      "bytes": 4070,
+      "sha256": "8a8d4095c9d0723662fbae6ba67aca03043ecd80e9a4962931acaaf5741e52ff"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "6031c4cc357d577fef89db42692659d6c4584df26eb7215ff8a7dd550eeae3e2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d6c601b0913f0fe4723ed4e146073ada8ff800700285a320c60ca8aae025b2a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-fresh.png",
+      "bytes": 4087,
+      "sha256": "7da9ce1c09b789fe5f5f891f5a8639f412ce319914fdca8d0c44e85383603307"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "6031c4cc357d577fef89db42692659d6c4584df26eb7215ff8a7dd550eeae3e2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7d13d66c6191511cd084ab0635872915752ff1ade4b311a40bf09a7ba3bc06a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-guarded-repacked.png",
+      "bytes": 4087,
+      "sha256": "7da9ce1c09b789fe5f5f891f5a8639f412ce319914fdca8d0c44e85383603307"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "6031c4cc357d577fef89db42692659d6c4584df26eb7215ff8a7dd550eeae3e2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "d6c601b0913f0fe4723ed4e146073ada8ff800700285a320c60ca8aae025b2a1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-fresh.png",
+      "bytes": 4087,
+      "sha256": "7da9ce1c09b789fe5f5f891f5a8639f412ce319914fdca8d0c44e85383603307"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "6a7d4b3b138fe7717db969e32c68123910b03879223c244f0054520d5656921f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "3eb26447bd9d1cbcfd7c77925cb07cfa53018dfba9342a806b461ac189a5d233"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-1-original-repacked.png",
+      "bytes": 4138,
+      "sha256": "a582a4f958cd77daef564e1b2d4f5231afba655a799b1d5e13f06e830c222d04"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "f05f2624c47ef3d59170a3f830b5a2929d02312332eb26988a71c4a6d96f3d9c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "e7e19d13fb227b698b0f455ffab63ff8b47c004deeb3633b92772a4d9422b523"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-fresh.png",
+      "bytes": 3925,
+      "sha256": "a580f0ef45aa8074d1bebc11e01a4eb1598c15c16e244b4dcfdb213712d9c275"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "f05f2624c47ef3d59170a3f830b5a2929d02312332eb26988a71c4a6d96f3d9c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "912dc7ddf619f8512dad4b8c1f0396f0d51ee24f37c256a1dc8285186fb24d88"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-guarded-repacked.png",
+      "bytes": 3925,
+      "sha256": "a580f0ef45aa8074d1bebc11e01a4eb1598c15c16e244b4dcfdb213712d9c275"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "f05f2624c47ef3d59170a3f830b5a2929d02312332eb26988a71c4a6d96f3d9c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "e7e19d13fb227b698b0f455ffab63ff8b47c004deeb3633b92772a4d9422b523"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-fresh.png",
+      "bytes": 3925,
+      "sha256": "a580f0ef45aa8074d1bebc11e01a4eb1598c15c16e244b4dcfdb213712d9c275"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "f05f2624c47ef3d59170a3f830b5a2929d02312332eb26988a71c4a6d96f3d9c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "f10680759e2b163bec7257ec631467bd2de1ebbb799203bca740ffe426d2a1bf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-2-original-repacked.png",
+      "bytes": 3925,
+      "sha256": "a580f0ef45aa8074d1bebc11e01a4eb1598c15c16e244b4dcfdb213712d9c275"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2685f336e4a44429639d6e2994e92d5427dab737c87ce242d23b6d8105444aa2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "15c84fe628600995b668e6c1869e307540b9714c8060a5d79723bdc9fb16dbd6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-fresh.png",
+      "bytes": 3920,
+      "sha256": "9cbaae7306be12b8272bb81796272066d2cccb5911e9b7bd355ef042cf69dd7a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2685f336e4a44429639d6e2994e92d5427dab737c87ce242d23b6d8105444aa2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "11b2a50811df0de0783403a32b58f1051b647dc58af2f5efcef21b18e5637ff5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-guarded-repacked.png",
+      "bytes": 3920,
+      "sha256": "9cbaae7306be12b8272bb81796272066d2cccb5911e9b7bd355ef042cf69dd7a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2685f336e4a44429639d6e2994e92d5427dab737c87ce242d23b6d8105444aa2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "15c84fe628600995b668e6c1869e307540b9714c8060a5d79723bdc9fb16dbd6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-fresh.png",
+      "bytes": 3920,
+      "sha256": "9cbaae7306be12b8272bb81796272066d2cccb5911e9b7bd355ef042cf69dd7a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2685f336e4a44429639d6e2994e92d5427dab737c87ce242d23b6d8105444aa2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "a019cffab60379d70a36dfbd274ad879eda3bbb169385fd1a4320d7c71d409a5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/2-light-true-3-original-repacked.png",
+      "bytes": 3920,
+      "sha256": "9cbaae7306be12b8272bb81796272066d2cccb5911e9b7bd355ef042cf69dd7a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-fresh.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "60c8e51903eb8cffb63bf50ca730e29c6c5ee4950fcf40c32ed2402d8fb4ee16"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-guarded-repacked.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-fresh.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b47199ef74e14ee535eb0da1dfab29f16a7d01ce20bb325e8c4e12bcba135ba6"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.125-original-repacked.png",
+      "bytes": 3893,
+      "sha256": "866e5ff10f3b002b0645a78ab02f1bfb1de33c027e9b0241daea94b9614ba586"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-fresh.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "60c8e51903eb8cffb63bf50ca730e29c6c5ee4950fcf40c32ed2402d8fb4ee16"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-guarded-repacked.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-fresh.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "90f7f9dcb5ebff6fd4696356d556e9a4a6195aa213bf791115cc17bc1fb40192"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.125-0.625-original-repacked.png",
+      "bytes": 3898,
+      "sha256": "1aa23ef7c92b06daabe682224e5eee635c47a299fe2c649a82da3ab3af3db52c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "573f1dac3de901eb7a42248585b26e7398544adc012d6750551a10f76f8db081"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-fresh.png",
+      "bytes": 3904,
+      "sha256": "19ab86e9e402ff1bea5b69312aba1c8d11e0029b5761934711cc9119162fd27d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "573f1dac3de901eb7a42248585b26e7398544adc012d6750551a10f76f8db081"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "60c8e51903eb8cffb63bf50ca730e29c6c5ee4950fcf40c32ed2402d8fb4ee16"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-guarded-repacked.png",
+      "bytes": 3904,
+      "sha256": "19ab86e9e402ff1bea5b69312aba1c8d11e0029b5761934711cc9119162fd27d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "573f1dac3de901eb7a42248585b26e7398544adc012d6750551a10f76f8db081"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-fresh.png",
+      "bytes": 3904,
+      "sha256": "19ab86e9e402ff1bea5b69312aba1c8d11e0029b5761934711cc9119162fd27d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "71632b561f874d25a081d043ed1bef58383c7d083da58ac00b694b91180ec340"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.125-original-repacked.png",
+      "bytes": 3960,
+      "sha256": "58fe31948a4f1bf2013d261ee7ffb75cbea0ef4a0e2e0e2e90178517e39f5ea9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "72f99a3eec2024d350a1c96cd139c1a3fcec7f5dbea9ee152ea7683fa37e0e12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-fresh.png",
+      "bytes": 3897,
+      "sha256": "993326a2a17743d331bcc7e8e2387bdd72bafe4ed4eea3f87f34920493f1915e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "72f99a3eec2024d350a1c96cd139c1a3fcec7f5dbea9ee152ea7683fa37e0e12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "60c8e51903eb8cffb63bf50ca730e29c6c5ee4950fcf40c32ed2402d8fb4ee16"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-guarded-repacked.png",
+      "bytes": 3897,
+      "sha256": "993326a2a17743d331bcc7e8e2387bdd72bafe4ed4eea3f87f34920493f1915e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "72f99a3eec2024d350a1c96cd139c1a3fcec7f5dbea9ee152ea7683fa37e0e12"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "511f4e96e20d7cbccb677bf2edeb2b24d9a1a419124add9974bcc155e6a11dea"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-fresh.png",
+      "bytes": 3897,
+      "sha256": "993326a2a17743d331bcc7e8e2387bdd72bafe4ed4eea3f87f34920493f1915e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "7c0283daefcd77634bac77ea40c72bc5bb53e083d320bb11f3bc67ff0f68c12d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "7a660eb230f52bfb6165c545180882bef634fa0df2d42d8c4c9382c43f588800"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/chapter-0.625-0.625-original-repacked.png",
+      "bytes": 3948,
+      "sha256": "9730e0419ad71d4668a7685265e22f44d9c3509ed88a72924b8ae676d5350ec1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/contact-0.png",
+      "bytes": 10481,
+      "sha256": "3af2045a4ee78cc317f5c500964955641760bf1ef4d7a379c808b77485c5fbbf"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/contact-1.png",
+      "bytes": 11062,
+      "sha256": "e0f9dc804731401882476b8c24c3b5a92423831628a59233a3c1e50d0e8d0ad1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/contact-2.png",
+      "bytes": 12884,
+      "sha256": "756ab865149ab81d2638960e2a66a3e25ca35e15e9330ba678c02063ad44a5d3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/contact-3.png",
+      "bytes": 13882,
+      "sha256": "bcaef37aa503e870476e68b9ff8bd1568716273238c352301e125eeef7c876cd"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter/gutter.json",
+      "bytes": 2723344,
+      "sha256": "b944e74d861b99652a704c7151c0823c1c6f32df3db010db582d588f3990e9b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/contact-0.png",
+      "bytes": 14290,
+      "sha256": "692827a7e4851326bb2a7b3eeb913f2e07305cfcb6b6d76f68bfbea3ded2906d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/contact-1.png",
+      "bytes": 28575,
+      "sha256": "77c0adf3dcfa724df3adfac1da48a3393f516a8d67f4b768e333a633349cb9d3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/gutter.json",
+      "bytes": 1640164,
+      "sha256": "3b59d6abbf553b2e77c7734a6b44231eb0fbf6d774b0eb44d74caa8b90c0f53e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ff89d9d16c47919bc277e3919790b84d7a96e13812a41073cfd05b59d0a7d479"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "d316d0e01535adf993809bb7812ea51976d3cef86dd9abff2c9ad92221a7da3d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-fresh.png",
+      "bytes": 2238,
+      "sha256": "f45e769a6411ae0425c97897ba7572000211026c3bfcd573f2c3c68c4ccfedec"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ff89d9d16c47919bc277e3919790b84d7a96e13812a41073cfd05b59d0a7d479"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "84479957c88b14799cd9f963bdc7fb8779a4d7a2a6df5035751a7e4c899e66d2"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-guarded-repacked.png",
+      "bytes": 2238,
+      "sha256": "f45e769a6411ae0425c97897ba7572000211026c3bfcd573f2c3c68c4ccfedec"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ff89d9d16c47919bc277e3919790b84d7a96e13812a41073cfd05b59d0a7d479"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "d316d0e01535adf993809bb7812ea51976d3cef86dd9abff2c9ad92221a7da3d"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-fresh.png",
+      "bytes": 2238,
+      "sha256": "f45e769a6411ae0425c97897ba7572000211026c3bfcd573f2c3c68c4ccfedec"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "ff89d9d16c47919bc277e3919790b84d7a96e13812a41073cfd05b59d0a7d479"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "762f4bdac4fc8d538ab3ec5d16eb53c05ca55dd54a3acbeb5956d4961ce78d37"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-false-original-repacked.png",
+      "bytes": 2238,
+      "sha256": "f45e769a6411ae0425c97897ba7572000211026c3bfcd573f2c3c68c4ccfedec"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c989a60a246f68abd670ffd556337410ae0095edf18428ddcbbd3661694bde8c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "46846004e4bcec85cfbd1e8fccea4829c2897249151b339d957f7eb8238a65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-fresh.png",
+      "bytes": 2467,
+      "sha256": "4e1f4b324787e5e583da2870d6db9e73e2022153e8568811f54bec8e273398f3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c989a60a246f68abd670ffd556337410ae0095edf18428ddcbbd3661694bde8c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "bbba2e52ae97e866f79daa32c7e18c9f8ccaf2c20bcd37548dded29cdc8ec3a3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-guarded-repacked.png",
+      "bytes": 2467,
+      "sha256": "4e1f4b324787e5e583da2870d6db9e73e2022153e8568811f54bec8e273398f3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c989a60a246f68abd670ffd556337410ae0095edf18428ddcbbd3661694bde8c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "46846004e4bcec85cfbd1e8fccea4829c2897249151b339d957f7eb8238a65fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-fresh.png",
+      "bytes": 2467,
+      "sha256": "4e1f4b324787e5e583da2870d6db9e73e2022153e8568811f54bec8e273398f3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "c989a60a246f68abd670ffd556337410ae0095edf18428ddcbbd3661694bde8c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c69e5fd1a1e772fc0d6cdac2527aaa4bce5165368945304b799d6664f01d1757"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-dark-true-original-repacked.png",
+      "bytes": 2467,
+      "sha256": "4e1f4b324787e5e583da2870d6db9e73e2022153e8568811f54bec8e273398f3"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "970861c3ac0b6d1add3a94a28ffdac4b518a1caf84fb307962fa01b6443d5b42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c3c6da05aad10f63d3633380b1eb2abf5d754dfdbb5dba70b638bbe5abb6ec28"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-fresh.png",
+      "bytes": 2126,
+      "sha256": "8e2fe99c46f61132039c60a5a2f3415cce887ce6de84bd7302eea5f083228197"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "970861c3ac0b6d1add3a94a28ffdac4b518a1caf84fb307962fa01b6443d5b42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "764036345a853749b35ab85dacf1e870d984f8cde9d40edfa10175d65437dcdb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-guarded-repacked.png",
+      "bytes": 2126,
+      "sha256": "8e2fe99c46f61132039c60a5a2f3415cce887ce6de84bd7302eea5f083228197"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "970861c3ac0b6d1add3a94a28ffdac4b518a1caf84fb307962fa01b6443d5b42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "c3c6da05aad10f63d3633380b1eb2abf5d754dfdbb5dba70b638bbe5abb6ec28"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-fresh.png",
+      "bytes": 2126,
+      "sha256": "8e2fe99c46f61132039c60a5a2f3415cce887ce6de84bd7302eea5f083228197"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "970861c3ac0b6d1add3a94a28ffdac4b518a1caf84fb307962fa01b6443d5b42"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "ede88a216463e0b36baae231247a4a268d43ff7cb5c06548f57b0c9c01dc50ed"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-false-original-repacked.png",
+      "bytes": 2126,
+      "sha256": "8e2fe99c46f61132039c60a5a2f3415cce887ce6de84bd7302eea5f083228197"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "aa6143f3af0f944e1baa5e6820df9688f88605e57452cca1d6c6f3d67ad24fdb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "808266da0cad38b24c96f6c861df94c87533240e3d24ca20ebf02988919c2783"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-fresh.png",
+      "bytes": 2361,
+      "sha256": "57e5c9e340774d6ed8023741ef48ed6b6229b89af01ca2fe3a8d5e2ab53062d5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "aa6143f3af0f944e1baa5e6820df9688f88605e57452cca1d6c6f3d67ad24fdb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "d6ebcd8e222b530e54c66aca5b241690fe0fbe5e8c62bc98204f3b08debf533f"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-guarded-repacked.png",
+      "bytes": 2361,
+      "sha256": "57e5c9e340774d6ed8023741ef48ed6b6229b89af01ca2fe3a8d5e2ab53062d5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-fresh-draw.rgba",
+      "bytes": 131072,
+      "sha256": "aa6143f3af0f944e1baa5e6820df9688f88605e57452cca1d6c6f3d67ad24fdb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-fresh-texture.rgba",
+      "bytes": 131072,
+      "sha256": "808266da0cad38b24c96f6c861df94c87533240e3d24ca20ebf02988919c2783"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-fresh.png",
+      "bytes": 2361,
+      "sha256": "57e5c9e340774d6ed8023741ef48ed6b6229b89af01ca2fe3a8d5e2ab53062d5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-repacked-draw.rgba",
+      "bytes": 131072,
+      "sha256": "aa6143f3af0f944e1baa5e6820df9688f88605e57452cca1d6c6f3d67ad24fdb"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-repacked-texture.rgba",
+      "bytes": 131072,
+      "sha256": "eb91dbd5bfad1aa6c0133fc14d6b212b9c76ef1b572d59634e2c4268b7db676a"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-1-light-true-original-repacked.png",
+      "bytes": 2361,
+      "sha256": "57e5c9e340774d6ed8023741ef48ed6b6229b89af01ca2fe3a8d5e2ab53062d5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "acf74c03a65484a8dbad8039cd65e27d8cc06c75b5ab2fe8bc1bba2ca10cc9ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "e074b160dd76fcfdb4a807edc8b10d49f1d36967cf98b205316590a95c067ffa"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-fresh.png",
+      "bytes": 6836,
+      "sha256": "3f117c72ce5c5516dca85be5ac7f850488704499f7d7e91e56e57412f2c31315"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "acf74c03a65484a8dbad8039cd65e27d8cc06c75b5ab2fe8bc1bba2ca10cc9ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "edd3469aa6397f02cf9565eeeedfd50758b5462f05315f760d4d58011e4fb7ca"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-guarded-repacked.png",
+      "bytes": 6836,
+      "sha256": "3f117c72ce5c5516dca85be5ac7f850488704499f7d7e91e56e57412f2c31315"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "acf74c03a65484a8dbad8039cd65e27d8cc06c75b5ab2fe8bc1bba2ca10cc9ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "e074b160dd76fcfdb4a807edc8b10d49f1d36967cf98b205316590a95c067ffa"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-fresh.png",
+      "bytes": 6836,
+      "sha256": "3f117c72ce5c5516dca85be5ac7f850488704499f7d7e91e56e57412f2c31315"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "2cc566291cceacc7fda0dbe20b067ca1cfc7fe5e4bce173db6d7400abab16c5e"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "5ea044df1d8b00f04c21d48cbbd917350618e9f3964b5f86c127e193647ebf46"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-false-original-repacked.png",
+      "bytes": 6981,
+      "sha256": "1fc7187293acdcf3ee18094a031bc7d97bbb32718ed781a8669b654d58b97f11"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a2f70506cb4716863b58c6cae78343265711aeda8257ac4f62dda8c6c56aa9d4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8b089ff1663ff26442cba181079e31d43558cd430e574c5210c67313ff7ba0c0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-fresh.png",
+      "bytes": 7630,
+      "sha256": "42e6ec6f26a8d0bb523228ddc82a0a2d3c954267d12dc034b27fd58fadbd17f4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a2f70506cb4716863b58c6cae78343265711aeda8257ac4f62dda8c6c56aa9d4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8440035baf7c8490ec3726a9516b2062d4a357db04a9fa737387f8cd1d0ea942"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-guarded-repacked.png",
+      "bytes": 7630,
+      "sha256": "42e6ec6f26a8d0bb523228ddc82a0a2d3c954267d12dc034b27fd58fadbd17f4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a2f70506cb4716863b58c6cae78343265711aeda8257ac4f62dda8c6c56aa9d4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "8b089ff1663ff26442cba181079e31d43558cd430e574c5210c67313ff7ba0c0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-fresh.png",
+      "bytes": 7630,
+      "sha256": "42e6ec6f26a8d0bb523228ddc82a0a2d3c954267d12dc034b27fd58fadbd17f4"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "b7e60d4ec29f35b6fc70eccedae2e9b5aaf536f0f5641f03f1a0072391dbe01b"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "5d1afb6b1911a109fa305c0c04823fda1140edfcc77f1e4ee536d7bbf7f4eab9"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-dark-true-original-repacked.png",
+      "bytes": 7849,
+      "sha256": "240abb722147c9ce4835210a8016e9a5c9cf74a9b4105b7e3a9ff91918df0d43"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "5a3bfe885fc7bef0197b40f92a57d041a0a04c4e5ed277fe2802c438b9209988"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "0147d9b6601b18bbd7b05bef0693bb647e2bf73aa9abda06fd5cc093b8a7d56c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-fresh.png",
+      "bytes": 6380,
+      "sha256": "6377f83c8163e85d75e86a9c575ce441a252ae44c23b3ec0e3f57907cdfea2c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "5a3bfe885fc7bef0197b40f92a57d041a0a04c4e5ed277fe2802c438b9209988"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "9aaf2e15381c0c54aee821f1b6da6a9d77bdf522b9e322d8c60f4407502815f0"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-guarded-repacked.png",
+      "bytes": 6380,
+      "sha256": "6377f83c8163e85d75e86a9c575ce441a252ae44c23b3ec0e3f57907cdfea2c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "5a3bfe885fc7bef0197b40f92a57d041a0a04c4e5ed277fe2802c438b9209988"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "0147d9b6601b18bbd7b05bef0693bb647e2bf73aa9abda06fd5cc093b8a7d56c"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-fresh.png",
+      "bytes": 6380,
+      "sha256": "6377f83c8163e85d75e86a9c575ce441a252ae44c23b3ec0e3f57907cdfea2c8"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "574b1e67ae11d7a3df10625ac14a3f977a1755f421fa6448a713e5e1c991ea21"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "806d68cdd7815909eba02663e030bfedd6b75c967036b34571b812cd6d2adb88"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-false-original-repacked.png",
+      "bytes": 6537,
+      "sha256": "955a8118ead235170973a91f135e4260d6ca9ebc3f16c6b7c73b1e0aa2fef006"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a9fa4dc7ebb31ddaabf968fc0a1da5f2a290592807a17a5818b4c0f5b7114e92"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "52d20bb6bc7ebbe893356dc881092f7164b3e9d022acdb3c7ca8d5571fa105f5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-fresh.png",
+      "bytes": 7066,
+      "sha256": "87bb9637843bcf25b01b41dc0bc9f6b775d9e518ca14c1a2f671207cd61e76ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a9fa4dc7ebb31ddaabf968fc0a1da5f2a290592807a17a5818b4c0f5b7114e92"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "9141f6f0979c317013ba291fbb066da8e993f85d8da7e0d52da695d216bc87fe"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-guarded-repacked.png",
+      "bytes": 7066,
+      "sha256": "87bb9637843bcf25b01b41dc0bc9f6b775d9e518ca14c1a2f671207cd61e76ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-fresh-draw.rgba",
+      "bytes": 524288,
+      "sha256": "a9fa4dc7ebb31ddaabf968fc0a1da5f2a290592807a17a5818b4c0f5b7114e92"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-fresh-texture.rgba",
+      "bytes": 524288,
+      "sha256": "52d20bb6bc7ebbe893356dc881092f7164b3e9d022acdb3c7ca8d5571fa105f5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-fresh.png",
+      "bytes": 7066,
+      "sha256": "87bb9637843bcf25b01b41dc0bc9f6b775d9e518ca14c1a2f671207cd61e76ab"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-repacked-draw.rgba",
+      "bytes": 524288,
+      "sha256": "5f1f1388001a5590acfe52aeaf7ee150913ecfa45f86c63d30afe931c49601d5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-repacked-texture.rgba",
+      "bytes": 524288,
+      "sha256": "bb961a823bd303c1c68bfac64f1d5d2ab70d2343e8fc17ebdec6089853c81790"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi/multi-2-light-true-original-repacked.png",
+      "bytes": 7227,
+      "sha256": "768f18da58f0726845c5a906c4be4c5ae56975928c1b279aff80d45ae355ae36"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-phase.log",
+      "sha256": "0e8ba740aed28efa9b83a1b98b1eddc289a02cd428997d8c93af01fbfbfb0183"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter.log",
+      "sha256": "faaaeedc507c20ac1336ec7a72fc28114276d24c61429b2fa6295b6b6e6917a5"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-model.log",
+      "sha256": "7c32969a1a2fa023dd7ef972960ad541a0fd89ffebbf66bff0bef9ec264c64b1"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi.log",
+      "sha256": "1a45c8fe0602c8df8c38b25f90d3840416b666eea280bacc606d0f67966a8939"
+    },
+    {
+      "path": "/tmp/atlas-map-atlas-gutter-multi-model.log",
+      "sha256": "691e517d4353e952132a405166732a70be485f7e0a57842cf82b35d9afa4ffd2"
+    }
+  ]
+}
