@@ -26,3 +26,5 @@ The selected point is an exact allocation lattice point for the chosen integer b
 - Native suite exercises all10budgets and both modes, every actual bar and support-disc area, real snapped drag to representative allocations, real buttons/keys, exact state replay and10 raw malformed cases. It compares actual numeric DOM/control/model values and complete paths/strokes/markers/text/TeX/page bounds. Evidence `/tmp/atlas-coordinator/game-blotto-native.log`, images `game-blotto/`.
 
 Existing flag awaits independent acceptance.
+
+Final evidence: all six native groups1450/430/320×light/dark exit0. Personally inspected own320light N11full output and N12support,320dark N12support and N3full output: disc areas and full support are consistent, plots/labels are contained and the balanced N3pure saddle is correctly distinguished from the currently selected pure point. Exact guards preserve unowned3.6–3.8 and3.10–3.11 bytes; shared solver/runtime are unchanged.
