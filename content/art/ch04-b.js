@@ -1,3 +1,5 @@
+import{dichromacyItem}from'./source-audit-dichromacy.js';
+import{photometryItem}from'./source-audit-photometry.js';
 import{maxwellPaper}from'./source-audit-maxwell.js';
 import{grassmannPaperItem,cieStandardsPaperItem}from'./source-audit-colorimetry-items.js';
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.9–4.16; 4.1–4.8 are in ch04.js)
@@ -183,111 +185,10 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         v.readout(() => `code $(${info.code.join(', ')})$ → linear $(${fmt3(v, info.lin)})$ → $XYZ=(${fmt3(v, info.X)})$ → $(x,y)=(${v.fix(info.x, 4)},\\ ${v.fix(info.y, 4)})$, luminance $Y=${v.fix(info.X[1], 3)}$\nmatrix computed from the primaries, middle row $(${SRGB_M[1].map((u) => v.fix(u, 4)).join(', ')})$ (published $0.2126,\\ 0.7152,\\ 0.0722$) · the midpoint of the codes has $Y=${v.fix(info.Y1, 3)}$, the midpoint of the light $Y=${v.fix(info.Y2, 3)}$ (code ${info.m2.map((u) => v.fix(u, 0)).join(', ')} instead of ${info.m1.map((u) => v.fix(u, 0)).join(', ')})`);
       },
     },
-    // ------------------------------------------------------------------ 4.12
-    {
-      num: '4.12',
-      kind: 'Phenomenon',
-      name: 'Colour blindness: dichromacy as a projection',
-      credit: 'Brettel, Viénot & Mollon, 1997 (simulation method)',
-      statement: String.raw`A dichromat lacks one cone type (protanopia: $L$; deuteranopia: $M$; tritanopia: $S$), so his colours are described by two numbers, not three, and the colour space of three dimensions collapses onto a plane of the cone space $(L,M,S)$. Two colours that differ only in the missing cone’s response look the same to him. In the chromaticity diagram those colours lie on straight **confusion lines** that all pass through one point, the **copunctal point**, the (imaginary) chromaticity of a light that excites only the missing cone type.`,
-      idea: String.raw`Adding a light that excites only the missing cone does not change what the other two cones report (art-4.4, additivity), so a dichromat cannot see it; colours $c$ and $c+\alpha\,e_L$ are the same to a protanope, and in chromaticity coordinates the set $\{c+\alpha e_L\}$ is the line through $c$ and the point of $e_L$. A simulation replaces the missing response by a function of the two remaining ones, chosen so that the neutral axis stays neutral and two anchor wavelengths keep their appearance (Brettel and colleagues use 475 and 575 nm for protans and deutans, 485 and 660 nm for tritans), a projection of cone space onto two half-planes.`,
-      caption: String.raw`Choose the type of dichromacy. On the left, the chromaticity diagram with the copunctal point (when it is on the picture) and the confusion line through the point you drag; the row of swatches below shows colours taken along that line, as a trichromat sees them (top) and as the simulated dichromat does (bottom): the bottom row is a single colour. The two discs compare a hue circle for the trichromat and for the simulated dichromat.`,
-      deps: ['art-4.2'],
-      refs: ['Fairchild ch. 1'],
-      tags: ['colour blindness', 'dichromacy', 'cones'],
-      scope: String.raw`This is the standard simulation, not a measurement of anyone’s experience; real colour-deficient observers vary (many have anomalous trichromacy, a shifted cone, not a missing one). Cone space here is the Hunt–Pointer–Estévez approximation of the CIE 1931 fit, so the copunctal points differ from those quoted in the literature. The anchor wavelengths are as I recall them from the 1997 paper; one secondary source gives 470 instead of 475 nm for the protan and deutan anchor.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Color_blindness' },
-      verify: true,
-      viz(v) {
-        const typ = v.select('type', [{ value: 'protan', label: 'protanopia (no L)' }, { value: 'deutan', label: 'deuteranopia (no M)' }, { value: 'tritan', label: 'tritanopia (no S)' }], 'deutan');
-        const E = [1, 1, 1], anc = (l) => toLMS(cmf(l));
-        const sim = (t, q) => {
-          let A, n;
-          if (t === 'tritan') { A = q[1] / q[0] < 1 ? anc(660) : anc(485); n = cross3(E, A); return [q[0], q[1], -(n[0] * q[0] + n[1] * q[1]) / n[2]]; }
-          A = q[2] / q[1] < 1 ? anc(575) : anc(475); n = cross3(E, A);
-          return t === 'protan' ? [-(n[1] * q[1] + n[2] * q[2]) / n[0], q[1], q[2]] : [q[0], -(n[0] * q[0] + n[2] * q[2]) / n[1], q[2]];
-        };
-        const simXYZ = (t, c) => fromLMS(sim(t, toLMS(c)));
-        const copun = (t) => { const e = t === 'protan' ? [1, 0, 0] : t === 'deutan' ? [0, 1, 0] : [0, 0, 1]; const c = fromLMS(e), s = c[0] + c[1] + c[2]; return [c[0] / s, c[1] / s]; };
-        const D = v.stage({ x: [0, 0.8], y: [0, 0.9], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 330, weight: 1.1, title: 'confusion line through a colour' });
-        const H = D.handle(0.3, 0.45, { color: 'ink', r: 8, label: '', constrain: (x, y) => clampLocus(x, y) });
-        const T1 = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: false, height: 330, weight: 0.6, minWidth: 190, title: 'trichromat' });
-        const T2 = v.stage({ x: [-1.1, 1.1], y: [-1.1, 1.1], equal: true, axes: false, height: 330, weight: 0.6, minWidth: 190, title: 'simulated dichromat' });
-        const Sw = v.stage({ x: [0, 8], y: [0, 2.1], axes: false, height: 120, full: true, title: 'colours on the line: as seen (top), as simulated (bottom)' });
-        const disc = (stage, t) => stage.raster((x, y) => { const r = Math.hypot(x, y); if (r > 1) return null; const code = hsv2code(((Math.atan2(y, x) * 180) / Math.PI + 360) % 360, r, 0.95); const c = t ? xyzToCode(simXYZ(t, codeToXYZ(code))) : code.map(Math.round); return [c[0], c[1], c[2], 1]; }, { res: 3, key: 'disc' + t });
-        let info = {};
-        v.render(() => {
-          const t = typ.value, C = copun(t);
-          drawChromaticity(D, v, { fade: 0.4 });
-          const p = [H.x, H.y], dx = C[0] - p[0], dy = C[1] - p[1], nn = Math.hypot(dx, dy) || 1, ux = dx / nn, uy = dy / nn;
-          D.line(p[0] - ux * 3, p[1] - uy * 3, p[0] + ux * 3, p[1] + uy * 3, { color: 'ink', width: 1.4, dash: [5, 4] });
-          if (C[0] > -0.1 && C[0] < 0.9 && C[1] > -0.1 && C[1] < 1) D.dot(C[0], C[1], { r: 5, color: 'orange', label: 'copunctal', labelPos: 'nw' });
-          // swatches along the line inside the locus
-          const pts = []; for (let s = -2; s <= 2; s += 0.004) { const q = [p[0] + ux * s, p[1] + uy * s]; if (q[1] > 0.02 && inLocus(q[0], q[1])) pts.push(q); }
-          const K = 8;
-          for (let k = 0; k < K; k++) {
-            const q = pts[Math.round((k * (pts.length - 1)) / (K - 1))] || p, c = xyz(q[0], q[1], 0.5), cs = simXYZ(t, c), sc = 0.5 / (cs[1] > 1e-6 ? cs[1] : 1);
-            Sw.rect(k, 1.1, k + 0.98, 2.1, { fill: xyzToCode(c), stroke: false, fillAlpha: 1 });
-            Sw.rect(k, 0.05, k + 0.98, 1.0, { fill: xyzToCode(cs.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-            D.dot(q[0], q[1], { r: 3, color: xyzToCode(c) });
-          }
-          disc(T1, null); disc(T2, t);
-          info = { C, n: pts.length };
-        });
-        v.legend([['ink', 'confusion line (dashed)']]);
-        v.readout(() => `${typ.value === 'protan' ? 'protanopia' : typ.value === 'deutan' ? 'deuteranopia' : 'tritanopia'}: copunctal point of the model at $(x,y)=(${v.fix(info.C[0], 3)},\\ ${v.fix(info.C[1], 3)})$ (the chromaticity of a light that excites only the missing cone)\nthe whole bottom row of swatches is one colour for the simulated observer, because they differ only by a multiple of the missing cone’s direction`);
-      },
-    },
-    // ------------------------------------------------------------------ 4.13
-    {
-      num: '4.13',
-      kind: 'Concept',
-      name: 'Luminance, V(λ) and the Purkinje shift',
-      credit: 'CIE 1924 photopic V(λ); CIE 1951 scotopic V′(λ); J. E. Purkyně, 1819',
-      statement: String.raw`The **luminous efficiency** $V(\lambda)$ weights the spectrum to give luminance: $L_v=K_m\int S(\lambda)V(\lambda)\,d\lambda$ with $K_m=683$ lm/W, where $V$ peaks at $555$ nm for daylight (cone) vision. In dim light the rods take over and the weighting becomes the scotopic function $V'(\lambda)$, peaking near $507$ nm, so that as the illumination falls the brightness of blue-green colours rises relative to reds (the **Purkinje shift**). In the mesopic range, roughly $0.01$–$3$ cd/m$^2$, the weighting moves between the two.`,
-      idea: String.raw`Luminance is a linear functional of the spectrum (art-4.6, $Y=\int S\bar y$ with $\bar y=V$), and a different receptor population gives a different functional: the cone-based $V$ combines $L$ and $M$ signals (art-4.1), while rods have one pigment (rhodopsin) with its own absorption spectrum, shifted to shorter wavelengths. Since the weights differ, two lights of equal photopic luminance can have different scotopic luminance, and the ranking of surfaces by brightness changes with the light level.`,
-      caption: String.raw`Slide the light level from starlight to daylight. The curves are $V$ (green), $V'$ (blue) and the weighting in use (gold). Below, a red flower, a green leaf and a blue flower lit by daylight: the first row is their colour (fading as the cones go out of use), the second the brightness the eye assigns them (relative to a white card): the red darkens first, the blue and green stay relatively bright.`,
-      deps: ['art-4.1'],
-      refs: ['Fairchild ch. 1'],
-      tags: ['luminance', 'rods', 'Purkinje'],
-      scope: String.raw`$V$ is the CIE 1931 $\bar y$ (analytic fit). $V'$ is a two-sided Gaussian model anchored at the 507 nm peak and fitted by me to a few remembered values of the CIE 1951 table, so its wings are only approximate; the transition between the two follows a smooth step between $0.01$ and $3$ cd/m$^2$, a simplification of the CIE mesopic system. The reflectances are invented smooth curves.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Purkinje_effect' },
-      verify: true,
-      viz(v) {
-        const lum = v.slider('light level (cd/m² on the white card)', 1e-4, 1e3, 0.05, { log: true, fmt: (x) => (x < 1 ? v.fix(x, x < 0.01 ? 4 : 3) : v.fix(x, 0)) });
-        const A = v.stage({ x: [380, 720], y: [0, 1.12], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'luminous efficiency', height: 300, weight: 1.3, title: 'weighting of the spectrum' });
-        const B = v.stage({ x: [0, 3], y: [0, 2.3], axes: false, height: 300, weight: 0.9, minWidth: 250, title: 'three flowers under daylight' });
-        const day = (l) => planck(l, 6500);
-        const OBJ = [
-          { name: 'red flower', R: (l) => 0.05 + 0.8 * sigm((l - 595) / 10) },
-          { name: 'green leaf', R: (l) => 0.05 + 0.4 * gauss(l, 540, 70) },
-          { name: 'blue flower', R: (l) => 0.05 + 0.6 * gauss(l, 450, 45) },
-        ];
-        const brightness = (R, w) => { let a = 0, b = 0; for (let l = 380; l <= 780; l += 4) { const V = w * Vphot(l) + (1 - w) * Vscot(l); a += day(l) * R(l) * V; b += day(l) * V; } return a / b; };
-        let info = {};
-        v.render(() => {
-          const lg = Math.log10(lum.value), t = Math.max(0, Math.min(1, (lg + 2) / (Math.log10(3) + 2))), w = t * t * (3 - 2 * t);
-          const Veff = (l) => w * Vphot(l) + (1 - w) * Vscot(l);
-          A.fn(Vphot, { color: 'green', width: 1.6, domain: [380, 720] });
-          A.fn(Vscot, { color: 'accent', width: 1.6, domain: [380, 720] });
-          A.fn(Veff, { color: 'gold', width: 3, domain: [380, 720] });
-          A.vline(555, { color: 'green', dash: [3, 4], width: 1, alpha: 0.6 }); A.vline(507, { color: 'accent', dash: [3, 4], width: 1, alpha: 0.6 });
-          const wh = spdXYZ(day, 5);
-          let pk = 0, pv = 0; for (let l = 380; l <= 720; l++) { const q = Veff(l); if (q > pv) { pv = q; pk = l; } }
-          OBJ.forEach((o, i) => {
-            const c = spdXYZ((l) => day(l) * o.R(l), 5).map((u) => (u / wh[1]) * 0.9), g = brightness(o.R, w) / brightness(() => 1, w), g0 = brightness(o.R, 1) / brightness(() => 1, 1);
-            const grey = Math.round(255 * Math.pow(Math.min(1, g * 1.1), 1 / 2.2)), rgb = rgbOf(c), mixc = rgb.map((u) => Math.round(u * w + grey * (1 - w)));
-            B.rect(i, 1.25, i + 0.92, 2.2, { fill: mixc, stroke: false, fillAlpha: 1, radius: 6 });
-            B.rect(i, 0.2, i + 0.92, 1.15, { fill: [grey, grey, grey], stroke: false, fillAlpha: 1, radius: 6 });
-            B.text(o.name, i + 0.46, 0.12, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
-            (info.g = info.g || [])[i] = g / g0;
-          });
-          info.w = w; info.pk = pk; info.lum = lum.value;
-        });
-        v.legend([['green', '$V(\\lambda)$ photopic'], ['accent', '$V\'(\\lambda)$ scotopic (model)'], ['gold', 'weighting in use']]);
-        v.readout(() => `level ${v.sci(info.lum, 2)} cd/m² → cone weight ${v.fix(info.w, 2)} (${info.w > 0.98 ? 'photopic' : info.w < 0.02 ? 'scotopic' : 'mesopic'}), the weighting peaks at ${info.pk} nm\nbrightness relative to its daylight value: red flower ${v.fix(info.g[0], 2)}, green leaf ${v.fix(info.g[1], 2)}, blue flower ${v.fix(info.g[2], 2)}`);
-      },
-    },
+    // Source-audited dichromacy 4.12
+    dichromacyItem,
+    // Source-audited photometry 4.13
+    photometryItem,
     // Source-audited colorimetry 4.14
     grassmannPaperItem,
     // Source-audited Maxwell 4.15
