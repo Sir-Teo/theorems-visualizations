@@ -631,6 +631,16 @@
         "af74bcd",
         "f9a9406"
       ]
+    },
+    {
+      "ids": [
+        "music-8.16"
+      ],
+      "peer": "coordinator independent source/math/audio/native review",
+      "reports": [
+        "docs/verification/music-rows-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -643,7 +653,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 70,
+  "currentPendingSourceReviews": 69,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",

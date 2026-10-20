@@ -45,7 +45,7 @@ for every difference $d$, including zero.`,
     },
     // ------------------------------------------------------------------ 8.16
     {
-      num:'8.16',kind:'Concept',name:'Twelve-tone rows and the row matrix',verify:true,
+      num:'8.16',kind:'Concept',name:'Twelve-tone rows and the row matrix',verify:false,
       statement:String.raw`A twelve-tone row $p=(p_0,\ldots,p_{11})$ is a permutation of the twelve pitch classes. Transposition $T_n:p_j\mapsto p_j+n$, inversion $I:p_j\mapsto-p_j$ and order reversal $R$ generate48 operations: $T_n$, $T_nI$, $T_nR$, $T_nRI$. They can produce fewer than48 distinct ordered rows when a combined operation fixes p. The matrix
 $$m_{ij}=p_j-p_i+p_0\pmod{12}$$
 has p as its first row. Every row and column is a permutation: fixing i translates p, while fixing j translates its pitch-class inversion. Read rows left-to-right for P, right-to-left for R, columns top-to-bottom for I and bottom-to-top for RI. Here the subscript names the first pitch of the associated forward P or I form, including when its retrograde is selected.`,

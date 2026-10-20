@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 70,
+  "remainingFlags": 69,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "game": 2,
     "polsci": 2,
-    "music": 2,
+    "music": 1,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -259,21 +259,6 @@
       "refs": [],
       "links": {
         "archive": "https://archive.org/details/essaisurlapplica00cond"
-      }
-    },
-    {
-      "id": "music-8.16",
-      "file": "content/music/ch08-c.js",
-      "name": "Twelve-tone rows and the row matrix",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Benson ch. 9"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Twelve-tone_technique"
       }
     },
     {
@@ -1890,7 +1875,8 @@
       "tech-5.4",
       "tech-5.5",
       "tech-5.7",
-      "polsci-5.9"
+      "polsci-5.9",
+      "music-8.16"
     ]
   },
   "additionalFollowups": [
@@ -6769,6 +6755,11 @@
       "id": "polsci-5.9",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent original/author-correction/math/native review and saved-state repair; docs/verification/polsci-swing-followup.md."
+    },
+    {
+      "id": "music-8.16",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent source/math/audio/native review; docs/verification/music-rows-followup.md."
     }
   ]
 }
