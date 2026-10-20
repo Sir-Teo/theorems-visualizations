@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 45,
+  "remainingFlags": 43,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,7 +24,7 @@
     "art": 2,
     "arch": 9,
     "ling": 5,
-    "bighist": 18
+    "bighist": 16
   },
   "queue": [
     {
@@ -486,35 +486,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Extinction_event"
-      }
-    },
-    {
-      "id": "bighist-3.9",
-      "file": "content/bighist/ch03-b.js",
-      "name": "The end-Cretaceous impact",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Chicxulub_crater"
-      }
-    },
-    {
-      "id": "bighist-3.10",
-      "file": "content/bighist/ch03-b.js",
-      "name": "Extraterrestrial Cause for the K–T Extinction",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1126/science.208.4448.1095",
-        "wikipedia": "https://en.wikipedia.org/wiki/Alvarez_hypothesis"
       }
     },
     {
@@ -1522,7 +1493,9 @@
       "art-4.12",
       "art-4.13",
       "ling-3.8",
-      "ling-3.9"
+      "ling-3.9",
+      "bighist-3.9",
+      "bighist-3.10"
     ]
   },
   "additionalFollowups": [
@@ -6526,6 +6499,16 @@
       "id": "ling-3.9",
       "status": "resolved",
       "note": "2026-10-20: worker_three exact-commit original/official source-pixels, independent template/copy oracles, fresh native-state and output-pixel review; docs/verification/ling-morphology-followup.md."
+    },
+    {
+      "id": "bighist-3.9",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently accepted exact 4f6b9c7 after primary-source, math and fresh native/pixel review; docs/verification/bighist-impact-followup.md."
+    },
+    {
+      "id": "bighist-3.10",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently accepted exact 4f6b9c7 after primary-source, math and fresh native/pixel review; docs/verification/bighist-impact-followup.md."
     }
   ]
 }

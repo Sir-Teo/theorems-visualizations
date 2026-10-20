@@ -1,0 +1,15 @@
+# Independent peer review — exact4f6b9c7
+
+Recommendation: accept BIGHIST3.9 and3.10. No actionable source, hypothesis, math, state or native finding.
+
+Fresh archive `/tmp/atlas-worker-two/bighist-impact-peer`; producer tree and coordinator source evidence remained untouched. Original source SHA values match producer report. Actual Alvarez1980 original p1100 Table1 and footnote, p1106 size/dust assumptions and qualification pixels inspected; summary/method/alternatives/context read from original scan/OCR aid. All seven Danish heights, five measured values/errors, two upper limits and all residue fractions match actual Table1. The independently measured whole-rock28.6±1.3 is correctly kept distinct from41.6±1.8 residue and acid-loss footnote. The source's60,2200,.22 assumptions and approximate10±4 conclusion are explicitly conditional and are not turned into measured deposit/darkness or confidence limits.
+
+Actual Collins2005 pp823–824 equation and Fig3 pixels inspected; SI Eq21, kilometre Eq27, transient2.56km branch, simple1.25 rule, gravity/target assumptions, surface versus pre-entry velocity, broad uncertain prefactor and structural versus fresh-rim meaning match code/copy. Kring's actual complete LPI discovery account read independently in browser: original samples/diagnostic shock/melt/composition/radial ejecta and180km structure support the bounded statement, and the160km simulation is correctly not equated with the structure. NIST actual TNT row supports4.184e15J/Mt.
+
+Actual Renne2013 original684 pooled Beloc and IrZ proxy passages, original687 notes9/11 inspected. Both date pairs and analytical/total errors match, and68% confidence is explicit. Published5±27kyr and32kyr synchrony resolution are not independent subtraction of total uncertainties or a measured delay.
+
+All five independent math groups and focused static2/0/0 pass. Independently regenerated producer's80digit Decimal/trigonometric/bisected-inverse reference file, byte-identical SHA2565ccfab4653c31a05284070af56535ff51aa5e103c908872f8c2e2dc436d8ea5c. Read numerical oracle: no JS model import; sphere-radius mass, explicit SI factors, monotonic inverse bisection and retained-crust mass balance are separate calculations.
+
+Fresh all four320light/dark item native groups pass. Actual DOM=value/state equality, all16crater corners/8dust corners, all121/101curve points, all7measurements/upper limits, exact date error endpoints, inverse/reference marker, real drag, keyboard, edited agreeing full state,22/10malformed/duplicate-state rejections and exact replay pass. Producer's full12matrices plus fresh4 narrow copies are proportionate native evidence. Own images under `/tmp/atlas-worker-two/bighist-impact-peer-evidence`; personally inspected own3.9default320light full page,3.10upper-limit320dark full page and3.10zero-retention320light panel. Geometry, arrows, marker halos, controls and formulas are complete/readable, including an exact-zero curve. No NaN, exception, TeX or page overflow.
+
+Own logs `/tmp/atlas-worker-two/bighist-impact-peer-{math,reference,static,light,dark}.log`.
