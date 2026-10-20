@@ -1,0 +1,7 @@
+{
+  "baseline": "45cf297ed2e9b04175910a09d03640451b073b6b",
+  "file": "content/pharm/ch02.js",
+  "num": "2.3",
+  "before": "          const { f, w } = info, lo = f.k - w > 0 ? LN2 / (f.k + w) : NaN, hi = f.k - w > 0 ? LN2 / (f.k - w) : Infinity;\n          return `$n=${info.m}$: $\\\\hat k=${v.fix(f.k, 3)}\\\\pm${v.fix(w, 3)}$ h$^{-1}$ (95 %), so $\\\\hat t_{1/2}=${v.fix(LN2 / f.k, 1)}$ h with interval $[${v.fix(lo, 1)},\\\\ ${isFinite(hi) ? v.fix(hi, 1) : '\\\\infty'}]$ h; $\\\\hat C_0=${v.fix(Math.exp(f.R.intercept), 1)}$ mg/L (true $20$), $r^2=${v.fix(f.R.r2, 3)}$.`;",
+  "after": "          const { f, w } = info, rateLo = f.k - w, rateHi = f.k + w;\n          const rate = `$n=${info.m}$: $\\\\hat k=${v.fix(f.k, 3)}\\\\pm${v.fix(w, 3)}$ h$^{-1}$ (nominal 95 %)`;\n          if (!(rateHi > 0)) return `${rate}. The rate interval contains no positive elimination rate, so it supports no positive-decay half-life.`;\n          const lo = LN2 / rateHi, hi = rateLo > 0 ? LN2 / rateLo : Infinity;\n          const point = f.k > 0 ? `$\\\\hat t_{1/2}=${v.fix(LN2 / f.k, 1)}$ h` : 'no positive-decay point estimate';\n          return `${rate}, so ${point} with positive-rate half-life interval $[${v.fix(lo, 1)},\\\\ ${isFinite(hi) ? v.fix(hi, 1) + ']' : '\\\\infty)'}$ h; $\\\\hat C_0=${v.fix(Math.exp(f.R.intercept), 1)}$ mg/L (true $20$), $r^2=${v.fix(f.R.r2, 3)}$.`;"
+}

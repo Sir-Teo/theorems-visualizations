@@ -204,8 +204,12 @@ For positive reported concentrations, put $y_i=\log C_i$ and let U be the span o
         v.legend([['green', 'true value', { dash: true }], ['accent', 'fit and 95 % interval'], ['gold', 'samples used', { dot: true }]]);
         v.readout(() => {
           if (!info.f) return 'fewer than three reportable samples';
-          const { f, w } = info, lo = f.k - w > 0 ? LN2 / (f.k + w) : NaN, hi = f.k - w > 0 ? LN2 / (f.k - w) : Infinity;
-          return `$n=${info.m}$: $\\hat k=${v.fix(f.k, 3)}\\pm${v.fix(w, 3)}$ h$^{-1}$ (95 %), so $\\hat t_{1/2}=${v.fix(LN2 / f.k, 1)}$ h with interval $[${v.fix(lo, 1)},\\ ${isFinite(hi) ? v.fix(hi, 1) : '\\infty'}]$ h; $\\hat C_0=${v.fix(Math.exp(f.R.intercept), 1)}$ mg/L (true $20$), $r^2=${v.fix(f.R.r2, 3)}$.`;
+          const { f, w } = info, rateLo = f.k - w, rateHi = f.k + w;
+          const rate = `$n=${info.m}$: $\\hat k=${v.fix(f.k, 3)}\\pm${v.fix(w, 3)}$ h$^{-1}$ (nominal 95 %)`;
+          if (!(rateHi > 0)) return `${rate}. The rate interval contains no positive elimination rate, so it supports no positive-decay half-life.`;
+          const lo = LN2 / rateHi, hi = rateLo > 0 ? LN2 / rateLo : Infinity;
+          const point = f.k > 0 ? `$\\hat t_{1/2}=${v.fix(LN2 / f.k, 1)}$ h` : 'no positive-decay point estimate';
+          return `${rate}, so ${point} with positive-rate half-life interval $[${v.fix(lo, 1)},\\ ${isFinite(hi) ? v.fix(hi, 1) + ']' : '\\infty)'}$ h; $\\hat C_0=${v.fix(Math.exp(f.R.intercept), 1)}$ mg/L (true $20$), $r^2=${v.fix(f.R.r2, 3)}$.`;
         });
       },
     },
