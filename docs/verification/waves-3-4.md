@@ -1061,3 +1061,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### MAT combined acceptance
 
 [Independent MAT peer](mat-independent-peer.md) accepts 22 direct inputs and the bounded model, units and layout corrections. Full objects/functions/flags/raw lists and fresh full narrow-theme fields pass; root composition preservation/closing and independent math rechecks pass. Live prerequisite shortfall 277, 17/64 published and 14 whole syllabi below target; 31 further collections meet target. This follows checkpoint be8d100; source queue five, full-map and Wave 5 gates remain open.
+
+### Guarded original single-history result
+
+[Original/guarded history](map-guarded-original-history-followup.md) independently reproduces the prior original-only raw frames and establishes exact stability of all four guarded frames, matching observed request/draw/clear histories and original logical owners. No direct-Canvas, alternate-binding, lifecycle, production or timing gate is accepted. Browser hold ended; content native reviews resumed.

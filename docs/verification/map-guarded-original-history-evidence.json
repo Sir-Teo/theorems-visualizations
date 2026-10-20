@@ -1,0 +1,721 @@
+{
+  "harnessCommit": "caca8419c844fb395d99954e62eff62fd6d3efd9",
+  "archiveCommit": "3ebf661",
+  "archive": "/tmp/atlas-root-original-guard-stage",
+  "guardCandidate": "781d336d11e136873b173b628d2cd3e7e9c96964",
+  "peer": "a09e53c69c873f58c3ea45f148d6f8dbfca92eb8",
+  "modes": [
+    {
+      "mode": "unguarded",
+      "root": "/tmp/atlas-root-atlas155-original-history",
+      "captureSHA256": "8e49f2bb006616a26e707a6b72f088432e4e30487f171d4554d843077be77049",
+      "browser": "155.0.8059.85",
+      "rawFiles": {
+        "pre-unselected-A": {
+          "bytes": 128532480,
+          "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+          "chunks": 123
+        },
+        "pre-unselected-B": {
+          "bytes": 128532480,
+          "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+          "chunks": 123
+        },
+        "pre-selected-A": {
+          "bytes": 128532480,
+          "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+          "chunks": 123
+        },
+        "pre-selected-B": {
+          "bytes": 128532480,
+          "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+          "chunks": 123
+        },
+        "A0": {
+          "bytes": 128532480,
+          "sha256": "08fd6a441f0f6562e958d18ef88a4765e1f6a59ad7a8f5553faa9826c2b15907",
+          "chunks": 123
+        },
+        "A1": {
+          "bytes": 128532480,
+          "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+          "chunks": 123
+        },
+        "A2": {
+          "bytes": 128532480,
+          "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+          "chunks": 123
+        },
+        "A3": {
+          "bytes": 128532480,
+          "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d",
+          "chunks": 123
+        }
+      },
+      "sources": {
+        "assets/js/map-scene-edges.js": {
+          "originalSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+          "servedSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262"
+        },
+        "assets/js/map-webgl-scene.js": {
+          "originalSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+          "servedSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+        },
+        "assets/js/map-scene-text.js": {
+          "originalSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "servedSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed"
+        }
+      },
+      "fixtureHashes": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+        "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+        "scripts/lib/map-chunked-indices-fixture.mjs": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "tests/map-chunked-indices-native.mjs": "110d8acd1591b4587a21dc513903a175d2fcb8c1bf45b132c6edbdd641a623b8"
+      },
+      "comparisons": {
+        "A0-A1": {
+          "channels": 31327,
+          "pixels": 8929,
+          "max": 121,
+          "bounds": [
+            3128,
+            128,
+            7679,
+            3658
+          ]
+        },
+        "A1-A2": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        },
+        "A3-A2": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        },
+        "A0-A3": {
+          "channels": 31327,
+          "pixels": 8929,
+          "max": 121,
+          "bounds": [
+            3128,
+            128,
+            7679,
+            3658
+          ]
+        }
+      },
+      "frames": [
+        {
+          "label": "A0",
+          "atlasBefore": {
+            "generation": 7,
+            "cacheSize": 96,
+            "x": 1957,
+            "y": 347,
+            "rowHeight": 48
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 2,
+            "x": 831,
+            "y": 0,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1154,
+          "traceEnd": 1328,
+          "drawSerial": 9
+        },
+        {
+          "label": "A1",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 2,
+            "x": 831,
+            "y": 0,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1328,
+          "traceEnd": 1498,
+          "drawSerial": 10
+        },
+        {
+          "label": "A2",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1498,
+          "traceEnd": 1585,
+          "drawSerial": 11
+        },
+        {
+          "label": "A3",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1585,
+          "traceEnd": 1672,
+          "drawSerial": 12
+        }
+      ],
+      "observedEvents": 1672,
+      "postCaptureEvents": 0,
+      "errors": []
+    },
+    {
+      "mode": "guarded",
+      "root": "/tmp/atlas-root-atlas155-guarded-history",
+      "captureSHA256": "48b3c463f61c17cfd5486aeaae547eecfb7397b6b1f1b2a96dd1c83c0e02ef5c",
+      "browser": "155.0.8059.85",
+      "rawFiles": {
+        "pre-unselected-A": {
+          "bytes": 128532480,
+          "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+          "chunks": 123
+        },
+        "pre-unselected-B": {
+          "bytes": 128532480,
+          "sha256": "6d4e7a55f6b0970a7adcad136c09788629f5acc3e89e6df28aa2fc02a7abbc0b",
+          "chunks": 123
+        },
+        "pre-selected-A": {
+          "bytes": 128532480,
+          "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+          "chunks": 123
+        },
+        "pre-selected-B": {
+          "bytes": 128532480,
+          "sha256": "e59ff59cbaad9f81b710d4253f4cc3ad84713f22efe45cfe131dbd0b16a23844",
+          "chunks": 123
+        },
+        "A0": {
+          "bytes": 128532480,
+          "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+          "chunks": 123
+        },
+        "A1": {
+          "bytes": 128532480,
+          "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+          "chunks": 123
+        },
+        "A2": {
+          "bytes": 128532480,
+          "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+          "chunks": 123
+        },
+        "A3": {
+          "bytes": 128532480,
+          "sha256": "ea66776de451ea6c270235cbfc5ea9dfa22d1392de7e2b5f0de5166816bce5d7",
+          "chunks": 123
+        }
+      },
+      "sources": {
+        "assets/js/map-scene-edges.js": {
+          "originalSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+          "servedSHA256": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262"
+        },
+        "assets/js/map-webgl-scene.js": {
+          "originalSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+          "servedSHA256": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5"
+        },
+        "assets/js/map-scene-text.js": {
+          "originalSHA256": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+          "servedSHA256": "cf80b84fb67aaf0abc042da6dca73570e12c6bd57c8d1daa8f65328cf9781e62"
+        }
+      },
+      "fixtureHashes": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+        "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+        "scripts/lib/map-chunked-indices-fixture.mjs": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+        "tests/map-chunked-indices-native.mjs": "110d8acd1591b4587a21dc513903a175d2fcb8c1bf45b132c6edbdd641a623b8"
+      },
+      "comparisons": {
+        "A0-A1": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        },
+        "A1-A2": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        },
+        "A3-A2": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        },
+        "A0-A3": {
+          "channels": 0,
+          "pixels": 0,
+          "max": 0,
+          "bounds": null
+        }
+      },
+      "frames": [
+        {
+          "label": "A0",
+          "atlasBefore": {
+            "generation": 7,
+            "cacheSize": 96,
+            "x": 1957,
+            "y": 347,
+            "rowHeight": 48
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 2,
+            "x": 831,
+            "y": 0,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1154,
+          "traceEnd": 1328,
+          "drawSerial": 9
+        },
+        {
+          "label": "A1",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 2,
+            "x": 831,
+            "y": 0,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1328,
+          "traceEnd": 1498,
+          "drawSerial": 10
+        },
+        {
+          "label": "A2",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1498,
+          "traceEnd": 1585,
+          "drawSerial": 11
+        },
+        {
+          "label": "A3",
+          "atlasBefore": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "atlasAfter": {
+            "generation": 9,
+            "cacheSize": 85,
+            "x": 1757,
+            "y": 410,
+            "rowHeight": 69
+          },
+          "resources": {
+            "logicalRetainedBytes": 52913740,
+            "logicalPeakBytes": 54599720,
+            "logicalLimitBytes": 64000000,
+            "components": {
+              "worldPointsAndCurveMetadata": 34471936,
+              "segmentIndices": 1810508,
+              "nativeWordTexture": 4194304,
+              "nativeWordSourceCanvas": 4194304,
+              "singleChannelCoverage": 7999488,
+              "nodeAndFlagTextures": 243200
+            },
+            "componentSum": 52913740,
+            "primaryDrawingBufferBytes": 128532480,
+            "primarySamples": 0,
+            "requestedDepth": false,
+            "requestedStencil": false,
+            "maskPixels": 7999488,
+            "retainedModels": [
+              {
+                "scale": 0.5,
+                "points": 444859,
+                "segments": 421495
+              },
+              {
+                "scale": 4,
+                "points": 1161473,
+                "segments": 1138109
+              },
+              {
+                "scale": 0.5,
+                "points": 38667,
+                "segments": 37911
+              }
+            ],
+            "indexBuffers": 86,
+            "inputCanvasPixels": 1,
+            "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+            "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL."
+          },
+          "glError": 0,
+          "traceStart": 1585,
+          "traceEnd": 1672,
+          "drawSerial": 12
+        }
+      ],
+      "observedEvents": 1672,
+      "postCaptureEvents": 0,
+      "errors": []
+    }
+  ],
+  "rootOfflineRecheck": "/tmp/atlas-root-atlas155-history-recheck",
+  "scope": "Original edge/scene binding only, exact frozen checkpoint5/single-history stability; no alternate binding, direct-Canvas bound, lifecycle, production or timing acceptance."
+}
