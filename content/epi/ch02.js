@@ -122,7 +122,14 @@ so raising $c$ buys specificity with sensitivity. Each is a proportion *within o
       name: 'Bayes’ theorem for tests: predictive values',
       credit: 'Bayes, 1763; Vecchio, 1966 (predictive values of tests)',
       statement: String.raw`Let a test have sensitivity $\text{Se}$ and specificity $\text{Sp}$, and apply it to people in whom the disease has prevalence (pre-test probability) $p$. The **positive predictive value** — the probability of disease given a positive result — and the **negative predictive value** are
-$$\text{PPV} = P(D\mid +) = \frac{\text{Se}\,p}{\text{Se}\,p + (1-\text{Sp})(1-p)}, \qquad \text{NPV} = P(\bar D\mid -) = \frac{\text{Sp}\,(1-p)}{\text{Sp}\,(1-p) + (1-\text{Se})\,p}.$$
+$$\begin{aligned}
+\text{PPV}&=P(D\mid +)\\
+&=\frac{\text{Se}\,p}{\text{Se}\,p + (1-\text{Sp})(1-p)},
+\end{aligned}$$
+$$\begin{aligned}
+\text{NPV}&=P(\bar D\mid -)\\
+&=\frac{\text{Sp}\,(1-p)}{\text{Sp}\,(1-p) + (1-\text{Se})\,p}.
+\end{aligned}$$
 With $\text{Se}$ and $\text{Sp}$ fixed, PPV rises and NPV falls as $p$ increases: $\text{PPV}\to 0$ as $p \to 0$ and $\text{NPV} \to 0$ as $p\to 1$. A positive result raises the probability of disease ($\text{PPV} > p$) exactly when $\text{Se} > 1 - \text{Sp}$, and $\text{PPV} = \tfrac12$ when true and false positives are equally numerous, $\text{Se}\,p = (1-\text{Sp})(1-p)$. Predictive values therefore belong to a test *in a population*, not to the test alone.`,
       idea: String.raw`It is Bayes' theorem (stat 10.1) with the law of total probability in the denominator: the positives are the true positives $\text{Se}\,p$ plus the false positives $(1-\text{Sp})(1-p)$, and the PPV is the share of the first among all of them. In natural frequencies the formula becomes counting: out of 1 000 people, $1000p$ are ill and $\text{Se}$ of them test positive, while $1000(1-p)$ are well and $1 - \text{Sp}$ of *them* test positive. When the disease is rare the healthy group is so large that even a small false-positive rate produces more positives than the whole diseased group can — so the predictive value is governed by prevalence (1.3) as much as by the test's accuracy (2.1).`,
       caption: String.raw`Each dot is a person (red = has the disease); a gold tile means the test came back positive. The tree counts the same 1 000 people in natural frequencies, and the bars underneath split the positives and the negatives by true status — that split is the predictive value. Slide the prevalence and watch PPV move along its curve while sensitivity and specificity (dashed) stay put. The starting values are screening mammography in the US Breast Cancer Surveillance Consortium, 2007–2013 (sensitivity 86.9%, specificity 88.9%, about 5.9 cancers per 1 000 women screened; Lehman et al., *Radiology* 2017): Bayes' formula gives a PPV of 4.4%, matching the 4.4% of recalled women who were found to have cancer.`,

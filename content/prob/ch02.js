@@ -45,7 +45,11 @@ export default {
       name: 'Independence of events, variables and σ-fields',
       verify: true,
       statement: String.raw`Two events $A,B$ are **independent** if $P(A\cap B)=P(A)P(B)$. Two random variables $X,Y$ are independent if
-$$P(X\in C,\ Y\in D)=P(X\in C)\,P(Y\in D)\quad\text{for all Borel sets } C,D,$$
+$$\begin{gathered}
+P(X\in C,\ Y\in D)\\
+=P(X\in C)\,P(Y\in D)\\
+\text{for all Borel sets } C,D,
+\end{gathered}$$
 that is, every event fixed by $X$ is independent of every event fixed by $Y$. Two σ-fields $\mathcal F,\mathcal G$ are independent if every $A\in\mathcal F$ is independent of every $B\in\mathcal G$.
 
 For several objects the order is reversed, starting from σ-fields. $\mathcal F_1,\dots,\mathcal F_n$ are independent if $P(A_1\cap\dots\cap A_n)=\prod_iP(A_i)$ whenever $A_i\in\mathcal F_i$. Random variables $X_1,\dots,X_n$ are independent if $P(X_1\in B_1,\dots,X_n\in B_n)=\prod_iP(X_i\in B_i)$ for all Borel $B_i$. Events $A_1,\dots,A_n$ are independent if $P(\bigcap_{i\in I}A_i)=\prod_{i\in I}P(A_i)$ for **every** $I\subset\{1,\dots,n\}$. An infinite family is independent when each of its finite subfamilies is.`,
