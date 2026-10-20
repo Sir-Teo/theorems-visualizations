@@ -1,0 +1,366 @@
+{
+  "baseline": "1dc0c8fa4a47faf1b60e07793e9fc508a656aa20",
+  "acceptedRootContent": "17a6009",
+  "changes": {
+    "1.2": {
+      "file": "content/game/ch01.js",
+      "added": [
+        "pma-4.16",
+        "pma-5.8"
+      ],
+      "before": [
+        "game-1.1"
+      ],
+      "full": [
+        "game-1.1",
+        "pma-4.16",
+        "pma-5.8"
+      ],
+      "note": "For the continuous-action claim, pma 4.16 supplies an attained maximum only when the nonempty action set is compact and the payoff is continuous. At an interior differentiable maximizer, pma 5.8 makes the own-action derivative zero. For the displayed quadratic this derivative is $c+ba_j-2a_i$; completing the square shows that its unconstrained root is the unique maximum, and restriction to the closed action interval clips that root to an endpoint when necessary. A zero derivative alone would not establish a maximum for an arbitrary payoff, and the interior derivative test does not replace the endpoint comparison.",
+      "rowBefore": [
+        "game-1.1"
+      ],
+      "itemDepsSource": "['game-1.1']",
+      "rowDepsSource": "['game-1.1']",
+      "afterDepsSource": "['game-1.1', 'pma-4.16', 'pma-5.8']"
+    },
+    "1.3": {
+      "file": "content/game/ch01.js",
+      "added": [
+        "prob-1.6.1",
+        "comb-3.1"
+      ],
+      "before": [
+        "game-1.2"
+      ],
+      "full": [
+        "game-1.2",
+        "prob-1.6.1",
+        "comb-3.1"
+      ],
+      "note": "For the random-game calculation, take the two payoff arrays independently, with independent identically distributed continuous entries within each array. The indicator of each cell being a mutual best reply has mean $1/(mn)$; linearity of expectation (prob 1.6.1) then gives expected equilibrium count one without assuming that the cell indicators are independent. For the no-equilibrium probability, use the finite uniform space of column maxima for player 1 and row maxima for player 2. Only sets of cells in distinct rows and columns can all be equilibria. There are $\\binom mk\\binom nk k!$ such k-cell sets, each with joint probability $(mn)^{-k}$. Inclusion\u2013exclusion (comb 3.1), dividing finite event counts by the size of this uniform space, gives the alternating sum of these intersection probabilities. When both m and n grow, its kth term tends to $(-1)^k/k!$ and its absolute value is at most $1/k!$; summable tails give the limit $1/e$. These hypotheses exclude tied discrete-payoff tables and arbitrary dependent continuous arrays.",
+      "rowBefore": [
+        "game-1.2"
+      ],
+      "itemDepsSource": "['game-1.2']",
+      "rowDepsSource": "['game-1.2']",
+      "afterDepsSource": "['game-1.2', 'prob-1.6.1', 'comb-3.1']"
+    },
+    "1.8": {
+      "file": "content/game/ch01.js",
+      "added": [
+        "pma-3.20"
+      ],
+      "before": [
+        "game-1.7"
+      ],
+      "full": [
+        "game-1.7",
+        "pma-3.20"
+      ],
+      "note": "The interval-squeezing conclusion uses pma 3.20(e): for fixed $0<p<1$, $p^k$ tends to zero. Thus a nonnegative guess lying in every interval $[0,100p^k]$ must be zero. In the stated smooth-payoff version, if opponents' guesses lie in $[0,M]$, replacing one's own $x>pM$ by $pM$ strictly reduces the distance to the target: both choices lie above their respective own-influenced targets, and the distance falls by $(1-p/n)(x-pM)>0$. This accounts for the player's own contribution to the mean; the geometric limit is not a claim about finite experimental reasoning levels.",
+      "rowBefore": [
+        "game-1.7"
+      ],
+      "itemDepsSource": "['game-1.7']",
+      "rowDepsSource": "['game-1.7']",
+      "afterDepsSource": "['game-1.7', 'pma-3.20']"
+    },
+    "1.10": {
+      "file": "content/game/ch01.js",
+      "added": [
+        "pma-6.21",
+        "prob-4.1.13"
+      ],
+      "before": [
+        "game-1.3"
+      ],
+      "full": [
+        "game-1.3",
+        "pma-6.21",
+        "prob-4.1.13"
+      ],
+      "note": "For positive prize value v, against an independent exponential concession time with density $e^{-s/v}/v$, choosing a fixed finite time t gives expected payoff $\\int_0^t(v-s)e^{-s/v}/v\\,ds-t e^{-t/v}$. The integrand has antiderivative $s e^{-s/v}$, so the fundamental theorem pma 6.21 makes this payoff zero, including t=0. To cover a randomized deviation T, condition on its chosen time: the same conditional payoff is zero at every finite T. The payoff is absolutely bounded by v plus the opponent's exponential time, which has finite mean. The tower property (prob 4.1.13) therefore gives unconditional expected payoff zero as well. This verifies indifference against arbitrary independently randomized finite quitting times, not just a finite list of pure times.",
+      "rowBefore": [
+        "game-1.3"
+      ],
+      "itemDepsSource": "['game-1.3']",
+      "rowDepsSource": "['game-1.3']",
+      "afterDepsSource": "['game-1.3', 'pma-6.21', 'prob-4.1.13']"
+    },
+    "2.1": {
+      "file": "content/game/ch02.js",
+      "added": [
+        "prob-1.6.1",
+        "prob-2.1.13"
+      ],
+      "before": [
+        "game-1.1",
+        "micro-13.2"
+      ],
+      "full": [
+        "game-1.1",
+        "micro-13.2",
+        "prob-1.6.1",
+        "prob-2.1.13"
+      ],
+      "note": "Write the realized payoff as the finite sum over profiles a of $u_i(a)\\prod_j I_{j,a_j}$, where $I_{j,a_j}$ indicates player j's sampled action. Linearity of expectation (prob 1.6.1) moves expectation inside that sum. Independent players' action indicators have factored product expectations by prob 2.1.13, giving exactly $\\prod_j\\sigma_j(a_j)$ and hence the displayed expected-payoff formula. Indicators for different actions of the same player are not independent; no such factorization is used. Holding the other mixtures fixed then leaves an affine, indeed linear, function of one's own probabilities.",
+      "rowBefore": [
+        "game-1.1",
+        "micro-13.2"
+      ],
+      "itemDepsSource": "['game-1.1', 'micro-13.2']",
+      "rowDepsSource": "['game-1.1', 'micro-13.2']",
+      "afterDepsSource": "['game-1.1', 'micro-13.2', 'prob-1.6.1', 'prob-2.1.13']"
+    },
+    "2.9": {
+      "file": "content/game/ch02-b.js",
+      "added": [
+        "prob-4.1.1a"
+      ],
+      "before": [
+        "game-2.3",
+        "algo-11.15"
+      ],
+      "full": [
+        "game-2.3",
+        "algo-11.15",
+        "prob-4.1.1a"
+      ],
+      "note": "The finite-partition formula in prob 4.1.1a turns obedience into conditional expected utility. On a positive-probability recommendation event, divide the weighted payoff difference in the displayed inequality by its recommendation probability; the result is the conditional gain from obeying rather than switching. Since this divisor is positive, the sign is unchanged. If that recommendation has zero mass, every joint term in its inequality is zero, so the inequality is vacuous and no conditional distribution at a null event is required. Correlated recommendations need not factor into independent player mixtures.",
+      "rowBefore": [
+        "game-2.3",
+        "algo-11.15"
+      ],
+      "itemDepsSource": "['game-2.3', 'algo-11.15']",
+      "rowDepsSource": "['game-2.3', 'algo-11.15']",
+      "afterDepsSource": "['game-2.3', 'algo-11.15', 'prob-4.1.1a']"
+    },
+    "2.5": {
+      "file": "content/game/ch02.js",
+      "added": [
+        "graph-1.2.1"
+      ],
+      "before": [
+        "game-2.2"
+      ],
+      "full": [
+        "game-2.2",
+        "graph-1.2.1"
+      ],
+      "note": "The parity step uses the finite almost-completely-labelled graph described in the proof. Its internal vertices have degree two and its path endpoints degree one. The handshake lemma (graph 1.2.1) forces an even number of odd-degree vertices in each finite component. The component containing the artificial endpoint therefore has another endpoint; following its degree-two path cannot enter a cycle from an endpoint. This is the endpoint argument under the stated nondegeneracy assumptions, not a polynomial bound on the number of pivots or a guarantee for an unmodified degenerate implementation.",
+      "rowBefore": [
+        "game-2.2"
+      ],
+      "itemDepsSource": "['game-2.2']",
+      "rowDepsSource": "['game-2.2']",
+      "afterDepsSource": "['game-2.2', 'graph-1.2.1']"
+    },
+    "3.6": {
+      "file": "content/game/ch03-b.js",
+      "added": [
+        "pma-3.6"
+      ],
+      "before": [
+        "game-3.3"
+      ],
+      "full": [
+        "game-3.3",
+        "pma-3.6"
+      ],
+      "note": "The final empirical-limit step uses pma 3.6 on the compact product of the two probability simplices. Any convergent empirical subsequence has a feasible limit; continuity of the finite minimum/maximum payoff envelopes and the already proved vanishing gap make that limit optimal. If the empirical distance to the closed optimal-strategy product did not tend to zero, a subsequence staying a fixed positive distance away would have a convergent subsubsequence, contradicting that conclusion. Compactness upgrades optimality of limit points to distance convergence, not convergence to a uniquely selected pair or a rate for Robinson's block argument.",
+      "rowBefore": [
+        "game-3.3"
+      ],
+      "itemDepsSource": "['game-3.3']",
+      "rowDepsSource": "['game-3.3']",
+      "afterDepsSource": "['game-3.3', 'pma-3.6']"
+    },
+    "3.7": {
+      "file": "content/game/ch03-b.js",
+      "added": [
+        "stat-1.16"
+      ],
+      "before": [
+        "game-3.3",
+        "game-3.6"
+      ],
+      "full": [
+        "game-3.3",
+        "game-3.6",
+        "stat-1.16"
+      ],
+      "note": "Use the bounded-variable exponential lemma in the proof of stat 1.16, rather than its independent-sample tail conclusion. At a single round introduce an auxiliary action index I with distribution $x_t$, so $g_t(I)\\in[0,1]$. That lemma bounds its logarithmic moment generating function by $\\eta x_t\\cdot g_t+\\eta^2/8$, exactly the potential increment used here. It is a one-round inequality for the realized gain vector; temporal independence of gains is unnecessary, even for adaptive full-information play. Summing these increments gives the stated finite-horizon bound, and the choice of eta depending on T makes the averaged minimax gap vanish rather than identifying a unique limiting strategy vector.",
+      "rowBefore": [
+        "game-3.3"
+      ],
+      "itemDepsSource": "['game-3.3', 'game-3.6']",
+      "rowDepsSource": "['game-3.3']",
+      "afterDepsSource": "['game-3.3', 'game-3.6', 'stat-1.16']"
+    },
+    "3.10": {
+      "file": "content/game/blackwell-item.js",
+      "added": [
+        "ladr-6.14"
+      ],
+      "before": [
+        "game-3.3",
+        "rca-4.10"
+      ],
+      "full": [
+        "game-3.3",
+        "rca-4.10",
+        "ladr-6.14"
+      ],
+      "note": "The all-direction coverage correction consumes Cauchy\u2013Schwarz (ladr 6.14): the dot-product change $|(u-u')\\cdot r|$ is bounded by $\\|u-u'\\|\\|r\\|$. Every payoff vector in this diagnostic has norm at most $\\sqrt8$, so every fixed-mixture scalar payoff is Lipschitz in the unit direction with that constant. Taking a finite min or max over the opponent's pure actions and then the optimal mixture preserves this uniform bound. The disc's support has constant equal to the Euclidean norm of its centre; the axis-aligned square has at most that norm plus its radius times $\\sqrt2$. Adding constants gives the stated margin constant L, so subtracting L times the grid's chord coverage distance controls unsampled directions. This step supports the finite diagnostic certificate; it does not turn a random realized path into the ideal conditional-mean bound.",
+      "rowBefore": [
+        "game-3.3",
+        "rca-4.10"
+      ],
+      "itemDepsSource": "['game-3.3','rca-4.10']",
+      "rowDepsSource": "['game-3.3', 'rca-4.10']",
+      "afterDepsSource": "['game-3.3', 'rca-4.10', 'ladr-6.14']"
+    },
+    "3.4": {
+      "file": "content/game/ch03.js",
+      "added": [
+        "pma-4.16"
+      ],
+      "before": [
+        "game-3.1",
+        "game-2.1",
+        "algo-11.19"
+      ],
+      "full": [
+        "game-3.1",
+        "game-2.1",
+        "algo-11.19",
+        "pma-4.16"
+      ],
+      "note": "For the primal attainment step, positivity of every shifted matrix entry makes the feasible set nonempty, closed and bounded: zero is feasible and each coordinate lies between zero and $1/b$. The extreme value theorem pma 4.16 therefore attains the continuous objective $\\mathbf1^{\\mathsf T}z$ on this compact set. A small positive feasible vector makes its maximum strictly positive, enabling normalization. The theorem is not applied directly to the unbounded dual feasible set; the already stated strong LP duality supplies its attained minimum.",
+      "rowBefore": [
+        "game-3.1",
+        "game-2.1",
+        "algo-11.19"
+      ],
+      "itemDepsSource": "['game-3.1', 'game-2.1', 'algo-11.19']",
+      "rowDepsSource": "['game-3.1', 'game-2.1', 'algo-11.19']",
+      "afterDepsSource": "['game-3.1', 'game-2.1', 'algo-11.19', 'pma-4.16']"
+    },
+    "3.5": {
+      "file": "content/game/ch03.js",
+      "added": [
+        "opt-3.6"
+      ],
+      "before": [
+        "game-3.3"
+      ],
+      "full": [
+        "game-3.3",
+        "opt-3.6"
+      ],
+      "note": "The pointwise-maximum rule opt 3.6 applies to $-g(p)=\\max_j[-L_j(p)]$, a finite maximum of affine convex functions, making g concave. This proves the lower-envelope shape used by the graphical optimizer without differentiability at line crossings. An endpoint/intersection candidate list can contain an optimum even when a flat segment gives a whole interval of optima or a constant active line attains the peak; concavity does not require uniqueness or two strictly opposite slopes. The analogous upper envelope is convex.",
+      "rowBefore": [
+        "game-3.3"
+      ],
+      "itemDepsSource": "['game-3.3']",
+      "rowDepsSource": "['game-3.3']",
+      "afterDepsSource": "['game-3.3', 'opt-3.6']"
+    },
+    "4.1": {
+      "file": "content/game/ch04.js",
+      "added": [
+        "comb-1.1"
+      ],
+      "before": [
+        "game-1.1",
+        "game-1.3"
+      ],
+      "full": [
+        "game-1.1",
+        "game-1.3",
+        "comb-1.1"
+      ],
+      "note": "The product rule comb 1.1 counts complete plans: one independent specification is made at each of the player's decision nodes, with $|A(h)|$ choices there, so the number is their product. These are plan choices, not probabilities or independence of play. If the player never moves the empty product is one. Multiplying across players gives the full profile count; in a binary tree with D decision nodes this is $2^D$, while chance nodes are excluded by this finite deterministic model.",
+      "rowBefore": [
+        "game-1.1",
+        "game-1.3"
+      ],
+      "itemDepsSource": "['game-1.1', 'game-1.3']",
+      "rowDepsSource": "['game-1.1', 'game-1.3']",
+      "afterDepsSource": "['game-1.1', 'game-1.3', 'comb-1.1']"
+    },
+    "4.8": {
+      "file": "content/game/chainstore-item.js",
+      "added": [
+        "prob-4.1.1a"
+      ],
+      "before": [
+        "game-4.2",
+        "game-4.4",
+        "game-1.3"
+      ],
+      "full": [
+        "game-4.2",
+        "game-4.4",
+        "game-1.3",
+        "prob-4.1.1a"
+      ],
+      "note": "For a positive-probability observed fight, the finite-partition conditional-mean formula of prob 4.1.1a applied to the commitment-type indicator gives posterior $p/[p+(1-p)s]=p/q$: commitment contributes joint mass p and the weak type contributes $(1-p)s$. An observed cooperation has zero commitment mass and therefore reveals weakness when it has positive mass. At a null history this ratio is not defined; the separately stated tremble/off-path convention specifies beliefs instead. This is a calculation for the authored extension, preserving the distinction from the original complete-information chain-store game.",
+      "rowBefore": [
+        "game-4.2",
+        "game-4.4",
+        "game-1.3"
+      ],
+      "itemDepsSource": "['game-4.2','game-4.4','game-1.3']",
+      "rowDepsSource": "['game-4.2', 'game-4.4', 'game-1.3']",
+      "afterDepsSource": "['game-4.2', 'game-4.4', 'game-1.3', 'prob-4.1.1a']"
+    },
+    "4.9": {
+      "file": "content/game/ch04-b.js",
+      "added": [
+        "prob-4.1.1a"
+      ],
+      "before": [
+        "game-4.1",
+        "game-2.1",
+        "game-1.3"
+      ],
+      "full": [
+        "game-4.1",
+        "game-2.1",
+        "game-1.3",
+        "prob-4.1.1a"
+      ],
+      "note": "The finite-partition formula prob 4.1.1a supplies the posterior used in the poker example. At its preset the high-card-and-bet mass is $1/2$, the low-card-and-bet mass is $(1/2)(1/3)=1/6$, and the total bet mass is $2/3$. Conditional expectation of the high-card indicator on the positive-mass bet event is therefore $(1/2)/(2/3)=3/4$. Payoff comparisons after a bet must use this posterior rather than the prior half. Zero-probability information events would need a separate version or off-path convention; no division by their mass is justified.",
+      "rowBefore": [
+        "game-4.1",
+        "game-2.1",
+        "game-1.3"
+      ],
+      "itemDepsSource": "['game-4.1', 'game-2.1', 'game-1.3']",
+      "rowDepsSource": "['game-4.1', 'game-2.1', 'game-1.3']",
+      "afterDepsSource": "['game-4.1', 'game-2.1', 'game-1.3', 'prob-4.1.1a']"
+    }
+  },
+  "rowRepairs": {
+    "1.7": {
+      "full": [
+        "game-1.1",
+        "game-1.3"
+      ],
+      "beforeSource": "['game-1.1']",
+      "afterSource": "['game-1.1', 'game-1.3']",
+      "reason": "The existing argument proves every Nash equilibrium survives strict elimination by the best-response definition in game1.3; existing item already names this dependency."
+    },
+    "3.2": {
+      "full": [
+        "game-3.1",
+        "game-1.3"
+      ],
+      "beforeSource": "['game-3.1']",
+      "afterSource": "['game-3.1', 'game-1.3']",
+      "reason": "The existing theorem/proof identifies pure saddles with mutual best responses and hence Nash equilibrium; existing item already names game1.3."
+    }
+  }
+}
