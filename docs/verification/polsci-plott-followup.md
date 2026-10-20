@@ -1,0 +1,28 @@
+# Political science4.5: exact Euclidean half-plane condition
+
+Candidate for independent acceptance; `verify:true` remains. No global ledger change.
+
+## Primary source and attribution
+
+Read the actual Plott, *A Notion of Equilibrium and Its Possibility Under Majority Rule*, AER57(4):787–806 (1967), via [Caltech's author repository](https://authors.library.caltech.edu/records/rzmbm-kft47). The web download initially followed an expired cached signed redirect; a fresh direct repository request delivered the full21-page published scan. Retained `/tmp/atlas-worker-three/plott1967.pdf`, SHA256 `8933d6c70a21b824a4bfd58669e4c960053145c532ca20231379f19953b388a7`, and extracted `plott1967.txt`.
+
+Read the local-motion/gradient definitions and indifference convention pp.787–789, unrestricted odd-electorate conditions pp.790–791, including the **one and only one individual at a maximum** qualification and footnote8 on multiple maxima. Personally inspected actual original pp.790–791, PDF pages5–6, `plott1967-page{5,6}.png`, including Eq.(3), Figure2 and the statement of necessary/sufficient conditions as qualified. This comparison does not certify the paper's general constrained-gradient results, second-order conditions or an attainment/convergence theorem. The item explicitly labels its global Euclidean formulation/proof a specialization derived here.
+
+The previous text omitted the one-maximum qualification and therefore falsely excluded, for example, three coincident ideal points in a five-person electorate with two arbitrary other ideals. It also classified global existence by a numerical yolk radius below0.004, and inferred an empty winset from sampled areas. Both inference problems are removed.
+
+## Mathematical and numerical contract
+
+For any finite odd Euclidean electorate in the full plane, q is unbeaten iff every open half-plane through q contains at most(n−1)/2 ideals. A strict improvement requires positive projection in the move direction. Conversely, any strict majority of positive projections admits a sufficiently small winning move. If q is not an ideal, a generic line splits the odd electorate unequally; hence only distinct ideal locations need be considered as equilibrium candidates. When exactly one voter is at q, rotating a generic line forces equal ray multiplicities on opposite sides, giving the paired-ray characterization. Coincident maxima use the general criterion instead of being silently treated as one voter.
+
+The widget offers3/5/7 voters. Every input ideal and q is bounded by[-2,2]² and snaps to an eighth-unit grid. Relative coordinates multiplied by8 are integers of magnitude at most32. Every cross/dot product used for direction decisions is therefore an exact small integer in binary64. For each nonzero relative vector, enumerate both sides of its line and both infinitesimal boundary rotations: strictly-left/right counts plus the same/opposite-ray count. These cover all open angular sectors, including duplicated rays. The maximum is exact, not an angular sample or tolerance.
+
+For a defeating sector, choose integer direction K·normal±vector, with K greater than every relevant absolute dot product; its projection signs match that sector exactly. A step of min-positive-projection/(8·squared-direction-length) strictly improves every supporting voter's distance. A small bounded integer direction search may choose a larger certified step; it does not determine the equilibrium verdict. Actual strict distance comparisons verify the displayed proposal. All distinct ideals are tested, so the global existence verdict does not rely on raster resolution or an arbitrary radius threshold.
+
+The left plot shows all ideals and q, grouping coincident marker labels. The right plot zooms around q and the actual constructed proposal. Both winset rasters use strict Euclidean distance comparisons, exact state cache keys and explicit sampled-pixel language. No positive-area/empty-raster inference is used. Coordinates and all handles are in the core state snapshot, including inactive handles; restoring state does not lose a dragged electorate.
+
+## Evidence
+
+- `node --test tests/verification-polsci-plott.test.mjs`:3/3 groups, `/tmp/atlas-worker-three/polsci-plott-math.log`. All729 three-voter electorates on a3×3 integer grid ×9 status quos against independently enumerated integer directions; symmetric/asymmetric/coincident cases for every offered size;120 seeded grid electorates ×3 sizes ×4 statuses, actual strict witness distances, all distinct candidates, domain validation and complete bounds.
+- `node scripts/check.mjs polsci-4.5 --static`:1 item, zero errors/warnings, `/tmp/atlas-worker-three/polsci-plott-static.log`; syllabus syntax and `git diff --check` pass.
+- `node tests/verification-polsci-plott.mjs`: six1450/430/320×light/dark groups in `/tmp/atlas-worker-three/polsci-plott-native-final.log`. Every electorate/preset, actual ideal and q mouse drags, eighth-grid constraints, both raster functions against separate direct-distance samples, full marker/ring/handle/text/TeX/page containment, exact dragged-state replay and malformed select fallback. Screenshots `/tmp/atlas-worker-three/polsci-plott-{case}-{width}-{theme}.png` plus both panels are inspected directly before handoff.
+- Byte guards preserve all other chapter objects and syllabus rows. Only4.5, its narrow syllabus row, isolated helper/tests and this report change; the old shared yolk helper is preserved for other consumers. No shared runtime or tracked generated data changes.
