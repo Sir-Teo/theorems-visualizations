@@ -33,3 +33,5 @@ Both plots now use the full available width. Independent narrow checks caught a 
 - Byte guards confirm every unowned chapter object/syllabus row and prior arithmetic/reference/test files match parent003e624; `git diff --check` passes.
 
 Early narrow test failures were actual diagonal half-stroke clipping, then test instrumentation errors (`M.mm` was not an exported API; a hand-edited select snapshot needs its registered index/label schema rather than a raw string). These were repaired and the full six-group matrix rerun successfully. No source uncertainty is silently closed here; independent peer acceptance remains required.
+
+Independent acceptance: [coordinator peer report](nla-original-peer.md), exact73fe4dc; original-source, mathematical and fresh native/pixel checks pass.

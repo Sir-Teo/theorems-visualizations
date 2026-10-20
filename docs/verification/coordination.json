@@ -963,6 +963,19 @@
       "commits": [
         "60af20f"
       ]
+    },
+    {
+      "ids": [
+        "nla-3.15"
+      ],
+      "peer": "coordinator independently compared actual1947 source, exact rational arithmetic and fresh native/output evidence",
+      "reports": [
+        "docs/verification/nla-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "73fe4dc"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -975,7 +988,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 34,
+  "currentPendingSourceReviews": 33,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

@@ -17,7 +17,7 @@ The direct error analysis specializes to symmetric nonnegative definite matrices
       tags: ['history', 'matrix-inversion', 'rounding-error'],
       refs: ['Original 1947 §§1.1,2.1–2.3,3.3,4.2,5.1,6.9,7.4,7.8; pp1023–1039,1045,1051–1056,1081–1082,1091–1099'],
       links: { original:'https://doi.org/10.1090/S0002-9904-1947-08909-6', archivedOriginal:'https://web.archive.org/web/20250204013009id_/https://www.ams.org/journals/bull/1947-53-11/S0002-9904-1947-08909-6/S0002-9904-1947-08909-6.pdf' },
-      verify: true,
+      verify: false,
       scope: 'Original full 79-page publisher PDF read through a public archive for the stated historical sections. The visualization is an authored modern floating-point experiment with partial row pivoting, not a reproduction of the paper’s fixed-point algorithm or a test of its conditional bounds. The paper’s ‘definite’ means nonnegative symmetric, with nonsingularity required for inversion. Its general-case Gram reduction and additional §7.8 statistical hypotheses are not run here. Reference inverses, norms and simulated arithmetic use underlying JavaScript doubles; this is not arbitrary precision or an exact reproduction of the historical analysis.',
       viz(v) {
         const M = v.M;
