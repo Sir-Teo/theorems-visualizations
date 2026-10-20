@@ -1,6 +1,6 @@
 import{EXTINCTIONS,DEFAULT_LOSSES,extinctionModel}from'./source-audit-extinction.js';
 export default {
-  num:'3.8',kind:'Phenomenon',name:'Mass extinctions and recoveries',verify:true,
+  num:'3.8',kind:'Phenomenon',name:'Mass extinctions and recoveries',verify:false,
   statement:String.raw`Raup and Sepkoski's 1982 marine-family compilation identified five conspicuous diversity drops. Four extinction episodes were statistically distinct from background in their analysis; the Devonian drop was not, with extinctions spread across several stages. This is a statement about their data and test, not a claim that the Devonian crisis was unimportant.
 
 Barnosky and colleagues' 2011 Table 1 summarizes estimated losses at two different taxonomic levels. The plotted genus percentages and inferred species percentages are distinct quantities. Event durations and fossil sampling also differ; a percentage alone does not specify an extinction rate.`,

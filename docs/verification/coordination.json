@@ -921,6 +921,19 @@
         "9a65687",
         "4cf5c25"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.8"
+      ],
+      "peer": "Worker three independently accepted exact9ac40db after original metric/lag sources, independent80digit/random/RK4 and fresh native/pixel review",
+      "reports": [
+        "docs/verification/bighist-extinction-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9ac40db"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -933,7 +946,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 36,
+  "currentPendingSourceReviews": 35,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

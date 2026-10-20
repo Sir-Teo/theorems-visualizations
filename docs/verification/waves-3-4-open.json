@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 36,
+  "remainingFlags": 35,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "arch": 6,
     "ling": 3,
-    "bighist": 16
+    "bighist": 15
   },
   "queue": [
     {
@@ -368,21 +368,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Cambrian_explosion"
-      }
-    },
-    {
-      "id": "bighist-3.8",
-      "file": "content/bighist/ch03-b.js",
-      "name": "Mass extinctions and recoveries",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Extinction_event"
       }
     },
     {
@@ -1395,7 +1380,8 @@
       "arch-3.12",
       "arch-3.13",
       "ling-3.10",
-      "ling-4.13"
+      "ling-4.13",
+      "bighist-3.8"
     ]
   },
   "additionalFollowups": [
@@ -6449,6 +6435,11 @@
       "id": "ling-4.13",
       "status": "resolved",
       "note": "2026-10-20: Worker two independently accepted exact9a65687 after original Zipf/Mandelbrot, independent tokenizer/finitefit reference and fresh native/output review; docs/verification/ling-wordstats-followup.md."
+    },
+    {
+      "id": "bighist-3.8",
+      "status": "resolved",
+      "note": "2026-10-20: Worker three independently accepted exact9ac40db after original metric/lag sources, independent80digit/random/RK4 and fresh native/pixel review; docs/verification/bighist-extinction-followup.md."
     }
   ]
 }
