@@ -1,0 +1,16 @@
+# REL remaining two inputs — read-only preparation
+
+Reviewed the accepted root content after full checkpoint `be8d100`: REL has 23 published cross-field inputs. REL is physics; LADR and PMA are math. These are proposals only. No dependency or content mutation, source closure, quota acceptance or native check is performed by this preparation.
+
+I read the complete statements and proof ideas of REL3.2, REL3.5, LADR3.21 and PMA5.3. Two direct steps are available without duplicating the accepted inputs:
+
+| Consumer | Target | Actual proof use |
+| --- | --- | --- |
+| REL3.2 Minkowski orthogonality | LADR3.21 | For nonzero A, the functional B ↦ η(A,B) on R⁴ is nonzero because η is nondegenerate. Its range is R, so rank-nullity gives a three-dimensional kernel. This justifies the stated simultaneity **hyperplane**, separate from REL3.1's construction/invariance of the metric. For timelike A, its rest frame identifies that kernel with B⁰=0 and proves all nonzero members spacelike. Do not apply the rank-one argument to A=0; its orthogonal complement is all R⁴. The original planar ratio should be understood only when its denominators are nonzero; the linear equation itself covers axis cases. |
+| REL3.5 Four-acceleration | PMA5.3 | Apply the finite sum and product rules to the constant inertial-coordinate expression (u⁰)²−Σ(uʲ)²=c². Differentiability in proper time gives 2η(u,a)=0, with no coordinate-dependent metric derivative. This is distinct from REL3.4's proper-time chain rule. A curved or non-inertial coordinate metric needs additional terms. |
+
+The written LADR3.21 proof extends a basis of the kernel, maps the remaining basis vectors to a basis of the range and counts dimensions; the hypotheses hold for the finite-dimensional nonzero functional above. PMA5.3 proves the product increment identity and limit passage for differentiable real functions; each proper-time component satisfies those hypotheses on a compact local subinterval. Neither is a generic analogy or a replacement for the existing REL input.
+
+An inherited bounded correctness issue must be addressed if REL3.5 is authored: its proper acceleration is a nonnegative magnitude, so for signed lab acceleration the scalar formula is **γ³ |dv/dt|**, not γ³ dv/dt. The signed component formulas remain correct in c=1 units. Its idea also says acceleration is spacelike without the zero exception and removes an absolute value when taking a square root. A separate literal correction should retain the zero case and distinguish the signed acceleration component from its magnitude. Test negative, positive and zero lab acceleration, not only the current positive slider values. This does not resolve any historical/source flag.
+
+If both inputs are implemented and independently accepted, REL would reach 25 written inputs and cease to contribute its two-edge shortfall. A producer must preserve all 57 full objects/functions/helpers/flags and all raw dependency lists, synchronize only the two touched rows, guard all bounded exceptions explicitly, derive independent math including rank-one/zero-functional and signed-acceleration witnesses, and run strict/static plus fresh 320px both-theme full statement/scope/proof checks at the actual 253px field width with personal pixel inspection. No automatic credit is made here.
