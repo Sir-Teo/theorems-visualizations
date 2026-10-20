@@ -1,0 +1,233 @@
+{
+  "baseline": "48890db",
+  "entries": [
+    {
+      "num": "1.4",
+      "file": "content/ecol/ch01.js",
+      "added": [
+        "pma-8.6",
+        "opt-1.6"
+      ],
+      "expectedDeps": [
+        "pma-8.6",
+        "opt-1.6"
+      ],
+      "append": "For positive mass and trait values, the inverse-exponential identities of pma 8.6 give $\\log(aM^b)=\\log a+b\\log M$. Fitting the resulting coordinates uses the line case of opt 1.6: the design rows are $(1,\\log M_i)$, and the normal equations make the residual orthogonal to both columns. Distinct log masses give full column rank and a unique fitted intercept and slope. This is least squares in log trait, not least squares in the original trait; neither the normal equations nor the log identity proves that an empirical biological exponent is universal."
+    },
+    {
+      "num": "1.6",
+      "file": "content/ecol/ch01.js",
+      "added": [
+        "pma-3.26"
+      ],
+      "expectedDeps": [
+        "ecol-1.5",
+        "mathbio-10.11",
+        "pma-3.26"
+      ],
+      "append": "The finite-sum identity in the proof of pma 3.26 supplies the network volume. With terminal volume fixed, it is proportional to $N_c\\sum_{j=0}^N q^{-j}$, where $q=n\\beta^2\\gamma$. For $0<q<1$, reverse the sum to obtain $N_c q^{-N}(1-q^{N+1})/(1-q)$. With the chosen WBE ratios, $q=n^{-1/3}$ and $N_c=n^N$, its leading growth is $N_c^{4/3}$. At $q=1$ the exact sum is $N+1$, not a convergent infinite geometric series. The three-quarter exponent concerns the stated large-network limit and the separate blood-volume/body-mass assumption."
+    },
+    {
+      "num": "2.1",
+      "file": "content/ecol/ch02.js",
+      "added": [
+        "prob-1.6.1"
+      ],
+      "expectedDeps": [
+        "prob-1.6.1"
+      ],
+      "append": "Let $I_j$ indicate that the jth marked animal is included in the uniform second sample. Each has probability $n/N$, so linearity of expectation (prob 1.6.1) gives $E m=E\\sum_{j=1}^M I_j=Mn/N$. Sampling without replacement makes these indicators dependent; linearity does not require independence. Equating the observed count to this mean gives the displayed moment estimator when $m>0$. It does not make its reciprocal unbiased, and a zero recapture count does not supply a finite Lincoln–Petersen estimate."
+    },
+    {
+      "num": "2.2",
+      "file": "content/ecol/ch02.js",
+      "added": [
+        "pma-6.21"
+      ],
+      "expectedDeps": [
+        "mathbio-4.1",
+        "pma-6.21"
+      ],
+      "append": "For the Weibull example write the cumulative hazard as $H(x)=a x^c$ with $a,c>0$. On any interval $[\\epsilon,x]$ with $\\epsilon>0$, the fundamental theorem pma 6.21 evaluates the integral of $ac u^{c-1}$ as $a(x^c-\\epsilon^c)$. Taking $\\epsilon$ down to zero gives $H(x)$ even when the hazard diverges at the origin for $c<1$. Thus $\\log l_x=-a x^c$, whose derivative at positive age is minus the hazard. The integral at zero is then improper, not an application of a bounded-integrand theorem across the singular endpoint."
+    },
+    {
+      "num": "2.4",
+      "file": "content/ecol/ch02.js",
+      "added": [
+        "pma-3.26"
+      ],
+      "expectedDeps": [
+        "ecol-2.2",
+        "mathbio-4.6",
+        "pma-3.26"
+      ],
+      "append": "The perennial Euler–Lotka sum is $(\\sigma b/\\lambda)\\sum_{j\\ge0}(s/\\lambda)^j$. The geometric-series theorem pma 3.26 applies only for $0\\le s/\\lambda<1$, yielding $\\sigma b/(\\lambda-s)$. With positive juvenile survival and fecundity the resulting root $\\lambda=s+\\sigma b$ indeed satisfies $\\lambda>s$. At or below that convergence boundary the infinite sum cannot be replaced by the rational expression. The picture's finite 300-age comparison is a truncation of this infinite-life calculation."
+    },
+    {
+      "num": "2.9",
+      "file": "content/ecol/ch02-b.js",
+      "added": [
+        "prob-2.2.1"
+      ],
+      "expectedDeps": [
+        "ecol-2.6",
+        "prob-2.2.1"
+      ],
+      "append": "Use the centered-product expansion in the proof of prob 2.2.1, retaining covariance terms rather than assuming stages are uncorrelated. With finite second moments and $K=\\sum_i k_i$, linearity gives $\\operatorname{Cov}(k_i,K)=\\sum_j\\operatorname{Cov}(k_i,k_j)$. Summing over i gives $\\operatorname{Var}(K)$, so the slopes sum to one when that variance is positive; the same identity holds for consistently centered sample covariances. Individual slopes can be negative or exceed one when stages covary. They are regression contributions, not independent causal shares."
+    },
+    {
+      "num": "2.10",
+      "file": "content/ecol/ch02-b.js",
+      "added": [
+        "prob-1.6.13"
+      ],
+      "expectedDeps": [
+        "prob-1.6.13"
+      ],
+      "append": "The Poisson reference line uses the factorial-moment calculation of prob 1.6.13: $E X=\\lambda$ and $E[X(X-1)]=\\lambda^2$ imply $\\operatorname{Var}(X)=\\lambda$. This fixes the theoretical variance–mean baseline, not an equality between every finite sample mean and sample variance. The model adds mixing of the Poisson intensity for aggregation; the implemented count helper uses a rounded normal approximation at intensities at least 40. Those finite-sample and numerical choices are distinct from the exact Poisson moment identity."
+    },
+    {
+      "num": "2.11",
+      "file": "content/ecol/ch02-b.js",
+      "added": [
+        "prob-2.4.1"
+      ],
+      "expectedDeps": [
+        "rca-3.3",
+        "mathbio-2.1",
+        "prob-2.4.1"
+      ],
+      "append": "With independent, identically distributed yearly environments and positive factors satisfying $E|\\log\\lambda_t|<\\infty$, the strong law prob 2.4.1 applies to $X_t=\\log\\lambda_t$. Since $\\log(N_t/N_0)=\\sum_{j<t}X_j$, the per-year log growth converges almost surely to $E\\log\\lambda$. For the finite good/bad-year distribution these hypotheses hold whenever both factors are positive. At $g=1$ with zero bad-year yield the logarithm is not integrable: a bad year instead kills the population, and a positive bad-year probability makes such a year occur eventually almost surely. The finite simulation is an illustration of these distinct cases."
+    },
+    {
+      "num": "2.12",
+      "file": "content/ecol/ch02-b.js",
+      "added": [
+        "stoch-2.4"
+      ],
+      "expectedDeps": [
+        "mathbio-11.2",
+        "mathbio-11.4",
+        "stoch-2.4"
+      ],
+      "append": "For positive birth and death rates the embedded jump chain steps up with probability $p=b/(b+d)$ and down otherwise. Apply the finite-barrier ruin formula and its fair case in stoch 2.4, then send the upper barrier to infinity. For $b>d$ this gives hitting-zero probability $(d/b)^{N_0}$; for $b<d$ and for the fair case $b=d>0$ the limit is one. The holding times do not change which state is hit in this nonexplosive linear birth–death process. Independent founder lineages give the same power formula; this argument does not cover density dependence or a common environmental shock."
+    },
+    {
+      "num": "2.13",
+      "file": "content/ecol/ch02-b.js",
+      "added": [
+        "prob-2.2.3"
+      ],
+      "expectedDeps": [
+        "ecol-2.11",
+        "ecol-2.12",
+        "prob-2.2.3"
+      ],
+      "append": "At a fixed horizon let $I_j$ indicate whether simulated run j has crossed the threshold. Under independent replicate runs these are bounded Bernoulli variables with mean equal to the crossing probability under the chosen simulation law. The mean-square estimate in prob 2.2.3 gives $E(\\bar I-p)^2=p(1-p)/R\\le1/(4R)$ for R runs. This explains why more replicates reduce Monte Carlo error. It does not reduce uncertain input parameters, numerical approximation of offspring draws, or disagreement between the chosen population model and a real population."
+    },
+    {
+      "num": "3.2",
+      "file": "content/ecol/ch03.js",
+      "added": [
+        "ode-1.7"
+      ],
+      "expectedDeps": [
+        "ecol-3.1",
+        "ode-1.7"
+      ],
+      "append": "The scalar field $f(p)=p(c-e-cp)$ is continuously differentiable and leaves the physical interval $[0,1]$ invariant. The phase-line theorem ode 1.7 makes each bounded trajectory between equilibria monotone and forces its limit to be a zero of f. Its sign points toward $1-e/c$ from both sides when $c>e$ and $p(0)>0$; for $c\\le e$ it points toward zero. The exactly empty state remains empty even above threshold, and deterministic attraction does not prevent extinction in a finite patch process."
+    },
+    {
+      "num": "3.4",
+      "file": "content/ecol/ch03.js",
+      "added": [
+        "ode-1.8"
+      ],
+      "expectedDeps": [
+        "ecol-3.3",
+        "ode-1.8"
+      ],
+      "append": "For $f(p)=p(r-cp)$, the derivative is r at zero and $-r$ at the positive equilibrium $r/c$. Away from $r=0$, the attracting equilibrium therefore has linearized rate $-|r|$, and ode 1.8 supplies the local exponential relaxation scale $1/|r|$. At the critical parameter the theorem's nonzero-derivative test no longer applies: the exact positive solution is $p(t)=p(0)/(1+cp(0)t)$, with algebraic rather than exponential decay. Critical slowing describes the approach to this nonhyperbolic case, not a finite exponential rate at the threshold itself."
+    },
+    {
+      "num": "3.6",
+      "file": "content/ecol/ch03.js",
+      "added": [
+        "ode-1.4"
+      ],
+      "expectedDeps": [
+        "mathbio-1.2",
+        "ode-1.4"
+      ],
+      "append": "For a continuous source trajectory, the sink equation is linear with positive loss d. The integrating-factor theorem ode 1.4 gives $N_2(t)=e^{-dt}N_2(0)+m\\int_0^t e^{-d(t-s)}N_1(s)\\,ds$. If the source tends to a constant, the exponentially weighted input tends to $mN_1^*/d$; after cutting the link the integral term vanishes and only the homogeneous decay remains. This uses the full time-dependent source, rather than substituting its equilibrium value throughout a transient."
+    },
+    {
+      "num": "3.7",
+      "file": "content/ecol/ch03.js",
+      "added": [
+        "prob-5.5.1a"
+      ],
+      "expectedDeps": [
+        "ecol-3.1",
+        "prob-5.5.1a"
+      ],
+      "append": "Freeze the neighbours' occupancies when evaluating the displayed incidence approximation. The resulting two-state transition matrix has empty-to-occupied probability C and occupied-to-empty probability $E(1-C)$. Solving the stationary-distribution equation $\\pi P=\\pi$ of prob 5.5.1a gives $J=C/(C+E-CE)$; equivalently the balance equation is $(1-J)C=J E(1-C)$. The denominator must be positive; if both transitions vanish every distribution is stationary. In the coupled stochastic landscape the neighbours fluctuate, so this frozen-input calculation is not an exact stationary marginal of the entire interacting network."
+    },
+    {
+      "num": "4.4",
+      "file": "content/ecol/ch04.js",
+      "added": [
+        "ladr-9.50",
+        "ode-3.8"
+      ],
+      "expectedDeps": [
+        "ecol-4.3",
+        "ladr-9.50",
+        "ode-3.8"
+      ],
+      "append": "With the consumption directions as columns of C, resource balance requires $CN=S-R^*$. Distinct directions here give $\\det C=\\sin(\\theta_B-\\theta_A)\\ne0$; ladr 9.50 then supplies an inverse and a unique formal abundance vector. Strict positivity is an additional feasibility condition. The planar classification ode 3.8 applies to the reduced linearized matrix $-DC$, with positive diagonal $D=\\operatorname{diag}(N_Aq_A,N_Bq_B)$. Its trace is negative and its determinant has the sign of $\\det C$, giving attracting linearized modes or a saddle respectively. Equal directions are singular and must be treated separately; the calculation is local at the smooth unique-limiter crossing."
+    },
+    {
+      "num": "4.7",
+      "file": "content/ecol/ch04-b.js",
+      "added": [
+        "ladr-7.62",
+        "ladr-3.84"
+      ],
+      "expectedDeps": [
+        "mathbio-3.21",
+        "ladr-7.62",
+        "ladr-3.84"
+      ],
+      "append": "For independent equal-norm utilization curves, the overlap matrix is symmetric positive definite in the sense of ladr 7.62: its quadratic form is the squared integral norm of a nonzero linear combination of the curves, divided by their common squared norm. At a strictly positive equilibrium set $C=D^{1/2}$. The change-of-basis identity ladr 3.84 rewrites $J=-D\\alpha$ as $C^{-1}JC=-D^{1/2}\\alpha D^{1/2}$. Its quadratic form is strictly negative for every nonzero vector, so its eigenvalues and those of J are negative. This local stability argument does not imply positivity of the formal equilibrium or turn an ill-conditioned numerical solve into evidence of exclusion."
+    },
+    {
+      "num": "4.10",
+      "file": "content/ecol/ch04-b.js",
+      "added": [
+        "pma-5.15",
+        "prob-2.2.1"
+      ],
+      "expectedDeps": [
+        "ecol-4.9",
+        "pma-5.15",
+        "prob-2.2.1"
+      ],
+      "append": "The centered-product expansion in prob 2.2.1, with the covariance term retained, gives $\\operatorname{Var}(\\log B_1-\\log B_2)=2\\sigma^2(1-\\rho)$; the two species need not be independent within a year. For $0<\\delta<1$, apply Taylor's theorem pma 5.15 to $f(x)=\\log(1-\\delta+\\delta e^x)$ at zero: $f'(0)=\\delta$ and $f''(0)=\\delta(1-\\delta)$. Its third derivative is uniformly bounded, so the expected remainder is bounded by a constant times $E|X|^3$. The Gaussian law has that moment, justifying the stated local second-order expansion as mean and variance shrink. At $\\delta=1$ the exact function is x; the expansion is not a global coexistence criterion."
+    },
+    {
+      "num": "4.12",
+      "file": "content/ecol/ch04-b.js",
+      "added": [
+        "ode-3.9"
+      ],
+      "expectedDeps": [
+        "ecol-3.1",
+        "ecol-4.9",
+        "ode-3.9"
+      ],
+      "append": "At a strictly positive coexistence equilibrium the two-rank system has a lower-triangular Jacobian: the superior species is unaffected by the inferior. Its diagonal entries reduce to $-c_1p_1^*$ and $-c_2p_2^*$, both negative. The linear-system criterion ode 3.9 therefore makes every perturbation mode of this Jacobian decay; together with smoothness this supplies the local stability test at the interior equilibrium. At invasion boundaries one entry is zero and that strict test is unavailable. It does not certify that a finite simulated trajectory has equilibrated or that an absent species appears without introduction."
+    }
+  ],
+  "rowRepairs": {}
+}
