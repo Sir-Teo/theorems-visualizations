@@ -1,0 +1,147 @@
+{
+  "candidate": "acf697eda8a235710428df17c14e431d3183d655",
+  "archive": "/tmp/atlas-new-map-failure-peer/archive",
+  "rawOrigin": "readPixels bottom-left origin, RGBA8 bytes; PNGs vertically flipped only; white-display variants composited for viewing",
+  "files": {
+    "/tmp/atlas-new-map-failure-peer/capture.log": {
+      "bytes": 802,
+      "sha256": "542134bc0eeb43f4f78ebae93633e5e6e3535effe6c42c841f22dfaf92f064d8"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked.log": {
+      "bytes": 9177,
+      "sha256": "63ab00f126ccd14b0e7b89c31e1b3b9d0c7a9a9657817919ce94232080df1e35"
+    },
+    "/tmp/atlas-new-map-failure-peer/offline-images.log": {
+      "bytes": 467,
+      "sha256": "2da0a5ee9e21f008059037a844fcd66e15345613f10be2198f914d1fb2ccc7a0"
+    },
+    "/tmp/atlas-new-map-failure-peer/evidence/read-only-audit.json": {
+      "bytes": 407,
+      "sha256": "d71054ebbd52c1e389ec369b24034c024fff99ddfd243309600b85a32bbf9b07"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-C2-actual-crop.png": {
+      "bytes": 14197550,
+      "sha256": "a2b7ad16a4c0e91c6c82167ecc215a7f498432bbf1251e161bf6be1775f73c39"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-C2-difference-crop.png": {
+      "bytes": 65067,
+      "sha256": "ff874879d6e6b42e71db2802c8e759bb9020301a5b40d5b573bbe6475d187484"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-C2-difference-x4.png": {
+      "bytes": 111623,
+      "sha256": "38e542481b2d1b91af60c6fce458156c4bab9f5f1f7ebeae06fceffe9d91fd26"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-C2-reference-crop.png": {
+      "bytes": 14210621,
+      "sha256": "c4681ca743360c3de70ee637373b7c8b64649ecce60eb61efed320500f59dfe1"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-O1-actual-crop.png": {
+      "bytes": 14197550,
+      "sha256": "a2b7ad16a4c0e91c6c82167ecc215a7f498432bbf1251e161bf6be1775f73c39"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-O1-difference-crop.png": {
+      "bytes": 65067,
+      "sha256": "ff874879d6e6b42e71db2802c8e759bb9020301a5b40d5b573bbe6475d187484"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-O1-difference-x4.png": {
+      "bytes": 111623,
+      "sha256": "38e542481b2d1b91af60c6fce458156c4bab9f5f1f7ebeae06fceffe9d91fd26"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-O1-first-difference-region.png": {
+      "bytes": 663,
+      "sha256": "7fe4cc11803fa3bfedb0dae9e044799716ab891bf5d697d387a69ff546d37cba"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-O1-reference-crop.png": {
+      "bytes": 14210621,
+      "sha256": "c4681ca743360c3de70ee637373b7c8b64649ecce60eb61efed320500f59dfe1"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-exact-RGBA.png": {
+      "bytes": 16715582,
+      "sha256": "ab4e993e7503752d5712998ed9308dcf730c2f637fc9fa9ffa73d830c7f6fdbd"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-first-difference-region.png": {
+      "bytes": 53608,
+      "sha256": "ee2254ccfd4fc80d87e83cc531bef1d70570def0ea3373be90d7c9903309c03b"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1-white-display.png": {
+      "bytes": 14158004,
+      "sha256": "f4209e8a04fe3ff61b7473e7c0765c0bd8176b6a9fd71c060dd883c3b0af2e56"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C1.rgba": {
+      "bytes": 128532480,
+      "sha256": "08fd6a441f0f6562e958d18ef88a4765e1f6a59ad7a8f5553faa9826c2b15907"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C2-O2-difference-x4.png": {
+      "bytes": 93646,
+      "sha256": "d083096684ce042a1a84bf066d6b763acaf727ab697394930f5a5c9d1da6cd8a"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C2-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C2-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/C2.rgba": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O1-O2-difference-x4.png": {
+      "bytes": 93646,
+      "sha256": "d083096684ce042a1a84bf066d6b763acaf727ab697394930f5a5c9d1da6cd8a"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O1-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O1-first-difference-region.png": {
+      "bytes": 53632,
+      "sha256": "943c8d7da37d85d77ef970ea01803b72739aa2c60bdaf66f0334ff4ad8a3f80a"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O1-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O1.rgba": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O2-exact-RGBA.png": {
+      "bytes": 16729428,
+      "sha256": "aa15376d7a3f2acc883b49da2c5311bc12180af45f6dc704eb435d4ef4cbae5b"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O2-white-display.png": {
+      "bytes": 14169464,
+      "sha256": "6d428727e9e0835e0e2ce21b4fcbb4d461679ef1beea901bb60f4aecc92159c5"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/O2.rgba": {
+      "bytes": 128532480,
+      "sha256": "2433e75ca074e653e258bb8597675b245461aeae3bbeabb2461bae56025b717d"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/capture.json": {
+      "bytes": 726921,
+      "sha256": "b8631aaad7510272d784fe574b29df5e7b4d0a83afe0989ed64d2fc77399278b"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/offline-manifest.json": {
+      "bytes": 3535,
+      "sha256": "81d0a798d42b142ba1f60b3a2c43145d07b93892765bc4de779cd98883793d94"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/preceding-selected-Canvas.png": {
+      "bytes": 7823633,
+      "sha256": "d34676345d21d517cc594c18731a56154263f7cdb141192ec896bd4f630f2775"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/preceding-selected-third-redraw.png": {
+      "bytes": 11720155,
+      "sha256": "645be0675c4ca78e1326dbfe575e04221ffeb86e3a9c351c8c4d5badb7ebcb72"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/preceding-unselected-Canvas.png": {
+      "bytes": 9476776,
+      "sha256": "7567f5964ff9738e13366159cfa012237ac3fbeac5c08b664cbe6abbfbff18c6"
+    },
+    "/tmp/atlas-new-map-failure-peer/capture-chunked/preceding-unselected-third-redraw.png": {
+      "bytes": 14524113,
+      "sha256": "c13f5e2128d0ba58d4f291faf5bfe41e9a483b9c1e0fac84229910c73f7b8cdd"
+    }
+  }
+}
