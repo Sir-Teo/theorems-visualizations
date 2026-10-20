@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 146,
+  "remainingFlags": 144,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 9,
+    "game": 7,
     "psych": 11,
     "soc": 14,
     "polsci": 9,
@@ -269,37 +269,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Chain_store_paradox"
-      }
-    },
-    {
-      "id": "game-4.9",
-      "file": "content/game/ch04-b.js",
-      "name": "Imperfect information: information sets and behaviour strategies",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a76.1",
-        "Osborne \u00a710.1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Information_set_(game_theory)"
-      }
-    },
-    {
-      "id": "game-4.10",
-      "file": "content/game/ch04-b.js",
-      "name": "Kuhn\u2019s theorem: behaviour and mixed strategies under perfect recall",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a76.2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Perfect_recall_(game_theory)"
       }
     },
     {
@@ -3093,7 +3062,9 @@
       "art-4.1",
       "art-4.2",
       "psych-4.3",
-      "psych-4.5"
+      "psych-4.5",
+      "game-4.9",
+      "game-4.10"
     ]
   },
   "additionalFollowups": [
@@ -7524,6 +7495,18 @@
       "status": "source-review-pending",
       "report": "docs/verification/psych-lateral-inhibition-open.md",
       "note": "Newly confirmed wrong algebraic sign, nonconvergent offered recurrent settings and visually clipped negative outputs. Exact200-step reproduction records residuals; no completed source/native acceptance claimed."
+    },
+    {
+      "id": "game-4.9",
+      "status": "resolved",
+      "report": "docs/verification/game-information-followup.md",
+      "note": "Actual OR/Bonanno definitions and finite-expectation/Nash prerequisites; complete plans and independent behavioral constraints, correct poker strict/indifferent best replies; root sixmath/eightnative/static2/0/0 and exact neighbor guards pass."
+    },
+    {
+      "id": "game-4.10",
+      "status": "resolved",
+      "report": "docs/verification/game-information-followup.md",
+      "note": "Bounded actual-textbook-backed theorem; full conditional/zero-prefix chain-rule and pre-sampling proof, allterminal distributions and no-repeated-set forgotten-action determinant; root sixmath/eightnative/static pass. Unacquired1953original is not an accepted historical-paper audit; unsupported originalpriority credit removed."
     }
   ]
 }

@@ -2,6 +2,7 @@
 import {
   idx, leaf, dec, isLeaf, prep, playBeh, infoSets, pureStrategies, stratName, drawTree, treeView, nmz, kuhnBehaviour, mixedOutcome,
 } from './ch04.shared.js';
+import { informationNumber, informationProfile, informationRecallModel, informationForgetModel, informationPlanText, drawInformationTree, drawInformationProbabilities } from './information-audit.js';
 import { assertUltimatumAlphaTick, centipedeModel, ultimatumModel } from './source-audit-centipede-ultimatum.js';
 
 // ---------------------------------------------------------------- chain store (reputation) helpers
@@ -149,114 +150,61 @@ Rejection has utility zero. With acceptance on indifference, accept exactly when
     },
     // ------------------------------------------------------------------ 4.9
     {
-      num: '4.9',
-      kind: 'Definition',
-      name: 'Imperfect information: information sets and behaviour strategies',
-      statement: String.raw`In an extensive game with **imperfect information** the decision nodes of a player are partitioned into **information sets**: the player knows only which set she is in, so the same actions must be available at all of its nodes and her choice cannot depend on which node it is. Chance moves are nodes of a nature player with given probabilities. A **pure strategy** chooses one action in every information set, a **mixed strategy** is a probability distribution over pure strategies, and a **behaviour strategy** chooses, independently in each information set, a probability distribution over its actions. A profile of behaviour strategies fixes the probability of every leaf (product of the probabilities along its path) and hence expected payoffs. The game has **perfect recall** if no player forgets what she knew or did earlier.`,
-      idea: String.raw`Information sets are the tree’s way of saying “I cannot tell these histories apart”. They destroy backward induction in the form of game-4.2, since a mover at a set cannot condition on the node. A behaviour strategy needs one probability per action per information set, far fewer numbers than a mixed strategy over exponentially many pure strategies; Kuhn’s theorem (game-4.10) says that under perfect recall nothing is lost by using them. Every simultaneous game is an imperfect-information game: the second mover’s two nodes form one information set.`,
-      caption: String.raw`Pick a game and set the behaviour strategies with the sliders (each is the probability of the first listed action at the information set of that letter). Dashed bars join nodes of one information set. Edge labels show the probabilities you chose, grey numbers under the leaves the probability of reaching them. In the poker game, the button “equilibrium” sets the strategies that make both players indifferent; try deviating from them and watch the value move.`,
-      credit: 'Kuhn, 1950–53',
-      deps: ['game-4.1', 'game-2.1'],
-      refs: ['MSZ §6.1', 'Osborne §10.1'],
-      tags: ['information set', 'behaviour strategy'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Information_set_(game_theory)' },
-      verify: true,
+      num: '4.9', kind: 'Definition',
+      name: 'Information sets and behaviour strategies',
+      statement: String.raw`A **finite extensive game** is a finite rooted tree with a nonempty finite action set at each decision, terminal payoffs, and fixed probability distributions at chance nodes (zero probabilities are allowed). Each player's decision nodes are partitioned into **information sets**; nodes in a set have the same available actions, and the player's action cannot depend on which of those nodes occurred. Here no information set contains a node and its descendant. A **pure strategy** specifies an action at every information set, including unreached ones. A **mixed strategy** is a distribution over these complete plans. A **behaviour strategy** gives one action distribution at each information set, with independent draws at its different sets. Different players randomize independently. Multiplying the chance and behaviour probabilities on each path gives every terminal history's probability and hence expected payoffs. **Perfect recall** means that at any two nodes of one of a player's information sets, her ordered sequence of earlier information sets and own actions is identical.`,
+      idea: String.raw`The complete plans of game-4.1 now choose at information sets, not separately at indistinguishable nodes. Conditional randomization therefore obeys information constraints: in Matching Pennies, player 2 cannot see player 1's action; in the authored poker game, player 2 cannot see the card. Finite expectation and independent randomization between players come from game-2.1; coordinates of a single mixed plan need not be independent. At the poker preset, high always bets, low bets with probability $1/3$, and player 2 calls with probability $2/3$. High strictly prefers betting: $1+2/3>1$. Low is indifferent: $1-3(2/3)=-1$. Conditional on a bet, high has probability $3/4$, so call and fold both give player 2 payoff $-1$. These whole-plan best replies establish Nash equilibrium by game-1.3; linearity rules out a profitable mixed deviation.`,
+      caption: String.raw`Choose either authored game and vary every local action probability continuously. Dashed connectors mark shared information sets; $z_j$ identifies a distinct terminal history even when payoffs coincide. The readout retains every probability, complete pure deviation, and its payoff. “Equilibrium preset” sets an analytically justified profile; the numerical regret is a separate floating-point check.`,
+      credit: 'Definitions: Osborne & Rubinstein (1994); Bonanno (2024). Authored finite examples.',
+      scope: 'Finite trees and independently randomized behaviour profiles; the displayed examples have perfect recall. These are teaching games, not empirical poker models.',
+      deps: ['game-4.1', 'game-2.1', 'game-1.3'],
+      refs: ['Osborne & Rubinstein (1994), Definitions 200.1, 203.1, 203.3, 212.1', 'Bonanno (2024), Definitions 4.1.1–4.1.2 and 7.1.1'],
+      tags: ['information set', 'behaviour strategy'], verify: false,
       viz(v) {
-        const MK = {
-          mp: () => dec(1, [['Heads', dec(2, [['Heads', leaf(1, -1)], ['Tails', leaf(-1, 1)]], 'B')], ['Tails', dec(2, [['Heads', leaf(-1, 1)], ['Tails', leaf(1, -1)]], 'B')]], 'A'),
-          poker: () => dec(0, [['High', dec(1, [['Bet', dec(2, [['Call', leaf(2, -2)], ['Fold', leaf(1, -1)]], 'C')], ['Check', leaf(1, -1)]], 'A'), 0.5], ['Low', dec(1, [['Bet', dec(2, [['Call', leaf(-2, 2)], ['Fold', leaf(1, -1)]], 'C')], ['Check', leaf(-1, 1)]], 'B'), 0.5]]),
-        };
-        let key = 'mp', P = prep(MK.mp());
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 360, title: 'game tree with information sets' });
-        const sl = ['A', 'B', 'C'].map((k, i) => v.slider(`information set ${k}: probability of the first action`, 0, 1, 0.5, { step: 0.05 }));
-        const setup = () => { P = prep(MK[key]()); sl.forEach((s, i) => { s.el.hidden = !infoSets(P, 1).concat(infoSets(P, 2)).some((I) => I.key === 'ABC'[i]); }); };
-        v.select('game', [{ value: 'mp', label: 'Matching Pennies as a tree' }, { value: 'poker', label: 'one-card poker' }], key, { onChange: (k) => { key = k; setup(); } });
-        v.button('equilibrium', () => { if (key === 'mp') sl.forEach((s) => s.set(0.5)); else { sl[0].set(1); sl[1].set(1 / 3); sl[2].set(2 / 3); } });
-        setup();
-        let info;
-        v.render(() => {
-          const beh = {};
-          [...infoSets(P, 1), ...infoSets(P, 2)].forEach((I) => { const p = sl['ABC'.indexOf(I.key)].value; beh[I.key] = [p, 1 - p]; });
-          const r = playBeh(P, beh), vw = treeView(P); T.setView(vw.x, vw.y);
-          drawTree(T, P, {
-            edgeLabel: (e) => (e.from.p === 0 ? `${e.a} ${e.pr}` : `${e.a} ${v.fix(beh[e.from.key][e.i], 2)}`),
-            leafNote: (n) => `prob ${v.fix(r.leafP.get(n) || 0, 3)}`,
-            edgeWidth: (e) => (e.from.p === 0 ? 2 : 1.4 + 4 * (beh[e.from.key][e.i] || 0)),
-            nodeTag: (n) => (n.p === 0 ? 'nature' : `${n.p} · ${n.key}`),
-          });
-          info = { r, beh };
-        });
-        v.readout(() => {
-          const { r } = info, S1 = pureStrategies(P, 1).length, S2 = pureStrategies(P, 2).length;
-          const nb = infoSets(P, 1).concat(infoSets(P, 2)).length;
-          return `expected payoffs $(${nmz(r.u[0])},\\,${nmz(r.u[1])})$ = sum over leaves of (reach probability) × (payoff)\nplayer 1 has ${S1} pure strategies, player 2 has ${S2}; a behaviour profile needs only ${nb} numbers (one per information set of this tree)`;
-        });
+        const T=v.stage({axes:false,height:380,title:'Every information set and terminal history'});
+        const B=v.stage({axes:false,height:260,title:'Terminal probabilities (blue)'});
+        const key=v.select('authored game',[{value:'pennies',label:'Matching Pennies'},{value:'poker',label:'two-type poker'}],'pennies');
+        const controls=['A','B','C'].map(I=>v.slider(`first action at information set ${I}`,0,1,.5,{step:'any',decimals:6,fmt:informationNumber}));
+        v.button('equilibrium preset',()=>{[key.value==='pennies'?.5:1,key.value==='pennies'?.5:1/3,key.value==='pennies'?.5:2/3].forEach((x,i)=>controls[i].set(x));});
+        let model;
+        v.render(()=>{model=informationProfile(key.value,...controls.map(c=>c.value));controls[2].el.hidden=key.value==='pennies';drawInformationTree(T,model.P,model.outcome.reach);drawInformationProbabilities(B,[{color:'blue',values:model.outcome.probabilities}]);});
+        v.readout(()=>{const m=model,f=informationNumber;return [
+          `Information constraints: ${m.P.information.map(I=>`${I.player}·${I.key}: {${I.actions.join(',')}} at ${I.nodes.length} node(s), first-action probability ${f(m.behavior[I.key][I.actions[0]])}`).join('; ')}`,
+          ...m.P.leaves.map((id,j)=>`z${j+1}: ${m.P.nodes[id].history.join(' → ')}; probability ${f(m.outcome.probabilities[j])}; payoff (${m.P.nodes[id].payoff.join(', ')})`),
+          `Expected payoff (${m.outcome.payoff.map(f).join(', ')}). Every complete pure deviation:`,
+          ...m.deviations.map((ds,i)=>`Player ${i+1}: ${ds.map(d=>`${informationPlanText(d.plan)} ⇒ ${f(d.payoff)}`).join('; ')}. Regret ${m.regrets[i].toExponential(2)} (numerical tolerance 1e-12).`),
+          `Perfect-recall own-history audit: both players ${m.recall.every(r=>r.ok)?'pass':'fail'}. Complete plans include off-path choices.`,
+        ].join('\n');});
       },
     },
     // ------------------------------------------------------------------ 4.10
     {
-      num: '4.10',
-      kind: 'Theorem',
-      name: 'Kuhn’s theorem: behaviour and mixed strategies under perfect recall',
-      statement: String.raw`In a finite extensive game in which a player has **perfect recall**, every mixed strategy of that player is **outcome-equivalent** to a behaviour strategy: whatever the others do, both induce the same probability distribution over leaves. Conversely every behaviour strategy is equivalent to a mixed one. Hence in games of perfect recall one may restrict to behaviour strategies without changing the set of achievable outcome distributions or the equilibria payoffs. Without perfect recall this fails.`,
-      idea: String.raw`Given a mixed strategy $\mu$, define the behaviour probability of action $a$ at an information set $I$ as the probability, under $\mu$, of choosing $a$ conditional on the player’s own earlier choices on the way to $I$ (the same for every node of $I$, by perfect recall). Because the player’s own choices on the path to a leaf are independent coordinates of a pure strategy, the probability of a leaf under $\mu$ factorises into these conditional probabilities times the others’ moves and nature’s, which is exactly the behaviour-strategy probability. With imperfect recall, as for the absent-minded driver, one information set contains two nodes on the same path and the factorisation breaks.`,
-      caption: String.raw`Left, “perfect recall”: player 1 mixes over her 16 pure strategies with random weights (re-roll with the button, or change how concentrated they are). Kuhn’s formula turns the mixture into probabilities on player 1’s edges (shown: the probability of the first action, $a$ or $U$, at each of her information sets, and of the second one on the other edge). The bars compare the leaf distribution of the original mixture with the distribution of the behaviour strategy, and they agree to machine precision. Right, “absent-minded driver”: exit at the first or second junction without remembering which. Mixed strategies give at most payoff $1$, behaviour strategies reach $4/3$ at $p=2/3$.`,
-      credit: 'Kuhn, 1953 (absent-minded driver: Piccione & Rubinstein, 1997)',
-      scope: String.raw`Finite games with perfect recall; the theorem concerns one player’s strategies at a time and holds for any behaviour of the others.`,
+      num: '4.10', kind: 'Theorem',
+      name: 'Kuhn: realization equivalence with perfect recall',
+      statement: String.raw`In a finite extensive game, fix a player with **perfect recall** as defined in game-4.9. Every mixed strategy of this player has a **realization-equivalent behaviour strategy**: against every fixed profile of the other players (and the given chance probabilities), the two assign the same probability to **each terminal history**. Conversely a behaviour strategy can be realized by a mixed strategy. This is equality of induced distributions, not identity of strategies; different distributions over complete plans can have the same realization. Behaviour at an information set with zero own-prefix probability can be chosen arbitrarily. Without perfect recall, mixed-to-behaviour equivalence can fail even if no information set is visited twice.`,
+      idea: String.raw`Write $\rho_i(h)$ for the mass of pure plans consistent with player $i$'s own earlier actions on the path to $h$. Perfect recall makes that own-history record identical throughout an information set $I$. If $\rho_i(h)>0$, set $\beta_I(a)=\rho_i(ha)/\rho_i(h)$; if it is zero, choose any distribution. Along a terminal history with positive own mass these conditional factors telescope from $1$ to $\rho_i(z)$. If the own mass is zero, its first transition from positive to zero has behaviour probability zero, so all later arbitrary choices are irrelevant. A zero chance factor or an opponent's incompatible plan also makes that terminal probability zero under both descriptions. Thus every terminal history agrees for each opposing pure profile, and finite expectation (game-4.9, via game-2.1) extends this to opposing mixtures and behaviour strategies. This uses conditional probabilities, not independence of the given mixed plan's coordinates. Conversely, independently pre-sample one action at every information set, assigning a complete plan $s$ mass $\prod_I\beta_I(s(I))$. Perfect recall prevents repeated information sets on a path; summing over unused coordinates contributes factors of $1$, giving the behaviour probability at every terminal history. The empty plan has mass $1$ when the player never moves.`,
+      caption: String.raw`The authored perfect-recall tree exposes all four pure-plan weights. The three allocation controls cover the full probability simplex; compare every terminal probability (blue: original mixture, green: behaviour). Presets include distinct equivalent mixtures, a zero own-prefix, and a positive prefix of $10^{-14}$: positive mass is never replaced by a numerical zero cutoff. In “forgets own action”, the two nodes of $B$ have different own histories. The target mixture has determinant $\lambda(1-\lambda)$; every behaviour distribution has determinant zero. This proves impossibility for $0<\lambda<1$, while the endpoints admit equivalence.`,
+      credit: 'Kuhn’s theorem, as proved in Osborne & Rubinstein (1994), Proposition 214.1; exposition also Bonanno (2024).',
+      scope: 'Finite games; equivalence is against every opponent profile at every terminal history. Authored examples and floating-point residuals illustrate the exact argument. The original 1953 chapter has not been audited here.',
       deps: ['game-4.9'],
-      refs: ['MSZ §6.2'],
-      tags: ['perfect recall', 'behaviour strategy'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Perfect_recall_(game_theory)' },
-      verify: true,
+      refs: ['Osborne & Rubinstein (1994), Proposition 214.1, proof p.215 and Figure 215.1', 'Bonanno (2024), §7.1, Theorem 7.1.1 and Figure 7.4'],
+      tags: ['perfect recall', 'behaviour strategy'], verify: false,
       viz(v) {
-        const mkPR = () => dec(1, [
-          ['U', dec(2, [['l', dec(1, [['a', leaf(3, -3)], ['b', leaf(0, 0)]], 'B')], ['r', dec(1, [['a', leaf(1, -1)], ['b', leaf(4, -4)]], 'C')]], 'X')],
-          ['D', dec(2, [['l', dec(1, [['a', leaf(2, -2)], ['b', leaf(-1, 1)]], 'E')], ['r', dec(1, [['a', leaf(2, -2)], ['b', leaf(-1, 1)]], 'E')]], 'Y')],
-        ], 'A');
-        const mkAM = () => dec(1, [['exit', leaf(0, 0)], ['continue', dec(1, [['exit', leaf(4, 0)], ['continue', leaf(1, 0)]], 'D')]], 'D');
-        // The driver's first and second nodes form ONE information set 'D'
-        let mode = 'pr', P = prep(mkPR()), S = pureStrategies(P, 1), seed = 5, mu = null;
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, weight: 1.15, title: 'game tree (player 1 is the one who mixes)' });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, weight: 0.85, title: 'outcome distributions' });
-        const conc = v.slider('concentration of the mixture', 0.15, 3, 0.7, { step: 0.05, onChange: () => draw0() });
-        const q2 = v.slider('player 2 plays $l$ at $X$ with probability', 0, 1, 0.5, { step: 0.05 });
-        const q3 = v.slider('player 2 plays $l$ at $Y$ with probability', 0, 1, 0.3, { step: 0.05 });
-        const pd = v.slider('driver continues with probability $p$', 0, 1, 2 / 3, { step: 0.01 });
-        const draw0 = () => { const r = v.rng(seed); const w = S.map(() => Math.pow(-Math.log(1 - r() * 0.999999), 1 / conc.value)); const t = w.reduce((a, b) => a + b, 0); mu = w.map((x) => x / t); };
-        const setMode = (m) => { mode = m; P = prep(m === 'pr' ? mkPR() : mkAM()); S = pureStrategies(P, 1); draw0(); [conc, q2, q3].forEach((c) => { c.el.hidden = m !== 'pr'; }); pd.el.hidden = m !== 'am'; };
-        v.select('game', [{ value: 'pr', label: 'perfect recall' }, { value: 'am', label: 'absent-minded driver' }], 'pr', { onChange: setMode });
-        v.button('new random mixture', () => { seed += 1; draw0(); });
-        setMode('pr');
-        let info;
-        v.render(() => {
-          const vw = treeView(P); T.setView(vw.x, vw.y);
-          if (mode === 'pr') {
-            const others = { X: [q2.value, 1 - q2.value], Y: [q3.value, 1 - q3.value] };
-            const beh = kuhnBehaviour(P, 1, S, mu), bAll = { ...others, ...beh };
-            const mixOut = mixedOutcome(P, 1, S, mu, others), behOut = P.leaves.map((l) => playBeh(P, bAll).leafP.get(l) || 0);
-            drawTree(T, P, { edgeLabel: (e) => (e.from.p === 1 ? `${v.fix(beh[e.from.key][e.i], 2)}` : e.a), nodeTag: (n) => (n.p ? `${n.p}·${n.key}` : null), size: 12 });
-            B.setView([0.4, P.nl + 0.6], [0, Math.max(0.3, ...mixOut) * 1.2]);
-            P.leaves.forEach((l, j) => {
-              B.rect(j + 1 - 0.38, 0, j + 1 - 0.02, mixOut[j], { fill: 'blue', fillAlpha: 0.35, color: 'blue', width: 1.2 });
-              B.rect(j + 1 + 0.02, 0, j + 1 + 0.38, behOut[j], { fill: 'green', fillAlpha: 0.35, color: 'green', width: 1.2 });
-            });
-            B.setTicks(P.leaves.map((l, j) => [j + 1, `${l.u[0]}`]), null); B.setLabels('leaf (payoff to player 1)', 'probability');
-            info = { diff: Math.max(...mixOut.map((x, j) => Math.abs(x - behOut[j]))), support: mu.filter((x) => x > 0.01).length, u: playBeh(P, bAll).u[0] };
-          } else {
-            const p = pd.value, beh = { D: [1 - p, p] }, r = playBeh(P, beh);
-            drawTree(T, P, { edgeLabel: (e) => `${e.a} ${v.fix(beh.D[e.a === 'exit' ? 0 : 1], 2)}`, nodeTag: (n) => (n.p ? 'driver · D' : null), size: 12 });
-            B.setView([0, 1], [0, 1.6]); B.setTicks(null, null); B.setLabels('probability $p$ of continuing', 'expected payoff');
-            B.fn((x) => 4 * x * (1 - x) + x * x, { color: 'green', width: 3 });
-            B.line(0, 0, 1, 1, { color: 'blue', width: 3 });
-            B.text('behaviour strategies', 0.12, 1.45, { color: 'green', weight: 700, size: 12, align: 'left' });
-            B.text('mixtures of the two pure strategies', 0.97, 0.3, { color: 'blue', weight: 700, size: 12, align: 'right' });
-            B.dot(p, r.u[0], { r: 7, color: 'gold' }); B.dot(2 / 3, 4 / 3, { r: 4, color: 'green' });
-            info = { u: r.u[0], p };
-          }
-        });
-        v.readout(() => (mode === 'pr'
-          ? `mixture over ${S.length} pure strategies (${info.support} with weight above 1%); largest difference between the two leaf distributions: ${info.diff.toExponential(1)}\nexpected payoff to player 1: ${v.fix(info.u, 3)} — the same under both descriptions`
-          : `behaviour payoff at $p=${v.fix(info.p, 2)}$: ${v.fix(info.u, 3)}; best behaviour strategy $p=2/3$ gives $4/3$, best mixture of pure strategies gives only $1$ — the mixture cannot imitate the behaviour strategy`));
+        const T=v.stage({axes:false,height:380,title:'Information sets and complete terminal histories'});
+        const B=v.stage({axes:false,height:260,title:'Terminal probabilities: mixture blue, behaviour green'});
+        const mode=v.select('authored game',[{value:'recall',label:'perfect recall'},{value:'forget',label:'forgets own action'}],'recall');
+        const labels=['first pure-plan weight u','share v of remainder for second plan','share w of next remainder for third plan','opponent probability q of l','zero-prefix fallback: first action probability','target diagonal weight λ','behaviour probability p of L','behaviour probability r of a'];
+        const defaults=[.25,1/3,.5,.5,.5,.5,.5,.5];
+        const controls=labels.map((s,i)=>v.slider(s,0,1,defaults[i],{step:'any',decimals:6,fmt:informationNumber}));
+        for(const [label,values] of [['uniform mixture',[.25,1/3,.5]],['correlated mixture',[.5,0,0]],['equivalent mixture A',[.25,1/3,1]],['equivalent mixture B',[.25,1/3,0]],['zero own-prefix',[0,0,.5]],['rare positive prefix',[1e-14,0,0]]])v.button(label,()=>{mode.set('recall');values.forEach((x,i)=>controls[i].set(x));});
+        let model;
+        v.render(()=>{const pr=mode.value==='recall';controls.forEach((c,i)=>{c.el.hidden=pr?i>=5:i<5;});model=pr?informationRecallModel(...controls.slice(0,5).map(c=>c.value)):informationForgetModel(...controls.slice(5).map(c=>c.value));drawInformationTree(T,model.P,(pr?model.original:model.mixed).reach);drawInformationProbabilities(B,[{color:'blue',values:(pr?model.original:model.mixed).probabilities},{color:'green',values:model.realized.probabilities}]);});
+        v.readout(()=>{const m=model,pr=mode.value==='recall',f=informationNumber,original=pr?m.original:m.mixed;return [
+          `All complete player-1 plans: ${m.plans.map((s,j)=>`${informationPlanText(s)}: ${f(m.mu[j])}`).join('; ')}.`,
+          ...(pr?[`Allocation: μ=(u, (1−u)v, (1−u)(1−v)w, (1−u)(1−v)(1−w)).`,...m.converted.records.map(r=>`${r.info}: own prefix ${r.prefix.map(([I,a])=>`${I}=${a}`).join(', ')||'(empty)'}; mass ${f(r.denominator)}, action masses (${r.numerators.map(f).join(', ')}); behaviour (${r.probabilities.map(f).join(', ')})${r.arbitrary?' — arbitrary at EXACT zero':' — conditional ratios'}.`),`Product pre-sampling gives another equivalent mixture (${m.product.map(f).join(', ')}). Opponent: X=l with probability ${f(controls[3].value)}.`]:[`Perfect recall FAILS at B: own histories A=L and A=R differ. Target determinant λ(1−λ)=${f(m.determinant)}; behaviour determinant residual ${m.behaviorDeterminant.toExponential(2)}.`,m.determinant>0?'Positive target determinant proves no behaviour strategy matches all four terminal histories.':'Degenerate target: equivalence is possible by setting p=r=λ.']),
+          ...m.P.leaves.map((id,j)=>`z${j+1}: ${m.P.nodes[id].history.join(' → ')}; mixture ${f(original.probabilities[j])}, behaviour ${f(m.realized.probabilities[j])}.`),
+          `Largest displayed terminal-probability difference ${m.difference.toExponential(2)}${pr?' (floating-point check; exact proof above).':' for the selected behaviour, not an optimized distance.'}`,
+        ].join('\n');});
       },
     },
   ],
