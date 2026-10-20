@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 76,
+  "remainingFlags": 74,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "game": 2,
     "polsci": 3,
-    "music": 4,
+    "music": 2,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -303,36 +303,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Change_ringing"
-      }
-    },
-    {
-      "id": "music-8.5",
-      "file": "content/music/ch08.js",
-      "name": "Myhill’s property: two sizes per generic interval",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tymoczko ch. 4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Cardinality_equals_variety"
-      }
-    },
-    {
-      "id": "music-8.6",
-      "file": "content/music/ch08.js",
-      "name": "Well-formed scales and the three-gap theorem",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Tymoczko ch. 4"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Three-gap_theorem"
       }
     },
     {
@@ -1976,7 +1946,9 @@
       "music-8.15",
       "tech-4.11",
       "polsci-5.6",
-      "game-4.8"
+      "game-4.8",
+      "music-8.5",
+      "music-8.6"
     ]
   },
   "additionalFollowups": [
@@ -6825,6 +6797,16 @@
       "id": "game-4.8",
       "status": "resolved",
       "note": "2026-10-20: worker two independent actual-source/math/native review and 81940 belief-state checks; docs/verification/game-chainstore-followup.md."
+    },
+    {
+      "id": "music-8.5",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/audio/native review and saved-state repair; docs/verification/music-generated-followup.md."
+    },
+    {
+      "id": "music-8.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/audio/native review and saved-state repair; docs/verification/music-generated-followup.md."
     }
   ]
 }

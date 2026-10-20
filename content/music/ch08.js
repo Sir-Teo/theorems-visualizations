@@ -235,7 +235,7 @@ export default {
       deps:['music-8.4'],see:['music-8.6'],refs:['Amiot2007 §2.3 Theorem11, pp.109–110; Carey–Clampitt1989 pp.201–202'],tags:['scales','combinatorics'],
       credit:'Myhill’s property, as treated by Clough–Myerson and Carey–Clampitt; finite span comparison authored',
       scope:String.raw`The general formula concerns floor scales with integers $c>n\ge2$. The interactive examples are finite twelve-tone pitch-class sets; no converse identifying arbitrary Myhill scales with maximally even sets is asserted. Exactly two sizes differs from at most two.`,
-      links:{source:'https://journals.openedition.org/msh/pdf/4272'},verify:true,
+      links:{source:'https://journals.openedition.org/msh/pdf/4272'},verify:false,
       viz(v){
         const labels={diat:'diatonic',pent:'pentatonic',harm:'harmonic minor',mel:'melodic minor',whole:'whole-tone',oct:'octatonic',cluster:'cluster {0,1,2}',rand:'seeded random seven'};
         const sc=v.select('scale',Object.entries(labels).map(([value,label])=>({value,label})),'diat'),kk=v.slider('generic interval k',1,7,2,{int:true}),seed=v.slider('random seed',0,9999,3,{int:true});
@@ -256,7 +256,7 @@ export default {
       deps:['music-8.5','music-7.10'],see:['music-7.11','music-8.4'],refs:['Carey–Clampitt1989 pp.196,198–202; Marklof–Strömbergsson2017 §§1–2, Proposition2'],tags:['scales','three-gap'],
       credit:'Three-gap theorem and Carey–Clampitt’s generated-scale theory; finite rational and numerical comparison authored',
       scope:String.raw`The mathematical irrational statement is exact. Preset transcendental/algebraic values are evaluated in binary floating point for n≤60, with gap grouping tolerance $10^{-11}$ of an octave checked against90-digit fixtures. Custom generators are rational integer/1,200,000 and their orbit, repetitions and gap equality are computed with exact integer residues. Degenerate equal spacing and repeated generation are reported separately from nondegenerate well-formedness.`,
-      links:{source:'https://arxiv.org/abs/1612.04906'},verify:true,
+      links:{source:'https://arxiv.org/abs/1612.04906'},verify:false,
       viz(v){
         const type=v.select('generator',Object.entries(GS_GENERATORS).map(([value,p])=>({value,label:p.label})),'fifth'),g=v.slider('custom generator (cents)',0,1200,701.955,{step:.001,decimals:3}),n=v.slider('generated points n',1,60,7,{int:true});
         // Only an actual slider input chooses custom; restoring its saved value must preserve the saved preset.

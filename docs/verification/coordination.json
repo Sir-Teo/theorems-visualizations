@@ -556,6 +556,17 @@
         "docs/verification/game-chainstore-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-8.5",
+        "music-8.6"
+      ],
+      "peer": "coordinator independent actual-source/math/audio/native review and saved-state repair",
+      "reports": [
+        "docs/verification/music-generated-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -568,7 +579,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 76,
+  "currentPendingSourceReviews": 74,
   "latestCheckpoint": {
     "acceptedContentCommit": "04ab914",
     "pendingSourceReviews": 85,
