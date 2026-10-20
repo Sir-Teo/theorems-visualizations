@@ -118,6 +118,13 @@ with $\tilde g=0$ when $g=0$, and take the step $\theta\leftarrow\theta-\eta\til
       viz(v) {
         const eta = v.slider('step size $\\eta$', 0.0005, 0.01, 0.002, { log: true, sig: 2 });
         const cS = v.slider('clip threshold $c$', 1, 400, 20, { log: true, sig: 2 });
+        // Keep exact physical defaults/restores and the native logarithmic thumb in sync.
+        // Native input still uses the slider's two-significant-digit physical rounding.
+        for (const control of [eta, cS]) {
+          control.input.step = 'any';
+          control.set(control.value);
+          control.input.addEventListener('input', () => control.set(control.value));
+        }
         const modeS = v.select('clip by', [{ value: 'norm', label: 'norm' }, { value: 'value', label: 'value' }], 'norm');
         const T = 30, YS = 2, STEPS = 60;
         const S = (w) => { let s = 0, p = 1; for (let k = 0; k < T; k++) { s += p; p *= w; } return s; };
