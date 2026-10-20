@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 30,
+  "remainingFlags": 29,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "arch": 5,
+    "arch": 4,
     "ling": 1,
     "bighist": 14
   },
@@ -203,22 +203,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "arch-4.6",
-      "file": "content/arch/ch04-b.js",
-      "name": "Poleni’s hanging-chain analysis of St Peter’s (1748)",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Heyman"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Giovanni_Poleni",
-        "mactutor": "https://mathshistory.st-andrews.ac.uk/Biographies/Poleni.html"
       }
     },
     {
@@ -1315,7 +1299,8 @@
       "nla-3.15",
       "arch-3.7",
       "ling-4.6",
-      "bighist-4.4"
+      "bighist-4.4",
+      "arch-4.6"
     ]
   },
   "additionalFollowups": [
@@ -6404,6 +6389,11 @@
       "id": "bighist-4.4",
       "status": "resolved",
       "note": "2026-10-20: worker one independently read original2005source, regenerated complete reference and checked exact distribution and fresh native/output evidence; docs/verification/bighist-founder-peer.md."
+    },
+    {
+      "id": "arch-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independently read original Poleni1748, checked exact-Fraction/80digit equilibrium and fresh native/output evidence; docs/verification/arch-poleni-peer.md."
     }
   ]
 }

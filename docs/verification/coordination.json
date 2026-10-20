@@ -1015,6 +1015,19 @@
       "commits": [
         "9285ee1"
       ]
+    },
+    {
+      "ids": [
+        "arch-4.6"
+      ],
+      "peer": "worker one independently read original Poleni1748, checked exact-Fraction/80digit equilibrium and fresh native/output evidence",
+      "reports": [
+        "docs/verification/arch-poleni-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "987ea53"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1027,7 +1040,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 30,
+  "currentPendingSourceReviews": 29,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",
