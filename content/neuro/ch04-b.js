@@ -118,7 +118,7 @@ at every branch point, and all terminal branches end in the same way (all sealed
       kind: 'Model',
       name: 'Compartmental models',
       statement: String.raw`A compartmental model replaces a cable-shaped neuron by approximately isopotential membrane pieces. With capacitance $C_i$, leak $g_i$, other outward channel current $I_i^{\rm chan}$ and injected current $I_i^{\rm inj}$, Kirchhoff's law gives
-$$C_i\dot V_i=-g_i(V_i-E_i)-I_i^{\rm chan}+\sum_{j\sim i}g_{ij}(V_j-V_i)+I_i^{\rm inj}.$$
+$$\begin{aligned}&C_i\dot V_i=-g_i(V_i-E_i)\\&\quad-I_i^{\rm chan}+\sum_{j\sim i}g_{ij}(V_j-V_i)\\&\quad+I_i^{\rm inj}.\end{aligned}$$
 For adjacent cylindrical pieces, the centre-to-centre axial conductance is $g_{ij}=1/(R_i/2+R_j/2)$, with $R_i=4R_a\ell_i/(\pi d_i^2)$. On a tree, a linear implicit voltage solve can eliminate leaves and back-substitute in $O(n)$ operations. A consistent spatial discretization approaches the branched cable model when spatial and time errors are controlled; a finite mesh comparison alone is not a convergence proof.`,
       idea: String.raw`Spatial discretization of the cable equation produces an ODE circuit. Each compartment stores charge in its capacitance, loses current through its membrane and exchanges equal and opposite axial currents with its neighbours. In an implicit linear step, eliminate a leaf into its parent, then work toward the root. Each edge contributes a fixed number of arithmetic operations; the reverse pass recovers the voltages. Nonlinear gates may be updated separately or require additional iteration, so the linear solve's cost does not bound every possible nonlinear model. Gerstner et al. §3.4 and Fig. 3.8 give the circuit and half-resistance coupling used here.
 
@@ -153,7 +153,7 @@ Sparse elimination nla-4.10 explains the tree solve's linear cost. The passive b
       kind: 'Phenomenon',
       name: 'Conduction velocity grows as √diameter in unmyelinated axons',
       statement: String.raw`For a homogeneous unmyelinated cable with fixed membrane capacitance, ion-channel densities/kinetics and axial resistivity, a corresponding travelling wave has speed $\theta\propto\sqrt d$. In
-$$C_m\partial_tV=\frac{d}{4R_a}\partial_x^2V-I_{\rm ion}(V,\ldots),$$
+$$\begin{gathered}C_m\partial_tV=\frac{d}{4R_a}\partial_x^2V\\-I_{\rm ion}(V,\ldots),\end{gathered}$$
 rescaling diameter from $d_0$ to $d$ and distance by $\sqrt{d/d_0}$ preserves the voltage/gate waveform as a function of time. Thus its spatial speed scales by $\sqrt{d/d_0}$. This comparison assumes a propagating wave exists and boundaries/stimulation do not alter it. Doubling speed requires four times the diameter and, for a fixed axon length, sixteen times the axoplasm volume.`,
       idea: String.raw`The total axial current is $-\pi d^2(4R_a)^{-1}\partial_xV$, while membrane capacitance per unit length is $\pi d C_m$. Dividing current balance by membrane area gives the coefficient $d/(4R_a)$ above; the square-root spatial change leaves the local gate equations unchanged. The original Hodgkin–Huxley propagation calculation (1952, pp.522–528, Eqs.29–34) gives18.8m/s at18.5°C for a238µm radius axon with $R_a=35.4\,\Omega\,\mathrm{cm}$, versus21.2m/s measured in that fibre. Those source values are a benchmark, not the output of this finite-grid solver or a universal squid speed.
 
