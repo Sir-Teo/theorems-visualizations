@@ -1,3 +1,4 @@
+import { wellRecipe, wellModel, wellAudio, wellRebalance, wellValid, WELL_RECIPES, WELL_CHAIN } from './source-audit-well.js';
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part b: items 7.7–7.12)
 import { continuedModel, CF_ALPHA } from './source-audit-continued.js';
 import { equalModel, equalAudio, WE_REFERENCES } from './source-audit-wolf-equal.js';
@@ -50,65 +51,40 @@ Our chain is E♭–B♭–F–C–G–D–A–E–B–F♯–C♯–G♯, with 
     },
     // ------------------------------------------------------------------ 7.8
     {
-      num: '7.8',
-      kind: 'Method',
-      name: 'Well temperaments',
-      statement: String.raw`A **well temperament** distributes the Pythagorean comma unevenly around the circle of fifths without any wolf: the twelve fifths are tuned to sizes that sum to exactly seven octaves (8400 ¢) but differ from one another. Keys near C get nearly pure thirds and fifths, keys far from C get wider, brighter thirds, and every key is usable, each with its own character. Examples that survive in the literature are Werckmeister III (four fifths narrowed by a quarter of the Pythagorean comma), Kirnberger III (four fifths narrowed by a quarter of the syntonic comma, one by a schisma), and Vallotti in its modern form (six fifths narrowed by a sixth of the Pythagorean comma). Any assignment of narrowings $d_1,\dots,d_{12}$ to the twelve fifths with $\sum d_i=23.46$ ¢ is a closed twelve-note tuning.`,
-      idea: String.raw`The sum constraint is just 7.3: twelve fifths of sizes $701.955-d_i$ close the circle exactly when $\sum d_i$ equals the Pythagorean comma. Given the constraint, the designer chooses where to put the narrowing. A major third is four consecutive fifths less two octaves, so its error from the pure third is the sum of the four narrowings minus the syntonic comma; the temperament determines which keys get the thirds with the least error and which with the most. The "colour of the keys" of the eighteenth-century writers is this variation.`,
-      caption: String.raw`Left: how much each of the twelve fifths is narrowed from pure; drag a bar's top and the others rebalance so the sum stays at one Pythagorean comma, or load a historical tuning. Right: the circle of fifths coloured by the major third of each key (darker red = wider than the pure 5/4); the figures are the third's excess in cents. Play a cadence I–IV–V–I in C and in F♯ and listen to the difference in character.`,
-      deps: ['music-7.7'],
-      see: ['music-7.9', 'music-7.14'],
-      refs: ['Benson ch. 5'],
-      tags: ['temperament', 'keys'],
-      credit: 'A. Werckmeister, Musicalische Temperatur, 1691; J. P. Kirnberger (1770s); F. A. Vallotti (c. 1728, published 1779)',
-      scope: String.raw`Fifth-size recipes as commonly quoted; the Vallotti recipe used here is the modern form (six fifths F–C … E–B narrowed by 1/6 of a Pythagorean comma), which differs slightly from what Vallotti himself described, and Kirnberger's third temperament is taken to have the schisma on F♯–C♯. Werckmeister's and Kirnberger's exact dates and precise recipes should be checked against the historical sources.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Well_temperament' },
-      verify: true,
-      viz(v) {
-        const eq = () => Array(12).fill(PCOMMA / 12), mk = (idx, amt, rest = 0) => { const d = Array(12).fill(0); idx.forEach((i) => { d[i] = amt; }); return d; };
-        const PRESET = {
-          pyth: { n: 'Pythagorean', d: () => { const d = Array(12).fill(0); d[11] = PCOMMA; return d; } },
-          qm: { n: 'quarter-comma meantone', d: () => { const d = Array(12).fill(SCOMMA / 4); d[11] = PCOMMA - 11 * SCOMMA / 4; return d; } },
-          wm3: { n: 'Werckmeister III', d: () => mk([3, 4, 5, 8], PCOMMA / 4) },
-          kb3: { n: 'Kirnberger III', d: () => { const d = mk([3, 4, 5, 6], SCOMMA / 4); d[9] = PCOMMA - SCOMMA; return d; } },
-          val: { n: 'Vallotti (modern)', d: () => mk([2, 3, 4, 5, 6, 7], PCOMMA / 6) },
-          et: { n: 'equal temperament', d: eq },
-        };
-        let d = PRESET.wm3.d(), name = 'wm3';
-        const pre = v.select('tuning', Object.entries(PRESET).map(([k, x]) => ({ value: k, label: x.n })).concat([{ value: 'custom', label: 'custom' }]), 'wm3', { onChange: (k) => { if (k !== 'custom') { d = PRESET[k].d(); name = k; hs.forEach((h, i) => h.set(i, d[i])); v.invalidate(); } } });
-        const kk = v.select('cadence in', [{ value: 0, label: 'C' }, { value: 6, label: 'F♯' }], 0);
-        const bs = v.stage({ x: [-0.6, 11.6], y: [-40, 26], axes: 'box', gutter: true, height: 340, xticks: CHAIN.map((c, i) => [i, c]), yticks: [-40, -20, 0, 10, 20].map((y) => [y, String(y)]), xlabel: 'fifth starting on …', ylabel: 'fifth narrower than pure by (¢)', title: 'drag the tops of the bars' });
-        const wh = v.stage({ x: [-1.5, 1.5], y: [-1.5, 1.5], equal: true, axes: false, height: 340, title: 'major third of each key' });
-        const snd = v.sound();
-        const hs = d.map((x, i) => { const h = bs.handle(i, x, { color: 'gold', r: 7, constrain: (xx, yy) => [i, clamp(yy, -40, 25)] }); h.onDrag = () => { const val = h.y, others = d.reduce((s, q, j) => (j === i ? s : s + q), 0), want = PCOMMA - val; d = d.map((q, j) => (j === i ? val : Math.abs(others) > 0.5 ? (q * want) / others : q + (want - others) / 11)); name = 'custom'; pre.value = 'custom'; v.invalidate(); }; return h; });
-        const fifths = () => d.map((x) => FIFTH - x);
-        const pcs = () => tuneFromFifths(fifths());
-        const third = (P, r) => fold(P[(r + 4) % 12] - P[r]);
-        const play = () => { const P = pcs(), r = kk.value, roots = [r, (r + 5) % 12, (r + 7) % 12, r]; snd.stop(); snd.samples(seqCents(roots.map((x) => triadAbs(P, x)), C4, 1.2, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('play I–IV–V–I', play);
-        v.render(() => {
-          hs.forEach((h, i) => h.set(i, d[i]));
-          bs.hline(0, { color: 'muted' }); bs.hline(PCOMMA / 12, { color: 'green', dash: [5, 4] });
-          bs.text('equal temperament (1.95 ¢)', -0.5, PCOMMA / 12, { size: 10.5, color: 'green', align: 'left', baseline: 'bottom', dy: -3 });
-          d.forEach((x, i) => { bs.rect(i - 0.3, 0, i + 0.3, x, { fill: x < 0 ? 'red' : 'orange', fillAlpha: 0.45, color: x < 0 ? 'red' : 'orange' }); });
-          const P = pcs();
-          for (let j = 0; j < 12; j++) {
-            const r = chainSemi(j), t = third(P, r) - M3J, a0 = ((j - 3) * 30 - 15) * Math.PI / 180, a1 = a0 + Math.PI / 6, pts = [];
-            for (let q = 0; q <= 6; q++) { const a = a0 + (a1 - a0) * q / 6; pts.push([1.38 * Math.sin(a), 1.38 * Math.cos(a)]); }
-            for (let q = 6; q >= 0; q--) { const a = a0 + (a1 - a0) * q / 6; pts.push([0.72 * Math.sin(a), 0.72 * Math.cos(a)]); }
-            const c = v.ramp(clamp((t + 2) / 24, 0, 1), 'red');
-            wh.poly(pts, { fill: c, fillAlpha: 1, color: 'panel', width: 2 });
-            const am = (a0 + a1) / 2, p = [1.05 * Math.sin(am), 1.05 * Math.cos(am)];
-            wh.text(NOTE[r], p[0], p[1], { size: 13, align: 'center', baseline: 'bottom', weight: 700, color: 'ink' });
-            wh.text(sc(v, t, 1), p[0], p[1], { size: 11, align: 'center', baseline: 'top', dy: 2, color: 'ink' });
-          }
-          wh.text('major thirds re 5/4', 0, 0.12, { size: 11, color: 'muted', align: 'center' });
-          wh.text('circle of fifths, C at the top', 0, -0.12, { size: 10.5, color: 'muted', align: 'center' });
+      num:'7.8',kind:'Method',name:'Well temperaments',
+      statement:String.raw`Write $P=1200\log_2(531441/524288)$ for the Pythagorean comma and $S=1200\log_2(81/80)$ for the syntonic comma. If fifth $i$ is $d_i$ cents narrower than $3/2$, a twelve-fifth chain closes after seven octaves exactly when
+$$\sum_{i=0}^{11}d_i=P.$$
+A negative $d_i$ means a widened fifth. A major third reached through four successive fifths has signed error from $5/4$ equal to
+$$S-(d_i+d_{i+1}+d_{i+2}+d_{i+3}),$$
+with cyclic indices. Closure alone places no bound on individual fifths and does not guarantee musical usability.
+
+Benson's exposition of irregular or well temperaments gives the named recipes compared here: Werckmeister III distributes $P/4$ over C–G, G–D, D–A and B–F♯; Kirnberger III uses $S/4$ over C–G–D–A–E and $P-S$ on F♯–C♯; the displayed Vallotti recipe uses $P/6$ over F–C–G–D–A–E–B. All other fifths in each recipe are pure.`,
+      idea:String.raw`Twelve pure fifths total $8400+P$ cents. Subtracting narrowings with sum $P$ leaves 8400. Four pure fifths minus two octaves give the Pythagorean third $81/64$, which exceeds $5/4$ by $S$; subtracting the four relevant narrowings gives the stated signed error. The table checks this formula for every starting note, including windows crossing the closing edge.
+
+The named recipes are Benson's transcriptions, rather than newly authenticated readings of historical manuscripts. The equal recipe shares $P$ uniformly. The Pythagorean and quarter-comma cuts are contrasting closed examples with a concentrated closing discrepancy. Their inclusion shows why the sum constraint alone is weaker than a claim that every key works equally well.`,
+      caption:String.raw`Drag any gold handle to change one fifth's narrowing. The other eleven receive a common shift, clipped to the declared −40…25-cent bounds, until their total closes the chain. Load a recipe to reset all handles. The complete table gives every fifth and its major-third error. Choose C or F♯ and play the declared upward I–IV–V–I triads; the actual frequencies are printed below.`,
+      deps:['music-7.3','music-7.6','music-7.7'],see:['music-7.9','music-7.14'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §5.13, pp.181–187; named recipes are his technical transcriptions'],tags:['temperament','keys'],
+      credit:'Named recipes as transcribed by Dave Benson; bounded redistribution, comparisons and synthesis authored here.',
+      scope:String.raw`A finite mathematical comparison of explicitly specified recipes, with no claim about historical dates, priority, a composer's preferred tuning or universal key character. The drag bounds are authored constraints, not a definition of well temperament. Exact logarithmic formulas specify closure; binary64 evaluation leaves the displayed residual, which is reported rather than asserted to be zero. The C4 anchor is 261.6256 Hz; each cadence root lies in its C4–C5 octave and the other voices ascend from it. Audio is the same authored 44,100-Hz H8 signal as 7.4/7.9, with amplitudes 1/h, pre-output bound 0.12, 10-ms ramps and zero-sample gaps. Output gain/limiter and device are separate; frequency errors do not measure perceived quality.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      viz(v){
+        let d=wellRecipe('werckmeister');
+        const pre=v.select('recipe',[...Object.entries(WELL_RECIPES).map(([value,label])=>({value,label})),{value:'custom',label:'custom'}],'werckmeister',{onChange:k=>{if(k!=='custom'){d=wellRecipe(k);hs.forEach((h,j)=>h.set(j,d[j]));}}});
+        const key=v.select('cadence in',[{value:0,label:'C'},{value:6,label:'F♯'}],0);
+        const A=v.stage({x:[-.8,11.8],y:[-47,32],axes:'box',gutter:true,full:true,height:350,minWidth:240,xlabel:'fifth starting on …',ylabel:'narrower than 3/2 (cents)',xticks:WELL_CHAIN.map((x,j)=>[j,x]),yticks:[-40,-20,0,20],title:'drag a gold handle; all twelve remain bounded'});
+        const B=v.stage({x:[0,1],y:[-.5,12.7],axes:false,full:true,height:440,minWidth:240,title:'all twelve fifths and major-third signed errors (cents)'});
+        const hs=d.map((x,j)=>{const h=A.handle(j,x,{color:'gold',r:6,constrain:(_x,y)=>[j,Math.max(-40,Math.min(25,y))]});h.onDrag=()=>{d=wellRebalance(d,j,h.y);pre.value='custom';hs.forEach((g,i)=>g.set(i,d[i]));};return h;});
+        v.shareState('closing fifth narrowings',{get:()=>({d:[...d],recipe:pre.value}),validate:s=>!!s&&wellValid(s.d)&&(s.recipe==='custom'||Object.hasOwn(WELL_RECIPES,s.recipe)&&wellRecipe(s.recipe).every((x,j)=>Math.abs(x-s.d[j])<1e-9)),set:s=>{d=[...s.d];pre.value=s.recipe;hs.forEach((h,j)=>h.set(j,d[j]));}});
+        let info;v.soundButton('Play declared I–IV–V–I',sd=>{const a=wellAudio(d,key.value);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        v.render(()=>{
+          const a=wellModel(d,key.value);info=a;hs.forEach((h,j)=>h.set(j,d[j]));A.line(-.4,0,11.4,0,{color:'muted',width:1});
+          a.rows.forEach(r=>A.rect(r.j-.28,0,r.j+.28,r.narrowing,{fill:r.narrowing<0?'purple':'orange',fillAlpha:.5,stroke:false}));
+          [['note',.07],['narrow',.35],['fifth',.65],['M3 error',.95]].forEach(([t,x])=>B.text(t,x,12.05,{size:10.5,align:x===.95?'right':'center',baseline:'middle',weight:700}));
+          a.rows.forEach((r,j)=>{const y=11-j,col=r.error<0?'purple':'orange';B.text(r.name,.07,y,{size:11.5,align:'center',baseline:'middle'});B.text(v.fix(r.narrowing,3),.35,y,{size:10.5,align:'center',baseline:'middle'});B.text(v.fix(r.fifth,3),.65,y,{size:10.5,align:'center',baseline:'middle'});B.text(`${r.error<0?'−':'+'}${v.fix(Math.abs(r.error),3)}`,.95,y,{size:10.5,align:'right',baseline:'middle',color:col});});
         });
-        v.readout(() => {
-          const P = pcs(), s = d.reduce((a, b) => a + b, 0), thirds = Array.from({ length: 12 }, (_, r) => ({ r, t: third(P, r) - M3J })).sort((a, b) => a.t - b.t);
-          return `${name === 'custom' ? 'custom tuning' : PRESET[name].n}: Σ narrowing = ${v.fix(s, 2)} ¢ (the Pythagorean comma ${v.fix(PCOMMA, 2)} ¢); fifths from ${v.fix(FIFTH - Math.max(...d), 1)} to ${v.fix(FIFTH - Math.min(...d), 1)} ¢ · best major third ${NOTE[thirds[0].r]} (${sc(v, thirds[0].t, 1)} ¢ from pure), worst ${NOTE[thirds[11].r]} (${sc(v, thirds[11].t, 1)} ¢) · third in C ${v.fix(third(P, 0), 1)} ¢, in F♯ ${v.fix(third(P, 6), 1)} ¢`;
-        });
+        v.legend([['gold','draggable fifth'],['orange','positive narrowing / third error'],['purple','negative narrowing / third error']]);
+        v.readout(()=>{const a=info;return `Closure residual (binary64): ${a.closureResidual.toExponential(2)} cents; narrowing-sum residual ${a.narrowingResidual.toExponential(2)} cents. Fifth range ${v.fix(a.minFifth,6)}–${v.fix(a.maxFifth,6)} cents. Actual C4-anchored cadence events (Hz): ${a.cadence.map(fs=>fs.map(f=>v.fix(f,4)).join(', ')).join(' → ')}. The signed third error is S minus four narrowings; it is not a quality score.`;});
       },
     },
     // ------------------------------------------------------------------ 7.9
