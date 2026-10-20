@@ -235,7 +235,13 @@ and a flat surface emits the spectral flux (exitance) $\pi B_\lambda(T)$ into th
       name: 'Stefan–Boltzmann law',
       credit: 'Josef Stefan, 1879 (from measurements); Ludwig Boltzmann, 1884 (from thermodynamics)',
       statement: String.raw`The total power emitted per unit area by a blackbody at temperature $T$, summed over all wavelengths and over the hemisphere, is
-$$F = \int_0^\infty \pi B_\lambda(T)\,d\lambda = \sigma T^4,\qquad \sigma = \frac{2\pi^5 k_B^4}{15\,h^3c^2} = 5.670\times10^{-8}\ \text{W m}^{-2}\,\text{K}^{-4}.$$
+$$\begin{aligned}
+F&=\int_0^\infty \pi B_\lambda(T)\,d\lambda\\
+ &=\sigma T^4,\\
+\sigma&=\frac{2\pi^5 k_B^4}{15\,h^3c^2}\\
+ &=5.670\times10^{-8}\\
+ &\quad\text{W m}^{-2}\,\text{K}^{-4}.
+\end{aligned}$$
 In particular $dF/F = 4\,dT/T$: a 1 % rise in temperature increases the emission by about 4 %, and near Earth's emission temperature (255 K) the emission grows by $4\sigma T^3 \approx 3.8$ W m⁻² per kelvin.`,
       scope: String.raw`Holds for a blackbody. A grey body of emissivity $\varepsilon$ emits $\varepsilon\sigma T^4$; a body whose emissivity varies with wavelength emits the Planck-weighted average, which itself changes with $T$.`,
       idea: String.raw`Substituting $x = hc/\lambda k_BT$ in Planck's law (1.1) turns the integral into $T^4$ times the pure number $\int_0^\infty x^3/(e^x-1)\,dx = \pi^4/15$: the temperature comes out of the integral as a fourth power because the spectrum stretches as $1/T$ in wavelength while its height grows as $T^5$. Boltzmann obtained the same $T^4$ from thermodynamics alone, using the radiation pressure $u/3$ of an isotropic photon gas (thermo-9.6). The substitution can be justified on each finite wavelength interval $0<L<U$. Put $a=hc/(k_BT)$ and reflect wavelength to $u=-\lambda$; the map $u=-a/x$ is strictly increasing from $[a/U,a/L]$ onto $[-U,-L]$, as required by pma 6.19. Accounting for the reflected orientation gives the positive Jacobian $a/x^2$ and extracts the factor $T^4$. Taking the endpoints to zero and infinity then uses the convergent dimensionless integrand, which behaves as $x^2$ near zero and decays exponentially at infinity; the substitution alone does not evaluate its numerical constant.`,
@@ -705,7 +711,12 @@ Venus is hot although it absorbs *less* sunlight than Earth — its clouds refle
       name: 'Insolation by latitude and season',
       credit: 'Milutin Milanković, 1920 (insolation tables by latitude and season)',
       statement: String.raw`The daily-mean sunlight reaching the top of the atmosphere at latitude $\varphi$ is
-$$\bar Q = \frac{S}{\pi}\Big(\frac{\bar d}{d}\Big)^2\big(h_0\sin\varphi\sin\delta + \cos\varphi\cos\delta\sin h_0\big),\qquad \cos h_0 = -\tan\varphi\tan\delta ,$$
+$$\begin{aligned}
+\bar Q&=\frac{S}{\pi}\Big(\frac{\bar d}{d}\Big)^2\\
+ &\quad\cdot\bigl(h_0\sin\varphi\sin\delta\\
+ &\qquad+\cos\varphi\cos\delta\sin h_0\bigr),\\
+\cos h_0&=-\tan\varphi\tan\delta ,
+\end{aligned}$$
 where $\delta$ is the Sun's declination ($\sin\delta = \sin\varepsilon\,\sin\lambda_\odot$ for obliquity $\varepsilon$ and solar longitude $\lambda_\odot$), $h_0$ the hour angle of sunset ($h_0 = \pi$ in polar day, $0$ in polar night) and $(\bar d/d)^2$ the distance factor. Insolation therefore depends on latitude *and* season: with Earth's $\varepsilon = 23.44°$ the summer pole, lit for 24 hours, receives about 525 W m⁻² at the solstice — more than the equator (about 385 W m⁻²) — while the winter polar cap gets nothing. The annual mean still falls from about 416 W m⁻² at the equator to about 172 W m⁻² at the poles. With zero obliquity the seasons disappear (apart from the small distance effect) and the poles are dark all year.`,
       idea: String.raw`The flux on a horizontal surface is $S(\bar d/d)^2\cos Z$ with $\cos Z = \sin\varphi\sin\delta + \cos\varphi\cos\delta\cos h$ (spherical trigonometry on the globe, geog-1.2); averaging over the hours of daylight, $|h| < h_0$, gives the formula (energy-4.2). At the pole $\cos Z = \sin\delta$ all day, while the equator sees a higher noon Sun for only 12 hours. Integrated over the sphere, the insolation of any day is $S(\bar d/d)^2/4$ (1.5): tilt only moves sunlight between latitudes. For one fixed day, write $a=\sin\varphi\sin\delta$ and $b=\cos\varphi\cos\delta$. The daylight integral of $a+b\cos h$ has antiderivative $ah+b\sin h$, so pma 6.21 evaluates it on $[-h_0,h_0]$. Dividing by the full rotation $2\pi$, including the zero night-time flux, gives $(a h_0+b\sin h_0)/\pi$. Polar day and night use the stated endpoint choices rather than an out-of-range inverse cosine.`,
       caption: String.raw`The map shows daily-mean insolation for every latitude and day of the year, computed from the formula with Kepler's equation for the orbit; drag the cross to choose a day and latitude. The globe shows that day's lit hemisphere, the tropics and polar circles; the lower panel is the latitude profile on that day against the annual mean. Set the obliquity to zero and the seasons vanish; push it past 54° and the poles receive more sunlight than the equator over the year.`,

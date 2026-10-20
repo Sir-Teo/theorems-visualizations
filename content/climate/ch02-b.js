@@ -36,7 +36,10 @@ export default {
       statement: String.raw`For radiation of wavenumber $\nu$ travelling along a path in a gas in local thermodynamic equilibrium that absorbs and emits but does not scatter, the intensity changes at the rate
 $$\frac{dI_\nu}{d\tau_\nu} = -\,I_\nu + B_\nu\big(T\big),$$
 where $\tau_\nu$ is the optical depth along the path (2.5) and $B_\nu(T)$ the Planck function (1.1) at the local temperature: the beam is **absorbed** at the rate $I_\nu$ and **replenished** by emission at the rate $B_\nu$, so it relaxes toward the local blackbody value. Integrated from the ground to space,
-$$I_\nu(\infty) = B_\nu(T_s)\,e^{-\tau_0} + \int_0^{\tau_0} B_\nu\big(T(\tau)\big)\,e^{-(\tau_0-\tau)}\,d\tau .$$
+$$\begin{gathered}
+I_\nu(\infty)=B_\nu(T_s)\,e^{-\tau_0}\\
+ +\int_0^{\tau_0} B_\nu\big(T(\tau)\big)\,e^{-(\tau_0-\tau)}\,d\tau .
+\end{gathered}$$
 If the temperature is the same everywhere ($T = T_s$) the answer is simply $B_\nu(T_s)$ at every wavenumber — the atmosphere has no effect on the outgoing radiation, however opaque it is.`,
       scope: String.raw`Plane-parallel, non-scattering, local thermodynamic equilibrium (valid below about 60 km); in the thermal infrared scattering by cloud droplets and aerosols must be added. Here the diffusivity approximation (a slant factor 1.66) turns the angular integral into a single flux.`,
       idea: String.raw`Kirchhoff's law (1.4) says that the gas emits as much as it absorbs at the same wavenumber when it is at the same temperature as the radiation field, so a thin slab pushes the beam toward $B_\nu(T)$: absorbing a fraction $d\tau$ of $I_\nu$ and emitting $B_\nu\,d\tau$. Solving the linear equation (Beer–Lambert, 2.5) gives the integral. The greenhouse effect is the statement that $B_\nu(T)$ is smaller in the cold upper air than at the ground; with no temperature drop there is nothing to trap. Use optical depth accumulated along the ray as the path coordinate. For a continuous source B on a finite optical interval, multiplying $I\prime+I=B$ by $e^\tau$ is the integrating-factor construction of ode 1.4. It gives $I(\tau_0)=I(0)e^{-\tau_0}+\int_0^{\tau_0}B(s)e^{-(\tau_0-s)}\,ds$. With the surface boundary and local thermal source this is the stated formal solution; it retains the no-scattering and local-equilibrium hypotheses.`,
@@ -265,7 +268,10 @@ so every doubling adds the same $5.35\ln 2 \approx 3.7$ W/m² (including stratos
       kind: 'Phenomenon',
       name: 'Pressure broadening of absorption lines',
       statement: String.raw`Collisions interrupt the oscillation of an absorbing molecule, so each absorption line has a Lorentzian shape
-$$k(\nu) = S\,\frac{\gamma/\pi}{(\nu-\nu_0)^2+\gamma^2},\qquad \gamma = \gamma_0\,\frac{p}{p_0}\Big(\frac{T_0}{T}\Big)^{n},$$
+$$\begin{aligned}
+k(\nu)&=S\,\frac{\gamma/\pi}{(\nu-\nu_0)^2+\gamma^2},\\
+\gamma&=\gamma_0\,\frac{p}{p_0}\Big(\frac{T_0}{T}\Big)^{n},
+\end{aligned}$$
 whose half-width $\gamma$ is proportional to the pressure, while the **line strength $S$** (the area under the line) does not change. At the ground $\gamma \approx 0.07$ cm⁻¹ for CO₂ lines separated by about 1.6 cm⁻¹; in the stratosphere (1–10 hPa) the width falls to the Doppler width, about $6\times10^{-4}$ cm⁻¹, and the gaps between lines open. For a given amount of gas, a broader line profile absorbs more of a band because less of the band lies in transparent gaps.`,
       scope: String.raw`A single band segment of 12 CO₂ lines (illustrative strengths, spacing 1.6 cm⁻¹), shown with a pseudo-Voigt profile (Lorentz plus Doppler). Real bands have thousands of lines of many gases, line mixing and wings that deviate from the Lorentz shape far from the centre.`,
       idea: String.raw`Absorption by a line is the sum over many independent collisions that each reset the phase of the molecular oscillator; the more frequent the collisions (the higher the pressure), the broader the line (quantum collision theory in the molecular-spectroscopy chapters). The integrated line strength depends only on the molecule, so pressure redistributes the same absorption over a wider range of wavenumbers. When a line is strong enough that its centre is saturated, spreading it into the gaps increases the band-average absorption (2.5). For a positive Lorentz width $\gamma$, an antiderivative of the displayed line profile is $(S/\pi)\arctan[(\nu-\nu_0)/\gamma]$. The fundamental theorem pma 6.21 evaluates every finite interval; extending the limits to both infinities gives area S independently of $\gamma$. This normalization is for the ideal unbounded Lorentz line, not a guarantee that a finite plotted band segment contains all of its wings.`,
