@@ -240,7 +240,7 @@ On a smooth timelike segment, $d\tau/dt=1/\gamma$ is positive. The chain rule (p
       name: 'Hyperbolic motion: constant proper acceleration',
       credit: 'Born, 1909 (who named it "hyperbolic motion")',
       statement: String.raw`A particle that starts from rest at the origin and keeps constant proper acceleration $\alpha$ along $x$ has
-$$v=c\tanh\frac{\alpha\tau}{c},\qquad ct=\frac{c^2}{\alpha}\sinh\frac{\alpha\tau}{c},\qquad x=\frac{c^2}{\alpha}\Big(\cosh\frac{\alpha\tau}{c}-1\Big),$$
+$$\begin{gathered}v=c\tanh\frac{\alpha\tau}{c},\qquad\\ ct=\frac{c^2}{\alpha}\sinh\frac{\alpha\tau}{c},\qquad\\ x=\frac{c^2}{\alpha}\Big(\cosh\frac{\alpha\tau}{c}-1\Big),\end{gathered}$$
 so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. Its speed tends to $c$ but never reaches it; its rapidity is $\varphi=\alpha\tau/c$. For $\alpha\tau\ll c$ it reduces to Newton's $x=\tfrac12\alpha t^2$.`,
       idea: String.raw`Constant magnitude of $a$ (rel-3.5) with $a\perp u$ means $du/d\tau=\alpha\,\hat e$ where $\hat e$ is the unit spacelike vector orthogonal to $u$, with $\eta(\hat e,\hat e)=-1$, so $\sqrt{-\eta(du/d\tau,du/d\tau)}=\alpha$; rotating $u$ by a boost of rapidity rate $\alpha/c$ gives $u=c(\cosh\varphi,\sinh\varphi)$ with $\varphi=\alpha\tau/c$ (rel-2.3). Integrating $u=dx/d\tau$ yields the formulas. The hyperbola has asymptotes $x+c^2/\alpha=\pm ct$, and shipboard time grows only like the logarithm of the Earth-frame distance.
 

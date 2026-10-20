@@ -1,0 +1,7 @@
+# Relativity equivalent narrow statement wraps
+
+Separate successor after prerequisite f61887e and bounded math corrections a818e53 wraps only the existing statements1.9,2.14,3.6 in gathered rows. Explicit guard checks all57 full objects/functions/flags/deps/scopes, module metadata and helpers/syllabus. Removing only added gathered wrappers, rowbreaks and whitespace leaves every original mathematical and prose token in the exact original order. No formula or hypothesis changes at this boundary.
+
+Strict build/static57:zero errors/warnings. Own fresh production `.statement` viewport320 light/dark:six cases, each statementclient285/scroll285 and inner displayclient253/scroll253. All six complete screenshots personally inspected `/tmp/atlas-new-imaging-source/rel/wrap-native/{1.9,2.14,3.6}-{light,dark}.png`;rawnative.json;contact `/tmp/atlas-new-imaging-source/rel/wrap-contact.png`. The second unchanged inline2.14 perpendicular-boost expression was separately measured245.844px wide, inside the253px content region. No page/TeX errors. Browser/server closed.
+
+The three observed inherited statement overflows are resolved. Combined candidate consists of the sixteen genuine input edges, two separately documented inherited mathematical qualifications, and these three equivalent wraps. Independent peer is still required; no self-acceptance, source closure, numerical-function or flag change.

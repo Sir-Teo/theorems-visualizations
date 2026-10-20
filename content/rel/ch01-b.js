@@ -124,7 +124,7 @@ has the same value in every inertial frame (flat spacetime, without gravity). In
       name: 'Proper time along a worldline',
       credit: 'Minkowski, 1908',
       statement: String.raw`Along a timelike worldline $x(t)$ with $|dx/dt|<c$ the **proper time** between two events on it is
-$$\Delta\tau=\int\sqrt{1-\frac{v(t)^2}{c^2}}\,dt=\frac1c\int\sqrt{c^2\,dt^2-dx^2},$$
+$$\begin{gathered}\Delta\tau=\int\sqrt{1-\frac{v(t)^2}{c^2}}\,dt\\=\frac1c\int\sqrt{c^2\,dt^2-dx^2},\end{gathered}$$
 the time read by a clock carried along the worldline. It is the Minkowski analogue of arc length (pma-6.27) with the sign of $dx^2$ reversed; it has the same value in every inertial frame. Among all timelike worldlines joining two events, the straight (inertial) one has the **largest** proper time.`,
       idea: String.raw`For a small step the clock is momentarily at rest in a frame where $dx'=0$, so it advances by $d\tau=\sqrt{c^2dt^2-dx^2}/c$, an interval (rel-1.7) divided by $c$ and therefore frame independent. Summing the steps gives the integral, exactly as arc length sums $\sqrt{dx^2+dy^2}$ (pma-6.27). Any detour makes each step $\sqrt{dt^2-dx^2}$ shorter than the straight chord would, because $\sqrt{a^2-b_1^2}+\sqrt{a'^2-b_2^2}\le\sqrt{(a+a')^2-(b_1+b_2)^2}$ — the reversed triangle inequality.
 
