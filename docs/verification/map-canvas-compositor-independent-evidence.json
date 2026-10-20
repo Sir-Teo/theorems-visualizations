@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "experimentalOnly": true,
+  "candidateCode": "93f033a044609e4fe411a9456ae9b2a96333429a",
+  "producerReport": "92475257efa66db1aff8cd49ed4581abcbba7ee3",
+  "pictureResizeHashes": {
+    "data/index.json": "8eafbbf604545bc4811ea342b6e6ead2289628de4b71c200912fd888d8181402",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+    "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+    "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+    "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+  },
+  "nativeSupplementHashes": {
+    "data/index.json": "49b65fb05a860fab028600ff07b84a6e6dd7773b959d38aebea72233b54e68f5",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "scripts/lib/map-canvas-compositor-runtime.mjs": "059cfb397057e0211a4a62d2f0178d27ef20789bae7923ad3c18269af6fe9a25",
+    "scripts/lib/map-canvas-compositor-prototype.mjs": "2ef8f9e43899e3858a514daf3f433eb71fc194c25751e3600b78b99788ad54fd",
+    "scripts/lib/map-canvas-compositor-fixture.mjs": "650ee15f365cd147acc99b57ae6ee7a174205baff0b76ff53e3dab305dda1d3a",
+    "tests/map-canvas-compositor-native.mjs": "2f29a97d0979d27fb1db1f04046e5a3e93ade677ff08dedb3f8df57221fb0884"
+  },
+  "freezeDistinction": "The coordinator regenerated index.json between processes. Pictures/resize and4native contexts use8eafbbf; oversized-native supplement uses49b65fb. Planned, graph andallhelper/protocol hashes match. No full-picture claim is extended to the later index.",
+  "pictureInventory": {
+    "nodes": 13574,
+    "edges": 23210
+  },
+  "pictures": {
+    "pairs": 40,
+    "masks": false,
+    "maxMeanChannelError255": 0.8720426502145923,
+    "maxChangedRgbChannelFractionAbove20": 0.0019407685582578287,
+    "maxChangedPixelAnyRgbFractionAbove20": 0.0033403373867429663,
+    "exactFallbackBackingPairs": 24,
+    "maxFinalExtraPixels": 15790080
+  },
+  "native": {
+    "completedContexts": 5,
+    "hits": 2400,
+    "supplementReason": "Initial raw process completed all40pictures and4nativecontexts, then sampled oversized zooming after its debounce expired. Current probe observes native zoom state synchronously after the original keydown handler. The separate oversized-native supplement passed on its recorded later index; the initial incomplete artifact is retained unchanged."
+  },
+  "resize": {
+    "transitions": 12,
+    "setterRecordsIncludingRepeatedPrefixes": 504,
+    "maxIntermediateExtraPixels": 15982208,
+    "overflow": false
+  },
+  "rawArtifacts": {
+    "/tmp/atlas-new-map-peer/independent-fidelity/correctness.json": {
+      "sha256": "87c32e8d2cb1f5363775759d462458456fa5479a66d1efafe4c2668e9a63b7d7"
+    },
+    "/tmp/atlas-new-map-peer/independent-large-native/correctness.json": {
+      "sha256": "9daadab0516f65b6927672a9e9e307052e02149f5adad13c31ee2ed4494c63f5"
+    },
+    "/tmp/atlas-new-map-peer/independent-resize/resize.json": {
+      "sha256": "8bd8ef912a073fc340a2c893d66e56062bcb8e93af413b26f237785f4dfbbe76"
+    }
+  },
+  "noFpsOrTimingMeasurement": true,
+  "productionGateClosed": false,
+  "coordinatorSubsequentDecision": {
+    "status": "prototype rejected; no production acceptance or further timing",
+    "detailPrototypeFps": 29.018,
+    "detailOriginalFps": 44.016,
+    "attribution": "Reported by coordinator; this peer made no timing measurements."
+  }
+}
