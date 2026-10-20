@@ -47,3 +47,13 @@ for file,h in d['hashes'].items():
  if file.startswith('data/') or file=='assets/js/graph.js':assert digest(pathlib.Path('/tmp/atlas-continuation/checkpoint5')/file)==h
 trace=d['textHistory'];summary={'mode':d['mode'],'browser':d['browser'],'raw':raw,'comparisons':comparisons,'historicalByteComparisons':historical,'sources':source,'draws':[e for e in trace if e['type'].startswith('draw-')],'eventCounts':dict(collections.Counter(e['type'] for e in trace)),'traceSerializedBytes':len(json.dumps(trace).encode()),'postCaptureEvents':len(d['postCaptureHistory']),'rawDiskBytes':size*8,'mainCoexistingDiagnosticBytes':size*4,'status':'PASS','limits':'No browser, upload content hash, later alternate-binding acceptance, or physical-memory claim.'}
 json.dump(summary,open(out/(d['mode']+'-audit.json'),'w'),indent=2);print(json.dumps({k:v for k,v in summary.items() if k in ['mode','eventCounts','postCaptureEvents','status','rawDiskBytes']}))
+
+if d['mode']=='guarded' and len(sys.argv)>4:
+ u=json.load(open(pathlib.Path(sys.argv[4])/'capture.json'));assert u['frames']==d['frames'];assert len(u['textHistory'])==len(d['textHistory']);expanded=0
+ for a,b in zip(u['textHistory'],d['textHistory']):
+  if a['type']=='upload':
+   expected=dict(a);expected.update(x=a['x']-1,y=a['y']-1,width=a['width']+2,height=a['height']+2);assert expected==b;expanded+=1
+  else:assert a==b
+ assert expanded==541
+ assert all(v['channels']==0 for v in comparisons.values())
+ json.dump({'observedEvents':len(d['textHistory']),'identicalNonUploadEvents':len(d['textHistory'])-expanded,'exactlyExpandedUploads':expanded,'identicalMainFrameMetadata':True,'initializationAndContentHashLimitation':True,'guardedVsHistorical':historical},open(out/'paired-history-audit.json','w'),indent=2)
