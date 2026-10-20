@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 4 (part b): items 4.8-4.13
+import {blackPaper} from './source-audit-black.js';
 import {downsSpatial} from './source-audit-downs-items.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, PhiInv, median, mean, pct, dist2, votesFor, mixGrid, binX, gridMedian, gridMean, LINE, cdfOf, votes2, tallyBins } from './ch04.shared.js';
 
@@ -283,73 +284,8 @@ By the median voter theorem (polsci-4.2), the tax rate chosen by majority vote i
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.12
-    {
-      num: '4.12',
-      kind: 'Paper',
-      name: 'On the Rationale of Group Decision-making',
-      paper: { authors: 'Duncan Black', year: 1948, title: 'On the Rationale of Group Decision-making', venue: 'Journal of Political Economy 56 (1): 23–34', doi: '10.1086/256633' },
-      introduces: ['polsci-4.1', 'polsci-4.2'],
-      statement: String.raw`Black asks when the decision of a committee by majority vote is determinate, and answers by restricting the preferences of its members. Suppose the options can be arranged on a line and every member's preference is single-peaked, drawn as a curve over the options with one maximum. Then, with an odd number of members, the option at the **median of the members' peaks** beats every other option in a vote between two, so the committee's pairwise decisions form a consistent ordering with that option on top (polsci-4.2). When some member's curve has two peaks, the majority relation can cycle, and the committee has no determinate decision (polsci-2.1).`,
-      idea: String.raw`The context is the question of whether voting among several options yields a decision at all, which the cyclic majorities of Condorcet's paradox (polsci-2.1) put in doubt. Black's paper (1948), which predates Arrow's impossibility theorem (1950), identified a condition on the *domain* of preferences, single-peakedness (polsci-4.1), that removes the difficulty, and the median voter theorem (polsci-4.2) as its consequence. It changed the question from "is majority rule well-defined?" to "which restrictions on preferences make it so?", and the one-dimensional case it solved is the basis of the spatial theory of parties and elections in the rest of this chapter.`,
-      caption: String.raw`Five committee members rank seven options $A$–$G$, drawn as curves over the options. Pick a member (buttons) and **drag the dots on her curve** to reshape her preferences; the other members' curves are faint. At the start everyone is single-peaked: the table on the right (row $a$, column $b$: votes for $a$ minus votes for $b$) shows the option at the median peak (marked $m$) beating all others. Bend one member's curve to two peaks (the **bend** button does it for member 3) and a cycle appears. The curves are my own reconstruction of the kind of picture Black used; the paper's own figures were not available to me.`,
-      deps: ['polsci-2.1'],
-      see: ['polsci-4.1', 'polsci-4.2', 'polsci-3.14'],
-      refs: [],
-      tags: ['paper', 'single-peaked', 'median voter'],
-      credit: 'Duncan Black, 1948',
-      scope: String.raw`Odd number of members, strict preferences on a finite set of options ordered on a line. This page re-derives the theorem on an editable committee; it does not reproduce a table or figure from the paper.`,
-      verify: true,
-      links: { doi: 'https://doi.org/10.1086/256633' },
-      viz(v) {
-        const NO = 7, NM = 5;
-        const C = v.stage({ x: [-0.6, NO - 0.4], y: [0, 1.15], axes: 'box', gutter: true, height: 340, minWidth: 340, yticks: [], xticks: range(NO).map((k) => [k, LET[k]]), xlabel: 'options on the line', ylabel: 'member’s value', title: 'committee members’ curves' });
-        const T = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 340, minWidth: 340, title: 'votes between pairs of options' });
-        const mem = v.select('member to edit', range(NM).map((i) => ({ value: i, label: String(i + 1) })), 2, { onChange: () => syncHandles() });
-        const tent = (pk) => range(NO).map((k) => 1 - Math.abs(k - pk) / 7.5);
-        const PEAKS = [0, 1, 3, 4, 6];
-        const BASE = () => PEAKS.map((p) => tent(p));
-        let U = BASE();
-        const HH = range(NO).map((k) => C.handle(k, U[2][k], { color: 'gold', r: 8, constrain: (x, y) => [k, clamp(y, 0.02, 1.1)] }));
-        function syncHandles() { HH.forEach((h, k) => h.set(k, U[mem.value][k])); HH.forEach((h) => { h.color = CC[mem.value]; }); }
-        HH.forEach((h, k) => { h.onDrag = () => { U[mem.value][k] = h.y; }; });
-        v.button('bend member 3', () => { U[2] = [0.84, 0.3, 0.12, 0.35, 0.55, 0.75, 0.95]; syncHandles(); });
-        v.button('reset', () => { U = BASE(); syncHandles(); });
-        let info = null;
-        v.render(() => {
-          const modes = (u) => { let c = 0; for (let k = 0; k < NO; k++) { const l = k === 0 ? -1 : u[k - 1], r = k === NO - 1 ? -1 : u[k + 1]; if (u[k] > l && u[k] > r) c++; } return c; };
-          const peaks = U.map((u) => u.indexOf(Math.max(...u))), uni = U.map((u) => modes(u) === 1);
-          range(NM).forEach((i) => {
-            const act = i === mem.value;
-            C.path(U[i].map((y, k) => [k, y]), { color: CC[i], width: act ? 3 : 1.6, alpha: act ? 1 : 0.4 });
-            U[i].forEach((y, k) => { if (!act) C.dot(k, y, { r: 3, color: CC[i], alpha: 0.5 }); });
-          });
-          HH.forEach((h, k) => { if (Math.abs(h.y - U[mem.value][k]) > 1e-9) h.set(k, U[mem.value][k]); });
-          const M = range(NO).map((a) => range(NO).map((b) => (a === b ? 0 : sum(U.map((u) => Math.sign(u[a] - u[b]))))));
-          const cw = range(NO).filter((a) => range(NO).every((b) => b === a || M[a][b] > 0));
-          let cyc = null; for (let a = 0; a < NO && !cyc; a++) for (let b = 0; b < NO && !cyc; b++) if (M[a][b] > 0) for (let c = 0; c < NO; c++) if (M[b][c] > 0 && M[c][a] > 0) { cyc = [a, b, c]; break; }
-          const mp = [...peaks].sort((x, y) => x - y)[(NM - 1) / 2];
-          // pair table
-          const c = T.ctx, W = T.width, H = T.height, cs = Math.min((W - 60) / NO, (H - 70) / NO), x0 = 40 + (W - 60 - cs * NO) / 2, y0 = 40;
-          range(NO).forEach((k) => { txt(v, c, LET[k], x0 + k * cs + cs / 2, y0 - 14, { size: 12, weight: 700, color: k === mp ? 'green' : 'muted' }); txt(v, c, LET[k], x0 - 14, y0 + k * cs + cs / 2, { size: 12, weight: 700, color: k === mp ? 'green' : 'muted' }); });
-          range(NO).forEach((a) => range(NO).forEach((b) => {
-            const X = x0 + b * cs, Y = y0 + a * cs, val = M[a][b];
-            rr(c, X + 1.5, Y + 1.5, cs - 3, cs - 3, 5);
-            c.fillStyle = v.color(a === b ? 'grid' : val > 0 ? (a === mp ? 'green' : 'accent') : 'orange', a === b ? 0.3 : val > 0 ? 0.4 : 0.12); c.fill();
-            if (a !== b) txt(v, c, (val > 0 ? '+' : val < 0 ? '−' : '') + Math.abs(val), X + cs / 2, Y + cs / 2, { size: 11.5, weight: val > 0 ? 750 : 500, color: val > 0 ? 'ink' : 'muted' });
-          }));
-          txt(v, c, 'row beats column when positive', W / 2, H - 14, { size: 10.5, color: 'muted' });
-          info = { uni, peaks, mp, cw, cyc, M, allUni: uni.every(Boolean) };
-        });
-        v.legend([['green', 'row of the option at the median peak'], ['accent', 'a majority prefers the row option', { area: true }]]);
-        v.readout(() => {
-          const { uni, mp, cw, cyc, allUni } = info;
-          const head = allUni ? `All five curves have one peak. Black’s claim: option **${LET[mp]}**, at the median of the peaks, beats every other option. Computed: ${cw.length ? `Condorcet winner **${cw.map((a) => LET[a]).join(', ')}**${cw[0] === mp ? ' — agreement' : ' — DISAGREEMENT'}` : 'no Condorcet winner — DISAGREEMENT'}.`
-            : `Member${uni.filter((u) => !u).length > 1 ? 's' : ''} ${uni.map((u, i) => (u ? null : i + 1)).filter(Boolean).join(', ')} ${uni.filter((u) => !u).length > 1 ? 'have' : 'has'} more than one peak, so the theorem does not apply. ${cyc ? `The majority relation cycles: ${cyc.map((a) => LET[a]).join(' ≻ ')} ≻ ${LET[cyc[0]]}.` : cw.length ? `A Condorcet winner still exists (${cw.map((a) => LET[a]).join(', ')}): single-peakedness is sufficient, not necessary.` : 'There is no Condorcet winner.'}`;
-          return head;
-        });
-      },
-    },
+    // Source-audited ordinal committee 4.12
+    blackPaper,
 
     // Source-audited finite comparison 4.13
     downsSpatial,
