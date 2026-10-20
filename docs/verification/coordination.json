@@ -1182,6 +1182,20 @@
         "d09be99ca46377f6fd8b7fd80c2471d7634fd7a3",
         "e7334e2"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.2"
+      ],
+      "peer": "Worker two independently read bounded actual originals/author bodies and pixels, regenerated683 exact fixtures, added3125 integer-vector and coefficientwise dominance checks, and passed fresh320both-theme native/source-output pixel review after glyph follow-up",
+      "reports": [
+        "docs/verification/bighist-origins-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "97b9fe0b6c285b1ed6660c048eac5c1ee228c550",
+        "62ae619e72eb8533136af985026bf39cb3348d35"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1194,7 +1208,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 18,
+  "currentPendingSourceReviews": 17,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",

@@ -18,7 +18,7 @@ export function originsModel(weights=[1,1,1,1,1],row='rna',criterion='copying'){
 }
 function guard(c){const set=c.set;c.set=x=>{if(!originWeightValid(x))throw new RangeError('Canonical saved tenth-step weight required');return set(x);};return c;}
 function fit(S,text,x,y,left,right,size=12,extra={}){const c=S.ctx;c.save();c.font=`500 ${size}px Inter, system-ui, sans-serif`;const width=c.measureText(text).width;c.restore();S.text(text,x,y,{size:Math.min(size,size*(Math.abs(S.X(right)-S.X(left))-6)/Math.max(width,1)),halo:false,...extra});}
-export default{num:'3.2',kind:'Hypothesis',name:'The RNA world and rival origin-of-life hypotheses',verify:true,
+export default{num:'3.2',kind:'Hypothesis',name:'The RNA world and rival origin-of-life hypotheses',verify:false,
  statement:String.raw`Origin-of-life proposals emphasize different stages and environments. RNA-world accounts combine sequence information and catalysis in RNA. Wächtershäuser’s1988 surface-metabolism theory begins with mineral-bound autocatalytic chemistry before nucleic-acid templates. Russell and Hall’s1997 vent proposal couples mineral compartments to redox and pH differences. Patel and colleagues’2015 cyanosulfidic chemistry links precursors of RNA, amino acids and lipids in a proposed surface setting.
 
 These are overlapping research programs, not four exclusive historical outcomes. Laboratory synthesis, a proposed geological scenario and direct evidence of an ancient event are different kinds of support. None of the cited results identifies a complete historical path from simple chemistry to the first cells.`,

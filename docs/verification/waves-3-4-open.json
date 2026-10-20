@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 18,
+  "remainingFlags": 17,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -19,7 +19,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 10
+    "bighist": 9
   },
   "queue": [
     {
@@ -150,22 +150,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "bighist-3.2",
-      "file": "content/bighist/ch03.js",
-      "name": "The RNA world and rival origin-of-life hypotheses",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/RNA_world",
-        "doi": "https://doi.org/10.1038/nature08013"
       }
     },
     {
@@ -1132,7 +1116,8 @@
       "bighist-3.7",
       "arch-4.9",
       "bighist-3.1",
-      "bighist-4.1"
+      "bighist-4.1",
+      "bighist-3.2"
     ]
   },
   "additionalFollowups": [
@@ -6271,6 +6256,11 @@
       "id": "bighist-4.1",
       "status": "resolved",
       "note": "2026-10-20: worker one independently read original source tables and author reply plus official museum bodies, regenerated 80-digit reference and independent 100-digit allometry, fresh narrow native and real pointer-drag replays, own source/output pixels without findings; docs/verification/bighist-hominin-peer.md."
+    },
+    {
+      "id": "bighist-3.2",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently read bounded actual originals/author bodies and pixels, regenerated683 exact fixtures, added3125 integer-vector and coefficientwise dominance checks, and passed fresh320both-theme native/source-output pixel review after glyph follow-up; docs/verification/bighist-origins-peer.md."
     }
   ]
 }
