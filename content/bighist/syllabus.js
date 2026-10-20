@@ -132,8 +132,8 @@ export default {
           pic: 'Separate fixed published eruption-age evidence from an authored continuous pair-coalescence model; distinguish conditional interval probability from the fraction of all initial pairs.' },
         { num: '4.7', kind: 'Concept', name: 'Collective learning', deps: ['bighist-4.1', 'stat-1.12', 'bioinf-3.5'], refs: ['Christian2004 pp146–148', 'Henrich2004 pp200–203/210'],
           pic: 'Replay exact integer four-group Gumbel block maxima with a saved seed and optional zero bound; compare finite best-value averages to explicitly separate unbounded drift diagnostics.' },
-        { num: '4.8', kind: 'Hypothesis', name: 'Megafaunal extinctions: overkill or climate?', deps: ['bighist-4.3', 'bighist-4.2'], refs: ['Christian'],
-          pic: 'Extinction dates of large mammals by continent against human arrival and climate shifts: drag the uncertainty bars and see which explanation each continent supports.' },
+        { num: '4.8', kind: 'Hypothesis', name: 'Megafaunal extinctions: comparing dated windows', deps: ['bighist-4.3', 'bighist-4.2'], refs: ['Roberts2001', 'Faith2009', 'Holdaway2014', 'Clarkson2017', 'USGS2026'],
+          pic: 'Drag four saved endpoints in three source-specific dating cases; compare analytic uniform-model order, conditional gaps, overlap and point ties without assigning a cause.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 5

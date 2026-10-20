@@ -1,0 +1,64 @@
+[
+  {
+    "file": "roberts2001-uow.pdf",
+    "localPath": "/tmp/atlas-worker-two/bighist-extinction-sources/roberts2001-uow.pdf",
+    "url": "https://documents.uow.edu.au/content/groups/public/@web/@sci/@eesc/documents/doc/uow014698.pdf",
+    "doi": "10.1126/science.1060264",
+    "bytes": 988932,
+    "sha256": "145d22fcba7966324c4a52026bd216bd423c23a8967140ca08683deb4cc2de79",
+    "readScope": "Complete original five-page article1888–1892 read. In particular1891 statistical model and95%CI, dating/reworking caveats,1892 alternative causal paths. SI not read/reproduced. Historical source model, not universal/current chronology.",
+    "pixels": [
+      "/tmp/atlas-worker-two/bighist-extinction-sources/roberts2001-uow-p4.png",
+      "/tmp/atlas-worker-two/bighist-extinction-sources/roberts2001-uow-p5.png"
+    ]
+  },
+  {
+    "file": "faith2009-author.pdf",
+    "localPath": "/tmp/atlas-worker-two/bighist-extinction-sources/faith2009-author.pdf",
+    "url": "https://drive.google.com/uc?export=download&id=1rZB-l38O527ADDD8QcN31FQ_GzHL8nn9",
+    "doi": "10.1073/pnas.0908153106",
+    "bytes": 446197,
+    "sha256": "1fd5ac1f08bc3425f41a6d9ab2447afad46a1b6b02b6207f042e49280bee5f0e",
+    "readScope": "All five main pages20641–20645 read.20641 sample/window definition,20642–20643 sampling tests and Signor–Lipps direction,20644 alternative prior losses/causal non-identifiability,20644–20645 dating Methods. Author-site link resolves to actual original plus6SI pages; SI not independently audited/reproduced.",
+    "pixels": [
+      "/tmp/atlas-worker-two/bighist-extinction-sources/faith2009-author-p3.png",
+      "/tmp/atlas-worker-two/bighist-extinction-sources/faith2009-author-p4.png"
+    ],
+    "authorLocator": "https://www.toddsurovell.com/todd-surovell",
+    "observedAuthorLink": "https://drive.google.com/file/d/1rZB-l38O527ADDD8QcN31FQ_GzHL8nn9/view?usp=sharing"
+  },
+  {
+    "file": "holdaway2014-correct.pdf",
+    "localPath": "/tmp/atlas-worker-two/bighist-extinction-sources/holdaway2014-correct.pdf",
+    "url": "https://www.nature.com/articles/ncomms6436.pdf",
+    "doi": "10.1038/ncomms6436",
+    "bytes": 993452,
+    "sha256": "45e3576550d4f7f1c462541e6e37ddc9168548feefe33eccee21a0453d2b16ed",
+    "readScope": "Complete main text/Methods pp1–7 read, page8 bibliography checked for identity. Actual p4 1294–1330CE95%onsetHPD vs1396–1480CE lossHPDmass.949 retained. Distinct eastern-lowland chronology not substituted; discussion1446endpoint is not treated as95%bound. Detailed Methods phases/deposition assumptions read; SI/raw ages not independently rerun.",
+    "pixels": [
+      "/tmp/atlas-worker-two/bighist-extinction-sources/holdaway2014-correct-p3.png",
+      "/tmp/atlas-worker-two/bighist-extinction-sources/holdaway2014-correct-p4.png",
+      "/tmp/atlas-worker-two/bighist-extinction-sources/holdaway2014-correct-p7.png"
+    ]
+  },
+  {
+    "file": "clarkson-2017.pdf",
+    "url": "https://digital.library.adelaide.edu.au/server/api/core/bitstreams/cc073119-2f9f-4379-854d-13ea614fd415/content",
+    "doi": "10.1038/nature22968",
+    "bytes": 5388993,
+    "sha256": "d76d32b1b7dac17615135f7832426575e02980b7347ba7f7316c5bbe76992a04",
+    "readScope": "Institutional accepted manuscript, complete main lines1–212 read, original PDF5 date/model paragraph pixels inspected.65.0±5.7kyr total systematic95.4%, alternative±3.7 excludes systematic at same95.4%.120page supplement/raw lab model not all audited.",
+    "localPath": "/tmp/atlas-worker-two/bighist-human-sources/clarkson-2017.pdf",
+    "reuse": "Accepted bighist4.3 bounded original/official source reading; actual PDF bytes rehashed for4.8."
+  },
+  {
+    "file": "usgs-whitesands-2025.pdf",
+    "url": "https://pubs.usgs.gov/fs/2025/3046/fs20253046.pdf",
+    "doi": "10.3133/fs20253046",
+    "bytes": 1670594,
+    "sha256": "e976374dc9c1fe23ecd94fc7396e78eb9bd7ac4a296db8422da0e6e13e3f0d22",
+    "readScope": "Complete four-page official coauthor fact sheet read; actual first-page date and third-page footprint horizons inspected. Number2025–3046, actual publicationMay2026.23–21kyr is approximateTH2–6activity interval. Original2021/2023articles/raw data not claimed read or reproduced.",
+    "localPath": "/tmp/atlas-worker-two/bighist-human-sources/usgs-whitesands-2025.pdf",
+    "reuse": "Accepted bighist4.3 bounded original/official source reading; actual PDF bytes rehashed for4.8."
+  }
+]
