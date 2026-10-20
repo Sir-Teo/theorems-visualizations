@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 36,
-  "wholeSyllabusBelowTarget": 26,
+  "publishedBelowTarget": 35,
+  "wholeSyllabusBelowTarget": 25,
   "entries": [
     {
       "collection": "stat",
@@ -1432,12 +1432,26 @@
       "collection": "info",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 9,
-      "writtenToKnown": 9,
-      "wholeSyllabus": 12,
-      "publishedShortfall": 16,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 28,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "info-1.7",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-1.10",
+          "prerequisite": "pma-5.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "info-1.1",
           "prerequisite": "prob-1.1.1a",
@@ -1460,8 +1474,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "info-1.3",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "info-1.4",
           "prerequisite": "rca-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-2.8",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-2.13",
+          "prerequisite": "pma-5.11",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -1481,6 +1516,34 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "info-2.3",
+          "prerequisite": "rca-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-2.4",
+          "prerequisite": "prob-2.2.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.10",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.11",
+          "prerequisite": "pma-3.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "info-3.12",
           "prerequisite": "stoch-4.1",
           "prerequisiteField": "math",
@@ -1488,8 +1551,57 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "info-3.13",
+          "prerequisite": "stoch-4.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.14",
+          "prerequisite": "stoch-4.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.15",
+          "prerequisite": "stoch-4.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.1",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-3.1",
+          "prerequisite": "prob-1.6.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "info-3.7",
           "prerequisite": "pma-8.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-4.14",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "info-4.4",
+          "prerequisite": "pma-3.20",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -15888,7 +16000,8 @@
       "5a442ec82caadd1e241c5a70000fa5281b694872",
       "70998872b4b75de086bfbcbcf5a5f4e52ec456c0",
       "2a677b2630cd8e8cde1383ff576c57e66c7fe018",
-      "48093726065c5fa4a9e3fc065ec6cdd951d58014"
+      "48093726065c5fa4a9e3fc065ec6cdd951d58014",
+      "bd86a7e011b98a7787dcd1dc3d34a447b0326221"
     ],
     "excludedUnacceptedEdges": [
       {

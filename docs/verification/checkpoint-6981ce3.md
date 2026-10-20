@@ -9,3 +9,5 @@ This checkpoint includes independently accepted WAVES/AERO/DEMO prerequisites an
 Excludes subsequent GEOL candidate/peer/acceptance files, later map operation census and future INFO/GEO/BEHAV/KIN/PHYSIO/EPI candidates. Those are not certified by this immutable run. Full-map60fps remains open; Wave5 is prepared and unstarted until all§7.3 gates pass.
 
 Evidence: `/tmp/atlas-continuation/checkpoint4-{build,tests,static,queue,crossfield-accepted}.log`, exact marker `checkpoint4-commit.txt`, accepted full inventory `checkpoint4-crossfield-accepted.json`. No original or old-worker checkout was edited.
+
+Subsequent review: independent peer `a8a78482277a8dc984c398e41c0ba4b2ef60c0ca` accepted the included entropy bridge note. Its later INFO content/peer files remain outside this immutable test run. See [independent review](info-independent-peer-2026-10-20.md).

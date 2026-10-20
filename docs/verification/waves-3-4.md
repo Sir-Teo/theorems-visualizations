@@ -966,3 +966,6 @@ GEOL's fifteen mathematical inputs are [independently accepted](geol-independent
 
 
 Exact [6981ce3 checkpoint](checkpoint-6981ce3.md) passes2,140default tests including all6UIgroups, strict/fullstatic0errors/0warnings and home112,981bytes gzip. It includes WAVES/AERO/DEMO and the acceptedIMAGING2.9peer; its prerequisite inventory is696/37/26. GEOL acceptance is later (live681/36/26); the exact snapshot is not extended to later files. Entropy bridge is still awaiting independent peer. Source queue5=833+1−829,146acceptedentries.
+
+
+INFO's sixteen inputs and the bounded entropy bridge note are [independently accepted](info-independent-peer-2026-10-20.md). Current accepted shortfall665,35/64published collections below25,25whole syllabi below25; sourcequeue remains5. INFO/peer files are later than the2140-test snapshot; the included entropy note has now received independent acceptance.

@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent INFO prerequisites and entropy bridge peer",
+      "current": "Read-only complete production raster DOM-promotion hypothesis",
       "owns": [
-        "Unique INFO and entropy bridge peer reports/tests only"
+        "Unique map read-only reports; no renderer or benchmark"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "GEO atmosphere/ocean prerequisite production",
+      "current": "Independent map area census peer; GEO producer boundary preserved",
       "owns": [
-        "GEO written items/matching rows/unique reports/tests"
+        "Unique map census peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -1406,7 +1406,7 @@
       "/tmp/atlas-continuation/checkpoint4-crossfield-accepted.log"
     ],
     "limitations": [
-      "Entropy bridge note be2bdb2 is tested but awaits independent INFO/bridge peer; no source closure.",
+      "Entropy bridge note be2bdb2 is included; subsequent a8a7848 independently accepted it outside the immutable tested snapshot.",
       "Default test success does not accept unresolved source bodies or frozen BIGHIST3.5candidate/edge; accepted inventory excludes that edge.",
       "Excludes later GEOL integration, map operation census and forthcoming prerequisite candidates."
     ]
@@ -1965,15 +1965,31 @@
       "report": "docs/verification/geol-independent-peer-2026-10-20.md",
       "sourceClosure": "None; all functions and source flags preserved.",
       "bridgeReview": "No changed consumers are existing bridge steps."
+    },
+    {
+      "collection": "info",
+      "commits": [
+        "bd86a7e011b98a7787dcd1dc3d34a447b0326221",
+        "be2bdb25dbdac006b8e4e08df5fc035891f0431b",
+        "a8a78482277a8dc984c398e41c0ba4b2ef60c0ca"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs; coordinator bridge note",
+      "peer": "logic_peer",
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "report": "docs/verification/info-independent-peer-2026-10-20.md",
+      "sourceClosure": "None; functions/source flags preserved.",
+      "bridgeReview": "Entropy3.14 common-kernel/stationary-reference note independently accepted with actual narrow-theme cards."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 681,
-    "publishedBelow25": 36,
+    "publishedShortfall": 665,
+    "publishedBelow25": 35,
     "collections": 64,
-    "wholeSyllabusBelow25": 26,
+    "wholeSyllabusBelow25": 25,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twelve further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO and GEOL. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Thirteen further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO, GEOL and INFO. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
