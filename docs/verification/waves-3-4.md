@@ -963,3 +963,6 @@ AERO and corrected DEMO prerequisites are independently accepted: fourteen and t
 
 
 GEOL's fifteen mathematical inputs are [independently accepted](geol-independent-peer-2026-10-20.md), giving25published links. Current shortfall681,36/64 published collections below25,26whole syllabi below25. This later batch is outside the running immutable6981ce3 checkpoint.
+
+
+Exact [6981ce3 checkpoint](checkpoint-6981ce3.md) passes2,140default tests including all6UIgroups, strict/fullstatic0errors/0warnings and home112,981bytes gzip. It includes WAVES/AERO/DEMO and the acceptedIMAGING2.9peer; its prerequisite inventory is696/37/26. GEOL acceptance is later (live681/36/26); the exact snapshot is not extended to later files. Entropy bridge is still awaiting independent peer. Source queue5=833+1−829,146acceptedentries.

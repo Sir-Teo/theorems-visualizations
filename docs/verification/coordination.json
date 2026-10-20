@@ -1366,15 +1366,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "888724954d683105ce371236fbdaffa9fe5bdf49",
-    "acceptedContentCommit": "8887249",
-    "report": "docs/verification/checkpoint-8887249.md",
-    "defaultTests": 2128,
+    "testedContentCommit": "6981ce3e31f5d8632628ce3fd3c7f9da8cb786cb",
+    "acceptedContentCommit": "6981ce3",
+    "report": "docs/verification/checkpoint-6981ce3.md",
+    "defaultTests": 2140,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 112.95280875,
+    "testDurationSeconds": 131.666761041,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1385,13 +1385,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112923,
+    "homeGzipBytes": 112981,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 736,
-    "publishedCollectionsBelowTarget": 40,
+    "publishedCrossFieldShortfall": 696,
+    "publishedCollectionsBelowTarget": 37,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 27,
+    "wholeSyllabusBelowTarget": 26,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1399,16 +1399,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint3-build.log",
-      "/tmp/atlas-continuation/checkpoint3-tests.log",
-      "/tmp/atlas-continuation/checkpoint3-static.log",
-      "/tmp/atlas-continuation/checkpoint3-queue.log",
-      "/tmp/atlas-continuation/checkpoint3-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint4-build.log",
+      "/tmp/atlas-continuation/checkpoint4-tests.log",
+      "/tmp/atlas-continuation/checkpoint4-static.log",
+      "/tmp/atlas-continuation/checkpoint4-queue.log",
+      "/tmp/atlas-continuation/checkpoint4-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes IMAGING2.9 runtime candidate1a26f53; independent native acceptance subsequently completed in aa491cc, outside the tested snapshot.",
-      "Default test success does not accept unresolved source bodies or the frozen BIGHIST3.5 candidate/edge. Accepted crossfield inventory excludes that edge.",
-      "Excludes subsequent experimental map files/reports, WAVES/DEMO/AERO candidates and later runtime-peer reports."
+      "Entropy bridge note be2bdb2 is tested but awaits independent INFO/bridge peer; no source closure.",
+      "Default test success does not accept unresolved source bodies or frozen BIGHIST3.5candidate/edge; accepted inventory excludes that edge.",
+      "Excludes later GEOL integration, map operation census and forthcoming prerequisite candidates."
     ]
   },
   "openStateFindings": [
