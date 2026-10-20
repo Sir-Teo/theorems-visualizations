@@ -12,7 +12,7 @@ IsoSer - 1.4e-4 -
 α-AIB 1.1e-3 3.7e-3 7.1e-2
 β-AIB 3.2e-5 9e-4 4.8e-2
 α-ABA 7e-4 2e-4 -
-β-ABA 6e-4 6e-4 4.7e-2
+β-ABA 5e-4 6e-4 4.7e-2
 γ-ABA 1e-4 6e-4 1.4e-2
 HomoSer - 3.4e-6 -
 2-Me-Ser - 1.6e-5 -
