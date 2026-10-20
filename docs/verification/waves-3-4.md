@@ -1057,3 +1057,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Private tiny atlas gutter acceptance
 
 [Independent atlas peer](map-atlas-gutter-independent-peer.md) accepts the bounded private transparent-perimeter correction across 52 cases, including scaled titles and thick strokes. Root integrated raw/extent audits pass; full inner glyph bytes, fresh output, placement/filter/state and logical owner sizes are preserved. This is outside production and checkpoint be8d100. A new original-only history probe is prepared, not executed; full-map fairness/lifecycle/resources/60fps and alternate binding remain open.
+
+### MAT combined acceptance
+
+[Independent MAT peer](mat-independent-peer.md) accepts 22 direct inputs and the bounded model, units and layout corrections. Full objects/functions/flags/raw lists and fresh full narrow-theme fields pass; root composition preservation/closing and independent math rechecks pass. Live prerequisite shortfall 277, 17/64 published and 14 whole syllabi below target; 31 further collections meet target. This follows checkpoint be8d100; source queue five, full-map and Wave 5 gates remain open.

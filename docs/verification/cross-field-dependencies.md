@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **18 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 299 edges. Even
-including planned items and planned prerequisites, **15 collections remain below 25**.
+Of 64 non-math collections, **17 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 277 edges. Even
+including planned items and planned prerequisites, **14 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -296,3 +296,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## XTAL combined acceptance
 
 [Independent XTAL peer](xtal-independent-peer.md) accepts 24 direct inputs, reaching 25 published / 27 known / 43 whole. The additions are 23 math and one earth-field edge into a chemistry collection. Primitive-cell/subgroup/orientation qualifications and actual narrow equations are independently reviewed; no source closure. Current accepted gate is 299 / 18 / 15, with the frozen BIGHIST edge still excluded.
+
+## MAT combined acceptance
+
+[Independent MAT peer](mat-independent-peer.md) accepts 22 direct inputs, reaching 25 published / 25 known / 44 whole. The additions are 21 math and one physics edge into chemistry. Finite-window/density/activation/defect/slip-rank qualifications, eight equivalent statement wraps and a per-atom versus molar-energy closing correction are reviewed. No source closure. Current accepted gate is 277 / 17 / 14.
