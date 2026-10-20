@@ -162,8 +162,8 @@ with $\tilde g=0$ when $g=0$, and take the step $\theta\leftarrow\theta-\eta\til
           const g0 = grad(h0.x, h0.y), n0 = Math.hypot(g0[0], g0[1]);
           info = { A, B: Bc, n0, e, c, mode, lA: last(A.ls), lB: last(Bc.ls) };
         });
-        v.legend([['red', 'unclipped gradient descent'], ['accent', 'clipped'], ['green', 'valley floor $uS(w)=2$'], ['muted', 'dashed: maximal step $\\eta c$', { dash: true }]]);
-        v.readout(() => info && String.raw`start: loss ${sp(loss(h0.x, h0.y))}, $\|g\|=${sp(info.n0)}$ → unclipped first step has length $\eta\|g\|=${sp(info.e * info.n0)}$; clipped step ≤ $\eta c=${sp(info.e * info.c)}$` + `\n` +
+        v.legend([['red', 'unclipped gradient descent'], ['accent', 'clipped'], ['green', 'valley floor $uS(w)=2$'], ['muted', 'dashed: bound for selected rule', { dash: true }]]);
+        v.readout(() => info && String.raw`start: loss ${sp(loss(h0.x, h0.y))}, $\|g\|=${sp(info.n0)}$ → unclipped first step has length $\eta\|g\|=${sp(info.e * info.n0)}$; clipped step ≤ $\eta c${info.mode === 'value' ? String.raw`\sqrt2` : ''}=${sp(info.e * info.c * (info.mode === 'value' ? Math.SQRT2 : 1))}$` + `\n` +
           `after ${STEPS} steps: unclipped ` + (info.A.dead ? `**diverged** (overflow)` : `loss $${sp(info.lA)}$`) + ` · clipped (${info.mode}) ` + (info.B.dead ? `**diverged**` : `loss $${sp(info.lB)}$`) + (info.n0 * info.e < 0.3 ? ` · the start is gentle enough that clipping is idle: drag it onto the wall at $w>1$` : ''));
       },
     },
