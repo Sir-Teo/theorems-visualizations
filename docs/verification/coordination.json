@@ -905,14 +905,14 @@
   },
   "currentPendingSourceReviews": 39,
   "latestCheckpoint": {
-    "acceptedContentCommit": "a99dc23",
-    "report": "docs/verification/checkpoint-a99dc23.md",
-    "defaultTests": 1889,
+    "acceptedContentCommit": "fb1cb6e",
+    "report": "docs/verification/checkpoint-fb1cb6e.md",
+    "defaultTests": 1930,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 103.15980375,
+    "testDurationSeconds": 105.80627325,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -923,9 +923,9 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112727,
-    "pendingSourceReviews": 55,
-    "acceptedTeamEntries": 93,
+    "homeGzipBytes": 112724,
+    "pendingSourceReviews": 39,
+    "acceptedTeamEntries": 110,
     "publishedCrossFieldShortfall": 847,
     "publishedCollectionsBelowTarget": 53,
     "nonMathCollections": 64,
@@ -937,13 +937,13 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint6-tests.log",
-      "/tmp/atlas-coordinator/checkpoint6-build.log",
-      "/tmp/atlas-coordinator/checkpoint6-static.log"
+      "/tmp/atlas-coordinator/checkpoint7-tests.log",
+      "/tmp/atlas-coordinator/checkpoint7-build.log",
+      "/tmp/atlas-coordinator/checkpoint7-static.log"
     ],
     "limitations": [
-      "Exact tested snapshot includes game4.11 candidatea99dc23 still flagged and awaiting independent acceptance; all93 accepted entries are separate from that pending row.",
-      "UnintegratedART55c303a,TECH67c246d andLING62b0eaf are excluded from this immutable snapshot.",
+      "Exact immutable accepted snapshot excludes ongoing BIGHIST3.8, ART Newton/Goethe, ARCH3.9/3.7 and LING Zipf drafts.",
+      "The first unbuilt scratch attempt was stopped after missing generated data/atlas.css was identified; the final built-snapshot run passes all1930tests.",
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },

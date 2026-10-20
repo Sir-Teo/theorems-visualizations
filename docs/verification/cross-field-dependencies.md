@@ -130,3 +130,8 @@ Published shortfall857→855 through actual prerequisite arguments: soc4.1→pro
 ## Accepted checkpoint through1cf1a67
 
 Published counts remain at shortfall855,53/64collections below25published and28whole syllabi below25. Psych4.8 retains its actually used rca8.13 absolute-integrability prerequisite and moves unused planned art6.2 to related context, reducing the whole-syllabus psych count45→44 without changing published counts. See [retinal acceptance](psych-centresurround-followup.md) and [combined checkpoint](checkpoint-1cf1a67.md).
+
+
+## Accepted checkpoint through fb1cb6e
+
+The exact accepted snapshot has847 published-edge shortfall,53/64 non-math collections below25 published prerequisites and28 below25 over their complete syllabi. Big History3.9 now explicitly uses the actual kinetic-energy definition mech3.1, with chapter/syllabus synchronized; that collection already met the published target, so the summed shortfall stays847. The inventory excludes the ongoing extinction logistic prerequisite and other unaccepted drafts. Counts do not establish justification; the gate remains open.

@@ -883,3 +883,8 @@ The accepted snapshotc9b5466 passes1,695default tests, strict build and full sta
 ## Isolated team checkpoint through214d86c
 
 The accepted queue is96 =833 initial+4 added−741 original resolved. Coordinator plus three isolated workers have accepted46 entries:43 queued reviews cleared and three additional neighboring errors repaired. Psychology and sociology queues are clear. The combined snapshot passes1,735 default tests (including six UI tests), strict build and full static with zero errors/warnings; home JSON112,757 bytes gzip. Source-specific reports retain precise access limits and separate original measurements from authored models. Active candidates are excluded. Full evidence: [checkpoint214d86c](checkpoint-214d86c.md). Wave5 remains prepared; source, cross-field and full-map performance gates remain open.
+
+
+## Isolated-team checkpoint through fb1cb6e (2026-10-20)
+
+The exact immutable accepted snapshot passes1,930 default tests including all6UI tests, strict build6684written/6890planned/450chapters/85collections and full static6621, with0errors/warnings. Home JSON112,724bytes gzip. It has39pending source reviews,797 original flags resolved and3added; all actual flags reconcile. The team has110independently accepted entries. Cross-field published shortfall847,53/64below25 and28whole-syllabus collections below25. Wave5 remains prepared/unstarted and map60fps remains open. See [durable checkpoint](checkpoint-fb1cb6e.md). Ongoing producer drafts are excluded.

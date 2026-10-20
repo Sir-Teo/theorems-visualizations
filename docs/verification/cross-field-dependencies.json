@@ -12900,10 +12900,10 @@
       "collection": "art",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 8,
-      "writtenToKnown": 13,
-      "wholeSyllabus": 29,
-      "publishedShortfall": 17,
+      "writtenToWritten": 7,
+      "writtenToKnown": 12,
+      "wholeSyllabus": 28,
+      "publishedShortfall": 18,
       "unknown": [],
       "edges": [
         {
@@ -12966,13 +12966,6 @@
           "item": "art-3.4",
           "prerequisite": "mech-5.2",
           "prerequisiteField": "physics",
-          "itemWritten": true,
-          "prerequisiteWritten": true
-        },
-        {
-          "item": "art-4.14",
-          "prerequisite": "ladr-1.20",
-          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -13746,9 +13739,9 @@
       "collection": "tech",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 35,
-      "writtenToKnown": 45,
-      "wholeSyllabus": 90,
+      "writtenToWritten": 37,
+      "writtenToKnown": 47,
+      "wholeSyllabus": 92,
       "publishedShortfall": 0,
       "unknown": [],
       "edges": [
@@ -13998,6 +13991,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "tech-5.8",
+          "prerequisite": "mech-4.1",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "tech-5.9",
           "prerequisite": "geog-2.4",
           "prerequisiteField": "earth",
@@ -14038,6 +14038,13 @@
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "tech-5.3",
+          "prerequisite": "mech-4.7",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "tech-5.4",
@@ -14388,10 +14395,10 @@
       "collection": "bighist",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 13,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 42,
-      "publishedShortfall": 12,
+      "writtenToWritten": 14,
+      "writtenToKnown": 20,
+      "wholeSyllabus": 43,
+      "publishedShortfall": 11,
       "unknown": [],
       "edges": [
         {
@@ -14467,6 +14474,13 @@
         {
           "item": "bighist-2.6",
           "prerequisite": "astro-3.3",
+          "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bighist-3.9",
+          "prerequisite": "mech-3.1",
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": true
