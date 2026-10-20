@@ -1032,31 +1032,7 @@
       "Current source and explicit §7.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
-  "openStateFindings": [
-    {
-      "id": "art-optics-tiny-native-roundtrip",
-      "items": [
-        "art-3.3",
-        "art-3.12",
-        "art-3.13"
-      ],
-      "status": "assigned",
-      "owner": "worker_three",
-      "finding": "Some15significant-digit tiny values in native0..12/0..1.2 ranges serialize with fewer significant digits, escaping the current15digit-only raw guard.",
-      "examples": [
-        [
-          1.09441300722704e-06,
-          1.094413007227e-06
-        ],
-        [
-          2.08536099449929e-06,
-          2.085360994499e-06
-        ]
-      ],
-      "required": "Local native-range roundtrip probe before restoration, exact numericDOM assertions, unsupported tiny raw rejection/fullrollback and canonicaltiny replay; independent peer before closure.",
-      "sourceFlags": "Unchanged; source evidence and mathematical model remain accepted."
-    }
-  ],
+  "openStateFindings": [],
   "stateFollowups": [
     {
       "ids": [
@@ -1079,6 +1055,19 @@
       "finding": "Valid raw17digit restoration left actual range DOM rounded while model retained extra digits; near-equality hid disagreement.",
       "verification": "Fresh directDOM equality, valid15digit replay, both rawcounterexample rejection/exactdefault rollback and320light/dark native/source/output review pass.",
       "report": "docs/verification/arch-buttress-pier-followup.md"
+    },
+    {
+      "id": "art-optics-tiny-native-roundtrip",
+      "items": [
+        "art-3.3",
+        "art-3.12",
+        "art-3.13"
+      ],
+      "status": "closed",
+      "correction": "0790ac5",
+      "finding": "Some15significant-digit tiny values in native0..12/0..1.2 ranges serialize with fewer significant digits, escaping the current15digit-only raw guard.",
+      "verification": "Independent actual native counterexamples; six math/static3/0/0 and six fresh320 native groups with exactDOM/tiny raw rollback/canonical replay and own pixels pass.",
+      "report": "docs/verification/art-optics-native-roundtrip-followup.md"
     }
   ]
 }
