@@ -119,10 +119,10 @@ The **per-capita growth rate** is $g = \dfrac1N\dfrac{dN}{dt}$. If births and de
       kind: 'Concept',
       name: 'Doubling time and the rule of 70',
       statement: String.raw`Under exponential growth $N=N_0e^{rt}$ the doubling time is $T_2=\ln 2/r$, independent of $N_0$. Since $\ln 2 = 0.693\ldots$, a continuous growth rate of $p\%$ per period doubles the population in $T_2 \approx 70/p$ periods, with relative error $\approx 1\%$ (the rule of $72$ errs by $+3.9\%$ but is easier to divide). If instead the percentage is a compound rate per period, $T_2=\ln 2/\ln(1+p/100)$, and the rule loses accuracy as $p$ grows.`,
-      idea: String.raw`Solve $e^{rT}=2$. For a continuous rate $r=p/100$ this gives $T_2 = 69.3/p$, so $70/p$ is a convenient overestimate. For a compound rate, $\ln(1+x) = x - x^2/2+\cdots$ makes the true $r$ slightly smaller than $x$, so the exact doubling time is longer than $69.3/p$ and the rule underestimates it, increasingly so for large $p$.`,
+      idea: String.raw`Solve $e^{rT}=2$. For a continuous rate $r=p/100$ this gives $T_2=100\ln2/p$, so $70/p$ is a convenient overestimate. For a compound rate put $x=p/100$. Taylor's theorem (pma-5.15), applied to $\ln(1+x)$ at zero, gives $\ln(1+x)=x-x^2/[2(1+\xi)^2]$ for some $0<\xi<x$. Thus the compound growth exponent is smaller than $x$ and its doubling time exceeds the continuous-rate value. The signed relative error of $70/p$ is $0.7\ln(1+x)/(x\ln2)-1$. It is positive at small compound rates (at $p=1$, the exact time is about $69.661$ periods, below $70$), then becomes negative as the rate rises. The plot computes this error directly; a compound rate does not make the rule an underestimate at every positive rate.`,
       scope: String.raw`Valid for exponential growth only; the shortcut is within a few percent for rates up to about $10\%$ per period.`,
       caption: String.raw`Choose whether $p$ is a continuous or a compound rate and drag $p$. The lower plot shows the percentage error of the rules of 70 and 72 against the exact doubling time; the green band is $\pm5\%$.`,
-      deps: ['mathbio-1.2'],
+      deps: ['mathbio-1.2', 'pma-5.15'],
       tags: ['doubling time', 'exponential growth'],
       refs: ['Edelstein-Keshet ch. 4'],
       viz(v) {
@@ -262,9 +262,9 @@ Here $r$ is the intrinsic growth rate at low density and $K$ the carrying capaci
       statement: String.raw`The initial-value problem $\dot N = rN(1-N/K)$, $N(0)=N_0>0$ has the unique solution
 $$N(t)=\frac{K}{1+\bigl(K/N_0-1\bigr)e^{-rt}} .$$
 It increases to $K$ if $0<N_0<K$, decreases to $K$ if $N_0>K$. If $N_0<K/2$ the curve is sigmoid: the growth rate $\dot N$ is largest, and $N$ has its inflection point, exactly when $N=K/2$, at time $t^*=\frac1r\ln\bigl(K/N_0-1\bigr)$.`,
-      idea: String.raw`The equation is separable. With the substitution $u=1/N$ it becomes linear, $\dot u=-ru+r/K$, whose solution is $u=1/K+(1/N_0-1/K)e^{-rt}$; inverting gives the formula. The speed $\dot N=rN(1-N/K)$ is a parabola in $N$ with its maximum at $N=K/2$ (pma-5.8), so $N$ is steepest when it crosses $K/2$.`,
+      idea: String.raw`The equation is separable. With the substitution $u=1/N$ it becomes linear, $\dot u=-ru+r/K$, whose solution is $u=1/K+(1/N_0-1/K)e^{-rt}$; inverting gives the formula. The speed $\dot N=rN(1-N/K)$ is a parabola in $N$ with its maximum at $N=K/2$ (pma-5.8), so $N$ is steepest when it crosses $K/2$. This substitution uses the linear-equation theorem (ode-1.4) with constant coefficient r and forcing r/K. Its integrating factor is $e^{rt}$. For $N_0>0$, $u(t)$ remains positive for forward time, so taking its reciprocal recovers the unique positive logistic solution on that interval.`,
       caption: String.raw`Drag $N_0$ (gold) below and above $K/2$. The closed form (blue) is overlaid on a numerical solution (gold dots; choose Euler or RK4 and the step). The right panel shows the speed $\dot N(t)$: its peak sits at $N=K/2$ at the predicted time, and for $N_0\ge K/2$ there is no inflection.`,
-      deps: ['mathbio-1.4', 'mathbio-1.5'],
+      deps: ['mathbio-1.4', 'mathbio-1.5', 'ode-1.4'],
       tags: ['logistic growth', 'inflection point'],
       refs: ['Murray I ch. 1'],
       viz(v) {
@@ -315,10 +315,10 @@ It increases to $K$ if $0<N_0<K$, decreases to $K$ if $N_0>K$. If $N_0<K/2$ the 
       num: '1.7',
       kind: 'Concept',
       name: 'Nondimensionalization and scaling',
-      statement: String.raw`Choose a characteristic population $K$ and a characteristic time $1/r$ and set $u=N/K$, $\tau=rt$. The logistic equation becomes the parameter-free equation $du/d\tau=u(1-u)$ with a single remaining parameter $u_0=N_0/K$. Three dimensional parameters $(r,K,N_0)$ collapse to one dimensionless group, and every logistic curve is the same curve $u=1/(1+e^{-(\tau-\tau_0)})$ shifted in time.`,
-      idea: String.raw`Units are arbitrary, so only dimensionless combinations of parameters can matter for the shape of a solution. Choosing scales that make the terms of the equation $O(1)$ both removes redundant parameters and exposes which regime is slow or fast, large or small. Here the scales are forced by the equation: $K$ is the only population and $1/r$ the only time.`,
+      statement: String.raw`Choose a characteristic population $K$ and a characteristic time $1/r$ and set $u=N/K$, $\tau=rt$. The logistic equation becomes the parameter-free equation $du/d\tau=u(1-u)$ with a single remaining parameter $u_0=N_0/K$. Three dimensional parameters $(r,K,N_0)$ collapse to one dimensionless group, and, for $0<u_0<1$, every such logistic curve is the same sigmoid $u=1/(1+e^{-(\tau-\tau_0)})$ shifted in time.`,
+      idea: String.raw`Units are arbitrary, so only dimensionless combinations of parameters can matter for the shape of a solution. Choosing scales that make the terms of the equation $O(1)$ both removes redundant parameters and exposes which regime is slow or fast, large or small. Here the scales are forced by the equation: $K$ is the only population and $1/r$ the only time. The chain rule (pma-5.5) makes the rescaling explicit: $du/d\tau=(dN/dt)/(Kr)$ for $u(\tau)=N(\tau/r)/K$, giving $u(1-u)$. This step applies for positive r,K and any positive initial population. The common shifted sigmoid additionally uses $0<u_0<1$, as do all twelve generated cultures here; a population initially above K instead decreases toward it.`,
       caption: String.raw`Twelve logistic cultures with random $r$, $K$, $N_0$. Slide “rescaling” from $0$ to $1$ to divide each population by $K^s$ and multiply time by $r^s$: at $s=1$ every curve has the same shape. The last step, “shift time”, moves each curve so it reaches $u=\tfrac12$ at $\tau=0$ and they lie on top of each other.`,
-      deps: ['mathbio-1.4'],
+      deps: ['mathbio-1.4', 'pma-5.5'],
       tags: ['nondimensionalization', 'scaling'],
       refs: ['Murray I ch. 1'],
       viz(v) {
@@ -368,10 +368,10 @@ It increases to $K$ if $0<N_0<K$, decreases to $K$ if $N_0>K$. If $N_0<K/2$ the 
       name: 'Gompertz growth',
       credit: 'Gompertz, 1825',
       statement: String.raw`The Gompertz model $\dfrac{dN}{dt}=aN\ln\dfrac KN$ ($a,K>0$) has solution $N(t)=K\exp\bigl(\ln(N_0/K)\,e^{-at}\bigr)$. It is sigmoid and tends to $K$ like the logistic curve, but asymmetric: the growth rate is largest, and the inflection point lies, at $N=K/e\approx0.37K$ rather than $K/2$. The per-capita rate falls like $\ln(K/N)$, not linearly.`,
-      idea: String.raw`Put $y=\ln(N/K)$: then $\dot y=-ay$, a linear equation with solution $y_0e^{-at}$, which gives the formula. The speed $aN\ln(K/N)$ is maximal where its derivative $a\ln(K/N)-a=0$, i.e. $N=K/e$. Gompertz is often a better empirical fit to tumours and to organ growth, where growth slows before half the plateau is reached.`,
+      idea: String.raw`Put $y=\ln(N/K)$: then $\dot y=-ay$, a linear equation with solution $y_0e^{-at}$, which gives the formula. The speed $aN\ln(K/N)$ is maximal where its derivative $a\ln(K/N)-a=0$, i.e. $N=K/e$. Gompertz is often a better empirical fit to tumours and to organ growth, where growth slows before half the plateau is reached. The transformed equation is exactly exponential decay (ode-1.5) with coefficient $k=-a$. Its solution $y=y_0e^{-at}$ applies to either sign of $y_0=\ln(N_0/K)$, as well as zero; exponentiating then recovers the positive-population Gompertz solution. This analytic step is separate from the synthetic-data fitting comparison.`,
       scope: String.raw`Empirical: it describes sigmoid growth with early deceleration; it is not derived from resource limitation. The data here are synthetic and illustrative.`,
       caption: String.raw`Synthetic tumour volumes (dots, noise you control) are fitted by least squares on $\ln N$ with both models. Choose which model generated the data and resample the noise: the residual plot and the sum of squares show which one fits better, and the circled points mark each fit's inflection ($K/2$ for the logistic, $K/e$ for Gompertz).`,
-      deps: ['mathbio-1.4'],
+      deps: ['mathbio-1.4', 'ode-1.5'],
       tags: ['Gompertz', 'tumour growth', 'model fitting'],
       refs: ['Murray I ch. 1'],
       viz(v) {
