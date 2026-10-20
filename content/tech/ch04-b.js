@@ -1,34 +1,10 @@
+import { stampStroke, lockChange } from './source-audit-mechanisms.js';
 import { smeatonWind } from './source-audit-power.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.7–4.12; 4.1–4.6 are in ch04.js)
 import { yearStage, drawYears, G, plate } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
-const smooth = (s) => s * s * (3 - 2 * s);
-
-// ---------------------------------------------------------------- 4.7: the trip hammer, one steady cycle
-/**
- * A hammer on a pivoted helve, head mass as a point at arm length L, lifted by lugs on a shaft. theta = elevation of the head above the anvil (rad).
- * Each lug lifts the tail for a fraction `frac` of the lug period T (smooth rise for the first 70% of its contact, then it slips off), so the head is thrown
- * up to thmax and falls freely (theta'' = −(g/L) cos theta) unless the next lug catches it first. Returns the last of five simulated cycles.
- */
-function hammerCycle(k, rpm, frac, thmax, L) {
-  const T = 60 / (rpm * k), tL = frac * T, N = 1500, dt = T / N, ncyc = 5, out = [];
-  const prof = (tt) => { const f = tt / tL; return f >= 0 && f < 0.7 ? thmax * smooth(f / 0.7) : 0; };
-  let a = 0, w = 0, impacts = [];
-  for (let c = 0; c < ncyc; c++) {
-    impacts = [];
-    for (let i = 0; i < N; i++) {
-      const tt = i * dt, cam = prof(tt), a0 = a;
-      w += -(G / L) * Math.cos(a) * dt; a += w * dt;
-      if (a <= 0) { if (a0 > 1e-9 && w < 0) impacts.push({ v: -w * L, t: tt }); a = 0; w = 0; }
-      if (a < cam) { a = cam; w = Math.max(0, (prof(tt + dt) - cam) / dt); }
-      if (c === ncyc - 1) out.push([tt, a, cam]);
-    }
-  }
-  const vImp = impacts.length ? Math.max(...impacts.map((q) => q.v)) : 0;
-  return { T, tL, samples: out, vImp, hit: impacts.length > 0, tHit: impacts.length ? impacts[0].t : null, dt };
-}
 
 // ---------------------------------------------------------------- 4.11: flat-plate sail on a boat
 /** Force (in units of ½ρA = 1, true wind speed 1) of a thin flat sail with chord direction c in an apparent wind A. */
@@ -68,69 +44,25 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.7
     {
-      num: '4.7',
-      kind: 'Invention',
-      name: 'The cam and the trip hammer',
-      credit: 'Water-driven pestles and hammers are reported from Han China (first century CE or earlier, interpretations differ); mechanised forge hammers are recorded in Europe from the 12th century',
-      verify: true,
-      statement: String.raw`A **cam** is a projection on a rotating shaft that lifts a follower and then lets it go; it turns steady rotation into a repeated up-and-down motion. A **trip hammer** is the classic use: a pivoted beam (the helve) carries a heavy head at one end, and lugs on a shaft (a cam shaft turned by a water wheel, 4.4) press down the other end, lift the head and slip off, so that the head drops under gravity on the work. The same arrangement drives the stamps of a fulling mill, which pounded cloth, and the bellows of a forge.
+      num:'4.7',kind:'Invention',name:'The cam and the trip hammer',verify:true,
+      credit:'Cam-driven stamps described in Agricola 1556, Book VIII; isolated guided-stroke comparison authored here',
+      statement:String.raw`A cam raises a follower as a shaft turns. Releasing a raised head lets gravity produce an impact. A trip hammer uses a pivoted beam; a stamp instead slides in guides. Agricola's De re metallica, Book VIII, describes iron-shod stamps, tappets and two cams per stamp on a water-driven shaft. The 1912 translation and woodcut show this mechanism.
 
-What the sources support: Chinese texts of the Han period, among them Huan Tan's *Xin Lun* (about 20 CE), describe water-driven pestles (although one reading is that they describe a water lever, not a trip hammer), and later work on Han burial models shows vertical water wheels powering batteries of hammers. In Europe, records from Styria (1135 and 1175) and France (1116 and 1249) mention mechanised trip hammers on forges; a claim for a Roman fulling mill rests on a translation that is doubtful. The head of a tilt hammer was limited to about 50 kg, but the stroke rate could be high.
+The illustration studies one ideal **guided vertical stamp stroke**. It does not simulate a pivoted helve, a repeating steady state, the next cam's collision or a specific historical machine. A prescribed lift can require a retaining force at high speed; this constraint is exposed rather than assuming a one-sided cam can pull its follower downward.`,
+      idea:String.raw`Let $T=60/(kN)$ for k lugs and shaft speed N in turns/minute, and let the prescribed lift last $t_L=dT$. For $s=t/t_L$, impose
+$$y=H(3s^2-2s^3),\qquad0\le s\le1.$$
+The head begins and ends the lift at rest, then follows the isolated fall $y=H-g(t-t_L)^2/2$ until impact. Thus $t_f=\sqrt{2H/g}$, $v_{\rm hit}=\sqrt{2gH}$ and impact energy is $mgH$.
 
-Scope of the picture: the head is a point mass on a massless arm, the lug profile is a made-up smooth lift, there is no rebound, and the numbers are those of a typical small mill chosen for illustration.`,
-      idea: String.raw`Raising the head by $h$ stores $mgh$ (mech-3.1); letting it go converts that to speed $v=\sqrt{2gh}$ at the anvil, and the blow is that kinetic energy. The shaft only has to supply the lift, and the water wheel supplies it at a steady rate: mean power = energy per blow times blows per second, where blows per second = (lugs per turn) × (turns per second). The cam profile sets how smoothly the head is lifted, and the release shape sets how cleanly it drops.
-
-What limits the stroke rate is the fall. The head needs a time $t_\mathrm{fall}$ of order $\sqrt{L/g}$ to come down; the next lug arrives after $T=1/(\text{lugs}\times\text{turns/s})$. If $T$ is shorter than the fall the lug catches the head in mid-air, the blow is weaker, and then there is none at all. That is why a mill with many lugs on a slow shaft and a mill with few lugs on a fast shaft give different blows at the same number of strokes.`,
-      caption: String.raw`Left: the cam shaft (turning) and the helve; the head is raised by each lug and drops. Right: the timing diagram for one lug period — the lug's lift (orange dashed) and the head's elevation (green), with the blow marked. Set the **lugs**, the **shaft speed**, the **lug width** (how long each lug stays in contact) and the **lift**. Speed the shaft up with many lugs until the head cannot fall before the next lug catches it: the blows weaken and then stop.`,
-      deps: ['tech-4.4', 'mech-3.1'],
-      see: ['tech-2.10', 'tech-4.6'],
-      refs: ['Mokyr ch. 3', 'Needham, Science and Civilisation in China 4.2 and Lewis (1997), as cited by Wikipedia “Trip hammer”'],
-      tags: ['medieval', 'prime mover', 'mechanism'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Trip_hammer' },
-      viz(v) {
-        const A = v.stage({ x: [-1.2, 3.1], y: [-1.0, 1.6], equal: true, axes: false, height: 300, weight: 1, minWidth: 320, title: 'cam shaft and helve' });
-        const B = v.stage({ x: [0, 1], y: [0, 30], axes: 'box', gutter: true, height: 300, weight: 1, minWidth: 320, xlabel: 'time within one lug period (s)', ylabel: 'elevation of the head (°)', title: 'timing diagram' });
-        const nL = v.slider('lugs on the shaft', 1, 8, 4, { int: true });
-        const rpm = v.slider('shaft speed (turns/min)', 2, 40, 12, { step: 0.5 });
-        const frac = v.slider('lug contact (fraction of period)', 0.1, 0.8, 0.4, { step: 0.01 });
-        const lift = v.slider('lift of the head (°)', 10, 40, 25, { step: 1 });
-        const mass = v.slider('head mass (kg)', 10, 100, 50, { step: 1 });
-        const L = 1.2; // arm to the head, m
-        let cyc = null, key = '';
-        v.animate((t) => {
-          const k = nL.value, th = lift.value * D2R, kk = `${k}|${rpm.value}|${frac.value}|${lift.value}`;
-          if (kk !== key) { key = kk; cyc = hammerCycle(k, rpm.value, frac.value, th, L); }
-          const T = cyc.T, tau = t % T, idx = clamp(Math.floor((tau / T) * cyc.samples.length), 0, cyc.samples.length - 1);
-          const a = cyc.samples[idx][1];
-          // helve: pivot P, tail to the left, head to the right
-          const P = [0.9, 0.2], Lt = 0.8, Lh = 1.5, ca = Math.cos(a), sa = Math.sin(a);
-          const head = [P[0] + Lh * ca, P[1] + Lh * sa], tail = [P[0] - Lt * ca, P[1] - Lt * sa];
-          A.line(-1.2, -0.75, 3.1, -0.75, { color: 'muted', width: 2 });
-          A.rect(1.9, -0.75, 2.9, -0.55, { fill: 'muted', fillAlpha: 0.4, color: 'muted', width: 1.2 }); A.text('anvil', 2.4, -0.9, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' });
-          A.line(P[0], P[1], P[0], -0.75, { color: 'muted', width: 4 }); A.dot(P[0], P[1], { r: 4, color: 'ink' });
-          A.line(tail[0], tail[1], head[0], head[1], { color: 'ink', width: 5, alpha: 0.85 });
-          A.rect(head[0] - 0.13, head[1] - 0.13, head[0] + 0.13, head[1] + 0.13, { fill: 'accent', fillAlpha: 0.5, color: 'accent', width: 2 });
-          // shaft: lugs; contact point is straight below the shaft centre
-          const S = [P[0] - Lt, P[1] + 0.62], rs = 0.18, rl = 0.62, Wl = (cyc.tL / cyc.T) * (360 / k);
-          const base = -90 - Wl / 2 + (tau / cyc.T) * (360 / k);
-          A.circle(S[0], S[1], rs, { fill: 'muted', fillAlpha: 0.4, color: 'muted', width: 1.5 });
-          for (let i = 0; i < k; i++) { const ang = (base + (i * 360) / k) * D2R; A.line(S[0] + rs * Math.cos(ang), S[1] + rs * Math.sin(ang), S[0] + rl * Math.cos(ang), S[1] + rl * Math.sin(ang), { color: 'orange', width: 6 }); }
-          A.text('cam shaft', S[0], S[1] + 0.82, { size: 10.5, color: 'muted', align: 'center' });
-          A.arrow(S[0] - 0.4, S[1] + 0.5, S[0] - 0.4, S[1] + 0.2, { color: 'muted', width: 1.4, head: 6 });
-          if (a < 0.003 && cyc.hit) A.text('blow', head[0] + 0.3, head[1] + 0.25, { size: 11, color: 'red', weight: 700 });
-          // timing diagram
-          B.setView([0, T], [0, Math.max(30, lift.value * 1.15)]);
-          B.path(cyc.samples.map((s) => [s[0], s[2] / D2R]), { color: 'orange', width: 2, dash: [5, 3] });
-          B.path(cyc.samples.map((s) => [s[0], s[1] / D2R]), { color: 'green', width: 2.6 });
-          B.vline(tau, { color: 'gold', width: 1.2, dash: [4, 3] });
-          if (cyc.hit) B.dot(cyc.tHit, 0, { r: 6, color: 'red' });
-        }, { period: 1e9, still: 0.9 });
-        v.legend([['orange', 'lift given by the lug', { dash: [5, 3] }], ['green', 'elevation of the head'], ['red', 'blow', { dot: true }]]);
-        v.readout(() => {
-          const k = nL.value, th = lift.value * D2R, m = mass.value, c = cyc || hammerCycle(k, rpm.value, frac.value, th, L);
-          const h = L * Math.sin(th), eFall = m * G * h, eHit = 0.5 * m * c.vImp * c.vImp, rate = (k * rpm.value) / 60;
-          return `lugs ${k} × ${v.fix(rpm.value, 1)} turns/min = **${v.fix(60 * rate, 0)} blows/min**; lift ${v.fix(h, 2)} m, so a full drop would carry $mgh=${v.fix(eFall, 0)}$ J at ${v.fix(Math.sqrt(2 * G * h), 2)} m/s\nthis cycle: ${c.hit ? `blow at **${v.fix(c.vImp, 2)} m/s**, ${v.fix(eHit, 0)} J (${v.fix(100 * eHit / eFall, 0)}% of a full drop)` : '**the head is caught before it lands: no blow**'}; lug period ${v.fix(1000 * c.T, 0)} ms · mean power into the blows ${v.fix(eHit * rate, 0)} W (illustrative masses and arm)`;
-        });
+During the prescribed lift, guide force is $m(g+\ddot y)$. Its minimum is $m(g-6H/t_L^2)$. A negative value means a retaining constraint would be required; an ordinary upward-only cam cannot enforce that path. The isolated impact time $t_L+t_f$ is compared with the next scheduled lug at T. Equal kN, duty and height give the same trajectory; there is no claimed dependence on how an equal rate is split between lugs and rpm.`,
+      caption:String.raw`Vary lug count, rpm, lift duration, height and mass, then inspect the selected time in one complete isolated stroke. The vertical head reaches the actual drawn anvil at zero height. Orange shows only the prescribed lift; green includes the entire subsequent fall and resting state. The red line marks the next scheduled lug, whose action is not applied. The readout separately reports whether impact precedes that deadline and whether the lift needs a retaining force. A nominal energy-per-period value is conditional on both checks.`,
+      deps:['tech-4.4','mech-3.1'],see:['tech-2.10','tech-4.6'],refs:['Agricola 1556, De re metallica Book VIII; Hoover/Hoover 1912 pp.280–287, stamp/cam text and woodcut p.284'],tags:['mechanism','prime mover'],
+      scope:String.raw`The cubic constrained lift, vertical point mass, fixed g=9.81 m/s², release from rest, perfectly inelastic impact and scheduled-lug deadline are authored assumptions. No unilateral contact solver, cam contour, crushing law, drive inertia, rebound or multi-cycle state is inferred. The diagram's head size and guides are schematic. Current state and event times use the closed-form stroke; finite sample curves also include release, deadline and impact exactly.`,
+      links:{source:'https://www.gutenberg.org/files/38015/38015-h/38015-h.htm#BOOK_VIII'},
+      viz(v){
+        const lugs=v.slider('lugs per shaft turn',1,8,4,{int:true}),rpm=v.slider('shaft speed (turns/min)',2,40,12,{step:'any',decimals:6}),duty=v.slider('prescribed lift / period',.1,.8,.4,{step:'any',decimals:6}),height=v.slider('vertical lift H (m)',.1,1,.4,{step:'any',decimals:6}),mass=v.slider('head mass (kg)',10,100,50,{step:'any',decimals:6}),progress=v.slider('fraction of displayed isolated stroke',0,1,.3,{step:'any',decimals:6}),A=v.stage({x:[-.5,1.5],y:[-.45,2],equal:true,axes:false,height:310,minWidth:260,title:'single guided vertical stamp'}),B=v.stage({x:[-.1,2],y:[-.1,1.2],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'time from lift start (s)',ylabel:'head height above impact (m)',title:'complete isolated motion and next deadline'});let info;
+        v.legend([['orange','prescribed constrained lift'],['green','isolated head motion'],['red','next scheduled lug'],['gold','selected time',{dot:true}]]);
+        v.render(()=>{const p=stampStroke(lugs.value,rpm.value,duty.value,height.value,mass.value,progress.value),y=.2+p.current.y;A.rect(.2,-.25,.9,.1,{color:'muted',fill:'muted',fillAlpha:.3});A.line(.18,.1,.18,1.8,{color:'muted',width:2});A.line(.92,.1,.92,1.8,{color:'muted',width:2});A.rect(.32,y-.1,.78,y+.1,{color:'accent',fill:'accent',fillAlpha:.4});A.line(.55,y+.1,.55,y+.55,{color:'ink',width:3});A.text('impact surface',.55,-.35,{align:'center',color:'muted',size:10});B.setView([-.05*p.end,1.05*p.end],[-.15*p.height,1.22*p.height]);B.path(p.headCurve,{color:'green',width:2.3});B.path(p.liftCurve,{color:'orange',width:2,dash:[4,3]});B.line(p.T,0,p.T,p.height,{color:'red',width:1.5,dash:[4,3]});B.dot(p.impactTime,0,{color:'red',r:4,ring:false});B.dot(p.time,p.current.y,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `At ${v.fix(p.time,9)} s: ${p.current.phase}, height ${v.fix(p.current.y,9)} m, velocity ${v.fix(p.current.v,9)} m/s. Lift ends ${v.fix(p.liftTime,9)} s; isolated impact ${v.fix(p.impactTime,9)} s; next scheduled lug ${v.fix(p.T,9)} s: ${p.hitBeforeNext?'impact precedes next lug':'next lug would intervene'}.\nMinimum prescribed guide force ${v.fix(p.minGuideForce,9)} N: ${p.oneSided?'nonnegative throughout lift':'a retaining constraint would be required'}. Isolated impact ${v.fix(p.impactSpeed,9)} m/s, ${v.fix(p.energy,9)} J. ${p.cycleCompatible?`Compatible ideal energy per period ${v.fix(p.nominalPower,9)} W; drive losses omitted.`:'A repeated-cycle power is not inferred for this setting.'}`;});
       },
     },
 
@@ -270,98 +202,25 @@ To use the horse's mass the rider must hold on: the whole force must pass betwee
 
     // ------------------------------------------------------------------ 4.10
     {
-      num: '4.10',
-      kind: 'Invention',
-      name: 'The canal pound lock',
-      credit: 'Qiao Weiyue, China, 984 CE (Song dynasty, near Huai’an); in Europe, pound locks in the Low Countries and Italy in the 14th–15th centuries',
-      verify: true,
-      statement: String.raw`A **pound lock** lets a boat change level on a canal. It is a chamber with a gate at each end: the boat enters at one level, the gates are closed, water is let in or out of the chamber through sluices (paddles) until its surface matches the other level, and the boat leaves through the other gate. The older **flash lock** was a single removable weir or gate: opening it let the upper reach rush out, and boats were carried through on the flood (downstream) or hauled up against the current, wasting a great deal of water and sometimes the boat.
+      num:'4.10',kind:'Invention',name:'The canal pound lock',verify:true,
+      credit:'Lock operation described by the Canal & River Trust; ideal level-change and water budget authored here',
+      statement:String.raw`A pound lock is a chamber between gated water levels. Paddles admit or discharge water while the main gates are closed; after the chamber and the next reach have equal levels, the relevant gate can open. This mechanism is described in the Canal & River Trust's operational handbook. The handbook also recommends sharing broad locks to save water; a chamber cycle need not correspond to just one boat.
 
-The pound lock is credited to Qiao Weiyue, a Song official, in 984 CE: he installed two gates about 250 feet apart, roofed over, on the canal near Huai'an in Jiangsu, to stop barges wrecking on the slipways; Shen Kuo describes such locks in his *Dream Pool Essays* (1088). In Europe, a form of pound lock was built at Vreeswijk in the Netherlands (the sources give 1373 and 1385), the first "true European pound lock" is placed at Damme near Bruges in 1396, and Bertola da Novate built 18 pound locks on the Naviglio di Bereguardo between 1452 and 1458. Mitre gates are attributed to Leonardo da Vinci in the late 15th century. Whether the European lock was invented independently or learnt from China is not established in what I could confirm. The dates come from secondary summaries of Needham, and are flagged unverified.
-
-Scope: the model fills the chamber through paddles that discharge like an orifice; friction in the culverts and leakage are ignored.`,
-      idea: String.raw`The water lost by a lockage is fixed by geometry: the chamber's area times the lift, $V=L\,w\,\Delta H$, taken once from the upper pound for each boat that goes up or down. The time taken depends on the paddles: with discharge coefficient $c_d$ and paddle area $a$, the level difference $h$ between the pound and the chamber obeys $A\,\dot h=-c_d a\sqrt{2gh}$ (Torricelli, fluid-2.9), which reaches zero in a finite time $t=2A\sqrt{\Delta H}/(c_d a\sqrt{2g})$. Open the paddles slowly and the lock is slow; open them wide and the boat is knocked about.
-
-A flash lock releases a reach: if the weir's height equals the lift, the reach of length $\ell$ drains by about that height, $V_\mathrm{flash}\approx \ell\,w\,\Delta H$, which is larger than the chamber by the ratio of the reach to the chamber, often a hundred or more. Canals in hilly country could run on the water saved.`,
-      caption: String.raw`A boat is taken **up** or **down** (choose) through the lock; the animation runs at a rate you can read from the clock on the picture (time is real time, sped up). The blue line is the water in the chamber. Set the **chamber length and width**, the **lift** and the **paddle area**, and read the water used and the time. The bars compare it with a flash lock for a reach of the chosen length. Below, the dated evidence for the lock (the disputed Vreeswijk date hollow and dashed).`,
-      deps: ['tech-4.3', 'fluid-2.9'],
-      see: ['tech-4.3', 'tech-8.9'],
-      refs: ['Mokyr ch. 3', 'Needham, Science and Civilisation in China 4.3 (as cited by Wikipedia “Lock (water navigation)”)'],
-      tags: ['medieval', 'canals', 'hydraulics'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Lock_(water_navigation)' },
-      viz(v) {
-        const A = v.stage({ x: [0, 100], y: [-2.5, 6], axes: false, height: 280, full: true, title: 'side view of the lock' });
-        const Bst = v.stage({ x: [0, 4], y: [-0.15, 1], axes: false, height: 200, weight: 1, minWidth: 300, title: 'water used per boat' });
-        const Dd = yearStage(v, [950, 1540], { height: 190, weight: 1.4, minWidth: 360, title: 'dated evidence: the pound lock' });
-        const dirS = v.select('boat goes', [{ value: 'up', label: 'up' }, { value: 'down', label: 'down' }], 'up');
-        const Ls = v.slider('chamber length (m)', 15, 60, 30, { step: 1 });
-        const Ws = v.slider('chamber width (m)', 3, 9, 6, { step: 0.5 });
-        const Hs = v.slider('lift $\\Delta H$ (m)', 1, 4, 2.5, { step: 0.1 });
-        const Ps = v.slider('paddle area (m²)', 0.1, 1.5, 0.6, { step: 0.05 });
-        const Rs = v.slider('flash-lock reach (m)', 500, 5000, 2500, { step: 100 });
-        const SPEED = 15;
-        function timeline() {
-          const Ach = Ls.value * Ws.value, dH = Hs.value, tF = (2 * Ach * Math.sqrt(dH)) / (0.6 * Ps.value * Math.sqrt(2 * G));
-          return { Ach, dH, tF, ph: [8, 3, tF, 3, 8] }; // enter, close gate, fill/empty, open gate, leave
-        }
-        v.animate((t) => {
-          const { Ach, dH, tF, ph } = timeline(), up = dirS.value === 'up', total = ph.reduce((a, b) => a + b, 0);
-          const tr = (t * SPEED) % total; // real seconds
-          let ph0 = 0, acc = 0; while (ph0 < 4 && tr >= acc + ph[ph0]) { acc += ph[ph0]; ph0++; }
-          const f = (tr - acc) / ph[ph0];
-          const Lc = Ls.value, x0 = 50 - Lc / 2, x1 = 50 + Lc / 2;
-          // levels: lower pound 0, upper pound dH. Going up: boat from lower (right) to upper (left)? place the upper pound on the left always
-          const hCh = (() => {
-            const h0 = up ? 0 : dH, h1 = up ? dH : 0;
-            if (ph0 < 2) return h0;
-            if (ph0 === 2) { const s = 1 - f, hh = dH * s * s; return up ? dH - hh : hh; }
-            return h1;
-          })();
-          const vol = ph0 < 2 ? 0 : ph0 === 2 ? Ach * Math.abs(hCh - (up ? 0 : dH)) : Ach * dH;
-          const bed = -1.5;
-          A.rect(0, bed, x0, dH, { fill: 'accent', fillAlpha: 0.22, stroke: false });
-          A.rect(x1, bed, 100, 0, { fill: 'accent', fillAlpha: 0.22, stroke: false });
-          A.rect(x0, bed, x1, hCh, { fill: 'accent', fillAlpha: 0.32, stroke: false });
-          A.line(0, dH, x0, dH, { color: 'accent', width: 2 }); A.line(x1, 0, 100, 0, { color: 'accent', width: 2 }); A.line(x0, hCh, x1, hCh, { color: 'accent', width: 2.4 });
-          A.line(0, bed, 100, bed, { color: 'muted', width: 3 }); A.rect(0, bed - 1, 100, bed, { fill: 'muted', fillAlpha: 0.3, stroke: false });
-          // gates (upper at x0, lower at x1), raised or closed
-          const upOpen = up ? ph0 >= 3 : ph0 <= 0, loOpen = up ? ph0 <= 0 : ph0 >= 3;
-          A.line(x0, bed, x0, upOpen ? dH + 0.6 : dH + 1.2, { color: upOpen ? 'faint' : 'ink', width: upOpen ? 2 : 5 });
-          A.line(x1, bed, x1, 1.2, { color: loOpen ? 'faint' : 'ink', width: loOpen ? 2 : 5 });
-          if (ph0 === 2) A.text(up ? 'paddles open: water in from above' : 'paddles open: water out below', 50, dH + 1.4, { size: 11.5, color: 'accent', align: 'center', weight: 600 });
-          const bl = Math.min(Lc - 6, 12);
-          let bx;
-          if (up) bx = ph0 === 0 ? 96 - f * (96 - (x1 - 1)) : ph0 < 4 ? x1 - 1 : (x1 - 1) - f * (x1 - 1 - 8);
-          else bx = ph0 === 0 ? bl + 2 + f * ((x0 + bl + 1) - (bl + 2)) : ph0 < 4 ? x0 + bl + 1 : (x0 + bl + 1) + f * (96 - (x0 + bl + 1));
-          const cxm = bx - bl / 2, by = cxm < x0 ? dH : cxm > x1 ? 0 : hCh;
-          A.poly([[bx - bl, by + 0.7], [bx, by + 0.7], [bx - 0.9, by - 0.1], [bx - bl + 0.9, by - 0.1]], { fill: 'orange', fillAlpha: 0.7, color: 'orange', width: 1.5 });
-          const clock = tr;
-          A.corner(`${v.fix(clock / 60, 1)} min · ${['boat enters', 'gate shut', 'chamber fills or empties', 'gate opened', 'boat leaves'][ph0]}`, 'tl', { color: 'ink', weight: 600 });
-          A.corner(`water moved from the upper to the lower pound: ${v.fix(vol, 0)} m³`, 'tr', { color: 'accent', weight: 600 });
-          A.text('upper pound', 14, dH + 0.5, { size: 11, color: 'muted' }); A.text('lower pound', 86, 0.5, { size: 11, color: 'muted', align: 'right' });
-        }, { period: 1e9, still: 4.5 });
-        v.render(() => {
-          const { Ach, dH } = timeline();
-          const pound = Ach * dH, flash = Rs.value * Ws.value * dH, top = Math.max(pound, flash);
-          Bst.rect(0.4, 0.05, 1.4, 0.05 + 0.85 * pound / top, { fill: 'green', fillAlpha: 0.55, color: 'green', width: 1.5 });
-          Bst.rect(2.4, 0.05, 3.4, 0.05 + 0.85 * flash / top, { fill: 'orange', fillAlpha: 0.55, color: 'orange', width: 1.5 });
-          Bst.text(`${v.fix(pound, 0)} m³`, 0.9, 0.08 + 0.85 * pound / top, { size: 12, color: 'green', align: 'center', baseline: 'bottom', weight: 700 });
-          Bst.text(`${v.fix(flash, 0)} m³`, 2.9, 0.08 + 0.85 * flash / top, { size: 12, color: 'orange', align: 'center', baseline: 'bottom', weight: 700 });
-          Bst.text('pound lock', 0.9, 0.0, { size: 11.5, color: 'ink', align: 'center', baseline: 'top' }); Bst.text('flash lock', 2.9, 0.0, { size: 11.5, color: 'ink', align: 'center', baseline: 'top' });
-          drawYears(v, Dd, [
-            { t: 984, label: 'Qiao Weiyue, Huai’an (984)', color: 'green' },
-            { t: 1088, label: 'Shen Kuo describes it (1088)' },
-            { t: [1373, 1385], label: 'Vreeswijk (1373 or 1385)', contested: true },
-            { t: 1396, label: 'Damme (1396)' },
-            { t: [1452, 1458], label: 'Naviglio di Bereguardo (1452–58)' },
-            { t: 1490, label: 'mitre gates, Leonardo (late 15th c.)', contested: true },
-          ], { lanes: 4, ticks: [1000, 1100, 1200, 1300, 1400, 1500] });
-        });
-        v.legend([['accent', 'water'], ['orange', 'boat'], ['green', 'pound lock'], ['orange', 'flash lock']]);
-        v.readout(() => {
-          const { Ach, dH, tF } = timeline(), pound = Ach * dH, flash = Rs.value * Ws.value * dH;
-          return `chamber ${Ls.value} × ${Ws.value} m, lift ${v.fix(dH, 1)} m: each lockage moves **${v.fix(pound, 0)} m³** (${v.fix(pound / 1000, 1)} megalitres) from the upper to the lower pound and takes ${v.fix(tF / 60, 1)} min to fill or empty (paddle discharge coefficient 0.6)\na flash lock draining a ${v.fix(Rs.value / 1000, 1)} km reach by the same height would spend about ${v.fix(flash, 0)} m³ — **${v.fix(flash / pound, 0)} times** as much (model: the reach drains by the weir's height)`;
-        });
+The comparison below begins with a boat already inside and follows one level change. Filling withdraws water from the upper pound into the chamber. Emptying delivers stored chamber water to the lower pound. These are different transfers; water entering the chamber has not already reached the lower pound.`,
+      idea:String.raw`Let chamber area be $A=LW$ and lift be H. With fixed external levels, negligible boat displacement and constant effective paddle coefficient $C_d=0.6$, the remaining head difference obeys
+$$A\dot h=-C_da\sqrt{2gh}.$$
+Its filling/emptying duration is
+$$t_f=\frac{2A\sqrt H}{C_da\sqrt{2g}}.$$
+At elapsed fraction $\tau$, remaining head is $H(1-\tau)^2$ and transferred volume is $AH\tau(2-\tau)$. During filling, chamber storage increases by the upper withdrawal. During emptying, storage decreases by the lower delivery. An ideal complete fill-and-empty cycle transfers AH between the pounds; actual water demand also depends on preparation, leakage, boat movements, sharing and water-saving works.`,
+      caption:String.raw`Choose filling/up or emptying/down, chamber dimensions, lift, paddle area and elapsed fraction. The boat stays within the chamber and follows its water level; it is a marker with no displacement feedback. Green gate markers mean levels match and that gate is ready to open, not that an unequal-level gate has been opened. The second panel shows the complete normalized chamber level and transfer curves. Read upper withdrawal, lower delivery and chamber storage change separately. The timing is an authored ideal-orifice comparison.`,
+      deps:['tech-4.3','fluid-2.10'],see:['tech-8.9'],refs:['Canal & River Trust, Boaters’ Handbook: Boating through locks','Canal & River Trust, Boaters’ Handbook full lock transcript, gate levels and sharing; Annual Lockage Report webpage, cycle definition'],tags:['canals','hydraulics'],
+      scope:String.raw`Uniform rectangular chamber, fixed large-pool levels, constant effective paddle area and coefficient, quasi-steady flow, no leakage, no culvert inertia and negligible boat displacement are assumed. Only one chamber level change is modelled. The fill/empty water balance is not a per-boat calibration, a flash-lock loss measurement, a gate-load calculation or a prediction for a real lock.`,
+      links:{source:'https://canalrivertrust.org.uk/boating/go-boating/a-guide-to-boating/boaters-handbook/boating-through-locks',budget:'https://canalrivertrust.org.uk/our-cause/looking-after-canals-and-rivers/managing-our-water/annual-lockage-report'},
+      viz(v){
+        const length=v.slider('chamber length (m)',15,60,30,{step:'any',decimals:6}),width=v.slider('chamber width (m)',3,9,6,{step:'any',decimals:6}),lift=v.slider('lift H (m)',1,4,2.5,{step:'any',decimals:6}),paddle=v.slider('effective paddle area (m²)',.1,1.5,.6,{step:'any',decimals:6}),progress=v.slider('elapsed fraction of level change',0,1,.5,{step:'any',decimals:6}),direction=v.select('level change',[{value:'up',label:'filling / up'},{value:'down',label:'emptying / down'}],'up'),A=v.stage({x:[-5,105],y:[-1,5],axes:false,height:310,minWidth:260,title:'boat already inside; gates equalize first'}),B=v.stage({x:[-.06,1.06],y:[-.12,1.12],axes:'box',gutter:true,height:310,minWidth:260,xlabel:'elapsed fraction of ideal duration',ylabel:'fraction of full height / volume',title:'complete level and transfer histories'});let info;
+        v.legend([['accent','chamber water / normalized level'],['orange','boat marker'],['green','normalized transfer / gate ready'],['gold','selected elapsed fraction',{dot:true}]]);
+        v.render(()=>{const p=lockChange(length.value,width.value,lift.value,paddle.value,progress.value,direction.value),x0=50-p.L/2,x1=50+p.L/2,b=.55*Math.min(p.L*.6,8);A.setView([-5,105],[-1,p.H+1.3]);A.rect(0,-.55,x0,p.H,{fill:'accent',fillAlpha:.22,stroke:false});A.rect(x0,-.55,x1,p.level,{fill:'accent',fillAlpha:.35,stroke:false});A.rect(x1,-.55,100,0,{fill:'accent',fillAlpha:.22,stroke:false});A.line(0,p.H,x0,p.H,{color:'accent',width:2});A.line(x0,p.level,x1,p.level,{color:'accent',width:2});A.line(x1,0,100,0,{color:'accent',width:2});A.line(0,-.55,100,-.55,{color:'muted',width:2});A.line(x0,-.55,x0,p.H+.7,{color:'ink',width:3});A.line(x1,-.55,x1,p.H+.7,{color:'ink',width:3});A.dot(x0,p.H+.85,{color:p.upperReady?'green':'muted',r:4,ring:false});A.dot(x1,p.H+.85,{color:p.lowerReady?'green':'muted',r:4,ring:false});A.poly([[50-b,p.level+.4],[50+b,p.level+.4],[50+b-.8,p.level-.08],[50-b+.8,p.level-.08]],{color:'orange',fill:'orange',fillAlpha:.5,width:1.2});B.path(p.levelCurve,{color:'accent',width:2.5});B.path(p.transferCurve,{color:'green',width:1.6,dash:[4,3]});B.dot(p.progress,p.level/p.H,{color:'accent',r:4,ring:false});B.dot(p.progress,p.transfer/p.volume,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Time ${v.fix(p.time,9)} / ${v.fix(p.duration,9)} s; chamber level ${v.fix(p.level,9)} m; instantaneous flow ${v.fix(p.flow,9)} m³/s.\nSince this level change began: upper withdrawal ${v.fix(p.upperIn,9)} m³, lower delivery ${v.fix(p.lowerOut,9)} m³, storage change ${v.fix(p.storageChange,9)} m³. Ideal full level-change volume ${v.fix(p.volume,9)} m³; this is not a universal per-boat budget. Gate ready: upper ${p.upperReady?'yes':'no'}, lower ${p.lowerReady?'yes':'no'}.`;});
       },
     },
 

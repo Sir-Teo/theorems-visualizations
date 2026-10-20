@@ -1,7 +1,8 @@
+import { windDisk } from './source-audit-mechanisms.js';
 import { waterWheels, smeatonWater } from './source-audit-power.js';
 import { mortar, aqueduct } from './source-audit-water.js';
 // History of Technology — Chapter 4: Building, water and power before steam (items 4.1–4.6; 4.7–4.12 are in ch04-b.js)
-import { yearStage, drawYears, lump, plate, windCp, BETZ, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
+import { yearStage, drawYears, lump, archGeometry, archFeasible, thrustAt } from './ch04.shared.js';
 
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
 const D2R = Math.PI / 180;
@@ -218,81 +219,26 @@ Small residuals can reflect rounding. Larger discrepancies remain visible rather
 
     // ------------------------------------------------------------------ 4.6
     {
-      num: '4.6',
-      kind: 'Invention',
-      name: 'The windmill',
-      credit: 'Panemone (vertical-axis) windmills reported from Persia, dated between the 7th and 10th centuries by different authors; horizontal-axis post mills in north-west Europe from the 1180s (earliest certain English reference 1185, Weedley, Yorkshire)',
-      verify: true,
-      statement: String.raw`A **windmill** turns the kinetic energy of the wind into rotation of a shaft that grinds grain or pumps water. Two quite different machines carry the name. The **panemone**, with sails turning in a horizontal plane about a vertical axis, is reported from Persian lands, with the date placed between the 7th and 10th centuries depending on how the early accounts are read (an anecdote about the caliph Umar is questioned because it was recorded only in the 10th century). The **post mill** of northern Europe has its sails on a horizontal axis in a wooden body that balances on a single upright post and can be turned by hand to face the wind; documentary evidence for European windmills begins in the 1180s, and the earliest certain English reference, in 1185, does not say which type it was. Whether the European mill descended from the Persian one or was invented independently is not settled.
+      num:'4.6',kind:'Invention',name:'The windmill',verify:true,
+      credit:'Post-mill mechanism documented by the National Trust; ideal actuator-disc comparison following Jonkman 2003',
+      statement:String.raw`A windmill uses moving air to drive a shaft. In a post mill, the body turns about a large upright post so its sails can face the wind. The National Trust's record of Pitstone describes this post and the miller's tail pole; it explicitly leaves the construction date unknown. This example does not establish an earliest European or Persian invention date.
 
-The power in a wind of speed $U$ through a disc of area $A=\pi R^2$ is $\tfrac12\rho A U^3$, and no machine can take more than the fraction $\tfrac{16}{27}\approx0.593$ of it (the Betz limit). That limit was derived by Lanchester (1915), Betz (1919, published 1920) and Joukowski (1920) independently, so it carries Betz's name by convention and not by priority.
+The power through an area $A$ in uniform free-stream wind $U$ is $\tfrac12\rho AU^3$. An ideal aligned actuator disc has a particular maximum extraction fraction $16/27$. Its assumptions matter: steady uniform incompressible inviscid flow, uniform disc loading, equal ambient pressure far upstream/downstream, and no wake rotation. This is a result for that ideal model, not an unconditional ceiling for every machine, flow or installation.`,
+      idea:String.raw`Define axial induction $a$ by disc speed $U_d=U(1-a)$ and far-wake speed $U_w=U(1-2a)$. Momentum and energy balance give
+$$C_p=4a(1-a)^2.$$
+Its derivative is $4(1-a)(1-3a)$, so the maximum is at $a=1/3$, with value $16/27$. The offered range is $0\le a\le0.4$, keeping a positive far-wake speed and avoiding the stopped-wake boundary where the simple model fails.
 
-Scope of the picture: the sails are modelled as flat boards with a thin-plate lift and drag (the lift and drag coefficients are made up for the picture, not measured on medieval sails), so the power coefficient it shows (about 0.1–0.2) is a model result.`,
-      idea: String.raw`Slow the wind to a fraction of its speed behind the sails and the energy taken out is the difference of kinetic energy fluxes. If the sails slow the air passing through them by a fraction $a$ (the axial induction), mass and momentum conservation (fluid-2.12) give a power coefficient $C_p=4a(1-a)^2$, whose maximum $16/27$ falls at $a=\tfrac13$ (energy-5.2). Take too little wind speed out and the air is not used; take too much and it goes round the disc instead of through it.
-
-A real sail is limited further by the lift and drag of its cloth or board at each radius. Along a blade the sail moves at $\Omega r$ and the wind arrives axially at $U$, so the apparent wind meets it at an angle $\phi=\arctan\bigl(U/(\Omega r)\bigr)$ that grows toward the hub: the sail must be twisted, with a steeper angle of weather near the hub, to keep a good angle of attack everywhere (a point Smeaton made in 1759, see 4.12). Facing the wind matters too: if the axis is turned by an angle $\psi$ from the wind, the wind component along it is $U\cos\psi$ and the power falls like $\cos^3\psi$ in the simplest estimate, which is why a post mill is built to be turned.`,
-      caption: String.raw`Top view (left): drag the **gold wind** handle (where the wind comes from) and the **orange sail-facing** handle (which way the sails point). The grey bar is the width of wind the sails face, and the power factor is $\cos^3\psi$ of the misalignment. Middle: the power coefficient of a four-sail windmill against tip-speed ratio $\lambda$, for the **sail angle** and **sail area** you choose, under the Betz limit (dashed). Right: the power in a given wind and the cube law; the dashed curve is the Betz ceiling.`,
-      deps: ['tech-4.4', 'energy-5.2'],
-      see: ['energy-5.1', 'energy-5.3', 'tech-4.12', 'aero-7.3'],
-      refs: ['Usher, “Water wheels and windmills”', 'Mokyr ch. 3', 'Wikipedia “Windmill” (Persian panemone, Weedley 1185) and “Betz’s law” (Lanchester 1915, Betz 1919, Zhukovsky 1920)'],
-      tags: ['medieval', 'c. 1180', 'prime mover'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Windmill' },
-      viz(v) {
-        const A = v.stage({ x: [-1.7, 1.7], y: [-1.7, 1.7], equal: true, axes: false, height: 300, weight: 0.9, minWidth: 280, title: 'post mill from above' });
-        const B = v.stage({ x: [0, 6], y: [0, 0.7], axes: 'box', gutter: true, height: 300, weight: 1.1, minWidth: 320, xlabel: 'tip-speed ratio $\\lambda=\\Omega R/U$', ylabel: '$C_p$', title: 'power coefficient of the sails' });
-        const C = v.stage({ x: [0, 20], y: [0, 100], axes: 'box', gutter: true, height: 300, weight: 1.1, minWidth: 320, xlabel: 'wind speed (m/s)', ylabel: 'power (kW)', title: 'power in the wind' });
-        const beta = v.slider('sail angle of weather (°)', 3, 45, 12, { step: 0.5 });
-        const solid = v.slider('sail area ÷ swept area', 0.1, 0.6, 0.3, { step: 0.01 });
-        const Rs = v.slider('sail radius $R$ (m)', 4, 16, 9, { step: 0.5 });
-        const Us = v.slider('wind $U$ (m/s)', 2, 20, 8, { step: 0.5 });
-        const lam = v.slider('tip-speed ratio $\\lambda$', 0.5, 6, 2, { step: 0.05 });
-        const wind = A.handle(Math.cos(55 * D2R) * 1.4, Math.sin(55 * D2R) * 1.4, { color: 'gold', r: 8, label: 'wind', labelPos: 'ne', constrain: (x, y) => { const a = Math.atan2(y, x); return [1.4 * Math.cos(a), 1.4 * Math.sin(a)]; } });
-        const face = A.handle(Math.cos(20 * D2R) * 0.85, Math.sin(20 * D2R) * 0.85, { color: 'orange', r: 8, label: 'sails face', labelPos: 'se', constrain: (x, y) => { const a = Math.atan2(y, x); return [0.85 * Math.cos(a), 0.85 * Math.sin(a)]; } });
-        let cache = '', cp = [];
-        const lamGrid = Array.from({ length: 56 }, (_, i) => 0.4 + (i * 5.6) / 55);
-        v.render(() => {
-          const wa = Math.atan2(wind.y, wind.x), fa = Math.atan2(face.y, face.x);
-          let psi = Math.abs(wa - fa); if (psi > Math.PI) psi = 2 * Math.PI - psi;
-          const fac = psi < Math.PI / 2 ? Math.cos(psi) ** 3 : 0;
-          // ---- A: top view
-          A.circle(0, 0, 1.4, { color: 'faint', width: 1, dash: [3, 4], fill: false });
-          const fx = Math.cos(fa), fy = Math.sin(fa), nx = -fy, ny = fx;
-          A.poly([[-0.28 * fx + 0.22 * nx, -0.28 * fy + 0.22 * ny], [0.1 * fx + 0.22 * nx, 0.1 * fy + 0.22 * ny], [0.1 * fx - 0.22 * nx, 0.1 * fy - 0.22 * ny], [-0.28 * fx - 0.22 * nx, -0.28 * fy - 0.22 * ny]], { fill: 'muted', fillAlpha: 0.35, color: 'muted', width: 1.4 });
-          A.line(-0.6 * fx, -0.6 * fy, -0.28 * fx, -0.28 * fy, { color: 'muted', width: 3 });
-          A.text('tail pole', -0.68 * fx, -0.68 * fy, { size: 10, color: 'muted', align: 'center', baseline: 'middle' });
-          const sx = 0.12 * fx, sy = 0.12 * fy;
-          A.line(sx + 0.8 * nx, sy + 0.8 * ny, sx - 0.8 * nx, sy - 0.8 * ny, { color: 'ink', width: 4 });
-          // wind arrow and stream tube
-          const wdx = -Math.cos(wa), wdy = -Math.sin(wa); // blowing toward the mill
-          const wnx = -wdy, wny = wdx, half = 0.8 * Math.abs(Math.cos(psi));
-          A.line(Math.cos(wa) * 1.15 + half * wnx, Math.sin(wa) * 1.15 + half * wny, Math.cos(wa) * 1.15 - half * wnx, Math.sin(wa) * 1.15 - half * wny, { color: 'gold', width: 5, alpha: 0.8 });
-          for (const o of [-0.8, -0.4, 0, 0.4, 0.8]) { const off = o * half / 0.8; A.arrow(Math.cos(wa) * 1.4 + off * wnx, Math.sin(wa) * 1.4 + off * wny, Math.cos(wa) * 0.95 + off * wnx, Math.sin(wa) * 0.95 + off * wny, { color: 'gold', width: 1.4, head: 6, alpha: 0.8 }); }
-          A.text(`misaligned by ${v.fix(psi / D2R, 0)}°`, 0, -1.55, { size: 12, color: 'ink', align: 'center', weight: 600 });
-          // ---- B: Cp(lambda)
-          const key = `${beta.value}|${solid.value}`;
-          if (key !== cache) { cache = key; cp = lamGrid.map((l) => windCp(l, () => beta.value * D2R, { solidity: solid.value })); }
-          B.hline(BETZ, { color: 'muted', width: 1.3, dash: [6, 4] });
-          B.text('Betz limit 16/27', 5.95, BETZ + 0.015, { size: 10.5, color: 'muted', align: 'right', baseline: 'bottom' });
-          B.path(lamGrid.map((l, i) => [l, cp[i]]), { color: 'accent', width: 2.6 });
-          const cpHere = windCp(lam.value, () => beta.value * D2R, { solidity: solid.value });
-          B.dot(lam.value, cpHere, { r: 6, color: 'gold' });
-          B._cp = cpHere; B._max = Math.max(...cp); B._lmax = lamGrid[cp.indexOf(Math.max(...cp))];
-          // ---- C: power
-          const area = Math.PI * Rs.value ** 2, wnd = (U) => 0.5 * 1.225 * area * U ** 3 / 1000;
-          C.setView([0, 20], [0, Math.max(10, wnd(20) * BETZ * 1.05)]);
-          C.fn((U) => wnd(U) * BETZ, { color: 'muted', width: 1.6, dash: [6, 4] });
-          C.fn((U) => wnd(U) * B._cp * fac, { color: 'accent', width: 2.6 });
-          C.vline(Us.value, { color: 'gold', width: 1.3, dash: [4, 3] });
-          C.dot(Us.value, wnd(Us.value) * B._cp * fac, { r: 6, color: 'gold' });
-          C._p = wnd(Us.value) * B._cp * fac; C._w = wnd(Us.value);
-        });
-        v.legend([['gold', 'wind and operating point'], ['accent', 'the sails (model)'], ['muted', 'Betz ceiling', { dash: [6, 4] }]]);
-        v.readout(() => {
-          const wa = Math.atan2(wind.y, wind.x), fa = Math.atan2(face.y, face.x);
-          let psi = Math.abs(wa - fa); if (psi > Math.PI) psi = 2 * Math.PI - psi;
-          const fac = psi < Math.PI / 2 ? Math.cos(psi) ** 3 : 0;
-          return `wind power through the disc: **${v.fix(C._w, 1)}** kW at ${v.fix(Us.value, 1)} m/s ($\\tfrac12\\rho A U^3$, cube law); sails at $\\lambda=${v.fix(lam.value, 2)}$: $C_p=${v.fix(B._cp, 3)}$ (best $${v.fix(B._max, 3)}$ at $\\lambda\\approx${v.fix(B._lmax, 1)}$; Betz limit ${v.fix(BETZ, 3)}); facing error ${v.fix(psi / D2R, 0)}° → factor $\\cos^3\\psi=${v.fix(fac, 2)}$\nmodel output: **${v.fix(C._p, 2)}** kW. Make the angle of weather large and the best $\\lambda$ falls to about 1; make it small and the sails need to spin faster.`;
-        });
+A separate authored alignment estimate multiplies power by $\max(0,\cos\psi)^3$, where $\psi$ is the facing error. This axial-component rule is not a solution of skewed-wake flow. It is not used to infer blade pitch, lift coefficients, cloth area, rotation speed or the performance of Pitstone.`,
+      caption:String.raw`Set the wind's source direction and the direction the sails face. Gold and orange points identify these angles in the schematic top view. Choose induction, radius and wind speed. The middle panel contains the complete aligned coefficient curve and selected state. The other power panel compares the chosen induction/alignment estimate with the ideal aligned maximum over the entire 0–20 m/s family.`,
+      deps:['tech-4.4','energy-5.2'],see:['energy-5.1','tech-4.12','aero-7.3'],
+      refs:['National Trust, Pitstone Windmill, owner description of post and tail pole','J.M. Jonkman 2003, NREL/TP-500-34755, §2.2 pp.6–10'],tags:['medieval','prime mover','wind'],
+      scope:String.raw`The theorem uses the aligned, one-dimensional, unblocked ideal disc hypotheses above. Air density 1.225 kg/m³, angular schematic, restricted induction domain, finite 201-point families and positive-part cosine-cubed multiplier are selected illustration assumptions. Yaw, blade drag, finite blades, wake rotation, turbulence, structures and real power curves are not solved. The source's early-2000s empirical performance estimates are not presented as current turbine specifications.`,
+      links:{source:'https://www.nationaltrust.org.uk/visit/oxfordshire-buckinghamshire-berkshire/pitstone-windmill',theory:'https://docs.nlr.gov/docs/fy04osti/34755.pdf'},
+      viz(v){
+        const induction=v.slider('axial induction a',0,.4,1/3,{step:'any',decimals:9}),radius=v.slider('disc radius (m)',4,16,9,{step:'any',decimals:6}),speed=v.slider('free-stream wind (m/s)',2,20,8,{step:'any',decimals:6}),wind=v.slider('wind source direction (°)',-180,180,55,{step:'any',decimals:6}),face=v.slider('sail-facing direction (°)',-180,180,20,{step:'any',decimals:6}),A=v.stage({x:[-1.6,1.6],y:[-1.6,1.6],equal:true,axes:false,height:300,minWidth:260,title:'authored post-mill top view'}),B=v.stage({x:[-.03,.43],y:[-.08,.72],axes:'box',gutter:true,height:300,minWidth:260,xlabel:'axial induction a',ylabel:'aligned ideal Cₚ',title:'complete offered induction family'}),C=v.stage({x:[-1,21],y:[-10,100],axes:'box',gutter:true,height:300,minWidth:260,xlabel:'free-stream wind (m/s)',ylabel:'power (kW)',title:'alignment estimate and aligned maximum'});let info;
+        v.legend([['gold','wind source / selected state',{dot:true}],['orange','sails face',{dot:true}],['accent','authored alignment estimate'],['muted','aligned ideal maximum']]);
+        v.render(()=>{const p=windDisk(induction.value,radius.value,speed.value,wind.value,face.value),wa=p.wind*D2R,fa=p.face*D2R,fx=Math.cos(fa),fy=Math.sin(fa),nx=-fy,ny=fx;A.circle(0,0,1.1,{color:'muted',width:1,dash:[4,3]});A.line(-.45*fx,-.45*fy,.12*fx,.12*fy,{color:'muted',width:5});A.line(-.75*nx,-.75*ny,.75*nx,.75*ny,{color:'ink',width:4});A.dot(1.1*Math.cos(wa),1.1*Math.sin(wa),{color:'gold',r:5,ring:false});A.dot(.65*fx,.65*fy,{color:'orange',r:5,ring:false});A.arrow(Math.cos(wa),Math.sin(wa),.4*Math.cos(wa),.4*Math.sin(wa),{color:'gold',width:2});B.path(p.cpCurve,{color:'accent',width:2.3});B.line(0,16/27,.4,16/27,{color:'muted',dash:[4,3]});B.dot(p.a,p.cp,{color:'gold',r:4,ring:false});C.setView([-1,21],[-.12*p.yMax,p.yMax]);C.path(p.powerCurves[1],{color:'muted',width:1.5,dash:[4,3]});C.path(p.powerCurves[0],{color:'accent',width:2.3});C.dot(p.U,p.power/1000,{color:'gold',r:4,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Aligned ideal Cₚ ${v.fix(p.cp,9)}; disc/wake speeds ${v.fix(p.disk,9)} / ${v.fix(p.wake,9)} m/s. Facing error ${v.fix(p.psi,9)}°; authored factor ${v.fix(p.factor,9)}.\nFree-stream power ${v.fix(p.available/1000,9)} kW; aligned model ${v.fix(p.aligned/1000,9)} kW; alignment estimate ${v.fix(p.power/1000,9)} kW. Aligned mass flow ${v.fix(p.massFlow,9)} kg/s and thrust ${v.fix(p.thrust,9)} N. These are ideal comparisons, not historical performance measurements.`;});
       },
     },
   ],
