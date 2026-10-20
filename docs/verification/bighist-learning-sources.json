@@ -1,0 +1,20 @@
+[
+  {
+    "source": "christian2004",
+    "url": "https://storage.googleapis.com/coursetexts-notion/usmani%20sociol2204/readings/Christian%20and%20McNeill%20-%20Maps%20of%20Time%20An%20Introduction%20to%20Big%20History.pdf",
+    "bytes": 3411946,
+    "sha256": "6362d93c0059e189a8cb0c8cd1e3b63d52b8a393693cb5928294320bdcd45fbd",
+    "pdfPages": 667,
+    "scope": "Actual2004book pp146\u2013148, PDF170\u2013172 only; not all667pages. Personally inspected source146/147pixels; retained concept attribution only, not all comparisons/bottleneck/date claims.",
+    "cache": "/tmp/atlas-coordinator/sources/bighist/christian2004.pdf"
+  },
+  {
+    "source": "henrich2004",
+    "url": "https://gwern.net/doc/sociology/2004-henrich.pdf",
+    "bytes": 579245,
+    "sha256": "1d671b4ef047be00480a930195d47ff8e2db57805af85aab0b4c7548d965937b",
+    "pdfPages": 18,
+    "scope": "Actual18page original facsimile, retained claims compared with original pp200\u2013203 Eq2/3/Fig1 and p210AppendixA/B; not a certification of all Tasmanian archaeological claims, every printed integral or later empirical studies. Official author PDF also resolved through web (19pages inclcover); direct author-host curl timed out. Mirror is original body, no commentary used.",
+    "cache": "/tmp/atlas-coordinator/sources/bighist/henrich2004.pdf"
+  }
+]

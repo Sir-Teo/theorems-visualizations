@@ -10,15 +10,15 @@
 //     18684 (2012) (Crossref-checked; date of about 74 ka rounded, the value 73.88 ka was not confirmed); Lane et al., PNAS 110:
 //     8025 (2013) and Yost et al., J. Hum. Evol. (2018) (Lake Malawi ash: no volcanic winter; only the titles/gist were confirmed
 //     by search). The pairwise-coalescence calculation is textbook; the bottleneck sizes are the reader's.
-//   4.7 Henrich, Am. Antiq. 69: 197 (2004) (confirmed); Powell, Shennan & Thomas, Science 324: 1298 (2009) and Kline & Boyd, Proc. R.
-//     Soc. B 277: 2559 (2010) (Crossref-checked). The simulation is a model in the spirit of Henrich's (best-model copying with a
-//     Gumbel error; the exact maximum of m Gumbel draws is sampled), with parameters chosen for display, not fitted.
+//   4.7 Actual Christian2004pp146–148/Henrich2004pp200–203/210 source versions read.
+//     Four-group extension and best/mean/rounded-share distinctions explicit; independent review pending.
 //   4.8 Roberts et al., Science 292: 1888 (2001) (about 46 ka); Saltre et al., Nat. Commun. 7: 10511 (2016); Faith & Surovell, PNAS 106:
 //     20641 (2009) (North America, window of about 13.8-11.4 ka recalled); Cooper et al., Science 349: 602 (2015); Holdaway & Jacomb,
 //     Science 287: 2250 (2000) (moa, within about a century of settlement); Clarkson 2017 and Bennett 2021 as in 4.3. All bars are
 //     rounded, indicative windows (several recalled, not re-checked) and not the output of one dataset.
 
-import { clamp, gumbel01, EULER_GAMMA, paintSegments } from './ch04.shared.js';
+import { clamp, paintSegments } from './ch04.shared.js';
+import learningItem from './learning-item.js';
 
 // ── 4.8 data: arrival window, extinction window, climate window (or null); ages in ka before present ─────────
 const REG = [
@@ -176,86 +176,7 @@ so the length of the segments dates the admixture. The $45\,000$-year-old Ust'-I
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-    {
-      num: '4.7',
-      kind: 'Concept',
-      name: 'Collective learning',
-      statement: String.raw`**Collective learning**, in David Christian's phrase, is the ability of a species to share what its members have learned precisely and abundantly enough that knowledge accumulates across generations and beyond any single lifetime. Humans are its clear example; it is why technology grew while the biology stayed much the same. Cultural-evolution models make the idea quantitative: skills are acquired by copying the best available model with some error, so the skill level of a population grows when the pool of models is large enough that the best of them beats the loss in copying. In Henrich's (2004) model, with copying loss $\alpha$ and a spread $\beta$ of skill among learners (a Gumbel distribution), the average skill changes per generation by
-$$\Delta z \approx -\alpha + \beta\,(\ln N + \gamma),$$
-where $\gamma\approx0.577$; skills grow if $N > N^* = e^{\alpha/\beta-\gamma}$ and decay otherwise, so **more difficult skills need larger interacting populations**. Fossil and archaeological data have been argued to fit this (Powell, Shennan and Thomas, 2009; Kline and Boyd, 2010 on Oceanic tool kits).
-
-**Scope.** A stylised model: skills are independent numbers, learners copy the best model they can see, and the demographic interpretation of the Tasmanian, Pleistocene and Oceanic records is disputed.`,
-      idea: String.raw`The best of $N$ noisy learners is an extreme-value problem. If each learner's skill is the model's skill minus $\alpha$ plus a Gumbel-distributed $\beta G$, the maximum of $N$ such draws is again Gumbel, shifted by $\beta\ln N$ (bioinf-3.5), so its mean is $-\alpha+\beta(\ln N+\gamma)$ above the model. Population size enters only through the logarithm, so doubling the pool adds a fixed amount $\beta\ln2$ per generation: the gain from a bigger population is small but relentless, while the loss $\alpha$ for a hard skill is large. Connectivity matters because what counts is the number of models a learner can see: groups of $N/4$ that rarely meet face the smaller threshold. This is the step beyond the brain growth of 4.1: a large brain can learn, but a large network lets learning accumulate.`,
-      caption: String.raw`Left: the skill level of three skills of increasing difficulty (green simple, orange moderate, red complex) over 120 generations in 10 runs (thin) and their mean (bold), for a population split into four groups. Slide the total size and the connectivity (the chance a learner copies the best of all four groups instead of the best of its own); the complex skill is lost at small $N$. Right: the net change per generation against $N$, with the thresholds where it crosses zero.`,
-      deps: ['bighist-4.1', 'bioinf-3.5'],
-      see: ['bighist-4.8', 'bighist-4.3'],
-      refs: ['Christian'],
-      credit: 'Christian (collective learning, Maps of Time, 2004); Henrich, 2004; Powell, Shennan & Thomas, 2009; Kline & Boyd, 2010',
-      tags: ['cultural evolution', 'population size', 'technology'],
-      scope: String.raw`Model in the spirit of Henrich (2004): independent skills, best-model copying, Gumbel error, four equal groups.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Cumulative_cultural_evolution', doi: 'https://doi.org/10.2307/4128416' },
-      verify: true,
-      viz(v) {
-        const N = v.slider('population size $N$', 4, 5000, 200, { step: 1, int: true, log: true });
-        const c = v.slider('connectivity (chance of copying the global best)', 0, 1, 0.3, { step: 0.05 });
-        const beta = v.slider('spread of learners $\\beta$', 0.5, 2, 1, { step: 0.05 });
-        const AL = [['simple', 3, 'green'], ['moderate', 5, 'orange'], ['complex', 7, 'red']];
-        const GENS = 120, K = 4, R = 10, Z0 = 12;
-        const A = v.stage({ x: [0, GENS], y: [0, 40], axes: 'box', gutter: true, height: 340, weight: 1.3, xlabel: 'generation', ylabel: 'skill level', title: 'skill level over time' });
-        const B = v.stage({ x: [4, 5000], y: [-8, 8], xlog: true, axes: 'box', gutter: true, height: 340, weight: 1, xlabel: 'population size N', ylabel: 'change per generation Δz', title: 'net growth rate' });
-        let key = '', cache = null;
-        const run = () => {
-          const k = `${N.value}|${c.value}|${beta.value}`;
-          if (k === key) return cache; key = k;
-          const out = AL.map(([, al]) => {
-            const runs = [];
-            for (let q = 0; q < R; q++) {
-              const r = v.rng(100 + q * 17 + al);
-              let z = Array(K).fill(Z0); const tr = [Z0];
-              const sz = Math.max(1, Math.round(N.value / K));
-              for (let g = 0; g < GENS; g++) {
-                const gb = Math.max(...z); const own = Math.round((1 - c.value) * sz), glob = sz - own;
-                z = z.map((zz) => {
-                  let best = -Infinity;
-                  if (own > 0) best = Math.max(best, zz - al + beta.value * (Math.log(own) + gumbel01(r)));
-                  if (glob > 0) best = Math.max(best, gb - al + beta.value * (Math.log(glob) + gumbel01(r)));
-                  return Math.max(0, best);
-                });
-                tr.push(Math.max(...z));
-              }
-              runs.push(tr);
-            }
-            return runs;
-          });
-          cache = out; return out;
-        };
-        v.render(() => {
-          const out = run(); let ymax = 20;
-          out.forEach((runs) => runs.forEach((t) => { ymax = Math.max(ymax, ...t); }));
-          A.setView([0, GENS], [0, ymax * 1.05]);
-          out.forEach((runs, i) => {
-            const col = AL[i][2];
-            runs.forEach((t) => A.path(t.map((y, g) => [g, y]), { color: col, width: 1, alpha: 0.25 }));
-            A.path(Array.from({ length: GENS + 1 }, (_, g) => [g, runs.reduce((s, t) => s + t[g], 0) / R]), { color: col, width: 3 });
-          });
-          A.hline(Z0, { color: 'faint', width: 1, dash: [3, 3] });
-          AL.forEach(([nm, al, col]) => {
-            B.fn((n) => beta.value * (EULER_GAMMA + Math.log(n)) - al, { color: col, width: 2, domain: [4, 5000] });
-            B.fn((n) => beta.value * (EULER_GAMMA + Math.log(n / K)) - al, { color: col, width: 1.4, dash: [4, 3], domain: [4 * K, 5000] });
-          });
-          B.hline(0, { color: 'ink', width: 1.2 });
-          B.vline(N.value, { color: 'gold', width: 1.6 });
-          v.legend([['green', 'simple (α = 3)'], ['orange', 'moderate (α = 5)'], ['red', 'complex (α = 7)'], ['muted', 'solid: all N models; dashed: only the group, N/4', { dash: true }]]);
-        });
-        v.readout(() => {
-          const th = (al) => Math.exp(al / beta.value - EULER_GAMMA);
-          const fmt = (x) => (x < 1e4 ? v.fix(x, x < 10 ? 1 : 0) : '> 10⁴');
-          const out = run();
-          const fin = out.map((runs) => runs.reduce((s, t) => s + t[GENS], 0) / R);
-          return `Thresholds $N^*=e^{\\alpha/\\beta-\\gamma}$ (all models visible): simple **${fmt(th(3))}**, moderate **${fmt(th(5))}**, complex **${fmt(th(7))}**; with isolated groups of $N/4$ the total must be four times larger.\nAfter ${GENS} generations the mean skill is ${v.fix(fin[0], 0)} (simple), ${v.fix(fin[1], 0)} (moderate), ${v.fix(fin[2], 0)} (complex), started at ${Z0}.`;
-        });
-      },
-    },
+    learningItem,
     // ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
     {
       num: '4.8',
