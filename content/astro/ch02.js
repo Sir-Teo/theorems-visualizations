@@ -168,8 +168,8 @@ The multivariable chain rule pma-9.15 justifies differentiating the potential al
       num: '2.2',
       kind: 'Definition',
       name: 'Zero-velocity curves and Hill regions',
-      statement: String.raw`For a given value of the Jacobi constant $C_J$, the particle can only be where $2\Omega(x, y, z) \ge C_J$, since $v^2 = 2\Omega - C_J \ge 0$. The boundary $2\Omega = C_J$ is the **zero-velocity curve** (surface in 3D); the allowed sets are the **Hill regions**. In decreasing order of $C_J$, with $C_{L1} > C_{L2} > C_{L3} > C_{L4} = C_{L5}$:
-- $C_J > C_{L1}$: three disjoint regions — around the primary, around the secondary, and far outside; a particle near one mass is trapped there forever;
+      statement: String.raw`For a given value of the Jacobi constant $C_J$, the particle can only be where $2\Omega(x, y, z) \ge C_J$, since $v^2 = 2\Omega - C_J \ge 0$. The boundary $2\Omega = C_J$ is the **zero-velocity curve** (surface in 3D); the allowed sets are the **Hill regions**. For the ordered planar list below assume $0<\mu<1/2$. In decreasing order of $C_J$, with $C_{L1} > C_{L2} > C_{L3} > C_{L4} = C_{L5}$:
+- $C_J > C_{L1}$: three disjoint regions — around the primary, around the secondary, and far outside; a collision-free trajectory near one mass stays in that component for as long as its solution exists;
 - $C_{L2} < C_J < C_{L1}$: a neck opens at $L_1$ and the two inner regions merge;
 - $C_{L3} < C_J < C_{L2}$: a second neck opens at $L_2$, so escape to infinity becomes possible past the secondary;
 - $C_{L4} < C_J < C_{L3}$: the neck at $L_3$ opens and the forbidden zones shrink to two tadpoles around $L_4$, $L_5$;
