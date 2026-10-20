@@ -170,6 +170,18 @@
         "music-circle53-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "psych-4.11",
+        "psych-4.12",
+        "psych-4.14"
+      ],
+      "peer": "worker_one exact-commit primary PDF and printed equation review, independent Decimal/complex ODE calculations, six math groups and six fresh narrow native matrices",
+      "reports": [
+        "psych-lightness-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -182,5 +194,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 123
+  "currentPendingSourceReviews": 120
 }
