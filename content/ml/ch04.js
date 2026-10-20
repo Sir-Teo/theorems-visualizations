@@ -217,8 +217,8 @@ and the ERM$_{\mathcal H}$ rule is a successful agnostic PAC learner for $\mathc
       num: '4.5',
       kind: 'Lemma',
       name: 'Hoeffding’s inequality',
-      statement: String.raw`Let $\theta_1,\dots,\theta_m$ be i.i.d. random variables with $\mathbb E[\theta_i]=\mu$ and $\mathbb P[a\le\theta_i\le b]=1$. Then for every $\varepsilon>0$
-$$\mathbb P\Big[\Big|\frac1m\sum_{i=1}^m\theta_i-\mu\Big|>\varepsilon\Big]\;\le\;2\exp\!\Big(-\frac{2m\varepsilon^2}{(b-a)^2}\Big).$$`,
+      statement: String.raw`Let $\theta_1,\dots,\theta_m$ be i.i.d. random variables with $\mathbb E[\theta_i]=\mu$ and $\mathbb P[a\le\theta_i\le b]=1$ with $a<b$. Then for every $\varepsilon>0$
+$$\mathbb P\Big[\Big|\frac1m\sum_{i=1}^m\theta_i-\mu\Big|>\varepsilon\Big]\;\le\;2\exp\!\Big(-\frac{2m\varepsilon^2}{(b-a)^2}\Big).$$ If $a=b$, every variable equals that constant almost surely, so the displayed deviation event has probability zero for every $\varepsilon>0$; no division by a zero range is needed.`,
       idea: String.raw`Bound the moment generating function of a bounded, centred variable: for $\mathbb E\theta=0$ and $\theta\in[a,b]$ one has $\mathbb E e^{s\theta}\le e^{s^2(b-a)^2/8}$ (Hoeffding's lemma, by convexity of $e^{s\theta}$ on the interval). Independence multiplies the $m$ factors, and Markov's inequality applied to $e^{s\sum\theta_i}$ with the best $s$ gives a one-sided tail $e^{-2m\varepsilon^2/(b-a)^2}$; the two sides add up to the factor $2$. The bound depends on the range $b-a$ only, never on the variance, which is why it is loose for rare events (compare ml-33.6).
 
 After centering, let $A\le0\le B$ bound the variable with $A<B$. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm $\psi(s)$ of this bound has $\psi(0)=\psi\prime(0)=0$ and $\psi\prime\prime(s)\le(B-A)^2/4$, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives $\psi(s)\le s^2(B-A)^2/8$. This is the quadratic estimate used before the Markov step; a constant variable is handled separately.`,
