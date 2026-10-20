@@ -1,0 +1,45 @@
+{
+  "1.9": {
+    "deps": [
+      "alg-1.25"
+    ],
+    "text": "The partition theorem (alg-1.25) makes the refinement invariant precise. Equal current colours define equivalence classes, hence disjoint blocks covering the vertices. Replace a colour by its old colour together with the multiset of neighbour colours, using the same tuple encoding in both graphs (or refining their disjoint union). Equality of new colours implies equality of old colours, so blocks can split but never merge; a strict refinement increases the block count, and on $N$ vertices there are at most $N-1$ strict increases. An isomorphism preserves each signature round by round, so different colour histograms rule it out. The partition property and termination do not make equal stable histograms sufficient for isomorphism."
+  },
+  "3.2": {
+    "deps": [
+      "alg-4.28"
+    ],
+    "text": "The polynomial verification cost uses repeated squaring (alg-4.28), separately from the order and primitive-root arguments. For a nonnegative exponent $e$, successive squarings compute the residues of $g^{2^j}$; multiplying those selected by the binary digits of $e$ gives $g^e$ modulo the proposed prime. For $e>0$ there are at most twice its bit length modular multiplications. Reducing after each multiplication keeps operands below the modulus and the unreduced product below its square, so ordinary bit arithmetic takes polynomial time in the certificate's bit length. This arithmetic works for composite moduli too: it computes the tests, while the order argument establishes why a passing certificate is sound."
+  },
+  "3.4": {
+    "deps": [
+      "logic-3.4"
+    ],
+    "text": "The quantifier-game reading is the finite-domain satisfaction recursion of logic-3.4. Fix $x$ and take the nonempty domain $D=\\{0,1\\}^{q(|x|)}$, with the binary relation $R_x(u,w)$ interpreted by the verifier's value. Then $\\exists u\\,\\forall w\\,R_x(u,w)$ is true exactly when one witness survives every challenge; its negation is $\\forall u\\,\\exists w\\,\\neg R_x(u,w)$. This supplies the complementary class description without changing the polynomial bounds or assuming a deterministic way to find witnesses. Satisfaction depends only on free variables, so a newly quantified variable ignored by the predicate is genuinely dummy; even a zero-length block has the one empty word as its domain."
+  },
+  "3.10": {
+    "deps": [
+      "alg-2.1"
+    ],
+    "text": "Induction (alg-2.1) proves the finite closure computation rather than just suggesting repeated passes. Let $S_0$ contain the accepting halts. At stage $t+1$, keep $S_t$ and add an existential configuration with a successor in $S_t$, or a non-rejecting universal configuration whose successors are all in $S_t$. The invariant is that $S_t$ contains exactly the configurations with an accepting finite computation subtree of height at most $t$: one child witnesses an existential step, while every child must supply a subtree at a universal step. Rejecting halts are never added. Thus the union is precisely the least accepting fixed point, and a cycle without a finite accepting justification is not accepted. With $N$ configurations every strict pass inserts a new one, so at most $N$ strict passes occur; inspecting all finite transition lists per pass is polynomial in this configuration graph's size."
+  },
+  "4.7": {
+    "deps": [
+      "logic-2.3"
+    ],
+    "text": "The final circuit-to-CNF step uses the local truth-assignment semantics of logic-2.3, not an exponential truth-table expansion of the whole circuit. Introduce one fresh variable $z$ for each gate output. For an AND gate with inputs $a,b$, the three clauses $(\\neg z\\lor a)$, $(\\neg z\\lor b)$ and $(z\\lor\\neg a\\lor\\neg b)$ hold together exactly when $z=a\\land b$; the OR and NOT tables give analogous constant-size clauses. Add the unit clause asserting the final output. In topological order every input assignment has a unique extension satisfying all gate clauses, and that extension satisfies the output clause exactly when the circuit accepts. Consequently existentially quantifying the fresh variables preserves satisfiability with only linearly many clauses. This supplies the claimed SAT reduction after the separate tableau construction has supplied the circuit."
+  },
+  "4.10": {
+    "deps": [
+      "alg-2.1"
+    ],
+    "text": "The support lower bound is a depth induction (alg-2.1). At depth zero an input depends on at most one input variable and a constant depends on none. A NOT gate keeps its child's support, and a binary AND/OR has support contained in the union of its children's supports. Thus every depth-$d$ output has support of size at most $2^d$, even with shared subcircuits; dependence on all $n$ inputs forces $d\\ge\\lceil\\log_2 n\\rceil$. In the other direction, recursively splitting $k$ inputs into two nearly equal groups gives a binary AND/OR tree with $k-1$ gates and depth $\\lceil\\log_2 k\\rceil$ for $k\\ge1$. This is the local depth estimate used when replacing unbounded gates, not an extra lower bound against unrestricted fan-in."
+  },
+  "4.13": {
+    "deps": [
+      "ladr-3.46",
+      "comb-1.2"
+    ],
+    "text": "The Boolean squaring invariant follows from the ordinary real matrix product formula (ladr-3.46) without treating Boolean arithmetic as a field. For a zero-one reachability matrix $B$, $(B^2)_{ij}=\\sum_r B_{ir}B_{rj}$ is a nonnegative integer, positive exactly when some intermediate vertex joins two represented paths. Threshold that ordinary product at positivity to obtain the Boolean product. Starting with identity and adjacency entries, induction makes the matrix after $k$ squarings represent paths of length at most $2^k$; identity entries permit padding shorter paths.\n\nThe finite stopping bound uses pigeonhole (comb-1.2). A path with at least $N$ edges among $N$ vertices repeats a vertex, so deleting the intervening closed walk preserves its endpoints and shortens it. Repeating this deletion leaves a simple path of at most $N-1$ edges whenever the endpoints are reachable. Therefore doubling the represented length until it reaches $N-1$ is sufficient; the $N=1$ case is already handled by the initial identity matrix. This bounds the number of squarings independently of the Boolean gate implementation."
+  }
+}
