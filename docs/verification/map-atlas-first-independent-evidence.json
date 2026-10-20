@@ -1,0 +1,299 @@
+{
+  "candidate": "6c45d07947c2074660cb0b9a0e01b3a42bc524b8",
+  "status": "STOP: real stale border and same inner glyph, but zero native output divergence; no fix or causality acceptance",
+  "source": {
+    "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+    "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+    "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc"
+  },
+  "rawSha": [
+    {
+      "draw": {
+        "bytes": 131072,
+        "sha256": "29a460ad41a40daf5ad4fc6c03bc8af57eb247c97c64546bb8cc87423c82a033"
+      },
+      "texture": {
+        "bytes": 131072,
+        "sha256": "62ef749d945774128215638982bd4d09c683813f18dc3069d336406056766e9f"
+      }
+    },
+    {
+      "draw": {
+        "bytes": 131072,
+        "sha256": "29a460ad41a40daf5ad4fc6c03bc8af57eb247c97c64546bb8cc87423c82a033"
+      },
+      "texture": {
+        "bytes": 131072,
+        "sha256": "4242b78ae3a3024608364d8b0ec96f8e457e446c877d5739cd229f900790cb0f"
+      }
+    }
+  ],
+  "dirty": [
+    {
+      "x": 14,
+      "y": 3,
+      "pixel": [
+        140,
+        140,
+        140,
+        140
+      ]
+    },
+    {
+      "x": 14,
+      "y": 4,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 6,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 8,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 10,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 11,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 12,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 14,
+      "y": 14,
+      "pixel": [
+        189,
+        189,
+        189,
+        189
+      ]
+    },
+    {
+      "x": 14,
+      "y": 15,
+      "pixel": [
+        79,
+        79,
+        79,
+        79
+      ]
+    },
+    {
+      "x": 14,
+      "y": 16,
+      "pixel": [
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    {
+      "x": 9,
+      "y": 27,
+      "pixel": [
+        179,
+        179,
+        179,
+        179
+      ]
+    },
+    {
+      "x": 10,
+      "y": 27,
+      "pixel": [
+        255,
+        255,
+        255,
+        255
+      ]
+    },
+    {
+      "x": 11,
+      "y": 27,
+      "pixel": [
+        209,
+        209,
+        209,
+        209
+      ]
+    }
+  ],
+  "current": {
+    "anchorX": 30.375,
+    "anchorY": 80.125,
+    "left": 28.375,
+    "top": 56.125,
+    "right": 41.375,
+    "bottom": 82.125,
+    "dirtyCellsReachable": 0,
+    "maxDirtyWeight": 0,
+    "weights": {}
+  },
+  "proposed": [
+    {
+      "anchorX": 30.125,
+      "anchorY": 80.125,
+      "left": 28.125,
+      "top": 56.125,
+      "right": 41.125,
+      "bottom": 82.125,
+      "dirtyCellsReachable": 0,
+      "maxDirtyWeight": 0,
+      "weights": {}
+    },
+    {
+      "anchorX": 30.125,
+      "anchorY": 80.625,
+      "left": 28.125,
+      "top": 56.625,
+      "right": 41.125,
+      "bottom": 82.625,
+      "dirtyCellsReachable": 3,
+      "maxDirtyWeight": 0.328125,
+      "weights": {
+        "9,27": 0.328125,
+        "10,27": 0.328125,
+        "11,27": 0.328125
+      }
+    },
+    {
+      "anchorX": 30.625,
+      "anchorY": 80.125,
+      "left": 28.625,
+      "top": 56.125,
+      "right": 41.625,
+      "bottom": 82.125,
+      "dirtyCellsReachable": 14,
+      "maxDirtyWeight": 0.328125,
+      "weights": {
+        "14,3": 0.328125,
+        "14,4": 0.328125,
+        "14,5": 0.328125,
+        "14,6": 0.328125,
+        "14,7": 0.328125,
+        "14,8": 0.328125,
+        "14,9": 0.328125,
+        "14,10": 0.328125,
+        "14,11": 0.328125,
+        "14,12": 0.328125,
+        "14,13": 0.328125,
+        "14,14": 0.328125,
+        "14,15": 0.328125,
+        "14,16": 0.328125
+      }
+    },
+    {
+      "anchorX": 30.625,
+      "anchorY": 80.625,
+      "left": 28.625,
+      "top": 56.625,
+      "right": 41.625,
+      "bottom": 82.625,
+      "dirtyCellsReachable": 17,
+      "maxDirtyWeight": 0.234375,
+      "weights": {
+        "14,3": 0.234375,
+        "14,4": 0.234375,
+        "14,5": 0.234375,
+        "14,6": 0.234375,
+        "14,7": 0.234375,
+        "14,8": 0.234375,
+        "14,9": 0.234375,
+        "14,10": 0.234375,
+        "14,11": 0.234375,
+        "14,12": 0.234375,
+        "14,13": 0.234375,
+        "14,14": 0.234375,
+        "14,15": 0.234375,
+        "14,16": 0.234375,
+        "9,27": 0.234375,
+        "10,27": 0.234375,
+        "11,27": 0.234375
+      }
+    }
+  ],
+  "modelLimit": "Bilinear pixel-center source model only. Proposed phases have not been run; no native output or mechanism claim.",
+  "browserRerun": false
+}
