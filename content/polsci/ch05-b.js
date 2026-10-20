@@ -1,49 +1,8 @@
 // Political Science & Social Choice — Chapter 5 (part b): items 5.6-5.10
+import {swingTheorem} from './source-audit-swing.js';
 import {juryTheorem} from './source-audit-strategic-jury.js';
 import {downsIgnorance} from './source-audit-downs-items.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, logspace } from './ch05.shared.js';
-
-/** Distribution of D = (votes for A) - (votes for B) from independent voters: voters = [[pA, pB], ...] plus a fixed shift. Returns { off, p }. */
-function diffDist(voters, shift = 0) {
-  const M = voters.length + Math.abs(shift) + 1, off = M;
-  let p = new Float64Array(2 * M + 1); p[off + shift] = 1;
-  for (const [a, b] of voters) {
-    const r = new Float64Array(2 * M + 1), c = 1 - a - b;
-    for (let i = 1; i < 2 * M; i++) { const x = p[i]; if (x === 0) continue; r[i + 1] += x * a; r[i - 1] += x * b; r[i] += x * c; }
-    p = r;
-  }
-  return { off, at: (d) => { const i = off + d; return i >= 0 && i < p.length ? p[i] : 0; } };
-}
-
-/**
- * Swing-voter model. Two equally likely states, A and B. Informed voters (nI) vote for the right candidate with probability q;
- * partisans (a for A, b for B) always vote for their candidate; the other independents (nU uninformed) vote A, B or abstain.
- * Gain in expected utility of one uninformed independent from voting A (resp. B) instead of abstaining, when the other nU-1 use (al, be).
- */
-function gains(nI, q, a, b, nU, al, be) {
-  const out = {};
-  const D = { A: null, B: null };
-  for (const s of ['A', 'B']) {
-    const vs = [];
-    for (let i = 0; i < nI; i++) vs.push(s === 'A' ? [q, 1 - q] : [1 - q, q]);
-    for (let j = 0; j < nU - 1; j++) vs.push([al, be]);
-    D[s] = diffDist(vs, a - b);
-  }
-  const gA = 0.25 * ((D.A.at(0) + D.A.at(-1)) - (D.B.at(0) + D.B.at(-1)));
-  const gB = 0.25 * (-(D.A.at(0) + D.A.at(1)) + (D.B.at(0) + D.B.at(1)));
-  return { gA, gB };
-}
-/** Symmetric equilibrium of the uninformed voters' game by exponential-weights (replicator) dynamics from the centre. */
-function swingEq(nI, q, a, b, nU) {
-  let s = [1 / 3, 1 / 3, 1 / 3], res = 0;
-  for (let it = 0; it < 500; it++) {
-    const { gA, gB } = gains(nI, q, a, b, nU, s[0], s[1]);
-    const w = [s[0] * Math.exp(40 * gA), s[1] * Math.exp(40 * gB), s[2]], Z = w[0] + w[1] + w[2];
-    s = w.map((x) => x / Z);
-    if (it === 499) res = Math.max(gA - Math.max(0, gB), 0);
-  }
-  return { al: s[0], be: s[1], ab: s[2] };
-}
 
 export default {
   collection: 'polsci',
@@ -105,63 +64,8 @@ In particular, if the uninformed guess completely at random ($u=\tfrac12$), then
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 5.9
-    {
-      num: '5.9',
-      kind: 'Theorem',
-      name: 'The swing voter’s curse',
-      statement: String.raw`Two states of the world, $A$ and $B$, are equally likely; the better candidate is the one named after the state. Some voters are *informed*: each votes for the correct candidate with probability $q>\tfrac12$. Some are *partisans* who always vote for their own candidate, with equally many partisans $a=b$ on each side. The rest are *independents* who share the common goal of electing the correct candidate but have no information. An independent can vote $A$, vote $B$ or abstain; she is decisive when the others tie or when her side is one vote behind.
-
-**Claim.** If the number $n_I$ of informed voters is odd and all the other independents abstain, then voting for either candidate gives an independent a strictly *lower* expected payoff than abstaining:
-$$\Delta U_A = \Delta U_B = \tfrac14\bigl[\Pr{}_A(D=-1)-\Pr{}_A(D=1)\bigr]<0,$$
-where $D$ is the margin of votes for $A$ over $B$ among the others in state $A$. Abstention by the uninformed is therefore part of an equilibrium even though voting is free.`,
-      idea: String.raw`An independent's vote matters only when the others are tied (or one behind), and *those are exactly the events in which the informed voters are split*, which is bad news about the state: given a tie, the informed voters' information has cancelled, but given a one-vote lead for the true side it is the true side that would be more likely to win anyway. When the margin is $D=-1$, the votes are more likely to have come from a world where the state is $B$, so adding a vote for $A$ pushes the result in the wrong direction more often than the right one. The net effect is the difference $\Pr_A(D=-1)-\Pr_A(D=1)$, which is negative because the true state is more likely to lead. Hence the uninformed do best to leave the decision to those who know. With unbalanced partisans the same pivotal-event logic makes some independents vote for the side that is behind, to offset the partisans (as the right panel shows).`,
-      caption: String.raw`Left: for the profile you pick ($\alpha$ and $\beta$ are the shares of the *other* independents who vote $A$ and $B$; the rest abstain), the expected payoff gain of one independent from voting $A$ or $B$ instead of abstaining. When partisans are balanced and the others abstain, both bars are below zero. Right: the symmetric equilibrium shares of independents who abstain, vote $A$ and vote $B$, as the number of informed voters changes. Add partisans on one side and watch independents vote for the other.`,
-      deps: ['polsci-5.6'],
-      see: ['polsci-5.7', 'polsci-3.7'],
-      refs: ['Shepsle: voting and turnout', 'Feddersen and Pesendorfer (1996), American Economic Review 86: 408–424'],
-      tags: ['abstention', 'strategic voting', 'information'],
-      credit: 'Timothy Feddersen and Wolfgang Pesendorfer, 1996',
-      scope: String.raw`This is a reconstruction of the idea of the 1996 paper in a finite, simplified setting of my own: informed voters have noisy signals of accuracy $q$ (the paper's informed voters know the state), the equilibrium on the right is found by running an exponential-weights dynamic from the centre and need not be the only symmetric equilibrium, and ties are broken by a fair coin. A published comment on the paper's proofs exists (Fey and Kim, 2000), which I could not confirm in detail.`,
-      verify: true,
-      links: {},
-      viz(v) {
-        const L = v.stage({ x: [0, 3], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 320, minWidth: 300, ylabel: 'gain over abstaining', title: 'gain from voting', xticks: [[0.5, 'vote A'], [1.5, 'vote B'], [2.5, 'abstain']] });
-        const R = v.stage({ x: [1, 12], y: [0, 1], axes: 'box', gutter: true, height: 320, minWidth: 300, xlabel: 'informed voters $n_I$', ylabel: 'share of independents', title: 'equilibrium behaviour of independents' });
-        const nI = v.slider('informed voters $n_I$', 1, 12, 3, { int: true });
-        const qS = v.slider('informed accuracy $q$', 0.55, 1, 0.8, { step: 0.01 });
-        const aS = v.slider('partisans for $A$', 0, 6, 0, { int: true });
-        const bS = v.slider('partisans for $B$', 0, 6, 0, { int: true });
-        const nU = v.slider('independents $n_U$', 2, 10, 4, { int: true });
-        const alS = v.slider('others vote $A$ ($\\alpha$)', 0, 1, 0, { step: 0.05 });
-        const beS = v.slider('others vote $B$ ($\\beta$)', 0, 1, 0, { step: 0.05 });
-        const cache = new Map();
-        const eqCurve = () => {
-          const key = [qS.value, aS.value, bS.value, nU.value].join('|');
-          if (!cache.has(key)) { if (cache.size > 20) cache.clear(); cache.set(key, range(12).map((i) => [i + 1, swingEq(i + 1, qS.value, aS.value, bS.value, nU.value)])); }
-          return cache.get(key);
-        };
-        let info = {};
-        v.render(() => {
-          const al = Math.min(alS.value, 1 - beS.value), be = beS.value;
-          const g = gains(nI.value, qS.value, aS.value, bS.value, nU.value, al, be);
-          const m = Math.max(0.02, Math.abs(g.gA), Math.abs(g.gB)) * 1.4;
-          L.setView([0, 3], [-m, m]);
-          L.hline(0, { color: 'ink', alpha: 0.6 });
-          L.rect(0.2, 0, 0.8, g.gA, { fill: 'blue', fillAlpha: 0.6, color: 'blue' });
-          L.rect(1.2, 0, 1.8, g.gB, { fill: 'orange', fillAlpha: 0.6, color: 'orange' });
-          L.rect(2.2, 0, 2.8, 0, { fill: 'muted', color: 'muted' });
-          const E = eqCurve();
-          R.path(E.map(([n, e]) => [n, e.ab]), { color: 'muted', width: 2.4 });
-          R.path(E.map(([n, e]) => [n, e.al]), { color: 'blue', width: 2.2 });
-          R.path(E.map(([n, e]) => [n, e.be]), { color: 'orange', width: 2.2 });
-          R.vline(nI.value, { color: 'gold', dash: true, width: 1.6 });
-          info = { g, e: E[nI.value - 1][1] };
-        });
-        v.legend([['muted', 'abstain'], ['blue', 'vote $A$'], ['orange', 'vote $B$']]);
-        v.readout(() => `Others: $\\alpha=${v.fix(Math.min(alS.value, 1 - beS.value), 2)}$ vote $A$, $\\beta=${v.fix(beS.value, 2)}$ vote $B$. Gain from voting $A$: **${v.fix(info.g.gA, 4)}**, from voting $B$: **${v.fix(info.g.gB, 4)}** (abstaining is 0). Equilibrium at this $n_I$: abstain ${pct(info.e.ab, 0)}, vote $A$ ${pct(info.e.al, 0)}, vote $B$ ${pct(info.e.be, 0)}${nI.value % 2 === 0 && aS.value === bS.value ? '. With an even number of informed voters and balanced partisans the margin never equals $\\pm1$, so the gains are zero.' : ''}`);
-      },
-    },
+    // Source-audited exact deviation example 5.9
+    swingTheorem,
 
     // ───────────────────────────────────────────────────────────── 5.10
     {
