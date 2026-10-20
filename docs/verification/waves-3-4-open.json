@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 49,
+  "remainingFlags": 47,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "art": 4,
+    "art": 2,
     "arch": 9,
     "ling": 7,
     "bighist": 18
@@ -234,36 +234,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Theory_of_Colours"
-      }
-    },
-    {
-      "id": "art-4.12",
-      "file": "content/art/ch04-b.js",
-      "name": "Colour blindness: dichromacy as a projection",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fairchild ch. 1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Color_blindness"
-      }
-    },
-    {
-      "id": "art-4.13",
-      "file": "content/art/ch04-b.js",
-      "name": "Luminance, V(λ) and the Purkinje shift",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fairchild ch. 1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Purkinje_effect"
       }
     },
     {
@@ -1579,7 +1549,9 @@
       "tech-5.3",
       "game-4.11",
       "ling-4.14",
-      "art-4.15"
+      "art-4.15",
+      "art-4.12",
+      "art-4.13"
     ]
   },
   "additionalFollowups": [
@@ -6563,6 +6535,16 @@
       "id": "art-4.15",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent analytic spectral reference, fresh native-state and output-pixel review; docs/verification/art-spectra-maxwell-followup.md."
+    },
+    {
+      "id": "art-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent linear/Simpson and owner-data checks, native-state and output-pixel review; docs/verification/art-perception-followup.md."
+    },
+    {
+      "id": "art-4.13",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent linear/Simpson and owner-data checks, native-state and output-pixel review; docs/verification/art-perception-followup.md."
     }
   ]
 }
