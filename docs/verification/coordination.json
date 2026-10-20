@@ -182,6 +182,18 @@
         "psych-lightness-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "psych-4.9",
+        "psych-4.10",
+        "psych-4.13"
+      ],
+      "peer": "worker_three exact-commit primary-source/model review, six math and six fresh narrow native groups plus528 independent checks",
+      "reports": [
+        "psych-patterns-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -194,5 +206,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 120
+  "currentPendingSourceReviews": 117
 }
