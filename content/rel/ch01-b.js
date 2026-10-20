@@ -126,9 +126,11 @@ has the same value in every inertial frame (flat spacetime, without gravity). In
       statement: String.raw`Along a timelike worldline $x(t)$ with $|dx/dt|<c$ the **proper time** between two events on it is
 $$\Delta\tau=\int\sqrt{1-\frac{v(t)^2}{c^2}}\,dt=\frac1c\int\sqrt{c^2\,dt^2-dx^2},$$
 the time read by a clock carried along the worldline. It is the Minkowski analogue of arc length (pma-6.27) with the sign of $dx^2$ reversed; it has the same value in every inertial frame. Among all timelike worldlines joining two events, the straight (inertial) one has the **largest** proper time.`,
-      idea: String.raw`For a small step the clock is momentarily at rest in a frame where $dx'=0$, so it advances by $d\tau=\sqrt{c^2dt^2-dx^2}/c$, an interval (rel-1.7) divided by $c$ and therefore frame independent. Summing the steps gives the integral, exactly as arc length sums $\sqrt{dx^2+dy^2}$ (pma-6.27). Any detour makes each step $\sqrt{dt^2-dx^2}$ shorter than the straight chord would, because $\sqrt{a^2-b_1^2}+\sqrt{a'^2-b_2^2}\le\sqrt{(a+a')^2-(b_1+b_2)^2}$ — the reversed triangle inequality.`,
+      idea: String.raw`For a small step the clock is momentarily at rest in a frame where $dx'=0$, so it advances by $d\tau=\sqrt{c^2dt^2-dx^2}/c$, an interval (rel-1.7) divided by $c$ and therefore frame independent. Summing the steps gives the integral, exactly as arc length sums $\sqrt{dx^2+dy^2}$ (pma-6.27). Any detour makes each step $\sqrt{dt^2-dx^2}$ shorter than the straight chord would, because $\sqrt{a^2-b_1^2}+\sqrt{a'^2-b_2^2}\le\sqrt{(a+a')^2-(b_1+b_2)^2}$ — the reversed triangle inequality.
+
+For the polygonal paths shown, give each leg weight $\Delta t_i/T$. Jensen (prob 1.6.2) applied to the convex function $-\sqrt{1-z^2}$ for $|z|<1$ bounds the weighted sum of proper-time rates by the rate at the weighted mean velocity. That mean is the fixed endpoint displacement divided by $T$, so the straight leg maximizes proper time. Strict convexity gives equality only when all positive-duration legs have the same velocity.`,
       caption: String.raw`**Drag the interior points** (and the end point) sideways to bend the worldline: the right graph accumulates the wristwatch time $\tau(t)$ against coordinate time and always ends below the straight line's. Drag a point more than one unit of $x$ per unit of $ct$ away from its neighbour and the segment turns red: no clock can follow it.`,
-      deps: ['rel-1.7', 'pma-6.27'],
+      deps: ['rel-1.7', 'pma-6.27', 'prob-1.6.2'],
       refs: ['Taylor–Wheeler §5.6', 'Schutz §1.6'],
       tags: ['proper time', 'worldline', 'arc length'],
       scope: String.raw`The worldline is drawn as a polygon through the handles, so each leg is uniform motion; the integral is exact for it.`,

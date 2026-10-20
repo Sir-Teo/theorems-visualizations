@@ -153,9 +153,11 @@ where $\tau(X,Y)=\sqrt{(\Delta t)^2-|\Delta\mathbf x|^2}$ (units $c=1$), with eq
       statement: String.raw`For a particle with worldline $x^\mu(\tau)$ parametrised by its proper time, the **four-velocity** is $u^\mu=dx^\mu/d\tau$. In the lab frame, with ordinary velocity $\mathbf v$ and $\gamma=(1-v^2/c^2)^{-1/2}$,
 $$u^\mu=\gamma\,(c,\ \mathbf v),\qquad \eta(u,u)=c^2.$$
 It is a four-vector (the quotient of the displacement four-vector $dx^\mu$ by the invariant $d\tau$), always future timelike with Minkowski length $c$: it is the unit tangent to the worldline.`,
-      idea: String.raw`$d\tau=dt/\gamma$ (rel-1.9), so $dx^\mu/d\tau=\gamma\,dx^\mu/dt$ gives the components above. Its length is fixed because $d\tau^2=\eta(dx,dx)/c^2$ (rel-3.1) is exactly the statement $\eta(u,u)=c^2$. Geometrically, in a boost the tip of $u$ slides along the hyperboloid $\eta(u,u)=c^2$, which is the set of all possible velocities; the ordinary speed $v$ is only a coordinate on it, and is bounded by $c$ while $u$ itself is not.`,
+      idea: String.raw`$d\tau=dt/\gamma$ (rel-1.9), so $dx^\mu/d\tau=\gamma\,dx^\mu/dt$ gives the components above. Its length is fixed because $d\tau^2=\eta(dx,dx)/c^2$ (rel-3.1) is exactly the statement $\eta(u,u)=c^2$. Geometrically, in a boost the tip of $u$ slides along the hyperboloid $\eta(u,u)=c^2$, which is the set of all possible velocities; the ordinary speed $v$ is only a coordinate on it, and is bounded by $c$ while $u$ itself is not.
+
+On a smooth timelike segment, $d\tau/dt=1/\gamma$ is positive. The chain rule (pma 5.5) therefore converts each coordinate derivative from lab time to proper time: $dx^\mu/d\tau=(dx^\mu/dt)(dt/d\tau)$. This yields the displayed factor $\gamma$ component by component. Null curves have no such positive proper-time parameter, so this step concerns massive-particle timelike motion.`,
       caption: String.raw`The particle moves with $v(t)=V\sin\omega t$ (sliders for $V$ and $\omega$). **Slide the time** to move along the worldline (gold dots mark equal steps of proper time $\Delta\tau=0.5$, crowding together as the speed rises). The blue arrow is $u$; it keeps Minkowski length $1$ although it looks longer when the worldline tilts. Right: the unit hyperbola of all four-velocities, with the whole trip traced on it.`,
-      deps: ['rel-3.1', 'rel-1.9'],
+      deps: ['rel-3.1', 'rel-1.9', 'pma-5.5'],
       refs: ['Schutz §2.3', 'Carroll ch. 1'],
       tags: ['four-velocity', 'worldline', 'proper time'],
       viz(v) {
@@ -240,9 +242,11 @@ It is a four-vector (the quotient of the displacement four-vector $dx^\mu$ by th
       statement: String.raw`A particle that starts from rest at the origin and keeps constant proper acceleration $\alpha$ along $x$ has
 $$v=c\tanh\frac{\alpha\tau}{c},\qquad ct=\frac{c^2}{\alpha}\sinh\frac{\alpha\tau}{c},\qquad x=\frac{c^2}{\alpha}\Big(\cosh\frac{\alpha\tau}{c}-1\Big),$$
 so that $(x+c^2/\alpha)^2-(ct)^2=(c^2/\alpha)^2$: the worldline is a hyperbola. Its speed tends to $c$ but never reaches it; its rapidity is $\varphi=\alpha\tau/c$. For $\alpha\tau\ll c$ it reduces to Newton's $x=\tfrac12\alpha t^2$.`,
-      idea: String.raw`Constant magnitude of $a$ (rel-3.5) with $a\perp u$ means $du/d\tau=(\alpha/c)\,\hat e$ where $\hat e$ is the unit spacelike vector orthogonal to $u$; rotating $u$ by a boost of rapidity rate $\alpha/c$ gives $u=c(\cosh\varphi,\sinh\varphi)$ with $\varphi=\alpha\tau/c$ (rel-2.3). Integrating $u=dx/d\tau$ yields the formulas. The hyperbola has asymptotes $x+c^2/\alpha=\pm ct$, and shipboard time grows only like the logarithm of the Earth-frame distance.`,
+      idea: String.raw`Constant magnitude of $a$ (rel-3.5) with $a\perp u$ means $du/d\tau=(\alpha/c)\,\hat e$ where $\hat e$ is the unit spacelike vector orthogonal to $u$; rotating $u$ by a boost of rapidity rate $\alpha/c$ gives $u=c(\cosh\varphi,\sinh\varphi)$ with $\varphi=\alpha\tau/c$ (rel-2.3). Integrating $u=dx/d\tau$ yields the formulas. The hyperbola has asymptotes $x+c^2/\alpha=\pm ct$, and shipboard time grows only like the logarithm of the Earth-frame distance.
+
+With the stated constant proper acceleration, the rapidity is linear in proper time. The smooth hyperbolic components of $u^\mu$ have the displayed coordinate functions as antiderivatives. The fundamental theorem (pma 6.21) evaluates their integrals on each finite proper-time interval; the initial position and rest condition fix the constants. This is exact integration of the ideal prescribed motion, not a fuel-consumption or variable-thrust model.`,
       caption: String.raw`**Set the acceleration** (in units of Earth's $g$) **and the ship time.** Left: the hyperbolic worldline, in light-years and years, with a dot per ship year, against Newton's parabola (red dashed); the gold line is the asymptote. Right: speed against ship time, $\tanh$ against Newton's unbounded line. The toggle flips the ship at the midpoint to arrive at rest. The readout works out three trips at the chosen acceleration: round figures, no engine-physics, just the formula.`,
-      deps: ['rel-3.5', 'rel-2.3'],
+      deps: ['rel-3.5', 'rel-2.3', 'pma-6.21'],
       refs: ['Taylor–Wheeler §2.9', 'Schutz ch. 2'],
       tags: ['hyperbolic motion', 'proper acceleration', 'rapidity'],
       scope: String.raw`Flat spacetime, one dimension, ideal constant-thrust engine (propellant mass, radiation and drag ignored). Distances: Proxima Centauri about 4.24 ly; Galactic Centre $8178\pm 13_{\rm stat}\pm22_{\rm sys}$ pc, i.e. about 26,670 ly (GRAVITY Collaboration 2019).`,
