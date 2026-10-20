@@ -51,7 +51,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
 1. Continue the Wave 3–4 source-review queue: **179 items remain**. The named modern PWT/MRW input audit is complete; its evidence and reproducible extraction are in `docs/verification/pwt-10.0.json` and `scripts/verify-pwt.py`.
 2. Continue agent screenshot inspection in light and dark themes and close remaining input/model gaps. [Automated audio coverage](docs/verification/audio-input-followup.md) passes 53 items and 95 actions. Human review, subjective listening and user approval are not required.
    Reconcile the existing cross-field prerequisite gate: [the inventory](docs/verification/cross-field-dependencies.md)
-   finds 54 of64 non-math collections below25 published edges, with27 below25 even across
+   finds 53 of64 non-math collections below25 published edges, with27 below25 even across
    planned chapters. Add connections only when the argument or model actually requires them.
    The home JSON gate passes. [Steady-pan measurements](docs/verification/map-performance.md)
    reach60fps in eight tested modes. [Zoom/hover comparisons](docs/verification/map-transitions-followup.md)
@@ -67,7 +67,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    Continue renderer work from these measured constraints; the full 60 fps gate stays open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
-The completed checkpoint through `3e4d6f3` passes **1,467 tests**, including all six UI tests, and a **58-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,795 bytes gzipped. The subset adds laboratory dividends, Arrow–Debreu existence and the Pareto geometry routes and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 184 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-3e4d6f3.md).
+The completed checkpoint through `c211d3a` passes **1,490 tests**, including all six UI tests, and a **64-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is112,816bytes gzipped. The exact accepted snapshot was checked separately from ongoing chapter drafts. The source ledger has179pending/657originalresolved; finance now has25published cross-field edges, while53of64non-math collections and27complete syllabi remain below target. The retained-edge experiment passes independent bounded correctness checks but regresses all twelve controlled timing cases and remains isolated. See [checkpoint evidence](docs/verification/checkpoint-c211d3a.md).
 
 ### Where we started
 

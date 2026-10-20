@@ -3,8 +3,8 @@
 2026-10-19. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against all current written and planned records.
 
-Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 870 edges. Even
+Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 866 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -93,3 +93,9 @@ the [laboratory audit](fin-laboratory-followup.md). Chapter and syllabus agree.
 Finance has21published cross-field edges; the total shortfall is870, with54of64
 collections below25published edges and27below25across their complete syllabi.
 The gate remains open.
+
+## Daily exits, detailed balance and conditional forecasts
+
+Four newly audited finance connections bring finance to25published cross-field edges. Finance5.7 applies the finite-variance weak law `prob-2.2.3` to independent authored daily exit outcomes;5.10 derives the finite copying chain's invariant law using actual detailed-balance item `prob-5.5.2a`;5.6 and5.15 explicitly use conditional-L² projection `prob-4.1.15` for the population variance identity. Root read the actual prerequisite bodies and independently checked the arguments, source scope and native models. Related historical/model topics remain related links. See [daily exits](fin-arbitrage-followup.md), [copying chain](fin-speculation-followup.md) and [conditional forecasts](fin-shiller-followup.md).
+
+The checkpoint throughc211d3a has published shortfall866,53of64non-math collections below25published edges, and27below25acrosscomplete syllabi. This remains an open gate; valid arguments, rather than count alone, justify these links.

@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 54,
+  "publishedBelowTarget": 53,
   "wholeSyllabusBelowTarget": 27,
   "entries": [
     {
@@ -10893,10 +10893,10 @@
       "collection": "fin",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 21,
-      "writtenToKnown": 26,
-      "wholeSyllabus": 37,
-      "publishedShortfall": 4,
+      "writtenToWritten": 25,
+      "writtenToKnown": 29,
+      "wholeSyllabus": 40,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -11019,11 +11019,25 @@
           "prerequisiteWritten": false
         },
         {
-          "item": "fin-5.10",
-          "prerequisite": "soc-5.4",
-          "prerequisiteField": "social",
+          "item": "fin-5.6",
+          "prerequisite": "prob-4.1.15",
+          "prerequisiteField": "math",
           "itemWritten": true,
-          "prerequisiteWritten": false
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.7",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.10",
+          "prerequisite": "prob-5.5.2a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "fin-5.11",
@@ -11056,6 +11070,13 @@
         {
           "item": "fin-5.14",
           "prerequisite": "prob-4.1.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.15",
+          "prerequisite": "prob-4.1.15",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
