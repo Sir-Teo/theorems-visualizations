@@ -44,7 +44,7 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.7
     {
-      num:'4.7',kind:'Invention',name:'The cam and the trip hammer',verify:true,
+      num:'4.7',kind:'Invention',name:'The cam and the trip hammer',verify:false,
       credit:'Cam-driven stamps described in Agricola 1556, Book VIII; isolated guided-stroke comparison authored here',
       statement:String.raw`A cam raises a follower as a shaft turns. Releasing a raised head lets gravity produce an impact. A trip hammer uses a pivoted beam; a stamp instead slides in guides. Agricola's De re metallica, Book VIII, describes iron-shod stamps, tappets and two cams per stamp on a water-driven shaft. The 1912 translation and woodcut show this mechanism.
 
@@ -202,7 +202,7 @@ To use the horse's mass the rider must hold on: the whole force must pass betwee
 
     // ------------------------------------------------------------------ 4.10
     {
-      num:'4.10',kind:'Invention',name:'The canal pound lock',verify:true,
+      num:'4.10',kind:'Invention',name:'The canal pound lock',verify:false,
       credit:'Lock operation described by the Canal & River Trust; ideal level-change and water budget authored here',
       statement:String.raw`A pound lock is a chamber between gated water levels. Paddles admit or discharge water while the main gates are closed; after the chamber and the next reach have equal levels, the relevant gate can open. This mechanism is described in the Canal & River Trust's operational handbook. The handbook also recommends sharing broad locks to save water; a chamber cycle need not correspond to just one boat.
 

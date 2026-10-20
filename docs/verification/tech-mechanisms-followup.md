@@ -41,3 +41,9 @@ The operational source supports the mechanism, gate equalization and sharing cav
 - `pitstone.html`: SHA256 `942c95871d31380e876511667b2240e4177302bdc5c6376b45798de13aafbb84`.
 - `agricola-1912.html`: SHA256 `e93c714a9dcb2f4e74403d3627b87e0b0a7b0de60887c63feac4b1caca86723c`.
 - `agricola-stamp-p284.jpg`: SHA256 `9a3fbce2f93eea47ec089ac5ed229486fd1d3193eba86869043ce18921dc3ac7`.
+
+## Independent acceptance — 2026-10-20
+
+Worker three reviewed exact candidate `6a51d2e99e43484b02e487482d3e7ed0549a920e` in a separate archive and recommends acceptance with no actionable findings. Independently read the actual NREL report §2.2, printed pp.6–10, equations2.1–2.17 and §2.3 opening; Pitstone owner record; Agricola BookVIII pp.280–287 and original p.284 woodcut; and the complete accessible Canal & River Trust lock handbook transcript and annual-lockage definition. Source fingerprints match. The stated limits on handbook PDF access remain explicit. Inspected the actual NREL PDF pages12,15,16 and Agricola woodcut pixels.
+
+Fresh independent checks pass: six mathematical groups, three static items with zero errors/warnings, and six native 320px light/dark item groups. Native checks cover full model families, event geometry, controls, exact replay, malformed input, drawing/text/TeX bounds; all six output screenshots were inspected. Evidence: `/tmp/atlas-worker-three/tech-mechanisms-peer-{math,static,native}.log` and `tech-mechanisms-peer-images/`. Coordinator integrated the reviewed source as `d826d30` and clears only these three flags.

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 94,
+  "remainingFlags": 91,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 17,
+    "tech": 14,
     "bighist": 18
   },
   "queue": [
@@ -918,22 +918,6 @@
       }
     },
     {
-      "id": "tech-4.7",
-      "file": "content/tech/ch04-b.js",
-      "name": "The cam and the trip hammer",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.2 and Lewis (1997), as cited by Wikipedia “Trip hammer”"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Trip_hammer"
-      }
-    },
-    {
       "id": "tech-4.8",
       "file": "content/tech/ch04-b.js",
       "name": "The heavy plough and the horse collar",
@@ -974,27 +958,6 @@
       }
     },
     {
-      "id": "tech-4.10",
-      "file": "content/tech/ch04-b.js",
-      "name": "The canal pound lock",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "statement",
-          "text": "A **pound lock** lets a boat change level on a canal. It is a chamber with a gate at each end: the boat enters at one level, the gates are closed, water is let in or out of the chamber through sluices (paddles) until its surface matches the other level, and the boat leaves through the other gate. The older **flash lock** was a single removable weir or gate: opening it let the upper reach rush out, and boats were carried through on the flood (downstream) or hauled up against the current, wasting a great deal of water and sometimes the boat.\n\nThe pound lock is credited to Qiao Weiyue, a Song official, in 984 CE: he installed two gates about 250 feet apart, roofed over, on the canal near Huai'an in Jiangsu, to stop barges wrecking on the slipways; Shen Kuo describes such locks in his *Dream Pool Essays* (1088). In Europe, a form of pound lock was built at Vreeswijk in the Netherlands (the sources give 1373 and 1385), the first \"true European pound lock\" is placed at Damme near Bruges in 1396, and Bertola da Novate built 18 pound locks on the Naviglio di Bereguardo between 1452 and 1458. Mitre gates are attributed to Leonardo da Vinci in the late 15th century. Whether the European lock was invented independently or learnt from China is not established in what I could confirm. The dates come from secondary summaries of Needham, and are flagged unverified.\n\nScope: the model fills the chamber through paddles that discharge like an orifice; friction in the culverts and leakage are ignored."
-        }
-      ],
-      "refs": [
-        "Mokyr ch. 3",
-        "Needham, Science and Civilisation in China 4.3 (as cited by Wikipedia “Lock (water navigation)”)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Lock_(water_navigation)"
-      }
-    },
-    {
       "id": "tech-4.11",
       "file": "content/tech/ch04-b.js",
       "name": "Sternpost rudder and lateen sail",
@@ -1027,23 +990,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Arch"
-      }
-    },
-    {
-      "id": "tech-4.6",
-      "file": "content/tech/ch04.js",
-      "name": "The windmill",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “Water wheels and windmills”",
-        "Mokyr ch. 3",
-        "Wikipedia “Windmill” (Persian panemone, Weedley 1185) and “Betz’s law” (Lanchester 1915, Betz 1919, Zhukovsky 1920)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Windmill"
       }
     },
     {
@@ -2264,7 +2210,10 @@
       "tech-4.5",
       "tech-4.12",
       "music-7.16",
-      "music-7.17"
+      "music-7.17",
+      "tech-4.6",
+      "tech-4.7",
+      "tech-4.10"
     ]
   },
   "additionalFollowups": [
@@ -6993,6 +6942,21 @@
       "id": "music-7.17",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently compared actual Bohlen tables and Benson source pixels, regenerated exact ratios/errors and complete spectral/audio checks, and inspected fresh narrow light/dark outputs; music-adaptive-bp-followup.md."
+    },
+    {
+      "id": "tech-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently accepted exact 6a51d2e; docs/verification/tech-mechanisms-followup.md."
+    },
+    {
+      "id": "tech-4.7",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently accepted exact 6a51d2e; docs/verification/tech-mechanisms-followup.md."
+    },
+    {
+      "id": "tech-4.10",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently accepted exact 6a51d2e; docs/verification/tech-mechanisms-followup.md."
     }
   ]
 }

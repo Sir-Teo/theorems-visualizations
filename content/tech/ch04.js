@@ -219,7 +219,7 @@ Small residuals can reflect rounding. Larger discrepancies remain visible rather
 
     // ------------------------------------------------------------------ 4.6
     {
-      num:'4.6',kind:'Invention',name:'The windmill',verify:true,
+      num:'4.6',kind:'Invention',name:'The windmill',verify:false,
       credit:'Post-mill mechanism documented by the National Trust; ideal actuator-disc comparison following Jonkman 2003',
       statement:String.raw`A windmill uses moving air to drive a shaft. In a post mill, the body turns about a large upright post so its sails can face the wind. The National Trust's record of Pitstone describes this post and the miller's tail pole; it explicitly leaves the construction date unknown. This example does not establish an earliest European or Persian invention date.
 
