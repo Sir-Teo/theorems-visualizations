@@ -1,0 +1,26 @@
+{
+  "baseline": "793bbc5acca7f31b454f401560cabb650aec7561",
+  "changes": [
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.2",
+      "field": "caption",
+      "before": "Left: bars are the peak (blue) and trough (orange) after each dose; the green line is the closed-form limit. Right: the accumulation factor as a function of $\\tau/t_{1/2}$; drag the point. At $\\tau=t_{1/2}$ the factor is exactly 2, and for short intervals $R\\approx t_{1/2}/(0.693\\,\\tau)$.",
+      "after": "Left: each dose-number group pairs the blue peak immediately after dose n with the orange trough immediately before that same dose n; the first trough is zero. The green lines are the separate steady-state peak and trough limits. Right: the IV-bolus accumulation factor as a function of $\\tau/t_{1/2}$; drag the point. At $\\tau=t_{1/2}$ the factor is exactly 2, and for short intervals $R\\approx t_{1/2}/(0.693\\,\\tau)$."
+    },
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.2",
+      "field": "scope",
+      "before": "IV bolus, linear kinetics, equal doses at equal intervals, instantaneous mixing. For oral doses the trough and the accumulation factor are the same, the peak is lower and later.",
+      "after": "IV bolus, linear kinetics, equal doses at equal intervals, instantaneous mixing. The stated peak/trough and single accumulation factor are for instantaneous IV boluses. With first-order oral absorption and distinct positive rates, the periodic curve instead has separate absorption and elimination terms with factors $1/(1-e^{-k_a\\tau})$ and $1/(1-e^{-k\\tau})$; its trough need not equal the IV value."
+    },
+    {
+      "file": "content/pharm/ch04.js",
+      "num": "4.2",
+      "field": "viz",
+      "before": "'trough before next dose'",
+      "after": "'trough before dose n'"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# PHARM4.2 before-dose index clarification
+
+Separate authorized successor to `793bbc5acca7f31b454f401560cabb650aec7561`: caption and scope plus one visualization legend literal. The bar recurrence is unchanged. At dose number n, peak P_n=1+r+…+r^(n−1), while the code's orange value P_n−1=rP_(n−1) is the trough immediately before that same dose n; it is not the next trough rP_n. The first orange value is zero. Caption and legend now use that actual convention and identify the two separate steady-state limits.
+
+The scope also removes the false equality of IV/oral troughs. At k=1,ka=.2,tau=1 in normalized units, the IV steady trough is .5819767069 but the first-order oral one is .9836697148. The oral periodic formula contains both rate-specific accumulation factors.
+
+`tests/pharm-bar-label-manifest.json` records the exact three exceptions. `verification-pharm-bar-label.mjs` reconstructs every other byte across all21PHARM sources, including every executable bar calculation, helper/flag/dependency/raw list. All301 independent indexing/counterexample checks pass. Strict build0/0. `verification-pharm-bar-label-native.mjs` uses real Home/ArrowRight keys for n1/n2 at r=.5 in both320px themes: blue values1 and1.5, orange0 and.5, with the corrected caption/legend and closed-form readouts. All eight complete visualization/readout pictures pass bounds/TeX/page checks and were personally inspected. Own `/tmp/atlas-pharm-prereqs/bar-label-native` and bar-label-{guard-math,build,native}.log; browsers closed.
+
+An additional inherited readout suffix incorrectly always says about3.3half-lives for the first peak within10% of steady state. The coordinator has separately authorized correcting that elapsed-time suffix while preserving n90. This commit does not claim that later correction or combined acceptance. Source3.12 remains unchanged/open.

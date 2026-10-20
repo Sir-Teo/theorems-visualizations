@@ -65,8 +65,8 @@ The superposition argument is the linear-solution property in ode 3.1 applied be
       name: 'Accumulation factor 1/(1 − e^{−kτ})',
       statement: String.raw`For an intravenous bolus $D$ repeated every $\tau$ in a one-compartment body with elimination rate $k$, put $r=e^{-k\tau}$. The peak just after the $n$-th dose is $C_{\max,n}=\tfrac{D}{V}\,(1+r+\dots+r^{n-1})=\tfrac{D}{V}\,\tfrac{1-r^n}{1-r}$ and the trough just before the $n$-th dose is $r$ times the preceding peak. As $n\to\infty$ the peak tends to $C_{\max,ss}=\tfrac{D}{V}\,R$ with **accumulation factor** $R=\dfrac{1}{1-e^{-k\tau}}$, and the trough to $C_{\min,ss}=C_{\max,ss}\,e^{-k\tau}$.`,
       idea: String.raw`Just after the $n$-th dose the body still holds a fraction $r$ of the previous dose's contribution, $r^2$ of the one before, and so on: the peak is a geometric series (pma-3.26) in the residual fraction $r<1$. It converges because each dose is eliminated by a factor $r$ per interval, and its sum is $1/(1-r)$. With $r=2^{-\tau/t_{1/2}}$ the factor depends only on the ratio $\tau/t_{1/2}$.`,
-      caption: String.raw`Left: bars are the peak (blue) and trough (orange) after each dose; the green line is the closed-form limit. Right: the accumulation factor as a function of $\tau/t_{1/2}$; drag the point. At $\tau=t_{1/2}$ the factor is exactly 2, and for short intervals $R\approx t_{1/2}/(0.693\,\tau)$.`,
-      scope: String.raw`IV bolus, linear kinetics, equal doses at equal intervals, instantaneous mixing. For oral doses the trough and the accumulation factor are the same, the peak is lower and later.`,
+      caption: String.raw`Left: each dose-number group pairs the blue peak immediately after dose n with the orange trough immediately before that same dose n; the first trough is zero. The green lines are the separate steady-state peak and trough limits. Right: the IV-bolus accumulation factor as a function of $\tau/t_{1/2}$; drag the point. At $\tau=t_{1/2}$ the factor is exactly 2, and for short intervals $R\approx t_{1/2}/(0.693\,\tau)$.`,
+      scope: String.raw`IV bolus, linear kinetics, equal doses at equal intervals, instantaneous mixing. The stated peak/trough and single accumulation factor are for instantaneous IV boluses. With first-order oral absorption and distinct positive rates, the periodic curve instead has separate absorption and elimination terms with factors $1/(1-e^{-k_a\tau})$ and $1/(1-e^{-k\tau})$; its trough need not equal the IV value.`,
       deps: ['pharm-4.1', 'pma-3.26'],
       refs: ['Rowland–Tozer'],
       tags: ['accumulation', 'geometric series'],
@@ -98,7 +98,7 @@ The superposition argument is the linear-solution property in ode 3.1 applied be
           const n90 = Math.ceil(Math.log(0.1) / Math.log(r));
           info = { peak: sum, R, r, n, n90, sumDirect: (1 - r ** n) / (1 - r) };
         });
-        v.legend([['accent', 'peak after dose $n$'], ['orange', 'trough before next dose'], ['green', 'steady-state limit', { dash: true }]]);
+        v.legend([['accent', 'peak after dose $n$'], ['orange', 'trough before dose n'], ['green', 'steady-state limit', { dash: true }]]);
         v.readout(() => `$r=2^{-\\tau/t_{1/2}}=${v.fix(info.r, 4)}$; sum of ${info.n} terms $=${v.fix(info.peak, 4)}$ vs closed form $(1-r^{${info.n}})/(1-r)=${v.fix(info.sumDirect, 4)}$; limit $R=1/(1-r)=${v.fix(info.R, 4)}$. Within 10 % of steady state after ${info.n90} dose${info.n90 === 1 ? '' : 's'} (about 3.3 half-lives).`);
       },
     },
