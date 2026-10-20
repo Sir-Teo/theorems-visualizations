@@ -278,9 +278,11 @@ More precisely, when no eigenvalue is on the imaginary axis ($x_e$ is *hyperboli
 (i) $V(0)=0$ and $V(x)>0$ for $x\ne0$ ($V$ is positive definite), and
 (ii) its derivative along solutions, $\dot V(x)=\nabla V(x)\cdot f(x)$, satisfies $\dot V(x)\le0$ on $D$.
 It is a **strict** Lyapunov function if $\dot V<0$ for $x\ne0$. The point is that $\dot V$ is computed from $f$ alone, without solving the differential equation.`,
-      idea: String.raw`$V$ plays the role of a generalised energy: the level sets $\{V=c\}$ are closed curves around the origin, and $\dot V\le0$ says that the vector field never points out of any of them. The notion generalises the total energy of a mechanical system, whose derivative is minus the dissipation (ode-5.8 treats the same notion for differential equations, and ctrl-3.1 supplies the stability being certified). Finding $V$ is the art; checking the sign of $\dot V$ is mechanical.`,
+      idea: String.raw`$V$ plays the role of a generalised energy: the level sets $\{V=c\}$ are closed curves around the origin, and $\dot V\le0$ says that the vector field never points out of any of them. The notion generalises the total energy of a mechanical system, whose derivative is minus the dissipation (ode-5.8 treats the same notion for differential equations, and ctrl-3.1 supplies the stability being certified). Finding $V$ is the art; checking the sign of $\dot V$ is mechanical.
+
+Apply the multivariable chain rule pma-9.15 to a differentiable solution curve $t\mapsto x(t)$ and the $C^1$ scalar function $V$. It gives $(V\circ x)'(t)=DV(x(t))\dot x(t)=\nabla V(x(t))\cdot f(x(t))$, which is why the derivative can be checked from the vector field without first finding the trajectory.`,
       caption: String.raw`The system is a damped pendulum, $\dot\varphi=\omega,\ \dot\omega=-\sin\varphi-0.4\omega$. Choose a candidate $V$: the pendulum's **energy**, or a **quadratic** $x^\top Px$ whose ellipses you rotate ($\theta$) and stretch ($r$). The curves are level sets of $V$. Arrows are the direction of motion, **green** where $\dot V<0$ (the flow crosses the level sets inward) and **red** where $\dot V>0$ (outward); the shading repeats this. The slider chooses a level $c$; the readout reports whether $\dot V\le0$ holds on the whole set $\{V\le c\}$, which is what a certificate needs.`,
-      deps: ['ctrl-3.1', 'ode-5.8'],
+      deps: ['ctrl-3.1', 'ode-5.8', 'pma-9.15'],
       refs: ['Åström–Murray §5.4'],
       tags: ['lyapunov', 'certificate'],
       credit: 'A. M. Lyapunov, 1892',
@@ -337,9 +339,11 @@ It is a **strict** Lyapunov function if $\dot V<0$ for $x\ne0$. The point is tha
 (a) If $\dot V\le0$ on $D$, the origin is stable.
 (b) If $\dot V<0$ on $D\setminus\{0\}$, the origin is asymptotically stable; moreover every sublevel set $\Omega_c=\{V\le c\}\subset D$ that is bounded is positively invariant and lies in the region of attraction.
 (c) If $D=\R^n$, $\dot V<0$ away from $0$ and $V$ is radially unbounded ($V\to\infty$ as $|x|\to\infty$), the origin is globally asymptotically stable.`,
-      idea: String.raw`If $\dot V\le0$ a trajectory can never move to a higher level set, and the level sets $\{V\le c\}$ shrink to the origin as $c\to0$ (this uses the positive definiteness and the compactness of the spheres, via ode-5.9). Given $\varepsilon$, pick a level $c$ below the minimum of $V$ on $|x|=\varepsilon$ and a $\delta$ with $V<c$ on $|x|<\delta$: this is exactly the $\delta$ that ctrl-3.1 asks for. Under $\dot V<0$ the value $V(x(t))$ decreases to a limit that must be zero, because a positive limit would leave the trajectory in a compact annulus where $\dot V\le-m<0$.`,
+      idea: String.raw`If $\dot V\le0$ a trajectory can never move to a higher level set, and the level sets $\{V\le c\}$ shrink to the origin as $c\to0$ (this uses the positive definiteness and the compactness of the spheres, via ode-5.9). Given $\varepsilon$, pick a level $c$ below the minimum of $V$ on $|x|=\varepsilon$ and a $\delta$ with $V<c$ on $|x|<\delta$: this is exactly the $\delta$ that ctrl-3.1 asks for. Under $\dot V<0$ the value $V(x(t))$ decreases to a limit that must be zero, because a positive limit would leave the trajectory in a compact annulus where $\dot V\le-m<0$.
+
+The extreme-value theorem pma-4.16 makes the trapping argument quantitative: continuous positive $V$ attains a strictly positive minimum on the sphere $|x|=\varepsilon$ contained in $D$. In the strict case, continuity of $\dot V$ on a compact annulus gives a negative maximum away from the equilibrium, so remaining there would force $V$ to decrease at a uniform rate rather than approach a positive limit.`,
       caption: String.raw`Drag the **gold** initial state. The ellipse is the level set of $V=x^\top Px$ through it, the **orange** curve the trajectory, and the lower plot shows $V(x(t))$, coloured **green** where it falls and **red** where it rises. Rotate and stretch $V$ with $\theta$ and $r$: for the linear system with a good shape $\dot V<0$ everywhere and $V(t)$ falls monotonically; with a bad shape the certificate fails (the readout says where) and $V(t)$ rises in places, **although the true trajectory is the same and still converges**. Failure of one $V$ never says anything about stability.`,
-      deps: ['ctrl-3.5', 'ode-5.9'],
+      deps: ['ctrl-3.5', 'ode-5.9', 'pma-4.16'],
       refs: ['Åström–Murray §5.4', 'Franklin–Powell §9.5'],
       tags: ['lyapunov', 'stability'],
       credit: 'A. M. Lyapunov, 1892',

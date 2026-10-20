@@ -484,9 +484,11 @@ At constant speed $v$ and constant steering angle the car moves on a circle of r
       statement: String.raw`For the linear system $\dot x=Ax+Bu,\ y=Cx+Du$ with $x(0)=0$, the Laplace transforms of input and output are related by $Y(s)=G(s)U(s)$ with
 $$G(s)=C(sI-A)^{-1}B+D=\frac{C\,\mathrm{adj}(sI-A)\,B+D\det(sI-A)}{\det(sI-A)}.$$
 $G$ is a proper rational function (strictly proper if $D=0$). Its denominator divides $\det(sI-A)$, so every **pole** of $G$ is an eigenvalue of $A$. Equality holds, with no pole lost, when there is no pole–zero cancellation, that is, when $(A,B)$ is controllable and $(C,A)$ is observable. A change of state coordinates does not change $G$.`,
-      idea: String.raw`Transform $\dot x=Ax+Bu$ with $x(0)=0$ to get $(sI-A)X=BU$, solve for $X=(sI-A)^{-1}BU$ and substitute into $Y=CX+DU$. The inverse of a matrix is its adjugate over its determinant (sig-9.6 for the Laplace transform of a derivative). The determinant of $sI-A$ is the characteristic polynomial, whose roots are the eigenvalues. A mode that the input cannot excite or the output cannot see drops out of $G$, which is why the input–output description can be simpler than the state one.`,
+      idea: String.raw`Transform $\dot x=Ax+Bu$ with $x(0)=0$ to get $(sI-A)X=BU$, solve for $X=(sI-A)^{-1}BU$ and substitute into $Y=CX+DU$. The inverse of a matrix is its adjugate over its determinant (sig-9.6 for the Laplace transform of a derivative). The determinant of $sI-A$ is the characteristic polynomial, whose roots are the eigenvalues. A mode that the input cannot excite or the output cannot see drops out of $G$, which is why the input–output description can be simpler than the state one.
+
+By ladr-9.51, the zeros of $\det(sI-A)$ are exactly the eigenvalues of $A$. This is the step that converts the denominator of the resolvent formula into a statement about modes of the state matrix; cancellation in the input-output fraction can remove a pole without removing that eigenvalue.`,
       caption: String.raw`A second-order system with matrices you can edit. The left panel is the $s$-plane: red crosses are the poles of $G$, hollow green dots its zeros, and the large gold rings the eigenvalues of $A$; they sit on the crosses. The right panel overlays the step response of $G(s)$ (computed from the transfer function alone) on a direct numerical simulation of $\dot x=Ax+Bu$. The preset *cancellation* makes a zero land on a pole: the mode with eigenvalue $-3$ is still an eigenvalue of $A$ but invisible in $G$ (a gold ring with no cross).`,
-      deps: ['ctrl-2.1', 'sig-9.6'],
+      deps: ['ctrl-2.1', 'sig-9.6', 'ladr-9.51'],
       refs: ['Åström–Murray §9.2', 'Franklin–Powell §7.4'],
       tags: ['transfer function', 'laplace'],
       viz(v) {
