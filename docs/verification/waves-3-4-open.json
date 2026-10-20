@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 14,
+  "remainingFlags": 13,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "robot": 1,
     "arch": 1,
-    "bighist": 7
+    "bighist": 6
   },
   "queue": [
     {
@@ -134,22 +134,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "bighist-3.3",
-      "file": "content/bighist/ch03.js",
-      "name": "LUCA and the tree of life",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Last_universal_common_ancestor",
-        "doi": "https://doi.org/10.1038/s41559-024-02461-1"
       }
     },
     {
@@ -1072,7 +1056,8 @@
       "bighist-3.2",
       "bighist-4.2",
       "energy-3.10",
-      "bighist-4.7"
+      "bighist-4.7",
+      "bighist-3.3"
     ]
   },
   "additionalFollowups": [
@@ -6226,6 +6211,11 @@
       "id": "bighist-4.7",
       "status": "resolved",
       "note": "2026-10-20: Worker three independently read actual Christian2004/Henrich2004 and prerequisite bodies/pixels, found27rational half-tie errors, verified exactf09b533 correction with independent BigInt26250grid and byte-identical65digit10profile fixtures, and passed fresh320both-theme complete native/replay/own pixels; docs/verification/bighist-learning-peer.md."
+    },
+    {
+      "id": "bighist-3.3",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently read actual1977/1990originals, bounded2024dating/methods and NCBIcode tables with ownpixels, regeneratedFractionreference/sourcehashes, added2402cutpointcases, and passed fresh320both-theme native/extra independent raw-selector edits/fullreplay/ownpixels; docs/verification/bighist-luca-peer.md."
     }
   ]
 }

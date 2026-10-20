@@ -1237,6 +1237,19 @@
         "30f1711",
         "f09b533"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.3"
+      ],
+      "peer": "Worker two independently read actual1977/1990originals, bounded2024dating/methods and NCBIcode tables with ownpixels, regeneratedFractionreference/sourcehashes, added2402cutpointcases, and passed fresh320both-theme native/extra independent raw-selector edits/fullreplay/ownpixels",
+      "reports": [
+        "docs/verification/bighist-luca-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "cedbe66e1fd8f4f3d765d0ab0e78a862557d4158"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1249,7 +1262,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 14,
+  "currentPendingSourceReviews": 13,
   "latestCheckpoint": {
     "acceptedContentCommit": "61ced0c",
     "report": "docs/verification/checkpoint-61ced0c.md",
