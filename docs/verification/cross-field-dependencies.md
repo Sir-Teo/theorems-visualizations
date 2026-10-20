@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 874 edges. Even
+written ideas in a different field**. Their combined shortfall is 871 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -65,3 +65,18 @@ audited in the [bubble](fin-bubbles-followup.md) and
 related links. Finance now has17 published cross-field edges and behavior11.
 Published shortfall874;54/64collections and27whole-syllabus collections remain
 below25. The gate remains open.
+
+
+## Conditional trading systems and diffusion
+
+The reviewed efficiency entries `fin-5.1` and `fin-5.14` explicitly use
+`prob-4.1.14`, taking out a bounded measurable position from a conditional
+expectation. Integrability and the separately specified benchmark are stated;
+subtracting the true conditional mean alone is identified as an identity.
+Bachelier's Gaussian in `fin-5.13` explicitly applies the written heat kernel
+`pde-3.3` at diffusivity sigma²/2. Original source/formula reading and independent
+model checks support all three connections; chapter and syllabus are synchronized.
+See the [efficiency](fin-efficiency-followup.md) and
+[Bachelier](fin-bachelier-followup.md) reports. Finance has 20 published edges;
+the refreshed shortfall is 871. The gate remains open for 54 of 64 collections,
+including 27 below target even across their complete syllabi.
