@@ -108,7 +108,7 @@ export default {
         { num: '3.13', kind: 'Paper', name: 'The mechanism of plastic deformation of crystals',
           paper: { authors: 'G. I. Taylor', year: 1934, title: 'The Mechanism of Plastic Deformation of Crystals. Part I.—Theoretical', venue: 'Proceedings of the Royal Society of London A 145 (855): 362–387', doi: '10.1098/rspa.1934.0106' },
           introduces: ['mat-3.2', 'mat-3.8'], deps: ['mat-3.1', 'mat-3.4'], refs: [],
-          pic: 'Shear a crystal two ways: slide whole planes rigidly and the stress needed is near G/10; insert one extra half-plane and push it through one bond at a time and a tiny fraction of that suffices, while a growing tangle of such dislocations raises the flow stress as the square root of their density.' },
+          pic: 'Original1934 slip propagation, rough atomic potential and conditional array hardening are distinguished from an authored finite harmonic chain. Inspect fixed-end registry and force residual under a declared finite relaxation; stationarity, budget exhaustion and model limits are explicit, with exact saved ticks.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

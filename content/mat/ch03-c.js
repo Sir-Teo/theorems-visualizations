@@ -1,3 +1,4 @@
+import taylorPaper from './taylor-paper-item.js';
 // Materials Science — Chapter 3, part c: items 3.11–3.13 (deformation twinning, partial dislocations, Taylor's 1934 paper)
 import { edgeU } from './ch03.shared.js';
 
@@ -116,49 +117,6 @@ export default {
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────────────────── 3.13
-    {
-      num: '3.13',
-      kind: 'Paper',
-      name: 'The mechanism of plastic deformation of crystals',
-      statement: String.raw`Taylor's 1934 paper belongs to the early dislocation account of crystal plasticity, alongside work by Orowan and Polanyi, as discussed in the cited modern historical overview. The full original has not been reviewed here. The illustration is a **separately defined finite chain**, not a reproduction of Taylor's calculations: harmonic neighbors and a periodic substrate allow localized changes in relative registry instead of rigidly translating a whole plane. Its finite numerical relaxation does not establish a depinning threshold.`,
-      idea: String.raw`In units with substrate period and barrier both one, define $$E=\frac K2\sum_{i=1}^{39}(x_i-x_{i-1}-1)^2+\frac12\sum_{i=1}^{38}(1-\cos2\pi x_i)-f\sum_{i=1}^{38}x_i,$$ fixing $x_0=0,x_{39}=38$. The interior gradient is $g_i=K(2x_i-x_{i-1}-x_{i+1})+\pi\sin2\pi x_i-f$. Gradient descent with $\eta=0.8/(4K+2\pi^2)$ decreases this energy; a half-step option uses twice as many iterations for the same requested pseudotime. A small gradient certifies only numerical stationarity, not a stable minimum. Because fixed endpoints make the elastic energy confining for $K>0$, this finite model cannot demonstrate unbounded runaway under constant force.`,
-      caption: String.raw`Choose stiffness, applied force and a finite iteration budget, or press Run longer. Left: registry $u_i=x_i-i$ of the zero-force reference (grey) and the final forced chain (blue). Right: the actual maximum interior force residual over iterations, floored only for logarithmic display. The readout distinguishes a stationary numerical state from an unfinished relaxation. The scale $f_{\rm rigid}=\pi$ is the maximum force of one substrate site, not a measured collective depinning force.`,
-      deps: ['mat-3.1', 'mat-3.4'],
-      refs: ['Kauffmann and Heilmaier, KIT Plasticity lecture (14 February 2022), historical overview slides 20–22: https://www.iam.kit.edu/wk/downloads/PoMI/4a-Dislocations-Concept_web.pdf', 'Taylor original bibliographic record (full original not accessed): https://doi.org/10.1098/rspa.1934.0106'],
-      tags: ['dislocation', 'finite chain', 'history'],
-      paper: { authors: 'G. I. Taylor', year: 1934, title: 'The Mechanism of Plastic Deformation of Crystals. Part I.—Theoretical', venue: 'Proceedings of the Royal Society of London A 145 (855): 362–387', doi: '10.1098/rspa.1934.0106' },
-      introduces: ['mat-3.2', 'mat-3.8'],
-      credit: 'G. I. Taylor, 1934 (bibliographic paper entry); finite-chain energy and numerical protocol here are a modern illustration.',
-      scope: String.raw`The original Taylor text remains inaccessible and its paper-specific claims, figures and priority details are unverified; the source flag remains open. The chain has 40 labelled sites and 39 bonds spanning 38 substrate periods, fixed endpoints, no hard-core exclusion, harmonic springs and unit periodic barrier. A 20000-iteration zero-force reference is computed separately, with its residual reported. The forced protocol starts afresh from that reference for each input setting. Numerical stationarity does not prove minimum stability, uniqueness, infinite-chain depinning or an exponential threshold law; no fitted threshold curve is shown.`,
-      verify: true,
-      viz(v) {
-        let cache=null;
-        const K = v.slider('spring stiffness $K$', .25, 8, 1.5, {log:true,sig:2,onChange:()=>{cache=null;}});
-        const f = v.slider('applied force $f/f_{\\rm rigid}$',0,1.05,.2,{step:.001});
-        const budget = v.slider('base iteration budget',100,12000,2000,{step:100,int:true});
-        const half = v.toggle('half step, twice the iterations',false);
-        v.button('Run longer',()=>budget.set(Math.min(12000,budget.value*2)));
-        const A=v.stage({x:[0,39],y:[-1.2,.2],axes:'box',gutter:true,height:310,weight:1.2,xlabel:'site index $i$',ylabel:'registry $x_i-i$',title:'finite fixed-end chain: reference and final registry'});
-        const B=v.stage({x:[0,2000],y:[1e-12,10],ylog:true,axes:'box',gutter:true,height:310,weight:1,xlabel:'gradient-descent iterations',ylabel:'maximum force residual',title:'finite relaxation; logarithmic floor $10^{-12}$'});
-        let info;
-        v.render(()=>{
-          if(!cache)cache=relaxChain(chainInitial(),K.value,0,{budget:20000,tol:1e-9});
-          const r=relaxChain(cache.x,K.value,f.value*Math.PI,{budget:budget.value*(half.value?2:1),scale:half.value?.4:.8});
-          const ref=Array.from(cache.x,(x,i)=>[i,x-i]),cur=Array.from(r.x,(x,i)=>[i,x-i]);
-          const all=[...ref,...cur].map(p=>p[1]),lo=Math.min(...all),hi=Math.max(...all),span=Math.max(1,hi-lo);
-          A.setView([0,39],[lo-.12*span,hi+.12*span]);A.path(ref,{color:'muted',dash:true,width:2});A.path(cur,{color:'accent',width:2});
-          for(const p of cur)A.dot(...p,{color:'accent',fill:'accent',r:3});
-          B.setView([0,Math.max(1,r.steps)],[1e-12,Math.max(1e-8,...r.hist.map(p=>p.residual))*1.25]);
-          B.path(r.hist.map(p=>[p.steps,Math.max(1e-12,p.residual)]),{color:'accent',width:2.5});B.hline(1e-9,{color:'green',dash:true});
-          info={r,reference:cache,w:chainWidth(cache.x),shift:Math.max(...Array.from(r.x,(x,i)=>Math.abs(x-cache.x[i])))};
-        });
-        v.legend([['muted','zero-force reference',{dash:true}],['accent','finite forced relaxation'],['green','stationarity tolerance $10^{-9}$',{dash:true}]]);
-        v.readout(()=>{
-          if(!info)return '';
-          const {r,reference,w,shift}=info;
-          return `Finite protocol: ${r.steps} iterations, step ${v.fix(r.eta,6)}, pseudotime ${v.fix(r.steps*r.eta,3)}; maximum residual $${v.sci(r.residual,3)}$. ${r.converged?'Numerically stationary within the stated tolerance; minimum stability is not checked.':'Iteration budget reached: relaxation is incomplete; no motion threshold is inferred.'}\nMaximum displacement from the zero-force reference ${v.fix(shift,4)} periods; energy change ${v.fix(r.hist.at(-1).energy-r.hist[0].energy,5)} at this fixed force. Reference residual $${v.sci(reference.residual,3)}$, 10–90% registry width ${w===null?'unavailable':v.fix(w,3)} site spacings. Fixed endpoints remain at 0 and 38; full Taylor original-paper verification remains pending.`;
-        });
-      },
-    },
+    taylorPaper,
   ],
 };
