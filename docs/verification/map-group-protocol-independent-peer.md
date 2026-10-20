@@ -1,0 +1,30 @@
+# Independent membership and MAX-mask protocol peer
+
+## Exact membership report assessed
+
+**Endorse the bounded source-level membership and count/reserve/pack reasoning in exact read-only report commit `a83371d68fe9b62c8c1c2b6919029906e69708e8`.** Archive: `/tmp/atlas-new-map-protocol-peer/archive`. I read the report, original group/control/draw/disposal paths and actual `SceneBudget`, painter and text-owner code. No renderer/binding change, browser run, timing, FPS or source-content review is part of this assessment.
+
+The equality proof is correct: with the same ordered style ID array, original Float64 path endpoints, model ranges and **saved original coverage**, both loops skip the same IDs and append the same ascending per-range first-point integers. Induction preserves the complete sequence, multiplicity, zero-segment omissions and order. Recomputing coverage from the current camera, substituting Float32 shader endpoints, deduplicating or sorting does not prove equality. The previously completed independent census peer `7da1da8` separately stream-compared 86 original group calls in each of two actual frozen states, including empty groups, with 270068/452627 original indices; those checks supplement this source proof.
+
+Borrowing arrays avoids a newly retained Uint32 membership copy only while owner identities remain valid. Actual controls release all groups before replacing style arrays. Covered camera reuse retains the original padded inventory and coverage; a coverage miss constructs another group. Model object identity, released status and scene/control generation matter, not a fidelity number alone. Descriptors must expire on group release, controls changes, model replacement/eviction, context restore and destroy. A borrowed reference may remain readable after its GPU owner is released, which does not make it valid for submission. No await/yield may bridge changes without revalidating the complete snapshot, and persistent descriptors must not prolong obsolete array/metadata lifetimes.
+
+The budget caveat is confirmed in the actual allocator: reserving a new owner with `evictable:false` can still evict another original prewarmed owner. A synchronous no-eviction headroom preflight, with all required original resource transitions and all new CPU/GPU owners accounted for, is necessary before reserve. Growth must include old/new coexistence or release the old optional owners first. A failed optimization may sacrifice its own scratch/metadata, never the original geometry/group resources required by fallback. Nominal census headroom is not reservation or physical-memory acceptance.
+
+Fallback must complete the same original style/tile **before its single color composite**. Clearing a partially accumulated mask and replaying the original full group is safe. Compositing a partial subset and then overlaying a complete original color pass is not safe: it changes opacity. Context/device failure needs the complete original fallback path, not an already partially composited scene. Count/pack discrepancies and stale or missing metadata must never silently truncate output.
+
+## Independent model evidence
+
+`node tests/verification-map-group-protocol-peer.mjs <immutable archive>` passes the peer's independent read-only models:
+
+- 256 explicit ordered membership fixtures, including repeated IDs and zero-segment paths; saved-coverage reuse and a Float64/Float32 boundary counterexample.
+- Eight owner/identity invalidations, including same-fidelity replacement model identity.
+- Twenty-four fixed-capacity chunk cases, including zero, exact capacity, capacity+1 and multi-chunk groups, plus 96 partial-mask clear/replay fallbacks.
+- Actual allocator eviction/no-eviction counterexamples and four exact current memory sums.
+
+The model also establishes the bounded proposed chunk algebra independently of any unreviewed implementation: MAX is associative/idempotent, and monotone R8 quantization commutes with MAX. Accumulating complete segment instances in a once-cleared mask and applying color once preserves this algebra; color source-over per chunk does not. Outer style order remains significant. The actual shader derives four local vertices from each first-point attribute and does not use an instance-global sequence number, so splitting the instance sequence need not alter vertex identity under unchanged state. This is a semantic argument conditional on complete conservative membership, unchanged shader/uniform/scissor state and ordered uploads, not actual alternate-binding pixel certification.
+
+For a capacity of **32768 indices**, the fixed CPU and GPU buffers are each **131072 bytes**, together 262144 bytes. Original logical owners plus active 9291784-byte packed x/y plus that pair are **59106264 / 59185028 / 62467668 / 62648732 bytes** for the four accepted census snapshots. The oversized nominal headrooms are 1532332/1351268 bytes before bookkeeping, metadata preparation/replacement coexistence, driver staging and transient growth. Full old/new active metadata coexistence already breaks the bound. No additional original membership array, all-tile/history cache, geometric capacity growth or hidden replacement store is justified by those figures.
+
+Fixed capacity can remove the preliminary pass that counts a required maximum scratch size; it does not remove per-tile membership/box scans, filtered-index packing, uploads, state changes or synchronization. The current single reusable mask means tiles must finish independently; avoiding repeated per-tile scans would need another separately accounted representation. Updating an in-flight fixed buffer can stall or incur driver staging; no-orphan policy does not prove zero physical copies or acceptable CPU/GPU time.
+
+Evidence: `/tmp/atlas-new-map-protocol-peer/evidence/model.json`. This peer has not yet received the separately assigned immutable fixed-chunk assessment and therefore does **not** certify its unseen report or any renderer candidate. No implementation or performance acceptance follows from these read-only models.
