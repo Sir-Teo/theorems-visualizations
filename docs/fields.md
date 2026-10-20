@@ -23,7 +23,7 @@ tools to reach for. Read the section for your field before writing a chapter.
   dimensionless sliders (ratios, multiples of a natural scale) when the absolute scale does not
   matter.
 
-- **Prerequisites are used inputs, not analogies.** Read the target proof and identify its step in the consumer, including hypotheses. Put a useful comparison in related links when it does not supply the argument. Synchronize complete raw dependency lists in the item and syllabus.
+- **Prerequisites are used inputs, not analogies.** Read the target proof and identify its step in the consumer, including hypotheses. Put a useful comparison in related links when it does not supply the argument. Synchronize complete raw dependency lists in the item and syllabus. Count field differences from actual collection metadata through the inventory helper; a topic name or folder prefix does not establish its field. For example, PROB belongs to mathematics while STAT belongs to statistics in this atlas.
 
 ## Mathematics (book-anchored and curated)
 
@@ -65,6 +65,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Machine learning items train on data the reader places (click to add points) and show the
   generalization gap against the bound.
 - State the censoring/intensity assumptions behind event-count and observed-time identities. Informative censoring can invalidate a baseline constant-hazard interpretation; it is not covered by “whatever the censoring.” See the [independent EPI counterexample](verification/epi-prerequisites-independent-peer.md).
+- Atomless multivariate laws can still have atoms in a coordinate marginal (a continuous distribution on a vertical line is an example). Quantile witnesses for sampling bounds must be fixed independently of the sample, include boundary atoms and use the measure actually restricted to the target set. See the [ML peer](verification/ml-crossfield-prerequisite-peer.md).
 
 ## Computer science
 
