@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 44,
-  "wholeSyllabusBelowTarget": 28,
+  "publishedBelowTarget": 42,
+  "wholeSyllabusBelowTarget": 27,
   "entries": [
     {
       "collection": "stat",
@@ -969,10 +969,10 @@
       "collection": "algo",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 18,
-      "wholeSyllabus": 23,
-      "publishedShortfall": 9,
+      "writtenToWritten": 25,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 32,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -1032,6 +1032,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "algo-3.15",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "algo-3.3",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "algo-4.12",
           "prerequisite": "pma-8.10",
           "prerequisiteField": "math",
@@ -1067,6 +1081,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "algo-5.14",
+          "prerequisite": "prob-2.2.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "algo-5.18",
+          "prerequisite": "prob-1.6.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "algo-5.20",
           "prerequisite": "pma-3.26",
           "prerequisiteField": "math",
@@ -1074,8 +1102,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "algo-5.20",
+          "prerequisite": "prob-1.1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "algo-6.8",
+          "prerequisite": "opt-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "algo-8.11",
           "prerequisite": "pma-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "algo-10.19",
+          "prerequisite": "ladr-2.22",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -1100,6 +1149,20 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "algo-11.24",
+          "prerequisite": "ladr-9.45",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "algo-11.24",
+          "prerequisite": "ladr-9.46",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "algo-12.2",
@@ -10243,16 +10306,23 @@
       "collection": "robot",
       "field": "eng",
       "target": 25,
-      "writtenToWritten": 15,
-      "writtenToKnown": 15,
-      "wholeSyllabus": 30,
-      "publishedShortfall": 10,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 40,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
           "item": "robot-1.1",
           "prerequisite": "mech-6.1",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-1.2",
+          "prerequisite": "pma-9.28",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -10271,9 +10341,30 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "robot-2.6",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-2.9",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "robot-2.10",
           "prerequisite": "mech-2.8",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-2.10",
+          "prerequisite": "ladr-7.1",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -10327,8 +10418,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "robot-4.6",
+          "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-4.6",
+          "prerequisite": "ladr-6.14",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "robot-4.8",
           "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-4.8",
+          "prerequisite": "pma-9.28",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -10341,6 +10453,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "robot-4.1",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "robot-4.2",
           "prerequisite": "mech-6.4",
           "prerequisiteField": "physics",
@@ -10348,8 +10467,22 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "robot-4.2",
+          "prerequisite": "ladr-7.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "robot-4.3",
           "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "robot-4.3",
+          "prerequisite": "ladr-9.50",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -15229,7 +15362,9 @@
       "e57c6a5758904c1f08f79c437a2be87a69924471",
       "3fea5ed16b2c7bc2a08bdccb353a4add425fe817",
       "cdc478caa16e6cfa24c329659e10287973468fd7",
-      "cabd1be31cd9690a623545dffe6ad88865ad2f1e"
+      "cabd1be31cd9690a623545dffe6ad88865ad2f1e",
+      "cd37ccc90d940aebf4034703b6e9b7dbbaa4dda6",
+      "50424bfe669f06c70eb4a14b5948fe60a0989395"
     ],
     "excludedUnacceptedEdges": [
       {
