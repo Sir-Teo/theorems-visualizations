@@ -2,34 +2,7 @@
 import {
   idx, leaf, dec, isLeaf, prep, playBeh, infoSets, pureStrategies, stratName, drawTree, treeView, nmz, kuhnBehaviour, mixedOutcome,
 } from './ch04.shared.js';
-
-// ---------------------------------------------------------------- centipede helpers
-const cBig = (m) => 4 * 2 ** (m - 1), cSmall = (m) => 2 ** (m - 1);   // take at node m: mover gets big, the other small
-/** Level-j take sets (arrays of booleans indexed 1..n) for the player who moves at the odd (who = 0) or even (who = 1) nodes. */
-function levelStrategy(n, who, lvl, memo = {}) {
-  const k = `${who}/${lvl}`; if (memo[k]) return memo[k];
-  let res;
-  if (lvl <= 0) res = new Array(n + 2).fill(false);
-  else {
-    const opp = levelStrategy(n, 1 - who, lvl - 1, memo), mine = new Array(n + 2).fill(false);
-    const mover = (m) => (m % 2 === 1 ? 0 : 1);
-    const payoff = (m) => (mover(m) === who ? cBig(m) : cSmall(m));          // my payoff if the game stops at m (m = n+1: end)
-    const V = new Array(n + 3).fill(0); V[n + 1] = payoff(n + 1);
-    for (let m = n; m >= 1; m--) {
-      if (mover(m) !== who) { V[m] = opp[m] ? payoff(m) : V[m + 1]; continue; }
-      const pass = V[m + 1];
-      mine[m] = payoff(m) > pass + 1e-9; V[m] = mine[m] ? payoff(m) : pass;
-    }
-    res = mine;
-  }
-  return (memo[k] = res);
-}
-function centipedePlay(n, a, b) {
-  const memo = {}, S = [levelStrategy(n, 0, a, memo), levelStrategy(n, 1, b, memo)];
-  for (let m = 1; m <= n; m++) if (S[(m % 2 === 1) ? 0 : 1][m]) return m;
-  return n + 1;
-}
-const centiPay = (m) => (m % 2 === 1 ? [cBig(m), cSmall(m)] : [cSmall(m), cBig(m)]);
+import { centipedeModel, ultimatumModel } from './source-audit-centipede-ultimatum.js';
 
 // ---------------------------------------------------------------- chain store (reputation) helpers
 const EQ = 1e-9;
@@ -67,114 +40,67 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.6
     {
-      num: '4.6',
-      kind: 'Paradox',
-      name: 'Centipede game',
-      statement: String.raw`Two players move in turn, starting with player 1. At each of $n$ nodes the mover can **take**, ending the game with the larger pile for herself and the smaller for her partner, or **pass**, which doubles both piles and hands the move over. If every node is passed the game ends with the piles after the last doubling. At every node, taking gives the mover more than she would get if the partner took at the next node, so backward induction (game-4.2) says: the first player takes at once, and the pair ends with a tiny payoff, although they would both be far better off if the game went to the end.`,
-      idea: String.raw`At the last node taking beats passing; knowing this, the player before her also takes, since passing would only give her the smaller pile; and so on to the root. Every step is a correct application of the rule, yet the result is that two people who could split a large pot settle for crumbs. The conclusion rests on common knowledge that everyone reasons all the way down; if a player thinks the other might pass, passing becomes attractive. In laboratory versions people commonly pass for several rounds, which is why the game is called a paradox.`,
-      caption: String.raw`A centipede with $n$ nodes (blue = player 1, orange = player 2; the pair below a node is what the game gives if the mover takes there). The right grid assumes **level-$k$ reasoners**: level 0 always passes, level $k$ best-responds to a level $k-1$ opponent. Each cell shows where the game stops when player 1 has the row level and player 2 the column level. Drag the sliders or click the grid; a player 1 who reasons deeply (bottom rows) ends the game at node 1, while shallow reasoners let it run on. This is a model of reasoning, not experimental data.`,
-      credit: 'Rosenthal, 1981 (laboratory version: McKelvey & Palfrey, 1992)',
-      scope: String.raw`Payoffs here: taking at node $m$ gives the mover $4\cdot 2^{m-1}$ and the other player $2^{m-1}$ (arbitrary units), in the pattern of the McKelvey–Palfrey design.`,
-      deps: ['game-4.2'],
-      refs: ['MSZ §7.2'],
-      tags: ['paradox', 'backward induction', 'common knowledge'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Centipede_game' },
-      verify: true,
-      viz(v) {
-        const A = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 1.35, title: 'the centipede' });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: false, height: 330, weight: 0.8, equal: true, title: 'where play stops, by reasoning level' });
-        const sn = v.slider('number of nodes $n$', 2, 10, 6, { int: true });
-        const la = v.slider('player 1 reasoning level', 0, 10, 2, { int: true });
-        const lb = v.slider('player 2 reasoning level', 0, 10, 2, { int: true });
-        const grid = (n) => ({ x0: 0.14, y0: 0.88, cs: 0.84 / (n + 1) });
-        B.onClick((x, y) => {
-          const n = sn.value, g = grid(n), j = Math.floor((x - g.x0) / g.cs), i = Math.floor((g.y0 - y) / g.cs);
-          if (i >= 0 && i <= n && j >= 0 && j <= n) { la.set(i); lb.set(j); }
+      num:'4.6',kind:'Paradox',name:'Centipede game',
+      statement:String.raw`Two players alternate at $n$ observed decision nodes. Taking at node $m$ gives its mover $4\cdot2^{m-1}$ and the other player $2^{m-1}$, in authored money units. Passing doubles both piles and changes the mover. If all $n$ nodes are passed, a fixed terminal leaf pays the same formula at index $n+1$, with the next player assigned the larger pile; there is no extra decision there.
+
+With these payoffs, finite horizon and each player maximizing her own money, the unique subgame perfect plan takes at every decision node, including off-path nodes. Its initial outcome is $(4,1)$, although the all-pass terminal payoff is larger for both players for every offered $n\ge2$. This is a contrast between the model's equilibrium and available payoffs, not a logical contradiction.
+
+McKelvey and Palfrey's **1991 working-paper version** reports laboratory play that often continued beyond the first node. Their four- and six-move designs start at $(0.40,0.10)$ and double the piles. This widget scales those base payoffs by ten and also offers other lengths; its reasoning levels are authored examples, not their observed choices or fitted explanation.`,
+      idea:String.raw`At the last node, taking gives its mover $4\cdot2^{n-1}$ while passing gives her $2^n$, so taking is strictly better. If the next mover takes, passing at any earlier node similarly gives only $2^m$, compared with $4\cdot2^{m-1}$ from taking now. Backward induction (game-4.2) therefore selects take at every node. The single-node criterion in game-4.4 verifies the whole plan, not just the initial path.
+
+The separate level rule sets level 0 to pass everywhere. Level $k\ge1$ chooses a complete best-response plan against an opponent of level $k-1$, optimizing its own future choices too and passing on exact indifference. An actual pair of levels then plays its two prescribed plans. The opponent used to construct a plan need not equal the actual opponent. For example, with ten nodes, levels $(9,0)$ stop at node 3. This is neither a monotone measure of cooperation nor a solution of the incomplete-information model in the source.`,
+      caption:String.raw`The left panel inspects one node and its immediate take/payoff or pass continuation **under the selected complete plans**. Use previous/next, root, or played outcome to inspect every decision and the final all-pass leaf. The right grid retains all levels 0–10 for both players, independently of game length; click a cell or use the two level sliders. Each cell gives the terminal index, with $n+1$ meaning all pass. Gold marks the action prescribed by the selected plans; the readout lists their off-path choices and any profitable one-node deviations.`,
+      deps:['game-4.2','game-4.4'],refs:['McKelvey & Palfrey, Social Science Working Paper 732, revised August 1991, §§1–3 and Figures 1–2'],
+      credit:'McKelvey & Palfrey, 1991 working paper (experimental comparison); authored finite-level illustration',
+      scope:String.raw`Finite deterministic perfect-information game, arbitrary money units and selfish preferences. The source study used student subjects from Caltech and Pasadena Community College with repeated, differently matched plays; the widget contains no subject data. No historical first-invention or epistemic common-knowledge theorem is asserted.`,
+      tags:['centipede','backward induction','complete plans'],links:{source:'https://authors.library.caltech.edu/records/n6131-v8q36'},verify: false,
+      viz(v){
+        let inspect=1,info;
+        const n=v.slider('number of decision nodes $n$',2,10,6,{int:true,onChange:x=>{inspect=Math.min(inspect,x+1);}}),a=v.slider('player 1 reasoning level',0,10,2,{int:true}),b=v.slider('player 2 reasoning level',0,10,2,{int:true});
+        v.button('inspect root',()=>{inspect=1;});v.button('previous node',()=>{inspect=Math.max(1,inspect-1);});v.button('next node',()=>{inspect=Math.min(n.value+1,inspect+1);});v.button('inspect played outcome',()=>{inspect=centipedeModel(n.value,a.value,b.value).stop;});
+        v.shareState('centipede inspected index',{get:()=>({nodes:n.value,index:inspect}),validate:d=>!!d&&Number.isInteger(d.nodes)&&d.nodes>=2&&d.nodes<=10&&Number.isInteger(d.index)&&d.index>=1&&d.index<=d.nodes+1,set:d=>{n.set(d.nodes);inspect=d.index;}});
+        const A=v.stage({x:[-2.1,2.1],y:[-1.5,1.7],height:350,minWidth:280,axes:false,title:'selected subgame and prescribed continuation'}),B=v.stage({x:[-.8,11.8],y:[-.8,12.5],height:360,minWidth:280,equal:true,axes:false,title:'terminal index for all level pairs'});
+        B.onClick((x,y)=>{const j=Math.floor(x),i=10-Math.floor(y);if(i>=0&&i<=10&&j>=0&&j<=10){a.set(i);b.set(j);}});
+        v.legend([['blue','player 1'],['orange','player 2'],['gold','prescribed action'],['green','all pass'],['red','stop at node 1']]);
+        v.render(()=>{inspect=Math.min(inspect,n.value+1);const p=centipedeModel(n.value,a.value,b.value,inspect);info=p;
+          if(inspect===p.n+1){A.text(`terminal ${inspect}: all pass`,0,1.1,{align:'center',size:14,weight:700});A.text(`(${p.full.join(', ')})`,0,.3,{align:'center',size:20,weight:700,color:'green'});A.text('No decision remains.',0,-.45,{align:'center',size:13,color:'muted'});}
+          else{const q=p.continuations[inspect-1],col=q.who?'orange':'blue';A.text(`node ${inspect} / ${p.n}: player ${q.who+1}`,0,1.35,{align:'center',size:13,weight:700,color:col});A.dot(0,.85,{r:11,color:col});
+            A.arrow(-.08,.7,-1.05,-.25,{color:q.selected?'gold':'muted',width:q.selected?3:1.5,head:8});A.arrow(.08,.7,1.05,-.25,{color:!q.selected?'gold':'muted',width:!q.selected?3:1.5,head:8});
+            A.text('Take',-1.12,.4,{align:'center',size:13,weight:700,color:q.selected?'gold':'ink'});A.text('Pass',1.12,.4,{align:'center',size:13,weight:700,color:!q.selected?'gold':'ink'});
+            A.text(`(${q.take.join(', ')})`,-1.05,-.55,{align:'center',size:14,weight:700});A.text(`(${q.pass.join(', ')})`,1.05,-.55,{align:'center',size:14,weight:700});A.text(`stop ${q.m}`,-1.05,-.9,{align:'center',size:12,color:'muted'});A.text(`stop ${q.passStop}`,1.05,-.9,{align:'center',size:12,color:'muted'});A.text('Payoffs: player 1, player 2',0,-1.25,{align:'center',size:12,color:'muted'});}
+          for(let i=0;i<=10;i++)for(let j=0;j<=10;j++){const stop=p.grid[i][j],selected=i===p.a&&j===p.b;B.rect(j,10-i,j+1,11-i,{fill:stop===1?'red':stop===p.n+1?'green':'gold',fillAlpha:.2,color:selected?'ink':'faint',width:selected?2.5:.6});B.text(String(stop),j+.5,10.5-i,{align:'center',baseline:'middle',size:11,weight:selected?800:500});}
+          for(let i=0;i<=10;i++){B.text(String(i),-.25,10.5-i,{align:'right',baseline:'middle',size:10,color:'blue'});B.text(String(i),i+.5,11.35,{align:'center',size:10,color:'orange'});}B.text('player 2 level',5.5,12,{align:'center',size:12,color:'orange',weight:700});B.text('player 1 levels down the rows',5.5,-.45,{align:'center',size:11,color:'blue'});
         });
-        let info;
-        v.render(() => {
-          const n = sn.value, a = Math.min(la.value, n), b = Math.min(lb.value, n), stop = centipedePlay(n, a, b);
-          const pay = centiPay(stop), bi = centiPay(1), full = centiPay(n + 1);
-          const maxc = cBig(n + 1);
-          A.setView([0.2, n + 1.8], [-3.1, 1.6]);
-          for (let m = 1; m <= n + 1; m++) {
-            const x = m, pl = m % 2 === 1 ? 'blue' : 'orange', on = m <= stop;
-            if (m <= n) A.arrow(x, 0, x + 1 - 0.12, 0, { color: on && m < stop ? 'gold' : 'muted', width: on && m < stop ? 4 : 1.8, head: 8 });
-            if (m <= n) A.dot(x, 0, { r: 11, color: pl });
-            const [u1, u2] = centiPay(m);
-            if (m <= n) A.line(x, 0, x, -0.55, { color: m === stop ? 'gold' : 'muted', width: m === stop ? 4 : 1.4 });
-            else A.line(x, 0, x, -0.55, { color: m === stop ? 'gold' : 'muted', width: m === stop ? 4 : 1.4 });
-            A.rect(x - 0.34, -0.6 - 2.3 * u1 / maxc * 0.9, x - 0.02, -0.6, { fill: 'blue', fillAlpha: m === stop ? 0.55 : 0.25, color: 'blue', width: 1 });
-            A.rect(x + 0.02, -0.6 - 2.3 * u2 / maxc * 0.9, x + 0.34, -0.6, { fill: 'orange', fillAlpha: m === stop ? 0.55 : 0.25, color: 'orange', width: 1 });
-            if (m === stop) A.text(`${u1}, ${u2}`, x, -0.6 - 2.3 * Math.max(u1, u2) / maxc * 0.9 - 0.08, { align: 'center', baseline: 'top', size: 11.5, weight: 700, color: 'ink', plate: true });
-            A.text(m <= n ? `take ${m}` : 'all pass', x, -0.28, { align: 'center', size: 10.5, color: 'muted', weight: 600 });
-          }
-          // grid
-          const g = grid(n);
-          B.setView([0, 1], [0, 1]);
-          for (let i = 0; i <= n; i++) for (let j = 0; j <= n; j++) {
-            const st = centipedePlay(n, i, j), t = (st - 1) / n;
-            const x0 = g.x0 + j * g.cs, y0 = g.y0 - (i + 1) * g.cs, sel = i === a && j === b;
-            B.rect(x0, y0, x0 + g.cs, y0 + g.cs, { fill: st === 1 ? 'red' : st === n + 1 ? 'green' : 'gold', fillAlpha: st === 1 ? 0.3 : st === n + 1 ? 0.3 : 0.12 + 0.35 * t, color: sel ? 'ink' : 'faint', width: sel ? 3 : 0.6 });
-            if (n <= 8) B.text(String(st), x0 + g.cs / 2, y0 + g.cs / 2, { align: 'center', baseline: 'middle', size: 11, weight: sel ? 800 : 500, color: 'ink' });
-          }
-          B.text('P2 level →', g.x0 + (n + 1) * g.cs / 2, g.y0 + 0.015, { align: 'center', baseline: 'bottom', size: 11.5, color: 'orange', weight: 700 });
-          B.text('P1 level ↓', g.x0 - 0.01, g.y0 + 0.015, { align: 'right', baseline: 'bottom', size: 11.5, color: 'blue', weight: 700 });
-          info = { n, stop, pay, bi, full, a, b };
-        });
-        v.readout(() => {
-          const { n, stop, pay, bi, full, a, b } = info;
-          return `player 1 at level ${a} against player 2 at level ${b}: the game stops at node ${stop === n + 1 ? 'n + 1 (everyone passed)' : stop}, payoffs $(${pay[0]},\\,${pay[1]})$\nbackward induction: take at node 1, payoffs $(${bi[0]},\\,${bi[1]})$; passing to the end would give $(${full[0]},\\,${full[1]})$, ${Math.round(full[0] / bi[0])} times better for player 1 and ${Math.round(full[1] / bi[1])} times for player 2`;
+        v.readout(()=>{if(!info)return'';const p=info,plan=who=>p.plans[who].flatMap((take,j)=>j%2===who?[`${j+1}:${take?'T':'P'}`]:[]).join(' ');return `Actual levels (${p.a}, ${p.b}); terminal ${p.stop}${p.stop===p.n+1?' (all pass)':''}, payoffs (${p.pay.join(', ')}). Full all-pass leaf: (${p.full.join(', ')}).\nComplete P1 plan: ${plan(0)}. Complete P2 plan: ${plan(1)}. T=take, P=pass. Pure strategy counts ${p.strategyCounts.join(' × ')}.\nProfitable single-node deviations in this profile: ${p.violations.length?p.violations.join(', '):'none (a pure SPE)'}. Backward induction takes at every node and initially pays (4, 1). Inspecting index ${p.inspect}.`;
         });
       },
     },
     // ------------------------------------------------------------------ 4.7
     {
-      num: '4.7',
-      kind: 'Model',
-      name: 'Ultimatum game',
-      statement: String.raw`A proposer divides a pie of size $10$ and offers the responder an integer share $x\in\{0,\dots,10\}$; the responder accepts (payoffs $10-x$ and $x$) or rejects (both get $0$). If the responder simply maximises her own money and accepts any $x\ge 0$, backward induction (game-4.2) gives the subgame perfect equilibrium $x=0$ (with the tie broken in favour of accepting; offering the smallest positive amount is the other equilibrium if she rejects $0$): the proposer takes everything. More generally if the responder accepts exactly the offers at least $m$, the best offer is $m$, and if responders differ the proposer picks the offer maximising $(10-x)\,F(x)$, where $F(x)$ is the fraction who would accept $x$.`,
-      idea: String.raw`The responder’s decision is the last move, so it is solved first: accept if and only if her payoff from accepting beats $0$, with her own notion of payoff. The proposer then faces a fixed acceptance rule and just maximises. Everything depends on the responder’s utility. If it is pure money, almost nothing is offered; if she dislikes getting less than the proposer (inequity aversion, as in Fehr and Schmidt’s model), the threshold rises toward an even split, and a proposer who is only selfish is then forced to offer a lot. The theory predicts nothing without a model of preferences.`,
-      caption: String.raw`Left: the proposer’s expected payoff for each offer. Right: the probability that an offer is accepted. Choose how responders decide: money-maximising, a fixed threshold, a population with scattered thresholds (normal with mean $\mu$ and spread $\sigma$), or inequity-averse responders with envy weight $\alpha$ (accept $x$ iff $x-\alpha\max(10-2x,0)\ge 0$). The gold bar is the best offer. The thresholds are model inputs, not data.`,
-      credit: 'Güth, Schmittberger & Schwarze, 1982 (experiment); Fehr & Schmidt, 1999 (inequity aversion)',
-      deps: ['game-4.4'],
-      refs: ['Osborne §6.1'],
-      tags: ['bargaining', 'fairness', 'subgame perfection'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Ultimatum_game' },
-      verify: true,
-      viz(v) {
-        const L = v.stage({ x: [-0.6, 10.6], y: [0, 10.5], axes: 'box', gutter: true, height: 320, xlabel: 'offer $x$ to the responder', ylabel: 'proposer’s expected payoff', xticks: idx(11), title: 'what each offer is worth to the proposer' });
-        const R = v.stage({ x: [-0.6, 10.6], y: [0, 1.05], axes: 'box', gutter: true, height: 320, weight: 0.8, xlabel: 'offer $x$', ylabel: 'probability of acceptance', xticks: idx(11), title: 'acceptance rule' });
-        const mode = v.select('responders', [{ value: 'spe', label: 'money-maximising' }, { value: 'thr', label: 'fixed threshold' }, { value: 'pop', label: 'scattered thresholds' }, { value: 'fs', label: 'inequity-averse' }], 'spe', { onChange: () => vis() });
-        const mu = v.slider('threshold $\\mu$', 0, 6, 3, { step: 0.5 });
-        const sg = v.slider('spread $\\sigma$', 0.25, 3, 1.5, { step: 0.25 });
-        const al = v.slider('envy weight $\\alpha$', 0, 4, 1, { step: 0.25 });
-        const vis = () => { mu.el.hidden = mode.value !== 'thr' && mode.value !== 'pop'; sg.el.hidden = mode.value !== 'pop'; al.el.hidden = mode.value !== 'fs'; };
-        vis();
-        const acc = (x) => {
-          switch (mode.value) {
-            case 'spe': return 1;
-            case 'thr': return x >= mu.value - 1e-9 ? 1 : 0;
-            case 'pop': return 0.5 * (1 + v.M.erf((x + 0.5 - mu.value) / (sg.value * Math.SQRT2)));   // threshold ~ N(mu, sigma), accepts x if threshold <= x + 1/2
-            default: return x - al.value * Math.max(10 - 2 * x, 0) >= -1e-9 ? 1 : 0;
-          }
-        };
-        let info;
-        v.render(() => {
-          const F = idx(11).map(acc), E = F.map((f, x) => (10 - x) * f), best = Math.max(...E), bx = E.indexOf(best);
-          idx(11).forEach((x) => {
-            L.rect(x - 0.36, 0, x + 0.36, E[x], { fill: x === bx ? 'gold' : 'blue', fillAlpha: x === bx ? 0.55 : 0.28, color: x === bx ? 'gold' : 'blue', width: 1.5 });
-            R.rect(x - 0.36, 0, x + 0.36, F[x], { fill: 'green', fillAlpha: 0.28, color: 'green', width: 1.5 });
-          });
-          L.line(-0.6, 10, 10.6, 10, { color: 'faint', dash: true });
-          L.text('whole pie', 10.5, 10.05, { align: 'right', baseline: 'bottom', size: 11, color: 'muted' });
-          info = { E, best, bx, F };
-        });
-        v.readout(() => {
-          const { E, best, bx } = info;
-          const bests = idx(11).filter((x) => Math.abs(E[x] - best) < 1e-9);
-          return `best offer: $x=${bests.join(' \\text{ or } ')}$; the proposer expects ${v.fix(best, 2)} and the responder ${v.fix(bests[0] * info.F[bests[0]], 2)}\nmoney-maximising responders (the subgame perfect prediction) get $0$ and the proposer keeps the whole pie, $10$`;
-        });
+      num:'4.7',kind:'Model',name:'Ultimatum game',
+      statement:String.raw`A proposer offers an integer $x\in\{0,\ldots,10\}$ from a pie of 10. The responder observes it and accepts, yielding money $(10-x,x)$, or rejects, yielding $(0,0)$. Her pure strategy specifies a decision after **every** possible offer. With both players maximizing only their own money, she strictly accepts every positive offer and is indifferent at zero. There are exactly two **pure** subgame perfect profiles: accept zero and offer zero; or reject zero and offer one. Mixed equilibria are not classified here.
+
+For a separately specified acceptance probability $F(x)$, a selfish proposer maximizes $(10-x)F(x)$ over all 11 offers; every maximizing offer is retained. Such a response rule is an input, not automatically a money-payoff equilibrium. Güth, Schmittberger and Schwarze's 1982 paper experimentally studied money-division and chip-allocation bargaining. The displayed pie, response populations and probabilities are authored, with no experimental frequencies imported.`,
+      idea:String.raw`Subgame perfection (game-4.4) first checks the responder's choice at all 11 histories. Positive money beats zero, while both actions are best replies at offer zero. The proposer then picks the least costly accepted offer, giving the two pure-money profiles above. A fixed threshold $m$ accepts exactly when $x\ge m$; $m=11$ means no offer is accepted, so all offers yield zero and all tie.
+
+The authored population is uniform over integer thresholds from $\max(0,\mu-w)$ through $\min(11,\mu+w)$ inclusive. The proposer knows this distribution, but not the selected responder's threshold. Thus $F(x)$ is the exact accepted-type count divided by the support size. It is neither an estimated normal distribution nor evidence about fairness.
+
+The inequity mode specializes Fehr–Schmidt's two-player utility to a selfish proposer and responder with disadvantage weight $\alpha\ge0$ and advantage weight $\beta=0$:
+$$U_R(x)=x-\alpha\max(10-2x,0).$$
+Rejection has utility zero. With acceptance on indifference, accept exactly when $x\ge10\alpha/(1+2\alpha)$; the smallest accepted **integer** offer is optimal for this selfish proposer. The continuous threshold is below 5 for finite $\alpha$, while integer rounding can make the offer 5. This mode is one parameter slice, not the whole Fehr–Schmidt model or a fit to subjects.`,
+      caption:String.raw`Compare all 11 offers: left, proposer expected money; right, acceptance probability. Every gold bar is a best offer, including exact ties. In money mode, choose whether the responder accepts zero to inspect both pure SPE. Fixed threshold and uniform threshold population are exogenous response rules; threshold 11 is “never accept.” The inequity mode uses the utility and tie rule above. Hidden controls keep their saved values but do not enter the active rule.`,
+      deps:['game-4.4'],refs:['Güth, Schmittberger & Schwarze (1982), §§1–2, especially §2.1','Fehr & Schmidt (1999), Eq. (2), §III.A/Proposition 1 and footnote 8'],
+      credit:'Güth, Schmittberger & Schwarze, 1982 (experiment); Fehr & Schmidt, 1999 (utility model)',
+      scope:String.raw`Finite integer offers and a money-maximizing proposer. The fixed/population thresholds are authored commitments or reduced-form response rules, not claims that money-only responders rationally reject positive money. No observed offer distribution or universal fairness inference is shown.`,
+      tags:['bargaining','subgame perfection','response rules'],links:{source:'http://www.dklevine.com/archive/refs4291.pdf',utility:'https://web.stanford.edu/~niederle/Fehr.Schmidt.1999.QJE.pdf'},verify: false,
+      viz(v){
+        let info;const mode=v.select('response rule',[{value:'money',label:'money only'},{value:'threshold',label:'fixed threshold'},{value:'population',label:'uniform threshold population'},{value:'inequity',label:'inequity utility'}],'money',{onChange:()=>visible()});
+        const mu=v.slider(String.raw`threshold / population center $\mu$`,0,11,3,{int:true}),width=v.slider('population half-width $w$',0,5,2,{int:true}),alpha=v.slider(String.raw`disadvantage weight $\alpha$`,0,4,1,{step:.25}),zero=v.select('money-only tie at zero',[{value:'accept',label:'accept zero'},{value:'reject',label:'reject zero'}],'accept');
+        const visible=()=>{mu.el.hidden=!['threshold','population'].includes(mode.value);width.el.hidden=mode.value!=='population';alpha.el.hidden=mode.value!=='inequity';zero.el.hidden=mode.value!=='money';};visible();
+        const L=v.stage({x:[-.65,10.65],y:[-.55,11],height:340,minWidth:280,axes:'box',gutter:true,xticks:idx(11),xlabel:'offer to responder',ylabel:'proposer expected money',title:'all offers; gold marks every best offer'}),R=v.stage({x:[-.65,10.65],y:[-.08,1.12],height:340,minWidth:280,axes:'box',gutter:true,xticks:idx(11),yticks:[0,.25,.5,.75,1],xlabel:'offer to responder',ylabel:'acceptance probability',title:'authored response rule'});
+        v.legend([['blue','other offers'],['gold','all best offers'],['green','acceptance probability']]);
+        v.render(()=>{const p=ultimatumModel(mode.value,mu.value,width.value,alpha.value,zero.value);info=p;for(let x=0;x<=10;x++){const best=p.bestOffers.includes(x);L.rect(x-.34,0,x+.34,p.profits[x],{fill:best?'gold':'blue',fillAlpha:.35,color:best?'gold':'blue',width:1.5});R.rect(x-.34,0,x+.34,p.probabilities[x],{fill:'green',fillAlpha:.3,color:'green',width:1.5});}});
+        v.readout(()=>{if(!info)return'';const p=info,details=p.mode==='population'?`Uniform threshold support: ${p.support.join(', ')}; each has weight 1/${p.denominator}.`:p.mode==='threshold'?`Fixed threshold ${p.mu}${p.mu===11?' (never accept)':''}.`:p.mode==='inequity'?`Responder β=0, α=${p.alpha}; real threshold ${v.fix(p.realThreshold,6)}, accepted integer offers ${p.numerators.flatMap((k,x)=>k?[x]:[]).join(', ')}; accept on utility ties.`:`Money-only responder ${p.zero==='accept'?'accepts':'rejects'} zero and accepts every positive offer.`;return `${details}\nBest offers: ${p.bestOffers.join(', ')}. Proposer expected money ${v.fix(p.best,6)}. Responder expected money at these offers: ${p.bestOffers.map(x=>`${x}→${v.fix(p.responderMoney[x],4)}`).join('; ')}.\nThe two pure-money SPE are offer 0 / accept 0 and offer 1 / reject 0, with acceptance of all positive offers in both. Other modes are explicitly specified utilities or authored response rules, not observed experimental frequencies.`;});
       },
     },
     // ------------------------------------------------------------------ 4.8

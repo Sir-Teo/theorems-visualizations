@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 154,
+  "remainingFlags": 152,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 11,
+    "game": 9,
     "psych": 12,
     "soc": 14,
     "polsci": 9,
@@ -254,36 +254,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Approachability_(game_theory)"
-      }
-    },
-    {
-      "id": "game-4.6",
-      "file": "content/game/ch04-b.js",
-      "name": "Centipede game",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a77.2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Centipede_game"
-      }
-    },
-    {
-      "id": "game-4.7",
-      "file": "content/game/ch04-b.js",
-      "name": "Ultimatum game",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Osborne \u00a76.1"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Ultimatum_game"
       }
     },
     {
@@ -3208,7 +3178,9 @@
       "psych-4.1",
       "psych-4.2",
       "polsci-5.4",
-      "polsci-5.5"
+      "polsci-5.5",
+      "game-4.6",
+      "game-4.7"
     ]
   },
   "additionalFollowups": [
@@ -7567,6 +7539,18 @@
       "status": "resolved",
       "report": "docs/verification/polsci-jury-followup.md",
       "note": "Explicit authored common-leader model; independent finite mixtures, rho\u00b2 correlation, exact critical middle limit, all manual/analytic controls and complete saved-state/native checks independently accepted."
+    },
+    {
+      "id": "game-4.6",
+      "status": "resolved",
+      "report": "docs/verification/game-centipede-ultimatum-followup.md",
+      "note": "Actual McKelvey\u2013Palfrey1991 working-paper version and prerequisites read; full owned-node plans and fixed terminal leaf, unique every-node SPE, all finite level pairs and real grid/navigation/replay independently accepted."
+    },
+    {
+      "id": "game-4.7",
+      "status": "resolved",
+      "report": "docs/verification/game-centipede-ultimatum-followup.md",
+      "note": "Actual original G\u00fcth rules and Fehr\u2013Schmidt Eq2/Proposition1/footnote8 read; two discrete pure-money SPE, exact uniform threshold probabilities/all profit ties, declared inequity slice and all control/replay cases independently accepted."
     }
   ]
 }
