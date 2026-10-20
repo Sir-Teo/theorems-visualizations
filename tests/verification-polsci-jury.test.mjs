@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import{juryProbability as P,juryMass as M,juryLowerBound as B,juryLeader as L,juryLeaderRelation as R,juryNumber}from'../content/polsci/source-audit-jury.js';
+import{assertJurySliderTick,juryProbability as P,juryMass as M,juryLowerBound as B,juryLeader as L,juryLeaderRelation as R,juryNumber}from'../content/polsci/source-audit-jury.js';
 const near=(a,b,t=2e-12)=>assert.ok(Math.abs(a-b)<=t*Math.max(1,Math.abs(b)),`${a} != ${b}`);
 function enumerate(n,p){const a=Array(n+1).fill(0);for(let bits=0;bits<2**n;bits++){let count=0,prob=1;for(let i=0;i<n;i++){const x=!!(bits&(1<<i));count+=x;prob*=x?p:1-p;}a[count]+=prob;}return a;}
 test('Independent full vote-vector enumeration verifies every binomial count and odd-jury success, including deterministic endpoints and no ties',()=>{
@@ -25,5 +25,6 @@ test('Analytic critical mode preserves q0=.5 for all 71 competence ticks, distin
  assert.equal(R(.625,.2),0);assert.equal(R(.625,.19999999999999998),1);assert.equal(R(.625,.20000000000000004),-1);assert.equal(L(401,.625,.2).limit,.8125);
  // Positive correlation need not obstruct the limit: fixed rho=.1 gives q0>.5.
  const a=L(401,.7,.1);assert.ok(a.correlation>0&&a.q0>.5);assert.equal(a.limit,1);
+ for(const d of[100,200]){for(let i=0;i<=d;i++)assert.doesNotThrow(()=>assertJurySliderTick(i/d,d));for(const x of[.55235,.40555,1e-7,NaN,-.01,1.01])assert.throws(()=>assertJurySliderTick(x,d),RangeError);}
  for(const n of[0,2,400,403,-1,1.5,NaN])assert.throws(()=>P(n,.7),RangeError);for(const p of[-.01,1.01,NaN,Infinity])assert.throws(()=>M(31,p),RangeError);for(const p of[0,.5,1])assert.throws(()=>L(31,p,.4),RangeError);for(const r of[-.1,1.1,NaN])assert.throws(()=>L(31,.7,r),RangeError);
 });

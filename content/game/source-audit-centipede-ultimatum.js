@@ -26,6 +26,7 @@ export function centipedeModel(n,a,b,inspect=1){
   const grid=Array.from({length:11},(_,i)=>Array.from({length:11},(_,j)=>centipedeOutcome(n,[centipedePlan(n,0,i,memo),centipedePlan(n,1,j,memo)])));
   return{n,a,b,inspect,plans,stop,pay,full,continuations,grid,violations:continuations.filter(p=>p.gain>0).map(p=>p.m),strategyCounts:[2**Math.ceil(n/2),2**Math.floor(n/2)]};
 }
+export function assertUltimatumAlphaTick(alpha) { if (!Number.isFinite(alpha) || !integer(alpha*4,0,16)) throw new RangeError('The inequity slider requires quarter steps from 0 to 4.'); }
 export const ULTIMATUM_MODES=['money','threshold','population','inequity'];
 export function ultimatumModel(mode='money',mu=3,width=2,alpha=1,zero='accept'){
   if(!ULTIMATUM_MODES.includes(mode)||!integer(mu,0,11)||!integer(width,0,5)||!Number.isFinite(alpha)||alpha<0||alpha>4||!['accept','reject'].includes(zero))throw new RangeError('Offered ultimatum controls required');

@@ -2,7 +2,7 @@
 import {
   idx, leaf, dec, isLeaf, prep, playBeh, infoSets, pureStrategies, stratName, drawTree, treeView, nmz, kuhnBehaviour, mixedOutcome,
 } from './ch04.shared.js';
-import { centipedeModel, ultimatumModel } from './source-audit-centipede-ultimatum.js';
+import { assertUltimatumAlphaTick, centipedeModel, ultimatumModel } from './source-audit-centipede-ultimatum.js';
 
 // ---------------------------------------------------------------- chain store (reputation) helpers
 const EQ = 1e-9;
@@ -95,7 +95,7 @@ Rejection has utility zero. With acceptance on indifference, accept exactly when
       tags:['bargaining','subgame perfection','response rules'],links:{source:'http://www.dklevine.com/archive/refs4291.pdf',utility:'https://web.stanford.edu/~niederle/Fehr.Schmidt.1999.QJE.pdf'},verify: false,
       viz(v){
         let info;const mode=v.select('response rule',[{value:'money',label:'money only'},{value:'threshold',label:'fixed threshold'},{value:'population',label:'uniform threshold population'},{value:'inequity',label:'inequity utility'}],'money',{onChange:()=>visible()});
-        const mu=v.slider(String.raw`threshold / population center $\mu$`,0,11,3,{int:true}),width=v.slider('population half-width $w$',0,5,2,{int:true}),alpha=v.slider(String.raw`disadvantage weight $\alpha$`,0,4,1,{step:.25}),zero=v.select('money-only tie at zero',[{value:'accept',label:'accept zero'},{value:'reject',label:'reject zero'}],'accept');
+        const mu=v.slider(String.raw`threshold / population center $\mu$`,0,11,3,{int:true}),width=v.slider('population half-width $w$',0,5,2,{int:true}),alpha=v.slider(String.raw`disadvantage weight $\alpha$`,0,4,1,{step:.25,decimals:2,onChange:assertUltimatumAlphaTick}),zero=v.select('money-only tie at zero',[{value:'accept',label:'accept zero'},{value:'reject',label:'reject zero'}],'accept');
         const visible=()=>{mu.el.hidden=!['threshold','population'].includes(mode.value);width.el.hidden=mode.value!=='population';alpha.el.hidden=mode.value!=='inequity';zero.el.hidden=mode.value!=='money';};visible();
         const L=v.stage({x:[-.65,10.65],y:[-.55,11],height:340,minWidth:280,axes:'box',gutter:true,xticks:idx(11),xlabel:'offer to responder',ylabel:'proposer expected money',title:'all offers; gold marks every best offer'}),R=v.stage({x:[-.65,10.65],y:[-.08,1.12],height:340,minWidth:280,axes:'box',gutter:true,xticks:idx(11),yticks:[0,.25,.5,.75,1],xlabel:'offer to responder',ylabel:'acceptance probability',title:'authored response rule'});
         v.legend([['blue','other offers'],['gold','all best offers'],['green','acceptance probability']]);

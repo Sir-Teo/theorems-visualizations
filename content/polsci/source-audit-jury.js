@@ -26,6 +26,12 @@ export function juryMass(n,p) {
 }
 export function juryLowerBound(n,p){valid(n,p);return p>.5?Math.max(0,1-p*(1-p)/(n*(p-.5)**2)):null;}
 function decimalFraction(x){const [mant,e='0']=String(x).split('e'),[a,b='']=mant.split('.');let numerator=BigInt(a+b),denominator=10n**BigInt(b.length),power=+e;if(power>0)numerator*=10n**BigInt(power);else if(power<0)denominator*=10n**BigInt(-power);return[numerator,denominator];}
+/** The widget offers decimal tick values; preserve that contract on replay. */
+export function assertJurySliderTick(x, denominator) {
+  if (!validP(x) || ![100,200].includes(denominator)) throw new RangeError('A probability on the declared slider step is required.');
+  const [a,b] = decimalFraction(x);
+  if (a*BigInt(denominator)%b !== 0n) throw new RangeError('A probability on the declared slider step is required.');
+}
 /** Sign of 2p(1-rho)-1 for the exact finite decimal input values. This avoids
  * using display rounding or a tolerance to manufacture the critical case. */
 export function juryLeaderRelation(p,rho){if(!Number.isFinite(p)||p<=.5||p>=1||!validP(rho))throw new RangeError('Require .5<p<1 and 0≤rho≤1.');const[a,b]=decimalFraction(p),[c,d]=decimalFraction(rho),s=2n*a*(d-c)-b*d;return s>0n?1:s<0n?-1:0;}

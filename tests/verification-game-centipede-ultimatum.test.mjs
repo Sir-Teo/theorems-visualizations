@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import{centipedePayoff as pay,centipedePlan as plan,centipedeOutcome as out,centipedeModel as model,ultimatumModel as ultimatum}from'../content/game/source-audit-centipede-ultimatum.js';
+import{assertUltimatumAlphaTick,centipedePayoff as pay,centipedePlan as plan,centipedeOutcome as out,centipedeModel as model,ultimatumModel as ultimatum}from'../content/game/source-audit-centipede-ultimatum.js';
 const range=n=>Array.from({length:n},(_,i)=>i),mover=m=>(m-1)%2;
 const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-12,`${a} != ${b}`);
 const ownPlans=(n,who)=>{const nodes=range(n).filter(j=>j%2===who);return range(2**nodes.length).map(mask=>range(n).map(j=>j%2===who?!!(mask&(1<<nodes.indexOf(j))):false));};
@@ -61,6 +61,7 @@ test('All72 finite threshold populations and12 fixed rules retain every exact pr
  assert.deepEqual(ultimatum('population',5,5).bestOffers,[4,5]);assert.deepEqual(ultimatum('threshold',10).bestOffers,range(11));assert.deepEqual(ultimatum('threshold',11).bestOffers,range(11));assert.deepEqual(ultimatum('population',11,0).bestOffers,range(11));
 });
 test('Malformed controls/plans, holes, and unsupported choices fail before arithmetic',()=>{
+ for(let i=0;i<=16;i++)assert.doesNotThrow(()=>assertUltimatumAlphaTick(i/4));for(const x of[.37,2.24999,1e-7,NaN,-.25,4.25])assert.throws(()=>assertUltimatumAlphaTick(x),RangeError);
  for(const args of[[1,0,0],[11,0,0],[2,-1,0],[2,11,0],[2,0,0,4]])assert.throws(()=>model(...args),RangeError);
  for(const S of[Array(2),[Array(2),[false,false]],[[true,false],[false]],[[true,1],[true,false]]])assert.throws(()=>out(2,S),RangeError);
  for(const args of[['wrong'],['money',-.5],['population',0,6],['inequity',0,0,Infinity],['money',0,0,0,'wrong']])assert.throws(()=>ultimatum(...args),RangeError);

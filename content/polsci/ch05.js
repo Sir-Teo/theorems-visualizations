@@ -1,5 +1,5 @@
 // Political Science & Social Choice — Chapter 5: Turnout, information and juries (items 5.1-5.5; the rest are in ch05-b.js)
-import { assertOddJurySize, juryProbability, juryMass, juryLowerBound, juryLeader, juryNumber } from './source-audit-jury.js';
+import { assertJurySliderTick, assertOddJurySize, juryProbability, juryMass, juryLowerBound, juryLeader, juryNumber } from './source-audit-jury.js';
 import { sum, range, clamp, mean, pct, Phi, phi, lgam, binomPmf, binomTail, majProb, tieProb, hoeffding, logspace } from './ch05.shared.js';
 
 /** Tie probability for a given electorate size and expected support q (cached by rounding). */
@@ -188,7 +188,7 @@ Symmetry gives $P_n(1-p)=1-P_n(p)$, including the fair-coin case. The bound expl
       viz(v) {
         const A=v.stage({x:[-12,314],y:[-.07,1.08],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'odd jury size $n$',ylabel:'probability majority is right',title:'finite majority accuracy'});
         const B=v.stage({x:[-2,33],y:[-.08,1.12],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'number of correct votes',ylabel:'probability',title:'all binomial outcomes'});
-        const pS=v.slider('competence $p$',0,1,.55,{step:.005,decimals:3});
+        const pS=v.slider('competence $p$',0,1,.55,{step:.005,decimals:3,onChange:x=>assertJurySliderTick(x,200)});
         const nS=v.slider('odd jury size $n$',1,301,31,{int:true,step:2,onChange:assertOddJurySize});
         let cache=null,info={};
         v.render(()=>{
@@ -236,8 +236,8 @@ For distinct correct-vote indicators, conditional independence gives $E(X_iX_j)=
       viz(v) {
         const A=v.stage({x:[-16,418],y:[-.08,1.09],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'odd jury size $n$',ylabel:'probability majority is right',title:'finite common-leader mixture'});
         const B=v.stage({x:[-.055,1.055],y:[-.08,1.09],axes:'box',gutter:true,height:330,minWidth:300,xlabel:'following probability $\\rho$',ylabel:'probability majority is right',title:'finite accuracy and infinite limit'});
-        const pS=v.slider('competence $p$',.55,.9,.7,{step:.005,decimals:3});
-        const rS=v.slider('manual following $\\rho$',0,1,.4,{step:.01,decimals:2});
+        const pS=v.slider('competence $p$',.55,.9,.7,{step:.005,decimals:3,onChange:x=>assertJurySliderTick(x,200)});
+        const rS=v.slider('manual following $\\rho$',0,1,.4,{step:.01,decimals:2,onChange:x=>assertJurySliderTick(x,100)});
         const nS=v.slider('odd jury size $n$',1,401,101,{int:true,step:2,onChange:assertOddJurySize});
         const mode=v.select('following parameter',[{value:'manual',label:'manual following'},{value:'critical',label:'exact critical case'}],'manual');
         let cache=null,info={};
