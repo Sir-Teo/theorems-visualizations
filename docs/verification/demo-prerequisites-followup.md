@@ -33,3 +33,7 @@ Two tempting links were rejected. `demo-1.7 → epi-1.8` would create a cycle be
 - Existing bridge steps were searched for the changed IDs: **no bridge consumers**. No bridge, shared runtime, global inventory or accepted ledger was edited.
 
 Raw logs, 24 screenshot paths and their SHA256 hashes are listed in `demo-prerequisites-evidence.json`; raw output is under `/tmp/atlas-new-imaging-source/demo-prerequisites`. The two new probes are explicit-only verification scripts. Independent immutable-candidate review remains required before acceptance. This prerequisite work does not audit historical source claims or clear reproduction/fertility source boundaries.
+
+## Independent-peer syllabus correction
+
+The peer found that 3.14's multiline syllabus row had escaped the producer edit. A narrow followup adds `prob-2.2.1` to that row. The earlier removal-based baseline guard could confirm that no unwanted dependencies were added but did not require every expected addition; its original claim of exact row matching was too strong. The corrected guard now checks the full expected dependency list for every owned row explicitly. Item prose, numerical functions, flags, native evidence and the counts above are unchanged.

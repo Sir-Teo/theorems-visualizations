@@ -133,7 +133,7 @@ export default {
           pic: 'Gompertz’s observation that the force of mortality grows geometrically with adult age: fit μ(x) = Bcˣ to the Northampton and Carlisle tables he worked from, read off the doubling time of the death rate (about eight years), and see where the straight line of log mortality bends away at the youngest and oldest ages.' },
         { num: '3.14', kind: 'Paper', name: 'Modeling and Forecasting U.S. Mortality',
           paper: { authors: 'Ronald D. Lee and Lawrence R. Carter', year: 1992, title: 'Modeling and Forecasting U.S. Mortality', venue: 'Journal of the American Statistical Association 87 (419): 659–671', doi: '10.1080/01621459.1992.10475265' },
-          introduces: ['demo-3.6'], deps: ['demo-2.1', 'demo-2.4', 'demo-3.13'], refs: [],
+          introduces: ['demo-3.6'], deps: ['demo-2.1', 'demo-2.4', 'demo-3.13', 'prob-2.2.1'], refs: [],
           pic: 'US death rates by age, 1900–1989, decomposed as ln m(x, t) = aₓ + bₓkₜ by a singular value decomposition: the single mortality index kₜ falls almost linearly, so it is forecast as a random walk with drift; draw the fan of projected life expectancy (the paper’s central forecast reaches about 86 years by 2065) and compare it with the years observed since.' },
       ],
     },
