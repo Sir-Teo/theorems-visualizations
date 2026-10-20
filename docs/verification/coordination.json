@@ -81,7 +81,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CM genuine prerequisite production",
+      "current": "ML genuine prerequisite production after accepted QINFO peer",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -2222,15 +2222,33 @@
       "sourceClosure": "None; all51functions/flags/helpers preserved; assessment numbers unchanged.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Nineteen genuine inputs across17consumers. Six equivalent statement wraps, two scope citation links moved to exact clickable URLs, false between-blackbody-slopes claim removed. Seventeen full touched raw lists match including three existing same-field backfills; four untouched raw mismatches remain explicitly unendorsed. Independent1205math17groups and freshfullscope/narrowtheme pixels pass."
+    },
+    {
+      "collection": "qinfo",
+      "commits": [
+        "cd06f043a644670bfe7bc15559990ac00abf839b",
+        "ec7867651b18a1fe5776d404ee4e00d82cdd85a6",
+        "b78affd5465fc3ef734f6a2119d6b9e35fe7a410",
+        "84645c9a2883395ffc3f29122631224db81eb929"
+      ],
+      "publishedBefore": 6,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/qinfo-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all32objects/functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge steps.",
+      "followup": "Nineteen genuine inputs; bounded Helstrom success/error, POVM/rank, Bell-pair distinction, spectral/square-root reference and independent-interception qualifications. Eight narrow statement layouts including exact4.9notation expansion, followed by grammar-only root successor. Independent16530checks+ownfreshpixels/closingallTeXidentity. Earlier producerfrozenguard certifies ec78676 only; peer closingliteralguard certifiesb78affd."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 448,
-    "publishedBelow25": 23,
+    "publishedShortfall": 429,
+    "publishedBelow25": 22,
     "collections": 64,
-    "wholeSyllabusBelow25": 19,
+    "wholeSyllabusBelow25": 18,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty-five further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 and pending QINFO inputs explicitly excluded."
+    "acceptedSnapshot": "Twenty-six further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

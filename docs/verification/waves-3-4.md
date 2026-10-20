@@ -1013,3 +1013,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### CLIMATE combined acceptance
 
 [Independent CLIMATE peer](climate-independent-peer.md) accepts19genuineinputs and independently closes equation/scope-link and blackbody-bound findings. Collectionreaches25written. Live448/23/19, sourcequeue5; pendingQINFO inputs still excluded until its finalpeer. This follows checkpointa4a5103.
+
+### QINFO combined acceptance
+
+[QINFO independent peer](qinfo-crossfield-prerequisite-peer.md) accepts19genuineinputs and bounded correctness/layout/grammar changes throughb78affd. Collectionreaches25written; live429/22/18,26furthercollectionsmeetpublishedtarget, sourcequeue5. Earlier pendingexclusionsremovedonlyafterclosingpeer; frozenBIGHIST unchanged. Fullcheckpoint follows.

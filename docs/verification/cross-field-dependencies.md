@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **23 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 448 edges. Even
-including planned items and planned prerequisites, **19 collections remain below 25**.
+Of 64 non-math collections, **22 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 429 edges. Even
+including planned items and planned prerequisites, **18 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -268,3 +268,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## CLIMATE combined acceptance
 
 [CLIMATE independent peer](climate-independent-peer.md) accepts nineteen genuine inputs across seventeen consumers,6/19/37→25/38/56. Complete51objects/functions/flags/helpers are preserved. Six equivalent statement wraps, exact clickable source links and removal of the unsupported between-blackbody-slopes assertion close independent findings. Seventeen full touched raw lists match; four untouched inherited mismatches remain unendorsed. Independent1,205mathassertions and fresh complete statement/scope/proof pixels pass. Live448shortfall,23/64below25published,19whole syllabi below25; pendingQINFO and frozenBIGHIST inputs remain excluded. No source closure; after2167-test checkpoint.
+
+## QINFO combined acceptance
+
+[QINFO independent peer](qinfo-crossfield-prerequisite-peer.md) accepts nineteen genuine inputs,6/6/23→25/25/42, including bounded correctness/layout and the final grammar successorb78affd. All32objects/functions/flags/helpers/fullrawlists,16,530independent checks and fresh320both-theme fullfields pass. Closingpeer verifies every4.9TeXspanidentical after literalgrammarpolish; earlier frozenproducer guard certifies its own earlier boundary only. PendingQINFO exclusions are removed only now; frozenBIGHIST exclusion is unchanged. Live429shortfall,22/64below25published,18whole syllabi below25. No source closure; later than2167-test checkpoint.
