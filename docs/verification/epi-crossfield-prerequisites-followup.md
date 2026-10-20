@@ -1,6 +1,6 @@
 # EPI written cross-field prerequisites — 2026-10-20
 
-This batch adds **15 prerequisite edges across 14 existing written ideas** and the same additions to their syllabus rows. Read-only inventory changes EPI from **10 written-to-written / 11 written-to-known / 29 whole-syllabus** to **25 / 26 / 44**, with zero unknown targets. These producer figures remain provisional pending independent peer acceptance/coordinator integration. This is a mathematical prerequisite/prose change, not biomedical source certification: all original statements, models, functions, empirical claims, references, scopes and source flags are preserved.
+This batch adds **15 prerequisite edges across 14 existing written ideas** and the same additions to their syllabus rows. Read-only inventory changes EPI from **10 written-to-written / 11 written-to-known / 29 whole-syllabus** to **25 / 26 / 44**, with zero unknown targets. These producer figures remain provisional pending independent peer acceptance/coordinator integration. This is a mathematical prerequisite/prose change, not biomedical source certification: all original statements, models, functions, empirical claims, references, scopes and source flags are preserved. A separately authorized followup below narrows one inherited censoring phrase in the 3.9 argument and synchronizes three raw syllabus rows.
 
 ## Actual consumer and target proof review
 
@@ -27,26 +27,26 @@ No historical, clinical or empirical claim is newly certified by these links. In
 
 ## Complete dependency changes and preservation
 
-The following lists **every changed full-item and syllabus deps array**. Preexisting differences between written content and planned rows are retained; only the named new edges are appended. Machine-readable evidence is `/tmp/atlas-epi-prereqs-evidence/deps.json`.
+The following lists **every changed full-item and syllabus deps array**. The originally retained differences in rows 1.5, 1.8 and 4.6 are now synchronized to the actual raw written lists in a separately authorized metadata followup. These synchronize preexisting written uses and add no quota edges. Raw 2.7 uses epi-2.5 (an alias of stat-6.5), not the loader-normalized ID; its item and row were already consistent. Historical original-candidate evidence is `/tmp/atlas-epi-prereqs-evidence/deps.json`; corrected raw item/row evidence is `/tmp/atlas-epi-metadata-followup/deps.json`.
 
 | Item | Full item before → after | Syllabus row before → after |
 |---|---|---|
 | 1.2 | `[epi-1.1]` → `[epi-1.1, stat-3.5]` | `[epi-1.1]` → `[epi-1.1, stat-3.5]` |
-| 1.5 | `[epi-1.1, epi-1.2, pma-8.6]` → `[epi-1.1, epi-1.2, pma-8.6, pma-5.15, pma-6.21]` | `[epi-1.1, epi-1.2]` → `[epi-1.1, epi-1.2, pma-5.15, pma-6.21]` |
-| 1.8 | `[demo-1.7, epi-1.2]` → `[demo-1.7, epi-1.2, prob-1.6.1]` | `[epi-1.7]` → `[epi-1.7, prob-1.6.1]` |
+| 1.5 | `[epi-1.1, epi-1.2, pma-8.6]` → `[epi-1.1, epi-1.2, pma-8.6, pma-5.15, pma-6.21]` | `[epi-1.1, epi-1.2]` → `[epi-1.1, epi-1.2, pma-8.6, pma-5.15, pma-6.21]` |
+| 1.8 | `[demo-1.7, epi-1.2]` → `[demo-1.7, epi-1.2, prob-1.6.1]` | `[epi-1.7]` → `[demo-1.7, epi-1.2, prob-1.6.1]` |
 | 1.9 | `[epi-1.6, mathbio-4.1]` → `[epi-1.6, mathbio-4.1, prob-2.2.13]` | `[epi-1.6, mathbio-4.1]` → `[epi-1.6, mathbio-4.1, prob-2.2.13]` |
 | 2.4 | `[epi-2.2]` → `[epi-2.2, prob-2.1.1a]` | `[epi-2.2]` → `[epi-2.2, prob-2.1.1a]` |
-| 2.7 | `[stat-6.5]` → `[stat-6.5, pma-5.8]` | `[epi-2.5]` → `[epi-2.5, pma-5.8]` |
+| 2.7 | `[epi-2.5]` → `[epi-2.5, pma-5.8]` | `[epi-2.5]` → `[epi-2.5, pma-5.8]` |
 | 2.8 | `[epi-2.2]` → `[epi-2.2, prob-2.1.1a]` | `[epi-2.2]` → `[epi-2.2, prob-2.1.1a]` |
 | 2.11 | `[epi-2.10]` → `[epi-2.10, prob-1.6.9a]` | `[epi-2.10]` → `[epi-2.10, prob-1.6.9a]` |
 | 3.2 | `[epi-3.1]` → `[epi-3.1, stat-5.6]` | `[epi-3.1]` → `[epi-3.1, stat-5.6]` |
 | 3.3 | `[epi-3.1]` → `[epi-3.1, prob-2.2.1]` | `[epi-3.1]` → `[epi-3.1, prob-2.2.1]` |
 | 3.9 | `[epi-1.2]` → `[epi-1.2, stat-5.6]` | `[epi-1.2]` → `[epi-1.2, stat-5.6]` |
 | 3.12 | `[epi-3.10]` → `[epi-3.10, prob-1.2.5]` | `[epi-3.10]` → `[epi-3.10, prob-1.2.5]` |
-| 4.6 | `[causal-1.1, causal-3.5]` → `[causal-1.1, causal-3.5, causal-4.3]` | `[epi-4.1, causal-3.5]` → `[epi-4.1, causal-3.5, causal-4.3]` |
+| 4.6 | `[causal-1.1, causal-3.5]` → `[causal-1.1, causal-3.5, causal-4.3]` | `[epi-4.1, causal-3.5]` → `[causal-1.1, causal-3.5, causal-4.3]` |
 | 4.13 | `[epi-4.6]` → `[epi-4.6, causal-4.4]` | `[epi-4.6]` → `[epi-4.6, causal-4.4]` |
 
-Temporary explicit guard `/tmp/atlas-epi-prereqs-evidence/guard.mjs` compares the complete baseline/candidate objects including actual function source. All **47** written objects retain every field except exactly these 14 append-only idea paragraphs and 15 deps; the entire syllabus retains every field except these same additions. All existing shared helpers and `epi-source-audit.js` are byte-for-byte unchanged. Baseline, mapping, guard output and read-only inventory are in that same directory. No snapshot assertion is added to default tests, and no global inventory/source queue is edited.
+At original immutable candidate a13604f7, temporary explicit guard `/tmp/atlas-epi-prereqs-evidence/guard.mjs` compared the complete baseline/candidate objects including actual function source. At that candidate, all **47** written objects retained every field except exactly these 14 append-only idea paragraphs and 15 deps; the entire syllabus retained every field except these same additions. The later raw followup audit additionally permits only the three declared syllabus-list corrections and the literal 3.9 censoring qualification; it preserves all other raw fields/functions/flags. All existing shared helpers and `epi-source-audit.js` are byte-for-byte unchanged. Baseline, mapping, guard output and read-only inventory are in that same directory. No snapshot assertion is added to default tests, and no global inventory/source queue is edited.
 
 ## Independent checks and native pixels
 
@@ -61,3 +61,10 @@ Strict build: **6684 written + 6890 planned, 450 chapters, 85 collections; 0 err
 ## Bridge assessment
 
 The actual changed-ID bridge search finds only `content/bridges/causality.js` → epi-4.6. Its note already states that a common cause mixes mechanisms, stratification removes confounding under model assumptions, and mediators/colliders require different treatment. The new paragraph makes the back-door/positivity assumptions explicit and remains compatible with that bounded note. No bridge update is needed or made.
+
+
+## Authorized raw metadata and censoring followup
+
+The 1.5 row now retains its already-written pma-8.6 exponential-solution input. The 1.8 row now uses already-written demo-1.7 and epi-1.2, which support its explicit direct-standardization comparison and person-time calculation. The 4.6 row uses canonical causal-1.1 in place of its epi-4.1 alias. Raw 2.7 remains epi-2.5 in both item and row; the earlier report had mixed this with loader-normalized stat-6.5. These are metadata/report corrections, with no additional written/known/whole-syllabus edge credit.
+
+The inherited 3.9 argument's “whatever the censoring” is narrowed to non-informative censoring preserving the hazard in the observed at-risk process. Informative censoring can break E[d]=lambda E[T]: with event time X exponential and censor C=X/2, no event is observed but lambda E[T]=1/2. This qualification agrees with the existing conditional-hazard argument and appended approximation limits. No runtime or model function changes. Full followup checks and exact raw-list evidence are recorded in `epi-prerequisites-metadata-followup.md`.
