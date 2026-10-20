@@ -126,7 +126,7 @@ Hence a measured flux together with a known distance gives the luminosity, $L = 
       kind: 'Definition',
       name: 'Magnitudes and the distance modulus',
       statement: String.raw`The **apparent magnitude** $m$ is a logarithmic measure of flux, defined so that a difference of five magnitudes is a flux ratio of exactly $100$:
-$$m_1 - m_2 = -2.5\log_{10}\frac{F_1}{F_2}\qquad\Longleftrightarrow\qquad \frac{F_1}{F_2}=100^{(m_2-m_1)/5}\approx 2.512^{\,m_2-m_1}.$$
+$$\begin{gathered}m_1 - m_2 = -2.5\log_{10}\frac{F_1}{F_2}\qquad\\\Longleftrightarrow\qquad\\ \frac{F_1}{F_2}=100^{(m_2-m_1)/5}\\\approx 2.512^{\,m_2-m_1}.\end{gathered}$$
 Larger $m$ means a fainter star. The **absolute magnitude** $M$ is the apparent magnitude the star would have at $10$ pc. Because $F\propto d^{-2}$ (4.2),
 $$m - M = 5\log_{10}\frac{d}{10\ \text{pc}},$$
 the **distance modulus**, which gives the distance of any star of known $M$ from its apparent magnitude.`,
@@ -225,7 +225,7 @@ For a true blackbody the temperature can also be read from the spectrum: the pea
       kind: 'Theorem',
       name: 'Stellar radii from L = 4πR²σT⁴',
       statement: String.raw`A star of luminosity $L$ and effective temperature $T_{\rm eff}$ has radius
-$$R = \sqrt{\frac{L}{4\pi\sigma T_{\rm eff}^4}},\qquad\text{or}\qquad \frac{R}{R_\odot}=\Big(\frac{L}{L_\odot}\Big)^{1/2}\Big(\frac{T_\odot}{T_{\rm eff}}\Big)^{2},$$
+$$\begin{gathered}R = \sqrt{\frac{L}{4\pi\sigma T_{\rm eff}^4}},\qquad\\\text{or}\qquad\\ \frac{R}{R_\odot}=\Big(\frac{L}{L_\odot}\Big)^{1/2}\Big(\frac{T_\odot}{T_{\rm eff}}\Big)^{2},\end{gathered}$$
 with $T_\odot = 5772$ K. In a plot of $\log L$ against $\log T_{\rm eff}$ the stars of a given radius lie on a line $\log L = 2\log R + 4\log T_{\rm eff} + \text{const}$: a family of parallel lines of slope $4$. Stellar radii span about seven orders of magnitude, from $\sim\!10^{-2}R_\odot$ (white dwarfs, Earth-sized) to $\sim\!10^{3}R_\odot$ (red supergiants).`,
       idea: String.raw`Rearrange the definition of $T_{\rm eff}$ (4.4): the luminosity is the surface flux $\sigma T_{\rm eff}^4$ times the area $4\pi R^2$, and $L$ comes from flux and distance (4.2). So for a given temperature a larger star must be more luminous, and for a given luminosity a cooler star must be larger: red giants are red *and* luminous, hence enormous. No telescope resolves most stars; this is how their sizes are known.
 
