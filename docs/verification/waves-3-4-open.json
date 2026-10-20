@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 172,
+  "remainingFlags": 171,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -30,7 +30,7 @@
     "art": 11,
     "arch": 11,
     "ling": 10,
-    "phil": 4,
+    "phil": 3,
     "tech": 23,
     "bighist": 18
   },
@@ -2069,22 +2069,6 @@
       "links": {}
     },
     {
-      "id": "phil-4.7",
-      "file": "content/phil/ch04-b.js",
-      "name": "The barber and Russell\u2019s paradox",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Sainsbury",
-        "SEP \u201cRussell\u2019s Paradox\u201d"
-      ],
-      "links": {
-        "sep": "https://plato.stanford.edu/entries/russell-paradox/"
-      }
-    },
-    {
       "id": "phil-4.8",
       "file": "content/phil/ch04-b.js",
       "name": "The surprise examination",
@@ -3479,7 +3463,8 @@
       "demo-4.8",
       "demo-4.9",
       "game-3.4",
-      "game-3.6"
+      "game-3.6",
+      "phil-4.7"
     ]
   },
   "additionalFollowups": [
@@ -7730,6 +7715,12 @@
       "status": "resolved",
       "report": "docs/verification/game-minimax-followup.md",
       "note": "Complete actual Robinson original and vonStengel LP proof checked; six independent model groups/eight native groups plus final images pass; strict-positive normalization, numerical certificates,both update timings and optimal-set scope corrected."
+    },
+    {
+      "id": "phil-4.7",
+      "status": "resolved",
+      "report": "docs/verification/phil-barber-followup.md",
+      "note": "Actual Russell primary-text transcriptions and general diagonal/outside-domain proof checked; four independent math/four native groups plus final narrow images pass; selector and full outside-row geometry corrected."
     }
   ]
 }
