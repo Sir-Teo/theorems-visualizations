@@ -1,0 +1,65 @@
+# Retained edge layer: rejected experiment, 2026-10-19
+
+The experiment is **not suitable for production** and remains isolated. It reuses a completed GPU edge layer while keeping nodes, text, focus rings and controls live. Correctness checks pass within stated image bounds; the full-map 60 fps gate remains open. The original Canvas renderer, earlier rejected prototypes and their frozen evidence are unchanged.
+
+## Architecture and coverage
+
+`RetainedMapScene` wraps the committed persistent scene. The color edge pass is cached for an unselected view. A selected/hovered view shares a gray edge backdrop; faint nodes, ancestor/descendant edges, connected nodes and labels retain their existing order. The far bundled pass remains the original direct GPU pass. World geometry and original CPU hit testing remain unchanged. Filters, highlight dimming, theme/ink, viewport and DPR invalidate the cache. Changing focus can retain the gray index buffer because its visible-edge inventory is unchanged.
+
+The cache uses full-resolution RGBA8 storage. If the viewport does not fit the 64 MB owned-resource cap, it retains a bounded central rectangle and draws every uncovered strip with the original coverage union. An independently checked partition produces at most four nonoverlapping integer rectangles; no part of the picture is omitted. This is a correctness fallback inside the GPU path, with its cost exposed separately.
+
+During motion, an existing layer can be reprojected only between 0.75 and 1.4 of its source scale. It can change stroke width, dash appearance and antialiased coverage within the tested image bound. Settling redraws the edges at the exact geometry/transform; intermediate RGBA8 rounding still prevents a pixel-identity claim. Native words use their exact size and physical-pixel phase even while moving. The inherited 32 px moving-title approximation compounded the first wider-range cache error, so it is disabled in this wrapper. Same-size rebuilds reuse the texture and framebuffer; a rebuild need not allocate another RGBA layer.
+
+An early allocation bug evicted the prewarmed detail tier during oversized initial fit. The final allocator reserves capacity for the prewarmed tier and the forthcoming coverage target. Both initial edge tiers are protected at every later visibility/coverage allocation, so RGBA reuse is evicted before needed geometry. Native region tests now require active GPU paints and the expected backing dimensions before every readback; blank or one-pixel fallback buffers cannot pass a picture comparison.
+
+## Memory and lifecycle
+
+The **64,000,000-byte limit is a logical owned-resource cap**. It includes geometry and curve metadata, segment indices, node/flag textures, the GPU native-word atlas and its connected source Canvas, R8 coverage, and the retained RGBA edge texture. Resource components must sum to the tracked total after each tested state. The new RGBA layer is included, rather than treated as unaccounted scratch storage. Same-size rebuild reuse avoids allocating a replacement layer.
+
+The primary RGBA drawing buffer is separate: 21,473,280 logical bytes for the normal DPR-2 map, or 128,532,480 for the oversized map. The input Canvas has a one-pixel backing while the GPU is active. There is no MSAA, requested depth or stencil storage. The original 8-million-pixel R8 coverage ceiling remains. Shader/VAO storage, driver alignment and staging, compositor/swap-chain/backbuffer copies and delayed deallocation are not a physical-memory total exposed by WebGL. Retained CPU path/range objects and transient worker construction arrays are also separate from the logical GPU cap; see the persistent-scene reference report.
+
+Unavailable WebGL, inadequate allocation capacity, cold geometry, actual loss/restoration and destruction retain the complete Canvas fallback. Native tests compare lost-context pixels exactly, preserve full selection/filter/highlight/camera state, compare 480 independent linear hit searches with zero mismatches, exercise scale-16 cold recovery, and release tracked resources, workers and hidden source canvases to zero.
+
+## Picture evidence
+
+The explicit-only checks cover one independent integer-pixel partition test and 42 native groups: 28 complete Canvas comparisons; four state/reuse groups; four 320/3840 px full-frame region comparisons; two lifecycle groups; and four moving-picture groups containing 72 zoom/pan pictures. Both themes and DPR 1/2 are covered at normal size; narrow and oversized region/lifecycle checks use DPR 2. Each correctness process freezes its actual graph, helper and data bytes before serving them, and records their hashes.
+
+The direct moving comparisons use the original complete Canvas `_paint()` at the identical transform and focus state. The Canvas is connected to preserve inherited native font rendering. GL readback rows are reversed when compared with top-down Canvas data. A first harness attempt omitted that orientation change; its failed diagnostic was corrected before accepting any fidelity result. A wider 0.6–1.8 scale range then exceeded the full-Canvas bound, so the final renderer tightens the range and preserves exact native text. The additional uncached-edge comparison uses the same exact-font adapter, so it isolates edge reuse rather than confusing the intentional font improvement with edge error.
+
+Maximum direct Canvas differences are **1.4212/255 mean and 1.0251% of RGB channels above 20/255** over the 72 moving pictures. The unchanged acceptance bound is mean below 2/255 and above-20 fraction below 2%. The 28 stationary full-Canvas comparisons reach 1.2130/255 and 1.9613%. These are bounded differences, not identical images. Same-transform uncached-GPU comparisons separately check settled quantization and fractional cache reprojection, including full oversized readbacks and explicit uncovered strips. Screenshots of wide/narrow, light/dark, moving, selected-hover and oversized pictures were inspected for aligned nodes/edges, readable native text and cache-boundary artifacts.
+
+The full Chrome 155.0.8059.80 moving-picture run records ANGLE Metal Renderer: Apple M1. Other correctness groups use Chromium 153.0.8010.12 with `--use-angle=metal`; their browser versions and exact served bytes are retained in [map-retained-correctness.json](map-retained-correctness.json). These checks are not timing measurements.
+
+## Timing method and limits
+
+The final coordinated window ran **2026-10-20 00:58:00–00:58:55 UTC** (October 19 local). Root and both other agents held browser/heavy jobs. Four sequential full Chrome 155.0.8059.80 runs used `--use-angle=metal`; each records **ANGLE Metal Renderer: Apple M1**. All **13,574 nodes, 23,080 directed edges, 13 fields, 6,890 planned nodes and definitions** were enabled. Renderer-order node IDs hash to `c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057`; directed endpoint pairs hash to `140e9fc3c337dd742450fd6630ed99c7a7c8b4bd078239a462a3c082a00d938d`. These inventories were computed from the loaded renderer, rather than copied from an older graph count.
+
+| Viewport, DPR 2 | Interaction | Canvas fps | Retained fps | Canvas / retained CPU draw p95, ms |
+| --- | --- | ---: | ---: | ---: |
+| 1440 × 1000 | detail zoom | 47.70 | 21.80 | 10.50 / 29.30 |
+| 1440 × 1000 | selected focus | 59.80 | 27.70 | 16.40 / 113.20 |
+| 1440 × 1000 | detail pan | 60.00 | 48.09 | 0.20 / 3.00 |
+| 3840 × 2160 | detail zoom | 12.53 | 4.31 | 8.40 / 31.00 |
+| 3840 × 2160 | selected focus | 60.18 | 5.58 | 14.00 / 643.60 |
+| 3840 × 2160 | detail pan | 13.48 | 6.99 | 3.90 / 4.50 |
+
+**Reject this prototype for production.** Every retained case has zero timed Canvas fallback draws, so the regression is not explained by hidden cold fallback. CPU submission intervals are separate from presentation cadence: a 4.5 ms oversized pan draw p95 coexists with about 7 fps. Selected focus reaches its time target through fewer frames under load; duration alone does not establish smoothness. The timing peak is 63,564,080 logical owned bytes, below the unchanged 64 MB cap.
+
+The traces expose the constraint: normal zoom builds the edge cache 12 times and redraws an average 30.3% of the viewport outside it; oversized zoom also builds 12 times and redraws 92.2%. Oversized pan redraws 92.3%. Cache build CPU p95 is 0.4 ms for zoom but rises to 80.4 ms for selected oversized focus; missing-strip submission p95 is about 0.6 ms for zoom/pan. These are CPU intervals, not independent GPU timers. The 803.1 ms oversized selected-focus cold setup is recorded separately from cadence. Small submission costs and large frame intervals are consistent with the earlier measured GPU edge subsystem cost; this run does not distinguish fill, bandwidth, synchronization or composition costs.
+
+Exact inputs, individual frame/submission intervals, renderer/GPU flags, cache traces, resource sums, source identities and host snapshots are frozen in [map-retained-performance.json](map-retained-performance.json). Data digest is `090996326df223351b324347861cb5a027bedee9d6c44a1ed793e52cc398f861`; index SHA-256 `e6946d502c4ac7dc81360f7d1b4520db5868945f8b219c4af378bdfa5225639f`, planned SHA-256 `67bff095ffb81c4424bb8227034cc690cc8f03a98bac4967146be61dfb0b3645`. Before/after source and data hashes match. The final retained helper SHA is `0659133f70f7ab8afd5e77cc3008ad636314a1a1d1e7d8fd2e1d3a87b536b4c0`.
+
+The host remained on AC power. Boundary CPU idle readings were 69.84–84.11% before and 79.79–87.58% after, with memory compression about 3.65–3.96 GB. The hold covers team jobs, not all host activity: the saved snapshots include a Chrome renderer at 103% of a core before and a Codex renderer at 237.9% after, plus WindowServer and other processes. They were not disturbed. Neither GPU utilization nor aggregate host load was continuously sampled. This is one bounded light-theme DPR-2 matched window on this host; it is not the entire 60 fps acceptance matrix or a general device claim.
+
+An earlier controlled attempt is separately frozen in [map-retained-attempt.json](map-retained-attempt.json), including old source/protocol text and its full failure log. It stopped after the per-draw assertion caught eight cold Canvas fallbacks during focus; its partial outcomes are not mixed into the final table. Capacity planning then protected **both** initial geometry tiers at every budget reservation. The strengthened lifecycle regression requires both resident tiers and a successful scale-16 recovery. An [uncontrolled 12-condition replay](map-retained-replay.json) subsequently verified no hidden fallback; its cadence is explicitly not timing evidence. The final table uses only the later controlled window.
+
+
+The timed protocol primes selected/hover statement content to empty strings to isolate handler/rendering work. It does not measure successful real-statement layout or network loading. Wheel/pointer preflights use trusted browser inputs; the repeated measurement uses the recorded RAF-driven native events/transforms. Focus requests the original 600 ms animation. Two RAFs drain final rendering, with cold setup, final draw and settling recorded separately. Individual frame/submission intervals and per-draw scale, cache hit/build/allocation counts, missing pixels, fallback status and edge CPU intervals are retained. Edge build time includes allocation; allocation is its subset, not an additive separate pass. These CPU intervals can include driver backpressure and do not establish independent GPU pass durations.
+
+The cap materially limits oversized reuse: the unselected k=0.8 region fixture retains 9,878,560 RGBA bytes and redraws 29,663,480 of 32,133,120 pixels directly. A complete oversized RGBA cache alone would require 128.5 MB, outside this experiment's bound. Increasing the cap is not part of this prototype. A separately named larger-cap comparison would require its own complete resource and performance evidence.
+
+## Reproduction
+
+Run `node --test tests/map-retained-model.mjs`, then each `tests/map-retained-{prototype,state,regions,lifecycle,motion}.mjs` explicitly. `CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'` selects full Chrome for the moving picture suite. `node scripts/audit-map-retained-comparison.mjs OUTPUT` runs the bounded matched protocol only after coordinating an otherwise quiet team browser/CPU window. It captures host load and before/after hashes and asserts zero timed Canvas fallbacks; a failed case is saved before validation.
+
+The original [persistent scene report](map-scene-followup.md) documents geometry fidelity, MAX coverage union, text atlas behavior and capability limits; the [GPU counter diagnostic](map-scene-gpu-followup.md) motivated retaining completed edge layers. The stroke requirement follows the [Canvas stroke algorithm](https://html.spec.whatwg.org/multipage/canvas.html#dom-context-2d-stroke), and texture/composition/loss behavior follows the [WebGL 2 specification](https://registry.khronos.org/webgl/specs/latest/2.0/). No new source-review or central master-plan flag is changed by this experiment.

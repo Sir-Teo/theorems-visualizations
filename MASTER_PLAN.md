@@ -61,8 +61,10 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    and hover are near60fps. Both the edge-only and persistent WebGL prototypes
    regressed matched performance and remain isolated. The [persistent-scene audit](docs/verification/map-scene-parent-check.md)
    preserves the failed 12-case diagnostic and independent correctness checks.
-   Profile the expensive passes and test bounded reuse of completed edge layers
-   before reconsidering production integration; the full 60 fps gate stays open.
+   The [GPU pass diagnostic](docs/verification/map-scene-gpu-followup.md) identified the costly edge subsystem.
+   A [bounded retained-edge experiment](docs/verification/map-retained-parent-check.md) passes independent
+   picture/resource/lifecycle checks but regresses all twelve controlled matched cases and remains isolated.
+   Continue renderer work from these measured constraints; the full 60 fps gate stays open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `3e4d6f3` passes **1,467 tests**, including all six UI tests, and a **58-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,795 bytes gzipped. The subset adds laboratory dividends, Arrow–Debreu existence and the Pareto geometry routes and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 184 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-3e4d6f3.md).
