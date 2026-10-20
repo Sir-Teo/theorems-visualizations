@@ -25,9 +25,9 @@
       "content/bighist/** and collection-specific audit helpers/tests/reports"
     ],
     "current": [
-      "Integrate independently reviewed batches and reconcile source/wave gates",
-      "BIGHIST3.9/3.10candidate4f6b9c7 under worker_two independent peer review",
-      "Peer-review ARCH3.10/3.12/3.13candidatee840446 and continue BIGHIST/difficult source audits"
+      "Serially integrate independently reviewed candidates and reconcile source/wave gates",
+      "BIGHIST3.6/3.7 original source, finite model/state and native audits",
+      "Independent historical-paper peer review and full immutable checkpoints"
     ]
   },
   "workers": [
@@ -43,7 +43,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "LING3.8/3.9 independently accepted; produce3.10 using actual177-verb study, then remainingLING.",
+      "current": "LING4.6/4.12 and BIGHIST4.4/Poleni peers accepted; producing remaining LING3.6 with actual WALS primary sources.",
       "completedCollections": [
         "music"
       ]
@@ -64,21 +64,22 @@
         "psych",
         "tech"
       ],
-      "current": "All23 assigned technology flags independently accepted; LING62b0eaf peer complete; producing9ARCH source reviews."
+      "current": "Poleni4.6 and circular3.7 accepted; producing4.7Pantheon, then4.8/4.9 and3.14source recovery."
     },
     {
       "agent": "worker_three",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
       "branch": "codex/atlas-worker-three",
-      "collection": "art",
+      "collection": "historical source stragglers",
       "owns": [
         "content/art/**",
-        "Only owned art syllabus rows, collection-specific reports/helpers/tests"
+        "Only owned art syllabus rows, collection-specific reports/helpers/tests",
+        "Only assigned logic/mat/geol/mathbio/pharm/imaging/circ/energy/robot source-straggler objects, matching syllabus rows and unique helpers/tests/reports"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ART4.12/4.13 independently accepted; LING morphology peer complete; produceART3.12/3.13plus newly assigned3.3neighbor (register at integration).",
+      "current": "NLA3.15accepted and ART tiny-native finding closed; MAT3.13candidate3c5ac7e under root peer; producingGEOL3.15/4.10 then MATHBIO/PHARM/IMAGING/CIRC/ENERGY/ROBOT sources.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1042,14 +1043,14 @@
   },
   "currentPendingSourceReviews": 29,
   "latestCheckpoint": {
-    "acceptedContentCommit": "fb1cb6e",
-    "report": "docs/verification/checkpoint-fb1cb6e.md",
-    "defaultTests": 1930,
+    "acceptedContentCommit": "428f1af",
+    "report": "docs/verification/checkpoint-428f1af.md",
+    "defaultTests": 1970,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 105.80627325,
+    "testDurationSeconds": 104.702124167,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1060,10 +1061,10 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112724,
-    "pendingSourceReviews": 39,
-    "acceptedTeamEntries": 110,
-    "publishedCrossFieldShortfall": 847,
+    "homeGzipBytes": 112720,
+    "pendingSourceReviews": 30,
+    "acceptedTeamEntries": 121,
+    "publishedCrossFieldShortfall": 845,
     "publishedCollectionsBelowTarget": 53,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
@@ -1074,13 +1075,12 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint7-tests.log",
-      "/tmp/atlas-coordinator/checkpoint7-build.log",
-      "/tmp/atlas-coordinator/checkpoint7-static.log"
+      "/tmp/atlas-coordinator/checkpoint8-tests.log",
+      "/tmp/atlas-coordinator/checkpoint8-build.log",
+      "/tmp/atlas-coordinator/checkpoint8-static.log"
     ],
     "limitations": [
-      "Exact immutable accepted snapshot excludes ongoing BIGHIST3.8, ART Newton/Goethe, ARCH3.9/3.7 and LING Zipf drafts.",
-      "The first unbuilt scratch attempt was stopped after missing generated data/atlas.css was identified; the final built-snapshot run passes all1930tests.",
+      "Exact immutable accepted snapshot includes all accepted content through428f1af and excludes Poleni/MAT/Pantheon and ongoing source drafts.",
       "Current source and explicit §7.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
