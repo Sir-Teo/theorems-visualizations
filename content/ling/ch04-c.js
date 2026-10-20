@@ -1,3 +1,4 @@
+import zipfPaper from './source-audit-zipf.js';
 import {shannonPaper} from './source-audit-shannon.js';
 // Linguistics & Language — Chapter 4, part c: items 4.11–4.14
 import { corpus, TEXT_OPTS, TEXT_LABELS, MINE_DEFAULT, FED, FED_WORDS, logRanks, fitLogLog, toSyms, letterModel, guessDistribution, shannonBounds, TEXTS, TEST_TEXT } from './ch04.shared.js';
@@ -25,11 +26,6 @@ const SH_LO = [3.19, 2.50, 2.1, 1.7, 1.7, 1.3, 1.8, 1.0, 1.0, 1.0, 1.3, 1.3, 1.2
 const SH_NS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 100];
 const SH_F27 = [4.76, 4.03, 3.32, 3.1], SH_F26 = [4.70, 4.14, 3.56, 3.3];
 
-function picker(v, init = 'alice') {
-  const sel = v.select('Text', TEXT_OPTS, init, { onChange: () => v.invalidate() });
-  const inp = v.input('Your text', MINE_DEFAULT, { width: 360, onChange: () => v.invalidate() });
-  return { sel, get() { inp.el.hidden = sel.value !== 'mine'; const c = corpus(sel.value, inp.value || ''); return c.tokens.length < 20 ? corpus('alice') : c; } };
-}
 
 export default {
   collection: 'ling',
@@ -126,57 +122,7 @@ $c_w$ being the count of $w$ in a text of $N$ words and $\rho^{\,\cdot}_w$ the c
       },
     },
     // ───────────────────────────────────────────────────────────────────────── 4.13
-    {
-      num: '4.13',
-      kind: 'Paper',
-      name: 'The Psycho-Biology of Language',
-      paper: {
-        authors: 'George Kingsley Zipf', year: 1935, title: 'The Psycho-Biology of Language: An Introduction to Dynamic Philology',
-        venue: 'Boston: Houghton Mifflin, 1935', url: 'https://archive.org/details/psychobiologyofl0000zipf',
-      },
-      introduces: ['ling-4.1', 'ling-4.5'],
-      credit: 'George Kingsley Zipf, 1935',
-      statement: String.raw`Zipf counted the words of real texts and argued that language shows a **dynamic equilibrium** between two pressures: a speaker's wish to say everything with as few distinct words as possible and the listener's wish for each word to mean one thing. Two regularities followed. If words are ranked by frequency, then rank times frequency is roughly constant, $r\cdot f(r)\approx C$ (the rank–frequency law); and the more frequent a word, the shorter it tends to be (the law of abbreviation). Both he attributed to a general *principle of least effort*.`,
-      idea: String.raw`Before the book, word statistics had been tabulated for shorthand and for education (counts by Käding, Estoup and others) but not treated as a law of behaviour. Zipf placed the tables in the setting of biology and psychology, found the hyperbola in several languages and in non-linguistic data, and gave it a mechanism, effort minimisation, that is still invoked. Later work (Mandelbrot, 1953) modified the formula to $f=C/(r+b)^{s}$, and showed in turn that random typing gives similar curves (4.2), so the law is informative about shape, not necessarily about mechanism. The book introduced the law of word frequencies (4.1) and the law of abbreviation (4.5).`,
-      caption: String.raw`Zipf's own diagnostic: left, the product $r\cdot f(r)$ against rank for the chosen text (his law predicts a horizontal line). Switch on Mandelbrot's correction to see the fit improve at the top ranks. Right: mean length of the words that occur exactly $n$ times, which falls as $n$ grows. The texts are public-domain novels, not Zipf's data (his main sample was *Ulysses*); the book's own tables are not reproduced.`,
-      scope: String.raw`The product is only approximately constant: it rises over the first few ranks, is flat through the middle, and falls where the tail’s ties begin. Fits depend on the range used.`,
-      deps: [],
-      refs: [],
-      tags: ['principle of least effort', 'word frequency'],
-      verify: true,
-      links: { archive: 'https://archive.org/details/psychobiologyofl0000zipf' },
-      viz(v) {
-        const pk = picker(v);
-        const mb = v.toggle('Mandelbrot correction $f=C/(r+b)^s$', false);
-        const s1 = v.stage({ x: [1, 5000], y: [0, 4000], xlog: true, axes: 'box', gutter: true, xlabel: 'rank r', ylabel: 'rank × count  (r · f)', height: 360, title: 'Zipf’s product' });
-        const s2 = v.stage({ x: [1, 40], y: [0, 10], xlog: true, axes: 'box', gutter: true, xlabel: 'times the word occurs, n', ylabel: 'mean length (letters)', height: 360, title: 'Law of abbreviation' });
-        let info = {};
-        v.render(() => {
-          const c = pk.get(); const rf = c.rf, m = rf.length; const top = Math.max(...rf.slice(0, 2000).map((x, i) => x[1] * (i + 1)));
-          s1.setView([1, Math.max(100, m)], [0, top * 1.1]);
-          const rr = logRanks(m, 500); s1.dots(rr.map((r) => [r, rf[r - 1][1] * r]), { r: 2.6, color: 'accent' });
-          const R = Math.min(m, 1500); const fit = fitLogLog(rf, 1, Math.min(R, 1000));
-          let mbFit = null;
-          if (mb.value) {
-            const lf = rf.slice(0, R).map((x) => Math.log(x[1]));
-            const cost = (p) => { const b = Math.abs(p[1]), s = p[2]; let e = 0; for (let r = 1; r <= R; r++) { const d = p[0] - s * Math.log(r + b) - lf[r - 1]; e += d * d; } return e; };
-            const o = v.M.nelderMead(cost, [Math.log(rf[0][1]), 1, 1], { step: 0.5, tol: 1e-10, maxIt: 1500 });
-            mbFit = { C: Math.exp(o.x[0]), b: Math.abs(o.x[1]), s: o.x[2], sse: o.fx };
-            s1.path(rr.filter((r) => r <= R).map((r) => [r, mbFit.C * Math.pow(r + mbFit.b, -mbFit.s) * r]), { color: 'green', width: 3 });
-          }
-          s1.path([[1, Math.exp(fit.icpt) * Math.pow(1, fit.slope + 1)], [Math.min(m, 1000), Math.exp(fit.icpt) * Math.pow(Math.min(m, 1000), fit.slope + 1)]], { color: 'orange', width: 2, dash: true });
-          // length by occurrence count
-          const by = new Map(); for (const [w, f] of rf) { if (f > 40) continue; const o = by.get(f) || [0, 0]; o[0] += w.length; o[1]++; by.set(f, o); }
-          const pts = [...by.entries()].filter(([, o]) => o[1] >= 5).map(([n, o]) => [n, o[0] / o[1]]).sort((a, b) => a[0] - b[0]);
-          s2.setView([1, 40], [0, Math.max(8, ...pts.map((p) => p[1])) * 1.1]);
-          s2.path(pts, { color: 'teal', width: 2 }); s2.dots(pts, { r: 4, color: 'teal' });
-          const lf = fitLogLog(rf, 1, Math.min(m, 1000));
-          info = { s: -lf.slope, mbFit, m, first: pts[0], last: pts[pts.length - 1] };
-        });
-        v.legend([['accent', 'r · f(r)', { dot: true }], ['orange', 'power-law fit (ranks 1–1000)', { dash: true }], ['green', 'Mandelbrot fit'], ['teal', 'mean length by count', { dot: true }]]);
-        v.readout(() => `Zipf’s claim: $r\\cdot f\\approx$ constant, i.e. exponent $s=1$. This text, ranks 1–1000: $s=${v.fix(info.s, 2)}$ (a slope other than 1 tilts the orange line).${info.mbFit ? ` Mandelbrot fit: $s=${v.fix(info.mbFit.s, 2)}$, $b=${v.fix(info.mbFit.b, 1)}$.` : ''}\nWords occurring once average ${v.fix(info.first[1], 1)} letters; those occurring ${info.last[0]} times average ${v.fix(info.last[1], 1)}.`);
-      },
-    },
+    zipfPaper,
     // ───────────────────────────────────────────────────────────────────────── 4.14
     shannonPaper,
   ],
