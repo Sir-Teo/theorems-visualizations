@@ -15,7 +15,7 @@ A line-free colouring alone does not give a drawing strategy. It might even assi
  deps:['comb-11.9','game-4.3','game-4.11'],
  refs:['Golomb & Hales, Hypercube Tic-Tac-Toe, MSRI Publications42 (2002), §§1–3, pp.167–171; line definition, Theorem1 and distinction between drawing and forced wins','Conlon & Kamčev, Intervals in the Hales–Jewett theorem, author version, §1 p.1: combinatorial-line definition and stated Hales–Jewett theorem'],
  tags:['tic-tac-toe','Hales–Jewett','strategy stealing'],
- credit:'Technical geometric-line exposition: Solomon W. Golomb and Alfred W. Hales (2002). Hales–Jewett statement: Conlon–Kamčev author paper. Finite search and diagnostic authored here.',
+ credit:'Technical geometric-line exposition: Solomon W. Golomb and Alfred W. Hales. Hales–Jewett statement: Conlon–Kamčev author paper. Finite search and diagnostic authored here.',
  scope:String.raw`Normal play with one mark per turn, no passing or swaps, and play stopping at the first completed line. The finite search asks about arbitrary two-colourings, not game values. It offers n=2–5 and d=1–4 where n^d≤256; the omitted 5^4 board is not silently substituted. The node budget is part of the cache key and saved state. Colour symmetry fixes cell zero blue without changing existence. “None” is a complete finite search result; an unknown result certifies neither existence nor impossibility. Historical priority, the unread 1963 original, Patashnik's original computer proof and an optimal high-dimensional strategy are outside this technical audit.`,
  links:{source:'https://library.slmath.org/books/Book42/files/golomb.pdf',halesJewett:'https://www.its.caltech.edu/~dconlon/Intervals.pdf'},verify:false,
  viz(v){let pick=0,info;
