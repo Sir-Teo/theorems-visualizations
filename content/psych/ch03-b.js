@@ -1,6 +1,7 @@
 // Psychology & Perception — Chapter 3: Scaling sensation (items 3.6–3.10; 3.1–3.5 are in ch03.js)
 import { Phi, zq, logTicks, sig } from './ch03.shared.js';
 import { luceState } from './source-audit-luce.js';
+import { mdsSynthetic, mdsView } from './source-audit-mds.js';
 
 export default {
   collection: 'psych',
@@ -226,65 +227,42 @@ equivalently $N\propto I^{\,0.3}$ in sound *intensity* $I$ (since $10$ dB is a f
     },
     // ------------------------------------------------------------------ 3.10
     {
-      num: '3.10',
-      kind: 'Method',
-      name: 'Multidimensional scaling of similarity',
-      statement: String.raw`**Multidimensional scaling (MDS)** takes judged dissimilarities $\delta_{ij}$ between $m$ stimuli and finds points $y_1,\dots,y_m$ in a low-dimensional space whose distances $d_{ij}=\lVert y_i-y_j\rVert$ reproduce them. In **classical (Torgerson) MDS**, with squared dissimilarities $\Delta^{(2)}=[\delta_{ij}^2]$ and the centring matrix $J=I-\frac1m\mathbf 1\mathbf 1^{\!\top}$, the matrix $B=-\tfrac12J\Delta^{(2)}J$ is symmetric; if the $\delta_{ij}$ are exact Euclidean distances between points, then $B=YY^{\!\top}$ and the coordinates are the top eigenvectors of $B$, scaled by the square roots of their eigenvalues. The fit is measured by the **stress**
-$$\sigma_1=\Big(\sum_{i<j}(\delta_{ij}-d_{ij})^2\Big/\sum_{i<j}\delta_{ij}^2\Big)^{1/2},$$
-and a plot of the stress against the number of dimensions shows how many dimensions the judgments need. The solution is determined only up to rotation, reflection and shift.`,
-      idea: String.raw`Squared distances determine inner products once the origin is moved to the centroid ($B$ is that double-centred matrix), so a spectral decomposition recovers the configuration whenever one exists; noise in the judgments puts small eigenvalues on the “spurious” directions and the stress shows how much is lost by keeping the first few. The method grew out of Thurstone-style scaling (3.7), which turns choices into one-dimensional scale values; MDS turns *dissimilarity ratings* into a configuration in several dimensions, and the picture can reveal structure (a circle, clusters) that no single rating scale shows. Torgerson's 1952 paper gave the classical solution; later nonmetric versions (Shepard, Kruskal) use only the rank order of the dissimilarities.`,
-      caption: String.raw`**Left:** the *true* configuration of 12 stimuli, a hidden psychological space; drag the points to reshape it or choose a preset (a hue circle, a line, clusters). A simulated judge rates every pair's dissimilarity as the true distance times random noise (slider). **Middle:** the configuration recovered by classical MDS from those ratings alone, rotated and scaled to sit on the truth (thin lines show the errors). **Right:** stress against dimension: it drops to near zero at the true dimension (2 for a circle or clusters, 1 for a line) when the noise is small (classical MDS minimises a different criterion, the strain of $B$, so stress can wobble as dimensions are added). Simulated judgments. For real colour data, Ekman's 1954 similarity ratings of 14 spectral colours are often cited as an example in which MDS arranges the colours around a circle.`,
-      deps: ['psych-3.7'],
-      refs: ['Gescheider ch. 10'],
-      tags: ['multidimensional scaling', 'similarity', 'stress'],
-      credit: 'W. S. Torgerson, “Multidimensional scaling: I. Theory and method”, Psychometrika 17 (1952): 401–419; J. B. Kruskal (1964) for stress and nonmetric MDS',
-      scope: String.raw`Classical MDS is exact for Euclidean distances and approximate otherwise; real similarity judgments are noisy, may be non-Euclidean or asymmetric, and the number of dimensions is chosen by judgment from the stress plot. The map is unique only up to rotation, reflection and translation.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Multidimensional_scaling' },
+      num: '3.10', kind: 'Method', name: 'Classical multidimensional scaling',
+      statement: String.raw`Let $n\ge2$ and let $\Delta=[\delta_{ij}]$ be an $n\times n$ symmetric matrix of nonnegative dissimilarities, with $\delta_{ii}=0$. Write
+$$J=I-\frac1n\mathbf1\mathbf1^{\mathsf T},\qquad B=-\tfrac12J[\delta_{ij}^2]J.$$
+The dissimilarities are exact Euclidean distances **if and only if** the centered Gram matrix $B$ is positive semidefinite. If its rank is $r$, an exact centered configuration in $\mathbf R^r$ comes from its positive eigenvalues and orthonormal eigenvectors:
+$$\begin{gathered}Y=Q_r\operatorname{diag}(\sqrt{\lambda_1},\ldots,\sqrt{\lambda_r}),\\ YY^{\mathsf T}=B.\end{gathered}$$
+Keeping the largest $k$ positive directions gives classical spectral scaling in at most $k$ dimensions. Negative eigenvalues indicate that exact Euclidean reconstruction is impossible. This spectral construction does **not** directly minimize raw-distance stress. Full exact configurations differ only by rigid translation, rotation or reflection; the supplied distance scale is fixed. A truncated solution can depend on the chosen subspace when the eigenvalue at its cutoff is repeated.`,
+      idea: String.raw`Expand $\|x_i-x_j\|^2=\|x_i\|^2+\|x_j\|^2-2x_i\cdot x_j$. Multiplying by $J$ on both sides removes the two norm terms because $J\mathbf1=0$, leaving $B=X_cX_c^{\mathsf T}$ for centered rows $X_c$. The real spectral theorem (ladr-7.29) gives orthonormal eigenvectors; the positive-operator characterizations (ladr-7.38) identify nonnegative eigenvalues and the Gram factorization. Conversely, for symmetric zero-diagonal input, $B_{ii}+B_{jj}-2B_{ij}=\delta_{ij}^2$, so a positive-semidefinite factorization reproduces all distances. Its rank is at most $n-1$ because $B\mathbf1=0$.
+
+We report a directly defined **normalized distance error**,
+$$E_k=\sqrt{\frac{\sum_{i<j}(\delta_{ij}-d_{ij}^{(k)})^2}{\sum_{i<j}\delta_{ij}^2}}.$$
+It is a diagnostic of the spectral fit, not a claim that this fit minimizes it, not a universal Stress-1 convention and not an intrinsic-dimension certificate. If every target distance is zero, this ratio is undefined; the absolute RMS distance error is still defined. Metric least-squares scaling explicitly optimizes a distance criterion; nonmetric scaling can also fit a monotone transformation of dissimilarities. Neither optimizer runs here. The mathematical account used is Williams's own technical exposition, §2, rather than a claim to reproduce a historical psychological experiment.`,
+      caption: String.raw`**Left:** 12 authored planar points; drag them inside the full $[-2.3,2.3]^2$ input box, or choose a circle, line, clusters, one outlier or coincident points. Every pair's synthetic dissimilarity is its true distance times $\exp(sZ_{ij})$, with a symmetric table of standard-normal draws (prob-1.2.5) and slider $s$. For $s>0$ the theoretical multiplier distribution has median 1 and mean greater than 1; at $s=0$ every multiplier equals 1. **Middle:** a two-dimensional classical fit, aligned by translation, rotation and possible reflection only—**no fitted rescaling**. Grey rings are centered truth, colored dots are recovered points and connecting segments are position errors. **Right:** the defined $E_k$ for dimensions 1–4. Exact noiseless planar data have zero error once enough dimensions are retained, up to rounding; noisy data need not. All coordinates and full glyphs determine padded plot bounds.`,
+      scope: String.raw`Inputs here are complete, finite, symmetric, nonnegative dissimilarities with zero diagonal; asymmetric or missing data need another method. All point sets and noise are authored examples. No actual color judgments, nonmetric fitting or psychological dimension estimates are supplied. Positive/negative eigenvalue counts are numerical diagnostics using an explicit rounding cutoff, not exact PSD certificates. Tiny positive modes at or below that cutoff are omitted with negative modes. A zero distance denominator and zero truth radius receive explicit undefined status; neither is replaced by a fake ratio. Error dimensions 1–4 do not display every possible direction of a noisy 12-point matrix.`,
+      deps: ['ladr-7.29','ladr-7.38','prob-1.2.5'], see: ['psych-3.7'],
+      refs: ['Christopher K. I. Williams, On a Connection between Kernel PCA and Metric Multidimensional Scaling, NIPS2000, proceedings2001, §2.1–2.3'],
+      tags: ['multidimensional scaling','dissimilarity','Gram matrices'], credit: 'Classical scaling; technical account: Christopher K. I. Williams, NIPS2000/2001, §2', verify: false,
+      links: {source:'https://proceedings.neurips.cc/paper_files/paper/2000/file/d4b2aeb2453bdadaa45cbe9882ffefcf-Paper.pdf'},
       viz(v) {
-        const M = v.M, NP = 12;
-        let seed = 31, Z = null, zSeed = -1;
-        const PRE = { circle: M.range(NP).map((k) => [1.5 * Math.cos((2 * Math.PI * k) / NP), 1.5 * Math.sin((2 * Math.PI * k) / NP)]),
-          line: M.range(NP).map((k) => [-1.8 + (3.6 * k) / (NP - 1), 0]),
-          clusters: M.range(NP).map((k) => { const c = [[-1.4, 1.0], [1.4, 0.7], [0, -1.5]][k % 3], a = (k * 2.399) % 6.28; return [c[0] + 0.45 * Math.cos(a), c[1] + 0.45 * Math.sin(a)]; }) };
-        const noise = v.slider('judgment noise (log-SD)', 0, 0.6, 0.1, { step: 0.01 });
-        const cfg = v.select('preset', [{ value: 'circle', label: 'hue circle' }, { value: 'line', label: 'line' }, { value: 'clusters', label: 'clusters' }], 'circle', { onChange: (c) => PRE[c].forEach((p, i) => H[i].set(p[0], p[1])) });
-        v.button('New judgments', () => { seed = 1 + ((Math.random() * 1e9) | 0); });
-        const tr = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 290, weight: 1, minWidth: 220, title: 'true configuration (drag)' });
-        const rc = v.stage({ x: [-2.4, 2.4], y: [-2.4, 2.4], equal: true, axes: false, height: 290, weight: 1, minWidth: 220, title: 'recovered by classical MDS' });
-        const sb = v.stage({ x: [0.4, 4.6], y: [0, 0.6], axes: 'box', gutter: true, height: 290, weight: 0.85, minWidth: 220, xlabel: 'number of dimensions', ylabel: 'stress', xticks: [1, 2, 3, 4], title: 'stress by dimension' });
-        const colr = (i) => M.hsl2rgb(i / NP, 0.7, 0.5);
-        const H = PRE.circle.map((p, i) => tr.handle(p[0], p[1], { color: colr(i), r: 8, constrain: (x, y) => [M.clamp(x, -2.3, 2.3), M.clamp(y, -2.3, 2.3)] }));
-        let st = null;
-        v.render(() => {
-          if (zSeed !== seed) { const R = v.rng(seed); Z = M.zeros(NP, NP); for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { Z[i][j] = R.normal(); Z[j][i] = Z[i][j]; } zSeed = seed; }
-          const X = H.map((h) => [h.x, h.y]), sd = noise.value;
-          const dist = (A, i, j) => Math.hypot(...A[i].map((a, k) => a - A[j][k]));
-          const Dm = M.zeros(NP, NP); for (let i = 0; i < NP; i++) for (let j = 0; j < NP; j++) if (i !== j) Dm[i][j] = dist(X, i, j) * Math.exp(sd * Z[i][j]);
-          const D2 = Dm.map((r) => r.map((x) => x * x)), rm = D2.map((r) => M.mean(r)), gm = M.mean(rm);
-          const B = D2.map((r, i) => r.map((x, j) => -0.5 * (x - rm[i] - rm[j] + gm)));
-          const E = M.eigSym(B), lam = E.values;
-          const coord = (k) => E.vecs.slice(0, k).map((ev, a) => ev.map((x) => x * Math.sqrt(Math.max(lam[a], 0)))); // k lists of m
-          const stress = (k) => { const C = coord(k); let num = 0, den = 0; for (let i = 0; i < NP; i++) for (let j = i + 1; j < NP; j++) { let d2 = 0; for (let a = 0; a < k; a++) d2 += (C[a][i] - C[a][j]) ** 2; num += (Dm[i][j] - Math.sqrt(d2)) ** 2; den += Dm[i][j] ** 2; } return Math.sqrt(num / den); };
-          const sts = [1, 2, 3, 4].map(stress);
-          // align 2-D solution to truth: reflect?, rotate, scale
-          const C2 = coord(2), Y = M.range(NP).map((i) => [C2[0][i], C2[1][i]]), cx = M.mean(X.map((p) => p[0])), cy = M.mean(X.map((p) => p[1])), Xc = X.map((p) => [p[0] - cx, p[1] - cy]);
-          let best = null;
-          for (const refl of [1, -1]) {
-            const Yr = Y.map((p) => [p[0], refl * p[1]]); const my0 = M.mean(Yr.map((p) => p[0])), my1 = M.mean(Yr.map((p) => p[1])), Yc = Yr.map((p) => [p[0] - my0, p[1] - my1]);
-            let a = 0, b = 0, nn = 0; for (let i = 0; i < NP; i++) { a += Xc[i][0] * Yc[i][0] + Xc[i][1] * Yc[i][1]; b += Yc[i][0] * Xc[i][1] - Yc[i][1] * Xc[i][0]; nn += Yc[i][0] ** 2 + Yc[i][1] ** 2; }
-            const th = Math.atan2(b, a), c = Math.cos(th), s = Math.sin(th), sc = nn > 1e-12 ? Math.hypot(a, b) / nn : 1;
-            const R = Yc.map((p) => [sc * (c * p[0] - s * p[1]), sc * (s * p[0] + c * p[1])]);
-            const err = Math.sqrt(M.mean(R.map((p, i) => (p[0] - Xc[i][0]) ** 2 + (p[1] - Xc[i][1]) ** 2)));
-            if (!best || err < best.err) best = { R, err };
-          }
-          const rad = Math.sqrt(M.mean(Xc.map((p) => p[0] ** 2 + p[1] ** 2)));
-          best.R.forEach((p, i) => { rc.line(Xc[i][0], Xc[i][1], p[0], p[1], { color: 'muted', alpha: 0.6, width: 1.2 }); rc.dot(Xc[i][0], Xc[i][1], { r: 3.5, color: 'muted', hollow: true, width: 1.4 }); rc.dot(p[0], p[1], { r: 7, color: colr(i), label: String(i + 1), labelPos: 'ne' }); });
-          sts.forEach((s, k) => { sb.rect(k + 1 - 0.3, 0, k + 1 + 0.3, s, { fill: k === 1 ? 'accent' : 'muted', fillAlpha: k === 1 ? 0.5 : 0.25, color: k === 1 ? 'accent' : 'muted', width: 1.6 }); sb.text(s.toFixed(3), k + 1, s, { dy: -10, align: 'center', size: 11.5, weight: 700, color: 'ink' }); });
-          sb.setView([0.4, 4.6], [0, Math.max(0.2, Math.max(...sts) * 1.18)]);
-          st = { sts, err: best.err, rad, lam: lam.slice(0, 4) };
+        const NP=12,M=v.M,colors=M.range(NP).map(i=>M.hsl2rgb(i/NP,.7,.5));let seed=31,noiseSeed=null,Z;
+        const presets={circle:M.range(NP).map(k=>[1.5*Math.cos(2*Math.PI*k/NP),1.5*Math.sin(2*Math.PI*k/NP)]),line:M.range(NP).map(k=>[-1.8+3.6*k/(NP-1),0]),clusters:M.range(NP).map(k=>{const c=[[-1.4,1],[1.4,.7],[0,-1.5]][k%3],a=k*2.399;return[c[0]+.45*Math.cos(a),c[1]+.45*Math.sin(a)];}),outlier:M.range(NP).map(k=>k===0?[2.3,2.3]:[-2.3,-2.3]),coincident:M.range(NP).map(()=>[0,0])};
+        const noise=v.slider('authored normal log-noise $s$',0,.6,.1,{step:.01,decimals:2});
+        v.select('authored point preset',[{value:'circle',label:'circle'},{value:'line',label:'line'},{value:'clusters',label:'clusters'},{value:'outlier',label:'one outlier'},{value:'coincident',label:'coincident'}],'circle',{onChange:k=>presets[k].forEach((p,i)=>H[i].set(...p))});
+        v.button('New authored noise',()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;});
+        const tr=v.stage({x:[-2.9,2.9],y:[-2.9,2.9],equal:true,axes:false,height:320,minWidth:260,title:'authored truth: drag all 12 points'}),rc=v.stage({x:[-2.9,2.9],y:[-2.9,2.9],equal:true,axes:false,height:320,minWidth:260,title:'2D fit: rigid alignment, scale 1'}),sb=v.stage({x:[.4,4.6],y:[-.1,.6],axes:'box',gutter:true,height:320,minWidth:260,xlabel:'retained dimensions',ylabel:'normalized distance error',xticks:[1,2,3,4],title:'spectral fit diagnostic, no stress optimizer'});
+        const H=presets.circle.map((p,i)=>tr.handle(...p,{r:8,color:colors[i],constrain:(x,y)=>[M.clamp(x,-2.3,2.3),M.clamp(y,-2.3,2.3)]}));
+        v.legend([['muted','centered truth',{dot:true}],['accent','recovered points (colors match handles)',{dot:true}],['muted','position difference',{dash:true}]]);let info;
+        v.render(()=>{
+          if(noiseSeed!==seed){const R=v.rng(seed);Z=M.zeros(NP,NP);for(let i=0;i<NP;i++)for(let j=i+1;j<NP;j++)Z[i][j]=Z[j][i]=R.normal();noiseSeed=seed;}
+          const fit=mdsSynthetic(H.map(h=>[h.x,h.y]),noise.value,Z),a=fit.alignment,bounds=mdsView([...a.truth,...a.points]);rc.setView(bounds.x,bounds.y);
+          a.points.forEach((p,i)=>{rc.line(...a.truth[i],...p,{color:'muted',width:1.2,alpha:.6});rc.dot(...a.truth[i],{r:8,color:'muted',hollow:true,width:1.4});rc.dot(...p,{r:5,color:colors[i]});});
+          if(fit.targetSquares===0){sb.setView([.4,4.6],[-.1,.6]);sb.text('all target distances are 0',2.5,.32,{align:'center',size:13,weight:700,color:'muted'});sb.text('normalized error undefined (0/0)',2.5,.21,{align:'center',size:11,color:'muted'});}
+          else{const high=Math.max(.2,...fit.fits.map(f=>f.normalized));sb.setView([.4,4.6],[-.14*high,1.32*high]);fit.fits.forEach(f=>{sb.rect(f.dimension-.3,0,f.dimension+.3,f.normalized,{fill:f.dimension===2?'accent':'muted',fillAlpha:.4,color:f.dimension===2?'accent':'muted',width:1.6});sb.text(f.normalized.toFixed(4),f.dimension,f.normalized,{dy:-13,align:'center',size:11.5,weight:700,color:'ink'});});}
+          info={...fit,seed};
         });
-        v.readout(() => st ? `Stress for 1, 2, 3, 4 dimensions: ${st.sts.map((s) => v.fix(s, 3)).join(', ')} · root-mean-square position error of the 2-D map after alignment: ${v.fix(st.err, 3)} (${v.fix((100 * st.err) / st.rad, 0)}% of the configuration's radius) · leading eigenvalues of $B$: ${st.lam.map((l) => v.fix(l, 2)).join(', ')} · with no noise and a planar truth the stress at 2 dimensions is 0` : '');
+        const number=x=>x.toExponential(3);
+        v.readout(()=>{if(!info)return'';const p=info,a=p.alignment;return `Authored seed ${p.seed}; all ${p.pairs} symmetric pair dissimilarities retained. Normalized distance errors E1–E4: ${p.fits.map(f=>f.normalized===null?'undefined (0/0)':number(f.normalized)).join(', ')}. Absolute RMS distance errors: ${p.fits.map(f=>number(f.absoluteRms)).join(', ')} in the supplied distance units.\nRigid-only 2D position RMS ${number(a.rms)}; truth radius ${number(a.radius)}; relative position error ${a.relative===null?'undefined (zero radius)':number(a.relative)}. Fitted scale remains exactly 1.\nNumerically resolved positive/negative/near-zero eigenvalues: ${p.positive}/${p.negative}/${p.nearZero}; cutoff ${number(p.tolerance)}. All eigenvalues: ${p.eigenvalues.map(number).join(', ')}. These are numerical diagnostics; no exact PSD or empirical dimension certificate is inferred.\nThis is classical spectral scaling, not an optimized raw-distance stress or nonmetric solution.`;});
       },
     },
   ],

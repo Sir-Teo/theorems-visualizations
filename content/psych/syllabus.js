@@ -134,8 +134,8 @@ export default {
           pic: 'A full positive four-option family includes all 15 nonempty menus, singleton/empty UI handling and scale identification; synchronized sliders/handles and an explicitly authored equal-copy counterexample separate one pair/menu comparison from the complete 54-comparison IIA audit.' },
         { num: '3.9', kind: 'Law', name: 'Loudness in sones: doubling per 10 dB', deps: ['psych-3.2', 'music-1.9'], refs: ['Goldstein ch. 11'],
           pic: 'Raise a tone in 10 dB steps and judge whether it sounds twice as loud; the sone scale drawn beside the decibel slider shows the 0.3 power of intensity behind the rule.' },
-        { num: '3.10', kind: 'Method', name: 'Multidimensional scaling of similarity', deps: ['psych-3.7'], refs: ['Gescheider ch. 10'],
-          pic: 'Rate the dissimilarity of pairs of colours; classical MDS lays them out in a plane and recovers a colour circle from your judgments, with stress reported.' },
+        { num: '3.10', kind: 'Method', name: 'Classical multidimensional scaling', deps: ['ladr-7.29', 'ladr-7.38', 'prob-1.2.5'], see: ['psych-3.7'], refs: ['Williams, NIPS2000/2001, technical exposition §2'],
+          pic: 'Authored point/noise families test Gram centering, PSD/eigen reconstruction, rigid-only alignment, explicit undefined zero ratios and fully bounded spectral distance-error diagnostics, with no empirical data or stress/nonmetric optimizer claim.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

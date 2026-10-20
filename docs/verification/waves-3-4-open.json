@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 169,
+  "remainingFlags": 168,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 16,
-    "psych": 16,
+    "psych": 15,
     "soc": 16,
     "polsci": 11,
     "music": 23,
@@ -487,21 +487,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Sone"
-      }
-    },
-    {
-      "id": "psych-3.10",
-      "file": "content/psych/ch03-b.js",
-      "name": "Multidimensional scaling of similarity",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Gescheider ch. 10"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Multidimensional_scaling"
       }
     },
     {
@@ -3435,7 +3420,8 @@
       "game-3.6",
       "phil-4.7",
       "psych-3.8",
-      "phil-4.8"
+      "phil-4.8",
+      "psych-3.10"
     ]
   },
   "additionalFollowups": [
@@ -7704,6 +7690,12 @@
       "status": "resolved",
       "report": "docs/verification/phil-surprise-followup.md",
       "note": "Actual Chow\u00a7\u00a71\u20134 read with formula images; exact finite-world conditioning/support proof independently derived; four math/four native groups and final narrow/undefined-state images pass; no general paradox-resolution claim."
+    },
+    {
+      "id": "psych-3.10",
+      "status": "resolved",
+      "report": "docs/verification/psych-mds-followup.md",
+      "note": "Actual Williams classical-scaling exposition and formula images checked; independent centering/PSD, repeated-cutoff, rigid-only and impossible-triangle derivations; five mathematical and four native groups plus static checks pass. Authored noise and zero ratios are explicit; no raw-distance optimizer or empirical dimension claim."
     }
   ]
 }
