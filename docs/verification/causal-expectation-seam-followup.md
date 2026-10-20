@@ -1,0 +1,5 @@
+# CAUSAL expectation and propensity wording seam
+
+Separate literal successor to `09af3e1488726b1c1e73edf142885fca7acd4a68`, after producer final-pixel reading. Exactly three idea fields change, recorded in `causal-expectation-seam-manifest.json`: 2.7's population balance requires true or correctly specified modeled propensities, with misspecified models explicitly excluded; 2.3's nonnegative correction bounds the variance estimator's **expectation**, not each sample realization; 1.11's valid attenuation comparison is retained without an unsupported universal monotonicity claim as prognostic coefficients change.
+
+The three-field explicit guard passes all 48 full objects/functions/flags/helpers and the whole unchanged syllabus against the immutable parent. No dependency, model function/control/number or source flag changes. These are narrow proof qualifications; the final combined full guard, mathematics, strict/static and updated complete native pixels are reported by the following layout successor. Independent peer remains required.
