@@ -1,0 +1,6 @@
+{
+  "baseline": "2f4154e960686381ccfe54ae174452d9047dab59",
+  "file": "content/game/ch01.js",
+  "before": "and for a smooth concave payoff it solves the first-order condition",
+  "after": "and at an interior maximizer of a smooth concave payoff it solves the first-order condition"
+}
