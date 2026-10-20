@@ -815,3 +815,6 @@ The [retina/dark-adaptation audit](psych-retina-adaptation-followup.md) resolves
 
 
 The [exact accepted checkpoint through6522f86](checkpoint-6522f86.md) passes1,566default tests (all six UI),87 validated routes, strict build6,684written+6,890planned/450chapters/85collections and full static6,621items, all0errors/0warnings. The source queue reconciles156pending/680original resolved/3added; home112,796bytes gzip. Published cross-field shortfall861, with53/64 below25 and28 whole syllabi below25. Flagship source/proof curation is1/100, separate from102 control checks. The initial build/test sequencing mistake and complete successful post-build rerun are documented. Ongoing drafts are excluded; no historical renderer-timing identity is replaced.
+
+
+[Exchange-proof curation](ladr-exchange-followup.md) accepts the second flagship with6 mathematical and8 native groups, all-frame invariant/certificate checks, actual vector/camera/replay evidence and explicit numerical limits. The curation registry is2/100; the historical102 control checks remain separate. This item had no queued flag, so the source queue remains156 and680 original flags resolved. The latest full checkpoint remains1,566 tests through6522f86;6 new default exchange groups pass separately.

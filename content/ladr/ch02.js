@@ -2,6 +2,8 @@
 // Part 1 (2.4–2.28): span, linear independence, the linear dependence lemma, the exchange theorem, bases.
 // Part 2 is ch02-b.js (2.30–2.43).
 
+import { EXCHANGE_DEFAULT, EXCHANGE_PRESETS, exchangePreset, exchangeTrace, exchangeRank, validExchangeState } from './exchange-audit.js';
+
 // =====================================================================================================
 // Shared helpers. A small 3D scene drawn on a 2D stage, so that vectors in R^3 can be dragged by their
 // tips (dragging moves a tip parallel to the screen; dragging the background rotates the view).
@@ -698,76 +700,142 @@ Furthermore, if $k$ satisfies this condition and the $k$th term is removed from 
       num: '2.22',
       kind: 'Theorem',
       name: 'Independent list no longer than spanning list',
-      statement: String.raw`In a finite-dimensional vector space, the length of every linearly independent list of vectors is less than or equal to the length of every spanning list of vectors.`,
-      idea: String.raw`Let $u_1,\dots,u_m$ be linearly independent and $w_1,\dots,w_n$ span $V$, and feed the $u$'s into the spanning list one at a time. At step $k$, insert $u_k$ after $u_1,\dots,u_{k-1}$; since the previous list spanned $V$, the new list is linearly dependent, so the linear dependence lemma 2.19 finds a vector lying in the span of its predecessors. It cannot be one of the $u$'s, which are independent, so it is a $w$ — remove it, and by 2.19 the list still spans $V$. Each step uses up one $w$, so all $m$ steps can be carried out only if $m\le n$.`,
-      caption: String.raw`A spanning list $w_1,\dots,w_n$ of $\mathbf R^3$ (orange) and an independent list $u_1,u_2,u_3$ (blue); drag any tip, drag the background to rotate. Step through the exchange: each step inserts the next $u$; the lemma finds the first vector lying in the span of its predecessors (gold path), and that $w$ is evicted. The chips show the current list, which always spans $\mathbf R^3$. Break the hypothesis by feeding in four $u$'s: the lemma then lands on a $u$ — the $u$'s were dependent after all.`,
+      statement: String.raw`Suppose $u_1,\ldots,u_m$ are linearly independent in $V$ and $\spn(w_1,\ldots,w_n)=V$, where both lists are finite. Then $m\le n$. This includes empty lists and the zero space.`,
+      idea: String.raw`Keep a list of length $n$ that spans $V$ and begins with the $u$'s already inserted. Insert the next $u$ immediately after that prefix. The enlarged list is dependent because the old list spans $V$. By 2.19, some vector belongs to the span of its predecessors and can be deleted without changing the span. That vector cannot be in the independent $u$-prefix, so delete an original $w$. Each insertion therefore consumes a different $w$, giving $m\le n$. If $m=0$ nothing needs doing; if $n=0$, then $V=\{0\}$ and independence forces $m=0$.`,
+      caption: String.raw`The model fixes $V=\R^3$. Choose the list lengths, drag vector tips, or rotate the background, then step through each insertion, dependence certificate, and deletion. The initial $W$ must pass a numerical spanning check. Zero or parallel $u$'s expose the actual dependent prefix, even in a list of length two. Four $u$'s in $\R^3$ always fail independence. Near dependence pauses the numerical illustration; the exact theorem has no tolerance.`,
       deps: ['ladr-2.19', 'ladr-2.15', 'ladr-2.9'],
       see: ['pma-9.2'],
       tags: ['independence', 'span'],
-      credit: 'Grassmann, 1862; Steinitz, 1913 (exchange lemma)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Steinitz_exchange_lemma' },
+      refs: ['Axler, Linear Algebra Done Right, 4e, 2.22 and its proof (printed p.35); 2.19 (pp.33–34).'],
+      links: { source: 'https://linear.axler.net/LADR4e.pdf' },
       viz(v) {
-        const M = v.M;
-        const G = scene3(v, { height: 420, minWidth: 340 });
-        const nSel = v.select('spanning list', [{ value: '3', label: '$w_1,w_2,w_3$' }, { value: '4', label: '$w_1,\\dots,w_4$' }, { value: '5', label: '$w_1,\\dots,w_5$' }], '4');
-        const mSel = v.select('independent list', [{ value: '2', label: '$u_1,u_2$' }, { value: '3', label: '$u_1,u_2,u_3$' }, { value: '4', label: '$u_1,\\dots,u_4$' }], '3');
-        const HW = [[1.5, -0.5, -0.3], [-0.3, 1.4, 0.2], [0.5, -0.4, 1.4], [-1.2, 0.2, -0.6], [0.6, 0.4, -1.3]].map((p) => G.handle(p, { color: 'orange', r: 5.5 }));
-        const HU = [[0.84, -0.23, 1.21], [-1.2, 1.0, 0.4], [0.2, -1.2, -0.9], [-0.6, -1.4, 0.4]].map((p) => G.handle(p, { color: 'blue', r: 5.5 }));
-        const CODE = [
-          '$B \\leftarrow (w_1,\\dots,w_n)$   ▷ spans $V$',
-          'for $k = 1$ to $m$:',
-          '  insert $u_k$ after $u_{k-1}$ in $B$   ▷ now dependent',
-          '  $j \\leftarrow$ first index with $B_j \\in \\operatorname{span}(B_1,\\dots,B_{j-1})$',
-          '  if $B_j$ is a $u$: stop   ▷ the $u$\'s were dependent',
-          '  remove $B_j$   ▷ a $w$; $B$ still spans $V$',
-          'return $m \\le n$   ▷ each step used up a $w$',
-        ];
-        const L = (e) => e.name, listTeX = (B) => B.map(L).join(',\\,');
-        function build() {
-          const n = +nSel.value, m = +mSel.value;
-          const W = HW.slice(0, n).map((h, i) => ({ name: `w_{${i + 1}}`, t: `w${SUB[i]}`, kind: 'w', i, h }));
-          const U = HU.slice(0, m).map((h, i) => ({ name: `u_{${i + 1}}`, t: `u${SUB[i]}`, kind: 'u', i, h }));
-          let B = W.slice(); const gone = []; const F = [];
-          F.push({ B: B.slice(), gone: [], line: 1, note: `Start: the list $${listTeX(B)}$ spans $\\mathbf R^3$; the independent list $${listTeX(U)}$ waits outside.` });
-          for (let k = 0; k < m; k++) {
-            const B2 = [...B.filter((e) => e.kind === 'u'), U[k], ...B.filter((e) => e.kind === 'w')];
-            F.push({ B: B2, gone: gone.slice(), ins: U[k], line: 3, note: `Step ${k + 1}: insert $${U[k].name}$. The list $${listTeX(B2)}$ is linearly dependent: $${U[k].name}$ already lay in the span of the previous list.` });
-            const dep = firstDependent(M, B2.map((e) => e.h.p)), out = B2[dep.k];
-            const expr = `${out.name} = ${combTeX(dep.c, B2.slice(0, dep.k).map(L))}`;
-            if (out.kind === 'u') {
-              F.push({ B: B2, gone: gone.slice(), ins: U[k], dep, out, line: 5, fail: true, hold: 2, note: `The first vector in the span of its predecessors is $${expr}$ — a $u$. So $${listTeX(U)}$ is **not** linearly independent: ${m} vectors in $\\mathbf R^3$ never are. The hypothesis of 2.22 fails and no $w$ needs to be evicted.` });
-              return F;
-            }
-            F.push({ B: B2, gone: gone.slice(), ins: U[k], dep, out, line: 4, note: `Lemma 2.19: the first vector in the span of its predecessors is $${expr}$. It is not a $u$ (they are independent), so it is a $w$.` });
-            B = B2.filter((e) => e !== out); gone.push(out);
-            F.push({ B: B.slice(), gone: gone.slice(), line: 6, note: `Evict $${out.name}$. The list $${listTeX(B)}$ still spans $\\mathbf R^3$; ${k + 1} of the ${n} $w$'s ${k ? 'have' : 'has'} been used up.` });
-          }
-          F.push({ B: B.slice(), gone: gone.slice(), line: 7, done: true, hold: 2, note: `All ${m} $u$'s are in and each step evicted a different $w$, so $m = ${m} \\le ${n} = n$.` });
-          return F;
+        const G = scene3(v, { height: 420, minWidth: 220, range: 3.2, hint: false, axes: false });
+        let S, trace, signature = '', st = null;
+        const rebuild = () => {
+          const W = HW.slice(0, +nSel.value).map(h => h.p), U = HU.slice(0, +mSel.value).map(h => h.p);
+          signature = JSON.stringify([nSel.value, mSel.value, ...HW.map(h => h.p), ...HU.map(h => h.p)]);
+          trace = exchangeTrace(v.M, W, U);
+          if (S) { S.pause(); S.reset(trace.frames.map(describe), { at: 'keep' }); }
+        };
+        const nSel = v.select('length of W', [3, 4, 5].map(n => ({ value: String(n), label: `$n=${n}$` })), '4', { onChange: rebuild });
+        const mSel = v.select('length of U', [2, 3, 4].map(m => ({ value: String(m), label: `$m=${m}$` })), '3', { onChange: rebuild });
+        const HW = EXCHANGE_DEFAULT.W.map(p => G.handle(p, { color: 'orange', r: 5.5, onDrag: rebuild }));
+        const HU = EXCHANGE_DEFAULT.U.map(p => G.handle(p, { color: 'blue', r: 5.5, onDrag: rebuild }));
+        const preset = v.select('starting vectors', EXCHANGE_PRESETS.map(([value, label]) => ({ value, label })), 'valid', { onChange: key => {
+          const p = exchangePreset(key); p.W.forEach((x, i) => HW[i].set(x)); p.U.forEach((x, i) => HU[i].set(x)); rebuild(); S.first();
+        } });
+        const target = v.select('tip to drag', [{ value: 'all', label: 'all tips' }, ...['w', 'u'].flatMap(kind => Array.from({ length: kind === 'w' ? 5 : 4 }, (_, i) => ({ value: kind + (i + 1), label: kind + SUB[i] })))], 'all');
+        const name = e => `${e.kind}_{${e.i + 1}}`, text = e => e.kind + SUB[e.i], list = B => B.map(text).join(', ');
+        function describe(f) {
+          const k = f.k + 1;
+          const note = {
+            initial: `Fixed ambient space: $V=\\R^3$. Check W first. Its numerical rank is ${trace.wRank.rank ?? 'unresolved'}. U is a candidate list, not an assumed independent input.`,
+            nonspanning: `**Spanning check fails:** W has numerical rank ${trace.wRank.rank}, below 3. No insertion is justified in this fixed ambient space. Moving U cannot repair this hypothesis.`,
+            uncertain: '**Numerical pause:** a normalized singular value is near the dependence threshold, an input is too small to normalize safely, or no reliable dependence certificate was obtained. No exact conclusion is inferred from this stop.',
+            insert: `Step ${k}: insert $u_{${k}}$ after the earlier u's. The previous list spans $\\R^3$, so this enlarged list is dependent. Its length is now ${f.B.length}.`,
+            relation: `Lemma 2.19 finds $${f.out ? name(f.out) : ''}$ in the span of its predecessors. The current u-prefix passed the numerical independence check. The gold path shows the computed relation; its coefficients and residual appear below.`,
+            remove: `Delete $${f.out ? name(f.out) : ''}$ using that relation. The list returns to length ${+nSel.value}, with the same span. ${f.gone.length} distinct original w's have now been removed.`,
+            dependentU: `**Numerical independence check fails:** the first numerically dependent prefix ends at $${f.out ? name(f.out) : ''}$. Its computed relation uses only earlier u's. Stop here; no w is removed for this insertion.${+mSel.value > 3 ? ' Independently, any list of four vectors in $\\R^3$ is dependent.' : ''}`,
+            done: `All ${+mSel.value} insertions removed different original w's. The final list still has length ${+nSel.value} and spans $\\R^3$, illustrating $m\\le n$.`,
+          }[f.phase];
+          return { ...f, line: { initial: 1, nonspanning: 1, uncertain: 5, insert: 3, relation: 4, remove: 6, dependentU: 5, done: 7 }[f.phase], note };
         }
-        const S = v.steps({ frames: build, code: CODE, codeTitle: 'The exchange (proof of 2.22)', speed: 0.9, start: 2 });
-        let sig = '', st = null;
-        v.legend([['blue', '$u$ (independent list)'], ['orange', '$w$ (spanning list)'], ['red', 'vector to evict', { dot: true }], ['gold', 'its expression in its predecessors', { dash: true }]]);
-        G.render(() => {
-          const n = +nSel.value, m = +mSel.value;
-          HW.forEach((h, i) => { h.visible = i < n; }); HU.forEach((h, i) => { h.visible = i < m; });
-          const s = [nSel.value, mSel.value, ...HW, ...HU].map((x) => (typeof x === 'string' ? x : x.p.map((c) => c.toFixed(4)).join(','))).join('|');
-          if (s !== sig) { const first = !sig; sig = s; if (!first) S.reset(undefined, { at: 'keep' }); }
-          const f = S.frame; if (!f.B) return;
-          const inB = new Set(f.B);
-          for (const e of f.gone) G.vec(e.h.p, { color: 'orange', label: e.name, width: 1.4, dash: [3, 4], alpha: 0.4, head: 7 });
-          HU.slice(0, m).forEach((h, i) => { if (![...inB].some((e) => e.h === h)) G.vec(h.p, { color: 'blue', label: `u_{${i + 1}}`, width: 1.4, dash: [3, 4], alpha: 0.4, head: 7 }); });
-          if (f.dep && f.out) { let s0 = ZERO; f.dep.c.forEach((c, i) => { const nx = add3(s0, mul3(f.B[i].h.p, c)); G.arrow(s0, nx, { color: 'gold', width: 2.2, dash: [6, 4], head: 9 }); s0 = nx; }); }
-          for (const e of f.B) G.vec(e.h.p, { color: e === f.out ? 'red' : e.kind === 'u' ? 'blue' : 'orange', label: e.name, width: e === f.out ? 3.2 : 2.5 });
-          if (f.out) G.dot(f.out.h.p, { r: 12, hollow: true, color: 'red', width: 2.4, noDim: true });
-          if (f.ins) G.dot(f.ins.h.p, { r: 11, hollow: true, color: 'gold', width: 2.2, noDim: true });
-          G.overlay(() => chips(v, G.S, f.B.map((e) => ({ t: e.t, color: e.kind === 'u' ? 'blue' : 'orange', state: e === f.out ? 'hot' : e === f.ins ? 'new' : 'on' })), 10, 8));
-          st = { f, rank: orth(f.B.map((e) => e.h.p)).length };
+        rebuild();
+        S = v.steps({ frames: trace.frames.map(describe), codePos: 'below', start: 0, speed: .9, codeTitle: 'Exchange invariant: same span, length n', code: [
+          'check W spans V',
+          'for each next u:',
+          '  insert u after the previous u-prefix',
+          '  find first dependent prefix (2.19)',
+          '  if unresolved or dependent U: stop',
+          '  delete its last vector, a w',
+          'return m ≤ n (distinct w removals)',
+        ] });
+        for (const line of S.codeEl.querySelectorAll('.ln')) {
+          line.style.whiteSpace = 'pre-wrap'; line.lastElementChild.style.minWidth = '0'; line.lastElementChild.style.overflowWrap = 'anywhere';
+        }
+        v.shareState('exchange vectors and camera', {
+          get: () => ({ W: HW.map(h => h.p.slice()), U: HU.map(h => h.p.slice()), preset: preset.value, yaw: Math.atan2(Math.sin(G.yaw), Math.cos(G.yaw)), pitch: G.pitch }),
+          validate: validExchangeState,
+          set: d => { preset.set(d.preset); d.W.forEach((p, i) => HW[i].set(p)); d.U.forEach((p, i) => HU[i].set(p)); G.yaw = d.yaw; G.pitch = d.pitch; rebuild(); },
         });
+        v.legend([['blue', 'candidate U'], ['orange', 'original W'], ['red', 'dependent prefix endpoint', { dot: true }], ['gold', 'computed relation', { dash: true }]]);
+        G.render(() => {
+          const sig = JSON.stringify([nSel.value, mSel.value, ...HW.map(h => h.p), ...HU.map(h => h.p)]);
+          if (sig !== signature) rebuild();
+          HW.forEach((h, i) => { h.visible = i < +nSel.value && (target.value === 'all' || target.value === 'w' + (i + 1)); });
+          HU.forEach((h, i) => { h.visible = i < +mSel.value && (target.value === 'all' || target.value === 'u' + (i + 1)); });
+          const f = S.frame, entries = [...trace.W, ...trace.U], active = new Set(f.B.map(e => e.id));
+          const chain = f.dep?.chain || [], pts = [...entries.map(e => e.p), ...chain];
+          // Fit the complete certificate, including large intermediate partial sums.
+          // A minimum radius leaves room for every label, marker and hover halo.
+          const extent = Math.max(2.5, ...pts.flatMap(p => G.P(p).map(Math.abs)));
+          const radius = extent * 1.4; G.S.setView([-radius, radius], [-radius, radius]);
+          const axes = [0, 1, 2].map(i => { const p = [0, 0, 0]; p[i] = radius * .65; return p; });
+          for (const p of axes) G.line(mul3(p, -1), p, { color: 'faint', width: 1 });
+          for (const e of entries) G.vec(e.p, { color: e.id === f.out?.id && f.dep ? 'red' : e.kind === 'u' ? 'blue' : 'orange', width: active.has(e.id) ? 2.5 : 1.3, alpha: active.has(e.id) ? 1 : .4, dash: active.has(e.id) ? undefined : [3, 4] });
+          for (let i = 1; i < chain.length; i++) G.arrow(chain[i - 1], chain[i], { color: 'gold', width: 2.2, dash: [6, 4], head: 9 });
+          if (f.dep && f.out) G.dot(f.out.p, { r: 12, hollow: true, color: 'red', width: 2.4, noDim: true });
+          if (f.ins) G.dot(f.ins.p, { r: 11, hollow: true, color: 'gold', width: 2.2, noDim: true });
+          // Labels sharing a projected tip form one name group. Place groups in
+          // separate rows when necessary; full vector records remain below.
+          G.overlay(() => {
+            const groups = [];
+            for (const e of [...entries, ...axes.map((p, i) => ({ p, axis: ['x', 'y', 'z'][i] }))]) {
+              const p = G.P(e.p), x = G.S.X(p[0]), y = G.S.Y(p[1]);
+              const g = groups.find(g => Math.hypot(g.x - x, g.y - y) < 12);
+              const label = e.axis || text(e);
+              if (g) g.names.push(label); else groups.push({ x, y, names: [label] });
+            }
+            const occupied = [];
+            for (const g of groups.sort((a, b) => a.y - b.y)) {
+              const label = g.names.join(', ');
+              G.S.ctx.save(); G.S.ctx.font = '500 14px Inter, system-ui, sans-serif';
+              const w = G.S.ctx.measureText(label).width + 14; G.S.ctx.restore();
+              const tips = entries.map(e => { const p = G.P(e.p); return [G.S.X(p[0]), G.S.Y(p[1])]; });
+              const candidates = Array.from({ length: Math.ceil(G.S.height / 20) }, (_, i) => [g.y - 24 - i * 20, g.y + 24 + i * 20]).flat();
+              const clampX = x => Math.max(w / 2 + 3, Math.min(G.S.width - w / 2 - 3, x));
+              const xs = [...new Set([g.x + 18, g.x + 24 + w / 2, g.x - 24 - w / 2, ...Array.from({ length: Math.ceil(G.S.width / 24) }, (_, i) => 16 + i * 24)].map(clampX))];
+              let place;
+              search: for (const y of candidates) {
+                if (y < 16 || y > G.S.height - 32) continue;
+                for (const x of xs) {
+                  if (occupied.some(o => Math.abs(o.y - y) < 21 && Math.abs(o.x - x) < (o.w + w) / 2)) continue;
+                  if (tips.some(([px, py]) => Math.abs(py - y) < 22 && Math.abs(px - x) < w / 2 + 14)) continue;
+                  place = { x, y }; break search;
+                }
+              }
+              const { x, y } = place || { x: clampX(g.x + 18), y: 16 };
+              if (Math.abs(x - g.x) > 28 || Math.abs(y - g.y) > 34) {
+                const end = Math.abs(x - g.x) > w / 2 ? [x + Math.sign(g.x - x) * w / 2, y] : [x, y + Math.sign(g.y - y) * 10];
+                G.S.path([G.S.inv(g.x, g.y), G.S.inv(...end)], { color: 'muted', alpha: .4, width: .8 });
+              }
+              occupied.push({ x, y, w });
+              G.S.textPx(label, x, y, { align: 'center', size: 14, color: 'ink' });
+            }
+            G.S.corner('R³ · drag background to rotate', 'bl', { size: 10.5, color: 'muted' });
+          });
+          st = { trace, f, radius, rank: exchangeRank(v.M, f.B.map(e => e.p)) };
+        });
+        const number = x => x === 0 ? '0' : String(+x.toPrecision(6));
         v.readout(() => {
           if (!st) return '';
-          const { f, rank } = st;
-          return `Current list: $${listTeX(f.B)}$ (length ${f.B.length}); ` + (rank === 3 ? 'it spans $\\mathbf R^3$, as it does at every step.' : 'it does not span $\\mathbf R^3$ — drag the $w$\'s apart.') + (f.done ? ' **Done:** $m\\le n$.' : f.fail ? ' **Stopped:** the $u$-list was dependent.' : '');
+          const { f, rank, radius } = st, dep = f.dep;
+          const rows = [
+            `Current B (length ${f.B.length}): ${list(f.B)}. Removed w's: ${f.gone.length ? list(f.gone) : 'none'}.`,
+            target.value === 'all' ? 'For overlapping tips, choose one named tip to drag.' : `Drag target: ${target.value}. ${+target.value.slice(1) > +(target.value[0] === 'w' ? nSel.value : mSel.value) ? 'It is outside the chosen list length; increase that length to reveal it.' : 'Only this tip receives vector input; background dragging rotates the view.'}`,
+            `Numerical rank of B: ${rank.rank ?? 'unresolved'}${rank.ambiguous ? '–' + (rank.upper ?? '?') + ' (uncertain)' : ''}. ${trace.wRank.rank === 3 && !trace.wRank.ambiguous ? 'Initial W passes the spanning test.' : 'Initial W does not pass the spanning test.'}`,
+            'Column-normalized singular-value ratios: ≤1e−12 is treated as dependence; above 1e−7 passes independence. Between them, pause. Relation relative residual must be ≤1e−10. These tests illustrate, rather than prove, exact rank.',
+            `All coordinates and coefficients below are rounded to 6 significant digits; replay stores full values. Each tip stays in the radius-2 ball. Fitted view radius: ${number(radius)}.`,
+            ...[...trace.W, ...trace.U].map(e => `${text(e)} = (${e.p.map(number).join(', ')})`),
+          ];
+          if (dep?.c) {
+            rows.push(`Computed relation for ${text(f.out || f.B[dep.k])}: sum of the following predecessor terms (≈, not an exact symbolic identity).`);
+            dep.c.forEach((c, i) => rows.push(`coefficient of ${text(f.B[i])}: ${number(c)}`));
+            if (!dep.c.length) rows.push('Empty predecessor sum = 0.');
+            rows.push(`Absolute residual: ${number(dep.residual)}. Relative residual: ${number(dep.relativeResidual)}.`);
+          }
+          if (f.phase === 'done') rows.push(`Completed: m = ${mSel.value} ≤ ${nSel.value} = n; each of the ${mSel.value} removed w's has a different original index.`);
+          return rows.join('\n');
         });
       },
     },

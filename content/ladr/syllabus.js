@@ -68,7 +68,7 @@ export default {
         { num: '2.19', kind: 'Lemma', name: 'Linear dependence lemma', deps: ['ladr-2.17', 'ladr-2.4'], tags: ['independence'],
           pic: 'Add vectors one at a time in ℝ³; the first one that lands in the span of its predecessors is highlighted, and deleting it leaves the drawn span unchanged.' },
         { num: '2.22', kind: 'Theorem', name: 'Independent list no longer than spanning list', deps: ['ladr-2.19', 'ladr-2.15', 'ladr-2.9'], see: ['pma-9.2'], tags: ['independence', 'span'],
-          pic: 'Exchange game in ℝ³: feed an independent list u₁, u₂, u₃ into a spanning list w₁ … w₄ one vector at a time, each step evicting a w while the span stays ℝ³, so the u’s can never outnumber the w’s.' },
+          pic: 'In fixed ℝ³, check W spans before exchanging; inspect every insertion, dependence relation, distinct-w deletion and preserved span. Zero/parallel U reveals the actual dependent prefix, while near dependence pauses numerical claims. All nine list lengths, complete vector records, fitted certificates and full 3D/camera replay remain available.' },
         { num: '2.25', kind: 'Theorem', name: 'Finite-dimensional subspaces', deps: ['ladr-2.19', 'ladr-2.22', 'ladr-2.9', 'ladr-1.33'], tags: ['dimension', 'subspaces'],
           pic: 'Pick a subspace of ℝ³ and run the greedy step “choose a vector of U outside the current span”; the process always halts within three steps.' },
         { num: '2.26', kind: 'Definition', name: 'Basis', deps: ['ladr-2.15', 'ladr-2.4'], tags: ['bases'],

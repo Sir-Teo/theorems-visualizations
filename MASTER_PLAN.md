@@ -65,8 +65,8 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    A [bounded retained-edge experiment](docs/verification/map-retained-parent-check.md) passes independent
    picture/resource/lifecycle checks but regresses all twelve controlled matched cases and remains isolated.
    Continue renderer work from these measured constraints; the full 60 fps gate stays open.
-   Continue source/proof curation for 100 flagship steppers: [the first accepted result](docs/verification/flagship-basis-followup.md)
-   is recorded separately from the 102-player control inventory. The curation gate remains open.
+   Continue source/proof curation for 100 flagship steppers: **2/100 are accepted**, including [basis extraction](docs/verification/flagship-basis-followup.md)
+   and the [exchange argument](docs/verification/ladr-exchange-followup.md), separately from the 102-player control inventory. The curation gate remains open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
 The completed checkpoint through `6522f86` passes **1,566 tests**, including all six UI tests, and an **87-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,796 bytes gzipped. Its exact accepted snapshot excludes ongoing drafts and reconciles 156 pending and 680 original source flags resolved. Since the preceding checkpoint, seven original flags close through independently checked categorisation, loudness, minimax, attachment and retina/adaptation batches, and the first flagship proof is curated. The cross-field shortfall is 861; 53 of 64 non-math collections and 28 complete syllabi remain below target. The full-map 60 fps and 100-flagship source/proof-curation gates remain open. See [checkpoint evidence](docs/verification/checkpoint-6522f86.md).
@@ -584,7 +584,7 @@ These are features only an atlas can have, and the main reason to build one.
    the frontier of what to learn next.
 3. **Proof steppers** for ~100 flagship results: `v.steps` drives the viz through the proof idea
    (cover with balls → extract a finite subcover → take the minimum radius).
-   Source/proof/all-frame curation has begun: [1/100 accepted](docs/verification/flagship-proof-curation.json),
+   Source/proof/all-frame curation has begun: [2/100 accepted](docs/verification/flagship-proof-curation.json),
    independently of the historical 102-player control audit. [Basis extraction](docs/verification/flagship-basis-followup.md)
    now handles plane/line/zero input and exact state replay with explicit numerical limits.
 4. **Shareable states and embeds**: control and handle state encoded in the URL
