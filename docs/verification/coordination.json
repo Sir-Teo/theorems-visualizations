@@ -989,6 +989,19 @@
       "commits": [
         "9d9a64b"
       ]
+    },
+    {
+      "ids": [
+        "ling-4.6"
+      ],
+      "peer": "coordinator independently compared actual Altmann1980, regenerated complete proxy/fit oracle and fresh native/output evidence",
+      "reports": [
+        "docs/verification/ling-menzerath-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "73e2c4d"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1001,7 +1014,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 32,
+  "currentPendingSourceReviews": 31,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

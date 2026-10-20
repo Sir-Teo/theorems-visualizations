@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 32,
+  "remainingFlags": 31,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 5,
-    "ling": 2,
+    "ling": 1,
     "bighist": 15
   },
   "queue": [
@@ -283,21 +283,6 @@
         "Fromkin et al. ch. 2"
       ],
       "links": {}
-    },
-    {
-      "id": "ling-4.6",
-      "file": "content/ling/ch04-b.js",
-      "name": "Menzerath’s law",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Jurafsky & Martin ch. 2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Menzerath%27s_law"
-      }
     },
     {
       "id": "bighist-3.6",
@@ -1344,7 +1329,8 @@
       "bighist-3.8",
       "ling-4.12",
       "nla-3.15",
-      "arch-3.7"
+      "arch-3.7",
+      "ling-4.6"
     ]
   },
   "additionalFollowups": [
@@ -6423,6 +6409,11 @@
       "id": "arch-3.7",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently compared primary annular sources, tangency/quadrature math and fresh native/output evidence; docs/verification/arch-circular-peer.md."
+    },
+    {
+      "id": "ling-4.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared actual Altmann1980, regenerated complete proxy/fit oracle and fresh native/output evidence; docs/verification/ling-menzerath-peer.md."
     }
   ]
 }
