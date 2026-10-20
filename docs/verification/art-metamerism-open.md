@@ -1,6 +1,6 @@
-# Open follow-up: art 4.3 metamerism
+# Art 4.3 metamerism: initial triage and resolution
 
-This newly identified source review remains open. Reading the neighboring item during the independent cone audit revealed unsupported perceptual labels: numerical u′v′ distances below 0.002 and 0.005 are called indistinguishable or barely distinguishable without a specified observer, task or threshold source. Equality in a stated colorimetric model and a measured perceptual threshold need separate claims.
+This review is resolved by the independently accepted [metamerism and linear-matching audit](art-metamer-followup.md). The following records the original finding and bounded preparation before that acceptance. Reading the neighboring item during the independent cone audit revealed unsupported perceptual labels: numerical u′v′ distances below 0.002 and 0.005 are called indistinguishable or barely distinguishable without a specified observer, task or threshold source. Equality in a stated colorimetric model and a measured perceptual threshold need separate claims.
 
 The kernel argument also needs explicit bounds on physically admissible reflectances. A nonzero kernel alone does not show that every boundary reflectance has a distinct admissible metamer. The constructed pair's bounds, numerical integration, illumination changes, adaptation transform and saved controls still need an independent audit. The existing model uses the Wyman–Sloan–Shirley approximation to CIE 1931 functions; the CIE 2006 cone model and cone-based XYZ_F used in items 4.1–4.2 must not silently replace it.
 

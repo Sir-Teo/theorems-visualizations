@@ -1,4 +1,5 @@
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.1–4.8; 4.9–4.16 are in ch04-b.js)
+import { METAMER_LAMPS, MIXTURE_OPS, metamerSurfaces, metamerMixture, metamerNumber } from './metamer-audit.js';
 import { CONE_CURVES, CONE_AMOUNT_MAX, coneStimulus, coneLeastSquares, coneMatchTarget, coneMatch, coneDisplayPair } from './source-audit-cones.js';
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz, planck, gauss, sigm, drawChromaticity, LOCUS, inLocus, dominant, specBars, SRGB, coneFund, conePeaks, coneResp, toLMS, fromLMS, primSet, CIERGB, EW, adaptXYZ, mv3, inv3, metamerNull } from './ch04.shared.js';
 
@@ -102,104 +103,60 @@ Here the authored monochromatic primaries are 540, 610 and 450 nm, each with one
     },
     // ------------------------------------------------------------------ 4.3
     {
-      num: '4.3',
-      kind: 'Phenomenon',
-      name: 'Metamerism',
-      statement: String.raw`Two surfaces (or lights) with different spectra can produce identical cone responses, and so match, under one illuminant; such a pair is called *metameric*. Under a different illuminant their responses generally differ and the match fails: if $R_1(\lambda)$ and $R_2(\lambda)$ satisfy
-$$\int I_a R_1\,\bar c_k\,d\lambda=\int I_a R_2\,\bar c_k\,d\lambda\quad(k=1,2,3)$$
-for illuminant $I_a$, it does not follow that the same holds for another illuminant $I_b$. The difference $R_1-R_2$ lies in the kernel of the map spectrum $\to$ colour for $I_a$, but that kernel changes with the illuminant.`,
-      idea: String.raw`The map from reflectance spectra to colour is a linear map to $\mathbb R^3$ (art-4.2), whose kernel is huge (infinite-dimensional), so there are always many metamers. The kernel depends on the weights $I(\lambda)\bar c_k(\lambda)$, so it moves when the illuminant does. In the demonstration the second spectrum is the first plus an oscillation that has zero integral against the three weights of daylight; under another lamp the weights are different and the oscillation no longer cancels.`,
-      caption: String.raw`Two paint samples that match under daylight (the oscillation is built to be invisible to the daylight weights). Change the lamp and watch the swatches separate; the number is the distance in the $u'v'$ chromaticity plane. Increase the mismatch strength to enlarge the spectral difference. The three-band fluorescent lamp and the sodium-like peaks show how strongly the result depends on where the lamp has energy. “Eye adapts” rescales each lamp’s white to daylight white.`,
-      deps: ['art-4.2'],
-      refs: ['Fairchild ch. 3'],
-      tags: ['metamerism', 'spectrum'],
-      scope: String.raw`The daylight is a $6504$ K black body (a crude stand-in for the CIE D65 spectrum), the other lamps are models (incandescent: $2856$ K black body; LED and fluorescent: generic shapes). The reflectances are smooth invented curves. The standard observer is the CIE 1931 fit; individual observers differ and see observer metamerism too.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Metamerism_(color)' },
-      verify: true,
-      viz(v) {
-        const day = (l) => planck(l, 6504);
-        const LAMP = {
-          day: { f: day, label: 'daylight (model)' },
-          tung: { f: (l) => planck(l, 2856), label: 'incandescent' },
-          led: { f: (l) => 1.8 * gauss(l, 450, 22) + gauss(l, 570, 120), label: 'white LED (model)' },
-          fl: { f: (l) => 0.04 + 0.6 * gauss(l, 436, 8) + gauss(l, 545, 8) + 1.1 * gauss(l, 611, 8), label: 'three-band fluorescent (model)' },
-        };
-        const R1 = (l) => 0.12 + 0.55 * sigm((l - 565) / 26);
-        const n = metamerNull(day, v.M.nullspace);
-        let amax = 1; for (let l = 380; l <= 780; l += 2) { const r = R1(l), m = Math.abs(n(l)) || 1e-9; amax = Math.min(amax, n(l) > 0 ? (0.97 - r) / n(l) : (r - 0.02) / m); }
-        const sel = v.select('lamp', Object.entries(LAMP).map(([k, o]) => ({ value: k, label: o.label.replace(' (model)', '') })), 'day');
-        const mis = v.slider('mismatch strength', 0, 1, 1, { step: 0.01 });
-        const adapt = v.toggle('eye adapts to the lamp', false);
-        const A = v.stage({ x: [380, 780], y: [0, 1.05], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'reflectance', height: 300, weight: 1.4, title: 'two paints with different reflectance spectra' });
-        const Bst = v.stage({ x: [0, 4], y: [0, 2.4], axes: false, equal: true, height: 300, weight: 0.8, minWidth: 240, title: 'as seen under the lamp' });
-        let info = {};
-        v.render(() => {
-          const a = mis.value * amax, R2 = (l) => R1(l) + a * n(l), lamp = LAMP[sel.value];
-          A.fn(R1, { color: 'accent', width: 2, domain: [380, 780] });
-          A.fn(R2, { color: 'orange', width: 2, domain: [380, 780] });
-          let imax = 0; for (let l = 380; l <= 780; l += 4) imax = Math.max(imax, lamp.f(l));
-          A.fn((l) => (0.9 * lamp.f(l)) / imax, { color: 'muted', width: 1, dash: [4, 4], domain: [380, 780] });
-          const w = spdXYZ(lamp.f, 5), Yw = w[1];
-          const col = (R) => { let c = spdXYZ((l) => lamp.f(l) * R(l), 5).map((u) => u / Yw); if (adapt.value) c = adaptXYZ(c, w.map((u) => u / Yw)); return c; };
-          const c1 = col(R1), c2 = col(R2), pa = up(c1), pb = up(c2);
-          const rg = (c) => rgbOf(c.map((u) => u * 0.9));
-          Bst.rect(0.1, 0.1, 1.9, 2.3, { fill: rg(c1), stroke: false, fillAlpha: 1, radius: 8 });
-          Bst.rect(2.1, 0.1, 3.9, 2.3, { fill: rg(c2), stroke: false, fillAlpha: 1, radius: 8 });
-          Bst.text('paint 1', 1, 0.15, { size: 11, color: 'muted', align: 'center', baseline: 'bottom', plate: true });
-          Bst.text('paint 2', 3, 0.15, { size: 11, color: 'muted', align: 'center', baseline: 'bottom', plate: true });
-          info = { d: Math.hypot(pa[0] - pb[0], pa[1] - pb[1]) };
-        });
-        v.legend([['accent', 'paint 1'], ['orange', 'paint 2'], ['muted', 'lamp spectrum (dashed)']]);
-        v.readout(() => `distance of the two colours in the $u'v'$ plane under this lamp: $${v.sci(info.d, 2)}$${info.d < 0.002 ? ' (indistinguishable: a metameric match)' : info.d < 0.005 ? ' (barely distinguishable)' : ' (clearly different)'}\nunder model daylight the distance is $\\approx 0$ for every mismatch strength, although the spectra differ by up to ${v.fix(mis.value * amax, 2)} in reflectance`);
+      num:'4.3',kind:'Phenomenon',name:'Metamerism',
+      statement:String.raw`**Metamers** have different spectra but identical tristimulus values in a **specified colorimetric system**. For a fixed illuminant $I$ and observer functions $\bar c_k$, the reflectance response map is
+$$T_I(R)_k=\int_{380}^{780}IR\,\bar c_k\,d\lambda.$$
+The integrand functions are evaluated at $\lambda$. Physically admissible model reflectances are continuous functions with $0\le R\le1$. A nonzero $n$ in the kernel gives a distinct metamer $R+an$ only when that perturbation remains admissible. Uniformly interior reflectances admit small such perturbations; this does **not** hold for every boundary reflectance. Equality for $I_a$ need not imply equality for $I_b$, but changing the illuminant does not necessarily break every match (proportional illuminants have the same kernel).`,
+      idea:String.raw`Choose four continuous, disjoint triangular bumps. Their four response vectors in $\mathbb R^3$ are dependent by ladr-2.22, using the three standard basis vectors as a spanning list. Thus a nonzero combination of the bumps lies in the kernel. Disjoint supports ensure that combination is not the zero function. Normalize its coefficient absolute sum to at most $1$; then $|n(\lambda)|\le1$ at **every** wavelength. If $\delta\le R\le1-\delta$, any $|a|\le\delta$ gives an admissible perturbation. By contrast, black has no distinct nonnegative continuous metamer when $I\bar y$ is strictly positive: a zero integral then forces $R=0$.
+
+The reflected spectrum is the product $IR$ (art-3.2). This widget uses the Wyman–Sloan–Shirley CIE 1931 2° analytic fit. Its authored baseline obeys $0.12\le R_1\le0.67$, and $R_2=R_1+0.12tn$ with $0\le t\le1$, so globally $0\le R_2\le0.79$. A cofactor identity constructs a kernel vector for the **declared quadrature matrix**. The computed reference residual and its refined-quadrature check are numerical evidence, not an exact continuous-integral or empirical matching certificate.`,
+      caption:String.raw`Choose one of four authored illuminants and a continuous perturbation strength. The full curves remain admissible between sample points by the coefficient bound. Strength zero gives identical reflectances. In exact arithmetic, positive strength gives distinct reflectances; very small floating-point perturbations may round away. Inspect raw $XYZ$ before the optional **authored XYZ white-balance proxy**. The patches additionally use a common sRGB display mapping; screen similarity does not certify a metamer. The $u'v'$ number is only a chromaticity-coordinate distance, with no universal visibility cutoff.`,
+      deps:['art-3.2','ladr-2.22'],
+      refs:['CIE S 017:2020 e-ILV 17-23-006 and 17-23-008','Wyman, Sloan & Shirley (2013), §2.2, Eq.4, Table1, Listing1 and numerical-error discussion','Stockman & Rider (2023), §6'],
+      tags:['metamerism','spectrum'],verify: false,
+      scope:String.raw`Authored, continuous finite-band reflectances and lamp spectra, not measured paints or calibrated display matches. The 6504 K black body is a reference model, not measured daylight or CIE D65; 2856 K, LED and three-band spectra are separate models. Each lamp is normalized so that a unit reflectance has $Y=1$; raw XYZ means before white balance and display mapping. CIE 1931 fitted XYZ is distinct from the CIE 2006/XYZ_F observer in 4.1–4.2. Quadrature uses composite 8-point Gauss rules on intervals at most 5 nm, split at fit/bump corners; refinement uses 16 points and at most 2.5 nm. Refinement differences are not rigorous error bounds. No adaptation physiology or perceptual detection threshold is inferred.`,
+      links:{source:'https://jcgt.org/published/0002/02/01/',definition:'https://cie.co.at/eilvterm/17-23-006'},
+      viz(v){
+        const lamp=v.select('authored illuminant',METAMER_LAMPS.map(([value,label])=>({value,label})),'day');
+        const strength=v.slider('reflectance perturbation strength t',0,1,1,{step:'any',decimals:6,fmt:metamerNumber});
+        const balance=v.toggle('authored XYZ white-balance proxy',false);
+        const A=v.stage({x:[370,790],y:[-.06,1.08],axes:'box',gutter:true,xlabel:'wavelength (nm)',ylabel:'reflectance; lamp rescaled',height:320,minWidth:280,weight:1.3,title:'globally admissible reflectances'});
+        const F=v.stage({x:[-.1,2.1],y:[-.1,1.22],axes:false,height:230,minWidth:260,title:'sRGB display proxies; compare raw XYZ'});
+        let info;
+        v.render(()=>{info=metamerSurfaces(lamp.value,strength.value,balance.value);info.spectra.forEach((p,j)=>A.path(p,{color:j?'orange':'accent',width:2}));A.path(info.lamp,{color:'muted',width:1,dash:true});
+          info.display.colors.forEach((color,j)=>F.rect(j,0,j+1,1,{fill:color,fillAlpha:1,stroke:false}));F.text('surface 1',.5,1.10,{align:'center',size:11});F.text('surface 2',1.5,1.10,{align:'center',size:11});});
+        v.legend([['accent','reflectance 1'],['orange','reflectance 2'],['muted','lamp, rescaled',{dash:true}]]);
+        v.readout(()=>{const m=info,f=metamerNumber;return `Raw XYZ surface 1: (${m.raw[0].map(f).join(', ')}); surface 2: (${m.raw[1].map(f).join(', ')}).\nRelative raw XYZ residual ${m.relative.toExponential(3)}; raw chromaticity distance Δu′v′ ${m.uv===null?'undefined':m.uv.toExponential(3)}. These are numerical coordinates, not visibility thresholds.\nReference-illuminant relative residual ${m.referenceRelative.toExponential(3)}; refined check ${m.referenceRefinedRelative.toExponential(3)}. Maximum current-lamp quadrature/refinement difference ${m.refinement.toExponential(3)} (not an error enclosure).\nGlobal reflectance-2 bound [${m.bounds.map(f).join(', ')}]; coefficient absolute sum ≤1. ${m.strength===0?'Both reflectances are identical.':m.plottedDistinct?'The authored reflectances differ.':'Positive strength, but plotted differences round away at this precision.'}\n${m.balance?'Common authored gain diag(D65white / lampwhite) is applied to both raw triples; this is a display white-balance proxy, not validated eye adaptation.':'No white-balance proxy applied.'} Display exposure ${m.display.exposure}; common linear-RGB lift ${f(m.display.lift)}, divisor ${f(m.display.scale)}, then sRGB transfer and 8-bit rounding. Patches may hide or distort a numerical mismatch.`;});
       },
     },
     // ------------------------------------------------------------------ 4.4
     {
-      num: '4.4',
-      kind: 'Law',
-      name: 'Grassmann’s laws of colour mixture',
-      credit: 'Hermann Grassmann, 1853',
-      statement: String.raw`Write $A\sim B$ when two lights look identical in a matching field, and $A\oplus C$ for the light made by superposing $A$ and $C$. At fixed adaptation and moderate intensities, matching is compatible with mixing and scaling:
-(a) **proportionality:** if $A\sim B$ then $kA\sim kB$ for every $k>0$;
-(b) **additivity:** if $A\sim B$ then $A\oplus C\sim B\oplus C$ for every light $C$;
-(c) matching is symmetric and transitive, so it is an equivalence relation.
-Hence colours form a three-dimensional convex cone: a match is an equality of three linear functionals of the spectrum.`,
-      idea: String.raw`Absorbed photons add, so the cone responses $L,M,S$ of a superposition are the sums of the responses (art-4.1), and a match is equality of the triples. Proportionality and additivity then say that $(L,M,S)$ is linear in the light, which is true up to the nonlinearities of later vision (adaptation, saturation at high intensity). That linearity is what allows colour-matching functions (art-4.5) to be tabulated once and for all.`,
-      caption: String.raw`Two lights match: the left is a smooth spectrum, the right a different spectrum built to give the same $XYZ$. Choose an operation to apply: add the same light $C$ (a narrow band you can tune) to both halves, scale both, or the “unfair” variants that add or scale on one side only. The difference in $XYZ$ stays zero for the legal operations and becomes visible for the unfair ones.`,
-      deps: ['art-4.2', 'art-3.5'],
-      refs: ['Fairchild ch. 3'],
-      tags: ['Grassmann', 'linearity', 'colour mixing'],
-      scope: String.raw`Valid for lights in a small foveal field at constant adaptation; it fails at very high intensities (bleaching), for large or long-lasting fields, and wherever the eye’s state changes between the two fields. The numerical check uses the CIE 1931 fit; the spectra are models.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Grassmann%27s_laws_(color_science)' },
-      verify: true,
-      viz(v) {
-        const n = metamerNull(() => 1, v.M.nullspace);
-        const cen = v.slider('left light: bump centre (nm)', 450, 650, 560, { step: 1 });
-        const op = v.select('operation', [{ value: 'none', label: 'none' }, { value: 'addB', label: 'add $C$ to both' }, { value: 'scB', label: 'scale both' }, { value: 'addL', label: 'add $C$ to left only' }, { value: 'scL', label: 'scale left only' }], 'none');
-        const cl = v.slider('$C$: wavelength (nm)', 420, 680, 620, { step: 1 });
-        const ca = v.slider('$C$: amount', 0, 2, 0.6, { step: 0.01 });
-        const k = v.slider('scale factor $k$', 0.2, 3, 1.8, { step: 0.01 });
-        const A = v.stage({ x: [380, 780], y: [0, 3.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'power', height: 300, weight: 1.4, title: 'the two spectra after the operation' });
-        const Bst = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 300, weight: 0.8, minWidth: 240, title: 'matching field' });
-        let info = {};
-        v.render(() => {
-          const L0 = (l) => 0.5 + 0.5 * gauss(l, cen.value, 90), R0 = (l) => Math.max(0, L0(l) + 0.2 * n(l));
-          const C = (l) => ca.value * 2 * gauss(l, cl.value, 12);
-          const o = op.value;
-          const addL = o === 'addB' || o === 'addL', addR = o === 'addB', kl = o === 'scB' || o === 'scL' ? k.value : 1, kr = o === 'scB' ? k.value : 1;
-          [ca, cl].forEach((s) => { s.el.hidden = !(o === 'addB' || o === 'addL'); }); k.el.hidden = !(o === 'scB' || o === 'scL');
-          const Lf = (l) => kl * (L0(l) + (addL ? C(l) : 0)), Rf = (l) => kr * (R0(l) + (addR ? C(l) : 0));
-          A.fn(Lf, { color: 'accent', width: 2, domain: [380, 780] });
-          A.fn(Rf, { color: 'orange', width: 2, domain: [380, 780] });
-          const XL = spdXYZ(Lf, 5), XR = spdXYZ(Rf, 5), d = [0, 1, 2].map((i) => XL[i] - XR[i]);
-          const sc = 0.55 / (((XL[1] + XR[1]) / 2) || 1);
-          Bst.rect(0, 0, 1, 1, { fill: rgbOf(XL.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          Bst.rect(1, 0, 2, 1, { fill: rgbOf(XR.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          const pa = up(XL), pb = up(XR);
-          info = { rel: Math.hypot(...d) / Math.hypot(...XL), du: Math.hypot(pa[0] - pb[0], pa[1] - pb[1]), diff: Math.max(...[0, 1, 2].map((i) => { let m = 0; for (let l = 380; l <= 780; l += 4) m = Math.max(m, Math.abs(Lf(l) - Rf(l))); return m; })) };
-        });
-        v.legend([['accent', 'left light'], ['orange', 'right light']]);
-        v.readout(() => `largest difference between the two spectra: ${v.fix(info.diff, 2)} · relative difference of the $XYZ$ triples: $${v.sci(info.rel, 2)}$ · colour distance $\\Delta u'v'=${v.sci(info.du, 2)}$\n${info.rel < 1e-4 ? 'the halves still match: different spectra, same colour' : 'the match is broken'}`);
+      num:'4.4',kind:'Principle',name:'Grassmann’s laws in a linear colour model',
+      credit:'Modern linear-model exposition: Stockman & Rider (2023), §§6–7.',
+      statement:String.raw`Fix an observer and matching context, and let $T$ be the linear tristimulus map on spectra. Define model matching by $A\sim B$ exactly when $T(A)=T(B)$. Then matching is symmetric and transitive, and
+$$A\sim B\ \Longrightarrow\ kA\sim kB\quad(k\ge0),$$
+$$A\sim B\ \Longrightarrow\ A+C\sim B+C.$$
+Physical light spectra and $C$ are nonnegative; signed differences are algebraic comparisons, not negative light. The image of nonnegative spectra is a convex cone. Its span has dimension three **if the response map has rank three**, an independent assumption not implied by additivity or proportionality alone. These algebraic laws do not assert unrestricted colour-appearance equivalence.`,
+      idea:String.raw`Spectrum superposition and integration are linear (art-3.5). If $T(A-B)=0$, then $T(kA-kB)=kT(A-B)=0$ and $T((A+C)-(B+C))=T(A-B)=0$. Symmetry and transitivity follow from equality of triples. A one-dimensional response map satisfies the same identities, so three-dimensional matching requires separate independent responses; the laws alone cannot prove trichromacy.
+
+The baseline pair is constructed as in art-4.3, now with an equal-energy weighting and nonnegative light spectra. The same bounded perturbation is added without clipping: $L_0\ge0.5$, $|n|\le1$ and amplitude $0.2$ imply $R_0\ge0.3$. Adding $C$ to one side changes the difference by $T(C)$; scaling just the left gives $kT(L_0)-T(R_0)$. These operations preserve a match at the degenerate settings $C=0$ or $k=1$. Moreover one-sided scaling changes XYZ intensity while leaving chromaticity unchanged, so equality of $u'v'$ is insufficient for a tristimulus match.`,
+      caption:String.raw`Inspect the two authored nonnegative spectra, then apply any operation. Every parameter and complete curve stays within its declared domain. Common addition or scaling preserves the baseline quadrature match up to numerical residuals; unilateral operations have explicit difference formulas and degenerate settings. The split patches use a common display proxy; use the unmodified XYZ triples and their residual, not screen appearance or chromaticity alone.`,
+      deps:['art-4.3','art-3.5'],
+      refs:['Stockman & Rider (2023), complete §§6–7','Wyman, Sloan & Shirley (2013), §2.2/Eq.4/Table1/Listing1','W3C CSS Color4, sample XYZ(D65)/sRGB conversion code, 9 October 2026 snapshot'],
+      tags:['Grassmann','linearity','colour mixing'],verify: false,
+      scope:String.raw`Exact implications of a declared linear matching model, illustrated numerically with the same CIE 1931 analytic fit as 4.3. Symmetric photopic matching at fixed context is distinct from asymmetric/adapted appearance. Spectra are authored, not observations. The original Grassmann 1853 paper was not acquired or audited; no historical priority/year attribution is inferred here. All XYZ triples use one fixed equal-energy-$Y$ normalization, preserving linearity. Numerical quadrature and display mapping have the limits stated in 4.3.`,
+      links:{account:'https://doi.org/10.1002/col.22879',conversion:'https://www.w3.org/TR/css-color-4/#color-conversion-code'},
+      viz(v){
+        const center=v.slider('baseline Gaussian centre (nm)',450,650,560,{int:true});
+        const operation=v.select('operation',MIXTURE_OPS.map(([value,label])=>({value,label})),'none');
+        const wavelength=v.slider('added Gaussian centre (nm)',420,680,620,{int:true}),amount=v.slider('added density multiplier',0,2,.6,{step:'any',decimals:6,fmt:metamerNumber}),k=v.slider('scale factor k',.2,3,1.8,{step:'any',decimals:6,fmt:metamerNumber});
+        const A=v.stage({x:[370,790],y:[-.12,1.32],axes:'box',gutter:true,xlabel:'wavelength (nm)',ylabel:'relative spectral density',height:320,minWidth:280,weight:1.3,title:'complete spectra after the operation'});
+        const F=v.stage({x:[-.1,2.1],y:[-.1,1.22],axes:false,height:230,minWidth:260,title:'sRGB display proxies; compare raw XYZ'});
+        let info;
+        v.render(()=>{info=metamerMixture(center.value,operation.value,wavelength.value,amount.value,k.value);[wavelength,amount].forEach(c=>{c.el.hidden=!['addB','addL'].includes(operation.value);});k.el.hidden=!['scB','scL'].includes(operation.value);const top=info.bounds[1];A.setView([370,790],[-.08*top,1.12*top]);info.spectra.forEach((p,j)=>A.path(p,{color:j?'orange':'accent',width:2}));
+          info.display.colors.forEach((color,j)=>F.rect(j,0,j+1,1,{fill:color,fillAlpha:1,stroke:false}));F.text('left spectrum',.5,1.10,{align:'center',size:11});F.text('right spectrum',1.5,1.10,{align:'center',size:11});});
+        v.legend([['accent','left spectrum'],['orange','right spectrum']]);
+        v.readout(()=>{const m=info,f=metamerNumber;return `Raw XYZ left: (${m.raw[0].map(f).join(', ')}); right: (${m.raw[1].map(f).join(', ')}).\nDifference left − right: (${m.difference.map(f).join(', ')}); relative XYZ residual ${m.relative.toExponential(3)}. Chromaticity distance Δu′v′ ${m.uv===null?'undefined':m.uv.toExponential(3)} is not a full colour match test.\n${m.preserves?'This common or degenerate operation preserves the baseline linear-model identity; the remaining residual is numerical.':'A unilateral nondegenerate operation need not preserve the baseline identity; the displayed XYZ difference is the comparison.'} Maximum quadrature/refinement difference ${m.refinement.toExponential(3)} (not an enclosure).\nNonnegative-spectrum upper bound ${f(m.bounds[1])}; no negative-spectrum clipping. Display: common exposure ${m.display.exposure}, linear-RGB lift ${f(m.display.lift)}, divisor ${f(m.display.scale)}, sRGB transfer, 8-bit rounding. These patches are illustrative and can obscure differences.`;});
       },
     },
     // ------------------------------------------------------------------ 4.5
