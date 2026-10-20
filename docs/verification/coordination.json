@@ -1351,14 +1351,15 @@
   },
   "currentPendingSourceReviews": 6,
   "latestCheckpoint": {
-    "acceptedContentCommit": "e0f9fb5",
-    "report": "docs/verification/checkpoint-e0f9fb5.md",
-    "defaultTests": 2068,
+    "testedContentCommit": "817891138e17ab8cffcce3515b4c9b6145600bd6",
+    "acceptedContentCommit": "8178911",
+    "report": "docs/verification/checkpoint-8178911.md",
+    "defaultTests": 2079,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 109.415664375,
+    "testDurationSeconds": 136.059696791,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1369,11 +1370,11 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112704,
+    "homeGzipBytes": 112705,
     "pendingSourceReviews": 7,
-    "acceptedTeamEntries": 144,
-    "publishedCrossFieldShortfall": 822,
-    "publishedCollectionsBelowTarget": 49,
+    "acceptedTeamEntriesAtSnapshot": 144,
+    "publishedCrossFieldShortfall": 807,
+    "publishedCollectionsBelowTarget": 47,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
     "wave5Status": "prepared-unstarted",
@@ -1383,16 +1384,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint13-tests.log",
-      "/tmp/atlas-coordinator/checkpoint13-build.log",
-      "/tmp/atlas-coordinator/checkpoint13-static.log",
-      "/tmp/atlas-coordinator/checkpoint13-queue.log",
-      "/tmp/atlas-coordinator/checkpoint13-crossfield.log"
+      "/tmp/atlas-continuation/checkpoint1-build.log",
+      "/tmp/atlas-continuation/checkpoint1-tests.log",
+      "/tmp/atlas-continuation/checkpoint1-static.log",
+      "/tmp/atlas-continuation/checkpoint1-queue.log",
+      "/tmp/atlas-continuation/checkpoint1-crossfield-raw.log"
     ],
     "limitations": [
-      "Exact immutable acceptede0f9fb5 includes Toba/megafauna/ROBOT and FLUID/PHIL; later narrow-formula layout/MATHBIO/endosymbiosis drafts excluded.",
-      "Initial1aa4b8b stale pending-flag test assertion failed and is preserved separately; fresh full post-build2068pass follows test-only correction.",
-      "Source/prerequisite/full-map gates remain open; tests do not certify unread bodies."
+      "Tests precede later LOGIC closure flag/peer test and bridge35c129f; current sourcequeue6 is a later ledger reconciliation.",
+      "Code includes frozen/unacceptedBIGHIST3.5candidate; running default checks does not accept its source or prerequisite. Accepted crossfield807 excludes that single edge.",
+      "Initial archive ledger invocation used wronggitdir; setupfailure preserved, corrected actualgitdir ledger passes; fulltests not rerun for metadata."
     ]
   },
   "openStateFindings": [
@@ -1604,15 +1605,38 @@
       "publishedBefore": 18,
       "publishedAfter": 25,
       "corrections": "Rule70sign, relative rabbitmode, complex Jordan factors, sigmoid domains;3.14originalflag unchanged."
+    },
+    {
+      "commits": [
+        "e57c6a5758904c1f08f79c437a2be87a69924471",
+        "35c129fe8858163907402c5a559ddf7473b73a9a"
+      ],
+      "collection": "deep",
+      "items": [
+        "deep-3.1",
+        "deep-3.5",
+        "deep-4.2",
+        "deep-5.2",
+        "deep-5.5",
+        "deep-5.10",
+        "deep-5.12"
+      ],
+      "status": "accepted",
+      "producer": "previous worker_three",
+      "peer": "deep_peer",
+      "report": "docs/verification/deep-crossfield-prerequisites-peer.md",
+      "publishedBefore": 17,
+      "publishedAfter": 25,
+      "sourceClosure": "None; separate5.12label/runtime followups stay open."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 815,
-    "publishedBelow25": 48,
+    "publishedShortfall": 807,
+    "publishedBelow25": 47,
     "collections": 64,
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Exact98d3de0 accepts MATHBIO prerequisite/Gompertz prose; unaccepted3.5draft excluded via immutable archive"
+    "acceptedSnapshot": "DEEP exacte57c6a5 independently accepted, bridge35c129f separately endorsed; frozenBIGHIST3.5edge explicitly excluded."
   },
   "previousSessionWorkers": [
     {

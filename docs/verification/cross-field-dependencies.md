@@ -150,3 +150,10 @@ Six independently reviewed existing arguments now identify their actual written 
 ## Finite-window ancestry waiting times
 
 Independently accepted BIGHIST4.5 explicitly uses the actual written prob1.2.4 exponential density/mean/memorylessness argument for stationary Markov lengths and delayed-entry censoring. Chapter/syllabus match; the finite-window expected-count law is independently derived rather than treating selected complete lengths as iid exponentials. The current accepted global shortfall is833,51/64collections below25published and28whole syllabi below25. See [source/model acceptance](bighist-admixture-peer.md).
+
+
+## Deep learning reaches the published prerequisite target
+
+Exact `e57c6a5` adds eight independently reviewed genuine uses across seven written arguments: multivariable chain rule, matrix composition, symmetric spectral modes, variance, isometries, Pythagoras and norm homogeneity. DEEP now has25published/33known/55whole-syllabus edges. The touched stability bridge note is separately reviewed at `35c129f`. No source flag closes;5.12label and logarithmic-thumb findings remain separately tracked. See [independent review](deep-crossfield-prerequisites-peer.md).
+
+Current accepted global shortfall807,47/64collections below25published,28whole syllabi below25. The explicit frozen BIGHIST3.5candidate edge is excluded from this accepted inventory. Counts remain separate from prerequisite justification.
