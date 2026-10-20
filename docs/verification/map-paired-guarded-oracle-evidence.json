@@ -1,0 +1,244 @@
+{
+  "stage": "source/protocol/tiny only; full map NOT RUN",
+  "tinySourceCommit": "fbb406ab7fbaf66716ba1becb9d3acb26dafeea3",
+  "sourceSHA256": {
+    "scripts/lib/map-paired-atlas-observer.mjs": "5939ecaa3d90214b562298f3b5821362158d271f65fc779559f396a8bcfcf8ee",
+    "scripts/lib/map-paired-artifacts.mjs": "4cd9c89954e5ad3ea71acf8bf2f8cebb9ca59128ceb18ae741581ea3c9a5bcf7",
+    "scripts/lib/map-paired-guarded-fixture.mjs": "779c3eb39920d7aa4dbd5d5f395aaea724c0517b082b0a5f66912f4a462894d8",
+    "scripts/lib/map-paired-guarded-epoch.mjs": "f2fe8b031db6d96ad3bb91798dd5aa8f7bfe94be62f491237376490cb537d9f4",
+    "tests/map-paired-atlas-tiny.mjs": "c6f8a866d162fb44eebd982a9ba0a07212ad412476b822cb16f8ebaae2794249",
+    "tests/map-paired-atlas-model.mjs": "93039ff3570e7084489c544343a1169de73e30bf212d31e1679345b8d2551bd3",
+    "tests/map-paired-guarded-oracle.mjs": "bc24d937bb13598bc2b84f82d3d726a4ebfd31a75d80ae767ad73eb711f3401a",
+    "tests/map-paired-dom-difference.py": "9cd5939f3c7f0d36b464b563c9b19dceccf83a9bfe0a6be58aa6a2c36342530a"
+  },
+  "tinyFiles": [
+    {
+      "path": "/tmp/atlas-map-paired-tiny/01-read-state.json",
+      "bytes": 10608,
+      "sha256": "44dcaac023e2f097b3448f18cdc38a33b84ca5141f4c1d1d5525c93276519ecf"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/02-atlas-reset.json",
+      "bytes": 7001,
+      "sha256": "a4713a670c25090c24918501414ecd4c48903c7c03c199274afcdd0f1ce51809"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/03-comparisons.json",
+      "bytes": 1196,
+      "sha256": "5f51c444e77486020543ed83ae6cbf488679b24429abf97bc29789ba687aa630"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/all-tiny-comparisons.png",
+      "bytes": 8732,
+      "sha256": "1e661f78c09620878e17f695003457e14bf2cf2ace0a138a831d331ce7d87bf2"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/complete.json",
+      "bytes": 695,
+      "sha256": "72436c15f389d5ac96359e68ec42891b568a8ae05131e8933c9b6753e31b49a8"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/model.log",
+      "bytes": 86,
+      "sha256": "7bf3a16cec9dcf9c7aa86f3a9f3fdc802c61cd958c274ecf7b2d68572c0ba123"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/observed-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-0.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1-actual.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1-comparison.json",
+      "bytes": 376,
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1-diff.png",
+      "bytes": 510,
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1-diff.rgba",
+      "bytes": 131072,
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1-reference.png",
+      "bytes": 846,
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/plain-1.rgba",
+      "bytes": 131072,
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+    },
+    {
+      "path": "/tmp/atlas-map-paired-tiny/tiny-comparison-contact.png",
+      "bytes": 3149,
+      "sha256": "b0b78a9c3259e4e2a17abada172abfbdd2822544b3d0cc743d925279564e2fe0"
+    }
+  ],
+  "prepared": {
+    "description": "Prepared independently reset original/chunk guarded exact-state oracle; not run without later root authorization",
+    "hashes": {
+      "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+      "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+      "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+      "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+      "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+      "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+      "assets/js/map-scene-text.js": "fbd1cb00b5028d5e2897ff7e3b8384c37429285d51749be4d762b9be2253b8ed",
+      "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+      "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+      "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+      "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+      "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+      "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+      "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+      "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+      "scripts/lib/map-paired-atlas-observer.mjs": "5939ecaa3d90214b562298f3b5821362158d271f65fc779559f396a8bcfcf8ee",
+      "scripts/lib/map-paired-guarded-epoch.mjs": "f2fe8b031db6d96ad3bb91798dd5aa8f7bfe94be62f491237376490cb537d9f4",
+      "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+    },
+    "servedHashes": {
+      "original": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+        "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+        "assets/js/map-webgl-scene.js": "1f0a4f9846be15ad0921f8002c1a072193352b72467f217c2230181650834684",
+        "assets/js/map-scene-text.js": "de3544f787086bffea5e2c506b5a4631cfb8bdcf6510cd534c8f99e618f372ed",
+        "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+        "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+        "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "scripts/lib/map-paired-atlas-observer.mjs": "5939ecaa3d90214b562298f3b5821362158d271f65fc779559f396a8bcfcf8ee",
+        "scripts/lib/map-paired-guarded-epoch.mjs": "f2fe8b031db6d96ad3bb91798dd5aa8f7bfe94be62f491237376490cb537d9f4",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+      },
+      "chunk": {
+        "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+        "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+        "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+        "assets/js/graph.js": "b8ef140ce689aee1450088d88f35626a455e8f3e9de15d4cb662cf7bb5119a20",
+        "assets/js/map-scene-edges.js": "42a60184e729c08248f1860b1fe2b70904a2d1f2f69cc8bc81aa10cf45122804",
+        "assets/js/map-webgl-scene.js": "a579c3248504e2f85773c1b982c5633185ca28d208b36a6e3b3381c2092aa5ca",
+        "assets/js/map-scene-text.js": "de3544f787086bffea5e2c506b5a4631cfb8bdcf6510cd534c8f99e618f372ed",
+        "assets/js/map-scene-painter.js": "082ce9a34a86ad1d9e91d275174bc9d90cd47b2c22eeb4e1391318defbd9454d",
+        "assets/js/map-scene-gl.js": "b94855c4988e6c7d951d97ca9f2fa773d25ae828872ff6dee79cd42decdda4dc",
+        "assets/js/map-scene-model.js": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+        "assets/js/map-scene-worker.js": "d913af8f8baf5ea8a0a83d504332ceb4fdd17e58e48cc560c246e08ed8690009",
+        "assets/js/map-scene-decorations.js": "402fe1d8a452b3e91062539c8825bd1f6cb39fadb892ab05e3bb5d38ccd629aa",
+        "index.html": "1a0b532c169a635609ab0f8990604e082063b353701071832b356e0684906ecb",
+        "assets/css/style.css": "4a012b180e1b2a872cdb3ed010f7562cd2a5779ba7153384a0422b2f07783dd8",
+        "assets/vendor/google-fonts/fonts.css": "d7e4a43c00598ee3d0b5bee8b8effd558f49bf1e67fbd94bdcb792579f140ebb",
+        "scripts/lib/map-paired-atlas-observer.mjs": "5939ecaa3d90214b562298f3b5821362158d271f65fc779559f396a8bcfcf8ee",
+        "scripts/lib/map-paired-guarded-epoch.mjs": "f2fe8b031db6d96ad3bb91798dd5aa8f7bfe94be62f491237376490cb537d9f4",
+        "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+        "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1"
+      }
+    },
+    "viewport": {
+      "width": 3840,
+      "height": 2160,
+      "dpr": 2,
+      "theme": "light"
+    },
+    "expectedMap": {
+      "W": 3840,
+      "H": 2092,
+      "k": 0.8,
+      "tx": 1574.35,
+      "ty": -1071.0500000000002
+    },
+    "mainOrdinals": [
+      "A0",
+      "A1",
+      "A2",
+      "A3"
+    ],
+    "expectedLoaded": {
+      "nodes": 13574,
+      "edges": 23364
+    },
+    "logicalCap": 64000000,
+    "maskCap": 8000000,
+    "transportCap": 1048576
+  },
+  "allBrowsersClosed": true,
+  "noProductionChanges": true,
+  "fullMapRun": false,
+  "timing": false
+}
