@@ -1,7 +1,7 @@
 {
   "version": 1,
   "started": "2026-10-20",
-  "status": "active",
+  "status": "active-new-session-six-workers",
   "objective": "Clear verification backlog, satisfy wave gates, then author Wave 5. Prioritize speed and quality.",
   "baseCommit": "dad83c6",
   "originalCheckout": "/Users/teodev/Developer/theorems-visualizations",
@@ -13,79 +13,80 @@
     "wave5": "Prepared only until verification gates pass; do not relabel pending work as complete."
   },
   "coordinator": {
-    "worktree": "/Users/teodev/.codex/worktrees/atlas-coordinator/theorems-visualizations",
-    "branch": "codex/atlas-coordinator",
+    "worktree": "/Users/teodev/.codex/worktrees/8510/theorems-visualizations",
+    "branch": "codex/atlas-continuation",
     "owns": [
-      "MASTER_PLAN.md",
-      "docs/verification/waves-3-4*",
-      "docs/verification/coordination.json",
-      "shared runtime and integration inventories",
-      "Only music8.9\u20138.13 objects, isolated setclass files and corresponding syllabus rows",
-      "collection audit lanes: game and qchem",
-      "content/bighist/** and collection-specific audit helpers/tests/reports"
+      "Global inventories/queue/MASTER/coordination",
+      "Serial cherry-picks and acceptance records",
+      "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Serial integration and full immutable checkpoints",
-      "BIGHIST3.5actual-source/CDS-unit audit; Toba4.6/megafauna4.8accepted",
-      "PHIL metadata integration; hard original bodies/prerequisite/full-map gates remain open"
+      "Six actual workers started in separate managed worktrees from4b959d6",
+      "No acceptance claims before independent peer",
+      "IMAGING new PDF requires password; route stopped",
+      "BIGHIST3.5 frozen service restriction persists; no retry or edge acceptance"
     ]
   },
   "workers": [
     {
-      "agent": "worker_one",
-      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-one/theorems-visualizations",
-      "branch": "codex/atlas-worker-one",
-      "collection": "ling",
-      "owns": [
-        "content/ling/**",
-        "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
-      ],
+      "agent": "logic_peer",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ROBOT source/camera and PHIL peer complete; producing separate responsive equation-only correction for epi2.2/prob2.1.1a; hard original-body recovery paused.",
-      "completedCollections": [
-        "music",
-        "ling"
-      ]
+      "current": "Exact d2ca3ba immutable source/math/native peer",
+      "owns": [
+        "LOGIC4.12 unique peer report/tests only"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
     },
     {
-      "agent": "worker_two",
-      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
-      "branch": "codex/bighist-extinction",
-      "collection": "arch",
-      "owns": [
-        "content/arch/**",
-        "Only owned architecture syllabus rows, collection-specific reports/helpers/tests"
-      ],
+      "agent": "deep_peer",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "completedCollections": [
-        "psych",
-        "tech"
+      "current": "Exact e57c6a5 immutable prerequisite peer",
+      "owns": [
+        "DEEP unique peer report/tests only"
       ],
-      "current": "Megafauna4.8andToba4.6accepted; read-only new CIRC/MATHBIO original-body or authorized1936translation locators."
+      "peerReview": "Independent immutable peer before coordinator acceptance"
     },
     {
-      "agent": "worker_three",
-      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
-      "branch": "codex/atlas-energy-erratum",
-      "collection": "historical source stragglers",
-      "owns": [
-        "content/art/**",
-        "Only owned art syllabus rows, collection-specific reports/helpers/tests",
-        "Only assigned logic/mat/geol/mathbio/pharm/imaging/circ/energy/robot source-straggler objects, matching syllabus rows and unique helpers/tests/reports"
-      ],
+      "agent": "arch_source",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
-      "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ROBOT corrected-yaw peer accepted; PHIL candidate independently reviewed; producing genuine MATHBIOprerequisites with bounded argument corrections, preserving1936flag.",
-      "completedCollections": [
-        "soc",
-        "polsci"
-      ]
+      "current": "Actual Heyman original audit and bounded candidate",
+      "owns": [
+        "ARCH3.14 item/private helper/matching row/tests/reports"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "imaging_source",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
+      "status": "working",
+      "current": "IMAGING3.18 access-boundary evidence then local DEEP5.12 log repair",
+      "owns": [
+        "IMAGING3.18 report only; DEEP5.12 local item/helper/tests/reports"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "thermo_prereqs",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
+      "status": "working",
+      "current": "Genuine THERMO crossfield prerequisite production",
+      "owns": [
+        "THERMO items/matching syllabus rows/tests/reports"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
+    },
+    {
+      "agent": "ctrl_prereqs",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
+      "status": "working",
+      "current": "Genuine CTRL crossfield prerequisite production",
+      "owns": [
+        "CTRL items/matching syllabus rows/tests/reports"
+      ],
+      "peerReview": "Independent immutable peer before coordinator acceptance"
     }
   ],
   "acceptedBatches": [
@@ -331,7 +332,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1380,7 +1381,15 @@
       "Source/prerequisite/full-map gates remain open; tests do not certify unread bodies."
     ]
   },
-  "openStateFindings": [],
+  "openStateFindings": [
+    {
+      "id": "deep-5.12-log-thumb",
+      "status": "assigned",
+      "owner": "imaging_source",
+      "finding": "Saved/model eta=.002 differs from actual DOM log thumb; c=20 also snaps on inherited400tick grid.",
+      "scope": "Dedicated local synchronization; preserve exact physical model/replay and2sig nativeinput; no shared runtime change."
+    }
+  ],
   "stateFollowups": [
     {
       "ids": [
@@ -1590,5 +1599,72 @@
     "wholeSyllabusBelow25": 28,
     "date": "2026-10-20",
     "acceptedSnapshot": "Exact98d3de0 accepts MATHBIO prerequisite/Gompertz prose; unaccepted3.5draft excluded via immutable archive"
-  }
+  },
+  "previousSessionWorkers": [
+    {
+      "agent": "worker_one",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-one/theorems-visualizations",
+      "branch": "codex/atlas-worker-one",
+      "collection": "ling",
+      "owns": [
+        "content/ling/**",
+        "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
+        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "ROBOT source/camera and PHIL peer complete; producing separate responsive equation-only correction for epi2.2/prob2.1.1a; hard original-body recovery paused.",
+      "completedCollections": [
+        "music",
+        "ling"
+      ]
+    },
+    {
+      "agent": "worker_two",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
+      "branch": "codex/bighist-extinction",
+      "collection": "arch",
+      "owns": [
+        "content/arch/**",
+        "Only owned architecture syllabus rows, collection-specific reports/helpers/tests"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "completedCollections": [
+        "psych",
+        "tech"
+      ],
+      "current": "Megafauna4.8andToba4.6accepted; read-only new CIRC/MATHBIO original-body or authorized1936translation locators."
+    },
+    {
+      "agent": "worker_three",
+      "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-three/theorems-visualizations",
+      "branch": "codex/atlas-energy-erratum",
+      "collection": "historical source stragglers",
+      "owns": [
+        "content/art/**",
+        "Only owned art syllabus rows, collection-specific reports/helpers/tests",
+        "Only assigned logic/mat/geol/mathbio/pharm/imaging/circ/energy/robot source-straggler objects, matching syllabus rows and unique helpers/tests/reports"
+      ],
+      "status": "working",
+      "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
+      "peerReview": "Assigned by coordinator after a committed batch is ready",
+      "current": "ROBOT corrected-yaw peer accepted; PHIL candidate independently reviewed; producing genuine MATHBIOprerequisites with bounded argument corrections, preserving1936flag.",
+      "completedCollections": [
+        "soc",
+        "polsci"
+      ]
+    }
+  ],
+  "restrictedCandidates": [
+    {
+      "id": "bighist-3.5",
+      "candidate": "cb471bc",
+      "status": "frozen-unaccepted",
+      "reason": "Automated worker service rejected independent biology-content source peer; repeated prior attempts remain uncertified.",
+      "boundary": "Do not retry via agent/tool/reframing/new chat. verify flag remains true; one candidate edge excluded from accepted inventory."
+    }
+  ]
 }
