@@ -1,0 +1,33 @@
+# LING direct prerequisite producer: source/math boundary
+
+Accepted baseline `d4f67e50ec2f4571f6b31010531e69e341734a33` has byte-identical LING blobs in this private checkout before editing. There was no local alignment. This boundary appends20 direct inputs to17 written items and the corresponding full raw rows: actual different-field counts **5/6/19 →25/26/39** (written/written-known/whole syllabus). LING is humanities; existing MUSIC inputs are arts and remain counted correctly. No new arts link, global inventory write, source closure or flag update is made.
+
+All52 written consumer statements, proof ideas and scopes were read, including the actual declarations delegated to source-audit modules. All16 distinct target statements/proofs were read in the accepted root archive; the target snapshots retain their exact root file identities. Changes to prerequisite prose in actual owned source-audit item declarations were explicitly authorized by root. Every pre-existing literal paragraph, citation, helper/data/function/control byte and source flag is preserved by the whole-module guard.
+
+| Consumer | Added actual input | Direct mathematical step and limits |
+|---|---|---|
+|1.1|sig-3.9|Convolution acts on a harmonic by multiplying its eigenvalue; absolute integrability and a fixed LTI window are explicit.|
+|1.8|ode-3.13|Complete spatial harmonic sine/cosine basis, then mixed pressure boundaries give the odd-quarter-wave spectrum.|
+|1.10|pma-8.6|The log-product identity cancels a common positive speaker multiplier under centering; it does not remove arbitrary speaker differences.|
+|1.13|prob-2.1.13|Independent bounded label products in balanced label-only ABX, including random ties, yield the displayed prediction; this is a model premise.|
+|1.14|pma-4.16|A finite-energy sublevel in a compact feasible auditory region avoids collisions and admits an energy minimum; no numerical global-optimum certification.|
+|2.3|comb-1.1|Binary coordinate choices give2^n bundles; the widget's0 is not counted as a sign.|
+|2.4|logic-2.3|Actual feature-value predicates and conjunction semantics give the intersection test, with0 treated explicitly.|
+|2.6|comb-1.5|Distinct rules used once givek! sequences; sequence count is not distinct surface-output count.|
+|4.2|prob-2.1.13;comb-1.1|Independent symbol probability products and separate length-block string counts yield equal-probability plateaus and their envelope.|
+|4.3|prob-1.6.1|Innovation indicators give exactEV_N=1+alpha(N−1), independently of the separate tail approximation.|
+|4.4|prob-1.6.1|Finite iid occupancy indicators give the expected vocabulary sum and decreasing increments; finite vocabulary saturates and no universal Heaps exponent follows.|
+|4.5|algo-10.3|Swapping meaning assignments to fixed codewords safely decreases expected length for any probability/length inversion.|
+|4.6|ode-1.3;ladr-6.61|Separation gives the positive model solution; projection onto the three-column log-design span gives the squared-error fit, with full rank for unique coefficients.|
+|4.8|info-2.9;info-2.7|Contextwise rectangular-mixture concavity gives the lower expression; the rank relabelling and removing context give the upper expression. No empirical human histogram is certified.|
+|4.9|info-2.4|Conditional empirical cross-entropy equals the fixed test-token mean log loss, with infinite loss on zero support and no iid/rate-consistency claim.|
+|4.10|pma-8.6|Log-product law preserves ideal cue surprisal before the separate quadratic-cost calculation; no empirical UID proof.|
+|4.12|prob-1.6.13|Actual Poisson masses give the cancelling likelihood contrast under the declared conditional-independence model; no calibration or historical replication claim.|
+
+Target proof reading is substantive: LTI factorization substitutes the exponential directly; constant-coefficient completeness uses companion/Jordan solutions; exponential/log identities follow from the product series and inverse; independent expectations split factors; extrema use the compact continuous image; product/permutation counts use successive disjoint choices; truth evaluation recursively interprets conjunction; expectation is linearity of the integral; exchange requires a feasibility-preserving swap; separation integrates the nonzero positive branch; least distance uses the orthogonal Pythagorean decomposition; entropy concavity follows from convex divergence/log-sum, while the upper bound uses nonnegative mutual information; cross-entropy inserts the reference log probability; Poisson probabilities supply the factorial/exposure cancellation.
+
+The explicit guard passes all52 full objects and52 function sources, all136 complete syllabus rows and every52 written/raw dependency list. It checks complete expected bytes for all25 LING JavaScript modules, including all source-audit and shared modules, allowing only the exact manifest paragraph/dependency appends. Default math tests make no source-status assertions. Seventeen independent math groups pass, covering actual eigenintegrals, mixed boundaries, log centering, complete ABX outcome enumeration, compact-grid energy sublevels, feature sets, factorial orders, random typing blocks/probabilities, innovation/occupancy full enumerations, safe coding swaps, separated positive solutions, independent orthogonal fits, conditional entropy mixtures, fixed-test log loss, cue algebra and Poisson likelihoods. No production arithmetic is imported.
+
+Two unchosen inherited seams are reserved rather than used to manufacture links:3.7's universal productivity-ranking/conservative Good–Turing claim needs qualifications beyond a generic unseen-mass identity;2.13's statement should allow tied optimal candidates when the constraint vectors coincide. No chapter3 dependency or speculative Catalan/parse-tree link is added. The actual build/native text gates remain pending at this source/math boundary. Any required bounded text qualification and equivalent layout successor will be separate; runtime corrections require root scope first. No native LING job or map rerun has run here. Independent rotated acceptance is required before any credit or global update.
+
+Raw source/target archive and logs: `/tmp/atlas-ling-prerequisites`. Exact additions/declaration files and full raw dependency source spellings are recorded in `verification-ling-prerequisites-manifest.json`.

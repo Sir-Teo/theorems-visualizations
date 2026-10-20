@@ -1,0 +1,192 @@
+{
+  "1.1": {
+    "targets": [
+      "sig-3.9"
+    ],
+    "paragraph": "The harmonic-by-harmonic step uses the LTI eigenfunction calculation (sig 3.9): for an absolutely integrable impulse response $h$, inserting $e^{i\\omega t}$ in the convolution integral gives $e^{i\\omega t}\\int h(\\tau)e^{-i\\omega\\tau}\\,d\\tau$. Thus each harmonic retains its frequency and acquires the transfer factor at that frequency. Apply this to the tract and radiation filters over a fixed-shape window; it does not assert exact linearity or independence of the source and tract in actual speech.",
+    "file": "ch01.js",
+    "beforeDepsSource": "deps: ['music-4.10']",
+    "afterDepsSource": "deps: ['music-4.10', 'sig-3.9']",
+    "beforeRowDepsSource": "deps: ['music-4.10']",
+    "afterRowDepsSource": "deps: ['music-4.10', 'sig-3.9']"
+  },
+  "1.8": {
+    "targets": [
+      "ode-3.13"
+    ],
+    "paragraph": "For the stated lossless uniform tube, a harmonic pressure amplitude satisfies $P''+(\\omega/c)^2P=0$. The constant-coefficient solution theorem (ode 3.13) gives the complete pair $\\cos(\\omega x/c)$ and $\\sin(\\omega x/c)$ for $\\omega>0$. The closed-glottis condition is $P'(0)=0$, leaving only the cosine, while the open-lip condition $P(L)=0$ requires $\\omega L/c=(2n-1)\\pi/2$. Converting angular frequency to hertz yields the displayed odd-quarter-wave formula. This boundary calculation is for pressure, not the opposite node convention for volume velocity.",
+    "file": "ch01.js",
+    "beforeDepsSource": "deps: ['ling-1.7', 'music-3.3']",
+    "afterDepsSource": "deps: ['ling-1.7', 'music-3.3', 'ode-3.13']",
+    "beforeRowDepsSource": "deps: ['ling-1.7', 'music-3.3']",
+    "afterRowDepsSource": "deps: ['ling-1.7', 'music-3.3', 'ode-3.13']"
+  },
+  "1.10": {
+    "targets": [
+      "pma-8.6"
+    ],
+    "paragraph": "The logarithm law (pma 8.6) supplies the cancellation in log-mean normalisation. If all positive formant measurements $F_i$ are multiplied by one speaker factor $a>0$, then $\\log(aF_i)=\\log a+\\log F_i$ and their mean log shifts by the same $\\log a$. Subtraction therefore leaves every centred log coordinate unchanged. This exact invariance belongs to the common-multiplier model; unequal formant scaling, different vowel sampling and biological differences are not removed by that identity.",
+    "file": "ch01-b.js",
+    "beforeDepsSource": "deps: ['ling-1.9']",
+    "afterDepsSource": "deps: ['ling-1.9', 'pma-8.6']",
+    "beforeRowDepsSource": "deps: ['ling-1.9']",
+    "afterRowDepsSource": "deps: ['ling-1.9', 'pma-8.6']"
+  },
+  "1.13": {
+    "targets": [
+      "prob-2.1.13"
+    ],
+    "paragraph": "The label-only ABX prediction assumes fresh independent Bernoulli labels for A, B and X, with probabilities $p_A,p_B$ of the /p/ label, and balanced choices of whether X repeats A or B. When A and B receive the same label, the decision is a random tie; otherwise it matches X's label. Factoring products of these bounded independent label indicators (prob 2.1.13) and summing the eight label outcomes gives $\\tfrac12+\\tfrac12(p_A-p_B)^2$. Independence and the tie rule are premises of this prediction, not measured properties of a listener, so the formula is not a universal discrimination law.",
+    "file": "ch01-b.js",
+    "beforeDepsSource": "deps: ['ling-1.5']",
+    "afterDepsSource": "deps: ['ling-1.5', 'prob-2.1.13']",
+    "beforeRowDepsSource": "deps: ['ling-1.5']",
+    "afterRowDepsSource": "deps: ['ling-1.5', 'prob-2.1.13']"
+  },
+  "1.14": {
+    "targets": [
+      "pma-4.16"
+    ],
+    "paragraph": "The ideal energy minimisation has an existence argument distinct from finding it numerically. For $n\\ge2$ points in a compact auditory region containing $n$ distinct feasible points, choose one collision-free configuration with finite energy $E_0$. In its energy sublevel, every pair has distance at least $E_0^{-1/2}$, so that sublevel is compact and avoids collisions. The energy is continuous there; the extreme-value theorem (pma 4.16) gives a minimum, also global since every lower-energy configuration lies in this sublevel. This proves existence in the declared model, not that a numerical search certifies the global minimum or that real languages optimise this objective.",
+    "file": "ch01-b.js",
+    "beforeDepsSource": "deps: ['ling-1.9']",
+    "afterDepsSource": "deps: ['ling-1.9', 'pma-4.16']",
+    "beforeRowDepsSource": "deps: ['ling-1.9']",
+    "afterRowDepsSource": "deps: ['ling-1.9', 'pma-4.16']"
+  },
+  "2.3": {
+    "targets": [
+      "comb-1.1"
+    ],
+    "paragraph": "The binary capacity count uses the product rule (comb 1.1): for $n$ freely specifiable features with two values each, choosing one value at each coordinate gives exactly $2^n$ distinct bundles. An actual inventory occupies only some bundles because its features need not vary independently. The widget's value $0$ means unspecified or inapplicable; it is not silently counted as one of the two signs in that binary bound.",
+    "file": "ch02.js",
+    "beforeDepsSource": "deps: ['ling-2.1', 'ling-1.4']",
+    "afterDepsSource": "deps: ['ling-2.1', 'ling-1.4', 'comb-1.1']",
+    "beforeRowDepsSource": "deps: ['ling-2.1', 'ling-1.4']",
+    "afterRowDepsSource": "deps: ['ling-2.1', 'ling-1.4', 'comb-1.1']"
+  },
+  "2.4": {
+    "targets": [
+      "logic-2.3"
+    ],
+    "paragraph": "Make one predicate for each specified feature value, true of a segment exactly when that segment carries that value. Conjunction has the truth-table semantics of logic 2.3, so a bundle holds exactly when every selected predicate holds; its extension is therefore the intersection of their extensions. A $0$ entry is not automatically the negation of a positive feature value. This is a finite interpretation on the displayed inventory, and it licenses the intersection test without treating arbitrary subsets as single natural classes.",
+    "file": "ch02.js",
+    "beforeDepsSource": "deps: ['ling-2.3']",
+    "afterDepsSource": "deps: ['ling-2.3', 'logic-2.3']",
+    "beforeRowDepsSource": "deps: ['ling-2.3']",
+    "afterRowDepsSource": "deps: ['ling-2.3', 'logic-2.3']"
+  },
+  "2.6": {
+    "targets": [
+      "comb-1.5"
+    ],
+    "paragraph": "With $k$ distinct rules, an ordering uses each rule once. The permutation count (comb 1.5) gives $k(k-1)\\cdots1=k!$ possible sequences, because the next position has one fewer unused rule. Testing those sequences against the forms then selects the admissible orders. Different orders may produce identical outputs, so the factorial counts rule sequences, not distinct surface grammars or meanings.",
+    "file": "ch02-b.js",
+    "beforeDepsSource": "deps: ['ling-2.5']",
+    "afterDepsSource": "deps: ['ling-2.5', 'comb-1.5']",
+    "beforeRowDepsSource": "deps: ['ling-2.5']",
+    "afterRowDepsSource": "deps: ['ling-2.5', 'comb-1.5']"
+  },
+  "4.2": {
+    "targets": [
+      "prob-2.1.13",
+      "comb-1.1"
+    ],
+    "paragraph": "For $M\\ge2$ letters and $0<\\sigma<1$, independence makes the probability of a fixed $\\ell$-letter string followed by space the product $\\sigma[(1-\\sigma)/M]^\\ell$ (prob 2.1.13). Conditioning on a nonempty word divides by $1-\\sigma$, giving the displayed word probability. Separately, the product rule (comb 1.1) counts $M^\\ell$ different strings of that length, and the sum rule accumulates their rank blocks over lengths. These are distinct steps: equal within-length probabilities create plateaus, while the exponentially growing block counts produce the power-law envelope, rather than an exact smooth equality at every rank.",
+    "file": "ch04.js",
+    "beforeDepsSource": "deps: ['ling-4.1']",
+    "afterDepsSource": "deps: ['ling-4.1', 'prob-2.1.13', 'comb-1.1']",
+    "beforeRowDepsSource": "deps: ['ling-4.1']",
+    "afterRowDepsSource": "deps: ['ling-4.1', 'prob-2.1.13', 'comb-1.1']"
+  },
+  "4.3": {
+    "targets": [
+      "prob-1.6.1"
+    ],
+    "paragraph": "Let $I_j$ indicate an innovation at token $j$. The first token is new, while every subsequent innovation has probability $\\alpha$ in this model. Since $V_N=1+\\sum_{j=2}^N I_j$, linearity of expectation (prob 1.6.1) gives the exact identity $E V_N=1+\\alpha(N-1)$ without any assumption about dependence between different indicators. The statement's $\\alpha N$ is its large-$N$ form; this calculation does not establish the separate rank-frequency tail approximation or describe topic-dependent real text.",
+    "file": "ch04.js",
+    "beforeDepsSource": "deps: ['ling-4.1']",
+    "afterDepsSource": "deps: ['ling-4.1', 'prob-1.6.1']",
+    "beforeRowDepsSource": "deps: ['ling-4.1']",
+    "afterRowDepsSource": "deps: ['ling-4.1', 'prob-1.6.1']"
+  },
+  "4.4": {
+    "targets": [
+      "prob-1.6.1"
+    ],
+    "paragraph": "In a finite fixed-vocabulary sampling model, write the observed vocabulary as the sum of indicators that each type has appeared. Linearity of expectation (prob 1.6.1) gives $E V_N=\\sum_j[1-(1-p_j)^N]$ for independent tokens with type probabilities $p_j$. Thus common types saturate early and progressively rarer types contribute later, making the expected increments decrease. This is an explicit sampling calculation underlying the explanation, not a proof of a universal Heaps exponent: a finite vocabulary ultimately saturates, and correlated or changing text need not follow this model.",
+    "file": "ch04.js",
+    "beforeDepsSource": "deps: ['ling-4.1']",
+    "afterDepsSource": "deps: ['ling-4.1', 'prob-1.6.1']",
+    "beforeRowDepsSource": "deps: ['ling-4.1']",
+    "afterRowDepsSource": "deps: ['ling-4.1', 'prob-1.6.1']"
+  },
+  "4.5": {
+    "targets": [
+      "algo-10.3"
+    ],
+    "paragraph": "The coding argument uses a safe exchange (algo 10.3). Hold a finite set of distinct codewords and their positive length costs fixed. If $p_i>p_j$ but $\\ell_i>\\ell_j$, swapping their meanings preserves every codeword and any prefix-free property, while changing expected cost by $-(p_i-p_j)(\\ell_i-\\ell_j)<0$. Repeating removes such inversions. This explains why a cost-minimising assignment pairs larger probabilities with shorter forms under these assumptions; it neither derives actual lexicons nor proves that every observed frequency-length correlation has this cause.",
+    "file": "ch04.js",
+    "beforeDepsSource": "deps: ['ling-4.1']",
+    "afterDepsSource": "deps: ['ling-4.1', 'algo-10.3']",
+    "beforeRowDepsSource": "deps: ['ling-4.1']",
+    "afterRowDepsSource": "deps: ['ling-4.1', 'algo-10.3']"
+  },
+  "4.6": {
+    "targets": [
+      "ode-1.3",
+      "ladr-6.61"
+    ],
+    "paragraph": "The two mathematical steps are separate. On $x>0$ with $y>0$, separation of variables (ode 1.3) integrates $y'/y=b/x-c$ to $\\log y=\\log A+b\\log x-cx$, with $A>0$. For the equal-group log fit, the observed vector $(\\log y_i)$ is approximated in the span of the three columns $1$, $\\log x_i$, and $-x_i$. Orthogonal projection minimises squared Euclidean distance to that span (ladr 6.61), giving the normal equations used here. Unique coefficients additionally require full column rank, which the helper checks; neither an exact model solution nor a least-squares optimum establishes a universal linguistic mechanism.",
+    "file": "source-audit-menzerath.js",
+    "beforeDepsSource": "deps:['ling-4.5']",
+    "afterDepsSource": "deps:['ling-4.5', 'ode-1.3', 'ladr-6.61']",
+    "beforeRowDepsSource": "deps: ['ling-4.5']",
+    "afterRowDepsSource": "deps: ['ling-4.5', 'ode-1.3', 'ladr-6.61']"
+  },
+  "4.8": {
+    "targets": [
+      "info-2.9",
+      "info-2.7"
+    ],
+    "paragraph": "For each known finite context $h$, sort its conditional symbol probabilities $p_i^{(h)}$ and set $p_{28}^{(h)}=0$. The weights $i(p_i^{(h)}-p_{i+1}^{(h)})$ express that sorted distribution as a mixture of uniforms on the first $i$ ranks. Entropy concavity (info 2.9), applied within each context and then averaged, yields the lower expression using the marginal rank probabilities $q_i$. The rank is a bijective relabelling of symbols when $h$ is known, so its conditional entropy equals $F$. Conditioning reduces entropy on average (info 2.7), giving $F\\le H(\\text{rank})=U$. The two inequalities require different steps; neither makes a nonideal empirical guessing histogram a certified bound.",
+    "file": "source-audit-shannon.js",
+    "beforeDepsSource": "deps:['ling-4.7','info-1.2']",
+    "afterDepsSource": "deps:['ling-4.7','info-1.2', 'info-2.9', 'info-2.7']",
+    "beforeRowDepsSource": "deps: ['ling-4.7', 'info-1.2']",
+    "afterRowDepsSource": "deps: ['ling-4.7', 'info-1.2', 'info-2.9', 'info-2.7']"
+  },
+  "4.9": {
+    "targets": [
+      "info-2.4"
+    ],
+    "paragraph": "Choose a test-token position uniformly and let its context/next-word pair be the outcome. Within each observed context, cross-entropy (info 2.4) averages $-\\log_2 q(w\\mid h)$ under the empirical next-word distribution; averaging these conditional losses by the empirical context frequencies is exactly the displayed mean token log loss. Its exponential is perplexity. Any observed continuation with $q=0$ makes this loss and perplexity infinite. This finite test-set identity assumes neither independent test tokens nor convergence to a natural-language entropy rate, and it gives no guarantee that a higher-order model improves prediction.",
+    "file": "source-audit-language-models.js",
+    "beforeDepsSource": "deps:['ling-4.8']",
+    "afterDepsSource": "deps:['ling-4.8', 'info-2.4']",
+    "beforeRowDepsSource": "deps: ['ling-4.8']",
+    "afterRowDepsSource": "deps: ['ling-4.8', 'info-2.4']"
+  },
+  "4.10": {
+    "targets": [
+      "pma-8.6"
+    ],
+    "paragraph": "For the authored ideal cue model, $0<c,q\\le1$ makes the logarithm product law (pma 8.6) applicable: $-\\log_2(cq)=-\\log_2 c-\\log_2 q$. Thus marking redistributes a fixed combined surprisal between the two units. The quadratic-cost saving then follows by expanding $(a+b)^2-a^2-b^2=2ab$ for $a=-\\log_2c$, $b=-\\log_2q$. This is the declared cue/cost calculation, not a proof of the empirical UID hypothesis or of a production benefit once extra-word costs are included.",
+    "file": "source-audit-language-models.js",
+    "beforeDepsSource": "deps:['ling-4.9']",
+    "afterDepsSource": "deps:['ling-4.9', 'pma-8.6']",
+    "beforeRowDepsSource": "deps: ['ling-4.9']",
+    "afterRowDepsSource": "deps: ['ling-4.9', 'pma-8.6']"
+  },
+  "4.12": {
+    "targets": [
+      "prob-1.6.13"
+    ],
+    "paragraph": "The displayed score starts from the Poisson probability mass function (prob 1.6.13). For $N>0$ and a positive candidate rate $\\rho_w$, the model probability of count $c_w$ is $e^{-N\\rho_w}(N\\rho_w)^{c_w}/c_w!$. Subtracting candidate log probabilities cancels $c_w!$ and $N^{c_w}$ and gives the stated per-word contrast. The assumed conditional independence then permits summing these contrasts. This verifies the plug-in likelihood formula; it does not validate independence, resolve rate uncertainty, reproduce the historical article's full Bayesian model or calibrate extreme odds.",
+    "file": "source-audit-stylometry.js",
+    "beforeDepsSource": "deps:['ling-4.1']",
+    "afterDepsSource": "deps:['ling-4.1', 'prob-1.6.13']",
+    "beforeRowDepsSource": "deps: ['ling-4.1']",
+    "afterRowDepsSource": "deps: ['ling-4.1', 'prob-1.6.13']"
+  }
+}

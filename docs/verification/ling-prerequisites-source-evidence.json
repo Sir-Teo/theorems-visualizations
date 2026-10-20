@@ -1,0 +1,1098 @@
+{
+  "acceptedRoot": "d4f67e50ec2f4571f6b31010531e69e341734a33",
+  "scope": "prerequisite-only source/math; native/build pending",
+  "inventory": {
+    "before": {
+      "collection": "ling",
+      "field": "humanities",
+      "target": 25,
+      "writtenToWritten": 5,
+      "writtenToKnown": 6,
+      "wholeSyllabus": 19,
+      "publishedShortfall": 20,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "ling-1.11",
+          "prerequisite": "sig-8.13",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-1.1",
+          "prerequisite": "music-4.10",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.7",
+          "prerequisite": "music-4.9",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.8",
+          "prerequisite": "music-3.3",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.8",
+          "prerequisite": "info-1.2",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.14",
+          "prerequisite": "info-1.2",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-5.3",
+          "prerequisite": "toc-5.1",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.6",
+          "prerequisite": "toc-6.1",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.8",
+          "prerequisite": "toc-7.12",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.9",
+          "prerequisite": "toc-6.6",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.15",
+          "prerequisite": "toc-5.9",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.16",
+          "prerequisite": "stoch-1.12",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-6.3",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-6.12",
+          "prerequisite": "art-5.3",
+          "prerequisiteField": "arts",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-9.5",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.5",
+          "prerequisite": "popgen-3.9",
+          "prerequisiteField": "bio",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.7",
+          "prerequisite": "stat-10.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-9.12",
+          "prerequisite": "geol-2.6",
+          "prerequisiteField": "earth",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.13",
+          "prerequisite": "bioinf-6.6",
+          "prerequisiteField": "bio",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    },
+    "after": {
+      "collection": "ling",
+      "field": "humanities",
+      "target": 25,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 39,
+      "publishedShortfall": 0,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "ling-1.10",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.11",
+          "prerequisite": "sig-8.13",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-1.13",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.14",
+          "prerequisite": "pma-4.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.1",
+          "prerequisite": "music-4.10",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.1",
+          "prerequisite": "sig-3.9",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.7",
+          "prerequisite": "music-4.9",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.8",
+          "prerequisite": "music-3.3",
+          "prerequisiteField": "arts",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-1.8",
+          "prerequisite": "ode-3.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-2.6",
+          "prerequisite": "comb-1.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-2.3",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-2.4",
+          "prerequisite": "logic-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.6",
+          "prerequisite": "ode-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.6",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.8",
+          "prerequisite": "info-1.2",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.8",
+          "prerequisite": "info-2.9",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.8",
+          "prerequisite": "info-2.7",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.9",
+          "prerequisite": "info-2.4",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.10",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.12",
+          "prerequisite": "prob-1.6.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.14",
+          "prerequisite": "info-1.2",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.2",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.2",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.3",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-4.5",
+          "prerequisite": "algo-10.3",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-5.3",
+          "prerequisite": "toc-5.1",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.6",
+          "prerequisite": "toc-6.1",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.8",
+          "prerequisite": "toc-7.12",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.9",
+          "prerequisite": "toc-6.6",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.15",
+          "prerequisite": "toc-5.9",
+          "prerequisiteField": "cs",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-5.16",
+          "prerequisite": "stoch-1.12",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-6.3",
+          "prerequisite": "logic-3.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-6.12",
+          "prerequisite": "art-5.3",
+          "prerequisiteField": "arts",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-9.5",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.5",
+          "prerequisite": "popgen-3.9",
+          "prerequisiteField": "bio",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.7",
+          "prerequisite": "stat-10.1",
+          "prerequisiteField": "stats",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "ling-9.12",
+          "prerequisite": "geol-2.6",
+          "prerequisiteField": "earth",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "ling-9.13",
+          "prerequisite": "bioinf-6.6",
+          "prerequisiteField": "bio",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    }
+  },
+  "preservation": "{\"pass\":true,\"objects\":52,\"functions\":52,\"syllabusRows\":136,\"completeJSModules\":25,\"newEdges\":20,\"changedConsumers\":17,\"fullRawLists\":52}\n",
+  "math": "\u2714 LTI exponential eigenaction from an independent exponential impulse integral (24.121917ms)\n\u2714 complete sine/cosine pressure solutions yield odd quarter waves under mixed endpoint conditions (0.416208ms)\n\u2714 common positive formant multiplication cancels exactly in centered log coordinates (0.362917ms)\n\u2714 independent label-only ABX enumeration includes random same-label ties (0.445834ms)\n\u2714 finite dispersion sublevels avoid collision and compact-grid minima satisfy the actual energy bound (0.901875ms)\n\u2714 binary feature product counts and conjunction extension with unspecified values (9.397458ms)\n\u2714 distinct rule sequences have factorial count even with identical surface outputs (5.052791ms)\n\u2714 random typing separately factors letter probabilities and counts exact rank blocks (0.7385ms)\n\u2714 Simon innovations have exact finite expected vocabulary without a tail-law assumption (0.274958ms)\n\u2714 finite iid occupancy expectation matches full enumeration and eventually saturates (0.418ms)\n\u2714 safe codeword swaps preserve feasibility and decrease cost for every frequency-length inversion (0.258292ms)\n\u2714 positive Menzerath solutions satisfy the separated ODE for unrestricted coefficient signs (0.176167ms)\n\u2714 independent orthogonal projection satisfies all log-fit normal equations and least-squares inequality (0.165166ms)\n\u2714 contextwise rectangular mixtures give lower entropy and removing context gives the upper bound (0.149125ms)\n\u2714 conditional empirical cross-entropy equals token loss/perplexity and zero support is infinite (0.106625ms)\n\u2714 UID ideal cue preserves log surprisal and quadratic saving can lose to extra-word cost (0.064208ms)\n\u2714 Poisson likelihood ratios cancel factorial/exposure and add only under the declared model (0.401167ms)\n\u2139 tests 17\n\u2139 suites 0\n\u2139 pass 17\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 105.325833\n",
+  "targetStatementsAndProofs": [
+    {
+      "id": "sig-3.9",
+      "file": "content/sig/ch03-b.js",
+      "name": "Complex exponentials are eigenfunctions of LTI systems",
+      "statement": "Let an LTI system have a (causal, for definiteness) impulse response $h$, and let $s\\in\\C$ be a number for which $H(s)=\\int_{-\\infty}^{\\infty}h(\\tau)e^{-s\\tau}\\,d\\tau$ converges absolutely. Then the input $x(t)=e^{st}$, applied for all time, produces the output\n$$y(t)=H(s)\\,e^{st},$$\nthe same exponential multiplied by the complex number $H(s)$. In discrete time, $x[n]=z^n$ gives $y[n]=H(z)z^n$ with $H(z)=\\sum_k h[k]z^{-k}$. If the exponential is only switched on at $t=0$, the output approaches $H(s)e^{st}$ as the transient dies out, provided $h$ decays.",
+      "idea": "Plug the exponential into the convolution integral (sig-3.2): $y(t)=\\int h(\\tau)e^{s(t-\\tau)}d\\tau=e^{st}\\int h(\\tau)e^{-s\\tau}d\\tau$, and the second factor does not depend on $t$. So $e^{st}$ is an eigenfunction of every LTI system, with eigenvalue $H(s)$, just as an eigenvector of a matrix is only scaled. Time invariance does the work: shifting the input by $\\tau$ multiplies $e^{st}$ by the constant $e^{-s\\tau}$. With $s=j\\omega$ (the sinusoids of sig-1.5) the eigenvalue $H(j\\omega)$ is the frequency response (sig-3.10), and expanding signals in exponentials turns convolution into multiplication, the core idea of Fourier analysis."
+    },
+    {
+      "id": "ode-3.13",
+      "file": "content/ode/ch03-b.js",
+      "name": "Order-n linear equations and the characteristic polynomial",
+      "statement": "Consider $y^{(n)}+a_{n-1}y^{(n-1)}+\\dots+a_1y'+a_0y=0$ with constant coefficients and characteristic polynomial $p(\\lambda)=\\lambda^n+a_{n-1}\\lambda^{n-1}+\\dots+a_0$. It is equivalent to the first-order system $\\dot x=Cx$ for $x=(y,y',\\dots,y^{(n-1)})$ with the companion matrix $C$, whose characteristic polynomial is $p$. If $p=\\prod_k(\\lambda-\\lambda_k)^{m_k}$, then the $n$ functions\n$$t^{j}e^{\\lambda_kt}\\quad(0\\le j<m_k)$$\nform a basis of the (complex) solutions; for a real equation a complex pair $\\alpha\\pm i\\beta$ of multiplicity $m$ contributes the real functions $t^je^{\\alpha t}\\cos\\beta t$ and $t^je^{\\alpha t}\\sin\\beta t$, $j<m$.",
+      "idea": "The companion matrix has a single eigenvector $(1,\\lambda,\\dots,\\lambda^{n-1})$ for each root, so each root has exactly one Jordan block of size equal to its multiplicity; 3.7 then gives the solutions $t^je^{\\lambda t}$ for $y$ itself. Directly: writing $D=d/dt$, the equation is $p(D)y=0$, and $(D-\\lambda)^m$ kills $t^je^{\\lambda t}$ for $j<m$ because $(D-\\lambda)(t^je^{\\lambda t})=jt^{j-1}e^{\\lambda t}$. The $n$ functions are independent (the Wronskian is non-zero at $0$, 3.10)."
+    },
+    {
+      "id": "pma-8.6",
+      "file": "content/pma/ch08-a2.js",
+      "name": "Properties of the exponential function",
+      "statement": "Define $E(z)=\\sum_{n=0}^{\\infty} z^n/n!$ for complex $z$; the series converges absolutely for every $z$, and $E(z+w)=E(z)E(w)$. For real $x$ write $e^x=E(x)$ (this agrees with $e=E(1)$ and with rational powers of $e$). Then:\n(a) $e^x$ is continuous and differentiable on $\\R$;\n(b) $(e^x)'=e^x$;\n(c) $e^x$ is strictly increasing and positive;\n(d) $e^{x+y}=e^xe^y$;\n(e) $e^x\\to+\\infty$ as $x\\to+\\infty$ and $e^x\\to0$ as $x\\to-\\infty$;\n(f) $\\lim_{x\\to+\\infty}x^ne^{-x}=0$ for every $n$.\n\nConsequently $e^x$ has an inverse $\\log:(0,\\infty)\\to\\R$, with $(\\log y)'=1/y$ and $\\log(uv)=\\log u+\\log v$; it is used to define $x^\\alpha=e^{\\alpha\\log x}$ for $x>0$.",
+      "idea": "Absolute convergence (ratio test) and Mertens' theorem on Cauchy products (3.50) give the addition formula $E(z)E(w)=E(z+w)$ by the binomial theorem. Then $\\frac{E(z+h)-E(z)}{h}=E(z)\\frac{E(h)-1}{h}\\to E(z)$, which is (a) and (b). For $x>0$ every term is positive, so $E(x)>1$; with $E(x)E(-x)=1$ this gives (c) and (e). Finally $e^x>\\frac{x^{n+1}}{(n+1)!}$ for $x>0$, so $0<x^ne^{-x}<\\frac{(n+1)!}{x}\\to0$, which is (f)."
+    },
+    {
+      "id": "prob-2.1.13",
+      "file": "content/prob/ch02.js",
+      "name": "Expectations of independent products factor",
+      "statement": "If $X_1,\\dots,X_n$ are independent and either (a) $X_i\\ge0$ for all $i$, or (b) $E|X_i|<\\infty$ for all $i$, then the expectation of the product exists and\n$$E\\Bigl(\\prod_{i=1}^nX_i\\Bigr)=\\prod_{i=1}^nEX_i.$$\nThe converse fails: $E(XY)=EX\\,EY$ (uncorrelated variables) does not imply independence.",
+      "idea": "By Theorem 2.1.10, $X_1$ and $X_2\\cdots X_n$ are independent. Theorem 2.1.12 with $f=g=|\\cdot|$ gives $E|X_1\\cdots X_n|=E|X_1|\\,E|X_2\\cdots X_n|$, and induction shows this is $\\prod_iE|X_i|<\\infty$. Then Theorem 2.1.12 with $f(x)=x$, $g(y)=y$ splits off one factor at a time. For the converse, a symmetric table with $XY\\equiv0$ has $E(XY)=0=EX\\,EY$ but $P(X=1,Y=1)=0<P(X=1)P(Y=1)$."
+    },
+    {
+      "id": "pma-4.16",
+      "file": "content/pma/ch04-a2.js",
+      "name": "Extreme value theorem",
+      "statement": "Let $f$ be a continuous real function on a compact metric space $X$, and put $M=\\sup_{p\\in X}f(p)$, $m=\\inf_{p\\in X}f(p)$. Then there are points $p,q\\in X$ with $f(p)=M$ and $f(q)=m$; that is, $f(q)\\le f(x)\\le f(p)$ for all $x\\in X$.",
+      "idea": "By 4.15 the set $f(X)\\subset\\R$ is closed and bounded, so its supremum and infimum exist and \u2014 being limit points of a closed set, or members of it \u2014 belong to $f(X)$ (2.28). Hence $M=f(p)$ and $m=f(q)$ for some $p,q\\in X$."
+    },
+    {
+      "id": "comb-1.1",
+      "file": "content/comb/ch01.js",
+      "name": "Sum and product rules",
+      "statement": "**Sum rule.** If a finite set $A$ is the union of pairwise disjoint subsets $A_1,\\dots,A_m$, then $|A| = |A_1| + \\cdots + |A_m|$.\n\n**Product rule.** Suppose every object of a set $A$ is produced by a sequence of $k$ choices, different sequences giving different objects, where the first choice can be made in $n_1$ ways and, whatever the earlier choices were, the $i$-th choice can be made in $n_i$ ways. Then $|A| = n_1 n_2 \\cdots n_k$. In particular $|A_1\\times\\cdots\\times A_k| = |A_1|\\cdots|A_k|$.",
+      "idea": "The sum rule is what counting means: count the pieces one at a time. The product rule is the sum rule used repeatedly: sorting the objects by their first choice splits $A$ into $n_1$ disjoint classes, each produced by the remaining $k-1$ choices and so, by induction, of size $n_2\\cdots n_k$. Only the *number* of options at each stage has to be independent of the earlier choices, not the options themselves \u2014 which is exactly what makes the falling factorials of 1.5 work."
+    },
+    {
+      "id": "logic-2.3",
+      "file": "content/logic/ch02.js",
+      "name": "Truth assignments and truth tables",
+      "statement": "A **truth assignment** for a set $S$ of sentence letters is a function $v : S \\to \\{T, F\\}$. By recursion on formulas (logic-2.2) it extends uniquely to $\\bar v$ on all formulas built from $S$:\n$$\\bar v(\\neg\\alpha)=T \\iff \\bar v(\\alpha)=F,\\qquad \\bar v(\\alpha\\land\\beta)=T \\iff \\bar v(\\alpha)=\\bar v(\\beta)=T,$$\n$$\\bar v(\\alpha\\lor\\beta)=F \\iff \\bar v(\\alpha)=\\bar v(\\beta)=F,\\qquad \\bar v(\\alpha\\to\\beta)=F \\iff \\bar v(\\alpha)=T,\\ \\bar v(\\beta)=F,$$\nand $\\bar v(\\alpha\\leftrightarrow\\beta)=T \\iff \\bar v(\\alpha)=\\bar v(\\beta)$. The value of $\\varphi$ depends only on the letters occurring in $\\varphi$. A formula with $n$ letters therefore has $2^n$ relevant assignments, and listing them with the values of every subformula gives its **truth table**.",
+      "idea": "Unique readability makes the recursion well defined (logic-2.1, logic-2.2): each node of the parse tree computes its value from its children's values. Changing a letter that does not occur in $\\varphi$ changes no node of $\\varphi$'s tree, which is why only $2^n$ rows matter."
+    },
+    {
+      "id": "comb-1.5",
+      "file": "content/comb/ch01.js",
+      "name": "Permutations and falling factorials",
+      "statement": "A **$k$-permutation** of an $n$-element set is a sequence of $k$ distinct elements of it \u2014 equivalently an injective map $\\{1,\\dots,k\\}\\to[n]$. Their number is the **falling factorial**\n$$n^{\\underline k} = n(n-1)\\cdots(n-k+1) = \\frac{n!}{(n-k)!}\\qquad (0\\le k\\le n),$$\nwith $n^{\\underline 0} = 1$ and $n^{\\underline k} = 0$ for $k>n$. The case $k=n$ counts the $n!$ **permutations** (orderings) of the set.",
+      "idea": "Fill seat 1, then seat 2, and so on. Seat $i$ can take any of the $n-i+1$ people not yet seated. *Which* people are left depends on the earlier choices, but *how many* does not, and that is all the product rule (1.1) needs."
+    },
+    {
+      "id": "prob-1.6.1",
+      "file": "content/prob/ch01-d.js",
+      "name": "Linearity and monotonicity of expectation",
+      "statement": "Suppose $X,Y\\ge0$, or $E|X|<\\infty$ and $E|Y|<\\infty$. Then\n\n(a) $E(X+Y)=EX+EY$;\n(b) $E(aX+b)=a\\,EX+b$ for all real $a,b$;\n(c) if $X\\ge Y$, then $EX\\ge EY$.",
+      "idea": "Expectation is an integral, so (a)\u2013(c) restate Lemma 1.4.5 (nonnegative case) and Theorem 1.4.7 (integrable case), together with $E(b)=b\\,P(\\Omega)=b$. Nothing about the joint behaviour of $X$ and $Y$ enters. Linearity holds however strongly the two variables depend on each other, even though the **spread** of $aX+bY$ depends on that dependence."
+    },
+    {
+      "id": "algo-10.3",
+      "file": "content/algo/ch10.js",
+      "name": "Exchange arguments",
+      "statement": "An **exchange argument** proves that a greedy solution $G$ is optimal by starting from an arbitrary optimal solution $O$ and transforming it into $G$ through a sequence of local swaps, each of which keeps the solution feasible and does not make its value worse. Concretely: find the first place where $O$ and $G$ disagree, replace $O$'s choice there by greedy's, show the result is still feasible and still optimal, and repeat. The number of agreements with $G$ grows with each swap, so after finitely many swaps $O$ has become $G$, and $G$ is optimal because the value never dropped.",
+      "idea": "The work is in one lemma: *the swap is safe*. For interval scheduling it reads: if $O$ and $G$ agree on their first $i-1$ intervals, then replacing the $i$-th interval of $O$ by greedy's does not create a conflict, because greedy's interval ends no later (the greedy choice) and everything else in $O$ starts after the old one ended. Compared with greedy-stays-ahead (10.2), an exchange argument works from the *structure* of a solution rather than from a progress measure, which is why it applies to problems with no natural step-by-step measure, such as scheduling jobs in an order (10.6) or building a code tree (10.11)."
+    },
+    {
+      "id": "ode-1.3",
+      "file": "content/ode/ch01.js",
+      "name": "Separation of variables",
+      "statement": "Consider $\\dot x = g(t)\\,h(x)$ with $g$ continuous on an interval $I$ and $h$ continuous on an interval $J$. Every zero $x^*$ of $h$ gives a constant solution $x\\equiv x^*$. On a subinterval where $h\\neq0$, let $G$ be an antiderivative of $g$ and $H$ an antiderivative of $1/h$. Then the solution with $x(t_0) = x_0$ (where $h(x_0)\\ne0$) is given implicitly by\n$$H(x(t)) - H(x_0) = G(t) - G(t_0),\\qquad\\text{i.e.}\\qquad \\int_{x_0}^{x(t)}\\frac{d\\xi}{h(\\xi)} = \\int_{t_0}^{t} g(s)\\,ds,$$\nas long as $x(t)$ stays in the interval where $h\\ne0$; since $H$ is strictly monotone there, this determines $x(t) = H^{-1}(H(x_0) + G(t) - G(t_0))$. The solution curves are the level sets of $H(x) - G(t)$.",
+      "idea": "If $x$ is a solution and $h(x(t))\\ne 0$, then $\\frac{d}{dt}H(x(t)) = \\dot x/h(x) = g(t)$, so $H(x(t)) - G(t)$ has zero derivative and is constant \u2014 the fundamental theorem of calculus (pma-6.21) does the rest. The formal rule \u201c$dx/h(x) = g\\,dt$, integrate both sides\u201d is this computation. Dividing by $h$ loses the constant solutions at the zeros of $h$; they must be added back by hand. Uniqueness can fail at those zeros when $1/h$ has a finite one-sided integral there (1.15), but when $\\int d\\xi/h$ diverges at $x^*$ no other solution can reach $x^*$ in finite time."
+    },
+    {
+      "id": "ladr-6.61",
+      "file": "content/ladr/ch06-c.js",
+      "name": "Minimizing distance to a subspace",
+      "statement": "Suppose $U$ is a finite-dimensional subspace of $V$, $v\\in V$ and $u\\in U$. Then $$\\|v-P_Uv\\|\\le\\|v-u\\|,$$ with equality if and only if $u=P_Uv$. In words: $P_Uv$ is the unique point of $U$ closest to $v$.",
+      "idea": "Write $v-u=(v-P_Uv)+(P_Uv-u)$. The first piece lies in $U^\\perp$ by 6.57(f) and the second lies in $U$, so Pythagoras (6.12) gives $$\\|v-u\\|^2=\\|v-P_Uv\\|^2+\\|P_Uv-u\\|^2\\ge\\|v-P_Uv\\|^2,$$ with equality exactly when $P_Uv-u=0$. Combined with the formula 6.57(i) this solves concrete approximation problems: projecting $\\sin x$ onto the polynomials of degree at most $5$ in $C[-\\pi,\\pi]$ with $\\langle f,g\\rangle=\\int_{-\\pi}^{\\pi}fg$ gives $0.987862x-0.155271x^3+0.00564312x^5$, far better on $[-\\pi,\\pi]$ than the Taylor polynomial."
+    },
+    {
+      "id": "info-2.9",
+      "file": "content/info/ch02-b.js",
+      "name": "Concavity of entropy, convexity of divergence",
+      "statement": "The entropy $H(p)$ is a **concave** function of the distribution $p$: for distributions $p_0,p_1$ and $\\lambda\\in[0,1]$,\n$$H\\big(\\lambda p_0+(1-\\lambda)p_1\\big)\\ \\ge\\ \\lambda H(p_0)+(1-\\lambda)H(p_1).$$\nThe relative entropy is **jointly convex** in the pair: for pairs $(p_0,q_0)$, $(p_1,q_1)$,\n$$D\\big(\\lambda p_0+(1-\\lambda)p_1\\,\\big\\|\\,\\lambda q_0+(1-\\lambda)q_1\\big)\\ \\le\\ \\lambda D(p_0\\|q_0)+(1-\\lambda)D(p_1\\|q_1).$$\n(So $D(p\\|q)$ is also convex in $p$ alone and in $q$ alone, and $I(X;Y)$ is concave in $p(x)$ for fixed $p(y|x)$ and convex in $p(y|x)$ for fixed $p(x)$.)",
+      "idea": "Convexity of $D$ is the log-sum inequality (2.3) applied to each outcome: with $a_i=\\lambda p_0(x)$, $a_2=(1-\\lambda)p_1(x)$ and $b_i$ the corresponding $q$ pieces, $(\\sum a)\\log\\frac{\\sum a}{\\sum b}\\le\\sum a\\log\\frac ab$; sum over $x$. Concavity of $H$ follows from $H(p)=\\log|\\mathcal X|-D(p\\|u)$ with $u$ uniform: $D$ is convex in $p$, so $H$ is concave. Mixing two distributions loses nothing in entropy and can only gain (the gap is the Jensen\u2013Shannon divergence), while mixing two (truth, belief) pairs can only make them harder to tell apart."
+    },
+    {
+      "id": "info-2.7",
+      "file": "content/info/ch02.js",
+      "name": "Conditioning reduces entropy (on average)",
+      "statement": "For discrete random variables $X,Y$,\n$$H(X\\mid Y)\\ \\le\\ H(X),$$\nwith equality if and only if $X$ and $Y$ are independent. The inequality holds *on average*: for a particular value $y$, the conditional entropy $H(X\\mid Y=y)$ can exceed $H(X)$. Observing a surprising $y$ may leave us more uncertain than before, but the average over $y$ cannot.",
+      "idea": "By 2.5, $H(X)-H(X\\mid Y)=I(X;Y)$, and $I(X;Y)=D\\big(p(x,y)\\|p(x)p(y)\\big)\\ge0$ by Gibbs' inequality (2.2); equality is independence. The average is essential because $H(X\\mid Y)$ is the $p(y)$-weighted mean of the entropies $H(X\\mid Y=y)$, and nothing forces each one below $H(X)$. In the classic example, $X$ is nearly always $0$, so $H(X)$ is small; a rare $y$ that makes the two values equally likely leaves $H(X\\mid Y=y)=1$ bit, more than $H(X)$, while the common $y$ sharpens the prediction enough to win on average."
+    },
+    {
+      "id": "info-2.4",
+      "file": "content/info/ch02.js",
+      "name": "Cross-entropy",
+      "statement": "The **cross-entropy** of a model $q$ relative to the true distribution $p$ is\n$$H(p,q)=-\\sum_x p(x)\\log_2 q(x)=\\mathbb E_{X\\sim p}\\big[-\\log_2 q(X)\\big].$$\nIt is the expected number of bits needed to encode a draw of $X\\sim p$ with an ideal code built for $q$, and it decomposes as\n$$H(p,q)=H(p)+D(p\\,\\|\\,q).$$\nIt is $+\\infty$ when $q$ gives probability $0$ to an outcome that $p$ allows. For fixed $p$, minimising $H(p,q)$ over $q$ is the same as minimising $D(p\\|q)$, and the minimum $H(p)$ is attained only at $q=p$.",
+      "idea": "Insert $\\log p$ inside the logarithm: $-\\log q=-\\log p+\\log\\frac pq$, and take the $p$-average to get $H(p)+D(p\\|q)$. Since $D\\ge0$ (2.2), no model can beat the truth, and the excess over $H(p)$ is exactly the divergence. With samples $x_1,\\dots,x_n$ drawn from $p$, the law of large numbers makes the average log-loss $\\frac1n\\sum-\\log q(x_t)$ converge to $H(p,q)$; this is why \u201cminimise the average negative log-likelihood\u201d is the same as \u201cminimise the divergence from the data distribution\u201d in statistics and machine learning.\n\nFor i.i.d. data, let $Z_t=-\\log_2q(X_t)$. Whenever $E_p|Z_1|<\\infty$, the finite-mean weak law prob-2.2.14 makes the sample mean log-loss converge in probability to $E_pZ_1=H(p,q)$. For a finite alphabet it suffices that $q$ be positive on the support of $p$. A model assigning zero probability to a possible outcome has infinite cross-entropy and does not satisfy this finite-mean hypothesis."
+    },
+    {
+      "id": "prob-1.6.13",
+      "file": "content/prob/ch01-d.js",
+      "name": "Poisson distribution",
+      "statement": "$X$ has the **Poisson distribution** with parameter $\\lambda>0$ if\n$$P(X=k)=e^{-\\lambda}\\frac{\\lambda^k}{k!},\\qquad k=0,1,2,\\dots$$\nIts factorial moments are $E\\big(X(X-1)\\cdots(X-k+1)\\big)=\\lambda^k$; in particular $EX=\\lambda$ and $\\operatorname{var}(X)=\\lambda$.",
+      "idea": "In $\\sum_jj(j-1)\\cdots(j-k+1)e^{-\\lambda}\\lambda^j/j!$ the terms with $j<k$ vanish, and cancelling the falling factorial against $j!$ leaves $\\lambda^k\\sum_{j\\ge k}e^{-\\lambda}\\lambda^{j-k}/(j-k)!=\\lambda^k$, because the probabilities sum to $1$. Then $EX=\\lambda$, and $\\operatorname{var}(X)=E(X(X-1))+EX-(EX)^2=\\lambda^2+\\lambda-\\lambda^2=\\lambda$."
+    }
+  ],
+  "allRawLists": [
+    {
+      "num": "1.9",
+      "before": [
+        "ling-1.7",
+        "ling-1.6"
+      ],
+      "after": [
+        "ling-1.7",
+        "ling-1.6"
+      ]
+    },
+    {
+      "num": "1.10",
+      "before": [
+        "ling-1.9"
+      ],
+      "after": [
+        "ling-1.9",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "1.11",
+      "before": [
+        "music-4.7",
+        "ling-1.5"
+      ],
+      "after": [
+        "music-4.7",
+        "ling-1.5"
+      ]
+    },
+    {
+      "num": "1.12",
+      "before": [
+        "ling-1.11"
+      ],
+      "after": [
+        "ling-1.11"
+      ]
+    },
+    {
+      "num": "1.13",
+      "before": [
+        "ling-1.5"
+      ],
+      "after": [
+        "ling-1.5",
+        "prob-2.1.13"
+      ]
+    },
+    {
+      "num": "1.14",
+      "before": [
+        "ling-1.9"
+      ],
+      "after": [
+        "ling-1.9",
+        "pma-4.16"
+      ]
+    },
+    {
+      "num": "1.15",
+      "before": [
+        "ling-1.1"
+      ],
+      "after": [
+        "ling-1.1"
+      ]
+    },
+    {
+      "num": "1.1",
+      "before": [
+        "music-4.10"
+      ],
+      "after": [
+        "music-4.10",
+        "sig-3.9"
+      ]
+    },
+    {
+      "num": "1.2",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "1.3",
+      "before": [
+        "ling-1.2"
+      ],
+      "after": [
+        "ling-1.2"
+      ]
+    },
+    {
+      "num": "1.4",
+      "before": [
+        "ling-1.3"
+      ],
+      "after": [
+        "ling-1.3"
+      ]
+    },
+    {
+      "num": "1.5",
+      "before": [
+        "ling-1.4"
+      ],
+      "after": [
+        "ling-1.4"
+      ]
+    },
+    {
+      "num": "1.6",
+      "before": [
+        "ling-1.2"
+      ],
+      "after": [
+        "ling-1.2"
+      ]
+    },
+    {
+      "num": "1.7",
+      "before": [
+        "ling-1.1",
+        "music-4.9"
+      ],
+      "after": [
+        "ling-1.1",
+        "music-4.9"
+      ]
+    },
+    {
+      "num": "1.8",
+      "before": [
+        "ling-1.7",
+        "music-3.3"
+      ],
+      "after": [
+        "ling-1.7",
+        "music-3.3",
+        "ode-3.13"
+      ]
+    },
+    {
+      "num": "2.6",
+      "before": [
+        "ling-2.5"
+      ],
+      "after": [
+        "ling-2.5",
+        "comb-1.5"
+      ]
+    },
+    {
+      "num": "2.7",
+      "before": [
+        "ling-2.5"
+      ],
+      "after": [
+        "ling-2.5"
+      ]
+    },
+    {
+      "num": "2.8",
+      "before": [
+        "ling-2.1"
+      ],
+      "after": [
+        "ling-2.1"
+      ]
+    },
+    {
+      "num": "2.9",
+      "before": [
+        "ling-2.8"
+      ],
+      "after": [
+        "ling-2.8"
+      ]
+    },
+    {
+      "num": "2.10",
+      "before": [
+        "ling-2.9"
+      ],
+      "after": [
+        "ling-2.9"
+      ]
+    },
+    {
+      "num": "2.11",
+      "before": [
+        "ling-2.9"
+      ],
+      "after": [
+        "ling-2.9"
+      ]
+    },
+    {
+      "num": "2.12",
+      "before": [
+        "ling-2.3"
+      ],
+      "after": [
+        "ling-2.3"
+      ]
+    },
+    {
+      "num": "2.13",
+      "before": [
+        "ling-2.5",
+        "ling-2.9"
+      ],
+      "after": [
+        "ling-2.5",
+        "ling-2.9"
+      ]
+    },
+    {
+      "num": "2.1",
+      "before": [
+        "ling-1.2"
+      ],
+      "after": [
+        "ling-1.2"
+      ]
+    },
+    {
+      "num": "2.2",
+      "before": [
+        "ling-2.1"
+      ],
+      "after": [
+        "ling-2.1"
+      ]
+    },
+    {
+      "num": "2.3",
+      "before": [
+        "ling-2.1",
+        "ling-1.4"
+      ],
+      "after": [
+        "ling-2.1",
+        "ling-1.4",
+        "comb-1.1"
+      ]
+    },
+    {
+      "num": "2.4",
+      "before": [
+        "ling-2.3"
+      ],
+      "after": [
+        "ling-2.3",
+        "logic-2.3"
+      ]
+    },
+    {
+      "num": "2.5",
+      "before": [
+        "ling-2.2",
+        "ling-2.4"
+      ],
+      "after": [
+        "ling-2.2",
+        "ling-2.4"
+      ]
+    },
+    {
+      "num": "3.6",
+      "before": [
+        "ling-3.1"
+      ],
+      "after": [
+        "ling-3.1"
+      ]
+    },
+    {
+      "num": "3.7",
+      "before": [
+        "ling-3.5"
+      ],
+      "after": [
+        "ling-3.5"
+      ]
+    },
+    {
+      "num": "3.8",
+      "before": [
+        "ling-3.1"
+      ],
+      "after": [
+        "ling-3.1"
+      ]
+    },
+    {
+      "num": "3.9",
+      "before": [
+        "ling-3.1"
+      ],
+      "after": [
+        "ling-3.1"
+      ]
+    },
+    {
+      "num": "3.10",
+      "before": [
+        "ling-3.7"
+      ],
+      "after": [
+        "ling-3.7"
+      ]
+    },
+    {
+      "num": "3.1",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "3.2",
+      "before": [
+        "ling-3.1"
+      ],
+      "after": [
+        "ling-3.1"
+      ]
+    },
+    {
+      "num": "3.3",
+      "before": [
+        "ling-3.2"
+      ],
+      "after": [
+        "ling-3.2"
+      ]
+    },
+    {
+      "num": "3.4",
+      "before": [
+        "ling-3.3"
+      ],
+      "after": [
+        "ling-3.3"
+      ]
+    },
+    {
+      "num": "3.5",
+      "before": [
+        "ling-3.1",
+        "ling-2.5"
+      ],
+      "after": [
+        "ling-3.1",
+        "ling-2.5"
+      ]
+    },
+    {
+      "num": "4.6",
+      "before": [
+        "ling-4.5"
+      ],
+      "after": [
+        "ling-4.5",
+        "ode-1.3",
+        "ladr-6.61"
+      ]
+    },
+    {
+      "num": "4.7",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "4.8",
+      "before": [
+        "ling-4.7",
+        "info-1.2"
+      ],
+      "after": [
+        "ling-4.7",
+        "info-1.2",
+        "info-2.9",
+        "info-2.7"
+      ]
+    },
+    {
+      "num": "4.9",
+      "before": [
+        "ling-4.8"
+      ],
+      "after": [
+        "ling-4.8",
+        "info-2.4"
+      ]
+    },
+    {
+      "num": "4.10",
+      "before": [
+        "ling-4.9"
+      ],
+      "after": [
+        "ling-4.9",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "4.11",
+      "before": [
+        "ling-4.8",
+        "ling-2.9"
+      ],
+      "after": [
+        "ling-4.8",
+        "ling-2.9"
+      ]
+    },
+    {
+      "num": "4.12",
+      "before": [
+        "ling-4.1"
+      ],
+      "after": [
+        "ling-4.1",
+        "prob-1.6.13"
+      ]
+    },
+    {
+      "num": "4.13",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "4.14",
+      "before": [
+        "info-1.2",
+        "ling-4.9"
+      ],
+      "after": [
+        "info-1.2",
+        "ling-4.9"
+      ]
+    },
+    {
+      "num": "4.1",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "4.2",
+      "before": [
+        "ling-4.1"
+      ],
+      "after": [
+        "ling-4.1",
+        "prob-2.1.13",
+        "comb-1.1"
+      ]
+    },
+    {
+      "num": "4.3",
+      "before": [
+        "ling-4.1"
+      ],
+      "after": [
+        "ling-4.1",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "4.4",
+      "before": [
+        "ling-4.1"
+      ],
+      "after": [
+        "ling-4.1",
+        "prob-1.6.1"
+      ]
+    },
+    {
+      "num": "4.5",
+      "before": [
+        "ling-4.1"
+      ],
+      "after": [
+        "ling-4.1",
+        "algo-10.3"
+      ]
+    }
+  ],
+  "sourceHashes": {
+    "content/ling/ch02-b.js": "e757a66b54b0d302e33fdde8d67ceb00c73e96488b2f6348d010331337268097",
+    "content/ling/ch02-c.js": "94f3c3e16b44ed2f168279b7e4ddee970734d6375cc829d80ba8a7877e161447",
+    "content/ling/source-audit-zipf.js": "e3bb603d2e38158a537fd4d4d497145fa5921d5013fcdd902f7f22b181977b6c",
+    "content/ling/source-audit-stylometry.js": "2dc99e0792a5115c73d2438932571d3bdece7b71bf8c4158b1fda24121f3f9a0",
+    "content/ling/ch03-b.js": "0510a761eed73bdd9879c936d21b8601dd6ef685480bb84a5a59a2940f7cc722",
+    "content/ling/source-audit-typology.js": "f26722986043585b54a618de0f7ec5d643276bbea95f2ebafa30236607ad6d27",
+    "content/ling/ch02.js": "8cb014bbb755c2d7757e4c43366939b609ef0f115982f5a04012db1d7aa0bf93",
+    "content/ling/ch04-b.js": "d6dc688ed1c5310f20bc451d5ddbd4ec6c449b841fc6634b8cbac8c4365f8a37",
+    "content/ling/syllabus.js": "a1356d2c7925526dbe12622067aecdb20334b81b0a35c1bd02776153757b2452",
+    "content/ling/source-audit-irregular-data.js": "0dd3c253d4782c112fa6764a724433e97a61ea5301c648d34ff575fda01cbd2b",
+    "content/ling/source-audit-wordstats.js": "50a333086175385c920d2df900f6209c879a826f3d585f395473783f135c48e0",
+    "content/ling/ch04-c.js": "94cf423c3f757ca0b35c91703a5c4622395ca0c3c8b8d79545c437f98502e5a9",
+    "content/ling/ch03.js": "4826fc7821677008599b89a3d933f431a1cf88308d72ec5e378e9cc95169da22",
+    "content/ling/ch04.js": "65f225c724b0702da06a86715d02f8337e16a8e2ff708fa97e40531e11bc2bdb",
+    "content/ling/source-audit-menzerath.js": "422b269dbc4e00bf7b7ff30511a57fd0f618e04f8bcbd35aa43003911ca9ce58",
+    "content/ling/ch04.shared.js": "b91b272a95181e9ec62c3b2c6e465281104b90e0e53706fa2fbc7d9fb89a2ce0",
+    "content/ling/ch02.shared.js": "0d05da2c4be069b6814629281b99beafd4dfd32ec9d158964d548f5da267aaee",
+    "content/ling/ch01.js": "8f122712c5ddffa07d530651119cce208bfd3c558c3caebfaf372e016283e811",
+    "content/ling/source-audit-language-models.js": "fba17784b54f4a04972802eeb207f6767b21bfc302ce829e4b3ae07265977b0d",
+    "content/ling/ch01-b.js": "981b46b3f79a9daec64a074cc6b595a3206226c7f151817ce509628c0826e00d",
+    "content/ling/ch03.shared.js": "c19173de05405a9964133201da182b9d2fcf91dfd5604e7cd76473a216bc5372",
+    "content/ling/source-audit-morphology.js": "7576ce02a6329c6595be5d230b92df51673ceae5bfa8f04d4611429074057263",
+    "content/ling/source-audit-shannon.js": "b7381c4d4bfd04d21501a91e47cadefa867435afc56a5dd8e116e47903a58acc",
+    "content/ling/collection.js": "3169d04f0aa2a70389c212aa499eeba7fc22166ff81486dd6d9b309ac63b82c8",
+    "content/ling/source-audit-irregular.js": "888994b12dfd4d156af4022dfe671524528203732aed0580365641b273db94fa"
+  },
+  "baselineHashes": {
+    "ch02-b.js": "bf2be264a59fb14a4710f13fb06e37ad38931745304b7f2b294aca3837b03426",
+    "ch02-c.js": "94f3c3e16b44ed2f168279b7e4ddee970734d6375cc829d80ba8a7877e161447",
+    "source-audit-zipf.js": "e3bb603d2e38158a537fd4d4d497145fa5921d5013fcdd902f7f22b181977b6c",
+    "source-audit-stylometry.js": "a1f97de75051d76688a9bbc4097ef96997a315623465dd7d86b49769085b6649",
+    "ch03-b.js": "0510a761eed73bdd9879c936d21b8601dd6ef685480bb84a5a59a2940f7cc722",
+    "source-audit-typology.js": "f26722986043585b54a618de0f7ec5d643276bbea95f2ebafa30236607ad6d27",
+    "ch02.js": "12de4a125f4d71fcafe45214eea530d6d66001ff1867db63c0cc5105ce35405b",
+    "ch04-b.js": "d6dc688ed1c5310f20bc451d5ddbd4ec6c449b841fc6634b8cbac8c4365f8a37",
+    "syllabus.js": "44565b9f484ea8686dfd9d61f89740392bae829728cabe41b54dc3692c65571f",
+    "source-audit-irregular-data.js": "0dd3c253d4782c112fa6764a724433e97a61ea5301c648d34ff575fda01cbd2b",
+    "source-audit-wordstats.js": "50a333086175385c920d2df900f6209c879a826f3d585f395473783f135c48e0",
+    "ch04-c.js": "94cf423c3f757ca0b35c91703a5c4622395ca0c3c8b8d79545c437f98502e5a9",
+    "ch03.js": "4826fc7821677008599b89a3d933f431a1cf88308d72ec5e378e9cc95169da22",
+    "ch04.js": "8965b55ef51dbb2f1a049b3ce8386cc9129a4615bf51ad2d616f2ea364013c9a",
+    "source-audit-menzerath.js": "43724333704d3a9a1923eacddba6d98756161fdfbbdd46ea15c4cb137a4d1744",
+    "ch04.shared.js": "b91b272a95181e9ec62c3b2c6e465281104b90e0e53706fa2fbc7d9fb89a2ce0",
+    "ch02.shared.js": "0d05da2c4be069b6814629281b99beafd4dfd32ec9d158964d548f5da267aaee",
+    "ch01.js": "aefc939fa1b60f1fa89b327dcef242ebbf62102a88a14c0fc690fe51beedb1e3",
+    "source-audit-language-models.js": "6c333a93e7d9b11800df0d7994279f6c1657997eca8e0a8d3bee030aabfb7460",
+    "ch01-b.js": "2d6ea6fa4e7306d6e864a5697c6c03b6a47fad3ad3b6084dad1f5724a1285491",
+    "ch03.shared.js": "c19173de05405a9964133201da182b9d2fcf91dfd5604e7cd76473a216bc5372",
+    "source-audit-morphology.js": "7576ce02a6329c6595be5d230b92df51673ceae5bfa8f04d4611429074057263",
+    "source-audit-shannon.js": "b63a368959c6f559395cd819f29f3ff5ab88b3b6f7a5dadd336c714cb06b701a",
+    "collection.js": "3169d04f0aa2a70389c212aa499eeba7fc22166ff81486dd6d9b309ac63b82c8",
+    "source-audit-irregular.js": "888994b12dfd4d156af4022dfe671524528203732aed0580365641b273db94fa"
+  }
+}
