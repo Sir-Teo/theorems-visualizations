@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 74,
+  "remainingFlags": 71,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -27,7 +27,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 10,
+    "tech": 7,
     "bighist": 18
   },
   "queue": [
@@ -711,22 +711,6 @@
       }
     },
     {
-      "id": "tech-5.7",
-      "file": "content/tech/ch05-b.js",
-      "name": "The anchor escapement",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “The development of clocks and watches”",
-        "Lloyd, “The anchor escapement: William Clement or Robert Hooke?” (1952), as cited by the British Museum catalogue"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Anchor_escapement"
-      }
-    },
-    {
       "id": "tech-5.8",
       "file": "content/tech/ch05-b.js",
       "name": "The balance spring",
@@ -827,38 +811,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Compass"
-      }
-    },
-    {
-      "id": "tech-5.4",
-      "file": "content/tech/ch05.js",
-      "name": "Mechanical clock with verge-and-foliot escapement",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “Water clocks and mechanical clocks”",
-        "Cardwell"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Verge_escapement"
-      }
-    },
-    {
-      "id": "tech-5.5",
-      "file": "content/tech/ch05.js",
-      "name": "The mainspring and fusee",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “The development of clocks and watches”",
-        "Cardwell"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Fusee_(horology)"
       }
     },
     {
@@ -1948,7 +1900,10 @@
       "polsci-5.6",
       "game-4.8",
       "music-8.5",
-      "music-8.6"
+      "music-8.6",
+      "tech-5.4",
+      "tech-5.5",
+      "tech-5.7"
     ]
   },
   "additionalFollowups": [
@@ -6807,6 +6762,21 @@
       "id": "music-8.6",
       "status": "resolved",
       "note": "2026-10-20: coordinator independent actual-source/math/audio/native review and saved-state repair; docs/verification/music-generated-followup.md."
+    },
+    {
+      "id": "tech-5.4",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/native review; docs/verification/tech-clockdrives-followup.md."
+    },
+    {
+      "id": "tech-5.5",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/native review; docs/verification/tech-clockdrives-followup.md."
+    },
+    {
+      "id": "tech-5.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independent actual-source/math/native review; docs/verification/tech-clockdrives-followup.md."
     }
   ]
 }

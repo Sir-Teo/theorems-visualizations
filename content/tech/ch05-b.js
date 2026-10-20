@@ -10,7 +10,7 @@ export default {
   items: [
     // ------------------------------------------------------------------ 5.7
     {
-      num:'5.7',kind:'Invention',name:'The anchor escapement',verify:true,
+      num:'5.7',kind:'Invention',name:'The anchor escapement',verify:false,
       credit:'Historical example documented by The Metropolitan Museum of Art; circular-error comparison and rocker schematic authored here',
       statement:String.raw`An anchor escapement alternately locks and releases escape-wheel teeth through two pallets on a rocking anchor coupled to a pendulum. It permits a small pendulum swing. In a recoil anchor the wheel can move slightly backward during part of the cycle; this interaction can itself disturb the oscillator.
 

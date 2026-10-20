@@ -192,7 +192,7 @@ Scope of the picture: the declination map is a **model**: a centred dipole whose
 
     // ------------------------------------------------------------------ 5.4
     {
-      num:'5.4',kind:'Invention',name:'Mechanical clock with verge-and-foliot escapement',verify:true,
+      num:'5.4',kind:'Invention',name:'Mechanical clock with verge-and-foliot escapement',verify:false,
       credit:'Historical mechanism and stationary model examined by Hoyng and Nieuwenhuizen; illustration uses declared parameters',
       statement:String.raw`A verge-and-foliot escapement couples a driven crown wheel to two pallets on a vertical verge. The foliot is a bar with movable weights; changing their position changes its inertia. The pallets alternately arrest and release the wheel. Hoyng and Nieuwenhuizen analyse a model in which torque reverses when the verge crosses fixed pallet angles, with friction proportional to angular velocity.
 
@@ -219,7 +219,7 @@ The next is its sign-reversed copy. Velocity is continuous at switches. Drive wo
 
     // ------------------------------------------------------------------ 5.5
     {
-      num:'5.5',kind:'Invention',name:'The mainspring and fusee',verify:true,
+      num:'5.5',kind:'Invention',name:'The mainspring and fusee',verify:false,
       credit:'Spring-driven historical clocks documented by Germanisches Nationalmuseum; normalized torque comparison authored here',
       statement:String.raw`A mainspring stores energy in a coiled metal strip and releases torque as it unwinds. A fusee is a tapered, grooved pulley connected to the spring barrel by a line or chain. A smaller working radius at full wind and a larger one as the spring weakens can compensate its changing torque.
 
