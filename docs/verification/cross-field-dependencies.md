@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **42 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 754 edges. Even
+Of 64 non-math collections, **41 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 744 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -179,3 +179,8 @@ Exact `cabd1be` adds11independently reviewed mathematical uses across10written a
 Independent exactcd37ccc accepts10genuine ROBOTuses (15→25written,15→25known,30→40whole) with regularity, rank, spectral and chain/composition arguments. Its accepted3.7camera/convention/runtime remain byteidentical. See [ROBOTpeer](robot-crossfield-prerequisites-peer.md). Exact50424bf adds9genuine ALGOuses (16→25written,18→27known,23→32whole): expectation, Cauchy–Schwarz, Chebyshev/Markov/union bounds, logconcavity, dependence and determinant proofs. See [ALGOpeer](algo-crossfield-prerequisites-peer.md). Full197ALGO and30ROBOTobject/function/flag guards, independent903ROBOTcases and113854ALGOchecks plus fresh18/16narrowtheme proofoutputs pass. NochangedIDis anexistingbridgestep.
 
 Current accepted shortfall754,42/64below25published,27whole syllabi below25; frozenBIGHISTedge excluded. ALGO5.18upperbound/readout/retrycap findings remain separatelyopen and are not certified by prerequisite acceptance. No sourceflagclosure.
+
+
+## Sociology exceeds the published prerequisite target
+
+Exact `d345105` adds11genuine used dependencies across8items; independentpeer `5fcd25f` confirms actualmoment/Cauchy/spectral/geometricseries/Markov/variance arguments and fixedshuffle/periodicity/tie/boundedbelief qualifications. SOC15→26published,18→29known,41→52whole. Globalshortfall reduces10, not11: current744,41/64below25published,27wholebelow25.53object/function/flag/fullsyllabusguards,38SOCmathgroups, independentgraph/permutation/matrix/tailcases and fresh16narrowtheme pages/ownpixels pass. See [peer](soc-crossfield-prerequisite-peer.md). NochangedIDis anexistingbridgestep. Sourceflags unchanged; frozenBIGHISTedge excluded.

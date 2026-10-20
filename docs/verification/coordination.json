@@ -42,7 +42,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "ALGOpeeraccepted; independentDEEP5.12label47fa7e8peer",
+      "current": "IndependentALGO5.18runtimefinitefamily/exhaustionpeer preparation",
       "owns": [
         "Unique ENERGY peer report/tests, no content/global changes"
       ],
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "IndependentSOC exactd345105prerequisite/prosepeer",
+      "current": "IMAGING2.9runtime singular-energy/logdose investigation; editswaitproducerboundary",
       "owns": [
-        "UniqueSOCpeer report/tests only"
+        "IMAGING2.9localruntime/privatehelper/tests/report afterthermo commit"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -1424,20 +1424,30 @@
     },
     {
       "id": "deep-5.12-coordinate-labels",
-      "status": "successor-candidate-awaiting-peer",
+      "status": "closed",
       "finding": "Coordinateclipping plot has eta*c*sqrt2 bound but inherited legend/readout still eta*c.",
       "owner": "oldworker_three immutable delivery only; successor does not edit oldtree",
       "sourceClosure": "None; no commit yet as of lastread ofcodex/atlas-crossfield-psych e57c6a5.",
       "candidate": "47fa7e8",
       "producer": "coordinator",
       "report": "docs/verification/deep-clipping-label-followup.md",
-      "scope": "Oldworkeruncommitteddraft remainsunadopted; successor separatelycommitted2displaylines atopacceptedlogrepair."
+      "scope": "Oldworkeruncommitteddraft remainsunadopted; successor separatelycommitted2displaylines atopacceptedlogrepair.",
+      "peer": "deep_peer",
+      "peerCommit": "e9788549e911b96c98aeceb95e501f1b4d756e2e",
+      "note": "Successorindependentlycommitted/reviewed; nooldworkeruncommitteddraftacceptance. Do notcherry-picklaterduplicatelabelcommit."
     },
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "recorded-awaiting-dedicated-repair",
       "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap."
+    },
+    {
+      "id": "imaging-2.9-singular-energies-and-log-dose",
+      "status": "assigned-after-prerequisite-boundary",
+      "owner": "ctrl_prereqs",
+      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent."
     }
   ],
   "stateFollowups": [
@@ -1540,6 +1550,18 @@
         "421ca255c0a8f0097ea6cdc321a06aee929f4ed0"
       ],
       "peer": "ctrl_prereqs"
+    },
+    {
+      "id": "deep-5.12-coordinate-labels",
+      "status": "accepted",
+      "commits": [
+        "47fa7e8",
+        "e9788549e911b96c98aeceb95e501f1b4d756e2e"
+      ],
+      "producer": "coordinator",
+      "peer": "deep_peer",
+      "report": "docs/verification/deep-clipping-label-peer.md",
+      "sourceClosure": "None; unchangednumericalmodel/sourceflag."
     }
   ],
   "acceptedSourceLimitations": [
@@ -1796,15 +1818,39 @@
       "publishedAfter": 25,
       "sourceClosure": "None; unchangedsourceflags.",
       "bridgeReview": "NochangedconsumerIDs are existingbridgesteps; independentlychecked."
+    },
+    {
+      "commit": "d34510512b63cb816e16d9e9c8c97934e4723b3c",
+      "collection": "soc",
+      "items": [
+        "soc-2.4",
+        "soc-2.9",
+        "soc-2.11",
+        "soc-2.14",
+        "soc-3.2",
+        "soc-3.3",
+        "soc-3.4",
+        "soc-3.5"
+      ],
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/soc-crossfield-prerequisite-peer.md",
+      "publishedBefore": 15,
+      "publishedAfter": 26,
+      "shortfallReduction": 10,
+      "edgesAdded": 11,
+      "sourceClosure": "None; unchangedsourceflags.",
+      "bridgeReview": "NochangedconsumerIDis anexistingbridgestep; independentlychecked."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 754,
-    "publishedBelow25": 42,
+    "publishedShortfall": 744,
+    "publishedBelow25": 41,
     "collections": 64,
     "wholeSyllabusBelow25": 27,
     "date": "2026-10-20",
-    "acceptedSnapshot": "SixnewcollectionsDEEP/THERMO/CTRL/ENERGY/ROBOT/ALGO have independently accepted25writtenprerequisites; frozenBIGHIST3.5edge excluded."
+    "acceptedSnapshot": "SevennewcollectionsDEEP/THERMO/CTRL/ENERGY/ROBOT/ALGO/SOC have independently accepted>=25writtenprerequisites; frozenBIGHIST3.5edge excluded."
   },
   "previousSessionWorkers": [
     {
