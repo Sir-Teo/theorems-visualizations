@@ -12087,10 +12087,10 @@
       "collection": "polsci",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 17,
-      "wholeSyllabus": 25,
-      "publishedShortfall": 9,
+      "writtenToWritten": 19,
+      "writtenToKnown": 20,
+      "wholeSyllabus": 28,
+      "publishedShortfall": 6,
       "unknown": [],
       "edges": [
         {
@@ -12208,6 +12208,27 @@
         {
           "item": "polsci-5.3",
           "prerequisite": "pma-8.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "polsci-5.4",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "polsci-5.4",
+          "prerequisite": "prob-2.2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "polsci-5.5",
+          "prerequisite": "prob-4.1.1a",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

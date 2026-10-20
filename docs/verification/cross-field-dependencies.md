@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 861 edges. Even
+written ideas in a different field**. Their combined shortfall is 858 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -110,3 +110,8 @@ Accepted snapshot `00b1ea9`: psychology has 19 published cross-field prerequisit
 ## Accepted checkpoint through 6522f86
 
 This inventory is generated from the exact accepted export, excluding ongoing exchange-proof, jury and experimental-game drafts. The published shortfall is861;53/64 non-math collections and28 whole syllabi remain below25. Philosophy now has19 published cross-field edges: the actual ODE argument used by its authored hysteresis model supplies one new edge. Psychology retains19. Removing an unused planned Pólya-urn dependency from attachment gives sociology36 whole-syllabus edges and9 published edges; no quota-filling link was substituted. Counts remain an inventory, not proof of prerequisite quality.
+
+
+## Accepted checkpoint through 55c657d
+
+The exact accepted export excludes active music, colour and vault drafts. Political science rises from 16 to 19 published cross-field edges and 25 to 28 over its complete syllabus: jury 5.4 genuinely uses the written independent-product rule and variance weak law; 5.5 uses finite-partition conditional expectation. Root read the actual prerequisite arguments and checked their use in the finite and conditional proofs. The published shortfall falls 861→858; 53/64 non-math collections and 28 whole syllabi remain below 25. The gate remains open. See [jury acceptance](polsci-jury-followup.md) and [combined checkpoint](checkpoint-55c657d.md).
