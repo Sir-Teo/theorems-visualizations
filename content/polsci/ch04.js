@@ -1,4 +1,5 @@
 // Political Science & Social Choice — Chapter 4: Spatial models and the median voter
+import {chaosTheorem} from './source-audit-chaos.js';
 import {plottModel,PLOTT_BASE} from './source-audit-plott.js';
 import { CC, sum, range, clamp, txt, rr, chip, Phi, phi, median, mean, pct, dist2, votesFor, beats, yolk, medianLines, tournament, coverage, sophisticated, chaosPath, mixGrid, binX, gridMedian, gridMean, LINE } from './ch04.shared.js';
 
@@ -404,71 +405,8 @@ When q is not any ideal point, a generic line through it splits the odd electora
       },
     },
 
-    // ───────────────────────────────────────────────────────────── 4.6
-    {
-      num: '4.6',
-      kind: 'Theorem',
-      name: 'McKelvey’s chaos theorem',
-      statement: String.raw`Let $n \ge 3$ voters have Euclidean preferences over a policy space $\mathbb{R}^k$ with $k \ge 2$, and suppose the ideal points do **not** satisfy Plott's symmetry condition (polsci-4.5), so that no majority-rule equilibrium exists. Then the **majority preference relation is intransitive everywhere**: for **any** two points $a$ and $b$ there is a finite sequence $a = x_0, x_1, \dots, x_K = b$ in which, at every step, a strict majority prefers $x_{j+1}$ to $x_j$. A setter who controls the order of votes can therefore steer the committee from any status quo to any outcome whatever, including points that every voter prefers $a$ to.
-
-For voters with Euclidean preferences the general result is due to McKelvey; Schofield extended it to a larger class of utility functions.`,
-      idea: String.raw`Without Plott symmetry (polsci-4.5) the winset $W(x)$ of every point $x$ is nonempty, and McKelvey shows that majority-preferred moves can be chained so that they carry the committee farther and farther from the voters' ideal points. A point far enough away is worse for every voter than every point in a bounded region around them, so from such a far point a single vote leads straight to the target $b$. The chain is therefore an outward path from $a$ followed by one step in. Each step is an honest pairwise vote won by two of three voters, so Condorcet's paradox (polsci-2.1) is not a local accident but global, and agenda control (polsci-2.8) has no limit.`,
-      caption: String.raw`Three voters (coloured dots) with Euclidean preferences, a status quo $S$ (gold) and a target $T$ (green); drag any of them. The page searches a $50\times50$ grid of policies, plus $S$ and $T$ themselves, for the shortest chain of moves each of which wins a 2–1 majority, and draws it with numbered arrows. The orange area is the winset of $S$, the shaded triangle the voters' Pareto set. With the asymmetric preset the chain leaves the triangle and arrives at $T$ in a few votes. With the **symmetric** preset (voter 1 at the midpoint of 2 and 3) the search finds no chain: the reachable set stays small.`,
-      deps: ['polsci-4.5', 'polsci-2.8'],
-      see: ['polsci-4.7', 'polsci-4.10'],
-      refs: ['Shepsle: agenda power', 'McKelvey (1976), Journal of Economic Theory 12: 472–482', 'McKelvey (1979), Econometrica 47: 1085–1112'],
-      tags: ['chaos theorem', 'agenda control'],
-      credit: 'Richard D. McKelvey, 1976 (general version 1979)',
-      scope: String.raw`Euclidean preferences, three or more voters and at least two policy dimensions, without Plott symmetry. The chain shown is found on a grid, so it is a valid chain of exact pairwise votes but not the shortest possible chain in the continuum.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/McKelvey%E2%80%93Schofield_chaos_theorem' },
-      viz(v) {
-        const R = 4.4;
-        const S = v.stage({ x: [-R, R], y: [-R, R], equal: true, axes: false, height: 560, full: true, title: 'a chain of majority votes from the status quo S to the target T' });
-        const PRE = {
-          asym: [[-1.0, -0.6], [1.2, -0.5], [0.1, 1.4]],
-          sym: [[0.3, 0.2], [1.4, 0.9], [-0.8, -0.5]],
-        };
-        const hs = PRE.asym.map((p, i) => S.handle(p[0], p[1], { color: CC[i], r: 10, label: `${i + 1}`, labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } }));
-        const Sh = S.handle(0.2, 0.0, { color: 'gold', r: 9, label: 'S', labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } });
-        const Th = S.handle(3.1, -2.8, { color: 'green', r: 9, label: 'T', labelPos: 'n', constrain: { x: [-R + 0.2, R - 0.2], y: [-R + 0.2, R - 0.2] } });
-        const pre = v.select('voters', [{ value: 'asym', label: 'generic (no symmetry)' }, { value: 'sym', label: 'Plott-symmetric' }], 'asym', { onChange: () => PRE[pre.value].forEach((p, i) => hs[i].set(p[0], p[1])) });
-        let cache = { key: '', res: null };
-        const distTri = (p, V) => {
-          const inside = (() => { const s = V.map((a, i) => { const b = V[(i + 1) % 3]; return (b[0] - a[0]) * (p[1] - a[1]) - (b[1] - a[1]) * (p[0] - a[0]); }); return s.every((x) => x >= 0) || s.every((x) => x <= 0); })();
-          if (inside) return 0;
-          return Math.min(...V.map((a, i) => { const b = V[(i + 1) % 3], dx = b[0] - a[0], dy = b[1] - a[1], t = clamp(((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / (dx * dx + dy * dy), 0, 1); return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy); }));
-        };
-        let info = null;
-        v.render(() => {
-          const V = hs.map((h) => [h.x, h.y]), s0 = [Sh.x, Sh.y], t0 = [Th.x, Th.y];
-          const key = [...V, s0, t0].map((p) => p[0].toFixed(2) + ',' + p[1].toFixed(2)).join('|');
-          if (cache.key !== key) cache = { key, res: chaosPath(V, s0, t0, { G: 50, R }) };
-          const res = cache.res, ws = v.ramp(0.4, 'orange');
-          S.raster((x, y) => (votesFor(V, [x, y], s0) >= 2 ? ws : null), { res: 3, key: `w${key}` });
-          S.poly(V, { fill: 'ink', fillAlpha: 0.07, color: 'muted', width: 1.2, dash: true });
-          if (res.ok) {
-            res.path.forEach((p, k) => {
-              if (k === 0) return;
-              const a = res.path[k - 1];
-              S.arrow(a[0], a[1], p[0], p[1], { color: 'purple', width: 2 });
-            });
-            res.path.forEach((p, k) => { if (k > 0 && k < res.path.length - 1) S.dot(p[0], p[1], { r: 5, color: 'purple' }); });
-            res.path.forEach((p, k) => { if (k > 0) S.text(String(k), (p[0] + res.path[k - 1][0]) / 2 + 0.2, (p[1] + res.path[k - 1][1]) / 2 + 0.2, { size: 12, weight: 700, color: 'purple' }); });
-          }
-          V.forEach((p, i) => S.dot(p[0], p[1], { r: 9, color: CC[i] }));
-          const steps = res.ok ? res.path.slice(1).map((p, k) => { const a = res.path[k]; return range(3).filter((i) => dist2(V[i], p) < dist2(V[i], a)).map((i) => i + 1); }) : [];
-          const out = res.ok ? Math.max(...res.path.map((p) => distTri(p, V))) : 0;
-          info = { res, steps, out };
-        });
-        v.legend([['purple', 'chain of majority-preferred moves'], ['orange', 'winset of $S$', { area: true }], ['muted', 'Pareto triangle']]);
-        v.readout(() => {
-          const { res, steps, out } = info;
-          if (!res.ok) return `No chain from $S$ to $T$ exists on the search grid (${res.nodes} policies reachable from $S$ were explored). With this arrangement of ideal points no sequence of majority votes escapes the neighbourhood of the voters.`;
-          const lst = steps.map((w, k) => `${k + 1}: voters ${w.join(' & ')}`).join(' · ');
-          return `**${steps.length} votes** take the committee from $S$ to $T$, each won ${steps.every((w) => w.length === 2) ? '2–1' : 'by a majority'} (${lst}). The chain wanders up to ${v.fix(out, 1)} units outside the dashed Pareto triangle.`;
-        });
-      },
-    },
+    // Source-audited bounded chain 4.6
+    chaosTheorem,
 
     // ───────────────────────────────────────────────────────────── 4.7
     {
