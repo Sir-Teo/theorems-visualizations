@@ -26,8 +26,8 @@
     ],
     "current": [
       "Serially integrate independently reviewed candidates and reconcile source/wave gates",
-      "BIGHIST3.6/3.7 original source, finite model/state and native audits",
-      "Independent historical-paper peer review and full immutable checkpoints"
+      "BIGHIST3.7 exact source-scoped Cambrian chronology and replayable analytic logistic; ch04 source audits next",
+      "Independent historical-paper peer reviews and full immutable checkpoints"
     ]
   },
   "workers": [
@@ -1124,14 +1124,14 @@
   },
   "currentPendingSourceReviews": 23,
   "latestCheckpoint": {
-    "acceptedContentCommit": "428f1af",
-    "report": "docs/verification/checkpoint-428f1af.md",
-    "defaultTests": 1970,
+    "acceptedContentCommit": "5c65e26",
+    "report": "docs/verification/checkpoint-5c65e26.md",
+    "defaultTests": 1993,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 104.702124167,
+    "testDurationSeconds": 112.859563208,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1142,9 +1142,9 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112720,
-    "pendingSourceReviews": 30,
-    "acceptedTeamEntries": 121,
+    "homeGzipBytes": 112703,
+    "pendingSourceReviews": 23,
+    "acceptedTeamEntries": 128,
     "publishedCrossFieldShortfall": 845,
     "publishedCollectionsBelowTarget": 53,
     "nonMathCollections": 64,
@@ -1156,12 +1156,12 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint8-tests.log",
-      "/tmp/atlas-coordinator/checkpoint8-build.log",
-      "/tmp/atlas-coordinator/checkpoint8-static.log"
+      "/tmp/atlas-coordinator/checkpoint9-tests.log",
+      "/tmp/atlas-coordinator/checkpoint9-build.log",
+      "/tmp/atlas-coordinator/checkpoint9-static.log"
     ],
     "limitations": [
-      "Exact immutable accepted snapshot includes all accepted content through428f1af and excludes Poleni/MAT/Pantheon and ongoing source drafts.",
+      "Exact immutable accepted snapshot5c65e26 includes accepted Pantheon, Florence and Cambrian production are excluded.",
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
