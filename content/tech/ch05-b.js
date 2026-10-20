@@ -34,7 +34,7 @@ A clock calibrated at T0 loses $86400(1-T_0/T)$ seconds per reference day. This 
 
     // ------------------------------------------------------------------ 5.8
     {
-      num:'5.8',kind:'Invention',name:'The balance spring',verify:true,
+      num:'5.8',kind:'Invention',name:'The balance spring',verify:false,
       credit:'Historical mechanism documented by The Metropolitan Museum of Art; ideal linear and hardening-spring comparisons authored here',
       statement:String.raw`A balance spring connects a rotating watch balance to a fixed support and supplies restoring torque. In the ideal linear model that torque is−κθ, giving an amplitude-independent period. A real spring's torque can depart from this law.
 

@@ -241,7 +241,7 @@ Normalize both modes with the same Rb and full-wind radius, taking both as 1. Th
 
     // ------------------------------------------------------------------ 5.6
     {
-      num:'5.6',kind:'Invention',name:'The pendulum clock (Huygens)',verify:true,
+      num:'5.6',kind:'Invention',name:'The pendulum clock (Huygens)',verify:false,
       credit:'Christiaan Huygens; cycloidal suspension described in Horologium Oscillatorium; ideal comparisons authored here',
       statement:String.raw`Huygens's Horologium Oscillatorium describes a clock whose escapement sustains a pendulum and whose curved suspension plates make the bob follow a cycloid. The 1673 original distinguishes the unequal periods of circular swings from the equal descent times on an inverted cycloid. Part II Proposition XXV proves the equal-time property; Part III Propositions V–VI establish the equal cycloid produced by unwinding a string from a cycloidal cheek.
 

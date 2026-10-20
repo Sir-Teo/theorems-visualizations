@@ -25,7 +25,7 @@
     ],
     "current": [
       "Integrate independently reviewed batches and reconcile all wave gates",
-      "Peer-review technology5.6/5.8; continue game3.9/4.11",
+      "Peer-review incoming source/math/native batches; continue game3.9/4.11",
       "Continue difficult original-source audits; preserve source-access limitations"
     ]
   },
@@ -62,7 +62,7 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Huygens5.6/5.8 candidate b310153 awaits coordinator peer; finish technology5.2/5.3/5.9/5.10/5.11."
+      "current": "Huygens5.6/5.8 accepted; finish technology5.2/5.3/5.9/5.10/5.11 navigation audits."
     },
     {
       "agent": "worker_three",
@@ -676,6 +676,20 @@
         "ee16fa1",
         "71e3f45"
       ]
+    },
+    {
+      "ids": [
+        "tech-5.6",
+        "tech-5.8"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent ODE, native input/replay and geometry review",
+      "reports": [
+        "docs/verification/tech-huygens-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "eed690f"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -688,7 +702,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 66,
+  "currentPendingSourceReviews": 64,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",

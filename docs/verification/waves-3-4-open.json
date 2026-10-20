@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 66,
+  "remainingFlags": 64,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -25,7 +25,7 @@
     "art": 9,
     "arch": 9,
     "ling": 10,
-    "tech": 7,
+    "tech": 5,
     "bighist": 18
   },
   "queue": [
@@ -638,22 +638,6 @@
       }
     },
     {
-      "id": "tech-5.8",
-      "file": "content/tech/ch05-b.js",
-      "name": "The balance spring",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “The development of clocks and watches”",
-        "Cardwell"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Balance_spring"
-      }
-    },
-    {
       "id": "tech-5.9",
       "file": "content/tech/ch05-b.js",
       "name": "The longitude problem",
@@ -738,23 +722,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Compass"
-      }
-    },
-    {
-      "id": "tech-5.6",
-      "file": "content/tech/ch05.js",
-      "name": "The pendulum clock (Huygens)",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Usher, “The development of clocks and watches”",
-        "Mokyr ch. 4",
-        "Huygens, Horologium Oscillatorium (1673)"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Pendulum_clock"
       }
     },
     {
@@ -1835,7 +1802,9 @@
       "music-8.16",
       "music-8.21",
       "polsci-5.8",
-      "polsci-5.10"
+      "polsci-5.10",
+      "tech-5.6",
+      "tech-5.8"
     ]
   },
   "additionalFollowups": [
@@ -6734,6 +6703,16 @@
       "id": "polsci-5.10",
       "status": "resolved",
       "note": "2026-10-20: worker_one exact-commit original-source/pixels, independent integer-polynomial, native-state and output-pixel review; docs/verification/polsci-essai-followup.md."
+    },
+    {
+      "id": "tech-5.6",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent ODE, native input/replay and geometry review; docs/verification/tech-huygens-followup.md."
+    },
+    {
+      "id": "tech-5.8",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent ODE, native input/replay and geometry review; docs/verification/tech-huygens-followup.md."
     }
   ]
 }
