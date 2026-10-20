@@ -1,3 +1,4 @@
+import blottoItem from './blotto-item.js';
 import blackwellItem from './blackwell-item.js';
 // Game Theory & Social Choice — Chapter 3 (part b): learning the value, Blotto, approachability, von Neumann's 1928 paper
 import {
@@ -37,15 +38,6 @@ function hedge(G, T, eta, mode, rng) {
   return { reg, gap, xs, xbar, ybar };
 }
 
-// ---------- Colonel Blotto: three battlefields, N soldiers each; payoff = battlefields won (ties half) - 3/2 ----------
-const BL = {};
-function blotto(N) {
-  if (BL[N]) return BL[N];
-  const al = []; for (let a = 0; a <= N; a++) for (let b = 0; a + b <= N; b++) al.push([a, b, N - a - b]);
-  const pay = (x, y) => x.reduce((s, xi, k) => s + (xi > y[k] ? 1 : xi === y[k] ? 0.5 : 0), 0) - 1.5;
-  const A = al.map((x) => al.map((y) => pay(x, y)));
-  return (BL[N] = { al, A, sol: solveZS(A), pure: zsPure(A) });
-}
 
 
 export default {
@@ -165,54 +157,7 @@ which gives a constructive proof of the minimax theorem (game-3.3).`,
         });
       },
     },
-    // ------------------------------------------------------------------ 3.9
-    {
-      num: '3.9',
-      kind: 'Model',
-      name: 'Colonel Blotto',
-      credit: 'Émile Borel, 1921; Borel & Ville, 1938; Gross & Wagner, 1950',
-      statement: String.raw`Two colonels each distribute $N$ indivisible soldiers over $3$ battlefields, secretly and simultaneously: a pure strategy is an allocation $x=(x_1,x_2,x_3)\in\mathbb Z_{\ge0}^3$ with $\sum_kx_k=N$. In the version drawn here the row colonel's payoff is the number of battlefields where she has more soldiers, counting a tie as one half, minus $3/2$ (so the game is symmetric and zero-sum with value $0$):
-$$a(x,y)=\sum_{k=1}^3\bigl([x_k>y_k]+\tfrac12[x_k=y_k]\bigr)-\tfrac32 .$$
-By the minimax theorem (game-3.3) it has a value and optimal mixed allocations, found by linear programming (game-3.4). For $N=3$ the allocation $(1,1,1)$ is a pure saddle point, but for every $N\ge4$ no pure allocation is safe: the best pure guarantee is $-\tfrac12<0=v$, and every optimal strategy mixes several allocations, scattered so that no reply wins more than it loses.`,
-      idea: String.raw`A pure allocation is exposed to a reply that wins the two battlefields it neglects. Against any fixed allocation the opponent can place just enough soldiers to win two fields and sacrifice the third, which is why the pure security level is negative. Randomising over a symmetric family of allocations that are spread around the simplex removes this: every allocation of the opponent then loses as often as it wins against the mixture. By the minimax theorem such a mixture exists, the game being symmetric forces the value to be $0$, and the optimum can be computed as the solution of a linear programme with one variable per allocation. The picture of the optimal support, points around the simplex rather than at its centre, is Borel's observation that the strategy must be unpredictable. The payoff rule (battlefields won, ties half) is one of several in the literature (others reward only a majority of fields), and the supports differ with the rule and $N$.`,
-      caption: String.raw`Every allocation is a point of the triangle (corners: all soldiers on one field). Green discs show one optimal mixture found by linear programming, the area of each disc proportional to its probability (the optimum is not unique, this is the simplex method's vertex). Drag the gold point to choose your own pure allocation and pick *your allocation* or *the optimal mixture* as the row strategy: the bars show your payoff against each of the opponent's pure allocations. A pure allocation always has a negative bar for $N\ge4$, the mixture has none. Change $N$ to see the support rearrange.`,
-      deps: ['game-3.3'],
-      refs: ['MSZ §4.14'],
-      tags: ['Blotto', 'mixed strategy', 'zero-sum'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Blotto_game' },
-      verify: true,
-      viz(v) {
-        const NS = v.slider('soldiers $N$', 3, 12, 5, { int: true });
-        const row = v.select('row strategy', [{ value: 'pure', label: 'your allocation' }, { value: 'mix', label: 'the optimal mixture' }], 'pure');
-        const ST = v.stage({ x: [-0.12, 1.12], y: [-0.2, 1.02], equal: true, axes: false, height: 360, weight: 0.95, title: 'allocations; green: optimal mixture' });
-        const SB = v.stage({ x: [0, 1], y: [-1.6, 1.6], axes: 'box', gutter: true, height: 360, weight: 1.15, xlabel: 'opponent’s pure allocation', ylabel: 'payoff', yticks: [[-1.5, '−1.5'], [-1, '−1'], [-0.5, '−0.5'], [0, '0'], [0.5, '0.5'], [1, '1'], [1.5, '1.5']], xticks: [], title: 'payoff against each pure reply' });
-        const h = ST.handle(...triPt([1 / 3, 1 / 3, 1 / 3]), { color: 'gold', r: 10, constrain: (x, y) => triClamp(x, y) });
-        let info = null;
-        v.render(() => {
-          const N = NS.value, { al, A, sol, pure } = blotto(N), pts = al.map((a) => triPt(a.map((q) => q / N)));
-          drawTriangle(ST, v, { labels: ['all on 1', 'all on 2', 'all on 3'], labelColor: 'muted' });
-          pts.forEach((p) => ST.dot(p[0], p[1], { r: 2.5, color: 'faint' }));
-          sol.x.forEach((q, i) => { if (q > 1e-9) { ST.dot(pts[i][0], pts[i][1], { r: 5 + 22 * Math.sqrt(q), color: 'green', alpha: 0.5 }); ST.text(al[i].join('-'), pts[i][0], pts[i][1], { dy: -14 - 12 * Math.sqrt(q), align: 'center', size: 10.5, color: 'green', weight: 700 }); } });
-          // snap your allocation
-          const b = triBary(h.x, h.y); let bi = 0, bd = Infinity;
-          al.forEach((a, i) => { const d = Math.hypot(pts[i][0] - h.x, pts[i][1] - h.y); if (d < bd) { bd = d; bi = i; } });
-          h.set(pts[bi][0], pts[bi][1]);
-          const rowS = row.value === 'pure' ? idx(al.length).map((i) => (i === bi ? 1 : 0)) : sol.x;
-          const pay = al.map((_, j) => rowS.reduce((s, xi, i) => s + xi * A[i][j], 0));
-          const nB = al.length; SB.setView([0, nB], [-1.6, 1.6]);
-          pay.forEach((p, j) => SB.rect(j + 0.1, Math.min(0, p), j + 0.9, Math.max(0, p), { fill: p < -1e-9 ? 'orange' : p > 1e-9 ? 'blue' : 'green', fillAlpha: 0.7, color: p < -1e-9 ? 'orange' : 'blue', width: 0.5 }));
-          SB.hline(0, { color: 'ink', width: 1.5 });
-          const worst = Math.min(...pay);
-          info = { N, al, bi, worst, pure, nB, vstar: sol.v, rowS };
-        });
-        v.readout(() => {
-          if (!info) return '';
-          const { N, al, bi, worst, pure, nB, vstar } = info;
-          const sp = info.rowS.filter((q) => q > 1e-9).length;
-          return `$N=${N}$: ${nB} allocations   value $v=${tx(Math.abs(vstar) < 1e-9 ? 0 : vstar)}$   best pure guarantee $\\underline v=${tx(pure.maxmin)}$ ${pure.maxmin < -1e-9 ? '(no pure allocation is safe)' : '(a pure saddle point)'}\n${row.value === 'pure' ? `your allocation ${al[bi].join('-')}` : `the optimal mixture (${sp} allocations)`}: worst-case payoff over all pure replies $=${tx(worst)}$`;
-        });
-      },
-    },
+    blottoItem,
     blackwellItem,
     // ------------------------------------------------------------------ 3.11
     {
