@@ -115,8 +115,8 @@ export default {
       title: 'Self-reference and truth',
       summary: String.raw`A sentence that says of itself that it is false cannot be consistently assigned a truth value. Tarski’s response separates languages into levels, Kripke’s lets some sentences be neither true nor false, and dialetheists accept that some contradictions are true. Variants without obvious self-reference, or without negation, show how deep the problem runs, and the same diagonal pattern powers Cantor’s, Russell’s, Gödel’s and Turing’s results.`,
       items: [
-        { num: '4.1', kind: 'Paradox', name: 'The strengthened liar and revenge', deps: ['logic-1.7'], refs: ['Sainsbury', 'SEP “Liar Paradox”'],
-          pic: 'Assign truth values to “This sentence is false” and to “This sentence is not true” under two-valued and gap-allowing semantics; each attempt is checked and the revenge sentence breaks the gap fix.' },
+        { num: '4.1', kind: 'Paradox', name: 'The strengthened liar and revenge', deps: ['logic-1.7'], refs: ['Kripke, Outline of a Theory of Truth (1975), pp. 699–701 and 714–715', 'Přenosil, Four-valued logics of truth, non-falsity, exact truth, and material equivalence, arXiv:2111.09978v1 (2021), introduction and §§2.3–2.4'],
+          pic: 'Compare true-only, false-only, neither and both in an authored finite status checker. Separate object negation from external not-true classification, and add its self-applicable object rule explicitly to test the strengthened equation.' },
         { num: '4.2', kind: 'Theorem', name: 'Tarski’s hierarchy of object and meta-languages', deps: ['logic-7.6', 'phil-4.1'], refs: ['Sainsbury', 'SEP “Liar Paradox”'],
           pic: 'Stack languages L₀, L₁, L₂…: each has a truth predicate only for the level below, and a sentence trying to talk about its own level is rejected as ill-formed.' },
         { num: '4.3', kind: 'Model', name: 'Kripke’s fixed-point theory of truth', deps: ['phil-4.2'], refs: ['SEP “Liar Paradox”'],

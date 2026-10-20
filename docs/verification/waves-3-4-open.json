@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 168,
+  "remainingFlags": 167,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -30,7 +30,7 @@
     "art": 11,
     "arch": 11,
     "ling": 10,
-    "phil": 2,
+    "phil": 1,
     "tech": 23,
     "bighist": 18
   },
@@ -2039,22 +2039,6 @@
       "links": {}
     },
     {
-      "id": "phil-4.1",
-      "file": "content/phil/ch04.js",
-      "name": "The strengthened liar and revenge",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Sainsbury",
-        "SEP \u201cLiar Paradox\u201d"
-      ],
-      "links": {
-        "sep": "https://plato.stanford.edu/entries/liar-paradox/"
-      }
-    },
-    {
       "id": "tech-4.7",
       "file": "content/tech/ch04-b.js",
       "name": "The cam and the trip hammer",
@@ -3421,7 +3405,8 @@
       "phil-4.7",
       "psych-3.8",
       "phil-4.8",
-      "psych-3.10"
+      "psych-3.10",
+      "phil-4.1"
     ]
   },
   "additionalFollowups": [
@@ -7696,6 +7681,12 @@
       "status": "resolved",
       "report": "docs/verification/psych-mds-followup.md",
       "note": "Actual Williams classical-scaling exposition and formula images checked; independent centering/PSD, repeated-cutoff, rigid-only and impossible-triangle derivations; five mathematical and four native groups plus static checks pass. Authored noise and zero ratios are explicit; no raw-distance optimizer or empirical dimension claim."
+    },
+    {
+      "id": "phil-4.1",
+      "status": "resolved",
+      "report": "docs/verification/phil-liar-followup.md",
+      "note": "Actual Kripke and P\u0159enosil passages/images read independently; exact pair equations distinguish object negation, external reporting and conditional self-enrichment. Four math and four final native groups plus static checks pass; no full-language or general-collapse claim."
     }
   ]
 }
