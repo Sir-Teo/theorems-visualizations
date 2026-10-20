@@ -1,0 +1,644 @@
+{
+  "scope": "Producer prerequisite boundary; separate statement wrapping and independent review pending",
+  "before": [
+    6,
+    19,
+    37
+  ],
+  "after": [
+    25,
+    38,
+    56
+  ],
+  "arrays": [
+    {
+      "num": "1.2",
+      "added": [
+        "pma-6.19"
+      ],
+      "itemBefore": [
+        "climate-1.1",
+        "thermo-9.6"
+      ],
+      "itemAfter": [
+        "climate-1.1",
+        "thermo-9.6",
+        "pma-6.19"
+      ],
+      "rowBefore": [
+        "climate-1.1",
+        "thermo-9.6"
+      ],
+      "rowAfter": [
+        "climate-1.1",
+        "thermo-9.6",
+        "pma-6.19"
+      ]
+    },
+    {
+      "num": "1.3",
+      "added": [
+        "pma-5.8"
+      ],
+      "itemBefore": [
+        "climate-1.1",
+        "thermo-9.5"
+      ],
+      "itemAfter": [
+        "climate-1.1",
+        "thermo-9.5",
+        "pma-5.8"
+      ],
+      "rowBefore": [
+        "climate-1.1",
+        "thermo-9.5"
+      ],
+      "rowAfter": [
+        "climate-1.1",
+        "thermo-9.5",
+        "pma-5.8"
+      ]
+    },
+    {
+      "num": "1.7",
+      "added": [
+        "prob-1.6.2"
+      ],
+      "itemBefore": [
+        "climate-1.6"
+      ],
+      "itemAfter": [
+        "climate-1.6",
+        "prob-1.6.2"
+      ],
+      "rowBefore": [
+        "climate-1.6"
+      ],
+      "rowAfter": [
+        "climate-1.6",
+        "prob-1.6.2"
+      ]
+    },
+    {
+      "num": "1.8",
+      "added": [
+        "pma-6.21"
+      ],
+      "itemBefore": [
+        "climate-1.5",
+        "energy-4.2",
+        "geog-1.2"
+      ],
+      "itemAfter": [
+        "climate-1.5",
+        "energy-4.2",
+        "geog-1.2",
+        "pma-6.21"
+      ],
+      "rowBefore": [
+        "climate-1.5",
+        "energy-4.2",
+        "geog-1.2"
+      ],
+      "rowAfter": [
+        "climate-1.5",
+        "energy-4.2",
+        "geog-1.2",
+        "pma-6.21"
+      ]
+    },
+    {
+      "num": "1.9",
+      "added": [
+        "ode-1.4"
+      ],
+      "itemBefore": [
+        "climate-1.6",
+        "climate-1.8",
+        "sig-6.8"
+      ],
+      "itemAfter": [
+        "climate-1.6",
+        "climate-1.8",
+        "sig-6.8",
+        "ode-1.4"
+      ],
+      "rowBefore": [
+        "climate-1.6",
+        "sig-6.8"
+      ],
+      "rowAfter": [
+        "climate-1.6",
+        "climate-1.8",
+        "sig-6.8",
+        "ode-1.4"
+      ]
+    },
+    {
+      "num": "2.6",
+      "added": [
+        "ode-1.4"
+      ],
+      "itemBefore": [
+        "climate-2.5",
+        "climate-1.4"
+      ],
+      "itemAfter": [
+        "climate-2.5",
+        "climate-1.4",
+        "ode-1.4"
+      ],
+      "rowBefore": [
+        "climate-2.5",
+        "climate-1.4"
+      ],
+      "rowAfter": [
+        "climate-2.5",
+        "climate-1.4",
+        "ode-1.4"
+      ]
+    },
+    {
+      "num": "2.8",
+      "added": [
+        "pma-8.6"
+      ],
+      "itemBefore": [
+        "climate-2.4",
+        "climate-2.6"
+      ],
+      "itemAfter": [
+        "climate-2.4",
+        "climate-2.6",
+        "pma-8.6"
+      ],
+      "rowBefore": [
+        "climate-2.4",
+        "climate-2.6"
+      ],
+      "rowAfter": [
+        "climate-2.4",
+        "climate-2.6",
+        "pma-8.6"
+      ]
+    },
+    {
+      "num": "2.10",
+      "added": [
+        "pma-6.21"
+      ],
+      "itemBefore": [
+        "qchem-10.10",
+        "climate-2.4"
+      ],
+      "itemAfter": [
+        "qchem-10.10",
+        "climate-2.4",
+        "pma-6.21"
+      ],
+      "rowBefore": [
+        "qchem-10.10",
+        "climate-2.4"
+      ],
+      "rowAfter": [
+        "qchem-10.10",
+        "climate-2.4",
+        "pma-6.21"
+      ]
+    },
+    {
+      "num": "2.5",
+      "added": [
+        "ode-1.4"
+      ],
+      "itemBefore": [
+        "qchem-9.13",
+        "geo-1.1"
+      ],
+      "itemAfter": [
+        "qchem-9.13",
+        "geo-1.1",
+        "ode-1.4"
+      ],
+      "rowBefore": [
+        "qchem-9.13",
+        "geo-1.1"
+      ],
+      "rowAfter": [
+        "qchem-9.13",
+        "geo-1.1",
+        "ode-1.4"
+      ]
+    },
+    {
+      "num": "3.6",
+      "added": [
+        "ode-3.5"
+      ],
+      "itemBefore": [
+        "climate-3.5",
+        "climate-1.9"
+      ],
+      "itemAfter": [
+        "climate-3.5",
+        "climate-1.9",
+        "ode-3.5"
+      ],
+      "rowBefore": [
+        "climate-3.5"
+      ],
+      "rowAfter": [
+        "climate-3.5",
+        "climate-1.9",
+        "ode-3.5"
+      ]
+    },
+    {
+      "num": "3.9",
+      "added": [
+        "prob-2.1.1a",
+        "prob-1.2.5"
+      ],
+      "itemBefore": [
+        "climate-3.5",
+        "climate-3.8"
+      ],
+      "itemAfter": [
+        "climate-3.5",
+        "climate-3.8",
+        "prob-2.1.1a",
+        "prob-1.2.5"
+      ],
+      "rowBefore": [
+        "climate-3.5",
+        "climate-3.8"
+      ],
+      "rowAfter": [
+        "climate-3.5",
+        "climate-3.8",
+        "prob-2.1.1a",
+        "prob-1.2.5"
+      ]
+    },
+    {
+      "num": "3.10",
+      "added": [
+        "pma-5.5"
+      ],
+      "itemBefore": [
+        "climate-3.2",
+        "climate-1.11"
+      ],
+      "itemAfter": [
+        "climate-3.2",
+        "climate-1.11",
+        "pma-5.5"
+      ],
+      "rowBefore": [
+        "climate-3.2",
+        "climate-1.11"
+      ],
+      "rowAfter": [
+        "climate-3.2",
+        "climate-1.11",
+        "pma-5.5"
+      ]
+    },
+    {
+      "num": "3.3",
+      "added": [
+        "pma-6.21"
+      ],
+      "itemBefore": [
+        "climate-3.2",
+        "kin-1.5"
+      ],
+      "itemAfter": [
+        "climate-3.2",
+        "kin-1.5",
+        "pma-6.21"
+      ],
+      "rowBefore": [
+        "climate-3.2",
+        "kin-1.5"
+      ],
+      "rowAfter": [
+        "climate-3.2",
+        "kin-1.5",
+        "pma-6.21"
+      ]
+    },
+    {
+      "num": "3.4",
+      "added": [
+        "pma-5.15"
+      ],
+      "itemBefore": [
+        "climate-1.6",
+        "climate-2.8",
+        "climate-3.1"
+      ],
+      "itemAfter": [
+        "climate-1.6",
+        "climate-2.8",
+        "climate-3.1",
+        "pma-5.15"
+      ],
+      "rowBefore": [
+        "climate-1.6",
+        "climate-2.8"
+      ],
+      "rowAfter": [
+        "climate-1.6",
+        "climate-2.8",
+        "climate-3.1",
+        "pma-5.15"
+      ]
+    },
+    {
+      "num": "4.6",
+      "added": [
+        "pma-6.19",
+        "prob-4.1.1a"
+      ],
+      "itemBefore": [
+        "climate-4.1",
+        "climate-3.5"
+      ],
+      "itemAfter": [
+        "climate-4.1",
+        "climate-3.5",
+        "pma-6.19",
+        "prob-4.1.1a"
+      ],
+      "rowBefore": [
+        "climate-4.1",
+        "climate-3.5"
+      ],
+      "rowAfter": [
+        "climate-4.1",
+        "climate-3.5",
+        "pma-6.19",
+        "prob-4.1.1a"
+      ]
+    },
+    {
+      "num": "4.8",
+      "added": [
+        "pma-9.17"
+      ],
+      "itemBefore": [
+        "climate-4.1",
+        "climate-2.6"
+      ],
+      "itemAfter": [
+        "climate-4.1",
+        "climate-2.6",
+        "pma-9.17"
+      ],
+      "rowBefore": [
+        "climate-4.1",
+        "climate-2.6"
+      ],
+      "rowAfter": [
+        "climate-4.1",
+        "climate-2.6",
+        "pma-9.17"
+      ]
+    },
+    {
+      "num": "4.1",
+      "added": [
+        "pma-3.26"
+      ],
+      "itemBefore": [
+        "climate-3.4",
+        "ctrl-1.4"
+      ],
+      "itemAfter": [
+        "climate-3.4",
+        "ctrl-1.4",
+        "pma-3.26"
+      ],
+      "rowBefore": [
+        "climate-3.4",
+        "ctrl-1.4"
+      ],
+      "rowAfter": [
+        "climate-3.4",
+        "ctrl-1.4",
+        "pma-3.26"
+      ]
+    }
+  ],
+  "pixels": [
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.2-dark-idea.png",
+      "sha256": "a920c61c0c2bdd2c1dbc8f4c6a760f2dca363f4b1c239c188c729ffc51dd1340"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.2-light-idea.png",
+      "sha256": "f55cbaeae1b6184637595f2d8dd5bf2982c09a9760c380804ebcdd61c8cff75e"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.3-dark-idea.png",
+      "sha256": "11316374754d41751dcfccec7a2c3a4e684ec8aea74514e098ec0b2460d7f460"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.3-light-idea.png",
+      "sha256": "743766816bf94acecc5da1c6944ac073395a48765393fbe9d4ed4eacae84b430"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.7-dark-idea.png",
+      "sha256": "230105f7f2ccce5c6dd1c6f3229f39b3d02186eb8af1e3f11a4436aeb59bb378"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.7-light-idea.png",
+      "sha256": "5e9bfc09c273e9b30dc30f3f58aa1c22c013b646398f316122e1cd0b1f7297b6"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.8-dark-idea.png",
+      "sha256": "10ce2246e3dbfe87f2841cd77952b9d9955a795534eb98c10fa1614fcb703e30"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.8-light-idea.png",
+      "sha256": "5ad301d62b1ddca7a433d211fb04c4cdfa43a8efef958d2698066baed4fe47e2"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.9-dark-idea.png",
+      "sha256": "623b97ecc149d6289da3a900f1567ca407bdeca57a7266590071bf578dc6387b"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/1.9-light-idea.png",
+      "sha256": "f237e2ddf961f731436916929ece89c0fc38df2c332e11a065f6980e7b9aedc6"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.10-dark-idea.png",
+      "sha256": "94915f4eb6c320d8d96a1446c5d34953d185cfadeb3ac9ed99f8657847d591c0"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.10-light-idea.png",
+      "sha256": "26d7f92e97d0913ed4780aa559ff0217127c705dad58047aec8d090ed18a6463"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.5-dark-idea.png",
+      "sha256": "3cf7ce9dcf175bf344bf86fd9380bd15ab6cf9467027c61bb947ee88a97ed44a"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.5-light-idea.png",
+      "sha256": "ec77e96bcc71ac95bd172dc6448d33bc89a5615661772fce7446717bd9efff5f"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.6-dark-idea.png",
+      "sha256": "891de092187e97f4608ca86af72b518d653677e440eab2bd52c4a4d6e90263ed"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.6-light-idea.png",
+      "sha256": "cb145e9712c719b2ef0a603e4bd7863acbc201d088fcfc04e0c26ab664f82d85"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.8-dark-idea.png",
+      "sha256": "6e315cceb5d38732b6b13bb8d0a51ed5ef38f0c81a61ffee5481644b068b0be0"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/2.8-light-idea.png",
+      "sha256": "ee36ed5e561d30d538fa380c906c3e51ed83f8a17a4c452b342ed0c8bd76394a"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.10-dark-idea.png",
+      "sha256": "88e10c8125e571559a3a0fea24e0b9a524aa8c27ab05ce9ee83e20c382718684"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.10-light-idea.png",
+      "sha256": "08bb0df49f954992cad189d969698a4d666d264fa21f5aa86dd850c00aad6367"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.3-dark-idea.png",
+      "sha256": "b11d0a7db65559b9cfda901086324c9a5ea183982266962ac30ee3eeed8d122a"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.3-light-idea.png",
+      "sha256": "e71b3dc0231f96dbd6d65f0e85f58884c6ed2961afd000e7314f66f7c583a20a"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.4-dark-idea.png",
+      "sha256": "276b3db0b0711592548cdc7af78ef99ea11cb84bb73ade3474fd3a4e376d69e0"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.4-light-idea.png",
+      "sha256": "ab80b3e53de00796da5ab19ab0d68ac6dda109b951828a756e1619cc530f9c21"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.6-dark-idea.png",
+      "sha256": "90e81f84723345611a85c89c739c9a35582c2ffdd948da808b7f5ed02059eb64"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.6-light-idea.png",
+      "sha256": "b0a2045b2f7095cc32af221955985588c74393f73a7765f2c28ce3ee1400747a"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.9-dark-idea.png",
+      "sha256": "fc48d800dac0ec4fba774e85f3fa1776d227f41c72ef5284905317c755531a85"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/3.9-light-idea.png",
+      "sha256": "6fd99ef747864ee3e761700652a66a1c58b476a2b990440cef78e2d6b571bc3d"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.1-dark-idea.png",
+      "sha256": "f997f1e9b68ca3ed65ccd7fb5e18962ed3aef1f7ce6317510cf955bdbc7300f9"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.1-light-idea.png",
+      "sha256": "805bcca151eb05c24ab23472faff576bb55c8abbbb174984e5a2ead7d0f14efa"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.6-dark-idea.png",
+      "sha256": "5e49e8b8af822bdb20477f8e15a01cedec4016e28b936ad10a6c78e99dabdbd0"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.6-light-idea.png",
+      "sha256": "d297cc8994e34030bdd0e7bf87f8c81a6d11b1c682218d445437e11e0b5e9997"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.8-dark-idea.png",
+      "sha256": "973f3b20fe99d945da54ceb2f0465536f2d35508ba70de6d567a0f587f3ce9c3"
+    },
+    {
+      "path": "/tmp/atlas-climate-prereqs/native-initial/4.8-light-idea.png",
+      "sha256": "95774b157d6501ff056b7458aa690ccc5f70cfe3790447e8805c896fe3bff434"
+    }
+  ],
+  "inheritedStatementOverflow": [
+    {
+      "id": "2.6",
+      "theme": "light",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 384
+    },
+    {
+      "id": "2.10",
+      "theme": "light",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 371
+    },
+    {
+      "id": "4.6",
+      "theme": "light",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 454
+    },
+    {
+      "id": "1.2",
+      "theme": "light",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 574
+    },
+    {
+      "id": "1.8",
+      "theme": "light",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 575
+    },
+    {
+      "id": "2.6",
+      "theme": "dark",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 384
+    },
+    {
+      "id": "2.10",
+      "theme": "dark",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 371
+    },
+    {
+      "id": "4.6",
+      "theme": "dark",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 454
+    },
+    {
+      "id": "1.2",
+      "theme": "dark",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 574
+    },
+    {
+      "id": "1.8",
+      "theme": "dark",
+      "selector": "#statement",
+      "width": 281,
+      "scroll": 575
+    }
+  ]
+}
