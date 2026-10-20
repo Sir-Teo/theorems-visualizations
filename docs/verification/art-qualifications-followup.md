@@ -1,0 +1,15 @@
+# ART bounded geometric and numerical qualifications
+
+This separate successor to prerequisite boundary03d24499ebb31470c602c1f0d1eaa85ae0155942 changes11 complete text fields only. The explicit manifest stores every full before/after literal. A28-file reconstruction permits exactly those fields and preserves all numerical functions, source-audit helpers, controls/replay behavior, source flags, dependencies and raw rows byte-for-byte.
+
+1.11 now requires an exterior eye and a forward tangent cone, theta+alpha<90degrees, for a finite ellipse. For fixed alpha the unbounded-section threshold is90−alpha; sec(theta) is a small-alpha approximation away from that threshold. The spherical-screen comparison is explicitly ideal geometry rather than a physiological retinal claim. The actual control domain remains unchanged and inside the finite-ellipse regime.
+
+1.12 requires distinct source points, an off-line center, coplanar projection and finite distinct images. Its column caption specifies consecutive quartets, since arbitrary selected columns need not have cross-ratio4/3. The signed-area proof/input stays unchanged. 1.14 keeps its correct great-circle trace: the spatial line and eye span a plane through the eye-centered sphere’s center. No small-circle correction is made.
+
+2.1 defines the perpendicular intended plane through the canvas’s central sight-line hit and distinguishes its central differential scales from the finite projective warp. With local intended coordinates(a,b), eye distanceL and anglephi, the actual geometry gives X(a)=La/(Lsinphi+acosphi) and Z(a,b)=bLsinphi/(Lsinphi+acosphi). Thus X′(0)=1/sinphi and Z(0,b)=b, while off-axis scales depend on position. The separately authorized canvas-label literal follows in its own boundary.
+
+2.8 removes the retained claim that homogeneous DLT finds the globally best geometric reprojection fit; its unit-vector algebraic spectral optimum and separately reported geometric RMS remain distinct. 4.10 replaces a universal “looks most like” interpretation with nearest distance in the chosen coordinate metric, consistent with the new interior stationary-point argument and finite-table scope.
+
+The separately authorized2.4 text now derives the crossing optimum specifically for the actual root-sum-square proxy, b²=d²+k²/d². Its minimum has d⁴=k²; arbitrary increasing/decreasing functions do not imply a crossing optimum. The proxy is distinguished from the numerical84%-energy Fresnel computation, its finite radial integration, approximate Bessel function and sampled diameter search. No numerical algorithm, comparison criterion, trajectory or source closure is changed.
+
+Own independent analytic witnesses pass464 assertions, including the finite-cone boundary, central and off-axis homography derivatives, nonconsecutive cross-ratio, a counterexample to the generic crossing rule and the constrained zero-camera distinction. Fresh native/strict/static closing gates follow when the coordinator’s browser/heavy-work hold is released; no visual acceptance is claimed at this source/math-only boundary. Independent peer review remains required.
