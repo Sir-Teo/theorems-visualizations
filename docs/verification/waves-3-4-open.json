@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 64,
+  "remainingFlags": 63,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 2,
+    "game": 1,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -200,21 +200,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "game-3.9",
-      "file": "content/game/ch03-b.js",
-      "name": "Colonel Blotto",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ §4.14"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Blotto_game"
       }
     },
     {
@@ -1804,7 +1789,8 @@
       "polsci-5.8",
       "polsci-5.10",
       "tech-5.6",
-      "tech-5.8"
+      "tech-5.8",
+      "game-3.9"
     ]
   },
   "additionalFollowups": [
@@ -6713,6 +6699,11 @@
       "id": "tech-5.8",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent ODE, native input/replay and geometry review; docs/verification/tech-huygens-followup.md."
+    },
+    {
+      "id": "game-3.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker_two exact-commit original-source/pixels, exact rational inequalities, native-state and output-pixel review; credit-year follow-up independently confirmed; docs/verification/game-blotto-followup.md."
     }
   ]
 }

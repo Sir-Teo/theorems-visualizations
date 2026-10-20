@@ -25,7 +25,7 @@
     ],
     "current": [
       "Integrate independently reviewed batches and reconcile all wave gates",
-      "Peer-review incoming source/math/native batches; continue game3.9/4.11",
+      "Peer-review navigation raw-state correction; continue game4.11",
       "Continue difficult original-source audits; preserve source-access limitations"
     ]
   },
@@ -62,7 +62,7 @@
       "completedCollections": [
         "psych"
       ],
-      "current": "Huygens5.6/5.8 accepted; finish technology5.2/5.3/5.9/5.10/5.11 navigation audits."
+      "current": "Navigation5.9/5.10 candidate735e0f5 awaits raw-state fix; repair corresponding tech4.8 callbacks, then finish5.2/5.3/5.11. Blotto peer accepted."
     },
     {
       "agent": "worker_three",
@@ -76,7 +76,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Political-science queue independently accepted and clear; continue9 queued ART reviews, starting colorimetry4.5/4.14/4.16.",
+      "current": "Finish ART4.5/4.14/4.16 candidate, then independent LING4.9/4.10 peer f4183e3 before remainingART.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -690,6 +690,21 @@
       "commits": [
         "eed690f"
       ]
+    },
+    {
+      "ids": [
+        "game-3.9"
+      ],
+      "peer": "worker_two exact-commit original-source/pixels, exact rational inequalities, native-state and output-pixel review; credit-year follow-up independently confirmed",
+      "reports": [
+        "docs/verification/game-blotto-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5c1739d",
+        "9997e2c",
+        "4f598d4"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -702,7 +717,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 64,
+  "currentPendingSourceReviews": 63,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",
@@ -744,5 +759,14 @@
       "Unintegrated worker candidates are excluded from this snapshot.",
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
-  }
+  },
+  "openStateFindings": [
+    {
+      "id": "tech-4.8",
+      "status": "open",
+      "finding": "Endpoint onDrag callbacks can overwrite valid changed saved height controls during handle restoration; independently confirmed callback ordering matches navigation reproduction. Worker_two repairing separately; prior source audit remains accepted, native-state gate stays open.",
+      "relatedCandidate": "735e0f5 navigation peer reproduction",
+      "evidence": "/tmp/atlas-coordinator/tech-longitude-peer-raw.log"
+    }
+  ]
 }
