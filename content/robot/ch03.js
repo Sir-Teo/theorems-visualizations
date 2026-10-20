@@ -1,4 +1,5 @@
 // Robotics — Chapter 3: Forward kinematics and closed chains
+import denavitAudit from './source-audit-denavit.js';
 import {
   TAU, DEG, clamp, vadd, vsub, vsc, dot3, cross3, norm3, unit3, I3, mm, mt, mv, madd, msc, mcol, fro, orthErr, Rx, Ry, Rz,
   mkT, Rof, pof, Tmul, Tinv, Tapply, Ttrans, Trot, I4, twistExp, adjoint, mv6,
@@ -344,94 +345,6 @@ and $\phi=\theta_1+\cdots+\theta_n$. The same pose is the $3\times3$ matrix prod
       },
     },
     // ------------------------------------------------------------------ 3.7
-    {
-      num: '3.7',
-      kind: 'Paper',
-      name: 'A Kinematic Notation for Lower-Pair Mechanisms',
-      paper: { authors: 'J. Denavit and R. S. Hartenberg', year: 1955, title: 'A Kinematic Notation for Lower-Pair Mechanisms Based on Matrices', venue: 'Journal of Applied Mechanics 22 (2): 215–221', doi: '10.1115/1.4011045' },
-      introduces: ['robot-3.2'],
-      credit: 'J. Denavit & R. S. Hartenberg, 1955',
-      statement: String.raw`Denavit and Hartenberg proposed a systematic way to describe any **lower-pair mechanism** (one whose joints are surface contacts: revolute, prismatic, helical, cylindrical, spherical, planar pairs) so that its kinematics can be handled by matrix algebra. A fixed convention for attaching a coordinate frame to each link reduces the relation between consecutive links to **four numbers**, a joint angle, an offset along the joint axis, a link length and a twist angle; each pair of frames is related by a $4\times4$ matrix built from those four numbers, and the pose of the last link in the first is the product of these matrices. The notation covers space mechanisms as well as planar ones. Here we use today's names and symbols $(\theta_i,d_i,a_i,\alpha_i)$ and the classical product $A_i=\mathrm{Rot}(z,\theta_i)\mathrm{Trans}(z,d_i)\mathrm{Trans}(x,a_i)\mathrm{Rot}(x,\alpha_i)$; the paper's own symbols and frame placement are not reproduced.`,
-      idea: String.raw`Before this paper the common symbolic language for mechanisms was Reuleaux's notation, which, the authors argued, did not record all the numbers needed to describe a mechanism completely. Denavit and Hartenberg gave a rule for placing the frames and a $4\times4$ matrix for each link, which turned loop-closure and position analysis into matrix algebra on a computer or by hand. Their four-number description became the **Denavit–Hartenberg parameters** (3.2), later the standard table of robot manufacturers' kinematics, and it rests on the homogeneous matrices of 2.6. Modern books place the frames slightly differently (the *modified* convention), but the content is the same four numbers per link. This summary follows the paper's abstract and standard accounts of it, not a reading of its full text.`,
-      verify: true,
-      caption: String.raw`Build a serial chain of up to four links: pick a **link**, then set its four parameters $(a,\alpha,d,\theta)$ with the sliders. The frames the convention attaches are drawn on the chain (red $x$, blue $z$), the link table is shown on the right, and the pose of the last frame is the product of the $4\times4$ matrices. Switch the **convention** between the classical form and the modified form: the frames move, the table is re-indexed, and the final pose is unchanged. This is a reconstruction in modern notation, not the paper's own figures or data.`,
-      deps: ['robot-2.6'],
-      see: ['robot-3.2'],
-      refs: [],
-      tags: ['Denavit–Hartenberg', 'lower pair', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters' },
-      viz(v) {
-        const P = [
-          { a: 0, al: 90, d: 0.6, th: 30 }, { a: 1.0, al: 0, d: 0, th: 40 }, { a: 0.8, al: 0, d: 0, th: -50 }, { a: 0.4, al: -90, d: 0.2, th: 20 },
-        ];
-        const nJ = v.slider('number of links', 1, 4, 3, { int: true });
-        const conv = v.select('convention', [{ value: 'cl', label: 'classical (frame i on link i)' }, { value: 'mod', label: 'modified (Craig; Lynch–Park)' }], 'cl');
-        const sel = v.select('link', ['1', '2', '3', '4'], '1');
-        const cur = () => P[Math.min(+sel.value, nJ.value) - 1];
-        const sa = v.slider('link length $a$', -1.5, 1.5, P[0].a, { step: 0.01, onChange: (x) => { cur().a = x; } });
-        const sal = v.slider('twist $\\alpha$ (°)', -180, 180, P[0].al, { step: 1, onChange: (x) => { cur().al = x; } });
-        const sd = v.slider('offset $d$', -1, 1, P[0].d, { step: 0.01, onChange: (x) => { cur().d = x; } });
-        const sth = v.slider('joint angle $\\theta$ (°)', -180, 180, P[0].th, { step: 1, onChange: (x) => { cur().th = x; } });
-        let lastSel = '1';
-        const SC = v.stage({ x: [-1.7, 2.9], y: [-1.0, 1.9], equal: true, axes: false, height: 440, title: 'a serial chain with its frames' });
-        const sc = v.scene3(SC, { yaw: -0.8, pitch: 0.3, axes: false, lim: 1.5, axis: 1.2 });
-        const B = v.stage({ x: [0, 10], y: [0, 7.4], axes: false, height: 440, title: 'the link table', minWidth: 300 });
-        let st = null;
-        v.render(() => {
-          const n = nJ.value, k = Math.min(+sel.value, n);
-          if (sel.value !== lastSel || +sel.value > n) { lastSel = sel.value; const c = P[k - 1]; sa.set(c.a); sal.set(c.al); sd.set(c.d); sth.set(c.th); }
-          const modern = conv.value === 'mod';
-          // classical chain
-          const Fcl = [I4()]; for (let i = 0; i < n; i++) Fcl.push(Tmul(Fcl[i], dhA(P[i].th * DEG, P[i].d, P[i].a, P[i].al * DEG)));
-          // modified chain: same numbers re-indexed, with a final fixed transform (a_n, alpha_n)
-          let Tm = I4(); const G = [];
-          for (let i = 0; i < n; i++) { const A = dhAmod(i === 0 ? 0 : P[i - 1].al * DEG, i === 0 ? 0 : P[i - 1].a, P[i].th * DEG, P[i].d); Tm = Tmul(Tm, A); G.push(Tm); }
-          const Tend = Tmul(Tm, Tmul(Ttrans([P[n - 1].a, 0, 0]), Trot(Rx(P[n - 1].al * DEG))));
-          sc.begin();
-          const floor = []; for (let i = 0; i < 40; i++) { const t = (TAU * i) / 40; floor.push([0.35 * Math.cos(t), 0.35 * Math.sin(t), 0]); }
-          sc.path(floor, { color: 'muted', width: 2, close: true, top: false });
-          for (let i = 1; i <= n; i++) {
-            const Op = pof(Fcl[i - 1]), zp = mcol(Rof(Fcl[i - 1]), 2), Oi = pof(Fcl[i]), foot = vadd(Op, vsc(zp, P[i - 1].d)), hl = i === k;
-            sc.line(Op, foot, { color: JC[i - 1], width: hl ? 7 : 5, alpha: hl ? 0.95 : 0.6 }); sc.line(foot, Oi, { color: JC[i - 1], width: hl ? 7 : 5, alpha: hl ? 0.95 : 0.6 });
-            sc.line(vadd(Op, vsc(zp, -0.5)), vadd(Op, vsc(zp, 0.5)), { color: JC[i - 1], width: 1.3, dash: true, alpha: 0.6, top: false });
-          }
-          const fr = modern ? G.map((T, i) => ({ T, name: i + 1 })).concat([{ T: Tend, name: 't' }]) : Fcl.map((T, i) => ({ T, name: i }));
-          for (const { T, name } of fr) {
-            const R = Rof(T), p = pof(T);
-            sc.arrow(p, vadd(p, vsc(mcol(R, 2), 0.32)), { color: 'accent', width: 2.2, head: 7 }); sc.arrow(p, vadd(p, vsc(mcol(R, 0), 0.32)), { color: 'red', width: 2.2, head: 7 });
-            sc.dot(p, { color: 'ink', r: 3 }); sc.tex(`\\{${name}\\}`, vadd(p, [0.12, 0, -0.2]), { color: 'ink', size: 11.5 });
-          }
-          sc.dot(pof(Fcl[n]), { color: 'gold', r: 5.5 });
-          sc.flush();
-          // table
-          const cols = modern ? [0.9, 2.7, 4.5, 6.3, 8.1] : [0.9, 2.7, 4.5, 6.3, 8.1];
-          const heads = modern ? ['link', '\\alpha_{i-1}', 'a_{i-1}', 'd_i', '\\theta_i'] : ['link', '\\theta_i', 'd_i', 'a_i', '\\alpha_i'];
-          heads.forEach((h, j) => (j ? B.tex(h, cols[j] + 0.4, 6.8, { size: 14, color: 'muted', align: 'center' }) : B.text(h, cols[j], 6.8, { size: 13, color: 'muted', align: 'center' })));
-          for (let i = 0; i <= n; i++) {
-            if (!modern && i === n) break;
-            const y = 5.85 - i * 0.95;
-            const row = modern
-              ? (i < n ? [i === 0 ? 0 : P[i - 1].al, i === 0 ? 0 : P[i - 1].a, P[i].d, P[i].th] : [P[n - 1].al, P[n - 1].a, null, null])
-              : [P[i].th, P[i].d, P[i].a, P[i].al];
-            const isSel = i + 1 === k && (!modern || i < n);
-            B.rect(0.1, y - 0.4, 9.9, y + 0.4, { fill: isSel ? 'accent' : 'muted', fillAlpha: isSel ? 0.14 : 0.05, color: isSel ? 'accent' : 'faint', width: isSel ? 1.8 : 1, radius: 4 });
-            B.text(modern && i === n ? 'tool' : String(i + 1), cols[0], y, { size: 14, align: 'center', baseline: 'middle', color: modern && i === n ? 'ink' : JC[i] });
-            row.forEach((x, j) => {
-              const isVar = modern ? j === 3 : j === 0;
-              if (x == null) { B.text('—', cols[j + 1] + 0.4, y, { size: 13, align: 'center', baseline: 'middle', color: 'muted' }); return; }
-              if (isVar) B.rect(cols[j + 1] - 0.5, y - 0.3, cols[j + 1] + 1.3, y + 0.3, { fill: 'orange', fillAlpha: 0.25, color: 'orange', width: 1, radius: 4 });
-              const deg = modern ? j === 0 || j === 3 : j === 0 || j === 3;
-              B.text(cn(x, deg ? 0 : 2) + (deg ? '°' : ''), cols[j + 1] + 0.4, y, { size: 13.5, align: 'center', baseline: 'middle', color: 'ink' });
-            });
-          }
-          B.tex(modern ? 'A_i=\\mathrm{Rot}(x,\\alpha_{i-1})\\mathrm{Trans}(x,a_{i-1})\\mathrm{Rot}(z,\\theta_i)\\mathrm{Trans}(z,d_i)' : 'A_i=\\mathrm{Rot}(z,\\theta_i)\\mathrm{Trans}(z,d_i)\\mathrm{Trans}(x,a_i)\\mathrm{Rot}(x,\\alpha_i)', 5, 0.7, { size: 13, color: 'muted', align: 'center' });
-          st = { n, errConv: f4(sub4(Tend, Fcl[n])), orth: orthErr(Rof(Fcl[n])), tip: pof(Fcl[n]) };
-        });
-        v.readout(() => {
-          if (!st) return '';
-          return `Pose of the last frame, as the product of ${st.n} matrices $A_i$: position $${g3(st.tip)}$, $\\|R^{\\mathsf T}R-I\\|=${v.sci(st.orth + 1e-17, 1)}$ (a rigid motion).\nThe classical product $\\prod\\mathrm{Rot}(z,\\theta_i)\\mathrm{Trans}(z,d_i)\\mathrm{Trans}(x,a_i)\\mathrm{Rot}(x,\\alpha_i)$ and the modified product, which uses the same ${4 * st.n} numbers re-indexed plus a final fixed transform, agree to $${v.sci(st.errConv + 1e-17, 2)}$. Each link needs $4$ numbers where an arbitrary frame transform needs $6$.`;
-        });
-      },
-    },
+    denavitAudit,
   ],
 };

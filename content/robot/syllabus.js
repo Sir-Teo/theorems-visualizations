@@ -87,8 +87,8 @@ export default {
         { num: '3.7', kind: 'Paper', name: 'A Kinematic Notation for Lower-Pair Mechanisms',
           paper: { authors: 'J. Denavit and R. S. Hartenberg', year: 1955, title: 'A Kinematic Notation for Lower-Pair Mechanisms Based on Matrices',
                    venue: 'Journal of Applied Mechanics 22 (2): 215–221', doi: '10.1115/1.4011045' },
-          introduces: ['robot-3.2'], deps: ['robot-2.6', 'robot-1.2'], refs: [],
-          pic: 'Build a linkage joint by joint: for each link set the four parameters (a, α, d, θ), see the frame the convention attaches, and watch the product of 4 × 4 matrices carry the end frame as the joints move.' },
+          introduces: ['robot-3.2'], deps: ['robot-2.6', 'robot-1.2'], refs: ['Denavit & Hartenberg 1955, original pp.215–221; Eq.(6) p.219'],
+          pic: 'Edit four saved modern DH rows, compare classical and modified frames plus the fixed tool, and verify the reordered 1955 matrix with its opposite signed twist.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
