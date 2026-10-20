@@ -154,7 +154,7 @@ export default {
           pic: 'Expose every mixed-plan weight and own-prefix conditional probability, including exact zero and rare positive prefixes; a forgotten-action determinant separates terminal distributions without perfect recall.' },
         { num: '4.11', kind: 'Theorem', name: 'Strategy stealing: the first player wins Hex and Chomp', deps: ['game-4.3'], refs: ['MSZ §3.4'],
           pic: 'Play Hex on small boards and Chomp on rectangles; solved positions confirm a first-player win, and the stealing argument is animated by inserting an extra stone into a hypothetical second-player strategy.' },
-        { num: '4.12', kind: 'Theorem', name: 'Nim and the Sprague–Grundy theorem', deps: ['game-4.2'], refs: ['MSZ ch. 3'],
+        { num: '4.12', kind: 'Theorem', name: 'Nim and the Sprague–Grundy theorem', deps: ['game-4.2'], refs: ['Sprague (1935), Über mathematische Kampfspiele, §§1–9, Theorems I–III, pp.438–442'],
           pic: 'Play Nim against the computer, which moves to make the binary XOR of the heaps zero; Grundy values of other impartial games (subtraction games, Kayles) are computed and added like Nim heaps.' },
         { num: '4.13', kind: 'Theorem', name: 'High-dimensional tic-tac-toe: the first player wins', deps: ['comb-11.9', 'game-4.11'], refs: ['MSZ §3.4'],
           pic: 'In nᵈ tic-tac-toe, Hales–Jewett rules out draws in high dimension and strategy stealing then gives a first-player win; small cases (3², 4³) are solved and displayed.' },
