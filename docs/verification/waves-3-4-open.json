@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 40,
+  "remainingFlags": 37,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,6 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "art": 3,
     "arch": 6,
     "ling": 4,
     "bighist": 16
@@ -198,42 +197,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "art-3.12",
-      "file": "content/art/ch03-b.js",
-      "name": "Opticks",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "The arc proportions are the numbers printed in the Opticks text as I read it from a public-domain transcription (Project Gutenberg), not checked against the 1704 print. The wavelength attached to each colour name in the modern comparison (660, 607, 577, 532, 482, 452, 420 nm) is a conventional mid-band choice, not Newton’s."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Opticks"
-      }
-    },
-    {
-      "id": "art-3.13",
-      "file": "content/art/ch03-b.js",
-      "name": "Zur Farbenlehre (Theory of Colours)",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Linear model of a thin prism and equal-energy lighting, as in art-3.11. What Goethe reported (yellow-red and blue-violet edges, green from a narrowed white stripe, purple from a narrowed dark one, the growth of the fringes with distance) is taken from secondary descriptions of the experiments, not checked against the 1810 text."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Theory_of_Colours"
       }
     },
     {
@@ -641,33 +604,11 @@
         "wikipedia": "https://en.wikipedia.org/wiki/Serial_founder_effect",
         "doi": "https://doi.org/10.1073/pnas.0507611102"
       }
-    },
-    {
-      "id": "art-3.3",
-      "file": "content/art/ch03.js",
-      "name": "Newton’s colour circle and centre-of-gravity mixing",
-      "field": "art",
-      "category": "neighboring-source-error",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        "Inherited blue-arc fraction differs from actual1704 print; isolated candidate003e624 awaits independent acceptance"
-      ],
-      "refs": [
-        "Newton1704, BookI PartII PropositionVI pp.114–117",
-        "CIE1931 official matching-function dataset DOI10.25039/CIE.DS.xvudnb9b"
-      ],
-      "links": {
-        "original": "https://www.wilbourhall.org/pdfs/newton/opticks1704englishwh.pdf",
-        "transcription": "https://newtonproject.ox.ac.uk/view/texts/diplomatic/NATP00034"
-      }
     }
   ],
   "changesFromBaseline": {
     "addedFlags": [
-      "circ-4.17",
-      "art-3.12",
-      "art-3.13",
-      "art-3.3"
+      "circ-4.17"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -6503,8 +6444,18 @@
     },
     {
       "id": "art-3.3",
-      "status": "source-review-pending",
-      "note": "2026-10-20: actual1704 print has blue1/10, inherited shared circle had1/16; coordinator assigned isolated repair; integrated exact003e624 remains flagged pending independent peer."
+      "status": "resolved",
+      "note": "2026-10-20: Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review; docs/verification/art-optics-followup.md."
+    },
+    {
+      "id": "art-3.12",
+      "status": "resolved",
+      "note": "2026-10-20: Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review; docs/verification/art-optics-followup.md."
+    },
+    {
+      "id": "art-3.13",
+      "status": "resolved",
+      "note": "2026-10-20: Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review; docs/verification/art-optics-followup.md."
     }
   ]
 }

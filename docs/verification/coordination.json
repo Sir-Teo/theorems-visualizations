@@ -891,6 +891,22 @@
       "commits": [
         "e1cfabd"
       ]
+    },
+    {
+      "ids": [
+        "art-3.3",
+        "art-3.12",
+        "art-3.13"
+      ],
+      "peer": "Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review",
+      "reports": [
+        "docs/verification/art-optics-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "003e624",
+        "0042d66"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -903,7 +919,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 40,
+  "currentPendingSourceReviews": 37,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",
