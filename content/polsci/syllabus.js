@@ -187,9 +187,9 @@ export default {
         { num: '5.9', kind: 'Theorem', name: 'The swing voter’s curse', deps: ['polsci-5.6'], refs: ['Feddersen–Pesendorfer1996, pp.411–413/419; Fey–Kim2002, author August2000 correction pp.3–10'],
           pic: 'Exact conditional margin distributions and one uninformed voter’s gains from voting instead of abstaining. Odd noisy informed count, signal accuracy and fixed partisan margin are controlled; the balanced case has proved best replies, and unbalanced margins are deviation audits without equilibrium claims.' },
         { num: '5.10', kind: 'Paper', name: 'Essai sur l’application de l’analyse à la probabilité…',
-          paper: { authors: 'Marquis de Condorcet', year: 1785, title: 'Essai sur l’application de l’analyse à la probabilité des décisions rendues à la pluralité des voix', venue: 'Paris: Imprimerie Royale', url: 'https://archive.org/details/essaisurlapplica00cond' },
-          introduces: ['polsci-5.4', 'polsci-2.1', 'polsci-1.6'], deps: ['polsci-1.5'], refs: [],
-          pic: 'Condorcet’s two discoveries side by side: a jury of n independent voters each right with probability p, where the chance that the majority is right climbs toward 1 as n grows if p > ½ and sinks toward 0 if p < ½; and three voters whose rankings make the majority preference cycle (A beats B, B beats C, C beats A), with a sampler that shows how often random electorates produce such a cycle.' },
+          paper: { authors: 'Marquis de Condorcet', year: 1785, title: 'Essai sur l’application de l’analyse à la probabilité des décisions rendues à la pluralité des voix', venue: 'Paris: Imprimerie Royale', url: 'https://doi.org/10.3931/e-rara-3791' },
+          introduces: ['polsci-5.4', 'polsci-2.1', 'polsci-1.6'], deps: ['polsci-1.5'], refs: ['Original1785 Discours préliminaire pp.xxi–xxiv andlvi–lxv; ETHRar5135 scan'],
+          pic: 'Modern iid jury probability with all three source-stated competence regimes, alongside the original sixty-voter cycle and pairwise-winner examples. Custom six-ranking counts are editable and replay exactly; all pairwise margins, strict cycles, winners and ties are tallied, without simulation claims.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
