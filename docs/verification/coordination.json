@@ -1560,7 +1560,7 @@
       ],
       "producer": "coordinator",
       "peer": "deep_peer",
-      "report": "docs/verification/deep-clipping-label-peer.md",
+      "report": "docs/verification/deep-gradient-clipping-label-peer.md",
       "sourceClosure": "None; unchangednumericalmodel/sourceflag."
     }
   ],
