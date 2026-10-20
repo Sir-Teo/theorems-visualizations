@@ -1,0 +1,161 @@
+{
+  "prerequisiteBoundary": "7bcb87d3efad2734933920d067dda3af050f0b55",
+  "scope": "Equivalent formatting of seven statements only; independent peer pending; no source closure",
+  "items": [
+    "1.4",
+    "2.3",
+    "4.9",
+    "5.5",
+    "5.8",
+    "5.9",
+    "6.2"
+  ],
+  "guard": {
+    "objects": 48,
+    "functions": 48,
+    "statementFields": 7,
+    "equivalence": "All mathematical and prose tokens in order; only aligned/gathered, row breaks, alignment marks and whitespace removed",
+    "allOtherFieldsAndFiles": "identical",
+    "functionsDependenciesSyllabusFlags": "preserved"
+  },
+  "native": {
+    "cases": 14,
+    "width": 320,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "overflow": [],
+    "ownPixels": "All14 complete actual strict-built statement images personally inspected",
+    "builtStatementSHA": "4da85bda5384fd8a490626d84378a0bfeef2a113f1dd7058c4dc4117ef4aba09"
+  },
+  "strict": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "static": {
+    "items": 7,
+    "errors": 0,
+    "warnings": 0
+  },
+  "logs": [
+    "/tmp/atlas-new-imaging-source/geog-wrap-guard.log",
+    "/tmp/atlas-new-imaging-source/geog-wrap-native.log",
+    "/tmp/atlas-new-imaging-source/geog-wrap-strict.log",
+    "/tmp/atlas-new-imaging-source/geog-wrap-static.log"
+  ],
+  "pictures": [
+    {
+      "id": "geog-1.4",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/1.4-light-statement.png",
+      "sha256": "2b2712fd4afc197c85ae32409820d17f8c30beb1a8d73626893d633f115b0fca",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/2.3-light-statement.png",
+      "sha256": "91b595dd617872c6dcf327be8ec021240a0d30cc06b7de0b252f4ed8319d2895",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/4.9-light-statement.png",
+      "sha256": "4ddb1c332722c5d2a25c37f33bc3347f2ee7f244f8480c24eba0a31dc217d940",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.5-light-statement.png",
+      "sha256": "0395cf1e58e1ec9c496690e7a02d28931a23bd529ee461a4463a7ddabfcad1e2",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.8-light-statement.png",
+      "sha256": "8a7f5f39fee9e65eec3fe6e9c110ad641d6369f1e53f833efc0420a5d2de6d16",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.9-light-statement.png",
+      "sha256": "e1292966c2289622a16b888f5bcd0c9d5b331e4979a53ca06d49075039af4ae4",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "light",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/6.2-light-statement.png",
+      "sha256": "f5d91ef63ff31dc3ff5e8b2e5483a08d8c0f43cec30d2d116b858b4bea1d68f3",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-1.4",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/1.4-dark-statement.png",
+      "sha256": "7eee50e8e620b6196421fb5fde20f7ccdc8f6c54f00d6993bdc8da09ed2a662d",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-2.3",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/2.3-dark-statement.png",
+      "sha256": "28173da6ecbe0435a760b47f19d89b241c2c2b8e342d606d1a13957a2d05f2d6",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-4.9",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/4.9-dark-statement.png",
+      "sha256": "5bf1fcda857ef1a84d61379a7e328aae79ccd4dfb86cad00e1203ce0e1fc8d8d",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.5",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.5-dark-statement.png",
+      "sha256": "b942c9587296294c0affe2cbf591aa245f8ed285773dc45edeccd2dc31e51ca5",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.8",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.8-dark-statement.png",
+      "sha256": "d6e9f79fc205419d5f01883074efcb897fe8fe1520baca54b1ce914046780d25",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-5.9",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/5.9-dark-statement.png",
+      "sha256": "567fa3a946e8b41bbcddbc31dd4102f2bb4a49b1d7773b94e48141145e2012ee",
+      "scroll": 281,
+      "client": 281
+    },
+    {
+      "id": "geog-6.2",
+      "theme": "dark",
+      "path": "/tmp/atlas-new-imaging-source/geog-wrap-native/6.2-dark-statement.png",
+      "sha256": "27f291646752b4f50027adcbee959ae864c9e40f99142d7f50efdbaa9281adf2",
+      "scroll": 281,
+      "client": 281
+    }
+  ]
+}
