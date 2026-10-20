@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 22,
+  "remainingFlags": 21,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -19,7 +19,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 2,
-    "bighist": 13
+    "bighist": 12
   },
   "queue": [
     {
@@ -165,21 +165,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Pendentive"
-      }
-    },
-    {
-      "id": "bighist-3.7",
-      "file": "content/bighist/ch03-b.js",
-      "name": "The Cambrian explosion",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Cambrian_explosion"
       }
     },
     {
@@ -1190,7 +1175,8 @@
       "bighist-3.6",
       "geol-4.10",
       "arch-4.7",
-      "arch-4.8"
+      "arch-4.8",
+      "bighist-3.7"
     ]
   },
   "additionalFollowups": [
@@ -6309,6 +6295,11 @@
       "id": "arch-4.8",
       "status": "resolved",
       "note": "2026-10-20: worker three independently read actual owner text and checked shell equilibrium, unique root, positive-part band integrals, regenerated 80-digit reference, fresh 320px native themes and own output pixels without findings; source page screenshot access limit recorded explicitly; docs/verification/arch-florence-peer.md."
+    },
+    {
+      "id": "bighist-3.7",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently read actual source versions and pixels, verified corrected primary URL, regenerated 80-digit reference, checked independent RK4/Simpson identities, fresh 320px native themes and own output pixels without remaining findings; docs/verification/bighist-cambrian-peer.md."
     }
   ]
 }

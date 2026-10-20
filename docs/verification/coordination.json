@@ -26,8 +26,8 @@
     ],
     "current": [
       "Serially integrate independently reviewed candidates and reconcile source/wave gates",
-      "BIGHIST3.7 exact source-scoped Cambrian chronology and replayable analytic logistic; ch04 source audits next",
-      "Independent historical-paper peer reviews and full immutable checkpoints"
+      "BIGHIST4.5\u20134.8 original source/model/state audits; worker two now owns4.1\u20134.3",
+      "Independent Miller3.1 peer after original-source table finding; full immutable checkpoints"
     ]
   },
   "workers": [
@@ -66,7 +66,7 @@
         "psych",
         "tech"
       ],
-      "current": "Pantheon4.7candidate99df40d ready; independent peer ROOT Snowball9a1c859, then produce4.8/4.9/3.14."
+      "current": "ARCH4.9exact22ac03ad ready for peer; exclusive BIGHIST4.1\u20134.3 production on fresh coordinator baseline."
     },
     {
       "agent": "worker_three",
@@ -81,7 +81,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "NLA3.15accepted and ART tiny-native finding closed; MAT3.13candidate3c5ac7e under root peer; producingGEOL3.15/4.10 then MATHBIO/PHARM/IMAGING/CIRC/ENERGY/ROBOT sources.",
+      "current": "Cambrian independently accepted; peer ARCH4.9exact22ac03ad next; six hard original-source bodies remain open.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -1124,6 +1124,20 @@
         "3dac4fa88e301e30223098890eb28867ba912f25",
         "acc653a"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.7"
+      ],
+      "peer": "worker three independently read actual source versions and pixels, verified corrected primary URL, regenerated 80-digit reference, checked independent RK4/Simpson identities, fresh 320px native themes and own output pixels without remaining findings",
+      "reports": [
+        "docs/verification/bighist-cambrian-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "5dc9da6",
+        "4c558b8"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1136,7 +1150,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 22,
+  "currentPendingSourceReviews": 21,
   "latestCheckpoint": {
     "acceptedContentCommit": "5c65e26",
     "report": "docs/verification/checkpoint-5c65e26.md",

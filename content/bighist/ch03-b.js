@@ -4,7 +4,7 @@
 //   3.6 Actual North1980 NASApreprint/Gough1981/Myhre1998/Hoffman1998 bodies and source pixels compared.
 //     Independently accepted; see docs/verification/bighist-snowball-peer.md.
 //   3.7 Actual Marshall2006 chronology/explanation sections and ICS2024/12 chart compared.
-//     Historical source scale and authored gate remain separate; independent review pending.
+//     Independently accepted; see docs/verification/bighist-cambrian-peer.md.
 //   3.8 Actual Raup1982 original, Barnosky2011 Table1 and Kirchner2000 primary/relevant supplement read.
 //     Independently accepted; see docs/verification/bighist-extinction-peer.md.
 //   3.9/3.10 Actual original Alvarez1980, Collins2005 and Renne2013 source equations/tables checked.

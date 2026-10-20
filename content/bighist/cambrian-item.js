@@ -1,7 +1,7 @@
 import{cambrianModel,CAMBRIAN_EVENTS}from'./source-audit-cambrian.js';
 function label(S,text,x,y,size=11){const ctx=S.ctx;ctx.save();ctx.font=`500 ${size}px Inter, system-ui, sans-serif`;const w=ctx.measureText(text).width,available=S.X(-495)-S.X(-600)-6;ctx.restore();S.text(text,x,y,{size:Math.min(size,size*available/Math.max(1,w)),align:'center',halo:false});}
 export default{
- num:'3.7',kind:'Event',name:'The Cambrian explosion',verify:true,
+ num:'3.7',kind:'Event',name:'The Cambrian explosion',verify:false,
  statement:String.raw`The Cambrian radiation includes a marked increase in animal diversity and morphological disparity over millions of years. A fossil first occurrence is evidence of a preservable form, not necessarily the date its lineage originated. Marshall's 2006 review distinguishes these questions and discusses environmental, ecological and developmental explanations that can interact.
 
 Dating calibrations also change. His review places the Cambrian boundary at 542–543 Ma; the official ICS chart version 2024/12 gives 538.8±0.6 Ma. The left panel explicitly retains the review's historical calibration for its fossil examples. It is not a table of current best ages.`,

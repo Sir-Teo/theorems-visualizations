@@ -29,3 +29,5 @@ All three numeric controls restore strict supported ticks before shared constrai
 Independent actual-source/math/native/own-pixel review remains required before clearing the source flag. No unread original dating study, universal origin of animal lineages or unique historical cause is certified.
 
 Independent peer found the review link had been changed by the typography cleanup to a nonexistent filename containing a space. Corrected it to the actual `Marshall2006.pdf` source; source data, formulas, controls and geometry are unchanged. The source flag remains pending peer acceptance.
+
+Coordinator acceptance: worker three independently accepted exact5dc9da6 +URL-only4c558b8 after source reading, independent RK4/Simpson checks, reference regeneration, both narrow native themes and own pixels. [Peer report](bighist-cambrian-peer.md). The source flag is now cleared within the stated historical/source-model scope.
