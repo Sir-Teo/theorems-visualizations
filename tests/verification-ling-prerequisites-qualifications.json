@@ -1,0 +1,6 @@
+[
+  [
+    "Apply this to the tract and radiation filters over a fixed-shape window; it does not assert exact linearity or independence of the source and tract in actual speech.",
+    "Apply this integral calculation to the tract response when that hypothesis holds over a fixed-shape window. Ideal radiation differentiation is a separate operation: $\\frac{d}{dt}e^{i\\omega t}=i\\omega e^{i\\omega t}$, rather than an absolutely integrable impulse response. Neither step asserts exact linearity or independence of the source and tract in actual speech."
+  ]
+]
