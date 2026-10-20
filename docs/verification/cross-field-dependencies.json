@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 37,
+  "publishedBelowTarget": 36,
   "wholeSyllabusBelowTarget": 26,
   "entries": [
     {
@@ -5675,10 +5675,10 @@
       "collection": "geol",
       "field": "earth",
       "target": 25,
-      "writtenToWritten": 10,
-      "writtenToKnown": 21,
-      "wholeSyllabus": 48,
-      "publishedShortfall": 15,
+      "writtenToWritten": 25,
+      "writtenToKnown": 36,
+      "wholeSyllabus": 63,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -5706,6 +5706,13 @@
           "item": "geol-1.1",
           "prerequisite": "xtal-1.10",
           "prerequisiteField": "chem",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-1.2",
+          "prerequisite": "pde-1.4",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -5738,11 +5745,25 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "geol-2.10",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "geol-2.1",
           "prerequisite": "kin-9.7",
           "prerequisiteField": "chem",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "geol-2.2",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "geol-2.3",
@@ -5755,6 +5776,27 @@
           "item": "geol-2.4",
           "prerequisite": "kin-4.1",
           "prerequisiteField": "chem",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-2.4",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-3.6",
+          "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-3.9",
+          "prerequisite": "mech-10.1",
+          "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -5773,6 +5815,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "geol-3.3",
+          "prerequisite": "ladr-6.55",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "geol-3.4",
           "prerequisite": "mech-10.1",
           "prerequisiteField": "physics",
@@ -5787,11 +5836,25 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "geol-4.6",
+          "prerequisite": "pde-4.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "geol-4.7",
           "prerequisite": "fluid-10.8",
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "geol-4.7",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "geol-4.10",
@@ -5808,8 +5871,29 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "geol-4.1",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-4.2",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "geol-4.3",
           "prerequisite": "pde-3.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-4.3",
+          "prerequisite": "pma-5.5",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -5818,6 +5902,27 @@
           "item": "geol-4.4",
           "prerequisite": "fluid-2.5",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-4.4",
+          "prerequisite": "pma-6.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-4.5",
+          "prerequisite": "pma-6.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "geol-4.5",
+          "prerequisite": "pma-6.19",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -15782,7 +15887,8 @@
       "37ea502c3aede818110e2097c238bfc38e753c6a",
       "5a442ec82caadd1e241c5a70000fa5281b694872",
       "70998872b4b75de086bfbcbcf5a5f4e52ec456c0",
-      "2a677b2630cd8e8cde1383ff576c57e66c7fe018"
+      "2a677b2630cd8e8cde1383ff576c57e66c7fe018",
+      "48093726065c5fa4a9e3fc065ec6cdd951d58014"
     ],
     "excludedUnacceptedEdges": [
       {

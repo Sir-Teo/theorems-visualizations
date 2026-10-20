@@ -960,3 +960,6 @@ The [WAVES peer](waves-crossfield-prerequisites-peer.md) independently accepts t
 
 
 AERO and corrected DEMO prerequisites are independently accepted: fourteen and thirteen genuine inputs respectively, with native narrow-theme proof inspection and full preservation. Current accepted shortfall696,37/64 published collections below25,26whole syllabi below25. Source queue remains5; frozen BIGHIST edge remains excluded. See [AERO peer](aero-crossfield-prerequisite-peer.md) and [DEMO peer](demo-prerequisites-independent-peer.md). Next full checkpoint is pending.
+
+
+GEOL's fifteen mathematical inputs are [independently accepted](geol-independent-peer-2026-10-20.md), giving25published links. Current shortfall681,36/64 published collections below25,26whole syllabi below25. This later batch is outside the running immutable6981ce3 checkpoint.

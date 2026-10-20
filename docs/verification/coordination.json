@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent GEOL prerequisite peer",
+      "current": "Independent INFO prerequisites and entropy bridge peer",
       "owns": [
-        "Unique GEOL peer reports/tests only"
+        "Unique INFO and entropy bridge peer reports/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "GEOL genuine prerequisite production",
+      "current": "GEO atmosphere/ocean prerequisite production",
       "owns": [
-        "GEOL written items/matching rows/unique tests/reports"
+        "GEO written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "INFO genuine prerequisite production",
+      "current": "EPI genuine prerequisite production",
       "owns": [
-        "INFO written items/matching rows/unique tests/reports"
+        "EPI written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -1950,15 +1950,30 @@
       "report": "docs/verification/demo-prerequisites-independent-peer.md",
       "sourceClosure": "None; source flags and numerical functions preserved.",
       "bridgeReview": "No changed consumer IDs are bridge steps."
+    },
+    {
+      "collection": "geol",
+      "commits": [
+        "48093726065c5fa4a9e3fc065ec6cdd951d58014",
+        "2fcf1881c307c9103fcfbf74eff1d5b99372d4be"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "logic_peer",
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "report": "docs/verification/geol-independent-peer-2026-10-20.md",
+      "sourceClosure": "None; all functions and source flags preserved.",
+      "bridgeReview": "No changed consumers are existing bridge steps."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 696,
-    "publishedBelow25": 37,
+    "publishedShortfall": 681,
+    "publishedBelow25": 36,
     "collections": 64,
     "wholeSyllabusBelow25": 26,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Eleven further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO and DEMO. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twelve further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO and GEOL. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **37 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 696 edges. Even
+Of 64 non-math collections, **36 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 681 edges. Even
 including planned items and planned prerequisites, **26 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -203,3 +203,8 @@ The separate [IMAGING2.9 runtime peer](imaging-dual-energy-runtime-peer.md) acce
 ## Accepted AERO and DEMO prerequisite batches
 
 Independent [AERO review](aero-crossfield-prerequisite-peer.md) accepts fourteen consumed mathematical inputs across thirteen written items, bringing counts 11/25/55→25/39/69. The harmonic bridge remains accurate. Independent [DEMO review](demo-prerequisites-independent-peer.md) accepts thirteen inputs across twelve items, including the corrected multiline3.14 syllabus row, bringing 12/13/24→25/26/37. All complete changed-row dependency lists now match, and all functions/source flags are preserved. Accepted shortfall is696, with37/64 collections and26 whole syllabi below25. No source obligation closes.
+
+
+## Accepted GEOL mathematical inputs
+
+The [independent GEOL review](geol-independent-peer-2026-10-20.md) accepts fifteen actual inputs across fourteen consumers: written/known/whole10/21/48→25/36/63. Full object/function/source-flag preservation, exact syllabus lists, independent equations and28 own inspected narrow theme outputs pass. The same4.2 equation is split for readability. No bridge step is touched. Accepted shortfall681,36/64 below25 published,26whole syllabi below25; source queue unchanged.
