@@ -53,7 +53,8 @@ export default {
       statement: String.raw`Let $A$ be a finite real $m\times n$ zero-sum payoff matrix, with the row player maximizing and the column player minimizing. Start cumulative action counts at $r_0=0$, $c_0=0$. In **simultaneous fictitious play**, round $t\ge1$ chooses
 $$\begin{aligned}i_t&\in\arg\max_i(Ac_{t-1})_i,\\j_t&\in\arg\min_j(r_{t-1}^{\mathsf T}A)_j,\\r_t&=r_{t-1}+e_{i_t},\\c_t&=c_{t-1}+e_{j_t}.\end{aligned}$$
 Zero initial scores make the first choices arbitrary; no frequency at time zero is needed. Robinson also treats the **alternating** rule: choose the same $i_t$ first, update $r_t$, then choose $j_t\in\arg\min_j(r_t^{\mathsf T}A)_j$. Either rule allows any choice among tied best replies. Put $\bar x_t=r_t/t$, $\bar y_t=c_t/t$, $g(x)=\min_j(x^{\mathsf T}A)_j$, and $h(y)=\max_i(Ay)_i$. **Robinson's theorem (1951)** says, for either timing,
-$$h(\bar y_t)-g(\bar x_t)\;\longrightarrow\;0\quad(t\to\infty),$$
+$$\begin{gathered}h(\bar y_t)-g(\bar x_t)\;\longrightarrow\;0\\
+ \quad(t\to\infty),\end{gathered}$$
 so $g(\bar x_t)\le v\le h(\bar y_t)$ converge to the minimax value $v$ (game-3.3). Every limit point of the empirical pair is optimal; equivalently, its distance to the product of optimal-strategy sets tends to zero. This does not assert convergence to one particular optimal pair, convergence of the actions, monotonicity of either bound, or a convergence rate.`,
       idea: String.raw`Write $U(t)=r_t^{\mathsf T}A$ and $V(t)=Ac_t$. Robinson calls a row or column eligible on an interval if it is a best reply at some time in that interval. Her Lemmas 2–3 bound the spreads of the cumulative scores, and then their cross-gap, on intervals where every action is eligible. Lemma 4 handles the remaining intervals by induction on the total number of actions: an action that is never eligible is never selected and can be deleted, reducing to a smaller game. Partitioning a long run into such blocks gives $\max V(t)-\min U(t)=o(t)$; the same argument covers both update timings. Minimax brackets $v$ between $\min U(t)/t$ and $\max V(t)/t$, so their difference tending to zero forces both limits to $v$. Finally, compactness of the simplices and continuity of $g,h$ imply that every empirical limit pair is optimal. This is an outline of Robinson's block-induction proof, not a claim that either plotted bound improves every round.
 
@@ -107,9 +108,13 @@ The final empirical-limit step uses pma 3.6 on the compact product of the two pr
       name: 'Multiplicative weights and no-regret learning',
       credit: 'Littlestone & Warmuth, 1994; Freund & Schapire, 1999',
       statement: String.raw`A learner repeatedly chooses a mixed strategy $x_t$ over $m$ actions; then an arbitrary gain vector $g_t\in[0,1]^m$ is revealed. The **multiplicative weights (Hedge)** rule plays $x_t(i)\propto\exp\bigl(\eta\sum_{s<t}g_s(i)\bigr)$. Its **regret** against the best fixed action,
-$$R_T=\max_i\sum_{t\le T}g_t(i)-\sum_{t\le T}x_t\cdot g_t,$$
+$$\begin{aligned}R_T&=\max_i\sum_{t\le T}g_t(i) \\
+ &{}-\sum_{t\le T}x_t\cdot g_t,\end{aligned}$$
 satisfies $R_T\le\dfrac{\ln m}{\eta}+\dfrac{\eta T}{8}$ for every sequence $g_1,\dots,g_T$ (adaptive or not), hence $R_T\le\sqrt{T\ln m/2}$ for $\eta=\sqrt{8\ln m/T}$: the average regret vanishes like $T^{-1/2}$. In a zero-sum game with payoffs scaled into $[0,1]$, if both players run Hedge, the time-averaged strategies $\bar x_T,\bar y_T$ form an $\varepsilon$-approximate minimax pair with
-$$\varepsilon=\max_i(A\bar y_T)_i-\min_j(\bar x_T^{\mathsf T}A)_j\le\frac{R_T^{\rm row}+R_T^{\rm col}}{T}=O\!\bigl(\sqrt{\ln(mn)/T}\bigr),$$
+$$\begin{aligned}\varepsilon&=\max_i(A\bar y_T)_i\\
+ &{}-\min_j(\bar x_T^{\mathsf T}A)_j\\
+ &\le\frac{R_T^{\rm row}+R_T^{\rm col}}{T}\\
+ &=O\!\bigl(\sqrt{\ln(mn)/T}\bigr),\end{aligned}$$
 which gives a constructive proof of the minimax theorem (game-3.3).`,
       idea: String.raw`Track the potential $\Phi_t=\ln\sum_i e^{\eta G_t(i)}$ with $G_t(i)$ the cumulative gain. Each round raises it by at most $\eta\,x_t\!\cdot g_t+\eta^2/8$ (Hoeffding's lemma), while at the end $\Phi_T\ge\eta\max_iG_T(i)$ and at the start $\Phi_0=\ln m$; rearranging yields the regret bound. For the game, regret against the best fixed row says: the row player did as well as the best row against the *actual* column play, which is the time average $\bar y_T$, so $\max_i(A\bar y_T)_i\le\frac1T\sum_t x_t^{\mathsf T}Ay_t+R^{\rm row}_T/T$; the symmetric bound for the column player and $\sum_tx_t^{\mathsf T}Ay_t$ cancelling gives the displayed $\varepsilon$. For the stated horizon-dependent learning rate, the averaged minimax gap tends to zero; no unique limiting strategy pair is asserted. The individual iterates $x_t$ generally keep orbiting the optimum, as in game-3.6.
 

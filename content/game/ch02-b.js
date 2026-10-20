@@ -108,7 +108,9 @@ fixed by indifference: $v-c=v\bigl(1-(1-p^*)^{n-1}\bigr)$. The probability that 
       name: 'Correlated equilibrium',
       credit: 'Robert J. Aumann, 1974',
       statement: String.raw`A **correlated equilibrium** of a finite game is a probability distribution $\mu$ on the set $A$ of action profiles such that, when a mediator draws $a\sim\mu$ and privately recommends $a_i$ to each player $i$, no player gains by disobeying: for every player $i$ and all actions $a_i,a_i'$,
-$$\sum_{a_{-i}}\mu(a_i,a_{-i})\bigl[u_i(a_i,a_{-i})-u_i(a_i',a_{-i})\bigr]\ \ge\ 0 .$$
+$$\begin{gathered}\sum_{a_{-i}}\mu(a_i,a_{-i})\bigl[\\
+ u_i(a_i,a_{-i})-\\
+ u_i(a_i',a_{-i})\bigr]\ \ge\ 0 .\end{gathered}$$
 These are finitely many linear inequalities in $\mu$, so the set of correlated equilibria is a nonempty convex polytope (a linear-programming feasible set, algo-11.15). Every Nash equilibrium is one (take $\mu$ a product distribution), as is every convex combination of Nash equilibria; but the polytope is generally larger, and can contain outcomes with higher payoffs than any Nash equilibrium.`,
       idea: String.raw`Each obedience inequality says: *conditional on being told $a_i$, following it is a best reply*, with the other players' behaviour computed from $\mu$. A Nash equilibrium satisfies them because the conditional distribution of $a_{-i}$ does not depend on the recommendation. Correlation can do more: in Chicken a traffic light that says "go" to one driver and "stop" to the other, with the third state (both stop) as likely as each of the others, gives each driver $5$, better than the mixed equilibrium's $4\tfrac23$ — and no driver wants to disobey. Nonemptiness is immediate from Nash's theorem (game-2.3).
 

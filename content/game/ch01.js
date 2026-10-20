@@ -286,7 +286,11 @@ The players choose simultaneously, none seeing the others' choices, and the prof
       name: 'Best responses',
       credit: 'Antoine Augustin Cournot, 1838 (reaction functions)',
       statement: String.raw`In a strategic game, a **best response** of player $i$ to a list $a_{-i}$ of the other players' actions is an action that maximizes $i$'s payoff while the others' actions are held fixed. The **best-response correspondence** is
-$$B_i(a_{-i}) = \{\, a_i\in A_i \;:\; u_i(a_i, a_{-i}) \ge u_i(a_i', a_{-i}) \text{ for all } a_i'\in A_i \,\}.$$
+$$\begin{gathered}B_i(a_{-i}) = \\
+ \{\, a_i\in A_i \;:\; \\
+ u_i(a_i, a_{-i}) \ge \\
+ u_i(a_i', a_{-i}) \\
+ \text{ for all } a_i'\in A_i \,\}.\end{gathered}$$
 $B_i(a_{-i})$ is nonempty when $A_i$ is finite (or compact with $u_i$ continuous in $a_i$), and it may contain several actions; when it is always a single action, $b_i(a_{-i})$ is called the **best-response function**. In a bimatrix, player 1's best responses to column $c$ are the rows holding the largest first entry of that column, and player 2's best responses to row $r$ are the columns holding the largest second entry of that row.`,
       idea: String.raw`A best response is a one-person decision problem: freeze everyone else and optimize. With finitely many actions it is a maximum over finitely many numbers, which always exists, and ties make $B_i$ a set. With a continuum of actions a maximizer exists when payoffs are continuous on a compact set, and for a smooth concave payoff it solves the first-order condition $\partial u_i/\partial a_i = 0$: for $u_i = a_i\,(c + b\,a_j - a_i)$ this gives the line $b_i(a_j) = (c + b\,a_j)/2$, clipped at the edges of the action set. Its slope says whether actions are *strategic complements* ($b > 0$: I do more when you do more) or *substitutes* ($b < 0$). A Nash equilibrium (game-1.3) is a point where the players' best responses are consistent with one another.
 
@@ -390,7 +394,10 @@ For the continuous-action claim, pma 4.16 supplies an attained maximum only when
       name: 'Nash equilibrium',
       credit: 'John F. Nash, 1950',
       statement: String.raw`A **Nash equilibrium** of a strategic game is an action profile $a^*$ from which no player can gain by changing her own action while the others keep theirs:
-$$u_i(a^*_i, a^*_{-i}) \;\ge\; u_i(a_i, a^*_{-i})\qquad\text{for every player } i \text{ and every action } a_i\in A_i.$$
+$$\begin{gathered}u_i(a^*_i, a^*_{-i}) \;\ge\; \\
+ u_i(a_i, a^*_{-i})\\
+ \qquad\text{for every player } i \\
+ \text{ and every action } a_i\in A_i.\end{gathered}$$
 Equivalently $a^*_i\in B_i(a^*_{-i})$ for every $i$: each player's action is a best response to the others' — $a^*$ is a fixed point of the best-response correspondence $a\mapsto B_1(a_{-1})\times\cdots\times B_n(a_{-n})$. In a bimatrix the (pure) Nash equilibria are the cells in which both entries are best replies. A game may have no pure equilibrium (game-1.6), exactly one (game-1.4) or several (game-1.5).`,
       idea: String.raw`The condition is stability against *unilateral* deviations and nothing more: it does not ask that the outcome be good for anyone (game-1.4), and it says nothing about how players get there. One reading is a steady state of players who have learned what others typically do and have no reason to change; another is a self-enforcing agreement — if everyone expects $a^*$, nobody wants to break it. Checking a cell takes one look down its column and one along its row. The arrows of profitable deviations form a directed graph on the cells whose sinks are exactly the equilibria. For two independent payoff arrays with independent identically distributed continuous entries in an $m$-by-$n$ game, each cell is a best reply for player 1 with probability $1/m$ and for player 2 with probability $1/n$, independently, so the expected number of pure equilibria is exactly $mn(1/m)(1/n)=1$. The chance of no pure equilibrium tends to $1/e$ when both m and n tend to infinity. Arbitrary dependent arrays, nonidentically distributed entries or ties need not satisfy these claims. Existence in general needs mixed strategies (game-2.3).
 

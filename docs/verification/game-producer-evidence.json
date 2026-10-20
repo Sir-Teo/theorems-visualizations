@@ -1,0 +1,62 @@
+{
+  "status": "producer-verified-awaiting-independent-peer",
+  "parents": [
+    "3a08b79379bb98322e16a10adebc000a1d53aea6",
+    "0817cb65e461e128923705e30da78618ae906465",
+    "e0fac583aa76cff9bf014c5b3ab0fe5a804ea315"
+  ],
+  "counts": {
+    "before": [
+      4,
+      8,
+      20
+    ],
+    "after": [
+      23,
+      27,
+      39
+    ],
+    "newEdges": 19,
+    "consumers": 15,
+    "publishedShortfall": 2
+  },
+  "preservation": {
+    "files": 30,
+    "objects": 45,
+    "functions": 45,
+    "writtenRawLists": 45,
+    "totalRows": 105,
+    "edges": 19,
+    "consumers": 15,
+    "textQualifications": 6,
+    "equivalentWraps": 6,
+    "runtimeLabelLiterals": 1,
+    "everyOtherFunctionHelperSourceFlag": "byte-identical"
+  },
+  "native": {
+    "cases": 32,
+    "pictures": 128,
+    "viewport": 320,
+    "productionMathWidth": 253,
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "personallyInspectedMainStatementScopes": 32,
+    "personallyInspectedMainProofs": 32,
+    "personallyInspectedAdditionalControlCaptionPictures": 10
+  },
+  "artifacts": {
+    "/tmp/atlas-new-imaging-source/game/final-combined.json": "a6d052aabb9ffd04229d9c135c8807a7b51590de44141d212f725eef45670019",
+    "/tmp/atlas-new-imaging-source/game/final-math.json": "1d7a7c8dac01fb1e9e03308f9f696613b0b91b2906089d1e0002ab1587cc95cd",
+    "/tmp/atlas-new-imaging-source/game/final-existing.log": "21068f2bcbbed4a12c16d586e7701e7255a59e850059adade57f94e7aef0f9d9",
+    "/tmp/atlas-new-imaging-source/game/final-static.log": "fe72c30ca7e8885722d81dd48c33e0557bfa1caeaa3719a626de1b35312293f1",
+    "/tmp/atlas-new-imaging-source/game/wrap-build.log": "c825e05efb63bc87a0f40a8deb3544814d7bc99bfabd9eb9966c39740496748a",
+    "/tmp/atlas-new-imaging-source/game/native-final/native.json": "5913e634d04af8d9dbc15d5312dfa7f624df4e9937b66d6dbe49cfcd5a26e67c",
+    "/tmp/atlas-new-imaging-source/game/hedge-native/native.json": "09a78e29e61c8b972d587328ce47d190a4f38852531e7c6bbd75c6bd4db323e8",
+    "/tmp/atlas-new-imaging-source/game/envelope-native/native.json": "69c2dc62e122475a42bf44bed88134fa73d5754ce2409640bf6f1c47520de309"
+  },
+  "sourceFlags": "unchanged",
+  "sourceClosure": false,
+  "browsers": "closed"
+}
