@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 144,
+  "remainingFlags": 142,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -24,7 +24,7 @@
     "robot": 1,
     "game": 7,
     "psych": 11,
-    "soc": 14,
+    "soc": 12,
     "polsci": 9,
     "music": 21,
     "art": 10,
@@ -655,36 +655,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Bow-tie_structure"
-      }
-    },
-    {
-      "id": "soc-4.1",
-      "file": "content/soc/ch04.js",
-      "name": "Erd\u0151s\u2013R\u00e9nyi random graph",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Newman ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model"
-      }
-    },
-    {
-      "id": "soc-4.2",
-      "file": "content/soc/ch04.js",
-      "name": "The giant component appears at mean degree one",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Newman ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Giant_component"
       }
     },
     {
@@ -3064,7 +3034,9 @@
       "psych-4.3",
       "psych-4.5",
       "game-4.9",
-      "game-4.10"
+      "game-4.10",
+      "soc-4.1",
+      "soc-4.2"
     ]
   },
   "additionalFollowups": [
@@ -7507,6 +7479,18 @@
       "status": "resolved",
       "report": "docs/verification/game-information-followup.md",
       "note": "Bounded actual-textbook-backed theorem; full conditional/zero-prefix chain-rule and pre-sampling proof, allterminal distributions and no-repeated-set forgotten-action determinant; root sixmath/eightnative/static pass. Unacquired1953original is not an accepted historical-paper audit; unsupported originalpriority credit removed."
+    },
+    {
+      "id": "soc-4.1",
+      "status": "resolved",
+      "report": "docs/verification/soc-erdos-renyi-followup.md",
+      "note": "Exact finite Binomial degree law and sparse Poisson limit; conditional closure distinguished from transitivity; original Gilbert/ER and modern sources, independent graph enumeration/high precision and full native checks accepted."
+    },
+    {
+      "id": "soc-4.2",
+      "status": "resolved",
+      "report": "docs/verification/soc-erdos-renyi-followup.md",
+      "note": "Critical probability scale, finite uniform-edge growth versus limiting G(n,c/n), original parameter conversion, stable positive root and exact prefix/domain/replay checks accepted after actual sources and independent numerical/native review."
     }
   ]
 }

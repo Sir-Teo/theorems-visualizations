@@ -11,6 +11,7 @@ import {
   rng32, components, meanDistER, triangleStats, poissonPmf, pairUniforms, gnpCoupled, growthCurve, giantTheory,
   wsSkeleton, wsBuild, pathAndClustering, meanDelivery, linkLengthShares, circlePos,
 } from './ch04.shared.js';
+import { erSeed, erValidSeed, erUniforms, erCircle, erGnp, erDegreeLaw, erCenti, erGiant, erEdgeOrder, erGrowth, erGrowthAt } from './source-audit-erdos-renyi.js';
 
 export default {
   collection: 'soc',
@@ -20,116 +21,84 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.1
     {
-      num: '4.1',
-      kind: 'Model',
-      name: 'Erdős–Rényi random graph',
-      statement: String.raw`The random graph $G(n,p)$ has $n$ labelled vertices; each of the $\binom n2$ possible edges is present independently with probability $p$. (Erdős and Rényi's own model $G(n,M)$ instead picks $M$ edges uniformly at random; for large $n$ the two behave alike when $M\approx p\binom n2$.)
+      num:'4.1',kind:'Model',name:'Erdős–Rényi random graph',
+      statement:String.raw`In $G(n,p)$, each unordered pair of distinct labelled vertices is an edge independently with probability $p\in[0,1]$. This independent-edge convention is explicit in Gilbert (1959); Erdős and Rényi (1960) study the uniform-edge growth convention $G(n,M)$.
 
-With mean degree $c=p(n-1)$ held fixed as $n\to\infty$:
-(a) the degree of a vertex is binomial, hence close to **Poisson**: $P(k)\approx e^{-c}c^k/k!$, so very high-degree vertices are exponentially rare;
-(b) the expected clustering coefficient equals $p=c/(n-1)\to0$: triangles are rare, since two friends of a vertex are linked only with the base probability;
-(c) distances are short: a vertex has about $c^d$ vertices at distance $d$, so typical distances are $\approx\ln n/\ln c$.`,
-      idea: String.raw`Independence does all the work. A vertex's degree is a sum of $n-1$ independent Bernoulli($p$) variables, which is Binomial($n-1,p$) and tends to Poisson($c$) when $p\sim c/n$. Any pair of neighbours of a vertex is joined with probability exactly $p$, whatever else is known, so clustering is $p$. And because a vertex's neighbours' neighbours are essentially new vertices (no triangles to speak of), the neighbourhood grows like a tree with branching ratio $c$ (the branching process of 4.2). The model is a *null model*: the baseline against which real networks, which are clustered and heavy-tailed, look surprising.`,
-      caption: String.raw`**Left**: a 60-vertex sample with the same mean degree $c$ (the largest component is gold). **Right**: the degree histogram of the $n$-vertex graph, with the Poisson($c$) probabilities as dots. Drag $c$: edges are added to the same graph (a coupling, not a fresh draw), so you can watch components merge. Notice that the histogram is a bump, not a tail, and that clustering equals $p$.`,
-      scope: String.raw`Mathematically exact for the model; as a model of real networks it fails on clustering (real networks have far more triangles than $p$) and on the degree tail. $G(n,p)$ was also introduced by Gilbert in 1959; the Erdős–Rényi papers are 1959–1960.`,
-      deps: ['soc-2.3'],
-      refs: ['Newman ch. 11'],
-      tags: ['random graphs', 'networks'],
-      credit: 'Erdős & Rényi, 1959–1960 (and Gilbert, 1959)',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Erd%C5%91s%E2%80%93R%C3%A9nyi_model' },
-      verify: true,
-      viz(v) {
-        const N0 = 60;
-        let seed = 7, n = 500, U = null, U0 = null;
-        const nSel = v.select('vertices $n$', [{ value: 200, label: '200' }, { value: 500, label: '500' }, { value: 1000, label: '1000' }], 500, { onChange: (x) => { n = +x; U = null; } });
-        const cS = v.slider('mean degree $c$', 0, 12, 2, { step: 0.1 });
-        v.button('Resample', () => { seed += 1; U = null; U0 = null; });
-        const SD = v.stage({ x: [-1.2, 1.2], y: [-1.2, 1.2], equal: true, axes: false, height: 340, title: 'a 60-vertex sample, same mean degree', minWidth: 280 });
-        const SH = v.stage({ x: [-0.5, 24.5], y: [0, 0.3], axes: 'box', gutter: true, height: 340, xlabel: 'degree $k$', ylabel: 'share of vertices', title: 'degree distribution', minWidth: 300, weight: 1.2 });
-        const pos = circlePos(N0, 0.95).map(([x, y]) => [x, y]);
-        const G = v.graph(SD, { nodes: pos.map(([x, y], i) => ({ id: i, x, y })), edges: [], layout: 'none', r: 5, autoRadius: false, draggable: false });
-        let st = null;
-        v.render(() => {
-          n = +nSel.value; U ??= pairUniforms(n, seed); U0 ??= pairUniforms(N0, seed + 1000);
-          const c = cS.value, p = c / (n - 1);
-          const g0 = gnpCoupled(N0, U0, c / (N0 - 1)), comp0 = components(g0), inGiant = new Set(comp0[0]);
-          G.edges = g0.edges.map(([a, b]) => ({ from: a, to: b }));
-          G.draw({ nodeColor: () => 'muted', nodeFill: (id) => (comp0[0].length > 2 && inGiant.has(id) ? 'gold' : null), edgeColor: () => 'muted', nodeLabel: () => '' });
-          const g = gnpCoupled(n, U, p), cnt = [], K = 24;
-          for (const a of g.adj) cnt[a.length] = (cnt[a.length] || 0) + 1;
-          const kmax = cnt.length - 1; let peak = 0.05;
-          for (let k = 0; k <= K; k++) { const h = (cnt[k] || 0) / n; peak = Math.max(peak, h, poissonPmf(k, c)); if (cnt[k]) SH.rect(k - 0.4, 0, k + 0.4, h, { fill: 'accent', fillAlpha: 0.55, stroke: false }); }
-          SH.setView([-0.5, 24.5], [0, peak * 1.15]);
-          for (let k = 0; k <= K; k++) SH.dot(k, poissonPmf(k, c), { r: 4, color: 'orange' });
-          const tri = triangleStats(g), comp = components(g);
-          const mean = 2 * g.edges.length / n, vr = g.adj.reduce((s, a) => s + (a.length - mean) ** 2, 0) / n;
-          st = { c, p, mean, vr, kmax, trans: tri.transitivity, giant: comp[0].length / n, theory: giantTheory(c), n, m: g.edges.length };
+For a fixed vertex its degree $D$ is exactly
+$$D\sim\operatorname{Bin}(n-1,p).$$
+Thus $\mathbb ED=c=(n-1)p$, $\operatorname{Var}D=c(1-p)$, and the expected edge count is $nc/2$. If $p=c/(n-1)$ with fixed $c>0$ and $n\to\infty$, then $D$ converges in distribution to $\operatorname{Poisson}(c)$. For $c=0$ it is identically zero.
+
+Conditional on a vertex’s incident edges giving at least two neighbours, any specified pair of those neighbours is linked with probability $p$, whenever the conditioning event has positive probability. This is a conditional closure probability, not a claim that a sampled graph’s transitivity equals $p$.`,
+      idea:String.raw`Degree is a sum of $n-1$ independent Bernoulli variables. The rare-event limit in prob-3.6.1 applies because the sum of their probabilities is $c$ and their largest probability tends to zero. Degrees of different vertices are dependent: they share their possible connecting edge. The histogram therefore compares dependent finite graph data with a single vertex’s marginal law; it is not $n$ independent degree trials.
+
+An edge between two neighbours is independent of the incident edges used to identify those neighbours. This proves the conditional closure statement when that incident configuration is possible. At $p=0$ there is no event with two neighbours to condition on. A graph-level ratio of triangle and wedge counts has a different expectation. Also, conditional on its edge count being $M$ with positive probability, $G(n,p)$ is uniform over all $M$-edge graphs: every such graph has the same probability $p^M(1-p)^{\binom n2-M}$.`,
+      caption:String.raw`One authored, reproducible graph supplies **both** panels. Every selected vertex is drawn; one largest component is gold (ties go to its smallest vertex label). Change the continuous edge probability $p$: at fixed size and seed, the same pair uniforms are reused, so edges nest. The histogram counts every degree, including zero. The final bucket $k\ge n$ contains the entire Poisson overflow; a finite simple graph has no such degrees. The Poisson comparison is most useful in the sparse regime.`,
+      scope:String.raw`These are finite simple undirected graph laws and a stated sparse limit, not a fit to a social network. Random drawings use a finite seeded pseudorandom generator; the probability laws assume ideal independent choices. “Transitivity” in the readout is three times the triangle count divided by the number of centred neighbour pairs and is undefined if that denominator is zero. No general distance formula or unconditional expected global clustering identity is asserted.`,
+      deps:['soc-2.3','prob-3.6.1'],
+      refs:['Gilbert (1959), §1, p.1141','Erdős & Rényi (1960), introduction pp.17–19'],
+      tags:['random graphs','networks'],credit:'Gilbert, 1959; Erdős & Rényi, 1960 (uniform-edge growth)',
+      links:{source:'https://www.stat.cmu.edu/~brian/780/bibliography/09%20Other%20Models/Gilbert%20-%201959%20-%20Random%20graphs.pdf',original:'https://combinatorica.hu/~p_erdos/1960-10.pdf'},verify: false,
+      viz(v){
+        let seed=7,cache=null,info;
+        v.shareState('graph-seed',{get:()=>seed,validate:erValidSeed,set:x=>{seed=erSeed(x);cache=null;}});
+        const n=v.select('vertices $n$',[20,60,120].map(value=>({value,label:String(value)})),60);
+        const p=v.slider('edge probability $p$',0,1,2/59,{step:'any',fmt:x=>String(+x.toFixed(6))});
+        v.button('Empty',()=>p.set(0));v.button('Expected degree 1',()=>p.set(1/(n.value-1)));v.button('Complete',()=>p.set(1));v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-1.18,1.18],y:[-1.18,1.18],equal:true,axes:false,height:340,minWidth:280,title:'same graph as the degree histogram'});
+        const B=v.stage({x:[-5,65],y:[-.1,1.15],axes:'box',gutter:true,height:340,minWidth:280,weight:1.3,xlabel:'degree k; final bucket k ≥ n',ylabel:'share / probability',title:'finite degree law and Poisson comparison'});
+        v.render(()=>{
+          const N=+n.value;if(!cache||cache.n!==N||cache.seed!==seed)cache={n:N,seed,U:erUniforms(N,seed),pos:erCircle(N)};
+          const g=erGnp(N,cache.U,p.value),law=erDegreeLaw(N,p.value),largest=new Set(g.components[0]);info={...g,law,seed,p:p.value};
+          for(const[a,b]of g.edges)A.line(...cache.pos[a],...cache.pos[b],{color:'muted',width:.6,alpha:.24});
+          cache.pos.forEach(([x,y],j)=>A.dot(x,y,{r:3,ring:false,color:largest.has(j)?'gold':'muted'}));
+          const peak=Math.max(...g.counts.map(x=>x/N),...law.binomial,...law.poisson,.01);B.setView([-5,N+5],[-.13*peak,1.17*peak]);
+          g.counts.forEach((count,k)=>{if(count)B.rect(k-.38,0,k+.38,count/N,{fill:'accent',fillAlpha:.55,stroke:false});});
+          law.binomial.forEach((q,k)=>B.dot(k,q,{r:2.6,ring:false,color:'green'}));law.poisson.forEach((q,k)=>B.dot(k,q,{r:2.1,ring:false,color:'orange',hollow:true,width:1.1}));
         });
-        v.legend([['accent', 'sampled degree histogram', { area: true }], ['orange', 'Poisson($c$)', { dot: true }], ['gold', 'largest component (left)', { dot: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          return String.raw`$n=${st.n}$, $m=${st.m}$ edges, $p=c/(n-1)=${v.fix(st.p, 4)}$ · mean degree **${v.fix(st.mean, 2)}** (target ${v.fix(st.c, 1)}), variance **${v.fix(st.vr, 2)}** (Poisson: variance = mean), largest degree ${st.kmax}
-clustering (transitivity) **${v.fix(st.trans, 4)}** versus $p=${v.fix(st.p, 4)}$ · largest component **${v.fix(100 * st.giant, 1)}%** of vertices (theory for $n\to\infty$: ${v.fix(100 * st.theory, 1)}%)`;
-        });
+        v.legend([['accent','observed degree shares',{area:true}],['green','exact Binomial marginal',{dot:true}],['orange','Poisson comparison + overflow',{dot:true}],['gold','one largest component',{dot:true}]]);
+        v.readout(()=>{const g=info,L=g.law;return String.raw`Seed ${g.seed}; $n=${g.n}$, $p=${v.fix(g.p,6)}$, edges **${g.m}** (expected ${v.fix(L.expectedEdges,3)}). Observed mean $2M/n=${v.fix(g.mean,6)}$ and variance ${v.fix(g.variance,6)}; finite marginal mean $c=${v.fix(L.c,6)}$ and variance ${v.fix(L.variance,6)}.
+Largest / second component: **${g.largest} / ${g.second}** vertices. Triangles ${g.triangles}; centred neighbour pairs ${g.wedges}; sampled transitivity ${g.transitivity===null?'**undefined** (no neighbour pairs)':v.fix(g.transitivity,6)}. Conditional neighbour-pair closure ${L.conditionalClosure===null?'**undefined** (the conditioning event has probability zero)':`$p=${v.fix(L.conditionalClosure,6)}$`}. Poisson mass in $k\ge n$: $${v.sci(L.poisson[g.n],4)}$.`;});
       },
     },
     // ------------------------------------------------------------------ 4.2
     {
-      num: '4.2',
-      kind: 'Theorem',
-      name: 'The giant component appears at mean degree one',
-      statement: String.raw`Let $G(n,c/n)$ be the random graph with fixed mean degree $c$ as $n\to\infty$.
+      num:'4.2',kind:'Theorem',name:'The giant component appears at mean degree one',
+      statement:String.raw`Fix $c\ge0$ and let $n\to\infty$ in $G(n,c/n)$ (with $n>c$). The finite expected degree is $c(1-1/n)$, not exactly $c$. Write $L_1,L_2$ for the largest and second-largest component sizes.
 
-(a) If $c<1$, with high probability every component has $O(\log n)$ vertices (all are small trees, essentially).
+For $0<c<1$, $L_1=O(\log n)$ with high probability. For $c>1$, there is a unique giant component: $L_1/n$ converges in probability to the unique positive solution $S(c)$ of
+$$S=1-e^{-cS},$$
+and $L_2=O(\log n)$ with high probability. For $c\le1$, the limiting fraction is $S(c)=0$; at $c=0$ the graph is exactly empty and $L_1=1$.
 
-(b) If $c>1$, there is, with high probability, exactly one component with $\sim S n$ vertices, the **giant component**, where $S\in(0,1)$ is the positive solution of
-$$S = 1 - e^{-cS},$$
-and every other component has $O(\log n)$ vertices.
+At $c=1$, $L_1=\Theta_{\mathbb P}(n^{2/3})$: for every $\varepsilon>0$, sufficiently large constants $A$ bound $L_1/n^{2/3}$ between $1/A$ and $A$ with probability at least $1-\varepsilon$ for large $n$. This does not assert fixed deterministic bounds with probability tending to one. Just above one, $S(c)\sim2(c-1)$.`,
+      idea:String.raw`Early component exploration in a sparse graph is locally approximated by a Galton–Watson process with Poisson($c$) offspring. Its generating function is $f(q)=e^{c(q-1)}$. The least-fixed-point extinction theorem stoch-3.10 gives $q=f(q)$; setting $S=1-q$ yields the displayed equation. A finite graph exploration always terminates; equating the branching-process survival probability with the limiting giant fraction requires the random-graph theorem, not a literal finite “survival forever” argument.
 
-(c) At $c=1$ the largest component has size of order $n^{2/3}$.
-
-So the emergence of the giant component is a **phase transition**: the fraction of vertices in the largest component is $0$ for $c\le1$ and grows continuously (like $2(c-1)$ just above 1) afterwards.`,
-      idea: String.raw`Explore a component from a vertex, one neighbour at a time. In a sparse random graph the number of unexplored new neighbours of each vertex is nearly Poisson($c$) and independent, so the exploration is a Galton–Watson branching process (stoch-3.9) with mean offspring $c$. The process dies out with probability one if $c\le1$ and survives with positive probability $1-q$ if $c>1$, where $q=e^{-c(1-q)}$ is the extinction probability. A vertex lies in the giant component exactly when its exploration survives (it escapes to "infinity"), so $S=1-q$, which is the equation $S=1-e^{-cS}$. Two giant components cannot coexist because two large sets would have a link between them with overwhelming probability.`,
-      caption: String.raw`**Left**: the share of vertices in the largest component against $c$ for one growing random graph of $n=100,\,1000,\,10\,000$ vertices (dots/lines) and the limit curve. **Right**: the fixed-point picture: the non-zero crossing of $y=1-e^{-cS}$ with $y=S$ exists only when the slope $c$ at $S=0$ exceeds 1. Drag $c$ across 1 and watch the finite curves sharpen towards the kink.`,
-      scope: String.raw`$G(n,p)$ with $p=c/n$ and $n\to\infty$. The finite curves are one random growth process each, so they fluctuate; near $c=1$ finite-size effects (width $\sim n^{-1/3}$) smear the transition. Real networks with heavy-tailed degrees have a different threshold (see the configuration model, 4.14).`,
-      deps: ['soc-4.1', 'stoch-3.9'],
-      refs: ['Newman ch. 11'],
-      tags: ['random graphs', 'phase transition', 'giant component'],
-      credit: 'Erdős & Rényi, 1960',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Giant_component' },
-      verify: true,
-      viz(v) {
-        const SIZES = [100, 1000, 10000], COL = ['orange', 'green', 'accent'];
-        const cS = v.slider('mean degree $c$', 0, 3, 1.5, { step: 0.01 });
-        const A = v.stage({ x: [0, 3], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'mean degree $c$', ylabel: 'largest component / $n$', title: 'the transition', minWidth: 300, weight: 1.2 });
-        const B = v.stage({ x: [0, 1], y: [0, 1], axes: 'box', gutter: true, height: 340, xlabel: 'S', ylabel: 'y', title: '$S=1-e^{-cS}$', minWidth: 260, weight: 1 });
-        const runs = SIZES.map((n, i) => growthCurve(n, Math.round(1.5 * n), 11 + i));
-        const sim = (i, c) => { const n = SIZES[i], m = Math.min(Math.round(c * n / 2), runs[i].big.length - 1); return { s: runs[i].big[m] / n, sec: runs[i].sec[m] }; };
-        let st = null;
-        v.render(() => {
-          const c = cS.value;
-          A.fn((x) => giantTheory(x), { color: 'ink', width: 2.2, n: 400 });
-          runs.forEach((r, i) => {
-            const n = SIZES[i], pts = []; for (let m = 0; m < r.big.length; m += Math.max(1, Math.floor(r.big.length / 150))) pts.push([2 * m / n, r.big[m] / n]);
-            A.path(pts, { color: COL[i], width: 1.7, alpha: 0.9 });
-          });
-          A.vline(c, { color: 'gold', width: 1.6, dash: true }); A.vline(1, { color: 'muted', width: 1, dash: [3, 4] });
-          A.text('critical point c = 1', 1, 0.95, { dx: 6, size: 11, color: 'muted', align: 'left' });
-          B.line(0, 0, 1, 1, { color: 'muted', width: 1.4 });
-          B.fn((s) => 1 - Math.exp(-c * s), { color: 'purple', width: 2.4 });
-          const S = giantTheory(c);
-          B.dot(0, 0, { r: 5, color: S > 0 ? 'red' : 'green', hollow: S > 0 });
-          if (S > 0) B.dot(S, S, { r: 6, color: 'green', label: `S = ${v.fix(S, 3)}`, labelPos: 'se' });
-          st = { c, S, sims: SIZES.map((_, i) => sim(i, c)) };
+For $c>1$, $1-e^{-cS}-S$ has positive derivative at zero, strictly negative second derivative, and is negative at $S=1$. Hence exactly one positive root exists. For $c\le1$ there is none. Expanding the equation near $c=1$ gives $S\sim2(c-1)$. The critical $n^{2/3}$ probability bounds are a separate result (Frieze–Karoński, Theorem 2.21), not a conclusion from that fixed-point equation.`,
+      caption:String.raw`**Left:** three authored uniform-edge growth samples $G(n,M)$, plotted as their complete component-size staircases against the realised degree $2M/n$, alongside the limiting curve. For the selected hundredth-grid parameter $c$, the sample uses $M=\lfloor cn/2\rfloor$; coloured dots mark the actual selected prefixes. The readout distinguishes $c$ from $2M/n$. **Right:** the zero root is always present; a second crossing appears for $c>1$.`,
+      scope:String.raw`The theorem is an asymptotic probability statement. The uniform-edge ensemble with $M=\lfloor cn/2\rfloor$ has the same limiting giant fraction, but is a different finite ensemble from independent-edge $G(n,c/n)$. One finite seeded sample at each size neither proves convergence nor certifies a giant from its size alone. The critical statement above is for $G(n,1/n)$; the finite growth pictures illustrate fluctuations without establishing its distribution. Original Erdős–Rényi notation uses edges/vertices, so its critical parameter is $1/2$; here $c$ is twice that parameter.`,
+      deps:['soc-4.1','stoch-3.10'],
+      refs:['Erdős & Rényi (1960), introduction; §9, Theorem 9b','Frieze & Karoński, author text 9 September 2024, Theorems 2.9, 2.14, 2.21'],
+      tags:['random graphs','phase transition','giant component'],credit:'Erdős & Rényi, 1960; critical bounds as stated in Frieze–Karoński',
+      links:{original:'https://combinatorica.hu/~p_erdos/1960-10.pdf',account:'https://www.math.cmu.edu/~af1p/Teaching/RandomGraphs/Undergraduate/BOOK.pdf'},verify: false,
+      viz(v){
+        const sizes=[100,1000,10000],cols=['orange','green','accent'];let seed=11,cache=null,info;
+        v.shareState('growth-seed',{get:()=>seed,validate:erValidSeed,set:x=>{seed=erSeed(x);cache=null;}});
+        const c=v.slider('limit parameter $c$',0,3,1.5,{step:.01,onChange:erCenti,fmt:x=>x.toFixed(2)});
+        v.button('c = 0',()=>c.set(0));v.button('c = 1',()=>c.set(1));v.button('c = 3',()=>c.set(3));v.button('Resample',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-.12,3.12],y:[-.08,1.10],axes:'box',gutter:true,height:340,minWidth:280,weight:1.2,xlabel:'c (limit); 2M/n (finite samples)',ylabel:'largest component / n',title:'limit curve and finite growth samples'});
+        const B=v.stage({x:[-.08,1.08],y:[-.08,1.08],axes:'box',gutter:true,height:340,minWidth:280,xlabel:'S',ylabel:'y',title:'zero root and positive root'});
+        v.render(()=>{
+          if(!cache||cache.seed!==seed)cache={seed,runs:sizes.map((n,j)=>erGrowth(n,erEdgeOrder(n,Math.floor(1.5*n),(seed+j)>>>0)))};
+          const C=c.value,S=erGiant(C),samples=cache.runs.map(run=>erGrowthAt(run,C));info={seed,c:C,S,samples};
+          A.fn(erGiant,{color:'ink',width:2.2,n:450,domain:[0,3]});cache.runs.forEach((run,j)=>A.path(run.points,{color:cols[j],width:1.5,alpha:.85}));
+          A.line(1,0,1,1.025,{color:'muted',width:1,dash:true});A.line(C,-.025,C,1.025,{color:'gold',width:1.3,dash:true});samples.forEach((s,j)=>A.dot(s.realizedMean,s.fraction,{r:4,ring:false,color:cols[j]}));
+          A.text('c = 1',1,1.03,{size:11,align:'center',baseline:'middle',color:'muted'});
+          B.line(0,0,1,1,{color:'muted',width:1.2});B.fn(s=>-Math.expm1(-C*s),{domain:[0,1],color:'purple',width:2.2});
+          B.dot(0,0,{r:4,ring:false,color:S>0?'red':'green',hollow:S>0,width:1.4});if(S>0)B.dot(S,S,{r:5,ring:false,color:'green'});
+          B.text(`limit S: ${v.fix(S,6)}`,.95,.08,{size:11,align:'right',baseline:'middle',color:'green'});
         });
-        v.legend([['ink', 'limit $n\\to\\infty$'], ['orange', '$n=100$'], ['green', '$n=1000$'], ['accent', '$n=10\\,000$'], ['purple', '$y=1-e^{-cS}$']]);
-        v.readout(() => {
-          if (!st) return '';
-          const { c, S, sims } = st;
-          const crit = Math.abs(c - 1) < 0.06 ? String.raw` · at $c\approx1$ the largest component of the $10^4$-vertex graph has ${Math.round(sims[2].s * 1e4)} vertices (compare $n^{2/3}=464$)` : '';
-          return String.raw`$c=${v.fix(c, 2)}$ · limit $S=${v.fix(S, 3)}$ ${c <= 1 ? '(no giant component: slope at $S=0$ is $c\\le1$)' : `(slope at 0 is $c>1$: a second crossing)`}
-largest component / $n$: $n{=}100$: ${v.fix(sims[0].s, 3)} · $n{=}1000$: ${v.fix(sims[1].s, 3)} · $n{=}10^4$: ${v.fix(sims[2].s, 3)}; second largest at $n{=}10^4$: ${sims[2].sec} vertices${crit}`;
-        });
+        v.legend([['ink','limiting fraction S(c)'],['orange','finite n = 100'],['green','finite n = 1000'],['accent','finite n = 10,000'],['purple','1 − exp(−cS)']]);
+        v.readout(()=>{const{c:C,S,samples}=info;return String.raw`Seed ${info.seed}; $c=${C.toFixed(2)}$, limiting fraction $S(c)=${v.fix(S,6)}$. ${C===1?'Exactly critical: the n^(2/3) statement is a probability-scale result.':C<1?'Subcritical limit: the largest fraction tends to zero.':'Supercritical limit: one positive root and one asymptotic giant.'}
+${samples.map(s=>String.raw`$n=${s.n}$: $M=${s.m}$, realised $2M/n=${v.fix(s.realizedMean,4)}$; largest / second **${s.largest} / ${s.second}**, ${s.components} components, largest fraction ${v.fix(s.fraction,6)}.`).join('\n')}`;});
       },
     },
     // ------------------------------------------------------------------ 4.3
