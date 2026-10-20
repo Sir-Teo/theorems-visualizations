@@ -104,6 +104,17 @@
         "music-well-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "psych-4.4",
+        "psych-4.7"
+      ],
+      "peer": "coordinator original-source/proof/model review, ten math groups and two fresh narrow native groups",
+      "reports": [
+        "psych-pooling-inhibition-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -116,5 +127,5 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 132
+  "currentPendingSourceReviews": 130
 }

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 132,
+  "remainingFlags": 130,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 6,
-    "psych": 10,
+    "psych": 8,
     "soc": 10,
     "polsci": 9,
     "music": 16,
@@ -2110,40 +2110,6 @@
       }
     },
     {
-      "id": "psych-4.7",
-      "file": "content/psych/ch04-b.js",
-      "name": "Lateral inhibition (Hartline–Ratliff)",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        "Above-threshold rearrangement has the wrong sign; offered recurrent200-step settings do not satisfy the stated steady equations and returned negative values are visually clipped. Full source/model/solver follow-up required."
-      ],
-      "refs": [
-        "Goldstein ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Lateral_inhibition"
-      }
-    },
-    {
-      "id": "psych-4.4",
-      "file": "content/psych/ch04.js",
-      "name": "Convergence trades acuity for sensitivity",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        "Discrete receptor averaging is compared with a continuous box sinc transfer function; actual empirical source, partial-spot assumptions, sampling phase/aliasing, controls and saved-state/visual agreement need review."
-      ],
-      "refs": [
-        "Goldstein ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Retinal_ganglion_cell"
-      }
-    },
-    {
       "id": "art-3.2",
       "file": "content/art/ch03.js",
       "name": "Spectral power distributions",
@@ -2166,8 +2132,6 @@
       "circ-4.17",
       "art-3.12",
       "art-3.13",
-      "psych-4.7",
-      "psych-4.4",
       "art-3.2"
     ],
     "resolvedFlags": [
@@ -7305,9 +7269,9 @@
     },
     {
       "id": "psych-4.7",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/psych-lateral-inhibition-open.md",
-      "note": "Newly confirmed wrong algebraic sign, nonconvergent offered recurrent settings and visually clipped negative outputs. Exact200-step reproduction records residuals; no completed source/native acceptance claimed."
+      "note": "2026-10-20: coordinator original-source/proof/model review, ten math groups and two fresh narrow native groups; psych-pooling-inhibition-followup.md."
     },
     {
       "id": "game-4.9",
@@ -7341,9 +7305,9 @@
     },
     {
       "id": "psych-4.4",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/psych-discrete-pooling-open.md",
-      "note": "Root read actual item and independently summed the discrete receptor aperture; continuous sinc curve disagrees even for a single receptor. Full source/model/native audit remains open."
+      "note": "2026-10-20: coordinator original-source/proof/model review, ten math groups and two fresh narrow native groups; psych-pooling-inhibition-followup.md."
     },
     {
       "id": "art-3.2",
