@@ -9,6 +9,7 @@
 //     Authored exact plane/point-weight models are separate from those historical observations.
 //     Source pages, independent derivations and native evidence: docs/verification/arch-buttresses-followup.md.
 
+import heymanItem from './source-audit-heyman-item.js';
 import { buttressPier } from './source-audit-buttress-pier.js';
 import { pinnacle, proportion, hanging, HOOKE_PHRASE, HOOKE_LETTERS } from './source-audit-buttresses.js';
 
@@ -229,55 +230,6 @@ export default {
       },
     },
     // ───────────────────────────────────────────────────────────────────────────────────── 3.14
-    {
-      num: '3.14',
-      kind: 'Paper',
-      name: 'The Stone Skeleton',
-      paper: { authors: 'Jacques Heyman', year: 1966, title: 'The stone skeleton', venue: 'International Journal of Solids and Structures 2 (2): 249–279', doi: '10.1016/0020-7683(66)90018-7' },
-      introduces: ['arch-3.4', 'arch-3.5'],
-      statement: String.raw`Heyman's paper argues that the safety of a masonry structure is a question of geometry and equilibrium, not of stress. If masonry has no tensile strength, has compressive strength that is never approached, and does not slide (arch-3.4), a structure of it is a rigid-plastic body to which the theorems of plastic theory apply: a thrust line inside the masonry, in equilibrium with the loads, proves the structure safe (arch-3.5), and collapse comes by the formation of hinges (arch-3.6). He works the idea out for the arch and for the Gothic cathedral, where the flying buttress and the quadripartite vault are treated in some detail, with a brief look at domes. The practical consequence is that safety is measured by proportions, not by stress: an arch and a copy of it ten times larger are equally safe in this sense, while their stresses differ tenfold.`,
-      idea: String.raw`Earlier writers, from Couplet (1730), had used thrust lines and hinge mechanisms, and the same three conditions were the working hypotheses for calculating masonry arches throughout the nineteenth century; the dominant tool, however, was the search for the one true state of stress, which depends on small support movements nobody can know. Heyman recognised that, with the three conditions made explicit, the masonry structure falls within limit analysis, so that one admissible state suffices (the safe theorem), and the true state, with its cracks and settlements, need not be found. The paper introduces the three assumptions (arch-3.4) and the safe theorem (arch-3.5) as the working basis of the theory, and applies them to arches, vaults and buttresses; later work (arch-3.7, arch-3.8) turned them into numbers such as the minimum thickness and the effect of settlement.`,
-      caption: String.raw`The paper's own figures and numbers are not reproduced (I did not have the full text): what is recreated is its argument. The map on the right shows, for a semicircular arch with a point load at the chosen position, which combinations of ring thickness and load stand (green) and which do not (red); drag the disc. The arch on the left shows the thrust line that fits, or, when none does, the line at the instant of collapse with its hinges. The readout gives the two safety measures that follow: the geometric factor $t/t_{\min}$ and the load factor, and the stress, which grows with the span.`,
-      deps: ['arch-3.2', 'solid-4.10'],
-      refs: [],
-      credit: 'J. Heyman, 1966',
-      scope: String.raw`Reconstruction of the argument for a semicircular arch with radial joints, self-weight 22 kN/m³ and one point load; the paper's own examples (cathedral section, vault, flying buttress) and numbers are not used. The attribution of the individual results to this paper rather than to the later arch literature is as stated in secondary sources (the paper itself was not read).`,
-      verify: true,
-      tags: ['heyman', 'limit analysis', 'history'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Line_of_thrust' },
-      viz(v) {
-        const N = 24, xS = v.slider('load position x / R', -0.92, 0.92, -0.5, { step: 0.01 }), spS = v.slider('span of the real arch (m)', 5, 150, 20, { log: true });
-        const A = v.stage({ x: [-1.3, 1.3], y: [-0.25, 1.45], equal: true, axes: false, height: 340, weight: 1.35, title: 'the arch' });
-        const B = v.stage({ x: [0.1, 0.4], y: [0, 3], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'ring thickness t / R', ylabel: 'point load / arch weight', title: 'map of safety: drag the disc' });
-        const hnd = B.handle(0.2, 0.25, { color: 'accent', r: 8, constrain: { x: [0.1, 0.4], y: [0, 3] } });
-        const bound = new Map();
-        const curve = (x) => { const key = x.toFixed(3); if (bound.has(key)) return bound.get(key); const pts = []; for (let i = 0; i <= 30; i++) { const t = 0.1 + (0.3 * i) / 30, g = arch({ R: 1, t, N }), c = collapseFactor(g, [{ x, P: g.W, var: true, k: blockAt(g, x) }]); pts.push([t, c ? c.lam : 0]); } if (bound.size > 8) bound.clear(); bound.set(key, pts); return pts; };
-        let M = null;
-        v.render(() => {
-          const x = xS.value, pts = curve(x), t = hnd.x, share = hnd.y, g = arch({ R: 1, t, N }), k = blockAt(g, x), loadsV = [{ x, P: g.W, var: true, k }], cf = collapseFactor(g, loadsV);
-          const ymax = Math.min(3, Math.max(0.6, ...pts.map((p) => p[1]))) * 1.05; B.setView([0.1, 0.4], [0, ymax]); if (hnd.y > ymax) hnd.set(hnd.x, ymax);
-          B.poly([...pts.map((p) => [p[0], Math.min(p[1], ymax)]), [0.4, 0], [0.1, 0]], { fill: 'green', fillAlpha: 0.2, color: 'green', width: 1.8 });
-          B.poly([...pts.map((p) => [p[0], Math.min(p[1], ymax)]), [0.4, ymax], [0.1, ymax]], { fill: 'red', fillAlpha: 0.1, color: 'red', stroke: false });
-          B.text('stands', 0.3, ymax * 0.12, { size: 12, color: 'green', align: 'center' }); B.text('collapses', 0.3, ymax * 0.92, { size: 12, color: 'red', align: 'center' });
-          drawArch(v, A, g, { fillAlpha: 0.12 });
-          const yl = extradosY(g, x), lam = cf ? cf.lam : 0, stands = cf && share <= lam + 1e-9;
-          let u = null, hs = [];
-          if (stands) { const lo = [{ x, P: share * g.W, k }], c = centralLine(g, lo); if (c) { u = c.u; const rg = thrustRange(g, lo); if (rg) for (const uu of [rg.min, rg.max]) { const tl = thrustLine(g, lo, uu); for (let i = 0; i + 1 < tl.length; i++) A.line(tl[i].p[0], tl[i].p[1], tl[i + 1].p[0], tl[i + 1].p[1], { color: 'muted', width: 1.1, dash: [4, 3] }); } drawThrust(v, A, thrustLine(g, lo, c.u), { color: 'green', width: 2.8 }); } }
-          else if (cf) { u = cf.u; drawThrust(v, A, thrustLine(g, loadsV, cf.u), { color: 'red', width: 2.8 }); hs = hinges(g, loadsV, cf.u, {}, 1e-6); for (const h of hs) { const p = h.side === 'a' ? g.joints[h.j].a : g.joints[h.j].b; A.dot(p[0], p[1], { r: 5.5, color: 'red' }); } }
-          else A.corner('this ring cannot even stand alone', 'tl', { color: 'red' });
-          if (share > 0) A.arrow(x, yl + 0.15 + 0.6 * Math.min(1, share), x, yl + 0.02, { color: 'gold', width: 3.5, head: 10 });
-          if (cf) A.corner(stands ? 'a thrust line fits: safe' : 'no thrust line fits: collapse (hinges shown)', 'tl', { color: stands ? 'green' : 'red' });
-          const fit = share > 0 ? bestFit((tt) => arch({ R: 1, t: tt, N }), (gg) => [{ x, P: share * gg.W, k: blockAt(gg, x) }], {}, 0.05, 0.6, 22) : bestFit((tt) => arch({ R: 1, t: tt, N }), () => [], {}, 0.05, 0.6, 22);
-          let F = 0; if (u) { const tl = thrustLine(g, stands ? [{ x, P: share * g.W, k }] : loadsV, u); F = Math.max(...tl.map((q) => Math.hypot(...q.F))); }
-          M = { g, cf, share, stands, tmin: fit ? fit.t : NaN, F, t, lam };
-        });
-        v.legend([['green', 'thrust line that fits'], ['red', 'line at collapse, hinges'], ['muted', 'lowest and highest lines', { dash: true }]]);
-        v.readout(() => {
-          if (!M || !M.cf) return 'This ring cannot stand even under its own weight.';
-          const R = spS.value / 2, stress = (M.F * R) / M.t / 1000;
-          return `Ring $t/R = ${f2(M.t, 3)}$, point load ${f2(M.share, 2)} of the arch weight at $x = ${f2(xS.value, 2)}\\,R$. Collapse load ${f2(M.lam, 2)} W, so the **load factor** is ${M.share > 0 ? f2(M.lam / M.share, 2) : '∞'}; the thinnest ring that would carry this load is $t_{\\min}/R = ${f2(M.tmin, 3)}$, so the **geometric factor** is $t/t_{\\min} = ${f2(M.t / M.tmin, 2)}$ — neither depends on the size of the arch.\nFor a span of ${spS.value.toFixed(0)} m the largest force in the arch is about ${f2((M.F * R * R) / 1, 0)} kN/m, a mean stress of roughly ${f2(stress, 2)} MPa over the joint: it grows in proportion to the span while the safety measures above do not.`;
-        });
-      },
-    },
+    heymanItem,
   ],
 };

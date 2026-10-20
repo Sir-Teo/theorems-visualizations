@@ -113,7 +113,7 @@ export default {
           paper: { authors: 'Jacques Heyman', year: 1966, title: 'The stone skeleton',
                    venue: 'International Journal of Solids and Structures 2 (2): 249–279', doi: '10.1016/0020-7683(66)90018-7' },
           introduces: ['arch-3.4', 'arch-3.5'], deps: ['arch-3.2', 'solid-4.10'], refs: [],
-          pic: 'Heyman’s safe theorem on a masonry arch: the reader draws thrust lines between the minimum and maximum thrust; if any one fits inside the stone the arch stands, and thinning the ring or adding a point load until no line fits produces the four-hinge collapse mechanism, with the geometric factor of safety read off.' },
+          pic: 'Inspect Heyman’s no-tension joint yield wedge and the finite-crushing parabolic boundary from Fig. 2; vary axial load and eccentricity, reconstruct a compressive contact-pressure witness, and distinguish this local test from the whole-structure safe theorem.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
