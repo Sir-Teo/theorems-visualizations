@@ -22,7 +22,7 @@
     ],
     "current": [
       "Accepted prerequisite shortfall 219; 14/64 published collections and 11 whole syllabi below target; 34 further collections meet 25 written inputs. Source queue 5 unchanged.",
-      "Latest immutable checkpoint8 on be8d100 passes 2187 tests, all six UI groups, strict/static zero errors and warnings.",
+      "Latest immutable checkpoint9 on7b90a07 passes2195 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private atlas guard passes independent tiny/native155 tests and exact original-only history stability; symmetric reset/upload-content matched original/chunk oracle is being prepared, with no run or timing acceptance.",
       "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
@@ -1367,15 +1367,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "be8d10097c50282394a7ec7aed517e8d4398fb36",
-    "acceptedContentCommit": "be8d100",
-    "report": "docs/verification/checkpoint-be8d100.md",
-    "defaultTests": 2187,
+    "testedContentCommit": "7b90a07bba3c8159ae6bc8e814963cf9043b10f8",
+    "acceptedContentCommit": "7b90a07",
+    "report": "docs/verification/checkpoint-7b90a07.md",
+    "defaultTests": 2195,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 129.236924875,
+    "testDurationSeconds": 111.708112875,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1386,13 +1386,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113100,
+    "homeGzipBytes": 113144,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 323,
-    "publishedCollectionsBelowTarget": 19,
+    "publishedCrossFieldShortfall": 219,
+    "publishedCollectionsBelowTarget": 14,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 16,
+    "wholeSyllabusBelowTarget": 11,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1400,16 +1400,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint8-build.log",
-      "/tmp/atlas-continuation/checkpoint8-tests.log",
-      "/tmp/atlas-continuation/checkpoint8-static.log",
-      "/tmp/atlas-continuation/checkpoint8-queue.log",
-      "/tmp/atlas-continuation/checkpoint8-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint9-build.log",
+      "/tmp/atlas-continuation/checkpoint9-tests.log",
+      "/tmp/atlas-continuation/checkpoint9-static.log",
+      "/tmp/atlas-continuation/checkpoint9-queue.log",
+      "/tmp/atlas-continuation/checkpoint9-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes accepted SOLID, PL, ML, ASTRO, DIST and CG; excludes later CAUSAL/ML read-only preparation and pending MAT/XTAL/CRYPTO/CAUSAL changes.",
+      "Includes accepted XTAL, MAT, CRYPTO, CAUSAL and ML probability followup, plus bounded original-only guarded history records. Excludes pending REL/SYSBIO/ECOL and later matched-upload preparation.",
       "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace source peer.",
-      "Private map diagnostics are not renderer or performance acceptance. The phase/gutter candidate is outside this checkpoint and awaits independent review."
+      "Private tiny/original-only map gates do not accept alternate binding, direct-Canvas fidelity, full matrix/lifecycle, production or timing. Old rejected records remain unchanged."
     ]
   },
   "openStateFindings": [

@@ -1069,3 +1069,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### CRYPTO, CAUSAL and ML probability follow-up
 
 Independent [CRYPTO](crypto-crossfield-prerequisite-peer.md), [CAUSAL](causal-crossfield-prerequisite-peer.md) and [ML](ml-probability-independent-peer.md) peers accept24/23/11 genuine inputs, all reaching25 published. Full preservation, bounded proof/finite-model/layout corrections, fresh native/personal pixels and root integrated rechecks pass. Live shortfall219,14/64 published and11 whole syllabi below target;34 further collections meet target. Source queue five; later than checkpoint be8d100.
+
+### Full checkpoint through CAUSAL/CRYPTO/ML probability
+
+[Exact7b90a07 checkpoint](checkpoint-7b90a07.md) passes2,195default tests/all six UI groups, strict build and full static with zero errors/warnings. Accepted inventory219/14/11 and sourcequeue5 reconcile. Pending REL/SYSBIO/ECOL and later matched-upload preparation excluded; no additional map or Wave5 gate is accepted.
