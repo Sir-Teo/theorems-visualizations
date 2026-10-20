@@ -11609,7 +11609,7 @@
         },
         {
           "item": "psych-3.9",
-          "prerequisite": "music-1.9",
+          "prerequisite": "music-1.8",
           "prerequisiteField": "arts",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -11824,8 +11824,8 @@
       "field": "social",
       "target": 25,
       "writtenToWritten": 9,
-      "writtenToKnown": 14,
-      "wholeSyllabus": 37,
+      "writtenToKnown": 13,
+      "wholeSyllabus": 36,
       "publishedShortfall": 16,
       "unknown": [],
       "edges": [
@@ -11905,13 +11905,6 @@
           "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": true
-        },
-        {
-          "item": "soc-4.9",
-          "prerequisite": "stoch-12.10",
-          "prerequisiteField": "math",
-          "itemWritten": true,
-          "prerequisiteWritten": false
         },
         {
           "item": "soc-4.13",
@@ -13370,10 +13363,10 @@
       "collection": "phil",
       "field": "humanities",
       "target": 25,
-      "writtenToWritten": 18,
-      "writtenToKnown": 21,
-      "wholeSyllabus": 41,
-      "publishedShortfall": 7,
+      "writtenToWritten": 19,
+      "writtenToKnown": 22,
+      "wholeSyllabus": 42,
+      "publishedShortfall": 6,
       "unknown": [],
       "edges": [
         {
@@ -13471,6 +13464,13 @@
           "item": "phil-3.6",
           "prerequisite": "psych-1.9",
           "prerequisiteField": "social",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "phil-3.7",
+          "prerequisite": "ode-1.8",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },

@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 862 edges. Even
+written ideas in a different field**. Their combined shortfall is 861 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -105,3 +105,8 @@ Accepted snapshot24abff6 (2026-10-19): finance has29published cross-field edges,
 
 
 Accepted snapshot `00b1ea9`: psychology has 19 published cross-field prerequisites and philosophy 18. Classical scaling uses the actual written symmetric spectral theorem, positive-operator factorization and normal-noise distribution; the surprise-exam illustration uses actual finite conditional probability. Root read those prerequisite arguments and checked their model use. The four additional published edges reduce the combined shortfall from 866 to 862. There are still 53 of 64 collections below 25 published edges and 28 below 25 over their complete syllabi. No arbitrary prerequisite was added to meet a count. The inventory excludes ongoing drafts. See [MDS](psych-mds-followup.md) and [conditional-information audit](phil-surprise-followup.md).
+
+
+## Accepted checkpoint through 6522f86
+
+This inventory is generated from the exact accepted export, excluding ongoing exchange-proof, jury and experimental-game drafts. The published shortfall is861;53/64 non-math collections and28 whole syllabi remain below25. Philosophy now has19 published cross-field edges: the actual ODE argument used by its authored hysteresis model supplies one new edge. Psychology retains19. Removing an unused planned Pólya-urn dependency from attachment gives sociology36 whole-syllabus edges and9 published edges; no quota-filling link was substituted. Counts remain an inventory, not proof of prerequisite quality.
