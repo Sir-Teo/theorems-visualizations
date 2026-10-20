@@ -23,9 +23,15 @@ export class CanvasMapCompositor{
   const lod=m.k<.13?0:m.k<.35?1:m.k<1.15?2:3,key=[m.W,m.H,m.dpr,m.show.defs,m.show.planned,[...m.show.fields].join(','),document.documentElement.dataset.theme,lod].join('|');
   const old=this.cache,ratio=old?m.k/old.k:1,left=old?m.tx-old.tx*ratio-old.pad*ratio:0,top=old?m.ty-old.ty*ratio-old.pad*ratio:0;
   const covered=old&&left<=0&&top<=0&&left+old.width*ratio>=m.W&&top+old.height*ratio>=m.H;
-  const rebuild=!old||old.key!==key||ratio<.9||ratio>1.1||!covered;
+  let rebuild=!old||old.key!==key||ratio<.9||ratio>1.1||!covered;
   if(!this.underlay){this.underlay=document.createElement('canvas');this.geometry=document.createElement('canvas');for(const [i,c]of[this.underlay,this.geometry].entries()){c.setAttribute('aria-hidden','true');c.dataset.canvasCompositor=String(i);c.style.cssText=`position:absolute;inset:auto;left:0;top:0;pointer-events:none;z-index:${i};transform-origin:0 0`;m.canvas.before(c);}this.geometry.style.willChange='transform';m.canvas.style.zIndex='2';}
   const {underlay,geometry}=this;
+  // Two final allocations fitting the cap does not make mixed old/new dimensions safe.
+  // Release both old stores before any width/height grows, including changes in pad/DPR.
+  if(underlay.width!==a.underWidth||underlay.height!==a.underHeight||geometry.width!==a.pixelWidth||geometry.height!==a.pixelHeight){
+   underlay.width=0;underlay.height=0;geometry.width=0;geometry.height=0;
+   this.cache=null;rebuild=true;
+  }
   if(underlay.width!==a.underWidth)underlay.width=a.underWidth;if(underlay.height!==a.underHeight)underlay.height=a.underHeight;
   underlay.style.width=m.W+'px';underlay.style.height=m.H+'px';
   const saved={ctx:m.ctx,W:m.W,H:m.H,tx:m.tx,ty:m.ty};

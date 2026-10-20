@@ -11,7 +11,7 @@ export function mapCanvasCompositorPrototype(source) {
  result=result.replace('    this._bind();','    window.__mapAudit=this; this._bind();');
  result=result.replace('  _draw() {',`  _draw() {\n    this.__compositor ||= new CanvasMapCompositor(this);\n    if(this.__compositor.draw()) return;\n    this._drawOriginal();\n  }\n  _drawOriginal() {`);
  result=result.replace('  destroy() { this.dead = true;', '  destroy() { this.__compositor?.destroy(); this.dead = true;');
- result=result.replace('  resize() {\n    const r = this.host.getBoundingClientRect();', '  resize() {\n    this.__compositor?.invalidate();\n    const r = this.host.getBoundingClientRect();');
+ result=result.replace('  resize() {\n    const r = this.host.getBoundingClientRect();', '  resize() {\n    this.__compositor?.release();this.mapRaster=this.focusRaster=null;\n    const r = this.host.getBoundingClientRect();');
  result=result.replace('this.onTheme = () => { this.mapRaster', 'this.onTheme = () => { this.__compositor?.invalidate(); this.mapRaster');
  result=result.replace('this.onFonts = () => { if (!this.dead) { this.mapRaster', 'this.onFonts = () => { if (!this.dead) { this.__compositor?.invalidate(); this.mapRaster');
  return result.slice(0,result.indexOf('  _paint({ layer'))+passes+result.slice(result.indexOf('  _paint({ layer'));
