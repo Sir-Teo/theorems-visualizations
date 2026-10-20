@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 23,
+  "remainingFlags": 22,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -18,7 +18,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "arch": 3,
+    "arch": 2,
     "bighist": 13
   },
   "queue": [
@@ -150,21 +150,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Line_of_thrust"
-      }
-    },
-    {
-      "id": "arch-4.8",
-      "file": "content/arch/ch04-b.js",
-      "name": "Brunelleschi’s dome in Florence",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Salvadori"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Florence_Cathedral"
       }
     },
     {
@@ -1204,7 +1189,8 @@
       "ling-3.6",
       "bighist-3.6",
       "geol-4.10",
-      "arch-4.7"
+      "arch-4.7",
+      "arch-4.8"
     ]
   },
   "additionalFollowups": [
@@ -6318,6 +6304,11 @@
       "id": "arch-4.7",
       "status": "resolved",
       "note": "2026-10-20: worker three independently inspected actual primary source pages, regenerated the 80-digit reference, checked independent shell equilibrium, both fresh 320px native themes and own source/output pixels without findings; docs/verification/arch-pantheon-peer.md."
+    },
+    {
+      "id": "arch-4.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently read actual owner text and checked shell equilibrium, unique root, positive-part band integrals, regenerated 80-digit reference, fresh 320px native themes and own output pixels without findings; source page screenshot access limit recorded explicitly; docs/verification/arch-florence-peer.md."
     }
   ]
 }

@@ -1110,6 +1110,20 @@
         "99df40d491d4d4918d6f1911e8321f8679b4b018",
         "b19544e"
       ]
+    },
+    {
+      "ids": [
+        "arch-4.8"
+      ],
+      "peer": "worker three independently read actual owner text and checked shell equilibrium, unique root, positive-part band integrals, regenerated 80-digit reference, fresh 320px native themes and own output pixels without findings; source page screenshot access limit recorded explicitly",
+      "reports": [
+        "docs/verification/arch-florence-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "3dac4fa88e301e30223098890eb28867ba912f25",
+        "acc653a"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1122,7 +1136,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 23,
+  "currentPendingSourceReviews": 22,
   "latestCheckpoint": {
     "acceptedContentCommit": "5c65e26",
     "report": "docs/verification/checkpoint-5c65e26.md",
