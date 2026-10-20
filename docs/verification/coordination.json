@@ -43,7 +43,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "Peer-review GAME4.11 exacta99dc23, then LING3.8/3.9; LING4.8/4.14 independently accepted pending integration.",
+      "current": "LING3.8/3.9 independently accepted; produce3.10 using actual177-verb study, then remainingLING.",
       "completedCollections": [
         "music"
       ]
@@ -833,6 +833,21 @@
       "commits": [
         "9f38382"
       ]
+    },
+    {
+      "ids": [
+        "ling-3.8",
+        "ling-3.9"
+      ],
+      "peer": "worker_three exact-commit original/official source-pixels, independent template/copy oracles, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/ling-morphology-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "f0dbec4",
+        "8f301862"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -845,7 +860,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 47,
+  "currentPendingSourceReviews": 45,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",

@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 47,
+  "remainingFlags": 45,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "art": 2,
     "arch": 9,
-    "ling": 7,
+    "ling": 5,
     "bighist": 18
   },
   "queue": [
@@ -379,37 +379,6 @@
         {
           "field": "caption",
           "text": "Choose a language (or click a dot on the right) to read the clause morpheme by morpheme: roots blue, affixes teal, with their glosses. The plot gives each clause's morphemes per word and the average number of grammatical features per affix, and shades nothing: the labels mark where the textbook classes sit. The four clauses are rough counterparts of “I can’t hear (very) well” and are **not** word-for-word translations. My own segmentation, checked against reference grammars only for Turkish ability/negation, Mandarin potential complements and the Inuktitut example (Wikipedia's *Inuit grammar*); Latin is from memory, and conventions for counting (is *qīngchu* one morpheme? is *-junga* one or two?) change the numbers a little."
-        }
-      ],
-      "refs": [
-        "Fromkin et al. ch. 2"
-      ],
-      "links": {}
-    },
-    {
-      "id": "ling-3.8",
-      "file": "content/ling/ch03-b.js",
-      "name": "Roots and templates: nonconcatenative morphology",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Fromkin et al. ch. 2"
-      ],
-      "links": {}
-    },
-    {
-      "id": "ling-3.9",
-      "file": "content/ling/ch03-b.js",
-      "name": "Reduplication",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "caption",
-          "text": "Choose a language and a stem: the copied part is shown in orange with an arrow from the stem, and the result appears with its meaning. In *free play* type any stem and choose the rule (full, first CV, first CVC) to see how the same stem looks under each pattern. The bars give the typological counts of the WALS chapter. Examples: Indonesian *buku-buku*, *anak-anak* and *mata-mata* “spy” and the Tagalog forms *susulat*, *kakain*, *babasa*, *iinom* were checked against teaching sources; *rumah-rumah*, *jalan-jalan* and *bibili* are from memory. The copying here is orthographic, a simplification of the sound-level rule."
         }
       ],
       "refs": [
@@ -1551,7 +1520,9 @@
       "ling-4.14",
       "art-4.15",
       "art-4.12",
-      "art-4.13"
+      "art-4.13",
+      "ling-3.8",
+      "ling-3.9"
     ]
   },
   "additionalFollowups": [
@@ -6545,6 +6516,16 @@
       "id": "art-4.13",
       "status": "resolved",
       "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent linear/Simpson and owner-data checks, native-state and output-pixel review; docs/verification/art-perception-followup.md."
+    },
+    {
+      "id": "ling-3.8",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit original/official source-pixels, independent template/copy oracles, fresh native-state and output-pixel review; docs/verification/ling-morphology-followup.md."
+    },
+    {
+      "id": "ling-3.9",
+      "status": "resolved",
+      "note": "2026-10-20: worker_three exact-commit original/official source-pixels, independent template/copy oracles, fresh native-state and output-pixel review; docs/verification/ling-morphology-followup.md."
     }
   ]
 }
