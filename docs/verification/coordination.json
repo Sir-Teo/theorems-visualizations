@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Document rejected compositor timing; bounded read-only next-step diagnosis",
+      "current": "Independent GEOL prerequisite peer",
       "owns": [
-        "Isolated map prototype reports and explicit-only tests; no production graph edits"
+        "Unique GEOL peer reports/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent AERO prerequisite peer",
+      "current": "PHYSIO genuine prerequisite production",
       "owns": [
-        "Unique AERO peer report/tests only"
+        "PHYSIO written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent DEMO prerequisite peer; one-row correction under review",
+      "current": "KIN genuine prerequisite production",
       "owns": [
-        "Unique DEMO peer reports/tests only"
+        "KIN written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -1919,15 +1919,46 @@
       "edgesAdded": 13,
       "sourceClosure": "None; all source flags unchanged.",
       "bridgeReview": "No changed consumer IDs are existing bridge steps; independently checked."
+    },
+    {
+      "collection": "aero",
+      "commits": [
+        "70998872b4b75de086bfbcbcf5a5f4e52ec456c0",
+        "0d380ea8882132f2fd2b8b1d5a61388683fce59f"
+      ],
+      "status": "accepted",
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "publishedBefore": 11,
+      "publishedAfter": 25,
+      "report": "docs/verification/aero-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; source flags and numerical functions preserved.",
+      "bridgeReview": "AERO2.5 harmonic step independently reviewed and remains accurate."
+    },
+    {
+      "collection": "demo",
+      "commits": [
+        "5b4798842d57f5f66c1a6cdcbdebeca1d9609c6c",
+        "2a677b2630cd8e8cde1383ff576c57e66c7fe018",
+        "f3d24d912f4ba0a6298605495f593d030db0fa5e"
+      ],
+      "status": "accepted",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "publishedBefore": 12,
+      "publishedAfter": 25,
+      "report": "docs/verification/demo-prerequisites-independent-peer.md",
+      "sourceClosure": "None; source flags and numerical functions preserved.",
+      "bridgeReview": "No changed consumer IDs are bridge steps."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 723,
-    "publishedBelow25": 39,
+    "publishedShortfall": 696,
+    "publishedBelow25": 37,
     "collections": 64,
-    "wholeSyllabusBelow25": 27,
+    "wholeSyllabusBelow25": 26,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Nine new collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING and WAVES. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Eleven further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO and DEMO. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

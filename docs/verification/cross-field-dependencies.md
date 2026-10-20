@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **39 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 723 edges. Even
-including planned items and planned prerequisites, **27 collections remain below 25**.
+Of 64 non-math collections, **37 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 696 edges. Even
+including planned items and planned prerequisites, **26 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -198,3 +198,8 @@ The source queue does not change: Hounsfield3.18 remains open. The singular-ener
 Thirteen actual derivational uses across twelve WAVES items bring written/known/whole counts from 12/20/27 to 25/33/40. Independent target-proof review, 1,145 fresh mathematical cases and 24 narrow theme renders support acceptance, including bounded Taylor, Parseval, Hermitian mode and stationary-ray hypotheses. No existing bridge step is touched. See [WAVES independent peer](waves-crossfield-prerequisites-peer.md). Accepted shortfall is 723, with 39/64 collections below 25 published links and 27 whole syllabi below target.
 
 The separate [IMAGING2.9 runtime peer](imaging-dual-energy-runtime-peer.md) accepts all 41 offered singular pairs as explicit unavailable decompositions, preserves all 5,110 invertible-pair arithmetic, and independently verifies local dose controls and replay. It adds no prerequisite edge and closes no historical-source flag. The frozen BIGHIST edge remains excluded.
+
+
+## Accepted AERO and DEMO prerequisite batches
+
+Independent [AERO review](aero-crossfield-prerequisite-peer.md) accepts fourteen consumed mathematical inputs across thirteen written items, bringing counts 11/25/55→25/39/69. The harmonic bridge remains accurate. Independent [DEMO review](demo-prerequisites-independent-peer.md) accepts thirteen inputs across twelve items, including the corrected multiline3.14 syllabus row, bringing 12/13/24→25/26/37. All complete changed-row dependency lists now match, and all functions/source flags are preserved. Accepted shortfall is696, with37/64 collections and26 whole syllabi below25. No source obligation closes.

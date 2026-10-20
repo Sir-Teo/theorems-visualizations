@@ -957,3 +957,6 @@ Exact `8887249` passes2,128 default tests, all six UI groups, strict build/full 
 ### Subsequent WAVES and IMAGING acceptance
 
 The [WAVES peer](waves-crossfield-prerequisites-peer.md) independently accepts thirteen edges across twelve existing items: 25 published prerequisites, global shortfall723, 39/64 collections below target and27 whole syllabi below target. The [IMAGING2.9 runtime peer](imaging-dual-energy-runtime-peer.md) separately accepts the singular-energy and native-dose correction, without source closure or additional prerequisite count. These later files are outside the immutable2128-test checkpoint; its included runtime candidate is now independently accepted. Source queue remains5.
+
+
+AERO and corrected DEMO prerequisites are independently accepted: fourteen and thirteen genuine inputs respectively, with native narrow-theme proof inspection and full preservation. Current accepted shortfall696,37/64 published collections below25,26whole syllabi below25. Source queue remains5; frozen BIGHIST edge remains excluded. See [AERO peer](aero-crossfield-prerequisite-peer.md) and [DEMO peer](demo-prerequisites-independent-peer.md). Next full checkpoint is pending.
