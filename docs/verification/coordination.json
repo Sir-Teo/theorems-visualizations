@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Non-timing actual-mesh operation/storage census; current freeze pending",
+      "current": "Read-only exact membership re-enumeration and bounded scratch feasibility",
       "owns": [
-        "Explicit diagnostic math/storage/count files only; no renderer binding or timing"
+        "Unique read-only map feasibility report; no renderer binding or timing"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -42,9 +42,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "CIRC genuine prerequisite production; GEO combined peer complete",
+      "current": "Independent actual-mesh count/storage census peer; CIRC boundaries preserved",
       "owns": [
-        "CIRC written items/matching rows/unique reports/tests"
+        "Unique non-timing mesh census peer reports/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent BIOINF prerequisite peer",
+      "current": "TOC genuine prerequisite production; BIOINF/accounting peers complete",
       "owns": [
-        "Unique BIOINF peer files only"
+        "TOC written items/matching rows/unique reports/tests"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -2063,15 +2063,31 @@
       "report": "docs/verification/epi-prerequisites-independent-peer.md",
       "sourceClosure": "None; all functions/helpers/source flags preserved.",
       "followup": "Three raw rows synchronized;3.9non-informative censoring qualification independently checked; causality bridge accurate."
+    },
+    {
+      "collection": "bioinf",
+      "commits": [
+        "f893017643c70994854fa6af773c68606a2be26f",
+        "8502d567356e1bd45962629d026a682df2178e85"
+      ],
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/bioinf-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; functions/helpers/flags unchanged.",
+      "bridgeReview": "No changed IDs are existing bridge steps.",
+      "followup": "3.8expectation explicitly requires common valid placements,3.2existingFekete row backfilled,4.12LSEpositiveargument typo corrected."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 590,
-    "publishedBelow25": 30,
+    "publishedShortfall": 575,
+    "publishedBelow25": 29,
     "collections": 64,
     "wholeSyllabusBelow25": 23,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Eighteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Nineteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -2176,6 +2192,15 @@
       "loadedEdges": 23218,
       "method": "Correctness-only three-state smoke; exact complete original raster/cache history promoted to DOM. No timing.",
       "limitation": "Same-LOD ratio1.375 fails retained direct-paint mean bound2/255: candidate2.529006,production2.533013. Later matrix/lifecycle/native checks unrun. Original CSS served bytes not frozen; observed hash disclosed. Production unchanged."
+    }
+  ],
+  "accountingSafeguards": [
+    {
+      "candidate": "5ae9794d03b55f10fed54b2741d89fe84150f618",
+      "peer": "7d2d028ce74bb0778e53fd86e3bc65fa27052e2c",
+      "status": "accepted-tooling-only",
+      "report": "docs/verification/cross-field-accounting-independent-peer.md",
+      "scope": "Default CLI preserves explicit exclusions/metadata, fails before writing on stale/unknown/duplicate exclusions; raw stdout never writes. No candidate argument or source content accepted."
     }
   ]
 }

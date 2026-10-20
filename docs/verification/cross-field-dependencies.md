@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **30 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 590 edges. Even
+Of 64 non-math collections, **29 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 575 edges. Even
 including planned items and planned prerequisites, **23 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -235,3 +235,10 @@ The [combined independent GEO peer](geo-prerequisites-independent-peer.md) accep
 The [BEHAV peer](behav-independent-peer.md) accepts fourteen inputs across thirteen consumers,11/15/17→25/29/31, plus four equivalent field wraps. All67objects/functions/flags, exact syllabus lists,106,445independent assertions and32changed-field images pass. No bridge is touched.
 
 The [EPI peer](epi-prerequisites-independent-peer.md) accepts fifteen inputs across fourteen consumers,10/11/29→25/26/44. Three inherited raw syllabus mismatches and the3.9censoring qualification were corrected and re-reviewed; informative censoring has an explicit counterexample. All47objects/functions/flags/helpers and full changed-row lists pass; original/new corrected native outputs and causality bridge cards were personally inspected. No source claim or biomedical scope expands. Accepted global shortfall590,30/64published collections below25,23whole syllabi below25.
+
+
+## Accepted bioinformatics inputs and accounting safeguard
+
+The [BIOINF peer](bioinf-crossfield-prerequisite-peer.md) accepts fifteen inputs across eleven consumers,10/15/31→25/30/46. All47objects/functions/flags/full raw item/row lists pass, including an existingFekete row backfill. Common valid seed placements and the LSEoverflow sign are precisely qualified/corrected; independent mathematics and22narrow theme outputs pass. No bridge is touched. Accepted shortfall575,29/64below25published,23whole syllabi below25.
+
+The separately [reviewed accounting tool](cross-field-accounting-independent-peer.md) preserves explicit exclusions and acceptance metadata by default, rejects stale/unknown/duplicate exclusions before writing, and keeps raw output separate. Its frozen fixtures and isolated CLI checks do not access source content or certify candidate arguments. The actual accepted/raw inventories differ only by the one frozen edge.

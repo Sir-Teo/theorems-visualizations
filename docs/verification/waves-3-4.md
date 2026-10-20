@@ -984,3 +984,6 @@ GEO's fifteen inputs and separate inheritedcurlsign correction are [independentl
 
 
 Exact [68aa4e2checkpoint](checkpoint-68aa4e2.md) passes2,152default tests, all6UIgroups, strict/fullstatic0errors/0warnings, home113,033bytes gzip. It includes all accepted batches through correctedEPI/BEHAV, with accepted prerequisite590/30/23 and source5=833+1−829. Later inventory-tool/mesh-diagnostic/BIOINF files remain outside its scope.
+
+
+[BIOINF](bioinf-crossfield-prerequisite-peer.md) adds fifteen independently accepted inputs; live575shortfall,29/64below25published,23whole syllabi below25. The [accounting safeguard](cross-field-accounting-independent-peer.md) prevents accidental loss of explicit frozen-edge exclusions during regeneration. Both are later than the2152-test checkpoint. Sourcequeue5 unchanged.

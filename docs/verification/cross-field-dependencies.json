@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 30,
+  "publishedBelowTarget": 29,
   "wholeSyllabusBelowTarget": 23,
   "entries": [
     {
@@ -8011,12 +8011,19 @@
       "collection": "bioinf",
       "field": "bio",
       "target": 25,
-      "writtenToWritten": 10,
-      "writtenToKnown": 15,
-      "wholeSyllabus": 31,
-      "publishedShortfall": 15,
+      "writtenToWritten": 25,
+      "writtenToKnown": 30,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "bioinf-1.10",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "bioinf-1.11",
           "prerequisite": "stat-10.18",
@@ -8046,11 +8053,32 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "bioinf-1.2",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "bioinf-1.5",
           "prerequisite": "stoch-12.6",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "bioinf-1.6",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-1.6",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "bioinf-1.7",
@@ -8088,8 +8116,64 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "bioinf-2.4",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-3.6",
+          "prerequisite": "prob-1.6.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-3.6",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-3.8",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-3.8",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "bioinf-3.2",
           "prerequisite": "prob-2.7.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-3.5",
+          "prerequisite": "prob-1.6.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-4.7",
+          "prerequisite": "stat-2.1",
+          "prerequisiteField": "stats",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-4.7",
+          "prerequisite": "prob-1.6.1",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -8102,9 +8186,23 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "bioinf-4.12",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "bioinf-4.1",
           "prerequisite": "stoch-1.1",
           "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "bioinf-4.2",
+          "prerequisite": "stat-6.4",
+          "prerequisiteField": "stats",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -8121,6 +8219,13 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "bioinf-4.4",
+          "prerequisite": "algo-7.2",
+          "prerequisiteField": "cs",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "bioinf-5.7",
@@ -16531,7 +16636,8 @@
       "23b0fc2d861beebfb7b11122ea49716ac0c66cf2",
       "41e28718ef13f3c5c8338d689b8407f21ff09b47",
       "2afbe7e27409aae87a402cc515291f9e9436e4f8",
-      "a13604f7bae12f3718d28fe089c18e4957e790d3"
+      "a13604f7bae12f3718d28fe089c18e4957e790d3",
+      "f893017643c70994854fa6af773c68606a2be26f"
     ],
     "excludedUnacceptedEdges": [
       {
