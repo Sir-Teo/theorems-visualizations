@@ -907,6 +907,20 @@
         "003e624",
         "0042d66"
       ]
+    },
+    {
+      "ids": [
+        "ling-4.13"
+      ],
+      "peer": "Worker two independently accepted exact9a65687 after original Zipf/Mandelbrot, independent tokenizer/finitefit reference and fresh native/output review",
+      "reports": [
+        "docs/verification/ling-wordstats-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9a65687",
+        "4cf5c25"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -919,7 +933,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 37,
+  "currentPendingSourceReviews": 36,
   "latestCheckpoint": {
     "acceptedContentCommit": "fb1cb6e",
     "report": "docs/verification/checkpoint-fb1cb6e.md",

@@ -1,5 +1,5 @@
 import {wordstatsModel,wsBestShift,WS_OPTIONS,WS_DEFAULT} from './source-audit-wordstats.js';
-export default{num:'4.13',kind:'Paper',name:'The Psycho-Biology of Language',verify:true,
+export default{num:'4.13',kind:'Paper',name:'The Psycho-Biology of Language',verify:false,
  paper:{authors:'George Kingsley Zipf',year:1935,title:'The Psycho-Biology of Language: An Introduction to Dynamic Philology',venue:'Boston: Houghton Mifflin,1935',url:'https://languagelog.ldc.upenn.edu/myl/Zipf1935b.pdf'},introduces:['ling-4.1','ling-4.5'],credit:'George Kingsley Zipf,1935',
  statement:String.raw`Zipf's1935 book consolidates quantitative regularities in language. Its p.38 describes abbreviation as a tendency for more frequent words to be shorter, explicitly without requiring inverse proportionality. Pages44–47 rank word forms by occurrence and compare their frequencies with a harmonic standard: approximately f(r)∝1/r, or r·f(r)≈constant.
 

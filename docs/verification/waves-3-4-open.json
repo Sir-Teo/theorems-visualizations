@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 37,
+  "remainingFlags": 36,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 6,
-    "ling": 4,
+    "ling": 3,
     "bighist": 16
   },
   "queue": [
@@ -337,19 +337,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/The_Federalist_Papers#Authorship"
-      }
-    },
-    {
-      "id": "ling-4.13",
-      "file": "content/ling/ch04-c.js",
-      "name": "The Psycho-Biology of Language",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "archive": "https://archive.org/details/psychobiologyofl0000zipf"
       }
     },
     {
@@ -1407,7 +1394,8 @@
       "arch-3.10",
       "arch-3.12",
       "arch-3.13",
-      "ling-3.10"
+      "ling-3.10",
+      "ling-4.13"
     ]
   },
   "additionalFollowups": [
@@ -6456,6 +6444,11 @@
       "id": "art-3.13",
       "status": "resolved",
       "note": "2026-10-20: Worker one independently accepted exact003e624 after original sources, independent optics/color references and fresh actualpixel native review; docs/verification/art-optics-followup.md."
+    },
+    {
+      "id": "ling-4.13",
+      "status": "resolved",
+      "note": "2026-10-20: Worker two independently accepted exact9a65687 after original Zipf/Mandelbrot, independent tokenizer/finitefit reference and fresh native/output review; docs/verification/ling-wordstats-followup.md."
     }
   ]
 }
