@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 178,
+  "remainingFlags": 176,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,6 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "fin": 2,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -227,36 +226,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters"
-      }
-    },
-    {
-      "id": "fin-5.4",
-      "file": "content/fin/ch05.js",
-      "name": "Prices react to news within minutes",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Event_study"
-      }
-    },
-    {
-      "id": "fin-5.5",
-      "file": "content/fin/ch05.js",
-      "name": "Active funds versus the index",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 11"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Active_management"
       }
     },
     {
@@ -3568,7 +3537,9 @@
       "fin-5.10",
       "micro-10.22",
       "fin-5.15",
-      "demo-4.3"
+      "demo-4.3",
+      "fin-5.4",
+      "fin-5.5"
     ]
   },
   "additionalFollowups": [
@@ -7783,6 +7754,18 @@
       "status": "resolved",
       "report": "docs/verification/demo-reproduction-followup.md",
       "note": "Independent officialUN definitions/units and methodologyglossary reading; exact maternal-survival exposure integral and no-mortality/monotonicity proof assessed;4math+4nativegroups and all2800original inputscalars across50country-years pass. Full final mobile/desktop/source-knot/bar screenshots inspected. Shared inputs preserved; reconstructed, official-L and published references are explicitly distinct."
+    },
+    {
+      "id": "fin-5.4",
+      "status": "resolved",
+      "report": "docs/verification/fin-events-funds-followup.md",
+      "note": "Actual primary source claims checked; independent six-group math and eight-group native checks plus final narrow/desktop image inspection pass; authored CAR/Gaussian models are separated from historical evidence."
+    },
+    {
+      "id": "fin-5.5",
+      "status": "resolved",
+      "report": "docs/verification/fin-events-funds-followup.md",
+      "note": "Actual primary source claims checked; independent six-group math and eight-group native checks plus final narrow/desktop image inspection pass; authored CAR/Gaussian models are separated from historical evidence."
     }
   ]
 }

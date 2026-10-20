@@ -9,6 +9,7 @@ import { clamp, pct, fx, sg, daily, acf, normCdf, normPdf, pricePath, rng } from
 
 import { dailyCalendar } from './source-audit-daily-calendar.js';
 import { signRule, wealthPath, newsLevel } from './source-audit-efficiency.js';
+import { SPIVA_2024_LARGE_CAP, eventStudy, eventIntraday, fundLaw, fundScatter } from './source-audit-events-funds.js';
 
 export default {
   collection: 'fin',
@@ -186,111 +187,75 @@ Scope: one asset, exponential utility, normal payoffs and noise; a stylised mode
     },
     // ------------------------------------------------------------------ 5.4
     {
-      num: '5.4',
-      kind: 'Phenomenon',
-      name: 'Prices react to news within minutes',
-      statement: String.raw`In **event studies**, the abnormal return of a stock around a public announcement is measured against what the market model predicts, $AR_t=r_t-(\alpha+\beta r_{M,t})$, and cumulated to $CAR$. For earnings announcements, stock splits and similar news the pattern is: the price moves in the direction of the surprise, **most of the adjustment happens at or just before the announcement**, and after it the cumulative abnormal return is nearly flat, with no further profit for someone who trades on the announcement once it is public. Intraday studies find that simple trading rules on earnings and dividend releases lose their profit within **five to ten minutes** of the release.
+      num: '5.4', kind: 'Phenomenon', name: 'Event studies and price adjustment',
+      statement: String.raw`An **event study** measures returns around a dated announcement against a specified benchmark. With excess stock and market returns on the same basis, write
+$$\begin{gathered}AR_{i,t}=(r_{i,t}-r_{f,t})-b_{i,t},\\ b_{i,t}=\alpha_i+\beta_i(r_{M,t}-r_{f,t}).\end{gathered}$$
+The cross-sectional average is $AAR_t=N^{-1}\sum_i AR_{i,t}$; here **CAR** is the arithmetic sum of AAR from a declared baseline, not a compounded investment return. A response before an announcement can reflect earlier information; a later drift can reflect delayed adjustment, later news or a misspecified benchmark. A sample CAR is not itself a trading profit or an efficiency verdict.
 
-Scope: the average over many events; individual announcements can overshoot. Post-announcement drift after earnings surprises (a slow part of the adjustment, documented later) is a well-known qualification, shown here with the "slow market" button.`,
-      idea: String.raw`Many professional traders watch the same releases and compete to trade on them; whoever is fastest earns the move and, by trading, pushes the price to its new value. The arithmetic of an event study makes this visible: averaging abnormal returns of many firms with similar surprises cancels the firm-specific noise ($\propto 1/\sqrt N$) and leaves the common signal, while the market model strips out market movements (fin-4.3). The semi-strong form of fin-5.1 is exactly the claim that the post-announcement part of the curve is flat.`,
-      caption: String.raw`**Left**: the average cumulative abnormal return of 300 firms in each of five **earnings-surprise** groups, days $-20$ to $+20$. The efficient market jumps on day 0 and then stays; choose a **slow** market (part of the move arrives gradually in the next 20 days, a post-announcement drift) or a **leaky** one (part of it before the news). **Right**: zoom into the first minutes after the release; move the **adjustment time** and the **delay** with which you can trade, and read off the profit you can still capture. (Stylised simulation based on the cited pattern, not the original data.)`,
-      deps: ['fin-5.1'],
-      refs: ['BKM ch. 11'],
-      tags: ['event study', 'news', 'semi-strong form'],
-      credit: 'Ball & Brown, 1968; Fama, Fisher, Jensen & Roll, 1969; Patell & Wolfson, 1984',
-      scope: String.raw`Average behaviour for liquid U.S. stocks; the five-to-ten minute figure refers to the 1980s intraday data of Patell and Wolfson, and today's adjustment is faster.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Event_study' },
+Ball and Brown (1968) examined monthly returns for 261 firms and fiscal years 1957–1965. Much of the association with annual income appeared before its announcement. Their pp.173–174 also discuss possible later persistence and transaction costs. Their original **Abnormal Performance Index** compounds residuals; the daily arithmetic-CAR illustration below is an authored extension, not their figure or data.`,
+      idea: String.raw`The regression benchmark (fin-4.3) removes a chosen common component; it does not establish that every residual is caused by the announcement. In the illustration, each group's daily mean error has standard deviation $1.5/\sqrt{300}$ percentage points. This is the exact distribution obtained by averaging 300 independent normal errors of daily standard deviation 1.5. The variance argument of prob-2.2.3 explains the $1/\sqrt N$ reduction. It requires uncorrelated errors; a common residual component need not vanish. Independent daily errors then give terminal CAR noise with standard deviation $1.5\sqrt{40/300}$ points over the 40 increments. Real event studies also face benchmark estimation, cross-event dependence, event-date uncertainty and selection into surprise groups.`,
+      caption: String.raw`**Daily panel:** five assigned effect groups use jump, drift or early-information schedules. Solid curves are simulated group-average CARs; dashed curves are their exact expected schedules. All start at zero on day −20. The jump model has a flat expected path after day 0, while its noisy sample still moves. Resample the group errors, change the effect size or select another schedule. **Minute panel:** a separate authored level response $1-e^{-t/\tau}$ has adjustable time scale and entry delay. The full 90% time remains visible. The vertical gold segment shows the remaining asymptotic level change, not a holding-period return or executable profit.`,
+      scope: String.raw`The five groups, 300-error averaging law, daily noise, response schedules and minute time constants are chosen teaching parameters. Group labels use assigned eventual effects and are not an available trading signal. Drift assigns 60% at day 0 and 40% over days 1–20; early information assigns 35% over days −10 to −1 and 65% at day 0. The daily and minute panels are separate models. No minute-speed estimate, universal absence of earnings drift, current-market speed comparison, causal identification or no-profit conclusion is inferred from them. Benchmark coefficients are treated as known.`,
+      deps: ['fin-5.1','fin-4.3','prob-2.2.3','prob-1.2.5'],
+      refs: ['Ball & Brown (1968), pp.161–168, Figure 1 p.169, pp.170–177', 'https://dallenwapty.com/coursematerial/investmentv/ballandbrown1968.pdf'],
+      tags: ['event study','news','semi-strong form'], credit: 'Ball & Brown, 1968; daily and minute examples derived here', verify: false,
+      links: { doi:'https://doi.org/10.2307/2490232',source:'https://dallenwapty.com/coursematerial/investmentv/ballandbrown1968.pdf' },
       viz(v) {
-        const mkt = v.select('market', [{ value: 'eff', label: 'efficient' }, { value: 'slow', label: 'slow (drift)' }, { value: 'leak', label: 'leaky' }], 'eff');
-        const size = v.slider('typical surprise effect (%)', 1, 6, 3, { step: 0.25 });
-        const tau = v.slider('adjustment time (min)', 0.5, 40, 5, { log: true, sig: 2 });
-        const delay = v.slider('your trading delay (min)', 0, 40, 10, { step: 0.5 });
-        let seed = 3; v.button('Resample firms', () => { seed++; });
-        const A = v.stage({ x: [-20, 20], y: [-5, 5], axes: 'box', gutter: true, height: 340, weight: 1.4, minWidth: 300, xlabel: 'trading days from the announcement', ylabel: 'cumulative abnormal return (%)', title: 'earnings surprise groups (stylised)' });
-        const B = v.stage({ x: [-5, 40], y: [-0.05, 1.1], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 260, xlabel: 'minutes after the release', ylabel: 'share of the move', title: 'the first minutes' });
-        const GROUPS = [-1, -0.4, 0, 0.4, 1], COL = ['red', 'orange', 'muted', 'teal', 'green'], N = 300;
-        const share = (d) => (d < 0 ? 0 : mkt.value === 'slow' ? 0.6 + 0.4 * Math.min(1, d / 20) : 1); // by day offset d (>= 0 -> jump day)
-        let prof = 0;
-        v.render(() => {
-          const R = rng(seed * 977);
-          for (let g = 0; g < 5; g++) {
-            const J = GROUPS[g] * size.value; let car = 0; const pts = [];
-            for (let d = -20; d <= 20; d++) {
-              let mu = 0;
-              if (d === 0) mu = J * (mkt.value === 'slow' ? 0.6 : mkt.value === 'leak' ? 0.65 : 1);
-              if (mkt.value === 'slow' && d > 0) mu = J * 0.4 / 20;
-              if (mkt.value === 'leak' && d >= -10 && d < 0) mu = J * 0.35 / 10;
-              let e = 0; for (let k = 0; k < N; k++) e += 1.5 * R.normal(); e /= N;
-              car += mu + e; pts.push([d, car]);
-            }
-            // shift so that CAR at −20 starts at about zero (already: starts with day −20)
-            A.path(pts, { color: COL[g], width: 2.2 });
-            A.text(['most negative', '', '', '', 'most positive'][g], 20, pts[40][1], { dx: -4, dy: g === 0 ? 12 : -10, align: 'right', size: 10.5, color: COL[g], weight: 700 });
-          }
-          A.vline(0, { color: 'faint', dash: true }); A.hline(0, { color: 'faint' });
-          const f = (t) => (t < 0 ? 0 : 1 - Math.exp(-t / tau.value));
-          const ts = []; for (let t = -5; t <= 40; t += 0.25) ts.push([t, f(t)]);
-          B.path(ts, { color: 'accent', width: 2.6 }); B.vline(0, { color: 'faint', dash: true }); B.hline(1, { color: 'faint', dash: true });
-          const pe = f(delay.value); prof = 1 - pe;
-          B.rect(delay.value, pe, 40, 1, { fill: 'gold', fillAlpha: 0.3, stroke: false });
-          B.dot(delay.value, pe, { r: 7, color: 'gold' }); B.text('you trade here', delay.value, pe, { dx: 8, dy: 16, size: 11.5, color: 'gold', weight: 700, align: delay.value > 25 ? 'right' : 'left' });
-          B.dot(Math.log(10) * tau.value, 0.9, { r: 4, color: 'green' }); B.text('90% done', Math.log(10) * tau.value, 0.9, { dx: 10, dy: -12, size: 11, color: 'green', align: 'left' });
-          B.tex('1-e^{-t/\\tau}', 28, f(28) - 0.12, { size: 13, color: 'accent' });
+        const mode=v.select('authored daily response',[{value:'jump',label:'jump at announcement'},{value:'drift',label:'60% jump, 40% drift'},{value:'early',label:'35% early information'}],'jump');
+        const effect=v.slider('largest assigned effect (percentage points)',1,6,3,{step:.25});
+        const tau=v.slider('authored adjustment time (minutes)',.5,40,5,{log:true,sig:2});
+        const delay=v.slider('entry delay (minutes)',0,40,10,{step:.5});
+        let seed=3;v.button('Resample group errors',()=>{seed++;});
+        const A=v.stage({x:[-24,24],y:[-7,7],axes:'box',gutter:true,height:360,weight:1.3,minWidth:290,xlabel:'days from the assigned event',ylabel:'arithmetic CAR (percentage points)',title:'authored daily event study'});
+        const B=v.stage({x:[-8,45],y:[-.14,1.18],axes:'box',gutter:true,height:360,minWidth:270,xlabel:'minutes from the assigned event',ylabel:'normalized response level',title:'separate authored minute response'});
+        const colors=['red','orange','muted','teal','green'];
+        v.legend([['accent','solid: simulated group mean'],['accent','dashed: expected daily schedule',{dash:true}],['gold','entry level / remaining level change'],['green','90% of the minute response']]);
+        let info={};
+        v.render(()=>{
+          const R=v.rng(seed*977),study=eventStudy(mode.value,effect.value,()=>R.normal()),minute=eventIntraday(tau.value,delay.value),values=study.groups.flatMap(g=>[...g.points,...g.expected].map(p=>p[1])),lo=Math.min(0,...values),hi=Math.max(0,...values),pad=Math.max(.5,.15*(hi-lo));
+          A.setView([-24,24],[lo-pad,hi+pad]);
+          study.groups.forEach((g,i)=>{A.path(g.points,{color:colors[i],width:1.8});A.path(g.expected,{color:colors[i],width:2.4,dash:[5,4]});});
+          A.vline(0,{color:'faint',dash:[3,4]});A.hline(0,{color:'faint'});
+          B.setView([-5-.08*(minute.end+5),minute.end+.12*(minute.end+5)],[-.14,1.18]);
+          B.line(0,1,minute.end,1,{color:'faint',dash:[3,4]});B.path(minute.points,{color:'accent',width:2.6});
+          B.line(minute.delay,minute.entry,minute.delay,1,{color:'gold',width:2.2});B.dot(minute.delay,minute.entry,{r:7,color:'gold'});B.dot(minute.t90,.9,{r:5,color:'green'});
+          info={study,minute,seed};
         });
-        v.readout(() => `Right panel: with an adjustment time of ${v.fix(tau.value, 1)} min, 90% of the move is done after ${v.fix(Math.log(10) * tau.value, 1)} min; a trader who gets in after ${v.fix(delay.value, 1)} min captures only **${pct(prof, 0)}** of it${prof < 0.05 ? ' (practically nothing: this is what the semi-strong form says)' : ''}.\nLeft: the most negative and most positive groups have total effects of ${sg(-size.value, 1)}% and ${sg(size.value, 1)}% by construction; in the efficient market the paths are flat after day 0, in the slow market they keep drifting for 20 days, in the leaky one part of the move comes before.`);
+        v.readout(()=>{const s=info.study,m=info.minute;return `Assigned extreme effects: ${sg(-s.effect,2)} and ${sg(s.effect,2)} percentage points. Realized day 20 CARs: ${sg(s.groups[0].points.at(-1)[1],5)} and ${sg(s.groups[4].points.at(-1)[1],5)}. Sampling noise means those realized endpoints need not equal the assigned effects. All 41 days per group, including the zero baseline, are retained.\nDaily group-mean error SD ${fx(s.meanSd,6)} points; terminal CAR error SD ${fx(s.terminalSd,6)} points under the imposed independent normal law. A flat expected schedule does not make each sampled path flat.\nMinute model: 90% at ${fx(m.t90,5)} minutes; response at entry ${fx(m.entry,7)}, remaining asymptotic change ${fx(m.remaining,7)} of the normalized effect, and change to the plotted endpoint ${fx(m.visible,7)}. These level changes are not returns or risk-adjusted profits.`;});
       },
     },
     // ------------------------------------------------------------------ 5.5
     {
-      num: '5.5',
-      kind: 'Phenomenon',
-      name: 'Active funds versus the index',
-      statement: String.raw`Averaged over active managers, **gross** performance is about that of the market, so after fees the average active fund must underperform the index by roughly its costs, and the share of funds beating the index falls as the horizon lengthens. Writing a fund's true annual alpha as $\alpha_i\sim N(\mu_g-f,\ s_\alpha^2)$ (gross mean $\mu_g$, fee $f$, skill dispersion $s_\alpha$) and its measured alpha over $H$ years as $\hat\alpha_i=\alpha_i+e_i$ with $e_i\sim N(0,\sigma_{te}^2/H)$ (tracking error $\sigma_{te}$), the share of funds that **beat** the index over $H$ years is
-$$\Phi\!\left(\frac{\mu_g-f}{\sqrt{s_\alpha^2+\sigma_{te}^2/H}}\right).$$
-With no skill ($s_\alpha=0$) a fund's rank in one period is unrelated to its rank in the next. Large empirical studies find little persistence and little evidence of skill after costs among U.S. equity funds, apart from a persistent tail of poor performers.
+      num: '5.5', kind: 'Phenomenon', name: 'Active funds versus the index',
+      statement: String.raw`Sharpe's (1991) arithmetic concerns **all active dollars in the same specified market**: if passive holdings reproduce the market, the remaining active holdings have the same aggregate gross return. Higher active costs then lower aggregate net returns. This identity does not fix the equal-weight return of a mutual-fund subset, its winning fraction or its performance against a different benchmark.
 
-Scope: a statistical model of the claim, not the data. Reference points: S&P's SPIVA scorecard reports 65% of all large-cap U.S. funds underperforming the S&P 500 in calendar 2024 and a majority of funds underperforming over 15 years in every category.`,
-      idea: String.raw`Gross of costs, active management is a zero-sum game: the dollar-weighted return of all active investors equals the market's (Sharpe's arithmetic of active management), so net of fees the average is below the index by the fee. Over a short horizon, luck dominates ($\sigma_{te}/\sqrt H$ is large), so a no-skill fund beats the index about half the time before fees; over long horizons luck averages out and the fee drag decides. Persistence tests ask whether past winners win again; if differences between funds are mostly luck (large $\sigma_{te}$ relative to $s_\alpha$), the answer is no. Fama and French (2010) find that the cross-section of fund returns is consistent with little or no skill net of costs beyond what luck produces; Carhart (1997) found that apparent persistence was mostly explained by momentum and expenses.`,
-      caption: String.raw`**Left**: the model's share of funds that *underperform* against the horizon, with two reference points from the SPIVA scorecard (secondary source for the 15-year value). Set the **fee** to 0 and the **skill** to something positive and watch the curve flip. **Right**: 500 simulated funds, alpha in one five-year period against the next; the correlation shows how little luck predicts. Raise **skill dispersion** until winners repeat. (Simulation of a statistical model.)`,
-      deps: ['fin-5.1', 'fin-4.4'],
-      refs: ['BKM ch. 11'],
-      tags: ['mutual funds', 'alpha', 'luck versus skill'],
-      credit: 'Sharpe, 1991; Jensen, 1968; Carhart, 1997; Fama & French, 2010',
-      scope: String.raw`The model is a stylised description of U.S. large-cap equity funds against a broad benchmark; reference points are reported percentages that include survivorship adjustments and category definitions by S&P.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Active_management' },
+The empirical panel transcribes the **All Large-Cap Funds versus S&P 500** row of SPIVA's year-end 2024 Report 1a: underperformance rates 65.24%, 84.96%, 76.26%, 84.34% and 89.50% at 1, 3, 5, 10 and 15 years. These are absolute-return comparisons, net of fees excluding loads, with the starting opportunity set used for survivorship correction. They are not alpha estimates. In their 1984–2006 benchmark/bootstrap study, Fama and French (2010) find few funds with enough performance to cover costs; their gross-of-expense-ratio tails show both superior and inferior performance. The Gaussian models below do not reproduce that bootstrap.`,
+      idea: String.raw`For a chosen fund subset, suppose a fixed annual gross alpha is $\mu_g+sZ_i$, an additive annual fee is $f$, and independent errors across two disjoint $H$-year periods are $\sigma Z_{i,j}/\sqrt H$. All $Z$ variables are independent standard normals (prob-1.2.5). Then
+$$\begin{gathered}a_i=\mu_g-f+sZ_i,\\ \widehat\alpha_{i,j}=a_i+\frac{\sigma}{\sqrt H}Z_{i,j}.\end{gathered}$$
+Variance addition (prob-2.2.1) gives $V_H=s^2+\sigma^2/H$, so $\Pr(\widehat\alpha<0)=\Phi((f-\mu_g)/\sqrt{V_H})$ and the population correlation between periods is $s^2/V_H$. As $H$ grows, the negative-alpha fraction rises if $\mu_g-f<0$, falls if it is positive, and stays at one half if it is zero. Persistent dispersion can make ranks informative in this model; it is not a standalone empirical identification of managerial skill.`,
+      caption: String.raw`**Empirical panel:** five fixed SPIVA observations, all ending December 2024; their horizons have different starting cohorts and the percentages need not be monotone. **Model panel:** the probability of a negative estimated alpha, under the displayed independent Gaussian assumptions. It is separate from raw index underperformance. **Scatter:** all 500 generated pairs of annual alpha estimates from disjoint periods, with their sample least-squares line. Change fees, mean alpha, persistent dispersion, tracking error or horizon; resample to see finite-population variation. Both the population and sample correlations are read out.`,
+      scope: String.raw`Model alphas are benchmark-relative annual percentage points, as in fin-4.4; they are arithmetic estimates, not compound fund wealth. A fee is an additive alpha decrement here. The chosen subset need not exhaust the market, so its mean parameter is unconstrained by the all-active-dollar identity. Normal errors allow unbounded alpha estimates; every generated point is retained without coordinate clipping. Independent errors, constant latent alphas and constant noise are imposed assumptions. SPIVA observations are historical descriptive comparisons and do not calibrate the model or forecast later performance. Fama–French gross returns add expense ratios back but still include trading costs.`,
+      deps: ['fin-5.1','fin-4.4','prob-1.2.5','prob-2.2.1'],
+      refs: ['Sharpe (1991), The Arithmetic of Active Management, complete author reprint', 'Fama & French (2010), introduction, §I, §III setup, §VI and Appendix A', 'SPIVA U.S. Year-End 2024, Report 1a p.10, methodology p.8, glossary pp.40–41'],
+      tags: ['mutual funds','alpha','luck versus skill'],credit: 'Sharpe, 1991; Fama & French, 2010; S&P Dow Jones Indices, 2024 scorecard',verify: false,
+      links: { source:'https://www.spglobal.com/spdji/en/documents/spiva/spiva-us-year-end-2024.pdf',arithmetic:'https://web.stanford.edu/~wfsharpe/art/active/active.htm',fundStudy:'https://r.jordan.im/download/investing/fama2010.pdf' },
       viz(v) {
-        const fee = v.slider('fee $f$ (% a year)', 0, 2, 1, { step: 0.05 });
-        const gross = v.slider('gross mean alpha $\\mu_g$ (% a year)', -1, 1, 0, { step: 0.05 });
-        const skill = v.slider('skill dispersion $s_\\alpha$ (% a year)', 0, 3, 0.5, { step: 0.05 });
-        const te = v.slider('tracking error $\\sigma_{te}$ (% a year)', 1, 8, 3, { step: 0.25 });
-        const Hs = v.slider('horizon in the scatter $H$ (years)', 1, 15, 5, { int: true });
-        let seed = 11; v.button('Resample funds', () => { seed++; });
-        const A = v.stage({ x: [0, 16], y: [0, 100], axes: 'box', gutter: true, height: 330, weight: 1.1, minWidth: 280, xlabel: 'horizon H (years)', ylabel: 'funds underperforming the index (%)', xticks: [1, 3, 5, 10, 15], title: 'share of funds that lag the index' });
-        const B = v.stage({ x: [-8, 8], y: [-8, 8], equal: true, axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 270, xlabel: 'alpha, period 1 (% a year)', ylabel: 'alpha, period 2 (% a year)', title: '500 funds, two consecutive periods' });
-        let cor = 0, top = 0;
-        const under = (H) => 100 * (1 - normCdf((gross.value - fee.value) / Math.sqrt(skill.value ** 2 + te.value ** 2 / H)));
-        v.render(() => {
-          const pts = []; for (let H = 0.5; H <= 16; H += 0.25) pts.push([H, under(H)]);
-          A.hline(50, { color: 'faint', dash: true });
-          A.path(pts, { color: 'accent', width: 2.6 });
-          A.dots([[1, 65], [15, 89.5]], { r: 6, color: 'red', hollow: true });
-          A.text('SPIVA 2024: 65%', 1, 65, { dx: 10, dy: -12, size: 11, color: 'red', align: 'left', weight: 700 });
-          A.text('SPIVA 15 yr: ≈ 89.5%', 15, 89.5, { dx: -10, dy: 14, size: 11, color: 'red', align: 'right', weight: 700 });
-          A.dot(Hs.value, under(Hs.value), { r: 5.5, color: 'gold' });
-          // scatter
-          const R = rng(seed * 313), N = 500, H = Hs.value, x = [], y = [];
-          for (let i = 0; i < N; i++) { const a = gross.value - fee.value + skill.value * R.normal(); x.push(a + te.value / Math.sqrt(H) * R.normal()); y.push(a + te.value / Math.sqrt(H) * R.normal()); }
-          const mx = x.reduce((s, q) => s + q) / N, my = y.reduce((s, q) => s + q) / N; let sxy = 0, sxx = 0, syy = 0; for (let i = 0; i < N; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; }
-          cor = sxy / Math.sqrt(sxx * syy);
-          const ys = [...y].sort((a, b) => a - b), med = ys[N >> 1], xs = [...x].sort((a, b) => a - b), q3 = xs[Math.floor(0.75 * N)];
-          let nt = 0, up = 0; for (let i = 0; i < N; i++) if (x[i] >= q3) { nt++; if (y[i] > med) up++; } top = up / nt;
-          B.hline(0, { color: 'faint' }); B.vline(0, { color: 'faint' });
-          B.dots(x.map((a, i) => [clamp(a, -7.8, 7.8), clamp(y[i], -7.8, 7.8)]), { r: 2.4, color: 'accent', alpha: 0.5 });
-          const sl = sxy / sxx; B.line(-8, my + sl * (-8 - mx), 8, my + sl * (8 - mx), { color: 'orange', width: 2.2 });
+        const fee=v.slider('fee (annual alpha points)',0,2,1,{step:.05}),gross=v.slider('mean gross alpha (annual points)',-1,1,0,{step:.05}),skill=v.slider('persistent alpha SD (annual points)',0,3,.5,{step:.05}),te=v.slider('annual tracking-error SD (points)',1,8,3,{step:.25}),H=v.slider('years in each scatter period',1,15,5,{int:true});
+        let seed=11;v.button('Resample modeled funds',()=>{seed++;});
+        const A=v.stage({x:[-.5,16.5],y:[-8,108],axes:'box',gutter:true,height:350,minWidth:260,xlabel:'historical horizon (years)',ylabel:'funds underperforming S&P 500 (%)',xticks:[1, 3, 5, 10,15],title:'SPIVA 2024: reported absolute returns'});
+        const B=v.stage({x:[-.5,16.5],y:[-8,108],axes:'box',gutter:true,height:350,minWidth:260,xlabel:'model horizon H (years)',ylabel:'negative estimated alpha (%)',xticks:[1, 3, 5, 10,15],title:'authored Gaussian alpha probability'});
+        const C=v.stage({x:[-8,8],y:[-8,8],equal:true,axes:'box',gutter:true,height:350,minWidth:270,xlabel:'period 1 alpha (%/year)',ylabel:'period 2 alpha (%/year)',title:'all 500 modeled funds: disjoint periods'});
+        v.legend([['red','reported SPIVA percentages',{dot:true}],['accent','model probability / generated funds'],['gold','selected model horizon'],['orange','sample regression']]);
+        let info={};
+        v.render(()=>{
+          const parameters={fee:fee.value,gross:gross.value,skill:skill.value,te:te.value,H:H.value},R=v.rng(seed*313),scatter=fundScatter(parameters,()=>R.normal()),curve=Array.from({length:59},(_,i)=>{const h=.5+i/4;return[h,100*fundLaw({...parameters,H:h}).negative];});
+          SPIVA_2024_LARGE_CAP.forEach(([h,rate])=>A.dot(h,rate,{r:6,color:'red',hollow:true,width:2}));
+          B.line(.5,50,15,50,{color:'faint',dash:[3,4]});B.path(curve,{color:'accent',width:2.6});B.dot(H.value,100*scatter.negative,{r:6,color:'gold'});
+          const xs=scatter.points.map(p=>p[0]),ys=scatter.points.map(p=>p[1]),xmin=Math.min(0,...xs),xmax=Math.max(0,...xs),line=scatter.slope===null?[]:[[xmin,scatter.my+scatter.slope*(xmin-scatter.mx)],[xmax,scatter.my+scatter.slope*(xmax-scatter.mx)]],ymin=Math.min(0,...ys,...line.map(p=>p[1])),ymax=Math.max(0,...ys,...line.map(p=>p[1])),px=Math.max(.5,.12*(xmax-xmin)),py=Math.max(.5,.12*(ymax-ymin));
+          C.setView([xmin-px,xmax+px],[ymin-py,ymax+py]);C.hline(0,{color:'faint'});C.vline(0,{color:'faint'});C.dots(scatter.points,{r:2.4,color:'accent',alpha:.55});if(line.length)C.path(line,{color:'orange',width:2.3});
+          info={parameters,scatter,curve,line,seed};
         });
-        v.readout(() => `Model: **${v.fix(under(1), 0)}%** of funds lag the index over 1 year, **${v.fix(under(5), 0)}%** over 5, **${v.fix(under(15), 0)}%** over 15; no-skill, no-fee funds would sit at 50%.\nScatter (H = ${Hs.value} yr): correlation of period-1 and period-2 alpha **${fx(cor, 2)}**; of the funds in the top quarter in period 1, **${pct(top, 0)}** beat the median in period 2 (50% = pure luck).`);
+        v.readout(()=>{const p=info.parameters,s=info.scatter;return `SPIVA 2024 observations (1/3/5/10/15 years): 65.24/84.96/76.26/84.34/89.50% underperforming, with category/cohort definitions held to that report. They are not a monotone horizon law or alpha estimates.\nGaussian model: net mean alpha ${sg(s.mean,4)} points/year; negative-alpha probability ${pct(s.negative,6)} at H=${p.H}. Population correlation ${fx(s.correlation,6)}; sample correlation ${s.sampleCorrelation===null?'undefined for constant samples':fx(s.sampleCorrelation,6)}.\nAll ${s.count} generated pairs retained. Exactly ${s.top.length} first-period top-quartile funds are selected by rank; ${s.above} (${pct(s.repeat,2)}) exceed the second-period sample median. With zero persistent dispersion, independence gives a population repeat probability of 50%; this finite count fluctuates. The model does not establish an implementable investment strategy or identify real fund skill.`;});
       },
     },
   ],
