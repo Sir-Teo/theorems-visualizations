@@ -1,3 +1,4 @@
+import{newtonCircleConcept}from'./source-audit-optics-items.js';
 import{spectralItem}from'./source-audit-spectra.js';
 // Visual Art & Color — Chapter 3: Light, spectra and colour mixing (items 3.1–3.7; 3.8–3.13 are in ch03-b.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz2lin, lin2srgb, planck, bbXYZ, gauss, sigm, nBK7, nWater, specBars, drawChromaticity, SRGB, LOCUS, dominant, NEWTON, circPt, arcCentroid, newtonMix, arcAt, mixXYZ, rad, deg } from './ch03.shared.js';
@@ -143,109 +144,8 @@ For a prism of apex angle $A$ the deviation of a ray with incidence angle $i$ is
     },
     // Source-audited spectra 3.2
     spectralItem,
-    // ------------------------------------------------------------------ 3.3
-    {
-      num: '3.3',
-      kind: 'Concept',
-      name: 'Newton’s colour circle and centre-of-gravity mixing',
-      credit: 'Isaac Newton, Opticks, 1704 (Book I, Part II, Prop. VI)',
-      statement: String.raw`Newton arranges the spectral colours around a circle (red, orange, yellow, green, blue, indigo, violet, with the purples closing the gap between violet and red). To find the colour of a mixture of lights, put at the centre of gravity of each colour’s arc a weight equal to the amount of that colour in the mixture, and find the centre of gravity $Z$ of all the weights. The direction of $Z$ from the centre $O$ gives the **hue** of the mixture and the ratio $|OZ|/R$ its **fullness**; a mixture whose $Z$ is at the centre is white.
-
-The rule is exact in one respect, that mixing is a weighted average: the colour of a mixture lies on the segment between the colours mixed, in proportion to their amounts. It is only a rough guide in another: the circle is a diagram, and the true mixing space is the chromaticity diagram, whose colour-wheel is not a circle with equal-weight centres.`,
-      idea: String.raw`Light adds linearly, so the response of the eye to a mixture is the weighted sum of its responses to the parts; in the chromaticity plane that is a weighted average of points. Newton’s circle is a hand-drawn version of that plane in which the spectrum is bent into a ring, and its centre stands for white. The picture is qualitative: the true spectral locus is not a circle and the weights $X+Y+Z$ that make the average exact are not equal for equal powers, which is why the comparison panel disagrees with the circle by a visible amount.`,
-      caption: String.raw`Drag the seven sliders (amounts of each spectral colour). The coloured ring is Newton’s circle with his arc proportions; the gold point $Z$ is the centre of gravity of the weights placed at the arcs’ own centres of gravity, and the line $OZ$ extended hits the rim at the hue. On the right, the chromaticity diagram compares Newton’s prediction (open ring) with the true mixture of lights at the same wavelengths (gold dot). Try the presets: Newton’s own example, a red–green–violet mixture balanced so that $Z=O$, and an orange–blue pair.`,
-      deps: ['art-3.1'],
-      refs: ['Kemp ch. 7'],
-      tags: ['Newton', 'colour circle', 'mixing'],
-      scope: String.raw`Newton’s arc lengths are the proportions printed in the Opticks; the wavelength attached to each colour name is a conventional mid-band value (660, 607, 577, 532, 482, 452, 420 nm), not Newton’s. The “true mixture” assumes the weights are radiant powers of monochromatic lights at those wavelengths and uses the standard-observer fit of the colour-matching functions.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Color_wheel' },
-      viz(v) {
-        const names = NEWTON.arcs.map((a) => a.name);
-        const sl = names.map((nm, i) => v.slider(nm, 0, 12, [10, 6, 5, 3, 2, 1, 1][i], { step: 0.1 }));
-        const set = (a) => a.forEach((x, i) => sl[i].set(x));
-        v.button('Newton’s example', () => set([10, 6, 5, 3, 2, 1, 1]));
-        v.button('red + green + violet, balanced', () => {
-          // barycentric weights placing Z at the centre of the circle
-          const P = [0, 3, 6].map(arcCentroid), Mx = [[P[0][0], P[1][0], P[2][0]], [P[0][1], P[1][1], P[2][1]], [1, 1, 1]], w = v.M.solve(Mx, [0, 0, 1]);
-          const k = 6 / Math.max(...w); set([w[0] * k, 0, 0, w[1] * k, 0, 0, w[2] * k]);
-        });
-        v.button('all seven equal', () => set([4, 4, 4, 4, 4, 4, 4]));
-        v.button('orange + blue', () => set([0, 6, 0, 0, 6, 0, 0]));
-        const C = v.stage({ x: [-1.45, 1.45], y: [-1.4, 1.4], equal: true, axes: false, height: 400, weight: 1, title: 'Newton’s circle' });
-        const X = v.stage({ x: [0.0, 0.8], y: [0.0, 0.9], equal: true, axes: false, height: 400, weight: 1, title: 'the same mixture on the chromaticity diagram' });
-        const centres = NEWTON.arcs.map((a) => (a.a0 + a.a1) / 2);
-        const hueXY = (ang) => {
-          // piecewise interpolation of the wavelengths of the arc centres; across the red–violet seam the hue is a purple
-          const A = NEWTON.arcs, cc = centres.map((c, i) => [c, A[i].rep]);
-          const ext = [[cc[6][0] - 2 * Math.PI, A[6].rep, 6], ...cc.map((c, i) => [c[0], c[1], i]), [cc[0][0] + 2 * Math.PI, A[0].rep, 0]];
-          for (let j = 0; j + 1 < ext.length; j++) {
-            const a = ext[j], b = ext[j + 1];
-            if (ang >= a[0] && ang <= b[0]) {
-              const u = (ang - a[0]) / (b[0] - a[0]);
-              if (j === 0 || j === ext.length - 2) { // purple seam: mix of violet and red lights of equal luminance
-                const ca = cmf(420), cb = cmf(660), na = ca[1] ? ca.map((q) => q / ca[1]) : ca, nb = cb.map((q) => q / cb[1]);
-                const uu = j === 0 ? u : u, m = [0, 1, 2].map((q) => (j === 0 ? (1 - uu) * na[q] + uu * nb[q] : (1 - uu) * nb[q] + uu * na[q]));
-                return xyOf(j === 0 ? m : m);
-              }
-              const l = a[1] + u * (b[1] - a[1]); return xyOf(cmf(l));
-            }
-          }
-          return [1 / 3, 1 / 3];
-        };
-        let info = {};
-        v.render(() => {
-          const wts = sl.map((s) => s.value), mx = newtonMix(wts);
-          // the ring
-          C.circle(0, 0, 1, { color: 'faint', width: 1 });
-          for (const A of NEWTON.arcs) {
-            const NST = 16;
-            for (let k = 0; k < NST; k++) {
-              const t0 = A.a0 + (A.w * k) / NST, t1 = A.a0 + (A.w * (k + 1)) / NST + 0.004, l = Math.min(660, Math.max(430, A.l0 + ((A.l1 - A.l0) * (k + 0.5)) / NST));
-              C.poly([circPt(t0, 0.9), circPt(t1, 0.9), circPt(t1, 1.0), circPt(t0, 1.0)], { fill: specRGB(l, 0.5), stroke: false, fillAlpha: 1 });
-            }
-          }
-          NEWTON.arcs.forEach((A, i) => {
-            const p = circPt(A.a0, 1.0), q = circPt(A.a0, 1.07), m = circPt((A.a0 + A.a1) / 2, 1.3);
-            C.line(p[0], p[1], q[0], q[1], { color: 'muted', width: 1 });
-            C.text(A.letter, ...circPt(A.a0, 1.13), { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
-            C.text(A.name, m[0], m[1], { size: 11, color: 'muted', align: 'center', baseline: 'middle' });
-          });
-          // weights at the arcs' centres of gravity (area proportional to the amount)
-          const tot = wts.reduce((a, b) => a + b, 0) || 1;
-          wts.forEach((w, i) => {
-            if (w <= 0) return;
-            const c = arcCentroid(i), r = 0.075 * Math.sqrt(w);
-            C.circle(c[0], c[1], r, { fill: specRGB(NEWTON.arcs[i].rep, 0.5), fillAlpha: 0.75, color: 'ink', width: 1 });
-          });
-          if (mx.sw > 0) {
-            const Y = circPt(mx.ang, 1), hue = hueXY(mx.ang);
-            C.line(0, 0, Y[0], Y[1], { color: 'ink', width: 1.2, dash: [5, 4], alpha: 0.7 });
-            C.line(0, 0, mx.Z[0], mx.Z[1], { color: 'ink', width: 2.6 });
-            C.dot(Y[0], Y[1], { r: 5, hollow: true, color: 'ink', label: 'Y', labelPos: 'n' });
-            C.dot(mx.Z[0], mx.Z[1], { r: 6.5, color: 'gold', label: 'Z', labelPos: 'ne' });
-          }
-          C.dot(0, 0, { r: 3.5, color: 'ink', label: 'O', labelPos: 'sw' });
-          // chromaticity comparison
-          X.setView([-0.02, 0.8], [-0.02, 0.9]);
-          drawChromaticity(X, v, { ticks: [460, 500, 540, 580, 620] });
-          const Wp = [1 / 3, 1 / 3], mixc = mixXYZ(wts), xyMix = mx.sw > 0 ? xyOf(mixc) : Wp;
-          let pred = Wp;
-          if (mx.sw > 0) { const h = hueXY(mx.ang); pred = [Wp[0] + mx.full * (h[0] - Wp[0]), Wp[1] + mx.full * (h[1] - Wp[1])]; }
-          X.dot(Wp[0], Wp[1], { r: 3.5, color: 'ink', label: 'white', labelPos: 'sw' });
-          X.dot(pred[0], pred[1], { r: 8, hollow: true, color: 'ink', label: 'Newton', labelPos: 'nw' });
-          X.dot(xyMix[0], xyMix[1], { r: 6, color: 'gold', label: 'light mixture', labelPos: 'se' });
-          const dm = dominant(xyMix[0], xyMix[1]), at = arcAt(mx.ang);
-          info = { mx, pred, xyMix, dm, at, dist: Math.hypot(pred[0] - xyMix[0], pred[1] - xyMix[1]) };
-        });
-        v.legend([['gold', '$Z$, the centre of gravity, and the true mixture'], ['ink', 'Newton’s predicted colour (ring) and the rule $OZ$']]);
-        v.readout(() => {
-          if (info.mx.sw <= 0) return 'all weights are zero: no light, no colour';
-          const A = NEWTON.arcs[info.at.i];
-          const purple = info.mx.ang > centres[6] || info.mx.ang < centres[0] ? ' (in the purple gap between violet and red)' : '';
-          return `Newton’s rule: hue in the ${A.name} arc, ${v.fix(100 * info.at.u, 0)}% of the way from ${A.letter} to ${NEWTON.arcs[(info.at.i + 1) % 7].letter}${purple}; fullness $|OZ|/R=${v.fix(info.mx.full, 3)}$\nmixture of the lights themselves: $x=${v.fix(info.xyMix[0], 3)},\\ y=${v.fix(info.xyMix[1], 3)}$, ${info.dm.l ? `${info.dm.purple ? 'complementary' : 'dominant'} wavelength $${v.fix(info.dm.l, 0)}$ nm, purity $${v.fix(info.dm.purity, 2)}$` : 'white'}; Newton’s prediction and the true mixture are $${v.fix(info.dist, 3)}$ apart in $xy$`;
-        });
-      },
-    },
+    // Source-audited optics 3.3
+    newtonCircleConcept,
     // ------------------------------------------------------------------ 3.4
     {
       num: '3.4',
