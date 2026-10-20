@@ -1,0 +1,19 @@
+{
+  "baseline": "a88f994cca720945a13786992b21bcbda2f679da",
+  "fields": [
+    {
+      "file": "content/sysbio/ch02.js",
+      "num": "2.5",
+      "field": "statement",
+      "before": "If a positively autoregulated gene has a steep (cooperative) input function and a low leak, the production curve $\\beta_0+\\beta h(p)$ can cross the removal line $\\alpha p$ in **three** points: a low stable state, an unstable threshold, and a high stable state. The deterministic gene is then **bistable**, and which state a cell ends in depends on its history. In a population of cells that start near the threshold, molecular noise pushes each cell to one side, and the distribution of expression levels becomes **bimodal**, with a low peak and a high peak and few cells in between. With weak cooperativity there is one fixed point and the distribution is unimodal.",
+      "after": "If a positively autoregulated gene has a steep (cooperative) input function and a low leak, the production curve $\\beta_0+\\beta h(p)$ can cross the removal line $\\alpha p$ in **three** points: a low stable state, an unstable threshold, and a high stable state. The deterministic gene is then **bistable**, and which state a cell ends in depends on its history. In a population of cells that start near the threshold, molecular noise pushes each cell to one side, and the distribution of expression levels can become **bimodal**, with a low peak and a high peak and few cells in between. For these illustrative parameters weak cooperativity can give one deterministic fixed point. A noisy expression distribution need not be unimodal even then; its shape also depends on noise strength, boundary behaviour, initial conditions and observation time."
+    },
+    {
+      "file": "content/sysbio/ch02.js",
+      "num": "2.5",
+      "field": "caption",
+      "before": "Left: production (purple) against removal; crossings are dotted (stable green, unstable red). Middle: 25 sample cells simulated with the chemical Langevin equation from a common starting level. Right: histogram of 600 cells at the chosen time. Increase the cooperativity $n$ across about $2.5$: the crossings go from one to three and the histogram splits into two peaks. Make the system size $\\Omega$ small (very noisy) and the peaks blur and exchange cells; start from \"all low\" to see memory.",
+      "after": "Left: production (purple) against removal; crossings are dotted (stable green, unstable red). Middle: 25 sample cells simulated with the chemical Langevin equation from a common starting level. Right: histogram of 600 cells at the chosen time. For the chosen parameters, increasing the cooperativity $n$ across about $2.5$ can change the crossings from one to three, and the histogram can develop two peaks. The histogram is a finite-time noisy sample, not a modality theorem: even one deterministic fixed point does not guarantee a unimodal noisy distribution. Make the system size $\\Omega$ small (very noisy) and the peaks blur and exchange cells; start from \"all low\" to see memory."
+    }
+  ]
+}
