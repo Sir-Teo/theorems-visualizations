@@ -81,7 +81,7 @@ export default {
     {
       num: '2.2', kind: 'Theorem', name: 'Difference in means is unbiased under randomization',
       statement: String.raw`Let a finite population of $N$ units have fixed potential outcomes $(Y_i^0,Y_i^1)$, and let exactly $m$ of them ($1\le m\le N-1$) be treated, every subset of size $m$ being equally likely (complete randomization). Then the difference in the observed means,
-$$\hat\tau=\frac1m\sum_{i:A_i=1}Y_i-\frac1{N-m}\sum_{i:A_i=0}Y_i,$$
+$$\begin{gathered}\hat\tau=\\\frac1m\sum_{i:A_i=1}Y_i\\-\frac1{N-m}\sum_{i:A_i=0}Y_i,\end{gathered}$$
 satisfies $E[\hat\tau]=\frac1N\sum_i (Y_i^1-Y_i^0)$, the average causal effect of the population, with the expectation taken over the random assignment alone. The same holds in an infinite population under coin-flip assignment, conditional on both arms being non-empty, and for any $m$, balanced or not. It need not hold when the chance of treatment depends on the potential outcomes.`,
       idea: String.raw`By consistency, a treated unit contributes $Y_i^1$ and an untreated one $Y_i^0$. Under complete randomization every unit has the same chance $m/N$ of being treated, so $E\big[\tfrac1m\sum A_iY_i^1\big]=\tfrac1N\sum Y_i^1$, and likewise $E\big[\tfrac1{N-m}\sum(1-A_i)Y_i^0\big]=\tfrac1N\sum Y_i^0$. Subtracting gives the average effect. Nothing about the outcomes was used, which is the content of exchangeability (item 2.1): the treated are a random sample of the population, and so are the untreated.
 
@@ -308,8 +308,8 @@ When the block assignments are randomized independently, their centered block es
     // ------------------------------------------------------------------ 2.6
     {
       num: '2.6', kind: 'Method', name: 'Standardization',
-      statement: String.raw`Suppose a discrete covariate $L$ is enough for exchangeability, $Y^a\perp A\mid L$, and positivity holds, $P(A=a\mid L=l)>0$ whenever $P(L=l)>0$ (items 1.7–1.9). The **standardized** (or g-formula) estimate of the mean counterfactual outcome under treatment value $a$ weights the stratum-specific means by the distribution of $L$ in the *whole* population:
-$$E[Y^a]=\sum_l E[Y\mid A=a,L=l]\;P(L=l).$$
+      statement: String.raw`Suppose a discrete covariate $L$ is enough for exchangeability, $Y^a\perp A\mid L$, and positivity holds, $P(A=a\mid L=l)>0$ whenever $P(L\!=\!l)>0$ (items 1.7–1.9). The **standardized** (or g-formula) estimate of the mean counterfactual outcome under treatment value $a$ weights the stratum-specific means by the distribution of $L$ in the *whole* population:
+$$\begin{gathered}E[Y^a]=\\\sum_l E[Y\mid A\!=\!a,L\!=\!l]\;P(L\!=\!l).\end{gathered}$$
 The average effect is the difference of the standardized means for $a=1$ and $a=0$. The crude comparison $E[Y\mid A=1]-E[Y\mid A=0]$ instead weights the strata by $P(L=l\mid A=a)$, which can differ between the arms when $L$ affects treatment. Different weights can create confounding when stratum counterfactual means differ, but do not alone imply bias. Standardization uses the population weights; its causal interpretation still requires the stated identification assumptions.`,
       idea: String.raw`Within a stratum $l$ the units are exchangeable (conditional randomization, item 2.5, or by assumption), so the observed mean in arm $a$ stands in for the counterfactual mean of the stratum: $E[Y^a\mid L=l]=E[Y\mid A=a,L=l]$. The marginal counterfactual mean is the average of the stratum means over the stratum sizes of the whole population (law of total expectation); the data supply the stratum means, positivity guarantees they exist, and the weights are simply the observed stratum proportions.
 

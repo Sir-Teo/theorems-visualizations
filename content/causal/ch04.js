@@ -123,7 +123,7 @@ the observational factorization with the factors of the intervened variables del
     {
       num: '4.3', kind: 'Theorem', name: 'Back-door criterion',
       statement: String.raw`Let $X$ and $Y$ be two variables of a causal DAG $G$. A set $Z$ of observed variables disjoint from $\{X,Y\}$ satisfies the **back-door criterion** relative to $(X,Y)$ if (i) no member of $Z$ is a descendant of $X$, and (ii) $Z$ blocks (d-separates) every path between $X$ and $Y$ that begins with an arrow *into* $X$, i.e. $(X\perp\!\!\!\perp Y\mid Z)$ in the graph $G_{\underline X}$ with the arrows out of $X$ deleted. If $Z$ satisfies it and $P(X=x\mid Z=z)>0$ for every $z$ with $P(z)>0$, the effect is identifiable by adjustment:
-$$P(y\mid \mathrm{do}(x))=\sum_{z}P(y\mid x,z)\,P(z).$$`,
+$$\begin{gathered}P(y\mid \mathrm{do}(x))=\\\sum_{z}P(y\mid x,z)\,P(z).\end{gathered}$$`,
       idea: String.raw`The back-door condition permits exchange of action and observation: $P(y\mid\mathrm{do}(x),z)=P(y\mid x,z)$. Because $Z$ contains no descendants of $X$, $P(z\mid\mathrm{do}(x))=P(z)$. Summing over $z$ gives the adjustment formula. This does not say $X$ and $Y$ are independent in the intervened model: causal arrows from $X$ to $Y$ remain.
 
 Use the tower property (PROB 4.1.13) in the interventional probability law, conditioning the outcome indicator on $Z$ before marginalizing. In the discrete formula this supplies the sum over strata. The back-door graphical argument must first justify replacing its conditional outcome law and the stratum law by the displayed observational quantities. Tower alone does not prove either replacement, or turn an arbitrary measured covariate into an adjustment set.`,

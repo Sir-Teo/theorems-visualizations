@@ -22,8 +22,8 @@ for(const rho of[0,.2,.7,1])for(const gap of[0,5,20,30]){const G=basis(3,0),W0=a
 const joint=new Map(),px=new Map(),py=new Map();for(const a of[0,1])for(const b of[0,1])for(const c of[0,1]){const x=a,y=b+2*c,k=x+':'+y; joint.set(k,(joint.get(k)||0)+1/8);px.set(x,(px.get(x)||0)+1/8);py.set(y,(py.get(y)||0)+1/8);}for(const[x,wx]of px)for(const[y,wy]of py)near(joint.get(x+':'+y),wx*wy);groups++;
 // Literal-correction counterexamples: fixed-block composition, true/model weights,
 // degenerate prognostic strata and net Z-control bias.
-near((8*100+2*0)/10-(2*100+8*0)/10,60);near(.5*(100-100)+.5*(0-0),0);
-ok(1/.2!==2);ok(1/.8!==2);near(1/.5,2);for(const q of[0,1]){const p=a=>(1-q)*expit(a)+q*expit(a+2);near(odds(p(1))/odds(p(0)),Math.E);}
+near((8*100+2*0)/10-(2*100+8*0)/10,60);near((8*1+2*1)/10-0,1);near(.5*(100-100)+.5*(0-0),0);const blocked=[-1,0,0,1],unblocked=[-1,0,0,0,0,1];near(popv(blocked),.5);near(popv(unblocked),1/3);ok(popv(blocked)>popv(unblocked));
+ok(1/.2!==2);ok(1/.8!==2);near(1/.5,2);near(.5*.2/.5/(.5*.2/.5+.5*.8/.5),.2);ok(.2!==.5);near(variance([0,0])/2+variance([1,1])/2,0);ok(0<1/3);for(const q of[0,1]){const p=a=>(1-q)*expit(a)+q*expit(a+2);near(odds(p(1))/odds(p(0)),Math.E);}
 ok((1+.1)/3<1/2);ok((1+2)/3>1/2);groups++;
 // Fully interacted finite-sample regression adjustment need not be unbiased.
 const X=[-3,-2,-1,1,2,4],Y0=X.map(x=>x*x),Y1=X.map(x=>x*x+x*x*x/10),adjusted=[];for(let mask=0;mask<64;mask++){const I=Array.from({length:6},(_,i)=>mask>>i&1);if(I.reduce((a,b)=>a+b)!==3)continue;const adjustedMean=a=>{const ii=I.map((v,i)=>v===a?i:-1).filter(i=>i>=0),xx=ii.map(i=>X[i]),yy=ii.map(i=>a?Y1[i]:Y0[i]),mx=mean(xx),my=mean(yy),xc=xx.map(x=>x-mx),yc=yy.map(y=>y-my),b=dot(xc,yc)/dot(xc,xc);return my-b*(mx-mean(X));};adjusted.push(adjustedMean(1)-adjustedMean(0));}ok(Math.abs(mean(adjusted)-mean(sub(Y1,Y0)))>1e-4);groups++;

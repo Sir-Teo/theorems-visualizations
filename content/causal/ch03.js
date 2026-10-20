@@ -146,7 +146,7 @@ Conditional distributions on parent configurations of probability zero may be ch
     {
       num: '3.3', kind: 'Model', name: 'Structural causal model',
       statement: String.raw`An **acyclic structural causal model** specifies jointly distributed exogenous variables $U_i$ and assignments
-$$V_i := f_i(\mathrm{pa}_i,U_i),\qquad i=1,\dots,k,$$
+$$\begin{gathered}V_i := f_i(\mathrm{pa}_i,U_i),\\\qquad i=1,\dots,k,\end{gathered}$$
 whose endogenous parent sets form a DAG. Topological evaluation determines the joint law. Each function is an autonomous mechanism; an intervention replaces selected assignments while retaining the others. In a **Markovian** model the $U_i$ are mutually independent. This extra assumption gives the Markov property for the displayed DAG; dependent disturbances may require shared latent causes in an augmented graph.`,
       idea: String.raw`With independent disturbances, $U_i$ is independent of the noises generating the non-descendants of $V_i$. Thus its conditional mechanism depends only on its parents and the joint law is Markov. Modularity fixes functions, not finite-sample regression estimates: changing an upstream function changes predictor values, so least-squares fits of an unchanged equation can move. In this zero-mean linear model, population regressions recover the structural coefficients; finite regressions need not equal them.
 
