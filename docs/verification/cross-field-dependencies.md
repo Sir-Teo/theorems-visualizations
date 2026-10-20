@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **34 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 649 edges. Even
+Of 64 non-math collections, **33 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 634 edges. Even
 including planned items and planned prerequisites, **24 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -218,3 +218,8 @@ The [independent INFO review](info-independent-peer-2026-10-20.md) accepts sixte
 ## Accepted chemical-kinetics inputs
 
 The [independent KIN peer](kin-crossfield-prerequisite-peer.md) accepts sixteen actual inputs across sixteen consumers:9/10/23→25/26/39. All49objects/functions/flags/helpers, every full item/syllabus dependency list, independent mathematics and32narrow theme outputs pass. The3.4syllabus alias now names the already consumed written harmonic-oscillator proof; this adds no edge beyond the sixteen counted inputs. No bridge is touched. Accepted shortfall649,34/64below25published,24whole syllabi below25.
+
+
+## Accepted physiology inputs
+
+The [independent PHYSIO peer](physio-crossfield-prerequisite-peer.md) accepts fifteen actual inputs across fourteen consumers:10/20/38→25/35/53. All55objects/functions/flags/helpers, complete raw syllabus lists, numerical assertions and28changed narrow-theme proofs pass. The1.3row now matches its written first-law reference, without claiming an unwritten proof. Two default-test dependency assertions retain required subsets and all numerical checks. Feedback/diffusion bridge cards remain accurate. Accepted shortfall634,33/64below25published,24whole syllabi below25; no source closure.

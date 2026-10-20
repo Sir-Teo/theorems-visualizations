@@ -1997,15 +1997,31 @@
       "sourceClosure": "None; source flags/functions/helpers preserved.",
       "bridgeReview": "No changed consumer IDs are bridge steps.",
       "syllabusCorrection": "3.4qchem1.8alias canonicalized to existingwrittenqm4.4; no extraedge."
+    },
+    {
+      "collection": "physio",
+      "commits": [
+        "23b0fc2d861beebfb7b11122ea49716ac0c66cf2",
+        "83641504627ab601bd11d0a3ec83f47122d44d5a"
+      ],
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "publishedBefore": 10,
+      "publishedAfter": 25,
+      "report": "docs/verification/physio-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; all functions/source flags/helpers preserved.",
+      "bridgeReview": "Actual feedback/diffusion narrow cards independently reviewed; unchanged notes accurate.",
+      "syllabusCorrection": "1.3 matches existing written planned first-law pchem10.1; no authored planned proof or extraedge claimed."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 649,
-    "publishedBelow25": 34,
+    "publishedShortfall": 634,
+    "publishedBelow25": 33,
     "collections": 64,
     "wholeSyllabusBelow25": 24,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Fourteen further collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING, WAVES, AERO, DEMO, GEOL, INFO and KIN. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Fifteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -2101,6 +2117,15 @@
       "loadedEdges": 23258,
       "method": "Four frozen non-timing stationary draws;453actual GL operation records match151group/tile passes.",
       "limitation": "No pixel correctness, GPU cost, improvement, production acceptance or60fps claim. Frozen CSS fixture subsequently explicit; all raw counts reproduce."
+    },
+    {
+      "candidate": "700053818c40ec011b4d88ecfcfb26e98af62e5d",
+      "status": "rejected-at-first-fidelity-failure",
+      "report": "docs/verification/map-complete-raster-dom-followup.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23218,
+      "method": "Correctness-only three-state smoke; exact complete original raster/cache history promoted to DOM. No timing.",
+      "limitation": "Same-LOD ratio1.375 fails retained direct-paint mean bound2/255: candidate2.529006,production2.533013. Later matrix/lifecycle/native checks unrun. Original CSS served bytes not frozen; observed hash disclosed. Production unchanged."
     }
   ]
 }

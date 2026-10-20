@@ -33,3 +33,5 @@ This first fixture did **not freeze generated atlas.css**. It served the coordin
 The smoke ends after three states, before dark/DPR2/narrow/oversized, later LOD/focus/filter states, trusted native input/hit tests, resource setter observer, resize/theme/font/destroy coverage or independent peer. **None of those unrun checks is claimed to pass.** Browser and server closed through finally handlers. No timing was collected and no sixty-fps claim is made.
 
 The hypothesis remains distinguishable from the prior split compositor, but the exact requested combination of broad production cache history and direct-painter fidelity fails this bounded counterexample. Tightening cache reuse, adding live text, changing the acceptance reference or running timing would require a new explicit assignment; no such change is included here.
+
+Coordinator review independently inspected the complete failing actual/direct PNGs: cached chapter labels differ in scale/available wording and stroke/node sampling, while the direct paint is sharper. The failure remains recorded, with no acceptance or benchmark.
