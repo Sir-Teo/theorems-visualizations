@@ -107,7 +107,8 @@ export default {
       name: 'Intrinsic carrier density',
       credit: 'Equilibrium parabolic-band carrier model',
       statement: String.raw`In a pure semiconductor in equilibrium the electron and hole densities are equal, $n=p=n_i$, with
-$$n_i=\sqrt{N_cN_v}\,e^{-E_g/2k_BT},\qquad N_{c,v}=2\left(\frac{m_{e,h}^*k_BT}{2\pi\hbar^2}\right)^{3/2},$$
+$$n_i=\sqrt{N_cN_v}\,e^{-E_g/2k_BT},$$
+$$N_{c,v}=2\left(\frac{m_{e,h}^*k_BT}{2\pi\hbar^2}\right)^{3/2},$$
 where $N_c,N_v$ are the effective densities of states at the band edges and $m^*_{e,h}$ the density-of-states effective masses. The chemical potential sits near mid-gap, $\mu=\tfrac12E_g+\tfrac34k_BT\ln(m_h^*/m_e^*)$. A plot of $\ln n_i$ against $1/T$ is therefore nearly a straight line of slope $-E_g/2k_B$ (the $T^{3/2}$ prefactor and the temperature dependence of $E_g$ bend it slightly). This holds when $E_g\gg k_BT$, so that the Fermi function is a Boltzmann factor.`,
       idea: String.raw`The density of conduction electrons is the integral of (density of states $\propto\sqrt{E-E_c}$) times (Fermi function, from thermo-8.4). When the chemical potential lies far below $E_c$ the Fermi function is $e^{-(E-\mu)/k_BT}$ and the integral is $N_ce^{-(E_c-\mu)/k_BT}$; the same for holes with $N_v$ and $(\mu-E_v)$. Requiring $n=p$ fixes $\mu$, and in the product $np=N_cN_ve^{-E_g/k_BT}$ the chemical potential cancels, so $n_i$ depends only on the gap and the masses. Creating one electron–hole pair costs approximately $E_g$. Solving the equal-density condition gives an $E_g/2$ activation exponent for each carrier density; it does not mean that a single promotion across the gap costs half a gap (cm-2.4).
 

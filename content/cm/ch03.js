@@ -104,7 +104,9 @@ For ideal lattices, $(S_6,S_{12})$ is approximately $(14.45392,12.13188)$ for fc
       name: 'Diatomic chain: acoustic and optical branches',
       credit: 'Born & von Kármán, 1912',
       statement: String.raw`A chain of alternating masses $m$ and $M$ joined by identical springs $K$ (cell length $a$) has normal modes $u_n\propto e^{i(kna-\omega t)}$ whose frequencies solve
-$$\omega^2=K\left(\frac1m+\frac1M\right)\pm K\sqrt{\left(\frac1m+\frac1M\right)^2-\frac{4\sin^2(ka/2)}{mM}},$$
+$$\omega^2=K\left(S\pm\sqrt{S^2-P}\right),$$
+$$S=\frac1m+\frac1M,$$
+$$P=\frac{4\sin^2(ka/2)}{mM},$$
 two **branches** over the zone $|k|\le\pi/a$: the **acoustic** branch with $\omega\to0$ as $k\to0$ (neighbours move together) and the **optical** branch with $\omega(0)=\sqrt{2K(1/m+1/M)}$ (the two sublattices move against each other). At the zone edge the frequencies are $\sqrt{2K/M}$ and $\sqrt{2K/m}$, leaving a **gap** that closes when $m=M$.`,
       idea: String.raw`With two atoms per cell the Bloch ansatz gives a $2\times2$ eigenproblem for the amplitudes $(U,V)$ on the two sublattices (cm-2.1's band velocity idea applied to a mechanical band). Its two eigenvalues are the two branches; the off-diagonal coupling $2K\cos(ka/2)$ vanishes at the zone edge, where the sublattices decouple and each oscillates at its own frequency $\sqrt{2K/M}$ or $\sqrt{2K/m}$, which opens the gap. The monatomic chain is recovered at $m=M$, where the two branches join into one folded in half (the reduced zone, as in xtal-5.4).
 

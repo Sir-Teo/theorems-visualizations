@@ -79,7 +79,9 @@ so the layer extends mostly into the lightly doped side.`,
       name: 'Shockley diode equation',
       credit: 'Ideal long-junction diffusion model',
       statement: String.raw`For a $p$–$n$ junction with applied forward voltage $V$ (positive on the $p$ side) in low injection, the current density is
-$$J=J_0\left(e^{eV/k_BT}-1\right),\qquad J_0=en_i^2\left(\frac{D_p}{L_pN_d}+\frac{D_n}{L_nN_a}\right),\quad L=\sqrt{D\tau}.$$
+$$J=J_0\left(e^{eV/k_BT}-1\right),$$
+$$J_0=en_i^2\left(\frac{D_p}{L_pN_d}+\frac{D_n}{L_nN_a}\right),$$
+$$L=\sqrt{D\tau}.$$
 It rises exponentially (a factor $10$ for every $k_BT\ln10/e\approx60$ mV at 300 K) in forward bias and saturates at $-J_0$ in reverse. The reverse saturation current $J_0\propto n_i^2$ grows rapidly with temperature, like $e^{-E_g/k_BT}$. Real diodes can also show a recombination current of the depletion region $\propto e^{eV/2k_BT}$ at low bias, and are limited by series resistance at high bias.`,
       idea: String.raw`The bias does not change the built-in field's job in the neutral regions but lowers the barrier to $V_{bi}-V$, so the product of the densities at the edges of the depletion region becomes $np=n_i^2e^{eV/k_BT}$ (the quasi-Fermi levels split by $eV$ and stay flat across the thin depletion layer, cm-4.3). The minority carriers injected into the neutral regions, $\Delta n_p=n_{p0}(e^{eV/k_BT}-1)$, diffuse and recombine over their diffusion length $L$ (Fick's law with Einstein's $D=\mu k_BT/e$, cm-4.6), and the current at the depletion edge is $eD\,\Delta n_p/L$. Adding electrons and holes gives the formula. Recombination in the depletion layer adds a forward $e^{eV/2k_BT}$ term; generation there contributes reverse current.
 
@@ -147,7 +149,8 @@ In each long, uniformly doped neutral region, steady low-injection diffusion and
       name: 'Light-emitting diodes',
       credit: 'Double-heterostructure and illustrative ABC rate model',
       statement: String.raw`A **light-emitting diode** is a forward-biased $p$–$n$ junction (usually a double heterostructure) in which injected electrons and holes recombine in a thin active layer and the recombination energy leaves as a photon of energy $h\nu\approx E_g$, so the colour is set by the band gap, $\lambda\,[\text{nm}]\approx1239.8/E_g\,[\text{eV}]$. The fraction of injected carriers that give photons is the **internal quantum efficiency**, in the ABC model
-$$\eta_{\text{int}}=\frac{Bn^2}{An+Bn^2+Cn^3},\qquad \frac{J}{e\,d}=An+Bn^2+Cn^3,$$
+$$\eta_{\text{int}}=\frac{Bn^2}{An+Bn^2+Cn^3},$$
+$$\frac{J}{e\,d}=An+Bn^2+Cn^3,$$
 where $A$ is the rate of non-radiative (defect) recombination, $B$ the radiative coefficient, $C$ the Auger coefficient, $n$ the carrier density in the active layer of thickness $d$. In a **direct**-gap material $B$ is large; in an **indirect**-gap material (Si, Ge, GaP) radiative recombination needs a phonon and $B$ can be much smaller. The plotted four-order reduction is an assumed comparison, not a universal material ratio.`,
       idea: String.raw`Forward bias injects both carrier types into the active layer (cm-4.8); a heterostructure confines them there at densities far above equilibrium, so the product $np\gg n_i^2$ and recombination is fast. Each recombination of a conduction-band electron with a valence-band hole releases $\approx E_g$. Whether this goes into a photon depends on momentum: the selection rule of cm-4.1 makes the radiative rate $Bnp$ with a small $B$ for indirect gaps, which competes with defect and Auger channels. Efficiency is low at small current (defects: $A n$ wins), peaks where the defect and Auger losses balance, $An=Cn^3$, even if $Bn^2$ never dominates, and droops at very high current as the $n^3$ Auger term grows.
 

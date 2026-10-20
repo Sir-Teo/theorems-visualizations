@@ -245,7 +245,7 @@ Between $\omega_{TO}$ and $\omega_{LO}$ one has $\varepsilon<0$: light cannot pr
       name: 'Polarons',
       credit: 'Feynman, 1955 (path-integral variational treatment)',
       statement: String.raw`An electron in an ionic dielectric can move with a cloud of polarization: a **polaron**. In the continuum Fröhlich model, a parabolic band electron couples to one dispersionless LO phonon branch. The dimensionless coupling is
-$$\alpha=\frac{e^2}{4\pi\epsilon_{\rm vac}\hbar}\sqrt{\frac{m}{2\hbar\omega_{LO}}}\left(\frac1{\varepsilon_\infty}-\frac1{\varepsilon_s}\right),$$
+$$\begin{aligned}\alpha={}&\frac{e^2}{4\pi\epsilon_{\rm vac}\hbar}\sqrt{\frac{m}{2\hbar\omega_{LO}}}\\&\times\left(\frac1{\varepsilon_\infty}-\frac1{\varepsilon_s}\right),\end{aligned}$$
 where the dielectric constants in parentheses are relative permittivities. Leading weak-coupling results are $E=-\alpha\hbar\omega_{LO}+O(\alpha^2)$ and $m^*/m=1+\alpha/6+O(\alpha^2)$. At strong coupling, variational energy scales as $-\alpha^2$ and the corresponding approximate mass as $\alpha^4$; these limits are not accurate formulas at all couplings.`,
       idea: String.raw`Integrating out harmonic phonons leaves a retarded self-interaction of the electron path. Feynman compares this with a quadratic trial action describing an electron attached to an auxiliary particle. Jensen's inequality bounds the ground-state energy from above for every choice of trial parameters $v\ge w>0$. His Eqs. (31) and (33) give the energy functional, minimized numerically here. A separate small-momentum calculation, Eq. (45), estimates the physical effective mass. It differs from the trial-system total mass $(v/w)^2$, which is shown separately in the readout. The mass estimate has no comparable upper-bound guarantee.
 
@@ -286,7 +286,8 @@ The inequality step can be made explicit first for a finite-time regularized or 
       name: 'Bloch–Grüneisen law for phonon resistivity',
       credit: 'Bloch, 1930; Grüneisen, 1933',
       statement: String.raw`Electrons scattering from phonons in a simple metal give a resistivity
-$$\rho_{ph}(T)=A\left(\frac T\Theta\right)^5\int_0^{\Theta/T}\frac{x^5\,dx}{(e^x-1)(1-e^{-x})},$$
+$$\rho_{ph}(T)=A\left(\frac T\Theta\right)^5 I(\Theta/T),$$
+$$I(y)=\int_0^y\frac{x^5\,dx}{(e^x-1)(1-e^{-x})},$$
 where $\Theta$ is close to the Debye temperature. It crosses toward approximately linear behaviour around $T\sim\Theta/3$ and is **asymptotically linear** as $T/\Theta\to\infty$ (the thermally occupied phonon population then scales with $T$) and falls as $T^5$ for $T\ll\Theta$ (only phonons with $q\sim k_BT/\hbar v$ exist, and each turns the electron by only a small angle $\propto q/k_F$, which makes it inefficient at relaxing the current; together with the phonon number and the coupling strength this gives $T^5$). With impurities, Matthiessen's rule adds the temperature-independent residual $\rho_0$.`,
       idea: String.raw`The scattering rate is $\propto\int d^3q\,q^2\,\bar n(\omega_q)\,\ldots$ with the weight $(1-\cos\theta)\propto q^2$ for momentum relaxation (the "transport" factor that makes small-angle scattering inefficient), and the Bose factor $n(n+1)$ from absorption plus emission. At low $T$ the integral up to $x=\Theta/T$ converges to a constant, leaving the prefactor $T^5$. At high $T$ the integrand is $\sim x^3$, the integral $\sim(\Theta/T)^4/4$, and $\rho\propto T$. Combining with cm-2.7: $\rho=\rho_0+\rho_{ph}(T)$.
 
