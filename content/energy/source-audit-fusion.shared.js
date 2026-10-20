@@ -1,12 +1,14 @@
 // Original Bosch & Hale 1992, Eqs12–14/TableVII, T(d,n)4He column.
-// Reactivity fit range: 0.2–100 keV; cm³/s converted to m³/s.
+// Actual1993erratum leaves these fit parameters/range unchanged. Its0.5–100keV
+// correction concerns the separate Eq16 D–D branching-ratio polynomial, not used here.
+// D–T thermal-reactivity fit range: 0.2–100 keV; cm³/s converted to m³/s.
 const DT_C=[1.17302e-9,1.51361e-2,7.51886e-2,4.60643e-3,1.35e-2,-1.0675e-4,1.366e-5];
 export const KEV_J_AUDIT=1.602176634e-16;
 // Rounded energies and bremsstrahlung coefficient used by Wurzel & Hsu,
 // original author manuscript arXiv2105.10954, SecIII/Eqs7,11,16,22.
 export const FUSION_INPUTS_AUDIT={alphaKeV:3500,fusionKeV:17600,bremsW:5.34e-37};
 export function fusionReactivityAudit(T){
-  if(!(T>=.2&&T<=100))throw new RangeError('Bosch–Hale D–T fit requires 0.2–100 keV');
+  if(typeof T!=='number'||!Number.isFinite(T)||T<.2||T>100)throw new RangeError('Bosch–Hale D–T fit requires 0.2–100 keV');
   const[c1,c2,c3,c4,c5,c6,c7]=DT_C;
   const theta=T/(1-T*(c2+T*(c4+T*c6))/(1+T*(c3+T*(c5+T*c7))));
   const xi=Math.cbrt(34.3827**2/(4*theta));

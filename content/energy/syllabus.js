@@ -107,8 +107,8 @@ export default {
           pic: 'Step the control rods and integrate the point-kinetics equations: power shows a prompt jump followed by a stable period, and exceeding prompt criticality makes the period collapse.' },
         { num: '3.9', kind: 'Phenomenon', name: 'Decay heat after shutdown', deps: ['energy-3.6'], refs: ['Tester ch. 9'],
           pic: 'Scram a reactor: fission stops but radioactive decay keeps producing about 7% of full power, decaying slowly as a power law — the heat that must still be removed, as at Fukushima.' },
-        { num: '3.10', kind: 'Model', name: 'Fusion and the Lawson criterion', deps: ['energy-3.5'], refs: ['Tester ch. 9'],
-          pic: 'Adjust plasma density, temperature and confinement time: the triple product is plotted against the ignition curve, with tokamak and laser experiments placed as historical points.' },
+        { num: '3.10', kind: 'Model', name: 'Fusion and the Lawson criterion', deps: ['energy-3.5'], refs: ['Lawson1957; Bosch–Hale1992 with1993erratum; Wurzel–Hsu2022 §III'],
+          pic: 'Adjust density, temperature and transport time: compare the triple product with fuel-gain contours and recompute the same state’s alpha heating, transport, radiation and absorbed-heating powers.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4
