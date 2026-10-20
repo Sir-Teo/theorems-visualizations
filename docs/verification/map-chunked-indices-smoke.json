@@ -1,0 +1,1846 @@
+{
+  "complete": true,
+  "hashes": {
+    "data/index.json": "c62d6beda2c317280aa99d107873d880a4b5c4fb6748113b8e9b45c5772cb1fd",
+    "data/planned.json": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f",
+    "assets/js/graph.js": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "assets/js/map-scene-edges.js": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "assets/js/map-webgl-scene.js": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "scripts/lib/map-chunked-indices-runtime.mjs": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+    "scripts/lib/map-chunked-indices-prototype.mjs": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+    "scripts/lib/map-chunked-indices-fixture.mjs": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+    "scripts/lib/map-segment-mesh-enclosure.mjs": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+    "tests/map-chunked-indices-native.mjs": "110d8acd1591b4587a21dc513903a175d2fcb8c1bf45b132c6edbdd641a623b8"
+  },
+  "browser": "155.0.8059.85",
+  "method": "Exact same-scene original-vs-chunked RGBA, plus complete unmasked DOM screenshot versus direct original Canvas painter; no timing.",
+  "results": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "unselected",
+      "k": 0.8,
+      "dx": 0,
+      "dy": 0,
+      "moving": false,
+      "resources": {
+        "logicalRetainedBytes": 55235764,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1231916,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55235764,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 842,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 756,
+        "optimizedTiles": 18,
+        "chunks": 10,
+        "indices": 24551,
+        "emptyTiles": 8,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 842,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 847,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 42292736
+          },
+          {
+            "kind": "metadata",
+            "bytes": 9295880,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68378,
+            "retained": 2486,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 212,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 42,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 280,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25989,
+            "retained": 10452,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 121,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 244,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2149,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2818,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 110850,
+            "retained": 5747,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 10,
+      "deltaOptimized": 18,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.598692079955492,
+        "changed": 0.00003054959465903672
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "selected",
+      "k": 0.8,
+      "dx": 0,
+      "dy": 0,
+      "moving": false,
+      "resources": {
+        "logicalRetainedBytes": 55162884,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1159036,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55162884,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 3,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 774,
+        "optimizedTiles": 57,
+        "chunks": 33,
+        "indices": 100679,
+        "emptyTiles": 24,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 845,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 850,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2149,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2818,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 110850,
+            "retained": 5747,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68378,
+            "retained": 2486,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 212,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 42,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 280,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25989,
+            "retained": 10452,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 121,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 244,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2149,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2818,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 110850,
+            "retained": 5747,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 270068,
+            "retained": 24537,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "up",
+            "original": 207,
+            "retained": 207,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "down",
+            "original": 19484,
+            "retained": 2282,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 3,
+      "deltaOptimized": 3,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.47797051343188685,
+        "changed": 0.0012969917342234938
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "fractional-pan",
+      "k": 0.8,
+      "dx": 12.375,
+      "dy": -8.125,
+      "moving": true,
+      "resources": {
+        "logicalRetainedBytes": 55078140,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1074292,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55078140,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 777,
+        "optimizedTiles": 84,
+        "chunks": 52,
+        "indices": 205895,
+        "emptyTiles": 32,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 931,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 936,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 110850,
+            "retained": 5747,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 270068,
+            "retained": 24537,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "up",
+            "original": 207,
+            "retained": 207,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "down",
+            "original": 19484,
+            "retained": 2282,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 270068,
+            "retained": 24537,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "up",
+            "original": 207,
+            "retained": 207,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "down",
+            "original": 19484,
+            "retained": 2282,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 270068,
+            "retained": 24537,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "up",
+            "original": 207,
+            "retained": 207,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "down",
+            "original": 19484,
+            "retained": 2282,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 270068,
+            "retained": 24537,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "up",
+            "original": 207,
+            "retained": 207,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "down",
+            "original": 19484,
+            "retained": 2282,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68074,
+            "retained": 2439,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 210,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 41,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 275,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 10277,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 115,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 233,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2145,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2787,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 5616,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 10,
+      "deltaOptimized": 18,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.9746805952948657,
+        "changed": 0.005155182006040375
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "zoom",
+      "k": 0.84,
+      "dx": 0,
+      "dy": 0,
+      "moving": true,
+      "resources": {
+        "logicalRetainedBytes": 55078140,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1074292,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55078140,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 795,
+        "optimizedTiles": 120,
+        "chunks": 72,
+        "indices": 253067,
+        "emptyTiles": 48,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 931,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 936,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 10277,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 115,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 233,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2145,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2787,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 5616,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68074,
+            "retained": 2310,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 199,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 36,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 264,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 9855,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 106,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 204,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2123,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2727,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 5210,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 10,
+      "deltaOptimized": 18,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.9249128218884121,
+        "changed": 0.0043571669845811475
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "label-tier",
+      "k": 1.2,
+      "dx": 0,
+      "dy": 0,
+      "moving": false,
+      "resources": {
+        "logicalRetainedBytes": 55078140,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1074292,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55078140,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 813,
+        "optimizedTiles": 156,
+        "chunks": 92,
+        "indices": 288811,
+        "emptyTiles": 64,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 931,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 936,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 9855,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 106,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 204,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 2123,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 2727,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 5210,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68074,
+            "retained": 799,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 110,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 18,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 183,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 7278,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 37,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 97,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 1746,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 782,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 1660,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 10,
+      "deltaOptimized": 18,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.4065681628516929,
+        "changed": 0.000005960896518836433
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "dpr": 1,
+      "theme": "light",
+      "name": "low-tier",
+      "k": 0.12,
+      "dx": 0,
+      "dy": 0,
+      "moving": false,
+      "resources": {
+        "logicalRetainedBytes": 55229784,
+        "logicalPeakBytes": 55235764,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1225936,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 1342080,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 55229784,
+        "primaryDrawingBufferBytes": 5368320,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 1342080,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 842,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 1587,
+        "optimizedTiles": 174,
+        "chunks": 102,
+        "indices": 301521,
+        "emptyTiles": 72,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1687,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 1692,
+        "priorityDrops": 0,
+        "peak": 55235764,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 7278,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 37,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 97,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 1746,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 782,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 1660,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pma",
+            "original": 68074,
+            "retained": 799,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:rca",
+            "original": 17110,
+            "retained": 110,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:fa",
+            "original": 4576,
+            "retained": 18,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ode",
+            "original": 11132,
+            "retained": 183,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:ladr",
+            "original": 25877,
+            "retained": 7278,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:mech",
+            "original": 874,
+            "retained": 37,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:pde",
+            "original": 3043,
+            "retained": 97,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:vcalc",
+            "original": 5010,
+            "retained": 1746,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:alg",
+            "original": 3276,
+            "retained": 782,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:top",
+            "original": 1640,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:prob",
+            "original": 12524,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stoch",
+            "original": 1834,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:nt",
+            "original": 294,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:comb",
+            "original": 824,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 109771,
+            "retained": 1660,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 0,
+      "deltaOptimized": 0,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 0,
+        "max": 0,
+        "width": 1440,
+        "height": 932
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.6264949431727865,
+        "changed": 0.0010063980289302177
+      }
+    }
+  ]
+}

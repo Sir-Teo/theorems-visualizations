@@ -1,0 +1,485 @@
+{
+  "disposition": "Rejected/stopped at first exact same-scene full-map gate failure; no timing",
+  "stages": {
+    "edges": {
+      "directory": "/tmp/atlas-map-chunked-edges",
+      "PNGs": {
+        "butt-false-live.png": "09259397c60ac324aa56a28d892f7b029aa15a0b8dd6066124076d949553a18e",
+        "butt-false-none.png": "09259397c60ac324aa56a28d892f7b029aa15a0b8dd6066124076d949553a18e",
+        "butt-true-live.png": "0538d3c2deed874b221a083978dcf252d64e6d6e12232296ed6f5705dd1ebe3b",
+        "butt-true-none.png": "0538d3c2deed874b221a083978dcf252d64e6d6e12232296ed6f5705dd1ebe3b",
+        "round-false-live.png": "6fbffb89ecca07174778de0501fb47956a59e043fd2610aee392240d156ca7f6",
+        "round-false-none.png": "6fbffb89ecca07174778de0501fb47956a59e043fd2610aee392240d156ca7f6",
+        "round-true-live.png": "6b291ff2569755607a52866b4adeb760815e33cef775f37902379bf523128611",
+        "round-true-none.png": "6b291ff2569755607a52866b4adeb760815e33cef775f37902379bf523128611"
+      }
+    },
+    "smoke": {
+      "directory": "/tmp/atlas-map-chunked-smoke",
+      "PNGs": {
+        "1440-1-light-fractional-pan-actual.png": "2add28e9b184db3ccf98b1dc9a5c9a898330d32b075b87d72ad20175ce2fa20f",
+        "1440-1-light-fractional-pan-direct.png": "5358206ed2f51de042a6cf9a81bcf06927751245956dce404bdaac9346bac806",
+        "1440-1-light-label-tier-actual.png": "926f867f1a0d13f0e4665b229cfa38f50de2a0e5f26a8196a3d538ecde307568",
+        "1440-1-light-label-tier-direct.png": "578809b9ca8b3d2e6153fdcee892791d0383be15a7fe32ce7a6258ffc12dc47a",
+        "1440-1-light-low-tier-actual.png": "e0815830ca5c068fe6077eefe0b8a29b0e9eb1180c5b25e25c82932943aea7ac",
+        "1440-1-light-low-tier-direct.png": "cc1acc93c263f7aa5a93a799aed5156c8dd821a5308237595be44b28aabfe025",
+        "1440-1-light-selected-actual.png": "8e50839948200eaab80d026e49cb132d79129e00ef6bfdc2f759b7d37c86caec",
+        "1440-1-light-selected-direct.png": "e7a89eb93be785b281b2dd63781a195725162fa7eeffba72ae546639e52d31e8",
+        "1440-1-light-unselected-actual.png": "00c0cdd2c2b67ccaa5cbc66faa98fa7ca6be98c77283687235c46345b684a8d0",
+        "1440-1-light-unselected-direct.png": "8fa8a26d55df35cf5007c02f713ab98457a06855a575d192ace82878da0f8fef",
+        "1440-1-light-zoom-actual.png": "e20a41a781130970f47676c2423868bdf0dc408f8e7380b715d7b72593f86b55",
+        "1440-1-light-zoom-direct.png": "c3d26bb8eb13f25d26a0f81c70a9e421cecd8421d8eaea0911fe5bf352b9c480"
+      }
+    },
+    "matrix": {
+      "directory": "/tmp/atlas-map-chunked-matrix",
+      "PNGs": {
+        "1440-1-light-fractional-pan-actual.png": "2add28e9b184db3ccf98b1dc9a5c9a898330d32b075b87d72ad20175ce2fa20f",
+        "1440-1-light-fractional-pan-direct.png": "5358206ed2f51de042a6cf9a81bcf06927751245956dce404bdaac9346bac806",
+        "1440-1-light-label-tier-actual.png": "926f867f1a0d13f0e4665b229cfa38f50de2a0e5f26a8196a3d538ecde307568",
+        "1440-1-light-label-tier-direct.png": "578809b9ca8b3d2e6153fdcee892791d0383be15a7fe32ce7a6258ffc12dc47a",
+        "1440-1-light-low-tier-actual.png": "e0815830ca5c068fe6077eefe0b8a29b0e9eb1180c5b25e25c82932943aea7ac",
+        "1440-1-light-low-tier-direct.png": "cc1acc93c263f7aa5a93a799aed5156c8dd821a5308237595be44b28aabfe025",
+        "1440-1-light-selected-actual.png": "8e50839948200eaab80d026e49cb132d79129e00ef6bfdc2f759b7d37c86caec",
+        "1440-1-light-selected-direct.png": "e7a89eb93be785b281b2dd63781a195725162fa7eeffba72ae546639e52d31e8",
+        "1440-1-light-unselected-actual.png": "00c0cdd2c2b67ccaa5cbc66faa98fa7ca6be98c77283687235c46345b684a8d0",
+        "1440-1-light-unselected-direct.png": "8fa8a26d55df35cf5007c02f713ab98457a06855a575d192ace82878da0f8fef",
+        "1440-1-light-zoom-actual.png": "e20a41a781130970f47676c2423868bdf0dc408f8e7380b715d7b72593f86b55",
+        "1440-1-light-zoom-direct.png": "c3d26bb8eb13f25d26a0f81c70a9e421cecd8421d8eaea0911fe5bf352b9c480",
+        "1440-2-light-fractional-pan-actual.png": "617571cfec7628d20b9a4dd920dd1974596f3c4ac6b1dcddcc09d3a7bede02ad",
+        "1440-2-light-fractional-pan-direct.png": "3bc87c9c237294875bc92f304d96b903862e9092e01a77304135c83154603c08",
+        "1440-2-light-label-tier-actual.png": "d9319ceffd1044e396f4aed23d7ebca05b55f290e8f7dfdd4006322753f415dc",
+        "1440-2-light-label-tier-direct.png": "b25b9a92976a6de2f29dcf6773e67b12f5668e4eb93939d7fcbe0412824f9a05",
+        "1440-2-light-low-tier-actual.png": "a97025201b9bbb3cce0fec6e2094b40d88b0747af0ecb9d5b4faa2e57bb4d7c4",
+        "1440-2-light-low-tier-direct.png": "00ed62a3a1f6e7691db9ec2b08f78b965c2e4e98892093963ddf0e4c7cb498b4",
+        "1440-2-light-selected-actual.png": "733416a4bf518d1943c0e5721ae42dfaa8d173a07d4674cecd6f10a85b7a329f",
+        "1440-2-light-selected-direct.png": "2a78be95430e08e7f230506db8372b547adfe76fe6429be64a8c3f17b2e6f6d6",
+        "1440-2-light-unselected-actual.png": "95c45744aa4e2123a6715b06058bef3b71c78705663ea7314142f7fc29b8472e",
+        "1440-2-light-unselected-direct.png": "70e944fefef9287e87e2dff5929c0516bebb9221d40f7e0ac9fde6f0ee0c040f",
+        "1440-2-light-zoom-actual.png": "d6f7bf7319edb2d3d48885c530c57e9f613e1362a6d9ad05da5c8c961e9044e6",
+        "1440-2-light-zoom-direct.png": "d1f6df1be5c59713dd480a2bb86737a9975d101a13d2cff13ca31c983be32db3",
+        "320-1-light-fractional-pan-actual.png": "6f75ac18177836bd10161660bc53bb48302ff2b7bc1d0605b3f6327128439dfc",
+        "320-1-light-fractional-pan-direct.png": "fefacbd8daed84fbc852a825be1bad657ede2ad5ab71509ffdedbb8863f2c407",
+        "320-1-light-label-tier-actual.png": "5fc4f049e5fe42d7797fd586c3469e6dedd3765db9171b121e969e27fb2887c5",
+        "320-1-light-label-tier-direct.png": "092c5261325b153be353fa88feb1d7c0182b2fed5c2e31161e06ff64ca39d2b2",
+        "320-1-light-low-tier-actual.png": "dcaede0cd05408c7944cdbcfd2fc7df8bcc2a0b6c5832c83404d827d957ab912",
+        "320-1-light-low-tier-direct.png": "dd5a8132e7bddaf5e7b8e7ab63349467d75df0de837ed5b41bbf9ed94847de36",
+        "320-1-light-selected-actual.png": "bb90410af6cf31f3efaacde750c65afc935fb39b1e3de38ea39c19aa0bc4be61",
+        "320-1-light-selected-direct.png": "c73d9cd7dbebc560f20da8a3b285ee557af4a74883724d4f2c2a86bfdbb71cac",
+        "320-1-light-unselected-actual.png": "d490e4b35175acce721354a96f9a1d2eb2d8a0348af7f56f9e99faac00c21dbe",
+        "320-1-light-unselected-direct.png": "7623b7c18d08f70c61926737de8c21497e9577078726ccfc8f5a97aa55cfaffd",
+        "320-1-light-zoom-actual.png": "563ccf5f48e5185489172fa16803c34635032ac8f00da28fbe5a1fca2e121970",
+        "320-1-light-zoom-direct.png": "91c99add4bde01206add7e3ca2422e84f5581425f28eab014b359c185c9a50da",
+        "320-2-light-fractional-pan-actual.png": "6a7027ee2ff61552d3b80972fe254493d06df556ee7d0c86d528d2b91ca3650d",
+        "320-2-light-fractional-pan-direct.png": "f031e2122553ed2c4325af56271b59d7e8e5dbdd44b8e88d3a276dd50e1ff6cd",
+        "320-2-light-label-tier-actual.png": "0e2e7bec3d1b5d2ef36bb9acc9a7797071c1f18f02b170406f737f6a30942c90",
+        "320-2-light-label-tier-direct.png": "32fc364679af198f8435432bbd08b6db5c3a9a859617197b8c50d26ec7d88ed3",
+        "320-2-light-low-tier-actual.png": "2fc53769da511e95fb1a9751de89503c65c7a18fc2cfa1ab3987e5104d2df4e9",
+        "320-2-light-low-tier-direct.png": "d0198c634a9eb0e2087a8529503228b8d580e62d5a0527254984c0caeedab0f6",
+        "320-2-light-selected-actual.png": "23bf1d8ef322bcd6071ea08a2aada5b6e957707d101deb3a1cd8e975ee4680f0",
+        "320-2-light-selected-direct.png": "3f1f4142d8064a1d117cea3bb14fc84b28926566191348f393cc3a5267e1b0cd",
+        "320-2-light-unselected-actual.png": "4d2459d45de78a2f80cf556a958e6dc00b859cee614b05a985a8fc3b15e7924e",
+        "320-2-light-unselected-direct.png": "ca7d462ab314f097154dc3f6f70fb3a5c7765d05a3ed10bf619aaf6331ee74f2",
+        "320-2-light-zoom-actual.png": "092044ceb7cf2c2d92348b385e101300615ccd5fa515e7b7305db86c66e65b4a",
+        "320-2-light-zoom-direct.png": "1f2a3d061fa609be80f1d4b327a5a8c4fb9cfb04dd3b69c6be26ddaed525ff5b",
+        "3840-1-light-fractional-pan-actual.png": "a4635950a070b81ffe09ff78fbc406e854ecba712b9caf6d890b0a951f7548ba",
+        "3840-1-light-fractional-pan-direct.png": "0aa2c49939f9598bf1b72c9774440026c6e52e6948de1cc9c013447a11c36022",
+        "3840-1-light-label-tier-actual.png": "0dcc4f7590fc59805f397b3c137ba2d66fa1e54567ee3fa8f6bdc2235c724086",
+        "3840-1-light-label-tier-direct.png": "09d138d5e357ecc763d8fe277122800ffe167d09c73dbb9d349c2fa2ee288ee4",
+        "3840-1-light-low-tier-actual.png": "6877a5668281c2fed2d210f9a36fc1b44717f827e5afc8a34a1a6df86d41144b",
+        "3840-1-light-low-tier-direct.png": "8cc8c24df36c78ff08bee9220012f1f73e69ea6a2b202476775d90cf2e750c8f",
+        "3840-1-light-selected-actual.png": "abf77b8e1705f3c332d6312c12599c440b51b339588723d6f436db249b350555",
+        "3840-1-light-selected-direct.png": "7e8dd2c90919172c0c224acefa76a3efd7e5c5f4724c81e4c96168840c984104",
+        "3840-1-light-unselected-actual.png": "9ada5e9dcf4ce0d1006f3843ae7ada7a05273d9c6265489ad5401a6c7692341f",
+        "3840-1-light-unselected-direct.png": "e2caadc0b9055525656716b248128392b87ba486160e3927daec84d9854a4d54",
+        "3840-1-light-zoom-actual.png": "e0ccc6baa694bf531e0a06a76ff089f78b6d6080b25f502b72581f85481edc7f",
+        "3840-1-light-zoom-direct.png": "7247a9525b0a94eac2688b71cee93982e5b33abbddbeaf92ad7e7eb974d5167a",
+        "3840-2-light-fractional-pan-actual.png": "95248fa91f5aa2aa1b8f4e6cf40accaad65956f0c34bf37ffcc352b1783dc604",
+        "3840-2-light-fractional-pan-direct.png": "51e101c3c3aaaceec9ff9a21f157fa0d95e794c545dfbc7ff9a41210dfab0e1e",
+        "3840-2-light-selected-actual.png": "645be0675c4ca78e1326dbfe575e04221ffeb86e3a9c351c8c4d5badb7ebcb72",
+        "3840-2-light-selected-direct.png": "d34676345d21d517cc594c18731a56154263f7cdb141192ec896bd4f630f2775",
+        "3840-2-light-unselected-actual.png": "c13f5e2128d0ba58d4f291faf5bfe41e9a483b9c1e0fac84229910c73f7b8cdd",
+        "3840-2-light-unselected-direct.png": "7567f5964ff9738e13366159cfa012237ac3fbeac5c08b664cbe6abbfbff18c6"
+      }
+    }
+  },
+  "files": {
+    "scripts/lib/map-chunked-indices-runtime.mjs": {
+      "sha256": "3c8b01c4df2d5497f27d7d65876adbfaebbbdcd659cf2c8cb29d25714896c187",
+      "source": "// Isolated alternate instance stream, using OriginalSceneEdges for ALL rendering semantics.\nimport {halfInterval,constant,operation,intersectsTile} from './map-segment-mesh-enclosure.mjs';\nexport const CHUNK_CAPACITY=32768,BOOKKEEPING_BYTES=4096;\nexport function visitMembership(d,emit){let n=0;const bundle=d.key.startsWith('bundle:');for(const id of d.ids){const p=d.paths[id],a=p[0],b=p.at(-1),c=d.coverage;if(!bundle&&(Math.max(a[0],b[0])<c[0]||Math.min(a[0],b[0])>c[2]||Math.max(a[1],b[1])<c[1]||Math.min(a[1],b[1])>c[3]))continue;const r=d.model.ranges[id];for(let i=0;i<r.segments;i++){emit(r.startPoint+i);n++;}}return n;}\nexport function chunkedEdgesClass(Original){return class ChunkedEdges extends Original{\n constructor(gl,budget,...args){super(gl,budget,...args);this.meta=null;this.scratch=null;this.forceOriginal=false;this.optionalLimit=64_000_000;this.stats={originalBinds:0,optimizedTiles:0,chunks:0,indices:0,emptyTiles:0,liveReplays:0,staleAborts:0,streamComparisons:0,metadataCopies:0,metadataDrops:0,reserveChecks:0,priorityDrops:0,peak:budget.peak,events:[]};this.originalReserve=budget.reserve.bind(budget);this.originalRelease=budget.release.bind(budget);const self=this;\n budget.reserve=function(key,bytes,release,options){if(!self.inOptional){self.stats.reserveChecks++;const old=budget.entries.get(key)?.bytes||0;if(budget.bytes-old+bytes>budget.limit){self.stats.priorityDrops++;self.dropOptional('original reserve priority');}}const result=self.originalReserve(key,bytes,release,options);self.stats.peak=Math.max(self.stats.peak,budget.bytes);return result;};\n budget.release=function(key){if(!self.dropping&&self.meta?.model===key)self.dropOptional('model released');return self.originalRelease(key);};\n }\n event(kind,data={}){this.stats.events.push({kind,...data});if(this.stats.events.length>32)this.stats.events.shift();}\n optionalResources(){return{metadataCPU:this.meta?.xy?.byteLength||0,scratchCPU:this.scratch?.cpu?.byteLength||0,scratchGPU:this.scratch?this.scratch.capacity*4:0,bookkeeping:this.meta?BOOKKEEPING_BYTES:0,capacity:this.scratch?.capacity||0,modelScale:this.meta?.model.scale??null};}\n reserveOptional(owner,bytes,release){if(bytes>this.optionalLimit||this.budget.bytes+bytes>Math.min(this.budget.limit,this.optionalLimit))return false;this.inOptional=true;try{this.budget.reserve(owner,bytes,release,{evictable:false});this.stats.peak=Math.max(this.stats.peak,this.budget.bytes);return true;}finally{this.inOptional=false;}}\n dropOptional(reason){if(this.dropping)return;this.dropping=true;try{if(this.scratch){const o=this.scratch;this.scratch=null;this.originalRelease(o);}if(this.meta){const o=this.meta;this.meta=null;this.originalRelease(o);this.stats.metadataDrops++;}this.event('drop',{reason,bytes:this.budget.bytes});}finally{this.dropping=false;}}\n upload(geometry,paths,options){const model=super.upload(geometry,paths,options);if(geometry.scale!==4)return model;this.dropOptional('metadata replacement');const owner={model,xy:null,J:0,maxAbs:0};const bytes=model.pointCount*8+BOOKKEEPING_BYTES;if(!this.reserveOptional(owner,bytes,()=>{owner.xy=null;if(this.meta===owner)this.meta=null;})){this.event('metadata unavailable',{bytes});return model;}\n this.meta=owner;try{owner.xy=new Float32Array(model.pointCount*2);for(let i=0;i<model.pointCount;i++){const x=geometry.points[i*4],y=geometry.points[i*4+1];owner.xy[i*2]=x;owner.xy[i*2+1]=y;owner.maxAbs=Math.max(owner.maxAbs,Math.abs(x),Math.abs(y));}for(let i=0;i<geometry.joins.length;i++){const h=halfInterval(geometry.joins[i]);if(!h)throw Error('unsupported uploaded join');owner.J=Math.max(owner.J,Math.abs(h[0]),Math.abs(h[1]));}this.stats.metadataCopies++;this.event('metadata',{bytes,scale:model.scale});}catch(error){this.dropOptional(error.message);}return model;\n }\n group(indices,style){const d=this.__construction;if(d){let at=0;visitMembership(d,index=>{if(index!==indices[at++])throw Error('exact membership stream mismatch');});if(at!==indices.length)throw Error('membership count mismatch');this.stats.streamComparisons++;}return super.group(indices,style);}\n descriptor(model,g){const s=this.scene;if(!s||g.model!==model)return null;let key=null;for(const[k,v]of s.groups)if(v===g){key=k.slice(k.indexOf(':')+1);break;}const ids=key==='gray'?s.visibleEdges:key==='up'?s.ancestorEdges:key==='down'?s.descendantEdges:key==='ghost'?s.ghostEdges:key?.startsWith('col:')?s.byCol.get(key.slice(4)):null;if(!ids)return null;return{key,ids,paths:s.paths,model,coverage:g.coverage};}\n union(model,groups,view){const s=this.scene;this.frame={model,groups,view:{...view},control:s?.controlKey,generation:s?.generation};try{return super.union(model,groups,view);}finally{this.frame=null;}}\n live(model,g,view,d){const s=this.scene,f=this.frame,m=s?.map;return!!(f&&m&&!model.released&&s.generation===f.generation&&s.controlKey===f.control&&f.model===model&&g.model===model&&g.buffer&&d.coverage===g.coverage&&[...s.groups.values()].includes(g)&&m.k===view.k&&m.tx===view.tx&&m.ty===view.ty&&m.W===view.width&&m.H===view.height&&m.dpr===view.dpr);}\n ensureScratch(){if(this.scratch)return true;if(!this.meta)return false;const gl=this.gl,o={capacity:CHUNK_CAPACITY,cpu:null,buffer:null};if(!this.reserveOptional(o,CHUNK_CAPACITY*8,()=>{if(o.buffer)gl.deleteBuffer(o.buffer);o.cpu=null;o.buffer=null;if(this.scratch===o)this.scratch=null;}))return false;this.scratch=o;try{o.cpu=new Uint32Array(CHUNK_CAPACITY);o.buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,o.buffer);gl.bufferData(gl.ARRAY_BUFFER,CHUNK_CAPACITY*4,gl.DYNAMIC_DRAW);if(gl.getError()!==gl.NO_ERROR)throw Error('scratch allocation failed');return true;}catch(error){this.dropOptional(error.message);return false;}}\n supported(meta,group,view,tileW,tileH){return meta?.xy&&!meta.corrupt&&meta.model===group.model&&meta.maxAbs<=2**20&&meta.J<=16&&view.k>=.01&&view.k<=16&&[1,2].includes(view.dpr)&&Math.abs(view.tx)<=2**20&&Math.abs(view.ty)<=2**20&&view.width*view.dpr<=8192&&view.height*view.dpr<=8192&&tileW>=1&&tileW<=4096&&tileH>=1&&tileH<=4096&&group.width>=.1&&group.width<=8&&['round','butt'].includes(group.cap);}\n box(index,g,v,pw,ph){const meta=this.meta,p=meta.xy,a=index*2,b=(index+1)*2,k=Math.fround(v.k),tx=Math.fround(v.tx),ty=Math.fround(v.ty);if(b+1>=p.length)return null;const inv=operation(constant(1),constant(v.dpr),'/'),outer=operation(constant(g.width/2),inv,'+');if(!outer)return null;const ext=g.cap==='round'?outer[1]:inv[1],radius=meta.J*(outer[1]+ext),ax=p[a]*k+tx,bx=p[b]*k+tx,ay=p[a+1]*k+ty,by=p[b+1]*k+ty,M=Math.abs(p[a]*k)+Math.abs(p[b]*k)+Math.abs(p[a+1]*k)+Math.abs(p[b+1]*k)+Math.abs(tx)+Math.abs(ty)+radius+(pw+ph)/v.dpr+1,guard=1+128*2**-23*M*v.dpr,B=[Math.floor((Math.min(ax,bx)-radius)*v.dpr-guard),Math.floor((Math.min(ay,by)-radius)*v.dpr-guard),Math.ceil((Math.max(ax,bx)+radius)*v.dpr+guard),Math.ceil((Math.max(ay,by)+radius)*v.dpr+guard)];return B.every(Number.isFinite)?B:null;}\n bind(model,g,view,x=0,y=0,tileW=view.width*view.dpr,tileH=view.height*view.dpr,maskOnly=false){const original=()=>{this.stats.originalBinds++;return super.bind(model,g,view,x,y,tileW,tileH,maskOnly);};if(!maskOnly||this.forceOriginal)return original();const d=this.descriptor(model,g),meta=this.meta;if(!d||!this.supported(meta,g,view,tileW,tileH)||!this.ensureScratch())return original();\n const gl=this.gl,pw=Math.round(view.width*view.dpr),ph=Math.round(view.height*view.dpr),b=g.bounds,margin=g.width*5+2,l=b?Math.max(0,Math.floor((b[0]*view.k+view.tx-margin)*view.dpr)):0,r=b?Math.min(pw,Math.ceil((b[2]*view.k+view.tx+margin)*view.dpr)):pw,t=b?Math.max(0,Math.floor((b[1]*view.k+view.ty-margin)*view.dpr)):0,bottom=b?Math.min(ph,Math.ceil((b[3]*view.k+view.ty+margin)*view.dpr)):ph,L=Math.max(x,l),R=Math.min(x+tileW,r),T=Math.max(y,t),B=Math.min(y+tileH,bottom),clip={x:L,y:T,width:R-L,height:B-T};let used=0,chunks=0,retained=0;\n const flush=()=>{if(!used)return;if(!this.live(model,g,view,d)||this.meta!==meta)throw Error('expired snapshot');gl.bindBuffer(gl.ARRAY_BUFFER,this.scratch.buffer);gl.bufferSubData(gl.ARRAY_BUFFER,0,this.scratch.cpu,0,used);super.bind(model,{...g,buffer:this.scratch.buffer,count:used},view,x,y,tileW,tileH,true);if(gl.getError()!==gl.NO_ERROR)throw Error('chunk GL failure');chunks++;this.stats.chunks++;this.stats.indices+=used;used=0;if(this.fault&&chunks>=this.fault.afterChunks){const fault=this.fault;this.fault=null;if(fault.mode==='stale')this.scene.map.k+=.0001;if(fault.mode==='released'){this.releaseGroup(g);g.buffer=null;}throw Error('injected '+fault.mode);}};\n try{const count=visitMembership(d,index=>{if(intersectsTile(this.box(index,g,view,pw,ph),clip)){this.scratch.cpu[used++]=index;retained++;if(used===this.scratch.capacity)flush();}});if(count!==g.count)throw Error('stream count mismatch');flush();if(!this.live(model,g,view,d)||this.meta!==meta)throw Error('expired snapshot');this.stats.optimizedTiles++;if(!retained)this.stats.emptyTiles++;this.event('tile',{key:d.key,original:g.count,retained,chunks});return;}\n catch(error){if(!this.live(model,g,view,d)||gl.isContextLost()){this.stats.staleAborts++;throw Error('chunk snapshot expired: '+error.message);}gl.bindFramebuffer(gl.FRAMEBUFFER,this.mask.framebuffer);gl.viewport(0,0,tileW,tileH);gl.enable(gl.SCISSOR_TEST);gl.scissor(L-x,tileH-(B-y),R-L,B-T);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);gl.blendEquation(gl.MAX);gl.blendFunc(gl.ONE,gl.ONE);this.stats.liveReplays++;return original();}\n }\n destroy(){this.dropOptional('destroy');super.destroy();this.budget.reserve=this.originalReserve;this.budget.release=this.originalRelease;}\n};}\n"
+    },
+    "scripts/lib/map-chunked-indices-prototype.mjs": {
+      "sha256": "c6704721acd140e3dce10b82c93f321bf658fd517a6f0cce495bf0e8d1aeaecb",
+      "source": "// Explicit-only routed sources; production and old scene modules remain untouched.\nimport assert from 'node:assert/strict';\nexport function chunkedSceneSources(edges,scene){\n assert.ok(edges.includes('export class SceneEdges'));let E=\"import {chunkedEdgesClass} from '/scripts/lib/map-chunked-indices-runtime.mjs';\\n\"+edges.replace('export class SceneEdges','class OriginalSceneEdges');E+='\\nexport const SceneEdges=chunkedEdgesClass(OriginalSceneEdges);\\n';\n let S=scene.replace('this.edges = new SceneEdges(gl, this.budget);','this.edges = new SceneEdges(gl, this.budget); this.edges.scene=this;');\n const needle='group = this.edges.group(new Uint32Array(indices), { ...style, bounds }); group.model = model;';assert.ok(S.includes(needle));S=S.replace(needle,'this.edges.__construction={model,key,ids,paths,coverage}; try { group = this.edges.group(new Uint32Array(indices), { ...style, bounds }); } finally { this.edges.__construction=null; } group.model = model;');\n S=S.replace('  resources() {','  resources() {\\n    const r=this._resourcesOriginal(), e=this.edges, o=e?.optionalResources?.()||{metadataCPU:0,scratchCPU:0,scratchGPU:0,bookkeeping:0};\\n    Object.assign(r.components,{optionalPackedXY:o.metadataCPU,optionalScratchCPU:o.scratchCPU,optionalScratchGPU:o.scratchGPU,optionalBookkeeping:o.bookkeeping});r.componentSum+=o.metadataCPU+o.scratchCPU+o.scratchGPU+o.bookkeeping;r.optional=o;return r;\\n  }\\n  _resourcesOriginal() {');return{edges:E,scene:S};\n}\n"
+    },
+    "scripts/lib/map-chunked-indices-fixture.mjs": {
+      "sha256": "148274402c35aed9312fb52f22de0f25063b2de455b2c48a964663baffccd555",
+      "source": "import{readFile}from'node:fs/promises';import{createHash}from'node:crypto';import{pathToFileURL}from'node:url';import{chunkedSceneSources}from'./map-chunked-indices-prototype.mjs';import{mapScenePrototype}from'./map-scene-prototype.mjs';\nexport async function chunkedFixture(){const root=pathToFileURL((process.env.MAP_CHUNK_ROOT||'/tmp/atlas-continuation/checkpoint5')+'/'),files=new Map(),hashes={},add=async(p,u)=>{const b=await readFile(u);files.set(p,b);hashes[p]=createHash('sha256').update(b).digest('hex');};for(const p of['data/index.json','data/planned.json','data/atlas.css','assets/js/graph.js','assets/js/map-scene-edges.js','assets/js/map-webgl-scene.js'])await add(p,new URL(p,root));for(const p of['scripts/lib/map-chunked-indices-runtime.mjs','scripts/lib/map-chunked-indices-prototype.mjs','scripts/lib/map-chunked-indices-fixture.mjs','scripts/lib/map-segment-mesh-enclosure.mjs','tests/map-chunked-indices-native.mjs'])await add(p,new URL('../../'+p,import.meta.url));const rewritten=chunkedSceneSources(files.get('assets/js/map-scene-edges.js').toString(),files.get('assets/js/map-webgl-scene.js').toString());return{root,hashes,async route(page){for(const[p,b]of files)await page.route('**/'+p,r=>r.fulfill({body:p==='assets/js/graph.js'?mapScenePrototype(b.toString()):p==='assets/js/map-scene-edges.js'?rewritten.edges:p==='assets/js/map-webgl-scene.js'?rewritten.scene:b,contentType:p.endsWith('.json')?'application/json':p.endsWith('.css')?'text/css':'application/javascript'}));}};}\n"
+    },
+    "tests/map-chunked-indices-model.mjs": {
+      "sha256": "cf3fd9507fcf3bbb73f4d8737f64ab864c2a87c90da946d7a9001eb5ca79c4c2",
+      "source": "import assert from 'node:assert/strict';import{readFile}from'node:fs/promises';import{visitMembership,chunkedEdgesClass,CHUNK_CAPACITY}from'../scripts/lib/map-chunked-indices-runtime.mjs';import{SceneBudget}from'../assets/js/map-scene-gl.js';import{chunkedSceneSources}from'../scripts/lib/map-chunked-indices-prototype.mjs';\nassert.equal(CHUNK_CAPACITY,32768);let fixtures=0;for(let seed=0;seed<256;seed++){const ids=Array.from({length:11},(_,i)=>(i*7+seed)%9),paths=Array.from({length:9},(_,i)=>[[i-4,seed%5],[0,0],[i-2,seed%5+1]]),ranges=paths.map((_,i)=>({startPoint:i*9,segments:(i+seed)%5})),coverage=[-2,0,3,4],expected=[];for(const id of ids){const p=paths[id],a=p[0],b=p.at(-1);if(Math.max(a[0],b[0])<coverage[0]||Math.min(a[0],b[0])>coverage[2]||Math.max(a[1],b[1])<coverage[1]||Math.min(a[1],b[1])>coverage[3])continue;for(let j=0;j<ranges[id].segments;j++)expected.push(ranges[id].startPoint+j);}let at=0;const count=visitMembership({key:'gray',ids,paths,model:{ranges},coverage},n=>assert.equal(n,expected[at++]));assert.equal(count,expected.length);fixtures++;}\nconst budget=new SceneBudget(1000000),gl={deleteBuffer(){},createVertexArray(){},createBuffer(){},getParameter(){return4096}},Original=class{constructor(gl,b){this.gl=gl;this.budget=b;}upload(g){const m={pointCount:g.points.length/4,scale:g.scale};b.reserve(m,100,()=>m.released=true,{evictable:true});return m;}destroy(){}};let b=budget;const C=chunkedEdgesClass(Original),e=new C(gl,budget);const model=e.upload({points:new Float32Array([1,2,0,.25,3,4,1,.5]),joins:new Float32Array([0,1,0,1]),scale:4},[]);assert.equal(e.optionalResources().metadataCPU,16);const original={};budget.reserve(original,996000,()=>{});assert.equal(e.meta,null);assert.equal(model.released,undefined,'optional owners released before original prewarm eviction');assert.equal(e.stats.priorityDrops,1);\nconst edges=await readFile(new URL('../assets/js/map-scene-edges.js',import.meta.url),'utf8'),scene=await readFile(new URL('../assets/js/map-webgl-scene.js',import.meta.url),'utf8'),adapted=chunkedSceneSources(edges,scene);assert.ok(adapted.edges.includes(edges.replace('export class SceneEdges','class OriginalSceneEdges')),'entire original edges class preserved');assert.ok(adapted.scene.includes('this.edges.__construction={model,key,ids,paths,coverage}'));console.log(`PASS ${fixtures} exact ordered/multiplicity membership fixtures, optional reserve priority and complete original edge-class preservation;262144pair ceiling.`);\n"
+    },
+    "tests/map-chunked-indices-edges.mjs": {
+      "sha256": "c43120d7b12678401fc20a2213a3b935dd3435334b7fa1b2dbaeb36246465634",
+      "source": "// First native gate: tiny exact original-vs-chunked same-scene GL pixels. No timing.\nimport assert from'node:assert/strict';import{readFile,writeFile,mkdir}from'node:fs/promises';import{chromium}from'playwright-core';import{createServer}from'../scripts/serve.mjs';import{findBrowser}from'../scripts/browser.mjs';import{chunkedSceneSources}from'../scripts/lib/map-chunked-indices-prototype.mjs';\nconst out=process.env.MAP_CHUNK_OUTPUT||'/tmp/atlas-map-chunked-edges';await mkdir(out,{recursive:true});const edges=await readFile(new URL('../assets/js/map-scene-edges.js',import.meta.url),'utf8'),scene=await readFile(new URL('../assets/js/map-webgl-scene.js',import.meta.url),'utf8'),routed=chunkedSceneSources(edges,scene).edges+'\\nexport {OriginalSceneEdges};\\n',server=createServer();await new Promise(r=>server.listen(0,r));const browser=await chromium.launch({executablePath:findBrowser(),headless:true,args:['--use-angle=metal']}),results=[];\ntry{const page=await browser.newPage({viewport:{width:640,height:400}});await page.route('**/assets/js/map-scene-edges.js',r=>r.fulfill({body:routed,contentType:'application/javascript'}));await page.goto(`http://localhost:${server.address().port}/tools/harness.html`);const errors=[];page.on('pageerror',e=>errors.push(e.message));\n for(const cap of['butt','round'])for(const dash of[false,true])for(const fault of[null,'live']){const row=await page.evaluate(async({cap,dash,fault})=>{const{SceneEdges,OriginalSceneEdges}=await import('/assets/js/map-scene-edges.js'),{SceneBudget}=await import('/assets/js/map-scene-gl.js'),{buildWorldPaths}=await import('/assets/js/map-scene-model.js');const paths=[[[10,40],[30,40],[60,40],[110,40]],[[60,8],[60,25],[60,65],[60,88]]],G=buildWorldPaths(paths,4),pictures=[],stats=[];for(const alternate of[false,true]){const canvas=document.createElement('canvas');canvas.width=128;canvas.height=96;canvas.style.cssText='width:256px;height:192px';document.body.append(canvas);const gl=canvas.getContext('webgl2',{alpha:true,antialias:false,depth:false,stencil:false,preserveDrawingBuffer:true}),budget=new SceneBudget(),E=alternate?SceneEdges:OriginalSceneEdges,e=new E(gl,budget),model=e.upload(G,paths),view={width:128,height:96,dpr:1,k:1,tx:.375,ty:-.125},ids=[...Array(32769).fill(0),1],indices=new Uint32Array([...Array(32769).fill(G.ranges[0].startPoint),G.ranges[1].startPoint]),coverage=[-50,-50,200,200];e.__construction={model,key:'gray',ids,paths,coverage};const g=e.group(indices,{width:2,color:[.3,.6,.9,.55],cap,dash,bounds:[0,0,128,96]});e.__construction=null;g.model=model;g.coverage=coverage;const groups=new Map([['4:gray',g]]),map={...view,W:view.width,H:view.height};e.scene={map,groups,visibleEdges:ids,paths,generation:1,controlKey:'test'};if(alternate&&fault)e.fault={afterChunks:1,mode:fault};gl.enable(gl.BLEND);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,128,96);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);e.union(model,[g],view);const pixels=new Uint8Array(128*96*4);gl.readPixels(0,0,128,96,gl.RGBA,gl.UNSIGNED_BYTE,pixels);pictures.push(pixels);stats.push(alternate?{...e.stats,owners:e.optionalResources(),budget:budget.bytes}:null);canvas.dataset.variant=String(alternate);e.destroy();budget.clear();if(alternate&&budget.bytes!==0)throw Error('cleanup');}\n let changed=0,max=0,painted=0;for(let i=0;i<pictures[0].length;i++){let d=Math.abs(pictures[0][i]-pictures[1][i]);if(d)changed++;max=Math.max(max,d);if(pictures[0][i])painted++;}return{cap,dash,fault,changed,max,painted,stats:stats[1]};},{cap,dash,fault});results.push(row);await writeFile(out+'/edges.json',JSON.stringify({complete:false,results},null,2));console.log(JSON.stringify(row));assert.equal(row.changed,0);assert.ok(row.painted>100);if(fault)assert.equal(row.stats.liveReplays,1);else assert.ok(row.stats.chunks>=2);assert.equal(row.stats.owners.capacity,32768);await page.screenshot({path:`${out}/${cap}-${dash}-${fault||'none'}.png`,fullPage:true});await page.evaluate(()=>document.querySelectorAll('canvas[data-variant]').forEach(x=>x.remove()));}assert.deepEqual(errors,[]);await writeFile(out+'/edges.json',JSON.stringify({complete:true,results},null,2));await page.close();}finally{await browser.close();await new Promise(r=>server.close(r));}\n"
+    },
+    "tests/map-chunked-indices-native.mjs": {
+      "sha256": "110d8acd1591b4587a21dc513903a175d2fcb8c1bf45b132c6edbdd641a623b8",
+      "source": "// Full-picture correctness only, stopping at the first gate failure.\nimport assert from'node:assert/strict';import{mkdir,writeFile}from'node:fs/promises';import{chromium}from'playwright-core';import{chunkedFixture}from'../scripts/lib/map-chunked-indices-fixture.mjs';import{pathToFileURL}from'node:url';\nconst out=process.env.MAP_CHUNK_OUTPUT||'/tmp/atlas-map-chunked-native',fixture=await chunkedFixture(),{createServer}=await import(new URL('scripts/serve.mjs',fixture.root)),server=createServer();await mkdir(out,{recursive:true});await new Promise(r=>server.listen(0,r));const browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true,args:['--use-angle=metal']}),results=[];const save=complete=>writeFile(out+'/native.json',JSON.stringify({complete,hashes:fixture.hashes,browser:browser.version(),method:'Exact same-scene original-vs-chunked RGBA, plus complete unmasked DOM screenshot versus direct original Canvas painter; no timing.',results},null,2));\nasync function difference(page,a,b){return page.evaluate(async({a,b})=>{const decode=async s=>{const i=new Image;i.src='data:image/png;base64,'+s;await i.decode();const c=document.createElement('canvas');c.width=i.width;c.height=i.height;const x=c.getContext('2d');x.drawImage(i,0,0);return{w:c.width,h:c.height,p:x.getImageData(0,0,c.width,c.height).data};},A=await decode(a),B=await decode(b);let sum=0,changed=0;for(let i=0;i<A.p.length;i+=4)for(let j=0;j<3;j++){const d=Math.abs(A.p[i+j]-B.p[i+j]);sum+=d;if(d>20)changed++;}return{mean:sum/(A.w*A.h*3),changed:changed/(A.w*A.h*3)};},{a:a.toString('base64'),b:b.toString('base64')});}\nconst regimes=process.argv.includes('--smoke')?[{width:1440,height:1000,dpr:1,theme:'light'}]:['light','dark'].flatMap(theme=>[1,2].flatMap(dpr=>[{width:1440,height:1000,dpr,theme},{width:320,height:1000,dpr,theme},{width:3840,height:2160,dpr,theme}]));const states=[['unselected',.8,0,0,false],['selected',.8,0,0,false],['fractional-pan',.8,12.375,-8.125,true],['zoom',.84,0,0,true],['label-tier',1.2,0,0,false],['low-tier',.12,0,0,false]];\ntry{for(const v of regimes){const page=await browser.newPage({viewport:{width:v.width,height:v.height},deviceScaleFactor:v.dpr,colorScheme:v.theme}),errors=[];page.on('pageerror',e=>errors.push(e.message));try{await fixture.route(page);await page.goto(`http://localhost:${server.address().port}/#/map`);await page.waitForFunction(()=>window.__mapAudit?.__scene?.status==='ready',null,{timeout:60000});await page.evaluate(()=>document.fonts.ready);\n for(const[name,k,dx,dy,moving]of states){const audit=await page.evaluate(async({name,k,dx,dy,moving})=>{const m=window.__mapAudit,s=m.__scene,e=s.edges,n=m.byId.get('ladr-2.30');m.select(null,false);m.hover=m.hl=null;m.userMoved=true;clearTimeout(m.zoomTimer);clearTimeout(m.hoverTimer);cancelAnimationFrame(m.anim);m.anim=0;cancelAnimationFrame(m._raf);m._raf=0;m.zooming=moving;m.dragging=false;m.k=k;m.tx=m.W/2-n.x*k+.375+dx;m.ty=m.H/2-n.y*k-.125+dy;if(name==='selected')m.select(n,false);cancelAnimationFrame(m._raf);m._raf=0;e.forceOriginal=false;const before={...e.stats};if(!s.draw())throw Error('candidate Canvas fallback');const gl=s.gl,w=s.canvas.width,h=s.canvas.height,actual=new Uint8Array(w*h*4);gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,actual);const state={resources:s.resources(),stats:JSON.parse(JSON.stringify(e.stats)),deltaChunks:e.stats.chunks-before.chunks,deltaOptimized:e.stats.optimizedTiles-before.optimizedTiles,nodes:m.nodes.length,edges:m.edges.length};e.forceOriginal=true;if(!s.draw())throw Error('original scene fallback');const reference=new Uint8Array(actual.length);gl.readPixels(0,0,w,h,gl.RGBA,gl.UNSIGNED_BYTE,reference);let changed=0,max=0;for(let i=0;i<actual.length;i++){let d=Math.abs(actual[i]-reference[i]);if(d)changed++;max=Math.max(max,d);}e.forceOriginal=false;s.draw();return{...state,sameScene:{changed,max,width:w,height:h},glError:gl.getError()};},{name,k,dx,dy,moving});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const prefix=`${v.width}-${v.dpr}-${v.theme}-${name}`,actual=await page.locator('.map-page').screenshot({path:`${out}/${prefix}-actual.png`});await page.evaluate(()=>{const m=window.__mapAudit;m.__scene.fallback('direct reference');m._paint();});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const expected=await page.locator('.map-page').screenshot({path:`${out}/${prefix}-direct.png`}),direct=await difference(page,actual,expected),row={...v,name,k,dx,dy,moving,...audit,direct};results.push(row);await save(false);console.log(JSON.stringify(row));assert.equal(audit.sameScene.changed,0,'exact same-scene GPU pixels');assert.equal(audit.glError,0);assert.equal(audit.resources.componentSum,audit.resources.logicalRetainedBytes);assert.ok(audit.resources.logicalRetainedBytes<=64_000_000);assert.ok(audit.resources.logicalPeakBytes<=64_000_000);assert.ok(direct.mean<2&&direct.changed<.02,'existing complete direct-Canvas fidelity bound');assert.deepEqual(errors,[]);}\n }finally{await page.close();}}await save(true);}finally{await browser.close();await new Promise(r=>server.close(r));}\n"
+    },
+    "scripts/lib/map-segment-mesh-enclosure.mjs": {
+      "sha256": "703dec2779911573b11e67cfd34c98cd9dfb84dc4803e393af0d8fd1619614b1",
+      "source": "// Diagnostic only: conservative intervals for the existing shader mesh. No renderer binding.\n// GLSL ES 3.00 §4.5.1: correctly rounded +,-,*; division <=2.5 ULP;\n// multiply-add may be fused or separate. Inputs/operations here enclose both.\nconst bits=new ArrayBuffer(4),f=new Float32Array(bits),u=new Uint32Array(bits);\nexport function nextFloat32(x,direction){x=Math.fround(x);if(!Number.isFinite(x))return x;if(x===0){u[0]=1;return direction>0?f[0]:-f[0];}f[0]=x;u[0]+=(x>0)===(direction>0)?1:-1;return f[0];}\nconst valid=a=>a.length===2&&a.every(Number.isFinite)&&a[0]<=a[1];\nfunction outward(lo,hi,steps=1,roundError=0){if(!Number.isFinite(lo)||!Number.isFinite(hi))return null;lo-=roundError;hi+=roundError;let a=Math.fround(lo),b=Math.fround(hi);for(let j=0;j<steps;j++){a=nextFloat32(a,-1);b=nextFloat32(b,1);}if(!Number.isFinite(a)||!Number.isFinite(b))return null;if(a<2**-126&&b>-(2**-126)){a=Math.min(a,0);b=Math.max(b,0);}return[a,b];}\nexport function constant(x){x=Math.fround(x);return Number.isFinite(x)?[x,x]:null;}\nexport function operation(a,b,op){if(!a||!b||!valid(a)||!valid(b))return null;if(op==='/'&&b[0]<=0&&b[1]>=0)return null;const values=[];for(const x of a)for(const y of b)values.push(op==='+'?x+y:op==='-'?x-y:op==='*'?x*y:x/y);const magnitude=Math.max(...values.map(Math.abs),...a.map(Math.abs),...b.map(Math.abs),Number.MIN_VALUE);return outward(Math.min(...values),Math.max(...values),op==='/'?4:1,magnitude*Number.EPSILON*4);}\nexport function halfValue(bits){const sign=bits&0x8000?-1:1,e=(bits>>>10)&31,m=bits&1023;return e===31?(m?NaN:sign*Infinity):sign*(e?2**(e-15)*(1+m/1024):2**-14*m/1024);}\nexport function halfInterval(value){value=Math.fround(value);if(!Number.isFinite(value)||Math.abs(value)>65504)return null;const sign=value<0?-1:1,x=Math.abs(value);let lo=0,hi=0x7bff;while(lo<hi){const m=Math.floor((lo+hi)/2);if(halfValue(m)<x)lo=m+1;else hi=m;}let a=halfValue(lo),b=a;if(a>x)a=halfValue(Math.max(0,lo-1));if(x<2**-14)a=0;return sign>0?[a,b]:[-b,-a];}\nconst add=(a,b)=>operation(a,b,'+'),sub=(a,b)=>operation(a,b,'-'),mul=(a,b)=>operation(a,b,'*'),div=(a,b)=>operation(a,b,'/');\nconst neg=a=>a?[-a[1],-a[0]]:null;\nexport function segmentMeshEnclosure({points,joins,firstPoint,width,cap='butt',view,tile}){\n const k=constant(view.k),tx=constant(view.tx),ty=constant(view.ty),dpr=constant(view.dpr),half=constant(width/2),one=constant(1),outer=add(half,div(one,dpr)),extension=cap==='round'?outer:div(one,dpr),ox=constant(tile.x/view.dpr),oy=constant(tile.y/view.dpr),rx=constant(tile.width/view.dpr),ry=constant(tile.height/view.dpr);let left=Infinity,top=Infinity,right=-Infinity,bottom=-Infinity;\n for(const end of[false,true]){const index=firstPoint+(end?1:0),w=points[index*4+3],fraction=w-Math.floor(w),start=fraction>.2&&fraction<.4,last=fraction>.4,jx=halfInterval(joins[index*2]),jy=halfInterval(joins[index*2+1]),extra=!end&&start?neg(extension):end&&last?extension:constant(0);for(const side of[-1,1]){\n  const x=sub(add(add(add(mul(constant(points[index*4]),k),tx),mul(mul(jx,outer),constant(side))),mul(jy,extra)),ox),y=sub(add(add(add(mul(constant(points[index*4+1]),k),ty),mul(mul(jy,outer),constant(side))),mul(neg(jx),extra)),oy);\n  // Enclose shader's NDC division/multiplication/addition, then viewport mapping.\n  const nx=add(mul(div(x,rx),constant(2)),constant(-1)),ny=add(mul(div(y,ry),constant(-2)),constant(1));if(!nx||!ny)return null;\n  const X=nx.map(n=>(n+1)*tile.width/2+tile.x),Y=ny.map(n=>(1-n)*tile.height/2+tile.y);left=Math.min(left,...X);right=Math.max(right,...X);top=Math.min(top,...Y);bottom=Math.max(bottom,...Y);\n }}if(![left,right,top,bottom].every(Number.isFinite))return null;return[Math.floor(left)-1,Math.floor(top)-1,Math.ceil(right)+1,Math.ceil(bottom)+1];\n}\nexport function intersectsTile(box,tile){return!box||box[0]<=tile.x+tile.width&&box[2]>=tile.x&&box[1]<=tile.y+tile.height&&box[3]>=tile.y;}\n"
+    },
+    "docs/verification/map-chunked-indices-edges.json": {
+      "sha256": "06bf01a82bf61d1c0e1ae53051664b10ee928c57f4af9db6b8f774d40c380cc8"
+    },
+    "docs/verification/map-chunked-indices-smoke.json": {
+      "sha256": "c26823b696ac13e4b7dbc3e4b1d4b9b81b61f59666e278ea14d7fa33e0699c7b"
+    },
+    "docs/verification/map-chunked-indices-matrix.json": {
+      "sha256": "5e26238efad20ea34fd95cb3c39620aa0145bcd01faf5376ddd5c7425cbde382"
+    }
+  },
+  "failing": {
+    "actual": "/tmp/atlas-map-chunked-matrix/3840-2-light-fractional-pan-actual.png",
+    "directCanvas": "/tmp/atlas-map-chunked-matrix/3840-2-light-fractional-pan-direct.png",
+    "originalGPUReference": null,
+    "gpuDifferenceImage": null,
+    "readbackArrays": null,
+    "limitation": "The failed in-page RGBA comparison retained changed/max counts only; original GPU image/readback/diff was not persisted. The actual PNG is the third candidate redraw, not the first captured readback.",
+    "state": {
+      "width": 3840,
+      "height": 2160,
+      "dpr": 2,
+      "theme": "light",
+      "name": "fractional-pan",
+      "k": 0.8,
+      "dx": 12.375,
+      "dy": -8.125,
+      "moving": true,
+      "resources": {
+        "logicalRetainedBytes": 62471764,
+        "logicalPeakBytes": 63895600,
+        "logicalLimitBytes": 64000000,
+        "components": {
+          "worldPointsAndCurveMetadata": 34471936,
+          "segmentIndices": 1810508,
+          "nativeWordTexture": 4194304,
+          "nativeWordSourceCanvas": 4194304,
+          "singleChannelCoverage": 7999488,
+          "nodeAndFlagTextures": 243200,
+          "optionalPackedXY": 9291784,
+          "optionalScratchCPU": 131072,
+          "optionalScratchGPU": 131072,
+          "optionalBookkeeping": 4096
+        },
+        "componentSum": 62471764,
+        "primaryDrawingBufferBytes": 128532480,
+        "primarySamples": 0,
+        "requestedDepth": false,
+        "requestedStencil": false,
+        "maskPixels": 7999488,
+        "retainedModels": [
+          {
+            "scale": 0.5,
+            "points": 444859,
+            "segments": 421495
+          },
+          {
+            "scale": 4,
+            "points": 1161473,
+            "segments": 1138109
+          },
+          {
+            "scale": 0.5,
+            "points": 38667,
+            "segments": 37911
+          }
+        ],
+        "indexBuffers": 86,
+        "inputCanvasPixels": 1,
+        "contextRestore": "Terminate worker and release all owned resources before constructing a replacement generation.",
+        "excluded": "Logical dimensions are not a physical GPU-memory ceiling. Driver alignment, shader/VAO storage, compositor surfaces, swap-chain/backbuffer copies and delayed deallocation are not exposed by WebGL.",
+        "optional": {
+          "metadataCPU": 9291784,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        }
+      },
+      "stats": {
+        "originalBinds": 596,
+        "optimizedTiles": 156,
+        "chunks": 115,
+        "indices": 508823,
+        "emptyTiles": 47,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 261,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 266,
+        "priorityDrops": 0,
+        "peak": 63895600,
+        "events": [
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 30,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:algo",
+            "original": 902,
+            "retained": 20,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:logic",
+            "original": 760,
+            "retained": 6,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "col:opt",
+            "original": 498,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:opt",
+            "original": 498,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:stat",
+            "original": 3400,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:info",
+            "original": 1052,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:causal",
+            "original": 366,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:causal",
+            "original": 366,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "col:causal",
+            "original": 366,
+            "retained": 0,
+            "chunks": 0
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 1828,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 26536,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 2608,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 19355,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 6,
+            "chunks": 1
+          },
+          {
+            "kind": "tile",
+            "key": "ghost",
+            "original": 182705,
+            "retained": 948,
+            "chunks": 1
+          }
+        ]
+      },
+      "deltaChunks": 70,
+      "deltaOptimized": 117,
+      "nodes": 13574,
+      "edges": 23364,
+      "sameScene": {
+        "changed": 31327,
+        "max": 121,
+        "width": 7680,
+        "height": 4184
+      },
+      "glError": 0,
+      "direct": {
+        "mean": 0.4916459715085245,
+        "changed": 0.0020782606855481198
+      },
+      "reconstructedCamera": {
+        "explanation": "Reconstructed from immutable target coordinates and exact probe formula; camera values were not separately returned by the in-page probe.",
+        "target": {
+          "id": "ladr-2.30",
+          "x": 448,
+          "y": 2636
+        },
+        "W": 3840,
+        "H": 2092,
+        "k": 0.8,
+        "tx": 1574.35,
+        "ty": -1071.0500000000002
+      }
+    }
+  }
+}

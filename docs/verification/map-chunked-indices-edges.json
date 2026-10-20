@@ -1,0 +1,425 @@
+{
+  "complete": true,
+  "results": [
+    {
+      "cap": "butt",
+      "dash": false,
+      "fault": null,
+      "changed": 0,
+      "max": 0,
+      "painted": 2148,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 1,
+        "chunks": 2,
+        "indices": 32770,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 32770,
+            "retained": 32770,
+            "chunks": 2
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "butt",
+      "dash": false,
+      "fault": "live",
+      "changed": 0,
+      "max": 0,
+      "painted": 2148,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "butt",
+      "dash": true,
+      "fault": null,
+      "changed": 0,
+      "max": 0,
+      "painted": 1440,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 1,
+        "chunks": 2,
+        "indices": 32770,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 32770,
+            "retained": 32770,
+            "chunks": 2
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "butt",
+      "dash": true,
+      "fault": "live",
+      "changed": 0,
+      "max": 0,
+      "painted": 1440,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "round",
+      "dash": false,
+      "fault": null,
+      "changed": 0,
+      "max": 0,
+      "painted": 2180,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 1,
+        "chunks": 2,
+        "indices": 32770,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 32770,
+            "retained": 32770,
+            "chunks": 2
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "round",
+      "dash": false,
+      "fault": "live",
+      "changed": 0,
+      "max": 0,
+      "painted": 2180,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "round",
+      "dash": true,
+      "fault": null,
+      "changed": 0,
+      "max": 0,
+      "painted": 1936,
+      "stats": {
+        "originalBinds": 0,
+        "optimizedTiles": 1,
+        "chunks": 2,
+        "indices": 32770,
+        "emptyTiles": 0,
+        "liveReplays": 0,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "tile",
+            "key": "gray",
+            "original": 32770,
+            "retained": 32770,
+            "chunks": 2
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    },
+    {
+      "cap": "round",
+      "dash": true,
+      "fault": "live",
+      "changed": 0,
+      "max": 0,
+      "painted": 1936,
+      "stats": {
+        "originalBinds": 1,
+        "optimizedTiles": 0,
+        "chunks": 1,
+        "indices": 32768,
+        "emptyTiles": 0,
+        "liveReplays": 1,
+        "staleAborts": 0,
+        "streamComparisons": 1,
+        "metadataCopies": 1,
+        "metadataDrops": 0,
+        "reserveChecks": 3,
+        "priorityDrops": 0,
+        "peak": 446504,
+        "events": [
+          {
+            "kind": "drop",
+            "reason": "metadata replacement",
+            "bytes": 36864
+          },
+          {
+            "kind": "metadata",
+            "bytes": 4128,
+            "scale": 4
+          },
+          {
+            "kind": "drop",
+            "reason": "destroy",
+            "bytes": 180232
+          }
+        ],
+        "owners": {
+          "metadataCPU": 32,
+          "scratchCPU": 131072,
+          "scratchGPU": 131072,
+          "bookkeeping": 4096,
+          "capacity": 32768,
+          "modelScale": 4
+        },
+        "budget": 446504
+      }
+    }
+  ]
+}
