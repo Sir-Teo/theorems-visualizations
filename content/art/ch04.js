@@ -1,3 +1,4 @@
+import{matchingFunctionsItem}from'./source-audit-colorimetry-items.js';
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.1–4.8; 4.9–4.16 are in ch04-b.js)
 import { METAMER_LAMPS, MIXTURE_OPS, metamerSurfaces, metamerMixture, metamerNumber } from './metamer-audit.js';
 import { CONE_CURVES, CONE_AMOUNT_MAX, coneStimulus, coneLeastSquares, coneMatchTarget, coneMatch, coneDisplayPair } from './source-audit-cones.js';
@@ -159,54 +160,8 @@ The baseline pair is constructed as in art-4.3, now with an equal-energy weighti
         v.readout(()=>{const m=info,f=metamerNumber;return `Raw XYZ left: (${m.raw[0].map(f).join(', ')}); right: (${m.raw[1].map(f).join(', ')}).\nDifference left − right: (${m.difference.map(f).join(', ')}); relative XYZ residual ${m.relative.toExponential(3)}. Chromaticity distance Δu′v′ ${m.uv===null?'undefined':m.uv.toExponential(3)} is not a full colour match test.\n${m.preserves?'This common or degenerate operation preserves the baseline linear-model identity; the remaining residual is numerical.':'A unilateral nondegenerate operation need not preserve the baseline identity; the displayed XYZ difference is the comparison.'} Maximum quadrature/refinement difference ${m.refinement.toExponential(3)} (not an enclosure).\nNonnegative-spectrum upper bound ${f(m.bounds[1])}; no negative-spectrum clipping. Display: common exposure ${m.display.exposure}, linear-RGB lift ${f(m.display.lift)}, divisor ${f(m.display.scale)}, sRGB transfer, 8-bit rounding. These patches are illustrative and can obscure differences.`;});
       },
     },
-    // ------------------------------------------------------------------ 4.5
-    {
-      num: '4.5',
-      kind: 'Method',
-      name: 'Colour-matching functions',
-      credit: 'Experiments of W. D. Wright (1928) and J. Guild (1932); CIE RGB primaries 700, 546.1 and 435.8 nm',
-      verify: true,
-      statement: String.raw`Fix three primary lights. For each wavelength $\lambda$ let $\bar r(\lambda),\bar g(\lambda),\bar b(\lambda)$ be the amounts of the primaries that match a unit of monochromatic light at $\lambda$ (negative amounts are added to the test). By Grassmann’s laws (art-4.4), the match of any light $S(\lambda)$ then needs the amounts
-$$R=\int S\,\bar r\,d\lambda,\quad G=\int S\,\bar g\,d\lambda,\quad B=\int S\,\bar b\,d\lambda ,$$
-so three functions of $\lambda$ describe every colour match. The functions depend on the chosen primaries by a $3\times3$ linear change.`,
-      idea: String.raw`A general light is a superposition of monochromatic lights, so by additivity and proportionality its match is the same superposition of the monochromatic matches; the integrals follow. The negative lobe of $\bar r$ between about 440 and 550 nm is not strange physics: no real mixture of a single red, green and blue primary reaches the saturation of a spectral blue-green, so the red primary must be added to the test field to desaturate it.`,
-      caption: String.raw`Slide the test wavelength. The right panel shows the amounts of the three primaries; a bar below zero means that primary goes to the test side. In the field, the test is shown alone, with the negative primary added, and as the positive mixture, the last two being the same colour. Change the primaries to see that the curves change but remain related by a linear map; for primaries bunched together the negative lobes become enormous.`,
-      deps: ['art-4.4'],
-      refs: ['Fairchild ch. 3'],
-      tags: ['colour matching', 'CIE'],
-      scope: String.raw`The curves here are not the Wright and Guild measurements: they are the CIE 1931 analytic fit (art-4.6) converted to the chosen primaries by the exact linear change. The unit of each primary is scaled so that the equal-energy stimulus needs equal amounts of all three, the CIE RGB convention. Standard 2° observer.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/CIE_1931_color_space' },
-      viz(v) {
-        const SETS = { cie: CIERGB, disp: primSet([610, 540, 465]), tight: primSet([590, 550, 510]) };
-        const sel = v.select('primaries (nm)', [{ value: 'cie', label: '700, 546.1, 435.8 (CIE RGB)' }, { value: 'disp', label: '610, 540, 465' }, { value: 'tight', label: '590, 550, 510' }], 'cie');
-        const lam = v.slider('test wavelength (nm)', 400, 700, 490, { step: 1 });
-        const A = v.stage({ x: [380, 720], y: [-0.2, 1.6], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'amount of primary (equal-area units)', height: 330, weight: 1.45, title: 'colour-matching functions' });
-        const B = v.stage({ x: [0, 3], y: [0, 1], axes: false, equal: false, height: 330, weight: 0.75, minWidth: 230, title: 'the matching field' });
-        let info = {};
-        v.render(() => {
-          const P = SETS[sel.value];
-          const ymax = 1.0; let lo = 0, hi = 0; for (let l = 380; l <= 720; l += 4) { const c = P.cmf(l).map((u) => u * EW[0]); lo = Math.min(lo, ...c); hi = Math.max(hi, ...c); }
-          A.setView([380, 720], [lo * 1.15 - 0.02, hi * 1.15]);
-          const cols = ['red', 'green', 'accent'];
-          for (let i = 0; i < 3; i++) A.fn((l) => P.cmf(l)[i] * EW[0], { color: cols[i], width: 2, domain: [380, 720] });
-          A.hline(0, { color: 'ink', width: 0.8, alpha: 0.6 });
-          A.vline(lam.value, { color: 'gold', width: 1.5, dash: [4, 4] });
-          const a = P.cmf(lam.value).map((u) => u * EW[0]), t = cmf(lam.value);
-          for (let i = 0; i < 3; i++) A.dot(lam.value, a[i], { r: 4.5, color: cols[i] });
-          let Lc = t.slice(), Rc = [0, 0, 0];
-          for (let i = 0; i < 3; i++) { const p = P.prim(i); for (let k = 0; k < 3; k++) { if (a[i] >= 0) Rc[k] += a[i] / EW[0] * p[k]; else Lc[k] += -a[i] / EW[0] * p[k]; } }
-          const sc = 0.55 / (Rc[1] || 1);
-          B.rect(0, 0.34, 1, 1, { fill: rgbOf(t.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          B.rect(1, 0.34, 2, 1, { fill: rgbOf(Lc.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          B.rect(2, 0.34, 3, 1, { fill: rgbOf(Rc.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          ['test', 'test + neg.', 'mixture'].forEach((s, i) => B.text(s, 0.5 + i, 0.3, { size: 10.5, color: 'muted', align: 'center', baseline: 'top' }));
-          const Y = SETS.cie.P[1];
-          info = { a, neg: a.findIndex((u) => u < 0), Y, hi };
-        });
-        v.legend([['red', 'first primary'], ['green', 'second'], ['accent', 'third'], ['gold', 'test wavelength']]);
-        v.readout(() => `amounts at ${lam.value} nm: $(${fmt3(v, info.a)})$ ${info.neg >= 0 ? `· the ${['first', 'second', 'third'][info.neg]} primary is negative: added to the test` : '· all positive'}\nthe CIE RGB unit primaries have luminances in the ratio $1:${v.fix(SETS.cie.P[1][1] / SETS.cie.P[1][0], 4)}:${v.fix(SETS.cie.P[1][2] / SETS.cie.P[1][0], 4)}$ (this is the $Y$ row of the published matrix, $0.17697:0.81240:0.01063$)`);
-      },
-    },
+    // Source-audited colorimetry 4.5
+    matchingFunctionsItem,
     // ------------------------------------------------------------------ 4.6
     {
       num: '4.6',

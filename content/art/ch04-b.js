@@ -1,3 +1,4 @@
+import{grassmannPaperItem,cieStandardsPaperItem}from'./source-audit-colorimetry-items.js';
 // Visual Art & Color — Chapter 4: Trichromacy and colorimetry (items 4.9–4.16; 4.1–4.8 are in ch04.js)
 import { cmf, cmfT, specRGB, rgbOf, spdXYZ, xyOf, xyz, planck, gauss, sigm, drawChromaticity, LOCUS, inLocus, dominant, SRGB, toLMS, fromLMS, primSet, CIERGB, CIERGB_M, EW, mv3, inv3, cross3, PLANCK_TABLE, bbXY, uv60, xy60, cctNearest, cctMcCamy, SRGB_M, SRGB_MI, srgbDec, srgbEnc, codeToXYZ, xyzToCode, hsv2code, rgbMatrixFrom, Vphot, Vscot } from './ch04.shared.js';
 
@@ -286,59 +287,8 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         v.readout(() => `level ${v.sci(info.lum, 2)} cd/m² → cone weight ${v.fix(info.w, 2)} (${info.w > 0.98 ? 'photopic' : info.w < 0.02 ? 'scotopic' : 'mesopic'}), the weighting peaks at ${info.pk} nm\nbrightness relative to its daylight value: red flower ${v.fix(info.g[0], 2)}, green leaf ${v.fix(info.g[1], 2)}, blue flower ${v.fix(info.g[2], 2)}`);
       },
     },
-    // ------------------------------------------------------------------ 4.14
-    {
-      num: '4.14',
-      kind: 'Paper',
-      name: 'Zur Theorie der Farbenmischung',
-      paper: { authors: 'H. Grassmann', year: 1853, title: 'Zur Theorie der Farbenmischung', venue: 'Annalen der Physik 165 (5): 69–84', doi: '10.1002/andp.18531650505' },
-      introduces: ['art-4.4'],
-      credit: 'Hermann Grassmann, 1853',
-      statement: String.raw`Grassmann answers Helmholtz’s 1852 paper on compound colours by setting the theory of colour mixture on laws. Every colour sensation, he says, is determined by three elements, which he calls the hue, the intensity of the colour and the intensity of the white mixed with it. Mixing two lights is a sum, in which the mixture of two lights has a hue between them and the same law holds for any further light added to both sides of a match. He argues that every hue has a complementary hue which, mixed in the right proportions, gives white; against Helmholtz’s observation that in the spectrum only one pair of colours (indigo-blue and yellow) did so, he points out that the observation concerns spectral colours only, and that the other spectral colours have as their complements mixtures lying on the purple side.`,
-      idea: String.raw`Newton’s circle (art-3.3) had given the first rule for mixing; Helmholtz found in 1852 that the rule failed in some of its consequences, as only one pair of spectral colours seemed to make white. Grassmann’s answer is mathematical: the colours form a space whose mixing is addition and whose scaling is intensity, so a colour is a vector with three coordinates, complements exist because a hue circle has opposite points, and the apparent exceptions come from the colour circle having purple colours that the spectrum does not contain. These laws (art-4.4), later stated for the additivity and proportionality of matches, became the foundation of colorimetry.`,
-      caption: String.raw`The colour plane around white, here drawn with the modern chromaticity diagram, where Grassmann’s mixture of two lights is the weighted centre of two points. Set the hues of lights $A$ and $B$ (angle around white) and their saturations and intensities: the mixture (gold) moves on the segment. Press “Balance” to rotate $A$ to the opposite hue and fit its intensity: the mixture falls on white, so every hue has a complement, including the purples. Bottom: the mixture field beside a white field; adding a third light $C$ to both preserves the match.`,
-      deps: ['art-3.3', 'art-3.5', 'ladr-1.20'],
-      refs: [],
-      tags: ['Grassmann', 'complementary colours', 'colour mixing'],
-      scope: String.raw`Grassmann worked with prismatic colours and a qualitative scale of hue; the picture here is a modern recreation in the CIE 1931 chromaticity plane, which did not exist in 1853. What the paper says about Helmholtz, and about the three elements, is taken from secondary accounts and the paper’s abstract, not from a reading of the full German text.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Grassmann%27s_laws_(color_science)' },
-      verify: true,
-      viz(v) {
-        const hA = v.slider('hue of $A$ (angle around white)', 0, 360, 60, { step: 1 }), sA = v.slider('saturation of $A$', 0.1, 1, 0.9, { step: 0.01 }), yA = v.slider('intensity of $A$', 0.02, 2, 0.5, { step: 0.005 });
-        const hB = v.slider('hue of $B$', 0, 360, 240, { step: 1 }), sB = v.slider('saturation of $B$', 0.1, 1, 0.7, { step: 0.01 }), yB = v.slider('intensity of $B$', 0.02, 2, 0.2, { step: 0.005 });
-        const cAmt = v.slider('third light $C$: intensity (added to both fields)', 0, 1, 0, { step: 0.01 }), hC = v.slider('hue of $C$', 0, 360, 130, { step: 1 });
-        const pt = (h, s) => { const b = boundaryAt(h); return [1 / 3 + (b[0] - 1 / 3) * s, 1 / 3 + (b[1] - 1 / 3) * s]; };
-        const balance = () => {
-          hA.set((hB.value + 180) % 360);
-          const B = pt(hB.value, sB.value), A = pt(hA.value, sA.value), rB = Math.hypot(B[0] - 1 / 3, B[1] - 1 / 3), rA = Math.hypot(A[0] - 1 / 3, A[1] - 1 / 3);
-          // Y_A/y_A * rA = Y_B/y_B * rB
-          yA.set(Math.max(0.02, Math.min(2, (yB.value / B[1]) * rB * A[1] / rA)));
-        };
-        v.button('Balance', balance); balance();
-        const D = v.stage({ x: [0, 0.8], y: [0, 0.9], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 400, weight: 1.2, title: 'two lights and their mixture' });
-        const F = v.stage({ x: [0, 2], y: [0, 1], axes: false, height: 400, weight: 0.8, minWidth: 240, title: 'mixture of $A$ and $B$ (left), white (right)' });
-        let info = {};
-        v.render(() => {
-          drawChromaticity(D, v, { fade: 0.4 });
-          const A = pt(hA.value, sA.value), B = pt(hB.value, sB.value), C = pt(hC.value, 0.8);
-          const XA = xyz(A[0], A[1], yA.value), XB = xyz(B[0], B[1], yB.value), XC = xyz(C[0], C[1], cAmt.value);
-          const M = [0, 1, 2].map((k) => XA[k] + XB[k]), [mx, my] = xyOf(M);
-          D.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink', label: 'white', labelPos: 'nw' });
-          D.line(A[0], A[1], B[0], B[1], { color: 'ink', width: 1.2, dash: [4, 4] });
-          D.dot(A[0], A[1], { r: 7, color: 'red', label: 'A', labelPos: 'ne' }); D.dot(B[0], B[1], { r: 7, color: 'accent', label: 'B', labelPos: 'ne' });
-          D.dot(mx, my, { r: 7, color: 'gold', label: 'mixture', labelPos: 'ne' });
-          if (cAmt.value > 0) D.dot(C[0], C[1], { r: 5, color: 'green', label: 'C', labelPos: 'ne' });
-          const L = [0, 1, 2].map((k) => M[k] + XC[k]), Wt = xyz(1 / 3, 1 / 3, M[1]), R = [0, 1, 2].map((k) => Wt[k] + XC[k]);
-          const sc = 0.6 / (((L[1] + R[1]) / 2) || 1);
-          F.rect(0, 0, 1, 1, { fill: rgbOf(L.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          F.rect(1, 0, 2, 1, { fill: rgbOf(R.map((u) => u * sc)), stroke: false, fillAlpha: 1 });
-          const pa = upvp(L), pb = upvp(R), dm = dominant(A[0], A[1]), dB = dominant(B[0], B[1]);
-          info = { mx, my, d: Math.hypot(pa[0] - pb[0], pa[1] - pb[1]), dm, dB, dist: Math.hypot(mx - 1 / 3, my - 1 / 3) };
-        });
-        v.legend([['red', 'light $A$'], ['accent', 'light $B$'], ['gold', 'mixture']]);
-        v.readout(() => `$A$: ${info.dm.l ? (info.dm.purple ? 'purple, complement of ' : '') + v.fix(info.dm.l, 0) + ' nm' : 'neutral'}, $B$: ${info.dB.l ? (info.dB.purple ? 'purple, complement of ' : '') + v.fix(info.dB.l, 0) + ' nm' : 'neutral'} · the mixture is at distance ${v.fix(info.dist, 4)} from white\ndifference between the two fields in $u'v'$: $${v.sci(info.d + 1e-12, 2)}$ ${info.d < 0.003 ? '(a match: it survives adding $C$ to both fields)' : '(not a match: $A$ and $B$ are not yet complements in the right proportion)'}`);
-      },
-    },
+    // Source-audited colorimetry 4.14
+    grassmannPaperItem,
     // ------------------------------------------------------------------ 4.15
     {
       num: '4.15',
@@ -398,51 +348,7 @@ $$C=\begin{cases}12.92\,u,&u\le0.0031308\\ 1.055\,u^{1/2.4}-0.055,&u>0.0031308\e
         v.readout(() => `slit amounts needed for this target: $(${fmt3(v, info.a)})$ (equal-energy white needs $(1,1,1)$) · residual of your setting ${v.fix(100 * info.d, 2)}%${info.neg ? ' · a negative amount: that slit’s light is added to the target' : ''}\n${tgt.value === 'band' && lam.value > 440 && lam.value < 530 ? 'the red amount is negative here: the spectral colour is more saturated than any mixture of the three slits (it lies outside Maxwell’s triangle)' : ''}`);
       },
     },
-    // ------------------------------------------------------------------ 4.16
-    {
-      num: '4.16',
-      kind: 'Paper',
-      name: 'The C.I.E. Colorimetric Standards and Their Use',
-      paper: { authors: 'T. Smith and J. Guild', year: 1931, title: 'The C.I.E. Colorimetric Standards and Their Use', venue: 'Transactions of the Optical Society 33 (3): 73–134', doi: '10.1088/1475-4878/33/3/301' },
-      introduces: ['art-4.6', 'art-4.7'],
-      credit: 'Thomas Smith and John Guild, 1931',
-      statement: String.raw`Smith and Guild’s paper (1931–32) describes the 1931 CIE standard colorimetric system and how to use it. The matching data of Wright and Guild with primaries at 700, 546.1 and 435.8 nm are transformed to an imaginary set of primaries $X,Y,Z$, chosen so that the matching functions are non-negative at all wavelengths, so that one of them ($\bar y$) is the luminous-efficiency function, and so that the equal-energy stimulus has equal tristimulus values; chromaticity coordinates $x=X/(X+Y+Z)$, $y=Y/(X+Y+Z)$ then place every colour in a plane where the spectrum is a convex curve closed by the line of purples.`,
-      idea: String.raw`In 1931 the data of colour matching existed in several systems with negative lobes (art-4.5, art-4.15); the CIE needed one numerical standard for industry. A linear change of primaries is allowed by Grassmann’s laws (art-4.4), so the choice was practical: the new triangle $XYZ$ encloses the whole locus (all chromaticities positive), has one side along the line of zero luminance (the alychne) so that $Y$ alone carries the luminance (art-4.13), and a second side tangent to the locus; the equal-energy white is fixed at $x=y=\tfrac13$. The paper’s purpose was to give the data, the transformation and the procedures for using them.`,
-      caption: String.raw`Drag $t$ from 0 to 1: the triangle of primaries moves from the CIE RGB primaries (the real lights of the experiment, whose triangle leaves out the whole blue-green part of the locus) to the imaginary $X,Y,Z$ at $(1,0)$, $(0,1)$, $(0,0)$, which encloses the locus. At the same time the three matching functions on the right change from the experimental $\bar r\bar g\bar b$ with their negative lobe to the all-positive $\bar x\bar y\bar z$. The readout tracks the most negative value and the $\bar y$ curve.`,
-      deps: ['art-4.5', 'art-4.13'],
-      refs: [],
-      tags: ['CIE 1931', 'standard observer'],
-      scope: String.raw`This is a reconstruction, not the paper’s own table: the matching functions are the CIE 1931 analytic fit (Wyman, Sloan & Shirley), and the interpolation between the CIE RGB system and $XYZ$ is my own device to show the effect of the linear change; intermediate primaries have no historical meaning. The RGB-to-XYZ matrix is the published one (rows $0.49,0.31,0.20$; $0.17697,0.81240,0.01063$; $0,0.01,0.99$).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/CIE_1931_color_space' },
-      verify: true,
-      viz(v) {
-        const t = v.slider('change of primaries $t$ (0 = CIE RGB, 1 = $XYZ$)', 0, 1, 0, { step: 0.005 });
-        v.button('CIE RGB', () => t.set(0)); v.button('XYZ', () => t.set(1));
-        const Dg = v.stage({ x: [-0.25, 1.1], y: [-0.2, 1.1], equal: true, axes: 'box', gutter: true, xlabel: '$x$', ylabel: '$y$', height: 400, weight: 1.15, title: 'the primaries in the $xy$ diagram' });
-        const Cm = v.stage({ x: [380, 780], y: [-0.5, 2], axes: 'box', gutter: true, xlabel: 'wavelength (nm)', ylabel: 'matching functions', height: 400, weight: 1, title: 'matching functions for these primaries' });
-        const Pt = (s) => CIERGB.P.map((row, r) => row.map((a, j) => (1 - s) * a + s * (r === j ? EW[r] : 0)));
-        let info = {};
-        v.render(() => {
-          const P = Pt(t.value), Pi = inv3(P);
-          drawChromaticity(Dg, v, { fade: 0.3 });
-          const cols = [0, 1, 2].map((j) => xyOf([P[0][j], P[1][j], P[2][j]]));
-          Dg.poly(cols, { color: 'ink', width: 1.6, fill: 'accent', fillAlpha: 0.08 });
-          Dg.line(0, 0, 1, 0, { color: 'orange', width: 1.2, dash: [4, 4] });
-          Dg.text('alychne $y=0$ (zero luminance)', 0.6, -0.1, { size: 10.5, color: 'orange', align: 'center' });
-          cols.forEach(([x, y], i) => Dg.dot(x, y, { r: 5, color: ['red', 'green', 'accent'][i], label: t.value < 0.02 ? ['R 700', 'G 546.1', 'B 435.8'][i] : t.value > 0.98 ? ['X', 'Y', 'Z'][i] : '', labelPos: 'ne' }));
-          Dg.dot(1 / 3, 1 / 3, { r: 4, hollow: true, color: 'ink' });
-          const g = (l) => mv3(Pi, cmf(l));
-          let mn = 0, mnl = 0; for (let l = 380; l <= 780; l += 2) { const c = g(l); for (let k = 0; k < 3; k++) if (c[k] * EW[0] < mn) { mn = c[k] * EW[0]; mnl = l; } }
-          const sc = 1;
-          for (let i = 0; i < 3; i++) Cm.fn((l) => g(l)[i] * EW[0] * sc, { color: ['red', 'green', 'accent'][i], width: i === 1 ? 2.4 : 1.8, domain: [380, 780] });
-          Cm.hline(0, { color: 'ink', width: 0.8, alpha: 0.6 });
-          // all locus points inside triangle?
-          const inside = LOCUS_XY.every((p) => inConvex(p, cols));
-          info = { mn, mnl, inside };
-        });
-        v.legend([['red', 'first primary'], ['green', 'second'], ['accent', 'third']]);
-        v.readout(() => `most negative value of any matching function: ${v.fix(info.mn, 3)}${info.mn < -1e-3 ? ` (at ${info.mnl} nm)` : ' (none: all matching functions are non-negative)'} · the primary triangle ${info.inside ? 'encloses' : 'does not enclose'} the spectral locus${t.value > 0.99 ? '\nat $t=1$ the second function is $\\bar y$, the luminous-efficiency function $V(\\lambda)$ (peak 1 at 555 nm)' : ''}`);
-      },
-    },
+    // Source-audited colorimetry 4.16
+    cieStandardsPaperItem,
   ],
 };
