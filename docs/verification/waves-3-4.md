@@ -725,3 +725,7 @@ The micro-9.21 review resolves its original-source flag after independent readin
 ## Additional Pareto geometry and introductory scope followups
 
 Three unflagged followups micro9.1–9.3 correct false near-tangency efficiency certificates and include the entire closed allocation box. Explicit smooth sets and constructive trade gains, complements weakly preferred lines and substitute boundary degeneracies pass independent4mathematical and12native theme/viewport groups. Actual source definitions, terminology and written MRS prerequisites were checked. These additional corrections do not close source-queue flags: **184 source reviews remain**. See [evidence](micro-efficiency-followup.md).
+
+## Combined checkpoint through3e4d6f3
+
+All1,467default tests pass, including all6UI tests. Strict build and full static checks report0errors/0warnings;58valid changed routes pass. Home JSON is112,795bytes gzipped. The reconciled source queue has184pending reviews and652original flags resolved; published cross-field shortfall870. Two source closures and three additional Pareto followups add14mathematical and20native groups. Source, proof-curation, cross-field and full-map60fps gates remain open; Wave5 is prepared and unstarted. See [checkpoint evidence](checkpoint-3e4d6f3.md).

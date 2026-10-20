@@ -10893,10 +10893,10 @@
       "collection": "fin",
       "field": "econ",
       "target": 25,
-      "writtenToWritten": 20,
-      "writtenToKnown": 25,
-      "wholeSyllabus": 36,
-      "publishedShortfall": 5,
+      "writtenToWritten": 21,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 37,
+      "publishedShortfall": 4,
       "unknown": [],
       "edges": [
         {
@@ -11028,6 +11028,13 @@
         {
           "item": "fin-5.11",
           "prerequisite": "prob-4.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "fin-5.12",
+          "prerequisite": "prob-2.2.3",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true

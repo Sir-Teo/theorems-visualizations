@@ -65,7 +65,7 @@ writing any of them (Phase 2). Finally, fill that skeleton in four breadth-first
    before reconsidering production integration; the full 60 fps gate stays open.
 3. After the verification gate, begin **Wave 5: the next unwritten chapter in each of the 80 unfinished collections**, keeping the same breadth-first authoring, source review and reconciliation process. The [prepared production inventory](docs/wave-five.md) enumerates 1,031 new items and preserves two already written entries in those chapters; authoring has not started.
 
-The completed checkpoint through `2c2145f` passes **1,453 tests**, including all six UI tests, and a **53-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,805 bytes gzipped. The subset adds the Bachelier, efficiency-benchmark, exchange-core and dominant-firm routes and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 186 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-2c2145f.md).
+The completed checkpoint through `3e4d6f3` passes **1,467 tests**, including all six UI tests, and a **58-route changed-page sweep**. Strict build and full static checks report zero errors/warnings; the home JSON is 112,795 bytes gzipped. The subset adds laboratory dividends, Arrow–Debreu existence and the Pareto geometry routes and does not replace the earlier broader route audit. The tracked behavior source queue is clear; 184 total source reviews remain. See [checkpoint evidence](docs/verification/checkpoint-3e4d6f3.md).
 
 ### Where we started
 

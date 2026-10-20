@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **54 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 871 edges. Even
+written ideas in a different field**. Their combined shortfall is 870 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -80,3 +80,16 @@ See the [efficiency](fin-efficiency-followup.md) and
 [Bachelier](fin-bachelier-followup.md) reports. Finance has 20 published edges;
 the refreshed shortfall is 871. The gate remains open for 54 of 64 collections,
 including 27 below target even across their complete syllabi.
+
+## Finite laboratory-path averages
+
+The reviewed laboratory illustration `fin-5.12` now explicitly uses written
+`prob-2.2.3` for the finite-second-moment weak law applied to independent
+simulated paths. A fixed-period finite-horizon Lipschitz/floor recurrence has
+finite variance. The displayed40-path mean and estimated standard error remain
+finite estimates; pairing noise across presets does not invalidate averaging
+within each preset. Original-source and independent model/native checks are in
+the [laboratory audit](fin-laboratory-followup.md). Chapter and syllabus agree.
+Finance has21published cross-field edges; the total shortfall is870, with54of64
+collections below25published edges and27below25across their complete syllabi.
+The gate remains open.
