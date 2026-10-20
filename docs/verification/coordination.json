@@ -21,7 +21,7 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite shortfall155;10/64 published collections and7 whole syllabi below target;38 further collections meet25 written inputs. Source queue5 unchanged.",
+      "Accepted prerequisite shortfall126;8/64 published collections and5 whole syllabi below target;40 further collections meet25 written inputs. Source queue5 unchanged.",
       "Latest immutable checkpoint10 on573ea1b passes2199 tests, all six UI groups, strict/static zero errors and warnings.",
       "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
       "Private atlas guard passes bounded tiny155/source readiness. First independently reset full-map attempt stopped on unexpected original transfer draw before alternate opened; all raw/history evidence preserved, no timing. Callback provenance under read-only review.",
@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "CM genuine prerequisite producer after final paired-map source/tiny review",
+      "current": "Private paired-oracle provenance/quiescence successor source/model after accepted CM",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "NEURO producer final equivalent layouts and two-test maintenance",
+      "current": "ARCH genuine prerequisite producer after accepted CM peer",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "NEURO independent peer; CPLX13 accepted by root",
+      "current": "ODE1.3 separate minimal proof/native peer after accepted NEURO",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -333,7 +333,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1440,7 +1440,7 @@
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "closed",
-      "finding": "Concrete modp hashfamily need not attain displayed expectation2n\u22121; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
       "commits": [
         "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
@@ -1454,7 +1454,7 @@
       "id": "imaging-2.9-singular-energies-and-log-dose",
       "status": "closed",
       "owner": "ctrl_prereqs",
-      "finding": "Energydomains overlap40\u201380:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
       "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
       "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
       "peer": "arch_source",
@@ -2312,7 +2312,7 @@
       "producer": "arch_source",
       "peer": "ctrl_prereqs",
       "report": "docs/verification/astro-crossfield-prerequisite-peer.md",
-      "followup": "Twenty-one genuine mathinputs. \u03a9sign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
+      "followup": "Twenty-one genuine mathinputs. Ωsign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
       "sourceClosure": "None; original source flags preserved.",
       "bridgeReview": "No affected bridge steps."
     },
@@ -2542,15 +2542,57 @@
       "followup": "Twenty-three genuine inputs across21consumers yield25/25/29. Full37objects/functions/helpers/flags/85rows and all6equivalent wraps pass. Authorized2.2two saturation expressions and matching label corrected, actual timeTo/trajectories preserved. Separate2.5noisy-modality qualification closes peer counterexample. Independent2215math assertions, actual narrow full fields/controls/captions/bridge cards pass; root integrated preservation/math reruns pass.",
       "sourceClosure": "None; source flags preserved.",
       "bridgeReview": "Six touched feedback bridge cards independently inspected; no bridge edit needed."
+    },
+    {
+      "collection": "cm",
+      "commits": [
+        "ced06a3a0aa13939aab609ccd1c3b623fcba7d73",
+        "3e16653b73e3d600e9c9cc23cdef7dff26d7e08c",
+        "0280baae48392b159d36589d6afda99eb5141d08",
+        "2c857d3309b2603ea00813a9c62765772667431c",
+        "3add09e493ec7d97ecf78d57f7095b74898fd520",
+        "8b84a551d58ce59034677405c69e38d7f078c1b3"
+      ],
+      "publishedBefore": 16,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "logic_peer",
+      "peer": "arch_source",
+      "report": "docs/verification/cm-nine-inputs-peer.md",
+      "followup": "Nine genuine math inputs yield25/33/33. Complete52objects/functions/helpers/flags/73rows and full lists pass. Acoustic nullity, ABC peak, exponential collision hazards and high-T asymptote qualified; six equivalent statement wraps. Independent8286 math checks,29 default tests and fresh18native/72completefields+18control images pass; root integrated preservation/math/default reruns pass.",
+      "sourceClosure": "None; flags preserved.",
+      "bridgeReview": "No affected bridges."
+    },
+    {
+      "collection": "neuro",
+      "commits": [
+        "96b45823744b35f2dc86bf84ebd6531a59e750fb",
+        "afe66ce49a3c6551ece2e624bfaa19aca5607573",
+        "ca89abd966e3a6541f65a438937ff331e0e59397",
+        "616cbfa6f04ac219a5b91498d6c471c85cceb3b0",
+        "e30c7c11f555bac15f8072d40bf2e1608e16510c",
+        "6bdf1706ae24d6023350d7891cc6465425ca9a03",
+        "3afd4ef474e41530fb369283c6543104b8064524"
+      ],
+      "publishedBefore": 5,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/neuro-crossfield-prerequisite-independent-peer.md",
+      "followup": "Twenty genuine math inputs across18consumers yield25/29/41. Full36objects/functions/helpers/flags/88rows/lists, two exact required-subset default-test maintenance edits, bounded gating/fold/kernel qualifications, grammar and12equivalent text fields pass. Independent5022 math checks,61 default tests and fresh36native/144fullfields+36actualcontrol images pass; root integrated preservation/math/default reruns pass.",
+      "sourceClosure": "None; flags preserved.",
+      "bridgeReview": "No affected bridges.",
+      "limitation": "Inherited4.6morphology low contrast at frame0 recorded by peer; no exhaustive animation/runtime acceptance."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 155,
-    "publishedBelow25": 10,
+    "publishedShortfall": 126,
+    "publishedBelow25": 8,
     "collections": 64,
-    "wholeSyllabusBelow25": 7,
+    "wholeSyllabusBelow25": 5,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Thirty-eight further collections meet the written target after independent review. CPLX13 accepted but remains nine short. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Forty further collections meet the written target after independent review. CPLX13 accepted but nine short. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -2561,7 +2603,7 @@
       "owns": [
         "content/ling/**",
         "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",

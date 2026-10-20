@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 10,
-  "wholeSyllabusBelowTarget": 7,
+  "publishedBelowTarget": 8,
+  "wholeSyllabusBelowTarget": 5,
   "entries": [
     {
       "collection": "stat",
@@ -4856,10 +4856,10 @@
       "collection": "cm",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 16,
-      "writtenToKnown": 24,
-      "wholeSyllabus": 24,
-      "publishedShortfall": 9,
+      "writtenToWritten": 25,
+      "writtenToKnown": 33,
+      "wholeSyllabus": 33,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -4933,6 +4933,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cm-2.8",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-2.11",
           "prerequisite": "pma-9.15",
           "prerequisiteField": "math",
@@ -4954,11 +4961,32 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cm-2.7",
+          "prerequisite": "prob-2.1.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-3.10",
           "prerequisite": "xtal-5.4",
           "prerequisiteField": "chem",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "cm-3.14",
+          "prerequisite": "rca-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-3.15",
+          "prerequisite": "rca-1.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "cm-3.16",
@@ -4996,6 +5024,20 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "cm-3.3",
+          "prerequisite": "ladr-7.29",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-3.4",
+          "prerequisite": "ladr-7.31",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cm-3.5",
           "prerequisite": "pma-3.26",
           "prerequisiteField": "math",
@@ -5015,6 +5057,27 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "cm-4.8",
+          "prerequisite": "ode-3.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-4.9",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cm-4.2",
+          "prerequisite": "pma-8.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "cm-4.5",
@@ -10282,10 +10345,10 @@
       "collection": "neuro",
       "field": "bio",
       "target": 25,
-      "writtenToWritten": 5,
-      "writtenToKnown": 9,
-      "wholeSyllabus": 21,
-      "publishedShortfall": 20,
+      "writtenToWritten": 25,
+      "writtenToKnown": 29,
+      "wholeSyllabus": 41,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -10296,11 +10359,25 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "neuro-1.6",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "neuro-1.7",
           "prerequisite": "pchem-7.4",
           "prerequisiteField": "chem",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "neuro-1.7",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "neuro-1.1",
@@ -10331,11 +10408,81 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "neuro-1.3",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-2.1",
+          "prerequisite": "prob-2.1.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-2.2",
+          "prerequisite": "prob-2.1.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-2.4",
+          "prerequisite": "ode-2.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-3.6",
+          "prerequisite": "ode-3.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-3.7",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-3.1",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "neuro-3.2",
           "prerequisite": "ode-7.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "neuro-3.2",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-3.3",
+          "prerequisite": "ode-2.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-3.4",
+          "prerequisite": "ode-1.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "neuro-3.5",
@@ -10345,8 +10492,64 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "neuro-3.5",
+          "prerequisite": "ode-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.6",
+          "prerequisite": "nla-4.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.7",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "neuro-4.1",
           "prerequisite": "pde-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.1",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.3",
+          "prerequisite": "ode-3.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.4",
+          "prerequisite": "pde-3.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.4",
+          "prerequisite": "pde-3.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "neuro-4.4",
+          "prerequisite": "pma-5.11",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -19610,7 +19813,9 @@
       "cc46d6226931f35919b86cd95609cfb2b521a153",
       "f83bdc7c5980f85332c6db0f9da6e0daf6f68390",
       "e2a5b01870439c48510d7a73cec7f8af3e5b89f5",
-      "3b75bdb0f319f6c0e224ef05aeb3b4038625fbea"
+      "3b75bdb0f319f6c0e224ef05aeb3b4038625fbea",
+      "ced06a3a0aa13939aab609ccd1c3b623fcba7d73",
+      "96b45823744b35f2dc86bf84ebd6531a59e750fb"
     ],
     "excludedUnacceptedEdges": [
       {
