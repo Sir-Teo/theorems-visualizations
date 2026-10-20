@@ -1,0 +1,1839 @@
+{
+  "objects": 25,
+  "functions": 25,
+  "syllabusRows": 367,
+  "addedEdges": 11,
+  "consumers": 8,
+  "independentMathChecks": 290,
+  "fullLists": [
+    {
+      "num": "1.1a",
+      "before": [
+        "comb-1.7",
+        "pma-6.21"
+      ],
+      "after": [
+        "comb-1.7",
+        "pma-6.21",
+        "prob-2.1.13",
+        "prob-2.1.10"
+      ]
+    },
+    {
+      "num": "1.1b",
+      "before": [],
+      "after": []
+    },
+    {
+      "num": "2.1a",
+      "before": [
+        "rca-1.24"
+      ],
+      "after": [
+        "rca-1.24"
+      ]
+    },
+    {
+      "num": "2.1b",
+      "before": [
+        "ml-2.1a"
+      ],
+      "after": [
+        "ml-2.1a"
+      ]
+    },
+    {
+      "num": "2.1c",
+      "before": [
+        "ml-2.1b",
+        "rca-2.20"
+      ],
+      "after": [
+        "ml-2.1b",
+        "rca-2.20"
+      ]
+    },
+    {
+      "num": "2.1d",
+      "before": [
+        "ml-2.1b"
+      ],
+      "after": [
+        "ml-2.1b"
+      ]
+    },
+    {
+      "num": "2.1",
+      "before": [
+        "ml-2.1d"
+      ],
+      "after": [
+        "ml-2.1d"
+      ]
+    },
+    {
+      "num": "2.1e",
+      "before": [
+        "ml-2.1a"
+      ],
+      "after": [
+        "ml-2.1a",
+        "prob-2.1.11"
+      ]
+    },
+    {
+      "num": "2.2",
+      "before": [
+        "rca-1.25",
+        "rca-1.26"
+      ],
+      "after": [
+        "rca-1.25",
+        "rca-1.26"
+      ]
+    },
+    {
+      "num": "2.3",
+      "before": [
+        "ml-2.1",
+        "ml-2.1e",
+        "ml-2.2",
+        "pma-5.11"
+      ],
+      "after": [
+        "ml-2.1",
+        "ml-2.1e",
+        "ml-2.2",
+        "pma-5.11",
+        "prob-2.1.10",
+        "prob-2.1.13"
+      ]
+    },
+    {
+      "num": "3.1",
+      "before": [
+        "ml-2.1",
+        "ml-2.1e",
+        "pma-8.6"
+      ],
+      "after": [
+        "ml-2.1",
+        "ml-2.1e",
+        "pma-8.6",
+        "prob-2.1.13"
+      ]
+    },
+    {
+      "num": "3.2",
+      "before": [
+        "ml-3.1",
+        "ml-2.3"
+      ],
+      "after": [
+        "ml-3.1",
+        "ml-2.3"
+      ]
+    },
+    {
+      "num": "3.2a",
+      "before": [
+        "ml-2.1a",
+        "rca-1.27"
+      ],
+      "after": [
+        "ml-2.1a",
+        "rca-1.27"
+      ]
+    },
+    {
+      "num": "3.2b",
+      "before": [
+        "ml-3.2a",
+        "rca-1.24"
+      ],
+      "after": [
+        "ml-3.2a",
+        "rca-1.24",
+        "prob-4.1.13"
+      ]
+    },
+    {
+      "num": "3.3",
+      "before": [
+        "ml-3.1",
+        "ml-3.2a"
+      ],
+      "after": [
+        "ml-3.1",
+        "ml-3.2a"
+      ]
+    },
+    {
+      "num": "3.3a",
+      "before": [
+        "ml-3.2a"
+      ],
+      "after": [
+        "ml-3.2a"
+      ]
+    },
+    {
+      "num": "3.4",
+      "before": [
+        "ml-3.3",
+        "ml-3.3a",
+        "rca-1.24"
+      ],
+      "after": [
+        "ml-3.3",
+        "ml-3.3a",
+        "rca-1.24"
+      ]
+    },
+    {
+      "num": "3.4a",
+      "before": [
+        "ml-3.4"
+      ],
+      "after": [
+        "ml-3.4"
+      ]
+    },
+    {
+      "num": "4.1",
+      "before": [
+        "ml-3.4"
+      ],
+      "after": [
+        "ml-3.4",
+        "prob-2.2.14"
+      ]
+    },
+    {
+      "num": "4.2",
+      "before": [
+        "ml-4.1",
+        "ml-2.1b"
+      ],
+      "after": [
+        "ml-4.1",
+        "ml-2.1b"
+      ]
+    },
+    {
+      "num": "4.3",
+      "before": [
+        "ml-4.1"
+      ],
+      "after": [
+        "ml-4.1"
+      ]
+    },
+    {
+      "num": "4.4",
+      "before": [
+        "ml-4.2",
+        "ml-4.3"
+      ],
+      "after": [
+        "ml-4.2",
+        "ml-4.3"
+      ]
+    },
+    {
+      "num": "4.5",
+      "before": [
+        "pma-5.15"
+      ],
+      "after": [
+        "pma-5.15",
+        "prob-2.1.13",
+        "prob-1.6.4"
+      ]
+    },
+    {
+      "num": "4.6",
+      "before": [
+        "ml-4.5",
+        "ml-2.2",
+        "ml-4.4",
+        "pma-8.6"
+      ],
+      "after": [
+        "ml-4.5",
+        "ml-2.2",
+        "ml-4.4",
+        "pma-8.6",
+        "prob-2.1.10"
+      ]
+    },
+    {
+      "num": "4.6a",
+      "before": [
+        "ml-4.6",
+        "comb-1.1"
+      ],
+      "after": [
+        "ml-4.6",
+        "comb-1.1"
+      ]
+    }
+  ],
+  "status": "PASS",
+  "scope": "bounded source/math/strict/static/native text acceptance",
+  "candidate": "0ffa06b0c3cc85ed97f6c47cc67835238cbb8e91",
+  "baseCandidate": "99650b2050ca81b4a28c3a70f1cbe671bd6030a1",
+  "acceptedBaseline": "13f726acd45392b7c6976938798a09399421cf90",
+  "counts": {
+    "fields": {
+      "ml": "stats",
+      "prob": "math"
+    },
+    "written": 25,
+    "known": 25,
+    "whole": 30,
+    "unknown": [],
+    "edges": [
+      {
+        "from": "ml-1.1a",
+        "to": "comb-1.7",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-1.1a",
+        "to": "pma-6.21",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-1.1a",
+        "to": "prob-2.1.13",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-1.1a",
+        "to": "prob-2.1.10",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.1a",
+        "to": "rca-1.24",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.1c",
+        "to": "rca-2.20",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.1e",
+        "to": "prob-2.1.11",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.2",
+        "to": "rca-1.25",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.2",
+        "to": "rca-1.26",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.3",
+        "to": "pma-5.11",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.3",
+        "to": "prob-2.1.10",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-2.3",
+        "to": "prob-2.1.13",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.1",
+        "to": "pma-8.6",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.1",
+        "to": "prob-2.1.13",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.2a",
+        "to": "rca-1.27",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.2b",
+        "to": "rca-1.24",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.2b",
+        "to": "prob-4.1.13",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-3.4",
+        "to": "rca-1.24",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.1",
+        "to": "prob-2.2.14",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.5",
+        "to": "pma-5.15",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.5",
+        "to": "prob-2.1.13",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.5",
+        "to": "prob-1.6.4",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.6",
+        "to": "pma-8.6",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.6",
+        "to": "prob-2.1.10",
+        "written": true,
+        "known": true
+      },
+      {
+        "from": "ml-4.6a",
+        "to": "comb-1.1",
+        "written": true,
+        "known": true
+      }
+    ]
+  },
+  "outputs": {
+    "/tmp/atlas-new-ml-followup-peer/native/ml-1.1a-dark-proof.png": {
+      "sha256": "b6d75e34c89bd5ee0a6b17370c7565cba2e1a6df233bfe3aee796f6581823477",
+      "bytes": 202549
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-1.1a-dark-statement-scope.png": {
+      "sha256": "c92ca132375f6b9eace487e7d7804d4bd341ec377883c77aac9ecea08dfbf565",
+      "bytes": 90861
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-1.1a-light-proof.png": {
+      "sha256": "e10cc85f8f8b70d670ded98dc6e5a5794844bfceae6ccce10ec3d7442ae2dbb6",
+      "bytes": 201369
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-1.1a-light-statement-scope.png": {
+      "sha256": "3c33e7bd21efde0ee12bd3dba1dd5b0b6b6bb12de4258208b7c0652fbadd33a4",
+      "bytes": 91133
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.1e-dark-proof.png": {
+      "sha256": "f155e6856a0e313725cb9366c9c5af94307c7cfc14ace4d4bfeed6b327334c2e",
+      "bytes": 99309
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.1e-dark-statement-scope.png": {
+      "sha256": "a6ba8a09cd0d003807f3fb6445616c6a862312f904e13799a4a3dd67b1880ac3",
+      "bytes": 76740
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.1e-light-proof.png": {
+      "sha256": "784c14415eb80d18f50f70ddd9c929f98b636fed245b2abf4dba05f104998ec0",
+      "bytes": 98545
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.1e-light-statement-scope.png": {
+      "sha256": "671a3ebd0099ef0c71e7b731bff82848db9916eee2616f35b201f8ae3b8c63bc",
+      "bytes": 77188
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.3-dark-proof.png": {
+      "sha256": "024cee07bc904040454f466cee88524a1edad4c0c16251f4bc7bad120ff1dec6",
+      "bytes": 145228
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.3-dark-statement-scope.png": {
+      "sha256": "394c15c8223b52207a1d4c8b4eecc8e8271b804685ec505469bf3acaf9809656",
+      "bytes": 48970
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.3-light-proof.png": {
+      "sha256": "692055e88b01f92da2866d3d124d727b96923a8042054676c75a3a0fefe5ba01",
+      "bytes": 144248
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-2.3-light-statement-scope.png": {
+      "sha256": "af5f39d85e71dece6b2aa6c727c10c66251f441f3ae1efa85710f3516bb28cde",
+      "bytes": 49700
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.1-dark-proof.png": {
+      "sha256": "cca2ce654adda00d1625bb2e4646f79f61ada3becb9fd727101cbe02a1c986e8",
+      "bytes": 217722
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.1-dark-statement-scope.png": {
+      "sha256": "f2be30e7b7119de7b430239ff5a3a738f8996b79c31e4a20842a628674ea1492",
+      "bytes": 88261
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.1-light-proof.png": {
+      "sha256": "e39c4943504d6124252d45f15922596c98ec1b79cba72a4c8be6060192f8e4a7",
+      "bytes": 215450
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.1-light-statement-scope.png": {
+      "sha256": "ea603ddcbcc9027e971e5617df08795a9bf0748bb412961c789d346bbe960d88",
+      "bytes": 88941
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.2b-dark-proof.png": {
+      "sha256": "2ee666ad38bb67d5b04dbdc1b3befaae192fa677b371473da7b453599f4ab739",
+      "bytes": 152687
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.2b-dark-statement-scope.png": {
+      "sha256": "564e05e5a41cff050df6d1906b30038a620eb93b65a7dd8776075e6a0507a031",
+      "bytes": 62133
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.2b-light-proof.png": {
+      "sha256": "0825d533bc741dff7200aeba75bd51e4113efeac1626a40ef23cc98d6c87ed3b",
+      "bytes": 150563
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-3.2b-light-statement-scope.png": {
+      "sha256": "2247e1fe88fd33fb4bfd1b46d69b75a3c0473b51052855e16bd43a4c876d0d5b",
+      "bytes": 62812
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.1-dark-proof.png": {
+      "sha256": "7b5621cbf87675aaa6fdaa8d8b449649f1f27d0750e894f04005a32f401f3d01",
+      "bytes": 109215
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.1-dark-statement-scope.png": {
+      "sha256": "7bac1122838ea4023568ad46b92c640f19f5c5f75183666df0e682cfe3ca7117",
+      "bytes": 51773
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.1-light-proof.png": {
+      "sha256": "ad2da1d1b06c5c3976fb082251107233434da546f909093032843f941f55a640",
+      "bytes": 108205
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.1-light-statement-scope.png": {
+      "sha256": "4b8007a38380c4209140da920590efcb5a855574f0aa5cabf930b80311564ec7",
+      "bytes": 52526
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.5-dark-proof.png": {
+      "sha256": "7891e0757c27f96f7028cb408b009a10eab95ab977c9911ff3ae4db104728d75",
+      "bytes": 161528
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.5-dark-statement-scope.png": {
+      "sha256": "87abde060df046b042fb5f6e617961c5a5fa3e58e63e2d7440cd15b773b281ca",
+      "bytes": 50846
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.5-light-proof.png": {
+      "sha256": "d59e5c418b95a406f26ca57c82eff95cb8ba729c4c0811e416f55628099bfd2d",
+      "bytes": 160252
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.5-light-statement-scope.png": {
+      "sha256": "b3655fbcdd282af5d0c22eb3580042659cdb0b04bd6888a9f0de5c2b80b6a58e",
+      "bytes": 51020
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.6-dark-proof.png": {
+      "sha256": "586e0c9cb0750db99a6c3c22eacc4dfb8bee7f2a88fec476a184a1d27ad40a46",
+      "bytes": 130313
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.6-dark-statement-scope.png": {
+      "sha256": "4df4f4c67dc27f84ea289b48f5d72879e19cc9cac21ebb8227fa2a0be243aa77",
+      "bytes": 64389
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.6-light-proof.png": {
+      "sha256": "9e51a84a39295fa144070b4fcb0a99fb42b9b4d173dec6bbfb3761116f5372c4",
+      "bytes": 128893
+    },
+    "/tmp/atlas-new-ml-followup-peer/native/ml-4.6-light-statement-scope.png": {
+      "sha256": "af6666f787872afd892d01debbbc1ef504f76eddc849dbec99e5ce968c700bc9",
+      "bytes": 65588
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-1.1a-dark-proof.png": {
+      "sha256": "71281b83898869c1f6c32eb8b7965401046997eaad6ea58191de15c614122a03",
+      "bytes": 211420
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-1.1a-dark-statement-scope.png": {
+      "sha256": "559c42fb9208da34ae8e94ca4ca9ee98438ced8beab53be4adabb96114857c59",
+      "bytes": 86751
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-1.1a-light-proof.png": {
+      "sha256": "7e68dd7aa8a3a2196a2d22fb84833d8d1eb84d826d07f0c87419299f441b3d6e",
+      "bytes": 209130
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-1.1a-light-statement-scope.png": {
+      "sha256": "8c118c8f630d61761e7097bd7dd6989c880328d5c553af53ac4e8ae19491d39b",
+      "bytes": 88019
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.1e-dark-proof.png": {
+      "sha256": "ca6ae515eb81fb68a1c6d2c3d3e07014388f026bd30dc83dfe033df2255bc58c",
+      "bytes": 102322
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.1e-dark-statement-scope.png": {
+      "sha256": "32f905191b12c061ab89d85361034a99f244dce16fa5203e270b0ef069153d4f",
+      "bytes": 73809
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.1e-light-proof.png": {
+      "sha256": "8ec55780aa3d5d474db09dffc4ad31bf7a4b46fac004ad88fc5bcdf5ed2ba083",
+      "bytes": 101350
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.1e-light-statement-scope.png": {
+      "sha256": "3428cabd6dfb418494ed6a0cf9a8c5ed6549186c1ea9912c3def1fe59cd367cc",
+      "bytes": 74133
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.3-dark-proof.png": {
+      "sha256": "d303b79bfc0ac19369c32343e57aa28407b1c4ab9fc11f2bee8ae0f8efcfdf75",
+      "bytes": 150079
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.3-dark-statement-scope.png": {
+      "sha256": "029690d0e7df6063c385c0c7edf47936b8222cd5c7fe6ca45fe8072a8b255dd1",
+      "bytes": 45921
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.3-light-proof.png": {
+      "sha256": "777906a92bbb7294a8f9d80ffad9ca751adcada1c59de64b7bc016f8de8cb208",
+      "bytes": 149327
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-2.3-light-statement-scope.png": {
+      "sha256": "2002ba6e9fa93f72402be45c05aad65044d683317807687c8fb469afe695f5fe",
+      "bytes": 46437
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.1-dark-proof.png": {
+      "sha256": "c2dbdb1613dc5e3251f57df2a7098455df5430fdfb4367dd37afe53878bd5869",
+      "bytes": 223935
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.1-dark-statement-scope.png": {
+      "sha256": "12877756b072cd25626a4ddf1441f2275be5d3122f1e67d907f08cadb6cd1355",
+      "bytes": 83488
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.1-light-proof.png": {
+      "sha256": "e2037465ae7028d66f90fbd72f2db3503449bd62d22d45974ee0fd0e7cd15cf1",
+      "bytes": 221325
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.1-light-statement-scope.png": {
+      "sha256": "6cdff5b6046e42d09bb5b71faff36cf8e70b7a68109b3af8a1ebb5188b1b813f",
+      "bytes": 84512
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.2b-dark-proof.png": {
+      "sha256": "20bf5f6d6294cd3c3ed65615329a0c3c3532489bebf15acc784513b0672fdbca",
+      "bytes": 157093
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.2b-dark-statement-scope.png": {
+      "sha256": "6f739fa67dd6bf5d0fa1f8b906f6586ec18ac247ac81659b8b7730adf0bf4485",
+      "bytes": 61025
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.2b-light-proof.png": {
+      "sha256": "eba86da2dca6871e4f93b3d891fdf24ecc155b03b33662e0fb7b408e1785d845",
+      "bytes": 155359
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-3.2b-light-statement-scope.png": {
+      "sha256": "28e9296e4a84830ee566abcd4c998ce3ce9321e5c766a8f02cf9ede157294030",
+      "bytes": 61804
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.1-dark-proof.png": {
+      "sha256": "1f21db6294006862b585ec9b10c7c37c2f5e6bb319f195bb5e0d21f359a161e5",
+      "bytes": 113461
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.1-dark-statement-scope.png": {
+      "sha256": "2ad58fcc40990505fc961320b3dea20ec8a54642a959320a9a128e3c019b300c",
+      "bytes": 49260
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.1-light-proof.png": {
+      "sha256": "190e35d70faa8582e89f14d5a3cf7bad3769078a6d73c6bfebf04dbb7933f781",
+      "bytes": 112393
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.1-light-statement-scope.png": {
+      "sha256": "a6c647f387dc567548e86b243135e235052d505233977845fcaa9fcee559da1b",
+      "bytes": 49438
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.5-dark-proof.png": {
+      "sha256": "6dd37be9d477a196695022cc025e830f241b9855281bba1e2a4a052e32807702",
+      "bytes": 167029
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.5-dark-statement-scope.png": {
+      "sha256": "1d59a473be6341ca83690713673d408d6b6af9c7e10fc45fb1b26d4e157e557b",
+      "bytes": 48773
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.5-light-proof.png": {
+      "sha256": "dd55f3a6080385d4bfdf77b3ddad34372493d6add66cf8a7132d423db31a90f1",
+      "bytes": 165393
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.5-light-statement-scope.png": {
+      "sha256": "61fe96dee6435cf3d8f0620738c58bd37b1d5e3569d51175d618a9a2403e96e6",
+      "bytes": 49113
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.6-dark-proof.png": {
+      "sha256": "950bb98a34e65d19089b5a71f2594461003176f5cb086cff433f75f149ec4b42",
+      "bytes": 135989
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.6-dark-statement-scope.png": {
+      "sha256": "295fa90ff2e947ebf0d699e8e3a9ed1322fb229951ccc499a032feedf004cfda",
+      "bytes": 61557
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.6-light-proof.png": {
+      "sha256": "17f09f329ae974b0087c701f8089df725591babd4f577651e0dc9d3a6ba3b7eb",
+      "bytes": 134646
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253/ml-4.6-light-statement-scope.png": {
+      "sha256": "9b62cabca92647af5272e024b8fb6ead3d64042c2585875188cd3a53deb4b8ea",
+      "bytes": 62637
+    },
+    "/tmp/atlas-new-ml-followup-peer/build.log": {
+      "sha256": "0906b2876575ff9063755b93e406ee0e5366bbcfadec8ea383dfe1984f938e55",
+      "text": "6684 items (+6890 planned) in 450 chapters, 85 collections \u2014 0 error(s), 0 warning(s)\nwrote data/index.json (2219 KB), data/home.json (112700 bytes gzip), data/planned.json (555 KB), data/col/*.json, data/atlas.css\n"
+    },
+    "/tmp/atlas-new-ml-followup-peer/static.log": {
+      "sha256": "5ac871afb1a4dacf56169e23353a28260ef1b79f721b917163b633201b76f0ce",
+      "text": "static check: 25 item(s)\n  0 error(s), 0 warning(s)\n"
+    },
+    "/tmp/atlas-new-ml-followup-peer/native.log": {
+      "sha256": "56f4be3203198a52ac037f38de19dad5439346c608c9c504b68aaefbe5cce06c",
+      "text": "{\n  \"states\": 16,\n  \"failures\": []\n}\n"
+    },
+    "/tmp/atlas-new-ml-followup-peer/text253.log": {
+      "sha256": "56f4be3203198a52ac037f38de19dad5439346c608c9c504b68aaefbe5cce06c",
+      "text": "{\n  \"states\": 16,\n  \"failures\": []\n}\n"
+    }
+  },
+  "native": {
+    "browser": "153.0.8010.12",
+    "rows": [
+      {
+        "num": "1.1a",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A learner that is willing to credit any event it experienced with causing an outcome has nothing to prefer among the many coincidences in its past, so it either needs a great deal of data or locks onto a spurious rule. A learner that comes equipped with a prior restriction on what may cause what (an inductive bias) can learn from very little data, but only as long as the world respects the restriction: the same restriction makes it unable to learn when the cause lies outside what it allows.The two classical illustrations are the rat that avoids a bait after a single bout of nausea, because it considers only what it ate as a possible cause of sickness, and Skinner's pigeons, fed at fixed intervals whatever they did, several of which developed a repeated ritual that they apparently believed brought the food.Holds when Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Learning from a sample is an inference from finitely many observed cases to the unseen ones, and a finite sample is consistent with many explanations. If every one of FFF cues may be the cause, then after nnn poisonings the cues that happened to be present every time are still all candidates: the true cause plus each other cue with probability 2\u2212n2^{-n}2\u2212n, so the number of impostors is binomial with F\u22121F-1F\u22121 trials and success probability p=2\u2212np=2^{-n}p=2\u2212n, and a learner choosing uniformly among the candidates is right with probability E[11+K]=1\u2212(1\u2212p)FFp\\mathbb E\\big[\\tfrac1{1+K}\\big]=\\dfrac{1-(1-p)^F}{Fp}E[1+K1\u200b]=Fp1\u2212(1\u2212p)F\u200b (about 1/(1+(F\u22121)p)1/(1+(F-1)p)1/(1+(F\u22121)p) when FFF is small). Restricting the candidates to the taste of the bait removes the competition at once. The price is exactly the price paid in the No-Free-Lunch theorem (ml-5.1): a restriction that does not match the world gives a learner that never succeeds. The pigeon is the other face of the coin: with no prior against \"my wing flap brings food\", credit given to whatever it was doing when food arrived feeds back into what it does next, and a ritual is born.For F\u22651F\\ge1F\u22651 and p>0p>0p>0, write 1/(k+1)=\u222b01tk\u2009dt1/(k+1)=\\int_0^1t^k\\,dt1/(k+1)=\u222b01\u200btkdt. The binomial theorem (comb 1.7) turns the finite weighted sum for the success probability into \u222b01(1\u2212p+pt)F\u22121\u2009dt\\int_0^1(1-p+pt)^{F-1}\\,dt\u222b01\u200b(1\u2212p+pt)F\u22121dt. The fundamental theorem (pma 6.21) evaluates this polynomial integral as [1\u2212(1\u2212p)F]/(Fp)[1-(1-p)^F]/(Fp)[1\u2212(1\u2212p)F]/(Fp). This derives the stated toy-model average rather than replacing the random number of competitors by its mean.The rat calculation assumes an idealized sampling model: the true cause is present at every poisoned meal, while each irrelevant cue is independently present with probability 1/21/21/2 at each meal, independently across cues as well. A particular irrelevant cue survives nnn meals exactly when the product of its nnn presence indicators is 111; the independent-product expectation rule (PROB 2.1.13) makes its survival probability 2\u2212n2^{-n}2\u2212n. Survival indicators for different cues are measurable functions of disjoint independent cue columns, so the independent-block argument (PROB 2.1.10) makes them independent. Their sum is therefore binomial, supplying the premise of the finite expectation calculation above. The code illustrates this ideal model with separate seeded draws per cue and meal; neither genuine independence of a deterministic generator nor a model fitted to animal cognition is claimed.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data."
+      },
+      {
+        "num": "2.1e",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The training instances are assumed to be independent and identically distributed: S\u223cDmS\\sim\\mathcal D^mS\u223cDm means that each xix_ixi\u200b is drawn from D\\mathcal DD independently of the others, and the test instance comes from the same D\\mathcal DD. Because SSS is random, so is the output hSh_ShS\u200b and its true error LD,f(hS)L_{\\mathcal D,f}(h_S)LD,f\u200b(hS\u200b), and one cannot demand that this error be small for every sample. One asks for accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1): the error LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5 should hold with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the draw of SSS. A sample for which it fails is called non-representative (\"misleading\"); the learner is probably (1\u2212\u03b41-\\delta1\u2212\u03b4) approximately (\u03b5\\varepsilon\u03b5) correct.Holds when The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to \u03b5\\varepsilon\u03b5), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case no learner can do well: that chance is \u03b4\\delta\u03b4. Independence of the examples and equality of the distributions is what makes the sample tell the truth about D\\mathcal DD: break it, and the histogram of errors shifts, as the drift switch shows.The notation Dm\\mathcal D^mDm uses the product-law theorem (PROB 2.1.11): for measurable instance sets AiA_iAi\u200b, independence gives P(xi\u2208Ai\u00a0for\u00a0every\u00a0i)=\u220fiD(Ai)\\mathbb P(x_i\\in A_i\\text{ for every }i)=\\prod_i\\mathcal D(A_i)P(xi\u200b\u2208Ai\u200b\u00a0for\u00a0every\u00a0i)=\u220fi\u200bD(Ai\u200b). This equals the product measure on generating rectangles, hence determines the joint sample law on the product sigma-field. For an abstract measurable instance space, use the same generating-rectangle uniqueness argument, rather than identifying instances with scalar real variables. Matching marginals alone would not determine this law: repeated copies of one random instance can have the correct marginals but dependent coordinates.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD."
+      },
+      {
+        "num": "2.3",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let H\\mathcal HH be a finite hypothesis class, \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), \u03b5>0\\varepsilon>0\u03b5>0, and let mmm satisfy m\u2005\u200a\u2265\u2005\u200alog\u2061(\u2223H\u2223/\u03b4)\u03b5.m\\;\\ge\\;\\frac{\\log(|\\mathcal H|/\\delta)}{\\varepsilon}.m\u2265\u03b5log(\u2223H\u2223/\u03b4)\u200b. Then for every labelling function fff and distribution D\\mathcal DD for which the realizability assumption holds (ml-2.1), with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of an i.i.d. sample SSS of size mmm labelled by fff, every ERM hypothesis hSh_ShS\u200b satisfies LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5.Holds when Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Let HB={h\u2208H:LD,f(h)>\u03b5}\\mathcal H_B=\\{h\\in\\mathcal H:L_{\\mathcal D,f}(h)>\\varepsilon\\}HB\u200b={h\u2208H:LD,f\u200b(h)>\u03b5} be the bad hypotheses. By realizability an ERM output has training error 000, so it is bad only if the sample is misleading: some h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b has LS(h)=0L_S(h)=0LS\u200b(h)=0. A fixed bad hhh survives one independent example with probability at most 1\u2212\u03b51-\\varepsilon1\u2212\u03b5, hence all mmm with probability at most (1\u2212\u03b5)m\u2264e\u2212\u03b5m(1-\\varepsilon)^m\\le e^{-\\varepsilon m}(1\u2212\u03b5)m\u2264e\u2212\u03b5m. The union bound (ml-2.2) over the events \"hhh survives\" for h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b gives Dm(misleading)\u2264\u2223HB\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m\\mathcal D^m(\\text{misleading})\\le|\\mathcal H_B|e^{-\\varepsilon m}\\le|\\mathcal H|e^{-\\varepsilon m}Dm(misleading)\u2264\u2223HB\u200b\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m, which is at most \u03b4\\delta\u03b4 exactly when m\u2265log\u2061(\u2223H\u2223/\u03b4)/\u03b5m\\ge\\log(|\\mathcal H|/\\delta)/\\varepsilonm\u2265log(\u2223H\u2223/\u03b4)/\u03b5.The exponential tail comparison follows from derivative-sign monotonicity (pma 5.11): g(x)=e\u2212x\u22121+xg(x)=e^{-x}-1+xg(x)=e\u2212x\u22121+x has g(0)=0g(0)=0g(0)=0 and g\u2032(x)=1\u2212e\u2212x\u22650g\\prime(x)=1-e^{-x}\\ge0g\u2032(x)=1\u2212e\u2212x\u22650 for x\u22650x\\ge0x\u22650. Hence 1\u2212x\u2264e\u2212x1-x\\le e^{-x}1\u2212x\u2264e\u2212x. For 0<\u03b5<10<\\varepsilon<10<\u03b5<1 both bases are nonnegative and taking the integer power mmm gives the bound used here; for \u03b5\u22651\\varepsilon\\ge1\u03b5\u22651 no hypothesis has risk strictly greater than \u03b5\\varepsilon\u03b5.Fix a measurable hhh before drawing the sample. Its correctness indicator for example iii is measurable with respect to the sigma-field of that sample coordinate. These coordinate sigma-fields are independent, so the independent-block proof of PROB 2.1.10 makes the indicators independent, also on an abstract measurable domain. The event of zero empirical error is their product being 111. PROB 2.1.13 therefore factors its probability into mmm identical factors, giving (1\u2212LD,f(h))m(1-L_{\\mathcal D,f}(h))^m(1\u2212LD,f\u200b(h))m. This probability step is distinct from the exponential comparison above. It is not applied directly to the sample-selected ERM hypothesis: the finite union over fixed hypotheses is what handles that selection.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one."
+      },
+      {
+        "num": "3.1",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A hypothesis class H\\mathcal HH is PAC learnable if there are a function mH:(0,1)2\u2192Nm_{\\mathcal H}:(0,1)^2\\to\\mathbb NmH\u200b:(0,1)2\u2192N and a learning algorithm AAA with the following property: for every accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), for every distribution D\\mathcal DD over X\\mathcal XX and every labelling function f:X\u2192{0,1}f:\\mathcal X\\to\\{0,1\\}f:X\u2192{0,1} for which the realizability assumption holds (fff agrees with some member of H\\mathcal HH D\\mathcal DD-almost surely), running AAA on m\u2265mH(\u03b5,\u03b4)m\\ge m_{\\mathcal H}(\\varepsilon,\\delta)m\u2265mH\u200b(\u03b5,\u03b4) i.i.d. examples labelled by fff returns a hypothesis hhh that, with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of the sample, satisfies LD,f(h)\u2264\u03b5L_{\\mathcal D,f}(h)\\le\\varepsilonLD,f\u200b(h)\u2264\u03b5. The smallest such function is the sample complexity of H\\mathcal HH. The number mHm_{\\mathcal H}mH\u200b may depend on \u03b5\\varepsilon\u03b5, \u03b4\\delta\u03b4 and H\\mathcal HH but not on D\\mathcal DD or fff.Holds when Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The definition is a guarantee in two parts. Accuracy \u03b5\\varepsilon\u03b5 says how close to perfect the output must be (an approximately correct predictor); confidence \u03b4\\delta\u03b4 says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: mHm_{\\mathcal H}mH\u200b is fixed first and must then work against an adversary who picks the worst D\\mathcal DD and fff afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with mH(\u03b5,\u03b4)=\u2308ln\u2061(4/\u03b4)/ln\u2061(1/(1\u2212\u03b5/4))\u2309\u22484ln\u2061(4/\u03b4)/\u03b5m_{\\mathcal H}(\\varepsilon,\\delta)=\\lceil\\ln(4/\\delta)/\\ln(1/(1-\\varepsilon/4))\\rceil\\approx4\\ln(4/\\delta)/\\varepsilonmH\u200b(\u03b5,\u03b4)=\u2308ln(4/\u03b4)/ln(1/(1\u2212\u03b5/4))\u2309\u22484ln(4/\u03b4)/\u03b5. For the strip argument put q=\u03b5/4q=\\varepsilon/4q=\u03b5/4 and restrict the measure to the target rectangle RRR. If D(R)\u2264q\\mathcal D(R)\\le qD(R)\u2264q, a missed side of mass greater than qqq is impossible. Otherwise fix, for each of the four oriented coordinates, the first cumulative-mass quantile reaching qqq, including its boundary atom in a witness strip. Its mass is at least qqq. Any strict missed-side strip of mass greater than qqq contains that fixed witness; the cutoff depends on RRR and the law, not on the sample. If total missed mass exceeds \u03b5\\varepsilon\u03b5, one of the four sides exceeds qqq, so every example misses its witness. If there are no positive examples, all witnesses are missed. Each such miss event has probability at most (1\u2212q)m(1-q)^m(1\u2212q)m, giving the four-event union bound. Coordinate atoms may increase a witness's mass and only improve its miss bound.Starting from the stated four-strip failure bound, put q=1\u2212\u03b5/4\u2208(0,1)q=1-\\varepsilon/4\\in(0,1)q=1\u2212\u03b5/4\u2208(0,1). The exponential and logarithm properties (pma 8.6) give qm=e\u2212mlog\u2061(1/q)q^m=e^{-m\\log(1/q)}qm=e\u2212mlog(1/q) with log\u2061(1/q)>0\\log(1/q)>0log(1/q)>0. Therefore 4qm\u2264\u03b44q^m\\le\\delta4qm\u2264\u03b4 is equivalent to m\u2265log\u2061(4/\u03b4)/log\u2061(1/q)m\\ge\\log(4/\\delta)/\\log(1/q)m\u2265log(4/\u03b4)/log(1/q), explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself.For each fixed witness strip in the atom-safe construction above, let JiJ_iJi\u200b indicate that example iii misses it. The strip is chosen from the law and target before sampling, so the JiJ_iJi\u200b are independent functions of independent example coordinates, each with mean 1\u2212pstrip1-p_{\\mathrm{strip}}1\u2212pstrip\u200b. The nonnegative independent-product identity (PROB 2.1.13) makes the probability of missing that witness on every draw equal to (1\u2212pstrip)m(1-p_{\\mathrm{strip}})^m(1\u2212pstrip\u200b)m. Since its mass is at least \u03b5/4\\varepsilon/4\u03b5/4, this is at most (1\u2212\u03b5/4)m(1-\\varepsilon/4)^m(1\u2212\u03b5/4)m. An atom can make its mass larger; no exact-mass or nonatomic assumption is introduced. This supplies witness survival, separately from the four-event union and logarithmic inversion.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1."
+      },
+      {
+        "num": "3.2b",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let D\\mathcal DD be a distribution over X\u00d7{0,1}\\mathcal X\\times\\{0,1\\}X\u00d7{0,1} and put \u03b7(x)=P[y=1\u2223x]\\eta(x)=\\mathbb P[y=1\\mid x]\u03b7(x)=P[y=1\u2223x]. Among all functions h:X\u2192{0,1}h:\\mathcal X\\to\\{0,1\\}h:X\u2192{0,1} (measurable), the Bayes predictor fD(x)={1if\u00a0\u03b7(x)\u226512,0otherwise,f_{\\mathcal D}(x)=\\begin{cases}1&\\text{if }\\eta(x)\\ge\\tfrac12,\\\\0&\\text{otherwise,}\\end{cases}fD\u200b(x)={10\u200bif\u00a0\u03b7(x)\u226521\u200b,otherwise,\u200b minimizes the true risk LDL_{\\mathcal D}LD\u200b: LD(fD)\u2264LD(g)L_{\\mathcal D}(f_{\\mathcal D})\\le L_{\\mathcal D}(g)LD\u200b(fD\u200b)\u2264LD\u200b(g) for every ggg. Its risk is E[min\u2061(\u03b7(x),1\u2212\u03b7(x))]\\mathbb E[\\min(\\eta(x),1-\\eta(x))]E[min(\u03b7(x),1\u2212\u03b7(x))], and for any ggg the excess is LD(g)\u2212LD(fD)=E[\u22232\u03b7(x)\u22121\u2223\u20091[g(x)\u2260fD(x)]]L_{\\mathcal D}(g)-L_{\\mathcal D}(f_{\\mathcal D})=\\mathbb E\\big[|2\\eta(x)-1|\\,\\mathbf 1[g(x)\\ne f_{\\mathcal D}(x)]\\big]LD\u200b(g)\u2212LD\u200b(fD\u200b)=E[\u22232\u03b7(x)\u22121\u22231[g(x)\ue020=fD\u200b(x)]].Holds when Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Condition on the instance. Given xxx, predicting 111 is wrong with probability 1\u2212\u03b7(x)1-\\eta(x)1\u2212\u03b7(x) and predicting 000 is wrong with probability \u03b7(x)\\eta(x)\u03b7(x), and the choice made at one point does not influence the error at another. So the risk \u222b(conditional\u00a0error\u00a0at\u00a0x)\u2009dDx\\int(\\text{conditional error at }x)\\,d\\mathcal D_x\u222b(conditional\u00a0error\u00a0at\u00a0x)dDx\u200b is minimized by choosing at every xxx the smaller conditional error, and choosing the other label at xxx costs exactly \u22232\u03b7(x)\u22121\u2223|2\\eta(x)-1|\u22232\u03b7(x)\u22121\u2223 extra. No learner can beat fDf_{\\mathcal D}fD\u200b, which depends on the unknown D\\mathcal DD; it is an unrestricted benchmark. Agnostic learning in ml-3.3 competes with the chosen class and need not approach the Bayes risk if that class is too restrictive.For every measurable binary predictor, its conditional error is pointwise at least min\u2061(\u03b7,1\u2212\u03b7)\\min(\\eta,1-\\eta)min(\u03b7,1\u2212\u03b7), and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in [0,1][0,1][0,1], so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class.Take a measurable chosen version \u03b7(X)=E[1{Y=1}\u2223\u03c3(X)]\\eta(X)=\\mathbb E[\\mathbf1_{\\{Y=1\\}}\\mid\\sigma(X)]\u03b7(X)=E[1{Y=1}\u200b\u2223\u03c3(X)] in the conditional-probability setting of the statement. For a fixed measurable binary predictor hhh, the bounded error indicator has conditional expectation \u03b7(X)1{h(X)=0}+(1\u2212\u03b7(X))1{h(X)=1}\\eta(X)\\mathbf1_{\\{h(X)=0\\}}+(1-\\eta(X))\\mathbf1_{\\{h(X)=1\\}}\u03b7(X)1{h(X)=0}\u200b+(1\u2212\u03b7(X))1{h(X)=1}\u200b. The tower identity (PROB 4.1.13) equates its unconditional expectation, the risk, to the expectation of this conditional error. The pointwise lower-envelope comparison and integral monotonicity above then prove Bayes optimality. Versions may differ on null sets; a zero-probability individual xxx does not define a unique conditional probability from data. Ties and all risks remain bounded.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes."
+      },
+      {
+        "num": "4.1",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Fix a domain ZZZ, a hypothesis class H\\mathcal HH, a loss \u2113:H\u00d7Z\u2192R+\\ell:\\mathcal H\\times Z\\to\\mathbb R_+\u2113:H\u00d7Z\u2192R+\u200b and a distribution D\\mathcal DD over ZZZ. A training set SSS is called \u03b5\\varepsilon\u03b5-representative (with respect to Z,H,\u2113,DZ,\\mathcal H,\\ell,\\mathcal DZ,H,\u2113,D) if the empirical risk of every hypothesis is within \u03b5\\varepsilon\u03b5 of its true risk: \u2200h\u2208H:\u2223LS(h)\u2212LD(h)\u2223\u2264\u03b5.\\begin{gathered}\\forall h\\in\\mathcal H:\\\\\\bigl|L_S(h)-L_{\\mathcal D}(h)\\bigr|\\le\\varepsilon .\\end{gathered}\u2200h\u2208H:\u200bLS\u200b(h)\u2212LD\u200b(h)\u200b\u2264\u03b5.\u200b The requirement is simultaneous, over the whole class, and holds for one fixed sample.Holds when Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "For a single fixed hhh the law of large numbers already says LS(h)\u2248LD(h)L_S(h)\\approx L_{\\mathcal D}(h)LS\u200b(h)\u2248LD\u200b(h). The trouble with ERM is that it looks at the minimum of LSL_SLS\u200b over a class, and the hypothesis at which the minimum occurs is chosen after seeing SSS, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve h\u21a6LS(h)h\\mapsto L_S(h)h\u21a6LS\u200b(h) lies in an \u03b5\\varepsilon\u03b5-tube around the true curve, no choice of hhh made from SSS can be fooled by more than \u03b5\\varepsilon\u03b5. Whether samples are representative with high probability is the subject of ml-4.3.The law-of-large-numbers remark is pointwise in the hypothesis: fix one measurable hhh with finite expected absolute loss before sampling. The losses on i.i.d. examples are then i.i.d. integrable real variables, so the finite-first-moment weak law (PROB 2.2.14) says their average converges in probability to LD(h)L_{\\mathcal D}(h)LD\u200b(h). Its proof uses truncation and tail control, not a required finite variance. This neither gives uniform convergence over all hhh, nor permits choosing hhh after seeing the sample, nor supplies a distribution-free finite-sample rate for arbitrary unbounded losses. Representativeness is the separate simultaneous condition.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7."
+      },
+      {
+        "num": "4.5",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let \u03b81,\u2026,\u03b8m\\theta_1,\\dots,\\theta_m\u03b81\u200b,\u2026,\u03b8m\u200b be i.i.d. random variables with E[\u03b8i]=\u03bc\\mathbb E[\\theta_i]=\\muE[\u03b8i\u200b]=\u03bc and P[a\u2264\u03b8i\u2264b]=1\\mathbb P[a\\le\\theta_i\\le b]=1P[a\u2264\u03b8i\u200b\u2264b]=1 with a<ba<ba<b. Then for every \u03b5>0\\varepsilon>0\u03b5>0 P[\u22231m\u2211i=1m\u03b8i\u2212\u03bc\u2223>\u03b5]\u2005\u200a\u2264\u2005\u200a2exp\u2061\u2009\u2063(\u22122m\u03b52(b\u2212a)2).\\begin{gathered}\\mathbb P\\Big[\\Big|\\frac1m\\sum_{i=1}^m\\theta_i-\\mu\\Big|>\\varepsilon\\Big]\\\\\\;\\le\\;2\\exp\\!\\Big(-\\frac{2m\\varepsilon^2}{(b-a)^2}\\Big).\\end{gathered}P[\u200bm1\u200bi=1\u2211m\u200b\u03b8i\u200b\u2212\u03bc\u200b>\u03b5]\u22642exp(\u2212(b\u2212a)22m\u03b52\u200b).\u200b If a=ba=ba=b, every variable equals that constant almost surely, so the displayed deviation event has probability zero for every \u03b5>0\\varepsilon>0\u03b5>0; no division by a zero range is needed.Holds when Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Bound the moment generating function of a bounded, centred variable: for E\u03b8=0\\mathbb E\\theta=0E\u03b8=0 and \u03b8\u2208[a,b]\\theta\\in[a,b]\u03b8\u2208[a,b] one has Ees\u03b8\u2264es2(b\u2212a)2/8\\mathbb E e^{s\\theta}\\le e^{s^2(b-a)^2/8}Ees\u03b8\u2264es2(b\u2212a)2/8 (Hoeffding's lemma, by convexity of es\u03b8e^{s\\theta}es\u03b8 on the interval). Independence multiplies the mmm factors, and Markov's inequality applied to es\u2211\u03b8ie^{s\\sum\\theta_i}es\u2211\u03b8i\u200b with the best sss gives a one-sided tail e\u22122m\u03b52/(b\u2212a)2e^{-2m\\varepsilon^2/(b-a)^2}e\u22122m\u03b52/(b\u2212a)2; the two sides add up to the factor 222. The bound depends on the range b\u2212ab-ab\u2212a only, never on the variance, which is why it is loose for rare events (compare ml-33.6).After centering, let A\u22640\u2264BA\\le0\\le BA\u22640\u2264B bound the variable with A<BA<BA<B. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm \u03c8(s)\\psi(s)\u03c8(s) of this bound has \u03c8(0)=\u03c8\u2032(0)=0\\psi(0)=\\psi\\prime(0)=0\u03c8(0)=\u03c8\u2032(0)=0 and \u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4\\psi\\prime\\prime(s)\\le(B-A)^2/4\u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives \u03c8(s)\u2264s2(B\u2212A)2/8\\psi(s)\\le s^2(B-A)^2/8\u03c8(s)\u2264s2(B\u2212A)2/8. This is the quadratic estimate used before the Markov step; a constant variable is handled separately.Let Xi=\u03b8i\u2212\u03bcX_i=\\theta_i-\\muXi\u200b=\u03b8i\u200b\u2212\u03bc and r=b\u2212a>0r=b-a>0r=b\u2212a>0. For a positive parameter sss, the variables esXie^{sX_i}esXi\u200b are positive, independent and bounded, so PROB 2.1.13 factors the expectation of their product. The preceding log-MGF estimate bounds it by ems2r2/8e^{ms^2r^2/8}ems2r2/8. Apply the nonnegative Markov inequality (PROB 1.6.4) to the product with threshold esm\u03b5e^{sm\\varepsilon}esm\u03b5: the upper-tail probability is at most e\u2212sm\u03b5+ms2r2/8e^{-sm\\varepsilon+ms^2r^2/8}e\u2212sm\u03b5+ms2r2/8. Choosing s=4\u03b5/r2s=4\\varepsilon/r^2s=4\u03b5/r2 gives e\u22122m\u03b52/r2e^{-2m\\varepsilon^2/r^2}e\u22122m\u03b52/r2. Apply the same argument to \u2212Xi-X_i\u2212Xi\u200b with a positive parameter for the other tail and add the two bounds. The accepted constant-range case remains separate; the Taylor/log-MGF step alone does not supply either product factorization or Markov.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis."
+      },
+      {
+        "num": "4.6",
+        "theme": "light",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let H\\mathcal HH be a finite hypothesis class, ZZZ a domain and \u2113:H\u00d7Z\u2192[0,1]\\ell:\\mathcal H\\times Z\\to[0,1]\u2113:H\u00d7Z\u2192[0,1] a loss. Then H\\mathcal HH has the uniform convergence property with mHUC(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200a\u2308ln\u2061(2\u2223H\u2223/\u03b4)2\u03b52\u2309,m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon,\\delta)\\;\\le\\;\\Big\\lceil\\frac{\\ln(2|\\mathcal H|/\\delta)}{2\\varepsilon^2}\\Big\\rceil ,mHUC\u200b(\u03b5,\u03b4)\u2264\u23082\u03b52ln(2\u2223H\u2223/\u03b4)\u200b\u2309, and is therefore agnostic PAC learnable by ERMH_{\\mathcal H}H\u200b with mH(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200amHUC(\u03b5/2,\u03b4)\u2005\u200a\u2264\u2005\u200a\u23082ln\u2061(2\u2223H\u2223/\u03b4)\u03b52\u2309.\\begin{gathered}m_{\\mathcal H}(\\varepsilon,\\delta)\\\\\\;\\le\\;m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon/2,\\delta)\\\\\\;\\le\\;\\Big\\lceil\\frac{2\\ln(2|\\mathcal H|/\\delta)}{\\varepsilon^2}\\Big\\rceil .\\end{gathered}mH\u200b(\u03b5,\u03b4)\u2264mHUC\u200b(\u03b5/2,\u03b4)\u2264\u2308\u03b522ln(2\u2223H\u2223/\u03b4)\u200b\u2309.\u200bHolds when Bounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Fix hhh. The losses \u2113(h,zi)\\ell(h,z_i)\u2113(h,zi\u200b) are i.i.d. with values in [0,1][0,1][0,1] and mean LD(h)L_{\\mathcal D}(h)LD\u200b(h), so Hoeffding (ml-4.5, b\u2212a=1b-a=1b\u2212a=1) gives P[\u2223LS(h)\u2212LD(h)\u2223>\u03b5]\u22642e\u22122m\u03b52\\mathbb P[|L_S(h)-L_{\\mathcal D}(h)|>\\varepsilon]\\le2e^{-2m\\varepsilon^2}P[\u2223LS\u200b(h)\u2212LD\u200b(h)\u2223>\u03b5]\u22642e\u22122m\u03b52. The union bound (ml-2.2) over the \u2223H\u2223|\\mathcal H|\u2223H\u2223 hypotheses multiplies this by \u2223H\u2223|\\mathcal H|\u2223H\u2223; making the result at most \u03b4\\delta\u03b4 gives the sample size. The class size enters only through ln\u2061\u2223H\u2223\\ln|\\mathcal H|ln\u2223H\u2223, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.For a nonempty finite class, the union estimate is 2\u2223H\u2223e\u22122m\u03b522|\\mathcal H|e^{-2m\\varepsilon^2}2\u2223H\u2223e\u22122m\u03b52. Positivity and monotonicity of the exponential, and its inverse logarithm (pma 8.6), make the requirement that this is at most \u03b4\\delta\u03b4 equivalent to 2m\u03b52\u2265log\u2061(2\u2223H\u2223/\u03b4)2m\\varepsilon^2\\ge\\log(2|\\mathcal H|/\\delta)2m\u03b52\u2265log(2\u2223H\u2223/\u03b4). Replacing representativeness accuracy by half the desired excess risk then gives the second displayed sample bound.Before applying Hoeffding, keep hhh fixed and require its loss as a function of the example to be measurable. Each loss is measurable with respect to its own example-coordinate sigma-field, and those sigma-fields are independent. The proof of PROB 2.1.10 therefore transfers independence to the losses, even for an abstract measurable example domain ZZZ; identical example laws give the same loss law and mean. This establishes the i.i.d. premise used for each fixed hypothesis. It does not treat the selected minimizer as independent of the sample: the finite union over fixed hhh supplies the uniform statement, and the logarithm calculation above only inverts its bound.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Bounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound."
+      },
+      {
+        "num": "1.1a",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A learner that is willing to credit any event it experienced with causing an outcome has nothing to prefer among the many coincidences in its past, so it either needs a great deal of data or locks onto a spurious rule. A learner that comes equipped with a prior restriction on what may cause what (an inductive bias) can learn from very little data, but only as long as the world respects the restriction: the same restriction makes it unable to learn when the cause lies outside what it allows.The two classical illustrations are the rat that avoids a bait after a single bout of nausea, because it considers only what it ate as a possible cause of sickness, and Skinner's pigeons, fed at fixed intervals whatever they did, several of which developed a repeated ritual that they apparently believed brought the food.Holds when Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Learning from a sample is an inference from finitely many observed cases to the unseen ones, and a finite sample is consistent with many explanations. If every one of FFF cues may be the cause, then after nnn poisonings the cues that happened to be present every time are still all candidates: the true cause plus each other cue with probability 2\u2212n2^{-n}2\u2212n, so the number of impostors is binomial with F\u22121F-1F\u22121 trials and success probability p=2\u2212np=2^{-n}p=2\u2212n, and a learner choosing uniformly among the candidates is right with probability E[11+K]=1\u2212(1\u2212p)FFp\\mathbb E\\big[\\tfrac1{1+K}\\big]=\\dfrac{1-(1-p)^F}{Fp}E[1+K1\u200b]=Fp1\u2212(1\u2212p)F\u200b (about 1/(1+(F\u22121)p)1/(1+(F-1)p)1/(1+(F\u22121)p) when FFF is small). Restricting the candidates to the taste of the bait removes the competition at once. The price is exactly the price paid in the No-Free-Lunch theorem (ml-5.1): a restriction that does not match the world gives a learner that never succeeds. The pigeon is the other face of the coin: with no prior against \"my wing flap brings food\", credit given to whatever it was doing when food arrived feeds back into what it does next, and a ritual is born.For F\u22651F\\ge1F\u22651 and p>0p>0p>0, write 1/(k+1)=\u222b01tk\u2009dt1/(k+1)=\\int_0^1t^k\\,dt1/(k+1)=\u222b01\u200btkdt. The binomial theorem (comb 1.7) turns the finite weighted sum for the success probability into \u222b01(1\u2212p+pt)F\u22121\u2009dt\\int_0^1(1-p+pt)^{F-1}\\,dt\u222b01\u200b(1\u2212p+pt)F\u22121dt. The fundamental theorem (pma 6.21) evaluates this polynomial integral as [1\u2212(1\u2212p)F]/(Fp)[1-(1-p)^F]/(Fp)[1\u2212(1\u2212p)F]/(Fp). This derives the stated toy-model average rather than replacing the random number of competitors by its mean.The rat calculation assumes an idealized sampling model: the true cause is present at every poisoned meal, while each irrelevant cue is independently present with probability 1/21/21/2 at each meal, independently across cues as well. A particular irrelevant cue survives nnn meals exactly when the product of its nnn presence indicators is 111; the independent-product expectation rule (PROB 2.1.13) makes its survival probability 2\u2212n2^{-n}2\u2212n. Survival indicators for different cues are measurable functions of disjoint independent cue columns, so the independent-block argument (PROB 2.1.10) makes them independent. Their sum is therefore binomial, supplying the premise of the finite expectation calculation above. The code illustrates this ideal model with separate seeded draws per cue and meal; neither genuine independence of a deterministic generator nor a model fitted to animal cognition is claimed.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data."
+      },
+      {
+        "num": "2.1e",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "The training instances are assumed to be independent and identically distributed: S\u223cDmS\\sim\\mathcal D^mS\u223cDm means that each xix_ixi\u200b is drawn from D\\mathcal DD independently of the others, and the test instance comes from the same D\\mathcal DD. Because SSS is random, so is the output hSh_ShS\u200b and its true error LD,f(hS)L_{\\mathcal D,f}(h_S)LD,f\u200b(hS\u200b), and one cannot demand that this error be small for every sample. One asks for accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1): the error LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5 should hold with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the draw of SSS. A sample for which it fails is called non-representative (\"misleading\"); the learner is probably (1\u2212\u03b41-\\delta1\u2212\u03b4) approximately (\u03b5\\varepsilon\u03b5) correct.Holds when The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to \u03b5\\varepsilon\u03b5), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case no learner can do well: that chance is \u03b4\\delta\u03b4. Independence of the examples and equality of the distributions is what makes the sample tell the truth about D\\mathcal DD: break it, and the histogram of errors shifts, as the drift switch shows.The notation Dm\\mathcal D^mDm uses the product-law theorem (PROB 2.1.11): for measurable instance sets AiA_iAi\u200b, independence gives P(xi\u2208Ai\u00a0for\u00a0every\u00a0i)=\u220fiD(Ai)\\mathbb P(x_i\\in A_i\\text{ for every }i)=\\prod_i\\mathcal D(A_i)P(xi\u200b\u2208Ai\u200b\u00a0for\u00a0every\u00a0i)=\u220fi\u200bD(Ai\u200b). This equals the product measure on generating rectangles, hence determines the joint sample law on the product sigma-field. For an abstract measurable instance space, use the same generating-rectangle uniqueness argument, rather than identifying instances with scalar real variables. Matching marginals alone would not determine this law: repeated copies of one random instance can have the correct marginals but dependent coordinates.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD."
+      },
+      {
+        "num": "2.3",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let H\\mathcal HH be a finite hypothesis class, \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), \u03b5>0\\varepsilon>0\u03b5>0, and let mmm satisfy m\u2005\u200a\u2265\u2005\u200alog\u2061(\u2223H\u2223/\u03b4)\u03b5.m\\;\\ge\\;\\frac{\\log(|\\mathcal H|/\\delta)}{\\varepsilon}.m\u2265\u03b5log(\u2223H\u2223/\u03b4)\u200b. Then for every labelling function fff and distribution D\\mathcal DD for which the realizability assumption holds (ml-2.1), with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of an i.i.d. sample SSS of size mmm labelled by fff, every ERM hypothesis hSh_ShS\u200b satisfies LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5.Holds when Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Let HB={h\u2208H:LD,f(h)>\u03b5}\\mathcal H_B=\\{h\\in\\mathcal H:L_{\\mathcal D,f}(h)>\\varepsilon\\}HB\u200b={h\u2208H:LD,f\u200b(h)>\u03b5} be the bad hypotheses. By realizability an ERM output has training error 000, so it is bad only if the sample is misleading: some h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b has LS(h)=0L_S(h)=0LS\u200b(h)=0. A fixed bad hhh survives one independent example with probability at most 1\u2212\u03b51-\\varepsilon1\u2212\u03b5, hence all mmm with probability at most (1\u2212\u03b5)m\u2264e\u2212\u03b5m(1-\\varepsilon)^m\\le e^{-\\varepsilon m}(1\u2212\u03b5)m\u2264e\u2212\u03b5m. The union bound (ml-2.2) over the events \"hhh survives\" for h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b gives Dm(misleading)\u2264\u2223HB\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m\\mathcal D^m(\\text{misleading})\\le|\\mathcal H_B|e^{-\\varepsilon m}\\le|\\mathcal H|e^{-\\varepsilon m}Dm(misleading)\u2264\u2223HB\u200b\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m, which is at most \u03b4\\delta\u03b4 exactly when m\u2265log\u2061(\u2223H\u2223/\u03b4)/\u03b5m\\ge\\log(|\\mathcal H|/\\delta)/\\varepsilonm\u2265log(\u2223H\u2223/\u03b4)/\u03b5.The exponential tail comparison follows from derivative-sign monotonicity (pma 5.11): g(x)=e\u2212x\u22121+xg(x)=e^{-x}-1+xg(x)=e\u2212x\u22121+x has g(0)=0g(0)=0g(0)=0 and g\u2032(x)=1\u2212e\u2212x\u22650g\\prime(x)=1-e^{-x}\\ge0g\u2032(x)=1\u2212e\u2212x\u22650 for x\u22650x\\ge0x\u22650. Hence 1\u2212x\u2264e\u2212x1-x\\le e^{-x}1\u2212x\u2264e\u2212x. For 0<\u03b5<10<\\varepsilon<10<\u03b5<1 both bases are nonnegative and taking the integer power mmm gives the bound used here; for \u03b5\u22651\\varepsilon\\ge1\u03b5\u22651 no hypothesis has risk strictly greater than \u03b5\\varepsilon\u03b5.Fix a measurable hhh before drawing the sample. Its correctness indicator for example iii is measurable with respect to the sigma-field of that sample coordinate. These coordinate sigma-fields are independent, so the independent-block proof of PROB 2.1.10 makes the indicators independent, also on an abstract measurable domain. The event of zero empirical error is their product being 111. PROB 2.1.13 therefore factors its probability into mmm identical factors, giving (1\u2212LD,f(h))m(1-L_{\\mathcal D,f}(h))^m(1\u2212LD,f\u200b(h))m. This probability step is distinct from the exponential comparison above. It is not applied directly to the sample-selected ERM hypothesis: the finite union over fixed hypotheses is what handles that selection.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one."
+      },
+      {
+        "num": "3.1",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "A hypothesis class H\\mathcal HH is PAC learnable if there are a function mH:(0,1)2\u2192Nm_{\\mathcal H}:(0,1)^2\\to\\mathbb NmH\u200b:(0,1)2\u2192N and a learning algorithm AAA with the following property: for every accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), for every distribution D\\mathcal DD over X\\mathcal XX and every labelling function f:X\u2192{0,1}f:\\mathcal X\\to\\{0,1\\}f:X\u2192{0,1} for which the realizability assumption holds (fff agrees with some member of H\\mathcal HH D\\mathcal DD-almost surely), running AAA on m\u2265mH(\u03b5,\u03b4)m\\ge m_{\\mathcal H}(\\varepsilon,\\delta)m\u2265mH\u200b(\u03b5,\u03b4) i.i.d. examples labelled by fff returns a hypothesis hhh that, with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of the sample, satisfies LD,f(h)\u2264\u03b5L_{\\mathcal D,f}(h)\\le\\varepsilonLD,f\u200b(h)\u2264\u03b5. The smallest such function is the sample complexity of H\\mathcal HH. The number mHm_{\\mathcal H}mH\u200b may depend on \u03b5\\varepsilon\u03b5, \u03b4\\delta\u03b4 and H\\mathcal HH but not on D\\mathcal DD or fff.Holds when Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "The definition is a guarantee in two parts. Accuracy \u03b5\\varepsilon\u03b5 says how close to perfect the output must be (an approximately correct predictor); confidence \u03b4\\delta\u03b4 says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: mHm_{\\mathcal H}mH\u200b is fixed first and must then work against an adversary who picks the worst D\\mathcal DD and fff afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with mH(\u03b5,\u03b4)=\u2308ln\u2061(4/\u03b4)/ln\u2061(1/(1\u2212\u03b5/4))\u2309\u22484ln\u2061(4/\u03b4)/\u03b5m_{\\mathcal H}(\\varepsilon,\\delta)=\\lceil\\ln(4/\\delta)/\\ln(1/(1-\\varepsilon/4))\\rceil\\approx4\\ln(4/\\delta)/\\varepsilonmH\u200b(\u03b5,\u03b4)=\u2308ln(4/\u03b4)/ln(1/(1\u2212\u03b5/4))\u2309\u22484ln(4/\u03b4)/\u03b5. For the strip argument put q=\u03b5/4q=\\varepsilon/4q=\u03b5/4 and restrict the measure to the target rectangle RRR. If D(R)\u2264q\\mathcal D(R)\\le qD(R)\u2264q, a missed side of mass greater than qqq is impossible. Otherwise fix, for each of the four oriented coordinates, the first cumulative-mass quantile reaching qqq, including its boundary atom in a witness strip. Its mass is at least qqq. Any strict missed-side strip of mass greater than qqq contains that fixed witness; the cutoff depends on RRR and the law, not on the sample. If total missed mass exceeds \u03b5\\varepsilon\u03b5, one of the four sides exceeds qqq, so every example misses its witness. If there are no positive examples, all witnesses are missed. Each such miss event has probability at most (1\u2212q)m(1-q)^m(1\u2212q)m, giving the four-event union bound. Coordinate atoms may increase a witness's mass and only improve its miss bound.Starting from the stated four-strip failure bound, put q=1\u2212\u03b5/4\u2208(0,1)q=1-\\varepsilon/4\\in(0,1)q=1\u2212\u03b5/4\u2208(0,1). The exponential and logarithm properties (pma 8.6) give qm=e\u2212mlog\u2061(1/q)q^m=e^{-m\\log(1/q)}qm=e\u2212mlog(1/q) with log\u2061(1/q)>0\\log(1/q)>0log(1/q)>0. Therefore 4qm\u2264\u03b44q^m\\le\\delta4qm\u2264\u03b4 is equivalent to m\u2265log\u2061(4/\u03b4)/log\u2061(1/q)m\\ge\\log(4/\\delta)/\\log(1/q)m\u2265log(4/\u03b4)/log(1/q), explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself.For each fixed witness strip in the atom-safe construction above, let JiJ_iJi\u200b indicate that example iii misses it. The strip is chosen from the law and target before sampling, so the JiJ_iJi\u200b are independent functions of independent example coordinates, each with mean 1\u2212pstrip1-p_{\\mathrm{strip}}1\u2212pstrip\u200b. The nonnegative independent-product identity (PROB 2.1.13) makes the probability of missing that witness on every draw equal to (1\u2212pstrip)m(1-p_{\\mathrm{strip}})^m(1\u2212pstrip\u200b)m. Since its mass is at least \u03b5/4\\varepsilon/4\u03b5/4, this is at most (1\u2212\u03b5/4)m(1-\\varepsilon/4)^m(1\u2212\u03b5/4)m. An atom can make its mass larger; no exact-mass or nonatomic assumption is introduced. This supplies witness survival, separately from the four-event union and logarithmic inversion.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1."
+      },
+      {
+        "num": "3.2b",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let D\\mathcal DD be a distribution over X\u00d7{0,1}\\mathcal X\\times\\{0,1\\}X\u00d7{0,1} and put \u03b7(x)=P[y=1\u2223x]\\eta(x)=\\mathbb P[y=1\\mid x]\u03b7(x)=P[y=1\u2223x]. Among all functions h:X\u2192{0,1}h:\\mathcal X\\to\\{0,1\\}h:X\u2192{0,1} (measurable), the Bayes predictor fD(x)={1if\u00a0\u03b7(x)\u226512,0otherwise,f_{\\mathcal D}(x)=\\begin{cases}1&\\text{if }\\eta(x)\\ge\\tfrac12,\\\\0&\\text{otherwise,}\\end{cases}fD\u200b(x)={10\u200bif\u00a0\u03b7(x)\u226521\u200b,otherwise,\u200b minimizes the true risk LDL_{\\mathcal D}LD\u200b: LD(fD)\u2264LD(g)L_{\\mathcal D}(f_{\\mathcal D})\\le L_{\\mathcal D}(g)LD\u200b(fD\u200b)\u2264LD\u200b(g) for every ggg. Its risk is E[min\u2061(\u03b7(x),1\u2212\u03b7(x))]\\mathbb E[\\min(\\eta(x),1-\\eta(x))]E[min(\u03b7(x),1\u2212\u03b7(x))], and for any ggg the excess is LD(g)\u2212LD(fD)=E[\u22232\u03b7(x)\u22121\u2223\u20091[g(x)\u2260fD(x)]]L_{\\mathcal D}(g)-L_{\\mathcal D}(f_{\\mathcal D})=\\mathbb E\\big[|2\\eta(x)-1|\\,\\mathbf 1[g(x)\\ne f_{\\mathcal D}(x)]\\big]LD\u200b(g)\u2212LD\u200b(fD\u200b)=E[\u22232\u03b7(x)\u22121\u22231[g(x)\ue020=fD\u200b(x)]].Holds when Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Condition on the instance. Given xxx, predicting 111 is wrong with probability 1\u2212\u03b7(x)1-\\eta(x)1\u2212\u03b7(x) and predicting 000 is wrong with probability \u03b7(x)\\eta(x)\u03b7(x), and the choice made at one point does not influence the error at another. So the risk \u222b(conditional\u00a0error\u00a0at\u00a0x)\u2009dDx\\int(\\text{conditional error at }x)\\,d\\mathcal D_x\u222b(conditional\u00a0error\u00a0at\u00a0x)dDx\u200b is minimized by choosing at every xxx the smaller conditional error, and choosing the other label at xxx costs exactly \u22232\u03b7(x)\u22121\u2223|2\\eta(x)-1|\u22232\u03b7(x)\u22121\u2223 extra. No learner can beat fDf_{\\mathcal D}fD\u200b, which depends on the unknown D\\mathcal DD; it is an unrestricted benchmark. Agnostic learning in ml-3.3 competes with the chosen class and need not approach the Bayes risk if that class is too restrictive.For every measurable binary predictor, its conditional error is pointwise at least min\u2061(\u03b7,1\u2212\u03b7)\\min(\\eta,1-\\eta)min(\u03b7,1\u2212\u03b7), and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in [0,1][0,1][0,1], so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class.Take a measurable chosen version \u03b7(X)=E[1{Y=1}\u2223\u03c3(X)]\\eta(X)=\\mathbb E[\\mathbf1_{\\{Y=1\\}}\\mid\\sigma(X)]\u03b7(X)=E[1{Y=1}\u200b\u2223\u03c3(X)] in the conditional-probability setting of the statement. For a fixed measurable binary predictor hhh, the bounded error indicator has conditional expectation \u03b7(X)1{h(X)=0}+(1\u2212\u03b7(X))1{h(X)=1}\\eta(X)\\mathbf1_{\\{h(X)=0\\}}+(1-\\eta(X))\\mathbf1_{\\{h(X)=1\\}}\u03b7(X)1{h(X)=0}\u200b+(1\u2212\u03b7(X))1{h(X)=1}\u200b. The tower identity (PROB 4.1.13) equates its unconditional expectation, the risk, to the expectation of this conditional error. The pointwise lower-envelope comparison and integral monotonicity above then prove Bayes optimality. Versions may differ on null sets; a zero-probability individual xxx does not define a unique conditional probability from data. Ties and all risks remain bounded.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes."
+      },
+      {
+        "num": "4.1",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Fix a domain ZZZ, a hypothesis class H\\mathcal HH, a loss \u2113:H\u00d7Z\u2192R+\\ell:\\mathcal H\\times Z\\to\\mathbb R_+\u2113:H\u00d7Z\u2192R+\u200b and a distribution D\\mathcal DD over ZZZ. A training set SSS is called \u03b5\\varepsilon\u03b5-representative (with respect to Z,H,\u2113,DZ,\\mathcal H,\\ell,\\mathcal DZ,H,\u2113,D) if the empirical risk of every hypothesis is within \u03b5\\varepsilon\u03b5 of its true risk: \u2200h\u2208H:\u2223LS(h)\u2212LD(h)\u2223\u2264\u03b5.\\begin{gathered}\\forall h\\in\\mathcal H:\\\\\\bigl|L_S(h)-L_{\\mathcal D}(h)\\bigr|\\le\\varepsilon .\\end{gathered}\u2200h\u2208H:\u200bLS\u200b(h)\u2212LD\u200b(h)\u200b\u2264\u03b5.\u200b The requirement is simultaneous, over the whole class, and holds for one fixed sample.Holds when Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "For a single fixed hhh the law of large numbers already says LS(h)\u2248LD(h)L_S(h)\\approx L_{\\mathcal D}(h)LS\u200b(h)\u2248LD\u200b(h). The trouble with ERM is that it looks at the minimum of LSL_SLS\u200b over a class, and the hypothesis at which the minimum occurs is chosen after seeing SSS, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve h\u21a6LS(h)h\\mapsto L_S(h)h\u21a6LS\u200b(h) lies in an \u03b5\\varepsilon\u03b5-tube around the true curve, no choice of hhh made from SSS can be fooled by more than \u03b5\\varepsilon\u03b5. Whether samples are representative with high probability is the subject of ml-4.3.The law-of-large-numbers remark is pointwise in the hypothesis: fix one measurable hhh with finite expected absolute loss before sampling. The losses on i.i.d. examples are then i.i.d. integrable real variables, so the finite-first-moment weak law (PROB 2.2.14) says their average converges in probability to LD(h)L_{\\mathcal D}(h)LD\u200b(h). Its proof uses truncation and tail control, not a required finite variance. This neither gives uniform convergence over all hhh, nor permits choosing hhh after seeing the sample, nor supplies a distribution-free finite-sample rate for arbitrary unbounded losses. Representativeness is the separate simultaneous condition.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7."
+      },
+      {
+        "num": "4.5",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let \u03b81,\u2026,\u03b8m\\theta_1,\\dots,\\theta_m\u03b81\u200b,\u2026,\u03b8m\u200b be i.i.d. random variables with E[\u03b8i]=\u03bc\\mathbb E[\\theta_i]=\\muE[\u03b8i\u200b]=\u03bc and P[a\u2264\u03b8i\u2264b]=1\\mathbb P[a\\le\\theta_i\\le b]=1P[a\u2264\u03b8i\u200b\u2264b]=1 with a<ba<ba<b. Then for every \u03b5>0\\varepsilon>0\u03b5>0 P[\u22231m\u2211i=1m\u03b8i\u2212\u03bc\u2223>\u03b5]\u2005\u200a\u2264\u2005\u200a2exp\u2061\u2009\u2063(\u22122m\u03b52(b\u2212a)2).\\begin{gathered}\\mathbb P\\Big[\\Big|\\frac1m\\sum_{i=1}^m\\theta_i-\\mu\\Big|>\\varepsilon\\Big]\\\\\\;\\le\\;2\\exp\\!\\Big(-\\frac{2m\\varepsilon^2}{(b-a)^2}\\Big).\\end{gathered}P[\u200bm1\u200bi=1\u2211m\u200b\u03b8i\u200b\u2212\u03bc\u200b>\u03b5]\u22642exp(\u2212(b\u2212a)22m\u03b52\u200b).\u200b If a=ba=ba=b, every variable equals that constant almost surely, so the displayed deviation event has probability zero for every \u03b5>0\\varepsilon>0\u03b5>0; no division by a zero range is needed.Holds when Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Bound the moment generating function of a bounded, centred variable: for E\u03b8=0\\mathbb E\\theta=0E\u03b8=0 and \u03b8\u2208[a,b]\\theta\\in[a,b]\u03b8\u2208[a,b] one has Ees\u03b8\u2264es2(b\u2212a)2/8\\mathbb E e^{s\\theta}\\le e^{s^2(b-a)^2/8}Ees\u03b8\u2264es2(b\u2212a)2/8 (Hoeffding's lemma, by convexity of es\u03b8e^{s\\theta}es\u03b8 on the interval). Independence multiplies the mmm factors, and Markov's inequality applied to es\u2211\u03b8ie^{s\\sum\\theta_i}es\u2211\u03b8i\u200b with the best sss gives a one-sided tail e\u22122m\u03b52/(b\u2212a)2e^{-2m\\varepsilon^2/(b-a)^2}e\u22122m\u03b52/(b\u2212a)2; the two sides add up to the factor 222. The bound depends on the range b\u2212ab-ab\u2212a only, never on the variance, which is why it is loose for rare events (compare ml-33.6).After centering, let A\u22640\u2264BA\\le0\\le BA\u22640\u2264B bound the variable with A<BA<BA<B. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm \u03c8(s)\\psi(s)\u03c8(s) of this bound has \u03c8(0)=\u03c8\u2032(0)=0\\psi(0)=\\psi\\prime(0)=0\u03c8(0)=\u03c8\u2032(0)=0 and \u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4\\psi\\prime\\prime(s)\\le(B-A)^2/4\u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives \u03c8(s)\u2264s2(B\u2212A)2/8\\psi(s)\\le s^2(B-A)^2/8\u03c8(s)\u2264s2(B\u2212A)2/8. This is the quadratic estimate used before the Markov step; a constant variable is handled separately.Let Xi=\u03b8i\u2212\u03bcX_i=\\theta_i-\\muXi\u200b=\u03b8i\u200b\u2212\u03bc and r=b\u2212a>0r=b-a>0r=b\u2212a>0. For a positive parameter sss, the variables esXie^{sX_i}esXi\u200b are positive, independent and bounded, so PROB 2.1.13 factors the expectation of their product. The preceding log-MGF estimate bounds it by ems2r2/8e^{ms^2r^2/8}ems2r2/8. Apply the nonnegative Markov inequality (PROB 1.6.4) to the product with threshold esm\u03b5e^{sm\\varepsilon}esm\u03b5: the upper-tail probability is at most e\u2212sm\u03b5+ms2r2/8e^{-sm\\varepsilon+ms^2r^2/8}e\u2212sm\u03b5+ms2r2/8. Choosing s=4\u03b5/r2s=4\\varepsilon/r^2s=4\u03b5/r2 gives e\u22122m\u03b52/r2e^{-2m\\varepsilon^2/r^2}e\u22122m\u03b52/r2. Apply the same argument to \u2212Xi-X_i\u2212Xi\u200b with a positive parameter for the other tail and add the two bounds. The accepted constant-range case remains separate; the Taylor/log-MGF step alone does not supply either product factorization or Markov.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis."
+      },
+      {
+        "num": "4.6",
+        "theme": "dark",
+        "text": [
+          {
+            "selector": ".statement",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 285,
+            "clientWidth": 285,
+            "text": "Let H\\mathcal HH be a finite hypothesis class, ZZZ a domain and \u2113:H\u00d7Z\u2192[0,1]\\ell:\\mathcal H\\times Z\\to[0,1]\u2113:H\u00d7Z\u2192[0,1] a loss. Then H\\mathcal HH has the uniform convergence property with mHUC(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200a\u2308ln\u2061(2\u2223H\u2223/\u03b4)2\u03b52\u2309,m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon,\\delta)\\;\\le\\;\\Big\\lceil\\frac{\\ln(2|\\mathcal H|/\\delta)}{2\\varepsilon^2}\\Big\\rceil ,mHUC\u200b(\u03b5,\u03b4)\u2264\u23082\u03b52ln(2\u2223H\u2223/\u03b4)\u200b\u2309, and is therefore agnostic PAC learnable by ERMH_{\\mathcal H}H\u200b with mH(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200amHUC(\u03b5/2,\u03b4)\u2005\u200a\u2264\u2005\u200a\u23082ln\u2061(2\u2223H\u2223/\u03b4)\u03b52\u2309.\\begin{gathered}m_{\\mathcal H}(\\varepsilon,\\delta)\\\\\\;\\le\\;m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon/2,\\delta)\\\\\\;\\le\\;\\Big\\lceil\\frac{2\\ln(2|\\mathcal H|/\\delta)}{\\varepsilon^2}\\Big\\rceil .\\end{gathered}mH\u200b(\u03b5,\u03b4)\u2264mHUC\u200b(\u03b5/2,\u03b4)\u2264\u2308\u03b522ln(2\u2223H\u2223/\u03b4)\u200b\u2309.\u200bHolds when Bounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound.",
+            "overflow": []
+          },
+          {
+            "selector": "#idea",
+            "width": 288,
+            "left": 16,
+            "right": 304,
+            "scrollWidth": 288,
+            "clientWidth": 288,
+            "text": "Fix hhh. The losses \u2113(h,zi)\\ell(h,z_i)\u2113(h,zi\u200b) are i.i.d. with values in [0,1][0,1][0,1] and mean LD(h)L_{\\mathcal D}(h)LD\u200b(h), so Hoeffding (ml-4.5, b\u2212a=1b-a=1b\u2212a=1) gives P[\u2223LS(h)\u2212LD(h)\u2223>\u03b5]\u22642e\u22122m\u03b52\\mathbb P[|L_S(h)-L_{\\mathcal D}(h)|>\\varepsilon]\\le2e^{-2m\\varepsilon^2}P[\u2223LS\u200b(h)\u2212LD\u200b(h)\u2223>\u03b5]\u22642e\u22122m\u03b52. The union bound (ml-2.2) over the \u2223H\u2223|\\mathcal H|\u2223H\u2223 hypotheses multiplies this by \u2223H\u2223|\\mathcal H|\u2223H\u2223; making the result at most \u03b4\\delta\u03b4 gives the sample size. The class size enters only through ln\u2061\u2223H\u2223\\ln|\\mathcal H|ln\u2223H\u2223, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.For a nonempty finite class, the union estimate is 2\u2223H\u2223e\u22122m\u03b522|\\mathcal H|e^{-2m\\varepsilon^2}2\u2223H\u2223e\u22122m\u03b52. Positivity and monotonicity of the exponential, and its inverse logarithm (pma 8.6), make the requirement that this is at most \u03b4\\delta\u03b4 equivalent to 2m\u03b52\u2265log\u2061(2\u2223H\u2223/\u03b4)2m\\varepsilon^2\\ge\\log(2|\\mathcal H|/\\delta)2m\u03b52\u2265log(2\u2223H\u2223/\u03b4). Replacing representativeness accuracy by half the desired excess risk then gives the second displayed sample bound.Before applying Hoeffding, keep hhh fixed and require its loss as a function of the example to be measurable. Each loss is measurable with respect to its own example-coordinate sigma-field, and those sigma-fields are independent. The proof of PROB 2.1.10 therefore transfers independence to the losses, even for an abstract measurable example domain ZZZ; identical example laws give the same loss law and mean. This establishes the i.i.d. premise used for each fixed hypothesis. It does not treat the selected minimizer as independent of the sample: the finite union over fixed hhh supplies the uniform statement, and the logarithm calculation above only inverts its bound.",
+            "overflow": []
+          }
+        ],
+        "pageWidth": 320,
+        "texErrors": 0,
+        "scope": "Holds when Bounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound."
+      }
+    ],
+    "errors": []
+  },
+  "text253": {
+    "browser": "153.0.8010.12",
+    "rows": [
+      {
+        "num": "1.1a",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 3,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 3,
+            "controls": 5,
+            "readout": true,
+            "interactive": 5
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A learner that is willing to credit any event it experienced with causing an outcome has nothing to prefer among the many coincidences in its past, so it either needs a great deal of data or locks onto a spurious rule. A learner that comes equipped with a prior restriction on what may cause what (an inductive bias) can learn from very little data, but only as long as the world respects the restriction: the same restriction makes it unable to learn when the cause lies outside what it allows.The two classical illustrations are the rat that avoids a bait after a single bout of nausea, because it considers only what it ate as a possible cause of sickness, and Skinner's pigeons, fed at fixed intervals whatever they did, several of which developed a repeated ritual that they apparently believed brought the food.Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Learning from a sample is an inference from finitely many observed cases to the unseen ones, and a finite sample is consistent with many explanations. If every one of FFF cues may be the cause, then after nnn poisonings the cues that happened to be present every time are still all candidates: the true cause plus each other cue with probability 2\u2212n2^{-n}2\u2212n, so the number of impostors is binomial with F\u22121F-1F\u22121 trials and success probability p=2\u2212np=2^{-n}p=2\u2212n, and a learner choosing uniformly among the candidates is right with probability E[11+K]=1\u2212(1\u2212p)FFp\\mathbb E\\big[\\tfrac1{1+K}\\big]=\\dfrac{1-(1-p)^F}{Fp}E[1+K1\u200b]=Fp1\u2212(1\u2212p)F\u200b (about 1/(1+(F\u22121)p)1/(1+(F-1)p)1/(1+(F\u22121)p) when FFF is small). Restricting the candidates to the taste of the bait removes the competition at once. The price is exactly the price paid in the No-Free-Lunch theorem (ml-5.1): a restriction that does not match the world gives a learner that never succeeds. The pigeon is the other face of the coin: with no prior against \"my wing flap brings food\", credit given to whatever it was doing when food arrived feeds back into what it does next, and a ritual is born.For F\u22651F\\ge1F\u22651 and p>0p>0p>0, write 1/(k+1)=\u222b01tk\u2009dt1/(k+1)=\\int_0^1t^k\\,dt1/(k+1)=\u222b01\u200btkdt. The binomial theorem (comb 1.7) turns the finite weighted sum for the success probability into \u222b01(1\u2212p+pt)F\u22121\u2009dt\\int_0^1(1-p+pt)^{F-1}\\,dt\u222b01\u200b(1\u2212p+pt)F\u22121dt. The fundamental theorem (pma 6.21) evaluates this polynomial integral as [1\u2212(1\u2212p)F]/(Fp)[1-(1-p)^F]/(Fp)[1\u2212(1\u2212p)F]/(Fp). This derives the stated toy-model average rather than replacing the random number of competitors by its mean.The rat calculation assumes an idealized sampling model: the true cause is present at every poisoned meal, while each irrelevant cue is independently present with probability 1/21/21/2 at each meal, independently across cues as well. A particular irrelevant cue survives nnn meals exactly when the product of its nnn presence indicators is 111; the independent-product expectation rule (PROB 2.1.13) makes its survival probability 2\u2212n2^{-n}2\u2212n. Survival indicators for different cues are measurable functions of disjoint independent cue columns, so the independent-block argument (PROB 2.1.10) makes them independent. Their sum is therefore binomial, supplying the premise of the finite expectation calculation above. The code illustrates this ideal model with separate seeded draws per cue and meal; neither genuine independence of a deterministic generator nor a model fitted to animal cognition is claimed.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.1e",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "The training instances are assumed to be independent and identically distributed: S\u223cDmS\\sim\\mathcal D^mS\u223cDm means that each xix_ixi\u200b is drawn from D\\mathcal DD independently of the others, and the test instance comes from the same D\\mathcal DD. Because SSS is random, so is the output hSh_ShS\u200b and its true error LD,f(hS)L_{\\mathcal D,f}(h_S)LD,f\u200b(hS\u200b), and one cannot demand that this error be small for every sample. One asks for accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1): the error LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5 should hold with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the draw of SSS. A sample for which it fails is called non-representative (\"misleading\"); the learner is probably (1\u2212\u03b41-\\delta1\u2212\u03b4) approximately (\u03b5\\varepsilon\u03b5) correct.The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to \u03b5\\varepsilon\u03b5), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case no learner can do well: that chance is \u03b4\\delta\u03b4. Independence of the examples and equality of the distributions is what makes the sample tell the truth about D\\mathcal DD: break it, and the histogram of errors shifts, as the drift switch shows.The notation Dm\\mathcal D^mDm uses the product-law theorem (PROB 2.1.11): for measurable instance sets AiA_iAi\u200b, independence gives P(xi\u2208Ai\u00a0for\u00a0every\u00a0i)=\u220fiD(Ai)\\mathbb P(x_i\\in A_i\\text{ for every }i)=\\prod_i\\mathcal D(A_i)P(xi\u200b\u2208Ai\u200b\u00a0for\u00a0every\u00a0i)=\u220fi\u200bD(Ai\u200b). This equals the product measure on generating rectangles, hence determines the joint sample law on the product sigma-field. For an abstract measurable instance space, use the same generating-rectangle uniqueness argument, rather than identifying instances with scalar real variables. Matching marginals alone would not determine this law: repeated copies of one random instance can have the correct marginals but dependent coordinates.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.3",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 2,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 6,
+            "readout": true,
+            "interactive": 8
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let H\\mathcal HH be a finite hypothesis class, \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), \u03b5>0\\varepsilon>0\u03b5>0, and let mmm satisfy m\u2005\u200a\u2265\u2005\u200alog\u2061(\u2223H\u2223/\u03b4)\u03b5.m\\;\\ge\\;\\frac{\\log(|\\mathcal H|/\\delta)}{\\varepsilon}.m\u2265\u03b5log(\u2223H\u2223/\u03b4)\u200b. Then for every labelling function fff and distribution D\\mathcal DD for which the realizability assumption holds (ml-2.1), with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of an i.i.d. sample SSS of size mmm labelled by fff, every ERM hypothesis hSh_ShS\u200b satisfies LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5.Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Let HB={h\u2208H:LD,f(h)>\u03b5}\\mathcal H_B=\\{h\\in\\mathcal H:L_{\\mathcal D,f}(h)>\\varepsilon\\}HB\u200b={h\u2208H:LD,f\u200b(h)>\u03b5} be the bad hypotheses. By realizability an ERM output has training error 000, so it is bad only if the sample is misleading: some h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b has LS(h)=0L_S(h)=0LS\u200b(h)=0. A fixed bad hhh survives one independent example with probability at most 1\u2212\u03b51-\\varepsilon1\u2212\u03b5, hence all mmm with probability at most (1\u2212\u03b5)m\u2264e\u2212\u03b5m(1-\\varepsilon)^m\\le e^{-\\varepsilon m}(1\u2212\u03b5)m\u2264e\u2212\u03b5m. The union bound (ml-2.2) over the events \"hhh survives\" for h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b gives Dm(misleading)\u2264\u2223HB\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m\\mathcal D^m(\\text{misleading})\\le|\\mathcal H_B|e^{-\\varepsilon m}\\le|\\mathcal H|e^{-\\varepsilon m}Dm(misleading)\u2264\u2223HB\u200b\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m, which is at most \u03b4\\delta\u03b4 exactly when m\u2265log\u2061(\u2223H\u2223/\u03b4)/\u03b5m\\ge\\log(|\\mathcal H|/\\delta)/\\varepsilonm\u2265log(\u2223H\u2223/\u03b4)/\u03b5.The exponential tail comparison follows from derivative-sign monotonicity (pma 5.11): g(x)=e\u2212x\u22121+xg(x)=e^{-x}-1+xg(x)=e\u2212x\u22121+x has g(0)=0g(0)=0g(0)=0 and g\u2032(x)=1\u2212e\u2212x\u22650g\\prime(x)=1-e^{-x}\\ge0g\u2032(x)=1\u2212e\u2212x\u22650 for x\u22650x\\ge0x\u22650. Hence 1\u2212x\u2264e\u2212x1-x\\le e^{-x}1\u2212x\u2264e\u2212x. For 0<\u03b5<10<\\varepsilon<10<\u03b5<1 both bases are nonnegative and taking the integer power mmm gives the bound used here; for \u03b5\u22651\\varepsilon\\ge1\u03b5\u22651 no hypothesis has risk strictly greater than \u03b5\\varepsilon\u03b5.Fix a measurable hhh before drawing the sample. Its correctness indicator for example iii is measurable with respect to the sigma-field of that sample coordinate. These coordinate sigma-fields are independent, so the independent-block proof of PROB 2.1.10 makes the indicators independent, also on an abstract measurable domain. The event of zero empirical error is their product being 111. PROB 2.1.13 therefore factors its probability into mmm identical factors, giving (1\u2212LD,f(h))m(1-L_{\\mathcal D,f}(h))^m(1\u2212LD,f\u200b(h))m. This probability step is distinct from the exponential comparison above. It is not applied directly to the sample-selected ERM hypothesis: the finite union over fixed hypotheses is what handles that selection.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "3.1",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 3,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 6,
+            "readout": true,
+            "interactive": 9
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A hypothesis class H\\mathcal HH is PAC learnable if there are a function mH:(0,1)2\u2192Nm_{\\mathcal H}:(0,1)^2\\to\\mathbb NmH\u200b:(0,1)2\u2192N and a learning algorithm AAA with the following property: for every accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), for every distribution D\\mathcal DD over X\\mathcal XX and every labelling function f:X\u2192{0,1}f:\\mathcal X\\to\\{0,1\\}f:X\u2192{0,1} for which the realizability assumption holds (fff agrees with some member of H\\mathcal HH D\\mathcal DD-almost surely), running AAA on m\u2265mH(\u03b5,\u03b4)m\\ge m_{\\mathcal H}(\\varepsilon,\\delta)m\u2265mH\u200b(\u03b5,\u03b4) i.i.d. examples labelled by fff returns a hypothesis hhh that, with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of the sample, satisfies LD,f(h)\u2264\u03b5L_{\\mathcal D,f}(h)\\le\\varepsilonLD,f\u200b(h)\u2264\u03b5. The smallest such function is the sample complexity of H\\mathcal HH. The number mHm_{\\mathcal H}mH\u200b may depend on \u03b5\\varepsilon\u03b5, \u03b4\\delta\u03b4 and H\\mathcal HH but not on D\\mathcal DD or fff.Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "The definition is a guarantee in two parts. Accuracy \u03b5\\varepsilon\u03b5 says how close to perfect the output must be (an approximately correct predictor); confidence \u03b4\\delta\u03b4 says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: mHm_{\\mathcal H}mH\u200b is fixed first and must then work against an adversary who picks the worst D\\mathcal DD and fff afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with mH(\u03b5,\u03b4)=\u2308ln\u2061(4/\u03b4)/ln\u2061(1/(1\u2212\u03b5/4))\u2309\u22484ln\u2061(4/\u03b4)/\u03b5m_{\\mathcal H}(\\varepsilon,\\delta)=\\lceil\\ln(4/\\delta)/\\ln(1/(1-\\varepsilon/4))\\rceil\\approx4\\ln(4/\\delta)/\\varepsilonmH\u200b(\u03b5,\u03b4)=\u2308ln(4/\u03b4)/ln(1/(1\u2212\u03b5/4))\u2309\u22484ln(4/\u03b4)/\u03b5. For the strip argument put q=\u03b5/4q=\\varepsilon/4q=\u03b5/4 and restrict the measure to the target rectangle RRR. If D(R)\u2264q\\mathcal D(R)\\le qD(R)\u2264q, a missed side of mass greater than qqq is impossible. Otherwise fix, for each of the four oriented coordinates, the first cumulative-mass quantile reaching qqq, including its boundary atom in a witness strip. Its mass is at least qqq. Any strict missed-side strip of mass greater than qqq contains that fixed witness; the cutoff depends on RRR and the law, not on the sample. If total missed mass exceeds \u03b5\\varepsilon\u03b5, one of the four sides exceeds qqq, so every example misses its witness. If there are no positive examples, all witnesses are missed. Each such miss event has probability at most (1\u2212q)m(1-q)^m(1\u2212q)m, giving the four-event union bound. Coordinate atoms may increase a witness's mass and only improve its miss bound.Starting from the stated four-strip failure bound, put q=1\u2212\u03b5/4\u2208(0,1)q=1-\\varepsilon/4\\in(0,1)q=1\u2212\u03b5/4\u2208(0,1). The exponential and logarithm properties (pma 8.6) give qm=e\u2212mlog\u2061(1/q)q^m=e^{-m\\log(1/q)}qm=e\u2212mlog(1/q) with log\u2061(1/q)>0\\log(1/q)>0log(1/q)>0. Therefore 4qm\u2264\u03b44q^m\\le\\delta4qm\u2264\u03b4 is equivalent to m\u2265log\u2061(4/\u03b4)/log\u2061(1/q)m\\ge\\log(4/\\delta)/\\log(1/q)m\u2265log(4/\u03b4)/log(1/q), explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself.For each fixed witness strip in the atom-safe construction above, let JiJ_iJi\u200b indicate that example iii misses it. The strip is chosen from the law and target before sampling, so the JiJ_iJi\u200b are independent functions of independent example coordinates, each with mean 1\u2212pstrip1-p_{\\mathrm{strip}}1\u2212pstrip\u200b. The nonnegative independent-product identity (PROB 2.1.13) makes the probability of missing that witness on every draw equal to (1\u2212pstrip)m(1-p_{\\mathrm{strip}})^m(1\u2212pstrip\u200b)m. Since its mass is at least \u03b5/4\\varepsilon/4\u03b5/4, this is at most (1\u2212\u03b5/4)m(1-\\varepsilon/4)^m(1\u2212\u03b5/4)m. An atom can make its mass larger; no exact-mass or nonatomic assumption is introduced. This supplies witness survival, separately from the four-event union and logarithmic inversion.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "3.2b",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 7,
+            "drags": 0,
+            "clicks": 1,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 3,
+            "readout": true,
+            "interactive": 11
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let D\\mathcal DD be a distribution over X\u00d7{0,1}\\mathcal X\\times\\{0,1\\}X\u00d7{0,1} and put \u03b7(x)=P[y=1\u2223x]\\eta(x)=\\mathbb P[y=1\\mid x]\u03b7(x)=P[y=1\u2223x]. Among all functions h:X\u2192{0,1}h:\\mathcal X\\to\\{0,1\\}h:X\u2192{0,1} (measurable), the Bayes predictor fD(x)={1if\u00a0\u03b7(x)\u226512,0otherwise,f_{\\mathcal D}(x)=\\begin{cases}1&\\text{if }\\eta(x)\\ge\\tfrac12,\\\\0&\\text{otherwise,}\\end{cases}fD\u200b(x)={10\u200bif\u00a0\u03b7(x)\u226521\u200b,otherwise,\u200b minimizes the true risk LDL_{\\mathcal D}LD\u200b: LD(fD)\u2264LD(g)L_{\\mathcal D}(f_{\\mathcal D})\\le L_{\\mathcal D}(g)LD\u200b(fD\u200b)\u2264LD\u200b(g) for every ggg. Its risk is E[min\u2061(\u03b7(x),1\u2212\u03b7(x))]\\mathbb E[\\min(\\eta(x),1-\\eta(x))]E[min(\u03b7(x),1\u2212\u03b7(x))], and for any ggg the excess is LD(g)\u2212LD(fD)=E[\u22232\u03b7(x)\u22121\u2223\u20091[g(x)\u2260fD(x)]]L_{\\mathcal D}(g)-L_{\\mathcal D}(f_{\\mathcal D})=\\mathbb E\\big[|2\\eta(x)-1|\\,\\mathbf 1[g(x)\\ne f_{\\mathcal D}(x)]\\big]LD\u200b(g)\u2212LD\u200b(fD\u200b)=E[\u22232\u03b7(x)\u22121\u22231[g(x)\ue020=fD\u200b(x)]].Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Condition on the instance. Given xxx, predicting 111 is wrong with probability 1\u2212\u03b7(x)1-\\eta(x)1\u2212\u03b7(x) and predicting 000 is wrong with probability \u03b7(x)\\eta(x)\u03b7(x), and the choice made at one point does not influence the error at another. So the risk \u222b(conditional\u00a0error\u00a0at\u00a0x)\u2009dDx\\int(\\text{conditional error at }x)\\,d\\mathcal D_x\u222b(conditional\u00a0error\u00a0at\u00a0x)dDx\u200b is minimized by choosing at every xxx the smaller conditional error, and choosing the other label at xxx costs exactly \u22232\u03b7(x)\u22121\u2223|2\\eta(x)-1|\u22232\u03b7(x)\u22121\u2223 extra. No learner can beat fDf_{\\mathcal D}fD\u200b, which depends on the unknown D\\mathcal DD; it is an unrestricted benchmark. Agnostic learning in ml-3.3 competes with the chosen class and need not approach the Bayes risk if that class is too restrictive.For every measurable binary predictor, its conditional error is pointwise at least min\u2061(\u03b7,1\u2212\u03b7)\\min(\\eta,1-\\eta)min(\u03b7,1\u2212\u03b7), and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in [0,1][0,1][0,1], so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class.Take a measurable chosen version \u03b7(X)=E[1{Y=1}\u2223\u03c3(X)]\\eta(X)=\\mathbb E[\\mathbf1_{\\{Y=1\\}}\\mid\\sigma(X)]\u03b7(X)=E[1{Y=1}\u200b\u2223\u03c3(X)] in the conditional-probability setting of the statement. For a fixed measurable binary predictor hhh, the bounded error indicator has conditional expectation \u03b7(X)1{h(X)=0}+(1\u2212\u03b7(X))1{h(X)=1}\\eta(X)\\mathbf1_{\\{h(X)=0\\}}+(1-\\eta(X))\\mathbf1_{\\{h(X)=1\\}}\u03b7(X)1{h(X)=0}\u200b+(1\u2212\u03b7(X))1{h(X)=1}\u200b. The tower identity (PROB 4.1.13) equates its unconditional expectation, the risk, to the expectation of this conditional error. The pointwise lower-envelope comparison and integral monotonicity above then prove Bayes optimality. Versions may differ on null sets; a zero-probability individual xxx does not define a unique conditional probability from data. Ties and all risks remain bounded.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.1",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Fix a domain ZZZ, a hypothesis class H\\mathcal HH, a loss \u2113:H\u00d7Z\u2192R+\\ell:\\mathcal H\\times Z\\to\\mathbb R_+\u2113:H\u00d7Z\u2192R+\u200b and a distribution D\\mathcal DD over ZZZ. A training set SSS is called \u03b5\\varepsilon\u03b5-representative (with respect to Z,H,\u2113,DZ,\\mathcal H,\\ell,\\mathcal DZ,H,\u2113,D) if the empirical risk of every hypothesis is within \u03b5\\varepsilon\u03b5 of its true risk: \u2200h\u2208H:\u2223LS(h)\u2212LD(h)\u2223\u2264\u03b5.\\begin{gathered}\\forall h\\in\\mathcal H:\\\\\\bigl|L_S(h)-L_{\\mathcal D}(h)\\bigr|\\le\\varepsilon .\\end{gathered}\u2200h\u2208H:\u200bLS\u200b(h)\u2212LD\u200b(h)\u200b\u2264\u03b5.\u200b The requirement is simultaneous, over the whole class, and holds for one fixed sample.Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "For a single fixed hhh the law of large numbers already says LS(h)\u2248LD(h)L_S(h)\\approx L_{\\mathcal D}(h)LS\u200b(h)\u2248LD\u200b(h). The trouble with ERM is that it looks at the minimum of LSL_SLS\u200b over a class, and the hypothesis at which the minimum occurs is chosen after seeing SSS, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve h\u21a6LS(h)h\\mapsto L_S(h)h\u21a6LS\u200b(h) lies in an \u03b5\\varepsilon\u03b5-tube around the true curve, no choice of hhh made from SSS can be fooled by more than \u03b5\\varepsilon\u03b5. Whether samples are representative with high probability is the subject of ml-4.3.The law-of-large-numbers remark is pointwise in the hypothesis: fix one measurable hhh with finite expected absolute loss before sampling. The losses on i.i.d. examples are then i.i.d. integrable real variables, so the finite-first-moment weak law (PROB 2.2.14) says their average converges in probability to LD(h)L_{\\mathcal D}(h)LD\u200b(h). Its proof uses truncation and tail control, not a required finite variance. This neither gives uniform convergence over all hhh, nor permits choosing hhh after seeing the sample, nor supplies a distribution-free finite-sample rate for arbitrary unbounded losses. Representativeness is the separate simultaneous condition.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.5",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let \u03b81,\u2026,\u03b8m\\theta_1,\\dots,\\theta_m\u03b81\u200b,\u2026,\u03b8m\u200b be i.i.d. random variables with E[\u03b8i]=\u03bc\\mathbb E[\\theta_i]=\\muE[\u03b8i\u200b]=\u03bc and P[a\u2264\u03b8i\u2264b]=1\\mathbb P[a\\le\\theta_i\\le b]=1P[a\u2264\u03b8i\u200b\u2264b]=1 with a<ba<ba<b. Then for every \u03b5>0\\varepsilon>0\u03b5>0 P[\u22231m\u2211i=1m\u03b8i\u2212\u03bc\u2223>\u03b5]\u2005\u200a\u2264\u2005\u200a2exp\u2061\u2009\u2063(\u22122m\u03b52(b\u2212a)2).\\begin{gathered}\\mathbb P\\Big[\\Big|\\frac1m\\sum_{i=1}^m\\theta_i-\\mu\\Big|>\\varepsilon\\Big]\\\\\\;\\le\\;2\\exp\\!\\Big(-\\frac{2m\\varepsilon^2}{(b-a)^2}\\Big).\\end{gathered}P[\u200bm1\u200bi=1\u2211m\u200b\u03b8i\u200b\u2212\u03bc\u200b>\u03b5]\u22642exp(\u2212(b\u2212a)22m\u03b52\u200b).\u200b If a=ba=ba=b, every variable equals that constant almost surely, so the displayed deviation event has probability zero for every \u03b5>0\\varepsilon>0\u03b5>0; no division by a zero range is needed.Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Bound the moment generating function of a bounded, centred variable: for E\u03b8=0\\mathbb E\\theta=0E\u03b8=0 and \u03b8\u2208[a,b]\\theta\\in[a,b]\u03b8\u2208[a,b] one has Ees\u03b8\u2264es2(b\u2212a)2/8\\mathbb E e^{s\\theta}\\le e^{s^2(b-a)^2/8}Ees\u03b8\u2264es2(b\u2212a)2/8 (Hoeffding's lemma, by convexity of es\u03b8e^{s\\theta}es\u03b8 on the interval). Independence multiplies the mmm factors, and Markov's inequality applied to es\u2211\u03b8ie^{s\\sum\\theta_i}es\u2211\u03b8i\u200b with the best sss gives a one-sided tail e\u22122m\u03b52/(b\u2212a)2e^{-2m\\varepsilon^2/(b-a)^2}e\u22122m\u03b52/(b\u2212a)2; the two sides add up to the factor 222. The bound depends on the range b\u2212ab-ab\u2212a only, never on the variance, which is why it is loose for rare events (compare ml-33.6).After centering, let A\u22640\u2264BA\\le0\\le BA\u22640\u2264B bound the variable with A<BA<BA<B. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm \u03c8(s)\\psi(s)\u03c8(s) of this bound has \u03c8(0)=\u03c8\u2032(0)=0\\psi(0)=\\psi\\prime(0)=0\u03c8(0)=\u03c8\u2032(0)=0 and \u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4\\psi\\prime\\prime(s)\\le(B-A)^2/4\u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives \u03c8(s)\u2264s2(B\u2212A)2/8\\psi(s)\\le s^2(B-A)^2/8\u03c8(s)\u2264s2(B\u2212A)2/8. This is the quadratic estimate used before the Markov step; a constant variable is handled separately.Let Xi=\u03b8i\u2212\u03bcX_i=\\theta_i-\\muXi\u200b=\u03b8i\u200b\u2212\u03bc and r=b\u2212a>0r=b-a>0r=b\u2212a>0. For a positive parameter sss, the variables esXie^{sX_i}esXi\u200b are positive, independent and bounded, so PROB 2.1.13 factors the expectation of their product. The preceding log-MGF estimate bounds it by ems2r2/8e^{ms^2r^2/8}ems2r2/8. Apply the nonnegative Markov inequality (PROB 1.6.4) to the product with threshold esm\u03b5e^{sm\\varepsilon}esm\u03b5: the upper-tail probability is at most e\u2212sm\u03b5+ms2r2/8e^{-sm\\varepsilon+ms^2r^2/8}e\u2212sm\u03b5+ms2r2/8. Choosing s=4\u03b5/r2s=4\\varepsilon/r^2s=4\u03b5/r2 gives e\u22122m\u03b52/r2e^{-2m\\varepsilon^2/r^2}e\u22122m\u03b52/r2. Apply the same argument to \u2212Xi-X_i\u2212Xi\u200b with a positive parameter for the other tail and add the two bounds. The accepted constant-range case remains separate; the Taylor/log-MGF step alone does not supply either product factorization or Markov.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.6",
+        "theme": "light",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 5,
+            "readout": true,
+            "interactive": 5
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let H\\mathcal HH be a finite hypothesis class, ZZZ a domain and \u2113:H\u00d7Z\u2192[0,1]\\ell:\\mathcal H\\times Z\\to[0,1]\u2113:H\u00d7Z\u2192[0,1] a loss. Then H\\mathcal HH has the uniform convergence property with mHUC(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200a\u2308ln\u2061(2\u2223H\u2223/\u03b4)2\u03b52\u2309,m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon,\\delta)\\;\\le\\;\\Big\\lceil\\frac{\\ln(2|\\mathcal H|/\\delta)}{2\\varepsilon^2}\\Big\\rceil ,mHUC\u200b(\u03b5,\u03b4)\u2264\u23082\u03b52ln(2\u2223H\u2223/\u03b4)\u200b\u2309, and is therefore agnostic PAC learnable by ERMH_{\\mathcal H}H\u200b with mH(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200amHUC(\u03b5/2,\u03b4)\u2005\u200a\u2264\u2005\u200a\u23082ln\u2061(2\u2223H\u2223/\u03b4)\u03b52\u2309.\\begin{gathered}m_{\\mathcal H}(\\varepsilon,\\delta)\\\\\\;\\le\\;m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon/2,\\delta)\\\\\\;\\le\\;\\Big\\lceil\\frac{2\\ln(2|\\mathcal H|/\\delta)}{\\varepsilon^2}\\Big\\rceil .\\end{gathered}mH\u200b(\u03b5,\u03b4)\u2264mHUC\u200b(\u03b5/2,\u03b4)\u2264\u2308\u03b522ln(2\u2223H\u2223/\u03b4)\u200b\u2309.\u200bBounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Fix hhh. The losses \u2113(h,zi)\\ell(h,z_i)\u2113(h,zi\u200b) are i.i.d. with values in [0,1][0,1][0,1] and mean LD(h)L_{\\mathcal D}(h)LD\u200b(h), so Hoeffding (ml-4.5, b\u2212a=1b-a=1b\u2212a=1) gives P[\u2223LS(h)\u2212LD(h)\u2223>\u03b5]\u22642e\u22122m\u03b52\\mathbb P[|L_S(h)-L_{\\mathcal D}(h)|>\\varepsilon]\\le2e^{-2m\\varepsilon^2}P[\u2223LS\u200b(h)\u2212LD\u200b(h)\u2223>\u03b5]\u22642e\u22122m\u03b52. The union bound (ml-2.2) over the \u2223H\u2223|\\mathcal H|\u2223H\u2223 hypotheses multiplies this by \u2223H\u2223|\\mathcal H|\u2223H\u2223; making the result at most \u03b4\\delta\u03b4 gives the sample size. The class size enters only through ln\u2061\u2223H\u2223\\ln|\\mathcal H|ln\u2223H\u2223, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.For a nonempty finite class, the union estimate is 2\u2223H\u2223e\u22122m\u03b522|\\mathcal H|e^{-2m\\varepsilon^2}2\u2223H\u2223e\u22122m\u03b52. Positivity and monotonicity of the exponential, and its inverse logarithm (pma 8.6), make the requirement that this is at most \u03b4\\delta\u03b4 equivalent to 2m\u03b52\u2265log\u2061(2\u2223H\u2223/\u03b4)2m\\varepsilon^2\\ge\\log(2|\\mathcal H|/\\delta)2m\u03b52\u2265log(2\u2223H\u2223/\u03b4). Replacing representativeness accuracy by half the desired excess risk then gives the second displayed sample bound.Before applying Hoeffding, keep hhh fixed and require its loss as a function of the example to be measurable. Each loss is measurable with respect to its own example-coordinate sigma-field, and those sigma-fields are independent. The proof of PROB 2.1.10 therefore transfers independence to the losses, even for an abstract measurable example domain ZZZ; identical example laws give the same loss law and mean. This establishes the i.i.d. premise used for each fixed hypothesis. It does not treat the selected minimizer as independent of the sample: the finite union over fixed hhh supplies the uniform statement, and the logarithm calculation above only inverts its bound.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "1.1a",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 3,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 3,
+            "controls": 5,
+            "readout": true,
+            "interactive": 5
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A learner that is willing to credit any event it experienced with causing an outcome has nothing to prefer among the many coincidences in its past, so it either needs a great deal of data or locks onto a spurious rule. A learner that comes equipped with a prior restriction on what may cause what (an inductive bias) can learn from very little data, but only as long as the world respects the restriction: the same restriction makes it unable to learn when the cause lies outside what it allows.The two classical illustrations are the rat that avoids a bait after a single bout of nausea, because it considers only what it ate as a possible cause of sickness, and Skinner's pigeons, fed at fixed intervals whatever they did, several of which developed a repeated ritual that they apparently believed brought the food.Illustrative simulation. The pigeon rule (credit to the behaviour in progress at feeding; choice proportional to credit squared) and the rat's hypothesis search are toy models chosen to show the effect, not fits to the animal data.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Learning from a sample is an inference from finitely many observed cases to the unseen ones, and a finite sample is consistent with many explanations. If every one of FFF cues may be the cause, then after nnn poisonings the cues that happened to be present every time are still all candidates: the true cause plus each other cue with probability 2\u2212n2^{-n}2\u2212n, so the number of impostors is binomial with F\u22121F-1F\u22121 trials and success probability p=2\u2212np=2^{-n}p=2\u2212n, and a learner choosing uniformly among the candidates is right with probability E[11+K]=1\u2212(1\u2212p)FFp\\mathbb E\\big[\\tfrac1{1+K}\\big]=\\dfrac{1-(1-p)^F}{Fp}E[1+K1\u200b]=Fp1\u2212(1\u2212p)F\u200b (about 1/(1+(F\u22121)p)1/(1+(F-1)p)1/(1+(F\u22121)p) when FFF is small). Restricting the candidates to the taste of the bait removes the competition at once. The price is exactly the price paid in the No-Free-Lunch theorem (ml-5.1): a restriction that does not match the world gives a learner that never succeeds. The pigeon is the other face of the coin: with no prior against \"my wing flap brings food\", credit given to whatever it was doing when food arrived feeds back into what it does next, and a ritual is born.For F\u22651F\\ge1F\u22651 and p>0p>0p>0, write 1/(k+1)=\u222b01tk\u2009dt1/(k+1)=\\int_0^1t^k\\,dt1/(k+1)=\u222b01\u200btkdt. The binomial theorem (comb 1.7) turns the finite weighted sum for the success probability into \u222b01(1\u2212p+pt)F\u22121\u2009dt\\int_0^1(1-p+pt)^{F-1}\\,dt\u222b01\u200b(1\u2212p+pt)F\u22121dt. The fundamental theorem (pma 6.21) evaluates this polynomial integral as [1\u2212(1\u2212p)F]/(Fp)[1-(1-p)^F]/(Fp)[1\u2212(1\u2212p)F]/(Fp). This derives the stated toy-model average rather than replacing the random number of competitors by its mean.The rat calculation assumes an idealized sampling model: the true cause is present at every poisoned meal, while each irrelevant cue is independently present with probability 1/21/21/2 at each meal, independently across cues as well. A particular irrelevant cue survives nnn meals exactly when the product of its nnn presence indicators is 111; the independent-product expectation rule (PROB 2.1.13) makes its survival probability 2\u2212n2^{-n}2\u2212n. Survival indicators for different cues are measurable functions of disjoint independent cue columns, so the independent-block argument (PROB 2.1.10) makes them independent. Their sum is therefore binomial, supplying the premise of the finite expectation calculation above. The code illustrates this ideal model with separate seeded draws per cue and meal; neither genuine independence of a deterministic generator nor a model fitted to animal cognition is claimed.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.1e",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "The training instances are assumed to be independent and identically distributed: S\u223cDmS\\sim\\mathcal D^mS\u223cDm means that each xix_ixi\u200b is drawn from D\\mathcal DD independently of the others, and the test instance comes from the same D\\mathcal DD. Because SSS is random, so is the output hSh_ShS\u200b and its true error LD,f(hS)L_{\\mathcal D,f}(h_S)LD,f\u200b(hS\u200b), and one cannot demand that this error be small for every sample. One asks for accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1): the error LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5 should hold with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the draw of SSS. A sample for which it fails is called non-representative (\"misleading\"); the learner is probably (1\u2212\u03b41-\\delta1\u2212\u03b4) approximately (\u03b5\\varepsilon\u03b5) correct.The reference bound 4(1\u2212\u03b5/4)m4(1-\\varepsilon/4)^m4(1\u2212\u03b5/4)m for rectangles is the classical one for the realizable case, valid for every distribution when training and test data come from the same D\\mathcal DD.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Two different things can go wrong, and the two parameters separate them. Even from a good sample the output is only an approximation of the target (error up to \u03b5\\varepsilon\u03b5), and there is always some chance that the sample itself was unlucky (for instance, no papaya from a part of the square that matters), in which case no learner can do well: that chance is \u03b4\\delta\u03b4. Independence of the examples and equality of the distributions is what makes the sample tell the truth about D\\mathcal DD: break it, and the histogram of errors shifts, as the drift switch shows.The notation Dm\\mathcal D^mDm uses the product-law theorem (PROB 2.1.11): for measurable instance sets AiA_iAi\u200b, independence gives P(xi\u2208Ai\u00a0for\u00a0every\u00a0i)=\u220fiD(Ai)\\mathbb P(x_i\\in A_i\\text{ for every }i)=\\prod_i\\mathcal D(A_i)P(xi\u200b\u2208Ai\u200b\u00a0for\u00a0every\u00a0i)=\u220fi\u200bD(Ai\u200b). This equals the product measure on generating rectangles, hence determines the joint sample law on the product sigma-field. For an abstract measurable instance space, use the same generating-rectangle uniqueness argument, rather than identifying instances with scalar real variables. Matching marginals alone would not determine this law: repeated copies of one random instance can have the correct marginals but dependent coordinates.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "2.3",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 2,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 6,
+            "readout": true,
+            "interactive": 8
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let H\\mathcal HH be a finite hypothesis class, \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), \u03b5>0\\varepsilon>0\u03b5>0, and let mmm satisfy m\u2005\u200a\u2265\u2005\u200alog\u2061(\u2223H\u2223/\u03b4)\u03b5.m\\;\\ge\\;\\frac{\\log(|\\mathcal H|/\\delta)}{\\varepsilon}.m\u2265\u03b5log(\u2223H\u2223/\u03b4)\u200b. Then for every labelling function fff and distribution D\\mathcal DD for which the realizability assumption holds (ml-2.1), with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of an i.i.d. sample SSS of size mmm labelled by fff, every ERM hypothesis hSh_ShS\u200b satisfies LD,f(hS)\u2264\u03b5L_{\\mathcal D,f}(h_S)\\le\\varepsilonLD,f\u200b(hS\u200b)\u2264\u03b5.Finite H\\mathcal HH and realizable case. The picture counts the non-empty grid rectangles only; adding the empty hypothesis changes \u2223H\u2223|\\mathcal H|\u2223H\u2223 by one.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Let HB={h\u2208H:LD,f(h)>\u03b5}\\mathcal H_B=\\{h\\in\\mathcal H:L_{\\mathcal D,f}(h)>\\varepsilon\\}HB\u200b={h\u2208H:LD,f\u200b(h)>\u03b5} be the bad hypotheses. By realizability an ERM output has training error 000, so it is bad only if the sample is misleading: some h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b has LS(h)=0L_S(h)=0LS\u200b(h)=0. A fixed bad hhh survives one independent example with probability at most 1\u2212\u03b51-\\varepsilon1\u2212\u03b5, hence all mmm with probability at most (1\u2212\u03b5)m\u2264e\u2212\u03b5m(1-\\varepsilon)^m\\le e^{-\\varepsilon m}(1\u2212\u03b5)m\u2264e\u2212\u03b5m. The union bound (ml-2.2) over the events \"hhh survives\" for h\u2208HBh\\in\\mathcal H_Bh\u2208HB\u200b gives Dm(misleading)\u2264\u2223HB\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m\\mathcal D^m(\\text{misleading})\\le|\\mathcal H_B|e^{-\\varepsilon m}\\le|\\mathcal H|e^{-\\varepsilon m}Dm(misleading)\u2264\u2223HB\u200b\u2223e\u2212\u03b5m\u2264\u2223H\u2223e\u2212\u03b5m, which is at most \u03b4\\delta\u03b4 exactly when m\u2265log\u2061(\u2223H\u2223/\u03b4)/\u03b5m\\ge\\log(|\\mathcal H|/\\delta)/\\varepsilonm\u2265log(\u2223H\u2223/\u03b4)/\u03b5.The exponential tail comparison follows from derivative-sign monotonicity (pma 5.11): g(x)=e\u2212x\u22121+xg(x)=e^{-x}-1+xg(x)=e\u2212x\u22121+x has g(0)=0g(0)=0g(0)=0 and g\u2032(x)=1\u2212e\u2212x\u22650g\\prime(x)=1-e^{-x}\\ge0g\u2032(x)=1\u2212e\u2212x\u22650 for x\u22650x\\ge0x\u22650. Hence 1\u2212x\u2264e\u2212x1-x\\le e^{-x}1\u2212x\u2264e\u2212x. For 0<\u03b5<10<\\varepsilon<10<\u03b5<1 both bases are nonnegative and taking the integer power mmm gives the bound used here; for \u03b5\u22651\\varepsilon\\ge1\u03b5\u22651 no hypothesis has risk strictly greater than \u03b5\\varepsilon\u03b5.Fix a measurable hhh before drawing the sample. Its correctness indicator for example iii is measurable with respect to the sigma-field of that sample coordinate. These coordinate sigma-fields are independent, so the independent-block proof of PROB 2.1.10 makes the indicators independent, also on an abstract measurable domain. The event of zero empirical error is their product being 111. PROB 2.1.13 therefore factors its probability into mmm identical factors, giving (1\u2212LD,f(h))m(1-L_{\\mathcal D,f}(h))^m(1\u2212LD,f\u200b(h))m. This probability step is distinct from the exponential comparison above. It is not applied directly to the sample-selected ERM hypothesis: the finite union over fixed hypotheses is what handles that selection.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "3.1",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 3,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 6,
+            "readout": true,
+            "interactive": 9
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "A hypothesis class H\\mathcal HH is PAC learnable if there are a function mH:(0,1)2\u2192Nm_{\\mathcal H}:(0,1)^2\\to\\mathbb NmH\u200b:(0,1)2\u2192N and a learning algorithm AAA with the following property: for every accuracy \u03b5\u2208(0,1)\\varepsilon\\in(0,1)\u03b5\u2208(0,1) and confidence \u03b4\u2208(0,1)\\delta\\in(0,1)\u03b4\u2208(0,1), for every distribution D\\mathcal DD over X\\mathcal XX and every labelling function f:X\u2192{0,1}f:\\mathcal X\\to\\{0,1\\}f:X\u2192{0,1} for which the realizability assumption holds (fff agrees with some member of H\\mathcal HH D\\mathcal DD-almost surely), running AAA on m\u2265mH(\u03b5,\u03b4)m\\ge m_{\\mathcal H}(\\varepsilon,\\delta)m\u2265mH\u200b(\u03b5,\u03b4) i.i.d. examples labelled by fff returns a hypothesis hhh that, with probability at least 1\u2212\u03b41-\\delta1\u2212\u03b4 over the choice of the sample, satisfies LD,f(h)\u2264\u03b5L_{\\mathcal D,f}(h)\\le\\varepsilonLD,f\u200b(h)\u2264\u03b5. The smallest such function is the sample complexity of H\\mathcal HH. The number mHm_{\\mathcal H}mH\u200b may depend on \u03b5\\varepsilon\u03b5, \u03b4\\delta\u03b4 and H\\mathcal HH but not on D\\mathcal DD or fff.Realizable case. The picture uses the tightest-box learner for rectangles in the plane, with the textbook bound 4(1\u2212\u03b5/4)m\u2264\u03b44(1-\\varepsilon/4)^m\\le\\delta4(1\u2212\u03b5/4)m\u2264\u03b4; the empirical fraction is a simulation (500 rounds), so it carries sampling noise of roughly \u00b10.02\\pm0.02\u00b10.02 near \u03b4=0.1\\delta=0.1\u03b4=0.1.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "The definition is a guarantee in two parts. Accuracy \u03b5\\varepsilon\u03b5 says how close to perfect the output must be (an approximately correct predictor); confidence \u03b4\\delta\u03b4 says how often the sample may be so unlucky that it fails (probably). The quantifier order carries the content: mHm_{\\mathcal H}mH\u200b is fixed first and must then work against an adversary who picks the worst D\\mathcal DD and fff afterwards, which is what makes the guarantee distribution-free. For axis-aligned rectangles the tightest-box learner of ml-2.1e's setting is PAC with mH(\u03b5,\u03b4)=\u2308ln\u2061(4/\u03b4)/ln\u2061(1/(1\u2212\u03b5/4))\u2309\u22484ln\u2061(4/\u03b4)/\u03b5m_{\\mathcal H}(\\varepsilon,\\delta)=\\lceil\\ln(4/\\delta)/\\ln(1/(1-\\varepsilon/4))\\rceil\\approx4\\ln(4/\\delta)/\\varepsilonmH\u200b(\u03b5,\u03b4)=\u2308ln(4/\u03b4)/ln(1/(1\u2212\u03b5/4))\u2309\u22484ln(4/\u03b4)/\u03b5. For the strip argument put q=\u03b5/4q=\\varepsilon/4q=\u03b5/4 and restrict the measure to the target rectangle RRR. If D(R)\u2264q\\mathcal D(R)\\le qD(R)\u2264q, a missed side of mass greater than qqq is impossible. Otherwise fix, for each of the four oriented coordinates, the first cumulative-mass quantile reaching qqq, including its boundary atom in a witness strip. Its mass is at least qqq. Any strict missed-side strip of mass greater than qqq contains that fixed witness; the cutoff depends on RRR and the law, not on the sample. If total missed mass exceeds \u03b5\\varepsilon\u03b5, one of the four sides exceeds qqq, so every example misses its witness. If there are no positive examples, all witnesses are missed. Each such miss event has probability at most (1\u2212q)m(1-q)^m(1\u2212q)m, giving the four-event union bound. Coordinate atoms may increase a witness's mass and only improve its miss bound.Starting from the stated four-strip failure bound, put q=1\u2212\u03b5/4\u2208(0,1)q=1-\\varepsilon/4\\in(0,1)q=1\u2212\u03b5/4\u2208(0,1). The exponential and logarithm properties (pma 8.6) give qm=e\u2212mlog\u2061(1/q)q^m=e^{-m\\log(1/q)}qm=e\u2212mlog(1/q) with log\u2061(1/q)>0\\log(1/q)>0log(1/q)>0. Therefore 4qm\u2264\u03b44q^m\\le\\delta4qm\u2264\u03b4 is equivalent to m\u2265log\u2061(4/\u03b4)/log\u2061(1/q)m\\ge\\log(4/\\delta)/\\log(1/q)m\u2265log(4/\u03b4)/log(1/q), explaining the ceiling and the positive denominator in the sample size. This algebra converts the geometric bound; it does not supply the strip argument itself.For each fixed witness strip in the atom-safe construction above, let JiJ_iJi\u200b indicate that example iii misses it. The strip is chosen from the law and target before sampling, so the JiJ_iJi\u200b are independent functions of independent example coordinates, each with mean 1\u2212pstrip1-p_{\\mathrm{strip}}1\u2212pstrip\u200b. The nonnegative independent-product identity (PROB 2.1.13) makes the probability of missing that witness on every draw equal to (1\u2212pstrip)m(1-p_{\\mathrm{strip}})^m(1\u2212pstrip\u200b)m. Since its mass is at least \u03b5/4\\varepsilon/4\u03b5/4, this is at most (1\u2212\u03b5/4)m(1-\\varepsilon/4)^m(1\u2212\u03b5/4)m. An atom can make its mass larger; no exact-mass or nonatomic assumption is introduced. This supplies witness survival, separately from the four-event union and logarithmic inversion.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "3.2b",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 7,
+            "drags": 0,
+            "clicks": 1,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 3,
+            "readout": true,
+            "interactive": 11
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let D\\mathcal DD be a distribution over X\u00d7{0,1}\\mathcal X\\times\\{0,1\\}X\u00d7{0,1} and put \u03b7(x)=P[y=1\u2223x]\\eta(x)=\\mathbb P[y=1\\mid x]\u03b7(x)=P[y=1\u2223x]. Among all functions h:X\u2192{0,1}h:\\mathcal X\\to\\{0,1\\}h:X\u2192{0,1} (measurable), the Bayes predictor fD(x)={1if\u00a0\u03b7(x)\u226512,0otherwise,f_{\\mathcal D}(x)=\\begin{cases}1&\\text{if }\\eta(x)\\ge\\tfrac12,\\\\0&\\text{otherwise,}\\end{cases}fD\u200b(x)={10\u200bif\u00a0\u03b7(x)\u226521\u200b,otherwise,\u200b minimizes the true risk LDL_{\\mathcal D}LD\u200b: LD(fD)\u2264LD(g)L_{\\mathcal D}(f_{\\mathcal D})\\le L_{\\mathcal D}(g)LD\u200b(fD\u200b)\u2264LD\u200b(g) for every ggg. Its risk is E[min\u2061(\u03b7(x),1\u2212\u03b7(x))]\\mathbb E[\\min(\\eta(x),1-\\eta(x))]E[min(\u03b7(x),1\u2212\u03b7(x))], and for any ggg the excess is LD(g)\u2212LD(fD)=E[\u22232\u03b7(x)\u22121\u2223\u20091[g(x)\u2260fD(x)]]L_{\\mathcal D}(g)-L_{\\mathcal D}(f_{\\mathcal D})=\\mathbb E\\big[|2\\eta(x)-1|\\,\\mathbf 1[g(x)\\ne f_{\\mathcal D}(x)]\\big]LD\u200b(g)\u2212LD\u200b(fD\u200b)=E[\u22232\u03b7(x)\u22121\u22231[g(x)\ue020=fD\u200b(x)]].Binary labels and 000\u2013111 loss. Risks are integrated exactly for the displayed piecewise-linear conditional probabilities, splitting at every cell, knot and half-probability crossing (up to floating rounding). The best rule on 60 cells can have positive excess over pointwise Bayes.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Condition on the instance. Given xxx, predicting 111 is wrong with probability 1\u2212\u03b7(x)1-\\eta(x)1\u2212\u03b7(x) and predicting 000 is wrong with probability \u03b7(x)\\eta(x)\u03b7(x), and the choice made at one point does not influence the error at another. So the risk \u222b(conditional\u00a0error\u00a0at\u00a0x)\u2009dDx\\int(\\text{conditional error at }x)\\,d\\mathcal D_x\u222b(conditional\u00a0error\u00a0at\u00a0x)dDx\u200b is minimized by choosing at every xxx the smaller conditional error, and choosing the other label at xxx costs exactly \u22232\u03b7(x)\u22121\u2223|2\\eta(x)-1|\u22232\u03b7(x)\u22121\u2223 extra. No learner can beat fDf_{\\mathcal D}fD\u200b, which depends on the unknown D\\mathcal DD; it is an unrestricted benchmark. Agnostic learning in ml-3.3 competes with the chosen class and need not approach the Bayes risk if that class is too restrictive.For every measurable binary predictor, its conditional error is pointwise at least min\u2061(\u03b7,1\u2212\u03b7)\\min(\\eta,1-\\eta)min(\u03b7,1\u2212\u03b7), and the threshold rule attains that lower envelope, including ties. Monotonicity of the nonnegative integral (rca 1.24) turns the pointwise comparison into the risk comparison. The functions lie in [0,1][0,1][0,1], so all these integrals are finite; optimizing a conditional error point by point is not the same as restricting to a smaller hypothesis class.Take a measurable chosen version \u03b7(X)=E[1{Y=1}\u2223\u03c3(X)]\\eta(X)=\\mathbb E[\\mathbf1_{\\{Y=1\\}}\\mid\\sigma(X)]\u03b7(X)=E[1{Y=1}\u200b\u2223\u03c3(X)] in the conditional-probability setting of the statement. For a fixed measurable binary predictor hhh, the bounded error indicator has conditional expectation \u03b7(X)1{h(X)=0}+(1\u2212\u03b7(X))1{h(X)=1}\\eta(X)\\mathbf1_{\\{h(X)=0\\}}+(1-\\eta(X))\\mathbf1_{\\{h(X)=1\\}}\u03b7(X)1{h(X)=0}\u200b+(1\u2212\u03b7(X))1{h(X)=1}\u200b. The tower identity (PROB 4.1.13) equates its unconditional expectation, the risk, to the expectation of this conditional error. The pointwise lower-envelope comparison and integral monotonicity above then prove Bayes optimality. Versions may differ on null sets; a zero-probability individual xxx does not define a unique conditional probability from data. Ties and all risks remain bounded.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.1",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 1,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 1,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Fix a domain ZZZ, a hypothesis class H\\mathcal HH, a loss \u2113:H\u00d7Z\u2192R+\\ell:\\mathcal H\\times Z\\to\\mathbb R_+\u2113:H\u00d7Z\u2192R+\u200b and a distribution D\\mathcal DD over ZZZ. A training set SSS is called \u03b5\\varepsilon\u03b5-representative (with respect to Z,H,\u2113,DZ,\\mathcal H,\\ell,\\mathcal DZ,H,\u2113,D) if the empirical risk of every hypothesis is within \u03b5\\varepsilon\u03b5 of its true risk: \u2200h\u2208H:\u2223LS(h)\u2212LD(h)\u2223\u2264\u03b5.\\begin{gathered}\\forall h\\in\\mathcal H:\\\\\\bigl|L_S(h)-L_{\\mathcal D}(h)\\bigr|\\le\\varepsilon .\\end{gathered}\u2200h\u2208H:\u200bLS\u200b(h)\u2212LD\u200b(h)\u200b\u2264\u03b5.\u200b The requirement is simultaneous, over the whole class, and holds for one fixed sample.Illustrative world: the thresholds form a grid of 101 points (a finite stand-in for the infinite class of thresholds), and true risks are computed by numerical integration of \u03b7\\eta\u03b7.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "For a single fixed hhh the law of large numbers already says LS(h)\u2248LD(h)L_S(h)\\approx L_{\\mathcal D}(h)LS\u200b(h)\u2248LD\u200b(h). The trouble with ERM is that it looks at the minimum of LSL_SLS\u200b over a class, and the hypothesis at which the minimum occurs is chosen after seeing SSS, so the estimate there can be optimistically wrong (ml-2.1c). Representativeness is the condition that removes this selection effect: when the whole empirical curve h\u21a6LS(h)h\\mapsto L_S(h)h\u21a6LS\u200b(h) lies in an \u03b5\\varepsilon\u03b5-tube around the true curve, no choice of hhh made from SSS can be fooled by more than \u03b5\\varepsilon\u03b5. Whether samples are representative with high probability is the subject of ml-4.3.The law-of-large-numbers remark is pointwise in the hypothesis: fix one measurable hhh with finite expected absolute loss before sampling. The losses on i.i.d. examples are then i.i.d. integrable real variables, so the finite-first-moment weak law (PROB 2.2.14) says their average converges in probability to LD(h)L_{\\mathcal D}(h)LD\u200b(h). Its proof uses truncation and tail control, not a required finite variance. This neither gives uniform convergence over all hhh, nor permits choosing hhh after seeing the sample, nor supplies a distribution-free finite-sample rate for arbitrary unbounded losses. Representativeness is the separate simultaneous condition.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.5",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 4,
+            "readout": true,
+            "interactive": 4
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let \u03b81,\u2026,\u03b8m\\theta_1,\\dots,\\theta_m\u03b81\u200b,\u2026,\u03b8m\u200b be i.i.d. random variables with E[\u03b8i]=\u03bc\\mathbb E[\\theta_i]=\\muE[\u03b8i\u200b]=\u03bc and P[a\u2264\u03b8i\u2264b]=1\\mathbb P[a\\le\\theta_i\\le b]=1P[a\u2264\u03b8i\u200b\u2264b]=1 with a<ba<ba<b. Then for every \u03b5>0\\varepsilon>0\u03b5>0 P[\u22231m\u2211i=1m\u03b8i\u2212\u03bc\u2223>\u03b5]\u2005\u200a\u2264\u2005\u200a2exp\u2061\u2009\u2063(\u22122m\u03b52(b\u2212a)2).\\begin{gathered}\\mathbb P\\Big[\\Big|\\frac1m\\sum_{i=1}^m\\theta_i-\\mu\\Big|>\\varepsilon\\Big]\\\\\\;\\le\\;2\\exp\\!\\Big(-\\frac{2m\\varepsilon^2}{(b-a)^2}\\Big).\\end{gathered}P[\u200bm1\u200bi=1\u2211m\u200b\u03b8i\u200b\u2212\u03bc\u200b>\u03b5]\u22642exp(\u2212(b\u2212a)22m\u03b52\u200b).\u200b If a=ba=ba=b, every variable equals that constant almost surely, so the displayed deviation event has probability zero for every \u03b5>0\\varepsilon>0\u03b5>0; no division by a zero range is needed.Independent, bounded variables. The simulation uses 4000 trials per setting, so frequencies below about 2.5\u22c510\u221242.5\\cdot10^{-4}2.5\u22c510\u22124 are reported as 000 and are not drawn on the logarithmic axis.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Bound the moment generating function of a bounded, centred variable: for E\u03b8=0\\mathbb E\\theta=0E\u03b8=0 and \u03b8\u2208[a,b]\\theta\\in[a,b]\u03b8\u2208[a,b] one has Ees\u03b8\u2264es2(b\u2212a)2/8\\mathbb E e^{s\\theta}\\le e^{s^2(b-a)^2/8}Ees\u03b8\u2264es2(b\u2212a)2/8 (Hoeffding's lemma, by convexity of es\u03b8e^{s\\theta}es\u03b8 on the interval). Independence multiplies the mmm factors, and Markov's inequality applied to es\u2211\u03b8ie^{s\\sum\\theta_i}es\u2211\u03b8i\u200b with the best sss gives a one-sided tail e\u22122m\u03b52/(b\u2212a)2e^{-2m\\varepsilon^2/(b-a)^2}e\u22122m\u03b52/(b\u2212a)2; the two sides add up to the factor 222. The bound depends on the range b\u2212ab-ab\u2212a only, never on the variance, which is why it is loose for rare events (compare ml-33.6).After centering, let A\u22640\u2264BA\\le0\\le BA\u22640\u2264B bound the variable with A<BA<BA<B. The convex chord bounds its moment generating function by that of a mean-zero distribution on the two endpoints. The logarithm \u03c8(s)\\psi(s)\u03c8(s) of this bound has \u03c8(0)=\u03c8\u2032(0)=0\\psi(0)=\\psi\\prime(0)=0\u03c8(0)=\u03c8\u2032(0)=0 and \u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4\\psi\\prime\\prime(s)\\le(B-A)^2/4\u03c8\u2032\u2032(s)\u2264(B\u2212A)2/4, since this derivative is the variance of an exponentially tilted two-point law. Taylor's theorem (pma 5.15), with second-order remainder at zero, gives \u03c8(s)\u2264s2(B\u2212A)2/8\\psi(s)\\le s^2(B-A)^2/8\u03c8(s)\u2264s2(B\u2212A)2/8. This is the quadratic estimate used before the Markov step; a constant variable is handled separately.Let Xi=\u03b8i\u2212\u03bcX_i=\\theta_i-\\muXi\u200b=\u03b8i\u200b\u2212\u03bc and r=b\u2212a>0r=b-a>0r=b\u2212a>0. For a positive parameter sss, the variables esXie^{sX_i}esXi\u200b are positive, independent and bounded, so PROB 2.1.13 factors the expectation of their product. The preceding log-MGF estimate bounds it by ems2r2/8e^{ms^2r^2/8}ems2r2/8. Apply the nonnegative Markov inequality (PROB 1.6.4) to the product with threshold esm\u03b5e^{sm\\varepsilon}esm\u03b5: the upper-tail probability is at most e\u2212sm\u03b5+ms2r2/8e^{-sm\\varepsilon+ms^2r^2/8}e\u2212sm\u03b5+ms2r2/8. Choosing s=4\u03b5/r2s=4\\varepsilon/r^2s=4\u03b5/r2 gives e\u22122m\u03b52/r2e^{-2m\\varepsilon^2/r^2}e\u22122m\u03b52/r2. Apply the same argument to \u2212Xi-X_i\u2212Xi\u200b with a positive parameter for the other tail and add the two bounds. The accepted constant-range case remains separate; the Taylor/log-MGF step alone does not supply either product factorization or Markov.",
+          "overflow": []
+        }
+      },
+      {
+        "num": "4.6",
+        "theme": "dark",
+        "done": {
+          "ok": true,
+          "errors": [],
+          "texErrors": [],
+          "canvases": 2,
+          "quality": {
+            "handles": 0,
+            "drags": 0,
+            "clicks": 0,
+            "hover": 0,
+            "animate": 0,
+            "stages": 2,
+            "controls": 5,
+            "readout": true,
+            "interactive": 5
+          },
+          "blank": []
+        },
+        "statement-scope": {
+          "left": 37,
+          "right": 290,
+          "contentWidth": 253,
+          "client": 285,
+          "scroll": 285,
+          "text": "Let H\\mathcal HH be a finite hypothesis class, ZZZ a domain and \u2113:H\u00d7Z\u2192[0,1]\\ell:\\mathcal H\\times Z\\to[0,1]\u2113:H\u00d7Z\u2192[0,1] a loss. Then H\\mathcal HH has the uniform convergence property with mHUC(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200a\u2308ln\u2061(2\u2223H\u2223/\u03b4)2\u03b52\u2309,m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon,\\delta)\\;\\le\\;\\Big\\lceil\\frac{\\ln(2|\\mathcal H|/\\delta)}{2\\varepsilon^2}\\Big\\rceil ,mHUC\u200b(\u03b5,\u03b4)\u2264\u23082\u03b52ln(2\u2223H\u2223/\u03b4)\u200b\u2309, and is therefore agnostic PAC learnable by ERMH_{\\mathcal H}H\u200b with mH(\u03b5,\u03b4)\u2005\u200a\u2264\u2005\u200amHUC(\u03b5/2,\u03b4)\u2005\u200a\u2264\u2005\u200a\u23082ln\u2061(2\u2223H\u2223/\u03b4)\u03b52\u2309.\\begin{gathered}m_{\\mathcal H}(\\varepsilon,\\delta)\\\\\\;\\le\\;m^{\\mathrm{UC}}_{\\mathcal H}(\\varepsilon/2,\\delta)\\\\\\;\\le\\;\\Big\\lceil\\frac{2\\ln(2|\\mathcal H|/\\delta)}{\\varepsilon^2}\\Big\\rceil .\\end{gathered}mH\u200b(\u03b5,\u03b4)\u2264mHUC\u200b(\u03b5/2,\u03b4)\u2264\u2308\u03b522ln(2\u2223H\u2223/\u03b4)\u200b\u2309.\u200bBounded loss in [0,1][0,1][0,1] (000\u2013111 loss here). D\\mathcal DD is the empirical distribution of a 3000-point population, so risks are exact and samples are drawn with replacement; k\u22643000k\\le3000k\u22643000 half-planes. Six runs are far too few to estimate a \u03b4\\delta\u03b4-quantile; they show typical behaviour, the theorem bounds a failure probability for each fixed sample size. Individual runs and observed finite fractions can cross the bound.",
+          "overflow": []
+        },
+        "proof": {
+          "left": 18,
+          "right": 271,
+          "contentWidth": 253,
+          "client": 253,
+          "scroll": 253,
+          "text": "Fix hhh. The losses \u2113(h,zi)\\ell(h,z_i)\u2113(h,zi\u200b) are i.i.d. with values in [0,1][0,1][0,1] and mean LD(h)L_{\\mathcal D}(h)LD\u200b(h), so Hoeffding (ml-4.5, b\u2212a=1b-a=1b\u2212a=1) gives P[\u2223LS(h)\u2212LD(h)\u2223>\u03b5]\u22642e\u22122m\u03b52\\mathbb P[|L_S(h)-L_{\\mathcal D}(h)|>\\varepsilon]\\le2e^{-2m\\varepsilon^2}P[\u2223LS\u200b(h)\u2212LD\u200b(h)\u2223>\u03b5]\u22642e\u22122m\u03b52. The union bound (ml-2.2) over the \u2223H\u2223|\\mathcal H|\u2223H\u2223 hypotheses multiplies this by \u2223H\u2223|\\mathcal H|\u2223H\u2223; making the result at most \u03b4\\delta\u03b4 gives the sample size. The class size enters only through ln\u2061\u2223H\u2223\\ln|\\mathcal H|ln\u2223H\u2223, so a class can be astronomically large and still be learnable. Then ml-4.4 turns uniform convergence into agnostic learning.For a nonempty finite class, the union estimate is 2\u2223H\u2223e\u22122m\u03b522|\\mathcal H|e^{-2m\\varepsilon^2}2\u2223H\u2223e\u22122m\u03b52. Positivity and monotonicity of the exponential, and its inverse logarithm (pma 8.6), make the requirement that this is at most \u03b4\\delta\u03b4 equivalent to 2m\u03b52\u2265log\u2061(2\u2223H\u2223/\u03b4)2m\\varepsilon^2\\ge\\log(2|\\mathcal H|/\\delta)2m\u03b52\u2265log(2\u2223H\u2223/\u03b4). Replacing representativeness accuracy by half the desired excess risk then gives the second displayed sample bound.Before applying Hoeffding, keep hhh fixed and require its loss as a function of the example to be measurable. Each loss is measurable with respect to its own example-coordinate sigma-field, and those sigma-fields are independent. The proof of PROB 2.1.10 therefore transfers independence to the losses, even for an abstract measurable example domain ZZZ; identical example laws give the same loss law and mean. This establishes the i.i.d. premise used for each fixed hypothesis. It does not treat the selected minimizer as independent of the sample: the finite union over fixed hhh supplies the uniform statement, and the logarithm calculation above only inverts its bound.",
+          "overflow": []
+        }
+      }
+    ],
+    "errors": []
+  }
+}
