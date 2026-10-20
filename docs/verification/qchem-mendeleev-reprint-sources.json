@@ -1,0 +1,111 @@
+{
+  "reader": "https://ru.djvu.online/file/xty8kYbSpDPfG",
+  "edition": "D. I. Mendeleev, Periodicheskii zakon, edited by B. N. Menshutkin, Gosizdat, Moscow–Leningrad,1926",
+  "article": "Соотношение свойств с атомным весом элементов",
+  "pages": "4–20; original1869journal citation60–77 printed on opening page",
+  "acquisition": "Public displayed page images saved through ordinary reader. Complete reprint text read; no CAPTCHA, paywall or access control bypass. This is edited reprint typography, not the original1869facsimile.",
+  "pagesDownloaded": [
+    {
+      "scan": 9,
+      "printed": 4,
+      "sha256": "360ba8e225edc56161c67d648de1853a89806307857f8f8685407f715bee00ea",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/009.webp"
+    },
+    {
+      "scan": 10,
+      "printed": 5,
+      "sha256": "00eea27ab648b311d12d56fa9daa3470c1bd4f69eecda18a890397097b457593",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/010.webp"
+    },
+    {
+      "scan": 11,
+      "printed": 6,
+      "sha256": "ed9ba3a8162b1fe82ae716880d0c37c1d66ca83afe76b9c3072610118f5249b9",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/011.webp"
+    },
+    {
+      "scan": 12,
+      "printed": 7,
+      "sha256": "549130fc0967a8488e68aa2bd81acbfa0824e2989b12efe1b80059f674838784",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/012.webp"
+    },
+    {
+      "scan": 13,
+      "printed": 8,
+      "sha256": "ba7738b7ecce81cc206068d871f25ffbdbd561d9831002ee765211275eb13f95",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/013.webp"
+    },
+    {
+      "scan": 14,
+      "printed": 9,
+      "sha256": "3b5aadeed2688efe127d44f972b319dae08755b26c8fb2467fa703ae338579c7",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/014.webp"
+    },
+    {
+      "scan": 15,
+      "printed": 10,
+      "sha256": "5a13fac254ded3837acf645135b583c928bc9884d8457819b094e08ffd000fe4",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/015.webp"
+    },
+    {
+      "scan": 16,
+      "printed": 11,
+      "sha256": "486e56a1af0ddc5baa58b712a71434119d9e6d1c729736deb6c5cf1d9364c1dc",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/016.webp"
+    },
+    {
+      "scan": 17,
+      "printed": 12,
+      "sha256": "4fba7f30768ebd7562ff3d82f5f3104d9ff0e164032a31f34d10481356fa178e",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/017.webp"
+    },
+    {
+      "scan": 18,
+      "printed": 13,
+      "sha256": "b4a0f61cb62c4a2ddbf7c1dfa645f157c509a3cae8c7051b7cc8f8d3d109b002",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/018.webp"
+    },
+    {
+      "scan": 19,
+      "printed": 14,
+      "sha256": "596c20711c7b388623d882773bd1a4ba379a077d7b46a665fa819d8a3391e2bf",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/019.webp"
+    },
+    {
+      "scan": 20,
+      "printed": 15,
+      "sha256": "6b02b5a1d36fc59d2844b4298d0017f9aa782e28ff1e2696310ea6efc14a69f2",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/020.webp"
+    },
+    {
+      "scan": 21,
+      "printed": 16,
+      "sha256": "099cd162a199c58efeef0e61aa1af8d39937235eeeb0917571d301fcd6dfdfe7",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/021.webp"
+    },
+    {
+      "scan": 22,
+      "printed": 17,
+      "sha256": "525e575e3cf71dfb7fff5b46e7f9a413502e7ccc9cc4ab6480d559d38d09e365",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/022.webp"
+    },
+    {
+      "scan": 23,
+      "printed": 18,
+      "sha256": "678ff86f7ef8717f0ff00b915858e3fa8dac74e935b836f6dfa423f1579845d3",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/023.webp"
+    },
+    {
+      "scan": 24,
+      "printed": 19,
+      "sha256": "4004d6c0c5f2d573bcb596a8d5588a70db314b0d8c4f37f27a9f91e41d090e5f",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/024.webp"
+    },
+    {
+      "scan": 25,
+      "printed": 20,
+      "sha256": "0713335d298fc384b761328d1077560d338875e15bc6b0d5795fa2ac07ecca76",
+      "url": "https://ru.djvu.online/jpg1/x/t/y/xty8kYbSpDPfG/025.webp"
+    }
+  ]
+}

@@ -119,8 +119,8 @@ export default {
           pic: 'Turn relativity on and off for group 11: the 6s orbital contracts, the 5d–6s gap narrows, and the computed absorption edge of gold moves from the ultraviolet into the blue, turning silver-white metal yellow.' },
         { num: '3.13', kind: 'Paper', name: 'Properties and atomic weights of the elements',
           paper: { authors: 'D. Mendeleev', year: 1869, title: 'Соотношение свойств с атомным весом элементов (The relation of the properties to the atomic weights of the elements)', venue: 'Zhurnal Russkago Khimicheskago Obshchestva 1: 60–77', url: 'https://babel.hathitrust.org/cgi/pt?id=mdp.39015065536586&seq=70' },
-          introduces: [], deps: ['pchem-1.3'], refs: [],
-          pic: 'Arrange the 63 elements known in 1869 by atomic weight as Mendeleev did and watch valence and chemistry recur period by period; keep the gaps he marked “?” near atomic weights 45, 68 and 70, predict what fills them by interpolating neighbours, and compare with scandium, gallium and germanium when they were found.' },
+          introduces: [], deps: ['qchem-3.9'], refs: ['Mendeleev, complete1869 article in the1926 Menshutkin reprint, pp.4–20; Giunta complete German-abstract translation'],
+          pic: 'Explore a modern responsive reflow of the German abstract's62 named table entries, joint Ni=Co and four anonymous weights45/68/70/180. Separate authored toy arithmetic from Mendeleev's claims and disclose differences from the complete Russian article's1926 reprint.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 4

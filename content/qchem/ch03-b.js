@@ -276,15 +276,15 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
       paper: { authors: 'D. Mendeleev', year: 1869, title: 'Соотношение свойств с атомным весом элементов (The relation of the properties to the atomic weights of the elements)', venue: 'Zhurnal Russkago Khimicheskago Obshchestva 1: 60–77', url: 'https://babel.hathitrust.org/cgi/pt?id=mdp.39015065536586&seq=70' },
       introduces: [],
       credit: 'D. Mendeleev, 1869',
-      statement: String.raw`The 1869 German abstract arranges elements by atomic weight and chemical analogy. Its eight comments connect the arrangement with valence, anticipate analogues of silicon and aluminium with weights 65–75, and propose correcting some weights. The table contains four anonymous entries at weights 45, 68, 70 and 180. This historical classification is not a fixed seven-element cycle and is not the modern periodic table.`,
-      scope: String.raw`Verified here: Carmen Giunta's complete translation of the German abstract, Zeitschrift für Chemie 12, 405–406 (1869), including its table and eight comments. The named Russian paper, pp. 60–77, has not been obtained in full; its review remains open. The displayed values and question marks follow the abstract's table, including the joint entry Ni=Co=59. Our weight-sorted reflow is not its original arrangement, whose analogous elements occupy horizontal rows. The interpolation switch is an arithmetic illustration supplied by this atlas, not a reconstruction of Mendeleev's reasoning or later predictions.`,
-      idea: String.raw`The abstract puts chemically analogous elements together, compares close weights and increments within families, and uses missing entries to suggest further elements. Its seventh comment proposes changing tellurium's weight from 128 to 123–126; that historical proposal must not be presented as a successful modern correction. The seven colors below identify selected families only: they do not count elements in a universal repeating period. Atomic number, rather than atomic weight, orders the modern periodic system.`,
+      statement: String.raw`Mendeleev's 1869 article, read in its complete1926 reprint, arranges elements by atomic weight and chemical analogy. Its eight conclusions connect the arrangement with valence, anticipate analogues of silicon and aluminium with weights 65–75, and propose correcting some weights. The article and the German abstract both contain four anonymous entries at weights 45, 68, 70 and 180. This historical classification is not a fixed seven-element cycle and is not the modern periodic table.`,
+      scope: String.raw`Verified here: Carmen Giunta's complete translation of the German abstract, Zeitschrift für Chemie 12, 405–406 (1869), including its table and eight comments. The complete Russian article is also read in B. N. Menshutkin's1926 edited reprint, pp.4–20, whose opening identifies the1869 journal pages60–77. This is a reprint, rather than a facsimile of the1869 typesetting. Its table at p.13 differs from Giunta's German-abstract table: Ru is101.4 rather than104.4, and Bi210 has no question mark. The displayed table deliberately retains the German-abstract version; the two versions are not silently conflated. The displayed values and question marks follow the abstract's table, including the joint entry Ni=Co=59. Our weight-sorted reflow is not its original arrangement, whose analogous elements occupy horizontal rows. The interpolation switch is an arithmetic illustration supplied by this atlas, not a reconstruction of Mendeleev's reasoning or later predictions.`,
+      idea: String.raw`The Russian article and the abstract put chemically analogous elements together, compares close weights and increments within families, and uses missing entries to suggest further elements. Its seventh comment proposes changing tellurium's weight from 128 to 123–126; that historical proposal must not be presented as a successful modern correction. The seven colors below identify selected families only: they do not count elements in a universal repeating period. Atomic number, rather than atomic weight, orders the modern periodic system.`,
       caption: String.raw`Upper panel: a modern weight-sorted reflow of the German abstract's entries, wrapped at Li, Na, K, Rb and Cs. Dashed entries retain printed question marks; the four anonymous entries remain visible. The lower panel plots selected family indices 1–7, an arbitrary color key rather than a measured quantity or a fixed cycle. Move the weight cut-off and toggle **show toy interpolations**: the printed values 45, 68 and 70 are compared with simple arithmetic between neighboring weights. The 45 entry is in the abstract's bottom region, not its boron-family row; it is omitted from the selected-family plot.`,
       deps: ['qchem-3.9'],
-      refs: ['Mendelejeff, Zeitschrift für Chemie 12 (1869), 405–406, complete abstract translated by Carmen Giunta'],
+      refs: ['Mendeleev,1926 Menshutkin-edited reprint of the complete1869 article, pp.4–20, especially table p.13 and conclusions pp.19–20', 'Mendelejeff, Zeitschrift für Chemie12 (1869),405–406, complete abstract translated by Carmen Giunta'],
       tags: ['Mendeleev', 'periodic law', 'history'],
       verify: true,
-      links: { giunta: 'https://webserver.lemoyne.edu/~giunta/EA/MENDELEEVann.HTML', wikipedia: 'https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements' },
+      links: { reprint:'https://ru.djvu.online/file/xty8kYbSpDPfG', giunta: 'https://webserver.lemoyne.edu/~giunta/EA/MENDELEEVann.HTML', wikipedia: 'https://en.wikipedia.org/wiki/Mendeleev%27s_predicted_elements' },
       viz(v) {
         // Mendeleev's 1869 table, family = our selected color index (original analogous families are horizontal). w: printed weight; q: printed with '?'; gap: unnamed '?'.
         const E = [
@@ -300,7 +300,7 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
         const pred = { 0: (40 + 50) / 2, 1: 65.2 + (75 - 65.2) / 3, 2: 65.2 + (2 * (75 - 65.2)) / 3 };
         const cut = v.slider('weight cut-off (hydrogen = 1)', 10, 210, 210, { step: 1 });
         const fill = v.toggle('show toy interpolations', false);
-        const sT = v.stage({ x: [0, 20], y: [-6.1, 0.2], axes: false, height: 400, full: true, title: 'the elements in order of atomic weight, wrapped at each alkali metal' });
+        const sT = v.stage({ x: [0, 20], y: [-6.1, 0.2], axes: false, height: 700, minWidth:240, full: true, title: 'weight-sorted reflow; rows restart at alkalis and wrap to fit' });
         const sF = v.stage({ x: [0, 215], y: [0, 8], axes: 'box', gutter: true, height: 300, full: true, xlabel: 'atomic weight (1869)', ylabel: 'family 1 … 7 (Li, Be, B, C, N, O, F)', title: 'selected family indices (not a seven-element period)' });
         const FC = [null, 'red', 'orange', 'gold', 'green', 'teal', 'accent', 'purple'];
         let st = null;
@@ -308,9 +308,9 @@ the energy cost of giving an electron to the atom and the gain from taking one, 
           const W = cut.value, f = fill.value;
           const all = [...E, ...GAPS].sort((a, b) => a.w - b.w);
           // rows start at each alkali metal
-          const starts = ['Li', 'Na', 'K', 'Rb', 'Cs']; let row = 0; const rows = [[]]; // row 0: H
-          all.forEach((e) => { if (e.w > W) return; if (starts.includes(e.sym)) { row++; rows[row] = []; } rows[row].push(e); });
-          sT.setView([0, Math.max(1, ...rows.map(r => r.length))], [-6.1, 0.2]);
+          const starts = ['Li', 'Na', 'K', 'Rb', 'Cs'], cols=Math.max(4,Math.floor((sT.width||1100)/56)); let row = 0; const rows = [[]];
+          all.forEach((e) => { if (e.w > W) return; if (rows[row].length && (starts.includes(e.sym)||rows[row].length>=cols)) { row++; rows[row] = []; } rows[row].push(e); });
+          sT.setView([0, Math.max(1, ...rows.map(r => r.length))], [-rows.length-.1, 0.2]);
           rows.forEach((r, ri) => r.forEach((e, ci) => {
             const gp = e.gap, fam = e.fam, col = gp ? 'ink' : FC[fam] || 'muted', hollow = gp || e.q;
             sT.rect(ci + 0.04, -ri - 0.92, ci + 0.96, -ri - 0.04, { color: gp ? (f ? 'gold' : 'faint') : col, fill: hollow ? false : col, fillAlpha: hollow ? 0 : 0.35, width: gp ? 1.8 : 1.1, dash: hollow ? true : undefined });

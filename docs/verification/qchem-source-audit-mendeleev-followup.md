@@ -1,4 +1,22 @@
-# Mendeleev abstract corrections; Russian-paper review stays pending
+# Mendeleev1869: complete Russian reprint and abstract comparison
+
+Coordinator candidate for independent acceptance. `qchem-3.13` retains its source flag until peer review. The complete Russian article has now been read in the1926 Menshutkin-edited collected reprint, printed pp.4–20 (reader scans9–25). The opening explicitly identifies the1869 article and journal pages60–77; the next article begins on printed p.21. This closes the earlier access gap through a complete primary-text reprint, rather than claiming that the original1869 typesetting was obtained.
+
+## Primary text and actual page evidence
+
+[Complete public1926reprint](https://ru.djvu.online/file/xty8kYbSpDPfG). The National Electronic Library [catalog](https://rusneb.ru/catalog/000219_000011_RU_%D0%93%D0%9F%D0%9D%D0%A2%D0%91_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8_IBIS_0000647791/) independently identifies the edition, editor and library holdings. Its PDF download was unavailable; it is used for bibliography only. The ordinary public reader displayed all17article pages. Their actual image files were saved through the browser, with exact URLs and SHA256 hashes in `qchem-mendeleev-reprint-sources.json`; local copies are `/tmp/atlas-coordinator/sources/mendeleev-1926/`. No CAPTCHA or access control was bypassed.
+
+Read the complete reprint text: pp.4–7 examine limitations of metal/metalloid, chemical-order and valence-only classifications; pp.8–12 discuss natural families, triads, atomic weight, ordering and proposed tellurium correction; pp.13–18 give the table, alternative layouts, unresolved transition-metal/rare-earth placements and speculative analogies; pp.19–20 contain all eight conclusions and the closing paragraph. Actual opening, table p.13, and conclusion pp.19–20 pixels were inspected at full source resolution, including all table symbols/weights and the123–126? proposal. This is historical classification, not a modern endorsement of its incorrect weights or analogies.
+
+The reprint table and Giunta's complete German-abstract translation differ materially: reprint Ru101.4 versus abstract104.4; reprint Bi210 versus abstract210?. The widget deliberately retains the abstract table, now explicitly distinguishing the two versions. Both have joint Ni=Co=59, four anonymous weights45/68/70/180 and horizontal analogous families. The eight conclusions support valence comparisons and expected Al/Si analogues65–75; they do not justify the former fixed seven-element cycle,63-entry count or the atlas's illustrative interpolation as Mendeleev's calculation. The uncorrected syllabus row still made those claims; it now matches the audited item and actual prerequisite.
+
+## Native layout repair and validation
+
+Fresh320px inspection found the old weight-sorted table rendered up to20cells across, causing overlapping labels despite contained rectangle centers. The table now wraps according to actual stage width (at least56px per cell at narrow sizes), starts new rows at alkalis and expands its vertical data range for all rows. This is explicitly a modern reflow. The source table and toy arithmetic are unchanged.
+
+`node --test tests/verification-qchem-source-audit-mendeleev.test.mjs`:3groups pass, including all201integer cutoffs at both240/1100px mock widths, full entry/gap transcription and disclosed source versions. `node tests/verification-qchem-source-audit-mendeleev.mjs`:6groups pass at1600/430/320px in light/dark,8actual cutoff values and the real toggle in each group, complete table-label nonoverlap and bounds, geometry, page/TeX/runtime checks. Log `/tmp/atlas-coordinator/qchem-mendeleev-native.log`. Fresh output screenshots `/tmp/atlas-coordinator/qchem-mendeleev-abstract-reflow-WIDTH-THEME.png`; narrow light/dark table and family panels inspected after the wrap fix. Independent peer acceptance is recorded separately in the coordinator ledger.
+
+## Earlier partial correction (historical record)
 
 `qchem-3.13`, `content/qchem/ch03-b.js`: supported partial correction only. `verify:true` intentionally remains. The named item is the Russian paper in *Zhurnal Russkago Khimicheskago Obshchestva* 1 (1869), 60–77. Neither the HathiTrust item nor a 14-page preview of a later collected reprint supplied its full text. Catalog metadata and a complete German abstract are not a full-paper review.
 
