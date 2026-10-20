@@ -42,9 +42,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent actual-mesh count/storage census peer; CIRC boundaries preserved",
+      "current": "CIRC two-row metadata followup complete; mesh peer complete",
       "owns": [
-        "Unique non-timing mesh census peer reports/tests only"
+        "CIRC two-row/report followup; unique completed mesh peer evidence"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "POPGEN genuine prerequisite production; BIOINF candidate under peer",
+      "current": "POPGEN equivalent statement-wrap followup; TOC peer next",
       "owns": [
-        "POPGEN written items/matching rows/unique reports/tests"
+        "Seven POPGEN statement fields and unique explicit evidence; then unique TOC peer files"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "MACRO genuine prerequisite production; EPI peer complete",
+      "current": "Independent CIRC peer awaiting exact row followup; MACRO notation delivered",
       "owns": [
-        "MACRO written items/matching rows/unique reports/tests"
+        "Unique CIRC peer files; completed MACRO notation report"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -2079,15 +2079,32 @@
       "sourceClosure": "None; functions/helpers/flags unchanged.",
       "bridgeReview": "No changed IDs are existing bridge steps.",
       "followup": "3.8expectation explicitly requires common valid placements,3.2existingFekete row backfilled,4.12LSEpositiveargument typo corrected."
+    },
+    {
+      "collection": "macro",
+      "commits": [
+        "a7f647f181ee4575efb60253c9ee3f7680661600",
+        "baf0631514059e1699f7124670423c4098928a8b",
+        "16ff6f4919ef80bd00f468cd5651c3f59ad1477f"
+      ],
+      "publishedBefore": 9,
+      "publishedAfter": 25,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/macro-crossfield-prerequisite-peer.md",
+      "sourceClosure": "None; functions/helpers/flags preserved.",
+      "bridgeReview": "No changed IDs are bridge steps.",
+      "followup": "Three justified raw row omissions backfilled; signed residual coefficient beta_x distinguished from positive convergence b."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 575,
-    "publishedBelow25": 29,
+    "publishedShortfall": 559,
+    "publishedBelow25": 28,
     "collections": 64,
-    "wholeSyllabusBelow25": 23,
+    "wholeSyllabusBelow25": 22,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Nineteen further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twenty further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -2192,6 +2209,16 @@
       "loadedEdges": 23218,
       "method": "Correctness-only three-state smoke; exact complete original raster/cache history promoted to DOM. No timing.",
       "limitation": "Same-LOD ratio1.375 fails retained direct-paint mean bound2/255: candidate2.529006,production2.533013. Later matrix/lifecycle/native checks unrun. Original CSS served bytes not frozen; observed hash disclosed. Production unchanged."
+    },
+    {
+      "candidate": "b5b680b8e1d4645bcf6508d49f8cf9f6d72e999c",
+      "peer": "7da1da8c0743178f5ba25ad9cd86669a1c1c9a0a",
+      "status": "accepted-bounded-diagnostic-only",
+      "report": "docs/verification/map-segment-mesh-census-independent-peer.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23364,
+      "method": "Frozen68aa4e2 actual-upload conservative enclosure/counts and storage, four states; independent source/membership/corner recount.",
+      "limitation": "No alternate indices submitted, no pixel/performance/production fit claim. Oversized retained CPU membership and selected full-capacity scratch exceed64MB. Exact regenerated membership and bounded scratch remain separate feasibility work."
     }
   ],
   "accountingSafeguards": [

@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **29 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 575 edges. Even
-including planned items and planned prerequisites, **23 collections remain below 25**.
+Of 64 non-math collections, **28 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 559 edges. Even
+including planned items and planned prerequisites, **22 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -242,3 +242,8 @@ The [EPI peer](epi-prerequisites-independent-peer.md) accepts fifteen inputs acr
 The [BIOINF peer](bioinf-crossfield-prerequisite-peer.md) accepts fifteen inputs across eleven consumers,10/15/31→25/30/46. All47objects/functions/flags/full raw item/row lists pass, including an existingFekete row backfill. Common valid seed placements and the LSEoverflow sign are precisely qualified/corrected; independent mathematics and22narrow theme outputs pass. No bridge is touched. Accepted shortfall575,29/64below25published,23whole syllabi below25.
 
 The separately [reviewed accounting tool](cross-field-accounting-independent-peer.md) preserves explicit exclusions and acceptance metadata by default, rejects stale/unknown/duplicate exclusions before writing, and keeps raw output separate. Its frozen fixtures and isolated CLI checks do not access source content or certify candidate arguments. The actual accepted/raw inventories differ only by the one frozen edge.
+
+
+## Accepted macroeconomics inputs and signed regression notation
+
+The [combined MACRO peer](macro-crossfield-prerequisite-peer.md) accepts sixteen used inputs across fifteen consumers,9/12/15→25/28/31. All48objects/functions/flags/helpers/full raw lists, three justified row repairs and signed-beta clarification pass. Independent QR checks on actual full/OECD samples, theorem calculations and30base+2followup narrow-theme proofs support the review. No bridge is touched. Accepted shortfall559,28/64published collections below25,22whole syllabi below25.

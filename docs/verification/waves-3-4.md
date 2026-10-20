@@ -987,3 +987,6 @@ Exact [68aa4e2checkpoint](checkpoint-68aa4e2.md) passes2,152default tests, all6U
 
 
 [BIOINF](bioinf-crossfield-prerequisite-peer.md) adds fifteen independently accepted inputs; live575shortfall,29/64below25published,23whole syllabi below25. The [accounting safeguard](cross-field-accounting-independent-peer.md) prevents accidental loss of explicit frozen-edge exclusions during regeneration. Both are later than the2152-test checkpoint. Sourcequeue5 unchanged.
+
+
+[MACRO](macro-crossfield-prerequisite-peer.md) adds sixteen accepted inputs after signed-beta clarification: live559shortfall,28/64below25published,22whole syllabi below25. Sourcequeue5unchanged. The [actual-mesh census peer](map-segment-mesh-census-independent-peer.md) independently reproduces conservative filtering counts and explicit memory deficits on the2152-test frozen data; it accepts no renderer binding, pixel result, faster frame or production fit.
