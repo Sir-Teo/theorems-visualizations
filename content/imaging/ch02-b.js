@@ -1,3 +1,4 @@
+import { twoMaterialSystem, solveTwoMaterial } from './ch02-dual-energy.shared.js';
 // Medical Imaging — Chapter 2 (part 2): 2.6 projection geometry, 2.7 scatter and grids, 2.8 contrast agents and the K-edge, 2.9 dual-energy imaging.
 import {
   clamp, fx, pct, mean, sd, MATS, mu, massAtt, kEdge, tubeSpectrum, transmit, meanEnergy, energyFluence, E_GRID, showImage, frame, poisson,
@@ -269,15 +270,16 @@ so contrast is largest in the window just above $E_K$, and the beam spectrum sho
       num: '2.9',
       kind: 'Method',
       name: 'Dual-energy imaging',
-      statement: String.raw`Over the diagnostic range the attenuation of any body material is, to good accuracy, a linear combination of two basis functions of energy (the photoelectric and the Compton behaviour), so two measurements at different energies determine two unknowns. With a soft-tissue (index $s$) and bone (index $b$) basis, the log-attenuations measured at energies $E_1$ and $E_2$ are
-$$\begin{pmatrix}A_1\\A_2\end{pmatrix}=\begin{pmatrix}\mu_b(E_1)&\mu_s(E_1)\\ \mu_b(E_2)&\mu_s(E_2)\end{pmatrix}\begin{pmatrix}t_b\\t_s\end{pmatrix},$$
-and solving the $2\times2$ system at each pixel gives the equivalent bone thickness $t_b$ and soft-tissue thickness $t_s$. Displaying them separately yields a bone-only and a bone-subtracted soft-tissue image: a nodule hidden behind a rib shows up in the soft-tissue image, and a calcified one stays in the bone image. A unique decomposition requires a nonzero matrix determinant. Equal energies give identical rows and a singular system; nearly parallel rows can amplify measurement noise strongly. Merely separating the energy settings does not, by itself, quantify relative conditioning.`,
-      idea: String.raw`Each pixel's Beer–Lambert exponent (imaging-2.3) is a sum over the materials crossed; at two energies the bone/tissue ratio differs because bone's photoelectric absorption falls faster with energy than tissue's (imaging-2.4), so the two equations are independent and the $2\times2$ system is invertible. Noise from counting statistics (Poisson, imaging-1.7) in $A_1$ and $A_2$ is propagated through the matrix inverse, and a nearly singular matrix magnifies it, producing a noisier subtraction than either original image. The determinant criterion (pma 9.36) says that a unique two-material solution exists exactly when the displayed coefficient matrix $A$ has nonzero determinant. For fixed invertible $A$, the condition-number definition (nla 3.1) applied to the data map $F(b)=A^{-1}b$ measures worst relative amplification using its Jacobian $A^{-1}$, for nonzero input and output: perturbing log-attenuation data by $\delta b$ changes the recovered thickness by exactly $A^{-1}\delta b$. This separates sensitivity of the inverse problem from numerical error in a chosen solver; a nonzero determinant alone does not bound noise amplification. The displayed row-angle proxy is $1/|\sin\theta|$ for the angle between the two coefficient rows: it detects near parallelism but omits their relative lengths, so it is not the relative condition number defined by nla 3.1.`,
-      caption: String.raw`A simulated chest: soft tissue, lungs, ribs, spine and a 2 cm nodule placed behind a rib (choose a soft-tissue or calcified nodule). Top row: the two measured images at the energies you set. Bottom row: the solved bone and soft-tissue thickness maps. Bring $E_1$ and $E_2$ close together or lower the photon count and the decomposition turns to noise; spread them apart and the ribs fade from the soft-tissue image (watch the rib contrast in the readout fall), so the nodule stands out against a cleaner background.`,
+      statement: String.raw`Over the diagnostic range the attenuation of any body material is, to good accuracy, a linear combination of two basis functions of energy (the photoelectric and the Compton behaviour), so two independent measurements can determine two unknowns. With a soft-tissue (index $s$) and bone (index $b$) basis, the coefficient matrix at energies $E_1$ and $E_2$ is
+$$A=\begin{pmatrix}\mu_b(E_1)&\mu_s(E_1)\\ \mu_b(E_2)&\mu_s(E_2)\end{pmatrix}.$$
+With $t=(t_b,t_s)^\mathsf T$ and $b=(A_1,A_2)^\mathsf T$, the equations are $At=b$, and a unique solution exists exactly when $\det A\ne0$.
+Solving the invertible $2\times2$ system at each pixel gives the equivalent bone thickness $t_b$ and soft-tissue thickness $t_s$. Displaying them separately yields a bone-only and a bone-subtracted soft-tissue image: a nodule hidden behind a rib shows up in the soft-tissue image, and a calcified one stays in the bone image. A unique decomposition requires a nonzero matrix determinant. Equal energies give identical rows and a singular system; nearly parallel rows can amplify measurement noise strongly. Merely separating the energy settings does not, by itself, quantify relative conditioning.`,
+      idea: String.raw`Each pixel's Beer–Lambert exponent (imaging-2.3) is a sum over the materials crossed. Bone's photoelectric absorption falls faster with energy than tissue's (imaging-2.4); when the selected energies give different bone/tissue attenuation ratios, the two equations are independent and the $2\times2$ system is invertible. Noise from counting statistics (Poisson, imaging-1.7) in $A_1$ and $A_2$ is propagated through the matrix inverse, and a nearly singular matrix magnifies it, producing a noisier subtraction than either original image. The determinant criterion (pma 9.36) says that a unique two-material solution exists exactly when the displayed coefficient matrix $A$ has nonzero determinant. For fixed invertible $A$, the condition-number definition (nla 3.1) applied to the data map $F(b)=A^{-1}b$ measures worst relative amplification using its Jacobian $A^{-1}$, for nonzero input and output: perturbing log-attenuation data by $\delta b$ changes the recovered thickness by exactly $A^{-1}\delta b$. This separates sensitivity of the inverse problem from numerical error in a chosen solver; a nonzero determinant alone does not bound noise amplification. The displayed row-angle proxy is $1/|\sin\theta|$ for the angle between the two coefficient rows: it detects near parallelism but omits their relative lengths, so it is not the relative condition number defined by nla 3.1.`,
+      caption: String.raw`A simulated chest: soft tissue, lungs, ribs, spine and a 2 cm nodule placed behind a rib (choose a soft-tissue or calcified nodule). Top row: the two measured images at the energies you set. Bottom row: the solved bone and soft-tissue thickness maps when the matrix is invertible. Equal energies instead show explicit unavailable panels: there is no unique decomposition. Bring $E_1$ and $E_2$ close together or lower the photon count and the decomposition turns to noise; spread them apart and the ribs fade from the soft-tissue image (watch the rib contrast in the readout fall), so the nodule stands out against a cleaner background.`,
       deps: ['imaging-2.4', 'pma-9.36', 'nla-3.1'],
       tags: ['dual energy', 'material decomposition', 'subtraction'],
       refs: ['Prince–Links ch. 5'],
-      scope: String.raw`Monoenergetic beams at $E_1,E_2$ (real systems use two kVp spectra with a copper filter, which brings beam hardening back and needs calibration); no scatter; materials restricted to bone and soft tissue, so a contrast agent or metal breaks the two-material assumption. The row-angle proxy is the product of the coefficient-row norms divided by the absolute determinant; it is not a matrix norm condition number. At equal energies the inverse does not exist: the inherited numerical decomposition has unguarded singular divisions, so those images and derived noise metrics are undefined.`,
+      scope: String.raw`Monoenergetic beams at $E_1,E_2$ (real systems use two kVp spectra with a copper filter, which brings beam hardening back and needs calibration); no scatter; materials restricted to bone and soft tissue, so a contrast agent or metal breaks the two-material assumption. The row-angle proxy is the product of the coefficient-row norms divided by the absolute determinant; it is not a matrix norm condition number. At equal energies the inverse does not exist. The two measured images remain available, while the thickness panels explicitly withhold decomposition: identical measured equations have nonunique real solutions, and unequal noisy measurements give inconsistent exact equations. This is a valid rank-failure example, not a malformed control state.`,
       viz(v) {
         const N = 80;
         const mk = (title) => v.stage({ x: [0, N], y: [0, N], equal: true, axes: false, height: 250, minWidth: 190, title });
@@ -285,6 +287,10 @@ and solving the $2\times2$ system at each pixel gives the equivalent bone thickn
         const e1 = v.slider('low energy $E_1$ (keV)', 30, 80, 45, { step: 1, int: true });
         const e2 = v.slider('high energy $E_2$ (keV)', 40, 140, 80, { step: 1, int: true });
         const dose = v.slider('incident photons per pixel', 1e4, 1e8, 3e6, { log: true, sig: 2, fmt: (x) => x.toExponential(1).replace('e+', '×10^') });
+        // Exact continuous physical restores coexist with two-significant-digit native input.
+        dose.input.step = 'any';
+        dose.set(dose.value);
+        dose.input.addEventListener('input', () => dose.set(dose.value));
         const nod = v.select('nodule', [{ value: 'soft', label: 'soft tissue' }, { value: 'calc', label: 'calcified' }], 'soft');
         // phantom (thickness maps, cm)
         const rib = (k, x) => 0.28 + 0.095 * k + 0.32 * (x - 0.5) ** 2;
@@ -313,13 +319,18 @@ and solving the $2\times2$ system at each pixel gives the equivalent bone thickn
           const key = `${e1.value}|${e2.value}|${dose.value}|${nod.value}`;
           if (cache.key === key) return cache;
           const { ts, tb, nodMask } = MAPS[nod.value], r = v.rng(21), n = N * N;
-          const a11 = mub(e1.value), a12 = mus(e1.value), a21 = mub(e2.value), a22 = mus(e2.value), det = a11 * a22 - a12 * a21;
-          const A1 = new Float64Array(n), A2 = new Float64Array(n), Tb = new Float64Array(n), Ts = new Float64Array(n);
+          const a11 = mub(e1.value), a12 = mus(e1.value), a21 = mub(e2.value), a22 = mus(e2.value);
+          const system = twoMaterialSystem(a11, a12, a21, a22), { det, singular } = system;
+          const A1 = new Float64Array(n), A2 = new Float64Array(n), Tb = singular ? null : new Float64Array(n), Ts = singular ? null : new Float64Array(n);
+          let nonunique = 0, inconsistent = 0;
           for (let q = 0; q < n; q++) {
             const x1 = a11 * tb[q] + a12 * ts[q], x2 = a21 * tb[q] + a22 * ts[q], N0 = dose.value;
             const c1 = poisson(N0 * Math.exp(-x1), r), c2 = poisson(N0 * Math.exp(-x2), r);
             A1[q] = -Math.log(Math.max(c1, 0.5) / N0); A2[q] = -Math.log(Math.max(c2, 0.5) / N0);
-            Tb[q] = (a22 * A1[q] - a12 * A2[q]) / det; Ts[q] = (-a21 * A1[q] + a11 * A2[q]) / det;
+            const solution = solveTwoMaterial(system, A1[q], A2[q]);
+            if (solution.status === 'unique') { Tb[q] = solution.bone; Ts[q] = solution.soft; }
+            else if (solution.status === 'nonunique') nonunique++;
+            else inconsistent++;
           }
           // visibility of the nodule: contrast between nodule core and a surrounding ring, in units of the ring's spread
           const core = [], side = [], p1 = [], p2 = [];
@@ -334,7 +345,8 @@ and solving the $2\times2$ system at each pixel gives the equivalent bone thickn
           const cnr = (I, a, b) => (Math.abs(mean(a.map((q) => I[q])) - mean(b.map((q) => I[q]))) * 0.943) / sd(p2.map((q) => resid(I, q)));
           const vis = (I) => cnr(I, core, side), rib1 = (I) => cnr(I, p1, p2);
           const bgq = []; for (let j = 36; j < 44; j++) for (let i = 52; i < 60; i++) bgq.push(j * N + i);
-          cache = { key, A1, A2, Tb, Ts, det, cond: Math.abs(a11 * a22) + Math.abs(a12 * a21) > 0 ? (Math.hypot(a11, a12) * Math.hypot(a21, a22)) / Math.abs(det) : Infinity, vA: vis(A1), vB: vis(A2), vT: vis(Ts), vBn: vis(Tb), rA: rib1(A1), rB: rib1(A2), rT: rib1(Ts), rBn: rib1(Tb), sb: sd(bgq.map((q) => Tb[q])), ss: sd(bgq.map((q) => Ts[q])) };
+          cache = { key, A1, A2, Tb, Ts, det, singular, nonunique, inconsistent, cond: system.rowAngleProxy, vA: vis(A1), vB: vis(A2), rA: rib1(A1), rB: rib1(A2),
+            ...(singular ? {} : { vT: vis(Ts), vBn: vis(Tb), rT: rib1(Ts), rBn: rib1(Tb), sb: sd(bgq.map((q) => Tb[q])), ss: sd(bgq.map((q) => Ts[q])) }) };
           return cache;
         };
         v.render(() => {
@@ -343,14 +355,22 @@ and solving the $2\times2$ system at each pixel gives the equivalent bone thickn
           const [l1, h1] = win(c.A1), [l2, h2] = win(c.A2);
           showImage(sA, c.A1, N, N, { lo: l1 - 0.2, hi: h1, id: 'a' }); frame(sA, N, N);
           showImage(sB, c.A2, N, N, { lo: l2 - 0.2, hi: h2, id: 'b' }); frame(sB, N, N);
-          showImage(sBone, c.Tb, N, N, { lo: -0.4, hi: 3.6, id: 'c' }); frame(sBone, N, N);
-          showImage(sSoft, c.Ts, N, N, { lo: 4, hi: 30, id: 'd' }); frame(sSoft, N, N);
-          for (const s of [sA, sB, sBone, sSoft]) s.circle(nx * N, N - ny * N, nr * N * 1.5, { color: 'gold', width: 1.5, stroke: true, fill: false });
+          if (c.singular) {
+            for (const s of [sBone, sSoft]) {
+              s.text('No unique decomposition', N / 2, N * 0.55, { align: 'center', size: 14, color: 'ink' });
+              s.text('equal-energy rows', N / 2, N * 0.43, { align: 'center', size: 12, color: 'muted' });
+            }
+          } else {
+            showImage(sBone, c.Tb, N, N, { lo: -0.4, hi: 3.6, id: 'c' }); frame(sBone, N, N);
+            showImage(sSoft, c.Ts, N, N, { lo: 4, hi: 30, id: 'd' }); frame(sSoft, N, N);
+          }
+          for (const s of c.singular ? [sA, sB] : [sA, sB, sBone, sSoft]) s.circle(nx * N, N - ny * N, nr * N * 1.5, { color: 'gold', width: 1.5, stroke: true, fill: false });
           st = c;
         });
         v.legend([['gold', 'where the nodule is (behind the 3rd rib)']]);
         v.readout(() => {
           if (!st) return '';
+          if (st.singular) return `**No unique decomposition:** equal energies give identical coefficient rows, determinant $0$, and an unbounded row-angle proxy. The measured images remain available. Of ${N * N} measured pixel pairs, ${st.nonunique} have matching equations with nonunique real thickness pairs; ${st.inconsistent} have unequal noisy measurements and inconsistent exact equations. Bone/tissue maps and their derived noise or contrast metrics are not defined.`;
           return `Matrix determinant $${fx(st.det, 3)}$ (row-angle proxy $${fx(st.cond, 1)}$): this proxy measures near-parallel rows, not the relative condition number. Noise in a uniform region: $\\sigma(t_b)=${fx(st.sb, 2)}$ cm, $\\sigma(t_s)=${fx(st.ss, 1)}$ cm.\nContrast-to-noise ratio of the nodule against its neighbours along the rib: low-energy image $${fx(st.vA, 1)}$, high-energy image $${fx(st.vB, 1)}$, soft-tissue image $${fx(st.vT, 1)}$, bone image $${fx(st.vBn, 1)}$.\nOf a rib (against the gap between ribs): $${fx(st.rA, 1)}$, $${fx(st.rB, 1)}$, $${fx(st.rT, 1)}$ in the soft-tissue image (the ribs are subtracted away) and $${fx(st.rBn, 1)}$ in the bone image.`;
         });
       },
