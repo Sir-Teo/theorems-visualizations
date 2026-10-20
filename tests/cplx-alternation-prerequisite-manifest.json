@@ -1,0 +1,19 @@
+{
+  "baseline": "487f6cd1b422da8e213fe00ef7c12fd5096cd784",
+  "file": "content/cplx/ch03-b.js",
+  "num": "3.8",
+  "target": "logic-2.10",
+  "paragraph": "For the complementation comparison, fix an input x and require finite branching and halting on every computation branch. The contrapositive of K\u00f6nig's lemma (logic 2.10) makes the unfolded computation tree finite: an infinite finitely branching tree would have an infinite branch. Induction on this finite tree then gives the De Morgan duality: swap existential and universal nodes and interchange accepting and rejecting leaves, and each node's Boolean value is negated. In particular an all-universal decider complements the corresponding all-existential decider with swapped halting labels. A looping branch blocks this finite-tree argument; the least-fixed-point convention does not make looping reject in one machine and accept in its dual. Inputwise finiteness alone supplies no polynomial running-time bound.",
+  "beforeIdea": "The computation tree is evaluated like a game tree: an existential node is an OR over its children, a universal node an AND, and halting leaves are the constants accept/reject (this is the NTM of toc-7.6 with the \"some branch\" rule applied only at $\\exists$ states). The accepting computation is therefore not a path but a **subtree**: one child at each $\\exists$ node and all children at each $\\forall$ node. With all states existential the subtree is a single path (a certificate, NP); with all universal there is no choice and the machine accepts when every branch does (coNP); alternating the two kinds gives $\\Sigma_k$ and $\\Pi_k$ by running $k$ blocks of existential/universal states (3.5) \u2014 and, as 3.9 and 3.10 show, unbounded alternation reaches PSPACE and P.",
+  "beforeDeps": [
+    "toc-7.6",
+    "toc-14.6"
+  ],
+  "fullDeps": [
+    "toc-7.6",
+    "toc-14.6",
+    "logic-2.10"
+  ],
+  "depsBeforeSource": "['toc-7.6', 'toc-14.6']",
+  "depsAfterSource": "['toc-7.6', 'toc-14.6', 'logic-2.10']"
+}

@@ -124,7 +124,7 @@ export default {
           pic: 'Merging two adjacent quantifiers of the same kind lets every higher level fold down; toggling the hypothesis animates the tower telescoping to level k.' },
         { num: '3.7', kind: 'Theorem', name: 'Σₖ-SAT is complete for level k', deps: ['cplx-3.5', 'toc-13.4'], refs: ['Arora–Barak ch. 5'],
           pic: 'A quantified formula with k alternating blocks is evaluated as a game tree; the Cook–Levin tableau construction is shown carrying over block by block.' },
-        { num: '3.8', kind: 'Definition', name: 'Alternating Turing machines', deps: ['toc-7.6', 'toc-14.6'], refs: ['Arora–Barak ch. 5'],
+        { num: '3.8', kind: 'Definition', name: 'Alternating Turing machines', deps: ['toc-7.6', 'toc-14.6', 'logic-2.10'], refs: ['Arora–Barak ch. 5'],
           pic: 'A computation tree with ∃ and ∀ nodes is evaluated bottom-up — OR at existential nodes, AND at universal ones — and the reader flips leaf outcomes to change the verdict.' },
         { num: '3.9', kind: 'Theorem', name: 'Alternating polynomial time equals PSPACE', deps: ['cplx-3.8', 'toc-14.7'], refs: ['Arora–Barak ch. 5'],
           pic: 'TQBF is solved by an alternating machine in linear time, and conversely an alternating computation tree is evaluated depth-first with a stack whose size is read out.' },
