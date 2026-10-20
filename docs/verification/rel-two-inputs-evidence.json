@@ -1,0 +1,1023 @@
+{
+  "baseline": "efc33457f48557e2ac0c85f5ad31e11ec45f9683",
+  "prerequisiteCommit": "e4bf3e16de02c4f91eca693fe426b908bde0ca29",
+  "correctionCommit": "70b7f3ded1b33004363deb623e5f9c952fef853e",
+  "counts": {
+    "before": [
+      23,
+      24,
+      46
+    ],
+    "after": [
+      25,
+      26,
+      48
+    ]
+  },
+  "preservation": {
+    "objects": 57,
+    "functions": 57,
+    "syllabusRows": 156,
+    "helpersAndFlags": "unchanged"
+  },
+  "mathGroups": 4,
+  "native": {
+    "productionStates": 4,
+    "text253States": 4,
+    "signedStates": 6,
+    "personallyReadCompleteImages": 30,
+    "browser": "153.0.8010.12",
+    "allBrowsersClosed": true,
+    "noTiming": true
+  },
+  "strictBuild": {
+    "written": 6684,
+    "planned": 6890,
+    "chapters": 450,
+    "collections": 85,
+    "errors": 0,
+    "warnings": 0,
+    "homeGzipBytes": 112713
+  },
+  "static": {
+    "items": 57,
+    "errors": 0,
+    "warnings": 0
+  },
+  "rawInventory": {
+    "baseline": {
+      "collection": "rel",
+      "field": "physics",
+      "target": 25,
+      "writtenToWritten": 23,
+      "writtenToKnown": 24,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 2,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "rel-1.9",
+          "prerequisite": "pma-6.27",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-1.9",
+          "prerequisite": "prob-1.6.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-9.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-3.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.14",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.14",
+          "prerequisite": "ladr-7.93",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.3",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.4",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.7",
+          "prerequisite": "pma-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.1",
+          "prerequisite": "ladr-9.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.1",
+          "prerequisite": "mfd-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-3.4",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.6",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.11",
+          "prerequisite": "ladr-3.110",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.12",
+          "prerequisite": "ladr-9.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.12",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.12",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.13",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.13",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.16",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.1",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-5.5",
+          "prerequisite": "pma-10.51",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.1",
+          "prerequisite": "pma-9.24",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.1",
+          "prerequisite": "mfd-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.2",
+          "prerequisite": "mfd-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.3",
+          "prerequisite": "dg-8.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.4",
+          "prerequisite": "mfd-9.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.5",
+          "prerequisite": "dg-10.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.6",
+          "prerequisite": "dg-9.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.9",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.9",
+          "prerequisite": "dg-8.3",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.10",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.10",
+          "prerequisite": "mfd-9.7",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.11",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.11",
+          "prerequisite": "mfd-11.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.12",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.12",
+          "prerequisite": "mfd-10.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.13",
+          "prerequisite": "mfd-10.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.14",
+          "prerequisite": "dg-9.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.14",
+          "prerequisite": "mfd-4.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-8.6",
+          "prerequisite": "dg-10.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-8.11",
+          "prerequisite": "dg-11.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-11.3",
+          "prerequisite": "pde-6.3",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    },
+    "final": {
+      "collection": "rel",
+      "field": "physics",
+      "target": 25,
+      "writtenToWritten": 25,
+      "writtenToKnown": 26,
+      "wholeSyllabus": 48,
+      "publishedShortfall": 0,
+      "unknown": [],
+      "edges": [
+        {
+          "item": "rel-1.9",
+          "prerequisite": "pma-6.27",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-1.9",
+          "prerequisite": "prob-1.6.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-9.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-3.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.13",
+          "prerequisite": "ladr-3.65",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.14",
+          "prerequisite": "ladr-3.43",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.14",
+          "prerequisite": "ladr-7.93",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.3",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.4",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-2.7",
+          "prerequisite": "pma-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.1",
+          "prerequisite": "ladr-9.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.1",
+          "prerequisite": "mfd-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-3.2",
+          "prerequisite": "ladr-3.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.4",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.5",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.6",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.11",
+          "prerequisite": "ladr-3.110",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-3.12",
+          "prerequisite": "ladr-9.25",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.12",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.12",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.13",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.13",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.16",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.1",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-4.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-5.5",
+          "prerequisite": "pma-10.51",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.1",
+          "prerequisite": "pma-9.24",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.1",
+          "prerequisite": "mfd-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-7.2",
+          "prerequisite": "mfd-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.3",
+          "prerequisite": "dg-8.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.4",
+          "prerequisite": "mfd-9.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.5",
+          "prerequisite": "dg-10.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.6",
+          "prerequisite": "dg-9.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.9",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.9",
+          "prerequisite": "dg-8.3",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.10",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.10",
+          "prerequisite": "mfd-9.7",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.11",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.11",
+          "prerequisite": "mfd-11.2",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.12",
+          "prerequisite": "mfd-10.1",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.12",
+          "prerequisite": "mfd-10.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.13",
+          "prerequisite": "mfd-10.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.14",
+          "prerequisite": "dg-9.4",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-7.14",
+          "prerequisite": "mfd-4.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "rel-8.6",
+          "prerequisite": "dg-10.6",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-8.11",
+          "prerequisite": "dg-11.8",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        },
+        {
+          "item": "rel-11.3",
+          "prerequisite": "pde-6.3",
+          "prerequisiteField": "math",
+          "itemWritten": false,
+          "prerequisiteWritten": false
+        }
+      ]
+    }
+  },
+  "actualTargetProofs": {
+    "content/ladr/ch03.js": {
+      "sameTargetStatementAndProof": true,
+      "actualRootTarget": {
+        "statement": "Suppose $V$ is finite-dimensional and $T\\in\\mathcal L(V,W)$. Then $\\operatorname{range}T$ is finite-dimensional and\n$$\\dim V=\\dim\\operatorname{null}T+\\dim\\operatorname{range}T.$$",
+        "idea": "$\\operatorname{null}T$ is a subspace of $V$ (3.13), so it has a basis $u_1,\\dots,u_m$, which extends to a basis $u_1,\\dots,u_m,v_1,\\dots,v_n$ of $V$ (2.32). Then $Tv_1,\\dots,Tv_n$ is a basis of $\\operatorname{range}T$: it spans because $Tu_k=0$, and it is independent because $\\sum c_jTv_j=0$ puts $\\sum c_jv_j$ in $\\operatorname{null}T=\\operatorname{span}(u_k)$, which the basis forbids unless all $c_j=0$. Counting, $\\dim V=m+n$."
+      }
+    },
+    "content/pma/ch05.js": {
+      "sameTargetStatementAndProof": true,
+      "actualRootTarget": {
+        "statement": "Let $f$ and $g$ be defined on $[a,b]$ and differentiable at a point $x\\in[a,b]$. Then $f+g$ and $fg$ are differentiable at $x$, and so is $f/g$ provided $g(x)\\neq0$; moreover\n(a) $(f+g)'(x)=f'(x)+g'(x)$;\n(b) $(fg)'(x)=f'(x)\\,g(x)+f(x)\\,g'(x)$;\n(c) $\\left(\\dfrac fg\\right)'(x)=\\dfrac{g(x)\\,f'(x)-g'(x)\\,f(x)}{g(x)^2}$.",
+        "idea": "(a) follows from the sum rule for limits (4.4). For (b) split the increment of the product as $f(t)g(t)-f(x)g(x)=f(t)\\,[g(t)-g(x)]+g(x)\\,[f(t)-f(x)]$, divide by $t-x$, and use $f(t)\\to f(x)$, which is Theorem 5.2. For (c) put the increment of $f/g$ over the common denominator $g(t)g(x)$; by 5.2 again it tends to $g(x)^2\\neq0$."
+      }
+    }
+  },
+  "contentHashes": {
+    "content/rel/ch01-b.js": "fef35360e800853beac59c1b6f911b446ed5630f77aa8144948f734743ececd8",
+    "content/rel/ch01-p.js": "7971d5ca043cf6035a0fa4efaccca5ba399f9f54f01cc6505190a879cb2c2bff",
+    "content/rel/ch01-papers.js": "05a0f2f7a09a4d769498b0e4dc94981d70bc0f7bdb334336f4a3a7523cd77059",
+    "content/rel/ch01.js": "9d4bdaf49f572eacdafd5b3d8c207483133ce7f9b154296483f70d30955b7df5",
+    "content/rel/ch01.shared.js": "f050feb25d155cb787423a02c8591ae477f3e1e69ff68e5a03e754d78cd048fc",
+    "content/rel/ch02-b.js": "3666f3d1df076ac268a81a63d6b2947e63622f28a5844bd9a100822ea23d4a2a",
+    "content/rel/ch02.js": "df43929d1878728510f9d0ce215737f9d25432e01cf2b364b0951a3a5f67309b",
+    "content/rel/ch02.shared.js": "064759cf15203bd4b6bc037cfd90ead9314889e417660d5d9973d80d2a3d0094",
+    "content/rel/ch03.js": "5c707ec3b123140c46e418ecf6a536c47f796d324a639590d93906f7cfd6cd0c",
+    "content/rel/ch03.shared.js": "c1bfc7289a2000c637c4b501ed1b64343f93f90d95abfb7541af3b1211fe9ea4",
+    "content/rel/ch04-b.js": "716fa6dc0f5b5dda05edfed6ac55fbd8428773869b2ac47497dbeb435f64fa17",
+    "content/rel/ch04-c.js": "7daafa32a225227c139a548051f0706454793b899b7428e5636ea36edcce4dad",
+    "content/rel/ch04.js": "f1b0f7af6f1f5065fea9f4d631a61a8ed1f64da3ede609904c09f39ee95d00a7",
+    "content/rel/ch04.shared.js": "3a5f77159d2935aefece0d76ab8c6a9487fc3189c99c425c1ad37f5b0127ded3",
+    "content/rel/collection.js": "2cd76de39216163d59f3e4750a2ba9935c47bd1bd36d767539fd2e0ec72ffb3e",
+    "content/rel/rel-source-audit.js": "0534d5aa564e719fea557f6e5bf94f8e74751fac10a29b2480b14f913978d977",
+    "content/rel/syllabus.js": "ed2da362f607cf5a855463c0ffa0e3850532d3fd1a28287abf051bbf165c3155"
+  },
+  "evidenceFiles": [
+    {
+      "path": "/tmp/atlas-rel-two-inputs/actual-targets.json",
+      "bytes": 1584,
+      "sha256": "a8ce25e2c8f2234e883e2a6e729efcbd72012e15007a9ffbb30d755322d94113"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/additions.json",
+      "bytes": 1230,
+      "sha256": "3b49b56d1604a2a6e30aa9373383e12621b57c7aacf6de2574046311902289e4"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/baseline.txt",
+      "bytes": 41,
+      "sha256": "5359762a96bcf70ce7651f580c4471505c8f2c33c4f010b6a4dedf8fcf921816"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/build.log",
+      "bytes": 217,
+      "sha256": "e1cd0871378cb9cc5a3297050ddbfa9e8677e29dff21033092af6d36968973ed"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/native-3.2.png",
+      "bytes": 439224,
+      "sha256": "93481457fd6a10d08f182c0f5a3b14a12a433ecd05bf28fd6a18a68c9ead511a"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/native-3.5.png",
+      "bytes": 470540,
+      "sha256": "7441066a0d3163e505147c32ee42b46d1461cfc2d578af27bea48e4ea7e498de"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/signed-dark.png",
+      "bytes": 157251,
+      "sha256": "4da1aba64c22f8b70232a6a0dede370d6297aae7dc393ae1380c91b4d44ce4b7"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/signed-light.png",
+      "bytes": 158321,
+      "sha256": "e1f31ddad75c382a93c065bad8856d9e37ca46ca52496aeaa2725378cbd014f8"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/text253-3.2.png",
+      "bytes": 442583,
+      "sha256": "3e8b8b6698639f1e53ac0c75d262ac3f4bc467935203f3dbbd05dd1d4afc3787"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/contacts/text253-3.5.png",
+      "bytes": 465501,
+      "sha256": "8db3263793b03ddd9ff2b926c2bdd2e587d0da17c3b076ba867d1f880395b89b"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/inventory.json",
+      "bytes": 17679,
+      "sha256": "4fede487e2f397267714a04ef70757295332d04b23164c3de33fa0d5d2c0cbaf"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/math-final.log",
+      "bytes": 518,
+      "sha256": "c7f7ed738d13d9cd1754e174ae87228dfab2dd595b1d6524a4f6a679aa704ba2"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/math.log",
+      "bytes": 517,
+      "sha256": "fe7204d29c62ba6ac3ab2aec35117f4606e1a5fb3b056c25299e3ec603c93f89"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-dark-caption.png",
+      "bytes": 26412,
+      "sha256": "1942730476faabc683263608f7c3a42960a02c8a5c9c535a36ff0f9630b6968b"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-dark-proof.png",
+      "bytes": 91836,
+      "sha256": "90c4fee8b40c58e40cc9ef104fb92a8a5b2b7d228984a6e8354359bbba863e8d"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-dark-statement-scope.png",
+      "bytes": 51756,
+      "sha256": "6450aa68a5cbab16056bae8e1e906e5ba9fda0761c67165ad197fe1070b764d1"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-light-caption.png",
+      "bytes": 27332,
+      "sha256": "768470c29252fc79fbe474111c9bde0e4b42a0a6b8899eb3da011da430359e1f"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-light-proof.png",
+      "bytes": 91001,
+      "sha256": "bc98e7b0ba8075dee5ff80effe66392392b7c720a6bb68b6c3bb86c5a75a1f4e"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.2-light-statement-scope.png",
+      "bytes": 51533,
+      "sha256": "539a111d0dbe7f50046e83a855c9bb924c825ec146f4ef259ae16ccae24e2247"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-dark-caption.png",
+      "bytes": 42682,
+      "sha256": "5a153f17ad92a690e46e78ae54a09e474a4be673a40bff6d722d97daddde981f"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-dark-proof.png",
+      "bytes": 94362,
+      "sha256": "0625361a357fac06ccbcc4a253318b740fda80c61084801dc58f06ecc1b0d79f"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-dark-statement-scope.png",
+      "bytes": 47755,
+      "sha256": "383ea24a594fc885d56ef4dfcd184dd22d9046b7d00539ccb70542966c800840"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-light-caption.png",
+      "bytes": 43487,
+      "sha256": "5cf012d746a366dc8d198e9e3f9fef164b03ce4ff7e12c17bfa5a076b4580df9"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-light-proof.png",
+      "bytes": 94008,
+      "sha256": "b21b2efbc7ea5b89c06257f831ee7cbcdc0b2c6c2abb6d7fc5fa193dc204739a"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/rel-3.5-light-statement-scope.png",
+      "bytes": 47428,
+      "sha256": "d7c5e8d34ec9169bfc2e8637c00bab6794e88fbca925c774f1c23b1302484d91"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native/text.json",
+      "bytes": 14016,
+      "sha256": "d0f4871ae92b1aa3732ef752246485cdc9b36d71d6ef0e7080b9a5aab855eeb5"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/native.log",
+      "bytes": 36,
+      "sha256": "5c1fcb8079daf69d5226e78db0c6967d5d50405e4e0711eb8d7b2ee5d9597a41"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/preservation.log",
+      "bytes": 95,
+      "sha256": "36090505bec1e8f6df1ca140539df0df03e6d602399444dd299fe919827def5c"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-dark-near-zero.png",
+      "bytes": 104625,
+      "sha256": "8a50ca8b8a5a98eb0212543741eef0af3823f876418f54af26e1f332a1b23896"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-dark-negative.png",
+      "bytes": 104687,
+      "sha256": "a526f29a7fdb464b2a4c04787f0ab2864d3ac5820d8a4d3cd9f40c1cd00260a3"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-dark-positive.png",
+      "bytes": 102871,
+      "sha256": "bd155bfb201af99c78923ef2e8b0d850b299ddc12cca123b6e9ae2cb7f0bfdf4"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-light-near-zero.png",
+      "bytes": 104815,
+      "sha256": "8e3eab9aa4c5bae2999d052768a658bd8df084ffbf5fcc3604a8451426a0dcb7"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-light-negative.png",
+      "bytes": 104747,
+      "sha256": "16d9e6e90822cca8e54b3f35e58aa830765680ff8c567ab0bc0868ca76a6ada8"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/rel-3.5-light-positive.png",
+      "bytes": 103062,
+      "sha256": "6e1fb77976d7c72fe326c3e3cc1009af549df90cbbd31d5e9e3187cb1920c794"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed/signed.json",
+      "bytes": 9067,
+      "sha256": "20a5d9e8740e1e7453937a32c34a85c433c50c5071277e8dd9623ea95e5eefe1"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/signed.log",
+      "bytes": 168,
+      "sha256": "c9560a0e8939b997fbbaf3f24f09e02bb48076c28437577f8a7c8a11aa4ed11d"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/static.log",
+      "bytes": 52,
+      "sha256": "19beb8e7a95eafb47f17e21317e2d44f5bb2449d92d02b3c60099a3b69ca11fe"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-dark-caption.png",
+      "bytes": 26480,
+      "sha256": "60fc2e203bbd0795589932a6549f063c736a64d86e793436fc4b7367622fea71"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-dark-proof.png",
+      "bytes": 96063,
+      "sha256": "406b989b55cc2380a190852dc85cbb24cf438b4ca82829b65cfd8c68ee7d7c38"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-dark-statement-scope.png",
+      "bytes": 51258,
+      "sha256": "fea4977c1abe7280c6fe3e2735528fe1ea26d712b3440b8d1a7fd3a9c6a9ded7"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-light-caption.png",
+      "bytes": 27283,
+      "sha256": "07bde290bc26cd57917a13b94c8d8abe37a0d9c22727c681ef39339bd5580e4a"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-light-proof.png",
+      "bytes": 95391,
+      "sha256": "0453fcb3fbe2af593e985188a8bbba69b6823f2bb4e7e1dec62f746e3e81b03f"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.2-light-statement-scope.png",
+      "bytes": 51039,
+      "sha256": "847145479c4525d5d83f3bab1b19c2bb976e8e4d91d74957778c3af040ecec78"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-dark-caption.png",
+      "bytes": 41952,
+      "sha256": "ea10b0a7bdc50db0bb377312287dfdf5218fffa27fbe6460daf2b54288adef73"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-dark-proof.png",
+      "bytes": 98553,
+      "sha256": "1bd0af3c829091c57555b0d90891f20a53303e306d33e1f677c412edb57a0062"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-dark-statement-scope.png",
+      "bytes": 44582,
+      "sha256": "8ea6a3e3a63fecdff0452598f5816c9b1d55c1142d560ba5d264f60a23525eab"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-light-caption.png",
+      "bytes": 43105,
+      "sha256": "83d862945c00954142340fd1825b7c4290f56adabeee799e83f5c61cfad138e3"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-light-proof.png",
+      "bytes": 97885,
+      "sha256": "590ca16c8e93e44ee5a61d63186f7b81fb034ecfbad3ced0bd0f2db17b1dd4d2"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/rel-3.5-light-statement-scope.png",
+      "bytes": 44421,
+      "sha256": "3e6c5b7543cb9900d9a5d4d5e806aebe6237af414f51c48e9cda38e9e0a21098"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253/text.json",
+      "bytes": 14688,
+      "sha256": "ace4cf711ee2e9cbba8b7014e0ab775f7fdacc06983f76ce69f21da180316f10"
+    },
+    {
+      "path": "/tmp/atlas-rel-two-inputs/text253.log",
+      "bytes": 36,
+      "sha256": "5c1fcb8079daf69d5226e78db0c6967d5d50405e4e0711eb8d7b2ee5d9597a41"
+    }
+  ]
+}
