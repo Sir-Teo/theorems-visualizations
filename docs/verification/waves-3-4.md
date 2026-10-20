@@ -1001,3 +1001,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### Integrated checkpoint a4a5103
 
 [Immutable checkpoint](checkpoint-a4a5103.md) passes2,167default tests including all6UI, strict/fullstatic0errors/0warnings, home113,072bytes gzip. Includes all accepted batches through POPGEN/TOC/GEOG and accounting fixtures; prerequisite492/24/19, source5=833+1−829. Subsequent read-only chunk reports and new candidates are outside its scope; map60fps remains open.
+
+### REL bounded acceptance
+
+[Independent REL peer](rel-independent-peer-followup.md) accepts16genuineinputs, two bounded mathematical qualifications and three equivalent wraps. Published23is still2below25; livegate476/24/19. No sourceclosure; later than checkpointa4a5103.

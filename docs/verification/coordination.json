@@ -71,7 +71,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent combined REL prerequisite/correction/wrap peer",
+      "current": "DIST genuine prerequisite production after accepted REL peer",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -2167,10 +2167,28 @@
       "status": "accepted",
       "sourceClosure": "None; all source flags preserved.",
       "bridgeReview": "Existing map-distortion bridge reviewed; no edit required."
+    },
+    {
+      "collection": "rel",
+      "commits": [
+        "f61887e3f2bc1cdb89d63c7670526803aed92a9b",
+        "a818e538a2372b228894d577e9ef13e04d9965e0",
+        "c9e6c00f30022d9702a1059328cb35ab8aa14a3d",
+        "2a887fb5bbb89cb0adad7a7aba037f1c5764460b"
+      ],
+      "publishedBefore": 7,
+      "publishedAfter": 23,
+      "status": "accepted-bounded-below-target",
+      "producer": "imaging_source",
+      "peer": "thermo_prereqs",
+      "report": "docs/verification/rel-independent-peer-followup.md",
+      "sourceClosure": "None; all57functions/flags/helpers preserved.",
+      "bridgeReview": "No affected bridge references.",
+      "followup": "Sixteen genuine inputs across12consumers. Unit-normalized four-acceleration coefficient and small-rapidity Newtonian rocket qualifier corrected; three equivalent narrow statement wraps. Full57raw lists match; remaining published shortfall2."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 492,
+    "publishedShortfall": 476,
     "publishedBelow25": 24,
     "collections": 64,
     "wholeSyllabusBelow25": 19,
