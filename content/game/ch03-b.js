@@ -3,29 +3,13 @@ import {
   C1, C2, nm, idx, TRI, triPt, triBary, triClamp, drawTriangle,
   solveZS, zsPure, guarantee, ceiling, ZS, copyM, matWindow, matCell, drawMat,
 } from './ch03.shared.js';
+import { FICTITIOUS_GAMES, fictitiousPlay, fictitiousBounds, lpGameCertificate } from './minimax-audit.js';
 
 const clamp = (t, a, b) => Math.min(b, Math.max(a, t));
 const tx = (a) => String(Math.round(a * 1000) / 1000).replace('-', '\\!-');
 const argmax = (a) => a.reduce((b, t, i) => (t > a[b] + 1e-12 ? i : b), 0);
 const argmin = (a) => a.reduce((b, t, i) => (t < a[b] - 1e-12 ? i : b), 0);
 const BIAS = [[0, -2, 3], [2, 0, -1], [-3, 1, 0]];
-
-/** Robinson's fictitious play: both players best-respond (first index on ties) to the other's empirical counts. */
-function fictitious(A, T) {
-  const m = A.length, n = A[0].length;
-  const cx = new Array(m).fill(0), cy = new Array(n).fill(0), rs = new Array(m).fill(0), cs = new Array(n).fill(0);
-  let i = 0, j = 0;
-  const X = [], Y = [], lo = [], hi = [];
-  for (let t = 1; t <= T; t++) {
-    cx[i]++; cy[j]++;
-    for (let r = 0; r < m; r++) rs[r] += A[r][j];
-    for (let c = 0; c < n; c++) cs[c] += A[i][c];
-    X.push(cx.map((q) => q / t)); Y.push(cy.map((q) => q / t));
-    lo.push(Math.min(...cs) / t); hi.push(Math.max(...rs) / t);
-    i = argmax(rs); j = argmin(cs);
-  }
-  return { X, Y, lo, hi };
-}
 
 /** Hedge (multiplicative weights) for the row player on gains G in [0,1]; the column player is an adversary, random, or Hedge too. */
 function hedge(G, T, eta, mode, rng) {
@@ -75,44 +59,42 @@ export default {
       num: '3.6',
       kind: 'Algorithm',
       name: 'Fictitious play in zero-sum games (Robinson)',
-      credit: 'G. W. Brown, 1951; Julia Robinson, 1951',
-      statement: String.raw`In **fictitious play** two players repeat a zero-sum matrix game $A$. In round $t$ each player best-responds to the *empirical frequency* of the opponent's past actions (ties broken by a fixed rule): the row player plays $i_t\in\arg\max_i (A\bar y_{t-1})_i$ and the column player $j_t\in\arg\min_j(\bar x_{t-1}^{\mathsf T}A)_j$, where $\bar x_t,\bar y_t$ are the frequencies of past actions. **Robinson's theorem (1951):** for every finite zero-sum game,
-$$\max_i(A\bar y_t)_i-\min_j(\bar x_t^{\mathsf T}A)_j\;\longrightarrow\;0\quad(t\to\infty),$$
-so every limit point of $(\bar x_t,\bar y_t)$ is a pair of optimal strategies and both bounds $\min_j(\bar x_t^{\mathsf T}A)_j\le v\le\max_i(A\bar y_t)_i$ squeeze the value $v$. The play itself need not converge, only the frequencies; and the convergence can be slow: the classical bound (Robinson; Shapiro, 1958) is of order $t^{-1/(m+n-2)}$ for an $m\times n$ game.`,
-      idea: String.raw`Robinson's proof is an induction on the number of actions, repeatedly using the fact that a best response to the other side's counts stays a best response for a stretch of rounds, so the accumulated payoff vectors cannot drift far from the value. The two bounds are exactly the weak-duality quantities of game-3.4: $g(\bar x_t)\le v\le h(\bar y_t)$, so the shrinking gap proves convergence of both frequencies to the optimal sets of game-3.3. Karlin conjectured in 1959 that the gap shrinks like $t^{-1/2}$; for lexicographic tie-breaking this is open in general, and Daskalakis and Pan (2014) showed that with adversarial tie-breaking the rate can be as slow as $t^{-1/n}$ on the identity matrix. Contrast game-3.7, where a regret bound gives $t^{-1/2}$ for all games.`,
-      caption: String.raw`A $3\times3$ game; the two triangles are the simplices of mixed strategies. Gold paths trace the empirical frequencies $\bar x_t$ (left) and $\bar y_t$ (right) of the first $t$ rounds, and the green rings mark the optimal strategies; in Rock–Paper–Scissors the frequencies spiral in to the centre although the actual play cycles forever. Right panel: the upper bound $\max_i(A\bar y_t)_i$ (orange) falls and the lower bound $\min_j(\bar x_t^{\mathsf T}A)_j$ (blue) rises, both converging to the value (green), on a log time axis. Drag the slider to choose $t$; compare the slow, jagged progress with the smooth Hedge curve in game-3.7.`,
+      credit: 'Julia Robinson, 1951 (procedure proposed by G. W. Brown)',
+      statement: String.raw`Let $A$ be a finite real $m\times n$ zero-sum payoff matrix, with the row player maximizing and the column player minimizing. Start cumulative action counts at $r_0=0$, $c_0=0$. In **simultaneous fictitious play**, round $t\ge1$ chooses
+$$\begin{aligned}i_t&\in\arg\max_i(Ac_{t-1})_i,\\j_t&\in\arg\min_j(r_{t-1}^{\mathsf T}A)_j,\\r_t&=r_{t-1}+e_{i_t},\\c_t&=c_{t-1}+e_{j_t}.\end{aligned}$$
+Zero initial scores make the first choices arbitrary; no frequency at time zero is needed. Robinson also treats the **alternating** rule: choose the same $i_t$ first, update $r_t$, then choose $j_t\in\arg\min_j(r_t^{\mathsf T}A)_j$. Either rule allows any choice among tied best replies. Put $\bar x_t=r_t/t$, $\bar y_t=c_t/t$, $g(x)=\min_j(x^{\mathsf T}A)_j$, and $h(y)=\max_i(Ay)_i$. **Robinson's theorem (1951)** says, for either timing,
+$$h(\bar y_t)-g(\bar x_t)\;\longrightarrow\;0\quad(t\to\infty),$$
+so $g(\bar x_t)\le v\le h(\bar y_t)$ converge to the minimax value $v$ (game-3.3). Every limit point of the empirical pair is optimal; equivalently, its distance to the product of optimal-strategy sets tends to zero. This does not assert convergence to one particular optimal pair, convergence of the actions, monotonicity of either bound, or a convergence rate.`,
+      idea: String.raw`Write $U(t)=r_t^{\mathsf T}A$ and $V(t)=Ac_t$. Robinson calls a row or column eligible on an interval if it is a best reply at some time in that interval. Her Lemmas 2–3 bound the spreads of the cumulative scores, and then their cross-gap, on intervals where every action is eligible. Lemma 4 handles the remaining intervals by induction on the total number of actions: an action that is never eligible is never selected and can be deleted, reducing to a smaller game. Partitioning a long run into such blocks gives $\max V(t)-\min U(t)=o(t)$; the same argument covers both update timings. Minimax brackets $v$ between $\min U(t)/t$ and $\max V(t)/t$, so their difference tending to zero forces both limits to $v$. Finally, compactness of the simplices and continuity of $g,h$ imply that every empirical limit pair is optimal. This is an outline of Robinson's block-induction proof, not a claim that either plotted bound improves every round.`,
+      caption: String.raw`Choose simultaneous updates (both see $t-1$ rounds) or alternating updates (the column also sees the newly chosen row). Ties use the first action index in this illustration. Gold paths retain every empirical point through round $t$; green rings mark one computed optimal pair, possibly among many. The blue lower security bound and orange upper bound can rise or fall locally. Faint curves retain the complete 4000-round record, bright curves its selected prefix, and the green dashed line is the computed value. The log time axis includes both endpoints with marker margins; its payoff range includes every excursion in the full record.`,
       deps: ['game-3.3'],
-      refs: ['MSZ §5.2'],
+      refs: ['Robinson (1951), pp. 296–301, Definition 1 and Lemmas 1–4'],
       tags: ['learning', 'fictitious play', 'zero-sum'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Fictitious_play' },
-      see: ['game-3.7'],
-      verify: true,
+      links: { source: 'https://ranger.uta.edu/~weems/NOTES6319/PAPERSONE/robinson.pdf', wikipedia: 'https://en.wikipedia.org/wiki/Fictitious_play' },
+      see: ['game-3.4', 'game-3.7'],
+      verify: false,
       viz(v) {
-        const games = {
-          rps: { label: 'Rock–Paper–Scissors', A: ZS.rps.A },
-          skew: { label: 'skew-symmetric', A: BIAS },
-          saddle: { label: 'saddle point', A: ZS.saddle.A },
-          rand: { label: 'random 3 × 3', A: idx(3).map((i) => idx(3).map((j) => [[3, -2, 1], [-1, 4, -3], [-4, 0, 2]][i][j])) },
-        };
-        let g = games.rps, run = null, key = '';
+        const games = FICTITIOUS_GAMES;
+        let run = null, key = '';
         const TM = 4000;
         const SX = v.stage({ x: [-0.12, 1.12], y: [-0.2, 1.02], equal: true, axes: false, height: 320, weight: 0.9, title: 'row frequencies x̄ₜ' });
         const SY = v.stage({ x: [-0.12, 1.12], y: [-0.2, 1.02], equal: true, axes: false, height: 320, weight: 0.9, title: 'column frequencies ȳₜ' });
-        const SL = v.stage({ x: [1, TM], y: [-2, 2], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1.2, xlabel: 'round t', ylabel: 'bounds on the value', title: 'min_j (x̄ₜᵀA)ⱼ  ≤  v  ≤  max_i (Aȳₜ)ᵢ' });
-        v.select('game', Object.keys(games).map((k) => ({ value: k, label: games[k].label })), 'rps', { onChange: (k) => { g = games[k]; } });
+        const SL = v.stage({ x: [.65, TM * 1.55], y: [-2, 2], xlog: true, axes: 'box', gutter: true, height: 320, weight: 1.2, xlabel: 'round t', ylabel: 'bounds on the value', title: 'lower guarantee, upper ceiling' });
+        const game = v.select('game', Object.keys(games).map((k) => ({ value: k, label: games[k].label })), 'rps');
+        const mode = v.select('update timing', [{ value: 'simultaneous', label: 'simultaneous' }, { value: 'alternating', label: 'alternating' }], 'simultaneous');
         const T = v.slider('rounds $t$', 1, TM, 60, { int: true, log: true });
         v.render(() => {
-          const A = g.A, k = g.label;
-          if (key !== k) { run = { ...fictitious(A, TM), sol: solveZS(A), P: zsPure(A) }; key = k; }
+          const A = games[game.value].A, k = `${game.value}:${mode.value}`;
+          if (key !== k) { const sol = solveZS(A); run = { ...fictitiousPlay(A, TM, mode.value), sol, certificate: lpGameCertificate(A, sol) }; key = k; }
           const t = Math.round(T.value), { X, Y, lo, hi, sol } = run;
           drawTriangle(SX, v, { labels: ['row 1', 'row 2', 'row 3'], labelColor: 'blue' }); drawTriangle(SY, v, { labels: ['col 1', 'col 2', 'col 3'], labelColor: 'orange' });
-          const pxs = idx(t).filter((s) => s < 400 || s % Math.ceil(t / 400) === 0 || s === t - 1);
+          const pxs = idx(t);
           SX.path(pxs.map((s) => triPt(X[s])), { color: 'gold', width: 1.6 }); SY.path(pxs.map((s) => triPt(Y[s])), { color: 'gold', width: 1.6 });
-          SX.dot(...triPt(sol.x), { r: 11, hollow: true, color: 'green', width: 2.5 }); SY.dot(...triPt(sol.y), { r: 11, hollow: true, color: 'green', width: 2.5 });
+          if (run.certificate.ok) { SX.dot(...triPt(sol.x), { r: 11, hollow: true, color: 'green', width: 2.5 }); SY.dot(...triPt(sol.y), { r: 11, hollow: true, color: 'green', width: 2.5 }); }
           SX.dot(...triPt(X[t - 1]), { r: 6, color: 'blue' }); SY.dot(...triPt(Y[t - 1]), { r: 6, color: 'orange' });
-          const R = Math.max(1, Math.ceil(Math.max(...A.flat().map(Math.abs))) * 0.6);
-          SL.setView([1, TM], [Math.min(sol.v, ...lo.slice(0, 1)) - 0.2 * R, Math.max(sol.v, hi[0]) + 0.2 * R]);
-          const pts = (a) => a.map((q, s) => [s + 1, q]).filter((_, s) => s < 300 || s % 8 === 0);
+          const bounds = fictitiousBounds(run, sol.v);
+          SL.setView(bounds.x, bounds.y);
+          const pts = a => a.map((q, s) => [s + 1, q]);
           SL.hline(sol.v, { color: 'green', width: 2, dash: true });
           SL.path(pts(hi), { color: 'orange', width: 1.6, alpha: 0.4 }); SL.path(pts(lo), { color: 'blue', width: 1.6, alpha: 0.4 });
           SL.path(pts(hi.slice(0, t)), { color: 'orange', width: 2.4 }); SL.path(pts(lo.slice(0, t)), { color: 'blue', width: 2.4 });
@@ -121,8 +103,8 @@ so every limit point of $(\bar x_t,\bar y_t)$ is a pair of optimal strategies an
         });
         v.readout(() => {
           if (!run) return '';
-          const t = Math.round(T.value), gp = run.hi[t - 1] - run.lo[t - 1], d = Math.hypot(...run.X[t - 1].map((q, i) => q - run.sol.x[i]));
-          return `$t=${t}$: $\\min_j(\\bar x_t^{\\mathsf T}A)_j=${tx(run.lo[t - 1])}\\;\\le\\;v=${tx(run.sol.v)}\\;\\le\\;\\max_i(A\\bar y_t)_i=${tx(run.hi[t - 1])}$, gap $=${tx(gp)}$, $\\sqrt t\\cdot\\text{gap}=${v.fix(gp * Math.sqrt(t), 2)}$\n(first-index tie-breaking; one optimal $x^*$ is marked, others may exist: the distance to it is ${v.fix(d, 3)} here)`;
+          const t = Math.round(T.value), gp = run.hi[t - 1] - run.lo[t - 1], [i, j] = run.actions[t - 1];
+          return `$t=${t}$: lower $g=${tx(run.lo[t - 1])}$, computed value $v=${tx(run.sol.v)}$, upper $h=${tx(run.hi[t - 1])}$; gap $=${tx(gp)}$.\nRound ${t}: row ${i + 1}, column ${j + 1}. Row sees columns 1–${t - 1}; column sees rows 1–${mode.value === 'alternating' ? t : t - 1} (an empty prefix at zero). First-index ties.\nEvery point is retained; neither bound is required to move monotonically. Rings show one ${run.certificate.ok ? 'numerically certified' : 'uncertified'} optimal pair; convergence is to the optimal sets.`;
         });
       },
     },

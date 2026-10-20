@@ -3,6 +3,7 @@ import {
   C1, C2, nm, idx, TRI, triPt, triBary, triClamp, drawTriangle,
   lpMax, solveZS, zsPure, guarantee, ceiling, ZS, copyM, matWindow, matCell, drawMat,
 } from './ch03.shared.js';
+import { MINIMAX_BIAS, lpGameCertificate } from './minimax-audit.js';
 
 const clamp = (t, a, b) => Math.min(b, Math.max(a, t));
 const tx = (a) => String(Math.round(a * 1000) / 1000).replace('-', '\\!-');
@@ -184,35 +185,38 @@ Both extrema are attained: there are optimal strategies $x^*,y^*$ with $x^{*\mat
       num: '3.4',
       kind: 'Theorem',
       name: 'Minimax by linear-programming duality',
-      credit: 'von Neumann, Dantzig, Gale, Kuhn & Tucker, 1947–1951',
-      statement: String.raw`Let $A$ be an $m\times n$ matrix and shift it so that $B=A+s\mathbf 1\mathbf 1^{\mathsf T}>0$. Consider the pair of linear programmes
-$$(\mathrm P)\;\max\ \mathbf 1^{\mathsf T}z\ \text{ s.t. }\ Bz\le\mathbf 1,\ z\ge0,\qquad(\mathrm D)\;\min\ \mathbf 1^{\mathsf T}w\ \text{ s.t. }\ B^{\mathsf T}w\ge\mathbf 1,\ w\ge0.$$
-They are dual to each other, both are feasible and bounded, and by LP duality (algo-11.19) their optimal values are equal: $\mathbf 1^{\mathsf T}z^*=\mathbf 1^{\mathsf T}w^*=:1/(v+s)$. Then $y^*=z^*/\mathbf 1^{\mathsf T}z^*$ and $x^*=w^*/\mathbf 1^{\mathsf T}w^*$ are optimal mixed strategies and $v$ is the value of $A$. Weak duality alone already gives $\min_j (x^{\mathsf T}A)_j\le v\le\max_i(Ay)_i$ for every $x,y$, and strong duality says there is no gap at the optimum; this reproves the minimax theorem (game-3.3).`,
-      idea: String.raw`Dividing by $\mathbf 1^{\mathsf T}z$ turns the constraints $Bz\le\mathbf 1$ into "every row pays the row player at most $1/\mathbf 1^{\mathsf T}z$ against $y=z/\mathbf 1^{\mathsf T}z$", so maximising $\mathbf 1^{\mathsf T}z$ minimises the ceiling the column player concedes; the dual programme does the same for the row player's guarantee. Weak duality (any feasible $w$ and $z$ have $\mathbf 1^{\mathsf T}w\ge w^{\mathsf T}Bz\ge\mathbf 1^{\mathsf T}z$) is the inequality $\underline v\le\overline v$ again, and strong duality, proved by the simplex method or by separation, closes the gap. Dantzig recalled that von Neumann saw the connection when they met in October 1947; the converse, that every linear programme can be written as a matrix game, is more delicate.`,
-      caption: String.raw`A $3\times3$ game. Drag the blue point to choose the row player's mixture $x$ in her simplex (shading: her guarantee $g(x)=\min_j(x^{\mathsf T}A)_j$, brightest at the optimum) and the orange point to choose the column player's $y$ (shading: his ceiling $h(y)=\max_i(Ay)_i$, brightest at the optimum). Bottom line: $g(x)\le v\le h(y)$ always, which is weak duality. The gap closes only when both players sit at optimal strategies, which "Snap to the LP solution" does: the simplex method on $(\mathrm P)$ and $(\mathrm D)$ ends with equal objective values, shown in the readout. Pick another matrix with the button.`,
-      deps: ['game-3.3', 'algo-11.19'],
-      refs: ['MSZ §24.3'],
+      statement: String.raw`Let $A$ be a finite real $m\times n$ matrix with $m,n\ge1$. Choose $s> -\min_{ij}a_{ij}$, so every entry of $B=A+s\mathbf 1\mathbf 1^{\mathsf T}$ is strictly positive. Consider the dual linear programmes
+$$\begin{aligned}(\mathrm P)&\quad\max_{z\ge0}\ \mathbf 1^{\mathsf T}z\\&\quad\text{subject to }Bz\le\mathbf 1,\\(\mathrm D)&\quad\min_{w\ge0}\ \mathbf 1^{\mathsf T}w\\&\quad\text{subject to }B^{\mathsf T}w\ge\mathbf 1.\end{aligned}$$
+Both are feasible and have finite, attained optimal objective values. Strong LP duality (algo-11.19) makes these equal to some $\alpha>0$. Set $y^*=z^*/\alpha$, $x^*=w^*/\alpha$, and $v=1/\alpha-s$. These are mixed strategies satisfying
+$$\begin{aligned}\min_j(x^{*\mathsf T}A)_j&\ge v,\\\max_i(Ay^*)_i&\le v.\end{aligned}$$
+Thus $v$ is the game's value, reproving game-3.3 without assuming minimax. For arbitrary mixtures $x,y$, their security levels obey $g(x):=\min_j(x^{\mathsf T}A)_j\le v\le h(y):=\max_i(Ay)_i$.`,
+      idea: String.raw`Adding $s$ changes every mixed payoff by exactly $s$, leaving optimal strategies unchanged. Write $b=\min_{ij}B_{ij}>0$ and $M=\max_{ij}B_{ij}$. The primal contains $0$ and a small positive vector, for example $z_j=1/(2nM)$; every feasible coordinate satisfies $z_j\le1/b$. Its compact feasible set therefore has a finite positive maximum $\alpha$. The dual is feasible at $w_i=1/(mb)$; its feasible region is unbounded, but its objective has the finite attained minimum supplied by LP duality. For feasible $z,w$, weak duality is $\mathbf 1^{\mathsf T}z\le w^{\mathsf T}Bz\le\mathbf 1^{\mathsf T}w$. At equal positive optimal sums, normalization gives $By^*\le\mathbf 1/\alpha$ and $B^{\mathsf T}x^*\ge\mathbf 1/\alpha$. Subtracting the shift proves the two security inequalities. They squeeze $x^{*\mathsf T}Ay^*$ to $v$, and comparing arbitrary mixtures against these optimal opponents proves the final bracket. This uses only mixed expected payoffs and strong LP duality.`,
+      caption: String.raw`Drag the blue and orange handles through the two three-action simplices. Blue shading shows the row guarantee $g(x)$; orange shading shows the column ceiling $h(y)$. The payoff panel brackets the computed value between those security levels. Green rings mark one numerically certified optimal pair. “Snap to the LP solution” moves both handles there. The readout separates primal/dual constraint residuals, objective agreement, and the normalized security gap: floating-point tolerance is a numerical check, while the theorem asserts exact duality. Random matrices have reproducible seeds; the matrix entries appear below.`,
+      deps: ['game-3.1', 'game-2.1', 'algo-11.19'],
+      refs: ['von Stengel (2023), §2, equations (10)–(12)'],
       tags: ['linear programming', 'duality', 'minimax'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Zero-sum_game#Solving' },
-      verify: true,
+      links: { source: 'https://arxiv.org/abs/2205.11196v6', wikipedia: 'https://en.wikipedia.org/wiki/Zero-sum_game#Solving' },
+      see: ['game-3.3'],
+      verify: false,
       viz(v) {
-        let seed = 7, kind = 'bias';
-        const BIAS = [[0, -2, 3], [2, 0, -1], [-3, 1, 0]];
-        const gen = () => { if (kind === 'bias') return copyM(BIAS); const r = v.rng(seed * 101 + 3); return idx(3).map(() => idx(3).map(() => r.int(-5, 5))); };
-        let A = gen(), key = 'bias';
+        let A, key;
         const Tx = v.stage({ x: [-0.12, 1.12], y: [-0.2, 1.02], equal: true, axes: false, height: 330, weight: 1, title: 'row player: her mixture x' });
         const Ty = v.stage({ x: [-0.12, 1.12], y: [-0.2, 1.02], equal: true, axes: false, height: 330, weight: 1, title: 'column player: his mixture y' });
-        const Nl = v.stage({ x: [-6, 6], y: [0, 1], axes: 'box', gutter: true, height: 150, weight: 2, full: true, xlabel: 'payoff to the row player', yticks: [], title: 'weak duality  g(x) ≤ v ≤ h(y)' });
-        v.select('matrix', [{ value: 'bias', label: 'skew-symmetric' }, { value: 'rand', label: 'random' }], 'bias', { onChange: (k) => { kind = k; A = gen(); key = `${k}${seed}`; hx.set(...triPt([1 / 3, 1 / 3, 1 / 3])); hy.set(...triPt([1 / 3, 1 / 3, 1 / 3])); } });
-        v.button('New random matrix', () => { seed += 1; kind = 'rand'; A = gen(); key = `rand${seed}`; hx.set(...triPt([1 / 3, 1 / 3, 1 / 3])); hy.set(...triPt([1 / 3, 1 / 3, 1 / 3])); });
+        const Nl = v.stage({ x: [-6, 6], y: [0, 1], axes: 'box', gutter: true, height: 200, weight: 2, full: true, xlabel: 'payoff to the row player', yticks: [], title: 'weak duality  g(x) ≤ v ≤ h(y)' });
         const hx = Tx.handle(...triPt([0.6, 0.2, 0.2]), { color: 'blue', r: 9, constrain: (x, y) => triClamp(x, y) });
         const hy = Ty.handle(...triPt([0.2, 0.2, 0.6]), { color: 'orange', r: 9, constrain: (x, y) => triClamp(x, y) });
+        const reset = () => { hx.set(...triPt([1 / 3, 1 / 3, 1 / 3])); hy.set(...triPt([1 / 3, 1 / 3, 1 / 3])); };
+        const matrix = v.select('matrix', [{ value: 'bias', label: 'skew-symmetric' }, { value: 'rand', label: 'random' }], 'bias', { onChange: reset });
+        const seed = v.slider('matrix seed', 1, 128, 7, { int: true, onChange: reset });
+        v.button('New random matrix', () => { seed.set(seed.value % 128 + 1); matrix.set('rand'); reset(); });
         let S = null, Skey = '';
-        v.button('Snap to the LP solution', () => { hx.set(...triPt(S.x)); hy.set(...triPt(S.y)); });
+        v.button('Snap to the LP solution', () => { if (S && lpGameCertificate(A, S).ok) { hx.set(...triPt(S.x)); hy.set(...triPt(S.y)); } });
         const bary = (h) => { const b = triBary(h.x, h.y).map((t) => Math.max(0, t)), s = b[0] + b[1] + b[2] || 1; return b.map((t) => t / s); };
         let info = null;
         v.render(() => {
-          if (Skey !== key) { S = solveZS(A); Skey = key; }
+          key = `${matrix.value}:${seed.value}`;
+          if (Skey !== key) { const r = v.rng(seed.value * 101 + 3); A = matrix.value === 'bias' ? copyM(MINIMAX_BIAS) : idx(3).map(() => idx(3).map(() => r.int(-5, 5))); S = solveZS(A); Skey = key; }
+          const certificate = lpGameCertificate(A, S);
           const P = zsPure(A), x = bary(hx), y = bary(hy), gx = guarantee(A, x), hy_ = ceiling(A, y);
           const lo = Math.min(...P.rowMin), hi = Math.max(...P.colMax);
           drawTriangle(Tx, v, { labels: ['row 1', 'row 2', 'row 3'], labelColor: 'blue' }); drawTriangle(Ty, v, { labels: ['col 1', 'col 2', 'col 3'], labelColor: 'orange' });
@@ -220,21 +224,20 @@ They are dual to each other, both are feasible and bounded, and by LP duality (a
           Tx.raster((X, Y) => { const b = triBary(X, Y); if (b.some((t) => t < 0)) return null; const t = clamp((guarantee(A, b) - lo) / (S.v - lo + 1e-9), 0, 1); return [cb[0], cb[1], cb[2], 0.07 + 0.6 * t * t]; }, { res: 3, key: `gx${key}` });
           Ty.raster((X, Y) => { const b = triBary(X, Y); if (b.some((t) => t < 0)) return null; const t = clamp((hi - ceiling(A, b)) / (hi - S.v + 1e-9), 0, 1); return [co[0], co[1], co[2], 0.07 + 0.6 * t * t]; }, { res: 3, key: `hy${key}` });
           drawTriangle(Tx, v, { labels: ['row 1', 'row 2', 'row 3'], labelColor: 'blue' }); drawTriangle(Ty, v, { labels: ['col 1', 'col 2', 'col 3'], labelColor: 'orange' });
-          Tx.dot(...triPt(S.x), { r: 11, hollow: true, color: 'green', width: 2.5 }); Ty.dot(...triPt(S.y), { r: 11, hollow: true, color: 'green', width: 2.5 });
+          if (certificate.ok) { Tx.dot(...triPt(S.x), { r: 11, hollow: true, color: 'green', width: 2.5 }); Ty.dot(...triPt(S.y), { r: 11, hollow: true, color: 'green', width: 2.5 }); }
           const R = Math.max(3, Math.ceil(Math.max(...A.flat().map(Math.abs))) + 1);
           Nl.setView([-R, R], [0, 1]);
           Nl.line(-R, 0.5, R, 0.5, { color: 'faint', width: 1.5 });
           Nl.rect(gx, 0.4, hy_, 0.6, { fill: 'purple', fillAlpha: 0.22, stroke: false });
-          Nl.dot(gx, 0.5, { r: 8, color: 'blue' }); Nl.text('g(x)', gx, 0.78, { align: 'center', size: 12, weight: 700, color: 'blue' });
-          Nl.dot(hy_, 0.5, { r: 8, color: 'orange' }); Nl.text('h(y)', hy_, 0.78, { align: 'center', size: 12, weight: 700, color: 'orange' });
-          Nl.dot(S.v, 0.5, { r: 5, color: 'green' }); Nl.text('v', S.v, 0.2, { align: 'center', size: 12, weight: 700, color: 'green' });
-          info = { x, y, gx, hy_, S };
+          Nl.dot(gx, 0.5, { r: 10, hollow: true, width: 2, color: 'blue' }); Nl.text('g(x)', gx, 0.72, { align: 'center', size: 12, weight: 700, color: 'blue' });
+          Nl.dot(hy_, 0.5, { r: 7, hollow: true, width: 2, color: 'orange' }); Nl.text('h(y)', hy_, 0.24, { align: 'center', size: 12, weight: 700, color: 'orange' });
+          Nl.dot(S.v, 0.5, { r: 3.5, color: 'green' }); Nl.text('v', S.v, 0.9, { align: 'center', size: 12, weight: 700, color: 'green' });
+          info = { x, y, gx, hy_, S, certificate };
         });
         v.readout(() => {
           if (!info) return '';
-          const { x, y, gx, hy_, S: s } = info;
-          const sum = (a) => a.reduce((p, q) => p + q, 0);
-          return `$g(x)=${tx(gx)}\\;\\le\\;v=${tx(s.v)}\\;\\le\\;h(y)=${tx(hy_)}$, gap $h(y)-g(x)=${tx(hy_ - gx)}\\ge0$\nLP with $B=A+${s.s}$: simplex stopped after ${s.pivots} pivots; $\\mathbf 1^{\\mathsf T}z^*=${v.fix(sum(s.z), 4)}$ (P), $\\mathbf 1^{\\mathsf T}w^*=${v.fix(sum(s.w), 4)}$ (D), and $1/(v+s)=${v.fix(1 / (s.v + s.s), 4)}$ ✓\n$x^*=(${s.x.map((t) => v.fix(t, 3)).join(', ')})$, $y^*=(${s.y.map((t) => v.fix(t, 3)).join(', ')})$`;
+          const { gx, hy_, S: s, certificate: c } = info, sci = x => x.toExponential(2);
+          return `$g(x)=${tx(gx)}$, computed $v=${tx(s.v)}$, $h(y)=${tx(hy_)}$; current gap $=${tx(hy_ - gx)}$\n$A$: ${A.map(r => `[${r.join(', ')}]`).join(' ')}; shift $s=${s.s}$, ${s.pivots} simplex pivots.\nP objective ${v.fix(c.primal, 6)}; D objective ${v.fix(c.dual, 6)}. Constraint residual ${sci(c.constraintResidual)}; objective gap ${sci(c.objectiveGap)}.\nLP pair: ${c.ok ? 'passes' : 'fails'} numerical checks (constraint tolerance ${sci(c.tolerance)}, objective tolerance ${sci(c.objectiveTolerance)}). Normalization residual ${sci(c.normalizationResidual)}; optimal-pair security gap ${sci(c.securityGap)} (payoff tolerance ${sci(c.payoffTolerance)}).`;
         });
       },
     },

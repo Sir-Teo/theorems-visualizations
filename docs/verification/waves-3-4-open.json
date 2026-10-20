@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 174,
+  "remainingFlags": 172,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "game": 18,
+    "game": 16,
     "psych": 17,
     "soc": 16,
     "polsci": 11,
@@ -228,21 +228,6 @@
       }
     },
     {
-      "id": "game-3.6",
-      "file": "content/game/ch03-b.js",
-      "name": "Fictitious play in zero-sum games (Robinson)",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a75.2"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Fictitious_play"
-      }
-    },
-    {
       "id": "game-3.9",
       "file": "content/game/ch03-b.js",
       "name": "Colonel Blotto",
@@ -283,21 +268,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Minimax_theorem"
-      }
-    },
-    {
-      "id": "game-3.4",
-      "file": "content/game/ch03.js",
-      "name": "Minimax by linear-programming duality",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "MSZ \u00a724.3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Zero-sum_game#Solving"
       }
     },
     {
@@ -3507,7 +3477,9 @@
       "fin-5.4",
       "fin-5.5",
       "demo-4.8",
-      "demo-4.9"
+      "demo-4.9",
+      "game-3.4",
+      "game-3.6"
     ]
   },
   "additionalFollowups": [
@@ -7746,6 +7718,18 @@
       "status": "resolved",
       "report": "docs/verification/demo-fertility-indices-followup.md",
       "note": "Actual official technical table and original Coale definitions checked; five independent math groups,10360 original scalars,eight native groups and final mobile/extreme images pass; source/model units and assumptions explicit."
+    },
+    {
+      "id": "game-3.4",
+      "status": "resolved",
+      "report": "docs/verification/game-minimax-followup.md",
+      "note": "Complete actual Robinson original and vonStengel LP proof checked; six independent model groups/eight native groups plus final images pass; strict-positive normalization, numerical certificates,both update timings and optimal-set scope corrected."
+    },
+    {
+      "id": "game-3.6",
+      "status": "resolved",
+      "report": "docs/verification/game-minimax-followup.md",
+      "note": "Complete actual Robinson original and vonStengel LP proof checked; six independent model groups/eight native groups plus final images pass; strict-positive normalization, numerical certificates,both update timings and optimal-set scope corrected."
     }
   ]
 }
