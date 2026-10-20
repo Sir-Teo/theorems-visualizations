@@ -416,7 +416,7 @@ For a triangle, any nonempty matching leaves one vertex with zero. Stability on 
       tags: ['exchange networks', 'bargaining', 'power'],
       credit: 'Definitions and examples: Kleinberg & Tardos, 2008; their account attributes the balanced-outcome model to Cook & Yamagishi, 1992.',
       links: { source: 'https://www.cs.cornell.edu/info/people/kleinber/stoc08-exchange.pdf' },
-      verify: true,
+      verify: false,
       viz(v) {
         const s=v.stage({x:[-1.5,1.5],y:[-1.15,1.15],axes:false,equal:true,height:320});
         const sb=v.stage({x:[-.7,4.7],y:[-.1,1.35],axes:'box',xticks:[],ylabel:'unit-edge amount',height:320});

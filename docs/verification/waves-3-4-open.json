@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 105,
+  "remainingFlags": 104,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -22,7 +22,6 @@
     "energy": 1,
     "robot": 1,
     "game": 5,
-    "soc": 1,
     "polsci": 9,
     "music": 13,
     "art": 9,
@@ -278,22 +277,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Hales%E2%80%93Jewett_theorem"
-      }
-    },
-    {
-      "id": "soc-3.7",
-      "file": "content/soc/ch03.js",
-      "name": "Power from position in exchange networks",
-      "field": "social",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "E&K §12.2",
-        "E&K §12.3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Exchange_network_theory"
       }
     },
     {
@@ -2446,7 +2429,8 @@
       "soc-4.16",
       "soc-4.15",
       "soc-4.13",
-      "soc-4.14"
+      "soc-4.14",
+      "soc-3.7"
     ]
   },
   "additionalFollowups": [
@@ -7120,6 +7104,11 @@
       "id": "soc-4.14",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently read NSW and Feld originals including formula pixels, checked 75 extra incidence cases and fresh native narrow light/dark cases; soc-configuration-followup.md."
+    },
+    {
+      "id": "soc-3.7",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review; soc-exchange-followup.md."
     }
   ]
 }

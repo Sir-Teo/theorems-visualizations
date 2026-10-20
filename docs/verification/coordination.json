@@ -299,6 +299,16 @@
         "soc-growth-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "soc-3.7"
+      ],
+      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "reports": [
+        "soc-exchange-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -311,7 +321,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 105,
+  "currentPendingSourceReviews": 104,
   "latestCheckpoint": {
     "acceptedContentCommit": "c9b5466",
     "pendingSourceReviews": 114,
