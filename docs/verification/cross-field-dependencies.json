@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 21,
-  "wholeSyllabusBelowTarget": 18,
+  "publishedBelowTarget": 20,
+  "wholeSyllabusBelowTarget": 17,
   "entries": [
     {
       "collection": "stat",
@@ -2037,12 +2037,26 @@
       "collection": "dist",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 1,
-      "writtenToKnown": 2,
-      "wholeSyllabus": 6,
-      "publishedShortfall": 24,
+      "writtenToWritten": 26,
+      "writtenToKnown": 27,
+      "wholeSyllabus": 31,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "dist-1.6",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-1.9",
+          "prerequisite": "alg-1.30",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "dist-1.10",
           "prerequisite": "tech-12.5",
@@ -2051,9 +2065,170 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "dist-1.4",
+          "prerequisite": "comb-1.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.7",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.7",
+          "prerequisite": "stoch-2.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.7",
+          "prerequisite": "stoch-2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.8",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.8",
+          "prerequisite": "prob-1.6.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.9",
+          "prerequisite": "alg-2.9",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.11",
+          "prerequisite": "graph-1.5.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.1",
+          "prerequisite": "graph-1.5.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.1",
+          "prerequisite": "graph-1.5.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.3",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.3",
+          "prerequisite": "alg-4.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.4",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-2.4",
+          "prerequisite": "prob-2.3.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-3.7",
+          "prerequisite": "alg-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-3.9",
+          "prerequisite": "prob-2.1.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "dist-3.12",
           "prerequisite": "rel-1.8",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-3.2",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-3.4",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-3.5",
+          "prerequisite": "alg-2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-4.10",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-4.11",
+          "prerequisite": "comb-3.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-4.12",
+          "prerequisite": "comb-3.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "dist-4.4",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -4864,12 +5039,160 @@
       "collection": "astro",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 0,
-      "writtenToKnown": 0,
-      "wholeSyllabus": 0,
-      "publishedShortfall": 25,
+      "writtenToWritten": 21,
+      "writtenToKnown": 21,
+      "wholeSyllabus": 21,
+      "publishedShortfall": 4,
       "unknown": [],
-      "edges": []
+      "edges": [
+        {
+          "item": "astro-1.1",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-1.3",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.7",
+          "prerequisite": "ode-3.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.8",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.12",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.1",
+          "prerequisite": "pma-9.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.3",
+          "prerequisite": "ode-3.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-2.4",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.1",
+          "prerequisite": "pma-8.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.2",
+          "prerequisite": "ode-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.4",
+          "prerequisite": "pma-8.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.7",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.8",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.9",
+          "prerequisite": "pma-6.22",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-3.10",
+          "prerequisite": "ode-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.7",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.9",
+          "prerequisite": "pma-5.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.12",
+          "prerequisite": "ladr-6.61",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.1",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.3",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "astro-4.5",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        }
+      ]
     },
     {
       "collection": "fluid",
@@ -17958,7 +18281,9 @@
       "cd06f043a644670bfe7bc15559990ac00abf839b",
       "3d543ac662e32eff55b6f357fbe24dfadae9e100",
       "c578ef8229f03739ccfa0dddccb5bda09f9929cd",
-      "0026d445591cb294549063f7e85e7afdd6d003c5"
+      "0026d445591cb294549063f7e85e7afdd6d003c5",
+      "d28855802e3b9e69fca532ed0669d886c1547bba",
+      "e3c25b3511ef4d9de191b0e464084675820d0681"
     ],
     "excludedUnacceptedEdges": [
       {

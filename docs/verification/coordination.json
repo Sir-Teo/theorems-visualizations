@@ -62,7 +62,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "SOLID genuine prerequisite production after accepted CLIMATE peer",
+      "current": "XTAL genuine prerequisite production after accepted DIST peer",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -82,7 +82,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "Independent ASTRO peer closing literal orders/radiation corrections",
+      "current": "CRYPTO genuine prerequisite production after accepted ASTRO peer",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -2295,15 +2295,52 @@
       "sourceClosure": "None; all25functions/flags/helpers/rawlists preserved.",
       "bridgeReview": "No affected bridge steps.",
       "followup": "Fourteen genuine mathfield inputs across12consumers. Atom-safe target-restricted fixedquantile proof inclboundary/empty-positive cases; coordinate atoms qualified, Hoeffding nondegenerate/constant range cases, seven equivalentwraps. Own32877independentchecks andfreshcomplete253px/narrowtheme pictures pass;11written shortfall remains."
+    },
+    {
+      "collection": "astro",
+      "commits": [
+        "d28855802e3b9e69fca532ed0669d886c1547bba",
+        "4005f92f038df335ba3a1dd1b8c75711319780d5",
+        "403942eca09da1ac936453d189a612d8ace83971",
+        "645d60432204b7963d92db519989176b4e4909f8",
+        "4df36d5351ba5c1f5459f6db0ef87983d32a69ff"
+      ],
+      "publishedBefore": 0,
+      "publishedAfter": 21,
+      "status": "accepted-bounded-below-target",
+      "producer": "arch_source",
+      "peer": "ctrl_prereqs",
+      "report": "docs/verification/astro-crossfield-prerequisite-peer.md",
+      "followup": "Twenty-one genuine mathinputs. Ωsign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
+      "sourceClosure": "None; original source flags preserved.",
+      "bridgeReview": "No affected bridge steps."
+    },
+    {
+      "collection": "dist",
+      "commits": [
+        "e3c25b3511ef4d9de191b0e464084675820d0681",
+        "3d08f6beadd24992058d1c34eaf965ce3e6999e5",
+        "4c620b420e7a89c4208cb9c9a22e59a1b1a70ff8",
+        "e9f9c49c9efc5279f63d93bf2db9c9f7cf3f8fd7"
+      ],
+      "publishedBefore": 1,
+      "publishedAfter": 26,
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "imaging_source",
+      "report": "docs/verification/dist-independent-peer.md",
+      "followup": "Twenty-five genuine mathinputs across19consumers. ExplicitirLaw/irRun+onevizexceptions: exactmeanvsfiniteCDF, honestcap/tiedsurvivors/noarbitraryleader/censoredUI. Sevenboundedfields, width-dependentColeVishkinrounds andoneequivalentwrap; remaining47objects/functions/flags/helpers/rawlists/sourcebytes preserved. Own589828math+1035recurrencechecks/38natives+nativecontrols/closingpixels;two meaningfuldefaultbehavior regressions pass.",
+      "sourceClosure": "None; original source flags preserved.",
+      "bridgeReview": "No affected bridge steps."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 388,
-    "publishedBelow25": 21,
+    "publishedShortfall": 343,
+    "publishedBelow25": 20,
     "collections": 64,
-    "wholeSyllabusBelow25": 18,
+    "wholeSyllabusBelow25": 17,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Twenty-seven further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Twenty-eight further collections meet the written target after independent review. See accepted crossFieldBatches. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {

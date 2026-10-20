@@ -3,9 +3,9 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **21 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 388 edges. Even
-including planned items and planned prerequisites, **18 collections remain below 25**.
+Of 64 non-math collections, **20 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 343 edges. Even
+including planned items and planned prerequisites, **17 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
 The inventory counts each directed item-to-prerequisite edge once. It separates
@@ -284,3 +284,7 @@ The [combined CIRC peer](circ-prerequisites-independent-peer.md) accepts sevente
 ## ML bounded acceptance
 
 [ML independent peer](ml-crossfield-prerequisite-peer.md) accepts fourteen genuine mathematical inputs,0/0/5→14/14/19. All25objects/functions/flags/helpers/rawlists preserved. Target-restricted fixedquantile witnesses handle coordinate atoms/empty-positive samples; zero-range concentration and seven equivalentwraps are explicit. Independent32,877checks and fresh full253px/narrow-theme pixels pass. ML remains11below25written. Live388shortfall,21/64below25published,18whole syllabi below25; no sourceclosure. Aftercheckpoint69710ca.
+
+## ASTRO and DIST combined acceptance
+
+[ASTRO peer](astro-crossfield-prerequisite-peer.md) accepts21genuineinputs with bounded orbital/radiation/radius prose and12equivalentwraps; published21remains4short. [DIST peer](dist-independent-peer.md) accepts25genuineinputs, honest capped-election/model-mean behavior and bounded proof/complexity qualifiers; published26meets25. Explicitruntimeexceptions are independently checked, with two default behavior regressions; unrelatedfunctions/flags/rawlists remainpreserved. Live343shortfall,20/64below25published,17whole syllabi below25. Sourcequeue5unchanged; later thancheckpoint69710ca.
