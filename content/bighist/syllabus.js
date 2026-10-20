@@ -89,8 +89,8 @@ export default {
       items: [
         { num: '3.1', kind: 'Event', name: 'The Miller–Urey experiment', deps: [], refs: ['Miller1953; Johnson et al.2008 plus TableS1; Miller & Schlesinger NASA CP2276'],
           pic: 'Distinguish original secure and tentative identifications, then compare all27 archived-sample compounds across three apparatus with exact printed ratios and qualitative nondetections.' },
-        { num: '3.2', kind: 'Hypothesis', name: 'The RNA world and rival origin-of-life hypotheses', deps: ['bighist-3.1'], refs: ['Christian'],
-          pic: 'Compare scenarios — RNA world, metabolism first, hydrothermal vents, warm ponds — on a chart of what each explains and what evidence supports it.' },
+        { num: '3.2', kind: 'Hypothesis', name: 'The RNA world and rival origin-of-life hypotheses', deps: ['bighist-3.1'], refs: ['Wächtershäuser1988; Patel2015; Horning & Joyce2016; bounded vent author accounts'],
+          pic: 'Compare dated source claims with authored0–3 sensitivity scores; preserve all tied leaders, undefined zero-weight means and complete saved cell/weight choices.' },
         { num: '3.3', kind: 'Event', name: 'LUCA and the tree of life', deps: ['bighist-3.2', 'popgen-3.9'], refs: ['Christian'],
           pic: 'An interactive tree of the three domains rooted at the last universal common ancestor, with molecular-clock dates on the branches and their uncertainty bars.' },
         { num: '3.4', kind: 'Event', name: 'The Great Oxidation Event', deps: ['bighist-3.3'], refs: ['Christian'],

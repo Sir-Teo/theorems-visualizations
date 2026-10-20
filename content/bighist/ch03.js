@@ -2,9 +2,7 @@
 //
 // Sources checked (Oct 2026):
 //   3.1 Actual Miller1953 report, Johnson2008 fullmain+SOM/TableS1 and NASA CP2276 printed50 audited; see private source report.
-//   3.2 Gilbert, Nature 319: 618 (1986); Powner, Gerland & Sutherland, Nature 459: 239 (2009); Patel et al., Nature Chem. 7: 301
-//     (2015); Wachtershauser, Microbiol. Rev. 52: 452 (1988); Russell & Hall, J. Geol. Soc. 154: 377 (1997); Kelley et al.,
-//     Nature 412: 145 (2001) (Lost City). The 0–3 ratings in the matrix are the author's coarse qualitative reading, not data.
+//   3.2 Dated primary claims and bounded original-abstract access; authored ordinal sensitivity matrix. See private audit report.
 //   3.3 Woese & Fox, PNAS 74: 5088 (1977); Woese, Kandler & Wheelis, PNAS 87: 4576 (1990); Moody et al., Nature Ecol. Evol. 8:
 //     1654 (2024) (LUCA about 4.2 Ga; I could not confirm the published interval, so only the central value is used); earlier
 //     clock estimates 3.5–3.8 Ga as summarised in press coverage of that paper; Wilde et al., Nature 409: 175 (2001) (Jack
@@ -21,6 +19,7 @@
 
 import { clamp } from './ch03.shared.js';
 import millerEvent from './source-audit-miller.js';
+import originsHypothesis from './source-audit-origins.js';
 
 export default {
   collection: 'bighist',
@@ -31,57 +30,7 @@ export default {
     // ───────────────────────────────────────────────────────────────────────────────────── 3.1
     millerEvent,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.2
-    {
-      num: '3.2',
-      kind: 'Hypothesis',
-      name: 'The RNA world and rival origin-of-life hypotheses',
-      statement: String.raw`How life began is unsettled. Four families of proposals are the most discussed. (a) **RNA world** (Gilbert's 1986 name for an idea of the 1960s–70s): RNA both stored heredity and catalysed reactions before DNA and proteins, supported by ribozymes. (b) **Metabolism first** (for example Wächtershäuser's iron–sulfur world): networks of self-sustaining chemical cycles on mineral surfaces came before genes. (c) **Alkaline hydrothermal vents** (Russell and colleagues): porous mineral chimneys such as those at the Lost City field supplied compartments and natural chemical gradients. (d) **Warm ponds and cyanosulfidic chemistry** (Darwin's “warm little pond”, developed by Sutherland's group): ultraviolet light and cyanide on land make precursors of nucleotides, amino acids and lipids together.
-
-They are not mutually exclusive, and no one of them accounts for every requirement: building blocks, heredity, a compartment, an energy source and a plausible geological setting.`,
-      idea: String.raw`Any account must supply four things that modern life gets from one another: a source of molecular building blocks, a way to copy information, a boundary that keeps products together, and a flow of energy to drive it. The proposals differ in which they solve first, and each is weakest where another is strongest. RNA-world chemistry gets heredity and catalysis in one molecule but needs nucleotides and a compartment from elsewhere; vents give compartments and energy but have not produced replicators; the cyanosulfidic route makes many precursors in one scheme but does not itself give a cell. The experiments of 3.1 are the oldest example of testing such a proposal in a flask.`,
-      caption: String.raw`A matrix of coarse ratings (0–3, the author's qualitative reading of the literature, not measured data) of four scenarios against five criteria. Weight each criterion with the sliders: the weighted bars at the right show that no scenario wins for every weighting. Click a cell for the evidence behind it.`,
-      deps: ['bighist-3.1'],
-      see: ['bighist-3.3'],
-      refs: ['Christian'],
-      credit: 'Gilbert, 1986 (RNA world); Wächtershäuser, 1988; Russell & Hall, 1997; Powner, Gerland & Sutherland, 2009',
-      tags: ['origin of life', 'RNA world'],
-      scope: String.raw`These are hypotheses about conditions on Earth 4.5–3.8 billion years ago, for which almost no rocks survive; they are tested by laboratory chemistry and plausibility, not by direct evidence.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/RNA_world', doi: 'https://doi.org/10.1038/nature08013' },
-      verify: true,
-      viz(v) {
-        const rows = ['RNA world', 'Metabolism first', 'Alkaline vents', 'Warm ponds'];
-        const cols = ['Building blocks', 'Heredity', 'Compartment, energy', 'Geology fits', 'Lab support'];
-        const score = [[2, 3, 1, 1, 2], [2, 0, 1, 2, 1], [1, 0, 3, 2, 1], [3, 1, 1, 2, 2]];
-        const note = [
-          ['Pyrimidine nucleotides made without free ribose (Powner et al. 2009); a full, one-pot route to all four bases is still lacking.', 'Ribozymes catalyse and RNA stores sequence; no ribozyme yet copies itself with high fidelity.', 'Gives no boundary or energy supply; these must come from outside the scheme.', 'Free RNA is fragile in water; strands must be concentrated (ponds, ice, pores) and shielded.', 'Ribozyme evolution in vitro works well; the origin chain as a whole has not been reproduced.'],
-          ['Metals and minerals drive some reactions resembling the core of metabolism in the lab.', 'No clear route from cycles to heritable information; whether a cycle can be a genome is debated.', 'Mineral surfaces concentrate molecules; the energy comes from redox gradients.', 'Iron–sulfur minerals and reducing fluids existed at vents and in the crust.', 'Several metal-catalysed steps shown; complete self-sustaining cycles not yet.'],
-          ['Hydrogen-rich fluids could reduce CO₂, but organic yields from vents are small so far.', 'No proposed replicator arises naturally in this setting yet.', 'Natural mineral pores and pH and redox gradients across thin walls supply compartments and energy.', 'Vent fields such as Lost City exist today; vents at 4 Ga are inferred.', 'Laboratory reactors give modest CO₂ reduction; no continuous organic synthesis.'],
-          ['Ultraviolet-driven cyanide and sulfide chemistry gives precursors of nucleotides, amino acids and lipids (Patel et al. 2015).', 'Gives RNA precursors, so inherits the RNA-world weaknesses.', 'Lipid precursors form, but no energy-transducing membrane is explained.', 'Needs cyanide (for example from impacts) and shallow ponds with wet–dry cycles.', 'Several steps demonstrated end to end in one laboratory.'],
-        ];
-        const wS = cols.map((c, j) => v.slider(`weight: ${c.toLowerCase()}`, 0, 3, 1, { step: 0.1 }));
-        const s = v.stage({ x: [-2.3, 7.4], y: [-0.2, 5.1], axes: false, height: 340, full: true, title: 'ratings 0–3 (author’s reading): click a cell' });
-        let sel = [0, 1];
-        s.onClick((x, y) => { const j = Math.floor(x), i = 3 - Math.floor(y - 0.2); if (j >= 0 && j < 5 && i >= 0 && i < 4) sel = [i, j]; });
-        const total = () => rows.map((_, i) => { let a = 0, b = 0; wS.forEach((w, j) => { a += w.value * score[i][j]; b += w.value * 3; }); return b ? a / b : 0; });
-        v.render(() => {
-          cols.forEach((c, j) => { const parts = c.split(', '); parts.forEach((p, k) => s.text(p, j + 0.5, 4.75 - 0.2 * k + 0.25 * (2 - parts.length), { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' })); });
-          s.text('weighted score', 6.35, 4.6, { size: 10.5, color: 'muted', align: 'center' });
-          const T = total(), best = T.indexOf(Math.max(...T));
-          rows.forEach((r, i) => {
-            const y0 = 3 - i + 0.2;
-            s.text(r, -0.12, y0 + 0.5, { size: 12, color: 'ink', align: 'right', baseline: 'middle' });
-            cols.forEach((_, j) => {
-              const sc = score[i][j], isSel = sel[0] === i && sel[1] === j;
-              s.rect(j + 0.04, y0 + 0.04, j + 0.96, y0 + 0.96, { fill: 'green', fillAlpha: 0.08 + 0.2 * sc, color: isSel ? 'ink' : 'faint', width: isSel ? 2.2 : 1, radius: 4 });
-              s.text('●'.repeat(sc) || '–', j + 0.5, y0 + 0.5, { size: 13, color: sc ? 'green' : 'muted', align: 'center', baseline: 'middle' });
-            });
-            s.rect(5.4, y0 + 0.25, 5.4 + 2 * T[i], y0 + 0.75, { fill: i === best ? 'accent' : 'muted', fillAlpha: i === best ? 0.7 : 0.4, stroke: false, radius: 3 });
-            s.text(v.fix(3 * T[i], 2), 5.4 + 2 * T[i] + 0.08, y0 + 0.5, { size: 11, color: 'ink', align: 'left', baseline: 'middle' });
-          });
-        });
-        v.readout(() => { const T = total(), best = T.indexOf(Math.max(...T)); return `**${rows[sel[0]]} — ${cols[sel[1]].toLowerCase()} (${score[sel[0]][sel[1]]}/3):** ${note[sel[0]][sel[1]]}\nTop of the current weighting: **${rows[best]}** (${v.fix(3 * T[best], 2)} of 3). The ratings are a coarse reading, not a measurement.`; });
-      },
-    },
+    originsHypothesis,
     // ───────────────────────────────────────────────────────────────────────────────────── 3.3
     {
       num: '3.3',
