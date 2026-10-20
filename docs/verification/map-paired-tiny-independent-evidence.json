@@ -1,0 +1,2738 @@
+{
+  "originalBoundary": "06717752cb1c01875a79ab54d5164d5a7647ebf3",
+  "reviewedSuccessor": "2c7a6d35273e05cd5a6bf0de4df8cd4005fb3a7b",
+  "native": {
+    "pass": true,
+    "browser": "155.0.8059.85",
+    "readChecks": 2,
+    "atlasCases": 5,
+    "images": [
+      {
+        "mode": "plain",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "plain",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 0,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      },
+      {
+        "mode": "observed",
+        "ordinal": 1,
+        "hash": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971"
+      }
+    ],
+    "traceEvents": 16,
+    "errors": []
+  },
+  "extra": {
+    "browser": "155.0.8059.85",
+    "checks": [
+      {
+        "label": "nonnull-program-multi-tile-exact-content",
+        "pass": true,
+        "sha256": "71b46c38bc4716fffcc305daabe0660c15f52d9482624bc1bb56a6c9d83024da",
+        "bytes": 1130800,
+        "parts": [
+          {
+            "offset": 0,
+            "length": 1048560
+          },
+          {
+            "offset": 1048560,
+            "length": 82240
+          }
+        ],
+        "scratchCap": 1048576,
+        "nonnullProgram": true
+      },
+      {
+        "label": "null-allocation-refuses-without-touch",
+        "pass": true,
+        "count": {
+          "create": 1,
+          "read": 0,
+          "consume": 0,
+          "attach": 0,
+          "bind": 0
+        },
+        "message": "diagnostic framebuffer allocation failed"
+      },
+      {
+        "label": "second-read-fault-restores-state",
+        "pass": true,
+        "calls": 2,
+        "consumed": 1,
+        "message": "peer injected second read failure"
+      }
+    ],
+    "error": 0,
+    "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+    "diagnostic": {
+      "textureBytes": 1130872,
+      "packBytes": 64,
+      "scratchCap": 1048576,
+      "hashStateBytes": 352,
+      "retainedTextureCopies": 0
+    },
+    "scope": "tiny GL only; no map or renderer acceptance",
+    "errors": []
+  },
+  "files": {
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/01-read-state.json": {
+      "sha256": "44dcaac023e2f097b3448f18cdc38a33b84ca5141f4c1d1d5525c93276519ecf",
+      "bytes": 10608
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/02-atlas-reset.json": {
+      "sha256": "a4713a670c25090c24918501414ecd4c48903c7c03c199274afcdd0f1ce51809",
+      "bytes": 7001
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/03-comparisons.json": {
+      "sha256": "5f51c444e77486020543ed83ae6cbf488679b24429abf97bc29789ba687aa630",
+      "bytes": 1196
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/complete.json": {
+      "sha256": "72436c15f389d5ac96359e68ec42891b568a8ae05131e8933c9b6753e31b49a8",
+      "bytes": 695
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0-actual.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0-comparison.json": {
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887",
+      "bytes": 376
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0-diff.png": {
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2",
+      "bytes": 510
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0-diff.rgba": {
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0-reference.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-0.rgba": {
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1-actual.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1-comparison.json": {
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887",
+      "bytes": 376
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1-diff.png": {
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2",
+      "bytes": 510
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1-diff.rgba": {
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1-reference.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/observed-1.rgba": {
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/peer-all-nine-native.png": {
+      "sha256": "42b37bbf7abedc9db900a9933099449755fa5b3515239aca10dc0f2c00175250",
+      "bytes": 38042
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-0.rgba": {
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1-actual.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1-comparison.json": {
+      "sha256": "ac36ffb3ff65a60cf644096b79db050032cb8b9b8f0a2b545a79d81320eca887",
+      "bytes": 376
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1-diff.png": {
+      "sha256": "4345c40439bf374aca25b604be55db42d3f4835f9527787e7a5d9f5463ea12e2",
+      "bytes": 510
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1-diff.rgba": {
+      "sha256": "79f042779e26c42049ef191e897a78aa250d61f146ec0fb795a1eed9e5412eb1",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1-reference.png": {
+      "sha256": "16e292d7b01f1ee60e50aa2fad81a44844014352985e309011c0b26f9ef49757",
+      "bytes": 846
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/tiny/plain-1.rgba": {
+      "sha256": "e3b31b94775262a2308ddb6849722606b857b334ceab1a54b5d7cd2f3fafb971",
+      "bytes": 131072
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/failure-model/A0.rgba": {
+      "sha256": "0fc1435eaf57ab580899f34dddb436dcde2aa539c4f6546580844521c8fa0810",
+      "bytes": 2048
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/failure-model/initialization-only.json": {
+      "sha256": "3c83981bced12abe968bdc6c38c738161154b54f0b96d95e51862b3ce86f4759",
+      "bytes": 630
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/failure-model/mid-epoch.json": {
+      "sha256": "7baf390d71c2e65e32354a8366b69e931161f56e53645b82bbe7835a85c0fed8",
+      "bytes": 64222
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/extra/extra-native.json": {
+      "sha256": "98463e4a35d5ebaa5d64c6f9387b3bace3633388e78658b2eb8fd5e6d164c3f7",
+      "bytes": 1263
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/prepared-successor/prepared.json": {
+      "sha256": "e1eeb8ee92a0bd4ced95e4b793e0fbc3715a1b25df299b1c19ea712f6d45a848",
+      "bytes": 6622
+    }
+  },
+  "fullMapRun": false,
+  "allFourTinyRGBAExact": true,
+  "partialModel": {
+    "metadata": {
+      "bufferComplete": {
+        "A0": true
+      },
+      "bufferReadBytes": {
+        "A0": 2048
+      },
+      "frames": [
+        {
+          "label": "pre-unselected-0",
+          "start": 1,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 3
+        },
+        {
+          "label": "pre-unselected-1",
+          "start": 3,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 5
+        },
+        {
+          "label": "pre-unselected-third",
+          "start": 5,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 7
+        },
+        {
+          "label": "pre-selected-0",
+          "start": 7,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "direct reference",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 9
+        },
+        {
+          "label": "pre-selected-1",
+          "start": 9,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 11
+        },
+        {
+          "label": "pre-selected-third",
+          "start": 11,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 13
+        },
+        {
+          "label": "pre-selected-explicit-transfer-0",
+          "start": 13,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 15
+        },
+        {
+          "label": "pre-selected-explicit-transfer-1",
+          "start": 15,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 16.375,
+              "ty": 7.875,
+              "zooming": false,
+              "dragging": false,
+              "selection": "ladr-2.30",
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "end": 17
+        },
+        {
+          "label": "A0",
+          "start": 17,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 28.75,
+              "ty": -0.25,
+              "zooming": true,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "direct reference",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": true,
+          "after": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 28.75,
+              "ty": -0.25,
+              "zooming": true,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "error": 0,
+          "readError": 0,
+          "end": 19
+        },
+        {
+          "label": "A1",
+          "start": 19,
+          "before": {
+            "map": {
+              "W": 32,
+              "H": 16,
+              "dpr": 1,
+              "k": 0.8,
+              "tx": 28.75,
+              "ty": -0.25,
+              "zooming": true,
+              "dragging": false,
+              "selection": null,
+              "hover": null,
+              "highlight": null,
+              "fields": [
+                "math"
+              ],
+              "defs": true,
+              "planned": true
+            },
+            "scene": {
+              "generation": 1,
+              "status": "ready",
+              "canvas": [
+                32,
+                16
+              ],
+              "control": "fixed",
+              "pending": 0
+            },
+            "models": [
+              {
+                "key": "edges:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "edges:4",
+                "scale": 4,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              },
+              {
+                "key": "bundles:0.5",
+                "scale": 0.5,
+                "points": 1,
+                "segments": 1,
+                "released": false,
+                "budgetOwned": true
+              }
+            ],
+            "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+            "groups": [],
+            "resources": {
+              "logicalRetainedBytes": 4192,
+              "logicalPeakBytes": 4192,
+              "logicalLimitBytes": 64000000,
+              "componentSum": 4192,
+              "maskPixels": 0,
+              "retainedModels": [
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 0,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 1,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 4,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                },
+                {
+                  "ranges": [
+                    {
+                      "startPoint": 2,
+                      "segments": 1
+                    }
+                  ],
+                  "scale": 0.5,
+                  "pointCount": 1,
+                  "segmentCount": 1,
+                  "released": false
+                }
+              ]
+            },
+            "stats": {},
+            "loaded": {
+              "nodes": 0,
+              "edges": 0
+            }
+          },
+          "completed": false,
+          "failure": {
+            "message": "injected epoch failure A1",
+            "stack": "Error: injected epoch failure A1\n    at draw (file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/scripts/lib/map-paired-guarded-epoch.mjs:10:185)\n    at captureGuardedEpoch (file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/scripts/lib/map-paired-guarded-epoch.mjs:11:500)\n    at file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/tests/map-paired-epoch-failure-model.mjs:8:17\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)"
+          },
+          "end": 19
+        }
+      ],
+      "trace": [
+        {
+          "type": "fresh-reset-complete",
+          "stage": "explicit-fresh-reset",
+          "width": 32,
+          "height": 16,
+          "bytes": 4192,
+          "peak": 4192,
+          "unchangedOwners": 3
+        },
+        {
+          "type": "draw-begin",
+          "draw": 1,
+          "stage": "pre-unselected-0"
+        },
+        {
+          "type": "draw-end",
+          "draw": 1,
+          "stage": "pre-unselected-0",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 2,
+          "stage": "pre-unselected-1"
+        },
+        {
+          "type": "draw-end",
+          "draw": 2,
+          "stage": "pre-unselected-1",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 3,
+          "stage": "pre-unselected-third"
+        },
+        {
+          "type": "draw-end",
+          "draw": 3,
+          "stage": "pre-unselected-third",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 4,
+          "stage": "pre-selected-0"
+        },
+        {
+          "type": "draw-end",
+          "draw": 4,
+          "stage": "pre-selected-0",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 5,
+          "stage": "pre-selected-1"
+        },
+        {
+          "type": "draw-end",
+          "draw": 5,
+          "stage": "pre-selected-1",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 6,
+          "stage": "pre-selected-third"
+        },
+        {
+          "type": "draw-end",
+          "draw": 6,
+          "stage": "pre-selected-third",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 7,
+          "stage": "pre-selected-explicit-transfer-0"
+        },
+        {
+          "type": "draw-end",
+          "draw": 7,
+          "stage": "pre-selected-explicit-transfer-0",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 8,
+          "stage": "pre-selected-explicit-transfer-1"
+        },
+        {
+          "type": "draw-end",
+          "draw": 8,
+          "stage": "pre-selected-explicit-transfer-1",
+          "result": true,
+          "status": "ready"
+        },
+        {
+          "type": "draw-begin",
+          "draw": 9,
+          "stage": "A0"
+        },
+        {
+          "type": "draw-end",
+          "draw": 9,
+          "stage": "A0",
+          "result": true,
+          "status": "ready"
+        }
+      ],
+      "historyEnd": 19,
+      "resetAt": 1,
+      "resetSnapshot": {
+        "map": {
+          "W": 32,
+          "H": 16,
+          "dpr": 1,
+          "selection": null,
+          "hover": null,
+          "highlight": null,
+          "fields": [
+            "math"
+          ],
+          "defs": true,
+          "planned": true
+        },
+        "scene": {
+          "generation": 1,
+          "status": "ready",
+          "canvas": [
+            32,
+            16
+          ],
+          "control": "fixed",
+          "pending": 0
+        },
+        "models": [
+          {
+            "key": "edges:0.5",
+            "scale": 0.5,
+            "points": 1,
+            "segments": 1,
+            "released": false,
+            "budgetOwned": true
+          },
+          {
+            "key": "edges:4",
+            "scale": 4,
+            "points": 1,
+            "segments": 1,
+            "released": false,
+            "budgetOwned": true
+          },
+          {
+            "key": "bundles:0.5",
+            "scale": 0.5,
+            "points": 1,
+            "segments": 1,
+            "released": false,
+            "budgetOwned": true
+          }
+        ],
+        "rangesSHA256": "85c43fe617cd3a037a135db1d4c73bb7c9f71a0a674277e9b1d17bdce50aab1b",
+        "groups": [],
+        "resources": {
+          "logicalRetainedBytes": 4192,
+          "logicalPeakBytes": 4192,
+          "logicalLimitBytes": 64000000,
+          "componentSum": 4192,
+          "maskPixels": 0,
+          "retainedModels": [
+            {
+              "ranges": [
+                {
+                  "startPoint": 0,
+                  "segments": 1
+                }
+              ],
+              "scale": 0.5,
+              "pointCount": 1,
+              "segmentCount": 1,
+              "released": false
+            },
+            {
+              "ranges": [
+                {
+                  "startPoint": 1,
+                  "segments": 1
+                }
+              ],
+              "scale": 4,
+              "pointCount": 1,
+              "segmentCount": 1,
+              "released": false
+            },
+            {
+              "ranges": [
+                {
+                  "startPoint": 2,
+                  "segments": 1
+                }
+              ],
+              "scale": 0.5,
+              "pointCount": 1,
+              "segmentCount": 1,
+              "released": false
+            }
+          ]
+        },
+        "stats": {},
+        "loaded": {
+          "nodes": 0,
+          "edges": 0
+        }
+      },
+      "width": 32,
+      "height": 16,
+      "failure": {
+        "message": "injected epoch failure A1",
+        "stack": "Error: injected epoch failure A1\n    at draw (file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/scripts/lib/map-paired-guarded-epoch.mjs:10:185)\n    at captureGuardedEpoch (file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/scripts/lib/map-paired-guarded-epoch.mjs:11:500)\n    at file:///private/tmp/atlas-new-map-paired-tiny-peer/successor/tests/map-paired-epoch-failure-model.mjs:8:17\n    at ModuleJob.run (node:internal/modules/esm/module_job:569:25)\n    at async node:internal/modules/esm/loader:650:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)",
+        "stage": "A1"
+      },
+      "diagnosticRGBABytes": 2048,
+      "initializationOnly": false,
+      "failureScene": {
+        "status": "ready",
+        "pending": 0,
+        "generation": 1
+      },
+      "postCaptureHistory": []
+    },
+    "draws": 9,
+    "readCalls": 1,
+    "byteCount": 2048,
+    "sha256": "0fc1435eaf57ab580899f34dddb436dcde2aa539c4f6546580844521c8fa0810",
+    "traceBefore": [
+      {
+        "type": "fresh-reset-complete",
+        "stage": "explicit-fresh-reset",
+        "width": 32,
+        "height": 16,
+        "bytes": 4192,
+        "peak": 4192,
+        "unchangedOwners": 3
+      },
+      {
+        "type": "draw-begin",
+        "draw": 1,
+        "stage": "pre-unselected-0"
+      },
+      {
+        "type": "draw-end",
+        "draw": 1,
+        "stage": "pre-unselected-0",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 2,
+        "stage": "pre-unselected-1"
+      },
+      {
+        "type": "draw-end",
+        "draw": 2,
+        "stage": "pre-unselected-1",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 3,
+        "stage": "pre-unselected-third"
+      },
+      {
+        "type": "draw-end",
+        "draw": 3,
+        "stage": "pre-unselected-third",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 4,
+        "stage": "pre-selected-0"
+      },
+      {
+        "type": "draw-end",
+        "draw": 4,
+        "stage": "pre-selected-0",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 5,
+        "stage": "pre-selected-1"
+      },
+      {
+        "type": "draw-end",
+        "draw": 5,
+        "stage": "pre-selected-1",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 6,
+        "stage": "pre-selected-third"
+      },
+      {
+        "type": "draw-end",
+        "draw": 6,
+        "stage": "pre-selected-third",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 7,
+        "stage": "pre-selected-explicit-transfer-0"
+      },
+      {
+        "type": "draw-end",
+        "draw": 7,
+        "stage": "pre-selected-explicit-transfer-0",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 8,
+        "stage": "pre-selected-explicit-transfer-1"
+      },
+      {
+        "type": "draw-end",
+        "draw": 8,
+        "stage": "pre-selected-explicit-transfer-1",
+        "result": true,
+        "status": "ready"
+      },
+      {
+        "type": "draw-begin",
+        "draw": 9,
+        "stage": "A0"
+      },
+      {
+        "type": "draw-end",
+        "draw": 9,
+        "stage": "A0",
+        "result": true,
+        "status": "ready"
+      }
+    ]
+  },
+  "initializationFailureModel": {
+    "bufferComplete": {},
+    "bufferReadBytes": {},
+    "frames": [],
+    "width": 32,
+    "height": 16,
+    "diagnosticRGBABytes": 0,
+    "resetAt": null,
+    "resetSnapshot": null,
+    "failure": {
+      "message": "injected original constructor failure",
+      "stage": "initialization"
+    },
+    "historyEnd": 1,
+    "trace": [
+      {
+        "type": "atlas-constructor-begin",
+        "stage": "initialization",
+        "width": 32,
+        "height": 16,
+        "budgetBytes": 0
+      }
+    ],
+    "initializationOnly": true,
+    "failureScene": {
+      "status": "injected initialization failed",
+      "pending": 0,
+      "generation": 1
+    },
+    "postCaptureHistory": []
+  }
+}
