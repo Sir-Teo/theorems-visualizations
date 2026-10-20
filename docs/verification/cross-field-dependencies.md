@@ -4,7 +4,7 @@
 MASTER_PLAN §7.3 against all current written and planned records.
 
 Of 64 non-math collections, **53 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 857 edges. Even
+written ideas in a different field**. Their combined shortfall is 855 edges. Even
 including planned items and planned prerequisites, **28 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -120,3 +120,8 @@ The exact accepted export excludes active music, colour and vault drafts. Politi
 ## Accepted checkpoint through b229c72
 
 Art rises from 6 to 7 published cross-field edges and from 27 to 28 across its whole syllabus: trichromacy 4.2 explicitly uses the written basis criterion ladr-2.28 for existence and uniqueness. Root read its actual argument and checked its use with the full-rank primary matrix. The published shortfall falls from 858 to 857; 53/64 non-math collections and 28 whole syllabi remain below 25. No arbitrary prerequisites are added. See [cone-matching acceptance](art-cones-trichromacy-followup.md) and [combined checkpoint](checkpoint-b229c72.md).
+
+
+## Accepted checkpoint through6978d28
+
+Published shortfall857→855 through actual prerequisite arguments: soc4.1→prob3.6.1 for the sparse Poisson limit (soc9→10published,36→37whole) and art4.3→ladr2.22 for dependence of four response vectors in R³ (art7→8published,28→29whole). Root read the actual arguments;53/64collections remain below25published edges and28whole syllabi remain below25. See [network acceptance](soc-erdos-renyi-followup.md), [colour acceptance](art-metamer-followup.md) and [combined checkpoint](checkpoint-6978d28.md).

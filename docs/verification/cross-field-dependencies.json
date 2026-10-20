@@ -11823,10 +11823,10 @@
       "collection": "soc",
       "field": "social",
       "target": 25,
-      "writtenToWritten": 9,
-      "writtenToKnown": 13,
-      "wholeSyllabus": 36,
-      "publishedShortfall": 16,
+      "writtenToWritten": 10,
+      "writtenToKnown": 14,
+      "wholeSyllabus": 37,
+      "publishedShortfall": 15,
       "unknown": [],
       "edges": [
         {
@@ -11914,8 +11914,15 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "soc-4.1",
+          "prerequisite": "prob-3.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "soc-4.2",
-          "prerequisite": "stoch-3.9",
+          "prerequisite": "stoch-3.10",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -12858,10 +12865,10 @@
       "collection": "art",
       "field": "arts",
       "target": 25,
-      "writtenToWritten": 7,
-      "writtenToKnown": 12,
-      "wholeSyllabus": 28,
-      "publishedShortfall": 18,
+      "writtenToWritten": 8,
+      "writtenToKnown": 13,
+      "wholeSyllabus": 29,
+      "publishedShortfall": 17,
       "unknown": [],
       "edges": [
         {
@@ -12937,6 +12944,13 @@
         {
           "item": "art-4.2",
           "prerequisite": "ladr-2.28",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "art-4.3",
+          "prerequisite": "ladr-2.22",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
