@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 96,
+  "remainingFlags": 94,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "robot": 1,
     "game": 5,
     "polsci": 9,
-    "music": 8,
+    "music": 6,
     "art": 9,
     "arch": 9,
     "ling": 10,
@@ -410,41 +410,6 @@
       ],
       "links": {
         "doi": "https://doi.org/10.1086/257897"
-      }
-    },
-    {
-      "id": "music-7.16",
-      "file": "content/music/ch07-c.js",
-      "name": "Adaptive tuning",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Sethares ch. 8"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Adaptive_tuning"
-      }
-    },
-    {
-      "id": "music-7.17",
-      "file": "content/music/ch07-c.js",
-      "name": "The Bohlen–Pierce scale",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "Roughness model of Sethares for steady tones, 11 harmonics with amplitudes $0.88^{k-1}$ (odd ones only in the closed-pipe case), base 261.6 Hz. The thirteen just ratios above are quoted from memory of the standard list and should be checked; the dissonance minima are computed here, not quoted. Whether listeners perceive the scale as \"consonant\" with odd-harmonic timbres is a matter of experiment and of learning."
-        }
-      ],
-      "refs": [
-        "Benson ch. 6"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale"
       }
     },
     {
@@ -2297,7 +2262,9 @@
       "music-8.13",
       "tech-4.4",
       "tech-4.5",
-      "tech-4.12"
+      "tech-4.12",
+      "music-7.16",
+      "music-7.17"
     ]
   },
   "additionalFollowups": [
@@ -7016,6 +6983,16 @@
       "id": "tech-4.12",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently compared all19 original sail rows and six footnote stations, apparatus/product definition, arithmetic and fresh native review; tech-power-followup.md."
+    },
+    {
+      "id": "music-7.16",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently read original Sethares formulas and Figure 5 pixels, regenerated the 90-digit oracle, checked all60 finite control combinations and four fresh native/audio/state groups; music-adaptive-bp-followup.md."
+    },
+    {
+      "id": "music-7.17",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator independently compared actual Bohlen tables and Benson source pixels, regenerated exact ratios/errors and complete spectral/audio checks, and inspected fresh narrow light/dark outputs; music-adaptive-bp-followup.md."
     }
   ]
 }
