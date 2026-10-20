@@ -38,7 +38,7 @@ Toggle the constant-head comparison to see a supply vessel kept full by overflow
     },
     // ------------------------------------------------------------------ 5.2
     {
-      num:'5.2',kind:'Invention',name:'The astrolabe',verify:true,
+      num:'5.2',kind:'Invention',name:'The astrolabe',verify:false,
       credit:'Royal Museums Greenwich astrolabe owner record; ideal stereographic sky model authored here',
       statement:String.raw`A planispheric astrolabe places a rotating sky map, the rete, over a plate drawn for one observer latitude. The plate carries projected circles of equal altitude, including the horizon. The rete carries celestial directions and the ecliptic. Turning it represents the sky's rotation about the celestial pole.
 
@@ -65,7 +65,7 @@ This is a circle for the nonnegative altitudes and northern latitudes used here.
 
     // ------------------------------------------------------------------ 5.3
     {
-      num:'5.3',kind:'Invention',name:'The magnetic compass',verify:true,
+      num:'5.3',kind:'Invention',name:'The magnetic compass',verify:false,
       credit:'Royal Museums Greenwich RAF Mark II compass owner mechanism account; ideal field and damping model authored here',
       statement:String.raw`A magnetic compass turns toward the horizontal component of a magnetic field. That direction can differ from geographic north; its signed angle east of north is declination. If the horizontal field is zero, a horizontal needle has no preferred bearing.
 

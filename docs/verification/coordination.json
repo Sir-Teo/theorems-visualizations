@@ -24,8 +24,8 @@
       "collection audit lanes: game and qchem"
     ],
     "current": [
-      "Integrate independently reviewed batches and reconcile all wave gates",
-      "Peer-review technology5.11; finish game4.11 native and source audit",
+      "Integrate independently reviewed candidates; reconcile source and wave gates",
+      "Peer-review ART3.2/4.15; integrate independently reviewed GAME4.11 and LING4.8/4.14",
       "Continue difficult original-source audits; preserve source-access limitations"
     ]
   },
@@ -42,7 +42,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "LING4.9/4.10 independently accepted; continue4.8/4.14 (new4.8 flag to be centrally registered) then remaining queuedLING.",
+      "current": "Peer-review GAME4.11 exacta99dc23, then LING3.8/3.9; LING4.8/4.14 independently accepted pending integration.",
       "completedCollections": [
         "music"
       ]
@@ -51,18 +51,19 @@
       "agent": "worker_two",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-worker-two/theorems-visualizations",
       "branch": "codex/atlas-worker-two",
-      "collection": "tech",
+      "collection": "arch",
       "owns": [
-        "content/tech/**",
-        "collection-specific audit docs and tests"
+        "content/arch/**",
+        "Only owned architecture syllabus rows, collection-specific reports/helpers/tests"
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
       "completedCollections": [
-        "psych"
+        "psych",
+        "tech"
       ],
-      "current": "Optics5.11 accepted; finish5.2/5.3, then independent LING4.8/4.14 peer62b0eaf, then9ARCH source reviews."
+      "current": "All23 assigned technology flags independently accepted; LING62b0eaf peer complete; producing9ARCH source reviews."
     },
     {
       "agent": "worker_three",
@@ -76,7 +77,7 @@
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "ART4.5/4.14/4.16 independently accepted; continue3.2/4.15 original-Maxwell/spectral batch, then remainingART.",
+      "current": "ART3.2/4.15 candidate55c303a pending root review; produce4.12/4.13, then3.12/3.13.",
       "completedCollections": [
         "soc",
         "polsci"
@@ -762,6 +763,20 @@
       "commits": [
         "ece12ff"
       ]
+    },
+    {
+      "ids": [
+        "tech-5.2",
+        "tech-5.3"
+      ],
+      "peer": "coordinator exact-commit complete owner-source/pixels, independent geometry/ODE, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/tech-skycompass-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "67c246d"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -774,7 +789,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 55,
+  "currentPendingSourceReviews": 53,
   "latestCheckpoint": {
     "acceptedContentCommit": "f9a9406",
     "report": "docs/verification/checkpoint-f9a9406.md",
