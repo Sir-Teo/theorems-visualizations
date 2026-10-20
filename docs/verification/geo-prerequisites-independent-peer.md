@@ -36,3 +36,13 @@ Raw evidence and native PNGs are under `/tmp/atlas-new-geo-peer/evidence` (`buil
 ## Separately bounded inherited finding
 
 The old, retained first paragraph of geo-2.7 says curl(2Ω k×u) becomes **+**2Ω∂u/∂z under incompressibility. The actual constant-vector identity gives **−**2Ω∂u/∂z. Its zero-derivative conclusion is unchanged and the newly added curl-of-pressure-gradient step is correct. This pre-existing sign typo does not invalidate the new edge, but should receive a separate bounded prose correction. I did not repair it, certify its unchanged full argument, or claim any source closure.
+
+## Separately reviewed correction and combined recommendation
+
+I then independently archived exact successor **`0046dec6794e2d292e56273cfac275af4cf2c017`** at `/tmp/atlas-new-geo-sign-peer/archive`. Comparing every GEO file byte against `41e2871` permits exactly one replacement: the old positive curl sign becomes negative and the same sentence states constant rotation. Every other GEO byte, all 34 executable functions, flags, dependencies and syllabus rows remain identical.
+
+The identity is `curl(C k×u)=C[k div(u)−∂zu]` for constant C. Direct component differentiation with the incompressible witness `u=(yz,xz,xy)` gives `curl(C k×u)=(-Cy,-Cx,0)`, so the old positive sign fails. The independent peer math utility now includes **906 separate finite-difference component checks** over 151 parameter families, with both this divergence-free witness and a nonzero-divergence control `u=(xz,yz,z²)`; all pass. For nonzero rotation and zero pressure curl, the corrected negative sign gives the same axial-invariance conclusion.
+
+Own successor strict build passes **0 errors / 0 warnings**, home **112706 gzip bytes**; static **1 / 0 / 0**. Own fresh `GEO_CURL_SIGN_OUTPUT=/tmp/atlas-new-geo-sign-peer/evidence/native` native run passes both actual **320px light and dark** cases. I personally read both complete own output note images: the negative sign, constant-rotation condition and unchanged appended prerequisite paragraph are clear and unclipped. No runtime/TeX/blank/overflow errors. Browsers are closed. Logs and images are under `/tmp/atlas-new-geo-sign-peer/evidence`.
+
+**Combined recommendation: accept the fifteen prerequisite edges in `41e2871` together with the separately reviewed bounded correction `0046dec`.** The inherited sign finding is resolved by that exact successor. This endorsement remains limited to the changed prerequisite text and sign correction; no source closure, unchanged interaction certification or global inventory edit is claimed.
