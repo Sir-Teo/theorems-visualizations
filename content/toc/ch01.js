@@ -142,9 +142,11 @@ export default {
 The **concatenation** $xy$ writes $y$ after $x$; it is associative with identity $\varepsilon$, and $|xy|=|x|+|y|$. The **reversal** of $w$ is $w^R=w_n\cdots w_1$. $x$ is a **prefix** of $w$ if $w=xz$ for some $z$, a **suffix** if $w=zx$, a **substring** if $w=uxz$; a string of length $n$ has exactly $n+1$ prefixes and $n+1$ suffixes, $\varepsilon$ and $w$ included.
 
 A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite. The empty language $\varnothing$ and the language $\{\varepsilon\}$ are different: the second contains one string.`,
-      idea: String.raw`Everything a computer reads or writes is a finite string over a finite alphabet, so strings are the universal data type of the theory, and a yes/no question about inputs is the same thing as the set of inputs whose answer is yes. Counting is immediate: each of the $n$ positions of a string in $\Sigma^n$ is chosen independently from $|\Sigma|$ symbols, giving $|\Sigma|^n$ strings, and a prefix is fixed by where it stops, which can be any of the $n+1$ boundaries.`,
+      idea: String.raw`Everything a computer reads or writes is a finite string over a finite alphabet, so strings are the universal data type of the theory, and a yes/no question about inputs is the same thing as the set of inputs whose answer is yes. Counting is immediate: each of the $n$ positions of a string in $\Sigma^n$ is chosen independently from $|\Sigma|$ symbols, giving $|\Sigma|^n$ strings, and a prefix is fixed by where it stops, which can be any of the $n+1$ boundaries.
+
+The string count is the product rule comb-1.1: an ordered choice of one of $k=|\Sigma|$ symbols at each of n positions determines exactly one length-n string, and different choice sequences give different strings. Hence $|\Sigma^n|=k^n$, including the single empty choice when $n=0$. Here independent choices means that the number of available symbols stays k; no probability model is required.`,
       caption: String.raw`Type a string with the letter buttons and switch the top panel between its **prefixes** (bars from the left end), **suffixes** and its **reversal**. The bottom panel lists every string of length at most 4 (3 for three letters), one row $\Sigma^n$ per length; a language $L$ is a choice of strings, shown in green, counted against $|\Sigma|^n$ at the right. Note that $\varnothing$ and $\{\varepsilon\}$ differ in row $\Sigma^0$.`,
-      deps: [],
+      deps: ['comb-1.1'],
       refs: ['Sipser §0.2'],
       tags: ['strings', 'languages'],
       viz(v) {
@@ -235,9 +237,11 @@ A **language** over $\Sigma$ is any set $L\subseteq\Sigma^*$, finite or infinite
 (c) **star** $A^*=\{x_1x_2\cdots x_k : k\ge 0,\ x_i\in A\}=\bigcup_{k\ge0}A^k$, where $A^0=\{\varepsilon\}$ and $A^{k+1}=A^kA$.
 
 So $\varepsilon\in A^*$ for every $A$, $\varnothing^*=\{\varepsilon\}^*=\{\varepsilon\}$, and $A^*$ is infinite as soon as $A$ contains a nonempty string. Concatenation is associative with identity $\{\varepsilon\}$ and absorbing element $\varnothing$, but not commutative, and $|AB|\le|A|\,|B|$ with strict inequality when two pairs glue to the same string.`,
-      idea: String.raw`These are the operations a pattern needs: alternatives (union), sequencing (concatenation) and repetition (star). Concatenation multiplies choices, but the count $|A|\,|B|$ is only an upper bound, because a string such as $abb$ may split as $a\cdot bb$ and as $ab\cdot b$; the same ambiguity makes the strings of $A^*$ factor in several ways. Kleene's theorem (Chapter 3) shows that these three operations, starting from single letters, describe exactly the languages finite automata recognise.`,
+      idea: String.raw`These are the operations a pattern needs: alternatives (union), sequencing (concatenation) and repetition (star). Concatenation multiplies choices, but the count $|A|\,|B|$ is only an upper bound, because a string such as $abb$ may split as $a\cdot bb$ and as $ab\cdot b$; the same ambiguity makes the strings of $A^*$ factor in several ways. Kleene's theorem (Chapter 3) shows that these three operations, starting from single letters, describe exactly the languages finite automata recognise.
+
+For finite A and B, comb-1.1 counts the ordered pairs of words as $|A\times B|=|A|\,|B|$. Concatenation maps those pairs onto AB, so its image has at most that many elements. Equality needs different pairs to produce different words; ambiguous split positions are exactly why the inequality may be strict. Union has an additive count only for disjoint languages, as required by the same target's sum rule.`,
       caption: String.raw`Click the chips in rows $A$ and $B$ to put short strings in or out of each language, then choose the operation. Every result string is drawn with the pieces it was glued from coloured ($A$ blue, $B$ orange; alternating shades for the factors of a star); a red badge counts strings that arise from several factorizations, which is why $|AB|$ can fall short of $|A|\cdot|B|$.`,
-      deps: ['toc-1.1'],
+      deps: ['toc-1.1', 'comb-1.1'],
       refs: ['Sipser §1.1'],
       credit: 'Kleene, 1956 (star)',
       tags: ['languages', 'regular operations'],
@@ -703,9 +707,11 @@ and solving the problem means deciding membership in that language (strings that
 (b) **inductive step:** for every string $u$ and symbol $\sigma\in\Sigma$, $P(u)$ implies $P(u\sigma)$.
 
 This is ordinary induction on the length $|w|$, organised along the way strings are built (every nonempty string is uniquely $u\sigma$). It is the standard tool for facts defined by recursion on strings — reversal ($\varepsilon^R=\varepsilon$, $(u\sigma)^R=\sigma u^R$), the extended transition function of an automaton (2.2), derivations of grammars — and the inductive step must work for *every* $u$ and $\sigma$, not just for the first few.`,
-      idea: String.raw`Every string is reached from $\varepsilon$ by appending one symbol at a time, so the strings form a tree rooted at $\varepsilon$ in which each node has its parent as the shorter case; the base case settles the root and the inductive step pushes truth from each node to its children. For $(xy)^R=y^Rx^R$ one inducts on $y$: $(xu\sigma)^R=\sigma(xu)^R=\sigma u^Rx^R=(u\sigma)^Rx^R$, using the recursive definition twice and the hypothesis once. A false claim such as $w^R=w$ passes the base case and the one-letter strings, but its inductive step needs $\sigma u=u\sigma$, which fails at $u=a$, $\sigma=b$.`,
+      idea: String.raw`Every string is reached from $\varepsilon$ by appending one symbol at a time, so the strings form a tree rooted at $\varepsilon$ in which each node has its parent as the shorter case; the base case settles the root and the inductive step pushes truth from each node to its children. For $(xy)^R=y^Rx^R$ one inducts on $y$: $(xu\sigma)^R=\sigma(xu)^R=\sigma u^Rx^R=(u\sigma)^Rx^R$, using the recursive definition twice and the hypothesis once. A false claim such as $w^R=w$ passes the base case and the one-letter strings, but its inductive step needs $\sigma u=u\sigma$, which fails at $u=a$, $\sigma=b$.
+
+Apply ordinary induction alg-2.1 to the statement that every word of length n has P. The empty word proves the n=0 case. A word of length n+1 has a unique last symbol and a prefix of length n, so the all-prefix hypothesis and the stated append step prove its case. Quantifying over every word at each length is essential: an example at each length would not prove the required statement.`,
       caption: String.raw`Step through the strings in shortlex order. Each step verifies the claim at the gold node by the inductive template on the right, which uses only the parent's case (the highlighted edge) — the concrete strings are filled in and evaluated. Choose the false claim $w^R=w$ and watch the step break at **ab**: everything below it is left unproved.`,
-      deps: ['toc-1.1'],
+      deps: ['toc-1.1', 'alg-2.1'],
       refs: ['Sipser §0.4'],
       tags: ['induction', 'proof method'],
       viz(v) {
@@ -794,9 +800,11 @@ This is ordinary induction on the length $|w|$, organised along the way strings 
       statement: String.raw`A **Boolean formula** is built from variables $x_1,\dots,x_n$ with the connectives $\neg,\land,\lor$ (and abbreviations such as $\to,\leftrightarrow,\oplus$). A truth assignment gives each variable a value in $\{0,1\}$ and thereby the formula a value, computed bottom-up along its parse tree. A formula is **satisfiable** if some assignment makes it true; the language $\mathrm{SAT}=\{\langle\varphi\rangle : \varphi\text{ is satisfiable}\}$ is the central problem of Chapter 7 (Cook–Levin).
 
 A **literal** is a variable or its negation, a **clause** is an $\lor$ of literals, and a formula is in **conjunctive normal form** (CNF) if it is an $\land$ of clauses. Every formula is equivalent to a CNF formula: take one clause per falsifying assignment, the clause that is false exactly there.`,
-      idea: String.raw`The value of a formula under an assignment is a bottom-up evaluation of its parse tree, so a truth table with $2^n$ rows lists the formula's whole meaning, and satisfiability asks whether that column contains a 1. The clause $(\ell_1\lor\dots\lor\ell_n)$ with $\ell_i=\neg x_i$ when $x_i=1$ and $\ell_i=x_i$ when $x_i=0$ is false on exactly one row, so the $\land$ of these clauses over the falsifying rows is false exactly where $\varphi$ is: an equivalent CNF, at worst exponentially long — which is why later chapters convert to CNF more cleverly (Tseitin) when size matters.`,
+      idea: String.raw`The value of a formula under an assignment is a bottom-up evaluation of its parse tree, so a truth table with $2^n$ rows lists the formula's whole meaning, and satisfiability asks whether that column contains a 1. The clause $(\ell_1\lor\dots\lor\ell_n)$ with $\ell_i=\neg x_i$ when $x_i=1$ and $\ell_i=x_i$ when $x_i=0$ is false on exactly one row, so the $\land$ of these clauses over the falsifying rows is false exactly where $\varphi$ is: an equivalent CNF, at worst exponentially long — which is why later chapters convert to CNF more cleverly (Tseitin) when size matters.
+
+The CNF construction is the canonical normal-form theorem logic-2.5, not a claim of a small equivalent formula. For each false truth-table row, choose each literal so that it is false on that row; its disjunction excludes exactly that assignment. Their conjunction therefore agrees with the original formula on every row. A tautology can use an empty conjunction, or an explicit tautology if the syntax lacks truth constants; exponential growth is allowed here.`,
       caption: String.raw`Click an operator in the parse tree to cycle it (∧ ∨ → ↔ ⊕) and a leaf to change its variable; pick a row of the truth table to evaluate the tree under that assignment (green = true, red = false). Step through the CNF conversion: each step adds the clause killing one falsifying row, and the last column, the CNF built so far, converges to $\varphi$.`,
-      deps: ['logic-2.3'],
+      deps: ['logic-2.3', 'logic-2.5'],
       refs: ['Sipser §0.2', 'Sipser §7.4'],
       tags: ['logic', 'satisfiability'],
       viz(v) {
