@@ -1,3 +1,4 @@
+import florenceItem from './source-audit-florence-item.js';
 import pantheonItem from './source-audit-pantheon-item.js';
 import poleniEvent from './source-audit-poleni-item.js';
 // Architecture & Structural Form — Chapter 4: Vaults and domes (items 4.6–4.11; 4.1–4.5 are in ch04.js)
@@ -5,10 +6,7 @@ import poleniEvent from './source-audit-poleni-item.js';
 // Sources checked (Oct 2026):
 //   Audited Poleni4.6: actual1748BookI §§76–89,TableAA,plateE; source facts distinguished from authored fixed-station illustration.
 //   Audited Pantheon4.7: official owner and actualMark/Hutchinson1986pp24–34; authored spherical weight reduction, no real-building certificate.
-//   Brunelleschi: Wikipedia "Florence Cathedral" (read in Oct 2026): competition 19 Aug 1418; dome begun 1420, finished 1436 (cathedral consecrated
-//     25 Mar 1436), lantern 1446–1461; span about 44 m; double shell of brick; herringbone brickwork; four stone-and-iron chains plus a wooden chain.
-//     The "quinto acuto" profile (arcs of radius 4/5 of the span) is the usual description in the literature; it is not on the Wikipedia page
-//     and is flagged verify.
+//   Audited Florence4.8: official owner construction description; authored complete circular-shell equilibrium and isolated-block friction, no building certificate.
 //   Pendentives: geometry computed here; Hagia Sophia's dome on pendentives, built 532–537 under Justinian by Anthemius of Tralles and Isidore of
 //     Miletus (rebuilt after a collapse in 558), main dome about 31 m across (flagged verify).
 //   Thrust network analysis: P. Block and J. Ochsendorf, "Thrust network analysis: A new methodology for three-dimensional equilibrium",
@@ -30,66 +28,7 @@ export default {
     pantheonItem,
 
     // ───────────────────────────────────────────────────────────────────────────────────── 4.8
-    {
-      num: '4.8',
-      kind: 'Invention',
-      name: 'Brunelleschi’s dome in Florence',
-      statement: String.raw`The dome of Florence Cathedral, designed by Filippo Brunelleschi after a competition announced in 1418, begun in 1420 and closed in 1436, spans about 44 m on an octagonal drum. It combines several devices: a **pointed profile** (the "quinto acuto" arcs, steeper than a hemisphere, which lowers the hoop tension); a **double shell** of brick, the two shells joined by ribs and stairs, so that the dome is deep without being heavy; **herringbone brickwork** that locks each course into the ones below it; and **horizontal chains** of stone beams, wooden and iron elements at several levels that take the hoop tension the masonry cannot. Together they let the dome be built without a full timber centering supporting the whole shell.`,
-      idea: String.raw`Each device answers a question from the statics of arch-4.4. The tension belt of a hemisphere starts at $51.8^\circ$ from the crown; a pointed profile is steeper at the base, so the meridional thrust is more vertical and the hoop tension is smaller and covers less of the dome. The chains are placed in the bands that remain in tension and are sized by the sum of the hoop force in the band they serve. The courses can be laid without centering as long as the bed joints are not steeper than the friction of the mortar allows; above that height the courses are held by their interlocking bond and by closing each ring (a closed ring is an arch in its own plane). The numbers below are a membrane estimate for a single equivalent shell, not a model of Brunelleschi's structure.`,
-      caption: String.raw`The left panel is the dome section: the part built so far is solid, the rest is outlined, and the courses where friction alone cannot hold the bed joints are orange. Drag the **gold handles** to move the chains and read the hoop tension each of them must carry; change the profile between semicircle and quinto acuto (arcs of $0.8\times$ the span); set the friction of the mortar. The right panel is the hoop force (per unit weight of shell) against height, with the semicircular dome dashed.`,
-      deps: ['arch-4.4'],
-      see: ['arch-4.5', 'arch-4.7'],
-      tags: ['brunelleschi', 'chains', 'construction'],
-      refs: ['Salvadori'],
-      credit: 'Filippo Brunelleschi, competition 1418, dome begun 1420, completed 1436 (lantern completed 1461)',
-      scope: String.raw`Membrane theory of an equivalent axisymmetric shell of uniform weight $w$ per unit area, with a pointed profile of two circular arcs of radius $k\cdot$span. The real dome is an octagon of two shells with ribs; the friction check treats each course as a rigid ring on a bed that is normal to the meridian.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Florence_Cathedral' },
-      viz(v) {
-        const S = 44, W0 = 40;
-        const kq = v.slider('profile: arc radius / span (0.5 semicircle, 0.8 quinto acuto)', 0.5, 1.0, 0.8, { step: 0.01 });
-        const mu = v.slider('friction of the mortar bed, μ', 0.2, 1.0, 0.6, { step: 0.05 });
-        const built = v.slider('built so far (share of the rise)', 0.05, 1, 0.6, { step: 0.01 });
-        const A = v.stage({ x: [-27, 36], y: [-3, 36], equal: true, axes: false, height: 370, weight: 1.1, minWidth: 300, title: 'section: chains, courses, friction' });
-        const B = v.stage({ x: [0, 36], y: [-30, 30], axes: 'box', gutter: true, xlabel: 'height above the springing (m)', ylabel: 'hoop force / w (m)', height: 370, weight: 1, minWidth: 300 });
-        const chainZ = [11, 21, 30];
-        const hs = chainZ.map((z) => A.handle(25, z, { color: 'gold', constrain: (x, y) => [25, clamp(y, 1, 34)] }));
-        let data = null;
-        const compute = (k) => { const P = profile({ type: 'pointed', S, k, n: 400 }), m = membrane(P, 1); return { P, m, rise: P[0].z }; };
-        v.render(() => {
-          const d = data = compute(kq.value), ref = compute(0.5), { P, m } = d;
-          const psiC = 90 - deg(Math.atan(mu.value)), zb = built.value * d.rise;
-          for (let i = 1; i < P.length; i++) {
-            const q = P[i], p0 = P[i - 1], done = q.z <= zb, ok = deg(q.psi) >= psiC;
-            for (const sg of [-1, 1]) A.line(sg * p0.r, p0.z, sg * q.r, q.z, { color: ok ? 'accent' : 'orange', width: done ? 8 : 2, alpha: done ? 0.75 : 0.5, dash: done ? undefined : [3, 3] });
-          }
-          const zs = [0.5, ...hs.map((h) => h.y)].sort((a, b) => a - b);
-          for (const z of zs) A.line(-27, z, 27, z, { color: 'gold', width: 1.6, dash: [5, 4] });
-          // chain forces: net hoop force of the band served
-          const edges = [0, ...zs.slice(0, -1).map((z, i) => (z + zs[i + 1]) / 2), 1e9], T = [];
-          zs.forEach((z, i) => {
-            let sum = 0;
-            for (let j = 1; j < P.length; j++) { const zm = (P[j].z + P[j - 1].z) / 2; if (zm >= edges[i] && zm < edges[i + 1]) sum += (m.Ntheta[j] + m.Ntheta[j - 1]) / 2 * (P[j].s - P[j - 1].s); }
-            T.push(Math.max(0, sum));
-          });
-          d.T = T; d.zs = zs;
-          zs.forEach((z, i) => A.text(`${f2((T[i] * W0) / 1000, 1)} MN`, 26.5, z, { size: 11, color: 'gold', align: 'left' }));
-          A.line(-25, 0, 25, 0, { color: 'faint', width: 1 });
-          const zf = (o) => o.P.map((q, i) => [q.z, o.m.Ntheta[i]]).reverse();
-          B.hline(0, { color: 'faint', width: 1 });
-          B.path(zf(ref), { color: 'muted', dash: [4, 4], width: 1.6 });
-          B.path(zf(d), { color: 'red', width: 2.8 });
-          for (const z of zs) B.vline(z, { color: 'gold', width: 1, alpha: 0.7 });
-          v.legend([['red', 'hoop force, this profile'], ['muted', 'semicircular dome', { dash: true }], ['gold', 'chains']]);
-        });
-        v.readout(() => {
-          const d = data, psiC = 90 - deg(Math.atan(mu.value)), fr = d.P.filter((q) => deg(q.psi) >= psiC).reduce((mx, q) => Math.max(0, mx, 0), 0);
-          const zFric = Math.max(0, ...d.P.filter((q) => deg(q.psi) >= psiC).map((q) => q.z)), zero = hoopZero(d.P, d.m.Ntheta);
-          const tot = d.T.reduce((a, b) => a + b, 0);
-          return `Rise ${f2(d.rise, 1)} m. Hoop tension begins ${zero !== null ? `${f2(deg(zero), 1)}° from the crown` : 'nowhere'}; friction ($\\mu=${f2(mu.value, 2)}$) keeps the bed joints from sliding up to a height of ${f2(zFric, 1)} m (${f2((100 * zFric) / d.rise, 0)}% of the rise), above which bond and ring closure must do the work. Chain tensions for a shell of ${W0} kN/m² (a made-up equivalent weight): ${d.T.map((t) => `${f2((t * W0) / 1000, 1)} MN`).join(', ')}; total ${f2((tot * W0) / 1000, 1)} MN.`;
-        });
-      },
-    },
+    florenceItem,
     // ───────────────────────────────────────────────────────────────────────────────────── 4.9
     {
       num: '4.9',
