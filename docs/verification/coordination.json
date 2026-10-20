@@ -1323,6 +1323,20 @@
         "659731fd8275c6137a4082c85e0d13ca7f13208c",
         "f75ac4d5acecf74b386373058706b3d4694276b2"
       ]
+    },
+    {
+      "ids": [
+        "logic-4.12"
+      ],
+      "peer": "logic_peer independently read complete authorized1930English source and verified exactd2ca3ba with independent math/freshnative/ownpixels",
+      "reports": [
+        "docs/verification/logic-godel-independent-peer-2026-10-20.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d2ca3bab4e07ea4f23064cc7b04098ccd4e8a5dc",
+        "842051e3b4528cedde166d65d2bff304324babc9"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1335,7 +1349,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 7,
+  "currentPendingSourceReviews": 6,
   "latestCheckpoint": {
     "acceptedContentCommit": "e0f9fb5",
     "report": "docs/verification/checkpoint-e0f9fb5.md",

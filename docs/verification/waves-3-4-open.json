@@ -8,10 +8,9 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 7,
+  "remainingFlags": 6,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
-    "logic": 1,
     "mathbio": 1,
     "pharm": 1,
     "imaging": 1,
@@ -20,17 +19,6 @@
     "bighist": 1
   },
   "queue": [
-    {
-      "id": "logic-4.12",
-      "file": "content/logic/ch04-b.js",
-      "name": "Vollständigkeit der Axiome des logischen Funktionenkalküls",
-      "field": "math",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {}
-    },
     {
       "id": "mathbio-3.14",
       "file": "content/mathbio/ch03-c.js",
@@ -970,7 +958,8 @@
       "bighist-4.5",
       "bighist-4.8",
       "bighist-4.6",
-      "robot-3.7"
+      "robot-3.7",
+      "logic-4.12"
     ]
   },
   "additionalFollowups": [
@@ -6159,6 +6148,11 @@
       "id": "robot-3.7",
       "status": "resolved",
       "note": "2026-10-20: Worker three independently read all7original pages/convention mapping, regenerated85digit fixtures and2400quaternionchains, found then verified bounded-yaw correction, and passed both320full native/all17directDOM/16rows/126raw/12camera-wrap cases/exactreplay/ownpixels; docs/verification/worker-three-robot-denavit-peer.md."
+    },
+    {
+      "id": "logic-4.12",
+      "status": "resolved",
+      "note": "2026-10-20: logic_peer independently read complete authorized1930English source and verified exactd2ca3ba with independent math/freshnative/ownpixels; docs/verification/logic-godel-independent-peer-2026-10-20.md."
     }
   ]
 }
