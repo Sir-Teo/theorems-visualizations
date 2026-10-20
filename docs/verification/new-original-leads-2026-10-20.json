@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-20",
+  "id": "circ-4.17",
+  "newLead": "https://picture.iczhiku.com/resource/ieee/WYkFutIepdZJRBNN.pdf",
+  "discovery": "Ordinary websearch returned apparent indexed first-page original text and title/ISSCC1963page32; this is not complete sourcebody evidence.",
+  "ordinaryGet": {
+    "command": "curl -L --fail --max-time45",
+    "httpStatus": 403,
+    "declaredContentLength": 381,
+    "headers": "/tmp/atlas-continuation/circ-original/headers.txt",
+    "outcome": "NoPDFdownloaded. No sourcepage render or body audit possible."
+  },
+  "accessBoundary": "Stop unchanged route; no authentication/password/preview/access-limit bypass.",
+  "otherLead": {
+    "url": "https://citeseerx.ist.psu.edu/document?doi=1fa234fb2e21418d0d683bd0651ff479a0874866&repid=rep1&type=pdf",
+    "topic": "Hughes1992authorized-reprint possibility in Classic Papers Revisited",
+    "webFetch": "403Forbidden; no actualbody obtained; no sourceclosure."
+  },
+  "status": "All corresponding sourceflags remain open. No acceptance count or model change."
+}
