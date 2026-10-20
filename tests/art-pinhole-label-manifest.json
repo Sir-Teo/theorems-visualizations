@@ -1,0 +1,26 @@
+{
+  "baseline": "9fe4579f3f76ae42415dbfcf98c4f7f7d264d0f1",
+  "fields": [
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.4",
+      "field": "viz-label",
+      "before": "exact (Fresnel integral)",
+      "after": "numerical (Fresnel integral)"
+    },
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.4",
+      "field": "viz-label",
+      "before": "exact 84%-spot",
+      "after": "numerical 84%-spot"
+    },
+    {
+      "file": "content/art/ch02.js",
+      "num": "2.4",
+      "field": "viz-label",
+      "before": "Sharpest exact spot",
+      "after": "Smallest sampled spot"
+    }
+  ]
+}

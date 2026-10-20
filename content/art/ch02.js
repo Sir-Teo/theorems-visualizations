@@ -362,8 +362,8 @@ with the factor depending on how the blurs are combined and measured (Rayleigh's
           pic.text('1 mm', -0.8, -0.85, { size: 11, color: 'ink', align: 'center', baseline: 'bottom' });
           info = { spot, dopt, dmin: cv[imin][0], smin: cv[imin][1], dip: val(0, 0) / val(half, 0), s, peak };
         });
-        v.legend([['orange', 'geometric blur $d$', { dash: true }], ['purple', 'Airy blur $2.44\\lambda f/d$', { dash: true }], ['accent', 'exact (Fresnel integral)'], ['gold', 'your pinhole', { dot: true }]]);
-        v.readout(() => `$d=${v.fix(ds.value, 3)}$ mm: exact 84%-spot $${v.fix(info.spot, 3)}$ mm. Sharpest exact spot $${v.fix(info.smin, 3)}$ mm at $d\\approx${v.fix(info.dmin, 2)}$ mm; $\\sqrt{2.44\\lambda f}=${v.fix(info.dopt, 3)}$ mm\nthe two stars' images are $${v.fix(info.s, 2)}$ mm apart; brightness at the midpoint over the peak: $${v.fix(info.dip, 2)}$ ${info.dip < 0.735 ? '(resolved by Rayleigh’s 0.735 criterion)' : '(blurred together)'}`);
+        v.legend([['orange', 'geometric blur $d$', { dash: true }], ['purple', 'Airy blur $2.44\\lambda f/d$', { dash: true }], ['accent', 'numerical (Fresnel integral)'], ['gold', 'your pinhole', { dot: true }]]);
+        v.readout(() => `$d=${v.fix(ds.value, 3)}$ mm: numerical 84%-spot $${v.fix(info.spot, 3)}$ mm. Smallest sampled spot $${v.fix(info.smin, 3)}$ mm at $d\\approx${v.fix(info.dmin, 2)}$ mm; $\\sqrt{2.44\\lambda f}=${v.fix(info.dopt, 3)}$ mm\nthe two stars' images are $${v.fix(info.s, 2)}$ mm apart; brightness at the midpoint over the peak: $${v.fix(info.dip, 2)}$ ${info.dip < 0.735 ? '(resolved by Rayleigh’s 0.735 criterion)' : '(blurred together)'}`);
       },
     },
     // ------------------------------------------------------------------ 2.5

@@ -1,0 +1,5 @@
+# ART 2.4 finite computation labels
+
+This separately authorized successor changes three visible literals only: the legend’s “exact (Fresnel integral)” becomes “numerical (Fresnel integral)”; the current “exact84%-spot” becomes “numerical84%-spot”; and the grid winner’s “Sharpest exact spot” becomes “Smallest sampled spot”. The preceding text-only qualification explains the RSS proxy and finite numerical limitations. These labels now describe the finite algorithm instead of certifying an exact continuum minimum.
+
+The explicit28-file guard permits only those three literal replacements. Every formula, quadrature loop, radial limit, Bessel approximation, sample grid, selection criterion, current numerical result, control, trajectory, helper, dependency and source flag stays byte-identical. Actual real diameter-control/readout/legend captures in both themes remain pending the coordinator’s browser/heavy-work hold release. No broader numerical-source audit, algorithm correction, source closure or combined acceptance is claimed.
