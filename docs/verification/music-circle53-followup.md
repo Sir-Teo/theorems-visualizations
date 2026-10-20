@@ -1,0 +1,31 @@
+# Music7.13/7.14: finite53-TET bounds and the actual fifth chain
+
+Worker-one candidate after7c591b0.7.13 was already source-flagged.7.14 is a newly identified material follow-up: its unflagged statement claimed that every well temperament gives all keys the same interval set, contradicting unequal circulating recipes. Both flags remain true for independent coordinator acceptance. Scope is these two objects, matching syllabus rows, an isolated helper and unique tests/reference/report. No combined ledger, master plan, generated data or shared runtime/helper is changed.
+
+## Actual source reading
+
+Read Benson §6.3, printed213–216/PDF227–230, including the convergents, actual fifth/major-third calculations and torus discussion. Printed214 is an instrument photograph, not evidence that its historical source was independently authenticated. Read complete used key-signature/relative-minor exposition, Appendix M printed393–394/PDF407–408, plus the earlier-read §§5.3–5.4 pure-fifth/spiral/cents argument. Directly inspected fresh source images `/tmp/atlas-worker-one/benson-page-{229,407}.png` alongside the extracted full passages. The source is the cached complete2008 [Benson author PDF](https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf), SHA2566983deabf65460f5bfa01fdf3748963d2a4a8045c3fe8a4c42aa18a477da57a7.
+
+The finite reference collection is authored and explicitly declared; Benson6.3 supports the central53-step approximation, not a unique chromatic table or the inherited universal five-limit accuracy claim. No Jing Fang/Mercator/Bosanquet original/date/priority claim or auditory-threshold experiment is certified. Used mathematical prerequisites were read from actual7.11 finite-approximation,7.5 rational-triad and7.8 unequal-closure bodies. The Appendix M notational claims are distinguished from frequency identity in a tuning.
+
+## Material repairs
+
+7.13's inherited “every interval of five-limit just intonation within about1.5c, below what most listeners can hear” was false as a universal mathematical bound and unsupported as a perceptual claim. The exact five-limit25/16 counterexample uses34 steps with−2.816106975c error. The eleven declared conventional references have maximum error1.544470313c (45/32); the general nearest-grid bound is600/53≈11.320755c. The statement explains fixed prime-map error accumulation rather than projecting the finite table's accuracy over the entire infinite lattice. All12 declared reference rows and selected rational/53/12 chord versions are actual computations. The53-fifth closure excess uses the exact BigInt prime-power ratio and a cancellation-resistant log1p evaluation.
+
+7.14 now distinguishes a constant-fifth family from arbitrary unequal closed chains. The proper sum constraint does not imply identical key intervals. It preserves actual forward-chain spelling C,G,…,E♯,B♯ instead of applying enharmonic-flat key names to distinct pure-chain notes. Angular locations are explicitly chain order and authored radius encodes excess, with no claim of frequency distance. Native controls register tempering and selection; a click must hit a real visible node rather than an invisible angular sector. The empty center does not play. Audio roots are consistently folded into C4–C5 and both upper voices ascend; the12-event walk uses roots1–12, and an explicit C4/final-root pair makes the closing discrepancy inspectable.
+
+The closing residual is computed in centered form delta=(1−tau)(pure−700), error=12delta, preserving a positive residual even when adding delta to700 falls below one binary64 ULP. Exact closed-state classification uses the exact parameter endpoint; decimal frequencies/pixels may be unable to resolve extremely small differences. No rounded threshold decides closure. The final ring is drawn before the note fill so the coincident equal endpoint remains visible.
+
+## Independent numerical and actual native evidence
+
+`python3 tests/verification-music-circle53-reference.py` passes exact Fraction log-bound checks for all24 ratio/division comparisons, plus an80-digit Decimal evaluation of the exact53-fifth prime-power excess. Fixture `docs/verification/music-circle53-reference.json`; log `/tmp/atlas-worker-one/circle53-reference.log`.
+
+`node --test tests/verification-music-circle53.test.mjs` passes4/4 groups; independent table/error comparisons, the explicit counterexample, every cut-free constant-fifth control combination at endpoints/intermediate/sub-ULP parameters, all12 actual visible hit targets, exact endpoint and audio registers, all chord versions and walk/closing signal actions and malformed domains. Log `/tmp/atlas-worker-one/circle53-math.log`.
+
+`node scripts/check.mjs music-7.13 music-7.14 --static` passes2 items/0 errors/0 warnings. Log `/tmp/atlas-worker-one/circle53-static.log`.
+
+`node tests/verification-music-circle53.mjs` passes12/12 groups with exit0 at1450/430/320px light/dark; browser/server closed.7.13 checks all3 chord choices×4 actual actions per layout, every table entry and plotted chord note.7.14 checks continuous endpoints/intermediate values, all12 selections in the wide light group and0/6/11 in every other layout, every real visible-node click, ignored center/exterior clicks, keyboard endpoints, exact control replay and malformed-state fallback. All paths, markers/rings, tables, canvas/TeX labels and page bounds are asserted. Across216 actual H8 buffer actions/534 events, every sample, gap, peak, route/gain/limiter, schedule and stop is independently checked. Log `/tmp/atlas-worker-one/circle53-native.log`.
+
+Directly inspected fresh7.13 circle/table at320dark and7.14 pure/equal diagrams at320light plus the430dark intermediate diagram. All labels and12 table rows are readable, the closing ring/selected note remain distinct, and full marker strokes are contained. Other saved full-page/panel outputs are `/tmp/atlas-worker-one/music-circle53-ITEM-{final,pure,equal}[-panel0|-panel1]-WIDTH-THEME.png`.
+
+All signal claims use the already-audited mono44,100-Hz H8 helper unchanged. The pre-output peak bound0.12,1/h partial amplitudes and10-ms ramps concern synthesized samples; no human listening, measured audibility or universal consonance certificate is claimed.

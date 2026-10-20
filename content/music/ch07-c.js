@@ -1,3 +1,4 @@
+import{fiftyThreeModel,fiftyThreeAudio,circleModel,circleHit,circleAudio,CIRCLE_NAMES}from'./source-audit-circle53.js';
 // Music Theory & Acoustics — Chapter 7: Tuning and temperament (part c: items 7.13–7.17)
 import { SR, C4, FIFTH, PCOMMA, SCOMMA, M3J, NOTE, TIM, sc, fold, circ, ring, cents, gcd, seqCents, chordCents, edoApprox, J5, harmonic, at, dissAll, dissCurve, minima } from './ch07.shared.js';
 
@@ -10,97 +11,55 @@ export default {
   items: [
     // ------------------------------------------------------------------ 7.13
     {
-      num: '7.13',
-      kind: 'Concept',
-      name: '53-tone equal temperament',
-      statement: String.raw`**53-tone equal temperament** divides the octave into 53 steps of $22.64$ ¢. Its fifth (31 steps, $701.89$ ¢) is only $0.07$ ¢ below $3/2$, its major third (17 steps, $384.91$ ¢) is $1.40$ ¢ below $5/4$ and its minor third (14 steps, $316.98$ ¢) is $1.34$ ¢ above $6/5$: every interval of five-limit just intonation is matched to within about $1.5$ ¢, below what most listeners can hear. The reason is arithmetical: $3^{53}$ is almost exactly $2^{84}$, the ratio $3^{53}/2^{84}\approx1.0021$ (**Mercator's comma**, 3.615 ¢) being very small because $31/53$ is a convergent of $\log_2(3/2)$ (7.10, 7.11), and $123/53$ happens also to approximate $\log_25$ to $1.4$ ¢. A chain of 53 pure fifths therefore closes to within 3.6 ¢ and the notes it produces are 53 nearly equally spaced pitches.`,
-      idea: String.raw`Approximating $\log_2 3$ and $\log_2 5$ by multiples of $1/53$ is a simultaneous rational approximation: $84/53$ for $\log_23$ (this is $1+31/53$, a convergent of $\log_2 3$ (7.10, 7.11)) and $123/53$ for $\log_25$ both have small errors. The small errors in the two primes add up, with the integer coefficients of each interval, to small errors in every 5-limit interval. So one 53-note set of pitches realises, to about a cent, the whole lattice of 7.5: the lattice has been wrapped around a circle of 53 points in a way that sends nearby lattice points to the same or adjacent steps (7.15).`,
-      caption: String.raw`Left: the 53 steps of the octave as ticks on a circle with the exact ratios (green) and the step each is assigned (the dots coincide at this scale; the errors are in the bars). Right: the error, in cents, of each five-limit interval in 53-TET (blue) and in 12-TET (grey). Choose a chord and play it in just intonation, in 53-TET, in 12-TET, or compare just and 53-TET alternately: try to hear a difference.`,
-      deps: ['music-7.11', 'music-7.5'],
-      see: ['music-7.15', 'music-7.12', 'music-7.2'],
-      refs: ['Benson ch. 6'],
-      tags: ['equal temperament', 'just intonation'],
-      credit: 'Jing Fang (1st c. BCE) noticed that 53 fifths ≈ 31 octaves; Nicolaus Mercator (17th c.) computed the comma; Bosanquet (19th c.) built instruments',
-      scope: String.raw`Exact arithmetic. Which of the early observations of the near-closure of 53 fifths belong to Jing Fang and to Mercator (including the dates) is taken from secondary sources only. Whether such differences of a cent or so are audible depends on timbre and on beats: in the pure 5-limit chord the partials coincide exactly, in 53-TET they beat at less than 1 Hz.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/53_equal_temperament' },
-      verify: true,
-      viz(v) {
-        const N = 53;
-        const CH = { maj: ['major triad 4:5:6', [1, 5 / 4, 3 / 2]], min: ['minor triad 10:12:15', [1, 6 / 5, 3 / 2]], m7: ['major seventh chord 8:10:12:15', [1, 5 / 4, 3 / 2, 15 / 8]] };
-        const sel = v.select('chord', Object.entries(CH).map(([k, x]) => ({ value: k, label: x[0] })), 'maj');
-        const rg = v.stage({ x: [-1.5, 1.5], y: [-1.45, 1.45], equal: true, axes: false, height: 400, title: 'the 53 steps' });
-        const eb = v.stage({ x: [-0.6, J5.length - 0.4], y: [-18, 18], axes: 'box', gutter: true, height: 400, xticks: J5.map((x, i) => [i, `${x[0]}/${x[1]}`]), yticks: [-15, -7.5, 0, 7.5, 15].map((y) => [y, String(y)]), ylabel: 'error from the just ratio (¢)', title: 'five-limit intervals' });
-        const snd = v.sound();
-        const edo = (n, r) => { const [k, e] = edoApprox(n, cents(r)); return { k, e, c: (k * 1200) / n }; };
-        const chordC = (mode) => CH[sel.value][1].map((r) => (mode === 'just' ? cents(r) : edo(mode === '53' ? 53 : 12, r).c));
-        const play = (m) => { snd.stop(); snd.samples(seqCents(m === 'alt' ? [chordC('just'), chordC('53'), chordC('just'), chordC('53')] : [chordC(m)], C4, m === 'alt' ? 1.3 : 2.4, 0.12), SR, { gain: 0.9 }); };
-        v.soundButton('just', () => play('just')); v.soundButton('53-TET', () => play('53')); v.soundButton('12-TET', () => play('12')); v.soundButton('alternate: just, 53-TET', () => play('alt'));
-        v.render(() => {
-          ring(rg, 1, { tick: 1200 / N, len: 0.05 });
-          for (let k = 0; k < 12; k++) { const a = circ(k * 100, 0.78), b = circ(k * 100, 0.85); rg.line(a[0], a[1], b[0], b[1], { color: 'muted', width: 1.3, alpha: 0.7 }); }
-          rg.text('12-TET', 0, 0.2, { size: 11, color: 'muted', align: 'center' }); rg.text('53 steps', 0, 0, { size: 14, weight: 700, align: 'center' }); rg.text('22.64 ¢ each', 0, -0.17, { size: 11, color: 'muted', align: 'center' });
-          const used = CH[sel.value][1];
-          J5.concat([[2, 1, 'octave']]).forEach(([p, q], i) => {
-            const c = cents(p / q), r = p / q, e = edo(N, r), on = used.some((u) => Math.abs(u - r) < 1e-9 || (Math.abs(u * 2 - r) < 1e-9)), a = circ(c, 1), b = circ(e.c, 0.94), l = circ(c, 1.2);
-            rg.dot(a[0], a[1], { r: on ? 6 : 4, color: 'green' }); rg.dot(b[0], b[1], { r: on ? 4 : 2.5, color: 'accent' });
-            if (p / q < 2) rg.text(`${p}/${q}`, l[0], l[1], { size: on ? 12 : 10, color: on ? 'green' : 'muted', align: 'center', baseline: 'middle', weight: on ? 700 : 400 });
-          });
-          const a0 = circ(0, 1.2); rg.text('1/1', a0[0], a0[1], { size: 11, color: 'green', align: 'center', baseline: 'middle', weight: 700 });
-          eb.hline(0, { color: 'green', width: 1.6 });
-          J5.forEach(([p, q], i) => { const e53 = edo(53, p / q).e, e12 = edo(12, p / q).e; eb.rect(i - 0.34, 0, i - 0.02, e12, { fill: 'muted', fillAlpha: 0.45, color: 'muted' }); eb.rect(i + 0.02, 0, i + 0.34, e53, { fill: 'accent', fillAlpha: 0.7, color: 'accent' }); eb.text(sc(v, e53, 1), i + 0.18, e53, { size: 9.5, align: 'center', baseline: e53 >= 0 ? 'bottom' : 'top', dy: e53 >= 0 ? -2 : 2 }); });
-        });
-        v.legend([['green', 'just ratio'], ['accent', '53-TET'], ['muted', '12-TET']]);
-        v.readout(() => {
-          const rs = CH[sel.value][1], d = rs.map((r) => edo(53, r)), d12 = rs.map((r) => edo(12, r));
-          const m53 = Math.max(...J5.map(([p, q]) => Math.abs(edo(53, p / q).e)));
-          return `${CH[sel.value][0]} in 53-TET: steps ${d.map((x) => x.k).join(', ')} above the root, errors ${d.map((x) => sc(v, x.e, 2)).join(', ')} ¢ · in 12-TET: ${d12.map((x) => sc(v, x.e, 1)).join(', ')} ¢ · worst error of the eleven 5-limit intervals in 53-TET: ${v.fix(m53, 2)} ¢ · $3^{53}/2^{84}$ = ${v.fix(1200 * (53 * Math.log2(3) - 84), 3)} ¢ (Mercator's comma) · 53 pure fifths = 31 octaves + ${v.fix(53 * FIFTH - 37200, 3)} ¢`;
-        });
+      num:'7.13',kind:'Concept',name:'53-tone equal temperament',
+      statement:String.raw`53-TET divides the octave into 53 equal frequency ratios, each $2^{1/53}$ or $1200/53$ cents. Its nearest fifth uses 31 steps (701.886792 cents), major third 17 (384.905660) and minor third 14 (316.981132). The corresponding signed errors are approximately−0.068208,−1.408053 and+1.339845 cents.
+
+These small errors concern particular intervals, not every five-limit ratio. For example, $25/16$ is also five-limit, and its nearest 34 steps have error about−2.816107 cents. The eleven declared conventional references in the table have maximum absolute error about 1.544470 cents. Every octave interval has a nearest 53-TET step within $600/53\approx 11.320755$ cents, which is the general rounding bound.
+
+The exact ratio between 53 pure fifths and 31 octaves is $3^{53}/2^{84}>1$, with logarithmic excess about 3.615046 cents.`,
+      idea:String.raw`The convergent 31/53 of $\log_2(3/2)$ gives the close fifth approximation. The major third is a separate approximation,17/53 of an octave. If prime 3 and prime 5 are assigned 84 and 123 steps, respectively, the error assigned to a ratio $2^a 3^b 5^c$ is a linear combination of the errors for those primes. Larger exponents can accumulate larger errors; nearest-step rounding may then choose a different count. The finite table does not bound the entire five-limit lattice.
+
+For $25/16=(5/4)^2$, the assigned 34-step error is twice that of 17 steps against 5/4, giving an explicit counterexample to a universal 1.5-cent claim. The bound 600/53 follows because rounding changes an octave coordinate by at most half of a 53-TET step.`,
+      caption:String.raw`Select one of three explicitly voiced rational chords. The circle shows 53 grid ticks and the selected chord's pure ratios (green) versus its 53-TET notes (blue, at a separate radius). The complete table compares eleven declared references and the 25/16 counterexample with both 53-TET and 12-TET. Playback uses the printed C4-anchored register for each version; alternate plays rational and 53-TET events in turn.`,
+      deps:['music-7.11','music-7.5'],see:['music-7.15','music-7.12','music-7.2'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §6.3, pp.213–216; declared reference table and25/16 counterexample computed here'],tags:['equal temperament','just intonation'],
+      credit:'Technical53-TET exposition: Dave Benson; finite reference table, counterexample and synthesis authored here.',
+      scope:String.raw`A mathematical finite comparison. The ratio list is declared rather than a unique five-limit scale, and no universal 1.5-cent or listener-threshold claim is made. Historical priority and naming of the 53-fifth closure excess are outside this claim. Integer step counts and the prime-power ratio are exact definitions; decimal logarithms/frequencies are numerical evaluations. Audio is the C4=261.6256-Hz,44,100-Hz H8 signal specified in 7.4/7.9, with pre-output bound 0.12 and 10-ms ramps; no perceived-beat or consonance certificate is inferred.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      viz(v){
+        const chord=v.select('chord',[{value:'major',label:'major triad 4:5:6'},{value:'minor',label:'minor triad 10:12:15'},{value:'major7',label:'major seventh 8:10:12:15'}],'major');
+        const A=v.stage({x:[-1.5,1.5],y:[-1.45,1.45],equal:true,axes:false,full:true,height:350,minWidth:240,title:'53 equal ticks and the selected chord'}),B=v.stage({x:[0,1],y:[-.5,12.7],axes:false,full:true,height:440,minWidth:240,title:'declared rational references and signed errors (cents)'});
+        let info;for(const[action,label]of[['just','Play rational chord'],['53','Play 53-TET chord'],['12','Play 12-TET chord'],['alternate','Alternate rational / 53-TET']])v.soundButton(label,sd=>{const a=fiftyThreeAudio(chord.value,action);sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});});v.button('Stop audio',()=>v.sound().stop());
+        const point=(c,r)=>[r*Math.sin(c*Math.PI/600),r*Math.cos(c*Math.PI/600)];
+        v.render(()=>{const a=fiftyThreeModel(chord.value);info=a;A.circle(0,0,1,{color:'muted',width:1});for(let j=0;j<53;j++)A.line(...point(j*1200/53,.95),...point(j*1200/53,1),{color:'muted',width:1});a.notes.forEach(n=>{const c=1200*Math.log2(n.p/n.q),e=1200*Math.log2(n.in53/261.6256);A.dot(...point(c,1),{r:5,ring:false,color:'green'});A.dot(...point(e,.82),{r:4,ring:false,color:'accent'});A.text(n.exact,...point(c,1.2),{size:11,align:'center',baseline:'middle',color:'green'});});A.text('53-TET',0,.06,{size:15,align:'center',baseline:'middle'});A.text('selected chord',0,-.15,{size:11,align:'center',baseline:'middle',color:'muted'});
+          [['ratio',.15],['k53',.4],['53−ref',.7],['12−ref',.95]].forEach(([t,x])=>B.text(t,x,12.05,{size:10.5,align:x>.5?'right':'center',baseline:'middle',weight:700}));a.rows.forEach((r,j)=>{const y=11-j,col=r.counterexample?'gold':'accent';B.text(r.exact,.15,y,{size:11,align:'center',baseline:'middle',color:r.counterexample?'gold':'ink'});B.text(String(r.in53.k),.4,y,{size:11,align:'center',baseline:'middle',color:col});B.text(`${r.in53.error<0?'−':'+'}${v.fix(Math.abs(r.in53.error),3)}`,.7,y,{size:10.5,align:'right',baseline:'middle',color:col});B.text(`${r.in12.error<0?'−':'+'}${v.fix(Math.abs(r.in12.error),3)}`,.95,y,{size:10.5,align:'right',baseline:'middle',color:'muted'});});
+        });v.legend([['green','selected pure ratio'],['accent','53-TET'],['muted','12-TET table'],['gold','25/16 counterexample']]);
+        v.readout(()=>{const a=info;return `Maximum absolute 53-TET error over the eleven declared references: ${v.fix(a.maxCuratedError,9)} cents. 25/16 counterexample: ${v.fix(a.counterexample.in53.error,9)} cents. 53-fifth closure excess: ${v.fix(a.commaCents,9)} cents; the exact prime-power ratio is 3⁵³/2⁸⁴. Actual rational / 53-TET /12-TET chord frequencies (Hz): ${a.notes.map(n=>`${v.fix(n.just,6)} /${v.fix(n.in53,6)} /${v.fix(n.in12,6)}`).join('; ')}. Small numerical errors do not establish an audibility threshold.`;});
       },
     },
     // ------------------------------------------------------------------ 7.14
     {
-      num: '7.14',
-      kind: 'Concept',
-      name: 'The circle of fifths',
-      statement: String.raw`The **circle of fifths** arranges the twelve keys so that neighbours differ by a fifth, a key signature gains one sharp each step clockwise and one flat each step counter-clockwise, and relative minors sit inside their major keys. It is a circle only in a tempered tuning: with pure fifths the chain of notes $C, G, D, \dots$ is an open spiral, each turn ending 23.46 ¢ above where it began (7.3). A tuning with twelve equal fifths of exactly 700 ¢ (12-TET, 7.9), or any well temperament (7.8), closes it, so that the twelfth fifth lands on the starting note and every key has the same set of intervals. Twelve steps of $k\cdot f$ with $f$ the size of the fifth close only if $12f=8400$ ¢.`,
-      idea: String.raw`Think of the tuning of the fifth as a single number $f$ and of the chain $k\mapsto kf \bmod 1200$ as a rotation of the pitch circle. After twelve steps the chain has advanced by $12f-8400=12(f-700)$ cents: zero only for $f=700$. So the spiral of pure fifths and the closed circle of tempered fifths are the two ends of a one-parameter family; shrinking each fifth by 1.955 ¢ rolls the spiral onto a circle. The circle is also the order of keys by the number of notes they share: neighbouring keys have six of seven scale notes in common.`,
-      caption: String.raw`The twelve keys in circle-of-fifths order with their key signatures (relative minors inside). The slider changes the fifth from pure (701.955 ¢) to equal-tempered (700 ¢); the spiral of pure fifths (radius grows by the accumulated comma) closes up into the circle. Click a key to hear its major triad; the walk plays the triads for twelve successive fifths and ends on a C that is 23.5 ¢ sharp unless the slider is at 1.`,
-      deps: ['music-7.9', 'music-7.2'],
-      see: ['music-7.4', 'music-7.8', 'music-8.4'],
-      refs: ['Benson ch. 5'],
-      tags: ['circle of fifths'],
-      scope: String.raw`Conventional key names are used (sharps clockwise to F♯, flats beyond); enharmonic pairs such as F♯ and G♭ coincide only when the circle closes. The walk plays the notes folded into the octave nearest middle C.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Circle_of_fifths' },
-      viz(v) {
-        const tau = v.slider('tempering: pure → equal', 0, 1, 0, { step: 0.01, fmt: (x) => `${v.fix(FIFTH - x * (FIFTH - 700), 3)} ¢` });
-        const s = v.stage({ x: [-1.9, 1.9], y: [-1.85, 1.85], equal: true, axes: false, height: 520, title: 'the circle (and spiral) of fifths' });
-        const snd = v.sound();
-        const MAJ = ['C', 'G', 'D', 'A', 'E', 'B', 'F♯', 'D♭', 'A♭', 'E♭', 'B♭', 'F'], MIN = ['Am', 'Em', 'Bm', 'F♯m', 'C♯m', 'G♯m', 'E♭m', 'B♭m', 'Fm', 'Cm', 'Gm', 'Dm'];
-        const SIG = ['0', '1♯', '2♯', '3♯', '4♯', '5♯', '6♯/6♭', '5♭', '4♭', '3♭', '2♭', '1♭'];
-        const f = () => FIFTH - tau.value * (FIFTH - 700);
-        const kOf = (i) => (i <= 6 ? i : i - 12);
-        const ang = (i) => (i * Math.PI) / 6, pt = (i, R) => [R * Math.sin(ang(i)), R * Math.cos(ang(i))];
-        const rootC = (i) => { const c = kOf(i) * f(); return c - 1200 * Math.round(c / 1200); };
-        const triad = (i) => { const r = rootC(i); return [r, r + 4 * f() - 2400, r + f()]; };
-        s.onClick((x, y) => { const a = Math.atan2(x, y), i = ((Math.round((a * 6) / Math.PI) % 12) + 12) % 12; snd.stop(); snd.samples(seqCents([triad(i)], C4, 2.0, 0), SR, { gain: 0.9 }); });
-        v.soundButton('walk around the circle', (sd) => { const ch = []; for (let k = 0; k <= 12; k++) { const c = k * f() - 1200 * Math.round((k * f()) / 1200); ch.push([c, c + 4 * f() - 2400, c + f()]); } sd.samples(seqCents(ch, C4, 0.6, 0.04), SR, { gain: 0.9 }); });
-        v.render(() => {
-          const e = f() - 700, rad = (k) => 1 + (0.4 * (k * e)) / PCOMMA;
-          s.circle(0, 0, 1, { color: 'faint', width: 1, dash: [4, 4] });
-          const P = []; for (let k = 0; k <= 12; k++) P.push([rad(k) * Math.sin(ang(k)), rad(k) * Math.cos(ang(k))]);
-          s.path(P, { color: 'orange', width: 2.2, alpha: 0.8 });
-          for (let i = 0; i < 12; i++) {
-            const p = P[i]; s.dot(p[0], p[1], { r: 6, color: i === 0 ? 'green' : 'accent' });
-            s.text(MAJ[i], pt(i, 1.52)[0], pt(i, 1.52)[1], { size: 15, align: 'center', baseline: 'middle', weight: 700 });
-            s.text(SIG[i], pt(i, 1.72)[0], pt(i, 1.72)[1], { size: 10.5, color: 'muted', align: 'center', baseline: 'middle' });
-            s.text(MIN[i], pt(i, 0.7)[0], pt(i, 0.7)[1], { size: 12, color: 'purple', align: 'center', baseline: 'middle' });
-          }
-          const p12 = P[12], p0 = P[0]; s.dot(p12[0], p12[1], { r: 7, color: 'red', hollow: true });
-          s.text(e > 0.01 ? `12th fifth lands ${v.fix(12 * e, 2)} ¢ above C` : 'the 12th fifth lands on C', 0, 0.12, { size: 12, color: e > 0.01 ? 'red' : 'green', align: 'center', weight: 700 });
-          s.text(`fifth = ${v.fix(f(), 3)} ¢`, 0, -0.1, { size: 11, color: 'muted', align: 'center' });
-        });
-        v.legend([['orange', 'chain of fifths of size f, drawn outward by the accumulated excess'], ['purple', 'relative minor']]);
-        v.readout(() => `fifth ${v.fix(f(), 3)} ¢ · after 12 fifths the chain has risen by $12(f-700)=${v.fix(12 * (f() - 700), 3)}$ ¢ above the starting note (pure: 23.460 ¢, equal: 0) · major third of a key: ${v.fix(4 * f() - 2400, 2)} ¢ (pure 5/4: 386.31 ¢) · neighbouring keys on the circle differ by one accidental`);
+      num:'7.14',kind:'Concept',name:'The circle of fifths',
+      statement:String.raw`In 12-TET, adding a fifth advances 7 semitones modulo 12; because 7 and 12 are coprime, twelve steps visit every pitch class and return to the start. The conventional major-key signatures form the same circle: neighboring major scales differ by one note. A natural minor scale shares its key signature with the major scale three semitones above it.
+
+For a chain with a constant fifth size $f$ in the displayed 700-to-pure-fifth range, the twelve-step excess above seven octaves is $12(f-700)$ cents. It vanishes only at $f=700$. Pure fifths give the Pythagorean comma, and the last spelled B♯ differs from C.
+
+An unequal twelve-fifth tuning can also close: its fifth sizes need only sum to 8400 cents (7.8). That condition does not make all keys' interval patterns identical. The widget's uniform-fifth family is one specific mathematical comparison.`,
+      idea:String.raw`Octave equivalence means reducing pitch in cents modulo 1200. Twelve equal 700-cent steps sum to 8400. With pure fifths the sum is 8400 plus the comma; continuously reducing every fifth by the same share removes that excess. If fifths vary, closure constrains only their total, not every four-fifth major third. The named circulating recipes in 7.8 are concrete examples.
+
+Benson's Appendix M demonstrates the key-signature relationship with C/G and C/F major, and describes relative natural minors. Those notational facts are distinct from whether differently spelled notes have exactly the same frequency in a chosen tuning. This diagram therefore retains the actual forward-chain spellings C,G,…,E♯,B♯.`,
+      caption:String.raw`Choose the continuous tempering amount and a chain note. Gold selects its actual visible node; clicks near nodes select and play a triad, while empty space does nothing. Angular positions encode chain order. Authored radial growth encodes accumulated excess, not frequency distance. The red endpoint is step 12 (B♯), which coincides with C only at the equal endpoint. The walk plays twelve subsequent triads, rooted on steps 1–12; the closing-pair button directly compares the final root with the C4 anchor.`,
+      deps:['music-7.9','music-7.2','music-7.8'],see:['music-7.4','music-8.4','music-8.20'],
+      refs:['Benson, Music: A Mathematical Offering, Web version14Dec2008, §§5.3–5.4, pp.155–158; Appendix M, pp.393–394'],tags:['circle of fifths'],
+      credit:'Tuning and key-signature exposition: Dave Benson; continuous uniform-fifth diagram and synthesis authored here.',
+      scope:String.raw`A specified constant-fifth family with registered controls, rather than a simulation of every well temperament. The final note's unison with C is exact at the equal endpoint; intermediate calculations and decimal readouts use binary 64. Every audio root is folded into C4–C5, and its two upper voices ascend by the displayed four-fifth major third and fifth. C4 is 261.6256Hz. Audio uses the mono 44,100-Hz H8 contract of 7.4/7.9 with pre-output bound 0.12 and 10-ms ramps. No subjective key-character or perceptual equality is inferred.`,
+      links:{source:'https://homepages.abdn.ac.uk/d.j.benson/pages/html/music.pdf'},verify:true,
+      viz(v){
+        const tau=v.slider('tempering: pure to equal',0,1,0,{step:'any',decimals:9}),selected=v.slider('selected chain note',0,11,0,{int:true,fmt:x=>CIRCLE_NAMES[x]});
+        const A=v.stage({x:[-1.8,1.8],y:[-1.8,1.8],equal:true,axes:false,full:true,height:390,minWidth:240,title:'chain order; radial displacement encodes accumulated excess'});let info;
+        const play=(action,sd=v.sound())=>{const a=circleAudio(tau.value,selected.value,action);sd.stop();sd.samples(a.samples,a.sampleRate,{gain:1,normalize:false});};v.soundButton('Play selected triad',sd=>play('triad',sd));v.soundButton('Play twelve subsequent triads',sd=>play('walk',sd));v.soundButton('Compare C4 and final root',sd=>play('closing',sd));v.button('Stop audio',()=>v.sound().stop());A.onClick((x,y)=>{const j=circleHit(tau.value,x,y);if(j!==null){selected.set(j);play('triad');}});
+        v.render(()=>{const a=circleModel(tau.value,selected.value);info=a;A.circle(0,0,1,{color:'muted',width:1,dash:[4,4]});A.path(a.path,{color:'orange',width:2});const end=a.path[12];A.dot(...end,{r:8,hollow:true,color:'red',width:2});a.nodes.forEach(n=>{A.dot(...n.point,{r:n.j===a.selected?6:4.5,ring:false,color:n.j===a.selected?'gold':'accent'});const j=n.j,r=Math.hypot(...n.point),factor=j===0?.78/r:1+.17/r;A.text(n.name,n.point[0]*factor,n.point[1]*factor,{size:12,align:'center',baseline:'middle'});});A.text(`selected ${a.chosen.name}`,0,.12,{size:13,align:'center',baseline:'middle',color:'gold'});A.text(`${v.fix(a.fifth,6)} cents/fifth`,0,-.12,{size:11,align:'center',baseline:'middle',color:'muted'});});
+        v.legend([['accent','forward-chain notes'],['gold','selected note'],['red','step 12 B♯'],['orange','authored chain path']]);v.readout(()=>{const a=info;return `Fifth ${v.fix(a.fifth,9)} cents; twelve-step excess ${v.fix(a.error,9)} cents. ${a.closed?'Equal endpoint: B♯ and C coincide.':'The final B♯ differs from C.'} Actual C4/final-root pair ${a.closing.map(x=>v.fix(x,6)).join(', ')}Hz. Selected ${a.chosen.name} upward triad ${a.triad.map(x=>v.fix(x,6)).join(', ')}Hz. The plot is an authored chain-order diagram; its radius is not a frequency.`;});
       },
     },
     // ------------------------------------------------------------------ 7.15
