@@ -6929,6 +6929,16 @@
       "id": "game-4.13",
       "status": "resolved",
       "note": "2026-10-20: worker two independently accepted exact 2bf0ae7; docs/verification/game-hypercube-followup.md."
+    },
+    {
+      "id": "music-6.6",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently accepted exact 90d674e; docs/verification/music-induced-paper-followup.md."
+    },
+    {
+      "id": "music-6.15",
+      "status": "resolved",
+      "note": "2026-10-20: worker three independently accepted exact 90d674e; docs/verification/music-induced-paper-followup.md."
     }
   ]
 }

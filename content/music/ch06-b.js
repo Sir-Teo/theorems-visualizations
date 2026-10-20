@@ -465,7 +465,7 @@ He ranked intervals (octave 2, fifth 4, fourth 5, major sixth and major third 7,
     },
     // ------------------------------------------------------------------ 6.15
     {
-      num:'6.15',kind:'Paper',name:'Local Consonance, Timbre and Scale',verify:true,
+      num:'6.15',kind:'Paper',name:'Local Consonance, Timbre and Scale',verify:false,
       paper:{authors:'William A. Sethares',year:1993, title:'Local consonance and the relationship between timbre and scale',venue:'Journal of the Acoustical Society of America 94(3):1218–1228',doi:'10.1121/1.408175'},introduces:['music-6.4','music-6.5'],
       statement:String.raw`Sethares's 1993 paper specifies a product-amplitude roughness model for finite spectra (Eqs. 1–6) and defines related timbres and scales through local minima of the resulting dissonance curves. Partial coincidences suggest candidate minima, and the paper also exhibits broad minima between coincidences. Its applications include stretched/compressed spectra, a uniform free beam and induced equal-tempered timbres; timbre selection is a constrained optimization, rather than a guarantee that coincidence alone determines every minimum.
 The theorem section makes two explicit simplifications: unit partial amplitudes and a single fixed bandwidth factor $s=1$. Its stated minimum-count bounds and other general properties must not be transferred without justification to the full frequency-dependent, unequal-amplitude plots below.`,

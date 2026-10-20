@@ -314,7 +314,7 @@ For a stretched or compressed spectrum $f_j=fA^{\log_2j}$, every partial-ratio c
     },
     // ------------------------------------------------------------------ 6.6
     {
-      num:'6.6',kind:'Method',name:'Designing spectra for a tuning',verify:true,
+      num:'6.6',kind:'Method',name:'Designing spectra for a tuning',verify:false,
       statement:String.raw`For an $n$-tone equal temperament, write $b=2^{1/n}$. An induced timbre has partial ratios $b^{m_j}$ with integer exponents. Each partial coincidence then occurs at a scale ratio $b^{m_i-m_j}$. Such timbres are candidates for matching a scale's roughness minima; this algebra does not force every coincidence to be a minimum, every scale step to have a minimum, or every minimum to lie on the scale.
 Sethares's 1993 paper treats constrained timbre selection and gives induced examples. Its first 10-tone example uses the seven exponents $0,10,17,20,25,28,30$. Snapping harmonic partials to their nearest scale positions is a separate illustrative construction, not his optimization algorithm.`,
       idea:String.raw`The differences of integer exponents prove the coincidence-lattice claim exactly. Whether a candidate is a minimum depends on the other partial pairs, amplitudes and bandwidth; shallow minima can also occur between coincidences. The original paper's optimization combines roughness values with a penalty for scale positions lacking a local minimum, while fixing amplitudes and bounding the frequency search. Minimizing roughness alone can favor trivial or poorly matched spectra.`,

@@ -421,6 +421,17 @@
         "docs/verification/game-hypercube-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-6.6",
+        "music-6.15"
+      ],
+      "peer": "worker three independently accepted exact 90d674e",
+      "reports": [
+        "docs/verification/music-induced-paper-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
