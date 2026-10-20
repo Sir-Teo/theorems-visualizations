@@ -23,6 +23,8 @@ tools to reach for. Read the section for your field before writing a chapter.
   dimensionless sliders (ratios, multiples of a natural scale) when the absolute scale does not
   matter.
 
+- **Prerequisites are used inputs, not analogies.** Read the target proof and identify its step in the consumer, including hypotheses. Put a useful comparison in related links when it does not supply the argument. Synchronize complete raw dependency lists in the item and syllabus.
+
 ## Mathematics (book-anchored and curated)
 
 As in AUTHORING.md. Book-anchored collections (`pma`, `rca`, `fa`, `ladr`, …) use the book's
@@ -44,6 +46,8 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
 - Show conserved quantities live (energy, momentum, angular momentum) and the quantity the law
   predicts beside the measured one (period vs amplitude, orbit period vs semi-major axis³ᐟ²).
 
+- An equation count does not prove existence or uniqueness for arbitrary element laws. For network models, test coefficient and augmented ranks or establish the actual positivity/invertibility hypotheses; conflicting ideal sources can make a structurally balanced system inconsistent.
+
 ## Statistics & data science
 
 - **Simulate, don't assert**: every claim about estimators, tests or intervals is shown by repeated
@@ -58,6 +62,7 @@ an eigen-direction, an orthonormal frame, an ellipse's axes) with live numbers.
   mixture, Kolmogorov …) rather than hand-rolled laws.
 - Machine learning items train on data the reader places (click to add points) and show the
   generalization gap against the bound.
+- State the censoring/intensity assumptions behind event-count and observed-time identities. Informative censoring can invalidate a baseline constant-hazard interpretation; it is not covered by “whatever the censoring.” See the [independent EPI counterexample](verification/epi-prerequisites-independent-peer.md).
 
 ## Computer science
 
