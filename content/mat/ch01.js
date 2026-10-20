@@ -343,7 +343,7 @@ The numerical mean uses a finite interval of bond lengths with positive Boltzman
       kind: 'Concept',
       name: 'Anisotropy of single crystals',
       statement: String.raw`The stiffness of a single crystal depends on direction because the density and strength of bonds do. For a cubic crystal with stiffnesses $C_{11},C_{12},C_{44}$ (compliances $S_{ij}$), the Young's modulus along a direction with unit vector $\mathbf n=(n_1,n_2,n_3)$ is
-$$\frac1{E(\mathbf n)}=S_{11}-2\Big(S_{11}-S_{12}-\tfrac12S_{44}\Big)\big(n_1^2n_2^2+n_2^2n_3^2+n_3^2n_1^2\big).$$
+$$\begin{gathered}\frac1{E(\mathbf n)}=S_{11}\\{}-2\Big(S_{11}-S_{12}-\tfrac12S_{44}\Big)\\{}\cdot\big(n_1^2n_2^2+n_2^2n_3^2+n_3^2n_1^2\big).\end{gathered}$$
 It is isotropic exactly when the **Zener ratio** $A=2C_{44}/(C_{11}-C_{12})$ equals $1$. Otherwise the extremes are along $\langle100\rangle$ and $\langle111\rangle$: copper ($A\approx3.2$) is three times stiffer along the body diagonal than along the cube edge, tungsten ($A\approx1$) is nearly isotropic. A polycrystal with randomly oriented grains averages these values between the Voigt (equal strain) and Reuss (equal stress) bounds.`,
       idea: String.raw`Each direction in the crystal presents a different arrangement of bonds to the load: along $\langle111\rangle$ in fcc copper the dense close-packed atom rows carry the stress, along $\langle100\rangle$ the load must bend the bonds sideways. The formula follows from rotating the fourth-rank compliance tensor, which for cubic symmetry depends on the single combination $n_1^2n_2^2+\dots$. Averaging over all orientations gives the isotropic polycrystal modulus quoted in handbooks, and it lies between the extremes along the axes, as the Voigt and Reuss averages show.
 
