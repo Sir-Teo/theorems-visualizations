@@ -388,6 +388,17 @@
         "docs/verification/tech-mechanisms-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "music-6.4",
+        "music-6.5"
+      ],
+      "peer": "worker two independently accepted exact 4a240c9",
+      "reports": [
+        "docs/verification/music-roughness-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {

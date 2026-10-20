@@ -257,7 +257,7 @@ whose peak lies at $s\,\Delta f=\ln(b_2/b_1)/(b_2-b_1)\approx0.22$. Because the 
     },
     // ------------------------------------------------------------------ 6.4
     {
-      num:'6.4',kind:'Model',name:'Dissonance curves of complex tones (Sethares)',verify:true,
+      num:'6.4',kind:'Model',name:'Dissonance curves of complex tones (Sethares)',verify:false,
       statement:String.raw`A finite tone is specified by partial ratios $h_i>0$ and nonnegative amplitudes $a_i$. For a lower fundamental $f$, concatenate the partial lists of that tone and its copy at $\alpha f$. The later MATLAB model published by Sethares sums over every unordered pair, including pairs within each tone:
 $$D_f(\alpha)=\sum_{i<j}w_{ij}g(x_{ij}),$$
 $$w_{ij}=5\min(a_i,a_j),$$
@@ -290,7 +290,7 @@ Partial coincidences at $\alpha=h_i/h_j$ are candidate locations for notches, no
     },
     // ------------------------------------------------------------------ 6.5
     {
-      num:'6.5',kind:'Principle',name:'Local consonance relates timbres and scales',verify:true,
+      num:'6.5',kind:'Principle',name:'Local consonance relates timbres and scales',verify:false,
       statement:String.raw`Sethares calls a timbre and a scale related when local minima of the timbre's dissonance curve occur at scale positions. This is a model-based way to propose intervals for a given sound, rather than a theorem that its spectrum determines one best musical tuning. Partial coincidences can suggest notches, while additional shallow minima can occur between them (6.4).
 For a stretched or compressed spectrum $f_j=fA^{\log_2j}$, every partial-ratio coincidence $j/k$ moves to $A^{\log_2(j/k)}$. A comparison scale has twelve equal steps per pseudo-octave $A$, with step ratios $A^{k/12}$. These equal steps need not coincide exactly with partial ratios or with all minima.`,
       idea:String.raw`Stretching transforms the coincidence locations, but the frequency differences and critical-band factor in the roughness formula also change. The full score must therefore be recomputed; there is no exact horizontal-rescaling identity for its curve. Spectrum, register, amplitude weighting and musical context all matter. Compare the numerical roughness of specific chords instead of inferring that every matched passage is smoother than every mismatch.`,

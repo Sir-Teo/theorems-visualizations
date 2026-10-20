@@ -6957,6 +6957,16 @@
       "id": "tech-4.10",
       "status": "resolved",
       "note": "2026-10-20: worker three independently accepted exact 6a51d2e; docs/verification/tech-mechanisms-followup.md."
+    },
+    {
+      "id": "music-6.4",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independently accepted exact 4a240c9; docs/verification/music-roughness-followup.md."
+    },
+    {
+      "id": "music-6.5",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independently accepted exact 4a240c9; docs/verification/music-roughness-followup.md."
     }
   ]
 }
