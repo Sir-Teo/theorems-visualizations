@@ -918,3 +918,8 @@ Independent peers close4.6andROBOT3.7. Toba now separates bounded actual dated c
 ## Accepted philosophy prerequisites
 
 Independent worker-one argument/target/byteguard/native review accepts six used links, taking PHIL19→25published edges while preserving every visualization and source flag. The horn's equivalent equation layout also fits320. Bayes squares, full-family independence, premise-versus-MP, finite primitives before improper limits, conditional induction and fixed-background deduction are checked within their actual hypotheses. See [independent evidence](phil-crossfield-independent-peer-worker-one.md). Two pre-existing target formula overflows observed by the peer are tracked separately for correction. Exact current inventory822published shortfall,49/64below25and28whole syllabi below25. Seven source reviews remain; Wave5is prepared/unstarted.
+
+
+## Accepted checkpoint through e0f9fb5 and separate narrow formulas
+
+Fresh exact snapshot passes2068default tests including6UI, strict build/fullstatic0errors/warnings, home112704bytes gzip; queue7=833initial+1added−827original resolved, team144accepted entries. Published prerequisite shortfall822,49/64below25and28whole syllabi below25. The initial stale pending-flag assertion failure is preserved and the full successful rerun is documented in [checkpoint-e0f9fb5](checkpoint-e0f9fb5.md). Later equivalent EPI2.2/PROB2.1.1a display wrapping is independently accepted:26moduleitems/full2syllabi/formula tokens/functions/flags guarded,4fresh320theme/itemgroups pass with complete fractions/Borelqualification visible. See [separate peer](prerequisite-formula-wrap-peer.md); no source count changes. Active MATHBIO/endosymbiosis/LOGICdrafts remain excluded.

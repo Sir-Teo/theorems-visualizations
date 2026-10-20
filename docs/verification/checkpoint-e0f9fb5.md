@@ -1,0 +1,9 @@
+# Accepted checkpoint through e0f9fb5
+
+Exact immutable snapshot `e0f9fb5d3017f5e13129c184b1910f3cfa5dae36`, archive `/tmp/atlas-coordinator/checkpoint13`, passes all2068default tests including6UI groups with concurrency2:0failures/cancelled/skipped,109.415664375seconds. Strict build runs before tests:6684written/6890planned items,450chapters/85collections,0errors/0warnings, home112704bytes gzip. Complete static check6621items,0errors/0warnings. The source ledger reconciles2260scoped items,7pending=833initial+1added−827original resolved. Team144independently accepted entries.
+
+The snapshot includes independently accepted Toba, original Denavit–Hartenberg with bounded/wrapped camera correction, megafaunal dated-window comparison, and FLUID/PHIL genuine prerequisites. Cross-field published shortfall822,49/64non-math collections below25published edges,28whole syllabi below25. It excludes later mathematical-biology candidates, narrow EPI/PROB statement wrapping and active endosymbiosis work. Those later bounded checks are recorded separately.
+
+Initial exact1aa4b8bfailed one stale mathematical-test assertion that the source flag was stilltrue after acceptance; see [preserved initial failure](checkpoint-1aa4b8b-initial-failure.md). The test-only removal changes no source/model/native behavior. All six focused ROBOT groups and this complete fresh post-build run pass. The initial attempt is not presented as a passed checkpoint.
+
+Logs `/tmp/atlas-coordinator/checkpoint13-{build,tests,static,queue,crossfield}.log`, exact marker `checkpoint13-commit.txt`; the complete cross-field inventory remains in that exact archive. Original checkout/inherited drafts remain untouched. Full-map60fps is still open and unbenchmarked amid competing browser jobs; flagship proof curation2/100 is separate alongside-wave work. Wave5 remains prepared80chapters/1031new+2preserved items and unstarted while the source/prerequisite/full-map gates remain open.

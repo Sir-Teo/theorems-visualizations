@@ -1336,14 +1336,14 @@
   },
   "currentPendingSourceReviews": 7,
   "latestCheckpoint": {
-    "acceptedContentCommit": "e31b9dc",
-    "report": "docs/verification/checkpoint-e31b9dc.md",
-    "defaultTests": 2053,
+    "acceptedContentCommit": "e0f9fb5",
+    "report": "docs/verification/checkpoint-e0f9fb5.md",
+    "defaultTests": 2068,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 111.485789583,
+    "testDurationSeconds": 109.415664375,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1354,11 +1354,11 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112710,
-    "pendingSourceReviews": 10,
-    "acceptedTeamEntries": 141,
-    "publishedCrossFieldShortfall": 833,
-    "publishedCollectionsBelowTarget": 51,
+    "homeGzipBytes": 112704,
+    "pendingSourceReviews": 7,
+    "acceptedTeamEntries": 144,
+    "publishedCrossFieldShortfall": 822,
+    "publishedCollectionsBelowTarget": 49,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
     "wave5Status": "prepared-unstarted",
@@ -1368,28 +1368,19 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint11-tests.log",
-      "/tmp/atlas-coordinator/checkpoint11-build.log",
-      "/tmp/atlas-coordinator/checkpoint11-static.log",
-      "/tmp/atlas-coordinator/checkpoint11-queue-recheck.log"
+      "/tmp/atlas-coordinator/checkpoint13-tests.log",
+      "/tmp/atlas-coordinator/checkpoint13-build.log",
+      "/tmp/atlas-coordinator/checkpoint13-static.log",
+      "/tmp/atlas-coordinator/checkpoint13-queue.log",
+      "/tmp/atlas-coordinator/checkpoint13-crossfield.log"
     ],
     "limitations": [
-      "Exact immutable accepted snapshote31b9dc includes nine independently accepted source entries after61ced0c plus psychology/political-science prerequisite reconciliation and separate rational aggregation correction.",
-      "Current source/prerequisite/full-map gates remain open; passing tests do not certify unread bodies or active drafts."
+      "Exact immutable acceptede0f9fb5 includes Toba/megafauna/ROBOT and FLUID/PHIL; later narrow-formula layout/MATHBIO/endosymbiosis drafts excluded.",
+      "Initial1aa4b8b stale pending-flag test assertion failed and is preserved separately; fresh full post-build2068pass follows test-only correction.",
+      "Source/prerequisite/full-map gates remain open; tests do not certify unread bodies."
     ]
   },
-  "openStateFindings": [
-    {
-      "ids": [
-        "epi-2.2",
-        "prob-2.1.1a"
-      ],
-      "status": "layout-followup-pending",
-      "finding": "Independent PHIL prerequisite peer observed unchanged target display formulas clipped at320; exact formulas read, no target-source/math acceptance implied.",
-      "producer": "worker_one",
-      "report": "docs/verification/phil-crossfield-independent-peer-worker-one.md"
-    }
-  ],
+  "openStateFindings": [],
   "stateFollowups": [
     {
       "ids": [
@@ -1448,6 +1439,21 @@
       ],
       "report": "docs/verification/worker-three-robot-denavit-peer.md",
       "sourceClosure": "Same3.7original closure, not a second source-review count."
+    },
+    {
+      "ids": [
+        "epi-2.2",
+        "prob-2.1.1a"
+      ],
+      "status": "accepted",
+      "finding": "Independent PHIL prerequisite peer observed unchanged target display formulas clipped at320; exact formulas read, no target-source/math acceptance implied.",
+      "producer": "worker_one",
+      "report": "docs/verification/prerequisite-formula-wrap-peer.md",
+      "commits": [
+        "951b4ed0248aa41ba769d95e882ef1328a45c243"
+      ],
+      "peer": "worker_two",
+      "sourceClosure": "None; both existing source flags unchanged, equivalent statements only."
     }
   ],
   "acceptedSourceLimitations": [
