@@ -113,7 +113,7 @@ export default {
         { num: '3.3', kind: 'Model', name: 'Lotka–Volterra predator–prey equations', deps: ['mathbio-3.1', 'ode-6.8'], refs: ['Murray I ch. 3', 'Edelstein-Keshet ch. 6'],
           pic: 'Hares and lynx oscillate out of phase in a time plot while the same run traces a closed loop in the phase plane; predator peaks always lag prey peaks by a quarter cycle.' },
         { num: '3.4', kind: 'Theorem', name: 'Lotka–Volterra conserved quantity and closed orbits', deps: ['mathbio-3.3'], refs: ['Murray I ch. 3'],
-          pic: 'Contours of the conserved quantity V = δx − γ ln x + βy − α ln y are drawn, and a symplectic integration stays on its contour while the readout shows V constant to many digits; switch to Euler and watch it drift.' },
+          pic: 'Contours of the conserved quantity V = δx − γ ln x + βy − α ln y are drawn. Compare the plotted finite-step energy error for Euler, RK4 and symplectic Euler against the tiny-step RK4 reference; symplectic area preservation does not imply exact energy conservation.' },
         { num: '3.5', kind: 'Theorem', name: 'Cycle averages equal the coexistence equilibrium', deps: ['mathbio-3.4', 'pma-6.21'], refs: ['Murray I ch. 3'],
           pic: 'Pick orbits of very different sizes; running averages of prey and predator over each cycle converge to the same equilibrium values regardless of amplitude.' },
         { num: '3.6', kind: 'Principle', name: 'Volterra’s principle', deps: ['mathbio-3.5'], refs: ['Murray I ch. 3'],
