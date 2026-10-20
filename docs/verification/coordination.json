@@ -21,11 +21,11 @@
       "Full immutable checkpoints and unrelated gate analysis"
     ],
     "current": [
-      "Accepted prerequisite343/20/17 after ASTRO/DIST;28furthercollections meet25written; source5unchanged",
-      "Latest immutablecheckpoint7 on69710ca passes2167tests/all6UI andstrict/static0/0; later SOLID/PL/ML/ASTRO/DIST awaitnextfullcheckpoint",
-      "Rejectedacf697e firstsame-sceneimagefailure reproducedinexactoriginal-onlyhistory; independentcontrolpeeraccepteddiagnosticonly, no renderer/timingacceptance",
-      "Atlasfirstcase6c45d07 hasstaleGPUborderbutzerooutputdifference; stopped/peerpreserved; separatelyauthorizedphase-sensitiveprobe pending",
-      "FrozenBIGHIST3.5service restrictionpersists; no retry/edgeacceptance"
+      "Accepted prerequisite shortfall 323; 19/64 published collections and 16 whole syllabi below target; 29 further collections meet 25 written inputs. Source queue 5 unchanged.",
+      "Latest immutable checkpoint8 on be8d100 passes 2187 tests, all six UI groups, strict/static zero errors and warnings.",
+      "Rejected chunk prototype remains unaccepted. Original-only control reproduces its cold/warm discrepancy; no renderer or timing acceptance.",
+      "Private phase/gutter boundary 781d336 follows positive phase witness bc5e18f; independent tiny peer in progress before any full-map run.",
+      "Frozen BIGHIST3.5 service restriction persists; no retry or edge acceptance."
     ]
   },
   "workers": [
@@ -33,7 +33,7 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Bounded atlas physical-phase causalprobe and conditional private gutter prototype; CG finalpeerpending",
+      "current": "ML genuine PROB prerequisite followup while atlas candidate awaits independent peer",
       "owns": [
         "Unique isolated prototype/model/native/resource reports; production and shared runtime preserved"
       ],
@@ -43,7 +43,7 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only CAUSAL mapping while awaiting immutable atlasprobe; no newnative",
+      "current": "Independent tiny atlas phase/gutter review of bc5e18f \u2192 781d336",
       "owns": [
         "Unique independent binding/pixel/resource/lifecycle evidence after immutable producer boundary"
       ],
@@ -53,7 +53,7 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "CAUSAL genuine prerequisite production after accepted CG peer",
+      "current": "CAUSAL producer; independent CRYPTO peer after freezing CAUSAL",
       "owns": [
         "QINFO content and bounded correctness/metadata successors"
       ],
@@ -63,7 +63,7 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "XTAL producer boundedprimitive/stabilizer/wrap successors",
+      "current": "XTAL primitive-basis and oriented-normal closing corrections, then independent MAT peer",
       "owns": [
         "Unique CLIMATE peer evidence; REL producer boundary complete"
       ],
@@ -73,7 +73,7 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "MAT producer boundedfinitewindow/density/activation/CRSS successors",
+      "current": "Independent XTAL combined peer and bounded closing review",
       "owns": [
         "Unique REL peer evidence; CLIMATE producer boundary complete"
       ],
@@ -83,7 +83,7 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "CRYPTO producer boundedshare/collision/proof/wrap successors",
+      "current": "CRYPTO final ready; read-only CAUSAL peer preparation awaiting exact boundary",
       "owns": [
         "CM producer; GEOG independent peer complete"
       ],
@@ -333,7 +333,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1367,15 +1367,15 @@
   },
   "currentPendingSourceReviews": 5,
   "latestCheckpoint": {
-    "testedContentCommit": "69710ca31b8c056e321f282b8e3aa76b575f1dac",
-    "acceptedContentCommit": "69710ca",
-    "report": "docs/verification/checkpoint-69710ca.md",
-    "defaultTests": 2167,
+    "testedContentCommit": "be8d10097c50282394a7ec7aed517e8d4398fb36",
+    "acceptedContentCommit": "be8d100",
+    "report": "docs/verification/checkpoint-be8d100.md",
+    "defaultTests": 2187,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 133.117745042,
+    "testDurationSeconds": 129.236924875,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1386,13 +1386,13 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 113085,
+    "homeGzipBytes": 113100,
     "pendingSourceReviews": 5,
     "acceptedTeamEntriesAtSnapshot": 146,
-    "publishedCrossFieldShortfall": 429,
-    "publishedCollectionsBelowTarget": 22,
+    "publishedCrossFieldShortfall": 323,
+    "publishedCollectionsBelowTarget": 19,
     "nonMathCollections": 64,
-    "wholeSyllabusBelowTarget": 18,
+    "wholeSyllabusBelowTarget": 16,
     "wave5Status": "prepared-unstarted",
     "wave5Chapters": 80,
     "wave5NewItems": 1031,
@@ -1400,16 +1400,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint7-build.log",
-      "/tmp/atlas-continuation/checkpoint7-tests.log",
-      "/tmp/atlas-continuation/checkpoint7-static.log",
-      "/tmp/atlas-continuation/checkpoint7-queue.log",
-      "/tmp/atlas-continuation/checkpoint7-crossfield-accepted.log"
+      "/tmp/atlas-continuation/checkpoint8-build.log",
+      "/tmp/atlas-continuation/checkpoint8-tests.log",
+      "/tmp/atlas-continuation/checkpoint8-static.log",
+      "/tmp/atlas-continuation/checkpoint8-queue.log",
+      "/tmp/atlas-continuation/checkpoint8-crossfield-accepted.log"
     ],
     "limitations": [
-      "Excludes forthcoming DIST/ASTRO/SOLID/ML candidates and later rejected isolated fixed-chunk binding candidate.",
-      "Frozen BIGHIST3.5candidate/edge remains unaccepted; default tests do not replace sourcepeer.",
-      "Read-only map protocols are not actual renderer/pixel/performance acceptance; failed explicit image probes remain failures."
+      "Includes accepted SOLID, PL, ML, ASTRO, DIST and CG; excludes later CAUSAL/ML read-only preparation and pending MAT/XTAL/CRYPTO/CAUSAL changes.",
+      "Frozen BIGHIST3.5 candidate/edge remains unaccepted; default tests do not replace source peer.",
+      "Private map diagnostics are not renderer or performance acceptance. The phase/gutter candidate is outside this checkpoint and awaits independent review."
     ]
   },
   "openStateFindings": [
@@ -1440,7 +1440,7 @@
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "closed",
-      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n\u22121; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
       "commits": [
         "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
@@ -1454,7 +1454,7 @@
       "id": "imaging-2.9-singular-energies-and-log-dose",
       "status": "closed",
       "owner": "ctrl_prereqs",
-      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "finding": "Energydomains overlap40\u201380:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
       "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
       "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
       "peer": "arch_source",
@@ -2312,7 +2312,7 @@
       "producer": "arch_source",
       "peer": "ctrl_prereqs",
       "report": "docs/verification/astro-crossfield-prerequisite-peer.md",
-      "followup": "Twenty-one genuine mathinputs. Ωsign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
+      "followup": "Twenty-one genuine mathinputs. \u03a9sign/strictJordanthreshold, orbitalperiod units, retainedquadraticAMD, radiation-adjustedcircularreference andfiveorders prose corrected;12equivalentwraps andoneexistingrowbackfill. Full48objects/functions/flags/helpers/rawlists,5995independentchecks andfresh88fullfieldpixels pass;4shortfall remains.",
       "sourceClosure": "None; original source flags preserved.",
       "bridgeReview": "No affected bridge steps."
     },
@@ -2372,7 +2372,7 @@
       "owns": [
         "content/ling/**",
         "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",

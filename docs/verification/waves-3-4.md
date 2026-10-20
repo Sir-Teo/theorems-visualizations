@@ -1045,3 +1045,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### CG combined acceptance
 
 [Independent CG peer](cg-crossfield-prerequisite-peer.md) accepts20genuineinputs, fullrawrows and bounded LP/SoS/equivalentlayout qualifications. Reaches25written; live323/19/16,29furthercollectionsmeetpublishedtarget/sourcequeue5. Integratedfullcheckpointfollows; map60fpsopen.
+
+### Full checkpoint through CG
+
+[Exact be8d100 checkpoint](checkpoint-be8d100.md) passes 2,187 default tests including all six UI groups, strict build and full static with zero errors/warnings. Accepted inventory remains 323/19/16 and source queue five. Pending producer and private atlas candidates are excluded; full-map 60fps remains open and Wave 5 unstarted.
