@@ -791,14 +791,14 @@
   },
   "currentPendingSourceReviews": 53,
   "latestCheckpoint": {
-    "acceptedContentCommit": "f9a9406",
-    "report": "docs/verification/checkpoint-f9a9406.md",
-    "defaultTests": 1827,
+    "acceptedContentCommit": "a99dc23",
+    "report": "docs/verification/checkpoint-a99dc23.md",
+    "defaultTests": 1889,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 93.998,
+    "testDurationSeconds": 103.15980375,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -809,9 +809,9 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112744,
-    "pendingSourceReviews": 70,
-    "acceptedTeamEntries": 78,
+    "homeGzipBytes": 112727,
+    "pendingSourceReviews": 55,
+    "acceptedTeamEntries": 93,
     "publishedCrossFieldShortfall": 847,
     "publishedCollectionsBelowTarget": 53,
     "nonMathCollections": 64,
@@ -823,12 +823,13 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-coordinator/checkpoint5-tests.log",
-      "/tmp/atlas-coordinator/checkpoint5-build.log",
-      "/tmp/atlas-coordinator/checkpoint5-static.log"
+      "/tmp/atlas-coordinator/checkpoint6-tests.log",
+      "/tmp/atlas-coordinator/checkpoint6-build.log",
+      "/tmp/atlas-coordinator/checkpoint6-static.log"
     ],
     "limitations": [
-      "Unintegrated worker candidates are excluded from this snapshot.",
+      "Exact tested snapshot includes game4.11 candidatea99dc23 still flagged and awaiting independent acceptance; all93 accepted entries are separate from that pending row.",
+      "UnintegratedART55c303a,TECH67c246d andLING62b0eaf are excluded from this immutable snapshot.",
       "Current source and explicit \u00a77.3 gates remain open; passing tests do not certify unread source bodies."
     ]
   },
