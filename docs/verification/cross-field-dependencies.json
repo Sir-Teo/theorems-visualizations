@@ -4,8 +4,8 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 11,
-  "wholeSyllabusBelowTarget": 9,
+  "publishedBelowTarget": 10,
+  "wholeSyllabusBelowTarget": 7,
   "entries": [
     {
       "collection": "stat",
@@ -1798,12 +1798,82 @@
       "collection": "cplx",
       "field": "cs",
       "target": 25,
-      "writtenToWritten": 3,
-      "writtenToKnown": 5,
-      "wholeSyllabus": 12,
-      "publishedShortfall": 22,
+      "writtenToWritten": 16,
+      "writtenToKnown": 18,
+      "wholeSyllabus": 25,
+      "publishedShortfall": 9,
       "unknown": [],
       "edges": [
+        {
+          "item": "cplx-1.11",
+          "prerequisite": "pma-3.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-1.1",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-1.3",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-1.3",
+          "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-1.4",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-2.13",
+          "prerequisite": "logic-1.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-3.2",
+          "prerequisite": "nt-3.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-3.2",
+          "prerequisite": "nt-3.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-3.3",
+          "prerequisite": "nt-1.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.11",
+          "prerequisite": "alg-1.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "cplx-4.14",
           "prerequisite": "alg-19.15a",
@@ -1819,8 +1889,29 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "cplx-4.1",
+          "prerequisite": "logic-2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "cplx-4.2",
           "prerequisite": "comb-1.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.2",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "cplx-4.6",
+          "prerequisite": "logic-1.2",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -10684,12 +10775,89 @@
       "collection": "sysbio",
       "field": "bio",
       "target": 25,
-      "writtenToWritten": 2,
-      "writtenToKnown": 2,
-      "wholeSyllabus": 6,
-      "publishedShortfall": 23,
+      "writtenToWritten": 25,
+      "writtenToKnown": 25,
+      "wholeSyllabus": 29,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "sysbio-1.8",
+          "prerequisite": "pma-5.3",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.8",
+          "prerequisite": "prob-1.6.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.10",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.1",
+          "prerequisite": "graph-1.10.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.2",
+          "prerequisite": "kin-1.9",
+          "prerequisiteField": "chem",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.3",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.4",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.5",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-1.6",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-2.1",
+          "prerequisite": "pma-4.23",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-2.2",
+          "prerequisite": "pma-6.20",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "sysbio-2.3",
           "prerequisite": "ctrl-1.7",
@@ -10698,8 +10866,92 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "sysbio-2.3",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-2.4",
+          "prerequisite": "ode-2.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-2.5",
+          "prerequisite": "ode-1.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-3.8",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-3.8",
+          "prerequisite": "pma-6.12",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-3.10",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-3.1",
+          "prerequisite": "comb-1.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-4.8",
+          "prerequisite": "kin-1.3",
+          "prerequisiteField": "chem",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-4.9",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "sysbio-4.1",
           "prerequisite": "ctrl-1.12",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-4.1",
+          "prerequisite": "ctrl-3.4",
+          "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-4.3",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "sysbio-4.5",
+          "prerequisite": "ctrl-3.4",
           "prerequisiteField": "eng",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -19356,7 +19608,9 @@
       "761e7b53c333ec45496c3631394646dd11f9841e",
       "e4bf3e16de02c4f91eca693fe426b908bde0ca29",
       "cc46d6226931f35919b86cd95609cfb2b521a153",
-      "f83bdc7c5980f85332c6db0f9da6e0daf6f68390"
+      "f83bdc7c5980f85332c6db0f9da6e0daf6f68390",
+      "e2a5b01870439c48510d7a73cec7f8af3e5b89f5",
+      "3b75bdb0f319f6c0e224ef05aeb3b4038625fbea"
     ],
     "excludedUnacceptedEdges": [
       {
