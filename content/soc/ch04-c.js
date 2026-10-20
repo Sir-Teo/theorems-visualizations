@@ -1,3 +1,4 @@
+import {webSeedValid,webModel,WEB_REGIONS,WEB_LABELS,WEB_PUBLISHED,WEB_TOTAL} from './source-audit-bowtie.js';
 import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab.js';
 // Networks & Collective Behavior — Chapter 4, part c: heavy tails in the wild (items 4.12–4.16)
 //
@@ -212,60 +213,23 @@ Reported: niche books ≈ 39% of Amazon's 2000 sales (extrapolated power-law fit
     },
     // ------------------------------------------------------------------ 4.16
     {
-      num: '4.16',
-      kind: 'Concept',
-      name: 'The bow-tie structure of the Web',
-      statement: String.raw`In a directed graph such as the Web (pages are vertices, hyperlinks are directed edges), the vertices fall into regions determined by reachability. Broder and colleagues (2000) analysed two AltaVista crawls of 1999 (about 200 million pages and 1.5 billion links) and found a **bow-tie**:
+      num:'4.16',kind:'Concept',name:'The bow-tie structure of the Web',
+      statement:String.raw`Broder and colleagues' May 1999 AltaVista crawl contained 203,549,046 pages. Their published decomposition reports 56,463,993 in the giant strongly connected core, 43,343,168 in IN, 43,166,185 in OUT, 43,797,944 in TENDRILS (including tubes), and 16,777,756 outside the giant weak component.
 
-(a) a giant **strongly connected core (SCC)**, in which every page can reach every other by following links (56.5 million pages, 27.7% of the May 1999 crawl);
-(b) **IN**, pages that can reach the core but cannot be reached from it (43.3 million, 21.3%);
-(c) **OUT**, pages reachable from the core with no path back (43.2 million, 21.2%);
-(d) **tendrils** (43.8 million, 21.5%): pages attached only to IN or OUT, including "tubes" that link IN directly to OUT;
-(e) **disconnected** pieces (16.8 million, 8.2%).
+Core pages mutually reach one another by directed links. IN pages can reach the core but cannot be reached from it; OUT pages can be reached from the core but cannot return. The remaining pages in that weak component are grouped as tendrils; tubes provide passages from IN to OUT that avoid the core. These measured proportions describe this crawl, not a universal law for all directed or heavy-tailed graphs.`,
+      idea:String.raw`For this finite model, compute **every** strongly connected component with Tarjan's algorithm and choose the largest; ties choose the component with the smallest vertex index. Forward and reverse searches from a core vertex determine OUT and IN. Ignoring direction determines the weak component containing that core. Residual vertices in that weak component are split into tubes (reachable from IN and able to reach OUT without visiting the core) and other residual tendrils.
 
-The proportions of the regions are properties of the crawl and its date (later studies, with other crawls, find the same shape with different proportions).`,
-      idea: String.raw`In a directed random graph with mean out-degree $c>1$, a vertex reaches a giant set with probability $S$ (the branching-process survival probability of 4.2, $S=1-e^{-cS}$) and is reached from a giant set with the same probability. The core is the intersection, of relative size $S^2$; IN and OUT are the vertices that only reach, or are only reached by, the giant set (each $S(1-S)$); the rest, $(1-S)^2$, are the tendrils, tubes and disconnected parts. The Web's four big regions of similar size are what a not-too-sparse directed graph with heavy-tailed degrees tends to produce; a bow-tie shape does *not* mean the Web is a random graph.`,
-      caption: String.raw`A model, not a crawl: 400 pages with random directed links, mean out-degree $c$. The page classes (core, IN, OUT, tendrils and tubes, disconnected) are computed by actual reachability searches and laid out as a bow-tie. **Right**: the shares of the six classes in this graph against the shares in the 1999 AltaVista crawl and the large-$n$ prediction for directed random graphs ($S^2$ for the core, $S(1-S)$ for IN and OUT). Drag $c$ across 1 to see the core appear.`,
-      scope: String.raw`The percentages for AltaVista are the figures in the original paper (May 1999 crawl, 203,549,046 pages; the paper lists tendrils as one class, here labelled as such, and calls the tubes a sub-class). The simulated graph is a plain directed Erdős–Rényi graph with only 400 vertices, so its classes fluctuate from draw to draw and the tubes are rare.`,
-      deps: ['soc-2.2'],
-      refs: ['E&K §13.4'],
-      tags: ['web', 'directed graphs', 'connectivity'],
-      credit: 'Broder, Kumar, Maghoul, Raghavan, Rajagopalan, Stata, Tomkins & Wiener, 2000',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Bow-tie_structure' },
-      verify: true,
-      viz(v) {
-        const cS = v.slider('mean out-degree $c$', 0.3, 4, 1.6, { step: 0.05 });
-        let seed = 4; v.button('New graph', () => { seed++; });
-        const n = 400;
-        const A = v.stage({ x: [-1.3, 1.3], y: [-1, 1], equal: false, axes: false, height: 360, title: 'a 400-page web (model)', minWidth: 320, weight: 1.3 });
-        const B = v.stage({ x: [0, 6], y: [0, 0.6], axes: 'box', gutter: true, height: 360, xticks: [[0.5, 'core'], [1.5, 'IN'], [2.5, 'OUT'], [3.5, 'tendr.'], [4.5, 'disc.']], xlabel: 'region of the bow-tie', ylabel: 'share of pages', title: 'shares of the regions', minWidth: 280, weight: 1 });
-        const cache = {};
-        const make = (c) => { const k = `${c.toFixed(2)}|${seed}`; if (cache[k]) return cache[k]; const R = rng32(seed * 53 + Math.round(c * 100)); const G = digraphGnp(n, c, R), bt = bowTie(G); const pos = [], P = rng32(seed + 99); const box = { scc: [-0.3, 0.3, -0.35, 0.35], in: [-1.15, -0.45, -0.4, 0.4], out: [0.45, 1.15, -0.4, 0.4], tendril: [-1.0, 1.0, 0.55, 0.95], tube: [-0.35, 0.35, 0.5, 0.75], disc: [-1.2, 1.2, -0.95, -0.6] };
-          for (let i = 0; i < n; i++) { let b = box[bt.type[i]]; if (bt.type[i] === 'tendril' && P() < 0.5) b = [-1.0, 1.0, -0.95, -0.55]; if (bt.type[i] === 'disc') b = [-1.2, 1.2, -0.95, -0.6]; pos.push([b[0] + (b[1] - b[0]) * P(), b[2] + (b[3] - b[2]) * P()]); }
-          return (cache[k] = { G, bt, pos }); };
-        const COL = { scc: 'gold', in: 'accent', out: 'green', tendril: 'orange', tube: 'purple', disc: 'muted' };
-        let st = null;
-        v.render(() => {
-          const c = cS.value, { G, bt, pos } = make(c);
-          for (let i = 0; i < n; i++) for (const j of G.out[i]) A.line(pos[i][0], pos[i][1], pos[j][0], pos[j][1], { color: 'faint', width: 0.6, alpha: 0.55 });
-          for (let i = 0; i < n; i++) A.dot(pos[i][0], pos[i][1], { r: 3, color: COL[bt.type[i]] });
-          A.text('IN', -0.8, 0.5, { size: 12, weight: 700, color: 'accent' }); A.text('OUT', 0.8, 0.5, { size: 12, weight: 700, color: 'green' }); A.text('core', 0, 0.42, { size: 12, weight: 700, color: 'gold' });
-          const cn = bt.counts, S = giantTheory(c);
-          const mine = [cn.scc, cn.in, cn.out, cn.tendril + cn.tube, cn.disc].map((x) => x / n);
-          const paper = [56463993, 43343168, 43166185, 43797944, 16777756].map((x) => x / 203549046);
-          const theory = [S * S, S * (1 - S), S * (1 - S)];
-          B.setView([0, 6], [0, 0.6]);
-          mine.forEach((x, i) => { B.rect(i + 0.08, 0, i + 0.38, x, { fill: 'accent', fillAlpha: 0.7, stroke: false }); B.rect(i + 0.42, 0, i + 0.72, paper[i], { fill: 'orange', fillAlpha: 0.7, stroke: false }); });
-          theory.forEach((x, i) => B.dot(i + 0.23, x, { r: 4.5, color: 'ink', hollow: true }));
-          st = { c, cn, S, mine, paper, theory };
-        });
-        v.legend([['gold', 'core (SCC)', { dot: true }], ['accent', 'IN', { dot: true }], ['green', 'OUT', { dot: true }], ['orange', 'tendrils', { dot: true }], ['purple', 'tubes', { dot: true }], ['muted', 'disconnected', { dot: true }], ['ink', 'large-$n$ theory', { dot: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const { c, cn, S, mine, paper, theory } = st, p = (x) => `${v.fix(100 * x, 1)}%`;
-          return String.raw`$c=${v.fix(c, 2)}$: this graph — core ${p(mine[0])}, IN ${p(mine[1])}, OUT ${p(mine[2])}, tendrils ${p(mine[3])} (of which ${cn.tube} tube pages), disconnected ${p(mine[4])} · large-$n$ theory $S=${v.fix(S, 3)}$: core $S^2=${p(theory[0])}$, IN and OUT $S(1-S)=${p(theory[1])}$ each
-AltaVista, May 1999 (bars in orange): core ${p(paper[0])}, IN ${p(paper[1])}, OUT ${p(paper[2])}, tendrils ${p(paper[3])}, disconnected ${p(paper[4])}`;
-        });
+This is an exact classification of the displayed graph. A largest component may be one vertex and need not be a “giant.” Its weak component need not be the graph's largest weak component. The reported “outside weak” fraction uses that explicitly selected core component. In the actual crawl the published core lies in the giant weak component.`,
+      caption:String.raw`An authored directed random graph, not Web data. Each ordered pair of distinct pages receives a link with probability $c/(n-1)$, so its expected out-degree is $c$. Every vertex is drawn; optional arrows show every link. Colors identify the six finite classes. Right: finite graph shares versus the original crawl's five reported groups, with tubes included in tendrils. Change size, expected degree or seed; every classification is recomputed from the actual graph.`,
+      scope:String.raw`The source's original region table, definitions, Figure 9 legend and derivation of the counts are checked; its complete raw crawl is not reproduced. Source counts combine strong/weak component computation and BFS reach-set inference. The finite illustration uses independent-edge sampling conventions and a full SCC decomposition, without a large-network phase-transition, branching-process or heavy-tail prediction. Node positions are authored and arrows indicate direction only; distances on the drawing have no metric meaning.`,
+      deps:['soc-2.2'],refs:['Broder et al., Graph structure in the web (WWW9, 2000), §§1.1, 2.2 and 3, Figure9 and region table'],tags:['web','directed graphs','connectivity'],credit:'Broder, Kumar, Maghoul, Raghavan, Rajagopalan, Stata, Tomkins and Wiener, 2000; exact finite graph illustration authored here.',links:{source:'https://archives.iw3c2.org/www9/w9cdrom/160/160.html'},verify:true,
+      viz(v){
+        let seed=4,cache=null,info;v.shareState('directed web seed',{get:()=>seed,validate:webSeedValid,set:x=>{seed=x;cache=null;}});
+        const size=v.select('pages',[80,200,400].map(value=>({value,label:String(value)})),200),c=v.slider('expected out-degree c',.3,4,1.6,{step:'any',fmt:x=>x.toPrecision(6)}),links=v.toggle('show every directed link',false);v.button('New graph',()=>{seed=(seed+1)>>>0;cache=null;});
+        const A=v.stage({x:[-1.4,1.4],y:[-1.12,1.12],axes:false,height:360,minWidth:260,title:'every modeled page; optional link arrows'}),B=v.stage({x:[-67,137],y:[-1,10.5],axes:false,full:true,height:390,minWidth:260,title:'finite graph and reported crawl shares'}),colors={scc:'gold',in:'accent',out:'green',tendril:'orange',tube:'purple',disc:'muted'};
+        v.render(()=>{const key=`${size.value}|${c.value}|${seed}`;if(!cache||cache.key!==key)cache={key,data:webModel(size.value,c.value,seed)};const p=cache.data;if(links.value)for(const[i,j]of p.edges)A.arrow(...p.pos[i],...p.pos[j],{color:'faint',width:.6,head:4,alpha:.5});p.pos.forEach(([x,y],i)=>A.dot(x,y,{r:2.5,ring:false,color:colors[p.classes.types[i]]}));A.text('IN',-.8,.44,{align:'center',size:11,color:'accent'});A.text('core',0,.39,{align:'center',size:11,color:'gold'});A.text('OUT',.8,.44,{align:'center',size:11,color:'green'});B.text('share of pages (%)',30,9.9,{align:'center',baseline:'middle',size:11,color:'muted'});B.line(0,-.35,0,9.35,{color:'faint',width:1});WEB_REGIONS.forEach((t,j)=>{const y=9-2*j,a=100*p.shares[j],b=100*WEB_PUBLISHED[j]/WEB_TOTAL;B.text(WEB_LABELS[j],-4,y-.1,{align:'right',baseline:'middle',size:10,color:'ink'});B.rect(0,y+.02,a,y+.36,{fill:'accent',fillAlpha:.7,stroke:false});B.rect(0,y-.42,b,y-.08,{fill:'orange',fillAlpha:.7,stroke:false});B.text(`${v.fix(a,1)}%`,a+3,y+.19,{baseline:'middle',size:10,color:'accent'});B.text(`${v.fix(b,1)}%`,b+3,y-.25,{baseline:'middle',size:10,color:'orange'});});info=p;});
+        v.legend([['gold','core',{dot:true}],['accent','IN',{dot:true}],['green','OUT',{dot:true}],['orange','other tendrils',{dot:true}],['purple','tube subset',{dot:true}],['muted','outside core weak component',{dot:true}]]);
+        v.readout(()=>{const p=info,k=p.classes.counts;return `Seed ${seed}; ${p.n} pages, ${p.edges.length} directed links; realized mean out-degree ${v.fix(p.edges.length/p.n,4)} versus expected ${p.c.toPrecision(12)}. Exact core ${k.scc}; IN ${k.in}; OUT ${k.out}; other residual tendrils ${k.tendril}; tubes ${k.tube}; outside core weak component ${k.disc}. Counts sum to ${p.n}. The selected core's weak component contains ${p.classes.weakSize} vertices. Bars: blue finite model; orange published May 1999 crawl. Tubes are combined with tendrils in both five-group comparisons. A largest finite SCC is not automatically a giant component.`;});
       },
     },
   ],
