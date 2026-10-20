@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 145,
+  "remainingFlags": 146,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "game": 9,
-    "psych": 10,
+    "psych": 11,
     "soc": 14,
     "polsci": 9,
     "music": 21,
@@ -2374,6 +2374,23 @@
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Metamerism_(color)"
       }
+    },
+    {
+      "id": "psych-4.7",
+      "file": "content/psych/ch04-b.js",
+      "name": "Lateral inhibition (Hartline\u2013Ratliff)",
+      "field": "social",
+      "category": "historical-credit-empirical-input-or-reference",
+      "status": "source-review-pending",
+      "explicitUncertainty": [
+        "Above-threshold rearrangement has the wrong sign; offered recurrent200-step settings do not satisfy the stated steady equations and returned negative values are visually clipped. Full source/model/solver follow-up required."
+      ],
+      "refs": [
+        "Goldstein ch. 3"
+      ],
+      "links": {
+        "wikipedia": "https://en.wikipedia.org/wiki/Lateral_inhibition"
+      }
     }
   ],
   "changesFromBaseline": {
@@ -2381,7 +2398,8 @@
       "circ-4.17",
       "art-3.12",
       "art-3.13",
-      "art-4.3"
+      "art-4.3",
+      "psych-4.7"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -7500,6 +7518,12 @@
       "status": "resolved",
       "report": "docs/verification/psych-spectral-summation-followup.md",
       "note": "Complete actual Barlow1958 scans/text and bounded Webvision naming source; two explicitly authored conditional reciprocity cuts, independently derived slopes/products; fourmathgroups including10360triples,12fullnative including interior drags/exactreplay/invalidstate and static/scope pass."
+    },
+    {
+      "id": "psych-4.7",
+      "status": "source-review-pending",
+      "report": "docs/verification/psych-lateral-inhibition-open.md",
+      "note": "Newly confirmed wrong algebraic sign, nonconvergent offered recurrent settings and visually clipped negative outputs. Exact200-step reproduction records residuals; no completed source/native acceptance claimed."
     }
   ]
 }

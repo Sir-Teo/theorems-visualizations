@@ -72,6 +72,7 @@ export default {
       credit: 'H. K. Hartline & F. Ratliff, 1957, J. Gen. Physiol. 40: 357–376 (Limulus eye); Hartline shared the 1967 Nobel Prize in Physiology or Medicine',
       scope: String.raw`Holds in the steady state for a model that is linear above a threshold, in the lateral eye of *Limulus*; the same architecture is found in the retinas of vertebrates, where it is only qualitatively similar (and acts through horizontal and amacrine cells).`,
       links: { wikipedia: 'https://en.wikipedia.org/wiki/Lateral_inhibition' },
+      verify: true,
       viz(v) {
         const M = v.M, N = 25;
         const pat = v.select('Light', [{ value: 'one', label: 'single cell' }, { value: 'patch', label: 'patch' }, { value: 'edge', label: 'edge' }], 'edge');
