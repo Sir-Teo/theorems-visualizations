@@ -1,3 +1,4 @@
+import {marketSeedValid,MARKET_APPEAL,marketModel} from './source-audit-musiclab.js';
 // Networks & Collective Behavior — Chapter 4, part c: heavy tails in the wild (items 4.12–4.16)
 //
 // Sources checked (Oct 2026): Salganik, Dodds & Watts, Science 311: 854–856 (2006), doi 10.1126/science.1121066 — 14,341
@@ -22,73 +23,24 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.12
     {
-      num: '4.12',
-      kind: 'Phenomenon',
-      name: 'Unpredictable success in cultural markets (MusicLab)',
-      statement: String.raw`In the MusicLab experiment, 14,341 participants at a music website were offered 48 unknown songs and could listen and download. They were split into an **independent** condition, in which they saw only song names, and eight parallel **social-influence worlds**, in which they also saw how many times each song had been downloaded so far in their own world. Everything else was identical.
+      num:'4.12',kind:'Phenomenon',name:'Unpredictable success in cultural markets (MusicLab)',
+      statement:String.raw`Salganik, Dodds and Watts report two web experiments involving 14,341 participants and 48 previously unknown songs. Within each experiment, participants were randomly assigned to an independent condition or one of eight social-influence worlds. Influence participants saw their own world's previous download counts; the independent condition did not.
 
-(a) **Inequality**: the distribution of downloads was more unequal (higher Gini coefficient) in every social-influence world than in the independent condition, and more so when the download counts were displayed more prominently.
+In both experiments all eight influence worlds had more unequal download shares than the independent condition. Song shares also varied more across influence worlds than across random splits of independent participants. Independent-condition popularity supplied a population-specific measure of “quality,” which only partly predicted influence-world success.
 
-(b) **Unpredictability**: the same songs, with the same pool of people, finished with very different market shares and ranks in different worlds; the average difference in a song's share between two worlds was larger with social influence.
-
-(c) **Quality matters, only partly**: the best songs rarely did poorly and the worst rarely did well, but any other result was possible for songs in between.
-
-Success in such markets is therefore partly a property of the history: a cumulative advantage that early random luck can tip either way.`,
-      idea: String.raw`If each listener chooses with a probability that grows with a song's current popularity, early downloads are self-reinforcing: a song that gets a few extra early downloads in one world looks more attractive to the next listeners, which is exactly preferential attachment (4.9) on a market of 48 items. The eight worlds are eight independent runs of the same random process with the same ingredients, so differences between worlds are pure *path dependence*. This is why prediction from quality alone fails even with perfect knowledge of the songs, and why hits cannot be reliably identified in advance.`,
-      caption: String.raw`A simple model, not the experimental data: each song has a fixed quality; a listener picks song $i$ with probability proportional to $(0.25+q_i)\,(1+d_i)^{\beta}$, where $d_i$ is the song's current download count in that world and $\beta$ is the strength of social influence. **Left**: market share against quality in 8 social worlds (dots); **right**: the same with $\beta=0$ in 8 independent groups of equal size. Drag $\beta$: the independent cloud hugs the dashed expectation, the social one scatters and becomes more unequal.`,
-      scope: String.raw`The experiment's results are as reported in the paper (the 2006 *Science* report and its supporting online material). The simulation is a stylised stand-in with one download per listener and a power-law feedback of strength $\beta$; it is not fitted to the experimental data, so its numbers should not be compared with the paper's Gini coefficients.`,
-      deps: ['soc-4.9'],
-      refs: ['E&K §18.4'],
-      tags: ['cumulative advantage', 'cultural markets', 'experiment'],
-      credit: 'Salganik, Dodds & Watts, 2006',
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Experimental_Study_of_Inequality_and_Unpredictability_in_an_Artificial_Cultural_Market', doi: 'https://doi.org/10.1126/science.1121066' },
-      verify: true,
-      viz(v) {
-        const NS = 48, a = Array.from({ length: NS }, (_, i) => 0.25 + (i + 0.5) / NS), q = a.map((x) => x - 0.25), asum = a.reduce((x, y) => x + y, 0);
-        const bS = v.slider('social influence $\\beta$', 0, 2, 0.8, { step: 0.05 });
-        const nS = v.slider('listeners per world', 200, 4000, 1750, { step: 50, int: true });
-        let seed = 1; v.button('New worlds', () => { seed++; });
-        const L = v.stage({ x: [0.1, 0.9], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'with social influence (8 worlds)', minWidth: 280, weight: 1 });
-        const Rr = v.stage({ x: [0.1, 0.9], y: [0, 0.2], axes: 'box', gutter: true, height: 340, xlabel: 'song quality $q$', ylabel: 'market share', title: 'independent choices (8 groups)', minWidth: 280, weight: 1 });
-        const W = 8;
-        const run = (beta, n, sd) => {
-          const R = rng32(sd * 977 + 13), out = [];
-          for (let w = 0; w < W; w++) {
-            const d = new Float64Array(NS);
-            for (let t = 0; t < n; t++) {
-              let tot = 0; const wt = new Float64Array(NS);
-              for (let i = 0; i < NS; i++) { wt[i] = a[i] * Math.pow(1 + d[i], beta); tot += wt[i]; }
-              let r = R() * tot, k = 0; while (k < NS - 1 && r > wt[k]) { r -= wt[k]; k++; } d[k]++;
-            }
-            out.push(Array.from(d, (x) => x / n));
-          }
-          return out;
-        };
-        const gini = (s) => { const x = [...s].sort((p, r) => p - r), n = x.length, tot = x.reduce((p, r) => p + r, 0); let acc = 0; x.forEach((y, i) => { acc += (i + 1) * y; }); return 2 * acc / (n * tot) - (n + 1) / n; };
-        const unpred = (worlds) => { let s = 0, c = 0; for (let i = 0; i < NS; i++) for (let p = 0; p < W; p++) for (let r = p + 1; r < W; r++) { s += Math.abs(worlds[p][i] - worlds[r][i]); c++; } return s / c; };
-        const cache = {}; const sim = (beta, n) => { const k = `${beta.toFixed(2)}|${n}|${seed}`; return (cache[k] ??= run(beta, n, seed)); };
-        let st = null;
-        v.render(() => {
-          const beta = bS.value, n = nS.value, soc = sim(beta, n), ind = sim(0, n);
-          const mx = Math.max(0.05, ...soc.flat(), ...ind.flat()) * 1.1;
-          for (const [S, wl] of [[L, soc], [Rr, ind]]) {
-            S.setView([0.1, 0.9], [0, mx]);
-            S.path(q.map((x, i) => [x, a[i] / asum]).map(([x, y]) => [x + 0.25 - 0.25, y]), { color: 'ink', width: 1.6, dash: [6, 4] });
-          }
-          const COL = ['accent', 'orange', 'green', 'purple', 'teal', 'pink', 'gold', 'red'];
-          soc.forEach((w, k) => L.dots(w.map((s, i) => [q[i], s]), { r: 2.8, color: COL[k], alpha: 0.85 }));
-          ind.forEach((w, k) => Rr.dots(w.map((s, i) => [q[i], s]), { r: 2.8, color: COL[k], alpha: 0.85 }));
-          const rank = (w) => { const o = w.map((s, i) => [s, i]).sort((x, y) => y[0] - x[0]); const r = new Array(NS); o.forEach(([, i], k) => (r[i] = k + 1)); return r; };
-          const rb = soc.map((w) => rank(w)[NS - 1]), rw = soc.map((w) => rank(w)[0]);
-          st = { gs: soc.map(gini), gi: ind.map(gini), us: unpred(soc), ui: unpred(ind), rb, rw, beta };
-        });
-        v.legend([['ink', 'expected share if choices are independent', { dash: true }]]);
-        v.readout(() => {
-          if (!st) return '';
-          const m = (x) => x.reduce((p, r) => p + r, 0) / x.length;
-          return String.raw`Gini coefficient of the 48 market shares: social worlds **${v.fix(m(st.gs), 2)}** (range ${v.fix(Math.min(...st.gs), 2)}–${v.fix(Math.max(...st.gs), 2)}), independent groups **${v.fix(m(st.gi), 2)}** · unpredictability (mean difference in a song's share between two worlds): social **${v.fix(100 * st.us, 2)}** vs independent **${v.fix(100 * st.ui, 2)}** percentage points
-The best song's rank across the 8 social worlds: ${Math.min(...st.rb)} to ${Math.max(...st.rb)}; the worst song's: ${Math.min(...st.rw)} to ${Math.max(...st.rw)} (out of 48)`;
-        });
+The presentation differed between experiments: experiment 1 used a randomly ordered grid; experiment 2 displayed influence songs in popularity order in a single column. Increased inequality and unpredictability in experiment 2 accompanied this stronger presentation of social information. Recruitment demographics also changed between experiments; these are experimental findings with declared design limits, not universal laws about every market.`,
+      idea:String.raw`Parallel worlds allow comparison of several histories with the same songs and initially zero downloads. A fixed predisposition toward an item and feedback from earlier choices can jointly affect outcomes. The reported empirical results do not establish that a particular reinforcement formula generated participants' behavior, or that every stronger feedback value raises inequality in every finite realization.`,
+      caption:String.raw`An authored feedback model, with 48 fixed appeal coordinates $q_i=(i+1/2)/48$, $i=0,\ldots,47$. Each listener makes exactly one choice with probability proportional to $(0.25+q_i)(1+d_i)^\beta$. Left: all 48 shares in each of eight seeded feedback worlds. Right: eight same-size no-feedback worlds, paired by seed. The dashed curve is the exact no-feedback expected share. Change feedback, size or seed; at $\beta=0$ the paired panels agree exactly.`,
+      scope:String.raw`The empirical summary is checked against the original report and its supporting experimental design. The simulation is not experimental data, a fit, or a replay of the listening/rating/optional-download process. Its eight no-feedback worlds differ from the paper's one independent world and random-split comparison. “Appeal” is an authored positive weight, not measured quality. Deterministic pseudorandom streams are reused across parameter settings; finite scatter and metric changes are observations of this model only.`,
+      deps:['soc-4.9'],refs:['Salganik, Dodds & Watts, Science 311:854–856 (2006), Figs.1–3; supporting design and participant Tables S1–S2'],tags:['cumulative advantage','cultural markets','experiment'],credit:'Experimental findings: Salganik, Dodds & Watts, 2006; feedback simulation authored here.',links:{source:'https://www.princeton.edu/~mjs3/salganik_dodds_watts06_full.pdf',doi:'https://doi.org/10.1126/science.1121066'},verify:true,
+      viz(v){
+        let seed=1,cache=new Map(),st;v.shareState('feedback market seed',{get:()=>seed,validate:marketSeedValid,set:x=>{seed=x;cache.clear();}});
+        const beta=v.slider('feedback exponent beta',0,2,.8,{step:'any',fmt:x=>x.toPrecision(6)}),size=v.select('listeners per world',[200,1000,4000].map(value=>({value,label:String(value)})),1000);v.button('New worlds',()=>{seed=(seed+1)>>>0;cache.clear();});
+        const L=v.stage({x:[-.04,1.04],y:[-.01,.2],axes:'box',gutter:true,height:340,xlabel:'authored appeal coordinate q',ylabel:'share of choices',title:'eight feedback worlds',minWidth:260}),R=v.stage({x:[-.04,1.04],y:[-.01,.2],axes:'box',gutter:true,height:340,xlabel:'authored appeal coordinate q',ylabel:'share of choices',title:'eight no-feedback worlds',minWidth:260});
+        const sim=b=>{const key=`${b}|${size.value}|${seed}`;if(!cache.has(key)){if(cache.size>=8)cache.delete(cache.keys().next().value);cache.set(key,marketModel(b,size.value,seed));}return cache.get(key);};
+        v.render(()=>{const social=sim(beta.value),independent=sim(0),top=Math.max(.05,...social.shares.flat(),...independent.shares.flat()),expected=MARKET_APPEAL.map(q=>(.25+q)/36),colors=['accent','orange','green','purple','teal','pink','gold','red'];for(const[S,m]of[[L,social],[R,independent]]){S.setView([-.04,1.04],[-.04*top,1.1*top]);S.path(MARKET_APPEAL.map((q,i)=>[q,expected[i]]),{color:'ink',width:1.5,dash:[5,4]});m.shares.forEach((w,j)=>S.dots(w.map((x,i)=>[MARKET_APPEAL[i],x]),{r:2.8,ring:false,color:colors[j],alpha:.8}));}st={social,independent};});
+        v.legend([['ink','exact no-feedback expected share',{dash:true}],['accent','each color identifies one paired world',{dot:true}]]);
+        v.readout(()=>{const a=st.social,b=st.independent;return `Seed ${seed}; ${a.n} listeners per world; beta ${a.beta.toPrecision(12)}. Mean Gini: feedback ${v.fix(a.meanGini,4)} (range ${v.fix(Math.min(...a.ginis),4)}–${v.fix(Math.max(...a.ginis),4)}), no feedback ${v.fix(b.meanGini,4)}. Mean absolute difference in one song's share across all 28 pairs of worlds: feedback ${v.fix(100*a.unpredictability,4)}, no feedback ${v.fix(100*b.unpredictability,4)} percentage points, averaged over all 48 songs. All 384 observations in each panel are included, including zeros. These finite model metrics are not the paper's experimental estimates.`;});
       },
     },
     // ------------------------------------------------------------------ 4.13
