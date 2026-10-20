@@ -31,7 +31,12 @@ export default {
       kind: 'Algorithm',
       name: 'Algebraic reconstruction technique (Kaczmarz)',
       statement: String.raw`Let $A\mu=b$ be a finite real system with nonzero rows $\mathbf a_i$. Cyclic **ART (Kaczmarz)** uses the relaxed row update
-$$\mu^{(k+1)}=\mu^{(k)}+\lambda\,\frac{b_i-\mathbf a_i\cdot\mu^{(k)}}{\|\mathbf a_i\|^2}\,\mathbf a_i ,\qquad i=k\bmod m,\quad0<\lambda<2.$$
+Take $i=k\bmod m$ and fixed $0<\lambda<2$. Using the row residual and increment,
+$$\begin{aligned}
+r_i^{(k)}&=b_i-\mathbf a_i\cdot\mu^{(k)},\\
+\Delta\mu^{(k)}&=\lambda\,\frac{r_i^{(k)}}{\|\mathbf a_i\|^2}\,\mathbf a_i,\\
+\mu^{(k+1)}&=\mu^{(k)}+\Delta\mu^{(k)}.
+\end{aligned}$$
 At $\lambda=1$ this is the orthogonal projection onto the equation's hyperplane; otherwise it is a relaxed projection. With fixed relaxation and every row visited cyclically, a **consistent** system converges to the solution closest in Euclidean norm to the starting point. For an inconsistent system there is no common solution: different row phases can approach different limits. An end-of-sweep sequence may converge even though the individual row iterates do not. Early stopping can reduce reconstruction error for a particular noisy problem; it has no universal optimality guarantee.`,
       idea: String.raw`For any solution $z$ of a consistent system, put $r_i=b_i-\mathbf a_i\cdot x$. One update gives
 $$\begin{aligned}\|x^+-z\|^2&=\|x-z\|^2\\&\quad-\lambda(2-\lambda)\frac{r_i^2}{\|\mathbf a_i\|^2}.\end{aligned}$$
@@ -95,7 +100,9 @@ Thus distances to every solution decrease or stay fixed. Summing this identity m
       kind: 'Algorithm',
       name: 'SIRT and SART',
       statement: String.raw`For a nonnegative matrix $A$, define positive row sums $r_i=\sum_j a_{ij}$ and column sums $c_j=\sum_i a_{ij}$. This **normalized SIRT** variant updates all rays together:
-$$\mu^{(k+1)}=\mu^{(k)}+\lambda C A^T R(b-A\mu^{(k)}),\qquad R_{ii}=1/r_i,\quad C_{jj}=1/c_j.$$
+Here $R_{ii}=1/r_i$ and $C_{jj}=1/c_j$. Write the increment separately:
+$$\Delta\mu^{(k)}=\lambda C A^T R(b-A\mu^{(k)}),$$
+$$\mu^{(k+1)}=\mu^{(k)}+\Delta\mu^{(k)}.$$
 Zero rows are omitted and unobserved columns are held fixed. For fixed $0<\lambda<2$, the observed components converge to a minimizer of $\|R^{1/2}(A\mu-b)\|^2$, closest to the start in the $C^{-1}$ norm. This is **weighted**, generally not ordinary, least squares. **SART** applies the same normalized formula to one view at a time, recomputing column sums within each view. A sweep visits every view. Neither averaging nor convergence to least squares guarantees removal of noise or a universal speed ranking.`,
       idea: String.raw`The normalization gives a direct convergence proof for the stated SIRT variant. Set $B=R^{1/2}AC^{1/2}$ and $y=C^{-1/2}\mu$. Weighted Cauchy–Schwarz yields
 $$\|Bz\|^2\le\sum_i\sum_j a_{ij}z_j^2/c_j=\|z\|^2.$$
