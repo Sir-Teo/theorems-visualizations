@@ -200,6 +200,14 @@
     "/tmp/atlas-new-map-paired-tiny-peer/prepared-successor/prepared.json": {
       "sha256": "e1eeb8ee92a0bd4ced95e4b793e0fbc3715a1b25df299b1c19ea712f6d45a848",
       "bytes": 6622
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/prepared-final/prepared.json": {
+      "sha256": "e1eeb8ee92a0bd4ced95e4b793e0fbc3715a1b25df299b1c19ea712f6d45a848",
+      "bytes": 6622
+    },
+    "/tmp/atlas-new-map-paired-tiny-peer/final/tests/map-paired-guarded-oracle.mjs": {
+      "sha256": "e47f7455b21821e8ff96fe4b813b7271a1a30a2f75f8cce3a548c3b1160f52fd",
+      "bytes": 12392
     }
   },
   "fullMapRun": false,
@@ -2734,5 +2742,8 @@
       "generation": 1
     },
     "postCaptureHistory": []
-  }
+  },
+  "finalRunner": "ccc73f96f807aefc2d98b2bcc44a9489e0bb88db",
+  "finalPreparedDefaultBrowserLaunch": false,
+  "finalRunnerHelperNativeSourcesChanged": false
 }
