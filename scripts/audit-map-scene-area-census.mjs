@@ -10,6 +10,7 @@ const output=process.argv[2],dataRoot=process.argv[3];
 assert.ok(output&&dataRoot,'usage: node scripts/audit-map-scene-area-census.mjs OUTPUT_JSON FROZEN_DATA_DIR');
 const hash=x=>createHash('sha256').update(x).digest('hex'),hashes={},frozen=new Map();
 for(const name of ['index','planned']){const bytes=await readFile(`${dataRoot}/${name}.json`);frozen.set(name,bytes);hashes[`data/${name}`]=hash(bytes);}
+const frozenCSS=await readFile(`${dataRoot}/atlas.css`);hashes['data/atlas.css']=hash(frozenCSS);
 const source=await readFile(new URL('../assets/js/graph.js',import.meta.url),'utf8');
 for(const name of ['graph','map-webgl-scene','map-scene-edges','map-scene-model'])hashes[name]=hash(await readFile(new URL(`../assets/js/${name}.js`,import.meta.url)));
 const server=createServer();await new Promise(r=>server.listen(0,r));
@@ -20,6 +21,7 @@ try{
     const page=await browser.newPage({viewport:{width,height:width===1440?1000:2160},deviceScaleFactor:2,colorScheme:'light'});
     try{
       for(const [name,body]of frozen)await page.route(`**/data/${name}.json`,r=>r.fulfill({body,contentType:'application/json'}));
+      await page.route('**/data/atlas.css',r=>r.fulfill({body:frozenCSS,contentType:'text/css'}));
       await page.route('**/assets/js/graph.js',r=>r.fulfill({body:mapScenePrototype(source),contentType:'application/javascript'}));
       await page.goto(`http://localhost:${server.address().port}/#/map`);
       await page.waitForFunction(()=>window.__mapAudit?.__scene?.status==='ready',null,{timeout:60000});

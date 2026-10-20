@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Read-only complete production raster DOM-promotion hypothesis",
+      "current": "Isolated complete existing-raster DOM-promotion correctness candidate",
       "owns": [
-        "Unique map read-only reports; no renderer or benchmark"
+        "Isolated helper/model/native/report files only; no production or timing"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -42,9 +42,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "BEHAV genuine prerequisite production",
+      "current": "Independent GEO prerequisite peer; BEHAV/wrap boundary preserved",
       "owns": [
-        "BEHAV written items/matching rows/unique tests/reports"
+        "Unique GEO peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "PHYSIO genuine prerequisite production",
+      "current": "Independent KIN prerequisite peer; PHYSIO boundary preserved",
       "owns": [
-        "PHYSIO written items/matching rows/unique reports/tests"
+        "Unique KIN peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent map area census peer; GEO producer boundary preserved",
+      "current": "Independent BEHAV prerequisites/equation-wrap peer",
       "owns": [
-        "Unique map census peer files only"
+        "Unique BEHAV peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "KIN genuine prerequisite production",
+      "current": "Independent EPI peer; row synchronization pending",
       "owns": [
-        "KIN written items/matching rows/unique reports/tests"
+        "Unique EPI peer files only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "EPI genuine prerequisite production",
+      "current": "Independent PHYSIO peer; EPI row correction next",
       "owns": [
-        "EPI written items/matching rows/unique reports/tests"
+        "Unique PHYSIO peer files; bounded EPI row/report followup"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -2075,6 +2075,16 @@
       "loadedEdges": 23218,
       "evidence": "/tmp/atlas-map-canvas-compositor-timing-normal-dpr2-light.json",
       "limitation": "Single bounded controlled run; no universal-device or full-matrix pass. Production graph remains unchanged."
+    },
+    {
+      "candidate": "6fd9268b4032ea38024b54f5a820806bd920d06b",
+      "peer": "fe3d33ef9b895a93f17d3e182d03ea8c1a1b72fb",
+      "status": "accepted-bounded-diagnostic-only",
+      "report": "docs/verification/map-census-independent-peer.md",
+      "loadedNodes": 13574,
+      "loadedEdges": 23258,
+      "method": "Four frozen non-timing stationary draws;453actual GL operation records match151group/tile passes.",
+      "limitation": "No pixel correctness, GPU cost, improvement, production acceptance or60fps claim. Frozen CSS fixture subsequently explicit; all raw counts reproduce."
     }
   ]
 }
