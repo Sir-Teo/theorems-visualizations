@@ -38,12 +38,13 @@
       "collection": "ling",
       "owns": [
         "content/ling/**",
-        "Only owned ling syllabus rows, collection-specific reports/helpers/tests"
+        "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
+        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",
       "peerReview": "Assigned by coordinator after a committed batch is ready",
-      "current": "LING4.6/4.12 and BIGHIST4.4/Poleni peers accepted; producing remaining LING3.6 with actual WALS primary sources.",
+      "current": "GEOL3.15peer complete; LING3.6candidate2d6a493 under coordinator peer; producing exclusive BIGHIST3.1–3.5.",
       "completedCollections": [
         "music"
       ]
@@ -64,7 +65,7 @@
         "psych",
         "tech"
       ],
-      "current": "Poleni4.6 and circular3.7 accepted; producing4.7Pantheon, then4.8/4.9 and3.14source recovery."
+      "current": "Pantheon4.7candidate99df40d ready; independent peer ROOT Snowball9a1c859, then produce4.8/4.9/3.14."
     },
     {
       "agent": "worker_three",
@@ -1042,6 +1043,19 @@
       "commits": [
         "3c5ac7e"
       ]
+    },
+    {
+      "ids": [
+        "geol-3.15"
+      ],
+      "peer": "worker one independently read complete original1967, checked spherical Jacobians and fresh native/output evidence",
+      "reports": [
+        "docs/verification/geol-mckenzie-original-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "d391e35"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1054,7 +1068,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 28,
+  "currentPendingSourceReviews": 27,
   "latestCheckpoint": {
     "acceptedContentCommit": "428f1af",
     "report": "docs/verification/checkpoint-428f1af.md",

@@ -8,11 +8,11 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 28,
+  "remainingFlags": 27,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
-    "geol": 2,
+    "geol": 1,
     "mathbio": 1,
     "pharm": 1,
     "imaging": 1,
@@ -34,19 +34,6 @@
       "explicitUncertainty": [],
       "refs": [],
       "links": {}
-    },
-    {
-      "id": "geol-3.15",
-      "file": "content/geol/ch03-c.js",
-      "name": "The North Pacific: an Example of Tectonics on a Sphere",
-      "field": "earth",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [],
-      "links": {
-        "doi": "https://doi.org/10.1038/2161276a0"
-      }
     },
     {
       "id": "geol-4.10",
@@ -1284,7 +1271,8 @@
       "ling-4.6",
       "bighist-4.4",
       "arch-4.6",
-      "mat-3.13"
+      "mat-3.13",
+      "geol-3.15"
     ]
   },
   "additionalFollowups": [
@@ -6378,6 +6366,11 @@
       "id": "arch-4.6",
       "status": "resolved",
       "note": "2026-10-20: worker one independently read original Poleni1748, checked exact-Fraction/80digit equilibrium and fresh native/output evidence; docs/verification/arch-poleni-peer.md."
+    },
+    {
+      "id": "geol-3.15",
+      "status": "resolved",
+      "note": "2026-10-20: worker one independently read complete original1967, checked spherical Jacobians and fresh native/output evidence; docs/verification/geol-mckenzie-original-peer.md."
     }
   ]
 }

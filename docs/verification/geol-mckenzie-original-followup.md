@@ -33,3 +33,5 @@ Longitude/latitude are canonical tenths; offset scale is a whole degree. Raw uns
 - Strict full build in isolated `/tmp/atlas-worker-three/geol-original-build`:6684items/6890planned/450chapters/85collections,0errors/0warnings; log `/tmp/atlas-worker-three/geol-mckenzie-build.log`. Generated output remains outside the worktree. `git diff --check` and unowned-object/row byte guards pass.
 
 The original's scientific claims are bounded to the source's own scope. This does not certify empirical slip solutions, current plate boundaries, modern MORVEL parameters, uncertainty inference or a statistically fitted pole.
+
+Independent worker-one acceptance: [peer report](geol-mckenzie-original-peer.md), exactd391e35. Complete original/axis convention, eight math groups,1883extra Jacobians and both fresh native/output checks pass; no findings.
