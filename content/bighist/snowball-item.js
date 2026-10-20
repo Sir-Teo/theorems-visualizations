@@ -1,6 +1,6 @@
 import{snowballModel}from'./source-audit-snowball.js';
 export default{
- num:'3.6',kind:'Hypothesis',name:'Snowball Earth',verify:true,
+ num:'3.6',kind:'Hypothesis',name:'Snowball Earth',verify:false,
  statement:String.raw`Neoproterozoic glacial deposits at low palaeolatitudes, cap carbonates and unusual carbon-isotope patterns motivated the Snowball Earth hypothesis. Hoffman and colleagues’ 1998 study of Namibia argued that widespread sea ice and its aftermath could explain their geological and geochemical observations. This is a historical hypothesis and interpretation of evidence; an energy-balance diagram alone cannot establish complete ocean coverage.
 
 Ice reflects sunlight, so spreading ice can amplify cooling. A nonlinear energy-balance model can have different warm and frozen equilibria under the same forcing. Volcanic greenhouse accumulation is one proposed escape mechanism; its physical threshold requires radiative-transfer and geological constraints beyond this illustration.`,

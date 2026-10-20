@@ -25,3 +25,5 @@ All six fresh1450/430/320×light/dark native groups PASS: full24selected tempera
 Personally inspected own fresh320light warm temperature/complete hysteresis,320dark frozen profile and independently edited fullpage/formula pixels. Every curve, source/model limitation and registered control remains readable and contained. Evidence images `/tmp/atlas-coordinator/bighist-snowball/`. Node/browser nonlinear profiles use1e−6comparison tolerance; within-browser saved state and all derived replay outputs remain byte-exact.
 
 Isolated strict build6684written/6890planned/450chapters/85collections,0errors/warnings,home112713bytes gzip; focusedstatic1/0/0 PASS. Logs `bighist-snowball-{build,static}.log`, scratch `bighist-snowball-build/`. Generated outputs remain outside the worktree. Independent source/math/native/output peer acceptance is still required before clearing the flag.
+
+Independent worker-two acceptance: [peer report](bighist-snowball-peer.md), exact9a1c859. Actual source versions/pixels, independent80digit byte-identical reference,72extra conservative profile checks and both fresh native/output reviews pass; no findings.

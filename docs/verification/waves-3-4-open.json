@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 26,
+  "remainingFlags": 25,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -20,7 +20,7 @@
     "energy": 1,
     "robot": 1,
     "arch": 4,
-    "bighist": 14
+    "bighist": 13
   },
   "queue": [
     {
@@ -217,22 +217,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Pendentive"
-      }
-    },
-    {
-      "id": "bighist-3.6",
-      "file": "content/bighist/ch03-b.js",
-      "name": "Snowball Earth",
-      "field": "humanities",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "Christian"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Snowball_Earth",
-        "doi": "https://doi.org/10.1126/science.281.5381.1342"
       }
     },
     {
@@ -1254,7 +1238,8 @@
       "arch-4.6",
       "mat-3.13",
       "geol-3.15",
-      "ling-3.6"
+      "ling-3.6",
+      "bighist-3.6"
     ]
   },
   "additionalFollowups": [
@@ -6358,6 +6343,11 @@
       "id": "ling-3.6",
       "status": "resolved",
       "note": "2026-10-20: coordinator independently read WALS/Sapir primary bodies, regenerated source/count reference and checked fresh native/output evidence; docs/verification/ling-typology-peer.md."
+    },
+    {
+      "id": "bighist-3.6",
+      "status": "resolved",
+      "note": "2026-10-20: worker two independently checked actual sources,80digit dense-LU and72extra profile/flux cases plus fresh native/output evidence; docs/verification/bighist-snowball-peer.md."
     }
   ]
 }

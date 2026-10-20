@@ -1070,6 +1070,19 @@
       "commits": [
         "2d6a493"
       ]
+    },
+    {
+      "ids": [
+        "bighist-3.6"
+      ],
+      "peer": "worker two independently checked actual sources,80digit dense-LU and72extra profile/flux cases plus fresh native/output evidence",
+      "reports": [
+        "docs/verification/bighist-snowball-peer.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "9a1c859"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -1082,7 +1095,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 26,
+  "currentPendingSourceReviews": 25,
   "latestCheckpoint": {
     "acceptedContentCommit": "428f1af",
     "report": "docs/verification/checkpoint-428f1af.md",
