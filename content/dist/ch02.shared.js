@@ -199,15 +199,23 @@ export function irLaw(m0, K, R = 60) {
     T.set(m, P); return P;
   };
   let dist = new Array(m0 + 1).fill(0); dist[m0] = 1;
-  const cdf = [m0 === 1 ? 1 : 0]; let mean = 0, mass1 = m0 === 1 ? 1 : 0;
+  const cdf = [m0 === 1 ? 1 : 0]; let truncatedMean = 0, mass1 = m0 === 1 ? 1 : 0;
   for (let r = 1; r <= R; r++) {
     const nd = new Array(m0 + 1).fill(0);
     for (let m = 1; m <= m0; m++) { if (!dist[m]) continue; if (m === 1) { nd[1] += dist[1]; continue; } const P = trans(m); for (let j = 1; j <= m; j++) nd[j] += dist[m] * P[j]; }
-    dist = nd; cdf.push(nd[1]); mean += (1 - cdf[r - 1]);
+    dist = nd; cdf.push(nd[1]); truncatedMean += (1 - cdf[r - 1]);
     mass1 = nd[1];
   }
   const pmf = cdf.map((c, r) => c - (r ? cdf[r - 1] : 0));
-  return { pmf, cdf, mean, tail: 1 - mass1 };
+  // First-step system is triangular except for each state's self-loop.
+  const expected = new Array(m0 + 1).fill(0);
+  for (let m = 2; m <= m0; m++) {
+    const P = trans(m); let rhs = 1;
+    for (let j = 2; j < m; j++) rhs += P[j] * expected[j];
+    expected[m] = rhs / (1 - K ** (1 - m));
+  }
+  const mean = expected[m0], remainingMean = dist.reduce((sum, p, m) => sum + p * expected[m], 0);
+  return { pmf, cdf, mean, truncatedMean, remainingMean, tail: 1 - mass1 };
 }
 /** One run: returns rounds [{cands, draws, winners}] until a single candidate remains. */
 export function irRun(n, K, r) {
@@ -216,7 +224,8 @@ export function irRun(n, K, r) {
     const draws = cands.map(() => 1 + Math.floor(r() * K)), mx = Math.max(...draws), win = cands.filter((c, i) => draws[i] === mx);
     rounds.push({ cands, draws, winners: win }); cands = win;
   }
-  return { rounds, leader: cands[0] };
+  const complete = cands.length === 1;
+  return { rounds, leader: complete ? cands[0] : null, complete, candidates: cands.slice() };
 }
 
 // ----------------------------------------------------------------------------------------------------------- 2.8 Luby

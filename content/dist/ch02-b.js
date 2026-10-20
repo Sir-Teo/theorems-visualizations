@@ -12,13 +12,13 @@ export default {
     {
       num: '2.7', kind: 'Algorithm', name: 'Randomized election in anonymous rings',
       statement: String.raw`In a ring of $n$ anonymous processes (identical, no identifiers, possibly not even knowing $n$) every process starts as a *candidate*. In a round every candidate draws an independent uniform number from $\{1,\dots,K\}$, $K\ge2$, and only the candidates that drew the maximum stay candidates; the others become non-candidates and merely relay messages. The rounds repeat until exactly one candidate is left, which is then elected (a token sent once round the ring tells a lone candidate that it is alone). The algorithm never elects two leaders, it ends with probability 1, and the expected number of rounds is finite: for $K=2$ about $\log_2 n+O(1)$, and it tends to $1$ as $K\to\infty$ with $n$ fixed.`,
-      idea: String.raw`Safety is trivial: a round never removes every candidate, because the maximum always has a holder, so at least one candidate survives forever. Progress follows from the probability that the maximum is unique, which is positive for every number of candidates $m\ge2$ (for example, $m$ candidates all drawing $K$ except one drawing less is possible), so the number of candidates is a Markov chain on $\{1,\dots,n\}$ that is absorbed at 1 with probability 1. Randomness is exactly what 2.3 showed to be missing: independent draws make the symmetric states of the ring unequal.
+      idea: String.raw`Safety is trivial: a round never removes every candidate, because the maximum always has a holder, so at least one candidate survives forever. Progress follows from the probability that the maximum is unique, which is positive for every number of candidates $m\ge2$ (for example, one candidate drawing $K$ and all the others drawing $1$ is possible), so the number of candidates is a Markov chain on $\{1,\dots,n\}$ that is absorbed at 1 with probability 1. Randomness is exactly what 2.3 showed to be missing: independent draws make the symmetric states of the ring unequal.
 
 Independence (prob 2.1.1a) assigns probability $K^{-m}$ to each vector of $m$ draws. In particular, one designated candidate drawing $K$ and all others drawing $1$ has positive probability and leaves a unique maximum. With a fixed finite initial $n$, each nonabsorbing candidate count can therefore reach one. The finite absorbing-chain theorem (stoch 2.5) applies to the transition matrix used for the exact round law. The mean-round calculation is its first-step equation (stoch 2.3): $E_1=0$ and $E_m=1+\sum_{j=2}^mP_{mj}E_j$, including the self-transition before solving. Fresh independent rounds and fixed $K\ge2$ are essential; seeded finite runs illustrate this ideal law.`,
       caption: String.raw`Left: one run on the ring: candidates (filled) with the number each drew; the ones holding the maximum stay. Step through the rounds with the slider and press *new run*. Right: the number of rounds over 3000 independent runs (bars) against the exact law computed from the Markov chain (dots). Make $K$ large and almost every run finishes in one round; at $K=2$ it takes about $\log_2 n$.`,
       deps: ['dist-2.3','prob-2.1.1a','stoch-2.3','stoch-2.5'], refs: ['Attiya–Welch ch. 14'], tags: ['randomization', 'symmetry breaking', 'ring'],
       credit: 'Itai & Rodeh, 1981',
-      scope: String.raw`Anonymous synchronous ring; the guarantee is probability 1 termination and always-correct output (a Las Vegas algorithm), not a worst-case bound on rounds.`,
+      scope: String.raw`Anonymous synchronous ring; the ideal algorithm has probability 1 termination and always-correct output (a Las Vegas algorithm), not a worst-case bound on rounds. Simulated runs stop at 200 rounds and report tied survivors as incomplete. The displayed model mean solves the finite first-step equations; the plotted law uses the first 60 rounds, not a claim that its tail is zero.`,
       viz(v) {
         const sR = v.stage({ x: [-1.8, 1.8], y: [-1.8, 1.8], axes: false, equal: true, height: 350, title: 'one run', weight: 1, minWidth: 280 });
         const sH = v.stage({ x: [0, 14], y: [0, 1], axes: 'box', gutter: true, xlabel: 'rounds until a unique leader', ylabel: 'fraction of runs', height: 350, title: '3000 runs', weight: 1.05, minWidth: 270 });
@@ -32,9 +32,9 @@ Independence (prob 2.1.1a) assigns probability $K^{-m}$ to each vector of $m$ dr
         const prep = () => {
           const k = `${n.value}|${K.value}|${hseed}`;
           if (k !== key) {
-            key = k; const r = mulberry32(hseed * 977 + n.value * 13 + K.value), cnt = new Array(41).fill(0); let sum = 0;
-            for (let i = 0; i < 3000; i++) { const R = irRun(n.value, K.value, r).rounds.length; cnt[Math.min(R, 40)]++; sum += R; }
-            hist = { cnt, mean: sum / 3000 }; law = irLaw(n.value, K.value, 60);
+            key = k; const r = mulberry32(hseed * 977 + n.value * 13 + K.value), cnt = new Array(41).fill(0); let sum = 0, censored = 0;
+            for (let i = 0; i < 3000; i++) { const sample = irRun(n.value, K.value, r), R = sample.rounds.length; cnt[Math.min(R, 40)]++; sum += R; if (!sample.complete) censored++; }
+            hist = { cnt, mean: sum / 3000, censored }; law = irLaw(n.value, K.value, 60);
           }
           const rk = `${n.value}|${K.value}|${seed}`;
           if (rk !== rkey) { rkey = rk; run = irRun(n.value, K.value, mulberry32(seed * 31 + n.value * 7 + K.value)); }
@@ -42,13 +42,13 @@ Independence (prob 2.1.1a) assigns probability $K^{-m}$ to each vector of $m$ dr
         v.render(() => {
           prep(); const N = n.value, r = Math.min(rd.value, run.rounds.length), R = run.rounds[r];
           drawRingEdges(sR, N, 1.35, { r: 0.0, width: 1.2 });
-          const cand = new Set(R ? R.cands : [run.leader]), draws = new Map(R ? R.cands.map((c, i) => [c, R.draws[i]]) : []), win = new Set(R ? R.winners : [run.leader]);
+          const cand = new Set(R ? R.cands : run.candidates), draws = new Map(R ? R.cands.map((c, i) => [c, R.draws[i]]) : []), win = new Set(R ? R.winners : run.complete ? [run.leader] : []);
           for (let i = 0; i < N; i++) {
-            const [x, y] = ringXY(i, N, 1.35), c = cand.has(i), w = win.has(i), fin = !R;
+            const [x, y] = ringXY(i, N, 1.35), c = cand.has(i), w = win.has(i), fin = !R && run.complete;
             sR.circle(x, y, N > 24 ? 0.1 : 0.14, { fill: fin && w ? 'green' : c ? (w ? 'accent' : 'orange') : 'panel', fillAlpha: c ? 0.65 : 1, color: c ? (fin && w ? 'green' : 'accent') : 'faint', width: 2 });
             if (draws.has(i)) sR.text(String(draws.get(i)), x * 0.8, y * 0.8, { align: 'center', baseline: 'middle', size: 11, color: w ? 'accent' : 'muted' });
           }
-          sR.setTitle(R ? `round ${r + 1}: ${R.cands.length} candidates draw, ${R.winners.length} hold the maximum` : `leader elected after ${run.rounds.length} rounds`);
+          sR.setTitle(R ? `round ${r + 1}: ${R.cands.length} candidates draw, ${R.winners.length} hold the maximum` : run.complete ? `leader elected after ${run.rounds.length} rounds` : `incomplete after ${run.rounds.length} rounds: ${run.candidates.length} tied candidates`);
           const top = Math.max(0.1, ...hist.cnt.map((c) => c / 3000), ...law.pmf.slice(1, 15)) * 1.15;
           sH.setView([0, 14], [0, top]);
           sH.bars(hist.cnt.slice(1, 14).map((c) => c / 3000), { x0: 1, color: 'accent', alpha: 0.5 });
@@ -56,7 +56,7 @@ Independence (prob 2.1.1a) assigns probability $K^{-m}$ to each vector of $m$ dr
           sH.vline(law.mean, { color: 'green', dash: true, width: 1.8 });
         });
         v.legend([['accent', 'simulated'], ['gold', 'exact law', { dot: true }], ['green', 'exact mean', { dash: true }]]);
-        v.readout(() => { prep(); return `simulated mean **${v.fix(hist.mean, 3)}** rounds vs exact $E=${v.fix(law.mean, 3)}$ ${Math.abs(hist.mean - law.mean) < 0.12 ? '✓' : '(Monte-Carlo noise)'} · $\\Pr[\\text{finished within }\\ 3]=${v.fix(law.cdf[3] ?? 1, 3)}$ · this run took ${run.rounds.length} rounds · $\\log_2 n=${v.fix(log2(n.value), 2)}$`; });
+        v.readout(() => { prep(); return `recorded mean **${v.fix(hist.mean, 3)}** rounds (200-round cap; ${hist.censored} censored) vs model $E=${v.fix(law.mean, 3)}$ ${hist.censored ? '(capped sample)' : Math.abs(hist.mean - law.mean) < 0.12 ? '✓' : '(Monte-Carlo noise)'} · $\\Pr[\\text{finished within }\\ 3]=${v.fix(law.cdf[3] ?? 1, 3)}$ · ${run.complete ? `this run elected one leader after ${run.rounds.length} rounds` : `incomplete after ${run.rounds.length} rounds: ${run.candidates.length} tied candidates, no leader declared`} · $\\log_2 n=${v.fix(log2(n.value), 2)}$`; });
       },
     },
     // ------------------------------------------------------------------------------------------------ 2.8
