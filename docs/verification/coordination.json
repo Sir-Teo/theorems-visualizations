@@ -21,12 +21,13 @@
       "docs/verification/coordination.json",
       "shared runtime and integration inventories",
       "Only music8.9\u20138.13 objects, isolated setclass files and corresponding syllabus rows",
-      "collection audit lanes: game and qchem"
+      "collection audit lanes: game and qchem",
+      "content/bighist/** and collection-specific audit helpers/tests/reports"
     ],
     "current": [
-      "Integrate independently reviewed candidates; reconcile source and wave gates",
-      "Peer-review ART3.2/4.15; integrate independently reviewed GAME4.11 and LING4.8/4.14",
-      "Continue difficult original-source audits; preserve source-access limitations"
+      "Integrate independently reviewed candidates and reconcile source/wave gates",
+      "Audit BIGHIST source backlog; preserve actual source access and model limits",
+      "Continue difficult original-source audits when independent batches await review"
     ]
   },
   "workers": [
@@ -804,6 +805,20 @@
       "commits": [
         "62b0eaf"
       ]
+    },
+    {
+      "ids": [
+        "art-3.2",
+        "art-4.15"
+      ],
+      "peer": "coordinator exact-commit original-source/pixels, independent analytic spectral reference, fresh native-state and output-pixel review",
+      "reports": [
+        "docs/verification/art-spectra-maxwell-followup.md"
+      ],
+      "status": "accepted",
+      "commits": [
+        "55c303a"
+      ]
     }
   ],
   "remainingAtStart": {
@@ -816,7 +831,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 51,
+  "currentPendingSourceReviews": 49,
   "latestCheckpoint": {
     "acceptedContentCommit": "a99dc23",
     "report": "docs/verification/checkpoint-a99dc23.md",

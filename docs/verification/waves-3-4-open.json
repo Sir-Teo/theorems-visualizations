@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 51,
+  "remainingFlags": 49,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -21,7 +21,7 @@
     "circ": 1,
     "energy": 1,
     "robot": 1,
-    "art": 6,
+    "art": 4,
     "arch": 9,
     "ling": 7,
     "bighist": 18
@@ -264,24 +264,6 @@
       ],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Purkinje_effect"
-      }
-    },
-    {
-      "id": "art-4.15",
-      "file": "content/art/ch04-b.js",
-      "name": "On the Theory of Compound Colours",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        {
-          "field": "scope",
-          "text": "The slit positions are my conversion of the positions printed in Maxwell’s paper (the scale divisions and Fraunhofer’s units in his Table II, where I read red 2328, green 1914 and blue 1717, with the green close to the line E, from an OCR transcription): multiplying by $2.707\\times10^{-7}$ mm, the Paris inch scaled unit of Fraunhofer, gives about 630, 518 and 465 nm, but I have not verified the unit or the conversion. The calculation uses the CIE 1931 fit and an equal-energy white (Maxwell matched sky or white paper); his own data are not reproduced."
-        }
-      ],
-      "refs": [],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/James_Clerk_Maxwell#Colour_vision"
       }
     },
     {
@@ -802,31 +784,13 @@
         "wikipedia": "https://en.wikipedia.org/wiki/Serial_founder_effect",
         "doi": "https://doi.org/10.1073/pnas.0507611102"
       }
-    },
-    {
-      "id": "art-3.2",
-      "file": "content/art/ch03.js",
-      "name": "Spectral power distributions",
-      "field": "arts",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [
-        "A nonzero kernel does not imply rank three or that three nonnegative physical primaries reproduce every colour; fitted XYZ, cone responses, appearance, camera/adaptation proxy and actual numerical/state model need separate review."
-      ],
-      "refs": [
-        "Fairchild ch. 3"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Spectral_power_distribution"
-      }
     }
   ],
   "changesFromBaseline": {
     "addedFlags": [
       "circ-4.17",
       "art-3.12",
-      "art-3.13",
-      "art-3.2"
+      "art-3.13"
     ],
     "resolvedFlags": [
       "energy-4.8",
@@ -1614,7 +1578,8 @@
       "tech-5.2",
       "tech-5.3",
       "game-4.11",
-      "ling-4.14"
+      "ling-4.14",
+      "art-4.15"
     ]
   },
   "additionalFollowups": [
@@ -6084,9 +6049,9 @@
     },
     {
       "id": "art-3.2",
-      "status": "source-review-pending",
+      "status": "resolved",
       "report": "docs/verification/art-spectral-map-open.md",
-      "note": "Actual prerequisite reading revealed an invalid kernel-to-universal-physical-primary inference; only the integral and reflected-product argument is used by the neighboring accepted model. Full audit remains open."
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent analytic spectral reference, fresh native-state and output-pixel review; docs/verification/art-spectra-maxwell-followup.md."
     },
     {
       "id": "art-4.3",
@@ -6593,6 +6558,11 @@
       "id": "ling-4.14",
       "status": "resolved",
       "note": "2026-10-20: worker_two exact-commit complete original-source/pixels, independent corpus and finite-joint oracles, native-state and output-pixel review; docs/verification/ling-shannon-followup.md."
+    },
+    {
+      "id": "art-4.15",
+      "status": "resolved",
+      "note": "2026-10-20: coordinator exact-commit original-source/pixels, independent analytic spectral reference, fresh native-state and output-pixel review; docs/verification/art-spectra-maxwell-followup.md."
     }
   ]
 }
