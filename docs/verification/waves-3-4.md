@@ -1009,3 +1009,7 @@ Combined independent peers accept net16POPGEN,18TOC and16GEOG inputs, with bound
 ### CM bounded acceptance
 
 [CM independent peer](cm-crossfield-prerequisite-peer.md) accepts9genuine mathfield inputs and bounded mass/orbit statements/equivalent wraps. Published16remains9below25; live467/24/19, sourcequeue5. This is after checkpointa4a5103.
+
+### CLIMATE combined acceptance
+
+[Independent CLIMATE peer](climate-independent-peer.md) accepts19genuineinputs and independently closes equation/scope-link and blackbody-bound findings. Collectionreaches25written. Live448/23/19, sourcequeue5; pendingQINFO inputs still excluded until its finalpeer. This follows checkpointa4a5103.

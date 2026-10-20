@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 24,
+  "publishedBelowTarget": 23,
   "wholeSyllabusBelowTarget": 19,
   "entries": [
     {
@@ -6987,10 +6987,10 @@
       "collection": "climate",
       "field": "earth",
       "target": 25,
-      "writtenToWritten": 6,
-      "writtenToKnown": 19,
-      "wholeSyllabus": 37,
-      "publishedShortfall": 19,
+      "writtenToWritten": 25,
+      "writtenToKnown": 38,
+      "wholeSyllabus": 56,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
         {
@@ -7008,11 +7008,25 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "climate-1.2",
+          "prerequisite": "pma-6.19",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-1.3",
           "prerequisite": "thermo-9.5",
           "prerequisiteField": "physics",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "climate-1.3",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "climate-1.4",
@@ -7036,9 +7050,23 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "climate-1.7",
+          "prerequisite": "prob-1.6.2",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-1.8",
           "prerequisite": "energy-4.2",
           "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-1.8",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -7050,6 +7078,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "climate-1.9",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-1.11",
           "prerequisite": "em-12.10",
           "prerequisiteField": "physics",
@@ -7057,11 +7092,32 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "climate-2.6",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-2.8",
+          "prerequisite": "pma-8.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-2.10",
           "prerequisite": "qchem-10.10",
           "prerequisiteField": "chem",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "climate-2.10",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "climate-2.13",
@@ -7113,6 +7169,41 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "climate-2.5",
+          "prerequisite": "ode-1.4",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-3.6",
+          "prerequisite": "ode-3.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-3.9",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-3.9",
+          "prerequisite": "prob-1.2.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-3.10",
+          "prerequisite": "pma-5.5",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-3.3",
           "prerequisite": "kin-1.5",
           "prerequisiteField": "chem",
@@ -7120,9 +7211,51 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "climate-3.3",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-3.4",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-4.6",
+          "prerequisite": "pma-6.19",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-4.6",
+          "prerequisite": "prob-4.1.1a",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-4.8",
+          "prerequisite": "pma-9.17",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "climate-4.1",
           "prerequisite": "ctrl-1.4",
           "prerequisiteField": "eng",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "climate-4.1",
+          "prerequisite": "pma-3.26",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -17400,7 +17533,8 @@
       "27e280c4b611ed2191a63a203ddb6987ca9ef17d",
       "7bcb87d3efad2734933920d067dda3af050f0b55",
       "f61887e3f2bc1cdb89d63c7670526803aed92a9b",
-      "eb35ab8d07c9c2def5436f9fa188aebde0faccc6"
+      "eb35ab8d07c9c2def5436f9fa188aebde0faccc6",
+      "0cf13c462023a444e2beadc2178b2ef52125c4e0"
     ],
     "excludedUnacceptedEdges": [
       {
