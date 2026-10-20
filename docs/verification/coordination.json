@@ -432,6 +432,16 @@
         "docs/verification/music-induced-paper-followup.md"
       ],
       "status": "accepted"
+    },
+    {
+      "ids": [
+        "polsci-4.5"
+      ],
+      "peer": "coordinator independently accepted exact e9de0e4",
+      "reports": [
+        "docs/verification/polsci-plott-followup.md"
+      ],
+      "status": "accepted"
     }
   ],
   "remainingAtStart": {
@@ -444,7 +454,7 @@
     "fullMap60fps": "open",
     "wave5": "prepared-not-started"
   },
-  "currentPendingSourceReviews": 87,
+  "currentPendingSourceReviews": 86,
   "latestCheckpoint": {
     "acceptedContentCommit": "214d86c",
     "pendingSourceReviews": 96,
