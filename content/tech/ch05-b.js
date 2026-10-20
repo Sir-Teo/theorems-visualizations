@@ -1,10 +1,9 @@
+import{reflectingInstrument}from'./source-audit-optics.js';
 import{longitude,chronometer}from'./source-audit-longitude.js';
 import{balance}from'./source-audit-huygens.js';
 import{anchor}from'./source-audit-clockdrives.js';
 // History of Technology — Chapter 5: Time and navigation (items 5.7–5.11; 5.1–5.6 are in ch05.js)
 import { D2R, clamp, pendulumRatio, lossPerDay, bangPeriod, bangAngle, springPeriodRatio, sunLon, eclDec, dayName, fmtSec } from './ch05.shared.js';
-
-const reflect = (d, nAng) => { const nx = Math.cos(nAng), ny = Math.sin(nAng), k = 2 * (d[0] * nx + d[1] * ny); return [d[0] - k * nx, d[1] - k * ny]; };
 
 export default {
   collection: 'tech',
@@ -110,61 +109,28 @@ and the random component has RMS $\sqrt{d(s^2+m^2)}$. This is a discrete end-of-
 
     // ------------------------------------------------------------------ 5.11
     {
-      num: '5.11',
-      kind: 'Invention',
-      name: 'The octant and sextant',
-      credit: 'John Hadley (octant, 1731) and, independently, Thomas Godfrey of Philadelphia (about 1730–31); Isaac Newton described a similar instrument to Halley earlier, but his description was published only after Halley\'s death in 1742; the sextant (a 60° arc) followed in the 1750s',
-      verify: true,
-      statement: String.raw`The **reflecting octant** (Hadley's quadrant) measures the angle between two objects, usually the Sun and the horizon, with two mirrors: a movable *index mirror* on an arm over an arc, and a fixed half-silvered *horizon glass* through which the horizon is seen directly while the Sun's twice-reflected image is seen in the silvered half. When the index arm is turned until the Sun's image touches the horizon, the angle $h$ between the Sun and the horizon is **twice** the angle $\alpha$ between the two mirrors, so the arc of $45^\circ$ is engraved to $90^\circ$ and the **sextant**, with a $60^\circ$ arc, reads to $120^\circ$. Because both the Sun and the horizon are seen at once, the pitching of the ship does not matter. The latitude then follows from the noon altitude, $\varphi=90^\circ-h+\delta$ for the Sun south of the observer.
+      num:'5.11',kind:'Invention',name:'The octant and sextant',verify:true,
+      credit:'John Hadley’s actual Royal Society communication; ideal double-reflection geometry authored here',
+      statement:String.raw`A reflecting angle instrument brings a directly viewed object and a twice-reflected object into coincidence. One mirror is fixed; the other moves with the index arm. In ideal plane geometry the two reflections rotate the apparent direction by twice the relative mirror angle α. A chosen 45° mirror-angle range therefore measures separations through 90°; a chosen 60° range measures through 120°.
 
-What the sources support: Hadley presented the octant to the Royal Society in 1731, and Godfrey, a Philadelphia glazier, reached a similar instrument independently at about the same time; Newton's earlier description is known from papers found among Halley's. The sextant's larger arc allowed the lunar-distance method (the angle between the Moon and a star), which could be used for longitude.
+Hadley's actual Royal Society communication, read 13 May 1731, proves the doubled-angle relation and describes an octant with 45° divided into 90 observational degrees. His discussion of observations from a moving support includes qualifications: keeping the objects near the instrument plane, appropriate alignment, optical precision and sea conditions. It does not assert that every effect of ship motion vanishes. The present drawing is an ideal front-observing mechanism, not a reconstruction of every variant in his paper.`,
+      idea:String.raw`Reflection in a plane with unit normal n sends a ray direction d to
+$$R_n(d)=d-2(d\cdot n)n.$$
+Composing two reflections whose normals differ by α gives an exact rotation through 2α. The central ray is traced backward from the eye through the fixed glass and index mirror. At coincidence its outgoing direction matches the chosen distant-object separation β, so β=2α. The field diagram shows the angular residual β−2α; a negative residual means the reflected image lies below the direct reference image.
 
-Scope of the picture: the instrument is drawn in plane geometry (all rays in the plane of the arc), without dip of the horizon, refraction, semi-diameter or index error; the Sun's declination is a low-precision formula good to about a degree.`,
-      idea: String.raw`A mirror reflecting a ray turns the ray when the mirror turns, by twice the mirror's rotation (the law of reflection, waves-4.5). Two successive reflections therefore turn it through the *difference* of two such doublings: if the mirrors are parallel the final ray is parallel to the incoming one (so Sun and horizon coincide at zero), and if the index mirror is turned by $\alpha$ relative to the horizon glass, the outgoing ray is deviated by $2\alpha$ exactly. The Sun's image is lowered by $2\alpha$ toward the horizon, and the reading is the angle of the arm on the arc, doubled in the engraving. The noon altitude of the Sun is $90^\circ-|\varphi-\delta|$ (geog-2.4), which gives $\varphi$ from the reading and the date.`,
-      caption: String.raw`Left: the rays (eye at the origin, horizon glass on the sight line, index mirror above it) for the **mirror angle** $\alpha$ you set; the actual Sun is the gold dashed ray. Right: what the observer sees: the horizon in the left half, and in the right half the Sun's image lowered by $2\alpha$. Turn the **arm** until the image just rests on the horizon, then read the latitude. Choose **octant** or **sextant**: the former cannot reach a Sun higher than 90°.`,
-      deps: ['tech-5.2', 'waves-4.5', 'geog-2.4'],
-      see: ['tech-5.9', 'tech-5.10'],
-      refs: ['Mokyr ch. 4', 'Hadley, John (MacTutor / Oxford DNB)'],
-      tags: ['early-modern', 'navigation', 'optics'],
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Octant_(instrument)' },
-      viz(v) {
-        const A = v.stage({ x: [-0.4, 2.8], y: [-0.5, 2.5], equal: true, axes: false, height: 360, weight: 1.1, minWidth: 340, title: 'the two mirrors (plane of the arc)' });
-        const B = v.stage({ x: [-1, 1], y: [-12, 80], axes: 'box', gutter: true, height: 360, weight: 0.8, minWidth: 260, ylabel: 'angle above the horizon (°)', title: 'as seen by the observer' });
-        const iS = v.select('instrument', [{ value: '45', label: 'octant (45° arc)' }, { value: '60', label: 'sextant (60° arc)' }], '60');
-        const aS = v.slider('mirror angle $\\alpha$ (°)', 0, 60, 10, { step: 0.05 });
-        const dS = v.slider('date', 1, 365, 172, { step: 1, fmt: (x) => dayName(x) });
-        const lS = v.slider('latitude (°N)', 0, 70, 45, { step: 1 });
-        const H = [2.0, 0], PSI = (157.5 * Math.PI) / 180; // horizon glass at (2, 0)
-        const sunAlt = () => { const dec = eclDec(sunLon(dS.value)); return 90 - Math.abs(lS.value - dec); };
-        v.render(() => {
-          const lim = +iS.value, al = Math.min(aS.value, lim), h = sunAlt();
-          const d0 = [1, 0], d1 = reflect(d0, PSI), I = [H[0] + 1.6 * d1[0], H[1] + 1.6 * d1[1]], psiI = PSI + al * D2R, d2 = reflect(d1, psiI);
-          A.line(0, 0, 3.2, 0, { color: 'blue', width: 1.2, dash: [3, 4] }); A.text('horizon', 2.78, 0.06, { size: 10.5, color: 'blue', align: 'right', baseline: 'bottom' });
-          A.dot(0, 0, { r: 5, color: 'ink', label: 'eye', labelPos: 'sw' });
-          A.line(0, 0, H[0], H[1], { color: 'accent', width: 1.8 }); A.line(H[0], H[1], I[0], I[1], { color: 'accent', width: 1.8 });
-          A.arrow(I[0], I[1], I[0] + 1.2 * d2[0], I[1] + 1.2 * d2[1], { color: 'accent', width: 1.8, head: 8 });
-          const sh = h * D2R; A.line(I[0], I[1], I[0] + 1.3 * Math.cos(sh), I[1] + 1.3 * Math.sin(sh), { color: 'gold', width: 1.8, dash: [5, 3] });
-          // mirrors
-          const mir = (p, ang, len, col) => { const tx = -Math.sin(ang), ty = Math.cos(ang); A.line(p[0] - len * tx, p[1] - len * ty, p[0] + len * tx, p[1] + len * ty, { color: col, width: 5 }); };
-          mir(H, PSI, 0.22, 'purple'); mir(I, psiI, 0.22, 'orange');
-          A.text('horizon glass', H[0] + 0.12, H[1] - 0.1, { size: 10.5, color: 'purple', align: 'left', baseline: 'top' }); A.text('index mirror', I[0] + 0.25, I[1] + 0.05, { size: 10.5, color: 'orange', align: 'left' });
-          A.text(`rays leave at ${Math.round(2 * al * 10) / 10}° above the sight line`, 0.8, 2.4, { size: 11, color: 'accent', align: 'left' });
-          // view: horizon line, direct on the left half, Sun's image on the right half
-          B.vline(0, { color: 'muted', width: 1.5, dash: [4, 3] });
-          B.line(-1, 0, 1, 0, { color: 'blue', width: 2.4 });
-          B.rect(-1, -12, 0, 0, { fill: 'blue', fillAlpha: 0.1, stroke: false });
-          const img = h - 2 * al;
-          B.circle(0.5, img, 0, {});
-          B.dot(0.5, img, { r: 11, color: 'gold', label: 'Sun (image)', labelPos: 'w' });
-          B.text('direct view', -0.5, 76, { size: 10.5, color: 'muted', align: 'center' }); B.text('mirror view', 0.5, 76, { size: 10.5, color: 'muted', align: 'center' });
-        });
-        v.legend([['accent', 'ray path (eye → glass → mirror → Sun)'], ['gold', 'the actual Sun direction', { dash: [5, 3] }]]);
-        v.readout(() => {
-          const lim = +iS.value, al = Math.min(aS.value, lim), h = sunAlt(), dec = eclDec(sunLon(dS.value)), img = h - 2 * al, read = 2 * al;
-          const touch = Math.abs(img) < 0.25;
-          return `arm reading **${v.fix(read, 1)}°** (mirrors ${v.fix(al, 2)}° apart); the true noon altitude of the Sun here is ${v.fix(h, 1)}° (${v.fix(dec, 1)}° declination): image ${touch ? '**on the horizon**' : (img > 0 ? `${v.fix(img, 1)}° above it` : `${v.fix(-img, 1)}° below it`)}\nlatitude if the image touched the horizon at this reading: $\\varphi=90^\\circ-${v.fix(read, 1)}^\\circ+\\delta=$ **${v.fix(90 - read + dec, 1)}°N** (true ${v.fix(lS.value, 0)}°)${h > 2 * lim ? '; **this instrument cannot reach this Sun altitude**' : ''}`;
-        });
+For a separate ideal **noon-Sun interpretation**, an observed altitude h≤90° and known declination δ imply
+$$h=90^\circ-|\varphi-\delta|.$$
+Both candidates $\varphi=\delta\pm(90^\circ-h)$ must be considered, keeping only latitudes in−90…90°. The plus sign corresponds to a Sun south of the observer, the minus sign to a Sun north. Bearing information resolves the branch; altitude alone need not.`,
+      caption:String.raw`Select the instrument and move its index through a fraction of its actual allowed arc. The visible mirror angle, doubled reading and ray directions always agree. Choose a distant-object separation; bring its reflected image onto the direct reference line. Separations above 90° illustrate why a larger range helps general angle measurement; an ordinary visible noon Sun never has an altitude above 90°. Declination is a chosen input, without a date-to-ephemeris approximation.`,
+      deps:['waves-4.5','geog-2.4'],see:['tech-5.2','tech-5.9','tech-5.10'],refs:['Hadley, The description of a new instrument for taking angles, Philosophical Transactions37(1731),147–157 and plates; actual original, DOI10.1098/rstl.1731.0025','Whipple Museum, Troughton sextant accession1295, actual owner mechanism/condition account'],tags:['navigation','optics'],
+      scope:String.raw`Distant objects, ideal plane point-mirrors and a fixed direct reference direction; front-observing 45°/60° mirror-angle ranges are selected illustrations. No finite aperture, occlusion, index error, refraction, horizon dip, solar semidiameter, platform-motion forecast or observing advice. Hadley's third-mirror back-observation variant and historically extended scales are not represented. The noon interpretation assumes a corrected visible altitude and known declination, and requires bearing information when two latitude candidates remain. No independent Godfrey/Newton priority or first-sextant chronology is certified.`,
+      links:{source:'https://doi.org/10.1098/rstl.1731.0025',original:'https://archive.org/download/jstor-104076/104076.pdf',object:'https://collections.whipplemuseum.cam.ac.uk/objects/8757/'},
+      viz(v){const instrument=v.select('front-observing instrument',[{value:'octant',label:'45° arc: octant'},{value:'sextant',label:'60° arc: sextant'}],'sextant'),fraction=v.slider('index fraction of allowed arc',0,1,.2,{step:'any',decimals:6}),separation=v.slider('distant-object separation β (°)',0,120,40,{step:'any',decimals:6}),declination=v.slider('chosen solar declination δ (°)',-23.44,23.44,10,{step:'any',decimals:6}),A=v.stage({x:[-.5,3.4],y:[-.65,2.5],equal:true,axes:false,height:350,minWidth:260,title:'backward central ray; ideal point mirrors'}),B=v.stage({x:[-1.2,1.2],y:[-140,140],axes:'box',gutter:true,height:350,minWidth:260,ylabel:'angle from direct reference (°)',title:'direct and reflected image directions'});let info;
+        v.legend([['accent','backward central ray'],['gold','chosen distant-object direction / reflected image'],['blue','direct reference'],['purple','fixed glass'],['orange','index mirror']]);
+        v.render(()=>{const p=reflectingInstrument(instrument.value,fraction.value,separation.value,declination.value);A.line(0,0,3,0,{color:'blue',width:1.3,dash:[4,3]});A.line(0,0,...p.H,{color:'accent',width:2});A.line(...p.H,...p.I,{color:'accent',width:2});A.arrow(...p.I,...p.end,{color:'accent',width:2,head:7});A.line(...p.I,...p.target,{color:'gold',width:1.8,dash:[5,3]});p.mirrors.forEach((q,i)=>A.line(...q[0],...q[1],{color:i?'orange':'purple',width:5}));A.dot(0,0,{color:'ink',r:4,ring:false});A.dot(...p.H,{color:'purple',r:3,ring:false});A.dot(...p.I,{color:'orange',r:3,ring:false});B.line(-.95,0,.95,0,{color:'blue',width:2});B.dot(-.5,0,{color:'blue',r:5,ring:false});B.dot(.5,p.residual,{color:'gold',r:7,ring:false});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `Actual mirror angle ${v.fix(p.alpha,9)}° within the ${p.limit}° mechanical range; doubled reading ${v.fix(p.reading,9)}°. Object separation ${v.fix(p.separation,9)}°, image residual ${v.fix(p.residual,9)}°. ${p.canReach?'The chosen separation is in this model’s range.':'The chosen separation exceeds this model’s range.'}\nConditional noon interpretation of this reading: ${p.reading<=90?`${p.possible.length===1?'one latitude candidate':'two latitude candidates'}: ${p.possible.map(x=>v.fix(x,9)+'°').join(' or ')} at declination ${v.fix(p.declination,9)}°. Use Sun bearing to resolve a remaining branch.`:'No ordinary visible noon-Sun altitude exceeds 90°; this larger reading is for general object separations.'} The noon interpretation is an observation only after image coincidence and the stated corrections.`;});
       },
     },
+
   ],
 };

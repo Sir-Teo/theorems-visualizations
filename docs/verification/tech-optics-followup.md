@@ -1,0 +1,36 @@
+# Technology5.11: double reflection and noon-latitude branches
+
+Candidate for independent acceptance. Existing flag remains true. Only5.11, its syllabus row and uniquely named helper/report/tests change. Shared runtime, shared astronomical helper and central ledgers remain untouched.
+
+## Sources actually read
+
+Read the actual complete original article **John Hadley, The description of a new instrument for taking angles**, Philosophical Transactions37(1731), printed147–157, and its supplied continuation/correction printed356, [DOI10.1098/rstl.1731.0025](https://doi.org/10.1098/rstl.1731.0025), [JSTOR Early Journal Content original facsimile](https://archive.org/download/jstor-104076/104076.pdf). Local `/tmp/atlas-worker-two/tech-sources/hadley-1731.pdf`,16PDFpages including wrapper/plates, SHA256 `e8c87b2006ea2ee252bae88793c3895f219e7c028d2069966e70a325e7b49c4d`. Original text read with imperfect OCR as an aid; inspected actual source pixels for147/PDF5,148/6,150/8,151/9,155/13,156/14,157/15,356/16 and actual figureIV/PDF3. Material claims are legible in the original, independently of OCR errors.
+
+Printed147–149 prove double reflection;150 describes45mechanical degrees divided into90observational degrees;151 details the fixed glass/direct+reflected views and distinguishes an alternative observation arrangement beyond90°;155–156 qualify required steadiness, instrument-plane alignment and sea roughness. Printed157 leaves proposed lunar-distance usefulness to trials. The continuation/correction qualifies orientation and repairs printing. No general statement that ship motion never matters is supported. His back-observing arrangement with a third mirror is distinct from the two-mirror front-observing model retained here.
+
+Read the actual [Royal Society manuscript owner record CLP/2/21](https://makingscience.royalsociety.org/items/clp_2_21/paper-the-description-of-a-new-instrument-for-taking-angles-by-john-hadley), which identifies the13May1731communication; its manuscript is not silently substituted for the published facsimile above.
+
+Read the actual full [Whipple Museum owner record, Troughton sextant accession1295](https://collections.whipplemuseum.cam.ac.uk/objects/8757/), local `whipple-sextant.html`, SHA256 `d1544dcd17cfc2b23691f7129eb57397222bea7814a2142e18aa04a0ae6f33b9`. It describes index/horizon mirrors, shades, half-silvered/direct viewing and the doubled nominal60°/120° relation. Its specific specimen has extended−5…140°graduations, condition limitations and a possibly non-original mercury bottle. The selected60°mechanical model does not pretend to reproduce this entire object's scale or condition. No exact first-sextant date or Newton/Godfrey priority is independently certified; unread citations are removed from the item's credit.
+
+## Complete mathematical and model comparison
+
+Old copy assumed a south-bearing Sun for latitude inversion, while its true-latitude controls allowed north-bearing cases; the displayed result could therefore be wrong. Its octant silently clamped a60°control at45°, so saved/displayed control and drawn angle disagreed. The image could leave its fixed field bounds, and a horizon ray exceeded the geometry window. Its date approximation and claim of pitch immunity introduced unsupported accuracy/scope.
+
+Now the registered control is **fraction of the actual allowed arc**, so both selected instruments retain exact control/model agreement: α=45f or60f, reading2α. The input separation β0…120°is explicitly a general distant-object angle. The two exact reflected unit vectors, actual mirror normals/tangents, ray endpoints and image residualβ−2α all derive from the same geometry. Both full allowed domains are contained, including negative image residuals. The fixed diagram shows an ideal point-mirror central backtrace, not an exact finite-aperture optical reconstruction.
+
+For unit normaln, reflectiond−2(d·n)n preserves tangent and reverses normal components. Composing mirrors at normal anglesn andn+α gives a rotation2α, independently checked for arbitrary incident directions and common frame rotations. Selectedα, actual ray heading and doubled reading match for every sampled mechanical input and exact coincidence cases.
+
+Noon is a **conditional separate interpretation** of a readingh≤90°with chosen declinationδ, without a date/ephemeris formula. Sinceh=90−|φ−δ|, bothδ±(90−h)are retained when within−90…90°. At zenith the duplicate candidate collapses to one. The text explicitly requires Sun bearing when two candidates remain; a general reading above90°is never called an ordinary visible noon altitude. The readout is an observation only after coincidence and applicable corrections. The old claim that an octant could not reach a visible noon Sun higher than90°is gone: such a Sun is impossible in this model.
+
+Read actual prerequisites waves4.5 (specular plane reflection, stationary smooth interface) and geog2.4 (both noon branches and corrected astronomical observations); syllabus dependencies now match. No finite mirror/occlusion/refraction/horizon dip/index error/solar semidiameter/platform forecast is computed, and none is inferred from the ideal vectors.
+
+## Checks
+
+- Six independent math groups pass, `/tmp/atlas-worker-two/tech-optics-math.log`: single-reflection component/length/involution checks; arbitrary two-reflection rotations and covariance; both complete mechanical domains and actual mirror/ray geometry; exhaustive observable northern/southern noon-latitude recovery on a0.5°grid; general-angle versus noon distinction; malformed finite domains.
+- Focused static result and complete final native matrix are recorded below when complete. Native CLI `node tests/verification-tech-optics.mjs THEME WIDTH`; `TECH_OPTICS_OUTPUT` redirects evidence for independent review.
+
+Final focused static1item/0errors/0warnings, `tech-optics-static.log`. **All6final native matrices pass**,1450/430/320×light/dark, `tech-optics-native.log`. Every actual ray, mirror segment, image position, both instrument ranges, all16instrument/corner combinations, exact coincidence and branch/zenith cases, off-grid values, native segmented buttons/keyboard endpoints, exact saved replay and malformed snapshots are checked. Actual full stroke/arrowhead/glyph/text/TeX/control/page bounds are contained. The complete final matrix includes final copy spacing.
+
+Personally inspected final320dark two-latitude full page and1450light sextant-limit full page, plus original Hadley source pixels listed above. The default/corner panels remain readable, both±latitude candidates are visible at80°/δ10°, and the120°reading is explicitly separated from noon altitude. Evidence `/tmp/atlas-worker-two/tech-optics/`.
+
+Exact guards preserve all5.7–5.10bodies and unowned syllabus rows byte for byte. Only the obsolete private reflection helper is removed outside the owned item, replaced by the independently checked helper module. `git diff --check` passes. Existing flag awaits independent acceptance.

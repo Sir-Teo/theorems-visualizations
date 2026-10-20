@@ -183,8 +183,8 @@ export default {
           pic: 'Compare one signed affine clock-error model across the map, full90-day curve and selected day. Exact zero crossings and parallel arcs are explicit; angular benchmarks alone do not establish eligibility under the Act.' },
         { num: '5.10', kind: 'Invention', name: 'Harrison’s marine chronometer', deps: ['tech-5.8', 'tech-5.9'], refs: ['Royal Museums Greenwich, H4 ZAA0037 owner record and actual inscription'], tags: ['timekeeping', 'navigation'],
           pic: 'Separate H4 artifact evidence from three authored uncalibrated sensitivity profiles. All daily trajectories, exact discrete systematic mean and independent-increment RMS share a registered replayable seed and complete signed plot bounds.' },
-        { num: '5.11', kind: 'Invention', name: 'The octant and sextant', deps: ['tech-5.2', 'mech-5.2'], refs: ['Mokyr ch. 4'], tags: ['early-modern', '1731'],
-          pic: 'Bring the sun’s reflection down to the horizon with a double-reflecting instrument: the arc reads twice the mirror rotation, and latitude follows from noon altitude.' },
+        { num: '5.11', kind: 'Invention', name: 'The octant and sextant', deps: ['waves-4.5', 'geog-2.4'], refs: ['Hadley1731 actual original147–157 and plates; Whipple Museum Troughton sextant1295'], tags: ['navigation', 'optics'],
+          pic: 'Trace two exact ideal reflections and compare the allowed mirror angle with its doubled reading. Separate general object angles from visible noon altitudes; the noon interpretation retains both valid latitude branches instead of silently assuming the Sun is south.' },
       ],
     },
     // ───────────────────────────────────────────────────────────── 6
