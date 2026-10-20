@@ -9,3 +9,5 @@ This snapshot includes accepted LOGIC/ARCH source closures; DEEP/THERMO/CTRL/ENE
 Excludes later map experiment artifacts, WAVES/DEMO/AERO candidates and runtime peer reports. The controlled compositor experiment is separately rejected for production; production graph.js remains unchanged. The full-map60fps gate remains open. Wave5 stays prepared and unstarted until all§7.3 gates pass.
 
 Evidence: `/tmp/atlas-continuation/checkpoint3-{build,tests,static,queue,crossfield-accepted}.log`, exact marker `checkpoint3-commit.txt`, and full accepted inventory `checkpoint3-crossfield-accepted.json`. All checks pass on their first attempt for this immutable snapshot. No original or old worker checkout was edited.
+
+Subsequent acceptance: independent runtime peer `aa491ccf7cc43eb325b771afad73883f6ae887c9` accepted the included IMAGING2.9 candidate after this checkpoint. See [peer evidence](imaging-dual-energy-runtime-peer.md). This later acceptance does not extend the immutable test snapshot to subsequent files.

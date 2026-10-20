@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 40,
+  "publishedBelowTarget": 39,
   "wholeSyllabusBelowTarget": 27,
   "entries": [
     {
@@ -2741,12 +2741,19 @@
       "collection": "waves",
       "field": "physics",
       "target": 25,
-      "writtenToWritten": 12,
-      "writtenToKnown": 20,
-      "wholeSyllabus": 27,
-      "publishedShortfall": 13,
+      "writtenToWritten": 25,
+      "writtenToKnown": 33,
+      "wholeSyllabus": 40,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "waves-1.9",
+          "prerequisite": "pma-9.36",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "waves-1.12",
           "prerequisite": "pde-6.10",
@@ -2762,6 +2769,13 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "waves-1.1",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "waves-1.3",
           "prerequisite": "pde-2.2",
           "prerequisiteField": "math",
@@ -2771,6 +2785,13 @@
         {
           "item": "waves-1.5",
           "prerequisite": "rca-0.7",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-1.6",
+          "prerequisite": "pde-2.5",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -2839,6 +2860,13 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "waves-2.4",
+          "prerequisite": "pma-8.16",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "waves-2.6",
           "prerequisite": "rca-11.3",
           "prerequisiteField": "math",
@@ -2851,6 +2879,13 @@
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": false
+        },
+        {
+          "item": "waves-3.10",
+          "prerequisite": "ladr-7.31",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
         },
         {
           "item": "waves-3.13",
@@ -2881,8 +2916,64 @@
           "prerequisiteWritten": false
         },
         {
+          "item": "waves-3.4",
+          "prerequisite": "pma-5.10",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-3.5",
+          "prerequisite": "pma-5.15",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "waves-3.6",
           "prerequisite": "fa-7.6",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-3.6",
+          "prerequisite": "pma-8.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-3.6",
+          "prerequisite": "rca-9.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-4.12",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-4.15",
+          "prerequisite": "pma-6.21",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-4.5",
+          "prerequisite": "pma-5.8",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "waves-4.6",
+          "prerequisite": "pma-5.8",
           "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
@@ -15499,7 +15590,8 @@
       "cd37ccc90d940aebf4034703b6e9b7dbbaa4dda6",
       "50424bfe669f06c70eb4a14b5948fe60a0989395",
       "d34510512b63cb816e16d9e9c8c97934e4723b3c",
-      "37ea502c3aede818110e2097c238bfc38e753c6a"
+      "37ea502c3aede818110e2097c238bfc38e753c6a",
+      "5a442ec82caadd1e241c5a70000fa5281b694872"
     ],
     "excludedUnacceptedEdges": [
       {

@@ -952,3 +952,8 @@ Actual43page original (249–279plus12plates), allsourcebody/proof/sourcepixels 
 DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC and IMAGING now meet the published prerequisite target after independent exact-target/proof/native-text review. Their80 genuinely used added edges reduce shortfall815→736 (SOC's extra edge above25 does not reduce shortfall twice).40/64 collections and27 whole syllabi remain below target. No prerequisite batch closes a source flag.
 
 Exact `8887249` passes2,128 default tests, all six UI groups, strict build/full static with zero errors/warnings, home112,923 bytes gzip. The current source queue remains5=833+1−829. See [checkpoint boundaries and evidence](checkpoint-8887249.md). IMAGING2.9 runtime is still under independent peer review. The isolated Canvas compositor failed the matched detail-zoom timing target and remains outside production.
+
+
+### Subsequent WAVES and IMAGING acceptance
+
+The [WAVES peer](waves-crossfield-prerequisites-peer.md) independently accepts thirteen edges across twelve existing items: 25 published prerequisites, global shortfall723, 39/64 collections below target and27 whole syllabi below target. The [IMAGING2.9 runtime peer](imaging-dual-energy-runtime-peer.md) separately accepts the singular-energy and native-dose correction, without source closure or additional prerequisite count. These later files are outside the immutable2128-test checkpoint; its included runtime candidate is now independently accepted. Source queue remains5.

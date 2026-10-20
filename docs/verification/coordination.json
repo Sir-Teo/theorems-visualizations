@@ -42,9 +42,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "Independent WAVES prerequisite peer",
+      "current": "BEHAV genuine prerequisite production",
       "owns": [
-        "Unique WAVES peer reports/tests only"
+        "BEHAV written items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "Independent IMAGING2.9 runtime and built-statement peer",
+      "current": "Independent AERO prerequisite peer",
       "owns": [
-        "Unique IMAGING2.9 peer report/tests only"
+        "Unique AERO peer report/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "DEMO genuine prerequisite production",
+      "current": "GEOL genuine prerequisite production",
       "owns": [
-        "DEMO written items/matching rows/unique tests/reports"
+        "GEOL written items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "WAVES prerequisite production final boundary",
+      "current": "Independent DEMO prerequisite peer; one-row correction under review",
       "owns": [
-        "WAVES items/matching rows/unique tests/reports"
+        "Unique DEMO peer reports/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "AERO genuine prerequisite production",
+      "current": "INFO genuine prerequisite production",
       "owns": [
-        "AERO written items/matching rows/unique tests/reports"
+        "INFO written items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -332,7 +332,7 @@
       "ids": [
         "soc-3.7"
       ],
-      "peer": "coordinator independently read original Kleinberg–Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
+      "peer": "coordinator independently read original Kleinberg\u2013Tardos definitions and Figure 2 pixels, checked exact balanced fixtures and triangle proof, and passed fresh math/native narrow light/dark review",
       "reports": [
         "soc-exchange-followup.md"
       ],
@@ -1406,7 +1406,7 @@
       "/tmp/atlas-continuation/checkpoint3-crossfield-accepted.log"
     ],
     "limitations": [
-      "Includes IMAGING2.9runtime candidate1a26f53 pending independent native acceptance at the tested snapshot.",
+      "Includes IMAGING2.9 runtime candidate1a26f53; independent native acceptance subsequently completed in aa491cc, outside the tested snapshot.",
       "Default test success does not accept unresolved source bodies or the frozen BIGHIST3.5 candidate/edge. Accepted crossfield inventory excludes that edge.",
       "Excludes subsequent experimental map files/reports, WAVES/DEMO/AERO candidates and later runtime-peer reports."
     ]
@@ -1439,7 +1439,7 @@
     {
       "id": "algo-5.18-upper-bound-and-retry",
       "status": "closed",
-      "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
+      "finding": "Concrete modp hashfamily need not attain displayed expectation2n\u22121; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
       "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
       "commits": [
         "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
@@ -1451,13 +1451,14 @@
     },
     {
       "id": "imaging-2.9-singular-energies-and-log-dose",
-      "status": "candidate-awaiting-independent-peer",
+      "status": "closed",
       "owner": "ctrl_prereqs",
-      "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
+      "finding": "Energydomains overlap40\u201380:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
       "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
       "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
       "peer": "arch_source",
-      "report": "docs/verification/imaging-dual-energy-runtime-followup.md"
+      "report": "docs/verification/imaging-dual-energy-runtime-peer.md",
+      "peerCommit": "aa491ccf7cc43eb325b771afad73883f6ae887c9"
     }
   ],
   "stateFollowups": [
@@ -1585,6 +1586,18 @@
       "peer": "deep_peer",
       "report": "docs/verification/algo-perfect-hashing-state-peer.md",
       "sourceClosure": "None; existing source flag preserved."
+    },
+    {
+      "id": "imaging-2.9-singular-energies-and-log-dose",
+      "status": "accepted",
+      "commits": [
+        "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
+        "aa491ccf7cc43eb325b771afad73883f6ae887c9"
+      ],
+      "producer": "ctrl_prereqs",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-dual-energy-runtime-peer.md",
+      "sourceClosure": "None; no new prerequisite count."
     }
   ],
   "acceptedSourceLimitations": [
@@ -1890,15 +1903,31 @@
       "publishedAfter": 25,
       "sourceClosure": "None. Hounsfield3.18 source remains open;2.9 runtime is separate.",
       "bridgeReview": "Inverse-problems3.8 kernel/Plancherel note independently reviewed."
+    },
+    {
+      "commits": [
+        "5a442ec82caadd1e241c5a70000fa5281b694872",
+        "f1135a6781533903910c8d2b8f4373ccb4a890e9"
+      ],
+      "collection": "waves",
+      "status": "accepted",
+      "producer": "thermo_prereqs",
+      "peer": "deep_peer",
+      "report": "docs/verification/waves-crossfield-prerequisites-peer.md",
+      "publishedBefore": 12,
+      "publishedAfter": 25,
+      "edgesAdded": 13,
+      "sourceClosure": "None; all source flags unchanged.",
+      "bridgeReview": "No changed consumer IDs are existing bridge steps; independently checked."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 736,
-    "publishedBelow25": 40,
+    "publishedShortfall": 723,
+    "publishedBelow25": 39,
     "collections": 64,
     "wholeSyllabusBelow25": 27,
     "date": "2026-10-20",
-    "acceptedSnapshot": "Eight new collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC and IMAGING. Frozen BIGHIST3.5 edge excluded."
+    "acceptedSnapshot": "Nine new collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC, IMAGING and WAVES. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -1909,7 +1938,7 @@
       "owns": [
         "content/ling/**",
         "Only owned ling syllabus rows, collection-specific reports/helpers/tests",
-        "Only BIGHIST3.1–3.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
+        "Only BIGHIST3.1\u20133.5 in ch03.js/private files, corresponding syllabus rows and unique tests/reports; coordinator retains3.6/3.7/ch04."
       ],
       "status": "working",
       "firstBatch": "Complete inherited draft with independent source, math and native visual checks",

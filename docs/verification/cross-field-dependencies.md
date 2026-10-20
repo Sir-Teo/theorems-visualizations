@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **40 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 736 edges. Even
+Of 64 non-math collections, **39 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 723 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -191,3 +191,10 @@ Exact `d345105` adds11genuine used dependencies across8items; independentpeer `5
 Exact `37ea502` adds eight genuine inputs across seven items, taking IMAGING from 17 to 25 published prerequisites (24→32 known, 38→46 whole syllabus). The peer read the actual variance, inverse-function, conditioning, Fourier, projection, SVD and independence arguments. The retained prose separates finite-energy filter identities from heteroscedastic Poisson ROI measurements, and labels the row-angle proxy honestly. Independent review also accepts the inverse-problems bridge note and four narrow statement splits. See [peer evidence](imaging-crossfield-prerequisite-peer.md).
 
 The source queue does not change: Hounsfield3.18 remains open. The singular-energy/native-dose runtime followup for2.9 is separately reviewed and is not certified by this prerequisite review. Current accepted shortfall is736, with40/64 collections below25 published and27 whole syllabi below25. The frozen BIGHIST edge remains excluded.
+
+
+## Accepted WAVES prerequisites and IMAGING runtime peer
+
+Thirteen actual derivational uses across twelve WAVES items bring written/known/whole counts from 12/20/27 to 25/33/40. Independent target-proof review, 1,145 fresh mathematical cases and 24 narrow theme renders support acceptance, including bounded Taylor, Parseval, Hermitian mode and stationary-ray hypotheses. No existing bridge step is touched. See [WAVES independent peer](waves-crossfield-prerequisites-peer.md). Accepted shortfall is 723, with 39/64 collections below 25 published links and 27 whole syllabi below target.
+
+The separate [IMAGING2.9 runtime peer](imaging-dual-energy-runtime-peer.md) accepts all 41 offered singular pairs as explicit unavailable decompositions, preserves all 5,110 invertible-pair arithmetic, and independently verifies local dose controls and replay. It adds no prerequisite edge and closes no historical-source flag. The frozen BIGHIST edge remains excluded.
