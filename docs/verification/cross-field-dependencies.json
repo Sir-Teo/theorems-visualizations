@@ -4,7 +4,7 @@
   "counting": "Unique directed prerequisite edges from a non-math collection to a different field; separate written and planned availability. Related links and same-field cross-collection links do not count.",
   "limitation": "Counts alone do not establish that any prerequisite is pedagogically or factually justified. Correct links require source/proof review; do not add arbitrary links to meet a quota.",
   "collections": 64,
-  "publishedBelowTarget": 41,
+  "publishedBelowTarget": 40,
   "wholeSyllabusBelowTarget": 27,
   "entries": [
     {
@@ -8442,12 +8442,19 @@
       "collection": "imaging",
       "field": "med",
       "target": 25,
-      "writtenToWritten": 17,
-      "writtenToKnown": 24,
-      "wholeSyllabus": 38,
-      "publishedShortfall": 8,
+      "writtenToWritten": 25,
+      "writtenToKnown": 32,
+      "wholeSyllabus": 46,
+      "publishedShortfall": 0,
       "unknown": [],
       "edges": [
+        {
+          "item": "imaging-1.6",
+          "prerequisite": "prob-2.2.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
         {
           "item": "imaging-1.7",
           "prerequisite": "prob-1.6.13",
@@ -8512,6 +8519,20 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "imaging-2.9",
+          "prerequisite": "pma-9.36",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "imaging-2.9",
+          "prerequisite": "nla-3.1",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "imaging-2.10",
           "prerequisite": "waves-4.15",
           "prerequisiteField": "physics",
@@ -8561,6 +8582,34 @@
           "prerequisiteWritten": true
         },
         {
+          "item": "imaging-3.7",
+          "prerequisite": "rca-9.11",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "imaging-3.8",
+          "prerequisite": "rca-9.13",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "imaging-3.11",
+          "prerequisite": "ladr-6.55",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "imaging-3.12",
+          "prerequisite": "ladr-7.70",
+          "prerequisiteField": "math",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
           "item": "imaging-3.4",
           "prerequisite": "rca-9.1",
           "prerequisiteField": "math",
@@ -8599,6 +8648,13 @@
           "item": "imaging-4.7",
           "prerequisite": "waves-4.15",
           "prerequisiteField": "physics",
+          "itemWritten": true,
+          "prerequisiteWritten": true
+        },
+        {
+          "item": "imaging-4.7",
+          "prerequisite": "prob-2.1.1a",
+          "prerequisiteField": "math",
           "itemWritten": true,
           "prerequisiteWritten": true
         },
@@ -15442,7 +15498,8 @@
       "cabd1be31cd9690a623545dffe6ad88865ad2f1e",
       "cd37ccc90d940aebf4034703b6e9b7dbbaa4dda6",
       "50424bfe669f06c70eb4a14b5948fe60a0989395",
-      "d34510512b63cb816e16d9e9c8c97934e4723b3c"
+      "d34510512b63cb816e16d9e9c8c97934e4723b3c",
+      "37ea502c3aede818110e2097c238bfc38e753c6a"
     ],
     "excludedUnacceptedEdges": [
       {

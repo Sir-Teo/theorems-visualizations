@@ -3,8 +3,8 @@
 2026-10-20. The executable inventory in `cross-field-dependencies.json` checks
 MASTER_PLAN §7.3 against accepted written and planned prerequisite records. Its acceptance metadata explicitly excludes the frozen BIGHIST3.5candidate edge.
 
-Of 64 non-math collections, **41 have fewer than 25 published prerequisite edges to
-written ideas in a different field**. Their combined shortfall is 744 edges. Even
+Of 64 non-math collections, **40 have fewer than 25 published prerequisite edges to
+written ideas in a different field**. Their combined shortfall is 736 edges. Even
 including planned items and planned prerequisites, **27 collections remain below 25**.
 The wave gate is open. Counts are not evidence that a prerequisite is justified.
 
@@ -184,3 +184,10 @@ Current accepted shortfall754,42/64below25published,27whole syllabi below25; fro
 ## Sociology exceeds the published prerequisite target
 
 Exact `d345105` adds11genuine used dependencies across8items; independentpeer `5fcd25f` confirms actualmoment/Cauchy/spectral/geometricseries/Markov/variance arguments and fixedshuffle/periodicity/tie/boundedbelief qualifications. SOC15→26published,18→29known,41→52whole. Globalshortfall reduces10, not11: current744,41/64below25published,27wholebelow25.53object/function/flag/fullsyllabusguards,38SOCmathgroups, independentgraph/permutation/matrix/tailcases and fresh16narrowtheme pages/ownpixels pass. See [peer](soc-crossfield-prerequisite-peer.md). NochangedIDis anexistingbridgestep. Sourceflags unchanged; frozenBIGHISTedge excluded.
+
+
+## Imaging reaches the published prerequisite target
+
+Exact `37ea502` adds eight genuine inputs across seven items, taking IMAGING from 17 to 25 published prerequisites (24→32 known, 38→46 whole syllabus). The peer read the actual variance, inverse-function, conditioning, Fourier, projection, SVD and independence arguments. The retained prose separates finite-energy filter identities from heteroscedastic Poisson ROI measurements, and labels the row-angle proxy honestly. Independent review also accepts the inverse-problems bridge note and four narrow statement splits. See [peer evidence](imaging-crossfield-prerequisite-peer.md).
+
+The source queue does not change: Hounsfield3.18 remains open. The singular-energy/native-dose runtime followup for2.9 is separately reviewed and is not certified by this prerequisite review. Current accepted shortfall is736, with40/64 collections below25 published and27 whole syllabi below25. The frozen BIGHIST edge remains excluded.

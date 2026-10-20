@@ -32,9 +32,9 @@
       "agent": "logic_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-logic-peer/theorems-visualizations",
       "status": "working",
-      "current": "Isolated connected-Canvas composition prototype correctness; no FPS while others work",
+      "current": "Document rejected compositor timing; bounded read-only next-step diagnosis",
       "owns": [
-        "Unique map-canvas-compositor test-only helper/tests/report; no production graph/global edits"
+        "Isolated map prototype reports and explicit-only tests; no production graph edits"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -42,9 +42,9 @@
       "agent": "deep_peer",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-deep-peer/theorems-visualizations",
       "status": "working",
-      "current": "IndependentALGO5.18runtimefinitefamily/exhaustionpeer preparation",
+      "current": "Independent WAVES prerequisite peer",
       "owns": [
-        "Unique ENERGY peer report/tests, no content/global changes"
+        "Unique WAVES peer reports/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -52,9 +52,9 @@
       "agent": "arch_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-arch-source/theorems-visualizations",
       "status": "working",
-      "current": "IndependentIMAGINGprerequisite/conditionalnoisepeer",
+      "current": "Independent IMAGING2.9 runtime and built-statement peer",
       "owns": [
-        "UniqueIMAGINGpeer report/tests only"
+        "Unique IMAGING2.9 peer report/tests only"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -62,9 +62,9 @@
       "agent": "imaging_source",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-imaging-source/theorems-visualizations",
       "status": "working",
-      "current": "DedicatedALGO5.18upperbound/retrycap runtime correction",
+      "current": "DEMO genuine prerequisite production",
       "owns": [
-        "ALGO5.18localitem/privatehelper/tests/report only"
+        "DEMO written items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -72,9 +72,9 @@
       "agent": "thermo_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-thermo-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "IMAGING genuine prerequisite production;3.18passwordboundary unchanged",
+      "current": "WAVES prerequisite production final boundary",
       "owns": [
-        "IMAGING writtenitems/matchingrows/unique tests/reports; no3.18sourceclosure"
+        "WAVES items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     },
@@ -82,9 +82,9 @@
       "agent": "ctrl_prereqs",
       "worktree": "/Users/teodev/.codex/worktrees/atlas-ctrl-prereqs/theorems-visualizations",
       "status": "working",
-      "current": "IMAGING2.9runtime singular-energy/logdose investigation; editswaitproducerboundary",
+      "current": "AERO genuine prerequisite production",
       "owns": [
-        "IMAGING2.9localruntime/privatehelper/tests/report afterthermo commit"
+        "AERO written items/matching rows/unique tests/reports"
       ],
       "peerReview": "Independent immutable peer before coordinator acceptance"
     }
@@ -1438,16 +1438,26 @@
     },
     {
       "id": "algo-5.18-upper-bound-and-retry",
-      "status": "recorded-awaiting-dedicated-repair",
+      "status": "closed",
       "finding": "Concrete modp hashfamily need not attain displayed expectation2n−1; universality gives an upperbound. Firstlevel loop also accepts after>50draws.",
-      "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap."
+      "scope": "Separate text/runtime followup; ALGOprerequisite peer must not certify current labels/retrycap.",
+      "commits": [
+        "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
+        "6403925aa8ad190ab3c9eb8714d8a8a61a0a5f60",
+        "608adc8eed7cb1a1d78cee409e6e1857ac6fa0e7"
+      ],
+      "peer": "deep_peer",
+      "report": "docs/verification/algo-perfect-hashing-state-peer.md"
     },
     {
       "id": "imaging-2.9-singular-energies-and-log-dose",
-      "status": "assigned-after-prerequisite-boundary",
+      "status": "candidate-awaiting-independent-peer",
       "owner": "ctrl_prereqs",
       "finding": "Energydomains overlap40–80:41valid equal-energy pairs give determinant0 and unguarded inverse divisions. Dose native logthumb also snaps oninherited400tickgrid.",
-      "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent."
+      "scope": "Separate localruntime correction afterthermo immutableprerequisite/row-anglelabelcommit; valid singularstate must remainhonestlynonunique/inconsistent.",
+      "candidate": "1a26f535aeb267e6a13d9c4f467d59704a5f110b",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-dual-energy-runtime-followup.md"
     }
   ],
   "stateFollowups": [
@@ -1562,6 +1572,19 @@
       "peer": "deep_peer",
       "report": "docs/verification/deep-gradient-clipping-label-peer.md",
       "sourceClosure": "None; unchangednumericalmodel/sourceflag."
+    },
+    {
+      "id": "algo-5.18-upper-bound-and-retry",
+      "status": "accepted",
+      "commits": [
+        "212d23e562fbfcde04953d0e1e8e2957b4c1dd1f",
+        "6403925aa8ad190ab3c9eb8714d8a8a61a0a5f60",
+        "608adc8eed7cb1a1d78cee409e6e1857ac6fa0e7"
+      ],
+      "producer": "imaging_source",
+      "peer": "deep_peer",
+      "report": "docs/verification/algo-perfect-hashing-state-peer.md",
+      "sourceClosure": "None; existing source flag preserved."
     }
   ],
   "acceptedSourceLimitations": [
@@ -1842,15 +1865,40 @@
       "edgesAdded": 11,
       "sourceClosure": "None; unchangedsourceflags.",
       "bridgeReview": "NochangedconsumerIDis anexistingbridgestep; independentlychecked."
+    },
+    {
+      "commits": [
+        "37ea502c3aede818110e2097c238bfc38e753c6a",
+        "43e7fcc",
+        "f34d5c3"
+      ],
+      "collection": "imaging",
+      "items": [
+        "imaging-1.6",
+        "imaging-2.9",
+        "imaging-3.7",
+        "imaging-3.8",
+        "imaging-3.11",
+        "imaging-3.12",
+        "imaging-4.7"
+      ],
+      "status": "accepted",
+      "producer": "thermo_prereqs; coordinator statement and bridge followups",
+      "peer": "arch_source",
+      "report": "docs/verification/imaging-crossfield-prerequisite-peer.md",
+      "publishedBefore": 17,
+      "publishedAfter": 25,
+      "sourceClosure": "None. Hounsfield3.18 source remains open;2.9 runtime is separate.",
+      "bridgeReview": "Inverse-problems3.8 kernel/Plancherel note independently reviewed."
     }
   ],
   "currentPrerequisiteGate": {
-    "publishedShortfall": 744,
-    "publishedBelow25": 41,
+    "publishedShortfall": 736,
+    "publishedBelow25": 40,
     "collections": 64,
     "wholeSyllabusBelow25": 27,
     "date": "2026-10-20",
-    "acceptedSnapshot": "SevennewcollectionsDEEP/THERMO/CTRL/ENERGY/ROBOT/ALGO/SOC have independently accepted>=25writtenprerequisites; frozenBIGHIST3.5edge excluded."
+    "acceptedSnapshot": "Eight new collections meet the written target: DEEP, THERMO, CTRL, ENERGY, ROBOT, ALGO, SOC and IMAGING. Frozen BIGHIST3.5 edge excluded."
   },
   "previousSessionWorkers": [
     {
@@ -1917,6 +1965,25 @@
       "status": "frozen-unaccepted",
       "reason": "Automated worker service rejected independent biology-content source peer; repeated prior attempts remain uncertified.",
       "boundary": "Do not retry via agent/tool/reframing/new chat. verify flag remains true; one candidate edge excluded from accepted inventory."
+    }
+  ],
+  "mapExperiments": [
+    {
+      "candidate": "93f033a044609e4fe411a9456ae9b2a96333429a",
+      "status": "rejected-for-production",
+      "method": "Matched full Chrome/Apple M1 Metal, current frozen full map,1440x1000,DPR2,light,24frames; all six workers and root held browsers/heavy jobs.",
+      "overviewFPS": {
+        "original": 48.744,
+        "prototype": 50.368
+      },
+      "detailFPS": {
+        "original": 44.016,
+        "prototype": 29.018
+      },
+      "loadedNodes": 13574,
+      "loadedEdges": 23218,
+      "evidence": "/tmp/atlas-map-canvas-compositor-timing-normal-dpr2-light.json",
+      "limitation": "Single bounded controlled run; no universal-device or full-matrix pass. Production graph remains unchanged."
     }
   ]
 }
