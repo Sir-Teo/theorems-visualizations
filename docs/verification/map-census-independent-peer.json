@@ -1,0 +1,1129 @@
+{
+  "complete": true,
+  "scope": "Independent four-state operation census only. No timing, FPS, pixel correctness, conservative-bound proof or production acceptance.",
+  "candidate": "6fd9268b4032ea38024b54f5a820806bd920d06b",
+  "browser": "155.0.8059.85",
+  "hashes": {
+    "data/index": "e30edc52e17812418a9aede80b7842380749c377939762eecc2468eaea20ab42",
+    "data/planned": "9627cdd57f3131e3876efeeaf5ebe3d1f5d06f6450c1a104a6d1e028c1f8ebbd",
+    "graph": "9a8850528193c87e97deba14a387bebff3215e9e67569c125cac265e061f94fc",
+    "map-webgl-scene": "2422e59c2780e19e0c7b5c11da56127bc23718925ddde3e4d71527e4e45c21b5",
+    "map-scene-edges": "7b3fcf731105674252465c1376942b2f2b549fa51f9a3c9a3ee581a10c242262",
+    "map-scene-model": "a7d10c9ba64acd3f4be8307d07461e0d9fad04f567d0d40dbbebfa37f2a581af",
+    "data/atlas.css": "792d9bdaa2e9978863ff78a42a5d5d87e084b9f8d810941de07def487ddff29f"
+  },
+  "results": [
+    {
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "selected": false,
+      "fields": [
+        "math",
+        "stats",
+        "cs",
+        "physics",
+        "chem",
+        "earth",
+        "bio",
+        "med",
+        "eng",
+        "econ",
+        "social",
+        "arts",
+        "humanities"
+      ],
+      "definitions": true,
+      "planned": true,
+      "nodes": 13574,
+      "edges": 23258,
+      "unions": [
+        {
+          "rows": [
+            {
+              "style": "col:pma",
+              "segments": 57058,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -1080,
+                88,
+                11256,
+                11171
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:rca",
+              "segments": 16832,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -504,
+                499,
+                9172,
+                11202
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:fa",
+              "segments": 4576,
+              "tiles": 1,
+              "area": 5107360,
+              "rectangle": [
+                140,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -356.80000000000007,
+                1173,
+                7796,
+                10781
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:ode",
+              "segments": 10232,
+              "tiles": 1,
+              "area": 4712192,
+              "rectangle": [
+                352,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -224,
+                1531,
+                11480,
+                10897
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:ladr",
+              "segments": 25519,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -1206.4,
+                1068,
+                10236,
+                10907
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:mech",
+              "segments": 874,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -2175,
+                1583,
+                8574.2,
+                4894
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:pde",
+              "segments": 2925,
+              "tiles": 1,
+              "area": 4559344,
+              "rectangle": [
+                434,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -172.8,
+                1868,
+                5708,
+                10486
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:vcalc",
+              "segments": 4806,
+              "tiles": 1,
+              "area": 4248056,
+              "rectangle": [
+                601,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -68.8,
+                1889,
+                8852,
+                10560
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:alg",
+              "segments": 3276,
+              "tiles": 1,
+              "area": 878445,
+              "rectangle": [
+                711,
+                1459,
+                2880,
+                1864
+              ],
+              "bounds": [
+                0,
+                2973,
+                7916,
+                10181
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:top",
+              "segments": 1640,
+              "tiles": 1,
+              "area": 3470768,
+              "rectangle": [
+                1018,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                192,
+                109,
+                4872,
+                4215
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:prob",
+              "segments": 7918,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -2091.6,
+                752,
+                8099.6,
+                11213
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:stoch",
+              "segments": 928,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -2134.8,
+                1383,
+                6878.8,
+                10181
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:nt",
+              "segments": 294,
+              "tiles": 1,
+              "area": 2479680,
+              "rectangle": [
+                0,
+                1003,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -1525.2,
+                2688,
+                6941.2,
+                6221
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:comb",
+              "segments": 824,
+              "tiles": 1,
+              "area": 4181760,
+              "rectangle": [
+                0,
+                412,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -1269.2,
+                2319,
+                5981.2,
+                5526
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:algo",
+              "segments": 902,
+              "tiles": 1,
+              "area": 3565832,
+              "rectangle": [
+                967,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                160,
+                1457,
+                7948,
+                4915
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:logic",
+              "segments": 760,
+              "tiles": 1,
+              "area": 1172160,
+              "rectangle": [
+                0,
+                1457,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -1990.8,
+                2972,
+                6414.8,
+                5558
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:info",
+              "segments": 1052,
+              "tiles": 1,
+              "area": 3375704,
+              "rectangle": [
+                1069,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                224,
+                141,
+                8396,
+                5874
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "ghost",
+              "segments": 110850,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11202
+              ],
+              "width": 0.7
+            }
+          ],
+          "mask": [
+            2880,
+            1864
+          ],
+          "tileDraws": 18,
+          "actualInstanceSubmissions": 251266,
+          "logicalClearPixels": 75329541,
+          "logicalCompositePixels": 75329541,
+          "actualGLRecords": 54
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 18,
+        "uniqueGroupSegments": 251266,
+        "submittedSegmentInstances": 251266,
+        "clearPixels": 75329541,
+        "compositePixels": 75329541,
+        "tileDraws": 18
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "width": 1440,
+      "height": 932,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 361.59999999999997,
+      "ty": -1642.8000000000002,
+      "selected": true,
+      "fields": [
+        "math",
+        "stats",
+        "cs",
+        "physics",
+        "chem",
+        "earth",
+        "bio",
+        "med",
+        "eng",
+        "econ",
+        "social",
+        "arts",
+        "humanities"
+      ],
+      "definitions": true,
+      "planned": true,
+      "nodes": 13574,
+      "edges": 23258,
+      "unions": [
+        {
+          "rows": [
+            {
+              "style": "gray",
+              "segments": 251266,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11213
+              ],
+              "width": 0.7
+            }
+          ],
+          "mask": [
+            2880,
+            1864
+          ],
+          "tileDraws": 1,
+          "actualInstanceSubmissions": 251266,
+          "logicalClearPixels": 5368320,
+          "logicalCompositePixels": 5368320,
+          "actualGLRecords": 3
+        },
+        {
+          "rows": [
+            {
+              "style": "up",
+              "segments": 207,
+              "tiles": 1,
+              "area": 59600,
+              "rectangle": [
+                709,
+                918,
+                1454,
+                998
+              ],
+              "bounds": [
+                0,
+                2636,
+                448,
+                2668
+              ],
+              "width": 1
+            },
+            {
+              "style": "down",
+              "segments": 18660,
+              "tiles": 1,
+              "area": 5368320,
+              "rectangle": [
+                0,
+                0,
+                2880,
+                1864
+              ],
+              "bounds": [
+                -3434.2,
+                109,
+                14038.2,
+                10876
+              ],
+              "width": 1
+            }
+          ],
+          "mask": [
+            2880,
+            1864
+          ],
+          "tileDraws": 2,
+          "actualInstanceSubmissions": 18867,
+          "logicalClearPixels": 5427920,
+          "logicalCompositePixels": 5427920,
+          "actualGLRecords": 6
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 3,
+        "uniqueGroupSegments": 270133,
+        "submittedSegmentInstances": 270133,
+        "clearPixels": 10796240,
+        "compositePixels": 10796240,
+        "tileDraws": 3
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "selected": false,
+      "fields": [
+        "math",
+        "stats",
+        "cs",
+        "physics",
+        "chem",
+        "earth",
+        "bio",
+        "med",
+        "eng",
+        "econ",
+        "social",
+        "arts",
+        "humanities"
+      ],
+      "definitions": true,
+      "planned": true,
+      "nodes": 13574,
+      "edges": 23258,
+      "unions": [
+        {
+          "rows": [
+            {
+              "style": "col:pma",
+              "segments": 105114,
+              "tiles": 6,
+              "area": 26346648,
+              "rectangle": [
+                1383,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1080,
+                88,
+                11608,
+                11171
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:rca",
+              "segments": 27146,
+              "tiles": 6,
+              "area": 22493184,
+              "rectangle": [
+                2304,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -504,
+                499,
+                9172,
+                11202
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:fa",
+              "segments": 19016,
+              "tiles": 6,
+              "area": 21957632,
+              "rectangle": [
+                2432,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -424,
+                1099,
+                7796,
+                10781
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:ode",
+              "segments": 12064,
+              "tiles": 6,
+              "area": 20618752,
+              "rectangle": [
+                2752,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -224,
+                88,
+                11480,
+                10897
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:ladr",
+              "segments": 47725,
+              "tiles": 6,
+              "area": 27196000,
+              "rectangle": [
+                1180,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1206.4,
+                88,
+                11544,
+                10907
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:mech",
+              "segments": 874,
+              "tiles": 6,
+              "area": 29099520,
+              "rectangle": [
+                0,
+                395,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -2175,
+                1583,
+                8574.2,
+                4894
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:pde",
+              "segments": 2925,
+              "tiles": 6,
+              "area": 16151718,
+              "rectangle": [
+                2834,
+                851,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -172.8,
+                1868,
+                5708,
+                10486
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:vcalc",
+              "segments": 4806,
+              "tiles": 6,
+              "area": 15440700,
+              "rectangle": [
+                3001,
+                884,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -68.8,
+                1889,
+                8852,
+                10560
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:alg",
+              "segments": 3276,
+              "tiles": 4,
+              "area": 7150485,
+              "rectangle": [
+                3111,
+                2619,
+                7680,
+                4184
+              ],
+              "bounds": [
+                0,
+                2973,
+                7916,
+                10181
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:rep",
+              "segments": 1596,
+              "tiles": 4,
+              "area": 2225103,
+              "rectangle": [
+                3111,
+                3697,
+                7680,
+                4184
+              ],
+              "bounds": [
+                0,
+                3647,
+                6472,
+                9875
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:top",
+              "segments": 4378,
+              "tiles": 6,
+              "area": 19116696,
+              "rectangle": [
+                3111,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                0,
+                109,
+                4872,
+                4278
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:prob",
+              "segments": 9556,
+              "tiles": 6,
+              "area": 32133120,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -2091.6,
+                752,
+                8099.6,
+                11213
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:stoch",
+              "segments": 1932,
+              "tiles": 6,
+              "area": 31557120,
+              "rectangle": [
+                0,
+                75,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -2134.8,
+                1383,
+                6878.8,
+                10181
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:nt",
+              "segments": 294,
+              "tiles": 4,
+              "area": 14167210,
+              "rectangle": [
+                670,
+                2163,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1525.2,
+                2688,
+                6941.2,
+                6221
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:comb",
+              "segments": 2170,
+              "tiles": 6,
+              "area": 17457000,
+              "rectangle": [
+                1080,
+                1539,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1269.2,
+                2298,
+                5981.2,
+                10591
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:algo",
+              "segments": 902,
+              "tiles": 6,
+              "area": 17213183,
+              "rectangle": [
+                3367,
+                193,
+                7680,
+                4184
+              ],
+              "bounds": [
+                160,
+                1457,
+                7948,
+                4915
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:logic",
+              "segments": 760,
+              "tiles": 4,
+              "area": 12034560,
+              "rectangle": [
+                0,
+                2617,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1990.8,
+                2972,
+                6414.8,
+                5558
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:opt",
+              "segments": 182,
+              "tiles": 2,
+              "area": 167040,
+              "rectangle": [
+                2460,
+                4152,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -406.79999999999995,
+                3931,
+                6174.8,
+                4873
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:stat",
+              "segments": 3400,
+              "tiles": 6,
+              "area": 27200184,
+              "rectangle": [
+                1179,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -1207.6,
+                109,
+                11879.6,
+                9865
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:info",
+              "segments": 1052,
+              "tiles": 6,
+              "area": 17618824,
+              "rectangle": [
+                3469,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                224,
+                141,
+                8396,
+                5874
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "col:causal",
+              "segments": 366,
+              "tiles": 3,
+              "area": 13458588,
+              "rectangle": [
+                4391,
+                92,
+                7680,
+                4184
+              ],
+              "bounds": [
+                800.4000000000001,
+                1394,
+                10543.6,
+                10886
+              ],
+              "width": 0.8
+            },
+            {
+              "style": "ghost",
+              "segments": 182705,
+              "tiles": 6,
+              "area": 32133120,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11202
+              ],
+              "width": 0.7
+            }
+          ],
+          "mask": [
+            4096,
+            1953
+          ],
+          "tileDraws": 117,
+          "actualInstanceSubmissions": 2579756,
+          "logicalClearPixels": 422936387,
+          "logicalCompositePixels": 422936387,
+          "actualGLRecords": 351
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 22,
+        "uniqueGroupSegments": 432239,
+        "submittedSegmentInstances": 2579756,
+        "clearPixels": 422936387,
+        "compositePixels": 422936387,
+        "tileDraws": 117
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    },
+    {
+      "width": 3840,
+      "height": 2092,
+      "dpr": 2,
+      "k": 0.8,
+      "tx": 1561.6,
+      "ty": -1062.8000000000002,
+      "selected": true,
+      "fields": [
+        "math",
+        "stats",
+        "cs",
+        "physics",
+        "chem",
+        "earth",
+        "bio",
+        "med",
+        "eng",
+        "econ",
+        "social",
+        "arts",
+        "humanities"
+      ],
+      "definitions": true,
+      "planned": true,
+      "nodes": 13574,
+      "edges": 23258,
+      "unions": [
+        {
+          "rows": [
+            {
+              "style": "gray",
+              "segments": 432239,
+              "tiles": 6,
+              "area": 32133120,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -4301.400000000001,
+                67,
+                14265.400000000001,
+                11213
+              ],
+              "width": 0.7
+            }
+          ],
+          "mask": [
+            4096,
+            1953
+          ],
+          "tileDraws": 6,
+          "actualInstanceSubmissions": 2593434,
+          "logicalClearPixels": 32133120,
+          "logicalCompositePixels": 32133120,
+          "actualGLRecords": 18
+        },
+        {
+          "rows": [
+            {
+              "style": "up",
+              "segments": 207,
+              "tiles": 1,
+              "area": 59600,
+              "rectangle": [
+                3109,
+                2078,
+                3854,
+                2158
+              ],
+              "bounds": [
+                0,
+                2636,
+                448,
+                2668
+              ],
+              "width": 1
+            },
+            {
+              "style": "down",
+              "segments": 44011,
+              "tiles": 6,
+              "area": 32133120,
+              "rectangle": [
+                0,
+                0,
+                7680,
+                4184
+              ],
+              "bounds": [
+                -3434.2,
+                88,
+                14038.2,
+                10897
+              ],
+              "width": 1
+            }
+          ],
+          "mask": [
+            4096,
+            1953
+          ],
+          "tileDraws": 7,
+          "actualInstanceSubmissions": 264273,
+          "logicalClearPixels": 32192720,
+          "logicalCompositePixels": 32192720,
+          "actualGLRecords": 21
+        }
+      ],
+      "totals": {
+        "activeStyleGroups": 3,
+        "uniqueGroupSegments": 476457,
+        "submittedSegmentInstances": 2857707,
+        "clearPixels": 64325840,
+        "compositePixels": 64325840,
+        "tileDraws": 13
+      },
+      "nodeIDsHash": "c0c4dd4c74b1943da1411a9032f2eeb554f5a97b5479ce002c71e2fe5b272057",
+      "edgeIDsHash": "6e78b14642d5411a3575b99eed960f846d26de2688e0ca483a8bc5cf9a74e90c"
+    }
+  ]
+}
