@@ -1,3 +1,4 @@
+import { shiftedPower, matching } from './source-audit-scaling.js';
 // Psychology & Perception — Chapter 3: Scaling sensation (items 3.1–3.5; 3.6–3.10 are in ch03-b.js)
 import { EXPS, EXP, logTicks, sig, pc } from './ch03.shared.js';
 
@@ -63,162 +64,68 @@ export default {
     },
     // ------------------------------------------------------------------ 3.2
     {
-      num: '3.2',
-      kind: 'Law',
-      name: 'Stevens’ power law',
-      statement: String.raw`For many sensory continua, the magnitude $\psi$ of the sensation reported by observers grows as a power of the physical intensity $I$ of the stimulus:
-$$\psi=k\,I^{\,n}.$$
-The constant $k$ depends on the units; the **exponent** $n$ characterises the continuum and the stimulus conditions. Consequently every multiplication of the stimulus by a fixed factor $r$ multiplies the sensation by the fixed factor $r^{n}$ (equal stimulus *ratios* give equal sensation ratios), and on log–log axes the law is a straight line of slope $n$. Where $n<1$ the scale is compressive (the sensation grows more slowly than the stimulus), when $n>1$ it is expansive. Near threshold the power law is usually written with the effective stimulus $I-I_0$ ($I_0$ a small constant), which bends the log–log line at low intensities.`,
-      idea: String.raw`The law is an empirical summary of magnitude estimates (3.1), cross-modality matches (3.4) and other ratio judgments, not a derived result. A power function is the only continuous family that turns equal ratios of the stimulus into equal ratios of the sensation (setting $\psi(rI)=g(r)\psi(I)$ forces $g(r)=r^n$), and that is what makes its log–log graph a line. It replaced Fechner's logarithmic law (psych-1.11, see 3.5), which the same data contradict: a logarithm turns equal ratios into equal *differences*.`,
-      caption: String.raw`**Left:** sensation against intensity on ordinary axes (scaled so that $\psi(1)=10$). **Right:** the same curve on log–log axes, where it is a straight line. Move the **exponent** between 0.2 and 3.6, or press a preset: brightness is compressive, length about linear, heaviness and shock expansive. The two markers show a doubling of the stimulus ($I=1\to2$) and the sensation ratio $2^n$ it produces. Turn on the **threshold** offset $I_0$ to see the low-intensity bend: the apparent log–log slope drops below $n$ for faint stimuli.`,
-      deps: ['psych-3.1', 'psych-1.11'],
-      refs: ['Gescheider ch. 13'],
-      tags: ['power law', 'Stevens', 'exponent'],
-      credit: 'S. S. Stevens, “On the psychophysical law”, Psychological Review 64 (1957): 153–181',
-      scope: String.raw`An empirical regularity for ratio-scale judgments over several decades of intensity, not an exact law: the exponent varies with the procedure, the stimulus range and the observer; it is approximate near threshold and for stimuli close to damaging levels; and it describes judgments of apparent magnitude, which may not coincide with discrimination (3.5).`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stevens%27s_power_law' },
-      viz(v) {
-        const M = v.M, PRE = [['bright', 'brightness'], ['loud', 'loudness'], ['len', 'length'], ['heavy', 'heaviness'], ['shock', 'shock']];
-        const nSl = v.slider('exponent $n$', 0.2, 3.6, 0.67, { step: 0.01 });
-        const pre = v.select('preset', PRE.map(([id, l]) => ({ value: id, label: l + ' ' + EXP[id].n })), 'loud', { onChange: (id) => nSl.set(EXP[id].n) });
-        const thr = v.toggle('threshold offset $I_0$', false);
-        const i0Sl = v.slider('$I_0$', 0.05, 0.6, 0.3, { step: 0.01 });
-        const lin = v.stage({ x: [0, 4], y: [0, 10], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'stimulus intensity $I$', ylabel: 'sensation $\\psi$', title: 'ordinary axes' });
-        const lg = v.stage({ x: [-1, 0.85], y: [0, 2], axes: 'box', gutter: true, height: 300, weight: 1, xlabel: 'stimulus $I$', ylabel: 'sensation $\\psi$', xticks: logTicks(-1, 0.85, { mult: [1, 2, 5] }), yticks: logTicks(0, 2), title: 'log–log axes' });
-        v.legend([['accent', 'power law $\\psi=k(I-I_0)^n$'], ['gold', 'doubling $I=1\\to2$', { dot: true }], ['muted', 'straight line, slope $n$', { dash: true }]]);
-        let st = null;
-        v.render(() => {
-          const n = nSl.value, I0 = thr.value ? i0Sl.value : 0, psi = (I) => (I > I0 ? 10 * Math.pow((I - I0) / (1 - I0), n) : 0);
-          i0Sl.el.hidden = !thr.value;
-          const top = psi(4) * 1.06;
-          lin.setView([0, 4], [0, top]);
-          lin.fn(psi, { domain: [0, 4], color: 'accent', width: 2.8, n: 240 });
-          lin.line(1, 0, 1, psi(1), { color: 'gold', dash: [3, 3] }); lin.line(2, 0, 2, psi(2), { color: 'gold', dash: [3, 3] });
-          lin.line(0, psi(1), 1, psi(1), { color: 'gold', dash: [3, 3] }); lin.line(0, psi(2), 2, psi(2), { color: 'gold', dash: [3, 3] });
-          lin.dot(1, psi(1), { r: 5.5, color: 'gold' }); lin.dot(2, psi(2), { r: 5.5, color: 'gold' });
-          lin.text('ψ = ' + sig(psi(1)), 0.04, psi(1), { dy: -9, align: 'left', size: 11.5, color: 'muted', weight: 600 });
-          lin.text('ψ = ' + sig(psi(2)), 0.04, psi(2), { dy: -9, align: 'left', size: 11.5, color: 'muted', weight: 600 });
-          const ylo = 1 - 1.05 * n - 0.2, yhi = 1 + 0.85 * n + 0.2;
-          lg.setView([-1, 0.85], [ylo, yhi]); lg.setTicks(logTicks(-1, 0.85), logTicks(ylo, yhi));
-          lg.line(-1, 1 - n, 0.85, 1 + 0.85 * n, { color: 'muted', dash: [5, 4], width: 1.3 });
-          const pts = []; for (let k = 0; k <= 240; k++) { const x = -1 + (1.85 * k) / 240, I = Math.pow(10, x), p = psi(I); pts.push(p > 0 ? [x, Math.log10(p)] : null); }
-          lg.path(pts, { color: 'accent', width: 2.8 });
-          lg.dot(0, Math.log10(psi(1)), { r: 5.5, color: 'gold' }); lg.dot(Math.log10(2), Math.log10(psi(2)), { r: 5.5, color: 'gold' });
-          const sl = (Math.log10(psi(2)) - Math.log10(psi(1))) / Math.log10(2);
-          const lo = I0 + 0.1 * (1 - I0), sl2 = I0 > 0 ? (Math.log10(psi(lo * 1.5)) - Math.log10(psi(lo))) / Math.log10(1.5) : n;
-          st = { n, I0, r: psi(2) / psi(1), sl, sl2, lo };
-        });
-        v.readout(() => st ? `$n$ = ${v.fix(st.n, 2)} · doubling the stimulus multiplies the sensation by $2^n$ = ${v.fix(Math.pow(2, st.n), 3)} (measured from the curve: ${v.fix(st.r, 3)}) · log–log slope between $I=1$ and $2$: ${v.fix(st.sl, 3)}${st.I0 > 0 ? ` · near threshold ($I$ = ${v.fix(st.lo, 2)}–${v.fix(st.lo * 1.5, 2)}) the apparent slope is ${v.fix(st.sl2, 2)}` : ''} · sensation doubles when the stimulus grows by $2^{1/n}$ = ${v.fix(Math.pow(2, 1 / st.n), 3)}` : '');
+      num:'3.2',kind:'Law',name:'Stevens’ power law',
+      statement:String.raw`A power function is an empirical model of reported sensory magnitude over specified stimulus conditions: $\psi=kI^n$ for positive stimulus $I$, scale $k>0$ and exponent $n>0$. Equal stimulus ratios then produce equal modeled sensation ratios, and the log–log graph has slope $n$. A compressive exponent is below 1; an expansive one is above 1. This does not establish a universal exponent or a complete theory of sensation.
+
+An effective-stimulus offset changes the model to $\psi=k(I-I_0)^n$ for $I>I_0$. Its log–log slope against the **unshifted** stimulus is $nI/(I-I_0)$, which is greater than $n$ when $I_0>0$ and approaches $n$ at high intensity. An effective offset need not equal an experimentally measured detection threshold.`,
+      idea:String.raw`Taking logarithms of the unshifted model gives $\log\psi=\log k+n\log I$. For the offset family, logarithmic differentiation gives $d\log\psi/d\log I=nI/(I-I_0)$. Thus an offset bends the curve upward in slope near its positive boundary. A doubling from $I=1$ to 2 produces $((2-I_0)/(1-I_0))^n$, which equals $2^n$ only at zero offset.
+
+Stevens' account treats exponents as empirical averages that depend on the continuum and conditions. The displayed normalization sets $\psi(1)=10$; it fixes a reference unit, not an observed universal scale.`,
+      caption:String.raw`Choose an exponent or a historical preset and toggle the effective offset. The ordinary plot shows the modeled magnitude through $I=4$. The log–log plot compares the same family with the zero-offset line; gold points are the exact values at 1 and 2. Its finite lower endpoint is the larger of 0.1 and $I_0+0.02(1-I_0)$, so it does not pretend to draw the divergent log slope at the boundary. Readouts distinguish the local slopes, the 1-to-2 secant slope and the stimulus level that doubles magnitude relative to $I=1$.`,
+      deps:['psych-3.1','psych-1.11'],refs:['S. S. Stevens (1961), The Psychophysics of Sensory Function, pp.10–17 and24–25'],tags:['power law','Stevens','effective stimulus'],
+      credit:'S. S. Stevens (1961), The Psychophysics of Sensory Function, in Sensory Communication, pp.1–33',
+      scope:String.raw`The curves and continuous exponent/offset controls are authored illustrations. Presets select identified historical examples described in 3.3; changing the exponent does not change the physical kind of stimulus. This display contains no measured observations. The offset branch is defined only above its boundary and is drawn as zero below it on the ordinary plot. A finite log window cannot include zero sensation.`,
+      links:{source:'https://hci.stanford.edu/courses/cs448b/papers/Stevens_Psychophysics.pdf'},verify:true,
+      viz(v){
+        const preset=v.select('historical example',['bright','loud','len','heavy','shock'].map(id=>({value:id,label:EXP[id].short+' '+EXP[id].n})),'loud',{onChange:id=>exponent.set(EXP[id].n)}),exponent=v.slider('exponent n',.2,3.6,.6,{step:'any',decimals:6}),offsetOn=v.toggle('effective offset',false),offset=v.slider('effective offset I₀',0,.6,.3,{step:'any',decimals:6});
+        const A=v.stage({x:[-.2,4.2],y:[-1,15],height:300,minWidth:260,axes:'box',gutter:true,xlabel:'relative stimulus I',ylabel:'modeled magnitude',title:'ordinary coordinates'}),B=v.stage({x:[-1.1,.7],y:[-1,2],height:300,minWidth:260,axes:'box',gutter:true,xlabel:'log₁₀ stimulus I',ylabel:'log₁₀ modeled magnitude',title:'offset changes the log slope'});let info;
+        v.legend([['accent','selected power family'],['muted','same n, zero offset',{dash:true}],['gold','I = 1 and 2',{dot:true}]]);
+        v.render(()=>{const p=shiftedPower(exponent.value,offsetOn.value?offset.value:0);offset.el.hidden=!offsetOn.value;const value=I=>I>p.offset?10*((I-p.offset)/(1-p.offset))**p.n:0;A.setView([-.2,4.2],[-.12*p.atFour,1.12*p.atFour]);A.fn(value,{domain:[0,4],n:241,color:'accent',width:2.5});for(const I of[1,2])A.dot(I,value(I),{r:5,color:'gold'});B.setView(p.x,p.y);B.path(p.baseline,{color:'muted',dash:[4,4],width:1.3});B.path(p.curve,{color:'accent',width:2.5});for(const I of[1,2])B.dot(Math.log10(I),Math.log10(value(I)),{r:5,color:'gold'});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info;return `n=${v.fix(p.n,6)}, effective offset=${v.fix(p.offset,6)}. Magnitudes at I=1 and 2: ${v.fix(p.atOne,6)}, ${v.fix(p.atTwo,6)}; ratio ${v.fix(p.ratio,6)} (2ⁿ=${v.fix(2**p.n,6)} at zero offset). Local log slopes: ${v.fix(p.slopeOne,6)} at1 and ${v.fix(p.slopeTwo,6)} at2; secant ${v.fix(p.secant,6)}. Magnitude doubles relative to I=1 at I=${v.fix(p.doubling,6)}. Log curve starts at I=${v.fix(p.lower,6)}.`;});
       },
     },
     // ------------------------------------------------------------------ 3.3
     {
-      num: '3.3',
-      kind: 'Concept',
-      name: 'Exponents across sensory continua',
-      statement: String.raw`The exponent of the power law (3.2) is a signature of the sensory continuum. In the values usually quoted from Stevens, brightness of a $5^\circ$ target in the dark has $n\approx0.33$ and loudness (as a function of sound *pressure*) $n\approx0.67$, so both are compressive; apparent length of a projected line is about $1$; the heaviness of lifted weights is $1.45$, warmth on the skin $1.6$; and electric shock through the fingers $3.5$. Exponents below $1$ mean the stimulus factor needed to double the sensation exceeds 2, exponents above $1$ that it is smaller than 2. The exponent depends on the stimulus conditions (a point source of light has $n\approx0.5$, the extended target $0.33$), so the number belongs to a continuum *and* a procedure.`,
-      idea: String.raw`Every exponent is the slope of a magnitude-estimation line (3.1) on log–log axes. The gallery shows that sensation systems are not built to the same plan: the senses that must cover a huge range of energies (brightness, loudness) are compressive, and those that signal threatening intensities (shock, muscle effort, heat) are expansive, a pattern often read as a trade between range and resolution. All the lines are drawn through the same point (a standard stimulus with sensation 10), so differences in slope are the only difference between them.`,
-      caption: String.raw`**Left:** each line is $\log\psi$ against $\log I$ for one continuum, all passing through the standard. **Right:** the exponents as bars; the dashed line at 1 separates compressive from expansive. Click a line or a bar to select a continuum. Use the **stimulus ratio** slider: each bar then ends with the sensation ratio $r^n$ that such a stimulus ratio produces (for $r=2$: brightness barely changes, shock grows more than elevenfold). The values are transcribed from the commonly reproduced table of Stevens' exponents, not from the original papers.`,
-      deps: ['psych-3.2'],
-      refs: ['Gescheider ch. 13'],
-      tags: ['power law', 'exponents', 'sensory modalities'],
-      credit: 'Table of exponents from S. S. Stevens (1957; 1975, Psychophysics)',
-      scope: String.raw`Typical values from magnitude-estimation experiments; published exponents for the same continuum range widely with the conditions (stimulus range, instructions, adapting state, body site).`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stevens%27s_power_law' },
-      viz(v) {
-        const M = v.M, N = EXPS.length;
-        let sel = 'loud';
-        const rSl = v.slider('stimulus ratio $r=I_2/I_1$', 1.2, 10, 2, { step: 0.1 });
-        const lg = v.stage({ x: [0, 1], y: [0.8, 4.7], axes: 'box', gutter: true, height: 340, weight: 1, minWidth: 280, xlabel: 'stimulus (decades above the standard)', ylabel: 'sensation', xticks: [[0, '1'], [0.301, '2'], [0.699, '5'], [1, '10']], yticks: logTicks(0.8, 4.7, { mult: [1, 3] }), title: 'every continuum is a line through the standard' });
-        const br = v.stage({ x: [-3.7, 5.3], y: [-0.2, N + 0.2], axes: false, height: 340, weight: 1.05, minWidth: 300, title: 'exponent $n$ (bar) and sensation ratio for $r$' });
-        const rows = EXPS.slice().sort((a, b) => a.n - b.n);
-        lg.onClick((x, y) => { let best = null, bd = 1e9; for (const e of EXPS) { const d = Math.abs(1 + e.n * M.clamp(x, 0, 1) - y); if (d < bd) { bd = d; best = e; } } if (best) sel = best.id; });
-        br.onClick((x, y) => { const k = N - 1 - Math.round(y - 0.5); if (k >= 0 && k < N) sel = rows[k].id; });
-        v.legend([['accent', 'selected'], ['muted', 'others'], ['muted', 'linear ($n=1$)', { dash: true }]]);
-        let st = null;
-        v.render(() => {
-          const r = rSl.value;
-          for (const e of EXPS) if (e.id !== sel) lg.line(0, 1, 1, 1 + e.n, { color: 'muted', alpha: 0.5, width: 1.4 });
-          const S = EXP[sel];
-          lg.line(0, 1, 1, 1 + S.n, { color: 'accent', width: 3.2 });
-          lg.dot(0, 1, { r: 4.5, color: 'ink' });
-          lg.text(S.short + '  n = ' + S.n, 0.96, 1 + 0.96 * S.n, { align: 'right', dy: -12, color: 'accent', weight: 700, size: 12.5 });
-          // bars
-          br.line(1, -0.2, 1, N + 0.2, { color: 'muted', dash: [4, 4], width: 1.2 });
-          br.text('n = 1', 1, N + 0.05, { align: 'center', size: 11, color: 'muted', baseline: 'bottom' });
-          rows.forEach((e, i) => {
-            const y = N - 1 - i + 0.5, on = e.id === sel;
-            br.rect(0, y - 0.32, e.n, y + 0.32, { fill: on ? 'accent' : e.c, fillAlpha: on ? 0.55 : 0.28, color: on ? 'accent' : e.c, width: on ? 2 : 1 });
-            br.text(e.short, -0.08, y, { align: 'right', size: 12, weight: on ? 700 : 500, color: on ? 'accent' : 'ink' });
-            br.text(e.n + '  (×' + sig(Math.pow(r, e.n), 3) + ')', e.n + 0.08, y, { align: 'left', size: 11, color: on ? 'accent' : 'muted', weight: on ? 700 : 500 });
-          });
-          st = { S, r };
-        });
-        v.readout(() => st ? `**${st.S.name}**: $n$ = ${st.S.n} · a stimulus ratio $r$ = ${v.fix(st.r, 1)} multiplies the sensation by $r^n$ = ${v.fix(Math.pow(st.r, st.S.n), 2)} · doubling the stimulus gives ×${v.fix(Math.pow(2, st.S.n), 2)}, and the sensation doubles when the stimulus grows by ×${v.fix(Math.pow(2, 1 / st.S.n), 2)} · the lines run over one decade of stimulus: the sensation changes by a factor of ${v.fix(Math.pow(10, st.S.n), 1)}` : '');
+      num:'3.3',kind:'Concept',name:'Exponents across sensory continua',
+      statement:String.raw`Historical power-law exponents describe a sensory attribute **and a specified stimulus variable**. Stevens' 1961 Table 2 gives brightness 0.33 for a $5^\circ$ target with a dark-adapted eye, binaural loudness 0.6 as a function of sound pressure, lifted-weight heaviness 1.45, warmth on the arm 1.6 and electric shock 3.5 for 60-cycle current through the fingers. The same source's apparent-length example uses about 1.1.
+
+The gallery also includes area 0.7 from Stevens and Guirao's 1963 original abstract. Stevens and Harris' 1962 abstract reports roughness about $-1.5$ against **grit number**; the positive 1.5 here uses its reciprocal as the stimulus coordinate. The exponent's sign or size is meaningless without naming that coordinate.`,
+      idea:String.raw`For $\psi=kI^n$, changing intensity by factor $r$ multiplies modeled magnitude by $r^n$, and magnitude doubles after factor $2^{1/n}$. All gallery curves use the authored reference $\psi(1)=10$, allowing the slopes to be compared without equating the actual units of sound, temperature or weight.
+
+Stevens explicitly described his table as tentative, with average exponents that need not fit an individual. These historical examples do not prove that one exponent is an immutable property of a sense or explain why its value takes that form.`,
+      caption:String.raw`Select a continuum and change the stimulus ratio. The left panel shows one reference decade of each power function in log coordinates; the selected curve is blue. The bars show the exponents and their predicted ratios. The curve and ratios are computations from historical illustrative coefficients, not a redrawing of original participant data or a claim of validity across the whole displayed decade.`,
+      deps:['psych-3.2'],refs:['Stevens (1961), pp.12–13, Table 2','Stevens and Guirao (1963), original abstract, J. Exp. Psychol.66:177–186','Stevens and Harris (1962), original abstract, J. Exp. Psychol.64:489–494'],tags:['power law','exponents','stimulus conditions'],
+      credit:'S. S. Stevens (1961), Sensory Communication pp.12–13; area: Stevens and Guirao (1963); inverse-grit roughness: Stevens and Harris (1962)',
+      scope:String.raw`Brightness, smell, saccharin, vibration, pressure, lightness, sucrose, heaviness, warmth and shock are transcribed from the actual 1961 Table 2; length is its p.12 example. Area and roughness use the identified original abstracts; the full 1962/1963 papers are not represented as read. The original current, temperature, chemical concentration and stimulus geometry are not reproduced here, and the screen does not deliver those stimuli. No functional adaptation or danger-resolution explanation is inferred.`,
+      links:{source:'https://hci.stanford.edu/courses/cs448b/papers/Stevens_Psychophysics.pdf',area:'https://doi.org/10.1037/h0044984',roughness:'https://doi.org/10.1037/h0042621'},verify:true,
+      viz(v){
+        const selected=v.select('continuum',EXPS.map(e=>({value:e.id,label:e.short})),'loud'),ratio=v.slider('stimulus ratio r',1.2,10,2,{step:'any',decimals:6}),rows=EXPS.slice().sort((a,b)=>a.n-b.n),N=rows.length;
+        const A=v.stage({x:[-.08,1.08],y:[.75,4.75],height:360,minWidth:260,axes:'box',gutter:true,xlabel:'log₁₀ stimulus / reference',ylabel:'log₁₀ modeled magnitude',title:'one decade, common reference'}),B=v.stage({x:[-4.7,8],y:[-.4,N+.6],height:390,minWidth:260,axes:false,title:'exponents and predicted ratios'});let info;
+        v.legend([['accent','selected'],['muted','other examples'],['muted','n = 1',{dash:true}]]);
+        v.render(()=>{const chosen=EXP[selected.value];for(const e of EXPS)A.line(0,1,1,1+e.n,{color:e===chosen?'accent':'muted',width:e===chosen?2.6:1.2,alpha:e===chosen?1:.45});A.dot(Math.log10(ratio.value),1+chosen.n*Math.log10(ratio.value),{r:5,color:'gold'});B.line(1,0,1,N,{color:'muted',dash:[4,4]});for(const[e,i]of rows.map((e,i)=>[e,i])){const y=N-i-.5,on=e===chosen;B.rect(0,y-.28,e.n,y+.28,{fill:on?'accent':'muted',fillAlpha:on?.7:.3,stroke:false});B.text(e.short,-.14,y,{align:'right',size:10,color:'ink'});B.text(`${e.n} (×${(ratio.value**e.n).toPrecision(3)})`,e.n+.12,y,{size:10,color:on?'accent':'muted'});}info=chosen;});
+        v.readout(()=>info?`${info.name}: n=${info.n}. A stimulus factor ${v.fix(ratio.value,6)} gives modeled factor ${v.fix(ratio.value**info.n,6)}. Doubling the stimulus gives ${v.fix(2**info.n,6)}; magnitude doubles after factor ${v.fix(2**(1/info.n),6)}.`:'');
       },
     },
     // ------------------------------------------------------------------ 3.4
     {
-      num: '3.4',
-      kind: 'Method',
-      name: 'Cross-modality matching',
-      statement: String.raw`In **cross-modality matching** the observer adjusts the intensity of a stimulus on one continuum $B$ (say, a line length) until it seems as strong as a stimulus on another continuum $A$ (say, the loudness of a tone). If sensation is a power function on each continuum, $\psi_A=k_AI_A^{a}$ and $\psi_B=k_BI_B^{b}$, then matching means $\psi_A=\psi_B$, and so
-$$\log I_B=\frac ab\,\log I_A+\text{const}.$$
-The matching function is a straight line on log–log axes whose slope is the *ratio of the two exponents*, which can be compared with the ratio of the exponents found by magnitude estimation (3.1) on each continuum separately. The exponents then are tested without asking for numbers at all.`,
-      idea: String.raw`Each match equates two sensations, so the number scale of magnitude estimation drops out: only the power laws themselves (3.2) are assumed. If the exponents are consistent, matches also chain: the slope for $A\to C$ is the product of the slopes for $A\to B$ and $B\to C$, an additional check not available to a single scale. Matches of this sort (for example line length to loudness) were used by Stevens and colleagues to support the power law; their consistency is the evidence, and the finding that people agree about such matches is the reason the method is credited.`,
-      caption: String.raw`The **simulated matcher** has the exponents of the two chosen continua. **Left:** both power laws on log–log axes; drag the **gold** handle up and down the sensation axis to choose a sensation level, and read the two stimulus levels (dropped vertically) that produce it. **Right:** the matching function, each trial a point (the dashed line is the predicted slope $a/b$). Choose the two continua and the match noise, and press *Run matches*: the green fitted slope tracks $a/b$, except that the fit of $B$ on $A$ tends to flatten when the noise is placed in $A$ (an errors-in-variables effect; compare the two fitted slopes in the readout). Illustrative simulation using the exponents of 3.3, not Stevens' data.`,
-      deps: ['psych-3.2'],
-      refs: ['Gescheider ch. 12'],
-      tags: ['cross-modality matching', 'power law', 'scaling'],
-      credit: 'S. S. Stevens and collaborators, 1950s–60s (e.g. Stevens & Guirao, 1963, J. Exp. Psychol. 66: 177–186, matched length to loudness and brightness)',
-      scope: String.raw`Holds when each continuum obeys a power law over the range used; the fitted slope depends on which continuum the observer adjusts (regression effects) and on the stimulus range, and real matches only approximately agree with the predicted ratio of exponents.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Stevens%27s_power_law' },
-      viz(v) {
-        const M = v.M, CH = ['bright', 'loud', 'len', 'heavy', 'shock'], opts = CH.map((id) => ({ value: id, label: EXP[id].short }));
-        let seed = 8, data = null;
-        const selA = v.select('continuum $A$ (standard)', opts, 'loud', { onChange: () => redo() });
-        const selB = v.select('continuum $B$ (adjusted)', opts, 'len', { onChange: () => redo() });
-        const noise = v.slider('match noise (log₁₀ sensation)', 0, 0.25, 0.06, { step: 0.01, onChange: () => redo() });
-        v.button('Run matches', () => { seed = 1 + ((Math.random() * 1e9) | 0); redo(); });
-        const s1 = v.stage({ x: [0, 4], y: [0.8, 3.2], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 280, xlabel: 'stimulus level (decades above its reference)', ylabel: 'sensation ψ', yticks: logTicks(0.8, 3.2, { mult: [1, 3] }), title: 'two power laws, one sensation level' });
-        const s2 = v.stage({ x: [0, 4], y: [0, 4], axes: 'box', gutter: true, height: 320, weight: 1, minWidth: 280, xlabel: 'log₁₀ level of $A$', ylabel: 'log₁₀ level of $B$', title: 'the matching function' });
-        const hl = s1.handle(0, 2, { color: 'gold', r: 8, constrain: (x, y) => [0, M.clamp(y, 1, 3)] });
-        function redo() {
-          const a = EXP[selA.value].n, b = EXP[selB.value].n, R = v.rng(seed), L = M.range(9).map((k) => 1 + k / 4);
-          // A fixed, B adjusted: noise in B; and B fixed, A adjusted: noise in A
-          const sd = noise.value;
-          const AB = L.map((p) => { const q = p + sd * R.normal(); return [p / a - 1 / a, (q - 1) / b]; });
-          const BA = L.map((p) => { const q = p + sd * R.normal(); return [(q - 1) / a, (p - 1) / b]; });
-          const f1 = M.linreg(AB.map((t) => t[0]), AB.map((t) => t[1]));
-          const f2 = M.linreg(BA.map((t) => t[0]), BA.map((t) => t[1]));
-          const g = M.linreg(BA.map((t) => t[1]), BA.map((t) => t[0]));
-          data = { a, b, AB, BA, f1, f2, inv: 1 / g.slope };
-        }
-        redo();
-        v.legend([['accent', '$A$ fixed, observer sets $B$', { dot: true }], ['orange', '$B$ fixed, observer sets $A$', { dot: true }], ['green', 'fit of $B$ on $A$'], ['muted', 'predicted slope $a/b$', { dash: true }]]);
-        let st = null;
-        v.render(() => {
-          const D = data, a = D.a, b = D.b, A = EXP[selA.value], B = EXP[selB.value], ps = hl.y;
-          const xa = (ps - 1) / a, xb = (ps - 1) / b, xmax = Math.max(2 / a, 2 / b) * 1.02;
-          s1.setView([-0.05 * xmax, xmax], [0.8, 3.2]); s1.setTicks(null, logTicks(0.8, 3.2, { mult: [1, 3] }));
-          s1.line(0, 1, 2 / a, 3, { color: 'accent', width: 2.8 }); s1.line(0, 1, 2 / b, 3, { color: 'orange', width: 2.8 });
-          s1.text(A.short + ' (n = ' + A.n + ')', 2 / a, 3, { dx: -6, dy: 14, align: 'right', color: 'accent', weight: 700, size: 12 });
-          s1.text(B.short + ' (n = ' + B.n + ')', 2 / b, 3, { dx: -6, dy: A === B || Math.abs(a - b) < 0.5 ? 30 : 14, align: 'right', color: 'orange', weight: 700, size: 12 });
-          s1.line(0, ps, Math.max(xa, xb), ps, { color: 'gold', dash: [4, 3], width: 1.4 });
-          s1.line(xa, 0.8, xa, ps, { color: 'accent', dash: [3, 3] }); s1.line(xb, 0.8, xb, ps, { color: 'orange', dash: [3, 3] });
-          s1.dot(xa, ps, { r: 5, color: 'accent' }); s1.dot(xb, ps, { r: 5, color: 'orange' });
-          const X1 = 2 / a, Y1 = 2 / b;
-          s2.setView([-0.04 * X1, X1], [-0.04 * Y1, Y1]);
-          s2.line(0, 0, X1, Y1, { color: 'muted', dash: [5, 4], width: 1.6 });
-          s2.line(0, D.f1.predict(0), X1, D.f1.predict(X1), { color: 'green', width: 2.2 });
-          for (const [x, y] of D.AB) s2.dot(x, y, { r: 4.2, color: 'accent', ring: false });
-          for (const [x, y] of D.BA) s2.dot(x, y, { r: 4.2, color: 'orange', ring: false });
-          s2.dot(xa, xb, { r: 8, color: 'gold', hollow: true, width: 2.2 });
-          st = { D, A, B };
-        });
-        v.readout(() => st ? `Predicted slope $a/b$ = ${st.A.n}/${st.B.n} = ${v.fix(st.D.a / st.D.b, 3)} · fitted slope when $B$ is adjusted: ${v.fix(st.D.f1.slope, 3)} ± ${v.fix(st.D.f1.seSlope, 3)} · when $A$ is adjusted and $B$ regressed on $A$: ${v.fix(st.D.f2.slope, 3)} (tends to be flattened); inverse of the regression of $A$ on $B$: ${v.fix(st.D.inv, 3)} · geometric mean of the two unbiased estimates: ${v.fix(Math.sqrt(st.D.f1.slope * st.D.inv), 3)}` : '');
+      num:'3.4',kind:'Method',name:'Cross-modality matching',
+      statement:String.raw`Cross-modality matching asks an observer to adjust one kind of stimulus until its apparent magnitude matches another. Under the joint model $\psi_A=k_AI_A^a$ and $\psi_B=k_BI_B^b$, equating the modeled magnitudes gives
+$$\log I_B=(a/b)\log I_A+\mathrm{constant}.$$
+Thus the log–log matching slope is the exponent ratio. This is a conditional prediction that can be compared with observations obtained without numerical magnitude estimates; the algebra alone does not establish that real observers equate one common internal scale.`,
+      idea:String.raw`Normalize the two scales at magnitude 10 and let $t=\log_{10}(\psi/10)$. An exact match has $x=\log_{10}I_A=t/a$ and $y=\log_{10}I_B=t/b$. Ratios also compose: $(a/b)(b/c)=a/c$.
+
+Stevens' 1961 account describes reciprocal adjustment experiments, approximate agreement with magnitude-based predictions and a centering tendency that depends on which stimulus is adjusted. The authored simulation places independent Gaussian perturbations in the adjusted stimulus's log-sensation coordinate. Noise in the plotted horizontal variable can flatten ordinary least squares on average; an individual finite sample need not follow that tendency. A reciprocal fitted slope and a geometric mean of slopes are not generally unbiased estimators.`,
+      caption:String.raw`Choose two historical examples and a noise level. The left panel uses a gold handle to select one modeled sensation, with the corresponding stimulus levels shown on both curves. On the right, blue trials adjust B and orange trials adjust A. The green line fits B-on-A for the blue trials; the dashed line is the exact a/b prediction. The integer seed makes trials repeatable; Next sample advances it. Bounds include every actual trial and the fitted line. These nine-trial samples and their noise are authored, not Stevens' measurements.`,
+      deps:['psych-3.2'],see:['psych-3.3'],refs:['Stevens (1961), pp.14–17, Cross-Modality Comparisons and Figure 5'],tags:['cross-modality matching','power law','regression'],
+      credit:'S. S. Stevens (1961), The Psychophysics of Sensory Function, pp.14–17; seeded demonstration authored here',
+      scope:String.raw`The common power-law scale and fixed exponents are assumptions. The simulation's noise is neither a fitted participant model nor proof of a biological regression mechanism. The source's reciprocal loudness/vibration experiment had ten observers and is described separately from this example. Negative or zero fitted slopes, if they occur in a finite sample, are reported without taking an invalid logarithm or claiming a meaningful positive geometric compromise.`,
+      links:{source:'https://hci.stanford.edu/courses/cs448b/papers/Stevens_Psychophysics.pdf'},verify:true,
+      viz(v){
+        const ids=['bright','loud','len','heavy','shock'],opts=ids.map(id=>({value:id,label:EXP[id].short})),a=v.select('standard A',opts,'loud'),b=v.select('adjusted B',opts,'len'),noise=v.slider('noise in log₁₀ sensation',0,.25,.06,{step:'any',decimals:6}),seed=v.slider('sample seed',1,999999,8,{int:true});v.button('Next sample',()=>seed.set(seed.value===999999?1:seed.value+1));
+        const A=v.stage({x:[-.5,7],y:[.6,3.4],height:330,minWidth:260,axes:'box',gutter:true,xlabel:'log₁₀ stimulus / reference',ylabel:'log₁₀ modeled magnitude',title:'two conditional power laws'}),B=v.stage({x:[-.5,7],y:[-.5,7],height:330,minWidth:260,axes:'box',gutter:true,xlabel:'log₁₀ stimulus A / reference',ylabel:'log₁₀ stimulus B / reference',title:'seeded reciprocal adjustments'}),h=A.handle(0,2,{r:7,color:'gold',constrain:(_,y)=>[0,v.M.clamp(y,1,3)]});let info;
+        v.legend([['accent','A / B adjusted',{dot:true}],['orange','B / A adjusted',{dot:true}],['green','blue-trial fit'],['muted','a/b prediction',{dash:true}]]);
+        v.render(()=>{const p=matching(EXP[a.value].n,EXP[b.value].n,noise.value,seed.value),max=Math.max(2/p.a,2/p.b),xa=(h.y-1)/p.a,xb=(h.y-1)/p.b;A.setView([-.15*max,1.15*max],[.6,3.4]);A.line(0,1,2/p.a,3,{color:'accent',width:2.5});A.line(0,1,2/p.b,3,{color:'orange',width:2.5});A.line(0,h.y,Math.max(xa,xb),h.y,{color:'gold',dash:[3,3]});A.dot(xa,h.y,{r:5,color:'accent'});A.dot(xb,h.y,{r:5,color:'orange'});B.setView(p.x,p.y);B.line(0,0,2/p.a,2/p.b,{color:'muted',dash:[4,4],width:1.4});B.path(p.fit,{color:'green',width:2});for(const[x,y]of p.AB)B.dot(x,y,{r:4,color:'accent',ring:false});for(const[x,y]of p.BA)B.dot(x,y,{r:4,color:'orange',ring:false});B.dot(xa,xb,{r:7,color:'gold',hollow:true});info={...p,xa,xb,level:h.y};});
+        v.readout(()=>{if(!info)return'';const p=info,show=x=>x===null?'undefined for this sample':v.fix(x,6);return `a=${p.a}, b=${p.b}; exact predicted slope a/b=${show(p.predicted)}. Selected log magnitude ${show(p.level)}: log stimulus A=${show(p.xa)}, B=${show(p.xb)}. Blue-trial B-on-A slope ${show(p.forward.slope)}; orange-trial B-on-A slope ${show(p.pooledReverse.slope)}. Reciprocal of orange A-on-B slope ${show(p.inverse)}; geometric combination ${show(p.geometric)}. Seed ${p.seed}, nine trials per direction; finite sample summaries.`;});
       },
     },
     // ------------------------------------------------------------------ 3.5
