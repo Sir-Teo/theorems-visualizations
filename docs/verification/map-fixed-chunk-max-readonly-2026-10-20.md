@@ -22,14 +22,16 @@ The shader stream is stateless across chunks, but CPU work is not free. Re-enume
 
 ## Failure before the one color composite
 
-Maintain the tile invariant: **primary color has not been modified by this style/tile until its completed mask is committed**. On stale model/control/coverage/view identity, missing metadata, interrupted enumeration, packing/index error or recoverable upload failure after any number of chunks:
+Maintain the tile invariant: **primary color has not been modified by this style/tile until its completed mask is committed**. For missing metadata, interrupted enumeration, packing/index error or a recoverable upload failure after any number of chunks, **current-tile replay is valid only while the complete original-frame snapshot remains live and matching**: scene generation, control generation, model object/textures, original group/buffer and saved coverage, view/style/tile state, and all previously composited frame state. Under that condition:
 
 1. Discard the partial CPU prefix; do not composite the incomplete mask.
 2. Restore the original mask framebuffer/viewport and exact original scissor. Clear that **same tile mask rectangle** back to zero, even if a prefix already drew there.
 3. Restore original MAX blend and call the untouched original full-group coverage bind for this current tile, which rebinds its original buffer/textures/uniforms/attribute state (`bind:78–82`).
 4. Perform its one original color composite, then continue the original traversal.
 
-If no chunk was submitted yet, the original once-clear/full-group path suffices. A previous completed tile must not be replayed in color: tiles are disjoint, but replaying the whole style/whole frame over already composited output would double translucent opacity. Likewise, replaying original full coverage on top of a partial mask without clearing is not an acceptable shortcut even if MAX idempotence might mask some errors; a clear/replay gives an auditable recovery invariant.
+**Expired snapshot is a different failure class.** If the model/group was released or replaced, any scene/control/coverage/view identity expired, or previously composited tiles belong to a different frame state, do not replay the old buffer and do not mix new state into the partial frame. Abort the partial experimental frame and restart a complete original frame from its normal clear with a newly validated snapshot, or invoke the existing complete Canvas fallback. A usable GL context alone does not make stale original resources valid. This rule applies even when the current tile has not yet composited.
+
+If no chunk was submitted yet and the original-frame snapshot still matches, the original once-clear/full-group path suffices. A previous completed tile must not be replayed in color: tiles are disjoint, but replaying the whole style/whole frame over already composited output would double translucent opacity. Likewise, replaying original full coverage on top of a partial mask without clearing is not an acceptable shortcut even if MAX idempotence might mask some errors; a clear/replay gives an auditable recovery invariant.
 
 Context loss, device failure or unusable framebuffer state cannot be assumed recoverable by another GL draw. In that case abort the experimental GL frame and use the existing complete Canvas fallback, which hides the GL canvas; rebuild a later generation only through normal initialization. No partial GL frame may be accepted as the completed picture. A failure after the tile color composite is a different failure boundary and cannot be repaired by current-tile color replay. A future candidate must detect/contain recoverable errors before commit, or choose the complete existing fallback.
 
