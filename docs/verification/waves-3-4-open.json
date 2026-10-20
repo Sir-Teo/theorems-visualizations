@@ -7803,6 +7803,24 @@
       "status": "resolved",
       "report": "docs/verification/micro-arrow-debreu-followup.md",
       "note": "Actual Arrow\u2013Debreu1954 introduction and completeTheoremI \u00a7\u00a71\u20133 independently read, including original proof formula images. Exact convex equilibrium and exhaustive nonconvex production-branch certificates replace finite-grid verdicts; root6math and4native theme/viewport groups pass independently with full41-step histories, true tie choices, positive-price divisions and inspected screenshots."
+    },
+    {
+      "id": "micro-9.1",
+      "status": "resolved",
+      "report": "docs/verification/micro-efficiency-followup.md",
+      "note": "Narrow foundation prose/readout correction: weak preference is distinct from strict improvement, smooth/convex hypotheses scoped to pictured Cobb\u2013Douglas tastes; sampled lens and2% near-band no longer certify efficiency. Drawing/controls preserved; historical metadata not newly certified. Root4math+12native groups pass; additional unflagged followup, no pending count change."
+    },
+    {
+      "id": "micro-9.2",
+      "status": "resolved",
+      "report": "docs/verification/micro-efficiency-followup.md",
+      "note": "Explicit rational efficient curve and reservation-root construction replace percentage-MRS/raster verdicts; full-box controls, resolved gains and unresolved near-curve cases independently checked. Root4math+12native groups pass; additional unflagged followup, no pending count change."
+    },
+    {
+      "id": "micro-9.3",
+      "status": "resolved",
+      "report": "docs/verification/micro-efficiency-followup.md",
+      "note": "Four explicit closed efficient sets include smooth endpoints, complements weak-line/diagonal degeneracies and both substitute edge orientations/equal-slope whole box; global arguments, complete strokes and native drags independently checked. Root4math+12native groups pass; additional unflagged followup, no pending count change."
     }
   ]
 }

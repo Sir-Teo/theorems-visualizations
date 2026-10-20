@@ -721,3 +721,7 @@ The fin-5.12 review resolves the original dividend-design uncertainty using the 
 ## Arrow–Debreu TheoremI — independent original proof and production economy
 
 The micro-9.21 review resolves its original-source flag after independent reading of §§1–3 and actual proof formula images. Exact model calculations certify the convex equilibrium and exhaust both global production branches in the specified increasing-returns counterexample. Six mathematical and four native viewport/theme groups pass independently, including all actual parameter settings in the mathematical trajectory matrix and uncut native histories. Existence, iteration behavior and free-good conditions are distinguished. See [evidence](micro-arrow-debreu-followup.md). **184 source reviews remain**.
+
+## Additional Pareto geometry and introductory scope followups
+
+Three unflagged followups micro9.1–9.3 correct false near-tangency efficiency certificates and include the entire closed allocation box. Explicit smooth sets and constructive trade gains, complements weakly preferred lines and substitute boundary degeneracies pass independent4mathematical and12native theme/viewport groups. Actual source definitions, terminology and written MRS prerequisites were checked. These additional corrections do not close source-queue flags: **184 source reviews remain**. See [evidence](micro-efficiency-followup.md).
