@@ -157,7 +157,7 @@ Use the bounded-variable exponential lemma in the proof of stat 1.16, rather tha
         v.readout(() => {
           if (!info) return '';
           const { reg, bound, gap, md, env } = info;
-          return `after $T=${T}$ rounds: regret $R_T=${v.fix(reg, 2)}$   guarantee $\\ln m/\\eta+\\eta T/8=${v.fix(bound, 2)}$ ${reg <= bound + 1e-9 ? '✓' : '✗'}   tuned $\\sqrt{T\\ln m/2}=${v.fix(env, 2)}$\ngap of the averaged strategies $=${v.fix(gap, 4)}$ ${md === 'self' ? '(both players Hedge: bounded by $2R_T/T$)' : '(the opponent is not learning, so the averages need not be optimal)'}`;
+          return `after $T=${T}$ rounds: regret $R_T=${v.fix(reg, 2)}$   guarantee $\\ln m/\\eta+\\eta T/8=${v.fix(bound, 2)}$ ${reg <= bound + 1e-9 ? '✓' : '✗'}   tuned $\\sqrt{T\\ln m/2}=${v.fix(env, 2)}$\ngap of the averaged strategies $=${v.fix(gap, 4)}$ ${md === 'self' ? '(both players Hedge: bounded by the sum of the two regrets divided by T)' : '(the opponent is not learning, so the averages need not be optimal)'}`;
         });
       },
     },

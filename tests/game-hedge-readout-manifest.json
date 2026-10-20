@@ -1,0 +1,6 @@
+{
+  "baseline": "0817cb65e461e128923705e30da78618ae906465",
+  "file": "content/game/ch03-b.js",
+  "before": "(both players Hedge: bounded by $2R_T/T$)",
+  "after": "(both players Hedge: bounded by the sum of the two regrets divided by T)"
+}
