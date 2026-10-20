@@ -29,3 +29,12 @@ All inputs, optional bound and seed register/replay. Resample increments saved s
 - Focused static1/0/0. Isolated strict build6684written/6890planned/450chapters/85collections,0errors/warnings, home112703bytes gzip. Scratch `/tmp/atlas-coordinator/bighist-learning-build`; logs `bighist-learning-{math,static,build,byteguard}.log`. All generated assets stay outside the worktree. No unsupported source flag is cleared by these producer checks.
 
 Independent actual-source/math/reference/native/own-pixel peer acceptance is required before clearing4.7.
+
+
+## Independent peer finding and exact rational allocation follow-up
+
+Worker three found27positive half-tie counterexamples across the full21share ticks×1250group sizes: binary multiplication can put the exact rational half below its intended value. For example, c=.35,m=90 and c=.7,m=45 both require32global draws but the former Math.round(c*m) returned31. The correction computes the nonnegative nearest integer directly from the integer twentieth tick: floor((tick*m+10)/20). The standalone reference uses quotient/remainder arithmetic and Decimal rounding, without importing the JavaScript helper.
+
+All5math groups now pass, including all26250allocation cases against the independent exact grid and two added full high-precision trajectory profiles at those counterexamples. The65digit reference now has10profiles/7200selected group coordinates; SHA256 `8a83203297c9c0da368e5496100239338f520488ac7eb0c19deca6ad07d4f614`. Its exact-allocation companion SHA256 is `ad53efa6492a1b3d4c5a2819eb98404cc78d85678c4ca360afc758b7d3641281`. The earlier eight-profile evidence above remains historical and did not cover these pairs.
+
+All6fresh1450/430/320light/dark native groups pass after the correction. Both exact half-tie states now assert q=32 and replay the complete trajectory/readout/state. All previous corners, input/raw rollback, DOM/model equality and full geometry checks pass. Personally inspected own corrected320dark half-tie trajectories and320light diagnostic panel. New logs `bighist-learning-tie-{math,static,build}.log` and `bighist-learning-tie-native-{light,dark}.log`; images `bighist-learning-tie-final/` under `/tmp/atlas-coordinator/`. Focused static1/0/0 and isolated strict build0errors/warnings pass. Flag remains true pending the independent corrected-candidate peer.

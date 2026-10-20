@@ -7,7 +7,7 @@ def integers(seed):
  a=seed&mask
  while True:
   a=(a+0x6d2b79f5)&mask;t=((a^(a>>15))*(a|1))&mask;t=(t^((t+((t^(t>>7))*(t|61)&mask))&mask))&mask;yield(t^(t>>14))&mask
-cases=[(50,'.3','1',3,True),(1,'0','.5',0,True),(1250,'1','2',9999,False),(7,'.5','.8',17,False),(11,'.35','1.7',2718,True),(3,'.05','.5',41,False),(2,'.95','2',17,True),(1250,'.55','.55',0,False)]
+cases=[(50,'.3','1',3,True),(1,'0','.5',0,True),(1250,'1','2',9999,False),(7,'.5','.8',17,False),(11,'.35','1.7',2718,True),(3,'.05','.5',41,False),(2,'.95','2',17,True),(1250,'.55','.55',0,False),(90,'.35','1',3,True),(45,'.7','2',17,False)]
 out=[]
 for m,c,beta,seed,bound in cases:
  c=D(c);beta=D(beta);q=int((c*m).to_integral_value(rounding=ROUND_HALF_UP));own=m-q;sc=[]
@@ -29,3 +29,12 @@ for m,c,beta,seed,bound in cases:
   sc.append(dict(alpha=alpha,runs=runs,meanFinal=str(sum(final)/10),threshold=str((D(alpha)/beta-gamma).exp()),drift=str(-D(alpha)+beta*(D(4*m).ln()+gamma))))
  out.append(dict(m=m,c=float(c),beta=float(beta),seed=seed,bound=bound,q=q,scenarios=sc))
 dest=Path(sys.argv[1])if len(sys.argv)>1 else Path('docs/verification/bighist-learning-reference.json');dest.write_text(json.dumps(out,indent=2)+'\n')
+
+# Exact positive nearest-integer allocation from independent quotient/remainder arithmetic.
+allocations=[]
+for tick in range(21):
+ row=[]
+ for m in range(1,1251):
+  whole,remainder=divmod(tick*m,20);row.append(whole+int(2*remainder>=20))
+ allocations.append(row)
+dest.with_name(dest.stem+'-allocations.json').write_text(json.dumps(allocations,separators=(',',':'))+'\n')
