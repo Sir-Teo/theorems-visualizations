@@ -1351,15 +1351,15 @@
   },
   "currentPendingSourceReviews": 6,
   "latestCheckpoint": {
-    "testedContentCommit": "817891138e17ab8cffcce3515b4c9b6145600bd6",
-    "acceptedContentCommit": "8178911",
-    "report": "docs/verification/checkpoint-8178911.md",
-    "defaultTests": 2079,
+    "testedContentCommit": "5a8b79422b0492bd8c7188a55e1d8efc704434c8",
+    "acceptedContentCommit": "5a8b794",
+    "report": "docs/verification/checkpoint-5a8b794.md",
+    "defaultTests": 2095,
     "uiTests": 6,
     "testFailures": 0,
     "testCancelled": 0,
     "testSkipped": 0,
-    "testDurationSeconds": 136.059696791,
+    "testDurationSeconds": 126.954942416,
     "testConcurrency": 2,
     "strictBuildErrors": 0,
     "strictBuildWarnings": 0,
@@ -1370,11 +1370,11 @@
     "plannedItems": 6890,
     "chapters": 450,
     "collections": 85,
-    "homeGzipBytes": 112705,
-    "pendingSourceReviews": 7,
-    "acceptedTeamEntriesAtSnapshot": 144,
-    "publishedCrossFieldShortfall": 807,
-    "publishedCollectionsBelowTarget": 47,
+    "homeGzipBytes": 112853,
+    "pendingSourceReviews": 6,
+    "acceptedTeamEntriesAtSnapshot": 145,
+    "publishedCrossFieldShortfall": 784,
+    "publishedCollectionsBelowTarget": 45,
     "nonMathCollections": 64,
     "wholeSyllabusBelowTarget": 28,
     "wave5Status": "prepared-unstarted",
@@ -1384,16 +1384,16 @@
     "map60fps": "open; no benchmark amid competing browser jobs",
     "flagshipProofCuration": "2/100 alongside-wave work",
     "evidence": [
-      "/tmp/atlas-continuation/checkpoint1-build.log",
-      "/tmp/atlas-continuation/checkpoint1-tests.log",
-      "/tmp/atlas-continuation/checkpoint1-static.log",
-      "/tmp/atlas-continuation/checkpoint1-queue.log",
-      "/tmp/atlas-continuation/checkpoint1-crossfield-raw.log"
+      "/tmp/atlas-continuation/checkpoint2-build.log",
+      "/tmp/atlas-continuation/checkpoint2-tests.log",
+      "/tmp/atlas-continuation/checkpoint2-static.log",
+      "/tmp/atlas-continuation/checkpoint2-queue.log",
+      "/tmp/atlas-continuation/checkpoint2-crossfield-accepted.log"
     ],
     "limitations": [
-      "Tests precede later LOGIC closure flag/peer test and bridge35c129f; current sourcequeue6 is a later ledger reconciliation.",
-      "Code includes frozen/unacceptedBIGHIST3.5candidate; running default checks does not accept its source or prerequisite. Accepted crossfield807 excludes that single edge.",
-      "Initial archive ledger invocation used wronggitdir; setupfailure preserved, corrected actualgitdir ledger passes; fulltests not rerun for metadata."
+      "Exactsnapshot includes ARCH6587367+b33b4e0 flagtrue pending independent acceptance, plus DEEP5.12runtime correction subsequently peeraccepted.",
+      "Excludes laterENERGYcandidate, additional peerutilityfiles and later sourceflag closures; source/prerequisite acceptance remains separate from tests.",
+      "FrozenBIGHIST3.5code remains unaccepted; accepted inventory explicitly excludes its oneedge."
     ]
   },
   "openStateFindings": [
