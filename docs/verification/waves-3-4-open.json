@@ -8,7 +8,7 @@
     "items": 2260,
     "initialFlags": 833
   },
-  "remainingFlags": 182,
+  "remainingFlags": 181,
   "unflaggedExplicitUncertainty": [],
   "byCollection": {
     "logic": 1,
@@ -23,7 +23,7 @@
     "energy": 1,
     "robot": 1,
     "micro": 1,
-    "fin": 4,
+    "fin": 3,
     "game": 18,
     "psych": 17,
     "soc": 16,
@@ -241,21 +241,6 @@
       "refs": [],
       "links": {
         "wikipedia": "https://en.wikipedia.org/wiki/Antoine_Augustin_Cournot"
-      }
-    },
-    {
-      "id": "fin-5.10",
-      "file": "content/fin/ch05-b.js",
-      "name": "Speculative bubbles: tulips, South Sea, dot-com",
-      "field": "econ",
-      "category": "historical-credit-empirical-input-or-reference",
-      "status": "source-review-pending",
-      "explicitUncertainty": [],
-      "refs": [
-        "BKM ch. 12"
-      ],
-      "links": {
-        "wikipedia": "https://en.wikipedia.org/wiki/Economic_bubble"
       }
     },
     {
@@ -3622,7 +3607,8 @@
       "fin-5.12",
       "micro-9.21",
       "fin-5.7",
-      "micro-9.20"
+      "micro-9.20",
+      "fin-5.10"
     ]
   },
   "additionalFollowups": [
@@ -7807,6 +7793,12 @@
       "status": "resolved",
       "report": "docs/verification/micro-walras-followup.md",
       "note": "Actual1874original Lessons9and21\u201323 independently read with title/50/124/131images. Authored simultaneous ODE separated from historical successive-price process; exact rational clearing and global positive-invariant/active-index Dini contraction independently assessed. Root4math+4native groups and separate75digit24-reference generator pass; complete histories/arrows/bars and final screenshots checked."
+    },
+    {
+      "id": "fin-5.10",
+      "status": "resolved",
+      "report": "docs/verification/fin-speculation-followup.md",
+      "note": "Independent primary-section reading and original image inspection; five math groups, original CSV comparison of624 scalars/471 wealth points/157 month labels/291 plot points, four native viewport/theme groups and final screenshots pass. Qualified historical interpretations, explicit monthly spacing/shared normalization and exact authored finite-copying-chain law replace unsupported crash/information-cascade claims."
     }
   ]
 }

@@ -3,8 +3,9 @@
 // Sources and honesty notes (checked Oct 2026): Shiller, AER 71(3):421–436 (1981); LeRoy & Porter, Econometrica 49(3):555–574 (1981);
 // Shleifer & Vishny, J. Finance 52(1):35–55 (1997); De Long, Shleifer, Summers & Waldmann, JPE 98(4):703–738 (1990); Rosenthal & Young, JFE 26(1):123–141 (1990);
 // Froot & Dabora, JFE 53(2):189–216 (1999); Mandelbrot, J. Business 36(4):394–419 (1963); Engle, Econometrica 50(4):987–1007 (1982); Bollerslev, J. Econometrics 31(3):307–327 (1986);
-// Kirman, QJ Economics 108(1):137–156 (1993); Temin & Voth, AER 94(5):1654–1668 (2004).
+// 5.10: Garber (1989), Temin & Voth (2004), and Moran et al. (2021 preprint version, opening §III); copying rule authored. No direct Kirman1993 reading is claimed.
 // Real data: Shiller's annual series and the daily market in ch05.shared.js; monthly industry returns (French library) via ch04.shared.js. Simulations are labelled.
+import { speculationHistorical, speculationHistory, speculationStationary, monthOrdinal } from './source-audit-speculation.js';
 import { arbitrageGap, arbitrageOutcome, arbitrageSample } from './source-audit-arbitrage.js';
 import { clamp, pct, fx, sg, data, daily, shiller, shillerDetrended, exPost, meanOf, sdOf, acf, normPdf, normCdf, kurtosis, simGarch, rng, monthLabel } from './ch05.shared.js';
 
@@ -246,64 +247,57 @@ Scope: a parametric model of the conditional variance, fitted by maximum likelih
     },
     // ------------------------------------------------------------------ 5.10
     {
-      num: '5.10',
-      kind: 'Phenomenon',
-      name: 'Speculative bubbles: tulips, South Sea, dot-com',
-      statement: String.raw`A **speculative bubble** is a rapid, large rise in an asset's price that cannot be explained by changes in fundamentals and ends in a sharp collapse. Famous episodes: the Dutch **tulip mania** (1636–37, contract prices for bulbs collapsing in February 1637), the **South Sea bubble** (1720, the company's shares rising roughly eightfold within months and falling back to near their starting level), and the **dot-com bubble** (U.S. technology stocks, boom in 1995–2000, bust 2000–2002). Rescaled to their peaks, the price histories share a shape: accelerating run-up, peak, and a collapse that is faster than the climb.
+      num: '5.10', kind: 'Phenomenon', name: 'Speculative bubbles: tulips, South Sea, dot-com',
+      statement: String.raw`Calling a price episode a **speculative bubble** requires a benchmark for fundamental value, based on cash flows, discounting and information. A large rise and subsequent fall alone does not identify that component, and a bubble need not end in a crash within an observed window (5.11).
 
-Contested points: how large the fundamental component was (the tulip case in particular is debated) and whether the price at the top was irrational or reflected hard-to-measure fundamentals, e.g. in the South Sea case, the ex-ante prospects of the company's debt conversion scheme.
+Historical cases have different evidence. **Tulips, 1636–37:** Garber (1989) distinguishes rare bulbs, whose high prices could reflect scarcity and reproduction, from the sharp common-bulb speculation around January–February 1637; he stresses incomplete data and disputed fundamentals. **South Sea, 1720:** Temin and Voth (2004) interpret Hoare's Bank as knowingly riding overvaluation and emphasize coordination problems, without claiming one cause explains the whole episode. **Technology stocks around 2000:** the plotted portfolio return indices document a boom and decline; they do not estimate fundamental value or identify why investors traded.`,
+      idea: String.raw`The left panel compounds monthly total returns, $W_t=W_{t-1}(1+r_t)$ (fin-1.1), then divides each series by its own value on the **same high-tech peak date**. Thus all three equal 100 at that date; their individual maxima need not coincide. These are value-weighted high-tech and telecom portfolios and the broad U.S. market from the French library, including dividends. They are not the NASDAQ index or a reconstruction of tulip and South Sea quotations.
 
-Scope: qualitative regularities from a handful of historical episodes; the dot-com series below is real data, the historical anchors are approximate and the herding panel is a model.`,
-      idea: String.raw`Excess volatility (fin-5.6) says prices move more than dividends justify; bubbles are the extreme case. Several mechanisms are proposed: positive feedback (investors buy because prices are rising), herding and information cascades (observing others' choices outweighs one's own signal), limits to arbitrage (fin-5.7: the skeptic is wiped out before the collapse), and rational bubbles (fin-5.11). The herding panel shows the simplest version: when agents copy each other, the share of optimists drifts to extremes for long periods, and the price, which depends on it, runs away from the fundamental value and falls back when the herd turns.`,
-      caption: String.raw`**Left**: price histories rescaled to 100 at their peak and aligned on the peak month. Real data: the U.S. high-technology and telecom industry portfolios and the whole market around the 2000 peak (monthly, French library); the red dots are approximate South Sea anchors (about 128 in January 1720, a peak a little above 1000 in mid-1720, about 150 by late September), drawn only as markers. **Right**: a herding model of 100 agents each either optimistic or pessimistic; the price is $100\,e^{1.2(x-1/2)}$ with $x$ the share of optimists, and the fundamental value stays at 100. Switch from **independent** to **herding** and lower the **independent-thinking rate** $\varepsilon$: long boom-and-bust episodes appear without any news. (Stylised model.)`,
-      deps: ['fin-5.6', 'soc-5.4'],
-      refs: ['BKM ch. 12'],
+The right panel is an **authored finite copying chain**, motivated by recruitment as discussed by Moran, Fosset, Kirman and Benzaquen (2021 preprint version, opening §III). It has $N=100$ binary agents and optimistic count $k$. One update selects a random agent: with probability $\varepsilon$ it resets to a fair coin, otherwise it copies a uniformly chosen *other* agent. Hence
+$$u_k=\frac{N-k}{N}\left[\frac\varepsilon2+(1-\varepsilon)\frac{k}{N-1}\right],$$
+$$d_k=\frac{k}{N}\left[\frac\varepsilon2+(1-\varepsilon)\frac{N-k}{N-1}\right].$$
+The remaining probability leaves $k$ unchanged. In **independent** mode every update resets the chosen agent. No private signals, Bayesian learning, trades or fundamental news enter this chain.
+
+Detailed balance (prob-5.5.2a) gives $\pi_{k+1}/\pi_k=u_k/d_{k+1}$. In copying mode the stationary count is beta-binomial with
+$$a=\frac{\varepsilon(N-1)}{2(1-\varepsilon)},\qquad E[k/N]=\tfrac12,$$
+$$\operatorname{var}(k/N)=\frac{N+2a}{4N(2a+1)}.$$
+Independent mode instead has a binomial $(N,\tfrac12)$ count and standard deviation $1/(2\sqrt N)=.05$ for the optimistic fraction. Finite paths started at $k=50$ need not reproduce the stationary distribution. The chosen price map $P(k)=100e^{1.2(k/N-1/2)}$ and reference value 100 are authored assignments, not equilibrium asset valuations.`,
+      caption: String.raw`**Left:** month-end total-return observations at equal monthly intervals, with all three portfolios set to 100 in the high-tech portfolio's March 2000 peak month. The full five years before and three years after are shown. Dividends are reinvested; there are no fees or inflation adjustments. The observation window is selected retrospectively.
+
+**Right:** 400 simulation **sweeps**, each containing 100 single-agent updates, starting with half the agents optimistic. Switch the update rule, change $\varepsilon$ in copying mode, or select **New history**. The full possible price range $100e^{-.6}$–$100e^{.6}$ remains visible. The 130 line is an illustrative threshold, not a test for a bubble. Exact stationary summaries and the finite path are reported separately.`,
+      deps: ['fin-1.1', 'prob-5.5.2a'], see: ['fin-5.6', 'fin-5.7', 'fin-5.11', 'soc-5.4'],
+      refs: ['Garber (1989), §§I,IV,VI–VII', 'Temin & Voth (2004), introduction, §I and conclusions', 'Moran, Fosset, Kirman & Benzaquen (2021 preprint version), opening §III', 'Kenneth R. French Data Library, monthly factors and 10 industry portfolios, CRSP 202608'],
       tags: ['bubbles', 'herding', 'history'],
-      credit: 'Kindleberger; Temin & Voth, 2004; Kirman, 1993 (the herding model)',
-      scope: String.raw`Historical episodes are one-off; the herding model is an illustration of a mechanism, not a calibrated description of any of them.`,
-      verify: true,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Economic_bubble' },
+      credit: 'Historical interpretations: Garber (1989), Temin and Voth (2004); copying rule and price assignment authored here',
+      scope: String.raw`The copying/reset rule, price assignment and fixed reference are explicit teaching assumptions. The recruitment motif follows the later primary discussion; the transition probabilities and invariant law are derived for this authored rule. Neither this mechanism nor the portfolio curves establish an information cascade, a historical cause, irrationality or a profitable trading rule. The date window and peak are selected retrospectively.`,
+      verify: false,
+      links: { source: 'https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html', tulips: 'https://ms.mcmaster.ca/~grasselli/Garber89.pdf', southsea: 'https://people.bu.edu/chamley/565-24/VothTemin-co.pdf', recruitment: 'https://arxiv.org/abs/2009.10563' },
       viz(v) {
-        const d = data();
-        const mode = v.select('traders', [{ value: 'ind', label: 'independent' }, { value: 'herd', label: 'herding' }], 'herd');
-        const eps = v.slider('independent-thinking rate $\\varepsilon$', 0.0005, 0.05, 0.004, { log: true, sig: 2 });
+        const historical = speculationHistorical(data());
+        const mode = v.select('agent update rule', [{ value: 'ind', label: 'independent reset' }, { value: 'herd', label: 'copying + reset' }], 'herd');
+        const eps = v.slider('fair-coin reset probability $\\varepsilon$', .0005, .05, .004, { log: true, sig: 2 });
         let seed = 9; v.button('New history', () => { seed++; });
-        const A = v.stage({ x: [-60, 36], y: [0, 112], axes: 'box', gutter: true, height: 340, weight: 1.3, minWidth: 300, xlabel: 'months from the peak', ylabel: 'price (peak = 100)', title: 'the dot-com boom and bust (real) and 1720 (anchors)' });
-        const B = v.stage({ x: [0, 400], y: [60, 220], axes: 'box', gutter: true, height: 340, weight: 1.2, minWidth: 280, xlabel: 'day', ylabel: 'price (fundamental value = 100)', title: 'herding model' });
-        // real series: cumulative total return of HiTec, Telcm and the market, 1993-01 … 2005-12; align on the HiTec peak
-        const i0 = (1993 - 1963) * 12 - 6, i1 = (2006 - 1963) * 12 - 6;
-        const idx = (series) => { const o = [100]; for (let i = i0; i < i1; i++) o.push(o[o.length - 1] * (1 + series[i])); return o; };
-        const hi = idx(d.ind[4]), te = idx(d.ind[5]), mk = idx(Float64Array.from(d.mkt, (x, i) => x + d.rf[i]));
-        let pk = 0; for (let i = 0; i < hi.length; i++) if (hi[i] > hi[pk]) pk = i;
-        const peakLabel = monthLabel(i0 + pk - 1);
-        let st = {};
+        const A = v.stage({ x: [1995, 2003.4], y: [0, 124], axes: 'box', gutter: true, height: 360, weight: 1.2, minWidth: 300, xlabel: 'return month', ylabel: 'total-return index (March 2000 = 100)', xticks: [[1995, '1995'], [1997, '1997'], [1999, '1999'], [2001, '2001'], [2003, '2003']], title: 'U.S. portfolio total-return growth' });
+        const B = v.stage({ x: [-14, 414], y: [45, 195], axes: 'box', gutter: true, height: 360, weight: 1.2, minWidth: 300, xlabel: 'simulation sweep (100 updates)', ylabel: 'authored price assignment', title: 'finite copying-chain history' });
+        v.legend([['accent', 'high-tech total return'], ['purple', 'telecom total return'], ['muted', 'broad-market total return'], ['orange', 'authored copying-chain price'], ['green', 'assigned reference 100'], ['red', 'illustrative threshold 130']]);
+        let info = {}, cache = { key: '', history: null, stationary: null };
         v.render(() => {
-          const ser = (a, c) => a.map((x, i) => [i - pk, 100 * x / a[pk]]).filter(([t]) => t >= -60 && t <= 36);
-          A.hline(100, { color: 'faint', dash: true }); A.vline(0, { color: 'faint', dash: true });
-          A.path(ser(hi), { color: 'accent', width: 2.6 }); A.path(ser(te), { color: 'purple', width: 2 }); A.path(ser(mk), { color: 'muted', width: 2 });
-          A.text('high-tech (US)', -50, 24, { size: 11.5, color: 'accent', weight: 700 }); A.text('telecom', -14, 72, { size: 11.5, color: 'purple', weight: 700 }); A.text('whole market', 12, 65, { size: 11.5, color: 'muted', weight: 700 });
-          A.dots([[-6, 12.8], [3, 15]], { r: 6, color: 'red' }); A.text('South Sea (anchors)', -6, 12.8, { dx: 8, dy: -12, size: 11, color: 'red', weight: 700 });
-          A.corner(`peak: ${peakLabel}`, 'tr', { color: 'muted' });
-          // herding model
-          const N = 100, T = 400, R = rng(seed * 1237); let k = 50; const xs = [];
-          for (let t = 0; t < T; t++) {
-            for (let u = 0; u < N; u++) {
-              const opt = R() < k / N;
-              let nw;
-              if (mode.value === 'ind') nw = R() < 0.5; else if (R() < eps.value) nw = R() < 0.5; else nw = R() < (k - (opt ? 1 : 0)) / (N - 1);
-              k += (nw ? 1 : 0) - (opt ? 1 : 0);
-            }
-            xs.push(k / N);
-          }
-          const pr = xs.map((x) => 100 * Math.exp(1.2 * (x - 0.5)));
-          B.setView([0, T], [Math.min(60, ...pr) - 5, Math.max(160, ...pr) + 8]);
-          B.hline(100, { color: 'green', dash: true, width: 2 }); B.text('fundamental value', T, 100, { dx: -4, dy: 12, align: 'right', size: 11, color: 'green', weight: 700 });
-          B.path(pr.map((y, t) => [t, y]), { color: 'accent', width: 2 });
-          let above = 0, mx = 0, mn = 1e9; for (const y of pr) { if (y > 130) above++; mx = Math.max(mx, y); mn = Math.min(mn, y); }
-          B.hline(130, { color: 'red', dash: true, width: 1 }); B.text('bubble: > 130', 2, 130, { dx: 4, dy: -9, size: 10.5, color: 'red' });
-          st = { above: above / T, mx, mn };
+          eps.el.hidden = mode.value === 'ind';
+          const next = [seed, eps.value, mode.value].join('|');
+          if (cache.key !== next) cache = { key: next, history: speculationHistory(eps.value, mode.value, rng(seed * 1237)), stationary: speculationStationary(eps.value, mode.value) };
+          const { history, stationary } = cache, peakX = monthOrdinal(historical.peakYm) / 12;
+          A.hline(100, { color: 'faint', dash: true }); A.vline(peakX, { color: 'faint', dash: true });
+          historical.series.forEach((s, i) => A.path(s.points, { color: ['accent', 'purple', 'muted'][i], width: i ? 2 : 2.6 }));
+          A.dot(peakX, 100, { r: 5, color: 'accent' }); A.text('March 2000', peakX, 100, { align: 'center', dy: -18, size: 11, color: 'accent', weight: 700 });
+          B.hline(100, { color: 'green', dash: true, width: 1.6 }); B.hline(130, { color: 'red', dash: true, width: 1.2 });
+          B.path(history.prices.map((p, t) => [t, p]), { color: 'orange', width: 2.3 }); B.dot(400, history.prices[400], { r: 5, color: 'orange' });
+          info = { historical, mode: mode.value, epsilon: eps.value, seed, history, stationary };
         });
-        v.readout(() => `Real data: from its peak (${peakLabel}) the high-tech portfolio fell **${v.fix(100 - 100 * hi[Math.min(hi.length - 1, pk + 30)] / hi[pk], 0)}%** in 30 months, after rising **${v.fix(100 * hi[pk] / hi[Math.max(0, pk - 60)] - 100, 0)}%** in the five years before (total returns, dividends reinvested).\nHerding model: price ranged from ${v.fix(st.mn, 0)} to ${v.fix(st.mx, 0)} around a fixed fundamental value of 100; it was above 130 on **${pct(st.above, 0)}** of days. With independent traders the price barely leaves the 95–105 range.`);
+        const chance = x => x < .0001 ? `${(100 * x).toExponential(3)}%` : pct(x, 3);
+        v.readout(() => {
+          const { history: h, stationary: q, mode: kind, epsilon } = info;
+          return `Historical high-tech total-return index: shared peak date **2000-03**; gain over 60 months ${pct(historical.rise60, 3)}; change through **2002-09**, 30 months later, ${pct(historical.change30, 3)}. Each comparison series equals 100 at the shared date.\n\nAuthored history: price range ${v.fix(h.minimum, 3)}–${v.fix(h.maximum, 3)}; above 130 in ${pct(h.above, 2)} of the 400 recorded sweeps. Exact **stationary** optimistic-fraction mean ${v.fix(q.mean, 3)}, standard deviation ${v.fix(Math.sqrt(q.variance), 6)}; stationary probability of price above 130 is ${chance(q.above)}. ${kind === 'ind' ? 'Independent resets do not confine every price to 95–105.' : `Reset probability ${v.fix(epsilon, 6)}; copying can generate persistent extremes with no exogenous information input.`} A finite path is not a stationary-distribution estimate or evidence about a named historical market.`;
+        });
       },
     },
   ],
