@@ -1,0 +1,7 @@
+{
+  "baseline": "5439dff1a066157c47dd97767647cbdbf4e0887a",
+  "file": "content/art/ch02.js",
+  "num": "2.1",
+  "before": "`stretched ${v.fix(1 / Math.sin(rad(phi.value)), 2)}\u00d7`",
+  "after": "`central local stretch ${v.fix(1 / Math.sin(rad(phi.value)), 2)}\u00d7`"
+}

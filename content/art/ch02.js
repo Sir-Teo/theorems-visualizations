@@ -76,7 +76,7 @@ Seen from $E$, the painted canvas and the intended picture send the eye the same
             }
             for (const sh of painted) if (sh.close && !sh.fill) can.poly(sh.q, { fill: 'accent', fillAlpha: 0.06, stroke: false });
           });
-          can.text(`stretched ${v.fix(1 / Math.sin(rad(phi.value)), 2)}×`, -CW + 0.15, CH - 0.15, { align: 'left', baseline: 'top', size: 12, color: 'muted' });
+          can.text(`central local stretch ${v.fix(1 / Math.sin(rad(phi.value)), 2)}×`, -CW + 0.15, CH - 0.15, { align: 'left', baseline: 'top', size: 12, color: 'muted' });
           // the viewer's retina: a pinhole camera at the viewer, aimed at the canvas centre, same focal distance L as the design
           const vf = unit([-vw[0], -vw[1]]), cam = camera([vw[0], vw[1], 0], { yaw: Math.atan2(vf[0], vf[1]), d: L });
           ret.rect(-1.7, -1.7, 1.7, 1.7, { color: 'faint', width: 1 });

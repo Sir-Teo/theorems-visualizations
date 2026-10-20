@@ -1,0 +1,5 @@
+# ART 2.1 central differential scale label
+
+This separately authorized successor changes only the canvas text literal “stretched” to “central local stretch”. The numerical factor, stage, font, controls, constraints, projective paint map, ray geometry, readout and every trajectory remain byte-identical. The existing readout already distinguishes middle-of-skull scale from the width of the complete finite smear; the canvas now uses the same qualification.
+
+The explicit28-file guard permits only that literal. Twelve independent finite homography witnesses verify the central derivative1/sin(phi), including native control endpoints8/90degrees and distances2.5/4/7. At non-right angles the off-axis derivative differs. The text/model qualification is separately recorded in the preceding bounded prose boundary, not a change to the computed projection. Actual real-control/readout/canvas captures and personal pixels remain pending the coordinator’s browser/heavy-work hold release. No source closure or combined acceptance is claimed.
