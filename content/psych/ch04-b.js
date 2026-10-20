@@ -1,4 +1,5 @@
 // Psychology & Perception — Chapter 4: Early vision (items 4.6–4.10)
+import { centreSurround, fieldWeight, machFilter, rampInput } from './source-audit-centresurround.js';
 import { logTicks, grey, clamp01, blur1, dog1, blur2, smooth01 } from './ch04.shared.js';
 
 export default {
@@ -7,55 +8,29 @@ export default {
   items: [
     // ------------------------------------------------------------------ 4.6
     {
-      num: '4.6',
-      kind: 'Concept',
-      name: 'Centre–surround receptive fields',
-      statement: String.raw`A retinal ganglion cell does not respond to light everywhere equally: its **receptive field** (the region of the retina whose illumination changes its firing) has two concentric zones with opposite signs. In an **ON-centre** cell, light on the central zone raises the firing rate and light on the surrounding annulus lowers it; an **OFF-centre** cell is the mirror image. The weighting is well described by a **difference of Gaussians**, $w(r)=G_{\sigma_c}(r)-k\,G_{\sigma_s}(r)$ with $\sigma_s>\sigma_c$, and the cell's response is the weighted sum of the light, $\iint w\,S\,dA$. When the two zones balance ($k\approx1$), a uniform field produces almost no response: the cell reports local contrast, not absolute illumination.`,
-      idea: String.raw`The response is a linear weighted sum of the image, i.e. the image correlated with the receptive-field weighting. Because the positive and negative weights have nearly equal totals, a uniform stimulus cancels, whereas a spot that fills the centre but not the surround, or an edge placed across the field, leaves some net excitation or inhibition. Growing a spot first adds centre excitation (rising response) and then starts to cover the opposed surround (falling response), which is why such cells prefer a spot of an optimal size. Kuffler recorded exactly this structure from cat retinal ganglion cells in 1953.`,
-      caption: String.raw`**Left:** the receptive field (**red** = excitatory weights, **blue** = inhibitory) with a stimulus you place by dragging the **gold** handle; choose a *spot*, an *annulus* or a *uniform field*. **Right:** the firing rate of the model cell against the radius of a spot centred on the handle: it peaks when the spot just fills the centre and sinks as the surround is covered. Reduce the *surround strength* to see the cell become a plain light meter, and flip *ON-centre* to make the mirror-image cell. The weights, firing-rate scale and baseline are **model values** chosen for illustration.`,
-      deps: ['psych-4.4'],
-      refs: ['Goldstein ch. 3'],
-      tags: ['receptive field', 'ganglion cell', 'contrast'],
-      credit: 'Stephen Kuffler, 1953, J. Neurophysiol. 16: 37–68; the difference-of-Gaussians form: Rodieck, 1965 (unconfirmed)',
-      scope: String.raw`This is the linear, static description. Real cells add nonlinearities (rectification, gain control), adaptation and, in the so-called Y cells, nonlinear subunits; and the sizes of centre and surround grow with distance from the fovea.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Receptive_field#Retinal_ganglion_cells' },
-      verify: true,
-      viz(v) {
-        const shape = v.select('Stimulus', [{ value: 'spot', label: 'spot' }, { value: 'ring', label: 'annulus' }, { value: 'full', label: 'uniform field' }], 'spot');
-        const rad = v.slider('stimulus radius', 0.2, 5.5, 1, { step: 0.05 });
-        const sr = v.slider('surround width / centre width', 1.5, 5, 3, { step: 0.1 });
-        const bal = v.slider('surround strength $k$', 0, 1.2, 0.9, { step: 0.01 });
-        const on = v.toggle('ON-centre cell', true);
-        const sc = 0.8, BASE = 20, GAIN = 60, CELL = 0.25, NG = 48;
-        const rf = v.stage({ x: [-6, 6], y: [-6, 6], equal: true, axes: false, height: 330, weight: 1, minWidth: 290, title: 'receptive field and stimulus' });
-        const tu = v.stage({ x: [0, 6], y: [0, 120], axes: 'box', gutter: true, height: 330, weight: 1, minWidth: 290, xlabel: 'radius of a centred spot', ylabel: 'firing rate (spikes/s)', title: 'tuning to spot size' });
-        const hd = rf.handle(0, 0, { color: 'gold', r: 8, label: 'stimulus', labelPos: 'ne' });
-        const W = (x, y, ss, k) => { const r2 = x * x + y * y; return Math.exp(-r2 / (2 * sc * sc)) / (2 * Math.PI * sc * sc) - k * Math.exp(-r2 / (2 * ss * ss)) / (2 * Math.PI * ss * ss); };
-        const resp = (S, ss, k) => { let a = 0; for (let i = 0; i < NG; i++) for (let j = 0; j < NG; j++) { const x = -6 + (i + 0.5) * CELL, y = -6 + (j + 0.5) * CELL; if (S(x, y)) a += W(x, y, ss, k); } return a * CELL * CELL; };
-        const rate = (R) => Math.max(0, BASE + GAIN * (on.value ? 1 : -1) * R);
-        v.legend([['red', 'excitatory (ON) zone', { area: true }], ['blue', 'inhibitory zone', { area: true }], ['gold', 'stimulus']]);
-        let st = null;
-        v.render(() => {
-          const ss = sc * sr.value, k = bal.value, sgn = on.value ? 1 : -1;
-          const wmax = Math.abs(W(0, 0, ss, k));
-          rf.raster((x, y) => { const c = v.diverge(Math.max(-1, Math.min(1, sgn * W(x, y, ss, k) / wmax)), 'blue', 'red'); return [...c, 1]; }, { res: 3, key: `${ss.toFixed(2)}|${k.toFixed(2)}|${sgn}` });
-          const cx = hd.x, cy = hd.y, r = rad.value;
-          const inS = shape.value === 'spot' ? (x, y) => (x - cx) ** 2 + (y - cy) ** 2 <= r * r : shape.value === 'ring' ? (x, y) => { const d = Math.hypot(x - cx, y - cy); return d >= r && d <= r + 1.5; } : () => true;
-          if (shape.value === 'spot') rf.circle(cx, cy, r, { color: 'gold', width: 2.6, fill: 'gold', fillAlpha: 0.12 });
-          else if (shape.value === 'ring') { rf.circle(cx, cy, r, { color: 'gold', width: 2.6 }); rf.circle(cx, cy, r + 1.5, { color: 'gold', width: 2.6 }); }
-          else rf.rect(-6, -6, 6, 6, { color: 'gold', width: 4, fill: 'gold', fillAlpha: 0.08 });
-          const R = resp(inS, ss, k), fr = rate(R);
-          const Ru = resp(() => true, ss, k);
-          tu.hline(BASE, { color: 'muted', dash: [5, 4] });
-          tu.text('spontaneous rate', 5.9, BASE, { align: 'right', dy: 14, size: 11.5, color: 'muted' });
-          const pts = []; for (let q = 0.1; q <= 6; q += 0.2) pts.push([q, rate(resp((x, y) => (x - cx) ** 2 + (y - cy) ** 2 <= q * q, ss, k))]);
-          tu.path(pts, { color: 'accent', width: 2.8 });
-          let best = pts[0]; for (const p of pts) if (p[1] > best[1]) best = p; // preferred size
-          tu.dot(best[0], best[1], { r: 4, color: 'green' });
-          if (shape.value === 'spot') tu.dot(r, rate(resp(inS, ss, k)), { r: 7, color: 'gold' });
-          st = { fr, Ru, ru: rate(Ru), best };
-        });
-        v.readout(() => st ? `Firing rate for this stimulus: **${v.fix(st.fr, 0)} spikes/s** (baseline ${BASE}) · a uniform field gives ${v.fix(st.ru, 0)} spikes/s${st.ru <= BASE + 3 && st.ru >= BASE - 3 ? ' — almost no change from baseline' : ''} · preferred spot radius ≈ ${v.fix(st.best[0], 1)} (centre $\\sigma$ = 0.8)` : '');
+      num:'4.6',kind:'Concept',name:'Centre–surround receptive fields',
+      statement:String.raw`In many retinal ganglion cells, illuminating the receptive-field centre and its surround has opposing effects. ON-centre and OFF-centre describe opposite polarities. Kuffler's cat recordings showed these spatial interactions, but also irregular fields and changes with illumination and adaptation. They do not imply that every ganglion cell has an identical, perfectly concentric field.
+
+A **difference of Gaussians** is one useful spatial model: a narrow positive Gaussian opposed by a broader weighted Gaussian. For unit-integral Gaussians, $w=G_{\sigma_c}-kG_{\sigma_s}$ has total weight $1-k$. A uniform input cancels **exactly in this whole-plane model when $k=1$**, before any baseline or rectification.`,
+      idea:String.raw`The authored family uses concentric disks and annuli. A normalized two-dimensional Gaussian assigns a disk of radius $r$ the exact mass
+$$F_\sigma(r)=1-e^{-r^2/(2\sigma^2)}.$$
+Its disk drive is $D(r)=F_{\sigma_c}(r)-kF_{\sigma_s}(r)$. An annulus from $r$ to $r+1.5$ has drive $D(r+1.5)-D(r)$; a uniform plane has drive $1-k$. The plotting window does not truncate any of these integrals.
+
+The authored rate is $\max(0,20+60sD)$, with polarity $s=+1$ for ON and $s=-1$ for OFF. These baseline/gain values are illustrative. For $k>0$, differentiating the disk drive gives one positive stationary radius; for $k=0$ it increases monotonically. Comparing that stationary point, when inside 0–6, with both endpoints gives the displayed global maximum for the selected polarity. OFF cells need not prefer the ON cell's spot size.`,
+      caption:String.raw`The field is an **authored circular spatial weighting**, with red positive and blue negative for the selected polarity. Choose a concentric spot, annulus, or the uniform plane. The gold handle and radius slider change the radius; the diagram uses arbitrary distance units with fixed centre width 0.8. Uniform illumination fills the whole mathematical plane, beyond the displayed window.
+
+The other panel always shows the response to a **centred disk**, including radius zero and six. Green points mark every maximizing candidate; the hollow gold point marks the disk at the selected radius. The readout separately gives the selected annulus or uniform response. No temporal response or measured spike train is reproduced.`,
+      deps:['psych-4.4'],refs:['Kuffler (1953), methods and §§4–5, Figures 6/8 and summary','Meister and Berry (1999), The Neural Code of the Retina, pp. 435–439, equations 1–3/Figure 1'],tags:['receptive field','ganglion cell','contrast'],
+      credit:'Stephen W. Kuffler (1953), Journal of Neurophysiology 16:37–68; DoG model exposition: Markus Meister and Michael J. Berry II (1999), Neuron 22:435–450',
+      scope:String.raw`The source physiology includes irregular receptive-field organization, adaptation, timing and nonlinear effects. The static concentric Gaussian family, whole-plane stimulus, distances, baseline and gain here are authored, not fitted measurements. Reversing polarity reverses the signed drive, while the rectified rate need not be a mirror image. A uniform field at k=1 leaves the authored baseline, rather than suppressing all spiking. The complete spatial filter is not a model of sustained firing under all illumination conditions; no retinal eccentricity law, original Rodieck-paper reading or historical priority is claimed.`,
+      links:{source:'https://doi.org/10.1152/jn.1953.16.1.37',exposition:'https://www.cnbc.cmu.edu/~tai/readings/adaptation/meister_berry.pdf'},verify: false,
+      viz(v){
+        const shape=v.select('concentric stimulus',[{value:'spot',label:'spot'},{value:'ring',label:'annulus'},{value:'full',label:'uniform plane'}],'spot'),rad=v.slider('radius (model units)',0,6,1,{step:'any',decimals:6,fmt:x=>x.toFixed(9)}),ratio=v.slider('surround / centre width',1.5,5,3,{step:'any',decimals:6,fmt:x=>x.toFixed(9)}),k=v.slider('surround weight k',0,1.2,.9,{step:'any',decimals:6,fmt:x=>x.toFixed(9)}),on=v.toggle('ON polarity',true);
+        const A=v.stage({x:[-8,8],y:[-8,8],equal:true,height:340,minWidth:260,axes:false,title:'authored signed spatial field'}),B=v.stage({x:[-.4,6.4],y:[-8,101],height:340,minWidth:260,axes:'box',gutter:true,xlabel:'centred-disk radius (model units)',ylabel:'authored rate (spikes/s)',xticks:[0,2,4,6],yticks:[0,20,40,60,80],title:'disk-size curve for selected polarity'});
+        const h=A.handle(1,0,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,0,6),0],onDrag:h=>rad.set(h.x)});let info;
+        v.legend([['red','positive weight',{area:true}],['blue','negative weight',{area:true}],['gold','selected radius',{dot:true}],['green','global disk maximum',{dot:true}]]);
+        v.render(()=>{const p=centreSurround(rad.value,ratio.value,k.value,shape.value,on.value),peak=fieldWeight(0,0,p.sc,p.ss,p.k);A.raster((x,y)=>[...v.diverge(p.sign*fieldWeight(x,y,p.sc,p.ss,p.k)/peak,'blue','red'),1],{res:2,key:JSON.stringify([p.ratio,p.k,p.on])});if(p.shape==='full')A.rect(A.bounds.x[0],A.bounds.y[0],A.bounds.x[1],A.bounds.y[1],{fill:'gold',fillAlpha:.08,stroke:false});else{A.circle(0,0,p.radius,{color:'gold',width:2,fill:p.shape==='spot'?'gold':undefined,fillAlpha:.12});if(p.shape==='ring')A.circle(0,0,p.radius+1.5,{color:'gold',width:2});}h.set(p.radius,0);B.path(p.curve,{color:'accent',width:2.5});B.line(0,20,6,20,{color:'muted',dash:[4,4],width:1});B.dot(p.radius,p.probeDisk,{r:7,color:'gold',hollow:true});for(const q of p.best)B.dot(q.r,q.rate,{r:5,color:'green'});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,f=x=>x.toExponential(7);return `Selected ${p.shape}, ${p.on?'ON':'OFF'} polarity: signed drive ${f(p.drive)}, authored rate ${f(p.rate)} spikes/s. Uniform-plane drive 1−k=${f(p.uniformDrive)}, rate ${f(p.uniformRate)} spikes/s (baseline20).\nCentred-disk rate at radius ${p.radius.toPrecision(10)}: ${f(p.probeDisk)} spikes/s. Global disk maximum on[0,6]: ${p.best.map(q=>`r=${q.r.toPrecision(10)}, rate=${f(q.rate)}`).join('; ')}. ${p.critical===null?'k=0: disk drive is monotone.':`Positive stationary disk radius ${p.critical.toPrecision(10)}; endpoints are included in the comparison.`} These are authored spatial-model values.`;});
       },
     },
     // ------------------------------------------------------------------ 4.7
@@ -126,52 +101,31 @@ export default {
     },
     // ------------------------------------------------------------------ 4.8
     {
-      num: '4.8',
-      kind: 'Theorem',
-      name: 'Lateral inhibition predicts Mach bands',
-      statement: String.raw`Let $L(x)$ be a luminance profile that is constant, ramps linearly and is constant again, and let a retinal unit respond to it with a centre–surround weighting $w=G_{\sigma_c}-k\,G_{\sigma_s}$ that integrates to $1-k$. Then for $k=1$ (balanced) the response $R=w*L$ is zero on the plateaus and, to a good approximation when the ramp width is small relative to $\sigma_s$, equals $-c\,L''$ smoothed at the scale of the centre: it **overshoots above** the bright plateau at the bright end of the ramp and **undershoots below** the dark plateau at the dark end. These two extremes occur at the **knees** of the profile (where $L'$ changes), exactly where observers see a bright band on the light side and a dark band on the dark side (the **Mach bands**), although the luminance there has no such features.`,
-      idea: String.raw`Convolving with a kernel of zero total weight acts, to leading order, like a second derivative: $w*L\approx\tfrac{1}{2}(\sigma_c^2-k\sigma_s^2)L''$ for slowly varying $L$ (from the Taylor expansion of $L(x-y)$ in the convolution integral, the convolution of rca-8.13), and a piecewise-linear $L$ has $L''$ concentrated at the knees, with positive sign at the one and negative at the other. Because $\sigma_s>\sigma_c$ and $k=1$, the coefficient $\sigma_c^2-k\sigma_s^2$ is negative, so the response is proportional to $-L''$: positive at the bright knee, where the slope drops from positive to zero ($L''<0$), and negative at the dark knee ($L''>0$). That is the Mach band pattern. If the ramp is much wider than the surround, the profile is locally linear everywhere and the response is flat except for faint features, so the bands vanish.`,
-      caption: String.raw`**Top:** the luminance profile (**black**), a plateau, a linear ramp and a plateau; drag the **gold** handles to move the knees. **Middle:** the response of the difference-of-Gaussians unit (**blue**), with the plateau levels (dashed). **Bottom:** the stimulus as a strip (above) and the model's "perceived brightness" (below, response rescaled to grey); the bands are in the lower strip and not in the upper. Widen the ramp and the bands fade. Change the surround weight: with $k=0$ there is no overshoot. Ernst Mach described the bands in 1865; this figure is computed, not measured.`,
-      deps: ['psych-4.7', 'art-6.2', 'rca-8.13'],
-      refs: ['Goldstein ch. 3'],
-      tags: ['Mach bands', 'lateral inhibition', 'convolution'],
-      credit: 'Ernst Mach, 1865 (bands); Ratliff, Hartline and others tied them to lateral inhibition, 1950s–60s (unconfirmed)',
-      scope: String.raw`Valid for a linear centre–surround unit and ramps not much wider than the surround. Real Mach bands also depend on contrast, on viewing distance and on the shape of the ramp, and some of the effect may arise beyond the retina.`,
-      links: { wikipedia: 'https://en.wikipedia.org/wiki/Mach_bands' },
-      verify: true,
-      viz(v) {
-        const sc = v.slider('centre width $\\sigma_c$', 0.04, 0.4, 0.12, { step: 0.005 });
-        const sr = v.slider('surround / centre width', 2, 8, 4, { step: 0.1 });
-        const kk = v.slider('surround weight $k$', 0, 1.2, 1, { step: 0.01 });
-        const N = 400, X0 = 0, X1 = 10, dx = (X1 - X0) / N, LO = 0.25, HI = 0.8;
-        const lum = v.stage({ x: [0, 10], y: [0, 1], axes: 'box', gutter: true, height: 180, weight: 1.4, minWidth: 340, ylabel: 'luminance', title: 'stimulus' });
-        const rs = v.stage({ x: [0, 10], y: [-0.1, 0.1], axes: 'box', gutter: true, height: 210, weight: 1.4, minWidth: 340, ylabel: 'response', xlabel: 'position', title: 'response of the centre–surround unit' });
-        const st = v.stage({ x: [0, 10], y: [0, 2], axes: false, height: 120, weight: 1.4, minWidth: 340, title: 'stimulus (top) and model brightness (bottom)' });
-        const L = (x, a, b) => (x <= a ? LO : x >= b ? HI : LO + ((HI - LO) * (x - a)) / (b - a));
-        const ha = lum.handle(4.4, LO, { color: 'gold', r: 8, constrain: (x) => [Math.min(Math.max(x, 1.5), hb.x - 0.1), LO] });
-        const hb = lum.handle(5.6, HI, { color: 'gold', r: 8, constrain: (x) => [Math.max(Math.min(x, 8.5), ha.x + 0.1), HI] });
-        let R = null, key = '', info = null;
-        v.legend([['ink', 'luminance'], ['accent', 'unit response'], ['muted', 'plateau levels', { dash: true }]]);
-        v.render(() => {
-          const a = ha.x, b = hb.x; ha.set(a, LO); hb.set(b, HI);
-          const l = Array.from({ length: N }, (_, i) => L(X0 + (i + 0.5) * dx, a, b));
-          R = dog1(l, sc.value / dx, (sc.value * sr.value) / dx, kk.value);
-          lum.fn((x) => L(x, a, b), { domain: [0, 10], color: 'ink', width: 3 });
-          const i1 = Math.floor(0.4 * N * 0.1), i2 = N - i1;
-          const pl = R[Math.floor(0.08 * N)], ph = R[Math.floor(0.92 * N)];
-          { let m = 0.02; for (const r of R) m = Math.max(m, Math.abs(r)); rs.setView([0, 10], [-1.35 * m, 1.35 * m]); }
-          rs.hline(pl, { color: 'muted', dash: [5, 4] }); rs.hline(ph, { color: 'muted', dash: [5, 4] });
-          rs.path(R.map((r, i) => [X0 + (i + 0.5) * dx, r]), { color: 'accent', width: 2.8 });
-          // extremes near the knees
-          let mx = -9, mxi = 0, mn = 9, mni = 0;
-          for (let i = 0; i < N; i++) { const x = X0 + (i + 0.5) * dx; if (x > b - 1.2 && x < b + 1.2 && R[i] > mx) { mx = R[i]; mxi = i; } if (x > a - 1.2 && x < a + 1.2 && R[i] < mn) { mn = R[i]; mni = i; } }
-          rs.dot(X0 + (mxi + 0.5) * dx, mx, { r: 5, color: 'green' }); rs.dot(X0 + (mni + 0.5) * dx, mn, { r: 5, color: 'red' });
-          const span = Math.max(1e-6, ph - pl), lo = Math.min(R[Math.floor(0.08 * N)], mn), hi2 = Math.max(ph, mx);
-          const k2 = `${a.toFixed(2)}|${b.toFixed(2)}|${sc.value}|${sr.value}|${kk.value}`;
-          st.raster((x, y) => { const i = Math.min(N - 1, Math.max(0, Math.floor((x - X0) / dx))); if (y > 1) return [...grey(l[i]), 1]; const t = 0.5 + 0.5 * (R[i] - (pl + ph) / 2) / Math.max(1e-6, Math.max(hi2 - (pl + ph) / 2, (pl + ph) / 2 - lo)); return [...grey(LO + (HI - LO) * clamp01(t)), 1]; }, { res: 2, key: k2 });
-          info = { over: (mx - ph) / (HI - LO), under: (pl - mn) / (HI - LO), xb: X0 + (mxi + 0.5) * dx, xa: X0 + (mni + 0.5) * dx, a, b, ph, pl };
-        });
-        v.readout(() => info ? `Bright band: response peaks ${v.fix(100 * info.over, 1)}% of the luminance step above the bright plateau, at x = ${v.fix(info.xb, 2)} (knee at ${v.fix(info.b, 2)}) · dark band: ${v.fix(100 * info.under, 1)}% below the dark plateau, at x = ${v.fix(info.xa, 2)} (knee at ${v.fix(info.a, 2)}) · ramp width ${v.fix(info.b - info.a, 2)} vs surround width ${v.fix(sc.value * sr.value, 2)}` : '');
+      num:'4.8',kind:'Model',name:'Centre–surround filtering and Mach bands',
+      statement:String.raw`Mach bands are perceived dark and bright bands near the foot and knee of some luminance ramps. A single centre–surround filter can produce a dip and bump near those transitions, but its signed response is **not perceived brightness**. As Kingdom's 2014 analysis emphasizes, a balanced filter gives equal far-field levels on both sides, and a single filter gives strong edge lobes at a step where distinct Mach bands are absent. These are limitations of the simple account.
+
+Here an explicitly authored ramp is convolved on the **whole real line** with $G_{\sigma_c}-kG_{\sigma_s}$, using unit-integral **one-dimensional** Gaussians. Its exact asymptotic responses are $(1-k)L_0$ and $(1-k)L_1$. For $k=1$ these limits are zero; finite plateaus still receive Gaussian-tail contributions. For $k=0$ the Gaussian-smoothed input is monotone and stays between its two luminance levels.`,
+      idea:String.raw`For an input constant in the perpendicular direction, integrating the two-dimensional Gaussian of 4.6 over that direction gives this one-dimensional kernel. Let $a<b$ be the two knees, $\Delta L=L_1-L_0$, and let $\Phi,\phi$ denote the standard normal cumulative distribution and density. The Gaussian mean of a positive hinge is, with $u=z/\sigma$,
+$$J_\sigma(z)=z\Phi(u)+\sigma\phi(u).$$
+Write $\Delta J_\sigma=J_\sigma(x-a)-J_\sigma(x-b)$. The smoothed ramp is
+$$F_\sigma=L_0+\Delta L\,\frac{\Delta J_\sigma}{b-a},$$
+and the signed response is $R=F_{\sigma_c}-kF_{\sigma_s}$. At zero ramp width the input is a step and $F_\sigma=L_0+\Delta L\,\Phi((x-c)/\sigma)$, where $c$ is its position.
+
+For a positive-width balanced ramp, the response at its midpoint is zero. Differentiating gives a **positive derivative at both knees**, so neither knee is an extremum of this filter response. The dip lies before the lower knee and the bump after the upper knee. A small-kernel, slowly varying-input expansion can resemble a second derivative; no such approximation is needed for these exact ramp calculations.`,
+      caption:String.raw`Set the authored centre width, surround ratio, weight, ramp position and **width including zero**. Gold knee handles move symmetrically about the selected position; the lower handle cannot pass the centre and the upper cannot pass it in the opposite direction. A separate probe slider inspects the response. The input has fixed relative levels 0.25 and 0.8, and the graph includes the full line segment at a step.
+
+The other plot is the computed **signed filter signal**; its vertical scale uses a whole-line bound for the selected weight and width ratio, so read its ticks when comparing settings. It has dashed asymptotic levels and exact probe/knee values in the readout. The grayscale strip is a schematic of the input's encoded gray values, not a calibrated luminance display or a second simulated percept. Compare a ramp with the step endpoint to see why a single filter's lobes alone do not establish a perceptual explanation.`,
+      deps:['psych-4.6','rca-8.13'],see:['psych-4.7','art-6.2'],refs:['Kingdom (2014), Mach bands explained by response normalization, introduction, step-edge results/Figure 5 and discussion'],tags:['Mach bands','centre–surround','convolution'],
+      credit:'Frederick A. A. Kingdom (2014), Frontiers in Human Neuroscience 8:843, DOI 10.3389/fnhum.2014.00843; ramp/DoG calculation authored here',
+      scope:String.raw`This is a bounded family of static, one-dimensional linear filters, not a fit to human judgments or a reproduction of Kingdom's nine-scale response-normalization model. Gaussian tails extend beyond the displayed window and are included analytically. A very short ramp uses stable Gaussian quadrature to avoid subtracting nearly equal hinge values; source/model comparisons are checked independently. Very small responses are subject to cancellation and derivatives can underflow; tiny displayed signs and relative tail accuracy are not certified. Distance, luminance levels and filter gains are authored relative units. Competing perceptual models and viewing/stimulus conditions matter. No original Mach/Ratliff publication, historical priority or complete physiological mechanism is claimed.`,
+      links:{source:'https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2014.00843/full'},verify: false,
+      viz(v){
+        const fmt=x=>x.toFixed(9),sc=v.slider('centre width',.04,.4,.12,{step:'any',decimals:6,fmt}),ratio=v.slider('surround / centre width',2,8,4,{step:'any',decimals:6,fmt}),k=v.slider('surround weight k',0,1.2,1,{step:'any',decimals:6,fmt}),centre=v.slider('ramp position',3.5,6.5,5,{step:'any',decimals:6,fmt}),width=v.slider('ramp width',0,7,1.2,{step:'any',decimals:6,fmt}),probe=v.slider('response probe',-3,13,5,{step:'any',decimals:6,fmt});
+        const A=v.stage({x:[-4,14],y:[-.13,1.12],height:260,minWidth:260,axes:'box',gutter:true,xlabel:'position (model units)',ylabel:'relative input level',xticks:[0,5,10],yticks:[0,.25,.8,1],title:'authored ramp or exact step'}),B=v.stage({x:[-4,14],y:[-.85,.94],height:300,minWidth:260,axes:'box',gutter:true,xlabel:'position (model units)',ylabel:'signed filter response',xticks:[0,5,10],title:'filter signal, not perceived brightness'}),C=v.stage({x:[-3,13],y:[0,1],height:80,minWidth:260,axes:false,title:'schematic encoded input grays'});
+        const ha=A.handle(4.4,.25,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,centre.value-3.5,centre.value),.25],onDrag:h=>{if(h.x!==centre.value-width.value/2)width.set(2*(centre.value-h.x));}}),hb=A.handle(5.6,.8,{r:8,color:'gold',constrain:x=>[v.M.clamp(x,centre.value,centre.value+3.5),.8],onDrag:h=>{if(h.x!==centre.value+width.value/2)width.set(2*(h.x-centre.value));}});let info;
+        v.legend([['ink','authored input'],['accent','signed filter response'],['muted','far-field limits',{dash:true}],['gold','response probe',{dot:true}]]);
+        v.render(()=>{const p=machFilter(sc.value,ratio.value,k.value,centre.value,width.value,probe.value);const pad=.12*(p.responseBounds[1]-p.responseBounds[0])+.02;B.setView([-4,14],[p.responseBounds[0]-pad,p.responseBounds[1]+pad]);A.path(p.stimulus,{color:'ink',width:2.5});ha.set(p.a,.25);hb.set(p.b,.8);B.path(p.response,{color:'accent',width:2.5});B.line(-3,p.lowLimit,13,p.lowLimit,{color:'muted',width:1,dash:[4,4]});B.line(-3,p.highLimit,13,p.highLimit,{color:'muted',width:1,dash:[4,4]});B.dot(p.probe,p.atProbe,{r:6,color:'gold'});C.raster((x)=>{const L=rampInput(x,p.centre,p.width);return[...grey(L),1];},{res:2,key:JSON.stringify([p.centre,p.width])});info=p;});
+        v.readout(()=>{if(!info)return'';const p=info,f=x=>x.toExponential(7);return `Width ${p.width.toPrecision(10)}, knees a=${p.a.toPrecision(10)}, b=${p.b.toPrecision(10)}. Exact far-field limits: low ${f(p.lowLimit)}, high ${f(p.highLimit)}. Probe x=${p.probe.toPrecision(10)}: input ${f(p.lumProbe)}, response ${f(p.atProbe)}.\nAt lower/upper knees: responses ${f(p.atA)}, ${f(p.atB)}; derivatives ${f(p.slopeA)}, ${f(p.slopeB)}. ${p.width===0?'Exact step endpoint: filter edge lobes are not a prediction of distinct perceived Mach bands.':p.k===1?(p.kneeUnderflow?'Balanced ramp: knee derivatives are analytically positive but below floating-point range here; the extrema are not at the knees.':'Balanced positive-width ramp: both knee derivatives are positive; the extrema are not at the knees.'):p.k===0?'No surround: the output is a monotone Gaussian blur.':'Unbalanced authored filter: dashed lines are asymptotic limits, not exact finite plateau measurements.'} No perceptual extrema or brightness fit is inferred.`;});
       },
     },
     // ------------------------------------------------------------------ 4.9
